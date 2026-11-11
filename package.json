@@ -1,0 +1,46 @@
+{
+  "name": "digital-armory-3d",
+  "version": "1.0.0",
+  "description": "Interactive Web 3D Digital Armory & Firearm Internal Structure Disassembly / Dynamic Firing Simulation (10 Iconic World Firearms, 253 CSG Parts, 2K Procedural PBR)",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zhoujingkun1989-arch/digital-armory-3d.git"
+  },
+  "keywords": [
+    "threejs",
+    "react-three-fiber",
+    "webgl",
+    "3d-disassembly",
+    "exploded-view",
+    "csg",
+    "pbr",
+    "mechanical-simulation",
+    "digital-armory"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@react-three/drei": "^9.117.3",
+    "@react-three/fiber": "^8.17.10",
+    "lucide-react": "^0.460.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "three": "^0.169.0",
+    "three-bvh-csg": "^0.0.17",
+    "three-mesh-bvh": "^0.8.3",
+    "zustand": "^5.0.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@types/three": "^0.169.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "typescript": "~5.6.2",
+    "vite": "^6.0.1"
+  }
+}

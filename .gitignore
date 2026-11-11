@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Production build & TypeScript incremental cache
+dist/
+dist-ssr/
+*.tsbuildinfo
+
+# Python cache (PBR texture generators)
+__pycache__/
+*.py[cod]
+.venv/
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Logs & Local env
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.env
+.env.local
+.env.*.local
