@@ -1,293 +1,287 @@
 #!/usr/bin/env python3
-"""
-Generates high-resolution 2K multi-channel PBR textures (Albedo + OpenGL Tangent-Space Normal + Roughness)
-for #8 Magnum Research / IMI Mark XIX Desert Eagle (.50 Action Express, Polished & Brushed Chrome):
-  - public/textures/deagle_chrome_albedo.png    (2048 x 1024)
-  - public/textures/deagle_chrome_normal.png    (2048 x 1024)
-  - public/textures/deagle_chrome_roughness.png (2048 x 1024)
+"""Desert Eagle Mark XIX hard-chrome / elastomer material atlas, 2048x1024.
 
-Atlas UV Layout (v=0 bottom, v=1 top in Three.js UV space):
-  - v in [0.65, 0.98], u in [0.02, 0.98]: Right (+Z) Brushed/Polished Silver Chrome Wall
-      * Rear slide/frame (u in [0.06, 0.44]): "IMI MADE IN ISRAEL  .50 AE" & "MAGNUM RESEARCH INC." + serial "DK0050919"
-      * Red safety firing dot at (u=0.135, v=0.845)
-      * Forward barrel flank (u in [0.54, 0.92]): ".50 AE" caliber stamp & satin longitudinal brush
-  - v in [0.30, 0.63], u in [0.02, 0.98]: Left (-Z) Brushed/Polished Silver Chrome Wall (u=0 muzzle -> u=1 rear)
-      * Forward barrel flank (u in [0.10, 0.44]): ".50 AE" caliber stamp
-      * Rear slide breech (u in [0.54, 0.90]): "DESERT EAGLE PISTOL / MAGNUM RESEARCH INC. / IMI MADE IN ISRAEL"
-      * Red safety firing dot at (u=0.865, v=0.495)
-  - v in [0.02, 0.27], u in [0.02, 0.72]: Matte Black Stippled IMI/MR Rubber Grip Swatch (#181b20)
-      * High-frequency elastomer pebble stippling + recessed MRI/IMI Desert Eagle circular medallion
-  - v in [0.02, 0.27], u in [0.74, 0.86]: Dark Milled Steel Cuts / Serration Grooves / Bore Swatch
-  - v in [0.02, 0.27], u in [0.87, 0.99]: Mirror-Polished Bright Chrome Top Deck / Scope Rail / Front-Strap Swatch
+Unchanged outputs: deagle_chrome_{albedo,normal,roughness}.webp (or .png).
+*_roughness is LINEAR RGB ORM (R=AO, G=roughness, B=metalness).
+Fixed UV layout, v=0 bottom, v=1 top:
+  Right chrome wall: u=.02..98, v=.65..98 (mapped .66..97, 25.6 x 3.35 cm);
+    rear text u=.06..44, forward barrel u=.54..92; safety inset at u=.118, v=.865.
+  Left chrome wall: u=.02..98, v=.30..63 (mapped .31..62, 25.6 x 3.35 cm);
+    barrel u=.10..44, rear rollmarks u=.54..90; safety inset at u=.882, v=.515.
+  Rubber grip: u=.02..72, v=.02..27 (flank u=.20..56, v=.04..25, 5.4 x 8.8 cm).
+  Milled steel: u=.74..86, v=.02..27 (padded to u>.73/v<=.28).
+  Mirror top deck: u=.87..99, v=.02..27 (padded to u>.86/v<=.28).
+No painted bevel highlights: chrome reflection comes from lighting and normals.
 """
 
-import math
 import os
+import sys
+from pathlib import Path
+from tempfile import TemporaryDirectory
+
 import numpy as np
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image, ImageDraw
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-OUT_DIR = os.path.join(PROJECT_ROOT, "public", "textures")
-os.makedirs(OUT_DIR, exist_ok=True)
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+from scripts.pbr_core import (
+    OUT_DIR, bevel_mask, chipped_edge_wear, cnc_toolpath, compute_convexity,
+    compute_height_ao, fbm_noise, height_to_normal_map, laser_stipple_field,
+    load_font, save_orm_png, save_rgb_png, scratch_field, seamless_band_noise,
+    smoothstep, worley_cellular,
+)
 
-FONT_CANDIDATES = [
-    "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
-    "/System/Library/Fonts/Helvetica.ttc",
-    "/System/Library/Fonts/Supplemental/Impact.ttf",
-    "/System/Library/Fonts/Supplemental/Tahoma Bold.ttf",
-]
-
-
-def load_font(size: int):
-    for fp in FONT_CANDIDATES:
-        if os.path.exists(fp):
-            try:
-                return ImageFont.truetype(fp, size=size)
-            except Exception:
-                pass
-    return ImageFont.load_default()
+FONT_DIN = "/System/Library/Fonts/Supplemental/DIN Alternate Bold.ttf"
+FONT_COND = "/System/Library/Fonts/Supplemental/DIN Condensed Bold.ttf"
 
 
-def spectral_noise(
-    h: int,
-    w: int,
-    f_low: float,
-    f_high: float,
-    seed: int,
-    aniso_x: float = 1.0,
-    aniso_y: float = 1.0,
-) -> np.ndarray:
-    rng = np.random.default_rng(seed)
-    white = rng.standard_normal((h, w)).astype(np.float32)
-    spec = np.fft.rfft2(white)
-    fy = np.fft.fftfreq(h)[:, None] * h / aniso_y
-    fx = np.fft.rfftfreq(w)[None, :] * w / aniso_x
-    freq = np.sqrt(fx * fx + fy * fy)
-    envelope = np.exp(-0.5 * ((freq - f_low) / max(1.0, (f_high - f_low))) ** 2)
-    envelope[0, 0] = 0.0
-    field = np.fft.irfft2(spec * envelope, s=(h, w))
-    std = float(np.std(field)) + 1e-7
-    return (field / std).astype(np.float32)
+def tint(albedo, mask, color):
+    albedo *= 1 - mask[..., None]
+    albedo += np.asarray(color, np.float32) * mask[..., None]
 
 
-def height_to_normal_png(height: np.ndarray, strength: float, out_path: str) -> None:
-    dh_dy, dh_dx = np.gradient(height)
-    nx = -dh_dx * strength
-    ny = dh_dy * strength
-    nz = np.ones_like(height)
-    inv_len = 1.0 / np.sqrt(nx * nx + ny * ny + nz * nz + 1e-8)
-    rgb = np.zeros((height.shape[0], height.shape[1], 3), dtype=np.uint8)
-    rgb[..., 0] = np.clip((nx * inv_len * 0.5 + 0.5) * 255.0, 0, 255).astype(np.uint8)
-    rgb[..., 1] = np.clip((ny * inv_len * 0.5 + 0.5) * 255.0, 0, 255).astype(np.uint8)
-    rgb[..., 2] = np.clip((nz * inv_len * 0.5 + 0.5) * 255.0, 0, 255).astype(np.uint8)
-    Image.fromarray(rgb, mode="RGB").save(out_path, optimize=True)
+def paste_world_patch(target_mask, canvas_img, u0, u1, v0, v1,
+                      resample=Image.Resampling.LANCZOS):
+    h, w = target_mask.shape
+    x0, x1 = int(round(u0 * w)), int(round(u1 * w))
+    y0, y1 = int(round((1.0 - v1) * h)), int(round((1.0 - v0) * h))
+    resized = canvas_img.resize((max(1, x1 - x0), max(1, y1 - y0)), resample=resample)
+    arr = np.asarray(resized, dtype=np.float32) / 255.0
+    target_mask[y0:y1, x0:x1] = np.maximum(target_mask[y0:y1, x0:x1], arr)
 
 
-def save_rgb_png(arr01: np.ndarray, out_path: str) -> None:
-    rgb = np.clip(arr01 * 255.0, 0, 255).astype(np.uint8)
-    Image.fromarray(rgb, mode="RGB").save(out_path, optimize=True)
+def draw_israeli_proof_shield(draw, cx, cy, rad, width=4):
+    """Israeli / CIP proof shield with 6-pointed star emblem."""
+    w_sh, h_sh = int(rad * .78), int(rad * .95)
+    draw.polygon([
+        (cx - w_sh, cy - int(h_sh * .68)),
+        (cx + w_sh, cy - int(h_sh * .68)),
+        (cx + w_sh, cy + int(h_sh * .22)),
+        (cx, cy + h_sh),
+        (cx - w_sh, cy + int(h_sh * .22)),
+    ], outline=255, width=width)
+    sr = int(rad * .42)
+    cy_s = cy - int(h_sh * .08)
+    draw.polygon([(cx, cy_s - sr), (cx - int(sr * .86), cy_s + int(sr * .5)),
+                  (cx + int(sr * .86), cy_s + int(sr * .5))], outline=255, width=max(2, width - 1))
+    draw.polygon([(cx, cy_s + sr), (cx - int(sr * .86), cy_s - int(sr * .5)),
+                  (cx + int(sr * .86), cy_s - int(sr * .5))], outline=255, width=max(2, width - 1))
 
 
-def save_gray_png(arr01: np.ndarray, out_path: str) -> None:
-    g = np.clip(arr01 * 255.0, 0, 255).astype(np.uint8)
-    Image.fromarray(g, mode="L").save(out_path, optimize=True)
-
-
-def build_deagle_chrome_suite() -> None:
-    W, H = 2048, 1024
-
-    # Ultra-fine longitudinal anisotropic brushed chrome hairlines (zero wavy dents!)
-    aniso_brush = spectral_noise(H, W, 90, 340, seed=5001, aniso_x=0.16, aniso_y=3.6)
-    micro_polish = spectral_noise(H, W, 240, 500, seed=5002)
-    rubber_stipple = spectral_noise(H, W, 180, 460, seed=5003)
-    rubber_fine = spectral_noise(H, W, 95, 240, seed=5004)
-
-    v_grid = 1.0 - (np.arange(H, dtype=np.float32)[:, None] + 0.5) / H
-    u_grid = (np.arange(W, dtype=np.float32)[None, :] + 0.5) / W
-
-    # Base Platinum-Silver Chrome (#b4c0ce -> [180, 192, 206] / 255 = [0.7059, 0.7529, 0.8078])
-    albedo = np.zeros((H, W, 3), dtype=np.float32)
-    albedo[..., 0] = 180.0 / 255.0
-    albedo[..., 1] = 192.0 / 255.0
-    albedo[..., 2] = 206.0 / 255.0
-    albedo += (aniso_brush * 0.012 + micro_polish * 0.004)[..., None]
-
-    # Optically flat CNC chrome steel normals (128, 128, 255) on chrome panels — zero brush ripple!
-    height = np.zeros((H, W), dtype=np.float32)
-    roughness = np.clip(0.200 + aniso_brush * 0.010 + micro_polish * 0.004, 0.185, 0.220)
-
-    # Subtle edge/bevel AO framing along Right [0.66..0.97] & Left [0.31..0.62] perimeters + u ends
-    edge_ao_r = (
-        np.exp(-((v_grid - 0.972) / 0.016) ** 2)
-        + np.exp(-((v_grid - 0.658) / 0.016) ** 2)
-    ) * ((v_grid >= 0.64) & (v_grid <= 0.99))
-    edge_ao_l = (
-        np.exp(-((v_grid - 0.622) / 0.016) ** 2)
-        + np.exp(-((v_grid - 0.308) / 0.016) ** 2)
-    ) * ((v_grid >= 0.29) & (v_grid <= 0.64))
-    edge_ao_u = (
-        np.exp(-((u_grid - 0.02) / 0.022) ** 2)
-        + np.exp(-((u_grid - 0.98) / 0.022) ** 2)
-    ) * (v_grid >= 0.29)
-    edge_ao = np.clip(edge_ao_r + edge_ao_l + 0.55 * edge_ao_u, 0.0, 1.0)
-    ao_steel_col = np.array([0.525, 0.576, 0.639], dtype=np.float32)  # #8693a3 cool bevel shadow
-    albedo = albedo * (1.0 - edge_ao[..., None] * 0.30) + ao_steel_col * (edge_ao[..., None] * 0.30)
-    roughness = np.clip(roughness + edge_ao * 0.025, 0.18, 0.26)
-
-    # Crisp inboard satin-platinum bevel highlight ridge just inside top/bottom shoulders
-    shoulder_r = np.exp(-((v_grid - 0.942) / 0.015) ** 2) + 0.6 * np.exp(-((v_grid - 0.688) / 0.014) ** 2)
-    shoulder_l = np.exp(-((v_grid - 0.592) / 0.015) ** 2) + 0.6 * np.exp(-((v_grid - 0.338) / 0.014) ** 2)
-    mirror_polish = np.clip(shoulder_r + shoulder_l, 0.0, 1.0)
-    mirror_col = np.array([0.788, 0.831, 0.882], dtype=np.float32)  # #c9d4e1 bright platinum ridge
-    albedo = albedo * (1.0 - mirror_polish[..., None] * 0.28) + mirror_col * (mirror_polish[..., None] * 0.28)
-    roughness = np.clip(roughness - mirror_polish * 0.014, 0.18, 0.25)
-
-    # ==========================================================================
-    # Crisp Dark Rollmark Engravings + Crimson Safety Firing Dots
-    # ==========================================================================
-    engrave_mask = Image.new("L", (W, H), 0)
-    red_dot_mask = Image.new("L", (W, H), 0)
-    de = ImageDraw.Draw(engrave_mask)
-    dr = ImageDraw.Draw(red_dot_mask)
-
-    f_hero = load_font(34)
-    f_mid = load_font(25)
-    f_small = load_font(20)
-    f_cal = load_font(30)
-
-    # 1) LEFT WALL (v in [0.30, 0.63]; u=0.02 is +X muzzle, u=0.98 is -X rear)
-    # Rear Slide Breech (X in [-7.5, +1.0] -> u in [0.56, 0.88])
-    lx_slide = int(0.545 * W)
-    ly_slide = int((1.0 - 0.545) * H)
-    # Stylized Magnum Research eagle wing bar + crisp rollmarks
-    de.line([(lx_slide, ly_slide - 10), (lx_slide + 470, ly_slide - 10)], fill=215, width=2)
-    de.text((lx_slide, ly_slide), "DESERT EAGLE PISTOL", fill=255, font=f_hero)
-    de.text((lx_slide, ly_slide + 40), "MAGNUM RESEARCH INC. MINNEAPOLIS MN", fill=240, font=f_mid)
-    de.text((lx_slide, ly_slide + 72), "IMI  MADE IN ISRAEL   .50 AE", fill=235, font=f_small)
-
-    # Left Forward Barrel Flank (u in [0.16, 0.36], v ~ 0.49)
-    lx_bbl = int(0.20 * W)
-    ly_bbl = int((1.0 - 0.505) * H)
-    de.text((lx_bbl, ly_bbl), ".50 AE", fill=245, font=f_cal)
-
-    # Left Safety Red Firing Dot (near rear slide safety drum u=0.875, v=0.515)
-    ldx = int(0.882 * W)
-    ldy = int((1.0 - 0.515) * H)
-    dr.ellipse([ldx - 9, ldy - 9, ldx + 9, ldy + 9], fill=255)
-    de.ellipse([ldx - 11, ldy - 11, ldx + 11, ldy + 11], outline=180, width=2)
-
-    # 2) RIGHT WALL (v in [0.65, 0.98]; u=0.02 is -X rear, u=0.98 is +X muzzle)
-    # Rear Slide & Frame Right Flank (u in [0.16, 0.48])
-    rx_slide = int(0.165 * W)
-    ry_slide = int((1.0 - 0.885) * H)
-    de.text((rx_slide, ry_slide), "MAGNUM RESEARCH INC.", fill=245, font=f_mid)
-    de.text((rx_slide, ry_slide + 34), "IMI MADE IN ISRAEL   .50 AE", fill=255, font=f_mid)
-    # Serial number along right frame rail deck (v ~ 0.72)
-    de.text((int(0.18 * W), int((1.0 - 0.735) * H)), "DK 0050919", fill=225, font=f_small)
-
-    # Right Forward Barrel Flank (u in [0.62, 0.82], v ~ 0.84)
-    de.text((int(0.66 * W), int((1.0 - 0.855) * H)), ".50 AE", fill=245, font=f_cal)
-
-    # Right Safety Red Firing Dot (u=0.118, v=0.865)
-    rdx = int(0.118 * W)
-    rdy = int((1.0 - 0.865) * H)
-    dr.ellipse([rdx - 9, rdy - 9, rdx + 9, rdy + 9], fill=255)
-    de.ellipse([rdx - 11, rdy - 11, rdx + 11, rdy + 11], outline=180, width=2)
-
-    eng_arr = np.asarray(engrave_mask.filter(ImageFilter.GaussianBlur(radius=0.55)), dtype=np.float32) / 255.0
-    red_arr = np.asarray(red_dot_mask.filter(ImageFilter.GaussianBlur(radius=0.55)), dtype=np.float32) / 255.0
-
-    # Apply dark laser/rollmark engraving into bright silver chrome
-    eng_col = np.array([0.145, 0.168, 0.205], dtype=np.float32)
-    albedo = albedo * (1.0 - eng_arr[..., None] * 0.86) + eng_col * (eng_arr[..., None] * 0.86)
-    height -= eng_arr * 1.35
-    roughness = np.clip(roughness + eng_arr * 0.34, 0.13, 0.85)
-
-    # Apply crimson red enamel safety indicator dot
-    red_col = np.array([0.82, 0.11, 0.13], dtype=np.float32)
-    albedo = albedo * (1.0 - red_arr[..., None] * 0.95) + red_col * (red_arr[..., None] * 0.95)
-    height -= red_arr * 0.85
-    roughness = np.clip(roughness * (1.0 - red_arr) + 0.20 * red_arr, 0.13, 0.85)
-
-    # ==========================================================================
-    # Bottom Band Swatch 1: Matte Black Stippled IMI/MR Rubber Grip (#181b20)
-    # v in [0.00, 0.28], u in [0.00, 0.73]
-    # ==========================================================================
-    grip_mask = (v_grid <= 0.28) & (u_grid <= 0.73)
-    grip_base = np.array([0.094, 0.106, 0.125], dtype=np.float32)  # #181b20
-
-    # Molded stipple border & horizontal finger ribs inside grip swatch
-    in_panel = (v_grid >= 0.035) & (v_grid <= 0.245) & (u_grid >= 0.04) & (u_grid <= 0.69)
-    stipple_tex = rubber_stipple * 0.52 + rubber_fine * 0.24
-    rib_grooves = np.sin(v_grid * 64.0 * math.pi)
-    rib_band = in_panel & (u_grid >= 0.06) & (u_grid <= 0.20) & (rib_grooves > 0.72)
-
-    grip_rgb = grip_base[None, None, :] + (rubber_stipple * 0.009 + rubber_fine * 0.006)[..., None]
-    albedo[grip_mask] = grip_rgb[grip_mask]
-    height[grip_mask] = (stipple_tex * 0.55)[grip_mask]
-    roughness[grip_mask] = np.clip(0.73 + rubber_stipple * 0.035, 0.65, 0.82)[grip_mask]
-
-    height[rib_band] += 0.75
-    albedo[rib_band] += 0.015
-
-    # Molded circular MRI / IMI Desert Eagle Grip Medallion at (u=0.38, v=0.145)
-    med_mask_img = Image.new("L", (W, H), 0)
-    dm = ImageDraw.Draw(med_mask_img)
-    mcx = int(0.38 * W)
-    mcy = int((1.0 - 0.145) * H)
-    dm.ellipse([mcx - 54, mcy - 54, mcx + 54, mcy + 54], outline=220, width=4)
-    dm.ellipse([mcx - 45, mcy - 45, mcx + 45, mcy + 45], outline=150, width=2)
-    # Stylized eagle chevron & IMI/MRI text inside grip medallion
-    dm.polygon(
-        [(mcx - 30, mcy - 6), (mcx, mcy + 12), (mcx + 30, mcy - 6), (mcx, mcy + 2)],
-        fill=215,
-    )
-    dm.text((mcx - 24, mcy - 30), "IMI", fill=225, font=f_small)
-    dm.text((mcx - 26, mcy + 14), "MRI", fill=215, font=f_small)
-    med_arr = np.asarray(med_mask_img.filter(ImageFilter.GaussianBlur(radius=0.5)), dtype=np.float32) / 255.0
-
-    med_col = np.array([0.165, 0.182, 0.212], dtype=np.float32)
-    albedo = albedo * (1.0 - med_arr[..., None] * 0.75) + med_col * (med_arr[..., None] * 0.75)
-    height += med_arr * 0.90
-    roughness = np.clip(roughness - med_arr * 0.16, 0.12, 0.85)
-
-    # ==========================================================================
-    # Bottom Band Swatch 2: Dark Milled Cuts / Serrations / Bore (u in (0.73, 0.86], v <= 0.28)
-    # ==========================================================================
-    milled_mask = (v_grid <= 0.28) & (u_grid > 0.73) & (u_grid <= 0.86)
-    albedo[milled_mask] = np.array([0.175, 0.200, 0.238], dtype=np.float32) + micro_polish[milled_mask, None] * 0.008
-    height[milled_mask] = 0.0
-    roughness[milled_mask] = 0.34
-
-    # ==========================================================================
-    # Bottom Band Swatch 3: Platinum-Silver Chrome Top Deck & Scope Rail (u > 0.86, v <= 0.28)
-    # ==========================================================================
-    deck_mask = (v_grid <= 0.28) & (u_grid > 0.86)
-    deck_edge_ao = np.clip(
-        np.exp(-((v_grid - 0.03) / 0.018) ** 2) + np.exp(-((v_grid - 0.25) / 0.018) ** 2),
-        0.0,
-        1.0,
-    )
-    deck_base = (
-        np.array([0.718, 0.765, 0.820], dtype=np.float32)[None, None, :]
-        * (1.0 - deck_edge_ao[..., None] * 0.24)
-        + np.array([0.535, 0.585, 0.648], dtype=np.float32)[None, None, :] * (deck_edge_ao[..., None] * 0.24)
-        + aniso_brush[..., None] * 0.006
-    )
-    albedo[deck_mask] = deck_base[deck_mask]
-    height[deck_mask] = 0.0
-    roughness[deck_mask] = 0.198
-
-    # Thin clean neutral border lines between horizontal bands so bilinear filtering never bleeds
-    sep1 = np.abs(v_grid[:, 0] - 0.285) < 0.006
-    sep2 = np.abs(v_grid[:, 0] - 0.640) < 0.006
-    sep = sep1 | sep2
-    height[sep, :] = 0.0
-
+def save_suite(albedo, height, roughness, metalness, crevice):
+    """Pack with pbr_core, keeping linear normal/ORM WebPs lossless."""
+    ao = np.clip(compute_height_ao(height, strength=1.2) * crevice, 46/255, 1)
+    roughness = np.clip(roughness, 13/255, 234/255)
+    metalness = np.clip(metalness, 6/255, 249/255)
+    for field in (height, ao, roughness, metalness):
+        if field.shape != height.shape or not np.isfinite(field).all():
+            raise ValueError("Invalid chrome material field")
     save_rgb_png(albedo, os.path.join(OUT_DIR, "deagle_chrome_albedo.png"))
-    height_to_normal_png(height, strength=2.2, out_path=os.path.join(OUT_DIR, "deagle_chrome_normal.png"))
-    save_gray_png(roughness, os.path.join(OUT_DIR, "deagle_chrome_roughness.png"))
-    print("[OK] Generated deagle_chrome_{albedo,normal,roughness}.png (2048x1024)")
+    requested = os.environ.get("PBR_OUTPUT_FORMAT")
+    fmt = "png" if (requested or "webp").lower() == "png" else "webp"
+    with TemporaryDirectory(prefix="deagle-linear-") as tmp:
+        try:
+            os.environ["PBR_OUTPUT_FORMAT"] = "png"
+            normal_path = height_to_normal_map(height, 1.45,
+                os.path.join(tmp, "deagle_chrome_normal.png"), seamless=False)
+            orm_path = save_orm_png(ao, roughness, metalness,
+                os.path.join(tmp, "deagle_chrome_roughness.png"))
+        finally:
+            if requested is None:
+                os.environ.pop("PBR_OUTPUT_FORMAT", None)
+            else:
+                os.environ["PBR_OUTPUT_FORMAT"] = requested
+        for kind, path in (("normal", normal_path), ("roughness", orm_path)):
+            with Image.open(path) as img:
+                target = os.path.join(OUT_DIR, f"deagle_chrome_{kind}.{fmt}")
+                if fmt == "webp":
+                    img.save(target, "WEBP", lossless=True, exact=True, method=6)
+                else:
+                    img.save(target, "PNG", optimize=True)
+    print(f"[OK] deagle_chrome: 2048x1024 RGB normal + ORM ({fmt})", flush=True)
+
+
+def build_deagle_chrome_suite():
+    w, h = 2048, 1024
+    u = (np.arange(w, dtype=np.float32)[None, :] + .5) / w
+    v = 1 - (np.arange(h, dtype=np.float32)[:, None] + .5) / h
+    fine_brush = cnc_toolpath(h, w, pitch_px=2.8, angle_deg=0, seed=5001)
+    slow_brush = cnc_toolpath(h, w, pitch_px=6.3, angle_deg=.22, seed=5002)
+    polish = seamless_band_noise(h, w, 150, 480, seed=5003)
+    oil = fbm_noise(h, w, base_freq=7, octaves=3, seed=5004)
+    micro_scratches = scratch_field(h, w, count=3200, min_len=3, max_len=42,
+        angle_deg=0, angle_spread=5, seed=5005)
+    albedo = np.empty((h, w, 3), np.float32)
+    albedo[:] = (.715, .738, .765)
+    albedo += (.005 * fine_brush + .003 * slow_brush + .002 * polish)[..., None]
+    height = .012 * fine_brush + .008 * slow_brush + .006 * polish - .016 * micro_scratches
+    roughness = np.clip(.18 + .011 * fine_brush + .007 * slow_brush + .006 * polish
+                        - .010 * micro_scratches - .005 * oil, .15, .21)
+    metalness = np.full((h, w), .98, np.float32)
+    crevice = np.ones((h, w), np.float32)
+
+    # Crisp 2-3 px mechanical bevels + localized holster/muzzle burnish with FBM breakup.
+    walls = ((u >= .02) & (u <= .98)
+             & (((v >= .65) & (v <= .98)) | ((v >= .30) & (v <= .63))))
+    bevel = bevel_mask(walls.astype(np.float32), width_px=3, profile="trapezoid")
+    rim = walls.astype(np.float32) - bevel
+    height += .10 * bevel
+    crevice *= 1 - .15 * rim
+    breakup = smoothstep(.05, .58, fbm_noise(h, w, base_freq=36, octaves=4, seed=5010))
+    proximity = np.zeros((h, w), np.float32)
+    for low, high, is_right in ((.65, .98, True), (.30, .63, False)):
+        band = (v >= low) & (v <= high)
+        xn = (u - .02) / .96 if is_right else (.98 - u) / .96
+        holster_bias = .18 + .82 * smoothstep(.58, .94, xn)
+        edge = np.maximum(np.clip(1 - np.abs(v - (high - .012)) / .0038, 0, 1),
+                          np.clip(1 - np.abs(v - (low + .012)) / .0038, 0, 1))
+        proximity = np.maximum(proximity, edge * holster_bias * breakup * band)
+    chips, _ = chipped_edge_wear(proximity, seed=5006, wear_amount=.38)
+    holster = scratch_field(h, w, count=640, min_len=5, max_len=44,
+        angle_deg=0, angle_spread=6, seed=5007, mask=proximity)
+    burnish = np.maximum(chips, holster)
+    tint(albedo, burnish * .26, (.79, .81, .84))
+    roughness = roughness * (1 - burnish) + .12 * burnish
+    height -= .014 * holster
+
+    # Isotropic 2.5x supersampled world canvases for chrome walls:
+    # u=[0.02, 0.98], vL=[0.31, 0.62], vR=[0.66, 0.97] map 25.6 x 3.35 cm (py/px = 1.234x).
+    # Using 200 px/cm -> 5120 x 670 px renders safety dots as 1:1 true circles & un-squashes text.
+    cw, ch = 5120, 670
+    eng_l, eng_r, dot_l, dot_r = [Image.new("L", (cw, ch), 0) for _ in range(4)]
+    del_d, der_d, ddl_d, ddr_d = [ImageDraw.Draw(im) for im in (eng_l, eng_r, dot_l, dot_r)]
+    hero = load_font(FONT_DIN, 78)
+    mid = load_font(FONT_DIN, 54)
+    small = load_font(FONT_DIN, 44)
+    caliber = load_font(FONT_DIN, 68)
+
+    def uv_to_world_px(u_val, v_val, v0, v1):
+        return (int(round((u_val - .02) / .96 * cw)),
+                int(round((1.0 - (v_val - v0) / (v1 - v0)) * ch)))
+
+    # Left chrome wall (v=[0.31, 0.62]; frame samples v<=0.42, slide/barrel v>=0.43)
+    lx, ly = uv_to_world_px(.545, .545, .31, .62)
+    del_d.line([(lx, ly - 22), (lx + 1260, ly - 22)], fill=255, width=5)
+    del_d.text((lx, ly), "DESERT EAGLE PISTOL", fill=255, font=hero)
+    del_d.text((lx, ly + 92), "MAGNUM RESEARCH INC. MINNEAPOLIS MN", fill=255, font=mid)
+    del_d.text((lx, ly + 162), "IMI  MADE IN ISRAEL   .50 AE", fill=255, font=small)
+    draw_israeli_proof_shield(del_d, lx + 1215, ly + 182, 32, width=4)
+    bx_l, by_l = uv_to_world_px(.20, .505, .31, .62)
+    del_d.text((bx_l, by_l), ".50 AE", fill=255, font=caliber)
+
+    sx_l, sy_l = uv_to_world_px(.882, .515, .31, .62)
+    ddl_d.ellipse((sx_l - 23, sy_l - 23, sx_l + 23, sy_l + 23), fill=255)
+    del_d.ellipse((sx_l - 28, sy_l - 28, sx_l + 28, sy_l + 28), outline=255, width=5)
+
+    # Right chrome wall (v=[0.66, 0.97]; frame samples v<=0.77, slide/barrel v>=0.79)
+    rx, ry = uv_to_world_px(.165, .885, .66, .97)
+    der_d.text((rx, ry), "MAGNUM RESEARCH INC.", fill=255, font=mid)
+    der_d.text((rx, ry + 78), "IMI  MADE IN ISRAEL   .50 AE", fill=255, font=mid)
+    draw_israeli_proof_shield(der_d, rx + 1015, ry + 102, 32, width=4)
+    fx_r, fy_r = uv_to_world_px(.18, .735, .66, .97)
+    der_d.text((fx_r, fy_r), "DK 0050919", fill=255, font=small)
+    bx_r, by_r = uv_to_world_px(.66, .855, .66, .97)
+    der_d.text((bx_r, by_r), ".50 AE", fill=255, font=caliber)
+
+    sx_r, sy_r = uv_to_world_px(.118, .865, .66, .97)
+    ddr_d.ellipse((sx_r - 23, sy_r - 23, sx_r + 23, sy_r + 23), fill=255)
+    der_d.ellipse((sx_r - 28, sy_r - 28, sx_r + 28, sy_r + 28), outline=255, width=5)
+
+    engraved = np.zeros((h, w), dtype=np.float32)
+    red = np.zeros((h, w), dtype=np.float32)
+    paste_world_patch(engraved, eng_l, .02, .98, .31, .62)
+    paste_world_patch(engraved, eng_r, .02, .98, .66, .97)
+    paste_world_patch(red, dot_l, .02, .98, .31, .62)
+    paste_world_patch(red, dot_r, .02, .98, .66, .97)
+
+    height -= 1.35 * bevel_mask(engraved, width_px=1.15)
+    tint(albedo, engraved, (.185, .202, .224))
+    roughness = roughness * (1 - engraved) + .52 * engraved
+    metalness = metalness * (1 - engraved) + .56 * engraved
+    crevice *= 1 - .34 * engraved
+
+    height += .30 * bevel_mask(red, width_px=2.0, profile="round")
+    tint(albedo, red, (.58, .022, .034))
+    roughness = roughness * (1 - red) + .14 * red
+    metalness = metalness * (1 - red) + .03 * red
+
+    # Fixed padded grip swatch u<=.73, v<=.28; flank u=.20..56, v=.04..25 maps 5.4 x 8.8 cm
+    # (px = 136.53 px/cm, py = 24.44 px/cm -> anisotropy = 5.587x!).
+    # Compensate stipple cell counts (cells_y = 2.8x cells_x on 2048x1024) for 1:1 round pebbles!
+    grip = (v <= .28) & (u <= .73)
+    cells, facets = worley_cellular(h, w, 520, 186, seed=5008)
+    pebble = laser_stipple_field(h, w, 350, 125, seed=5009)
+    elastomer = .28 * facets - .14 * cells + .22 * pebble
+    albedo[grip] = np.array((.184, .195, .210)) + (.014 * facets + .006 * pebble)[grip, None]
+    height[grip] = elastomer[grip]
+    roughness[grip] = (.78 + .018 * polish + .018 * cells)[grip]
+    metalness[grip] = .02
+    crevice[grip] = 1
+
+    panel_mask = (v >= .035) & (v <= .245) & (u >= .04) & (u <= .69)
+    panel = bevel_mask(panel_mask.astype(np.float32), width_px=3)
+    height -= .14 * panel
+    crevice *= 1 - .12 * (panel_mask.astype(np.float32) - panel)
+
+    # Raised elastomer finger ribs along backstrap/frontstrap swatch u=.06..18
+    rib_img = Image.new("L", (w, h), 0)
+    rib_draw = ImageDraw.Draw(rib_img)
+    for vc in np.arange(.055, .24, .03125):
+        rib_draw.rounded_rectangle((int(.06 * w), int((1 - vc - .005) * h),
+            int(.18 * w), int((1 - vc + .005) * h)), radius=3, fill=255)
+    ribs = bevel_mask(np.asarray(rib_img, np.float32) / 255, width_px=2)
+    height += .35 * ribs
+    tint(albedo, ribs * .18, (.230, .242, .258))
+
+    # World-proportional 1:1 circular IMI / MRI eagle grip medallion!
+    # Flank u=[0.20, 0.56], v=[0.04, 0.25] = 5.4 x 8.8 cm -> 300 px/cm = 1620 x 2640 px.
+    # A 340 px radius circle (2.27 cm diameter) on 1620x2640 maps to rx=155 px, ry=28 px in UV,
+    # which un-stretches by 5.59x into an exact 1:1 true circle on the 3D rubber grip!
+    gw, gh = 1620, 2640
+    med_c, let_c = Image.new("L", (gw, gh), 0), Image.new("L", (gw, gh), 0)
+    dm, dt = ImageDraw.Draw(med_c), ImageDraw.Draw(let_c)
+    gcx, gcy, grad = gw // 2, gh // 2, 345
+    dm.ellipse((gcx - grad, gcy - grad, gcx + grad, gcy + grad), fill=255)
+    dt.ellipse((gcx - grad + 14, gcy - grad + 14, gcx + grad - 14, gcy + grad - 14),
+               outline=255, width=22)
+    dt.ellipse((gcx - grad + 58, gcy - grad + 58, gcx + grad - 58, gcy + grad - 58),
+               outline=255, width=13)
+    # Stylized spread-wing Desert Eagle silhouette across center
+    dt.polygon([
+        (gcx - 215, gcy - 34), (gcx - 65, gcy - 12), (gcx, gcy - 54),
+        (gcx + 65, gcy - 12), (gcx + 215, gcy - 34),
+        (gcx + 145, gcy + 26), (gcx, gcy + 68), (gcx - 145, gcy + 26),
+    ], fill=255)
+    dt.text((gcx, gcy - 155), "IMI", fill=255, font=load_font(FONT_DIN, 128), anchor="mm")
+    dt.text((gcx, gcy + 168), "MRI", fill=255, font=load_font(FONT_DIN, 128), anchor="mm")
+
+    med_mask = np.zeros((h, w), dtype=np.float32)
+    let_mask = np.zeros((h, w), dtype=np.float32)
+    paste_world_patch(med_mask, med_c, .20, .56, .04, .25)
+    paste_world_patch(let_mask, let_c, .20, .56, .04, .25)
+    med = bevel_mask(med_mask, width_px=2.5)
+    let_bevel = bevel_mask(let_mask, width_px=1.0)
+    height = height * (1 - med) - .26 * med + .44 * let_bevel
+    tint(albedo, med, (.165, .176, .192))
+    tint(albedo, let_mask * .48, (.245, .258, .276))
+    roughness = roughness * (1 - med) + .70 * med
+    crevice *= 1 - .16 * let_mask - .10 * (med_mask - med)
+    metalness[grip] = .02  # medallion is molded rubber dielectric (B <= 0.05)
+
+    # Padded lower swatches retain exact original pixel regions.
+    milled = (v <= .28) & (u > .73) & (u <= .86)
+    albedo[milled] = np.array((.225, .242, .264)) + .005 * polish[milled, None]
+    height[milled] = .018 * fine_brush[milled]
+    roughness[milled], metalness[milled], crevice[milled] = .36, .58, .90
+    deck = (v <= .28) & (u > .86)
+    albedo[deck] = np.array((.76, .78, .805)) + .002 * fine_brush[deck, None]
+    height[deck] = .004 * fine_brush[deck] - .006 * micro_scratches[deck]
+    roughness[deck], metalness[deck], crevice[deck] = .09, .98, 1
+    sep = (np.abs(v[:, 0] - .285) < .006) | (np.abs(v[:, 0] - .640) < .006)
+    height[sep, :] = 0
+    conv_dg = smoothstep(.08, .50, compute_convexity(height, sigma=1.8)) * (~sep[:, None])
+    albedo += (conv_dg * .020)[..., None]
+    roughness -= conv_dg * .034
+    save_suite(albedo, height, roughness, metalness, crevice)
 
 
 if __name__ == "__main__":

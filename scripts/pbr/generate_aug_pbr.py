@@ -1,402 +1,550 @@
 #!/usr/bin/env python3
-"""
-Generates high-resolution multi-channel PBR textures (Albedo + OpenGL Tangent-Space Normal + Roughness)
-for the Steyr AUG A1 (StG 77 · 5.56×45mm NATO, Classic Austrian Olive-Green) in public/textures/:
-  1. aug_stock_{albedo,normal,roughness}.png (2048x1024)
-     - Upper UV band: Classic Austrian Olive-Green (#4b5841) satin polyamide bullpup stock
-       with crisp molded STEYR MANNLICHER AUSTRIA / StG 77 markings & Steyr target logo
-     - Lower UV band: Dark charcoal-grey anodized die-cast aluminum receiver & 1.5x Swarovski optic
-       with SWAROVSKI OPTIK TIROL 1.5x markings & flat non-wavy normals
-     - Bottom utility swatches: black rubber, emerald-blue coated glass lens, bright steel
-  2. aug_mag_{albedo,normal,roughness}.png (1024x1024)
-     - Translucent amber waffle-grid polycarbonate magazine revealing stacked golden
-       5.56×45mm NATO brass cartridges & copper FMJ spitzer bullets behind raised waffle ribs!
+"""Steyr AUG A1 / StG 77: deterministic, 1:1 world-calibrated PBR atlases.
+
+Exact filenames, dimensions and UV zones:
+  aug_stock_{albedo,normal,roughness}.png (2048x1024; .webp by default).
+    Buttstock (14.70 x 5.50 cm -> left u=.05..45, right u=.55..95, v=.56..92, py/px = 1.203x):
+      Molded cartouches u=.07..43 / .57..93, v=.67..85 (clear of olive_plain v=.88..97).
+    Foregrip/pistol grip (3.80 x 5.20 cm -> u=.42..58, v=.51..62, px/py = 3.98x):
+      World-isotropic tactile stipple patch u=.41..59, v=.50..63.
+    Swarovski Habicht 1.5x scope (10.30 x 1.15 cm -> left u=.07..45, right u=.55..93, v=.36..45):
+      Crisp white laser markings + mapped windage/elevation vernier ticks inside scope flanks.
+    Die-cast aluminum receiver (8.35 x 1.68 cm -> left u=.07..45, right u=.55..93, v=.16..27, px/py = 1.39x):
+      Crisp Austrian Eagle 'NPv' proof shields + caliber/serial rollmarks.
+    Bottom swatches v<.075: rubber u<.34; multi-coated lens .34<=u<.65; red safety dot .66..70; bright steel u>=.72.
+
+  aug_mag_{albedo,normal,roughness}.png (1024x1024; .webp by default).
+    15 internal 5.56x45 brass/copper cartridges u=.16..84, v=.14..88, pitch=.0493.
+    Smoked Makrolon polycarbonate waffle box u=.12..88, v=.12..89 (strictly B<=0.05 polymer!).
+    Symmetric 10/20/30 witness index bars on 3D spine u=.880..916 + collar/margin typography outside side UV mirror.
+    Bottom swatches v<.075: dark polymer u<.50 (B=.03); steel feed-lip insert u>=.50 (B=.96).
 """
 
-import math
 import os
+import sys
+from pathlib import Path
+
 import numpy as np
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image, ImageDraw
+from scipy import ndimage
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-OUT_DIR = os.path.join(PROJECT_ROOT, "public", "textures")
-os.makedirs(OUT_DIR, exist_ok=True)
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+from scripts.pbr_core import (
+    OUT_DIR,
+    bevel_mask,
+    chipped_edge_wear,
+    cnc_toolpath,
+    compute_convexity,
+    compute_height_ao,
+    fbm_noise,
+    height_to_normal_png,
+    laser_stipple_field,
+    load_font,
+    save_orm_png,
+    save_rgb_png,
+    scratch_field,
+    smoothstep,
+    spectral_noise,
+    worley_cellular,
+)
 
-FONT_CANDIDATES = [
-    "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
-    "/System/Library/Fonts/Helvetica.ttc",
-    "/System/Library/Fonts/Supplemental/Tahoma Bold.ttf",
-    "/System/Library/Fonts/Supplemental/Impact.ttf",
-]
-
-
-def load_font(size: int):
-    for fp in FONT_CANDIDATES:
-        if os.path.exists(fp):
-            try:
-                return ImageFont.truetype(fp, size=size)
-            except Exception:
-                pass
-    return ImageFont.load_default()
-
-
-def spectral_noise(
-    h: int,
-    w: int,
-    f_low: float,
-    f_high: float,
-    seed: int,
-    aniso_x: float = 1.0,
-    aniso_y: float = 1.0,
-) -> np.ndarray:
-    rng = np.random.default_rng(seed)
-    white = rng.standard_normal((h, w)).astype(np.float32)
-    spec = np.fft.rfft2(white)
-    fy = np.fft.fftfreq(h)[:, None] * h / aniso_y
-    fx = np.fft.rfftfreq(w)[None, :] * w / aniso_x
-    freq = np.sqrt(fx * fx + fy * fy)
-    envelope = np.exp(-0.5 * ((freq - f_low) / max(1.0, (f_high - f_low))) ** 2)
-    envelope[0, 0] = 0.0
-    field = np.fft.irfft2(spec * envelope, s=(h, w))
-    std = float(np.std(field)) + 1e-7
-    return (field / std).astype(np.float32)
+FONT_SANS = "/System/Library/Fonts/Supplemental/DIN Alternate Bold.ttf"
+FONT_COND = "/System/Library/Fonts/Supplemental/DIN Condensed Bold.ttf"
 
 
-def height_to_normal_png(height: np.ndarray, strength: float, out_path: str) -> None:
-    dh_dy, dh_dx = np.gradient(height)
-    nx = -dh_dx * strength
-    ny = dh_dy * strength
-    nz = np.ones_like(height)
-    inv_len = 1.0 / np.sqrt(nx * nx + ny * ny + nz * nz + 1e-8)
-    rgb = np.zeros((height.shape[0], height.shape[1], 3), dtype=np.uint8)
-    rgb[..., 0] = np.clip((nx * inv_len * 0.5 + 0.5) * 255.0, 0, 255).astype(np.uint8)
-    rgb[..., 1] = np.clip((ny * inv_len * 0.5 + 0.5) * 255.0, 0, 255).astype(np.uint8)
-    rgb[..., 2] = np.clip((nz * inv_len * 0.5 + 0.5) * 255.0, 0, 255).astype(np.uint8)
-    Image.fromarray(rgb, mode="RGB").save(out_path, optimize=True)
+def _uv_grid(h: int, w: int) -> tuple[np.ndarray, np.ndarray]:
+    return (
+        np.broadcast_to((np.arange(w, dtype=np.float32)[None, :] + 0.5) / w, (h, w)),
+        np.broadcast_to(1.0 - (np.arange(h, dtype=np.float32)[:, None] + 0.5) / h, (h, w)),
+    )
 
 
-def save_rgb_png(arr01: np.ndarray, out_path: str) -> None:
-    rgb = np.clip(arr01 * 255.0, 0, 255).astype(np.uint8)
-    Image.fromarray(rgb, mode="RGB").save(out_path, optimize=True)
+def _paste_world_mask(
+    dest: np.ndarray,
+    patch_img: Image.Image,
+    u0: float,
+    u1: float,
+    v0: float,
+    v1: float,
+) -> None:
+    """Project an isotropic world-space L-mode canvas into atlas UV box [u0, u1] x [v0, v1]."""
+    h, w = dest.shape
+    x0, x1 = int(round(u0 * w)), int(round(u1 * w))
+    y0, y1 = int(round((1.0 - v1) * h)), int(round((1.0 - v0) * h))
+    if x1 <= x0 or y1 <= y0:
+        return
+    resized = patch_img.resize((x1 - x0, y1 - y0), Image.Resampling.LANCZOS)
+    arr = np.asarray(resized, dtype=np.float32) / 255.0
+    np.maximum(dest[y0:y1, x0:x1], arr, out=dest[y0:y1, x0:x1])
 
 
-def save_gray_png(arr01: np.ndarray, out_path: str) -> None:
-    g = np.clip(arr01 * 255.0, 0, 255).astype(np.uint8)
-    Image.fromarray(g, mode="L").save(out_path, optimize=True)
+def _edge_proximity(mask: np.ndarray, width: float = 5.0) -> np.ndarray:
+    distance = ndimage.distance_transform_edt(mask).astype(np.float32)
+    return (1.0 - smoothstep(0.8, width, distance)) * mask
 
 
-def draw_steyr_logo(draw: ImageDraw.ImageDraw, cx: int, cy: int, r: int, col: int = 235) -> None:
-    """Draws the classic Steyr Mannlicher concentric target-ring crosshair emblem."""
-    draw.ellipse([cx - r, cy - r, cx + r, cy + r], outline=col, width=4)
-    r_in = int(r * 0.56)
-    draw.ellipse([cx - r_in, cy - r_in, cx + r_in, cy + r_in], outline=col, width=3)
-    # Crosshair ticks (top, left, right, angled bottom legs)
-    draw.line([(cx, cy - r - 6), (cx, cy - r_in + 4)], fill=col, width=4)
-    draw.line([(cx - r - 6, cy), (cx - r_in + 4, cy)], fill=col, width=4)
-    draw.line([(cx + r_in - 4, cy), (cx + r + 6, cy)], fill=col, width=4)
-    draw.line([(cx - int(r * 0.45), cy + r + 4), (cx, cy + r_in - 3)], fill=col, width=4)
-    draw.line([(cx + int(r * 0.45), cy + r + 4), (cx, cy + r_in - 3)], fill=col, width=4)
+def _save_suite(
+    stem: str,
+    albedo: np.ndarray,
+    height: np.ndarray,
+    roughness: np.ndarray,
+    metalness: np.ndarray,
+    cavity: np.ndarray,
+    strength: float,
+) -> None:
+    ao = np.clip(compute_height_ao(height, strength=1.45) * cavity, 0.18, 1.0)
+    roughness = np.clip(roughness, 0.04, 0.92)
+    metalness = np.clip(metalness, 0.02, 0.98)
+    for field in (albedo, height, roughness, metalness, ao):
+        if not np.isfinite(field).all():
+            raise ValueError(f"{stem} contains non-finite material samples")
+    paths = [save_rgb_png(np.clip(albedo, 0.0, 1.0), os.path.join(OUT_DIR, f"{stem}_albedo.png"))]
+    normal_path = height_to_normal_png(
+        height, strength=strength, out_path=os.path.join(OUT_DIR, f"{stem}_normal.png")
+    )
+    orm_path = save_orm_png(
+        ao, roughness, metalness, out_path=os.path.join(OUT_DIR, f"{stem}_roughness.png")
+    )
+    if Path(orm_path).suffix == ".webp":
+        dy, dx = np.gradient(height)
+        normal = np.stack((-dx * strength, dy * strength, np.ones_like(height)), axis=-1)
+        normal /= np.linalg.norm(normal, axis=-1, keepdims=True)
+        orm_rgb = np.clip(
+            np.rint(np.stack((ao, roughness, metalness), axis=-1) * 255.0),
+            (46, 11, 5),
+            (255, 235, 250),
+        ).astype(np.uint8)
+        maps = (
+            (np.rint((normal * 0.5 + 0.5) * 255.0).astype(np.uint8), normal_path),
+            (orm_rgb, orm_path),
+        )
+        for data, path in maps:
+            Image.fromarray(data, "RGB").save(path, "WEBP", lossless=True, method=4, exact=True)
+    paths.extend((normal_path, orm_path))
+    for path in paths:
+        if Path(path).suffix == ".webp":
+            Path(path).with_suffix(".png").unlink(missing_ok=True)
+    print(
+        f"[OK] {stem} {height.shape[1]}x{height.shape[0]} albedo / OpenGL normal / RGB ORM:",
+        *paths,
+        sep="\n  ",
+    )
 
 
-# ==============================================================================
-# 1. STEYR AUG A1 OLIVE-GREEN STOCK & ANODIZED OPTIC RECEIVER SUITE (2048 x 1024)
-# ==============================================================================
+def draw_steyr_logo(draw: ImageDraw.ImageDraw, cx: float, cy: float, r: float, col: int = 255) -> None:
+    """Steyr-Mannlicher concentric target reticle emblem in isotropic world coordinates."""
+    inner = r * 0.56
+    w_outer = max(2, round(r * 0.12))
+    w_inner = max(2, round(r * 0.09))
+    draw.ellipse((cx - r, cy - r, cx + r, cy + r), outline=col, width=w_outer)
+    draw.ellipse((cx - inner, cy - inner, cx + inner, cy + inner), outline=col, width=w_inner)
+    for pts in (
+        ((cx, cy - r - r * 0.22), (cx, cy - inner + r * 0.14)),
+        ((cx - r - r * 0.22, cy), (cx - inner + r * 0.14, cy)),
+        ((cx + inner - r * 0.14, cy), (cx + r + r * 0.22, cy)),
+        ((cx - r * 0.46, cy + r + r * 0.16), (cx, cy + inner - r * 0.10)),
+        ((cx + r * 0.46, cy + r + r * 0.16), (cx, cy + inner - r * 0.10)),
+    ):
+        draw.line(pts, fill=col, width=w_outer)
+
+
+def draw_austrian_npv_proof(draw: ImageDraw.ImageDraw, cx: float, cy: float, r: float) -> None:
+    """Austrian Vienna/Ferlach Bundesbeschussamt Eagle shield + 'NPv' nitro proof mark."""
+    lw = max(2, round(r * 0.11))
+    # Spread Austrian eagle wings + breast shield
+    wings = [
+        (cx - r * 0.92, cy - r * 0.34),
+        (cx - r * 0.35, cy - r * 0.12),
+        (cx, cy - r * 0.56),
+        (cx + r * 0.35, cy - r * 0.12),
+        (cx + r * 0.92, cy - r * 0.34),
+        (cx + r * 0.58, cy + r * 0.22),
+        (cx, cy + r * 0.56),
+        (cx - r * 0.58, cy + r * 0.22),
+    ]
+    draw.polygon(wings, outline=255, width=lw)
+    draw.rectangle((cx - r * 0.26, cy - r * 0.14, cx + r * 0.26, cy + r * 0.30), fill=255)
+    f_npv = load_font(FONT_COND, max(12, round(r * 0.78)))
+    draw.text((cx + r * 1.12, cy + r * 0.04), "NPv", font=f_npv, fill=255, anchor="lm")
+
+
 def build_aug_stock_suite() -> None:
     W, H = 2048, 1024
-    # Fine high-frequency EDM mold micro-grain ONLY (zero low-freq wavy normal noise!)
-    poly_micro = spectral_noise(H, W, 240, 500, seed=901)
-    anodize_micro = spectral_noise(H, W, 280, 510, seed=902)
-    satin_sheen = spectral_noise(H, W, 12, 36, seed=903)
+    u, v = _uv_grid(H, W)
 
-    v_grid = np.broadcast_to(1.0 - (np.arange(H, dtype=np.float32)[:, None] + 0.5) / H, (H, W))
-    u_grid = np.broadcast_to((np.arange(W, dtype=np.float32)[None, :] + 0.5) / W, (H, W))
+    def rect(u0: float, u1: float, v0: float, v1: float) -> np.ndarray:
+        return (u >= u0) & (u <= u1) & (v >= v0) & (v <= v1)
 
-    albedo = np.zeros((H, W, 3), dtype=np.float32)
-    height = np.zeros((H, W), dtype=np.float32)
-    roughness = np.full((H, W), 0.58, dtype=np.float32)
+    grain = np.clip(spectral_noise(H, W, 260, 510, seed=901), -2.5, 2.5)
+    pebbles, edges = worley_cellular(H, W, 152, 304, seed=902)
+    edm = np.clip((0.42 - pebbles) * 1.8 + (edges - 0.17) * 0.5, -1.0, 1.0)
+    pores, cast_edges = worley_cellular(H, W, 256, 512, seed=903)
+    casting = (0.43 - pores) * 1.5 + (cast_edges - 0.18) * 0.3
+    tool = cnc_toolpath(H, W, pitch_px=3.4, angle_deg=0, seed=904)
+    handling = fbm_noise(H, W, base_freq=6, octaves=4, seed=905)
 
-    # --- A. Upper Band (v >= 0.49): Classic Austrian Olive-Green (#4b5841) Polyamide 66 Stock ---
-    # #4b5841 = (75/255, 88/255, 65/255) = (0.294, 0.345, 0.255)
-    stock_mask = v_grid >= 0.49
-    olive_rgb = np.array([0.294, 0.345, 0.255], dtype=np.float32)
-    albedo[stock_mask] = (
-        olive_rgb
-        + poly_micro[stock_mask, None] * 0.008
-        - satin_sheen[stock_mask, None] * 0.006
+    albedo = np.full((H, W, 3), (0.185, 0.196, 0.210), np.float32)
+    height = np.zeros((H, W), np.float32)
+    roughness = np.full((H, W), 0.58, np.float32)
+    metalness = np.full((H, W), 0.03, np.float32)
+    cavity = np.ones((H, W), np.float32)
+
+    # Upper UV band (v >= 0.49): Austrian olive fiberglass-reinforced PA66 stock
+    stock = v >= 0.49
+    albedo[stock] = np.array([82, 95, 71], np.float32) / 255.0 + edm[stock, None] * 0.009
+    height[stock] = (edm * 0.10 + grain * 0.009)[stock]
+    roughness[stock] = (0.58 + edm * 0.026 - handling * 0.017)[stock]
+    fibers = scratch_field(
+        H, W, count=2200, min_len=2, max_len=7, angle_deg=23, angle_spread=65, seed=906, mask=stock
     )
-    height[stock_mask] = poly_micro[stock_mask] * 0.11
-    roughness[stock_mask] = 0.58 + poly_micro[stock_mask] * 0.03 - satin_sheen[stock_mask] * 0.03
+    albedo += fibers[..., None] * np.array([0.013, 0.013, 0.008], np.float32)
+    height += fibers * 0.012
 
-    # Subtle molded recessed rectangular cartouche panels on Left & Right rear buttstock flanks
-    panel_l = (
-        (u_grid >= 0.07)
-        & (u_grid <= 0.43)
-        & (v_grid >= 0.67)
-        & (v_grid <= 0.85)
+    # Molded recessed cartouche panels u=.07..43 / .57..93, v=.67..85 (clear of olive_plain v>=.88)
+    panels = rect(0.07, 0.43, 0.67, 0.85) | rect(0.57, 0.93, 0.67, 0.85)
+    panel_relief = bevel_mask(panels, 5, profile="trapezoid")
+    height -= panel_relief * 0.58
+    albedo -= panel_relief[..., None] * 0.009
+    roughness += panel_relief * 0.015
+    cavity *= 1.0 - panel_relief * 0.04
+
+    # Foregrip/pistol grip stipple patch (3.80 x 5.20 cm -> u=.41..59, v=.50..63, px/py = 3.98x!)
+    # Compensated cell counts (cells_y=68, cells_x=46) yield 1:1 circular stipple craters in 3D!
+    grip_patch = rect(0.41, 0.59, 0.50, 0.63)
+    x0, x1 = int(0.41 * W), int(0.59 * W)
+    y0, y1 = int((1.0 - 0.63) * H), int((1.0 - 0.50) * H)
+    stipple = np.zeros((H, W), np.float32)
+    stipple[y0:y1, x0:x1] = laser_stipple_field(y1 - y0, x1 - x0, cells_y=68, cells_x=46, seed=907)
+    patch_bevel = bevel_mask(grip_patch, 3, profile="trapezoid")
+    height += stipple * patch_bevel * 0.36
+    roughness[grip_patch] = 0.70 + edm[grip_patch] * 0.015
+    cavity *= 1.0 - patch_bevel * np.maximum(-stipple, 0.0) * 0.09
+
+    seam = rect(0.025, 0.975, 0.960, 0.9615)
+    height += seam * 0.16
+    cavity *= 1.0 - seam * 0.04
+
+    # Lower UV band (0.08 <= v < 0.49): Die-cast anodized aluminum receiver & Swarovski optic housing
+    receiver = (v >= 0.08) & (v < 0.49)
+    albedo[receiver] = np.array([0.255, 0.275, 0.298], np.float32) + casting[receiver, None] * 0.007
+    height[receiver] = (casting * 0.027 + tool * 0.012 + grain * 0.004)[receiver]
+    roughness[receiver] = (0.36 + casting * 0.019 - handling * 0.018)[receiver]
+    metalness[receiver] = 0.56
+
+    rims = (rect(0.025, 0.975, 0.475, 0.481) | rect(0.025, 0.975, 0.089, 0.095)) & receiver
+    edge = _edge_proximity(rims, 4)
+    for bounds in ((0.07, 0.45, 0.36, 0.45), (0.55, 0.93, 0.36, 0.45)):
+        edge = np.maximum(edge, _edge_proximity(rect(*bounds), 4) * 0.85)
+    edge *= smoothstep(-0.02, 0.40, fbm_noise(H, W, base_freq=96, octaves=3, seed=909))
+    bare, oxide = chipped_edge_wear(edge * receiver, seed=910, wear_amount=0.52)
+    scratches = scratch_field(
+        H, W, count=130, min_len=16, max_len=58, angle_deg=-12, angle_spread=26, seed=911, mask=receiver
     )
-    panel_r = (
-        (u_grid >= 0.57)
-        & (u_grid <= 0.93)
-        & (v_grid >= 0.67)
-        & (v_grid <= 0.85)
+    albedo += (scratches * 0.28)[..., None] * np.array([0.08, 0.09, 0.10], np.float32)
+    roughness -= scratches * 0.072
+    albedo -= oxide[..., None] * 0.014
+    albedo = albedo * (1.0 - bare[..., None]) + np.array([0.58, 0.62, 0.67], np.float32) * bare[..., None]
+    roughness = roughness * (1.0 - bare) + 0.20 * bare
+    metalness = metalness * (1.0 - bare) + 0.96 * bare
+    height -= bare * 0.045 + scratches * 0.022
+
+    # -------------------------------------------------------------------------
+    # 1:1 ISOTROPIC WORLD-SPACE MOLDED CARTOUCHES, SWAROVSKI OPTIC & NPv PROOFS
+    # -------------------------------------------------------------------------
+    molded_mask = np.zeros((H, W), dtype=np.float32)
+    laser_mask = np.zeros((H, W), dtype=np.float32)
+
+    # 1) Buttstock Left & Right Flanks (14.70 x 5.50 cm -> 2940 x 1100 px at 200 px/cm)
+    # Cartouches sit inside panels u=.07..43 / .57..93 -> x_c in [147, 2793], v=.67..85 -> y_c in [214, 764]
+    BW, BH = 2940, 1100
+    for is_left in (True, False):
+        b_im = Image.new("L", (BW, BH), 0)
+        db = ImageDraw.Draw(b_im)
+        cx_logo, cy_logo = 460, 488
+        draw_steyr_logo(db, cx_logo, cy_logo, r=108, col=255)
+        f_hd = load_font(FONT_SANS, 114)
+        f_sub = load_font(FONT_SANS, 80)
+        if is_left:
+            db.text((635, 382), "STEYR MANNLICHER", font=f_hd, fill=255)
+            p1 = "MADE IN AUSTRIA"
+            db.text((638, 520), p1, font=f_sub, fill=255)
+            bx1 = db.textbbox((638, 520), p1, font=f_sub)
+            dot_x, dot_y = bx1[2] + 38, (bx1[1] + bx1[3]) // 2
+            db.ellipse((dot_x - 8, dot_y - 8, dot_x + 8, dot_y + 8), fill=255)
+            db.text((dot_x + 38, 520), "StG 77", font=f_sub, fill=255)
+            _paste_world_mask(molded_mask, b_im, 0.05, 0.45, 0.56, 0.92)
+        else:
+            db.text((635, 382), "STEYR AUG A1   5.56×45", font=f_hd, fill=255)
+            db.text((638, 520), "STEYR-DAIMLER-PUCH AG   907418", font=f_sub, fill=255)
+            _paste_world_mask(molded_mask, b_im, 0.55, 0.95, 0.56, 0.92)
+
+    # 2) Swarovski Habicht 1.5x14 Integral Scope (10.30 x 1.15 cm -> 2472 x 276 px at 240 px/cm)
+    # Vernier turret scale is now inside mapped scope flanks (not stranded in unmapped u=0.485 gutter!)
+    def _draw_vernier_arrows(d: ImageDraw.ImageDraw, cx: int, cy: int, left_lbl: str, right_lbl: str, fnt) -> None:
+        d.text((cx, cy), "0", font=fnt, fill=255, anchor="mm")
+        # Left vector arrow
+        d.line([(cx - 24, cy), (cx - 78, cy)], fill=255, width=4)
+        d.polygon([(cx - 86, cy), (cx - 68, cy - 9), (cx - 68, cy + 9)], fill=255)
+        d.text((cx - 98, cy), left_lbl, font=fnt, fill=255, anchor="rm")
+        # Right vector arrow
+        d.line([(cx + 24, cy), (cx + 78, cy)], fill=255, width=4)
+        d.polygon([(cx + 86, cy), (cx + 68, cy - 9), (cx + 68, cy + 9)], fill=255)
+        d.text((cx + 98, cy), right_lbl, font=fnt, fill=255, anchor="lm")
+
+    SW, SH = 2472, 276
+    for is_left in (True, False):
+        s_im = Image.new("L", (SW, SH), 0)
+        ds = ImageDraw.Draw(s_im)
+        f_sc = load_font(FONT_SANS, 74)
+        f_ver = load_font(FONT_COND, 46)
+        if is_left:
+            ds.text((140, SH // 2), "SWAROVSKI OPTIK TIROL   1.5×14", font=f_sc, fill=255, anchor="lm")
+            vx0 = 1860
+            for k in range(9):
+                tx = vx0 + k * 44
+                th = 42 if k % 4 == 0 else (28 if k % 2 == 0 else 18)
+                ds.line([(tx, 62), (tx, 62 + th)], fill=255, width=5 if k % 4 == 0 else 3)
+            _draw_vernier_arrows(ds, vx0 + 176, 152, "L", "R", f_ver)
+            _paste_world_mask(laser_mask, s_im, 0.07, 0.45, 0.36, 0.45)
+        else:
+            ds.text((140, SH // 2), "HABICHT 1.5×   MADE IN AUSTRIA", font=f_sc, fill=255, anchor="lm")
+            vx0 = 1860
+            for k in range(9):
+                tx = vx0 + k * 44
+                th = 42 if k % 4 == 0 else (28 if k % 2 == 0 else 18)
+                ds.line([(tx, 62), (tx, 62 + th)], fill=255, width=5 if k % 4 == 0 else 3)
+            _draw_vernier_arrows(ds, vx0 + 176, 152, "UP", "DN", f_ver)
+            _paste_world_mask(laser_mask, s_im, 0.55, 0.93, 0.36, 0.45)
+
+    # 3) Die-Cast Aluminum Receiver Flanks (8.35 x 1.68 cm -> 2004 x 403 px at 240 px/cm, px/py = 1.39x!)
+    RW, RH = 2004, 403
+    for is_left in (True, False):
+        r_im = Image.new("L", (RW, RH), 0)
+        dr = ImageDraw.Draw(r_im)
+        f_rc = load_font(FONT_COND, 72)
+        if is_left:
+            draw_steyr_logo(dr, 128, RH // 2, r=52, col=255)
+            dr.text((216, RH // 2), "STEYR  CAL. .223 REM. (5.56mm NATO)  AT-77418", font=f_rc, fill=255, anchor="lm")
+            draw_austrian_npv_proof(dr, 1785, RH // 2, r=54)
+            _paste_world_mask(laser_mask, r_im, 0.07, 0.45, 0.16, 0.27)
+        else:
+            dr.text((110, RH // 2), "MOD. AUG / SA   STEYR-DAIMLER-PUCH", font=f_rc, fill=255, anchor="lm")
+            draw_austrian_npv_proof(dr, 1465, RH // 2, r=56)
+            dr.text((1710, RH // 2), "CIP · N", font=load_font(FONT_COND, 62), fill=255, anchor="lm")
+            _paste_world_mask(laser_mask, r_im, 0.55, 0.93, 0.16, 0.27)
+
+    # Apply crisp raised PA66 polymer cartouche relief
+    mark = molded_mask * stock
+    mark_bevel = bevel_mask(mark, 1.4, profile="trapezoid")
+    albedo += mark[..., None] * np.array([0.028, 0.031, 0.021], np.float32)
+    height += mark_bevel * 0.42
+    roughness -= mark * 0.022
+    cavity *= 1.0 - np.clip(ndimage.maximum_filter(mark, size=3) - mark, 0.0, 1.0) * 0.08
+
+    # Apply white laser-etched receiver/scope markings: dielectric oxide layer (B = 0.04 <= 0.05!)
+    laser_mark = laser_mask * receiver
+    albedo = albedo * (1.0 - laser_mark[..., None]) + np.array([0.85, 0.87, 0.85], np.float32) * laser_mark[..., None]
+    height -= laser_mark * 0.085
+    roughness = roughness * (1.0 - laser_mark) + 0.42 * laser_mark
+    metalness = metalness * (1.0 - laser_mark) + 0.04 * laser_mark
+
+    # Bottom utility swatches (v < 0.075)
+    rubber = (v < 0.075) & (u < 0.34)
+    lens = (v < 0.075) & (u >= 0.34) & (u < 0.65)
+    steel = (v < 0.075) & (u >= 0.72)
+    albedo[rubber] = np.array([0.180, 0.190, 0.204]) + edm[rubber, None] * 0.006
+    height[rubber], roughness[rubber], metalness[rubber] = edm[rubber] * 0.10, 0.82, 0.02
+
+    conv_aug = smoothstep(0.08, 0.50, compute_convexity(height, sigma=2.0)) * (v >= 0.08)
+    albedo += (conv_aug * 0.022)[..., None]
+    roughness -= conv_aug * 0.040
+
+    ru, rv = (u - 0.495) / 0.14, (v - 0.038) / 0.038
+    radius = np.sqrt(ru * ru + rv * rv)
+    ar = 1.0 - smoothstep(0.05, 1.35, radius)
+    lens_rgb = np.array([0.024, 0.16, 0.22], np.float32) + ar[..., None] * np.array([0.025, 0.25, 0.19], np.float32)
+    ring = smoothstep(0.65, 0.85, radius) * (1.0 - smoothstep(0.86, 1.02, radius))
+    lens_rgb += ring[..., None] * np.array([0.018, 0.025, 0.055], np.float32)
+    albedo[lens], height[lens], roughness[lens], metalness[lens] = lens_rgb[lens], 0.0, 0.05, 0.10
+
+    albedo[steel] = np.array([0.78, 0.82, 0.87]) + tool[steel, None] * 0.004
+    height[steel], roughness[steel], metalness[steel] = tool[steel] * 0.009, 0.17, 0.97
+
+    # Red safety indicator dot in original UV swatch (.66..70, v=.015..055): strictly dielectric B=0.03 <= 0.05!
+    S = 2
+    red_im = Image.new("L", (W * S, H * S), 0)
+    ImageDraw.Draw(red_im).ellipse(
+        tuple(int(p * S) for p in (0.66 * W, 0.945 * H, 0.70 * W, 0.985 * H)), fill=255
     )
-    panels = panel_l | panel_r
-    height[panels] -= 0.35
-    albedo[panels] -= 0.014
-    roughness[panels] += 0.04
+    red = np.asarray(red_im.resize((W, H), Image.Resampling.LANCZOS), np.float32) / 255.0
+    albedo = albedo * (1.0 - red[..., None]) + np.array([0.82, 0.12, 0.12], np.float32) * red[..., None]
+    roughness = roughness * (1.0 - red) + 0.24 * red
+    metalness = metalness * (1.0 - red) + 0.03 * red
+    cavity[v < 0.08] = 1.0
 
-    # Molded grip stipple zone around pistol-grip UV patch (u in [0.38..0.62], v in [0.50..0.64])
-    grip_patch = (u_grid >= 0.41) & (u_grid <= 0.59) & (v_grid >= 0.50) & (v_grid <= 0.63)
-    height[grip_patch] += poly_micro[grip_patch] * 0.22
-    roughness[grip_patch] = 0.70
-
-    # --- B. Lower Band (0.08 <= v < 0.49): Dark Charcoal-Grey Anodized Optic Receiver ---
-    rec_mask = (v_grid >= 0.08) & (v_grid < 0.49)
-    # Authentic Steyr dark slate-charcoal cast/machined aluminum (#31373d)
-    anod_rgb = np.array([0.192, 0.216, 0.239], dtype=np.float32)
-    albedo[rec_mask] = anod_rgb + anodize_micro[rec_mask, None] * 0.006
-    # Optically flat anodized metal surface!
-    height[rec_mask] = anodize_micro[rec_mask] * 0.05
-    roughness[rec_mask] = 0.41 + anodize_micro[rec_mask] * 0.02 - satin_sheen[rec_mask] * 0.025
-
-    # Subtle silver edge wear along top/bottom rims of receiver band
-    rim_wear = (
-        np.exp(-((v_grid - 0.478) / 0.009) ** 2)
-        + np.exp(-((v_grid - 0.092) / 0.009) ** 2)
-    ) * rec_mask
-    silver_rgb = np.array([0.58, 0.63, 0.68], dtype=np.float32)
-    albedo = albedo * (1.0 - rim_wear[..., None] * 0.30) + silver_rgb * (rim_wear[..., None] * 0.30)
-    roughness -= rim_wear * 0.08
-
-    # --- C. Crisp Molded Stock Stamps & White Laser Receiver/Optic Markings ---
-    molded_stamp = Image.new("L", (W, H), 0)
-    laser_white = Image.new("L", (W, H), 0)
-    red_dot_mask = Image.new("L", (W, H), 0)
-
-    dm = ImageDraw.Draw(molded_stamp)
-    dl = ImageDraw.Draw(laser_white)
-    dr = ImageDraw.Draw(red_dot_mask)
-
-    f_brand = load_font(34)
-    f_sub = load_font(25)
-    f_optic = load_font(28)
-    f_small = load_font(21)
-
-    # 1) Left Stock Wall (u in [0.07..0.43], v in [0.67..0.85] => py around (1 - 0.78)*H)
-    lx = int(0.115 * W)
-    ly = int((1.0 - 0.79) * H)
-    draw_steyr_logo(dm, lx, ly + 26, 28, col=235)
-    dm.text((lx + 46, ly - 4), "STEYR MANNLICHER", fill=245, font=f_brand)
-    dm.text((lx + 48, ly + 36), "MADE IN AUSTRIA  ·  StG 77", fill=225, font=f_sub)
-
-    # 2) Right Stock Wall (u in [0.57..0.93], v in [0.67..0.85])
-    rx = int(0.605 * W)
-    ry = int((1.0 - 0.79) * H)
-    draw_steyr_logo(dm, rx, ry + 26, 26, col=235)
-    dm.text((rx + 44, ry - 4), "STEYR AUG A1  5.56×45", fill=245, font=f_brand)
-    dm.text((rx + 46, ry + 36), "STEYR-DAIMLER-PUCH AG  907418", fill=220, font=f_sub)
-
-    # 3) Receiver & Swarovski 1.5x Scope Tube Markings (v in [0.12..0.45])
-    # Left receiver & scope flank (u in [0.06..0.46])
-    ox_l = int(0.08 * W)
-    oy_scope = int((1.0 - 0.41) * H)
-    oy_rec = int((1.0 - 0.23) * H)
-    dl.text((ox_l, oy_scope), "SWAROVSKI OPTIK TIROL   1.5×14", fill=235, font=f_optic)
-    dl.text((ox_l, oy_rec), "STEYR  CAL. .223 REM. (5.56mm NATO)   AT-77418", fill=225, font=f_sub)
-
-    # Right receiver & scope flank (u in [0.54..0.94])
-    ox_r = int(0.56 * W)
-    dl.text((ox_r, oy_scope), "HABICHT 1.5×   MADE IN AUSTRIA", fill=235, font=f_optic)
-    dl.text((ox_r, oy_rec), "MOD. AUG / SA   NPv PROOF   STEYR", fill=220, font=f_sub)
-
-    # Turret elevation/windage tick scale around u = 0.49..0.54, v = 0.36..0.44
-    tx0 = int(0.485 * W)
-    ty0 = int((1.0 - 0.42) * H)
-    for t_i in range(9):
-        tx = tx0 + t_i * 11
-        tick_h = 12 if t_i % 4 == 0 else 7
-        dl.line([(tx, ty0), (tx, ty0 + tick_h)], fill=215, width=2)
-    dl.text((tx0, ty0 + 16), "L  ← 0 →  R", fill=210, font=f_small)
-
-    # Safety red warning indicator dot in utility zone
-    dr.ellipse([int(0.66 * W), int(0.945 * H), int(0.70 * W), int(0.985 * H)], fill=255)
-
-    molded_arr = np.asarray(molded_stamp.filter(ImageFilter.GaussianBlur(radius=0.55)), dtype=np.float32) / 255.0
-    laser_arr = np.asarray(laser_white.filter(ImageFilter.GaussianBlur(radius=0.5)), dtype=np.float32) / 255.0
-    red_arr = np.asarray(red_dot_mask, dtype=np.float32) / 255.0
-
-    # Molded olive-highlight lettering on stock (embossed/debossed crisp relief + subtle lighter sage-olive tint)
-    sage_mark = np.array([0.44, 0.50, 0.39], dtype=np.float32)
-    albedo = albedo * (1.0 - molded_arr[..., None] * 0.68) + sage_mark * (molded_arr[..., None] * 0.68)
-    height -= molded_arr * 0.95
-    roughness = np.clip(roughness + molded_arr * 0.06, 0.05, 0.92)
-
-    # Crisp silver-white laser engraving on dark grey anodized receiver/scope
-    laser_col = np.array([0.78, 0.82, 0.86], dtype=np.float32)
-    albedo = albedo * (1.0 - laser_arr[..., None] * 0.78) + laser_col * (laser_arr[..., None] * 0.78)
-    height -= laser_arr * 0.55
-    roughness = np.clip(roughness + laser_arr * 0.05, 0.05, 0.92)
-
-    # --- D. Bottom Swatch Strip (v < 0.08) ---
-    # 1) Black elastomer rubber swatch (u < 0.34, v < 0.075)
-    rub_sw = (v_grid < 0.075) & (u_grid < 0.34)
-    albedo[rub_sw] = np.array([0.095, 0.102, 0.112], dtype=np.float32)
-    roughness[rub_sw] = 0.84
-    height[rub_sw] = poly_micro[rub_sw] * 0.18
-
-    # 2) Multi-coated Swarovski emerald-cyan optical glass lens swatch (0.34 <= u < 0.65, v < 0.075)
-    lens_sw = (v_grid < 0.075) & (u_grid >= 0.34) & (u_grid < 0.65)
-    rad_u = (u_grid - 0.495) / 0.14
-    rad_v = (v_grid - 0.038) / 0.038
-    lens_glow = np.clip(1.0 - 0.45 * (rad_u * rad_u + rad_v * rad_v), 0.25, 1.0)
-    lens_col_in = np.array([0.08, 0.58, 0.62], dtype=np.float32)
-    lens_col_edge = np.array([0.04, 0.24, 0.38], dtype=np.float32)
-    albedo[lens_sw] = (
-        lens_col_edge + (lens_col_in - lens_col_edge) * lens_glow[lens_sw, None]
-    )
-    roughness[lens_sw] = 0.06
-    height[lens_sw] = 0.0
-
-    # 3) Bright steel trunnion/rail swatch (u >= 0.72, v < 0.075)
-    steel_sw = (v_grid < 0.075) & (u_grid >= 0.72)
-    albedo[steel_sw] = np.array([0.78, 0.82, 0.87], dtype=np.float32)
-    roughness[steel_sw] = 0.20
-    height[steel_sw] = 0.0
-
-    # Red warning dot swatch
-    red_rgb = np.array([0.82, 0.14, 0.14], dtype=np.float32)
-    albedo = albedo * (1.0 - red_arr[..., None]) + red_rgb * red_arr[..., None]
-
-    save_rgb_png(albedo, os.path.join(OUT_DIR, "aug_stock_albedo.png"))
-    height_to_normal_png(height, strength=2.2, out_path=os.path.join(OUT_DIR, "aug_stock_normal.png"))
-    save_gray_png(roughness, os.path.join(OUT_DIR, "aug_stock_roughness.png"))
-    print("[OK] Generated aug_stock_{albedo,normal,roughness}.png")
+    _save_suite("aug_stock", albedo, height, roughness, metalness, cavity, strength=2.2)
 
 
-# ==============================================================================
-# 2. STEYR AUG 30-RD TRANSLUCENT AMBER WAFFLE POLYMER MAGAZINE SUITE (1024 x 1024)
-# ==============================================================================
 def build_aug_mag_suite() -> None:
     W, H = 1024, 1024
-    poly_grain = spectral_noise(H, W, 180, 420, seed=911)
+    u, v = _uv_grid(H, W)
 
-    v_grid = np.broadcast_to(1.0 - (np.arange(H, dtype=np.float32)[:, None] + 0.5) / H, (H, W))
-    u_grid = np.broadcast_to((np.arange(W, dtype=np.float32)[None, :] + 0.5) / W, (H, W))
+    def rect(u0: float, u1: float, v0: float, v1: float) -> np.ndarray:
+        return (u >= u0) & (u <= u1) & (v >= v0) & (v <= v1)
 
-    # Base smoked translucent honey-amber Makrolon polycarbonate (#58431f .. #765928)
-    amber_dark = np.array([0.27, 0.20, 0.095], dtype=np.float32)
-    amber_rib = np.array([0.39, 0.295, 0.145], dtype=np.float32)
+    grain = np.clip(spectral_noise(H, W, 180, 420, seed=921), -2.5, 2.5)
+    amber_dark = np.array([0.27, 0.20, 0.095], np.float32)
+    amber_rib = np.array([0.405, 0.285, 0.120], np.float32)
+    albedo = np.broadcast_to(amber_dark, (H, W, 3)).copy() + grain[..., None] * 0.0025
+    # Cartridge relief is internal behind smooth polycarbonate windows
+    height = grain * 0.009
+    roughness = np.full((H, W), 0.32, np.float32)
+    metalness = np.full((H, W), 0.04, np.float32)
+    cavity = np.ones((H, W), np.float32)
 
-    albedo = np.broadcast_to(amber_dark, (H, W, 3)).copy()
-    albedo += poly_grain[..., None] * 0.008
-    height = poly_grain * 0.08
-    roughness = np.full((H, W), 0.22, dtype=np.float32)
-
-    # --- A. Stacked Golden 5.56x45mm NATO Cartridges Visible Through Translucent Amber Wall! ---
-    # Cartridges span u in [0.16, 0.84] (u=0.16 rear rim -> u=0.64 brass case/shoulder -> u=0.84 copper FMJ tip)
-    # and stack vertically along v in [0.14, 0.88] (15 visible side-row rounds of the 30-rd double stack!)
-    ammo_zone = (u_grid >= 0.16) & (u_grid <= 0.84) & (v_grid >= 0.14) & (v_grid <= 0.88)
-
-    # 15 rounds along v in [0.14, 0.88] => pitch = 0.0493
+    # Fifteen separate 5.56x45 NATO cartridges visible through smoked amber Makrolon
     pitch = 0.0493
-    phase = ((v_grid - 0.14) / pitch) * (2.0 * math.pi)
-    # Smooth cylindrical highlight per brass cartridge
-    cyl = np.clip(0.50 + 0.50 * np.sin(phase), 0.0, 1.0)
-    gap_shadow = np.clip(0.30 + 0.70 * (np.sin(phase * 0.5) ** 2), 0.25, 1.0)
+    row = np.floor((v - 0.14) / pitch).astype(np.int32)
+    safe_row = np.clip(row, 0, 14)
+    rng = np.random.default_rng(922)
+    stagger = rng.uniform(-0.0012, 0.0012, 15).astype(np.float32)
+    tilt = rng.uniform(-0.0015, 0.0015, 15).astype(np.float32)
+    centers = 0.14 + (safe_row + 0.5) * pitch
+    local_v = (v - centers + stagger[safe_row] + tilt[safe_row] * (u - 0.5)) / (pitch * 0.405)
 
-    # Cartridge anatomy along u (0.16 = case head rim, 0.60 = bottleneck shoulder, 0.68 = case mouth, 0.83 = spitzer tip)
-    brass_col = np.array([0.84, 0.66, 0.24], dtype=np.float32)
-    copper_col = np.array([0.78, 0.41, 0.19], dtype=np.float32)
-    anneal_col = np.array([0.66, 0.52, 0.28], dtype=np.float32)
+    radius = np.ones((H, W), np.float32)
+    body_t = np.clip((u - 0.212) / (0.60 - 0.212), 0.0, 1.0)
+    radius[:] = 1.0 - 0.14 * body_t
+    groove = smoothstep(0.194, 0.198, u) * (1.0 - smoothstep(0.208, 0.212, u))
+    radius -= groove * 0.12
+    shoulder = smoothstep(0.60, 0.64, u)
+    radius = np.where(u >= 0.60, 0.86 - 0.26 * shoulder, radius)
+    bullet_t = np.clip((u - 0.68) / 0.15, 0.0, 1.0)
+    bullet_radius = 0.60 * np.sqrt(1.0 - bullet_t) * (1.0 - 0.24 * bullet_t)
+    radius = np.where(u >= 0.68, bullet_radius, radius)
 
-    is_case = (u_grid >= 0.18) & (u_grid < 0.60)
-    is_neck = (u_grid >= 0.60) & (u_grid < 0.68)
-    # Tapered spitzer bullet profile narrowing toward u = 0.83
-    bullet_u = np.clip((u_grid - 0.68) / 0.15, 0.0, 1.0)
-    local_v_in_round = np.abs(((v_grid - 0.14) % pitch) / pitch - 0.5) * 2.0
-    bullet_radius_env = 1.0 - 0.78 * (bullet_u ** 1.5)
-    is_bullet = (u_grid >= 0.68) & (u_grid <= 0.83) & (local_v_in_round <= bullet_radius_env)
+    cross = local_v / np.maximum(radius, 0.008)
+    z = np.sqrt(np.maximum(1.0 - cross * cross, 0.0))
+    coverage = 1.0 - smoothstep(0.96, 1.04, np.abs(cross))
+    ammo_zone = rect(0.16, 0.84, 0.14, 0.88) & (row >= 0) & (row < 15)
+    coverage *= ammo_zone & (u <= 0.83)
+    shade = np.clip(0.27 + 0.64 * z - 0.16 * cross, 0.16, 1.02)
+    specular = np.clip(0.88 * z - 0.48 * np.clip(cross, -1.0, 1.0), 0.0, 1.0) ** 34 * 0.24
+    round_tone = rng.uniform(-0.025, 0.025, 15).astype(np.float32)[safe_row]
+    brass = np.array([0.84, 0.66, 0.29], np.float32)
+    cart = brass * (shade + round_tone)[..., None] + specular[..., None] * np.array([1.0, 0.88, 0.60], np.float32)
+    cart += grain[..., None] * 0.003
+    cart *= (1.0 - groove * 0.52)[..., None]
+    rim = rect(0.166, 0.179, 0.14, 0.88) * ammo_zone
+    cart += (rim * (0.045 + 0.035 * z))[..., None] * np.array([1.0, 0.85, 0.50], np.float32)
+    rim_cut = rect(0.180, 0.185, 0.14, 0.88) * ammo_zone
+    cart *= (1.0 - rim_cut * 0.25)[..., None]
 
-    # Extractor rim groove at u in [0.195, 0.212]
-    rim_groove = np.exp(-((u_grid - 0.205) / 0.008) ** 2)
-
-    cart_layer = np.zeros((H, W, 3), dtype=np.float32)
-    shade = (0.35 + 0.65 * cyl) * gap_shadow * (1.0 - 0.55 * rim_groove)
-
-    cart_layer[is_case] = brass_col * shade[is_case, None]
-    cart_layer[is_neck] = anneal_col * (shade[is_neck, None] * 0.86)
-    cart_layer[is_bullet] = copper_col * (shade[is_bullet, None] * 0.92)
-
-    has_metal = ammo_zone & (is_case | is_neck | is_bullet)
-    # Blend golden 5.56mm rounds through smoked honey-amber translucent polycarbonate!
-    amber_filter = np.array([0.92, 0.74, 0.40], dtype=np.float32)
-    filtered_round = amber_dark * 0.42 + (cart_layer * amber_filter) * 0.68
-    albedo[has_metal] = filtered_round[has_metal]
-    # Glossy smooth translucent polycarbonate window cells!
-    roughness[ammo_zone] = 0.15 + poly_grain[ammo_zone] * 0.015
-
-    # --- B. Iconic Steyr AUG Raised Waffle-Grid Reinforcement Ribs! ---
-    # Crisp horizontal ribs (11 bars) & vertical ribs (5 bars) forming rectangular waffle cells
-    in_waffle_box = (u_grid >= 0.12) & (u_grid <= 0.88) & (v_grid >= 0.12) & (v_grid <= 0.89)
-
-    # Horizontal waffle bars every 0.070 in v
-    h_dist = np.abs(((v_grid - 0.12) % 0.070) - 0.035)
-    h_rib = np.clip((0.0095 - np.abs(h_dist - 0.035)) / 0.0035, 0.0, 1.0)
-
-    # Vertical waffle bars at u = 0.13, 0.31, 0.50, 0.69, 0.87
-    v_rib = np.zeros((H, W), dtype=np.float32)
-    for vu in [0.13, 0.31, 0.50, 0.69, 0.87]:
-        v_rib = np.maximum(v_rib, np.clip((0.012 - np.abs(u_grid - vu)) / 0.004, 0.0, 1.0))
-
-    # Top feed collar (v > 0.89) & front/rear spine borders (u < 0.12 or u > 0.88) are thicker opaque olive-amber polymer
-    border_mask = np.clip(
-        np.maximum(
-            np.clip((v_grid - 0.885) / 0.012, 0.0, 1.0),
-            np.maximum(
-                np.clip((0.125 - u_grid) / 0.012, 0.0, 1.0),
-                np.clip((u_grid - 0.875) / 0.012, 0.0, 1.0),
-            ),
-        ),
-        0.0,
-        1.0,
+    anneal_t = np.clip((u - 0.552) / 0.112 + round_tone * 0.8, 0.0, 1.0)
+    stops = (0.0, 0.28, 0.48, 0.69, 1.0)
+    palette = np.array(
+        [[0.74, 0.57, 0.28], [0.55, 0.38, 0.24], [0.36, 0.29, 0.39], [0.53, 0.42, 0.29], [0.76, 0.61, 0.34]],
+        np.float32,
     )
+    anneal_rgb = np.stack([np.interp(anneal_t, stops, palette[:, i]) for i in range(3)], axis=-1).astype(np.float32)
+    anneal_mask = smoothstep(0.55, 0.578, u) * (1.0 - smoothstep(0.655, 0.672, u)) * 0.78
+    cart = cart * (1.0 - anneal_mask[..., None]) + anneal_rgb * (shade * 0.94 + specular)[..., None] * anneal_mask[..., None]
 
-    waffle = np.maximum(np.maximum(h_rib, v_rib) * in_waffle_box, border_mask * (v_grid >= 0.08))
+    bullet = (u >= 0.68) & (u <= 0.83)
+    copper = np.array([0.80, 0.42, 0.21], np.float32) * (shade * 0.97)[..., None]
+    copper += specular[..., None] * np.array([0.85, 0.58, 0.34], np.float32)
+    cart[bullet] = copper[bullet]
+    sealant = smoothstep(0.673, 0.675, u) * (1.0 - smoothstep(0.679, 0.681, u))
+    cart = cart * (1.0 - sealant[..., None]) + np.array([0.44, 0.025, 0.025], np.float32) * (shade * 0.9)[..., None] * sealant[..., None]
 
-    # Raised ribs attenuate internal cartridge visibility, add strong 3D normal relief & satin polymer roughness
-    albedo = albedo * (1.0 - waffle[..., None] * 0.76) + amber_rib * (waffle[..., None] * 0.76)
-    height += waffle * 1.35
-    roughness = roughness * (1.0 - waffle * 0.85) + (0.54 + poly_grain * 0.03) * (waffle * 0.85)
+    # Smoked Makrolon exterior window is strictly dielectric polycarbonate (B = 0.04 <= 0.05!)
+    tint = np.array([0.98, 0.86, 0.57], np.float32)
+    transmitted = cart * tint * 0.83 + amber_dark * 0.19
+    albedo = albedo * (1.0 - coverage[..., None]) + transmitted * coverage[..., None]
+    windows = rect(0.12, 0.88, 0.12, 0.89)
+    roughness[windows], metalness[windows] = 0.11, 0.04
+    cavity[ammo_zone] = (0.34 + 0.66 * coverage * np.sqrt(z))[ammo_zone]
+    cavity *= 1.0 - (groove * 0.11 * coverage)
 
-    # --- C. Molded Round-Count Witness Marks (10 / 20 / 30) & STEYR 5.56 Stamp ---
-    stamp = Image.new("L", (W, H), 0)
+    # Raised amber Makrolon waffle grid
+    grid_mask = np.zeros((H, W), bool)
+    for i in range(12):
+        center = 0.12 + i * 0.070
+        grid_mask |= rect(0.12, 0.88, center - 0.0095, center + 0.0095)
+    for center in (0.13, 0.31, 0.50, 0.69, 0.87):
+        grid_mask |= rect(center - 0.012, center + 0.012, 0.12, 0.89)
+    grid_mask &= windows
+    grid = bevel_mask(grid_mask, 3.5, profile="trapezoid")
+    frame_mask = ((v > 0.885) | (u < 0.125) | (u > 0.875)) & (v >= 0.08)
+    frame = bevel_mask(frame_mask, 4, profile="trapezoid")
+    waffle = np.maximum(grid, frame)
+
+    cast_shadow = ndimage.gaussian_filter(
+        ndimage.shift(waffle, (3.0, 3.0), order=1, mode="nearest"), sigma=1.15
+    )
+    cast_shadow *= (1.0 - waffle) * windows
+    albedo *= (1.0 - cast_shadow * 0.32)[..., None]
+    cavity *= 1.0 - cast_shadow * 0.36
+    distance = ndimage.distance_transform_edt(~(grid_mask | frame_mask)).astype(np.float32)
+    wall_cavity = np.exp(-distance / 3.0) * (1.0 - waffle) * windows
+    cavity *= 1.0 - wall_cavity * 0.30
+
+    rib_color = amber_rib + grain[..., None] * 0.003
+    albedo = albedo * (1.0 - waffle[..., None]) + rib_color * waffle[..., None]
+    height += waffle * 1.48
+    rib_rough = 0.30 + grain * 0.006 + 0.055 * (1.0 - waffle)
+    roughness = roughness * (1.0 - waffle) + rib_rough * waffle
+    metalness = metalness * (1.0 - waffle) + 0.04 * waffle
+    cavity = cavity * (1.0 - waffle) + 0.98 * waffle
+
+    scuffs = scratch_field(
+        H, W, count=160, min_len=3, max_len=34, angle_deg=84, angle_spread=18, seed=923, mask=v >= 0.08
+    )
+    height -= scuffs * 0.016
+    roughness += scuffs * 0.025
+
+    # UV-SYMMETRY AWARE MOLDED MARKINGS:
+    # applyAugMagUVs maps BOTH left & right side walls to u in [0.08, 0.92], v in [0.12, 0.94]
+    # without mirroring u so cartridges point +X on both sides. Therefore:
+    #  - Inside u in [0.882, 0.916], draw mirror-symmetric horizontal witness index bars at 10/20/30!
+    #  - Outside u<=0.92 / v<=0.94 (u=0.928..0.988 and v=0.946..0.982), draw crisp '10/20/30' and
+    #    'STEYR  5.56×45' so zero mirrored text ever appears on the 3D left magazine wall!
+    S = 2
+    stamp = Image.new("L", (W * S, H * S), 0)
     ds = ImageDraw.Draw(stamp)
-    f_num = load_font(24)
-    f_cal = load_font(26)
+    f_cnt = load_font(FONT_COND, 24 * S)
+    f_top = load_font(FONT_SANS, 25 * S)
+    for label, vp in (("10", 0.66), ("20", 0.44), ("30", 0.21)):
+        yc = int(round((1.0 - vp) * H * S))
+        # Symmetric molded witness bar + dot inside 3D front spine rib (u=.884..914)
+        ds.rounded_rectangle(
+            (int(0.884 * W * S), yc - 4 * S, int(0.914 * W * S), yc + 4 * S), radius=2 * S, fill=255
+        )
+        # Crisp numeral in showcase margin u=.928..985 (outside side mode's u<=0.92)
+        ds.text((int(0.956 * W * S), yc), label, fill=255, font=f_cnt, anchor="mm")
+    # Crisp Steyr logo + caliber stamp in top collar showcase band v=.948..985 (above side mode's v<=0.94)
+    draw_steyr_logo(ds, 0.305 * W * S, (1.0 - 0.964) * H * S, r=13 * S, col=255)
+    ds.text((int(0.335 * W * S), int((1.0 - 0.964) * H * S)), "STEYR   5.56×45   StG 77", fill=255, font=f_top, anchor="lm")
 
-    for txt, vp in [("10", 0.66), ("20", 0.44), ("30", 0.21)]:
-        py = int((1.0 - vp) * H) - 12
-        ds.text((int(0.89 * W), py), txt, fill=235, font=f_num)
-    ds.text((int(0.32 * W), int((1.0 - 0.945) * H)), "STEYR  5.56×45", fill=235, font=f_cal)
+    mark = np.asarray(stamp.resize((W, H), Image.Resampling.LANCZOS), np.float32) / 255.0
+    albedo += mark[..., None] * np.array([0.042, 0.031, 0.014], np.float32)
+    height += bevel_mask(mark, 1.2, profile="trapezoid") * 0.30
+    roughness = roughness * (1.0 - mark) + 0.31 * mark
+    metalness = metalness * (1.0 - mark) + 0.04 * mark
+    conv_waffle = smoothstep(0.08, 0.48, compute_convexity(height, sigma=2.0)) * (v >= 0.08)
+    albedo += conv_waffle[..., None] * np.array([0.026, 0.020, 0.010], np.float32)
+    roughness -= conv_waffle * 0.038
 
-    st_arr = np.asarray(stamp.filter(ImageFilter.GaussianBlur(radius=0.5)), dtype=np.float32) / 255.0
-    mark_col = np.array([0.62, 0.50, 0.28], dtype=np.float32)
-    albedo = albedo * (1.0 - st_arr[..., None] * 0.65) + mark_col * (st_arr[..., None] * 0.65)
-    height += st_arr * 0.75
+    # Bottom utility swatches: polymer floorplate (B=.03 <= .05) & steel feed-lip insert (B=.96 >= .95!)
+    floor = (v < 0.075) & (u < 0.50)
+    lip = (v < 0.075) & (u >= 0.50)
+    albedo[floor] = np.array([0.16, 0.17, 0.16]) + grain[floor, None] * 0.002
+    height[floor], roughness[floor], metalness[floor] = grain[floor] * 0.018, 0.64, 0.03
+    albedo[lip] = np.array([0.24, 0.26, 0.23]) + grain[lip, None] * 0.002
+    height[lip], roughness[lip], metalness[lip] = grain[lip] * 0.012, 0.28, 0.96
+    cavity[v < 0.08] = 1.0
 
-    # Bottom Olive/Black Polymer Catch & Steel Lip Swatch (v < 0.075)
-    lip_sw = (v_grid < 0.075) & (u_grid >= 0.50)
-    albedo[lip_sw] = np.array([0.22, 0.24, 0.20], dtype=np.float32)
-    roughness[lip_sw] = 0.55
-
-    floor_sw = (v_grid < 0.075) & (u_grid < 0.50)
-    albedo[floor_sw] = np.array([0.16, 0.17, 0.16], dtype=np.float32)
-    roughness[floor_sw] = 0.64
-
-    save_rgb_png(albedo, os.path.join(OUT_DIR, "aug_mag_albedo.png"))
-    height_to_normal_png(height, strength=2.4, out_path=os.path.join(OUT_DIR, "aug_mag_normal.png"))
-    save_gray_png(roughness, os.path.join(OUT_DIR, "aug_mag_roughness.png"))
-    print("[OK] Generated aug_mag_{albedo,normal,roughness}.png")
+    _save_suite("aug_mag", albedo, height, roughness, metalness, cavity, strength=2.4)
 
 
 if __name__ == "__main__":

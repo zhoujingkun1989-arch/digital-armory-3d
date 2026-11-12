@@ -1,396 +1,383 @@
 #!/usr/bin/env python3
-"""
-Generates high-resolution multi-channel PBR textures (Albedo + OpenGL Tangent-Space Normal + Roughness)
-for the Heckler & Koch MP5A3 (9×19mm Parabellum, BAY-03) in public/textures/:
-  1. mp5_receiver_{albedo,normal,roughness}.png (2048x1024)
-     - Satin German RAL 9005 baked black lacquer over stamped sheet steel
-     - Optically flat sheet-steel normals (zero wavy Perlin dents!)
-     - Longitudinal MP5A3 stock-channel shading & vertical magwell strengthening flutes
-     - Crisp German roll-marks: [HK] MP5 Kal. 9mm×19, Ulm proof marks & serial 62-19408
-  2. mp5_lower_{albedo,normal,roughness}.png    (1024x1024)
-     - Matte fiberglass-reinforced German polyamide Navy trigger housing
-     - Iconic White & Signal-Red H&K Navy Bullet-Pictogram selector markings (Safe / Semi / Full-Auto)
-       oriented toward +X muzzle on BOTH right and left flanks + molded HK grip emblem!
+"""MP5A3 lacquered receiver / Navy polyamide albedo, normal and RGB ORM.
+
+UNCHANGED UV CONTRACT:
+  mp5_receiver_{albedo,normal,roughness}.png: 2048x1024.
+    Right U .03..97 / V .53..97 (11.0 x 4.45 cm -> px/py = 1.7285x);
+    Left  U .03..97 / V .07..51 (11.0 x 4.45 cm -> px/py = 1.7285x).
+    Stock channels: U .03..64 / V .806 and U .36..97 / V .346.
+    Magwell flutes: U .685/.735/.785, V .55..72;
+                    U .215/.265/.315, V .09..26.
+    Deflector scuffs (.625,.815); left [HK] origin (.175,.435).
+    Bright steel U >= .78 / V <= .06.
+  mp5_lower_{albedo,normal,roughness}.png: 1024x1024.
+    Right U .05..95 / V .52..96 (8.15 x 6.75 cm -> px/py = 1.694x);
+    Left  U .05..95 / V .05..49 (8.15 x 6.75 cm -> px/py = 1.694x).
+    Selector pivots (.420,.885) right / (.580,.415) left.
+    +X muzzle points toward +U right / -U left: pictograms mirror toward muzzle.
+    Molded grip emblems at U .24 / V .62 and U .70 / V .15.
+
+The historical roughness suffix holds R=AO, G=roughness, B=metalness.
+PBR_OUTPUT_FORMAT changes only the extension. All noise is deterministic.
 """
 
-import math
-import os
+import sys
+from pathlib import Path
+
 import numpy as np
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image, ImageDraw
+from scipy import ndimage
 
-REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-OUT_DIR = os.path.join(REPO_ROOT, "public", "textures")
-os.makedirs(OUT_DIR, exist_ok=True)
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+from scripts.pbr_core import (
+    OUT_DIR, bevel_mask, chipped_edge_wear, cnc_toolpath, compute_convexity,
+    compute_height_ao, fbm_noise, height_to_normal_png, load_font, save_orm_png,
+    save_rgb_png, scratch_field, smoothstep, worley_cellular,
+)
 
-FONT_CANDIDATES = [
-    "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
-    "/System/Library/Fonts/Helvetica.ttc",
-    "/System/Library/Fonts/Supplemental/Tahoma Bold.ttf",
-    "/System/Library/Fonts/Supplemental/DIN Condensed Bold.ttf",
-]
-
-
-def load_font(size: int):
-    for fp in FONT_CANDIDATES:
-        if os.path.exists(fp):
-            try:
-                return ImageFont.truetype(fp, size=size)
-            except Exception:
-                pass
-    return ImageFont.load_default()
+FONT_DIN = "/System/Library/Fonts/Supplemental/DIN Alternate Bold.ttf"
+FONT_COND = "/System/Library/Fonts/Supplemental/DIN Condensed Bold.ttf"
 
 
-def spectral_noise(
-    h: int,
-    w: int,
-    f_low: float,
-    f_high: float,
-    seed: int,
-    aniso_x: float = 1.0,
-    aniso_y: float = 1.0,
-) -> np.ndarray:
-    rng = np.random.default_rng(seed)
-    white = rng.standard_normal((h, w)).astype(np.float32)
-    spec = np.fft.rfft2(white)
-    fy = np.fft.fftfreq(h)[:, None] * h / aniso_y
-    fx = np.fft.rfftfreq(w)[None, :] * w / aniso_x
-    freq = np.sqrt(fx * fx + fy * fy)
-    envelope = np.exp(-0.5 * ((freq - f_low) / max(1.0, (f_high - f_low))) ** 2)
-    envelope[0, 0] = 0.0
-    field = np.fft.irfft2(spec * envelope, s=(h, w))
-    std = float(np.std(field)) + 1e-7
-    return (field / std).astype(np.float32)
+def _uv(w, h):
+    return ((np.arange(w, dtype=np.float32)[None, :] + .5) / w,
+            1.0 - (np.arange(h, dtype=np.float32)[:, None] + .5) / h)
 
 
-def height_to_normal_png(height: np.ndarray, strength: float, out_path: str) -> None:
-    dh_dy, dh_dx = np.gradient(height)
-    nx = -dh_dx * strength
-    ny = dh_dy * strength
-    nz = np.ones_like(height)
-    inv_len = 1.0 / np.sqrt(nx * nx + ny * ny + nz * nz + 1e-8)
-    rgb = np.zeros((height.shape[0], height.shape[1], 3), dtype=np.uint8)
-    rgb[..., 0] = np.clip((nx * inv_len * 0.5 + 0.5) * 255.0, 0, 255).astype(np.uint8)
-    rgb[..., 1] = np.clip((ny * inv_len * 0.5 + 0.5) * 255.0, 0, 255).astype(np.uint8)
-    rgb[..., 2] = np.clip((nz * inv_len * 0.5 + 0.5) * 255.0, 0, 255).astype(np.uint8)
-    Image.fromarray(rgb, mode="RGB").save(out_path, optimize=True)
+def _box(u, v, x0, x1, y0, y1):
+    return ((u >= x0) & (u <= x1) & (v >= y0) & (v <= y1)).astype(np.float32)
 
 
-def save_rgb_png(arr01: np.ndarray, out_path: str) -> None:
-    rgb = np.clip(arr01 * 255.0, 0, 255).astype(np.uint8)
-    Image.fromarray(rgb, mode="RGB").save(out_path, optimize=True)
+def _ellipse(u, v, x, y, rx, ry, w, h):
+    radius = np.sqrt(((u - x) / rx) ** 2 + ((v - y) / ry) ** 2)
+    return np.clip((1.0 - radius) * min(rx * w, ry * h) + .5, 0, 1)
 
 
-def save_gray_png(arr01: np.ndarray, out_path: str) -> None:
-    g = np.clip(arr01 * 255.0, 0, 255).astype(np.uint8)
-    Image.fromarray(g, mode="L").save(out_path, optimize=True)
+def _mix(field, value, mask):
+    if field.ndim == 3:
+        mask = mask[..., None]
+    field *= 1.0 - mask
+    field += np.asarray(value, dtype=np.float32) * mask
 
 
-# ==============================================================================
-# 1. H&K MP5A3 STAMPED FLUTED UPPER RECEIVER SUITE (2048 x 1024)
-# ==============================================================================
+def _paste_world(target_mask, canvas_img, u0, u1, v0, v1,
+                 resample=Image.Resampling.LANCZOS):
+    h, w = target_mask.shape
+    x0, x1 = int(round(u0 * w)), int(round(u1 * w))
+    y0, y1 = int(round((1.0 - v1) * h)), int(round((1.0 - v0) * h))
+    resized = canvas_img.resize((max(1, x1 - x0), max(1, y1 - y0)), resample=resample)
+    arr = np.asarray(resized, dtype=np.float32) / 255.0
+    target_mask[y0:y1, x0:x1] = np.maximum(target_mask[y0:y1, x0:x1], arr)
+
+
+def _edge(mask, width=7):
+    """Distance to a real island/feature boundary, measured in atlas pixels."""
+    distance = ndimage.distance_transform_edt(np.pad(mask > .5, 1))[1:-1, 1:-1]
+    return (np.clip(1.0 - (distance - 1) / width, 0, 1) * mask).astype(np.float32)
+
+
+def _bare(albedo, height, roughness, metalness, mask, color, rough=.18, metal=.96):
+    _mix(albedo, color, mask)
+    _mix(roughness, rough, mask)
+    _mix(metalness, metal, mask)
+    height -= mask * .075
+
+
+def _save(name, albedo, height, roughness, metalness, cavity, strength):
+    ao = np.clip(compute_height_ao(height, strength=1.15) * cavity, .18, 1.0)
+    roughness = np.clip(roughness, .05, .92)
+    metalness = np.clip(metalness, .02, .98)
+    root = Path(OUT_DIR)
+    save_rgb_png(np.clip(albedo, 0, 1), str(root / f"{name}_albedo.png"))
+    normal_path = height_to_normal_png(height, strength=strength, out_path=str(root / f"{name}_normal.png"))
+    path = save_orm_png(ao, roughness, metalness, str(root / f"{name}_roughness.png"))
+    if Path(path).suffix == ".webp":
+        dy, dx = np.gradient(height)
+        normals = np.stack((-dx * strength, dy * strength, np.ones_like(height)), axis=-1)
+        normals /= np.sqrt(np.sum(normals * normals, axis=-1, keepdims=True) + 1e-8)
+        normal_rgb = np.clip((normals * .5 + .5) * 255, 0, 255).astype(np.uint8)
+        orm_rgb = (np.stack((ao, roughness, metalness), axis=-1) * 255).astype(np.uint8)
+        Image.fromarray(normal_rgb).save(normal_path, "WEBP", lossless=True, method=6)
+        Image.fromarray(orm_rgb).save(path, "WEBP", lossless=True, method=6)
+    print(f"[OK] {name}: {albedo.shape[1]}x{albedo.shape[0]}, albedo / normal / RGB ORM ({Path(path).suffix})")
+
+
+def _draw_ulm_proof(draw, x, y):
+    """German Beschussamt Ulm stag-antler + Federal Eagle / N nitro proof stamps."""
+    # Stag antler beam + 4 tines
+    draw.line([(x, y + 34), (x + 18, y + 30), (x + 34, y + 16), (x + 48, y + 3)],
+              fill=255, width=4)
+    for pts in (
+        [(x + 14, y + 30), (x + 8, y + 19), (x + 8, y + 10)],
+        [(x + 24, y + 24), (x + 22, y + 11), (x + 27, y + 4)],
+        [(x + 35, y + 15), (x + 35, y + 2)],
+        [(x + 37, y + 15), (x + 52, y + 17), (x + 60, y + 11)],
+    ):
+        draw.line(pts, fill=255, width=3)
+    # German Federal Eagle over 'N' shield + Ulm 'IK' date code
+    ex, ey = x + 86, y + 18
+    draw.polygon([(ex - 16, ey - 14), (ex + 16, ey - 14), (ex + 12, ey + 2),
+                  (ex, ey + 10), (ex - 12, ey + 2)], outline=255, width=3)
+    draw.line([(ex - 22, ey - 10), (ex + 22, ey - 10)], fill=255, width=3)
+    draw.text((ex + 28, y + 4), "N · IK · ULM", fill=245, font=load_font(FONT_COND, 30))
+
+
 def build_mp5_receiver_suite() -> None:
-    W, H = 2048, 1024
-    # Fine German manganese-phosphate micro-grain under satin RAL 9005 black lacquer
-    micro_grain = spectral_noise(H, W, 260, 520, seed=301)
-    oil_film = spectral_noise(H, W, 6, 20, seed=302)
-    rail_brush = spectral_noise(H, W, 18, 160, seed=303, aniso_x=3.5, aniso_y=0.35)
+    w, h = 2048, 1024
+    u, v = _uv(w, h)
+    cells, boundaries = worley_cellular(h, w, 330, 570, seed=301)
+    peel = (.42 - cells) * .75 + (boundaries - .17) * .3
+    oil = .5 + .5 * fbm_noise(h, w, base_freq=8, octaves=4, seed=302)
+    albedo = np.empty((h, w, 3), dtype=np.float32)
+    albedo[:] = (.208, .224, .244)  # RAL 9005 satin black baked lacquer
+    albedo += (peel * .009 - oil * .003)[..., None]
+    height = peel * .033
+    roughness = .31 + peel * .025 - (oil - .5) * .040
+    metalness = np.full((h, w), .50, dtype=np.float32)
+    cavity = np.ones((h, w), dtype=np.float32)
+    walls = np.maximum(_box(u, v, .03, .97, .53, .97), _box(u, v, .03, .97, .07, .51))
 
-    v_grid = 1.0 - (np.arange(H, dtype=np.float32)[:, None] + 0.5) / H
-    u_grid = (np.arange(W, dtype=np.float32)[None, :] + 0.5) / W
+    # Flat-bottomed, finite A3 stock guide channels with crisp planar bevels.
+    channels = np.maximum(_box(u, v, .03, .64, .788, .824),
+                          _box(u, v, .36, .97, .328, .364))
+    channel_profile = bevel_mask(channels, width_px=4, profile="trapezoid")
+    height -= channel_profile * .57
+    cavity *= 1 - _edge(channels, 4) * .13
+    albedo -= (channel_profile * .005)[..., None]
 
-    # Deep satin German black enamel (#1b1e24)
-    albedo = np.zeros((H, W, 3), dtype=np.float32)
-    albedo[..., 0] = 0.112
-    albedo[..., 1] = 0.124
-    albedo[..., 2] = 0.146
-    albedo += (micro_grain * 0.004 - oil_film * 0.004)[..., None]
+    # Six stamped, beveled magwell flutes retain exact original UV centers.
+    flutes = np.zeros((h, w), dtype=np.float32)
+    for xs, low, high in (((.685, .735, .785), .55, .72), ((.215, .265, .315), .09, .26)):
+        for x in xs:
+            flutes = np.maximum(flutes, _box(u, v, x - .010, x + .010, low, high))
+    flute_profile = bevel_mask(flutes, width_px=4, profile="trapezoid")
+    height -= flute_profile * .55
+    cavity *= 1 - _edge(flutes, 3) * .10
 
-    # Optically flat stamped steel sheet normals (no wavy low-freq height!)
-    height = micro_grain * 0.045
-    roughness = np.broadcast_to(0.36 - oil_film * 0.035 + micro_grain * 0.015, (H, W)).copy()
+    # Short, heat-affected TIG/resistance trunnion welds.
+    welds = np.maximum(_box(u, v, .603, .609, .630, .770),
+                       _box(u, v, .391, .397, .170, .310))
+    bead = bevel_mask(welds, width_px=2, profile="round")
+    ripple = .5 + .5 * np.cos(v * h * (2 * np.pi / 7.5))
+    height += bead * (.105 + .045 * ripple)
+    _mix(albedo, (.188, .182, .176), welds * .22)
+    roughness += welds * .025
 
-    # 1) Longitudinal MP5A3 Retractable Stock Guide Flute / Channel on Right & Left walls
-    # Right wall: u in [0.03..0.64], v ~ 0.806; Left wall: u in [0.36..0.97], v ~ 0.346
-    chan_r_mask = (u_grid >= 0.03) & (u_grid <= 0.64)
-    chan_l_mask = (u_grid >= 0.36) & (u_grid <= 0.97)
-    chan_r = chan_r_mask * np.exp(-((v_grid - 0.806) / 0.018) ** 2)
-    chan_l = chan_l_mask * np.exp(-((v_grid - 0.346) / 0.018) ** 2)
-    stock_flute = chan_r + chan_l
+    contact = np.maximum(_edge(walls, 5), _edge(channels, 2) * .90)
+    contact *= np.clip(.63 + .55 * fbm_noise(h, w, base_freq=41, octaves=3, seed=310), .12, 1.0)
+    chips, oxide = chipped_edge_wear(contact, seed=311, wear_amount=.58)
+    handling = scratch_field(h, w, count=85, min_len=16, max_len=52,
+                             angle_deg=-10, angle_spread=28, seed=312, mask=walls)
+    _mix(albedo, (.276, .292, .314), handling * .28)
+    roughness -= handling * .068
+    height -= handling * .022
+    _mix(albedo, (.152, .148, .144), oxide * .38)
+    roughness += oxide * .045
+    _bare(albedo, height, roughness, metalness, chips,
+          (.60, .63, .66), rough=.18, metal=.96)
+    sliding = scratch_field(h, w, count=1900, min_len=25, max_len=240,
+                            angle_deg=0, angle_spread=1.4, seed=313, mask=channel_profile)
+    sliding = smoothstep(.15, .56, sliding)
+    _bare(albedo, height, roughness, metalness, sliding, (.62, .65, .68), rough=.18, metal=.96)
 
-    height -= stock_flute * 0.65
-    albedo -= (stock_flute * 0.022)[..., None]
-    # Subtle silver sliding wear inside the MP5A3 stock channel rails!
-    slide_wear = stock_flute * np.clip(0.35 + 0.25 * rail_brush, 0.0, 0.65)
-    silver_steel = np.array([0.58, 0.63, 0.70], dtype=np.float32)
-    albedo = albedo * (1.0 - slide_wear[..., None] * 0.26) + silver_steel * (slide_wear[..., None] * 0.26)
-    roughness -= slide_wear * 0.10
+    conv_rec = smoothstep(.08, .50, compute_convexity(height, sigma=2.0)) * walls
+    albedo += (conv_rec * .026)[..., None]
+    roughness -= conv_rec * .046
 
-    # 2) Vertical Stamped Magazine-Well Strengthening Flutes (3 parallel vertical ribs on each side!)
-    # Right magwell: u in [0.68, 0.74, 0.80], v in [0.55..0.72]
-    # Left magwell:  u in [0.20, 0.26, 0.32], v in [0.09..0.26]
-    mw_v_r = np.clip(1.0 - np.abs(v_grid - 0.635) / 0.085, 0.0, 1.0)
-    mw_v_l = np.clip(1.0 - np.abs(v_grid - 0.175) / 0.085, 0.0, 1.0)
-    flute_sum = np.zeros((H, W), dtype=np.float32)
-    for uc in [0.685, 0.735, 0.785]:
-        flute_sum += mw_v_r * np.exp(-((u_grid - uc) / 0.010) ** 2)
-    for uc in [0.215, 0.265, 0.315]:
-        flute_sum += mw_v_l * np.exp(-((u_grid - uc) / 0.010) ** 2)
+    # Individual oblique brass-transfer kisses behind ejection port.
+    x0, x1 = int(.600 * w), int(.650 * w)
+    y0, y1 = int((1 - .85) * h), int((1 - .78) * h)
+    kiss = scratch_field(y1 - y0, x1 - x0, count=32, min_len=3, max_len=25,
+                         angle_deg=-28, angle_spread=18, seed=315)
+    local_u, local_v = _uv(x1 - x0, y1 - y0)
+    kiss *= _ellipse(local_u, local_v, .50, .50, .39, .43, x1 - x0, y1 - y0)
+    kiss = smoothstep(.13, .62, kiss)
+    section = np.s_[y0:y1, x0:x1]
+    _mix(albedo[section], (.63, .46, .22), kiss)
+    _mix(roughness[section], .25, kiss)
+    _mix(metalness[section], .96, kiss)
 
-    height -= flute_sum * 0.58
-    albedo -= (flute_sum * 0.020)[..., None]
-    # Subtle crisp highlight on flute shoulders
-    flute_rim = np.abs(np.gradient(flute_sum, axis=1))
-    albedo += (flute_rim * 0.08)[..., None]
+    # World-proportional 2.4x supersampled receiver canvases:
+    # u=[0.03, 0.97], v=[0.07, 0.51] / [0.53, 0.97] map 11.0 x 4.45 cm (px/py = 1.7285x!).
+    # Using isotropic 240 px/cm -> 2640 x 1068 px eliminates the 1.73x horizontal squash!
+    cw, ch = 2640, 1068
+    w_left, r_left, w_right = [Image.new("L", (cw, ch), 0) for _ in range(3)]
+    dwl, drl, dwr = [ImageDraw.Draw(im) for im in (w_left, r_left, w_right)]
 
-    # 3) Subtle Brass Case Deflection Scuffs behind Right Ejection Port (u ~ 0.63, v ~ 0.80)
-    brass_spot = np.exp(-(((u_grid - 0.625) / 0.018) ** 2 + ((v_grid - 0.815) / 0.028) ** 2))
-    brass_col = np.array([0.72, 0.56, 0.22], dtype=np.float32)
-    albedo = albedo * (1.0 - brass_spot[..., None] * 0.32) + brass_col * (brass_spot[..., None] * 0.32)
+    def uv_to_canvas(u_val, v_val, v0):
+        return (int(round((u_val - .03) / .94 * cw)),
+                int(round((1.0 - (v_val - v0) / .44) * ch)))
 
-    # 4) Crisp German Heckler & Koch Roll-Marks & Ulm Proof Stamps
-    stamp_white = Image.new("L", (W, H), 0)
-    stamp_red = Image.new("L", (W, H), 0)
-    dw = ImageDraw.Draw(stamp_white)
-    dr = ImageDraw.Draw(stamp_red)
+    # Left flank ([HK] red box + MP5 Kal. 9mmx19 + Ulm stag-antler & Eagle/N proof)
+    lx, ly = uv_to_canvas(.165, .445, .07)
+    drl.rounded_rectangle((lx, ly, lx + 124, ly + 88), radius=10, outline=255, width=6)
+    drl.text((lx + 62, ly + 44), "HK", fill=255, font=load_font(FONT_DIN, 68), anchor="mm")
+    dwl.text((lx + 152, ly + 4), "MP5   Kal. 9mm×19", fill=255, font=load_font(FONT_DIN, 68))
+    dwl.text((lx + 152, ly + 92), "DE   62 - 19408   CIP / N", fill=245, font=load_font(FONT_DIN, 44))
+    _draw_ulm_proof(dwl, lx + 745, ly + 94)
 
-    f_hk_box = load_font(38)
-    f_title = load_font(36)
-    f_sub = load_font(24)
-    f_small = load_font(20)
+    mlx, mly = uv_to_canvas(.185, .305, .07)
+    dwl.text((mlx, mly), "HK  MP5  9mm×19", fill=250, font=load_font(FONT_DIN, 44))
 
-    # LEFT SIDE (v in [0.07..0.51], reads left-to-right on Left camera view!):
-    # Place crisp [HK] MP5 9mm×19 above/near left magwell & receiver flank (u ~ 0.16..0.52, v ~ 0.41)
-    lx = int(0.175 * W)
-    ly = int((1.0 - 0.435) * H)
-    dr.rounded_rectangle([lx, ly, lx + 74, ly + 48], radius=5, outline=245, width=4)
-    dr.text((lx + 9, ly + 4), "HK", fill=250, font=f_hk_box)
+    # Right flank (Oberndorf manufacturer rollmark + magwell caliber)
+    rx, ry = uv_to_canvas(.335, .892, .53)
+    dwr.text((rx, ry), "HECKLER & KOCH GMBH", fill=255, font=load_font(FONT_DIN, 46))
+    dwr.text((rx, ry + 58), "OBERNDORF / N.  MADE IN GERMANY", fill=240, font=load_font(FONT_DIN, 38))
+    mrx, mry = uv_to_canvas(.662, .768, .53)
+    dwr.text((mrx, mry), "HK  9mm×19", fill=250, font=load_font(FONT_DIN, 44))
 
-    dw.text((lx + 92, ly + 4), "MP5    Kal. 9mm×19", fill=245, font=f_title)
-    dw.text((lx + 92, ly + 48), "DE   62 - 19408     CIP / N   ULM", fill=205, font=f_sub)
+    white_mark = np.zeros((h, w), dtype=np.float32)
+    red_mark = np.zeros((h, w), dtype=np.float32)
+    _paste_world(white_mark, w_left, .03, .97, .07, .51)
+    _paste_world(red_mark, r_left, .03, .97, .07, .51)
+    _paste_world(white_mark, w_right, .03, .97, .53, .97)
 
-    # Left Magwell vertical stamp: "9mm×19" above flutes
-    dw.text((int(0.215 * W), int((1.0 - 0.305) * H)), "HK  MP5  9mm×19", fill=225, font=f_sub)
+    mark = np.maximum(white_mark, red_mark)
+    height -= bevel_mask(mark, width_px=1.0, profile="trapezoid") * .52
+    _mix(albedo, (.78, .80, .82), white_mark * .95)
+    _mix(albedo, (.73, .052, .043), red_mark * .97)
+    _mix(roughness, .38, white_mark)
+    _mix(roughness, .28, red_mark)
+    _mix(metalness, .03, mark)  # baked enamel infill B <= 0.05
+    cavity *= 1 - mark * .09
 
-    # RIGHT SIDE (v in [0.53..0.97], reads left-to-right on Right camera view!):
-    rx = int(0.35 * W)
-    ry = int((1.0 - 0.885) * H)
-    dw.text((rx, ry), "HECKLER & KOCH GMBH", fill=220, font=f_sub)
-    dw.text((rx, ry + 28), "OBERNDORF / N.  MADE IN GERMANY", fill=195, font=f_small)
-    dw.text((int(0.675 * W), int((1.0 - 0.765) * H)), "HK  9mm×19", fill=225, font=f_sub)
-
-    w_arr = np.asarray(stamp_white.filter(ImageFilter.GaussianBlur(radius=0.5)), dtype=np.float32) / 255.0
-    r_arr = np.asarray(stamp_red.filter(ImageFilter.GaussianBlur(radius=0.5)), dtype=np.float32) / 255.0
-
-    engraved_silver = np.array([0.84, 0.87, 0.91], dtype=np.float32)
-    hk_red_col = np.array([0.84, 0.16, 0.16], dtype=np.float32)
-
-    albedo = albedo * (1.0 - w_arr[..., None] * 0.82) + engraved_silver * (w_arr[..., None] * 0.82)
-    albedo = albedo * (1.0 - r_arr[..., None] * 0.88) + hk_red_col * (r_arr[..., None] * 0.88)
-    height -= (w_arr + r_arr) * 0.95
-    roughness = np.clip(roughness + w_arr * 0.06, 0.14, 0.82)
-
-    # Bottom right swatch (u >= 0.78, v <= 0.06): bright polished steel for claw mount / weld accents
-    bright_sw = (v_grid <= 0.06) & (u_grid >= 0.78)
-    albedo[bright_sw] = np.array([0.80, 0.84, 0.89], dtype=np.float32)
-    roughness[bright_sw] = 0.20
-
-    save_rgb_png(albedo, os.path.join(OUT_DIR, "mp5_receiver_albedo.png"))
-    height_to_normal_png(height, strength=2.1, out_path=os.path.join(OUT_DIR, "mp5_receiver_normal.png"))
-    save_gray_png(roughness, os.path.join(OUT_DIR, "mp5_receiver_roughness.png"))
-    print("[OK] Generated mp5_receiver_{albedo,normal,roughness}.png")
-
-
-# ==============================================================================
-# Helper: Draw Authentic H&K Bullet Silhouette & Navy Pictogram Boxes
-# ==============================================================================
-def draw_bullet_icon(
-    draw: ImageDraw.ImageDraw,
-    cx: float,
-    cy: float,
-    length: float,
-    height_px: float,
-    dir_sign: int,
-    fill_val: int = 255,
-) -> None:
-    """
-    Draws a horizontal cartridge/bullet silhouette centered at (cx, cy).
-    dir_sign = +1 -> bullet tip points RIGHT (+u, for Right flank +Z).
-    dir_sign = -1 -> bullet tip points LEFT  (-u, for Left flank -Z).
-    """
-    half_l = length * 0.5
-    half_h = height_px * 0.5
-    body_len = length * 0.62
-
-    if dir_sign > 0:
-        x0 = cx - half_l
-        x_shoulder = x0 + body_len
-        x_tip = cx + half_l
-        pts = [
-            (x0, cy - half_h),
-            (x_shoulder, cy - half_h),
-            (x_tip, cy),
-            (x_shoulder, cy + half_h),
-            (x0, cy + half_h),
-        ]
-        # Rim groove
-        draw.polygon(pts, fill=fill_val)
-    else:
-        x0 = cx + half_l
-        x_shoulder = x0 - body_len
-        x_tip = cx - half_l
-        pts = [
-            (x0, cy - half_h),
-            (x_shoulder, cy - half_h),
-            (x_tip, cy),
-            (x_shoulder, cy + half_h),
-            (x0, cy + half_h),
-        ]
-        draw.polygon(pts, fill=fill_val)
+    steel = _box(u, v, .78, 1, 0, .06)
+    _mix(albedo, (.73, .76, .79), steel)
+    _mix(roughness, .20, steel)
+    _mix(metalness, .96, steel)
+    _mix(height, cnc_toolpath(h, w, pitch_px=3, angle_deg=0, seed=319) * .025, steel)
+    _mix(cavity, 1.0, steel)
+    _save("mp5_receiver", albedo, height, roughness, metalness, cavity, 2.1)
 
 
-def draw_hk_pictogram_cluster(
-    draw_white: ImageDraw.ImageDraw,
-    draw_red: ImageDraw.ImageDraw,
-    piv_px: int,
-    piv_py: int,
-    dir_sign: int,
-) -> None:
-    """
-    Draws the 3 iconic H&K Navy Bullet-Pictogram markings around selector pivot (piv_px, piv_py):
-      1) SAFE (lower-forward): White closed box + White bullet silhouette with diagonal cross-out
-      2) SEMI (mid-forward):   Red closed box   + 1 Red bullet silhouette
-      3) AUTO (upper-forward): Red open-front box + 5/7 staggered Red bullet silhouettes!
-    """
-    # Arc index dots between pivot and boxes (sized so all 3 boxes sit cleanly inside tray wall!)
-    dx_base = 72 * dir_sign
-    box_w = 76
-    box_h = 24
-
-    # 1. SAFE (Lower-forward: py + 29)
-    sx_c = piv_px + dx_base + (box_w // 2) * dir_sign
-    sy_c = piv_py + 29
-    draw_white.ellipse([piv_px + 46 * dir_sign - 3, sy_c - 3, piv_px + 46 * dir_sign + 3, sy_c + 3], fill=250)
-    bx0, bx1 = min(sx_c - box_w // 2, sx_c + box_w // 2), max(sx_c - box_w // 2, sx_c + box_w // 2)
-    by0, by1 = sy_c - box_h // 2, sy_c + box_h // 2
-    draw_white.rectangle([bx0, by0, bx1, by1], outline=250, width=3)
-    # Hollow/crossed white bullet for SAFE (0)
-    draw_bullet_icon(draw_white, sx_c, sy_c, length=40, height_px=10, dir_sign=dir_sign, fill_val=235)
-    draw_white.line([(bx0 + 12, by1 - 3), (bx1 - 12, by0 + 3)], fill=255, width=3)
-    draw_white.line([(bx0 + 12, by0 + 3), (bx1 - 12, by1 - 3)], fill=255, width=3)
-
-    # 2. SEMI-AUTO (Horizontal-forward: py + 0)
-    mx_c = piv_px + int(dx_base * 1.06) + (box_w // 2) * dir_sign
-    my_c = piv_py
-    draw_red.ellipse([piv_px + 50 * dir_sign - 3, my_c - 3, piv_px + 50 * dir_sign + 3, my_c + 3], fill=255)
-    mbx0, mbx1 = min(mx_c - box_w // 2, mx_c + box_w // 2), max(mx_c - box_w // 2, mx_c + box_w // 2)
-    mby0, mby1 = my_c - box_h // 2, my_c + box_h // 2
-    draw_red.rectangle([mbx0, mby0, mbx1, mby1], outline=255, width=3)
-    draw_bullet_icon(draw_red, mx_c, my_c, length=44, height_px=10.5, dir_sign=dir_sign, fill_val=255)
-
-    # 3. FULL-AUTO (Upper-forward: py - 30) - Open-front red box w/ 6 staggered burst bullets!
-    ax_c = piv_px + dx_base + (box_w // 2) * dir_sign
-    ay_c = piv_py - 30
-    draw_red.ellipse([piv_px + 46 * dir_sign - 3, ay_c - 3, piv_px + 46 * dir_sign + 3, ay_c + 3], fill=255)
-    abx0, abx1 = min(ax_c - box_w // 2, ax_c + box_w // 2), max(ax_c - box_w // 2, ax_c + box_w // 2)
-    aby0, aby1 = ay_c - (box_h + 4) // 2, ay_c + (box_h + 4) // 2
-    # Top, bottom, and rear walls of open-front HK full-auto box (+ dashed front!)
-    draw_red.line([(abx0, aby0), (abx1, aby0)], fill=255, width=3)
-    draw_red.line([(abx0, aby1), (abx1, aby1)], fill=255, width=3)
-    rear_x = abx0 if dir_sign > 0 else abx1
-    front_x = abx1 if dir_sign > 0 else abx0
-    draw_red.line([(rear_x, aby0), (rear_x, aby1)], fill=255, width=3)
-    # Dotted front opening of HK full-auto pictogram
-    for dy_dot in [aby0 + 3, (aby0 + aby1) // 2, aby1 - 3]:
-        draw_red.rectangle([front_x - 2, dy_dot - 2, front_x + 2, dy_dot + 2], fill=255)
-
-    # Staggered burst of red bullets inside the Full-Auto box
-    offsets = [
-        (-17 * dir_sign, -6),
-        (9 * dir_sign, -6),
-        (-5 * dir_sign, 0),
-        (21 * dir_sign, 0),
-        (-17 * dir_sign, 6),
-        (9 * dir_sign, 6),
+def _draw_bullet_world(draw, cx, cy, length, height_px, dir_sign):
+    """1:1 world-proportional FMJ cartridge silhouette oriented toward +X muzzle."""
+    s = dir_sign
+    x0, shoulder, neck, tip = -length * .5, length * .22, length * .30, length * .5
+    r = height_px * .5
+    pts = [
+        (x0, -r), (shoulder, -r), (neck, -r * .65),
+        (tip - length * .08, -r * .30), (tip, 0),
+        (tip - length * .08, r * .30), (neck, r * .65),
+        (shoulder, r), (x0, r),
     ]
-    for ox, oy in offsets:
-        draw_bullet_icon(draw_red, ax_c + ox, ay_c + oy, length=20, height_px=5.0, dir_sign=dir_sign, fill_val=255)
+    draw.polygon([(round(cx + x * s), round(cy + y)) for x, y in pts], fill=255)
 
 
-# ==============================================================================
-# 2. H&K MP5 NAVY POLYMER LOWER GRIP HOUSING SUITE (1024 x 1024)
-# ==============================================================================
+def _draw_navy_cluster_world(w_draw, r_draw, piv_x, piv_y, dir_sign):
+    """1:1 world-proportional HK Navy 0/1/7 bullet pictogram cluster."""
+    s = dir_sign
+    box_w, box_h = 156, 54
+    for mode, dy, r_off in (("safe", 78, 152), ("semi", 0, 162), ("auto", -80, 152)):
+        draw = w_draw if mode == "safe" else r_draw
+        center_x = piv_x + (r_off + box_w // 2) * s
+        cy = piv_y + dy
+        a, b = center_x - box_w / 2, center_x + box_w / 2
+        half_h = 34 if mode == "auto" else box_h / 2
+        top, bottom = cy - half_h, cy + half_h
+
+        # Circular selector index dot on true radial arc
+        dot_x = piv_x + (108 if mode == "semi" else 100) * s
+        draw.ellipse((dot_x - 6, cy - 6, dot_x + 6, cy + 6), fill=255)
+
+        if mode == "auto":
+            # Open-front 7-round burst pictogram box (open toward muzzle)
+            rear, front = (a, b) if s > 0 else (b, a)
+            draw.line([(front, top), (rear, top), (rear, bottom), (front, bottom)],
+                      fill=255, width=5)
+            for yy in (top + 8, cy, bottom - 8):
+                draw.rectangle((front - 3, yy - 3, front + 3, yy + 3), fill=255)
+            # 7 staggered bullet icons (3 + 2 + 2)
+            for ox, oy in ((-42, -16), (6, -16), (52, -16),
+                           (-18, 0), (30, 0),
+                           (-42, 16), (6, 16)):
+                _draw_bullet_world(draw, center_x + ox * s, cy + oy, 38, 10, s)
+        else:
+            draw.rounded_rectangle((a, top, b, bottom), radius=4, outline=255, width=5)
+            _draw_bullet_world(draw, center_x, cy, 88 if mode == "safe" else 96, 22, s)
+            if mode == "safe":
+                # Diagonal cancel X across safe cartridge box
+                draw.line([(a + 24, bottom - 6), (b - 24, top + 6)], fill=255, width=5)
+                draw.line([(a + 24, top + 6), (b - 24, bottom - 6)], fill=255, width=5)
+
+
 def build_mp5_lower_suite() -> None:
-    W, H = 1024, 1024
-    # Authentic matte German glass-fiber polyamide micro-stipple (uniform, non-blotchy)
-    pebble = spectral_noise(H, W, 110, 360, seed=401)
-    mold_sheen = spectral_noise(H, W, 8, 28, seed=402)
+    w, h = 1024, 1024
+    u, v = _uv(w, h)
+    cells, edges = worley_cellular(h, w, 300, 180, seed=401)
+    grain = (.43 - cells) * .85 + (edges - .17) * .35
+    wipe = .5 + .5 * fbm_noise(h, w, base_freq=10, octaves=3, seed=402)
+    albedo = np.empty((h, w, 3), dtype=np.float32)
+    albedo[:] = (.185, .196, .212)
+    albedo += (grain * .013 - wipe * .002)[..., None]
+    height = grain * .16
+    roughness = .58 + grain * .045
+    metalness = np.full((h, w), .03, dtype=np.float32)
+    cavity = np.ones((h, w), dtype=np.float32)
+    for x, y in ((.25, .68), (.75, .21)):
+        contact = np.exp(-(((u - x) / .105) ** 2 + ((v - y) / .11) ** 2))
+        roughness -= contact * (.045 + wipe * .035)
+        albedo += (contact * .0025)[..., None]
+    fibers = scratch_field(h, w, count=420, min_len=2, max_len=6,
+                           angle_deg=65, angle_spread=60, seed=407)
+    height += fibers * .018
+    albedo += (fibers * .002)[..., None]
 
-    v_grid = 1.0 - (np.arange(H, dtype=np.float32)[:, None] + 0.5) / H
-    u_grid = (np.arange(W, dtype=np.float32)[None, :] + 0.5) / W
+    # World-proportional 2.4x supersampled Navy grip housing canvases:
+    # u=[0.05, 0.95], v=[0.52, 0.96] / [0.05, 0.49] map 8.15 x 6.75 cm (px/py = 1.694x!).
+    # Using isotropic 240 px/cm -> 1956 x 1620 px eliminates the 1.69x horizontal squash!
+    cw, ch = 1956, 1620
+    w_right, r_right, m_right = [Image.new("L", (cw, ch), 0) for _ in range(3)]
+    w_left, r_left, m_left = [Image.new("L", (cw, ch), 0) for _ in range(3)]
 
-    albedo = np.zeros((H, W, 3), dtype=np.float32)
-    albedo[..., 0] = 0.116
-    albedo[..., 1] = 0.125
-    albedo[..., 2] = 0.144
-    albedo += (pebble * 0.006 - mold_sheen * 0.004)[..., None]
+    def uv_to_lower(u_val, v_val, v0):
+        return (int(round((u_val - .05) / .90 * cw)),
+                int(round((1.0 - (v_val - v0) / .44) * ch)))
 
-    height = pebble * 0.16
-    roughness = np.broadcast_to(0.70 + pebble * 0.025 - mold_sheen * 0.025, (H, W)).copy()
+    # Right flank: pivot (.420, .885), muzzle +X is +U (+1)
+    prx, pry = uv_to_lower(.420, .885, .52)
+    _draw_navy_cluster_world(ImageDraw.Draw(w_right), ImageDraw.Draw(r_right), prx, pry, +1)
+    grx, gry = uv_to_lower(.24, .62, .52)
+    dmr = ImageDraw.Draw(m_right)
+    dmr.rounded_rectangle((grx, gry, grx + 138, gry + 94), radius=10, outline=255, width=6)
+    dmr.text((grx + 69, gry + 47), "HK", fill=255, font=load_font(FONT_DIN, 68), anchor="mm")
 
-    # Selector pivot UV coordinates matching applyMp5GripHousingUVs in mp5Geometries.ts:
-    # Local grip housing bounds: x in [-4.35, +3.80] (span 8.15), y in [-5.80, +0.95] (span 6.75)
-    # Selector axle at world [-3.15, -0.55] - assembledPos [-2.15, -0.35] = local (-1.00, -0.20)
-    # xNorm_sel = (-1.00 - -4.35) / 8.15 = 0.4110
-    # yNorm_sel = (-0.20 - -5.80) / 6.75 = 0.8296
-    # Right flank (+Z): u = 0.05 + xNorm * 0.90 => u_sel_R = 0.420; v = 0.52 + yNorm * 0.44 => v_sel_R = 0.885
-    # Left flank  (-Z): u = 0.05 + (1 - xNorm) * 0.90 => u_sel_L = 0.580; v = 0.05 + yNorm * 0.44 => v_sel_L = 0.415
+    # Left flank: pivot (.580, .415), muzzle +X is -U (-1)
+    plx, ply = uv_to_lower(.580, .415, .05)
+    _draw_navy_cluster_world(ImageDraw.Draw(w_left), ImageDraw.Draw(r_left), plx, ply, -1)
+    glx, gly = uv_to_lower(.70, .15, .05)
+    dml = ImageDraw.Draw(m_left)
+    dml.rounded_rectangle((glx, gly, glx + 138, gly + 94), radius=10, outline=255, width=6)
+    dml.text((glx + 69, gly + 47), "HK", fill=255, font=load_font(FONT_DIN, 68), anchor="mm")
 
-    mask_white = Image.new("L", (W, H), 0)
-    mask_red = Image.new("L", (W, H), 0)
-    mask_mold = Image.new("L", (W, H), 0)
+    w_mark = np.zeros((h, w), dtype=np.float32)
+    r_mark = np.zeros((h, w), dtype=np.float32)
+    m_mark = np.zeros((h, w), dtype=np.float32)
+    _paste_world(w_mark, w_right, .05, .95, .52, .96)
+    _paste_world(r_mark, r_right, .05, .95, .52, .96)
+    _paste_world(m_mark, m_right, .05, .95, .52, .96)
+    _paste_world(w_mark, w_left, .05, .95, .05, .49)
+    _paste_world(r_mark, r_left, .05, .95, .05, .49)
+    _paste_world(m_mark, m_left, .05, .95, .05, .49)
 
-    dw = ImageDraw.Draw(mask_white)
-    dr = ImageDraw.Draw(mask_red)
-    dm = ImageDraw.Draw(mask_mold)
-
-    # Right Flank (+Z, +X muzzle is +u right):
-    piv_rx = int(0.420 * W)
-    piv_ry = int((1.0 - 0.885) * H)
-    draw_hk_pictogram_cluster(dw, dr, piv_rx, piv_ry, dir_sign=+1)
-
-    # Left Flank (-Z, +X muzzle is -u left):
-    piv_lx = int(0.580 * W)
-    piv_ly = int((1.0 - 0.415) * H)
-    draw_hk_pictogram_cluster(dw, dr, piv_lx, piv_ly, dir_sign=-1)
-
-    # Molded recessed "HK" logo near bottom of Navy polymer pistol grip on both sides!
-    f_grip = load_font(30)
-    for gx, gy in [(int(0.24 * W), int((1.0 - 0.62) * H)), (int(0.70 * W), int((1.0 - 0.15) * H))]:
-        dm.rounded_rectangle([gx, gy, gx + 62, gy + 40], radius=4, outline=220, width=3)
-        dm.text((gx + 8, gy + 3), "HK", fill=220, font=f_grip)
-
-    w_arr = np.asarray(mask_white.filter(ImageFilter.GaussianBlur(radius=0.45)), dtype=np.float32) / 255.0
-    r_arr = np.asarray(mask_red.filter(ImageFilter.GaussianBlur(radius=0.45)), dtype=np.float32) / 255.0
-    m_arr = np.asarray(mask_mold.filter(ImageFilter.GaussianBlur(radius=0.55)), dtype=np.float32) / 255.0
-
-    # Crisp German White & Signal-Red lacquer infill inside recessed pictogram engravings!
-    paint_white = np.array([0.93, 0.95, 0.97], dtype=np.float32)
-    paint_red = np.array([0.86, 0.14, 0.14], dtype=np.float32)
-
-    albedo = albedo * (1.0 - w_arr[..., None] * 0.92) + paint_white * (w_arr[..., None] * 0.92)
-    albedo = albedo * (1.0 - r_arr[..., None] * 0.94) + paint_red * (r_arr[..., None] * 0.94)
-    albedo -= (m_arr * 0.018)[..., None]
-
-    height -= (w_arr + r_arr) * 0.85
-    height -= m_arr * 0.75
-
-    # Glossy enamel paint infill inside matte polymer housing
-    roughness = np.clip(roughness - (w_arr + r_arr) * 0.34, 0.22, 0.86)
-
-    save_rgb_png(albedo, os.path.join(OUT_DIR, "mp5_lower_albedo.png"))
-    height_to_normal_png(height, strength=2.0, out_path=os.path.join(OUT_DIR, "mp5_lower_normal.png"))
-    save_gray_png(roughness, os.path.join(OUT_DIR, "mp5_lower_roughness.png"))
-    print("[OK] Generated mp5_lower_{albedo,normal,roughness}.png")
+    paint = np.maximum(w_mark, r_mark)
+    pocket = ndimage.maximum_filter(paint, size=3)
+    recess = bevel_mask(pocket, width_px=1.5, profile="trapezoid")
+    height -= recess * .73
+    height += bevel_mask(paint, width_px=1.0, profile="round") * .16
+    cavity *= (1 - pocket * .16) * (1 - paint * .06)
+    _mix(albedo, (.136, .145, .158), np.clip(pocket - paint, 0, 1) * .78)
+    _mix(albedo, (.90, .915, .925), w_mark)
+    _mix(albedo, (.76, .043, .031), r_mark)
+    _mix(roughness, .26, paint)
+    _mix(metalness, .03, paint)  # enamel paint dielectric B <= 0.05
+    height -= bevel_mask(m_mark, width_px=1.0, profile="trapezoid") * .40
+    _mix(albedo, (.152, .162, .176), m_mark * .74)
+    cavity *= 1 - m_mark * .13
+    conv_low = smoothstep(.08, .50, compute_convexity(height, sigma=1.8)) * (1.0 - paint)
+    albedo += (conv_low * .020)[..., None]
+    roughness -= conv_low * .038
+    _save("mp5_lower", albedo, height, roughness, metalness, cavity, 2.0)
 
 
 if __name__ == "__main__":

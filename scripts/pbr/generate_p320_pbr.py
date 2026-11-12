@@ -1,367 +1,296 @@
 #!/usr/bin/env python3
-"""
-Generates high-resolution 2K multi-channel PBR textures (Albedo + OpenGL Tangent-Space Normal + Roughness)
-for #10 SIG Sauer P320 M17 (9x19mm Modular Handgun System, Coyote Tan PVD / Coyote FDE) in public/textures/:
-  - p320_m17_albedo.png    (2048x2048, sRGB)
-  - p320_m17_normal.png    (2048x2048, Linear OpenGL Tangent-Space Normal)
-  - p320_m17_roughness.png (2048x2048, Linear Roughness)
+"""SIG Sauer P320 M17 manufacturing/material atlas, 2048x2048.
 
-Atlas UV Layout (u in [0, 1] left-to-right, v in [0, 1] bottom-to-top):
-  - v in [0.76, 0.98], u in [0.02, 0.98]: Coyote Tan PVD (#9d8363) Slide Right Wall (M17 UID matrix & 9mmx19)
-  - v in [0.52, 0.74], u in [0.02, 0.98]: Coyote Tan PVD (#9d8363) Slide Left Wall (SIG SAUER P320 & M17 rollmarks)
-  - v in [0.45, 0.50], u in [0.02, 0.56]: Coyote Tan PVD Slide Top Deck & Bullnose Bevels
-  - v in [0.45, 0.50], u in [0.60, 0.98]: Dark Coyote PVD Milled Serration Recesses & Cutouts
-  - v in [0.23, 0.44], u in [0.02, 0.72]: Coyote FDE (#8d7251) Polymer Grip Module Right Flank + Stipple + SIG SAUER
-  - v in [0.01, 0.22], u in [0.02, 0.72]: Coyote FDE (#8d7251) Polymer Grip Module Left Flank + Stipple + SIG SAUER
-  - v in [0.30, 0.43], u in [0.75, 0.98]: Brushed Stainless FCU Serial Plate w/ Laser-Etched "TF004912"
-  - v in [0.16, 0.28], u in [0.75, 0.98]: Brushed 17-4 PH Stainless Steel FCU Chassis Rails & Walls
-  - v in [0.02, 0.14], u in [0.75, 0.98]: Coyote FDE (#8d7251) Polymer Edge & 17rd Magazine Baseplate Swatch
+Unchanged outputs: p320_m17_{albedo,normal,roughness}.webp (or .png).
+Albedo is sRGB; normal and packed RGB ORM (AO/roughness/metalness) are linear.
+Fixed UV layout (u left-to-right, v bottom-to-top):
+  v=.76..98, u=.02..98: #9d8363 Coyote Tan PVD slide RIGHT, M17 UID/9mmx19.
+  v=.52..74, u=.02..98: #9d8363 Coyote Tan PVD slide LEFT, SIG SAUER/P320/M17.
+  v=.45..50, u=.02..56: PVD slide top deck / bullnose bevels.
+  v=.45..50, u=.60..98: dark PVD milled serration recesses and cutouts.
+  v=.23..44, u=.02..72: #8d7251 FDE polymer grip RIGHT, laser stipple/medallion.
+  v=.01..22, u=.02..72: #8d7251 FDE polymer grip LEFT, laser stipple/medallion.
+  v=.30..43, u=.75..98: brushed stainless FCU serial plate TF004912.
+  v=.16..28, u=.75..98: 17-4 PH stainless FCU chassis/rails.
+  v=.02..14, u=.75..98: FDE polymer edges and 17-rd magazine baseplate.
+Padded material boundaries retain the original values used by the mesh.
 """
 
-import math
 import os
+import sys
+from pathlib import Path
+from tempfile import TemporaryDirectory
+
 import numpy as np
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image, ImageDraw
 
-PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-OUT_DIR = os.path.join(PROJECT_ROOT, "public", "textures")
-os.makedirs(OUT_DIR, exist_ok=True)
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+from scripts.pbr_core import (
+    DEFAULT_FONT_CANDIDATES as FONT_CANDIDATES_BOLD,
+    MONO_FONT_CANDIDATES as FONT_CANDIDATES_MONO,
+    OUT_DIR, bevel_mask, chipped_edge_wear, cnc_toolpath, compute_convexity,
+    compute_height_ao, fbm_noise, height_to_normal_map, laser_stipple_field,
+    load_font, save_orm_png, save_rgb_png, scratch_field, seamless_band_noise,
+    smoothstep, worley_cellular,
+)
 
-FONT_CANDIDATES_BOLD = [
-    "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
-    "/System/Library/Fonts/Supplemental/Impact.ttf",
-    "/System/Library/Fonts/Helvetica.ttc",
-    "/System/Library/Fonts/Supplemental/Tahoma Bold.ttf",
-]
-
-FONT_CANDIDATES_MONO = [
-    "/System/Library/Fonts/Supplemental/Courier New Bold.ttf",
-    "/System/Library/Fonts/Menlo.ttc",
-    "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
-]
-
-
-def load_font(candidates, size: int):
-    for fp in candidates:
-        if os.path.exists(fp):
-            try:
-                return ImageFont.truetype(fp, size=size)
-            except Exception:
-                pass
-    return ImageFont.load_default()
+# Fixed serial artwork: actual ECC200, decoded payload "US M17 TF004912".
+# Generated/round-trip checked with ZXing-C++ (https://github.com/zxing-cpp/zxing-cpp).
+UID_DATAMATRIX = (
+    "1010101010101010", "1010010011000111", "1010101100101010", "1100010101011011",
+    "1000011000010000", "1010010001010011", "1100100110100010", "1101011010000111",
+    "1011100001110100", "1100110011111101", "1000010100001010", "1010101111101111",
+    "1011000011100110", "1101100000011101", "1011110001101010", "1111111111111111",
+)
 
 
-def spectral_noise(
-    h: int,
-    w: int,
-    f_low: float,
-    f_high: float,
-    seed: int,
-    aniso_x: float = 1.0,
-    aniso_y: float = 1.0,
-) -> np.ndarray:
-    rng = np.random.default_rng(seed)
-    white = rng.standard_normal((h, w)).astype(np.float32)
-    spec = np.fft.rfft2(white)
-    fy = np.fft.fftfreq(h)[:, None] * h / aniso_y
-    fx = np.fft.rfftfreq(w)[None, :] * w / aniso_x
-    freq = np.sqrt(fx * fx + fy * fy)
-    envelope = np.exp(-0.5 * ((freq - f_low) / max(1.0, (f_high - f_low))) ** 2)
-    envelope[0, 0] = 0.0
-    field = np.fft.irfft2(spec * envelope, s=(h, w))
-    std = float(np.std(field)) + 1e-7
-    return (field / std).astype(np.float32)
+def tint(albedo, mask, color):
+    albedo *= 1 - mask[..., None]
+    albedo += np.asarray(color, np.float32) * mask[..., None]
 
 
-def height_to_normal_png(height: np.ndarray, strength: float, out_path: str) -> None:
-    dh_dy, dh_dx = np.gradient(height)
-    nx = -dh_dx * strength
-    ny = dh_dy * strength
-    nz = np.ones_like(height)
-    inv_len = 1.0 / np.sqrt(nx * nx + ny * ny + nz * nz + 1e-8)
-    rgb = np.zeros((height.shape[0], height.shape[1], 3), dtype=np.uint8)
-    rgb[..., 0] = np.clip((nx * inv_len * 0.5 + 0.5) * 255.0, 0, 255).astype(np.uint8)
-    rgb[..., 1] = np.clip((ny * inv_len * 0.5 + 0.5) * 255.0, 0, 255).astype(np.uint8)
-    rgb[..., 2] = np.clip((nz * inv_len * 0.5 + 0.5) * 255.0, 0, 255).astype(np.uint8)
-    Image.fromarray(rgb, mode="RGB").save(out_path, optimize=True)
-
-
-def save_rgb_png(arr01: np.ndarray, out_path: str) -> None:
-    rgb = np.clip(arr01 * 255.0, 0, 255).astype(np.uint8)
-    Image.fromarray(rgb, mode="RGB").save(out_path, optimize=True)
-
-
-def save_gray_png(arr01: np.ndarray, out_path: str) -> None:
-    g = np.clip(arr01 * 255.0, 0, 255).astype(np.uint8)
-    Image.fromarray(g, mode="L").save(out_path, optimize=True)
-
-
-def paste_world_canvas_to_uv(
-    target_mask: np.ndarray,
-    canvas_img: Image.Image,
-    u0: float,
-    u1: float,
-    v0: float,
-    v1: float,
-) -> None:
-    H, W = target_mask.shape
-    x0 = int(round(u0 * W))
-    x1 = int(round(u1 * W))
-    y0 = int(round((1.0 - v1) * H))
-    y1 = int(round((1.0 - v0) * H))
-    resized = canvas_img.resize((max(1, x1 - x0), max(1, y1 - y0)), resample=Image.Resampling.BICUBIC)
-    arr = np.asarray(resized, dtype=np.float32) / 255.0
+def paste_world_canvas_to_uv(target_mask, canvas_img, u0, u1, v0, v1,
+                             resample=Image.Resampling.LANCZOS):
+    h, w = target_mask.shape
+    x0, x1 = int(round(u0 * w)), int(round(u1 * w))
+    y0, y1 = int(round((1 - v1) * h)), int(round((1 - v0) * h))
+    resized = canvas_img.resize((max(1, x1 - x0), max(1, y1 - y0)), resample=resample)
+    arr = np.asarray(resized, np.float32) / 255
     target_mask[y0:y1, x0:x1] = np.maximum(target_mask[y0:y1, x0:x1], arr)
 
 
-def build_p320_m17_atlas() -> None:
-    W, H = 2048, 2048
-
-    # High-frequency micro-textures ONLY (optically flat CNC/molded walls, zero wavy low-freq normal noise!)
-    pvd_micro = spectral_noise(H, W, 320, 680, seed=3201)
-    cnc_brush = spectral_noise(H, W, 180, 560, seed=3202, aniso_x=3.5, aniso_y=0.35)
-    poly_edm = spectral_noise(H, W, 260, 640, seed=3203)
-    stipple_hi = spectral_noise(H, W, 420, 880, seed=3204)
-    oil_subtle = spectral_noise(H, W, 8, 26, seed=3205)
-
-    v_grid = np.broadcast_to(1.0 - (np.arange(H, dtype=np.float32)[:, None] + 0.5) / H, (H, W))
-    u_grid = np.broadcast_to((np.arange(W, dtype=np.float32)[None, :] + 0.5) / W, (H, W))
-
-    # Exact target palettes from specification:
-    # 1) Warm Coyote Tan PVD metallic slide: #9d8363 -> (157, 131, 99) / 255 = (0.6157, 0.5137, 0.3882)
-    coyote_pvd = np.array([0.616, 0.514, 0.388], dtype=np.float32)
-    coyote_pvd_dark = np.array([0.435, 0.355, 0.262], dtype=np.float32)
-    # 2) Coyote FDE polymer grip module & baseplate: #8d7251 -> (141, 114, 81) / 255 = (0.5529, 0.4471, 0.3176)
-    coyote_fde = np.array([0.553, 0.447, 0.318], dtype=np.float32)
-    coyote_stipple_col = np.array([0.468, 0.374, 0.262], dtype=np.float32)
-    # 3) Brushed 17-4 PH Stainless FCU plate:
-    fcu_stainless = np.array([0.845, 0.868, 0.902], dtype=np.float32)
-
-    albedo = np.broadcast_to(coyote_fde, (H, W, 3)).copy()
-    height = np.zeros((H, W), dtype=np.float32)
-    roughness = np.full((H, W), 0.64, dtype=np.float32)
-
-    # ==========================================================================
-    # ZONE 1: COYOTE TAN PVD STAINLESS SLIDE (v >= 0.445)
-    # ==========================================================================
-    slide_mask = v_grid >= 0.445
-    albedo[slide_mask] = (
-        coyote_pvd
-        + pvd_micro[slide_mask, None] * 0.007
-        + cnc_brush[slide_mask, None] * 0.005
-        - oil_subtle[slide_mask, None] * 0.002
-    )
-    # Optically flat PVD sheet/CNC surface: micro-grain only
-    height[slide_mask] = pvd_micro[slide_mask] * 0.04 + cnc_brush[slide_mask] * 0.03
-    roughness[slide_mask] = 0.27 + pvd_micro[slide_mask] * 0.018 - oil_subtle[slide_mask] * 0.008
-
-    # Dark milled recess swatch for cocking serration roots & internal slide cuts (v in [0.445, 0.508], u >= 0.58)
-    milled_mask = (v_grid >= 0.445) & (v_grid <= 0.508) & (u_grid >= 0.58)
-    albedo[milled_mask] = coyote_pvd_dark + pvd_micro[milled_mask, None] * 0.007
-    roughness[milled_mask] = 0.44
-
-    # Subtle top-shoulder bevel specular wear lines along Left & Right slide bands
-    bevel_r = np.exp(-((v_grid - 0.915) / 0.011) ** 2) * (v_grid >= 0.75)
-    bevel_l = np.exp(-((v_grid - 0.675) / 0.011) ** 2) * ((v_grid >= 0.51) & (v_grid <= 0.75))
-    bevel_hi = np.clip((bevel_r + bevel_l) * 0.35, 0.0, 0.35)
-    pvd_edge_tint = np.array([0.725, 0.635, 0.515], dtype=np.float32)
-    albedo = albedo * (1.0 - bevel_hi[..., None]) + pvd_edge_tint * bevel_hi[..., None]
-    roughness -= bevel_hi * 0.06
-
-    # Slide Rollmarks rendered in proportional 1:1 world coordinates (19.50 x 2.70 cm -> 1950 x 270 px)
-    # Left Slide Wall: v in [0.52, 0.74], u in [0.02, 0.98]
-    # Note: on Left view, u=0 is muzzle (+X), u=1 is rear (-X), so left-to-right text sits cleanly between serrations!
-    sw_w, sw_h = 1950, 270
-    slide_left_canvas = Image.new("L", (sw_w, sw_h), 0)
-    dl = ImageDraw.Draw(slide_left_canvas)
-    f_sig = load_font(FONT_CANDIDATES_BOLD, 66)
-    f_model = load_font(FONT_CANDIDATES_BOLD, 56)
-    f_m17 = load_font(FONT_CANDIDATES_BOLD, 44)
-    f_sub = load_font(FONT_CANDIDATES_BOLD, 24)
-
-    # Positioned on smooth side flat between front serrations (px 0..420) and rear serrations (px 1520..1900)
-    dl.text((545, 78), "SIG SAUER", fill=245, font=f_sig)
-    dl.text((955, 86), "P320", fill=245, font=f_model)
-    dl.rounded_rectangle([1145, 84, 1295, 144], radius=8, outline=235, width=4)
-    dl.text((1173, 92), "M17", fill=245, font=f_m17)
-    dl.text((550, 158), "NEWINGTON, NH, USA", fill=195, font=f_sub)
-
-    # Right Slide Wall: v in [0.76, 0.98], u in [0.02, 0.98] (u=0 is rear -X, u=1 is muzzle +X)
-    slide_right_canvas = Image.new("L", (sw_w, sw_h), 0)
-    dr = ImageDraw.Draw(slide_right_canvas)
-    # US Army M17 UID Data-Matrix & cage marking forward of ejection port / rear flat
-    uid_x, uid_y = 1140, 96
-    dr.rectangle([uid_x, uid_y, uid_x + 62, uid_y + 62], outline=220, width=3)
-    rng_uid = np.random.default_rng(17)
-    for r_i in range(6):
-        for c_i in range(6):
-            if rng_uid.random() > 0.42:
-                dr.rectangle(
-                    [uid_x + 7 + c_i * 8, uid_y + 7 + r_i * 8, uid_x + 13 + c_i * 8, uid_y + 13 + r_i * 8],
-                    fill=215,
-                )
-    dr.text((1222, 96), "US  M17   9mm × 19", fill=225, font=f_sub)
-    dr.text((1222, 130), "CAGE 7Z546  P320-M17", fill=195, font=f_sub)
-
-    slide_engrave = np.zeros((H, W), dtype=np.float32)
-    paste_world_canvas_to_uv(slide_engrave, slide_left_canvas, 0.02, 0.98, 0.52, 0.74)
-    paste_world_canvas_to_uv(slide_engrave, slide_right_canvas, 0.02, 0.98, 0.76, 0.98)
-
-    engrave_col = np.array([0.315, 0.252, 0.185], dtype=np.float32)
-    albedo = albedo * (1.0 - slide_engrave[..., None] * 0.78) + engrave_col * (slide_engrave[..., None] * 0.78)
-    height -= slide_engrave * 0.95
-    roughness = np.clip(roughness + slide_engrave * 0.16, 0.10, 0.92)
-
-    # Subtle golden-brass case kiss marks right behind ejection port on Right Slide Wall
-    brass_spot = np.exp(-(((u_grid - 0.36) / 0.022) ** 2 + ((v_grid - 0.90) / 0.024) ** 2))
-    brass_col = np.array([0.76, 0.62, 0.32], dtype=np.float32)
-    albedo = albedo * (1.0 - brass_spot[..., None] * 0.25) + brass_col * (brass_spot[..., None] * 0.25)
-
-    # ==========================================================================
-    # ZONE 2: COYOTE FDE POLYMER CARRY GRIP MODULE (v < 0.445, u < 0.735)
-    # ==========================================================================
-    grip_mask = (v_grid < 0.445) & (u_grid < 0.735)
-    albedo[grip_mask] = coyote_fde + poly_edm[grip_mask, None] * 0.010
-    height[grip_mask] = poly_edm[grip_mask] * 0.14
-    roughness[grip_mask] = 0.66 + poly_edm[grip_mask] * 0.03
-
-    # Build proportional 1:1 world-space Grip Flank canvases (18.8 x 10.8 cm -> 1504 x 864 px)
-    # Grip world X in [-9.1, +9.7], world Y in [-9.7, +1.1]
-    gw_w, gw_h = 1504, 864
-
-    def make_grip_flank_masks(is_left: bool):
-        stip_img = Image.new("L", (gw_w, gw_h), 0)
-        med_border_img = Image.new("L", (gw_w, gw_h), 0)
-        text_img = Image.new("L", (gw_w, gw_h), 0)
-
-        ds = ImageDraw.Draw(stip_img)
-        db = ImageDraw.Draw(med_border_img)
-        dt = ImageDraw.Draw(text_img)
-
-        def wx_wy_to_px(wx: float, wy: float):
-            xn = (wx - (-9.1)) / 18.8
-            yn = (wy - (-9.7)) / 10.8
-            px = (1.0 - xn) * gw_w if is_left else xn * gw_w
-            py = (1.0 - yn) * gw_h
-            return (px, py)
-
-        # Ergonomic P320 Carry laser-stippled grip panel polygon (-18 deg grip angle!)
-        panel_world = [
-            (-3.25, -1.75),
-            (-6.25, -1.55),
-            (-7.88, -8.35),
-            (-4.95, -8.85),
-        ]
-        poly_px = [wx_wy_to_px(x, y) for (x, y) in panel_world]
-        ds.polygon(poly_px, fill=255)
-
-        # Smooth recessed oval/stadium medallion centered on the grip panel at (-5.45, -5.15)
-        cx, cy = wx_wy_to_px(-5.48, -5.12)
-        rx_px, ry_px = 148, 82
-        ds.ellipse([cx - rx_px, cy - ry_px, cx + rx_px, cy + ry_px], fill=0)
-        db.ellipse([cx - rx_px, cy - ry_px, cx + rx_px, cy + ry_px], outline=235, width=6)
-        db.polygon(poly_px, outline=210, width=5)
-
-        f_med = load_font(FONT_CANDIDATES_BOLD, 44)
-        f_med_sub = load_font(FONT_CANDIDATES_BOLD, 22)
-        dt.text((cx - 118, cy - 28), "SIG SAUER", fill=250, font=f_med)
-        dt.text((cx - 48, cy + 22), "M17  FDE", fill=215, font=f_med_sub)
-
-        # Subtle molded frame marking on dust cover
-        dcx, dcy = wx_wy_to_px(5.6, 0.35)
-        f_dc = load_font(FONT_CANDIDATES_BOLD, 20)
-        if is_left:
-            dt.text((dcx - 90, dcy - 10), "P320  CARRY  MOD.", fill=185, font=f_dc)
-        else:
-            dt.text((dcx - 135, dcy - 10), "NEWINGTON, NH, USA", fill=185, font=f_dc)
-
-        return (
-            stip_img.filter(ImageFilter.GaussianBlur(radius=0.8)),
-            med_border_img.filter(ImageFilter.GaussianBlur(radius=0.7)),
-            text_img.filter(ImageFilter.GaussianBlur(radius=0.5)),
-        )
-
-    stip_r, bord_r, txt_r = make_grip_flank_masks(is_left=False)
-    stip_l, bord_l, txt_l = make_grip_flank_masks(is_left=True)
-
-    stipple_mask = np.zeros((H, W), dtype=np.float32)
-    border_mask = np.zeros((H, W), dtype=np.float32)
-    grip_txt_mask = np.zeros((H, W), dtype=np.float32)
-
-    paste_world_canvas_to_uv(stipple_mask, stip_r, 0.02, 0.72, 0.23, 0.44)
-    paste_world_canvas_to_uv(border_mask, bord_r, 0.02, 0.72, 0.23, 0.44)
-    paste_world_canvas_to_uv(grip_txt_mask, txt_r, 0.02, 0.72, 0.23, 0.44)
-
-    paste_world_canvas_to_uv(stipple_mask, stip_l, 0.02, 0.72, 0.01, 0.22)
-    paste_world_canvas_to_uv(border_mask, bord_l, 0.02, 0.72, 0.01, 0.22)
-    paste_world_canvas_to_uv(grip_txt_mask, txt_l, 0.02, 0.72, 0.01, 0.22)
-
-    # Apply laser-stippled grip texture (darker toasted Coyote FDE + crisp granular stipple normal + high matte roughness)
-    albedo = (
-        albedo * (1.0 - stipple_mask[..., None] * 0.88)
-        + (coyote_stipple_col + stipple_hi[..., None] * 0.022) * (stipple_mask[..., None] * 0.88)
-    )
-    height += stipple_mask * (-0.35 + stipple_hi * 0.75)
-    roughness = np.clip(roughness + stipple_mask * 0.17, 0.10, 0.94)
-
-    # Molded border rim & embossed SIG SAUER medallion lettering
-    molded_hi = np.array([0.685, 0.575, 0.435], dtype=np.float32)
-    molded_sh = np.array([0.385, 0.305, 0.208], dtype=np.float32)
-    albedo = albedo * (1.0 - border_mask[..., None] * 0.55) + molded_sh * (border_mask[..., None] * 0.55)
-    height -= border_mask * 0.65
-
-    albedo = albedo * (1.0 - grip_txt_mask[..., None] * 0.72) + molded_hi * (grip_txt_mask[..., None] * 0.72)
-    height += grip_txt_mask * 0.95
-    roughness = np.clip(roughness - grip_txt_mask * 0.14, 0.10, 0.94)
-
-    # ==========================================================================
-    # ZONE 3: SERIALIZED STAINLESS FCU ("TF004912") & FDE BASEPLATE SWATCH (u >= 0.74)
-    # ==========================================================================
-    # 3A. Serialized Stainless FCU Window Plate: u in [0.75, 0.98], v in [0.30, 0.43]
-    fcu_serial_mask = (u_grid >= 0.745) & (u_grid <= 0.985) & (v_grid >= 0.295) & (v_grid <= 0.435)
-    # 3B. Brushed Stainless FCU Chassis Rails/Body: u in [0.75, 0.98], v in [0.16, 0.285]
-    fcu_body_mask = (u_grid >= 0.745) & (u_grid <= 0.985) & (v_grid >= 0.155) & (v_grid < 0.295)
-    fcu_all = fcu_serial_mask | fcu_body_mask
-
-    albedo[fcu_all] = fcu_stainless + cnc_brush[fcu_all, None] * 0.015
-    height[fcu_all] = cnc_brush[fcu_all] * 0.08
-    roughness[fcu_all] = 0.20 + pvd_micro[fcu_all] * 0.02
-
-    # Engrave "TF004912" onto FCU Serial Plate
-    ser_w, ser_h = 480, 260
-    ser_canvas = Image.new("L", (ser_w, ser_h), 0)
-    dser = ImageDraw.Draw(ser_canvas)
-    f_ser = load_font(FONT_CANDIDATES_MONO, 64)
-    f_ser_sm = load_font(FONT_CANDIDATES_BOLD, 22)
-    dser.rounded_rectangle([18, 22, ser_w - 18, ser_h - 22], radius=14, outline=210, width=5)
-    dser.text((54, 48), "SIG SAUER  FCU", fill=190, font=f_ser_sm)
-    dser.text((48, 92), "TF004912", fill=255, font=f_ser)
-    dser.text((54, 182), "MODULAR CHASSIS · US M17", fill=185, font=f_ser_sm)
-
-    ser_mask = np.zeros((H, W), dtype=np.float32)
-    paste_world_canvas_to_uv(
-        ser_mask,
-        ser_canvas.filter(ImageFilter.GaussianBlur(radius=0.55)),
-        0.75,
-        0.98,
-        0.30,
-        0.43,
-    )
-    laser_dark = np.array([0.18, 0.20, 0.23], dtype=np.float32)
-    albedo = albedo * (1.0 - ser_mask[..., None] * 0.85) + laser_dark * (ser_mask[..., None] * 0.85)
-    height -= ser_mask * 1.05
-    roughness = np.clip(roughness + ser_mask * 0.32, 0.10, 0.94)
-
-    # 3C. Coyote FDE Polymer Edge & 17-rd Magazine Baseplate Swatch: u in [0.75, 0.98], v in [0.02, 0.145]
-    fde_sw_mask = (u_grid >= 0.745) & (u_grid <= 0.985) & (v_grid >= 0.015) & (v_grid < 0.155)
-    albedo[fde_sw_mask] = coyote_fde + poly_edm[fde_sw_mask, None] * 0.009
-    height[fde_sw_mask] = poly_edm[fde_sw_mask] * 0.12
-    roughness[fde_sw_mask] = 0.65 + poly_edm[fde_sw_mask] * 0.03
-
+def save_suite(albedo, height, roughness, metalness, crevice):
+    """Use core ORM packing and OpenGL normals; linear maps encode losslessly."""
+    ao = np.clip(compute_height_ao(height, strength=1.15) * crevice, 46/255, 1)
+    roughness = np.clip(roughness, 13/255, 234/255)
+    metalness = np.clip(metalness, 6/255, 249/255)
+    for field in (height, ao, roughness, metalness):
+        if field.shape != height.shape or not np.isfinite(field).all():
+            raise ValueError("Invalid P320 material field")
     save_rgb_png(albedo, os.path.join(OUT_DIR, "p320_m17_albedo.png"))
-    height_to_normal_png(height, strength=2.2, out_path=os.path.join(OUT_DIR, "p320_m17_normal.png"))
-    save_gray_png(roughness, os.path.join(OUT_DIR, "p320_m17_roughness.png"))
-    print("[OK] Generated p320_m17_{albedo,normal,roughness}.png (2048x2048)")
+    requested = os.environ.get("PBR_OUTPUT_FORMAT")
+    fmt = "png" if (requested or "webp").lower() == "png" else "webp"
+    with TemporaryDirectory(prefix="p320-linear-") as tmp:
+        try:
+            os.environ["PBR_OUTPUT_FORMAT"] = "png"
+            normal_path = height_to_normal_map(height, 1.5,
+                os.path.join(tmp, "p320_m17_normal.png"), seamless=False)
+            orm_path = save_orm_png(ao, roughness, metalness,
+                os.path.join(tmp, "p320_m17_roughness.png"))
+        finally:
+            if requested is None:
+                os.environ.pop("PBR_OUTPUT_FORMAT", None)
+            else:
+                os.environ["PBR_OUTPUT_FORMAT"] = requested
+        for kind, path in (("normal", normal_path), ("roughness", orm_path)):
+            with Image.open(path) as img:
+                target = os.path.join(OUT_DIR, f"p320_m17_{kind}.{fmt}")
+                if fmt == "webp":
+                    img.save(target, "WEBP", lossless=True, exact=True, method=6)
+                else:
+                    img.save(target, "PNG", optimize=True)
+    print(f"[OK] p320_m17: 2048x2048 RGB normal + ORM ({fmt})", flush=True)
+
+
+def make_grip_flank_masks(is_left):
+    # 2x supersampled isotropic world canvas: 18.8 x 10.8 cm -> 3008 x 1728 px (160 px/cm).
+    ww, wh = 3008, 1728
+    stipple, border, text, medallion = [Image.new("L", (ww, wh), 0) for _ in range(4)]
+    ds, db, dt, dm = [ImageDraw.Draw(img) for img in (stipple, border, text, medallion)]
+
+    def project(wx, wy):
+        xn, yn = (wx + 9.1) / 18.8, (wy + 9.7) / 10.8
+        return ((1 - xn if is_left else xn) * ww, (1 - yn) * wh)
+
+    panel_world = [(-3.25, -1.75), (-6.25, -1.55), (-7.88, -8.35), (-4.95, -8.85)]
+    poly = [project(x, y) for x, y in panel_world]
+    ds.polygon(poly, fill=255)
+    db.polygon(poly, outline=255, width=10)
+    cx, cy = project(-5.48, -5.12)
+    box = (cx - 296, cy - 164, cx + 296, cy + 164)
+    ds.rounded_rectangle(box, radius=164, fill=0)
+    dm.rounded_rectangle(box, radius=164, fill=255)
+    db.rounded_rectangle(box, radius=164, outline=255, width=12)
+    dt.text((cx, cy - 34), "SIG SAUER", fill=255,
+            font=load_font(FONT_CANDIDATES_BOLD, 84), anchor="mm")
+    dt.text((cx, cy + 66), "M17  FDE", fill=255,
+            font=load_font(FONT_CANDIDATES_BOLD, 44), anchor="mm")
+    dcx, dcy = project(5.6, .35)
+    label = "P320  CARRY  MOD." if is_left else "NEWINGTON, NH, USA"
+    dt.text((dcx - (180 if is_left else 270), dcy - 20), label, fill=230,
+            font=load_font(FONT_CANDIDATES_BOLD, 40))
+    return stipple, border, text, medallion
+
+
+def build_p320_m17_atlas():
+    w = h = 2048
+    u = (np.arange(w, dtype=np.float32)[None, :] + .5) / w
+    v = 1 - (np.arange(h, dtype=np.float32)[:, None] + .5) / h
+    pvd_micro = seamless_band_noise(h, w, 220, 850, seed=3201)
+    grinding = cnc_toolpath(h, w, pitch_px=3.6, angle_deg=0, seed=3202)
+    cells, facets = worley_cellular(h, w, 560, 300, seed=3203)
+    poly_edm = .65 * facets - .40 * cells
+    oil = fbm_noise(h, w, base_freq=5, octaves=4, seed=3204)
+    pvd = np.array((157, 131, 99), np.float32) / 255
+    fde = np.array((141, 114, 81), np.float32) / 255
+    albedo = np.broadcast_to(fde, (h, w, 3)).copy()
+    height = .11 * poly_edm
+    roughness = .67 + .022 * poly_edm
+    metalness = np.full((h, w), .03, np.float32)
+    crevice = np.ones((h, w), np.float32)
+
+    # ZONE 1. Coyote Tan PVD slide region v>=.445, recess region v=.445..508/u>=.58.
+    slide = np.broadcast_to(v >= .445, (h, w))
+    shimmer = pvd_micro[..., None] * np.array((.007, .003, -.003), np.float32)
+    pvd_color = pvd + shimmer + (.004 * grinding - .002 * oil)[..., None]
+    albedo[slide] = pvd_color[slide]
+    height[slide] = (.022 * grinding + .018 * pvd_micro)[slide]
+    roughness[slide] = (.27 + .014 * pvd_micro + .010 * grinding - .015 * oil)[slide]
+    metalness[slide] = .64
+    milled = (v >= .445) & (v <= .508) & (u >= .58)
+    albedo[milled] = np.array((.455, .375, .280)) + .004 * pvd_micro[milled, None]
+    roughness[milled], metalness[milled] = .40, .60
+
+    # Localized forward holster/corner PVD burnish & micro-chipping with FBM breakup
+    # (eliminates ruler-straight dashed horizontal stripes and vertical muzzle dots).
+    breakup = smoothstep(.04, .58, fbm_noise(h, w, base_freq=36, octaves=4, seed=3211))
+    proximity = np.zeros((h, w), np.float32)
+    for low, high, is_right, shoulder, muzzle in ((.76, .98, True, .915, .968),
+                                                  (.52, .74, False, .675, .032)):
+        band = (v >= low) & (v <= high)
+        xn = (u - .02) / .96 if is_right else (.98 - u) / .96
+        yn = (v - low) / .22
+        holster_bias = .14 + .86 * smoothstep(.62, .94, xn)
+        shoulder_edge = np.clip(1 - np.abs(v - shoulder) / .0035, 0, 1) * holster_bias
+        corner_gate = smoothstep(.64, .86, yn) + (1.0 - smoothstep(.08, .24, yn)) * .50
+        muzzle_edge = np.clip(1 - np.abs(u - muzzle) / .0065, 0, 1) * np.clip(corner_gate, 0, 1)
+        proximity = np.maximum(proximity, np.maximum(shoulder_edge, muzzle_edge) * breakup * band)
+
+    chips, transition = chipped_edge_wear(proximity, seed=3205, wear_amount=.42)
+    scuff = scratch_field(h, w, count=780, min_len=6, max_len=56,
+        angle_deg=0, angle_spread=5, seed=3206, mask=np.clip(proximity * 1.5, 0, 1))
+    wear = np.maximum(chips, scuff * .78)
+    tint(albedo, transition * .20, (.47, .377, .27))
+    tint(albedo, wear, (.70, .69, .66))
+    roughness = roughness * (1 - wear) + .16 * wear
+    metalness = metalness * (1 - wear) + .97 * wear
+    height -= .030 * scuff + .022 * wear
+
+    # 2x supersampled isotropic world slide canvases: 19.5 x 2.72 cm -> 3900 x 544 px (200 px/cm).
+    ww, wh = 3900, 544
+    left, right, uid_canvas = [Image.new("L", (ww, wh), 0) for _ in range(3)]
+    dl, dr, du = [ImageDraw.Draw(img) for img in (left, right, uid_canvas)]
+    dl.text((1090, 156), "SIG SAUER", fill=255, font=load_font(FONT_CANDIDATES_BOLD, 124))
+    dl.text((1910, 172), "P320", fill=255, font=load_font(FONT_CANDIDATES_BOLD, 112))
+    dl.rounded_rectangle((2290, 168, 2594, 290), radius=16, outline=255, width=8)
+    dl.text((2442, 229), "M17", fill=255, font=load_font(FONT_CANDIDATES_BOLD, 88), anchor="mm")
+    dl.text((1100, 318), "NEWINGTON, NH, USA", fill=235,
+            font=load_font(FONT_CANDIDATES_BOLD, 48))
+
+    # Crisp 1:1 square ECC200 IUID DataMatrix (128x128 world px = 6.4 x 6.4 mm on 3D slide)
+    du.rounded_rectangle((2268, 178, 3045, 334), radius=12, outline=205, width=4)
+    for row, bits in enumerate(UID_DATAMATRIX):
+        for col, bit in enumerate(bits):
+            if bit == "1":
+                x, y = 2284 + col * 8, 192 + row * 8
+                du.rectangle((x, y, x + 7, y + 7), fill=255)
+    dr.text((2444, 192), "US  M17   9mm × 19", fill=255,
+            font=load_font(FONT_CANDIDATES_BOLD, 48))
+    dr.text((2444, 260), "CAGE 7Z546  SN TF004912", fill=235,
+            font=load_font(FONT_CANDIDATES_BOLD, 44))
+
+    engraving = np.zeros((h, w), np.float32)
+    paste_world_canvas_to_uv(engraving, left, .02, .98, .52, .74)
+    paste_world_canvas_to_uv(engraving, right, .02, .98, .76, .98)
+    paste_world_canvas_to_uv(engraving, uid_canvas, .02, .98, .76, .98,
+                             resample=Image.Resampling.BOX)
+    tint(albedo, engraving, (.255, .198, .135))
+    height -= 1.18 * bevel_mask(engraving, width_px=1.25)
+    roughness = roughness * (1 - engraving) + .52 * engraving
+    metalness = metalness * (1 - engraving) + .68 * engraving
+    crevice *= 1 - .32 * engraving
+
+    # Scattered brass transfer ticks in the ejection zone.
+    x0, x1 = int(.342 * w), int(.379 * w)
+    y0, y1 = int((1 - .924) * h), int((1 - .876) * h)
+    brass = np.zeros((h, w), np.float32)
+    brass[y0:y1, x0:x1] = scratch_field(y1 - y0, x1 - x0, count=21,
+        min_len=2, max_len=12, angle_deg=-30, angle_spread=24, seed=3207)
+    tint(albedo, brass * .70, (.72, .53, .25))
+    roughness = roughness * (1 - brass) + .21 * brass
+    metalness = metalness * (1 - brass) + .96 * brass
+
+    # ZONE 2. FDE polymer v<.445/u<.735, exact mirrored grip transforms.
+    grip = (v < .445) & (u < .735)
+    albedo[grip] = fde + (.011 * poly_edm + .003 * pvd_micro)[grip, None]
+    height[grip] = (.13 * poly_edm + .012 * pvd_micro)[grip]
+    roughness[grip] = (.67 + .025 * poly_edm + .012 * pvd_micro)[grip]
+    metalness[grip], crevice[grip] = .03, 1
+    stipple, border, letters, medallion = [np.zeros((h, w), np.float32) for _ in range(4)]
+    for is_left, v0, v1 in ((False, .23, .44), (True, .01, .22)):
+        source = make_grip_flank_masks(is_left)
+        for target, canvas in zip((stipple, border, letters, medallion), source):
+            paste_world_canvas_to_uv(target, canvas, .02, .72, v0, v1)
+    panel = bevel_mask(stipple, width_px=2)
+    # Elliptical atlas cells compensate the world's unequal U/V texel density.
+    craters = laser_stipple_field(h, w, cells_y=510, cells_x=270, seed=3208)
+    toasted = np.array((.468, .374, .262), np.float32)
+    ablated_color = toasted + (.026 * craters - .014 * smoothstep(.10, .65, -craters))[..., None]
+    albedo[:] = albedo * (1 - panel[..., None]) + ablated_color * panel[..., None]
+    height = height * (1 - panel) + panel * (-.16 + .48 * craters)
+    roughness = roughness * (1 - panel) + panel * (.86 + .018 * craters)
+    smooth_medallion = bevel_mask(medallion, width_px=3)
+    height = height * (1 - smooth_medallion) - .22 * smooth_medallion
+    tint(albedo, smooth_medallion, fde * .95)
+    roughness = roughness * (1 - smooth_medallion) + .62 * smooth_medallion
+    border_relief = bevel_mask(border, width_px=1.35)
+    letter_relief = bevel_mask(letters, width_px=1.1)
+    height -= .40 * border_relief
+    height += .54 * letter_relief
+    tint(albedo, border * .26, fde * .78)
+    tint(albedo, letters * .36, fde * 1.12)
+    crevice *= 1 - .18 * border - .12 * letters - .10 * (stipple - panel)
+
+    # ZONE 3. 17-4 PH stainless FCU serial plate (2.20 x 0.60 cm -> 3.667:1 world aspect!).
+    # Using isotropic 500 px/cm -> 1100x300 eliminates the 2.07x horizontal stretch on TF004912.
+    serial = (u >= .745) & (u <= .985) & (v >= .295) & (v <= .435)
+    body = (u >= .745) & (u <= .985) & (v >= .155) & (v < .295)
+    fcu = serial | body
+    steel_brush = cnc_toolpath(h, w, pitch_px=3.2, angle_deg=0, seed=3209)
+    steel_scratches = scratch_field(h, w, count=900, min_len=4, max_len=35,
+        angle_deg=0, angle_spread=8, seed=3210, mask=fcu.astype(np.float32))
+    albedo[fcu] = np.array((.805, .825, .85)) + .006 * steel_brush[fcu, None]
+    height[fcu] = (.018 * steel_brush - .016 * steel_scratches)[fcu]
+    roughness[fcu] = (.17 + .010 * pvd_micro + .008 * steel_brush)[fcu]
+    metalness[fcu], crevice[fcu] = .97, 1
+
+    serial_canvas = Image.new("L", (1100, 300), 0)
+    ds = ImageDraw.Draw(serial_canvas)
+    ds.rounded_rectangle((28, 22, 1072, 278), radius=20, outline=255, width=7)
+    ds.text((88, 48), "SIG SAUER  FCU  ·  CAGE 7Z546", fill=245,
+            font=load_font(FONT_CANDIDATES_BOLD, 34))
+    ds.text((84, 98), "TF004912", fill=255, font=load_font(FONT_CANDIDATES_MONO, 108))
+    ds.text((88, 224), "MODULAR CHASSIS  ·  US M17", fill=235,
+            font=load_font(FONT_CANDIDATES_BOLD, 32))
+
+    serial_mark = np.zeros((h, w), np.float32)
+    paste_world_canvas_to_uv(serial_mark, serial_canvas, .75, .98, .30, .43)
+    serial_mark *= serial
+    tint(albedo, serial_mark, (.205, .222, .244))
+    height -= .98 * bevel_mask(serial_mark, width_px=1.15)
+    roughness = roughness * (1 - serial_mark) + .46 * serial_mark
+    metalness = metalness * (1 - serial_mark) + .64 * serial_mark
+    crevice *= 1 - .30 * serial_mark
+
+    baseplate = (u >= .745) & (u <= .985) & (v >= .015) & (v < .155)
+    albedo[baseplate] = fde + .010 * poly_edm[baseplate, None]
+    height[baseplate] = .13 * poly_edm[baseplate]
+    roughness[baseplate] = (.64 + .025 * poly_edm)[baseplate]
+    metalness[baseplate], crevice[baseplate] = .03, 1
+    conv_p320 = smoothstep(.08, .50, compute_convexity(height, sigma=1.8))
+    albedo += (conv_p320 * .022)[..., None]
+    roughness -= conv_p320 * .040
+    save_suite(albedo, height, roughness, metalness, crevice)
 
 
 if __name__ == "__main__":

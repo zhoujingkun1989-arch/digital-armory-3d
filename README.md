@@ -1,122 +1,170 @@
+<div align="center">
+
 # Digital Armory 3D · 枪械内部结构 3D 数字仓库
 
-> 基于 **React 18 + TypeScript + Three.js (`@react-three/fiber` / `three-bvh-csg`)** 构建的浏览器端交互式 **十大世界经典名枪 3D 机械内构爆炸拆解与动态发射循环可视化系统**。
+**把十款世界传奇名枪的 1:1 机械内构，装进你的浏览器**
+
+[![CI](https://github.com/zhoujingkun1989-arch/digital-armory-3d/actions/workflows/ci.yml/badge.svg)](https://github.com/zhoujingkun1989-arch/digital-armory-3d/actions/workflows/ci.yml)
+[![GitHub Pages](https://github.com/zhoujingkun1989-arch/digital-armory-3d/actions/workflows/deploy-pages.yml/badge.svg)](https://zhoujingkun1989-arch.github.io/digital-armory-3d/showcase.html)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.6_Strict-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Three.js](https://img.shields.io/badge/Three.js-WebGL_2.0_PBR-000000?logo=threedotjs)](https://threejs.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-10b981.svg)](LICENSE)
+
+<h3>
+  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/showcase.html">✦ 访问官方交互式宣传主页 (Showcase)</a>
+  &nbsp;·&nbsp;
+  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/">🚀 直接进入 10 槽 3D 数字枪库</a>
+  &nbsp;·&nbsp;
+  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=ak15&screen=workbench">🔧 直达 AK-15M1 拆解台</a>
+</h3>
+
+</div>
+
+---
+
+> 基于 **React 18 + TypeScript + Three.js (`@react-three/fiber` / Web Worker `three-bvh-csg`)** 构建的工业级浏览器端交互式 **十大世界经典名枪 1:1 机械内构爆炸拆解、GPU 纵向军械剖视与 7 阶段内弹道仿真引擎**。
 >
-> An interactive WebGL 3D Digital Armory featuring **10 iconic world firearms**, **253 procedurally & CSG-modeled internal mechanical parts**, **58 procedural 2K PBR texture maps**, zero-overlap editorial 3D callout labels, X-Ray shell cutaway inspection, and 7-stage caliber-accurate firing/ballistics simulations.
+> A zero-external-mesh WebGL 2.0 3D Digital Armory featuring **10 self-contained weapon plugins**, **253 procedurally & CSG-modeled moving parts** streamed from a background Web Worker, **58 2K 5-channel Packed ORM WebP textures**, longitudinal GPU section-cut (`C`) with section-aware BVH raycasting, zero-reflow 3D leader callouts, and 7-stage caliber-accurate ballistics simulations.
+
+![Digital Armory 3D Official Showcase Hero](docs/screenshots/showcase-landing.jpg)
 
 ![10-Bay Digital Armory Showcase](docs/screenshots/armory-showcase.jpg)
 
 ---
 
-## 核心特性 | Key Features
+## 核心亮点 | Highlights
 
-- **10 展位 3D 数字枪库（10-Bay Digital Armory）**：支持按「全部馆藏 / 突击·卡宾·无托 / 冲锋枪 / 狙击·反器材 / 半自动手枪」分类筛选、展台 360° 自动旋转、实时 X-Ray 外壳透视预览与一键进入拆解工作台。
-- **253 个无依赖程序化 CSG 机械零件**：全部枪机突笋、螺旋复进簧/缓冲簧（支持随行程实时压缩/拉伸形变）、导气活塞、双闭锁滚柱、可拆卸火控内胆（FCU）、栓动防冰槽枪机、瞄准镜组与弧形弹匣均由纯代码 + `three-bvh-csg` 布尔运算实时构建，零外部 `.glb/.gltf` 黑盒模型依赖。
-- **分阶段爆炸拆解与零重叠引线标注**：支持 `0% -> 100%` 连续无级拆解、野战一级快拆 / 军械级全分解预设切换、BOM 零件目录树检索、单零件隔离检视（Isolate）以及自适应防碰撞排布的 3D 空间引线标签。
-- **7 阶段真实运动学发射与 6 口径弹道特效**：完整模拟每把武器独特的自动与闭锁循环（气吹导气、长/短行程活塞、滚柱延迟、整管短后坐加速子、60° 手动抬柄拉栓、固定枪管膛底导气等），同步呈现 `7.62×39mm`、`5.56×45mm NATO`、`9×19mm`、`.50 BMG` 双侧 60° 箭头制退冲击波、`.338 Lapua` 侧向制退喷焰与 `.50 AE` 环形枪口焰。
-- **58 张程序化 2K PBR 材质贴图与内置图集查看器**：通过 Python (`NumPy` + `Pillow`) 离线生成 Albedo / Normal / Roughness 通道贴图（俄式烤漆、柯尔特阳极氧化刻字、HK 红白子弹图标、比利时多色阶 FDE、铂银镜面镀铬、AUG 半透明琥珀华夫格弹匣、P320 激光防滑纹与不锈钢序列号铭牌），内置 PBR 图集检视弹窗。
+- **✦ 内置实时交互产品宣传页（Live 3D Showcase Landing Page）**：支持通过 `showcase.html` 或 `?screen=showcase` 打开全景产品发布页，首屏内嵌 **60 FPS 实时 WebGL 3D 检视窗**，无需跳转即可在宣传页直接切换 10 款名枪并实时体验「真铁 PBR / 纵向剖视 / X-Ray 透视 / 悬浮半爆炸」。
+- **10 展位 3D 数字枪库与 1:1 原厂测绘铭牌**：支持按「全部馆藏 / 突击·卡宾·无托 / 冲锋枪 / 狙击·反器材 / 半自动手枪」分类筛选，配备原厂全枪长 (OAL)、枪管缠距、空枪质量、初速与射程铭牌，支持卡片悬停预热加载与一键直达拆解台。
+- **GPU 纵向中轴军械剖视（`C`）与剖面穿透拾取**：按下 `C` 键即可沿枪膛纵轴实时剖开右侧机匣、套筒与弹匣壳体，原色直视内部膛线、闭锁突笋、导气活塞、复进簧与实弹托弹簧；定制 `sectionAwareMeshRaycast` 让鼠标直接穿透虚空切面点选内部火控构件。
+- **5 通道 Packed ORM 物理材质与双侧掠射柔光棚**：基于 `scripts/pbr_core/` 离线烘焙 `Albedo + Normal + ORM (R:高度积分AO · G:微粗糙度 · B:逐纹素金属度)` 共 **58 张 `.webp` 贴图**（`101.35 MB → 17.25 MB`，缩减 **83%**）；配合 ACES Filmic 双侧 `±Z` 掠射柔光箱与磷化转化膜 + 枪油清漆层曲线，清晰分离锰系磷化钢、硬质阳极铝、CNC 导轨倒角、玻纤尼龙与硫化橡胶五级深色质感。
+- **7 阶段耦合运动学与 6 口径 SAAMI/CIP 实弹内弹道**：完整还原长/短行程导气活塞、斯通纳气吹、MP5 `4:1` 双滚柱延迟、巴雷特整管短后坐加速子、AWM `60°` 六突笋防冰栓动及布朗宁闭锁下倾，含 Boxer 底火击发凹坑与 `.50 BMG` 双室箭头制退侧喷冲击波。
+- **Web Worker 零拷贝 CSG 流式建模 & 60Hz 零重渲染时钟**：重度 `three-bvh-csg` 布尔运算隔离在后台 Worker 并以 `Transferable Float32Array` 流式回传，配合非受控瞬态时钟 `playbackClock.ts` 与有界 LRU 几何/纹理显存池，恒定丝滑 60 FPS。
 
 ---
 
-## 界面预览 | Gallery
+## 实机渲染画廊 | Live WebGL 2.0 Gallery
 
-| Colt M4A1 军械级 100% 爆炸拆解与引线排布 | Barrett M82A1 `.50 BMG` 整管短后坐与箭头制退侧喷 |
+| AK-15M1 纵向中轴军械剖视 (`C`) 与内部供弹/击发咬合 | Barrett M82A1 `.50 BMG` 整管短后坐与 60° 箭头制退冲击波 |
 | :---: | :---: |
-| ![M4A1 100% Exploded View](docs/screenshots/m4a1-exploded.jpg) | ![Barrett M82A1 Firing Simulation](docs/screenshots/m82a1-firing.jpg) |
+| ![AK-15M1 Longitudinal Section Cut](docs/screenshots/ak15-section.jpg) | ![Barrett M82A1 Firing Simulation](docs/screenshots/m82a1-firing.jpg) |
 
-| Steyr AUG A1 军绿无托枪身与半透明琥珀弹匣 | Desert Eagle Mark XIX `.50 AE` 铂银镀铬镜面 |
+| Colt M4A1 军械级 100% 全零件爆炸图与防遮挡引线 | Desert Eagle Mark XIX `.50 AE` 拉丝硬铬与正向导气活塞 |
 | :---: | :---: |
-| ![Steyr AUG A1](docs/screenshots/aug-armory.jpg) | ![Desert Eagle Chrome](docs/screenshots/deagle-chrome.jpg) |
+| ![M4A1 100% Exploded View](docs/screenshots/m4a1-exploded.jpg) | ![Desert Eagle Chrome](docs/screenshots/deagle-chrome.jpg) |
 
-| SIG Sauer P320 M17 可整体拆出不锈钢火控内胆 (FCU) |
-| :---: |
-| ![SIG P320 M17 Exploded FCU](docs/screenshots/p320-exploded.jpg) |
-
----
-
-## 馆藏十款经典名枪一览 | 10-Weapon Roster
-
-| 展位 | 型号 | 国家 / 类型 | 口径 | 核心自动与闭锁机构 | 零件数 |
-| :--- | :--- | :--- | :--- | :--- | :---: |
-| `BAY-01` | **Kalashnikov AK-15M1 (6П71М)** | 俄罗斯 · 突击步枪 | `7.62×39mm (M43)` | 长行程导气活塞 · 双突笋 35° 回转枪机闭锁 | 26 |
-| `BAY-02` | **Colt M4A1 Carbine** | 美国 · 卡宾枪 | `5.56×45mm NATO` | 斯通纳气吹式导气 (DI) · 七突笋回转枪机 + 尾托缓冲簧 | 26 |
-| `BAY-03` | **Heckler & Koch MP5A3** | 德国 · 冲锋枪 | `9×19mm Parabellum` | 双 Ø8mm 滚柱 + 45° 闭锁楔延迟半自由枪机 · 非随动拉机柄 | 26 |
-| `BAY-04` | **Glock 17 Gen3** | 奥地利 · 半自动手枪 | `9×19mm Parabellum` | 枪管短后坐偏移闭锁 · Safe Action 三重被动保险平移击针 | 28 |
-| `BAY-05` | **Barrett M82A1** | 美国 · 反器材步枪 | `.50 BMG (12.7×99mm)` | 29" 开槽重枪管短后坐 · 加速子撬动三突笋枪机 + 双室箭头制退器 | 24 |
-| `BAY-06` | **Accuracy International AWM** | 英国 · 狙击步枪 | `.338 Lapua Magnum` | 手动 60° 六突笋防冰槽旋转后拉枪机 · 铝合金主梁拇指孔底盘 | 24 |
-| `BAY-07` | **FN SCAR-L Mk 16 Mod 0** | 比利时 · 模块化步枪 | `5.56×45mm NATO` | 短行程导气活塞顶杆 · 七突笋回转枪机 + 一体铝挤 FDE 上机匣 | 26 |
-| `BAY-08` | **Desert Eagle Mark XIX** | 以色列/美国 · 半自动手枪 | `.50 Action Express` | 三角形固定枪管膛底导气活塞 · 四突笋回转枪机 + 双联复进簧 | 24 |
-| `BAY-09` | **Steyr AUG A1 (StG 77)** | 奥地利 · 无托步枪 | `5.56×45mm NATO` | 无托后置弹匣 · 短行程活塞双长导杆 + 贯通双连杆后置全塑击锤包 | 25 |
-| `BAY-10` | **SIG Sauer P320 M17** | 美国/德国 · 半自动手枪 | `9×19mm Parabellum` | 可整体拆出序列号不锈钢 FCU 火控内胆 · 枪管偏移平移击针 | 24 |
+| Steyr AUG A1 施华洛世奇瞄具与半透明琥珀弹匣 | 内置 2K 三通道 PBR 贴图图集检视器 (Albedo / Normal / ORM) |
+| :---: | :---: |
+| ![Steyr AUG A1](docs/screenshots/aug-armory.jpg) | ![PBR Texture Atlas Modal](docs/screenshots/pbr-atlas.jpg) |
 
 ---
 
-## 快速启动 | Quick Start
+## 馆藏十款经典名枪矩阵 | 10-Weapon Roster
+
+| 展位 | 型号 | 国家 / 类型 | 口径 | 核心自动与闭锁机构 | 零件数 | 在线直达 |
+| :--- | :--- | :--- | :--- | :--- | :---: | :---: |
+| `BAY-01` | **Kalashnikov AK-15M1 (6П71М)** | 俄罗斯 · 突击步枪 | `7.62×39mm (M43)` | 长行程导气活塞 · 双突笋 35° 回转枪机闭锁 | 26 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=ak15&screen=workbench) |
+| `BAY-02` | **Colt M4A1 Carbine** | 美国 · 卡宾枪 | `5.56×45mm NATO` | 斯通纳气吹式导气 (DI) · 七突笋回转枪机 + 尾托缓冲簧 | 26 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=m4a1&screen=workbench) |
+| `BAY-03` | **Heckler & Koch MP5A3** | 德国 · 冲锋枪 | `9×19mm Parabellum` | 双 Ø8mm 滚柱 + 45° 闭锁楔 4:1 延迟半自由枪机 | 26 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=mp5&screen=workbench) |
+| `BAY-04` | **Glock 17 Gen3** | 奥地利 · 半自动手枪 | `9×19mm Parabellum` | 枪管短后坐偏移下倾闭锁 · Safe Action 三重保险击针 | 28 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=g17&screen=workbench) |
+| `BAY-05` | **Barrett M82A1** | 美国 · 反器材步枪 | `.50 BMG (12.7×99mm)` | 29" 开槽重枪管短后坐 · 加速子撬动三突笋枪机 + 箭头制退 | 24 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=m82a1&screen=workbench) |
+| `BAY-06` | **Accuracy International AWM** | 英国 · 狙击步枪 | `.338 Lapua Magnum` | 手动 60° 六突笋防冰槽旋转后拉枪机 · 铝合金贯穿底盘 | 24 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=awm&screen=workbench) |
+| `BAY-07` | **FN SCAR-L Mk 16 Mod 0** | 比利时 · 模块化步枪 | `5.56×45mm NATO` | 短行程导气活塞 · 七突笋回转枪机 + 一体铝挤 FDE 上机匣 | 26 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=scar&screen=workbench) |
+| `BAY-08` | **Desert Eagle Mark XIX** | 以色列/美国 · 半自动手枪 | `.50 Action Express` | 固定枪管膛底正向三环导气活塞 · 四突笋回转枪机 + 双复进簧 | 24 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=deagle&screen=workbench) |
+| `BAY-09` | **Steyr AUG A1 (StG 77)** | 奥地利 · 无托步枪 | `5.56×45mm NATO` | 无托后置弹匣 · 短行程活塞双长导杆 + 贯通双连杆全塑击锤包 | 25 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=aug&screen=workbench) |
+| `BAY-10` | **SIG Sauer P320 M17** | 美国/德国 · 半自动手枪 | `9×19mm Parabellum` | 模块化可拆不锈钢 FCU 火控内胆 · 布朗宁闭锁下倾平移击针 | 24 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=p320&screen=workbench) |
+
+---
+
+## 键盘快捷键与深度链接 | Shortcuts & Deep Links
+
+- **多入口与深度链接**：
+  - 官方宣传页：`/showcase.html` 或 `/?screen=showcase`
+  - 10 槽数字枪库：`/?weapon=ak15`
+  - 直达拆解/击发台：`/?weapon=m82a1&screen=workbench&mode=firing`
+- **全局工程快捷键**：
+  - `Space`：播放 / 暂停自动拆解或实弹击发循环演示
+  - `C`：开启 / 关闭 1:1 纵向中轴军械剖视切面（`军械剖视`）
+  - `X`：开启 / 关闭机匣与套筒外壳 X-Ray 半透明透视
+  - `E`：开启 / 关闭工业 CAD 硬边轮廓线
+  - `L`：显示 / 隐藏 3D 空间零件编号引出标签（拆解模式）
+  - `R`：一键重置回 100% 爆炸视图与默认等轴测视角
+  - `Esc`：依次关闭贴图图集弹窗 → 取消当前选中零件 → 返回 3D 数字枪库
+
+---
+
+## 快速启动与质量门禁 | Quick Start & Verification
 
 ### 环境要求 | Prerequisites
-- **Node.js** `>= 18`
-- （可选，仅在重新生成 PBR 贴图时需要）**Python** `>= 3.10` + `numpy` + `Pillow`
+- **Node.js** `>= 20`
+- （可选，仅在重新离线烘焙 PBR 贴图时需要）**Python** `>= 3.10` + `numpy` + `Pillow`
 
-### 安装与运行 | Install & Run
+### 常用命令 | Commands
 
 ```bash
-# 1. 克隆仓库
-git clone https://github.com/zhoujingkun1989-arch/digital-armory-3d.git
-cd digital-armory-3d
-
-# 2. 安装前端依赖
+# 1. 安装依赖
 npm install
 
-# 3. 启动本地开发服务器 (默认 http://localhost:5173)
+# 2. 启动本地开发服务器 (同时支持 / 与 /showcase.html)
 npm run dev
 
-# 4. 生产环境类型检查与打包构建
+# 3. 执行全量静态检查与 10 武器 253 零件契约测试
+npm run typecheck
+npm run lint
+npm test
+
+# 4. 生产环境多入口分包构建
 npm run build
 ```
 
-### 重新生成程序化 2K PBR 贴图（可选）
+### 重新烘焙 5 通道 Packed ORM WebP 贴图（可选）
 
-仓库 `public/textures/` 目录已内置全部预生成的 58 张贴图，开箱即用。如需修改划痕、铭文或粗糙度并重新生成：
+仓库 `public/textures/` 目录已内置全部 58 张高画质 `.webp` 贴图，开箱即用。如需调整表面转化膜色温、滚印或磨损参数：
 
 ```bash
-python3 scripts/generate_g17_pbr_textures.py
-python3 scripts/generate_ak15_pbr_textures.py
-for s in scripts/pbr/generate_*_pbr.py; do python3 "$s"; done
+# 运行 Python PBR 算子自测 + 重新生成全部 10 款武器贴图
+python3 -B -m scripts.pbr_core.selftest
+npm run textures:build
 ```
 
 ---
 
-## 项目目录结构 | Project Structure
+## 项目架构目录 | Project Architecture
 
 ```text
 digital-armory-3d/
+├── index.html                     # 3D 数字枪库与拆解工作台主入口
+├── showcase.html                  # 官方交互式产品宣传页独立入口
 ├── public/
-│   └── textures/              # 58 张 2K / Seamless 程序化 PBR 贴图 (Albedo / Normal / Roughness)
+│   ├── showcase/                  # 实机 WebGL 2.0 高清宣传页画廊资产 (WebP)
+│   └── textures/                  # 58 张 2K / Seamless 5-Ch ORM WebP 贴图
 ├── scripts/
-│   ├── generate_ak15_pbr_textures.py
-│   ├── generate_g17_pbr_textures.py
-│   └── pbr/                   # M4A1 / MP5 / M82A1 / AWM / SCAR / Deagle / AUG / P320 贴图生成器
+│   ├── pbr_core/                  # Python 共享 Worley/滚花/法线积分AO/曲率提亮算子库
+│   ├── pbr/                       # 10 款武器独立贴图生成器 (generate_*_pbr.py)
+│   └── build_textures.py          # 统一贴图生成与 WebP 编码流水线 CLI
 ├── src/
-│   ├── components/            # ArmoryView, G17Scene, ExplodablePart, FiringBallistics, CalloutOverlay 等
-│   ├── data/
-│   │   ├── armoryCatalog.ts   # 10 展位数字枪库目录与分类过滤器
-│   │   ├── weaponRegistry.ts  # 多武器零件、视角、运动学与弹道统一注册中心
-│   │   └── weapons/           # 各枪械零件拆解规格、7 阶段击发运动学与 PBR 绑定模块
-│   ├── geometry/
-│   │   ├── springHelper.ts    # 参数化螺旋压缩/拉伸弹簧网格生成器
-│   │   ├── pbrTextures.ts     # Three.js PBR 材质加载、缓存与金属/聚合物细节混成
-│   │   └── weapons/           # 各枪械 CSG 布尔运算与参数化零件几何构建器
-│   └── store/
-│       └── useExplodeStore.ts # Zustand 全局状态管理（枪库/拆解/击发/相机预设/透视开关）
-└── docs/
-    └── screenshots/           # README 实机渲染截图
+│   ├── app/                       # URL 双向深度链接、全局快捷键与 WebGL ErrorBoundary
+│   ├── engine/                    # 通用 3D 机械拆解、剖视与内弹道引擎层
+│   │   ├── actors/                # PartActor (转化膜+清漆层 PBR) + BallisticsSystem
+│   │   ├── callout/               # ResizeObserver 零回流避障与 60fps 引线投影器
+│   │   ├── canvas/                # ArmoryViewport 双侧掠射柔光棚与阻尼相机飞跃控制
+│   │   ├── clock/                 # playbackClock 60fps 瞬态时钟 (零 React 重渲染)
+│   │   ├── geometry/              # Web Worker 异步 CSG、剖视穿透射线与 LRU 几何池
+│   │   ├── kinematics/            # 零 GC 分配关键帧插值与运动学纯函数库
+│   │   └── materials/             # BASE_URL 自适应 WebP PBR 加载与 LRU 纹理池
+│   ├── weapons/                   # 10 款自包含武器插件包 (支持 Rollup 独立分包懒加载)
+│   ├── features/                  # 模块化视图层 (showcase / armory / workbench / atlas)
+│   ├── store/                     # useAppStore 强类型交互状态库
+│   └── styles/                    # 设计令牌与按视图模块拆分的样式体系
+├── tests/                         # Vitest 253 零件几何/UV/运动学/防死黑契约测试
+└── .github/workflows/             # CI 门禁 (ci.yml) + GitHub Pages 自动部署 (deploy-pages.yml)
 ```
 
 ---
 
 ## 声明 | Disclaimer
 
-本项目所有三维模型均为**原理示意级（Schematic / Educational Level）**浏览器端机械科普与交互可视化作品，重点展示机械自动原理、闭锁方式与运动学配合关系，**不包含任何真实工业制造公差、CAD 加工图纸或可打印构件尺寸**。
+本项目所有三维模型均为**原理示意级（Schematic / Educational Level）**浏览器端机械科普与交互可视化开源作品，重点展示机械自动原理、闭锁方式与运动学配合关系，**不包含任何真实工业制造公差、CAD 加工图纸或可打印构件尺寸**。
 
 ---
 

@@ -1,363 +1,488 @@
 #!/usr/bin/env python3
-"""
-Generates high-resolution 2K multi-channel PBR textures (Albedo + OpenGL Tangent-Space Normal + Roughness)
-for #7 FN SCAR-L Mk 16 Mod 0 (5.56x45mm NATO, Belgian "50 Shades of FDE") in public/textures/:
-  - scar_fde_albedo.png    (2048x2048, sRGB)
-  - scar_fde_normal.png    (2048x2048, Linear OpenGL tangent-space normal — flat anodized/sheet walls!)
-  - scar_fde_roughness.png (2048x2048, Linear roughness)
+"""FN SCAR-L Mk 16 Mod 0: deterministic 2K '50 Shades of FDE' PBR atlas.
+
+Output stems and UV island contracts:
+  scar_fde_{albedo,normal,roughness}.png (2048x2048; .webp by default).
+  Albedo: sRGB. Normal: OpenGL tangent space. Roughness: LINEAR RGB ORM (R=AO, G=rough, B=metal).
+  Band A (v >= .68): Extruded FDE 7075-T6 monolithic upper (20.0 x 2.98 cm -> u=.02..98,
+    left v=.842..987, right v=.692..837, px/py = 0.986 ~ 1:1; top plain u=.04..46, v=.855..890).
+  Band B (.40 <= v < .68): Coyote polymer lower (10.60 x 2.73 cm -> left u=.02..49,
+    right u=.51..98, v=.41..66, py/px = 2.065x! Compensated via 2120x546 world canvas).
+  Band C (.11 <= v < .40, u < .53): Ugg-boot stock (u < .33), cheek riser (.33 <= u < .53, v >= .25),
+    and diamond-checkered pistol grip (.33 <= u < .53, v < .25).
+  Band D (.11 <= v < .40, u >= .53): Tan dry-film STANAG magazine (3.60 x 10.15 cm ->
+    u=.58..94, v=.125..390, px/py = 3.830x! Compensated via 1080x3045 world canvas).
+  Band E (v < .11): Utility swatches — rubber u < .34, nitride .34 <= u < .67, bright steel u >= .67.
 """
 
 import os
+import sys
+from pathlib import Path
+
 import numpy as np
-from PIL import Image, ImageDraw, ImageFilter, ImageFont
+from PIL import Image, ImageDraw
+from scipy import ndimage
 
-REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-OUT_DIR = os.path.join(REPO_ROOT, "public", "textures")
-os.makedirs(OUT_DIR, exist_ok=True)
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
+from scripts.pbr_core import (
+    OUT_DIR,
+    bevel_mask,
+    chipped_edge_wear,
+    cnc_toolpath,
+    compute_convexity,
+    compute_height_ao,
+    diamond_knurl,
+    fbm_noise,
+    height_to_normal_png,
+    load_font,
+    save_orm_png,
+    save_rgb_png,
+    scratch_field,
+    smoothstep,
+    spectral_noise,
+    worley_cellular,
+)
 
-FONT_PATHS = [
-    "/System/Library/Fonts/Supplemental/Arial Bold.ttf",
-    "/System/Library/Fonts/Supplemental/DIN Condensed Bold.ttf",
-    "/System/Library/Fonts/Helvetica.ttc",
-    "/System/Library/Fonts/Supplemental/Tahoma Bold.ttf",
-]
-
-
-def load_font(size: int):
-    for fp in FONT_PATHS:
-        if os.path.exists(fp):
-            try:
-                return ImageFont.truetype(fp, size=size)
-            except Exception:
-                pass
-    return ImageFont.load_default()
-
-
-def spectral_noise(
-    h: int,
-    w: int,
-    f_low: float,
-    f_high: float,
-    seed: int,
-    aniso_x: float = 1.0,
-    aniso_y: float = 1.0,
-) -> np.ndarray:
-    rng = np.random.default_rng(seed)
-    white = rng.standard_normal((h, w)).astype(np.float32)
-    spec = np.fft.rfft2(white)
-    fy = np.fft.fftfreq(h)[:, None] * h / aniso_y
-    fx = np.fft.rfftfreq(w)[None, :] * w / aniso_x
-    freq = np.sqrt(fx * fx + fy * fy)
-    envelope = np.exp(-0.5 * ((freq - f_low) / max(1.0, (f_high - f_low))) ** 2)
-    envelope[0, 0] = 0.0
-    field = np.fft.irfft2(spec * envelope, s=(h, w))
-    std = float(np.std(field)) + 1e-7
-    return (field / std).astype(np.float32)
+FONT_SANS = "/System/Library/Fonts/Supplemental/DIN Alternate Bold.ttf"
+FONT_COND = "/System/Library/Fonts/Supplemental/DIN Condensed Bold.ttf"
 
 
-def height_to_normal_png(height: np.ndarray, strength: float, out_path: str) -> None:
-    dh_dy, dh_dx = np.gradient(height)
-    nx = -dh_dx * strength
-    ny = dh_dy * strength
-    nz = np.ones_like(height)
-    inv_len = 1.0 / np.sqrt(nx * nx + ny * ny + nz * nz + 1e-8)
-    rgb = np.zeros((height.shape[0], height.shape[1], 3), dtype=np.uint8)
-    rgb[..., 0] = np.clip((nx * inv_len * 0.5 + 0.5) * 255.0, 0, 255).astype(np.uint8)
-    rgb[..., 1] = np.clip((ny * inv_len * 0.5 + 0.5) * 255.0, 0, 255).astype(np.uint8)
-    rgb[..., 2] = np.clip((nz * inv_len * 0.5 + 0.5) * 255.0, 0, 255).astype(np.uint8)
-    Image.fromarray(rgb, mode="RGB").save(out_path, optimize=True)
+def _paste_world_mask(
+    dest: np.ndarray,
+    patch_img: Image.Image,
+    u0: float,
+    u1: float,
+    v0: float,
+    v1: float,
+) -> None:
+    """Project an isotropic world-space L-mode canvas into atlas UV box [u0, u1] x [v0, v1]."""
+    h, w = dest.shape
+    x0, x1 = int(round(u0 * w)), int(round(u1 * w))
+    y0, y1 = int(round((1.0 - v1) * h)), int(round((1.0 - v0) * h))
+    if x1 <= x0 or y1 <= y0:
+        return
+    resized = patch_img.resize((x1 - x0, y1 - y0), Image.Resampling.LANCZOS)
+    arr = np.asarray(resized, dtype=np.float32) / 255.0
+    np.maximum(dest[y0:y1, x0:x1], arr, out=dest[y0:y1, x0:x1])
 
 
-def save_rgb_png(arr01: np.ndarray, out_path: str) -> None:
-    rgb = np.clip(arr01 * 255.0, 0, 255).astype(np.uint8)
-    Image.fromarray(rgb, mode="RGB").save(out_path, optimize=True)
+def _edge_proximity(mask: np.ndarray, width: float = 5.0) -> np.ndarray:
+    distance = ndimage.distance_transform_edt(mask).astype(np.float32)
+    return (1.0 - smoothstep(0.8, width, distance)) * mask
 
 
-def save_gray_png(arr01: np.ndarray, out_path: str) -> None:
-    g = np.clip(arr01 * 255.0, 0, 255).astype(np.uint8)
-    Image.fromarray(g, mode="L").save(out_path, optimize=True)
+def _draw_belgian_liege_perron(draw: ImageDraw.ImageDraw, cx: float, cy: float, h_px: float) -> None:
+    """Authentic Belgian Proof House of Liège 'Perron' stepped column + 'L / CIP' proof marks."""
+    lw = max(2, round(h_px * 0.08))
+    # 3-step pedestal base
+    for step, frac in enumerate((0.46, 0.34, 0.24)):
+        y_s = cy + h_px * (0.44 - step * 0.11)
+        draw.line([(cx - h_px * frac, y_s), (cx + h_px * frac, y_s)], fill=255, width=lw)
+    # Central Perron column + pine-cone orb & cross at apex
+    draw.line([(cx, cy + h_px * 0.22), (cx, cy - h_px * 0.26)], fill=255, width=max(2, round(lw * 1.25)))
+    r_orb = h_px * 0.10
+    draw.ellipse((cx - r_orb, cy - h_px * 0.38, cx + r_orb, cy - h_px * 0.18), outline=255, width=lw)
+    draw.line([(cx, cy - h_px * 0.50), (cx, cy - h_px * 0.36)], fill=255, width=lw)
+    draw.line([(cx - h_px * 0.09, cy - h_px * 0.44), (cx + h_px * 0.09, cy - h_px * 0.44)], fill=255, width=lw)
+    # Flanking 'C I P' / 'P V' proof letters
+    f_p = load_font(FONT_COND, max(12, round(h_px * 0.34)))
+    draw.text((cx + h_px * 0.58, cy - h_px * 0.16), "CIP", font=f_p, fill=255, anchor="lm")
+    draw.text((cx + h_px * 0.58, cy + h_px * 0.22), "PV", font=f_p, fill=255, anchor="lm")
+
+
+def _draw_uid(draw: ImageDraw.ImageDraw, x: int, y: int, mod_px: int) -> None:
+    """Draw fixed LC-28419 serial's 18x18 ECC200 DataMatrix with exact square modules."""
+    rows = (
+        "101010101010101010",
+        "110010001000000101",
+        "101111011101111110",
+        "111011110010101111",
+        "100010101010101100",
+        "101101101100011111",
+        "110101110010111110",
+        "110010110111111101",
+        "110100001001000010",
+        "110101110100110101",
+        "100000110111011000",
+        "100110100011000111",
+        "110101010110100110",
+        "101100011111011111",
+        "100101101001001010",
+        "100110101011100101",
+        "110000011010000100",
+        "111111111111111111",
+    )
+    for r, row in enumerate(rows):
+        for c, bit in enumerate(row):
+            if bit == "1":
+                px0, py0 = x + c * mod_px, y + r * mod_px
+                draw.rectangle((px0, py0, px0 + mod_px - 1, py0 + mod_px - 1), fill=255)
+
+
+def _save_suite(
+    albedo: np.ndarray,
+    height: np.ndarray,
+    roughness: np.ndarray,
+    metalness: np.ndarray,
+    cavity: np.ndarray,
+) -> None:
+    ao = np.clip(compute_height_ao(height, strength=1.35) * cavity, 0.18, 1.0)
+    roughness = np.clip(roughness, 0.04, 0.92)
+    metalness = np.clip(metalness, 0.02, 0.98)
+    for field in (albedo, height, roughness, metalness, ao):
+        if not np.isfinite(field).all():
+            raise ValueError("SCAR material contains non-finite samples")
+    paths = [save_rgb_png(albedo, os.path.join(OUT_DIR, "scar_fde_albedo.png"))]
+    normal_path = height_to_normal_png(
+        height, strength=2.2, out_path=os.path.join(OUT_DIR, "scar_fde_normal.png")
+    )
+    orm_path = save_orm_png(
+        ao, roughness, metalness, out_path=os.path.join(OUT_DIR, "scar_fde_roughness.png")
+    )
+    if Path(orm_path).suffix == ".webp":
+        dy, dx = np.gradient(height)
+        normal = np.stack((-dx * 2.2, dy * 2.2, np.ones_like(height)), axis=-1)
+        normal /= np.linalg.norm(normal, axis=-1, keepdims=True)
+        orm_rgb = np.clip(
+            np.rint(np.stack((ao, roughness, metalness), axis=-1) * 255.0),
+            (46, 11, 5),
+            (255, 235, 250),
+        ).astype(np.uint8)
+        maps = (
+            (np.rint((normal * 0.5 + 0.5) * 255.0).astype(np.uint8), normal_path),
+            (orm_rgb, orm_path),
+        )
+        for data, path in maps:
+            Image.fromarray(data, "RGB").save(path, "WEBP", lossless=True, method=4, exact=True)
+    paths.extend((normal_path, orm_path))
+    for path in paths:
+        if Path(path).suffix == ".webp":
+            Path(path).with_suffix(".png").unlink(missing_ok=True)
+    print("[OK] SCAR 2048x2048 albedo / OpenGL normal / RGB ORM:", *paths, sep="\n  ")
 
 
 def build_scar_fde_suite() -> None:
     W, H = 2048, 2048
+    v = np.broadcast_to(1.0 - (np.arange(H, dtype=np.float32)[:, None] + 0.5) / H, (H, W))
+    u = np.broadcast_to((np.arange(W, dtype=np.float32)[None, :] + 0.5) / W, (H, W))
 
-    # High-frequency micro-textures ONLY (zero wavy low-frequency normal noise!)
-    anod_grain = spectral_noise(H, W, 320, 680, seed=1601)
-    extrusion_streak = spectral_noise(H, W, 90, 260, seed=1602, aniso_x=0.22, aniso_y=3.2)
-    poly_stipple = spectral_noise(H, W, 240, 580, seed=1603)
-    grip_diamond = spectral_noise(H, W, 380, 760, seed=1604)
+    def rect(u0: float, u1: float, v0: float, v1: float) -> np.ndarray:
+        return (u >= u0) & (u <= u1) & (v >= v0) & (v <= v1)
 
-    # v_grid & u_grid broadcast to full (H, W)
-    v_1d = 1.0 - (np.arange(H, dtype=np.float32)[:, None] + 0.5) / H
-    u_1d = (np.arange(W, dtype=np.float32)[None, :] + 0.5) / W
-    v_grid = np.broadcast_to(v_1d, (H, W))
-    u_grid = np.broadcast_to(u_1d, (H, W))
+    grain = np.clip(spectral_noise(H, W, 340, 740, seed=1601), -2.5, 2.5)
+    tool = cnc_toolpath(H, W, pitch_px=3.7, angle_deg=0, seed=1602)
+    pores, cells = worley_cellular(H, W, 510, 510, seed=1603)
+    anodize = (0.43 - pores) * 1.5 + (cells - 0.18) * 0.35
+    pebble, edges = worley_cellular(H, W, 325, 325, seed=1604)
+    leather = np.clip((0.42 - pebble) * 1.8 + (edges - 0.18) * 0.6, -1.0, 1.0)
+    oil = fbm_noise(H, W, base_freq=7, octaves=4, seed=1605)
 
-    albedo = np.zeros((H, W, 3), dtype=np.float32)
-    height = np.zeros((H, W), dtype=np.float32)
-    roughness = np.full((H, W), 0.55, dtype=np.float32)
+    albedo = np.zeros((H, W, 3), np.float32)
+    height = np.zeros((H, W), np.float32)
+    roughness = np.full((H, W), 0.55, np.float32)
+    metalness = np.full((H, W), 0.03, np.float32)
+    cavity = np.ones((H, W), np.float32)
 
-    # ==========================================================================
-    # BAND A (v in [0.68, 1.00]): MONOLITHIC EXTRUDED ALUMINUM UPPER (#a78b62)
-    # Metallic Champagne / Golden-Tan Type-III Hardcoat Anodized Aluminum
-    # ==========================================================================
-    m_upper = v_grid >= 0.68
-    # Rich Belgian champagne-bronze FDE (#a78b62 = [0.655, 0.545, 0.384], boosted slightly on sunlit satin)
-    champagne_rgb = np.array([0.668, 0.556, 0.392], dtype=np.float32)
-    albedo[m_upper] = (
-        champagne_rgb
-        + anod_grain[m_upper, None] * 0.005
-        + extrusion_streak[m_upper, None] * 0.006
+    def coat(mask, rgb, rough, metal, relief, variation):
+        albedo[mask] = np.asarray(rgb, np.float32) / 255.0 + variation[mask, None]
+        height[mask] = relief[mask]
+        roughness[mask], metalness[mask] = rough, metal
+
+    def expose(mask, rgb, rough, metal):
+        a = np.clip(mask, 0.0, 1.0)
+        albedo[:] = albedo * (1.0 - a[..., None]) + np.asarray(rgb, np.float32) * a[..., None]
+        roughness[:] = roughness * (1.0 - a) + rough * a
+        metalness[:] = metalness * (1.0 - a) + metal * a
+
+    # -------------------------------------------------------------------------
+    # BAND A (v >= 0.68): Extruded 7075-T6 FDE Hardcoat Anodized Monolithic Upper
+    # -------------------------------------------------------------------------
+    upper = v >= 0.68
+    coat(
+        upper,
+        (171, 143, 102),
+        0.31,
+        0.62,
+        anodize * 0.026 + grain * 0.008 + tool * 0.014,
+        anodize * 0.005 + tool * 0.003 + oil * 0.002,
     )
-    # Optically FLAT extruded aluminum walls — micro-anodized grain only!
-    height[m_upper] = anod_grain[m_upper] * 0.035 + extrusion_streak[m_upper] * 0.02
-    roughness[m_upper] = 0.33 + anod_grain[m_upper] * 0.018
+    roughness[upper] += (anodize * 0.016 + grain * 0.004 - oil * 0.022)[upper]
 
-    # Subtle recessed longitudinal extrusion flute line on Left (v~0.902) and Right (v~0.752)
-    flute_l = np.exp(-((v_grid - 0.902) / 0.0045) ** 2) * ((u_grid > 0.08) & (u_grid < 0.92))
-    flute_r = np.exp(-((v_grid - 0.752) / 0.0045) ** 2) * ((u_grid > 0.08) & (u_grid < 0.92))
-    flutes = flute_l + flute_r
-    albedo -= (flutes * 0.028)[..., None]
-    height -= flutes * 0.35
+    flutes = np.zeros((H, W), np.float32)
+    for center in (0.902, 0.752):
+        flutes = np.maximum(
+            flutes, bevel_mask(rect(0.08, 0.92, center - 0.0045, center + 0.0045), 3, profile="trapezoid")
+        )
+    height -= flutes * 0.48
+    albedo -= flutes[..., None] * 0.009
+    cavity *= 1.0 - flutes * 0.045
 
-    # Dark anodized Picatinny rail shadow band at very top of Left (v > 0.975) & Right (v in [0.822, 0.836])
-    rail_band = ((v_grid >= 0.975) | ((v_grid >= 0.822) & (v_grid <= 0.836)))
-    albedo[rail_band] *= 0.86
-    roughness[rail_band] = 0.38
+    rails = (v >= 0.975) | ((v >= 0.822) & (v <= 0.836))
+    albedo[rails] *= 0.86
+    roughness[rails] = 0.34 + grain[rails] * 0.005
 
-    # Subtle brass case kiss marks behind Right-side ejection port (u in [0.30, 0.35], v in [0.73, 0.77])
-    brass_kiss = np.exp(-(((u_grid - 0.325) / 0.016) ** 2 + ((v_grid - 0.750) / 0.014) ** 2))
-    brass_rgb = np.array([0.78, 0.63, 0.28], dtype=np.float32)
-    albedo = albedo * (1.0 - brass_kiss[..., None] * 0.35) + brass_rgb * (brass_kiss[..., None] * 0.35)
-
-    # ==========================================================================
-    # BAND B (v in [0.40, 0.68)): MATTE COYOTE-TAN POLYMER LOWER (#8f7654)
-    # ==========================================================================
-    m_lower = (v_grid >= 0.40) & (v_grid < 0.68)
-    coyote_rgb = np.array([0.561, 0.463, 0.329], dtype=np.float32)  # #8f7654 exact!
-    albedo[m_lower] = coyote_rgb + poly_stipple[m_lower, None] * 0.008
-    height[m_lower] = poly_stipple[m_lower] * 0.11
-    roughness[m_lower] = 0.69 + poly_stipple[m_lower] * 0.025
-
-    # Subtle molded magazine-well reinforcement fence ridge on lower walls
-    mw_ridge_l = (
-        (u_grid >= 0.05) & (u_grid <= 0.23) & (np.abs(v_grid - 0.495) < 0.006)
-    ).astype(np.float32)
-    mw_ridge_r = (
-        (u_grid >= 0.77) & (u_grid <= 0.95) & (np.abs(v_grid - 0.495) < 0.006)
-    ).astype(np.float32)
-    albedo += ((mw_ridge_l + mw_ridge_r) * 0.022)[..., None]
-    height += (mw_ridge_l + mw_ridge_r) * 0.32
-
-    # ==========================================================================
-    # BAND C (v in [0.11, 0.40), u < 0.53): "50 SHADES OF FDE" STOCK, RISER & GRIP
-    #  - Ugg-Boot Buttstock (u in [0.00, 0.33]): Warm Mustard Earth Tan (#9d835b)
-    #  - Cheek Riser (u in [0.33, 0.53], v >= 0.25): Lighter Sand-Tan (#ad936c)
-    #  - Ergonomic Pistol Grip (u in [0.33, 0.53], v < 0.25): Deep Coyote Tan (#846c4b) w/ stipple
-    # ==========================================================================
-    m_stock = (v_grid >= 0.11) & (v_grid < 0.40) & (u_grid < 0.33)
-    stock_rgb = np.array([0.616, 0.514, 0.357], dtype=np.float32)  # #9d835b
-    albedo[m_stock] = stock_rgb + poly_stipple[m_stock, None] * 0.008
-    height[m_stock] = poly_stipple[m_stock] * 0.12
-    roughness[m_stock] = 0.64 + poly_stipple[m_stock] * 0.02
-
-    m_riser = (v_grid >= 0.25) & (v_grid < 0.40) & (u_grid >= 0.33) & (u_grid < 0.53)
-    riser_rgb = np.array([0.678, 0.576, 0.424], dtype=np.float32)  # #ad936c
-    albedo[m_riser] = riser_rgb + poly_stipple[m_riser, None] * 0.007
-    height[m_riser] = poly_stipple[m_riser] * 0.09
-    roughness[m_riser] = 0.58 + poly_stipple[m_riser] * 0.02
-
-    m_grip = (v_grid >= 0.11) & (v_grid < 0.25) & (u_grid >= 0.33) & (u_grid < 0.53)
-    grip_rgb = np.array([0.518, 0.424, 0.294], dtype=np.float32)  # #846c4b
-    albedo[m_grip] = grip_rgb + grip_diamond[m_grip, None] * 0.014
-    height[m_grip] = grip_diamond[m_grip] * 0.28
-    roughness[m_grip] = 0.75 + grip_diamond[m_grip] * 0.03
-
-    # ==========================================================================
-    # BAND D (v in [0.11, 0.40), u >= 0.53): FDE TAN 30-RD STANAG MAGAZINE (#a2875e)
-    # ==========================================================================
-    m_mag = (v_grid >= 0.11) & (v_grid < 0.40) & (u_grid >= 0.53)
-    mag_rgb = np.array([0.635, 0.529, 0.369], dtype=np.float32)  # #a2875e
-    albedo[m_mag] = mag_rgb + anod_grain[m_mag, None] * 0.006 + extrusion_streak[m_mag, None] * 0.005
-    height[m_mag] = anod_grain[m_mag] * 0.05
-    roughness[m_mag] = 0.46 + anod_grain[m_mag] * 0.02
-
-    # Stamped STANAG horizontal strengthening ribs inside Band D (4 crisp flat-top ribs)
-    for rv in [0.165, 0.215, 0.265, 0.315]:
-        rib = (
-            (u_grid >= 0.58)
-            & (u_grid <= 0.94)
-            & (np.abs(v_grid - rv) < 0.0085)
-        ).astype(np.float32)
-        albedo += (rib * 0.024)[..., None]
-        height += rib * 0.42
-        roughness -= rib * 0.03
-
-    # Subtle magwell insertion wear near top of STANAG mag (v in [0.355, 0.395])
-    mag_wear = (
-        (v_grid >= 0.355) & (v_grid < 0.398) & (u_grid >= 0.55) & (u_grid <= 0.96)
-    ).astype(np.float32) * (0.28 + 0.22 * np.maximum(0.0, extrusion_streak))
-    steel_under = np.array([0.52, 0.54, 0.56], dtype=np.float32)
-    albedo = albedo * (1.0 - mag_wear[..., None] * 0.32) + steel_under * (mag_wear[..., None] * 0.32)
-    roughness -= mag_wear * 0.08
-
-    # ==========================================================================
-    # BAND E (v < 0.11): HARDWARE, RUBBER BUTTPAD, NITRIDE STEEL & CHROME SWATCHES
-    # ==========================================================================
-    m_rubber = (v_grid < 0.11) & (u_grid < 0.34)
-    albedo[m_rubber] = np.array([0.115, 0.125, 0.145], dtype=np.float32)
-    height[m_rubber] = poly_stipple[m_rubber] * 0.12
-    roughness[m_rubber] = 0.84
-
-    m_dark_steel = (v_grid < 0.11) & (u_grid >= 0.34) & (u_grid < 0.67)
-    albedo[m_dark_steel] = np.array([0.155, 0.180, 0.215], dtype=np.float32)
-    height[m_dark_steel] = anod_grain[m_dark_steel] * 0.05
-    roughness[m_dark_steel] = 0.32
-
-    m_bright_steel = (v_grid < 0.11) & (u_grid >= 0.67)
-    albedo[m_bright_steel] = np.array([0.80, 0.84, 0.89], dtype=np.float32)
-    height[m_bright_steel] = anod_grain[m_bright_steel] * 0.03
-    roughness[m_bright_steel] = 0.18
-
-    # ==========================================================================
-    # VECTOR LASER ENGRAVINGS, PICATINNY T-MARKS & RED/BLACK S-1-A SELECTOR MARKS
-    # ==========================================================================
-    overlay_rgba = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-    engrave_mask = Image.new("L", (W, H), 0)
-    draw = ImageDraw.Draw(overlay_rgba)
-    dengr = ImageDraw.Draw(engrave_mask)
-
-    f_title = load_font(36)
-    f_sub = load_font(27)
-    f_tiny = load_font(19)
-    f_tmark = load_font(17)
-    f_sel = load_font(36)
-
-    def v_to_py(v_val: float) -> int:
-        return int((1.0 - v_val) * H)
-
-    # 1. Left Upper Receiver Wall (v in [0.84, 0.98], u in [0.02, 0.98]):
-    #    FN HERSTAL BELGIUM / SCAR-L CAL. 5.56MM + FN Oval Logo + Data-Matrix QR!
-    ux0 = int(0.50 * W)
-    uy0 = v_to_py(0.945)
-
-    # FN Oval Cartouche
-    draw.ellipse([ux0, uy0 + 2, ux0 + 92, uy0 + 54], outline=(46, 38, 28, 235), width=4)
-    dengr.ellipse([ux0, uy0 + 2, ux0 + 92, uy0 + 54], outline=210, width=4)
-    draw.text((ux0 + 20, uy0 + 9), "FN", fill=(44, 36, 26, 240), font=f_title)
-    dengr.text((ux0 + 20, uy0 + 9), "FN", fill=220, font=f_title)
-
-    # Primary SCAR-L Receiver Rollmark
-    draw.text(
-        (ux0 + 112, uy0 - 2),
-        "FN HERSTAL BELGIUM",
-        fill=(42, 34, 24, 240),
-        font=f_title,
+    walls = rect(0.02, 0.98, 0.842, 0.987) | rect(0.02, 0.98, 0.692, 0.837)
+    edge = np.maximum(_edge_proximity(walls, 6), _edge_proximity(rails, 5))
+    port = rect(0.355, 0.60, 0.722, 0.784)
+    port_lip = ndimage.binary_dilation(port, iterations=3) & ~port
+    corner_u = np.minimum(np.abs(u - 0.355), np.abs(u - 0.60)) * W
+    corner_v = np.minimum(np.abs(v - 0.722), np.abs(v - 0.784)) * H
+    corners = 1.0 - smoothstep(4, 23, np.maximum(corner_u, corner_v))
+    edge = np.maximum(edge, port_lip * corners * 0.96) * upper
+    edge *= smoothstep(-0.02, 0.40, fbm_noise(H, W, base_freq=92, octaves=3, seed=1609))
+    bare, oxide = chipped_edge_wear(edge, seed=1610, wear_amount=0.54)
+    scratches = scratch_field(
+        H, W, count=300, min_len=6, max_len=55, angle_deg=-8, angle_spread=24, seed=1611, mask=upper
     )
-    dengr.text((ux0 + 112, uy0 - 2), "FN HERSTAL BELGIUM", fill=225, font=f_title)
+    wear = np.maximum(bare, smoothstep(0.42, 0.84, scratches) * 0.76)
+    albedo -= oxide[..., None] * np.array([0.022, 0.018, 0.010], np.float32)
+    expose(wear, (0.64, 0.67, 0.70), 0.18, 0.96)
+    height -= wear * 0.045 + scratches * 0.025
 
-    draw.text(
-        (ux0 + 112, uy0 + 40),
-        "SCAR-L   CAL. 5.56MM",
-        fill=(42, 34, 24, 240),
-        font=f_title,
+    # Brass deflector case-kiss marks behind right ejection port (u=.30..35, v=.73..77)
+    x0, x1 = int(0.30 * W), int(0.35 * W)
+    y0, y1 = int((1.0 - 0.77) * H), int((1.0 - 0.73) * H)
+    kiss = np.zeros((H, W), np.float32)
+    kiss[y0:y1, x0:x1] = scratch_field(
+        y1 - y0, x1 - x0, count=19, min_len=7, max_len=34, angle_deg=-32, angle_spread=21, seed=1612
     )
-    dengr.text((ux0 + 112, uy0 + 40), "SCAR-L   CAL. 5.56MM", fill=225, font=f_title)
+    kiss *= rect(0.30, 0.35, 0.73, 0.77)
+    expose(kiss * 0.78, (0.68, 0.51, 0.24), 0.22, 0.96)
+    height += kiss * 0.018
 
-    draw.text(
-        (ux0 + 112, uy0 + 82),
-        "MK 16 MOD 0     SN  LC-28419",
-        fill=(58, 48, 34, 220),
-        font=f_sub,
+    # -------------------------------------------------------------------------
+    # BAND B (0.40 <= v < 0.68): VDI-3400 EDM Coyote Polymer Lower Receiver
+    # -------------------------------------------------------------------------
+    lower = (v >= 0.40) & (v < 0.68)
+    coat(
+        lower,
+        (143, 118, 84),
+        0.70,
+        0.03,
+        leather * 0.105 + grain * 0.011,
+        leather * 0.010 + grain * 0.0015,
     )
-    dengr.text(
-        (ux0 + 112, uy0 + 82),
-        "MK 16 MOD 0     SN  LC-28419",
-        fill=185,
-        font=f_sub,
+    roughness[lower] += (leather * 0.027 + grain * 0.004)[lower]
+    fence_mask = rect(0.05, 0.23, 0.489, 0.501) | rect(0.77, 0.95, 0.489, 0.501)
+    fence = bevel_mask(fence_mask, 3, profile="trapezoid")
+    height += fence * 0.65
+    albedo += fence[..., None] * 0.006
+    seam = rect(0.03, 0.97, 0.652, 0.653) * lower
+    height += seam * 0.14
+    cavity *= 1.0 - seam * 0.045
+
+    # -------------------------------------------------------------------------
+    # BAND C (0.11 <= v < 0.40, u < 0.53): Ugg-Boot Stock, Cheek Riser & Grip
+    # -------------------------------------------------------------------------
+    stock = (v >= 0.11) & (v < 0.40) & (u < 0.33)
+    riser = (v >= 0.25) & (v < 0.40) & (u >= 0.33) & (u < 0.53)
+    grip = (v >= 0.11) & (v < 0.25) & (u >= 0.33) & (u < 0.53)
+    for mask, color, rough, amplitude in (
+        (stock, (157, 131, 91), 0.64, 0.10),
+        (riser, (173, 147, 108), 0.58, 0.07),
+        (grip, (132, 108, 75), 0.78, 0.10),
+    ):
+        coat(
+            mask, color, rough, 0.03,
+            leather * amplitude + grain * 0.01,
+            leather * 0.008 + grain * 0.001,
+        )
+        roughness[mask] += leather[mask] * 0.018
+    for bounds in ((0.035, 0.295, 0.162, 0.335), (0.35, 0.51, 0.273, 0.379)):
+        panel = bevel_mask(rect(*bounds), 4, profile="trapezoid")
+        height -= panel * 0.20
+        albedo -= panel[..., None] * 0.005
+        cavity *= 1.0 - panel * 0.025
+    hinge = bevel_mask(rect(0.292, 0.315, 0.145, 0.36), 3, profile="trapezoid")
+    height += hinge * 0.30
+    checkering = diamond_knurl(u, v, freq_u=124, freq_v=124)
+    grip_panel = bevel_mask(rect(0.344, 0.516, 0.122, 0.238), 5, profile="trapezoid")
+    height += grip_panel * (checkering + 0.25) * 0.52
+    albedo += (grip_panel * checkering * 0.012)[..., None]
+    cavity *= 1.0 - grip_panel * np.maximum(-checkering, 0.0) * 0.12
+
+    # -------------------------------------------------------------------------
+    # BAND D (0.11 <= v < 0.40, u >= 0.53): FDE Dry-Film STANAG 30-Rd Magazine
+    # -------------------------------------------------------------------------
+    magazine = (v >= 0.11) & (v < 0.40) & (u >= 0.53)
+    coat(
+        magazine,
+        (166, 139, 98),
+        0.44,
+        0.60,
+        anodize * 0.032 + tool * 0.012,
+        anodize * 0.006 + tool * 0.002,
     )
+    roughness[magazine] += (anodize * 0.02 + grain * 0.004)[magazine]
+    rib_mask = np.zeros((H, W), bool)
+    for rv in (0.165, 0.215, 0.265, 0.315):
+        rib_mask |= rect(0.58, 0.94, rv - 0.0085, rv + 0.0085)
+    ribs = bevel_mask(rib_mask, 4, profile="trapezoid")
+    height += ribs * 1.12
+    albedo += ribs[..., None] * 0.008
+    roughness -= ribs * 0.025
+    cavity *= 1.0 - _edge_proximity(rib_mask, 5) * 0.055
 
-    # UID 2D Data-Matrix Laser Square next to serial
-    qx, qy = ux0 + 22, uy0 + 68
-    draw.rectangle([qx, qy, qx + 52, qy + 52], fill=(235, 228, 212, 215), outline=(48, 40, 30, 230), width=2)
-    rng_qr = np.random.default_rng(1699)
-    for r in range(6):
-        for c in range(6):
-            if rng_qr.random() > 0.42:
-                cx0 = qx + 5 + c * 7
-                cy0 = qy + 5 + r * 7
-                draw.rectangle([cx0, cy0, cx0 + 5, cy0 + 5], fill=(42, 35, 25, 235))
-
-    # Right Upper Receiver Wall subtle NATO / proof mark (u ~ 0.62, v ~ 0.78)
-    rx0, ry0 = int(0.58 * W), v_to_py(0.785)
-    draw.text((rx0, ry0), "NATO  5.56×45   1/7\"", fill=(52, 42, 30, 205), font=f_sub)
-    dengr.text((rx0, ry0), "NATO  5.56×45   1/7\"", fill=175, font=f_sub)
-
-    # 2. White Laser-Etched Picatinny Rail T-Marks along Top Edge of Left & Right Upper
-    for idx, tnum in enumerate(range(38, 2, -4)):
-        u_pos = 0.06 + idx * 0.095
-        if u_pos < 0.94:
-            # Left upper top rail T-marks (v ~ 0.976)
-            draw.text((int(u_pos * W), v_to_py(0.986)), f"T{tnum}", fill=(244, 240, 230, 220), font=f_tmark)
-            # Right upper top rail T-marks (v ~ 0.824, reversed order front-to-rear)
-            t_r = 40 - tnum
-            draw.text((int(u_pos * W), v_to_py(0.835)), f"T{t_r}", fill=(244, 240, 230, 220), font=f_tmark)
-
-    # 3. Iconic FN SCAR Lower Receiver Red/Black "S / 1 / A" Selector Markings!
-    #    Left Lower Wall: selector pivot around (u = 0.392, v = 0.595)
-    #    Right Lower Wall: selector pivot around (u = 0.608, v = 0.595)
-    scar_red = (198, 34, 34, 248)
-    scar_black = (28, 26, 24, 245)
-
-    # Left wall selector marks (S forward-left, 1 top, A rear-right)
-    lsx, lsy = int(0.392 * W), v_to_py(0.585)
-    draw.text((lsx - 74, lsy - 14), "S", fill=scar_black, font=f_sel)
-    dengr.text((lsx - 74, lsy - 14), "S", fill=195, font=f_sel)
-    draw.line([(lsx - 42, lsy + 4), (lsx - 24, lsy + 4)], fill=scar_black, width=4)
-
-    draw.text((lsx - 11, lsy - 82), "1", fill=scar_red, font=f_sel)
-    dengr.text((lsx - 11, lsy - 82), "1", fill=195, font=f_sel)
-    draw.line([(lsx, lsy - 40), (lsx, lsy - 22)], fill=scar_red, width=4)
-
-    draw.text((lsx + 50, lsy - 14), "A", fill=scar_red, font=f_sel)
-    dengr.text((lsx + 50, lsy - 14), "A", fill=195, font=f_sel)
-    draw.line([(lsx + 24, lsy + 4), (lsx + 42, lsy + 4)], fill=scar_red, width=4)
-
-    # Right wall selector marks (A rear-left, 1 top, S forward-right)
-    rsx, rsy = int(0.608 * W), v_to_py(0.585)
-    draw.text((rsx - 76, rsy - 14), "A", fill=scar_red, font=f_sel)
-    dengr.text((rsx - 76, rsy - 14), "A", fill=195, font=f_sel)
-    draw.line([(rsx - 42, rsy + 4), (rsx - 24, rsy + 4)], fill=scar_red, width=4)
-
-    draw.text((rsx - 11, rsy - 82), "1", fill=scar_red, font=f_sel)
-    dengr.text((rsx - 11, rsy - 82), "1", fill=195, font=f_sel)
-    draw.line([(rsx, rsy - 40), (rsx, rsy - 22)], fill=scar_red, width=4)
-
-    draw.text((rsx + 50, rsy - 14), "S", fill=scar_black, font=f_sel)
-    dengr.text((rsx + 50, rsy - 14), "S", fill=195, font=f_sel)
-    draw.line([(rsx + 24, rsy + 4), (rsx + 42, rsy + 4)], fill=scar_black, width=4)
-
-    # 4. STANAG Magazine Floor/Body Stencil in Band D
-    mx0, my0 = int(0.65 * W), v_to_py(0.148)
-    draw.text((mx0, my0), "FN  5.56×45MM  30RD", fill=(62, 50, 34, 210), font=f_tiny)
-    dengr.text((mx0, my0), "FN  5.56×45MM  30RD", fill=150, font=f_tiny)
-
-    # Composite RGBA markings cleanly onto Albedo + Normal + Roughness
-    ov_np = np.asarray(overlay_rgba, dtype=np.float32) / 255.0
-    alpha = ov_np[..., 3:4]
-    albedo = albedo * (1.0 - alpha) + ov_np[..., :3] * alpha
-
-    engr_np = (
-        np.asarray(engrave_mask.filter(ImageFilter.GaussianBlur(radius=0.55)), dtype=np.float32)
-        / 255.0
+    insertion = rect(0.55, 0.96, 0.355, 0.398) * magazine
+    x0, x1 = int(0.55 * W), int(0.96 * W)
+    y0, y1 = int((1.0 - 0.398) * H), int((1.0 - 0.355) * H)
+    insert_scratches = np.zeros((H, W), np.float32)
+    insert_scratches[y0:y1, x0:x1] = scratch_field(
+        y1 - y0, x1 - x0, count=90, min_len=9, max_len=74, angle_deg=90, angle_spread=5, seed=1620
     )
-    height -= engr_np * 0.65
-    roughness = np.clip(roughness + engr_np * 0.08, 0.14, 0.90)
+    insert_scratches *= insertion
+    mag_edge = np.maximum(
+        _edge_proximity(rect(0.55, 0.96, 0.12, 0.395), 6),
+        _edge_proximity(rib_mask, 4) * 0.90,
+    ) * magazine
+    mag_edge *= smoothstep(0.0, 0.42, fbm_noise(H, W, base_freq=110, octaves=3, seed=1622))
+    mag_bare, mag_oxide = chipped_edge_wear(mag_edge, seed=1621, wear_amount=0.50)
+    mag_wear = np.maximum(mag_bare, smoothstep(0.24, 0.80, insert_scratches))
+    albedo -= mag_oxide[..., None] * 0.017
+    expose(mag_wear, (0.55, 0.58, 0.61), 0.21, 0.96)
+    height -= mag_wear * 0.055 + insert_scratches * 0.035
 
-    save_rgb_png(albedo, os.path.join(OUT_DIR, "scar_fde_albedo.png"))
-    height_to_normal_png(height, strength=2.2, out_path=os.path.join(OUT_DIR, "scar_fde_normal.png"))
-    save_gray_png(roughness, os.path.join(OUT_DIR, "scar_fde_roughness.png"))
-    print("[OK] Generated scar_fde_{albedo,normal,roughness}.png (2048x2048)")
+    # -------------------------------------------------------------------------
+    # BAND E (v < 0.11): Utility Swatches — Rubber, Nitride Steel, Bright Steel
+    # -------------------------------------------------------------------------
+    rubber = (v < 0.11) & (u < 0.34)
+    nitride = (v < 0.11) & (u >= 0.34) & (u < 0.67)
+    steel = (v < 0.11) & (u >= 0.67)
+    coat(rubber, (46, 50, 56), 0.82, 0.02, leather * 0.11, leather * 0.006)
+    coat(nitride, (58, 64, 72), 0.31, 0.58, anodize * 0.03 + tool * 0.009, anodize * 0.005)
+    coat(steel, (204, 214, 227), 0.16, 0.97, tool * 0.013, tool * 0.006)
+    cavity[v < 0.11] = 1.0
+
+    # -------------------------------------------------------------------------
+    # 1:1 ISOTROPIC WORLD-SPACE ROLLMARKS, CIP PROOFS, SELECTORS & T-NUMBERS
+    # -------------------------------------------------------------------------
+    engrave_mask = np.zeros((H, W), dtype=np.float32)
+    laser_mask = np.zeros((H, W), dtype=np.float32)
+    black_mask = np.zeros((H, W), dtype=np.float32)
+    red_mask = np.zeros((H, W), dtype=np.float32)
+
+    # 1) Upper Left & Right Walls (20.0 x 2.98 cm -> 4000 x 596 px at 200 px/cm)
+    UW, UH = 4000, 596
+    up_l_eng = Image.new("L", (UW, UH), 0)
+    up_l_las = Image.new("L", (UW, UH), 0)
+    de_ul = ImageDraw.Draw(up_l_eng)
+    dl_ul = ImageDraw.Draw(up_l_las)
+
+    # Keep u >= 0.50 (x_c >= 2000) so 'top' mode (u in [0.04, 0.46]) stays 100% clean!
+    ux0, uy0 = 2020, 172
+    # FN Herstal oval cartouche
+    de_ul.ellipse((ux0, uy0 + 4, ux0 + 186, uy0 + 108), outline=255, width=6)
+    de_ul.text((ux0 + 93, uy0 + 56), "FN", font=load_font(FONT_SANS, 70), fill=255, anchor="mm")
+    # 1:1 world-square 18x18 ECC200 DataMatrix (18 * 5 = 90 x 90 px = 4.5 x 4.5 mm!)
+    _draw_uid(de_ul, ux0 + 48, uy0 + 132, mod_px=5)
+
+    f_fn_hd = load_font(FONT_SANS, 68)
+    f_fn_md = load_font(FONT_SANS, 52)
+    de_ul.text((ux0 + 224, uy0 - 4), "FN HERSTAL BELGIUM", font=f_fn_hd, fill=255)
+    de_ul.text((ux0 + 224, uy0 + 76), "SCAR-L   CAL. 5.56MM", font=f_fn_hd, fill=255)
+    de_ul.text((ux0 + 224, uy0 + 158), "MK 16 MOD 0     SN  LC-28419", font=f_fn_md, fill=255)
+
+    # Belgian Liège Perron + CIP / PV proof stamp behind serial block
+    _draw_belgian_liege_perron(de_ul, ux0 + 1345, uy0 + 108, 124.0)
+
+    # Left side top M1913 rail T-numbers: front (+X, x_c small) = T38 -> rear (-X, x_c large) = T2
+    f_t = load_font(FONT_SANS, 34)
+    for idx, number in enumerate(range(38, 1, -2)):
+        xc = int(round((0.042 + idx * (0.89 / 18.0)) * UW))
+        dl_ul.text((xc, 24), f"T{number}", font=f_t, fill=255, anchor="mm")
+
+    _paste_world_mask(engrave_mask, up_l_eng, 0.02, 0.98, 0.842, 0.987)
+    _paste_world_mask(laser_mask, up_l_las, 0.02, 0.98, 0.842, 0.987)
+
+    # Upper Right Wall: u in [0.02, 0.98], v in [0.692, 0.837] (0 = -X rear, UW = +X front)
+    up_r_eng = Image.new("L", (UW, UH), 0)
+    up_r_las = Image.new("L", (UW, UH), 0)
+    de_ur = ImageDraw.Draw(up_r_eng)
+    dl_ur = ImageDraw.Draw(up_r_las)
+
+    # Forward of ejection port (u >= 0.61 -> x_c >= 2460), v ~ 0.785 -> y_c ~ 214
+    de_ur.text((2460, 206), 'NATO  5.56×45   1/7"', font=load_font(FONT_SANS, 52), fill=240)
+    _draw_belgian_liege_perron(de_ur, 3260, 232, 96.0)
+    for idx, number in enumerate(range(2, 39, 2)):
+        xc = int(round((0.042 + idx * (0.89 / 18.0)) * UW))
+        dl_ur.text((xc, 24), f"T{number}", font=f_t, fill=255, anchor="mm")
+
+    _paste_world_mask(engrave_mask, up_r_eng, 0.02, 0.98, 0.692, 0.837)
+    _paste_world_mask(laser_mask, up_r_las, 0.02, 0.98, 0.692, 0.837)
+
+    # 2) Polymer Lower Ambi Selector Markings (10.60 x 2.73 cm -> 2120 x 546 px at 200 px/cm)
+    # Compensates 2.065x vertical stretch (py=187.55 vs px=90.81 px/cm)!
+    LW, LH = 2120, 546
+    f_sel = load_font(FONT_SANS, 64)
+    sel_r = 104  # 0.52 cm true 3D circle radius around CAD selector pivot (-3.45, -0.35)!
+
+    for is_left in (True, False):
+        blk_im = Image.new("L", (LW, LH), 0)
+        red_im = Image.new("L", (LW, LH), 0)
+        db = ImageDraw.Draw(blk_im)
+        dr = ImageDraw.Draw(red_im)
+
+        # CAD selector (-3.45, -0.35) -> xNorm = 0.20755; yNorm = 0.708 (v=0.587, clear of v=0.652 seam)
+        xn_piv = 1.0 - 0.20755 if is_left else 0.20755
+        sx, sy = int(round(xn_piv * LW)), int(round((1.0 - 0.705) * LH))
+        left_char, right_char = ("S", "A") if is_left else ("A", "S")
+
+        # 9 o'clock, 12 o'clock ('1'), 3 o'clock on true 1:1 world circle
+        for char, ox, oy, tx0, ty0, tx1, ty1 in (
+            (left_char, -sel_r - 30, 0, -sel_r + 12, 0, -sel_r + 44, 0),
+            ("1", 0, -sel_r - 28, 0, -sel_r + 12, 0, -sel_r + 44),
+            (right_char, sel_r + 30, 0, sel_r - 44, 0, sel_r - 12, 0),
+        ):
+            target = db if char == "S" else dr
+            target.text((sx + ox, sy + oy), char, font=f_sel, fill=255, anchor="mm")
+            target.line([(sx + tx0, sy + ty0), (sx + tx1, sy + ty1)], fill=255, width=7)
+
+        u0_l, u1_l = (0.02, 0.49) if is_left else (0.51, 0.98)
+        _paste_world_mask(black_mask, blk_im, u0_l, u1_l, 0.41, 0.66)
+        _paste_world_mask(red_mask, red_im, u0_l, u1_l, 0.41, 0.66)
+
+    # 3) Band D FDE Magazine Skirt Rollmark (3.60 x 10.15 cm -> 1080 x 3045 px at 300 px/cm)
+    # Compensates 3.830x horizontal stretch (px=204.80 vs py=53.46 px/cm)!
+    MW, MH = 1080, 3045
+    mag_eng = Image.new("L", (MW, MH), 0)
+    dm_mag = ImageDraw.Draw(mag_eng)
+    # Below lowest rib (v=0.1565 -> yNorm = (0.1565 - 0.125)/0.265 = 0.1189 -> y_c > 2683)
+    dm_mag.text(
+        (MW // 2, 2815),
+        "FN   5.56×45MM   30RD",
+        font=load_font(FONT_COND, 62),
+        fill=245,
+        anchor="mm",
+    )
+    dm_mag.text(
+        (MW // 2, 2912),
+        "FN HERSTAL · CAGE 3S679",
+        font=load_font(FONT_COND, 44),
+        fill=225,
+        anchor="mm",
+    )
+    _paste_world_mask(engrave_mask, mag_eng, 0.58, 0.94, 0.125, 0.390)
+
+    # Composite markings into albedo, height, roughness, cavity, and strictly calibrated ORM metalness
+    expose(engrave_mask * 0.90, (0.215, 0.180, 0.132), 0.38, 0.56)
+    height -= engrave_mask * 0.22
+    cavity *= 1.0 - engrave_mask * 0.14
+
+    # White laser-etched T-slot numbers: dielectric white oxide/pigment (B = 0.04 <= 0.05!)
+    expose(laser_mask, (0.90, 0.89, 0.84), 0.40, 0.04)
+    height -= laser_mask * 0.065
+
+    # Polymer lower enamel selector fills: strictly dielectric paint (B = 0.03 <= 0.05!)
+    for mark_arr, col_rgb in ((black_mask * lower, (0.145, 0.138, 0.130)), (red_mask * lower, (0.74, 0.045, 0.035))):
+        expose(mark_arr, col_rgb, 0.25, 0.03)
+        height -= mark_arr * 0.24
+        cavity *= 1.0 - mark_arr * 0.075
+
+    conv_scar = smoothstep(0.08, 0.50, compute_convexity(height, sigma=2.0)) * (v >= 0.11)
+    albedo += (conv_scar * 0.024)[..., None]
+    roughness -= conv_scar * 0.042
+
+    _save_suite(np.clip(albedo, 0.0, 1.0), height, roughness, metalness, cavity)
 
 
 if __name__ == "__main__":
