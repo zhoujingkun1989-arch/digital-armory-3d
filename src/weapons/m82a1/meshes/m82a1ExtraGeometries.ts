@@ -1200,9 +1200,7 @@ export function buildM82MagBodyGeometry(): THREE.BufferGeometry {
  */
 export function buildM82MagFollowerGeometry(): THREE.BufferGeometry {
   const deck = paintGeometry(
-    new THREE.BoxGeometry(5.36, 0.3, 1.32)
-      .rotateZ(0.08)
-      .translate(0, 0.12, 0),
+    new THREE.BoxGeometry(5.36, 0.3, 1.32).rotateZ(0.08).translate(0, 0.12, 0),
     M82_FOLLOWER_STEEL
   );
   const stepRidge = paintGeometry(
@@ -1220,9 +1218,7 @@ export function buildM82MagFollowerGeometry(): THREE.BufferGeometry {
     M82_FOLLOWER_STEEL
   );
   const springBoss = paintGeometry(
-    new THREE.BoxGeometry(3.8, 0.22, 0.88)
-      .rotateZ(0.08)
-      .translate(0, -0.08, 0),
+    new THREE.BoxGeometry(3.8, 0.22, 0.88).rotateZ(0.08).translate(0, -0.08, 0),
     M82_FOLLOWER_STEEL
   );
   return mergeParts([deck, stepRidge, frontLeg, rearLeg, springBoss]);

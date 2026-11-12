@@ -1,4 +1,9 @@
-import { clamp01, findActiveFiringPhase, linearSeg, seg } from '../../engine/kinematics/math';
+import {
+  clamp01,
+  findActiveFiringPhase,
+  linearSeg,
+  seg,
+} from '../../engine/kinematics/math';
 import type {
   AssemblyGroupMeta,
   ExtendedBallisticsState,
@@ -455,9 +460,7 @@ export const AUG_PARTS: WeaponPartSpec[] = [
     group: 'fire_control',
     material: 'polymer_frame',
     assembledPos: [0.55, -2.35, 0],
-    explodeSteps: [
-      { range: [0.66, 0.92], offset: [4.2, -5.4, 0] },
-    ],
+    explodeSteps: [{ range: [0.66, 0.92], offset: [4.2, -5.4, 0] }],
     calloutDir: 'down',
     calloutStem: 36,
     calloutAnchor: [0.1, -0.95, 0],
@@ -475,9 +478,7 @@ export const AUG_PARTS: WeaponPartSpec[] = [
     group: 'fire_control',
     material: 'polymer_frame',
     assembledPos: [-0.65, -1.42, 0],
-    explodeSteps: [
-      { range: [0.66, 0.92], offset: [0.8, -5.8, -1.8] },
-    ],
+    explodeSteps: [{ range: [0.66, 0.92], offset: [0.8, -5.8, -1.8] }],
     calloutDir: 'down',
     calloutStem: 42,
     calloutAnchor: [0, -0.2, -0.95],
@@ -495,9 +496,7 @@ export const AUG_PARTS: WeaponPartSpec[] = [
     group: 'fire_control',
     material: 'stainless',
     assembledPos: [-6.6, -1.25, 0],
-    explodeSteps: [
-      { range: [0.68, 0.94], offset: [-1.2, -5.2, 0] },
-    ],
+    explodeSteps: [{ range: [0.68, 0.94], offset: [-1.2, -5.2, 0] }],
     calloutDir: 'down',
     calloutStem: 38,
     calloutAnchor: [1.5, -0.35, 0.58],
@@ -742,7 +741,8 @@ export function computeAugFiringKinematics(
   const trigStage1 = seg(f, 0.0, 0.085);
   const trigStage2 = seg(f, 0.095, 0.155);
   const trigRelease = seg(f, 0.87, 0.96);
-  const triggerDX = (-0.28 * trigStage1 - 0.24 * trigStage2) * (1 - trigRelease);
+  const triggerDX =
+    (-0.28 * trigStage1 - 0.24 * trigStage2) * (1 - trigRelease);
 
   switch (partId) {
     case 'aug_gas_piston': {
@@ -823,7 +823,9 @@ export function computeAugFiringKinematics(
  * 20" barrel travel past tilted gas block [8.85, 1.52, 0.52], tulip muzzle flash [20.50, 1.05, 0],
  * and rear cheekpiece ejection port brass throw!
  */
-export function computeAugBallisticsState(fRaw: number): ExtendedBallisticsState {
+export function computeAugBallisticsState(
+  fRaw: number
+): ExtendedBallisticsState {
   const f = clamp01(fRaw);
 
   const boltBack = seg(f, 0.348, 0.54) - seg(f, 0.57, 0.82);

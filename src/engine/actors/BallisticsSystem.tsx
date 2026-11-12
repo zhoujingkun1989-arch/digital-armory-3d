@@ -31,7 +31,10 @@ interface CaliberGeometryBundle {
   xHead: number;
 }
 
-function finalizeLathe(pts: THREE.Vector2[], segments: number): THREE.BufferGeometry {
+function finalizeLathe(
+  pts: THREE.Vector2[],
+  segments: number
+): THREE.BufferGeometry {
   const geo = new THREE.LatheGeometry(pts, segments);
   geo.rotateZ(-Math.PI / 2);
   geo.computeVertexNormals();
@@ -748,8 +751,7 @@ export const BallisticsSystem: React.FC = () => {
 
     if (chamberLightRef.current) {
       const lightBoost = curProfile === '50_bmg' ? 7.5 : 4.5;
-      chamberLightRef.current.intensity =
-        st.chamberFlashIntensity * lightBoost;
+      chamberLightRef.current.intensity = st.chamberFlashIntensity * lightBoost;
     }
 
     if (gasPortFlashRef.current) {
@@ -904,7 +906,11 @@ export const BallisticsSystem: React.FC = () => {
         </mesh>
 
         {/* Un-struck Nickel Boxer Primer Cup (visible before firing-pin strike) */}
-        <mesh ref={chamberLivePrimerRef} geometry={livePrimerGeo} renderOrder={2}>
+        <mesh
+          ref={chamberLivePrimerRef}
+          geometry={livePrimerGeo}
+          renderOrder={2}
+        >
           <meshStandardMaterial
             ref={chamberLivePrimerMatRef}
             color={calSpec.primerColor}
@@ -992,11 +998,7 @@ export const BallisticsSystem: React.FC = () => {
       </mesh>
       <pointLight
         ref={chamberLightRef}
-        position={[
-          meta.chamberGlowPos[0] + 0.2,
-          meta.chamberGlowPos[1],
-          0.6,
-        ]}
+        position={[meta.chamberGlowPos[0] + 0.2, meta.chamberGlowPos[1], 0.6]}
         color="#f97316"
         intensity={0}
         distance={14}
@@ -1264,10 +1266,7 @@ export const BallisticsSystem: React.FC = () => {
               </group>
             ))}
             {/* Asymmetric 6P71M upward-right compensator port jet countering muzzle climb */}
-            <group
-              position={[-0.82, 0.2, 0.12]}
-              rotation={[-0.42, 0, -0.16]}
-            >
+            <group position={[-0.82, 0.2, 0.12]} rotation={[-0.42, 0, -0.16]}>
               <mesh position={[0, 0.72, 0]} renderOrder={9}>
                 <coneGeometry args={[0.34, 1.42, 12, 1, true]} />
                 <meshBasicMaterial

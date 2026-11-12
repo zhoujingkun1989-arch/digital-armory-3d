@@ -785,7 +785,11 @@ export function buildScarHammerGeometry(): THREE.BufferGeometry {
       .translate(-0.55, 0.02, 0.23),
     SCAR_INNER_DARK
   );
-  const hammerBody = csgSubtract(hammerUnion, [pinBore, webPocketL, webPocketR]);
+  const hammerBody = csgSubtract(hammerUnion, [
+    pinBore,
+    webPocketL,
+    webPocketR,
+  ]);
 
   const coilL = paintGeometry(
     createHelicalSpring({
@@ -1003,7 +1007,10 @@ export function buildScarSelectorGeometry(): THREE.BufferGeometry {
   const drum = csgSubtract(drumRaw, [camCut, detentGroove]);
 
   // Sculpted FN Herstal tear-drop lever profile w/ pointer beak
-  const buildFnLever = (lengthX: number, zPos: number): THREE.BufferGeometry => {
+  const buildFnLever = (
+    lengthX: number,
+    zPos: number
+  ): THREE.BufferGeometry => {
     const ls = new THREE.Shape();
     ls.moveTo(0.24, 0); // Forward pointer witness tip
     ls.lineTo(0.06, 0.2);
@@ -1068,7 +1075,17 @@ export function buildScarSelectorGeometry(): THREE.BufferGeometry {
   );
 
   return sanitizeScarGeometry(
-    mergeParts([drum, leverL, leverR, hubL, hubR, screwL, screwR, ridgeL, ridgeR])
+    mergeParts([
+      drum,
+      leverL,
+      leverR,
+      hubL,
+      hubR,
+      screwL,
+      screwR,
+      ridgeL,
+      ridgeR,
+    ])
   );
 }
 

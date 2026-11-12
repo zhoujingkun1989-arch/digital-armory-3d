@@ -326,7 +326,9 @@ export const AUG_MAG_ANG_END = 0.48;
  * Maps rear (-X) convex spine -> u ≈ 0.08 (brass rim) and front (+X) concave spine -> u ≈ 0.92 (copper bullet tip)
  * so cartridges point forward (+X) on BOTH left and right magazine walls!
  */
-export function applyAugMagUVs(geo: THREE.BufferGeometry): THREE.BufferGeometry {
+export function applyAugMagUVs(
+  geo: THREE.BufferGeometry
+): THREE.BufferGeometry {
   const pos = geo.attributes.position;
   const col = geo.attributes.color;
   const count = pos.count;
@@ -1023,11 +1025,7 @@ export function buildAugReceiverOpticGeometry(): THREE.BufferGeometry {
   );
   const elevationTurret = csgSubtract(
     paintGeometry(
-      new THREE.CylinderGeometry(0.28, 0.32, 0.34, 20).translate(
-        1.45,
-        3.26,
-        0
-      ),
+      new THREE.CylinderGeometry(0.28, 0.32, 0.34, 20).translate(1.45, 3.26, 0),
       AUG_ANODIZED_GREY
     ),
     [

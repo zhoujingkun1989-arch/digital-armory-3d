@@ -989,7 +989,6 @@ export function computeAk15BallisticsState(
   };
 }
 
-
 export const AK15_PBR_BINDINGS: Record<string, PbrBindingSpec> = {
   ak_receiver: {
     albedoFile: 'ak_receiver_albedo.webp',

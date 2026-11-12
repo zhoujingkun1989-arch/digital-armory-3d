@@ -63,11 +63,7 @@ function buildTopPicatinnyRail(opts: {
     const sx = startX + i * pitch;
     cutters.push(
       paintGeometry(
-        new THREE.BoxGeometry(0.28, 0.15, 1.12).translate(
-          sx,
-          baseY + 0.205,
-          0
-        ),
+        new THREE.BoxGeometry(0.28, 0.15, 1.12).translate(sx, baseY + 0.205, 0),
         slotColor
       )
     );

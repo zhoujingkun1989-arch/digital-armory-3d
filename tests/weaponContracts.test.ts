@@ -8,6 +8,12 @@ import {
   evaluatePartPoseInto,
 } from '../src/engine/kinematics/math';
 import { normalizeTextureFileName } from '../src/engine/utils/assetUrl';
+import {
+  resolvePartCalloutLabel,
+  resolveWeaponDisplayMeta,
+  WEAPON_EN_FALLBACKS,
+} from '../src/i18n/weaponFallbacks';
+import type { WeaponNarrationBundle } from '../src/narration/types';
 import { useAppStore } from '../src/store/useAppStore';
 import { loadWeaponGeometryBuilders } from '../src/weapons/geometryLoaders';
 import {
@@ -94,9 +100,7 @@ function parseWebpHeader(buf: Buffer, fileName: string): ParsedWebpHeader {
   const riffSize = buf.readUInt32LE(4);
   const webp = buf.toString('ascii', 8, 12);
   if (riff !== 'RIFF' || webp !== 'WEBP') {
-    throw new Error(
-      `${fileName}: invalid RIFF/WEBP magic (${riff}/${webp})`
-    );
+    throw new Error(`${fileName}: invalid RIFF/WEBP magic (${riff}/${webp})`);
   }
   if (riffSize + 8 > buf.length) {
     throw new Error(
@@ -107,8 +111,7 @@ function parseWebpHeader(buf: Buffer, fileName: string): ParsedWebpHeader {
   const chunk = buf.toString('ascii', 12, 16);
   if (chunk === 'VP8 ') {
     const isInterFrame = (buf[20] & 0x01) !== 0;
-    const syncOk =
-      buf[23] === 0x9d && buf[24] === 0x01 && buf[25] === 0x2a;
+    const syncOk = buf[23] === 0x9d && buf[24] === 0x01 && buf[25] === 0x2a;
     if (isInterFrame || !syncOk) {
       throw new Error(`${fileName}: invalid VP8 keyframe sync header`);
     }
@@ -797,12 +800,12 @@ describe('10-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contra
 
       for (const [partId, binding] of Object.entries(plugin.pbrBindings)) {
         expect(plugin.parts.some((p) => p.id === partId)).toBe(true);
-        expect(
-          diskSet.has(normalizeTextureFileName(binding.albedoFile))
-        ).toBe(true);
-        expect(
-          diskSet.has(normalizeTextureFileName(binding.normalFile))
-        ).toBe(true);
+        expect(diskSet.has(normalizeTextureFileName(binding.albedoFile))).toBe(
+          true
+        );
+        expect(diskSet.has(normalizeTextureFileName(binding.normalFile))).toBe(
+          true
+        );
         expect(
           diskSet.has(normalizeTextureFileName(binding.roughnessFile))
         ).toBe(true);
@@ -888,5 +891,169 @@ describe('10-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contra
     store.getState().setTargetProgress(1.0);
     store.getState().resetAll();
     expect(playbackClock.getState().targetProgress).toBe(0);
+  });
+
+  it('verifies Google Gemini bilingual R&D stories, all 253 part narrations, all 586 MP3 voiceover clips across all 10 firearms, and bilingual store/fallback contracts', async () => {
+    let totalNarratedParts = 0;
+    const allReferencedAudioPaths: string[] = [];
+
+    for (const manifest of WEAPON_MANIFESTS) {
+      const wid = manifest.id;
+      const narrationPath = path.join(
+        ROOT_DIR,
+        'public',
+        'narrations',
+        `${wid}.json`
+      );
+      expect(
+        fs.existsSync(narrationPath),
+        `missing narration bundle for ${wid}`
+      ).toBe(true);
+
+      const bundle = JSON.parse(
+        fs.readFileSync(narrationPath, 'utf-8')
+      ) as WeaponNarrationBundle;
+      const plugin = await loadWeaponPlugin(wid);
+      const partIds = new Set(plugin.parts.map((p) => p.id));
+
+      expect(bundle.schemaVersion).toBe(1);
+      expect(bundle.weaponId).toBe(wid);
+      expect(bundle.generatorModels.text).toBe('gemini-3.8-flash');
+      expect(bundle.generatorModels.storyTts).toBe('gemini-3.8-flash-tts');
+      expect(bundle.generatorModels.partTts).toBe('gemini-3.8-flash-lite-tts');
+
+      // Verify all timeline presets & firing phases have English translations
+      for (const preset of plugin.timelinePresets) {
+        const tr = bundle.uiMetaEn.timelinePresets[preset.id];
+        expect(
+          tr,
+          `${wid}: missing English timeline preset ${preset.id}`
+        ).toBeDefined();
+        expect(tr.label.length).toBeGreaterThan(2);
+      }
+      for (const ph of plugin.firingPhases) {
+        const tr = bundle.uiMetaEn.firingPhases[ph.id];
+        expect(
+          tr,
+          `${wid}: missing English firing phase ${ph.id}`
+        ).toBeDefined();
+        expect(tr.shortLabel.length).toBeGreaterThan(2);
+        expect(tr.description.length).toBeGreaterThan(15);
+      }
+
+      // Verify 4-act bilingual R&D stories, 3 breakthroughs, and >=5 milestones
+      for (const lang of ['zh', 'en'] as const) {
+        const story = bundle.story[lang];
+        expect(story.headline.length).toBeGreaterThan(5);
+        expect(story.deck.length).toBeGreaterThan(15);
+        expect(story.acts).toHaveLength(4);
+        expect(story.breakthroughs).toHaveLength(3);
+        expect(story.milestones.length).toBeGreaterThanOrEqual(5);
+
+        for (const act of story.acts) {
+          expect(act.paragraphs.length).toBeGreaterThanOrEqual(2);
+          expect(act.audioScript.length).toBeGreaterThan(35);
+          expect(act.audioUrl).toMatch(
+            new RegExp(`^audio/${wid}/story_act[1-4]_${lang}\\.mp3$`)
+          );
+          allReferencedAudioPaths.push(act.audioUrl);
+          if (act.focusPartId) {
+            expect(
+              partIds.has(act.focusPartId),
+              `${wid}: invalid act focusPartId ${act.focusPartId}`
+            ).toBe(true);
+          }
+        }
+
+        for (const bt of story.breakthroughs) {
+          expect(
+            partIds.has(bt.focusPartId),
+            `${wid}: invalid breakthrough focusPartId ${bt.focusPartId}`
+          ).toBe(true);
+          expect(bt.summary.length).toBeGreaterThan(15);
+        }
+      }
+
+      // Verify 100% part coverage and bilingual audio scripts
+      expect(Object.keys(bundle.parts)).toHaveLength(plugin.parts.length);
+      totalNarratedParts += Object.keys(bundle.parts).length;
+
+      for (const part of plugin.parts) {
+        const entry = bundle.parts[part.id];
+        expect(
+          entry,
+          `${wid}: missing narration entry for ${part.id}`
+        ).toBeDefined();
+        expect(entry.partId).toBe(part.id);
+        expect(entry.bomCode).toBe(part.bomCode);
+        expect(entry.calloutLabelEn.length).toBeGreaterThan(2);
+        expect(entry.calloutLabelEn.length).toBeLessThanOrEqual(32);
+
+        for (const lang of ['zh', 'en'] as const) {
+          const loc = entry[lang];
+          expect(loc.roleTag.length).toBeGreaterThan(2);
+          expect(loc.overview.length).toBeGreaterThan(15);
+          expect(loc.craftAndMaterial.length).toBeGreaterThan(15);
+          expect(loc.kinematicRole.length).toBeGreaterThan(15);
+          expect(loc.designHighlight.length).toBeGreaterThan(15);
+          expect(loc.audioScript.length).toBeGreaterThan(25);
+          expect(loc.audioUrl).toBe(
+            `audio/${wid}/parts/${part.id}_${lang}.mp3`
+          );
+          allReferencedAudioPaths.push(loc.audioUrl);
+        }
+
+        const labelEn = resolvePartCalloutLabel(part, 'en', entry);
+        expect(labelEn.length).toBeGreaterThan(2);
+      }
+
+      // Verify English fallbacks & resolved display meta
+      const fb = WEAPON_EN_FALLBACKS[wid];
+      expect(fb, `missing English fallback for ${wid}`).toBeDefined();
+      const metaEn = resolveWeaponDisplayMeta(wid, 'en', bundle);
+      expect(metaEn.name.length).toBeGreaterThan(4);
+      expect(metaEn.highlights.length).toBeGreaterThanOrEqual(4);
+    }
+
+    // 253 total parts across 10 weapons -> 80 story MP3s + 506 part MP3s = 586 MP3 files
+    expect(totalNarratedParts).toBe(253);
+    expect(allReferencedAudioPaths).toHaveLength(586);
+
+    for (const relAudio of allReferencedAudioPaths) {
+      const fullMp3Path = path.join(ROOT_DIR, 'public', relAudio);
+      expect(
+        fs.existsSync(fullMp3Path),
+        `missing TTS audio file: ${relAudio}`
+      ).toBe(true);
+      const buf = fs.readFileSync(fullMp3Path);
+      expect(
+        buf.length,
+        `TTS MP3 unexpectedly small: ${relAudio}`
+      ).toBeGreaterThan(4096);
+      const isId3 = buf.toString('ascii', 0, 3) === 'ID3';
+      const isMpegSync = buf[0] === 0xff && (buf[1] & 0xe0) === 0xe0;
+      expect(isId3 || isMpegSync, `invalid MP3 header in ${relAudio}`).toBe(
+        true
+      );
+    }
+
+    // Verify bilingual & story actions on useAppStore
+    const store = useAppStore;
+    store.getState().returnToArmory();
+    store.getState().setLang('zh');
+    expect(store.getState().lang).toBe('zh');
+    store.getState().toggleLang();
+    expect(store.getState().lang).toBe('en');
+    store.getState().setLang('zh');
+
+    store.getState().setStoryOpen(true);
+    expect(store.getState().storyOpen).toBe(true);
+    store.getState().focusStoryPart('ak_bolt');
+    expect(store.getState().screen).toBe('workbench');
+    expect(store.getState().storyOpen).toBe(false);
+    expect(store.getState().xrayShells).toBe(true);
+    expect(store.getState().selectedPartId).toBe('ak_bolt');
+
+    store.getState().returnToArmory();
   });
 });

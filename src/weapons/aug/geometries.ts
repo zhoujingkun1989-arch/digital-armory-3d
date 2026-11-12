@@ -29,10 +29,7 @@ import {
   buildAugTriggerGeometry,
 } from './meshes/augExtraGeometries';
 
-export const GEOMETRY_BUILDERS: Record<
-  string,
-  () => THREE.BufferGeometry
-> = {
+export const GEOMETRY_BUILDERS: Record<string, () => THREE.BufferGeometry> = {
   // 1. Quick-Change 20" Barrel, Gas & Twin-Rod Bolt Group ('slide' · 9)
   aug_barrel: buildAugBarrelGeometry,
   aug_flash_hider: buildAugFlashHiderGeometry,

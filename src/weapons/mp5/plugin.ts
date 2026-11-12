@@ -921,7 +921,9 @@ export function computeMp5FiringKinematics(
  * fluted chamber X = 3.65, 3-lug muzzle X = 19.55, and right ejection port (+Z).
  * (Zero gas port flash — pure roller-delayed blowback!)
  */
-export function computeMp5BallisticsState(fRaw: number): ExtendedBallisticsState {
+export function computeMp5BallisticsState(
+  fRaw: number
+): ExtendedBallisticsState {
   const f = clamp01(fRaw);
   const { boltHeadDx } = sampleMp5RollerBoltGroup(f);
   const boreY = 1.0;

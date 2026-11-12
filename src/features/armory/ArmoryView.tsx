@@ -1,12 +1,14 @@
 import React, { useRef, useState } from 'react';
 import {
   ArrowRight,
+  BookOpen,
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
   Clock,
   Eye,
   Globe2,
+  Headphones,
   Image as ImageIcon,
   Layers,
   MousePointerClick,
@@ -18,22 +20,29 @@ import {
   Sparkles,
   Wrench,
 } from 'lucide-react';
-import { useAppStore } from '../../store/useAppStore';
+import { UI_STRINGS } from '../../i18n/uiStrings';
 import {
-  ARMORY_WEAPONS,
-  getShortWeaponLabel,
-  matchesArmoryCategory,
-} from '../../weapons/manifests';
+  getLocalizedShortWeaponLabel,
+  resolveWeaponDisplayMeta,
+} from '../../i18n/weaponFallbacks';
+import {
+  getLoadedNarrationBundle,
+  preloadWeaponNarration,
+  useWeaponNarration,
+} from '../../narration/narrationService';
+import { useAppStore } from '../../store/useAppStore';
+import { ARMORY_WEAPONS, matchesArmoryCategory } from '../../weapons/manifests';
 import { preloadWeaponPlugin } from '../../weapons/registry';
 import type { ArmoryCategory, ArmoryWeaponItem } from '../../weapons/types';
+import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
 import { WeaponSilhouetteSvg } from './WeaponSilhouetteSvg';
 
-const CATEGORY_FILTER_DEFS: { key: ArmoryCategory; labelBase: string }[] = [
-  { key: 'all', labelBase: '全部馆藏' },
-  { key: 'assault', labelBase: '突击/卡宾/无托' },
-  { key: 'smg', labelBase: '冲锋枪' },
-  { key: 'sniper', labelBase: '狙击/反器材' },
-  { key: 'pistol', labelBase: '半自动手枪' },
+const CATEGORY_KEYS: ArmoryCategory[] = [
+  'all',
+  'assault',
+  'smg',
+  'sniper',
+  'pistol',
 ];
 
 export const ArmoryView: React.FC = () => {
@@ -42,6 +51,10 @@ export const ArmoryView: React.FC = () => {
   const rackScrollRef = useRef<HTMLDivElement>(null);
 
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
+  const lang = useAppStore((s) => s.lang);
+  const storyOpen = useAppStore((s) => s.storyOpen);
+  const toggleStoryOpen = useAppStore((s) => s.toggleStoryOpen);
+  const setStoryOpen = useAppStore((s) => s.setStoryOpen);
   const openShowcase = useAppStore((s) => s.openShowcase);
   const selectArmoryWeapon = useAppStore((s) => s.selectArmoryWeapon);
   const enterWorkbench = useAppStore((s) => s.enterWorkbench);
@@ -57,7 +70,15 @@ export const ArmoryView: React.FC = () => {
 
   const featuredWeapon =
     ARMORY_WEAPONS.find((w) => w.id === activeWeaponId) ?? ARMORY_WEAPONS[0];
-  const shortWeaponTag = getShortWeaponLabel(featuredWeapon.id);
+  const { bundle: featuredBundle } = useWeaponNarration(featuredWeapon.id);
+
+  const ui = UI_STRINGS[lang].armory;
+  const featuredDisplay = resolveWeaponDisplayMeta(
+    featuredWeapon.id,
+    lang,
+    featuredBundle
+  );
+  const shortWeaponTag = getLocalizedShortWeaponLabel(featuredWeapon.id, lang);
 
   const filteredWeapons = ARMORY_WEAPONS.filter((w) =>
     matchesArmoryCategory(w, category)
@@ -90,19 +111,17 @@ export const ArmoryView: React.FC = () => {
       }
       return;
     }
-    setPlannedToast(
-      `「${item.nameCn}」模块正在接入中，当前可预览并拆解已入库枪械`
+    const cardMeta = resolveWeaponDisplayMeta(
+      item.id,
+      lang,
+      getLoadedNarrationBundle(item.id)
     );
+    const msg = ui.plannedToast(cardMeta.name);
+    setPlannedToast(msg);
     window.setTimeout(() => {
-      setPlannedToast((prev) => (prev?.includes(item.nameCn) ? null : prev));
+      setPlannedToast((prev) => (prev === msg ? null : prev));
     }, 3000);
   };
-
-  const featuredOriginTag = featuredWeapon.originCountryCn
-    ? `${featuredWeapon.originCountryCn} · ${
-        featuredWeapon.weaponTypeCn ?? featuredWeapon.categoryCn
-      }`
-    : featuredWeapon.categoryCn;
 
   return (
     <div className="armory-overlay">
@@ -111,10 +130,8 @@ export const ArmoryView: React.FC = () => {
         <div className="brand-block">
           <div className="brand-badge armory-vault-badge">DIGITAL ARMORY</div>
           <div>
-            <h1 className="brand-title">枪械内部结构 3D 数字枪库</h1>
-            <p className="brand-sub">
-              十款世界名枪交互式陈列馆 · 选择枪械预览 3D 真铁材质并进入爆炸拆解与击发演示
-            </p>
+            <h1 className="brand-title">{ui.title}</h1>
+            <p className="brand-sub">{ui.subtitle}</p>
           </div>
         </div>
 
@@ -122,35 +139,47 @@ export const ArmoryView: React.FC = () => {
           <div
             className="armory-filter-pills"
             role="tablist"
-            aria-label="枪械类别筛选"
+            aria-label={ui.filterAria}
           >
-            {CATEGORY_FILTER_DEFS.map((tab) => {
+            {CATEGORY_KEYS.map((key) => {
               const count = ARMORY_WEAPONS.filter((w) =>
-                matchesArmoryCategory(w, tab.key)
+                matchesArmoryCategory(w, key)
               ).length;
               return (
                 <button
-                  key={tab.key}
+                  key={key}
                   type="button"
                   className={`armory-filter-btn ${
-                    category === tab.key ? 'active' : ''
+                    category === key ? 'active' : ''
                   }`}
-                  onClick={() => setCategory(tab.key)}
+                  onClick={() => setCategory(key)}
                 >
-                  {tab.labelBase} ({count})
+                  {ui.categories[key]} ({count})
                 </button>
               );
             })}
           </div>
 
+          <LanguageSwitchPill />
+
+          <button
+            type="button"
+            className={`armory-story-btn ${storyOpen ? 'active' : ''}`}
+            onClick={toggleStoryOpen}
+            title={ui.storyBtnTitle}
+          >
+            <BookOpen size={13} />
+            <span>{ui.storyBtn}</span>
+          </button>
+
           <button
             type="button"
             className="armory-showcase-btn"
             onClick={openShowcase}
-            title="打开项目官方宣传与架构展示主页"
+            title={ui.showcaseTitle}
           >
             <Sparkles size={13} />
-            <span>产品宣传页</span>
+            <span>{ui.showcaseBtn}</span>
           </button>
 
           <button
@@ -159,7 +188,7 @@ export const ArmoryView: React.FC = () => {
             onClick={() => enterWorkbench(featuredWeapon.id)}
           >
             <Wrench size={14} />
-            <span>进入 {shortWeaponTag} 拆解台</span>
+            <span>{ui.enterBenchBtn(shortWeaponTag)}</span>
             <ArrowRight size={14} />
           </button>
         </div>
@@ -172,35 +201,37 @@ export const ArmoryView: React.FC = () => {
             <span className="plaque-bay-tag">{featuredWeapon.bayCode}</span>
             <span className="plaque-origin-pill">
               <Globe2 size={11} />
-              <span>{featuredOriginTag}</span>
+              <span>{featuredDisplay.originTag}</span>
             </span>
           </div>
           <span className="plaque-ready-pill">
             <CheckCircle2 size={11} />
-            {featuredWeapon.statusLabel}
+            {featuredDisplay.statusLabel}
           </span>
         </div>
 
-        <h2 className="plaque-weapon-title">{featuredWeapon.nameCn}</h2>
+        <h2 className="plaque-weapon-title">{featuredDisplay.name}</h2>
         <div className="plaque-weapon-sub">{featuredWeapon.modelCode}</div>
 
-        <p className="plaque-desc">{featuredWeapon.description}</p>
+        <p className="plaque-desc">{featuredDisplay.description}</p>
 
         <div className="plaque-spec-grid">
           <div className="plaque-spec-cell">
-            <span className="spec-k">口径规格</span>
+            <span className="spec-k">{ui.caliberLabel}</span>
             <span className="spec-v">{featuredWeapon.caliber}</span>
           </div>
           <div className="plaque-spec-cell">
-            <span className="spec-k">建模精度</span>
+            <span className="spec-k">{ui.precisionLabel}</span>
             <span className="spec-v">
-              {featuredWeapon.assembliesCount} 总成 /{' '}
-              {featuredWeapon.partsCount} 零件
+              {ui.precisionValue(
+                featuredWeapon.assembliesCount,
+                featuredWeapon.partsCount
+              )}
             </span>
           </div>
           <div className="plaque-spec-cell full">
-            <span className="spec-k">核心自动与闭锁原理</span>
-            <span className="spec-v">{featuredWeapon.actionMechanism}</span>
+            <span className="spec-k">{ui.mechanismLabel}</span>
+            <span className="spec-v">{featuredDisplay.actionMechanism}</span>
           </div>
         </div>
 
@@ -208,52 +239,52 @@ export const ArmoryView: React.FC = () => {
           <div className="plaque-metrology-head">
             <span className="plaque-metrology-title">
               <Ruler size={11} />
-              <span>1:1 原厂测绘与内弹道参数</span>
+              <span>{ui.metrologyTitle}</span>
             </span>
             <span className="plaque-metrology-tag">FACTORY 1:1</span>
           </div>
           <div className="plaque-metrology-grid">
             <div className="metrology-cell">
-              <span className="spec-k">全枪长 (OAL)</span>
+              <span className="spec-k">{ui.oalLabel}</span>
               <span className="spec-v tabular">
-                {featuredWeapon.specs1To1.overallLengthMm}
+                {featuredDisplay.overallLengthMm}
               </span>
             </div>
             <div className="metrology-cell">
-              <span className="spec-k">枪管与膛线</span>
+              <span className="spec-k">{ui.barrelLabel}</span>
               <span className="spec-v tabular">
-                {featuredWeapon.specs1To1.barrelSpec}
+                {featuredDisplay.barrelSpec}
               </span>
             </div>
             <div className="metrology-cell">
-              <span className="spec-k">空枪质量</span>
+              <span className="spec-k">{ui.weightLabel}</span>
               <span className="spec-v tabular">
                 {featuredWeapon.specs1To1.emptyWeightKg}
               </span>
             </div>
             <div className="metrology-cell">
-              <span className="spec-k">枪口初速</span>
+              <span className="spec-k">{ui.muzzleVelLabel}</span>
               <span className="spec-v tabular">
                 {featuredWeapon.specs1To1.muzzleVelocityMs}
               </span>
             </div>
             <div className="metrology-cell">
-              <span className="spec-k">有效射程</span>
+              <span className="spec-k">{ui.rangeLabel}</span>
               <span className="spec-v tabular">
                 {featuredWeapon.specs1To1.effectiveRangeM}
               </span>
             </div>
             <div className="metrology-cell">
-              <span className="spec-k">理论射速</span>
+              <span className="spec-k">{ui.rofLabel}</span>
               <span className="spec-v tabular">
-                {featuredWeapon.specs1To1.rateOfFire}
+                {featuredDisplay.rateOfFire}
               </span>
             </div>
           </div>
         </div>
 
         <div className="plaque-feature-chips">
-          {featuredWeapon.highlights.map((h) => (
+          {featuredDisplay.highlights.map((h) => (
             <span key={h} className="plaque-chip">
               {h}
             </span>
@@ -262,11 +293,28 @@ export const ArmoryView: React.FC = () => {
 
         <button
           type="button"
+          className="plaque-story-cta"
+          onClick={() => setStoryOpen(true)}
+        >
+          <div className="plaque-story-cta-left">
+            <span className="plaque-story-icon">
+              <Headphones size={14} />
+            </span>
+            <div>
+              <span className="plaque-story-main">{ui.plaqueStoryCta}</span>
+              <span className="plaque-story-sub">{ui.plaqueStorySub}</span>
+            </div>
+          </div>
+          <ArrowRight size={14} />
+        </button>
+
+        <button
+          type="button"
           className="plaque-primary-cta"
           onClick={() => enterWorkbench(featuredWeapon.id)}
         >
           <Layers size={16} />
-          <span>进入 {shortWeaponTag} 分解与发射演示</span>
+          <span>{ui.plaquePrimaryCta(shortWeaponTag)}</span>
           <ArrowRight size={16} />
         </button>
       </aside>
@@ -279,22 +327,20 @@ export const ArmoryView: React.FC = () => {
             pbrTexturesEnabled ? 'active-cyan' : ''
           }`}
           onClick={togglePbrTextures}
-          title="开启或关闭真实 2K 5通道 PBR 材质贴图 (Albedo + Normal + Packed ORM)"
+          title={ui.pbrTitle}
         >
           <Sparkles size={14} />
-          <span>
-            {pbrTexturesEnabled ? '真实 PBR 贴图已启用' : 'PBR 贴图已关闭'}
-          </span>
+          <span>{pbrTexturesEnabled ? ui.pbrOn : ui.pbrOff}</span>
         </button>
 
         <button
           type="button"
           className="toggle-chip armory-ctrl-chip"
           onClick={() => setTextureModalOpen(true)}
-          title="检视并下载全部定制 2K WebP 材质贴图原图"
+          title={ui.atlasTitle}
         >
           <ImageIcon size={14} />
-          <span>查看 PBR 贴图图集</span>
+          <span>{ui.atlasBtn}</span>
         </button>
 
         <button
@@ -303,10 +349,10 @@ export const ArmoryView: React.FC = () => {
             armoryAutoRotate ? 'active-cyan' : ''
           }`}
           onClick={toggleArmoryAutoRotate}
-          title="开启或暂停 3D 展台自动环绕旋转"
+          title={ui.rotateTitle}
         >
           <Orbit size={14} />
-          <span>{armoryAutoRotate ? '展台旋转中' : '自动旋转已停'}</span>
+          <span>{armoryAutoRotate ? ui.rotateOn : ui.rotateOff}</span>
         </button>
 
         <button
@@ -315,10 +361,10 @@ export const ArmoryView: React.FC = () => {
             xrayShells ? 'active-cyan' : ''
           }`}
           onClick={toggleXrayShells}
-          title="在枪库展台内直接预览内部枪机与火控透视结构 (X)"
+          title={ui.xrayTitle}
         >
           <Eye size={14} />
-          <span>X-Ray 透视预览</span>
+          <span>{ui.xrayBtn}</span>
         </button>
 
         <button
@@ -327,43 +373,43 @@ export const ArmoryView: React.FC = () => {
             sectionCut ? 'active-teal' : ''
           }`}
           onClick={toggleSectionCut}
-          title="沿纵向中轴切开外层机匣/套筒/弹匣右侧壳体，原色直视内部膛线、闭锁突笋与实弹供弹机构 (C)"
+          title={ui.sectionTitle}
         >
           <Scissors size={14} />
-          <span>{sectionCut ? '军械剖视已启用' : '军械剖视预览'}</span>
+          <span>{sectionCut ? ui.sectionOn : ui.sectionOff}</span>
         </button>
 
         <div className="armory-stage-hint">
           <MousePointerClick size={13} />
-          <span>拖拽检视 · 单击枪体直达分解</span>
+          <span>{ui.stageHint}</span>
         </div>
       </div>
 
       {/* Non-intrusive toast when clicking planned slot */}
-      {plannedToast && <div className="armory-toast-banner">{plannedToast}</div>}
+      {plannedToast && (
+        <div className="armory-toast-banner">{plannedToast}</div>
+      )}
 
       {/* Bottom Compact Single-Row 10-Bay Armory Weapon Vault Rack (~176px tall) */}
-      <section className="armory-rack-dock" aria-label="枪库十槽武器展架">
+      <section className="armory-rack-dock" aria-label={ui.rackAria}>
         <div className="rack-dock-header">
           <div className="rack-dock-title">
             <Shield size={13} className="rack-icon" />
-            <span>枪库武器陈列架 · 10-BAY WEAPON VAULT RACK</span>
+            <span>{ui.rackTitle}</span>
             <span className="rack-count-pill">
               {filteredWeapons.length} / {ARMORY_WEAPONS.length}
             </span>
           </div>
 
           <div className="rack-dock-right">
-            <span className="rack-dock-tip">
-              单击卡片切换展台预览 · 再次点击或点蓝字进入 3D 拆解台
-            </span>
+            <span className="rack-dock-tip">{ui.rackTip}</span>
             <div className="rack-scroll-btns">
               <button
                 type="button"
                 className="rack-scroll-btn"
                 onClick={() => scrollRackBy(-1)}
-                aria-label="向左滚动武器展架"
-                title="向左滚动查看槽位"
+                aria-label={ui.scrollLeft}
+                title={ui.scrollLeft}
               >
                 <ChevronLeft size={14} />
               </button>
@@ -371,8 +417,8 @@ export const ArmoryView: React.FC = () => {
                 type="button"
                 className="rack-scroll-btn"
                 onClick={() => scrollRackBy(1)}
-                aria-label="向右滚动武器展架"
-                title="向右滚动查看槽位"
+                aria-label={ui.scrollRight}
+                title={ui.scrollRight}
               >
                 <ChevronRight size={14} />
               </button>
@@ -383,11 +429,11 @@ export const ArmoryView: React.FC = () => {
         <div ref={rackScrollRef} className="armory-cards-grid">
           {filteredWeapons.map((item) => {
             const isOnTurntable = item.id === activeWeaponId;
-            const originTypeLabel = item.originCountryCn
-              ? `${item.originCountryCn} · ${
-                  item.weaponTypeCn ?? item.categoryCn
-                }`
-              : item.categoryCn;
+            const itemMeta = resolveWeaponDisplayMeta(
+              item.id,
+              lang,
+              getLoadedNarrationBundle(item.id)
+            );
 
             return (
               <div
@@ -398,10 +444,16 @@ export const ArmoryView: React.FC = () => {
                   item.available ? 'is-ready' : 'is-planned'
                 } ${isOnTurntable ? 'is-on-turntable' : ''}`}
                 onMouseEnter={() => {
-                  if (item.available) preloadWeaponPlugin(item.id);
+                  if (item.available) {
+                    preloadWeaponPlugin(item.id);
+                    preloadWeaponNarration(item.id);
+                  }
                 }}
                 onFocus={() => {
-                  if (item.available) preloadWeaponPlugin(item.id);
+                  if (item.available) {
+                    preloadWeaponPlugin(item.id);
+                    preloadWeaponNarration(item.id);
+                  }
                 }}
                 onClick={(e) => handleCardBodyClick(item, e.currentTarget)}
                 onKeyDown={(e) => {
@@ -413,7 +465,7 @@ export const ArmoryView: React.FC = () => {
               >
                 <div className="wcard-top-row">
                   <span className="wcard-bay">{item.bayCode}</span>
-                  <span className="wcard-origin-tag">{originTypeLabel}</span>
+                  <span className="wcard-origin-tag">{itemMeta.originTag}</span>
                   {item.available ? (
                     <span
                       className={`wcard-status ${
@@ -423,16 +475,19 @@ export const ArmoryView: React.FC = () => {
                       {isOnTurntable ? (
                         <>
                           <Rotate3d size={10} />
-                          <span>预览中</span>
+                          <span>{ui.previewingBadge}</span>
                         </>
                       ) : (
-                        <span className="live-dot" title={item.statusLabel} />
+                        <span
+                          className="live-dot"
+                          title={itemMeta.statusLabel}
+                        />
                       )}
                     </span>
                   ) : (
                     <span className="wcard-status planned">
                       <Clock size={10} />
-                      <span>待接入</span>
+                      <span>{ui.plannedBadge}</span>
                     </span>
                   )}
                 </div>
@@ -446,10 +501,10 @@ export const ArmoryView: React.FC = () => {
 
                 <div className="wcard-body">
                   <div className="wcard-title-row">
-                    <span className="wcard-name">{item.nameCn}</span>
+                    <span className="wcard-name">{itemMeta.name}</span>
                   </div>
                   <div className="wcard-meta">
-                    {item.caliber} · {item.partsCount} 零件节点
+                    {item.caliber} · {ui.partsNodeSuffix(item.partsCount)}
                   </div>
                 </div>
 
@@ -463,12 +518,12 @@ export const ArmoryView: React.FC = () => {
                         enterWorkbench(item.id);
                       }}
                     >
-                      <span>进入 3D 内部拆解与发射演示</span>
+                      <span>{ui.cardEnterCta}</span>
                       <ArrowRight size={12} />
                     </button>
                   ) : (
                     <span className="wcard-planned-note">
-                      {item.actionMechanism}
+                      {itemMeta.actionMechanism}
                     </span>
                   )}
                 </div>

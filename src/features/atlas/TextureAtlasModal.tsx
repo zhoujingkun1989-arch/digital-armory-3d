@@ -77,7 +77,9 @@ export const TextureAtlasModal: React.FC = () => {
             <div>
               <h2 className="tex-modal-title">{tabManifest.atlasHeadingCn}</h2>
               <p className="tex-modal-sub">
-                全馆十款名枪共 58 张定制高清 WebP 物理材质贴图（public/textures/*.webp）· 已按三角面 UV 实时绑定至全部 253 个精密零件
+                全馆十款名枪共 58 张定制高清 WebP
+                物理材质贴图（public/textures/*.webp）· 已按三角面 UV
+                实时绑定至全部 253 个精密零件
               </p>
             </div>
           </div>
@@ -165,7 +167,9 @@ export const TextureAtlasModal: React.FC = () => {
                         <span
                           className={`tex-ch-badge kind-${ch.kind.toLowerCase()}`}
                         >
-                          {ch.kind === 'Roughness' ? 'ORM · R/G/B' : ch.kind.toUpperCase()}
+                          {ch.kind === 'Roughness'
+                            ? 'ORM · R/G/B'
+                            : ch.kind.toUpperCase()}
                         </span>
                         <span className="tex-ch-title">
                           {ch.kind === 'Roughness'

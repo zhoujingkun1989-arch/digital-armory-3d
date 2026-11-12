@@ -1,6 +1,9 @@
 import { create } from 'zustand';
 import { playbackClock } from '../engine/clock/playbackClock';
+import { stopNarrationAudio } from '../narration/audioPlayer';
+import type { LanguageCode } from '../narration/types';
 import { getWeaponManifest } from '../weapons/manifests';
+import { getLoadedWeaponPlugin, loadWeaponPlugin } from '../weapons/registry';
 import type {
   AssemblyGroupKey,
   CameraPresetType,
@@ -23,6 +26,11 @@ export interface AppState {
   screen: AppScreen;
   activeWeaponId: WeaponId;
   armoryAutoRotate: boolean;
+
+  /** Bilingual UI & narration state */
+  lang: LanguageCode;
+  storyOpen: boolean;
+  autoPlayPartAudio: boolean;
 
   /** Active interactive mode inside Workbench: Exploded Disassembly vs Dynamic Firing Cycle */
   mode: AppViewMode;
@@ -56,6 +64,14 @@ export interface AppState {
 
   /** Camera control command (cameraEffectSeq bumps when progress jump should re-frame) */
   cameraCommand: { preset: CameraPresetType; seq: number };
+
+  // Bilingual & Story Narration Actions
+  setLang: (lang: LanguageCode) => void;
+  toggleLang: () => void;
+  setStoryOpen: (open: boolean) => void;
+  toggleStoryOpen: () => void;
+  toggleAutoPlayPartAudio: () => void;
+  focusStoryPart: (partId: string) => void;
 
   // Armory <-> Workbench <-> Showcase Navigation Actions
   openShowcase: () => void;
@@ -103,6 +119,10 @@ export const useAppStore = create<AppState>((set, get) => ({
   activeWeaponId: 'ak15',
   armoryAutoRotate: true,
 
+  lang: 'zh',
+  storyOpen: false,
+  autoPlayPartAudio: true,
+
   mode: 'explode',
 
   isPlaying: false,
@@ -129,13 +149,76 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   cameraCommand: { preset: 'armory_showcase', seq: 0 },
 
+  setLang: (lang) => {
+    if (get().lang !== lang) {
+      stopNarrationAudio();
+      set({ lang });
+    }
+  },
+
+  toggleLang: () => {
+    stopNarrationAudio();
+    set((s) => ({ lang: s.lang === 'zh' ? 'en' : 'zh' }));
+  },
+
+  setStoryOpen: (storyOpen) => set({ storyOpen }),
+
+  toggleStoryOpen: () => set((s) => ({ storyOpen: !s.storyOpen })),
+
+  toggleAutoPlayPartAudio: () =>
+    set((s) => ({ autoPlayPartAudio: !s.autoPlayPartAudio })),
+
+  focusStoryPart: (partId) => {
+    const s = get();
+    const weaponId = s.activeWeaponId;
+    playbackClock.setTargetProgress(0, false);
+    playbackClock.setFireProgress(0, true);
+
+    const applyFocus = () => {
+      const cur = get();
+      set({
+        screen: 'workbench',
+        mode: 'explode',
+        storyOpen: false,
+        isPlaying: false,
+        isFiringPlaying: false,
+        textureModalOpen: false,
+        xrayShells: true,
+        sectionCut: false,
+        showLabels: true,
+        isolateSelected: false,
+        selectedPartId: partId,
+        hoveredPartId: null,
+        hiddenGroups: { ...DEFAULT_HIDDEN_GROUPS },
+        cameraCommand:
+          cur.screen === 'workbench'
+            ? cur.cameraCommand
+            : { preset: 'iso', seq: cur.cameraCommand.seq + 1 },
+      });
+    };
+
+    if (getLoadedWeaponPlugin(weaponId)) {
+      applyFocus();
+    } else {
+      applyFocus();
+      void loadWeaponPlugin(weaponId).then(() => {
+        if (get().activeWeaponId === weaponId) {
+          set({ selectedPartId: null });
+          set({ selectedPartId: partId });
+        }
+      });
+    }
+  },
+
   openShowcase: () => {
+    stopNarrationAudio();
     playbackClock.setTargetProgress(0, false);
     playbackClock.setFireProgress(0, true);
     set((s) => ({
       screen: 'showcase',
       mode: 'explode',
       armoryAutoRotate: true,
+      storyOpen: false,
       isPlaying: false,
       isFiringPlaying: false,
       textureModalOpen: false,
@@ -154,6 +237,9 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   selectArmoryWeapon: (weaponIdRaw) => {
     const weaponId: WeaponId = isWeaponId(weaponIdRaw) ? weaponIdRaw : 'ak15';
+    if (get().activeWeaponId !== weaponId) {
+      stopNarrationAudio();
+    }
     playbackClock.setTargetProgress(0, false);
     playbackClock.setFireProgress(0, true);
     set((s) => ({
@@ -172,6 +258,9 @@ export const useAppStore = create<AppState>((set, get) => ({
     const nextWeaponId: WeaponId = isWeaponId(weaponIdRaw)
       ? weaponIdRaw
       : s.activeWeaponId;
+    if (nextWeaponId !== s.activeWeaponId) {
+      stopNarrationAudio();
+    }
     if (initialMode === 'firing') {
       playbackClock.setTargetProgress(0, false);
       playbackClock.setFireProgress(0, true);
@@ -179,6 +268,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         screen: 'workbench',
         activeWeaponId: nextWeaponId,
         mode: 'firing',
+        storyOpen: false,
         isPlaying: false,
         isFiringPlaying: true,
         textureModalOpen: false,
@@ -201,6 +291,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         screen: 'workbench',
         activeWeaponId: nextWeaponId,
         mode: 'explode',
+        storyOpen: false,
         isPlaying: false,
         isFiringPlaying: false,
         textureModalOpen: false,
@@ -217,11 +308,13 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   returnToArmory: () => {
+    stopNarrationAudio();
     playbackClock.setTargetProgress(0, false);
     playbackClock.setFireProgress(0, true);
     set((s) => ({
       screen: 'armory',
       mode: 'explode',
+      storyOpen: false,
       isPlaying: false,
       isFiringPlaying: false,
       textureModalOpen: false,

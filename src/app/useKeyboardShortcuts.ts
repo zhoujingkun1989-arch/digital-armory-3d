@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { stopNarrationAudio } from '../narration/audioPlayer';
 import { useAppStore } from '../store/useAppStore';
 
 function isEditableElement(target: EventTarget | null): boolean {
@@ -35,12 +36,19 @@ export function useKeyboardShortcuts(): void {
           state.setTextureModalOpen(false);
           return;
         }
+        if (state.storyOpen) {
+          e.preventDefault();
+          stopNarrationAudio();
+          state.setStoryOpen(false);
+          return;
+        }
         if (isEditableElement(e.target)) {
           (e.target as HTMLElement).blur();
           return;
         }
         if (state.selectedPartId !== null) {
           e.preventDefault();
+          stopNarrationAudio();
           state.selectPart(null);
           return;
         }

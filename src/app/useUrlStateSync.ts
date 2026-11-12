@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import type { LanguageCode } from '../narration/types';
 import {
   type AppScreen,
   type AppViewMode,
@@ -22,8 +23,12 @@ function applyLocationToStore(): void {
   const rawWeapon = params.get('weapon');
   const rawScreen = params.get('screen');
   const rawMode = params.get('mode');
+  const rawLang = params.get('lang');
 
   const current = useAppStore.getState();
+  if (rawLang === 'en' || rawLang === 'zh') {
+    current.setLang(rawLang);
+  }
   const weaponId: WeaponId = isWeaponId(rawWeapon)
     ? rawWeapon
     : current.activeWeaponId;
@@ -60,7 +65,8 @@ function applyLocationToStore(): void {
 function buildSearchString(
   weaponId: WeaponId,
   screen: AppScreen,
-  mode: AppViewMode
+  mode: AppViewMode,
+  lang: LanguageCode
 ): string {
   const params = new URLSearchParams(window.location.search);
   const defaultScreen = getDefaultEntryScreen();
@@ -76,18 +82,24 @@ function buildSearchString(
       params.set('screen', screen);
     }
   }
+  if (lang === 'en') {
+    params.set('lang', 'en');
+  } else {
+    params.delete('lang');
+  }
   const qs = params.toString();
   return qs ? `?${qs}` : '';
 }
 
 /**
  * Bi-directional synchronization between URL query parameters
- * (`?weapon=m4a1&screen=workbench&mode=firing`) and `useAppStore`.
+ * (`?weapon=m4a1&screen=workbench&mode=firing&lang=en`) and `useAppStore`.
  */
 export function useUrlStateSync(): void {
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const screen = useAppStore((s) => s.screen);
   const mode = useAppStore((s) => s.mode);
+  const lang = useAppStore((s) => s.lang);
 
   const initializedRef = useRef(false);
   const applyingPopStateRef = useRef(false);
@@ -131,12 +143,13 @@ export function useUrlStateSync(): void {
     if (
       live.activeWeaponId !== activeWeaponId ||
       live.screen !== screen ||
-      live.mode !== mode
+      live.mode !== mode ||
+      live.lang !== lang
     ) {
       return;
     }
 
-    const nextSearch = buildSearchString(activeWeaponId, screen, mode);
+    const nextSearch = buildSearchString(activeWeaponId, screen, mode, lang);
     if (window.location.search === nextSearch) {
       prevScreenRef.current = screen;
       return;
@@ -149,5 +162,5 @@ export function useUrlStateSync(): void {
       window.history.replaceState(null, '', nextUrl);
     }
     prevScreenRef.current = screen;
-  }, [activeWeaponId, screen, mode]);
+  }, [activeWeaponId, screen, mode, lang]);
 }

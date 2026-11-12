@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { clampUv01 as clamp01, fractPos, sampleTriangleInfo as readTriInfo } from '../../../engine/geometry/uvUnwrap';
-
-
-
-
+import {
+  clampUv01 as clamp01,
+  fractPos,
+  sampleTriangleInfo as readTriInfo,
+} from '../../../engine/geometry/uvUnwrap';
 
 /**
  * Maps U-01 Slide triangles onto the 2048x1024 slide_{albedo,normal,roughness}.png PBR atlas:

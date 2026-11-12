@@ -467,11 +467,7 @@ export function buildAkMuzzleDeviceGeometry(): THREE.BufferGeometry {
     ),
     // Top anti-muzzle-rise gas port
     paintGeometry(
-      new THREE.CylinderGeometry(0.13, 0.13, 0.55, 14).translate(
-        -0.1,
-        0.42,
-        0
-      ),
+      new THREE.CylinderGeometry(0.13, 0.13, 0.55, 14).translate(-0.1, 0.42, 0),
       AK_INNER_DARK
     ),
   ];

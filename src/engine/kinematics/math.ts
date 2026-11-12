@@ -68,9 +68,7 @@ export function evaluatePartPoseInto(
   explodeT: number,
   isFiring: boolean,
   fireF: number,
-  computeKinematics:
-    | ((partId: string, f: number) => PartKinematicDelta)
-    | null,
+  computeKinematics: ((partId: string, f: number) => PartKinematicDelta) | null,
   out: MutablePartPose
 ): MutablePartPose {
   let px = part.assembledPos[0];
@@ -132,7 +130,14 @@ export function computePartTransform(
   position: [number, number, number];
   rotation: [number, number, number];
 } {
-  const pose = evaluatePartPoseInto(part, t, false, 0, null, createMutablePose());
+  const pose = evaluatePartPoseInto(
+    part,
+    t,
+    false,
+    0,
+    null,
+    createMutablePose()
+  );
   return {
     position: [pose.px, pose.py, pose.pz],
     rotation: [pose.rx, pose.ry, pose.rz],

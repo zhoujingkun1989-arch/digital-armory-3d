@@ -1,4 +1,9 @@
-import { clamp01, findActiveFiringPhase, linearSeg, seg } from '../../engine/kinematics/math';
+import {
+  clamp01,
+  findActiveFiringPhase,
+  linearSeg,
+  seg,
+} from '../../engine/kinematics/math';
 import type {
   AssemblyGroupMeta,
   ExtendedBallisticsState,
@@ -95,7 +100,8 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     bomCode: 'U-01',
     nameZh: '7075-T6 锻造平顶上机匣（含辅助推机柄/导壳块/星形环）',
     calloutLabel: '平顶锻造上机匣',
-    nameEn: '7075-T6 Forged Flat-Top Upper Receiver w/ Forward Assist & Delta Ring',
+    nameEn:
+      '7075-T6 Forged Flat-Top Upper Receiver w/ Forward Assist & Delta Ring',
     group: 'slide',
     material: 'nitride_steel',
     isShell: true,
@@ -108,7 +114,8 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     calloutStem: 46,
     calloutAnchor: [0.45, 2.08, 0],
     labelAppearAt: 0.0,
-    roleTag: 'MIL-STD-1913 顶导轨 T2–T12 标号 / M4 双供弹坡 / 右侧辅助推机柄与三角导壳块',
+    roleTag:
+      'MIL-STD-1913 顶导轨 T2–T12 标号 / M4 双供弹坡 / 右侧辅助推机柄与三角导壳块',
     description:
       '采用航空级 7075-T6 铝合金精密模锻并经 MIL-A-8625 Type III 硬质阳极氧化处理的平顶上机匣：顶部机加工标准皮卡汀尼导轨与白色 T 槽位激光标号，右侧集成防卡滞辅助推机柄（Forward Assist）与保护左撇子射手的三角导壳块（Brass Deflector），前端带星形枪管螺母与锥形弹簧压环（Delta Ring）。',
   },
@@ -129,7 +136,8 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     calloutStem: 42,
     calloutAnchor: [0, 1.4, 0],
     labelAppearAt: 0.08,
-    roleTag: '左侧双滚花手拧螺母快拆夹具 / 0-2 近战与远距翻转双觇孔 + 300–600m 高低转轮',
+    roleTag:
+      '左侧双滚花手拧螺母快拆夹具 / 0-2 近战与远距翻转双觇孔 + 300–600m 高低转轮',
     description:
       '通过左侧两枚大型滚花手拧螺母夹持固定在平顶导轨上的铝合金锻造提把：后端护翼内集成可翻转双孔径觇孔照门（0–200m 大孔径近战觇孔与远距离精密小孔径觇孔），配合方向微调鼓轮与 6/3 射程高低调节盘，瞄准基线与前端三角准星严密共轴（Y = 3.52）。',
   },
@@ -151,7 +159,8 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     calloutStem: 40,
     calloutAnchor: [-1.5, 0.2, 0],
     labelAppearAt: 0.2,
-    roleTag: '前下端钩头带动枪机框首发装填 / 射击期间锁死在上机匣尾口绝不随动打脸',
+    roleTag:
+      '前下端钩头带动枪机框首发装填 / 射击期间锁死在上机匣尾口绝不随动打脸',
     description:
       '安置于上机匣顶部导槽内的非随动 T 形拉机柄：双指捏压左侧弹簧卡笋向后拉动时，前端下折钩扣拉动枪机框完成首发装填或排障；推回闭锁后卡笋自动咬合上机匣缺口，实弹射击期间保持静止不动。',
   },
@@ -193,7 +202,8 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     calloutStem: 44,
     calloutAnchor: [-0.4, 0.55, 0],
     labelAppearAt: 0.2,
-    roleTag: '斯通纳内膨胀气缸核心 / 顶部双六角螺钉冲铆气匙 / 右侧斜向辅助推机棘齿',
+    roleTag:
+      '斯通纳内膨胀气缸核心 / 顶部双六角螺钉冲铆气匙 / 右侧斜向辅助推机棘齿',
     description:
       '采用 8620 渗碳合金钢制造、内膛硬镀铬的 M4A1 全自动规格重尾枪机框：顶部双螺钉严密冲铆（Staked）漏斗形导气匙承接不锈钢气吹管燃气，将其导入枪机框内部与枪机气环构成的密闭膨胀腔，从而将枪机框本身变成无活塞连杆的同轴气缸。',
   },
@@ -202,7 +212,8 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     bomCode: 'U-06',
     nameZh: 'Carpenter 158 七突笋回转枪机（含抽壳钩/抛壳挺/气环/凸轮销）',
     calloutLabel: '七突笋回转枪机',
-    nameEn: 'Carpenter 158 7-Lug Rotating Bolt w/ Extractor, Gas Rings & Cam Pin',
+    nameEn:
+      'Carpenter 158 7-Lug Rotating Bolt w/ Extractor, Gas Rings & Cam Pin',
     group: 'slide',
     material: 'stainless',
     assembledPos: [2.45, 1.05, 0],
@@ -214,7 +225,8 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     calloutStem: 44,
     calloutAnchor: [-0.2, 0.35, 0],
     labelAppearAt: 0.4,
-    roleTag: '七枚径向闭锁突笋 + 抽壳钩构成八等分花瓣锁头 / 三道不锈钢活塞气环密封',
+    roleTag:
+      '七枚径向闭锁突笋 + 抽壳钩构成八等分花瓣锁头 / 三道不锈钢活塞气环密封',
     description:
       '军规 Carpenter 158 喷丸强化探伤（HPT/MPI）合金钢枪机：前端排布 7 枚径向闭锁突笋与右侧超宽抽壳钩爪、弹性柱塞抛壳挺，中段设三道错口不锈钢密封气环与矩形顶头凸轮销（Cam Pin），在枪机框螺旋槽导引下正反旋转 22.5° 完成刚性闭锁与解锁。',
   },
@@ -235,7 +247,8 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     calloutStem: 42,
     calloutAnchor: [-0.8, 0.15, 0],
     labelAppearAt: 0.42,
-    roleTag: '贯穿枪机中心孔 / 仅在凸轮销完全旋转闭锁后击锤方能触及尾钮确保不到位不击发',
+    roleTag:
+      '贯穿枪机中心孔 / 仅在凸轮销完全旋转闭锁后击锤方能触及尾钮确保不到位不击发',
     description:
       '通体硬镀铬防积碳烧蚀的多阶梯细长击针：由侧面开口销限位在枪机框内，当七突笋枪机尚未完全旋转闭锁时，枪机框底部遮蔽凸缘阻挡击锤敲击击针尾圆盘，从机械几何上彻底杜绝未闭锁早发事故。',
   },
@@ -257,7 +270,8 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     calloutStem: 42,
     calloutAnchor: [-0.2, 0.2, 0],
     labelAppearAt: 0.42,
-    roleTag: '尤金·斯通纳气吹原理精髓 / 无往复活塞质量实现极低枪口上跳与同轴质心',
+    roleTag:
+      '尤金·斯通纳气吹原理精髓 / 无往复活塞质量实现极低枪口上跳与同轴质心',
     description:
       '耐高温高压腐蚀的 347 奥氏体不锈钢细管：前端横销锁固在 A 字三角准星座导气孔内，中段经精准 S 形折弯穿过星形枪管螺母齿槽伸入上机匣，尾端圆润喷嘴在闭锁时严密插入枪机框气匙漏斗，直接将纯净推进燃气引回枪机框内部做功。',
   },
@@ -279,7 +293,8 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     calloutStem: 44,
     calloutAnchor: [0.2, 1.0, 0],
     labelAppearAt: 0.36,
-    roleTag: 'SOPMOD Block I 标志性四导轨 / 弹簧钩锁紧星形枪管螺母 + 内衬波纹铝反射隔热罩',
+    roleTag:
+      'SOPMOD Block I 标志性四导轨 / 弹簧钩锁紧星形枪管螺母 + 内衬波纹铝反射隔热罩',
     description:
       '美军特种部队与陆军步兵标配的骑士军备公司（Knight’s Armament Co.）M4 RAS 上护木：集成 12 点、3 点与 9 点钟三向 MIL-STD-1913 战术导轨（可挂载 AN/PEQ-15 激光指示器与战术手电）及两排散热圆孔，内壁铆接银白铝合金辐射隔热罩保护射手护木握持手免受气吹管高温灼伤。',
   },
@@ -300,7 +315,8 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     calloutStem: 44,
     calloutAnchor: [0.8, -0.95, 0],
     labelAppearAt: 0.36,
-    roleTag: '6 点钟皮卡汀尼底轨挂载垂直前握把 / 快拆后可直接加挂 M203 40mm 枪挂榴弹发射器',
+    roleTag:
+      '6 点钟皮卡汀尼底轨挂载垂直前握把 / 快拆后可直接加挂 M203 40mm 枪挂榴弹发射器',
     description:
       '与 RAS 上护木上下对合锁死在前端三角护木箍与后端 Delta 弹簧压环之间的铝合金下导轨：提供稳固的 6 点钟皮卡汀尼底轨用于安装 KAC 扫把柄垂直前握把；压下 Delta 压环即可徒手拆下下护木，直接利用枪管阶梯口挂载 M203 榴弹发射器。',
   },
@@ -321,7 +337,8 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     calloutStem: 46,
     calloutAnchor: [1.65, -2.15, 0],
     labelAppearAt: 0.24,
-    roleTag: '左侧奔马厂徽 PROPERTY OF U.S. GOVT. M4A1 CARBINE 铭文 / 右侧防误触围栏与 IUID 军资码',
+    roleTag:
+      '左侧奔马厂徽 PROPERTY OF U.S. GOVT. M4A1 CARBINE 铭文 / 右侧防误触围栏与 IUID 军资码',
     description:
       '全枪序列化核心受管制部件：7075-T6 模锻硬质阳极氧化铝制成，左侧弹匣井精刻柯尔特奔马徽标与「PROPERTY OF U.S. GOVT. M4A1 CARBINE CAL. 5.56 MM.」军产铭文及乒乓球拍式空仓挂机解脱杆，右侧设高耸防误触围栏（Fencing）环护弹匣释放钮并贴有美军国防部 IUID 二维码资产铭牌。',
   },
@@ -342,7 +359,8 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     calloutStem: 46,
     calloutAnchor: [13.2, 0.45, 0],
     labelAppearAt: 0.0,
-    roleTag: '1:7 右旋膛线稳定 62gr M855A1 / 准星座前方标志性 M203 阶梯缩径凹槽 / 护木内 SOCOM 重管段',
+    roleTag:
+      '1:7 右旋膛线稳定 62gr M855A1 / 准星座前方标志性 M203 阶梯缩径凹槽 / 护木内 SOCOM 重管段',
     description:
       '满足 MIL-B-11595E 军标的高压磁粉探伤 4150 铬钼钒钢 14.5 英寸卡宾枪管：内膛与弹膛全镀硬铬、1:7 英寸缠距精准稳定重弹头，后端旋入带 M4 加宽双供弹坡的枪管节套（Barrel Extension），前端准星座之外车削出极具辨识度的 M203 40mm 榴弹发射器前卡箍阶梯缩颈。',
   },
@@ -363,7 +381,8 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     calloutStem: 40,
     calloutAnchor: [0.2, 0.35, 0],
     labelAppearAt: 0.64,
-    roleTag: '上半周五道纵向泄气槽抑制枪口跳动 / 实心闭底防止卧姿射击扬起沙尘暴露位置',
+    roleTag:
+      '上半周五道纵向泄气槽抑制枪口跳动 / 实心闭底防止卧姿射击扬起沙尘暴露位置',
     description:
       '以 1/2×28 UNEF 螺纹配合锥形压溃垫圈（Crush Washer）定时锁紧于枪口：仅在上半圆周铣削 5 道纵向消焰槽而保留底部完全封闭——既有效打散炽热火药燃气保护夜视仪，又能在向下抑制枪口上跳的同时避免卧姿射击吹起地面尘土。',
   },
@@ -384,7 +403,8 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     calloutStem: 40,
     calloutAnchor: [0, 2.45, 0],
     labelAppearAt: 0.68,
-    roleTag: '平顶专用 F 标高准星座 / 双锥销横穿枪管刚性固定 / 集成导气室、M9 刺刀座与前背带环',
+    roleTag:
+      '平顶专用 F 标高准星座 / 双锥销横穿枪管刚性固定 / 集成导气室、M9 刺刀座与前背带环',
     description:
       'M4 卡宾枪灵魂剪影特征——一体模锻锰磷化钢 A 字形三角准星座（带平顶机匣专用 "F" 高度标记）：以两枚高强度锥形横销死死锁固在枪管上，同时承担高压导气箍、护木前箍限位、可调高低方形准星柱与护翼、底部 M9 刺刀卡笋以及包覆胶层的旋转前背带环五大功能。',
   },
@@ -403,7 +423,8 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     calloutStem: 44,
     calloutAnchor: [-3.85, -0.85, 0],
     labelAppearAt: 0.62,
-    roleTag: '与枪管及枪机框严格同轴直连 / 底部六孔定位导轨调节枪托长度 / 城堡螺母冲铆防松',
+    roleTag:
+      '与枪管及枪机框严格同轴直连 / 底部六孔定位导轨调节枪托长度 / 城堡螺母冲铆防松',
     description:
       '旋入下机匣尾塔螺纹并由四缺口城堡螺母（Castle Nut）与尾端定位板紧固的 7075-T6 铝合金圆筒：内部光滑直管直接容纳后坐缓冲器与复进簧，使后坐力沿枪管轴线笔直传导至射手肩窝（斯通纳直托布局），底部铣有 6 个圆形定位盲孔供伸缩枪托快速调节抵肩长度。',
   },
@@ -424,7 +445,8 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     calloutStem: 44,
     calloutAnchor: [-1.4, -0.45, 0],
     labelAppearAt: 0.22,
-    roleTag: '随枪机框同步直轴后坐 / 内置滑动钨合金块消除全自动闭锁枪机回跳（Bolt Bounce）',
+    roleTag:
+      '随枪机框同步直轴后坐 / 内置滑动钨合金块消除全自动闭锁枪机回跳（Bolt Bounce）',
     description:
       '专为 14.5 英寸高压卡宾导气系统升级的金色阳极氧化 H2 重型缓冲器（重约 4.6 盎司）：前端贴紧枪机框尾面同步后坐，腔内封装两枚高密度钨合金块与一枚钢块及橡胶隔垫，在枪机高速复进撞击闭锁瞬间产生二次滞后冲量以彻底抑制全自动连发枪机回跳，尾端配聚氨酯防撞头。',
   },
@@ -445,7 +467,8 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     calloutStem: 44,
     calloutAnchor: [-1.0, -0.7, 0],
     labelAppearAt: 0.22,
-    roleTag: '射击后坐期间实时压缩蓄能 / 释放势能驱动缓冲器与枪机框平顺复进推弹入膛',
+    roleTag:
+      '射击后坐期间实时压缩蓄能 / 释放势能驱动缓冲器与枪机框平顺复进推弹入膛',
     description:
       '贯穿整根尾托缓冲管的多圈螺旋压缩弹簧：尾端抵死缓冲管封闭底壁，前端套入 H2 缓冲器细颈；当枪机框与缓冲器后坐时沿轴向大幅压缩吸收后坐动能，随后释放储能平稳推回枪机框剥弹闭锁。',
   },
@@ -466,7 +489,8 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     calloutStem: 40,
     calloutAnchor: [-1.0, -3.2, 0],
     labelAppearAt: 0.0,
-    roleTag: '经典网格加强筋聚合物托身 / 捏压底部杠杆调节全长适应防弹插板携行与近战 CQB',
+    roleTag:
+      '经典网格加强筋聚合物托身 / 捏压底部杠杆调节全长适应防弹插板携行与近战 CQB',
     description:
       '高抗冲玻纤增强尼龙注塑成型的第二代 M4 加强筋“华夫格”伸缩托：套合于六档缓冲管外，手捏下方纹理杠杆拔出垂直定位销即可在 6 个档位间瞬时伸缩枪托长度，尾部配防滑菱纹橡胶抵肩底板与战术背带穿槽及底部旋转背带环。',
   },
@@ -484,7 +508,8 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     calloutStem: 40,
     calloutAnchor: [-2.0, -4.2, 0],
     labelAppearAt: 0.64,
-    roleTag: '经典后掠人体工学倾角 / 前缘中指承托凸台 + 两侧菱形防滑压纹 / 右上托住快慢机定位簧',
+    roleTag:
+      '经典后掠人体工学倾角 / 前缘中指承托凸台 + 两侧菱形防滑压纹 / 右上托住快慢机定位簧',
     description:
       '以长螺钉向上锁紧于下机匣握把座的黑色热固性高强度聚合物握把：两侧模压细密菱形防滑网格，前缘中部突起标志性 A2 中指分界凸棱以稳固湿滑或戴手套握持，右上端盲孔内压入快慢机定位顶针弹簧确保三档切换手感清脆。',
   },
@@ -522,7 +547,8 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     calloutStem: 44,
     calloutAnchor: [0.4, -1.1, 0],
     labelAppearAt: 0.7,
-    roleTag: '前端精磨主阻铁鼻扣住待击击锤 / 中央嵌套单发阻铁实现半自动断路防连发',
+    roleTag:
+      '前端精磨主阻铁鼻扣住待击击锤 / 中央嵌套单发阻铁实现半自动断路防连发',
     description:
       '安装在下机匣后火控销上的硬化钢弧形扳机组件，内槽铰接弹簧顶升的半自动单发阻铁（Disconnector）：向后扣动扳机（rz < 0）使前主阻铁鼻下沉释放击锤；在 SEMI 半自动档位下由单发阻铁中途接住回压击锤，松开扳机后交接回前主阻铁。',
   },
@@ -606,7 +632,8 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     calloutStem: 40,
     calloutAnchor: [1.1, -6.4, 0],
     labelAppearAt: 0.34,
-    roleTag: '贴合 STANAG 弯弧腔体提供恒定供弹张力 / 适应约 850 发/分全自动高射速',
+    roleTag:
+      '贴合 STANAG 弯弧腔体提供恒定供弹张力 / 适应约 850 发/分全自动高射速',
     description:
       '顺应 STANAG 铝合金弹匣弧度绕制的沉淀硬化不锈钢矩形螺旋弹簧，即便长期满弹战备携行并在高射速连发状态下依然能将每一发弹药及时推举至抱弹口。',
   },

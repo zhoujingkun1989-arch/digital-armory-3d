@@ -1,0 +1,934 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "m4a1",
+  "generatedAt": "2026-11-12T11:17:10.038590+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-lite-tts"
+  },
+  "uiMetaEn": {
+    "name": "Colt M4A1 Carbine",
+    "subtitle": "5.56×45mm NATO Direct-Impingement Quad-Rail Carbine",
+    "originCountry": "United States",
+    "weaponType": "Carbine",
+    "categoryLabel": "Carbine",
+    "actionMechanism": "Direct Impingement Gas · 7-Lug Rotary Bolt Lock",
+    "statusLabel": "In Vault · Strippable",
+    "description": "Engineered by Colt Defense from Eugene Stoner's AR-15/M16 architecture, the M4A1 represents the gold standard of modern modular combat carbines. It features a 14.5-inch stepped chrome-lined barrel with M203 notch, forged flat-top receiver, Knight's Armament quad-rail handguard, staked gas key bolt carrier group, and full-automatic fire-control mechanism.",
+    "highlights": [
+      "Stoner Direct Impingement & 7-Lug Rotary Bolt",
+      "KAC M4 RAS Quad Rail & 14.5\" Stepped Barrel",
+      "Detachable A2 Carry Handle & 6-Position Waffle Stock",
+      "Hardcoat Anodized Receiver & Dry-Film Gray STANAG Mag"
+    ],
+    "workbenchTitle": "Colt M4A1 3D Kinematics & Field Disassembly",
+    "workbenchSubtitle": "4 Modular Assemblies · 26 Precision Nodes · DI Gas Operation & 5.56×45mm Dynamic Cycle",
+    "cutawayLabel": "Bolt & Buffer Cutaway",
+    "cutawayTitle": "Switch to locked cutaway view focusing on staked gas key, rotary bolt, and in-line buffer assembly",
+    "searchPlaceholder": "Search component or code (e.g. Gas Tube, Bolt, Carry Handle, U-05)...",
+    "firingMilestoneLabel": "Muzzle Exit / Unlock",
+    "rateOfFire": "700–950 rpm",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0%",
+        "desc": "Complete Colt M4A1 14.5\" carbine in locked battery, showcasing the forged 7075-T6 hardcoat receiver, stepped barrel profile, A-frame front sight base, and KAC quad rail."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Standard USGI TM 9-1005-319-10 field disassembly: eject STANAG magazine, detach A2 carry handle, pop takedown pins, and withdraw the bolt carrier group and charging handle."
+      },
+      "upper_mag_strip": {
+        "label": "Sub-Assembly Strip",
+        "subLabel": "65%",
+        "desc": "Depress the delta ring to remove KAC RAS rail sections and heatshields, extract the seven-lug bolt and firing pin from the carrier, and strip the magazine follower and baseplate."
+      },
+      "full_explode": {
+        "label": "Armorer Overhaul",
+        "subLabel": "100%",
+        "desc": "Complete ordnance-level exploded view of all 26 components: barrel, birdcage hider, gas tube, receiver extension, H2 buffer, action spring, and full-auto fire control group."
+      }
+    },
+    "firingPhases": {
+      "m4a1_trigger_sear": {
+        "shortLabel": "Trigger & Hammer",
+        "title": "Phase 1 · Trigger Squeeze & Hammer Release",
+        "description": "Squeezing the curved trigger drops the primary sear nose from the hammer notch. Driven by its dual-wound torsion spring, the hammer swings forward through the carrier's bottom raceway."
+      },
+      "m4a1_pin_ignition": {
+        "shortLabel": "Primer Ignition",
+        "title": "Phase 2 · Firing Pin Strikes Cartridge Primer",
+        "description": "The hammer impacts the rear flange of the stepped firing pin, driving its tip into the primer of the chambered 5.56×45mm NATO round to ignite the propellant bed."
+      },
+      "m4a1_di_impingement": {
+        "shortLabel": "Gas Impingement",
+        "title": "Phase 3 · Direct Gas Bleed Through Stainless Tube",
+        "description": "As the bullet passes the front sight gas port, high-pressure combustion gas bleeds into the gas tube and travels rearward straight into the carrier's staked gas key."
+      },
+      "m4a1_cam_unlock_recoil": {
+        "shortLabel": "Cam Unlock & Recoil",
+        "title": "Phase 4 · Internal Gas Expansion & Bolt Cam Unlocking",
+        "description": "Gas expands inside the bolt-carrier chamber, shoving the carrier rearward while the cam pin rotates the bolt 22.5 degrees out of battery, flipping open the dust cover."
+      },
+      "m4a1_extract_eject": {
+        "shortLabel": "Extraction & Ejection",
+        "title": "Phase 5 · Casing Extraction & Plunger Deflection",
+        "description": "The heavy-duty extractor claw yanks the spent brass from the chamber, allowing the spring-loaded plunger ejector and brass deflector to kick it cleanly out to the two-o'clock quadrant."
+      },
+      "m4a1_buffer_feed_lock": {
+        "shortLabel": "Buffer Return & Lock",
+        "title": "Phase 6 · Counter-Recoil Feeding & Rotary Battery Lock",
+        "description": "The compressed buffer spring drives the carrier forward, stripping a fresh cartridge off the anti-tilt follower over dual M4 feed ramps before rotating the seven lugs into battery."
+      },
+      "m4a1_sear_reset": {
+        "shortLabel": "Disconnector Reset",
+        "title": "Phase 7 · Disconnector Handoff & Auto-Sear Timing",
+        "description": "Releasing the trigger transfers the recocked hammer from the disconnector back onto the primary trigger nose, resetting the fire-control group for the next semi or automatic cycle."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "从特战尖刀到全军图腾：柯尔特 M4A1 卡宾枪演进史",
+      "deck": "自越战卡宾型 XM177 的丛林烈焰中萌芽，至反恐战争中定义西方单兵模块化标准，M4A1 历经气吹导气优化与全自动火控重塑，成就了步兵武器史上不可替代的战术经典。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1965–1985",
+          "title": "短管宿命：从丛林短突到 XM4 联合战术构想",
+          "paragraphs": [
+            "在越南战场的湿热密林中，全长近一米的 M16A1 步枪让装甲乘员、通信兵及 MACV-SOG 特战分队感到局促。柯尔特公司应急研制了 CAR-15 与 XM177 系列短突击步枪。然而，将 20 英寸枪管骤然截短至 10 至 11.5 英寸后，火药燃气在枪管内膨胀不充分，导致导气孔压力骤增、未燃药柱在枪口剧烈喷发，伴随着高频卡壳与刺眼的火球。",
+            "进入 1980 年代，随着高机动多用途装甲车的大量装备以及空中突击战术的成形，美国陆军与海军陆战队迫切需要一种既能保持 M16A2 精度与弹道表现，又能自如进出战车座舱的紧凑型武器。1983 年，美军第 9 步兵师提出联合研制请求，皮卡汀尼兵工厂与柯尔特公司联合展开 XM4 研发计划，探索枪管长度、气动冲程与全枪配重之间的黄金平衡点。"
+          ],
+          "audioScript": "二十世纪六十年代，长逾一米的 M16 步枪在越南密林与直升机机舱内显得尤为冗长。特种部队尝试将枪管截短，却遭遇了严重的未燃火药喷溅与抽壳故障。八十年代初，面对机械化步兵对狭窄空间紧凑武器的迫切需求，柯尔特防务公司与美军联合启动了代号 XM4 的预研工程，一场平衡短枪管气动压力与射击精度的技术攻坚由此拉开帷幕。",
+          "audioUrl": "audio/m4a1/story_act1_zh.mp3",
+          "focusPartId": "m4a1_barrel",
+          "focusPartLabel": "14.5英寸镀铬阶梯枪管"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1986–1994",
+          "title": "破茧成蝶：阶梯缩颈、双供弹坡与特战全自动蜕变",
+          "paragraphs": [
+            "柯尔特总工程师团队经过严格的流体与外弹道测试，最终敲定了 14.5 英寸（368 毫米）的卡宾枪管长度。这一长度既能确保 M855 绿头弹在 300 米内保持碎裂杀伤初速，又大幅削减了携行全长。为了兼容下挂 M203 榴弹发射器的前部挂架，工程师在枪管三角准星座前方精密车削出一道标志性的阶梯缩颈，造就了识别度极高的 M4 轮廓。",
+            "然而初期的全自动试验暴露出致命隐患：短导气管使得循环射速飙升至每分钟 950 发以上，弹头在高速供弹时频繁撞卡在节套与机匣缝隙间。柯尔特工程师通过加深下机匣与节套连接处的导引斜面，创造出经典的 M4 双供弹坡；随后，美国特种作战司令部（USSOCOM）坚决废弃常规步兵 M4 的三发点射机构，换装纯粹可靠的全自动火控与防跳重型缓冲管，柯尔特型号 927——即 M4A1 正式定型。"
+          ],
+          "audioScript": "工程师们经过严谨测算，将枪管长度锁定在十四点五英寸，并在准星座前车削出容纳榴弹发射器的阶梯凹槽。为了根治射速暴增带来的推弹卡壳，柯尔特工程师精密重构了机匣进弹坡道，形成著名的 M4 双供弹坡。随后，特种作战司令部要求取消繁琐的三发点射齿轮，改回纯粹的全自动火控，配备防回跳重型缓冲器，一代名枪 M4A1 终于横空出世。",
+          "audioUrl": "audio/m4a1/story_act2_zh.mp3",
+          "focusPartId": "m4a1_lower_receiver",
+          "focusPartLabel": "柯尔特锻造全自动下机匣"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1995–2003",
+          "title": "机械精魄：斯通纳气动同轴链与导轨模块化革命",
+          "paragraphs": [
+            "M4A1 的核心机械灵魂在于尤金·斯通纳设计的直接气吹式（Direct Impingement）自动循环系统。高压燃气自不锈钢导气管直吹入枪机框顶部的铆固气匙，将枪机框内腔转化为微型膨胀活塞气缸。由于气动轴心完全与枪膛重合，射击时全枪无笨重活塞杆的往复偏心颠簸，枪口上跳极小。气环密封与凸轮销导引七突笋枪机旋转 22.5 度精准开锁，将紧凑轻量与高精度闭锁融为一体。",
+            "紧随其后的是著名的 SOPMOD Block I 特种作战特化改装。骑士军械公司（KAC）研制的 M4 RAS 护木取代了传统双层塑料护木，四面 MIL-STD-1913 皮卡汀尼导轨使得红点镜、激光指示器、战术强光灯与前握把得以无缝集成。机匣平顶化的皮轨配合可拆式 A2 提把照门，让 M4A1 由单一机械瞄准武器转变为多维态势感知的现代模块化武器平台。"
+          ],
+          "audioScript": "斯通纳气吹系统的机械精髓，在于燃气直入枪机框内部，将枪机尾部化为活塞。没有沉重的活塞连杆在枪管上方剧烈往复，后坐冲量完全沿枪膛同轴传递。配合硬镀铬七突笋回转闭锁，该枪实现了极致的紧凑与散布控制。而平顶机匣与骑士军械四导轨护木的加入，更开启了世界轻武器全附件模块化的崭新纪元。",
+          "audioUrl": "audio/m4a1/story_act3_zh.mp3",
+          "focusPartId": "m4a1_bolt_carrier",
+          "focusPartLabel": "全自动构型铆固气匙枪机框"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "2004–至今",
+          "title": "反恐沙场：中东血火洗礼与不可动摇的制式丰碑",
+          "paragraphs": [
+            "在阿富汗兴都库什山脉的峡谷交火与伊拉克费卢杰的逐屋近战中，M4A1 迎来了历史上最残酷的实战检验。面对超强度连续压制射击导致枪管过热破裂的极端状况，特战司令部迅速换装了护木内直径加粗的 SOCOM 重型枪管与 H2 防回跳缓冲器；同时引入沙色防倾倒托弹板与改进弹匣簧，彻底肃清了恶劣沙漠环境中的供弹故障隐患。",
+            "实战的严苛反馈最终促成了美军常规部队的全面换装。2014年起，美军推行 M4A1 PIP 升级计划，将陆军全部老旧 M4 翻新为 M4A1 全自动构型。即便在下一代班用武器（NGSW）选型的背景下，M4A1 凭借卓越的人体工程学、经过数十年实战验证的七突笋闭锁可靠性以及庞大的战术配件生态，依然是人类单兵枪械工程史上登峰造极的标杆图腾。"
+          ],
+          "audioScript": "从费卢杰的街巷攻坚到阿富汗的山地对决，M4A1 在漫长的反恐战争中经历了最严苛的血火淬炼。加粗的重型枪管、防回跳重型缓冲器与防倾斜弹匣托板的相继升级，让这支战术利刃愈发沉稳可靠。它不仅成为自由世界特战精英与常规步兵的标志性佩枪，更确立了二十一世纪步兵武器模块化设计的人体工学标准。",
+          "audioUrl": "audio/m4a1/story_act4_zh.mp3",
+          "focusPartId": "m4a1_ras_upper",
+          "focusPartLabel": "KAC M4 RAS 导轨护木"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "斯通纳内膨胀气缸与双冲铆气匙",
+          "tag": "同轴低后坐气动设计",
+          "summary": "不锈钢导气管将火药燃气直接导入枪机框内部微型膨胀室，利用气环密封与同轴对称推力推动枪机框后坐，彻底消除了传统长活塞带来的枪口偏转与剧烈重心偏移。气匙螺钉经双重机械深冲铆固，确保极端高射速下绝不松脱漏气。",
+          "focusPartId": "m4a1_bolt_carrier",
+          "focusPartLabel": "冲铆气匙枪机框"
+        },
+        {
+          "id": "bt2",
+          "title": "Carpenter 158 八等分七突笋回转闭锁",
+          "tag": "高抗疲劳军规闭锁",
+          "summary": "采用特种 Carpenter 158 渗碳钢锻造并经严格磁粉探伤，七个坚固的径向闭锁突笋与宽爪抽壳钩构成完美的圆周承压矩阵。22.5 度凸轮旋转快速开闭锁，能在 14.5 英寸短行程超高膛压冲击下实现极高闭锁强度与抽壳稳定性。",
+          "focusPartId": "m4a1_bolt",
+          "focusPartLabel": "七突笋回转枪机"
+        },
+        {
+          "id": "bt3",
+          "title": "KAC M4 RAS 模块化四导轨系统",
+          "tag": "SOPMOD 战术扩展基准",
+          "summary": "骑士军械公司研发的导轨护木通过弹簧卡爪锁紧枪管螺母，内衬双层铝合金反射隔热板，在不改动全枪基准精度的前提下提供全向 MIL-STD-1913 导轨接口，使步兵在战地黑暗环境中自由挂载光电夜视与前握把系统。",
+          "focusPartId": "m4a1_ras_upper",
+          "focusPartLabel": "KAC RAS 护木"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1983",
+          "title": "XM4 卡宾枪联合预研立项",
+          "detail": "美国陆军与柯尔特公司达成研发协议，旨在为装甲车辆乘员与快速反应部队研制一款兼容 M16A2 弹药的紧凑型武器。"
+        },
+        {
+          "year": "1994",
+          "title": "M4 与 M4A1 正式获得军方定型",
+          "detail": "美军正式定型 M4 卡宾枪；针对特种作战司令部高强度交火需求，同步批准装备全自动火控构型的 M4A1（柯尔特 Model 927）。"
+        },
+        {
+          "year": "1997",
+          "title": "SOPMOD Block I 模块化计划列装",
+          "detail": "特战司令部全面配发 KAC M4 RAS 四导轨护木、红点反射瞄准镜与战术激光指示器，确立了平顶机匣战术附件集成标准。"
+        },
+        {
+          "year": "2002",
+          "title": "SOCOM 重枪管与 H2 缓冲器改进",
+          "detail": "为防止阿富汗特种作战高烈度连续全自动射击引起枪管爆裂，正式列装护木下加粗的重型枪管与两钨一钢 H2 缓冲器。"
+        },
+        {
+          "year": "2010",
+          "title": "美军增强型防倾斜托弹板全面换装",
+          "detail": "军方全面淘汰旧款易卡滞托弹板，在 STANAG 弹匣中普及四向防倾斜沙色工程塑料托弹板，大幅降低风沙下推弹故障率。"
+        },
+        {
+          "year": "2014",
+          "title": "M4A1 PIP 美军全军步枪升级计划",
+          "detail": "美国陆军启动生产改进计划（PIP），将常规部队所有现役三发点射 M4 统一重组为重枪管全自动 M4A1 构型。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Forged in the Sandbox: The Evolution of the Colt M4A1 Carbine",
+      "deck": "Tracing its lineage from the jungles of Vietnam to global counter-terror operations, the M4A1 revolutionized modern combat ergonomics, modular weapon integration, and direct-impingement reliability.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1965–1985",
+          "title": "The Short-Barrel Conundrum: From XM177 to the XM4 Project",
+          "paragraphs": [
+            "During the Vietnam War, the full-length 39-inch M16A1 proved ungainly inside tight jungle canopies, armored troop transports, and utility helicopters. Colt responded with specialized commando derivatives like the XM177 series. Truncating the barrel to 10 or 11.5 inches, however, drastically curtailed dwell time and produced violent port pressures, spitting unburnt powder flashes while inflicting severe cyclic extraction failures.",
+            "By the early 1980s, the rapid mechanization of US ground forces and the advent of high-tempo air assault operations resurrected the requirement for a compact infantry weapon. The US Marine Corps and 9th Infantry Division sought a carbine sharing operational commonality and ammunition compatibility with the M16A2 rifle. In 1983, the US Army Armament R&D Center at Picatinny and Colt launched the XM4 development program, seeking an ideal harmonic balance between barrel length, chamber pressure, and portability."
+          ],
+          "audioScript": "During the Vietnam War, the full-length M16 proved clumsy in dense jungle foliage and tight helicopter cabins. Early short-barrel variants suffered from violent port pressures and blinding muzzle blast. In nineteen eighty-three, the United States Army and Colt launched the XM4 program to engineer a purpose-built carbine that retained the ballistic potency of the full-size service rifle in a compact, combat-ready envelope.",
+          "audioUrl": "audio/m4a1/story_act1_en.mp3",
+          "focusPartId": "m4a1_barrel",
+          "focusPartLabel": "14.5\" Chrome-Lined Stepped Barrel"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1986–1994",
+          "title": "Refining the Platform: Feed Ramps, Stepped Barrel, and Special Ops Auto",
+          "paragraphs": [
+            "Colt engineers subjected various prototypes to exhaustive ballistic profiling, converging on a 14.5-inch barrel length. This maintained lethal terminal fragmentation for 62-grain penetrator ammunition out to 300 meters while keeping the weapon extremely agile. To accommodate the front mounting bracket of the M203 40mm grenade launcher, designers introduced a precision step-down contour forward of the front sight base, cementing the iconic silhouette of the modern carbine.",
+            "High cyclic rates in the shortened system introduced dangerous double-feeds and nose-dive jams. Colt answered by extending the feed ramps from the barrel extension directly into the upper receiver forging, creating the legendary M4 extended feed ramps. While conventional forces adopted the burst-firing M4 in 1994, the United States Special Operations Command demanded sustained suppressive capability, procuring the Colt Model 927 featuring a dedicated full-automatic fire control group: the M4A1."
+          ],
+          "audioScript": "Engineers settled on a fourteen-and-a-half-inch barrel, machining an iconic step-down contour to host forty-millimeter grenade launchers. When violent cycling speeds triggered severe chambering jams, Colt carved extended feed ramps across the barrel extension and receiver. Special Operations Command rejected the three-round burst mechanism, demanding a pure full-automatic fire control group and heavy recoil buffers, officially christening the M4A1.",
+          "audioUrl": "audio/m4a1/story_act2_en.mp3",
+          "focusPartId": "m4a1_lower_receiver",
+          "focusPartLabel": "Colt Forged Lower Receiver"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1995–2003",
+          "title": "Mechanical Soul: Stoner's In-Line Vector and the SOPMOD Paradigm",
+          "paragraphs": [
+            "The mechanical core of the M4A1 lies in Eugene Stoner's internal expansion gas system. Rather than striking an external off-axis piston rod, high-pressure propellant gas travels down a stainless-steel tube directly into the carrier's staked gas key. The interior of the bolt carrier acts as a self-contained cylinder, expanding gas to cam the bolt unlocked. With all dynamic reciprocating masses aligned strictly in-line with the bore axis, muzzle flip is extraordinarily minimal.",
+            "This mechanical purity was matched by a revolution in weapon adaptability: the SOPMOD Block I program. Knight's Armament Company delivered the M4 RAS quad-rail system, replacing polymer handguards with rigid MIL-STD-1913 Picatinny rails. Combined with a flat-top flattop receiver, operators could clamp reflexive red dot sights, infrared target illuminators, visible white lights, and vertical forward grips, transforming the M4A1 into the ultimate modular mission-adaptable carbine."
+          ],
+          "audioScript": "Stoner's direct impingement architecture routes high-pressure gas directly into the bolt carrier, turning the assembly into an internal expansion cylinder. Because moving recoil masses travel strictly in line with the bore axis, muzzle climb is extraordinarily tame. When Knight's Armament added four-way Picatinny handguards, the M4A1 became the modular foundation for modern electro-optical warfare.",
+          "audioUrl": "audio/m4a1/story_act3_en.mp3",
+          "focusPartId": "m4a1_bolt_carrier",
+          "focusPartLabel": "Full-Auto Staked Bolt Carrier Group"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "2004–Present",
+          "title": "Trial by Fire: Middle Eastern Crucible and Universal Standardization",
+          "paragraphs": [
+            "The Global War on Terror subjected the M4A1 to extreme operational stress across the dusty alleys of Fallujah and the mountain passes of Afghanistan. Sustained emergency suppressive fire exposed vulnerability to barrel ruptures. In response, SOCOM transitioned to a heavier barrel profile under the handguard and issued the H2 buffer featuring dual tungsten weights to eradicate bolt bounce. Enhanced tan polymer followers and improved magazine springs permanently eliminated feeding stoppages.",
+            "Battlefield validation proved so overwhelming that the US Army initiated the M4A1 Product Improvement Program (PIP) in 2014, upgrading its entire inventory of legacy M4s to the heavier full-automatic M4A1 standard. Even as next-generation infantry rifles emerge, the Colt M4A1 stands as an enduring engineering monument, having defined modern combat weapon modularity and ergonomic mastery for over three decades."
+          ],
+          "audioScript": "From urban raids in Iraq to rugged mountain ambushes across Afghanistan, the M4A1 proved its mettle under relentless operational combat. Upgrades including thicker barrel profiles, anti-bounce tungsten buffers, and anti-tilt magazine followers turned an already formidable carbine into a bulletproof warfighter standard. It remains the quintessential modern combat rifle against which all peers are measured.",
+          "audioUrl": "audio/m4a1/story_act4_en.mp3",
+          "focusPartId": "m4a1_ras_upper",
+          "focusPartLabel": "KAC M4 RAS Upper Rail"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Internal Expansion Chamber & Staked Gas Key",
+          "tag": "In-Line Recoil Architecture",
+          "summary": "By piping gas straight into the bolt carrier cavity, the system eliminates heavy off-axis operating rods and associated muzzle climb. Deep mechanical staking of the carrier key fasteners prevents gas leaks under punishing cyclic temperatures and full-auto shock loads.",
+          "focusPartId": "m4a1_bolt_carrier",
+          "focusPartLabel": "Staked Bolt Carrier"
+        },
+        {
+          "id": "bt2",
+          "title": "Carpenter 158 7-Lug Rotary Bolt Geometry",
+          "tag": "High-Pressure Battery Lock",
+          "summary": "Machined from shot-peened Carpenter 158 alloy and subjected to magnetic particle inspection, seven radial locking lugs mate symmetrically into the barrel extension. A 22.5-degree cam rotation unlocks and seals high-pressure rounds reliably within shortened carbine cycle times.",
+          "focusPartId": "m4a1_bolt",
+          "focusPartLabel": "7-Lug Rotary Bolt"
+        },
+        {
+          "id": "bt3",
+          "title": "KAC M4 RAS Rail Adapter System",
+          "tag": "SOPMOD Modular Standard",
+          "summary": "Knight's Armament engineered an aluminum quad-rail handguard that clamps rigidly behind the delta ring without disturbing barrel alignment. Featuring integral internal heat shields, it established the modern gold standard for attaching optics, lasers, and weapon lights.",
+          "focusPartId": "m4a1_ras_upper",
+          "focusPartLabel": "KAC RAS Quad Rail"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1983",
+          "title": "XM4 Joint Carbine Program Initiated",
+          "detail": "The US Army and Colt establish formal R&D collaboration to design a lightweight carbine replacement for the M16A2."
+        },
+        {
+          "year": "1994",
+          "title": "Type Classification of M4 and M4A1",
+          "detail": "The Department of Defense formally classifies the burst-fire M4 alongside the USSOCOM full-auto Colt Model 927 as the M4A1."
+        },
+        {
+          "year": "1997",
+          "title": "SOPMOD Block I Deployment",
+          "detail": "USSOCOM issues the Knight's Armament quad rail, reflex sights, and infrared illuminators, launching the modular weapon era."
+        },
+        {
+          "year": "2002",
+          "title": "SOCOM Heavy Barrel & H2 Buffer Overhaul",
+          "detail": "Upgraded thicker barrel profiles and tungsten-weighted H2 buffers are fielded to prevent catastrophic cook-offs and bolt bounce."
+        },
+        {
+          "year": "2010",
+          "title": "Enhanced Tan Anti-Tilt Follower Standardized",
+          "detail": "US military issues improved tan four-way anti-tilt magazine followers, eliminating feeding tilt stoppages in desert operations."
+        },
+        {
+          "year": "2014",
+          "title": "US Army Launches M4A1 PIP Fleet Upgrade",
+          "detail": "The Army begins converting all active-duty three-round burst M4 carbines into heavy-barrel, full-auto M4A1 standard configurations."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "m4a1_upper_receiver": {
+      "partId": "m4a1_upper_receiver",
+      "bomCode": "U-01",
+      "calloutLabelEn": "Flat-Top Upper Receiver",
+      "zh": {
+        "roleTag": "MIL-STD-1913 平顶机匣 / 气吹枪机导轨核心基座",
+        "overview": "该部件是卡宾枪上半部的核心承力主体，通过前后销轴与下机匣铰接。其前端承插旋紧14.5英寸枪管节套，顶部机加工出贯通的皮卡汀尼导轨，右侧集成有辅助推机柄与三角导壳块。",
+        "craftAndMaterial": "采用高强度7075-T6航空铝合金精密模锻成型，表面经军规MIL-A-8625三级硬质阳极氧化处理。其内膛精密拉削有光滑的枪机框导向肋条，右侧三角导壳块可有效偏转抛出的高温弹壳。",
+        "kinematicRole": "射击全程中作为静止结构基准，引导枪机框作同轴直线往复运动并承受膨胀燃气反作用力。不完全分解时抽出后插销即可向上折转机匣，完全分解进度达百分之六十二时与下机匣完全分离。",
+        "designHighlight": "下内侧专门铣削出延伸入枪管节套的M4双加宽斜坡供弹道，彻底根除了早期短卡宾枪全自动高射速下钝头弹药容易顶壳卡滞的机械顽疾。",
+        "audioScript": "眼前的平顶锻造上机匣是整支步枪的机械骨架。它采用航空级铝合金锻造，内部引导枪机框直线后坐，右侧的斜角导壳块能防止炽热弹壳烫伤左撇子射手，下侧加宽的供弹坡更是保证全自动连发顺畅的核心设计。",
+        "audioUrl": "audio/m4a1/parts/m4a1_upper_receiver_zh.mp3"
+      },
+      "en": {
+        "roleTag": "MIL-STD-1913 Flattop Upper / Bolt Carrier Guide Foundation",
+        "overview": "This component serves as the structural core of the upper assembly, mating to the lower receiver via takedown pins. It threads tightly around the 14.5-inch barrel extension while integrating a full-length Picatinny rail and an angled brass deflector.",
+        "craftAndMaterial": "Forged from aerospace-grade 7075-T6 aluminum and finished with a Type Three hardcoat anodized layer. Internal guide rails are precision-broached to minimize bolt carrier drag, while the outer shell incorporates an integrated forward assist housing.",
+        "kinematicRole": "Acts as a stationary datum throughout firing, guiding the carrier linearly while absorbing gas pressure. It pivots upward when the rear takedown pin is pushed, separating completely during advanced armorer teardown around 62 percent disassembly.",
+        "designHighlight": "Features extended M4 feed ramps cut directly into the lower front lug, bridging smoothly with the barrel extension to eliminate steep bullet presentation jams during intense cyclic fire.",
+        "audioScript": "This forged flattop upper receiver forms the upper structural backbone of the M4A1. Precision-broached guide tracks inside allow the bolt carrier to cycle smoothly, while the triangular deflector reliably angles spent brass away from left-handed shooters during high-volume tactical fire.",
+        "audioUrl": "audio/m4a1/parts/m4a1_upper_receiver_en.mp3"
+      }
+    },
+    "m4a1_carry_handle": {
+      "partId": "m4a1_carry_handle",
+      "bomCode": "U-02",
+      "calloutLabelEn": "Detachable A2 Carry Sight",
+      "zh": {
+        "roleTag": "可拆式机械瞄具 / 0-2近战与远距双觇孔高低转轮",
+        "overview": "该部件是美军制式可拆卸A2提把机械照门总成，通过左侧两枚大型滚花螺母夹固于平顶导轨上方。其后端护翼内集成双孔径翻折觇孔，并与枪口三角准星构成标准瞄准基准轴线。",
+        "craftAndMaterial": "主体由模锻铝合金精密铣削制成，螺杆与内部齿轮盘采用磷化碳钢耐磨处理。护翼内部装有弹簧滚珠定位的微调棘轮，两组翻转觇孔分别针对近战大孔径与远程微孔精密射击。",
+        "kinematicRole": "射击过程中牢固锁紧在机匣顶导轨上保持零位稳定，不参与任何活动往复机构。野战分解最初百分之六阶段，旋松左侧滚花螺母即可向侧上方快速滑脱卸下。",
+        "designHighlight": "整合了历经越战验证的6杠3射程调节轮与风偏微调轮，既保留了经典提携携行功能，又能让射手在数百米距离内无需工具瞬间修正弹道落点。",
+        "audioScript": "这是美军经典的A2可拆卸提把照门。两枚粗壮的滚花螺母能将它牢牢锁定在皮卡汀尼导轨上。后部设有双孔径翻转觇孔与射程转轮，即使在未加装红点或光学瞄镜的恶劣环境下，也能提供绝对可靠的机械瞄准基线。",
+        "audioUrl": "audio/m4a1/parts/m4a1_carry_handle_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Detachable Iron Sight Assembly / 0-2 Dual Peep & Elevation Turret",
+        "overview": "This component is the standard detachable USGI carry handle assembly, clamped to the flattop rail using dual knurled thumbscrews. Its rear housing encloses a flip-aperture peep sight perfectly co-aligned with the front triangular sight post.",
+        "craftAndMaterial": "Constructed from forged aluminum alloy with manganese-phosphate steel windage and elevation click drums. The sight apertures feature hardened detent pins allowing positive clicks between wide close-range and tiny long-range apertures.",
+        "kinematicRole": "Remains static on the rail during all cycling stages to maintain an exact optical zero. During field stripping at the six percent mark, loosening both side thumbscrews releases the clamping bar to slide the assembly off.",
+        "designHighlight": "Incorporates elevation indexing calibrated up to 600 meters, ensuring consistent iron-sight point of impact without modifying the fixed front sight base.",
+        "audioScript": "The detachable A2 carry handle clamps over the upper rail using dual captive thumb nuts. Inside the rear protective ears sits a dual-aperture flip sight with windage and range click drums, providing a rock-solid backup sighting line if optical sights fail.",
+        "audioUrl": "audio/m4a1/parts/m4a1_carry_handle_en.mp3"
+      }
+    },
+    "m4a1_charging_handle": {
+      "partId": "m4a1_charging_handle",
+      "bomCode": "U-03",
+      "calloutLabelEn": "T-Charging Handle",
+      "zh": {
+        "roleTag": "非随动T形手动装填柄 / 首发装填与排障拉机具",
+        "overview": "该拉机柄纵向滑置于上机匣顶部内槽，前端钩形卡脚咬合枪机框气匙前缘。其左侧带有一道弹簧按压战术卡笋，用于在复进到位时锁定于上机匣侧面缺口内。",
+        "craftAndMaterial": "主体采用7075-T6高强度锻造铝合金铣制而成，经极细喷砂与黑色硬质阳极氧化处理。柄体长槽经过精密圆角过渡以消除应力集中，左侧卡笋枢轴销为硬化合金钢冲压定位。",
+        "kinematicRole": "仅在首发装填或排除卡壳故障时由射手手动向后拉动枪机框开锁压缩缓冲簧。击发与自动循环期间卡笋紧扣机匣保持静止不随动，野战分解达百分之十八时顺导槽向后滑出机匣。",
+        "designHighlight": "非随动设计避免了射击时拉机柄往复撞击射手面颊或下颌，其内藏式气吹导槽在早期原型中还能辅助导流部分高温燃气远离射手呼吸面区。",
+        "audioScript": "采用铝合金锻造的T形拉机柄安置在上机匣内。用食指与中指捏动左侧卡笋向后拉，前端挂钩就会带动机机框后退完成首发上膛。射击时它始终保持静止，绝不会像随动拉柄那样撞击射手的面颊。",
+        "audioUrl": "audio/m4a1/parts/m4a1_charging_handle_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Non-Reciprocating T-Handle / Manual Cocking & Stoppage Clearance",
+        "overview": "This handle slides along a dedicated channel in the upper receiver, engaging the bolt carrier gas key with its downward front lug. Its spring-loaded left latch locks tightly into an upper receiver notch when fully forward.",
+        "craftAndMaterial": "Precision machined from 7075-T6 forged aluminum with a low-friction hardcoat anodized finish. The central spine incorporates radiused transitions to endure aggressive one-handed mortaring, paired with a heat-treated steel latch pin.",
+        "kinematicRole": "Operated manually by the shooter to rack the carrier during initial loading or malfunction clearance. During live cycling it stays locked stationary, disengaging rearward out of the receiver channel at eighteen percent disassembly.",
+        "designHighlight": "The non-reciprocating architecture prevents violent cycling against the shooter's facial cheek weld, providing a safe, streamlined snag-free external contour.",
+        "audioScript": "The forged T-shaped charging handle rides along the upper receiver ceiling. Squeezing its spring latch unlocks the hook, drawing the bolt carrier back to chamber the initial cartridge. During continuous live fire, it stays locked motionless to protect the shooter's face.",
+        "audioUrl": "audio/m4a1/parts/m4a1_charging_handle_en.mp3"
+      }
+    },
+    "m4a1_dust_cover": {
+      "partId": "m4a1_dust_cover",
+      "bomCode": "U-04",
+      "calloutLabelEn": "Ejection Port Dust Cover",
+      "zh": {
+        "roleTag": "弹簧折翻抛壳窗防护盖 / 异物自防与后坐自动击开",
+        "overview": "该防尘盖铰接于上机匣右侧抛壳窗下沿的纵向销轴上，内置高扭矩发条扭簧。闭合时其中心弹簧钢珠卡入机匣上缘锁槽，完全密封抛壳口与内部枪机总成。",
+        "craftAndMaterial": "盖板由高韧性低碳钢冲压冷作硬化成型，内外经厚层锰系磷化防锈处理。表面冲压有两道纵向加强筋，中心安装带预压弹簧的铜合金定位卡珠总成。",
+        "kinematicRole": "闭合状态下静止密封，击发后枪机框开始后坐膨胀或前推到位瞬间，枪机框外凸轮侧面挤脱定位钢珠，扭簧瞬间驱动盖板向下弹开。分解至百分之六十六时随铰链销拆解。",
+        "designHighlight": "全被动纯机械式开启动作，无需任何电气控制或联动摇臂，仅利用枪机框外轮廓斜面推挤即可零延迟翻开，极大提高了热带雨林与中东荒漠环境下的防沙可靠性。",
+        "audioScript": "这枚冲压钢质防尘盖平时紧紧封闭抛壳窗，能将沙漠泥沙彻底阻隔在核心机件之外。只要扣动扳机，枪机框后坐的斜面就会瞬间顶开弹珠卡笋，强力扭簧立刻驱动它自动向下弹开，绝不阻碍弹壳抛出。",
+        "audioUrl": "audio/m4a1/parts/m4a1_dust_cover_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Spring-Loaded Port Cover / Passive Environmental Seal & Auto-Deployment",
+        "overview": "This cover hinges along a longitudinal steel pin under the ejection port, driven by a torsion spring. When closed, a spring-loaded ball detent snaps into a detent recess above the port to seal the chamber.",
+        "craftAndMaterial": "Formed from stamped sheet carbon steel, manganese phosphated for extreme corrosion defense. Twin stamped ribs provide structural rigidity, housing a precision sprung detent cylinder across its upper edge.",
+        "kinematicRole": "Remains latched shut until firing, when the bolt carrier's rearward stroke cams the ball detent inward, causing the torsion spring to flick the door down. Removed along with its hinge pin around 66 percent disassembly.",
+        "designHighlight": "A purely mechanical fail-safe design that opens automatically upon the very first movement of the carrier, sealing vital internals from mud and fine silt until the trigger is pulled.",
+        "audioScript": "Mounted over the right ejection window, this stamped steel cover keeps blowing grit out of the action. When a shot is fired, the rearward movement of the bolt carrier displaces its detent ball, allowing the integrated torsion spring to instantly pop it open.",
+        "audioUrl": "audio/m4a1/parts/m4a1_dust_cover_en.mp3"
+      }
+    },
+    "m4a1_bolt_carrier": {
+      "partId": "m4a1_bolt_carrier",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Full-Auto Bolt Carrier",
+      "zh": {
+        "roleTag": "全自动型重尾机框 / 膨胀气室兼连动凸轮转换中枢",
+        "overview": "该机框是导气系统的动力输出核心与惯性主要载体，水平滑置在上机匣内部导轨上。顶部双螺钉严密冲铆有硬铬气匙，右侧铣削有辅助推机棘齿，前端空腔容纳七突笋枪机。",
+        "craftAndMaterial": "选用AISI 8620渗碳合金钢精密锻造铣削，外部重磷化耐磨，内部气室与气匙内壁镜面硬镀铬。气匙紧固螺钉经冲压机深冲铆紧防震松，右侧弧面带有六道斜向受力凹槽。",
+        "kinematicRole": "阶段四中接收气吹管冲入的高压燃气在内腔膨胀后坐，通过螺旋凸轮槽驱动枪机回转22.5度开锁并压倒击锤。后退终点压倒全自动连发阻铁，分解进度达百分之十八时从机匣尾端抽出。",
+        "designHighlight": "采用M16全重封闭式尾裙设计，增大了整体后坐惯性质量，能大幅延缓开锁时刻并降低恶劣连发震颤，同时底面完整下压全自动阻铁凸耳确保可靠连发循环。",
+        "audioScript": "全自动构型的重尾机框是气吹系统的做功心脏。高压燃气通过顶部坚固铆接的气匙冲入机框内腔，驱动整个机框后坐，再通过螺旋凹槽强行扭转内部枪机完成开锁，其加重尾部能有效平抑全自动连发后坐。",
+        "audioUrl": "audio/m4a1/parts/m4a1_bolt_carrier_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Full-Auto M16 Profile Carrier / Internal Expansion Chamber & Cam Driver",
+        "overview": "This heavy bolt carrier serves as the primary reciprocating mass, cycling along the broached upper receiver tracks. It mounts a staked, chrome-lined gas key on top and encloses the rotating bolt within its inner expansion cylinder.",
+        "craftAndMaterial": "Machined from forged AISI 8620 carburized alloy steel with a manganese phosphate outer finish and chrome-lined bore. The gas key Grade Eight fasteners are intensely staked to prevent loosening under extreme thermal shock.",
+        "kinematicRole": "During Phase Four, incoming gas pushes against the carrier bore, forcing it back so its curved cam slot rotates the bolt 22.5 degrees to unlock. It disengages from the receiver tracks at eighteen percent disassembly.",
+        "designHighlight": "Retains the full-mass M16 shroud geometry, which delays chamber unlock to drop residual pressure while reliably tripping the auto sear during cyclic automatic fire.",
+        "audioScript": "This full-auto bolt carrier forms the direct-impingement engine. High-pressure gas enters the staked top gas key, expanding inside the carrier's chrome cylinder to push it rearward. Its internal helical cam track forces the bolt to unlock, while the extended tail trips the full-auto sear.",
+        "audioUrl": "audio/m4a1/parts/m4a1_bolt_carrier_en.mp3"
+      }
+    },
+    "m4a1_bolt": {
+      "partId": "m4a1_bolt",
+      "bomCode": "U-06",
+      "calloutLabelEn": "7-Lug Rotating Bolt",
+      "zh": {
+        "roleTag": "七突笋回转闭锁枪机 / 承受弹底高压与抽壳抛壳总成",
+        "overview": "该枪机同轴安装在枪机框前端膨胀孔内，弹底窝外周环列七枚径向闭锁突笋。右侧凹槽嵌入强力弹簧抓壳钩，窝底右下方布置有弹性柱塞抛壳挺与三道交叉气环。",
+        "craftAndMaterial": "采用军规Carpenter 158特种渗碳钢经高温热处理与微粒喷丸强化，每只出厂均通过高压试射与磁粉探伤。表面磷化吸油，尾部安装三道错位开口的不锈钢弹性活塞环。",
+        "kinematicRole": "阶段一至二紧锁于枪管节套阻断五万五千磅火药高压，阶段四在凸轮销带动下旋转开锁并带走空壳，阶段五挺壳，阶段六推弹入膛回转闭锁。完全分解至百分之四十时拔离机框。",
+        "designHighlight": "巧妙利用抽壳钩占据第八突笋缺口构成八等分星状闭锁花瓣，将极高弹底轴向推力均衡扩散到枪管节套突笋根部，以仅数十克净重实现近乎绝对的承压刚性。",
+        "audioScript": "采用特种合金钢锻造的七突笋枪机是抵抗弹药爆炸高压的最终防线。它的头部排布着七枚紧密闭锁齿和一枚坚固的抓壳钩，尾部的三道不锈钢气环在气吹燃气冲入瞬间充当活塞环，确保内腔气密做功。",
+        "audioUrl": "audio/m4a1/parts/m4a1_bolt_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Seven-Lug Rotary Bolt Head / High-Pressure Chamber Lock & Extractor Core",
+        "overview": "This component seats within the forward chamber of the bolt carrier, featuring seven radial locking lugs around the recessed bolt face. It houses a spring-powered claw extractor, a plunger ejector, and three split gas rings on its tail.",
+        "craftAndMaterial": "Machined from Carpenter 158 alloy steel, shot-peened, and individually verified by High-Pressure Proof and Magnetic Particle Inspection. Fitted with three heat-resistant staggered stainless steel rings to seal propellant gasses.",
+        "kinematicRole": "Locks firmly into the barrel extension during Phase One and Two to contain 55,000 PSI chamber pressure, unlocking in Phase Four via cam pin rotation. It pulls clear of the carrier at forty percent disassembly.",
+        "designHighlight": "Omits an eighth lug to seat an oversized extractor claw, maximizing structural shear area across seven balanced contact points within an extremely compact circular diameter.",
+        "audioScript": "Crafted from Carpenter 158 steel and magnetic-particle tested, this seven-lug bolt contains intense firing pressures. As gas enters the carrier, three rear gas rings seal the pressure, driving the cam pin to rotate these lugs out of battery to extract the spent brass casing.",
+        "audioUrl": "audio/m4a1/parts/m4a1_bolt_en.mp3"
+      }
+    },
+    "m4a1_firing_pin": {
+      "partId": "m4a1_firing_pin",
+      "bomCode": "U-07",
+      "calloutLabelEn": "Hard-Chromed Firing Pin",
+      "zh": {
+        "roleTag": "浮动式阶梯击针 / 底火撞击发火与未闭锁阻挡防早发",
+        "overview": "该击针纵向贯穿枪机和枪机框同轴中心孔，尾部带有凸出受力圆盘，前部为阶梯状纤细针尖。其尾段由穿插在枪机框侧壁的开口销实施轴向浮动限位。",
+        "craftAndMaterial": "选用高韧性优质合金钢整体车削，表面全浸式硬镀铬镜面抛光处理。圆锥形撞击针尖与细颈过渡段经精确滚光淬火，具有极佳的抗高温燃气烧蚀与耐反复冲击疲劳性能。",
+        "kinematicRole": "阶段一被阻铁释放的回转击锤猛烈撞击尾盘，针尖贯穿弹底窝刺破底火引燃发射药。随后在底火残压反推与自由浮动状态下复位。分解进度达百分之四十二时拔出开口销即可倒出。",
+        "designHighlight": "击针尾圆盘直径与机框凸槽紧密配合：只有当凸轮销旋入完全闭锁位置时击针尾盘才露头受击，若枪机未彻底转死闭锁，击锤只能砸在机框横梁上，彻底杜绝开锁炸膛。",
+        "audioScript": "这根通体镀铬的阶梯击针自由浮动在枪机中心轴线上。击锤猛烈敲击它的尾部圆盘，将冲量精准传递到子弹底火上。巧妙的几何设计保证只有在七个突笋完全旋转锁死后，击锤才打得着它，避免了开锁炸膛危险。",
+        "audioUrl": "audio/m4a1/parts/m4a1_firing_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Free-Floating Stepped Firing Pin / Primer Percussion & Out-of-Battery Interlock",
+        "overview": "This pin traverses the concentric bore of the carrier and bolt, featuring an enlarged rear striking collar and a fine stepped tip. It is retained loosely within the carrier by a transverse cotter retaining pin.",
+        "craftAndMaterial": "Precision machined from high-tensile alloy steel and finished with full-immersion hard chrome plating. The hemispherical striking tip is polished smooth to resist carbon erosion and repeated shock loading.",
+        "kinematicRole": "Struck by the falling hammer in Phase Two, throwing its floating mass forward to pierce the primer cup before bouncing free. Extracted rearward at 42 percent disassembly after withdrawing the retaining cotter pin.",
+        "designHighlight": "Interlocks mechanically with the cam pin: the pin's collar can only travel far enough forward to contact the primer when the bolt is rotated into full battery, eliminating catastrophic out-of-battery ignition.",
+        "audioScript": "This hard-chromed, free-floating firing pin rides through the bolt's centerline. When the hammer falls, it drives this pin forward into the 5.56 cartridge primer. The collar is physically blocked from striking forward unless the bolt is safely rotated into full lockup.",
+        "audioUrl": "audio/m4a1/parts/m4a1_firing_pin_en.mp3"
+      }
+    },
+    "m4a1_gas_tube": {
+      "partId": "m4a1_gas_tube",
+      "bomCode": "U-08",
+      "calloutLabelEn": "Direct-Impingement Tube",
+      "zh": {
+        "roleTag": "卡宾长度不锈钢导气管 / 纯净高压燃气同轴回传通道",
+        "overview": "该导气管是一根精密弯曲的细长空心金属管，前端横销固定在三角准星座内的导气孔上方。管身水平穿过枪管螺母齿槽，尾部喷嘴伸入机匣悬空对准枪机框气匙。",
+        "craftAndMaterial": "采用耐高温强腐蚀的347奥氏体不锈钢无缝拉拔弯曲制造，内壁超洁净钝化抛光。前端设有径向定位销孔，中后段带有双曲率S形应力热膨胀补偿弯，尾喷嘴经局部胀形倒角处理。",
+        "kinematicRole": "阶段三弹头越过枪管导气孔瞬间，截留一小股高压高温火药燃气，将其以极高流速同轴引回上机匣直接注入气匙。枪机闭锁时气匙套住其尾嘴。完全分解达百分之七十时冲出固定销卸下。",
+        "designHighlight": "斯通纳气吹系统的灵魂部件，完全省去了活塞、活塞杆与连杆等笨重活动零件，使全枪运动质心几乎完全落在枪管轴线上，大幅降低了枪口上跳与连发跳动散布。",
+        "audioScript": "这根347不锈钢细导气管是尤金·斯通纳气吹设计的灵魂。当弹头飞过导气孔，一截燃气瞬间沿这根管道闪电般冲回机匣，直接钻入枪机框做功。没有沉重的往复活塞，枪口跳动幅度因此被削减到极致。",
+        "audioUrl": "audio/m4a1/parts/m4a1_gas_tube_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Carbine-Length 347 Stainless Gas Tube / Direct-Gas Linear Impingement",
+        "overview": "This seamless bent tube pins into the front sight gas block, running parallel over the barrel and through the delta ring. Its open rear nozzle ports directly into the receiver cavity to mate with the carrier gas key.",
+        "craftAndMaterial": "Drawn from high-temperature 347 austenitic stainless steel, passivated to resist corrosive propellant residue. Formed with a delicate S-bend offset to clear the barrel nut, ending in an expanded rounded gas delivery nozzle.",
+        "kinematicRole": "During Phase Three, it taps a pulse of propellant gas behind the bullet and conveys it rearward into the gas key without moving. It detaches after punching out the gas block roll pin around 70 percent disassembly.",
+        "designHighlight": "Eliminates heavy gas pistons and operating rods, aligning reciprocating mass strictly along the bore axis to reduce muzzle climb and off-center barrel harmonics.",
+        "audioScript": "This carbine-length stainless steel gas tube represents the heart of direct gas impingement. Instead of driving a heavy operating rod, hot gas bypasses moving pistons and vents directly into the bolt carrier, ensuring minimal muzzle climb during high-speed drills.",
+        "audioUrl": "audio/m4a1/parts/m4a1_gas_tube_en.mp3"
+      }
+    },
+    "m4a1_ras_upper": {
+      "partId": "m4a1_ras_upper",
+      "bomCode": "U-09",
+      "calloutLabelEn": "KAC Upper Rail Handguard",
+      "zh": {
+        "roleTag": "SOPMOD Block I 三导轨护木 / 顶部侧面附件扩展与铝隔热罩",
+        "overview": "该护木是骑士军备公司M4 RAS战术系统的上半段，扣合在枪管上方包覆气吹管。其集成有顶部12点钟及两侧3点和9点钟的MIL-STD-1913标准皮卡汀尼导轨，内衬铝合金反射隔热板。",
+        "craftAndMaterial": "主体由6061-T6挤压铝合金精密机加工成型，表面军规黑色阳极氧化。前端集成定位爪，后端配有钢制弹性自锁簧片挂钩，内侧铆接有带有密集冲孔波纹的银白铝隔热罩。",
+        "kinematicRole": "射击期间稳固咬合在枪管螺母与前端护木帽之间保持静止，保护手部并为激光指示器提供绝对零位基准。分解至百分之三十六时松开后部紧固螺钉，抬起卡爪即可向上翻脱取下。",
+        "designHighlight": "后端特设弹簧卡爪直接死死咬合在星形枪管螺母齿槽中，从根本上消除了早期两半式工程塑料护木晃动扭曲导致PEQ激光器校飞走靶的严重缺陷。",
+        "audioScript": "骑士军备制造的RAS上半导轨是特种作战型M4A1的标志。坚固的铝合金框架四周集成了皮卡汀尼导轨，能安装激光指示器和战术灯。内衬的铝质辐射隔热罩，能把导气管散发的几百度高温牢牢隔绝在掌心之外。",
+        "audioUrl": "audio/m4a1/parts/m4a1_ras_upper_zh.mp3"
+      },
+      "en": {
+        "roleTag": "SOPMOD Block I Upper Rail / 3-Rail Accessory Host & Internal Heatshield",
+        "overview": "This handguard forms the upper half of the Knight's Armament Rail Adapter System, enclosing the gas tube along the barrel. It features 12, 3, and 9 o'clock MIL-STD-1913 Picatinny rails and an internal heatshield.",
+        "craftAndMaterial": "Extruded and CNC-milled from 6061-T6 aluminum alloy, treated with a matte hardcoat anodized surface. An internal stamped aluminum reflective sheet is riveted below the venting holes to shield against thermal radiation.",
+        "kinematicRole": "Remains firmly stationary between the handguard cap and delta ring, providing an optically rigid platform for weapon attachments. Detached at 36 percent disassembly by loosening the rear clamp screw and lifting it off.",
+        "designHighlight": "Features an integral spring steel clamp at the rear that bites directly into the barrel nut teeth, preventing rotational shift to hold laser sight calibration under heavy field abuse.",
+        "audioScript": "The Knight's Armament upper rail handguard provides mounting real estate at the top, left, and right. Clamping tight to the barrel nut teeth, it provides a stable zero for aiming lasers, while its internal aluminum heat shield keeps barrel heat off the shooter's hands.",
+        "audioUrl": "audio/m4a1/parts/m4a1_ras_upper_en.mp3"
+      }
+    },
+    "m4a1_ras_lower": {
+      "partId": "m4a1_ras_lower",
+      "bomCode": "U-10",
+      "calloutLabelEn": "KAC Lower Rail Handguard",
+      "zh": {
+        "roleTag": "6点钟底轨护木总成 / 垂直前握把基座兼M203快拆接口",
+        "overview": "该护木是RAS系统的下半段半圆壳体，与上半护木卡合包裹在枪管下腹部。其底部集成整段6点钟皮卡汀尼导轨，内嵌大面积冲压铝合金弧形隔热罩以阻隔枪管热辐射。",
+        "craftAndMaterial": "由6061-T6高强度铝合金一体挤压铣削，经过硬质阳极氧化着色耐磨处理。护木前后两端设有半圆限位凸缘，中间两排大直径圆形透气排热孔，隔热罩通过翻边固定在内壁。",
+        "kinematicRole": "射击时作为前手握持或前握把受力构件保持稳固静止。野战分解至百分之三十六时，只需用手向后用力压缩圆锥形Delta弹簧压环，向下一拽即可徒手瞬时剥离卸下。",
+        "designHighlight": "无需任何工具即可秒级徒手快拆：一旦卸掉下护木，露出裸露的阶梯外径枪管，射手可直接在几秒钟内加挂M203 40毫米榴弹发射器，战术转换极为迅捷。",
+        "audioScript": "卡扣在枪管下方的下半段RAS护木提供六点钟底部导轨，主要用于安装垂直前握把。它的拆卸极其精巧，双手向后死死按压星形环，无需螺丝刀就能把它向下掰开剥离，腾出空间直接挂载M203榴弹发射器。",
+        "audioUrl": "audio/m4a1/parts/m4a1_ras_lower_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Six O'Clock Lower Rail Section / Grip Foundation & M203 Launch Platform",
+        "overview": "This lower half of the RAS covers the barrel underside, locking into the front handguard cap and rear delta ring. It provides a continuous 6 o'clock Picatinny rail along its length backed by a curved reflective heatshield.",
+        "craftAndMaterial": "Extruded from durable 6061-T6 aircraft aluminum alloy with a non-reflective hardcoat anodized finish. Features lateral cooling vent ports and internal standoffs that seat the stamped aluminum shield clear of the barrel.",
+        "kinematicRole": "Acts as the rigid bottom interface for vertical foregrips and barricade rests during firing. At 36 percent disassembly, pulling back the spring-loaded Delta ring allows the piece to drop straight free without tools.",
+        "designHighlight": "Engineered for instant toolless removal: dropping this lower rail frees up the exposed barrel cut, permitting rapid field attachment of an M203 40-millimeter grenade launcher.",
+        "audioScript": "The lower rail segment locks underneath the barrel, furnishing a rugged mounting track for the iconic vertical broomstick grip. Compressing the spring-loaded delta ring drops this handguard free in seconds, clearing the way to mount a 40-millimeter grenade launcher.",
+        "audioUrl": "audio/m4a1/parts/m4a1_ras_lower_en.mp3"
+      }
+    },
+    "m4a1_lower_receiver": {
+      "partId": "m4a1_lower_receiver",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Colt Forged Lower Receiver",
+      "zh": {
+        "roleTag": "柯尔特锻造序列化机匣 / 握把机匣尾管与火控核心载体",
+        "overview": "该部件是卡宾枪在法律与结构意义上的全枪核心主体，承载握把、尾管、击发机与弹匣井。前部打穿有销轴铰接上机匣，右侧设有高耸围栏保护弹匣扣，左侧装有空仓挂机解脱拍。",
+        "craftAndMaterial": "选用7075-T6航空级铝合金整体精密模锻，经深层微弧阳极硬化钝化。左侧刻有柯尔特奔马徽标与军方资产铭文，弹匣井外口带有倒角喇叭喇叭口，右侧蚀刻防刮IUID二维码铭牌。",
+        "kinematicRole": "作为整枪核心装配骨架静止不动，下部承受后坐缓冲管的往复敲击，内部引导击锤回转与弹匣供弹。在整枪分解与组装流程中始终作为核心静止装配基准。",
+        "designHighlight": "右侧弹匣释放钮四周机加工有加高的凸出防护围栏，彻底杜绝了士兵在丛林中匍匐或穿戴防弹战术背心剐蹭时意外脱落弹匣的致命风险。",
+        "audioScript": "刻有柯尔特战马标志的锻造下机匣是这把武器的核心受控部件。弹匣井内壁边缘做了宽阔倒角便于盲插弹匣，右侧凸起的围栏能严密保护弹匣释放钮防止误碰，内部更容纳了整套军规全自动火控系统。",
+        "audioUrl": "audio/m4a1/parts/m4a1_lower_receiver_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Serialized Colt Lower / Fire Control & Receiver Extension Foundation",
+        "overview": "This component is the serialized core frame of the carbine, hosting the pistol grip, buffer tube, magazine well, and trigger pack. It anchors the upper receiver via cross-pins and features a paddle bolt catch on the left wall.",
+        "craftAndMaterial": "Forged from 7075-T6 aerospace aluminum and protected by a MIL-A-8625 Type Three Class Two hard anodized surface. Deep roll marks feature the Colt Rampant Colt logo along with government property markings and a Data Matrix plate.",
+        "kinematicRole": "Functions as the structural bedrock for the entire firearm, housing the hammer sweep, absorbing buffer recoil, and seating fresh magazines. Remains stationary at the base throughout disassembly.",
+        "designHighlight": "Features raised protective fence walls around the right magazine release button, ensuring a crawling soldier's tactical web gear will not inadvertently drop the magazine during combat.",
+        "audioScript": "The forged Colt lower receiver constitutes the serialized foundation of the M4A1. Bearing military acceptance markings and a beveled magwell, it holds the complete automatic trigger group, while raised fences shield the magazine release against accidental ejection.",
+        "audioUrl": "audio/m4a1/parts/m4a1_lower_receiver_en.mp3"
+      }
+    },
+    "m4a1_barrel": {
+      "partId": "m4a1_barrel",
+      "bomCode": "F-02",
+      "calloutLabelEn": "14.5\" Chrome-Lined Barrel",
+      "zh": {
+        "roleTag": "14.5英寸冷锻重管 / 膛压建立与M203挂架阶梯缩颈",
+        "overview": "该枪管长14.5英寸，后端旋压锁紧在枪管节套内并插入上机匣，中前部压装三角准星座与消焰器。其护木覆盖段为加厚SOCOM重枪管轮廓，前段切削有标志性的M203阶梯形卡口。",
+        "craftAndMaterial": "采用4150铬钼钒高强度炮钢精密冷拔精锻制造，内膛与弹膛整体硬镀军规铬层，外表面深沉磷化。缠距为标准的1比7英寸右旋膛线，出厂前逐根经高压弹超负荷试射与磁粉探伤检验。",
+        "kinematicRole": "火药点火后承受近六万磅瞬间高压，导引5.56毫米弹头旋转稳定飞离枪口，阶段三通过导气孔分流燃气。分解至百分之六十六时拧松外部枪管螺母即可向前拔离机匣。",
+        "designHighlight": "1比7英寸高速缠距专为稳定较重长弹头的M855与新型M855A1穿甲弹设计；准星座前方独特的下凹阶梯外径，正是专门卡合M203榴弹发射器前抱箍的机械定位槽。",
+        "audioScript": "这根十四点五英寸卡宾枪管由高规格铬钼钒合金钢精锻制成，内膛镀有厚硬铬以抵抗连发烧蚀。一比七英寸的缠距能完美稳定更重的弹头。前端削出的阶梯凹槽，则是用来快速卡死挂载M203榴弹发射器的定位颈。",
+        "audioUrl": "audio/m4a1/parts/m4a1_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "14.5-Inch CMV Barrel / 1:7 Twist Rifling & M203 Mounting Step",
+        "overview": "This 14.5-inch barrel seats into the upper receiver extension, carrying the pinned front sight tower and flash suppressor. It incorporates a reinforced contour beneath the handguards and a distinct step-down cut ahead of the sight block.",
+        "craftAndMaterial": "Cold hammer-forged from MIL-B-11595E specified 4150 Chrome-Moly-Vanadium steel, fully chrome-lined inside the bore and chamber. Features a tight 1:7 right-hand twist rate, tested by high-pressure proof round firings.",
+        "kinematicRole": "Contains peak ignition pressures reaching 60,000 PSI to stabilize outgoing projectiles, venting pressurized gas through its upper port in Phase Three. Slides free at 66 percent disassembly once the barrel nut is torqued off.",
+        "designHighlight": "The steep 1-in-7 twist reliably stabilizes heavy combat projectiles like the M855 and EPR rounds, while the barrel cut contour seats the front clamp bracket of an M203 40mm launcher without alteration.",
+        "audioScript": "Measuring 14.5 inches, this cold-hammer-forged steel barrel features a hard chrome-lined bore to endure sustained automatic fire. Its 1-in-7 rifling twist stabilizes modern heavier combat bullets, while the signature contour step upfront locks the M203 grenade launcher.",
+        "audioUrl": "audio/m4a1/parts/m4a1_barrel_en.mp3"
+      }
+    },
+    "m4a1_flash_hider": {
+      "partId": "m4a1_flash_hider",
+      "bomCode": "F-03",
+      "calloutLabelEn": "A2 Closed-Bottom Hider",
+      "zh": {
+        "roleTag": "A2鸟笼式闭底消焰器 / 膛口焰抑制与卧姿防吹尘抑制器",
+        "overview": "该部件通过二分之一乘二十八螺纹拧紧在14.5英寸枪管前端，配合压溃垫圈定向上紧。其圆柱体仅在上半圆周铣削出五道纵向泄气缝，底面保持完全封闭平整。",
+        "craftAndMaterial": "选用高强度铬钼钢经精密车削与纵向铣削制成，表面经深度锰系黑色磷化防锈抗烧蚀处理。配合一枚软钢制成的锥形可塑性压溃垫圈，保证其在拧紧定标时牢牢锁止在指定角度位点。",
+        "kinematicRole": "弹头出膛瞬间将高压尾气向侧上方均匀切散以熄灭枪口闪光，底面受力反冲压抑枪口上跳，本身随枪管固定保持静止。完全分解至百分之六十四时由扳手旋转逆时针拧卸下。",
+        "designHighlight": "将初代A1全开花鸟笼的底部开槽完全取消做成实心闭底：这不仅提供了微弱的向上泄气向下制退防跳效应，更彻底杜绝了趴在干旱沙漠射击时下冲气流吹起漫天尘土暴露射手方位的弊病。",
+        "audioScript": "枪口拧紧的A2鸟笼消焰器采用特殊的闭底设计。五道泄气缝全部集中在上半部分，底部则完全封闭。这样既能在夜间切散高温火焰保护夜视仪，又能在卧姿贴地射击时，杜绝气流向下吹起沙尘暴露隐蔽阵位。",
+        "audioUrl": "audio/m4a1/parts/m4a1_flash_hider_zh.mp3"
+      },
+      "en": {
+        "roleTag": "A2 Birdcage Compensator / Flash Dispersion & Dust Signature Reducer",
+        "overview": "This flash hider threads onto the barrel muzzle using half-by-twenty-eight threads, indexed securely over a deformable crush washer. Its outer profile has five longitudinal vents spaced around the top half while the bottom remains solid.",
+        "craftAndMaterial": "Turned from heat-treated carbon alloy steel, finished in a matte black manganese phosphate bath to survive superheated gas blast erosion. Indexed with a soft conical crush washer that compresses to align the slits upright.",
+        "kinematicRole": "Disperses escaping propellant fireball outward and upward at the end of Phase Two without moving. Unscrewed off the barrel threads using an armorer wrench around 64 percent full disassembly.",
+        "designHighlight": "Closed bottom design eliminates ground dust signature when firing prone over dry terrain, while directing vented gas upward to provide slight muzzle climb compensation during burst fire.",
+        "audioScript": "Threaded to the muzzle, the USGI A2 birdcage flash suppressor features five upper slots and a closed bottom. This geometry vents fireball flash away from the shooter's line of sight while preventing escaping gasses from kicking up desert dust when firing prone.",
+        "audioUrl": "audio/m4a1/parts/m4a1_flash_hider_en.mp3"
+      }
+    },
+    "m4a1_front_sight_base": {
+      "partId": "m4a1_front_sight_base",
+      "bomCode": "F-04",
+      "calloutLabelEn": "A-Frame Front Sight",
+      "zh": {
+        "roleTag": "平顶F标高准星座兼导气箍与刺刀座",
+        "overview": "这是经典锻造钢A字形三角准星座，通过两枚高强度锥销刚性跨锁在枪管导气孔上方。它集成了高压导气室、护木前挡环、机械准星柱以及底部的M9刺刀卡笋与背带环。",
+        "craftAndMaterial": "采用高强度合金钢整体模锻并经锰系磷化防锈处理，左侧压印有代表平顶机匣准星高度的F字符号。A字形立柱兼具坚固护翼与导气膨胀室，底座开有精密锥孔与枪管销孔实现微米级紧配合。",
+        "kinematicRole": "射击全程作为导气与机械瞄准的绝对刚性基准；在弹头经过导气孔瞬间承受膛内高温高压燃气冲刷并引流至气吹管。维护拆卸时在分解阶段后段冲出双锥销方能自枪管前缘滑脱。",
+        "designHighlight": "采用带斜度的锥形横销而非螺钉锁死，在历经成千上万发连发震动和冷热剧烈膨胀时不仅绝不松动，反而越振越紧，彻底根除了导气室漏气的战术隐患。",
+        "audioScript": "这座标志性的A字形三角准星是M4卡宾枪的灵魂剪影。它不仅能通过旋拧准星柱修正弹着点高低，更通过两根锥形销牢牢锁死在枪管上，直接捕获弹头通过瞬间的高压火药燃气，将其源源不断地引入导气管。",
+        "audioUrl": "audio/m4a1/parts/m4a1_front_sight_base_zh.mp3"
+      },
+      "en": {
+        "roleTag": "F-Marked Gas Block Front Sight",
+        "overview": "This is the forged steel A-frame front sight base pinned across the carbine-length gas port of the 14.5-inch barrel. It integrates the primary gas block, mechanical front sight tower, handguard cap retainer, and the standard M9 bayonet lug.",
+        "craftAndMaterial": "Drop-forged from alloy steel with a mil-spec manganese phosphate finish, bearing the stamped F-mark indicating raised shelf height for flat-top upper receivers. Its rugged triangular wings shield the square front sight post against extreme impacts.",
+        "kinematicRole": "Remains static as the primary forward sighting and gas venting datum; directs ultra-high-pressure combustion gas into the gas tube when the bullet passes the barrel port. During field stripping it separates at late armorer level after drifting out two tapered pins.",
+        "designHighlight": "Interference-fit taper pins wedge tighter into cross-milled barrel cuts under firing vibrations and thermal expansion, guaranteeing zero gas leakage and eliminating optical zero shift even in rough airborne operations.",
+        "audioScript": "The iconic A-frame front sight base defines the M4 silhouette. Forged from ordnance steel and pinned tightly to the barrel, it serves as both the front sight post and the carbine gas block, tapping high-pressure combustion gas to cycle the entire internal action.",
+        "audioUrl": "audio/m4a1/parts/m4a1_front_sight_base_en.mp3"
+      }
+    },
+    "m4a1_buffer_tube": {
+      "partId": "m4a1_buffer_tube",
+      "bomCode": "F-05",
+      "calloutLabelEn": "6-Position Buffer Tube",
+      "zh": {
+        "roleTag": "六档伸缩托缓冲管兼后坐导向通道",
+        "overview": "该圆筒形机匣延伸管旋紧于下机匣尾部，由齿形城堡螺母与后背带限位板锁定。它不仅作为斯通纳直托传力的主要承载骨架，还容纳了复进簧与缓冲器沿同轴往复运动。",
+        "craftAndMaterial": "采用7075-T6航天级铝合金挤压成型与车削加工，表面经过三级硬质阳极氧化处理。底侧铣有六个直径规整的盲孔导轨，管内壁光洁如镜以减少缓冲器高速擦碰摩擦。",
+        "kinematicRole": "在全枪射击循环中保持静止，承受枪机框后坐冲量并通过管底将动能平顺传递给射手肩窝。在分解阶段后半段卸下城堡螺母与卡榫后方可从机匣尾塔旋出脱离。",
+        "designHighlight": "严格遵循斯通纳直托设计理念，枪膛、枪机框与缓冲管内壁完全同轴，彻底消除了传统枪托后坐时的上跳翻转力矩，极大地改善了全自动连发时的弹着点散布。",
+        "audioScript": "这根7075铝合金缓冲管直接对齐枪管轴线。它不仅支撑着可伸缩的枪托，更在内壁开辟出一条完全同轴的导槽，让后坐力毫无偏角地直传射手肩窝，显著抑制全自动扫射时的枪口上跳。",
+        "audioUrl": "audio/m4a1/parts/m4a1_buffer_tube_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Receiver Extension Guide Tube",
+        "overview": "This mil-spec extension tube threads into the lower receiver ring, secured rigidly by a castle nut and receiver end plate. It houses the buffer assembly and action spring while providing the mounting rail for the collapsible buttstock.",
+        "craftAndMaterial": "Extruded from 7075-T6 aircraft aluminum and finished with Type III Class 2 hardcoat anodizing. The lower indexing rib features six precision-milled detent pockets, while the internal bore is mirror-burnished to eliminate friction drag.",
+        "kinematicRole": "Remains rigidly fixed to the receiver, transmitting linear recoil impulse straight back into the shooter shoulder socket. It separates during detailed armorer disassembly when the castle nut is staked loose and unthreaded.",
+        "designHighlight": "By aligning the bolt carrier path directly in line with the barrel bore axis, the design minimizes muzzle rise and recoil moments, a cornerstone of Eugene Stoner straight-line recoil architecture.",
+        "audioScript": "Threaded into the rear receiver ring, this six-position buffer tube provides the linear raceway for the recoil assembly. Its straight-line layout channels kinetic energy directly back into the shoulder, keeping muzzle climbing under control during rapid strings.",
+        "audioUrl": "audio/m4a1/parts/m4a1_buffer_tube_en.mp3"
+      }
+    },
+    "m4a1_buffer": {
+      "partId": "m4a1_buffer",
+      "bomCode": "F-06",
+      "calloutLabelEn": "H2 Heavy Recoil Buffer",
+      "zh": {
+        "roleTag": "H2防回跳配重缓冲器",
+        "overview": "该配重缓冲器置于尾托缓冲管内，前端直接抵住枪机框尾端面，后端连接螺旋复进簧。其内部精密封装两块钨合金与一块钢质惯性配重块，专为14.5英寸短导气系统优化。",
+        "craftAndMaterial": "外壳为阳极氧化硬质铝合金柱体，配装高耐磨聚氨酯尾部防撞胶垫。内腔配装两颗高密度钨合金重锤与一枚工具钢块，各配重之间垫有橡胶垫圈以允许纵向微幅浮动碰撞。",
+        "kinematicRole": "在后坐阶段随枪机框同步以极高线速度后退压缩复进簧并触底缓冲；复进到位时机框骤停，内置钨块产生延迟向前二次撞击，彻底抹平全自动闭锁瞬间的枪机回跳现象。",
+        "designHighlight": "M4A1由于导气孔距离弹膛更近导致开锁动能过猛，普通卡宾缓冲器极易出现击针空放故障。升级H2重型缓冲器后，内部惯性滞后冲量彻底驯服了全自动射击的高速反弹。",
+        "audioScript": "这枚带有金橙色标记的H2重型缓冲器内藏玄机。它内部封装了两块高密度钨合金块和一块钢块，在枪机强力推弹闭锁的刹那，钨块会产生二次延迟碰撞，彻底消灭枪机反弹跳动导致的连发哑火。",
+        "audioUrl": "audio/m4a1/parts/m4a1_buffer_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Anti-Bounce Tungsten Recoil Buffer",
+        "overview": "This H2 recoil buffer rides inside the receiver extension, seated between the carrier tail and the helical buffer spring. It is optimized for the aggressive carbine-length gas impulse of the 14.5-inch M4A1 barrel.",
+        "craftAndMaterial": "Turned from hard-anodized aluminum with a heavy-duty polyurethane bumper pinned to the rear. The hollow core contains two dense tungsten weights and one steel weight separated by rubber friction pads that allow controlled sliding impact.",
+        "kinematicRole": "Travels rearward in unison with the bolt carrier group during phase four, bottoming out inside the extension tube; on counter-recoil, its sliding internal weights deliver a delayed dead-blow impulse to suppress bolt bounce at lockup.",
+        "designHighlight": "Carbine gas systems generate violent unlocking velocity that causes standard buffers to rebound off the barrel extension, risking out-of-battery misfires. The H2 tungsten mass eliminates this bounce during full-auto fire.",
+        "audioScript": "Engineered for the hard-hitting carbine gas system, the H2 buffer contains sliding tungsten weights. When the bolt slams home to chamber a round, these internal weights deliver a microsecond delayed dead-blow hit, entirely preventing dangerous bolt bounce.",
+        "audioUrl": "audio/m4a1/parts/m4a1_buffer_en.mp3"
+      }
+    },
+    "m4a1_buffer_spring": {
+      "partId": "m4a1_buffer_spring",
+      "bomCode": "F-07",
+      "calloutLabelEn": "Helical Action Spring",
+      "zh": {
+        "roleTag": "高耐疲劳螺旋复进储能弹簧",
+        "overview": "这是一根多圈螺旋压缩弹簧，套设在缓冲管内部并包覆H2缓冲器的细颈。它在枪机后坐时吸收动能，并在复进阶段释放弹性势能推弹入膛。",
+        "craftAndMaterial": "选用17-7PH沉淀硬化不锈钢丝精密密绕并经表面抛丸强化与防锈钝化处理。弹簧两端经过平整磨削，确保在大载荷高频往复压缩下始终维持纯轴向推力。",
+        "kinematicRole": "在第4至第5阶段承受机框后推剧烈压缩蓄能；在第6阶段将储存的弹性能量转化为动能，向前高速推送缓冲器与枪机框剥弹入膛并回转锁死。在常规野战分解最初期即可卸出。",
+        "designHighlight": "针对全自动连续射击引发的升温疲劳工况进行了圈径与螺距计算，即便在数万次极限压缩后仍能保持充足弹力推击到位，防止严苛沙尘环境下的闭锁不到位卡壳。",
+        "audioScript": "这根高强度不锈钢复进簧贯穿整根枪托缓冲管。在枪机后坐瞬间它被强力压缩吸收后坐动能；当后坐终了时，它瞬间释放势能，推动枪机框高速回冲，将弹匣中的下一发子弹精准推入弹膛闭锁。",
+        "audioUrl": "audio/m4a1/parts/m4a1_buffer_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Stainless Recoil Action Spring",
+        "overview": "This long helical compression spring is captive within the buffer tube, slipping over the forward neck of the recoil buffer. It absorbs rearward cycle energy and propels the bolt group forward to strip and chamber new ammunition.",
+        "craftAndMaterial": "Wound from shot-peened 17-7PH precipitation-hardened stainless steel spring wire with closed and ground flat ends. Its specialized metallurgical treatment resists heat set and corrosion in maritime and desert environments.",
+        "kinematicRole": "Undergoes heavy axial compression during carrier recoil phases four and five; relaxes dynamically in phase six to drive the carrier group and buffer into battery. Extracted immediately during preliminary field disassembly.",
+        "designHighlight": "Calibrated with exact pitch and coil count to provide constant stripping thrust across diverse combat environments, ensuring reliable chambering even when the action is dry or fouled with heavy propellant carbon.",
+        "audioScript": "Constructed from shot-peened stainless steel, this action spring stores the kinetic energy generated during recoil. Rebounding with authority, it pushes the heavy bolt carrier group forward to strip the top cartridge off the magazine feed lips.",
+        "audioUrl": "audio/m4a1/parts/m4a1_buffer_spring_en.mp3"
+      }
+    },
+    "m4a1_buttstock": {
+      "partId": "m4a1_buttstock",
+      "bomCode": "F-08",
+      "calloutLabelEn": "M4 Collapsible Stock",
+      "zh": {
+        "roleTag": "华夫格加强筋六档伸缩抵肩托",
+        "overview": "该枪托套在六档缓冲管外侧，是射手主要的肩部支撑界面。通过捏压底部的快调杠杆，可在六个预设档位间自如伸缩以适应作战装具与携行要求。",
+        "craftAndMaterial": "采用高抗冲玻璃纤维增强聚酰胺注塑成型，托身表面分布有标志性的华夫格式加强格栅。尾部配有防滑横纹橡胶缓冲垫，并集成有尼龙战术背带扣穿槽与底部金属背带环。",
+        "kinematicRole": "射击全程保持锁止，吸收传递至肩窝的冲量；拉动杠杆释放弹簧顶销后可沿缓冲管轴向滑动。在初级不完全分解阶段拉伸杠杆即可向后完全滑出托身。",
+        "designHighlight": "经典华夫格网状骨架在减轻聚合物壁厚的同时提供了极高的抗跌落弯折强度，允许特战人员在狭窄车厢室内清扫与开阔地精准射击之间秒速切换全枪长度。",
+        "audioScript": "这款带有华夫格加强网格的六档伸缩枪托是特战队员的最爱。按压底部的解锁杠杆，即可让定位销在缓冲管的六个圆孔间滑动，方便射手在穿着厚重防弹衣或狭小车辆乘降时自如调整抵肩长度。",
+        "audioUrl": "audio/m4a1/parts/m4a1_buttstock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Collapsible Telescoping Stock",
+        "overview": "This collapsible buttstock sleeve encloses the six-position receiver extension, providing the shooter primary shoulder contact. Depressing its bottom adjustment lever permits instant length-of-pull reconfiguration.",
+        "craftAndMaterial": "Molded from impact-modified glass-reinforced nylon polymer featuring iconic exterior ribbed waffle reinforcement. Outfitted with a non-slip checkered rubber buttpad, integral sling pass-through slots, and a steel lower sling swivel.",
+        "kinematicRole": "Stationary during fire, acting as the rear stabilizing anchor against the shoulder; translates axially along the buffer tube when the spring-loaded detent is pulled downward. Slides off the rear tube during primary field stripping.",
+        "designHighlight": "The reinforced waffle truss pattern maximizes structural rigidity against severe drop impacts without adding unnecessary weight, allowing instant adjustment between tight vehicular operations and shoulder-mounted precision fire.",
+        "audioScript": "Molded with distinctive waffle reinforcement ribs, this collapsible stock adapts the carbine overall length to the mission. Squeezing the bottom lever retracts the vertical lock pin, letting the operator adjust length-of-pull around body armor in seconds.",
+        "audioUrl": "audio/m4a1/parts/m4a1_buttstock_en.mp3"
+      }
+    },
+    "m4a1_pistol_grip": {
+      "partId": "m4a1_pistol_grip",
+      "bomCode": "F-09",
+      "calloutLabelEn": "A2 Polymer Pistol Grip",
+      "zh": {
+        "roleTag": "A2指槽防滑人体工程学握把",
+        "overview": "该手枪式握把从下方向上通过内六角长螺栓牢固固定在下机匣握把座上。它为发射手的操枪控制提供主握持支点，同时在内部限位快慢机定位销与弹簧。",
+        "craftAndMaterial": "采用黑色坚固热固性聚合物一体成型，侧面模压有大面积菱形防滑滚花。握把前缘突起标志性中指限位凸台，右上缘预留有容纳快慢机阻尼簧与定位销的垂直盲孔。",
+        "kinematicRole": "在武器射击与行军时处于绝对锁死受力状态，传递扣击扳机的反向握持拉力。只有在全枪深度完全分解阶段，旋出内部紧固螺栓与平垫圈后方可向下脱卸。",
+        "designHighlight": "中指凸台和后掠角度基于海量美军士兵手型大数据标定，即便射手穿戴湿滑的防化手套或战术防割手套，也能维持稳固的指向性，并确保食指精准置于扳机中央。",
+        "audioScript": "经典的A2握把由高强度聚合物注塑而成。两侧的菱形防滑纹与前方的中指指槽能保证射手在戴手套或泥泞环境下依然牢靠握持；其内部盲孔还贴心收纳着快慢机拨杆的定位弹簧。",
+        "audioUrl": "audio/m4a1/parts/m4a1_pistol_grip_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Ergonomic Checkered Pistol Grip",
+        "overview": "This A2-pattern grip mounts directly to the lower receiver grip tang via an internal cap screw and star washer. It serves as the primary firing hand interface and houses the spring and detent for the selector switch.",
+        "craftAndMaterial": "Injection-molded from high-strength black thermoplastic polymer with aggressive molded-in diamond checkering along both flanks. Features an integral finger shelf on the front strap and an upper detent hole for fire selector indexing.",
+        "kinematicRole": "Static structural datum providing positive hand control during all firing cycle phases. Disassembles only during detailed armorer teardown by unthreading the long internal hex screw through the hollow bottom cavity.",
+        "designHighlight": "The pronounced finger shelf and ergonomic sweep angle position the shooter index finger naturally onto the trigger shoe, maintaining control during full-auto muzzle disturbance and adverse wet weather conditions.",
+        "audioScript": "Secured to the lower receiver by a heavy screw, the classic A2 pistol grip provides a secure hold. Its textured diamond checkering and pronounced finger shelf lock the hand in position, while an internal blind channel houses the selector detent spring.",
+        "audioUrl": "audio/m4a1/parts/m4a1_pistol_grip_en.mp3"
+      }
+    },
+    "m4a1_hammer": {
+      "partId": "m4a1_hammer",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Full-Auto Rotary Hammer",
+      "zh": {
+        "roleTag": "全自动带有钩回转式击锤",
+        "overview": "该精密渗碳钢击锤铰接于下机匣前横销上，受双卷强力扭簧驱使。击锤前端用于猛烈敲击击针，背部专门加工有全自动阻铁钩以实现连发击发控制。",
+        "craftAndMaterial": "采用优质合金工具钢经精密锻压、表面渗碳淬火与磷化研磨处理，达到军规高硬度要求。击打面与阻铁卡台经过镜面抛光，底部两翼套接对称对称布置的高抗疲劳双卷主扭簧。",
+        "kinematicRole": "扳机解脱后受扭簧驱动绕销轴向前回转，猛击击针尾部点燃底火；枪机框后坐时下底面强行将其向后压倒，在全自动模式下被自动阻铁挂住，待机框闭锁复位瞬间解脱击发。",
+        "designHighlight": "相比半自动民用版AR击锤，M4A1击锤背部增设了突出的自动挂钩，必须与全自动不到位阻铁精密咬合，确保枪机七突笋未完全旋转闭锁前击锤绝对无法前冲，杜绝炸膛事故。",
+        "audioScript": "这枚全自动回转击锤是击发动作的核心执行部件。扣下扳机后，强大的双卷扭簧驱动它如闪电般前扑，重重砸向击针尾部；在全自动模式下，击锤背部的突钩由自动阻铁精准抓取，等待枪机完全闭锁后再次击发。",
+        "audioUrl": "audio/m4a1/parts/m4a1_hammer_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Full-Auto Sear Hook Hammer",
+        "overview": "This carburized steel hammer pivots on the forward fire control pin in the lower receiver, powered by a dual-coil torsion spring. It strikes the firing pin to ignite primers and features a rear sear hook for automatic cycling.",
+        "craftAndMaterial": "Drop-forged from alloy tool steel, case-hardened, and finished with dry manganese phosphate. Engagement surfaces and cocking notches are ground flat to tight tolerances to preserve trigger pull characteristics under sustained wear.",
+        "kinematicRole": "Pivots forward at phase one when sear disengages, striking the firing pin in phase two; cocked rearward by the retreating bolt carrier underside during phase four, then caught momentarily by the auto sear until battery lockup is complete.",
+        "designHighlight": "The rearward hook engages the M4A1 auto sear, guaranteeing the hammer cannot drop until the bolt carrier has moved fully into battery and rotated the lugs into full lock, preventing catastrophic out-of-battery ignition.",
+        "audioScript": "Pivoting on the forward trigger pin, this full-auto hammer delivers the energetic blow required to set off the primer. Its rear hook is uniquely shaped to interact with the auto sear, ensuring the weapon only cycles automatically when fully locked.",
+        "audioUrl": "audio/m4a1/parts/m4a1_hammer_en.mp3"
+      }
+    },
+    "m4a1_trigger": {
+      "partId": "m4a1_trigger",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Trigger & Disconnector",
+      "zh": {
+        "roleTag": "军规弧形扳机兼单发阻铁总成",
+        "overview": "该组件安装于下机匣后部销轴上，包含平滑舒适的弧形扳机体与中央嵌套的弹簧顶起单发阻铁。它是射手手指输入击发指令并实现单发断路控制的关键总成。",
+        "craftAndMaterial": "扳机本体与单发阻铁均为合金工具钢精铸加硬化处理，前接触主卡鼻精密研磨以获得平稳的单道火拉力。单发阻铁受内置微型柱塞簧顶升，与扳机体呈弹性浮动铰接。",
+        "kinematicRole": "手指后扣让前主阻铁鼻下沉放飞击锤；半自动状态下，枪机框压回击锤时单发阻铁后挂钩卡住击锤防止连发；松开扳机瞬间，击锤自单发阻铁平稳滑脱交接回主阻铁鼻。",
+        "designHighlight": "嵌套式阻铁结构巧妙利用了单一销轴空间，不仅减少了下机匣火控构件体积，其独特的力交接机制更让半自动模式拥有清脆清晰的扳机复位感。",
+        "audioScript": "弧形扳机与内置的单发阻铁共同构成了火控中枢。扣动扳机时，前端卡鼻下沉释放击锤；在半自动模式下，单发阻铁在中途敏锐抓扣住反弹击锤，防止意外连发，直到松开手指才完成安全的待击交接。",
+        "audioUrl": "audio/m4a1/parts/m4a1_trigger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Curved Trigger with Disconnector",
+        "overview": "This fire control assembly rotates on the rear receiver pin, pairing a mil-spec curved trigger bow with an internally nested, spring-loaded disconnector. It controls the release of the hammer and governs semi-automatic disengagement.",
+        "craftAndMaterial": "Investment-cast from alloy steel and precision-ground on critical sear faces. The disconnector nests in a central well above a small coil spring, allowing independent pivoting movement relative to the primary trigger body.",
+        "kinematicRole": "Depressing the shoe tilts the primary sear nose downward in phase one, releasing the hammer; on semi-automatic cycling, the disconnector catches the hammer as the carrier cycles back, releasing it smoothly to the primary sear during phase seven reset.",
+        "designHighlight": "Nesting the disconnector inside the trigger body simplifies the fire control footprint while ensuring an unambiguous mechanical handoff between firing cycles, delivering the crisp tactile reset essential for tactical shooting.",
+        "audioScript": "The curved mil-spec trigger bow contains a nested spring-loaded disconnector. When pulled, the front sear drops to release the hammer. In semi-automatic mode, the disconnector catches the re-cocked hammer until you release the trigger for reset.",
+        "audioUrl": "audio/m4a1/parts/m4a1_trigger_en.mp3"
+      }
+    },
+    "m4a1_selector": {
+      "partId": "m4a1_selector",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Rotary Fire Selector",
+      "zh": {
+        "roleTag": "三档旋转式快慢机凸轮轴",
+        "overview": "该旋转轴横穿下机匣火控舱上方，左侧配有易于拇指拨动的防滑杠杆。它通过轴上精密铣削的阶梯凸轮缺口，切换保险、单发与纯全自动连发三种工作状态。",
+        "craftAndMaterial": "由高强度碳钢整体车铣与渗氮处理，带有刻槽的拨杆和轴体紧固为一体。圆柱轴身表面精确开有三组不同深度的让位槽，配合机匣握把孔内的弹簧顶针实现九十度定位手感。",
+        "kinematicRole": "处于静止选档工作位；当射手旋转至保险档时其凸轮圆弧面锁死扳机尾部阻碍回转；半自动档让位扳机但允许单发阻铁工作；全自动档凸轮将单发阻铁强行后压失效以开启连发。",
+        "designHighlight": "M4A1相比早期M4彻底摒弃了繁琐不可靠的三发点射棘轮机构，快慢机旋转至前上方即直接触发纯粹的全自动模式，极大提升了近战压制火力的连续性与机械可靠性。",
+        "audioScript": "这根带有拇指拨杆的三档快慢机是M4A1的灵魂中枢。向后拨是保险，垂直向上是半自动单发，向前拨到底则是全自动连发。它直接压倒单发阻铁，让卡宾枪爆发出每分钟八百发以上的凶猛压制火力。",
+        "audioUrl": "audio/m4a1/parts/m4a1_selector_zh.mp3"
+      },
+      "en": {
+        "roleTag": "3-Position Fire Selector Cam",
+        "overview": "This transverse cylindrical selector shaft spans the upper pocket of the lower receiver, operated via a textured thumb lever on the left flank. It selects between SAFE, SEMI, and continuous AUTO firing modes.",
+        "craftAndMaterial": "Machined from ordnance carbon steel with a durable nitride finish. The central cylinder incorporates precision-milled relief flats and cams that interact with the trigger tail, disconnector, and spring-loaded detent pin.",
+        "kinematicRole": "Stationary during fire until indexed by the shooter; rotated 90 degrees to SAFE blocks trigger movement; rotated to SEMI allows trigger movement while engaging the disconnector; rotated to AUTO depresses the disconnector to permit continuous fire.",
+        "designHighlight": "Unlike earlier three-round burst mechanisms, the M4A1 selector engages a true full-automatic mode, removing fragile burst ratchets and giving combat units uninterrupted 800 rounds-per-minute cyclic fire superiority.",
+        "audioScript": "Operating through three distinct ninety-degree stops, this selector sets the weapon to Safe, Semi, or full Auto. In the Auto position, its milled cam disables the semi-auto disconnector, letting the carbine unleash rapid automatic fire.",
+        "audioUrl": "audio/m4a1/parts/m4a1_selector_en.mp3"
+      }
+    },
+    "m4a1_mag_body": {
+      "partId": "m4a1_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "30-Rd STANAG Magazine",
+      "zh": {
+        "roleTag": "30发干膜灰铝合金弧形弹匣体",
+        "overview": "这是符合北约STANAG标准的30发轻量化弹匣壳体，直插式锁定在下机匣弹匣井内。其上段笔直以配合插拔，下段呈平滑圆弧弯曲以适应5.56毫米步枪弹的天然锥度。",
+        "craftAndMaterial": "选用6061-T6高延伸率铝合金薄板连续冲压折弯点焊成型，表面涂覆有美军标志性的Perma-Slik干膜灰色固体润滑剂。外壁冲压有五道纵向加强筋以显著提升侧向防挤压形变刚度。",
+        "kinematicRole": "在扣合弹匣卡榫后全程锁固于枪身；内部空间为托弹簧与托弹板提供低摩擦导向通道；顶部两道内收的弧形抱弹口在枪机后坐与复进循环中负责约束并释放弹药。",
+        "designHighlight": "独特的双曲率几何过渡设计既保证了上部与直立弹匣井绝对平行稳固，又让下方三十发无凸缘弹壳紧密吻合无死角，彻底消除了早年直式弹匣经常发生的叠弹供弹卡死故障。",
+        "audioScript": "美军经典的三十发铝合金弹匣体表面覆有一层枪灰色干膜固体润滑剂。上段垂直贴合机匣弹匣井，下段圆弧弯曲顺应步枪弹锥度，侧面五道冲压加强筋能够有效抵御恶劣战场上的踩踏与磕碰变形。",
+        "audioUrl": "audio/m4a1/parts/m4a1_mag_body_zh.mp3"
+      },
+      "en": {
+        "roleTag": "30-Round Curved Aluminum Magazine",
+        "overview": "This standard 30-round NATO STANAG aluminum magazine locks into the lower receiver magazine well. Its straight upper section transitions into a curved body to match the natural casing taper of 5.56x45mm rounds.",
+        "craftAndMaterial": "Deep-drawn and stamped from 6061-T6 aluminum sheet, spot-welded along the spine and coated with military-spec Perma-Slik dry-film lubricant. Five embossed vertical ribs on both flanks provide exceptional resistance to crushing.",
+        "kinematicRole": "Locks rigidly in place via the magazine catch; provides a slick internal path for the spring and follower, while its top stamped feed lips align each round for stripping by the bolt lugs in phase six.",
+        "designHighlight": "The transition from a straight upper section to a curved lower housing honors the cartridge taper without sacrificing magazine well fit, preventing the devastating rim-over-cartridge jams common in older straight magazines.",
+        "audioScript": "This 30-round aluminum STANAG magazine is treated with dry-film lubricant. Its upper half fits flush into the magwell, while the gentle lower curve feeds tapered 5.56 NATO rounds smoothly toward the bolt face through rigid feed lips.",
+        "audioUrl": "audio/m4a1/parts/m4a1_mag_body_en.mp3"
+      }
+    },
+    "m4a1_mag_follower": {
+      "partId": "m4a1_mag_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Anti-Tilt Follower",
+      "zh": {
+        "roleTag": "增强型四向防倾侧自润滑托弹板",
+        "overview": "该托弹板置于弹匣体内最上方，由下部的托弹簧直接支撑顶起。其阶梯状托台引导双排弹药交错堆叠，并在打空最后一发子弹后负责触发空仓挂机卡笋。",
+        "craftAndMaterial": "采用高自润滑性沙色聚甲醛工程塑料整体注塑，耐磨耐腐蚀。其前后两端特别延伸设计有超长垂直导向裙边，完全消除了受力不均时的俯仰翻转间隙。",
+        "kinematicRole": "随着弹药逐发消耗，在托弹簧推力下沿弹匣平滑平稳逐级上升；打光最后一发第30发弹药后，其左后侧突出的凸台精准顶起下机匣空仓挂机拍，强行将枪机框阻拦在后方待命。",
+        "designHighlight": "早年黑色与绿色托弹板因裙边短极易因前轻后重卡死在弹匣内。这款美军改进版沙色防倾侧托弹板彻底根治了该恶疾，即使单手单点按压前端也不会发生任何偏斜咬死。",
+        "audioScript": "这块沙色自润滑聚合物托弹板是美军弹匣可靠性升级的关键。它拥有加长的前后防倾导向裙边，无论怎么用力下压都不会侧倾卡滞；射尽最后一发子弹后，它的尾部凸起会迅速顶起空仓挂机装置。",
+        "audioUrl": "audio/m4a1/parts/m4a1_mag_follower_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Enhanced Anti-Tilt Polymer Follower",
+        "overview": "Positioned inside the top of the magazine, this enhanced follower is elevated by the action of the magazine spring. It presents staggered cartridges to the feed lips and trips the bolt catch once empty.",
+        "craftAndMaterial": "Molded from self-lubricating tan polyoxymethylene polymer that resists sand, debris, and cleaning solvents. It features extended front and rear stabilizing skirts that contact the internal magazine walls at four points.",
+        "kinematicRole": "Rises sequentially upward with each shot fired; upon discharging the final round, an elevated rear tab makes upward contact with the receiver bolt catch lever, locking the bolt carrier group open.",
+        "designHighlight": "Older legacy followers suffered frequent nose-dive feeding malfunctions due to short stabilizer legs. This enhanced anti-tilt design prevents rotational tilting, ensuring flawless ammunition orientation during high-tempo automatic fire.",
+        "audioScript": "Molded from self-lubricating polymer, this enhanced tan follower keeps rounds leveled under pressure. Its extended guide legs eliminate nose-diving jams, while a rear tab engages the bolt catch when the magazine runs dry.",
+        "audioUrl": "audio/m4a1/parts/m4a1_mag_follower_en.mp3"
+      }
+    },
+    "m4a1_mag_spring": {
+      "partId": "m4a1_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Rectangular Mag Spring",
+      "zh": {
+        "roleTag": "17-7PH不锈钢弧形矩形托弹簧",
+        "overview": "这是一根大节距矩形螺旋压缩弹簧，压缩在托弹板底部与弹匣底盖之间。它为整整30发高压步枪弹提供持续、均匀且响应极其迅速的向上推弹力。",
+        "craftAndMaterial": "采用17-7PH沉淀硬化不锈钢丝绕制，耐高湿热盐雾腐蚀并具有出色的抗蠕变性能。整根弹簧随弹匣外壳带有自然的恒曲率弧度，弹圈呈扁平矩形以严密贴合内部导向舱面。",
+        "kinematicRole": "装满三十发子弹时被高度压缩蓄能；在射击循环阶段以极高响应速度向上弹升托弹板，确保下一发弹药能在枪机框复进越过抱弹口的微秒内及时就位。弹匣拆卸时抽出释放。",
+        "designHighlight": "曲率随形设计使得弹簧各圈在全压缩状态下平整贴附而互不缠结，即使长期处于三十发满载战备值班状态，也不会产生弹力衰减，完美满足卡宾枪连发高射速供弹要求。",
+        "audioScript": "这根带有平滑弧度的不锈钢矩形托弹簧是供弹动力的来源。它不仅耐汗液和盐雾侵蚀，更具备惊人的抗疲劳寿命。即便是长期全满三十发子弹压入待机，也能保持充沛推力把子弹准时送入进弹坡。",
+        "audioUrl": "audio/m4a1/parts/m4a1_mag_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Corrosion-Proof Magazine Spring",
+        "overview": "This elongated rectangular helical spring is captured between the magazine floorplate and the bottom of the follower. It provides constant upward thrust to feed thirty rounds reliably into the action.",
+        "craftAndMaterial": "Wound from 17-7PH precipitation-hardened stainless spring steel with an intentional forward curvature conforming to the STANAG body profile. Highly resistant to permanent compression set and moisture corrosion.",
+        "kinematicRole": "Fully compressed under load; expands incrementally following every cartridge extraction to lift the next round up against the feed lips before the carrier strips it in phase six. Slides out during magazine servicing.",
+        "designHighlight": "Its curved profile prevents coil stack binding and spring tilting under full capacity, guaranteeing uniform lifting speed to prevent bolt-over-base misfeeds during high cyclic-rate full-auto bursts.",
+        "audioScript": "Formed from corrosion-resistant precipitation-hardened stainless steel, this curved rectangular spring provides steady upward lift. It feeds thirty cartridges without binding, even when subjected to prolonged full-capacity compression.",
+        "audioUrl": "audio/m4a1/parts/m4a1_mag_spring_en.mp3"
+      }
+    },
+    "m4a1_mag_floorplate": {
+      "partId": "m4a1_mag_floorplate",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Slide-On Mag Baseplate",
+      "zh": {
+        "roleTag": "冲压铝合金滑入式齐平弹匣底盖",
+        "overview": "该冲压金属底板滑入并卡紧在弹匣壳体最下端的折边翻唇上，将托弹簧和托弹板封闭在内。底面上冲压有生产厂代码与柯尔特跃马标志，兼作弹匣下底支撑基准。",
+        "craftAndMaterial": "选用硬质铝合金板料精密冷冲压成型，表面覆盖与弹匣体相同的灰色干膜润滑涂层。四角折边带有精确滑移导轨与中央防脱落锁止凸舌，配合弹匣底部斜角呈精确法向贴合。",
+        "kinematicRole": "在武器射击与行军过程中保持稳固锁闭，承受整个弹簧柱底部的反作用力；在进行战术排沙与维护保养时，用子弹尖轻微顶起内锁片即可向前滑出底盖。",
+        "designHighlight": "采用齐平滑槽冲压结构，既避免了外凸螺栓或厚重边框勾挂战术背心弹药袋，又能在野战泥水浸泡后徒手借助弹头实现三秒快速拆解，倾倒积水与细沙泥垢。",
+        "audioScript": "这枚冲压铝合金弹匣底盖以零间隙卡合在弹匣底部导轨上。底面刻有军规生产代码和跃马标志。遇到泥沙侵入时，只需用弹头轻轻顶起中央卡锁孔，向外抽出底盖即可快速清理内部污垢。",
+        "audioUrl": "audio/m4a1/parts/m4a1_mag_floorplate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Flush-Fitting Stamped Baseplate",
+        "overview": "This stamped aluminum floorplate slides onto the folded bottom rails of the magazine body, capturing the spring and internal follower. Its exterior bears military CAGE manufacturing codes and the iconic rampant Colt crest.",
+        "craftAndMaterial": "Precision-stamped from aluminum sheet and treated with dry-film lubricant to prevent galvanic corrosion. It features dual folded lateral guide channels and an indexing lock detent tailored to the magazine lower angle.",
+        "kinematicRole": "Stationary structural base maintaining compressive preload on the magazine spring during all tactical maneuvers; slides off its bottom rails during sub-assembly strip when unlatched with a cartridge tip.",
+        "designHighlight": "Its low-profile flush silhouette prevents catching on magazine pouches during rapid tactical reloads, while enabling tool-less field maintenance to dump silt or seawater directly in the field.",
+        "audioScript": "Sliding neatly onto the folded bottom lips of the magazine casing, this stamped aluminum floorplate seals the bottom tightly. When fouled by mud or carbon, it disassembles effortlessly by depressing the floorplate latch with a cartridge tip.",
+        "audioUrl": "audio/m4a1/parts/m4a1_mag_floorplate_en.mp3"
+      }
+    }
+  }
+}

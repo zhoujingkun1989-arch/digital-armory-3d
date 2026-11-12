@@ -7,6 +7,10 @@ import {
   Layers,
   Search,
 } from 'lucide-react';
+import { UI_STRINGS } from '../../i18n/uiStrings';
+import { resolveWeaponDisplayMeta } from '../../i18n/weaponFallbacks';
+import { useWeaponNarration } from '../../narration/narrationService';
+import type { LanguageCode } from '../../narration/types';
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
 import { useWeaponPlugin } from '../../weapons/registry';
@@ -18,16 +22,19 @@ import type {
 
 interface BomPartRowProps {
   part: WeaponPartSpec;
+  lang: LanguageCode;
   badgeColor: string;
   isHidden: boolean;
 }
 
 const BomPartRow: React.FC<BomPartRowProps> = React.memo(
-  ({ part, badgeColor, isHidden }) => {
+  ({ part, lang, badgeColor, isHidden }) => {
     const active = useAppStore((s) => s.selectedPartId === part.id);
     const hovered = useAppStore((s) => s.hoveredPartId === part.id);
     const selectPart = useAppStore((s) => s.selectPart);
     const hoverPart = useAppStore((s) => s.hoverPart);
+
+    const partName = lang === 'en' ? part.nameEn : part.nameZh;
 
     return (
       <li>
@@ -38,6 +45,7 @@ const BomPartRow: React.FC<BomPartRowProps> = React.memo(
           onClick={() => selectPart(active ? null : part.id)}
           onMouseEnter={() => hoverPart(part.id)}
           onMouseLeave={() => hoverPart(null)}
+          title={partName}
         >
           <span
             className="part-code"
@@ -47,7 +55,7 @@ const BomPartRow: React.FC<BomPartRowProps> = React.memo(
           >
             {part.bomCode}
           </span>
-          <span className="part-label">{part.nameZh}</span>
+          <span className="part-label">{partName}</span>
         </button>
       </li>
     );
@@ -57,19 +65,21 @@ const BomPartRow: React.FC<BomPartRowProps> = React.memo(
 BomPartRow.displayName = 'BomPartRow';
 
 export const BomTreeSidebar: React.FC = () => {
-  const [collapsed, setCollapsed] = useState<Record<AssemblyGroupKey, boolean>>({
-    slide: false,
-    frame: false,
-    fire_control: false,
-    magazine: false,
-  });
+  const [collapsed, setCollapsed] = useState<Record<AssemblyGroupKey, boolean>>(
+    {
+      slide: false,
+      frame: false,
+      fire_control: false,
+      magazine: false,
+    }
+  );
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
+  const lang = useAppStore((s) => s.lang);
   const [searchState, setSearchState] = useState<{
     weaponId: WeaponId;
     text: string;
   }>({ weaponId: activeWeaponId, text: '' });
-  const query =
-    searchState.weaponId === activeWeaponId ? searchState.text : '';
+  const query = searchState.weaponId === activeWeaponId ? searchState.text : '';
 
   const hiddenGroups = useAppStore((s) => s.hiddenGroups);
   const panelCollapsed = useAppStore((s) => s.sidebarCollapsed);
@@ -78,10 +88,12 @@ export const BomTreeSidebar: React.FC = () => {
 
   const manifest = getWeaponManifest(activeWeaponId);
   const plugin = useWeaponPlugin(activeWeaponId);
+  const { bundle } = useWeaponNarration(activeWeaponId);
   const weaponParts = plugin?.parts ?? [];
   const partGroups = plugin?.partGroups ?? [];
   const totalPartsCount = weaponParts.length || manifest.catalog.partsCount;
-  const meta = manifest.workbenchMeta;
+  const ui = UI_STRINGS[lang].bom;
+  const displayMeta = resolveWeaponDisplayMeta(activeWeaponId, lang, bundle);
 
   const normalizedQuery = query.trim().toLowerCase();
 
@@ -90,10 +102,10 @@ export const BomTreeSidebar: React.FC = () => {
       <button
         className="hud-collapsed-btn"
         onClick={() => setPanelCollapsed(false)}
-        title="展开 BOM 零件目录"
+        title={ui.collapsedTitle}
       >
         <Layers size={16} />
-        <span>零件目录 ({totalPartsCount})</span>
+        <span>{ui.collapsedBtn(totalPartsCount)}</span>
       </button>
     );
   }
@@ -103,15 +115,15 @@ export const BomTreeSidebar: React.FC = () => {
       <div className="sidebar-header">
         <div className="sidebar-title">
           <Layers size={15} className="accent-icon" />
-          <span>BOM 零件结构树</span>
+          <span>{ui.headerTitle}</span>
           <span className="count-pill">{totalPartsCount}</span>
         </div>
         <button
           className="icon-ghost-btn"
           onClick={() => setPanelCollapsed(true)}
-          title="收起侧栏"
+          title={ui.collapseTitle}
         >
-          收起
+          {ui.collapseAction}
         </button>
       </div>
 
@@ -119,7 +131,7 @@ export const BomTreeSidebar: React.FC = () => {
         <Search size={13} className="search-icon" />
         <input
           type="text"
-          placeholder={meta.searchPlaceholder}
+          placeholder={displayMeta.searchPlaceholder}
           value={query}
           onChange={(e) =>
             setSearchState({ weaponId: activeWeaponId, text: e.target.value })
@@ -143,6 +155,7 @@ export const BomTreeSidebar: React.FC = () => {
 
           const isGroupCollapsed = collapsed[group.key] && !normalizedQuery;
           const isHidden = hiddenGroups[group.key];
+          const groupTitle = lang === 'en' ? group.nameEn : group.nameZh;
 
           return (
             <div key={group.key} className="bom-group">
@@ -165,14 +178,14 @@ export const BomTreeSidebar: React.FC = () => {
                     className="group-dot"
                     style={{ backgroundColor: group.badgeColor }}
                   />
-                  <span className="group-name">{group.nameZh}</span>
+                  <span className="group-name">{groupTitle}</span>
                   <span className="group-count">{groupParts.length}</span>
                 </button>
 
                 <button
                   className={`eye-btn ${isHidden ? 'muted' : ''}`}
                   onClick={() => toggleGroupVisibility(group.key)}
-                  title={isHidden ? '显示该总成' : '隐藏该总成'}
+                  title={isHidden ? ui.showGroup : ui.hideGroup}
                 >
                   {isHidden ? <EyeOff size={13} /> : <Eye size={13} />}
                 </button>
@@ -184,6 +197,7 @@ export const BomTreeSidebar: React.FC = () => {
                     <BomPartRow
                       key={part.id}
                       part={part}
+                      lang={lang}
                       badgeColor={group.badgeColor}
                       isHidden={isHidden}
                     />

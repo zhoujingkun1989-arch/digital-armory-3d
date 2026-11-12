@@ -27,7 +27,8 @@
     "lint": "eslint src tests",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"tests/**/*.ts\"",
     "test": "vitest run",
-    "textures:build": "python3 scripts/build_textures.py --regenerate"
+    "textures:build": "python3 scripts/build_textures.py --regenerate",
+    "narrations:build": "python3 scripts/build_narrations.py"
   },
   "dependencies": {
     "@react-three/drei": "^9.117.3",

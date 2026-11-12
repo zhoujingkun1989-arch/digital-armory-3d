@@ -508,9 +508,7 @@ export function buildAkMagBodyGeometry(): THREE.BufferGeometry {
  */
 export function buildAkMagFollowerGeometry(): THREE.BufferGeometry {
   const topPlatform = paintGeometry(
-    new THREE.BoxGeometry(2.05, 0.24, 0.82)
-      .rotateZ(0.1)
-      .translate(0, 0.15, 0),
+    new THREE.BoxGeometry(2.05, 0.24, 0.82).rotateZ(0.1).translate(0, 0.15, 0),
     AK_FOLLOWER_RED
   );
   // Staggered double-column cartridge stacking ridge on left side
@@ -533,9 +531,7 @@ export function buildAkMagFollowerGeometry(): THREE.BufferGeometry {
     AK_FOLLOWER_RED
   );
   const springBoss = paintGeometry(
-    new THREE.BoxGeometry(1.15, 0.26, 0.42)
-      .rotateZ(0.1)
-      .translate(0, -0.1, 0),
+    new THREE.BoxGeometry(1.15, 0.26, 0.42).rotateZ(0.1).translate(0, -0.1, 0),
     AK_FOLLOWER_RED
   );
   return mergeParts([

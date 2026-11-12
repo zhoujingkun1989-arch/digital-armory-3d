@@ -5,25 +5,25 @@ import {
   useActiveFiringPhase,
   useActiveTimelinePresetId,
 } from '../../engine/clock/playbackClock';
+import { UI_STRINGS } from '../../i18n/uiStrings';
+import {
+  resolveFiringPhaseText,
+  resolveTimelinePresetText,
+  resolveWeaponDisplayMeta,
+} from '../../i18n/weaponFallbacks';
+import { useWeaponNarration } from '../../narration/narrationService';
 import { useAppStore } from '../../store/useAppStore';
-import { getWeaponManifest } from '../../weapons/manifests';
 import { useWeaponPlugin } from '../../weapons/registry';
-import type {
-  FiringPhaseInfo,
-  TimelinePresetItem,
-} from '../../weapons/types';
+import type { FiringPhaseInfo, TimelinePresetItem } from '../../weapons/types';
 
 const EMPTY_PRESETS: readonly TimelinePresetItem[] = [];
 const EMPTY_PHASES: readonly FiringPhaseInfo[] = [];
 
-const SPEED_OPTIONS: { value: 0.25 | 0.5 | 1.0; label: string }[] = [
-  { value: 0.25, label: '0.25x 超慢' },
-  { value: 0.5, label: '0.5x 慢放' },
-  { value: 1.0, label: '1.0x 标准' },
-];
+const SPEED_VALUES: readonly (0.25 | 0.5 | 1.0)[] = [0.25, 0.5, 1.0];
 
 export const TimelineDock: React.FC = () => {
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
+  const lang = useAppStore((s) => s.lang);
   const mode = useAppStore((s) => s.mode);
   const setMode = useAppStore((s) => s.setMode);
 
@@ -45,14 +45,16 @@ export const TimelineDock: React.FC = () => {
   const toggleFireLoop = useAppStore((s) => s.toggleFireLoop);
   const setFireSpeedMultiplier = useAppStore((s) => s.setFireSpeedMultiplier);
 
-  const manifest = getWeaponManifest(activeWeaponId);
-  const meta = manifest.workbenchMeta;
   const plugin = useWeaponPlugin(activeWeaponId);
+  const { bundle } = useWeaponNarration(activeWeaponId);
   const timelinePresets = plugin?.timelinePresets ?? EMPTY_PRESETS;
   const firingPhases = plugin?.firingPhases ?? EMPTY_PHASES;
 
   const activePresetId = useActiveTimelinePresetId(timelinePresets);
   const activePhase = useActiveFiringPhase(firingPhases);
+
+  const ui = UI_STRINGS[lang].timeline;
+  const displayMeta = resolveWeaponDisplayMeta(activeWeaponId, lang, bundle);
 
   const sliderRef = useRef<HTMLInputElement>(null);
   const pctRef = useRef<HTMLDivElement>(null);
@@ -92,40 +94,43 @@ export const TimelineDock: React.FC = () => {
             onClick={() => setMode('explode')}
           >
             <Layers size={14} />
-            <span>结构爆炸拆解模式</span>
+            <span>{ui.modeExplode}</span>
           </button>
           <button
             className={`mode-tab ${mode === 'firing' ? 'active-firing' : ''}`}
             onClick={() => setMode('firing')}
           >
             <Flame size={14} />
-            <span>子弹动态发射流程演示</span>
+            <span>{ui.modeFiring}</span>
           </button>
         </div>
 
         {mode === 'firing' && (
           <div className="firing-sub-controls">
             <div className="speed-group">
-              {SPEED_OPTIONS.map((sp) => (
-                <button
-                  key={sp.value}
-                  className={`speed-pill ${
-                    fireSpeedMultiplier === sp.value ? 'active' : ''
-                  }`}
-                  onClick={() => setFireSpeedMultiplier(sp.value)}
-                >
-                  {sp.label}
-                </button>
-              ))}
+              {SPEED_VALUES.map((val) => {
+                const key = String(val) as '0.25' | '0.5' | '1';
+                return (
+                  <button
+                    key={val}
+                    className={`speed-pill ${
+                      fireSpeedMultiplier === val ? 'active' : ''
+                    }`}
+                    onClick={() => setFireSpeedMultiplier(val)}
+                  >
+                    {ui.speeds[key]}
+                  </button>
+                );
+              })}
             </div>
 
             <button
               className={`loop-pill ${fireLoop ? 'active' : ''}`}
               onClick={toggleFireLoop}
-              title="切换连续循环击发或单发停止"
+              title={ui.loopTitle}
             >
               <Repeat size={12} />
-              <span>{fireLoop ? '连续循环' : '单发停止'}</span>
+              <span>{fireLoop ? ui.loopOn : ui.loopOff}</span>
             </button>
           </div>
         )}
@@ -136,6 +141,7 @@ export const TimelineDock: React.FC = () => {
           <div className="timeline-presets">
             {timelinePresets.map((preset) => {
               const isActive = activePresetId === preset.id;
+              const locPreset = resolveTimelinePresetText(preset, lang, bundle);
               return (
                 <button
                   key={preset.id}
@@ -154,10 +160,10 @@ export const TimelineDock: React.FC = () => {
                       );
                     }
                   }}
-                  title={preset.desc}
+                  title={locPreset.desc}
                 >
-                  <span className="preset-name">{preset.label}</span>
-                  <span className="preset-pct">{preset.subLabel}</span>
+                  <span className="preset-name">{locPreset.label}</span>
+                  <span className="preset-pct">{locPreset.subLabel}</span>
                 </button>
               );
             })}
@@ -167,14 +173,10 @@ export const TimelineDock: React.FC = () => {
             <button
               className={`play-btn ${isPlaying ? 'playing' : ''}`}
               onClick={togglePlay}
-              title={
-                isPlaying
-                  ? '暂停自动拆解 (Space)'
-                  : '自动播放分阶段拆解动画 (Space)'
-              }
+              title={ui.playExplodeTitle(isPlaying)}
             >
               {isPlaying ? <Pause size={15} /> : <Play size={15} />}
-              <span>{isPlaying ? '暂停' : '自动拆解'}</span>
+              <span>{isPlaying ? ui.pause : ui.autoExplode}</span>
             </button>
 
             <div className="slider-wrapper">
@@ -192,10 +194,10 @@ export const TimelineDock: React.FC = () => {
                 className="explode-slider"
               />
               <div className="stage-ticks">
-                <span style={{ left: '0%' }}>0% 合拢</span>
-                <span style={{ left: '30%' }}>30% 一级快拆</span>
-                <span style={{ left: '65%' }}>65% 二级分解</span>
-                <span style={{ left: '100%' }}>100% 全爆炸</span>
+                <span style={{ left: '0%' }}>{ui.ticksExplode[0]}</span>
+                <span style={{ left: '30%' }}>{ui.ticksExplode[1]}</span>
+                <span style={{ left: '65%' }}>{ui.ticksExplode[2]}</span>
+                <span style={{ left: '100%' }}>{ui.ticksExplode[3]}</span>
               </div>
             </div>
 
@@ -208,6 +210,7 @@ export const TimelineDock: React.FC = () => {
           <div className="firing-phases-grid">
             {firingPhases.map((ph) => {
               const isCurrent = activePhase?.id === ph.id;
+              const locPhase = resolveFiringPhaseText(ph, lang, bundle);
               return (
                 <button
                   key={ph.id}
@@ -218,10 +221,10 @@ export const TimelineDock: React.FC = () => {
                       ph.range[0] + (ph.range[1] - ph.range[0]) * 0.62;
                     setFireProgress(mid);
                   }}
-                  title={ph.title}
+                  title={locPhase.title}
                 >
                   <span className="phase-num">{ph.stepNum}</span>
-                  <span className="phase-text">{ph.shortLabel}</span>
+                  <span className="phase-text">{locPhase.shortLabel}</span>
                 </button>
               );
             })}
@@ -231,10 +234,10 @@ export const TimelineDock: React.FC = () => {
             <button
               className="single-shot-btn"
               onClick={triggerSingleShot}
-              title="从 0% 重新扣动扳机完整演示一次单发射击循环"
+              title={ui.singleShotTitle}
             >
               <Zap size={14} />
-              <span>扣扳机单发</span>
+              <span>{ui.singleShot}</span>
             </button>
 
             <button
@@ -242,10 +245,10 @@ export const TimelineDock: React.FC = () => {
                 isFiringPlaying ? 'playing' : ''
               }`}
               onClick={toggleFiringPlay}
-              title="播放或暂停发射循环演示 (Space)"
+              title={ui.firingPlayTitle}
             >
               {isFiringPlaying ? <Pause size={15} /> : <Play size={15} />}
-              <span>{isFiringPlaying ? '暂停' : '继续演示'}</span>
+              <span>{isFiringPlaying ? ui.pause : ui.resumeFiring}</span>
             </button>
 
             <div className="slider-wrapper">
@@ -263,14 +266,15 @@ export const TimelineDock: React.FC = () => {
                 className="explode-slider firing-slider"
               />
               <div className="stage-ticks">
-                <span style={{ left: '0%' }}>待击</span>
-                <span style={{ left: '22%' }}>底火击发</span>
+                <span style={{ left: '0%' }}>{ui.ticksFiring.cocked}</span>
+                <span style={{ left: '22%' }}>{ui.ticksFiring.ignition}</span>
                 <span style={{ left: '34%' }}>
-                  {meta.firingMilestoneLabel ?? '出膛/开锁'}
+                  {displayMeta.firingMilestoneLabel ||
+                    ui.ticksFiring.unlockFallback}
                 </span>
-                <span style={{ left: '54%' }}>后坐抛壳</span>
-                <span style={{ left: '78%' }}>推弹闭锁</span>
-                <span style={{ left: '100%' }}>复位</span>
+                <span style={{ left: '54%' }}>{ui.ticksFiring.eject}</span>
+                <span style={{ left: '78%' }}>{ui.ticksFiring.feedLock}</span>
+                <span style={{ left: '100%' }}>{ui.ticksFiring.reset}</span>
               </div>
             </div>
 

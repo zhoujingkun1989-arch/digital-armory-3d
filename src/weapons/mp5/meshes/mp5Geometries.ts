@@ -375,11 +375,7 @@ export function buildMp5BarrelGeometry(): THREE.BufferGeometry {
   );
   // Twin roller locking recesses w/ 45° forward camming abutments at X = 2.15, Z = ±0.40!
   const rollerRecessR = paintGeometry(
-    new THREE.CylinderGeometry(0.225, 0.225, 0.74, 20).translate(
-      2.15,
-      0,
-      0.41
-    ),
+    new THREE.CylinderGeometry(0.225, 0.225, 0.74, 20).translate(2.15, 0, 0.41),
     HK_INNER_DARK
   );
   const rollerRecessL = paintGeometry(
@@ -965,11 +961,7 @@ export function buildMp5ButtstockGeometry(): THREE.BufferGeometry {
       HK_DARK_STEEL
     );
     const railFlute = paintGeometry(
-      new THREE.BoxGeometry(10.2, 0.11, 0.06).translate(
-        6.1,
-        0.65,
-        side * 0.85
-      ),
+      new THREE.BoxGeometry(10.2, 0.11, 0.06).translate(6.1, 0.65, side * 0.85),
       HK_INNER_DARK
     );
     const notches: THREE.BufferGeometry[] = [railFlute];

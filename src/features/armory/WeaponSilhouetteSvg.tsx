@@ -316,10 +316,7 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
               rx="0.8"
               fill={stroke}
             />
-            <polygon
-              points="144,17 149,17 147.5,13.5 145,13.5"
-              fill={stroke}
-            />
+            <polygon points="144,17 149,17 147.5,13.5 145,13.5" fill={stroke} />
             <rect x="85" y="18.5" width="22" height="7" rx="1" fill="#475569" />
             {[42, 46, 50, 54, 58].map((x) => (
               <line
@@ -574,7 +571,14 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
             <rect x="128" y="18.5" width="4" height="6" fill={stroke} />
             <rect x="94" y="29.5" width="8" height="2.6" rx="1" fill={stroke} />
             {/* 14" Barrel + Gas Regulator Plug + 3-Prong Flash Hider */}
-            <rect x="132" y="27.2" width="4.5" height="3.2" rx="0.6" fill={stroke} />
+            <rect
+              x="132"
+              y="27.2"
+              width="4.5"
+              height="3.2"
+              rx="0.6"
+              fill={stroke}
+            />
             <rect x="132" y="31.5" width="26" height="3.2" fill={fill} />
             <path
               d="M158 30.3 L169 30.3 L169 31.8 L162 31.8 L162 34.2 L169 34.2 L169 35.7 L158 35.7 Z"
@@ -746,7 +750,14 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
               stroke={stroke}
               strokeWidth="1.2"
             />
-            <rect x="114" y="28.5" width="9" height="3.2" rx="0.7" fill={subFill} />
+            <rect
+              x="114"
+              y="28.5"
+              width="9"
+              height="3.2"
+              rx="0.7"
+              fill={subFill}
+            />
             <rect x="102" y="31.5" width="54" height="3.3" fill={fill} />
             <rect
               x="155"
@@ -787,10 +798,7 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
               rx="0.8"
               fill={stroke}
             />
-            <polygon
-              points="143,17 148,17 146.5,13.5 144,13.5"
-              fill={stroke}
-            />
+            <polygon points="143,17 148,17 146.5,13.5 144,13.5" fill={stroke} />
             <rect x="84" y="18.5" width="22" height="7" rx="1" fill={fill} />
             {/* Coyote FDE Modular Carry Grip w/ Beavertail, M1913 Rail & FCU Window */}
             <path

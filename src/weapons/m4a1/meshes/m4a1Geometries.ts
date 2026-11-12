@@ -361,11 +361,7 @@ export function buildM4a1UpperReceiverGeometry(): THREE.BufferGeometry {
     const lx = -5.1 + i * 0.76;
     parts.push(
       paintGeometry(
-        createM1913RailProfile(0.44, 0.96, 0.74, 0.15).translate(
-          lx,
-          1.97,
-          0
-        ),
+        createM1913RailProfile(0.44, 0.96, 0.74, 0.15).translate(lx, 1.97, 0),
         M4_RAIL_BEVEL
       )
     );
@@ -915,11 +911,7 @@ export function buildM4a1BoltCarrierGeometry(): THREE.BufferGeometry {
   // Twin Grade-8 Socket-Head Cap Screws + USGI Side Staking Swage Marks!
   for (const sx of [0.75, 1.65]) {
     const screwHead = paintGeometry(
-      new THREE.CylinderGeometry(0.098, 0.098, 0.16, 14).translate(
-        sx,
-        0.74,
-        0
-      ),
+      new THREE.CylinderGeometry(0.098, 0.098, 0.16, 14).translate(sx, 0.74, 0),
       M4_BRIGHT_STEEL
     );
     const hexRecess = paintGeometry(
@@ -1294,13 +1286,7 @@ export function buildM4a1RasUpperGeometry(): THREE.BufferGeometry {
 
   // Solid 3D Stamped Corrugated Aluminum Thermal Heatshield Liner inside upper RAS
   parts.push(
-    createSolidHeatshieldLiner(
-      7.45,
-      0.675,
-      0.036,
-      Math.PI * 0.1,
-      Math.PI * 0.8
-    )
+    createSolidHeatshieldLiner(7.45, 0.675, 0.036, Math.PI * 0.1, Math.PI * 0.8)
   );
 
   // Top 12-o'clock + Left/Right 3 & 9-o'clock MIL-STD-1913 Beveled Picatinny Spines & 11 Cross-Lugs
@@ -1420,13 +1406,7 @@ export function buildM4a1RasLowerGeometry(): THREE.BufferGeometry {
 
   // Solid 3D Stamped Corrugated Aluminum Lower Heatshield Liner
   parts.push(
-    createSolidHeatshieldLiner(
-      7.45,
-      0.665,
-      0.036,
-      Math.PI * 1.1,
-      Math.PI * 0.8
-    )
+    createSolidHeatshieldLiner(7.45, 0.665, 0.036, Math.PI * 1.1, Math.PI * 0.8)
   );
 
   // Bottom 6-o'clock MIL-STD-1913 Beveled Picatinny Rail + 11 Cross-Lugs

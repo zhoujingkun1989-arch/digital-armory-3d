@@ -30,10 +30,7 @@ import {
   buildM4a1TriggerGeometry,
 } from './meshes/m4a1ExtraGeometries';
 
-export const GEOMETRY_BUILDERS: Record<
-  string,
-  () => THREE.BufferGeometry
-> = {
+export const GEOMETRY_BUILDERS: Record<string, () => THREE.BufferGeometry> = {
   // 1. Flat-Top Upper, DI BCG & KAC M4 RAS ('slide' · 10)
   m4a1_upper_receiver: buildM4a1UpperReceiverGeometry,
   m4a1_carry_handle: buildM4a1CarryHandleGeometry,

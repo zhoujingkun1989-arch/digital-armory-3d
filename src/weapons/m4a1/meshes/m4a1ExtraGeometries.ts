@@ -284,11 +284,7 @@ export function buildM4a1BarrelGeometry(): THREE.BufferGeometry {
       paintGeometry(
         new THREE.BoxGeometry(16.26, 0.036, 0.044)
           .rotateX(-ang)
-          .translate(
-            14.13,
-            Math.sin(ang) * 0.156,
-            Math.cos(ang) * 0.156
-          ),
+          .translate(14.13, Math.sin(ang) * 0.156, Math.cos(ang) * 0.156),
         M4_STAINLESS
       )
     );

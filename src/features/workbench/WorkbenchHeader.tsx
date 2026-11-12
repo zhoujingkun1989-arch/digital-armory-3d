@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   ArrowLeft,
+  BookOpen,
   Box,
   Camera,
   Eye,
@@ -11,19 +12,24 @@ import {
   Sparkles,
   Tag,
 } from 'lucide-react';
+import { UI_STRINGS } from '../../i18n/uiStrings';
+import { resolveWeaponDisplayMeta } from '../../i18n/weaponFallbacks';
+import { useWeaponNarration } from '../../narration/narrationService';
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
 import type { CameraPresetType } from '../../weapons/types';
+import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
 
-const VIEW_ANGLES: { key: CameraPresetType; label: string }[] = [
-  { key: 'iso', label: '等轴测' },
-  { key: 'right', label: '右侧' },
-  { key: 'left', label: '左侧' },
-  { key: 'top', label: '俯视' },
-];
+const VIEW_ANGLE_KEYS: Extract<
+  CameraPresetType,
+  'iso' | 'right' | 'left' | 'top'
+>[] = ['iso', 'right', 'left', 'top'];
 
 export const WorkbenchHeader: React.FC = () => {
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
+  const lang = useAppStore((s) => s.lang);
+  const storyOpen = useAppStore((s) => s.storyOpen);
+  const toggleStoryOpen = useAppStore((s) => s.toggleStoryOpen);
   const returnToArmory = useAppStore((s) => s.returnToArmory);
   const mode = useAppStore((s) => s.mode);
   const setMode = useAppStore((s) => s.setMode);
@@ -43,9 +49,12 @@ export const WorkbenchHeader: React.FC = () => {
   const triggerCameraPreset = useAppStore((s) => s.triggerCameraPreset);
   const resetAll = useAppStore((s) => s.resetAll);
 
+  const { bundle } = useWeaponNarration(activeWeaponId);
   const manifest = getWeaponManifest(activeWeaponId);
   const meta = manifest.workbenchMeta;
   const partsCount = manifest.catalog.partsCount;
+  const ui = UI_STRINGS[lang].workbench;
+  const displayMeta = resolveWeaponDisplayMeta(activeWeaponId, lang, bundle);
 
   return (
     <header className="top-bar">
@@ -54,29 +63,43 @@ export const WorkbenchHeader: React.FC = () => {
           type="button"
           className="back-armory-btn"
           onClick={returnToArmory}
-          title="返回 3D 数字枪库选择其他枪型 (Esc)"
+          title={ui.backTitle}
         >
           <ArrowLeft size={14} />
-          <span>枪库</span>
+          <span>{ui.backBtn}</span>
         </button>
 
         <div className="brand-badge">{meta.badge}</div>
         <div>
-          <h1 className="brand-title">{meta.title}</h1>
-          <p className="brand-sub">{meta.subtitle}</p>
+          <h1 className="brand-title">{displayMeta.workbenchTitle}</h1>
+          <p className="brand-sub">{displayMeta.workbenchSubtitle}</p>
         </div>
       </div>
 
       <div className="toolbar-cluster">
+        <LanguageSwitchPill compact />
+
+        <button
+          type="button"
+          className={`toggle-chip ${storyOpen ? 'active-cyan' : ''}`}
+          onClick={toggleStoryOpen}
+          title={ui.storyChipTitle}
+        >
+          <BookOpen size={13} />
+          <span>{ui.storyChip}</span>
+        </button>
+
+        <div className="toolbar-divider" />
+
         <div className="camera-pills">
           <Camera size={13} className="cam-icon" />
-          {VIEW_ANGLES.map((v) => (
+          {VIEW_ANGLE_KEYS.map((key) => (
             <button
-              key={v.key}
-              className={`cam-btn ${cameraPreset === v.key ? 'active' : ''}`}
-              onClick={() => triggerCameraPreset(v.key)}
+              key={key}
+              className={`cam-btn ${cameraPreset === key ? 'active' : ''}`}
+              onClick={() => triggerCameraPreset(key)}
             >
-              {v.label}
+              {ui.viewAngles[key]}
             </button>
           ))}
         </div>
@@ -86,75 +109,75 @@ export const WorkbenchHeader: React.FC = () => {
         <button
           className={`toggle-chip ${mode === 'firing' ? 'active-orange' : ''}`}
           onClick={() => setMode(mode === 'firing' ? 'explode' : 'firing')}
-          title="切换子弹动态发射与抛壳复进流程演示"
+          title={ui.firingChipTitle}
         >
           <Flame size={14} />
-          <span>发射演示</span>
+          <span>{ui.firingChip}</span>
         </button>
 
         <button
           className={`toggle-chip ${pbrTexturesEnabled ? 'active-cyan' : ''}`}
           onClick={togglePbrTextures}
-          title="开启/关闭真实 2K 5通道 PBR 材质贴图 (Albedo + Normal + Packed ORM)"
+          title={ui.pbrChipTitle}
         >
           <Sparkles size={13} />
-          <span>PBR 贴图</span>
+          <span>{ui.pbrChip}</span>
         </button>
 
         <button
           className="toggle-chip"
           onClick={() => setTextureModalOpen(true)}
-          title="打开真实 PBR 材质贴图图集检视器"
+          title={ui.atlasChipTitle}
         >
           <ImageIcon size={13} />
-          <span>图集</span>
+          <span>{ui.atlasChip}</span>
         </button>
 
         <button
           className={`toggle-chip ${xrayShells ? 'active-cyan' : ''}`}
           onClick={toggleXrayShells}
-          title="将外层机匣/套筒、护木与弹匣壳体切换为半透明透视材质 (X)"
+          title={ui.xrayChipTitle}
         >
           <Eye size={14} />
-          <span>X-Ray 透视</span>
+          <span>{ui.xrayChip}</span>
         </button>
 
         <button
           className={`toggle-chip ${sectionCut ? 'active-teal' : ''}`}
           onClick={toggleSectionCut}
-          title="沿纵向中轴切开外层机匣/套筒/弹匣右侧壳体，原色直视内部膛线、闭锁突笋与实弹供弹机构 (C)"
+          title={ui.sectionChipTitle}
         >
           <Scissors size={14} />
-          <span>军械剖视</span>
+          <span>{ui.sectionChip}</span>
         </button>
 
         <button
           className={`toggle-chip ${showEdges ? 'active' : ''}`}
           onClick={toggleShowEdges}
-          title="开启/关闭工业 CAD 硬边轮廓线 (E)"
+          title={ui.edgesChipTitle}
         >
           <Box size={14} />
-          <span>CAD 描边</span>
+          <span>{ui.edgesChip}</span>
         </button>
 
         {mode === 'explode' && (
           <button
             className={`toggle-chip ${showLabels ? 'active' : ''}`}
             onClick={toggleShowLabels}
-            title={`显示全部 ${partsCount} 个零件的 3D 空间编号引出签 (L)`}
+            title={ui.labelsChipTitle(partsCount)}
           >
             <Tag size={14} />
-            <span>零件标签</span>
+            <span>{ui.labelsChip}</span>
           </button>
         )}
 
         <button
           className="toggle-chip reset-chip"
           onClick={resetAll}
-          title="重置回默认合拢态与标准视角 (R)"
+          title={ui.resetChipTitle}
         >
           <RotateCcw size={14} />
-          <span>复位</span>
+          <span>{ui.resetChip}</span>
         </button>
       </div>
     </header>

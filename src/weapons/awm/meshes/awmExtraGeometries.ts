@@ -157,13 +157,7 @@ export function applyAwmScopeUVs(
   const uvs = new Float32Array(count * 2);
 
   for (let i = 0; i + 2 < count; i += 3) {
-    const { cx, cy, cz, cr, cg, fnx, fnz } = triInfo(
-      pos,
-      col,
-      i,
-      i + 1,
-      i + 2
-    );
+    const { cx, cy, cz, cr, cg, fnx, fnz } = triInfo(pos, col, i, i + 1, i + 2);
     const isLens = cg > 0.35 && cr < 0.25;
     const isElevTurret = cx > -3.2 && cx < -0.7 && cy > 0.72;
     const isSideTurret = cx > -3.2 && cx < -0.7 && Math.abs(cz) > 0.72;
@@ -426,11 +420,7 @@ export function buildAwmScopeGeometry(): THREE.BufferGeometry {
         new THREE.CylinderGeometry(0.045, 0.045, 0.08, 8)
           .rotateZ(Math.PI / 2)
           .rotateY(-ang)
-          .translate(
-            -2.05 + Math.cos(ang) * 0.69,
-            1.14,
-            Math.sin(ang) * 0.69
-          ),
+          .translate(-2.05 + Math.cos(ang) * 0.69, 1.14, Math.sin(ang) * 0.69),
         AWM_STAINLESS
       )
     );
@@ -827,10 +817,12 @@ export function buildAwmBoltShroudGeometry(): THREE.BufferGeometry {
       .translate(-0.22, 0.52, 0.48),
     AWM_PARKERIZED
   );
-  const body = csgSubtract(
-    csgUnion([shroudBox, frontPlug, bottomGuideKey]),
-    [boreHole, bottomSearSlot, bevelL, bevelR]
-  );
+  const body = csgSubtract(csgUnion([shroudBox, frontPlug, bottomGuideKey]), [
+    boreHole,
+    bottomSearSlot,
+    bevelL,
+    bevelR,
+  ]);
 
   // Iconic AI 3-Position Wing/Flag Safety Lever on left-rear of shroud + white safe line & red fire-ready dot
   const safetyPivot = paintGeometry(
@@ -1101,9 +1093,7 @@ export function buildAwmSearGeometry(): THREE.BufferGeometry {
     }),
     AWM_GOLD_BRASS
   );
-  return sanitizeAwmMesh(
-    mergeParts([searBody, transferLeg, searReturnSpring])
-  );
+  return sanitizeAwmMesh(mergeParts([searBody, transferLeg, searReturnSpring]));
 }
 
 /**
@@ -1362,7 +1352,10 @@ class WideOvalHelixCurve extends THREE.Curve<THREE.Vector3> {
     this.coils = coils;
   }
 
-  override getPoint(t: number, optionalTarget = new THREE.Vector3()): THREE.Vector3 {
+  override getPoint(
+    t: number,
+    optionalTarget = new THREE.Vector3()
+  ): THREE.Vector3 {
     const theta = t * this.coils * Math.PI * 2;
     const x = Math.cos(theta) * this.rx;
     const y = this.yStart + (this.yEnd - this.yStart) * t;

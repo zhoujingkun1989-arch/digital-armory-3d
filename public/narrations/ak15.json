@@ -1,0 +1,934 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "ak15",
+  "generatedAt": "2026-11-12T10:54:01.085702+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-lite-tts"
+  },
+  "uiMetaEn": {
+    "name": "Kalashnikov AK-15M1 Assault Rifle (6P71M · Obr. 2023)",
+    "subtitle": "7.62×39mm Latest 5th-Gen Kalashnikov Combat-Refined Service Rifle",
+    "originCountry": "Russia",
+    "weaponType": "Assault Rifle",
+    "categoryLabel": "Assault Rifle",
+    "actionMechanism": "Long-Stroke Gas Piston · 2-Lug Rotating Bolt Lock",
+    "statusLabel": "Vault Ready · Interactive 3D",
+    "description": "The definitive 7.62×39mm fifth-generation service rifle of the legendary Kalashnikov lineage, the AK-15M1 (GRAU 6P71M, 2023-2025 combat-update pattern) incorporates rigorous field improvements. Upgrades include a slotted QD-suppressor birdcage muzzle device, a 90-degree gas block with hooded front sight, a fully free-floated high-heat polymer handguard, a cross-pin zero-retention railed dust cover, an ambidextrous thumb selector with two-round burst deleted, an EVO folding adjustable cheek riser stock, and a windowed curved polymer magazine.",
+    "highlights": [
+      "Long-Stroke Piston & 35° Rotary Bolt",
+      "2023 Ambi Selector & EVO Cheek Stock",
+      "7.62×39 Windowed Curved Magazine",
+      "2K Russian Enamel & Piston Scorch Finishes"
+    ],
+    "workbenchTitle": "AK-15M1 Internal Mechanics 3D Teardown & Cycling Simulation",
+    "workbenchSubtitle": "4 Assemblies · 26 Critical Nodes · Long-Stroke Gas Operation & 7.62×39mm Dynamic Firing Simulation",
+    "cutawayLabel": "Bolt & Hammer Mesh Focus",
+    "cutawayTitle": "Switch to locked X-Ray cutaway and focus on 2-lug rotating bolt head and rotary hammer engagement",
+    "searchPlaceholder": "Search component name / code (e.g., Piston, Bolt, B-03)...",
+    "firingMilestoneLabel": "Gas Unlocking",
+    "rateOfFire": "700 rpm",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0%",
+        "desc": "AK-15M1 (Obr. 2023) in complete battery. Engage X-Ray mode to inspect dual-lug rotary locking geometry and cocked hammer disposition."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Standard Russian field strip: detach 7.62 curved magazine, push cross-pin to swing open railed dust cover, remove telescoping recoil spring and long-stroke bolt carrier group."
+      },
+      "upper_mag_strip": {
+        "label": "Detailed Teardown",
+        "subLabel": "65%",
+        "desc": "Disengage dual-lug rotating bolt and free-floating firing pin from carrier, strip upper/lower heatshields and gas tube, and disassemble windowed magazine."
+      },
+      "full_explode": {
+        "label": "Full Exploded View",
+        "subLabel": "100%",
+        "desc": "Complete 26-node exploded array displaying cold-hammer-forged barrel, 90-degree gas block, EVO folding stock, and ambidextrous fire-control group."
+      }
+    },
+    "firingPhases": {
+      "ak_trigger_hammer": {
+        "shortLabel": "Trigger & Hammer",
+        "title": "Phase 1 · Trigger Squeeze & Hammer Acceleration",
+        "description": "Squeezing the curved trigger rotates the primary sear hooks downward, disengaging the cocked hammer. The heavy rotary hammer accelerates rapidly forward under driving tension from the multi-strand braided torsion spring."
+      },
+      "ak_pin_ignition": {
+        "shortLabel": "Primer Ignition",
+        "title": "Phase 2 · Floating Firing Pin Strikes 7.62×39mm Primer",
+        "description": "With the bolt carrier fully in battery and out-of-battery safety clears unobstructed, the hammer strikes the rear of the free-floating fluted firing pin. The tip indents the Boxer primer, igniting the propellant charge within the tapered steel case."
+      },
+      "ak_gas_tap": {
+        "shortLabel": "Gas Port Bleed",
+        "title": "Phase 3 · High-Pressure Gas Bleeds Through 90° Gas Block",
+        "description": "The 7.62mm projectile accelerates along the 415mm chrome-lined bore. As it crosses the gas port, high-pressure expanding combustion gases bleed through the 90-degree gas block, striking the cupped face of the long-stroke piston."
+      },
+      "ak_piston_unlock": {
+        "shortLabel": "Piston Cam Unlock",
+        "title": "Phase 4 · Piston Free-Travel & 35° Rotary Cam Unlocking",
+        "description": "The integrated piston and carrier travel rearward through 7.5mm of free travel to allow bore pressure to drop. The carrier's helical cam groove then drives the bolt cam pin, rotating the bolt head 35 degrees to disengage the front trunnion locking lugs."
+      },
+      "ak_extract_eject": {
+        "shortLabel": "Extract & Eject",
+        "title": "Phase 5 · Claw Extraction, Recoil Deceleration & Ejection",
+        "description": "The heavy claw extractor draws the tapered casing from the chamber as the bolt recoils, cocking the hammer. The casing base strikes the receiver's fixed ejector spur and pivots sharply out the ejection port while the carrier cushions against the rear guide."
+      },
+      "ak_feed_lock": {
+        "shortLabel": "Feed & Lock",
+        "title": "Phase 6 · Magazine Strip, Chambering & Counter-Rotation",
+        "description": "Driven by the braided helical recoil spring, the carrier lunges forward, stripping the top 7.62×39mm round from the magazine feed lips. Upon chambering, the carrier drives the bolt head into a 35-degree counter-rotation, locking it firmly into the trunnion."
+      },
+      "ak_sear_reset": {
+        "shortLabel": "Disconnector Reset",
+        "title": "Phase 7 · Trigger Release & Primary Sear Reset",
+        "description": "As the carrier completes forward travel in semi-automatic mode, the hammer is captured by the spring-loaded disconnector hook. Releasing the trigger allows the hammer to slip from the disconnector and re-catch onto the primary sear hooks with a distinct tactile click."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "红星锻造的终极重锤：卡拉什尼科夫 AK-15M1 实战淬火录",
+      "deck": "从叙利亚战场的高热扬尘到东欧战壕的抵近对决，AK-15M1 以严酷实战经验重塑苏联经典 7.62×39 毫米体系。通过浮置护木、全通导轨锁死机匣盖与全新人机工程，缔造出兼具绝对可靠性与现代光电打击精度的第五代突击步枪峰顶之作。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "2010–2018",
+          "title": "口径之争与大威力复苏：近接破障的呼唤",
+          "paragraphs": [
+            "在俄罗斯新一代“勇士”（Ratnik）单兵未来作战系统竞标之初，5.45×39毫米口径的AK-12被内定为主力制式枪族。然而，来自叙利亚山地反恐、城镇密林作战以及格鲁乌特种部队的实战报告却发出了尖锐的异议：在面对掩体后目标、轻质砖墙及灌木障碍物时，小口径高速弹药存在容易偏航、存能受限和对车体风挡击穿力不足的物理缺陷。",
+            "苏军在阿富汗与车臣时期对 7.62×39mm M43 弹药形成的“重弹头、强存能、绝佳障碍跳弹抗性”战术记忆被重新激活。俄军特战单位与突击工兵明确要求：必须保留发射这种经典大威力中间威力弹的现代化步枪平台。以此为起点，伊兹马什（卡拉什尼科夫集团）决定在全新 AK-12 的机匣架构下，研制一款拥有完全同等现代化战术导轨扩展能力、但专为 7.62 毫米重弹优化膛线与供弹的孪生型号，代号 AK-15（GRAU 代号 6P71）。"
+          ],
+          "audioScript": "两千一零年代初，虽然小口径步枪已成主流，但俄军特种部队在频繁的反恐与掩体突击中发现，轻量弹头穿透灌木和简易掩体时极易失稳。为了在密林与近距离破障战中获得致命压制力，经典的七点六二乘三十九毫米口径迎来了战术复兴。伊热夫斯克的枪械设计师们启动了代号为六批七十一的研制计划，这正是现代卡拉什尼科夫重拳——AK-15 的最初起点。",
+          "audioUrl": "audio/ak15/story_act1_zh.mp3",
+          "focusPartId": "ak_barrel",
+          "focusPartLabel": "415mm 冷锻内膛镀铬枪管"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "2018–2022",
+          "title": "战火中的淬炼重塑：从初生到 2023 实战大改",
+          "paragraphs": [
+            "2018年，首批 AK-15 伴随早期型 AK-12 正式列装特战力量与空降兵部队。然而，2022年爆发的大规模高烈度实战却将早期原型设计的不成熟暴露无遗。前线士兵反馈最为强烈的痛点有三：第一，机匣盖前端的插销旋转锁定机构在野战高频震动下存在微米级位移，导致安装其上的全息瞄准镜与红外激光出现“归零漂移”；第二，复杂的两连发机构在泥泞和冻土环境下极易积垢卡死，毫无战术价值；第三，原先的多功能枪口制退器在夜战中产生剧烈侧向火光，且无法快速加装消音器。",
+            "面对残酷的战壕检验，卡拉什尼科夫集团在总设计师谢尔盖·乌尔茹姆采夫主持下展开了雷厉风行的紧急改进，代号“2023改型”（6P71M）。设计团队果断剔除了两连发机构，将快慢机恢复为清晰可靠的单发、连发和保险三档；换装了带卡销强力张紧的全通导轨机匣盖；并将枪口换为带有五槽消焰和外螺纹快拆消音接口的全新鸟笼消焰器，实现了浴火重生。"
+          ],
+          "audioScript": "两千二十二年的高强度实战，将早期步枪的设计短板彻底曝光。前线反馈，两连发机械构件在泥泞战壕中极为累赘，瞄具导轨在连发射击后也会发生微小移位。卡拉什尼科夫集团迅速启动代号六批七十一埃姆的战术升级。他们果断取消了鸡肋的两连发，强化了机匣盖锁销，并重新设计了快拆消音枪口装置。枪械在战火淬炼中完成了真正成熟的蜕变。",
+          "audioUrl": "audio/ak15/story_act2_zh.mp3",
+          "focusPartId": "ak_selector",
+          "focusPartLabel": "2023 双侧联动拇指快慢机组件"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "2022–2024",
+          "title": "机械灵魂的蜕变：长行程活塞与浮置人机工程",
+          "paragraphs": [
+            "AK-15M1 的机械心脏依然继承了米哈伊尔·卡拉什尼科夫最引以为傲的长行程导气活塞与双突笋大导程回转枪机。当 7.62×39mm 弹头越过 90° 垂直导气箍时，火药燃气猛烈冲刷活塞凹面，高达 500 克的枪机框组件凭借其巨大惯性先行移动约 7.5 毫米自由行程，待膛压骤降至安全极限后，机框导槽才以 35° 顺时针强力扭转枪机头，将抽壳钩咬住的锥形弹壳顺滑抽出。",
+            "然而在机械外壳之下，AK-15M1 进行了革命性的现代化骨骼改造。护木彻底脱离枪管实现“悬臂自由浮置”，即便挂载重型热成像瞄具、激光指示器或在掩体上粗暴借力，枪管也不会发生弯曲变形。尾部安装的 2023 EVO 枪托不仅支持左折叠，还整合了多档伸缩与快速升降贴腮板，使得射手在使用高基线光电瞄准镜时能够实现贴腮即对准目镜光轴，将连发精度推向了 AK 家族的历史新高。"
+          ],
+          "audioScript": "在机械内部，AK-15M1 保留了苏系步枪最纯粹的灵魂。五百克重的枪机框与长行程导气活塞，提供了无与伦比的后坐排沙动力；双突笋枪机经过三十五度旋转闭锁，刚性承受七点六二弹药的膛压。而在外部，自由浮置式高耐热护木彻底消除了枪管受压形变，配合全可调贴腮折叠枪托，让粗犷的重口径武器兼具了精确射击的细腻人机工效。",
+          "audioUrl": "audio/ak15/story_act3_zh.mp3",
+          "focusPartId": "ak_bolt_carrier",
+          "focusPartLabel": "枪机框与长行程导气活塞一体件"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "2024–未来",
+          "title": "战壕重装的标杆：制式步枪的重口径新纪元",
+          "paragraphs": [
+            "进入 2024 年，AK-15M1 与 5.45 口径的 AK-12M1 构成了俄军突击作战部队高低搭配的双子星。在侦察小队、近接攻坚分队和城市巷战部队中，AK-15M1 凭借其对轻装甲车窗、砖石工事以及三级防弹衣的强大毁伤存能，成为了前线特战士兵最渴望获取的战术利器。",
+            "它不仅终结了外界长期以来对“AK 平台无法稳定搭载顶级现代光电火控”的质疑，更向世界防务界证明：历经四分之三个世纪风雨的卡拉什尼科夫长行程活塞体系，通过材料学、精密冲压与人机工程学的现代重铸，依然能够以傲然姿态立于 21 世纪数字化战场的中央。"
+          ],
+          "audioScript": "如今，AK-15M1 已全面列装特种作战部队与重装突击分队。在城镇巷战和近距攻坚中，它发射的重弹头展现了无可替代的掩体穿透力与终点毁伤效能。它不仅成功攻克了经典阿卡平台装载高倍瞄具易失准的历史难题，更用实战证明，这套经典的卡拉什尼科夫机械架构，经过现代化精细重铸后，依然是二十一世纪步兵武器库中最值得信赖的钢铁脊梁。",
+          "audioUrl": "audio/ak15/story_act4_zh.mp3",
+          "focusPartId": "ak_dust_cover",
+          "focusPartLabel": "全通皮卡汀尼导轨冲压机匣盖"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "横插前销强力张紧机匣盖：根治光电瞄具归零漂移",
+          "tag": "归零保持锁死机构",
+          "summary": "AK 家族数十年来的最大痛点是机匣盖震动移位无法稳定安装高倍瞄具。AK-15M1 采用了前端横向贯通锁销配合尾端自紧斜楔结构，使冲压机匣盖与下机匣牢固结合为一个高刚性光学瞄准平台，实现拆卸装回后百米归零零漂移。",
+          "focusPartId": "ak_dust_cover",
+          "focusPartLabel": "全通皮卡汀尼导轨冲压机匣盖"
+        },
+        {
+          "id": "bt2",
+          "title": "悬臂自由浮置隔热护木：枪管应力隔离与精准射击",
+          "tag": "自由浮置枪管架构",
+          "summary": "传统 AK 护木前后箍紧枪管，射手握持用力、两脚架依托或导气管受热膨胀均会引起枪管弹性变形。AK-15M1 创新性地将下护木直接刚性锚定在机匣前节套上，护木全程悬空不接触 415mm 枪管，杜绝外界应力对弹着点散布的干扰。",
+          "focusPartId": "ak_lower_handguard",
+          "focusPartLabel": "浮置耐热加强导轨下护木"
+        },
+        {
+          "id": "bt3",
+          "title": "2023 双侧拇指快慢机与取消双发机构：高压环境绝对容错",
+          "tag": "火控人机精简与防错",
+          "summary": "吸取高寒实战中双发点射凸轮机构易积雪卡死的教训，AK-15M1 坚决剔除了机械限动机构，恢复直观的保险-连发-单发（ПР/АВ/ОД）三档；并引入双侧拇指拨片，使射手无需松开握把即可在毫秒内完成推弹待发与模式切换。",
+          "focusPartId": "ak_selector",
+          "focusPartLabel": "2023 双侧联动拇指快慢机组件"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "2014",
+          "title": "7.62mm 现代原型立项",
+          "detail": "卡拉什尼科夫集团根据俄军 Ratnik 竞标中的特战火力需求，启动基于通用机匣的 7.62×39mm 突击步枪研制。"
+        },
+        {
+          "year": "2018",
+          "title": "国家靶场验收并获 GRAU 代号",
+          "detail": "AK-15 顺利通过俄联邦国防部国家靶场严酷环境验收测试，正式获得 GRAU 装备代号 6P71 并少量交付特种作战部队试用。"
+        },
+        {
+          "year": "2020",
+          "title": "第一代野战量产定型",
+          "detail": "首批生产型 AK-15 配发俄军精锐空降突击旅，装备伸缩托与早期的两发点射机构。"
+        },
+        {
+          "year": "2022",
+          "title": "前线实战反馈与紧急召回改进",
+          "detail": "高烈度实战暴露出机匣盖晃动、消焰器火光大及双发机构易卡滞等问题，总设计师乌尔茹姆采夫团队随即启动全面大改。"
+        },
+        {
+          "year": "2023",
+          "title": "AK-15M1 (6P71M) 终极定型",
+          "detail": "在莫斯科爱国者公园陆军论坛上正式公布 2023 战术定型版：取消双发点射、采用全通锁死导轨、EVO 贴腮托与快拆消音鸟笼。"
+        },
+        {
+          "year": "2024",
+          "title": "全面列装近接突击力量",
+          "detail": "AK-15M1 实现规模化全速量产，作为俄军一线近接攻坚分队与特种侦察分队的核心重火力突击制式步枪全面服役。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "The Red Star's Heavy Hammer: Combat Evolution of the Kalashnikov AK-15M1",
+      "deck": "From the dust of Syria to the high-intensity trench warfare of Eastern Europe, the AK-15M1 reimagines the legendary 7.62×39mm caliber. Through a free-floated handguard, zero-retention pinned railed dust cover, and combat-refined ergonomics, it represents the fifth-generation pinnacle of Kalashnikov assault rifles.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "2010–2018",
+          "title": "The Caliber Dilemma & The Heavy-Round Resurgence",
+          "paragraphs": [
+            "During the initial trials of Russia's Ratnik future infantry combat system, the 5.45×39mm AK-12 was designated as the primary general-issue weapon. However, operational debriefs from Syrian counter-terror operations, dense woodland combat, and GRU Special Forces raised acute operational objections: against intermediate light cover, vehicle glass, brick masonry, and dense brush, lightweight high-velocity rounds demonstrated noticeable deflection, limited energy retention, and insufficient barrier penetration.",
+            "The Soviet combat doctrine forged around the 7.62×39mm M43 cartridge—praising its heavy bullet mass, hard barrier punching capacity, and minimal trajectory deviation through vegetation—was swiftly revived. Russian assault detachments demanded an advanced rifle chambered in this intermediate powerhouse that retained full compatibility with modern optoelectronics. Kalashnikov Concern responded by building the AK-15 (GRAU index 6P71) sharing the receiver architecture of the AK-12."
+          ],
+          "audioScript": "In the early twenty-tens, while intermediate small calibers dominated the military landscape, elite Russian units fighting in dense forests and urban strongholds reported that lightweight high-velocity rounds suffered heavy deflection against light barriers. Demanding uncompromising barrier destruction and knockdown power, combat veterans called for the modern revival of the seven-point-six-two millimeter M43 round. In response, Izhevsk designers launched the project designated six-P-seventy-one, the foundation of the modern Kalashnikov AK-15.",
+          "audioUrl": "audio/ak15/story_act1_en.mp3",
+          "focusPartId": "ak_barrel",
+          "focusPartLabel": "415mm Cold-Hammer-Forged Chrome-Lined Barrel"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "2018–2022",
+          "title": "Crucible of Trenches: The 2023 Combat Overhaul",
+          "paragraphs": [
+            "In 2018, initial batches of the AK-15 entered service with reconnaissance and airborne units. However, the ferocious combat environments of 2022 exposed critical vulnerabilities in early production iterations. Frontline troops reported three decisive pain points: micro-movement in the receiver top cover induced optical zero-shift during high-volume fire; the complex two-round burst ratcheting fire control frequently seized in freezing mud; and the aggressive side-slotted muzzle brake generated blinding flash while hindering rapid suppressor mounting.",
+            "Under Chief Designer Sergey Urzhumtsev, Kalashnikov Concern initiated a ruthless, combat-driven redesign program known as the Model 2023 (6P71M). The engineering team purged the two-round burst completely, restoring an unequivocal Safe-Auto-Semi selector; integrated a captive cross-pin clamping dust cover that permanently locked zero; and replaced the muzzle brake with a five-slot birdcage suppressor-ready flash hider, completing the platform's trial by fire."
+          ],
+          "audioScript": "Intense combat trials in twenty-twenty-two exposed unforgiving flaws in early production rifles. Soldiers reported that the two-round burst mechanism frequently fouled in freezing trench mud, and railed dust covers risked shifting optic zero during prolonged full-auto fire. Chief designer Sergey Urzhumtsev led an emergency redesign program. The team abolished the burst mode, anchored the railed receiver cover with a reinforced captive pin, and introduced a quick-detach suppressor-ready flash hider. The rifle emerged transformed.",
+          "audioUrl": "audio/ak15/story_act2_en.mp3",
+          "focusPartId": "ak_selector",
+          "focusPartLabel": "Model 2023 Ambidextrous Fire Selector"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "2022–2024",
+          "title": "Mechanical Soul: Long-Stroke Piston & Floating Ergonomics",
+          "paragraphs": [
+            "The mechanical beating heart of the AK-15M1 preserves Mikhail Kalashnikov's timeless operating system: a robust long-stroke gas piston fixed to a massive reciprocating bolt carrier. When the 7.62×39mm projectile passes the 90-degree gas block, expanding propellant gases strike the cupped piston. The 500-gram operating group travels through 7.5 millimeters of free travel, allowing chamber pressure to drop safely before its helical cam track twists the bolt head 35 degrees clockwise, violently unseating the tapered steel casing.",
+            "Surrounding this mechanical core, however, is a thoroughly modern architecture. The reinforced polymer handguard is entirely cantilevered off the front trunnion, free-floating above the barrel so that sling tension, vertical grips, and thermal imagers never exert deflection stress on the bore. At the rear, the EVO folding buttstock features a rapid-height cheek riser, aligning the shooter's eye instantly with high-mount optoelectronics and unlocking peak full-automatic stability."
+          ],
+          "audioScript": "Internally, the rifle retains the purest Kalashnikov soul. A five-hundred-gram bolt carrier and long-stroke piston yield enormous cycling momentum to overcome sand, grit, and fouled cases. The dual-lug bolt turns thirty-five degrees to lock against extreme chamber pressures. Externally, an entirely free-floating handguard isolates the cold-hammer-forged barrel from external deflection, while an adjustable cheekpiece on the EVO stock ensures rapid optical target alignment, delivering unprecedented control to a heavy caliber weapon.",
+          "audioUrl": "audio/ak15/story_act3_en.mp3",
+          "focusPartId": "ak_bolt_carrier",
+          "focusPartLabel": "Bolt Carrier with Integrated Long-Stroke Gas Piston"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "2024–Future",
+          "title": "The Heavy-Assault Benchmark: Standing Watch in the Modern Age",
+          "paragraphs": [
+            "By 2024, the AK-15M1 stands alongside the 5.45mm AK-12M1 as the dual backbone of Russian frontline infantry operations. Among reconnaissance pathfinders, storm assault squads, and urban breaching teams, the AK-15M1 has become the weapon of choice due to its overwhelming terminal knockdown energy against brick masonry, light vehicle plating, and modern body armor.",
+            "The weapon dispelled decades of Western skepticism asserting that the AK receiver platform could never hold true optical zero or achieve refined precision. Proving that Mikhail Kalashnikov's foundational kinematics remain unmatched when combined with modern metallurgy, free-floated geometry, and ergonomic controls, the AK-15M1 enters history as the preeminent modern service rifle of the 7.62×39mm lineage."
+          ],
+          "audioScript": "Today, the AK-15M1 is deployed with frontline storm detachments and specialized reconnaissance teams. In urban close-quarters warfare, its heavy seven-point-six-two millimeter round provides indispensable terminal punch and barrier penetration. It has resolved historic platform shortcomings regarding optic retention, proving that the classic Kalashnikov long-stroke gas system, when rebuilt with twenty-first-century metallurgy and ergonomics, remains the most dependable infantry rifle on the modern battlefield.",
+          "audioUrl": "audio/ak15/story_act4_en.mp3",
+          "focusPartId": "ak_dust_cover",
+          "focusPartLabel": "Railed Stamped Receiver Top Cover (2023 Lock)"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Cross-Pinned Zero-Retention Top Cover: Securing Modern Optoelectronics",
+          "tag": "Zero-Retention Lock",
+          "summary": "Resolving the historic AK vulnerability of receiver vibration dislodging optic zero, the AK-15M1 utilizes an oversized captive cross-pin at the front trunnion combined with an auto-tensioning rear wedge. This clamps the railed stamped cover rigidly to the receiver, ensuring sub-MOA optic zero retention across repeated field disassembly.",
+          "focusPartId": "ak_dust_cover",
+          "focusPartLabel": "Railed Stamped Receiver Top Cover"
+        },
+        {
+          "id": "bt2",
+          "title": "Cantilever Free-Float Handguard: True Barrel Harmonic Isolation",
+          "tag": "Free-Float Architecture",
+          "summary": "Traditional AK handguards clamped directly around the barrel, transferring bipod loads, sling tension, and thermal expansion directly into barrel bending. The AK-15M1 mounts the lower handguard strictly to the receiver, leaving the 415mm barrel fully free-floating to tighten group dispersion significantly.",
+          "focusPartId": "ak_lower_handguard",
+          "focusPartLabel": "Reinforced Free-Float Lower Handguard"
+        },
+        {
+          "id": "bt3",
+          "title": "Model 2023 Ambidextrous Selector & Burst Elimination: High-Stress Reliability",
+          "tag": "Fail-Safe Fire Control",
+          "summary": "Field feedback proved that complex two-round burst ratchets were prone to seizing under frozen trench conditions. The 2023 revision deleted burst cams entirely, restoring pure Safe-Auto-Semi positions and integrating thumb levers on both sides so operators can switch modes instantly without breaking firing grip.",
+          "focusPartId": "ak_selector",
+          "focusPartLabel": "Model 2023 Ambidextrous Fire Selector"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "2014",
+          "title": "7.62mm Modernized Prototype Commissioned",
+          "detail": "Kalashnikov Concern initiates development of a dedicated 7.62×39mm assault rifle built upon the next-generation Ratnik receiver platform."
+        },
+        {
+          "year": "2018",
+          "title": "State Acceptance & GRAU Index 6P71",
+          "detail": "The AK-15 passes rigorous state trials across arctic, desert, and mud torture tests, receiving the official GRAU index 6P71."
+        },
+        {
+          "year": "2020",
+          "title": "Initial Operational Deployment",
+          "detail": "First-generation AK-15 rifles deploy with elite Russian VDV airborne brigades, equipped with early burst-fire groups and telescoping stocks."
+        },
+        {
+          "year": "2022",
+          "title": "Combat Debriefs & Emergency Overhaul",
+          "detail": "Large-scale combat deployment uncovers optic zero-shift and mud fouling in burst cams; Designer Sergey Urzhumtsev's team begins immediate redesign."
+        },
+        {
+          "year": "2023",
+          "title": "AK-15M1 (6P71M) Final Standardization",
+          "detail": "Officially unveiled at Army 2023: featuring the two-round burst deletion, pinned railed dust cover, EVO cheek riser stock, and QD birdcage suppressor mount."
+        },
+        {
+          "year": "2024",
+          "title": "Full-Scale Frontline Assault Fielding",
+          "detail": "The AK-15M1 enters full-rate production, serving as the premier heavy-punch primary arm for assault squads and military reconnaissance."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "ak_dust_cover": {
+      "partId": "ak_dust_cover",
+      "bomCode": "B-01",
+      "calloutLabelEn": "Railed Top Cover",
+      "zh": {
+        "roleTag": "光学瞄具归零基座 / 机匣防尘密封",
+        "overview": "全通皮卡汀尼导轨冲压机匣盖覆盖在机匣上方，构成了自动机运动舱室的上部封闭壳体。其前端铰接在枪管前节套上，后端通过横插闭锁横销紧密固定在下机匣尾端。",
+        "craftAndMaterial": "采用高强度冲压合金钢板成型，表面经硬化耐磨氮化与磷化防腐涂层处理，顶部一体铆接全尺寸皮卡汀尼导轨并冲压有抗扭加强肋。",
+        "kinematicRole": "射击循环全阶段保持刚性静止，为枪机框往复运动提供封闭空间；在野战不完全分解起始阶段（进度约7%至16%），拔出闭锁销后向上掀起脱离。",
+        "designHighlight": "彻底解决了传统卡拉什尼科夫机匣盖晃动导致的瞄具失准顽疾，后部横插闭锁销结合前铰链形成了无间隙刚性三角支撑，使串联光学瞄具拆装后能完美保持归零点。",
+        "audioScript": "眼前这块冲压机匣盖是二零二三版改进的关键。它顶部贯通了皮卡汀尼导轨，前端依靠铰链咬合，后端则通过硬化横销锁死在机匣上，哪怕连续射击或反复拆装维护，安装在上面的红点镜和热成像仪也能牢牢锁死归零点。",
+        "audioUrl": "audio/ak15/parts/ak_dust_cover_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Optic Zero Retention & Receiver Dust Seal",
+        "overview": "The railed stamped receiver top cover encloses the internal operating group across the top of the rifle. It hinges at the front trunnion and locks firmly onto the rear trunnion using a captive cross-pin.",
+        "craftAndMaterial": "Formed from deep-drawn heavy-gauge stamped steel with a black nitride finish, reinforced by stamped side ribs and an integral riveted full-length Picatinny rail.",
+        "kinematicRole": "Remains static during all seven firing phases, containing operating parts and gases. During field stripping at seven to sixteen percent disassembly, releasing the rear pin allows it to pivot up and detach.",
+        "designHighlight": "It resolves the historic AK loss-of-zero flaw by replacing the loose spring latch with a captive wedge cross-pin, creating a rock-solid platform suitable for heavy inline thermal and night vision optics.",
+        "audioScript": "This redesigned top cover solves the classic AK optic mounting challenge. Fastened via a rigid front hinge and a captive cross pin at the rear, it creates an immobile optics bridge that preserves precise zero across thousands of rounds and repeated maintenance cycles.",
+        "audioUrl": "audio/ak15/parts/ak_dust_cover_en.mp3"
+      }
+    },
+    "ak_rear_sight": {
+      "partId": "ak_rear_sight",
+      "bomCode": "B-02",
+      "calloutLabelEn": "Flip Diopter Sight",
+      "zh": {
+        "roleTag": "后置长瞄准基线 / 日夜双孔径切换",
+        "overview": "这是二零二三定型版全天候翻转双觇孔照门，安装在冲压机匣盖尾端的皮卡汀尼导轨槽位上。它与枪口前方的护圈准星构成大视野、长基线的机械对准系统。",
+        "craftAndMaterial": "主体由航空级合金钢精铸线切割成形，外层做哑光防眩目发黑氮化处理，带有微型滚花风偏调节螺钮及弹簧蓄能双孔位翻转叶片。",
+        "kinematicRole": "击发与自动机往复运动过程中保持绝对静止；随同机匣盖在分解初期升起，并在细致分解阶段（进度约66%至90%）可从皮卡汀尼导轨上单独滑移拆除。",
+        "designHighlight": "移除了早期机械鼓轮复杂的升降滑槽，改用低轮廓双孔径翻转设计，不仅降低了战斗中的钩挂风险，还将机械瞄准基线延展到了全枪极限位置。",
+        "audioScript": "针对前线实战反馈，二零二三版果断废弃了复杂的转轮照门，改用这种双孔径翻折觇孔。大孔径便于在阴暗狭窄环境下快速捕捉近距离目标，小孔径则保证中远距离点射精度，同时极大地拉长了有效瞄准基线。",
+        "audioUrl": "audio/ak15/parts/ak_rear_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Extended Sight Radius & Dual Apertures",
+        "overview": "The flip-aperture diopter rear sight is mounted directly to the rear section of the top receiver rail. Working alongside the front hooded post, it establishes a rugged, full-length iron sight radius.",
+        "craftAndMaterial": "Machined from ordnance carbon steel with a non-reflective matte nitride finish, featuring knurled windage adjustment screws and a spring-loaded dual-aperture flip leaf.",
+        "kinematicRole": "Stationary throughout all seven firing phases. It swings with the top cover in primary field stripping and detaches from the rail clamp during armorer bench strip between sixty-six and ninety percent disassembly.",
+        "designHighlight": "Eliminates the fragile rotary drums of previous revisions in favor of a low-profile flip design, providing a battle-proven trade-off between close-quarters speed and long-distance precision.",
+        "audioScript": "Mounted at the rearmost edge of the rail, this flip aperture sight dramatically extends the aiming baseline compared to older models. Shooters can instantly flick between an open combat aperture for fast snap shooting and a smaller peep hole for deliberate long-range engagements.",
+        "audioUrl": "audio/ak15/parts/ak_rear_sight_en.mp3"
+      }
+    },
+    "ak_bolt_carrier": {
+      "partId": "ak_bolt_carrier",
+      "bomCode": "B-03",
+      "calloutLabelEn": "Piston Bolt Carrier",
+      "zh": {
+        "roleTag": "核心自动机主动件 / 螺旋凸轮开闭锁驱动",
+        "overview": "枪机框与长行程导气活塞一体件位于机匣内腔上部，前端活塞伸入机匣上方导气管内。它是驱动全枪自动循环的能量分配主动机构与承载枢纽。",
+        "craftAndMaterial": "机框主体采用高强度锻钢铣削成型，前端紧密旋接并销定镀硬铬长行程活塞柱，内部开有高公差硬化螺旋开闭锁导槽与减重排沙凹槽。",
+        "kinematicRole": "射击第3阶段活塞承接火药燃气，第4阶段后坐约7毫米自由行程泄压后迫使枪机旋转开锁，第5阶段压倒击锤并后退抛壳，第6阶段由复进簧推回完成闭锁；在野战分解16%至30%阶段从机匣后方滑轨抬出。",
+        "designHighlight": "超大后坐质量提供了极高能量冗余度，独特的开锁自由行程让弹膛在高达300兆帕的峰值膛压自然回落后再抽壳，赋予其无与伦比的极端工况排污吞弹能力。",
+        "audioScript": "这就是卡拉什尼科夫步枪不朽的心脏。前端的一体式长行程活塞承受火药气体的剧烈推挤，带动沉重的枪机框向后猛冲。内部这道经过精密铣削的螺旋曲面，会强行旋转枪机完成开闭锁，即便内部灌入泥沙也能爆发出恐怖的抽壳动力。",
+        "audioUrl": "audio/ak15/parts/ak_bolt_carrier_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Primary Kinetic Driver & Cam Track",
+        "overview": "The bolt carrier with integrated long-stroke gas piston rides inside the upper receiver guides. Its front piston extends directly into the gas tube to siphon impulse from the fired round.",
+        "craftAndMaterial": "Precision milled from heat-treated forged alloy steel with an erosion-resistant hard chrome plated piston, featuring an internal helical cam channel and dirt clearance channels.",
+        "kinematicRole": "Driven rearward by gas impulse in phase four, idling for seven millimeters of dwell travel before rotating the bolt open; sweeps back to recock the hammer in phase five, and returns in phase six to chamber and lock. Extracted at sixteen to thirty percent disassembly.",
+        "designHighlight": "Its heavy reciprocating mass combined with calculated dwell travel ensures that chamber pressures drop to safe thresholds before extraction begins, preventing rim ruptures even with dirty lacquered steel cases.",
+        "audioScript": "This reciprocating assembly represents the enduring heartbeat of the system. The heavy chrome-faced piston siphons expanding gases at the gas port, driving the massive carrier rearward. Its internal helical cam forcibly twists the bolt open and recocks the hammer with overwhelming mechanical advantage.",
+        "audioUrl": "audio/ak15/parts/ak_bolt_carrier_en.mp3"
+      }
+    },
+    "ak_bolt": {
+      "partId": "ak_bolt",
+      "bomCode": "B-04",
+      "calloutLabelEn": "2-Lug Rotating Bolt",
+      "zh": {
+        "roleTag": "弹膛刚性回转闭锁 / 推弹闭锁核心",
+        "overview": "双突笋回转闭锁枪机头同轴套置在枪机框内腔前端，正对枪管弹膛后截面。它直接承受七点六二毫米弹药击发瞬间产生的巨大膨胀膛压。",
+        "craftAndMaterial": "选用高规格铬钼钒合金工具钢整体锻打成型，经深层渗碳淬火与高光洁度表面处理，前端精密铣削出对称粗壮的双闭锁突笋与引导推凸耳。",
+        "kinematicRole": "射击循环中随枪机框复进，推弹入膛后在枪机框凸轮导引下逆时针旋转三十五度锁死于前节套；后坐时顺时针回转三十五度开锁；在组件分解阶段（32%至52%）旋转抽出枪机框。",
+        "designHighlight": "超大断面的双对称闭锁突笋拥有极高的抗剪切强度，其三十五度回转角平衡了开锁阻力与闭锁刚性，即使在涂漆钢壳弹受热膨胀时也能实现自清理挤压闭锁。",
+        "audioScript": "这个看似小巧的钢制枪机头，承受着高达数百兆帕的爆燃冲击。两个对称分布的粗壮闭锁凸耳，会在推弹上膛的瞬间旋转三十五度，严丝合缝地楔入枪管前节套。只有当它完全旋转锁死，击针才能被击锤撞击，杜绝任何未闭锁击发的危险。",
+        "audioUrl": "audio/ak15/parts/ak_bolt_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Breech Lockup & Cartridge Chambering",
+        "overview": "The two-lug rotating bolt head is housed concentrically inside the bolt carrier assembly right behind the barrel chamber. It directly seals the breech against peak combustion pressures of the seven point six two by thirty-nine millimeter cartridge.",
+        "craftAndMaterial": "Forged from premium chrome-molybdenum-vanadium alloy steel, surface-carburized, and hardened to withstand severe shearing stress, fitted with dual opposing heavy locking lugs.",
+        "kinematicRole": "Moves with the carrier, chambering fresh rounds and rotating thirty-five degrees counter-clockwise into the front trunnion to lock; cams thirty-five degrees clockwise to unlock during recoil. Extracted from the carrier during sub-assembly strip between thirty-two and fifty-two percent.",
+        "designHighlight": "Features massive shear surfaces on both lugs that comfortably absorb over-pressure spikes, while the camming geometry reliably shaves away sand or frozen mud trapped within the locking recesses.",
+        "audioScript": "Here is the critical pressure barrier. When chambering a round, this bolt head rotates thirty-five degrees into the front trunnion, forming an impenetrable mechanical lockup. Its twin locking lugs provide immense shear strength, ensuring complete safety before the firing pin can ever reach the primer.",
+        "audioUrl": "audio/ak15/parts/ak_bolt_en.mp3"
+      }
+    },
+    "ak_firing_pin": {
+      "partId": "ak_firing_pin",
+      "bomCode": "B-05",
+      "calloutLabelEn": "Floating Firing Pin",
+      "zh": {
+        "roleTag": "传递击锤冲击能量 / 刺破底火",
+        "overview": "枪机浮动式长击针贯穿安装在双突笋枪机的中心轴通孔中。它的尾端延伸出枪机尾部，针尖对准枪机弹底窝的中心发火孔。",
+        "craftAndMaterial": "采用高抗疲劳不锈钢经高同心度精密磨削加工而成，表面经光亮淬火与硬化处理，杆身开有减重排气泄槽，并带有供横向限位销卡扣的凹肩。",
+        "kinematicRole": "第2阶段承受击锤猛烈打击向前冲刺击穿发火，第6阶段推弹时在无弹簧约束下自如悬浮；在完全分解步骤（36%至56%）由击针限位横销冲出后向后抽出。",
+        "designHighlight": "无击针簧的自由浮动式极简设计消除了弹簧疲劳失效点，经过严密质量验算的针体重量与几何行程确保了惯性安全，完全旋转闭锁前物理隔绝击锤接触。",
+        "audioScript": "穿过枪机中心的这枚细长钢针，就是点燃底火的关键导体。它采用无弹簧的自由浮动构造，没有多余的易损耗弹簧零件。在枪机头完全到位闭锁之前，它的尾端被机框深埋遮挡，物理上杜绝了因颠簸跌落而击发底火的可能。",
+        "audioUrl": "audio/ak15/parts/ak_firing_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Kinetic Strike Transfer & Ignition",
+        "overview": "The free-floating fluted firing pin passes longitudinally through the central axis channel of the rotating bolt head. Its rear tip receives the hammer blow while its hardened nose aligns with the bolt face primer hole.",
+        "craftAndMaterial": "Turned and ground from ultra-tough stainless steel, polished to minimize sliding friction, and fluted to vent debris and mitigate hydraulic lockup.",
+        "kinematicRole": "Propelled forward by hammer strike in phase two to ignite the primer cup; floats rearward under residual pressure and inertia in phase six. Drifted out rearward after driving its retaining pin at thirty-six to fifty-six percent disassembly.",
+        "designHighlight": "Eliminates the return spring entirely to purge points of failure, relying on tuned inertia and precise carrier shroud masking to prevent out-of-battery discharge or slam-fires during violent feeding.",
+        "audioScript": "Running straight through the heart of the bolt, this free-floating firing pin transfers hammer energy directly to the primer. Designed without complex springs, its geometry ensures it remains physically shielded by the carrier body until the bolt achieves complete lockup.",
+        "audioUrl": "audio/ak15/parts/ak_firing_pin_en.mp3"
+      }
+    },
+    "ak_extractor": {
+      "partId": "ak_extractor",
+      "bomCode": "B-06",
+      "calloutLabelEn": "Claw Extractor",
+      "zh": {
+        "roleTag": "强力咬合 7.62 锥形弹壳底缘抽壳",
+        "overview": "重型爪式抽壳钩铰接安装在枪机头右侧的开槽内，由内部的高劲度螺旋压簧持续施加向内张紧力。钩爪向前突出在枪机弹底窝边缘。",
+        "craftAndMaterial": "由高韧性合金钢精密锻造再经淬火硬化制成，爪齿前沿带有精细的导入斜面，后侧设有一道深咬合受力刃角与弹簧限位定位盲孔。",
+        "kinematicRole": "第6阶段推弹入膛时前斜面越过弹壳底缘咬合槽口，第5阶段后坐时牢牢拉扯住弹壳向后运动直至撞挺；在细拆阶段（36%至56%）冲出定位销后分解。",
+        "designHighlight": "专门针对七点六二乘三十九毫米涂漆钢壳弹大锥度底缘设计，极宽的受力爪面在泥沙、冻结或膛压异常膨胀时，能提供极高拔壳阻抗容限而不撕裂弹壳底缘。",
+        "audioScript": "这枚看似不起眼的硬化合金钢钩爪，是全枪恶劣工况下可靠排壳的守护神。面对生锈结冰或者受热膨胀的钢壳弹，它配合内部的高刚度压簧死死咬合住弹底凹槽，即便在数千发连发的高温积碳下，也不会出现脱钩滑脱的致命故障。",
+        "audioUrl": "audio/ak15/parts/ak_extractor_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Cartridge Rim Engagement & Extraction",
+        "overview": "The heavy claw extractor is pinned pivotally into a recessed slot on the right side of the bolt face. It is permanently loaded inward by a robust miniature coil spring and polymer damper.",
+        "craftAndMaterial": "Drop forged from fatigue-resistant alloy steel, induction-hardened at the engagement lip, and profiled with a smooth forward snap-over bevel.",
+        "kinematicRole": "Snaps over the steel rim during phase six forward chambering; pulls the spent case out of the chamber in phase five until the case strikes the fixed ejector. Disassembled between thirty-six and fifty-six percent progress by punching its pivot pin.",
+        "designHighlight": "Optimized to bite firmly onto the tapered case rim of Russian steel-cased ammunition, boasting an extra-wide claw footprint that prevents rim shearing even under excessive gas pressure.",
+        "audioScript": "Pivoting on the side of the bolt face, this heavy steel extractor is engineered for unrelenting extraction reliability. Backed by a stiff spring, its broad claw snaps securely over the rim of lacquer-coated steel cartridges, cleanly tearing stubborn spent cases out of the chamber every time.",
+        "audioUrl": "audio/ak15/parts/ak_extractor_en.mp3"
+      }
+    },
+    "ak_recoil_guide": {
+      "partId": "ak_recoil_guide",
+      "bomCode": "B-07",
+      "calloutLabelEn": "Telescoping Guide",
+      "zh": {
+        "roleTag": "复进簧导向防屈曲 / 后坐终端缓冲",
+        "overview": "双套管伸缩复进簧导杆安装在机匣后半段与枪机框尾部盲孔之间。其后端矩形凸起卡入下机匣后节套，兼作机匣盖后部定准基座。",
+        "craftAndMaterial": "由内外两节高精度无缝钢管套接成型，尾座采用厚壁冲压并焊接成坚固的梯形块，末端附着有耐油耐冲击聚合物减震胶垫。",
+        "kinematicRole": "自动机循环全阶段内部两套管往复伸缩，吸收枪机框后坐末端撞击冲量；在野战分解第一阶段（12%至22%进度），向前推顶尾座即可将其从机匣卡槽中完整抽出。",
+        "designHighlight": "伸缩套管式结构彻底解决了长弹簧高速压缩时的屈曲偏磨问题，而尾座整合的高分子缓冲垫显著衰减了七点六二后坐硬碰撞，改善了全自动连发射击平稳度。",
+        "audioScript": "这根双节伸缩导杆巧妙地贯穿了复进簧。两根内外钢管互相滑动，避免长弹簧在大力压缩时向四周扭曲变形。它的尾座不仅稳稳扣住机匣盖，二零二三版更增设了聚合物减震垫，能吸收枪机框撞击尾部的生硬震动，提升射击稳定性。",
+        "audioUrl": "audio/ak15/parts/ak_recoil_guide_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Spring Anti-Buckling & Buffer Bed",
+        "overview": "The telescoping dual-tube recoil guide assembly mounts between the rear trunnion and the inner bore of the bolt carrier. Its rear footing locks into the receiver heels to support the top cover latch.",
+        "craftAndMaterial": "Engineered with concentric telescoping steel tubes coated in anti-friction manganese phosphate, welded to a reinforced rear block fitted with a modern elastomer impact buffer.",
+        "kinematicRole": "Telescopes continuously during carrier travel, containing the spring column and absorbing carrier over-travel shocks. It unhooks from the rear trunnion at twelve to twenty-two percent field strip progress.",
+        "designHighlight": "The telescoping design prevents lateral spring deflection without increasing overall receiver length, while the rear elastomer buffer dampens metal-on-metal collision impulses in continuous fire.",
+        "audioScript": "This dual-section telescoping guide rod cradles the powerful recoil spring within the bolt carrier. The nested steel tubes prevent spring buckling during extreme high speed cycling, while an integrated rear elastomer buffer softens carrier impact, reducing muzzle jump during automatic fire.",
+        "audioUrl": "audio/ak15/parts/ak_recoil_guide_en.mp3"
+      }
+    },
+    "ak_recoil_spring": {
+      "partId": "ak_recoil_spring",
+      "bomCode": "B-08",
+      "calloutLabelEn": "Braided Recoil Spring",
+      "zh": {
+        "roleTag": "吸收枪机框后坐动能 / 驱动复进推弹",
+        "overview": "多股绞合高寿命螺旋复进簧套装在伸缩导杆外周，前半段深入枪机框后方的深孔内。它为整枪提供源源不断的复进势能储备。",
+        "craftAndMaterial": "采用高抗疲劳硅铬弹簧钢丝三股绞合螺旋卷绕而成，经过严格的热处理应力消除与喷丸强韧化处理，具备极高的抗衰减寿命。",
+        "kinematicRole": "第4和第5阶段随枪机框后退而被大幅压缩蓄能，第6阶段释放弹力驱动自动机高速前冲完成推弹上膛；随同导杆在分解初期（12%至22%）抽出机匣。",
+        "designHighlight": "采用多股绞合编织结构取代单股粗线，利用各股钢丝微观相互摩擦消耗高频有害谐振，在极寒极热恶劣交变温度下大幅延长疲劳寿命。",
+        "audioScript": "套在导杆上的这根长弹簧大有乾坤。它采用了类似航炮的多股钢丝绞合编织工艺，各股弹簧钢丝在伸缩时微小滑动摩擦，可以自身抵消剧烈的共振驻波。正是它在后退末端吸收能量，再猛烈释放，驱动全枪完成行云流水的推弹闭锁。",
+        "audioUrl": "audio/ak15/parts/ak_recoil_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Kinetic Energy Storage & Counter-Recoil",
+        "overview": "The braided helical recoil spring is sleeved over the telescoping guide and deeply pocketed inside the bolt carrier cavity. It accumulates and releases kinetic energy throughout the automatic firing cycle.",
+        "craftAndMaterial": "Formed from multi-strand braided silicon-chromium high-tensile spring steel, shot-peened for surface stress relief and rust-inhibited.",
+        "kinematicRole": "Compresses under rearward bolt carrier motion in phases four and five; expands forcefully in phase six to drive the carrier forward for chambering. Detached alongside the guide assembly during field strip at twelve to twenty-two percent.",
+        "designHighlight": "Multi-strand braided wire construction naturally dampens high-frequency harmonic vibration via internal strand-on-strand friction, drastically reducing spring fatigue under rapid automatic fire.",
+        "audioScript": "Sleeved over the telescoping guide, this recoil spring utilizes braided triple strand wire. The internal friction between strands dampens violent harmonics when absorbing heavy seven point six two recoil impulses, delivering unmatched spring endurance in sub-zero Arctic conditions or desert heat.",
+        "audioUrl": "audio/ak15/parts/ak_recoil_spring_en.mp3"
+      }
+    },
+    "ak_upper_handguard": {
+      "partId": "ak_upper_handguard",
+      "bomCode": "B-09",
+      "calloutLabelEn": "Upper Handguard",
+      "zh": {
+        "roleTag": "导气管隔热防护 / 前置战术附件导轨",
+        "overview": "皮卡汀尼导轨隔热上护木罩套在导气管上方，与下护木扣合包覆在枪管中前部。其顶部与机匣盖顶轨精确对齐，形成一条平直的前置附件安装面。",
+        "craftAndMaterial": "采用高强度阻燃玻纤增强聚酰胺复合材料一体注塑，内衬冲压铝制隔热反光导流罩，顶部注塑成型标准皮卡汀尼导轨。",
+        "kinematicRole": "在全套射击阶段保持静止，避免射手弱手触碰灼热导气管；在枪支深入维护分解阶段（34%至54%进度），解除固定卡笋后向上拔出脱离。",
+        "designHighlight": "采用不与枪管直接受压接触的准浮置结构，内层轻量隔热罩有效切断了连续射击时导气系统对顶部激光指示器等电子瞄具的热传导。",
+        "audioScript": "位于枪身上前方的这块上护木，采用耐高温玻纤尼龙模铸而成。它不仅为射手提供了可靠的握持隔热防护，内部更有金属隔热衬垫。顶部平直的导轨与机匣盖齐平，能够稳定承载战术手电、红外激光指示器以及配套的线控开关。",
+        "audioUrl": "audio/ak15/parts/ak_upper_handguard_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Thermal Shield & Forward Optic Rail",
+        "overview": "The railed polymer upper handguard heatshield encases the top of the gas tube, mating with the lower forend. Its top rail aligns seamlessly with the receiver cover to extend the tactical mounting deck.",
+        "craftAndMaterial": "Injection-molded from glass-filled heat-stabilized polyamide polymer, incorporating an internal stamped aluminum heat-reflective liner and molded Mil-Std-1913 rails.",
+        "kinematicRole": "Static across all firing phases, insulating the shooter's support hand from gas tube heat. Unlocked and lifted off along with the forend assembly at thirty-four to fifty-four percent strip progress.",
+        "designHighlight": "Mounted independent of direct barrel contact to prevent mechanical distortion, while the thermal isolation layer prevents heat mirage from disturbing laser target illuminators during prolonged automatic fire.",
+        "audioScript": "Molded from rugged fiberglass-reinforced polymer, this upper handguard forms a heat-resistant roof over the hot gas tube. Its internal aluminum heat shield prevents mirage distortion, while the full length top rail offers a stable platform for co-witnessed weapon lasers and illuminators.",
+        "audioUrl": "audio/ak15/parts/ak_upper_handguard_en.mp3"
+      }
+    },
+    "ak_gas_tube": {
+      "partId": "ak_gas_tube",
+      "bomCode": "B-10",
+      "calloutLabelEn": "Fluted Gas Tube",
+      "zh": {
+        "roleTag": "长行程活塞导向管 / 固定浮置护木基轴",
+        "overview": "加强肋钢制导气管水平固定在枪管正上方，后端咬合前节套，前端同轴对准导气箍气室。它的内部为活塞的前后直线高速往复提供精密轨道。",
+        "craftAndMaterial": "采用高壁厚合金无缝钢管经精密拉削加工制成，管壁冲压出多道轴向强化肋槽，前端配装有带闭锁卡口的旋拧式清积碳维护堵头。",
+        "kinematicRole": "全击发循环中静止承托长行程活塞的高速滑动，内部排气孔在活塞行程末端迅速泄出多余废气；在细部拆解步骤（38%至58%）解除锁销后向前抽出。",
+        "designHighlight": "二零二三版将其刚性固连于前节套，形成浮置护木系统的稳固基座，同时前端的可拆卸螺塞极大简化了清理恶劣发射药高黏度积碳的作业流程。",
+        "audioScript": "横卧在枪管上方的坚固钢管，就是导气活塞的专属运行通道。它的内壁分布着冲压加强肋，既能收集积碳污垢防止活塞卡死，又能起到泄气降温作用。前端专门设置了可拆卸的清理塞，让野战擦拭导气管积碳变得轻而易举。",
+        "audioUrl": "audio/ak15/parts/ak_gas_tube_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Piston Guidance & Handguard Foundation",
+        "overview": "The fluted steel gas tube is mounted horizontally directly above the barrel between the front trunnion and gas block. It channels and guides the long-stroke piston during its rapid cycle.",
+        "craftAndMaterial": "Constructed from heavy-wall seamless alloy steel tubing with longitudinal internal fluting, treated with black melonite and capped with an armorer-cleanout front plug.",
+        "kinematicRole": "Provides an exact linear track for piston movement during phases three through six while remaining rigidly stationary on the gun. Removed during detailed armorer teardown between thirty-eight and fifty-eight percent.",
+        "designHighlight": "Firmly anchored to the front trunnion to act as an unyielding structural backbone for the free-floating handguard system, featuring a forward cleanout plug for scrubbing corrosive powder residues.",
+        "audioScript": "Resting right above the barrel, this thick-walled steel tube houses the speeding long-stroke gas piston. The internal guide ribs vent propellant gases while scraping away gritty carbon fouling. An accessible front plug lets armorers clear heavy fouling without stripping the gas system.",
+        "audioUrl": "audio/ak15/parts/ak_gas_tube_en.mp3"
+      }
+    },
+    "ak_receiver": {
+      "partId": "ak_receiver",
+      "bomCode": "R-01",
+      "calloutLabelEn": "Stamped Receiver",
+      "zh": {
+        "roleTag": "全枪主承力基准壳体 / 导轨与抛壳挺载体",
+        "overview": "一点五毫米冲压钢下机匣与前后铆接节套构成了全枪的核心结构中枢骨架。它承载着枪管、发射机组件、自动机滑轨与弹匣井卡口。",
+        "craftAndMaterial": "选用一点五毫米特种合金钢板经多次冷冲压折弯成型，内部点焊有淬火钢制导轨条，左侧导轨前端延伸出硬化固定抛壳挺，前后经重型钢铆钉热铆接高强度锻造节套。",
+        "kinematicRole": "击发全周期作为绝对机械基准固定不动，内部导轨约束枪机框行进路线；在3D分解树中作为不可分解的基准骨架，所有零部件均从其上逐步剥离分离。",
+        "designHighlight": "沿用强化的一点五毫米加厚板料结合加固型六铆钉前节套，在严苛满足俄军野蛮跌落测试刚度需求的同时，左内导轨一体成型的高硬度抛壳挺提供了极为强劲的翻滚抛壳能量。",
+        "audioScript": "这里是全枪的骨骼与基石。厚达一点五毫米的冲压合金钢板，通过重型锻造节套紧紧铆接在一起。内部左侧的硬化导轨延伸出一道坚固的抛壳挺。无论是狂暴全自动开火还是承受剧烈跌落冲击，它都能确保整枪机械公差始终如一。",
+        "audioUrl": "audio/ak15/parts/ak_receiver_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Primary Structural Core & Ejector Bed",
+        "overview": "The stamped steel receiver with front and rear trunnions forms the central backbone of the weapon. It houses the fire control group, guides the bolt carrier, and holds the barrel and magazine well.",
+        "craftAndMaterial": "Cold-stamped from 1.5mm high-strength ordnance steel plate with stamped magazine-well dimples, hardened internal guide rails, an integral fixed ejector tip, and riveted forged steel trunnions.",
+        "kinematicRole": "Acts as the rigid stationary inertial datum during all seven firing phases. Serves as the primary coordinate anchor across the entire disassembly simulation, retaining zero explode offset.",
+        "designHighlight": "Employs an upgraded 1.5mm heavy stamping paired with an RPK-style front trunnion to withstand heavy sustained fire without structural flexing, ensuring zero receiver stretch over tens of thousands of cycles.",
+        "audioScript": "This is the structural spine of the weapon. Stamped from durable one point five millimeter alloy steel and bound together by forged trunnions, it anchors the barrel and firing mechanism. The hardened fixed ejector is welded directly into the left track, ensuring violent case ejection under any condition.",
+        "audioUrl": "audio/ak15/parts/ak_receiver_en.mp3"
+      }
+    },
+    "ak_barrel": {
+      "partId": "ak_barrel",
+      "bomCode": "R-02",
+      "calloutLabelEn": "415mm Barrel",
+      "zh": {
+        "roleTag": "赋予 7.62×39mm 弹头初速与四条右旋膛线自转",
+        "overview": "四百一十五毫米冷锻内膛镀铬枪管过盈压装于机匣前节套中，中段固定有导气箍，前端延伸出螺纹枪口。它是将火药燃气内能转化为弹头飞行动能的关键部件。",
+        "craftAndMaterial": "选用优质炮钢由立式精锻机精密冷锻成形，内膛与弹膛全覆盖加厚工业镀硬铬层，四条右旋膛线导程精密，外表面涂装耐高温耐刮擦保护面漆。",
+        "kinematicRole": "发射阶段引导弹头加速飞出，在导气孔处向活塞分流燃气，本身保持固定；在深度分解的终局阶段（68%至92%）作为最核心组件从前节套中虚拟脱出展示。",
+        "designHighlight": "采用现代重型浮置枪管构型与加厚硬铬层，显著降低了传统卡拉什尼科夫枪管在持续连发时的受热下垂与精度衰减，极大提高了野战枪管烧蚀服役寿命。",
+        "audioScript": "这根长四百一十五毫米的冷锻枪管，是决定精准度与弹道初速的核心。内膛精密加工有四条右旋膛线，并镀有耐高温烧蚀的厚铬层。独立浮置的结构让它在射击时能自由谐振，哪怕经历数千发密集全自动射击，也能维持优秀的弹着点散布。",
+        "audioUrl": "audio/ak15/parts/ak_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Ballistic Velocity & Gyroscopic Spin",
+        "overview": "The four hundred fifteen millimeter cold-hammer-forged chrome-lined barrel is press-fit and cross-pinned into the receiver front trunnion. It converts chemical propellant burn into kinetic bullet velocity.",
+        "craftAndMaterial": "Hammer forged from heat-resistant chromium-vanadium gun barrel steel, featuring an extra-thick internal hard chrome lining, four right-hand rifling grooves, and a weather-resistant exterior park-coat.",
+        "kinematicRole": "Accelerates the seven point six two millimeter bullet to roughly seven hundred fifteen meters per second while venting gas into the gas block. Extracted from the trunnion during armorer overhaul between sixty-eight and ninety-two percent.",
+        "designHighlight": "Features an optimized harmonic profile and free-floating integration within the handguard assembly, minimizing barrel stringing and shot dispersion during prolonged rapid-fire strings.",
+        "audioScript": "Measuring four hundred fifteen millimeters in length, this barrel is cold hammer forged from ordnance steel. The inner bore and chamber receive a military-spec hard chrome coating to combat heat and friction. Its modernized profile resists thermal droop, preserving tight groups during sustained combat strings.",
+        "audioUrl": "audio/ak15/parts/ak_barrel_en.mp3"
+      }
+    },
+    "ak_muzzle_device": {
+      "partId": "ak_muzzle_device",
+      "bomCode": "R-03",
+      "calloutLabelEn": "Birdcage QD Mount",
+      "zh": {
+        "roleTag": "抑制夜间枪口火光 / 套筒式快拆消音接口",
+        "overview": "二零二三固定槽式消焰补偿器螺接并销定在枪管最前端。它负责规整射击时喷出的高速残余火药燃气，并为专用战术消音器提供直接锁紧基座。",
+        "craftAndMaterial": "采用高热强合金钢整体车铣成型，经深度盐浴渗氮处理，四周开有五道定向消焰排气狭槽，外圆柱面加工有高精度的快拆消音器对接凸缘与环槽。",
+        "kinematicRole": "在第3阶段随弹头出膛向斜上方导流燃气以抑制后坐跳动与夜间爆光，本身与枪管固连静止；在维护分解步骤（36%至56%）从枪口螺纹上卸下。",
+        "designHighlight": "吸取了早期多室制退器在实战中积碳卡死无法拆卸消音器的惨痛教训，彻底改回无积碳死角的经典五槽鸟笼构型，使得战术消音器即便在狂暴连发后也能单手秒级快拆。",
+        "audioScript": "枪口这枚二零二三版消焰补偿器是实战催生的关键进化。它舍弃了早期容易积碳卡死的制退器，改为五槽鸟笼消焰设计。外圈加工有精密的锁止卡槽，让前线士兵可以在夜战中将消音器一秒套入并旋紧锁死，免去了繁琐的转接件维护。",
+        "audioUrl": "audio/ak15/parts/ak_muzzle_device_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Muzzle Flash Control & Suppressor Mount",
+        "overview": "The Model 2023 slotted birdcage flash suppressor is pinned securely onto the threaded barrel crown. It disperses high-pressure muzzle blast and functions as an integrated quick-detach mount for sound suppressors.",
+        "craftAndMaterial": "Turned from high-tensile nitrocarburized steel, featuring five tuned expansion slots cut radially around the upper perimeter and an external quick-detach mounting collar.",
+        "kinematicRole": "Directs exiting combustion gases upwards and outwards in phase three to mitigate muzzle jump and flash while remaining fixed to the barrel. Removed at thirty-six to fifty-six percent field strip progress.",
+        "designHighlight": "Combat experience in Ukraine prompted the abandonment of the intricate muzzle brake in favor of this reliable birdcage flash hider, entirely eliminating carbon weld issues when running quick-detach suppressors.",
+        "audioScript": "Designed directly from modern combat feedback, this birdcage muzzle device curbs nighttime flash while directing gas upward to tame muzzle rise. Its exterior incorporates an integrated quick-detach ring, allowing soldiers to mount or decouple a sound suppressor in seconds without carbon fouling issues.",
+        "audioUrl": "audio/ak15/parts/ak_muzzle_device_en.mp3"
+      }
+    },
+    "ak_gas_block": {
+      "partId": "ak_gas_block",
+      "bomCode": "R-04",
+      "calloutLabelEn": "90-Deg Combo Gas Block",
+      "zh": {
+        "roleTag": "引出高压燃气冲击活塞并集成前准星",
+        "overview": "该组件为压配并销定在冷锻枪管前端的组合式功能构件。它将九十度垂直导气室与全包覆式护翼柱状准星座融为一体，构成了整枪导气循环与机械瞄准的前端核心。",
+        "craftAndMaterial": "采用高抗冲渗氮合金钢模锻切削制造，表面经深层黑色渗氮硬化，耐受剧烈火药燃气冲刷与腐蚀。垂直直角气孔相比传统四十五度斜角孔更不易在弹头高速划过时撕刮铅铜碎屑并阻塞气孔。",
+        "kinematicRole": "射击阶段三中弹头飞越九十度垂直气孔引出超高压燃气，直接冲击长行程活塞端面驱动开锁循环。在完全分解阶段百分之七十至九十四区间，该件解除横向固定销后向枪口方向滑脱分解。",
+        "designHighlight": "取消传统枪管最前端独立准星座并将其后移至导气箍一体成型，大幅削减了枪口末端集中悬臂质量，从根本上改善了全自动连发时的枪管谐振散布与重心平衡。",
+        "audioScript": "眼前这枚渗氮钢构件是二零二三版突击步枪的经典缩影。九十度直角导气孔有效避免了弹头高速划削留铜留铅，而将准星座后移合二为一，更是大幅减少了枪口附加重量，让七点六二毫米大口径连发更加可控。",
+        "audioUrl": "audio/ak15/parts/ak_gas_block_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Taps high-pressure gas to drive piston & houses hooded front sight",
+        "overview": "This monolithic component is press-fit and cross-pinned onto the barrel ahead of the handguard. It integrates the perpendicular 90-degree gas expansion chamber with a fully protective hooded front post.",
+        "craftAndMaterial": "Forged from high-tensile alloy steel and finished with a deep-bore salt-bath nitriding treatment for extreme erosion resistance. The sharp perpendicular gas port geometry prevents bullet jacket material from shaving and clogging the bleed channel.",
+        "kinematicRole": "During Phase 3, the bullet uncorks the 90-degree gas tap, channeling superheated propellant gas directly against the gas piston face to cycle the action. During armorer strip (70% to 94%), cross-pins are punched out to slide it off the muzzle.",
+        "designHighlight": "Eliminating the separate legacy front sight block at the muzzle and consolidating it into the gas block drastically cuts polar moment of inertia, improving barrel harmonic consistency and full-auto pointability.",
+        "audioScript": "Notice this forged combo block. The perpendicular ninety-degree gas port prevents copper jacket shearing as heavy seven-point-six-two millimeter slugs whip past. Moving the front sight back onto the gas block removes dead muzzle weight, greatly taming barrel whip during intense fully automatic strings.",
+        "audioUrl": "audio/ak15/parts/ak_gas_block_en.mp3"
+      }
+    },
+    "ak_lower_handguard": {
+      "partId": "ak_lower_handguard",
+      "bomCode": "R-05",
+      "calloutLabelEn": "Free-Float Lower Guard",
+      "zh": {
+        "roleTag": "悬臂浮置隔热握持构件与底部战术导轨",
+        "overview": "该护木后部嵌套插接于机匣前突耳槽内，前部悬空支承于坚固的导气管下沿。它作为全枪前段的主体握持与战术附件挂载平台，提供底部皮卡汀尼导轨供安装前握把或两脚架。",
+        "craftAndMaterial": "选用耐两百度以上高温的玻纤增强聚酰胺复合材料一体注塑，内衬双层铝合金反射隔热冲压板。外壳布设深纵向散热肋条与防滑网格纹理，确保剧烈持续射击时护木不软化也不烫手。",
+        "kinematicRole": "在整枪射击循环全过程保持完全静止，且与高温自由振动的枪管保持绝对间隙，绝不干涉枪管热膨胀与谐振。在常规野战不完全分解百分之三十四至五十四行程中，解开前卡扣向斜下方拉卸脱离机匣。",
+        "designHighlight": "彻底打破传统老式步枪将下护木直接紧箍在发热枪管上的缺陷，实现真正悬臂独立自由浮置，彻底消除了外力握持或架枪对弹道落点产生的有害偏移。",
+        "audioScript": "二零二三版下护木实现了彻底的枪管自由浮置。后方直接固定在刚性机匣前唇，完全不与震颤的枪管产生接触。即便持续泼洒数十发大威力步枪弹，内衬的铝质防热屏也能保证射手舒适紧凑地握持控枪。",
+        "audioUrl": "audio/ak15/parts/ak_lower_handguard_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Free-floating heat-shield grip & bottom accessory rail interface",
+        "overview": "This rigid component locks into the lower receiver trunnion and cantilevers beneath the gas tube without contacting the barrel. It provides a robust bottom Picatinny rail interface for forward vertical grips and bipods.",
+        "craftAndMaterial": "Injection molded from high-impact glass-reinforced polyamide with twin internal stamped aluminum heat reflective shields. Deep longitudinal vents and textured ridges dissipate intense barrel heat without softening the polymer chassis.",
+        "kinematicRole": "Remains entirely stationary across all firing stages, isolating barrel thermal harmonics from exterior shooting loads. During field disassembly (34% to 54%), releasing the front cross-wedge enables it to rock down and pull forward away from the receiver.",
+        "designHighlight": "Eliminating direct barrel clamping enables genuine free-floating performance, eradicating zero shift caused by sling tension, heavy forward grips, or bipod pressure in real-world combat conditions.",
+        "audioScript": "This reinforced lower handguard is a true free-float design. It anchors straight into the front trunnion without touching the barrel. Even under punishing automatic fire, twin aluminum heat shields deflect radiant heat so the operator can drive the rifle hard without point-of-impact shifts.",
+        "audioUrl": "audio/ak15/parts/ak_lower_handguard_en.mp3"
+      }
+    },
+    "ak_buttstock": {
+      "partId": "ak_buttstock",
+      "bomCode": "R-06",
+      "calloutLabelEn": "EVO Folding Buttstock",
+      "zh": {
+        "roleTag": "同轴直托抵肩与向左折叠伸缩组件",
+        "overview": "枪托通过刚性铰链座固定在机匣尾端延伸段，为全枪提供稳定的抵肩支撑。它支持多段档位长度调节，并可在必要时一键向机匣左侧折叠锁定以便车辆乘员狭小空间携行。",
+        "craftAndMaterial": "主体由抗低温冲击的强化尼龙聚合物模压成形，内部骨架采用轻质挤压铝合金导轨。托底板包覆加厚橡胶缓冲层，表面模压有深人字形防滑排汗纹路并内藏通条收纳槽。",
+        "kinematicRole": "在七阶段射击循环中作为后坐能量的直传受力构件，将枪机后坐冲量线性导入射手肩部。在分解阶段百分之六十六至九十二区间，退出枪托折叠主铰链销后整组向后抽离机匣。",
+        "designHighlight": "枪托上沿轴线被刻意抬高至与枪管中心线完全平齐，构筑起现代步枪标准直托布局，从杠杆力矩角度根本消除因传统弯托产生的剧烈枪口上跳现象。",
+        "audioScript": "全新演进版枪托采用了近乎水平的同轴直托架构。将抵肩支点抬升到与枪膛轴线在同一水平面，直接将强劲的后坐力转化为向后的纯推力，配合多段伸缩与左折叠锁止机构，兼顾了控枪与狭窄携行。",
+        "audioUrl": "audio/ak15/parts/ak_buttstock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "In-line shoulder support stock with telescopic length and left-side fold",
+        "overview": "Mounted rigidly to the receiver rear hinge bracket, this assembly delivers stable ergonomic contact with the operator. It offers multiple positions of length-of-pull adjustment and folds completely flush against the left receiver face for transport.",
+        "craftAndMaterial": "Engineered from rugged impact-modified polymer reinforced with an extruded aerospace alloy spine. The thick textured rubber buttpad features deep diamond siping and conceals a modular onboard cleaning rod assembly.",
+        "kinematicRole": "Acts as the primary static structural datum channeling violent recoil impulses straight into the shoulder pocket during firing. In sub-assembly disassembly (66% to 92%), pushing out the rear vertical hinge pin separates the stock rearward.",
+        "designHighlight": "Aligning the stock comb line straight along the barrel bore axis converts angular muzzle flip into pure horizontal push, transforming controllable full-auto bursts from the punchy 7.62 cartridge.",
+        "audioScript": "Meet the modern EVO buttstock. Its inline geometry directs heavy recoil straight back into your shoulder pocket instead of whipping the muzzle upward. It offers smooth length-of-pull adjustments, packs an internal cleaning kit, and snaps securely along the left receiver wall for compact transport.",
+        "audioUrl": "audio/ak15/parts/ak_buttstock_en.mp3"
+      }
+    },
+    "ak_cheek_riser": {
+      "partId": "ak_cheek_riser",
+      "bomCode": "R-07",
+      "calloutLabelEn": "Optic Cheek Riser",
+      "zh": {
+        "roleTag": "抬升射手贴腮高度对齐光学瞄具光轴",
+        "overview": "该贴腮板以骑跨卡扣方式紧扣于枪托上部脊梁处，可沿垂直方向升降调节。它的核心功能是为射手在机匣顶部导轨加装高基线红点镜或热成像瞄具时，提供稳定的下颌与颧骨依托。",
+        "craftAndMaterial": "采用高韧性抗磨损聚酰胺材料成型，接触面经哑光细纹喷砂处理以防止皮肤汗液打滑。底座内设多档阶梯卡齿与弹性锁紧扣具，确保在跌落冲击下不会自行下沉滑移。",
+        "kinematicRole": "射击全程中贴腮板保持相对枪托固定，为射手头部提供稳定的瞄准几何基准。在全面分解阶段百分之六十八至九十四区间，向外扩张弹性侧卡臂即可从枪托上滑脱分离。",
+        "designHighlight": "专为解决现代突击步枪全导轨化后白光及夜视光电仪安装基线大幅抬高的痼疾，彻底告别了传统枪托空悬下颌的虚假贴腮，极大提升了首发捕靶瞄准速度。",
+        "audioScript": "这个看似不起眼的小构件，是实战光电化改造的关键一环。在机匣顶部导轨换装高倍热成像或全息镜后，通过升起贴腮板，射手的颧骨能立即找到稳固支点，使眼睛与瞄准镜光轴瞬间严密贴合。",
+        "audioUrl": "audio/ak15/parts/ak_cheek_riser_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Elevates cheek weld height to align with optic sightline",
+        "overview": "Straddling the upper spine of the buttstock, this module provides vertical cheek-weld height adjustment. It ensures repeatable facial indexing when running high-profile red dots, thermal sights, or magnified prism optics.",
+        "craftAndMaterial": "Molded from durable nylon polymer with a soft non-slip matte skin to prevent facial abrasion in extreme heat or frost. An internal spring-detent ratchet grips precision notches along the stock spine to eliminate lateral play.",
+        "kinematicRole": "Maintains stationary structural support beneath the shooter zygomatic bone across all firing steps. In deep disassembly (68% to 94%), pulling its retention latches allows it to unclip upward and free from the stock beam.",
+        "designHighlight": "Directly resolves chin weld inconsistency induced by modern tall optic mounts on Picatinny receiver covers, drastically slicing split-second eye-box acquisition times in target transitions.",
+        "audioScript": "Modern optics sit much higher than classic AK iron sights. This adjustable cheek riser snaps directly onto the buttstock spine, allowing you to lift the comb height in seconds so your eye settles straight into the optic eyebox without uncomfortable chin-weld strain.",
+        "audioUrl": "audio/ak15/parts/ak_cheek_riser_en.mp3"
+      }
+    },
+    "ak_pistol_grip": {
+      "partId": "ak_pistol_grip",
+      "bomCode": "R-08",
+      "calloutLabelEn": "Ergo Grip & Guard Combo",
+      "zh": {
+        "roleTag": "防滑握持操纵与带手套防护扳机护圈",
+        "overview": "该构件通过高强度穿心螺栓直接锁固在机匣底部后方，构成了全枪主握持界面。它将斜角手枪握把与加宽扳机护圈一体模压成型，下部集成带防水橡胶圈的工具配件储物舱。",
+        "craftAndMaterial": "采用轻量化高抗冲聚酰胺一体压铸成型，握把外表覆有粗糙防滑颗粒与前部解剖式指槽。扳机护圈空间显著加大且边缘做倒角钝化，握把内部空腔通过底部旋转锁死底盖密封防水。",
+        "kinematicRole": "在整枪射击全周期作为射手右手主操控受力点，护圈保护扳机免遭外物钩挂走火。在枪械全面拆解阶段百分之六十八至九十二区间，拧下内部内六角主螺栓后向下脱离机匣。",
+        "designHighlight": "二零二三版颠覆性地取消了传统的独立铁皮铆接扳机护圈，将其与握把合模一体化，彻底消除了长期困扰老枪射手中指指关节被钢护圈磕碰红肿的恶疾。",
+        "audioScript": "一体成型的握把护圈组件彻底革新了握持质感。取消了传统粗糙硌手的老式铁护圈，加宽的拱圈即使戴着厚重的防寒手套也能从容扣扳机。握把底盖内部还隐藏着备用电池与维护油壶仓。",
+        "audioUrl": "audio/ak15/parts/ak_pistol_grip_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Ergonomic control grip with oversized winter glove trigger guard",
+        "overview": "Fastened directly through the receiver base by a heavy cap screw, this component forms the primary shooting hand interface. It integrates a raked ergonomic pistol grip with an oversized enlarged trigger guard and internal storage bay.",
+        "craftAndMaterial": "Precision injection-molded from oil-resistant glass-reinforced polymer featuring diamond-stippled grip flanks and ergonomic finger indexing grooves. The flared bottom cap features a rubber O-ring seal to water-tightly secure cleaning components or CR123 batteries.",
+        "kinematicRole": "Provides the static firing chassis handling all hand-control torque while the guard physically shields the trigger blade. During depot-level strip (68% to 92%), unthreading the internal chassis screw drops the unit free.",
+        "designHighlight": "Consolidating the legacy sheet-metal trigger bow into the one-piece polymer grip eliminates the sharp metal edge that famously blistered soldiers middle fingers during prolonged full-auto handling.",
+        "audioScript": "Take a look at this one-piece pistol grip and trigger guard module. By molding them together from impact polymer, engineers eliminated the sharp metal seam that historically bruised shooters knuckles. The spacious guard offers effortless clearance for thick arctic combat gloves.",
+        "audioUrl": "audio/ak15/parts/ak_pistol_grip_en.mp3"
+      }
+    },
+    "ak_hammer": {
+      "partId": "ak_hammer",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Rotary Hammer Assembly",
+      "zh": {
+        "roleTag": "蓄能回转前旋打击击针释放击发冲量",
+        "overview": "击锤装配在机匣发射机座内中部的第一根横向固定销上，是枪械击发动作的能量传递核心。它通过强韧的多股双翼扭簧储能，在被阻铁释放后受扭力猛烈向前回转撞击浮动击针尾部。",
+        "craftAndMaterial": "采用高冲击韧性铬镍钼合金钢精锻切削，经渗碳淬火强化使其表面极硬而芯部强韧，承受数十万次高速撞击不崩裂。配用的主簧由三股细琴钢丝严密绞合成单根钢缆再卷制成双翼扭簧。",
+        "kinematicRole": "在阶段一被扳机解脱猛烈前旋击打击针引爆底火；阶段五被后坐枪机框底面强行压倒下倾待击；阶段六被阻铁重新捕获。在深度分解阶段百分之七十至九十四区间，拔出横轴销向上取出。",
+        "designHighlight": "采用三股琴钢丝绞合扭簧是卡拉什尼科夫不朽可靠性的灵魂所在：即便在严酷战场上单根钢丝发生疲劳断裂，剩余双股仍有充足冗余扭矩确保持续可靠击发。",
+        "audioScript": "这枚看似简单的锻钢击锤隐藏着极高的力学智慧。配合它的是极为罕见的三股绞合琴钢丝扭簧。即便其中一根钢丝意外断裂，其余股线仍能爆发出足够扭矩撞击击针，确保步枪在零下四十度绝不哑火。",
+        "audioUrl": "audio/ak15/parts/ak_hammer_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Rotary kinetic hammer driven by braided torsion spring to strike firing pin",
+        "overview": "Pivoting on the forward transverse receiver pin within the fire control well, this unit is the dynamic striker of the mechanism. Powered by a potent dual-leg multi-strand torsion spring, it swings forward violently to slap the tail of the free-floating firing pin.",
+        "craftAndMaterial": "Drop-forged from nickel-chromium-molybdenum tool steel with differential heat treatment providing a case-hardened striking face and ductile core. The hammer spring is braided from three independent piano wires spun into a dual-leg torsion arrangement.",
+        "kinematicRole": "In Phase 1, it rotates forward to initiate priming; in Phase 5, the recoiling carrier ramps it downward into cocked position; in Phase 6 and 7, it is recaptured by the sears. Explodes out at 70% to 94% armorer strip.",
+        "designHighlight": "Multi-strand twisted spring wire guarantees relentless survivability. If one wire strand fractures from high-stress fatigue, the sister strands continue generating the torque needed to crush tough military primers.",
+        "audioScript": "At the heart of the action lies this case-hardened rotary hammer. Its driving force comes from an aircraft-grade braided torsion spring. Even if one of the three twisted music-wire strands snaps in severe cold, the remaining strands deliver ample energy to detonate military primers without missing a beat.",
+        "audioUrl": "audio/ak15/parts/ak_hammer_en.mp3"
+      }
+    },
+    "ak_trigger": {
+      "partId": "ak_trigger",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Double-Hook Trigger",
+      "zh": {
+        "roleTag": "待击时稳固挂住击锤并由射手扣动解脱",
+        "overview": "该件贯穿机匣底部孔隙并由后部发射机横轴精确定位，构成射手控制击发的主界面。其弧形扳机舌向前延伸出坚固的双爪主阻铁，直面击锤下部的两个对称扣合台阶。",
+        "craftAndMaterial": "选用合金钢精密锻造并经过整体渗氮发黑强化，接触工作面经超精磨削以保证平滑脆爽的扳机行程。双阻铁钩结构对称布置于扳机舌左右，消除由于不对称受力造成的单侧扭转磨损。",
+        "kinematicRole": "在击发循环全程中挂托击锤或受射手食指拉力向下倾动让出击锤；在阶段七松开扳机时重新前抬接管击锤。在完全分解阶段百分之七十至九十四区间，伴随击针阻铁轴拔出向机匣下方卸出。",
+        "designHighlight": "双钩阻铁设计提供了极高的机械挂阻冗余度，即使步枪从高处跌落或侧面承受强烈震动冲击，左右双钩也能牢固卡阻击锤，彻底绝杜跌落走火隐患。",
+        "audioScript": "扳机组件将扣动扳机舌与前端的双钩主阻铁锻铸为坚实的一体件。左右双钩对称咬合在击锤两侧，不仅消除了扳机扣动时的横向晃动感，更能确保在剧烈颠簸跌落时绝不意外滑脱走火。",
+        "audioUrl": "audio/ak15/parts/ak_trigger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Holds cocked hammer and releases it upon operator trigger pull",
+        "overview": "Positioned on the rear trigger pin inside the receiver, this unit constitutes the primary mechanical trigger interface. Its downward curved finger shoe extends forward into twin forged primary sear hooks that mate directly with hammer cocking notches.",
+        "craftAndMaterial": "Precision hot-forged from high-grade alloy steel and salt-bath ferritic nitrocarburized. Dual mirrored sear hooks are precision ground on optical grinding tables to produce a smooth take-up and clean glass-rod break.",
+        "kinematicRole": "Rests statically engaging the hammer until the finger tilts it down in Phase 1 to release hammer rotation; tilts up in Phase 7 to reset. During full receiver breakdown (70% to 94%), pulling its pin allows it to drop out from below.",
+        "designHighlight": "Twin symmetrical sear hooks provide supreme drop-safe redundancy and lateral balance, preventing the sear from cocking sideways or disengaging accidentally under severe drop shock in combat.",
+        "audioScript": "Here is the double-hook trigger unit. Forged from high-grade alloy steel, it features twin sear hooks that grasp the hammer on both sides. This dual-hook architecture ensures crisp sear geometry while providing rock-solid drop safety even when slammed onto frozen mud or concrete.",
+        "audioUrl": "audio/ak15/parts/ak_trigger_en.mp3"
+      }
+    },
+    "ak_disconnector": {
+      "partId": "ak_disconnector",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Semi-Auto Disconnector",
+      "zh": {
+        "roleTag": "半自动射击中拦截击锤防止连发走火",
+        "overview": "该单发阻铁夹装在双钩扳机本体的中间镂空槽内，共用同一根固定横轴安装。其底部内嵌一根微型硬质复位压簧，上端后钩专职在扣死扳机不放的工况下中途截获后倒击锤。",
+        "craftAndMaterial": "由高硬度耐磨不锈钢精锻成型，接触阻铁鼻部经过微米级高频局部淬火处理，使其表面具备镜面般的耐划伤光滑度。复位弹簧采用耐高温抗疲劳合金弹簧丝紧密卷制。",
+        "kinematicRole": "在阶段四与五后坐循环中，若扳机仍被扣死，单发阻铁后钩前冲死死捕获压倒的击锤尾部；阶段七手指微松扳机，阻铁后仰并将击锤瞬间移交释放给主阻铁。在分解百分之七十二至九十六区间与扳机同步分拆。",
+        "designHighlight": "该机构是枪械实现半自动单发可控射击的神经中枢，其精密的几何交接倒角确保击锤在双阻铁移交瞬间仅有毫厘游隙，从容杜绝连发偶发与卡死停机。",
+        "audioScript": "单发阻铁嵌套在扳机正中央。当你扣住扳机不放时，它会在枪机倒退的瞬间以迅雷不及掩耳之势咬住击锤后钩，防止枪支打成连发。松开手指的瞬间，它再将击锤平稳交接给前方主扳机钩。",
+        "audioUrl": "audio/ak15/parts/ak_disconnector_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Catches hammer during semi-automatic cycling to prevent runaway burst fire",
+        "overview": "Nestled inside the central cutout of the double-hook trigger frame, this component rides on the shared trigger cross-axis pin. A captive compression spring beneath its heel pushes its rear catch forward to trap the hammer after each semi-automatic shot.",
+        "craftAndMaterial": "Engineered from hard-wearing chrome stainless steel with localized induction hardening on the catch nose. The pivot and hook geometry are micro-polished to guarantee flawless disengagement and a short tactical reset.",
+        "kinematicRole": "During Phase 5 carrier recoil, if the shooter keeps the trigger depressed, this hook snaps forward to snare the rear spur of the falling hammer; in Phase 7 as the finger lets off, it releases the hammer to snap back onto the primary sear. Stripped between 72% and 96%.",
+        "designHighlight": "The mechanical bridge timing between the disconnector hook and trigger sear is engineered with exacting clearance, ensuring crisp reset feel while making accidental runaway firing physically impossible.",
+        "audioScript": "Positioned inside the center of the trigger body is the semi-automatic disconnector. When you hold the trigger to the rear after a shot, this hook snaps forward to catch the hammer as the bolt carrier rolls back. Releasing your finger transfers the hammer cleanly back to the front sear.",
+        "audioUrl": "audio/ak15/parts/ak_disconnector_en.mp3"
+      }
+    },
+    "ak_selector": {
+      "partId": "ak_selector",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "Ambi Selector Lever",
+      "zh": {
+        "roleTag": "取消双发点射并实现左右手拇指快慢机控制",
+        "overview": "快慢机总成由横穿机匣左右壁的转轴及外侧双向拨片构成，安装在扳机上方机匣后段。它通过旋转轴上的异形限位凸轮，物理干涉阻铁与扳机行程以实现保险、全自动与单发模式切换。",
+        "craftAndMaterial": "主体转轴与右侧长大档尘拨片采用高强渗氮冲压钢制造，左侧拇指拨片经高强度激光焊接并经发黑防锈处理。拨杆下沿设有突起防滑踏片，专为射手大拇指快速发力设计。",
+        "kinematicRole": "作为人工火控输入机构，在全枪射击循环中保持选定角度不动；在最上档保险位置时物理卡死扳机并封闭机匣拉机柄缺口阻挡泥沙。在全面拆解百分之七十至九十五区间，旋转九十度垂直拔出机匣壁。",
+        "designHighlight": "二零二三版根据实战血淋淋的经验，毅然废弃了早期复杂脆弱易积沙卡死的两发点射棘轮，回归极简可靠的三档，并新增左侧拇指拨杆，射手无需右手脱离握把即可单指秒开保险。",
+        "audioScript": "二零二三版最重要的火控改进就在这里。听取一线实战反馈后，彻底淘汰了华而不实的两发点射机械棘轮，回归极其可靠的保险、连发、单发三档，并在左侧增设了大拇指快慢机，出枪接敌瞬间大拇指顺畅下压即可射击。",
+        "audioUrl": "audio/ak15/parts/ak_selector_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Selects safe, auto, and semi modes via ambidextrous thumb levers",
+        "overview": "Spanning across both receiver walls above the trigger mechanism, this transverse camshaft assembly governs the firearm operational mode. Its external levers allow the operator to cycle effortlessly between Safe, Full-Auto, and Semi-Auto settings.",
+        "craftAndMaterial": "Constructed from nitrided stamped carbon steel, with the primary right-hand dust-cover arm laser-welded through a central cam spindle to an ergonomic left-hand thumb lever. Ribbed thumb shelves are contour-profiled for instant positive grip.",
+        "kinematicRole": "Remains locked at the selected mode setting throughout the firing cycle; in the topmost Safe position, its internal cam blocks trigger rearward rotation and shields the receiver gap against mud. Rotated 90 degrees upward to withdraw laterally at 70% to 95% strip.",
+        "designHighlight": "Ditched the fragile two-round burst ratchet mechanism based directly on grueling combat feedback. The simplified 2023 layout introduces true ambidextrous thumb actuation without the shooter breaking master firing grip.",
+        "audioScript": "Notice this updated ambidextrous selector. Learning from intense frontline feedback, designers scrapped the complex two-round burst ratchet to restore bulletproof reliability. The new left-side thumb lever lets you drop the safety off Safe, down to Auto, or into Semi in a heartbeat without ever breaking your firing grip.",
+        "audioUrl": "audio/ak15/parts/ak_selector_en.mp3"
+      }
+    },
+    "ak_mag_body": {
+      "partId": "ak_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "30-Rd Windowed Mag",
+      "zh": {
+        "roleTag": "容纳三十发大锥度步枪弹的大弧度聚合物壳体",
+        "overview": "该弹匣壳体卡入机匣弹匣井内，是全枪供弹系统的核心储弹容器。针对七点六二乘三十九毫米步枪弹弹壳锥度极大的物理特性，壳体呈现出极其鲜明的前弯大香蕉弧度。",
+        "craftAndMaterial": "选用抗跌落低温玻纤聚酰胺高分子材料一体模压，关键的前后挂钩与抱弹口内嵌深冲压防变形钢衬。弹匣侧壁两侧均镶嵌有带十至三十发激光刻度的超声波焊接透明聚碳酸酯观察窗。",
+        "kinematicRole": "在阶段六中由内装弹簧将双排交错排列的子弹逐一稳定推入抱弹口，供枪机推弹入膛。在野战分解最开始的百分之二至十区间，按压卡笋向前旋转直接从枪身上卸出。",
+        "designHighlight": "不仅通过高强度钢骨架复合模压解决了传统全塑料弹匣挂齿易断裂问题，更巧妙设置了余弹透明窗与底部斜面支撑脚，射手可随时直观查验剩余弹药储备。",
+        "audioScript": "标志性的大香蕉弹匣，源于七点六二毫米弹壳巨大的锥度设计。壳体采用高韧度聚酰胺材料，前后卡挂齿埋入了高强度冲压钢衬。侧面的透明观察窗让射手在一秒内清清楚楚看清所剩弹药。",
+        "audioUrl": "audio/ak15/parts/ak_mag_body_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Curved high-capacity housing storing 30 rounds of 7.62x39mm ammunition",
+        "overview": "Rocking securely into the receiver magazine well, this deep-curved body acts as the ammunition reservoir feeding the system. Its prominent banana radius accommodates the steep casing taper of standard Soviet-lineage ammunition.",
+        "craftAndMaterial": "Injection-molded from arctic-rated impact-modified polyamide reinforced with overmolded steel feed lips and locking lugs. Both sides feature ultrasonically welded transparent polycarbonate observation windows graduated with remaining round counts.",
+        "kinematicRole": "Constrains and feeds ammunition upward during Phase 6 as the bolt carrier sweeps over, presenting round shoulders cleanly into the chamber throat. Removed in the initial disassembly phase (2% to 10%) by pushing the magazine latch.",
+        "designHighlight": "Marries steel lug longevity with ultra-light polymer construction. The windowed flank lets soldiers verify round count instantly in low light without unseating the magazine.",
+        "audioScript": "The magazine iconic forward curve is dictated by the sharp case taper of the seven-point-six-two millimeter M43 cartridge. Molded from rugged polymer with overmolded steel feed lips and locking lugs, it features transparent side windows so operators can instantly read remaining ammunition at a glance.",
+        "audioUrl": "audio/ak15/parts/ak_mag_body_en.mp3"
+      }
+    },
+    "ak_mag_follower": {
+      "partId": "ak_mag_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Anti-Tilt Red Follower",
+      "zh": {
+        "roleTag": "托举引导双排交叠枪弹并充当余弹游标",
+        "overview": "托弹板安装于弹匣内腔顶部，坐落在强力托弹簧上端。它通过自身的弧形导向裙边与双阶梯曲面，在弹药逐步消耗的过程中将剩余枪弹始终平稳推向弹匣口。",
+        "craftAndMaterial": "采用高自润滑性耐磨改性聚甲醛注塑成形，通体呈现高反差警示鲜艳橙红色。四周带有极度加长的垂直防倾裙边，彻底消除前后俯仰倾覆卡壳的隐患。",
+        "kinematicRole": "随着射击循环阶段六不断重复推弹消耗，托弹板在托弹簧推力下一步步沿弧形弹匣体内壁向上攀升；射空最后一发后其凸起顶面托挡于枪机下方。在弹匣分解百分之三十四至五十六区间从底部抽离。",
+        "designHighlight": "鲜艳的醒目红色能在打空弹匣时在抛壳窗内瞬间映入射手眼帘，同时在外部透明观察窗中充当精准清晰的余弹指示游标，大幅提升了战场交火感知效率。",
+        "audioScript": "这枚橙红色托弹板配备了长裙防倾侧设计，在恶劣沙尘环境下也能平顺上升绝不卡壳。鲜艳的红色非常巧妙：不仅在空仓时提示射手已经打空，还透过弹匣侧面的透明窗口充当清晰的余弹游标。",
+        "audioUrl": "audio/ak15/parts/ak_mag_follower_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Elevates cartridges smoothly without tilting and acts as visual capacity indicator",
+        "overview": "Riding atop the magazine drive spring inside the curved feed channel, this follower pushes the cartridge stack toward the chamber. Its stepped contoured profile aligns staggered rounds toward alternating feed lips.",
+        "craftAndMaterial": "Molded from low-friction self-lubricating polyoxymethylene resin in high-visibility safety orange. Its deep, extended skirt geometry glides along inner magazine wall contours without tipping forward or binding.",
+        "kinematicRole": "Elevates the remaining rounds upward stroke-by-stroke through each Phase 6 feeding event; upon the last cartridge ejection, it presents its top surface beneath the bolt. Separated from the magazine body between 34% and 56% teardown.",
+        "designHighlight": "The vivid day-glo orange color serves dual duty: it signals an empty mag instantly through the open ejection port while acting as an indicator bead visible behind the clear external capacity window.",
+        "audioScript": "Engineered from self-lubricating polymer, this anti-tilt orange follower features extended front and rear skirts that completely prevent binding even when fouled with dust. Its bright orange finish acts as a live indicator marker visible through the transparent magazine window.",
+        "audioUrl": "audio/ak15/parts/ak_mag_follower_en.mp3"
+      }
+    },
+    "ak_mag_spring": {
+      "partId": "ak_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Curved Mag Spring",
+      "zh": {
+        "roleTag": "沿弧形轨道输出恒定弹力推升三十发重弹",
+        "overview": "托弹簧纵贯于弧形弹匣体内腔中，上端支撑托弹板，下端紧压底盖内锁片。它在满装三十发重型步枪弹的压缩状态下储存充足弹性势能，确保持续平顺供弹。",
+        "craftAndMaterial": "选用高疲劳寿命的特种硅锰弹簧钢丝卷制，截面呈扁平矩形，表面经严格的磷化防锈与防潮浸油处理。钢丝轴心线经过专门的三维弧度预弯，使其曲率完全与弹匣外壳大弧度贴合吻合。",
+        "kinematicRole": "射击全程中处于受压释放势能的渐进拉伸状态，在阶段六以毫秒级响应将下一发子弹推升至枪机推弹导向面上。在弹匣组件分解百分之三十四至五十八区间，移开底板后向下自然弹出。",
+        "designHighlight": "预先根据弹匣香蕉弧线弯曲成形，彻底解决了传统直立弹簧在弯弧弹匣中受压时发生局部挤压、弹力不均以及各圈相互咬合死锁的致命缺陷。",
+        "audioScript": "为了让三十发沉甸甸的步枪弹沿香蕉型弯道平稳推升，这根托弹簧在出厂时就进行了精密的弧度预弯。即便长期处于满弹压实状态，优良的硅锰弹簧钢也能确保在高射速连发下毫不迟滞。",
+        "audioUrl": "audio/ak15/parts/ak_mag_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Delivers constant vertical lift force along the curved magazine channel",
+        "overview": "Positioned inside the curved magazine well beneath the follower, this spring bears against the floorplate retainer. It stores potential energy across thirty loaded rounds to feed them into the receiver under rapid cyclic rates.",
+        "craftAndMaterial": "Wound from high-endurance silicon-manganese spring steel in a space-efficient rectangular profile and treated with anti-corrosive manganese phosphating. The spring coil line is pre-arced during manufacture to match the magazine radius.",
+        "kinematicRole": "Continually expands during Phase 6 to drive remaining ammunition upward against feed friction at cyclic rates over 600 rounds per minute. Extracted out the magazine base during strip steps 34% to 58%.",
+        "designHighlight": "Pre-curving the spring along the 7.62 magazine radius prevents coil binding and uneven friction against the inner polymer shell, ensuring zero sluggish feeding even in heavy desert grit.",
+        "audioScript": "Notice how this spring is naturally curved along its length. By pre-arching the spring coils to mirror the aggressive banana curve of the magazine, engineers eliminated coil pinching, ensuring thirty rounds of heavy ammunition feed cleanly at seven hundred rounds a minute.",
+        "audioUrl": "audio/ak15/parts/ak_mag_spring_en.mp3"
+      }
+    },
+    "ak_mag_floorplate": {
+      "partId": "ak_mag_floorplate",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Angled Mag Floorplate",
+      "zh": {
+        "roleTag": "封闭弹匣底部并提供触地卧姿射击平稳依托",
+        "overview": "该底盖沿弹匣壳体底部下沿的两侧导轨水平滑入并锁止，封闭整个弹匣腔体。其底部向前下方形成独特的倾角平面，是新一代突击步枪弹匣极具辨识度的多功能底板构件。",
+        "craftAndMaterial": "外层为主体高阻尼热塑性橡胶包覆层，内部冲压嵌装渗氮强化钢骨架，兼顾吸能抗摔与结构刚性。底盖正下方开有锁止定位圆孔，表面模压有较深的横向防滑齿纹。",
+        "kinematicRole": "射击全程作为承载托弹簧反作用力的静止下封盖，并在地面射击时将枪身重力平稳导向泥土。在弹匣分解百分之三十四至五十八区间，顶起内锁片凸起即可将底盖向前滑卸脱离。",
+        "designHighlight": "底盖特意设计成前倾平底角度，射手在卧姿作战时可放心将弹匣直接拄在地面充当应急单脚架，既大幅提升了远程点射稳定性，又绝不会损伤供弹唇口导致卡壳故障。",
+        "audioScript": "这款弹匣底盖采用了独特的斜切平底造型。外层包覆吸震橡胶，内部是冲压钢骨架。卧姿射击时，射手可以直接将弹匣底座平稳支撑在地面充当单脚架，极大地提升了卧射瞄准精度。",
+        "audioUrl": "audio/ak15/parts/ak_mag_floorplate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Seals magazine base and serves as monopod rest for prone shooting",
+        "overview": "Sliding horizontally along flange rails at the bottom of the magazine shell, this plate locks the spring assembly within. Its uniquely angled lower facet provides an integrated flat resting platform for modern combat postures.",
+        "craftAndMaterial": "Constructed from stamped heat-treated alloy steel overmolded with shock-absorbing textured elastomer. Features a central detent hole matching the spring lock tab and molded traverse grooves for slip-free tactical extraction from gear pouches.",
+        "kinematicRole": "Maintains stationary containment of spring preload across all firing actions, translating ground reaction forces cleanly during prone rest. Slides off along tracks at 34% to 58% mag strip when detent is depressed.",
+        "designHighlight": "Its slanted flat base enables the shooter to rest the magazine directly against the ground as an impromptu monopod, delivering rifle stability in prone without flexing feed lips or inducing stovepipe jams.",
+        "audioScript": "This angled steel-reinforced floorplate is purpose-built for real combat. Its canted, flat, rubberized base lets the shooter rest the entire rifle directly onto the deck as a monopod, providing rock-solid stability in prone firing without causing feeding malfunctions.",
+        "audioUrl": "audio/ak15/parts/ak_mag_floorplate_en.mp3"
+      }
+    }
+  }
+}

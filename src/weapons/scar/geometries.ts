@@ -30,10 +30,7 @@ import {
   buildScarTriggerGeometry,
 } from './meshes/scarExtraGeometries';
 
-export const GEOMETRY_BUILDERS: Record<
-  string,
-  () => THREE.BufferGeometry
-> = {
+export const GEOMETRY_BUILDERS: Record<string, () => THREE.BufferGeometry> = {
   // 1. Monolithic Upper, Short-Stroke Piston & BCG ('slide' · 10)
   scar_upper_receiver: buildScarUpperReceiverGeometry,
   scar_rear_sight: buildScarRearSightGeometry,

@@ -35,7 +35,9 @@
   white-space: nowrap;
   user-select: none;
   will-change: transform, opacity;
-  transition: color 0.14s ease, font-weight 0.14s ease;
+  transition:
+    color 0.14s ease,
+    font-weight 0.14s ease;
 }
 
 .editorial-callout-label:hover,

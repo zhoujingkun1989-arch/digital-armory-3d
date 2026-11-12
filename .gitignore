@@ -7,10 +7,11 @@ dist/
 dist-ssr/
 *.tsbuildinfo
 
-# Python cache (PBR texture generators)
+# Python cache (PBR texture & narration generators)
 __pycache__/
 *.py[cod]
 .venv/
+scripts/narrations/.cache/
 
 # OS & Editor files
 .DS_Store

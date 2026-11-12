@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react';
 import * as THREE from 'three';
-import { useAppStore } from '../../store/useAppStore';
+import { resolvePartCalloutLabel } from '../../i18n/weaponFallbacks';
 import {
-  getLoadedWeaponPlugin,
-  useWeaponPlugin,
-} from '../../weapons/registry';
+  getLoadedNarrationBundle,
+  useWeaponNarration,
+} from '../../narration/narrationService';
+import { useAppStore } from '../../store/useAppStore';
+import { getLoadedWeaponPlugin, useWeaponPlugin } from '../../weapons/registry';
 import type { WeaponPartSpec } from '../../weapons/types';
 import {
   getCachedPartGeometry,
@@ -74,8 +76,8 @@ interface Candidate {
 }
 
 const DX_CANDIDATES = [
-  0, -20, 20, -42, 42, -66, 66, -94, 94, -126, 126, -162, 162, -202, 202,
-  -246, 246, -294, 294, -346, 346,
+  0, -20, 20, -42, 42, -66, 66, -94, 94, -126, 126, -162, 162, -202, 202, -246,
+  246, -294, 294, -346, 346,
 ];
 
 /**
@@ -103,6 +105,7 @@ export function updateCalloutOverlay60fps(
 
   const {
     activeWeaponId,
+    lang,
     mode,
     showLabels,
     xrayShells,
@@ -113,6 +116,7 @@ export function updateCalloutOverlay60fps(
   } = state;
 
   const plugin = getLoadedWeaponPlugin(activeWeaponId);
+  const narrationBundle = getLoadedNarrationBundle(activeWeaponId);
   const activeParts = plugin?.parts ?? [];
   const activeIdSet = new Set(activeParts.map((p) => p.id));
 
@@ -294,12 +298,17 @@ export function updateCalloutOverlay60fps(
       continue;
     }
 
+    const labelText = resolvePartCalloutLabel(
+      part,
+      lang,
+      narrationBundle?.parts[part.id]
+    );
     candidates.push({
       part,
       sx,
       sy,
       alpha,
-      width: estimateLabelWidth(part.calloutLabel, isCompact),
+      width: estimateLabelWidth(labelText, isCompact),
       isHighlighted: isSelected || isHovered,
     });
   }
@@ -374,10 +383,7 @@ export function updateCalloutOverlay60fps(
       const dx = Math.abs(candLx - c.sx);
       const pureVerticalBonus = dx <= Math.max(4, halfW - 4) ? 0 : 140;
       const cost =
-        penaltyBias +
-        pureVerticalBonus +
-        dx * 2.4 +
-        Math.abs(candLy - idealLy);
+        penaltyBias + pureVerticalBonus + dx * 2.4 + Math.abs(candLy - idealLy);
       if (cost < bestCost) {
         bestCost = cost;
         chosenLx = candLx;
@@ -463,9 +469,7 @@ export function updateCalloutOverlay60fps(
       dPath = `M ${c.sx.toFixed(1)} ${c.sy.toFixed(1)} L ${c.sx.toFixed(1)} ${ly.toFixed(1)} L ${edgeX.toFixed(1)} ${ly.toFixed(1)}`;
     }
 
-    const strokeColor = c.isHighlighted
-      ? '#0284c7'
-      : 'rgba(51, 65, 85, 0.52)';
+    const strokeColor = c.isHighlighted ? '#0284c7' : 'rgba(51, 65, 85, 0.52)';
     const strokeWidth = c.isHighlighted ? '1.5' : '0.95';
 
     refs.svgGroup!.style.opacity = c.alpha.toFixed(3);
@@ -477,10 +481,7 @@ export function updateCalloutOverlay60fps(
     refs.dot!.setAttribute('cy', c.sy.toFixed(1));
     refs.dot!.setAttribute('r', c.isHighlighted ? '3.2' : '2.1');
     refs.dot!.setAttribute('fill', c.isHighlighted ? '#0284c7' : '#f8fafc');
-    refs.dot!.setAttribute(
-      'stroke',
-      c.isHighlighted ? '#ffffff' : '#1e293b'
-    );
+    refs.dot!.setAttribute('stroke', c.isHighlighted ? '#ffffff' : '#1e293b');
 
     refs.label!.style.opacity = c.alpha.toFixed(3);
     refs.label!.style.fontSize = isCompact ? '10.5px' : '11.5px';
@@ -491,6 +492,8 @@ export function updateCalloutOverlay60fps(
 
 export const CalloutOverlay: React.FC = () => {
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
+  const lang = useAppStore((s) => s.lang);
+  const storyOpen = useAppStore((s) => s.storyOpen);
   const screen = useAppStore((s) => s.screen);
   const sidebarCollapsed = useAppStore((s) => s.sidebarCollapsed);
   const selectedPartId = useAppStore((s) => s.selectedPartId);
@@ -499,6 +502,7 @@ export const CalloutOverlay: React.FC = () => {
   const hoverPart = useAppStore((s) => s.hoverPart);
 
   const plugin = useWeaponPlugin(activeWeaponId);
+  const { bundle: narrationBundle } = useWeaponNarration(activeWeaponId);
   const weaponParts = plugin?.parts ?? [];
 
   useEffect(() => {
@@ -507,7 +511,14 @@ export const CalloutOverlay: React.FC = () => {
 
   useEffect(() => {
     scheduleHudBoundsRefresh();
-  }, [screen, sidebarCollapsed, selectedPartId, activeWeaponId]);
+  }, [
+    screen,
+    sidebarCollapsed,
+    selectedPartId,
+    activeWeaponId,
+    lang,
+    storyOpen,
+  ]);
 
   const ensureEntry = (id: string): CalloutDomRefs => {
     let entry = domRegistry.get(id);
@@ -568,7 +579,11 @@ export const CalloutOverlay: React.FC = () => {
               onMouseEnter={() => hoverPart(part.id)}
               onMouseLeave={() => hoverPart(null)}
             >
-              {part.calloutLabel}
+              {resolvePartCalloutLabel(
+                part,
+                lang,
+                narrationBundle?.parts[part.id]
+              )}
             </button>
           );
         })}

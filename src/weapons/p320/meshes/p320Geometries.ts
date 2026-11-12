@@ -967,14 +967,7 @@ export function buildP320StrikerGeometry(): THREE.BufferGeometry {
     '#cbd5e1'
   );
 
-  return mergeParts([
-    tip,
-    frontCone,
-    shaft,
-    searTang,
-    safetyCatch,
-    rearStem,
-  ]);
+  return mergeParts([tip, frontCone, shaft, searTang, safetyCatch, rearStem]);
 }
 
 /**
@@ -1389,7 +1382,9 @@ export function buildP320GripModuleGeometry(): THREE.BufferGeometry {
   }
 
   return applyP320GripAtlasUVs(
-    sanitizeCsgGeometry(csgSubtract(mergeParts([mainGrip, triggerGuard]), cutters))
+    sanitizeCsgGeometry(
+      csgSubtract(mergeParts([mainGrip, triggerGuard]), cutters)
+    )
   );
 }
 
@@ -1618,37 +1613,39 @@ export {
   buildP320MagBaseplateGeometry,
 };
 
-export const P320_GEOMETRY_BUILDERS: Record<string, () => THREE.BufferGeometry> =
-  {
-    // 1. Slide & Barrel Assembly (11)
-    p320_slide: buildP320SlideGeometry,
-    p320_optic_plate_sight: buildP320OpticPlateSightGeometry,
-    p320_front_sight: buildP320FrontSightGeometry,
-    p320_barrel: buildP320BarrelGeometry,
-    p320_recoil_guide_rod: buildP320RecoilGuideRodGeometry,
-    p320_recoil_spring: buildP320RecoilSpringGeometry,
-    p320_striker: buildP320StrikerGeometry,
-    p320_striker_spring: buildP320StrikerSpringGeometry,
-    p320_striker_housing: buildP320StrikerHousingGeometry,
-    p320_safety_lock: buildP320SafetyLockGeometry,
-    p320_extractor: buildP320ExtractorGeometry,
+export const P320_GEOMETRY_BUILDERS: Record<
+  string,
+  () => THREE.BufferGeometry
+> = {
+  // 1. Slide & Barrel Assembly (11)
+  p320_slide: buildP320SlideGeometry,
+  p320_optic_plate_sight: buildP320OpticPlateSightGeometry,
+  p320_front_sight: buildP320FrontSightGeometry,
+  p320_barrel: buildP320BarrelGeometry,
+  p320_recoil_guide_rod: buildP320RecoilGuideRodGeometry,
+  p320_recoil_spring: buildP320RecoilSpringGeometry,
+  p320_striker: buildP320StrikerGeometry,
+  p320_striker_spring: buildP320StrikerSpringGeometry,
+  p320_striker_housing: buildP320StrikerHousingGeometry,
+  p320_safety_lock: buildP320SafetyLockGeometry,
+  p320_extractor: buildP320ExtractorGeometry,
 
-    // 2. Carry Grip Module & Controls (4)
-    p320_grip_module: buildP320GripModuleGeometry,
-    p320_takedown_lever: buildP320TakedownLeverGeometry,
-    p320_slide_catch: buildP320SlideCatchGeometry,
-    p320_mag_catch: buildP320MagCatchGeometry,
+  // 2. Carry Grip Module & Controls (4)
+  p320_grip_module: buildP320GripModuleGeometry,
+  p320_takedown_lever: buildP320TakedownLeverGeometry,
+  p320_slide_catch: buildP320SlideCatchGeometry,
+  p320_mag_catch: buildP320MagCatchGeometry,
 
-    // 3. Modular Stainless FCU & M17 Manual Safety (5)
-    p320_fcu_chassis: buildP320FcuChassisGeometry,
-    p320_trigger_shoe: buildP320TriggerShoeGeometry,
-    p320_trigger_bar: buildP320TriggerBarGeometry,
-    p320_sear_group: buildP320SearGroupGeometry,
-    p320_manual_safety: buildP320ManualSafetyGeometry,
+  // 3. Modular Stainless FCU & M17 Manual Safety (5)
+  p320_fcu_chassis: buildP320FcuChassisGeometry,
+  p320_trigger_shoe: buildP320TriggerShoeGeometry,
+  p320_trigger_bar: buildP320TriggerBarGeometry,
+  p320_sear_group: buildP320SearGroupGeometry,
+  p320_manual_safety: buildP320ManualSafetyGeometry,
 
-    // 4. 17-Round Steel Magazine w/ Coyote Tan FDE Baseplate (4)
-    p320_mag_body: buildP320MagBodyGeometry,
-    p320_mag_follower: buildP320MagFollowerGeometry,
-    p320_mag_spring: buildP320MagSpringGeometry,
-    p320_mag_baseplate: buildP320MagBaseplateGeometry,
-  };
+  // 4. 17-Round Steel Magazine w/ Coyote Tan FDE Baseplate (4)
+  p320_mag_body: buildP320MagBodyGeometry,
+  p320_mag_follower: buildP320MagFollowerGeometry,
+  p320_mag_spring: buildP320MagSpringGeometry,
+  p320_mag_baseplate: buildP320MagBaseplateGeometry,
+};

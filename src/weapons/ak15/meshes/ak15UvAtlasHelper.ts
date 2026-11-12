@@ -1,9 +1,9 @@
 import * as THREE from 'three';
-import { clampUv01 as clamp01, fractPos, sampleTriangleInfo as triInfo } from '../../../engine/geometry/uvUnwrap';
-
-
-
-
+import {
+  clampUv01 as clamp01,
+  fractPos,
+  sampleTriangleInfo as triInfo,
+} from '../../../engine/geometry/uvUnwrap';
 
 /**
  * Unwraps R-01 Stamped AK-15M1 Receiver onto 2048x1024 ak_receiver_{albedo,normal,roughness}.png:

@@ -991,15 +991,13 @@ export function computeM82a1BallisticsState(
   } else if (f < 0.39) {
     // Extracted out of barrel extension into center of ejection port [2.15, 7.85]
     const u = smoothstep(0.325, 0.39, f);
-    const startX = 5.7 + computeBoltCamKinematics(
-      computeBarrelShortRecoilDx(0.325),
-      computeCarrierStrokeDx(0.325)
-    ).boltDx;
-    spentCasePos = [
-      startX + (3.85 - startX) * u,
-      1.25 + 0.08 * u,
-      0.56 * u,
-    ];
+    const startX =
+      5.7 +
+      computeBoltCamKinematics(
+        computeBarrelShortRecoilDx(0.325),
+        computeCarrierStrokeDx(0.325)
+      ).boltDx;
+    spentCasePos = [startX + (3.85 - startX) * u, 1.25 + 0.08 * u, 0.56 * u];
     spentCaseRot = [0.12 * u, -0.46 * u, 0.1 * u];
   } else if (f < 0.75) {
     // Dual plunger ejectors fling spent .50 BMG brass cleanly out +Z port

@@ -536,11 +536,7 @@ export function buildDeagleBarrelGeometry(): THREE.BufferGeometry {
       const x = xStart + (xEnd - xStart) * t;
       const phi = basePhi + totalTwist * t;
       pts.push(
-        new THREE.Vector3(
-          x,
-          2.6 + Math.cos(phi) * 0.53,
-          Math.sin(phi) * 0.53
-        )
+        new THREE.Vector3(x, 2.6 + Math.cos(phi) * 0.53, Math.sin(phi) * 0.53)
       );
     }
     const landCurve = new THREE.CatmullRomCurve3(pts);

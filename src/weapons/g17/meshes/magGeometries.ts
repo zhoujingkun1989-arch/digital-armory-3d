@@ -167,10 +167,7 @@ export function buildMagBodyGeometry(): THREE.BufferGeometry {
 
 /** M-02: High-Visibility Stepped Orange Polymer Magazine Follower */
 export function buildMagFollowerGeometry(): THREE.BufferGeometry {
-  const base = paintGeometry(
-    new THREE.BoxGeometry(2.1, 0.48, 1.25),
-    '#f97316'
-  );
+  const base = paintGeometry(new THREE.BoxGeometry(2.1, 0.48, 1.25), '#f97316');
 
   // Stepped cartridge-staggering upper rib
   const ridge = paintGeometry(

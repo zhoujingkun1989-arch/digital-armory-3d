@@ -28,10 +28,7 @@ import {
   buildDeagleTriggerGeometry,
 } from './meshes/deagleExtraGeometries';
 
-export const GEOMETRY_BUILDERS: Record<
-  string,
-  () => THREE.BufferGeometry
-> = {
+export const GEOMETRY_BUILDERS: Record<string, () => THREE.BufferGeometry> = {
   // 1. Slide, Fixed Barrel, Rotating Bolt & Dual Recoil Assembly ('slide' · 11)
   deagle_barrel: buildDeagleBarrelGeometry,
   deagle_slide: buildDeagleSlideGeometry,

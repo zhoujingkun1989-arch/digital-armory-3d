@@ -99,11 +99,7 @@ export function useActiveTimelinePresetId(
     [presets]
   );
 
-  return useSyncExternalStore(
-    subscribeExplodeStore,
-    getSnapshot,
-    () => null
-  );
+  return useSyncExternalStore(subscribeExplodeStore, getSnapshot, () => null);
 }
 
 /**

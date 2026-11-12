@@ -1,10 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
+  BookOpen,
   ChevronLeft,
   ChevronRight,
   Crosshair,
   Focus,
+  Loader2,
+  Pause,
+  Play,
   ShieldCheck,
+  Volume2,
+  VolumeX,
   X,
 } from 'lucide-react';
 import { useActiveFiringPhase } from '../../engine/clock/playbackClock';
@@ -12,25 +18,30 @@ import {
   getCachedPartGeometry,
   subscribeGeometryStatus,
 } from '../../engine/geometry/geometryService';
+import { UI_STRINGS } from '../../i18n/uiStrings';
+import {
+  resolveFiringPhaseText,
+  resolveWeaponDisplayMeta,
+} from '../../i18n/weaponFallbacks';
+import {
+  playNarrationPlaylist,
+  playOrToggleNarrationTrack,
+  stopNarrationAudio,
+  useNarrationAudioPlayer,
+} from '../../narration/audioPlayer';
+import { useWeaponNarration } from '../../narration/narrationService';
 import { useAppStore } from '../../store/useAppStore';
-import { getWeaponManifest } from '../../weapons/manifests';
 import { useWeaponPlugin } from '../../weapons/registry';
-import type { FiringPhaseInfo, MaterialKind } from '../../weapons/types';
+import type { FiringPhaseInfo } from '../../weapons/types';
 
 const EMPTY_FIRING_PHASES: readonly FiringPhaseInfo[] = [];
 
-const MATERIAL_NAMES_ZH: Record<MaterialKind, string> = {
-  nitride_steel: '碳氮共渗/磷化烤漆合金钢',
-  barrel_steel: '冷锻精密枪管钢 (镀硬铬/氮化)',
-  stainless: '精密冲压/锻造不锈钢与镀铬活塞钢',
-  polymer_frame: '高强度玻纤增强尼龙/聚酰胺聚合物',
-  spring_steel: '高疲劳强度多股琴钢丝弹簧',
-  follower_orange: '高辨识度防卡滞工程聚合物',
-  copper_accent: '黄铜合金示意表面',
-};
-
 export const PartInspectorCard: React.FC = () => {
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
+  const lang = useAppStore((s) => s.lang);
+  const autoPlayPartAudio = useAppStore((s) => s.autoPlayPartAudio);
+  const toggleAutoPlayPartAudio = useAppStore((s) => s.toggleAutoPlayPartAudio);
+  const setStoryOpen = useAppStore((s) => s.setStoryOpen);
   const mode = useAppStore((s) => s.mode);
   const selectedPartId = useAppStore((s) => s.selectedPartId);
   const isolateSelected = useAppStore((s) => s.isolateSelected);
@@ -47,29 +58,82 @@ export const PartInspectorCard: React.FC = () => {
     });
   }, [activeWeaponId]);
 
-  const manifest = getWeaponManifest(activeWeaponId);
-  const meta = manifest.workbenchMeta;
   const plugin = useWeaponPlugin(activeWeaponId);
+  const { bundle } = useWeaponNarration(activeWeaponId);
+  const audio = useNarrationAudioPlayer();
+
   const weaponParts = plugin?.parts ?? [];
   const partGroups = plugin?.partGroups ?? [];
   const activePhase = useActiveFiringPhase(
     plugin?.firingPhases ?? EMPTY_FIRING_PHASES
   );
 
-  // When no part is selected:
-  // - In Explode mode: keep the 3D viewport 100% open & unobstructed for hairline callouts,
-  //   offering just a compact top-right Cutaway pill.
-  // - In Firing mode: show a compact real-time step narration card (re-renders only on phase transitions).
+  const currentIdx = selectedPartId
+    ? weaponParts.findIndex((p) => p.id === selectedPartId)
+    : -1;
+  const part = currentIdx >= 0 ? weaponParts[currentIdx] : null;
+  const partNarrationEntry = part ? (bundle?.parts[part.id] ?? null) : null;
+  const localizedPartNarration = partNarrationEntry
+    ? partNarrationEntry[lang]
+    : null;
+
+  const autoVoiceSignature =
+    part && localizedPartNarration
+      ? `${activeWeaponId}:${part.id}:${lang}:${localizedPartNarration.audioUrl}`
+      : null;
+
+  const lastAutoPlayedRef = useRef<string | null>(null);
+
+  // Auto-play part voiceover when clicking a new part (or switching language while inspecting a part)
+  useEffect(() => {
+    if (!autoVoiceSignature) {
+      lastAutoPlayedRef.current = null;
+      return;
+    }
+    if (lastAutoPlayedRef.current === autoVoiceSignature) {
+      return;
+    }
+    lastAutoPlayedRef.current = autoVoiceSignature;
+
+    if (!autoPlayPartAudio || !part || !localizedPartNarration) {
+      return;
+    }
+    const titleStr = lang === 'en' ? part.nameEn : part.nameZh;
+    playNarrationPlaylist(
+      [
+        {
+          key: `part:${activeWeaponId}:${lang}:${part.id}`,
+          relativeUrl: localizedPartNarration.audioUrl,
+          label: `${part.bomCode} · ${titleStr}`,
+          kind: 'part',
+          partId: part.id,
+        },
+      ],
+      0
+    );
+  }, [
+    autoVoiceSignature,
+    autoPlayPartAudio,
+    activeWeaponId,
+    lang,
+    part,
+    localizedPartNarration,
+  ]);
+
+  const ui = UI_STRINGS[lang].inspector;
+  const displayMeta = resolveWeaponDisplayMeta(activeWeaponId, lang, bundle);
+
   if (!selectedPartId) {
     if (mode === 'firing') {
       if (!activePhase) return null;
+      const locPhase = resolveFiringPhaseText(activePhase, lang, bundle);
       return (
         <div className="inspector-card firing-compact-card">
           <div className="guide-badge firing-badge">
-            发射循环实时解析 · {activePhase.stepNum} / 07
+            {ui.firingBadge(activePhase.stepNum)}
           </div>
-          <h3 className="guide-title">{activePhase.title}</h3>
-          <p className="guide-desc">{activePhase.description}</p>
+          <h3 className="guide-title">{locPhase.title}</h3>
+          <p className="guide-desc">{locPhase.description}</p>
         </div>
       );
     }
@@ -78,25 +142,26 @@ export const PartInspectorCard: React.FC = () => {
       <button
         className="floating-cutaway-pill"
         onClick={activateCutawayFocus}
-        title={meta.cutawayTitle}
+        title={displayMeta.cutawayTitle}
       >
         <ShieldCheck size={14} />
-        <span>{meta.cutawayLabel}</span>
+        <span>{displayMeta.cutawayLabel}</span>
       </button>
     );
   }
 
-  const currentIdx = weaponParts.findIndex((p) => p.id === selectedPartId);
-  const part = weaponParts[currentIdx];
   if (!part) return null;
 
   const groupMeta = partGroups.find((g) => g.key === part.group);
   const badgeColor = groupMeta?.badgeColor ?? '#0284c7';
-  const groupNameZh = groupMeta?.nameZh ?? part.group;
+  const groupTitle =
+    lang === 'en'
+      ? (groupMeta?.nameEn ?? part.group)
+      : (groupMeta?.nameZh ?? part.group);
 
   const cachedGeo = getCachedPartGeometry(activeWeaponId, part.id);
-  let cadEnvelopeLabel = '实时 CSG 测绘中...';
-  let meshTriLabel = '构建中...';
+  let cadEnvelopeLabel = ui.envelopeBuilding;
+  let meshTriLabel = ui.meshBuilding;
   if (cachedGeo) {
     if (!cachedGeo.boundingBox) {
       cachedGeo.computeBoundingBox();
@@ -115,12 +180,11 @@ export const PartInspectorCard: React.FC = () => {
       : posAttr
         ? Math.round(posAttr.count / 3)
         : 0;
-    meshTriLabel = `${triCount.toLocaleString('en-US')} Δ 三角面`;
+    meshTriLabel = ui.meshTriangles(triCount.toLocaleString('en-US'));
   }
 
   const goPrev = () => {
-    const prevIdx =
-      (currentIdx - 1 + weaponParts.length) % weaponParts.length;
+    const prevIdx = (currentIdx - 1 + weaponParts.length) % weaponParts.length;
     selectPart(weaponParts[prevIdx].id);
   };
 
@@ -129,8 +193,41 @@ export const PartInspectorCard: React.FC = () => {
     selectPart(weaponParts[nextIdx].id);
   };
 
+  const primaryTitle = lang === 'en' ? part.nameEn : part.nameZh;
+  const secondaryTitle = lang === 'en' ? part.nameZh : part.nameEn;
+  const roleTagDisplay =
+    localizedPartNarration?.roleTag ??
+    (lang === 'en' ? part.nameEn : part.roleTag);
+
+  const trackKey = `part:${activeWeaponId}:${lang}:${part.id}`;
+  const isThisPartActive = audio.activeKey === trackKey;
+  const isThisPartPlaying = isThisPartActive && audio.isPlaying;
+  const isThisPartLoading = isThisPartActive && audio.isLoading;
+
+  const handleTogglePartVoice = () => {
+    if (!localizedPartNarration) return;
+    playOrToggleNarrationTrack({
+      key: trackKey,
+      relativeUrl: localizedPartNarration.audioUrl,
+      label: `${part.bomCode} · ${primaryTitle}`,
+      kind: 'part',
+      partId: part.id,
+    });
+  };
+
+  const handleCloseInspector = () => {
+    if (audio.activeKind === 'part') {
+      stopNarrationAudio();
+    }
+    selectPart(null);
+  };
+
   return (
-    <div className="inspector-card">
+    <div
+      className={`inspector-card ${
+        localizedPartNarration ? 'has-deep-narration' : ''
+      }`}
+    >
       <div className="inspector-top">
         <span
           className="part-group-badge"
@@ -139,46 +236,131 @@ export const PartInspectorCard: React.FC = () => {
             color: badgeColor,
           }}
         >
-          {part.bomCode} · {groupNameZh}
+          {part.bomCode} · {groupTitle}
         </span>
         <button
           className="close-btn"
-          onClick={() => selectPart(null)}
-          title="关闭详情 (Esc)"
+          onClick={handleCloseInspector}
+          title={ui.closeTitle}
         >
           <X size={15} />
         </button>
       </div>
 
-      <h2 className="part-title-zh">{part.nameZh}</h2>
-      <div className="part-title-en">{part.nameEn}</div>
+      <h2 className="part-title-zh">{primaryTitle}</h2>
+      <div className="part-title-en">{secondaryTitle}</div>
 
-      <div className="meta-grid">
-        <div className="meta-row">
-          <span className="meta-label">机械定位</span>
-          <span className="meta-value highlight">{part.roleTag}</span>
+      {/* Google Gemini TTS Part Audio Guide Bar */}
+      {localizedPartNarration && (
+        <div className="part-voice-bar">
+          <button
+            type="button"
+            className={`part-voice-play-btn ${
+              isThisPartPlaying ? 'playing' : ''
+            }`}
+            onClick={handleTogglePartVoice}
+          >
+            {isThisPartLoading ? (
+              <Loader2 size={13} className="spin-icon" />
+            ) : isThisPartPlaying ? (
+              <Pause size={13} />
+            ) : (
+              <Play size={13} />
+            )}
+            <span>
+              {isThisPartLoading
+                ? ui.voiceGuideLoading
+                : isThisPartPlaying
+                  ? ui.voiceGuideBtnPause
+                  : ui.voiceGuideBtnPlay}
+            </span>
+            {isThisPartPlaying && (
+              <span className="eq-bars" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+              </span>
+            )}
+          </button>
+
+          <button
+            type="button"
+            className={`part-auto-voice-btn ${
+              autoPlayPartAudio ? 'active' : ''
+            }`}
+            onClick={toggleAutoPlayPartAudio}
+            title={ui.autoVoiceTitle}
+          >
+            {autoPlayPartAudio ? <Volume2 size={12} /> : <VolumeX size={12} />}
+            <span>{ui.autoVoiceLabel}</span>
+          </button>
         </div>
-        <div className="meta-row">
-          <span className="meta-label">典型材质</span>
-          <span className="meta-value">{MATERIAL_NAMES_ZH[part.material]}</span>
+      )}
+
+      <div
+        className={localizedPartNarration ? 'inspector-scroll-area' : undefined}
+      >
+        <div className="meta-grid">
+          <div className="meta-row">
+            <span className="meta-label">{ui.roleLabel}</span>
+            <span className="meta-value highlight">{roleTagDisplay}</span>
+          </div>
+          <div className="meta-row">
+            <span className="meta-label">{ui.materialLabel}</span>
+            <span className="meta-value">{ui.materials[part.material]}</span>
+          </div>
+          <div className="meta-row" title={ui.envelopeTitle}>
+            <span className="meta-label">{ui.envelopeLabel}</span>
+            <span className="meta-value mono">{cadEnvelopeLabel}</span>
+          </div>
+          <div className="meta-row" title={ui.meshTitle}>
+            <span className="meta-label">{ui.meshLabel}</span>
+            <span className="meta-value mono">{meshTriLabel}</span>
+          </div>
         </div>
-        <div
-          className="meta-row"
-          title="局部 CAD 轴向包络尺寸：轴长 X × 高度 Y × 宽度 Z (1 场景单位 = 10 mm)"
-        >
-          <span className="meta-label">CAD 包络尺寸</span>
-          <span className="meta-value mono">{cadEnvelopeLabel}</span>
-        </div>
-        <div
-          className="meta-row"
-          title="实时布尔 CSG / 参数化流形三角网格面数"
-        >
-          <span className="meta-label">CSG 网格拓扑</span>
-          <span className="meta-value mono">{meshTriLabel}</span>
-        </div>
+
+        {localizedPartNarration ? (
+          <>
+            <div className="part-narration-sections">
+              <div className="part-narration-sec">
+                <span className="part-sec-label">{ui.secOverview}</span>
+                <p className="part-sec-body">
+                  {localizedPartNarration.overview}
+                </p>
+              </div>
+              <div className="part-narration-sec">
+                <span className="part-sec-label">{ui.secCraft}</span>
+                <p className="part-sec-body">
+                  {localizedPartNarration.craftAndMaterial}
+                </p>
+              </div>
+              <div className="part-narration-sec">
+                <span className="part-sec-label">{ui.secKinematics}</span>
+                <p className="part-sec-body">
+                  {localizedPartNarration.kinematicRole}
+                </p>
+              </div>
+              <div className="part-narration-sec highlight-sec">
+                <span className="part-sec-label">{ui.secDesign}</span>
+                <p className="part-sec-body">
+                  {localizedPartNarration.designHighlight}
+                </p>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              className="part-story-jump-link"
+              onClick={() => setStoryOpen(true)}
+            >
+              <BookOpen size={12} />
+              <span>{ui.openStoryLink}</span>
+            </button>
+          </>
+        ) : (
+          <div className="part-description">{part.description}</div>
+        )}
       </div>
-
-      <div className="part-description">{part.description}</div>
 
       <div className="inspector-actions">
         <button
@@ -186,18 +368,18 @@ export const PartInspectorCard: React.FC = () => {
           onClick={toggleIsolateSelected}
         >
           <Focus size={14} />
-          <span>{isolateSelected ? '退出单独隔离' : '单独隔离查看该零件'}</span>
+          <span>{isolateSelected ? ui.isolateExit : ui.isolateEnter}</span>
         </button>
 
         <div className="step-nav">
-          <button onClick={goPrev} title="上一个零件">
+          <button onClick={goPrev} title={ui.prevPart}>
             <ChevronLeft size={15} />
           </button>
           <span className="step-counter">
             <Crosshair size={12} />
             {currentIdx + 1} / {weaponParts.length}
           </span>
-          <button onClick={goNext} title="下一个零件">
+          <button onClick={goNext} title={ui.nextPart}>
             <ChevronRight size={15} />
           </button>
         </div>

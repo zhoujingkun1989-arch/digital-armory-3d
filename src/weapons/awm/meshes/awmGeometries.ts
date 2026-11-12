@@ -1202,11 +1202,7 @@ export function buildAwmBipodGeometry(): THREE.BufferGeometry {
 
     // Articulated ankle clevis + level curved Parker-Hale ribbed ski foot connected flush at (1.36, -4.52, side * 2.49)
     const ankleClevis = paintGeometry(
-      new THREE.BoxGeometry(0.38, 0.3, 0.4).translate(
-        1.36,
-        -4.48,
-        side * 2.49
-      ),
+      new THREE.BoxGeometry(0.38, 0.3, 0.4).translate(1.36, -4.48, side * 2.49),
       AWM_DARK_STEEL
     );
     const anklePin = paintGeometry(
@@ -1216,11 +1212,7 @@ export function buildAwmBipodGeometry(): THREE.BufferGeometry {
       AWM_STAINLESS
     );
     const skiFoot = paintGeometry(
-      new THREE.BoxGeometry(1.42, 0.15, 0.7).translate(
-        1.45,
-        -4.6,
-        side * 2.49
-      ),
+      new THREE.BoxGeometry(1.42, 0.15, 0.7).translate(1.45, -4.6, side * 2.49),
       AWM_DARK_STEEL
     );
     const skiToe = paintGeometry(
@@ -1256,39 +1248,37 @@ export function buildAwmBipodGeometry(): THREE.BufferGeometry {
 /**
  * Complete 24-Part Procedural/CSG Builder Map for #6 Accuracy International AWM (L115A3 · .338LM)
  */
-export const AWM_GEOMETRY_BUILDERS: Record<
-  string,
-  () => THREE.BufferGeometry
-> = {
-  // 1. Optic & 60° 6-Lug Turn-Bolt Group ('slide' · 7 parts)
-  awm_scope: buildAwmScopeGeometry,
-  awm_scope_mount: buildAwmScopeMountGeometry,
-  awm_bolt_body: buildAwmBoltBodyGeometry,
-  awm_bolt_shroud: buildAwmBoltShroudGeometry,
-  awm_striker: buildAwmStrikerGeometry,
-  awm_firing_pin_spring: buildAwmFiringPinSpringGeometry,
-  awm_extractor: buildAwmExtractorGeometry,
+export const AWM_GEOMETRY_BUILDERS: Record<string, () => THREE.BufferGeometry> =
+  {
+    // 1. Optic & 60° 6-Lug Turn-Bolt Group ('slide' · 7 parts)
+    awm_scope: buildAwmScopeGeometry,
+    awm_scope_mount: buildAwmScopeMountGeometry,
+    awm_bolt_body: buildAwmBoltBodyGeometry,
+    awm_bolt_shroud: buildAwmBoltShroudGeometry,
+    awm_striker: buildAwmStrikerGeometry,
+    awm_firing_pin_spring: buildAwmFiringPinSpringGeometry,
+    awm_extractor: buildAwmExtractorGeometry,
 
-  // 2. OD-Green Thumbhole Chassis, CNC Beam, Action & Fluted Barrel ('frame' · 9 parts)
-  awm_chassis_skins: buildAwmChassisSkinsGeometry,
-  awm_chassis_beam: buildAwmChassisBeamGeometry,
-  awm_action_receiver: buildAwmActionReceiverGeometry,
-  awm_barrel: buildAwmBarrelGeometry,
-  awm_muzzle_brake: buildAwmMuzzleBrakeGeometry,
-  awm_folding_stock: buildAwmFoldingStockGeometry,
-  awm_cheekpiece: buildAwmCheekpieceGeometry,
-  awm_buttpad_spacers: buildAwmButtpadSpacersGeometry,
-  awm_bipod: buildAwmBipodGeometry,
+    // 2. OD-Green Thumbhole Chassis, CNC Beam, Action & Fluted Barrel ('frame' · 9 parts)
+    awm_chassis_skins: buildAwmChassisSkinsGeometry,
+    awm_chassis_beam: buildAwmChassisBeamGeometry,
+    awm_action_receiver: buildAwmActionReceiverGeometry,
+    awm_barrel: buildAwmBarrelGeometry,
+    awm_muzzle_brake: buildAwmMuzzleBrakeGeometry,
+    awm_folding_stock: buildAwmFoldingStockGeometry,
+    awm_cheekpiece: buildAwmCheekpieceGeometry,
+    awm_buttpad_spacers: buildAwmButtpadSpacersGeometry,
+    awm_bipod: buildAwmBipodGeometry,
 
-  // 3. Two-Stage Match Trigger Group ('fire_control' · 4 parts)
-  awm_trigger_box: buildAwmTriggerBoxGeometry,
-  awm_sear: buildAwmSearGeometry,
-  awm_trigger_shoe: buildAwmTriggerShoeGeometry,
-  awm_mag_catch: buildAwmMagCatchGeometry,
+    // 3. Two-Stage Match Trigger Group ('fire_control' · 4 parts)
+    awm_trigger_box: buildAwmTriggerBoxGeometry,
+    awm_sear: buildAwmSearGeometry,
+    awm_trigger_shoe: buildAwmTriggerShoeGeometry,
+    awm_mag_catch: buildAwmMagCatchGeometry,
 
-  // 4. 5-Round .338 Lapua Magnum Steel Box Magazine ('magazine' · 4 parts)
-  awm_mag_body: buildAwmMagBodyGeometry,
-  awm_mag_follower: buildAwmMagFollowerGeometry,
-  awm_mag_spring: buildAwmMagSpringGeometry,
-  awm_mag_floorplate: buildAwmMagFloorplateGeometry,
-};
+    // 4. 5-Round .338 Lapua Magnum Steel Box Magazine ('magazine' · 4 parts)
+    awm_mag_body: buildAwmMagBodyGeometry,
+    awm_mag_follower: buildAwmMagFollowerGeometry,
+    awm_mag_spring: buildAwmMagSpringGeometry,
+    awm_mag_floorplate: buildAwmMagFloorplateGeometry,
+  };

@@ -21,7 +21,5 @@ export function resolveTextureUrl(fileOrPath: string): string {
 }
 
 export function normalizeTextureFileName(fileOrPath: string): string {
-  return fileOrPath
-    .replace(/^\/?textures\//, '')
-    .replace(/\.png$/i, '.webp');
+  return fileOrPath.replace(/^\/?textures\//, '').replace(/\.png$/i, '.webp');
 }

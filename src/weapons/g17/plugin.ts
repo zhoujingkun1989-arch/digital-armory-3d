@@ -81,7 +81,7 @@ export const GRIP_ANGLE_RAD = (-20 * Math.PI) / 180;
 const SLIDE_GROUP_STAGE1: KeyframeStep[] = [
   { range: [0.08, 0.14], offset: [5.6, 0, 0] },
   { range: [0.14, 0.22], offset: [-4.4, 5.8, 0] },
-  { range: [0.22, 0.30], offset: [0, 2.0, 0] },
+  { range: [0.22, 0.3], offset: [0, 2.0, 0] },
 ];
 
 const SLIDE_GROUP_LIFT2: KeyframeStep = {
@@ -173,7 +173,7 @@ export const G17_PARTS: WeaponPartSpec[] = [
     explodeSteps: [
       { range: [0.08, 0.14], offset: [5.6, 0, 0] },
       { range: [0.14, 0.22], offset: [-4.4, 5.8, 0] },
-      { range: [0.22, 0.30], offset: [0.4, -1.1, 0] },
+      { range: [0.22, 0.3], offset: [0.4, -1.1, 0] },
       { range: [0.68, 0.82], offset: [0, 1.4, 0] },
     ],
     calloutDir: 'up',
@@ -196,8 +196,8 @@ export const G17_PARTS: WeaponPartSpec[] = [
     explodeSteps: [
       { range: [0.08, 0.14], offset: [5.6, 0, 0] },
       { range: [0.14, 0.22], offset: [-4.4, 5.8, 0] },
-      { range: [0.20, 0.30], offset: [-0.2, -3.0, 0] },
-      { range: [0.48, 0.60], offset: [5.0, 0, 0] },
+      { range: [0.2, 0.3], offset: [-0.2, -3.0, 0] },
+      { range: [0.48, 0.6], offset: [5.0, 0, 0] },
       { range: [0.68, 0.82], offset: [0, 1.0, 0] },
     ],
     calloutDir: 'down',
@@ -220,8 +220,8 @@ export const G17_PARTS: WeaponPartSpec[] = [
     explodeSteps: [
       { range: [0.08, 0.14], offset: [5.6, 0, 0] },
       { range: [0.14, 0.22], offset: [-4.4, 5.8, 0] },
-      { range: [0.20, 0.30], offset: [-0.2, -3.0, 0] },
-      { range: [0.48, 0.60], offset: [-3.2, 0, 0] },
+      { range: [0.2, 0.3], offset: [-0.2, -3.0, 0] },
+      { range: [0.48, 0.6], offset: [-3.2, 0, 0] },
       { range: [0.68, 0.82], offset: [0, 1.0, 0] },
     ],
     calloutDir: 'up',
@@ -243,7 +243,7 @@ export const G17_PARTS: WeaponPartSpec[] = [
     assembledPos: [-7.52, 2.25, 0],
     explodeSteps: [
       ...SLIDE_GROUP_STAGE1,
-      { range: [0.30, 0.36], offset: [0, -2.1, 0] },
+      { range: [0.3, 0.36], offset: [0, -2.1, 0] },
       { range: [0.36, 0.44], offset: [-2.6, 0.5, 0] },
       SLIDE_GROUP_LIFT2,
     ],
@@ -288,7 +288,7 @@ export const G17_PARTS: WeaponPartSpec[] = [
     assembledPos: [0, 0, 0],
     explodeSteps: [
       ...SLIDE_GROUP_STAGE1,
-      { range: [0.35, 0.50], offset: [-15.0, 0, 0] },
+      { range: [0.35, 0.5], offset: [-15.0, 0, 0] },
       SLIDE_GROUP_LIFT2,
     ],
     calloutDir: 'up',
@@ -630,7 +630,7 @@ export const G17_PARTS: WeaponPartSpec[] = [
     assembledRot: [0, 0, GRIP_ANGLE_RAD],
     explodeSteps: [
       ...MAG_EXTRACT_STAGE1,
-      { range: [0.50, 0.62], offset: [0.9, 0.9, 0] },
+      { range: [0.5, 0.62], offset: [0.9, 0.9, 0] },
     ],
     calloutDir: 'down',
     calloutStem: 46,
@@ -952,7 +952,6 @@ export function computeFiringKinematics(
   return { pos: [dx, dy, dz], rot: [rx, ry, rz], scaleX };
 }
 
-
 /**
  * Computes positions, rotations & effects for cartridges, bullet, shell ejection, and muzzle gas plume.
  */
@@ -1068,7 +1067,6 @@ export function computeBallisticsState(fRaw: number): BallisticsVisualState {
     reserveRoundPos: [resX, resY, 0],
   };
 }
-
 
 export const G17_PBR_BINDINGS: Record<string, PbrBindingSpec> = {
   slide: {

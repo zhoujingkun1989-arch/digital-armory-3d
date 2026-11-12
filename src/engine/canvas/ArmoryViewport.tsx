@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import {
@@ -10,16 +10,14 @@ import {
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
-import {
-  getLoadedWeaponPlugin,
-  useWeaponPlugin,
-} from '../../weapons/registry';
+import { getLoadedWeaponPlugin, useWeaponPlugin } from '../../weapons/registry';
 import type {
   CameraPresetType,
   WeaponCameraMap,
   WeaponScaleProfile,
 } from '../../weapons/types';
 import { BallisticsSystem } from '../actors/BallisticsSystem';
+import { ExhibitionTurntable } from '../actors/ExhibitionTurntable';
 import { PartActor } from '../actors/PartActor';
 import { updateCalloutOverlay60fps } from '../callout/CalloutOverlay';
 import { playbackClock } from '../clock/playbackClock';
@@ -29,8 +27,17 @@ import {
   useWeaponGeometries,
 } from '../geometry/geometryService';
 import { computePartTransform } from '../kinematics/math';
+import {
+  computeTurntableFraming,
+  evaluateWeaponTurntableEnvelopeInto,
+  isShowcaseUserDragging,
+  registerTurntableDragHandler,
+  subscribeShowcaseDragging,
+  subscribeShowcaseWindowBounds,
+} from './turntableStageMetrics';
 
 const BASE_FIRING_RATE = 0.42;
+const INITIAL_TURNTABLE_AZIMUTH = 0.24;
 
 // Module-pooled scratch math primitives for zero heap churn on camera focus
 const _focusWorldCenter = new THREE.Vector3();
@@ -93,13 +100,65 @@ function applyWorkbenchFraming(
   );
 }
 
+const StageFloorGrid: React.FC = () => {
+  const groupRef = useRef<THREE.Group>(null);
+  const activeWeaponId = useAppStore((s) => s.activeWeaponId);
+  const screen = useAppStore((s) => s.screen);
+  const workbenchGridY = getWeaponManifest(activeWeaponId).workbenchMeta.gridY;
+
+  useFrame(() => {
+    if (!groupRef.current) return;
+    const st = useAppStore.getState();
+    if (st.screen === 'workbench') {
+      groupRef.current.position.y = getWeaponManifest(
+        st.activeWeaponId
+      ).workbenchMeta.gridY;
+    } else {
+      const env = evaluateWeaponTurntableEnvelopeInto(
+        st.activeWeaponId,
+        playbackClock.getState().animatedProgress
+      );
+      groupRef.current.position.y = env.gridFloorY;
+    }
+  });
+
+  const initialY =
+    screen === 'workbench'
+      ? workbenchGridY
+      : evaluateWeaponTurntableEnvelopeInto(activeWeaponId, 0).gridFloorY;
+
+  return (
+    <group ref={groupRef} position={[0, initialY, 0]}>
+      <Grid
+        position={[0, 0, 0]}
+        args={[160, 160]}
+        cellSize={2}
+        cellThickness={0.6}
+        cellColor="#cbd5e1"
+        sectionSize={10}
+        sectionThickness={1.1}
+        sectionColor="#94a3b8"
+        fadeDistance={130}
+        fadeStrength={1.3}
+      />
+    </group>
+  );
+};
+
 const DisassemblyRig: React.FC = () => {
   const controlsRef = useRef<OrbitControlsImpl>(null);
   const { camera, size } = useThree();
 
+  const [showcaseDragging, setShowcaseDragging] = useState<boolean>(
+    isShowcaseUserDragging
+  );
+  const [showcaseWindowVer, setShowcaseWindowVer] = useState<number>(0);
+
   const hasSnappedInitialRef = useRef<boolean>(false);
   const userOrbitedRef = useRef<boolean>(false);
   const lastFramedTRef = useRef<number>(0);
+
+  // Cartesian fly-to state for Workbench presets & part inspection focus
   const flyRef = useRef<{
     active: boolean;
     goalPos: THREE.Vector3;
@@ -108,6 +167,19 @@ const DisassemblyRig: React.FC = () => {
     active: false,
     goalPos: new THREE.Vector3(14.5, 2.2, 54.0),
     goalTarget: new THREE.Vector3(3.2, -5.2, 0),
+  });
+
+  // Cylindrical turntable state for Showcase & Armory (preserves live azimuth angle so 360° rotation never freezes)
+  const turntableRigRef = useRef<{
+    active: boolean;
+    goalTarget: THREE.Vector3;
+    goalHorizRadius: number;
+    goalOffsetY: number;
+  }>({
+    active: false,
+    goalTarget: new THREE.Vector3(3.65, -4.5, 0),
+    goalHorizRadius: 64.0,
+    goalOffsetY: 9.6,
   });
 
   const screen = useAppStore((s) => s.screen);
@@ -120,7 +192,33 @@ const DisassemblyRig: React.FC = () => {
   // Triggers background Web Worker CSG build & re-renders as part batches stream in
   useWeaponGeometries(activeWeaponId, plugin?.parts ?? null);
 
-  // Respond to explicit camera preset buttons, weapon switches & viewport aspect ratio changes
+  useEffect(() => subscribeShowcaseDragging(setShowcaseDragging), []);
+
+  useEffect(
+    () =>
+      subscribeShowcaseWindowBounds(() => {
+        setShowcaseWindowVer((v) => v + 1);
+      }),
+    []
+  );
+
+  // Connect manual pointer drag from ShowcaseView's unobstructed live stage window directly to OrbitControls
+  useEffect(() => {
+    return registerTurntableDragHandler((dxPx, dyPx) => {
+      const ctrl = controlsRef.current;
+      if (!ctrl) return;
+      turntableRigRef.current.active = false;
+      ctrl.setAzimuthalAngle(ctrl.getAzimuthalAngle() - dxPx * 0.0052);
+      const nextPolar = THREE.MathUtils.clamp(
+        ctrl.getPolarAngle() - dyPx * 0.0032,
+        Math.PI * 0.34,
+        Math.PI * 0.56
+      );
+      ctrl.setPolarAngle(nextPolar);
+    });
+  }, []);
+
+  // Respond to explicit camera preset buttons, weapon switches, screen transitions & viewport/window rect changes
   useEffect(() => {
     const manifest = getWeaponManifest(activeWeaponId);
     const presets = manifest.cameraPresets;
@@ -133,30 +231,52 @@ const DisassemblyRig: React.FC = () => {
     const t = playbackClock.getState().targetProgress;
     lastFramedTRef.current = t;
     const aspect = Math.max(0.42, size.width / Math.max(1, size.height));
+    const perspCam = camera as THREE.PerspectiveCamera;
 
-    if (cameraCommand.preset === 'armory_showcase') {
-      const baseMinScale =
-        scaleProfile === 'heavy_sniper'
-          ? 1.08
-          : scaleProfile === 'rifle'
-            ? 1.05
-            : 1.0;
-      const aspectRef = scaleProfile === 'heavy_sniper' ? 1.28 : 1.18;
-      const armoryScale = Math.max(baseMinScale, aspectRef / aspect);
-      const origTx = cfg.target[0];
-      const tx =
-        screen === 'armory' && scaleProfile !== 'pistol'
-          ? origTx - 2.6
-          : origTx;
-      const ty = screen === 'showcase' ? cfg.target[1] + 1.15 : cfg.target[1];
-      const tz = cfg.target[2];
-      flyRef.current.goalTarget.set(tx, ty, tz);
-      flyRef.current.goalPos.set(
-        tx + (cfg.pos[0] - origTx) * armoryScale,
-        ty + (cfg.pos[1] - cfg.target[1]) * armoryScale,
-        tz + (cfg.pos[2] - tz) * armoryScale
+    if (cameraCommand.preset === 'armory_showcase' && screen !== 'workbench') {
+      const tf = computeTurntableFraming(
+        activeWeaponId,
+        scaleProfile,
+        t,
+        screen,
+        size.width,
+        size.height
       );
+      perspCam.setViewOffset(
+        size.width,
+        size.height,
+        tf.viewOffsetX,
+        tf.viewOffsetY,
+        size.width,
+        size.height
+      );
+
+      turntableRigRef.current.goalTarget.set(
+        tf.targetX,
+        tf.targetY,
+        tf.targetZ
+      );
+      turntableRigRef.current.goalHorizRadius = tf.horizRadius;
+      turntableRigRef.current.goalOffsetY = tf.offsetY;
+      flyRef.current.active = false;
+
+      if (!hasSnappedInitialRef.current && controlsRef.current) {
+        controlsRef.current.target.copy(turntableRigRef.current.goalTarget);
+        camera.position.set(
+          tf.targetX + Math.sin(INITIAL_TURNTABLE_AZIMUTH) * tf.horizRadius,
+          tf.targetY + tf.offsetY,
+          tf.targetZ + Math.cos(INITIAL_TURNTABLE_AZIMUTH) * tf.horizRadius
+        );
+        controlsRef.current.update();
+        turntableRigRef.current.active = false;
+        hasSnappedInitialRef.current = true;
+      } else {
+        turntableRigRef.current.active = true;
+      }
     } else {
+      perspCam.clearViewOffset();
+      turntableRigRef.current.active = false;
+
       applyWorkbenchFraming(
         cfg,
         scaleProfile,
@@ -166,20 +286,28 @@ const DisassemblyRig: React.FC = () => {
         flyRef.current.goalTarget,
         flyRef.current.goalPos
       );
-    }
 
-    if (!hasSnappedInitialRef.current && controlsRef.current) {
-      camera.position.copy(flyRef.current.goalPos);
-      controlsRef.current.target.copy(flyRef.current.goalTarget);
-      controlsRef.current.update();
-      flyRef.current.active = false;
-      hasSnappedInitialRef.current = true;
-    } else {
-      flyRef.current.active = true;
+      if (!hasSnappedInitialRef.current && controlsRef.current) {
+        camera.position.copy(flyRef.current.goalPos);
+        controlsRef.current.target.copy(flyRef.current.goalTarget);
+        controlsRef.current.update();
+        flyRef.current.active = false;
+        hasSnappedInitialRef.current = true;
+      } else {
+        flyRef.current.active = true;
+      }
     }
-  }, [cameraCommand, activeWeaponId, screen, size.width, size.height, camera]);
+  }, [
+    cameraCommand,
+    activeWeaponId,
+    screen,
+    size.width,
+    size.height,
+    showcaseWindowVer,
+    camera,
+  ]);
 
-  // Smoothly focus camera when user selects a part
+  // Smoothly focus camera when user selects a part in Workbench
   useEffect(() => {
     if (!selectedPartId) return;
     const state = useAppStore.getState();
@@ -235,6 +363,7 @@ const DisassemblyRig: React.FC = () => {
             ? 20
             : 14.5;
 
+    turntableRigRef.current.active = false;
     flyRef.current.goalTarget.copy(_focusWorldCenter);
     flyRef.current.goalPos
       .copy(_focusWorldCenter)
@@ -262,7 +391,7 @@ const DisassemblyRig: React.FC = () => {
       }
     }
 
-    // 2. Smoothly damp disassembly scalar t & keep workbench camera framed with explosion unless user manually orbited
+    // 2. Smoothly damp disassembly scalar t & keep camera framed with explosion
     const nextAnimatedT = THREE.MathUtils.damp(
       clock.animatedProgress,
       playbackClock.getState().targetProgress,
@@ -272,6 +401,31 @@ const DisassemblyRig: React.FC = () => {
     playbackClock.setAnimatedProgress(nextAnimatedT);
 
     if (
+      state.screen !== 'workbench' &&
+      state.cameraCommand.preset === 'armory_showcase' &&
+      Math.abs(nextAnimatedT - lastFramedTRef.current) > 0.002 &&
+      size.width > 0 &&
+      size.height > 0
+    ) {
+      const manifest = getWeaponManifest(state.activeWeaponId);
+      const tf = computeTurntableFraming(
+        state.activeWeaponId,
+        manifest.workbenchMeta.scaleProfile,
+        nextAnimatedT,
+        state.screen,
+        size.width,
+        size.height
+      );
+      turntableRigRef.current.goalTarget.set(
+        tf.targetX,
+        tf.targetY,
+        tf.targetZ
+      );
+      turntableRigRef.current.goalHorizRadius = tf.horizRadius;
+      turntableRigRef.current.goalOffsetY = tf.offsetY;
+      lastFramedTRef.current = nextAnimatedT;
+      turntableRigRef.current.active = true;
+    } else if (
       state.screen === 'workbench' &&
       state.mode === 'explode' &&
       !state.selectedPartId &&
@@ -335,13 +489,63 @@ const DisassemblyRig: React.FC = () => {
       playbackClock.setAnimatedFireProgress(0);
     }
 
-    // 4. Initial snap once OrbitControls mounts + non-intrusive smooth camera fly-to
+    // 4. Initial snap + smooth cylindrical turntable framing (Showcase/Armory) or Cartesian fly-to (Workbench)
     if (!hasSnappedInitialRef.current && controlsRef.current) {
-      camera.position.copy(flyRef.current.goalPos);
-      controlsRef.current.target.copy(flyRef.current.goalTarget);
-      controlsRef.current.update();
-      flyRef.current.active = false;
+      if (state.screen !== 'workbench') {
+        const gt = turntableRigRef.current.goalTarget;
+        const gr = turntableRigRef.current.goalHorizRadius;
+        const gy = turntableRigRef.current.goalOffsetY;
+        controlsRef.current.target.copy(gt);
+        camera.position.set(
+          gt.x + Math.sin(INITIAL_TURNTABLE_AZIMUTH) * gr,
+          gt.y + gy,
+          gt.z + Math.cos(INITIAL_TURNTABLE_AZIMUTH) * gr
+        );
+        controlsRef.current.update();
+        turntableRigRef.current.active = false;
+      } else {
+        camera.position.copy(flyRef.current.goalPos);
+        controlsRef.current.target.copy(flyRef.current.goalTarget);
+        controlsRef.current.update();
+        flyRef.current.active = false;
+      }
       hasSnappedInitialRef.current = true;
+    } else if (
+      turntableRigRef.current.active &&
+      controlsRef.current &&
+      state.screen !== 'workbench'
+    ) {
+      const ctrl = controlsRef.current;
+      const gt = turntableRigRef.current.goalTarget;
+      const gr = turntableRigRef.current.goalHorizRadius;
+      const gy = turntableRigRef.current.goalOffsetY;
+
+      const dx = camera.position.x - ctrl.target.x;
+      const dz = camera.position.z - ctrl.target.z;
+      const curRadius = Math.max(0.1, Math.hypot(dx, dz));
+      const theta =
+        curRadius > 0.2 ? Math.atan2(dx, dz) : INITIAL_TURNTABLE_AZIMUTH;
+      const curOffsetY = camera.position.y - ctrl.target.y;
+
+      const k = 1 - Math.exp(-7.5 * dt);
+      ctrl.target.lerp(gt, k);
+      const nextRadius = THREE.MathUtils.lerp(curRadius, gr, k);
+      const nextOffsetY = THREE.MathUtils.lerp(curOffsetY, gy, k);
+
+      camera.position.set(
+        ctrl.target.x + Math.sin(theta) * nextRadius,
+        ctrl.target.y + nextOffsetY,
+        ctrl.target.z + Math.cos(theta) * nextRadius
+      );
+      camera.lookAt(ctrl.target);
+
+      if (
+        ctrl.target.distanceTo(gt) < 0.04 &&
+        Math.abs(nextRadius - gr) < 0.06 &&
+        Math.abs(nextOffsetY - gy) < 0.04
+      ) {
+        turntableRigRef.current.active = false;
+      }
     } else if (flyRef.current.active && controlsRef.current) {
       camera.position.lerp(flyRef.current.goalPos, 1 - Math.exp(-6.0 * dt));
       controlsRef.current.target.lerp(
@@ -370,6 +574,7 @@ const DisassemblyRig: React.FC = () => {
   });
 
   const weaponParts = plugin?.parts ?? [];
+  const isTurntableScreen = screen !== 'workbench';
 
   return (
     <>
@@ -379,15 +584,21 @@ const DisassemblyRig: React.FC = () => {
         enableDamping
         dampingFactor={0.07}
         enableZoom={screen !== 'showcase'}
-        autoRotate={screen !== 'workbench' && armoryAutoRotate}
-        autoRotateSpeed={1.15}
+        enablePan={!isTurntableScreen}
+        minPolarAngle={isTurntableScreen ? Math.PI * 0.3 : 0}
+        maxPolarAngle={isTurntableScreen ? Math.PI * 0.58 : Math.PI}
+        autoRotate={isTurntableScreen && armoryAutoRotate && !showcaseDragging}
+        autoRotateSpeed={1.65}
         minDistance={4}
         maxDistance={280}
         onStart={() => {
           flyRef.current.active = false;
+          turntableRigRef.current.active = false;
           userOrbitedRef.current = true;
         }}
       />
+
+      <ExhibitionTurntable weaponId={activeWeaponId} />
 
       {plugin && (
         <group>
@@ -410,9 +621,6 @@ const DisassemblyRig: React.FC = () => {
 
 export const ArmoryViewport: React.FC = () => {
   const selectPart = useAppStore((s) => s.selectPart);
-  const activeWeaponId = useAppStore((s) => s.activeWeaponId);
-  const meta = getWeaponManifest(activeWeaponId).workbenchMeta;
-  const gridY = meta.gridY;
 
   return (
     <Canvas
@@ -448,6 +656,12 @@ export const ArmoryViewport: React.FC = () => {
         castShadow
         shadow-mapSize={[2048, 2048]}
         shadow-bias={-0.0002}
+        shadow-camera-left={-38}
+        shadow-camera-right={38}
+        shadow-camera-top={24}
+        shadow-camera-bottom={-28}
+        shadow-camera-near={1}
+        shadow-camera-far={110}
       />
       <directionalLight
         position={[-18, 22, -24]}
@@ -536,18 +750,7 @@ export const ArmoryViewport: React.FC = () => {
         />
       </Environment>
 
-      <Grid
-        position={[0, gridY, 0]}
-        args={[160, 160]}
-        cellSize={2}
-        cellThickness={0.6}
-        cellColor="#cbd5e1"
-        sectionSize={10}
-        sectionThickness={1.1}
-        sectionColor="#94a3b8"
-        fadeDistance={130}
-        fadeStrength={1.3}
-      />
+      <StageFloorGrid />
 
       <DisassemblyRig />
     </Canvas>

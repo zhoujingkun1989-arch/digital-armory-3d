@@ -125,7 +125,10 @@ export function buildAugBarrelGeometry(): THREE.BufferGeometry {
       )
     );
   }
-  const interruptedSpline = csgSubtract(mergeParts(lockRingsRaw), splineCutters);
+  const interruptedSpline = csgSubtract(
+    mergeParts(lockRingsRaw),
+    splineCutters
+  );
 
   // 6 internal 5.56mm right-hand rifling lands inside bore + chrome breech extension collar + grenade ring band
   const extras: THREE.BufferGeometry[] = [
@@ -345,11 +348,7 @@ export function buildAugGasRegulatorGeometry(): THREE.BufferGeometry {
     ),
     // Position 1 standard metering port + Position 2 fouled/adverse larger port
     paintGeometry(
-      new THREE.CylinderGeometry(0.065, 0.065, 0.65, 12).translate(
-        -0.32,
-        0,
-        0
-      ),
+      new THREE.CylinderGeometry(0.065, 0.065, 0.65, 12).translate(-0.32, 0, 0),
       AUG_INNER_DARK
     ),
     paintGeometry(
@@ -883,11 +882,7 @@ export function buildAugSafetyGeometry(): THREE.BufferGeometry {
     AUG_SAFETY_WHITE
   );
   const detentPlunger = paintGeometry(
-    new THREE.CylinderGeometry(0.075, 0.075, 0.52, 12).translate(
-      0,
-      0.22,
-      0.2
-    ),
+    new THREE.CylinderGeometry(0.075, 0.075, 0.52, 12).translate(0, 0.22, 0.2),
     AUG_BRIGHT_STEEL
   );
 
@@ -1193,8 +1188,7 @@ export function buildAugMagBodyGeometry(): THREE.BufferGeometry {
   // Outer (rear -X) convex arc from top (angStart) to bottom (angEnd)
   for (let i = 0; i <= steps; i++) {
     const u = i / steps;
-    const ang =
-      AUG_MAG_ANG_START + (AUG_MAG_ANG_END - AUG_MAG_ANG_START) * u;
+    const ang = AUG_MAG_ANG_START + (AUG_MAG_ANG_END - AUG_MAG_ANG_START) * u;
     const px = AUG_MAG_ARC_CX - Math.cos(ang) * AUG_MAG_R_OUTER;
     const py = AUG_MAG_ARC_CY - Math.sin(ang) * AUG_MAG_R_OUTER;
     if (i === 0) magShape.moveTo(px, py);
@@ -1203,8 +1197,7 @@ export function buildAugMagBodyGeometry(): THREE.BufferGeometry {
   // Inner (front +X) concave arc from bottom back to top
   for (let i = steps; i >= 0; i--) {
     const u = i / steps;
-    const ang =
-      AUG_MAG_ANG_START + (AUG_MAG_ANG_END - AUG_MAG_ANG_START) * u;
+    const ang = AUG_MAG_ANG_START + (AUG_MAG_ANG_END - AUG_MAG_ANG_START) * u;
     const px = AUG_MAG_ARC_CX - Math.cos(ang) * AUG_MAG_R_INNER;
     const py = AUG_MAG_ARC_CY - Math.sin(ang) * AUG_MAG_R_INNER;
     magShape.lineTo(px, py);
@@ -1293,9 +1286,7 @@ export function buildAugMagBodyGeometry(): THREE.BufferGeometry {
  */
 export function buildAugMagFollowerGeometry(): THREE.BufferGeometry {
   const deck = paintGeometry(
-    new THREE.BoxGeometry(2.08, 0.26, 0.82)
-      .rotateZ(0.06)
-      .translate(0, 0.14, 0),
+    new THREE.BoxGeometry(2.08, 0.26, 0.82).rotateZ(0.06).translate(0, 0.14, 0),
     AUG_BLACK_POLYMER
   );
   const stackStep = paintGeometry(

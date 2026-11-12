@@ -314,11 +314,7 @@ export function buildMp5BoltHeadGeometry(): THREE.BufferGeometry {
     HK_COPPER
   );
   const retainerPin = paintGeometry(
-    new THREE.CylinderGeometry(0.048, 0.048, 0.83, 12).translate(
-      0.68,
-      0,
-      0.26
-    ),
+    new THREE.CylinderGeometry(0.048, 0.048, 0.83, 12).translate(0.68, 0, 0.26),
     HK_DARK_STEEL
   );
 
@@ -1068,9 +1064,7 @@ export function buildMp5MagBodyGeometry(): THREE.BufferGeometry {
  */
 export function buildMp5MagFollowerGeometry(): THREE.BufferGeometry {
   const topDeck = paintGeometry(
-    new THREE.BoxGeometry(1.52, 0.22, 0.68)
-      .rotateZ(0.08)
-      .translate(0, 0.14, 0),
+    new THREE.BoxGeometry(1.52, 0.22, 0.68).rotateZ(0.08).translate(0, 0.14, 0),
     HK_FOLLOWER_ORANGE
   );
   const stepBead = paintGeometry(

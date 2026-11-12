@@ -227,11 +227,7 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
         ? '#0ea5e9'
         : matCfg.edgeColor;
 
-    const meshRenderOrder = isXrayHousing
-      ? 12
-      : isGhostByIsolate
-        ? 11
-        : 1;
+    const meshRenderOrder = isXrayHousing ? 12 : isGhostByIsolate ? 11 : 1;
 
     const handlePointerOver = (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation();

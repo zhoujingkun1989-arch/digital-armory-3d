@@ -1,4 +1,9 @@
-import { clamp01, findActiveFiringPhase, linearSeg, seg } from '../../engine/kinematics/math';
+import {
+  clamp01,
+  findActiveFiringPhase,
+  linearSeg,
+  seg,
+} from '../../engine/kinematics/math';
 import type {
   AssemblyGroupMeta,
   ExtendedBallisticsState,
@@ -173,7 +178,7 @@ export const P320_PARTS: WeaponPartSpec[] = [
       { range: [0.12, 0.19], offset: [5.4, 0, 0] },
       { range: [0.19, 0.28], offset: [-4.2, 6.2, 0] },
       { range: [0.28, 0.34], offset: [0.8, -0.8, 0] },
-      { range: [0.54, 0.70], offset: [1.6, 2.0, 0] },
+      { range: [0.54, 0.7], offset: [1.6, 2.0, 0] },
     ],
     calloutDir: 'up',
     calloutStem: 48,
@@ -329,7 +334,7 @@ export const P320_PARTS: WeaponPartSpec[] = [
     explodeSteps: [
       ...SLIDE_STAGE1,
       SLIDE_LIFT2,
-      { range: [0.46, 0.60], offset: [1.2, 0.6, 3.1] },
+      { range: [0.46, 0.6], offset: [1.2, 0.6, 3.1] },
     ],
     calloutDir: 'up',
     calloutStem: 42,
@@ -372,7 +377,11 @@ export const P320_PARTS: WeaponPartSpec[] = [
     material: 'nitride_steel',
     assembledPos: [1.85, 0.42, 0],
     explodeSteps: [
-      { range: [0.08, 0.16], offset: [0, 0, 0], rotation: [0, 0, -Math.PI / 2] },
+      {
+        range: [0.08, 0.16],
+        offset: [0, 0, 0],
+        rotation: [0, 0, -Math.PI / 2],
+      },
       { range: [0.32, 0.44], offset: [2.2, -0.6, -4.2] },
     ],
     calloutDir: 'down',
@@ -394,7 +403,7 @@ export const P320_PARTS: WeaponPartSpec[] = [
     assembledPos: [0, 0, 0],
     explodeSteps: [
       FCU_UNIT_LIFT,
-      { range: [0.70, 0.88], offset: [-1.4, 1.2, -3.4] },
+      { range: [0.7, 0.88], offset: [-1.4, 1.2, -3.4] },
     ],
     calloutDir: 'up',
     calloutStem: 48,
@@ -414,7 +423,7 @@ export const P320_PARTS: WeaponPartSpec[] = [
     material: 'nitride_steel',
     assembledPos: [-2.35, -2.15, 0],
     assembledRot: [0, 0, P320_GRIP_ANGLE_RAD],
-    explodeSteps: [{ range: [0.66, 0.80], offset: [1.8, -0.8, 3.8] }],
+    explodeSteps: [{ range: [0.66, 0.8], offset: [1.8, -0.8, 3.8] }],
     calloutDir: 'down',
     calloutStem: 46,
     calloutAnchor: [0, 0, -1.2],
@@ -456,7 +465,7 @@ export const P320_PARTS: WeaponPartSpec[] = [
     assembledPos: [0.05, 0.25, 0],
     explodeSteps: [
       FCU_UNIT_LIFT,
-      { range: [0.72, 0.90], offset: [3.6, -0.6, 1.8] },
+      { range: [0.72, 0.9], offset: [3.6, -0.6, 1.8] },
     ],
     calloutDir: 'down',
     calloutStem: 48,
@@ -546,7 +555,7 @@ export const P320_PARTS: WeaponPartSpec[] = [
     assembledRot: [0, 0, P320_GRIP_ANGLE_RAD],
     explodeSteps: [
       ...MAG_EXTRACT_STAGE1,
-      { range: [0.50, 0.62], offset: [-0.4, 0.4, 0] },
+      { range: [0.5, 0.62], offset: [-0.4, 0.4, 0] },
     ],
     calloutDir: 'down',
     calloutStem: 44,
@@ -612,7 +621,7 @@ export const P320_PARTS: WeaponPartSpec[] = [
     assembledRot: [0, 0, P320_GRIP_ANGLE_RAD],
     explodeSteps: [
       ...MAG_EXTRACT_STAGE1,
-      { range: [0.50, 0.58], offset: [2.6, -0.8, 0] },
+      { range: [0.5, 0.58], offset: [2.6, -0.8, 0] },
       { range: [0.58, 0.68], offset: [1.8, -0.4, -2.2] },
     ],
     calloutDir: 'down',

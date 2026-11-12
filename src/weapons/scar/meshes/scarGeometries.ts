@@ -288,10 +288,7 @@ export function applyScarMagUVs(
         const yNorm = clamp01((y - -7.6) / 10.15);
         const xNorm = clamp01((x - -1.45) / 3.6);
         if (isSideFlank) {
-          u =
-            fnz > 0
-              ? 0.58 + xNorm * 0.36
-              : 0.58 + (1.0 - xNorm) * 0.36;
+          u = fnz > 0 ? 0.58 + xNorm * 0.36 : 0.58 + (1.0 - xNorm) * 0.36;
           v = 0.125 + yNorm * 0.265;
         } else {
           u = 0.55 + clamp01((z + 0.65) / 1.3) * 0.03;
@@ -739,7 +736,11 @@ export function buildScarGasBlockGeometry(): THREE.BufferGeometry {
     SCAR_BRIGHT_STEEL
   );
   const sightPost = paintGeometry(
-    new THREE.CylinderGeometry(0.048, 0.062, 0.34, 12).translate(-0.12, 2.57, 0),
+    new THREE.CylinderGeometry(0.048, 0.062, 0.34, 12).translate(
+      -0.12,
+      2.57,
+      0
+    ),
     SCAR_BRIGHT_STEEL
   );
   const foldReleaseBtn = paintGeometry(
@@ -976,11 +977,7 @@ export function buildScarChargingHandleGeometry(): THREE.BufferGeometry {
       paintGeometry(
         new THREE.BoxGeometry(0.045, 0.045, 0.56)
           .rotateZ(ang)
-          .translate(
-            Math.cos(ang) * 0.235,
-            Math.sin(ang) * 0.235,
-            1.48
-          ),
+          .translate(Math.cos(ang) * 0.235, Math.sin(ang) * 0.235, 1.48),
         SCAR_BRIGHT_STEEL
       )
     );
@@ -1281,11 +1278,7 @@ export function buildScarBarrelGeometry(): THREE.BufferGeometry {
       paintGeometry(
         new THREE.BoxGeometry(16.72, 0.036, 0.044)
           .rotateX(-ang)
-          .translate(
-            14.36,
-            Math.sin(ang) * 0.156,
-            Math.cos(ang) * 0.156
-          ),
+          .translate(14.36, Math.sin(ang) * 0.156, Math.cos(ang) * 0.156),
         SCAR_BRIGHT_STEEL
       )
     );
@@ -1371,11 +1364,7 @@ export function buildScarFlashSuppressorGeometry(): THREE.BufferGeometry {
       paintGeometry(
         new THREE.BoxGeometry(1.18, 0.12, 0.12)
           .rotateX(-tineAng)
-          .translate(
-            0.84,
-            Math.sin(tineAng) * 0.51,
-            Math.cos(tineAng) * 0.51
-          ),
+          .translate(0.84, Math.sin(tineAng) * 0.51, Math.cos(tineAng) * 0.51),
         SCAR_INNER_DARK
       )
     );

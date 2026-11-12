@@ -1,4 +1,9 @@
-import { clamp01, findActiveFiringPhase, linearSeg, seg } from '../../engine/kinematics/math';
+import {
+  clamp01,
+  findActiveFiringPhase,
+  linearSeg,
+  seg,
+} from '../../engine/kinematics/math';
 import type {
   AssemblyGroupMeta,
   ExtendedBallisticsState,
@@ -748,7 +753,9 @@ export function computeAwmFiringKinematics(
       const searReset = seg(f, 0.43, 0.5);
       // Slight cam dip when cocked striker lug glides back onto top sear tooth during 60° bolt lock-down [0.90..0.96]
       const handoffDip = Math.sin(linearSeg(f, 0.9, 0.96) * Math.PI) * 0.32;
-      const total = clamp01((searCreep + searBreak) * (1 - searReset) + handoffDip);
+      const total = clamp01(
+        (searCreep + searBreak) * (1 - searReset) + handoffDip
+      );
       dy = -0.15 * total;
       rz = 0.17 * total;
       break;

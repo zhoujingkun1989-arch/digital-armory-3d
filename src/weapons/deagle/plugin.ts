@@ -1,4 +1,9 @@
-import { clamp01, findActiveFiringPhase, linearSeg, seg } from '../../engine/kinematics/math';
+import {
+  clamp01,
+  findActiveFiringPhase,
+  linearSeg,
+  seg,
+} from '../../engine/kinematics/math';
 import type {
   AssemblyGroupMeta,
   ExtendedBallisticsState,

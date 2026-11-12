@@ -29,12 +29,7 @@ export type MaterialKind =
   | 'copper_accent';
 
 export type CaliberProfile =
-  | '762_m43'
-  | '556_nato'
-  | '9mm_para'
-  | '50_bmg'
-  | '338_lapua'
-  | '50_ae';
+  '762_m43' | '556_nato' | '9mm_para' | '50_bmg' | '338_lapua' | '50_ae';
 
 export type WeaponScaleProfile = 'pistol' | 'rifle' | 'heavy_sniper';
 

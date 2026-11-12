@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ArrowRight,
   ArrowUpRight,
@@ -26,6 +26,11 @@ import {
   X,
   Zap,
 } from 'lucide-react';
+import {
+  dragTurntableBy,
+  setShowcaseUserDragging,
+  setShowcaseWindowBounds,
+} from '../../engine/canvas/turntableStageMetrics';
 import { playbackClock } from '../../engine/clock/playbackClock';
 import { resolveAssetUrl } from '../../engine/utils/assetUrl';
 import { useAppStore } from '../../store/useAppStore';
@@ -196,6 +201,86 @@ export const ShowcaseView: React.FC = () => {
   const [category, setCategory] = useState<ArmoryCategory>('all');
   const [copied, setCopied] = useState(false);
   const [lightboxItem, setLightboxItem] = useState<GalleryItem | null>(null);
+  const [isDraggingStage, setIsDraggingStage] = useState(false);
+
+  const heroSectionRef = useRef<HTMLElement>(null);
+  const liveWindowRef = useRef<HTMLDivElement>(null);
+  const dragStateRef = useRef<{
+    active: boolean;
+    pointerId: number;
+    lastX: number;
+    lastY: number;
+  }>({
+    active: false,
+    pointerId: -1,
+    lastX: 0,
+    lastY: 0,
+  });
+
+  useEffect(() => {
+    const measureWindow = () => {
+      const heroEl = heroSectionRef.current;
+      const winEl = liveWindowRef.current;
+      if (!heroEl || !winEl) return;
+      const topPx = heroEl.offsetTop + winEl.offsetTop;
+      const bottomPx = topPx + winEl.offsetHeight;
+      setShowcaseWindowBounds({ topPx, bottomPx });
+    };
+
+    measureWindow();
+    const ro =
+      typeof ResizeObserver !== 'undefined'
+        ? new ResizeObserver(measureWindow)
+        : null;
+    if (ro) {
+      if (heroSectionRef.current) ro.observe(heroSectionRef.current);
+      if (liveWindowRef.current) ro.observe(liveWindowRef.current);
+    }
+    window.addEventListener('resize', measureWindow, { passive: true });
+    return () => {
+      window.removeEventListener('resize', measureWindow);
+      ro?.disconnect();
+      setShowcaseWindowBounds(null);
+      setShowcaseUserDragging(false);
+    };
+  }, []);
+
+  const handleStagePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.button !== 0 || e.pointerType === 'touch') return;
+    if ((e.target as HTMLElement).closest('.showcase-live-telemetry')) return;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    dragStateRef.current = {
+      active: true,
+      pointerId: e.pointerId,
+      lastX: e.clientX,
+      lastY: e.clientY,
+    };
+    setIsDraggingStage(true);
+    setShowcaseUserDragging(true);
+  };
+
+  const handleStagePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const ds = dragStateRef.current;
+    if (!ds.active || e.pointerId !== ds.pointerId) return;
+    const dx = e.clientX - ds.lastX;
+    const dy = e.clientY - ds.lastY;
+    ds.lastX = e.clientX;
+    ds.lastY = e.clientY;
+    if (dx !== 0 || dy !== 0) {
+      dragTurntableBy(dx, dy);
+    }
+  };
+
+  const endStagePointerDrag = (e: React.PointerEvent<HTMLDivElement>) => {
+    const ds = dragStateRef.current;
+    if (!ds.active || e.pointerId !== ds.pointerId) return;
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    }
+    ds.active = false;
+    setIsDraggingStage(false);
+    setShowcaseUserDragging(false);
+  };
 
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const armoryAutoRotate = useAppStore((s) => s.armoryAutoRotate);
@@ -355,7 +440,7 @@ export const ShowcaseView: React.FC = () => {
       </nav>
 
       {/* ==================== HERO STAGE (LIVE REAL-TIME 3D WEBGL WINDOW) ==================== */}
-      <section className="showcase-hero">
+      <section ref={heroSectionRef} className="showcase-hero">
         <div className="showcase-hero-top">
           <div className="showcase-eyebrow">
             <Sparkles size={12} />
@@ -382,9 +467,9 @@ export const ShowcaseView: React.FC = () => {
               className="showcase-cta-primary"
               onClick={returnToArmory}
             >
-              <Layers size={16} />
+              <Layers size={15} />
               <span>立即进入 3D 数字枪库</span>
-              <ArrowRight size={16} />
+              <ArrowRight size={15} />
             </button>
 
             <button
@@ -392,7 +477,7 @@ export const ShowcaseView: React.FC = () => {
               className="showcase-cta-secondary"
               onClick={() => enterWorkbench(featuredWeapon.id, 'explode')}
             >
-              <Wrench size={15} />
+              <Wrench size={14} />
               <span>直达 {shortWeaponTag} 爆炸拆解台</span>
             </button>
 
@@ -401,7 +486,7 @@ export const ShowcaseView: React.FC = () => {
               className="showcase-cta-firing"
               onClick={() => enterWorkbench(featuredWeapon.id, 'firing')}
             >
-              <Flame size={15} />
+              <Flame size={14} />
               <span>播放实弹击发循环</span>
             </button>
 
@@ -411,19 +496,27 @@ export const ShowcaseView: React.FC = () => {
               rel="noreferrer"
               className="showcase-cta-ghost"
             >
-              <Star size={15} />
+              <Star size={14} />
               <span>Star on GitHub</span>
-              <ArrowUpRight size={14} />
+              <ArrowUpRight size={13} />
             </a>
           </div>
         </div>
 
         {/* Unobstructed Panoramic Window Revealing Live 60FPS WebGL Turntable Behind */}
-        <div className="showcase-live-window">
+        <div
+          ref={liveWindowRef}
+          className={`showcase-live-window ${isDraggingStage ? 'is-dragging' : ''}`}
+          onPointerDown={handleStagePointerDown}
+          onPointerMove={handleStagePointerMove}
+          onPointerUp={endStagePointerDrag}
+          onPointerCancel={endStagePointerDrag}
+          title="按住左键拖拽可自由旋转 3D 展台"
+        >
           <div className="showcase-live-telemetry">
             <div className="live-telemetry-head">
               <span className="live-pulse-dot" />
-              <span>LIVE WEBGL 2.0 REAL-TIME RENDER</span>
+              <span>LIVE 360° 展台旋转 · 可拖拽检视</span>
             </div>
             <div className="live-telemetry-name">{featuredWeapon.nameCn}</div>
             <div className="live-telemetry-meta">
@@ -439,11 +532,15 @@ export const ShowcaseView: React.FC = () => {
           </div>
         </div>
 
-        {/* Interactive Live 3D Stage Controller & Engineering Metrics Strip */}
+        {/* Interactive Live 3D Turntable Stage Controller */}
         <div className="showcase-stage-dock">
           <div className="stage-dock-controls">
-            <div className="stage-mode-group" role="group" aria-label="实时渲染模式切换">
-              <span className="stage-ctrl-label">实时 3D 视口预览：</span>
+            <div
+              className="stage-mode-group"
+              role="group"
+              aria-label="实时渲染模式切换"
+            >
+              <span className="stage-ctrl-label">实时 3D 展台预览：</span>
               <button
                 type="button"
                 className={`stage-mode-btn ${heroMode === 'pbr' ? 'active' : ''}`}
@@ -482,11 +579,14 @@ export const ShowcaseView: React.FC = () => {
                 onClick={toggleArmoryAutoRotate}
               >
                 <Orbit size={13} />
-                <span>{armoryAutoRotate ? '环绕旋转中' : '旋转已暂停'}</span>
+                <span>{armoryAutoRotate ? '展台旋转中' : '展台旋转已停'}</span>
               </button>
             </div>
 
-            <div className="stage-weapon-pills" aria-label="快速切换舞台展示枪械">
+            <div
+              className="stage-weapon-pills"
+              aria-label="快速切换舞台展示枪械"
+            >
               {ARMORY_WEAPONS.map((w) => {
                 const active = w.id === activeWeaponId;
                 return (
@@ -497,14 +597,21 @@ export const ShowcaseView: React.FC = () => {
                     onMouseEnter={() => preloadWeaponPlugin(w.id)}
                     onClick={() => handleHeroWeaponSwitch(w.id)}
                   >
-                    <span className="swp-bay">{w.bayCode.replace('BAY-', '#')}</span>
+                    <span className="swp-bay">
+                      {w.bayCode.replace('BAY-', '#')}
+                    </span>
                     <span>{getShortWeaponLabel(w.id)}</span>
                   </button>
                 );
               })}
             </div>
           </div>
+        </div>
+      </section>
 
+      {/* ==================== SOLID EDITORIAL CONTENT BODY ==================== */}
+      <div className="showcase-editorial-body">
+        <div className="showcase-metrics-ribbon">
           <div className="showcase-metrics-bar">
             <div className="s-metric-item">
               <div className="s-metric-val">10 款</div>
@@ -528,10 +635,6 @@ export const ShowcaseView: React.FC = () => {
             </div>
           </div>
         </div>
-      </section>
-
-      {/* ==================== SOLID EDITORIAL CONTENT BODY ==================== */}
-      <div className="showcase-editorial-body">
         {/* SECTION 1: FOUR CORE INSPECTION MODES BENTO */}
         <section id="capabilities" className="showcase-section">
           <div className="showcase-container">
@@ -552,7 +655,9 @@ export const ShowcaseView: React.FC = () => {
                     alt="AK-15M1 零回流引线与多级爆炸拆解工作台"
                     loading="lazy"
                   />
-                  <span className="bento-tag">MODE 01 · EXPLODED CAD & CALLOUTS</span>
+                  <span className="bento-tag">
+                    MODE 01 · EXPLODED CAD & CALLOUTS
+                  </span>
                 </div>
                 <div className="bento-content">
                   <h3>渐进式三级爆炸拆解 + 零回流防遮挡引线标注</h3>
@@ -641,7 +746,9 @@ export const ShowcaseView: React.FC = () => {
                     alt="5 通道 Packed ORM 物理贴图图集检视器"
                     loading="lazy"
                   />
-                  <span className="bento-tag">MODE 04 · 5-CHANNEL PACKED ORM PBR</span>
+                  <span className="bento-tag">
+                    MODE 04 · 5-CHANNEL PACKED ORM PBR
+                  </span>
                 </div>
                 <div className="bento-content">
                   <h3>Khronos 校准五级深色金属/聚合物分离与图集检视</h3>
@@ -669,7 +776,9 @@ export const ShowcaseView: React.FC = () => {
         <section id="gallery" className="showcase-section showcase-section-alt">
           <div className="showcase-container">
             <div className="section-header">
-              <span className="section-kicker">LIVE METAL WEBGL 2.0 CAPTURES</span>
+              <span className="section-kicker">
+                LIVE METAL WEBGL 2.0 CAPTURES
+              </span>
               <h2 className="section-title">100% 浏览器实时渲染实机画廊</h2>
               <p className="section-desc">
                 以下全部画面均由本项目前端引擎在浏览器内实时生成（零预渲染离线视频、零外部三维模型资产），点击图片可放大检视细节或一键进入同款实时视口。
@@ -715,14 +824,22 @@ export const ShowcaseView: React.FC = () => {
         <section id="arsenal" className="showcase-section">
           <div className="showcase-container">
             <div className="section-header">
-              <span className="section-kicker">10-BAY MASTER ROSTER · FACTORY 1:1</span>
-              <h2 className="section-title">十大世界经典名枪 1:1 测绘馆藏矩阵</h2>
+              <span className="section-kicker">
+                10-BAY MASTER ROSTER · FACTORY 1:1
+              </span>
+              <h2 className="section-title">
+                十大世界经典名枪 1:1 测绘馆藏矩阵
+              </h2>
               <p className="section-desc">
                 涵盖俄、美、德、奥、英、比、以七国代表性轻武器体系，每款均配备完整原厂外弹道/测绘铭牌、独立总成分组与专属自动闭锁运动学方程。
               </p>
             </div>
 
-            <div className="arsenal-filter-bar" role="tablist" aria-label="馆藏分类筛选">
+            <div
+              className="arsenal-filter-bar"
+              role="tablist"
+              aria-label="馆藏分类筛选"
+            >
               {CATEGORY_TABS.map((tab) => {
                 const count = ARMORY_WEAPONS.filter((w) =>
                   matchesArmoryCategory(w, tab.key)
@@ -763,7 +880,10 @@ export const ShowcaseView: React.FC = () => {
                     </div>
 
                     <div className="arsenal-silhouette">
-                      <WeaponSilhouetteSvg id={item.id} available={item.available} />
+                      <WeaponSilhouetteSvg
+                        id={item.id}
+                        available={item.available}
+                      />
                     </div>
 
                     <div className="arsenal-head">
@@ -818,11 +938,16 @@ export const ShowcaseView: React.FC = () => {
         </section>
 
         {/* SECTION 4: 6-PILLAR ENGINE ARCHITECTURE */}
-        <section id="architecture" className="showcase-section showcase-section-alt">
+        <section
+          id="architecture"
+          className="showcase-section showcase-section-alt"
+        >
           <div className="showcase-container">
             <div className="section-header">
               <span className="section-kicker">ENGINEERING ARCHITECTURE</span>
-              <h2 className="section-title">纯 TypeScript + Python 驱动的工业级架构</h2>
+              <h2 className="section-title">
+                纯 TypeScript + Python 驱动的工业级架构
+              </h2>
               <p className="section-desc">
                 拒绝臃肿黑盒静态资产，以严谨的前端图形工程管线解决大规模 CSG
                 布尔运算、高频动画状态同步与 GPU 显存生命周期管理。
@@ -943,7 +1068,8 @@ export const ShowcaseView: React.FC = () => {
                   现在进入 3D 数字枪库，亲手拆解每一枚精密零件
                 </h2>
                 <p className="final-cta-sub">
-                  支持 URL 深度链接分享任意枪械、拆解进度与击发演示；开源免费，如果这个项目对你有启发，欢迎在
+                  支持 URL
+                  深度链接分享任意枪械、拆解进度与击发演示；开源免费，如果这个项目对你有启发，欢迎在
                   GitHub 点亮一颗 Star。
                 </p>
               </div>
@@ -974,8 +1100,9 @@ export const ShowcaseView: React.FC = () => {
               <div className="footer-left">
                 <strong>Digital Armory 3D · 枪械内部结构 3D 数字仓库</strong>
                 <span>
-                  原理示意级（Schematic / Educational Level）机械科普与三维可视化开源工程
-                  · 不包含任何工业制造加工公差或可打印图纸。
+                  原理示意级（Schematic / Educational
+                  Level）机械科普与三维可视化开源工程 ·
+                  不包含任何工业制造加工公差或可打印图纸。
                 </span>
               </div>
               <div className="footer-right">
