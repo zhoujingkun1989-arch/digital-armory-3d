@@ -14,6 +14,11 @@ import {
   getLoadedWeaponPlugin,
   useWeaponPlugin,
 } from '../../weapons/registry';
+import type {
+  CameraPresetType,
+  WeaponCameraMap,
+  WeaponScaleProfile,
+} from '../../weapons/types';
 import { BallisticsSystem } from '../actors/BallisticsSystem';
 import { PartActor } from '../actors/PartActor';
 import { updateCalloutOverlay60fps } from '../callout/CalloutOverlay';
@@ -34,11 +39,67 @@ const _focusPartPos = new THREE.Vector3();
 const _focusCurrentTarget = new THREE.Vector3();
 const _focusViewDir = new THREE.Vector3();
 
+function applyWorkbenchFraming(
+  cfg: WeaponCameraMap[CameraPresetType],
+  scaleProfile: WeaponScaleProfile,
+  preset: CameraPresetType,
+  t: number,
+  aspect: number,
+  goalTarget: THREE.Vector3,
+  goalPos: THREE.Vector3
+): void {
+  const isFixedClosePreset =
+    preset === 'cutaway_focus' || preset === 'firing_view';
+  const tCam = Math.pow(Math.max(0, t), 0.52);
+
+  let vertScale: number;
+  let horizScale: number;
+  let xShift: number;
+  let yShift: number;
+
+  if (scaleProfile === 'heavy_sniper') {
+    vertScale = 1.18 + tCam * 0.68;
+    horizScale = (0.92 + tCam * 0.64) / aspect;
+    xShift = 2.2 * tCam;
+    yShift = -1.6 - (3.1 + (aspect < 0.85 ? 2.6 : 0)) * tCam;
+  } else if (scaleProfile === 'rifle') {
+    vertScale = 1.16 + tCam * 0.62;
+    horizScale = (0.88 + tCam * 0.56) / aspect;
+    xShift = 1.8 * tCam;
+    yShift = -1.4 - (2.8 + (aspect < 0.85 ? 2.4 : 0)) * tCam;
+  } else {
+    vertScale = 1.16 + tCam * 1.18;
+    horizScale = (0.88 + tCam * 0.88) / aspect;
+    xShift = -1.4 * tCam;
+    yShift = -1.3 - (2.1 + (aspect < 0.85 ? 2.4 : 0)) * tCam;
+  }
+
+  const scale = isFixedClosePreset
+    ? Math.max(1, 1.08 / aspect)
+    : Math.max(vertScale, horizScale);
+
+  const finalXShift = isFixedClosePreset ? 0 : xShift;
+  const finalYShift = isFixedClosePreset ? 0 : yShift;
+
+  goalTarget.set(
+    cfg.target[0] + finalXShift,
+    cfg.target[1] + finalYShift,
+    cfg.target[2]
+  );
+  goalPos.set(
+    cfg.pos[0] * scale + finalXShift,
+    cfg.pos[1] * scale + finalYShift,
+    cfg.pos[2] * scale
+  );
+}
+
 const DisassemblyRig: React.FC = () => {
   const controlsRef = useRef<OrbitControlsImpl>(null);
   const { camera, size } = useThree();
 
   const hasSnappedInitialRef = useRef<boolean>(false);
+  const userOrbitedRef = useRef<boolean>(false);
+  const lastFramedTRef = useRef<number>(0);
   const flyRef = useRef<{
     active: boolean;
     goalPos: THREE.Vector3;
@@ -68,7 +129,9 @@ const DisassemblyRig: React.FC = () => {
     const cfg = presets[cameraCommand.preset];
     if (!cfg || size.width <= 0 || size.height <= 0) return;
 
+    userOrbitedRef.current = false;
     const t = playbackClock.getState().targetProgress;
+    lastFramedTRef.current = t;
     const aspect = Math.max(0.42, size.width / Math.max(1, size.height));
 
     if (cameraCommand.preset === 'armory_showcase') {
@@ -94,49 +157,14 @@ const DisassemblyRig: React.FC = () => {
         tz + (cfg.pos[2] - tz) * armoryScale
       );
     } else {
-      const isFixedClosePreset =
-        cameraCommand.preset === 'cutaway_focus' ||
-        cameraCommand.preset === 'firing_view';
-      const tCam = Math.pow(Math.max(0, t), 0.52);
-
-      let vertScale: number;
-      let horizScale: number;
-      let xShift: number;
-      let yShift: number;
-
-      if (scaleProfile === 'heavy_sniper') {
-        vertScale = 1.18 + tCam * 0.68;
-        horizScale = (0.92 + tCam * 0.64) / aspect;
-        xShift = 2.2 * tCam;
-        yShift = -1.6 - (3.1 + (aspect < 0.85 ? 2.6 : 0)) * tCam;
-      } else if (scaleProfile === 'rifle') {
-        vertScale = 1.16 + tCam * 0.62;
-        horizScale = (0.88 + tCam * 0.56) / aspect;
-        xShift = 1.8 * tCam;
-        yShift = -1.4 - (2.8 + (aspect < 0.85 ? 2.4 : 0)) * tCam;
-      } else {
-        vertScale = 1.16 + tCam * 1.18;
-        horizScale = (0.88 + tCam * 0.88) / aspect;
-        xShift = -1.4 * tCam;
-        yShift = -1.3 - (2.1 + (aspect < 0.85 ? 2.4 : 0)) * tCam;
-      }
-
-      const scale = isFixedClosePreset
-        ? Math.max(1, 1.08 / aspect)
-        : Math.max(vertScale, horizScale);
-
-      const finalXShift = isFixedClosePreset ? 0 : xShift;
-      const finalYShift = isFixedClosePreset ? 0 : yShift;
-
-      flyRef.current.goalTarget.set(
-        cfg.target[0] + finalXShift,
-        cfg.target[1] + finalYShift,
-        cfg.target[2]
-      );
-      flyRef.current.goalPos.set(
-        cfg.pos[0] * scale + finalXShift,
-        cfg.pos[1] * scale + finalYShift,
-        cfg.pos[2] * scale
+      applyWorkbenchFraming(
+        cfg,
+        scaleProfile,
+        cameraCommand.preset,
+        t,
+        aspect,
+        flyRef.current.goalTarget,
+        flyRef.current.goalPos
       );
     }
 
@@ -234,7 +262,7 @@ const DisassemblyRig: React.FC = () => {
       }
     }
 
-    // 2. Smoothly damp disassembly scalar t
+    // 2. Smoothly damp disassembly scalar t & keep workbench camera framed with explosion unless user manually orbited
     const nextAnimatedT = THREE.MathUtils.damp(
       clock.animatedProgress,
       playbackClock.getState().targetProgress,
@@ -242,6 +270,34 @@ const DisassemblyRig: React.FC = () => {
       dt
     );
     playbackClock.setAnimatedProgress(nextAnimatedT);
+
+    if (
+      state.screen === 'workbench' &&
+      state.mode === 'explode' &&
+      !state.selectedPartId &&
+      !userOrbitedRef.current &&
+      state.cameraCommand.preset !== 'armory_showcase' &&
+      state.cameraCommand.preset !== 'cutaway_focus' &&
+      state.cameraCommand.preset !== 'firing_view' &&
+      Math.abs(nextAnimatedT - lastFramedTRef.current) > 0.002
+    ) {
+      const manifest = getWeaponManifest(state.activeWeaponId);
+      const cfg = manifest.cameraPresets[state.cameraCommand.preset];
+      if (cfg && size.width > 0 && size.height > 0) {
+        const aspect = Math.max(0.42, size.width / Math.max(1, size.height));
+        applyWorkbenchFraming(
+          cfg,
+          manifest.workbenchMeta.scaleProfile,
+          state.cameraCommand.preset,
+          nextAnimatedT,
+          aspect,
+          flyRef.current.goalTarget,
+          flyRef.current.goalPos
+        );
+        lastFramedTRef.current = nextAnimatedT;
+        flyRef.current.active = true;
+      }
+    }
 
     // 3. Firing cycle simulation playback
     if (state.mode === 'firing') {
@@ -329,6 +385,7 @@ const DisassemblyRig: React.FC = () => {
         maxDistance={280}
         onStart={() => {
           flyRef.current.active = false;
+          userOrbitedRef.current = true;
         }}
       />
 

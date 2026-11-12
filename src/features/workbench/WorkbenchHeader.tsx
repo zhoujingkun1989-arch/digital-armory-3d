@@ -151,7 +151,7 @@ export const WorkbenchHeader: React.FC = () => {
         <button
           className="toggle-chip reset-chip"
           onClick={resetAll}
-          title="重置回 100% 爆炸视图与默认视角 (R)"
+          title="重置回默认合拢态与标准视角 (R)"
         >
           <RotateCcw size={14} />
           <span>复位</span>

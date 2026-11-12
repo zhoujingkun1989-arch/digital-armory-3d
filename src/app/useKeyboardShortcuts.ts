@@ -20,7 +20,7 @@ function isEditableElement(target: EventTarget | null): boolean {
  * - `X` (Armory / Workbench): Toggle X-Ray shell transparency
  * - `E` (Workbench): Toggle CAD hard-edge wireframe
  * - `L` (Workbench, Explode mode): Toggle 3D part leader labels
- * - `R` (Workbench): Reset view & 100% exploded state
+ * - `R` (Workbench): Reset view & assembled (0%) state
  */
 export function useKeyboardShortcuts(): void {
   useEffect(() => {

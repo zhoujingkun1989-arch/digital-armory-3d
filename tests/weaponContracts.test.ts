@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { describe, expect, it } from 'vitest';
+import { playbackClock } from '../src/engine/clock/playbackClock';
 import {
   createMutablePose,
   evaluatePartPoseInto,
@@ -871,5 +872,21 @@ describe('10-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contra
 
     store.getState().returnToArmory();
     expect(store.getState().screen).toBe('armory');
+
+    // 6. Entering workbench, switching back to explode mode, and resetAll all default to assembled state (0% 合拢态)
+    store.getState().setTargetProgress(0.85);
+    expect(playbackClock.getState().targetProgress).toBeCloseTo(0.85, 5);
+
+    store.getState().enterWorkbench('ak15', 'explode');
+    expect(playbackClock.getState().targetProgress).toBe(0);
+
+    store.getState().setTargetProgress(1.0);
+    store.getState().setMode('firing');
+    store.getState().setMode('explode');
+    expect(playbackClock.getState().targetProgress).toBe(0);
+
+    store.getState().setTargetProgress(1.0);
+    store.getState().resetAll();
+    expect(playbackClock.getState().targetProgress).toBe(0);
   });
 });

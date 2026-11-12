@@ -195,7 +195,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         },
       });
     } else {
-      playbackClock.setTargetProgress(1.0, false);
+      playbackClock.setTargetProgress(0, nextWeaponId !== s.activeWeaponId);
       playbackClock.setFireProgress(0, true);
       set({
         screen: 'workbench',
@@ -258,7 +258,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       });
     } else {
       if (s.mode === 'firing') {
-        playbackClock.setTargetProgress(1.0, false);
+        playbackClock.setTargetProgress(0, false);
       }
       playbackClock.setFireProgress(0, true);
       set({
@@ -275,13 +275,20 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   togglePlay: () => {
-    const { isPlaying } = get();
+    const s = get();
     const { targetProgress } = playbackClock.getState();
-    if (!isPlaying) {
+    if (!s.isPlaying) {
       let dir: 1 | -1 = 1;
       if (targetProgress >= 0.99) dir = -1;
       else if (targetProgress <= 0.01) dir = 1;
-      set({ mode: 'explode', isPlaying: true, playDirection: dir });
+      set({
+        mode: 'explode',
+        isPlaying: true,
+        playDirection: dir,
+        cameraCommand: s.selectedPartId
+          ? s.cameraCommand
+          : { preset: s.cameraCommand.preset, seq: s.cameraCommand.seq + 1 },
+      });
     } else {
       set({ isPlaying: false });
     }
@@ -416,7 +423,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   resetAll: () => {
-    playbackClock.setTargetProgress(1.0, false);
+    playbackClock.setTargetProgress(0, false);
     playbackClock.setFireProgress(0, true);
     set((s) => ({
       mode: 'explode',

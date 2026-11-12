@@ -174,7 +174,7 @@ const SHORTCUT_ITEMS = [
   { key: 'X', label: '切换外层机匣与套筒 X-Ray 透视' },
   { key: 'E', label: '显示 / 隐藏工业 CAD 硬边轮廓线' },
   { key: 'L', label: '开关零回流 3D 零件引出编号签' },
-  { key: 'R', label: '一键复位 100% 爆炸态与等轴视角' },
+  { key: 'R', label: '一键复位默认合拢态与等轴视角' },
   { key: 'Esc', label: '关闭弹窗 / 取消选中 / 返回枪库' },
 ] as const;
 
@@ -569,7 +569,7 @@ export const ShowcaseView: React.FC = () => {
                     onClick={() => enterWorkbench('ak15', 'explode')}
                   >
                     <Play size={14} />
-                    <span>打开 AK-15M1 100% 爆炸拆解台</span>
+                    <span>打开 AK-15M1 拆解演示台</span>
                     <ArrowRight size={14} />
                   </button>
                 </div>
