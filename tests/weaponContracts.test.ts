@@ -56,6 +56,7 @@ const DYNAMIC_SPRING_PARTS: Readonly<Record<WeaponId, readonly string[]>> = {
   deagle: ['deagle_recoil_springs'],
   aug: ['aug_recoil_springs'],
   p320: ['p320_recoil_spring', 'p320_striker_spring'],
+  p90: ['p90_recoil_springs'],
 };
 
 const ROTATING_BOLT_PARTS: ReadonlyArray<{
@@ -83,6 +84,7 @@ const FIXED_BARREL_PARTS: ReadonlyArray<{
   { weaponId: 'scar', partId: 'scar_barrel' },
   { weaponId: 'deagle', partId: 'deagle_barrel' },
   { weaponId: 'aug', partId: 'aug_barrel' },
+  { weaponId: 'p90', partId: 'p90_barrel' },
 ];
 
 interface ParsedWebpHeader {
@@ -155,26 +157,26 @@ function findFirstNonFiniteIndex(arr: ArrayLike<number>): number {
   return -1;
 }
 
-describe('10-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contracts', () => {
-  it('registers all 10 iconic firearms totaling 253 parts with accurate category filtering & camera presets', () => {
-    expect(WEAPON_MANIFESTS).toHaveLength(10);
-    expect(ARMORY_WEAPONS).toHaveLength(10);
+describe('11-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contracts', () => {
+  it('registers all 11 iconic firearms totaling 278 parts with accurate category filtering & camera presets', () => {
+    expect(WEAPON_MANIFESTS).toHaveLength(11);
+    expect(ARMORY_WEAPONS).toHaveLength(11);
 
     const totalCatalogParts = WEAPON_MANIFESTS.reduce(
       (sum, m) => sum + m.catalog.partsCount,
       0
     );
-    expect(totalCatalogParts).toBe(253);
+    expect(totalCatalogParts).toBe(278);
 
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'all'))
-    ).toHaveLength(10);
+    ).toHaveLength(11);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'assault'))
     ).toHaveLength(4);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'smg'))
-    ).toHaveLength(1);
+    ).toHaveLength(2);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'sniper'))
     ).toHaveLength(2);
@@ -217,7 +219,7 @@ describe('10-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contra
     }
   });
 
-  it('enforces 1:1 BOM metadata, disassembly keyframes, dense [0..1] kinematic sweeps, and mechanism-specific motion laws across all 10 plugins', async () => {
+  it('enforces 1:1 BOM metadata, disassembly keyframes, dense [0..1] kinematic sweeps, and mechanism-specific motion laws across all 11 plugins', async () => {
     const globalPartIds = new Set<string>();
     let totalRuntimeParts = 0;
     const poseScratch = createMutablePose();
@@ -398,8 +400,8 @@ describe('10-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contra
       }
     }
 
-    expect(totalRuntimeParts).toBe(253);
-    expect(globalPartIds.size).toBe(253);
+    expect(totalRuntimeParts).toBe(278);
+    expect(globalPartIds.size).toBe(278);
 
     // 1. M82A1 short-recoil barrel + accelerator motion law
     const m82Plugin = loadedPlugins.get('m82a1')!;
@@ -501,6 +503,41 @@ describe('10-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contra
     expect(maxRollerAbsDz).toBeGreaterThan(0.05);
     expect(maxMp5BoltAbsRx).toBeLessThan(1e-4);
 
+    // FN P90 straight-blowback non-rotating bolt + 90° helical feed-ramp yaw rotation + vertical bottom ejection
+    const p90Plugin = loadedPlugins.get('p90')!;
+    let maxP90BoltAbsRx = 0;
+    let minP90BoltDx = 0;
+    let maxP90DustCoverRx = 0;
+    for (const f of DENSE_FIRING_SWEEP) {
+      const bDelta = p90Plugin.computeFiringKinematics('p90_bolt', f);
+      const covDelta = p90Plugin.computeFiringKinematics(
+        'p90_ejection_cover',
+        f
+      );
+      maxP90BoltAbsRx = Math.max(maxP90BoltAbsRx, Math.abs(bDelta.rot[0]));
+      minP90BoltDx = Math.min(minP90BoltDx, bDelta.pos[0]);
+      maxP90DustCoverRx = Math.max(maxP90DustCoverRx, covDelta.rot[0]);
+    }
+    expect(maxP90BoltAbsRx).toBeLessThan(1e-4);
+    expect(minP90BoltDx).toBeLessThan(-3.5);
+    expect(maxP90DustCoverRx).toBeGreaterThan(0.5);
+
+    const p90BallisticsStart = p90Plugin.computeBallisticsState(0);
+    const p90BallisticsMidRamp = p90Plugin.computeBallisticsState(0.6);
+    const p90BallisticsChambered = p90Plugin.computeBallisticsState(0.86);
+    const p90BallisticsBottomDrop = p90Plugin.computeBallisticsState(0.72);
+    expect(p90BallisticsStart.nextRoundRotY).toBeCloseTo(Math.PI * 0.5, 4);
+    expect(p90BallisticsMidRamp.nextRoundRotY!).toBeGreaterThan(0.15);
+    expect(p90BallisticsMidRamp.nextRoundRotY!).toBeLessThan(
+      Math.PI * 0.5 - 0.15
+    );
+    expect(p90BallisticsChambered.nextRoundRotY).toBeCloseTo(0, 4);
+    expect(p90BallisticsBottomDrop.spentCaseVisible).toBe(true);
+    expect(p90BallisticsBottomDrop.spentCasePos[1]).toBeLessThan(-6.0);
+    expect(Math.abs(p90BallisticsBottomDrop.spentCasePos[2])).toBeLessThan(
+      0.35
+    );
+
     // 4. Endpoint continuity across f = 0.995 -> 1.0 (catches modulo wrap-around snaps on single-shot completion)
     for (const [wid, plugin] of loadedPlugins.entries()) {
       for (const part of plugin.parts) {
@@ -543,7 +580,7 @@ describe('10-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contra
     }
   });
 
-  it('builds all 253 CSG/parametric BufferGeometries with finite attributes, unit normals, positive 3D volume, and [0, 1] custom-atlas UVs', async () => {
+  it('builds all 278 CSG/parametric BufferGeometries with finite attributes, unit normals, positive 3D volume, and [0, 1] custom-atlas UVs', async () => {
     let builtPartsCount = 0;
 
     for (const manifest of WEAPON_MANIFESTS) {
@@ -742,10 +779,10 @@ describe('10-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contra
       }
     }
 
-    expect(builtPartsCount).toBe(253);
+    expect(builtPartsCount).toBe(278);
   }, 120000);
 
-  it('verifies all 58 WebP PBR textures exist on disk (0 PNGs) and all 20 *_roughness.webp ORM maps have valid RGB WebP headers', async () => {
+  it('verifies all 64 WebP PBR textures exist on disk (0 PNGs) and all 22 *_roughness.webp ORM maps have valid RGB WebP headers', async () => {
     expect(fs.existsSync(TEXTURES_DIR)).toBe(true);
     const diskFiles = fs.readdirSync(TEXTURES_DIR);
     const webpFiles = diskFiles.filter((f) => f.endsWith('.webp')).sort();
@@ -755,10 +792,10 @@ describe('10-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contra
     );
     const normalFiles = webpFiles.filter((f) => f.endsWith('_normal.webp'));
 
-    expect(webpFiles).toHaveLength(58);
+    expect(webpFiles).toHaveLength(64);
     expect(pngFiles).toHaveLength(0);
-    expect(roughnessFiles).toHaveLength(20);
-    expect(normalFiles).toHaveLength(20);
+    expect(roughnessFiles).toHaveLength(22);
+    expect(normalFiles).toHaveLength(22);
 
     // Binary RIFF/WEBP header validation across all 58 textures
     for (const fileName of webpFiles) {
@@ -893,7 +930,7 @@ describe('10-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contra
     expect(playbackClock.getState().targetProgress).toBe(0);
   });
 
-  it('verifies Google Gemini bilingual R&D stories, all 253 part narrations, all 586 MP3 voiceover clips across all 10 firearms, and bilingual store/fallback contracts', async () => {
+  it('verifies Google Gemini bilingual R&D stories, all 278 part narrations, all 644 MP3 voiceover clips across all 11 firearms, and bilingual store/fallback contracts', async () => {
     let totalNarratedParts = 0;
     const allReferencedAudioPaths: string[] = [];
 
@@ -1015,9 +1052,9 @@ describe('10-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contra
       expect(metaEn.highlights.length).toBeGreaterThanOrEqual(4);
     }
 
-    // 253 total parts across 10 weapons -> 80 story MP3s + 506 part MP3s = 586 MP3 files
-    expect(totalNarratedParts).toBe(253);
-    expect(allReferencedAudioPaths).toHaveLength(586);
+    // 278 total parts across 11 weapons -> 88 story MP3s + 556 part MP3s = 644 MP3 files
+    expect(totalNarratedParts).toBe(278);
+    expect(allReferencedAudioPaths).toHaveLength(644);
 
     for (const relAudio of allReferencedAudioPaths) {
       const fullMp3Path = path.join(ROOT_DIR, 'public', relAudio);

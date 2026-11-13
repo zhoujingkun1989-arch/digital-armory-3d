@@ -677,6 +677,74 @@ export const WEAPON_MANIFESTS: readonly WeaponManifest[] = [
       firingMilestoneLabel: '出膛/开锁',
     },
   },
+  {
+    id: 'p90',
+    orderIndex: 11,
+    shortLabel: 'FN P90',
+    caliberProfile: '57_28',
+    atlasHeadingCn:
+      'FN Herstal P90 个人防卫冲锋枪贴图库 (Albedo / Normal / Packed ORM)',
+    catalog: {
+      id: 'p90',
+      bayCode: 'BAY-11',
+      modelCode: 'FN HERSTAL P90 · 5.7×28 PDW',
+      nameCn: 'FN P90 个人防卫冲锋枪',
+      subtitleEn: '5.7×28mm Top-Mag 90° Helical-Feed Bullpup PDW',
+      originCountryCn: '比利时',
+      weaponTypeCn: '个人防卫冲锋枪',
+      category: 'smg',
+      categoryCn: '个人防卫冲锋枪',
+      caliber: '5.7×28mm FN SS190',
+      actionMechanism: '顶置50发90°螺旋旋转供弹 · 重型自由枪机 + 底部抛壳',
+      specs1To1: {
+        overallLengthMm: '504 mm',
+        barrelSpec: '264 mm · 8右旋 1:228mm',
+        emptyWeightKg: '2.60 kg',
+        muzzleVelocityMs: '715 m/s',
+        effectiveRangeM: '200 m',
+        rateOfFire: '900 发/分',
+      },
+      assembliesCount: 4,
+      partsCount: 25,
+      firingStagesCount: 7,
+      available: true,
+      statusLabel: '已入库 · 可拆解',
+      description:
+        '比利时国营赫斯塔尔兵工厂（FN Herstal）应北约个人防卫武器（PDW）需求缔造的跨时代杰作。开创性地将 50 发烟熏半透明聚碳酸酯弹匣水平平铺于枪脊，5.7×28mm 高速穿甲弹与枪管垂直横向排列，经尾部专利 90° 螺旋坡道顺时针旋转转正入膛；配合流线拇指孔无托枪身、Ring Sight MC-10-80 准直瞄具、后置全塑击锤盒及底部垂直向下抛壳井，实现 504mm 超紧凑全对称操控。',
+      highlights: [
+        '顶置 50 发水平透明弹匣 + 90° 螺旋旋转供弹',
+        '5.7×28mm SS190 高初速弹 + 重型自由枪机双导杆',
+        'Ring Sight MC-10-80 准直镜 + 渐进扳机全塑击锤盒',
+        '中央垂直向下抛壳井 · 100% 左右手全对称人机工程',
+      ],
+    },
+    cameraPresets: {
+      armory_showcase: { pos: [11.5, 2.2, 41.5], target: [0.0, -3.5, 0] },
+      iso: { pos: [16.5, 9.2, 46.5], target: [-0.5, -0.6, 0] },
+      right: { pos: [-0.5, 0.4, 46.0], target: [-0.5, -0.6, 0] },
+      left: { pos: [-0.5, 0.4, -46.0], target: [-0.5, -0.6, 0] },
+      top: { pos: [-0.5, 49.0, 4.5], target: [-0.5, 0, 0] },
+      cutaway_focus: { pos: [-1.8, 3.2, 16.8], target: [-3.6, 1.4, 0.2] },
+      firing_view: { pos: [8.8, 4.6, 41.5], target: [2.4, 0.4, 0] },
+    },
+    workbenchMeta: {
+      badge: 'FN HERSTAL · 5.7×28 PDW',
+      title: 'FN P90 内部结构3D拆解与90°螺旋供弹演示',
+      subtitle:
+        '4 大总成 · 25 核心节点 · 顶置50发水平弹匣 90° 螺旋旋转入膛与底部抛壳模拟',
+      cutawayLabel: '90°螺旋供弹坡道特写',
+      cutawayTitle:
+        '切换至合拢透视状态并聚焦顶置 50 发水平弹匣尾端 90° 螺旋旋转供弹坡道与自由枪机啮合特写',
+      cutawayFocusPartId: 'p90_helical_ramp',
+      searchPlaceholder:
+        '搜索零件名 / 编号 (如 90°螺旋, 水平弹匣, MC-10-80, M-02)...',
+      muzzlePos: [16.85, 0.85, 0],
+      chamberGlowPos: [-1.9, 0.85, 0],
+      scaleProfile: 'rifle',
+      gridY: -22.5,
+      firingMilestoneLabel: '惯性直退',
+    },
+  },
 ];
 
 const MANIFEST_MAP: Record<WeaponId, WeaponManifest> = Object.fromEntries(

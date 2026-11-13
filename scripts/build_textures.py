@@ -37,6 +37,7 @@ WEAPON_GENERATORS: dict[str, str] = {
     "deagle": "generate_deagle_pbr.py",
     "aug": "generate_aug_pbr.py",
     "p320": "generate_p320_pbr.py",
+    "p90": "generate_p90_pbr.py",
 }
 
 

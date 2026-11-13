@@ -193,12 +193,12 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
     armory: {
       title: '枪械内部结构 3D 数字枪库',
       subtitle:
-        '十款世界名枪交互式陈列馆 · Google Gemini 中英研发史纪录片与全零件语音拆解导览',
+        '十一款世界名枪交互式陈列馆 · Google Gemini 中英研发史纪录片与全零件语音拆解导览',
       filterAria: '枪械类别筛选',
       categories: {
         all: '全部馆藏',
         assault: '突击/卡宾/无托',
-        smg: '冲锋枪',
+        smg: '冲锋枪 / PDW',
         sniper: '狙击/反器材',
         pistol: '半自动手枪',
       },
@@ -237,8 +237,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       sectionTitle:
         '沿纵向中轴切开外层机匣/套筒/弹匣右侧壳体，原色直视内部膛线、闭锁突笋与实弹供弹机构 (C)',
       stageHint: '拖拽检视 · 单击枪体直达分解',
-      rackAria: '枪库十槽武器展架',
-      rackTitle: '枪库武器陈列架 · 10-BAY WEAPON VAULT RACK',
+      rackAria: '枪库十一槽武器展架',
+      rackTitle: '枪库武器陈列架 · 11-BAY WEAPON VAULT RACK',
       rackTip: '单击卡片切换展台预览 · 再次点击或点蓝字进入 3D 拆解台',
       scrollLeft: '向左滚动查看槽位',
       scrollRight: '向右滚动查看槽位',
@@ -280,7 +280,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       sfxChipTitle: (muted) =>
         muted
           ? '军械机械咬合与实弹声场已静音，点击开启 (M)'
-          : '开启/静音 Web Audio 军械机械咬合声与 6 口径实弹声场 (M)',
+          : '开启/静音 Web Audio 军械机械咬合声与 7 口径实弹声场 (M)',
       resetChip: '复位',
       resetChipTitle: '重置回默认合拢态与标准视角 (R)',
     },
@@ -347,7 +347,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       loopOff: '单发停止',
       loopTitle: '切换连续循环击发或单发停止',
       sfxPill: '实弹声场',
-      sfxTitle: '开启/静音 7 阶段机械咬合与 6 口径实弹合成声效 (M)',
+      sfxTitle: '开启/静音 7 阶段机械咬合与 7 口径实弹合成声效 (M)',
       pause: '暂停',
       autoExplode: '自动拆解',
       playExplodeTitle: (playing) =>
@@ -395,7 +395,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       loadingDesc: '正在读取 Google Gemini 生成的双语工程档案。',
       pendingTitle: '双语研发档案未能加载',
       pendingDesc:
-        '请检查本地静态资源服务是否正常运行（全部 10 款馆藏名枪的四幕研发故事、253 枚零件双语讲解与 586 段 Google Gemini TTS 语音均已内置于 public/ 目录）。',
+        '请检查本地静态资源服务是否正常运行（全部 11 款馆藏名枪的四幕研发故事、278 枚零件双语讲解与 644 段 Google Gemini TTS 语音均已内置于 public/ 目录）。',
       switchToAk15Btn: '切换至 AK-15M1 研发故事档案',
       aiAttribution:
         '文本与语音由 Google Gemini 3.8 Flash & Gemini TTS 基于 1:1 军械测绘参数生成',
@@ -409,12 +409,12 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
     armory: {
       title: '3D Digital Firearm Armory & Cutaway Vault',
       subtitle:
-        '10 Iconic World Firearms · Google Gemini R&D Documentary & Component-by-Component Voice Disassembly',
+        '11 Iconic World Firearms · Google Gemini R&D Documentary & Component-by-Component Voice Disassembly',
       filterAria: 'Filter firearms by category',
       categories: {
         all: 'All Vault',
         assault: 'Rifle / Carbine',
-        smg: 'SMG',
+        smg: 'SMG / PDW',
         sniper: 'Sniper / Anti-Materiel',
         pistol: 'Service Pistol',
       },
@@ -453,8 +453,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       sectionTitle:
         'Slice outer receiver/slide/magazine along centerline to inspect rifling, lugs & feed path (C)',
       stageHint: 'Drag to orbit · Click firearm to enter workbench',
-      rackAria: '10-Bay Weapon Vault Rack',
-      rackTitle: '10-BAY WEAPON VAULT RACK · INTERACTIVE COLLECTION',
+      rackAria: '11-Bay Weapon Vault Rack',
+      rackTitle: '11-BAY WEAPON VAULT RACK · INTERACTIVE COLLECTION',
       rackTip:
         'Click card to preview on turntable · Click again to enter 3D Workbench',
       scrollLeft: 'Scroll rack left',
@@ -500,7 +500,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       sfxChipTitle: (muted) =>
         muted
           ? 'Gunsmith mechanical & ballistic SFX muted — click to unmute (M)'
-          : 'Toggle Web Audio gunsmith mechanical clicks & 6-caliber ballistic SFX (M)',
+          : 'Toggle Web Audio gunsmith mechanical clicks & 7-caliber ballistic SFX (M)',
       resetChip: 'Reset',
       resetChipTitle:
         'Reset to 0% assembled state & default isometric camera (R)',
@@ -569,7 +569,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       loopOff: 'Single Cycle',
       loopTitle: 'Toggle continuous loop vs single-cycle stop',
       sfxPill: 'Acoustic SFX',
-      sfxTitle: 'Toggle 7-phase mechanical & 6-caliber ballistic Web Audio SFX (M)',
+      sfxTitle: 'Toggle 7-phase mechanical & 7-caliber ballistic Web Audio SFX (M)',
       pause: 'Pause',
       autoExplode: 'Auto Strip',
       playExplodeTitle: (playing) =>
@@ -629,7 +629,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       loadingDesc: 'Fetching structured history & voiceover metadata.',
       pendingTitle: 'Unable to Load Bilingual R&D Archive',
       pendingDesc:
-        'Please verify your static asset server is reachable. Full 4-act R&D documentaries, 253 component breakdowns, and 586 Google Gemini TTS voiceovers across all 10 vault firearms are bundled under public/.',
+        'Please verify your static asset server is reachable. Full 4-act R&D documentaries, 278 component breakdowns, and 644 Google Gemini TTS voiceovers across all 11 vault firearms are bundled under public/.',
       switchToAk15Btn: 'Switch to AK-15M1 R&D Archive',
       aiAttribution:
         'Authored & voiced with Google Gemini 3.8 Flash & Gemini TTS grounded in 1:1 CAD specs',

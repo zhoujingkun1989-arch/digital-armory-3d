@@ -91,7 +91,7 @@ describe('Phase 1 (WP-01 ~ WP-03): Multimodal Audio-Visual Immersion Contracts',
     );
   });
 
-  it('WP-02: splits all 80 bilingual act audioScripts into valid monotonic cues without breaking decimals', () => {
+  it('WP-02: splits all 88 bilingual act audioScripts into valid monotonic cues without breaking decimals', () => {
     for (const weaponId of WEAPON_IDS) {
       const jsonPath = path.resolve(
         process.cwd(),
@@ -197,12 +197,13 @@ describe('Phase 1 (WP-01 ~ WP-03): Multimodal Audio-Visual Immersion Contracts',
     useAppStore.getState().returnToArmory();
   });
 
-  it('WP-03: enforces physical 6-caliber acoustic hierarchy, 8-event slow-mo phase separation, and TTS ducking', async () => {
+  it('WP-03: enforces physical 7-caliber acoustic hierarchy, 8-event slow-mo phase separation, and TTS ducking', async () => {
     const p50 = CALIBER_ACOUSTIC_PROFILES['50_bmg'];
     const p338 = CALIBER_ACOUSTIC_PROFILES['338_lapua'];
     const p50ae = CALIBER_ACOUSTIC_PROFILES['50_ae'];
     const p762 = CALIBER_ACOUSTIC_PROFILES['762_m43'];
     const p556 = CALIBER_ACOUSTIC_PROFILES['556_nato'];
+    const p57 = CALIBER_ACOUSTIC_PROFILES['57_28'];
     const p9 = CALIBER_ACOUSTIC_PROFILES['9mm_para'];
 
     // Fundamental sub-bass frequency scales inversely with cartridge impulse energy
@@ -210,7 +211,8 @@ describe('Phase 1 (WP-01 ~ WP-03): Multimodal Audio-Visual Immersion Contracts',
     expect(p338.subFreqHz).toBeLessThan(p50ae.subFreqHz);
     expect(p50ae.subFreqHz).toBeLessThan(p762.subFreqHz);
     expect(p762.subFreqHz).toBeLessThan(p556.subFreqHz);
-    expect(p556.subFreqHz).toBeLessThan(p9.subFreqHz);
+    expect(p556.subFreqHz).toBeLessThan(p57.subFreqHz);
+    expect(p57.subFreqHz).toBeLessThan(p9.subFreqHz);
 
     // Blast tail & peak gain scale positively with propellant charge
     expect(p50.blastTailSec).toBeGreaterThan(p9.blastTailSec * 3);

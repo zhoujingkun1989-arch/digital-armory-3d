@@ -28,11 +28,11 @@
 ## 2. 当前基线概览（Current Baseline）
 
 本仓库已建成的核心工程与内容底座如下：
-- **10 款馆藏名枪 / 253 个程序化与 CSG 运动零件**：覆盖 `ak15`、`m4a1`、`mp5`、`g17`、`m82a1`、`awm`、`scar`、`deagle`、`aug`、`p320`，全量通过法线、体积、UV 与运动学防穿模契约测试。
-- **58 张 2K 5 通道 Packed ORM WebP 贴图**：由 `scripts/pbr_core/` 离线烘焙并在 `public/textures/` 提供，配套浏览器内 PBR 贴图图集检视器（`TextureAtlasModal`）。
+- **11 款馆藏名枪 / 278 个程序化与 CSG 运动零件**：覆盖 `ak15`、`m4a1`、`mp5`、`g17`、`m82a1`、`awm`、`scar`、`deagle`、`aug`、`p320`、`p90`，全量通过法线、体积、UV 与运动学防穿模契约测试。
+- **64 张 2K 5 通道 Packed ORM WebP 贴图**：由 `scripts/pbr_core/` 离线烘焙并在 `public/textures/` 提供，配套浏览器内 PBR 贴图图集检视器（`TextureAtlasModal`）。
 - **GPU 纵向中轴军械剖视（`C`）与剖面穿透拾取**：通过 `sectionAwareMeshRaycast` 实现穿透虚空剖切面精准点选内部火控与枪机零件；支持外壳 X-Ray 透视（`X`）、CAD 硬边轮廓线（`E`）与零回流 3D 引线编号标签（`L`）。
-- **7 阶段耦合运动学 + 6 口径 SAAMI/CIP 实弹内弹道**：位于 `src/engine/actors/BallisticsSystem.tsx`，覆盖 `9×19mm`、`5.56 NATO`、`7.62×39mm`、`.50 AE`、`.338 Lapua`、`.50 BMG`，含底火击发凹坑、碳烟环、膛口冲击波与抛壳轨迹。
-- **全馆藏中英双语四幕研发纪录片 + 586 个 Gemini TTS 语音导览 + 3D 导演运镜 & Web Audio 实弹声场**：包含 `public/narrations/*.json`、`public/audio/`、浏览器 `speechSynthesis` 兜底（`src/narration/audioPlayer.ts`）、四幕自动镜头编排与同步字幕（`src/narration/storyDirector.ts`）、程序化 6 口径实弹与 8 点军械咬合合成声场（`src/engine/audio/mechanicalSoundEngine.ts`），以及全站与 `ShowcaseView` 100% 中英双语体验。
+- **7 阶段耦合运动学 + 7 口径 SAAMI/CIP 实弹内弹道**：位于 `src/engine/actors/BallisticsSystem.tsx`，覆盖 `9×19mm`、`5.7×28mm`、`5.56 NATO`、`7.62×39mm`、`.50 AE`、`.338 Lapua`、`.50 BMG`，含 `90°` 螺旋旋转供弹、底火击发凹坑、碳烟环、膛口冲击波与抛壳轨迹。
+- **全馆藏中英双语四幕研发纪录片 + 644 个 Gemini TTS 语音导览 + 3D 导演运镜 & Web Audio 实弹声场**：包含 `public/narrations/*.json`、`public/audio/`、浏览器 `speechSynthesis` 兜底（`src/narration/audioPlayer.ts`）、四幕自动镜头编排与同步字幕（`src/narration/storyDirector.ts`）、程序化 7 口径实弹与 8 点军械咬合合成声场（`src/engine/audio/mechanicalSoundEngine.ts`），以及全站与 `ShowcaseView` 100% 中英双语体验。
 
 ---
 
@@ -83,7 +83,7 @@
 - [ ] **WP-12｜扩充 `BAY-11 ~ BAY-14` 四款异构原理名枪**
   - **目标模块**：`src/weapons/{p90,benellim4,python,...}/`、`scripts/pbr/`、`public/narrations/`、`tests/weaponContracts.test.ts`
   - **交付与验收**：每款均需补齐完整 CSG 几何、2K 5-Ch ORM 贴图、7 阶段内弹道、全量契约测试与中英双语四幕语音：
-    1. `BAY-11` **FN P90**：置顶水平透明弹匣 + `90°` 螺旋坡道子弹旋转供弹；
+    1. [x] `BAY-11` **FN P90**：置顶水平透明弹匣 + `90°` 螺旋坡道子弹旋转供弹（已完成）；
     2. `BAY-12` **Benelli M4 (M1014)**：ARGO 双短行程活塞 + 管式弹仓升降托弹板供弹 + `12 Gauge` 多弹丸内弹道；
     3. `BAY-13` **Colt Python (.357 Magnum)**：双动/单动转轮棘轮拨齿分度与止转笋啮合；
     4. `BAY-14` **M1 Garand 或 M249 SAW**：8 发漏夹末发自动弹射 或 双程拨弹滑板弹链开膛机枪。

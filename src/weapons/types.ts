@@ -11,6 +11,7 @@ export const WEAPON_IDS = [
   'deagle',
   'aug',
   'p320',
+  'p90',
 ] as const;
 
 export type WeaponId = (typeof WEAPON_IDS)[number];
@@ -29,7 +30,13 @@ export type MaterialKind =
   | 'copper_accent';
 
 export type CaliberProfile =
-  '762_m43' | '556_nato' | '9mm_para' | '50_bmg' | '338_lapua' | '50_ae';
+  | '762_m43'
+  | '556_nato'
+  | '57_28'
+  | '9mm_para'
+  | '50_bmg'
+  | '338_lapua'
+  | '50_ae';
 
 export type WeaponScaleProfile = 'pistol' | 'rifle' | 'heavy_sniper';
 
@@ -158,6 +165,9 @@ export interface BallisticsVisualState {
 export interface ExtendedBallisticsState extends BallisticsVisualState {
   gasPortFlashIntensity: number;
   gasPortPos: [number, number, number];
+  /** Optional yaw rotation around Y (rad), e.g. FN P90 90° helical feed ramp */
+  nextRoundRotY?: number;
+  reserveRoundRotY?: number;
 }
 
 export interface PbrBindingSpec {

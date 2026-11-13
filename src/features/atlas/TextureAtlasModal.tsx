@@ -49,12 +49,12 @@ export const TextureAtlasModal: React.FC = () => {
             <div className="tex-badge-row">
               <span className="tex-modal-badge">
                 <ImageIcon size={12} />
-                10-WEAPON 2K PBR ATLAS
+                11-WEAPON 2K PBR ATLAS
               </span>
               <div
                 className="tex-weapon-switcher"
                 role="tablist"
-                aria-label="十款枪械 PBR 贴图库切换"
+                aria-label="十一款枪械 PBR 贴图库切换"
               >
                 {WEAPON_MANIFESTS.map((m) => (
                   <button
@@ -77,9 +77,9 @@ export const TextureAtlasModal: React.FC = () => {
             <div>
               <h2 className="tex-modal-title">{tabManifest.atlasHeadingCn}</h2>
               <p className="tex-modal-sub">
-                全馆十款名枪共 58 张定制高清 WebP
+                全馆十一款名枪共 64 张定制高清 WebP
                 物理材质贴图（public/textures/*.webp）· 已按三角面 UV
-                实时绑定至全部 253 个精密零件
+                实时绑定至全部 278 个精密零件
               </p>
             </div>
           </div>

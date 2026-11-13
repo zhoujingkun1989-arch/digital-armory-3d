@@ -862,6 +862,100 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
           </svg>
         );
       }
+
+      case 'p90': {
+        const smokedMag = available ? '#8a6f52' : '#78716c';
+        const opticAlloy = available ? '#3f4a59' : '#64748b';
+        return (
+          <svg viewBox="0 0 210 88" className="weapon-svg" aria-hidden="true">
+            {/* Top-Mounted Horizontal 50-Rd Smoked Translucent Polycarbonate Magazine */}
+            <rect
+              x="23"
+              y="24"
+              width="98"
+              height="9.5"
+              rx="2"
+              fill={smokedMag}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            {[36, 52, 68, 84, 100].map((mx) => (
+              <line
+                key={mx}
+                x1={mx}
+                y1="25.5"
+                x2={mx}
+                y2="32"
+                stroke="#fcd34d"
+                strokeWidth="1.2"
+                opacity="0.7"
+              />
+            ))}
+            {/* Forward Alloy Optical Bridge & Ring Sight MC-10-80 Collimator */}
+            <path
+              d="M108 33.5 L121 33.5 L125 14 Q127 10 133 10 L160 10 Q166 10 171 22 L177 33.5 L177 41 L108 41 Z"
+              fill={opticAlloy}
+              stroke={stroke}
+              strokeWidth="1.25"
+            />
+            <rect
+              x="132"
+              y="14.5"
+              width="28"
+              height="9.5"
+              rx="2.5"
+              fill="#0ea5c6"
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            {/* Slanted Birdcage Compensator & 10.4" Muzzle */}
+            <polygon
+              points="177,34 191,34 187,40.5 177,40.5"
+              fill={stroke}
+            />
+            {/* Futuristic Ergonomic Bullpup Polymer Thumbhole Stock & Front Hand-Stop */}
+            <path
+              d="M18 33.5 L108 33.5 L108 41 L175 41 Q175 56 170 66 Q167 68 164 63 Q158 53 149 51 Q147 65 138 69 L114 75 Q107 76 104 71 Q101 60 94 55 L68 55 Q48 57 25 67 L18 67 Z"
+              fill={fill}
+              stroke={stroke}
+              strokeWidth="1.3"
+            />
+            {/* Oval Ergonomic Thumbhole Cutout & Enclosed Front Trigger Window */}
+            <ellipse
+              cx="114"
+              cy="56"
+              rx="8.5"
+              ry="9.5"
+              fill="#eef2f6"
+              stroke={stroke}
+              strokeWidth="1.05"
+            />
+            <ellipse
+              cx="134"
+              cy="53.5"
+              rx="8.5"
+              ry="9"
+              fill="#eef2f6"
+              stroke={stroke}
+              strokeWidth="1.05"
+            />
+            {/* Progressive Sliding Trigger + Rotary Dial + Ribbed Buttplate */}
+            <path
+              d="M133 45.5 L136 45.5 L135 55 L131.5 55 Z"
+              fill={stroke}
+            />
+            <circle cx="130" cy="58.5" r="2.2" fill={opticAlloy} />
+            <rect
+              x="15.5"
+              y="33.5"
+              width="3.5"
+              height="33.8"
+              rx="1"
+              fill={stroke}
+            />
+          </svg>
+        );
+      }
     }
   });
 

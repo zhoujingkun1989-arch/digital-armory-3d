@@ -312,6 +312,34 @@ export const WEAPON_EN_FALLBACKS: Record<WeaponId, WeaponEnglishFallback> = {
       'Search part name / BOM code (e.g. FCU, safety, U-02)...',
     firingMilestoneLabel: 'Tilt Unlock',
   },
+  p90: {
+    shortLabel: 'FN P90',
+    name: 'FN Herstal P90 5.7×28mm PDW',
+    originCountry: 'Belgium',
+    weaponType: 'Bullpup PDW / SMG',
+    statusLabel: 'In Vault · Ready',
+    actionMechanism: 'Top 50-Rd 90° Helical Feed · Straight Blowback',
+    overallLengthMm: '504 mm',
+    barrelSpec: '264 mm · 8-RH 1:228mm',
+    rateOfFire: '900 rpm',
+    description:
+      'FN Herstal’s iconic Personal Defense Weapon engineered for NATO CRISAT requirements: mounts a 50-round translucent polycarbonate magazine flat along the top spine with 5.7×28mm cartridges oriented sideways, rotating each round 90° through a patented helical ramp into a 10.4" barrel—paired with a Ring Sight MC-10-80 optic, polymer hammer pack, and downward brass ejection.',
+    highlights: [
+      'Top 50-Rd Horizontal Mag + 90° Helical Feed Ramp',
+      '5.7×28mm SS190 + Straight-Blowback Dual-Rod Bolt',
+      'Ring Sight MC-10-80 Optic + Polymer Hammer Pack',
+      'Downward Ejection Chute · 100% Ambidextrous Thumbhole',
+    ],
+    workbenchTitle: 'FN P90 3D Disassembly & 90° Helical Feed Simulation',
+    workbenchSubtitle:
+      '4 Assemblies · 25 CAD Parts · Top Horizontal 50-Rd 90° Helical Feed & Downward Ejection',
+    cutawayLabel: '90° Helical Feed Ramp Focus',
+    cutawayTitle:
+      'Switch to cutaway view and frame the patented 90° helical feed ramp & breech bolt',
+    searchPlaceholder:
+      'Search part name / BOM code (e.g. helical, Ring Sight, M-02)...',
+    firingMilestoneLabel: 'Blowback',
+  },
 };
 
 export function getLocalizedShortWeaponLabel(

@@ -65,6 +65,7 @@ ALL_WEAPON_IDS = [
     "deagle",
     "aug",
     "p320",
+    "p90",
 ]
 
 TEXT_MODEL = "gemini-3.8-flash"

@@ -437,6 +437,61 @@ function build50AeGeometries(): CaliberGeometryBundle {
   };
 }
 
+/**
+ * 7. 5.7×28mm FN SS190 PDW (CIP / STANAG 4509: 28.90mm bottleneck case, 40.50mm OAL, 35° shoulder)
+ * Case X in [-0.96, +0.96] (1.92u), Cartridge OAL [-0.96, +1.73] (2.69u, OAL/case = 1.401).
+ * Polymer-lacquered straight-wall case w/ sharp bottleneck & high-velocity 31gr SS190 spitzer!
+ */
+function build57x28Geometries(): CaliberGeometryBundle {
+  const pocket: PrimerPocketSpec = {
+    xHead: -0.96,
+    rPocket: 0.114,
+    pocketDepth: 0.082,
+  };
+  const casePts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -0.878),
+    new THREE.Vector2(0.114, -0.878),
+    new THREE.Vector2(0.114, -0.949),
+    new THREE.Vector2(0.125, -0.96),
+    new THREE.Vector2(0.222, -0.96),
+    new THREE.Vector2(0.236, -0.942), // CIP rim entry chamfer
+    new THREE.Vector2(0.236, -0.874), // Narrow 7.80mm rim for 50-rd double-row horizontal stack
+    new THREE.Vector2(0.198, -0.848),
+    new THREE.Vector2(0.198, -0.768), // Deep extractor groove (6.35mm) for straight-blowback extraction
+    new THREE.Vector2(0.238, -0.718), // Straight cylindrical body OD (7.92mm — minimal taper!)
+    new THREE.Vector2(0.236, 0.48), // Long cylindrical propellant body
+    new THREE.Vector2(0.234, 0.58), // Steep 35° FN shoulder datum
+    new THREE.Vector2(0.172, 0.71), // Sharp bottleneck shoulder transition
+    new THREE.Vector2(0.171, 0.952), // Case neck OD (6.35mm)
+    new THREE.Vector2(0.168, 0.96),
+    new THREE.Vector2(0.154, 0.96), // Neck mouth ID (5.70mm)
+    new THREE.Vector2(0.154, 0.68),
+    new THREE.Vector2(0.198, 0.54),
+    new THREE.Vector2(0, 0.54),
+  ];
+
+  // 31gr FN SS190 Steel-Penetrator / Aluminum-Core Spitzer Boat-Tail (bulletLocalOffset = 1.48 -> tip at +1.73)
+  const bulletPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -0.92),
+    new THREE.Vector2(0.124, -0.92), // Boat-tail base
+    new THREE.Vector2(0.154, -0.78), // Bearing band seated in bonded neck
+    new THREE.Vector2(0.154, -0.52), // Exits +0.96 case mouth cleanly
+    new THREE.Vector2(0.146, -0.36),
+    new THREE.Vector2(0.126, -0.18),
+    new THREE.Vector2(0.094, 0.0),
+    new THREE.Vector2(0.054, 0.14),
+    new THREE.Vector2(0.018, 0.232),
+    new THREE.Vector2(0, 0.25),
+  ];
+
+  return {
+    caseGeo: finalizeLathe(casePts, 28),
+    bulletGeo: finalizeLathe(bulletPts, 26),
+    ...buildBoxerPrimerGeometries(pocket),
+    xHead: pocket.xHead,
+  };
+}
+
 interface CaliberVisualSpec {
   caseColor: string;
   reserveCaseColor: string;
@@ -478,6 +533,16 @@ const CALIBER_VISUAL_SPECS: Record<CaliberProfile, CaliberVisualSpec> = {
     reserveTiltZ: 0.1,
     flashScaleMult: 1.12,
     streakThickness: 0.17,
+  },
+  '57_28': {
+    caseColor: '#d9ae38',
+    reserveCaseColor: '#b58d24',
+    bulletColor: '#b8501c',
+    primerColor: '#e2e8f0',
+    bulletLocalOffset: 1.48,
+    reserveTiltZ: 0,
+    flashScaleMult: 0.98,
+    streakThickness: 0.15,
   },
   '338_lapua': {
     caseColor: '#deb23d',
@@ -532,6 +597,7 @@ const WEAPON_ROUND_FIT: Record<WeaponId, WeaponRoundFitSpec> = {
   awm: { roundScale: 1.0, magLocalShiftX: 0.42, ignitionF: 0.11 },
   m82a1: { roundScale: 0.68, magLocalShiftX: -0.89, ignitionF: 0.14 },
   deagle: { roundScale: 1.0, magLocalShiftX: -0.05, ignitionF: 0.1 },
+  p90: { roundScale: 0.68, magLocalShiftX: -0.385, ignitionF: 0.18 },
 };
 
 const caliberGeoCache = new Map<CaliberProfile, CaliberGeometryBundle>();
@@ -547,6 +613,9 @@ function getCaliberGeometries(profile: CaliberProfile): CaliberGeometryBundle {
       break;
     case '556_nato':
       built = build556Geometries();
+      break;
+    case '57_28':
+      built = build57x28Geometries();
       break;
     case '338_lapua':
       built = build338LapuaGeometries();
@@ -862,7 +931,11 @@ export const BallisticsSystem: React.FC = () => {
         st.nextRoundPos[1],
         st.nextRoundPos[2]
       );
-      nextRoundRef.current.rotation.set(0, 0, st.nextRoundRotZ);
+      nextRoundRef.current.rotation.set(
+        0,
+        st.nextRoundRotY ?? 0,
+        st.nextRoundRotZ
+      );
       nextRoundRef.current.scale.setScalar(curFit.roundScale);
     }
     if (nextRoundInnerRef.current) {
@@ -877,7 +950,11 @@ export const BallisticsSystem: React.FC = () => {
         st.reserveRoundPos[1],
         st.reserveRoundPos[2]
       );
-      reserveRoundRef.current.rotation.set(0, 0, curSpec.reserveTiltZ);
+      reserveRoundRef.current.rotation.set(
+        0,
+        st.reserveRoundRotY ?? 0,
+        curSpec.reserveTiltZ
+      );
       reserveRoundRef.current.scale.setScalar(curFit.roundScale);
     }
     if (reserveRoundInnerRef.current) {

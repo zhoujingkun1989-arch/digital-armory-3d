@@ -16,6 +16,7 @@ import { playbackClock } from '../clock/playbackClock';
 export type MechanismAcousticStyle =
   | 'long_stroke_piston'
   | 'gas_carbine'
+  | 'pdw_blowback'
   | 'compact_9mm'
   | 'short_recoil_heavy'
   | 'bolt_action'
@@ -110,6 +111,19 @@ export const CALIBER_ACOUSTIC_PROFILES: Record<
     brakeRoarGain: 0.22,
     casingRingHz: 3080,
     mechanismStyle: 'gas_carbine',
+  },
+  '57_28': {
+    caliber: '57_28',
+    labelEn: '5.7×28mm FN SS190',
+    labelZh: '5.7×28mm FN 高速穿甲防卫弹',
+    subFreqHz: 102,
+    punchDecaySec: 0.16,
+    blastTailSec: 0.28,
+    crackCutoffHz: 4820,
+    peakGain: 0.72,
+    brakeRoarGain: 0.16,
+    casingRingHz: 3820,
+    mechanismStyle: 'pdw_blowback',
   },
   '9mm_para': {
     caliber: '9mm_para',
@@ -552,6 +566,25 @@ class ProceduralGunsmithSoundEngine {
             freqEnd: 1120,
             type: 'triangle',
             gainPeak: 0.22,
+          });
+        } else if (profile.mechanismStyle === 'pdw_blowback') {
+          // FN P90 heavy straight-blowback breech bolt impulse + dual guide-rod elastomer buffer thud
+          this.emitModalPing({
+            startTime: now,
+            duration: 0.052,
+            freqStart: 640,
+            freqEnd: 240,
+            type: 'triangle',
+            gainPeak: 0.25,
+          });
+          this.emitNoiseBurst({
+            startTime: now,
+            duration: 0.042,
+            filterType: 'bandpass',
+            freqStart: 2200,
+            freqEnd: 1180,
+            q: 2.6,
+            gainPeak: 0.21,
           });
         } else {
           // High-pressure gas port bleed tapping piston cup / Stoner gas key

@@ -191,23 +191,23 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       capabilities: '四大核心模式',
       documentary: 'AI 导演纪录片',
       gallery: '实机渲染画廊',
-      arsenal: '十款馆藏名枪',
+      arsenal: '十一款馆藏名枪',
       architecture: '三维引擎架构',
       quickstart: '开源快速部署',
       launchArmory: '进入 3D 数字枪库',
     },
     hero: {
       eyebrow:
-        'OPEN-SOURCE WEBGL 2.0 MUSEUM · 10 FIREARMS · 586 AI VOICE CLIPS · WEB AUDIO',
-      titlePrefix: '把十款世界传奇名枪的 ',
+        'OPEN-SOURCE WEBGL 2.0 MUSEUM · 11 FIREARMS · 644 AI VOICE CLIPS · WEB AUDIO',
+      titlePrefix: '把十一款世界传奇名枪的 ',
       titleHighlight: '1:1 机械内构与声画纪录片',
       titleSuffix: '，装进你的浏览器',
       subLead: '纯代码实时 CSG 布尔建模 ',
-      subPartsStrong: '253 个独立运动零件',
+      subPartsStrong: '278 个独立运动零件',
       subMid1: '、',
-      subMapsStrong: '58 张 2K 5 通道 ORM 物理贴图',
+      subMapsStrong: '64 张 2K 5 通道 ORM 物理贴图',
       subMid2: ' 与 ',
-      subAudioStrong: '586 段双语语音 + Web Audio 分口径实弹声场',
+      subAudioStrong: '644 段双语语音 + Web Audio 分口径实弹声场',
       subTail:
         '。零客户端下载，一键开启 3D 导演自动运镜，60 FPS 丝滑透视每一根膛线、闭锁突笋与火药燃气联动。',
       ctaArmory: '立即进入 3D 数字枪库',
@@ -228,11 +228,11 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       weaponPillsAria: '快速切换舞台展示枪械',
     },
     metrics: [
-      { val: '10 款', lbl: '传奇制式名枪 · 6 大闭锁原理' },
-      { val: '253 件', lbl: '实时 CSG 布尔零件 · 零穿模' },
-      { val: '58 张', lbl: '2K 5 通道 ORM 物理材质贴图' },
-      { val: '586 段', lbl: '中英双语 AI 研发故事与零件配音' },
-      { val: 'Web Audio', lbl: '6 口径实弹声浪 · 7 阶段机械咬合' },
+      { val: '11 款', lbl: '传奇制式名枪 · 7 大闭锁与供弹原理' },
+      { val: '278 件', lbl: '实时 CSG 布尔零件 · 零穿模' },
+      { val: '64 张', lbl: '2K 5 通道 ORM 物理材质贴图' },
+      { val: '644 段', lbl: '中英双语 AI 研发故事与零件配音' },
+      { val: 'Web Audio', lbl: '7 口径实弹声浪 · 7 阶段机械咬合' },
     ],
     capabilities: {
       kicker: 'FOUR CORE CAPABILITIES',
@@ -251,8 +251,8 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         firing: {
           alt: 'Barrett M82A1 .50 BMG 整管短后坐与箭头制退侧喷',
           tag: 'MODE 02 · 7-STAGE KINEMATICS & BALLISTICS',
-          title: '7 阶段真实运动学循环 + 6 口径 SAAMI/CIP 实弹内弹道',
-          desc: '严格遵循各枪机械运动定律：长/短行程导气活塞、斯通纳气吹、MP5 4:1 滚柱延迟、M82A1 整管短后坐加速子、AWM 60° 防冰栓动及布朗宁闭锁下倾；同步触发分口径声浪与抛壳轨迹。',
+          title: '7 阶段真实运动学循环 + 7 口径 SAAMI/CIP 实弹内弹道',
+          desc: '严格遵循各枪机械运动定律：长/短行程导气活塞、斯通纳气吹、P90 顶置 90° 螺旋供弹自由枪机、MP5 4:1 滚柱延迟、M82A1 整管短后坐、AWM 60° 栓动及布朗宁闭锁下倾；同步触发分口径声浪与抛壳轨迹。',
           cta: '体验巴雷特 .50 BMG 慢放击发',
         },
         section: {
@@ -269,14 +269,14 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           tag: 'MODE 04 · 5-CHANNEL PACKED ORM PBR',
           title: 'Khronos 校准五级深色金属/聚合物分离与图集检视',
           desc: '针对锰系磷化钢、硬质阳极铝、CNC 导轨倒角、玻纤尼龙与硫化橡胶建立五级光学梯度，内置按需加载的 2K WebP 三通道贴图检视与原图下载面板。',
-          cta: '打开 58 张 PBR 贴图图集检视器',
+          cta: '打开 64 张 PBR 贴图图集检视器',
         },
       },
     },
     documentary: {
       kicker: 'MULTIMODAL AUDIO-VISUAL ENGINE · V3.0',
       title: 'AI 四幕双语研发纪录片 · 3D 导演运镜 & 军械声场',
-      desc: '告别无声手动拖拽模型的传统看图模式：全馆藏 10 款名枪内置中英双语四幕研发史、253 枚零件独立配音、自动镜头编排器与程序化 Web Audio 机械合成声效。',
+      desc: '告别无声手动拖拽模型的传统看图模式：全馆藏 11 款名枪内置中英双语四幕研发史、278 枚零件独立配音、自动镜头编排器与程序化 Web Audio 机械合成声效。',
       directorBadge: '3D STORY DIRECTOR · 自动运镜编排',
       directorTitle: '四幕研发纪录片「3D 导演自动运镜模式」',
       directorDesc:
@@ -315,7 +315,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       launchTourCta: (tag) => `全屏导演播放 ${tag} 四幕纪录片`,
       openDrawerCta: '打开图文+字幕抽屉',
       soundBadge: 'PROCEDURAL WEB AUDIO · 零外部音频膨胀',
-      soundTitle: '6 口径差异化实弹声浪 & 7 阶段军械咬合合成引擎',
+      soundTitle: '7 口径差异化实弹声浪 & 7 阶段军械咬合合成引擎',
       soundDesc:
         '基于 Web Audio API 实时物理建模（零额外 WAV/MP3 体积）：1.0x 标准射速清晰区分反器材重炮与手枪脆响；0.25x 超慢放精准剥离每一次金属撞击，并在播报语音时自动执行 Audio Ducking 闪避。',
       caliberRows: [
@@ -338,10 +338,10 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           signature: '导气孔高压放气冲击活塞头 + 35° 双突笋回转闭锁咔哒',
         },
         {
-          caliber: '5.56 NATO / 9×19mm',
-          weaponTag: 'M4A1 / MP5 / G17',
-          freqTag: '84–118 Hz 清脆短促',
-          signature: 'M4 同轴缓冲簧金属余韵 / 9mm 紧凑套筒利落复进与黄铜弹壳清鸣',
+          caliber: '5.56 NATO / 5.7×28mm / 9×19mm',
+          weaponTag: 'M4A1 / P90 / MP5 / G17',
+          freqTag: '84–118 Hz 高频穿甲与清鸣',
+          signature: 'P90 90° 螺旋供弹高速连发缓冲 / M4 缓冲簧余韵 / 9mm 弹壳清鸣',
         },
       ],
       soundFeatures: [
@@ -419,7 +419,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           badge: '2048×1024 WEBP · 贴图图集检视器',
           title: '内置三通道 PBR 图集检视器（Albedo / Normal / ORM）',
           subtitle:
-            '支持在浏览器内实时切换、放大并下载全库 58 张程序化烘焙贴图，体积从 101.35 MB 无损级压缩至 17.25 MB（-83%）。',
+            '支持在浏览器内实时切换、放大并下载全库 64 张程序化烘焙贴图，无损级高压缩比极速秒开。',
           imageFile: 'showcase/pbr-atlas.webp',
           weaponId: 'ak15',
           actionType: 'atlas',
@@ -428,14 +428,14 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       ],
     },
     arsenal: {
-      kicker: '10-BAY MASTER ROSTER · FACTORY 1:1',
-      title: '十大世界经典名枪 1:1 测绘馆藏矩阵',
+      kicker: '11-BAY MASTER ROSTER · FACTORY 1:1',
+      title: '十一大世界经典名枪 1:1 测绘馆藏矩阵',
       desc: '涵盖俄、美、德、奥、英、比、以七国代表性轻武器体系，每款均配备双语四幕研发纪录片、全零件配音、独立总成与自动闭锁运动学方程。',
       filterAria: '馆藏分类筛选',
       categories: {
         all: '全部馆藏',
         assault: '突击 / 卡宾 / 无托',
-        smg: '冲锋枪',
+        smg: '冲锋枪 / PDW',
         sniper: '狙击 / 反器材',
         pistol: '半自动手枪',
       },
@@ -466,8 +466,8 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           code: 'ARCH-01',
           iconKey: 'git',
           title: '自包含武器插件与首屏秒开分包',
-          desc: '首屏仅加载不足 8 KB 的轻量展架清单（manifests.ts）；10 款武器的零件 BOM、运动学方程、双语档案与 CSG 脚本均通过动态分包按需懒加载。',
-          metric: '10 独立插件 Chunk',
+          desc: '首屏仅加载轻量展架清单（manifests.ts）；11 款武器的零件 BOM、运动学方程、双语档案与 CSG 脚本均通过动态分包按需懒加载。',
+          metric: '11 独立插件 Chunk',
         },
         {
           code: 'ARCH-02',
@@ -488,7 +488,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           iconKey: 'sparkles',
           title: '5 通道 Packed ORM 与双语导演编排',
           desc: '离线烘焙 Albedo + 法线 + ORM 贴图还原真实磷化/硬铬质感；3D 导演编排器根据 Gemini TTS 语音进度自动驱动镜头聚焦、剖视与慢放击发。',
-          metric: '586 段双语语音',
+          metric: '644 段双语语音',
         },
         {
           code: 'ARCH-05',
@@ -501,7 +501,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           code: 'ARCH-06',
           iconKey: 'shield',
           title: '401 步运动学防穿模与声画契约门禁',
-          desc: 'Vitest 自动化契约套件对全部 10 枪 253 零件执行法线、UV、Khronos 亮度、586 段配音完整性及导演/声学相位连续性断言，锁死工业级交付标准。',
+          desc: 'Vitest 自动化契约套件对全部 11 枪 278 零件执行法线、UV、Khronos 亮度、644 段配音完整性及导演/声学相位连续性断言，锁死工业级交付标准。',
           metric: '全量自动化契约',
         },
       ],
@@ -526,7 +526,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       finalTitle: '现在进入 3D 数字枪库，开启声画同步机械探索之旅',
       finalSub:
         '支持中英双语自由切换与 URL 深度链接分享任意枪械、拆解进度与实弹演示；开源免费，如果这个项目对你有启发，欢迎在 GitHub 点亮一颗 Star。',
-      finalLaunchBtn: '启动 10 槽 3D 数字枪库',
+      finalLaunchBtn: '启动 11 槽 3D 数字枪库',
       finalStarBtn: '前往 GitHub 点亮 Star',
       footerBrand: 'Digital Armory 3D · 枪械内部结构 3D 数字博物馆',
       footerDisclaimer:
@@ -540,24 +540,24 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       capabilities: '4 Core Modes',
       documentary: 'AI 3D Director',
       gallery: 'Live Captures',
-      arsenal: '10-Firearm Vault',
+      arsenal: '11-Firearm Vault',
       architecture: 'Engine Architecture',
       quickstart: 'Quick Start',
       launchArmory: 'Enter 3D Armory',
     },
     hero: {
       eyebrow:
-        'OPEN-SOURCE WEBGL 2.0 MUSEUM · 10 FIREARMS · 586 AI VOICE CLIPS · WEB AUDIO',
+        'OPEN-SOURCE WEBGL 2.0 MUSEUM · 11 FIREARMS · 644 AI VOICE CLIPS · WEB AUDIO',
       titlePrefix: 'Explore ',
       titleHighlight: '1:1 Mechanical Cutaways & 3D AI Documentaries',
-      titleSuffix: ' of 10 Iconic Firearms in Your Browser',
+      titleSuffix: ' of 11 Iconic Firearms in Your Browser',
       subLead: 'Procedural real-time CSG modeling of ',
-      subPartsStrong: '253 moving CAD components',
+      subPartsStrong: '278 moving CAD components',
       subMid1: ', ',
-      subMapsStrong: '58 custom 2K 5-channel ORM textures',
+      subMapsStrong: '64 custom 2K 5-channel ORM textures',
       subMid2: ', and ',
       subAudioStrong:
-        '586 bilingual voice clips + Web Audio ballistic acoustics',
+        '644 bilingual voice clips + Web Audio ballistic acoustics',
       subTail:
         '. Zero installs—launch 3D Director Mode to inspect every rifling land, locking lug, and gas piston at 60 FPS.',
       ctaArmory: 'Enter 3D Digital Armory',
@@ -578,11 +578,11 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       weaponPillsAria: 'Switch live stage firearm',
     },
     metrics: [
-      { val: '10 Icons', lbl: 'Service Firearms · 6 Locking Systems' },
-      { val: '253 Parts', lbl: 'Manifold CSG Nodes · Zero Clipping' },
-      { val: '58 Maps', lbl: '2K 5-Channel Packed ORM Textures' },
-      { val: '586 Clips', lbl: 'Bilingual Gemini TTS R&D & Part Audio' },
-      { val: 'Web Audio', lbl: '6-Caliber Blasts · 7-Stage Mech Foley' },
+      { val: '11 Icons', lbl: 'Service Firearms · 7 Feed & Lock Systems' },
+      { val: '278 Parts', lbl: 'Manifold CSG Nodes · Zero Clipping' },
+      { val: '64 Maps', lbl: '2K 5-Channel Packed ORM Textures' },
+      { val: '644 Clips', lbl: 'Bilingual Gemini TTS R&D & Part Audio' },
+      { val: 'Web Audio', lbl: '7-Caliber Blasts · 7-Stage Mech Foley' },
     ],
     capabilities: {
       kicker: 'FOUR CORE CAPABILITIES',
@@ -601,8 +601,8 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         firing: {
           alt: 'Barrett M82A1 .50 BMG barrel short-recoil and 60-degree arrowhead muzzle blast',
           tag: 'MODE 02 · 7-STAGE KINEMATICS & BALLISTICS',
-          title: '7-Stage Coupled Kinematics + 6-Caliber SAAMI/CIP Ballistics',
-          desc: 'Faithfully models long/short-stroke pistons, Stoner DI gas tube, MP5 4:1 roller delay, M82A1 short-recoil accelerator, AWM 60° bolt lift, and Browning tilting barrel—paired with caliber-accurate Web Audio blasts.',
+          title: '7-Stage Coupled Kinematics + 7-Caliber SAAMI/CIP Ballistics',
+          desc: 'Faithfully models long/short-stroke pistons, Stoner DI gas tube, P90 90° helical top-feed blowback, MP5 4:1 roller delay, M82A1 short-recoil accelerator, AWM 60° bolt lift, and Browning tilting barrel.',
           cta: 'Launch Barrett .50 BMG Slow-Mo Cycle',
         },
         section: {
@@ -619,14 +619,14 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           tag: 'MODE 04 · 5-CHANNEL PACKED ORM PBR',
           title: 'Khronos-Calibrated 5-Tier Metal/Polymer PBR & Live Atlas',
           desc: 'Separates manganese phosphate steel, hard-coat anodized aluminum, CNC rail chamfers, glass-filled nylon, and overmolded rubber with an in-browser 2K WebP channel inspector.',
-          cta: 'Inspect All 58 2K PBR Texture Maps',
+          cta: 'Inspect All 64 2K PBR Texture Maps',
         },
       },
     },
     documentary: {
       kicker: 'MULTIMODAL AUDIO-VISUAL ENGINE · V3.0',
       title: 'Bilingual 4-Act AI Documentary · 3D Director & Acoustic Engine',
-      desc: 'Beyond silent manual model viewers: all 10 firearms ship with bilingual 4-act R&D documentaries, 253 spoken component breakdowns, automated 3D camera choreography, and procedural Web Audio gunsmith acoustics.',
+      desc: 'Beyond silent manual model viewers: all 11 firearms ship with bilingual 4-act R&D documentaries, 278 spoken component breakdowns, automated 3D camera choreography, and procedural Web Audio gunsmith acoustics.',
       directorBadge: '3D STORY DIRECTOR · AUTO-CHOREOGRAPHY',
       directorTitle: '4-Act Documentary "3D Director Auto-Tour Mode"',
       directorDesc:
@@ -665,9 +665,9 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       launchTourCta: (tag) => `Launch ${tag} 3D Director Tour`,
       openDrawerCta: 'Open Full Essay & Captions',
       soundBadge: 'PROCEDURAL WEB AUDIO · ZERO ASSET BLOAT',
-      soundTitle: '6-Caliber Ballistic Blasts & 7-Stage Gunsmith Foley Synth',
+      soundTitle: '7-Caliber Ballistic Blasts & 7-Stage Gunsmith Foley Synth',
       soundDesc:
-        'Real-time procedural Web Audio synthesis (0 KB external audio bloat): distinguishes anti-materiel shockwaves from crisp 9mm snaps at 1.0x, separates every metallic click at 0.25x, and ducks automatically under TTS voice.',
+        'Real-time procedural Web Audio synthesis (0 KB external audio bloat): distinguishes anti-materiel shockwaves from crisp PDW & 9mm snaps at 1.0x, separates every metallic click at 0.25x, and ducks automatically under TTS voice.',
       caliberRows: [
         {
           caliber: '12.7×99mm (.50 BMG)',
@@ -691,11 +691,11 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
             'Gas-port bleed striking piston cup + 35° dual-lug rotary lockup clunk',
         },
         {
-          caliber: '5.56 NATO / 9×19mm',
-          weaponTag: 'M4A1 / MP5 / G17',
-          freqTag: '84–118 Hz Crisp Snap',
+          caliber: '5.56 NATO / 5.7×28mm / 9×19mm',
+          weaponTag: 'M4A1 / P90 / MP5 / G17',
+          freqTag: '84–118 Hz Crisp PDW & Snap',
           signature:
-            'M4 coaxial buffer-spring twang / fast 9mm slide cycle & brass casing ring',
+            'P90 90° helical feed & elastomer buffer / M4 buffer twang / 9mm brass ring',
         },
       ],
       soundFeatures: [
@@ -773,7 +773,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           badge: '2048×1024 WEBP · TEXTURE INSPECTOR',
           title: 'Built-In 3-Channel PBR Atlas Inspector (Albedo / Normal / ORM)',
           subtitle:
-            'Toggle, zoom, and download all 58 procedurally baked 2K maps directly in the browser—losslessly compressed from 101.35 MB down to 17.25 MB (-83%).',
+            'Toggle, zoom, and download all 64 procedurally baked 2K WebP maps directly in the browser with ultra-fast lossless-grade compression.',
           imageFile: 'showcase/pbr-atlas.webp',
           weaponId: 'ak15',
           actionType: 'atlas',
@@ -782,14 +782,14 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       ],
     },
     arsenal: {
-      kicker: '10-BAY MASTER ROSTER · FACTORY 1:1',
-      title: '10 Iconic World Firearms · 1:1 Metrology Vault Matrix',
+      kicker: '11-BAY MASTER ROSTER · FACTORY 1:1',
+      title: '11 Iconic World Firearms · 1:1 Metrology Vault Matrix',
       desc: 'Spanning Russian, American, German, Austrian, British, Belgian, and Israeli small-arms lineages—each complete with a 4-act bilingual documentary, spoken part guides, and coupled kinematics.',
       filterAria: 'Filter vault collection by category',
       categories: {
         all: 'All Vault',
         assault: 'Rifle / Carbine / Bullpup',
-        smg: 'Submachine Gun',
+        smg: 'SMG / PDW',
         sniper: 'Sniper / Anti-Materiel',
         pistol: 'Service Pistol',
       },
@@ -820,8 +820,8 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           code: 'ARCH-01',
           iconKey: 'git',
           title: 'Self-Contained Plugins & Instant Cold-Start',
-          desc: 'Initial load pulls <8 KB of static catalog metadata (manifests.ts); all 10 weapon BOMs, kinematic equations, narration JSONs, and CSG builders lazy-load on demand.',
-          metric: '10 Dynamic Chunks',
+          desc: 'Initial load pulls static catalog metadata (manifests.ts); all 11 weapon BOMs, kinematic equations, narration JSONs, and CSG builders lazy-load on demand.',
+          metric: '11 Dynamic Chunks',
         },
         {
           code: 'ARCH-02',
@@ -841,8 +841,8 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           code: 'ARCH-04',
           iconKey: 'sparkles',
           title: '5-Channel Packed ORM & 3D Story Director',
-          desc: 'Python pbr_core bakes Albedo + Normal + ORM maps while storyDirector.ts choreographs camera flights, cutaways, and 0.25x firing to 586 Gemini TTS clips.',
-          metric: '586 Bilingual Clips',
+          desc: 'Python pbr_core bakes Albedo + Normal + ORM maps while storyDirector.ts choreographs camera flights, cutaways, and 0.25x firing to 644 Gemini TTS clips.',
+          metric: '644 Bilingual Clips',
         },
         {
           code: 'ARCH-05',
@@ -855,7 +855,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           code: 'ARCH-06',
           iconKey: 'shield',
           title: '401-Step Anti-Clipping & Audio-Visual Contracts',
-          desc: 'Automated Vitest suites verify unit normals, UV bounds, Khronos PBR luminance floors, 586 audio assets, and director/acoustic phase invariants.',
+          desc: 'Automated Vitest suites verify unit normals, UV bounds, Khronos PBR luminance floors, 644 audio assets, and director/acoustic phase invariants.',
           metric: 'Full Contract Suite',
         },
       ],
@@ -880,7 +880,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       finalTitle: 'Step Inside the 3D Armory & Experience Interactive Engineering',
       finalSub:
         'Full Chinese/English parity with shareable URL deep links for any weapon, mode, and language. Open-source under MIT—star the repo on GitHub if you enjoy it!',
-      finalLaunchBtn: 'Launch 10-Bay 3D Armory',
+      finalLaunchBtn: 'Launch 11-Bay 3D Armory',
       finalStarBtn: 'Star on GitHub',
       footerBrand: 'Digital Armory 3D · Open-Source 3D Firearms Mechanical Museum',
       footerDisclaimer:

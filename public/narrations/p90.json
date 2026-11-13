@@ -1,0 +1,911 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "p90",
+  "generatedAt": "2026-11-13T04:36:39.859555+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "FN P90 Personal Defense Weapon (PDW)",
+    "subtitle": "5.7×28mm Top-Mounted 50-Round Horizontal Helical-Feed Bullpup",
+    "originCountry": "Belgium",
+    "weaponType": "Personal Defense Weapon (PDW)",
+    "categoryLabel": "Bullpup PDW",
+    "actionMechanism": "Bullpup · Heavy Straight Blowback · 90° Helical Top-Magazine Feed · Bottom Ejection",
+    "statusLabel": "In Vault · Disassembly Ready",
+    "description": "Unveiled in 1990 by FN Herstal of Belgium in direct response to NATO AC/225 CRISAT requirements, the FN P90 pioneered the modern Personal Defense Weapon (PDW) class. Firing the high-velocity 5.7×28mm SS190 armor-piercing bottleneck cartridge from a 50-round translucent horizontal magazine that rotates rounds 90 degrees via a patented helical ramp, its ergonomic thumbhole bullpup stock and downward ejection chute achieve 100% ambidextrous handling inside a 504 mm footprint.",
+    "highlights": [
+      "Top-Mounted 50-Round Translucent Horizontal Magazine",
+      "Patented 90° Helical Cartridge-Rotating Feed Turret",
+      "100% Ambidextrous Thumbhole Stock & Bottom Ejection",
+      "10.4\" CHF 5.7×28mm Barrel & Ring Sight MC-10-80 Optic"
+    ],
+    "workbenchTitle": "FN P90 PDW Mechanical Cutaway & 90° Helical Feed Cycle",
+    "workbenchSubtitle": "4 Modular Groups · 25 Nodes · Horizontal 90° Turret Feed, Blowback & Bottom Ejection",
+    "cutawayLabel": "90° Helical Ramp Focus",
+    "cutawayTitle": "Switch to cutaway viewport focusing on the 90° helical feed ramp, blowback bolt, and bottom chute",
+    "searchPlaceholder": "Search component or BOM code (e.g., Helical, Ring Sight, Bolt, M-02)...",
+    "firingMilestoneLabel": "715 m/s Muzzle Exit",
+    "rateOfFire": "900 rpm",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0%",
+        "desc": "Standard ready configuration of the FN P90 PDW: the 50-round smoked polycarbonate magazine sits flush atop the spine with 5.7×28mm rounds stored transversely, mated to the Ring Sight MC-10-80 optic, heavy blowback bolt, and rear polymer hammer pack."
+      },
+      "field_strip": {
+        "label": "4-Group Field Strip",
+        "subLabel": "30%",
+        "desc": "Tool-less 12-second modular breakdown into four assemblies: retract the twin magazine latches to lift off the 50-round magazine, depress the receiver lock to slide out the optical upper and 10.4\" barrel, and drop the buttplate to withdraw the bolt and polymer hammer pack."
+      },
+      "sub_assembly": {
+        "label": "Helical & Guide-Rod Strip",
+        "subLabel": "65%",
+        "desc": "Sub-assembly separation isolating the patented 90-degree helical feed ramp turret, twin-roller horizontal follower, dual parallel stainless recoil guide rods, and elastomer rear buffer."
+      },
+      "full_exploded": {
+        "label": "25-Node Exploded View",
+        "subLabel": "100%",
+        "desc": "Complete armorers exploded view across all 25 nodes: slanted compensator, MC-10-80 collimator, coaxial firing pin, twin chute-straddling transfer bars, rotary dial selector, and polymer hammer."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "Progressive Trigger",
+        "title": "Phase 1 · Two-Stage Linear Trigger & Chute-Straddling Transfer Bars",
+        "description": "Pulling the horizontal sliding trigger draws twin parallel stainless transfer bars rearward around the central ejection chute, camming the primary sear inside the rear polymer hammer pack."
+      },
+      "phase_2": {
+        "shortLabel": "Polymer Hammer Strike",
+        "title": "Phase 2 · Ultra-Light Polymer Hammer Ignition & Primer Strike",
+        "description": "Released from the sear, the low-inertia polymer rotary hammer swings rapidly forward under torsion spring torque, driving the coaxial floating firing pin into the 5.7×28mm primer."
+      },
+      "phase_3": {
+        "shortLabel": "715 m/s Muzzle Exit",
+        "title": "Phase 3 · SS190 Acceleration & Inertial Blowback Dwell",
+        "description": "The 31-grain SS190 armor-piercing projectile accelerates down the 264 mm barrel to 715 m/s past the slanted compensator while bolt mass inertia holds polymer-coated case movement under 1.8 mm."
+      },
+      "phase_4": {
+        "shortLabel": "Linear Bolt Recoil",
+        "title": "Phase 4 · Non-Rotating Straight Blowback & Dual Spring Compression",
+        "description": "Residual chamber gas drives the heavy breech bolt straight rearward along dual parallel guide rods with zero lug rotation, compressing twin recoil springs and re-cocking the polymer hammer."
+      },
+      "phase_5": {
+        "shortLabel": "Downward Ejection",
+        "title": "Phase 5 · Rear Buffer Contact & Vertical Bottom Chute Ejection",
+        "description": "As the bolt reaches the polyurethane rear buffer, the fixed ejector kicks the spent 5.7×28mm brass straight downward through the stock chute, swinging open the spring dust cover toward the ground."
+      },
+      "phase_6": {
+        "shortLabel": "90° Helical Feed",
+        "title": "Phase 6 · 90° Helical Cartridge Rotation & Bolt Strip Chambering",
+        "description": "Driven by the twin-roller follower, the next horizontal cartridge spirals 90 degrees clockwise down the helical feed ramp to align forward, where the returning bolt strips it into the chamber."
+      },
+      "phase_7": {
+        "shortLabel": "Dust Cover & Reset",
+        "title": "Phase 7 · Bottom Dust-Cover Closure & Progressive Sear Reset",
+        "description": "The bottom ejection cover snaps shut against mud ingress while releasing the sliding trigger advances the twin transfer bars, resetting the disconnector onto the primary sear shelf."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "九十度螺旋奇迹：比利时 FN P90 个人防卫武器革命",
+      "deck": "当冷战末期凯夫拉与钛合金防弹衣令九毫米冲锋枪全面失效，比利时赫斯塔尔国营兵工厂用横向平铺五十发弹匣、九十度螺旋供弹坡道与人体工学无托流线枪身，缔造了跨越世纪的太空单兵武器传奇。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1986–1989",
+          "title": "防弹衣危机：北约后方乘员的九毫米困境与 PDW 诞生",
+          "paragraphs": [
+            "二十世纪八十年代中期，苏联大规模列装采用钛合金插板与芳纶织物的制式防弹衣。北约陆军装备委员会在代号 CRISAT 的靶场评估中震惊地发现，长期配发给装甲车驾驶员、炮兵、工兵与通信兵的九毫米手枪及冲锋枪，在五十米外面对苏联防弹衣已彻底丧失穿透力。占现代军队总员额近七成的技术与后勤兵种，一旦遭遇苏军空降突击队渗透，将陷入携枪却无法击穿敌军护甲的致命绝境。",
+            "一九八六年，比利时赫斯塔尔国营兵工厂率先开启代号“九十年代工程”的全新武器与弹药同步研发计划。设计团队彻底摒弃了沿用近百年的九毫米帕拉贝鲁姆手枪弹，从零研制出缩颈瓶形 5.7×28 毫米高速小口径穿甲弹：仅重两克的钢铝复合芯尖头弹以每秒七百一十五米初速出膛，既能在两百米距离击穿四十八层凯夫拉与一点六毫米钛板，又将后坐冲量削减至标准步枪弹的三分之一。"
+          ],
+          "audioScript": "上世纪八十年代中期，凯夫拉与钛合金复合防弹衣的普及，让传统九毫米手枪与冲锋枪在战场上全面失效。北约急需为装甲车乘员与后勤兵种配备一种兼具冲锋枪微缩尺寸与步枪级穿甲威力的个人防卫武器。比利时赫斯塔尔兵工厂于一九八六年启动九十年代工程，同步研发全新五点七毫米高速缩颈穿甲弹与超紧凑无托枪械。",
+          "audioUrl": "audio/p90/story_act1_zh.mp3",
+          "focusPartId": "p90_barrel",
+          "focusPartLabel": "10.4英寸冷锻镀铬 5.7×28mm 枪管"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1987–1990",
+          "title": "人机雕塑：拇指孔流线无托与底部垂直抛壳",
+          "paragraphs": [
+            "要让平时双手忙于驾驶坦克或操作雷达的士兵在遭遇突袭时一秒出枪命中，传统折叠托冲锋枪挂钩繁杂、左右手抛壳打脸的顽疾必须根除。工业设计大师勒内·普雷达齐与总师让-保罗·德尼引入当代人体工程学雕塑理念，采用高抗冲玻纤增强聚酰胺一体注塑出毫无尖锐棱角的流线型无托枪身。前护手自然下延成护指钩，握把化作贴合掌心的椭圆形拇指孔，全枪总长被压缩至惊人的五百零四毫米，却完整保留了二百六十四毫米的卡宾级加速枪管。",
+            "更令人拍案叫绝的是其百分百全对称交互架构：双侧非随动拉机柄、双侧弹匣卡笋、扳机下方的同轴旋盘快慢机左右完全镜像；而困扰无托步枪数十年的“左撇子射手被炽热弹壳打伤脸颊”难题，被握把后方直通枪腹的中央垂直抛壳井一举终结——射击时弹簧防尘活门自动弹开，空弹壳顺重力笔直落向射手脚尖前方。"
+          ],
+          "audioScript": "为了在狭窄坦克舱盖内瞬间出枪且绝不勾挂装具，设计师普雷达齐塑造出全圆弧拇指孔无托聚合物枪身。全枪长仅约五十厘米，比传统折叠冲锋枪还要短小精悍。工程团队更独创握把后方的中央垂直向下抛壳通道，让炽热弹壳笔直落向地面，实现了真正不分左右手的全对称抵肩射击。",
+          "audioUrl": "audio/p90/story_act2_zh.mp3",
+          "focusPartId": "p90_stock",
+          "focusPartLabel": "玻纤增强拇指孔无托枪身壳体"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1988–1990",
+          "title": "机械神来之笔：平铺五十发透明弹匣与九十度螺旋坡道",
+          "paragraphs": [
+            "如果沿用常规垂直下插式五十发长弹匣，整支武器高度将暴增一倍，不仅无法在车辆观察窗或伏地隐蔽姿态下平端射击，更会破坏整枪的低矮流线轮廓。赫斯塔尔工程师为此交出了世界轻武器史上最富想象力的美国专利第四百九十万五千三百九十四号发明：将半透明烟熏聚碳酸酯弹匣水平叠放在枪身顶部脊线上，五十发 5.7×28 毫米子弹在匣内与枪管呈九十度垂直横向双排排列，弹尖统一朝左。",
+            "当长行程水平推进扁簧推动双滚轮推弹器向枪尾挤压弹列时，弹匣尾端圆柱形的九十度螺旋旋转供弹坡道展现精妙几何魔力：横向子弹顺着阿基米德三维螺旋导槽顺时针平滑旋转九十度并下沉，在抵达双抱弹口的瞬间精准转正朝向枪口前方，随即被复进的重型枪机推入弹膛。高达五十发的持续火力被完全隐形收纳于枪脊之内，且射手低头一瞥即可透过刻度窗掌握余弹。"
+          ],
+          "audioScript": "下挂长弹匣会严重妨碍乘车与卧姿射击，赫斯塔尔团队为此发明了举世瞩目的顶置水平弹匣专利。五十发实弹横向平铺在半透明聚碳酸酯枪脊匣体内，弹尖全部朝左。射击供弹时，双滚轮推弹器将横向子弹推入尾端九十度螺旋坡道，子弹顺时针旋转九十度精准转正入膛，堪称轻武器供弹机械的巅峰杰作。",
+          "audioUrl": "audio/p90/story_act3_zh.mp3",
+          "focusPartId": "p90_helical_ramp",
+          "focusPartLabel": "90°螺旋旋转供弹坡道转盘"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1991–至今",
+          "title": "实战封神：高分子干膜闭锁与利马使馆突击传奇",
+          "paragraphs": [
+            "要在无回转突笋的自由枪机原理下安全驾驭高膛压瓶颈穿甲弹，FN 再次展现了深厚的内弹道冶金功底：重型自由枪机沿双联平行不锈钢导杆直线往复并由聚氨酯缓冲块柔和吸能，而每一发 5.7×28 毫米黄铜弹壳表面均涂覆特种固态聚合物干膜。发射膛压峰值瞬间干膜产生适度摩擦助力贴膛闭气，膛压回落时又赋予弹壳极佳润滑性顺畅抽壳，配合免润滑后置全塑击锤盒，实现了每分钟九百发泼水连发下近乎为零的枪口上跳。",
+            "一九九〇年正式量产的 P90 在一九九七年秘鲁利马日本大使馆人质解救行动“查文德万塔尔”中一战成名，秘鲁特种部队携 P90 突入密室瞬间击穿恐怖分子防弹背心全歼顽敌。此后，从美国特勤局总统贴身警卫、法国宪兵特勤队等四十余国反恐精锐，到二零二一年北约正式将 5.7×28 毫米签署为 STANAG 4509 制式标准弹药，FN P90 终以超越时代的工程想象力铸就不朽丰碑。"
+          ],
+          "audioScript": "在内部动力核心上，重型自由枪机配合双联平行复进导杆与高分子覆层弹壳，在每分钟九百发高射速下依然稳如磐石。后置全聚合物击锤盒无需工具即可在十余秒内徒手拆出维护。从一九九七年利马人质营救一战封神，到美国特勤局与四十多国反恐部队列装，再到北约正式确立五点七毫米制式标准，这款传奇武器彻底改写了现代近战法则。",
+          "audioUrl": "audio/p90/story_act4_zh.mp3",
+          "focusPartId": "p90_bolt",
+          "focusPartLabel": "重型自由枪机闭锁体"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "顶置 50 发水平弹匣与 90° 螺旋供弹转盘",
+          "tag": "US 4,905,394 核心专利",
+          "summary": "将 50 发实弹与枪管呈 90° 横向双排平铺于枪脊半透明聚碳酸酯匣内，尾端螺旋曲面导槽配合双滚轮推弹器将子弹顺时针连续旋转 90° 转正入膛，在零下垂高度增量下实现班用机枪级容弹量。",
+          "focusPartId": "p90_helical_ramp",
+          "focusPartLabel": "90°螺旋供弹坡道转盘"
+        },
+        {
+          "id": "bt2",
+          "title": "100% 全对称拇指孔无托与底部垂直抛壳",
+          "tag": "左右手零改装通用",
+          "summary": "流线圆弧玻纤聚酰胺枪身将全长浓缩至 504 mm，双侧拉机柄、双侧弹匣锁与同轴快慢机完全镜像，空弹壳经握把后方垂直通道向下直落地面，彻底消除无托枪侧向抛壳打脸与贴墙射击障碍。",
+          "focusPartId": "p90_stock",
+          "focusPartLabel": "拇指孔无托枪身"
+        },
+        {
+          "id": "bt3",
+          "title": "免工具快拆全聚合物击锤盒与渐进双阶扳机",
+          "tag": "自润滑高分子火控",
+          "summary": "尾托火控盒及超轻回转击锤全部由自润滑工程聚合物模压成型，锁时极短且耐严寒风沙；配合前置水平双阶渐进扳机，在连发档实现“半扣精准单发、扣到底 900 发/分连发”的直觉操控。",
+          "focusPartId": "p90_hammer_pack",
+          "focusPartLabel": "全聚合物击锤盒"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1986",
+          "title": "“90年代工程”秘密立项",
+          "detail": "针对防弹衣普及导致的 9mm 弹药失效危机，比利时 FN Herstal 启动全新高速小口径弹药与紧凑型个人防卫武器联合研制。"
+        },
+        {
+          "year": "1989",
+          "title": "90° 螺旋供弹专利与 CRISAT 靶试",
+          "detail": "让-保罗·德尼与马克·纽福格获授顶置横向弹匣 90° 螺旋旋转供弹专利，5.7×28mm 原型弹通过北约防弹靶板穿透测试。"
+        },
+        {
+          "year": "1990",
+          "title": "FN P90 正式定型投产",
+          "detail": "恰逢 1990 年代开启，“Project 9.0”正式定名为 FN P90 投入量产，开创现代个人防卫武器（PDW）全新战术门类。"
+        },
+        {
+          "year": "1993",
+          "title": "SS190 穿甲弹定型优化",
+          "detail": "推出采用钢穿甲头与铝芯复合弹头的 SS190 制式弹（总长缩至 40.5 mm），可在 200 米击穿 CRISAT 钛合金凯夫拉复合靶。"
+        },
+        {
+          "year": "1997",
+          "title": "利马日本大使馆实战首秀",
+          "detail": "秘鲁特种部队在“查文德万塔尔行动”中使用 P90 突袭解救 71 名人质，实战验证狭窄室内近战压制与穿甲效能。"
+        },
+        {
+          "year": "2021",
+          "title": "北约 STANAG 4509 制式化加冕",
+          "detail": "历经三十年实战检验，北约正式颁布 STANAG 4509 标准，将 FN 5.7×28mm 确立为北约制式个人防卫武器标准口径。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "The 90-Degree Helical Miracle: FN P90 & The PDW Revolution",
+      "deck": "When late-Cold-War Kevlar and titanium body armor rendered 9mm submachine guns obsolete, Belgium's FN Herstal answered with a flush 50-round horizontal spine magazine, a 90-degree helical feed ramp, and an organic bullpup chassis that redefined close-quarters small arms.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1986–1989",
+          "title": "The Body-Armor Crisis: NATO's Rear-Echelon Dilemma & Birth of the PDW",
+          "paragraphs": [
+            "By the mid-1980s, widespread Soviet fielding of titanium-plated and aramid-fiber body armor triggered alarm across NATO ordnance boards. Under the CRISAT trials, military analysts proved that standard 9×19mm pistols and submachine guns issued to vehicle crews, artillerymen, combat engineers, and signalers could no longer defeat enemy vests even at fifty meters. Nearly seventy percent of modern uniformed personnel faced being overrun by airborne commandos without a weapon capable of penetrating armor.",
+            "In 1986, Fabrique Nationale Herstal in Belgium launched 'Project 9.0' as a clean-sheet cartridge-and-weapon system. Discarding century-old pistol calibers, FN ballistics engineers created the bottleneck 5.7×28mm cartridge: firing a 31-grain steel-and-aluminum core spitzer projectile at 715 meters per second, it punched cleanly through forty-eight layers of Kevlar and 1.6-millimeter titanium at two hundred meters while generating barely one-third the recoil impulse of a 5.56mm rifle."
+          ],
+          "audioScript": "In the mid nineteen-eighties, widespread Kevlar and titanium body armor rendered conventional nine-millimeter submachine guns ineffective on the modern battlefield. NATO urgently needed a compact Personal Defense Weapon giving vehicle crews and support troops true rifle-grade armor penetration. In nineteen eighty-six, Belgium's FN Herstal launched Project Nine-Point-Zero to co-develop the high-velocity five-point-seven millimeter cartridge alongside a radical bullpup firearm.",
+          "audioUrl": "audio/p90/story_act1_en.mp3",
+          "focusPartId": "p90_barrel",
+          "focusPartLabel": "10.4-Inch Cold-Hammer-Forged 5.7×28mm Barrel"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1987–1990",
+          "title": "Ergonomic Sculpture: Thumbhole Bullpup Architecture & Bottom Ejection",
+          "paragraphs": [
+            "For tank drivers and radar operators forced to return fire at a moment's notice, folding-stock carbines were snaggy, slow to deploy, and hostile to left-handed shooters. Industrial designer René Predazzi and chief engineer Jean-Paul Denis sculpted an organic, snag-free bullpup stock injection-molded from glass-reinforced polyamide. Blending a curved forend hand-stop into an ergonomic oval thumbhole pistol grip, the chassis compressed overall length to a mere 504 millimeters while housing a full 264-millimeter cold-hammer-forged barrel.",
+            "Equally revolutionary was its total bilateral symmetry. Non-reciprocating charging wings, sliding magazine latches, and the under-trigger rotary selector dial mirrored identically left and right. Most decisively, FN eliminated the classic bullpup curse of brass striking a left-handed shooter's cheek by routing spent cases straight downward through an internal vertical stock chute past a spring-loaded dust cover."
+          ],
+          "audioScript": "To deploy instantly from cramped armored hatches without snagging gear, designer Rene Predazzi sculpted a snag-free polymer thumbhole bullpup chassis. Measuring barely fifty centimeters overall, the weapon remained shorter than most folded submachine guns while preserving a ten-point-four inch barrel. By routing spent brass straight downward through a vertical stock chute behind the grip, FN achieved effortless, one-hundred-percent ambidextrous handling.",
+          "audioUrl": "audio/p90/story_act2_en.mp3",
+          "focusPartId": "p90_stock",
+          "focusPartLabel": "Polymer Ergonomic Thumbhole Bullpup Stock"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1988–1990",
+          "title": "Mechanical Masterstroke: The 50-Round Spine Magazine & 90° Helical Ramp",
+          "paragraphs": [
+            "A conventional protruding fifty-round box magazine would have doubled the weapon's height, preventing prone firing or turret egress. FN engineers answered with one of small-arms history's boldest mechanisms, granted United States Patent 4,905,394: a translucent smoked polycarbonate magazine mounted horizontally flush atop the receiver spine, storing fifty 5.7×28mm cartridges sideways at a ninety-degree angle to the bore with bullet tips pointing left.",
+            "Driven rearward by a constant-force horizontal spring and a twin-roller follower, each cartridge enters a cylindrical helical feed-ramp turret at the rear of the magazine. Guided along precision three-dimensional spiral tracks, the round rotates ninety degrees clockwise while descending into the feed lips—aligning dead ahead with the chamber just as the returning bolt strips it home."
+          ],
+          "audioScript": "Because a long protruding box magazine would obstruct vehicle crews and prone shooting, FN Herstal patented a flush top-mounted horizontal magazine. Fifty cartridges lie sideways inside the smoked polycarbonate body perpendicular to the barrel, giving instant visual ammo checks. As the twin-roller follower pushes the column rearward, a cylindrical helical feed ramp smoothly spirals each round ninety degrees clockwise to align straight into the chamber.",
+          "audioUrl": "audio/p90/story_act3_en.mp3",
+          "focusPartId": "p90_helical_ramp",
+          "focusPartLabel": "90° Helical Cartridge-Rotating Feed Ramp Turret"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "1991–Present",
+          "title": "Combat Proven: Dry-Film Blowback Dynamics & Global Elite Service",
+          "paragraphs": [
+            "Harnessing a high-pressure bottleneck round inside a simple, ultra-reliable straight-blowback action demanded subtle metallurgical finesse. FN paired a heavy breech bolt riding on dual parallel stainless guide rods and a polyurethane buffer with a proprietary dry-film polymer coating baked onto every 5.7×28mm brass case. Under peak pressure the coating grips chamber walls to limit bolt movement, then releases cleanly for slick extraction—yielding controllable 900-round-per-minute bursts with virtually zero muzzle climb.",
+            "Entering production in 1990, the P90 earned combat fame during Peru's 1997 Operation Chavín de Huántar hostage rescue in Lima, defeating armored insurgents in tight corridors. Adopted by the United States Secret Service, GIGN, and special units across more than forty nations—and crowned by NATO STANAG 4509 standardization in 2021—the FN P90 stands as an enduring icon of futuristic mechanical engineering."
+          ],
+          "audioScript": "Inside the receiver, a heavy straight-blowback bolt glides along dual parallel guide rods while polymer-coated brass cases ensure flawless high-pressure extraction at nine hundred rounds per minute. At the rear buttstock, a self-lubricating all-polymer hammer cassette slides out in seconds without tools. From the nineteen ninety-seven Lima embassy rescue to the United States Secret Service and NATO standardization in twenty twenty-one, the FN P90 forever transformed close-quarters defense.",
+          "audioUrl": "audio/p90/story_act4_en.mp3",
+          "focusPartId": "p90_bolt",
+          "focusPartLabel": "Heavy Straight-Blowback Breech Bolt"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Flush 50-Round Horizontal Mag & 90° Helical Turret",
+          "tag": "US Patent 4,905,394",
+          "summary": "Stores 50 cartridges sideways atop the receiver spine inside translucent polycarbonate; a spiral ramp turret and twin-roller follower rotate each round 90° clockwise into chamber alignment with zero downward magazine protrusion.",
+          "focusPartId": "p90_helical_ramp",
+          "focusPartLabel": "90° Helical Feed Ramp"
+        },
+        {
+          "id": "bt2",
+          "title": "100% Ambidextrous Thumbhole Stock & Bottom Ejection",
+          "tag": "True Bilateral Ergonomics",
+          "summary": "Packs a 264 mm barrel into a 504 mm snag-free polymer bullpup frame with mirrored controls and a central downward ejection chute behind the grip, allowing instant shoulder transitions.",
+          "focusPartId": "p90_stock",
+          "focusPartLabel": "Thumbhole Bullpup Stock"
+        },
+        {
+          "id": "bt3",
+          "title": "Drop-Out All-Polymer Hammer Pack & Progressive Trigger",
+          "tag": "Lubricant-Free Fire Control",
+          "summary": "Molds the rear fire-control housing and ultra-light rotary hammer from self-lubricating polymer for millisecond lock times, paired with a two-stage sliding trigger offering semi/auto pull control.",
+          "focusPartId": "p90_hammer_pack",
+          "focusPartLabel": "All-Polymer Hammer Pack"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1986",
+          "title": "Launch of 'Project 9.0'",
+          "detail": "FN Herstal initiates simultaneous development of a high-velocity armor-piercing small-caliber round and compact bullpup PDW."
+        },
+        {
+          "year": "1989",
+          "title": "90° Helical Feed Patent & CRISAT Trials",
+          "detail": "Jean-Paul Denis and Marc Neuforge patent the horizontal helical-ramp magazine as 5.7×28mm prototypes defeat NATO CRISAT armor targets."
+        },
+        {
+          "year": "1990",
+          "title": "FN P90 Enters Series Production",
+          "detail": "Christened P90 for the new decade, the weapon enters full production in Herstal, establishing the modern Personal Defense Weapon category."
+        },
+        {
+          "year": "1993",
+          "title": "SS190 Duty Cartridge Standardized",
+          "detail": "FN introduces the 40.5 mm SS190 steel-aluminum penetrator load, optimizing reliability and 200-meter titanium-Kevlar penetration."
+        },
+        {
+          "year": "1997",
+          "title": "Operation Chavín de Huántar Debut",
+          "detail": "Peruvian commandos deploy the FN P90 to rescue 71 hostages at the Japanese Embassy residence in Lima, proving PDW lethality in combat."
+        },
+        {
+          "year": "2021",
+          "title": "NATO STANAG 4509 Ratification",
+          "detail": "NATO formally adopts the FN 5.7×28mm cartridge as an alliance standard under STANAG 4509 alongside 40+ national military and police users."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "p90_upper_receiver": {
+      "partId": "p90_upper_receiver",
+      "bomCode": "U-01",
+      "calloutLabelEn": "Alloy Optical Upper Receiver",
+      "zh": {
+        "roleTag": "枪管承力桥架 · 光学瞄具座与侧导轨",
+        "overview": "这是构成 FN P90 前部金属脊梁的模块化铝合金光学桥上机匣，前端紧固 10.4 英寸枪管，高拱桥窗内置反射瞄具并集成右侧皮卡汀尼战术导轨。",
+        "craftAndMaterial": "采用航空高强度铝合金高压精密铸造与五轴 CNC 铣削成型，表面施以深灰军规硬质阳极氧化防腐蚀镀层，顶部铣有贯通式应急机械备份准星照门沟槽。",
+        "kinematicRole": "射击全程刚性承载枪管与瞄准基线零位移；在一级野战快拆阶段（分解进度 0.08 至 0.30），按下机匣锁笋后整套上机匣与枪管顺导轨向前平滑推离枪身。",
+        "designHighlight": "跨拱式光学桥设计一举三得：既充当携行提把与瞄准镜防撞护罩，又用后拱斜面稳固承托 50 发水平弹匣前端底盖，确保剧烈震动下瞄准零点恒定。",
+        "audioScript": "这座拱形硬质阳极氧化铝合金上机匣是整枪的前部刚性骨架。高耸的前桥护罩内嵌准直反射瞄具，右侧设有战术附件导轨。卸下水平弹匣并按下一键锁笋后，整套上机匣与枪管即可在两秒内向前滑出。",
+        "audioUrl": "audio/p90/parts/p90_upper_receiver_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Modular Alloy Barrel Bridge · Optic Mount & Side Rail",
+        "overview": "This modular aluminum upper receiver forms the rigid metallic forward spine of the FN P90, anchoring the 10.4-inch barrel, cradling the Ring Sight optical collimator, and providing a starboard Picatinny accessory rail.",
+        "craftAndMaterial": "Precision die-cast and CNC-machined from high-strength aircraft aluminum alloy with a dark-gray Mil-Spec Type III hardcoat anodized finish and integral backup iron sight channels.",
+        "kinematicRole": "Remains completely rigid during live fire to preserve optical zero; slides cleanly forward out of the polymer stock rails between 8 and 30 percent field-strip progression once unlatched.",
+        "designHighlight": "Its arched bridge profile simultaneously shields the optical sight from battlefield impacts, acts as a natural grab handle, and seats the front end-plate of the 50-round horizontal magazine.",
+        "audioScript": "Machined from hardcoat-anodized aircraft aluminum, this arched optical upper receiver anchors the cold-hammer-forged barrel and houses the reflex sight. Once the magazine is lifted and the plunger depressed, the entire upper assembly slides smoothly forward off the stock without tools.",
+        "audioUrl": "audio/p90/parts/p90_upper_receiver_en.mp3"
+      }
+    },
+    "p90_barrel": {
+      "partId": "p90_barrel",
+      "bomCode": "U-02",
+      "calloutLabelEn": "10.4\" CHF 5.7×28mm Barrel",
+      "zh": {
+        "roleTag": "264mm 固定枪管 · 8右旋膛线与微锥弹膛",
+        "overview": "这是全长 264 毫米（10.4 英寸）的 5.7×28 毫米高强冷精锻枪管，同轴贯穿铝合金上机匣内部，赋予轻质穿甲弹每秒 715 米的凌厉初速。",
+        "craftAndMaterial": "精选铬钼钒特种枪管钢经旋转冷精锻一体成型，内膛与微锥形药室覆有厚层耐磨硬铬，内刻 8 条右旋膛线（缠距 1:9 英寸）以稳定细长复合芯尖头弹。",
+        "kinematicRole": "全自动射击中作为固定枪管保持绝对静止，无导气开孔损耗能量；在二级拆解阶段（进度 0.35 至 0.65）旋松前端消焰锁母后与上机匣分离展示。",
+        "designHighlight": "借力无托后置弹膛与顶置水平弹匣，P90 在仅 504 毫米的冲锋枪全长里塞入了逾半枪长的 264 毫米枪管，实现了两百米击穿钛合金防弹衣的越级弹道。",
+        "audioScript": "这根长二百六十四毫米的冷精锻镀铬枪管，占据了全枪一半以上的长度。八条高缠距右旋膛线将两克重的五点七毫米穿甲弹加速至每秒七百一十五米，在极短枪身内爆发出两百米破甲威力。",
+        "audioUrl": "audio/p90/parts/p90_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "264mm Fixed CHF Barrel · 8-Groove Chrome-Lined Bore",
+        "overview": "Measuring 264 millimeters (10.4 inches), this cold-hammer-forged barrel runs coaxially through the aluminum upper receiver, propelling 5.7×28mm projectiles to 715 meters per second.",
+        "craftAndMaterial": "Rotary cold-hammer-forged from ordnance-grade chrome-moly-vanadium alloy steel with a hard-chromed bore and chamber, cut with 8 right-hand grooves at a fast 1-in-9-inch twist rate.",
+        "kinematicRole": "Remains rigidly stationary throughout all seven firing phases with zero gas-bleed losses; separates from the upper receiver bridge between 35 and 65 percent sub-assembly disassembly.",
+        "designHighlight": "By combining bullpup chamber placement with a top-mounted magazine, FN packed a 10.4-inch barrel—over half the weapon's 504 mm total length—delivering lethal 200-meter armor penetration.",
+        "audioScript": "Spanning more than half the weapon's entire length, this ten-point-four-inch cold-hammer-forged chrome-lined barrel accelerates lightweight five-point-seven millimeter penetrators to seven hundred fifteen meters per second, defeating Kevlar and titanium armor out to two hundred meters.",
+        "audioUrl": "audio/p90/parts/p90_barrel_en.mp3"
+      }
+    },
+    "p90_flash_hider": {
+      "partId": "p90_flash_hider",
+      "bomCode": "U-03",
+      "calloutLabelEn": "Slanted Birdcage Compensator",
+      "zh": {
+        "roleTag": "枪口消焰 · 斜面燃气下压防跳",
+        "overview": "这是旋紧在枪口最前端的 32 度下斜切端面鸟笼式消焰防跳器，既是 P90 极具辨识度的前脸特征，也兼作将枪管锁紧于上机匣的轴向固定螺母。",
+        "craftAndMaterial": "采用高韧性合金钢精密车铣加工并经深层氮化抗烧蚀处理，圆周开有斜向泄气长槽，前端呈上长下短的经典斜切防跳几何面。",
+        "kinematicRole": "阶段三弹头出膛瞬间导流高温燃气向上前方喷出，产生向下的反冲力矩压制枪口跳动；深度分解阶段（进度 0.65 至 1.0）旋转拧离枪口螺纹。",
+        "designHighlight": "利用不对称斜切端面的流体偏折效应，将原本微弱的 5.7 毫米后坐上跳进一步抵消，使射手在每分钟 900 发连发扫射时准星几乎纹丝不动。",
+        "audioScript": "枪口这枚三十二度下斜切鸟笼消焰器一物两用：它既像锁紧螺母一样把枪管牢牢固定在铝合金上机匣内，又在弹头出膛瞬间引导高压燃气向上偏折，强力压制九百发高射速下的枪口上跳。",
+        "audioUrl": "audio/p90/parts/p90_flash_hider_zh.mp3"
+      },
+      "en": {
+        "roleTag": "32° Slanted Muzzle Compensator & Barrel Locking Nut",
+        "overview": "Threaded onto the muzzle crown with a signature 32-degree downward-slanted face, this birdcage flash suppressor both disperses muzzle flash and serves as the axial retention nut securing the barrel inside the upper receiver.",
+        "craftAndMaterial": "CNC-turned and slotted from heat-resistant ordnance steel with a salt-bath ferritic nitrocarburized finish to resist high-velocity propellant erosion.",
+        "kinematicRole": "Redirects expanding muzzle gases upward during Phase 3 exit to counteract muzzle climb; unscrews rotationally forward during full armorer teardown between 65 and 100 percent.",
+        "designHighlight": "Its asymmetric slanted exit face vents gas upward to generate a downward counter-torque, keeping the P90 flat on target through blistering 900-round-per-minute bursts.",
+        "audioScript": "Featuring FN's unmistakable thirty-two-degree slanted face, this birdcage compensator doubles as the barrel retention nut. As propellant gases exit in Phase Three, its angled ports vent upward to push the muzzle down, keeping full-auto bursts laser-flat.",
+        "audioUrl": "audio/p90/parts/p90_flash_hider_en.mp3"
+      }
+    },
+    "p90_ring_sight": {
+      "partId": "p90_ring_sight",
+      "bomCode": "U-04",
+      "calloutLabelEn": "Ring Sight MC-10-80 Optic",
+      "zh": {
+        "roleTag": "无倍率准直分划 · 日间集光棱镜/夜间氚光",
+        "overview": "这是固装于上机匣前拱窗口内的英国 Ring Sights MC-10-80 无倍率固态玻璃棱镜准直瞄具，彻底取代了易磕碰的传统外露机械准星。",
+        "craftAndMaterial": "镜体由实心光学玻璃块粘合多层增透蓝宝石青镀膜镜片并封装于阳极氧化铝壳内，前上方设自然光集光窗，内部嵌有免电池自发光氚气管。",
+        "kinematicRole": "随上机匣保持刚性校零定位，通过底部高低方向调节螺钉精密归零；在分解进度 0.55 至 1.0 阶段向上托出机匣桥窗，展示完整固态棱镜光路。",
+        "designHighlight": "完全无需电池供电的全天候双模分划：白昼阳光下呈现高锐度黑色测距大圆环与中心点，驶入幽暗地道或夜战时瞬间切换为柔和氚光十字。",
+        "audioScript": "嵌装在铝合金桥窗内的 MC-10-80 固态玻璃棱镜瞄具完全不需要电池。白天依靠顶部集光棱镜投射醒目的黑色速瞄圆环，进入黑暗室内则由内置氚光源点亮十字分划，实现双眼睁开的瞬间本能瞄准。",
+        "audioUrl": "audio/p90/parts/p90_ring_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "1× Solid-Glass Collimator · Collector Reticle & Tritium",
+        "overview": "Recessed safely inside the upper receiver's forward arch, the British-engineered Ring Sight MC-10-80 is a battery-free 1× solid-glass optical collimator designed for instant both-eyes-open CQB engagement.",
+        "craftAndMaterial": "Constructed from a monolithic solid optical glass prism block with sapphire-cyan anti-reflective coatings, encased in anodized aluminum with an ambient light collector and sealed tritium lamp.",
+        "kinematicRole": "Travels rigidly with the upper receiver during field strip and elevates clear of the optical bridge between 55 and 100 percent disassembly to reveal its solid prism housing.",
+        "designHighlight": "Operates 24/7 with zero batteries: ambient daylight projects a crisp black combat circle-dot reticle, while dark interiors automatically reveal a tritium-illuminated T-reticle.",
+        "audioScript": "Protected inside the aluminum receiver arch, the Ring Sight MC-10-80 uses a solid glass prism block that never needs batteries. Daylight projects a fast black combat ring, while low-light rooms bring out a self-luminous tritium reticle for instant two-eyes-open target acquisition.",
+        "audioUrl": "audio/p90/parts/p90_ring_sight_en.mp3"
+      }
+    },
+    "p90_charging_handles": {
+      "partId": "p90_charging_handles",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Ambi Non-Reciprocating Handles",
+      "zh": {
+        "roleTag": "左右手全对称待击 · 射击零随动不打手",
+        "overview": "这是对称布置在上机匣左右两侧导槽内的翼状折叠/低矮拉机柄组件，供射手用任意一手食指或掌缘向后拉动完成首发装填上膛。",
+        "craftAndMaterial": "拉柄翼片与横联滑杆采用氮化硬化合金钢冲压精铣制成，翼端带有防滑横纹并配有独立前推复位弹簧，紧贴机匣外壁零突出。",
+        "kinematicRole": "手动拉栓后松手即锁停在最前端，在实弹射击阶段一至阶段七中与高速往复的重型枪机完全脱开、保持绝对静止；分解进度 0.45 后从侧槽抽出。",
+        "designHighlight": "非随动分离机构对 504 毫米极短无托枪至关重要：无论射手采用何种高握持C字战术手型或贴靠车窗射击，拉机柄绝不会往复撞伤手指或卡滞。",
+        "audioScript": "上机匣左右两侧全对称的低矮拉机柄采用非随动分离设计。无论左手还是右手都能轻松后拉上膛，而在每分钟九百发的实弹连发过程中它保持绝对静止，彻底杜绝了紧凑无托握姿下的打手隐患。",
+        "audioUrl": "audio/p90/parts/p90_charging_handles_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Symmetrical Dual Cocking Wings · Non-Reciprocating",
+        "overview": "Riding in longitudinal tracks along both left and right flanks of the upper receiver, these low-profile ambidextrous charging handles allow either hand to cock the heavy blowback bolt.",
+        "craftAndMaterial": "Machined and stamped from nitrided ordnance steel with serrated finger pads and a dedicated forward return spring that latches the handles flush forward.",
+        "kinematicRole": "Manually pushes the bolt rearward to chamber the first round, then stays completely stationary throughout live-fire Phases 1 through 7; detaches laterally after 45 percent disassembly.",
+        "designHighlight": "Non-reciprocating isolation prevents painful support-hand strikes or barricade jams when firing from cramped vehicle ports or tight close-quarters grips.",
+        "audioScript": "Mirrored on both sides of the upper receiver, these low-profile charging wings operate on a non-reciprocating track. Either hand can rack the bolt to chamber a round, yet both handles stay locked motionless during live firing so they never strike your support hand.",
+        "audioUrl": "audio/p90/parts/p90_charging_handles_en.mp3"
+      }
+    },
+    "p90_bolt": {
+      "partId": "p90_bolt",
+      "bomCode": "U-06",
+      "calloutLabelEn": "Heavy Straight-Blowback Bolt",
+      "zh": {
+        "roleTag": "惯性质量闭锁 · 推弹入膛与抓弹抽壳",
+        "overview": "这是 FN P90 自动循环的动力心脏——大质量精密铣削自由枪机闭锁体，无任何回转闭锁突笋或导气活塞，纯粹依靠精密配重惯性实现安全闭锁。",
+        "craftAndMaterial": "由高密度特种铬镍钼合金钢整块五轴铣削并经表面渗碳氮化处理，上部贯通双平行导杆滑孔，顶端伸出窄幅推弹突笋，镜面嵌装强力弹性拉壳钩。",
+        "kinematicRole": "阶段三借自身质量惯性压住膛压峰值；阶段四至五沿双导杆无旋转直线后退 44 毫米压倒击锤并抽壳抛壳；阶段六在双复进簧推动下剥离转正的次发实弹直推入膛。",
+        "designHighlight": "化繁为简的工程典范：省去了导气管、活塞与回转凸轮槽，配合高分子干膜覆层弹壳将瓶颈高速弹驯服在纯直线自由枪机内，故障率低至极限且后坐力直线性极佳。",
+        "audioScript": "这块沉甸甸的合金钢自由枪机没有任何旋转闭锁突笋或导气活塞。它完全依靠精密计算的自身惯性质量抵御五点七毫米高膛压，射击时沿双平行导杆笔直后退抽壳，复进时将刚完成九十度旋转的新弹推入弹膛。",
+        "audioUrl": "audio/p90/parts/p90_bolt_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Inertial Mass Lockup · Linear Blowback & Cartridge Strip",
+        "overview": "This massive CNC-milled steel breech bolt is the kinematic heart of the FN P90, operating on pure straight blowback without rotating locking lugs, cam pins, or gas pistons.",
+        "craftAndMaterial": "Five-axis milled from dense chrome-nickel-molybdenum ordnance steel with a slick nitrided surface, featuring twin upper guide-rod bores, a narrow top feed horn, and a spring-loaded claw extractor.",
+        "kinematicRole": "Holds breech closure via pure mass inertia during Phase 3 peak pressure, recoils 44 millimeters linearly along -X with zero roll in Phases 4–5 to cock the hammer and eject brass, then strips the rotated round forward in Phase 6.",
+        "designHighlight": "Paired with FN's dry-film polymer cartridge coating, this non-rotating linear bolt tames a high-pressure bottleneck round with submachine-gun simplicity and straight-line recoil.",
+        "audioScript": "Milled from dense ordnance steel, this heavy breech bolt has no rotating lugs or gas piston. Calibrated mass inertia keeps the chamber sealed through peak pressure before gliding straight back on twin rods to eject brass and strip the next rotated round home.",
+        "audioUrl": "audio/p90/parts/p90_bolt_en.mp3"
+      }
+    },
+    "p90_firing_pin": {
+      "partId": "p90_firing_pin",
+      "bomCode": "U-07",
+      "calloutLabelEn": "Coaxial Floating Firing Pin",
+      "zh": {
+        "roleTag": "轴向传递击锤动能 · 防止惯性走火",
+        "overview": "这是同轴穿装在重型自由枪机中心阶梯孔内的硬化击针与防惯性回位簧总成，负责将后置聚合物击锤的摆动冲击转化为点燃底火的刺击。",
+        "craftAndMaterial": "采用高抗冲击 S7 工具钢精车热处理并整体抛光镀硬铬，针尖经半球微圆弧强化以防击穿薄底火帽，外圈配装高劲度不锈钢回位压簧。",
+        "kinematicRole": "阶段二被全塑击锤猛击向前瞬时突出枪机镜面 1.3 毫米刺响底火，随即在回位簧张力下缩回通道；在终极爆炸视图（进度 0.65 至 1.0）向后抽离枪机。",
+        "designHighlight": "由于自由枪机复进撞击弹膛底面瞬间减速度极大，强力回位簧严格约束击针缩入镜面之内，彻底杜绝了无击锤敲击时的闭锁惯性偶发走火。",
+        "audioScript": "隐藏在重型枪机中心孔内的阶梯钢制击针套装有强力回位簧。平时针尖严格缩在枪机镜面内部防止复进惯性走火，只有在后置全塑击锤高速敲击尾端的瞬间，才如闪电般刺出点燃底火。",
+        "audioUrl": "audio/p90/parts/p90_firing_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Spring-Retracted Axial Firing Pin · Slam-Fire Prevention",
+        "overview": "Housed coaxially inside the central bore of the heavy blowback bolt, this stepped firing pin and return spring transmit the polymer hammer's blow directly to the cartridge primer.",
+        "craftAndMaterial": "Precision-turned from shock-resistant S7 tool steel, heat-treated and hard-chrome plated with a polished hemispherical tip and captive stainless return spring.",
+        "kinematicRole": "Surges 1.3 millimeters past the breech face upon Phase 2 hammer impact to ignite the primer, immediately retracting under spring tension; withdraws rearward from the bolt between 65 and 100 percent disassembly.",
+        "designHighlight": "Its calibrated return spring keeps the tip safely recessed when the heavy blowback bolt slams into battery, completely preventing accidental inertial slam-fires.",
+        "audioScript": "Riding inside the center of the heavy breech bolt, this chrome-plated tool-steel firing pin is held retracted by a crisp return spring to prevent slam-fires, darting forward only at the instant the polymer hammer strikes its tail.",
+        "audioUrl": "audio/p90/parts/p90_firing_pin_en.mp3"
+      }
+    },
+    "p90_guide_rods": {
+      "partId": "p90_guide_rods",
+      "bomCode": "U-08",
+      "calloutLabelEn": "Dual Guide Rods & Rear Buffer",
+      "zh": {
+        "roleTag": "平行抗扭导向 · 尾端弹性体吸能防震",
+        "overview": "这是左右平行贯穿重型枪机上部滑孔的两根不锈钢复进导杆与尾端一体固定的合成聚氨酯弹性缓冲座，共同构成枪机总成的直线导轨。",
+        "craftAndMaterial": "双导杆由无心磨削马氏体不锈钢精密抛光制成，表面摩擦系数极低；尾部黑色缓冲基座采用高阻尼耐油聚氨酯弹性体包覆钢骨架模压而成。",
+        "kinematicRole": "射击全程静止锚定在尾托腔内，为高速后坐的枪机提供零偏摆平行约束，并在阶段五枪机触底瞬间吸收残余冲击动能；一级快拆时随枪机整体抽出。",
+        "designHighlight": "双平行导杆彻底消除了单导杆常见的枪机扭摆卡滞，而尾端高阻尼弹性体缓冲垫削平了后坐力尖峰，赋予 P90 如缝纫机般柔顺可控的连发体感。",
+        "audioScript": "这两根无心磨削不锈钢平行导杆如同精密高铁轨道，确保重型枪机直线往复绝不偏摆。尾端集成的聚氨酯高阻尼缓冲垫能柔和吸收枪机后坐撞击，让每分钟九百发的连发震动变得异常平顺。",
+        "audioUrl": "audio/p90/parts/p90_guide_rods_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Anti-Bind Twin Rails & Polyurethane Recoil Buffer",
+        "overview": "Passing symmetrically through the upper portion of the breech bolt, these twin parallel stainless guide rods anchor into a rear synthetic elastomer buffer block to form a unitized recoil assembly.",
+        "craftAndMaterial": "Centerless-ground and mirror-polished from martensitic stainless steel rods, mated to an oil-resistant, high-hysteresis polyurethane buffer pad over a steel backing plate.",
+        "kinematicRole": "Remains anchored inside the buttstock during firing to guide zero-yaw linear bolt travel and cushion Phase 5 rear impact; slides out with the bolt group during field stripping.",
+        "designHighlight": "Twin parallel rails eliminate torsional bolt canting, while the rear elastomer buffer rounds off sharp metal-on-metal recoil spikes for sewing-machine-smooth automatic fire.",
+        "audioScript": "Centerless-ground from polished stainless steel, these twin parallel guide rods keep the heavy bolt tracking true without canting, while the rear polyurethane buffer cushions full-recoil impact for remarkably smooth burst control.",
+        "audioUrl": "audio/p90/parts/p90_guide_rods_en.mp3"
+      }
+    },
+    "p90_recoil_springs": {
+      "partId": "p90_recoil_springs",
+      "bomCode": "U-09",
+      "calloutLabelEn": "Dual Helical Recoil Springs",
+      "zh": {
+        "roleTag": "双路蓄能缓冲 · 驱动剥弹复进闭锁",
+        "overview": "这是套装在左右两根平行导杆外侧的双联等刚度螺旋复进簧，负责吸收自由枪机后坐冲量并驱动枪机复进推弹上膛。",
+        "craftAndMaterial": "采用冷拔高疲劳琴钢丝精密卷绕并经喷丸强化与去应力回火处理，左右两根弹簧刚度严格配对，确保数万次全自动循环无自由长度衰减。",
+        "kinematicRole": "阶段四至阶段五随枪机后退同步压缩至原长约百分之五十二蓄积势能，阶段六平稳释放弹力推顶枪机前冲剥弹闭锁；终极拆解时从导杆前端滑出。",
+        "designHighlight": "左右对称双簧分摊载荷的设计大幅缩减了弹簧外径，把宝贵的机匣顶部空间完全让位给顶置 50 发水平弹匣与 90 度螺旋供弹口。",
+        "audioScript": "套装在双导杆上的两根配对琴钢丝复进簧对称分担后坐能量。它们在枪机直退时同步压缩蓄能，随即强力推顶枪机复进剥弹入膛，纤细的双簧布局更为上方的水平弹匣腾出了关键高度空间。",
+        "audioUrl": "audio/p90/parts/p90_recoil_springs_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Matched Twin Return Springs · Energy Storage & Strip",
+        "overview": "Captive around the left and right stainless guide rods, these matched helical recoil springs decelerate the heavy blowback bolt and drive it back into battery.",
+        "craftAndMaterial": "Coiled from shot-peened high-tensile music wire with stress-relieved ground ends, matched in spring rate to ensure balanced bilateral thrust across tens of thousands of cycles.",
+        "kinematicRole": "Compresses dynamically to roughly 52 percent length during Phases 4–5 bolt recoil before expanding throughout Phase 6 to strip and chamber the next 5.7×28mm round.",
+        "designHighlight": "Splitting recoil energy across two slim side-by-side springs slashes vertical receiver height, freeing critical overhead clearance for the 50-round horizontal magazine.",
+        "audioScript": "Wrapped around the twin guide rods, these rate-matched music-wire recoil springs compress symmetrically during bolt blowback and rebound cleanly to strip the next rotated cartridge into the chamber.",
+        "audioUrl": "audio/p90/parts/p90_recoil_springs_en.mp3"
+      }
+    },
+    "p90_stock": {
+      "partId": "p90_stock",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Thumbhole Polymer Bullpup Stock",
+      "zh": {
+        "roleTag": "流线人机工程 · 垂直向下抛壳通道",
+        "overview": "这是奠定 FN P90 科幻工业美学的整体式玻纤增强聚酰胺拇指孔无托枪身壳体，集成了前置护手钩、符合手掌解剖曲面的拇指孔握把与腹部垂直抛壳井。",
+        "craftAndMaterial": "采用高比例短切玻璃纤维增强尼龙 66 经双半壳精密注塑与超声波高强熔接成型，握把区蚀刻 VDI 火花防滑纹，两侧模压比利时赫斯塔尔原厂铭文。",
+        "kinematicRole": "作为全枪核心承力母体容纳重型枪机、双钢连杆与后置击锤包，握把后方的竖直内腔引导空弹壳笔直下落；开启纵向剖视（C键）即可直视内部全貌。",
+        "designHighlight": "全身无任何尖锐凸起的人体工学雕塑：无论戴厚重防寒手套还是车舱内单手紧握，手腕均保持最自然的零扭曲生理角度，三点一线本能指向目标。",
+        "audioScript": "这具一体成型的玻纤增强聚酰胺无托枪身是工业设计史上的教科书。圆润的拇指孔握把与前护手钩让双手自然锁定在枪管轴线下方，握把后方更暗藏直通底部的垂直抛壳井，左右手切换毫无障碍。",
+        "audioUrl": "audio/p90/parts/p90_stock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Ergonomic Glass-Filled Chassis & Vertical Ejection Chute",
+        "overview": "Sculpted by René Predazzi, this monolithic fiberglass-reinforced polymer bullpup stock integrates the forend hand-stop, anatomical thumbhole pistol grip, enlarged glove guard, and internal downward ejection chute.",
+        "craftAndMaterial": "Injection-molded from impact-modified glass-filled polyamide 66 with ultrasonic structural seam welding, VDI-textured grip panels, and crisp FN Herstal Belgium factory markings.",
+        "kinematicRole": "Serves as the master structural chassis housing the reciprocating bolt, twin transfer bars, and rear hammer pack while guiding spent brass straight down its central chute.",
+        "designHighlight": "Every external radius is contoured to glide out of tank hatches or beneath VIP protection coats without snagging, locking the shooter's wrists into natural biomechanical alignment.",
+        "audioScript": "Injection-molded from glass-reinforced polyamide, this iconic thumbhole bullpup stock eliminates every snag point. Its anatomical grip aligns the firing hand naturally beneath the bore while housing the internal vertical chute that drops spent brass straight to the ground.",
+        "audioUrl": "audio/p90/parts/p90_stock_en.mp3"
+      }
+    },
+    "p90_buttplate": {
+      "partId": "p90_buttplate",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Sliding Ribbed Polymer Buttplate",
+      "zh": {
+        "roleTag": "封闭尾托机匣腔 · 下滑快拆锁扣",
+        "overview": "这是扣合在无托枪身最尾端的弧面横向防滑棱纹肩托盖板，抵肩射击时提供稳固贴合支点，同时作为后舱门锁住内部枪机缓冲座与全塑击锤盒。",
+        "craftAndMaterial": "由高韧性抗跌落改性聚酰胺精密注塑成型，外弧面刻有深槽防滑横肋以咬合防弹背心肩部织物，内侧一体成型精密燕尾导轨与弹簧卡扣槽。",
+        "kinematicRole": "射击全程承受枪机缓冲垫传来的柔和轴向推力并传导至射手肩窝；在一级野战分解起始阶段（进度 0.06 至 0.24），按压锁片后向下平滑滑脱开启尾舱。",
+        "designHighlight": "免销钉滑盖设计避免了细小横插销在黑夜战壕中遗失的风险，拇指一按、手掌下滑两秒即可敞开整个后托机匣室。",
+        "audioScript": "枪托尾端的防滑横纹盖板既是稳固的抵肩支点，也是免工具快拆的后舱大门。野战保养时完全不需要敲打销钉，只需按压顶部弹性锁扣将盖板向下滑出，就能直接抽出枪机与全塑击锤盒。",
+        "audioUrl": "audio/p90/parts/p90_buttplate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dovetail Rear Receiver Door & Non-Slip Shoulder Pad",
+        "overview": "Capping the rear opening of the bullpup stock, this curved, horizontally ribbed polymer buttplate anchors firmly against body armor while locking the bolt buffer and hammer pack inside the stock.",
+        "craftAndMaterial": "Molded from high-impact modified polyamide with deep horizontal anti-slip ribs, internal dovetail guide rails, and a spring-detent locking tab.",
+        "kinematicRole": "Transfers cushioned recoil forces cleanly into the shooter's shoulder during firing; slides downward along its dovetail track at the start of field stripping (progress 0.06 to 0.24).",
+        "designHighlight": "Eliminates loose cross-pins that could drop in the dark—one thumb press on the upper catch lets the buttplate slide straight down to expose the entire rear action.",
+        "audioScript": "Ribbed to grip tactical vests without slipping, this curved polymer buttplate doubles as the rear receiver door. Pressing its top catch lets you slide the plate straight downward, opening the stock for tool-less removal of the bolt and hammer pack.",
+        "audioUrl": "audio/p90/parts/p90_buttplate_en.mp3"
+      }
+    },
+    "p90_takedown_lock": {
+      "partId": "p90_takedown_lock",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Receiver Takedown Lock Plunger",
+      "zh": {
+        "roleTag": "一键解锁上机匣 · 弹簧自动复定位",
+        "overview": "这是横置嵌装于枪身弹匣床前下方的弹簧快拆锁笋，负责在合拢态下刚性卡死铝合金光学上机匣的尾部定位耳。",
+        "craftAndMaterial": "采用表面渗氮硬化的铬钼合金钢车削制成，左侧按钮端铣有圆环防滑纹，内置防脱限位台阶与不锈钢圆柱复位压簧。",
+        "kinematicRole": "合拢射击时由弹簧顶死在锁定槽内消除上下机匣间隙；卸下顶置弹匣后向内按压即可释放上机匣前推分离；深拆阶段（进度 0.42 后）向左抽出。",
+        "designHighlight": "防误触安全互锁布局：当 50 发水平弹匣安装在位时，锁笋上方被匣体遮蔽保护，只有先执行安全卸匣动作后才能按压分解上机匣。",
+        "audioScript": "这枚精巧的氮化钢弹簧锁笋隐藏在水平弹匣床的前下方。平时它牢牢咬合铝合金上机匣尾耳消除一切旷量；卸掉顶置弹匣后用拇指向内一按，整座光学上机匣与枪管便即刻解锁前滑。",
+        "audioUrl": "audio/p90/parts/p90_takedown_lock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Spring-Loaded Captive Upper-Receiver Release Latch",
+        "overview": "Positioned transversely beneath the forward floor of the top magazine bed, this spring-loaded steel takedown plunger locks the aluminum optical upper receiver solidly into the polymer stock.",
+        "craftAndMaterial": "Turned from nitrided chromoly alloy steel with concentric anti-slip thumb grooves, captive travel stops, and a corrosion-resistant stainless coil spring.",
+        "kinematicRole": "Maintains zero-play axial lockup between upper receiver and stock throughout firing; depressed inward after magazine removal to release the upper assembly forward.",
+        "designHighlight": "Recessed safely beneath the magazine bed so the upper receiver can only be unlatched after the 50-round magazine has been cleared from the weapon.",
+        "audioScript": "Tucked beneath the forward magazine bed, this spring-loaded steel plunger locks the aluminum upper receiver tight against the stock. Once the magazine is removed, a single press inward frees the entire barrel and optic assembly to slide forward.",
+        "audioUrl": "audio/p90/parts/p90_takedown_lock_en.mp3"
+      }
+    },
+    "p90_mag_catches": {
+      "partId": "p90_mag_catches",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Ambi Top-Magazine Latches",
+      "zh": {
+        "roleTag": "双翼后拉解锁 · 锁紧90°供弹转盘颈部",
+        "overview": "这是跨骑在枪身脊部供弹口后上方的左右对称滑动式顶置弹匣卡笋，负责将 50 发水平弹匣尾端的 90 度螺旋转盘死死压紧在受弹座上。",
+        "craftAndMaterial": "由高耐磨玻纤增强聚酰胺一体模压并内嵌扁弹簧片，左右两侧凸起宽大的锯齿防滑捏翼，戴战术手套亦可精准施力。",
+        "kinematicRole": "装匣时拍击弹匣尾部自动弹开再闭合锁死供弹口高度；换匣或分解时双指向后轻拉双翼，锁钩退让使弹匣尾端向上弹起；进度 0.44 后向上拆出。",
+        "designHighlight": "精准的抱弹口垂直限位基准：将卡笋直接设在 90 度螺旋坡道正后方，确保每次换匣后抱弹口与自由枪机推弹突笋保持亚毫米级同轴对齐。",
+        "audioScript": "跨骑在枪脊后方的双侧对称滑块卡笋让战术换匣干净利落。无论左右手操作，只需拇指和食指捏住防滑双翼向后轻拉，五十发水平弹匣尾部便会自动向上弹起；装新匣时向下猛拍即可清脆入锁。",
+        "audioUrl": "audio/p90/parts/p90_mag_catches_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Bilateral Sliding Magazine Release Wings",
+        "overview": "Straddling the top rear spine of the stock directly behind the feed throat, these symmetrical sliding magazine latches clamp the 50-round magazine's helical turret at exact feed height.",
+        "craftAndMaterial": "Injection-molded from wear-resistant glass-filled polymer with aggressive serrated pinch wings and an internal captive return spring.",
+        "kinematicRole": "Snaps automatically over the magazine locking lug when slapped downward into place, and retracts rearward under thumb-and-index pinch to pop the magazine tail upward for reloads.",
+        "designHighlight": "Locating the latch directly at the 90-degree helical feed throat guarantees sub-millimeter vertical alignment between the magazine feed lips and the reciprocating bolt horn.",
+        "audioScript": "Positioned right behind the top feed throat, these symmetrical serrated latches make reloading intuitive with either hand. Pinching the wings rearward pops the empty fifty-round magazine upward, while slapping a fresh magazine down locks it home with an audible click.",
+        "audioUrl": "audio/p90/parts/p90_mag_catches_en.mp3"
+      }
+    },
+    "p90_ejection_cover": {
+      "partId": "p90_ejection_cover",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Bottom Chute Spring Dust Cover",
+      "zh": {
+        "roleTag": "平时密封防泥沙 · 射击自动下翻排壳",
+        "overview": "这是铰接在无托枪身腹部中央抛壳井出口处的弹簧防尘活门，平时严密闭合阻隔风沙泥水，射击瞬间顺势向下弹开排空黄铜弹壳。",
+        "craftAndMaterial": "采用轻质高韧性工程聚合物注塑成型，配装细径不锈钢铰链销轴与双圈回位扭簧，内表面光滑导流避免弹壳口部刮擦反弹。",
+        "kinematicRole": "待击与携行态紧贴枪腹密封；阶段四末至阶段六（击发进度 0.43 至 0.88）向下摆开约 37 度让空弹壳顺畅坠落，阶段七扭簧自动回弹闭合。",
+        "designHighlight": "全自动无感防尘门：无需射手像传统步枪那样手动拨合防尘盖，每一发抛壳完毕后活门在毫秒间自动回弹密封，泥沼攀爬后拿起来扣扳机即响。",
+        "audioScript": "位于枪身腹部的弹簧防尘活门守护着中央垂直抛壳井。平时它紧紧闭合隔绝泥沙雨水；一旦扣动扳机，活门在空弹壳下落瞬间自动向下翻开，让黄铜弹壳笔直坠向地面，随后立即自动回弹封闭。",
+        "audioUrl": "audio/p90/parts/p90_ejection_cover_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Self-Closing Vertical Ejection Chute Dust Flap",
+        "overview": "Hinged across the belly opening of the central vertical ejection chute behind the pistol grip, this spring-loaded polymer dust cover seals the action from mud and debris until the instant of firing.",
+        "craftAndMaterial": "Molded from tough impact-modified polyamide riding on a stainless hinge pin with a captive torsion return spring and smooth internal deflector bevels.",
+        "kinematicRole": "Swings open roughly 37 degrees downward during Phases 4 through 6 as spent 5.7×28mm cases drop clear toward the ground, snapping automatically shut again in Phase 7.",
+        "designHighlight": "Unlike manual rifle dust covers that stay open after the first shot, this torsion-sprung flap re-seals the underside of the receiver automatically at the end of every firing cycle.",
+        "audioScript": "Sealing the bottom of the vertical ejection chute behind the grip, this spring-loaded dust cover keeps mud and grit out of the action, swinging downward automatically as spent brass drops straight out and snapping shut right after.",
+        "audioUrl": "audio/p90/parts/p90_ejection_cover_en.mp3"
+      }
+    },
+    "p90_sling_mount": {
+      "partId": "p90_sling_mount",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Tactical Sling Loop & Slot",
+      "zh": {
+        "roleTag": "贴身隐蔽携行 · 车组/要员护卫快拔挂点",
+        "overview": "这是由枪托后下方钢制加强穿带槽衬套与上机匣侧向旋转挂环组成的前后战术背带悬挂系统，专为贴身垂挂与一秒快抬抵肩优化。",
+        "craftAndMaterial": "挂环与槽口护衬均由冷锻低碳合金钢冲压焊接并经锰系磷化消光防锈处理，圆角倒钝以防长期摩擦割伤尼龙战术织带。",
+        "kinematicRole": "全天候承载整枪满弹约三千克的动态悬挂拉力，射击循环中保持静止；全零件爆炸图阶段（进度 0.65 至 1.0）向后下方分离展示。",
+        "designHighlight": "贴合重心平衡点的挂点几何令 P90 可平贴悬挂于西装风衣内侧或坦克乘员胸前，松手自然垂稳不晃动，抬手即刻进入瞄准线。",
+        "audioScript": "这套前后钢制背带挂环与尾托穿带槽专为近身警卫与装甲车乘员量身定制。恰到好处的重心悬挂位置让满载五十发子弹的 P90 可以贴身隐蔽垂挂在风衣之下，遇险瞬间抬手即可抵肩开火。",
+        "audioUrl": "audio/p90/parts/p90_sling_mount_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Center-of-Gravity VIP & Crew Tactical Sling Hardware",
+        "overview": "Combining a reinforced rear buttstock webbing slot insert with a forward swivel loop, this tactical sling mounting suite supports single-point and three-point carry harnesses.",
+        "craftAndMaterial": "Formed from cold-forged alloy steel with a matte manganese-phosphate finish and radiused inner edges to prevent fraying nylon sling webbing.",
+        "kinematicRole": "Supports the weapon's loaded 3-kilogram mass comfortably across vehicle egress and close-protection duties, detaching downward during full 65–100% exploded inspection.",
+        "designHighlight": "Positioned around the bullpup center of mass so VIP protection details like the U.S. Secret Service can hang the P90 flat beneath jackets and snap it straight to eye level.",
+        "audioScript": "Combining a steel-reinforced buttstock slot with a forward swivel loop, this sling hardware balances the compact P90 flat against an operator's chest—ideal for vehicle crews and close-protection details.",
+        "audioUrl": "audio/p90/parts/p90_sling_mount_en.mp3"
+      }
+    },
+    "p90_trigger": {
+      "partId": "p90_trigger",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Progressive Sliding Trigger",
+      "zh": {
+        "roleTag": "水平导轨直拉 · 半扣单发 / 到底连发",
+        "overview": "这是安装在超大扳机护圈前导槽内的双阶渐进式水平直线滑动聚合物扳机，允许射手在全自动档位仅凭食指扣压深度自由切换单发与连发。",
+        "craftAndMaterial": "采用低摩擦自润滑聚缩醛工程塑料一体精密注塑，前弧面模压纵向防滑细纹，两侧翼槽与双联不锈钢扳机连杆首端刚性铰接。",
+        "kinematicRole": "阶段一向后水平直滑 5.2 毫米牵引双连杆释放击锤；在快慢机全自动档下越过一段阻点继续深扣即保持连发阻铁开放；阶段七在复位簧推动下归位。",
+        "designHighlight": "实战高压环境下的直觉人机工程：突遇近距单个目标轻扣即打出精准单发点射，遭遇复数装甲目标直接一指扣到底，瞬间倾泻 900 发/分弹雨。",
+        "audioScript": "这枚水平直线滑动的双阶渐进扳机充满战术智慧。在全自动档位下，食指轻扣第一段行程打出精准的半自动单发；危急时刻无需拨动开关，直接将扳机扣到底，就会瞬间爆发出每分钟九百发的连发火网。",
+        "audioUrl": "audio/p90/parts/p90_trigger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Two-Stage Linear Sliding Trigger · Pull-Depth Fire Control",
+        "overview": "Riding horizontally inside tracks at the front of the enlarged glove guard, this two-stage progressive polymer trigger lets operators select single shots or full-auto bursts purely by pull depth.",
+        "craftAndMaterial": "Precision-molded from low-friction polyacetal copolymer with textured finger grooves and bilateral yokes anchoring the twin stainless transfer bars.",
+        "kinematicRole": "Slides 5.2 millimeters linearly rearward in Phase 1 to trip the rear sear, holding the auto sear clear when pulled fully home, then resets crisply forward in Phase 7.",
+        "designHighlight": "In selector position 'A', pulling to the first tactile stage fires an accurate semi-auto shot, while pulling straight through unleashes 900-rpm automatic fire without shifting grip.",
+        "audioScript": "Sliding horizontally on low-friction polymer rails, this progressive two-stage trigger gives instant tactical flexibility: squeeze halfway for a crisp single shot, or pull all the way back to unleash nine hundred rounds per minute.",
+        "audioUrl": "audio/p90/parts/p90_trigger_en.mp3"
+      }
+    },
+    "p90_selector": {
+      "partId": "p90_selector",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Ambi Rotary Dial Selector",
+      "zh": {
+        "roleTag": "食指下缘拨盘 · 机械限位扳机行程",
+        "overview": "这是同轴布置在滑动扳机正下方的双侧全对称齿纹旋盘快慢机，清晰标刻有「S」安全、「1」半自动与「A」全自动三档红白标识。",
+        "craftAndMaterial": "采用高硬度玻纤增强尼龙注塑成型，外缘刻有大节距防滑拨齿，中心偏心凸轮轴与弹簧定位珠配合提供干脆利落的三档段落咔哒感。",
+        "kinematicRole": "通过旋转中心阶梯凸轮物理限制上方滑动扳机的最大后退行程：S档完全锁死扳机，1档截停在单发行程，A档放开全行程渐进连发。",
+        "designHighlight": "独具匠心的护圈内指尖拨盘布局：无论左手还是右手射击，食指微往下移半厘米即可盲操拨转档位，手掌完全无需离开拇指孔握把。",
+        "audioScript": "巧妙藏在扳机正下方的同轴旋转拨盘快慢机，左右两侧操作手感完全一致。食指无需离开扳机护圈即可轻松拨转：S档彻底锁死扳机，1档机械限位单发，拨至A档则全面解锁双阶渐进连发。",
+        "audioUrl": "audio/p90/parts/p90_selector_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Under-Trigger Coaxial Selector Dial (S / 1 / A)",
+        "overview": "Mounted coaxially directly beneath the sliding trigger inside the guard, this ambidextrous notched rotary dial provides Safe ('S'), Semi-Auto ('1'), and Full-Auto ('A') modes for either hand.",
+        "craftAndMaterial": "Molded from rugged glass-filled nylon with bold tactile perimeter teeth, high-contrast red/white markings, and crisp spring-loaded detent stops.",
+        "kinematicRole": "Rotates an internal stepped cam lobe that physically blocks trigger travel in 'S', limits travel to the semi-auto stage in '1', and opens full progressive travel in 'A'.",
+        "designHighlight": "Placed millimeters below the trigger finger so left- or right-handed operators can flick from Safe to Fire in a split second without ever breaking their firing grip.",
+        "audioScript": "Located directly beneath the trigger shoe, this notched rotary selector dial works identically for left- or right-handed shooters. Flicking its cam from Safe to One or Auto mechanically regulates trigger travel without breaking your grip.",
+        "audioUrl": "audio/p90/parts/p90_selector_en.mp3"
+      }
+    },
+    "p90_transfer_bars": {
+      "partId": "p90_transfer_bars",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Twin Steel Transfer Bars",
+      "zh": {
+        "roleTag": "绕过中央抛壳井 · 零挠度双路拉杆",
+        "overview": "这是贴合枪身左右两侧内壁导槽、平行跨过中央垂直抛壳井的两根高刚性不锈钢扳机连杆，将前置扳机动作精准传递至尾托击锤盒。",
+        "craftAndMaterial": "选用冷轧弹簧级奥氏体不锈钢带材精密冲压成型并做表面电解抛光降低摩擦，具有极高的轴向抗拉刚度与全寿命抗汗液锈蚀能力。",
+        "kinematicRole": "阶段一随渐进扳机向后刚性平移牵拉后置阻铁，阶段七随复位簧同步前移归位；在二级深拆阶段（进度 0.42 后）向下脱出枪身导槽。",
+        "designHighlight": "一左一右双轨对称拉动结构既完美绕开了中轴线上的拇指孔与垂直向下抛壳通道，又彻底消除了单侧连杆偏心受拉带来的扳机绵软生涩感。",
+        "audioScript": "这两根纤长坚韧的不锈钢平行连杆紧贴枪身左右内壁，巧妙绕开了中央的垂直向下抛壳通道。左右对称的双路刚性传动彻底消除了无托枪常见的偏心摩擦，将前置扳机拉力干脆利落地直传尾托击锤盒。",
+        "audioUrl": "audio/p90/parts/p90_transfer_bars_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Chute-Straddling Parallel Stainless Sear Linkage",
+        "overview": "Running along guide channels on both inner walls of the polymer stock, these twin parallel stainless-steel transfer bars connect the forward sliding trigger to the rear hammer pack around the central ejection chute.",
+        "craftAndMaterial": "Precision-stamped and electropolished from high-tensile spring-tempered austenitic stainless steel strip for zero axial stretch and lifetime corrosion immunity.",
+        "kinematicRole": "Translates rearward in unison with the trigger during Phase 1 to trip the rear sears, returning forward cleanly in Phase 7; drops free during detail strip past 42 percent.",
+        "designHighlight": "Symmetric twin pull-bars bypass both the thumbhole grip and vertical downward brass chute while eliminating single-bar torsional flex for a crisp bullpup trigger break.",
+        "audioScript": "Tracking along both inner walls of the stock, these twin electropolished stainless transfer bars straddle the central downward ejection chute, transmitting forward trigger pull symmetrically to the rear hammer pack with zero flex.",
+        "audioUrl": "audio/p90/parts/p90_transfer_bars_en.mp3"
+      }
+    },
+    "p90_hammer_pack": {
+      "partId": "p90_hammer_pack",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "All-Polymer Hammer Pack",
+      "zh": {
+        "roleTag": "全塑自润滑火控模块 · 免工具后抽快拆",
+        "overview": "这是模块化插装在枪托最尾端的灰绿色全工程塑料击锤盒壳体总成，内部集成了主阻铁、单发断路器、全自动不到位保险与回转击锤。",
+        "craftAndMaterial": "盒体与内部阻铁件采用添加二硫化钼/聚四氟乙烯改性的灰绿色自润滑特种聚酰胺精密注塑成型，仅销轴与弹簧为耐蚀合金钢。",
+        "kinematicRole": "在击发阶段一和阶段七精密执行阻铁脱扣、不到位闭锁核验与断路重挂；一级野战快拆（进度 0.12 至 0.30）下滑尾托盖板即可徒手整盒向后抽出。",
+        "designHighlight": "内置自动不到位保险（Out-of-Battery Sear）：全自动连发时唯有重型枪机彻底复进到位压下不到位杠杆，击锤方能释放，从机械根源杜绝炸壳风险。",
+        "audioScript": "这座灰绿色的模块化火控盒连同内部阻铁几乎全部采用自润滑工程塑料制成，终生无需滴加枪油也不惧极寒沙尘。它还内置不到位保险确保枪机完全闭锁后才允许击锤落下，徒手两秒即可从枪托尾部整盒抽出。",
+        "audioUrl": "audio/p90/parts/p90_hammer_pack_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Drop-Out Self-Lubricating Polymer Fire-Control Cassette",
+        "overview": "Seated in the extreme rear buttstock cavity, this removable gray-green all-polymer hammer pack cassette houses the primary sear, disconnector, out-of-battery auto sear, and rotary hammer.",
+        "craftAndMaterial": "Injection-molded from PTFE-lubricated glass-reinforced polyamide in FN's signature gray-green finish, using steel solely for pivot pins and music-wire springs.",
+        "kinematicRole": "Governs sear release in Phase 1, out-of-battery safety timing in Phase 6, and disconnector reset in Phase 7; slides straight out the rear of the stock between 12 and 30 percent field strip.",
+        "designHighlight": "Runs completely dry in sub-zero cold or desert sand without gumming up, while its mechanical out-of-battery sear blocks automatic hammer drop until the blowback bolt is fully closed.",
+        "audioScript": "Molded in FN's distinctive gray-green self-lubricating polymer, this drop-out hammer cassette operates completely oil-free in sand or Arctic frost, integrating an out-of-battery auto sear and sliding straight out the buttstock without tools.",
+        "audioUrl": "audio/p90/parts/p90_hammer_pack_en.mp3"
+      }
+    },
+    "p90_hammer": {
+      "partId": "p90_hammer",
+      "bomCode": "FC-05",
+      "calloutLabelEn": "Lightweight Polymer Hammer",
+      "zh": {
+        "roleTag": "极低转动惯量 · 毫秒级锁时与耐寒耐蚀",
+        "overview": "这是枢轴铰接在全塑火控盒内的超轻高强特种聚合物回转击锤与双圈扭簧总成，以闪电般的角速度摆动敲击同轴击针。",
+        "craftAndMaterial": "主体采用超高冲击强度特种工程聚合物模压成型（为呈现火控核心结构以高辨识色标注），正面镶嵌淬火钢打击衬块，配装高扭矩双股琴钢丝扭簧。",
+        "kinematicRole": "阶段二阻铁脱扣瞬间高速向前旋转约 58 度撞击击针尾端；阶段四被直退的重型枪机底面顺滑压倒重新挂入阻铁；深度拆解阶段（进度 0.65 后）分离出盒。",
+        "designHighlight": "相比传统实心锻钢击锤减重逾百分之六十，不仅将扣动扳机至子弹出膛的锁时缩短近半，更减小了击发瞬间枪身的微幅俯仰扰动。",
+        "audioScript": "这枚超轻高强工程聚合物回转击锤重量不到传统钢制击锤的四成。极低的转动惯量让它在双圈扭簧驱动下以毫秒级速度前摆击发底火，随后在重型枪机直线后坐时被平顺压倒重新挂入待击位。",
+        "audioUrl": "audio/p90/parts/p90_hammer_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Low-Inertia Polymer Rotary Hammer & Torsion Spring",
+        "overview": "Pivoting inside the modular rear trigger pack, this ultra-lightweight synthetic rotary hammer and twin-coil torsion spring deliver lightning-fast ignition strikes to the coaxial firing pin.",
+        "craftAndMaterial": "Molded from high-impact engineering polymer with a hardened steel strike insert and driven by a high-torque music-wire double torsion spring.",
+        "kinematicRole": "Rotates 58 degrees forward in Phase 2 to strike the firing pin, gets cammed smoothly back down by the recoiling bolt underside in Phase 4, and separates above the pack past 65 percent teardown.",
+        "designHighlight": "Weighing over 60 percent less than a forged steel hammer, its minimal rotational inertia slashes lock time and eliminates pre-ignition sight disturbance.",
+        "audioScript": "Weighing less than forty percent of a conventional steel hammer, this high-impact polymer rotary hammer whips forward in milliseconds to fire the round before being smoothly re-cocked by the recoiling blowback bolt.",
+        "audioUrl": "audio/p90/parts/p90_hammer_en.mp3"
+      }
+    },
+    "p90_mag_body": {
+      "partId": "p90_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "50-Rd Translucent Top Magazine",
+      "zh": {
+        "roleTag": "烟熏半透明匣体 · 50发横向双排零突出装弹",
+        "overview": "这是平卧贴合在枪身顶部脊线上的 50 发烟熏茶色半透明聚碳酸酯水平弹匣壳体，所有 5.7×28 毫米实弹在匣内横向双排叠置、弹尖朝左。",
+        "craftAndMaterial": "选用防弹级高抗冲Lexan聚碳酸酯光学树脂精密注塑成型，外顶面带有防滑横向凸肋与模压「50 / 25 / 10」余弹观察刻度窗。",
+        "kinematicRole": "供弹时作为光滑透明水平导槽引导 50 发横向弹列向枪尾推进；一级快拆最先动作（进度 0.04 至 0.26），拔起卡笋即可整匣向上托离枪脊。",
+        "designHighlight": "颠覆百年垂直弹匣定式的空间魔术：将五十发惊人持续火力完全“藏”进枪管上方的闲置平面，全枪高度分毫不增且余弹存量一目了然。",
+        "audioScript": "这具平铺在枪脊上的烟熏茶色半透明聚碳酸酯弹匣，彻底打破了百年垂直供弹传统。五十发五点七毫米子弹在匣内与枪管垂直横向双排排列，既不增加一毫米下垂高度，又能透过顶部刻度一眼看清剩余弹量。",
+        "audioUrl": "audio/p90/parts/p90_mag_body_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Flush Spine-Mounted Smoked Polycarbonate 50-Rd Body",
+        "overview": "Lying horizontally flush along the top spine of the weapon, this 50-round smoked translucent polycarbonate magazine stores 5.7×28mm cartridges sideways in a staggered double column with bullet tips pointing left.",
+        "craftAndMaterial": "Injection-molded from shatterproof optical-grade Lexan polycarbonate tinted smoky amber-brown, featuring transverse grip ribs and molded '50 / 25 / 10' round-count witness marks.",
+        "kinematicRole": "Guides the horizontal cartridge column smoothly rearward toward the helical ramp during firing, and lifts straight off the spine first during field strip (progress 0.04 to 0.26).",
+        "designHighlight": "Packs light-machine-gun 50-round capacity into dead space directly above the barrel with zero downward protrusion for prone or vehicle-port shooting and instant visual ammo checks.",
+        "audioScript": "Mounted flush along the top spine of the receiver, this smoked polycarbonate magazine stores fifty cartridges sideways perpendicular to the barrel—delivering massive capacity with zero downward bulk and instant visual round counts.",
+        "audioUrl": "audio/p90/parts/p90_mag_body_en.mp3"
+      }
+    },
+    "p90_helical_ramp": {
+      "partId": "p90_helical_ramp",
+      "bomCode": "M-02",
+      "calloutLabelEn": "90° Helical Feed-Ramp Turret",
+      "zh": {
+        "roleTag": "FN 核心专利 · 横向子弹顺时针旋转90°入膛",
+        "overview": "这是嵌装于水平弹匣尾端圆柱颈部的 90 度螺旋旋转供弹坡道转盘（美国专利 US 4,905,394），是整支 FN P90 最具独创性的机械灵魂。",
+        "craftAndMaterial": "内螺旋导槽由添加聚四氟乙烯的自润滑高耐磨工程聚合物精密成型，底部双抱弹口采用硬化不锈钢冲压护唇以抵御枪机高速剥弹磨损。",
+        "kinematicRole": "在击发阶段六（进度 0.52 至 0.68），引导横向朝左（偏航角 +90 度）的实弹沿三维阿基米德螺旋曲面顺时针平滑旋转 90 度并下沉至抱弹口，精准转正朝向枪口待推入膛。",
+        "designHighlight": "纯无源几何曲面导向：无需任何外部齿轮或拨叉动力，仅靠弹匣弹簧水平推力与螺旋曲面法向分力，在千分之几秒内零卡滞完成九十度转向奇迹。",
+        "audioScript": "这就是令全球军械师叹为观止的九十度螺旋供弹转盘专利核心。它没有任何齿轮动力，完全依靠精密的三维阿基米德螺旋曲面，在毫秒之间把横向朝左的子弹顺时针平滑旋转九十度并下沉到抱弹口，精准对准枪膛。",
+        "audioUrl": "audio/p90/parts/p90_helical_ramp_zh.mp3"
+      },
+      "en": {
+        "roleTag": "US Patent 4,905,394 · 90° Clockwise Cartridge Turret",
+        "overview": "Integrated into the cylindrical rear throat of the top magazine, this patented 90-degree helical feed-ramp turret (U.S. Patent 4,905,394) is the crowning mechanical signature of the FN P90.",
+        "craftAndMaterial": "Precision-molded with PTFE-infused self-lubricating internal spiral tracks paired with hardened steel lower feed lips to withstand 900-rpm bolt stripping.",
+        "kinematicRole": "Guides each sideways cartridge (+90° yaw) clockwise down a 3D Archimedean spiral ramp during Phase 6 (f = 0.52 to 0.68), rotating it 90 degrees to point straight into the chamber.",
+        "designHighlight": "Purely passive geometric camming: using zero gears or external power, magazine spring pressure alone turns horizontal cartridges smoothly around a 90-degree corner at 15 rounds per second.",
+        "audioScript": "Protected under U.S. Patent four-nine-zero-five-three-nine-four, this cylindrical helical feed ramp is the mechanical marvel of the P90—passively spiraling sideways cartridges ninety degrees clockwise in milliseconds to align dead ahead with the chamber.",
+        "audioUrl": "audio/p90/parts/p90_helical_ramp_en.mp3"
+      }
+    },
+    "p90_mag_follower": {
+      "partId": "p90_mag_follower",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Twin-Roller Polymer Follower",
+      "zh": {
+        "roleTag": "模拟实弹双圆柱滚轮 · 保送末发过90°弯道",
+        "overview": "这是在透明弹匣腔内水平向枪尾推进弹列的双滚轮推弹器，前端错位铰接两枚自由旋转的圆柱滚轮以仿生模拟两发并排实弹。",
+        "craftAndMaterial": "滑块本体与双滚轮均由自润滑耐磨聚甲醛树脂精密注塑成型，配装不锈钢滚轮芯轴，橙红色高可见涂装便于射手一眼读取余弹进度。",
+        "kinematicRole": "在阶段六供弹脉冲中向枪尾方向（-X）步进推动横向弹列；当打到最后几发时，前端双滚轮顺畅探入 90 度螺旋坡道入口将第 50 发末弹彻底送抵抱弹口。",
+        "designHighlight": "若使用普通平头托弹板，遇到 90 度螺旋弯道必然卡死残留三四发废弹；双错位滚轮模拟了假弹外廓，使第 50 发子弹也能丝滑滚过螺旋弯道。",
+        "audioScript": "这枚醒目的水平推弹器前端装有两个错位自由旋转的圆柱滚轮。两枚滚轮的外径恰好模拟两发并排的实弹，当打到最后几发时，滚轮能顺着九十度螺旋弯道一路探入，把第五十发末弹稳稳护送到抱弹口。",
+        "audioUrl": "audio/p90/parts/p90_mag_follower_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dummy-Cartridge Twin Rollers · Last-Round Helical Feed",
+        "overview": "Sliding horizontally inside the polycarbonate magazine body, this polymer follower carries two staggered free-spinning front rollers sized to mimic a pair of side-by-side 5.7×28mm cartridges.",
+        "craftAndMaterial": "Molded from high-visibility, low-friction acetal polymer with twin cylindrical rollers spinning on captive stainless pins.",
+        "kinematicRole": "Advances rearward along -X during Phase 6 to feed the horizontal cartridge column, rolling smoothly into the throat of the 90-degree helical ramp to deliver the 50th round.",
+        "designHighlight": "A flat follower could never turn a 90-degree spiral corner; these staggered dummy rollers follow the helical curve without binding so every last round feeds reliably.",
+        "audioScript": "Tipped with two staggered free-spinning rollers sized like dummy cartridges, this horizontal follower snakes smoothly into the throat of the ninety-degree helical ramp to ensure even the fiftieth round chambers without jamming.",
+        "audioUrl": "audio/p90/parts/p90_mag_follower_en.mp3"
+      }
+    },
+    "p90_mag_spring": {
+      "partId": "p90_mag_spring",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Horizontal Magazine Spring",
+      "zh": {
+        "roleTag": "恒压水平后推 · 克服90°螺旋转向摩擦",
+        "overview": "这是盘踞在顶置水平弹匣前后端之间的长行程矩形多圈推进弹簧，负责全姿态向后恒压推动 50 发横向弹列穿越螺旋坡道。",
+        "craftAndMaterial": "采用高弹性极限耐蚀不锈钢琴钢丝精密折弯成型并经低温去应力时效处理，长期满载压实存放数年依然保持充沛回弹力。",
+        "kinematicRole": "一端抵住前端可拆底盖，另一端推顶双滚轮推弹器向枪尾（-X）施力；在二级与全拆阶段（进度 0.35 至 1.0）从弹匣前端口伸展拉出。",
+        "designHighlight": "针对水平供弹不受重力辅助甚至需仰射、倒置射击的苛刻战术工况，其高初张力恒压曲线确保第一发至第五十发均跟得上每分钟 900 发的剥弹节奏。",
+        "audioScript": "这根长行程不锈钢推进弹簧从弹匣最前端向枪尾方向水平施力。因为水平供弹无法借助重力，它具备极佳的恒压推力曲线，即使士兵在太空失重或倒挂索降姿态下连发，也能毫无迟滞地把五十发子弹推过螺旋坡道。",
+        "audioUrl": "audio/p90/parts/p90_mag_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Constant-Force Horizontal Column Drive Spring",
+        "overview": "Spanning the interior of the top-mounted magazine from the front end-plate to the twin-roller follower, this long-stroke rectangular coil spring drives all 50 cartridges rearward into the helical ramp.",
+        "craftAndMaterial": "Formed from corrosion-resistant stainless spring wire, heat-set to resist compression fatigue even when stored fully loaded with 50 rounds for years.",
+        "kinematicRole": "Maintains continuous rearward (-X) column pressure across every firing attitude—including inverted or high-angle fire—expanding forward out the magazine nose past 35 percent disassembly.",
+        "designHighlight": "Calibrated to overcome helical-ramp rotational friction at 900 rounds per minute without over-pressing the top cartridge against the reciprocating bolt underside.",
+        "audioScript": "Driving the column horizontally from front to rear without relying on gravity, this stainless magazine spring delivers consistent thrust to rotate cartridges through the helical ramp even when firing upside down.",
+        "audioUrl": "audio/p90/parts/p90_mag_spring_en.mp3"
+      }
+    },
+    "p90_mag_floorplate": {
+      "partId": "p90_mag_floorplate",
+      "bomCode": "M-05",
+      "calloutLabelEn": "Front Magazine Locking Plate",
+      "zh": {
+        "roleTag": "前端卡扣封闭 · 快速清沙拆洗弹匣内腔",
+        "overview": "这是卡扣封装在顶置 50 发水平弹匣最前端（靠近光学上机匣后拱座）的工程塑料端盖板，承受内部水平推进弹簧的前向反推力。",
+        "craftAndMaterial": "由抗冲击黑色玻纤增强聚酰胺模压成型，两侧带有精密燕尾滑轨唇口，中心嵌有防意外滑脱的弹簧定位锁柱。",
+        "kinematicRole": "合拢态下前端楔入铝合金光学上机匣后拱凹窝内辅助定位整只弹匣；在拆解进度 0.35 至 1.0 阶段向前脱开端槽，便于抽出弹簧擦拭透明匣壁。",
+        "designHighlight": "将传统弹匣底部的底盖移至水平弹匣最前端，既充当插入上机匣后拱的导向鼻锥，又让士兵在野战沙尘环境中徒手即可拆开清沙。",
+        "audioScript": "封锁在水平弹匣最前端的这块卡扣底盖板，装枪时恰好楔入铝合金光学桥的后拱凹槽实现前点定位。野战保养时只需按压中心锁柱滑开端盖，即可轻松抽出弹簧与滚轮推弹器擦净透明内壁。",
+        "audioUrl": "audio/p90/parts/p90_mag_floorplate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Quick-Release Nose End-Plate & Bridge Locator",
+        "overview": "Locking over the forward nose of the 50-round horizontal magazine, this detachable polymer end-plate retains the drive spring while seating snugly into the rear arch pocket of the upper receiver.",
+        "craftAndMaterial": "Injection-molded from rugged black glass-filled polyamide with integral dovetail rails and a central spring-loaded retention button.",
+        "kinematicRole": "Anchors the forward end of the horizontal magazine inside the optical receiver bridge during firing, sliding off the nose past 35 percent disassembly for sand-cleaning maintenance.",
+        "designHighlight": "Serves doubly as the spring floorplate and the front indexing nose lug that guides a fresh 50-round magazine smoothly into the upper receiver pocket during fast reloads.",
+        "audioScript": "Capping the front nose of the horizontal magazine, this polymer end-plate indexes snugly into the upper receiver bridge and unlatches via a central button so operators can pull the spring and wipe the clear body clean.",
+        "audioUrl": "audio/p90/parts/p90_mag_floorplate_en.mp3"
+      }
+    }
+  }
+}
