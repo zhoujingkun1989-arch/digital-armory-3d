@@ -3,6 +3,16 @@ import * as THREE from 'three';
 import { loadWeaponGeometryBuilders } from '../../weapons/geometryLoaders';
 import type { WeaponId, WeaponPartSpec } from '../../weapons/types';
 import { isWeaponId } from '../../weapons/types';
+import {
+  beginPartSpringCapture,
+  finishPartSpringCapture,
+  validateSpringParamAlignment,
+} from './csgBuilder';
+import {
+  attachCurvatureAttribute,
+  CURVATURE_ATTRIBUTE,
+  SPRING_PARAM_ATTRIBUTE,
+} from './curvatureBuilder';
 import type {
   GeometryWorkerRequest,
   GeometryWorkerResponse,
@@ -70,7 +80,11 @@ function touchLru(weaponId: WeaponId): void {
   }
 }
 
-function reconstructBufferGeometry(
+/**
+ * Rebuilds a main-thread `THREE.BufferGeometry` from zero-copy transferred worker buffers,
+ * restoring `aCurvature` (itemSize 1) and, for spring coils, `aSpringParam` (itemSize 4).
+ */
+export function reconstructBufferGeometry(
   item: SerializedPartGeometry
 ): THREE.BufferGeometry {
   const geo = new THREE.BufferGeometry();
@@ -78,6 +92,21 @@ function reconstructBufferGeometry(
   geo.setAttribute('normal', new THREE.BufferAttribute(item.normal, 3));
   geo.setAttribute('uv', new THREE.BufferAttribute(item.uv, 2));
   geo.setAttribute('color', new THREE.BufferAttribute(item.color, 3));
+  if (item.curvature && item.curvature.length === item.position.length / 3) {
+    geo.setAttribute(
+      CURVATURE_ATTRIBUTE,
+      new THREE.BufferAttribute(item.curvature, 1)
+    );
+  }
+  if (
+    item.springParam &&
+    item.springParam.length === (item.position.length / 3) * 4
+  ) {
+    geo.setAttribute(
+      SPRING_PARAM_ATTRIBUTE,
+      new THREE.BufferAttribute(item.springParam, 4)
+    );
+  }
   if (item.index) {
     geo.setIndex(new THREE.BufferAttribute(item.index, 1));
   }
@@ -190,8 +219,17 @@ async function buildOnMainThreadSliced(
       const partId = partIds[j];
       if (entry.parts.has(partId)) continue;
       const fn = builders[partId];
-      const geo = fn ? fn() : new THREE.BoxGeometry(0.5, 0.5, 0.5);
-      recordBuiltGeometry(entry, partId, geo);
+      let geo: THREE.BufferGeometry | null = null;
+      beginPartSpringCapture();
+      try {
+        geo = fn ? fn() : new THREE.BoxGeometry(0.5, 0.5, 0.5);
+      } finally {
+        finishPartSpringCapture(geo);
+      }
+      // Main-thread fallback parity with the worker: every part carries `aCurvature` & aligned `aSpringParam`
+      validateSpringParamAlignment(geo!);
+      attachCurvatureAttribute(geo!, true);
+      recordBuiltGeometry(entry, partId, geo!);
     }
     entry.ready = entry.parts.size;
     notifyGeometryStatus(weaponId);

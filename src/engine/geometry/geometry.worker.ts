@@ -1,6 +1,16 @@
 import * as THREE from 'three';
 import { loadWeaponGeometryBuilders } from '../../weapons/geometryLoaders';
 import type { WeaponId } from '../../weapons/types';
+import {
+  beginPartSpringCapture,
+  finishPartSpringCapture,
+  validateSpringParamAlignment,
+} from './csgBuilder';
+import {
+  attachCurvatureAttribute,
+  CURVATURE_ATTRIBUTE,
+  SPRING_PARAM_ATTRIBUTE,
+} from './curvatureBuilder';
 
 export interface SerializedPartGeometry {
   partId: string;
@@ -8,6 +18,14 @@ export interface SerializedPartGeometry {
   normal: Float32Array;
   uv: Float32Array;
   color: Float32Array;
+  /** Signed CNC dihedral curvature per vertex (`aCurvature`, itemSize 1, [-1, +1]). */
+  curvature: Float32Array;
+  /**
+   * GPU constant-wire-diameter spring channel (`aSpringParam`, itemSize 4:
+   * `[u01, coilCenterCoord, anchorCoord, axisMode]`). Only allocated & transferred when at least
+   * one vertex is a spring coil (`axisMode > 0`), otherwise `null`.
+   */
+  springParam: Float32Array | null;
   index: Uint16Array | Uint32Array | null;
   bboxMin: [number, number, number];
   bboxMax: [number, number, number];
@@ -79,19 +97,45 @@ function toOwnedIndex(
     : new Uint16Array(src);
 }
 
-function serializeGeometry(
+function hasActiveSpringVertices(
+  attr: THREE.BufferAttribute | THREE.InterleavedBufferAttribute | undefined,
+  vertCount: number
+): boolean {
+  if (!attr || attr.itemSize !== 4 || attr.count !== vertCount) return false;
+  for (let i = 0; i < vertCount; i++) {
+    if (attr.getW(i) > 0) return true;
+  }
+  return false;
+}
+
+/**
+ * Serializes a built part into owned, transferable typed arrays. Guarantees every part carries an
+ * `aCurvature` channel (computed here if a weapon-specific sanitizer stripped it).
+ */
+export function serializeGeometry(
   partId: string,
   geo: THREE.BufferGeometry,
   transferList: Transferable[]
 ): SerializedPartGeometry {
   if (!geo.boundingBox) geo.computeBoundingBox();
   if (!geo.boundingSphere) geo.computeBoundingSphere();
+  validateSpringParamAlignment(geo);
+  attachCurvatureAttribute(geo, true);
 
   const vertCount = geo.attributes.position?.count ?? 0;
   const position = toOwnedFloat32(geo.attributes.position, vertCount, 3);
   const normal = toOwnedFloat32(geo.attributes.normal, vertCount, 3);
   const uv = toOwnedFloat32(geo.attributes.uv, vertCount, 2);
   const color = toOwnedFloat32(geo.attributes.color, vertCount, 3);
+  const curvature = toOwnedFloat32(
+    geo.attributes[CURVATURE_ATTRIBUTE],
+    vertCount,
+    1
+  );
+  const springAttr = geo.attributes[SPRING_PARAM_ATTRIBUTE];
+  const springParam = hasActiveSpringVertices(springAttr, vertCount)
+    ? toOwnedFloat32(springAttr, vertCount, 4)
+    : null;
   const index = toOwnedIndex(geo.index);
 
   const b = geo.boundingBox ?? new THREE.Box3();
@@ -111,7 +155,11 @@ function serializeGeometry(
     normal.buffer as ArrayBuffer,
     uv.buffer as ArrayBuffer,
     color.buffer as ArrayBuffer,
+    curvature.buffer as ArrayBuffer,
   ]);
+  if (springParam) {
+    seenBuffers.add(springParam.buffer as ArrayBuffer);
+  }
   if (index) {
     seenBuffers.add(index.buffer as ArrayBuffer);
   }
@@ -125,6 +173,8 @@ function serializeGeometry(
     normal,
     uv,
     color,
+    curvature,
+    springParam,
     index,
     bboxMin,
     bboxMax,
@@ -142,7 +192,12 @@ interface DedicatedWorkerScope {
   ) => void;
 }
 
-const workerScope = self as unknown as DedicatedWorkerScope;
+const workerScope: DedicatedWorkerScope = (typeof self !== 'undefined'
+  ? self
+  : {
+      onmessage: null,
+      postMessage: () => undefined,
+    }) as unknown as DedicatedWorkerScope;
 
 workerScope.onmessage = async (ev: MessageEvent<GeometryWorkerRequest>) => {
   const msg = ev.data;
@@ -159,8 +214,14 @@ workerScope.onmessage = async (ev: MessageEvent<GeometryWorkerRequest>) => {
     for (let i = 0; i < total; i++) {
       const partId = partIds[i];
       const buildFn = builders[partId];
-      const geo = buildFn ? buildFn() : new THREE.BoxGeometry(0.5, 0.5, 0.5);
-      batch.push(serializeGeometry(partId, geo, transfers));
+      let geo: THREE.BufferGeometry | null = null;
+      beginPartSpringCapture();
+      try {
+        geo = buildFn ? buildFn() : new THREE.BoxGeometry(0.5, 0.5, 0.5);
+      } finally {
+        finishPartSpringCapture(geo);
+      }
+      batch.push(serializeGeometry(partId, geo!, transfers));
       ready++;
 
       if (batch.length >= BATCH_SIZE || ready === total) {
