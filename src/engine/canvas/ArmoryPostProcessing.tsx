@@ -1,0 +1,547 @@
+import React, { useEffect, useMemo, useRef } from 'react';
+import * as THREE from 'three';
+import { useFrame, useThree } from '@react-three/fiber';
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { GTAOPass } from 'three/examples/jsm/postprocessing/GTAOPass.js';
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import { useAppStore } from '../../store/useAppStore';
+import {
+  DEFAULT_ARMORY_ENVIRONMENT,
+  getArmoryEnvironment,
+  type ArmoryEnvironmentPreset,
+} from './GunsmithStageMat';
+
+// =====================================================================================
+// 1. Post-Processing Configuration & Pure Testable Helpers (1 world unit = 1 cm)
+// =====================================================================================
+
+export type GtaoQualityMode = 'half' | 'adaptive' | 'full';
+
+export interface ArmoryGtaoParams {
+  /** World-space occlusion radius in cm (`1.8` = 18 mm reach around bolts, rails & lugs) */
+  radius: number;
+  /** > 1 concentrates samples tightly into sub-millimeter contact seams */
+  distanceExponent: number;
+  /** Max occluder thickness in cm before ignoring background depth jumps */
+  thickness: number;
+  distanceFallOff: number;
+  scale: number;
+  samples: number;
+  screenSpaceRadius: boolean;
+  blendIntensity: number;
+  pdLumaPhi: number;
+  pdDepthPhi: number;
+  pdNormalPhi: number;
+  pdRadius: number;
+  pdRadiusExponent: number;
+  pdRings: number;
+  pdSamples: number;
+}
+
+export interface ArmoryBloomParams {
+  /** Strict HDR luminance cutoff (>= 1.15) so normal lit PBR surfaces never haze */
+  threshold: number;
+  strength: number;
+  radius: number;
+}
+
+export interface ArmoryPostProcessingParams {
+  preset: ArmoryEnvironmentPreset;
+  toneMapping: THREE.ToneMapping;
+  toneMappingExposure: number;
+  gtao: ArmoryGtaoParams;
+  bloom: ArmoryBloomParams;
+}
+
+export const ARMORY_POSTFX_DEFAULTS = {
+  gtao: {
+    radius: 1.8,
+    distanceExponent: 1.65,
+    thickness: 1.35,
+    distanceFallOff: 1.0,
+    scale: 1.12,
+    samples: 16,
+    screenSpaceRadius: false,
+    pdLumaPhi: 10,
+    pdDepthPhi: 2,
+    pdNormalPhi: 3.2,
+    pdRadius: 6,
+    pdRadiusExponent: 1.5,
+    pdRings: 2,
+    pdSamples: 16,
+  },
+  bloom: {
+    threshold: 1.18,
+    strength: 0.32,
+    radius: 0.45,
+  },
+} as const;
+
+export function getPostProcessingPresetParams(
+  preset: ArmoryEnvironmentPreset = DEFAULT_ARMORY_ENVIRONMENT
+): ArmoryPostProcessingParams {
+  const env = getArmoryEnvironment(preset);
+  const bloomThreshold = preset === 'blueprint_daylight' ? 1.22 : 1.18;
+  return {
+    preset: env.id,
+    toneMapping: THREE.AgXToneMapping,
+    toneMappingExposure: env.toneMappingExposure,
+    gtao: {
+      ...ARMORY_POSTFX_DEFAULTS.gtao,
+      blendIntensity: env.postfx.gtaoIntensity,
+    },
+    bloom: {
+      threshold: bloomThreshold,
+      strength: env.postfx.bloomStrength,
+      radius: ARMORY_POSTFX_DEFAULTS.bloom.radius,
+    },
+  };
+}
+
+/**
+ * Creates the HDR `WebGLRenderTarget` backing `EffectComposer`.
+ *
+ * CRITICAL INVARIANT: `stencilBuffer: true` + `depthBuffer: true` + `HalfFloatType`
+ * is mandatory so Two-Pass WebGL Stencil Cross-Section Capping (`C`) continues to work
+ * seamlessly inside `RenderPass` while keeping linear HDR values unclamped for Bloom & AgX.
+ */
+export function createArmoryComposerRenderTarget(
+  width: number,
+  height: number
+): THREE.WebGLRenderTarget {
+  const safeW = Math.max(1, Math.floor(width));
+  const safeH = Math.max(1, Math.floor(height));
+  const rt = new THREE.WebGLRenderTarget(safeW, safeH, {
+    type: THREE.HalfFloatType,
+    format: THREE.RGBAFormat,
+    colorSpace: THREE.LinearSRGBColorSpace,
+    minFilter: THREE.LinearFilter,
+    magFilter: THREE.LinearFilter,
+    generateMipmaps: false,
+    depthBuffer: true,
+    stencilBuffer: true,
+  });
+  rt.texture.name = 'ArmoryEffectComposer.HDRStencilRT';
+  return rt;
+}
+
+const MAX_GTAO_LONG_EDGE = 2160;
+
+/**
+ * Computes internal G-buffer / Poisson-denoise dimensions for `GTAOPass` from physical
+ * framebuffer pixels (`cssSize * dpr`), balancing sub-millimeter sharpness with 60fps Retina headroom.
+ */
+export function computeGtaoInternalSize(
+  effectiveWidth: number,
+  effectiveHeight: number,
+  quality: GtaoQualityMode = 'adaptive',
+  dpr = 1
+): { width: number; height: number; scale: number } {
+  const baseW = Math.max(1, Math.floor(effectiveWidth));
+  const baseH = Math.max(1, Math.floor(effectiveHeight));
+
+  let scale =
+    quality === 'half'
+      ? 0.5
+      : quality === 'full'
+        ? 1.0
+        : dpr > 1.35
+          ? 0.75
+          : 1.0;
+
+  const longEdge = Math.max(baseW, baseH) * scale;
+  if (longEdge > MAX_GTAO_LONG_EDGE) {
+    scale *= MAX_GTAO_LONG_EDGE / longEdge;
+  }
+
+  return {
+    width: Math.max(1, Math.round(baseW * scale)),
+    height: Math.max(1, Math.round(baseH * scale)),
+    scale,
+  };
+}
+
+/**
+ * Softens GTAO blend intensity when X-Ray shell transparency or longitudinal section cut
+ * is active so exposed internal fire-control parts remain luminous and free of ghost halos.
+ */
+export function resolveGtaoBlendIntensity(
+  baseIntensity: number,
+  xrayShells: boolean,
+  sectionCut: boolean
+): number {
+  if (xrayShells) return baseIntensity * 0.58;
+  if (sectionCut) return baseIntensity * 0.88;
+  return baseIntensity;
+}
+
+function shouldExcludeMaterialFromGtao(
+  mat: THREE.Material | undefined
+): boolean {
+  if (!mat) return true;
+  if (!mat.visible) return true;
+  // Pass A / Pass B stencil increment-decrement helper meshes write stencil only
+  if (mat.colorWrite === false) return true;
+  // Pass C stencil cap quads & custom procedural shaders (e.g. infinite Grid XY->XZ swizzle)
+  if ((mat as THREE.ShaderMaterial).isShaderMaterial) return true;
+  if (mat.stencilWrite && mat.stencilFunc !== THREE.AlwaysStencilFunc) {
+    return true;
+  }
+  // Sliced outer shells in section-cut mode: scene.overrideMaterial ignores per-mesh clippingPlanes,
+  // so excluding clipped outer housings prevents their cut-away +Z half from occluding internal parts
+  if (mat.clippingPlanes && mat.clippingPlanes.length > 0) {
+    return true;
+  }
+  // Additive muzzle flash / Mach shock diamonds & translucent X-Ray / ghost / smoke / ContactShadows
+  if (mat.blending === THREE.AdditiveBlending) return true;
+  if (mat.transparent) return true;
+  if (mat.depthWrite === false) return true;
+  return false;
+}
+
+/**
+ * Determines whether a scene object must be hidden during `GTAOPass`'s opaque
+ * `MeshNormalMaterial` override pass so X-Ray shells, stencil caps, infinite grid shaders,
+ * ContactShadows, and additive muzzle VFX never cast dark phantom AO halos.
+ */
+export function shouldExcludeFromGtaoPass(object: THREE.Object3D): boolean {
+  if (
+    (object as THREE.Points).isPoints ||
+    (object as THREE.Line).isLine ||
+    (object as THREE.Sprite).isSprite
+  ) {
+    return true;
+  }
+  if (object.userData?.excludeFromGtao === true) {
+    return true;
+  }
+  if ((object as THREE.Mesh).isMesh) {
+    const mesh = object as THREE.Mesh;
+    const mat = mesh.material;
+    if (Array.isArray(mat)) {
+      if (mat.length === 0) return true;
+      for (let i = 0; i < mat.length; i++) {
+        if (shouldExcludeMaterialFromGtao(mat[i])) return true;
+      }
+      return false;
+    }
+    return shouldExcludeMaterialFromGtao(mat);
+  }
+  return false;
+}
+
+export function applyRendererToneMapping(
+  renderer: THREE.WebGLRenderer,
+  toneMapping: THREE.ToneMapping,
+  exposure: number,
+  outputColorSpace?: THREE.ColorSpace
+): void {
+  renderer.toneMapping = toneMapping;
+  renderer.toneMappingExposure = exposure;
+  if (outputColorSpace !== undefined) {
+    renderer.outputColorSpace = outputColorSpace;
+  }
+}
+
+// =====================================================================================
+// 2. Active EffectComposer Pipeline (mounted only when `enabled === true`)
+// =====================================================================================
+
+interface ActiveComposerProps {
+  environmentPreset: ArmoryEnvironmentPreset;
+  gtaoQuality: GtaoQualityMode;
+  enableGtao: boolean;
+  enableBloom: boolean;
+  enableSmaa: boolean;
+}
+
+interface ComposerRig {
+  composer: EffectComposer;
+  renderPass: RenderPass;
+  gtaoPass: GTAOPass;
+  bloomPass: UnrealBloomPass;
+  outputPass: OutputPass;
+  smaaPass: SMAAPass | null;
+}
+
+const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
+  environmentPreset,
+  gtaoQuality,
+  enableGtao,
+  enableBloom,
+  enableSmaa,
+}) => {
+  const { gl, scene, camera, size } = useThree();
+  const dpr = gl.getPixelRatio();
+
+  const rigRef = useRef<ComposerRig | null>(null);
+  const qualityRef = useRef<GtaoQualityMode>(gtaoQuality);
+  const baseGtaoIntensityRef = useRef<number>(
+    getPostProcessingPresetParams(environmentPreset).gtao.blendIntensity
+  );
+  const enableGtaoRef = useRef<boolean>(enableGtao);
+
+  // Build EffectComposer + passes once per (gl, scene, camera) lifecycle
+  useEffect(() => {
+    const cssW = Math.max(1, size.width);
+    const cssH = Math.max(1, size.height);
+    const curDpr = gl.getPixelRatio();
+    const effW = Math.max(1, Math.floor(cssW * curDpr));
+    const effH = Math.max(1, Math.floor(cssH * curDpr));
+
+    const initialParams = getPostProcessingPresetParams(environmentPreset);
+
+    const renderTarget = createArmoryComposerRenderTarget(effW, effH);
+    const composer = new EffectComposer(gl, renderTarget);
+    // Normalize EffectComposer internal CSS size & pixelRatio immediately so passes never scale by dpr^2
+    composer.setPixelRatio(curDpr);
+    composer.setSize(cssW, cssH);
+
+    // 1. HDR Linear Scene RenderPass (Three.js r169 automatically disables inline toneMapping when rendering to RT)
+    const renderPass = new RenderPass(scene, camera);
+    composer.addPass(renderPass);
+
+    // 2. Metric Ground-Truth Ambient Occlusion (1 unit = 1 cm)
+    const gtaoSize = computeGtaoInternalSize(
+      effW,
+      effH,
+      qualityRef.current,
+      curDpr
+    );
+    const gtaoPass = new GTAOPass(
+      scene,
+      camera,
+      gtaoSize.width,
+      gtaoSize.height
+    );
+    const rawGtaoSetSize = gtaoPass.setSize.bind(gtaoPass);
+    gtaoPass.setSize = (w: number, h: number): void => {
+      const scaled = computeGtaoInternalSize(
+        w,
+        h,
+        qualityRef.current,
+        gl.getPixelRatio()
+      );
+      rawGtaoSetSize(scaled.width, scaled.height);
+    };
+
+    // Zero-GC visibility filter so X-Ray shells, StencilSectionCap planes, Grid & VFX never ghost in AO
+    const visibilityCache = (
+      gtaoPass as unknown as { _visibilityCache: Map<THREE.Object3D, boolean> }
+    )._visibilityCache;
+    const visitForGtao = (obj: THREE.Object3D): void => {
+      visibilityCache.set(obj, obj.visible);
+      if (obj.visible && shouldExcludeFromGtaoPass(obj)) {
+        obj.visible = false;
+      }
+    };
+    gtaoPass.overrideVisibility = (): void => {
+      gtaoPass.scene.traverse(visitForGtao);
+    };
+
+    gtaoPass.updateGtaoMaterial({
+      radius: initialParams.gtao.radius,
+      distanceExponent: initialParams.gtao.distanceExponent,
+      thickness: initialParams.gtao.thickness,
+      distanceFallOff: initialParams.gtao.distanceFallOff,
+      scale: initialParams.gtao.scale,
+      samples: initialParams.gtao.samples,
+      screenSpaceRadius: initialParams.gtao.screenSpaceRadius,
+    });
+    gtaoPass.updatePdMaterial({
+      lumaPhi: initialParams.gtao.pdLumaPhi,
+      depthPhi: initialParams.gtao.pdDepthPhi,
+      normalPhi: initialParams.gtao.pdNormalPhi,
+      radius: initialParams.gtao.pdRadius,
+      radiusExponent: initialParams.gtao.pdRadiusExponent,
+      rings: initialParams.gtao.pdRings,
+      samples: initialParams.gtao.pdSamples,
+    });
+    gtaoPass.blendIntensity = initialParams.gtao.blendIntensity;
+    composer.addPass(gtaoPass);
+
+    // 3. Selective HDR Emissive UnrealBloomPass (threshold = 1.18+ so lit surfaces stay razor crisp)
+    const bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(effW, effH),
+      initialParams.bloom.strength,
+      initialParams.bloom.radius,
+      initialParams.bloom.threshold
+    );
+    composer.addPass(bloomPass);
+
+    // 4. Single AgX Tone-Mapping + Linear->sRGB OutputPass (reads gl.toneMapping & gl.toneMappingExposure)
+    const outputPass = new OutputPass();
+    composer.addPass(outputPass);
+
+    // 5. Perceptual LDR Subpixel Morphological Anti-Aliasing (SMAAPass)
+    let smaaPass: SMAAPass | null = null;
+    if (typeof Image !== 'undefined') {
+      smaaPass = new SMAAPass(effW, effH);
+      smaaPass.materialEdges.toneMapped = false;
+      smaaPass.materialWeights.toneMapped = false;
+      smaaPass.materialBlend.toneMapped = false;
+      composer.addPass(smaaPass);
+    }
+
+    rigRef.current = {
+      composer,
+      renderPass,
+      gtaoPass,
+      bloomPass,
+      outputPass,
+      smaaPass,
+    };
+
+    return () => {
+      rigRef.current = null;
+      renderPass.dispose();
+      gtaoPass.dispose();
+      bloomPass.dispose();
+      outputPass.dispose();
+      smaaPass?.dispose();
+      composer.dispose();
+    };
+    // Viewport size & preset updates are handled without reallocating passes in the effects below
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gl, scene, camera]);
+
+  // Handle window / canvas / DPR resize cleanly
+  useEffect(() => {
+    qualityRef.current = gtaoQuality;
+    const rig = rigRef.current;
+    if (!rig) return;
+    const cssW = Math.max(1, size.width);
+    const cssH = Math.max(1, size.height);
+    const curDpr = gl.getPixelRatio();
+    rig.composer.setPixelRatio(curDpr);
+    rig.composer.setSize(cssW, cssH);
+  }, [gl, size.width, size.height, dpr, gtaoQuality]);
+
+  // Sync preset & pass toggles without tearing down GPU targets
+  useEffect(() => {
+    enableGtaoRef.current = enableGtao;
+    const rig = rigRef.current;
+    if (!rig) return;
+    const params = getPostProcessingPresetParams(environmentPreset);
+    baseGtaoIntensityRef.current = params.gtao.blendIntensity;
+
+    rig.gtaoPass.enabled = enableGtao;
+    rig.gtaoPass.blendIntensity = params.gtao.blendIntensity;
+
+    rig.bloomPass.enabled = enableBloom && params.bloom.strength > 0.001;
+    rig.bloomPass.threshold = params.bloom.threshold;
+    rig.bloomPass.strength = params.bloom.strength;
+    rig.bloomPass.radius = params.bloom.radius;
+
+    if (rig.smaaPass) {
+      rig.smaaPass.enabled = enableSmaa;
+    }
+  }, [environmentPreset, enableGtao, enableBloom, enableSmaa]);
+
+  // Priority 1 takes over R3F's default render; Zero-GC per-frame execution
+  useFrame((_, delta) => {
+    const rig = rigRef.current;
+    if (!rig) return;
+
+    if (enableGtaoRef.current) {
+      const st = useAppStore.getState();
+      const targetBlend = resolveGtaoBlendIntensity(
+        baseGtaoIntensityRef.current,
+        st.xrayShells,
+        st.sectionCut
+      );
+      rig.gtaoPass.enabled = targetBlend > 0.01;
+      rig.gtaoPass.blendIntensity = targetBlend;
+    } else {
+      rig.gtaoPass.enabled = false;
+    }
+
+    rig.composer.render(Math.min(delta, 0.1));
+  }, 1);
+
+  return null;
+};
+
+// =====================================================================================
+// 3. Public Component (<ArmoryPostProcessing />)
+// =====================================================================================
+
+export interface ArmoryPostProcessingProps {
+  enabled?: boolean;
+  environmentPreset?: ArmoryEnvironmentPreset;
+  gtaoQuality?: GtaoQualityMode;
+  enableGtao?: boolean;
+  enableBloom?: boolean;
+  enableSmaa?: boolean;
+}
+
+/**
+ * Native Three.js r169 Post-Processing Pipeline:
+ * `RenderPass` (HalfFloat + 8-bit Stencil) → `GTAOPass` (1.8 cm world radius) →
+ * selective HDR `UnrealBloomPass` (`threshold >= 1.18`) → `OutputPass` (`AgXToneMapping`) → `SMAAPass`.
+ */
+export const ArmoryPostProcessing: React.FC<ArmoryPostProcessingProps> =
+  React.memo(
+    ({
+      enabled = true,
+      environmentPreset = DEFAULT_ARMORY_ENVIRONMENT,
+      gtaoQuality = 'adaptive',
+      enableGtao = true,
+      enableBloom = true,
+      enableSmaa = true,
+    }) => {
+      const { gl } = useThree();
+      const presetParams = useMemo(
+        () => getPostProcessingPresetParams(environmentPreset),
+        [environmentPreset]
+      );
+
+      // Preserve & restore previous renderer tone-mapping state on unmount
+      useEffect(() => {
+        const prevToneMapping = gl.toneMapping;
+        const prevExposure = gl.toneMappingExposure;
+        const prevColorSpace = gl.outputColorSpace;
+
+        applyRendererToneMapping(
+          gl,
+          THREE.AgXToneMapping,
+          prevExposure,
+          THREE.SRGBColorSpace
+        );
+
+        return () => {
+          applyRendererToneMapping(
+            gl,
+            prevToneMapping,
+            prevExposure,
+            prevColorSpace
+          );
+        };
+      }, [gl]);
+
+      useEffect(() => {
+        applyRendererToneMapping(
+          gl,
+          presetParams.toneMapping,
+          presetParams.toneMappingExposure
+        );
+      }, [gl, presetParams]);
+
+      if (!enabled) return null;
+
+      return (
+        <ActiveArmoryComposer
+          environmentPreset={environmentPreset}
+          gtaoQuality={gtaoQuality}
+          enableGtao={enableGtao}
+          enableBloom={enableBloom}
+          enableSmaa={enableSmaa}
+        />
+      );
+    }
+  );
+
+ArmoryPostProcessing.displayName = 'ArmoryPostProcessing';
