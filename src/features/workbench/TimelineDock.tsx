@@ -1,5 +1,18 @@
 import React, { useEffect, useRef } from 'react';
-import { Flame, Layers, Pause, Play, Repeat, Zap } from 'lucide-react';
+import {
+  Flame,
+  Layers,
+  Pause,
+  Play,
+  Repeat,
+  Volume2,
+  VolumeX,
+  Zap,
+} from 'lucide-react';
+import {
+  playWorkbenchFoley,
+  triggerManualPhasePreviewSound,
+} from '../../engine/audio/mechanicalSoundEngine';
 import {
   playbackClock,
   useActiveFiringPhase,
@@ -44,6 +57,8 @@ export const TimelineDock: React.FC = () => {
   const triggerSingleShot = useAppStore((s) => s.triggerSingleShot);
   const toggleFireLoop = useAppStore((s) => s.toggleFireLoop);
   const setFireSpeedMultiplier = useAppStore((s) => s.setFireSpeedMultiplier);
+  const sfxMuted = useAppStore((s) => s.sfxMuted);
+  const toggleSfxMuted = useAppStore((s) => s.toggleSfxMuted);
 
   const plugin = useWeaponPlugin(activeWeaponId);
   const { bundle } = useWeaponNarration(activeWeaponId);
@@ -125,12 +140,28 @@ export const TimelineDock: React.FC = () => {
             </div>
 
             <button
+              type="button"
               className={`loop-pill ${fireLoop ? 'active' : ''}`}
               onClick={toggleFireLoop}
               title={ui.loopTitle}
             >
-              <Repeat size={12} />
+              <Repeat size={12} aria-hidden="true" />
               <span>{fireLoop ? ui.loopOn : ui.loopOff}</span>
+            </button>
+
+            <button
+              type="button"
+              className={`loop-pill ${!sfxMuted ? 'active' : ''}`}
+              aria-pressed={!sfxMuted}
+              onClick={toggleSfxMuted}
+              title={ui.sfxTitle}
+            >
+              {sfxMuted ? (
+                <VolumeX size={12} aria-hidden="true" />
+              ) : (
+                <Volume2 size={12} aria-hidden="true" />
+              )}
+              <span>{ui.sfxPill}</span>
             </button>
           </div>
         )}
@@ -148,6 +179,7 @@ export const TimelineDock: React.FC = () => {
                   className={`preset-pill ${isActive ? 'active' : ''}`}
                   onClick={() => {
                     stopPlay();
+                    playWorkbenchFoley('preset_detent');
                     setTargetProgress(preset.t);
                     const state = useAppStore.getState();
                     if (!state.selectedPartId) {
@@ -220,6 +252,7 @@ export const TimelineDock: React.FC = () => {
                     const mid =
                       ph.range[0] + (ph.range[1] - ph.range[0]) * 0.62;
                     setFireProgress(mid);
+                    triggerManualPhasePreviewSound(activeWeaponId, mid);
                   }}
                   title={locPhase.title}
                 >
@@ -261,7 +294,9 @@ export const TimelineDock: React.FC = () => {
                 defaultValue={Math.round(initialScalar * 1000)}
                 onChange={(e) => {
                   stopFiringPlay();
-                  setFireProgress(Number(e.target.value) / 1000);
+                  const nextVal = Number(e.target.value) / 1000;
+                  setFireProgress(nextVal);
+                  triggerManualPhasePreviewSound(activeWeaponId, nextVal);
                 }}
                 className="explode-slider firing-slider"
               />

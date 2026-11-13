@@ -22,9 +22,9 @@
 
 ---
 
-> 基于 **React 18 + TypeScript + Three.js (`@react-three/fiber` / Web Worker `three-bvh-csg`)** 构建的工业级浏览器端交互式 **十大世界经典名枪 1:1 机械内构爆炸拆解、GPU 纵向军械剖视与 7 阶段内弹道仿真引擎**。
+> 基于 **React 18 + TypeScript + Three.js (`@react-three/fiber` / Web Worker `three-bvh-csg` / Web Audio API)** 构建的工业级浏览器端交互式 **十大世界经典名枪 1:1 机械内构拆解、双语 AI 四幕研发纪录片（3D 导演自动运镜）、GPU 纵向军械剖视与 7 阶段声画内弹道仿真博物馆**。
 >
-> A zero-external-mesh WebGL 2.0 3D Digital Armory featuring **10 self-contained weapon plugins**, **253 procedurally & CSG-modeled moving parts** streamed from a background Web Worker, **58 2K 5-channel Packed ORM WebP textures**, longitudinal GPU section-cut (`C`) with section-aware BVH raycasting, zero-reflow 3D leader callouts, and 7-stage caliber-accurate ballistics simulations.
+> A zero-external-mesh WebGL 2.0 3D Firearms Mechanical Museum featuring **10 self-contained weapon plugins**, **253 procedurally & CSG-modeled moving parts** streamed from a background Web Worker, **58 2K 5-channel Packed ORM WebP textures**, **586 bilingual Google Gemini TTS voiceovers**, automated **3D Story Director choreography** with synced click-to-seek captions, longitudinal GPU section-cut (`C`), and a **procedural Web Audio 6-caliber & 7-stage gunsmith acoustic engine**.
 
 ![Digital Armory 3D Official Showcase Hero](docs/screenshots/showcase-landing.jpg)
 
@@ -34,7 +34,9 @@
 
 ## 核心亮点 | Highlights
 
-- **✦ 内置实时交互产品宣传页（Live 3D Showcase Landing Page）**：支持通过 `showcase.html` 或 `?screen=showcase` 打开全景产品发布页，首屏内嵌 **60 FPS 实时 WebGL 3D 检视窗**，无需跳转即可在宣传页直接切换 10 款名枪并实时体验「真铁 PBR / 纵向剖视 / X-Ray 透视 / 悬浮半爆炸」。
+- **✦ 全站中英双语（`中文 / EN`）与实时交互宣传页（Live 3D Showcase v3.0）**：支持通过 `showcase.html`、`?screen=showcase` 或 `?lang=en` 打开双语全景产品发布页，首屏内嵌 **60 FPS 实时 WebGL 3D 检视窗**，无需跳转即可在宣传页切换 10 款名枪、体验「真铁 PBR / 纵向剖视 / X-Ray 透视 / 悬浮半爆炸」或一键启动 3D 导演纪录片。
+- **✦ AI 四幕研发纪录片 &「3D 导演自动运镜模式」**：全馆藏内置 **586 段双语语音导览**（40 段四幕研发史配音 + 506 段独立零件中英讲解，支持 `speechSynthesis` 离线兜底）。开启 **3D 导演运镜** 后，随旁白自动切入拆解工作台、飞跃聚焦核心零件、按剧情节拍切换纵向剖视 `C` / X-Ray / `52%` 二级分解与 `0.25x` 超慢放实弹循环，并配套可点击跳转的逐句滚动高亮字幕与悬浮影院字幕条。
+- **✦ 程序化 Web Audio 军械机械声效 & 6 口径实弹声场**：零外部音频膨胀，与 `playbackClock` 7 阶段击发相位硬绑定——`1.0x` 标准射速清晰区分 `.50 BMG` 38Hz 超低频震波与 `9×19mm` 清脆爆响；`0.25x` 超慢放精准分离阻铁释放、击针撞底火、导气/后坐、凸轮开锁、旋转黄铜弹壳清鸣与复进簧闭锁声，并在语音播报时自动执行 `-12.4 dB` 智能闪避（Audio Ducking）。
 - **10 展位 3D 数字枪库与 1:1 原厂测绘铭牌**：支持按「全部馆藏 / 突击·卡宾·无托 / 冲锋枪 / 狙击·反器材 / 半自动手枪」分类筛选，配备原厂全枪长 (OAL)、枪管缠距、空枪质量、初速与射程铭牌，支持卡片悬停预热加载与一键直达拆解台。
 - **GPU 纵向中轴军械剖视（`C`）与剖面穿透拾取**：按下 `C` 键即可沿枪膛纵轴实时剖开右侧机匣、套筒与弹匣壳体，原色直视内部膛线、闭锁突笋、导气活塞、复进簧与实弹托弹簧；定制 `sectionAwareMeshRaycast` 让鼠标直接穿透虚空切面点选内部火控构件。
 - **5 通道 Packed ORM 物理材质与双侧掠射柔光棚**：基于 `scripts/pbr_core/` 离线烘焙 `Albedo + Normal + ORM (R:高度积分AO · G:微粗糙度 · B:逐纹素金属度)` 共 **58 张 `.webp` 贴图**（`101.35 MB → 17.25 MB`，缩减 **83%**）；配合 ACES Filmic 双侧 `±Z` 掠射柔光箱与磷化转化膜 + 枪油清漆层曲线，清晰分离锰系磷化钢、硬质阳极铝、CNC 导轨倒角、玻纤尼龙与硫化橡胶五级深色质感。
@@ -79,17 +81,18 @@
 ## 键盘快捷键与深度链接 | Shortcuts & Deep Links
 
 - **多入口与深度链接**：
-  - 官方宣传页：`/showcase.html` 或 `/?screen=showcase`
-  - 10 槽数字枪库：`/?weapon=ak15`
+  - 官方双语宣传页：`/showcase.html`、`/?screen=showcase` 或 `/showcase.html?lang=en`
+  - 10 槽数字枪库：`/?weapon=ak15` 或 `/?weapon=ak15&lang=en`
   - 直达拆解/击发台：`/?weapon=m82a1&screen=workbench&mode=firing`
 - **全局工程快捷键**：
   - `Space`：播放 / 暂停自动拆解或实弹击发循环演示
   - `C`：开启 / 关闭 1:1 纵向中轴军械剖视切面（`军械剖视`）
   - `X`：开启 / 关闭机匣与套筒外壳 X-Ray 半透明透视
+  - `M`：开启 / 静音 Web Audio 军械机械咬合声与 6 口径实弹声场
   - `E`：开启 / 关闭工业 CAD 硬边轮廓线
   - `L`：显示 / 隐藏 3D 空间零件编号引出标签（拆解模式）
   - `R`：一键重置回默认合拢态与默认等轴测视角
-  - `Esc`：依次关闭贴图图集弹窗 → 取消当前选中零件 → 返回 3D 数字枪库
+  - `Esc`：依次收起全屏抽屉为悬浮字幕条 → 取消当前选中零件 → 返回 3D 数字枪库
 
 ---
 
@@ -136,6 +139,8 @@ digital-armory-3d/
 ├── index.html                     # 3D 数字枪库与拆解工作台主入口
 ├── showcase.html                  # 官方交互式产品宣传页独立入口
 ├── public/
+│   ├── audio/                     # 586 段双语四幕研发史与全零件 Gemini TTS MP3 语音
+│   ├── narrations/                # 10 款武器结构化双语研发故事与零件工程档案 JSON
 │   ├── showcase/                  # 实机 WebGL 2.0 高清宣传页画廊资产 (WebP)
 │   └── textures/                  # 58 张 2K / Seamless 5-Ch ORM WebP 贴图
 ├── scripts/
@@ -143,17 +148,20 @@ digital-armory-3d/
 │   ├── pbr/                       # 10 款武器独立贴图生成器 (generate_*_pbr.py)
 │   └── build_textures.py          # 统一贴图生成与 WebP 编码流水线 CLI
 ├── src/
-│   ├── app/                       # URL 双向深度链接、全局快捷键与 WebGL ErrorBoundary
-│   ├── engine/                    # 通用 3D 机械拆解、剖视与内弹道引擎层
+│   ├── app/                       # URL 双向深度链接、语言标题同步、快捷键与 ErrorBoundary
+│   ├── engine/                    # 通用 3D 机械拆解、剖视、内弹道与程序化声学引擎层
 │   │   ├── actors/                # PartActor (转化膜+清漆层 PBR) + BallisticsSystem
+│   │   ├── audio/                 # Web Audio 6 口径实弹声浪、8 点机械咬合与 TTS 闪避引擎
 │   │   ├── callout/               # ResizeObserver 零回流避障与 60fps 引线投影器
 │   │   ├── canvas/                # ArmoryViewport 双侧掠射柔光棚与阻尼相机飞跃控制
 │   │   ├── clock/                 # playbackClock 60fps 瞬态时钟 (零 React 重渲染)
 │   │   ├── geometry/              # Web Worker 异步 CSG、剖视穿透射线与 LRU 几何池
 │   │   ├── kinematics/            # 零 GC 分配关键帧插值与运动学纯函数库
 │   │   └── materials/             # BASE_URL 自适应 WebP PBR 加载与 LRU 纹理池
+│   ├── i18n/                      # 全站与宣传页中英双语词典及武器元数据兜底表
+│   ├── narration/                 # 语音播放队列、speechSynthesis 兜底与 3D 导演编排器
 │   ├── weapons/                   # 10 款自包含武器插件包 (支持 Rollup 独立分包懒加载)
-│   ├── features/                  # 模块化视图层 (showcase / armory / workbench / atlas)
+│   ├── features/                  # 模块化视图层 (showcase / armory / workbench / story / atlas)
 │   ├── store/                     # useAppStore 强类型交互状态库
 │   └── styles/                    # 设计令牌与按视图模块拆分的样式体系
 ├── tests/                         # Vitest 253 零件几何/UV/运动学/防死黑契约测试

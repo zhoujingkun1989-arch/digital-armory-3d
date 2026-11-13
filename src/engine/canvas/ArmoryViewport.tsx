@@ -347,6 +347,9 @@ const DisassemblyRig: React.FC = () => {
     }
     _focusViewDir.copy(camera.position).sub(_focusCurrentTarget);
     if (_focusViewDir.lengthSq() < 0.01) _focusViewDir.set(0.3, 0.2, 1);
+    if (state.sectionCut && _focusViewDir.z < 0.45) {
+      _focusViewDir.set(0.22, 0.16, 0.96);
+    }
     _focusViewDir.normalize();
 
     const scaleProfile = meta.scaleProfile;

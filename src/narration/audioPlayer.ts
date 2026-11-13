@@ -49,6 +49,7 @@ const INITIAL_SNAPSHOT: AudioPlayerSnapshot = {
 let currentSnapshot: AudioPlayerSnapshot = INITIAL_SNAPSHOT;
 let trackQueue: NarrationTrack[] = [];
 let audioEl: HTMLAudioElement | null = null;
+let pendingSeekRatio: number | null = null;
 let usingSpeechFallback = false;
 let activeUtterance: SpeechSynthesisUtterance | null = null;
 let speechPaused = false;
@@ -214,6 +215,18 @@ function ensureAudioElement(): HTMLAudioElement | null {
   el.addEventListener('loadedmetadata', () => {
     if (usingSpeechFallback) return;
     const dur = Number.isFinite(el.duration) ? el.duration : 0;
+    if (pendingSeekRatio !== null && dur > 0) {
+      const ratio = pendingSeekRatio;
+      pendingSeekRatio = null;
+      el.currentTime = ratio * dur;
+      emitSnapshot({
+        isLoading: false,
+        duration: dur,
+        currentTime: el.currentTime,
+        progress: ratio,
+      });
+      return;
+    }
     emitSnapshot({
       isLoading: false,
       duration: dur,
@@ -284,10 +297,14 @@ function ensureAudioElement(): HTMLAudioElement | null {
   return el;
 }
 
-function startQueueIndex(index: number): void {
+function startQueueIndex(index: number, initialSeekRatio = 0): void {
   const el = ensureAudioElement();
   const track = trackQueue[index];
   if (!el || !track) return;
+
+  const clampedRatio =
+    initialSeekRatio > 0 ? Math.max(0, Math.min(0.99, initialSeekRatio)) : 0;
+  pendingSeekRatio = clampedRatio > 0 ? clampedRatio : null;
 
   cancelSpeechFallback();
   el.pause();
@@ -308,7 +325,7 @@ function startQueueIndex(index: number): void {
     queueIndex: index,
     currentTime: 0,
     duration: 0,
-    progress: 0,
+    progress: clampedRatio,
   });
 
   const targetKey = track.key;
@@ -328,12 +345,13 @@ function startQueueIndex(index: number): void {
 
 export function playNarrationPlaylist(
   tracks: NarrationTrack[],
-  startIndex = 0
+  startIndex = 0,
+  initialSeekRatio = 0
 ): void {
   if (tracks.length === 0) return;
   const clamped = Math.max(0, Math.min(tracks.length - 1, startIndex));
   trackQueue = [...tracks];
-  startQueueIndex(clamped);
+  startQueueIndex(clamped, initialSeekRatio);
 }
 
 export function playOrToggleNarrationTrack(track: NarrationTrack): void {
@@ -392,6 +410,7 @@ export function toggleActiveNarrationPlayPause(): void {
 }
 
 export function stopNarrationAudio(): void {
+  pendingSeekRatio = null;
   cancelSpeechFallback();
   if (audioEl) {
     audioEl.pause();

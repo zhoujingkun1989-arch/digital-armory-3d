@@ -17,6 +17,17 @@ import { isWeaponId } from '../weapons/types';
 export type AppScreen = 'showcase' | 'armory' | 'workbench';
 export type AppViewMode = 'explode' | 'firing';
 
+export interface StoryDirectorStageSpec {
+  weaponId: WeaponId;
+  mode: AppViewMode;
+  targetProgress: number;
+  sectionCut: boolean;
+  xrayShells: boolean;
+  focusPartId: string | null;
+  cameraPreset: CameraPresetType;
+  fireSpeedMultiplier?: 0.25 | 0.5 | 1.0;
+}
+
 const DEFAULT_HIDDEN_GROUPS: Record<AssemblyGroupKey, boolean> = {
   slide: false,
   frame: false,
@@ -34,8 +45,10 @@ export interface AppState {
   lang: LanguageCode;
   storyOpen: boolean;
   storyMinimized: boolean;
+  storyDirectorMode: boolean;
   inspectorMinimized: boolean;
   autoPlayPartAudio: boolean;
+  sfxMuted: boolean;
 
   /** Active interactive mode inside Workbench: Exploded Disassembly vs Dynamic Firing Cycle */
   mode: AppViewMode;
@@ -76,9 +89,14 @@ export interface AppState {
   setStoryOpen: (open: boolean) => void;
   setStoryMinimized: (minimized: boolean) => void;
   toggleStoryOpen: () => void;
+  setStoryDirectorMode: (enabled: boolean) => void;
+  toggleStoryDirectorMode: () => void;
+  applyStoryDirectorStage: (stage: StoryDirectorStageSpec) => void;
   setInspectorMinimized: (minimized: boolean) => void;
   toggleInspectorMinimized: () => void;
   toggleAutoPlayPartAudio: () => void;
+  setSfxMuted: (muted: boolean) => void;
+  toggleSfxMuted: () => void;
   focusStoryPart: (partId: string) => void;
 
   // Armory <-> Workbench <-> Showcase Navigation Actions
@@ -130,8 +148,10 @@ export const useAppStore = create<AppState>((set, get) => ({
   lang: 'zh',
   storyOpen: false,
   storyMinimized: false,
+  storyDirectorMode: true,
   inspectorMinimized: false,
   autoPlayPartAudio: true,
+  sfxMuted: false,
 
   mode: 'explode',
 
@@ -190,6 +210,86 @@ export const useAppStore = create<AppState>((set, get) => ({
       return { storyOpen: false, storyMinimized: false };
     }),
 
+  setStoryDirectorMode: (storyDirectorMode) => set({ storyDirectorMode }),
+
+  toggleStoryDirectorMode: () =>
+    set((s) => ({ storyDirectorMode: !s.storyDirectorMode })),
+
+  applyStoryDirectorStage: (stage) => {
+    const cur = get();
+    if (stage.mode === 'firing') {
+      playbackClock.setTargetProgress(0, true);
+      if (cur.mode !== 'firing' || cur.activeWeaponId !== stage.weaponId) {
+        playbackClock.setFireProgress(0, true);
+      }
+      set({
+        screen: 'workbench',
+        activeWeaponId: stage.weaponId,
+        mode: 'firing',
+        isPlaying: false,
+        isFiringPlaying: true,
+        fireLoop: true,
+        fireSpeedMultiplier: stage.fireSpeedMultiplier ?? 0.25,
+        textureModalOpen: false,
+        sectionCut: stage.sectionCut,
+        xrayShells: stage.sectionCut ? false : stage.xrayShells,
+        showLabels: true,
+        isolateSelected: false,
+        selectedPartId: null,
+        hoveredPartId: null,
+        inspectorMinimized: true,
+        hiddenGroups: { ...DEFAULT_HIDDEN_GROUPS },
+        cameraCommand: {
+          preset: stage.cameraPreset,
+          seq: cur.cameraCommand.seq + 1,
+        },
+      });
+      return;
+    }
+
+    playbackClock.setFireProgress(0, true);
+    playbackClock.setTargetProgress(stage.targetProgress, false);
+
+    const commitExplodeStage = () => {
+      const live = get();
+      set({
+        screen: 'workbench',
+        activeWeaponId: stage.weaponId,
+        mode: 'explode',
+        isPlaying: false,
+        isFiringPlaying: false,
+        textureModalOpen: false,
+        sectionCut: stage.sectionCut,
+        xrayShells: stage.sectionCut ? false : stage.xrayShells,
+        showLabels: true,
+        isolateSelected: false,
+        selectedPartId: stage.focusPartId,
+        hoveredPartId: null,
+        inspectorMinimized: true,
+        hiddenGroups: { ...DEFAULT_HIDDEN_GROUPS },
+        cameraCommand: {
+          preset: stage.cameraPreset,
+          seq: live.cameraCommand.seq + 1,
+        },
+      });
+    };
+
+    commitExplodeStage();
+    if (stage.focusPartId && !getLoadedWeaponPlugin(stage.weaponId)) {
+      const targetPart = stage.focusPartId;
+      void loadWeaponPlugin(stage.weaponId).then(() => {
+        const after = get();
+        if (
+          after.activeWeaponId === stage.weaponId &&
+          after.selectedPartId === targetPart
+        ) {
+          set({ selectedPartId: null });
+          set({ selectedPartId: targetPart });
+        }
+      });
+    }
+  },
+
   setInspectorMinimized: (inspectorMinimized) => set({ inspectorMinimized }),
 
   toggleInspectorMinimized: () =>
@@ -197,6 +297,10 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   toggleAutoPlayPartAudio: () =>
     set((s) => ({ autoPlayPartAudio: !s.autoPlayPartAudio })),
+
+  setSfxMuted: (sfxMuted) => set({ sfxMuted }),
+
+  toggleSfxMuted: () => set((s) => ({ sfxMuted: !s.sfxMuted })),
 
   focusStoryPart: (partId) => {
     const s = get();

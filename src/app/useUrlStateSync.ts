@@ -5,6 +5,7 @@ import {
   type AppViewMode,
   useAppStore,
 } from '../store/useAppStore';
+import { getShortWeaponLabel } from '../weapons/manifests';
 import { isWeaponId, type WeaponId } from '../weapons/types';
 
 function getDefaultEntryScreen(): 'showcase' | 'armory' {
@@ -125,6 +126,29 @@ export function useUrlStateSync(): void {
     window.addEventListener('popstate', onPopState);
     return () => window.removeEventListener('popstate', onPopState);
   }, []);
+
+  // Sync document <html lang> and page <title> with active language & route (WCAG 3.1.1 & 2.4.2)
+  useEffect(() => {
+    if (typeof document === 'undefined') return;
+    document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN';
+    const shortTag = getShortWeaponLabel(activeWeaponId);
+    if (screen === 'showcase') {
+      document.title =
+        lang === 'en'
+          ? 'Digital Armory 3D — Open-Source 1:1 Firearm Mechanical Museum & AI Documentary'
+          : 'Digital Armory 3D — 开源 1:1 枪械内部结构 3D 数字博物馆与双语声画纪录片';
+    } else if (screen === 'workbench') {
+      document.title =
+        lang === 'en'
+          ? `${shortTag} · ${mode === 'firing' ? 'Live Ballistics' : '3D Disassembly'} — Digital Armory 3D`
+          : `${shortTag} · ${mode === 'firing' ? '实弹内弹道演示' : '3D 结构拆解台'} — Digital Armory 3D`;
+    } else {
+      document.title =
+        lang === 'en'
+          ? `${shortTag} · 3D Digital Armory Vault`
+          : `${shortTag} · 枪械内部结构 3D 数字枪库`;
+    }
+  }, [activeWeaponId, screen, mode, lang]);
 
   // Push/replace URL query parameters when store navigation changes
   useEffect(() => {

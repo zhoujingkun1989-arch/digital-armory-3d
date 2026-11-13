@@ -3,6 +3,7 @@ import { Sparkles } from 'lucide-react';
 import { useKeyboardShortcuts } from './app/useKeyboardShortcuts';
 import { useUrlStateSync } from './app/useUrlStateSync';
 import { ViewportErrorBoundary } from './app/ViewportErrorBoundary';
+import { useMechanicalSoundEngine } from './engine/audio/mechanicalSoundEngine';
 import { CalloutOverlay } from './engine/callout/CalloutOverlay';
 import { ArmoryViewport } from './engine/canvas/ArmoryViewport';
 import { ArmoryView } from './features/armory/ArmoryView';
@@ -13,6 +14,7 @@ import { PartInspectorCard } from './features/workbench/PartInspectorCard';
 import { TimelineDock } from './features/workbench/TimelineDock';
 import { WorkbenchHeader } from './features/workbench/WorkbenchHeader';
 import { UI_STRINGS } from './i18n/uiStrings';
+import { useStoryDirectorController } from './narration/storyDirector';
 import { useAppStore } from './store/useAppStore';
 
 const LazyShowcaseView = lazy(() => import('./features/showcase/ShowcaseView'));
@@ -23,6 +25,8 @@ const LazyTextureAtlasModal = lazy(
 export const App: React.FC = () => {
   useUrlStateSync();
   useKeyboardShortcuts();
+  useMechanicalSoundEngine();
+  useStoryDirectorController();
 
   const screen = useAppStore((s) => s.screen);
   const lang = useAppStore((s) => s.lang);

@@ -80,6 +80,8 @@ export interface UiDictionary {
     edgesChipTitle: string;
     labelsChip: string;
     labelsChipTitle: (count: number) => string;
+    sfxChip: string;
+    sfxChipTitle: (muted: boolean) => string;
     resetChip: string;
     resetChipTitle: string;
   };
@@ -131,6 +133,8 @@ export interface UiDictionary {
     loopOn: string;
     loopOff: string;
     loopTitle: string;
+    sfxPill: string;
+    sfxTitle: string;
     pause: string;
     autoExplode: string;
     playExplodeTitle: (playing: boolean) => string;
@@ -159,6 +163,11 @@ export interface UiDictionary {
     miniIdleSubtitle: string;
     playFullStory: string;
     pauseStory: string;
+    directorBtn: string;
+    directorBtnTitle: string;
+    cinemaModeBtn: string;
+    cinemaModeTitle: string;
+    liveSubtitlesLabel: string;
     playingActPrefix: string;
     actVoicePlay: string;
     actVoicePlaying: string;
@@ -267,6 +276,11 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       edgesChipTitle: '开启/关闭工业 CAD 硬边轮廓线 (E)',
       labelsChip: '零件标签',
       labelsChipTitle: (n) => `显示全部 ${n} 个零件的 3D 空间编号引出签 (L)`,
+      sfxChip: '机械声效',
+      sfxChipTitle: (muted) =>
+        muted
+          ? '军械机械咬合与实弹声场已静音，点击开启 (M)'
+          : '开启/静音 Web Audio 军械机械咬合声与 6 口径实弹声场 (M)',
       resetChip: '复位',
       resetChipTitle: '重置回默认合拢态与标准视角 (R)',
     },
@@ -332,6 +346,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       loopOn: '连续循环',
       loopOff: '单发停止',
       loopTitle: '切换连续循环击发或单发停止',
+      sfxPill: '实弹声场',
+      sfxTitle: '开启/静音 7 阶段机械咬合与 6 口径实弹合成声效 (M)',
       pause: '暂停',
       autoExplode: '自动拆解',
       playExplodeTitle: (playing) =>
@@ -361,6 +377,12 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       miniIdleSubtitle: '四幕研发历史语音导览 · 可边看枪械边听讲',
       playFullStory: '连播四幕研发纪录片',
       pauseStory: '暂停纪录片旁白',
+      directorBtn: '3D 导演运镜',
+      directorBtnTitle:
+        '随旁白自动切入拆解台、飞跃核心零件、联动纵向剖视 C / X-Ray 与 0.25x 慢放击发',
+      cinemaModeBtn: '悬浮字幕观影',
+      cinemaModeTitle: '最小化为顶部同步字幕条，全屏无遮挡观看 3D 导演自动运镜',
+      liveSubtitlesLabel: '旁白同步字幕 · 点击任意句跳转进度',
       playingActPrefix: '正在播报',
       actVoicePlay: '本幕配音',
       actVoicePlaying: '播报中',
@@ -474,6 +496,11 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       labelsChip: 'Callouts',
       labelsChipTitle: (n) =>
         `Toggle 3D leader callouts for all ${n} parts (L)`,
+      sfxChip: 'Mech SFX',
+      sfxChipTitle: (muted) =>
+        muted
+          ? 'Gunsmith mechanical & ballistic SFX muted — click to unmute (M)'
+          : 'Toggle Web Audio gunsmith mechanical clicks & 6-caliber ballistic SFX (M)',
       resetChip: 'Reset',
       resetChipTitle:
         'Reset to 0% assembled state & default isometric camera (R)',
@@ -541,6 +568,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       loopOn: 'Loop Cycle',
       loopOff: 'Single Cycle',
       loopTitle: 'Toggle continuous loop vs single-cycle stop',
+      sfxPill: 'Acoustic SFX',
+      sfxTitle: 'Toggle 7-phase mechanical & 6-caliber ballistic Web Audio SFX (M)',
       pause: 'Pause',
       autoExplode: 'Auto Strip',
       playExplodeTitle: (playing) =>
@@ -579,6 +608,13 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       miniIdleSubtitle: '4-Act R&D Audio Guide · Inspect 3D while listening',
       playFullStory: 'Play All 4 Acts',
       pauseStory: 'Pause Narration',
+      directorBtn: '3D Director',
+      directorBtnTitle:
+        'Automatically enter workbench, fly camera to focus parts, toggle Section-Cut (C) / X-Ray, and run 0.25x slow-mo live firing in sync with narration',
+      cinemaModeBtn: 'Cinema Bar',
+      cinemaModeTitle:
+        'Minimize drawer into top live-caption bar for unobstructed 3D director choreography',
+      liveSubtitlesLabel: 'LIVE SYNCED CAPTIONS · CLICK ANY SENTENCE TO SEEK',
       playingActPrefix: 'Now Playing',
       actVoicePlay: 'Play Act',
       actVoicePlaying: 'Playing',

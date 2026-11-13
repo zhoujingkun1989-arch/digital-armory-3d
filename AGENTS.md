@@ -32,21 +32,21 @@
 - **58 张 2K 5 通道 Packed ORM WebP 贴图**：由 `scripts/pbr_core/` 离线烘焙并在 `public/textures/` 提供，配套浏览器内 PBR 贴图图集检视器（`TextureAtlasModal`）。
 - **GPU 纵向中轴军械剖视（`C`）与剖面穿透拾取**：通过 `sectionAwareMeshRaycast` 实现穿透虚空剖切面精准点选内部火控与枪机零件；支持外壳 X-Ray 透视（`X`）、CAD 硬边轮廓线（`E`）与零回流 3D 引线编号标签（`L`）。
 - **7 阶段耦合运动学 + 6 口径 SAAMI/CIP 实弹内弹道**：位于 `src/engine/actors/BallisticsSystem.tsx`，覆盖 `9×19mm`、`5.56 NATO`、`7.62×39mm`、`.50 AE`、`.338 Lapua`、`.50 BMG`，含底火击发凹坑、碳烟环、膛口冲击波与抛壳轨迹。
-- **全馆藏中英双语四幕研发纪录片 + 586 个 Gemini TTS 语音导览**：包含 `public/narrations/*.json`、`public/audio/`、浏览器 `speechSynthesis` 兜底（`src/narration/audioPlayer.ts`），以及支持边听边看 3D 内构的 `WeaponStoryDrawer` / `PartInspectorCard` 最小化悬浮播放条。
+- **全馆藏中英双语四幕研发纪录片 + 586 个 Gemini TTS 语音导览 + 3D 导演运镜 & Web Audio 实弹声场**：包含 `public/narrations/*.json`、`public/audio/`、浏览器 `speechSynthesis` 兜底（`src/narration/audioPlayer.ts`）、四幕自动镜头编排与同步字幕（`src/narration/storyDirector.ts`）、程序化 6 口径实弹与 8 点军械咬合合成声场（`src/engine/audio/mechanicalSoundEngine.ts`），以及全站与 `ShowcaseView` 100% 中英双语体验。
 
 ---
 
 ## 3. 五大阶段 · 12 个具体工程包拆解（Execution Roadmap: `WP-01` ~ `WP-12`）
 
-### 阶段一：基线收口与「声画合一」沉浸感突破
-- [ ] **WP-01｜V3 语音基线归档 & 官方宣传页双语升级**
-  - **目标模块**：`src/features/showcase/ShowcaseView.tsx`、`src/i18n/uiStrings.ts`、`README.md`
+### 阶段一：基线收口与「声画合一」沉浸感突破（已完成）
+- [x] **WP-01｜V3 语音基线归档 & 官方宣传页双语升级**
+  - **目标模块**：`src/features/showcase/ShowcaseView.tsx`、`src/i18n/showcaseStrings.ts`、`src/i18n/uiStrings.ts`、`README.md`
   - **交付与验收**：归档当前 10 枪双语故事、586 条 TTS 语音与最小化悬浮播放条基线；为 `ShowcaseView.tsx` 接入 `lang` 中英双语切换，新增「AI 四幕研发纪录片 & 零件语音导览」互动展区并同步更新 `README.md`。
-- [ ] **WP-02｜四幕纪录片「3D 导演自动运镜模式」**
-  - **目标模块**：`src/narration/`（新增导演编排器）、`src/features/story/WeaponStoryDrawer.tsx`、`src/store/useAppStore.ts`、`src/engine/clock/playbackClock.ts`
+- [x] **WP-02｜四幕纪录片「3D 导演自动运镜模式」**
+  - **目标模块**：`src/narration/storyDirector.ts`、`src/features/story/WeaponStoryDrawer.tsx`、`src/store/useAppStore.ts`、`src/engine/clock/playbackClock.ts`
   - **交付与验收**：连播故事时支持一键开启导演模式，自动切入拆解工作台、飞跃镜头聚焦每幕 `focusPartId`、按剧情节点自动开关纵向剖视 `C` / X-Ray / `0.25x` 慢放击发，并同步滚动高亮当前旁白字幕。
-- [ ] **WP-03｜Web Audio 军械机械声效 & 分口径实弹声场引擎**
-  - **目标模块**：`src/engine/audio/`（新建程序化合成引擎）、`src/engine/clock/playbackClock.ts`、`src/store/useAppStore.ts`
+- [x] **WP-03｜Web Audio 军械机械声效 & 分口径实弹声场引擎**
+  - **目标模块**：`src/engine/audio/mechanicalSoundEngine.ts`、`src/engine/clock/playbackClock.ts`、`src/store/useAppStore.ts`
   - **交付与验收**：与 7 阶段击发相位硬绑定，实现 6 口径差异化枪口冲击波（`.50 BMG` 重低频轰鸣 vs `9×19mm` 清脆短促）；在 `0.25x` 慢放时清晰分离阻铁释放咔哒 → 击针撞击 → 枪机回转开锁碰撞 → 弹壳抛飞 → 复进簧摩擦闭锁声；接入拆装/点选金属卡笋反馈音、TTS 人声自动闪避（Audio Ducking）与独立静音开关。
 
 ### 阶段二：定量物理与内弹道可视化

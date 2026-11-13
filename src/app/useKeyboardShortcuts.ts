@@ -98,6 +98,10 @@ export function useKeyboardShortcuts(): void {
         state.toggleXrayShells();
         return;
       }
+      if (lowerKey === 'm') {
+        state.toggleSfxMuted();
+        return;
+      }
 
       if (state.screen !== 'workbench') return;
 

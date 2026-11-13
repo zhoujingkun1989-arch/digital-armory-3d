@@ -104,7 +104,10 @@ export const PartInspectorCard: React.FC = () => {
       return;
     }
     const snap = getNarrationAudioSnapshot();
-    if (snap.activeKind === 'story' && snap.isPlaying) {
+    if (
+      snap.activeKind === 'story' &&
+      (snap.isPlaying || snap.isLoading || useAppStore.getState().storyOpen)
+    ) {
       return;
     }
     const titleStr = lang === 'en' ? part.nameEn : part.nameZh;

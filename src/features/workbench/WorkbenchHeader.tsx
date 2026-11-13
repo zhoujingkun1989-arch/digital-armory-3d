@@ -11,6 +11,8 @@ import {
   Scissors,
   Sparkles,
   Tag,
+  Volume2,
+  VolumeX,
 } from 'lucide-react';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import { resolveWeaponDisplayMeta } from '../../i18n/weaponFallbacks';
@@ -38,6 +40,7 @@ export const WorkbenchHeader: React.FC = () => {
   const sectionCut = useAppStore((s) => s.sectionCut);
   const showEdges = useAppStore((s) => s.showEdges);
   const showLabels = useAppStore((s) => s.showLabels);
+  const sfxMuted = useAppStore((s) => s.sfxMuted);
   const cameraPreset = useAppStore((s) => s.cameraCommand.preset);
 
   const togglePbrTextures = useAppStore((s) => s.togglePbrTextures);
@@ -46,6 +49,7 @@ export const WorkbenchHeader: React.FC = () => {
   const toggleSectionCut = useAppStore((s) => s.toggleSectionCut);
   const toggleShowEdges = useAppStore((s) => s.toggleShowEdges);
   const toggleShowLabels = useAppStore((s) => s.toggleShowLabels);
+  const toggleSfxMuted = useAppStore((s) => s.toggleSfxMuted);
   const triggerCameraPreset = useAppStore((s) => s.triggerCameraPreset);
   const resetAll = useAppStore((s) => s.resetAll);
 
@@ -162,16 +166,34 @@ export const WorkbenchHeader: React.FC = () => {
 
         {mode === 'explode' && (
           <button
+            type="button"
             className={`toggle-chip ${showLabels ? 'active' : ''}`}
+            aria-pressed={showLabels}
             onClick={toggleShowLabels}
             title={ui.labelsChipTitle(partsCount)}
           >
-            <Tag size={14} />
+            <Tag size={14} aria-hidden="true" />
             <span>{ui.labelsChip}</span>
           </button>
         )}
 
         <button
+          type="button"
+          className={`toggle-chip ${!sfxMuted ? 'active-cyan' : ''}`}
+          aria-pressed={!sfxMuted}
+          onClick={toggleSfxMuted}
+          title={ui.sfxChipTitle(sfxMuted)}
+        >
+          {sfxMuted ? (
+            <VolumeX size={14} aria-hidden="true" />
+          ) : (
+            <Volume2 size={14} aria-hidden="true" />
+          )}
+          <span>{ui.sfxChip}</span>
+        </button>
+
+        <button
+          type="button"
           className="toggle-chip reset-chip"
           onClick={resetAll}
           title={ui.resetChipTitle}
