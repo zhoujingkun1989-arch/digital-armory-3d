@@ -261,6 +261,14 @@ describe('AAA Armory Surface Shader, GPU Spring Compression & Stencil Cutaway Ca
     );
     expect(depthShader.vertexShader).toContain('#define ARMORY_DEPTH_ONLY');
     expect(depthShader.vertexShader).toContain('#define ARMORY_SPRING');
+    expect(depthShader.vertexShader).toContain(
+      'transformed.x = aSpringParam.y * uSpringScale + wireDx;'
+    );
+    expect(depthShader.vertexShader).toContain('transformed.x *= uSpringScale;');
+    expect(mockShader.vertexShader).toContain(
+      'transformed.x = aSpringParam.y * uSpringScale + wireDx;'
+    );
+    expect(mockShader.vertexShader).toContain('transformed.x *= uSpringScale;');
     expect(depthShader.uniforms.uSpringScale).toBe(uniforms.uSpringScale);
 
     geo.dispose();
@@ -268,49 +276,80 @@ describe('AAA Armory Surface Shader, GPU Spring Compression & Stencil Cutaway Ca
     depthMat.dispose();
   });
 
-  it('preserves exact round wire diameter under GPU spring compression along both X and Y axes', () => {
+  it('preserves exact round wire diameter and 1:1 plugin.ts world anchor identity across rear-pinned, front-pinned, merged w=0 fittings, and Y-axis springs', () => {
     const wireRadius = 0.085; // 0.85 mm tempered music wire
-    const anchorX = -8.0;
-    const freeLength = 12.0;
-    const ringCount = 10;
     const radialSamples = 16;
 
-    for (const scale of [1.0, 0.65, 0.32, 1.2]) {
-      for (let r = 0; r <= ringCount; r++) {
-        const u01 = r / ringCount;
-        const coilCenterX = anchorX + u01 * freeLength;
-        let minCompressedX = Infinity;
-        let maxCompressedX = -Infinity;
+    // 1. Rear-pinned off-origin recoil spring (e.g. m82a1_recoil_spring: start = -20.28, anchor = -20.28)
+    // and front-pinned tension spring (e.g. m82a1_barrel_springs: start = -3.78, pinned at front anchor = +4.1)
+    const xSpringConfigs = [
+      { assembledX: 2.5, startX: -20.28, endX: -4.28, pinAnchorX: -20.28 },
+      { assembledX: 11.5, startX: -3.78, endX: 4.1, pinAnchorX: 4.1 },
+    ];
 
-        for (let k = 0; k < radialSamples; k++) {
-          const phi = (k / radialSamples) * Math.PI * 2;
-          const vx = coilCenterX + Math.cos(phi) * wireRadius;
-          const vy = Math.sin(phi) * wireRadius;
-          const pt = { x: vx, y: vy, z: 0.45 };
+    for (const cfg of xSpringConfigs) {
+      const ringCount = 10;
+      for (const scale of [1.0, 0.65, 0.32, 1.28]) {
+        // Every weapon plugin.ts computes dx = pinAnchorX * (1 - scaleX) inside p.px
+        const px = cfg.assembledX + cfg.pinAnchorX * (1 - scale);
 
-          applySpringCompressionInto(
-            pt,
-            [u01, coilCenterX, anchorX, SPRING_AXIS_X],
-            scale
-          );
-          minCompressedX = Math.min(minCompressedX, pt.x);
-          maxCompressedX = Math.max(maxCompressedX, pt.x);
-        }
+        for (let r = 0; r <= ringCount; r++) {
+          const u01 = r / ringCount;
+          const coilCenterX = cfg.startX + u01 * (cfg.endX - cfg.startX);
+          let minWorldX = Infinity;
+          let maxWorldX = -Infinity;
 
-        const compressedWireDiameter = maxCompressedX - minCompressedX;
-        expect(compressedWireDiameter).toBeCloseTo(wireRadius * 2, 6);
+          for (let k = 0; k < radialSamples; k++) {
+            const phi = (k / radialSamples) * Math.PI * 2;
+            const vx = coilCenterX + Math.cos(phi) * wireRadius;
+            const vy = Math.sin(phi) * wireRadius;
+            const pt = { x: vx, y: vy, z: 0.45 };
 
-        // Stationary anchor ring (r === 0) must stay pinned at anchorX
-        if (r === 0) {
-          expect((minCompressedX + maxCompressedX) * 0.5).toBeCloseTo(
-            anchorX,
+            applySpringCompressionInto(
+              pt,
+              [u01, coilCenterX, cfg.startX, SPRING_AXIS_X],
+              scale
+            );
+            const worldX = px + pt.x;
+            minWorldX = Math.min(minWorldX, worldX);
+            maxWorldX = Math.max(maxWorldX, worldX);
+          }
+
+          // Wire diameter stays strictly 2 * wireRadius (zero squashed wire!)
+          expect(maxWorldX - minWorldX).toBeCloseTo(wireRadius * 2, 6);
+          // Coil ring center matches `p.px + coilCenterX * scale` 100% identically
+          expect((minWorldX + maxWorldX) * 0.5).toBeCloseTo(
+            px + coilCenterX * scale,
             6
           );
         }
+
+        // Pinned end coil center stays 100% stationary in world space across all scaleX
+        const pinnedPt = { x: cfg.pinAnchorX, y: 0, z: 0 };
+        applySpringCompressionInto(
+          pinnedPt,
+          [0, cfg.pinAnchorX, cfg.startX, SPRING_AXIS_X],
+          scale
+        );
+        expect(px + pinnedPt.x).toBeCloseTo(
+          cfg.assembledX + cfg.pinAnchorX,
+          6
+        );
+
+        // Merged w = 0 end-fittings (cups, sleeves, hook-eyes) track `p.px + x * scale` identically
+        const fittingLocalX = cfg.endX + 0.18;
+        const fittingPt = { x: fittingLocalX, y: 0.2, z: -0.1 };
+        applySpringCompressionInto(
+          fittingPt,
+          [0, 0, 0, SPRING_AXIS_NONE],
+          scale
+        );
+        expect(px + fittingPt.x).toBeCloseTo(px + fittingLocalX * scale, 6);
+        expect(fittingPt.y).toBeCloseTo(0.2, 6);
       }
     }
 
-    // Y-axis magazine spring compression invariance
+    // 2. Y-axis magazine spring compression invariance around floorplate anchor
     const anchorY = -6.5;
     const ringCenterY = 1.5;
     const topWire = { x: 0, y: ringCenterY + wireRadius, z: 0 };
@@ -326,16 +365,7 @@ describe('AAA Armory Surface Shader, GPU Spring Compression & Stencil Cutaway Ca
       0.4
     );
     expect(topWire.y - botWire.y).toBeCloseTo(wireRadius * 2, 6);
-
-    // Non-spring (mode 0) & WebGL default disabled vec4 attribute (0, 0, 0, 1) invariance
-    const nonSpring = { x: 4.2, y: -1.7, z: 0.3 };
-    applySpringCompressionInto(nonSpring, [0, 0, 0, SPRING_AXIS_NONE], 0.25);
-    expect(nonSpring.x).toBeCloseTo(4.2, 6);
-    expect(nonSpring.y).toBeCloseTo(-1.7, 6);
-    expect(computeSpringCompressedCoord(4.2, 0, 0, 0.25)).toBeCloseTo(
-      4.2 * 1 + 0,
-      6
-    );
+    expect(computeSpringCompressedCoord(4.2, 0, 0, 0.25)).toBeCloseTo(4.2, 6);
   });
 
   it('configures Two-Pass WebGL Stencil Cross-Section Capping & PBR max anisotropy cleanly', () => {

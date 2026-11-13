@@ -144,7 +144,18 @@ export function computeSpringCompressedCoord(
   );
 }
 
-/** Applies `aSpringParam` semantics `(u01, center, anchor, axisMode)` to a vertex in place. */
+/**
+ * Applies `aSpringParam` semantics `(u01, center, anchor, axisMode)` to a vertex in place
+ * (exact CPU mirror of `VERTEX_SPRING` when `ARMORY_SPRING` is enabled):
+ * - X-axis coils (`0.5 < w < 1.5`): every weapon `plugin.ts` already bakes `dx = anchor * (1 - sx)`
+ *   into `p.px`, so scaling coil centers around local `0` (`center * springScale + wireDx`) matches
+ *   `p.px + center * sx` 100% identically across rear- and front-pinned springs while keeping
+ *   round wire diameter (`wireDx`) strictly invariant.
+ * - Y-axis coils (`w >= 1.5`): scales coil centers around `aSpringParam.z` (`anchorStartCoord`)
+ *   while preserving `wireDy`.
+ * - Merged `w < 0.5` sub-parts inside a spring geometry (cups, sleeves, hook-eyes): scales `x`
+ *   around `0` (`x *= springScale`) so end-fittings track `p.px + x * sx` in lockstep.
+ */
 export function applySpringCompressionInto(
   out: { x: number; y: number; z: number },
   springParam: readonly [number, number, number, number] | ArrayLike<number>,
@@ -152,12 +163,8 @@ export function applySpringCompressionInto(
 ): void {
   const mode = springParam[3];
   if (mode > 0.5 && mode < 1.5) {
-    out.x = computeSpringCompressedCoord(
-      out.x,
-      springParam[1],
-      springParam[2],
-      springScale
-    );
+    const wireDx = out.x - springParam[1];
+    out.x = springParam[1] * springScale + wireDx;
   } else if (mode >= 1.5) {
     out.y = computeSpringCompressedCoord(
       out.y,
@@ -165,6 +172,8 @@ export function applySpringCompressionInto(
       springParam[2],
       springScale
     );
+  } else if (mode < 0.5) {
+    out.x *= springScale;
   }
 }
 
@@ -358,7 +367,7 @@ export interface ArmoryShaderFeatures {
   triplanarMap?: boolean;
 }
 
-export const ARMORY_SHADER_VERSION = 2;
+export const ARMORY_SHADER_VERSION = 3;
 
 export function getArmoryProgramCacheKey(f: ArmoryShaderFeatures): string {
   return `armory-v${ARMORY_SHADER_VERSION}|s${f.spring ? 1 : 0}|c${f.curvature ? 1 : 0}|t${f.thermal ? 1 : 0}|f${f.fouling ? 1 : 0}|tm${f.triplanarMap ? 1 : 0}`;
@@ -409,14 +418,21 @@ const VERTEX_PARS = /* glsl */ `
 
 const VERTEX_SPRING = /* glsl */ `
 #ifdef ARMORY_SPRING
-  // Constant-wire-diameter compression: scale coil centreline about the anchor,
-  // preserve the wire cross-section offset from its own ring centre.
+  // Constant-wire-diameter compression:
+  // - X-axis coils (0.5 < w < 1.5): scale coil centreline around local 0 so p.px + center * uSpringScale
+  //   matches every weapon plugin dx = anchor * (1 - scaleX) identically (both rear- and front-pinned)
+  //   while preserving exact wire cross-section offset wireDx.
+  // - Y-axis coils (w >= 1.5): scale coil centreline around aSpringParam.z (anchor).
+  // - Merged w < 0.5 end-fittings (cups, sleeves, hook-eyes): scale transformed.x around 0 so they
+  //   remain welded to p.px + x * uSpringScale.
   if ( aSpringParam.w > 0.5 && aSpringParam.w < 1.5 ) {
     float wireDx = transformed.x - aSpringParam.y;
-    transformed.x = aSpringParam.z + ( aSpringParam.y - aSpringParam.z ) * uSpringScale + wireDx;
+    transformed.x = aSpringParam.y * uSpringScale + wireDx;
   } else if ( aSpringParam.w >= 1.5 ) {
     float wireDy = transformed.y - aSpringParam.y;
     transformed.y = aSpringParam.z + ( aSpringParam.y - aSpringParam.z ) * uSpringScale + wireDy;
+  } else if ( aSpringParam.w < 0.5 ) {
+    transformed.x *= uSpringScale;
   }
 #endif
 #ifndef ARMORY_DEPTH_ONLY
@@ -734,7 +750,8 @@ export function createArmorySpringDepthMaterial(
       true
     );
   };
-  mat.customProgramCacheKey = () => 'armory-spring-depth-v2';
+  mat.customProgramCacheKey = () =>
+    `armory-spring-depth-v${ARMORY_SHADER_VERSION}`;
   mat.userData.armoryUniforms = uniforms;
   return mat;
 }
