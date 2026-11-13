@@ -12,6 +12,20 @@ import type {
   WeaponId,
 } from '../../weapons/types';
 import { playbackClock } from '../clock/playbackClock';
+import {
+  ACOUSTIC_ENVIRONMENT_CONFIGS,
+  ACOUSTIC_ENVIRONMENT_PRESETS,
+  type AcousticEnvironmentPreset,
+  computeDynamicWetSendGain,
+  getOrCreateAcousticImpulseBuffer,
+  isAcousticEnvironmentPreset,
+} from './acousticImpulse';
+
+export {
+  ACOUSTIC_ENVIRONMENT_CONFIGS,
+  ACOUSTIC_ENVIRONMENT_PRESETS,
+  type AcousticEnvironmentPreset,
+};
 
 export type MechanismAcousticStyle =
   | 'long_stroke_piston'
@@ -140,6 +154,52 @@ export const CALIBER_ACOUSTIC_PROFILES: Record<
   },
 };
 
+/**
+ * Exact Euler-Bernoulli free-free ordnance steel bar transverse eigenfrequency
+ * ratios ((beta_n / beta_1)^2: 4.730^2 : 7.853^2 : 10.996^2 : 14.137^2).
+ */
+export const STEEL_BAR_EULER_BERNOULLI_PARTIALS = [
+  1.0, 2.756, 5.404, 8.933,
+] as const;
+
+/**
+ * Thin-walled drawn C26000 cartridge brass shell hoop/bell modal ratios.
+ */
+const BRASS_CASING_SHELL_PARTIALS = [1.0, 1.583, 2.392, 3.418] as const;
+
+export interface SteelWaveguidePartialSpec {
+  ratio: number;
+  freqHz: number;
+  decaySec: number;
+  relativeGain: number;
+}
+
+/**
+ * Computes Euler-Bernoulli cold-forged steel waveguide modal parameters with
+ * thermoelastic high-mode rapid damping so machined bolts, sears & slides
+ * exhibit crisp metallic bite without electronic sine-wave ring.
+ */
+export function computeSteelWaveguideModalSpec(
+  fundamentalHz: number,
+  baseDecaySec: number,
+  strikeHardness01 = 0.7
+): SteelWaveguidePartialSpec[] {
+  const h = Math.max(0, Math.min(1, strikeHardness01));
+  const f0 = Math.max(80, fundamentalHz);
+  const baseDur = Math.max(0.01, baseDecaySec);
+  const baseWeights = [1.0, 0.54, 0.29, 0.15] as const;
+
+  return STEEL_BAR_EULER_BERNOULLI_PARTIALS.map((ratio, idx) => {
+    const hardnessBoost = idx === 0 ? 1.0 : 0.45 + h * (0.55 + idx * 0.16);
+    return {
+      ratio,
+      freqHz: f0 * ratio,
+      decaySec: Math.max(0.006, baseDur / (1 + idx * 1.75)),
+      relativeGain: baseWeights[idx] * hardnessBoost,
+    };
+  });
+}
+
 export type FiringSoundEventKind =
   | 'sear_release'
   | 'primer_ignition'
@@ -160,6 +220,8 @@ export type WorkbenchFoleyKind =
   | 'preset_detent'
   | 'toggle_switch'
   | 'director_cue';
+
+export type PressCheckDirection = 'pull' | 'release' | 'back' | 'forward';
 
 const FALLBACK_FIRING_CUES: readonly FiringSoundCue[] = [
   { kind: 'sear_release', at: 0.02 },
@@ -243,13 +305,22 @@ type WebkitWindow = Window & {
   webkitAudioContext?: typeof AudioContext;
 };
 
+type RoutingBus = 'mechanical' | 'ballistic' | 'dry_only';
+
 class ProceduralGunsmithSoundEngine {
   private ctx: AudioContext | null = null;
   private masterGain: GainNode | null = null;
   private duckingGain: GainNode | null = null;
+  private dryBus: GainNode | null = null;
+  private mechanicalWetSend: GainNode | null = null;
+  private ballisticWetSend: GainNode | null = null;
+  private convolver: ConvolverNode | null = null;
+  private wetReturnGain: GainNode | null = null;
   private noiseBuffer: AudioBuffer | null = null;
   private saturatorCurve: Float32Array | null = null;
   private lastScrubSoundMs = 0;
+  private environmentPreset: AcousticEnvironmentPreset = 'indoor_range';
+  private activeSpeedMultiplier: 0.25 | 0.5 | 1.0 = 1.0;
 
   private getAudioContextConstructor(): typeof AudioContext | null {
     if (typeof window === 'undefined') return null;
@@ -257,6 +328,48 @@ class ProceduralGunsmithSoundEngine {
       window.AudioContext ??
       (window as WebkitWindow).webkitAudioContext ??
       null
+    );
+  }
+
+  public getEnvironment(): AcousticEnvironmentPreset {
+    return this.environmentPreset;
+  }
+
+  public setEnvironment(preset: AcousticEnvironmentPreset): void {
+    if (!isAcousticEnvironmentPreset(preset)) return;
+    this.environmentPreset = preset;
+    if (!this.ctx || !this.convolver || !this.wetReturnGain) return;
+
+    try {
+      this.convolver.buffer = getOrCreateAcousticImpulseBuffer(
+        this.ctx,
+        preset
+      );
+      const targetWet = computeDynamicWetSendGain(
+        preset,
+        this.activeSpeedMultiplier
+      );
+      this.wetReturnGain.gain.setTargetAtTime(
+        targetWet,
+        this.ctx.currentTime,
+        0.025
+      );
+    } catch {
+      // Non-fatal in constrained audio contexts
+    }
+  }
+
+  public syncSpeedWetMix(speedMultiplier: 0.25 | 0.5 | 1.0): void {
+    this.activeSpeedMultiplier = speedMultiplier;
+    if (!this.ctx || !this.wetReturnGain) return;
+    const targetWet = computeDynamicWetSendGain(
+      this.environmentPreset,
+      speedMultiplier
+    );
+    this.wetReturnGain.gain.setTargetAtTime(
+      targetWet,
+      this.ctx.currentTime,
+      0.02
     );
   }
 
@@ -285,11 +398,45 @@ class ProceduralGunsmithSoundEngine {
         const masterGain = ctx.createGain();
         masterGain.gain.value = useAppStore.getState().sfxMuted ? 0 : 0.88;
 
+        // Dry + Stereo ConvolverNode Wet Send Bus Architecture
+        const dryBus = ctx.createGain();
+        dryBus.gain.value = 1.0;
+
+        const mechanicalWetSend = ctx.createGain();
+        mechanicalWetSend.gain.value = 0.42;
+
+        const ballisticWetSend = ctx.createGain();
+        ballisticWetSend.gain.value = 1.0;
+
+        const convolver = ctx.createConvolver();
+        convolver.normalize = false;
+        convolver.buffer = getOrCreateAcousticImpulseBuffer(
+          ctx,
+          this.environmentPreset
+        );
+
+        const wetReturnGain = ctx.createGain();
+        wetReturnGain.gain.value = computeDynamicWetSendGain(
+          this.environmentPreset,
+          this.activeSpeedMultiplier
+        );
+
+        dryBus.connect(duckingGain);
+        mechanicalWetSend.connect(convolver);
+        ballisticWetSend.connect(convolver);
+        convolver.connect(wetReturnGain);
+        wetReturnGain.connect(duckingGain);
+
         duckingGain.connect(compressor);
         compressor.connect(masterGain);
         masterGain.connect(ctx.destination);
 
         this.ctx = ctx;
+        this.dryBus = dryBus;
+        this.mechanicalWetSend = mechanicalWetSend;
+        this.ballisticWetSend = ballisticWetSend;
+        this.convolver = convolver;
+        this.wetReturnGain = wetReturnGain;
         this.duckingGain = duckingGain;
         this.masterGain = masterGain;
         this.noiseBuffer = this.buildNoiseBuffer(ctx);
@@ -316,6 +463,16 @@ class ProceduralGunsmithSoundEngine {
       now,
       narrationPlaying ? 0.05 : 0.14
     );
+  }
+
+  private connectToBus(node: AudioNode, bus: RoutingBus): void {
+    if (!this.dryBus) return;
+    node.connect(this.dryBus);
+    if (bus === 'ballistic' && this.ballisticWetSend) {
+      node.connect(this.ballisticWetSend);
+    } else if (bus === 'mechanical' && this.mechanicalWetSend) {
+      node.connect(this.mechanicalWetSend);
+    }
   }
 
   private buildNoiseBuffer(ctx: AudioContext): AudioBuffer {
@@ -353,39 +510,42 @@ class ProceduralGunsmithSoundEngine {
     gainPeak: number;
     attack?: number;
     saturate?: boolean;
+    bus?: RoutingBus;
   }): void {
     const ctx = this.ctx;
-    const dest = this.duckingGain;
     const noiseBuf = this.noiseBuffer;
-    if (!ctx || !dest || !noiseBuf) return;
+    if (!ctx || !this.dryBus || !noiseBuf) return;
 
     const src = ctx.createBufferSource();
     src.buffer = noiseBuf;
-    // Offset randomly within pre-built buffer so consecutive bursts never phase-comb
     const maxOffset = Math.max(0, noiseBuf.duration - opts.duration - 0.05);
     const offset = maxOffset > 0 ? (opts.startTime * 0.37) % maxOffset : 0;
 
+    const nyquistSafe = ctx.sampleRate * 0.45;
     const filter = ctx.createBiquadFilter();
     filter.type = opts.filterType;
     filter.Q.setValueAtTime(opts.q ?? 1.2, opts.startTime);
     filter.frequency.setValueAtTime(
-      Math.max(24, opts.freqStart),
+      Math.min(nyquistSafe, Math.max(24, opts.freqStart)),
       opts.startTime
     );
     if (opts.freqEnd !== undefined) {
       filter.frequency.exponentialRampToValueAtTime(
-        Math.max(24, opts.freqEnd),
+        Math.min(nyquistSafe, Math.max(24, opts.freqEnd)),
         opts.startTime + opts.duration
       );
     }
 
     const env = ctx.createGain();
-    const attack = opts.attack ?? 0.0018;
+    const attack = opts.attack ?? 0.0014;
     env.gain.setValueAtTime(0.0001, opts.startTime);
-    env.gain.linearRampToValueAtTime(opts.gainPeak, opts.startTime + attack);
+    env.gain.linearRampToValueAtTime(
+      Math.max(0.0002, opts.gainPeak),
+      opts.startTime + attack
+    );
     env.gain.exponentialRampToValueAtTime(
       0.0001,
-      opts.startTime + Math.max(attack + 0.006, opts.duration)
+      opts.startTime + Math.max(attack + 0.005, opts.duration)
     );
 
     src.connect(filter);
@@ -397,7 +557,7 @@ class ProceduralGunsmithSoundEngine {
     } else {
       filter.connect(env);
     }
-    env.connect(dest);
+    this.connectToBus(env, opts.bus ?? 'mechanical');
 
     src.start(opts.startTime, offset, opts.duration + 0.02);
     src.stop(opts.startTime + opts.duration + 0.03);
@@ -410,33 +570,132 @@ class ProceduralGunsmithSoundEngine {
     freqEnd?: number;
     type?: OscillatorType;
     gainPeak: number;
+    bus?: RoutingBus;
   }): void {
     const ctx = this.ctx;
-    const dest = this.duckingGain;
-    if (!ctx || !dest) return;
+    if (!ctx || !this.dryBus) return;
+
+    const nyquistSafe = ctx.sampleRate * 0.46;
+    if (opts.freqStart > nyquistSafe) return;
 
     const osc = ctx.createOscillator();
-    osc.type = opts.type ?? 'triangle';
-    osc.frequency.setValueAtTime(opts.freqStart, opts.startTime);
+    osc.type = opts.type ?? 'sine';
+    osc.frequency.setValueAtTime(Math.max(20, opts.freqStart), opts.startTime);
     if (opts.freqEnd !== undefined) {
       osc.frequency.exponentialRampToValueAtTime(
-        Math.max(20, opts.freqEnd),
+        Math.min(nyquistSafe, Math.max(20, opts.freqEnd)),
         opts.startTime + opts.duration
       );
     }
 
     const env = ctx.createGain();
     env.gain.setValueAtTime(0.0001, opts.startTime);
-    env.gain.linearRampToValueAtTime(opts.gainPeak, opts.startTime + 0.0012);
+    env.gain.linearRampToValueAtTime(
+      Math.max(0.0002, opts.gainPeak),
+      opts.startTime + 0.001
+    );
     env.gain.exponentialRampToValueAtTime(
       0.0001,
-      opts.startTime + Math.max(0.008, opts.duration)
+      opts.startTime + Math.max(0.006, opts.duration)
     );
 
     osc.connect(env);
-    env.connect(dest);
+    this.connectToBus(env, opts.bus ?? 'mechanical');
     osc.start(opts.startTime);
     osc.stop(opts.startTime + opts.duration + 0.015);
+  }
+
+  /**
+   * Synthesizes a Cold-Forged Ordnance Steel impact using Euler-Bernoulli
+   * inharmonic bar modes (`[1.0, 2.756, 5.404, 8.933]`) with rapid high-mode
+   * damping + saturated broadband contact transient + optional heavy billet mass thud.
+   */
+  private emitSteelWaveguideStrike(opts: {
+    startTime: number;
+    fundamentalHz: number;
+    baseDecaySec: number;
+    gainPeak: number;
+    hardness01?: number;
+    massBodyHz?: number;
+    bus?: RoutingBus;
+  }): void {
+    const ctx = this.ctx;
+    if (!ctx || !this.dryBus) return;
+
+    const hardness = opts.hardness01 ?? 0.72;
+    const bus = opts.bus ?? 'mechanical';
+    const nyquistSafe = ctx.sampleRate * 0.46;
+
+    // 1. Short filtered metal-on-metal micro-contact transient burst
+    this.emitNoiseBurst({
+      startTime: opts.startTime,
+      duration: 0.0045 + (1 - hardness) * 0.004,
+      filterType: 'bandpass',
+      freqStart: Math.min(
+        nyquistSafe,
+        opts.fundamentalHz * (1.85 + hardness * 1.35)
+      ),
+      freqEnd: Math.min(nyquistSafe, opts.fundamentalHz * 1.15),
+      q: 3.4 + hardness * 2.2,
+      gainPeak: opts.gainPeak * (0.72 + hardness * 0.36),
+      attack: 0.0006,
+      saturate: true,
+      bus,
+    });
+
+    // 2. Optional machined steel billet / receiver body mass impulse
+    if (opts.massBodyHz !== undefined && opts.massBodyHz > 30) {
+      this.emitModalPing({
+        startTime: opts.startTime,
+        duration: Math.min(0.065, opts.baseDecaySec * 0.85),
+        freqStart: opts.massBodyHz * 1.45,
+        freqEnd: opts.massBodyHz,
+        type: 'triangle',
+        gainPeak: opts.gainPeak * 0.56,
+        bus,
+      });
+    }
+
+    // 3. 4-Mode Euler-Bernoulli Inharmonic Steel Waveguide Resonator
+    const partials = computeSteelWaveguideModalSpec(
+      opts.fundamentalHz,
+      opts.baseDecaySec,
+      hardness
+    );
+
+    for (let i = 0; i < partials.length; i++) {
+      const p = partials[i];
+      if (p.freqHz > nyquistSafe) continue;
+
+      const osc = ctx.createOscillator();
+      osc.type = 'sine';
+      // Nonlinear Hertzian contact stiffness micro-chirp on initial 3.5ms impact
+      osc.frequency.setValueAtTime(
+        Math.min(nyquistSafe, p.freqHz * 1.012),
+        opts.startTime
+      );
+      osc.frequency.exponentialRampToValueAtTime(
+        p.freqHz,
+        opts.startTime + Math.min(0.004, p.decaySec * 0.4)
+      );
+
+      const env = ctx.createGain();
+      const modePeak = opts.gainPeak * 0.46 * p.relativeGain;
+      env.gain.setValueAtTime(0.0001, opts.startTime);
+      env.gain.linearRampToValueAtTime(
+        Math.max(0.0002, modePeak),
+        opts.startTime + 0.0007
+      );
+      env.gain.exponentialRampToValueAtTime(
+        0.0001,
+        opts.startTime + p.decaySec
+      );
+
+      osc.connect(env);
+      this.connectToBus(env, bus);
+      osc.start(opts.startTime);
+      osc.stop(opts.startTime + p.decaySec + 0.01);
+    }
   }
 
   public playFiringEvent(
@@ -448,6 +707,8 @@ class ProceduralGunsmithSoundEngine {
     const ctx = this.unlock();
     if (!ctx || ctx.state !== 'running') return;
 
+    this.syncSpeedWetMix(speedMultiplier);
+
     const manifest = getWeaponManifest(weaponId);
     const profile = CALIBER_ACOUSTIC_PROFILES[manifest.caliberProfile];
     const now = ctx.currentTime + 0.002;
@@ -455,47 +716,31 @@ class ProceduralGunsmithSoundEngine {
 
     switch (kind) {
       case 'sear_release': {
-        // Hardened steel sear escapement click + hammer/striker spring release
-        this.emitNoiseBurst({
+        // Hardened S7/4140 steel sear escapement snap + hammer/striker spring release
+        this.emitSteelWaveguideStrike({
           startTime: now,
-          duration: 0.022,
-          filterType: 'bandpass',
-          freqStart: 3500,
-          freqEnd: 2200,
-          q: 4.5,
-          gainPeak: 0.26,
-        });
-        this.emitModalPing({
-          startTime: now,
-          duration: 0.028,
-          freqStart: 2850,
-          freqEnd: 1680,
-          type: 'triangle',
-          gainPeak: 0.16,
+          fundamentalHz: 1920,
+          baseDecaySec: 0.036,
+          gainPeak: 0.27,
+          hardness01: 0.86,
+          massBodyHz: 310,
+          bus: 'mechanical',
         });
         break;
       }
 
       case 'primer_ignition': {
-        // 1. Firing pin / striker sharp metallic impact on Boxer primer cup
-        this.emitModalPing({
+        // 1. Hardened steel firing pin / striker impact on Boxer brass primer cup
+        this.emitSteelWaveguideStrike({
           startTime: now,
-          duration: 0.024,
-          freqStart: 3420,
-          freqEnd: 2350,
-          type: 'sine',
-          gainPeak: 0.24,
-        });
-        this.emitNoiseBurst({
-          startTime: now,
-          duration: 0.016,
-          filterType: 'bandpass',
-          freqStart: 4800,
-          q: 5.0,
-          gainPeak: 0.22,
+          fundamentalHz: 2340,
+          baseDecaySec: 0.028,
+          gainPeak: 0.25,
+          hardness01: 0.92,
+          bus: 'mechanical',
         });
 
-        // 2. Propellant detonation + caliber-differentiated muzzle blast
+        // 2. Propellant detonation + caliber-differentiated supersonic muzzle blast
         const blastDelay = isSlowMo ? 0.028 : 0.006;
         const tBlast = now + blastDelay;
 
@@ -506,20 +751,22 @@ class ProceduralGunsmithSoundEngine {
           freqStart: profile.subFreqHz * 2.9,
           freqEnd: profile.subFreqHz,
           type: 'sine',
-          gainPeak: profile.peakGain * 0.78,
+          gainPeak: profile.peakGain * 0.8,
+          bus: 'ballistic',
         });
 
-        // Layer B: Supersonic muzzle crack
+        // Layer B: Supersonic N-wave muzzle crack (excites room ConvolverNode slapback!)
         this.emitNoiseBurst({
           startTime: tBlast,
           duration: Math.min(0.085, profile.punchDecaySec * 0.42),
           filterType: 'bandpass',
           freqStart: profile.crackCutoffHz,
           freqEnd: profile.crackCutoffHz * 0.55,
-          q: 1.1,
-          gainPeak: profile.peakGain * 0.85,
-          attack: 0.001,
+          q: 1.05,
+          gainPeak: profile.peakGain * 0.88,
+          attack: 0.0008,
           saturate: true,
+          bus: 'ballistic',
         });
 
         // Layer C: Muzzle brake & expanding gas blast tail
@@ -530,9 +777,10 @@ class ProceduralGunsmithSoundEngine {
           freqStart: profile.crackCutoffHz * 0.85,
           freqEnd: Math.max(95, profile.subFreqHz * 2.2),
           q: 0.85,
-          gainPeak: 0.34 + profile.brakeRoarGain * 0.52,
-          attack: 0.004,
+          gainPeak: 0.35 + profile.brakeRoarGain * 0.52,
+          attack: 0.0035,
           saturate: profile.brakeRoarGain > 0.3,
+          bus: 'ballistic',
         });
         break;
       }
@@ -540,62 +788,56 @@ class ProceduralGunsmithSoundEngine {
       case 'gas_or_recoil': {
         if (profile.mechanismStyle === 'short_recoil_heavy') {
           // M82A1 29-inch fluted barrel + dual recoil springs heavy rearward mass impulse
-          this.emitModalPing({
+          this.emitSteelWaveguideStrike({
             startTime: now,
-            duration: 0.095,
-            freqStart: 165,
-            freqEnd: 68,
-            type: 'triangle',
+            fundamentalHz: 620,
+            baseDecaySec: 0.095,
             gainPeak: 0.32,
-          });
-          this.emitNoiseBurst({
-            startTime: now,
-            duration: 0.075,
-            filterType: 'bandpass',
-            freqStart: 920,
-            freqEnd: 480,
-            q: 2.4,
-            gainPeak: 0.24,
+            hardness01: 0.62,
+            massBodyHz: 112,
+            bus: 'mechanical',
           });
         } else if (profile.mechanismStyle === 'bolt_action') {
-          // AWM 60-degree bolt handle lift & primary extraction cam
-          this.emitModalPing({
+          // AWM 60-degree steel bolt handle lift & primary extraction cam
+          this.emitSteelWaveguideStrike({
             startTime: now,
-            duration: 0.045,
-            freqStart: 1620,
-            freqEnd: 1120,
-            type: 'triangle',
-            gainPeak: 0.22,
+            fundamentalHz: 1180,
+            baseDecaySec: 0.052,
+            gainPeak: 0.25,
+            hardness01: 0.78,
+            massBodyHz: 240,
+            bus: 'mechanical',
           });
         } else if (profile.mechanismStyle === 'pdw_blowback') {
-          // FN P90 heavy straight-blowback breech bolt impulse + dual guide-rod elastomer buffer thud
-          this.emitModalPing({
+          // FN P90 heavy straight-blowback breech bolt impulse + dual guide-rod buffer thud
+          this.emitSteelWaveguideStrike({
             startTime: now,
-            duration: 0.052,
-            freqStart: 640,
-            freqEnd: 240,
-            type: 'triangle',
+            fundamentalHz: 980,
+            baseDecaySec: 0.054,
             gainPeak: 0.25,
-          });
-          this.emitNoiseBurst({
-            startTime: now,
-            duration: 0.042,
-            filterType: 'bandpass',
-            freqStart: 2200,
-            freqEnd: 1180,
-            q: 2.6,
-            gainPeak: 0.21,
+            hardness01: 0.68,
+            massBodyHz: 215,
+            bus: 'mechanical',
           });
         } else {
-          // High-pressure gas port bleed tapping piston cup / Stoner gas key
+          // High-pressure gas port bleed tapping chromed steel piston cup / Stoner gas key
           this.emitNoiseBurst({
             startTime: now,
-            duration: 0.055,
+            duration: 0.048,
             filterType: 'bandpass',
-            freqStart: 2650,
-            freqEnd: 1250,
-            q: 2.2,
+            freqStart: 2750,
+            freqEnd: 1280,
+            q: 2.1,
             gainPeak: 0.22,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + 0.002,
+            fundamentalHz: 1460,
+            baseDecaySec: 0.036,
+            gainPeak: 0.16,
+            hardness01: 0.74,
+            bus: 'mechanical',
           });
         }
         break;
@@ -604,158 +846,354 @@ class ProceduralGunsmithSoundEngine {
       case 'cam_unlock': {
         // Steel cam-pin / rotary bolt lugs / dual rollers / accelerator unlock clack
         const basePitch =
-          profile.mechanismStyle === 'compact_9mm' ? 1960 : 1380;
-        this.emitNoiseBurst({
+          profile.mechanismStyle === 'compact_9mm'
+            ? 1440
+            : profile.mechanismStyle === 'short_recoil_heavy'
+              ? 860
+              : 1080;
+        this.emitSteelWaveguideStrike({
           startTime: now,
-          duration: 0.038,
-          filterType: 'bandpass',
-          freqStart: basePitch * 1.4,
-          freqEnd: basePitch * 0.85,
-          q: 3.6,
-          gainPeak: 0.3,
-        });
-        this.emitModalPing({
-          startTime: now,
-          duration: 0.045,
-          freqStart: basePitch,
-          freqEnd: basePitch * 0.72,
-          type: 'triangle',
-          gainPeak: 0.22,
+          fundamentalHz: basePitch,
+          baseDecaySec: 0.056,
+          gainPeak: 0.31,
+          hardness01: 0.82,
+          massBodyHz: basePitch * 0.2,
+          bus: 'mechanical',
         });
         break;
       }
 
       case 'extract_eject': {
-        // 1. Extractor claw pull + ejector spur kick
-        this.emitNoiseBurst({
+        // 1. Extractor claw pull + steel ejector spur kick
+        this.emitSteelWaveguideStrike({
           startTime: now,
-          duration: 0.045,
-          filterType: 'bandpass',
-          freqStart: 2900,
-          freqEnd: 1700,
-          q: 3.0,
-          gainPeak: 0.25,
+          fundamentalHz: 1620,
+          baseDecaySec: 0.042,
+          gainPeak: 0.24,
+          hardness01: 0.8,
+          bus: 'mechanical',
         });
 
-        // 2. Spinning brass casing high-Q modal ring (3 inharmonic brass partials)
+        // 2. Spinning drawn-brass casing shell resonance on deflector exit
         const f0 = profile.casingRingHz;
         const ringStart = now + (isSlowMo ? 0.022 : 0.008);
-        this.emitModalPing({
-          startTime: ringStart,
-          duration: 0.14,
-          freqStart: f0,
-          freqEnd: f0 * 0.985,
-          type: 'sine',
-          gainPeak: 0.12,
-        });
-        this.emitModalPing({
-          startTime: ringStart,
-          duration: 0.11,
-          freqStart: f0 * 1.57,
-          freqEnd: f0 * 1.55,
-          type: 'sine',
-          gainPeak: 0.08,
-        });
-        this.emitModalPing({
-          startTime: ringStart,
-          duration: 0.085,
-          freqStart: f0 * 2.38,
-          type: 'sine',
-          gainPeak: 0.05,
-        });
+        for (let i = 0; i < BRASS_CASING_SHELL_PARTIALS.length; i++) {
+          const ratio = BRASS_CASING_SHELL_PARTIALS[i];
+          this.emitModalPing({
+            startTime: ringStart,
+            duration: 0.13 / (1 + i * 0.45),
+            freqStart: f0 * ratio,
+            freqEnd: f0 * ratio * 0.988,
+            type: 'sine',
+            gainPeak: (0.11 / (1 + i * 0.7)) * (isSlowMo ? 0.9 : 1.0),
+            bus: 'mechanical',
+          });
+        }
 
         // 3. Rear trunnion / buffer impact (including Colt M4A1 coaxial buffer spring ring)
         const tBuffer = now + (isSlowMo ? 0.04 : 0.016);
-        this.emitModalPing({
+        this.emitSteelWaveguideStrike({
           startTime: tBuffer,
-          duration: 0.06,
-          freqStart: 210,
-          freqEnd: 92,
-          type: 'triangle',
+          fundamentalHz: 740,
+          baseDecaySec: 0.062,
           gainPeak: 0.24,
+          hardness01: 0.6,
+          massBodyHz: 138,
+          bus: 'mechanical',
         });
         if (weaponId === 'm4a1') {
           this.emitModalPing({
             startTime: tBuffer,
-            duration: 0.16,
+            duration: 0.15,
             freqStart: 415,
-            freqEnd: 392,
+            freqEnd: 394,
             type: 'sine',
-            gainPeak: 0.09,
+            gainPeak: 0.075,
+            bus: 'mechanical',
           });
         }
         break;
       }
 
       case 'spring_feed': {
-        // Multi-strand braided recoil spring metallic coil rasp + cartridge strip
+        // Multi-strand braided recoil spring metallic coil rasp + brass cartridge feed-lip strip
         const dur = isSlowMo ? 0.12 : 0.065;
         this.emitNoiseBurst({
           startTime: now,
           duration: dur,
           filterType: 'bandpass',
           freqStart: 1850,
-          freqEnd: 3300,
-          q: 4.8,
-          gainPeak: 0.2,
-          attack: 0.008,
+          freqEnd: 3350,
+          q: 4.6,
+          gainPeak: 0.19,
+          attack: 0.007,
+          bus: 'mechanical',
+        });
+        this.emitSteelWaveguideStrike({
+          startTime: now + dur * 0.35,
+          fundamentalHz: 2120,
+          baseDecaySec: 0.03,
+          gainPeak: 0.14,
+          hardness01: 0.7,
+          bus: 'mechanical',
         });
         break;
       }
 
       case 'battery_lockup': {
-        // Authoritative bolt-into-battery rotary lug lockup ("ka-chunk")
+        // Authoritative twin-stage cold-forged bolt-into-battery lug lockup ("ka-chunk")
         const lockBase =
-          profile.mechanismStyle === 'short_recoil_heavy' ? 980 : 1480;
-        this.emitModalPing({
+          profile.mechanismStyle === 'short_recoil_heavy'
+            ? 780
+            : profile.mechanismStyle === 'compact_9mm'
+              ? 1360
+              : 1120;
+        // Stage 1: Extractor snap & breech face contact
+        this.emitSteelWaveguideStrike({
           startTime: now,
-          duration: 0.048,
-          freqStart: 245,
-          freqEnd: 108,
-          type: 'triangle',
-          gainPeak: 0.28,
+          fundamentalHz: lockBase * 0.84,
+          baseDecaySec: 0.048,
+          gainPeak: 0.25,
+          hardness01: 0.76,
+          massBodyHz: 148,
+          bus: 'ballistic',
         });
-        this.emitNoiseBurst({
-          startTime: now + 0.008,
-          duration: 0.036,
-          filterType: 'bandpass',
-          freqStart: lockBase * 1.35,
-          freqEnd: lockBase * 0.9,
-          q: 3.4,
-          gainPeak: 0.32,
-        });
-        this.emitModalPing({
-          startTime: now + 0.008,
-          duration: 0.04,
-          freqStart: lockBase,
-          freqEnd: lockBase * 0.78,
-          type: 'triangle',
-          gainPeak: 0.22,
+        // Stage 2: Rotary locking lugs / slide hood seating into barrel extension (+11ms)
+        this.emitSteelWaveguideStrike({
+          startTime: now + (isSlowMo ? 0.018 : 0.011),
+          fundamentalHz: lockBase,
+          baseDecaySec: 0.064,
+          gainPeak: 0.33,
+          hardness01: 0.88,
+          massBodyHz: 192,
+          bus: 'ballistic',
         });
         break;
       }
 
       case 'sear_reset': {
-        // Tactile disconnector-to-primary-sear reset click
-        this.emitNoiseBurst({
+        // Tactile disconnector-to-primary-sear steel hook engagement click
+        this.emitSteelWaveguideStrike({
           startTime: now,
-          duration: 0.018,
-          filterType: 'bandpass',
-          freqStart: 4200,
-          freqEnd: 2900,
-          q: 5.2,
+          fundamentalHz: 2460,
+          baseDecaySec: 0.028,
           gainPeak: 0.22,
-        });
-        this.emitModalPing({
-          startTime: now,
-          duration: 0.02,
-          freqStart: 3650,
-          freqEnd: 2400,
-          type: 'sine',
-          gainPeak: 0.14,
+          hardness01: 0.9,
+          bus: 'mechanical',
         });
         break;
       }
+    }
+  }
+
+  /**
+   * Synthesizes spent brass cartridge casing hitting the gunsmith bench / range floor
+   * with velocity-scaled cylindrical C26000 brass shell modes + rim tip-over micro-clink.
+   */
+  public playBrassCasingBounce(
+    caliber: CaliberProfile,
+    impactSpeedCmS: number
+  ): void {
+    if (impactSpeedCmS <= 6 || useAppStore.getState().sfxMuted) return;
+    const ctx = this.unlock();
+    if (!ctx || ctx.state !== 'running') return;
+
+    const profile =
+      CALIBER_ACOUSTIC_PROFILES[caliber] ??
+      CALIBER_ACOUSTIC_PROFILES['9mm_para'];
+    const vel01 = Math.max(0.06, Math.min(1.0, (impactSpeedCmS - 6) / 240));
+    const now = ctx.currentTime + 0.0015;
+
+    // Tiny deterministic pitch micro-variation from arrival timestamp so multiple casings sound distinct
+    const jitter = 0.975 + ((now * 17.3) % 1) * 0.05;
+    const f0 = profile.casingRingHz * jitter;
+
+    // Floor / mat surface contact tick
+    this.emitNoiseBurst({
+      startTime: now,
+      duration: 0.006,
+      filterType: 'highpass',
+      freqStart: 2600,
+      q: 1.4,
+      gainPeak: 0.14 * vel01,
+      attack: 0.0005,
+      bus: 'ballistic',
+    });
+
+    // Cylindrical hollow brass shell modal partials
+    const ringDecay =
+      caliber === '50_bmg' || caliber === '338_lapua' ? 0.19 : 0.135;
+    for (let i = 0; i < BRASS_CASING_SHELL_PARTIALS.length; i++) {
+      const ratio = BRASS_CASING_SHELL_PARTIALS[i];
+      this.emitModalPing({
+        startTime: now,
+        duration: ringDecay / (1 + i * 0.52),
+        freqStart: f0 * ratio,
+        freqEnd: f0 * ratio * 0.992,
+        type: 'sine',
+        gainPeak: (0.16 * vel01) / (1 + i * 0.68),
+        bus: 'ballistic',
+      });
+    }
+
+    // Secondary rim-rocking double-clink when casing tips flat onto its mouth
+    if (impactSpeedCmS < 155) {
+      const rockDelay = 0.014 + (1 - vel01) * 0.012;
+      this.emitModalPing({
+        startTime: now + rockDelay,
+        duration: ringDecay * 0.55,
+        freqStart: f0 * 1.03,
+        freqEnd: f0 * 1.01,
+        type: 'sine',
+        gainPeak: 0.075 * vel01,
+        bus: 'ballistic',
+      });
+      this.emitModalPing({
+        startTime: now + rockDelay,
+        duration: ringDecay * 0.38,
+        freqStart: f0 * BRASS_CASING_SHELL_PARTIALS[1] * 1.02,
+        type: 'sine',
+        gainPeak: 0.045 * vel01,
+        bus: 'ballistic',
+      });
+    }
+  }
+
+  public playSelectorDetent(mode: 'safe' | 'semi' | 'auto'): void {
+    if (useAppStore.getState().sfxMuted) return;
+    const ctx = this.unlock();
+    if (!ctx || ctx.state !== 'running') return;
+
+    const now = ctx.currentTime + 0.001;
+    const pitchMap = {
+      safe: 1460,
+      semi: 1840,
+      auto: 2040,
+    } as const;
+    const f0 = pitchMap[mode];
+
+    // Spring-loaded detent plunger sliding into machined receiver pocket
+    this.emitSteelWaveguideStrike({
+      startTime: now,
+      fundamentalHz: f0,
+      baseDecaySec: 0.032,
+      gainPeak: 0.24,
+      hardness01: 0.88,
+      massBodyHz: mode === 'safe' ? 220 : 280,
+      bus: 'mechanical',
+    });
+
+    if (mode === 'auto') {
+      // Secondary auto-sear trip lever clearance click
+      this.emitSteelWaveguideStrike({
+        startTime: now + 0.012,
+        fundamentalHz: 2320,
+        baseDecaySec: 0.024,
+        gainPeak: 0.16,
+        hardness01: 0.9,
+        bus: 'mechanical',
+      });
+    }
+  }
+
+  public playTriggerDryBlock(): void {
+    if (useAppStore.getState().sfxMuted) return;
+    const ctx = this.unlock();
+    if (!ctx || ctx.state !== 'running') return;
+
+    const now = ctx.currentTime + 0.001;
+    // Dead-stopped muted steel trigger bar hitting safety block cam
+    this.emitSteelWaveguideStrike({
+      startTime: now,
+      fundamentalHz: 2280,
+      baseDecaySec: 0.019,
+      gainPeak: 0.21,
+      hardness01: 0.92,
+      massBodyHz: 340,
+      bus: 'mechanical',
+    });
+  }
+
+  public playTriggerReset(): void {
+    if (useAppStore.getState().sfxMuted) return;
+    const ctx = this.unlock();
+    if (!ctx || ctx.state !== 'running') return;
+
+    const now = ctx.currentTime + 0.001;
+    // Tactile disconnector release + crisp primary sear re-engagement snap
+    this.emitNoiseBurst({
+      startTime: now,
+      duration: 0.009,
+      filterType: 'bandpass',
+      freqStart: 2400,
+      freqEnd: 3400,
+      q: 4.0,
+      gainPeak: 0.12,
+      bus: 'mechanical',
+    });
+    this.emitSteelWaveguideStrike({
+      startTime: now + 0.006,
+      fundamentalHz: 2640,
+      baseDecaySec: 0.028,
+      gainPeak: 0.24,
+      hardness01: 0.92,
+      massBodyHz: 320,
+      bus: 'mechanical',
+    });
+  }
+
+  public playPressCheckSpring(direction: PressCheckDirection): void {
+    if (useAppStore.getState().sfxMuted) return;
+    const ctx = this.unlock();
+    if (!ctx || ctx.state !== 'running') return;
+
+    const now = ctx.currentTime + 0.001;
+    const isPull = direction === 'pull' || direction === 'back';
+
+    if (isPull) {
+      // Braided recoil spring compression rasp + partial lug cam-out click
+      this.emitNoiseBurst({
+        startTime: now,
+        duration: 0.068,
+        filterType: 'bandpass',
+        freqStart: 1620,
+        freqEnd: 2780,
+        q: 4.5,
+        gainPeak: 0.18,
+        attack: 0.006,
+        bus: 'mechanical',
+      });
+      this.emitSteelWaveguideStrike({
+        startTime: now + 0.004,
+        fundamentalHz: 1320,
+        baseDecaySec: 0.036,
+        gainPeak: 0.2,
+        hardness01: 0.75,
+        massBodyHz: 190,
+        bus: 'mechanical',
+      });
+    } else {
+      // Crisp recoil spring return + forward battery lockup clack
+      this.emitNoiseBurst({
+        startTime: now,
+        duration: 0.042,
+        filterType: 'bandpass',
+        freqStart: 2650,
+        freqEnd: 1580,
+        q: 4.0,
+        gainPeak: 0.16,
+        attack: 0.003,
+        bus: 'mechanical',
+      });
+      this.emitSteelWaveguideStrike({
+        startTime: now + 0.024,
+        fundamentalHz: 1180,
+        baseDecaySec: 0.056,
+        gainPeak: 0.3,
+        hardness01: 0.88,
+        massBodyHz: 175,
+        bus: 'ballistic',
+      });
     }
   }
 
@@ -791,23 +1229,23 @@ class ProceduralGunsmithSoundEngine {
 
     const now = ctx.currentTime + 0.001;
     if (kind === 'part_select') {
-      this.emitModalPing({
+      this.emitSteelWaveguideStrike({
         startTime: now,
-        duration: 0.018,
-        freqStart: 2950,
-        freqEnd: 1980,
-        type: 'sine',
-        gainPeak: 0.11,
+        fundamentalHz: 2380,
+        baseDecaySec: 0.022,
+        gainPeak: 0.13,
+        hardness01: 0.78,
+        bus: 'dry_only',
       });
     } else if (kind === 'preset_detent') {
-      this.emitNoiseBurst({
+      this.emitSteelWaveguideStrike({
         startTime: now,
-        duration: 0.02,
-        filterType: 'bandpass',
-        freqStart: 2600,
-        freqEnd: 1650,
-        q: 4.2,
-        gainPeak: 0.15,
+        fundamentalHz: 1760,
+        baseDecaySec: 0.028,
+        gainPeak: 0.17,
+        hardness01: 0.82,
+        massBodyHz: 240,
+        bus: 'mechanical',
       });
     } else if (kind === 'director_cue') {
       this.emitModalPing({
@@ -817,15 +1255,16 @@ class ProceduralGunsmithSoundEngine {
         freqEnd: 2220,
         type: 'sine',
         gainPeak: 0.08,
+        bus: 'dry_only',
       });
     } else {
-      this.emitModalPing({
+      this.emitSteelWaveguideStrike({
         startTime: now,
-        duration: 0.016,
-        freqStart: 2350,
-        freqEnd: 1550,
-        type: 'triangle',
-        gainPeak: 0.11,
+        fundamentalHz: 2050,
+        baseDecaySec: 0.02,
+        gainPeak: 0.13,
+        hardness01: 0.8,
+        bus: 'dry_only',
       });
     }
   }
@@ -837,6 +1276,16 @@ export function unlockMechanicalAudio(): void {
   soundEngine.unlock();
 }
 
+export function setAcousticEnvironment(
+  preset: AcousticEnvironmentPreset
+): void {
+  soundEngine.setEnvironment(preset);
+}
+
+export function getAcousticEnvironment(): AcousticEnvironmentPreset {
+  return soundEngine.getEnvironment();
+}
+
 export function playWorkbenchFoley(kind: WorkbenchFoleyKind): void {
   soundEngine.playFoley(kind);
 }
@@ -846,6 +1295,33 @@ export function triggerManualPhasePreviewSound(
   progress: number
 ): void {
   soundEngine.playScrubCue(weaponId, progress);
+}
+
+export function playBrassCasingBounceSound(
+  caliber: CaliberProfile,
+  impactSpeedCmS: number
+): void {
+  soundEngine.playBrassCasingBounce(caliber, impactSpeedCmS);
+}
+
+export function playSelectorDetentSound(
+  mode: 'safe' | 'semi' | 'auto'
+): void {
+  soundEngine.playSelectorDetent(mode);
+}
+
+export function playTriggerDryBlockSound(): void {
+  soundEngine.playTriggerDryBlock();
+}
+
+export function playTriggerResetSound(): void {
+  soundEngine.playTriggerReset();
+}
+
+export function playPressCheckSpringSound(
+  direction: PressCheckDirection
+): void {
+  soundEngine.playPressCheckSpring(direction);
 }
 
 /**
@@ -913,8 +1389,14 @@ export function useMechanicalSoundEngine(): void {
     let prevSectionCut = useAppStore.getState().sectionCut;
     let prevXray = useAppStore.getState().xrayShells;
     let prevMuted = useAppStore.getState().sfxMuted;
+    let prevFireSpeed = useAppStore.getState().fireSpeedMultiplier;
 
     const unsubStore = useAppStore.subscribe((state) => {
+      if (state.fireSpeedMultiplier !== prevFireSpeed) {
+        prevFireSpeed = state.fireSpeedMultiplier;
+        soundEngine.syncSpeedWetMix(state.fireSpeedMultiplier);
+      }
+
       if (state.sfxMuted !== prevMuted) {
         prevMuted = state.sfxMuted;
         syncDuckingAndMute();
