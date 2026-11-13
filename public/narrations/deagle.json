@@ -1,0 +1,888 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "deagle",
+  "generatedAt": "2026-11-12T22:29:06.499687+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "Desert Eagle Mark XIX .50 AE Pistol",
+    "subtitle": ".50 AE Gas-Operated Rotating-Bolt Magnum Semi-Automatic Pistol",
+    "originCountry": "Israel / United States",
+    "weaponType": "Semi-Automatic Pistol",
+    "categoryLabel": "Semi-Automatic Pistol",
+    "actionMechanism": "Piston-Driven Slide w/ 4-Lug Rotating Bolt Lockup",
+    "statusLabel": "In Vault · Strippable",
+    "description": "Jointly developed by Magnum Research Inc. and Israel Military Industries, the Desert Eagle Mark XIX .50 AE mirror-chrome edition redefines high-power handgun architecture. Departing from traditional tilting-barrel short-recoil geometry, it incorporates rifle-grade mechanics: an under-bore gas piston driving an open-top bridge slide, a four-lug rotating bolt, a rigid six-inch triangular barrel with integral scope rails, and symmetrical twin recoil springs.",
+    "highlights": [
+      "Mirror & Brushed Chrome Dual Finish",
+      "6-Inch Triangular Rigid Barrel & Gas Piston",
+      "Rifle-Grade 4-Lug Rotating Bolt & Twin Springs",
+      "Dynamic 7-Round .50 AE Magnum Firing Cycle"
+    ],
+    "workbenchTitle": "Desert Eagle Internal Mechanism & Dynamic Firing",
+    "workbenchSubtitle": "4 Assemblies · 24 Critical Nodes · 6\" Rigid Gas Barrel + Rotating Bolt & .50 AE Cycle",
+    "cutawayLabel": "Gas & Bolt Closeup",
+    "cutawayTitle": "Switch to aligned cutaway view focusing on gas piston and 4-lug rotating bolt",
+    "searchPlaceholder": "Search component or BOM code (e.g., Bolt, Gas, B-03)...",
+    "firingMilestoneLabel": "Exit / Unlock",
+    "rateOfFire": "Semi-Automatic",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0%",
+        "desc": "Mark XIX in locked firing trim; enable X-ray cutaway to observe under-barrel gas cylinder and 4-lug rotating bolt lockup."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Rotate the takedown lever downward to draw the 6-inch triangular barrel forward, followed by bridge slide, twin springs, and steel magazine."
+      },
+      "upper_mag_strip": {
+        "label": "Detailed Strip",
+        "subLabel": "65%",
+        "desc": "Extract the helical cam pin to release the 4-lug bolt head, firing pin, claw extractor, ambidextrous safeties, and dual recoil rod assemblies."
+      },
+      "full_explode": {
+        "label": "Complete Exploded",
+        "subLabel": "100%",
+        "desc": "Remove the wrap-around rubber grip to reveal the forged chrome steel frame, exposed spur hammer, mainspring strut, and trigger sear linkage."
+      }
+    },
+    "firingPhases": {
+      "deagle_sa_trigger": {
+        "shortLabel": "Trigger Pull",
+        "title": "Phase 1 · Single-Action Trigger Stroke & Sear Disengagement",
+        "description": "With the slide-mounted safety turned to fire, pulling the single-action trigger drives dual transfer bars rearward past the wide magazine well, cleanly tripping the single-action sear from the cocked spur hammer notch."
+      },
+      "deagle_hammer_ignition": {
+        "shortLabel": "Hammer Strike",
+        "title": "Phase 2 · Mainspring Strut Thrust & Inertial Primer Ignition",
+        "description": "The heavy coil mainspring housed within the grip frame propels the spur hammer forward with high kinetic energy, striking the spring-loaded floating firing pin to detonate the large pistol magnum primer."
+      },
+      "deagle_gas_port_blast": {
+        "shortLabel": "Gas Port Bleed",
+        "title": "Phase 3 · 300-Grain Bullet Muzzle Departure & Chamber Gas Port Bleed",
+        "description": "As the 300-grain half-inch bullet accelerates down the six-inch polygonal bore, high-pressure powder gas bleeds through the under-chamber gas port and fills the forward expansion chamber beneath the muzzle."
+      },
+      "deagle_piston_bolt_unlock": {
+        "shortLabel": "Piston Unlocking",
+        "title": "Phase 4 · Piston Stroke, Free Travel & 39° Rotating Bolt Unlock",
+        "description": "The rigid barrel remains completely stationary as tapped gas punches the slide-integrated piston rearward; after a short dwell period, an internal helical cam track forces the four-lug bolt to twist 39 degrees and unlock from the barrel extension."
+      },
+      "deagle_extract_eject": {
+        "shortLabel": "Extract & Eject",
+        "title": "Phase 5 · Heavy Claw Extraction & Plunger-Driven Casing Ejection",
+        "description": "The robust extractor claw withdraws the spent rebated-rim brass casing from the fixed chamber until the spring-loaded ejector plunger on the bolt face flips the massive case up and right out of the open-top slide."
+      },
+      "deagle_twin_return_lock": {
+        "shortLabel": "Twin Springs Lock",
+        "title": "Phase 6 · Dual Recoil Springs Strip Next Round & Re-Lock 4 Lugs",
+        "description": "Symmetrical twin recoil springs thrust the bridge slide and bolt carrier forward, stripping a fresh .50 AE round up the polished feed ramp into battery and rotating the bolt lugs clockwise back into locked containment."
+      },
+      "deagle_sa_reset": {
+        "shortLabel": "Trigger Reset",
+        "title": "Phase 7 · Trigger Reset & Single-Action Kinematic Ready",
+        "description": "Releasing the trigger allows the dual transfer bars to move forward and snap underneath the sear reset ledge, maintaining the hammer at full cock ready for the subsequent discharge."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "手枪之王：沙漠之鹰与马格南导气式闭锁革命",
+      "deck": "从狩猎靶场的大胆构想到享誉全球的传奇符号，沙漠之鹰以步枪级导气活塞与四突笋回转枪机，彻底打破了传统手枪的口径极限。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1979–1982",
+          "title": "蛮力之梦：打破左轮对马格南弹药的垄断",
+          "paragraphs": [
+            "在20世纪70年代末期，远距离金属靶射击与北美大型猎物手枪狩猎运动正值狂热之风。当时的射手如果渴望获得超越千焦耳的毁灭性枪口动能，唯一的选择就是各类沉重的马格南转轮手枪。然而，转轮手枪有限的容弹量、无法由机械吸收的剧烈后坐力以及缓慢的装弹速度，成为了当时射手面临的极大痛点。三位明尼苏达州的机械枪械爱好者伯纳德·怀特等人下定决心：要研制出一款能够承受真正步枪级膛压、弹匣供弹的半自动马格南手枪。",
+            "初期的方案被命名为马格南研究公司创始项目，但技术壁垒几乎不可逾越。传统半自动手枪所采用的勃朗宁式枪管短后坐闭锁或滚柱闭锁，在面对峰值超过三万磅力每平方英寸的高膛压马格南药筒时，若非发生弹壳严重贴膛撕裂，就是抽壳过早引发灾难性炸裂。工程团队意识到，若要在握把内装填超长手枪弹，就必须从现代突击步枪的自动机中寻求灵感，彻底抛弃活动枪管设计。"
+          ],
+          "audioScript": "二十世纪七十年代末，马格南大威力手枪领域完全被转轮垄断。为了让半自动手枪也能驯服千焦耳级的马格南巨弹，马格南研究公司的工程师做出了大胆抉择：彻底颠覆勃朗宁枪管短后坐传统，向步枪汲取灵感，研制一把真正采用膛底导气与刚性回转枪机的自动手枪。",
+          "audioUrl": "audio/deagle/story_act1_zh.mp3",
+          "focusPartId": "deagle_barrel",
+          "focusPartLabel": "6英寸三角形固定枪管"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1983–1990",
+          "title": "工匠淬炼：以色列军事工业的力学攻坚",
+          "paragraphs": [
+            "尽管马格南研究公司确立了导气原理的专利雏形，但初期的原型枪频繁出现供弹卡死、气室积碳自锁以及闭锁突笋过度磨损等致命缺陷。1982年，他们做出了决定性的战略合作：将全套图纸交由实战经验丰富的以色列军事工业公司（IMI）进行生产工艺工程化再造。以色列军工枪械大师们凭借精良的数控锻压机床与火炮冶金技术，重新计算了燃气冲量与导气孔截面积，将导气活塞改置于枪管前下方，使整枪重心更向前移以抑制跳动。",
+            "在IMI拉马特沙龙兵工厂的打磨下，早期的Mark I与改进型Mark VII相继问世，顺利吃下了点三五七马格南与点四四马格南弹药。然而，团队并未就此停步。枪械设计师埃文·维尔平等人提出了终极目标：打造一款真正前所未有的半英寸口径超高压半自动手枪弹。这一野心直接催生了九十年代初由埃文·维尔平操刀定型的点五零 Action Express 巨弹，整枪结构迎来终极承压强化。"
+          ],
+          "audioScript": "怀揣图纸的马格南公司找到了以色列军事工业公司。面对严重积碳与抽壳断裂，以色列军工大师重塑了高压导气管路与前置活塞，彻底改写了枪机材料力学。随着点三五七和点四四口径的成熟，一把面向半英寸口径超高膛压的终极手枪呼之欲出。",
+          "audioUrl": "audio/deagle/story_act2_zh.mp3",
+          "focusPartId": "deagle_slide",
+          "focusPartLabel": "敞顶桥式套筒"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1995–1998",
+          "title": "机械灵魂：Mark XIX 架构与回转枪机巅峰",
+          "paragraphs": [
+            "1995年，沙漠之鹰的集大成之作——Mark XIX平台正式确立。该平台的核心突破在于通用化机匣与模块化枪管互换系统：只需更换枪管、枪机和弹匣，即可在点四四马格南与点五零 AE 之间从容切换。其机械布局堪称工程奇迹，6英寸三角形重型枪管采用下凸耳横销刚性锁止在铸钢底把上，全程保持固定静止，从物理层面消除了枪管晃动对射击精度的影响，并在枪管上方一体铣削出皮卡汀尼瞄准导轨。",
+            "整枪的自动机运行逻辑与突击步枪惊人一致：弹头经过弹膛前方的引气孔时，微量超高压火药燃气沿枪管下方的贯穿式气道疾速前冲，冲击套筒前置活塞。敞顶套筒在后坐自由行程后，利用内壁精密螺旋槽拨动凸轮销，强行使步枪级四突笋枪机旋转三十九度从容开锁。两根高强度复进导杆并列对称排布，配合双联弹簧，使两千焦耳级别的狂暴动能被线性吸收并平顺导向射手掌心。"
+          ],
+          "audioScript": "一九九五年问世的马克十九平台将这一设计推向巅峰。六英寸三角形枪管牢牢刚性锁定在精锻钢下机匣上，膛底导出的高压燃气猛击前置活塞，推动桥式套筒通过螺旋槽驱动四突笋枪机旋转三十九度刚性开锁。步枪级别的机构，在两公斤的枪躯内实现了完美的力学闭环。",
+          "audioUrl": "audio/deagle/story_act3_zh.mp3",
+          "focusPartId": "deagle_bolt",
+          "focusPartLabel": "四突笋回转闭锁枪机头"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1999–至今",
+          "title": "文化图腾：从特战试验到大荧幕枪械帝王",
+          "paragraphs": [
+            "进入二十一世纪，沙漠之鹰曾被包括波兰特种部队GROM以及葡萄牙特警在内的防暴特战分队进行过深入测试，用于执行重型掩体穿透、破锁及反车辆关键部件的任务。然而，其两公斤的战斗全重、七发弹匣容量以及极为凶悍的后坐力，注定了它无法成为常规单兵自卫武器，而是退居特种突破与野外防熊自卫的特殊地位。",
+            "真正让沙漠之鹰响彻全球的，是它在现代流行文化中的统治级地位。从《黑客帝国》中特工史密斯的冷酷银色利刃，到《反恐精英》中每一位老玩家耳熟能详的夜鹰一枪毙命传说，沙漠之鹰镜面镀铬的硬朗工业美学已超越了武器本身，成为人类轻武器工业历史上大威力机械美学的不朽丰碑。"
+          ],
+          "audioScript": "虽然两公斤的重量与凶猛后坐力让它远离了普通军队的行囊，但沙漠之鹰凭借强悍的毁伤力赢得了特种破障部队的尊重。更在好莱坞大片与电子竞技中化身无坚不摧的银色巨兽，成为了世界轻武器史上公认的大威力工业图腾。",
+          "audioUrl": "audio/deagle/story_act4_zh.mp3",
+          "focusPartId": "deagle_frame",
+          "focusPartLabel": "抛光拉丝镀铬精锻钢下机匣"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "膛底前置导气活塞与长气道系统",
+          "tag": "固定枪管 / 气动驱栓",
+          "summary": "打破常规手枪靠枪管后坐动量开锁的限制，通过枪管下方向前延伸的一体式导气孔与气室，将火药燃气前引并猛击套筒前端活塞，实现了超高膛压下枪管绝对静止不动与极高的射击精度。",
+          "focusPartId": "deagle_barrel",
+          "focusPartLabel": "6英寸三角形固定枪管"
+        },
+        {
+          "id": "bt2",
+          "title": "步枪级四突笋回转闭锁枪机",
+          "tag": "超高膛压 / 刚性闭锁",
+          "summary": "移植现代突击步枪的高承压锁闭结构，由套筒内螺旋槽带动凸轮导销驱动枪机旋转约39°闭锁于枪管节套内部，安全抵御点五零 AE 弹药超过三万磅每平方英寸的峰值爆发压力。",
+          "focusPartId": "deagle_bolt",
+          "focusPartLabel": "四突笋回转闭锁枪机头"
+        },
+        {
+          "id": "bt3",
+          "title": "双联对称复进导杆与并列簧组",
+          "tag": "后坐冲量线性缓冲",
+          "summary": "针对点五零马格南弹药巨大的后坐冲量与极高的套筒后坐速度，采用两套平行对称的复进簧与双导杆，搭配八字形固定尾座，有效抑制套筒后坐点头并赋予平稳柔顺的复进推弹力矩。",
+          "focusPartId": "deagle_recoil_springs",
+          "focusPartLabel": "双联并列螺旋复进簧组"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1979",
+          "title": "马格南手枪概念确立",
+          "detail": "伯纳德·怀特等人在明尼苏达州创立马格南研究公司，申请了导气式半自动手枪的初步专利构想。"
+        },
+        {
+          "year": "1982",
+          "title": "以色列军事工业 (IMI) 接手研制",
+          "detail": "IMI 与马格南研究公司签约，对原始设计进行深度工业重塑并攻克导气管积碳与卡壳工程瓶颈。"
+        },
+        {
+          "year": "1985",
+          "title": "Mark I 正式量产交付",
+          "detail": "首款推向民用与狩猎市场的点三五七口径沙漠之鹰投产，成功建立导气式回转枪机手枪的市场声誉。"
+        },
+        {
+          "year": "1990",
+          "title": ".50 Action Express 弹药诞生",
+          "detail": "埃文·维尔平主持研发出点五零 AE 巨弹，使半自动手枪首次实现突破两千焦耳的毁灭性枪口动能。"
+        },
+        {
+          "year": "1995",
+          "title": "Mark XIX 模块化通用平台确立",
+          "detail": "全平台统一机匣与皮卡汀尼上导轨成型，用户仅需更换枪管与枪机组即可自由跨越多种口径。"
+        },
+        {
+          "year": "2009",
+          "title": "Kahr 收购与全流程精密制造",
+          "detail": "卡尔武器集团全资收购马格南研究公司，生产线全面转移至美国明尼苏达州进行全数控高精研磨。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Sovereign of Handguns: The Desert Eagle & the Gas-Operated Magnum Revolution",
+      "deck": "Born from silhouette shooting ambition and engineered to perfection by Israel Military Industries, the Desert Eagle forged rifle-grade mechanics into an iconic chrome magnum titan.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1979–1982",
+          "title": "The Magnum Enigma: Challenging the Revolver Monopoly",
+          "paragraphs": [
+            "In the late 1970s, long-range metallic silhouette competition and big-game handgun hunting swept across North America. Hunters and precision target shooters demanding kinetic energy beyond one thousand joules were chained exclusively to heavy single- or double-action magnum revolvers. Yet revolvers imposed severe ballistic constraints: limited six-round capacities, sluggish cylinder reloading, and jarring unmitigated recoil. In Minneapolis, a trio of visionary firearms enthusiasts led by Bernard White set out to construct the impossible: a detachable-magazine semi-automatic handgun capable of taming true rifle-grade chamber pressures.",
+            "Their earliest prototypes exposed glaring mechanical boundaries. Traditional short-recoil tilting barrels, roller-delayed blowbacks, or inertia locks failed miserably under thirty-thousand pounds per square inch of peak magnum pressure. Cartridge cases either violently adhered to chamber walls or tore open due to premature extraction. The engineering team realized that to feed magnum brass reliably through a pistol grip, they had to abandon tilting barrels entirely and adapt the internal gas dynamics of modern battle rifles."
+          ],
+          "audioScript": "By the late nineteen seventies, massive magnum cartridges were locked strictly inside heavy revolvers. Craving superior capacity and manageable recoil, the founders of Magnum Research set out on a daring quest. Rather than relying on fragile tilting barrels, they turned toward combat rifle design, attempting to harness true rifle-class chamber pressure inside an autoloading handgun frame.",
+          "audioUrl": "audio/deagle/story_act1_en.mp3",
+          "focusPartId": "deagle_barrel",
+          "focusPartLabel": "6\" Fixed Triangular Barrel"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1983–1990",
+          "title": "Forged in the Levant: Israel Military Industries Overhaul",
+          "paragraphs": [
+            "While Magnum Research secured foundational patents for a gas-operated handgun, early American mockups choked constantly on carbon fouling, fractured bolt lugs, and jammed feed cycles. In 1982, the firm forged an alliance with Israel Military Industries. Renowned for battle-proven engineering on weapons like the Galil and Uzi, IMI firearm designers in Ramat HaSharon subjected the fledgling action to rigorous military kinematics and metallurgical refinements.",
+            "IMI engineers shifted the gas cylinder directly beneath the fixed barrel muzzle and fine-tuned port bleed geometries, relocating weapon balance forward to actively counter extreme muzzle flip. Their Mark I and Mark VII iterations conquered three-five-seven and four-four Magnum cartridges with flawless reliability. But lead designer Evan Whildin was already chasing the ultimate frontier: a half-inch magnum autoloading rimless cartridge, which debuted as the titanic point-five-zero Action Express in nineteen eighty-eight."
+          ],
+          "audioScript": "Early prototypes suffered catastrophic jams until Israel Military Industries entered the arena in nineteen eighty-two. Israeli engineers redesigned the forward gas port, tuned the expansion chamber, and reinforced heat-treated alloys. With three-five-seven and four-four Magnum tamed, designer Evan Whildin orchestrated the legendary point-five-zero Action Express, delivering unprecedented handgun destructive energy.",
+          "audioUrl": "audio/deagle/story_act2_en.mp3",
+          "focusPartId": "deagle_slide",
+          "focusPartLabel": "Open-Top Bridge Slide"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1995–1998",
+          "title": "Mechanical Soul: Mark XIX Architecture & Rotating Lockup",
+          "paragraphs": [
+            "In 1995, the Desert Eagle reached evolutionary maturity with the introduction of the Mark XIX platform. Its masterstroke was total modularity: a unified forged steel frame could host three-five-seven, four-four, or point-five-zero calibers through quick swaps of the barrel, bolt head, and magazine. The fixed six-inch triangular barrel remained anchored to the frame via a massive cross-pin cam lug, creating a rock-solid optical and ballistic datum that eliminated barrel play completely.",
+            "Mechanically, the Mark XIX operates as a miniaturized combat carbine. As the half-inch bullet crosses the gas bleed orifice ahead of the chamber, combustion gases blast down an internal lower conduit to strike the slide-mounted gas piston. The open-top bridge slide accelerates rearward, using an internal helical cam channel to pivot the four-lug bolt thirty-nine degrees out of battery. Symmetrical twin recoil guide rods and dual springs absorb the monumental two-thousand-joule impulse in a smooth, linear vector."
+          ],
+          "audioScript": "Standardized in nineteen ninety-five, the Mark nineteen platform unified the platform into an interchangeable marvel. Its six-inch triangular barrel stays completely motionless on the forged frame. Tapped gas drives a front piston, forcing the bridge slide to twist a four-lug rotating bolt thirty-nine degrees out of battery, absorbing two thousand joules through dual recoil springs.",
+          "audioUrl": "audio/deagle/story_act3_en.mp3",
+          "focusPartId": "deagle_bolt",
+          "focusPartLabel": "4-Lug Rotating Bolt Head"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "1999–Present",
+          "title": "Cultural Supremacy: From Breaching Trials to Screen Icon",
+          "paragraphs": [
+            "Entering the twenty-first century, tactical evaluation teams including Poland's GROM and Portuguese special police tested the Desert Eagle for targeted high-threat roles—breaching heavy barricades, disabling vehicular engine blocks, and penetrating armored windshields. Yet its two-kilogram empty weight and violent hand concussion prevented broad military adoption, cementing its functional identity as a dedicated long-range sporting firearm and formidable wilderness bear defense sidearm.",
+            "Simultaneously, the Desert Eagle transcended conventional ordnance to become a paramount cultural monolith. From Agent Smith's gleaming sidearm in The Matrix to legendary one-shot dominance across premier tactical video games, its high-polished chrome lines and roaring muzzle envelope made it world-famous. The Desert Eagle remains an extraordinary testament to uncompromising mechanical ambition and kinetic perfection."
+          ],
+          "audioScript": "Although two kilograms of forged steel proved too heavy for general military holsters, specialized counter-terror units evaluated its raw barrier-breaching power. Meanwhile, Hollywood blockbusters and competitive esports elevated its polished chrome silhouette into the ultimate symbol of kinetic dominance, cementing its legacy as the undisputed king of handguns.",
+          "audioUrl": "audio/deagle/story_act4_en.mp3",
+          "focusPartId": "deagle_frame",
+          "focusPartLabel": "Forged Chrome Steel Frame"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Under-Bore Forward Gas Expansion Conduit",
+          "tag": "Rigid Barrel / Gas-Piston Drive",
+          "summary": "By channeling high-pressure gas forward through an integral under-barrel passage to act upon a slide-mounted piston, the barrel remains completely rigid throughout the entire cycle, ensuring superior mechanical precision under magnum pressures.",
+          "focusPartId": "deagle_barrel",
+          "focusPartLabel": "6\" Fixed Triangular Barrel"
+        },
+        {
+          "id": "bt2",
+          "title": "Rifle-Derived 4-Lug Rotating Bolt Head",
+          "tag": "39° Cammed Rigid Lockup",
+          "summary": "Transplanting battle-rifle locking architecture into a handgun slide, the bolt engages four radial lugs into the barrel extension, rotating 39 degrees via a helical cam pin to easily withstand over thirty thousand psi of peak chamber pressure.",
+          "focusPartId": "deagle_bolt",
+          "focusPartLabel": "4-Lug Rotating Bolt Head"
+        },
+        {
+          "id": "bt3",
+          "title": "Symmetrical Twin Recoil Springs & Dual Guide Rods",
+          "tag": "Linear Impulse Distribution",
+          "summary": "Dual parallel guide rods anchored by an integrated figure-eight stop plate distribute the violent recoil force of the .50 AE cartridge symmetrically, preventing slide canting and smoothing out cycling velocities.",
+          "focusPartId": "deagle_recoil_springs",
+          "focusPartLabel": "Twin Parallel Helical Recoil Springs"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1979",
+          "title": "Magnum Autoloader Genesis",
+          "detail": "Bernard White and Magnum Research founders file initial patents for a gas-operated magnum autoloading handgun in Minnesota."
+        },
+        {
+          "year": "1982",
+          "title": "IMI Industrialization Partnership",
+          "detail": "Israel Military Industries enters a joint development contract, redesigning the gas system and barrel geometry for series production."
+        },
+        {
+          "year": "1985",
+          "title": "Mark I Series Introduction",
+          "detail": "The first production Desert Eagle chambered in .357 Magnum ships globally, establishing the viability of gas-operated handguns."
+        },
+        {
+          "year": "1990",
+          "title": ".50 Action Express Development",
+          "detail": "Evan Whildin finalizes the .50 AE cartridge, propelling a 300-grain bullet past two thousand joules of kinetic energy."
+        },
+        {
+          "year": "1995",
+          "title": "Mark XIX Universal Platform Standardized",
+          "detail": "The modular unified frame and integral-rail barrel system launch, enabling rapid caliber swaps between .44 Mag and .50 AE."
+        },
+        {
+          "year": "2009",
+          "title": "Kahr Firearms Acquisition & US CNC Manufacture",
+          "detail": "Magnum Research joins Kahr Arms Group, shifting complete precision CNC manufacturing of all Desert Eagle frames to Minnesota."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "deagle_barrel": {
+      "partId": "deagle_barrel",
+      "bomCode": "B-01",
+      "calloutLabelEn": "Fixed Triangular Barrel",
+      "zh": {
+        "roleTag": "刚性固定枪管与导气引流基元",
+        "overview": "这是沙漠之鹰标志性的6英寸重型三角形固定枪管，牢固嵌装于下机匣前端。其顶部一体铣削出皮卡汀尼瞄准导轨，弹膛底部下方则开有精密倾斜导气孔连接前端气室。",
+        "craftAndMaterial": "采用高强度特种合金钢经整体锻造和线切割精密成形，外覆高光硬质镀铬涂层，内膛为多边形膛线；厚实的三角形外廓专为抵御点五零马格南口径瞬间爆发的狂暴膛压与高热。",
+        "kinematicRole": "在全射击循环中始终与下机匣保持绝对刚性固定，为弹头加速与前端导气活塞提供稳定的几何基准；拆解时在百分之六至十四阶段率先向前上方滑脱卸下。",
+        "designHighlight": "与常规手枪管短后坐闭锁截然不同，固定枪管设计不仅消除了枪管晃动对射击精度的干扰，更为大威力导气式自动化循环奠定了绝对可靠的活塞气室基础。",
+        "audioScript": "请看这根标志性的六英寸重型固定枪管。它在射击时绝对静止，弹膛前下方的斜向导气孔会在子弹飞出前，将极高压力的燃气精准导入前端气室，像突击步枪一样驱动整个自动化循环。",
+        "audioUrl": "audio/deagle/parts/deagle_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Rigid Fixed Barrel & Gas Port",
+        "overview": "This iconic six-inch triangular heavy barrel anchors rigidly to the front of the steel frame. It features an integrated top Picatinny optics rail and an angled gas port bored beneath the chamber throat.",
+        "craftAndMaterial": "Forged from premium alloy steel with high-luster hard chrome plating, housing a cold hammer-forged polygonal rifled bore. Its rigid triangular external contour counteracts intense radial expansion and extreme thermal stress.",
+        "kinematicRole": "Remains completely stationary throughout all seven firing phases to ensure surgical accuracy. It unhooks forward and upward during initial field-stripping between six and fourteen percent disassembly.",
+        "designHighlight": "Unlike conventional Browning tilting barrels, keeping the barrel absolutely fixed eliminates mechanical alignment play and provides a rifle-grade foundation for the high-pressure gas piston cycle.",
+        "audioScript": "Here is the Desert Eagle legendary six-inch triangular barrel. Because it remains rigidly fixed to the frame during firing, high-pressure gas is reliably tapped beneath the chamber into the forward gas cup, operating the slide just like a modern battle rifle.",
+        "audioUrl": "audio/deagle/parts/deagle_barrel_en.mp3"
+      }
+    },
+    "deagle_slide": {
+      "partId": "deagle_slide",
+      "bomCode": "B-02",
+      "calloutLabelEn": "Open Bridge Slide",
+      "zh": {
+        "roleTag": "短行程活塞驱动套筒与凸轮座",
+        "overview": "这是兼具手枪套筒与步枪枪机框双重职能的敞顶桥式套筒，纵贯安装在机匣导轨之上。前端向下悬伸不锈钢导气活塞杆，后段闭锁体内侧切有用于控制枪机回转的精密螺旋凸轮槽。",
+        "craftAndMaterial": "采用整块铬钼合金钢精加工制成并做光亮硬铬处理；敞顶双侧桥臂设计既完美包容粗壮的固定枪管，又大幅减轻了运动件重量并杜绝抽壳卡弹事故。",
+        "kinematicRole": "在阶段四受活塞冲力高速后坐，内壁螺旋槽迫使枪机头偏转三十九度开锁并压缩双复进簧，随后后座压倒击锤；拆解时在百分之十三至二十八阶段向后上方滑离机匣。",
+        "designHighlight": "巧妙地将步枪式枪机框与短行程导气活塞融为单体滑套结构，在极其紧凑的手枪布局中驯服了点五零AE弹药的惊人后坐能量。",
+        "audioScript": "这座大开孔的桥式套筒不仅是手枪滑套，更扮演了步枪枪机框的角色。前下方的短行程活塞受燃气冲击后，驱动套筒猛烈后座，内侧凸轮导槽则精确带动枪机头回转开锁。",
+        "audioUrl": "audio/deagle/parts/deagle_slide_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Reciprocating Slide & Cam Host",
+        "overview": "Serving dual roles as pistol slide and rifle bolt carrier, this open-top bridge slide rides along full-length frame rails. Its front integrally houses the gas piston rod, while the rear bolt housing contains the helical cam guide.",
+        "craftAndMaterial": "Milled from monolithic chrome-moly steel with lustrous hard-chrome finish. The open-top side bridge architecture clears the fixed barrel and provides massive ejection clearance, drastically minimizing stovepipe jams.",
+        "kinematicRole": "Driven rearward by gas piston impulse during Phase 4, its internal cam surface rotates the bolt 39 degrees to unlock before cocking the hammer. It slides off the frame between thirteen and twenty-eight percent disassembly.",
+        "designHighlight": "By blending a short-stroke gas piston with a heavy handgun slide, Magnum Research effectively packaged battle-rifle operating kinematics into a semi-automatic hand cannon.",
+        "audioScript": "This open-top bridge slide acts as both a protective slide and an automated bolt carrier. Driven by the integrated forward gas piston, it travels rearward against twin springs while its internal helical track forces the bolt head to rotate and unlock.",
+        "audioUrl": "audio/deagle/parts/deagle_slide_en.mp3"
+      }
+    },
+    "deagle_bolt": {
+      "partId": "deagle_bolt",
+      "bomCode": "B-03",
+      "calloutLabelEn": "4-Lug Rotating Bolt",
+      "zh": {
+        "roleTag": "四突笋回转刚性闭锁枪机头",
+        "overview": "这是直接移植自现代突击步枪的高压回转枪机头，浮动装配于套筒后段闭锁腔内。机头前端沿圆周均布四枚粗壮闭锁突笋，镜面弹底窝内集成有弹性柱塞抛壳挺与中心击针通孔。",
+        "craftAndMaterial": "精选高屈服强度镍铬合金钢整体精密数控铣削，经深层碳氮共渗耐磨处理；四突笋对称受力布局确保在承受极高膛压时各向应力均匀分散。",
+        "kinematicRole": "阶段四在凸轮销导引下旋转三十九度脱离枪管锁套实现开锁；阶段六被复进簧前推入膛并逆向旋转完全闭锁；在三阶段拆解至百分之三十四至五十时自套筒向前旋出。",
+        "designHighlight": "作为纯正的步枪级闭锁结构，四突笋回转锁定使手枪能安全承受高达三万五千磅每平方英寸的点五零AE狂暴膛压，彻底杜绝早期开锁导致炸膛的危险。",
+        "audioScript": "这枚四突笋枪机头是沙漠之鹰真正的心脏。推弹入膛后它会顺时针旋转近四十度，像现代突击步枪一样将点五零口径马格南弹药死死锁死在枪膛尾端，承受极其狂暴的膛压。",
+        "audioUrl": "audio/deagle/parts/deagle_bolt_zh.mp3"
+      },
+      "en": {
+        "roleTag": "4-Lug High-Pressure Rotary Bolt",
+        "overview": "Directly adapted from modern infantry rifle designs, this rotating bolt head seats inside the slide rear bolt housing. It features four massive radial locking lugs around its face alongside an integral spring-loaded ejector plunger.",
+        "craftAndMaterial": "CNC-machined from high-tensile nickel-chromium alloy steel and case-hardened for superior wear resistance. Its symmetrical radial lugs distribute immense breech face thrust evenly into the barrel extension.",
+        "kinematicRole": "Rotates 39 degrees via the cam pin during Phase 4 to disengage barrel extension lugs, then pulls the fired case rearward. Separates forward out of the slide between thirty-four and fifty percent disassembly.",
+        "designHighlight": "Replacing traditional tilting-breech locks with a four-lug rotary lock empowers the Desert Eagle to safely tame chamber pressures reaching thirty-five thousand PSI without case ruptures.",
+        "audioScript": "Directly mirroring a battle rifle bolt, this four-lug rotating head handles massive breech pressure. Driven by the cam pin, it twists thirty-nine degrees to lock rigidly into the barrel extension just before the massive fifty Action Express round ignites.",
+        "audioUrl": "audio/deagle/parts/deagle_bolt_en.mp3"
+      }
+    },
+    "deagle_cam_pin": {
+      "partId": "deagle_cam_pin",
+      "bomCode": "B-04",
+      "calloutLabelEn": "Bolt Helical Cam Pin",
+      "zh": {
+        "roleTag": "直线往复转回转运动传力销",
+        "overview": "这是一枚高硬度圆柱形凸轮控制导销，垂直穿插在四突笋枪机尾柄中。其顶端圆头精准嵌入套筒内壁的螺旋形导向槽中，充当直线动能向旋转角位移转换的机械枢纽。",
+        "craftAndMaterial": "采用高抗剪特种工具钢热处理淬硬，表面经镜面抛光处理以最大限度降低摩擦阻力与咬合磨损，承受反复高速冲击时绝不发生微裂纹延展。",
+        "kinematicRole": "在套筒后座初段沿套筒内壁螺旋槽滑动，强迫枪机头产生三十九度旋转完成开锁；装配分解进入百分之三十二至四十六深度阶段时从枪机后柄侧向拔出。",
+        "designHighlight": "微小的凸轮销是整个导气自动机传力链的关键喉咙，其精密优化的螺旋升角曲率兼顾了迟滞开锁时间与极佳的闭锁平顺性。",
+        "audioScript": "这枚看似不起眼的凸轮销穿插在枪机尾部。套筒后坐时，内壁螺旋槽推挤凸轮销顶端，将套筒的直线后退动能瞬间转化为枪机四突笋的顺畅旋转，从而实现可靠开锁。",
+        "audioUrl": "audio/deagle/parts/deagle_cam_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Linear-to-Rotary Cam Pin",
+        "overview": "This precision cylindrical steel pin inserts vertically through the tail stem of the rotating bolt. Its exposed head rides directly inside the internal helical cam slot milled into the roof of the slide.",
+        "craftAndMaterial": "Machined from high-shear alloy tool steel, heat-treated to high Rockwell hardness, and mirror-polished to minimize sliding friction and surface galling under fierce bolt thrust.",
+        "kinematicRole": "Translates the slide linear rearward movement into 39 degrees of bolt rotation to unlock the breech during Phase 4. It pulls laterally out of the bolt between thirty-two and forty-six percent disassembly.",
+        "designHighlight": "The carefully engineered parabolic rise angle of the cam curve delays unlocking until internal bore pressure drops to safe limits, shielding the shooter from residual blowback gas.",
+        "audioScript": "This cam pin is the mechanical translator between slide and bolt. As the slide travels backward, its internal spiral track forces this pin sideways, translating linear slide motion into rotary unlocking torque for the four-lug bolt.",
+        "audioUrl": "audio/deagle/parts/deagle_cam_pin_en.mp3"
+      }
+    },
+    "deagle_firing_pin": {
+      "partId": "deagle_firing_pin",
+      "bomCode": "B-05",
+      "calloutLabelEn": "Inertia Firing Pin",
+      "zh": {
+        "roleTag": "轴心贯通式防粘连长击针",
+        "overview": "这是一根同轴贯穿套筒后座体、手动保险转鼓和旋转枪机中心孔的重型不锈钢长击针。外圆周套有强力回位螺旋弹簧，尾部设有供击锤打击的圆柱承击平面。",
+        "craftAndMaterial": "选用高韧性耐疲劳不锈钢棒材精细车削与钝化处理，针尖轮廓经过大圆弧倒角以防止击穿点五零弹药底火；弹簧则选用优质琴钢丝卷制。",
+        "kinematicRole": "阶段二在击锤猛烈敲击下克服弹簧阻力向前超动撞击底火，随后在回位簧作用下瞬间弹回，防止针尖滞留挂伤弹壳底缘；拆解时在百分之三十五至五十区间向后抽出。",
+        "designHighlight": "采用纯惯性长击针设计，击针总长度短于通道总长，即便枪支从高空意外跌落，击锤未被扳动时击针质量也不会因惯性单独自发击发底火。",
+        "audioScript": "细长的惯性击针横贯枪机中心孔。击锤释放后猛撞其尾端，击针克服弹簧阻力向前飞冲激发底火，完成击发后立即被回位簧迅速弹回，防止尖端粘连破损弹壳底火。",
+        "audioUrl": "audio/deagle/parts/deagle_firing_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Spring-Returned Inertia Firing Pin",
+        "overview": "This heavy-duty stainless firing pin passes coaxially through the slide rear, safety drum, and center of the rotating bolt. A concentric coil spring constantly keeps the tip retracted behind the bolt face.",
+        "craftAndMaterial": "Turned from fatigue-resistant stainless steel with a radiused striking tip to prevent primer piercing under magnum pressures. Paired with a precision-tempered music wire return spring.",
+        "kinematicRole": "Strikes the primer during Phase 2 via hammer momentum before snapping backward instantly under spring tension to clear the chamber face. It slides rearward out of the slide between thirty-five and fifty percent disassembly.",
+        "designHighlight": "True inertia-type safety sizing ensures the firing pin is shorter than its internal tunnel, completely preventing accidental discharge if the weapon is dropped hard onto its muzzle.",
+        "audioScript": "Passing straight through the center of the bolt, this spring-loaded inertia firing pin delivers the crushing hammer blow to the magnum primer. The moment ignition happens, its return spring pulls the tip back safely inside the bolt face.",
+        "audioUrl": "audio/deagle/parts/deagle_firing_pin_en.mp3"
+      }
+    },
+    "deagle_extractor": {
+      "partId": "deagle_extractor",
+      "bomCode": "B-06",
+      "calloutLabelEn": "Claw Extractor Assembly",
+      "zh": {
+        "roleTag": "缩缘弹壳边缘强制抽壳爪",
+        "overview": "这是铰接安装在枪机头右侧凹槽内的重型抽壳爪与柱塞顶簧组。其前端带有锐利的倒钩唇口，后端由强力弹簧柱塞提供恒定的径向内扣夹紧力。",
+        "craftAndMaterial": "采用高抗拉渗碳合金钢精密铸造与深层渗氮强化，呈现防腐哑光黑氧化层；钩齿刃口角度经过严谨计算以确保牢固咬合点五零AE独特的缩缘弹壳底槽。",
+        "kinematicRole": "随枪机旋转和推弹动作滑越弹底入槽；在阶段五开锁后坐时牢固抓取空弹壳拉出弹膛，直到抛壳挺将弹壳向右上方打出；拆解至百分之三十八至五十二深度时解脱分离。",
+        "designHighlight": "点五零AE弹药采用了缩缘设计，弹底边缘尺寸仅与四四马格南相当，抽壳钩承受的单位剪切应力极大，特制粗壮的抓壳唇口确保了剧烈后坐下的零滑脱抽壳。",
+        "audioScript": "嵌装在枪机头右侧的强力抽壳钩，带有专为点五零缩缘弹壳优化的硬化钩爪。无论膛内压力如何骤升，它都能牢固咬住弹底沟槽，强行将滚烫膨胀的空弹壳抽出弹膛。",
+        "audioUrl": "audio/deagle/parts/deagle_extractor_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Heavy-Duty Claw Extractor",
+        "overview": "Housed within the right-side flank of the rotating bolt head, this heavy claw extractor is energized by a powerful internal plunger and spring. Its sharp front claw contours tightly over the rebated rim channel.",
+        "craftAndMaterial": "Investment-cast from carbo-nitrided alloy steel with an anti-friction matte black finish. The claw engagement lip is shaped specifically to interface with the steep geometry of fifty Action Express rebated rims.",
+        "kinematicRole": "Snaps over the rim during chambering in Phase 6, then pulls the spent casing cleanly out of the chamber during Phase 5 extraction. Detaches from the bolt between thirty-eight and fifty-two percent disassembly.",
+        "designHighlight": "Because the fifty Action Express uses a rebated rim identical in diameter to a forty-four Magnum, extractor claw shear strength is reinforced to prevent edge chipping during violent extraction cycles.",
+        "audioScript": "This rugged extractor claw sits right on the bolt face. As the slide cycles back, its spring-loaded hardened lip tenaciously grips the rebated cartridge rim, yanking spent brass from the high-pressure chamber every single time.",
+        "audioUrl": "audio/deagle/parts/deagle_extractor_en.mp3"
+      }
+    },
+    "deagle_safety": {
+      "partId": "deagle_safety",
+      "bomCode": "B-07",
+      "calloutLabelEn": "Ambi Slide Safety Levers",
+      "zh": {
+        "roleTag": "击针阻断双侧水滴形手动保险",
+        "overview": "这是横向贯穿套筒尾部的手动保险转鼓总成，两侧对称装配有符合人机工程学的水滴形防滑操纵柄。向下压下遮盖红点即为保险，向上推起露红点即可进入发射状态。",
+        "craftAndMaterial": "转鼓与拨杆选用航空级合金钢精雕成型并做耐磨黑化处理，手柄侧面加工有深防滑纹路；内部开有精密的非对称半圆弧贯通切槽。",
+        "kinematicRole": "向下拨动时转鼓转动，其实体壁阻挡击针尾端并隔离击锤打击平面，即便击锤跌落也无法触碰击针；拆解在百分之四十四至五十六阶段通过对准缺口向侧方抽出。",
+        "designHighlight": "保险直接作用于最底层的击针本体而非仅仅锁闭扳机，提供了真正的机械级防跌落跌落保护，左右手对称配置则兼顾了双持射击作战习惯。",
+        "audioScript": "套筒尾部的双侧水滴形保险转鼓横贯全枪。向下扳动时，转鼓内壁转动将长击针与击锤物理隔绝，形成绝对安全的屏障；向上推露出红点，击锤方可直接敲击击针。",
+        "audioUrl": "audio/deagle/parts/deagle_safety_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Ambi Firing Pin Safety Drum",
+        "overview": "Traversing laterally through the slide rear, this safety drum features ambidextrous teardrop-profile control levers. Rotating the lever downward covers the red firing indicator and completely blocks the firing pin.",
+        "craftAndMaterial": "Engineered from hardened aerospace-grade steel with black nitride coating and textured serrations. The central shaft features an offset radial clearance cutout.",
+        "kinematicRole": "When turned down, its solid profile physically shields the firing pin shoulder from hammer contact. It aligns with slide slots and pulls free laterally between forty-four and fifty-six percent disassembly.",
+        "designHighlight": "By directly blocking and camming the firing pin away from the hammer rather than merely locking the trigger bar, it achieves fail-safe mechanical drop security under severe impacts.",
+        "audioScript": "These slide-mounted ambidextrous teardrop levers rotate a hardened steel cross-cylinder. Engaging the safety rotates a solid steel barrier between the hammer and the firing pin, guaranteeing the gun will not fire even if dropped.",
+        "audioUrl": "audio/deagle/parts/deagle_safety_en.mp3"
+      }
+    },
+    "deagle_front_sight": {
+      "partId": "deagle_front_sight",
+      "bomCode": "B-08",
+      "calloutLabelEn": "Combat Ramp Front Sight",
+      "zh": {
+        "roleTag": "固定枪管前端燕尾槽准星",
+        "overview": "这是一枚嵌装在固定枪管最前端燕尾槽中的低矮斜坡片状战斗准星。其朝向射手的迎光斜面中央镶嵌有清晰鲜明的白色瞄准圆点，用于快速捕获目标。",
+        "craftAndMaterial": "选用实心碳素钢整体线切割成型，表面施以黑色磷化防反光处理；斜坡倾角经过防勾挂钝化处理，底座与枪管配合面具有微米级紧固过盈公差。",
+        "kinematicRole": "在击发与循环全程中牢固驻留在静止不动的枪管上，绝无套筒往复撞击引起的位移；拆解进入百分之四十二至五十四时，经专用推模工具自燕尾槽向侧方移出。",
+        "designHighlight": "由于沙漠之鹰枪管为固定结构，准星不受套筒剧烈后座撞击震动，使射手在射击瞬间准星跳动完全取决于后坐力本身，瞄准基线复位速度远快于普通手枪。",
+        "audioScript": "这枚战斗准星通过燕尾槽直接镶嵌在固定枪管前端。由于枪管在射击时完全不动，准星不会随套筒前后震荡晃动，让射手在惊人的点五零后坐力恢复后能极为迅速地重新对准靶心。",
+        "audioUrl": "audio/deagle/parts/deagle_front_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Barrel-Mounted Ramp Front Sight",
+        "overview": "Drift-mounted into a transverse dovetail at the muzzle tip of the fixed barrel, this low-profile ramp combat sight features a glare-reducing rear incline inlaid with a bright white alignment dot.",
+        "craftAndMaterial": "Machined from solid bar-stock carbon steel with anti-glare manganese phosphate finish. The snag-free combat ramp profile combines smooth holster draw with tight dovetail press-fit tolerance.",
+        "kinematicRole": "Remains completely motionless on the barrel during the entire firing cycle, unaffected by slide cycling impact. It drifts laterally out of the dovetail between forty-two and fifty-four percent disassembly.",
+        "designHighlight": "Mounting the front sight directly onto the rigid fixed barrel preserves exact bore-axis zeroing and completely isolates the front sighting blade from violent slide cycling shockwaves.",
+        "audioScript": "Dovetailed directly onto the fixed barrel tip, this ramp front sight stays rock-steady. Because the slide reciprocates beneath it without disturbing the barrel axis, your sight picture settles remarkably fast between shots.",
+        "audioUrl": "audio/deagle/parts/deagle_front_sight_en.mp3"
+      }
+    },
+    "deagle_rear_sight": {
+      "partId": "deagle_rear_sight",
+      "bomCode": "B-09",
+      "calloutLabelEn": "Combat Square Rear Sight",
+      "zh": {
+        "roleTag": "套筒后桥抗冲击低矮战斗照门",
+        "overview": "这是一枚通过横向燕尾槽固定在套筒后桥顶部的方缺口战斗照门。缺口两侧嵌装有两个高清晰白色对比标记，与前端准星白点组成标准的三点式快速对准系统。",
+        "craftAndMaterial": "采用高强度工具钢数控精铣成型，经发黑防锈与喷砂哑光处理，照门后表面加工有密集的防眩光细横纹，有效抑制强光环境下的瞄准反光。",
+        "kinematicRole": "在阶段四至阶段六随套筒高速后坐并复进闭锁，承受极高的加减速过载冲击；在深层维护拆解至百分之四十二至五十四区间时侧向推离套筒基座。",
+        "designHighlight": "照门外壳棱角全部做大圆倒角防挂包死处理，并在燕尾槽底部设有垂直锁紧紧定螺钉，保证其在数千次承受巨大后坐力震颤后风偏归零点永不漂移。",
+        "audioScript": "坐落在套筒后桥上的方缺口照门，配有经典的双白点瞄准标。它的背部切有细密防反光横纹，强悍的基座锁紧设计确保它能承受重型套筒千百次狂暴的后坐冲击而不丢归零点。",
+        "audioUrl": "audio/deagle/parts/deagle_rear_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Slide-Mounted Combat Rear Sight",
+        "overview": "Mounted via a tight transverse dovetail onto the rear roof of the slide bridge, this combat rear sight features a square notch flanked by dual white sighting reference dots for intuitive sight acquisition.",
+        "craftAndMaterial": "CNC-milled from toughened alloy steel with non-reflective bead-blasted matte black finishing. The rear face features anti-glare serrations to eliminate harsh light washout.",
+        "kinematicRole": "Cycles violently back and forth with the slide during Phases 4 through 6, sustaining extreme acceleration loads. It drifts out laterally between forty-two and fifty-four percent disassembly.",
+        "designHighlight": "Contoured with low-drag snag-free shoulders and anchored by a recessed vertical set screw, it prevents any drift in windage calibration despite repeated magnum muzzle blasts.",
+        "audioScript": "Dovetailed into the rear slide bridge, this square-notch combat sight provides rapid target acquisition with its crisp three-dot picture. Built with snag-free contours, it reliably holds its windage zero through severe slide recoil shocks.",
+        "audioUrl": "audio/deagle/parts/deagle_rear_sight_en.mp3"
+      }
+    },
+    "deagle_recoil_rods": {
+      "partId": "deagle_recoil_rods",
+      "bomCode": "B-10",
+      "calloutLabelEn": "Dual Recoil Guide Rods",
+      "zh": {
+        "roleTag": "双路对称导向轴与尾座组合件",
+        "overview": "这是沙漠之鹰极具特色的双联并列复进导杆组，由两根平行的实心不锈钢导杆及一个精巧的八字形钢制尾座挡板装配而成。后端贴合在机匣前隔壁，前端插入套筒前孔内。",
+        "craftAndMaterial": "导向轴采用马氏体不锈钢精细无心磨削，具有极高的表面光洁度与抗弯刚度；八字形限位板采用弹簧钢板冲压淬火成型，双孔距公差严格控制以防偏斜卡滞。",
+        "kinematicRole": "为两根复进簧的线性压缩与伸展提供平直无偏斜的双路几何基准，引导套筒平稳往复；在野战分解百分之十八至二十八区间随复进簧总成向前整体取出。",
+        "designHighlight": "放弃传统的单根粗导杆而创新采用双并列轴对称布局，既避开了下方粗大固定弹膛下挂结构，又大幅压低了手枪重心并杜绝套筒后坐时的侧倾偏摆扭力。",
+        "audioScript": "这副独特的并列双复进导杆由八字形钢片紧密锁定在后端。双轴对称设计巧妙避开了粗壮的枪管底部结构，不仅降低了整枪重心，还保证了重型套筒能平稳如丝地高速往复。",
+        "audioUrl": "audio/deagle/parts/deagle_recoil_rods_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Twin Recoil Guide Rod Assembly",
+        "overview": "A signature Desert Eagle assembly, this component comprises two ground stainless guide rods joined at their base by a stamped figure-eight steel retainer plate. It nests neatly within the frame dust cover beneath the barrel.",
+        "craftAndMaterial": "Centerless-ground from martensitic stainless steel rods to mirror finish, ensuring high bending rigidity. The figure-eight base plate is stamped from hardened spring steel with tight centerline parallelism.",
+        "kinematicRole": "Maintains linear spring alignment as the slide strokes rearward and forward during the firing cycle. The unit extracts forward from the frame between eighteen and twenty-eight percent disassembly.",
+        "designHighlight": "Employing dual parallel guide rods rather than a bulky single center rod bypasses lower barrel contours, lowering the overall slide bore axis and eliminating torsional twist during rapid slide cycling.",
+        "audioScript": "Notice the distinctive figure-eight plate locking two parallel guide rods together. This dual-rod setup hugs the barrel underside closely, significantly lowering the center of mass while keeping the massive slide cycling straight and smooth.",
+        "audioUrl": "audio/deagle/parts/deagle_recoil_rods_en.mp3"
+      }
+    },
+    "deagle_recoil_springs": {
+      "partId": "deagle_recoil_springs",
+      "bomCode": "B-11",
+      "calloutLabelEn": "Dual Recoil Springs",
+      "zh": {
+        "roleTag": "驯服马格南后坐动能高抗疲劳簧组",
+        "overview": "这是两根并列套装在左右导杆上的重型螺旋复进弹簧，成对安置在机匣防尘盖下凹槽内。弹簧前端抵靠套筒内凸缘，后端则被八字形挡板牢牢撑住机匣骨架。",
+        "craftAndMaterial": "选用高疲劳寿命的特种硅锰弹簧钢丝精密缠绕，经定型回火与强压喷丸硬化处理，具有极其优异的动态储能系数与抗塑性永久变形衰减能力。",
+        "kinematicRole": "阶段四受套筒推挤猛烈压缩吸收点五零AE狂暴的后坐冲量；阶段六释放储存弹性势能，强力推套筒前行将新子弹推上弹坡并完成旋锁；拆解于百分之十八至二十八时卸除。",
+        "designHighlight": "通过将单簧负担分摊至左右双簧，在极矮的纵向垂直空间内实现了极为充沛的压缩行程与刚度储备，兼顾了柔和后坐感与可靠的重弹推弹入膛力道。",
+        "audioScript": "套在双导杆上的这两根高刚度螺旋复进簧，负责吸收点五零马格南子弹释放出的巨大后坐冲能。双簧并联不仅大幅延长了弹簧寿命，还提供了极其强韧的推弹复进上膛动力。",
+        "audioUrl": "audio/deagle/parts/deagle_recoil_springs_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Twin Heavy Recoil Springs",
+        "overview": "These twin heavy-gauge helical recoil springs slip over the dual parallel guide rods nestled inside the frame dust cover. Their forward ends bear against internal slide shoulders, backed up by the figure-eight base plate.",
+        "craftAndMaterial": "Wound from high-durability silicon-manganese spring steel wire, preset and shot-peened for fatigue life. They deliver a progressive elastic rate with superior resistance to compression set.",
+        "kinematicRole": "Compress forcefully during Phase 4 to cushion the slide rearward kinetic surge, then expand in Phase 6 to strip and chamber a fresh cartridge into the breech. Removed between eighteen and twenty-eight percent disassembly.",
+        "designHighlight": "Splitting recoil deceleration loads between dual springs packages maximum spring rate within a tight vertical envelope, ensuring both effective slide braking and positive feeding of hefty cartridges.",
+        "audioScript": "These twin parallel recoil springs handle the massive kinetic surge of the fifty Action Express cartridge. By distributing the load across two balanced springs, the system packs incredible compression strength into a compact frame.",
+        "audioUrl": "audio/deagle/parts/deagle_recoil_springs_en.mp3"
+      }
+    },
+    "deagle_frame": {
+      "partId": "deagle_frame",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Forged Chrome Steel Frame",
+      "zh": {
+        "roleTag": "全枪零位承载基准与导轨机匣",
+        "overview": "这是整支沙漠之鹰手枪的基础承载骨架，一体成型下机匣。其上方布置有全长套筒导轨和枪管安装闭锁座，下方集成了宽大扳机护圈、弹匣井以及延长的防咬手海狸尾。",
+        "craftAndMaterial": "由整块航空级高抗拉合金钢模锻切削而成，表面采用精细拉丝与镜面双工序硬质镀铬工艺，具备无与伦比的结构抗扭强度与顶级抗汗液腐蚀性能。",
+        "kinematicRole": "在击发循环所有阶段保持绝对几何零位基准，承受并消解射击反作用力及套筒导向摩擦力；在拆解流程中作为不可移动的核心零位支撑件。",
+        "designHighlight": "相较于铝合金下机匣，精锻钢机匣增加的整枪自重化身为绝佳的物理吸震压舱物，大幅降低了点五零AE射击时的剧烈枪口上跳，成就了标志性的稳定手感。",
+        "audioScript": "眼前这具闪耀着硬铬光泽的锻钢下机匣是全枪的骨架基准。重型实心钢材带来的可观自重，成为了驯服巨大后坐力的天然配重，延伸的海狸尾则稳稳护住虎口，防止击锤夹伤手掌。",
+        "audioUrl": "audio/deagle/parts/deagle_frame_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Forged Steel Structural Frame",
+        "overview": "Serving as the foundational chassis of the Desert Eagle, this monolithic forged steel receiver features full-length slide rail guides, a forward barrel locking seat, an oversized trigger guard, and an extended beavertail.",
+        "craftAndMaterial": "Milled from a monolithic forging of high-tensile alloy steel with a mirror and brushed hard chrome finish. It provides unmatched torsional rigidity and total resistance to corrosion and powder residue.",
+        "kinematicRole": "Acts as the immovable kinematic datum during all seven operational phases, soaking up recoil vector forces and housing the firing mechanism. It remains the anchor throughout all disassembly phases.",
+        "designHighlight": "Unlike lightweight alloy frames, this massive forged steel chassis supplies substantial physical mass that directly suppresses violent muzzle rise when firing brutal fifty-caliber cartridges.",
+        "audioScript": "This forged steel chrome frame is the solid foundation of the entire pistol. The sheer mass of solid steel acts as a counterweight against aggressive muzzle jump, while the extended beavertail securely guards your hand from hammer bite.",
+        "audioUrl": "audio/deagle/parts/deagle_frame_en.mp3"
+      }
+    },
+    "deagle_takedown_lever": {
+      "partId": "deagle_takedown_lever",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Barrel Takedown Lever",
+      "zh": {
+        "roleTag": "枪管快拆半月凸轮旋转锁销",
+        "overview": "这是横穿机匣右前端的固定枪管快拆锁柄，包含外露的水滴形控制柄与贯穿内部的半圆月牙形截面转轴。其与机匣左侧的防滑按压闭锁销相互配合锁定。",
+        "craftAndMaterial": "采用高韧性合金钢经高频淬火与深层碳氮化处理，表面呈防眩哑光黑；半月凸轮工作面经超精磨削，能经受枪管下耳座反复成千上万次高应力挤压锁定。",
+        "kinematicRole": "全枪工作时其月牙圆弧面紧压枪管下凸耳锁止槽将枪管与机匣锁死；分解时按下左侧销并向下旋转锁柄九十度，让开半月切槽即可解锁枪管，处于拆解六十六至七十八阶段。",
+        "designHighlight": "作为Mark XIX模块化换膛系统的核心枢纽，射手只需数秒扳转该旋柄，即可在无需任何工具的情况下快速换装点四四马格南或点五零AE枪管，通用性极强。",
+        "audioScript": "机匣右前方的旋转锁柄是实现无工具快速拆枪的关键。按下左侧止动销后将其向下转动九十度，内部的半月截面转轴就会让开枪管底座，只需两秒钟就能取下整根枪管进行口径更换。",
+        "audioUrl": "audio/deagle/parts/deagle_takedown_lever_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Quick-Release Barrel Cam Lever",
+        "overview": "Installed transversely across the front right of the frame, this quick-detach lever consists of an external teardrop arm and an internal half-moon cam cross-pin. It works in tandem with a spring detent button on the left flank.",
+        "craftAndMaterial": "Engineered from case-hardened high-tensile alloy steel with a black nitride finish. The half-moon eccentric contact flat is ground to micro-tolerances to clamp barrel lugs without any mechanical play.",
+        "kinematicRole": "Holds the barrel lower mounting lug firmly against the frame during all firing phases. Rotating it downward 90 degrees frees the barrel lug, detaching from the frame between sixty-six and seventy-eight percent disassembly.",
+        "designHighlight": "Serving as the heart of the Mark XIX modularity concept, this cam lever enables users to swap between forty-four Magnum and fifty Action Express barrels in seconds without armorer tooling.",
+        "audioScript": "This takedown lever unlocks the modular power of the Desert Eagle. Press the spring lock on the left and flip this lever down ninety degrees. Its internal half-moon shaft clears the barrel underlug, allowing instant barrel removal without any tools.",
+        "audioUrl": "audio/deagle/parts/deagle_takedown_lever_en.mp3"
+      }
+    },
+    "deagle_slide_stop": {
+      "partId": "deagle_slide_stop",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Extended Slide Stop",
+      "zh": {
+        "roleTag": "7发打空锁止套筒 / 拇指快放复进",
+        "overview": "这是铰接安装于镀铬机匣左侧枢轴孔的加长型空仓挂机解脱杆。当最后一发弹药打空后，它负责可靠咬合套筒左侧挂机缺口，使沉重的往复组件停留在后方待命状态。",
+        "craftAndMaterial": "采用高抗冲击合金钢精细冲压与数控铣削成型，表面经黑色氮化防腐硬化处理。外侧加工有阶梯状拇指防滑横纹，内侧探出的挑耳经过高频淬火以耐受高频次上挑冲击。",
+        "kinematicRole": "在击发循环的前六发期间，解脱杆在底部弹簧作用下保持静止下沉；第七发打空时，橙色托弹板左凸台将其挑耳顶起阻挡套筒复进。在全枪深度分解达百分之六十八至八十时从机匣左侧抽出。",
+        "designHighlight": "由于点五零快慢机后坐动能极其庞大，普通手枪的挂机缺口极易因震动误挂；沙鹰特别加大了解脱杆内部挂机面的正角受力斜面，确保唯有托弹板主动推抬才能进入锁止位。",
+        "audioScript": "加长型空仓挂机解脱杆位于机匣左侧。当第七发马格南巨弹打空，托弹板凸台会瞬间将内侧挑耳顶起，稳稳卡死后坐的重型套筒。换弹后只需拇指轻轻下压，便能借双联复进簧的凶猛推力推弹入膛。",
+        "audioUrl": "audio/deagle/parts/deagle_slide_stop_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Empty Slide Lockout / Thumb Bolt Release",
+        "overview": "This is an extended steel slide stop release lever pivoted on the left side of the receiver. It locks the recoiling slide open after the final shot and allows fast thumb release during reloads.",
+        "craftAndMaterial": "Precision stamped and CNC machined from high-tensile alloy steel with a matte black nitrided finish. The external paddle features aggressive traction serrations, while the internal engagement ear is case-hardened against repetitive peening.",
+        "kinematicRole": "Remains static and downward-sprung during the first six firing cycles; on the seventh empty cycle, the orange follower pushes its inner shelf up to arrest slide travel. It pulls outward between sixty-eight and eighty percent disassembly.",
+        "designHighlight": "To counter the massive violent inertia generated by the fifty Action Express recoil, the latch notch uses a positive lockup angle preventing inertia-induced premature slide locking during rapid firing.",
+        "audioScript": "Mounted on the left frame wall, this extended slide stop reliably captures the massive slide once the final round clears the chamber. A crisp downward press of your thumb releases the twin recoil springs to chamber a fresh fifty caliber cartridge.",
+        "audioUrl": "audio/deagle/parts/deagle_slide_stop_en.mp3"
+      }
+    },
+    "deagle_mag_catch": {
+      "partId": "deagle_mag_catch",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Checkered Mag Catch",
+      "zh": {
+        "roleTag": "重型钢弹匣横向锁止与快卸",
+        "overview": "这是横向贯穿安装于扳机护圈根部后方的格纹弹匣卡榫与螺旋锁簧组件。它在握把内部以刚性突起锁闭沉重的实弹弹匣，按下按钮即可实现弹匣的重力自由滑落。",
+        "craftAndMaterial": "锁栓主体由热处理合金钢经高精度慢走丝线切割加工，左侧圆形按压面刻有细密防滑方格网纹。配合高弹性圆柱螺旋不锈钢压簧，提供清脆坚挺的按压阻尼感。",
+        "kinematicRole": "在射击全程中始终处于锁闭预紧状态，抵御每发点五零弹药剧烈的纵向垂直冲击；按下时横移克服弹簧阻力退出弹匣卡槽。在底把分解阶段达到百分之六十八至八十时横向抽出脱出机匣。",
+        "designHighlight": "点五零马格南满载弹匣重达数百克，强后坐力会产生向下的巨大惯性剪切力；该卡榫采用了比一般战术手枪深近一点五毫米的超厚剪切卡齿，彻底防止狂暴射击中弹匣意外掉落。",
+        "audioScript": "弹匣卡榫深埋于护圈后方，左侧带有精致的防滑方格纹。它必须抵抗满载弹匣在巨大后坐力下产生的强烈下坠冲击。只有当你主动拇指深压，内部锁齿才会移出，让弹匣顺滑退脱。",
+        "audioUrl": "audio/deagle/parts/deagle_mag_catch_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Heavy Steel Mag Retention & Quick Release",
+        "overview": "This is a cross-bolt magazine catch assembly with its internal coil spring, fitted behind the trigger guard. It firmly locks the heavy loaded magazine within the grip and drops it clear on demand.",
+        "craftAndMaterial": "Wire-EDM machined from heat-treated carbon steel with a durable black finish. The thumb button features high-friction diamond checkering backed by a heavy-duty stainless steel return spring.",
+        "kinematicRole": "Remains fully engaged under spring tension across all firing phases to absorb vertical recoil shearing loads. Depressing it shifts the locking tooth clear, and the unit extracts laterally during frame teardown between sixty-eight and eighty percent.",
+        "designHighlight": "A fully charged fifty Action Express magazine exerts immense inertial tear-out force under recoil; this catch utilizes an extra-deep engagement lug compared to standard service handguns to eliminate accidental mag drops.",
+        "audioScript": "Positioned at the base of the trigger guard, this checkered catch anchors the steel magazine against brutal vertical inertia. Firm thumb pressure moves the hardened locking tooth aside, instantly releasing the spent magazine by gravity.",
+        "audioUrl": "audio/deagle/parts/deagle_mag_catch_en.mp3"
+      }
+    },
+    "deagle_grip": {
+      "partId": "deagle_grip",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Wrap-Around Grip",
+      "zh": {
+        "roleTag": "缓冲马格南后坐掌击 / 人机贴合防滑",
+        "overview": "这是完整包覆于机匣握把后背及双侧的一体成型热塑性橡胶握把。它为射手宽大的手掌提供极高的人机工学摩擦力，并承担分散大口径弹药后坐掌击力的重任。",
+        "craftAndMaterial": "选用耐油耐汗的高阻尼三元乙丙合成橡胶高压模压成型，表面覆盖细密鹅卵石防滑皮纹。双侧模压有经典的原厂浮雕圆徽，内部设有与镀铬钢机匣骨架严丝合缝的嵌入导槽。",
+        "kinematicRole": "在全枪射击的所有七个阶段中作为射手唯一受力的外层缓冲介质保持相对静止，将冲量柔化后传导至射手手掌。在下机匣部件分解进度达百分之七十至八十八时向后滑脱拆解。",
+        "designHighlight": "点五零沙鹰的弹匣井极为宽厚，若握把过厚会导致射手无法抓握；该包覆握把在背脊处收窄并在侧壁采用微弧形掌垫，在保证强度的同时使扳机行程维持在舒适的人机工学阈值内。",
+        "audioScript": "一体成型防滑橡胶握把紧密包裹着宽大的钢制底把。它采用高阻尼防汗橡胶模压而成，表面布满细腻颗粒。这层坚韧的表皮能有效吸附掌心，并在点五零巨弹爆发时吸收剧烈的掌根冲击。",
+        "audioUrl": "audio/deagle/parts/deagle_grip_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Magnum Recoil Absorption / Ergonomic Grip",
+        "overview": "This is a one-piece wrap-around rubber grip fitted over the rear backstrap and sides of the steel frame. It provides an ergonomic contact interface designed to tame brutal magnum recoil energy.",
+        "craftAndMaterial": "Injection molded from oil-resistant EPDM rubber with dense pebble texturing. It displays molded factory medallion emblems and features internal alignment tracks that contour flush against the chrome steel frame.",
+        "kinematicRole": "Acts as the static structural hand interface throughout all firing cycles, cushioning and transferring violent shockwaves into the palm. It slides rearward off the grip frame between seventy and eighty-eight percent disassembly.",
+        "designHighlight": "Accommodating the massive fifty Action Express magazine usually yields an unmanageable grip circumference; this wrap-around unit slims the backstrap radius to maintain an optimal trigger reach distance.",
+        "audioScript": "Wrapping completely around the wide steel grip frame, this textured rubber grip is the primary barrier between your palm and massive magnum recoil. Its contour and high-friction pebble grain keep the giant pistol glued to your hands.",
+        "audioUrl": "audio/deagle/parts/deagle_grip_en.mp3"
+      }
+    },
+    "deagle_hammer": {
+      "partId": "deagle_hammer",
+      "bomCode": "T-01",
+      "calloutLabelEn": "Skeletonized Hammer",
+      "zh": {
+        "roleTag": "高速回转敲击长击针 / 手动待击控制",
+        "overview": "这是铰接安装在机匣尾部上方、外露可视的单动马刺击锤。它在击发时向前猛烈旋转敲击长击针尾部，同时允许射手手动扳下击锤进入待发状态。",
+        "craftAndMaterial": "由高强度锻造合金钢数控精密铣削，表面经黑色氮化处理。马刺尾部加工有防滑横纹，身部镂空有标志性椭圆减重孔，底缘带有精细研磨的待击齿与半待击防跌落安全齿。",
+        "kinematicRole": "在阶段一阻铁解脱时，受主簧驱动在阶段二高速绕销轴向前旋转敲击击针；在阶段四套筒后坐时被压倒重新蓄能并挂上阻铁。在分解进度百分之七十四至九十时脱离横销分解。",
+        "designHighlight": "镂空马刺造型不仅赋予其极具侵略性的外观，更关键的是减轻了转动惯量，大幅提升了击锤释放后的角加速度，使锁时显著缩短并确保击针底火撞击能量充足。",
+        "audioScript": "外露单动马刺击锤带有经典的椭圆镂空减重孔。阻铁释放瞬间，击锤受主簧推力疾速绕轴挥击，猛烈敲击长击针尾部。套筒后坐时则将其重新强行压倒，完成下一发弹药的待击锁定。",
+        "audioUrl": "audio/deagle/parts/deagle_hammer_zh.mp3"
+      },
+      "en": {
+        "roleTag": "High-Velocity Firing Pin Striker / Cocking Spur",
+        "overview": "This is an exposed single-action spur hammer pivoted in the rear upper receiver. It swings forward upon release to strike the firing pin and enables manual cocking for precise single-action fire.",
+        "craftAndMaterial": "CNC milled from forged high-carbon steel with a tough black nitride coating. Features aggressive cross-serrations on the cocking spur, an iconic oval skeletonizing window, and EDM-ground full and half-cock sears.",
+        "kinematicRole": "Released in Phase 1, it accelerates forward in Phase 2 to strike the firing pin, then gets cocked rearward by the recoiling slide in Phase 4. It detaches from its pivot pin between seventy-four and ninety percent disassembly.",
+        "designHighlight": "The skeletonized lightening cutout reduces hammer mass and rotational inertia, substantially reducing lock time and maximizing kinetic strike velocity against stubborn magnum primers.",
+        "audioScript": "Featuring an iconic skeletonized spur, this single-action hammer is precision balanced. When the sear breaks, it snaps forward in milliseconds, striking the long firing pin with maximum kinetic force to ignite magnum primers.",
+        "audioUrl": "audio/deagle/parts/deagle_hammer_en.mp3"
+      }
+    },
+    "deagle_hammer_strut": {
+      "partId": "deagle_hammer_strut",
+      "bomCode": "T-02",
+      "calloutLabelEn": "Hammer Strut & Spring",
+      "zh": {
+        "roleTag": "纵置蓄能主簧 / 驱动击锤高速挥击",
+        "overview": "这是纵向隐藏于握把后方腔体内部的击锤传力顶杆与螺旋主击发簧组件。它负责储存套筒后坐压倒击锤的机械能，并在击发展开时释放驱动击锤。",
+        "craftAndMaterial": "顶杆采用耐弯曲的高韧性不锈钢棒材冲压研磨成型，顶部为球头铰接头；主簧采用高疲劳寿命的重载琴钢丝精密卷绕，底端配有聚合物主簧固定导向座。",
+        "kinematicRole": "阶段四套筒后推击锤时，球头带动顶杆向下急剧压缩主簧完成储能；阶段一阻铁解脱后，主簧在阶段二向上爆发推顶顶杆使击锤加速挥击。在分解阶段百分之七十四至九十二时向下抽出拆卸。",
+        "designHighlight": "由于马格南底火铜壳较厚，需要远高于一般战斗手枪的撞击能量；该组件采用两段式预压螺旋主簧，确保击锤即使在半行程也有足够的瞬时释放扭矩。",
+        "audioScript": "隐蔽在握把背脊深处的击锤顶杆与主击发簧，是全枪击发机构的心脏。套筒每次后坐都会把顶杆向下压死使主簧强力蓄能，为击锤击破坚硬的马格南底火储备充沛的机械能。",
+        "audioUrl": "audio/deagle/parts/deagle_hammer_strut_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Stored Kinetic Spring Assembly / Hammer Drive",
+        "overview": "This is a vertical hammer strut and coil mainspring plunger assembly concealed within the rear grip frame cavity. It stores energy during slide recoil and violently drives the hammer forward upon trigger break.",
+        "craftAndMaterial": "The strut is stamped and ground from high-tensile stainless steel with a radiused ball-pivot head. The mainspring is wound from heavy-gauge music wire seated over an impact-resistant lower plunger cup.",
+        "kinematicRole": "Compressed downward as the slide cocks the hammer in Phase 4, then violently expands upward in Phase 2 to pivot the hammer forward. It drops out of the grip backstrap cavity between seventy-four and ninety-two percent disassembly.",
+        "designHighlight": "Igniting hardened magnum primers requires massive impact energy; this dual-rate mainspring arrangement delivers continuous high torque across the hammer travel arc to ensure hundred percent primer ignition.",
+        "audioScript": "Tucked inside the rear frame channel, this strut and heavy coil mainspring store tremendous potential energy. Each slide recoil stroke forces the strut downward, compressing the mainspring for a reliable hammer strike.",
+        "audioUrl": "audio/deagle/parts/deagle_hammer_strut_en.mp3"
+      }
+    },
+    "deagle_trigger": {
+      "partId": "deagle_trigger",
+      "bomCode": "T-03",
+      "calloutLabelEn": "Trigger & Transfer Bar",
+      "zh": {
+        "roleTag": "干脆两道火单动击发 / 绕弹匣井传力",
+        "overview": "这是铰接于扳机护圈内部的宽体弧形单动扳机，及其两侧向后延伸的双联不锈钢传力连杆。它负责将射手食指的扣动力平稳绕过超宽弹匣井传递给尾部的阻铁。",
+        "craftAndMaterial": "扳机本体由航空铝合金数控切削或碳钢冲压制成，表面带细致防滑竖纹；双侧连杆采用经过热处理的薄壁不锈钢冲压成型，经过超精镜面研磨以消除摩擦杂音。",
+        "kinematicRole": "在阶段一射手扣动扳机时，带动双侧连杆向后平移拉动阻铁解脱击锤；阶段七射手松开食指时，在复位簧作用下向前复位重新挂入阻铁座。在底把完全分解百分之七十六至九十四时拆出。",
+        "designHighlight": "点五零 AE 弹匣极宽，单侧连杆会因为受力偏心造成拉力干涩；沙鹰创新性地采用环抱式双侧连杆，实现了左右完全均载的拉力传递，造就了如玻璃棒折断般的单动扳机手感。",
+        "audioScript": "宽面单动扳机连接着两条纤薄而坚韧的侧壁传力连杆。由于点五零弹匣极为宽大，设计师采用双侧对称连杆绕过弹匣井拉动阻铁，彻底消除了侧向偏磨，带来极为清脆的四磅单动击发感。",
+        "audioUrl": "audio/deagle/parts/deagle_trigger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Crisp 2-Stage SA Pull / Dual Mag-Well Bypass",
+        "overview": "This is a curved wide-face single-action trigger integrated with dual stamped stainless steel transfer bars. It transfers finger pull force around the wide magazine well to trip the rear sear.",
+        "craftAndMaterial": "The trigger shoe is precision machined from alloy steel with grooved vertical traction ridges. The dual transfer bars are stamped from spring-tempered stainless sheet, mirror-polished to minimize trigger creep.",
+        "kinematicRole": "Pulled rearward in Phase 1 to rotate the sear and drop the hammer; returns forward in Phase 7 under trigger spring tension to reset. The assembly withdraws from the frame between seventy-six and ninety-four percent disassembly.",
+        "designHighlight": "Routing a single trigger bar around the colossal fifty caliber mag well creates asymmetric flex; dual parallel bars balance mechanical pulling forces across both sides, delivering a renowned match-grade glass-rod break.",
+        "audioScript": "The curved single-action trigger links to twin transfer bars running along both flanks of the wide magazine well. By balancing forces symmetrically, this design eliminates flex and delivers a clean, match-grade break.",
+        "audioUrl": "audio/deagle/parts/deagle_trigger_en.mp3"
+      }
+    },
+    "deagle_sear": {
+      "partId": "deagle_sear",
+      "bomCode": "T-04",
+      "calloutLabelEn": "Sear & Disconnector",
+      "zh": {
+        "roleTag": "待击挂机锁止 / 套筒不到位半自动断路",
+        "overview": "这是位于击锤前方下侧的精密单动阻铁与半自动断路器组件。它的阻铁鼻稳固挂住击锤的待击槽，同时断路突起在套筒未完全闭锁到位时阻断击发链路。",
+        "craftAndMaterial": "阻铁与断路器基座选用超硬不锈钢微米级电火花线切割制成，工作啮合斜面经过光学级镜面抛光，具备极高的抗磨损寿命与无蠕动脱扣特性。",
+        "kinematicRole": "阶段一被扳机连杆拉动旋转使阻铁鼻脱出击锤待击槽；阶段四套筒后坐下压断路器强制脱开连杆，直到阶段七松手时重新咬合。在全枪深度分解达百分之七十六至九十四时取出。",
+        "designHighlight": "针对超大威力半自动手枪可能发生的跳火或连发失控隐患，断路器设计了垂直行程极短的高灵敏度凸榫，哪怕套筒仅后移两毫米也会瞬间断开击发回路，安全性无可挑剔。",
+        "audioScript": "精密单动阻铁与断路器组成了击发机的心智核心。阻铁鼻如精密标尺般卡住击锤待击槽；而顶部的断路器只要感应到套筒有丝毫未锁紧，就会立刻切断扳机传力，彻底杜绝炸膛和连发危险。",
+        "audioUrl": "audio/deagle/parts/deagle_sear_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Hammer Cocking Lock / Semi-Auto Disconnector",
+        "overview": "This is a precision-ground single-action sear integrated with a semi-automatic disconnector assembly in the rear frame. It locks the hammer in cocked battery and interrupts trigger linkage when the slide is out of battery.",
+        "craftAndMaterial": "Wire-EDM cut from tool-grade stainless steel with polished sear engagement lips. Hardened to over fifty-six Rockwell C to resist wear and maintain zero-creep single-action trigger breaks.",
+        "kinematicRole": "Rotates clear of the hammer notch in Phase 1; pushed downward by the recoiling slide in Phase 4 to disconnect the trigger bar until trigger release in Phase 7. Disassembles between seventy-six and ninety-four percent.",
+        "designHighlight": "To counter the severe vibration of magnum discharges, the sear geometry incorporates a distinct positive engagement ramp, guaranteeing it will not jar off-cock even when dropped or subjected to violent cycling.",
+        "audioScript": "The sear and disconnector assembly safeguards the firing mechanism. Its ground edge retains the cocked hammer under spring tension, while the vertical disconnector uncouples the trigger bar whenever the slide cycles rearward.",
+        "audioUrl": "audio/deagle/parts/deagle_sear_en.mp3"
+      }
+    },
+    "deagle_mag_body": {
+      "partId": "deagle_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "7-Rd Steel Mag Body",
+      "zh": {
+        "roleTag": "容纳 12.7×32.6mm 巨型马格南手枪弹",
+        "overview": "这是专为点五零口径设计的七发装重型单排冲压钢制弹匣体。它稳固安插于机匣握把内腔，负责容纳并导引七枚大装药量的无突缘马格南重弹。",
+        "craftAndMaterial": "采用一毫米厚优质冷轧高碳钢板经多道工序整体折弯、背缝激光精密焊接而成，整体经深度发蓝防锈处理。侧壁精准冲压有七枚余弹观察孔与一道加强刚性冲筋。",
+        "kinematicRole": "作为供弹核心在拔出弹匣时在百分之零至八分解时率先从握把底部抽出，并在阶段一至六中为套筒推弹上膛提供精确的弹尖导引几何。弹匣完全分解时在进度百分之五十至六十二展开。",
+        "designHighlight": "点五零 AE 弹药直径近十三毫米且全弹极重，双排供弹会导致握把过于巨大且极易发生交错自锁；沙鹰坚持采用厚壁刚性单排直进供弹，确保了恶劣射击状态下的绝对供弹可靠性。",
+        "audioScript": "七发装点五零口径发蓝钢制弹匣，是供弹系统的坚固容器。由于点五零弹药体积极为庞大，弹匣采用单排直列布局与厚钢板冲压焊接，侧壁带有余弹观察孔，能平稳承受巨型弹药的供弹推挤。",
+        "audioUrl": "audio/deagle/parts/deagle_mag_body_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Houses 12.7x32.6mm Magnum Rounds",
+        "overview": "This is a heavy-duty 7-round single-stack stamped steel magazine body engineered for fifty Action Express ammunition. It locks securely into the grip cavity to feed magnum cartridges reliably into the chamber.",
+        "craftAndMaterial": "Formed from one-millimeter-thick cold-rolled high-carbon steel with a laser-welded rear seam and deep blued finish. Fluted along the sides with seven witness holes to track remaining rounds.",
+        "kinematicRole": "Drops freely out of the frame between zero and eight percent disassembly. Guides cartridges during Phase 6 forward feeding and separates from internal magazine parts between fifty and sixty-two percent breakdown.",
+        "designHighlight": "A half-inch diameter magnum round creates massive frictional wedging if arranged in double stacks; Desert Eagle retained a rigid single-stack column to ensure flawlessly straight feed vectors without jamming.",
+        "audioScript": "Crafted from heavy-gauge cold-rolled carbon steel, this seven-round magazine body houses massive fifty caliber cartridges. Its single-stack geometry keeps feeding strictly inline, preventing the rim binds typical of high-recoil rounds.",
+        "audioUrl": "audio/deagle/parts/deagle_mag_body_en.mp3"
+      }
+    },
+    "deagle_mag_follower": {
+      "partId": "deagle_mag_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Concave Saddle Follower",
+      "zh": {
+        "roleTag": "稳定承托 .500\" 粗径弹体 / 触发空仓挂机",
+        "overview": "这是滑动安装于钢弹匣体内部的高可视橙色鞍面托弹板。它精准托举点五零粗壮筒形弹壳，并在最后一发弹药射出后负责顶起空仓挂机杆。",
+        "craftAndMaterial": "采用耐油、耐极温的自润滑工程聚合物注塑成型，呈现醒目的安全橙色。顶面模压有大口径半圆凹鞍导向槽，左侧前缘延伸出一道加固型空仓挂机驱动台阶。",
+        "kinematicRole": "在阶段三至六随着弹药逐步射出逐级向上推进，弹壳耗尽时其左侧阶梯在阶段四顶起空仓挂机解脱杆挑耳使套筒闭锁于后方。在弹匣分解阶段百分之五十二至六十四时从匣顶抽出。",
+        "designHighlight": "大口径手枪弹在高速后坐震荡下极易发生托弹板前后俯仰失准导致卡弹；该托弹板设计了超长的四角防俯仰垂直导向裙边，即使在最后一发高速冲撞下也绝不会在弹匣内翻转卡死。",
+        "audioScript": "采用高可视安全橙色的工程塑料托弹板，表面开有契合半英寸口径的半圆鞍槽。它不仅能让粗壮弹壳在向上推移时保持绝对同轴平稳，打空最后一发后其左侧突台还会精准顶起空仓挂机杆。",
+        "audioUrl": "audio/deagle/parts/deagle_mag_follower_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Stable .500\" Cartridge Saddle / Slide Catch Trip",
+        "overview": "This is a high-visibility orange polymer follower positioned inside the steel magazine tube. It supports the heavy fifty caliber rounds and activates the slide stop lever after the final round chambers.",
+        "craftAndMaterial": "Injection molded from low-friction, high-impact glass-filled polymer in safety orange. Sculpted with a deep concave cylindrical saddle on top and a reinforced slide stop trip lug along the left-front shoulder.",
+        "kinematicRole": "Rises step-by-step through Phases 3 to 6 as rounds are expended; trips the slide stop in Phase 4 when empty. Extracted from the magazine tube top between fifty-two and sixty-four percent disassembly.",
+        "designHighlight": "Heavy fifty-caliber ammo tends to induce severe nose-diving under recoil; this follower features extra-long anti-tilt side skirts that stabilize the cartridge column throughout rapid reciprocating cycles.",
+        "audioScript": "Molded in safety orange from self-lubricating polymer, this follower features a deep concave saddle matching fifty caliber cartridge casings. Its extended anti-tilt legs prevent nose-diving, while the left lug locks the slide on empty.",
+        "audioUrl": "audio/deagle/parts/deagle_mag_follower_en.mp3"
+      }
+    },
+    "deagle_mag_spring": {
+      "partId": "deagle_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Rectangular Mag Spring",
+      "zh": {
+        "roleTag": "高推力克服套筒极速往复供弹间隙",
+        "overview": "这是压缩安装在弹匣体内部、位于托弹板与底盖之间的宽幅矩形螺旋托弹簧。它为七发沉重的马格南实弹提供恒定且强劲的向上顶升推力。",
+        "craftAndMaterial": "选用加粗特种耐疲劳琴钢扁丝经过多工位精密数控卷簧机绕制成型，外表经过防锈热浸磷化处理，截面形状与弹匣体内壁的矩形截面完全吻合。",
+        "kinematicRole": "在满弹状态下处于极限压缩蓄能状态，在阶段五至六套筒后坐抽壳露出的瞬间将下一发实弹极速顶升到抱弹口导轨位。在弹匣分解进度达百分之五十二至六十四时向下完全释放展开。",
+        "designHighlight": "沙漠之鹰套筒后坐与复进速度极快，留给托弹上升的窗口期仅有几十毫秒；该簧通过变节距线圈设计，即使在弹匣只剩最后一发时也能提供足够高的残余预紧力，杜绝供弹迟滞卡壳。",
+        "audioScript": "加粗琴钢丝绕制的矩形截面弹匣簧，具有极其充沛的抗疲劳顶升弹性。在重达两公斤的套筒极速往复运动的几十毫秒狭小间隙里，它能以充沛推力将沉重实弹精准顶升至抱弹口待命。",
+        "audioUrl": "audio/deagle/parts/deagle_mag_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "High-Rate Ammo Lift / Rapid Slide Sync",
+        "overview": "This is a heavy-duty rectangular coil magazine spring housed between the follower and the bottom floorplate. It provides continuous upward lift force to cycle seven heavy magnum cartridges flawlessly.",
+        "craftAndMaterial": "Wound from heavy-gauge spring steel music wire into a customized rectangular profile matching the magazine interior. Finished with a rust-inhibiting phosphate treatment to endure abrasive powder grit.",
+        "kinematicRole": "Compressed to maximum energy when fully loaded; rapidly expands during Phases 5 and 6 to elevate cartridges against the feed lips before the slide returns. Expands free between fifty-two and sixty-four percent teardown.",
+        "designHighlight": "Because the massive slide cycles violently in split seconds, this spring uses variable coil pitch geometry to guarantee high residual preload even on the very last round, preventing feed lag.",
+        "audioScript": "Formed from heavy music wire, this wide rectangular spring provides the strong lifting force needed to elevate heavy cartridges. Its tuned coil tension ensures the next round is perfectly aligned before the slide returns forward.",
+        "audioUrl": "audio/deagle/parts/deagle_mag_spring_en.mp3"
+      }
+    },
+    "deagle_mag_baseplate": {
+      "partId": "deagle_mag_baseplate",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Flush-Fit Floorplate",
+      "zh": {
+        "roleTag": "严丝合缝贴合握把底缘 / 前伸小指托唇",
+        "overview": "这是滑套固定在弹匣体底部槽口处的平齐式指托弹匣底盖及钢制自锁底垫片。它封闭弹匣底部腔体，并与机匣及橡胶握把底缘形成无缝的支撑整体。",
+        "craftAndMaterial": "底盖采用抗跌落冲击的高强度工程聚合物或钢制冲压件注塑包胶制成，内衬冲压钢质锁片。其锁片中心凸台与底盖圆孔精密嵌套，前端微微向上翘起形成人机工学小指托唇。",
+        "kinematicRole": "在射击全程中作为静止承力底座承受托弹簧的持续下压力，并在跌落或换弹拍击时承受冲击。在弹匣分解进度达百分之五十至六十四时，顶入内锁片即可向前滑脱分离。",
+        "designHighlight": "底盖前沿微翘的小指支撑唇不仅极大提升了射手全力控枪时的杠杆支点效应，其负十五度的精密倾斜切角更能完全消除与机匣底部的缝隙，杜绝装弹夹肉与灰尘异物入侵。",
+        "audioScript": "平齐式指托弹匣底盖严丝合缝贴合在握把底部。前端微翘的人机指托唇能让射手的小指获得坚实的下压支点，有效抑制马格南手枪惊人的枪口上跳。拆卸时只需顶开底盖锁片即可轻松滑出。",
+        "audioUrl": "audio/deagle/parts/deagle_mag_baseplate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Seamless Grip Seal / Extended Pinky Rest Lip",
+        "overview": "This is a flush-fit floorplate and internal steel lock plate assembly sliding onto the base of the magazine body. It secures the magazine spring and forms an ergonomic extension of the lower grip contour.",
+        "craftAndMaterial": "Precision molded from impact-resistant polymer over a stamped carbon steel insert plate. Features a center locking detent window and an angled forward lip designed to contour seamlessly against the chrome frame.",
+        "kinematicRole": "Remains static during firing, bearing continuous downward spring preload and ground drop impacts during tactical reloads. Slides forward off the magazine body between fifty and sixty-four percent disassembly.",
+        "designHighlight": "The slightly upward-curled pinky rest lip provides a crucial leverage shelf for the shooter's bottom finger to manage violent muzzle flip, while the angled mating bevel prevents palm pinching during aggressive seated reloads.",
+        "audioScript": "The flush-fit magazine floorplate seals the magazine base and blends directly with the rubber grip. Its upward-swept front lip offers a solid leverage anchor for your pinky, helping tame the pistol's legendary muzzle rise.",
+        "audioUrl": "audio/deagle/parts/deagle_mag_baseplate_en.mp3"
+      }
+    }
+  }
+}

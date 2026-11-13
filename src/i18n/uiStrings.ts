@@ -95,6 +95,10 @@ export interface UiDictionary {
   inspector: {
     firingBadge: (stepNum: string) => string;
     closeTitle: string;
+    minimizeBtn: string;
+    minimizeTitle: string;
+    expandBtn: string;
+    expandTitle: string;
     roleLabel: string;
     materialLabel: string;
     envelopeLabel: string;
@@ -148,6 +152,11 @@ export interface UiDictionary {
     badge: string;
     drawerSubtitle: string;
     closeTitle: string;
+    minimizeBtn: string;
+    minimizeTitle: string;
+    expandBtn: string;
+    expandTitle: string;
+    miniIdleSubtitle: string;
     playFullStory: string;
     pauseStory: string;
     playingActPrefix: string;
@@ -272,7 +281,11 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
     },
     inspector: {
       firingBadge: (step) => `发射循环实时解析 · ${step} / 07`,
-      closeTitle: '关闭详情 (Esc)',
+      closeTitle: '关闭详情并停止零件语音 (Esc)',
+      minimizeBtn: '最小化',
+      minimizeTitle: '收起详情卡片，不中断语音继续自由观察 3D 枪械 (Esc)',
+      expandBtn: '展开详情',
+      expandTitle: '展开完整零件工程拆解卡片',
       roleLabel: '机械定位',
       materialLabel: '典型材质',
       envelopeLabel: 'CAD 包络尺寸',
@@ -340,7 +353,12 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
     story: {
       badge: 'GEMINI R&D DOCUMENTARY',
       drawerSubtitle: '枪械研发历史全景纪录 · 机械突破与 3D 零件联动导览',
-      closeTitle: '关闭研发故事抽屉 (Esc)',
+      closeTitle: '关闭研发故事并停止旁白',
+      minimizeBtn: '最小化',
+      minimizeTitle: '最小化为顶部迷你播放条，边看 3D 枪械边听讲解 (Esc)',
+      expandBtn: '展开全文',
+      expandTitle: '展开完整四幕研发历史讲解抽屉',
+      miniIdleSubtitle: '四幕研发历史语音导览 · 可边看枪械边听讲',
       playFullStory: '连播四幕研发纪录片',
       pauseStory: '暂停纪录片旁白',
       playingActPrefix: '正在播报',
@@ -471,7 +489,12 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
     },
     inspector: {
       firingBadge: (step) => `LIVE FIRING CYCLE · PHASE ${step} / 07`,
-      closeTitle: 'Close part inspector (Esc)',
+      closeTitle: 'Close inspector & stop part audio (Esc)',
+      minimizeBtn: 'Minimize',
+      minimizeTitle:
+        'Minimize card to inspect 3D firearm without stopping narration (Esc)',
+      expandBtn: 'Expand',
+      expandTitle: 'Expand full component engineering breakdown',
       roleLabel: 'Mechanical Role',
       materialLabel: 'Metallurgy / Polymer',
       envelopeLabel: 'CAD Envelope',
@@ -547,7 +570,13 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       badge: 'GEMINI R&D DOCUMENTARY',
       drawerSubtitle:
         'Complete Firearm R&D History · Mechanical Breakthroughs & 3D Part Links',
-      closeTitle: 'Close R&D Story Drawer (Esc)',
+      closeTitle: 'Close R&D Story & stop narration',
+      minimizeBtn: 'Minimize',
+      minimizeTitle:
+        'Minimize to floating bar so you can inspect the 3D firearm while listening (Esc)',
+      expandBtn: 'Expand',
+      expandTitle: 'Expand full 4-Act R&D documentary drawer',
+      miniIdleSubtitle: '4-Act R&D Audio Guide · Inspect 3D while listening',
       playFullStory: 'Play All 4 Acts',
       pauseStory: 'Pause Narration',
       playingActPrefix: 'Now Playing',

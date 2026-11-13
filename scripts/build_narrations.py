@@ -2,10 +2,9 @@
 """
 Google Gemini Bilingual R&D Story, 253-Part Engineering Narration & TTS Audio Builder.
 
-Models used (via Google GenAI Interactions API v1beta — zero video models):
+Models used (via Google GenAI Interactions & Batch APIs v1beta — zero video models):
   - Text & Structured JSON: `gemini-3.8-flash`
-  - Weapon 4-Act R&D Story Voiceover (CN + EN): `gemini-3.8-flash-tts`
-  - Component-by-Component Voiceover (CN + EN): `gemini-3.8-flash-lite-tts`
+  - Unified Weapon 4-Act R&D Story & 253-Part Voiceover (CN + EN): `gemini-3.8-flash-tts` (Voice: `Charon`)
 
 Safety & Cost Guardrails:
   - Reads GEMINI_API_KEY from environment, `.env`, `.env.local`, or `GEMINI_ENV_FILE` (never logged).
@@ -23,11 +22,16 @@ import argparse
 import base64
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
+try:
+    import fcntl
+except ImportError:  # pragma: no cover
+    fcntl = None  # type: ignore[assignment]
 import hashlib
 import json
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 import sys
 import threading
@@ -65,8 +69,18 @@ ALL_WEAPON_IDS = [
 
 TEXT_MODEL = "gemini-3.8-flash"
 STORY_TTS_MODEL = "gemini-3.8-flash-tts"
-PART_TTS_MODEL = "gemini-3.8-flash-lite-tts"
+PART_TTS_MODEL = STORY_TTS_MODEL
 DEFAULT_VOICE = "Charon"
+
+STORY_TTS_MIN_INTERVAL_SEC = 6.5
+_STORY_TTS_RATE_LOCK = threading.Lock()
+_LAST_STORY_TTS_MONO: float = 0.0
+_STORY_TTS_STAMP_FILE = TTS_CACHE_DIR / ".story_tts_rate.stamp"
+
+EDGE_FALLBACK_VOICES: dict[str, str] = {
+    "zh": "zh-CN-YunxiNeural",
+    "en": "en-US-ChristopherNeural",
+}
 
 STYLE_STORY_ZH = (
     "沉稳磁性、富有历史厚重感与精密机械工程严谨度的纪录片旁白，"
@@ -76,17 +90,17 @@ STYLE_STORY_EN = (
     "Authoritative, warm, articulate museum firearm historian and mechanical "
     "engineering documentary narrator, measured pace with natural cadence"
 )
-STYLE_PART_ZH = (
-    "专业冷静、条理清晰的军械总工程师现场拆解导览，语速平稳自然，术语准确清晰"
-)
-STYLE_PART_EN = (
-    "Clear, engaging master armorer and mechanical engineer explaining a precision "
-    "3D firearm component in an interactive museum exhibit, steady natural pace"
-)
+# Unified across the entire vault so every component narration matches the Glock 17 R&D story voice & cadence
+STYLE_PART_ZH = STYLE_STORY_ZH
+STYLE_PART_EN = STYLE_STORY_EN
 
 
 class StopSpending(RuntimeError):
     """Immediate circuit breaker on quota, rate-limit, or billing errors."""
+
+
+class _AbortedByStopEvent(RuntimeError):
+    """Internal signal when another worker triggered stop_event while waiting on rate lock."""
 
 
 # ==================== Pydantic Schemas for Gemini Structured Output ====================
@@ -269,7 +283,11 @@ def is_stop_spending_error(err: BaseException) -> bool:
 def make_client(timeout_sec: int = 300) -> genai.Client:
     load_api_key()
     return genai.Client(
-        http_options=types.HttpOptions(timeout=timeout_sec * 1000, api_version="v1beta")
+        http_options=types.HttpOptions(
+            timeout=timeout_sec * 1000,
+            api_version="v1beta",
+            retry_options=types.HttpRetryOptions(attempts=1),
+        )
     )
 
 
@@ -488,6 +506,64 @@ def wav_bytes_to_mp3(wav_bytes: bytes, out_mp3: Path, bitrate: str) -> None:
     os.replace(tmp_mp3, out_mp3)
 
 
+def _call_story_tts_rate_limited(
+    request_fn: Any,
+    stop_event: Optional[threading.Event] = None,
+) -> Any:
+    """Enforce >= 6.5s interval between `STORY_TTS_MODEL` calls (in-process + cross-process)."""
+    global _LAST_STORY_TTS_MONO
+    with _STORY_TTS_RATE_LOCK:
+        if stop_event is not None and stop_event.is_set():
+            raise _AbortedByStopEvent()
+
+        _STORY_TTS_STAMP_FILE.parent.mkdir(parents=True, exist_ok=True)
+        with open(_STORY_TTS_STAMP_FILE, "a+", encoding="utf-8") as stamp_fp:
+            if fcntl is not None:
+                fcntl.flock(stamp_fp.fileno(), fcntl.LOCK_EX)
+            try:
+                if stop_event is not None and stop_event.is_set():
+                    raise _AbortedByStopEvent()
+
+                stamp_fp.seek(0)
+                raw_stamp = stamp_fp.read().strip()
+                try:
+                    last_wall = float(raw_stamp) if raw_stamp else 0.0
+                except ValueError:
+                    last_wall = 0.0
+
+                wait_mono = (
+                    (_LAST_STORY_TTS_MONO + STORY_TTS_MIN_INTERVAL_SEC) - time.monotonic()
+                    if _LAST_STORY_TTS_MONO > 0.0
+                    else 0.0
+                )
+                wait_wall = (
+                    (last_wall + STORY_TTS_MIN_INTERVAL_SEC) - time.time()
+                    if last_wall > 0.0
+                    else 0.0
+                )
+                wait_sec = max(0.0, wait_mono, wait_wall)
+                if wait_sec > 0.0:
+                    if stop_event is not None:
+                        if stop_event.wait(timeout=wait_sec):
+                            raise _AbortedByStopEvent()
+                    else:
+                        time.sleep(wait_sec)
+
+                dispatched = True
+                try:
+                    return request_fn()
+                finally:
+                    if dispatched:
+                        _LAST_STORY_TTS_MONO = time.monotonic()
+                        stamp_fp.seek(0)
+                        stamp_fp.truncate()
+                        stamp_fp.write(f"{time.time():.6f}\n")
+                        stamp_fp.flush()
+            finally:
+                if fcntl is not None:
+                    fcntl.flock(stamp_fp.fileno(), fcntl.LOCK_UN)
+
+
 def synthesize_tts_mp3(
     client: genai.Client,
     *,
@@ -497,9 +573,10 @@ def synthesize_tts_mp3(
     text: str,
     out_mp3: Path,
     bitrate: str,
+    stop_event: Optional[threading.Event] = None,
 ) -> int:
-    try:
-        interaction = client.interactions.create(
+    def _do_create() -> Any:
+        return client.interactions.create(
             model=model,
             input=[
                 {
@@ -521,6 +598,14 @@ def synthesize_tts_mp3(
             response_format={"type": "audio"},
             generation_config={"speech_config": [{"voice": voice}]},
         )
+
+    try:
+        if model == STORY_TTS_MODEL:
+            interaction = _call_story_tts_rate_limited(_do_create, stop_event=stop_event)
+        else:
+            interaction = _do_create()
+    except _AbortedByStopEvent:
+        raise
     except Exception as exc:
         if is_stop_spending_error(exc):
             raise StopSpending(sanitize_error(exc)) from exc
@@ -534,6 +619,462 @@ def synthesize_tts_mp3(
     return out_mp3.stat().st_size
 
 
+_BATCH_CREATE_LOCK = threading.Lock()
+_LAST_BATCH_CREATE_MONO: float = 0.0
+
+
+def run_batch_tts_queue(
+    all_jobs: list[dict[str, Any]],
+    *,
+    batch_chunk_size: int = 10,
+    batch_concurrency: int = 6,
+    poll_interval_sec: float = 6.0,
+) -> None:
+    """Synthesize individual TTS clips via Gemini Batch API (`client.batches.create`).
+
+    Uses exact `gemini-3.8-flash-tts` + `Charon` + `speech_metadata.style` per item at 50% cost
+    and separate Batch API rate limits, persisting MP3s + SHA-256 hashes incrementally as each
+    chunk completes. Halts immediately (`StopSpending`) with zero retries on 402/429/quota errors.
+    """
+    if not all_jobs:
+        print("  [BATCH-TTS] All target TTS audio files are already up-to-date!")
+        return
+
+    chunks: list[list[dict[str, Any]]] = [
+        all_jobs[i : i + max(1, batch_chunk_size)]
+        for i in range(0, len(all_jobs), max(1, batch_chunk_size))
+    ]
+    print(
+        f"\n  [BATCH-TTS] Submitting {len(all_jobs)} clips across {len(chunks)} batch jobs "
+        f"(chunk_size={batch_chunk_size}, concurrency={batch_concurrency}, model=`{PART_TTS_MODEL}`, voice=`{DEFAULT_VOICE}`)..."
+    )
+
+    stop_event = threading.Event()
+    save_lock = threading.Lock()
+    completed_clips = 0
+    completed_batches = 0
+    total_bytes = 0
+    fatal_errors: list[BaseException] = []
+
+    def _throttled_create_batch(
+        client: genai.Client,
+        model_name: str,
+        inlined_reqs: list[types.InlinedRequest],
+        display_name: str,
+    ) -> Any:
+        global _LAST_BATCH_CREATE_MONO
+        with _BATCH_CREATE_LOCK:
+            if stop_event.is_set():
+                raise _AbortedByStopEvent()
+            wait_s = (_LAST_BATCH_CREATE_MONO + 0.75) - time.monotonic()
+            if wait_s > 0:
+                if stop_event.wait(timeout=wait_s):
+                    raise _AbortedByStopEvent()
+            try:
+                last_net_err: Optional[BaseException] = None
+                for net_attempt in range(1, 5):
+                    try:
+                        created = client.batches.create(
+                            model=model_name,
+                            src=inlined_reqs,
+                            config=types.CreateBatchJobConfig(display_name=display_name),
+                        )
+                        return created
+                    except Exception as create_exc:
+                        if is_stop_spending_error(create_exc):
+                            raise StopSpending(sanitize_error(create_exc)) from create_exc
+                        last_net_err = create_exc
+                        if net_attempt < 4:
+                            if stop_event.wait(timeout=2.5 * net_attempt):
+                                raise _AbortedByStopEvent()
+                            client = make_client(timeout_sec=180)
+                assert last_net_err is not None
+                raise last_net_err
+            finally:
+                _LAST_BATCH_CREATE_MONO = time.monotonic()
+
+    def _batch_worker(b_idx_chunk: tuple[int, list[dict[str, Any]]]) -> None:
+        nonlocal completed_clips, completed_batches, total_bytes
+        b_idx, chunk = b_idx_chunk
+        if stop_event.is_set():
+            return
+
+        client = make_client(timeout_sec=180)
+        model_name = chunk[0]["model"]
+        wids_label = "-".join(dict.fromkeys(j["weapon_id"] for j in chunk))
+        display_name = f"armory-tts-{wids_label}-{b_idx + 1}of{len(chunks)}"
+
+        inlined_reqs = [
+            types.InlinedRequest(
+                metadata={"id": job["rel_url"]},
+                contents=[
+                    types.Content(
+                        role="user",
+                        parts=[
+                            types.Part(
+                                text=job["text"].strip(),
+                                speech_metadata=types.SpeechMetadata(style=job["style"]),
+                            )
+                        ],
+                    )
+                ],
+                config=types.GenerateContentConfig(
+                    response_modalities=["AUDIO"],
+                    speech_config=types.SpeechConfig(
+                        voice_config=types.VoiceConfig(voice=job["voice"])
+                    ),
+                ),
+            )
+            for job in chunk
+        ]
+
+        t0 = time.time()
+        try:
+            batch_job = _throttled_create_batch(
+                client, model_name, inlined_reqs, display_name
+            )
+            print(
+                f"    [Batch {b_idx + 1}/{len(chunks)}] Created `{batch_job.name}` "
+                f"({len(chunk)} clips: {chunk[0]['rel_url']} .. {chunk[-1]['rel_url']})",
+                flush=True,
+            )
+
+            while not stop_event.is_set():
+                if stop_event.wait(timeout=poll_interval_sec):
+                    raise _AbortedByStopEvent()
+                cur = None
+                last_poll_err: Optional[BaseException] = None
+                for poll_attempt in range(1, 6):
+                    try:
+                        cur = client.batches.get(name=batch_job.name)
+                        break
+                    except Exception as poll_exc:
+                        if is_stop_spending_error(poll_exc):
+                            raise StopSpending(sanitize_error(poll_exc)) from poll_exc
+                        last_poll_err = poll_exc
+                        if poll_attempt < 5:
+                            if stop_event.wait(timeout=2.0 * poll_attempt):
+                                raise _AbortedByStopEvent()
+                            client = make_client(timeout_sec=180)
+                if cur is None:
+                    assert last_poll_err is not None
+                    raise last_poll_err
+                st = str(cur.state)
+                if any(term in st for term in ("SUCCEEDED", "FAILED", "CANCELLED", "EXPIRED")):
+                    if "SUCCEEDED" not in st:
+                        err_detail = getattr(cur, "error", None)
+                        err_str = f"Batch {batch_job.name} ended in {st}: {err_detail}"
+                        if is_stop_spending_error(RuntimeError(err_str)):
+                            raise StopSpending(sanitize_error(RuntimeError(err_str)))
+                        raise RuntimeError(err_str)
+
+                    resps = (
+                        cur.dest.inlined_responses
+                        if (cur.dest and cur.dest.inlined_responses)
+                        else []
+                    )
+                    if len(resps) != len(chunk):
+                        raise RuntimeError(
+                            f"Batch {batch_job.name} returned {len(resps)} responses for {len(chunk)} requests."
+                        )
+
+                    chunk_bytes = 0
+                    dirty_hash_files: dict[Path, dict[str, str]] = {}
+                    for job, item_resp in zip(chunk, resps):
+                        if getattr(item_resp, "error", None):
+                            item_err_str = f"Item error on {job['rel_url']}: {item_resp.error}"
+                            if is_stop_spending_error(RuntimeError(item_err_str)):
+                                raise StopSpending(sanitize_error(RuntimeError(item_err_str)))
+                            raise RuntimeError(item_err_str)
+
+                        if (
+                            not item_resp.response
+                            or not item_resp.response.candidates
+                            or not item_resp.response.candidates[0].content
+                            or not item_resp.response.candidates[0].content.parts
+                        ):
+                            raise RuntimeError(f"Empty audio candidate on {job['rel_url']}")
+
+                        part0 = item_resp.response.candidates[0].content.parts[0]
+                        if not part0.inline_data or not part0.inline_data.data:
+                            raise RuntimeError(f"Missing inline_data.data on {job['rel_url']}")
+
+                        raw_audio = part0.inline_data.data
+                        wav_bytes = (
+                            raw_audio
+                            if isinstance(raw_audio, bytes)
+                            else base64.b64decode(raw_audio)
+                        )
+                        wav_bytes_to_mp3(
+                            wav_bytes, job["out_file"], bitrate=job["bitrate"]
+                        )
+                        nbytes = job["out_file"].stat().st_size
+                        chunk_bytes += nbytes
+
+                        with save_lock:
+                            job["tts_hashes"][job["rel_url"]] = job["sig"]
+                            dirty_hash_files[job["hashes_path"]] = job["tts_hashes"]
+
+                    with save_lock:
+                        for h_path, h_dict in dirty_hash_files.items():
+                            h_path.parent.mkdir(parents=True, exist_ok=True)
+                            tmp_h = h_path.with_suffix(".tmp.json")
+                            tmp_h.write_text(
+                                json.dumps(h_dict, ensure_ascii=False, indent=2) + "\n",
+                                encoding="utf-8",
+                            )
+                            os.replace(tmp_h, h_path)
+                        completed_clips += len(chunk)
+                        completed_batches += 1
+                        total_bytes += chunk_bytes
+                        print(
+                            f"    [Batch {completed_batches}/{len(chunks)} DONE in {time.time() - t0:.1f}s] "
+                            f"[{completed_clips}/{len(all_jobs)} clips] +{chunk_bytes / 1024:.1f} KB ({wids_label})",
+                            flush=True,
+                        )
+                    return
+        except _AbortedByStopEvent:
+            return
+        except Exception as exc:
+            stop_event.set()
+            if is_stop_spending_error(exc) and not isinstance(exc, StopSpending):
+                exc = StopSpending(sanitize_error(exc))
+            with save_lock:
+                fatal_errors.append(exc)
+                tag = "STOP SPENDING" if isinstance(exc, StopSpending) else "BATCH ERROR"
+                print(f"    [{tag}] {sanitize_error(exc)}", file=sys.stderr, flush=True)
+
+    with ThreadPoolExecutor(max_workers=max(1, batch_concurrency)) as pool:
+        futs = [pool.submit(_batch_worker, (idx, ch)) for idx, ch in enumerate(chunks)]
+        for fut in as_completed(futs):
+            fut.result()
+
+    if fatal_errors:
+        first = fatal_errors[0]
+        if isinstance(first, StopSpending):
+            raise first
+        sys.exit(f"Batch TTS aborted due to error: {sanitize_error(first)}")
+
+    print(
+        f"\n  [BATCH-TTS COMPLETE] Generated {completed_clips}/{len(all_jobs)} MP3 clips "
+        f"({total_bytes / (1024 * 1024):.2f} MB total) with `{PART_TTS_MODEL}` (`{DEFAULT_VOICE}`)!"
+    )
+
+
+def resolve_edge_tts_cmd() -> list[str]:
+    env_bin = os.environ.get("EDGE_TTS_BIN")
+    if env_bin and Path(env_bin).is_file():
+        return [env_bin]
+    which_bin = shutil.which("edge-tts")
+    if which_bin:
+        return [which_bin]
+    return [sys.executable, "-m", "edge_tts"]
+
+
+def synthesize_edge_fallback_mp3(
+    *,
+    edge_cmd: list[str],
+    voice: str,
+    text: str,
+    out_mp3: Path,
+    bitrate: str = "48k",
+) -> int:
+    out_mp3.parent.mkdir(parents=True, exist_ok=True)
+    uid = f"{os.getpid()}_{threading.get_ident()}_{time.monotonic_ns()}"
+    txt_tmp = out_mp3.with_name(f".{out_mp3.stem}.{uid}.txt")
+    raw_tmp = out_mp3.with_name(f".{out_mp3.stem}.{uid}.edge.mp3")
+    conv_tmp = out_mp3.with_name(f".{out_mp3.stem}.{uid}.out.mp3")
+    try:
+        clean_text = re.sub(r"\s+", " ", text).strip()
+        if not clean_text:
+            raise RuntimeError(f"Empty audioScript for {out_mp3.name}")
+        txt_tmp.write_text(clean_text, encoding="utf-8")
+
+        last_err = ""
+        for attempt in range(1, 4):
+            raw_tmp.unlink(missing_ok=True)
+            edge_proc = subprocess.run(
+                [
+                    *edge_cmd,
+                    "-v",
+                    voice,
+                    "-f",
+                    str(txt_tmp),
+                    "--no-progress",
+                    "--write-media",
+                    str(raw_tmp),
+                ],
+                capture_output=True,
+                text=True,
+                check=False,
+                timeout=90,
+            )
+            if (
+                edge_proc.returncode == 0
+                and raw_tmp.is_file()
+                and raw_tmp.stat().st_size > 512
+            ):
+                break
+            last_err = (edge_proc.stderr or edge_proc.stdout or "").strip()
+            if attempt < 3:
+                time.sleep(1.2 * attempt)
+        else:
+            raise RuntimeError(
+                f"edge-tts failed for {out_mp3.name}: {last_err[:240]}"
+            )
+
+        ffmpeg_proc = subprocess.run(
+            [
+                "ffmpeg",
+                "-y",
+                "-hide_banner",
+                "-loglevel",
+                "error",
+                "-i",
+                str(raw_tmp),
+                "-vn",
+                "-ar",
+                "24000",
+                "-ac",
+                "1",
+                "-codec:a",
+                "libmp3lame",
+                "-b:a",
+                bitrate,
+                str(conv_tmp),
+            ],
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=60,
+        )
+        if (
+            ffmpeg_proc.returncode != 0
+            or not conv_tmp.is_file()
+            or conv_tmp.stat().st_size <= 1024
+        ):
+            err_txt = (ffmpeg_proc.stderr or "").strip()
+            raise RuntimeError(
+                f"ffmpeg conversion failed for {out_mp3.name}: {err_txt[:240]}"
+            )
+
+        os.replace(conv_tmp, out_mp3)
+        return out_mp3.stat().st_size
+    finally:
+        txt_tmp.unlink(missing_ok=True)
+        raw_tmp.unlink(missing_ok=True)
+        conv_tmp.unlink(missing_ok=True)
+
+
+def run_fallback_part_tts(
+    weapon_id: str,
+    *,
+    json_path: Path,
+    dry_run: bool = False,
+    workers: int = 3,
+) -> None:
+    if not json_path.is_file():
+        sys.exit(
+            f"Missing {json_path.relative_to(ROOT_DIR)}: `--fallback-part-tts` requires `<weapon_id>.json` to already exist."
+        )
+
+    bundle = json.loads(json_path.read_text(encoding="utf-8"))
+    parts_map = bundle.get("parts")
+    if not isinstance(parts_map, dict) or not parts_map:
+        sys.exit(f"Invalid `parts` map in {json_path.relative_to(ROOT_DIR)}.")
+
+    jobs: list[dict[str, Any]] = []
+    preserved_count = 0
+
+    for _pid, p_entry in parts_map.items():
+        for lang in ("zh", "en"):
+            loc_p = p_entry[lang]
+            rel_url = loc_p["audioUrl"]
+            out_file = ROOT_DIR / "public" / rel_url
+            if out_file.is_file() and out_file.stat().st_size > 1024:
+                preserved_count += 1
+                continue
+            jobs.append(
+                {
+                    "rel_url": rel_url,
+                    "out_file": out_file,
+                    "voice": EDGE_FALLBACK_VOICES[lang],
+                    "text": loc_p["audioScript"],
+                }
+            )
+
+    if dry_run:
+        print(
+            f"  [DRY-RUN] `--fallback-part-tts` for `{weapon_id}`: "
+            f"{len(jobs)} missing part MP3s to synthesize via edge-tts "
+            f"({preserved_count} existing valid MP3s preserved untouched; 0 cache hash writes)."
+        )
+        return
+
+    if not jobs:
+        print(
+            f"  [FALLBACK-TTS] All {preserved_count} part MP3s for `{weapon_id}` "
+            f"already exist (>1 KB); preserved untouched."
+        )
+        return
+
+    edge_cmd = resolve_edge_tts_cmd()
+    print(
+        f"  [FALLBACK-TTS] Synthesizing {len(jobs)} missing part MP3s for `{weapon_id}` "
+        f"via edge-tts (workers={workers}, preserved={preserved_count} existing MP3s, "
+        f"skipping tts_hashes cache)..."
+    )
+
+    lock = threading.Lock()
+    completed_count = 0
+    total_bytes = 0
+    errors_list: list[BaseException] = []
+
+    def fallback_worker(idx_job: tuple[int, dict[str, Any]]) -> None:
+        nonlocal completed_count, total_bytes
+        idx, job = idx_job
+        if errors_list:
+            return
+        time.sleep(0.08 * (idx % max(1, workers)))
+        if errors_list:
+            return
+        try:
+            nbytes = synthesize_edge_fallback_mp3(
+                edge_cmd=edge_cmd,
+                voice=job["voice"],
+                text=job["text"],
+                out_mp3=job["out_file"],
+                bitrate="48k",
+            )
+            with lock:
+                completed_count += 1
+                total_bytes += nbytes
+                print(
+                    f"    [{completed_count}/{len(jobs)}] OK (edge-tts) {job['rel_url']} "
+                    f"({nbytes / 1024:.1f} KB)"
+                )
+        except Exception as exc:
+            with lock:
+                errors_list.append(exc)
+                print(
+                    f"    [ERROR] Failed fallback {job['rel_url']}: {sanitize_error(exc)}",
+                    file=sys.stderr,
+                )
+
+    with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
+        futures = [pool.submit(fallback_worker, (i, j)) for i, j in enumerate(jobs)]
+        for fut in as_completed(futures):
+            fut.result()
+
+    if errors_list:
+        sys.exit(f"Fallback TTS aborted due to error: {sanitize_error(errors_list[0])}")
+
+    print(
+        f"  [DONE] `{weapon_id}` fallback part TTS complete! Generated {completed_count} interim MP3s "
+        f"({total_bytes / (1024 * 1024):.2f} MB), preserved {preserved_count} existing MP3s."
+    )
+
+
 # ==================== End-to-End Weapon Build Pipeline ====================
 
 
@@ -544,8 +1085,14 @@ def build_weapon(
     force_text: bool = False,
     force_audio: bool = False,
     skip_audio: bool = False,
+    story_audio_only: bool = False,
+    fallback_part_tts: bool = False,
     workers: int = 3,
+    collect_jobs_out: Optional[list[dict[str, Any]]] = None,
 ) -> None:
+    if story_audio_only and fallback_part_tts:
+        sys.exit("Cannot combine `--story-audio-only` and `--fallback-part-tts`.")
+
     print(f"\n==================== [{weapon_id.upper()}] Extracting 1:1 weapon spec ====================")
     spec = dump_weapon_spec(weapon_id)
     parts_list: list[dict[str, Any]] = spec["parts"]
@@ -558,18 +1105,25 @@ def build_weapon(
     json_path = NARRATIONS_OUT_DIR / f"{weapon_id}.json"
     hashes_path = TTS_CACHE_DIR / f"{weapon_id}_tts_hashes.json"
 
+    if fallback_part_tts:
+        run_fallback_part_tts(
+            weapon_id,
+            json_path=json_path,
+            dry_run=dry_run,
+            workers=workers,
+        )
+        return
+
     if dry_run:
         batch_count = (len(parts_list) + 12) // 13
         story_clips = 8
-        part_clips = len(parts_list) * 2
+        part_clips = 0 if story_audio_only else len(parts_list) * 2
         print(
             f"  [DRY-RUN] Would run {1 + batch_count} `{TEXT_MODEL}` structured JSON calls, "
             f"{story_clips} `{STORY_TTS_MODEL}` story clips, and "
             f"{part_clips} `{PART_TTS_MODEL}` part clips -> {json_path.relative_to(ROOT_DIR)}"
         )
         return
-
-    client = make_client(timeout_sec=360)
 
     bundle: Optional[dict[str, Any]] = None
     if json_path.is_file() and not force_text:
@@ -582,11 +1136,26 @@ def build_weapon(
                 and len(existing.get("story", {}).get("en", {}).get("acts", [])) == 4
             ):
                 bundle = existing
+                gen_models = bundle.setdefault("generatorModels", {})
+                if (
+                    gen_models.get("storyTts") != STORY_TTS_MODEL
+                    or gen_models.get("partTts") != PART_TTS_MODEL
+                ):
+                    gen_models["storyTts"] = STORY_TTS_MODEL
+                    gen_models["partTts"] = PART_TTS_MODEL
+                    json_path.write_text(
+                        json.dumps(bundle, ensure_ascii=False, indent=2) + "\n",
+                        encoding="utf-8",
+                    )
+                    print(
+                        f"  [SYNC META] Updated generatorModels in {json_path.relative_to(ROOT_DIR)} -> `{PART_TTS_MODEL}`"
+                    )
                 print(f"  [CACHE HIT] Reusing existing text bundle: {json_path.relative_to(ROOT_DIR)}")
         except Exception:
             bundle = None
 
     if bundle is None:
+        client = make_client(timeout_sec=360)
         t0 = time.time()
         batch_size = 13
         batches = [
@@ -778,6 +1347,7 @@ def build_weapon(
                 continue
             jobs.append(
                 {
+                    "weapon_id": weapon_id,
                     "rel_url": rel_url,
                     "out_file": out_file,
                     "model": STORY_TTS_MODEL,
@@ -786,44 +1356,67 @@ def build_weapon(
                     "text": script_text,
                     "bitrate": "64k",
                     "sig": sig,
+                    "hashes_path": hashes_path,
+                    "tts_hashes": tts_hashes,
                 }
             )
 
-    for pid, p_entry in bundle["parts"].items():
-        for lang, style in (("zh", STYLE_PART_ZH), ("en", STYLE_PART_EN)):
-            loc_p = p_entry[lang]
-            rel_url = loc_p["audioUrl"]
-            out_file = ROOT_DIR / "public" / rel_url
-            script_text = loc_p["audioScript"]
-            sig = sha256_hex(f"{PART_TTS_MODEL}|{DEFAULT_VOICE}|{style}|{script_text}")
-            if (
-                not force_audio
-                and out_file.is_file()
-                and out_file.stat().st_size > 1024
-                and tts_hashes.get(rel_url) == sig
-            ):
-                continue
-            jobs.append(
-                {
-                    "rel_url": rel_url,
-                    "out_file": out_file,
-                    "model": PART_TTS_MODEL,
-                    "voice": DEFAULT_VOICE,
-                    "style": style,
-                    "text": script_text,
-                    "bitrate": "48k",
-                    "sig": sig,
-                }
-            )
+    if not story_audio_only:
+        for pid, p_entry in bundle["parts"].items():
+            for lang, style in (("zh", STYLE_PART_ZH), ("en", STYLE_PART_EN)):
+                loc_p = p_entry[lang]
+                rel_url = loc_p["audioUrl"]
+                out_file = ROOT_DIR / "public" / rel_url
+                script_text = loc_p["audioScript"]
+                sig = sha256_hex(f"{PART_TTS_MODEL}|{DEFAULT_VOICE}|{style}|{script_text}")
+                if (
+                    not force_audio
+                    and out_file.is_file()
+                    and out_file.stat().st_size > 1024
+                    and tts_hashes.get(rel_url) == sig
+                ):
+                    continue
+                jobs.append(
+                    {
+                        "weapon_id": weapon_id,
+                        "rel_url": rel_url,
+                        "out_file": out_file,
+                        "model": PART_TTS_MODEL,
+                        "voice": DEFAULT_VOICE,
+                        "style": style,
+                        "text": script_text,
+                        "bitrate": "64k",
+                        "sig": sig,
+                        "hashes_path": hashes_path,
+                        "tts_hashes": tts_hashes,
+                    }
+                )
 
     if not jobs:
-        print(f"  [3/3] All TTS audio files for `{weapon_id}` are already up-to-date!")
+        if story_audio_only:
+            print(
+                f"  [3/3] All 8 four-act story TTS audio files for `{weapon_id}` "
+                f"are already up-to-date! (`--story-audio-only`)"
+            )
+        else:
+            print(f"  [3/3] All TTS audio files for `{weapon_id}` are already up-to-date!")
         return
 
-    print(
-        f"  [3/3] Synthesizing {len(jobs)} TTS audio clips "
-        f"(workers={workers}, story=`{STORY_TTS_MODEL}`, parts=`{PART_TTS_MODEL}`)..."
-    )
+    if collect_jobs_out is not None:
+        collect_jobs_out.extend(jobs)
+        print(f"  [QUEUED] Queued {len(jobs)} `{PART_TTS_MODEL}` (`{DEFAULT_VOICE}`) clips for `{weapon_id}` into Batch TTS pool.")
+        return
+
+    if story_audio_only:
+        print(
+            f"  [3/3] Synthesizing {len(jobs)} story TTS audio clips "
+            f"(workers={workers}, story=`{STORY_TTS_MODEL}`, `--story-audio-only`)..."
+        )
+    else:
+        print(
+            f"  [3/3] Synthesizing {len(jobs)} TTS audio clips "
+            f"(workers={workers}, story=`{STORY_TTS_MODEL}`, parts=`{PART_TTS_MODEL}`)..."
+        )
 
     stop_event = threading.Event()
     lock = threading.Lock()
@@ -851,6 +1444,7 @@ def build_weapon(
                 text=job["text"],
                 out_mp3=job["out_file"],
                 bitrate=job["bitrate"],
+                stop_event=stop_event,
             )
             with lock:
                 completed_count += 1
@@ -865,6 +1459,8 @@ def build_weapon(
                     f"    [{completed_count}/{len(jobs)}] OK {job['rel_url']} "
                     f"({nbytes / 1024:.1f} KB)"
                 )
+        except _AbortedByStopEvent:
+            return
         except StopSpending as stop_exc:
             stop_event.set()
             with lock:
@@ -884,6 +1480,7 @@ def build_weapon(
                     text=job["text"],
                     out_mp3=job["out_file"],
                     bitrate=job["bitrate"],
+                    stop_event=stop_event,
                 )
                 with lock:
                     completed_count += 1
@@ -898,6 +1495,8 @@ def build_weapon(
                         f"    [{completed_count}/{len(jobs)}] OK (retry) {job['rel_url']} "
                         f"({nbytes / 1024:.1f} KB)"
                     )
+            except _AbortedByStopEvent:
+                return
             except StopSpending as stop_exc2:
                 stop_event.set()
                 with lock:
@@ -962,14 +1561,45 @@ def main() -> None:
         help="Generate structured JSON text only and skip TTS synthesis.",
     )
     parser.add_argument(
+        "--story-audio-only",
+        action="store_true",
+        help="Ensure <weapon_id>.json exists and synthesize ONLY the 8 four-act story MP3s (skip part MP3s).",
+    )
+    parser.add_argument(
+        "--fallback-part-tts",
+        action="store_true",
+        help="Require existing <weapon_id>.json, skip Gemini API completely, and fill ONLY missing part MP3s via edge-tts without writing tts_hashes.",
+    )
+    parser.add_argument(
         "--workers",
         type=int,
         default=3,
-        help="Concurrent TTS workers (default: 3).",
+        help="Concurrent TTS workers for interactive mode (default: 3).",
+    )
+    parser.add_argument(
+        "--batch-tts",
+        action="store_true",
+        help="Synthesize TTS clips asynchronously via Gemini Batch API (`client.batches.create`) at 50% cost & separate quota.",
+    )
+    parser.add_argument(
+        "--batch-chunk-size",
+        type=int,
+        default=10,
+        help="Inlined TTS requests per Batch API job (default: 10).",
+    )
+    parser.add_argument(
+        "--batch-concurrency",
+        type=int,
+        default=6,
+        help="Concurrent active Batch API jobs (default: 6).",
     )
     args = parser.parse_args()
 
-    targets = ALL_WEAPON_IDS if args.all else [args.weapon]
+    # Prioritize g17 first when building --all so flagship reference voice is always updated first
+    all_ordered = ["g17"] + [w for w in ALL_WEAPON_IDS if w != "g17"]
+    targets = all_ordered if args.all else [args.weapon]
+    batch_pool: Optional[list[dict[str, Any]]] = [] if (args.batch_tts and not args.dry_run and not args.fallback_part_tts) else None
+
     for wid in targets:
         try:
             build_weapon(
@@ -978,7 +1608,20 @@ def main() -> None:
                 force_text=args.force_text,
                 force_audio=args.force_audio,
                 skip_audio=args.skip_audio,
+                story_audio_only=args.story_audio_only,
+                fallback_part_tts=args.fallback_part_tts,
                 workers=args.workers,
+                collect_jobs_out=batch_pool,
+            )
+        except StopSpending as stop_err:
+            sys.exit(f"Stopped immediately (quota/rate-limit guardrail): {stop_err}")
+
+    if batch_pool is not None and batch_pool:
+        try:
+            run_batch_tts_queue(
+                batch_pool,
+                batch_chunk_size=args.batch_chunk_size,
+                batch_concurrency=args.batch_concurrency,
             )
         except StopSpending as stop_err:
             sys.exit(f"Stopped immediately (quota/rate-limit guardrail): {stop_err}")

@@ -6,6 +6,8 @@ import {
   Crosshair,
   Focus,
   Loader2,
+  Maximize2,
+  Minimize2,
   Pause,
   Play,
   ShieldCheck,
@@ -24,6 +26,7 @@ import {
   resolveWeaponDisplayMeta,
 } from '../../i18n/weaponFallbacks';
 import {
+  getNarrationAudioSnapshot,
   playNarrationPlaylist,
   playOrToggleNarrationTrack,
   stopNarrationAudio,
@@ -41,6 +44,8 @@ export const PartInspectorCard: React.FC = () => {
   const lang = useAppStore((s) => s.lang);
   const autoPlayPartAudio = useAppStore((s) => s.autoPlayPartAudio);
   const toggleAutoPlayPartAudio = useAppStore((s) => s.toggleAutoPlayPartAudio);
+  const inspectorMinimized = useAppStore((s) => s.inspectorMinimized);
+  const setInspectorMinimized = useAppStore((s) => s.setInspectorMinimized);
   const setStoryOpen = useAppStore((s) => s.setStoryOpen);
   const mode = useAppStore((s) => s.mode);
   const selectedPartId = useAppStore((s) => s.selectedPartId);
@@ -98,6 +103,10 @@ export const PartInspectorCard: React.FC = () => {
     if (!autoPlayPartAudio || !part || !localizedPartNarration) {
       return;
     }
+    const snap = getNarrationAudioSnapshot();
+    if (snap.activeKind === 'story' && snap.isPlaying) {
+      return;
+    }
     const titleStr = lang === 'en' ? part.nameEn : part.nameZh;
     playNarrationPlaylist(
       [
@@ -107,6 +116,8 @@ export const PartInspectorCard: React.FC = () => {
           label: `${part.bomCode} · ${titleStr}`,
           kind: 'part',
           partId: part.id,
+          fallbackText: localizedPartNarration.audioScript,
+          lang,
         },
       ],
       0
@@ -212,6 +223,8 @@ export const PartInspectorCard: React.FC = () => {
       label: `${part.bomCode} · ${primaryTitle}`,
       kind: 'part',
       partId: part.id,
+      fallbackText: localizedPartNarration.audioScript,
+      lang,
     });
   };
 
@@ -221,6 +234,79 @@ export const PartInspectorCard: React.FC = () => {
     }
     selectPart(null);
   };
+
+  if (inspectorMinimized) {
+    return (
+      <div className="inspector-mini-pill">
+        {localizedPartNarration && (
+          <button
+            type="button"
+            className={`inspector-mini-play-btn ${
+              isThisPartPlaying ? 'playing' : ''
+            }`}
+            onClick={handleTogglePartVoice}
+            title={
+              isThisPartPlaying ? ui.voiceGuideBtnPause : ui.voiceGuideBtnPlay
+            }
+          >
+            {isThisPartLoading ? (
+              <Loader2 size={13} className="spin-icon" />
+            ) : isThisPartPlaying ? (
+              <Pause size={13} />
+            ) : (
+              <Play size={13} />
+            )}
+            {isThisPartPlaying && (
+              <span className="eq-bars" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+              </span>
+            )}
+          </button>
+        )}
+
+        <span
+          className="inspector-mini-code"
+          style={{ borderColor: badgeColor, color: badgeColor }}
+        >
+          {part.bomCode}
+        </span>
+
+        <span className="inspector-mini-title" title={primaryTitle}>
+          {primaryTitle}
+        </span>
+
+        <div className="inspector-mini-nav">
+          <button type="button" onClick={goPrev} title={ui.prevPart}>
+            <ChevronLeft size={13} />
+          </button>
+          <button type="button" onClick={goNext} title={ui.nextPart}>
+            <ChevronRight size={13} />
+          </button>
+        </div>
+
+        <button
+          type="button"
+          className="inspector-mini-expand-btn"
+          onClick={() => setInspectorMinimized(false)}
+          title={ui.expandTitle}
+        >
+          <Maximize2 size={12} />
+          <span>{ui.expandBtn}</span>
+        </button>
+
+        <button
+          type="button"
+          className="close-btn"
+          onClick={handleCloseInspector}
+          title={ui.closeTitle}
+        >
+          <X size={14} />
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -238,13 +324,24 @@ export const PartInspectorCard: React.FC = () => {
         >
           {part.bomCode} · {groupTitle}
         </span>
-        <button
-          className="close-btn"
-          onClick={handleCloseInspector}
-          title={ui.closeTitle}
-        >
-          <X size={15} />
-        </button>
+        <div className="inspector-top-actions">
+          <button
+            type="button"
+            className="inspector-minimize-btn"
+            onClick={() => setInspectorMinimized(true)}
+            title={ui.minimizeTitle}
+          >
+            <Minimize2 size={12} />
+            <span>{ui.minimizeBtn}</span>
+          </button>
+          <button
+            className="close-btn"
+            onClick={handleCloseInspector}
+            title={ui.closeTitle}
+          >
+            <X size={15} />
+          </button>
+        </div>
       </div>
 
       <h2 className="part-title-zh">{primaryTitle}</h2>

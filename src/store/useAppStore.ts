@@ -1,6 +1,9 @@
 import { create } from 'zustand';
 import { playbackClock } from '../engine/clock/playbackClock';
-import { stopNarrationAudio } from '../narration/audioPlayer';
+import {
+  getNarrationAudioSnapshot,
+  stopNarrationAudio,
+} from '../narration/audioPlayer';
 import type { LanguageCode } from '../narration/types';
 import { getWeaponManifest } from '../weapons/manifests';
 import { getLoadedWeaponPlugin, loadWeaponPlugin } from '../weapons/registry';
@@ -30,6 +33,8 @@ export interface AppState {
   /** Bilingual UI & narration state */
   lang: LanguageCode;
   storyOpen: boolean;
+  storyMinimized: boolean;
+  inspectorMinimized: boolean;
   autoPlayPartAudio: boolean;
 
   /** Active interactive mode inside Workbench: Exploded Disassembly vs Dynamic Firing Cycle */
@@ -69,7 +74,10 @@ export interface AppState {
   setLang: (lang: LanguageCode) => void;
   toggleLang: () => void;
   setStoryOpen: (open: boolean) => void;
+  setStoryMinimized: (minimized: boolean) => void;
   toggleStoryOpen: () => void;
+  setInspectorMinimized: (minimized: boolean) => void;
+  toggleInspectorMinimized: () => void;
   toggleAutoPlayPartAudio: () => void;
   focusStoryPart: (partId: string) => void;
 
@@ -121,6 +129,8 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   lang: 'zh',
   storyOpen: false,
+  storyMinimized: false,
+  inspectorMinimized: false,
   autoPlayPartAudio: true,
 
   mode: 'explode',
@@ -161,9 +171,29 @@ export const useAppStore = create<AppState>((set, get) => ({
     set((s) => ({ lang: s.lang === 'zh' ? 'en' : 'zh' }));
   },
 
-  setStoryOpen: (storyOpen) => set({ storyOpen }),
+  setStoryOpen: (storyOpen) => set({ storyOpen, storyMinimized: false }),
 
-  toggleStoryOpen: () => set((s) => ({ storyOpen: !s.storyOpen })),
+  setStoryMinimized: (storyMinimized) => set({ storyMinimized }),
+
+  toggleStoryOpen: () =>
+    set((s) => {
+      if (!s.storyOpen) {
+        return { storyOpen: true, storyMinimized: false };
+      }
+      if (s.storyMinimized) {
+        return { storyMinimized: false };
+      }
+      const snap = getNarrationAudioSnapshot();
+      if (snap.activeKind === 'story' && snap.isPlaying) {
+        return { storyMinimized: true };
+      }
+      return { storyOpen: false, storyMinimized: false };
+    }),
+
+  setInspectorMinimized: (inspectorMinimized) => set({ inspectorMinimized }),
+
+  toggleInspectorMinimized: () =>
+    set((s) => ({ inspectorMinimized: !s.inspectorMinimized })),
 
   toggleAutoPlayPartAudio: () =>
     set((s) => ({ autoPlayPartAudio: !s.autoPlayPartAudio })),
@@ -179,7 +209,9 @@ export const useAppStore = create<AppState>((set, get) => ({
       set({
         screen: 'workbench',
         mode: 'explode',
-        storyOpen: false,
+        storyOpen: cur.storyOpen,
+        storyMinimized: cur.storyOpen,
+        inspectorMinimized: false,
         isPlaying: false,
         isFiringPlaying: false,
         textureModalOpen: false,
@@ -219,6 +251,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       mode: 'explode',
       armoryAutoRotate: true,
       storyOpen: false,
+      storyMinimized: false,
+      inspectorMinimized: false,
       isPlaying: false,
       isFiringPlaying: false,
       textureModalOpen: false,
@@ -244,6 +278,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     playbackClock.setFireProgress(0, true);
     set((s) => ({
       activeWeaponId: weaponId,
+      inspectorMinimized: false,
       selectedPartId: null,
       hoveredPartId: null,
       cameraCommand: {
@@ -258,9 +293,11 @@ export const useAppStore = create<AppState>((set, get) => ({
     const nextWeaponId: WeaponId = isWeaponId(weaponIdRaw)
       ? weaponIdRaw
       : s.activeWeaponId;
-    if (nextWeaponId !== s.activeWeaponId) {
+    const sameWeapon = nextWeaponId === s.activeWeaponId;
+    if (!sameWeapon) {
       stopNarrationAudio();
     }
+    const keepStoryMini = sameWeapon && s.storyOpen;
     if (initialMode === 'firing') {
       playbackClock.setTargetProgress(0, false);
       playbackClock.setFireProgress(0, true);
@@ -268,7 +305,9 @@ export const useAppStore = create<AppState>((set, get) => ({
         screen: 'workbench',
         activeWeaponId: nextWeaponId,
         mode: 'firing',
-        storyOpen: false,
+        storyOpen: keepStoryMini,
+        storyMinimized: keepStoryMini,
+        inspectorMinimized: false,
         isPlaying: false,
         isFiringPlaying: true,
         textureModalOpen: false,
@@ -285,13 +324,15 @@ export const useAppStore = create<AppState>((set, get) => ({
         },
       });
     } else {
-      playbackClock.setTargetProgress(0, nextWeaponId !== s.activeWeaponId);
+      playbackClock.setTargetProgress(0, !sameWeapon);
       playbackClock.setFireProgress(0, true);
       set({
         screen: 'workbench',
         activeWeaponId: nextWeaponId,
         mode: 'explode',
-        storyOpen: false,
+        storyOpen: keepStoryMini,
+        storyMinimized: keepStoryMini,
+        inspectorMinimized: false,
         isPlaying: false,
         isFiringPlaying: false,
         textureModalOpen: false,
@@ -308,13 +349,20 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   returnToArmory: () => {
-    stopNarrationAudio();
+    const snap = getNarrationAudioSnapshot();
+    const keepStoryMini =
+      get().storyOpen && snap.activeKind === 'story' && snap.isPlaying;
+    if (!keepStoryMini) {
+      stopNarrationAudio();
+    }
     playbackClock.setTargetProgress(0, false);
     playbackClock.setFireProgress(0, true);
     set((s) => ({
       screen: 'armory',
       mode: 'explode',
-      storyOpen: false,
+      storyOpen: keepStoryMini,
+      storyMinimized: keepStoryMini,
+      inspectorMinimized: false,
       isPlaying: false,
       isFiringPlaying: false,
       textureModalOpen: false,
@@ -482,6 +530,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     set((s) => ({
       selectedPartId: partId,
       isolateSelected: partId === null ? false : s.isolateSelected,
+      inspectorMinimized: partId === null ? false : s.inspectorMinimized,
     })),
 
   hoverPart: (hoveredPartId) => {

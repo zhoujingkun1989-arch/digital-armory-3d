@@ -5,7 +5,7 @@
   "generatorModels": {
     "text": "gemini-3.8-flash",
     "storyTts": "gemini-3.8-flash-tts",
-    "partTts": "gemini-3.8-flash-lite-tts"
+    "partTts": "gemini-3.8-flash-tts"
   },
   "uiMetaEn": {
     "name": "Colt M4A1 Carbine",

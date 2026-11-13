@@ -1,5 +1,8 @@
 import { useEffect } from 'react';
-import { stopNarrationAudio } from '../narration/audioPlayer';
+import {
+  getNarrationAudioSnapshot,
+  stopNarrationAudio,
+} from '../narration/audioPlayer';
 import { useAppStore } from '../store/useAppStore';
 
 function isEditableElement(target: EventTarget | null): boolean {
@@ -31,15 +34,22 @@ export function useKeyboardShortcuts(): void {
       const state = useAppStore.getState();
 
       if (e.key === 'Escape') {
+        const audioSnap = getNarrationAudioSnapshot();
         if (state.textureModalOpen) {
           e.preventDefault();
           state.setTextureModalOpen(false);
           return;
         }
-        if (state.storyOpen) {
+        if (state.storyOpen && !state.storyMinimized) {
           e.preventDefault();
-          stopNarrationAudio();
-          state.setStoryOpen(false);
+          if (audioSnap.activeKind === 'story' && audioSnap.isPlaying) {
+            state.setStoryMinimized(true);
+          } else {
+            if (audioSnap.activeKind === 'story') {
+              stopNarrationAudio();
+            }
+            state.setStoryOpen(false);
+          }
           return;
         }
         if (isEditableElement(e.target)) {
@@ -48,8 +58,26 @@ export function useKeyboardShortcuts(): void {
         }
         if (state.selectedPartId !== null) {
           e.preventDefault();
-          stopNarrationAudio();
-          state.selectPart(null);
+          if (
+            !state.inspectorMinimized &&
+            audioSnap.activeKind === 'part' &&
+            audioSnap.isPlaying
+          ) {
+            state.setInspectorMinimized(true);
+          } else {
+            if (audioSnap.activeKind === 'part') {
+              stopNarrationAudio();
+            }
+            state.selectPart(null);
+          }
+          return;
+        }
+        if (state.storyOpen && state.storyMinimized) {
+          e.preventDefault();
+          if (audioSnap.activeKind === 'story') {
+            stopNarrationAudio();
+          }
+          state.setStoryOpen(false);
           return;
         }
         if (state.screen === 'workbench' || state.screen === 'showcase') {

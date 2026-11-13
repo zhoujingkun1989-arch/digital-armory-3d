@@ -1,0 +1,988 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "g17",
+  "generatedAt": "2026-11-12T22:36:44.369166+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "GLOCK 17 Gen 3 Service Pistol",
+    "subtitle": "9×19mm Safe Action Semi-Automatic System",
+    "originCountry": "Austria",
+    "weaponType": "Semi-Automatic Service Pistol",
+    "categoryLabel": "Semi-Automatic Pistol",
+    "actionMechanism": "Short-Recoil Tilting Barrel · Striker-Fired Safe Action",
+    "statusLabel": "In Vault · Ready",
+    "description": "The definitive polymer-framed combat handgun that redefined global service sidearms. Engineered across 28 precision components spanning a carbonitride steel slide, cold-hammer-forged polygonal barrel, and the patented three-tier Safe Action trigger assembly, supporting staged exploded visualization and real-time operational kinematics.",
+    "highlights": [
+      "2K Ultra-Realistic PBR Textures",
+      "4 Modular Assemblies · 28 Exploded Nodes",
+      "7-Phase Dynamic Ballistic Cycle",
+      "Cutaway X-Ray Engagement Inspection"
+    ],
+    "workbenchTitle": "GLOCK 17 Kinetic Anatomy & Exploded Armory",
+    "workbenchSubtitle": "4 Assemblies · 28 Precision Nodes · Staged Disassembly & Continuous Striker-Fire Simulation",
+    "cutawayLabel": "Safe Action Focus",
+    "cutawayTitle": "Switch to transparent cutaway viewport focusing on cruciform sear and striker interface",
+    "searchPlaceholder": "Search component or node (e.g. Striker, U-08)...",
+    "firingMilestoneLabel": "Muzzle Exit / Unlock",
+    "rateOfFire": "Semi-Automatic",
+    "timelinePresets": {
+      "assembled": {
+        "label": "In Battery",
+        "subLabel": "0%",
+        "desc": "Fully locked combat configuration with complete internal mechanical engagement."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Standard maintenance breakdown: slide, barrel, captured recoil assembly, polymer receiver, and magazine."
+      },
+      "upper_mag_strip": {
+        "label": "Detail Strip",
+        "subLabel": "65%",
+        "desc": "Subassembly separation of the firing pin assembly, extractor depressor plunger, safety plunger, and internal magazine spring."
+      },
+      "full_explode": {
+        "label": "Full Exploded View",
+        "subLabel": "100%",
+        "desc": "Frame pins extracted, locking block unseated, and cruciform trigger group isolated across all 28 structural components."
+      }
+    },
+    "firingPhases": {
+      "trigger_pull": {
+        "shortLabel": "Trigger Depress",
+        "title": "Phase 1 · Trigger Depress & Passive Safety Disengagement",
+        "description": "Index finger depression flushes the central safety paddle, permitting rearward movement of the trigger bar. As the bar translates aft, its raised triangular lobe pushes the spring-loaded firing pin safety plunger upward, clearing the striker path while the cruciform sear draws the partially tensioned firing pin to full compression."
+      },
+      "sear_release": {
+        "shortLabel": "Sear Release",
+        "title": "Phase 2 · Connector Deflection & Striker Trip",
+        "description": "Reaching maximum travel, the cruciform toe engages the angled ramp of the trigger connector, compelling the sear to cam downward out of the drop-safety shelf. Stripped of support, the striker accelerates forward under driving spring tension to impact the cartridge primer."
+      },
+      "projectile_exit": {
+        "shortLabel": "Bullet Exit",
+        "title": "Phase 3 · Propellant Deflagration & Muzzle Exit",
+        "description": "The primed charge deflagrates into expanding high-pressure propellant gases, driving the 9mm projectile through the polygonal rifling bore. The bullet leaves the muzzle at supersonic velocity, initiating an expanding incandescent gas jet."
+      },
+      "unlock_recoil": {
+        "shortLabel": "Barrel Unlock",
+        "title": "Phase 4 · Browning Recoil Impulse & Barrel Tilt",
+        "description": "Equal-and-opposite recoil thrust drives the slide and barrel rearward together for approximately three millimeters. The barrel underlug then strikes the steel locking block ramp, pivoting the chamber hood downward out of the ejection port to unlock the slide for independent travel."
+      },
+      "extract_eject": {
+        "shortLabel": "Extract & Eject",
+        "title": "Phase 5 · Casing Extraction & Ejector Impact",
+        "description": "Continuing rearward under residual momentum, the claw extractor pulls the spent brass case from the chamber. The rim impacts the rigid steel ejector arm on the frame housing, pivoting the spent hull laterally out through the open ejection port."
+      },
+      "feed_lock": {
+        "shortLabel": "Feed & Lock",
+        "title": "Phase 6 · Magazine Strip, In-Battery Feed & Pre-Cock",
+        "description": "The compressed flat-wire recoil spring reasserts dominance, propelling the slide back forward to strip a fresh cartridge from the feed lips. The round glides along the integral feed ramp into the chamber as the barrel cams upward into full battery, catching the striker foot at half-cock."
+      },
+      "trigger_reset": {
+        "shortLabel": "Trigger Reset",
+        "title": "Phase 7 · Connector Re-engagement & Tactile Reset",
+        "description": "As the shooter relaxes trigger pressure, the trigger bar moves forward, allowing the slide-cammed connector to snap back outboard. The cruciform sear resets beneath the firing pin lug with an audible and tactile click, resetting the internal drop shelf for subsequent cycles."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "塑料奇迹与无声风暴：格洛克 17 颠覆轻武器工业的技术史诗",
+      "deck": "从奥地利帘布冲压件作坊跨界突围，加斯顿·格洛克以高强度聚合物与三重被动保险，撕裂了全金属击锤手枪统领百年的传统法则。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1980–1981",
+          "title": "军备招标的局外赌徒",
+          "paragraphs": [
+            "1980 年，奥地利联邦陆军发出严苛招标书，要求寻找一款新一代制式军用手枪，以替换二战遗留的瓦尔特 P38。军方开出了一长串当时近乎苛刻的指标：全枪重量不得超过八百克、零件总数极度精简、容弹量不得少于八发、在严寒泥沙与极度跌落测试中必须保持绝对不走火，同时枪身必须能承受上万发高压弹药射击而不产生结构疲劳。",
+            "彼时欧洲主流轻武器巨头如伯莱塔、黑克勒-科赫与西格-绍尔均在传统铝合金或冲压钢制击锤架构中深耕，而毫无枪械制造履历的加斯顿·格洛克（Gaston Glock）却在维也纳近郊敏锐地察觉到了破局点。他此前经营的工厂专注于高分子聚合物与冲压军工刀具，对注塑工程塑料的力学特性与生产成本有着异于传统枪匠的理解。",
+            "格洛克并没有受困于既有的双动击锤思维。他召集了欧洲顶尖的射击教练、枪械军官与材料科学家闭门研讨数周，最终得出一个近乎叛逆的结论：军警一线最需要的不是多重手动安全保险栓，而是一支随时拔枪便能射击、不受泥沙油脂困扰、且永远无需担心意外走火的绝对工具。"
+          ],
+          "audioScript": "一九八零年，奥地利陆军启动了新一代手枪招标。面对军方近乎苛刻的轻量化与严酷环境要求，欧洲老牌兵工厂仍在沉重的全金属机匣里打转。毫无造枪经验的加斯顿·格洛克带着他对高分子聚合物的深刻认知闯入赛道。他敏锐地意识到，士兵在生死关头不需要复杂的手动保险，而需要一把拔枪即射、轻便坚韧的绝对武器。一场颠覆传统认知的轻武器风暴，正在维也纳悄然酝酿。",
+          "audioUrl": "audio/g17/story_act1_zh.mp3",
+          "focusPartId": "frame",
+          "focusPartLabel": "聚合物下机匣"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1981–1982",
+          "title": "聚合物机匣与二十八件神话",
+          "paragraphs": [
+            "加斯顿·格洛克在自家庭院改建的简易车间里搭建了试制线。传统手枪通常包含六十至上百个精细机加零件，稍有沙尘侵入即面临卡滞危险，而格洛克在图纸上大刀阔斧地合并工位，将全枪所有零部件总数直接压缩到了惊人的二十八个。整支手枪的下半部分被注塑成一体化的高强度工程聚合物机匣，四个小型淬硬钢滑轨直接内嵌于塑料骨架中承载套筒。",
+            "在当时的军火界，“塑料手枪”被传统保守派斥为不堪一击的玩具。然而在奥地利军方进行的一连串摧毁性摸底测试中，格洛克样枪展现了骇人的坚韧：在零下四十摄氏度的冰封环境下、在浸泡浓盐水与机油甚至经历重型卡车反复碾压后，聚合物机匣依靠其天然的吸震弹性完好无损，枪机闭锁配合依然精密如初。",
+            "更令军械专家折服的是该枪对金属件的处理。格洛克在碳钢套筒与冷锻枪管表面引入了盐浴复合碳氮共渗工艺（Tenifer 渗氮），表面显微硬度逼近金刚石，耐腐蚀性能甚至超越不锈钢。十七发双排大容量弹匣配合六百多克的极轻自重，让这支加斯顿·格洛克的第十七项公司专利设计（故名 G17）以压倒性优势横扫靶场，以 P80 的制式代号正式列装奥地利军方。"
+          ],
+          "audioScript": "格洛克在图纸上大刀阔斧地剔除冗余，将全枪零件总数极致压缩至二十八个。他大胆采用注塑成型的高强度工程塑料打造握把机匣，并将耐磨淬硬钢滑轨直接嵌合其中。在冰冻、盐雾、沙尘与重载碾压的极限测试中，这种柔韧的聚合物机匣展现出令传统全钢枪身汗颜的抗冲击能力。配合表面经过超高硬度渗氮处理的套筒，格洛克的第十七项专利作品横扫靶场，以压倒性优势赢得了军方订单。",
+          "audioUrl": "audio/g17/story_act2_zh.mp3",
+          "focusPartId": "slide",
+          "focusPartLabel": "套筒主体"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1982–1988",
+          "title": "Safe Action：平移击针的工程精粹",
+          "paragraphs": [
+            "格洛克 17 最具革命性的机械灵魂，在于其彻底摒弃外露击锤、开创性的平移击针式火控机制（Safe Action）。整套系统由三重全自动被动保险构成：扳机叶片中央的第一重自锁舌片、套筒内部常闭的第二重弹簧击针保险柱塞、以及扳机连杆尾部与机匣阻铁斜面配合的第三重防跌落十字平台。",
+            "在未扣动扳机时，击针被扳机连杆十字尾挂载于半待击位置，此时击针簧的储能不足以击发底火；若枪支意外自高处跌落，缺乏纵向移动空间的十字尾无法下沉脱扣，且击针通道被坚硬的金属柱塞物理封死。只有当射手手指压入扳机、依次顶开柱塞并后拉连杆直至全行程终点时，阻铁斜面才迫使十字尾下潜，彻底释放击针冲向底火。",
+            "在开闭锁几何学上，格洛克精炼了约翰·勃朗宁的枪管短后坐倾转原理：枪管后端的方形弹膛外廓直接嵌合于套筒抛壳窗内形成闭锁，省去了传统枪管上繁琐的闭锁凸台加工；枪管下方的开锁导引斜面在后坐三毫米后撞击机匣内部的高强度钢制闭锁块，迫使枪管尾部下倾脱扣。结构极致精炼，却赋予了自动机前所未有的可靠余量。"
+          ],
+          "audioScript": "格洛克十七的核心灵魂在于它独步天下的安全射击系统。扳机保险舌片、内部垂直击针保险柱塞，以及尾部的防跌落十字连杆，构成了无懈可击的三重被动防线。平移击针在常态下仅处于半储能状态，任凭高空坠落也绝不走火；唯有扣动扳机的瞬间，连杆才会压缩击针并引导十字尾潜下阻铁释放打击。化繁为简的勃朗宁方形弹膛闭锁，更为整枪赋予了极致顺畅的自动循环体验。",
+          "audioUrl": "audio/g17/story_act3_zh.mp3",
+          "focusPartId": "trigger_with_bar",
+          "focusPartLabel": "双阶保险扳机与十字尾连杆"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1988–至今",
+          "title": "风靡全球：勤务手枪的黄金标准",
+          "paragraphs": [
+            "进入二十世纪八十年代末，格洛克大步跨过大西洋进军北美执法与民用防卫市场。彼时美国正面临街头重火力犯罪浪潮，警方普遍配备的六发左轮手枪与大尺寸双动单排手枪在火力持续性上捉襟见肘。格洛克 17 凭借可靠的十七发弹匣容量、始终如一的扳机扣力以及极端环境下的免维护性，迅速在全美掀起执法换装风暴，一度占据北美警用市场百分之六十以上的份额。",
+            "伴随实战反馈，格洛克持续演进：第三代（Gen3）产品在下机匣前端整合了标准配件导轨以挂载战术灯，在握把前部雕刻出贴合人手的指槽，并在抽壳钩上集成了膛内有弹物理指示台；在内部结构上，增加了固定闭锁块的第二根上销钉，进一步稳固了应对高膛压弹药时的冲击韧性。",
+            "如今，格洛克 17 已成为全球五十余个国家特种部队、军警单位与射击运动的通用图腾。从战术防卫到好莱坞银幕，它开创的“聚合物机匣加平移击针纯双动”技术范式，彻底重塑了人类对勤务随身武器的认知标准，成为了现代轻武器历史上难以逾越的工业丰碑。"
+          ],
+          "audioScript": "二十世纪八十年代末，格洛克手枪横扫北美执法市场。它凭借十七发充沛弹量、一致的扳机行程与极高的抗污垢冗余度，取代了陈旧的转轮与重型金属手枪。第三代型号进一步引入了皮卡汀尼附件导轨与双销闭锁块加固设计，使其成为全球军警特战力量的黄金基准。格洛克不仅打造了一件热销武器，更彻底确立了现代聚合物平移击针手枪的工业标准。",
+          "audioUrl": "audio/g17/story_act4_zh.mp3",
+          "focusPartId": "locking_block",
+          "focusPartLabel": "金属闭锁块"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Safe Action 三重被动保险火控矩阵",
+          "tag": "火控安全革新",
+          "summary": "由扳机舌片自锁、机匣弹簧柱塞与十字尾防跌落平台构成的无外置手动保险体系。日常携带与剧烈跌落时击针处于半待击且完全物理阻断，射手拔枪扣压则逐级顺畅解除，兼具极端安全性与战术瞬时反应能力。",
+          "focusPartId": "trigger_with_bar",
+          "focusPartLabel": "保险扳机十字连杆"
+        },
+        {
+          "id": "bt2",
+          "title": "钢塑嵌合式承载聚合物机匣",
+          "tag": "结构轻量化与吸能",
+          "summary": "采用工程高分子聚合物一次注塑成型枪身，并在关键受力滑轨位置嵌合四块淬硬碳钢导向块。全枪较同级金属手枪减重近百分之三十，且工程塑料的高弹性阻尼大幅吸收了高压后坐能量，改善了射击跳动与疲劳寿命。",
+          "focusPartId": "frame",
+          "focusPartLabel": "聚合物握把下机匣"
+        },
+        {
+          "id": "bt3",
+          "title": "方形弹膛直接闭锁与模块化闭锁块",
+          "tag": "闭锁几何简化",
+          "summary": "省去繁杂枪管闭锁肋，直接利用冷锻枪管方形尾部与套筒抛壳窗进行大面积刚性咬合。枪管下耳与机匣内可拆换淬硬钢闭锁块撞击完成倾转开锁，极大精简工时并提高了抗污垢杂质与大容量后坐冲击能力。",
+          "focusPartId": "locking_block",
+          "focusPartLabel": "金属闭锁块"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1980",
+          "title": "军方招标与跨界组队",
+          "detail": "加斯顿·格洛克在维也纳获悉奥地利军方 P80 严苛手枪招标案，汇聚顶尖射击专家与聚合物工程师启动秘密研制。"
+        },
+        {
+          "year": "1982",
+          "title": "测试全胜与定型列装",
+          "detail": "格洛克 17 样枪在严苛极端环境与两万发耐用性盲测中取得全胜，正式以 P80 编号作为奥地利军用制式武器列装。"
+        },
+        {
+          "year": "1986",
+          "title": "登陆北美掀起聚合物风暴",
+          "detail": "通过美国 BATF 进口认证并正式进军美国警用防卫市场，一扫“塑料手枪逃避安检”谣言，迅速重塑执法手枪生态。"
+        },
+        {
+          "year": "1988",
+          "title": "第二代 Gen2 改型问世",
+          "detail": "引入前后方格防滑纹握把、改进型弹匣以及内部火控组件微调，全面满足全球多国军警实战恶劣环境采购需求。"
+        },
+        {
+          "year": "1998",
+          "title": "第三代 Gen3 确立现代基准",
+          "detail": "下机匣前端加装战术导轨、增设握把指槽与外露带突起抽壳钩，并加装第二根闭锁块加固销，奠定全球产量最大的经典版本。"
+        },
+        {
+          "year": "2010",
+          "title": "第四代双弹簧与模块化演进",
+          "detail": "引入双重同轴复进簧与可换握把背板，格洛克家族持续确立现代平移击针聚合物手枪的行业标杆地位。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "The Polymer Revolution: Gaston Glock and the Rebirth of Modern Combat Handguns",
+      "deck": "Forged by an Austrian industrial outsider using structural polymer and striker kinematics, the Glock 17 shattered century-old metallic design dogmas to become the defining sidearm of the modern era.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1980–1981",
+          "title": "The Outsider's Bid",
+          "paragraphs": [
+            "In 1980, the Austrian Federal Ministry of Defence issued an unforgiving set of combat specifications to replace their aging fleet of World War II-era Walther P38 service sidearms. The requirements read like an engineering paradox: the new pistol could weigh no more than eight hundred grams, had to hold at least eight rounds, must withstand continuous exposure to mud, snow, and extreme drop impacts without a single accidental discharge, and needed to endure thousands of overpressure nine-millimeter rounds without material fatigue.",
+            "While legacy European small arms titans like Beretta, Heckler and Koch, and SIG Sauer approached the problem with traditional cast aluminum and stamped steel hammer-fired platforms, Gaston Glock saw an unencumbered path forward from his workshop in Deutsch-Wagram. Having mastered industrial polymer injection tooling and precision metal stampings for field knives and machine gun belt links, Glock viewed firearms through the lens of modern composite chemistry rather than archaic gunsmithing tradition.",
+            "Gaston Glock convened an ad-hoc council of elite military shooters, competitive marksmen, and mechanical ordnance technicians. Their unanimous tactical consensus rejected manual safeties, complex decocking levers, and heavy metallic frames. The modern frontline operator demanded an instinctive tool that fired instantly under extreme duress, was impervious to grit and solvent rot, and possessed innate mechanical drop safety."
+          ],
+          "audioScript": "In nineteen eighty, the Austrian army initiated a competitive search for a next-generation service pistol. While legacy arms manufacturers were confined to traditional cast steel and complex double-action hammers, Gaston Glock entered the trials with no prior gunmaking background. Leveraging his deep expertise in industrial polymers and precision metal stampings, Glock realized frontline soldiers did not want confusing manual safeties. They required an ultra-light, instinctive, and impervious sidearm that would cycle without fail through freezing mud and salt spray. An engineering revolution was about to unfold.",
+          "audioUrl": "audio/g17/story_act1_en.mp3",
+          "focusPartId": "frame",
+          "focusPartLabel": "Polymer Receiver Frame"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1981–1982",
+          "title": "The Twenty-Eight Component Miracle",
+          "paragraphs": [
+            "Working with prototype machinery in his private facility, Gaston Glock radically re-engineered handgun architecture. Where contemporary combat sidearms commonly required sixty to over one hundred intricately machined springs, levers, and detents, Glock pruned every non-essential moving element, consolidating the entire working mechanism into an astonishing twenty-eight discrete components. The lower receiver was molded in one seamless piece using impact-resistant, high-rigidity polymer, anchored by four small hardened-steel guide rails embedded directly within the frame.",
+            "When initial prototypes were presented, skeptical military examiners initially ridiculed the weapon as a disposable plastic firearm. However, comprehensive stress-testing quickly silenced detractors. The polymer frame resisted extreme drop tests, operated reliably at minus-forty degrees Celsius, absorbed the violent shock of overpressure proof loads, and remained totally unaffected by caustic lubricants and salt fog.",
+            "Glock applied an equally revolutionary surface hardening technology to the carbon steel slide and cold-hammer-forged barrel. The proprietary Tenifer ferritic nitrocarburizing treatment altered the surface microstructure of the steel to near-diamond hardness, offering unparalleled wear resistance and rust protection. Paired with a revolutionary seventeen-round steel-lined polymer magazine, the design—patented as Gaston Glock's seventeenth corporate invention—shattered all military field trials and was officially commissioned as the P80."
+          ],
+          "audioScript": "Glock stripped weapon architecture down to its mathematical bare minimum, slashing the parts count to just twenty-eight components. He molded the entire receiver from a rugged high-strength polymer, embedding four localized steel guide rails to seat the slide. Subjected to freezing temperatures, sand submersion, and repeated heavy truck drive-over trials, the polymer body flexed under load and snapped back into true alignment. Paired with a salt-bath nitrocarburized steel slide and a seventeen-round magazine, Glock's seventeenth company patent conquered the Austrian military trials.",
+          "audioUrl": "audio/g17/story_act2_en.mp3",
+          "focusPartId": "slide",
+          "focusPartLabel": "Slide"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1982–1988",
+          "title": "The Safe Action Heartbeat",
+          "paragraphs": [
+            "The mechanical triumph of the Glock 17 resides in its patented Safe Action system—a fully integrated, striker-fired operating mechanism that discarded the external hammer entirely. The firing train relies on three sequentially disengaged passive safeties: an articulated trigger safety blade, a spring-biased vertical firing pin plunger, and a cruciform trigger bar resting on a rigid drop-safety ramp within the rear housing.",
+            "In the resting state, the striker remains at partial tension, prevented by physics from detonating the primer even if the weapon suffers a violent inertia drop. The striker safety cylinder completely seals the striker channel, while the rear cruciform tab sits trapped on its housing shelf. Only as the operator's finger pulls through the trigger stroke does the trigger bar move rearward, camming the safety plunger clear, compressing the striker spring to full tension, and finally deflecting down the connector ramp to trip the striker.",
+            "The locking geometry refined John Browning's classic short-recoil tilting barrel action into a streamlined powerhouse. Rather than utilizing fragile radial locking lugs, the barrel's squared chamber block locks directly into the slide's ejection port. Upon discharge, slide and barrel recoil together for approximately three millimeters until the barrel underlug strikes the frame-mounted steel locking block, camming the chamber down to unlock the slide with total cyclic reliability."
+          ],
+          "audioScript": "At the mechanical core of the Glock seventeen lies the brilliant Safe Action firing system. By eliminating external hammers, Glock implemented three passive safeties: a trigger face lever, a vertical firing pin safety plunger, and a drop-safe cruciform bar. The firing pin rests safely at half-tension, unable to reach the primer without a full trigger pull. As the trigger is drawn, the cruciform completes the striker compression before deflecting down the connector ramp to strike the primer. Coupled with a squared-chamber tilting barrel, the pistol delivers flawless automatic feeding.",
+          "audioUrl": "audio/g17/story_act3_en.mp3",
+          "focusPartId": "trigger_with_bar",
+          "focusPartLabel": "Trigger with Safety Blade & Cruciform Bar"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "1988–Present",
+          "title": "The Global Standard",
+          "paragraphs": [
+            "By the late 1980s, Glock ventured into the North American market during a critical operational transition. Faced with rising domestic criminal firepower, law enforcement agencies discovered that standard six-shot revolvers and low-capacity metal handguns were outmatched. The Glock 17, with its seventeen-round standard capacity, uniform trigger pull, and absolute tolerance for adverse environmental neglect, swept across police departments, ultimately capturing over sixty percent of the American law enforcement market.",
+            "Operational feedback continuously honed the platform into the definitive Generation 3 variant. Gen3 introduced an integrated universal accessory rail for weapon-mounted lights and lasers, ergonomic finger grooves molded into the grip, a loaded chamber indicator integrated into the extractor claw, and an additional steel cross-pin above the trigger to reinforce the locking block during high-pressure firing impulses.",
+            "Today, the Glock 17 is in service across more than fifty armed forces, intelligence services, and elite counter-terrorist tactical teams worldwide. From arctic patrols to desert operations, its striker-fired, polymer-frame ethos has become the universal yardstick against which every modern military handgun is judged, standing as a landmark achievement in late-twentieth-century industrial engineering."
+          ],
+          "audioScript": "By the late nineteen eighties, the Glock seventeen swept the global law enforcement market. Its massive seventeen-round firepower, consistent trigger pull, and extreme resistance to fouling replaced heavy revolvers across thousands of police departments. The Third Generation model introduced an integral accessory rail, finger grooves, and an extra locking block pin to withstand punishing duty cycles. Today, the Glock seventeen stands as the undisputed benchmark for military combat sidearms worldwide.",
+          "audioUrl": "audio/g17/story_act4_en.mp3",
+          "focusPartId": "locking_block",
+          "focusPartLabel": "Locking Block"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Safe Action Three-Tier Passive Safety Matrix",
+          "tag": "Passive Fire-Control Matrix",
+          "summary": "An interlocking safety system comprising a trigger blade lock, an internal vertical plunger safety, and a cruciform drop-shelf that renders the partially cocked striker physically incapable of detonating a cartridge during violent drops, yet allows lightning-fast, snag-free readiness with a single consistent trigger press.",
+          "focusPartId": "trigger_with_bar",
+          "focusPartLabel": "Trigger Bar & Cruciform Assembly"
+        },
+        {
+          "id": "bt2",
+          "title": "Unitized Polymer Receiver with Steel Inserts",
+          "tag": "Polymer Engineering & Damping",
+          "summary": "A monolithic high-strength nylon-based composite lower frame that cuts dry weapon mass by nearly thirty percent compared to traditional steel frames. The material flexes microscopically under sharp recoil impulses, mitigating felt recoil shock and extending mechanical cyclic fatigue life.",
+          "focusPartId": "frame",
+          "focusPartLabel": "Polymer Receiver Frame"
+        },
+        {
+          "id": "bt3",
+          "title": "Squared Hood Ejection Port Locking & Hardened Block",
+          "tag": "Refined Browning Tilting Geometry",
+          "summary": "Eliminates complicated internal machining by seating the cold-hammer-forged barrel's square chamber block directly into the slide's ejection port. An easily serviced, hardened alloy locking block absorbs barrel camming stresses, creating immense reliability in sand and grit environments.",
+          "focusPartId": "locking_block",
+          "focusPartLabel": "Locking Block"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1980",
+          "title": "Austrian Army P80 Contract Tender",
+          "detail": "Gaston Glock assembles a handpicked council of ballistic and materials experts to formulate the architecture for the Austrian military sidearm competition."
+        },
+        {
+          "year": "1982",
+          "title": "Tender Victory and Official Service Adoption",
+          "detail": "The Glock 17 dominates the comprehensive twenty-thousand-round trials and environmental torture gauntlet, entering service as the P80."
+        },
+        {
+          "year": "1986",
+          "title": "North American Market Entry",
+          "detail": "Secures import clearance through the US ATF, dispelling urban myths regarding polymer construction and capturing substantial domestic law enforcement orders."
+        },
+        {
+          "year": "1988",
+          "title": "Generation 2 Structural Evolution",
+          "detail": "Integrates textured front-and-rear grip checkering, updated steel-lined magazine bodies, and internal fire-control component durability upgrades."
+        },
+        {
+          "year": "1998",
+          "title": "Generation 3 Standard Configuration",
+          "detail": "Introduces the frame accessory rail, finger grooves, visual loaded chamber indicator, and an extra locking block cross-pin for military adoption worldwide."
+        },
+        {
+          "year": "2010",
+          "title": "Gen 4 Dual Recoil and Modular Backstrap System",
+          "detail": "Upgrades to a concentric dual recoil spring assembly and configurable frame backstraps, reaffirming the Glock family's commanding global presence."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "slide": {
+      "partId": "slide",
+      "bomCode": "U-01",
+      "calloutLabelEn": "Nitride Steel Slide",
+      "zh": {
+        "roleTag": "核心运动自动机 / 闭锁体",
+        "overview": "套筒是格洛克自动手枪最主要的可动往复惯性质量块，扣合于机匣上方的四段淬硬导轨上。其内部集成了击针通道、抽壳系统与复进座孔，外部右上角设有标志性的方形抛壳窗与枪管闭锁对咬。",
+        "craftAndMaterial": "采用高强度合金钢整块CNC精密铣削加工，表面经过严苛的高温辉光离子碳氮共渗处理，显微硬度可达洛氏六十四度，极度耐磨耐腐蚀且呈现哑光黑抗反光涂层。",
+        "kinematicRole": "击发阶段四在火药燃气冲量推动下与枪管共同后坐约三毫米并带动开锁，随后单独自然后坐完成抽壳与压下击针，阶段六在复进簧驱动下推弹进膛并重锁；在野战分解进度百分之十四向前滑出下机匣。",
+        "designHighlight": "方形切削断面不仅极大简化了铣削工时，更利用抛壳窗前沿直接与枪管方形膛室贴合，彻底抛弃了传统勃朗宁手枪复杂的弧形闭锁肋，显著降低了加工累积公差与闭锁卡死概率。",
+        "audioScript": "眼前的钢制套筒是格洛克的机动心脏。整块高强度合金钢在铣削成型后，经过深度渗氮硬化，表面甚至能抵御海水长年侵蚀。它顶部的方块抛壳窗直接充当了开闭锁卡槽，简单纯粹却坚如磐石。",
+        "audioUrl": "audio/g17/parts/slide_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Primary Recoiling Breech Block",
+        "overview": "The slide acts as the primary reciprocating mass of the pistol, riding atop the polymer frame on four stamped steel guide rails. It houses the striker mechanism, extractor assembly, and features the squared ejection port that directly locks the barrel breech.",
+        "craftAndMaterial": "Precision CNC milled from solid high-grade alloy steel and treated with a gas nitrocarburizing process that yields a diamond-hard Rockwell C 64 surface with extreme salt-spray corrosion resistance and a non-reflective matte black finish.",
+        "kinematicRole": "During phase four it recoils with the barrel for three millimeters before unlocked separation, traveling rearward to extract shells and half-cock the striker, then cycling forward in phase six to chamber a round; removed off the front frame rails at fourteen percent disassembly.",
+        "designHighlight": "By utilizing the squared breech block locking directly into the ejection port, Glock eliminated Browning-style radial locking lugs, slashing manufacturing operations and maximizing combat dirt clearances.",
+        "audioScript": "This nitrocarburized steel slide forms the moving heart of the Glock seventeen. Milled from a monolithic billet, its outer case is hardened against harsh saltwater immersion. The geometric ejection port doubles as the primary locking pocket, creating a brutally efficient lockup.",
+        "audioUrl": "audio/g17/parts/slide_en.mp3"
+      }
+    },
+    "front_sight": {
+      "partId": "front_sight",
+      "bomCode": "U-02",
+      "calloutLabelEn": "Screw-On Front Sight",
+      "zh": {
+        "roleTag": "前瞄准基准件",
+        "overview": "准星采用片状立柱构造，通过底部椭圆座垂直紧密压装在套筒前上方的预留定位孔中。准星后部正对射手方向嵌有醒目的圆形白斑，构成了快速概略瞄准的视觉前基点。",
+        "craftAndMaterial": "基体采用耐冲击高韧性工程注塑尼龙，内部带金属加强芯衬底，经由套筒内侧一颗专用的超薄六角防松螺丝牢固锁死，能抵御数万次后坐急停冲击。",
+        "kinematicRole": "全射击周期中完全随套筒以极高加速度进行前后往返后坐，自身不产生任何相对运动；在全枪深度分解进度百分之四十六时从套筒顶部拆除。",
+        "designHighlight": "第三代格洛克将早期一代易脱落的压入式塑料膨胀销，改进为高可靠性的螺钉底锁结构，既便于特战射手快速更换氚光夜视准星，又保证了剧烈跳动下的瞄准基线绝对归零。",
+        "audioScript": "这是固定在套筒前端的片状准星。三代型号采用了更加稳固的螺纹固定方式，背面点缀的高反差白点能引导射手在半秒内建立基准视线，即使经受上万发九毫米强装药的震荡也不会松动偏移。",
+        "audioUrl": "audio/g17/parts/front_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Primary Forward Sighting Reference",
+        "overview": "The front sight is a low-profile post mounted directly into an oval cutout on the top forward section of the slide. It features a bright white inlay dot facing the shooter to establish quick combat sight picture alignment.",
+        "craftAndMaterial": "Molded from high-impact glass-filled polymer over a steel thread insert, secured from beneath the slide ceiling via a specialized low-profile hex screw to withstand severe recoil deceleration.",
+        "kinematicRole": "Remains static relative to the slide throughout all seven firing phases while undergoing violent cycling accelerations; stripped upward from the slide at forty-six percent disassembly progress.",
+        "designHighlight": "Gen Three phased out the older friction-fit expanding pins in favor of a positive screw-on base, enabling armorers to swap to tritium night sights quickly without compromising windage stability under high-rate fire.",
+        "audioScript": "Mounted directly atop the muzzle end of the slide, this front sight post gives the shooter an immediate point of index. The high-contrast white dot aligns naturally with the rear notch, locked tight by an under-slide screw to shrug off violent cycling forces.",
+        "audioUrl": "audio/g17/parts/front_sight_en.mp3"
+      }
+    },
+    "rear_sight": {
+      "partId": "rear_sight",
+      "bomCode": "U-03",
+      "calloutLabelEn": "Dovetail Rear Sight",
+      "zh": {
+        "roleTag": "燕尾槽后瞄具",
+        "overview": "照门为矩形缺口瞄具，通过紧密的横向过盈配合压入套筒后上方的倒八字形燕尾槽中。照门缺口边缘涂装有标志性的三面闭合白色倒U形标线，与前准星白点形成球托门框瞄准画面。",
+        "craftAndMaterial": "主体由抗拉抗压热塑性工程塑料注塑成形，具备轻微的自润滑压配微变弹性，工装推弹器可施加横向推力微调位置以校正弹道风偏。",
+        "kinematicRole": "全程跟随套筒做高速往复运动，其缺口横向几何中心与枪膛中心轴线保持恒定瞄准视差；在总分解进度百分之四十六时经由横向推槽分离。",
+        "designHighlight": "经典的倒U形白框设计彻底颠覆了传统的左右双圆点后瞄，射手眼部能天然且本能地将前准星白点落入U框凹槽中央，极大提升了近距离本能射击与极低光照下的首发瞄准速度。",
+        "audioScript": "这是后部燕尾槽照门。经典的倒优形白色画框让射击者能下意识地将准星白圆点套入其中。通过专门的推准器横向平移，枪械师可以在没有工具台的野外精确修正远程横风偏差。",
+        "audioUrl": "audio/g17/parts/rear_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Windage Drift Rear Notch",
+        "overview": "The rear sight is a drift-adjustable square notch press-fitted into a transversal dovetail slot at the upper rear of the slide. It is characterized by Glock's iconic white outline box that frames the front sight dot during target acquisition.",
+        "craftAndMaterial": "Injection molded from resilient fiber-reinforced polymer engineered to retain exact frictional clamp inside the steel dovetail without shearing, also available in stamped steel versions.",
+        "kinematicRole": "Remains rigid with the slide during the complete seven-stage cycle, sustaining brutal slide deceleration forces; drifts sideways out of the dovetail cut at forty-six percent disassembly.",
+        "designHighlight": "The white bracket silhouette eliminates the visual confusion common with traditional three-dot arrangements, naturally cupping the circular front sight dot to expedite target acquisition under duress.",
+        "audioScript": "Fitted across a tapered dovetail cut, this rear sight features Glock's legendary white bracket pattern. By framing the front white dot inside the notch, shooters achieve instinctive target alignment. It can be drifted laterally to correct horizontal bullet impact.",
+        "audioUrl": "audio/g17/parts/rear_sight_en.mp3"
+      }
+    },
+    "barrel": {
+      "partId": "barrel",
+      "bomCode": "U-04",
+      "calloutLabelEn": "Cold Hammer Forged Barrel",
+      "zh": {
+        "roleTag": "勃朗宁偏移闭锁核心",
+        "overview": "枪管采用冷锻一体工艺制造，由精密的后段方形高压弹膛与前段圆柱形导气滑膛身组成。枪管尾部下方带有特种角度的双闭锁突耳斜槽，横跨安装在机匣锁块之上。",
+        "craftAndMaterial": "选用高规格优质铬钼钒炮钢精锻打造，内膛采用右旋六角多边形膛线加工，内外表层均经辉光离子渗氮处理，膛内自润滑性好且能承受数万发超压九毫米帕拉贝鲁姆弹击发。",
+        "kinematicRole": "阶段三承受膛压推进弹头；阶段四与套筒协同短后坐三毫米后，下凸耳受机匣闭锁块强制导向带动枪管尾端向下倾折两点三度完成开锁；阶段六被复进套筒推升反向复位并咬合抛壳窗闭锁。",
+        "designHighlight": "多边形膛线消除了传统阴阳膛线的尖锐直角突起，极大改善了高压弹头气密性并降低了磨损与挂铜；方形弹膛的全面包覆提供了极度可靠的弹壳高压防炸膛保护。",
+        "audioScript": "这根经过精密集约冷锻的枪管是开闭锁的关键。它内部没有传统的尖锐膛线，而是光滑圆润的六角多边形内膛，能有效密封膨胀火药燃气。后座时它的尾端顺着下方斜面骤降微倾，瞬间解除闭锁。",
+        "audioUrl": "audio/g17/parts/barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Browning Tilt-Lock Pressure Core",
+        "overview": "Manufactured via precision cold hammer forging, this barrel combines a blocky rectangular chamber with a profiled rifled tube. Its lower integral camming lugs interface directly with the steel locking block pinned within the polymer frame.",
+        "craftAndMaterial": "Forged from ultra-tough chrome-moly-vanadium barrel steel, featuring an internal right-hand hexagonal polygonal rifling profile with comprehensive Tenifer or nitrocarburized surface hardening.",
+        "kinematicRole": "Withstands explosive gas pressure during phase three, recoils rearward with the slide for three millimeters during phase four before camming down two point three degrees to unlock, then rises into battery during phase six; drops free at twenty-two percent disassembly.",
+        "designHighlight": "Polygonal rifling creates a gas-tight mechanical seal around jacketed rounds without sharp groove corners, extending bore service life beyond fifty thousand rounds while raising muzzle velocity.",
+        "audioScript": "Cold-hammer forged under extreme hydraulic pressure, this barrel features rounded hexagonal rifling instead of square-cut grooves. During recoil, the lower lug cams across the frame block, tilting the chamber down to release the slide and cycle the next round.",
+        "audioUrl": "audio/g17/parts/barrel_en.mp3"
+      }
+    },
+    "recoil_guide_rod": {
+      "partId": "recoil_guide_rod",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Polymer Recoil Guide",
+      "zh": {
+        "roleTag": "复进导向支撑",
+        "overview": "复进簧导杆是一根高强度轴向导向芯棒，横卧在枪管下方的套筒前下半圆导向凹槽中。其后端一体化的大直径圆盘基座，稳固顶在枪管下闭锁耳前端的弧形半圆切槽内。",
+        "craftAndMaterial": "采用高抗冲阻尼聚合物整体注塑成型，前端设有防脱挡头与自锁垫圈；材料具有极其优越的弯曲弹性模量与自吸收振动能力，避免金属对金属摩擦磨损。",
+        "kinematicRole": "阶段四至五为剧烈压缩形变的扁钢丝复进簧提供笔直的几何中心导引，防止其在高频后坐下产生蛇形横向失稳；阶段六引导套筒平稳复进；分解进度百分之二十直接脱出。",
+        "designHighlight": "格洛克选用轻质聚合物导杆而非笨重的钢棒，不仅大幅削减了枪口前方死重，而且注塑聚合物在长期干摩擦下具有免维护、耐泥沙异物刮擦且不易发生不可逆塑性折弯变形的绝佳弹性。",
+        "audioScript": "这根聚合物复进簧导杆看似轻巧，却是防止弹簧扭曲的核心骨架。它采用特种弹性塑料注塑成型，在套筒以每秒数米的惊人速度撞击时，能够轻微形变并吸收高频冲击，确保复进动作行云流水。",
+        "audioUrl": "audio/g17/parts/recoil_guide_rod_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Recoil Spring Guide Spindle",
+        "overview": "The guide rod is a flexible, structural axial spindle positioned directly below the barrel inside the forward channel of the slide. Its rear flange seat anchors directly against the forward face of the barrel lug under-notch.",
+        "craftAndMaterial": "Engineered from solid high-impact engineering polymer with an integrated retaining collar; provides elastic flex memory without taking permanent bends or generating galling friction against the slide.",
+        "kinematicRole": "Maintains linear axial alignment for the recoil spring as it collapses during phases four and five, preventing spring buckling, then guides kinetic expansion in phase six; pops out at twenty percent field strip.",
+        "designHighlight": "Using polymer rather than stainless steel minimizes front-end dead weight and tolerates coarse sand invasion without binding, bending elastically during high-rate slide impacts where metal rods might fracture.",
+        "audioScript": "Resting squarely below the barrel, this polymer guide rod acts as an unyielding core for the recoil spring. Rather than adding steel weight, its resilient polymer spine flexes safely under shock loads, ensuring the compressed spring never bends out of line.",
+        "audioUrl": "audio/g17/parts/recoil_guide_rod_en.mp3"
+      }
+    },
+    "recoil_spring": {
+      "partId": "recoil_spring",
+      "bomCode": "U-06",
+      "calloutLabelEn": "Flat-Wire Recoil Spring",
+      "zh": {
+        "roleTag": "吸收后坐能量 / 推套筒复进",
+        "overview": "复进簧紧密缠绕套于导杆外周，构成原厂一体式组装单元。其前部顶靠在套筒前孔内壁环形凸缘，后部受导杆大头法兰支撑并作用于枪管底耳。",
+        "craftAndMaterial": "精选特种高寿命弹簧钢丝冷拔压轧成扁平截面螺旋弹簧，相较于圆形截面，扁丝结构能在相同轴向压缩空间内堆叠更多的有效圈数与弹性储能，经喷丸抗疲劳处理。",
+        "kinematicRole": "阶段四至五吸收来自套筒与枪管的大部分后坐过剩动能，将其转化为最大极限弹性势能并缓冲撞击；阶段六剧烈释放膨胀，推动重达三百余克的套筒组抓取新弹并强力闭锁。",
+        "designHighlight": "一体封装式扁簧设计彻底消除了早年拆枪清洗时弹簧骤然弹出伤人的隐患，并在高压极限反复充放电式循环下拥有传统圆簧三倍以上的抗应力松弛寿命。",
+        "audioScript": "这圈紧密的扁钢丝复进簧是自动循环的动力源泉。特殊的扁平截面能在极度有限的空间内压缩并储存数十焦耳后坐动能，在瞬间化解后坐冲力的同时，再以雷霆之势将套筒推回复位闭锁。",
+        "audioUrl": "audio/g17/parts/recoil_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Primary Kinetic Energy Reservoir",
+        "overview": "This flat-wire spring is captive-mounted over the guide rod, creating a self-contained spring package. Its forward end seats against the inner muzzle face of the slide while the rear pushes against the guide rod flange.",
+        "craftAndMaterial": "Wound from shot-peened high-tensile spring steel flattened into a rectangular profile, packing substantially higher elastic energy density into a shorter solid-height space than conventional round wire.",
+        "kinematicRole": "Decelerates slide momentum across phases four and five by storing energy, then violently releases that potential in phase six to propel the slide forward and strip a fresh round; detaches as a subassembly at twenty percent strip.",
+        "designHighlight": "The captive flat-wire geometry prevents accidental decompression injuries during disassembly and delivers more consistent cycling velocity even under heavy fouling.",
+        "audioScript": "Wound from flat steel wire, this recoil spring is the energy heart of the cycle. By collapsing into an ultra-short footprint, it soaks up fierce nine-millimeter recoil forces, then snaps forward to chamber incoming cartridges with absolute authority.",
+        "audioUrl": "audio/g17/parts/recoil_spring_en.mp3"
+      }
+    },
+    "slide_cover_plate": {
+      "partId": "slide_cover_plate",
+      "bomCode": "U-07",
+      "calloutLabelEn": "Slide Rear End Plate",
+      "zh": {
+        "roleTag": "尾部封闭锁板",
+        "overview": "套筒尾盖板是一块垂直嵌合在套筒末端的长方形薄壁滑块，位于握把虎口正上方。它沿着套筒两侧的竖直凹槽自下而上滑入，完全封闭了内部击针通道与抽壳钩导杆通道。",
+        "craftAndMaterial": "内部采用冲压钢质骨架内衬以增强刚度，外部包裹耐磨工程尼龙外壳，下部设计有防滑横槽与台阶卡槽，防止内部高压气流与燃粉倒窜入射手眼睛。",
+        "kinematicRole": "全程为击针白色后导套及抽壳钩压杆黑色轴承提供不可后移的硬性后限位基准；在细拆阶段三十六时，需用工具向前推压击针套管解除其预紧卡位方可垂直滑脱。",
+        "designHighlight": "免螺丝卡榫式互锁设计堪称格洛克极简哲学的典范：无需任何螺丝或转销，仅凭内部击针簧衬套的轴向弹力就将尾板牢固自锁在滑槽中，彻底杜绝了震动掉螺丝的机械隐患。",
+        "audioScript": "这块套筒尾盖板是内部各机械长通道的封闭锁闩。它巧妙利用内部击针套筒的向前弹力将自己死死锁在垂直燕尾槽中。不需要任何螺栓紧固，只要用冲子顶起击针套，它就能顺畅向下滑出。",
+        "audioUrl": "audio/g17/parts/slide_cover_plate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Slide Rear Channel Retainer",
+        "overview": "The slide cover plate is a rectangular sliding backplate seated vertically across the rear face of the slide. It seals both the central striker bore and the offset extractor depressor plunger channel.",
+        "craftAndMaterial": "Composed of a stamped steel core over-molded with textured high-strength polymer, engineered to retain internal spring forces while deflecting ejecta debris away from the shooter's eyes.",
+        "kinematicRole": "Provides an immovable rear thrust stop for the striker spacer sleeve and extractor spring bearing during cycles; slid downward out of its vertical grooves at thirty-six percent armorer strip.",
+        "designHighlight": "Employs an ingenious tool-less mechanical interlock where forward pre-tension from the striker assembly keeps the plate captive, completely eliminating screws that could vibrate loose under sustained automatic fire.",
+        "audioScript": "Sitting right at the back of the slide, this cover plate locks the internal firing train in place. Held purely by the forward spring tension of the striker sleeve, it slides off vertically once depressed, demonstrating Glock's screw-free design mastery.",
+        "audioUrl": "audio/g17/parts/slide_cover_plate_en.mp3"
+      }
+    },
+    "striker": {
+      "partId": "striker",
+      "bomCode": "U-08",
+      "calloutLabelEn": "Linear Inertial Striker",
+      "zh": {
+        "roleTag": "平移式惯性击发件",
+        "overview": "击针是格洛克无击锤设计的核心击发构件，轴向水平悬浮于套筒正中央的台阶通孔内。其前部为平直纤细的击针尖，中部为防扭导棱，底部突出一枚至关重要的直角挂机齿。",
+        "craftAndMaterial": "采用高抗冲击韧性不锈钢或特殊工具钢精密加工硬化而成，针尖经圆角抛光钝化以防止击穿底火，底部挂机脚与横向受力表面均经过镜面研磨减小摩擦阻力。",
+        "kinematicRole": "阶段一随着扳机后扣，其挂机齿被十字尾向后拉伸进入全待击状态；阶段二十字尾下沉瞬间挣脱释放，击针在主簧冲动下撞击底火；阶段四后坐时被断路块压下重新半挂机；分解进度三十五向后抽出。",
+        "designHighlight": "击针采用平移撞击而非回转击锤，使全枪内部轴向空间极为紧凑，全枪质心高度和枪管轴线得以贴近射手虎口，产生极其优异的后坐力直线传递感与极低的枪口上跳。",
+        "audioScript": "格洛克没有外露击锤，这枚在套筒内部平移滑动的击针就是点火主角。平时它只被压缩到一半待击深度，即便意外跌落也绝无点火能量；只有扣动扳机至最后一刻，它才被完全后拉并瞬间脱扣撞击。",
+        "audioUrl": "audio/g17/parts/striker_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Direct-Linear Striker Core",
+        "overview": "The striker is the central reciprocating firing element positioned inside the slide's longitudinal striker tunnel. It terminates in a chisel-profile firing pin tip forward and an angled cocking lug extending downward into the frame mechanism.",
+        "craftAndMaterial": "Precision machined from high-tensile stainless alloy steel with heat-treated impact sections, finished with micro-polished engagement flats on the rear cocking foot to ensure a crisp sear break.",
+        "kinematicRole": "Drawn rearward to full cock by the trigger bar during phase one, released in phase two to impact the primer under spring thrust, then caught at half-cock during slide reset in phase seven; pulled free at thirty-five percent strip.",
+        "designHighlight": "The linear striker lowers the bore axis directly into the web of the hand compared to high-slung hammer mechanisms, vastly reducing perceived muzzle flip and split times during rapid strings of fire.",
+        "audioScript": "Replacing the bulky hammer of older handguns, this linear striker travels straight down the center axis of the slide. It rests partially tensioned until your trigger finger completes the stroke, releasing its polished lug to ignite the primer with surgical precision.",
+        "audioUrl": "audio/g17/parts/striker_en.mp3"
+      }
+    },
+    "striker_spring": {
+      "partId": "striker_spring",
+      "bomCode": "U-09",
+      "calloutLabelEn": "Striker Spring & Cups",
+      "zh": {
+        "roleTag": "击针驱动簧组",
+        "overview": "击针簧组件包含主击针弹簧、聚合物白色隔离衬套（Spacer Sleeve）以及位于尾端的一对卡扣式白色分体半圆弹簧杯。整套机构紧密套装在击针后半段杆身上。",
+        "craftAndMaterial": "主簧由高洁净度乐器级不锈钢弹簧钢丝紧密盘绕制成，弹簧杯由自润滑聚缩醛工程塑料注塑加工，两半对合结构能牢固卡死在击针轴颈凹槽内。",
+        "kinematicRole": "在阶段一伴随扳机连杆后拖击针被极致压缩蓄力，在阶段二以强劲的瞬态弹力推动击针前冲刺穿底火；全枪细拆至百分之三十五时随着击针组整体自套筒后端拔出。",
+        "designHighlight": "两片式分体弹簧杯不仅便于无需工装的手工快速装拆，而且半圆缝隙设计还允许进入套筒内的泥水污物顺畅排出，在严酷极端涉水出水射击时有效防止液压闭锁哑火。",
+        "audioScript": "击针簧与前端的白色分体卡杯，是释放雷霆撞击力的储能器。两半对拼的聚合物弹簧杯牢牢卡死弹簧末端，它的缝隙甚至能在枪支涉水浸湿后，迅速排出水汽碎屑，避免击针在套管中产生液压阻滞。",
+        "audioUrl": "audio/g17/parts/striker_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Striker Propulsion Drive Train",
+        "overview": "This assembly comprises the main helical striker spring, an internal spacer sleeve, and two split semi-circular marine spring cups that clamp onto the necked tail of the firing pin.",
+        "craftAndMaterial": "The spring is coiled from music-wire tensile steel; the retaining cups and spacer sleeve are molded from low-friction polyoxymethylene polymer that provides self-lubricating axial clearance inside the slide bore.",
+        "kinematicRole": "Compresses under tension during trigger pull in phase one, explodes forward in phase two driving the striker forward to impact the primer, then absorbs return shocks; slides out at thirty-five percent armorer strip.",
+        "designHighlight": "The split-cup collar enables rapid, tool-less armorer field replacement, while the clearance gaps vent out mud or hydrostatic pressure when discharging after immediate underwater extraction.",
+        "audioScript": "Wrapped around the rear of the striker, this spring pack provides the firing velocity. Retained by two interlocking polymer cups, the assembly provides smooth travel down the striker channel, even venting water and mud through its seams during amphibious operations.",
+        "audioUrl": "audio/g17/parts/striker_spring_en.mp3"
+      }
+    },
+    "firing_pin_safety": {
+      "partId": "firing_pin_safety",
+      "bomCode": "U-10",
+      "calloutLabelEn": "Firing Pin Plunger Safety",
+      "zh": {
+        "roleTag": "Safe Action 第二重被动保险",
+        "overview": "击针保险柱塞是一个垂直竖立在套筒内底面右侧的小型圆柱金属销，下方由一根微型螺旋压簧顶撑。它横跨并阻断了击针前端的自由滑移通道，从物理上隔绝了击针触碰底火。",
+        "craftAndMaterial": "精选高硬度淬火不锈钢精密冷镦机加成型，外侧腰部开有一道高精度收缩导引颈，底面经过精细微弧打磨以确保与扳机连杆鸟嘴突起的滑动接触极为顺滑。",
+        "kinematicRole": "阶段一扳机扣动到中段时，扳机连杆垂直立板将其强行向上顶起，收缩颈对正放行击针击发；后坐中阶段七扳机复位后，柱塞在压簧作用下重新向下弹回完成自锁；细拆百分之四十六取出。",
+        "designHighlight": "这是格洛克彻底颠覆手枪跌落走火历史的关键防线：只要扳机没有被人为完全扣到底，即便手枪从十米高处以任何角度剧烈摔砸在地，击针都因该销的刚性物理死锁而绝无可能冲出底火孔。",
+        "audioScript": "这是格洛克安全击发系统的第二重机械保险。平时由于弹簧顶托，柱塞完全封死了击针通道。无论手枪怎么摔打跌落，击针都不可能穿出击发孔；唯有真正扣下扳机，连杆才会将它向上顶开让路。",
+        "audioUrl": "audio/g17/parts/firing_pin_safety_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Safe Action Drop Interlock",
+        "overview": "The firing pin safety is a spring-loaded vertical cylinder nested within a cross-drilled recess in the underside of the slide. It blocks the forward travel of the striker until actively depressed by the trigger bar.",
+        "craftAndMaterial": "Precision turned from hardened stainless steel with a relief waist notch cut into its profile; features a domed bottom polished to interface seamlessly with the upward lobe of the trigger bar.",
+        "kinematicRole": "Rests depressed blocking the striker path; pushed upward against its spring during phase one to align its relief waist with the striker, then snaps down during phase seven to lock the striker once more; removed at forty-six percent disassembly.",
+        "designHighlight": "This component completely solved accidental drop discharges in law enforcement use, establishing an absolute mechanical barrier between the striker and the primer that only a deliberate trigger pull can bypass.",
+        "audioScript": "Tucked underneath the slide, this spring-loaded safety plunger is why a loaded Glock will never fire when dropped. Its solid body blocks the striker from reaching the primer. Only when you press the trigger does a mechanical arm lift the plunger out of the way.",
+        "audioUrl": "audio/g17/parts/firing_pin_safety_en.mp3"
+      }
+    },
+    "extractor": {
+      "partId": "extractor",
+      "bomCode": "U-11",
+      "calloutLabelEn": "Loaded Chamber Extractor",
+      "zh": {
+        "roleTag": "抓弹底缘抽壳 / 膛内有弹指示",
+        "overview": "抽壳钩是一个安装在套筒抛壳窗右后侧横向定位销槽内的淬火钢制杠杆抓手。其前端带有向内弯曲的锐利鹰嘴抓壳钩爪，外侧表面设计有一道与套筒齐平的凸起台阶。",
+        "craftAndMaterial": "采用高抗扭合金工具钢经金属粉末注射或模锻精铣制造，表面经过深层碳氮共渗耐磨强化处理，能够经受数万次弹壳底缘猛烈撞击挤压而不崩刃。",
+        "kinematicRole": "阶段六推弹进膛时钩爪受弹底外径挤压向外微闪并咬住弹底沟槽；阶段四至五牢固拉拽弹壳后坐，直至空弹壳左侧撞上固定抛壳挺向右上方翻转抛出；细拆百分之四十四取下。",
+        "designHighlight": "三代型号在抽壳钩侧面增加了凸出的触觉指示块：当弹膛内有弹时，钩爪咬住弹底使得外侧突起微凸出套筒外壁，射手在完全漆黑的夜战环境下只需用食指一摸便知膛内是否待击上膛。",
+        "audioScript": "安装在抛壳窗旁的抽壳钩，是抓紧空弹壳底缘后拉的核心钳爪。第三代格洛克赋予了它触觉指示功能：膛内有弹时，外侧台阶会微微凸出套筒表面，夜间摸上一把就能瞬间判断是否已上膛入膛。",
+        "audioUrl": "audio/g17/parts/extractor_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Case Rim Claw & Chamber Indicator",
+        "overview": "The extractor is a heavy-duty steel pivoting claw nested into the right side of the slide adjacent to the breech face. Its forward edge clips onto the cartridge rim while its side profile incorporates a raised tactile rib.",
+        "craftAndMaterial": "Manufactured from hardened, wear-resistant alloy tool steel through metal injection molding or precision forging, treated with a nitrided finish to prevent chipping under repetitive chambering snaps.",
+        "kinematicRole": "Snaps over the cartridge rim during phase six chambering, hauls the spent casing rearward during phases four and five until ejection strikes, and releases at forty-four percent disassembly during slide overhaul.",
+        "designHighlight": "Features a built-in loaded chamber indicator lug that protrudes laterally past the slide contour when a cartridge is seated, giving tactical officers instantaneous tactile confirmation of readiness in pitch-black conditions.",
+        "audioScript": "Pivoting alongside the ejection port, this extractor claw hooks over the rim of the chambered round. On Gen Three models, a raised metal edge protrudes slightly when a round is seated, allowing operators to verify chamber status by touch in total darkness.",
+        "audioUrl": "audio/g17/parts/extractor_en.mp3"
+      }
+    },
+    "extractor_plunger": {
+      "partId": "extractor_plunger",
+      "bomCode": "U-12",
+      "calloutLabelEn": "Extractor Depressor Rod",
+      "zh": {
+        "roleTag": "抽壳钩恒压弹性支撑",
+        "overview": "抽壳钩顶杆组件是一套沿套筒右侧纵向深孔布置的细长推力传动机构，横卧在抽壳钩后方。前端为金属斜切推头，中段为细长压簧，后端套接黑色工程塑料承压轴承盖。",
+        "craftAndMaterial": "金属顶杆采用耐磨不锈钢车削，顶头根据抽壳钩摆动轨迹精密切割出倾斜接触面；弹簧为高回弹疲劳弹簧钢，后轴承由自润滑聚甲醛材料注塑成型。",
+        "kinematicRole": "持续向前施加恒定预紧推力压迫抽壳钩尾端，利用杜杆支点原理迫使其前端抓壳爪向内持续紧抱弹壳底缘；在细拆卸下套筒尾盖板后于百分之三十六进度向后抽离。",
+        "designHighlight": "塑料轴承盖的颜色与长度在格洛克不同口径间严格区分，其非对称定位与塑料端面确保在剧烈高频冲击下与金属套筒尾盖不产生应力咬死，提供了均匀顺滑的转动恢复阻尼。",
+        "audioScript": "藏在右侧盲孔深处的顶杆与弹簧组，为抽壳钩提供了源源不断的咬合压力。前端倾斜的金属推头顶住抽壳钩尾部，后端的塑料轴承顶住后盖板，确保抓壳钩在任何恶劣震动中都能牢牢抱紧弹壳。",
+        "audioUrl": "audio/g17/parts/extractor_plunger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Spring-Loaded Extractor Plunger",
+        "overview": "The extractor depressor plunger is a continuous spring-loaded rod nested longitudinally inside a blind boring on the slide's right flank. It terminates in a steel tip forward and a synthetic bearing cap rearward.",
+        "craftAndMaterial": "The metal plunger rod is CNC-lathed from high-tensile stainless steel with an angled forward bevel; matched with a high-cycle spring and an injection-molded polyacetal polymer spring-loaded bearing.",
+        "kinematicRole": "Exerts constant forward spring leverage against the rear pivot arm of the extractor, forcing the front claw inward over the cartridge groove; slides rearward out of the slide tunnel at thirty-six percent strip.",
+        "designHighlight": "The polymer bearing provides specific mechanical standoff against the steel slide cover plate, minimizing spring binding and preventing dry metal-on-metal galling under abrasive combat grime buildup.",
+        "audioScript": "Hidden inside a dedicated channel behind the extractor, this plunger and spring combo supplies the necessary clamping leverage. Its angled metal nose presses constantly forward, ensuring the extractor claw bites deep into the shell rim until the case clears the port.",
+        "audioUrl": "audio/g17/parts/extractor_plunger_en.mp3"
+      }
+    },
+    "frame": {
+      "partId": "frame",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Polymer Receiver Frame",
+      "zh": {
+        "roleTag": "全枪基准承载骨架",
+        "overview": "高强度下机匣是统领全枪所有机构的基座躯干，融合了整体式扳机护圈、倾斜握把与前部皮卡汀尼战术附件导轨。其内部在注塑成型时永久浇铸包裹了四段淬硬钢质套筒导轨滑块。",
+        "craftAndMaterial": "采用格洛克专利配方的高强度短玻纤增强尼龙六六聚合物一体成型，具有抗极寒、抗高温阻燃与极佳耐酸碱化学溶剂腐蚀性能；握把表面注塑有点阵防滑微粒和手指指槽。",
+        "kinematicRole": "在全枪七个射击阶段中充当全枪惯性力系的静止基准参考系，其倾角吸收并经手掌骨骼传递残余后坐冲量；在所有拆解进度阶段始终作为坐标零位基础框架保持不动。",
+        "designHighlight": "一体化聚合物机匣将零件数量从传统手枪的七十多件锐减至三十余件，其固有的弹性形变吸收了约百分之十五的剧烈峰值后坐力，开创了现代军警全聚合物手枪的划时代先河。",
+        "audioScript": "这个看似简单的注塑聚合物握把下机匣，是现代手枪史上最具革命性的发明。它一体浇筑成型，内嵌四个坚固的钢制套筒滑轨。特种高韧性塑料在吸收后坐峰值冲击的同时，实现了惊人的轻量化与免维护性。",
+        "audioUrl": "audio/g17/parts/frame_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Primary Monolithic Chassis",
+        "overview": "The receiver frame serves as the master structural backbone of the entire firearm, integrating the trigger guard, ergonomic grip housing, and forward accessory rail. Four hardened steel slide rails are permanently insert-molded within its chassis.",
+        "craftAndMaterial": "Injection molded from proprietary high-impact glass-filled nylon 66 polymer, inherently impervious to temperature extremes, caustic solvents, and environmental degradation, featuring textured finger-groove grip panels.",
+        "kinematicRole": "Acts as the rigid inertial datum and coordinate reference system throughout the entire seven-phase firing sequence; remains locked as the coordinate origin baseline across all disassembly sequences.",
+        "designHighlight": "Gaston Glock's revolutionary polymer frame eliminated dozens of redundant fasteners while flexing microscopically under peak pressure to dampen perceived felt recoil by nearly fifteen percent.",
+        "audioScript": "This polymer receiver frame altered handgun design forever. Molded with four embedded steel guide rails, its high-tech nylon chassis resists harsh chemicals and impacts. The polymer body flexes imperceptibly during each shot, soaking up harsh recoil right in the palm of your hand.",
+        "audioUrl": "audio/g17/parts/frame_en.mp3"
+      }
+    },
+    "locking_block": {
+      "partId": "locking_block",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Locking Block",
+      "zh": {
+        "roleTag": "开锁导向与反作用力基座",
+        "overview": "金属闭锁块是固定在下机匣中部的精密铸钢件。它通过主销钉与机匣牢固锚定，作为枪管后坐开锁与复进闭锁的核心导向基准。",
+        "craftAndMaterial": "采用高强度合金钢熔模精密铸造并经热处理硬化，表面具备高耐磨性。其核心几何特征包括中央精加工的开锁斜面，以及两侧成对贯穿的销钉固定孔。",
+        "kinematicRole": "在发射药燃爆及枪管后坐阶段，其下斜面强行迫使枪管尾端下沉完成开锁；在全部分解阶段75%至96%进度时，随着双销拔除向上脱离机匣。",
+        "designHighlight": "它有效解决了聚合物机匣无法承受枪管猛烈撞击开锁冲量的矛盾，将剧烈后坐剪切力分散至下机匣的大面积承力区。",
+        "audioScript": "现在看到的精密铸钢闭锁块，是格洛克承受冲击最剧烈的骨架核心。射击时，枪管下方的凸耳会猛烈撞击它的V形斜面，迫使枪管尾部下沉开锁，将金属的刚性与聚合物机匣的韧性完美结合。",
+        "audioUrl": "audio/g17/parts/locking_block_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Camming & Lockup Support",
+        "overview": "The locking block is a precision-cast steel component pinned firmly into the mid-section of the polymer frame. It serves as the primary camming and reaction anchor for barrel unlocking and lockup.",
+        "craftAndMaterial": "Engineered from heat-treated investment cast alloy steel for severe impact wear resistance. It features precision-machined camming ramps and cross-pin holes to absorb recoil forces.",
+        "kinematicRole": "During recoil, its kidney-shaped cam ramps guide the barrel lug downward to unlock the breech; upon armorer strip between 75 and 96 percent progress, it lifts vertically out of the frame.",
+        "designHighlight": "It resolves the mechanical challenge of using a lightweight polymer frame by transferring violent unlocking shock directly into a rigid steel backbone.",
+        "audioScript": "This precision-cast steel locking block is the structural backbone of the frame. During recoil, the rear downward cam forces the barrel lug down to break lockup with the slide, safely distributing high-stress forces into the polymer chassis.",
+        "audioUrl": "audio/g17/parts/locking_block_en.mp3"
+      }
+    },
+    "slide_lock": {
+      "partId": "slide_lock",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Slide Lock & Spring",
+      "zh": {
+        "roleTag": "套筒行程限位与快拆卡榫",
+        "overview": "拆卸卡榫是一根横穿下机匣前上方的扁平钢板，配有专门的扁平弹簧。它横跨在枪管闭锁块前侧，向上常闭卡住枪管下凸耳前壁。",
+        "craftAndMaterial": "采用经渗氮硬化的高强度弹簧扁钢精冲成型，两端带有细密横向防滑纹，底部匹配片状折弯磷化钢板簧以提供持续上顶预紧力。",
+        "kinematicRole": "射击与复进循环中处于静止受力状态，限制套筒及枪管的最前停止位置；在不完全分解初始阶段向下拉动即可解除对枪管的阻挡以滑出套筒，完全分解时于66%至78%进度横向推出机匣。",
+        "designHighlight": "其极简的单条贯通式设计使格洛克实现了无螺栓、无工具的极速分解，成为军警现代手枪人机工效的标杆设计之一。",
+        "audioScript": "这枚细小的扁平拆卸卡榫是格洛克快拆系统的灵魂。常态下板簧将它死死顶在上方挡住枪管凸耳，只需双手同时向下拉动两端突出的防滑槽，套筒总成就能顺畅地向前滑出机匣。",
+        "audioUrl": "audio/g17/parts/slide_lock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Takedown Crossbar & Stop",
+        "overview": "The slide lock is a transverse steel bar nested in the frame above the trigger guard, backed by a flat leaf spring. It acts as the forward stop for the barrel and slide assembly during battery.",
+        "craftAndMaterial": "Fabricated from stamped, case-hardened alloy steel with grooved fingertip serrations on both ends, biased upward by a tempered leaf spring.",
+        "kinematicRole": "It remains stationary during firing to arrest slide over-travel; pulled down manually during field strip to free the barrel lug, and extracted sideways from the frame at 66 to 78 percent disassembly.",
+        "designHighlight": "A minimalist, toolless takedown interface that replaced fragile multi-piece takedown levers found on previous generation service pistols.",
+        "audioScript": "The slide lock and its leaf spring form Glock's renowned quick-strip mechanism. Biased upward, it acts as a mechanical dead-stop for the barrel lug. Pulling it down simultaneously on both sides allows the entire slide to glide off the frame.",
+        "audioUrl": "audio/g17/parts/slide_lock_en.mp3"
+      }
+    },
+    "slide_stop_lever": {
+      "partId": "slide_stop_lever",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Slide Stop Lever",
+      "zh": {
+        "roleTag": "空仓挂机阻铁与释放拨片",
+        "overview": "空仓挂机解脱杆是冲压成型的薄钢板杠杆，铰接于扳机主销左侧。其内侧挑脚伸入弹匣井内，外侧带有方便拇指操作的压花凸起平台。",
+        "craftAndMaterial": "采用冲压成型碳钢经渗氮耐磨表面处理，尾部延伸出内置的微型弹性钢丝腿，提供持续向下的常闭复位力矩。",
+        "kinematicRole": "最后一发弹药抛壳后，弹匣托弹板顶起其内侧拨片，使其阻铁端卡入套筒左侧挂机槽阻止套筒复进；在完全分解74%至96%进度时向左上方脱出机匣。",
+        "designHighlight": "整体成型带有自复位扭簧钢丝，巧妙利用扳机主销定位，无需额外螺栓或复杂转轴便实现了弹匣到位自动升起与手动快速释放。",
+        "audioScript": "空仓挂机杆依靠单枚冲压钢片身兼数职。弹匣打空时，橙色托弹板会把它的内脚顶起，硬生生阻挡套筒复进；换上新弹匣后，射手拇指轻轻下按外部凸台，套筒便瞬间复进上膛。",
+        "audioUrl": "audio/g17/parts/slide_stop_lever_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Slide Catch & Release",
+        "overview": "The slide stop lever is a stamped steel pivoting lever positioned on the left interior wall of the frame. It features an inward-facing follower tab and an external textured thumb paddle.",
+        "craftAndMaterial": "Constructed from stamped spring steel with a tough melonite or nitrided finish, featuring an integrated wire spring tension leg calibrated for downward bias.",
+        "kinematicRole": "When the magazine runs dry, the follower pushes the lever upward to catch the slide notch; lifts out of the frame chassis between 74 and 96 percent armorer teardown.",
+        "designHighlight": "It integrates an anti-bounce torsion wire spring directly into the lever body, preventing accidental inertia slide lockups during extreme rapid recoil.",
+        "audioScript": "Mounted along the inner left wall, the slide stop lever catches the recoiling slide once the magazine is empty. An integrated wire spring holds it down under normal recoil, rising only when the magazine follower engages its lower engagement tab.",
+        "audioUrl": "audio/g17/parts/slide_stop_lever_en.mp3"
+      }
+    },
+    "magazine_catch": {
+      "partId": "magazine_catch",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Magazine Catch & Spring",
+      "zh": {
+        "roleTag": "弹匣自锁与侧推释放机构",
+        "overview": "弹匣卡榫是横向安装在握把前上缘孔槽内的矩形滑块，由一根直立的金属弹簧钢丝锁固。它的内侧凸块卡入弹匣前壁侧面的凹槽锁定弹匣。",
+        "craftAndMaterial": "采用与机匣耐磨级别匹配的工程聚合物注塑成型，配合一根经过深冷淬火的直立琴钢丝弹簧提供横向复位预紧力。",
+        "kinematicRole": "插入弹匣时在斜面引导下克服直簧向外滑开并回弹锁死，射击过程中保持静止；在不完全分解后、完全分解66%至78%进度时，挑出钢丝后即可侧向抽出。",
+        "designHighlight": "采用聚合物对聚合物的接触摩擦设计，杜绝了反复拔插弹匣对弹匣外壳聚合物包层的过快刮削磨损。",
+        "audioScript": "这枚聚合物弹匣卡榫由一根竖直的细钢丝弹簧紧紧别住。插入弹匣时，弹匣壁将卡榫挤开随后清脆回弹入槽；扣压侧面凸台即可迅速释放弹匣，其工程塑料材质能防止磨损原厂弹匣外皮。",
+        "audioUrl": "audio/g17/parts/magazine_catch_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Magazine Retention Release",
+        "overview": "The magazine catch is a horizontal polymer sliding block seated across the grip housing, anchored by a vertical wire spring. It interfaces directly with the retaining notch on the front edge of the magazine.",
+        "craftAndMaterial": "Injection molded from dense polymer matching the frame material to minimize wear on magazines, backed by a high-tensile piano wire spring.",
+        "kinematicRole": "Cams laterally during magazine insertion and springs back to lock the mag notch; field removable at 66 to 78 percent disassembly once the retaining wire is unseated.",
+        "designHighlight": "Plastic-on-plastic contact ensures the steel-lined polymer magazine bodies are not worn down over thousands of tactical reloads.",
+        "audioScript": "The magazine catch slides transversely through the grip, retained solely by a vertical piano wire spring. When a fresh magazine clicks home, the catch snaps into the magazine cutout, providing secure retention and frictionless drops.",
+        "audioUrl": "audio/g17/parts/magazine_catch_en.mp3"
+      }
+    },
+    "trigger_pin": {
+      "partId": "trigger_pin",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Trigger Axis Pin",
+      "zh": {
+        "roleTag": "扳机与挂机杆主承力枢轴",
+        "overview": "扳机主销是下机匣三根横向固定销中最粗的一根，穿透闭锁块中下部、扳机连杆前端孔与空仓挂机杆。它承受射击扣扳机与后坐传导的核心剪切力。",
+        "craftAndMaterial": "采用高抗剪强度合金钢精密车削而成，表面经黑色渗氮处理，销身车有两道精密环形定位槽供挂机杆弹簧钢丝落槽限位。",
+        "kinematicRole": "射击与连杆往复运动期间提供旋转中心与承力点；在完全分解65%至76%进度时，通过轻微拨动挂机杆避开环槽后自左向右冲出。",
+        "designHighlight": "圆周环槽卡锁设计完全摒弃了螺栓或开口销，仅靠挂机杆弹簧的弹性张力即可彻底防止射击共振引起的横向退销脱落。",
+        "audioScript": "这是格洛克三根销钉中受力最大的扳机主销。表面特意车制了两道极细的凹槽，空仓挂机杆内置的钢丝弹簧正好嵌在槽里，既能允许机构转动，又能在剧烈震动中死死锁住销钉防止横向滑脱。",
+        "audioUrl": "audio/g17/parts/trigger_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Trigger Pivot Master Pin",
+        "overview": "The trigger pin is the central and thickest hardened cross-pin in the lower receiver. It aligns the locking block, trigger lever head, and slide stop lever into a single rigid hinge.",
+        "craftAndMaterial": "Turned from high-shear carbon steel with a black melonite surface, featuring two precision detent grooves machined around its circumference.",
+        "kinematicRole": "Maintains trigger hinge geometry during cycle phases 1 and 7; driven out from left to right at 65 to 76 percent armorer disassembly once the spring tension is relieved.",
+        "designHighlight": "Retained securely without threads or cotter clips by utilizing the natural spring pressure of the slide stop lever resting directly within its center groove.",
+        "audioScript": "The trigger pin is the stoutest of the frame pins, taking both trigger pull tension and recoil cam forces. Dual machined grooves seat the slide stop lever wire spring, holding the pin mechanically captive without any screws.",
+        "audioUrl": "audio/g17/parts/trigger_pin_en.mp3"
+      }
+    },
+    "locking_block_pin": {
+      "partId": "locking_block_pin",
+      "bomCode": "F-07",
+      "calloutLabelEn": "Locking Block Pin",
+      "zh": {
+        "roleTag": "闭锁块前部抗抬升锚定销",
+        "overview": "闭锁块前上销是位于扳机主销前上方的圆柱形实心钢销。它直接穿过下机匣塑料侧壁与金属闭锁块前部的定位通孔。",
+        "craftAndMaterial": "采用实心高韧性不锈钢或渗氮合金钢车削并经精磨加工，两端倒角平滑以便于在装配冲压时无阻力对正进入机匣孔位。",
+        "kinematicRole": "在全枪射击和枪管猛烈下坠解锁瞬间，抵抗闭锁块前部的垂直向上抬升力矩；在完全分解65%至76%阶段作为首个被冲出的销钉。",
+        "designHighlight": "这是格洛克第三代相比早期双销型号最著名的升级，专门为了平抑发射点四零高膛压弹药时闭锁块上抬开裂的工况而增设。",
+        "audioScript": "这根闭锁块前上销是第三代格洛克最显著的结构特征。早期的双销结构在射击高膛压弹药时容易导致闭锁块微幅上跳甚至震裂机匣，增加这枚实心钢销彻底封死了闭锁块抬升的任何间隙。",
+        "audioUrl": "audio/g17/parts/locking_block_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Forward Lock Block Pin",
+        "overview": "The locking block pin is a solid steel pin located just above and forward of the main trigger pin. It traverses the polymer frame and the forward locating hole of the steel locking block.",
+        "craftAndMaterial": "Machined from precision-ground hardened stainless or carbon alloy steel with radiused ends to facilitate drift punch driving without gouging polymer holes.",
+        "kinematicRole": "Provides rigid structural counter-torque against barrel unlocking moments; must be punched out first during the 65 to 76 percent disassembly step.",
+        "designHighlight": "Introduced in Gen 3 variants to handle the sharper recoil impulses of modern high-pressure cartridges, effectively eliminating frame flex and cracking around the camming seat.",
+        "audioScript": "This small upper locking block pin defines the classic third generation architecture. Added to tame higher-pressure rounds, it bolts down the forward section of the locking block, preventing recoil torque from stressing the frame polymer.",
+        "audioUrl": "audio/g17/parts/locking_block_pin_en.mp3"
+      }
+    },
+    "trigger_housing_pin": {
+      "partId": "trigger_housing_pin",
+      "bomCode": "F-08",
+      "calloutLabelEn": "Trigger Housing Pin",
+      "zh": {
+        "roleTag": "握把尾部扳机座紧固销",
+        "overview": "扳机座尾销是安装在握把后上方海狸尾区域的横向聚合物圆销。它将尾部塑料扳机座总成紧密固定在下机匣内腔后壁中。",
+        "craftAndMaterial": "采用耐冲击纯工程尼龙聚合物注塑制成，两端设计有向内微凸的定位端部，材质硬度与机匣握把保持完全一致避免刮擦扩孔。",
+        "kinematicRole": "在全枪后坐和扳机扣押行程中约束扳机座不产生任何轴向窜动；在完全分解65%至76%阶段使用格洛克专用冲针即可徒手顶出。",
+        "designHighlight": "选材为全聚合物而非金属，不仅有效减轻全枪重量，且热膨胀系数与机匣完全一致，避免长期受潮或冷热交替时孔位松动变形。",
+        "audioScript": "位于握把虎口后方的扳机座尾销完全由工程聚合物制成。它不需要承受射击的剧烈冲击，只需牢固锁定后部的扳机座。塑料对塑料的配合杜绝了金属销长期震动导致握把外壳扩孔滑落的风险。",
+        "audioUrl": "audio/g17/parts/trigger_housing_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Housing Retaining Pin",
+        "overview": "The trigger housing pin is a single polymer transverse dowel located through the rear upper beavertail of the grip. It binds the modular rear trigger housing inside the frame cavity.",
+        "craftAndMaterial": "Molded from high-density impact-resistant nylon polymer matched to the frame elasticity, finished with chamfered tips for tool push-through.",
+        "kinematicRole": "Holds the rear trigger assembly and ejector completely rigid during action cycling; driven out at 65 to 76 percent teardown stage.",
+        "designHighlight": "Constructed from polymer rather than steel to minimize non-structural mass and maintain uniform thermal expansion rates with the host frame.",
+        "audioScript": "Pushed through the rear beavertail, this lightweight polymer pin locks the entire fire control module in place. Since the rear housing experiences mostly linear sliding loads rather than harsh impacts, polymer construction preserves grip longevity.",
+        "audioUrl": "audio/g17/parts/trigger_housing_pin_en.mp3"
+      }
+    },
+    "trigger_with_bar": {
+      "partId": "trigger_with_bar",
+      "bomCode": "T-01",
+      "calloutLabelEn": "Trigger & Cruciform Bar",
+      "zh": {
+        "roleTag": "安全动作核心连杆机构",
+        "overview": "双阶保险扳机与十字尾连杆由前部的聚合物双阶扳机本体和后部冲压不锈钢拉杆冲铆成型。它从握把前端横贯至尾部阻铁座，直接控制击针释放。",
+        "craftAndMaterial": "扳机扣片由高耐磨尼龙注塑并内嵌保险折叶，连杆主体由不锈钢精密冷冲压并对导向边缘进行微米级滚光研磨以降低摩擦阻力。",
+        "kinematicRole": "阶段一与二中连杆向后平移，鸟嘴凸起顶开击针保险柱，十字尾下沉释放平移击针；完全分解76%至100%阶段连同阻铁组一同取出机匣。",
+        "designHighlight": "著名的十字尾结构在静止未扣下扳机时完全托在扳机座平台上形成物理防跌落保险，扣到底才滑落脱落斜面，实现了跌落绝对不走火。",
+        "audioScript": "这就是格洛克安全动作系统的关键机构。扳机前部集成有必须压平的防走火保险片，而后部的不锈钢连杆在扣动时会向上推开击针保险，其尾部著名的十字片滑下阻铁斜面，释放击针完成击发。",
+        "audioUrl": "audio/g17/parts/trigger_with_bar_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Safe Action Linkage Hub",
+        "overview": "This assembly consists of the polymer trigger shoe with its center safety blade pinned to a stamped stainless steel drawbar. It runs along the frame from the trigger guard to the rear sear housing.",
+        "craftAndMaterial": "Features an impact-polymer shoe mated to a precision cold-stamped, mirror-tumbled stainless steel transfer bar with stamped camming ramps.",
+        "kinematicRole": "Draws rearward in Phases 1 and 2 to depress the firing pin safety and drop the cruciform sear off the connector shelf; extracts at 76 to 100 percent disassembly.",
+        "designHighlight": "The cruciform tail rests securely on an internal drop safety shelf until deliberate trigger travel carries it off, guaranteeing drop-safe operational reliability.",
+        "audioScript": "The trigger bar assembly drives Glock's Safe Action mechanism. As your finger pulls the safety blade flush and draws the bar backward, the vertical tab lifts the firing pin safety while the rear cruciform crosses off the housing shelf to drop the striker.",
+        "audioUrl": "audio/g17/parts/trigger_with_bar_en.mp3"
+      }
+    },
+    "trigger_housing": {
+      "partId": "trigger_housing",
+      "bomCode": "T-02",
+      "calloutLabelEn": "Trigger Housing & Ejector",
+      "zh": {
+        "roleTag": "阻铁防跌落台与固定抛壳挺",
+        "overview": "扳机座壳体是一个立体的聚合物精密构架，嵌装在握把上后部空腔内。其左上方压装有一根向前伸出并向内弯折的固定式钢制抛壳挺。",
+        "craftAndMaterial": "座体采用自润滑工程聚合物成型并带有精密内嵌滑道槽，抛壳挺由经碳氮共渗的合金工具钢板冲压、热弯并牢固嵌压在基座内。",
+        "kinematicRole": "座体内部水平台阶为扳机十字尾提供常闭跌落防滑支撑；在阶段五套筒后坐到极限时，静止的抛壳挺迎头猛烈撞击弹壳底部将其侧向踢出；76%至100%分解阶段脱出。",
+        "designHighlight": "将阻铁滑道、断路限位孔、扳机复位弹簧锚座与固定抛壳挺全盘整合为单一模块，极大简化了全枪零件数与公差积累。",
+        "audioScript": "这个后部塑料座体承载着全枪的多项核心功能。它内部的水平台阶是十字尾连杆的防跌落安全托架，而左上方伸出的这根坚硬弯折钢针就是固定式抛壳挺，在套筒猛烈后坐时迎面将空弹壳踢出抛壳窗。",
+        "audioUrl": "audio/g17/parts/trigger_housing_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Sear Guide Frame & Ejector",
+        "overview": "The trigger housing is a modular polymer cage seated into the grip tail, housing the connector and reset spring. A hardened steel ejector arm is permanently staked into its forward upper corner.",
+        "craftAndMaterial": "Engineered from dimensionally stable glass-filled polymer featuring precision camming tracks, paired with a carbonitride-treated stamped alloy steel ejector spade.",
+        "kinematicRole": "Forms the safety drop shelf and hosts the rear trigger components; in Phase 5 the ejector nose strikes the recoiling casing base to kick it out, fully extracted between 76 and 100 percent strip.",
+        "designHighlight": "Consolidates the drop-safety ramp, disconnect housing, spring anchor, and static ejection system into a singular drop-in polymer module.",
+        "audioScript": "The trigger housing organizes the rear fire control logic. Its horizontal floor forms the drop-safety ledge under the trigger bar cruciform, while the fixed steel ejector arm at the top left strikes the spent casing base to flip it out of the ejection port.",
+        "audioUrl": "audio/g17/parts/trigger_housing_en.mp3"
+      }
+    },
+    "connector": {
+      "partId": "connector",
+      "bomCode": "T-03",
+      "calloutLabelEn": "Connector",
+      "zh": {
+        "roleTag": "阻铁下沉与半自动断路斜面片",
+        "overview": "连杆阻铁片是一块呈L形的极薄冲压高强度弹簧钢片，斜插在扳机座右侧插槽中。其倾斜的导向斜面直接决定了扳机击发时的扣力与手感。",
+        "craftAndMaterial": "采用极高硬度弹簧钢精冲成型，经微研磨硬化与化学镀镍或磷化处理，右上角冲压有精准角度的断路回折斜坡。",
+        "kinematicRole": "在阶段二引导扳机连杆十字尾沿斜面向下潜水完成击发；在阶段四与五套筒后坐时，套筒下凸棱将该阻铁片向内推挤断开连杆，完成半自动单发断路；76%至100%分解时脱出。",
+        "designHighlight": "通过仅仅弯折单片弹簧钢的斜角角度，即可在两公斤到三点五公斤之间精确调节扳机扣力，是全球最优雅的纯机械半自动断路器之一。",
+        "audioScript": "这枚看似不起眼的薄钢片是格洛克的阻铁斜面断路片。当扳机连杆向后滑动时，正是这块倾斜的滑坡迫使连杆十字尾下沉放开击针；套筒后坐时还会把它向内推开，实现扣住扳机不放也只能发射一发的单发断路功能。",
+        "audioUrl": "audio/g17/parts/connector_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Sear Cam & Disconnector",
+        "overview": "The connector is an angled, sheet spring steel component fitted securely into the right-hand slot of the trigger mechanism housing. It dictates trigger pull weight and controls semi-automatic reset timing.",
+        "craftAndMaterial": "Stamped from spring-tempered carbon steel, polished and plated for minimal friction, featuring a folded upper control cam with a precision incline angle.",
+        "kinematicRole": "Directs the trigger bar down in Phase 2 to release the striker; in Phases 4 and 5 the recoiling slide ramp wedges the connector inward to trigger semi-automatic disconnect; disassembles at 76 to 100 percent.",
+        "designHighlight": "Its incline angle determines trigger break resistance from standard military five point five pounds to match weights, serving as both sear ramp and disconnector without extra pins.",
+        "audioScript": "The connector governs trigger weight and disconnector timing. As the trigger bar travels back, its angled ramp forces the bar downward to trip the striker. The recoiling slide pushes the top tab inward, disconnecting the trigger bar so the gun will not fire full auto.",
+        "audioUrl": "audio/g17/parts/connector_en.mp3"
+      }
+    },
+    "trigger_spring": {
+      "partId": "trigger_spring",
+      "bomCode": "T-04",
+      "calloutLabelEn": "Trigger Spring",
+      "zh": {
+        "roleTag": "连杆上抬与复位辅助拉簧",
+        "overview": "扳机复位拉簧是安装在扳机座内部的微型螺旋拉伸弹簧。它的前端与末端分别通过折弯挂钩连接在扳机连杆十字尾垂直挂孔与扳机座后臂上。",
+        "craftAndMaterial": "采用高抗疲劳冷拉琴钢丝绕制成螺旋弹簧，两头冷弯折出便于穿入零件孔径的半封闭式S形与半圆形定位拉钩。",
+        "kinematicRole": "在连杆释放击针下沉后提供斜向上的拉力，待扳机松开时拉扯连杆向上抬升并向前滑动重新挂住击针挂机脚；在完全分解76%至100%进度时解脱摘下。",
+        "designHighlight": "反直觉的斜向几何拉拽设计：它在扣动扳机时受拉伸蓄能，而在射手稍微松开手指时拉动十字尾上抬复位，有效降低了射手的击发扣力负荷。",
+        "audioScript": "这根小巧的螺旋拉簧反直觉地斜挂在扳机连杆十字尾与扳机座之间。它不仅在击发后把连杆向上拉起以便重新挂上击针，其倾斜的角度在扣动扳机过程中其实还在辅助拉扯，巧妙抵消了一部分击针簧的反抗阻力。",
+        "audioUrl": "audio/g17/parts/trigger_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Cruciform Bias Tension Spring",
+        "overview": "The trigger spring is a small coil tension spring suspended diagonally inside the polymer trigger mechanism housing. It anchors between the rear arm of the housing and the bottom eyelet of the trigger cruciform.",
+        "craftAndMaterial": "Wound from high-grade tempered music wire, terminates in two offset rounded wire loop hooks designed to resist cyclical fatigue over tens of thousands of cycles.",
+        "kinematicRole": "Assists trigger bar reset in Phase 7 by lifting the cruciform back onto the drop-safety shelf; detaches from the housing during final armorer teardown between 76 and 100 percent progress.",
+        "designHighlight": "Configured in an inclined tension alignment so that stretching it during pull actually aids finger leverage, counteracting striker spring resistance to reduce net trigger pull force.",
+        "audioScript": "Hooked diagonally between the trigger housing and the cruciform, this trigger tension spring works in reverse of typical reset designs. It pulls the rear of the trigger bar up and forward during reset, subtly reducing user trigger pull effort by pulling in the direction of the draw.",
+        "audioUrl": "audio/g17/parts/trigger_spring_en.mp3"
+      }
+    },
+    "mag_body": {
+      "partId": "mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "Steel-Lined Mag Body",
+      "zh": {
+        "roleTag": "双排错位钢聚复合储弹壳体",
+        "overview": "双排单进弹匣体是供弹系统的核心储弹容器，自握把底部完整插入弹匣井。其内部具备可容纳十七发帕拉贝鲁姆弹药的交错大容量空间。",
+        "craftAndMaterial": "内部为深拉延硬化薄钢板内胆，外部全包覆高抗冲击耐磨工程塑料套，顶部抱弹口由坚固钢边整体折弯成型，背面模压有金属刻度观察孔。",
+        "kinematicRole": "在击发循环六中稳固导向下弹药逐级上升并由套筒推入弹膛；在分解初始阶段零至八进度时按下弹匣卡榫自握把滑出，五零至六二阶段拆解为零件。",
+        "designHighlight": "首创钢聚复合一体注塑结构，兼具全钢弹匣超强的抱弹口抗疲劳变形能力与聚合物外壳极其抗摔、抗低温撞击的综合耐久度。",
+        "audioScript": "格洛克弹匣是现代轻武器工程的杰作。它的内部是硬化冲压钢衬内胆，外部则包覆着厚实的高抗冲聚合物。即便受到剧烈跌落或重卡碾压，坚固的钢制抱弹口依旧能保持精准开度，彻底根绝供弹卡壳隐患。",
+        "audioUrl": "audio/g17/parts/mag_body_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Composite Dual-Stack Shell",
+        "overview": "The magazine body is the principal ammunition feed reservoir, sliding into the frame grip from the base. It holds seventeen rounds of nine millimeter cartridges in a staggered double-column arrangement.",
+        "craftAndMaterial": "Features a deep-drawn seamless hardened carbon steel inner liner overmolded with an impact-resistant polymer casing, ending in precision heat-treated steel feed lips.",
+        "kinematicRole": "Maintains column geometry to feed cartridges into the chamber in Phase 6; drops free at zero to 8 percent disassembly, sub-exploded at 50 to 62 percent progress.",
+        "designHighlight": "Pioneered the composite steel-polymer architecture, combining rigid feed lip geometry that never spreads over time with a dent-proof drop-resistant outer jacket.",
+        "audioScript": "Glock's composite magazine housing uses a hardened inner steel liner overmolded with tough polymer. The steel spine prevents the feed lips from spreading over decades of spring tension, while the polymer exterior absorbs blunt drop impacts without permanent deformation.",
+        "audioUrl": "audio/g17/parts/mag_body_en.mp3"
+      }
+    },
+    "mag_follower": {
+      "partId": "mag_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Magazine Follower",
+      "zh": {
+        "roleTag": "双排错位导向与挂机联动顶铁",
+        "overview": "托弹板是置于弹匣体内弹簧顶端的橙色工程塑料滑块。它承托着弹匣内的全部枪弹，并将其逐发向上推挤至双排单进抱弹口。",
+        "craftAndMaterial": "由醒目高辨识度亮橙色自润滑低摩擦尼龙注塑成型，顶部设计有双曲率错位阶梯拱面，左侧前壁模压有一处专门加高的直角凸台。",
+        "kinematicRole": "在射击全程伴随弹药消耗逐级上推；发射最后一发后，其左侧凸台在阶段五抬升顶起空仓挂机杆内脚实现挂机；弹匣完全分解五二至六四阶段抽出。",
+        "designHighlight": "亮橙色涂装让射手在拉开套筒时一眼便知全枪打空，阶梯状曲面可确保最后一发弹药同样平稳送入弹膛而不发生低头卡弹故障。",
+        "audioScript": "位于弹簧顶部的阶梯托弹板采用了高可视度的亮橙色。它的倾斜阶梯面引导九毫米子弹完美交错排列，而在最后一颗子弹离舱后，左侧的硬质凸起会迅速撞起空仓挂机杆，稳稳将套筒锁在后方提醒射手换弹。",
+        "audioUrl": "audio/g17/parts/mag_follower_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Cartridge Feed & Stop Lift",
+        "overview": "The magazine follower is an angled polymer platform seated atop the magazine spring within the housing. It supports the cartridge column and feeds each round toward the chamber.",
+        "craftAndMaterial": "Molded from high-visibility orange self-lubricating polymer, contoured with staggered stepped ramps and a distinct vertical lug on its forward-left shoulder.",
+        "kinematicRole": "Pushes ammunition up progressively through Phases 1 to 6; engages and lifts the slide stop lever in Phase 5 upon empty; separates between 52 and 64 percent magazine teardown.",
+        "designHighlight": "Bright orange styling allows instant visual chamber and magazine status verification, while its asymmetric contour prevents cartridge nose-diving on the final round.",
+        "audioScript": "The high-visibility orange follower rides atop the magazine spring, holding the cartridge stack at an optimal feeding angle. When the seventeenth round is chambered, the follower's raised left shoulder contacts and lifts the slide stop lever to lock the action open.",
+        "audioUrl": "audio/g17/parts/mag_follower_en.mp3"
+      }
+    },
+    "mag_spring": {
+      "partId": "mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Magazine Coil Spring",
+      "zh": {
+        "roleTag": "高应力递推供弹源",
+        "overview": "矩形螺旋托弹簧安装于弹匣壳体内部，底部由锁止内衬片托举，顶端紧扣聚合物托弹板。它负责在全行程内为双排弹柱提供精确可控的上升推力，确保子弹在各种射击姿态下稳定上膛。",
+        "craftAndMaterial": "选用高疲劳寿命硅铬弹簧钢丝冷卷成型，外表经由磷化防锈钝化处理。矩形折角绕圈轮廓完全贴合双排弹匣的几何内腔，在多圈压缩至极限时不发生侧向屈曲或死并。",
+        "kinematicRole": "射击循环阶段六中，套筒复进并推弹入膛后，托弹簧迅速舒张并推动后续弹药紧贴抱弹口；拆解时在弹匣脱出后，于百分之五十二至六十四分解进程中从弹匣壳底部完整抽出。",
+        "designHighlight": "弹簧顶部第一圈特意折出前倾俯角，使托弹板在满弹十七发到空仓挂机之间始终保持略微向上的仰角，彻底根绝了前端低头卡弹的供弹死锁隐患。",
+        "audioScript": "这是一根经过严苛寿命测试的矩形托弹簧。它采用高强度弹簧钢冷卷制成，截面紧贴双排弹匣内壁。不论弹匣内装满十七发重弹还是打到最后一发，它都能均匀释放稳定的推力，确保每颗九毫米弹药精准对齐进弹斜坡。",
+        "audioUrl": "audio/g17/parts/mag_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Continuous Feed Elevation",
+        "overview": "The magazine coil spring sits inside the magazine housing, supported at the bottom by the insert plate and hooked to the follower at top. It delivers linear, progressive upward force across the entire stack column to maintain reliable feed geometry.",
+        "craftAndMaterial": "Cold-wound from high-tensile silicon-chromium spring steel wire with a corrosion-resistant phosphate surface. Its rectangular profile closely mirrors the magazine cavity to prevent lateral buckling during maximum 17-round compression.",
+        "kinematicRole": "During Phase 6 feeding, it immediately expands upward to present the next cartridge against the feed lips; in field maintenance, it withdraws downward from the magazine tube between 52% and 64% disassembly progress.",
+        "designHighlight": "The uppermost spring coil is engineered with a subtle upward pitch, maintaining positive follower attitude from full compression down to slide lock, eliminating nose-dive feeding failures.",
+        "audioScript": "This rectangular magazine spring provides the vital upward drive for seventeen rounds of nine-millimeter ammunition. Cold wound from fatigue-resistant spring steel, its contour mirrors the internal housing perfectly. It delivers consistent vertical tension from the first shot to empty chamber slide-lock without buckling.",
+        "audioUrl": "audio/g17/parts/mag_spring_en.mp3"
+      }
+    },
+    "mag_base_plate": {
+      "partId": "mag_base_plate",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Floor Plate & Insert",
+      "zh": {
+        "roleTag": "弹匣承压锁止底盖",
+        "overview": "弹匣底盖组件包含聚合物滑移底板与带中心圆凸的锁止内衬片，扣合在弹匣壳体最下端。它封堵弹匣底部开口，为强力托弹簧提供稳固支承并吸收装退弹带来的垂直应力。",
+        "craftAndMaterial": "采用高抗冲注塑聚合物成型，底板内侧开有左右导轨滑槽，衬片冲压一体成型中央锁止圆柱。表面呈现耐磨细磨砂质感，即使剧烈跌落至硬质地面也不易碎裂。",
+        "kinematicRole": "整个七阶段射击循环中作为静止基准承载弹簧反作用力；在弹匣分解阶段，使用冲子顶入底盖圆孔压下内衬凸起，于百分之四十九至六十五分解行程中向前滑脱分离。",
+        "designHighlight": "巧妙的内衬互锁滑动设计舍弃了金属紧固螺丝，既利用弹簧预紧力实现了牢不可破的抗跌落自锁，又允许勤务人员仅凭单手冲压工具快速拆装清洁。",
+        "audioScript": "弹匣底盖由耐冲击聚合物制成，内部包含带有定位凸台的锁止衬片。这套机构完全依靠托弹簧自身的张力实现机械自锁。日常维护时，只需拿冲子顶入底板中心圆孔，即可轻松向前推开底盖进行清洁。",
+        "audioUrl": "audio/g17/parts/mag_base_plate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Base Closure & Retainer",
+        "overview": "The magazine floor plate assembly comprises a sliding polymer base plate and a detent insert plate seated at the bottom of the magazine body. It encloses the spring cavity, providing a rigid lower seat against compressed spring force.",
+        "craftAndMaterial": "Injection-molded from high-impact polymer featuring integrated bilateral retention flanges and a textured bottom profile. The insert plate incorporates a central locking nub that indexes into the floor plate aperture.",
+        "kinematicRole": "Serves as a rigid static datum absorbing vertical spring pressure throughout all 7 firing phases; during servicing, pressing the inner nub allows the plate to slide forward between 49% and 65% disassembly progress.",
+        "designHighlight": "The screwless detent interlock leverages the magazine spring's own preload to lock the base securely against severe drop impacts, while permitting tool-assisted armorer maintenance in seconds.",
+        "audioScript": "Constructed from rugged polymer, the magazine floor plate and insert plate form a fail-safe bottom seal. The spring tension itself forces the center insert into a locking detent. By depressing this center nub with an armorer punch, the plate slides off effortlessly for internal cleaning.",
+        "audioUrl": "audio/g17/parts/mag_base_plate_en.mp3"
+      }
+    }
+  }
+}

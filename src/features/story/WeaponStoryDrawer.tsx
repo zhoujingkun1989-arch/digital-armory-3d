@@ -5,6 +5,8 @@ import {
   Crosshair,
   History,
   Loader2,
+  Maximize2,
+  Minimize2,
   Pause,
   Play,
   Sparkles,
@@ -30,7 +32,9 @@ import { LanguageSwitchPill } from './LanguageSwitchPill';
 
 export const WeaponStoryDrawer: React.FC = () => {
   const storyOpen = useAppStore((s) => s.storyOpen);
+  const storyMinimized = useAppStore((s) => s.storyMinimized);
   const setStoryOpen = useAppStore((s) => s.setStoryOpen);
+  const setStoryMinimized = useAppStore((s) => s.setStoryMinimized);
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const selectArmoryWeapon = useAppStore((s) => s.selectArmoryWeapon);
   const enterWorkbench = useAppStore((s) => s.enterWorkbench);
@@ -54,6 +58,8 @@ export const WeaponStoryDrawer: React.FC = () => {
       label: `${act.actNumber} · ${act.title}`,
       kind: 'story',
       actId: act.id,
+      fallbackText: act.audioScript,
+      lang,
     }));
   }, [localizedStory, activeWeaponId, lang]);
 
@@ -102,6 +108,122 @@ export const WeaponStoryDrawer: React.FC = () => {
     }
   };
 
+  if (storyMinimized) {
+    const miniHeadline = isThisWeaponStoryActive
+      ? (audio.activeLabel ?? displayMeta.name)
+      : (localizedStory?.headline ?? ui.miniIdleSubtitle);
+
+    return (
+      <aside
+        className="story-mini-player"
+        aria-label={`${displayMeta.name} — ${ui.badge}`}
+      >
+        <div className="story-mini-main">
+          <button
+            type="button"
+            className={`story-mini-play-btn ${isStoryPlaying ? 'playing' : ''}`}
+            onClick={handleMainPlayToggle}
+            disabled={playlistTracks.length === 0}
+            title={isStoryPlaying ? ui.pauseStory : ui.playFullStory}
+          >
+            {audio.isLoading && isThisWeaponStoryActive ? (
+              <Loader2 size={14} className="spin-icon" />
+            ) : isStoryPlaying ? (
+              <Pause size={14} />
+            ) : (
+              <Play size={14} />
+            )}
+            {isStoryPlaying && (
+              <span className="eq-bars" aria-hidden="true">
+                <i />
+                <i />
+                <i />
+              </span>
+            )}
+          </button>
+
+          <div className="story-mini-info">
+            <div className="story-mini-title-row">
+              <span className="story-mini-tag">{displayMeta.shortLabel}</span>
+              <span className="story-mini-title" title={miniHeadline}>
+                {miniHeadline}
+              </span>
+            </div>
+          </div>
+
+          {localizedStory && localizedStory.acts.length > 0 && (
+            <div className="story-mini-acts">
+              {localizedStory.acts.map((act, idx) => {
+                const isActCurrent =
+                  isThisWeaponStoryActive && audio.activeActId === act.id;
+                return (
+                  <button
+                    key={act.id}
+                    type="button"
+                    className={`story-mini-act-pill ${
+                      isActCurrent ? 'active' : ''
+                    }`}
+                    onClick={() => handleActClick(idx, act.id)}
+                    title={`${act.actNumber} · ${act.title}`}
+                  >
+                    {idx + 1}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          <button
+            type="button"
+            className="story-rate-btn"
+            onClick={cycleNarrationPlaybackRate}
+            title="1.0x / 1.25x / 1.5x"
+          >
+            {audio.playbackRate}x
+          </button>
+
+          <button
+            type="button"
+            className="story-mini-expand-btn"
+            onClick={() => setStoryMinimized(false)}
+            title={ui.expandTitle}
+          >
+            <Maximize2 size={12} />
+            <span>{ui.expandBtn}</span>
+          </button>
+
+          <button
+            type="button"
+            className="story-mini-close-btn"
+            onClick={handleClose}
+            title={ui.closeTitle}
+          >
+            <X size={14} />
+          </button>
+        </div>
+
+        {isThisWeaponStoryActive && (
+          <div className="story-mini-scrubber">
+            <input
+              type="range"
+              min={0}
+              max={1000}
+              value={Math.round(audio.progress * 1000)}
+              onChange={(e) =>
+                seekNarrationAudio(Number(e.target.value) / 1000)
+              }
+              className="story-audio-slider"
+            />
+            <span className="story-time-readout">
+              {formatAudioTime(audio.currentTime)} /{' '}
+              {formatAudioTime(audio.duration)}
+            </span>
+          </div>
+        )}
+      </aside>
+    );
+  }
+
   return (
     <aside
       className="story-drawer"
@@ -125,6 +247,15 @@ export const WeaponStoryDrawer: React.FC = () => {
 
         <div className="story-header-controls">
           <LanguageSwitchPill compact />
+          <button
+            type="button"
+            className="story-minimize-btn"
+            onClick={() => setStoryMinimized(true)}
+            title={ui.minimizeTitle}
+          >
+            <Minimize2 size={13} />
+            <span>{ui.minimizeBtn}</span>
+          </button>
           <button
             type="button"
             className="story-close-btn"

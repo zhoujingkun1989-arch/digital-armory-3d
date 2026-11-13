@@ -1,0 +1,939 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "mp5",
+  "generatedAt": "2026-11-12T22:27:13.697657+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "Heckler & Koch MP5A3 Submachine Gun",
+    "subtitle": "9×19mm Parabellum Roller-Delayed Blowback Submachine Gun",
+    "originCountry": "Germany",
+    "weaponType": "Submachine Gun",
+    "categoryLabel": "Submachine Gun",
+    "actionMechanism": "Roller-delayed blowback, closed-bolt rotary hammer firing",
+    "statusLabel": "In Vault · Strippable",
+    "description": "The quintessential benchmark for tactical counter-terrorism and close-quarters battle, engineered by Heckler & Koch in Oberndorf. Miniaturized directly from the G3 battle rifle, it couples a symmetrical dual-roller locking piece mechanism with closed-bolt hammer ignition to deliver rifle-grade first-shot accuracy. This classic A3 Navy configuration features an 8.85-inch fluted chamber barrel with three-lug muzzle, non-reciprocating cocking tube, pictogram ambidextrous fire control group, dual-rail collapsible stock, and curved 30-round steel magazine.",
+    "highlights": [
+      "1:4 mechanical advantage roller-delayed blowback",
+      "Decoupled HK-Slap cocking handle & 3-lug CHF barrel",
+      "Ambidextrous bullet-pictogram Navy trigger pack",
+      "Twin-rail collapsible steel stock & curved 30-rd mag"
+    ],
+    "workbenchTitle": "HK MP5A3 Mechanical Workbench & Firing Cycle",
+    "workbenchSubtitle": "4 Modular Groups · 26 Precision Nodes · Roller Delay & 9×19mm Closed-Bolt Kinematics",
+    "cutawayLabel": "Roller Lock Cutaway",
+    "cutawayTitle": "Switch to closed cutaway state and inspect the 8mm cylindrical locking rollers and 45-degree wedge engagement",
+    "searchPlaceholder": "Search component or BOM code (e.g., locking roller, wedge, charging handle, B-04)...",
+    "firingMilestoneLabel": "Muzzle Exit / Unlock",
+    "rateOfFire": "800 rpm",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Ready State",
+        "subLabel": "0%",
+        "desc": "All 26 HK MP5A3 components in fully locked battery. Cylindrical rollers are cammed outward into the barrel extension recesses by the 45-degree locking wedge."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "35%",
+        "desc": "Receiver push pins removed: 30-round curved magazine, A3 collapsible buttstock, tropical forearm, Navy trigger pack, and roller bolt group separated per armorer manual."
+      },
+      "roller_bolt": {
+        "label": "Roller Bolt",
+        "subLabel": "62%",
+        "desc": "Bolt head, dual 8mm hardened rollers, 45-degree wedge, stepped firing pin, and carrier separated in suspension to expose the 1:4 transmission geometry."
+      },
+      "fcg_detail": {
+        "label": "Trigger Pack",
+        "subLabel": "84%",
+        "desc": "Sheet-steel trigger cassette, pivoted ejector lever, rotary hammer, ambidextrous selector axle, and magazine spring stack isolated for inspection."
+      },
+      "full_exploded": {
+        "label": "Full Exploded",
+        "subLabel": "100%",
+        "desc": "Complete exploded array displaying the ribbed stamped receiver, 12-flute chamber trunnion, diopter drum sight, and every internal kinematic component."
+      }
+    },
+    "firingPhases": {
+      "mp5_trigger_release": {
+        "shortLabel": "Sear Release",
+        "title": "Phase 1 · Closed-Bolt Trigger Pull and Hammer Release",
+        "description": "Firing from a closed bolt, twin locking rollers sit seated into receiver recesses. The trigger pulls the transfer sear, freeing the rotary hammer from its cocked notch."
+      },
+      "mp5_hammer_ignition": {
+        "shortLabel": "Primer Strike",
+        "title": "Phase 2 · Hammer Drives Floating Firing Pin to Detonate Primer",
+        "description": "The spring-driven hammer strikes the floating firing pin through the carrier channel, indenting the 9x19mm primer as the bullet accelerates down the rifled barrel."
+      },
+      "mp5_roller_delay_unlock": {
+        "shortLabel": "Roller Retraction",
+        "title": "Phase 3 · Rollers Cam Inward Driving the Wedge at 1:4 Delay Ratio",
+        "description": "Chamber thrust forces the bolt head back, driving both 8mm rollers inward against trunnion ramps. Rollers accelerate the locking wedge and carrier rearward four times faster."
+      },
+      "mp5_blowback_ejection": {
+        "shortLabel": "Recoil & Eject",
+        "title": "Phase 4 · Full Recoil Travel, Cocking Hammer & Fixed Ejector Kick",
+        "description": "With rollers fully retracted, the carrier recoils rearward against the recoil spring, resetting the hammer. The pivoted ejector lever kicks the spent casing through the ejection port."
+      },
+      "mp5_buffer_reversal": {
+        "shortLabel": "Buffer Impact",
+        "title": "Phase 5 · H-Buffer Impact and Magazine Spring Follower Elevation",
+        "description": "The bolt carrier strikes the polyurethane H-buffer inside the steel stock cap. Simultaneously, the magazine coil spring drives the next live cartridge against the feed lips."
+      },
+      "mp5_counter_recoil_feed": {
+        "shortLabel": "Counter-Recoil",
+        "title": "Phase 6 · Spring-Driven Forward Stroke Stripping Fresh Cartridge",
+        "description": "The compressed recoil spring propels the carrier forward. The bolt head strips the top round, feeding it along the chamber ramp into the 12-flute fluted chamber."
+      },
+      "mp5_roller_cam_lock": {
+        "shortLabel": "Wedge Cam Lock",
+        "title": "Phase 7 · Wedge Cams Rollers Outward into Trunnion Locking Recesses",
+        "description": "The bolt head stops on the barrel face while the heavier carrier completes its final travel, driving the wedge between the rollers and locking them outward into battery."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "反恐利刃的几何锁闭：HK MP5 与精密近战传奇",
+      "deck": "从格茨霍夫实验室对毛瑟滚柱原理的战后救赎，到英国特种空勤团破窗突入伊朗大使馆的惊天一击，黑克勒-科赫将一把冲锋枪打磨成了现代室内近战的绝对标尺。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1964–1966",
+          "title": "步枪心脏的微缩手术：项目64的诞生",
+          "paragraphs": [
+            "冷战中期的西德边防军与各州警察，手中的近战冲锋枪仍以二战遗留的开放式枪机型号为主。无论是英国斯登还是瓦尔特MPL，开膛待击枪机沉重的前冲惯性，都会在扣动扳机的刹那剧烈破坏瞄准基线，首发命中精度极为低劣。面对城市反恐、机要保卫与人质营救中对首发穿颅精度的苛刻要求，传统自由枪机结构彻底走向了战术死胡同。",
+            "奥伯恩多夫的黑克勒-科赫公司做出了一个大胆决断：放弃传统冲锋枪设计范式，以极其成功的G3自动步枪冲压钣金机匣为基础，将7.62毫米全威力步枪的滚柱闭锁心肺，同比例缩放注入9×19毫米帕拉贝鲁姆手枪弹药平台。1964年，代号“项目64”（Projekt 64）正式立项，并在两年后被西德联邦边防警卫队赋予正式军规代号——MP5（Maschinenpistole 5）。"
+          ],
+          "audioScript": "上世纪六十年代，西德警方手中的冲锋枪大多还采用落后的开膛待击设计，射手扣下扳机时，沉重的枪机向前猛冲，首发弹着点往往严重偏离。为了追求绝对的单发精度，黑克勒科赫的工程师们进行了一场大胆的手术：他们直接将七点六二毫米G3步枪复杂的滚柱闭锁机构完整缩减到手枪弹平台。这项代号为六四计划的研发，最终孕育出了一代传奇冲锋枪，MP5。",
+          "audioUrl": "audio/mp5/story_act1_zh.mp3",
+          "focusPartId": "mp5_upper_receiver",
+          "focusPartLabel": "冲压钢纵向加强槽上机匣与弹匣井"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1966–1977",
+          "title": "从直弹匣到圆弧供弹：可靠性攻坚战",
+          "paragraphs": [
+            "初代MP5投入测试后，工程团队遭遇了前所未有的机械瓶颈。早期的MP5与MP5A1采用直插式冲压钢弹匣，然而9×19毫米帕拉贝鲁姆弹壳自身带有微小的锥度，双排直弹匣极易在高速连发供弹时因弹壳端面摩擦产生卡滞，甚至导致枪弹翻转顶死在闭锁节套导引坡前。",
+            "工程师们随后重构了供弹几何，将直弹匣果断推翻，改用曲率契合弹壳锥度的30发弧形弯弹匣，并在弹膛内精密电火花加工出12条纵向燃气浮置槽。这些纵槽让火药燃气微量反吹托浮弹壳，化解了高摩擦贴膛与抽壳断裂的隐患；同时，枪托端盖内植入聚氨酯H缓冲垫，配合非随动拉机柄的L形卡槽锁机动作，最终确立了名震天下的“HK拍机”（HK-Slap）战术上膛规程。"
+          ],
+          "audioScript": "早期的MP5并非完美无瑕。最初配发的直弹匣因为忽视了九毫米手枪弹的锥度，极易发生致命卡弹。工程师们推翻重来，换装符合锥度的弧形弯弹匣，并在弹膛内雕琢出十二条浮置燃气槽，用高温高压燃气托起弹壳，彻底解决了贴膛难题。加上枪机行程末端的聚氨酯缓冲垫，一把故障率极低、上膛动作极富仪式感的精密利刃终于淬火成型。",
+          "audioUrl": "audio/mp5/story_act2_zh.mp3",
+          "focusPartId": "mp5_mag_body",
+          "focusPartLabel": "30发弯弧冲压钢弹匣体"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1977–1980",
+          "title": "滚柱与楔铁的机械交响：1:4开锁几何",
+          "paragraphs": [
+            "MP5傲视群雄的机械灵魂，凝聚在机头两侧两枚直径8毫米的淬火硬质钢滚柱与夹在它们之间的45度闭锁楔铁上。当枪弹击发时，高压燃气推压弹壳推动机头向后，但受制于节套两侧的斜面角度，滚柱必须向内挤压才能释放锁闭；向内收拢的滚柱推顶闭锁楔铁，迫使质量四倍于机头的重型枪机框以四倍后移速度脱开。",
+            "这种1比4的几何变速比，在不增加全枪重量的前提下为高膛压阶段争取了极其宝贵的数毫秒延迟时间。直到弹头冲出枪口、膛压骤降到安全阈值，滚柱才彻底滑脱节套进入纯自由后坐阶段。闭膛击发消除了枪机前冲震动，回转击锤平稳释放，赋予了MP5百米之外连续点射命中同一弹孔的惊人表现。"
+          ],
+          "audioScript": "MP5的核心奥秘，在于两枚直径八毫米的闭锁滚柱与四十五度楔铁。扣发瞬间，高压燃气向后推挤机头，但滚柱被节套斜面死死阻拦，只能向内收拢并推开楔铁。这一精密几何结构以四倍传动差强行迟滞了开锁时机。直到弹头飞出枪管、膛压彻底释放，枪机才顺畅向后退壳。闭膛待击与滚柱延迟的完美结合，成就了步枪级别的点射精度。",
+          "audioUrl": "audio/mp5/story_act3_zh.mp3",
+          "focusPartId": "mp5_locking_rollers",
+          "focusPartLabel": "右侧圆柱闭锁滚柱"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1980–至今",
+          "title": "猎手行动与蓝厅风暴：反恐王座的加冕",
+          "paragraphs": [
+            "1980年5月5日傍晚，伦敦南肯辛顿区伊朗大使馆的窗户轰然炸裂。英国第22特种空勤团（SAS）队员身着全黑突击服、佩戴防毒面具，手持搭载双钢轨伸缩托与大功率战术手电的MP5A3破窗切入。伴随清脆有节奏的“啪啪”双发速射，恐怖分子被精准击毙，人质几乎全员生还。BBC的全球现场直播，让MP5那标志性的圆环准星与弧形弹匣瞬间刻入了全球公众的集体记忆。",
+            "从德国联邦警察GSG 9在摩加迪沙的闪电突击，到美国海军海豹突击队在波斯湾的隐秘渗透，MP5A3衍生出的三突笋消音快拆枪管与海军型全双手通用子弹图标握把座，成为了全球特种部队近战突入的标准符号。即便在小口径短突击步枪风靡的今天，MP5凭借无与伦比的后坐平顺感与防流弹穿透安全性，依旧稳居世界反恐战术史的巅峰圣殿。"
+          ],
+          "audioScript": "一九八零年伦敦伊朗大使馆人质事件，英国特种空勤团手持MP5破窗突入，在电视直播的聚焦下，以极其精准的点射瞬间消灭暴徒。这场代号猎手行动的突袭，让MP5一战封神。随后的数十年里，从德国第九国境防卫队到美国海豹突击队，这把兼具优雅工程美学与外科手术般精度的冲锋枪，无可争议地加冕为近战反恐的永恒图腾。",
+          "audioUrl": "audio/mp5/story_act4_zh.mp3",
+          "focusPartId": "mp5_buttstock",
+          "focusPartLabel": "MP5A3 双钢轨伸缩枪托与防滑橡胶托底"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "1:4 变速比双滚柱闭锁机构",
+          "tag": "延迟开锁几何",
+          "summary": "通过 45° 闭锁楔铁将左右两枚 Ø8mm 淬火钢滚柱强行压入枪管节套凹槽。击发时利用斜面几何产生 1:4 的行程位移差，使重型枪机框率先高速后移，在手枪弹高膛压期间实现绝对延迟闭锁，既压低了后坐冲量又杜绝了炸膛隐患。",
+          "focusPartId": "mp5_locking_rollers",
+          "focusPartLabel": "右侧圆柱闭锁滚柱 (Ø8mm)"
+        },
+        {
+          "id": "bt2",
+          "title": "12 槽燃气浮置弹膛与三突笋接口",
+          "tag": "防抽断浮置弹膛",
+          "summary": "在冷锻弹膛内壁精密电火花加工出 12 条纵向浅导气槽，击发时引导少量燃气包覆弹壳外壁，使弹壳与膛壁之间形成气膜，彻底消除高压膨胀导致的粘膛抽断；外缘集成三突笋快拆卡榫，可秒级无旷量锁定消音器。",
+          "focusPartId": "mp5_barrel",
+          "focusPartLabel": "8.85寸冷锻三突笋海军型枪管与节套"
+        },
+        {
+          "id": "bt3",
+          "title": "非随动解耦拉机柄与 HK-Slap 机构",
+          "tag": "人机上膛机构",
+          "summary": "拉机柄前置于枪管上方独立导向管内，通过前部支撑套管与后方枪机框单向接触。射击时拉机柄完全静止不随动，避免伤及手部；待机时可向上磕入 L 形防脱缺口，换弹后射手施展招牌式 HK-Slap 单手拍击即可利用复进簧势能瞬间推弹入膛。",
+          "focusPartId": "mp5_charging_handle",
+          "focusPartLabel": "非随动拉机柄与支撑套管"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1964",
+          "title": "项目64（Projekt 64）立项",
+          "detail": "黑克勒-科赫在奥伯恩多夫启动基于 G3 步枪架构的 9×19mm 滚柱冲锋枪微缩化工程设计。"
+        },
+        {
+          "year": "1966",
+          "title": "定型服役与 MP5 命名",
+          "detail": "首批冲压机匣试制枪通过西德联邦边防警卫队（BGS）验收测试，正式定名为 Maschinenpistole 5。"
+        },
+        {
+          "year": "1977",
+          "title": "弯弹匣与浮置槽弹膛全面换装",
+          "detail": "全面淘汰早期故障频发的双排直弹匣，换装弧形 30 发冲压钢弹匣与 12 槽燃气浮置弹膛，可靠性跃升至军规巅峰。"
+        },
+        {
+          "year": "1980",
+          "title": "猎手行动：伊朗大使馆解救战",
+          "detail": "英国陆军特种空勤团（SAS）在突袭行动中依托 MP5A3 完成外科手术式人质营救，引发全球特种反恐部队采购狂潮。"
+        },
+        {
+          "year": "1986",
+          "title": "海军型（Navy）双侧图标握把座问世",
+          "detail": "应美国海军特种作战司令部（DEVGRU/SEALs）极苛水下与两栖要求，推出全密封不锈钢火控盒与双手可用子弹图标下机匣。"
+        },
+        {
+          "year": "2000+",
+          "title": "近战经典传奇的战术常青树",
+          "detail": "尽管遭遇突击步枪口径冲击，MP5 凭借近距离无跳弹风险与柔和连发可控性，仍作为百余国反恐精锐主力服役至今。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Geometric Delay: The Heckler & Koch MP5 and the CQB Revolution",
+      "deck": "From the post-war salvation of Mauser roller geometry in Oberndorf to the British Special Air Service storming Princes Gate, Heckler & Koch forged an enduring masterpiece of precision close-quarters counter-terrorism.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1964–1966",
+          "title": "Downsizing Battle Rifle Core: The Genesis of Project 64",
+          "paragraphs": [
+            "During the height of the Cold War, West German border guards and state law enforcement were stuck with open-bolt submachine guns descended from Second World War paradigms. Whether deploying the British Sten or domestic Walther MPL, the forward lurch of a massive open bolt upon trigger pull violently disrupted the sight picture, rendering surgical first-round shot placement nearly impossible.",
+            "Recognizing that modern counter-terrorism and hostage rescue demanded pinpoint accuracy rather than suppressive area fire, Heckler & Koch embarked on an audacious engineering experiment in Oberndorf am Neckar. Rather than refining conventional blowback, engineers scaled down the stamped-sheet receiver and roller-delayed action of the 7.62mm G3 battle rifle to the 9x19mm Parabellum cartridge. In 1964, 'Projekt 64' was launched, soon christened by the West German Federal Border Guard as the Maschinenpistole 5."
+          ],
+          "audioScript": "In the nineteen sixties, West German police faced a tactical crisis. Their open bolt submachine guns lurched forward violently whenever the trigger was pulled, making precision shooting impossible during hostage rescue. In response, Heckler and Koch scaled down the famous roller delayed mechanism of their seven point six two millimeter G3 battle rifle into a compact nine millimeter submachine gun. Dubbed Project Sixty-Four, this mechanical breakthrough soon took the service name MP5.",
+          "audioUrl": "audio/mp5/story_act1_en.mp3",
+          "focusPartId": "mp5_upper_receiver",
+          "focusPartLabel": "Stamped Sheet-Steel Fluted Upper Receiver"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1966–1977",
+          "title": "From Straight Sticks to Curved Geometry: The Battle for Reliability",
+          "paragraphs": [
+            "Early iterations of the MP5, particularly the MP5A1 and early A2 models, exposed immediate operational vulnerabilities under sustained automatic fire. The original straight box steel magazines struggled to reliably feed tapered 9x19mm Parabellum cases, leading to frequent nose-down feedway jams against the barrel trunnion ramps.",
+            "HK engineers redesigned the ammunition delivery architecture, discarding straight magazines in favor of a 30-round curved stamped-steel magazine tailored to the subtle taper of the 9mm cartridge. Simultaneously, 12 longitudinal gas flutes were electro-discharge machined into the chamber walls, allowing powder gases to backfill around the brass casing and prevent case binding. Paired with a polyurethane H-buffer and forward cocking tube detent, the legendary 'HK-Slap' tactical reload was born."
+          ],
+          "audioScript": "Early trials revealed that straight stick magazines frequently jammed because nine millimeter cartridge cases are slightly tapered. Heckler and Koch redesigned the feed geometry, introducing the iconic curved thirty round steel magazine. Inside the chamber, engineers carved twelve gas flutes that let combustion gases float the expanding casing to eliminate extraction failures. Combined with a polyurethane buffer and forward cocking slot, the world famous HK Slap manual of arms was perfected.",
+          "audioUrl": "audio/mp5/story_act2_en.mp3",
+          "focusPartId": "mp5_mag_body",
+          "focusPartLabel": "30-Round Curved Stamped-Steel Magazine Body"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1977–1980",
+          "title": "Wedges, Rollers, and Kinematics: The 1:4 Mechanical Delay",
+          "paragraphs": [
+            "The mechanical genius of the MP5 resides inside its bolt assembly: two hardened 8mm cylindrical locking rollers cradled between the bolt head and a 45-degree angled wedge piece. Upon ignition, peak chamber pressure drives the cartridge case rearward against the bolt face, but the rollers are held fast within the curved trunnion recesses.",
+            "To move backward, the rollers are forced to cam inward against the 45-degree wedge, driving the massive bolt carrier rearward four times faster and further than the bolt head itself. This mechanical leverage delays primary extraction until bullet exit relieves peak chamber pressure. Coupled with closed-bolt hammer release, the MP5 achieves a silky-smooth recoil impulse and match-grade accuracy unmatched by simple blowback designs."
+          ],
+          "audioScript": "The heart of the MP5 is its roller delayed blowback mechanism. Two hardened eight millimeter cylindrical rollers nest inside the barrel trunnion, held apart by a forty-five degree steel wedge. Upon ignition, chamber pressure pushes the bolt back, forcing the rollers inward against the wedge. This mechanical geometry accelerates the heavy bolt carrier rearward at a one to four transmission ratio, keeping the chamber safely closed until peak pressures drop.",
+          "audioUrl": "audio/mp5/story_act3_en.mp3",
+          "focusPartId": "mp5_locking_rollers",
+          "focusPartLabel": "Right Cylindrical Locking Roller (8mm Hardened Steel)"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "1980–Present",
+          "title": "Operation Nimrod and Princes Gate: The Global CQB Benchmark",
+          "paragraphs": [
+            "On May 5, 1980, millions watched live television as British 22 SAS operators in black respirators breached the windows of the besieged Iranian Embassy in London. Armed with retractable-stock MP5A3 submachine guns outfitted with early weapon lights, the operators neutralized five terrorists with rapid, surgical double-taps while preserving hostage lives. Operation Nimrod catapulted the MP5 into global tactical stardom.",
+            "Over the ensuing decades, from GSG 9's assault in Mogadishu to US Navy SEAL room-clearing operations, the MP5A3 Navy variant—with its threaded three-lug barrel and ambidextrous bullet-pictogram grip housing—set the gold standard for special operations units. Even in an era dominated by short-barreled carbines, the MP5's controllable automatic fire and low overpenetration risk keep it reigning as the supreme CQB icon."
+          ],
+          "audioScript": "On May fifth, nineteen eighty, millions watched live on television as British SAS troopers cleared the Iranian Embassy in London. Armed with collapsible stock MP5A3 submachine guns, the operators neutralized five terrorists with surgical double taps. Operation Nimrod cemented the submachine gun as the ultimate tactical weapon. From Germany to the United States Navy SEAL teams, the MP5 remains an eternal symbol of precision counter terrorism.",
+          "audioUrl": "audio/mp5/story_act4_en.mp3",
+          "focusPartId": "mp5_buttstock",
+          "focusPartLabel": "MP5A3 Twin-Rail Retractable Steel Buttstock"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "1:4 Mechanical Advantage Roller-Delayed System",
+          "tag": "Delay Geometry",
+          "summary": "Dual Ø8mm hardened rollers sit between a 45-degree wedge and the barrel extension. Mechanical transmission ratios delay extraction by accelerating the heavy bolt carrier rearward four times faster than the bolt head, keeping the breach sealed during peak chamber pressures.",
+          "focusPartId": "mp5_locking_rollers",
+          "focusPartLabel": "Right Cylindrical Locking Roller (8mm Hardened Steel)"
+        },
+        {
+          "id": "bt2",
+          "title": "12-Flute Gas Chamber & Quick-Attach 3-Lug Barrel",
+          "tag": "Gas-Fluted Chamber",
+          "summary": "Twelve longitudinal gas flutes electro-discharge machined along the chamber allow high-pressure gases to cushion the expanding casing, preventing case-head separation. The cold hammer-forged muzzle integrates three precision machined lugs for instant, play-free suppressor attachment.",
+          "focusPartId": "mp5_barrel",
+          "focusPartLabel": "8.85\" CHF 3-Lug Navy Threaded Barrel & Trunnion"
+        },
+        {
+          "id": "bt3",
+          "title": "Non-Reciprocating Cocking Tube with HK-Slap Notch",
+          "tag": "Ergonomic Charging",
+          "summary": "A forward-mounted charging handle operates independently within an overhead welded tube, engaging the carrier solely during manual cocking without reciprocating under fire. A retention slot permits locking the action open, enabling the world-renowned palm slap reload.",
+          "focusPartId": "mp5_charging_handle",
+          "focusPartLabel": "Non-Reciprocating Left HK-Slap Charging Handle"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1964",
+          "title": "Projekt 64 Inception",
+          "detail": "Heckler & Koch initiates development in Oberndorf to downscale the G3 battle rifle roller action to 9x19mm."
+        },
+        {
+          "year": "1966",
+          "title": "Official Adoption as MP5",
+          "detail": "The West German Federal Border Guard (BGS) and state police adopt the design under the official designation Maschinenpistole 5."
+        },
+        {
+          "year": "1977",
+          "title": "Curved Steel Magazine Standardization",
+          "detail": "HK discards problematic straight magazines, standardizing the curved 30-round stamped-steel magazine and 12-flute chamber."
+        },
+        {
+          "year": "1980",
+          "title": "Operation Nimrod at Princes Gate",
+          "detail": "British 22 SAS rescues 19 hostages in the Iranian Embassy siege, establishing the MP5 as the worldwide emblem of elite counter-terrorism."
+        },
+        {
+          "year": "1986",
+          "title": "Navy Trigger Pack & Submersible Upgrades",
+          "detail": "In response to US Navy SEAL requirements, HK introduces the ambidextrous bullet-pictogram polymer grip housing and corrosion-resistant trigger group."
+        },
+        {
+          "year": "2000+",
+          "title": "Enduring Modern CQB Legacy",
+          "detail": "Despite the proliferation of short-barreled rifle carbines, the MP5 retains front-line service across police and military tactical teams in over 100 nations."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "mp5_charging_handle": {
+      "partId": "mp5_charging_handle",
+      "bomCode": "B-01",
+      "calloutLabelEn": "Left Charging Handle",
+      "zh": {
+        "roleTag": "前管解耦非随动上膛机构",
+        "overview": "非随动拉机柄装配在机匣前上方的拉机柄导向管内，通过内部支撑套管向前延伸。射手在装填或排除故障时向后拉动拉机构件，并在换弹后施展标志性的拍击操作复进上膛。",
+        "craftAndMaterial": "主体采用经渗氮硬化的高强度合金钢骨架，外覆耐磨抗冲击工程聚合物防滑护套；手柄头部带有微倾倒角与滚花防滑纹，即便佩戴厚重战术手套也能实现可靠盲操。",
+        "kinematicRole": "射击循环阶段 1 至阶段 7 期间，手柄与高速后坐的枪机框完全解耦并由前端棘爪簧固定在前端，保持完全静止；分解阶段 0.35 至 0.68 时，自拉机柄管限位卡槽向左前方滑脱分解。",
+        "designHighlight": "非随动前置设计彻底杜绝了近距离掩体射击时后坐拉机柄打手或撞击障碍物的风险；顶端的 L 形锁死凹槽赋予了射手开膛待机后单手拍击释放的极致战术可靠性。",
+        "audioScript": "这根前置拉机柄在射击全过程中保持静止，完全不会随枪机前后打手。装入满弹匣后，特警射手只需用手掌边缘向下狠拍卡入凹槽的手柄，复进簧就会瞬间推弹入膛，这就是著名的黑克勒科赫拍击。",
+        "audioUrl": "audio/mp5/parts/mp5_charging_handle_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Decoupled Cocking Mechanism",
+        "overview": "Mounted inside the forward cocking tube above the barrel, this handle operates the internal cocking support tube. It provides shooters manual bolt retraction and allows the iconic HK slap during dynamic reload cycles.",
+        "craftAndMaterial": "Constructed from a nitrided forged steel structural core overmolded with high impact tactical polymer; the handle features deliberate ergonomic contouring and aggressive gripping ridges.",
+        "kinematicRole": "Remains decoupled and completely stationary at the forward position during all 7 dynamic firing phases; disengages laterally and forward out of the tube track between disassembly steps 0.35 and 0.68.",
+        "designHighlight": "Forward non-reciprocating architecture prevents weapon manipulation interference inside tight armored vehicles, while the classic upward L-notch enables instant manual bolt hold-open.",
+        "audioScript": "Positioned inside the forward cocking tube, this non reciprocating handle stays completely still while firing, preventing hand injuries. After inserting a fresh magazine, an operator executes the classic HK slap, striking the latch downward to chamber a round with unmatched speed.",
+        "audioUrl": "audio/mp5/parts/mp5_charging_handle_en.mp3"
+      }
+    },
+    "mp5_bolt_carrier": {
+      "partId": "mp5_bolt_carrier",
+      "bomCode": "B-02",
+      "calloutLabelEn": "Heavy Bolt Carrier",
+      "zh": {
+        "roleTag": "4倍质量惯性储能核心",
+        "overview": "重型枪机框位于上机匣内腔中部，是整个滚柱延迟自动机的主动驱动滑块。其上部与细长的复进簧导引管固接一体，底部加工有驱动击锤压下的圆弧形压铁与阻铁卡槽。",
+        "craftAndMaterial": "采用高抗冲击合金结构钢整体锻造经多轴数控精铣成型，表面深层渗氮发黑；前部掏空容纳闭锁楔铁，上导管采用精密铜焊与机框本体熔为一体以承受剧烈后坐撞击。",
+        "kinematicRole": "阶段 3 开锁时受 45 度楔铁驱动以机头 4 倍的瞬时速度加速后坐；阶段 4 压倒击锤蓄能，阶段 5 撞击聚氨酯缓冲垫止动，阶段 6 前冲推弹；分解阶段 0.22 至 0.48 整体自机匣尾部拉出。",
+        "designHighlight": "机框质量与机头保持约为 4 比 1 的黄金质量比，利用力学杠杆原理将机头后退的微小位移转化为机框高速储能，无需导气装置即可驯服高膛压冲量。",
+        "audioScript": "重型枪机框是整支冲锋枪的动力核心。开锁瞬间，左右滚柱会把后坐能量放大四倍传递给它，使机框飞速向后压缩复进簧并压倒击锤。它的巨大惯性保证了连发射击时极致平稳的射击节奏。",
+        "audioUrl": "audio/mp5/parts/mp5_bolt_carrier_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Inertial Momentum Carrier",
+        "overview": "Positioned axially within the stamped upper receiver, this heavy carrier acts as the primary reciprocating drive body. It houses the locking piece and integrates a brazed top extension tube that surrounds the recoil guide rod.",
+        "craftAndMaterial": "Milled from a solid alloy steel forging with high-durability ferritic nitrocarburizing; internal contact tracks are mirror-polished while the top tube is joined via aerospace-grade brazing.",
+        "kinematicRole": "Accelerates rearward at 4 times the bolt head velocity during Phase 3 roller unlocking; recocks the hammer in Phase 4 and rebounds from the receiver buffer at Phase 5 before sliding out at strip stages 0.22 to 0.48.",
+        "designHighlight": "Engineering the bolt carrier mass to be roughly four times that of the bolt head enables pure mechanical delay through inertia, eliminating all gas pistons while retaining pinpoint closed-bolt accuracy.",
+        "audioScript": "This heavy bolt carrier is the kinetic engine of the MP5. During discharge, the rollers force it backward four times faster than the bolt face itself. That massive moving inertia cycles the weapon effortlessly while keeping muzzle climb astonishingly soft.",
+        "audioUrl": "audio/mp5/parts/mp5_bolt_carrier_en.mp3"
+      }
+    },
+    "mp5_bolt_head": {
+      "partId": "mp5_bolt_head",
+      "bomCode": "B-03",
+      "calloutLabelEn": "Roller Bolt Head",
+      "zh": {
+        "roleTag": "推弹闭锁与铜簧抽壳",
+        "overview": "机头位于枪机组件最前端，直接承托 9 毫米帕拉贝鲁姆弹底窝并与枪管节套对正。其左右两侧开有滚柱容纳槽，右侧装有精密抽壳钩，底面切有通过固定抛壳挺的清空凹槽。",
+        "craftAndMaterial": "选用特种耐热不锈钢经多道淬火硬化热处理，具有极高表面硬度与抗冲刷性能；滚柱窗经过极低公差精磨以杜绝微观挤裂，抽壳钩采用铍铜合金片簧提供恒定高夹持力。",
+        "kinematicRole": "阶段 1 至 2 顶紧弹壳底窝支撑膛压；阶段 3 滚柱内缩后与闭锁楔脱离，随后后退约 4 毫米带出弹壳；分解阶段 0.22 开始抽出机匣，在阶段 0.48 至 0.78 处旋转 90 度自机框彻底脱离。",
+        "designHighlight": "独特的无凸轮闭膛直移机头设计，抽壳动作在弹膛微气隙建立后才平缓展开，彻底避免了高速抽壳时的撕底断壳现象，机头公差控制达到精密钟表级别。",
+        "audioScript": "这个滚柱闭锁机头直接顶住燃烧室的剧烈膛压。它的侧面藏有一对精细滚柱，击发后随着滚柱向内收缩，机头才从容后移抽出弹壳。在野外分解时，只需将它逆时针旋转九十度即可轻松拆下。",
+        "audioUrl": "audio/mp5/parts/mp5_bolt_head_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Primary Breach Seal Head",
+        "overview": "Positioned at the front of the bolt group, the bolt head interfaces directly with the chamber breech face. It features two lateral roller cutouts, a spring-loaded extractor claw, and a longitudinal clearance slot for the receiver ejector.",
+        "craftAndMaterial": "Precision machined from case-hardened alloy steel with ultra-smooth contact bevels; incorporates a high-fatigue copper-beryllium wire spring to power the high-retention extractor claw.",
+        "kinematicRole": "Supports the 9mm case rim during Phases 1 and 2; travels rearward during Phases 3 and 4 to extract fired brass; easily disassembles from the carrier by rotating 90 degrees between explosion steps 0.48 and 0.78.",
+        "designHighlight": "Eliminates rotating locking lugs in favor of dual inward-camming rollers, yielding perfectly linear cartridge seating and unmatched feed reliability across all standard 9mm NATO loads.",
+        "audioScript": "The bolt head directly supports the cartridge during the violence of firing. Dual hardened rollers on its flanks remain locked into the barrel trunnion until chamber pressures subside. A quarter turn is all it takes to unlock it from the bolt carrier during strip-down.",
+        "audioUrl": "audio/mp5/parts/mp5_bolt_head_en.mp3"
+      }
+    },
+    "mp5_locking_rollers": {
+      "partId": "mp5_locking_rollers",
+      "bomCode": "B-04R",
+      "calloutLabelEn": "Right Locking Roller",
+      "zh": {
+        "roleTag": "1:4 滚柱延迟闭锁核心",
+        "overview": "右侧闭锁滚柱精密嵌入机头右侧的跑道形窗口内，直径精确为 8 毫米。闭膛时凸出卡入枪管节套的内凹锁槽中，构成右半侧主闭锁支承点。",
+        "craftAndMaterial": "采用高碳铬轴承钢真空渗碳淬火制成，硬度达到洛氏 60 度以上，表面呈现高光洁度超精研磨镜面；圆柱外轮廓经微米级倒圆以减缓高频撞击接触应力。",
+        "kinematicRole": "击发阶段 3 承受弹膛后坐反冲，沿节套内弧面受力向机手中轴线向内挤入，强迫闭锁楔铁后退；分解阶段 0.48 至 0.78 随闭锁楔抽出后自机头侧窗垂直滑出取出。",
+        "designHighlight": "滚柱的实际滚动位移与斜面接触角经过数学优化，与左滚柱实现绝对动力学自平衡，消除了机头单侧受力倾覆的力矩磨损，使连发散布达到惊人水准。",
+        "audioScript": "这枚直径只有八毫米的精密淬火滚柱，是整个滚柱延迟开锁的核心锁钥。开火时，它必须在几毫秒内承受数千磅的斜向推力，顺畅滑入机头内侧，将闭锁楔铁强力向后顶开。",
+        "audioUrl": "audio/mp5/parts/mp5_locking_rollers_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Right Delay Locking Roller",
+        "overview": "Captive inside the right-hand rectangular window of the bolt head, this 8-millimeter roller interfaces directly with the barrel trunnion locking recess. It provides the right-side mechanical lockup that confines early chamber expansion.",
+        "craftAndMaterial": "Ground from high-chromium bearing steel through-hardened to exceed 60 HRC; features micro-finished cylindrical faces to eliminate galling and maximize cyclic lifespan under shock loading.",
+        "kinematicRole": "Cams laterally inward along receiver trunnion ramps during Phase 3 to drive the locking piece rearward; completely frees itself from the bolt head slot between disassembly steps 0.48 and 0.78.",
+        "designHighlight": "Translates pure axial chamber force into a transverse wedging movement, acting as a dynamic torque-free mechanical fuse that keeps the action shut until bore pressures plummet to safe ambient levels.",
+        "audioScript": "This hardened eight-millimeter steel cylinder is the mechanical heart of the MP5. At the instant of firing, chamber pressure forces this roller to cam inward against the locking piece, safely slowing the breach opening until the bullet exits the barrel.",
+        "audioUrl": "audio/mp5/parts/mp5_locking_rollers_en.mp3"
+      }
+    },
+    "mp5_locking_roller_left": {
+      "partId": "mp5_locking_roller_left",
+      "bomCode": "B-04L",
+      "calloutLabelEn": "Left Locking Roller",
+      "zh": {
+        "roleTag": "对称向内缩回延迟闭锁",
+        "overview": "左侧闭锁滚柱位于机头左侧窗口内，与右滚柱完全对称布局。它与枪管节套左闭锁槽精确啮合，共同封闭枪膛并承担左侧后坐分力。",
+        "craftAndMaterial": "同右滚柱一致选用航空级真空脱气高碳铬轴承钢，经过超细化晶粒球化退火与深冷淬火处理，具有极限抗压溃强度与极低滚动摩擦阻力系数。",
+        "kinematicRole": "阶段 2 至 3 与右滚柱严格同步向内向中轴线缩进，在阶段 7 闭膛到位时被闭锁楔前端左右斜面同步向外推出复位；分解阶段 0.48 至 0.78 沿机头侧窗自由脱出。",
+        "designHighlight": "左右滚柱的对称收敛动作构成了无弯矩纯剪切承力回路，比起常规旋转闭锁突笋，其瞬态摩擦功损耗大幅降低且对微量泥沙污垢具有极强碾碎自洁力。",
+        "audioScript": "左侧滚柱与右侧滚柱完美对称，两颗圆柱在毫厘之间同步向内收敛。这种对称闭锁结构完全消除了枪机横向摆动应力，使九毫米子弹在连发泼洒时枪口姿态依然极其沉稳。",
+        "audioUrl": "audio/mp5/parts/mp5_locking_roller_left_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Left Delay Locking Roller",
+        "overview": "Positioned symmetrically inside the left window of the bolt head, this hardened roller locks directly into the left trunnion recess. It works in unison with its right twin to balance instantaneous bolt thrust loads.",
+        "craftAndMaterial": "Formed from cryogenically treated vacuum-degassed bearing steel with flawless surface superfinishing, delivering extreme resistance to high-frequency impact shear stresses.",
+        "kinematicRole": "Retracts inward toward the firing pin centerline during Phase 3, then spreads outward into the trunnion during Phase 7 closure; drops out effortlessly during stage 0.48 to 0.78 sub-assembly strip.",
+        "designHighlight": "Symmetrical twin-roller kinematics cancel out parasitic tilting moments, ensuring pure linear breach travel without the angular binding common to traditional rotating multi-lug mechanisms.",
+        "audioScript": "Mirroring its twin on the right, this left roller wedges perfectly into the barrel trunnion. Because both rollers squeeze inward together, the mechanism cancels out twisting forces entirely, giving the MP5 its laser-like controllability.",
+        "audioUrl": "audio/mp5/parts/mp5_locking_roller_left_en.mp3"
+      }
+    },
+    "mp5_locking_piece": {
+      "partId": "mp5_locking_piece",
+      "bomCode": "B-05",
+      "calloutLabelEn": "45-Deg Locking Wedge",
+      "zh": {
+        "roleTag": "斜面变速比转换枢机",
+        "overview": "闭锁楔铁插装在枪机框前膛内并穿透机头后部，位于双滚柱正后方。其前端研磨有特定开合角度的精密对称斜面，中心开有击针通过通道。",
+        "craftAndMaterial": "采用高等级铬钼钒热作模具钢锻造精加工，表面涂覆耐磨黑磷化层；两侧楔面经过镜面研磨且精确校准为 45 度（全开角 100 度），确保传动比恒定在 4 比 1。",
+        "kinematicRole": "阶段 3 受双滚柱向内挤压被迫高速后撤，推动机框后坐；阶段 7 在复进簧驱动下前插将滚柱向外顶入节套完成闭锁；分解阶段 0.48 至 0.78 向外抽拉即可拆解。",
+        "designHighlight": "该楔铁是调整自动机工作特性的关键“变速箱”：改变斜面角度即可自由调节开锁迟滞时间和后坐冲量，是 MP5 适配加装消音器或发射强装药弹药的核心调节件。",
+        "audioScript": "这块四十五度闭锁楔铁就是全枪的力学变速箱。左右滚柱向内夹紧时，顺着它的两个斜面把机框向后猛推。通过更换不同角度的楔铁，特种部队就能让枪支完美适应消音器或亚音速弹药。",
+        "audioUrl": "audio/mp5/parts/mp5_locking_piece_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Cam Delay Wedge Block",
+        "overview": "Inserted axially through the front collar of the bolt carrier and seating within the rear socket of the bolt head, this wedge block directly contacts the two locking rollers. It features a central bore for firing pin clearance.",
+        "craftAndMaterial": "Precision forged from chromium-molybdenum tool steel and heat-treated to withstand relentless battering; cam faces are cut to exactly 45 degrees and micro-polished to maintain uniform contact friction.",
+        "kinematicRole": "Acts as the dynamic ramp in Phase 3 that accelerates the carrier rearward as rollers collapse, then re-drives the rollers outward at Phase 7; slides out during field strip stages 0.48 to 0.78.",
+        "designHighlight": "Functions as a mechanical transmission: the angle of the forward wedge slopes controls unlocking delay and bolt recoil momentum, allowing weapon tuning for suppressors or high-velocity ammunition.",
+        "audioScript": "This angled locking piece functions like a miniature mechanical transmission. As the rollers squeeze inward, they ride along these precision-cut forty-five-degree flats to propel the heavy carrier rearward. It is the secret behind the MP5 smooth shooting rhythm.",
+        "audioUrl": "audio/mp5/parts/mp5_locking_piece_en.mp3"
+      }
+    },
+    "mp5_firing_pin": {
+      "partId": "mp5_firing_pin",
+      "bomCode": "B-06",
+      "calloutLabelEn": "Stepped Firing Pin",
+      "zh": {
+        "roleTag": "不到位防偶发保险击针",
+        "overview": "击针纵向贯穿于闭锁楔铁和机头内腔中轴线上，后部套有圆柱形击针回位簧。当回转击锤击打其尾部时，击针尖向前冲出引燃底火。",
+        "craftAndMaterial": "采用耐疲劳超高韧性不锈钢车削成型，前端针尖经过球形倒圆精抛光；轴身设有多级变径台阶与弹簧限位环，兼顾高频撞击下的弹性恢复力与抗弯刚度。",
+        "kinematicRole": "阶段 2 在击锤打击下向前冲刺引燃底火并立即在回位簧作用下弹回；未完全闭锁时被未到位的闭锁楔阻挡无法伸出；分解阶段 0.48 至 0.78 自闭锁楔中心孔向后抽出。",
+        "designHighlight": "阶梯台阶设计构成了闭锁不到位物理保险：只要机框与机头尚存微小开锁间隙，闭锁楔便会阻断击针前伸行程，杜绝了炸膛意外的发生。",
+        "audioScript": "这根带有弹簧的浮动阶梯击针藏在枪机最中央。它设计有极其精巧的安全台阶，只有当左右滚柱完全卡入节套、闭锁楔完全推到位时，击针尖才能露头击发，彻底排除了未闭锁炸膛的隐患。",
+        "audioUrl": "audio/mp5/parts/mp5_firing_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Floating Inertial Firing Pin",
+        "overview": "Running along the geometric bore axis through the center of the locking piece and bolt head, this stepped pin transfers hammer kinetic energy to the cartridge primer. It is held retracted by a captive coil return spring.",
+        "craftAndMaterial": "Turned from aerospace-grade stainless steel with polished striker tips and transition shoulders; shot-peened to resist infinite cyclical hammer strikes without deformation.",
+        "kinematicRole": "Driven forward by hammer impact in Phase 2 to strike the primer before springing backward; physically blocked if the bolt is out of battery; extracts rearward between sub-strip steps 0.48 and 0.78.",
+        "designHighlight": "The stepped shoulder creates an inherent out-of-battery safety interlock: if the locking piece is not fully seated forward, the pin cannot protrude past the bolt face, preventing catastrophic premature detonation.",
+        "audioScript": "The firing pin floats inside the locking piece with its own return spring. Notice the stepped shoulders on its body. These serve as a fail-safe that physically prevents the pin from reaching the primer unless the roller action is fully locked into battery.",
+        "audioUrl": "audio/mp5/parts/mp5_firing_pin_en.mp3"
+      }
+    },
+    "mp5_recoil_rod": {
+      "partId": "mp5_recoil_rod",
+      "bomCode": "B-07",
+      "calloutLabelEn": "Recoil Guide Rod",
+      "zh": {
+        "roleTag": "上部复进同轴直线导向",
+        "overview": "复进导杆纵向固定在机匣后端的尾盖上，前部延伸插入枪机框上部的套管深处。它为套在其外围的长行程螺旋复进簧提供无偏摆的轴向直线导轨。",
+        "craftAndMaterial": "选用合金弹簧钢经过精拔加工与微孔硬铬电镀处理，表面极度光滑且耐腐蚀；尾端铆接防脱定位箍与聚氨酯减震基座，前部顶端做钝化圆弧导向头。",
+        "kinematicRole": "在射击全程作为静止的基准支撑部件，引导机框上管在其外沿做高频往复直线滑动；分解阶段 0.20 至 0.50 随尾盖取下后，自枪机套管内整体向后抽出。",
+        "designHighlight": "将复进簧高位悬置于枪管轴线上方而非下方，使后坐合力线更加贴近射手握持轴线，大幅抑制了连发时的枪口向上翻跳力矩。",
+        "audioScript": "这根细长的复进导杆固定在后尾盖上，直接穿入枪机框上方。它不仅防止强力复进簧在每分钟八百发的高速往复中扭曲变形，更让整枪的后坐力传递精准保持在同一条平直轴线上。",
+        "audioUrl": "audio/mp5/parts/mp5_recoil_rod_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Recoil Guide Spindle",
+        "overview": "Anchored to the receiver backplate assembly, this elongated rod extends forward inside the top tubular tunnel of the bolt carrier. It acts as the rigid central spine ensuring completely linear recoil spring compression.",
+        "craftAndMaterial": "Precision-drawn high-tensile spring steel finished with industrial hard chrome plating for zero friction; terminates in a staked rear collar secured against vibration loosening.",
+        "kinematicRole": "Remains static relative to the receiver while the bolt carrier slides over its length during all 7 dynamic firing phases; withdraws rearward from the carrier during strip steps 0.20 to 0.50.",
+        "designHighlight": "High-axis placement of the recoil spring directly above the barrel axis vectors recoil impulse straight into the operator's shoulder pocket, dramatically mitigating muzzle flip during full-auto bursts.",
+        "audioScript": "This slender recoil guide rod anchors inside the rear buttstock and supports the main spring. By positioning the spring high above the barrel, recoil forces travel straight back into your shoulder rather than tilting the muzzle upward.",
+        "audioUrl": "audio/mp5/parts/mp5_recoil_rod_en.mp3"
+      }
+    },
+    "mp5_recoil_spring": {
+      "partId": "mp5_recoil_spring",
+      "bomCode": "B-08",
+      "calloutLabelEn": "Helical Recoil Spring",
+      "zh": {
+        "roleTag": "后坐缓冲与复进闭锁动力",
+        "overview": "长行程螺旋复进簧紧密套在复进导杆外壁，容纳于枪机框上部圆管与尾座之间。它存储枪机后退时的冲量能量，并在复位时推动枪机完成供弹闭锁全过程。",
+        "craftAndMaterial": "采用顶级高纯度硅铬合金琴钢丝缠绕成型，经过预压定型与喷丸强韧化处理；端圈经平面磨削以保证端面受力绝对平整，杜绝偏载疲劳断裂。",
+        "kinematicRole": "阶段 3 至 5 随枪机后退被压缩蓄能；阶段 6 释放弹性势能推动机框前冲剥离新弹入膛；阶段 7 顶推闭锁楔铁将滚柱撑开锁死；分解阶段 0.20 至 0.50 抽出分离。",
+        "designHighlight": "针对 9 毫米口径专门调配的非线性刚度曲线，既能温和软化阶段 5 枪机撞底的峰值冲击，又能储备足够刚度确保脏污积碳环境下依然强力推弹入膛。",
+        "audioScript": "这根高强度琴钢丝复进簧是全自动射击的能量中枢。枪机后坐时它吸收冲击蓄积动能，随后在千分之几秒内释放能量，强行推走弹匣顶部的弹药送入枪膛，确保恶劣泥浆环境下闭锁毫不拖泥带水。",
+        "audioUrl": "audio/mp5/parts/mp5_recoil_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Recoil Drive Spring",
+        "overview": "Coiled closely around the recoil guide rod, this multi-turn spring is trapped between the backplate buffer and the carrier forward tube. It captures cyclic recoil kinetic energy and drives the action back into full battery.",
+        "craftAndMaterial": "Wound from premium music-wire silicon-chromium spring steel; subjected to pre-stress shot peening with squared and ground ends to eliminate spring buckling and lateral bowing.",
+        "kinematicRole": "Compresses continuously from Phase 3 through 5 to absorb bolt recoil; expands dynamically in Phase 6 to strip and chamber cartridges before sliding free between steps 0.20 and 0.50.",
+        "designHighlight": "Tuned specifically for the cyclic mass of the MP5 to yield a manageable 800 rounds-per-minute rate of fire while retaining enough forward thrust to overcome heavy carbon buildup.",
+        "audioScript": "Wound from ultra high grade spring steel, this long coil spring absorbs bolt recoil before slamming the bolt group home with fresh rounds. Its carefully calibrated tension provides the MP5 legendary eight hundred rounds per minute cadence.",
+        "audioUrl": "audio/mp5/parts/mp5_recoil_spring_en.mp3"
+      }
+    },
+    "mp5_upper_receiver": {
+      "partId": "mp5_upper_receiver",
+      "bomCode": "R-01",
+      "calloutLabelEn": "Stamped Receiver Spine",
+      "zh": {
+        "roleTag": "全枪主承力薄钢板壳体",
+        "overview": "上机匣是整支冲锋枪的骨骼核心，由上下两半冲压钢板在顶部中缝激光滚焊一体而成。其下方焊接有前倾弹匣井，两侧冲压有加强肋条与伸缩托滑动导轨，顶部设有四个瞄准镜卡座凸台。",
+        "craftAndMaterial": "选用 1.2 毫米高强度冷轧低碳合金钢板经大型液压模具精密深拉伸成型，全表面经浸盐液体氮化与深黑色磷化耐磨涂装，展现极佳的抗扭扭矩与防腐蚀指标。",
+        "kinematicRole": "在所有射击阶段作为全枪静止的空间基准体，内表面圆弧内壁引导枪机框滑行；在整枪分解阶段 0.50 至 1.00 作为核心架构，所有附件在其周围剥离散开。",
+        "designHighlight": "传承自二战晚期 STG44 的薄板冲压焊接工艺典范，在保证绝对刚度的同时大幅削减自重与制造成本；机匣顶部的四个锻造爪式卡座可在不改变原枪机械瞄准线的前提下快拆光学镜架。",
+        "audioScript": "这具由一点二毫米特种薄钢板冷冲压成型的上机匣，是整枪的刚性骨架。机匣两侧凸出的纵向凹槽既是结构加强肋，又是伸缩托的滑动轨道。顶部的四个凸耳更可免工具瞬间锁紧战术瞄准镜爪架。",
+        "audioUrl": "audio/mp5/parts/mp5_upper_receiver_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Stamped Receiver Chassis",
+        "overview": "Serving as the structural spine of the MP5, this upper receiver is formed from hydraulic-pressed sheet steel with a continuous welded top seam. It integrates a flared magazine well, claw-mount scope recesses, and collapsible stock rail channels.",
+        "craftAndMaterial": "Hydraulically deep-drawn from 1.2mm cold-rolled alloy steel, seam-welded and treated with salt-bath nitriding and manganese phosphating for supreme corrosion and scratch resistance.",
+        "kinematicRole": "Acts as the rigid stationary chassis through all 7 cycling phases, guiding the bolt carrier along internal stamped rails; serves as the base platform from which all parts separate across steps 0.50 to 1.00.",
+        "designHighlight": "Refined directly from the roller-delayed G3 lineage, this sheet metal receiver delivers tank-like rigidity at minimal production mass, featuring integral lugs for instant optic claw-mount attachment.",
+        "audioScript": "Formed from one point two millimeter stamped sheet steel, this upper receiver is the backbone of the weapon. Precision ribbing along its flanks stiffens the chassis while guiding the sliding stock arms. The forged bosses on the spine accept quick-detach claw mounts.",
+        "audioUrl": "audio/mp5/parts/mp5_upper_receiver_en.mp3"
+      }
+    },
+    "mp5_cocking_tube": {
+      "partId": "mp5_cocking_tube",
+      "bomCode": "R-02",
+      "calloutLabelEn": "Forward Cocking Tube",
+      "zh": {
+        "roleTag": "L形卡槽挂机与前导向管",
+        "overview": "前拉机柄导向管焊接固定在上机匣前部正上方，平行位于枪管上方。管体左侧开有带向上挂机卡槽的长条通槽，前端由带弹簧卡销的圆柱端盖封口。",
+        "craftAndMaterial": "采用高精度薄壁无缝冷拔钢管经数控铣削开槽后熔焊固定，表面同样经渗氮发黑处理；末端切口与上机匣导轨通过高强度铜焊过渡，确保数万次拍击不变形。",
+        "kinematicRole": "射击时作为静止通道保护内部零件不受泥沙侵蚀；手动拉机时导向拉机柄套管后滑，挂机时容纳手柄向上卡入；分解阶段 0.55 至 0.85 自机匣前端脱开。",
+        "designHighlight": "前端著名的向上 45 度 L 形锁死缺口设计，让射手能迅速将拉机柄挂在后方形成开膛观察状态，极便于核查弹膛空弹、排除双发卡弹或进行快速换弹操作。",
+        "audioScript": "焊接在机匣前方的拉机柄导向管，内部容纳着拉机柄支持套管。左侧上方这条独特的拐弯切口就是著名的挂机槽。把手柄向后拉并顺势向上卡死，即可锁定枪机开膛，方便检查弹膛或快速装填弹匣。",
+        "audioUrl": "audio/mp5/parts/mp5_cocking_tube_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Cocking Guide Channel",
+        "overview": "Permanently welded to the top forward section of the receiver directly above the barrel, this tubular housing guides the charging assembly. Its left flank features a longitudinal travel track with an upward locking detent notch.",
+        "craftAndMaterial": "Fabricated from precision-drawn seamless alloy steel tubing with milled guidance slots, robotically welded and finished in deep matte black phosphate to resist weapon abuse.",
+        "kinematicRole": "Remains static throughout all firing stages to isolate reciprocating parts from mud and grime; during field strip 0.55 to 0.85, it is detailed forward along the receiver center axis.",
+        "designHighlight": "The prominent HK L-shaped notch allows intuitive open-bolt holdbacks, enabling rapid visual chamber confirmation, double-feed clearing, and preparation for dynamic magazine changes.",
+        "audioScript": "Welded right above the barrel, this cocking tube encloses the charging mechanism. That prominent notch at the rear of the slot holds the bolt open for clearing jams or staging a reload. It protects internal parts from mud and sand under adverse conditions.",
+        "audioUrl": "audio/mp5/parts/mp5_cocking_tube_en.mp3"
+      }
+    },
+    "mp5_barrel": {
+      "partId": "mp5_barrel",
+      "bomCode": "R-03",
+      "calloutLabelEn": "CHF 3-Lug Barrel",
+      "zh": {
+        "roleTag": "燃气浮置弹膛与快拆三突笋",
+        "overview": "全长 8.85 英寸的精锻冷锻枪管过盈压配于机匣前端的锻钢闭锁节套中，通过横向定位销锁死。枪管后部为带 12 条纵向开槽的弹膛，前端具有经典的三突笋快拆消音器接口。",
+        "craftAndMaterial": "选用顶级铬钼高合金枪管钢整体精锻成型，内膛精密镀硬铬；弹膛内壁采用放电加工出 12 条高精度微型纵向燃气平衡槽，枪口加工有三突笋与螺纹保护套。",
+        "kinematicRole": "阶段 1 至 3 承托弹丸在 6 条右旋膛线中自旋加速；其弹膛燃气槽引导极少量高压燃气包裹弹壳外壁平衡压力；分解阶段 0.60 至 0.88 处整体自节套处分解分离。",
+        "designHighlight": "划时代的 12 槽燃气浮置弹膛设计：借助微量燃气反冲外壁使弹壳在超高膛压下形成“气体轴承”漂浮抽壳，消除了闭膛延迟机制中弹壳贴膛咬死的致命隐患。",
+        "audioScript": "这根八点八五英寸冷锻重型枪管藏着黑克勒科赫的看家绝技。它的弹膛内壁精密刻有十二条纵向燃气槽，击发时微量火药燃气会渗入弹壳外侧，像气垫一样托住弹壳，即使没有导气活塞也绝不会发生断壳故障。",
+        "audioUrl": "audio/mp5/parts/mp5_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Fluted Navy Barrel",
+        "overview": "Measuring 8.85 inches, this cold-hammer-forged barrel is press-fit into the heavy receiver trunnion and pinned in place. It integrates a 12-flute chamber profile and the world-renowned Navy 3-lug suppressor interface at the muzzle.",
+        "craftAndMaterial": "Hammer-forged from specialized chrome-moly steel with an ultra-durable hard-chrome bore lining; the chamber flutes are spark-eroded to exact micrometer tolerances.",
+        "kinematicRole": "Guides and stabilizes the 9mm projectile through 6 right-hand lands and grooves during Phases 1 and 2; uncouples from the trunnion assembly between deep-strip points 0.60 and 0.88.",
+        "designHighlight": "The 12 chamber flutes channel high-pressure combustion gas backward around the brass casing, creating an equalizer gas bearing that prevents cartridge binding during high-rate automatic extraction.",
+        "audioScript": "This eight point eight five inch cold-hammer-forged barrel features twelve internal chamber flutes. By bleeding a tiny puff of gas around the fired case, it creates a gas cushion that floats the brass backward effortlessly, entirely eliminating ruptured case heads.",
+        "audioUrl": "audio/mp5/parts/mp5_barrel_en.mp3"
+      }
+    },
+    "mp5_front_sight": {
+      "partId": "mp5_front_sight",
+      "bomCode": "R-04",
+      "calloutLabelEn": "Hooded Front Sight",
+      "zh": {
+        "roleTag": "经典圈套圈快速同心瞄准",
+        "overview": "准星座以抱箍形式骑跨固定在枪管与前拉机柄管前端之间。其顶部为全包覆式圆环护圈与内置可调柱状准星，基座下方集成有前护木固定插销孔与战术背带挂环。",
+        "craftAndMaterial": "采用高抗震整体铸钢件精加工而成，表面作耐磨哑光深灰磷化处理；全包圆环护罩具有极高的刚性截面厚度，能承受剧烈跌落撞击而不发生瞄准偏位。",
+        "kinematicRole": "在全枪射击循环中保持完全静止，作为射击瞄准的绝对几何前端基准点；在分解阶段 0.62 至 0.90 时，随着前端固定销冲出而从枪管与导管前端脱开。",
+        "designHighlight": "标志性的全封闭外圆护圈设计不仅坚固，更与枪尾旋转式觇孔构成了全球著名的“圈套圈”人机工学瞄准画面：人眼大脑天生具有同心圆找正本能，使近战接敌瞄准速度提升数倍。",
+        "audioScript": "这个标志性的全包圆护圈准星座是识别 MP5 的视觉图腾。它坚硬的铸钢外圈能承受剧烈撞击，更巧妙的是，它与机匣尾部的圆形觇孔形成了绝妙的同心圆对正。射手无需刻意对焦，凭借视觉本能套中目标即可扣动扳机。",
+        "audioUrl": "audio/mp5/parts/mp5_front_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Protected Front Tower",
+        "overview": "Clamped securely across the barrel and cocking tube forward junction, this cast steel tower holds the front post. It features a fully enclosed protective sight ring, an integral sling eyelet, and the forward handguard retaining pin boss.",
+        "craftAndMaterial": "Cast from tough ordnance alloy steel and precision-machined with matte manganese phosphating; the surrounding circular ring shield is engineered to absorb extreme tactical drops without shifting point-of-aim.",
+        "kinematicRole": "Provides an immovable optical datum throughout all 7 firing phases; separates from the barrel tip and cocking tube between exploded-assembly stages 0.62 and 0.90.",
+        "designHighlight": "The iconic circular hood naturally aligns with the rear rotary diopter drum to establish a 'circle-in-circle' sight picture, enabling reflexive, ultra-rapid target acquisition under extreme close-quarters stress.",
+        "audioScript": "The hooded circular front sight tower is an icon of tactical firearms. Its full-circle hood protects the internal post from drop impacts, while helping your eye instinctively center the front post inside the rear diopter ring for lightning-fast snap shooting.",
+        "audioUrl": "audio/mp5/parts/mp5_front_sight_en.mp3"
+      }
+    },
+    "mp5_rear_sight": {
+      "partId": "mp5_rear_sight",
+      "bomCode": "R-05",
+      "calloutLabelEn": "Rotary Drum Rear Sight",
+      "zh": {
+        "roleTag": "四孔环境照度旋转觇孔",
+        "overview": "后倾焊接并螺接于上机匣尾部上方的经典黑克勒科赫旋转鼓式照门。射手通过徒手旋转圆鼓即可在四个不同内径的精密同心圆孔间切换，快速匹配不同交火距离与环境光照条件。",
+        "craftAndMaterial": "采用高强度碳钢精密铸造与CNC铣削成型，表面经哑光深层氮化防反光处理。圆柱鼓身侧壁加工有滚花凹槽便于佩戴手套调节，内部嵌入防松定位滚珠与微调螺杆。",
+        "kinematicRole": "在整枪七个射击阶段中作为刚性瞄准基准保持静止不动。在野战分解中无需拆卸，仅在工场级深度分解（进度55%至85%）由军械员使用专用照门工具拧下偏航紧固螺钉后向上方滑出分离。",
+        "designHighlight": "所有四个觇孔孔径针对九毫米手枪弹的一百米平直弹道完成归零，其精髓在于解决弱光识别问题：孔径从微光下的宽视野大孔渐变至强日光下的高精度极小孔，兼顾CQB瞬间捕捉与远距精瞄。",
+        "audioScript": "欢迎查看MP5标志性的旋转鼓形照门。转动这个小钢鼓，射手能在四个孔径各异的圆孔间即时切换。它们不是用来测距的，而是为了应对从昏暗建筑物突入到艳阳烈日下的不同采光环境。当它与前端的圆形护翼准星重合时，人眼会在潜意识中形成同心圆对齐，实现极为迅捷的反射式瞄准。",
+        "audioUrl": "audio/mp5/parts/mp5_rear_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Rotary Diopter Rear Aperture",
+        "overview": "The tilted rotary drum diopter sight sits atop the rear receiver spine of the MP5. It allows operators to instantly click between four concentric peep apertures tailored to varying ambient light levels.",
+        "craftAndMaterial": "Machined from high-carbon ordnance steel with a glare-resistant black nitride finish. Features tactile exterior gripping flutes, internal detent ball bearing indexing, and windage adjustment screw slots.",
+        "kinematicRole": "Remains completely stationary as an optical datum throughout all 7 firing phases. Disassembles only during armorer-level strip (55% to 85% range) by unscrewing the windage clamp bolt.",
+        "designHighlight": "Unlike rifle sights where apertures correspond to changing target distances, all four drum apertures are zeroed for 9mm combat ranges; aperture sizing uniquely matches optical pupil dilation in daylight or night operations.",
+        "audioScript": "This is the renowned HK rotary diopter drum. Rotating it swaps between four distinct aperture diameters. Rather than adjusting for ballistic drop, these different hole sizes match varying light conditions, from pitch-black room clearing to harsh desert sun. When aligned with the hooded front sight, your eye naturally centers the concentric circles for blindingly fast target acquisition.",
+        "audioUrl": "audio/mp5/parts/mp5_rear_sight_en.mp3"
+      }
+    },
+    "mp5_forearm": {
+      "partId": "mp5_forearm",
+      "bomCode": "R-06",
+      "calloutLabelEn": "Tropical Polymer Guard",
+      "zh": {
+        "roleTag": "前插销快拆宽体隔热护木",
+        "overview": "包裹于枪管与前推机柄套管下方的经典热带加宽型聚合物前护木。它为射手支撑手提供丰满稳固的倒梯形握持平台，阻隔全自动连发时枪管辐射的高温。",
+        "craftAndMaterial": "采用高抗冲玻璃纤维增强聚酰胺尼龙一体注塑成型，呈现无光泽耐磨黑色纹理。外壁带有深防滑横肋与前端防前滑突起，后端设计有卡合下机匣的受力挂耳。",
+        "kinematicRole": "在整枪射击循环中保持静止，承受剧烈的火线热辐射与射手下压力。在野战不完全分解阶段（进度6%至32%），拔出前端单枚横向推销后即可向前下方整体脱离。",
+        "designHighlight": "被称为热带护木的宽体造型取代了早期纤细的直纹护木。其前宽后窄的人体工学截面即使在八百发每分泼水般的全自动射击后，内部充足的空气对流间隙依然能确保射手免受灼伤。",
+        "audioScript": "这是MP5著名的热带宽体护木。它采用特种玻纤聚酰胺高压注塑，握持感极其饱满。前端宽大的凸起能防止射手的手在全自动射击时意外滑向枪口。卸下前端单枚推销，仅用两秒钟就能把它拆下来，露出深藏在内部的枪管与准星座结构。",
+        "audioUrl": "audio/mp5/parts/mp5_forearm_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Quick-Detach Tropical Handguard",
+        "overview": "Encloses the barrel and cocking tube assembly to form the primary forward support interface. It provides an ergonomic, heat-shielded gripping zone that isolates the support hand during sustained automatic fire.",
+        "craftAndMaterial": "Molded from heavy-duty fiberglass-reinforced polyamide in matte black. Visible deep transverse traction ribs and an integrated forward hand stop prevent slippage, paired with internal steel reinforcement collars.",
+        "kinematicRole": "Static structural boundary during all 7 dynamic firing phases. Detaches during field stripping (6% to 32% explode range) once the forward captive push-pin is pushed through.",
+        "designHighlight": "Nicknamed the Tropical forearm, this flared contour was developed to counter extreme barrel heating during extended full-auto bursts, incorporating internal thermal spacing and chimney-effect convection.",
+        "audioScript": "Known to operators as the Tropical wide handguard, this fiberglass-reinforced polymer housing provides a comfortable, heat-shielded grip. The flared ledge at the front stops the shooter hand from sliding dangerously near the muzzle during rapid fire. Driven by a single push-pin, it can be stripped in seconds without any tools.",
+        "audioUrl": "audio/mp5/parts/mp5_forearm_en.mp3"
+      }
+    },
+    "mp5_stock_endcap": {
+      "partId": "mp5_stock_endcap",
+      "bomCode": "R-07",
+      "calloutLabelEn": "Stock Cap & H-Buffer",
+      "zh": {
+        "roleTag": "机匣尾盖与聚氨酯减震垫",
+        "overview": "套接于冲压上机匣后端并由后横向推销贯穿固定的重型锻钢承力端盖。它不仅构成了枪机后坐行程的终端止挡，更集成了伸缩托钢轨导向槽与弹簧卡锁拨杆。",
+        "craftAndMaterial": "端盖壳体由军规合金钢精冲热处理制成，内衬由耐冲击的高硬度热塑性聚氨酯冲压成型为经典H形缓冲垫，表面经过深层磷化与耐磨特氟龙涂层防护。",
+        "kinematicRole": "在第5阶段枪机后坐极限处，机头支座猛烈撞击内嵌的H缓冲垫吸收残余冲击动能。在野战分解第二步（进度8%至35%），拔出机匣大横销后整体向后抽离机匣。",
+        "designHighlight": "微型H形缓冲块能够极大柔化枪机框后坐触底瞬间的尖锐金属冲击碰撞。这种软接触显著降低了机匣尾部导轨焊缝疲劳开裂的风险，使整枪全自动射击质感极其平顺。",
+        "audioScript": "这块不起眼的钢制尾盖是吸收全枪后坐能量的关键枢纽。它的内侧镶嵌着一块黄色聚氨酯H形缓冲垫，每当枪机框以后坐末速后退时，都会猛力砸在这块弹性体上。它不仅保护了冲压机匣的焊缝寿命，更为MP5带来了令人惊叹的极低枪口上跳控制力。",
+        "audioUrl": "audio/mp5/parts/mp5_stock_endcap_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Endcap with Polyurethane Buffer",
+        "overview": "Caps the rear receiver opening and is held firmly by the rear takedown cross-pin. It arrests the bolt carrier at its extreme rearward travel and houses the dual guide channels for the retractable stock.",
+        "craftAndMaterial": "High-tensile forged steel frame finished in manganese phosphate, housing a high-durometer H-shaped cast polyurethane shock-buffer secured by a central steel retaining rivet.",
+        "kinematicRole": "Compresses mechanically during Phase 5 when the carrier crashes into its face to dissipate residual kinetic energy. Slides straight rearward off the gun during field stripping (8% to 35% range).",
+        "designHighlight": "The sacrificial elastomer H-buffer dampens sharp metal-on-metal slamming at bolt stop, preventing structural fatigue cracks on the stamped receiver track welds and contributing to the MP5 buttery recoil impulse.",
+        "audioScript": "This forged steel endcap serves as the mechanical dead-stop for the bolt group. Tucked inside is a distinctive polyurethane H-buffer. Every time the heavy bolt carrier slams rearward, this elastomer absorbs the shock, sparing the receiver rails from cracking and delivering the famously smooth recoil characteristics that made the MP5 a SWAT legend.",
+        "audioUrl": "audio/mp5/parts/mp5_stock_endcap_en.mp3"
+      }
+    },
+    "mp5_buttstock": {
+      "partId": "mp5_buttstock",
+      "bomCode": "R-08",
+      "calloutLabelEn": "Twin-Rail Retractable Stock",
+      "zh": {
+        "roleTag": "双侧开槽伸缩战术钢托",
+        "overview": "MP5A3标志性的紧凑型双钢轨伸缩枪托组件，安装在尾盖两侧滑动通道内。它允许特警队员在全缩进狭窄车厢隐蔽携行与瞬间拉伸抵肩精确瞄准之间自由切换。",
+        "craftAndMaterial": "两条滑动导轨采用弹簧合金钢模压冲铣出多档定位卡槽，末端焊接硬化冲压钢托底板，抵肩面外层一体模压硫化高摩擦防滑硬橡胶，表面经黑色QPQ盐浴复合处理。",
+        "kinematicRole": "在射击全过程中作为刚性抵肩支撑件，将复进簧反作用力与后坐冲击传递给射手肩窝。在分解初始阶段（进度2%至30%），拨开尾盖卡榫即可将双钢轨完全抽出。",
+        "designHighlight": "双导轨精准贴合上机匣外侧冲压出的加强槽，在闭合时机身横向几乎不增加厚度。这种极致紧凑的外廓是1980年英国空降特勤队猎杀恐怖分子时单兵突入狭小机舱的标准配置。",
+        "audioScript": "这就是MP5A3最具辨识度的双轨伸缩枪托。两条厚实的冲压钢轨完全沿着机匣侧壁凹槽滑动，折叠后整枪长度缩短了整整两百毫米。只需拇指轻按尾部释放拨杆，双手向后一拉，钢轨就能瞬时卡入凹槽牢牢锁定，为点射提供无比扎实的抵肩支撑。",
+        "audioUrl": "audio/mp5/parts/mp5_buttstock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Telescoping Twin-Rail Stock",
+        "overview": "The definitive collapsible twin-strut buttstock of the MP5A3 variant. It slides along external receiver flutes, collapsing down for vehicle egress or fully extending for rock-solid shoulder support.",
+        "craftAndMaterial": "Twin profiled high-carbon spring-steel struts with laser-cut lock notches, welded to a curved stamped butt-plate capped with vulcanized checkered rubber, finished in wear-resistant matte QPQ nitriding.",
+        "kinematicRole": "Acts as the rigid shoulder recoil path during all 7 firing phases. Slides out rearward as the very first disassembly step (2% to 30% range) once released by the stock lever.",
+        "designHighlight": "Designed to recess seamlessly into the receiver stamped flutes with zero added weapon width, offering counter-terrorist teams unmatched portability without sacrificing full-length carbine stability.",
+        "audioScript": "This is the legendary MP5A3 telescoping stock. Its dual spring-steel rails collapse neatly along the receiver side channels, shaving over two hundred millimeters off the weapon overall length. Flicking the release lever lets you whip it open into lockup instantaneously, transforming a compact CQB package into an accurate, shoulder-fired carbine.",
+        "audioUrl": "audio/mp5/parts/mp5_buttstock_en.mp3"
+      }
+    },
+    "mp5_grip_housing": {
+      "partId": "mp5_grip_housing",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Navy Pictogram Lower",
+      "zh": {
+        "roleTag": "海军版双侧三档图标握把",
+        "overview": "一体式聚合物下机匣组件，构成了射手主握持握把、扳机护圈及火控组件安装槽。其左右两侧清晰模压有国际通用的红白子弹象形图示，代表保险、单发与连发。",
+        "craftAndMaterial": "采用高抗冲特种聚酰胺一次注射成型，表面蚀刻细密防滑纹理。红白两色子弹图标通过二次精密热压填色工艺加工，具备极强的抗溶剂清洗与耐候性能。",
+        "kinematicRole": "承托内部火控盒并作为整机人机操控支架，全射击过程保持刚性基准。在分解阶段（进度16%至45%）拔除后推销后向下翻折，随后从前挂耳处彻底脱离机匣。",
+        "designHighlight": "被称为Navy海军版的下机匣取消了早期SEF德语字母刻线，彻底消除多国反恐特战部队的语言认知门槛，超大下弧扳机护圈更允许射手佩戴厚重的冬季战术手套灵敏击发。",
+        "audioScript": "你看到的是著名的HK海军版聚合物下机匣。它告别了传统的德文字母，改用直观的白底叉号保险、单颗红子弹单发、以及整排红子弹的全自动射击图标。宽大的扳机护圈不仅让戴厚重手套扣动更加自如，下机匣整体更兼具极高的减震与耐海水腐蚀性能。",
+        "audioUrl": "audio/mp5/parts/mp5_grip_housing_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Navy Ambi Pictogram Grip",
+        "overview": "One-piece molded lower receiver housing that integrates the ergonomic pistol grip, enlarged trigger guard, and drop-in trigger pack compartment. It features red and white bullet pictograms on both flanks.",
+        "craftAndMaterial": "High-impact injection-molded polyamide nylon with sandblasted texturing. Features ambidextrous fire control index recesses and hot-stamped indelible enamel pictograms depicting safe, single-fire, and full-auto.",
+        "kinematicRole": "Rigid structural frame housing the fire control chassis across all 7 cycle phases. Hinges downward and separates completely from the upper receiver during strip (16% to 45% range).",
+        "designHighlight": "Developed for US Navy SEAL requirements, the pictogram lower bypassed language barriers of older German markings, while its broad trigger arch comfortably accommodates thick maritime neoprene dive gloves.",
+        "audioScript": "Here is the famous HK Navy ambidextrous polymer lower. Gone are the old German SEF letters, replaced by universally understood white and red bullet icons. Its enlarged winter trigger guard easily accommodates heavy tactical gloves, and the resilient polymer construction provides fantastic shock absorption while remaining completely impervious to saltwater corrosion.",
+        "audioUrl": "audio/mp5/parts/mp5_grip_housing_en.mp3"
+      }
+    },
+    "mp5_trigger_pack": {
+      "partId": "mp5_trigger_pack",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Modular Trigger Pack",
+      "zh": {
+        "roleTag": "盒式击发机与联动抛壳挺",
+        "overview": "整装抽屉式插入聚合物握把座内的独立不锈钢火控机匣框架。其内部集成阻铁、单连发转换杠杆，左侧上缘更铰接有一根受枪机后坐驱动的长臂杠杆抛壳挺。",
+        "craftAndMaterial": "盒体由耐磨奥氏体不锈钢精冲弯折铆接而成，关键销轴孔经过高频淬火强化。表面呈现天然无涂层不锈钢哑光金属质感，内部关键连杆采用铬钼合金钢线切割制造。",
+        "kinematicRole": "在第4阶段，枪机框后坐底部凸轮下压抛壳挺后臂，迫使其前端翘起探入机头槽，猛烈踢击空弹壳右翻飞出。在分解阶段（进度16%至65%），随快慢机抽出后自握把框垂直拔出。",
+        "designHighlight": "独立盒式设计使MP5具备出色的枪族模块化维护性。前铰接的长杠杆抛壳挺不随枪机运动受力，巧妙利用枪机框下压行程实现精准力臂放大，彻底杜绝了反冲抛壳微弱的通病。",
+        "audioScript": "这是整个击发机构的机械大脑，一个由冲压不锈钢板构成的独立火控盒。除了阻铁与击锤联动轴外，请注意它左上侧那根长长的弹跳杠杆，那是抛壳挺。每次枪机后坐碾过它尾端时，前头就会如同跷跷板一样迅猛挑起，将打空的九毫米弹壳干脆利落地踹出右侧抛壳窗。",
+        "audioUrl": "audio/mp5/parts/mp5_trigger_pack_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Drop-in Pack & Ejector Lever",
+        "overview": "A self-contained stamped-steel fire control cassette nestled inside the polymer grip housing. It houses the hammer, sear mechanisms, and the iconic pivoted ejector arm on its upper left flank.",
+        "craftAndMaterial": "Fabricated from precision-stamped, folded, and spot-welded austenitic stainless steel sheet. Internal pivoting pins and sear contact lips are case-hardened to resist dynamic wear.",
+        "kinematicRole": "Pivots the ejector upward in Phase 4 when struck by the recoiling carrier to throw out spent brass. Fully lifted out of the grip housing during modular sub-assembly strip (16% to 65% range).",
+        "designHighlight": "Modular drop-in design allows instant armorer changeout. The seesaw-type lever ejector is cammed directly by the bolt carrier recoil stroke, providing a violent, reliable kick that overcomes dirty, gummed chambers.",
+        "audioScript": "This removable stainless steel chassis is the brains of the trigger group. Inside, you find the sear trip and disconnectors, but notice the prominent steel arm hinged on the left. That is the ejector lever. As the bolt carrier flies backward, it cams the rear of this lever down, snapping its tip up through the bolt face to violently kick the spent casing clear.",
+        "audioUrl": "audio/mp5/parts/mp5_trigger_pack_en.mp3"
+      }
+    },
+    "mp5_hammer": {
+      "partId": "mp5_hammer",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Rotary Steel Hammer",
+      "zh": {
+        "roleTag": "闭膛首发精准敲击回转锤",
+        "overview": "铰接于火控盒主轴上的高硬度合金钢回转击锤，后方由击锤簧顶杆与强力双股螺旋主簧提供转动势能。扣动扳机脱钩后，它绕轴高速向前上方回旋撞击击针尾部。",
+        "craftAndMaterial": "采用优质铬钼合金钢模锻成型，击打面与挂机阻铁凹槽经过局部高频感应淬火，达到洛氏硬度五十八度以上，表面经过精细研磨与黑色磷化防锈处理。",
+        "kinematicRole": "阶段1在闭膛状态下脱离阻铁，阶段2猛力向前回旋敲击浮动击针引发底火；阶段4被后坐枪机框强行压倒重新挂起。在深度分解（进度70%至100%）自火控盒侧向脱出。",
+        "designHighlight": "回转击锤与闭膛待击是MP5射击精度碾压传统开膛冲锋枪的秘诀。击发瞬间没有沉重枪机前后晃动的质心转移，仅凭轻量化击锤回转敲击，保证了首发子弹指哪打哪的极高命中率。",
+        "audioScript": "这枚强韧的锻钢回转击锤是MP5能够实施外科手术式精准射击的核心秘密。以往冲锋枪大多采用开膛待击，扣动扳机时整个沉重枪机前冲会导致枪身剧烈晃动。而MP5始终保持枪机闭锁静止，仅仅释放这枚轻巧的击锤高速旋转敲击击针，实现了如同竞技步枪般的首发精度。",
+        "audioUrl": "audio/mp5/parts/mp5_hammer_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Rotary Closed-Bolt Hammer",
+        "overview": "Pivoted on the main axle inside the trigger pack, driven by a heavy strut and mainspring coil. Upon trigger pull, it swings rapidly forward through the rear carrier notch to strike the spring-loaded firing pin.",
+        "craftAndMaterial": "Drop-forged from chrome-moly steel alloy, precision-ground on sear engagement notches and striking face, induction hardened past Rockwell C 58 with a dark protective phosphate coating.",
+        "kinematicRole": "Tripped forward in Phase 1 and strikes the firing pin in Phase 2; forced downward and recocked by the recoiling carrier in Phase 4. Disassembled during complete armorer explode (70% to 100% range).",
+        "designHighlight": "Operating from a closed bolt with a rotary hammer completely eliminated the massive forward center-of-gravity lurch common to open-bolt World War II submachine guns, enabling pin-point first-shot placement.",
+        "audioScript": "This forged hammer explains why the MP5 replaced crude open-bolt weapons globally. Instead of a heavy bolt slamming forward when you pull the trigger, the MP5 fires from a closed bolt where only this lightweight hammer swings forward to strike the pin. The center of mass never shifts, giving counter-terror units supreme first-shot hit probability.",
+        "audioUrl": "audio/mp5/parts/mp5_hammer_en.mp3"
+      }
+    },
+    "mp5_trigger": {
+      "partId": "mp5_trigger",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "Steel Trigger Shoe",
+      "zh": {
+        "roleTag": "弧形单级传动击发扳机",
+        "overview": "从握把座底部开口向下探出的弧面金属扳机组件，包含射手食指贴合的弧形扳机舌和内部击发传动臂。当射手向后扣压时，传动臂抬起并推动阻铁脱离击锤挂机卡槽。",
+        "craftAndMaterial": "由碳素工程钢板精密冲压与线切割而成，边缘经过宽倒角去毛刺抛光，提供极度舒适的指面触感。表面经氮化防磨处理，与阻铁配合的接触斜面具有极低的摩擦系数。",
+        "kinematicRole": "由射手食指操控向后摆动约三毫米启动击发阶段1；击发后由扳机回位簧推动向前复位。在火控盒全拆阶段（进度72%至100%），抽出对应连接枢轴后向下方取出。",
+        "designHighlight": "扳机行程具有德系武器标志性的两道火触感：初段清晰平顺的虚位预压，随后到达极度干脆的阻铁断开压力点。极其清晰的扳机击发反馈让特警在紧张对抗中对发射时机胸有成竹。",
+        "audioScript": "这是射手直接下达射击指令的钢制扳机。它拥有极为干脆纯粹的德系两道火手感：在手指预压走完短暂平顺的空行程后，阻力会骤然增加。再施加约二十五牛顿的压力，阻铁便如玻璃棒折断般瞬间释放击锤，让射手对每一次击发都有着绝对精准的感知与预判。",
+        "audioUrl": "audio/mp5/parts/mp5_trigger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Single-Stage Curved Trigger",
+        "overview": "Protrudes through the bottom opening of the trigger guard to provide the tactile finger interface. Pulling it pivots its integral transfer arm upward, tripping the sear to release the cocked hammer.",
+        "craftAndMaterial": "Precision stamped from ordnance-grade sheet steel with chamfered and polished pad faces for ergonomic comfort. Finished in a matte nitride coating with hardened sear trip surfaces.",
+        "kinematicRole": "Rotates backward by approximately three millimeters to initiate Phase 1; resets forward via its return torsion spring. Fully stripped at 72% to 100% explode range once its cross-axis is removed.",
+        "designHighlight": "Engineered with a predictable two-stage profile: clean take-up followed by a distinct, crisp glass-rod wall. This mechanical feedback allows tactical marksmen to stage the trigger under intense combat pressure.",
+        "audioScript": "Here is the curved steel trigger shoe. It features a crisp, predictable two-stage pull characteristic of German engineering. Take up the brief slack, hit a firm, definitive wall, and an extra break pressure releases the sear like snapping a fine glass rod. This crystal-clear tactile break allows precise trigger staging even during high-adrenaline breaches.",
+        "audioUrl": "audio/mp5/parts/mp5_trigger_en.mp3"
+      }
+    },
+    "mp5_selector": {
+      "partId": "mp5_selector",
+      "bomCode": "FC-05",
+      "calloutLabelEn": "Ambi Selector Lever",
+      "zh": {
+        "roleTag": "双侧联动三档模式快慢机",
+        "overview": "横向贯穿聚合物下机匣与火控盒的圆柱形多段凸轮轴，两侧各装有一枚带白色指示刻线的拇指拨杆。它用于在机械保险、单发半自动以及每分钟八百发全自动模式之间无缝切换。",
+        "craftAndMaterial": "快慢机中轴由高强度工具钢数控车削，表面铣削有不同深度的控制凸轮凹坑；两侧快慢机旋钮采用高强度聚酰胺或锌铝合金注塑压铸，表面带有高摩擦微距防滑槽。",
+        "kinematicRole": "旋转定位轴用于阻挡扳机上升或限制断连器行程。在火控分解时作为关键锁栓（进度68%至100%），旋转至特定对位角度后即可从右向左完整抽出解体握把与火控盒。",
+        "designHighlight": "双侧镜像联动设计让左撇子射手享有百分之百平等的操控效率。快慢机轴本身兼任火控盒在握把内的机械横向锁紧销，无需任何额外螺栓就达成了多合一精简结构。",
+        "audioScript": "这个横穿下机匣的双侧快慢机旋钮，能让射手用拇指在三个档位间顺滑换挡：保险档锁死扳机，中间档单发点射，拨到底则是每分钟八百发全自动泼水。它不仅左右手完全通用，其中央凸轮轴更巧妙地充当了固定内部火控盒的锁止销，展现出高超的整合设计。",
+        "audioUrl": "audio/mp5/parts/mp5_selector_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Ambidextrous Fire Selector",
+        "overview": "A transverse central cam-axle penetrating both the grip housing and trigger box, equipped with dual thumb levers. It regulates the weapon firing modes between Safe, Semi-Automatic, and 800-RPM Full-Auto.",
+        "craftAndMaterial": "CNC-turned alloy tool steel shaft milled with precise multi-lobe cams. The thumb levers are formed from ribbed polymer or cast metal, bearing crisp white position index lines.",
+        "kinematicRole": "Statically locks the trigger tail on Safe or clears disconnector clearances on Semi and Auto. During disassembly (68% to 100% range), aligning it to a disassembly notch allows it to be withdrawn.",
+        "designHighlight": "True ambidextrous mirroring grants left-handed operators identical tactical ergonomics. Elegantly, the central selector shaft doubles as the main cross-pin anchoring the trigger pack within the grip.",
+        "audioScript": "This ambidextrous selector gives shooters instantaneous thumb control over three modes: Safe, Semi-Auto, and 800-rounds-per-minute Full-Auto. Mirror levers ensure identical muscle memory for both right- and left-handed operators. Even smarter, the central axle doubles as the retaining pin that locks the entire internal trigger pack into the polymer frame.",
+        "audioUrl": "audio/mp5/parts/mp5_selector_en.mp3"
+      }
+    },
+    "mp5_mag_body": {
+      "partId": "mp5_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "30-Rd Curved Steel Mag",
+      "zh": {
+        "roleTag": "锥度自适应冲压弧形弹匣",
+        "overview": "插在上机匣供弹井下方的标志性三十发双排双进圆弧弯弹匣体。它严格顺应九毫米帕拉贝鲁姆手枪弹药的微小锥度设计，为全枪提供源源不断的高速供弹储备。",
+        "craftAndMaterial": "选用深冲特种弹簧钢板冲压、卷曲拼合并经沿脊连续滚阻焊成型。匣身外侧压有增强纵向抗凹强度的双加强肋，经过精密热处理与哑光深层磷化防锈涂装。",
+        "kinematicRole": "在第6阶段为前冲枪机提供处于固定几何高度的弹药。在野战分解第一步（进度0%至25%），按压弹匣卡榫或拨杆后沿供弹井滑道垂直向下滑出分离。",
+        "designHighlight": "1977年HK推出的弯弧弹匣彻底解决了早期直弹匣供弹偶尔卡壳的历史遗留缺陷。由于九毫米弹壳本身带有锥度，弯弧排列让三十发子弹紧密贴合无间隙，彻底消除了弹头下倾供弹故障。",
+        "audioScript": "这就是MP5在1977年全面换装的标志性弯弹匣。早期的MP5采用直弹匣，在发射平头空尖弹时偶尔会发生供弹卡壳。工程师后来根据九毫米子弹天然的微锥度外形，将弹匣改造成贴合弹体的香蕉形弯弧。自此，无论发射任何铅芯弹或空尖突入弹，MP5的供弹可靠性都达到了惊人的百分之百。",
+        "audioUrl": "audio/mp5/parts/mp5_mag_body_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Curved Stamped Steel Magazine",
+        "overview": "Locks securely into the receiver magazine well to supply 30 rounds of 9x19mm Parabellum ammunition. Its curved geometry matches the natural cartridge taper to ensure double-column double-feed reliability.",
+        "craftAndMaterial": "Deep-drawn stamped spring sheet-steel, seam-welded along the front and rear spines. Ribbed sidewalls enhance crushing rigidity, coated in protective corrosion-resistant manganese phosphate.",
+        "kinematicRole": "Presents fresh cartridges at the feed angle during Phase 6 loading. Stripped as the very first safety step of disassembly (0% to 25% range) via the paddle or push-button magazine catch.",
+        "designHighlight": "Introduced in 1977 to replace troublesome straight magazines, the curved geometry directly matches the subtle conical taper of the 9mm casing, completely eliminating nose-dive feed jams with modern hollow points.",
+        "audioScript": "This curved thirty-round magazine solved one of the few vulnerabilities of the early MP5. Original models used straight stick magazines, which could induce feed jams when loaded with hollow-point ammunition. In 1977, HK introduced this banana-curved body matching the natural taper of the 9mm cartridge. It eliminated bullet nose-diving completely, cementing the MP5 legendary feeding reliability.",
+        "audioUrl": "audio/mp5/parts/mp5_mag_body_en.mp3"
+      }
+    },
+    "mp5_mag_follower": {
+      "partId": "mp5_mag_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Anti-Tilt Mag Follower",
+      "zh": {
+        "roleTag": "双排阶梯防倾交错托弹板",
+        "overview": "位于弯弹匣内部最上端、随弹药消耗逐级上推的阶梯形导向受力底座。其顶面左右错层几何设计支撑双排排列的九毫米子弹，并维持子弹以完美的上倾角冲向进弹坡道。",
+        "craftAndMaterial": "采用高强度工程塑料注塑或冲压硬化钢板制造，多涂以醒目的高可视度橙色或哑光黑。长裙部外形贴合弹匣内弧导向轨，具备极强的抗扭曲防翻转刚性。",
+        "kinematicRole": "在第6阶段将最末发子弹准确托起至供弹唇处让枪机剥离入膛。弹匣全拆保养时（进度64%至98%），在取下底板与托弹簧后由弹匣底部顺利滑出。",
+        "designHighlight": "延长的下垂导向裙边是防止托弹板在八百发高射速急剧震动中前后俯仰卡死的关键。即使在泥浆雨水渗入弹匣壁的不利环境下，交错阶梯仍能将最后几发弹药稳定托送到位。",
+        "audioScript": "位于弹匣内部的这块阶梯状托弹板，时刻承受着强力弹簧的向上推力。它表面独特的左右高低阶梯，正好完美对应九毫米子弹的双排交错排列。延长的防倾斜导向裙边设计能确保即使在剧烈全自动震动下，托弹板也不会在弹匣内部歪斜卡死，保证打到最后一颗子弹依然顺畅。",
+        "audioUrl": "audio/mp5/parts/mp5_mag_follower_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Anti-Tilt Staggered Follower",
+        "overview": "Rides at the apex of the magazine interior beneath the ammunition column. Its stepped top profile supports double-stack geometry and feeds cartridges sequentially into the chamber feed throat.",
+        "craftAndMaterial": "Molded from anti-friction engineered polymer or stamped hardened sheet steel, often rendered in high-visibility orange. Features extended guide skirts specifically profiled to match the curved magazine tracks.",
+        "kinematicRole": "Elevates the cartridge stack during Phase 5 and Phase 6 feed cycles. Drops free out of the magazine base during internal magazine stripping (64% to 98% explode range).",
+        "designHighlight": "Deep non-tilting downward skirts prevent the follower from rocking nose-down during high-cyclic full-auto decompression, ensuring 100% feed reliability straight down to the final round.",
+        "audioScript": "Tucked inside the magazine is the anti-tilt follower. Its staggered top surface accommodates the dual-column stack of 9mm rounds, keeping each cartridge primed at the ideal feed angle. Deep downward skirts prevent it from twisting or seizing along the curved steel walls, guaranteeing flawless feeding even during violent high-cyclic bursts down to the very last shot.",
+        "audioUrl": "audio/mp5/parts/mp5_mag_follower_en.mp3"
+      }
+    },
+    "mp5_mag_spring": {
+      "partId": "mp5_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Curved Magazine Spring",
+      "zh": {
+        "roleTag": "弧形变距矩形卷簧",
+        "overview": "置于弹匣体内部、下端抵牢底板锁片而上端牢固套接托弹板的长行程矩形截面压缩弹簧。它负责将满载三十发至空仓全过程中的机械储能均匀转化为持续向上的托弹推力。",
+        "craftAndMaterial": "选用高疲劳寿命的特种硅锰弹簧钢丝精密盘绕，横截面呈现与弹匣匹配的扁平长方形。钢丝表面经化学钝化发黑与防锈油浸渍处理，抗蠕变与耐长期压紧衰减能力极佳。",
+        "kinematicRole": "满载压弹时经历大行程多层弹性压缩储能；在连发射击阶段5快速释放能量推动托弹板上行。弹匣分解时（进度60%至95%），抽开底板后向下自然弹出。",
+        "designHighlight": "每个卷圈的仰角与弧度均严格契合弯弹匣的三维曲率。这种弯曲绕制结构有效避免了弹簧在压缩收拢过程中与弹匣前后壁发生刮擦咬死，为高射速供弹提供了恒定有力的推力保障。",
+        "audioScript": "这根弹簧是维持高射速供弹动能的心脏。它顺应香蕉形弹匣的弧度弯曲绕制，由耐疲劳弹簧钢丝经过数百次热处理拉伸而成。即便弹匣压满三十发子弹长达数年不打，这根弹簧依然能保持足够的托弹压力，在扣下扳机的零点几秒内把子弹毫厘不差地托上进弹口。",
+        "audioUrl": "audio/mp5/parts/mp5_mag_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Constant-Force Mag Spring",
+        "overview": "Sits between the magazine floorplate and follower, providing consistent upward pressure across the entire 30-round stack to keep up with the MP5 800-RPM cyclic fire rate.",
+        "craftAndMaterial": "Wound from tempered silicon-manganese spring wire in a contoured rectangular coil profile. Chemically blackened and oiled for corrosion resistance and sustained elastic fatigue life.",
+        "kinematicRole": "Compresses progressively during loading and expands rapidly in Phase 5 to advance cartridges. Slips out of the bottom cavity during magazine field cleaning (60% to 95% explode range).",
+        "designHighlight": "The individual coils are wound with a progressive curvature that matches the magazine arc, preventing internal binding against the steel walls and providing uniform upward thrust from round thirty to empty.",
+        "audioScript": "This heavy-duty rectangular spring supplies the driving force behind the MP5 continuous feeding. Pre-curved to match the magazine banana contour, its coils expand without scraping or dragging against the steel casing walls. Even after sitting fully loaded in ready magazines for months, it retains enough spring rate to feed the weapon at eight hundred rounds per minute flawlessly.",
+        "audioUrl": "audio/mp5/parts/mp5_mag_spring_en.mp3"
+      }
+    },
+    "mp5_mag_floorplate": {
+      "partId": "mp5_mag_floorplate",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Slide-On Floorplate",
+      "zh": {
+        "roleTag": "冲压滑入式底盖卡板",
+        "overview": "滑扣于弯曲弹匣体底部翻边导轨上的金属封闭底盖。它与内部托弹簧下方的卡槽垫片紧密扣锁，将托弹簧和托弹板牢靠封闭在弹匣内部并承受长期的弹力张紧负荷。",
+        "craftAndMaterial": "采用高抗冲冷轧碳素钢板经单道冲压折弯成型，两侧边框加工有向内翻折的滑行凹槽。表面经深层锰系磷化与防腐底漆浸涂处理，中心冲压有按压式解锁圆孔。",
+        "kinematicRole": "作为托弹簧底端的静止刚性受力支撑，承受向下的恒定张力与跌落冲击。在弹匣分解阶段（进度55%至88%），用冲子按压中心锁孔内垫片后沿滑轨向前水平推出分离。",
+        "designHighlight": "平齐无突出边缘的滑盖外形极度顺滑，使特战队员在战术背心弹匣袋中抽拔弹匣时绝不会发生钩挂羁绊，同时底部硬化冲压钢板在跌落水泥硬地面时能有效防止底盖脱落炸匣。",
+        "audioScript": "这是弹匣最底端的冲压钢底盖。它通过两侧微小的内弯凹槽，直接滑扣在弹匣壳体的卷边轨道上。中心的小圆孔由弹簧底垫上的凸起点卡住锁死。保养时只需用子弹尖轻按这个圆孔，就能向前滑脱底盖，倒出托弹簧完成弹匣清沙。",
+        "audioUrl": "audio/mp5/parts/mp5_mag_floorplate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Slide-On Steel Floorplate",
+        "overview": "Slides onto the rolled lower rails of the magazine body to seal the bottom cavity. It locks against the internal spring retainer insert, containing spring tension and resisting rough tactical handling.",
+        "craftAndMaterial": "Stamped from heavy-gauge cold-rolled carbon steel sheet with double-inward curled guide flanges. Finished in corrosion-resistant manganese phosphate, with a central lock detent aperture.",
+        "kinematicRole": "Functions as the static mechanical base supporting all internal magazine spring loads. Disengages by depressing the locking insert pip through its hole and sliding forward (55% to 88% range).",
+        "designHighlight": "Low-profile flush-fitting geometry avoids snagging on tactical vest nylon mag pouches during speed reloads, while stamped perimeter lip walls resist bursting even if dropped onto concrete when fully loaded.",
+        "audioScript": "Sealing the magazine base is this stamped steel floorplate. It slides along twin folded flanges on the magazine bottom edge, held in place by a center detent pip. Pressing that pip through the circular hole allows the plate to slide forward off its rails, granting instant access to clean out grit and swap springs.",
+        "audioUrl": "audio/mp5/parts/mp5_mag_floorplate_en.mp3"
+      }
+    }
+  }
+}

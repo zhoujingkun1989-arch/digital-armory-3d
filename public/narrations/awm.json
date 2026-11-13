@@ -1,0 +1,896 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "awm",
+  "generatedAt": "2026-11-12T22:26:36.353352+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "Accuracy International AWM · L115A3",
+    "subtitle": ".338 Lapua Magnum Bolt-Action Arctic Sniper Rifle",
+    "originCountry": "United Kingdom",
+    "weaponType": "Sniper Rifle",
+    "categoryLabel": "Sniper",
+    "actionMechanism": "Manual 60° 6-Lug Turn-Bolt Action · Two-Stage Match Trigger",
+    "statusLabel": "In Vault · Field Strippable",
+    "description": "The quintessential extreme-range, all-weather military bolt-action sniper rifle engineered by Accuracy International and designated L115A3 by the British Armed Forces. Pioneering a full-length CNC billet aluminum spine chassis wrapped in olive-drab polymer thumbhole skins, it mates an epoxy-bonded flat-sided steel receiver with a 27-inch free-floating match barrel, anti-icing 60-degree fluted bolt, and Schmidt & Bender PM II 5-25x56 optics.",
+    "highlights": [
+      "British OD Thumbhole Skins + CNC Spine Chassis",
+      "60° 6-Lug Anti-Icing Bolt + Two-Stage Trigger",
+      "27\" Fluted Match Barrel + S&B PM II 5-25×56",
+      "Realistic 7-Phase Manual Turn-Bolt Kinematics"
+    ],
+    "workbenchTitle": "AWM Internal Mechanical Disassembly & Kinematics",
+    "workbenchSubtitle": "4 Core Assemblies · 24 High-Fidelity Nodes · 60° Six-Lug Locking & .338 Lapua Magnum Cycle",
+    "cutawayLabel": "60° Bolt Cutaway",
+    "cutawayTitle": "Switch to transparent cutaway view and focus on the 60° dual-row 6-lug rotating bolt and striker sear engagement",
+    "searchPlaceholder": "Search components or codes (e.g. Thumbhole, Bolt, Scope, S-03)...",
+    "firingMilestoneLabel": "Muzzle Exit / Unlocking",
+    "rateOfFire": "Manual Bolt Action",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Ready in Battery",
+        "subLabel": "0%",
+        "desc": "Accuracy International AWM (British L115A3) locked in battery; toggle X-Ray cutaway to inspect the CNC aluminum chassis spine and 6-lug receiver lockup."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Detach the 5-round .338LM steel box magazine, lift handle 60° and extract the fluted bolt assembly, and dismount the S&B PM II scope mount and spigot bipod."
+      },
+      "upper_mag_strip": {
+        "label": "Subassembly Detail",
+        "subLabel": "65%",
+        "desc": "Unscrew the bolt shroud to release the striker and spring, separate the two-piece OD polymer thumbhole skins from the CNC spine, and disassemble the magazine."
+      },
+      "full_explode": {
+        "label": "Full 24-Part Explosion",
+        "subLabel": "100%",
+        "desc": "Complete exploded array revealing the 27-inch fluted barrel, dual-chamber brake, flat-sided receiver, folding stock hinge, and modular two-stage trigger cassette."
+      }
+    },
+    "firingPhases": {
+      "awm_cocked_ready": {
+        "shortLabel": "Battery Ready",
+        "title": "Phase 1 · Dual-Row Six-Lug Lockup & Cocked Striker Battery",
+        "description": "The bolt head's six locking lugs are rotated 60 degrees into the flat-sided receiver's locking abutments, chambering a 93.5mm .338 Lapua Magnum round. The central striker is held rearward under full spring compression by the modular trigger cassette's hardened top sear."
+      },
+      "awm_two_stage_trigger": {
+        "shortLabel": "Two-Stage Break",
+        "title": "Phase 2 · First-Stage Takeup & Glass-Rod Second-Stage Sear Trip",
+        "description": "The marksman presses the curved trigger blade through smooth takeup before meeting a definitive mechanical wall. Adding slight finger pressure trips the hardened tool-steel sear with crisp zero-creep release, eliminating disturbance to the sniper's aim point."
+      },
+      "awm_striker_ignition": {
+        "shortLabel": "Striker Ignition",
+        "title": "Phase 3 · Helical Spring Impulsion & Magnum Primer Detonation",
+        "description": "Released from the sear, the striker accelerates under heavy helical spring force to deliver an ultra-fast four-millisecond lock time. The firing pin point protrudes through the bolt face, violently striking the .338 magnum primer and detonating the propellant charge."
+      },
+      "awm_supersonic_exit": {
+        "shortLabel": "Supersonic Exit",
+        "title": "Phase 4 · 250gr VLD Boat-Tail Exit & Dual-Chamber Braking",
+        "description": "The 250-grain very-low-drag projectile accelerates down the 27-inch fluted stainless barrel, exiting at 910 meters per second.AI's dual-chamber muzzle brake vents high-pressure gas symmetrically to mitigate heavy recoil, while the rigid manual lockup guarantees peerless barrel harmonics."
+      },
+      "awm_bolt_lift_60": {
+        "shortLabel": "60° Bolt Lift",
+        "title": "Phase 5 · Manual 60° Bolt Handle Rotation & Cam Cocking",
+        "description": "The operator lifts the spherical bolt handle through a short 60-degree arc, providing ample ocular clearance under the massive 56mm objective lens. Cam surfaces disengage the six lugs while an internal helix forces the striker rearward, re-cocking the mainspring."
+      },
+      "awm_bolt_pull_eject": {
+        "shortLabel": "Extraction & Eject",
+        "title": "Phase 6 · Rearward Stroke, Claw Extraction & Plunger Ejection",
+        "description": "Drawing the bolt rearward along anti-icing flutes, the heavy external claw extractor pulls the spent 70mm brass casing clear of the chamber. As the case mouth clears the ejection port, the spring-loaded plunger ejector kicks the hot brass briskly outward to the right."
+      },
+      "awm_bolt_feed_close": {
+        "shortLabel": "Feeding & Lockup",
+        "title": "Phase 7 · Centerline Magazine Feeding & 60° Bolt Push-Down",
+        "description": "Pushing the bolt forward strips a fresh .338 Lapua Magnum cartridge from the steel magazine lips, riding up the polished feed ramp into the chamber. Turning the handle downward 60 degrees locks all six lugs rigidly into battery, transferring the striker cocking piece seamlessly onto the top sear."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "千米之外的北极死神：精密国际 AWM 狙击步枪的工程史诗",
+      "deck": "从奥林匹克射击作坊的铝主梁构想，到重写世界最远狙击击杀纪录，AWM 与其英军列装型号 L115A3 将点三三八拉普阿马格南口径推向了现代战术狙击的神坛。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1978–1985",
+          "title": "车库里的革命：铝合金骨架对决传统木托",
+          "paragraphs": [
+            "冷战中后期的军用狙击步枪世界仍被传统木质枪托与改进自毛瑟步枪的猎枪平台所统治。无论是英军老旧的L42A1，还是美军的M24与M40，在高湿度、泥泞和严寒环境中，木质或早期玻璃钢枪托的细微受潮形变均会直接挤压机匣，引发不可调和的弹着点漂移。英国两届奥运射击金牌得主马尔科姆·库帕（Malcolm Cooper）深知，在绝对精度领域，任何来自外部护木对枪管和机匣的侧向应力都是致命的。",
+            "库帕与几位枪匠在英国朴次茅斯的一个破旧工棚中成立了精密国际（Accuracy International）。他们摒弃了传统步枪将枪机埋入木托并以树脂点胶座床的妥协做法，石破天惊地提出了一种颠覆性架构：以一条全长一体化航空级铝合金挤压梁作为全枪刚性脊梁，平侧壁厚钢机匣直接以环氧树脂胶合与高抗拉螺栓刚性锚固于铝梁之上，而外部护木退化为仅负责提供握持手感的两片式工程塑料壳体。",
+            "这一在当时被军方官僚斥为“科幻玩具”的构想，在1984年英国陆军为期数月的极寒与泥沙严苛选型试验中一战成名。AI原型枪以远超皇家恩菲尔德兵工厂竞标枪的惊人散布表现脱颖而出，被英军正式命名为L96A1，宣告了现代底盘式狙击步枪（Chassis System）纪元的降临。"
+          ],
+          "audioScript": "二十世纪七十年代末，两届奥运射击冠军马尔科姆·库帕在英国的一间作坊里，彻底打破了数百年来的步枪制造传统。他用一根贯穿全枪的航空级铝合金主梁作为绝对刚性骨架，彻底解决了恶劣气候下枪托形变导致的归零漂移。这项在当时被视作异端的底盘系统构想，最终化身为名震天下的精密国际狙击枪家族。",
+          "audioUrl": "audio/awm/story_act1_zh.mp3",
+          "focusPartId": "awm_chassis_beam",
+          "focusPartLabel": "全长 CNC 铝合金底盘主梁"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1988–1996",
+          "title": "北极严寒与马格南巨浪：极地战靴的远征",
+          "paragraphs": [
+            "在获得英军认可后，瑞典国防军在1988年向精密国际抛出了一份几乎不可能完成的极限指标：步枪必须在零下四十摄氏度的斯堪的纳维亚暴风雪中无润滑击发，即便机匣内部灌满暴雪融冻形成的坚冰，枪机也不得卡死。AI团队为此研发了著名的AW（Arctic Warfare，北极作战）系列。设计团队在枪机表面精密铣削出纵向防冰导槽，使冰屑能够被旋转突笋刮削挤压至槽内排出，同时将拉机柄设计为大直径球头以适配北极厚重防寒手套。",
+            "然而，传统七点六二乘五十一毫米北约标准弹在超过八百米距离上面临存速骤降与跨音速扰动问题，难以击穿新一代凯夫拉防弹衣与轻装甲掩体。为此，AI设计师与芬兰拉普阿（Lapua）公司紧密合作，将目光投向了刚刚研制成功的点三三八拉普阿马格南弹药（8.6×70毫米）。这是一种弹底直径达到十四点九毫米、装药量接近六克、能在千米之外维持超音速飞行的重型马格南弹。",
+            "为了容纳这种狂暴的马格南弹药，AI对原有的AW机匣进行了全面重构，推出了AWM（Arctic Warfare Magnum）。加长的平侧壁厚钢机匣、强化的双排六突笋六十度枪机闭锁机构，以及加宽的五发单排中心供弹钢制弹匣应运而生。这支步枪不再仅仅是一件反人员武器，而是能够跨越一千五百米实施反狙击与轻型器材破坏的战略级长臂。"
+          ],
+          "audioScript": "为了征服零下四十度的斯堪的纳维亚严寒，设计师在枪机上雕刻出独特的排冰导槽，诞生了北极作战系列。而为了彻底突破传统中口径狙击枪的射程天花板，精密国际又与芬兰拉普阿联手，将狂暴的点三三八马格南弹药装入加固机匣，缔造了拥有千米超音速杀伤力的反狙击神话，精密国际马格南型，也就是闻名遐迩的AWM。",
+          "audioUrl": "audio/awm/story_act2_zh.mp3",
+          "focusPartId": "awm_bolt_body",
+          "focusPartLabel": "60°六突笋防冰槽旋转枪机体"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1997–2007",
+          "title": "机械圣殿：六十度锁闭、两道火与光学巅峰",
+          "paragraphs": [
+            "AWM的机械精髓深植于其极度严苛的公差控制与人机几何学之中。与传统毛瑟两突笋枪机需要上抬九十度开锁不同，AWM采用了前部双排六突笋闭锁布局，闭锁支承面积大幅增加的同时，将拉机柄开锁旋转角极致压缩至六十度。这一十进位几何学革新不仅使拉栓上膛动作更加紧凑迅猛，更彻底避免了射手戴厚手套快速抽拉枪栓时擦碰大型瞄准镜目镜的战术灾难。",
+            "步枪的火控系统是一座微型钟表般的工程奇迹。全封闭盒式两道火比赛扳机拥有由优质工具钢线切割加工并经镜面抛光的上阻铁，第一道火柔和预压至清晰的阻力墙，第二道火释放力仅需约一点六公斤，触感如折断玻璃般干脆利落。击针在四毫秒内重重撞击底火，在二十七英寸高精度比赛级浮置枪管内，两百五十格令船尾空尖弹以每秒九百一十米的初速喷涌而出。枪口前方的AI双室平板制退器通过对称导流侧喷，将马格南口径的猛烈后坐力削减了百分之四十以上。",
+            "与之搭档的是安装在一体式重型俯角镜桥上的德国施密特-本德PM二代五至二十五倍五十六毫米大口径狙击镜。该镜拥有第一焦平面测距分划板与双圈超高仰角调节旋钮，即使在剧烈颠簸与狂暴后坐力震击下，也能保持零位坚如磐石。射手透过英国陆军标志性的橄榄绿两片式高强度玻纤拇指孔护壳贴腮瞄准，枪机、主梁、枪管与光学轴线在微米级公差内融为一体。"
+          ],
+          "audioScript": "短至六十度的开锁行程，双排六突笋闭锁，加上如折断玻璃般清脆的两道火扳机，构成了这支步枪精密的机械之魂。二十七英寸不锈钢浮置枪管与施密特本德高倍瞄准镜的严密结合，将点三三八马格南子弹的狂暴动能转化为跨越千米的一孔弹着。双室制退器的大角度侧喷，更赋予了射手迅速捕捉第二发目标的从容。",
+          "audioUrl": "audio/awm/story_act3_zh.mp3",
+          "focusPartId": "awm_scope",
+          "focusPartLabel": "Schmidt & Bender PM II 狙击瞄准镜"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "2008–至今",
+          "title": "帝国利刃与两千四百米传奇：L115A3的永恒丰碑",
+          "paragraphs": [
+            "2007年底，英国国防部根据阿富汗战场远距离交火的惨痛教训，启动了代号为“狙击系统改进计划”（SSIP）。精密国际的AWM折叠枪托型以无可争议的压倒性优势胜出，被英军正式命名为L115A3远程长程狙击武器系统。换装了折叠枪托、加长导轨、双室消音器制退螺纹与施密特-本德PM II超级瞄准镜的L115A3，迅速被空降特勤团（SAS）、皇家海军陆战队突击队与步兵狙击排配发至赫尔曼德省的前线血火之中。",
+            "2009年11月，在阿富汗穆萨卡拉附近，英国陆军皇家骑兵团狙击手克雷格·哈里森（Craig Harrison）手持L115A3步枪，在两千四百七十五米的惊人距离上连续击毙两名塔利班机枪手并瘫痪其重机枪。这一距离足足是该枪标称有效射程的一点六倍，子弹在空中整整飞行了近三秒钟，直接刷新了当时人类有记录的最远实战狙击杀敌世界纪录。这一战例将AWM及其军用编号L115A3彻底载入世界特种作战史册。",
+            "时至今日，尽管精密国际后续推出了模块化更强的AXMC与AT-X系列，但AWM作为第一款将铝合金底盘架构、极寒可靠性与马格南远射程完美熔于一炉的枪械，早已成为现代军用狙击步枪的黄金参照物。它不仅重塑了北约各国的特种狙击条令，更在全世界射手与军事历史爱好者心中构筑了一座无法磨灭的精度丰碑。"
+          ],
+          "audioScript": "二零零九年冬，在阿富汗赫尔曼德省的荒漠中，英国皇家骑兵团狙击手手持列装代号为L115A3的AWM步枪，在两千四百七十五米外连续精准命中两名敌军机枪手，创造了当时人类实战狙击的最远世界纪录。从英伦海湾工棚走向全球现代战场的巅峰，精密国际用极致的金属机械，书写了不可逾越的千米传奇。",
+          "audioUrl": "audio/awm/story_act4_zh.mp3",
+          "focusPartId": "awm_barrel",
+          "focusPartLabel": "27英寸纵向六槽不锈钢自由浮置比赛枪管"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "CNC 全长航空铝合金底盘主梁结构",
+          "tag": "底盘枪鼻祖架构",
+          "summary": "摒弃传统木托树脂座床工艺，首创以全长高刚性 7075-T6 铝合金挤压梁作为整枪结构脊梁，平侧壁机匣胶合螺栓双重紧固。彻底隔离了外部泥水、极寒温差对枪机和枪管的微观应力，终结了实战环境中的零位漂移宿疾。",
+          "focusPartId": "awm_chassis_beam",
+          "focusPartLabel": "全长 CNC 铝合金底盘主梁"
+        },
+        {
+          "id": "bt2",
+          "title": "60° 短行程六突笋防冰槽旋转枪机",
+          "tag": "极地防冻短程闭锁",
+          "summary": "双排对称六突笋布局提供了充裕的闭锁支承面积，将拉机柄开锁上抬角度从传统毛瑟式的 90° 大幅压缩至 60°，彻底规避了擦碰大型高倍瞄准镜的隐患；枪机圆柱体表面铣削深防冰排屑槽，即使在 -40℃ 结冰状态下也能旋转切碎坚冰顺畅推拉。",
+          "focusPartId": "awm_bolt_body",
+          "focusPartLabel": "60°六突笋防冰槽旋转枪机体"
+        },
+        {
+          "id": "bt3",
+          "title": "双室侧喷制退器与浮置枪管谐振系统",
+          "tag": "马格南后坐管理与精度",
+          "summary": "27 英寸比赛级六槽不锈钢枪管全程与机匣外壳自由浮置，保证每发弹丸出膛时的谐振完全一致；枪口精密加装 AI 双室平板高导流制退器，将强劲的 .338LM 燃气对称偏转喷射，削减超过 40% 的主后坐力，令射手能迅速恢复瞄准基线自观弹着点。",
+          "focusPartId": "awm_muzzle_brake",
+          "focusPartLabel": "AI 双室平板战术膛口制退器"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1978",
+          "title": "精密国际（AI）作坊创立",
+          "detail": "奥运射击双金得主马尔科姆·库帕联手精密枪匠在英国朴次茅斯创立 AI，开启铝合金骨架底盘狙击枪的颠覆性预研。"
+        },
+        {
+          "year": "1984",
+          "title": "赢得英军选型，定型 L96A1",
+          "detail": "AI 的底盘概念原型枪在极其苛刻的军方泥沙与严寒试射中击溃皇家恩菲尔德兵工厂，正式列装英国陆军成为 L96A1。"
+        },
+        {
+          "year": "1988",
+          "title": "瑞典极寒合同与 AW 系列诞生",
+          "detail": "为满足瑞典军方零下 40 度北极实战指标，AI 推出具备排冰导槽与球头拉栓的 Arctic Warfare（AW）极地型号。"
+        },
+        {
+          "year": "1996",
+          "title": "AWM 点三三八马格南型号定型",
+          "detail": "全面适配芬兰拉普阿 .338 Lapua Magnum 重型远程狙击弹，强化厚壁平侧机匣与双排六突笋枪机，AWM 传奇正式诞生。"
+        },
+        {
+          "year": "2007",
+          "title": "英军 SSIP 竞标获胜：命名 L115A3",
+          "detail": "英国国防部斥资采购配备折叠枪托与施密特-本德 PM II 镜的 AWM，并赋予其制式代号 L115A3 长程狙击系统。"
+        },
+        {
+          "year": "2009",
+          "title": "刷新 2475 米世界实战最远击杀纪录",
+          "detail": "英国皇家骑兵团狙击手克雷格·哈里森在阿富汗使用 L115A3 在 2,475 米距离连续命中敌方机枪阵地，铸就现代狙击传奇。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Death in the Arctic Mist: The Mechanical Odyssey of the Accuracy International AWM",
+      "deck": "From an Olympic marksman's carriage-house workshop to the longest sniper kill in combat history, the AWM and its British service variant, the L115A3, elevated the .338 Lapua Magnum round to legendary status.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1978–1985",
+          "title": "Workshop Heresy: The Chassis Revolution Over Wooden Stocks",
+          "paragraphs": [
+            "During the middle and late Cold War, military sniper rifles remained shackled to the legacy of sporterized Mauser hunting patterns and walnut stocks. Standard-issue arms like the British L42A1 and early American M24 platforms suffered notoriously in damp, muddy, or sub-zero environments: natural hygroscopic swelling of wooden stocks—and even thermal deflection in early fiberglass laminates—applied uneven sideways pressure against the action, inducing devastating zero shifts. Two-time Olympic prone shooting gold medalist Malcolm Cooper knew intuitively that in extreme-precision ballistics, any parasitic stock-induced bedding stress was unacceptable.",
+            "Operating from a spartan workshop in Portsmouth, Cooper and his master gunsmith partners founded Accuracy International. Rejecting the age-old compromise of glass bedding actions into carved rifle stocks, they forged an engineering heresy: a monolithic, extruded aerospace-grade aluminum spine running the entire length of the rifle. The machined steel flat-sided receiver was chemically bonded to this aluminum backbone with high-strength structural epoxy and torqued down with hardened high-tensile steel bolts, reducing the outer stock to a pair of non-structural, interchangeable polymer clamshells.",
+            "Dismissed by conservative defense bureaucrats as a fragile science-fiction contraption, the AI prototype swept through the grueling 1984 British Army sniper trials. Submitting to punishing mud baths and Arctic torture tests, Cooper's creation out-grouped competing rifles from Royal Small Arms Factory Enfield by a dramatic margin. Officially adopted as the L96A1, the rifle established the modern tactical chassis system, forever altering the trajectory of precision arms engineering."
+          ],
+          "audioScript": "In the late nineteen seventies, two-time Olympic shooting champion Malcolm Cooper overturned centuries of gunsmithing dogma inside a modest English shed. By embedding the steel receiver within an uninterrupted aerospace-grade aluminum chassis spine, he eliminated zero shift caused by stock warping. Initially dismissed by traditionalists, this groundbreaking chassis architecture triumphed in punishing military trials, giving birth to the legendary Accuracy International sniper family.",
+          "audioUrl": "audio/awm/story_act1_en.mp3",
+          "focusPartId": "awm_chassis_beam",
+          "focusPartLabel": "Full-Length CNC Billet Aluminum Chassis Spine Beam"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1988–1996",
+          "title": "Arctic Warfare and the Magnum Frontier: Conquering Forty Below",
+          "paragraphs": [
+            "Following British adoption, the Swedish Armed Forces issued an unforgiving technical tender in 1988: any candidate rifle had to fire flawlessly without lubrication in blizzard conditions at minus forty degrees Celsius, clearing ice packed directly into the receiver without jamming. AI answered with the Arctic Warfare (AW) series. Engineers milled longitudinal anti-icing flutes directly into the cylindrical bolt body, allowing frost and compacted snow to be sheared off and vented into recesses rather than locking up the mechanism, while fitting an enlarged spherical bolt knob operable with heavy winter mittens.",
+            "Concurrently, battlefield realities revealed the hard kinetic ceiling of standard seven-point-six-two by fifty-one millimeter NATO cartridges, which suffered severe transonic destabilization beyond eight hundred meters and failed to defeat body armor and light barriers. AI partnered closely with Finnish cartridge manufacturer Lapua to exploit the newly minted eight-point-six by seventy millimeter round—better known as the point three three eight Lapua Magnum—a devastating heavy cartridge packing six grams of slow-burning propellant behind a low-drag bullet.",
+            "To tame this ballistic titan, AI fundamentally redesigned the AW platform, creating the Arctic Warfare Magnum (AWM). An elongated flat-sided receiver made of high-tensile alloy steel, a reinforced dual-row six-lug bolt head, and an oversized single-stack five-round steel box magazine were developed. The resulting firearm was no longer merely an anti-personnel rifle, but a strategic long-range interdiction weapon capable of surgical anti-sniper and light-materiel destruction well past fifteen hundred meters."
+          ],
+          "audioScript": "To survive Swedish trials at minus forty degrees, engineers machined anti-icing flutes directly into the bolt body, giving rise to the Arctic Warfare designation. Meanwhile, recognizing the range limits of standard seven-point-six-two millimeter rounds, Accuracy International teamed up with Finnish cartridge maker Lapua. By housing the brutal point three three eight Lapua Magnum cartridge inside a reinforced magnum receiver, they forged the fearsome AWM, an anti-sniper rifle capable of supersonic precision beyond fifteen hundred meters.",
+          "audioUrl": "audio/awm/story_act2_en.mp3",
+          "focusPartId": "awm_bolt_body",
+          "focusPartLabel": "60° 6-Lug Anti-Icing Fluted Bolt Body"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1997–2007",
+          "title": "Clockwork of Precision: 60-Degree Lockup, Match Trigger, and PM II Optics",
+          "paragraphs": [
+            "The mechanical brilliance of the AWM lies in its uncompromising kinematic geometry and obsessive tolerances. Whereas classic Mauser actions demand a full ninety-degree bolt handle rotation that often crashes into oversized ocular lenses, the AWM employs a dual-row six-lug bolt head that delivers immense shear area while compressing the handle lift arc down to a rapid sixty degrees. This allows lightning-fast, cycling without finger-clearance issues beneath the Schmidt and Bender scope.",
+            "The fire-control group functions with clockwork delicacy. The cassette-style modular two-stage match trigger contains hardened, wire-EDM cut tool-steel sears polished to a mirror sheen. Taking up the gentle first-stage travel brings the finger against a crisp, unyielding mechanical wall, breaking cleanly at approximately one-point-six kilograms with zero perceptible creep. The striker propels forward within a lightning four-millisecond lock time, sending a two-hundred-and-fifty-grain match bullet down the twenty-seven-inch longitudinally fluted match barrel at nine hundred and ten meters per second, while AI's massive dual-chamber muzzle brake diverts high-pressure gas sideways to soak up forty percent of felt recoil.",
+            "Capping this mechanical symphony is the legendary Schmidt and Bender PM II five to twenty-five by fifty-six millimeter sniper scope, locked down in a monolithic inclined mount. The first-focal-plane reticle and double-turn elevation turrets shrug off the violent impulse of thousands of magnum firings. Gripped by the marksman via the iconic British olive-drab fiberglass thumbhole skins, every component on the rifle aligns in millimeter-perfect harmony along the central aluminum spine."
+          ],
+          "audioScript": "A tight sixty-degree bolt lift, dual-row six-lug lockup, and a glass-crisp two-stage match trigger define the AWM's mechanical heart. The twenty-seven-inch fluted stainless match barrel works in unison with a Schmidt and Bender high-magnification optic, translating the ferocious power of the point three three eight magnum into repeatable sub-minute-of-angle precision. Simultaneously, an efficient dual-chamber muzzle brake vents propellant gas laterally, allowing the marksman to track bullet impact through the lens.",
+          "audioUrl": "audio/awm/story_act3_en.mp3",
+          "focusPartId": "awm_scope",
+          "focusPartLabel": "Schmidt & Bender PM II 5-25×56 L/P Sniper Scope"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "2008–Present",
+          "title": "Crown Jewel of the Commonwealth: The 2,475-Meter Afghan Feat",
+          "paragraphs": [
+            "In late 2007, under the operational pressure of extreme-range engagements in Afghanistan, the British Ministry of Defence initiated the Sniper System Improvement Programme. Accuracy International's AWM equipped with a heavy side-folding stock and enhanced Picatinny interfaces swept the competition, designated officially as the L115A3 Long Range Rifle. Deployed with the SAS, Special Boat Service, Royal Marines, and infantry sniper platoons across Helmand Province, it immediately became the definitive counter-sniper system of the war.",
+            "In November 2009, near Musa Qala, Afghanistan, Corporal of Horse Craig Harrison of the Household Cavalry etched the L115A3 permanently into military lore. Engaging an insurgent machine-gun crew through shifting thermal mirage, Harrison fired three consecutive rounds at an incredible verified distance of two thousand four hundred and seventy-five meters—well over a mile and a half away. All three rounds struck their marks, neutralizing the machine gun team and shattering the world record for the longest confirmed combat sniper kill.",
+            "Though Accuracy International has since introduced multi-caliber platforms like the AXMC and AT-X, the original AWM remains the gold standard against which all modern bolt-action sniper systems are judged. By harmonizing an aerospace aluminum backbone, sub-zero reliability, and devastating magnum reach, it transformed military sniper doctrine and permanently sealed its reputation as one of the finest precision rifles ever forged."
+          ],
+          "audioScript": "In the winter of two thousand and nine, across the sunbaked desert of southern Afghanistan, British sniper Craig Harrison used his service L115A3 rifle to eliminate a hostile machine-gun position at an astonishing two thousand four hundred and seventy-five meters. The flight time of nearly three seconds set a world combat record. From a humble Portsmouth carriage house to the bleeding edge of modern combat, the AWM forged an enduring legend of long-range precision.",
+          "audioUrl": "audio/awm/story_act4_en.mp3",
+          "focusPartId": "awm_barrel",
+          "focusPartLabel": "27\" Longitudinally Fluted Stainless Match Barrel"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Full-Length CNC Billet Aluminum Spine Chassis",
+          "tag": "Chassis Pioneer",
+          "summary": "Dispensed with unreliable wooden stock glass bedding by anchoring the flat-sided steel receiver directly onto a full-length 7075-T6 aluminum extrusion using structural epoxy and high-tensile bolts. This mechanically isolates the barrel and action from weather-induced stock warping, eliminating zero shifts in harsh conditions.",
+          "focusPartId": "awm_chassis_beam",
+          "focusPartLabel": "Full-Length CNC Billet Aluminum Chassis Spine Beam"
+        },
+        {
+          "id": "bt2",
+          "title": "60° Short-Throw 6-Lug Anti-Icing Turn-Bolt",
+          "tag": "Sub-Zero Kinematics",
+          "summary": "Dual-row six-lug locking geometry delivers massive shear strength while reducing the bolt lift rotation from Mauser's 90 degrees to an ultra-compact 60 degrees, preventing hand clearance issues beneath massive tactical scopes. Longitudinal body flutes cut through frozen grime and ice to maintain smooth cycling down to -40°C.",
+          "focusPartId": "awm_bolt_body",
+          "focusPartLabel": "60° 6-Lug Anti-Icing Fluted Bolt Body"
+        },
+        {
+          "id": "bt3",
+          "title": "Dual-Chamber Tactical Muzzle Brake & Free-Float Harmonics",
+          "tag": "Magnum Recoil Control",
+          "summary": "The 27-inch match-grade stainless barrel floats completely free of the polymer chassis skins, ensuring totally consistent vibrational harmonics shot after shot. At the muzzle, a precision dual-chamber steel brake diverts high-pressure propellant gases symmetrically outward, reducing felt recoil by over 40% and preserving the shooter's visual sight picture.",
+          "focusPartId": "awm_muzzle_brake",
+          "focusPartLabel": "AI Two-Chamber Tactical Muzzle Brake"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1978",
+          "title": "Founding of Accuracy International",
+          "detail": "Olympic shooting champion Malcolm Cooper and master gunsmiths establish AI in Portsmouth, England, pioneering the aluminum spine chassis."
+        },
+        {
+          "year": "1984",
+          "title": "British Military Adoption of L96A1",
+          "detail": "AI's aluminum-chassis prototype outperforms state-run Royal Small Arms Factory Enfield designs in rigorous trials to become Britain's standard sniper rifle."
+        },
+        {
+          "year": "1988",
+          "title": "Swedish Arctic Trials & AW Creation",
+          "detail": "Engineered with anti-icing fluted bolts and oversized winter controls for Sweden's -40°C requirements, establishing the Arctic Warfare lineage."
+        },
+        {
+          "year": "1996",
+          "title": "AWM .338 Lapua Magnum Introduction",
+          "detail": "AI scales up the action with a reinforced flat-sided steel receiver and six-lug bolt to chamber the potent .338 Lapua Magnum cartridge."
+        },
+        {
+          "year": "2007",
+          "title": "British SSIP Selection: Designation L115A3",
+          "detail": "The UK Ministry of Defence awards AI the Sniper System Improvement contract, standardizing the folding-stock AWM as the L115A3."
+        },
+        {
+          "year": "2009",
+          "title": "World Record 2,475m Combat Kill",
+          "detail": "Household Cavalry sniper Craig Harrison records the longest confirmed kill in combat history in Afghanistan using his L115A3 at 2,475 meters."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "awm_scope": {
+      "partId": "awm_scope",
+      "bomCode": "S-01",
+      "calloutLabelEn": "PM II 5-25x56 Scope",
+      "zh": {
+        "roleTag": "第一焦平面远距白光瞄具 / 双圈密位调节塔",
+        "overview": "施密特本德 PM II 5至25倍56毫米物镜狙击瞄准镜是英军 L115A3 的核心白光瞄具，刚性夹持于机匣顶部的重型悬臂镜桥之上。它赋予射手在超远距离上精准识别人形目标并在复杂气象下精确修正弹道落点的能力。",
+        "craftAndMaterial": "镜身采用航空级高强度铝合金整体锻造加工出34毫米加粗镜管，表面经硬质阳极氧化消光处理；透镜群覆盖多层宽带抗反射绿膜，内部充干燥高纯氮气以实现彻底的防雾与防水密封。",
+        "kinematicRole": "射击全程中作为刚性光学瞄准基准保持静止，承受点三三八拉普阿马格南弹药带来的剧烈反冲脉冲；在不完全分解初期（进度10%至24%）与镜桥整体向上方脱离机匣，并在深度分解中（进度58%至86%）与下层镜桥完全分离。",
+        "designHighlight": "采用第一焦平面分划与专利双圈高低转轮设计，转入第二圈时顶部机械视标会自动升起提示射手已进入大俯仰量程，彻底根除远距离交火中调错圈数的致命失误。",
+        "audioScript": "施密特本德 5到25倍瞄准镜是 L115A3 创造两千多米极限击杀的视野核心。它采用三十四毫米加粗镜筒与大口径物镜，不仅透光率极佳，更具备两圈大行程高低调节塔，配合第二圈凸起的机械视标，即使在剧烈交火中也能清晰掌握弹道落差修正。",
+        "audioUrl": "audio/awm/parts/awm_scope_zh.mp3"
+      },
+      "en": {
+        "roleTag": "First Focal Plane Long-Range Optic / Double-Turn Turret",
+        "overview": "The Schmidt and Bender PM II 5 to 25 by 56 millimeter sniper scope is the premier optical sighting system mounted directly atop the AWM receiver rail via a cantilever bridge. It provides the sniper with extreme-range target identification and precise angular ballistic holdovers.",
+        "craftAndMaterial": "Forged from aerospace-grade aluminum into a robust 34-millimeter monolithic main tube finished in hard-anodized matte black; fully multi-coated optics are sealed and purged with dry nitrogen to guarantee fog-proof integrity.",
+        "kinematicRole": "Acts as an absolute structural datum throughout all firing cycles while withstanding heavy recoil forces; it separates upward with the mount during field stripping at 10 to 24 percent and releases from the base ring cradle during advanced disassembly at 58 to 86 percent.",
+        "designHighlight": "Features an ingenious Double-Turn elevation turret where a tactile mechanical indicator pin pops up on the second revolution, instantly preventing turret-revolution miscalculations under battlefield stress.",
+        "audioScript": "Mounted atop the rifle is the world-renowned Schmidt and Bender PM Two, sporting a massive thirty-four millimeter tube and fifty-six millimeter objective lens. Its first focal plane reticle scales seamlessly with magnification, while the double-turn elevation turret provides clear visual feedback when dialed past the first turn, ensuring total ballistic confidence beyond a mile.",
+        "audioUrl": "audio/awm/parts/awm_scope_en.mp3"
+      }
+    },
+    "awm_scope_mount": {
+      "partId": "awm_scope_mount",
+      "bomCode": "S-02",
+      "calloutLabelEn": "34mm Cantilever Mount",
+      "zh": {
+        "roleTag": "一体式俯角补偿镜座 / 承受极限后坐冲击",
+        "overview": "精密国际原厂一体式 34 毫米战术双环镜桥通过横向高强度螺栓直接刚性锁死在机匣顶部导轨上。它不仅为重型瞄准镜提供绝对共轴夹持，还预设了特定的前倾俯角以扩展远距离瞄准调节上限。",
+        "craftAndMaterial": "由高标号 7075 航空铝合金经五轴数控机床整体铣削成型，配合硬化合金钢横向止退块，表面采用军规三级硬质阳极氧化，抗剪切与抗冲击强度极高。",
+        "kinematicRole": "在击发与后坐时将枪管机匣振动均匀传导并紧固光学镜管，全周期不产生角位移；分解进度 10% 至 24% 随瞄具向上抬升脱离机匣，并在 58% 至 86% 阶段与镜身分离。",
+        "designHighlight": "镜座内部预置了约 28 至 45 角分的前倾俯角补偿，使瞄准镜的高低调节螺丝在归零后仍能保留绝大部分向上调节量，从而满足超音速弹头飞向一千五百米外所需的巨大仰角。",
+        "audioScript": "这具一体式重型镜桥采用单块航空级铝合金精雕而成，通过三枚高抗剪切螺栓牢牢咬住机匣。座体自带倾角补偿，把原本水平的瞄准线略微前下倾斜，为超远距离射击释放出数十角分的额外仰角行程，抵消重弹头巨大的远距离重力下坠。",
+        "audioUrl": "audio/awm/parts/awm_scope_mount_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Cantilever Cant-Compensating Mount / Heavy Recoil Anchor",
+        "overview": "The Accuracy International monolithic 34-millimeter scope mount anchors the optical sight directly to the receiver top rail using hardened cross-bolts. It establishes a rock-solid, co-axial platform designed to absorb massive magnum impulse without loss of zero.",
+        "craftAndMaterial": "Precision CNC-machined from high-strength 7075-T6 aluminum billet with integral steel recoil lugs, finished with durable Type III hardcoat anodizing for maximum shear resistance.",
+        "kinematicRole": "Maintains zero position through recoil and manual cycling as an immovable bridge; lifts off the receiver rail during early stripping at 10 to 24 percent, and separates from the scope rings during bench teardown at 58 to 86 percent.",
+        "designHighlight": "Engineered with an integrated forward tilt of roughly 28 to 45 minutes of angle, allocating maximum usable elevation travel within the optical erector tube for engagement past 1,500 meters.",
+        "audioScript": "Secured directly to the receiver, this one-piece mount clamps the 34-millimeter optic in high-tensile split rings. Precision-milled with a built-in forward cant, it tilts the scope down relative to the bore axis, granting the shooter dozens of minutes of extra upward elevation travel required for the ballistic arc of the Lapua Magnum.",
+        "audioUrl": "audio/awm/parts/awm_scope_mount_en.mp3"
+      }
+    },
+    "awm_bolt_body": {
+      "partId": "awm_bolt_body",
+      "bomCode": "S-03",
+      "calloutLabelEn": "60° 6-Lug Bolt Body",
+      "zh": {
+        "roleTag": "双排六突笋核心闭锁机体 / 防冰槽短行程开锁",
+        "overview": "圆柱形枪机体前端布置有前后双排共六个粗壮闭锁突笋，后部一体成型后掠式球头拉机柄，滑入并定位于机匣中央机芯腔。它是承受四百二十兆帕以上极限膛压并完成弹药推膛、闭锁与抽壳的核心运动机构。",
+        "craftAndMaterial": "选用高等级镍铬钼合金钢经整体精密渗碳淬火与研磨，机身外壁精铣六道深纵向防冰排屑槽，表面经低摩擦耐磨涂层处理以确保极低温环境下的滑动干涉降至最低。",
+        "kinematicRole": "击发阶段完全闭锁承受弹壳底压；退壳阶段随手柄上抬旋转 60 度开锁并在开栓凸轮作用下后退抽壳，推弹时旋转闭锁；在不完全分解初期（8% 至 17%）向后抽出机匣，深度分解（34% 至 56%）中与击针机尾组件旋分解体。",
+        "designHighlight": "六突笋布局将传统的 90 度开锁转角缩短至 60 度，不仅加快了重装填循环速度，更消除了拉栓时球头打在大型低趴瞄准镜目镜边缘的干涉隐患。",
+        "audioScript": "这就是著名的六十度六突笋枪机体，是北极作战血统的核心。头部两排共六个粗壮突笋能够稳稳锁住超过四百兆帕的狂暴膛压。由于开锁只需抬起六十度，机柄动作极其敏捷，在严寒天气下拉栓动作流畅，机身上的排泥深槽更防止了冰雪冻死机构。",
+        "audioUrl": "audio/awm/parts/awm_bolt_body_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dual-Row 6-Lug Bolt Body / Anti-Icing Fluted Core",
+        "overview": "The cylindrical bolt body houses dual rows of three locking lugs at the front and a bent-down swept handle at the rear, resting inside the steel receiver tunnel. It acts as the primary lockup element that resists chamber pressures while chambering and extracting cartridges.",
+        "craftAndMaterial": "Constructed from case-hardened high-tensile nickel-chromium-molybdenum alloy steel with deep anti-icing helical flutes milled around the perimeter to collect debris and ice under extreme sub-zero conditions.",
+        "kinematicRole": "Rotates 60 degrees upward to unlock during extraction, slides backward to pull the empty case, and cams forward to lock in battery; slides rearward out of the receiver at 8 to 17 percent disassembly and detaches from the internal striker at 34 to 56 percent.",
+        "designHighlight": "The dual-row, six-lug arrangement reduces the bolt lift to a short 60 degrees, substantially boosting operating speed while completely clearing large low-mounted scope ocular housings.",
+        "audioScript": "At the heart of the action lies this beefy bolt body featuring six locking lugs arranged in two concentric rows. Instead of a traditional ninety-degree lift, it unlocks with just a sixty-degree throw, saving crucial split-seconds while avoiding contact with massive sniper scopes. The deep outer flutes scrape away sand and ice, keeping the action smooth.",
+        "audioUrl": "audio/awm/parts/awm_bolt_body_en.mp3"
+      }
+    },
+    "awm_bolt_shroud": {
+      "partId": "awm_bolt_shroud",
+      "bomCode": "S-04",
+      "calloutLabelEn": "Bolt Shroud & Safety",
+      "zh": {
+        "roleTag": "枪机密封防吹尾罩 / 三档阻铁与机柄锁止保险",
+        "overview": "多边形棱柱钢质枪机尾罩螺接在枪机主体尾部，封闭了击针腔并在侧面集成了标志性的三档旗式拨片保险。它既是射手眼睛免受高压穿火伤害的防线，也是控制待击状态的安全开关。",
+        "craftAndMaterial": "经热处理的高强度碳钢精铣成型，表面氮化发黑处理；侧面拨片与内部阻铁槽受严格公差控制以防止任何微小的晃动与磨损。",
+        "kinematicRole": "击发时保持方位不转，仅允许击针尾杆从中心穿过完成击打；保险拨动时驱动内部阻铁块限制击针位移；分解进度 8% 至 17% 随枪机抽出，在 36% 至 58% 旋卸与枪机体脱离。",
+        "designHighlight": "三档保险拥有严谨的人机逻辑：一档全解锁击发；二档锁死击针却可推拉枪机安全退弹；三档同时刚性锁死机柄与击针，即便步枪受剧烈颠簸跌落也绝不走火。",
+        "audioScript": "枪机尾罩安装在机机尾端，内部集成了三档旗式保险。如果发生底火破裂，它能像坚固的挡风板一样挡住向后喷射的高压燃气。侧面的三档拨片设计极具实战考量，中间档位能完全锁死击针，但允许拉栓退出膛内实弹，实现了安全排障。",
+        "audioUrl": "audio/awm/parts/awm_bolt_shroud_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Protective Shroud Barrier / 3-Position Cocking Safety",
+        "overview": "The faceted steel bolt shroud threads onto the rear of the bolt body, sealing the striker assembly while housing the three-position flag safety lever. It protects the shooter's eyes from primer blow-by while providing comprehensive mechanical state selection.",
+        "craftAndMaterial": "Precision machined from heat-treated alloy steel and coated in durable matte black nitride, engineered with tight internal tracks to house the striker cocking piece with zero binding.",
+        "kinematicRole": "Remains stationary in orientation during bolt cycling, preventing the cocking piece from rotating while guiding striker travel; removes with the bolt at 8 to 17 percent and threads off the body during sub-assembly strip at 36 to 58 percent.",
+        "designHighlight": "Features a field-proven three-position safety: rearward locks both striker and bolt handle, middle locks the firing pin while permitting safe bolt cycling to clear chambers, and forward unlocks to fire.",
+        "audioScript": "Threaded to the rear of the bolt, the bolt shroud serves as a critical safety shield against hot propellant gas leakage. Its integrated three-position flag lever allows the operator to lock the firing pin completely while still cycling the bolt to unload a live round safely, offering unparalleled tactical handling.",
+        "audioUrl": "audio/awm/parts/awm_bolt_shroud_en.mp3"
+      }
+    },
+    "awm_striker": {
+      "partId": "awm_striker",
+      "bomCode": "S-05",
+      "calloutLabelEn": "Cocking Striker Piece",
+      "zh": {
+        "roleTag": "合金钢一体击针组件 / 四毫秒极速锁时机构",
+        "overview": "长行程轻量化合金钢击针贯穿于中空枪机内部，其后段连接着下沉式待击挂机尾杆。在闭锁待击时，其挂机凸笋由机匣底部的两道火扳机阻铁牢牢钩住蓄能。",
+        "craftAndMaterial": "选用超高韧性合金钢经调质与表面精细硬化处理，前部撞针呈抛光半球状以防止刺穿底火，后段开有减重排油槽以实现超高加速度与严寒环境顺畅滑动。",
+        "kinematicRole": "开栓时被尾罩斜面凸轮强行后推压缩击针簧；闭锁时由阻铁扣持；扣扳机瞬间在弹簧推动下以约四毫秒锁时向前猛烈飞冲撞击马格南底火；分解进度 36% 至 58% 时向后抽出枪机腔。",
+        "designHighlight": "仅约四毫秒的超短击发锁时是现代远程狙击步枪的标杆设计，极大地减小了从二道火击发到弹头起动期间射手呼吸与肌肉颤动带来的脱靶偏差。",
+        "audioScript": "这根高强度合金钢击针贯穿整个枪机中心。当射手扣过二道火后，它在强力击针簧驱使下只需极短的四毫秒就能刺向底火。极高的击发速度最大限度削减了击发瞬间的人体抖动，同时尾部凸起在夜间还能用手指直接摸出是否已处于待击状态。",
+        "audioUrl": "audio/awm/parts/awm_striker_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Monolithic Alloy Firing Pin / 4ms Ultra-Fast Lock Time",
+        "overview": "The longitudinal alloy steel striker assembly runs along the inner axis of the hollow bolt body, terminating in a downward cocking piece lug. In the ready-to-fire state, its bottom sear engagement face catches the receiver trigger sear under spring tension.",
+        "craftAndMaterial": "Manufactured from high-tensile impact-resistant alloy steel with a hardened semi-hemispherical tip to prevent blanking primers, featuring fluted shafts to shed debris and optimize acceleration.",
+        "kinematicRole": "Retracted and cocked by the helical cam when lifting the bolt handle, held stationary by the trigger sear during forward lockup, and driven forward upon trigger release to strike the magnum primer; extracts rearward during teardown at 36 to 58 percent.",
+        "designHighlight": "Engineered for an exceptional lock time of approximately four milliseconds, dramatically minimizing shooter movement and rifle displacement between trigger break and primer ignition.",
+        "audioScript": "Running the length of the bolt, this one-piece striker delivers a blisteringly fast lock time of around four milliseconds. When released by the sear, it punches into the heavy magnum primer cup with authority. The rear protrusion extends past the shroud, giving the shooter instant tactile confirmation of cocking status even in pitch black.",
+        "audioUrl": "audio/awm/parts/awm_striker_en.mp3"
+      }
+    },
+    "awm_firing_pin_spring": {
+      "partId": "awm_firing_pin_spring",
+      "bomCode": "S-06",
+      "calloutLabelEn": "Heavy Striker Spring",
+      "zh": {
+        "roleTag": "高劲度耐低温主击针簧 / 强劲引爆大号马格南底火",
+        "overview": "重型螺旋击针簧套设在细长击针杆的中段，前部顶在枪机内膛台阶，后部由击针待击套管锁死固定。它为击针高速前冲刺破大厚壁马格南底火提供全部机械驱动力。",
+        "craftAndMaterial": "采用高抗疲劳高级硅铬合金琴钢丝经精密回火密卷制造，并在超低温工况下经过多次疲劳预压强化处理，确保在零下四十摄氏度时弹性模量不发生衰减。",
+        "kinematicRole": "上抬拉机柄时由机尾旋转斜面施压被强行压缩蓄能，下压推栓闭锁后保持满载预紧；扣动扳机时瞬间向前方释放几十牛顿冲击推力驱动击针；分解阶段（36% 至 58%）脱离击针套筒。",
+        "designHighlight": "特别调校的强劲簧力能轻松击穿防震加厚杯壁的点三三八大号步枪底火，并在弹簧通道结霜冰封时仍有足够冗余冲量完成破冰击发，杜绝哑火故障。",
+        "audioScript": "这根强韧的琴钢螺旋击针簧是引爆狂暴弹药的动力之源。当射手向上提起拉机柄开锁时，它被机械斜面强行压缩蓄力。凭借巨大的预紧力和抗寒特性，即便在零下几十度的极地结霜冰冻环境下，它依然能以充沛能量瞬间撞击马格南底火。",
+        "audioUrl": "audio/awm/parts/awm_firing_pin_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Heavy-Duty Helical Striker Spring / Sub-Zero Ignition Power",
+        "overview": "The heavy helical firing pin spring wraps snugly around the central striker shaft, bearing against the forward bolt shoulder and rear cocking piece. It stores potential mechanical energy during cocking and drives the striker violently into the cartridge primer.",
+        "craftAndMaterial": "Wound from shot-peened silicon-chromium spring steel wire, pre-stressed and tempered to maintain consistent elastic stiffness even under extreme temperatures down to minus forty degrees Celsius.",
+        "kinematicRole": "Compressed linearly during the bolt handle lift phase by the cocking cam, held at full potential energy until the sear releases it, then rapidly expands forward; uncompressed and removed along the striker body at 36 to 58 percent disassembly.",
+        "designHighlight": "Delivers generous kinetic strike energy engineered specifically to detonate thick-cupped large magnum rifle primers reliably through ice crystals, dirt, and heavy lubricants.",
+        "audioScript": "Coiled around the firing pin shaft, this high-tension spring provides the relentless forward drive of the firing system. Compressed when the bolt handle cams upward, it stores immense kinetic energy. Its specialized alloy ensures that even in sub-zero Arctic conditions, it snaps forward with enough force to shatter ice and crush thick magnum primers.",
+        "audioUrl": "audio/awm/parts/awm_firing_pin_spring_en.mp3"
+      }
+    },
+    "awm_extractor": {
+      "partId": "awm_extractor",
+      "bomCode": "S-07",
+      "calloutLabelEn": "Claw Spring Extractor",
+      "zh": {
+        "roleTag": "重型外置宽爪弹性抽壳钩 / 高膛压紧贴壳拔出保证",
+        "overview": "安装在枪机右上方闭锁突笋外侧凹槽内的重型外抽壳钩，通过一体式弹性簧片抱紧弹壳底缘。它在枪机后拉时紧扣弹壳退壳沟，将膨胀贴壁的空铜壳从弹膛中生生拔出。",
+        "craftAndMaterial": "由高韧性模具弹簧钢一体精锻与数控加工成型，爪尖经过高频淬火获得极高耐磨硬度，外表呈深黑磷化防腐处理以抵御海水与泥浆侵蚀。",
+        "kinematicRole": "推弹入膛时前爪弹性滑过底缘卡入退壳沟；击发时保持静止咬合；开栓时配合初抽斜面带动弹壳后移，拉栓到底时配合机匣下抛壳挺将弹壳甩出抛壳窗；分解进度 38% 至 58% 沿滑槽撬离机头。",
+        "designHighlight": "采用独特的宽平爪面配合开栓初抽螺旋角设计，不仅抱壳面积大且机械拔壳杠杆比极高，即使在超过四千二百个大气压的高温贴膛极限状态下也绝不滑脱滑断底缘。",
+        "audioScript": "位于枪机头右上方的外置式宽爪抽壳钩，是可靠退壳的守护神。高压射击后，弹壳会向外膨胀死死贴住膛壁。这个宽厚的钢爪借助开栓时的螺旋初抽杠杆力，牢固咬紧弹壳边缘，即便在极端高温高压下连续射击，也能干脆利落地把弹壳拔出膛室。",
+        "audioUrl": "audio/awm/parts/awm_extractor_zh.mp3"
+      },
+      "en": {
+        "roleTag": "External Leaf-Spring Claw Extractor / High-Pressure Extraction",
+        "overview": "Mounted into a dedicated recess on the upper-right bolt lug, this external claw extractor snaps firmly over the cartridge rim via an integrated leaf spring. It grips the casing groove throughout the firing cycle to ensure positive primary and secondary extraction.",
+        "craftAndMaterial": "Engineered from hardened tool-grade spring steel with an induction-hardened engaging claw lip and protective manganese phosphate finish for maximum wear and corrosion resistance.",
+        "kinematicRole": "Flexes outwardly as the bolt closes over the chambered cartridge rim, securely clamps the rim during combustion, pulls the spent brass rearward during bolt retreat, and releases the spent case over the ejector; dismounts laterally at 38 to 58 percent teardown.",
+        "designHighlight": "Features an ultra-wide contact claw paired with primary cam extraction, providing massive mechanical advantage to tear free stubborn fire-formed brass expanded at over 420 megapascals.",
+        "audioScript": "Dovetailed into the outer edge of the bolt lug, this beefy claw extractor features a wide engagement surface and a stiff integral spring. When firing high-pressure Lapua rounds, brass expands against the chamber walls. This claw, aided by mechanical primary extraction cams, effortlessly rips spent casings loose without tearing the cartridge rim.",
+        "audioUrl": "audio/awm/parts/awm_extractor_en.mp3"
+      }
+    },
+    "awm_chassis_skins": {
+      "partId": "awm_chassis_skins",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Polymer Chassis Skins",
+      "zh": {
+        "roleTag": "经典英军绿拇指孔枪身侧板 / 极寒防粘连隔热外壳",
+        "overview": "辨识度极高的英国军用橄榄绿两片式高强度聚合物外壳，通过多枚沉头螺丝对称夹紧在中央铝合金主梁两侧。它构成了步枪完整的握把、拇指孔托底及宽大连指手套扳机护圈。",
+        "craftAndMaterial": "采用高比例长玻璃纤维增强的耐寒热塑性尼龙注塑成型，表面带有自消光防滑细咬花，具有极高的耐跌落冲击韧性、耐化学品腐蚀以及极低的热传导率。",
+        "kinematicRole": "射击与循环全过程中作为全枪外部静态人机工学保护层，不承受任何枪管与机匣产生的结构应力；在次级分解（42% 至 65%）中拆卸螺钉后向左右两侧展开剥离铝梁。",
+        "designHighlight": "首创将枪托设计为可替换非承重外壳，彻底告别了金属直接接触皮肤导致的北极极寒冻伤问题，损坏时只需拧下几枚螺丝即可在野战中几分钟完成换新。",
+        "audioScript": "这身标志性的英军橄榄绿外壳不仅塑造了经典外形，更暗藏玄机。它由高强度玻纤聚合物注塑而成，通过螺栓包裹在铝主梁外。在零下几十度的极地严寒中，塑料外壳隔绝了冰冷金属，射手即便赤手握持贴腮也绝不会被冻伤粘掉皮肤。",
+        "audioUrl": "audio/awm/parts/awm_chassis_skins_zh.mp3"
+      },
+      "en": {
+        "roleTag": "British OD Polymer Skins / Thumbhole Cold-Weather Ergonomics",
+        "overview": "The iconic two-piece British Olive Drab glass-reinforced polymer stock panels clamp together around the internal aluminum backbone using counter-sunk screws. They form the thumbhole contour, the pistol grip, and an enlarged winter-glove trigger guard.",
+        "craftAndMaterial": "Molded from long-strand glass-filled polyamide with a non-reflective textured matte finish, offering extreme drop impact resistance, chemical impermeability, and minimal thermal conductivity.",
+        "kinematicRole": "Provides an ergonomic touch interface and external shield completely isolated from barrel and action recoil stresses; unfastened and pulled away from the metal beam during frame disassembly at 42 to 65 percent.",
+        "designHighlight": "Decouples ergonomic touch-points from the structural chassis, ensuring the shooter's bare hands never freeze to raw metal in Arctic operational zones and allowing field skin replacement in minutes.",
+        "audioScript": "These famous olive-drab stock sides define the silhouette of the British military sniper. Made from virtually indestructible glass-reinforced nylon, they bolt directly to the chassis frame. This ingenious shell design ensures the shooter's cheek and fingers are insulated from freezing alloy parts during sub-zero operations while creating an exceptionally stable grip.",
+        "audioUrl": "audio/awm/parts/awm_chassis_skins_en.mp3"
+      }
+    },
+    "awm_chassis_beam": {
+      "partId": "awm_chassis_beam",
+      "bomCode": "F-02",
+      "calloutLabelEn": "CNC Billet Chassis Spine",
+      "zh": {
+        "roleTag": "全长航空铝底盘主脊梁 / 现代底盘步枪几何基准",
+        "overview": "全长 7075-T6 航空铝合金一体精雕主梁构成了 AWM 步枪的承载脊梁，前端延伸出两脚架连接孔与护木骨架，中后段一体加工出 V 形座床直接承托机匣与折叠托铰链。",
+        "craftAndMaterial": "由整块致密锻压航空铝合金坯料通过大型五轴联动数控中心整体切削铣出，前护木段铣有蜂窝减重窗，表面经军规三级硬质阳极氧化着色并辅以耐磨防腐涂层。",
+        "kinematicRole": "作为整枪核心的机械刚性骨架，全周期承受射击冲量、吸收后坐力并为机匣与枪管提供绝对平直的无应力固定座；在全枪深度分解（68% 至 92%）中作为最后的基础件展现。",
+        "designHighlight": "创始人马尔科姆·库珀在此首创了现代模块化金属底盘概念，用绝对热稳定性的航空铝梁彻底消除了传统木托或普通复合枪托因温湿度变化引起的枪膛变形和弹着点漂移。",
+        "audioScript": "剥开塑料外壳后，露出的这根全尺寸航空铝合金主梁才是步枪真正的脊梁骨。奥运射击冠军库珀在此开创了现代狙击枪铝底盘的先河。整块铝合金雕琢而成的骨架彻底杜绝了温湿度对枪托造成的变形，使得狙击步枪在沙漠与雪原之间来回穿梭却从不失准。",
+        "audioUrl": "audio/awm/parts/awm_chassis_beam_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Full-Length 7075-T6 Backbone / Zero-Drift Modular Chassis",
+        "overview": "The continuous 7075-T6 aluminum billet chassis spine forms the unyielding structural backbone of the AWM, integrating the forend bipod socket, receiver bedding trough, and folding hinge mount into a single rigid beam.",
+        "craftAndMaterial": "Five-axis CNC-machined from a solid billet of aerospace-grade alloy, with skeletonized forend pockets to reduce forward weight and hardcoat anodizing for rugged environmental protection.",
+        "kinematicRole": "Acts as the rigid foundational anchor through all firing phases, directly receiving action recoil without flexing; becomes completely exposed at the deepest level of full armorer explosion at 68 to 92 percent.",
+        "designHighlight": "Pioneered modern chassis rifle architecture by replacing fragile wood and unstable synthetic bedding, guaranteeing that environmental humidity or thermal shock can never warp the rifle bedding or shift the point of impact.",
+        "audioScript": "Beneath the green outer shell lies this aerospace aluminum spine, the revolutionary concept that transformed precision rifle design. Milled from a monolithic billet of high-grade alloy, it provides a completely rigid foundation for the barreled action, eliminating bedding bedding bedding shifts and guaranteeing surgical accuracy in any climate on Earth.",
+        "audioUrl": "audio/awm/parts/awm_chassis_beam_en.mp3"
+      }
+    },
+    "awm_action_receiver": {
+      "partId": "awm_action_receiver",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Flat-Sided Steel Receiver",
+      "zh": {
+        "roleTag": "高刚度平壁厚钢闭锁机匣 / 环氧胶接双重座床总成",
+        "overview": "平侧壁八角形厚截面实心合金钢机匣固定于中央铝梁上，前端通过超深螺纹紧固自由浮置枪管，内部精密铣出枪机滑道与弹匣井通道，是整枪的力学与装配枢纽。",
+        "craftAndMaterial": "选用高强度特种闭锁合金钢经实心锻打、CNC 多轴铣削与精密深孔研磨而成，外表面采用高硬度抗划痕深层氮化发黑处理以获得优异的防腐蚀与耐磨损特性。",
+        "kinematicRole": "击发时刚性封闭枪机突笋，通过底部受力面将后坐动量传导至主梁；开锁与推弹阶段提供平直轨道引导枪机运行；在全枪分解最后阶段（66% 至 92%）与铝梁螺栓脱开并分离。",
+        "designHighlight": "采用独特的厚实平板侧壁加极小抛壳窗设计，大大提高了机匣抗弯扭刚度；更在底部首创环氧树脂胶接与重型螺栓紧固的双重固定方案，使机匣与主梁在整个使用寿命中成为永久一体。",
+        "audioScript": "不同于传统猎枪圆管机匣，AWM 采用八角形平侧壁的厚壁实心钢机匣。它侧面仅开有紧凑的抛壳口，结构刚度极其强悍。底盘与机匣之间不仅有两枚重型螺栓固定，更有军用级环氧树脂直接胶合死锁，确保承受上万发重弹冲击也不会产生一丝微隙。",
+        "audioUrl": "audio/awm/parts/awm_action_receiver_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Flat-Sided Heavy Steel Receiver / Epoxied & Bolted Bedding",
+        "overview": "The monolithic flat-sided steel action receiver sits securely atop the aluminum chassis, threaded to the heavy barrel at the front while guiding the rotating bolt along internal raceways. It serves as the primary pressure containment core and mechanical datum of the rifle.",
+        "craftAndMaterial": "Machined from a solid billet of high-nickel ordnance-grade alloy steel with extra-thick sidewalls, treated with an advanced gas nitriding process for superior wear resistance and corrosion defense.",
+        "kinematicRole": "Absorbs chamber lockup pressure through its internal lug abutments and transfers recoil directly into the chassis; separates upward from the aluminum bedding beam at the armorer teardown stage of 66 to 92 percent.",
+        "designHighlight": "Engineered with flat slabs and a minimal ejection port for supreme torsional rigidity, permanently secured to the aluminum beam using a dual system of high-strength clamping bolts and aerospace epoxy bedding.",
+        "audioScript": "This massive flat-sided receiver is milled from a single block of high-strength steel. The slab-sided design, combined with a minimized ejection port, delivers unmatched resistance to twist and vibration. Permanently bonded to the aluminum spine with structural aerospace epoxy and heavy bolts, it will never flex or wander off target.",
+        "audioUrl": "audio/awm/parts/awm_action_receiver_en.mp3"
+      }
+    },
+    "awm_barrel": {
+      "partId": "awm_barrel",
+      "bomCode": "F-04",
+      "calloutLabelEn": "27\" Fluted Match Barrel",
+      "zh": {
+        "roleTag": "比赛级自由浮置不锈钢重枪管 / 纵向六槽高效散热",
+        "overview": "二十七英寸长比赛级重型不锈钢枪管螺接于机匣前方，全长与护木及铝梁保持充裕间隙呈完全自由浮置状态。它为点三三八拉普阿马格南重弹头提供极限稳定的内弹道加速与旋转陀螺力矩。",
+        "craftAndMaterial": "选用精选级高纯净耐烧蚀马氏体不锈钢经精密单点拉削加工出一比十英寸缠距的高精度膛线，外表面铣削有六道宽深纵向开槽，并经微珠喷砂无反光处理。",
+        "kinematicRole": "承受高温高压火药燃气驱动弹头加速至超音速离膛，自振波形在全长自由浮置约束下保持高度一致；在全分解最高阶段（68% 至 94%）由专用枪管扳手旋离机匣节套。",
+        "designHighlight": "长达六百八十六毫米的重型枪管外铣六道深槽，在不损失截面抗弯刚度的前提下显著降低了枪头下坠力矩，使散热表面积提升百分之四十以上，保证了二十发连续速射下的亚角分精度。",
+        "audioScript": "这根长达二十七英寸的比赛级重型枪管，是实现超远射程亚角分精度的终极武器。全枪管全程处于自由浮置状态，外壁精铣出六道纵向深槽。这不仅大幅降低了枪口前端的下坠垂重，更能极快散发高压产生的狂暴热量，曾创下两千四百七十五米实战命中神话。",
+        "audioUrl": "audio/awm/parts/awm_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Match-Grade Free-Floating Barrel / 6-Flute Heat Dissipation",
+        "overview": "The 27-inch match-grade stainless steel heavy barrel threads into the front of the receiver ring, floating entirely free of any contact with the forend assembly. It guides the heavy .338 Lapua Magnum projectile along a precise rifling path to supersonic muzzle velocity.",
+        "craftAndMaterial": "Button-rifled from vacuum-melt 416R stainless steel with a tight 1-in-10 inch twist, featuring six deep longitudinal flutes along its taper and an anti-glare bead-blasted external matte finish.",
+        "kinematicRole": "Contains interior ballistic deflagration while vibrating in consistent harmonic nodes during firing; dismounts forward from the receiver using armorer barrel-vice blocks at the final 68 to 94 percent stage.",
+        "designHighlight": "Deep outer fluting increases surface area by over forty percent for rapid heat dissipation while dramatically reducing front-heavy balance without sacrificing essential bore rigidity.",
+        "audioScript": "Measuring twenty-seven inches long, this match-grade stainless steel barrel stabilizes heavy two-hundred-and-fifty-grain bullets for flights exceeding a mile and a half. Completely free-floating from the chassis, its outer flutes strip away excess muzzle weight while speeding up barrel cooling during sustained precision engagements.",
+        "audioUrl": "audio/awm/parts/awm_barrel_en.mp3"
+      }
+    },
+    "awm_muzzle_brake": {
+      "partId": "awm_muzzle_brake",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Two-Chamber Muzzle Brake",
+      "zh": {
+        "roleTag": "双室侧喷高效枪口制退器 / 防扬尘消音器快接座",
+        "overview": "双室战术制退器通过同轴螺纹紧固于 27 英寸重枪管前端，是驯服点三三八马格南恐怖后坐力的前沿屏障。其外颈部还预留有外螺纹，可迅速套接英军战术消音器。",
+        "craftAndMaterial": "由耐高温火药燃气冲刷的硬化合金钢精密车铣，内膛同轴度极高以杜绝弹头飞行扰动，表面经过耐高温深层氮化与抗热烧蚀防腐处理。",
+        "kinematicRole": "击发阶段拦截弹头飞出后的高压火药废气，通过两侧侧向导气叶片向后侧方斜向喷出，产生反向推力抵消后坐；在分解进度 34% 至 56% 或深度拆卸 68% 至 96% 时旋出枪管螺纹。",
+        "designHighlight": "采用独特的侧向双室对称斜切导气结构，上下表面完全封闭，有效削减近百分之四十五后坐冲量的同时，杜绝了卧姿射击时下喷气流吹飞地面扬尘暴露狙击阵地的问题。",
+        "audioScript": "安装在枪管末端的双室战术制退器是驯服马格南后坐力的功臣。高压燃气在推挤弹头出膛后，被内部两个大型导气腔向后侧方有力喷出，直接抵消掉将近一半的后坐冲量。上下封闭的平板造型保证了卧姿贴地射击时绝不会激起漫天烟尘暴露阵地。",
+        "audioUrl": "audio/awm/parts/awm_muzzle_brake_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Twin-Chamber Tactical Muzzle Brake / Anti-Dust Signature",
+        "overview": "The twin-chamber muzzle brake screws onto the threaded muzzle of the 27-inch barrel, acting as an aggressive recoil attenuation device. Its outer collar also integrates external threads to accept a quick-detach tactical suppressor.",
+        "craftAndMaterial": "Engineered from heat-treated erosion-resistant steel with micro-machined expansion ports and a high-durability black oxide surface treatment to resist abrasive propellant gas blast.",
+        "kinematicRole": "Diverts supersonic gas expanding behind the emerging projectile horizontally rearward, producing forward kinetic counter-thrust; threads off the muzzle during maintenance at 34 to 56 percent and 68 to 96 percent.",
+        "designHighlight": "Employs an enclosed solid top-and-bottom geometry that redirects exhaust gases strictly laterally, eliminating ground dust signature in prone hide sites while slashing perceived recoil by roughly 45 percent.",
+        "audioScript": "Threaded to the muzzle, this twin-port brake is vital for managing the fierce recoil of the Lapua Magnum. It catches the blast of escaping propellant gases, venting them sideways and back to cancel out almost half of the recoil force. The closed top and bottom design prevents muzzle blast from kicking up dust and dirt in the prone position.",
+        "audioUrl": "audio/awm/parts/awm_muzzle_brake_en.mp3"
+      }
+    },
+    "awm_folding_stock": {
+      "partId": "awm_folding_stock",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Left-Folding Rear Stock",
+      "zh": {
+        "roleTag": "左侧重型铰接折叠后托 / 战术沙袋下托钩结构",
+        "overview": "后部折叠枪托段通过坚固的不锈钢铰链安装在铝合金主梁尾端，平时向后锁定形成坚实的抵肩基底。按下铰链释放钮后可向左平滑折叠，将整枪携行长度缩短二百六十毫米。",
+        "craftAndMaterial": "内部为整体锻铝铰链转轴骨架，外层裹覆阻燃高抗冲聚合物，底缘设有后握沙袋凹槽，尾端连接可调节贴腮板与厚橡胶缓冲垫总成。",
+        "kinematicRole": "展开时作为刚性支撑传递后坐力入射手肩窝，折叠时向左旋转一百八十度锁死在机匣侧面包裹拉机柄；在次级分解（32% 至 54%）或底盘拆卸（68% 至 94%）中由转轴销钉分离。",
+        "designHighlight": "托底特别设计了内凹式战术沙袋钩槽（Bag Rider Hook），射手的弱手可自如扣握沙袋精细微调瞄准镜十字线高低，折叠后更能巧妙挡护住拉机柄以防野战挂扯损坏。",
+        "audioScript": "这是 AWM 步枪折叠托版本的最实用升级。按下左侧铰链卡榫，后枪托便能迅速向左折叠一百八十度，整枪长度瞬间缩短二十六厘米，极为方便伞降与机动运载。托底还设计了经典的战术手托钩，让射手能在卧姿依托后沙袋时精巧微调瞄准高低。",
+        "audioUrl": "audio/awm/parts/awm_folding_stock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Side-Hinged Folding Buttstock / Tactical Bag-Rider Hook",
+        "overview": "The folding rear buttstock attaches to the rear of the aluminum chassis beam via a heavy-duty stainless steel hinge. It swings 180 degrees to the left when released, reducing overall rifle length by 260 millimeters for tactical transport.",
+        "craftAndMaterial": "Built around a precision-machined steel and aircraft-aluminum pivot block clad in impact-modified polymer, featuring a recessed rear bag-rider contour and an adjustable cheekpiece interface.",
+        "kinematicRole": "Locks rigidly in battery to channel axial recoil loads into the buttpad and shooter's shoulder; unhinges and pivots during transit, and disassembles from the chassis pivot bracket at 32 to 54 percent and 68 to 94 percent.",
+        "designHighlight": "Incorporates an ergonomic bottom bag-rider cutout that lets the support hand squeeze a rear sandbag for micrometer-fine reticle elevation control, while the folded stock protects the bolt handle from snagging.",
+        "audioScript": "A hallmark of the British L115A3, this folding stock swings a full one-hundred and eighty degrees to the left with a single push button. It trims ten inches off the rifle's overall length for parachute jumps and vehicle transport. The underside features a hooked bag-rider profile, allowing the sniper's off-hand to squeeze a support bag for micro-adjustments on target.",
+        "audioUrl": "audio/awm/parts/awm_folding_stock_en.mp3"
+      }
+    },
+    "awm_cheekpiece": {
+      "partId": "awm_cheekpiece",
+      "bomCode": "F-07",
+      "calloutLabelEn": "Twin-Post Cheekpiece",
+      "zh": {
+        "roleTag": "精准对齐 56 毫米高瞄准基线与无应力贴腮",
+        "overview": "这是安装在 AWM 后枪托脊部的马鞍形低导热聚合物贴腮板。它通过双垂直不锈钢导柱插入枪托，为射手颧骨提供高度与侧倾完全可调的坚固支撑。",
+        "craftAndMaterial": "选用高抗冲工程聚合物注塑成型，表面为哑光防滑细纹，下部连接双精密不锈钢垂直导柱与防腐锁紧螺柱，杜绝严寒环境中贴脸粘皮和热量流失。",
+        "kinematicRole": "在 7 个射击循环阶段中作为固定的头部人机基准保持不动；在分解进度约 32% 至 54% 的次级总成拆卸阶段，松开锁紧螺钉即可向上拔出脱离托体。",
+        "designHighlight": "专为搭配施密特本德 5 到 25 乘 56 大口径高物镜狙击镜设计，通过双柱独立高度锁死，确保狙击手眼睛始终位于光学出瞳中心，彻底消除视差引起的远距离瞄准偏差。",
+        "audioScript": "贴腮板采用低导热聚合物注塑，专门针对极地严寒设计，射手贴腮时绝不会粘连皮肤。通过两根垂直不锈钢立柱，你可以无级调整高度与微小侧倾，让眼睛在自然抵肩时精准对正五十六毫米大口径狙击镜的出瞳轴线。",
+        "audioUrl": "audio/awm/parts/awm_cheekpiece_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Optical Axis Cheek Weld Alignment Interface",
+        "overview": "This saddle-contoured cheekpiece mounts atop the buttstock backbone via two stainless steel vertical guide posts. It delivers micro-adjustable height and cast adjustments to position the shooter cheekbone precisely behind the scope.",
+        "craftAndMaterial": "Molded from low thermal-conductivity high-impact polymer with fine matte texturing, supported by twin ground stainless steel posts and knurled steel clamp hardware to eliminate cold-weather skin adhesion.",
+        "kinematicRole": "Remains an entirely stationary ergonomic datum throughout all 7 firing phases. Disengages by backing off the clamp screw and withdrawing upward during the 32% to 54% sub-assembly strip stage.",
+        "designHighlight": "Engineered directly to overcome the high optical centerline of massive Schmidt & Bender 5-25x56 PM II scopes, locking in repeatable zero-parallax eye alignment without physical neck strain.",
+        "audioScript": "This polymer saddle cheekpiece provides vital insulation so your skin never freezes to the stock in sub-zero Arctic deployments. Supported by twin stainless steel guide posts, it adjusts smoothly in height and cast, ensuring your eye settles naturally onto the optical center of large fifty-six millimeter objective sniper scopes.",
+        "audioUrl": "audio/awm/parts/awm_cheekpiece_en.mp3"
+      }
+    },
+    "awm_buttpad_spacers": {
+      "partId": "awm_buttpad_spacers",
+      "bomCode": "F-08",
+      "calloutLabelEn": "Recoil Pad & Spacers",
+      "zh": {
+        "roleTag": "增减垫片适配防弹衣厚度与吸收肩部后坐冲击",
+        "overview": "该组件由加厚索博坦高阻尼橡胶抵肩垫及模块化聚合物拉距垫片构成。它们通过长螺栓固定于后枪托尾端，直接承受并缓冲全枪的后坐能量。",
+        "craftAndMaterial": "采用高衰减索博坦黏弹性聚合物与抗冲击聚酰胺垫片复合而成，表面制有深横向防滑齿，耐极寒脆裂且具有卓越的能量吸收率。",
+        "kinematicRole": "在击发瞬间吸收点三三八拉普阿马格南弹药带来的近六千八百焦耳枪口动能后坐冲量；在分解进度约 32% 至 54% 阶段卸下尾部固定螺栓后向后分离。",
+        "designHighlight": "垫片组允许在不改变枪机行程的前提下快速调整拉距，狙击手无论是身着单薄夏季战斗服还是穿戴厚重防弹背心与极地防寒服，都能获得一致的贴肩人机姿态。",
+        "audioScript": "这块索博坦高阻尼抵肩垫配合可增减的垫片组，构成了吸收后坐冲力的核心屏障。点三三八马格南子弹释放出近六千八百焦耳的强大动能，通过这套高衰减弹性体逐层溃缩缓冲，保护狙击手肩窝免受剧烈撞击。",
+        "audioUrl": "audio/awm/parts/awm_buttpad_spacers_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Energy Absorbing Recoil Pad & Modular Spacers",
+        "overview": "This assembly comprises a thick Sorbothane viscoelastic rubber buttpad paired with modular polymer length-of-pull spacers. Bolted to the buttstock rear face, it forms the rifle primary recoil transfer interface.",
+        "craftAndMaterial": "Constructed from military-grade Sorbothane damping rubber bonded to high-rigidity polyamide spacers with deep transverse traction serrations that resist extreme sub-zero embrittlement.",
+        "kinematicRole": "Compresses elastically during step 4 to mitigate magnum recoil impulses against the shoulder pocket. Detaches rearward when the buttpad screws are backed out during the 32% to 54% disassembly window.",
+        "designHighlight": "The stackable spacer system lets armorers instantly optimize the length of pull whether the operator is clad in thin tropical gear or thick heavy body armor and Arctic cold-weather suits.",
+        "audioScript": "Combining thick Sorbothane viscoelastic rubber with modular polymer spacers, this assembly absorbs the violent recoil of the Lapua Magnum cartridge. By adding or removing spacers, the rifle length of pull can be tailored precisely to the shooter whether wearing combat gear or heavy winter parkas.",
+        "audioUrl": "audio/awm/parts/awm_buttpad_spacers_en.mp3"
+      }
+    },
+    "awm_bipod": {
+      "partId": "awm_bipod",
+      "bomCode": "F-09",
+      "calloutLabelEn": "Parker-Hale Ski Bipod",
+      "zh": {
+        "roleTag": "前插栓重心悬挂自动归正与雪橇脚垫平顺后坐",
+        "overview": "这是英国帕克黑尔经典款前插栓悬挂式重型折叠伸缩两脚架。它通过前部钢制锥销直接插入铝合金底盘前端套管中，承托整支狙击步枪的前部重心。",
+        "craftAndMaterial": "选用高强度合金钢冲压与机加制造，外表面施以深层氮化与黑色哑光磷化处理，配有外置张紧螺旋拉簧、多段棘齿伸缩内腿以及弧形钢制雪橇脚垫。",
+        "kinematicRole": "在击发时允许整枪沿平滑雪橇脚垫自然直线后坐，插栓机构提供微量阻尼偏航与俯仰；在野战分解进度 12% 至 26% 即可按压卡扣整体前抽卸下。",
+        "designHighlight": "采用前插栓悬挂架构，将枪身主轴置于两脚架转轴下方，利用重力摆自然保持水准，即使在崎岖碎石路面架枪也无需反复手动校正瞄准镜水平。",
+        "audioScript": "帕克黑尔经典的插栓式两脚架直接插入枪身底盘前端。整支步枪的重心悬挂在脚架支撑轴的下方，利用重力就能自然归平。底部的雪橇形金属脚掌，能在击发巨幅后坐时带动枪身平顺直线后移，利于快速二次瞄准。",
+        "audioUrl": "audio/awm/parts/awm_bipod_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Underslung Spigot-Mounted Telescoping Ski Bipod",
+        "overview": "This iconic British Parker-Hale heavy-duty folding bipod mates into the steel spigot socket at the chassis forend. It acts as the primary forward structural support for the entire precision rifle system.",
+        "craftAndMaterial": "Forged and machined from hardened alloy steel with black manganese phosphating, featuring external return springs, notched telescoping legs, and stamped steel ski-shaped rocker feet.",
+        "kinematicRole": "Provides smooth longitudinal recoil tracking across uneven ground while permitting controlled cant and traverse; slides forward out of the chassis spigot during early field-strip from 12% to 26%.",
+        "designHighlight": "The underslung spigot geometry lowers the rifle center of gravity below the pivot axis, creating natural pendulum leveling that keeps the reticle horizontal without manual friction adjustments.",
+        "audioScript": "This Parker-Hale spigot bipod slides directly into the aluminum chassis nose. Because the rifle centerline hangs below the bipod pivot point, gravity automatically levels your scope crosshairs on rough terrain, while the curved ski feet slide smoothly backward during recoil.",
+        "audioUrl": "audio/awm/parts/awm_bipod_en.mp3"
+      }
+    },
+    "awm_trigger_box": {
+      "partId": "awm_trigger_box",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Match Trigger Box",
+      "zh": {
+        "roleTag": "全封闭防尘防沙盒式火控与可调两道火基准",
+        "overview": "这是直接吊装于机匣底部的独立模块化两道火精密火控盒壳体。它包裹保护着内部阻铁、传动杠杆与弹簧，构筑高抗污能力的火控中枢。",
+        "craftAndMaterial": "壳体由航空铝合金整体数控铣削或冲压硬化钢板铆接制成，表面阳极氧化硬质处理，底侧开有微米级防松调节螺孔与细小排沙排冰缝隙。",
+        "kinematicRole": "在 7 个射击阶段中作为火控传动轴系的刚性定位框架；在深度分解进度 68% 至 94% 阶段，拆下机匣固定销后可整体从底部剥离出机匣。",
+        "designHighlight": "全封闭模块化盒式设计将精密阻铁与外界泥沙冰雪隔绝，底部设有黄铜调节螺钉，军械员可在一点五至二点零千克范围内精确微调一道火行程与击发破断力矩。",
+        "audioScript": "两道火比赛级扳机盒采用全封闭模块化结构，直接用销钉固定在机匣下方。壳体下部设计有精密的排沙缝隙和微调螺栓，能有效抵御严寒冰霜渗入，并在极度恶劣环境下维持绝对可靠的一点五至两千克击发拉力。",
+        "audioUrl": "audio/awm/parts/awm_trigger_box_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Enclosed Modular Two-Stage Cassette Enclosure",
+        "overview": "This self-contained match trigger box cassette suspends directly beneath the steel receiver bottom. It encases the internal sears, linkages, and springs inside a sealed, foul-resistant housing.",
+        "craftAndMaterial": "CNC machined from aircraft-grade aluminum alloy or riveted hardened steel plates with hard-anodized protective coatings, featuring slotted sand-drain relief channels and locking brass adjustment screws.",
+        "kinematicRole": "Acts as a rigid mounting chassis for all trigger pins throughout the cycle; separates downward from the receiver once mounting pins are driven out during deep disassembly from 68% to 94%.",
+        "designHighlight": "The cassette layout shields high-tolerance sear interfaces against frozen dirt and mud while permitting precise armorer adjustment of first-stage travel and second-stage release weights between 1.5 and 2.0 kg.",
+        "audioScript": "This modular two-stage trigger cassette hangs beneath the receiver inside an enclosed, debris-proof housing. It isolates delicate internal levers from ice, mud, and sand, giving armorers precision screw access to adjust trigger pull smoothly between one point five and two kilograms.",
+        "audioUrl": "audio/awm/parts/awm_trigger_box_en.mp3"
+      }
+    },
+    "awm_sear": {
+      "partId": "awm_sear",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Tool-Steel Top Sear",
+      "zh": {
+        "roleTag": "镜面研磨高硬度阻铁与极脆断路击发传动",
+        "overview": "该阻铁组件位于扳机盒上部开口处，处于击针待击卡齿的正下方。它通过高精密杠杆副承受击针簧的强大张力，并在击发瞬间迅速脱扣。",
+        "craftAndMaterial": "选用高碳高铬工具钢线切割精密成型，经真空淬火处理后啮合台阶达到极高表面硬度，接触咬合面经过光学级超精研磨，达到镜面光洁度。",
+        "kinematicRole": "阶段 1 和 5 咬合击针凸笋；阶段 2 扣压到达二道火阻力墙；阶段 3 瞬间向下滑脱释放击针高速撞击底火；在分解进度 70% 至 96% 阶段随扳机盒内销钉拆卸取出。",
+        "designHighlight": "阻铁传动比经过巧妙几何杠杆放大，将数十公斤击针簧压紧力转化为手指上极具辨识度的玻璃脆断感，释放前行程趋近于零且完全消除爬移感。",
+        "audioScript": "精密上阻铁是整支步枪击发质感的核心。它的接触台阶经过严苛的真空淬火和镜面研磨。待击时它稳稳卡住强大的击针簧，扣压扳机到达阻力点后，微小的指力增量即可让它瞬间下沉脱扣，带来如同折断玻璃棒般的清脆释放。",
+        "audioUrl": "audio/awm/parts/awm_sear_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Precision Hardened Tool-Steel Primary Sear",
+        "overview": "Mounted at the upper crown of the trigger box, this tool-steel component sits directly under the cocking piece lug. It holds the compressed firing pin spring securely until trippable release.",
+        "craftAndMaterial": "Wire-EDM cut from high-carbon, high-chromium tool steel, vacuum heat-treated to over sixty Rockwell C, with contact surfaces hand-lapped to an optical mirror finish.",
+        "kinematicRole": "Arrests the firing pin lug in phases 1 and 5, supports the second-stage wall in phase 2, and pivots downward instantly in phase 3 to release the striker. Extracted from the trigger pack between 70% and 96%.",
+        "designHighlight": "Carefully balanced mechanical leverage converts the heavy potential energy of the firing pin spring into a zero-creep, crisp glass-rod snap at the trigger shoe.",
+        "audioScript": "This mirror-polished tool steel sear is what creates the famous L115 crisp trigger break. Vacuum hardened to resist wear under heavy spring tension, it holds the striker securely in full cock until a deliberate trigger press trips the lever cleanly with zero noticeable creep.",
+        "audioUrl": "audio/awm/parts/awm_sear_en.mp3"
+      }
+    },
+    "awm_trigger_shoe": {
+      "partId": "awm_trigger_shoe",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Adjustable Trigger Shoe",
+      "zh": {
+        "roleTag": "前后滑轨调节扳机距与纵向防滑触感传递",
+        "overview": "这是直接暴露在扳机护圈内的弧形手指接触扳机舌。它通过底座微型滑轨夹持在击发摇臂上，是射手食指释放击发动作的物理界面。",
+        "craftAndMaterial": "采用高抗扭高强度合金钢数控精铣成形，外表面哑光氮化防腐，正面铣削有多道细密纵向防滑导槽，下端设计有圆润的大弧度倒角。",
+        "kinematicRole": "阶段 2 中由射手食指克服一道火弹簧向后平移两毫米，随后跨越二道火阻断阻铁；在全枪军械员完全分解进度 70% 至 96% 时与转轴销分离脱出。",
+        "designHighlight": "具备前后 13 毫米线性微调导轨，狙击手即便穿戴肥大的极地加厚防寒手套，也能通过调整扳机舌前后位置，确保食指第一指节自然垂直正压扳机。",
+        "audioScript": "扳机舌正面铣有多道纵向防滑槽，在冰雪天戴着厚手套也能提供清晰的指腹触感。它通过底部滑座固定，支持前后整整十三毫米的位置调节，让任何手型的射手都能以最自然的指节角度扣过两道火。",
+        "audioUrl": "audio/awm/parts/awm_trigger_shoe_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Fore-Aft Adjustable Curved Grooved Trigger Shoe",
+        "overview": "This curved shoe hangs within the trigger guard as the primary physical contact interface for the index finger. It clamps along an adjustable slider track on the lower trigger lever assembly.",
+        "craftAndMaterial": "Precision machined from high-tensile alloy steel with a non-reflective matte nitride finish, featuring vertical traction grooves across its broad face to maximize tactile feedback.",
+        "kinematicRole": "Translates finger pressure rearward through the first-stage take-up and second-stage break during phase 2. Disassembles from the trigger housing between 70% and 96% during full armorer strip.",
+        "designHighlight": "Offers up to 13 mm of fore-and-aft shoe adjustment on a dovetail rail, allowing snipers wearing heavy arctic mittens to align their index pad perpendicular to the bore axis.",
+        "audioScript": "The trigger shoe features deep longitudinal traction serrations across its curved face. Mounted on an adjustable rail with thirteen millimeters of linear travel, it can be shifted forward or backward so the sniper index finger achieves a perfectly straight rearward pull, even when wearing thick winter mittens.",
+        "audioUrl": "audio/awm/parts/awm_trigger_shoe_en.mp3"
+      }
+    },
+    "awm_mag_catch": {
+      "partId": "awm_mag_catch",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "Paddle Magazine Catch",
+      "zh": {
+        "roleTag": "加长防滑拨片与严寒戴手套双手快速盲操卸匣",
+        "overview": "这是铰接在扳机护圈前端与弹匣井后壁接合处的加长拨片式锁紧卡笋。其上方爪钩牢牢卡住弹匣后方限位块，保持供弹位置绝对稳定。",
+        "craftAndMaterial": "经高硬度合金钢整体冲压锻造与表面氮化发黑处理，下部拨片压有菱形防滑滚花，配备强力柱状扭簧，抵抗严酷泥泞与撞击环境。",
+        "kinematicRole": "在弹匣插入时受下斜面挤压后退并回弹闭锁；射手前推拨片即解除后卡齿实现退匣；在分解进度 68% 至 94% 阶段冲出铰接定位横销即可取下。",
+        "designHighlight": "宽大的对称下垂拨片式设计打破了传统右侧按钮局限，左右手射手均可用大拇指或食指甚至掌缘在盲操状态下向前一推快速卸除重型马格南弹匣。",
+        "audioScript": "弹匣卡笋位于扳机护圈的正前方，采用宽大的加长拨片造型。无论左右手操作，戴着厚重防寒手套的手指只需向前轻轻一推，卡笋上端的爪钩就会瞬间脱开弹匣卡齿，让沉重的钢制弹匣顺滑滑出。",
+        "audioUrl": "audio/awm/parts/awm_mag_catch_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Ambidextrous Extended Paddle Magazine Release",
+        "overview": "This paddle catch pivots in front of the trigger guard against the rear wall of the magazine well. Its upper retaining tooth locks into the rear notch of the steel box magazine to prevent feeding play.",
+        "craftAndMaterial": "Drop-forged from heat-treated alloy steel with a matte black carbonitride finish, featuring aggressive cross-hatched serrations on the paddle contact face and driven by a heavy coil spring.",
+        "kinematicRole": "Maintains solid vertical lockup on the magazine throughout all 7 firing phases. Depressing the paddle forward drops the magazine; driving out its pivot pin releases it between 68% and 94%.",
+        "designHighlight": "The ambidextrous paddle layout ensures positive magazine release using either the thumb or index finger, preventing accidental drops while remaining instantly operable under blizzard conditions.",
+        "audioScript": "Pivoting on the front edge of the trigger guard, this extended paddle catch firmly locks the Lapua Magnum magazine. The oversized, textured steel lever allows snipers using heavy cold-weather gear to drop empty magazines swiftly with either hand simply by nudging the paddle forward.",
+        "audioUrl": "audio/awm/parts/awm_mag_catch_en.mp3"
+      }
+    },
+    "awm_mag_body": {
+      "partId": "awm_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "5-Rd Steel Mag Body",
+      "zh": {
+        "roleTag": "容纳全长 93.5 毫米巨型马格南弹与中置供弹定位",
+        "overview": "这是专为点三三八拉普阿马格南弹药定制的单排直推五发冲压钢制盒式弹匣主体。它牢固固定在底盘弹匣井内，为大口径枪弹提供刚性入膛坡道对接。",
+        "craftAndMaterial": "采用高抗拉强度冷轧特种钢板精冲成形，侧壁压铸有五道加强凹槽，整体进行军规厚层锰系磷化与防锈浸渍处理，抗跌落抗碾压性能极强。",
+        "kinematicRole": "在阶段 6 和 7 中为枪机推弹入膛提供精准的中央抱弹几何限位；在野战分解最开始的 2% 至 12% 阶段即可前推卡笋整体向下拔出枪身。",
+        "designHighlight": "针对长度达九十三点五毫米的重型弹药设计了高精度中置抱弹口，相比双排弹匣大幅减少了子弹滑入枪膛时的偏转摩擦角，有效杜绝刮伤弹尖导致精度劣化。",
+        "audioScript": "五发点三三八钢制弹匣体由高强度特种钢板冲压制成，表面经过深层磷化防腐处理。弹匣侧面冲压有数道加强筋，内部采用中置抱弹口几何设计，能让长达九十三点五毫米的长程狙击弹笔直滑入枪膛，确保弹尖丝毫无损。",
+        "audioUrl": "audio/awm/parts/awm_mag_body_zh.mp3"
+      },
+      "en": {
+        "roleTag": "High-Strength Manganese-Phosphated Steel Magazine Shell",
+        "overview": "This 5-round stamped steel magazine box is engineered specifically to house the massive .338 Lapua Magnum cartridge. It mounts inside the chassis magazine well to feed rounds directly into the chamber line.",
+        "craftAndMaterial": "Precision stamped from heavy-gauge cold-rolled carbon steel sheet with structural strengthening ribs along both sides, finished in an anti-corrosion military-grade manganese phosphate bath.",
+        "kinematicRole": "Positions cartridges on a precise center-feed centerline during bolt chambering in phase 7. Disengages immediately at the very beginning of field stripping between 2% and 12%.",
+        "designHighlight": "Utilizes a single-stack center-feed mouth architecture that feeds long cartridges directly inline with the chamber throat, preventing projectile deformation and preserving sub-MOA long-range trajectories.",
+        "audioScript": "Stamped from heavy-gauge cold-rolled steel, this magazine housing is engineered to feed massive .338 Lapua Magnum rounds measuring over ninety-three millimeters in length. Its lateral ribs provide crushing resistance, while the center-feed geometry guides heavy bullets smoothly into the chamber without tip damage.",
+        "audioUrl": "audio/awm/parts/awm_mag_body_en.mp3"
+      }
+    },
+    "awm_mag_follower": {
+      "partId": "awm_mag_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Orange Anti-Tilt Follower",
+      "zh": {
+        "roleTag": "超长长裙边防倾侧设计与高辨识度空仓警示",
+        "overview": "该托弹板滑动容纳在弹匣盒体内部，处于最下方一发弹药的承托底面。它在弹簧推力下稳定支撑大锥度点三三八枪弹，确保平顺举升。",
+        "craftAndMaterial": "采用高韧性抗磨自润滑工程塑料注塑成形，表面为醒目的高可视度荧光橙色，前后两端模铸有超长垂直防倾倾侧导向裙边。",
+        "kinematicRole": "在阶段 1 到 7 中随着每发弹药消耗逐级平稳上移；在次级总成拆解阶段进度 36% 至 60% 时，卸开底盖后随弹簧从弹匣体下部或上部抽出分离。",
+        "designHighlight": "特有的长裙边完全杜绝了因弹壳前后重量不均导致的托弹板俯仰卡死现象；橙色表面可使狙击手在拉开枪机时一眼从抛壳窗看清已处于空仓状态。",
+        "audioScript": "托弹板采用高可视度的荧光橙色自润滑工程塑料制造。前后延长的垂直导向裙边能紧密贴合弹匣内壁，彻底消除弹药前倾卡滞的隐患。在剧烈的实战射击中，射手拉开枪栓就能通过亮橙色一眼辨识弹匣已然打空。",
+        "audioUrl": "audio/awm/parts/awm_mag_follower_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Self-Lubricating High-Visibility Anti-Tilt Follower",
+        "overview": "Riding inside the steel magazine body beneath the cartridges, this follower elevates each heavy round. It maintains precise angle-of-feed alignment under constant upward spring pressure.",
+        "craftAndMaterial": "Injection molded from high-impact, self-lubricating synthetic resin in safety-orange pigmentation, engineered with extended front and rear anti-tilt skirts that ride against the inner magazine walls.",
+        "kinematicRole": "Ascends sequentially as rounds are chambered throughout the firing cycles. Extracted from the magazine housing during the 36% to 60% sub-assembly strip once the floorplate is released.",
+        "designHighlight": "Extended front and rear guide skirts eliminate follower rocking when supporting tapered magnum brass, while the bright orange polymer provides instant empty-chamber verification through the ejection port.",
+        "audioScript": "Molded from self-lubricating polymer in high-visibility orange, this follower prevents tilting jams thanks to deep front and rear alignment skirts. When the last Lapua Magnum round is fired, the bright orange surface instantly alerts the sniper through the ejection port that the rifle is empty.",
+        "audioUrl": "audio/awm/parts/awm_mag_follower_en.mp3"
+      }
+    },
+    "awm_mag_spring": {
+      "partId": "awm_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Heavy-Duty Mag Spring",
+      "zh": {
+        "roleTag": "大长径比宽椭圆高张力与极寒恒力托举铜壳弹",
+        "overview": "这是压缩放置在托弹板与底盖之间的重型高张力椭圆螺旋弹簧。它持续向上对托弹板施加均匀托举力，确保首发至末发供弹能量恒定。",
+        "craftAndMaterial": "选用高疲劳寿命的大截面不锈钢琴钢丝经精密宽椭圆盘绕而成，表面经过喷丸硬化与钝化防腐处理，在零下四十度超低温下也不会发生冷脆断裂。",
+        "kinematicRole": "在满弹时处于最高储能压缩状态，并在阶段 6 抽壳后以毫秒级响应将下一发弹托至进弹线；在弹匣分解进度 36% 至 62% 时自然伸展弹出弹匣体。",
+        "designHighlight": "针对单发重达 47 克的重型点三三八狙击弹重新优化了各圈节距与簧力梯度，即便在长期压满弹药战备储存后仍可输出澎湃持久的托举力。",
+        "audioScript": "这根弹簧采用特种不锈钢琴钢丝以宽椭圆构型紧密卷绕而成。单发点三三八子弹重达四十七克，满载时负荷极大。这根弹簧经过超低温韧化与防锈钝化处理，即使在北极零下四十度的严寒中，也能稳定提供强劲托弹力。",
+        "audioUrl": "audio/awm/parts/awm_mag_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "High-Tension Stainless Steel Oval Magazine Spring",
+        "overview": "Positioned between the follower and the floorplate, this heavy-duty oval wound spring maintains continuous upward lifting force on the cartridge stack toward the feed lips.",
+        "craftAndMaterial": "Coiled from high-tensile 17-7 PH stainless spring wire in an elongated oval geometry, shot-peened for fatigue resistance, and fully passivated against corrosion in sub-zero climates.",
+        "kinematicRole": "Expands incrementally to drive the follower upward during cycle steps 6 and 7; relaxes out of the bottom of the magazine shell during the 36% to 62% disassembly stage.",
+        "designHighlight": "Calculated variable coil pitch provides uniform upward column pressure capable of lifting five heavy 47-gram Lapua Magnum cartridges reliably, even after years of fully loaded storage.",
+        "audioScript": "Wound from heavy-duty stainless steel wire into a broad oval contour, this spring lifts a full stack of heavy Lapua Magnum rounds. Shot-peened to eliminate stress cracking, it retains full lifting tension even after long periods of compressed storage in harsh sub-zero conditions.",
+        "audioUrl": "audio/awm/parts/awm_mag_spring_en.mp3"
+      }
+    },
+    "awm_mag_floorplate": {
+      "partId": "awm_mag_floorplate",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Detachable Steel Floorplate",
+      "zh": {
+        "roleTag": "外扩防滑快拔折边与免工具滑脱野外排沙维护",
+        "overview": "这是滑动卡装在弹匣壳体最下端的冲压钢制底盖板。它承托着托弹簧的下支撑端，并在弹匣底部形成严密的密封与快速抽拔基座。",
+        "craftAndMaterial": "由合金冷轧钢板整体冲压折边加工，表面采用深层磷化防磨发黑处理，边缘制有前后外翘的拔弹翼缘，中央带有锁定限位圆孔。",
+        "kinematicRole": "作为弹簧压缩力向下的刚性承托底面；在弹匣拆解进度 36% 至 64% 阶段，用子弹尖端或手指顶下弹簧卡扣后即可沿滑槽向前平移滑脱。",
+        "designHighlight": "前后外扩的卷折唇边专为戴手套盲操作设计，狙击手可在恶劣天候下从紧密的胸挂弹匣包中一把掏出弹匣，并能实现全野战免工具快速拆洗排沙。",
+        "audioScript": "冲压钢制弹匣底盖牢牢锁住弹簧底端。前后两端特别设计了外扩的防滑翻边，即便戴着湿滑的手套，也能从胸挂弹袋中快速盲插盲拔。只需用弹尖顶入底部的圆形锁定栓，就能徒手向前滑出底盖，快速清理内部泥沙冰雪。",
+        "audioUrl": "audio/awm/parts/awm_mag_floorplate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Flanged Steel Locking Floorplate with Extraction Lips",
+        "overview": "This stamped steel baseplate slides onto the folded bottom rails of the magazine body. It secures the magazine spring within the housing and forms an ergonomic extraction base.",
+        "craftAndMaterial": "Stamped from heavy alloy carbon steel with rolled side flanges and a phosphate protective finish, featuring flared front and rear grasping edges and a central spring-lock detent hole.",
+        "kinematicRole": "Provides the solid bottom foundation opposing spring compression during all firing phases. Depressing the inner detent allows it to slide forward and detach during the 36% to 64% disassembly step.",
+        "designHighlight": "The pronounced forward and rear flanges act as positive tactile extraction surfaces, enabling snipers wearing thick mittens to yank mags from tight pouches and perform rapid tool-free field cleaning.",
+        "audioScript": "This stamped steel floorplate seals the magazine base and holds the spring assembly tight. Its flared front and rear lips allow snipers to rip the magazine swiftly from tactical pouches while wearing bulky arctic gear, and it slides off without tools for rapid field cleaning.",
+        "audioUrl": "audio/awm/parts/awm_mag_floorplate_en.mp3"
+      }
+    }
+  }
+}

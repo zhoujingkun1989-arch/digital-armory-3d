@@ -1,0 +1,888 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "p320",
+  "generatedAt": "2026-11-12T22:35:29.981039+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "SIG SAUER P320-M17 Service Pistol",
+    "subtitle": "9×19mm Modular FCU Striker-Fired Service Pistol",
+    "originCountry": "United States / Germany",
+    "weaponType": "Semi-Automatic Service Pistol",
+    "categoryLabel": "Modular Striker Pistol",
+    "actionMechanism": "Modular Stainless-Steel FCU · Short Recoil Tilting Barrel Striker-Fired",
+    "statusLabel": "In Vault · Fully Strippable",
+    "description": "Selected as the United States Armed Forces standard-issue sidearm under the Modular Handgun System (MHS) program. Its defining breakthrough is the monolithic, self-contained, serialized stainless-steel Fire Control Unit (FCU), legally registered as the firearm and removable from polymer grip frames without tools. Equipped with a Coyote PVD stainless steel slide, optic-cut plate with tritium night sights, 4.7-inch nitrided barrel, ambidextrous manual thumb safety, and flush-fit 17-round steel magazines.",
+    "highlights": [
+      "Removable Serialized Stainless-Steel FCU Chassis",
+      "Coyote PVD Slide w/ Optic-Ready Tritium Plate",
+      "US Military M17 Ambi Manual Safety & Lever",
+      "2K Coyote Tan FDE Laser Stippling & Markings"
+    ],
+    "workbenchTitle": "P320 M17 Mechanical Kinematics & 3D Disassembly",
+    "workbenchSubtitle": "4 Primary Assemblies · 24 Core Nodes · Modular FCU Strip & Dynamic Firing Simulation",
+    "cutawayLabel": "FCU Chassis Close-up",
+    "cutawayTitle": "Switch to transparent cutaway view focused on the serialized FCU and dual-notch sear engagement",
+    "searchPlaceholder": "Search component name / code (e.g., FCU, Manual Safety, U-01)...",
+    "firingMilestoneLabel": "Muzzle Exit / Unlock",
+    "rateOfFire": "Semi-Automatic",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Ready Battery",
+        "subLabel": "0%",
+        "desc": "Fully assembled weapon in battery with serialized FCU window TF004912 visible on right frame flank."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Magazine dropped and takedown lever rotated 90 degrees downward to strip slide, 4.7-inch barrel, and captive recoil assembly forward."
+      },
+      "upper_mag_strip": {
+        "label": "FCU Extraction",
+        "subLabel": "65%",
+        "desc": "Takedown pin withdrawn allowing the serialized stainless FCU core to lift upward out of the Coyote grip module alongside optic plate and magazine disassembly."
+      },
+      "full_explode": {
+        "label": "Full Exploded View",
+        "subLabel": "100%",
+        "desc": "Complete isometric breakdown of 24 precision components including FCU cage, M17 ambidextrous thumb safeties, striker group, and steel magazine."
+      }
+    },
+    "firingPhases": {
+      "p320_trigger_pull": {
+        "shortLabel": "Trigger Pull",
+        "title": "Phase 1 · Curved Trigger Stroke & Striker Safety Unlocking",
+        "description": "With manual safeties disengaged, the shooter pulls the curved steel trigger shoe. The upper crank draws the stamped stainless trigger bar forward, levering the safety tab upward against the spring-loaded striker block inside the slide."
+      },
+      "p320_sear_release": {
+        "shortLabel": "Sear Drop",
+        "title": "Phase 2 · Dual-Notch Sear Drop & Striker Impact",
+        "description": "At the trigger break threshold, the pivoting dual-notch sear dips downward to release the pre-cocked striker tail. The striker main spring snaps forward with immense velocity, projecting the firing pin tip through the breach face to ignite the primer."
+      },
+      "p320_projectile_exit": {
+        "shortLabel": "Muzzle Exit",
+        "title": "Phase 3 · Propellant Gas Expansion & 9mm Projectile Egress",
+        "description": "High-pressure expanding propellant gases drive the 9x19mm copper-jacketed bullet through the 4.7-inch nitrided barrel along six right-hand rifling grooves. As the bullet leaves the muzzle crown, a bright conical supersonic muzzle bloom expands forward."
+      },
+      "p320_unlock_recoil": {
+        "shortLabel": "Barrel Tilting",
+        "title": "Phase 4 · Short Recoil Barrel Tilting & Slide Inertia",
+        "description": "Slide and barrel recoil rearward together for 3mm before the barrel bottom cam lug strikes the monolithic ramp on the FCU chassis. The chamber drops out of the ejection port to unlock, allowing the Coyote slide to travel fully aft against the flat-wire recoil spring."
+      },
+      "p320_extract_eject": {
+        "shortLabel": "Ejection Cycle",
+        "title": "Phase 5 · Extractor Traction & Fixed Blade Ejection",
+        "description": "The heavy-duty external spring-loaded extractor claw pulls the spent brass cartridge rim clear of the chamber. As the casing base strikes the FCU left-side ejector blade, it flips upward and outward through the ejection port."
+      },
+      "p320_feed_lock": {
+        "shortLabel": "Feed & Lock",
+        "title": "Phase 6 · Forward Stripping, Feeding & Chamber Lockup",
+        "description": "The 17-round steel magazine follower lifts the top cartridge into the feed path. Driven by the flat-wire recoil spring, the slide strips the fresh round up the polished feed ramp into the chamber, camming the barrel hood firmly back into battery."
+      },
+      "p320_trigger_reset": {
+        "shortLabel": "Trigger Reset",
+        "title": "Phase 7 · Disconnector Re-engagement & Crisp Reset",
+        "description": "As the trigger shoe is released, internal return springs draw the trigger bar rearward. The disconnector re-engages the sear notch, the striker safety lock snaps down into resting detention, and the system resets cleanly for the next semi-automatic shot."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "模块化枪械的世纪跃迁：西格绍尔 P320 与美军 M17 换装纪实",
+      "deck": "从笨重的老旧双动金属手枪，到斩获美军 Modular Handgun System 世纪大标；可拆卸不锈钢 FCU 内胆以颠覆性架构重塑了全球军警自卫武器格局。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "2008–2014",
+          "title": "老将退场：美军 MHS 招标与模块化浪潮",
+          "paragraphs": [
+            "在反恐战争的漫长硝烟中，美军服役三十载的贝雷塔 M9 手枪逐渐暴露出枪体笨重、人机握把无法适应小手型射手、缺乏模块化战术红点适配接口等严重代差。2010 年代初，美军正式启动跨军种‘模块化手枪系统’招标，明确要求下一代制式手枪必须具备无工具快速适配不同手型握把、高通用性附件导轨、便于搭载微型红点瞄具以及极致的野战可维护性。",
+            "面对严苛的技术指令，西格绍尔团队敏锐地意识到：修补传统的聚合物注塑握把框架已是死路一条。行业常规设计中，聚合物枪身直接铸入金属导轨并刻印枪号，一旦握把破损或需要调整尺寸，整枪在行政法规上均需报废或重新登记。西格团队决意打破禁锢，打造一套前所未见的‘可移动火控机械内核’。"
+          ],
+          "audioScript": "两千零八年以后，在漫长的反恐战争中，服役近三十年的贝雷塔手枪日显疲态。美军正式启动跨军种模块化手枪系统招标，要求新武器能自由更换握把尺寸，并无缝适配战术红点与电筒。西格绍尔设计团队敏锐察觉到，必须打破握把等于枪身注册主体的传统教条，打造一种全新的模块化火控内胆。",
+          "audioUrl": "audio/p320/story_act1_zh.mp3",
+          "focusPartId": "p320_fcu_chassis",
+          "focusPartLabel": "序列号不锈钢 FCU 火控内胆框架"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "2014–2017",
+          "title": "内胆革命：打破传统的序列号金属内核",
+          "paragraphs": [
+            "西格绍尔工程部门以早先的 P250 纯双动双击机构为跳板，大刀阔斧地改用射手呼声极高的平移击针撞击构造，诞生了划时代的 P320。其绝对核心是一块经过精密冷冲压与数控铣削的高强度不锈钢机匣。所有复杂的扳机连杆、双阶阻铁、抛壳挺以及滑轨均被紧凑地集成在这套独立的金属框架内，唯独在此处雕刻法定受控枪号。",
+            "这项颠覆性专利彻底解放了外壳限制：射手只需旋转一颗快拆杠杆并拔出横栓，便能在三十秒内将整套击发心脏提出，随意换入紧凑型、全尺寸或不同掌形弧度的聚合物握把外壳中。无论握把在恶劣泥沙中遭遇何种剧烈磨损，行政上这依然是同一支手枪。这一巧妙解法在 MHS 极端严苛的百万发泥沙、低温与跌落测试中一路过关斩将，最终在 2017 年击败包括格洛克在内的强劲对手，正式斩获美军 M17/M18 采购大单。"
+          ],
+          "audioScript": "西格工程团队彻底颠覆了行业惯例。他们将击针阻铁、扳机连杆与四段滑轨，全部浓缩在一整块冲压不锈钢框架内部，并将法定枪号刻在内胆侧面。射手无需任何工具，就能在三十秒内将整套火控系统完整取出，任意换装不同尺寸的聚合物握把。正是这一天才构想，让西格绍尔在两千零一七年击败强敌，斩获美军制式手枪订单。",
+          "audioUrl": "audio/p320/story_act2_zh.mp3",
+          "focusPartId": "p320_takedown_lever",
+          "focusPartLabel": "旋转式快拆解脱柄"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "2017–2019",
+          "title": "军规淬炼：安全闭锁、光学切槽与防跌改进",
+          "paragraphs": [
+            "军用型号 M17 的诞生并非坦途。为了契合五角大楼的军规采购白皮书，西格在民用版 P320 基础上加装了对称联动的手动拇指保险轴栓，并对快拆机构施加联锁限制：在弹匣未拔出或套筒未挂机时，绝不允许拆解，彻底杜绝了维护走火的致命隐患。套筒顶部则切出了支持直接加装微型光学红点的密封基座，并附带双氚光自发光夜视照门。",
+            "与此同时，面对早期民间偶发的特定角度跌落惯性击发质疑，西格工程团队展现出雷厉风行的攻坚能力：全面推行轻量化弧形氮化钢扳机，大幅降低击发构件的自重惯性，并优化击针内部机械阻断锁片几何形状与双阶阻铁行程。经过淬炼的 M17，不仅拥有极佳的扳机初段行程与清脆击发断点，更在六英尺各角度刚性跌落试验中做到了万无一失。"
+          ],
+          "audioScript": "军用版埃姆十七针对五角大楼的严苛要求进行了深度淬炼。工程师增设了双侧手动拇指保险，并设计了无需扣动扳机即可安全分解的快拆连锁机制。面对早期的跌落顾虑，他们迅速换装了轻量化弧形扳机并重塑内部阻铁几何面，彻底消除了惯性击发隐患。套筒上方更配备了红点瞄具切槽与氚光夜视照门，全面适应现代夜战。",
+          "audioUrl": "audio/p320/story_act3_zh.mp3",
+          "focusPartId": "p320_manual_safety",
+          "focusPartLabel": "美军 M17 双侧联动手动拇指保险"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "2019–至今",
+          "title": "全球风靡：全军列装与开放式生态狂潮",
+          "paragraphs": [
+            "从第 101 空降师首次接装狼棕色 M17 手枪开始，美国陆军、海军、空军与海军陆战队全面进入 P320 时代。在严寒、中东沙漠与高盐雾沿海环境中，凭借全覆盖式的 Coyote PVD 耐腐蚀涂层与全封闭击针通道，M17 的平均故障间隔发数（MRBS）刷新了美军制式单兵副武器的历史纪录。",
+            "更深远的影响在于其点燃的全球枪械工业生态革命。由于受法律管制的仅为那一枚小巧的不锈钢 FCU，全球改装厂与竞技射手纷纷推出了全铝切削握把、碳纤维套件、快速插拔底托乃至卡宾枪转换套件。西格绍尔 P320/M17 不仅赢得了一场世纪军标，更以模块化平台理念，确立了二十一世纪勤务手枪的全新工业标准。"
+          ],
+          "audioScript": "从第一零一空降师率先换装起，埃姆十七与紧凑型埃姆十八迅速铺满美军各大军种。依靠狼棕色防腐涂层与全封闭击针结构，其在沙漠与盐雾环境中的可靠性刷新了历史纪录。更重要的是，独立火控内胆掀起了全球模块化改装热潮，从全铝握把座到卡宾转换套件层出不穷，让这款手枪真正成为了二十一世纪的工业传奇。",
+          "audioUrl": "audio/p320/story_act4_zh.mp3",
+          "focusPartId": "p320_slide",
+          "focusPartLabel": "狼棕 PVD 不锈钢套筒"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "法定受控可分离式不锈钢 FCU 火控内胆",
+          "tag": "模块化核心内胆",
+          "summary": "打破握把即枪身的传统注塑限制，将击发阻铁、联动连杆与套筒滑轨整体集成为一件独立的不锈钢冲压核心，使握把与尺寸模块成为免许可即换耗材。",
+          "focusPartId": "p320_fcu_chassis",
+          "focusPartLabel": "序列号不锈钢 FCU 火控内胆框架"
+        },
+        {
+          "id": "bt2",
+          "title": "无工具无扣动无隐患快拆闭锁连动",
+          "tag": "军规野战安全拆解",
+          "summary": "不同于传统格洛克式手枪分解时必须扣动扳机的走火隐患，M17 唯有在退出弹匣且挂机状态下方可旋转快拆柄分离套筒，达到绝对勤务安全性。",
+          "focusPartId": "p320_takedown_lever",
+          "focusPartLabel": "旋转式快拆解脱柄"
+        },
+        {
+          "id": "bt3",
+          "title": "全天候光学瞄具切槽与氚光照门盖板集成",
+          "tag": "直上微型红点平台",
+          "summary": "套筒后部精密铣切红点安装位，原厂盖板融合夜视照门；射手可无缝装配反射红点镜，并保证机械瞄具在极度恶劣环境下的应急同轴备份照准能力。",
+          "focusPartId": "p320_optic_plate_sight",
+          "focusPartLabel": "可拆卸红点盖板与一体式夜视照门"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "2014",
+          "title": "P320 正式亮相",
+          "detail": "西格绍尔在拉斯维加斯 SHOT Show 展出模块化平移击针手枪 P320，首创不锈钢可分离 FCU 架构。"
+        },
+        {
+          "year": "2015",
+          "title": "美军 MHS 项目角逐",
+          "detail": "五角大楼正式启动 Modular Handgun System 竞标，西格绍尔以 P320 深度军规改进型提交样品。"
+        },
+        {
+          "year": "2017",
+          "title": "赢得 5.8 亿美元世纪大标",
+          "detail": "美军宣布 P320 正式胜出，定型为 M17 全尺寸手枪与 M18 紧凑型手枪，全面取代服役三十载的 M9。"
+        },
+        {
+          "year": "2017",
+          "title": "轻量化扳机自愿升级",
+          "detail": "西格绍尔迅速推行民用与军规全面升级计划，改用骨架轻量化扳机与全新内部击针锁，彻底杜绝极端跌落惯性隐患。"
+        },
+        {
+          "year": "2019",
+          "title": "全美四大军种全面配发",
+          "detail": "美国陆军、海军、空军及海军陆战队均加速推进配发，第 101 空降师等主力部队率先完成换装入列。"
+        },
+        {
+          "year": "2020–至今",
+          "title": "全球 FCU 模块化生态繁荣",
+          "detail": "西格绍尔推出独立纯 FCU 销售模式，推动定制握把外壳、竞技滑架与卡宾套件百花齐放，开创工业新纪元。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "A Century Leap in Modularity: The SIG SAUER P320 and US Military M17",
+      "deck": "From aging metal double-action relics to conquering the Modular Handgun System trials: how a stamped stainless FCU redefined the global doctrine of service sidearms.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "2008–2014",
+          "title": "Twilight of the M9: The MHS Requirement and Modularity Imperative",
+          "paragraphs": [
+            "Throughout the prolonged grit of the Global War on Terrorism, the venerable Beretta M9 sidearm—in military inventory since 1985—exhibited distinct mechanical exhaustion. Warfighters routinely grappled with its bulky aluminum grip circumference that alienated shooters with smaller hands, the absence of standardized accessory interfaces, and an inherent inability to mount modern slide-ride micro red dot optics without catastrophic slide fractures.",
+            "Recognizing an irreversible shift in tactical doctrine, the United States Department of Defense launched the joint-service Modular Handgun System competition. The procurement directives were unyielding: the victor had to provide tool-less grip reconfiguration across diverse anthropometric profiles, total ambidextrous manipulation, integrated optic compatibility, and flawless reliability in blinding sand and saline mud. SIG Sauer realized that conventional polymer handguns—where the plastic frame served as the legal serialized firearm—were a technological dead end."
+          ],
+          "audioScript": "Following decades of combat across arid operational theaters, the United States military found its aging Beretta sidearms increasingly deficient. The Pentagon inaugurated the Modular Handgun System trials, demanding an adaptable platform that could fit any hand size and host slide mounted optics. SIG Sauer recognized that simply modifying a standard polymer frame was futile. They needed a radical mechanical heart that separated the legal firearm from the ergonomic outer shell.",
+          "audioUrl": "audio/p320/story_act1_en.mp3",
+          "focusPartId": "p320_fcu_chassis",
+          "focusPartLabel": "Serialized Stainless-Steel FCU Chassis"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "2014–2017",
+          "title": "The Stainless Core: Engineering the Serialized Fire Control Unit",
+          "paragraphs": [
+            "Pivoting away from the hammer-fired kinematics of their earlier P250, SIG Sauer engineers spearheaded an entirely novel striker-fired architecture dubbed the P320. At the geometric center of this weapon was a rigid, self-contained chassis cold-formed from high-grade stainless steel. All operational linkages—the trigger crank, stamped trigger bar, dual-notch pivoting sear, ejector, and four internal slide guide rails—were contained entirely within this central core, bearing the laser-engraved legal serial number.",
+            "This patented configuration meant the surrounding polymer grip frame was merely an inexpensive, expendable housing. By rotating a single takedown lever and withdrawing the cross-pin, an operator could extract the entire firing unit within thirty seconds and drop it into full-size, carry, or subcompact polymer shells without tools or armorers. This breakthrough swept through the punishing military endurance trials, outperforming rival entries from Glock and Smith & Wesson to secure the historic M17 and M18 military contract in January 2017."
+          ],
+          "audioScript": "SIG Sauer engineers upended standard firearms design. By housing the trigger bar, dual notch sear, ejector, and slide rails inside a single stamped stainless steel chassis, they isolated the legal firearm to this compact core. An operator could extract the entire fire control unit in thirty seconds without tools and reinstall it into any grip module. This brilliant modular concept powered the weapon through rigorous sand and endurance tests to win the landmark military contract.",
+          "audioUrl": "audio/p320/story_act2_en.mp3",
+          "focusPartId": "p320_takedown_lever",
+          "focusPartLabel": "Rotating Takedown Lever"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "2017–2019",
+          "title": "M17 Hardening: Combat Safeties, Optics Integration, and Drop Refinement",
+          "paragraphs": [
+            "Transitioning the commercial P320 into the combat-ready M17 demanded strict adherence to military ordnance criteria. The Pentagon mandated an ambidextrous manual thumb safety mounted directly onto the FCU frame, coupled with a takedown safety interlock that mechanically prohibited slide removal until the magazine was fully extracted and the slide locked back—permanently eliminating the infamous negligent discharge risk associated with pulling the trigger during disassembly.",
+            "Simultaneously, when early civilian testing exposed trigger inertia drop-firing risks under severe impact angles, SIG Sauer responded with rapid engineering discipline. The factory upgraded the platform with a lightweight skeletonized curved trigger shoe, trimmed striker tail mass, and redesigned internal striker drop-block geometry. The perfected M17 paired a remarkably crisp, predictable trigger pull with unimpeachable drop safety, while its Coyote PVD slide integrated a modular cover plate housing tritium night sights that unbolted cleanly to seat combat reflex optics."
+          ],
+          "audioScript": "Adapting the design for combat required uncompromising engineering. SIG integrated ambidextrous manual safeties and a takedown interlock that prevented disassembly while a magazine was inserted, eliminating the hazard of pulling the trigger to field strip. To guarantee safety during harsh drops, engineers lightened the trigger shoe and refined the internal striker block. The slide received a Coyote protective finish and a removable optics plate fitted with night sights for low light operations.",
+          "audioUrl": "audio/p320/story_act3_en.mp3",
+          "focusPartId": "p320_manual_safety",
+          "focusPartLabel": "US Army M17 Ambidextrous Manual Thumb Safety"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "2019–Present",
+          "title": "Global Deployment: Joint-Service Standard and the Custom Ecosystem",
+          "paragraphs": [
+            "Commencing with initial deployment to the 101st Airborne Division at Fort Campbell, the M17 and its compact companion, the M18, expanded across the US Army, Navy, Air Force, and Marine Corps. Operating through extreme desert dust, Arctic frost, and maritime salt fog, the platform established unprecedented mean rounds between stoppages (MRBS) records, validating the resilience of its enclosed striker mechanism and advanced surface metallurgy.",
+            "Beyond military dominance, the P320 triggered a renaissance across the global civilian and competitive shooting landscape. Because the standalone FCU is the only legally controlled component, aftermarket manufacturers introduced precision-machined billet aluminum frames, carbon fiber competition sleeves, and quick-detach carbine chassis. The SIG SAUER P320-M17 did more than replace a thirty-year-old service pistol; it enshrined the modular fire control chassis as the definitive architectural benchmark of twenty-first-century small arms."
+          ],
+          "audioScript": "Following its combat debut with the One Hundred and First Airborne Division, the M Seventeen and compact M Eighteen became the universal sidearm of the United States Armed Forces. The platform proved its endurance across blistering deserts and freezing operational conditions. Crucially, the standalone fire control unit ignited an aftermarket revolution, enabling shooters to install custom metal frames and conversion kits, establishing a new global benchmark for modern handguns.",
+          "audioUrl": "audio/p320/story_act4_en.mp3",
+          "focusPartId": "p320_slide",
+          "focusPartLabel": "Coyote Tan PVD Stainless Slide"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Serialized Autonomous Stainless-Steel FCU Core",
+          "tag": "Modular Firearm Core",
+          "summary": "Decoupled the legally registered firearm from the molded polymer grip, encapsulating all sear, disconnector, and slide-rail geometry within a rigid stamped stainless unit that swaps across multiple frame sizes in seconds.",
+          "focusPartId": "p320_fcu_chassis",
+          "focusPartLabel": "Serialized Stainless-Steel FCU Chassis"
+        },
+        {
+          "id": "bt2",
+          "title": "Triggerless Takedown Safety Interlock",
+          "tag": "Armorer Field Safety",
+          "summary": "Eliminated the historical hazard of pulling the trigger to field strip the weapon by mechanically coupling the takedown lever to the magazine well and slide lock, guaranteeing absolute passive safety during disassembly.",
+          "focusPartId": "p320_takedown_lever",
+          "focusPartLabel": "Rotating Takedown Lever"
+        },
+        {
+          "id": "bt3",
+          "title": "Integrated Optics Plate with Night Sight Co-Witness",
+          "tag": "Direct Optic Platform",
+          "summary": "Milled directly into the stainless slide, the removable optic plate protects low-light tritium sights while offering plug-and-play mounting for combat reflex sights, preserving iron-sight back-up capability.",
+          "focusPartId": "p320_optic_plate_sight",
+          "focusPartLabel": "Removable Optic Plate w/ Night Rear Sight"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "2014",
+          "title": "Commercial Unveiling of the P320",
+          "detail": "SIG Sauer introduces the P320 modular striker-fired pistol at SHOT Show, debuting the patented standalone stainless steel FCU."
+        },
+        {
+          "year": "2015",
+          "title": "Entry into US Army MHS Trials",
+          "detail": "The Department of Defense launches the Modular Handgun System evaluation; SIG submits specialized full-size and compact P320 prototypes."
+        },
+        {
+          "year": "2017",
+          "title": "Historic Contract Award ($580 Million)",
+          "detail": "The US Army officially selects the P320 variant as the M17 (full-size) and M18 (compact), ending the 32-year reign of the Beretta M9."
+        },
+        {
+          "year": "2017",
+          "title": "Voluntary Safety Upgrade Initiative",
+          "detail": "SIG executes an engineered overhaul across civilian and military lines, adopting a lightweight trigger shoe and optimized striker disconnectors."
+        },
+        {
+          "year": "2019",
+          "title": "Joint-Service Branch Adoption",
+          "detail": "US Navy, Air Force, and Marine Corps initiate widespread procurement alongside the Army, with frontline airborne units achieving complete fielding."
+        },
+        {
+          "year": "2020–Present",
+          "title": "The Global FCU Modular Ecosystem",
+          "detail": "SIG releases the standalone bare FCU program, sparking an international industry of aftermarket CNC frames, PDW chassis, and custom builds."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "p320_slide": {
+      "partId": "p320_slide",
+      "bomCode": "U-01",
+      "calloutLabelEn": "PVD Stainless Slide",
+      "zh": {
+        "roleTag": "核心往复自动机与光学瞄具承载基座",
+        "overview": "该部件是手枪上部最关键的往复自动机主体，滑套在聚合物握把座与内部火控内胆导轨之上。它直接承受火药燃气后坐冲量，完成抽壳、抛壳、压倒阻铁以及推弹重锁的全套自动循环。",
+        "craftAndMaterial": "采用高强度特种不锈钢经五轴数控精密铣削成型，外表覆盖军规狼棕色物理气相沉积耐磨涂层。前后侧壁铣有深切斜角防滑锯齿，顶部预留光学瞄具安装切槽以兼顾红点镜与机械瞄具。",
+        "kinematicRole": "击发阶段一至三承受膛压，随后带动枪管后坐；在阶段四与开锁枪管脱开并独自后行压倒击针，阶段六在复进簧驱动下前移推弹入膛。拆解率约百分之十二至十九脱离握把，并在百分之四十八进入深度分解。",
+        "designHighlight": "通过前部阶梯渐缩减重槽与后部重心微调，既满足了美军模块化手枪高冲量穿透弹的抗疲劳寿命，又将后坐翻转轴心极力下压，显著提升速射稳定性。",
+        "audioScript": "现在看到的是狼棕色涂层的不锈钢套筒。它是整枪的往复运动核心，顶部预铣了美军规范的光学瞄具切槽。在后坐循环中，它直接带动平移击针蓄能并推弹入膛，展现了卓越的刚性与耐腐蚀表现。",
+        "audioUrl": "audio/p320/parts/p320_slide_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Primary Reciprocating Slide & Optic Platform",
+        "overview": "This component acts as the primary reciprocating slide assembly, riding atop the FCU rails and polymer lower. It harnesses recoil energy from firing to actuate extraction, ejection, striker cocking, and feeding cycles.",
+        "craftAndMaterial": "Precision CNC machined from high-grade stainless steel with a specialized Coyote Tan physical vapor deposition finish. It features aggressive front and rear cocking serrations and a milled optic cut for modular combat optics.",
+        "kinematicRole": "Anchors chamber pressure during initial ignition, recoils rearward in phase four to cock the striker, and surges forward under spring tension in phase six to chamber a fresh nine millimeter cartridge. Separates during early field stripping.",
+        "designHighlight": "Engineered with optimized mass distribution to cycle both standard ball and high-pressure military rounds reliably while drastically reducing muzzle flip during rapid follow-up shots.",
+        "audioScript": "This is the Coyote Tan PVD stainless steel slide. Serving as the primary reciprocating body, it features front and rear cocking serrations and an optic-ready cut. It endures direct recoil to cock the striker and load incoming rounds reliably.",
+        "audioUrl": "audio/p320/parts/p320_slide_en.mp3"
+      }
+    },
+    "p320_optic_plate_sight": {
+      "partId": "p320_optic_plate_sight",
+      "bomCode": "U-02",
+      "calloutLabelEn": "Optic Plate w/ Sight",
+      "zh": {
+        "roleTag": "模块化红点防护盖板与双点氚光照门",
+        "overview": "该盖板安装在套筒尾部上表面，封闭未安装红点镜时的光学切槽。其尾端整体集成有带侧翼保护的微光夜视缺口照门，构成紧凑可靠的后部瞄准基线。",
+        "craftAndMaterial": "选用优质合金钢经表面耐磨氮化硬化处理，与套筒紧密贴合。后部照门内部嵌装两枚自发光氚气夜视微管，两侧高耸护翼能防止跌落时镜管受损。",
+        "kinematicRole": "作为刚性部件固定在套筒后上部，在整枪七阶段循环中随套筒高速往复移动。在维护保养时，拆解率达到百分之四十六至五十八即可拧下螺钉从套筒向上分离。",
+        "designHighlight": "采用盖板与机械照门合一设计，拆除即可直装战术红点瞄准镜；其定位螺栓贯穿套筒内部，巧妙兼顾了对右侧抽壳钩顶杆弹簧总成的限位压制。",
+        "audioScript": "这是可拆卸红点盖板与一体式夜视照门。两枚绿光氚气灯管嵌入照门缺口两侧，无需电池也能全天候瞄准。拆下紧固螺钉后，即可直接安装军规红点瞄准镜。",
+        "audioUrl": "audio/p320/parts/p320_optic_plate_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Modular Optic Cover Plate & Night Sight",
+        "overview": "This plate seals the slide optic pocket when no miniature reflex sight is mounted. It incorporates a ruggedized integral combat rear sight containing twin tritium night-sight vials.",
+        "craftAndMaterial": "Fabricated from nitrided high-strength steel with a non-reflective black oxide coating. The sight blade features machined anti-glare horizontal serrations and shock-damped tritium lamp housings.",
+        "kinematicRole": "Remains locked atop the slide during all high-velocity cycling phases. Disassembles upward between forty-six and fifty-eight percent armorer teardown after loosening the internal retaining fasteners.",
+        "designHighlight": "Combines optic footprint protection with a robust rear reference notch; its mounting fasteners also interface to secure the spring-loaded extractor plunger within the slide interior.",
+        "audioScript": "Here is the removable optic plate with an integrated night sight. It encloses the optic cut while offering dual glowing tritium lamps for darkness engagement. Removing this steel plate allows immediate installation of tactical red dots.",
+        "audioUrl": "audio/p320/parts/p320_optic_plate_sight_en.mp3"
+      }
+    },
+    "p320_front_sight": {
+      "partId": "p320_front_sight",
+      "bomCode": "U-03",
+      "calloutLabelEn": "Tritium Front Sight",
+      "zh": {
+        "roleTag": "全天候自发光燕尾槽准星",
+        "overview": "该准星横向压入套筒前端的燕尾导槽内，为射手提供直观清晰的前部对准基准。它与后照门协同构成经典的平底三点式战斗瞄准基线。",
+        "craftAndMaterial": "采用高抗冲击合金钢精磨并施行盐浴渗氮处理，背面装有高对比度白色聚合物环与自发光密封氚气管，可在无光环境下持续发光数十年。",
+        "kinematicRole": "始终作为套筒前端的固定参照基准，随套筒同步承受高达数千牛顿的后坐加速度。仅在阶段拆解深度达百分之四十六至五十八时经由专用推星工具横向压出。",
+        "designHighlight": "燕尾槽底面设计有微量干涉配合防松倒梯形截面，在极其苛刻的盐雾、泥沙及剧烈振动测试下依然能维持瞄准点零位绝对不漂移。",
+        "audioScript": "这是燕尾槽氚光准星。背面镶嵌的高对比度白环与氚气发光管，使射手能在各种明暗光照条件下迅速对正目标。高精度燕尾结构确保了极其稳定的归零一致性。",
+        "audioUrl": "audio/p320/parts/p320_front_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dovetail Night Front Sight Post",
+        "overview": "This front sight blade is drift-fitted horizontally into the forward slide dovetail slot. It pairs with the rear notch to establish a crisp three-dot combat sight picture.",
+        "craftAndMaterial": "CNC machined from tough carbon steel with melonite black surface treating. Contains a precision-aligned tritium illumination vial enclosed within a bright white daylight aiming ring.",
+        "kinematicRole": "Stationary relative to the slide assembly throughout firing dynamics, enduring massive recoil forces. Removed during detailed slide overhaul between forty-six and fifty-eight percent teardown.",
+        "designHighlight": "Features an interference-fit dovetail base that holds true zero under thousands of combat rounds and intense environmental vibration drops without requiring set screws.",
+        "audioScript": "This is the dovetail-mounted front night sight. Equipped with an illuminated tritium lamp inside a white ring, it allows instant target acquisition in bright sunlight or total darkness while resisting drift under recoil.",
+        "audioUrl": "audio/p320/parts/p320_front_sight_en.mp3"
+      }
+    },
+    "p320_barrel": {
+      "partId": "p320_barrel",
+      "bomCode": "U-04",
+      "calloutLabelEn": "4.7\" Nitride Barrel",
+      "zh": {
+        "roleTag": "改进勃朗宁偏移闭锁核心身管",
+        "overview": "身管是手枪承受高压火药燃气并赋予弹头旋转的核心部件，安装在套筒内部。其方形弹膛节套卡入套筒抛壳窗，下方凸耳与内部闭锁块斜面发生几何导向配合。",
+        "craftAndMaterial": "选用优质铬钼钢经精密冷锻与六条右旋膛线加工，内外表经过深层QPQ盐浴氮化处理。弹膛顶端铣削有微型观察开口，以便肉眼确认膛内是否有弹。",
+        "kinematicRole": "阶段三承受发射膛压，与套筒闭锁微幅共同后坐；在阶段四下凸耳受斜块导引下坠脱锁让套筒继续后坐，阶段六在套筒推弹过程中上抬重新闭锁。拆解率约百分之二十八即可向上取出。",
+        "designHighlight": "放弃了传统铰链式链接，采用大截面倾斜闭锁凸耳结合高精度导引斜面，不仅极大精简了零件数量，更将弹膛对准精度与供弹可靠度推向了全新高度。",
+        "audioScript": "现在看到的是四点七英寸的冷锻氮化枪管。采用改良勃朗宁枪管偏移闭锁，尾端方形弹膛直接卡入套筒抛壳窗。下部精雕的开锁斜面，保证了九毫米弹药在高压射击下的顺畅循环。",
+        "audioUrl": "audio/p320/parts/p320_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Modified Browning Tilting Barrel",
+        "overview": "This full-length barrel guides the projectile while containing combustion chamber pressures. It seats within the slide cavity, locking its squarish chamber hood directly into the slide ejection port.",
+        "craftAndMaterial": "Cold hammer-forged from premium ordnance-grade alloy steel with six-groove rifling and deep salt-bath nitriding. It features a top loaded-chamber indicator notch on the chamber hood.",
+        "kinematicRole": "Contains peak ignition pressures, recoils with the slide briefly in phase three, tilts downward on its bottom lug during phase four to unlock, and tilts back up to lock in phase six. Lifted free at twenty-eight percent teardown.",
+        "designHighlight": "Eliminates fragile swinging links by utilizing a rigid angled cam lug, maximizing feeding ramp alignment and maintaining tight lockup tolerances across hundreds of thousands of cycles.",
+        "audioScript": "Here is the four point seven inch cold hammer forged barrel. Built with a modified Browning tilting block, its square chamber locks directly into the slide port. The precision bottom cam ensures reliable unlocking under intense chamber pressures.",
+        "audioUrl": "audio/p320/parts/p320_barrel_en.mp3"
+      }
+    },
+    "p320_recoil_guide_rod": {
+      "partId": "p320_recoil_guide_rod",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Recoil Guide Rod",
+      "zh": {
+        "roleTag": "双端捕获式钢制复进导向支柱",
+        "overview": "该部件穿过复进簧中央并安装在套筒前端下部与枪管下凸耳之间。它为高应力复进簧提供直线支撑轴线，防止弹簧在剧烈压缩后坐时发生侧向屈曲变形。",
+        "craftAndMaterial": "采用高韧性合金钢整体车削并经过渗氮硬化，表面具备高耐磨光洁度。后端设计有对称平切定位法兰，确保在安装时两平切边垂直卡紧在枪管底座上。",
+        "kinematicRole": "在后坐循环中，前端随套筒前移基座导向，后端稳定支撑在火控座前凸耳上承受簧力反冲。在阶段野战拆解进度达百分之二十四至三十二时，与复进簧作为一个总成从套筒内取出。",
+        "designHighlight": "采用了两端封闭的捕获式结构，后法兰上的定位平面能强制纠正安装朝向，彻底杜绝了基层士兵在野战分解维护时零部件受力弹飞或错位偏装的风险。",
+        "audioScript": "这是捕获式钢制复进导杆。它的中心轴线为扁钢丝复进簧提供了坚固导向，尾端设计有平切防错法兰。在整个射击循环中，它能有效防止弹簧扭曲，确保后坐平稳平顺。",
+        "audioUrl": "audio/p320/parts/p320_recoil_guide_rod_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Captive Steel Spring Guide Rod",
+        "overview": "This steel rod sits centrally along the recoil spring directly beneath the barrel. It provides a rigid coaxial spine that prevents lateral spring buckling as the slide recoils violently.",
+        "craftAndMaterial": "Turned from heat-treated solid carbon steel bar stock with a wear-resistant black nitride coating. The rear terminal flange features dual parallel flats for correct orientation against the barrel cam lug.",
+        "kinematicRole": "Anchors spring compression against the frame while the slide cycles over its forward nose during phases four through six. Released alongside the captive spring at twenty-four to thirty-two percent field strip progress.",
+        "designHighlight": "Utilizes a self-contained captive assembly with keyed indexing flats, eliminating accidental spring launches in the field and guaranteeing correct concentric alignment upon reassembly.",
+        "audioScript": "This is the solid steel recoil spring guide rod. It creates a rigid axial track for the flat recoil spring to compress against, with flats on the rear flange ensuring exact orientation against the barrel lug during reassembly.",
+        "audioUrl": "audio/p320/parts/p320_recoil_guide_rod_en.mp3"
+      }
+    },
+    "p320_recoil_spring": {
+      "partId": "p320_recoil_spring",
+      "bomCode": "U-06",
+      "calloutLabelEn": "Flat-Wire Recoil Spring",
+      "zh": {
+        "roleTag": "后坐动能吸收与复进推弹蓄能元件",
+        "overview": "该弹簧套装在金属复进导杆外部，位于套筒下腔的前半段。它是整枪自动循环的核心能量转化与传递装置，负责协调套筒的减速刹车与加速复进动作。",
+        "craftAndMaterial": "选用高疲劳强度弹簧钢扁平截面钢丝紧密卷绕而成，表面经过喷丸硬化与防腐防锈处理。扁平截面可在有限行程内提供更紧凑的实心叠并高度与线性压缩磅数。",
+        "kinematicRole": "阶段四随套筒后行被大幅度剧烈压缩，吸收套筒后坐动能以减小对射手手腕的冲击；在阶段六释放积蓄势能，猛烈推动套筒前冲推弹入膛并促使枪管抬升复位锁死。",
+        "designHighlight": "相比传统圆钢丝弹簧，扁线设计大幅降低了局部剪切应力，在保证同等推弹初压的前提下，将使用寿命由数千发大幅提升至两万发以上。",
+        "audioScript": "现在看到的是扁钢丝螺旋复进簧。它以高弹力扁平钢丝卷绕而成，后坐时大量吸收套筒冲量以减缓冲击，随后释放能量将套筒猛推向前，完成推弹入膛与枪管重新闭锁。",
+        "audioUrl": "audio/p320/parts/p320_recoil_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Flat-Wire Recoil Energy Spring",
+        "overview": "Wrapped captively around the guide rod, this heavy-duty helical spring occupies the slide lower tunnel. It governs energy absorption and momentum transfer throughout dynamic cycling.",
+        "craftAndMaterial": "Wound from ultra-high fatigue flat-profile spring steel, shot-peened and phosphate coated. The rectangular wire section offers superior solid height clearance and linear force progression.",
+        "kinematicRole": "Compresses under high velocity in phase four to cushion slide momentum; expands forcefully in phase six to strip a cartridge from the magazine and re-lock the barrel hood. Removed with the guide rod.",
+        "designHighlight": "Flat-wire geometry reduces internal coil stress concentrations significantly compared to round wire, pushing serviceable replacement intervals past twenty thousand combat rounds.",
+        "audioScript": "This is the captive flat-wire recoil spring. Engineered from flat spring steel, it absorbs peak slide recoil forces to reduce felt shock, then forcefully drives the slide forward to strip a fresh round and lock the breech.",
+        "audioUrl": "audio/p320/parts/p320_recoil_spring_en.mp3"
+      }
+    },
+    "p320_striker": {
+      "partId": "p320_striker",
+      "bomCode": "U-07",
+      "calloutLabelEn": "Stainless Striker Pin",
+      "zh": {
+        "roleTag": "全待击平移击发撞针",
+        "overview": "击针装配在套筒后部中央的轴向通道内，是平移击发机构的末端击发元件。其针尖正对弹膛底火，底部的挂机凸齿则与握把内部阻铁形成卡滞约束。",
+        "craftAndMaterial": "由特种高硬度不锈钢精密加工并施行深冷硬化热处理，具有优异的抗冲击韧性。针体右侧开有被动保险拦截缺口，下侧设有配合阻铁释放的低摩擦抛光斜面。",
+        "kinematicRole": "阶段六复进完毕时已处于百分之百全待击状态，被阻铁完全挂住；阶段二阻铁下潜脱开，击针在主簧释放下猛烈前冲刺破底火击发；阶段四在套筒后坐中被重新捕捉。",
+        "designHighlight": "采用现代全待击击针设计，扳机扣发过程无需再做多余的辅助蓄能压缩动作，使扳机行程极其干脆平顺；配合轻量化针身极大缩短了击发迟滞时间。",
+        "audioScript": "这是平移式不锈钢击针。与传统半待击机构不同，复进到位时它已蓄积全额击发能量。阻铁脱钩瞬间，击针在弹簧爆发力下高速向前刺击底火，行程短促且干脆利落。",
+        "audioUrl": "audio/p320/parts/p320_striker_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Fully-Cocked Linear Striker Pin",
+        "overview": "Positioned within the central bore of the slide, this firing pin delivers linear kinetic impact to the primer. Its bottom sear lug interfaces directly with the rotary sear inside the frame module.",
+        "craftAndMaterial": "Machined from high-grade stainless steel with specialized cryogenic hardening for extreme tensile durability. Features a lateral notch for safety block engagement and a hand-polished sear engagement facet.",
+        "kinematicRole": "Maintained in a fully-cocked state by the sear during battery; released in phase two to accelerate forward and detonate the primer in phase three. Drawn to rear during slide overhaul around forty-six percent disassembly.",
+        "designHighlight": "Employs a fully-cocked striker architecture that bypasses pre-cocking resistance during trigger pull, delivering an exceptionally crisp break and minimal lock time for pinpoint accuracy.",
+        "audioScript": "Here is the stainless steel striker pin. Held fully cocked behind the rotary sear when in battery, it immediately springs forward upon trigger break to detonate the cartridge primer with rapid lock-time precision.",
+        "audioUrl": "audio/p320/parts/p320_striker_en.mp3"
+      }
+    },
+    "p320_striker_spring": {
+      "partId": "p320_striker_spring",
+      "bomCode": "U-08",
+      "calloutLabelEn": "Striker Spring & Cups",
+      "zh": {
+        "roleTag": "击针主储能弹簧与半环限位卡杯",
+        "overview": "该压簧套在击针中段轴身外，前端依靠套筒台阶定位，后端由两个对拼的半环形聚合物卡杯限位在击针肩部。它为击针前冲击发底火提供全部的动力储备。",
+        "craftAndMaterial": "选用高纯度琴钢丝经精密密绕并经去应力回火，卡杯采用自润滑高耐磨工程塑料注塑成型。弹簧两端经平磨处理以确保轴向施力垂直无弯矩。",
+        "kinematicRole": "在套筒推弹复进且击针被阻铁挂住时被强力压缩蓄能；阻铁下潜释放击针时瞬间舒张做功，驱动击针以数米每秒的速度冲向底火。拆解率约百分之四十六时与击针一同抽出。",
+        "designHighlight": "双半环聚合物卡杯能有效缓冲弹簧剧烈展开时的瞬间金属撞击振动，并在击针高速运动时提供低摩擦轴向导向，保障底火击发深度均匀恒定。",
+        "audioScript": "这是击针螺旋主簧与保持卡杯。高强度压簧配合特种工程塑料卡杯卡紧在击针轴部，为击针撞击硬质军规底火提供充沛能量，确保恶劣环境下极高的击发可靠性。",
+        "audioUrl": "audio/p320/parts/p320_striker_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Striker Energy Spring & Spring Cups",
+        "overview": "Encircling the striker shank, this compression spring sits retained against the striker collar via twin split polymer spring cups. It generates the forward kinetic impulse that drives the firing pin into the primer.",
+        "craftAndMaterial": "Precision wound from high-tensile music wire with tempered ends to avoid bending stresses. Retainer split cups are molded from low-friction, high-impact self-lubricating technical polymer.",
+        "kinematicRole": "Remains fully compressed against the slide body while in battery; instantly uncoils in phase two to propel the striker tip through the breech face in phase three. Extracted during striker assembly teardown.",
+        "designHighlight": "The twin split cups offer smooth radial guidance along the slide tunnel while insulating the striker body from torsional resonance, ensuring dependable ignition across extreme temperature swings.",
+        "audioScript": "This is the striker main spring with its split polymer cups. Secured against the striker shaft, this tempered spring supplies the kinetic velocity required to crush hard military primers reliably under all field conditions.",
+        "audioUrl": "audio/p320/parts/p320_striker_spring_en.mp3"
+      }
+    },
+    "p320_striker_housing": {
+      "partId": "p320_striker_housing",
+      "bomCode": "U-09",
+      "calloutLabelEn": "Striker Housing Cage",
+      "zh": {
+        "roleTag": "套筒尾部模块化击针导向笼架与尾盖板",
+        "overview": "击针座总成嵌入套筒尾腔内部，封闭击针通道后方。它将平移击针、主簧以及跌落保险锁片集成固定为一个紧凑的独立子模块，外部由黑色钢制尾盖牢牢封锁。",
+        "craftAndMaterial": "内导向套由高抗冲强化工程塑料注塑加工而成，具备自润滑与排污容垢槽设计；尾盖板为高硬度合金钢压制并经表面黑色防刮处理。",
+        "kinematicRole": "始终作为套筒内部击发件的固定导向导管，在后坐过程中随套筒高速运动。在野战维护达到百分之四十四至五十八时，下压内部卡销即可向下滑脱尾盖板并将击针组抽出。",
+        "designHighlight": "模块化笼架式构造使得枪机击发部件的清理维护完全无需任何细小螺丝与专用冲子工具，大幅降低了基层部队因沙尘污垢造成的不发火故障率。",
+        "audioScript": "这是内部击针座总成与套筒尾盖板。它巧妙地将击针组件整合成一个独立子模块装入套筒尾部。压下内部释放卡榫后即可向下滑出尾盖，免工具完成全套击发部件拆解。",
+        "audioUrl": "audio/p320/parts/p320_striker_housing_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Modular Striker Guide Housing & Cap",
+        "overview": "This sleeve assembly nests within the rear slide cavity, capped externally by the slide rear plate. It houses and locates the striker, mainspring, and drop-safety block as a cohesive unit.",
+        "craftAndMaterial": "Injection molded from rugged self-lubricating engineering polymer with debris-channeling grooves; the external slide rear cap is stamped from nitrided steel with anti-scratch coating.",
+        "kinematicRole": "Guides striker travel during firing while cycling rigidly with the slide assembly. Slide cap slides downward at forty-four to fifty-eight percent teardown to release the internal striker group.",
+        "designHighlight": "Integrates internal striker components into an easily serviceable drop-in module that requires no pins or screwdrivers to inspect, dramatically speeding up sand and grit decontamination.",
+        "audioScript": "Here is the internal striker housing cage and slide rear cap. This polymer and steel assembly consolidates the striker parts into a modular drop-in cassette. Depressing the internal detent allows toolless disassembly in seconds.",
+        "audioUrl": "audio/p320/parts/p320_striker_housing_en.mp3"
+      }
+    },
+    "p320_safety_lock": {
+      "partId": "p320_safety_lock",
+      "bomCode": "U-10",
+      "calloutLabelEn": "Striker Safety Block",
+      "zh": {
+        "roleTag": "套筒内部被动摆动式防跌落阻挡钩",
+        "overview": "该微型保险锁片横向铰接于击针座侧面，受微型复位簧常推抵向击针槽。在射手扣动扳机之前，它形成一道坚固的物理机械壁垒，拦截击针前冲通道。",
+        "craftAndMaterial": "采用高抗剪切强度不锈钢经微粉末注射成型或精铸处理，工作接触面经过镜面抛光以降低阻力。内部配有一根细微的耐疲劳螺旋复位弹簧。",
+        "kinematicRole": "在阶段一射手扣下扳机时，火控座上的保险挺杆升起将其向上顶开让道；在其他非射击阶段始终咬合击针卡槽。拆解率达百分之四十八至六十二时分解脱离。",
+        "designHighlight": "与传统立柱垂直升降式保险销不同，该零件采用回转摆动式挂钩结构，侧向旋转开锁不仅行程极其紧凑平顺，还能有效避免跌落冲击惯性所导致的误解锁风险。",
+        "audioScript": "这是击针跌落保险锁片。平时在复位弹簧作用下，它死死卡住击针的前移通道；只有当扳机完全扣下、联动顶杆抬起时，它才会摆动让路，从机械根源上杜绝跌落走火。",
+        "audioUrl": "audio/p320/parts/p320_safety_lock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Passive Pivoting Striker Safety Lever",
+        "overview": "Hinged on the side of the striker housing, this mechanical lever rests across the striker notch under light spring tension. It physically obstructs the striker's forward path unless deliberately lifted.",
+        "craftAndMaterial": "Formed from high-shear stainless steel via metal injection molding, with micro-polished contact cams. Fitted with a miniature high-tensile spring that ensures instant positive reset.",
+        "kinematicRole": "Displaced upward in phase one by the frame-mounted lifter during trigger pull to clear the striker; snaps shut to lock the pin during all other phases. Separates around forty-eight percent teardown.",
+        "designHighlight": "Uses an angular pivoting hook rather than a vertical plunger, significantly shortening trigger uptake distance while mechanically neutralizing drop inertia along the longitudinal bore axis.",
+        "audioScript": "This is the pivoting striker safety lock. Kept engaged by a tiny spring, it physically obstructs the striker from reaching the primer. Only a complete trigger pull lifts this lock away, preventing accidental drop discharges.",
+        "audioUrl": "audio/p320/parts/p320_safety_lock_en.mp3"
+      }
+    },
+    "p320_extractor": {
+      "partId": "p320_extractor",
+      "bomCode": "U-11",
+      "calloutLabelEn": "Heavy-Duty Extractor",
+      "zh": {
+        "roleTag": "外露长杠杆式抽壳钩与弹簧销轴组",
+        "overview": "抽壳钩镶嵌在套筒右侧抛壳窗后方，前端带有一道锐利坚硬的抱弹爪刃。它在套筒推弹到位后紧紧扣住九毫米弹壳底缘，将空弹壳由弹膛平稳向后拉拽出膛。",
+        "craftAndMaterial": "选用高韧度渗氮合金钢经精密切削加工，具备优越的抗断裂冲击性能。后部由深层定位销轴、金属推顶杆及高硬度螺旋压簧持续施加向内夹紧力。",
+        "kinematicRole": "阶段六推弹时爪面滑过弹壳斜坡并咬住底缘；阶段四后坐时牢牢拉拽空弹壳直至接触火控座抛壳挺将其弹出；阶段五完成抛壳。在套筒深度分解百分之四十六至六十时取出。",
+        "designHighlight": "外露长力臂设计增大了杠杆机械利益，即使遭遇恶劣泥沙污染或重度积碳膨胀弹壳，依然能输出巨大的抱紧拉拔力，完全避免滑爪和卡壳故障。",
+        "audioScript": "现在看到的是外露长爪式抽壳钩。安装在套筒右侧壁后方，借助后端顶杆弹簧的持续推力，它在闭锁时紧紧咬住弹壳底缘，并在套筒后坐时强力将空弹壳从枪膛中拉出。",
+        "audioUrl": "audio/p320/parts/p320_extractor_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Heavy-Duty Pivot Extractor Assembly",
+        "overview": "Set into the right flank of the slide behind the ejection port, this spring-loaded claw grips the rim of chambered ammunition. It extracts spent casings from the chamber as the slide recoils.",
+        "craftAndMaterial": "Precision machined from case-hardened alloy steel with melonite finish for extreme toughness. Supported from the rear by a steel follower pin and heavy-duty coil plunger spring.",
+        "kinematicRole": "Snaps over the rim during phase six forward battery; pulls the spent casing rearward in phase four until impacted by the ejector in phase five. Disassembled between forty-six and sixty percent teardown.",
+        "designHighlight": "The elongated external lever configuration maximizes mechanical leverage, maintaining an iron grip on corroded or fouling-swollen cartridge rims to completely eliminate failure-to-extract stoppages.",
+        "audioScript": "Here is the external heavy-duty extractor. Situated on the right of the slide, this spring-actuated claw snaps firmly over the cartridge rim during feeding, wrenching the spent case out of the barrel chamber during recoil.",
+        "audioUrl": "audio/p320/parts/p320_extractor_en.mp3"
+      }
+    },
+    "p320_grip_module": {
+      "partId": "p320_grip_module",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Coyote Grip Module",
+      "zh": {
+        "roleTag": "非受控可自由更换工程聚合物握把底座",
+        "overview": "该部件是射手手掌直接握持与操作手枪的基础人机外壳，包裹在不锈钢火控内胆之外。它为整枪提供防滑握持手柄、加长海狸尾防护以及下方的战术导轨扩展槽。",
+        "craftAndMaterial": "选用军规狼棕色高强度玻纤增强尼龙注塑成型，具备极高的抗跌落冲击与耐酸碱腐蚀性能。握把表面布满细腻激光防滑纹理，右侧开有露出序列号的观察窗口。",
+        "kinematicRole": "整枪操作中作为射手承力与导向的静止基体，承受所有后坐力向手掌的传递；因不含法定火控机件，在拆卸解脱柄后可一秒直接脱离内部不锈钢内胆整体更换。",
+        "designHighlight": "打破了传统聚合物手枪下机匣即为受控枪身的法律限制，握把本身不带序列号，射手可根据个人手型或战术需要随时免审批更换不同尺寸颜色握把。",
+        "audioScript": "这是M17狼棕色聚合物握把模块。高强度玻纤尼龙外壳手感出色，右侧镂空窗口可露出内胆序列号。因为不含受控火控核心，士兵无需任何工具就能按手型自由更换握把。",
+        "audioUrl": "audio/p320/parts/p320_grip_module_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Modular Unserialized Polymer Grip Frame",
+        "overview": "This ergonomic lower shell provides the primary handling interface, enclosing the serialized fire control unit. It features an extended beavertail, full texturing, and an integrated accessory rail.",
+        "craftAndMaterial": "Molded from impact-resistant Coyote Brown glass-filled polyamide polymer. Surfaces feature laser-stippled grip traction zones and a dedicated inspection window revealing the internal serialized FCU.",
+        "kinematicRole": "Acts as the structural chassis transmitting felt recoil to the shooter's hands throughout all seven firing phases. Remains on bench as the FCU lifts free once the takedown pin is extracted.",
+        "designHighlight": "Functions as a legally non-firearm component due to the internal FCU chassis, enabling operators to swap grip sizes and colors instantly to fit individual hands without armorer re-registration.",
+        "audioScript": "This is the Coyote Tan polymer grip module. Ergonomically contoured with fine laser texturing, it houses the internal fire control unit. Because it lacks a serial number, operators can freely swap grip sizes to fit their hands.",
+        "audioUrl": "audio/p320/parts/p320_grip_module_en.mp3"
+      }
+    },
+    "p320_takedown_lever": {
+      "partId": "p320_takedown_lever",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Rotating Takedown Pin",
+      "zh": {
+        "roleTag": "安全快拆解脱柄与枪管锁块定位横栓",
+        "overview": "横向穿入握把座前方与内部火控内胆孔位中，是一根多功能旋转轴栓。外部手柄位于握把左侧，内部偏心轴颈直接限制枪管下凸耳的前后运动限位。",
+        "craftAndMaterial": "采用高抗扭高剪切合金钢整体精锻切削，经盐浴渗氮黑色防腐硬化处理。轴身精密铣削有偏心缺口与锁定凹坑，手柄外缘铣有防滑抓握细齿纹。",
+        "kinematicRole": "正常射击时偏心面朝上形成枪管开锁支撑限位；野战拆解阶段在挂机并拔掉弹匣后，在百分之八至十六区间顺时针旋转九十度避开枪管凸耳，使套筒向前滑脱。",
+        "designHighlight": "设计有严格的机械防呆连锁机制，必须先卸出弹匣并锁定套筒后才能转动旋柄，拆解全程完全无需像早期平移击针手枪那样扣动扳机，消除了走火隐患。",
+        "audioScript": "现在看到的是旋转式快拆解脱柄。平时它牢固锁定套筒与枪管，拆解时只需顺时针旋转九十度即可解锁。这套专利设计确保拆枪时完全无需扣动扳机，从流程上杜绝了误击伤亡。",
+        "audioUrl": "audio/p320/parts/p320_takedown_lever_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Safety Takedown Lever & Barrel Cross-Pin",
+        "overview": "Traversing the forward frame and stainless FCU chassis, this cross-pin serves as a quick-disconnect cam. Its internal profiled journal anchors and guides the barrel unlocking lugs during firing.",
+        "craftAndMaterial": "Forged and CNC-profiled from high-shear alloy steel with a hardened nitrided finish. The exterior thumb paddle features positive directional serrations for firm manipulation under gloved conditions.",
+        "kinematicRole": "Maintains barrel lockup geometry during phases one through seven. Rotates downward ninety degrees between eight and sixteen percent disassembly to clear the barrel lug, freeing the slide without trigger activation.",
+        "designHighlight": "Incorporates a physical interlock that prohibits rotation unless the magazine is removed and slide locked back, eliminating the dangerous requirement to pull the trigger during field disassembly.",
+        "audioScript": "This is the rotating takedown lever. It anchors the barrel lugs within the chassis. Rotating this lever downward ninety degrees allows the entire slide to glide off safely, completely eliminating the need to pull the trigger for disassembly.",
+        "audioUrl": "audio/p320/parts/p320_takedown_lever_en.mp3"
+      }
+    },
+    "p320_slide_catch": {
+      "partId": "p320_slide_catch",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Ambi Slide Catch",
+      "zh": {
+        "roleTag": "双侧双手通用空仓挂机与解脱构件",
+        "overview": "该杆件横贯不锈钢火控内胆中部并卡装于扳机销轴之上。它在最后一发弹药击发后抬升锁定套筒，并允许左右手射手直接拇指下压解脱复进。",
+        "craftAndMaterial": "采用冲压成型的高碳合金钢经盐浴氮化硬化处理，表面呈耐磨哑光黑。左右两端设计有横向细密防滑纹与阶梯加强筋，保证高应力下无扭转形变。",
+        "kinematicRole": "在阶段6打空后被托弹板凸台顶起阻挡套筒复进；射击中在复位簧下拉力下保持静止。在分解流程44%至62%阶段随火控内胆脱出握把，70%至88%阶段自销轴拆解。",
+        "designHighlight": "针对美军全尺寸防滑手套操作要求重构了拨片外扩轮廓与倒角，杜绝了老款容易被射手高位握把拇指意外压住导致空仓不挂机的通病。",
+        "audioScript": "双侧空仓挂机解脱杆是美军双手通用操作的关键组件。当弹匣打空，托弹板凸耳直接顶起该杆左侧突起，精准卡入套筒槽口将其牢牢挂起；射手换弹后无论左右手，只需大拇指轻轻往下一压，套筒便瞬间复进推弹上膛。",
+        "audioUrl": "audio/p320/parts/p320_slide_catch_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Ambidextrous Slide Stop and Release Lever",
+        "overview": "This lever is pivoted across the stainless steel fire control chassis above the trigger pin. It mechanically locks the slide rearward on an empty magazine and provides ambidextrous thumb release.",
+        "craftAndMaterial": "Stamped from high-carbon alloy steel with a salt-bath nitrided finish for exceptional wear and corrosion resistance. Deep serrations on both thumb tabs ensure positive grip, while the rigid bridge prevents torsional flex.",
+        "kinematicRole": "In Phase 6 after the final round, it is pushed upward by the magazine follower tab to arrest the forward stroke of the slide. Disassembles with the chassis at 44 to 62 percent, fully separating at 70 to 88 percent.",
+        "designHighlight": "Redesigned with lower-profile shielded tabs per US military feedback, preventing high-thumb competition grips from inadvertently preventing last-round slide lock.",
+        "audioScript": "The ambidextrous slide catch lever ensures seamless operation for both right and left-handed soldiers. On the last shot, the rising magazine follower drives this lever upward into the slide notch, locking the action open. Once a fresh magazine is seated, pressing either tab downward instantly releases the slide into full battery.",
+        "audioUrl": "audio/p320/parts/p320_slide_catch_en.mp3"
+      }
+    },
+    "p320_mag_catch": {
+      "partId": "p320_mag_catch",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Reversible Mag Catch",
+      "zh": {
+        "roleTag": "模块化双向可翻转弹匣锁止卡榫",
+        "overview": "该卡榫横向布置于聚合物握把扳机护圈根部的贯通腔槽内。其核心任务是精准咬合弹匣前侧定位方孔，确保供弹口与弹膛进弹坡精确对正。",
+        "craftAndMaterial": "采用高强度合金钢精铸与数控切削加工，表面经过防腐氮化处理。外露按钮采用贴合拇指弧度的圆角三角形网格咬花，内部设有弹簧阻挡定位盲孔与锁止舌。",
+        "kinematicRole": "射击全周期依靠内部高刚度螺旋压簧横向压紧弹匣定位孔；按压时横向位移使锁舌脱出让弹匣重力滑落。在分解66%至80%阶段用细探针顶开内置锁销后横向抽出。",
+        "designHighlight": "免工具对称翻转设计，仅需旋转拆出内部固定止动块即可实现左侧或右侧安装，兼顾左撇子特战队员的人体工学自适应。",
+        "audioScript": "安装在扳机护圈后方的三角形弹匣卡榫，牢牢锁定供弹弹匣的俯仰高度。它内部设有一根独立的螺旋弹簧，无论剧烈射击震动还是野外跌落都不会脱扣；特战队员只需微调内部卡扣，就能在两分钟内翻转给左手射手使用。",
+        "audioUrl": "audio/p320/parts/p320_mag_catch_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Modular Reversible Magazine Retention Latch",
+        "overview": "This triangular catch is mounted horizontally through the grip module at the rear base of the trigger guard. It positively locks into the rectangular detent of the magazine body to maintain exact feed ramp alignment.",
+        "craftAndMaterial": "Precision investment-cast steel with CNC machined engagement surfaces, finished in a matte black nitride bath. The release face features a rounded triangular shape with aggressive pyramid checkering for gloved thumb traction.",
+        "kinematicRole": "Remains statically locked under spring compression across Phases 1 through 7; when pressed laterally, its tooth clears the magazine notch to allow a clean gravity drop. Removed during the 66 to 80 percent disassembly phase.",
+        "designHighlight": "Engineered as a completely reversible subassembly without auxiliary parts, allowing field armorers to swap release orientation for left-handed operators in minutes.",
+        "audioScript": "Positioned right at the base of the trigger guard, this triangular magazine catch secures the 17-round steel magazine in perfect alignment with the feed ramp. Under intense recoil, its stiff coil spring prevents accidental drops, while the reversible geometry allows armorers to effortlessly flip it for left-handed soldiers.",
+        "audioUrl": "audio/p320/parts/p320_mag_catch_en.mp3"
+      }
+    },
+    "p320_fcu_chassis": {
+      "partId": "p320_fcu_chassis",
+      "bomCode": "FCU-01",
+      "calloutLabelEn": "Serialized FCU Chassis",
+      "zh": {
+        "roleTag": "核心专利与法定受控不锈钢火控底座",
+        "overview": "该一体化底座是整支手枪的心脏与唯一带有法定枪身序列号的核心构件。它嵌于聚合物握把内部，为套筒、枪管、击发机及保险机构提供刚性承载基准。",
+        "craftAndMaterial": "选用航空级沉淀硬化不锈钢板材，经多道高吨位连续冲压拉伸折弯与五轴数控高精度切削而成。前后一体冲压出四段导轨，右壁激光打标序列号 TF004912。",
+        "kinematicRole": "作为全枪运动基准座，在阶段4通过一体下开锁斜面引导枪管尾部下倾闭锁，阶段5利用左侧一体成型的固定抛壳挺撞击弹壳底部。在分解44%至62%阶段随分解销拔出整体脱离握把。",
+        "designHighlight": "彻底剥离了握把与枪械法定身份的传统束缚，射手无需重新办理枪证即可自由更换不同握把尺寸、枪管长度或套筒口径，重构了现代军用手枪系统。",
+        "audioScript": "这块带有序列号的不锈钢火控内胆，正是西格绍尔颠覆军械设计的核心专利。它由高强度不锈钢精密冲压而成，集成了前后导轨、枪管开锁斜面与抛壳挺。只需拔出快拆销，就能在数秒内将其完整移装到任意尺寸的握把外壳中。",
+        "audioUrl": "audio/p320/parts/p320_fcu_chassis_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Serialized Core Chassis and Guide Datum",
+        "overview": "This serialized stainless steel frame is the registered firearm heart of the P320-M17, housed within the polymer grip module. It structurally supports the slide rails, barrel cam, trigger linkage, and internal sear assembly.",
+        "craftAndMaterial": "Precision stamped, hydroformed, and CNC machined from 17-4 PH precipitation-hardened stainless steel with electropolished friction rails. Features an integral fixed ejector and laser-engraved serial number TF004912.",
+        "kinematicRole": "Acts as the primary kinematic datum; guides slide recoil in Phase 4, drives barrel unlocking via its integral cam ramp, and ejects spent brass via its fixed left fin in Phase 5. Lifts clear of the grip at 44 to 62 percent disassembly.",
+        "designHighlight": "By isolating the legally regulated firearm component into a self-contained metal skeleton, SIG enabled end-users to swap calibers, slide lengths, and grip sizes without purchasing a new serialized weapon.",
+        "audioScript": "This serialized stainless steel fire control unit is the revolutionary core of the P320 design. Masterfully formed from 17-4 precipitation-hardened stainless steel, it integrates the slide rails, barrel unlocking ramps, and fixed ejector. Pulling a single takedown pin lets you lift this entire firing mechanism out and drop it into any grip size.",
+        "audioUrl": "audio/p320/parts/p320_fcu_chassis_en.mp3"
+      }
+    },
+    "p320_trigger_shoe": {
+      "partId": "p320_trigger_shoe",
+      "bomCode": "FCU-02",
+      "calloutLabelEn": "Curved Nitride Trigger",
+      "zh": {
+        "roleTag": "轻量化低惯性弧形军规击发扳机",
+        "overview": "该扳机铰接在不锈钢火控内胆前端横向销轴上，下端弧形部分穿出握把护圈供食指扣压。其上部延伸力臂与扳机连杆前端柱销精确铰接，传递扣发位移。",
+        "craftAndMaterial": "采用中碳合金钢经金属注塑与精密锻压成型，表面施行耐磨军规盐浴氮化。背面进行大面积掏空减重，显著降低结构转动惯量以提升跌落安全性。",
+        "kinematicRole": "在阶段1射手扣动时绕销轴向后回转，驱动扳机连杆向前平动拉扯；阶段7复位簧推使其向前复位。在分解44%至62%随火控内胆提出，并在72%至90%分解阶段拔出枢轴脱落。",
+        "designHighlight": "历经美军招标跌落测试改进的轻量化弧形结构，大幅降低了扳机自身在枪支尾部触地时的后冲惯性，无需外部扳机保险片即可实现跌落零击发。",
+        "audioScript": "经过军规改良的M17弧形扳机，整体线条贴合战术手套扣压曲线。它的内部进行了极致减重掏空，极低的转动惯量能彻底防止枪身意外重摔时扳机因惯性自行后摆走火，扣压行程顺滑而击发临界点极为清晰。",
+        "audioUrl": "audio/p320/parts/p320_trigger_shoe_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Low-Inertia Curved Combat Trigger Shoe",
+        "overview": "This curved shoe pivots around a transverse pin in the forward section of the FCU chassis, projecting downward through the trigger guard. Its upper bellcrank arm is pinned directly to the forward hook of the trigger bar.",
+        "craftAndMaterial": "Fabricated from high-strength alloy steel via metal injection molding and CNC finishing, treated with a black nitride case-hardening. Extensively hollowed on its rear rib to dramatically reduce rotational mass.",
+        "kinematicRole": "In Phase 1, it rotates rearward around its axis when squeezed, translating movement into a forward draw on the trigger bar; in Phase 7, it resets smoothly forward. Disassembles between 72 and 90 percent of armorer breakdown.",
+        "designHighlight": "Specially optimized following the US Army drop-test upgrade program; reducing the physical mass of the trigger shoe eliminated unintended inertia fires when dropped on the beavertail without requiring a blade safety.",
+        "audioScript": "Upgraded specifically for military durability, this curved nitride steel trigger provides an ergonomic interface for gloved shooting. By trimming unnecessary mass from its rear pocket, engineers reduced its rotational inertia, preventing accidental discharge on hard ground impacts while delivering a remarkably crisp, predictable break.",
+        "audioUrl": "audio/p320/parts/p320_trigger_shoe_en.mp3"
+      }
+    },
+    "p320_trigger_bar": {
+      "partId": "p320_trigger_bar",
+      "bomCode": "FCU-03",
+      "calloutLabelEn": "Stainless Trigger Bar",
+      "zh": {
+        "roleTag": "前拉式动力传动与半自动断路连杆",
+        "overview": "该连杆贴附于不锈钢火控内胆右侧外壁的下沉滑道内。它一端连接弧形扳机曲柄，另一端向后延伸并与阻铁凸耳和保险解脱杆下臂联动。",
+        "craftAndMaterial": "选用高抗拉强度弹簧不锈钢板高精度冲压成型，表面镜面光洁滚磨以降低摩擦阻力。上方设计有精巧的半月形半自动断路凸耳与复位拉簧挂孔。",
+        "kinematicRole": "阶段1扣动扳机时连杆向前拉拽，后部斜面迫使双阶阻铁下潜并抬起保险顶杆；阶段4套筒后坐撞击断路凸耳将其下压脱开阻铁；阶段7扳机微松后弹簧拉拽连杆重新卡入阻铁。分解72%至92%脱出。",
+        "designHighlight": "采用前拉式拉力传导而非推挤传力，避免了长薄片连杆在受力时发生弹性横向扭曲，使得整个击发行程的力传递极为坚挺、清脆无蠕动。",
+        "audioScript": "紧贴在火控内胆右侧的冲压不锈钢扳机连杆，是扣发力量的核心传递通道。当你扣动扳机，它向前平稳拉动，压下阻铁并顶起击针保险；套筒后坐时下边缘压下连杆上的断路凸耳，强制实现精准的半自动单发控制。",
+        "audioUrl": "audio/p320/parts/p320_trigger_bar_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Forward-Draw Actuation & Semi-Auto Disconnector",
+        "overview": "This stamped bar runs lengthwise along the recessed right outer flank of the stainless FCU chassis. It translates trigger shoe motion rearward into the sear housing and safety disconnect mechanisms.",
+        "craftAndMaterial": "Precision stamped from high-tensile spring stainless steel with vibratory tumbling for an ultra-smooth glide finish. Features an integral disconnector tab along its upper top edge and anchoring holes for the return coil spring.",
+        "kinematicRole": "During Phase 1, it draws forward, camming down the pivoting sear and lifting the internal striker safety; in Phase 4, the recoiling slide cams its upper tab downward to disconnect from the sear; resets in Phase 7. Detaches at 72 to 92 percent strip.",
+        "designHighlight": "Operates in tension by pulling forward rather than pushing rearward, preventing thin sheet-metal buckling under heavy trigger pulls and ensuring a crisp, positive sear break.",
+        "audioScript": "Running along the right wall of the chassis, this stamped stainless trigger bar directly connects the trigger to the sear. Squeezing the trigger pulls the bar forward, rolling the sear downward to release the striker. As the slide recoils, it depresses the disconnector tab on this bar, preventing full-auto runaway.",
+        "audioUrl": "audio/p320/parts/p320_trigger_bar_en.mp3"
+      }
+    },
+    "p320_sear_group": {
+      "partId": "p320_sear_group",
+      "bomCode": "FCU-04",
+      "calloutLabelEn": "Dual-Notch Sear Unit",
+      "zh": {
+        "roleTag": "全待击平移击针卡放与二次拦截机构",
+        "overview": "该阻铁总成集中布置在不锈钢火控内胆后部的定位聚合物座内。它的主体回转阻铁直接扣合击针底部的击铁挂钩，右侧并列布置有解除击针锁片的保险顶杆。",
+        "craftAndMaterial": "采用热处理高耐磨粉末冶金不锈钢配合精密研磨的咬合阶梯，外壳采用自润滑强化聚合物。内部安装双对称高疲劳寿命螺旋阻铁弹簧。",
+        "kinematicRole": "阶段1受扳机连杆拉动，阻铁绕后横轴下潜旋转，同时保险顶杆向上顶开套筒击针锁片；阶段2阻铁完全让位释放击针；阶段6复进时阻铁上抬重新拦截击针。在分解74%至94%阶段从火控内胆尾部分离。",
+        "designHighlight": "具备主副两道防跌落拦截台阶；若手枪受到剧烈震动导致击针滑脱第一台阶，下方的次级安全台阶会在数微秒内再次强行截停击针，杜绝意外击发。",
+        "audioScript": "位于火控内胆尾部的双阶回转阻铁总成，是控制全待击击针的核心闸门。扣动扳机时，阻铁向前下方潜转，同步翘起保险顶杆释放击针；即便遭遇极端摔跌导致击针震脱，其第二道防跌落拦截台阶也能瞬间咬死击针，固若金汤。",
+        "audioUrl": "audio/p320/parts/p320_sear_group_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Full-Cock Striker Release & Dual-Shelf Interceptor",
+        "overview": "This assembly resides within a dedicated polymer housing inside the rear tower of the FCU chassis. It directly engages the downward lug of the striker while simultaneously driving the firing pin safety lever.",
+        "craftAndMaterial": "Metal injection molded from hardened martensitic stainless steel with mirror-lapped sear engagement surfaces, housed in a reinforced engineering polymer carrier with twin helical sear springs.",
+        "kinematicRole": "In Phase 1 and 2, pulled by the trigger bar, it pivots downward to free the fully-cocked striker while lifting the safety lever into the slide; in Phase 6, spring pressure forces it up to capture the resetting striker. Explodes at 74 to 94 percent.",
+        "designHighlight": "Features dual-notch mechanical architecture; if extreme mechanical impact jars the striker off the primary sear ledge, the secondary safety notch instantly catches the lug before primer impact can occur.",
+        "audioScript": "Mounted in the rear of the chassis, the dual-notch sear group holds the striker under full spring tension. Pulling the trigger rotates the sear downward while thrusting the safety lever up into the slide to clear the striker channel. Its secondary capture shelf guarantees total drop safety if the primary sear ever slips under shock.",
+        "audioUrl": "audio/p320/parts/p320_sear_group_en.mp3"
+      }
+    },
+    "p320_manual_safety": {
+      "partId": "p320_manual_safety",
+      "bomCode": "FCU-05",
+      "calloutLabelEn": "M17 Manual Safety",
+      "zh": {
+        "roleTag": "美军军规双侧机械联动拇指保险",
+        "overview": "该组件由贯穿火控内胆尾部的横向中心锁轴以及左右对称的拨片组成，凸出于聚合物握把外侧上方。用于由射手单手拇指快速拨动以实施机械锁死或开火就绪。",
+        "craftAndMaterial": "采用高强度合金钢精铸并经哑光黑磷化与耐磨渗氮双重表面硬化。拨片外表压印有水滴形深槽防滑纹，内部锁轴带有非对称精密闭锁凸轮截面。",
+        "kinematicRole": "射击状态下拨至水平开火位，凸轮避让扳机连杆与阻铁；向上推入安全位时，锁轴凸块强行压低并卡死扳机连杆，彻底物理切断扳机行程。在分解74%至96%阶段横向脱开内胆。",
+        "designHighlight": "美军模块化手枪系统明确要求的双侧手动保险配置，相比民用无外置保险版手枪，它通过军规标准横轴提供清脆机械棘爪定位感与直观视觉辨识。",
+        "audioScript": "美军M17标志性的双侧手动拇指保险，直接横穿火控底座尾部。向上推入保险位时，内部精密钢轴会瞬间物理卡死扳机连杆与阻铁，彻底杜绝扳机位移；需要射击时，持枪拇指顺势往下一抹，就能以极致清脆的机械反馈进入待发状态。",
+        "audioUrl": "audio/p320/parts/p320_manual_safety_zh.mp3"
+      },
+      "en": {
+        "roleTag": "US Military Specification Ambidextrous Thumb Safety",
+        "overview": "This cross-chassis assembly features a hardened central shaft connecting symmetrical left and right thumb paddles on the frame. It allows instant mechanical engagement or disengagement via the operator's firing thumb.",
+        "craftAndMaterial": "Precision cast and CNC profile-milled from alloy steel with a mil-spec black phosphate and nitride dual-coating. The external levers feature ribbed teardrop profiles for positive gloved operation.",
+        "kinematicRole": "In the down 'fire' position, clearance cuts allow free movement of the trigger bar and sear; in the up 'safe' position, integral camming surfaces physically block the trigger bar from advancing. Explodes at 74 to 96 percent.",
+        "designHighlight": "Mandated by the US Army Modular Handgun System competition, providing an explicit external mechanical barrier that eliminates human error during high-stress holster draws and re-holstering protocols.",
+        "audioScript": "Distinctive to the US Army M17 standard, this ambidextrous manual safety spans through the rear of the FCU. Snapping it upward rotates internal steel cams that physically lock down the trigger bar and sear. When ready to engage, a natural downward sweep of the shooter's thumb delivers a positive, tactical click into the firing position.",
+        "audioUrl": "audio/p320/parts/p320_manual_safety_en.mp3"
+      }
+    },
+    "p320_mag_body": {
+      "partId": "p320_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "17-Rd Steel Mag Tube",
+      "zh": {
+        "roleTag": "双排大容量高可靠全钢供弹管体",
+        "overview": "该弹匣管垂直插装于聚合物握把的弹匣井中，是容纳储存 17 发 9毫米帕拉贝鲁姆手枪弹的主体容器。其顶部精加工的抱弹口精准约束最高发待进弹药的几何姿态。",
+        "craftAndMaterial": "采用优质冷轧低碳合金钢板冲压卷制并经高频连续激光焊接而成，表面经专用超光滑抗磨自润滑涂层与抗腐蚀盐雾处理。背面冲有5、10、15与17发余弹计数圆孔。",
+        "kinematicRole": "在全枪射击周期中保持在弹匣井内锁止不动；阶段6引导套筒推弹突笋穿过抱弹口推弹入膛。在分解流程最开端的0%至18%阶段按下弹匣扣整匣退出，50%至62%阶段拆除底盖抽出弹簧。",
+        "designHighlight": "优化的双排错位变单排过渡收口几何设计，极大地减小了上弹时的侧向挤压摩擦阻力，即使在沙尘与高粉尘战场环境下也能确保连续全速上弹不卡壳。",
+        "audioScript": "这款专为美军打造的17发双排全钢弹匣体，采用激光焊接冷轧合金钢制成，表面覆有特殊减摩防腐涂层。背面清晰冲压出四档余弹观察窗，两侧精准冲压的锁止槽能与弹匣卡榫严密咬合，哪怕遭遇严酷泥沙考验，供弹依然稳定顺畅。",
+        "audioUrl": "audio/p320/parts/p320_mag_body_zh.mp3"
+      },
+      "en": {
+        "roleTag": "17-Round Double-Stack Steel Magazine Body",
+        "overview": "This heat-treated steel magazine tube inserts into the polymer grip magwell, storing 17 rounds of 9x19mm Parabellum ammunition. The precision feed lips at the top guide incoming rounds into the chamber.",
+        "craftAndMaterial": "Precision stamped, rolled, and laser-welded from premium cold-rolled alloy steel, finished with an anti-friction coating for superior corrosion resistance and slick feeding. Rear face includes stamped round-count witness holes at 5, 10, 15, and 17 rounds.",
+        "kinematicRole": "Statically locked in the grip during Phases 1 through 7; in Phase 6, its feed lips guide rounds straight into the chamber as the slide returns forward. Ejected at 0 to 18 percent of disassembly, stripped at 50 to 62 percent.",
+        "designHighlight": "Refined double-to-single stack transition feed-lip taper drastically reduces internal friction and spring binding, ensuring flawless feeding under desert dust and high-particulate combat environments.",
+        "audioScript": "The heart of the M17's capacity is this seventeen-round laser-welded steel magazine tube. Finished with an advanced anti-friction coating, it resists sand fouling and heavy field wear. Round-count witness holes on the rear let the operator visually assess ammunition levels at a glance before tactical insertion.",
+        "audioUrl": "audio/p320/parts/p320_mag_body_en.mp3"
+      }
+    },
+    "p320_mag_follower": {
+      "partId": "p320_mag_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Anti-Tilt Follower",
+      "zh": {
+        "roleTag": "防倾斜阶梯式供弹导引与挂机拨块",
+        "overview": "该托弹板安装在弹匣管体内弹簧最顶端，在弹药列下方提供稳定支撑。打空最后一发弹药后，其左前方凸起直接顶起空仓挂机解脱杆。",
+        "craftAndMaterial": "采用高刚性低摩擦工程聚合物注塑成型，表面显眼注塑有双排定位阶梯。设计有前后加长导向防倾裙边，杜绝在管体内下压时发生翘头或卡滞。",
+        "kinematicRole": "在阶段6每射出一发弹药后，在托弹簧推力下向上抬升一级弹药高度；最后一发弹壳抛出后顶起空仓挂机杆完成锁定。在弹匣分解52%至65%阶段滑出弹匣管口。",
+        "designHighlight": "加长防倾导向裙边与不对称阶梯斜面设计，不仅精确贴合首发与偶数发弹壳圆柱曲率，还彻底消除了传统冲压金属托弹板容易左右翻转卡死在匣内的痼疾。",
+        "audioScript": "位于弹匣内顶端的聚合物托弹板，采用了先进的防倾导向裙边设计。它能完美顺应双排弹药的错位排列，自始至终保持水平上推而不卡死；当最后一发子弹打完，其左侧突出的台阶会立刻向上顶起空仓挂机杆，通知射手更换弹匣。",
+        "audioUrl": "audio/p320/parts/p320_mag_follower_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Anti-Tilt Polymer Staggered Follower",
+        "overview": "This polymer follower sits atop the magazine spring inside the steel tube, supporting the ammunition column. Once the last round fires, its left-front stepped lug engages the slide catch lever.",
+        "craftAndMaterial": "Injection molded from high-lubricity, impact-resistant engineering polymer. Engineered with extended front and rear anti-tilt guidance legs to prevent canting or binding within the magazine tube.",
+        "kinematicRole": "Steps upward under magazine spring pressure during Phase 6 after every shot; elevates the slide catch in Phase 6 after round 17 is expended. Extracted from the tube during 52 to 65 percent sub-assembly strip.",
+        "designHighlight": "The geometry utilizes an asymmetric tiered ramp that balances the staggered double-column rounds while the prolonged skirts eliminate forward nose-diving, ensuring smooth round delivery to the very last shot.",
+        "audioScript": "Riding at the top of the magazine spring, this anti-tilt polymer follower ensures perfect round presentation. Its extended guidance legs keep the ammunition stack completely level under heavy recoil forces. After the seventeenth shot leaves the tube, its left shelf pushes the slide catch upward to lock the action open.",
+        "audioUrl": "audio/p320/parts/p320_mag_follower_en.mp3"
+      }
+    },
+    "p320_mag_spring": {
+      "partId": "p320_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Rectangular Mag Spring",
+      "zh": {
+        "roleTag": "高疲劳极限大扭角矩形螺旋托弹簧",
+        "overview": "该弹簧垂直纵置于弹匣管体内腔中，上端紧密套接托弹板底部，下端抵紧金属闭锁底托。为托弹板和整叠 17 发弹药提供持久稳定的向上推力。",
+        "craftAndMaterial": "选用优质高强度矩形扁截面航空级琴钢丝经高精度冷卷与低温去应力回火处理。外表覆以防锈润滑膜，耐受长期满负荷压发而不产生永久疲劳形变。",
+        "kinematicRole": "在阶段6持续释放压缩储能，驱动托弹板上推弹列直至最后一发空仓挂机；装弹时逐步被压缩蓄能。在弹匣维护分解52%至65%阶段从底部抽出。",
+        "designHighlight": "采用变节距矩形大折角圈形，相较于圆形截面弹簧在相同的匣体内腔中压缩极限尺寸缩短30%，为多容纳两发9毫米弹药创造了宝贵物理空间。",
+        "audioScript": "藏在弹匣内部的矩形截面螺旋托弹簧，是全枪供弹动力的持久源泉。采用特制琴钢丝冷卷工艺制造，即便数月长期压满17发弹药待命也不会发生应力衰减，能够在恶劣沙尘与极寒环境中，源源不断地提供强劲的上推力量。",
+        "audioUrl": "audio/p320/parts/p320_mag_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "High-Endurance Helical Compression Spring",
+        "overview": "This spring is housed longitudinally inside the magazine tube, seating into the base of the polymer follower above and the locking plate below. It exerts continuous upward lifting force on the round stack.",
+        "craftAndMaterial": "Precision wound from high-tensile rectangular-cross-section music wire steel, heat-treated and stress-relieved with a protective anti-corrosion coating. Designed to resist set even during prolonged full-load storage.",
+        "kinematicRole": "Progressively expands during Phase 6 after each cycle to elevate the remaining cartridges; fully compressed during magazine charging. Slides out of the magazine body at 52 to 65 percent of strip.",
+        "designHighlight": "The rectangular cross-section coil packs flatter than conventional round wire, yielding superior solid-height compression that frees up enough vertical volume inside the tube for extra round capacity.",
+        "audioScript": "Coiled inside the magazine, this rectangular steel spring delivers the raw kinetic drive for round feeding. Fabricated from premium spring steel wire, it retains full elasticity even after months of keeping all seventeen rounds compressed, consistently thrusting heavy military loads straight to the feed lips under combat conditions.",
+        "audioUrl": "audio/p320/parts/p320_mag_spring_en.mp3"
+      }
+    },
+    "p320_mag_baseplate": {
+      "partId": "p320_mag_baseplate",
+      "bomCode": "M-04",
+      "calloutLabelEn": "FDE Flush Floorplate",
+      "zh": {
+        "roleTag": "狼棕平齐闭锁底盖与快速拔弹抓槽",
+        "overview": "该底盖滑装卡扣在弹匣钢管下部的向外折边导轨上，配合内部带凸柱的底托锁片封闭弹匣底部。外形尺寸与 M17 紧凑型握把底部轮廓保持严丝合缝平齐。",
+        "craftAndMaterial": "选用美军指定狼棕色玻璃纤维增强高强度尼龙注塑制成，兼具抗跌落摔击韧性。左右两侧凹切有人体工学快拔拉手防滑浅槽，底部中心留有锁止顶柱圆孔。",
+        "kinematicRole": "作为全弹匣下部结构受力基底，在射击循环中承担托弹簧下反作用力与水泥地面跌落冲击。在弹匣分解50%至58%阶段顶起定位柱后向前滑脱脱开。",
+        "designHighlight": "平齐紧凑型轮廓规避了向外大幅凸出的底盖在战术抽枪动作中刮蹭战术背心或枪套的风险；两侧抠槽即使在弹匣受泥沙糊死时也能供射手手指强行拉拔排除卡弹。",
+        "audioScript": "这块采用军规狼棕色工程塑料制成的平齐弹匣底盖，与M17握把底部浑然一体。它不仅能承受满弹从两米高处硬碰硬摔跌在水泥地上的冲击，两侧精心设计的深抓槽更让射手即便在泥泞雨水中，也能一把将其从握把井内强行拔出排障。",
+        "audioUrl": "audio/p320/parts/p320_mag_baseplate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Flush-Fit Coyote Tan Retention Floorplate",
+        "overview": "This floorplate slides onto the outward bottom flanges of the steel magazine tube, secured by the internal steel locking insert. It aligns flush with the base of the M17 Carry grip module.",
+        "craftAndMaterial": "Molded from military-spec Coyote Tan glass-fiber reinforced polymer for high impact toughness in sub-zero drops. Features recessed side traction scallops for emergency manual magazine extraction.",
+        "kinematicRole": "Resists spring compression and environmental drop impacts throughout all operational phases. Slide-released during disassembly at 50 to 58 percent by depressing the central retainer pin.",
+        "designHighlight": "Designed with a flush profile to prevent snagging on tactical chest rigs and holsters, combined with aggressive side finger-grooves allowing operators to rip a fouled magazine free during clearing drills.",
+        "audioScript": "Seamlessly contoured to the base of the M17 grip, this Coyote Tan polymer floorplate seals the magazine assembly. Built from glass-reinforced composite to survive hard concrete drops, it incorporates deep side grasping scallops that give soldiers the leverage needed to forcibly rip a sand-clogged magazine out during tactical reloads.",
+        "audioUrl": "audio/p320/parts/p320_mag_baseplate_en.mp3"
+      }
+    }
+  }
+}

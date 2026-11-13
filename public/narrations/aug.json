@@ -1,0 +1,911 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "aug",
+  "generatedAt": "2026-11-12T12:45:15.136857+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "Steyr AUG A1 Bullpup Assault Rifle",
+    "subtitle": "5.56×45mm NATO Bullpup w/ Integrated 1.5× Swarovski Optic (StG 77)",
+    "originCountry": "Austria",
+    "weaponType": "Bullpup Assault Rifle",
+    "categoryLabel": "Bullpup Rifle",
+    "actionMechanism": "Bullpup · Short-Stroke Gas Piston · 7-Lug Rotating Bolt",
+    "statusLabel": "In Vault · Disassembly Ready",
+    "description": "Adopted by the Austrian Bundesheer in 1977 as the StG 77, the Steyr AUG redefined modern infantry weapons by housing a full-length 20-inch cold-hammer-forged barrel within an ultra-compact submachine gun footprint. It pioneered an olive-drab fiberglass-reinforced polyamide stock with an integrated enlarged trigger guard, a 1.5× Swarovski optical sight carrying handle, a folding front vertical grip, and a self-lubricating polymer hammer pack.",
+    "highlights": [
+      "Integrated 1.5× Swarovski Coated Optic Carrying Handle",
+      "20\" Quick-Change Barrel with Folding Vertical Grip",
+      "Twin Tubular Guide Rods & Rear Polymer Hammer Pack",
+      "30-Round Amber Translucent Waffle-Grid Magazine"
+    ],
+    "workbenchTitle": "Steyr AUG A1 Mechanical Cutaway & Firing Cycle",
+    "workbenchSubtitle": "4 Modular Groups · 25 Nodes · Bullpup Polymer Fire Control & Gas Piston Kinematics",
+    "cutawayLabel": "Rear Polymer Pack Focus",
+    "cutawayTitle": "Switch to transparent cutaway viewport focusing on the rear hammer pack and twin guide-rod carrier",
+    "searchPlaceholder": "Search component or BOM code (e.g., Optic, Waffle, Hammer Pack, U-06)...",
+    "firingMilestoneLabel": "Muzzle Exit / Unlock",
+    "rateOfFire": "680–750 rpm",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0%",
+        "desc": "Complete locked configuration of the Steyr AUG A1; enable X-Ray mode to view internal rear chamber, dual guide rods, and modular polymer fire control pack."
+      },
+      "field_strip": {
+        "label": "Modular Field Strip",
+        "subLabel": "30%",
+        "desc": "Iconic Austrian modular breakdown: drop the amber magazine, press the barrel lock to slide out the 20\" barrel assembly, and pull the cross-pin to remove the hammer pack and bolt group."
+      },
+      "upper_mag_strip": {
+        "label": "Gas, Bolt & Mag Strip",
+        "subLabel": "65%",
+        "desc": "Detail strip of the offset gas block with 3-position plug and short-stroke piston, separation of the 7-lug bolt head from twin rods, and exploded waffle magazine."
+      },
+      "full_explode": {
+        "label": "25-Node Exploded View",
+        "subLabel": "100%",
+        "desc": "Full kinematic breakdown showcasing the Swarovski 1.5× cast receiver, folding vertical foregrip, 14-centimeter dual transfer bars, and rear hammer assembly."
+      }
+    },
+    "firingPhases": {
+      "aug_progressive_trigger": {
+        "shortLabel": "Trigger & Bars",
+        "title": "Phase 1 · Progressive Linear Trigger Travel & Dual Transfer Bars",
+        "description": "As the sliding trigger is pulled linearly rearward, twin steel transfer bars transmit pull across the magazine well into the rear polymer hammer pack sear."
+      },
+      "aug_hammer_ignition": {
+        "shortLabel": "Polymer Hammer Strike",
+        "title": "Phase 2 · Lightweight Rotary Hammer Ignition & Primer Strike",
+        "description": "Released from the sear, the torsion-spring-driven polymer hammer rotates rapidly forward, striking the extended firing pin to ignite the chambered 5.56 NATO round."
+      },
+      "aug_barrel_gas_tap": {
+        "shortLabel": "Barrel Travel & Gas Tap",
+        "title": "Phase 3 · Bullet Acceleration & Offset Gas Port Tapping",
+        "description": "The projectile accelerates down the 20-inch chrome-lined barrel to 970 m/s; gas taps into the 45-degree offset cylinder while exiting the closed tulip flash suppressor."
+      },
+      "aug_short_stroke_unlock": {
+        "shortLabel": "Short Piston & Unlock",
+        "title": "Phase 4 · Short-Stroke Impingement & 25° Rotary Cam Unlock",
+        "description": "The gas piston delivers a sharp impulse against the right hollow guide rod, allowing the bolt carrier to cam the 7-lug bolt 25 degrees out of battery while cocking the hammer."
+      },
+      "aug_bullpup_eject": {
+        "shortLabel": "Stock Port Ejection",
+        "title": "Phase 5 · Claw Extraction & Lateral Ejection Port Clearance",
+        "description": "The heavy claw extractor draws the spent brass from the rear chamber, whereupon the spring-loaded plunger ejector kicks it clear through the starboard ejection window."
+      },
+      "aug_waffle_feed_lock": {
+        "shortLabel": "Spring Feed & Lock",
+        "title": "Phase 6 · Magazine Strip Feed & 7-Lug Cam Lockup",
+        "description": "Parallel twin recoil springs push the carrier forward, stripping a fresh cartridge from the translucent amber magazine and rotating the bolt into rigid barrel extension lockup."
+      },
+      "aug_progressive_reset": {
+        "shortLabel": "Progressive Reset",
+        "title": "Phase 7 · Trigger Return & Modular Pack Sear Engagement",
+        "description": "Releasing the trigger permits the transfer bars to reset forward, catching the rotary polymer hammer on the primary sear shelf for subsequent semi-auto fire."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "太空时代的无托革命：斯太尔 AUG 步枪演进史",
+      "deck": "奥地利斯太尔工程团队在 1970 年代打破传统步枪布局桎梏，将全尺寸 20 英寸冷锻枪管浓缩入冲锋枪般精悍的工程塑料枪身，开创了模块化无托武器的工业美学巅峰。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1960年代末–1970",
+          "title": "战术教条的困境：紧凑车载与全尺寸弹道之争",
+          "paragraphs": [
+            "冷战中期的欧洲平原上，机械化步兵与空降突击战术迅猛普及。装甲运兵车与直升机狭窄的乘员舱，让装备全尺寸 StG 58（奥地利造 FAL）重管自动步枪的奥地利联邦军士兵苦不堪言。步兵下车作战亟需冲锋枪般灵动短小的全长，但阿尔卑斯山地阻击战的实战经验又严酷警示：绝对不可牺牲 508 毫米标准步枪枪管带来的千米初速与五百米杀伤射程。",
+            "常规折叠托步枪在折叠状态下人机工效极差且无法稳定抵肩射击。奥地利国防部因而签发了新一代步兵武器研发纲领，明确要求研制一种全长不超八百毫米、却具备全尺寸突击步枪弹道、重量大幅削减且可快速拆解维护的新时代轻武器。面对这近乎悖论的军方指标，传统机械布局已走入死胡同，斯太尔兵工厂决定将目光投向二战末期即露雏形、却从未真正成熟的无托（Bullpup）布局。"
+          ],
+          "audioScript": "上世纪六十年代末，冷战装甲机械化突击的普及，让传统一米多长的全威力自动步枪在狭窄步兵战车内显得笨拙不堪。奥地利联邦军急需一种全长仅如冲锋枪般短小、却拥有五百米标准突击步枪威力的全新武器。为了破解这个结构悖论，斯太尔兵工厂决意颠覆传统枪械构型，开启无托步枪的研制大门。",
+          "audioUrl": "audio/aug/story_act1_zh.mp3",
+          "focusPartId": "aug_stock",
+          "focusPartLabel": "奥地利军绿玻纤聚酰胺无托枪身"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1970–1976",
+          "title": "模块化筑基：三位大师与工程塑料的冒险",
+          "paragraphs": [
+            "在斯太尔总设计师霍斯特·维塞尔（Horst Wesp）、卡尔·瓦格纳（Karl Wagner）与卡尔·穆泽尔（Karl Möser）的主导下，代号“陆军通用步枪”（Armee-Universal-Gewehr，简称 AUG）的项目全面铺开。工程团队打破了常规步枪机匣承载全枪的定势，开创性地提出了模块化六大件结构理念：枪管、机匣、枪托、枪机、击锤盒与弹匣，无需任何工具即可在数秒内拆解互换。",
+            "最大胆的创新发生在外壳与火控材料上。斯太尔与注塑工程专家深度合作，选用了当时极为前卫的杜邦 Zytel 玻璃纤维增强聚酰胺 66。他们不仅将包含握把、全手大护弓和后置弹匣井的整个枪身一体成型，更不可思议地将枪托尾腔内的击锤、阻铁乃至断路器完全采用自润滑工程塑料注塑制造。在零下四十度极寒与六十度酷暑的严苛泥沙跌落试验中，这套塑料火控不仅耐磨抗蚀，甚至实现了终身免润滑运转，彻底击碎了军方对塑料不可靠的质疑。"
+          ],
+          "audioScript": "在斯太尔设计师维塞尔与瓦格纳的主导下，陆军通用步枪项目开创了模块化拆解构型。工程团队更大胆抛弃传统冲压钢板，采用玻璃纤维增强聚酰胺制造一体化枪托，甚至将尾托内部的击锤与阻铁全部用工程塑料成型。在极寒与泥沙测试中，这套免润滑全塑火控展现出惊人耐用性，彻底颠覆了传统军工理念。",
+          "audioUrl": "audio/aug/story_act2_zh.mp3",
+          "focusPartId": "aug_hammer_pack",
+          "focusPartLabel": "后置全工程塑料模块化击锤盒框架"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1976–1977",
+          "title": "机械灵魂：冷锻快拆、双长导杆与施华洛世奇之眼",
+          "paragraphs": [
+            "为了实现真正的多功能通用性，AUG 确立了标志性的前置斜偏导气与两秒快拆枪管机制。枪管节套采用冷锻八齿衬套，与压铸铝机匣内的钢制卡槽严密契合；射手只需一推导气箍旁的横插锁钮，握住可折叠垂直前握把旋转四十五度，便能在战火中免工具抽出过热枪管，或在卡宾型、标准型、重管轻机枪型之间瞬时切换。枪机采用两根空心长导杆支撑往复，右侧导杆承接短行程活塞的瞬时撞击，左侧导杆连通非随动拉机柄，七突笋回转闭锁机头运转极度平稳顺滑。",
+            "瞄准系统的革命同样惊艳。AUG 舍弃了传统机械准星缺口，与奥地利光学名门施华洛世奇联合开发了一体化压铸 1.5 倍白光光学瞄准镜提把。视场内粗黑醒目的环形瞄标，让新兵在几小时内就能掌握“黑环套中目标即扣扳机”的快速瞄准本能；机匣顶部应急照门与全通透目镜的设计，让 AUG 在近距离室内清除与四百米开阔地精准射击中达到了前所未有的战术平衡。"
+          ],
+          "audioScript": "为了实现多任务快速转换，斯太尔设计了著名的两秒快拆枪管机构，配合双长导杆七突笋枪机框，实现了极其顺畅的短行程活塞循环。同时，与施华洛世奇联合定制的一点五倍一体式白光瞄准镜提把，用独特的环形分划让士兵实现近距离双眼快速捕捉与远距精确射击的完美兼顾。",
+          "audioUrl": "audio/aug/story_act3_zh.mp3",
+          "focusPartId": "aug_receiver_optic",
+          "focusPartLabel": "压铸铝合金机匣与一体式 1.5× 施华洛世奇瞄准镜提把"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1977–至今",
+          "title": "列装传奇：StG 77 与跨越半个世纪的无托丰碑",
+          "paragraphs": [
+            "1977 年，奥地利联邦军正式签署换装法令，赋予该枪“StG 77”（1977年型突击步枪）的军用代号。当通体橄榄绿、造型酷似科幻科特飞船的 AUG 首次亮相世界军博会时，全球轻武器界为之震动。紧凑无托的 790 毫米全长与半透明琥珀色华夫格弹匣，不仅重新定义了现代突击步枪的外观审美，更经受住了中东沙漠烈日、爱尔兰潮湿沼泽以及澳大利亚内陆尘暴等极端实战环境的严苛洗礼。",
+            "从澳大利亚国防军获得特许生产的 F88，到爱尔兰国防军、沙特阿拉伯皇家卫队、突尼斯陆军，乃至全球数十个精锐反恐特警单位，AUG 跨越半个世纪历久弥新。它不仅是人类历史上首款被大国成建制列装并经受充分实战检验的无托步枪，更是轻武器工业史上将人机工程学、先进高分子聚合物与模块化战术思想融为一体的不朽经典。"
+          ],
+          "audioScript": "一九七七年，奥地利陆军正式将其列装为七七型突击步枪。这款犹如科幻电影中走出的前卫无托武器，凭借半透明琥珀弹匣、极短全长与卓越精度迅速名震天下，先后被澳大利亚、爱尔兰等数十国军队采用。它成为世界步兵武器史上最成功、列装最持久的无托突击步枪传世丰碑。",
+          "audioUrl": "audio/aug/story_act4_zh.mp3",
+          "focusPartId": "aug_mag_body",
+          "focusPartLabel": "30发半透明琥珀色华夫格弧形聚合物弹匣体"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "全工程塑料免润滑模块化击锤盒",
+          "tag": "自润滑聚合物火控",
+          "summary": "首创将击锤、阻铁、断路器与火控壳体全部采用自润滑聚酰胺高分子注塑成型，彻底解决了无托步枪尾托油污积碳与极寒冻结卡死问题，并可通过一根横销整体抽换。",
+          "focusPartId": "aug_hammer_pack",
+          "focusPartLabel": "模块化全塑击锤盒"
+        },
+        {
+          "id": "bt2",
+          "title": "两秒免工具冷锻快拆枪管总成",
+          "tag": "多口径模块化换管",
+          "summary": "将 45° 偏置短活塞导气箍、折叠垂直前握把与冷锻镀铬八齿闭锁环一体集成，通过机匣下方的按压锁止块实现两秒内徒手快拆，赋予单兵在标准步枪、短突击卡宾与班用机枪间无缝切换的能力。",
+          "focusPartId": "aug_barrel",
+          "focusPartLabel": "20\" 冷锻快拆枪管"
+        },
+        {
+          "id": "bt3",
+          "title": "高强度半透明琥珀华夫格弹匣",
+          "tag": "全工况余弹感知",
+          "summary": "彻底告别金属弹匣易磕碰变形与盲视余弹的痛点，采用高抗冲半透明聚碳酸酯与外凸华夫网格加强筋，使射手无需拔出弹匣即可在眼角余光下精准预判剩余弹药量。",
+          "focusPartId": "aug_mag_body",
+          "focusPartLabel": "30发琥珀华夫弹匣"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1970",
+          "title": "AUG 项目立项研制",
+          "detail": "奥地利国防部下达换代步枪技术指标，斯太尔兵工厂维塞尔工程团队确立无托布局与模块化六大件研发路线。"
+        },
+        {
+          "year": "1974",
+          "title": "聚酰胺整体枪身原型落地",
+          "detail": "成功试制融合全手大护弓、握把与尾托一体成型的杜邦 Zytel 聚酰胺工程塑料枪身，并通过严苛跌落与极端温差试验。"
+        },
+        {
+          "year": "1977",
+          "title": "正式定型为 StG 77",
+          "detail": "AUG A1 击败竞争对手，被奥地利联邦陆军正式选定为制式突击步枪并赋予军用代号 StG 77。"
+        },
+        {
+          "year": "1982",
+          "title": "施华洛世奇 1.5× 瞄准镜定型升级",
+          "detail": "一体化光学瞄准镜提把优化了抗反光镀膜与环形测距标线，实现全天候中远距离首发命中概率飞跃。"
+        },
+        {
+          "year": "1985",
+          "title": "澳大利亚陆军选型采纳",
+          "detail": "经过热带雨林与泥沙环境竞标，澳大利亚国防军正式采购并特许本土利思戈兵工厂生产衍生型 F88 Austeyr。"
+        },
+        {
+          "year": "1997",
+          "title": "模块化皮卡汀尼导轨演化 (A2/A3)",
+          "detail": "斯太尔推出可拆卸光学提把的平顶导轨接收器版本，延续 AUG 枪族在 21 世纪模块化特种作战中的核心地位。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Space-Age Bullpup Revolution: The Steyr AUG Saga",
+      "deck": "In the 1970s, Steyr Mannlicher shattered traditional small-arms orthodoxy by packing a full-length 20-inch cold-hammer-forged barrel into a submachine-gun-length polymer chassis, crafting the zenith of modular bullpup engineering.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "Late 1960s–1970",
+          "title": "Doctrine in Crisis: Mechanized Mobility versus Ballistic Reach",
+          "paragraphs": [
+            "As armored personnel carriers and helicopter air-assault doctrines dominated Central European military theory in the late 1960s, infantrymen found themselves hemmed into cramped troop compartments burdened by full-length battle rifles like the StG 58. Yet Alpine operational doctrine refused to sacrifice the muzzle velocity and 500-meter lethal reach provided by standard 508-millimeter rifle barrels. Folding-stock rifles remained awkward to shoulder rapidly, presenting severe ergonomic compromises when egressing armored hulls.",
+            "The Austrian Bundesheer subsequently issued a radical technical requirement: a weapon shorter than 800 millimeters overall, possessing the ballistic trajectory of a full-size battle rifle, dramatically lighter in weight, and capable of field-level modular role transformation. Faced with physical limits that conventional steel-receiver layouts could never reconcile, Steyr-Daimler-Puch engineers resolved to master the bullpup configuration."
+          ],
+          "audioScript": "In the late nineteen-sixties, the rise of mechanized infantry fighting vehicles trapped European soldiers inside cramped hulls with unwieldy battle rifles. The Austrian Bundesheer demanded an infantry rifle with the overall length of a submachine gun, yet retaining the full muzzle velocity of a twenty-inch rifle barrel. Steyr Mannlicher stepped into the breach, turning to the radical bullpup configuration to solve this impossible tactical equation.",
+          "audioUrl": "audio/aug/story_act1_en.mp3",
+          "focusPartId": "aug_stock",
+          "focusPartLabel": "Austrian Olive-Green Polyamide 66 Bullpup Stock Housing"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1970–1976",
+          "title": "The Modular Gamble: Master Engineers & Molded Polymers",
+          "paragraphs": [
+            "Under chief engineers Horst Wesp, Karl Wagner, and Karl Möser, the Armee-Universal-Gewehr project discarded steel forgings in favor of an unapologetically modular six-group architecture: barrel, receiver, stock, bolt, hammer pack, and magazine. Every major group was engineered to detach without tools within seconds.",
+            "The boldest gamble lay in polymer chemistry. Collaborating with advanced injection molding specialists, Steyr opted for DuPont Zytel glass-fiber-reinforced polyamide 66. Beyond fashioning the green futuristic stock with its sweeping full-hand trigger guard and rear magwell, Steyr molded the entire rear fire control group—including the hammer, sears, and disconnector—out of self-lubricating synthetic resins. Torture-tested across extreme temperature swings from minus forty to plus sixty degrees Celsius, the polymer trigger pack resisted dirt, required zero lubrication, and silenced traditional military skepticism."
+          ],
+          "audioScript": "Led by chief designers Horst Wesp and Karl Wagner, the Steyr universal army rifle project pioneered a six-group modular architecture. The design team cast aside conventional steel in favor of fiberglass-reinforced polyamide, creating the green stock and molding the entire rear hammer pack from self-lubricating polymer. In severe Arctic freeze and desert dust trials, this grease-free lockwork proved utterly indestructible.",
+          "audioUrl": "audio/aug/story_act2_en.mp3",
+          "focusPartId": "aug_hammer_pack",
+          "focusPartLabel": "Rear All-Polymer Modular Hammer Pack Housing"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1976–1977",
+          "title": "Mechanical Soul: Cold-Hammered Quick-Change & Swarovski Optics",
+          "paragraphs": [
+            "To secure absolute multi-role adaptability, Steyr devised a two-second quick-change barrel mechanism. Cold-hammer-forged with an eight-lug locking ring, the barrel locks securely into steel inserts die-cast inside the aluminum receiver. By thumbing a knurled cross-bolt and rotating the folding vertical foregrip 45 degrees, a soldier could extract a red-hot barrel mid-firefight or swap between carbine, standard rifle, or heavy-barrel squad automatic weapon configurations.",
+            "Operating kinematics were equally refined: dual hollow steel guide rods supported the carrier, absorbing recoil along twin parallel springs while driving a 7-lug rotary bolt head. Complementing this kinematic balance, Steyr joined forces with Swarovski Optik to pioneer an integrated 1.5× optical scope carrying handle. Its bold donut reticle allowed intuitive, two-eyes-open target acquisition: center the ring on the torso and pull the progressive trigger, achieving devastating hit probability from close-quarters battle to 400 meters."
+          ],
+          "audioScript": "To enable seamless tactical versatility, Steyr integrated an eight-lug cold-hammer-forged barrel that unlatches in two seconds via the folding front grip. Inside, twin tubular guide rods drove a smooth seven-lug rotating bolt. Above the aluminum receiver sat an integrated one-point-five power Swarovski optic, whose intuitive circle reticle allowed rapid instinct shooting alongside long-range precision.",
+          "audioUrl": "audio/aug/story_act3_en.mp3",
+          "focusPartId": "aug_receiver_optic",
+          "focusPartLabel": "Die-Cast Aluminum Receiver w/ Integrated 1.5× Swarovski Optic"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "1977–Present",
+          "title": "Service Laurels: StG 77 & Five Decades of Global Dominance",
+          "paragraphs": [
+            "In 1977, the Austrian military formally accepted the weapon as the Sturmgewehr 77. When the olive-green bullpup with its distinctive amber translucent waffle magazine debuted on the world stage, it seemed beamed in from science fiction. Beneath its futuristic exterior, however, was an ultra-rugged weapon that conquered the blistering deserts of the Middle East, the wet bogs of Ireland, and the harsh red dust of the Australian Outback.",
+            "Manufactured under license by Australia as the F88 Austeyr, and fielded by nations from New Zealand to Saudi Arabia alongside elite tactical units like the Austrian EKO Cobra, the AUG has thrived for nearly half a century. It stands as the world's first comprehensively adopted, combat-proven bullpup assault rifle—a timeless testament to ergonomic foresight, polymer metallurgy, and Austrian mechanical ingenuity."
+          ],
+          "audioScript": "Formally adopted by the Austrian military in nineteen-seventy-seven as the StG seventy-seven, the Steyr universal rifle conquered international trials. License-built in Australia as the F-eighty-eight and fielded by over thirty nations, this olive-green bullpup proved that polymer construction and compact layouts could thrive in modern warfare, securing its status as an immortal firearms milestone.",
+          "audioUrl": "audio/aug/story_act4_en.mp3",
+          "focusPartId": "aug_mag_body",
+          "focusPartLabel": "30-Rd Translucent Amber Waffle-Grid Polymer Magazine"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "All-Polymer Modular Self-Lubricating Hammer Pack",
+          "tag": "Lubrication-Free Polymer Lockwork",
+          "summary": "Molding the hammer, sears, disconnectors, and housing out of self-lubricating polyamide eliminated fouling accumulation and freezing risks in the bullpup stock, removable as a complete drop-in module via a single cross-pin.",
+          "focusPartId": "aug_hammer_pack",
+          "focusPartLabel": "Modular Polymer Hammer Pack"
+        },
+        {
+          "id": "bt2",
+          "title": "Two-Second Toolless Quick-Change Barrel Assembly",
+          "tag": "Modular Barrel Interchangeability",
+          "summary": "Integrating a 45-degree offset gas system, folding foregrip, and cold-hammer-forged 8-lug locking collar into an unlatching subassembly allowed rapid field swaps between standard, carbine, and heavy support roles.",
+          "focusPartId": "aug_barrel",
+          "focusPartLabel": "20\" Quick-Change CHF Barrel"
+        },
+        {
+          "id": "bt3",
+          "title": "High-Impact Translucent Amber Waffle Magazine",
+          "tag": "Passive Ammunition Management",
+          "summary": "Replaced dent-prone stamped steel with impact-resistant amber polycarbonate molded with external structural ribs, giving soldiers immediate peripheral visual awareness of remaining round counts without unseating the magazine.",
+          "focusPartId": "aug_mag_body",
+          "focusPartLabel": "30-Rd Amber Waffle Magazine"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1970",
+          "title": "AUG Project Authorization",
+          "detail": "Austrian Ministry of Defense issues operational specs for an agile squad weapon; Steyr engineering team establishes the six-module bullpup design architecture."
+        },
+        {
+          "year": "1974",
+          "title": "Polyamide Monocoque Stock Validated",
+          "detail": "Successful tool molding of the unified DuPont Zytel chassis with enlarged trigger guard, surviving extreme drop testing and thermal shock."
+        },
+        {
+          "year": "1977",
+          "title": "Military Adoption as the StG 77",
+          "detail": "The AUG A1 wins competitive field evaluations and is officially adopted as the standard-issue assault rifle of the Austrian Armed Forces."
+        },
+        {
+          "year": "1982",
+          "title": "Swarovski 1.5× Optics Standardization",
+          "detail": "Finalization of the vacuum-sealed aluminum housing and anti-reflective coated circle reticle for rapid combat reflex sight acquisition."
+        },
+        {
+          "year": "1985",
+          "title": "Australian Defense Force Selection",
+          "detail": "Following rigorous trials in tropical and arid conditions, Australia adopts the rifle, leading to domestic license production as the F88 Austeyr."
+        },
+        {
+          "year": "1997",
+          "title": "A2 & A3 Modular Rail Evolution",
+          "detail": "Steyr introduces detachable optic brackets and Mil-Std-1913 Picatinny rail flats, extending the platform's multi-mission dominance into the 21st century."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "aug_barrel": {
+      "partId": "aug_barrel",
+      "bomCode": "U-01",
+      "calloutLabelEn": "20in CHF Barrel",
+      "zh": {
+        "roleTag": "508毫米全尺寸步枪弹道与两秒免工具快拆换管",
+        "overview": "这是AUG步枪标志性的20英寸冷锻快拆枪管组件，刚性安装于铝合金机匣前端。得益于无托后置布局，整枪在仅790毫米的紧凑全长内完整保留了508毫米全尺寸步枪枪管的初速与精度优势。",
+        "craftAndMaterial": "采用高规格铬钼钒特种合金钢进行旋转精密冷锻加工，内膛全长镀硬铬以抵抗高频冲刷腐蚀。枪管中段精密车削出八齿断隔式闭锁凸笋环，表面覆以耐磨防腐的磷化涂层。",
+        "kinematicRole": "击发阶段3中弹头在此加速旋转，燃气经右上方导气孔分流；不参与后坐往复。在不完全分解初期（进度0.07至0.28），射手按压机匣快拆卡榫并顺时针旋转45度，即可向前整体抽离枪管。",
+        "designHighlight": "快拆闭锁环设计彻底颠覆了传统步枪维护模式，野战射手无需工具即可在两秒内更换枪管，实现卡宾枪、标准步枪与重枪管轻机枪角色的快速切换。",
+        "audioScript": "得益于后置无托结构，AUG在冲锋枪般的超短身躯里，塞入了一根完整的508毫米精密冷锻枪管。按下卡榫旋转45度，两秒内就能徒手完成热管更换，兼顾了极致紧凑与全威力弹道表现。",
+        "audioUrl": "audio/aug/parts/aug_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "508mm Full Ballistics & 2-Second Quick Change",
+        "overview": "This is the flagship 20-inch cold hammer-forged quick-change barrel locking directly into the forward receiver sleeve. The bullpup layout retains full muzzle velocity within an ultra-compact 790-millimeter overall length.",
+        "craftAndMaterial": "Constructed from high-tensile chrome-moly-vanadium steel through rotary cold hammer forging, featuring a hard-chrome-plated bore. The exterior features interrupted eight-lug locking collars and a durable manganese phosphate finish.",
+        "kinematicRole": "During Phase 3, it guides the accelerating 5.56 NATO projectile while bleeding gas through the angled port; it remains fixed during cycling. In field stripping (progress 0.07 to 0.28), rotating it 45 degrees releases it forward instantly.",
+        "designHighlight": "The interrupted-lug quick-release interface revolutionized infantry modularity, allowing an operator to swap overheated barrels or switch barrel lengths in seconds without special armorer tools.",
+        "audioScript": "Thanks to the bullpup architecture, the AUG houses a full twenty-inch cold hammer-forged barrel inside a compact thirty-one-inch chassis. Depressing the receiver catch and rotating forty-five degrees allows the barrel to slide out in just two seconds.",
+        "audioUrl": "audio/aug/parts/aug_barrel_en.mp3"
+      }
+    },
+    "aug_flash_hider": {
+      "partId": "aug_flash_hider",
+      "bomCode": "U-02",
+      "calloutLabelEn": "Tulip Flash Hider",
+      "zh": {
+        "roleTag": "抑制5.56毫米膛口焰与兼作枪榴弹发射导环",
+        "overview": "这是AUG A1标志性的闭口三槽郁金香形消焰器，以细牙螺纹固定在枪管枪口末端。它不仅有效稀释膛口高速火药燃气，还兼作北约制式枪榴弹的发射导引基准座。",
+        "craftAndMaterial": "采用高强度碳素合金钢精密铣削加工，经深层液体氮化表面处理以抵抗炽热火药燃气冲刷。前端采用圆滑倒角的闭口花冠结构，后端车制有滚花限位环与钢丝挡簧卡圈槽。",
+        "kinematicRole": "射击全程随枪管保持静止，击发瞬间引导高速燃气呈三向辐射状排出，消除夜视仪过载白闪。在子组件深度分解阶段（进度0.36至0.56），使用扳手旋松螺纹后向前方拆离。",
+        "designHighlight": "闭口式郁金香结构杜绝了传统开叉式消焰器极易勾挂热带丛林藤蔓的缺陷，而后部滚花环可直接套接22毫米北约枪榴弹，无需加装任何额外转接配件。",
+        "audioScript": "标志性的闭口郁金香消焰器能将枪口焰均匀分流，避免强光干扰夜视器材。闭环花冠彻底避免了枝桠勾挂，其外径更是严密的22毫米，无需工具就能直接套射北约制式枪榴弹。",
+        "audioUrl": "audio/aug/parts/aug_flash_hider_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Muzzle Flash Control & 22mm Grenade Spigot",
+        "overview": "This is the iconic tulip-profile closed-prong flash suppressor, threaded onto the muzzle of the 20-inch barrel. Beyond concealing flash, its machined outer profile serves as a direct launch spigot for NATO rifle grenades.",
+        "craftAndMaterial": "Precision-machined from high-grade alloy steel and treated with a salt-bath ferritic nitrocarburizing process. It features closed forward tines and an integral grenade retaining ring groove with knurled positioning surfaces.",
+        "kinematicRole": "Remains static on the barrel, venting expanding combustion gases radially during firing Phase 3 to preserve night vision. During sub-assembly strip (progress 0.36 to 0.56), it unscrews forward from the muzzle threads.",
+        "designHighlight": "The closed-prong design eliminates the snagging hazards common to open fork flash hiders in jungle brush, while inherently supporting 22mm rifle grenades without muzzle adapters.",
+        "audioScript": "The iconic tulip flash suppressor prevents night-blindness by disrupting incandescent muzzle blast. Its closed-prong loop prevents catching on foliage, while its external diameter acts as a standardized mount for twenty-two-millimeter rifle grenades.",
+        "audioUrl": "audio/aug/parts/aug_flash_hider_en.mp3"
+      }
+    },
+    "aug_gas_block": {
+      "partId": "aug_gas_block",
+      "bomCode": "U-03",
+      "calloutLabelEn": "Offset Gas Block",
+      "zh": {
+        "roleTag": "右偏置气室直驱与折叠垂直前握把铰接基座",
+        "overview": "这是压装固定于枪管前端右侧的复合导气箍总成。它不仅将导气管偏置在枪身右上侧以直驱枪机右导杆，其底部还延伸出垂直前握把的阻尼铰接耳座。",
+        "craftAndMaterial": "采用高强度合金钢整体模锻后五轴精铣成型，表面作深色微弧氧化与耐高温磷化防锈处理。内腔包含精密研磨的导气活塞滑膛与前握把双向折叠卡锁机构。",
+        "kinematicRole": "全程随枪管装配体保持刚性结合，击发时引导燃气进入气室并承受活塞的反冲反作用力。在完全分解阶段（进度0.68至0.92），经专用冲具拔出固定锥销后可自枪管压脱分解。",
+        "designHighlight": "巧妙将前握把铰轴直接集成在导气箍下方，在枪管炽热发烫的紧急状态下，射手握持前握把即可徒手扳转并向前拔出枪管，兼顾人机工程与绝热安全。",
+        "audioScript": "复合导气箍向右上方倾斜45度，为气动系统留出最佳力线，直推机框右导杆。底部更整合了折叠垂直前握把，剧烈连发后，握紧前握把就能安全换管，丝毫不惧高温烫手。",
+        "audioUrl": "audio/aug/parts/aug_gas_block_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Offset Gas Expansion & Vertical Grip Pivot Hinge",
+        "overview": "This is the structural gas block pinned to the forward right profile of the barrel. It houses the gas regulator and angled gas cylinder while serving as the primary hinge boss for the folding vertical forward grip.",
+        "craftAndMaterial": "Drop-forged from high-grade alloy steel and precision CNC-machined, treated with a heavy-duty parkerized corrosion-resistant finish. Features an angled bore matching the piston guide tube and detent channels for the grip.",
+        "kinematicRole": "Remains solidly pinned to the barrel during firing, containing pressurized combustion gas to actuate the piston. Disassembled during complete armorer teardown (progress 0.68 to 0.92) by drifting its taper pins.",
+        "designHighlight": "By integrating the vertical foregrip hinge directly onto the gas block, the grip functions as an insulated handle to rotate and unlock the scalding barrel during high-intensity firefights.",
+        "audioScript": "Tilted forty-five degrees to the right, this forged gas block aligns directly with the carrier guide rod. It integrates the hinge for the folding foregrip, which doubles as an insulated handle for swapping hot barrels without burns.",
+        "audioUrl": "audio/aug/parts/aug_gas_block_en.mp3"
+      }
+    },
+    "aug_gas_regulator": {
+      "partId": "aug_gas_regulator",
+      "bomCode": "U-04",
+      "calloutLabelEn": "3-Position Gas Plug",
+      "zh": {
+        "roleTag": "标准与恶劣大进气及枪榴弹完全闭气三档调节塞",
+        "overview": "这是旋入倾斜导气箍前端的调节阀塞，通过旋转切换不同的进气截面。它允许步枪在严苛泥沙严寒环境或高膛压发射枪榴弹时灵活调控系统内气压。",
+        "craftAndMaterial": "主体由耐高温耐烧蚀特种不锈钢精密切削加工，前端加装耐冲击高强度工程塑料双向旋钮拨翼。侧壁开有精密的标准小孔、恶劣大孔以及用于完全截断燃气的盲壁段。",
+        "kinematicRole": "射击时承受高温高压气流直接冲击并维持设定气量，自身不产生轴向运动。在部件野战分解阶段（进度0.36至0.56），下压弹性阻尼卡销即可从导气箍前部整体旋出拆卸。",
+        "designHighlight": "双翼塑料拨柄阻绝了金属热传导，确保士兵在持续射击后佩戴厚防寒手套也能徒手快速旋拧，在正常与大进气档位间即时切换排除欠后坐故障。",
+        "audioScript": "旋入导气箍前端的三档调节塞，带有一对防烫工程塑料翼片。即使刚打完数百发子弹，射手戴着严寒手套也能徒手扳转，在标准射击、恶劣大进气与榴弹闭气档位间自由切换。",
+        "audioUrl": "audio/aug/parts/aug_gas_regulator_zh.mp3"
+      },
+      "en": {
+        "roleTag": "3-Position Gas Metering & Grenade Cutoff Plug",
+        "overview": "This is the rotary gas regulator plug threaded into the front of the angled gas block. It meters bleeding gas volume across distinct apertures to guarantee reliable cycling in adverse environments.",
+        "craftAndMaterial": "Machined from heat-resistant stainless steel with precision orifices, capped by a ruggedized polymer cross-wing knob. Features two calibrated metering ports for standard and adverse conditions plus a complete gas cutoff wall.",
+        "kinematicRole": "Channels gas into the piston face during Phase 3 while remaining locked in position. Removed during field strip cleaning (progress 0.36 to 0.56) by depressing the detent and withdrawing it forward.",
+        "designHighlight": "The heat-resistant polymer wings insulate against blistering gas block temperatures, allowing an operator wearing winter mittens to immediately cycle to adverse gas during sand or icing stoppages.",
+        "audioScript": "Threaded into the gas block, this three-position plug meters tapped propellant gas. Insulated polymer wings allow rapid adjustment even with winter gloves, letting soldiers toggle between standard gas, adverse high-fouling, or grenade-launching cutoff modes.",
+        "audioUrl": "audio/aug/parts/aug_gas_regulator_en.mp3"
+      }
+    },
+    "aug_gas_piston": {
+      "partId": "aug_gas_piston",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Short-Stroke Piston",
+      "zh": {
+        "roleTag": "隔离火药燃气热量与瞬时撞击枪机框右长导杆",
+        "overview": "这是滑装于导气箍气室内的短行程活塞与配套同轴复位螺旋簧。它负责将导气孔喷出的高温火药气体能量转换为极短距离的高速后坐机械冲量。",
+        "craftAndMaterial": "选用高硬度马氏体不锈钢经车铣与磨削加工，工作圆柱面经镀硬铬抛光镜面处理以抗积碳与高温烧蚀。配套活塞簧采用优质硅铬合金弹簧钢丝绕制。",
+        "kinematicRole": "阶段4中活塞受燃气驱动向后疾冲约18毫米，猛烈撞击枪机框右侧空心导杆后被气室台阶阻挡并泄压，随后由复位簧将其向前推回原位。在进度0.36至0.58分解段向后抽离气室。",
+        "designHighlight": "采用真正的短行程活塞设计，火药燃气和炙热积碳被完全阻绝在枪口导气箍区域，枪身贴腮部位的机匣和枪机框始终保持纯净低温，从根源消除了无托步枪喷烟熏眼的弊病。",
+        "audioScript": "这根镀硬铬的短行程活塞行程仅有十八毫米。击发时它如同一记重拳，瞬时撞击机框右侧长导杆，随后立刻被弹簧推回复位。炽热废气全在前方排尽，绝不进入后置贴腮机匣。",
+        "audioUrl": "audio/aug/parts/aug_gas_piston_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Gas Impulse Transfer & Receiver Thermal Isolation",
+        "overview": "This is the independent short-stroke gas piston and coaxial helical return spring seated in the gas block. It converts expanding gas pressure into a sharp, low-displacement mechanical impulse to cycle the action.",
+        "craftAndMaterial": "Precision-turned from high-strength stainless steel with a hard-chrome-plated body resisting fouling and pitting. The captive return spring is wound from premium silicon-chrome alloy spring wire.",
+        "kinematicRole": "During Phase 4, it travels rearward approximately 18mm, striking the right carrier guide rod before venting surplus gas forward, returning immediately via its spring. Removed rearward in strip range 0.36 to 0.58.",
+        "designHighlight": "By venting hot combustion gases over 30 centimeters forward of the shooter's face, the short-stroke mechanism keeps the bullpup cheekpiece clean and cool, entirely eliminating the toxic gas blowback common to bullpups.",
+        "audioScript": "Traveling only eighteen millimeters, this hard-chromed short-stroke piston delivers a sharp kinetic tap to the carrier right guide rod before venting excess gas forward. It keeps heat and carbon safely isolated from the shooter cheekpiece.",
+        "audioUrl": "audio/aug/parts/aug_gas_piston_en.mp3"
+      }
+    },
+    "aug_bolt_carrier": {
+      "partId": "aug_bolt_carrier",
+      "bomCode": "U-06",
+      "calloutLabelEn": "Twin-Rod Bolt Carrier",
+      "zh": {
+        "roleTag": "双导杆精密平衡往复与螺旋导槽驱动回转开闭锁",
+        "overview": "这是AUG步枪自动机的核心骨架，包含后端铸钢机框与两根向前伸出的等长空心长导杆。它在机匣内导向滑动，承担着容纳枪机、引导复进和缓冲击锤的综合重任。",
+        "craftAndMaterial": "核心机框由特种结构钢经精密熔模铸造结合CNC精加工成型，两根导杆为高同轴度薄壁冷拔无缝钢管经渗氮硬化并抛光。内部加工有极其精准的开闭锁螺旋引导凹槽。",
+        "kinematicRole": "阶段4中右导杆承受活塞撞击后驱使机框整体后坐，机框螺旋槽拨动枪机头回转25度完成开锁；阶段6由双复进簧推回完成闭锁。在部件拆解阶段（进度0.18至0.31）自机匣后部完整抽出。",
+        "designHighlight": "左右对称的双长导杆不仅消除了单杆后坐带来的侧向偏扭阻力，更巧妙地将左侧赋予拉机柄、右侧赋予活塞杆，管内还完整容纳了复进簧，空间集成度堪称机械奇迹。",
+        "audioScript": "机框前伸的两根空心长导杆是AUG的机械精髓：右导杆接活塞推力，左导杆连拉机柄，导杆空腔还正好藏进复进簧。这种完全对称的滑轨布局，彻底根治了无托步枪的偏载卡壳难题。",
+        "audioUrl": "audio/aug/parts/aug_bolt_carrier_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Symmetrical Guide Platform & Cam-Driven Bolt Carrier",
+        "overview": "This is the central operating assembly of the bullpup mechanism, comprising a cast-steel carrier body permanently staked with twin forward tubular guide rods. It balances cycling forces within the aluminum receiver.",
+        "craftAndMaterial": "Investment-cast from structural alloy steel with precision CNC-machined helical cam paths and nitrided wear tracks. The twin guide tubes are seamless cold-drawn steel, polished and hardened to minimize friction.",
+        "kinematicRole": "During Phase 4, the right rod absorbs piston impact, recoiling the carrier so its cam track rotates the bolt head 25 degrees out of battery; Phase 6 pushes it forward to chamber. Extracted rearward in strip range 0.18 to 0.31.",
+        "designHighlight": "The twin-rod layout distributes mass symmetrically: the right rod handles gas drive, the left links to the non-reciprocating charging handle, and both hollow shafts house the recoil springs in perfect balance.",
+        "audioScript": "Twin hollow guide rods are the engineering heart of the AUG bolt carrier. The right rod takes the gas piston strike while the left engages the cocking slide, housing the dual recoil springs inside to eliminate any tilting friction.",
+        "audioUrl": "audio/aug/parts/aug_bolt_carrier_en.mp3"
+      }
+    },
+    "aug_bolt": {
+      "partId": "aug_bolt",
+      "bomCode": "U-07",
+      "calloutLabelEn": "7-Lug Rotating Bolt",
+      "zh": {
+        "roleTag": "七突笋刚性咬合枪管节套与支持快速改制左向抛壳",
+        "overview": "这是嵌套于枪机框前部的七突笋回转闭锁枪机头，包含抽壳钩、柱塞抛壳挺与开闭锁凸轮导套。它直接与枪管后端的闭锁卡槽形成刚性咬合，构筑承受膛压的密封弹膛。",
+        "craftAndMaterial": "采用高抗扭高韧性航空级合金钢精密切削加工并经整体渗碳淬火，表面经高精度研磨与抗磨涂层处理。前圆周分布七个承压突笋，第八突笋空位装配爪式抽壳钩。",
+        "kinematicRole": "阶段4由枪机框螺旋槽带动旋转25度脱离节套完成开锁并后移抽壳；阶段6在复进到位瞬间受凸轮约束顺时针旋转25度刚性锁闭。在子组件分解阶段（进度0.36至0.58）自机框前端旋转拔离。",
+        "designHighlight": "枪机头拥有极其罕见的互换镜像对称设计：右撇子使用标准右旋开锁机头，左撇子射手仅需更换一套反向凸轮左旋机头并调整抛壳窗，整枪立刻变为左侧平稳抛壳。",
+        "audioScript": "枪机头部均布了七个刚性闭锁突笋，稳稳咬进枪管尾端的钢节套承受火药爆压。最有意思的是，左撇子射手只要换上反向凸轮枪机头，AUG就能在几秒内切换为左侧抛壳，毫无打脸之忧。",
+        "audioUrl": "audio/aug/parts/aug_bolt_zh.mp3"
+      },
+      "en": {
+        "roleTag": "7-Lug High-Pressure Lockup & Ambidextrous Modular Head",
+        "overview": "This is the rotary bolt head seated in the carrier face, containing the claw extractor, spring plunger ejector, and cross-pin cam sleeve. It locks directly into the barrel extension to seal the chamber against firing pressure.",
+        "craftAndMaterial": "Machined from high-grade aerospace alloy steel and carburized for exceptional surface hardness and core toughness. Features seven radial locking lugs with an integrated extractor claw occupying the eighth lug position.",
+        "kinematicRole": "During Phase 4, the carrier cam rotates it 25 degrees counterclockwise to unlock and extract; Phase 6 camming rotates it clockwise into rigid lockup. Removed from the carrier during strip range 0.36 to 0.58.",
+        "designHighlight": "Engineered with modular ambidexterity: swapping this standard right-hand bolt for a mirrored left-hand bolt and shifting the stock dust cover configures the weapon entirely for left-handed ejection without modifications.",
+        "audioScript": "Locking directly into the barrel extension with seven radial lugs, this bolt head withstands fifty-five thousand PSI of chamber pressure. Swapping it for a mirrored left-ejecting bolt head allows total ambidextrous conversion in under a minute.",
+        "audioUrl": "audio/aug/parts/aug_bolt_en.mp3"
+      }
+    },
+    "aug_firing_pin": {
+      "partId": "aug_firing_pin",
+      "bomCode": "U-08",
+      "calloutLabelEn": "Stepped Firing Pin",
+      "zh": {
+        "roleTag": "承接后置击锤打击与未闭锁到位机械被动保险",
+        "overview": "这是一根穿入枪机框和七突笋枪机中心轴线的高强度阶梯状不锈钢长击针。它在击锤释放时向前飞刺打火，同时其阶梯台阶受枪机旋转位置严格制约以确保射击安全。",
+        "craftAndMaterial": "选用高疲劳强度不锈钢棒料经超精密数控车床切削成型，针尖经局部高频感应淬火以防击穿底火或反复撞击镦粗变形，表面具有镜面级平整度。",
+        "kinematicRole": "阶段2中承受击锤猛烈敲击向前刺破底火，阶段4枪机旋转开锁时其尾端受凸轮限制无法外露，防止早发火事故。在枪机组件细拆阶段（进度0.38至0.58）拔出横向锁定销后向后滑出。",
+        "designHighlight": "击针长度与枪机框开锁深度经过严苛几何匹配：唯有枪机七突笋完全旋入枪管节套闭锁到位，击针尾端才能暴露在击锤打击行程内，构筑了绝对物理防早发火安全线。",
+        "audioScript": "这根阶梯状不锈钢长击针贯穿枪机轴心。它的长度经过精密几何计算：只有当枪机七个突笋完全旋转闭锁锁死弹膛后，击针尾部才准许露出来接受击锤撞击，杜绝任何提前炸膛可能。",
+        "audioUrl": "audio/aug/parts/aug_firing_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Direct Hammer Impact & Passive Out-of-Battery Safety",
+        "overview": "This is the stepped linear firing pin riding along the concentric center bore of the bolt and carrier assembly. It transmits kinetic strike energy from the rear hammer directly to the cartridge primer upon trigger break.",
+        "craftAndMaterial": "Precision-turned from high-fatigue stainless steel with an induction-hardened striking tip to prevent deformation under sustained rapid-fire cycles, polished to a friction-free finish.",
+        "kinematicRole": "In Phase 2, struck by the hammer to initiate ignition; physically masked by the carrier body during out-of-battery rotation to prevent slam-fires. Withdrawn rearward from the carrier in strip range 0.38 to 0.58.",
+        "designHighlight": "Geometric indexing guarantees absolute out-of-battery safety: until the bolt's seven lugs are fully cammed and locked into the barrel extension, the firing pin's tail cannot physically be contacted by the hammer.",
+        "audioScript": "Running down the bolt centerline, this stainless firing pin transfers the hammer strike to the primer. Strict geometric alignment ensures its tail is shrouded inside the carrier until the lugs are one hundred percent locked in battery.",
+        "audioUrl": "audio/aug/parts/aug_firing_pin_en.mp3"
+      }
+    },
+    "aug_recoil_springs": {
+      "partId": "aug_recoil_springs",
+      "bomCode": "U-09",
+      "calloutLabelEn": "Dual Recoil Springs",
+      "zh": {
+        "roleTag": "左右对称吸收后坐冲量与驱动自动机平顺复进",
+        "overview": "这是一组并列安装于后枪托上腔内、贯穿伸入枪机框双导杆内部的平行双联螺旋复进簧及内导向杆组件。它负责储存后坐行程能量，并稳定推手机组复进推弹入膛。",
+        "craftAndMaterial": "选用高弹性和抗疲劳性能极佳的特种碳素弹簧钢丝冷卷绕制，两端精密平头磨平，表面涂布防锈抗磨润滑脂。导向轴芯由光滑细长合金钢棒车成。",
+        "kinematicRole": "阶段4至5中伴随枪机框后移被强烈压缩，平稳吸收自动机后坐能量；阶段6释放弹力驱动机框向前推弹并闭锁。在部件分解阶段（进度0.20至0.31）自枪机双导杆管腔向后抽出。",
+        "designHighlight": "采用双弹簧平行布局不仅大幅分散了单根弹簧的压缩应力与疲劳衰减，而且弹簧完全深置于中空导杆内部，使得枪托在极度紧凑的无托空间内实现了长行程线性后坐减震。",
+        "audioScript": "AUG将两根螺旋复进簧并列对称塞进了枪机框的空心长导杆内部。左右双簧设计不仅让弹簧受力减半、寿命大幅延长，更让后坐推力沿枪膛轴线极其平稳线性地释放，连发枪口极易掌控。",
+        "audioUrl": "audio/aug/parts/aug_recoil_springs_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Symmetrical Energy Dissipation & In-Line Battery Drive",
+        "overview": "This is the twin parallel recoil spring group and guide rod assembly, housed longitudinally inside the carrier's hollow tubular guide rods. It harnesses kinetic recoil energy to drive the forward chambering stroke.",
+        "craftAndMaterial": "Coiled from high-grade silicon-manganese spring steel wire with ground ends, finished in protective anti-corrosion lubrication. Inner guide rods are hardened polished cold-drawn steel.",
+        "kinematicRole": "During Phase 4 and 5, it compresses symmetrically as the carrier slides rearward; in Phase 6, it drives the carrier forward to feed and lock the bolt. Extracted rearward from the guide rods in strip range 0.20 to 0.31.",
+        "designHighlight": "Dual nested springs slash cyclic fatigue by distributing dynamic loads across two axes, completely eliminating bolt carrier binding and providing the famously soft, straight-line recoil impulse of the STG 77.",
+        "audioScript": "Twin parallel recoil springs ride inside the hollow guide rods, capturing the recoil energy of each shot. This split-spring configuration halves individual mechanical stress while keeping recoil impulse linear, contributing to the AUG superb controllable full-auto burst fire.",
+        "audioUrl": "audio/aug/parts/aug_recoil_springs_en.mp3"
+      }
+    },
+    "aug_stock": {
+      "partId": "aug_stock",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Polymer Bullpup Stock",
+      "zh": {
+        "roleTag": "跨时代无托人机工程外壳与后置弹匣井全手护弓一体成型",
+        "overview": "这是1977年颠覆枪械工业的标志性无托下机匣枪身，由耐冲击工程塑料一体注塑注塑成型。它将后托、握把、连指手套大护弓、后置弹匣井和贴腮平台完美合为一体。",
+        "craftAndMaterial": "采用斯太尔首创的高强度奥地利国防绿聚酰胺66加长玻璃纤维复合工程塑料，经高压一体模压注塑。表面覆以细密防滑皮纹，外形无锐角且极耐极地严寒与沙漠高温。",
+        "kinematicRole": "作为全枪核心受力承载基座，在所有击发阶段（阶段1至7）作为手持握持及贴腮基准保持静止；作为外壳壳体（Shell），在分解演示中原位固定展开展示内部机构。",
+        "designHighlight": "整个枪托没有任何多余的金属框架，却兼顾了超高刚性与轻量化；特大号连指护弓不仅方便极寒冰雪环境下戴厚手套射击，还允许握持副手进行双手抵肩夹持支撑。",
+        "audioScript": "这具经典的奥地利军绿工程塑料枪身在1977年惊艳了世界。高韧性玻纤尼龙一体注塑成型，将后置弹匣井、握把和超大号连指护弓融为一体，极为坚韧轻盈，跌落摔砸都丝毫无损。",
+        "audioUrl": "audio/aug/parts/aug_stock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Iconic Ergonomic Chassis & Integrated Cold-Weather Guard",
+        "overview": "This is the world-renowned bullpup monocoque stock housing, seamlessly uniting the rear buttstock, cheekpiece, magazine well, pistol grip, and oversized trigger guard into a single continuous polymer shell.",
+        "craftAndMaterial": "High-pressure injection molded from impact-modified, long glass-fiber reinforced Polyamide 66 in Austrian military Olive Green RAL 7013. The textured matte surface resists abrasion, extreme sub-zero cold, and desert heat.",
+        "kinematicRole": "Serves as the structural housing for trigger bars, hammer pack, and receiver latch throughout all firing phases. Configured as the non-moving visual anchor shell during 3D disassembly sequences.",
+        "designHighlight": "Eliminates metallic chassis weight while providing phenomenal structural strength; the continuous large loop trigger guard accommodates arctic mittens while providing an alternate forward support hand grip point.",
+        "audioScript": "First introduced in 1977, this olive-drab fiberglass-reinforced polyamide stock shocked the small arms world. It integrates the rear magazine well, pistol grip, and oversized winter trigger guard into a virtually indestructible one-piece chassis.",
+        "audioUrl": "audio/aug/parts/aug_stock_en.mp3"
+      }
+    },
+    "aug_buttpad": {
+      "partId": "aug_buttpad",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Elastomer Buttpad",
+      "zh": {
+        "roleTag": "封闭枪托尾腔固定击锤盒与缓冲抵肩后坐及工具储藏",
+        "overview": "这是卡装于聚酰胺无托枪身最尾端的合成橡胶抵肩底板组件。它严密封闭枪身内部容纳全塑击锤盒与枪机行程的后腔室，并贴合射手肩窝以吸收后坐冲击。",
+        "craftAndMaterial": "由高韧性高阻尼合成弹性体橡胶高压硫化模压成型，表面成型有横向深沟槽防滑纹路。中央设有带有钢制弹簧铰链的开合式长方形擦拭工具盒活动封门。",
+        "kinematicRole": "射击全程提供柔软舒适的抵肩缓冲力学支撑，自身在底座上刚性锁定。在野战不完全分解第一步（进度0.14至0.24），拔出尾托闭锁销后即可向下直接推脱分离枪托。",
+        "designHighlight": "橡胶底板不仅是人机抵肩界面，更是整枪模块化分解的后部机械总锁：一旦卸下底板，其后腔内的整个全塑击锤盒和枪机组件无需任何螺丝就能顺次滑出枪身。",
+        "audioScript": "这块带有防滑横纹的橡胶抵肩底板不仅能柔和吸收后坐力，更是后托仓门的总封口。其内部巧妙隐藏了枪管通条与油壶储藏室；只要拔掉底销，底板一推即开，后置机构随之完全露出。",
+        "audioUrl": "audio/aug/parts/aug_buttpad_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Stock Cavity Closure & Shoulder Recoil Buffer Trapdoor",
+        "overview": "This is the ribbed synthetic elastomer buttpad capping the rear opening of the bullpup stock. It securely retains the hammer pack inside the rear cavity while cushioning shoulder recoil forces against the shooter.",
+        "craftAndMaterial": "Vulcanized from impact-absorbing, non-slip elastomeric synthetic rubber with deep molded horizontal tread ribs. It integrates a spring-loaded polymer trapdoor opening to an internal cleaning kit compartment.",
+        "kinematicRole": "Absorbs rearward shoulder shock during recoil Phases 4 through 6 while mechanically retaining the internal hammer mechanism. Detached rearward at the start of field stripping (progress 0.14 to 0.24).",
+        "designHighlight": "Doubles as both an ergonomic recoil pad and the master takedown retainer: sliding the pad down immediately unlocks the polymer trigger pack cavity, allowing full internal disassembly without hand tools.",
+        "audioScript": "Molded from dense synthetic elastomer, the buttpad absorbs felt recoil while sealing the rear receiver stock cavity. It houses a trapdoor for an armorer oiler and pull-through cleaning chain, sliding downward effortlessly once the sling cross-pin is unlatched.",
+        "audioUrl": "audio/aug/parts/aug_buttpad_en.mp3"
+      }
+    },
+    "aug_takedown_pin": {
+      "partId": "aug_takedown_pin",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Sling Takedown Pin",
+      "zh": {
+        "roleTag": "一键解锁橡胶底板与全塑击锤盒及后战术背带挂点",
+        "overview": "这是横向贯穿后枪托底板前缘的防丢失闭锁钢销，左端铆接有一枚大型椭圆战术背带转环。它是开启AUG后托动力室与维护全塑击锤组件的关键锁扣元件。",
+        "craftAndMaterial": "采用高抗剪特种碳素合金钢精车加工并经热处理调质，表面作深层磷化防锈处理。销体设有内部防脱弹簧限位卡珠，背带转环采用厚壁低碳钢弯折铆固。",
+        "kinematicRole": "全程横向贯穿枪身与底板卡槽，承受枪托底板的轴向推力并作为背带牵引支点。在野战拆解起点（进度0.11至0.19），从右向左按压拔出半截防脱位置，立即解锁底板。",
+        "designHighlight": "极其精妙的防丢失驻留（Captive）设计：横销向左拔出至极限位置后会被内部弹簧阻尼卡死在枪身上，永远不会在黑夜丛林或泥水战壕中意外遗失，极大提升了野战维护可靠性。",
+        "audioScript": "这根带有大号椭圆背带环的横插钢销，是开启后托机件的总钥匙。右侧用力一按、向左拔出半截，就能瞬间解脱托底板与击锤盒。内置防丢失限位卡珠确保它绝不会在野外意外掉落失踪。",
+        "audioUrl": "audio/aug/parts/aug_takedown_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Captive Pack Retention & Rear Tactical Sling Swivel",
+        "overview": "This is the transverse push-through locking pin passing through the lower rear stock body, staked on the left side to an oval tactical sling swivel loop. It retains the rubber buttpad and polymer trigger pack in position.",
+        "craftAndMaterial": "Machined from high-shear chrome-alloy steel with a manganese phosphate protective coating. Features internal captive detent balls preventing full detachment and a stamped steel swivel loop.",
+        "kinematicRole": "Maintains clamping force on the buttpad throughout all cycling forces and bears tactical sling suspension tension. Pushed through from right to left during disassembly entry (progress 0.11 to 0.19).",
+        "designHighlight": "Captive travel retention ensures the armorer can slide the cross-pin far enough to release the buttpad without it ever fully detaching or dropping into mud and snow during frantic battlefield maintenance.",
+        "audioScript": "Serving as both a sling mounting point and the master takedown latch, this steel cross-pin locks the buttpad in place. Pressing it through from right to left unlocks the buttstock while a captive detent ensures it can never be lost in the mud.",
+        "audioUrl": "audio/aug/parts/aug_takedown_pin_en.mp3"
+      }
+    },
+    "aug_receiver_optic": {
+      "partId": "aug_receiver_optic",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Receiver & 1.5x Optic",
+      "zh": {
+        "roleTag": "镶钢衬压铸铝机匣与一体式1.5倍施华洛世奇瞄准镜提把",
+        "overview": "这是AUG步枪标志性核心中躯，由高强度压铸铝合金机匣与一体成型的1.5倍施华洛世奇光学白光瞄准镜提把组成。它负责承载机匣内各运动件并提供出厂校零的瞄准基线。",
+        "craftAndMaterial": "机匣本体采用航空级高强度铝硅合金精密高压压铸成型，表面经军规深灰硬质阳极氧化；内部高应力区精密压装钢制轴瓦衬套。镜筒内灌充高纯氮气并装配高透光学多层镀膜棱镜组。",
+        "kinematicRole": "全程作为整枪骨架基座，引导枪机导杆滑轨往复，并容纳枪管闭锁凸轮；在分解进度0.18至0.29阶段，按下机匣中心解脱卡榫后整体向上前方滑脱移出塑料枪托身。",
+        "designHighlight": "率先将1.5倍施华洛世奇瞄准镜作为步兵标配提把直接集成在机匣上，经典甜甜圈圆环分划允许射手在三百米内不作测距直接套住人体躯干快速射击，彻底颠覆了机械瞄具传统。",
+        "audioScript": "压铸铝机匣与一体式1.5倍施华洛世奇瞄准镜提把构成了AUG前卫的科幻轮廓。镜内标志性的甜甜圈圆环分划终身免校零，三百米内只要将圆环套住目标即可精准首发命中，开创了光学瞄具普及先河。",
+        "audioUrl": "audio/aug/parts/aug_receiver_optic_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Die-Cast Alloy Receiver & 1.5x Swarovski Donut Sight",
+        "overview": "This is the primary metallic chassis of the AUG A1, combining a die-cast aluminum receiver with an integral carry handle containing an internal 1.5-power Swarovski optical daylight scope.",
+        "craftAndMaterial": "Die-cast from high-strength aircraft aluminum alloy with pressed steel wear bushings, protected by a dark-gray hardcoat anodized finish. The integrated hermetically sealed optical sight houses multi-coated lenses.",
+        "kinematicRole": "Acts as the rigid guidance datum for the bolt carrier guide rods and retains the barrel locking assembly throughout firing. Disengaged forward out of the polymer stock during field strip range 0.18 to 0.29.",
+        "designHighlight": "Pioneered the integration of standard-issue magnified optics on infantry rifles; the legendary circle-dot donut reticle spans a standing human torso at 300 meters, delivering instant snap-shooting without elevation dialing.",
+        "audioScript": "This die-cast aluminum receiver integrates an Austrian Swarovski one-point-five-power optical scope into its carry handle. Its iconic donut ring reticle is calibrated so a human silhouette fills the ring at three hundred meters, revolutionizing modern infantry optics.",
+        "audioUrl": "audio/aug/parts/aug_receiver_optic_en.mp3"
+      }
+    },
+    "aug_barrel_lock": {
+      "partId": "aug_barrel_lock",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Quick-Change Barrel Lock",
+      "zh": {
+        "roleTag": "径向锁死快拆枪管法兰 / 一指按压快速解锁",
+        "overview": "该部件横向穿插于铝合金机匣的前下端套箍内。其斜纹切面受弹簧顶紧，直接楔入冷锻枪管外壁的锁定缺口以消除机械间隙。",
+        "craftAndMaterial": "采用高强度合金钢经深层氮化硬化处理，表面雕琢有排泥斜向防滑滚花，右侧设有内藏式圆柱螺旋压簧导孔。",
+        "kinematicRole": "在全自动射击周期中完全静止受载，承受枪管微幅热胀冷缩应力；在分解进度约百分之十八至二十九阶段，向内按到底即可顺势旋开并抽出枪管组。",
+        "designHighlight": "斯太尔工程师通过单根弹簧与斜面自锁机构，省去了传统机枪繁琐的锁定手柄，使步兵在战火中仅需单手两秒即可完成灼热枪管的原位换装。",
+        "audioScript": "这就是实现两秒快速换枪管的核心机关。平时在强力弹簧支撑下，锁止钮牢牢咬合枪管基座。当你用手指将其用力推平，枪管闭锁凸笋立即解除约束，握住垂直前握把顺时针旋转四十五度，就能把整根枪管向前抽离机匣。",
+        "audioUrl": "audio/aug/parts/aug_barrel_lock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Radial Barrel Flange Lock / Push-Button Release",
+        "overview": "This spring-loaded steel cross-latch is housed transversely inside the lower front collar of the cast-aluminum receiver. It wedges rigidly into the barrel retention notch to completely eliminate headspace play during operation.",
+        "craftAndMaterial": "Machined from high-grade alloy steel with deep nitriding treatment, featuring aggressive exterior serrations and an internal coil spring well for corrosion resistance.",
+        "kinematicRole": "Remains static during live firing under cyclic barrel vibration; depressed at 18 to 29 percent disassembly progression to free the barrel assembly for forward extraction.",
+        "designHighlight": "Steyr combined a spring detent and angled camming surface into one compact button, doing away with clumsy heavy levers and enabling true single-handed barrel swaps under combat stress.",
+        "audioScript": "This compact cross bolt is the key to the famous quick-change barrel system of the AUG. Under constant spring tension, it cams solidly into the barrel base. Simply press this textured button inward to unlock the flange, rotate the foregrip, and pull the entire hot barrel assembly forward out of the receiver in just two seconds.",
+        "audioUrl": "audio/aug/parts/aug_barrel_lock_en.mp3"
+      }
+    },
+    "aug_charging_handle": {
+      "partId": "aug_charging_handle",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Folding Charging Handle",
+      "zh": {
+        "roleTag": "射击时不随动防打手 / 上翻卡入机匣缺口实现空仓挂机待命",
+        "overview": "该组件装配于机匣左侧长条形导槽内，由聚合物拉柄与内部钢制推杆组合而成。平时向内折叠贴合机匣外廓，射击时与右导杆完全脱开并保持静止。",
+        "craftAndMaterial": "握柄包覆抗冲击耐磨工程塑料，内部骨架采用淬火合金钢冷冲压成型，末端配备弹性折叠铰链与前推助推按钮结构。",
+        "kinematicRole": "拉机柄仅在手动上膛时向后推顶左机框导杆压缩复进簧，随后被前推簧复位；拉到底上抬可卡入机匣切口挂机；在分解中段约百分之三十八至五十八向左抽出。",
+        "designHighlight": "非随动设计彻底杜绝了后坐打手危险，左上方经典的挂机切槽允许射手用手掌后缘暴力下拍解脱上膛，兼备快速人机功效与恶劣环境防沙密封性。",
+        "audioScript": "位于机匣左上方的拉机柄在实弹射击时保持静止，避免打伤射手手部。装填时向后拉到底并向上抬起，即可卡入机匣缺口锁定枪机。装入新弹匣后，只需用左手手掌向下猛拍握柄，枪机便会借复进簧强力前冲推弹入膛。",
+        "audioUrl": "audio/aug/parts/aug_charging_handle_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Non-Reciprocating Left Cocking Handle / HK-Slap Hold-Open",
+        "overview": "Mounted along the longitudinal left-side receiver track, this assembly consists of an olive-drab polymer folding grip and an internal steel actuation lug. It operates the internal bolt carrier while staying disconnected during firing cycles.",
+        "craftAndMaterial": "Molded from impact-modified polyamide over a case-hardened stamped steel core, equipped with an anti-rattle detent spring and an integrated forward-assist pawl.",
+        "kinematicRole": "Manually cycles rearward against the left bolt guide rod and stays static during phases 1 through 7; pulled back and cocked upward into the receiver notch, then demounted between 38 and 58 percent disassembly.",
+        "designHighlight": "Its non-reciprocating geometry prevents painful thumb strikes in tight bullpup stances, while the upward locking notch supports the iconic armorer manual lock and slap-release chambering drill.",
+        "audioScript": "This folding charging handle remains stationary during live firing, completely eliminating hand injuries in compact bullpup shooting stances. Pulling it fully to the rear and flicking it upward locks the bolt open. After seating a fresh magazine, an open-palm downward slap sends the bolt carrier flying forward to chamber a round.",
+        "audioUrl": "audio/aug/parts/aug_charging_handle_en.mp3"
+      }
+    },
+    "aug_foregrip": {
+      "partId": "aug_foregrip",
+      "bomCode": "F-07",
+      "calloutLabelEn": "Folding Vertical Foregrip",
+      "zh": {
+        "roleTag": "紧凑全自动控枪支点 / 向下拉出即可向前 90° 折叠收纳",
+        "overview": "该前握把通过横向钢销铰接在倾斜导气箍下方的双耳基座上。作为无托枪身前部的主要握持点，它既提供全自动压枪力臂，也是快拆热枪管的隔热把手。",
+        "craftAndMaterial": "外壳为注塑成型的玻璃纤维增强聚酰胺，内置高硬度轴向定位推簧与双向限位齿槽，表面带有粗颗粒细纹以抵抗泥泞汗液。",
+        "kinematicRole": "随枪管组一体安装并在全自动扫射时传导射手向下拉力；向下用力拉出握把即可向前翻折九十度卡入锁位；在野战分解进度百分之七至十七阶段随枪管整包卸下。",
+        "designHighlight": "无托步枪质心后移容易导致枪口跳动，斯太尔设计了这支可下折又兼作枪管把手的垂直握把，使步枪在无需重型两脚架的情况下拥有极佳的连发控枪品质。",
+        "audioScript": "标志性的军绿色折叠握把不仅提供了绝佳的全自动控枪稳定性，更是一根隔热把手。射击完毕更换发烫的枪管时，手握这支尼龙把手即可安全扭转拔出枪管。向下轻拉握柄，还能向前九十度折叠收纳在枪管下方。",
+        "audioUrl": "audio/aug/parts/aug_foregrip_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Pivoting Vertical Grip / Quick-Change Barrel Handle",
+        "overview": "Hinged via a hardened cross-pin to the underside lugs of the gas regulator block, this forward vertical foregrip serves as the main stabilization point for the support hand and acts as an insulated heat handle during barrel swaps.",
+        "craftAndMaterial": "Engineered from glass-reinforced military polymer over internal steel pivot cams, featuring deep circumferential grip ribs and an axial locking spring.",
+        "kinematicRole": "Absorbs downward counter-recoil torque throughout cycling; pulled down axially against its internal spring to fold forward 90 degrees; detaches with the barrel assembly between 7 and 17 percent disassembly.",
+        "designHighlight": "By repositioning the forward hand directly under the gas port, it tames the natural muzzle-rise of the rear-heavy bullpup architecture without adding bulky external bipods or rail adapters.",
+        "audioScript": "This signature vertical foregrip is essential for taming bullpup muzzle climb during automatic fire. It also serves as an insulated handle for swapping boiling hot barrels without gloves. Pulling the grip straight down releases its internal locking detent, allowing it to pivot forward parallel under the barrel.",
+        "audioUrl": "audio/aug/parts/aug_foregrip_en.mp3"
+      }
+    },
+    "aug_trigger": {
+      "partId": "aug_trigger",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Two-Stage Sliding Trigger",
+      "zh": {
+        "roleTag": "无快慢机设计：轻扣至第一道行程半自动单发 · 扣到底全自动连发",
+        "overview": "该扳机装配在聚合物枪托握把内的前置导槽中，通过滑块与双长连杆首端相接。它彻底取消了机匣上的快慢机拨片，完全依靠扣压深度控制发射模式。",
+        "craftAndMaterial": "采用自润滑聚缩醛高分子材料精密注塑而成，摩擦系数极低，前表面带有平滑防滑槽并具有高韧性防跌落阻尼特性。",
+        "kinematicRole": "阶段一轻拉后移触发单发阻铁脱扣；继续施力至第二道行程越过阻点连发阻铁动作；阶段七松开后被复位簧推回原位；在终极拆解约百分之六十六至九十二阶段移出。",
+        "designHighlight": "开创性的渐进式扳机哲学：扣动前段四毫米为半自动，继续向后深扣即进入每分钟六百八十发全自动连发，使士兵在紧急遭遇战中省去了拨动保险选择机的时间。",
+        "audioScript": "这是奥地利步枪史上极具颠覆性的渐进式扳机。斯太尔直接取消了独立的连发快慢机旋钮。轻轻后扣第一道行程约为四毫米，阻铁击发精确的半自动单发；不要松手直接扣到底，枪械就会无缝进入全自动泼水扫射。",
+        "audioUrl": "audio/aug/parts/aug_trigger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Two-Stage Progressive Sliding Trigger / No Fire Selector",
+        "overview": "Housed inside the forward pistol grip channel of the polymer stock, this component slides translationally on rails and anchors the twin transfer bars. It replaces traditional fire selector levers by varying sear engagement through trigger travel.",
+        "craftAndMaterial": "Precision injection-molded from low-friction polyacetal polymer, engineered with ribbed front ergonomics and integral travel stops for extreme durability and freeze resistance.",
+        "kinematicRole": "Translates rearward in phase 1 to release the semi-auto sear; travels through the second-stage tactile wall for full-auto firing; returns in phase 7; fully exploded between 66 and 92 percent disassembly.",
+        "designHighlight": "Its progressive trigger concept empowers an operator to deliver pinpoint single shots with a gentle squeeze or unleash 680 rounds per minute instantly by pulling all the way back, without taking eyes off target.",
+        "audioScript": "This progressive sliding trigger completely replaces traditional fire selector switches. A smooth four-millimeter pull to the first wall releases the hammer for precise semi-automatic fire. Squeezing completely through that resistance immediately unleashes full-automatic fire at nearly seven hundred rounds per minute.",
+        "audioUrl": "audio/aug/parts/aug_trigger_en.mp3"
+      }
+    },
+    "aug_safety": {
+      "partId": "aug_safety",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Cross-Bolt Safety Button",
+      "zh": {
+        "roleTag": "刚性横锁扳机与双连杆 / 左侧显露红圈即待击预警",
+        "overview": "该横贯式方形保险块位于手枪握把正上方的贯穿孔洞内。向右推到底锁死扳机后移路径，向左推到底露出红色标记环即进入待发状态。",
+        "craftAndMaterial": "由坚固的耐冲击强化尼龙精密注塑制成，表面刻有清晰的红白状态标志，内部设有定位弹簧滚珠配合的保持凹坑。",
+        "kinematicRole": "处于安全档位时机械抵住扳机滑块使其无法移动；射击前被射手食指横向推移解锁；在百分之六十六至九十二的全枪深度分解工序中向外抽出。",
+        "designHighlight": "方柱形截面有效防止了圆轴机构常见的泥沙卡死故障，其位置恰好坐落在射手握持食指上方数毫米处，出枪指向目标的瞬间可完成单指按压解锁。",
+        "audioScript": "手枪握把上方的横穿式方柱保险直观可靠。从左侧用力推入，露出白色圆点即处于安全保险状态，扳机被彻底锁死；用右手大拇指或食指将其向左推出，露出鲜艳的红圈警示环，步枪便瞬间进入随时击发状态。",
+        "audioUrl": "audio/aug/parts/aug_safety_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Transverse Safety Cross-Bolt / Red Armed Indicator",
+        "overview": "Located directly above the pistol grip in a transverse stock tunnel, this square cross-bolt mechanically blocks the forward trigger slide. Pushing it fully to the right safe position immobilizes the trigger linkage.",
+        "craftAndMaterial": "Molded from heavy-duty impact polymer with high shear strength, detailed with vibrant red and white firing condition inlays and detent-retaining dimples.",
+        "kinematicRole": "Stationary barrier against the sliding trigger in safe mode; pushed laterally leftward to clear linkage travel prior to firing; dismounted during armorer teardown between 66 and 92 percent progression.",
+        "designHighlight": "Its rectangular cross-section prevents dirt accumulation and rotational binding that often compromise round safety pins, ensuring crisp thumb actuation under thick winter mittens.",
+        "audioScript": "Positioned right above the firing hand, this cross-bolt safety provides fool-proof mechanical locking. Pushing it in from the left exposes a white indicator marking the weapon safe. Pushing it back to the left reveals a high-visibility red band, showing the weapon is armed and ready to fire.",
+        "audioUrl": "audio/aug/parts/aug_safety_en.mp3"
+      }
+    },
+    "aug_transfer_bars": {
+      "partId": "aug_transfer_bars",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Twin Steel Transfer Bars",
+      "zh": {
+        "roleTag": "跨过握把与后置弹匣井 / 将前置扳机拉力无框量传至尾托击锤盒",
+        "overview": "这两根纤长的平行对称钢制连杆横跨枪托内部腹腔，前部固定在滑动扳机两侧，后部直通尾托抵住火控盒阻铁臂。它们是解决无托步枪火控延迟的关键桥梁。",
+        "craftAndMaterial": "采用高弹模量弹簧扁钢经过精密冲压与表面抛光镀层工艺制成，抗弯扭刚度极佳，两侧贴附在枪托内壁导向筋内滑动以彻底消除虚位。",
+        "kinematicRole": "阶段一与扳机同步平行后移数毫米压迫击锤盒阻铁；阶段七受阻铁簧及扳机簧驱动平顺回位；在底壳深拆百分之六十八至九十四阶段从导轨抽出。",
+        "designHighlight": "无托步枪的致命通病是扳机肉且行程模糊。斯太尔通过左右双轨平行拉索式刚性扁钢设计，将拉力对称均摊，实现了近乎传统步枪的干脆击发断开感。",
+        "audioScript": "无托步枪最大的机械痛点就是前置扳机与后置击锤之间的长距离传动。斯太尔采用两根高刚度平行扁钢连杆，从手枪握把两侧绕过中央弹匣井直通尾托，拉动时左右绝对对称，带来了极其清脆无旷量的扳机响应。",
+        "audioUrl": "audio/aug/parts/aug_transfer_bars_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dual Parallel Linkage Bars / Zero-Slop Bullpup Sear Rods",
+        "overview": "Extending through the stock interior along both inner sidewalls, these twin flat steel bars link the front sliding trigger to the rear-mounted hammer pack sears. They span the entire distance bypassing the pistol grip and central magazine well.",
+        "craftAndMaterial": "Stamped from spring-tempered stainless flat stock with mirror-burnished guide surfaces, engineered with high tensile stiffness to eliminate elastic deflection under stress.",
+        "kinematicRole": "Draws rearward in phase 1 to actuate the disconnector and sears; springs forward in phase 7 alongside the trigger slider; pulled out from stock ribs between 68 and 94 percent disassembly.",
+        "designHighlight": "Bullpup designs notoriously suffer from mushy trigger pulls; Steyr solved this via dual balanced pull-bars on twin tracks, neutralizing torsional binding and giving an exceptionally crisp break.",
+        "audioScript": "These twin parallel steel transfer bars solve the classic bullpup challenge of connecting a forward trigger to a rear hammer. By running along both internal walls around the magazine well, they transmit linear force symmetrically with zero flexing, delivering a remarkably crisp and predictable break.",
+        "audioUrl": "audio/aug/parts/aug_transfer_bars_en.mp3"
+      }
+    },
+    "aug_hammer_pack": {
+      "partId": "aug_hammer_pack",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "Modular Polymer Hammer Pack",
+      "zh": {
+        "roleTag": "全枪免润滑自润滑尼龙火控总成 / 集成单连发渐进阻铁与防跌落保险",
+        "overview": "该模块化火控盒独立安装在枪托尾部的托底板内侧前方。整个外壳及内部主要活动齿爪完全由耐磨工程塑料注塑而成，通过后背带环插销固定在枪托内。",
+        "craftAndMaterial": "采用耐高温耐磨蚀的玻纤增强聚酰胺精密注塑，内部无任何金属机匣壁，除击锤扭簧与连接销钉外几乎百分之百全塑化，极度耐受海水与细沙侵蚀。",
+        "kinematicRole": "在击发周期中稳固容纳阻铁、连发齿爪与回转击锤，精确执行脱扣与重挂；野战分解进度百分之十六至二十六阶段，卸下后底板即可徒手整体抽出火控总成。",
+        "designHighlight": "这是世界步枪史上首次大规模列装的全塑火控盒。其自润滑特性使得士兵在零下四十度极寒雪原或泥泞丛林中完全无需润滑油即可可靠运转数万发。",
+        "audioScript": "这是枪械工程史上的奇迹——全塑料火控盒。除了弹簧和销轴，外壳与阻铁机构全部由高强度尼龙注塑成型。即便在零下四十度的极寒环境下，也无需加注任何润滑油，拔出尾部背带销即可整块取出清洗。",
+        "audioUrl": "audio/aug/parts/aug_hammer_pack_zh.mp3"
+      },
+      "en": {
+        "roleTag": "All-Polymer Modular Trigger Pack / Lubricant-Free Fire Control",
+        "overview": "Housed within the rear buttstock cavity just in front of the buttplate, this self-contained modular fire control unit encases the sears, disconnectors, and hammer assembly. It is secured entirely by the rear sling-swivel retaining pin.",
+        "craftAndMaterial": "Molded almost entirely from glass-filled self-lubricating polyamide, resistant to salt spray, sand ingress, and arctic cold, relying solely on piano-wire springs and steel pin axles.",
+        "kinematicRole": "Acts as the rigid datum for sear tripping in phase 1 and hammer resets in phase 7; extracted as a complete drop-in cassette between 16 and 26 percent field-strip progress.",
+        "designHighlight": "A milestone in small-arms history, this completely oil-free plastic pack eliminates gummy lubricants that freeze in sub-zero alpine blizzards or collect desert dust, firing tens of thousands of rounds without failure.",
+        "audioScript": "This modular trigger cassette is a masterwork of polymer engineering. Aside from its springs and pins, the housing and internal catches are completely plastic. It operates completely dry without gun oil, thriving in freezing Arctic mud, and drops right out of the buttstock when the rear sling pin is removed.",
+        "audioUrl": "audio/aug/parts/aug_hammer_pack_en.mp3"
+      }
+    },
+    "aug_hammer": {
+      "partId": "aug_hammer",
+      "bomCode": "FC-05",
+      "calloutLabelEn": "Rotary Polymer Hammer",
+      "zh": {
+        "roleTag": "超轻质量极速前旋打击击针 / 极短闭锁延迟提升首发精度",
+        "overview": "该击锤枢接于塑料火控盒正中央，由左右对称的双股琴钢丝强力扭簧蓄能。其头部在阻铁释放后向前上方九十度高速弧形旋转敲击枪机框内的长击针。",
+        "craftAndMaterial": "选用高韧性抗疲劳聚合物一次注塑定型，底部设有精确的角度挂机台阶，顶部冲击面具有吸收高能撞击应力且不碎裂的微弹特性。",
+        "kinematicRole": "阶段二在扭簧爆发力下高速击打击针尾端；阶段五随枪机框后坐被平稳压倒重挂于阻铁上；在火控细拆百分之四十二至六十二阶段自盒体取下。",
+        "designHighlight": "全塑击锤相比传统钢制击锤转动惯量降低了近百分之四十，极大地缩短了从阻铁脱扣到击发底火的闭锁延迟时间，有效抑制了无托步枪击发瞬间的射手瞄准晃动。",
+        "audioScript": "你没看错，连击锤本身都是工程塑料铸造的。得益于极轻的转动惯量，当双股强力扭簧释放时，击锤能以闪电般的速度向前旋击长击针。这不仅极大地缩短了击发延迟时间，还大幅削减了重型钢击锤下落造成的枪口微颤。",
+        "audioUrl": "audio/aug/parts/aug_hammer_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Lightweight Polymer Hammer / Ultra-Fast Lock Time",
+        "overview": "Pivoting on a transverse steel axis inside the hammer pack, this polymer hammer is powered by dual high-torque music-wire torsion springs. Upon release, it swings forward and upward through a 90-degree arc to strike the long floating firing pin.",
+        "craftAndMaterial": "Molded from ultra-tough impact-modified synthetic polymer designed to withstand tens of thousands of violent impacts without splintering or deforming at its engagement hooks.",
+        "kinematicRole": "Swings forward in phase 2 to ignite the primer; cocked downward by the recoiling bolt carrier in phase 5; separated from the sub-pack between 42 and 62 percent disassembly.",
+        "designHighlight": "Reducing hammer mass significantly slashes lock time—the interval between sear release and primer ignition—dramatically enhancing first-round accuracy and eliminating jarring hammer vibrations in bullpup chassis.",
+        "audioScript": "Astonishingly, even the hammer is made of solid polymer. Driven by twin torsion springs, its featherweight construction allows it to snap forward with blazing rotational speed. This drastically reduces lock time, virtually eliminating weapon disturbance before the bullet exits the twenty-inch barrel.",
+        "audioUrl": "audio/aug/parts/aug_hammer_en.mp3"
+      }
+    },
+    "aug_mag_body": {
+      "partId": "aug_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "30-Rd Amber Magazine",
+      "zh": {
+        "roleTag": "经典琥珀半透明全视角检视余弹 / 纵横华夫凸格抗碾压防滑",
+        "overview": "该弹匣插装在枪托后腹部的弹匣井内，是步枪供弹系统的核心外壳。外表覆盖标志性的华夫饼干方格筋条，半透明琥珀色材质令内部三十发弹药与压簧尽收眼底。",
+        "craftAndMaterial": "采用高抗冲半透明聚碳酸酯模压成型，壁厚达两毫米，具有军规抗跌落抗越野车碾压韧性，长期暴露于强紫外线下不易黄化脆裂。",
+        "kinematicRole": "在阶段六为双排进弹提供精准导向轨道并在全射程保持刚性卡紧；分解进度百分之一至十阶段按压弹匣卡笋即可垂直向下拉出枪身。",
+        "designHighlight": "斯太尔率先抛弃了沉重不透明的冲压铁弹匣，琥珀半透明让士兵在战斗间隙仅凭眼角余光便能精准掌握剩余弹药量，华夫凸格则确保泥泞戴手套时拔弹可靠。",
+        "audioScript": "这是步枪历史上辨识度极高的半透明琥珀色弹匣。采用军规聚碳酸酯打造，外壁布满防滑华夫格加强筋，不仅坚韧到足以承受装甲车碾压，更允许射手低头一眼便精准数清内部金黄色的北约弹药余量。",
+        "audioUrl": "audio/aug/parts/aug_mag_body_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Translucent Amber Magazine / Waffle Anti-Crush Ribs",
+        "overview": "Inserted into the rear magazine well behind the pistol grip, this curved 30-round feeding housing holds 5.56 NATO cartridges. Its iconic translucent amber shell features prominent waffle grids for structural strength and instant ammo counting.",
+        "craftAndMaterial": "Injection-molded from aerospace-grade impact polycarbonate with high UV inhibitors, engineered with reinforced feed lips capable of withstanding vehicle roll-overs.",
+        "kinematicRole": "Maintains precise feed-geometry during high-speed chambering in phase 6; unlatched and pulled downward between 1 and 10 percent disassembly progression.",
+        "designHighlight": "Long before clear aftermarket magazines became commonplace, Steyr pioneered translucent polymer magazines, letting soldiers visually confirm remaining rounds at a glance under battlefield stress.",
+        "audioScript": "One of the most recognizable icons of modern small arms, this amber-tinted magazine is built from translucent polycarbonate. Its waffle-grid ribs provide incredible crushing resistance against military vehicles while letting the shooter check ammunition counts at an instant glance.",
+        "audioUrl": "audio/aug/parts/aug_mag_body_en.mp3"
+      }
+    },
+    "aug_mag_follower": {
+      "partId": "aug_mag_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Anti-Tilt Mag Follower",
+      "zh": {
+        "roleTag": "双排双进平顺导引 5.56mm 北约弹",
+        "overview": "该托弹板滑配在琥珀色弹匣体内腔，位于最底层弹药与托弹簧之间。它支撑三十发弹药呈左右交错双排排列，并将其连续向上送入枪机供弹槽。",
+        "craftAndMaterial": "采用自润滑黑色高密度聚乙烯塑料注塑，外周设计有加长导向防前倾侧裙，表面带有精密引导弹体斜坡。",
+        "kinematicRole": "随着阶段五弹壳抛出与阶段六推弹入膛，在托弹簧推力下阶梯式上升；打光最后一发后上抬机匣空仓挂机杆；在弹匣分解百分之三十六至五十八阶段取出。",
+        "designHighlight": "超长下摆侧裙设计杜绝了传统铁弹匣常见的托弹板向前后倾斜卡死故障，极大降低了无托步枪在高速连发进弹时的双发并卡概率。",
+        "audioScript": "位于弹匣内部的黑色托弹板肩负着每一次推弹的平顺性。长裙边设计彻底防止了前后倾翻偏斜卡壳。即使在沙尘侵入匣内的极端环境下，其自润滑材质也能确保弹药从第一发到最后一发匀速平稳地上升入膛。",
+        "audioUrl": "audio/aug/parts/aug_mag_follower_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Anti-Tilt Dual-Stack Magazine Follower / Smooth Feeding",
+        "overview": "Riding inside the curved polymer magazine shell, this component acts as the mobile cradle between the magazine spring and the staggered cartridges. It presents 5.56mm rounds reliably to the dual feed lips.",
+        "craftAndMaterial": "Molded from slick self-lubricating synthetic resin, featuring elongated fore-and-aft anti-tilt skirts and dual angled ramps matching the cartridge taper.",
+        "kinematicRole": "Steps upward progressively through feeding phases 5 and 6; trips the bolt catch upward after firing the final round; slides out of the body between 36 and 58 percent teardown.",
+        "designHighlight": "Its extended skirt architecture prevents the follower from pitching forward or nose-diving under dirty combat conditions, eliminating feeding jams common in legacy straight-bodied metal magazines.",
+        "audioScript": "Riding inside the magazine, this anti-tilt follower keeps thirty staggered rounds perfectly aligned. Its deep downward skirts prevent nose-diving under cyclic shock, ensuring the final round feeds into the chamber with the same smooth consistency as the very first.",
+        "audioUrl": "audio/aug/parts/aug_mag_follower_en.mp3"
+      }
+    },
+    "aug_mag_spring": {
+      "partId": "aug_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Curved Magazine Spring",
+      "zh": {
+        "roleTag": "满载长期储存抗松弛 / 恒力推弹上供",
+        "overview": "该托弹簧纵向盘绕在弹匣体内部，底部由底托板支撑，上端直接顶住托弹板内腔。它是弹匣供弹循环的能量储备源泉。",
+        "craftAndMaterial": "选用高疲劳寿命的不锈钢矩形截面弹簧丝，通过模具预弯成符合五点五六毫米弹弧度的曲线造型，表面经钝化防锈处理。",
+        "kinematicRole": "在每轮循环的阶段六持续释放张力推动弹柱上抬；在手动装填时被反复压缩蓄能；弹匣拆解进度百分之三十六至六十阶段随底盖脱出。",
+        "designHighlight": "矩形截面钢丝与带有弧度预定型工艺使得弹簧在长年满弹储存待命状态下几乎零衰减，且剧烈跌落冲击时内腔绝不会出现线圈错位绞合。",
+        "audioScript": "透过半透明的弹匣壁，你可以看清这根弧形矩形截面的托弹簧。经过特殊热处理的优质弹簧钢丝，即便在满弹三十发长期储存几个月的情况下，依然能保持恒定充足的推力，杜绝了无托步枪因供弹不足导致的哑火卡弹。",
+        "audioUrl": "audio/aug/parts/aug_mag_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Pre-Curved Magazine Spring / High Fatigue Retention",
+        "overview": "Coiled inside the magazine interior, this compression spring sits captive between the floorplate insert and the follower. It provides uninterrupted upward feeding force for all thirty cartridges.",
+        "craftAndMaterial": "Formed from rectangular-section spring-temper stainless steel wire, pre-bent along a constant radius matching 5.56 NATO casing tapers, passivated for total chemical inertness.",
+        "kinematicRole": "Expands upward during phase 6 to index fresh rounds into feed lips; remains under full compression during loaded carry; extracted between 36 and 60 percent magazine disassembly.",
+        "designHighlight": "Rectangular cross-section coils yield higher energy density and resist lateral bowing, ensuring the spring will not take a permanent set even when loaded at full capacity for extended deployments.",
+        "audioScript": "Visible right through the amber casing, this curved magazine spring provides steady upward tension. Formed from rectangular spring steel with pre-curved coils, it resists tension loss even when left fully loaded in storage racks for months on end.",
+        "audioUrl": "audio/aug/parts/aug_mag_spring_en.mp3"
+      }
+    },
+    "aug_mag_floorplate": {
+      "partId": "aug_mag_floorplate",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Mag Quick-Release Floorplate",
+      "zh": {
+        "roleTag": "严丝合缝封闭弹匣底端 / 免工具按压滑出清沙",
+        "overview": "该底盖平整卡固在琥珀弹匣的最底部开口处。其外缘包裹弹匣底唇，中心圆孔与托弹簧内衬锁片凹凸咬合锁定，构成坚固的封底防摔结构。",
+        "craftAndMaterial": "采用高抗冲加厚工程塑料压制，底面设计有防滑指槽，边缘设有外扩缓冲凸缘以吸收落地冲击能量。",
+        "kinematicRole": "在整个射击循环中作为弹簧压缩的刚性底部支撑点；野战维护时用枪弹弹尖顶入中心锁钮，向前方推移滑开底板；在百分之三十六至六十阶段完全脱卸。",
+        "designHighlight": "倾斜四十八弧度角度的滑轨设计契合无托枪托下沿轮廓，免工具拆装构造使得士兵在泥水沙尘浸入弹匣后，几秒内即可滑开底板清理杂质并快速复原。",
+        "audioScript": "封住弹匣底部的聚合物底盖具备出色的防跌落缓冲性能。当弹匣掉落在坚硬水泥地面时，外扩护翼能有效吸收冲击。如果弹匣内部进水进泥，用一发子弹的弹尖顶住底部小圆孔，即可轻松向外推滑拆开清洗。",
+        "audioUrl": "audio/aug/parts/aug_mag_floorplate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Polymer Floorplate & Retainer / Toolless Field Cleaning",
+        "overview": "Slotted into horizontal flanges along the bottom perimeter of the magazine body, this thick plate seals the spring cavity. Its central indent captures the internal spring locking plate.",
+        "craftAndMaterial": "Molded from heavy impact-resistant nylon with flared bottom lip armor that absorbs drops onto rocky terrain without cracking the clear body rails.",
+        "kinematicRole": "Serves as the static reactionary floor against magazine spring compression; demounted by depressing the central spring detent and sliding forward between 36 and 60 percent teardown progress.",
+        "designHighlight": "Its angled mating geometry matches the buttstock rake, while the toolless push-and-slide latch allows instant clearing of silt or mud from the magazine during field operations.",
+        "audioScript": "Sealing the bottom of the magazine, this tough polymer floorplate absorbs drop shocks on concrete. When cleaning out sandy debris in the field, simply use a cartridge tip to push the center lock pin in, and slide the floorplate forward to access the spring and follower.",
+        "audioUrl": "audio/aug/parts/aug_mag_floorplate_en.mp3"
+      }
+    }
+  }
+}

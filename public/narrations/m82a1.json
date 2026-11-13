@@ -1,0 +1,893 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "m82a1",
+  "generatedAt": "2026-11-12T12:45:05.516105+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "Barrett M82A1 Anti-Materiel Rifle",
+    "subtitle": ".50 BMG Short-Recoil Anti-Materiel Sniper Rifle",
+    "originCountry": "United States",
+    "weaponType": "Anti-Materiel Rifle",
+    "categoryLabel": "Anti-Materiel",
+    "actionMechanism": "Short-Recoil with Accelerator · 3-Lug Rotating Bolt Lock",
+    "statusLabel": "In Vault · Ready",
+    "description": "Pioneered in 1982 by Ronnie Barrett and adopted across US forces as the M107 SASR, this legendary 12.7x99mm (.50 BMG) semi-automatic platform tamed heavy machine gun cartridges into a shoulder-fired rifle. Integrating an arrowhead dual-chamber muzzle brake cutting 65% of felt recoil, a floating 29-inch fluted short-recoil barrel, and a kinetic momentum accelerator, it delivers anti-armor neutralization past 1,800 meters with semi-automatic follow-up firepower.",
+    "highlights": [
+      "Iconic Dual-Chamber Arrowhead Brake (65% Recoil Cut)",
+      "29-Inch Fluted Recoil Barrel + Accelerator Bolt Cam",
+      "Leupold Mark 4 Mil-Dot Scope + 27-MOA Picatinny Rail",
+      "10-Round .50 BMG Ribbed Steel Mag + Spiked Bipod"
+    ],
+    "workbenchTitle": "M82A1 Internal Kinematics & Ballistic Cycle",
+    "workbenchSubtitle": "4 Core Assemblies · 24 Nodes · Short-Recoil Dynamic Simulation",
+    "cutawayLabel": "Cutaway View",
+    "cutawayTitle": "Switch to cutaway focus showing bolt lugs, barrel extension, and accelerator",
+    "searchPlaceholder": "Search component or BOM code (e.g., Brake, Barrel, U-01)...",
+    "firingMilestoneLabel": "Muzzle Exit / Unlock",
+    "rateOfFire": "Semi-Automatic",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0%",
+        "desc": "Combat battery configuration: 29-inch fluted barrel seated under twin return spring tension with three-lug bolt head rigidly locked inside barrel extension."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "25%",
+        "desc": "Drop 10-round steel magazine, pop dual captive push pins to pivot stamped receivers apart, and slide out bolt carrier and accelerator assembly."
+      },
+      "upper_recoil": {
+        "label": "Recoil Core Strip",
+        "subLabel": "52%",
+        "desc": "Unhook twin barrel tension springs, withdraw 29-inch fluted heavy barrel with arrowhead brake forward, and detach Leupold Mark 4 optic and heavy rings."
+      },
+      "bolt_fcg": {
+        "label": "Bolt & Trigger Group",
+        "subLabel": "78%",
+        "desc": "Detail strip rotating bolt head, stepped firing pin, accelerator lever, stock recoil buffer spring, and lower upright linear hammer fire control group."
+      },
+      "full_exploded": {
+        "label": "Exploded View",
+        "subLabel": "100%",
+        "desc": "Complete 24-part orthogonal schematic display illustrating recoil mitigation kinetics and heavy ordnance cam locking geometry."
+      }
+    },
+    "firingPhases": {
+      "m82_battery_ready": {
+        "shortLabel": "Battery Ready",
+        "title": "Phase 1 · Rigid Cam Lock & Spring Preload",
+        "description": "Twin return springs hold the 29-inch fluted barrel fully forward. The three-lug bolt head is locked into the barrel extension with a 50 BMG chambered."
+      },
+      "m82_striker_ignition": {
+        "shortLabel": "Hammer Strike",
+        "title": "Phase 2 · Sear Release & Striker Impact",
+        "description": "Trigger pull rotates sear out of engagement, snapping the upright hammer forward under dual springs into the stepped inertia firing pin."
+      },
+      "m82_short_recoil_locked": {
+        "shortLabel": "Short Recoil",
+        "title": "Phase 3 · Dual-Brake Vent & Barrel Recoil",
+        "description": "High-pressure gas vents sideways at sixty degrees through the arrowhead brake, while barrel and locked bolt travel rearward together for 25 millimeters."
+      },
+      "m82_accelerator_unlock": {
+        "shortLabel": "Cam Unlock",
+        "title": "Phase 4 · Accelerator Leverage & 60-Degree Bolt Rotation",
+        "description": "The accelerator arm strikes the lower stop to lever momentum into the bolt carrier, driving helical cam rotation to unlock the three locking lugs."
+      },
+      "m82_extract_eject": {
+        "shortLabel": "Extraction & Eject",
+        "title": "Phase 5 · Forward Barrel Return & Shell Ejection",
+        "description": "Twin tension springs pull the barrel back into battery while the carrier recoils fully into the stock, pulling and kicking the brass case free."
+      },
+      "m82_counter_recoil_feed": {
+        "shortLabel": "Strip & Chamber",
+        "title": "Phase 6 · Main Recoil Stroke & Feeding",
+        "description": "The heavy buffer spring drives the bolt forward, stripping a fresh cartridge from the ten-round ribbed magazine and directing it up the chamber feed ramp."
+      },
+      "m82_cam_lock_reset": {
+        "shortLabel": "Lock & Reset",
+        "title": "Phase 7 · Lug Cam Engagement & Disconnector Reset",
+        "description": "Carrier cam track rotates the bolt sixty degrees into full extension lockup as disconnector catches the trigger bar ready for the next cycle."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "驯服五十点重机枪弹药：巴雷特 M82A1 反器材革命史",
+      "deck": "从田纳西州车库的手绘草图到震撼全球战场的重型狙击标准，罗尼·巴雷特以天才的枪管短后坐与加速子机构，开创了现代轻兵器超远距反器材作战纪元。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1982–1986",
+          "title": "车库起步与重机枪弹药的单兵化构想",
+          "paragraphs": [
+            "1982年1月1日，身为商业摄影师的罗尼·巴雷特在田纳西州斯通河畔拍摄一艘武装巡逻艇时，注意到了艇上架设的双联装勃朗宁 M2 重机枪。望着点五零口径巨大而充满暴力的重机枪弹壳，一个大胆的机械工程构想在他脑海中萌发：是否可以制造出一款能够由单兵在卧姿状态下精确肩射点五零口径弹药的半自动步枪？在当时，所有主流军械专家都对此嗤之以鼻，认为高达数千焦耳的毁灭性后坐力足以粉碎射手的肩胛骨。",
+            "没有任何正规军工科班背景的罗尼·巴雷特凭借极高的机械直觉，在自家的简陋车库里拉开了设计序幕。他找来白纸绘制了一比一比例的全尺寸剖面图，并自掏腰包拜访当地的多家机加工车间。几乎所有铣工都拒绝接单，斥责图纸异想天开，唯有机床师傅鲍勃·卡特接下了挑战。经过无数个日夜的反复手工切削与组装，首款原型枪 M82 终于在车库工作台上诞生，并在河滩试射中验证了单兵发射的可行性。"
+          ],
+          "audioScript": "一九八二年，商业摄影师罗尼·巴雷特注视着巡逻艇上的勃朗宁重机枪，萌生了打造肩射点五零半自动步枪的狂想。在所有军工权威断言人类肩膀无法承受重机枪暴虐后坐力的质疑声中，他在车库手绘出全尺寸图纸，开启了反器材步枪的破晓时代。",
+          "audioUrl": "audio/m82a1/story_act1_zh.mp3",
+          "focusPartId": "m82a1_lower_receiver",
+          "focusPartLabel": "冲压钢下机匣与缓冲托垫"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1986–1989",
+          "title": "箭头制退与加速子杠杆的技术破局",
+          "paragraphs": [
+            "初代 M82 原型虽然完成了击发，但剧烈的可感后坐力、卡壳频发以及冲压机匣的结构开裂，证明了直接套用传统导气式或简易后坐原理无法承载高达三万七千焦耳的枪口动能。巴雷特毅然推倒重来，确立了以枪管短后坐结合双室大容积后掠箭头形炮口制退器的全新动力学架构。该制退器利用两组巨大的后掠膨胀挡板，在弹头出膛后将高达百分之六十五的火药高压超音速燃气向斜后方分流反冲，直接从源头化解后坐冲量。",
+            "然而短后坐行程仅有约二十五毫米，沉重而修长的重枪管无法直接向后推移整套机框完成抽壳供弹。为此，巴雷特引入了一枚形状精妙的加速子杠杆：当枪管延伸节后坐到位骤停时，杠杆底部猛烈撞击下机匣阻铁座，以杠杆原理将重枪管的后坐残余动量以成倍速度放大撬动枪机框向后狂飙。这一突破性结构彻底解决了半自动远距反器材供弹疲软的世纪痼疾，定型为 M82A1。"
+          ],
+          "audioScript": "面对暴虐的膛压与零件形变，巴雷特彻底重构了内部动力链。独创的双室箭头制退器将六成以上的燃气喷流转化为向前拉扯的刹车力，配合底部的加速子杠杆，巧妙利用枪管制动惯性撬飞枪机框，彻底攻克了抽壳与供弹循环的机械死结。",
+          "audioUrl": "audio/m82a1/story_act2_zh.mp3",
+          "focusPartId": "m82a1_accelerator",
+          "focusPartLabel": "短后坐能量传递加速子"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1989–1992",
+          "title": "海湾雷霆与特种作战反器材教条确立",
+          "paragraphs": [
+            "1989年，瑞典陆军率先采购了一百套 M82A1 步枪用于未爆弹药与水雷远距离排除，标志着该枪正式敲开正规军备大门。随后不久海湾战争爆发，美军海军陆战队在沙特沙漠急迫需要一种能够在超视距外摧毁伊拉克雷达方舱、飞毛腿导弹发射车以及未引爆地雷的重型精准投送平台。巴雷特公司在极短时间内紧急动员，向战区运送了一百二十五套 M82A1 步枪。",
+            "在代号为“沙漠风暴”的实战行动中，M82A1 展现出了惊人的战术威慑力。特等射手们在超过一千六百米的外围阵地，使用特种穿甲燃烧弹直接瘫痪轻型装甲车辆与通讯雷达塔，甚至在敌方重机枪射程外实施精确压制。美国海军陆战队与特种作战司令部在战后报告中给予了极高评价，指出该武器重新定义了超长距离战场反器材战术条令，使步兵分队首次拥有了以往需要炮兵或对地打击机才能实现的硬目标点穴毁伤能力。"
+          ],
+          "audioScript": "一九九零年海湾风云突变，巴雷特步枪紧急配发沙漠前线。在沙漠风暴行动中，陆战队射手于一千六百米开外洞穿雷达阵地与轻装甲运兵车。这场现代化实战不仅击碎了伊拉克防线，更将反器材步枪这一全新战术门类写进了全球特种作战教条。",
+          "audioUrl": "audio/m82a1/story_act3_zh.mp3",
+          "focusPartId": "m82a1_barrel",
+          "focusPartLabel": "29英寸开槽短后坐重枪管"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1992–至今",
+          "title": "正式冠名 M107：传奇殿堂与工业标杆",
+          "paragraphs": [
+            "经历了数次实战淬火，美国陆军于2000年代初正式启动了远程狙击步枪项目，M82A1 经过进一步减重、增设通长皮卡汀尼导轨、升级消音器接口与双销快拆机匣后，被美军正式赋予官方型号代码：M107 半自动反器材步枪。美国陆军更是将 M107 评为二零零三年度十大最伟大军事发明之一，这是民间独立枪械工程师完全绕过传统军工巨头垄断而获得的至高荣耀。",
+            "如今，巴雷特 M82 系列已在全球超过六十个国家和地区的正规军及执法反恐单位中服役，成为现代军事反器材与远距离封锁任务的代名词。从乌克兰前线堑壕到中东炙热荒漠，重达十三点五公斤的钢铁身躯、标志性的箭头型双室炮口制退器与撼人心魄的低沉轰鸣，共同铸就了二十世纪末至今最不可动摇的单兵重火器传奇。"
+          ],
+          "audioScript": "从名不见经传的车库奇迹，到美军正式冠名授予的万乘之尊，巴雷特以十发点五零巨弹的磅礴气魄，横扫全球六十余国军警阵列。重达十三点五公斤的钢铁身躯与永恒的箭头制退器，已成为现代军火工业史上无可撼动的单兵远程重击丰碑。",
+          "audioUrl": "audio/m82a1/story_act4_zh.mp3",
+          "focusPartId": "m82a1_muzzle_brake",
+          "focusPartLabel": "双室箭头坦克炮口制退器"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "双室后掠箭头炮口制退器",
+          "tag": "65% 后坐冲量反冲泄压",
+          "summary": "采用六十度向后侧方大开角双膨胀室架构，在弹头脱离枪口瞬间引导高压火药燃气形成强大的前拉反冲矢量，直接削减高达百分之六十五的后坐动量，使点五零口径弹药肩射成为现实。",
+          "focusPartId": "m82a1_muzzle_brake",
+          "focusPartLabel": "双室箭头炮口制退器"
+        },
+        {
+          "id": "bt2",
+          "title": "短后坐加速子动量放大杠杆",
+          "tag": "动量转换增速机构",
+          "summary": "重枪管后坐约二十五毫米受阻瞬间，下机匣阻铁座撬动加速子杠杆底端，以杠杆比将沉重枪管的后坐残余动能成倍注入轻量化枪机框，彻底确保超大号高压黄铜弹壳抽壳与长行程后坐供弹可靠性。",
+          "focusPartId": "m82a1_accelerator",
+          "focusPartLabel": "短后坐加速子"
+        },
+        {
+          "id": "bt3",
+          "title": "三突笋六十度回转闭锁延伸节",
+          "tag": "370兆帕高压闭锁总成",
+          "summary": "三枚厚实闭锁突笋直接回转咬合于淬硬合金钢枪管延伸节内部，将高达三百七十兆帕的膛压膨胀完全闭锁在枪管总成内部，使上下冲压钢机匣无需承受破坏性径向膨胀应力，大幅减轻全枪重量。",
+          "focusPartId": "m82a1_bolt",
+          "focusPartLabel": "三突笋回转闭锁枪机头"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1982",
+          "title": "车库首创点五零半自动",
+          "detail": "罗尼·巴雷特在田纳西州自费试制完成首支 M82 原型枪，首创单兵肩射重机枪弹药新概念。"
+        },
+        {
+          "year": "1986",
+          "title": "M82A1 结构定型",
+          "detail": "引入标志性双室箭头制退器与加速子短后坐架构，申请并获批核心发明专利。"
+        },
+        {
+          "year": "1989",
+          "title": "首批军工订单交付瑞典",
+          "detail": "瑞典国防军订购100套 M82A1 用于远距离排雷防爆，开启正规军数列装篇章。"
+        },
+        {
+          "year": "1990",
+          "title": "沙漠风暴实战洗礼",
+          "detail": "美军海军陆战队紧急采购125支投入海湾战场，确立远距反器材破障战术学说。"
+        },
+        {
+          "year": "2002",
+          "title": "美军正式定型 M107 SASR",
+          "detail": "被美国陆军正式赋予 M107 官方列装编号，并获评年度十大最伟大军事发明。"
+        },
+        {
+          "year": "2016",
+          "title": "田纳西州官方州枪荣耀",
+          "detail": "田纳西州议会通过法案将巴雷特 M82 正式确立为该州官方步枪，载入枪械工业史册。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Taming the Fifty Caliber: The Operational Legacy of the Barrett M82A1",
+      "deck": "From a makeshift Tennessee garage blueprint to the undisputed hallmark of long-range battlefield anti-materiel doctrine, Ronnie Barrett harnessed short-recoil physics to pioneer a modern ordnance revolution.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1982–1986",
+          "title": "Garage Vision & The Man-Portable Heavy Machine Gun Dream",
+          "paragraphs": [
+            "On New Year's Day in 1982, commercial photographer Ronnie Barrett stood on the banks of the Stones River in Tennessee, photographing an armed river patrol craft armed with dual Browning M2 heavy machine guns. As he watched the massive .50 BMG brass casings eject under thunderous concussions, an audacious mechanical proposition struck him: could a semi-automatic shoulder-fired rifle be built that allowed an individual marksman to unleash this machine gun cartridge with precision from the prone position? At the time, military ordnance engineers dismissed the notion as outright suicide, calculating that the immense thousands of foot-pounds of felt recoil would shatter a human shooter's clavicle.",
+            "Possessing no formal engineering degree, Ronnie relied on sheer mechanical instinct and drew hand-drafted, full-scale cross-sectional schematics on his kitchen table. Seeking a machinist willing to fabricate the components, he was rejected by dozens of tool-and-die shops until local machinist Bob Carter agreed to take on the challenge. Working endless nights in a gravel-floor garage, the two hand-turned steel rods, bored receivers, and bent sheet metal, ultimately firing the initial M82 prototype along the riverbank to prove that a shoulder-fired fifty-caliber weapon was physically viable."
+          ],
+          "audioScript": "In nineteen eighty-two, photographer Ronnie Barrett watched a patrol boat machine gun and asked why an infantryman could not fire that massive round from the shoulder. Overcoming unanimous rejection from military ordnance experts who claimed fifty-caliber recoil would shatter human bones, Barrett drafted full-scale blueprints in his Tennessee garage, sparking the anti-materiel rifle revolution.",
+          "audioUrl": "audio/m82a1/story_act1_en.mp3",
+          "focusPartId": "m82a1_lower_receiver",
+          "focusPartLabel": "Stamped Sheet-Steel Lower Receiver"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1986–1989",
+          "title": "The Arrowhead Brake & Mechanical Momentum Redirection",
+          "paragraphs": [
+            "While the earliest M82 proof prototypes fired successfully, violent bolt velocities, battered receivers, and rapid component fatigue showed that standard gas or plain blowback operation was utterly incompatible with thirty-seven thousand joules of muzzle energy. Barrett discarded earlier ideas and formulated an integrated dynamic system: combining a 29-inch floating short-recoil barrel with an oversized dual-chamber arrowhead muzzle brake. This signature brake vectored high-pressure propellant gases rearward and sideways at sixty degrees, pulling the rifle forward to cancel over sixty-five percent of recoil shock at the muzzle exit.",
+            "However, with the barrel recoiling only an inch before stopping against internal buffers, the massive barrel could not travel far enough to cycle the bolt carrier through a complete cartridge stroke. Barrett engineered an accelerator arm pivoted on the lower receiver. As the barrel extension struck its rearward stop, the lower tip of the accelerator pivoted backward against the chassis, leveraging the kinetic inertia of the heavy barrel to fling the bolt carrier rearward with magnified velocity. This breakthrough solved cycling reliability and crystallized as the definitive M82A1."
+          ],
+          "audioScript": "Cracking receivers and punishing recoil demanded a bold redesign. Barrett created an iconic dual-chamber arrowhead brake that diverted sixty-five percent of muzzle blast rearward, pulling the rifle forward. Beneath the chamber, a mechanical accelerator arm converted the recoiling barrel's kinetic energy into carrier momentum, solving extraction and cycling issues for good.",
+          "audioUrl": "audio/m82a1/story_act2_en.mp3",
+          "focusPartId": "m82a1_accelerator",
+          "focusPartLabel": "Momentum Transfer Accelerator Arm"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1989–1992",
+          "title": "Desert Storm & The Birth of Long-Range Anti-Materiel Doctrine",
+          "paragraphs": [
+            "In 1989, the Swedish Armed Forces became the first military customer by purchasing one hundred M82A1 rifles for standoff explosive ordnance disposal. Soon after, the Gulf War erupted in the Middle East. Confronted with vast expanses of open sand and heavily defended Iraqi radar nodes, Scud missile trailers, and fortified bunkers, the United States Marine Corps placed an urgent combat requisition for one hundred twenty-five Barrett M82A1 systems.",
+            "During Operation Desert Storm, Marine sniper teams transformed tactical engagements beyond sixteen hundred meters. Utilizing specialized armor-piercing incendiary rounds, scout snipers eliminated communication antennae, punched through armored personnel carriers, and neutralized high-value equipment well beyond the effective range of enemy return fire. Combat reports cemented a fundamental paradigm shift: an infantry pair could now achieve targeted standoff anti-materiel destruction that previously mandated mortar barrages or dedicated air support."
+          ],
+          "audioScript": "In nineteen ninety, war broke out in the Persian Gulf, and the United States Marine Corps urgently ordered one hundred twenty-five Barrett rifles. During Operation Desert Storm, snipers engaged radar emplacements and light armored targets from beyond one thousand six hundred meters, proving that a two-man team could project surgical standoff firepower once reserved for air strikes.",
+          "audioUrl": "audio/m82a1/story_act3_en.mp3",
+          "focusPartId": "m82a1_barrel",
+          "focusPartLabel": "29-Inch Recoiling Heavy Barrel"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "1992–Present",
+          "title": "Designation M107: An Enduring Legend of Modern Ordnance",
+          "paragraphs": [
+            "Building on extensive combat validation across Iraq and the Balkans, the US Army initiated formal standardization trials in the early 2000s. Upgraded with an uninterrupted top Picatinny rail, dual quick-detach receiver pins, enhanced bipod mountings, and acoustic suppressor interfaces, the rifle was formally adopted as the Long Range Sniper Rifle, M107. The United States Army named the M107 one of the Top Ten Greatest Inventions of 2003, conferring rare official acclaim upon an independent civilian inventor who had challenged legacy defense conglomerates.",
+            "Today, the Barrett M82 series serves armed forces and elite tactical teams in more than sixty nations worldwide. From arctic outposts to urban security details, its distinctive silhouette, thunderous acoustic signature, and devastating downrange terminal effects remain the gold standard in anti-materiel weaponry, forever proving that visionary mechanical engineering can redefine battlefield geometry."
+          ],
+          "audioScript": "From an unheralded Tennessee garage to formal adoption as the United States military M107, Barrett transformed single-operator firepower. Firing ten devastating rounds of fifty-caliber ordnance, the M82A1 remains in service with over sixty nations, standing as an enduring symbol of mechanical ingenuity and battlefield dominance.",
+          "audioUrl": "audio/m82a1/story_act4_en.mp3",
+          "focusPartId": "m82a1_muzzle_brake",
+          "focusPartLabel": "Arrowhead Dual-Chamber Muzzle Brake"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Dual-Chamber Arrowhead Muzzle Brake",
+          "tag": "65% Recoil Impulse Vectoring",
+          "summary": "Dual rear-raked expansion baffles redirect supersonic propellant gas backward at sixty degrees immediately after bullet exit, producing a powerful forward impulse that eliminates 65% of felt recoil, rendering shoulder-fired .50 BMG controllable.",
+          "focusPartId": "m82a1_muzzle_brake",
+          "focusPartLabel": "Arrowhead Dual-Chamber Muzzle Brake"
+        },
+        {
+          "id": "bt2",
+          "title": "Kinetic Momentum Accelerator Lever",
+          "tag": "Mechanical Kinetic Transfer",
+          "summary": "As the barrel abruptly stops at 25mm of short recoil, the accelerator arm pivots against the receiver chassis, mechanically multiplying and transferring the barrel's residual momentum into the bolt carrier to assure flawless extraction under high pressures.",
+          "focusPartId": "m82a1_accelerator",
+          "focusPartLabel": "Recoil Momentum Accelerator Arm"
+        },
+        {
+          "id": "bt3",
+          "title": "Three-Lug Rotating Bolt & Barrel Extension",
+          "tag": "370 MPa Chamber Hoop Containment",
+          "summary": "Three heavy locking lugs engage directly inside the hardened alloy barrel extension, fully containing chamber pressures of 370 MPa entirely within the barrel assembly so the stamped sheet-metal receivers endure zero radial expansion stress.",
+          "focusPartId": "m82a1_bolt",
+          "focusPartLabel": "Three-Lug Rotating Bolt Head"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1982",
+          "title": "The Garage Prototype",
+          "detail": "Ronnie Barrett hand-builds the first operational M82 prototype in a Tennessee workshop, pioneering shoulder-fired .50 BMG."
+        },
+        {
+          "year": "1986",
+          "title": "Patented M82A1 Redesign",
+          "detail": "Integrates the arrowhead brake and momentum accelerator into a production platform, securing foundational firearm patents."
+        },
+        {
+          "year": "1989",
+          "title": "First Military Contract",
+          "detail": "Sweden orders 100 M82A1 rifles for explosive ordnance disposal, validating anti-materiel applications on an international scale."
+        },
+        {
+          "year": "1990",
+          "title": "Desert Storm Deployment",
+          "detail": "The US Marine Corps procures 125 units for combat in Kuwait, pioneering high-value vehicle and radar standoff neutralization."
+        },
+        {
+          "year": "2002",
+          "title": "Official US Army Adoption as M107",
+          "detail": "Standardized as the M107 Long Range Sniper Rifle and awarded one of the US Army's Top Ten Inventions of 2003."
+        },
+        {
+          "year": "2016",
+          "title": "Designated Official State Rifle",
+          "detail": "The Tennessee General Assembly enacts legislation officially naming the Barrett M82 the official state rifle of Tennessee."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "m82a1_muzzle_brake": {
+      "partId": "m82a1_muzzle_brake",
+      "bomCode": "U-01",
+      "calloutLabelEn": "Arrowhead Muzzle Brake",
+      "zh": {
+        "roleTag": "65% 后坐冲量侧喷制退",
+        "overview": "双室箭头炮口制退器是巴雷特步枪最具辨识度的标志性构件，牢固螺接在重枪管最前端。它负责在弹头离膛瞬间，将尾随的高压火药燃气向侧后方强制导流以大幅降低后坐力。",
+        "craftAndMaterial": "采用高强度合金钢整体数控铣削并经深层氮化防腐处理。内设两级六十度后掠导流隔板，大受风斜面能将剧烈的燃气冲击转化为向前拉扯枪管的减速分力。",
+        "kinematicRole": "在击发阶段随同重枪管后坐约二十五毫米，剧烈侧喷泄压抵消约百分之六十五的后坐动量。不完全分解展开到百分之二十八至五十四区间时随枪管组件向前方抽出脱离。",
+        "designHighlight": "若无此双室箭头制退器的侧向反冲分压，发射点五零点火冲量将直接超过人体锁骨承受极限，这是巴雷特实现单兵肩射的关键基石。",
+        "audioScript": "请看这具标志性的双室箭头制退器。当十二点七毫米巨弹离膛时，两道六十度大倾角隔板将尾随的高压燃气强行向后侧方狂暴喷射。它能瞬间削去整枪百分之六十五的后坐冲量，将炮弹般的后坐力驯化到人体肩窝可以承受的范围。",
+        "audioUrl": "audio/m82a1/parts/m82a1_muzzle_brake_zh.mp3"
+      },
+      "en": {
+        "roleTag": "65% Impulse Gas Brake",
+        "overview": "The iconic dual-chamber arrowhead muzzle brake threads securely onto the muzzle of the recoiling barrel. It acts as the primary recoil attenuation device by redirecting explosive propellant gases rearward.",
+        "craftAndMaterial": "CNC machined from high-tensile alloy steel with a rugged melonite salt-bath nitride finish. Its dual internal baffles swept at sixty degrees present massive expansion faces that generate forward traction against recoil forces.",
+        "kinematicRole": "Recoils rearward in unison with the heavy barrel through Phase 3 for about twenty-five millimeters while venting muzzle blasts. During stripping between twenty-eight and fifty-four percent, it draws forward along the barrel axis.",
+        "designHighlight": "Without this massive twin-chamber compensator venting gas to counteract recoil, the raw impulse of the fifty caliber cartridge would cause severe injury to a shooter's clavicle.",
+        "audioScript": "Notice this iconic arrowhead muzzle brake at the front of the barrel. When a fifty-caliber round departs, its twin sixty-degree angled baffles deflect high-pressure propellant gases aggressively sideways and rearward. This action cancels out nearly sixty-five percent of the rifle recoil impulse, making shoulder-firing this anti-materiel giant physically possible.",
+        "audioUrl": "audio/m82a1/parts/m82a1_muzzle_brake_en.mp3"
+      }
+    },
+    "m82a1_barrel": {
+      "partId": "m82a1_barrel",
+      "bomCode": "U-02",
+      "calloutLabelEn": "29-Inch Fluted Barrel",
+      "zh": {
+        "roleTag": "8 槽减重散热浮动后坐管",
+        "overview": "全长二十九英寸的冷锻重型浮动枪管，安设在上机匣内部的前后自润滑衬套之间。作为短后坐自动机的心脏构件，它承载弹膛并引导十二点七毫米弹头获得精确的自旋轨迹。",
+        "craftAndMaterial": "采用特种合金枪管钢精锻成型，外壁铣削八道深纵向减重散热凹槽。开槽在大幅提升表面对流通风面积的同时，兼顾了极高的纵向抗弯刚度并减轻了整枪前部死重。",
+        "kinematicRole": "发射初期与三突笋枪机刚性闭锁并共同后坐约二十五毫米；在机头解脱后受双联复进簧牵拉先行复位。分解进程达百分之三十至五十五阶段向前抽出。",
+        "designHighlight": "设计上兼具了精密狙击枪管的内外弹道公差与大口径火炮般的纵向浮动滑行缓冲行程，将暴戾的膛内瞬时峰值压平滑稀释在时间轴上。",
+        "audioScript": "这是一根全长二十九英寸的冷锻重枪管，膛内带有八条缠距十五英寸的精密膛线。外壁精细铣削出八道纵向深槽，不仅大幅强化了连续射击时的空气对流散热，还保证了枪管在短后坐高速滑行时拥有近乎完美的抗弯刚度。",
+        "audioUrl": "audio/m82a1/parts/m82a1_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Fluted Recoiling Heavy Barrel",
+        "overview": "The twenty-nine-inch cold hammer-forged floating barrel mounts inside dedicated self-lubricating bronze guide sleeves within the upper receiver. It forms the core recoiling mass of the action, housing the chamber and imparting spin to the projectile.",
+        "craftAndMaterial": "Forged from ordnance-grade alloy barrel steel and finished in deep manganese phosphate. Eight longitudinal radial flutes machined along its exterior maximize cooling surface area while stiffening structural rigidity and shaving crucial dead weight.",
+        "kinematicRole": "In Phases 1 through 3, it recoils rearward twenty-five millimeters locked rigidly to the bolt, before returning forward under spring tension in Phase 5. In field strip between thirty and fifty-five percent, it pulls clean out of the receiver.",
+        "designHighlight": "Balancing target-rifle bore tolerances with artillery-style linear sliding movement allows the barrel to soak up recoil peaks smoothly over an elongated operational cycle.",
+        "audioScript": "Spanning twenty-nine inches, this heavy fluted barrel is the physical heart of the short-recoil mechanism. Eight deep exterior flutes enhance heat dissipation while maintaining incredible rigidity. During firing, the locked barrel glides twenty-five millimeters rearward within receiver bushings to absorb peak impulse before releasing the bolt.",
+        "audioUrl": "audio/m82a1/parts/m82a1_barrel_en.mp3"
+      }
+    },
+    "m82a1_barrel_extension": {
+      "partId": "m82a1_barrel_extension",
+      "bomCode": "U-03",
+      "calloutLabelEn": "Locking Barrel Extension",
+      "zh": {
+        "roleTag": "承受 370MPa 膛压闭锁母座",
+        "overview": "枪管延伸节是高强度合金钢车削构件，以大扭矩永久螺接在重枪管后膛尾端。它作为旋转枪机头的闭锁受力母座，将高压气体的封闭环境完全锁死在枪管单元内部。",
+        "craftAndMaterial": "选用渗碳淬硬的高级合金钢整体车铣，内壁分布三个宽厚的闭锁齿槽并经精密磨削。外缘对称设有耳轴销孔，用于锚接双联枪管复位拉簧的后端挂钩。",
+        "kinematicRole": "在闭锁状态下承接弹底对枪机的后冲应力，并在短后坐全程与枪机保持刚性锁止，直至加速子触发机头偏转开锁。分解进度达百分之三十二至五十六时随枪管同步拆出。",
+        "designHighlight": "闭锁应力直接在延伸节与枪机突笋间闭环自平衡，彻底免除了冲压薄钢板上机匣承受轴向撕裂膛压的风险，是全枪实现轻量化的核心关窍。",
+        "audioScript": "紧固在枪管尾端的正是延伸节节套。它由高强度渗碳合金钢切削而成，内壁加工有一百二十度均布的三突笋闭锁母槽。点火瞬间高达三百七十兆帕的狂暴膛压完全被这个母座封堵吸收，使冲压薄钢机匣免于承受可怕的轴向拉应力。",
+        "audioUrl": "audio/m82a1/parts/m82a1_barrel_extension_zh.mp3"
+      },
+      "en": {
+        "roleTag": "370MPa Chamber Extension",
+        "overview": "The barrel extension is a hardened alloy collar torqued directly to the breech threads of the heavy barrel. It houses the internal locking recesses that engage the three-lug bolt head during firing.",
+        "craftAndMaterial": "Machined from carburized 4340 ordnance alloy steel and hardened for extreme surface durability. Features three precision wire-EDM broached locking lugs and external mounting lugs for the twin barrel return springs.",
+        "kinematicRole": "Locks the rotating bolt rigidly against the case head through Phase 3, transferring recoil directly into the recoiling barrel group. During disassembly from thirty-two to fifty-six percent, it extracts together with the barrel.",
+        "designHighlight": "By containing full firing pressure entirely between the barrel extension and bolt lugs, tensile stresses bypass the sheet-metal receiver completely, enabling a lightweight stamped construction.",
+        "audioScript": "Torqued permanently onto the breech of the barrel is the barrel extension. Machined from carburized alloy steel, its three internal locking shoulders directly resist peak breech pressures up to three hundred seventy megapascals. This clever setup ensures that all primary firing stresses remain sealed within the barrel assembly.",
+        "audioUrl": "audio/m82a1/parts/m82a1_barrel_extension_en.mp3"
+      }
+    },
+    "m82a1_barrel_springs": {
+      "partId": "m82a1_barrel_springs",
+      "bomCode": "U-04",
+      "calloutLabelEn": "Twin Barrel Return Springs",
+      "zh": {
+        "roleTag": "短后坐受拉储能复位双簧",
+        "overview": "双联枪管复进拉簧对称并列布置在护木内腔枪管两侧，前后端分别钩挂在上机匣前导套与枪管延伸节耳轴上。它们专职负责在枪机开锁后，以弹性拉力强制重枪管平稳向前复位复进到位。",
+        "craftAndMaterial": "选用耐疲劳沉淀硬化不锈钢弹簧丝密圈绕制，表面进行喷丸抗疲劳强化。两端加工为加粗半圆钩环，具备极高的抗交变拉伸疲劳寿命与防脱扣安全系数。",
+        "kinematicRole": "在短后坐阶段随枪管后移而轴向拉伸蓄能，当三突笋机头旋转开锁并解脱瞬间，释放弹力将沉重的重枪管拉回最前端待击点。维护保养在百分之二十八至五十四展开脱出。",
+        "designHighlight": "巧妙采用拉伸弹簧而非压缩弹簧，避免了长行程细长导杆的弯曲失稳自锁，使重枪管在前护木狭小轴向空间内的往复运动更为顺滑平稳。",
+        "audioScript": "布置在枪管两侧的是双联复进拉簧。当全枪后坐、重达四公斤的枪管向后平移二十五毫米时，这两根高强度拉簧被强制拉长蓄能。一旦枪机回转开锁脱扣，蓄积的拉力瞬间将枪管猛拉回前止点，等待下一发入膛。",
+        "audioUrl": "audio/m82a1/parts/m82a1_barrel_springs_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dual Recoil Return Springs",
+        "overview": "Symmetrically mounted along either side of the barrel inside the forend, these two heavy-gauge tension springs hook between the upper receiver sleeve and the barrel extension lugs. Their sole task is yanking the massive recoiling barrel forward after unlock.",
+        "craftAndMaterial": "Wound from shot-peened 17-7 PH precipitation-hardened stainless spring wire with closed loop ends. Engineered to maintain consistent elastic tension across thousands of brutal rapid extension cycles.",
+        "kinematicRole": "Stretches under tension during Phase 3 recoil; in Phase 5, pulls the barrel assembly back to battery independently while the bolt carrier continues rearward. Unhooks at twenty-eight to fifty-four percent disassembly.",
+        "designHighlight": "Using tension springs instead of compression springs prevents long guide rods from buckling under severe kinetic shocks within the tight upper housing.",
+        "audioScript": "Nestled on both flanks of the barrel are the twin return tension springs. When the massive barrel shifts backward during recoil, these springs stretch to absorb kinetic energy. The instant the bolt unlocks and breaks free, they snap the entire barrel assembly back into forward battery.",
+        "audioUrl": "audio/m82a1/parts/m82a1_barrel_springs_en.mp3"
+      }
+    },
+    "m82a1_upper_receiver": {
+      "partId": "m82a1_upper_receiver",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Vented Upper Receiver",
+      "zh": {
+        "roleTag": "八角冲压机匣 · 28散热长孔",
+        "overview": "冲压钢上机匣构成了枪身前半部的主体骨架，向下通过前后两枚快拆销与下机匣铰接锁固。其顶部整合全长战术导轨，前端护木全包覆重枪管及复进系统以提供全面防护。",
+        "craftAndMaterial": "由优质厚壁冲压低合金钢板经数控折弯成八角多棱截面并实施特种塞焊，表面经哑光磷化涂层处理。两侧共精密冲制二十八个跑道型长孔，兼具剧烈气流对流散热与结构轻量化。",
+        "kinematicRole": "在射击全周期作为静止基准构件，内壁精密衬套引导枪管作轴向往复后坐，顶部导轨承受沉重瞄准镜的光学惯性冲击。在分解进度百分之八至二十五阶段作为主体展开分离。",
+        "designHighlight": "八角截面折弯造型赋予了冲压薄板极其优异的横向抗扭刚度，顶部整合自带二十七角分俯角斜坡的机加导轨，直接解决超远距离狙击仰角不足的技术痛点。",
+        "audioScript": "这是八角截面的冲压薄钢板上机匣。机匣前部开凿有二十八个跑道形对流散热长孔，在保证结构刚度的同时迅速抽吸冷空气。顶部导轨出厂即带有二十七角分俯角倾斜补偿，帮助瞄准镜轻松应对近两公里的抛物线弹道修正。",
+        "audioUrl": "audio/m82a1/parts/m82a1_upper_receiver_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Octagonal Stamped Receiver",
+        "overview": "The heavy-gauge stamped steel upper receiver forms the upper structural backbone of the weapon, pinning securely to the lower receiver via dual pushpins. It houses the barrel group and provides a continuous top optics rail.",
+        "craftAndMaterial": "Formed from 4130 chrome-moly sheet steel folded into a rigid octagonal cross-section with longitudinal plug welds and black manganese phosphate. Features twenty-eight punch-vent slots that drive thermal convective cooling.",
+        "kinematicRole": "Acts as the rigid inertial datum throughout firing, guiding the sliding barrel and housing the cycling bolt carrier. Separates from the lower frame between eight and twenty-five percent in disassembly.",
+        "designHighlight": "The stamped octagonal profile yields extreme torsional stiffness against rough combat environments, while an integrated 27-MOA forward slope extends optical elevation travel.",
+        "audioScript": "Take a look at the octagonal sheet-steel upper receiver. Twenty-eight stamped ventilation slots allow heat from the fluted barrel to exhaust freely. The full-length Picatinny rail along the spine is permanently machined with a twenty-seven MOA forward cant, preserving upward turret elevation for two-kilometer engagements.",
+        "audioUrl": "audio/m82a1/parts/m82a1_upper_receiver_en.mp3"
+      }
+    },
+    "m82a1_carry_handle": {
+      "partId": "m82a1_carry_handle",
+      "bomCode": "U-06",
+      "calloutLabelEn": "Folding Carry Handle",
+      "zh": {
+        "roleTag": "质心平衡单手携行提把",
+        "overview": "快拆折叠重型提把横跨装夹在物镜前方的机匣皮卡汀尼导轨上，位于整枪处于空膛质心平衡点的最佳位置。它为单兵携行这款重达十四公斤的反器材巨兽提供了可靠支点。",
+        "craftAndMaterial": "提把支架由厚壁锻钢冲压弯折成型，外裹带有指槽防滑纹路的高分子耐热复合聚合物手柄。底座配备快拆偏心棘轮锁紧凸轮，可徒手完成无工具快速拆除移位。",
+        "kinematicRole": "在火控射击过程中保持水平向右折叠静止，避开大口径狙击物镜视场；待机搬运时人工向左上竖起锁入承重工位。在维护进度达百分之二十八至五十二时可自导轨卸下。",
+        "designHighlight": "提把锁紧基座经过精确静力矩配重计算，平举单手提枪时枪口与枪托自然保持接近水平姿态，显著减轻了单兵急行军时的肢体疲劳度。",
+        "audioScript": "固定在战术导轨重心配平点上的，是这具快拆折叠提把。巴雷特全重达十四公斤，有了这副人体工学防滑握把，射手便能稳健地单手提枪机动。卧姿瞄准前只需轻轻一压，提把便向右侧平卧折叠，完全避开瞄准视线。",
+        "audioUrl": "audio/m82a1/parts/m82a1_carry_handle_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Folding Transport Handle",
+        "overview": "The quick-detach folding carry handle clamps onto the top Picatinny rail directly above the rifle loaded center of gravity. It offers a secure, balanced transport point for moving this fourteen-kilogram weapon in the field.",
+        "craftAndMaterial": "Built around a robust stamped-steel swing arm shielded by an ergonomic, heat-resistant textured composite grip. Clamped firmly to standard rail lugs by an adjustable steel throw-lever locking mount.",
+        "kinematicRole": "Remains locked flat against the receiver during Phase 1 through 7 firing to avoid obscuring the optical centerline; pivots upward for transport. Detaches between twenty-eight and fifty-two percent in disassembly.",
+        "designHighlight": "Placed precisely at the balance center of mass, single-handed carry induces zero muzzle droop, saving sniper stamina during tactical relocation.",
+        "audioScript": "Clamped directly at the center of balance is the folding carry handle. Weighing over fourteen kilograms, moving the M82 requires serious leverage. This handle provides a solid grip for one-handed transport and folds flat against the receiver when going into battery to keep the sightline completely clear.",
+        "audioUrl": "audio/m82a1/parts/m82a1_carry_handle_en.mp3"
+      }
+    },
+    "m82a1_scope": {
+      "partId": "m82a1_scope",
+      "bomCode": "U-07",
+      "calloutLabelEn": "Mark 4 Sniper Scope",
+      "zh": {
+        "roleTag": "蓝绿镀膜物镜 · 0-15 MIL 手轮",
+        "overview": "刘波尔德 Mark 4 四点五至十四倍五十毫米远距离战术瞄准镜，通过高姿镜环固定在上机匣顶轨后段。它是射手猎杀近两公里外装甲车与工事掩体不可或缺的光学眼睛。",
+        "craftAndMaterial": "采用整根六零六一航空铝合金厚壁实心棒料掏空数控车削而成，镜筒充高纯度干燥氮气防雾防水。五十毫米前物镜采用多层宽带抗反射增透镀膜，具有极高的透光清晰度与边缘解析力。",
+        "kinematicRole": "作为瞄准基准在全击发周期承受巨大的双向冲击载荷；在百分之二十六至五十二分解阶段，可连同抱环向上方抬起离开导轨基座。",
+        "designHighlight": "内部光学透镜镜组与视差调节机械结构经过特级抗震加固，足以抵御发射点五零穿甲弹时高达千牛级别的往复惯性交变重力加速度冲击。",
+        "audioScript": "美军标准配发的是刘波尔德四点五至十四倍五十毫米高精度狙击瞄准镜。一体切削的三毫米厚壁镜管内充填高纯干燥氮气，能死死锁住视差。顶部高耸的战术密位手轮手感清脆，配合标线能精准击穿一千八百米外的轻型装甲目标。",
+        "audioUrl": "audio/m82a1/parts/m82a1_scope_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Mil-Dot Long-Range Optic",
+        "overview": "The Leupold Mark 4 4.5-14x50mm tactical scope clamps securely over the rear upper receiver rail via dual tactical rings. It provides the high-resolution magnification required to detect and engage materiel targets out to eighteen hundred meters.",
+        "craftAndMaterial": "Constructed from a single solid billet of aircraft-grade 6061-T6 aluminum, fully nitrogen-purged and O-ring sealed against moisture. The fifty-millimeter objective features index-matched multicoating to deliver high edge-to-edge optical resolution.",
+        "kinematicRole": "Stationary optical datum subjected to massive violent bidirectional recoil spikes during all firing phases. Detaches cleanly upwards from the receiver rail between twenty-six and fifty-two percent disassemble steps.",
+        "designHighlight": "Internally reinforced erector springs and cemented doublet lenses are engineered specifically to survive violent multi-axis g-forces generated by 12.7mm chamber firings.",
+        "audioScript": "Sitting atop the upper receiver is the battle-proven Leupold Mark 4 long-range sniper optic. Built inside a thirty-millimeter aircraft-aluminum tube, it resists violent g-shock while offering razor-sharp optical clarity. The exposed tactical turrets allow precise elevation adjustments for bullets traveling over a mile away.",
+        "audioUrl": "audio/m82a1/parts/m82a1_scope_en.mp3"
+      }
+    },
+    "m82a1_scope_rings": {
+      "partId": "m82a1_scope_rings",
+      "bomCode": "U-08",
+      "calloutLabelEn": "Heavy 30mm Scope Rings",
+      "zh": {
+        "roleTag": "抗 .50 BMG 双向冲击抱环",
+        "overview": "双环重型战术镜座由前后两具高刚性金属半环构件组成，基底横跨咬合在顶部皮卡汀尼导轨上。它们负责将昂贵沉重的高倍瞄准镜本体以恒定压紧力固持在枪身光轴上。",
+        "craftAndMaterial": "选用高强度合金钢实心精密切削，表面经过哑光发黑硬化处理。每个上抱环均由四颗高强度内六角螺栓呈对角线均匀压紧，底部嵌有厚实的整体铣削防剪切止退键槽块。",
+        "kinematicRole": "射击时将瞄准镜与上机匣死死嵌合在一起，抵挡射击正向后坐与枪机复位急停时产生的反向剪切应力。在分解维护达到百分之二十八至五十四时松开基座六角螺母脱卸。",
+        "designHighlight": "双向受力剪切块配合高扭矩固定螺母，能根除由于点五零口径剧烈双向加速度引起的瞄准镜前后微滑移现象，确保首发命中零位永不漂移。",
+        "audioScript": "这两具重型三十毫米战术镜环是瞄准镜的定海神针。由于重机枪弹发火与枪机复进急停会产生强烈的双向交变冲击，底座加工了整体防剪切阻退块，由八枚高强度螺栓四角均压锁紧，杜绝哪怕千分之一毫米的移位。",
+        "audioUrl": "audio/m82a1/parts/m82a1_scope_rings_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Recoil-Proof Mounting Rings",
+        "overview": "These dual 30mm heavy tactical mounting rings seat tightly onto the upper receiver Picatinny rail. They clamp the primary optic down securely, aligning its mechanical optical axis with extreme precision.",
+        "craftAndMaterial": "CNC milled from hardened alloy steel billets with a non-reflective matte oxide finish. Each ring cap features four high-tensile Torx cap screws, while the base incorporates an integral full-width cross-slot recoil lug.",
+        "kinematicRole": "Withstands shearing impulses caused by instantaneous backward recoil acceleration followed by forward bolt-slam shock. Loosens and lifts away between twenty-eight and fifty-four percent during teardown.",
+        "designHighlight": "Heavy-duty integral base lugs absorb massive lateral shear vectors, completely preventing optical zero shift under relentless fifty-caliber pounding.",
+        "audioScript": "Notice the massive twin 30mm scope rings clamping down the optic. Firing heavy fifty-caliber rounds generates violent back-and-forth whiplash forces. To preserve zero, each ring cap is locked down by four heavy-duty screws, anchored over an integral steel cross-lug that eliminates any chance of rail slippage.",
+        "audioUrl": "audio/m82a1/parts/m82a1_scope_rings_en.mp3"
+      }
+    },
+    "m82a1_bolt_carrier": {
+      "partId": "m82a1_bolt_carrier",
+      "bomCode": "U-09",
+      "calloutLabelEn": "Heavy Steel Bolt Carrier",
+      "zh": {
+        "roleTag": "螺旋凸轮槽 · 承接加速子推力",
+        "overview": "重型方截面枪机框是自动机运动组合的动力母体，水平置于上机匣后部两道内部纵向滑轨中。其右侧横向延伸出一根结实的圆柱拉机柄，供射手强力手动拉栓上膛。",
+        "craftAndMaterial": "由特种渗碳铬钼钢实心锻件整体掏空铣削并经深层淬火。内部切削有精密的三维螺旋凸轮导槽用于驱动枪机头偏转，表面具备高耐磨、低摩擦阻抗的光洁配合精度。",
+        "kinematicRole": "在短后坐末期被加速子撬动获得额外加速，随后脱离枪管单独向后进行长行程后坐，完成抽壳、抛壳与压倒击铁动作。在百分之十二至二十五阶段抽出发解。",
+        "designHighlight": "巨大的自重带来了充足的运动惯性冲量，在严寒结冰或沙漠泥沙等恶劣战场工况下，仍能强行闭锁推弹到位，展现了惊人的防污耐污吞吐容限度。",
+        "audioScript": "这是重达一点八公斤的方形整体合金钢枪机框。它的核心是内部那道深螺旋凸轮导槽。当加速子狠狠推击机框尾部时，沉重的机框迅速向后加速长行程滑跑，强制凸轮销带动前端枪机头回转，完成开锁并大力抽空滚烫的巨型铜壳。",
+        "audioUrl": "audio/m82a1/parts/m82a1_bolt_carrier_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Momentum Bolt Carrier",
+        "overview": "The massive rectangular-section bolt carrier assembly glides along internal receiver guide rails inside the upper housing. It carries the bolt head, houses the firing pin, and integrates a knurled right-side steel charging handle.",
+        "craftAndMaterial": "Milled from a solid billet of case-hardened chrome-moly steel with an ultra-slick nitrided surface finish. Features a precision CNC-machined helical cam track designed to rotate the bolt head under high load.",
+        "kinematicRole": "Propelled rearward by the accelerator arm in Phase 4, continuing rearward in Phase 5 to complete primary extraction and cocking against the buffer spring. Pulls out rearward at twelve to twenty-five percent disassembly.",
+        "designHighlight": "Exceptional kinetic mass allows this carrier to overcome foul sand, grit, and extreme cold, powering cartridges home even in unforgiving combat environments.",
+        "audioScript": "Inside the rear upper receiver slides this hefty square-profile bolt carrier. When the accelerator kicks it into high gear, the carrier drives rearward, using its internal helical cam track to twist the bolt head sixty degrees. Its tremendous forward momentum ensures it strips and chambers heavy rounds even when choked with desert dust.",
+        "audioUrl": "audio/m82a1/parts/m82a1_bolt_carrier_en.mp3"
+      }
+    },
+    "m82a1_accelerator": {
+      "partId": "m82a1_accelerator",
+      "bomCode": "U-10",
+      "calloutLabelEn": "Recoil Accelerator Arm",
+      "zh": {
+        "roleTag": "杠杆放大枪管动量至机框",
+        "overview": "短后坐加速子是一枚小巧却至关重要的弧形机械杠杆，通过横向旋转销轴铰接在枪机框后下方支架内。它是整枪短后坐与长行程后坐之间动能高效接力的核心枢纽。",
+        "craftAndMaterial": "选用沉淀硬化高韧度特种不锈钢精铸并热处理硬化，具备极高的抗冲击疲劳性能。其下摆臂接触角呈平滑渐开线轮廓，以减小对下机匣受力冲击台阶的剧烈啃蚀磨损。",
+        "kinematicRole": "第四阶段当枪管后坐到底时，加速子下端撞击下机匣斜面，上端呈两倍杠杆比猛撬机框向后加速滑跑。在深度分解百分之五十五至七十八拆卸浮动销后取下。",
+        "designHighlight": "罗尼·巴雷特在此巧妙运用了类似白朗宁机枪的杠杆加速原理，用极其紧凑可靠的单一零件解决了重枪管短行程与轻枪机长行程之间的速度匹配难题。",
+        "audioScript": "请屏住呼吸凝视这个不起眼的弧形小零件——能量加速子。当沉重的枪管向后短后坐到底骤停时，加速子下脚猛烈撞上下机匣内部斜面并向后急剧翻转，像撬棍一样把枪管数吨的冲击动能瞬间杠杆传递给机框，让其长后坐抽壳。",
+        "audioUrl": "audio/m82a1/parts/m82a1_accelerator_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Recoil Accelerator Lever",
+        "overview": "The short-recoil accelerator arm is a high-load curved lever pinned directly to the lower front portion of the bolt carrier. It serves as the primary kinetic transducer bridging the barrel short recoil and bolt travel.",
+        "craftAndMaterial": "Investment cast from 17-4 PH precipitation-hardened stainless steel and hardened to resist severe percussive battering. The lower contact lobe is profile-ground to glide cleanly against receiver impact surfaces.",
+        "kinematicRole": "In Phase 4, its lower tip trips against an anvil shoulder in the lower frame, violently pivoting rearward to transfer barrel momentum into carrier velocity. Separates between fifty-five and seventy-eight percent disassembly.",
+        "designHighlight": "Adapting John Browning classic accelerator principle enables the heavy barrel to hand over its kinetic energy to the bolt carrier, ensuring brisk cycling without gas systems.",
+        "audioScript": "This small curved lever is Ronnie Barrett mechanical stroke of genius: the recoil accelerator. When the heavy barrel halts after its twenty-five millimeter stroke, the foot of this lever hits a receiver shoulder. It instantly pivots, violently kicking the bolt carrier rearward with doubled velocity to cycle the massive action.",
+        "audioUrl": "audio/m82a1/parts/m82a1_accelerator_en.mp3"
+      }
+    },
+    "m82a1_bolt": {
+      "partId": "m82a1_bolt",
+      "bomCode": "U-11",
+      "calloutLabelEn": "3-Lug Rotating Bolt",
+      "zh": {
+        "roleTag": "60° 回转三突笋 · 双抛壳挺",
+        "overview": "三突笋回转枪机头是直接承受十二点七毫米火药高压火力的封膛核心，插装在机框前端同轴深孔中。机头前端嵌装有极其坚固的宽爪拉壳钩与双联高压弹簧柱塞抛壳挺。",
+        "craftAndMaterial": "采用高强度优质渗碳合金钢整体精密车削磨削，表面经超低摩擦固体润滑膜处理。头部加工有三枚厚度超过八毫米的一百二十度对称扇形闭锁突笋，确保超高承载切变截面积。",
+        "kinematicRole": "受凸轮槽驱动只需旋转六十度即可完成与枪管延伸节的锁死与解脱开锁；后退时长爪咬死弹壳退壳槽完成强力抽壳。在百分之五十二至七十六阶段自机框抽出分离。",
+        "designHighlight": "双抛壳挺双柱塞设计在弹壳完全脱离弹膛口部的瞬间，施加成倍的侧向扭转载荷，将沉重粗壮的五零口径弹壳以惊人的角速度清脆弹射出机匣。",
+        "audioScript": "这是直面燃烧烈焰的三突笋回转枪机头。三只宽厚结实的闭锁突笋呈一百二十度圆周分布，仅需旋转六十度就能牢牢锁死在延伸节内。弹底窝内部装有强悍的双弹簧柱塞抛壳挺，确保把沉重粗壮的空铜壳干脆利落地甩出抛壳窗。",
+        "audioUrl": "audio/m82a1/parts/m82a1_bolt_zh.mp3"
+      },
+      "en": {
+        "roleTag": "60-Degree Three-Lug Bolt",
+        "overview": "The three-lug rotating bolt head directly backs the .50 BMG case head during firing, seated coaxially inside the bolt carrier mouth. Its recessed bolt face houses an oversized claw extractor and dual spring-loaded ejector pins.",
+        "craftAndMaterial": "Turned from carburized high-strength alloy tool steel with polished bearing surfaces and a corrosion-resistant hard chrome face. Features three massive 120-degree radial locking lugs designed with large shear cross-sections.",
+        "kinematicRole": "Rotates sixty degrees into lock in Phase 1 and rotates open in Phase 4 via carrier cam pin action; extracts brass in Phase 5. Slides free of the carrier between fifty-two and seventy-six percent disassembly.",
+        "designHighlight": "Incorporating twin plunger ejectors instead of a traditional single pin exerts balanced ejection leverage, reliably launching heavy spent brass away from the weapon.",
+        "audioScript": "Here is the massive three-lug rotating bolt head that locks directly behind the cartridge base. Rotating through sixty degrees inside the barrel extension, its three beefy lugs easily withstand peak chamber blast. Dual spring-loaded ejectors in the bolt face ensure positive ejection of massive empty brass casings every single cycle.",
+        "audioUrl": "audio/m82a1/parts/m82a1_bolt_en.mp3"
+      }
+    },
+    "m82a1_firing_pin": {
+      "partId": "m82a1_firing_pin",
+      "bomCode": "U-12",
+      "calloutLabelEn": "Stepped Firing Pin",
+      "zh": {
+        "roleTag": "S7耐冲击击针 · 防惯性走火簧",
+        "overview": "全长轴对称阶梯式重型击针贯穿安装在枪机框与枪机头的中心轴心孔内。它的前端半球形撞针负责击发底火，后端露出的圆盘平顶承接机匣内线性击铁的剧烈撞击。",
+        "craftAndMaterial": "选用以极高抗冲击韧性闻名的耐震特种工具钢车削加工，头部淬火强化抗镦粗变形。柱身套有高韧性防惯性回位螺旋弹簧，防止剧烈震动产生意外走火危险。",
+        "kinematicRole": "扣扳机后受下机匣滑块击铁高速撞击，前冲超压点火弹底雷汞；枪机在开锁旋转状态下内部机械限位锁定击针无法前突。在百分之五十五至七十八阶段从机框尾部拔出。",
+        "designHighlight": "设计有严格的不到位保险台阶联动结构，唯有当三突笋彻底转入闭锁极限工位时，击针前端方能穿出机面触及底火，杜绝了提前早产击发事故。",
+        "audioScript": "贯穿枪机中心的这枚细长构件是高韧度耐冲击工具钢击针。前端配有一根防惯性走火回位弹簧，尾部平盘专门承受重型击铁的高速重击。内部具有严格的防未闭锁安全干涉限位，只有当枪机完全闭锁到位后，击针才能击穿底火。",
+        "audioUrl": "audio/m82a1/parts/m82a1_firing_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "S7 Tool-Steel Firing Pin",
+        "overview": "The full-length stepped firing pin runs through the longitudinal central core of both the bolt carrier and rotating bolt head. Its hardened hemispherical front tip detonates the primer, while its flanged rear tail absorbs striker impacts.",
+        "craftAndMaterial": "Turned from shock-resisting S7 tool steel, precisely tempered to prevent tip mushrooming or fracture under cyclic percussion shocks. Fitted with a captive stainless steel rebound spring.",
+        "kinematicRole": "Driven forward in Phase 2 by the linear hammer to ignite the cartridge primer, bouncing back under spring energy. During disassembly between fifty-five and seventy-eight percent, it slides rearward out of the bolt carrier.",
+        "designHighlight": "A mechanical out-of-battery interlock ensures that if the bolt head is not fully rotated sixty degrees into lock, the firing pin tip is physically obstructed from reaching the primer.",
+        "audioScript": "Running the full length of the bolt carrier is this rugged S7 tool-steel firing pin. Surrounded by a rebound spring to prevent inertia fire, its broad rear collar catches direct hits from the linear striker. An internal safety shelf prevents the pin from protruding unless the bolt is safely in full lock.",
+        "audioUrl": "audio/m82a1/parts/m82a1_firing_pin_en.mp3"
+      }
+    },
+    "m82a1_lower_receiver": {
+      "partId": "m82a1_lower_receiver",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Lower Receiver Buttstock",
+      "zh": {
+        "roleTag": "直列枪托下机匣 · 吸能橡胶垫",
+        "overview": "冲压钢下机匣集成了直列式固定枪托骨架与下部火控底板，构成了全枪持握操控的基础底座。尾部装有超厚吸能橡胶抵肩托垫，前部设有弹匣井卡槽与两脚架锁扣座。",
+        "craftAndMaterial": "由高韧性低合金钢板冷冲压折弯焊接而成，表面实施耐磨耐腐蚀黑色锰系磷化处理。抵肩垫由航空级黏弹性超低回弹吸能聚合物浇注模压成型，具备极佳的减震隔振阻尼。",
+        "kinematicRole": "在击发全周期作为射手身体与全枪机械系统之间的承力支架，导引复进主簧与缓冲装置的直线压缩储能。在百分之十至二十五阶段拔出前后快拆销即可分离下机匣。",
+        "designHighlight": "直列式机匣布局使后坐反作用力轴线与枪膛轴心基本平行重合，彻底消除了传统弯托步枪剧烈枪口上跳的偏转力矩，极大幅度提升了射击稳定性。",
+        "audioScript": "最后来看冲压钢下机匣。它将全套击发火控、直列式轻量化金属枪托和弹匣井融为一体。尾部装配了一块超厚的黏弹性吸能橡胶肩垫，由于枪托轴线与枪管几乎完全平齐重合，后坐力几乎呈纯直线传递，枪口完全没有恼人的大幅翻跳。",
+        "audioUrl": "audio/m82a1/parts/m82a1_lower_receiver_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Inline Stamped Lower Frame",
+        "overview": "The heavy-gauge stamped steel lower receiver incorporates the fire control housing, inline buttstock skeleton, and magazine well into a single rigid chassis. It mounts the ultra-thick recoil-absorbing buttpad at the rear.",
+        "craftAndMaterial": "Formed from deep-drawn sheet steel welded along longitudinal seams and phosphated for combat protection. The thick buttpad is molded from high-damping viscoelastic polyurethane polymer to isolate recoil impulses.",
+        "kinematicRole": "Serves as the ergonomic and structural anchor for the shooter, housing the main return buffer springs and hammer pack throughout all phases. Separates from the upper assembly at ten to twenty-five percent disassembly.",
+        "designHighlight": "The inline straight-comb geometry directs recoil vectors straight back into the shooter shoulder pocket, eliminating the severe muzzle climb typical of traditional angled drop-comb stocks.",
+        "audioScript": "Serving as the operational foundation is the stamped sheet-steel lower receiver. It combines the trigger housing, inline steel buttstock, and magazine well into one tough platform. Capped by a thick viscoelastic shock buttpad, its straight-line profile transfers recoil vectors directly rearward without inducing muzzle climb.",
+        "audioUrl": "audio/m82a1/parts/m82a1_lower_receiver_en.mp3"
+      }
+    },
+    "m82a1_recoil_spring": {
+      "partId": "m82a1_recoil_spring",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Main Recoil Spring",
+      "zh": {
+        "roleTag": "直列主复进簧与导向缓冲塞",
+        "overview": "这是贯穿下机匣尾托全长的重型主复进螺旋弹簧与聚氨酯缓冲塞总成。它同轴安装在枪膛运动中心线上，直接承托枪机框尾部传递的巨大后坐能量。",
+        "craftAndMaterial": "选用高疲劳寿命铬硅合金弹簧钢紧密卷制，表面施以磷化与防锈油膜处理，前端配有精密车削导向钢杯，尾端装配聚氨酯防震实心垫块。",
+        "kinematicRole": "在阶段五和阶段六中，它全行程压缩吸收枪机框后坐冲量，随即回弹释放弹性势能推弹入膛；分解时在32%至62%行程沿机匣轴向向后抽出。",
+        "designHighlight": "直列同轴布局彻底消除了后坐时枪机偏转力矩对下机匣侧壁的啃咬，后端的弹性缓冲垫杜绝了枪机框硬碰金属底板引发的断裂隐患。",
+        "audioScript": "这根粗壮的主复进簧直通尾托内部，与枪膛轴线完美共线。在点五零重机枪弹的狂暴后坐下，它能压缩吸收数百焦耳的剩余动能，再精准地将下一发沉重的穿甲弹强力推入弹膛。",
+        "audioUrl": "audio/m82a1/parts/m82a1_recoil_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Inline Main Recoil Spring & Buffer",
+        "overview": "This full-length recoil spring and polyurethane buffer plug assembly spans the entire lower receiver buttstock. It mounts coaxially with the bore line to directly absorb the rearward kinetic energy of the recoiling bolt carrier.",
+        "craftAndMaterial": "Wound from heavy-duty chrome-silicon spring steel with a manganese phosphate coating, tipped with a machined steel follower cup and capped by a high-durometer polyurethane shock plug.",
+        "kinematicRole": "Compacts under heavy recoil during phases five and six to brake the bolt carrier, then expands forward to strip and chamber a fresh round; slides straight out of the receiver buttstock between thirty-two and sixty-two percent disassembly.",
+        "designHighlight": "Inline coaxial alignment completely eliminates muzzle-flip torsion and off-axis carrier tilt, while the elastomeric rear buffer prevents metal-on-metal slamming against the receiver rear plate.",
+        "audioScript": "Running straight through the buttstock along the bore axis, this massive main recoil spring takes the full punishment of the fifty caliber cartridge. It cushions hundreds of joules of surplus kinetic energy, then drives the heavy bolt forward to feed the next round flawlessly.",
+        "audioUrl": "audio/m82a1/parts/m82a1_recoil_spring_en.mp3"
+      }
+    },
+    "m82a1_bipod": {
+      "partId": "m82a1_bipod",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Spiked Steel Bipod",
+      "zh": {
+        "roleTag": "隔离枪管谐振 · 破土驻锄两脚架",
+        "overview": "这是铰接于下机匣最前端独立耳轴处的重型可折叠伸缩两脚架。它向下为整枪提供稳固卧射支撑，且完全不接触内部浮动的短后坐枪管。",
+        "craftAndMaterial": "支架腿采用高强度碳素钢冲压成形并经盐浴氮化处理，外腿冲制多组圆孔以平衡配重，底端铆接带有宽大尖齿的锰钢破土驻锄。",
+        "kinematicRole": "在整套射击循环中作为静止支撑基准，完全隔绝枪管后坐震动；在分解阶段30%至60%行程可拔出横向销轴从机匣耳轴快速卸下。",
+        "designHighlight": "将脚架受力点彻底移至下机匣下端，使得浮置枪管在热胀与剧烈前后滑移时丝毫不受泥土地面反作用力干扰，确保了远距离射击精度。",
+        "audioScript": "巴雷特的重型两脚架直接锁在下机匣底部的独立耳轴上，与浮动短后坐的枪管完全隔离。带有锐利齿刃的破土驻锄能牢牢咬死冻土与沙地，为十二点七毫米的重弹射击提供磐石般的支撑平台。",
+        "audioUrl": "audio/m82a1/parts/m82a1_bipod_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Chassis-Mounted Resonant-Isolated Bipod",
+        "overview": "This heavy-duty folding bipod hinges on a dedicated trunnion pin at the very front of the lower receiver sheet metal. It delivers rigid prone support while completely isolating the floating, recoiling barrel.",
+        "craftAndMaterial": "Formed from high-tensile stamped steel with salt-bath nitriding, featuring lightening holes on the outer legs, heavy external lock springs, and stamped manganese-steel spiked digger feet.",
+        "kinematicRole": "Acts as the static shooting foundation throughout all seven firing phases without touching the cycling barrel; decouples from the receiver trunnion between thirty and sixty percent disassembly.",
+        "designHighlight": "Decoupling the bipod mount from the barrel shroud prevents ground recoil bounce and thermal barrel deflection from disturbing extreme long-range shot dispersion.",
+        "audioScript": "Locking directly into the lower receiver trunnion, this reinforced steel bipod stays entirely decoupled from the cycling barrel. Its aggressive serrated spade feet dig deep into mud, sand, or gravel, giving the shooter rock-solid stability under heavy fifty-caliber firing.",
+        "audioUrl": "audio/m82a1/parts/m82a1_bipod_en.mp3"
+      }
+    },
+    "m82a1_pistol_grip": {
+      "partId": "m82a1_pistol_grip",
+      "bomCode": "F-04",
+      "calloutLabelEn": "A2 Ergonomic Grip",
+      "zh": {
+        "roleTag": "通用A2握把与下沉式加大护弓",
+        "overview": "这是固定在下机匣火控下沿的玻纤增强聚合物手枪握把与延伸护弓。它为射手提供标准的人机工效抓握界面，并完全容纳防滑扳机组件。",
+        "craftAndMaterial": "握把主体为注塑成型高抗冲聚酰胺尼龙，外表面密布菱形防滑颗粒与中置指槽，扳机护弓则由折弯厚钢片冲压经磷化防腐处理而成。",
+        "kinematicRole": "在射击全程作为人机静止基准承受射手扣扳机拉力；在下机匣分解到达34%至64%时，可通过拧松内六角贯穿螺栓自底部抽离。",
+        "designHighlight": "沿用美军标准M16步枪握把接口极大降低了后勤采购成本，下沉加大的护弓腔体允许极寒地带狙击手佩戴厚重防寒手套轻松击发。",
+        "audioScript": "巴雷特采用了美军通用的A2标准手枪握把，向后倾斜二十二度并布满防滑网纹。下方特别加宽下沉的钢制护弓，即使在阿拉斯加极寒气候下佩戴厚重的战术防寒手套也能顺畅扣动扳机。",
+        "audioUrl": "audio/m82a1/parts/m82a1_pistol_grip_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Standard A2 Grip & Oversized Guard",
+        "overview": "This glass-reinforced polymer grip and steel guard assembly mounts underneath the lower receiver fire control well. It provides standard ergonomic manipulation while fully shielding the curved trigger.",
+        "craftAndMaterial": "Injection molded from high-impact glass-filled nylon with molded checkering and an A2 finger ledge, paired with a stamped, phosphated, heavy-gauge steel trigger bow.",
+        "kinematicRole": "Remains static during firing, anchoring the operator's trigger hand; removed via an internal long hex screw between thirty-four and sixty-four percent field disassembly.",
+        "designHighlight": "Direct compatibility with standard USGI M16 furniture minimized manufacturing costs and streamlined military armorer logistics, while the winter guard accommodates thick alpine gloves.",
+        "audioScript": "Utilizing the combat-proven A2 grip angle, this housing gives the shooter familiar weapon control with molded checkering. The deeply bowed steel trigger guard provides generous finger clearance, even when wearing thick winter combat gloves in Arctic conditions.",
+        "audioUrl": "audio/m82a1/parts/m82a1_pistol_grip_en.mp3"
+      }
+    },
+    "m82a1_striker": {
+      "partId": "m82a1_striker",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Linear Upright Striker",
+      "zh": {
+        "roleTag": "直列上伸击铁与双联击发主簧",
+        "overview": "这是位于下机匣底部的直列线性击铁杠杆与双联螺旋推簧总成。它的击铁头向上突出于火控槽内，用于高速撞击枪机框底部的重型击针。",
+        "craftAndMaterial": "主体采用铬钼合金钢经五轴数控机床整体铣削，经渗碳淬火达到六十洛氏硬度以防形变，配以高刚度双联击发推簧提供充沛动能。",
+        "kinematicRole": "阶段二中在阻铁脱钩瞬间向前上方弹跳高速打击击针；阶段五中被后坐的枪机框底部斜面直接压平并重新挂入待击阻铁，在分解46%至76%脱出。",
+        "designHighlight": "巧妙替代了传统的旋转击锤，克服了枪机框紧贴机匣底面滑行缺乏安装击锤回转空间的难题，且线性打击行程极短从而大幅缩减击发延迟。",
+        "audioScript": "这枚向上挺立的直列击铁是巴雷特的机械精髓。由于粗壮的枪机框紧贴机匣底部滑行，传统的旋转击锤根本塞不进去。在双联强力击发簧推动下，它以极短的行程笔直撞击击针尾部，击发响应干脆迅猛。",
+        "audioUrl": "audio/m82a1/parts/m82a1_striker_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Linear Rising Striker & Dual Springs",
+        "overview": "This upright linear striker lever with twin mainsprings mounts inside the floor of the lower fire control housing. Its hardened hammer face protrudes upward to punch the firing pin tail inside the recoiling carrier.",
+        "craftAndMaterial": "CNC milled from AISI 4140 chrome-moly steel and carburized to Rockwell C 60 to withstand perpetual impacts, driven forward by dual parallel piano-wire mainsprings.",
+        "kinematicRole": "Fires forward in phase two when the sear drops to ignite the primer; cammed downward into re-cocked position by the recoiling carrier in phase five; strips from fire control between forty-six and seventy-six percent.",
+        "designHighlight": "Replaces standard rotating hammers to solve severe vertical clearance limits under the sliding bolt carrier, drastically reducing lock time through an ultra-short linear strike travel.",
+        "audioScript": "This upright linear striker is Barrett's clever mechanical solution. Because the massive carrier rides flat along the receiver floor, there was no room for a conventional swinging hammer. Driven by dual heavy mainsprings, it leaps straight into the firing pin with lightning-fast lock time.",
+        "audioUrl": "audio/m82a1/parts/m82a1_striker_en.mp3"
+      }
+    },
+    "m82a1_sear": {
+      "partId": "m82a1_sear",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Precision Sear & Disconnector",
+      "zh": {
+        "roleTag": "镜面阻铁 · 传递连杆与单发断连器",
+        "overview": "这是火控组中精密的待击挂机阻铁、双轨冲压连杆及单发断连爪组合构件。它横向穿轴固定在下机匣中部，直接锁止或解脱高张力下的击铁。",
+        "craftAndMaterial": "高碳弹簧合金钢模锻成型，待击卡台工作面经研磨抛光达到镜面光洁度，断连部件表面经QPQ盐浴复合氮化处理增强抗磨损能力。",
+        "kinematicRole": "阶段一挂紧击铁维持待击；阶段二受扳机顶推翻转释放击铁；阶段七断连器截获重压击铁并在松开扳机后平稳复位，分解48%至76%时取出。",
+        "designHighlight": "在承受极高推力的双联强力击发簧下，双轨连杆分担了剪切载荷，使这支重型反器材步枪仍能拥有清脆清晰的比赛级二道火释放质感。",
+        "audioScript": "这套阻铁组件包含双轨传递连杆与单发断连爪。尽管要死死挂住后方强劲的双联击发簧，但经镜面研磨的挂机卡台依然能为重达十四公斤的反器材步枪带来清脆利落的二道火击发阻尼。",
+        "audioUrl": "audio/m82a1/parts/m82a1_sear_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Precision Sear & Semi-Auto Disconnector",
+        "overview": "This precision sear, stamped twin-rail transfer bar, and semi-auto disconnector group sits pinned in the lower receiver fire control pocket. It directly manages the cocking, engagement, and release of the upright striker.",
+        "craftAndMaterial": "Tool steel forgings with micro-polished engagement flats for zero creep, coated in a wear-resistant QPQ salt-bath nitrocarburized finish on high-friction sliding tabs.",
+        "kinematicRole": "Holds the striker locked in phase one; tilts clear in phase two on trigger press; catches the recocking striker in phase seven until trigger reset; dismantles between forty-eight and seventy-six percent.",
+        "designHighlight": "Dual-rail transfer architecture balances the brutal mechanical shear stress of the heavy striker springs, maintaining a remarkably crisp two-stage break unheard of in typical anti-materiel rifles.",
+        "audioScript": "The sear, transfer bar, and disconnector work together to tame the striker's fierce spring load. Thanks to mirror-polished engagement surfaces, this fourteen-kilogram anti-materiel rifle yields a crisp, match-like two-stage trigger break, resetting safely after every semi-automatic shot.",
+        "audioUrl": "audio/m82a1/parts/m82a1_sear_en.mp3"
+      }
+    },
+    "m82a1_trigger": {
+      "partId": "m82a1_trigger",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Grooved Curved Trigger",
+      "zh": {
+        "roleTag": "纵槽弧形扳机与后伸推杆",
+        "overview": "这是悬挂在加大护弓中央的弧形机加工扳机与后伸联动推杆总成。它是射手向全枪火控系统输入击发指令的唯一操作界面。",
+        "craftAndMaterial": "由高强度中碳合金钢一体精密铣削加工，表面氧化发黑防眩光，弧形指垫正面铣削有多道垂直细密防滑纹以改善触觉回馈。",
+        "kinematicRole": "在阶段二中被射手向后扣压，绕支撑横销微幅顺时针摆动并驱动推杆撬动阻铁；阶段七松开后借复位扭簧复位，分解48%至76%范围向下拉出。",
+        "designHighlight": "较长力臂比设计显著放大了手指按压机械效益，平滑克服了重型阻铁脱扣所需的初载荷，使长时间据枪瞄准射击不易产生手部疲劳。",
+        "audioScript": "位于防寒护弓中央的弧形扳机正面铣有多道纵向防滑槽。合理的力臂比放大了手指的机械杠杆效率，即使在剧烈颤抖的卧姿或厚重手套下，也能清晰感知扣板机时的行程与释放临界点。",
+        "audioUrl": "audio/m82a1/parts/m82a1_trigger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Vertical-Ribbed Trigger & Transfer Bow",
+        "overview": "This machined curved trigger and rear transfer bow assembly hangs centered within the enlarged winter trigger guard. It acts as the direct physical human-machine interface for firing command input.",
+        "craftAndMaterial": "Precision machined from medium-carbon alloy steel with an anti-glare manganese phosphate finish; the trigger shoe features finely milled vertical anti-slip grooves.",
+        "kinematicRole": "Pivots clockwise on its hardened cross-pin during phase two to push the sear off-hook; returns forward via its trigger torsion spring in phase seven; removes between forty-eight and seventy-six percent.",
+        "designHighlight": "A calculated high-leverage geometric ratio overcomes heavy sear friction caused by intense mainspring loads, preventing sniper finger fatigue during prolonged target interdiction.",
+        "audioScript": "Machined from solid steel, this curved trigger features vertical traction ribs across its face. Its mechanical leverage ratio provides a controlled, consistent pull, letting snipers sense the precise breaking point whether shooting barehanded or with padded alpine gloves.",
+        "audioUrl": "audio/m82a1/parts/m82a1_trigger_en.mp3"
+      }
+    },
+    "m82a1_selector": {
+      "partId": "m82a1_selector",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "Rotary Safety Selector",
+      "zh": {
+        "roleTag": "90度半月轴旋转式保险机构",
+        "overview": "这是横向贯穿下机匣火控室左侧的拇指旋转式快慢机保险轴。它通过偏心半月形销轴为扳机释放提供绝对的机械阻挡防护。",
+        "craftAndMaterial": "特种合金结构钢整体车铣成型，外侧拨片带有防滑凸筋，轴心经表面硬化热处理，机匣外部刻印白色的保险和红色的射击标记。",
+        "kinematicRole": "在整套射击循环中处于顺时针90度水平射击状态；处于保险档位时实体半圆轴卡死在扳机后肩上方禁止摆动，分解在48%至76%自左向右抽出。",
+        "designHighlight": "完全继承美军M16枪族的握把拇指操作习惯，即使在剧烈震动颠簸的装甲车内射击，其明确的角定位槽也能防止保险意外被晃开震落。",
+        "audioScript": "位于机匣左侧的快慢机旋钮遵循经典的90度操作逻辑。在安全档位下，它中部的半月形钢轴会严密压死在扳机后方，从物理结构上阻绝任何击发的可能。向下拨动露出红色标记即可开火。",
+        "audioUrl": "audio/m82a1/parts/m82a1_selector_zh.mp3"
+      },
+      "en": {
+        "roleTag": "90-Degree Half-Moon Cam Selector",
+        "overview": "This thumb-operated rotary safety selector bar penetrates across the lower receiver fire control housing. It utilizes an internal half-moon cam to mechanically lock or free the trigger bow.",
+        "craftAndMaterial": "Turned and milled from solid alloy steel with deep serrations on the paddle, surface-hardened and marked with white safe and red fire index engravings.",
+        "kinematicRole": "Rotated to vertical fire position across all live firing phases; in safe position, the solid cam physically wedges above the trigger tail; extracts laterally between forty-eight and seventy-six percent disassembly.",
+        "designHighlight": "Adopts the familiar manual of arms from the M16 military platform, while positive spring detents prevent inadvertent selector movement inside rattling armored vehicles.",
+        "audioScript": "Borrowing the familiar 90-degree throw of the M16, this selector axle features an internal half-moon cam. In the safe position, it physically blocks the trigger tail from upward movement. Rotating it down to the red fire mark clears the path for immediate action.",
+        "audioUrl": "audio/m82a1/parts/m82a1_selector_en.mp3"
+      }
+    },
+    "m82a1_mag_body": {
+      "partId": "m82a1_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "10-Rd Steel Mag Body",
+      "zh": {
+        "roleTag": "双排双进冲压四筋钢弹匣壳体",
+        "overview": "这是容纳十发点五零点穿甲燃烧弹的重型冲压薄钢板弹匣外壳。它通过前挂后卡式结构牢固卡锁在下机匣弹匣井内。",
+        "craftAndMaterial": "采用一点二毫米高强加厚深冲冷轧钢板折弯电阻焊成型，两侧冲压四道抗压纵向加强筋，表面经哑光磷酸盐耐磨防蚀浸泡处理。",
+        "kinematicRole": "阶段一至七保持固定提供弹药输送通道；阶段五弹壳后退抛出后向上引导下一发弹；在分解初期2%至22%行程按压卡笋向前翻转脱出。",
+        "designHighlight": "特意采用近十四度的斜切底角设计，既减小了卧姿射击时的触地阻碍，四道纵向压筋更保证在整箱弹药跌落重摔时抱弹口绝对不产生扩张形变。",
+        "audioScript": "这具沉重的冲压钢弹匣专门用来装载十发全长达到一百三十八毫米的庞大重弹。表面冲压出的四道深凹槽提供了惊人的抗挤压刚度，底部十四度的战术斜角让射手在伏地卧射时更加紧凑自如。",
+        "audioUrl": "audio/m82a1/parts/m82a1_mag_body_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Heavy Ribbed Stamped Magazine Body",
+        "overview": "This heavy stamped steel sheet magazine casing holds ten rounds of massive fifty-caliber BMG ammunition. It rocks and locks securely into the lower receiver magazine well using front and rear lugs.",
+        "craftAndMaterial": "Formed from 1.2-millimeter high-strength cold-rolled steel with four pressed longitudinal ribs on each side, seam-welded and protected by a dark matte manganese phosphate coating.",
+        "kinematicRole": "Stands locked in place throughout firing phases, guiding live cartridges upward to the feedway; unlatches and tilts down between two and twenty-two percent field strip.",
+        "designHighlight": "The fourteen-degree angled base profile keeps weapon height low in prone shooting, while stamped stiffening ribs prevent feed lip spreading during heavy ground drop impacts.",
+        "audioScript": "Built like an armored vault, this stamped steel box magazine holds ten massive fifty caliber rounds measuring nearly one hundred and forty millimeters each. Deep reinforcing ribs down its sides keep the feed lips rigid, while the angled bottom keeps a low silhouette in prone firing.",
+        "audioUrl": "audio/m82a1/parts/m82a1_mag_body_en.mp3"
+      }
+    },
+    "m82a1_mag_follower": {
+      "partId": "m82a1_mag_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Anti-Tilt Follower",
+      "zh": {
+        "roleTag": "双排防倾覆交错导弹板",
+        "overview": "这是在弹匣壳体内部四条内凸筋之间垂直滑动的防倾覆金属托弹板。它负责将下层弹药平稳抬升至机匣抱弹口的推弹轴线上。",
+        "craftAndMaterial": "冲压钢板配合表面高耐磨滑块复合制造，涂装醒目的战术防腐橙色涂层，板面冲压有符合十二点七毫米弹底阶梯轮廓的交错导弹槽。",
+        "kinematicRole": "随着弹药逐发消耗在托弹簧推动下向上步进；阶段六弹膛复位前提供恒定仰角支撑；在弹匣拆解阶段50%至80%从壳体底部滑出。",
+        "designHighlight": "加长防俯冲前后延伸导向裙边杜绝了沉重弹头重心前倾导致的卡弹瘫痪，确保最后一发穿甲弹依然拥有完美的弹尖入膛抬升角度。",
+        "audioScript": "这块橙色的防倾覆托弹板拥有加长的垂直导向裙边。点五零重机枪弹的弹头非常沉重，极易产生低头卡弹。托弹板上精密的交错导弹棱能确保从第一发到最后一发，弹药都以恒定的仰角滑进弹膛。",
+        "audioUrl": "audio/m82a1/parts/m82a1_mag_follower_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Anti-Tilt Staggered Guide Follower",
+        "overview": "This anti-tilt staggered magazine follower rides vertically along the inner guide ribs inside the steel magazine body. It lifts loaded cartridges smoothly toward the receiver feed lips along the bolt center axis.",
+        "craftAndMaterial": "Fabricated from stamped steel with anti-friction surface guides and high-visibility baked orange protective enamel, molded with staggered steps tailored to the fifty-caliber case profile.",
+        "kinematicRole": "Ascends step-by-step under spring tension as rounds deplete; aligns cartridge heads at a constant upward ramp angle during phase six; extracts downward between fifty and eighty percent disassembly.",
+        "designHighlight": "Extended front and rear anti-dive skirt skirts eliminate nose-diving caused by heavy projectile center-of-gravity shifts, ensuring consistent chamber entry right down to the final round.",
+        "audioScript": "Finished in high-visibility orange, this steel anti-tilt follower features long skirt guides. Fifty BMG projectiles are front-heavy and prone to feeding dives. The follower's contoured stepped geometry guarantees every cartridge points toward the chamber ramps at the exact feeding angle.",
+        "audioUrl": "audio/m82a1/parts/m82a1_mag_follower_en.mp3"
+      }
+    },
+    "m82a1_mag_spring": {
+      "partId": "m82a1_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Heavy Zig-Zag Spring",
+      "zh": {
+        "roleTag": "宽幅大截面多折重型托弹簧",
+        "overview": "这是安置在弹匣底板与托弹板之间的矩形大刚度多折弹簧。它向上提供高载荷的弹力以克服多发重弹的重力及摩擦阻力。",
+        "craftAndMaterial": "选用油淬火回火硅铬合金扁平弹簧钢线多道折弯成型，经喷丸强化疲劳寿命，表面覆有石墨防锈自润滑涂层。",
+        "kinematicRole": "满弹时处于极限受压蓄能状态，射击各阶段逐发回弹顶升弹柱；在弹匣分解阶段50%至80%随底板抽出时向前释放张力脱落。",
+        "designHighlight": "满载十发弹药总重超过一点一公斤，加之后坐剧烈震颤，弹簧必须具备极高初始预紧力和抗侧倾扭矩，防止连发射击时供弹脱节。",
+        "audioScript": "这根强劲的宽幅托弹簧由特种合金钢折叠而成。十发点五零穿甲弹的总重超过一点一公斤，加上射击时的狂暴后坐惯性，只有这种强力弹簧才能在半自动高速连射时保证供弹不出现丝毫停滞。",
+        "audioUrl": "audio/m82a1/parts/m82a1_mag_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "High-Tension Rectangular Feed Spring",
+        "overview": "This heavy-duty rectangular zig-zag spring is housed between the magazine floorplate and the anti-tilt follower. It supplies high upward compressive force to elevate the heavy cartridge column.",
+        "craftAndMaterial": "Formed from oil-tempered silicon-chromium alloy flat spring wire with shot-peened surface treatment for maximum cyclic endurance, coated in dry graphite corrosion protection.",
+        "kinematicRole": "Remains heavily compressed under full payload, incrementally expanding upward across all firing phases; springs freely outward between fifty and eighty percent magazine overhaul.",
+        "designHighlight": "Ten fifty-caliber rounds weigh over 1.15 kilograms; this spring provides immense initial preload and lateral resistance to prevent follower lag under brutal semi-automatic recoil cycles.",
+        "audioScript": "Constructed from heavy-gauge alloy wire, this multi-coil zig-zag spring tackles a massive burden. Ten loaded fifty-caliber cartridges weigh well over a kilogram. This spring delivers intense upward pressure to keep rounds feeding reliably through rapid semi-automatic fire.",
+        "audioUrl": "audio/m82a1/parts/m82a1_mag_spring_en.mp3"
+      }
+    },
+    "m82a1_mag_floorplate": {
+      "partId": "m82a1_mag_floorplate",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Angled Monopod Base",
+      "zh": {
+        "roleTag": "13.8度斜切驻锄加强弹匣底盖",
+        "overview": "这是滑入弹匣外壳最底端并卡扣闭锁的加厚冲压钢制底盖板。它不仅封闭弹匣底部支承托弹簧，更可充当射击时的辅助接地单脚架。",
+        "craftAndMaterial": "采用两毫米厚渗碳硬化耐磨钢板热冲压成形，前缘弯折有防滑破土翻边，表面经黑色哑光电泳处理具备出色的耐刮擦性能。",
+        "kinematicRole": "始终作为托弹簧底端的静止支撑座受力；弹匣解体阶段50%至80%时，按压托弹簧底衬锁扣即可向前滑脱分离。",
+        "designHighlight": "底盖向前倾斜近十四度并带有增强折边，射手在没有后单脚架的情况下可将弹匣直接杵在掩体或泥地构成立体三角支撑而不会震裂底板脱底。",
+        "audioScript": "这枚经过强化的厚钢板弹匣底盖顺着十四度的斜角滑入弹匣底部锁紧。它的前缘特意折弯出防滑护唇，卧姿射击时射手可以直接把整个弹匣抵死在泥地或沙袋上充当单脚架，稳如磐石。",
+        "audioUrl": "audio/m82a1/parts/m82a1_mag_floorplate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "13.8-Degree Angled Monopod Floorplate",
+        "overview": "This reinforced stamped steel floorplate slides onto and locks over the bottom flanges of the magazine casing. It securely retains the compressed magazine spring while doubling as a prone monopod shooting rest.",
+        "craftAndMaterial": "Hot-stamped from two-millimeter heavy-gauge carbon steel with rolled forward grasping lips, finished in a scratch-resistant matte black electro-deposition coating.",
+        "kinematicRole": "Provides an immovable counter-reaction floor for the magazine spring through all firing phases; detaches by depressing the internal lock plate tab between fifty and eighty percent disassembly.",
+        "designHighlight": "Sloped at fourteen degrees with flared skid lips, allowing shooters to rest the weapon directly on concrete, gravel, or sandbags as an improvised monopod without unseating the floorplate.",
+        "audioScript": "Sliding over the magazine bottom flanges at a fourteen-degree angle, this thick stamped steel floorplate serves a tactical double duty. Its bent forward edge acts as a ground rest, allowing the shooter to brace the loaded magazine directly on dirt or sandbags like a monopod.",
+        "audioUrl": "audio/m82a1/parts/m82a1_mag_floorplate_en.mp3"
+      }
+    }
+  }
+}

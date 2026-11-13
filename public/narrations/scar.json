@@ -1,0 +1,934 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "scar",
+  "generatedAt": "2026-11-12T12:44:58.777735+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "FN SCAR-L MK 16 MOD 0",
+    "subtitle": "5.56×45mm Short-Stroke Piston Modular Assault Rifle",
+    "originCountry": "Belgium / United States",
+    "weaponType": "Modular Assault Rifle",
+    "categoryLabel": "Assault Rifle",
+    "actionMechanism": "Short-Stroke Gas Piston · 7-Lug Rotating Bolt Lock",
+    "statusLabel": "In Vault · Ready for Disassembly",
+    "description": "Engineered by FN Herstal for the United States Special Operations Command (USSOCOM), the Mk 16 Mod 0 redefines modular battle rifles with an uninterrupted monolithic extruded aluminum upper receiver, an isolated stainless tappet gas system, a heavy carrier with a reversible reciprocating charging handle, and its instantly recognizable 'Ugg-Boot' telescoping side-folding stock across signature FDE tones.",
+    "highlights": [
+      "Monolithic Extruded Aluminum Receiver & Tappet Piston",
+      "Iconic 'Ugg-Boot' Side-Folding Telescopic Buttstock",
+      "Authentic FN '50 Shades of FDE' Multi-Material Finish",
+      "Quick-Change Cold-Hammer-Forged Barrel & STANAG Mag"
+    ],
+    "workbenchTitle": "FN SCAR-L Mk 16 Mechanical Disassembly & Kinematics",
+    "workbenchSubtitle": "4 Primary Assemblies · 26 Nodes · Short-Stroke Piston & 5.56×45mm Dynamic Firing Simulation",
+    "cutawayLabel": "Gas Tappet & Bolt Focus",
+    "cutawayTitle": "Switch to transparent cutaway view focused on stainless tappet piston and heavy bolt carrier engagement",
+    "searchPlaceholder": "Search parts or BOM code (e.g., Piston, Bolt, Buttstock, U-04)...",
+    "firingMilestoneLabel": "Muzzle Exit / Unlock",
+    "rateOfFire": "625 rpm",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0%",
+        "desc": "Complete FN SCAR-L Mk 16 Mod 0 in baseline configuration, displaying signature Belgian multi-shade FDE anodizing and polymer contrast."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Standard SOCOM field teardown: drop the STANAG magazine, slide down buttstock and captive recoil guide rod, pull out charging handle, and extract the heavy rectangular carrier."
+      },
+      "upper_mag_strip": {
+        "label": "Gas & Core Teardown",
+        "subLabel": "65%",
+        "desc": "Rotate the front regulator to extract the stainless tappet piston, strip the 7-lug rotary bolt and firing pin, and disassemble the STANAG magazine with tactical Ranger plate."
+      },
+      "full_explode": {
+        "label": "Full 26-Part Exploded",
+        "subLabel": "100%",
+        "desc": "Loosen six captive T25 Torx cross-bolts to drop the 14-inch quick-change barrel with 3-prong flash hider, fully resolving the buttstock, cheek riser, and ambidextrous lower receiver."
+      }
+    },
+    "firingPhases": {
+      "scar_trigger_hammer": {
+        "shortLabel": "Trigger & Hammer",
+        "title": "Phase 1 · Trigger Squeeze Releases Rotary Hammer",
+        "description": "Pulling the curved trigger rotates the primary sear downward out of the hammer notch. Dual-coil torsion springs sweep the rotary stainless hammer forward and upward into the rectangular carrier recess."
+      },
+      "scar_pin_ignition": {
+        "shortLabel": "Primer Ignition",
+        "title": "Phase 2 · Firing Pin Strikes 5.56×45mm NATO Primer",
+        "description": "With the 7-lug bolt fully locked in the barrel extension, the hammer impacts the rear of the captive firing pin. The hardened pin tip crushes the Boxer primer, igniting the spherical double-base powder charge."
+      },
+      "scar_gas_tap": {
+        "shortLabel": "Gas Port Tapping",
+        "title": "Phase 3 · High-Pressure Gas Bleeds Through Gas Regulator",
+        "description": "As the copper-jacketed bullet accelerates down the 14-inch cold-hammer-forged barrel past the gas port, high-pressure combustion gas bleeds into the gas block, venting excess forward while driving out the 3-prong flash hider."
+      },
+      "scar_tappet_unlock": {
+        "shortLabel": "Piston Strike & Unlock",
+        "title": "Phase 4 · Short-Stroke Tappet Impulses Carrier & Unlocks Bolt",
+        "description": "Expanding gas drives the stainless piston rearward through a sharp 14mm stroke before arresting against its seat. The massive carrier coasts rearward under momentum, its helical cam slot rotating the bolt head 22.5 degrees out of battery."
+      },
+      "scar_extract_eject": {
+        "shortLabel": "Extraction & Ejection",
+        "title": "Phase 5 · Robust Claw Extraction and Deflector Ejection",
+        "description": "The heavy-duty extractor pulls the spent brass case from the chamber. As it clears the ejection port, the spring-loaded plunger ejects the case against the polymer shell deflector safely toward the forward right quadrant."
+      },
+      "scar_feed_lock": {
+        "shortLabel": "Feed & Rotary Lock",
+        "title": "Phase 6 · Magazine Strip, Chambering, and Bolt Lockup",
+        "description": "The captive recoil spring drives the heavy carrier group forward, stripping a fresh 5.56mm cartridge from the STANAG feed lips. Cam geometry forces the 7-lug bolt head into a 22.5-degree counter-rotation, rigidly locking into the barrel extension."
+      },
+      "scar_sear_reset": {
+        "shortLabel": "Disconnector Reset",
+        "title": "Phase 7 · Disconnector Handoff & Trigger Mechanism Reset",
+        "description": "During rearward carrier travel, the hammer is captured by the semi-automatic disconnector hook. Releasing the trigger allows the disconnector to slip free, transferring the hammer cleanly back onto the primary trigger sear for the next shot."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "特战之刃：FN SCAR 模块化突击步枪的工程史诗",
+      "deck": "从美国特种作战司令部的苛刻选型，到一枪换膛的冷热气绝分离革命，比利时老牌军工巨头以一体挤压铝机匣与短行程活塞铸就现代模块化单兵武器的绝对基准。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "2003–2004",
+          "title": "特战司令部的终极通牒与模块化黎明",
+          "paragraphs": [
+            "在阿富汗托拉博拉的崇山峻岭与伊拉克干燥酷热的城镇街巷中，深入敌后的美军特种作战部队遭遇了致命的武器可靠性困境。现役的 M4A1 卡宾枪在长时间高烈度交火下，直接导气吹气式结构将炽热的高压燃气与大量游离碳化物直接喷注在枪机框核心腔体内，导致润滑油迅速干涸、受热膨胀并与细密风沙结合形成难以清除的油泥磨料，频繁诱发卡壳与抽壳失败。",
+            "2003年10月，美国特种作战司令部正式启动了名为特种部队战斗突击步枪（SOF Combat Assault Rifle，简称 SCAR）的公开竞标项目。军方明确下达了革命性的技术要求：新步枪必须在恶劣沙尘与泥水测试中展现出数倍于传统枪械的极限可靠性，同时必须具备真正的战术模块化能力——射手必须能够在前线基地甚至隐蔽阵地上，使用最简易的随枪工具在数分钟内自由更换近战、标准和精确射手枪管，并在 5.56 毫米北约口径与 7.62 毫米全威力弹药之间实现核心人机工效的完全兼容。"
+          ],
+          "audioScript": "两千零三年，在阿富汗与伊拉克的严酷沙尘中，美军特种部队对现役卡宾枪积碳和卡壳的抱怨达到了顶峰。美国特种作战司令部为此启动了著名的战斗突击步枪竞标。军方要求彻底根治传统吹气式结构的过热与污垢缺陷，并实现前线极速换装枪管的全面模块化能力。一场颠覆步兵武器制造工艺的技术革新由此拉开序幕。",
+          "audioUrl": "audio/scar/story_act1_zh.mp3",
+          "focusPartId": "scar_upper_receiver",
+          "focusPartLabel": "一体挤压成型香槟沙色铝上机匣"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "2004–2006",
+          "title": "列日的图纸与沙尘风暴中的冷酷洗礼",
+          "paragraphs": [
+            "面对柯尔特、罗宾逊军备与黑克勒科赫等军火巨擘的围剿，位于比利时埃斯塔尔的百年老厂 FN Herstal 展现出令人惊叹的系统整合能力。FN 工程团队没有在老旧的机匣方案上缝缝补补，而是彻底推翻了传统上下机匣的受力分割构型，开创性地使用航空级七千系铝合金整体挤压成型出一段兼顾强度与轻量化的高刚性上机匣梁，机匣顶部一气呵成贯通全长皮卡汀尼导轨，彻底解决了任何外挂光电瞄具的零位形变漂移问题。",
+            "在尤马试验场与阿伯丁试验基地的极端环境大比武中，早期的第三代原型枪遭遇了剧烈震动震坏光学瞄具和托底锁扣断裂等严峻工程挑战。FN 工程师们以惊人的响应速度深入一线，在几个月内连续迭代了六套枪托闭锁销结构，最终敲定了高强度聚合物注射成型的侧折叠伸缩枪托，并在内部布置了独立吸能缓冲橡胶垫。在随后进行的六万发沙尘极限制约测试中，FN 原型枪以数倍超越基准军用卡宾枪的极低故障率拔得头筹，于2004年11月无可争议地赢得了美军特战司令部的全额开发合同。"
+          ],
+          "audioScript": "面对多国军工巨头的激烈角逐，比利时埃斯塔尔兵工厂以颠覆性的全通一体航空铝机匣杀出重围。在著名的阿伯丁沙尘极限测试中，面对灼热风沙与超负荷泥水射击，工程师们快速解决震动过大与零件裂纹隐患，凭借惊人的高可靠性力压群雄，成功斩获美军特种作战司令部的全面订单，正式定名为马克十六。",
+          "audioUrl": "audio/scar/story_act2_zh.mp3",
+          "focusPartId": "scar_buttstock",
+          "focusPartLabel": "标志性“雪地靴”侧折叠六档伸缩枪托"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "2007–2009",
+          "title": "气绝热隔的机械之魂：短行程与重机框",
+          "paragraphs": [
+            "SCAR 步枪内蕴的机械灵魂在于其纯粹而高效的动力学构型。它彻底摒弃了气吹管设计，转而采用独立的不锈钢短行程导气活塞顶杆。当弹头飞越导气孔时，微量高温高压火药燃气瞬间冲入可调节导气箍气室，推动不锈钢小活塞猛烈向后冲撞仅仅十四毫米，撞击能量精准灌入重型矩形截面枪机框前部承撞座后，活塞即撞击限位台阶止动并由复位簧送回原位。高热燃气与灼热未燃火药渣被严密锁闭在护木前方，上机匣与枪机核心自始至终保持着不可思议的低温与洁净。",
+            "更为精妙的是其枪机运动学匹配。FN 工程师为 SCAR 设计了一个重达数百克的实心矩形枪机框，大质量低速运动的惯性平稳后坐，将射速严格控制在极佳控枪的每分钟六百二十五发左右。在枪机框前行的循环中，内壁精密铣削的螺旋凸轮槽导引凸轮销，驱动带有七个均载突笋的转栓枪机精确旋转二十二点五度，不仅闭锁受力面分布极度均匀对称，还让拉壳钩与刚性导壳块的动作容错率达到极致，造就了令特战射手交口称赞的平顺柔和后坐感。"
+          ],
+          "audioScript": "短行程活塞顶杆与大质量矩形机框，是这支名枪的机械灵魂。活塞仅需后坐十四毫米，就能将动能撞击传递给枪机框，随后立即止动复位。所有的火药燃气与焦炭杂质被彻底隔绝在护木前段，枪机内部冷酷而干燥。七突笋回转闭锁与六百二十五发的稳健射速，让全自动射击展现出前所未有的平顺操控感。",
+          "audioUrl": "audio/scar/story_act3_zh.mp3",
+          "focusPartId": "scar_gas_piston",
+          "focusPartLabel": "不锈钢短行程导气活塞顶杆 (Tappet)"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "2010–至今",
+          "title": "多色沙海的战火印记与现代单兵标杆",
+          "paragraphs": [
+            "2010年起，正式冠以 Mk 16 Mod 0 代号的 SCAR-L 伴随游骑兵、绿色贝雷帽与海豹突击队全面投入实战部署。在阿富汗库纳尔省的高原山谷中，特战小组对 SCAR 坚固的铝制上梁与冷锻枪管赞不绝口。不仅如此，由于不同部件采用了高强度铸造铝、冷挤压铝合金与耐冲击聚合物等截然不同的尖端工程材质，其表面阳极氧化与化学着色工艺呈现出深浅不一的金色、狼棕与芥末黄色系，被全球枪械爱好者戏称为富有军工魅力的“五十度沙色”，成为现代特战文化最具辨识度的视觉符号。",
+            "尽管后期美军因后勤补给通用化与预算收紧考量，在轻型 5.56 毫米口径步枪采购上重归由 M4A1 升级衍生出的 URGI 平台，并将采购重心倾斜向 7.62 毫米口径的重型 Mk 17 与 Mk 20 狙击支援步枪，但 SCAR-L 所奠定的一体全通平顶导轨、短行程活塞上机匣集成架构、极速换管结构与全双手双侧人机工效设计，已被全球数十个国家的陆军精锐与执法特警奉为圭臬。它不仅是一支战果卓著的特战步枪，更是二十一世纪步兵武器设计演进史上无法逾越的技术丰碑。"
+          ],
+          "audioScript": "伴随游骑兵与海豹突击队在阿富汗山地历经血火考验，全枪多材质组合形成的五十度沙色，成为特种作战最耀眼的图腾。尽管后续美军因弹药通用性对采购策略做出调整，但一体机匣、短活塞传动与全模块化换管架构，已成为全球下一代战斗步枪的标准范式，长久屹立在轻武器发展史的殿堂顶端。",
+          "audioUrl": "audio/scar/story_act4_zh.mp3",
+          "focusPartId": "scar_barrel_crossbolts",
+          "focusPartLabel": "快拆枪管钢制承力鞍座与六枚 T25 星形锁紧横栓"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "气绝热隔：短行程活塞顶杆传动系统",
+          "tag": "火药燃气隔离机构",
+          "summary": "不锈钢短行程活塞撞击行程仅十四毫米即撞肩自锁，高压火药燃气与积碳完全被封闭在枪管前部导气箍内，彻底消除了传统导气管对机匣核心机构的热量灌注与碳渣污染，在无润滑沙尘条件下实现上万发故障停机间隔。",
+          "focusPartId": "scar_gas_piston",
+          "focusPartLabel": "不锈钢短行程导气活塞顶杆"
+        },
+        {
+          "id": "bt2",
+          "title": "全通承力：一体冷挤压铝合金上机匣",
+          "tag": "全枪高刚性基准梁",
+          "summary": "打破传统冲压或锻造拼焊上下机匣形式，采用航天级七千系铝合金单件挤压成型出顶置全贯通导轨的上机匣，作为全枪唯一的承力骨架与拆解基准，为光学瞄准镜、红外激光指示器与枪管提供永不形变的机械归零基线。",
+          "focusPartId": "scar_upper_receiver",
+          "focusPartLabel": "一体挤压成型铝上机匣"
+        },
+        {
+          "id": "bt3",
+          "title": "定扭快拆：六栓枪管鞍座与自定位卡槽",
+          "tag": "野战枪管快速更换",
+          "summary": "通过高强度钢制鞍座与六枚星形横栓，配合机匣内高精度锥度引导面，士兵单人仅需一把定扭扳手即可在野战条件下五分钟内拆装冷锻枪管，并在更换近战短管或标准管后保持一角分以内的弹着点归零。",
+          "focusPartId": "scar_barrel_crossbolts",
+          "focusPartLabel": "快拆枪管锁紧横栓鞍座"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "2003",
+          "title": "USSOCOM 启动 SCAR 招标项目",
+          "detail": "美军特种作战司令部发布特种部队战斗突击步枪作战需求指标，要求开发具备高度可靠性与枪管口径模块化换装能力的下一代单兵系统。"
+        },
+        {
+          "year": "2004",
+          "title": "FN Herstal 胜出竞标并获独家合同",
+          "detail": "在阿伯丁试验场与尤马沙漠的残酷测试中，FN 提交的原型枪在泥沙、冻雨与高负荷连发中表现出压倒性优势，正式赢得开发定型合同。"
+        },
+        {
+          "year": "2006",
+          "title": "通过特种作战野战作战评估 (OPEVAL)",
+          "detail": "第一批成批生产的 Mk 16 Mod 0 与 Mk 17 Mod 0 交付海军海豹突击队与游骑兵团开展实战评估，验证了折叠枪托与模块化换管人机工效。"
+        },
+        {
+          "year": "2009",
+          "title": "获准全速量产并正式列装美军",
+          "detail": "美国国防部批准 SCAR 步枪族进入里程碑 C 全速率生产阶段，首批配发第 75 游骑兵团与特种部队大队部署阿富汗战场。"
+        },
+        {
+          "year": "2010",
+          "title": "阿富汗山地实战与沙色传奇确立",
+          "detail": "在持久自由行动中大量参与前沿清剿战斗，其极低故障率与多材质五十度沙色外观享誉全球，确立现代战术步枪审美与制造标杆。"
+        },
+        {
+          "year": "2015–至今",
+          "title": "技术开枝散叶与全球盟国普遍采办",
+          "detail": "尽管美军采购重心转向 7.62 毫米口径 Mk 17 与 Mk 20，但 SCAR 架构被法国陆军、比利时特警等全球四十余个国家主力采购，成为现代模块化武器的经典教科书。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Blade of Special Operations: The Engineering Epic of the FN SCAR",
+      "deck": "From the stringent crucible of USSOCOM trials to an isolated short-stroke piston architecture, FN Herstal redefined 21st-century modular combat arms with a monolithic extruded backbone and multi-material excellence.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "2003–2004",
+          "title": "The SOCOM Ultimatum and the Call for Modularity",
+          "paragraphs": [
+            "In the jagged crags of Tora Bora and the fine-sand corridors of Iraq, Tier-1 operators encountered acute reliability limits in standard-issue service carbines. Under intense sustained fire, the direct gas impingement system vented incandescent gas and suspended carbon fouling straight into the bolt carrier recess. In dust-choked desert theaters, lubricants boiled away and bonded with talcum-fine silt, forming abrasive lapping compound that induced severe extraction and chambering stoppages.",
+            "In October 2003, the United States Special Operations Command promulgated the SOF Combat Assault Rifle (SCAR) competition. SOCOM demanded a generational leap: extreme operational reliability in silt and saltwater, alongside modular architecture permitting front-line soldiers to swap barrel lengths from close-quarters to designated marksman roles within minutes using a single tool, while unifying ergonomics across intermediate and full-power cartridges."
+          ],
+          "audioScript": "In two thousand three, amidst harsh combat operations across Iraq and Afghanistan, elite operators reached the limits of direct gas carbines. Special Operations Command launched the historic battle rifle competition, demanding utter reliability in choking dust and rapid caliber and barrel modularity in the field. A technical revolution in modern infantry firearms was set into motion.",
+          "audioUrl": "audio/scar/story_act1_en.mp3",
+          "focusPartId": "scar_upper_receiver",
+          "focusPartLabel": "Monolithic Extruded Aluminum FDE Upper Receiver"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "2004–2006",
+          "title": "Blueprints in Liège: Tested in Aberdeen's Dust Storms",
+          "paragraphs": [
+            "Facing entrenched competition from Colt, Robinson Armament, and Heckler & Koch, the engineering team at FN Herstal in Belgium executed a clean-sheet architecture. Rather than retrofitting stamped steel or split split-forged receivers, FN extruded the primary chassis from high-tensile 7000-series aerospace aluminum. The continuous monolithic upper rail provided absolute rigidity across the optical axis, eliminating thermal and torsional zero-shift.",
+            "During grueling tortures at Yuma Proving Ground and Aberdeen Test Center, early generation-three prototypes confronted violent recoil harmonics and buttstock latch stress cracks. FN engineers rapidly iterated, reinforcing the side-folding stock assembly with high-impact composite polymers and internal elastomeric buffer blocks. In the benchmark sixty-thousand-round extreme dust trials, FN prototypes exhibited failure rates far lower than existing service carbines, decisively winning the full development award in November 2004."
+          ],
+          "audioScript": "Engineers at FN Herstal abandoned outdated stamped and cast receiver patterns, engineering a continuous monolithic upper receiver from aircraft-grade aluminum. Subjected to torrential mud, freezing rain, and brutal dust chambers at Aberdeen, the Belgian prototypes proved exceptionally reliable. By November two thousand four, the platform officially secured the United States Special Operations Command contract.",
+          "audioUrl": "audio/scar/story_act2_en.mp3",
+          "focusPartId": "scar_buttstock",
+          "focusPartLabel": "\"Ugg-Boot\" Side-Folding 6-Position Telescoping FDE Buttstock"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "2007–2009",
+          "title": "The Mechanical Soul: Short-Stroke Piston & Heavy Carrier",
+          "paragraphs": [
+            "At the mechanical core of the SCAR lies an elegant kinetic decoupling: the stainless short-stroke tappet gas piston. When the 5.56mm round travels past the gas port, high-pressure propellant gas vents into the forward regulator chamber, striking the free-floating piston through a sharp fourteen-millimeter stroke before the tappet arrests against its stop shoulder. All hot propellant carbon is expelled forward at the gas block; the receiver core and bolt face remain remarkably cool and clean.",
+            "Kinematic timing is harmonized by a massive rectangular bolt carrier. By concentrating weight into a slow-cycling mass block, the cyclic rate is metered to a controllable six hundred twenty-five rounds per minute. As the carrier glides along dual internal rails, an integral cam path smoothly rotates the seven-lug bolt head through twenty-two point five degrees. This balanced lug geometry distributes shear loads across the barrel extension with minimal friction, delivering a soft, trackable recoil impulse."
+          ],
+          "audioScript": "The heart of the design is its short-stroke gas tappet piston, which moves rearward just fourteen millimeters before arresting. High-pressure gas and carbon fouling are expelled at the forward gas block, keeping the bolt carrier cool and dry. Paired with a heavy rectangular carrier and a seven-lug rotary bolt, the rifle achieves a controlled rate of six hundred twenty-five rounds per minute with exceptionally soft recoil.",
+          "audioUrl": "audio/scar/story_act3_en.mp3",
+          "focusPartId": "scar_gas_piston",
+          "focusPartLabel": "Stainless Short-Stroke Gas Piston Tappet"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "2010–Present",
+          "title": "50 Shades of Desert: The Global Standard of Modern Combat",
+          "paragraphs": [
+            "Designated the Mk 16 Mod 0, the SCAR Light deployed extensively with US Army Rangers, Special Forces, and SEAL teams across Operation Enduring Freedom. In the harsh valleys of Kunar Province, operators lauded its pinpoint accuracy and mechanical endurance. The rifle's signature appearance—coined '50 Shades of FDE' due to differential chemical finishing across extruded alloy, cast steel, and polymer components—became an enduring pop-culture and military icon.",
+            "Although SOCOM later consolidated intermediate 5.56mm inventories around upgraded M4A1 platforms while prioritizing SCAR procurement for the 7.62mm Mk 17 and Mk 20 Precision Sniper Rifle, the engineering innovations pioneered by the Mk 16 remain ubiquitous. From sovereign weapon adoptions across French and Belgian armed forces to universal acceptance of monolithic rail uppers and quick-detach barrels, the SCAR stands as an undeniable landmark in modern ordnance history."
+          ],
+          "audioScript": "Carried into battle across the rugged mountains of Afghanistan, the rifle became instantly recognizable by its distinct multi-material shades of desert tan. While special operations later focused intermediate inventories around legacy supply lines, the modular monolithic upper, quick-change barrel, and isolated piston pioneered by the SCAR have become the blueprint for twenty-first century battle rifles worldwide.",
+          "audioUrl": "audio/scar/story_act4_en.mp3",
+          "focusPartId": "scar_barrel_crossbolts",
+          "focusPartLabel": "Quick-Change Barrel Steel Yoke & 6 Torx Retention Cross-Bolts"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Thermal Isolation: Short-Stroke Tappet System",
+          "tag": "Gas Isolation Mechanism",
+          "summary": "By confining piston travel to an abrupt 14mm impulse forward of the handguard, combustion carbon and searing gases are completely isolated from the bolt carrier, ensuring unprecedented mean rounds between stoppages under dry sandy conditions.",
+          "focusPartId": "scar_gas_piston",
+          "focusPartLabel": "Stainless Short-Stroke Gas Piston Tappet"
+        },
+        {
+          "id": "bt2",
+          "title": "Monolithic Extrusion: Rigid Upper Receiver Backbone",
+          "tag": "Structural Alignment Beam",
+          "summary": "Replacing multi-piece pinned receivers with a continuous aerospace 7000-series aluminum extrusion, creating an immutable optical Picatinny datum line that guarantees complete zero retention for thermal, night-vision, and magnified optics.",
+          "focusPartId": "scar_upper_receiver",
+          "focusPartLabel": "Monolithic Extruded Aluminum FDE Upper Receiver"
+        },
+        {
+          "id": "bt3",
+          "title": "Torque-Locked Quick Barrel Exchange",
+          "tag": "Field Barrel Modularity",
+          "summary": "Utilizing a high-tensile steel barrel saddle secured by six Torx cross-bolts, operators can swap 10-inch, 14-inch, or 18-inch cold-hammer-forged barrels in under five minutes with a field torque wrench while preserving sub-MOA point-of-impact return.",
+          "focusPartId": "scar_barrel_crossbolts",
+          "focusPartLabel": "Quick-Change Barrel Steel Yoke & Cross-Bolts"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "2003",
+          "title": "USSOCOM Solicits the SCAR Program",
+          "detail": "Special Operations Command releases operational criteria for a modular assault rifle system capable of rapid caliber and barrel conversion."
+        },
+        {
+          "year": "2004",
+          "title": "FN Herstal Declared Competition Winner",
+          "detail": "FN prototypes prevail in rigorous environmental shoot-offs across Aberdeen Test Center, securing the sole development contract."
+        },
+        {
+          "year": "2006",
+          "title": "Operational Evaluation Field Testing (OPEVAL)",
+          "detail": "First low-rate initial production Mk 16 and Mk 17 rifles undergo combat simulation field testing with US Navy SEAL and Ranger units."
+        },
+        {
+          "year": "2009",
+          "title": "Milestone C Approval & US Military Field Adoption",
+          "detail": "The platform receives full-rate production approval, and initial operational fielding commences with the 75th Ranger Regiment."
+        },
+        {
+          "year": "2010",
+          "title": "Extensive Deployment in Operation Enduring Freedom",
+          "detail": "Mk 16 carbines see heavy combat in Afghanistan, cementing the global reputation of its multi-toned FDE aesthetic and dirt-immune gas system."
+        },
+        {
+          "year": "2015–Present",
+          "title": "Global Adoption & Enduring Ordnance Influence",
+          "detail": "Adopted by special forces and police tactical units across forty nations, the SCAR architecture remains the definitive benchmark for modular rifle engineering."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "scar_upper_receiver": {
+      "partId": "scar_upper_receiver",
+      "bomCode": "U-01",
+      "calloutLabelEn": "Extruded FDE Upper",
+      "zh": {
+        "roleTag": "全通一体皮卡汀尼导轨 / 全枪高精度刚性梁",
+        "overview": "作为FN SCAR系统的核心结构基座，上机匣由整块航空铝合金一体挤压成型。它不仅包裹并导引重型枪机框往复运动，还在顶部和四周集成了全通皮卡汀尼战术导轨。",
+        "craftAndMaterial": "选用7000系列高强度航空铝挤压成型，表面经三级硬质阳极氧化呈现标志性的金属香槟沙色。前段铣削有大面积椭圆形散热孔以减轻前部死重并辅助枪管散热。",
+        "kinematicRole": "在击发与后坐全周期中作为静止刚性参考系，承受后坐反作用力与导气箍传递的冲击；在分解进度约百分之二十二至百分之三十时与下机匣解脱并向上抬起分离。",
+        "designHighlight": "彻底打破传统AR分体机匣设计，将上护木与上机匣融为一体，彻底消除了战术瞄准镜与激光指示器之间的零位偏移，奠定了模块化步枪的结构标杆。",
+        "audioScript": "眼前这件香槟沙色的一体挤压铝合金上机匣，正是SCAR系统高精度的根基。它将机匣与上护木融为一体，顶部延伸出毫无间断的全通战术导轨，让瞄准镜与激光指示器能够绝对共轴，永不松动失准。",
+        "audioUrl": "audio/scar/parts/scar_upper_receiver_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Monolithic Picatinny Rail / Primary Structural Spine",
+        "overview": "Serving as the structural backbone of the SCAR platform, this monolithic upper receiver is extruded from high-grade aircraft aluminum. It houses the reciprocating bolt carrier group while integrating uninterrupted MIL-STD-1913 rails along its perimeter.",
+        "craftAndMaterial": "Machined from extruded 7000-series alloy with a hard-coat anodized champagne-tan finish. Visible longitudinal guide ribs and oval venting slots reduce front-end weight while dissipating intense barrel heat.",
+        "kinematicRole": "Acts as the rigid kinematic datum through all seven firing phases, anchoring the recoil impulse; separates upward from the lower receiver between 22% and 30% disassembly.",
+        "designHighlight": "By unifying the forearm and upper receiver into a single continuous extrusion, FN eliminated handguard flex and optical zero shift under extreme thermal and combat stress.",
+        "audioScript": "This champagne-anodized monolithic upper receiver forms the rigid backbone of the SCAR. By extruding the receiver and handguard as a continuous piece of aircraft aluminum, it provides an uninterrupted top rail that permanently prevents your optical sight and laser pointer from losing zero.",
+        "audioUrl": "audio/scar/parts/scar_upper_receiver_en.mp3"
+      }
+    },
+    "scar_rear_sight": {
+      "partId": "scar_rear_sight",
+      "bomCode": "U-02",
+      "calloutLabelEn": "Folding Rear Diopter",
+      "zh": {
+        "roleTag": "高低风偏微调 / 使用光学镜时向后平折收纳",
+        "overview": "这是夹紧固定于上机匣后部战术导轨上的精密折叠双觇孔照门。平时作为主瞄准基线，在加装全息或高倍率瞄准镜时可单手向后快速按平。",
+        "craftAndMaterial": "由高碳合金钢经CNC精密铣削并做磷化防锈处理，刻度旋钮带有弹簧滚珠定位棘爪，确保调节风偏与射程时咔哒声清晰且锁止绝对可靠。",
+        "kinematicRole": "在全周期射击中随上机匣保持静止；在百分之二十二机匣分解后，于百分之六十六至百分之九十的高级枪械工分解阶段从导轨后方滑出脱卸。",
+        "designHighlight": "设计有快速翻转的近战大口径觇孔与远距离精瞄小觇孔，放倒后高度极低，彻底避免与主流低倍率可调光学瞄准镜目镜发生机械刮擦干涉。",
+        "audioScript": "安装在上机匣尾部的折叠机械后照门，集成了高低与风偏微调机构。射手可以快速翻转选择近战大觇孔或远距离小觇孔。当安装光学瞄准镜时，轻按侧键即可将它完全放平，绝不遮挡视野。",
+        "audioUrl": "audio/scar/parts/scar_rear_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Windage/Elevation Adjustable / Low-Profile Stowed Sight",
+        "overview": "Clamped rigidly to the rear dorsal Picatinny rail, this dual-aperture diopter serves as the primary backup iron sight. It folds flat rearward in a single motion when secondary optics or magnifiers are engaged.",
+        "craftAndMaterial": "CNC milled from ordnance steel with a manganese phosphate matte finish. Features click-adjustable elevation and windage drums indexed by spring-loaded detents for precise positive feedback.",
+        "kinematicRole": "Remains stationary during firing cycles; slides off the dorsal rail during detailed armorer teardown between 66% and 90% disassembly.",
+        "designHighlight": "Low-profile hinge geometry folds below optic height profiles, allowing seamless co-witnessing through red dots without impeding low-power variable optic eye relief.",
+        "audioScript": "This folding iron rear sight clamps onto the upper rail, offering tool-less windage and elevation adjustment. You can flip between a wide aperture for rapid close-quarters target acquisition and a fine pinhole for distant targets, or fold it completely flat beneath your rifle scope.",
+        "audioUrl": "audio/scar/parts/scar_rear_sight_en.mp3"
+      }
+    },
+    "scar_gas_block": {
+      "partId": "scar_gas_block",
+      "bomCode": "U-03",
+      "calloutLabelEn": "Gas Block & Sight",
+      "zh": {
+        "roleTag": "常规/消音两档进气调节 / 折叠圆形护翼准星",
+        "overview": "导气箍热套压入并销固于枪管中前部，直接汲取弹头越过导气孔后的火药燃气。其上方集成两档位旋转气阀塞以及带有圆形护圈的可折叠机械准星座。",
+        "craftAndMaterial": "采用高抗烧蚀铬钼钢整体锻造精铣，表面耐高温氮化处理；护圈准星弧面设计经受跌落测试，气塞截面带有精密排气泄流斜孔。",
+        "kinematicRole": "在第三阶段导流高压燃气冲撞活塞顶杆，气箍基体与枪管同步保持相对静止；在百分之三十六至百分之五十六枪管部件分解阶段前滑拆卸。",
+        "designHighlight": "两档气塞允许单兵在加装消音器时旋转至减气档，主动泄放多余高压燃气，防止枪机框剧烈后坐磨损机匣并极大减少火药残渣倒灌面部。",
+        "audioScript": "套装在枪管前端的导气箍是整枪的气动控制枢纽。它不仅整合了坚固的折叠护圈准星，还包含一个免工具两档旋塞。加装消音器时拧至减气档，能有效抑制机匣积碳与过量后坐冲击。",
+        "audioUrl": "audio/scar/parts/scar_gas_block_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Standard/Suppressed 2-Pos Regulator / Folding Front Hood",
+        "overview": "Pinned over the barrel porting window, this unit channels expanding propellent combustion to drive the cycle. Its integrated upper assembly supports a two-position gas plug and a folding hooded front sight.",
+        "craftAndMaterial": "Forged from erosion-resistant chrome-moly steel with an anti-friction salt-bath nitride surface. Precision cross-drilled bleed orifices regulate venting under severe thermal cyclic loads.",
+        "kinematicRole": "Diverts peak cylinder pressure to the tappet piston in Phase 3 while remaining fixed; unpins forward along the barrel between 36% and 56% disassembly.",
+        "designHighlight": "The suppressor gas setting intentionally chokes port volume, eliminating over-gassing and carrier over-speeding while sparing the shooter noxious blowback gases in enclosed spaces.",
+        "audioScript": "Pinned to the barrel, this gas block is the heart of the SCAR cycling mechanism. Up front, a rotating gas regulator switches between standard and suppressed modes to prevent violent bolt bounce, while the top hinge houses an impact-resistant folding front sight.",
+        "audioUrl": "audio/scar/parts/scar_gas_block_en.mp3"
+      }
+    },
+    "scar_gas_piston": {
+      "partId": "scar_gas_piston",
+      "bomCode": "U-04",
+      "calloutLabelEn": "Short-Stroke Piston",
+      "zh": {
+        "roleTag": "短行程瞬态冲击传力 / 隔离火药燃气积碳与热量",
+        "overview": "短行程活塞顶杆卧于枪管正上方的导气管内，后部对准机框前端承撞面。在火药燃气注入气室的瞬态，它如气锤般向后骤猛冲击枪机框。",
+        "craftAndMaterial": "由特种高硬度耐热不锈钢车削研磨而成，头部带有自清洁密封环槽。外壁经超精研磨减摩抛光，无需任何润滑油脂即可在炽热气体中高速运作。",
+        "kinematicRole": "在阶段四被高压燃气推动后移约十四毫米，猛烈撞击枪机框后撞肩自锁止动；在百分之三十四至百分之五十六阶段向前抽出机匣。",
+        "designHighlight": "短行程冲撞后即刻脱离，枪机框全凭惯性完成开锁后坐。这种设计将高达数百度的肮脏碳渣彻底隔绝在气箍内，使SCAR上机匣内部始终干净清凉。",
+        "audioScript": "这根小巧的不锈钢短行程活塞顶杆，是SCAR可靠性的核心秘诀。燃气入室后，它仅向后猛击大约十四毫米便撞肩止动，靠冲量撞开枪机框。它把灼热的积碳死死锁在枪管前段，机匣内部始终保持干净冰凉。",
+        "audioUrl": "audio/scar/parts/scar_gas_piston_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Short-Stroke Kinetic Tappet / Gas and Carbon Barrier",
+        "overview": "Situated directly above the barrel bore, this tappet piston receives the initial gas blast. It functions as an unattached kinetic hammer that delivers a sharp rearward blow to the bolt carrier extension.",
+        "craftAndMaterial": "Turned from aerospace stainless alloy with gas-scraping labyrinth head grooves. Mirror-polished bearing surfaces allow continuous dry operation without collecting baked lubricant residues.",
+        "kinematicRole": "Driven rearward approximately 14 millimeters in Phase 4 before hitting its internal stop collar; slides cleanly out of the gas cylinder between 34% and 56% disassembly.",
+        "designHighlight": "By decoupling the piston from the carrier, high-temperature gases and fouling vent forward at the gas block rather than venting directly into the receiver cavity like traditional direct-impingement systems.",
+        "audioScript": "This precision stainless short-stroke piston tappet is the key to weapon reliability. Propelled by expanding gas, it travels back just fourteen millimeters to strike the carrier before stopping dead. This keeps hot carbon and debris far away from the delicate bolt inside the receiver.",
+        "audioUrl": "audio/scar/parts/scar_gas_piston_en.mp3"
+      }
+    },
+    "scar_bolt_carrier": {
+      "partId": "scar_bolt_carrier",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Heavy Bolt Carrier",
+      "zh": {
+        "roleTag": "低射频平稳后坐质量块 / 螺旋凸轮槽驱动枪机开闭锁",
+        "overview": "位于机匣上腔的重型合金钢滑动构件，前上方长管抵接活塞顶杆，腹部内腔容纳回转枪机。其侧面开有精密螺旋凸轮槽，支配枪机头的自转与闭锁动作。",
+        "craftAndMaterial": "由整块优质合金钢精密锻造并经五轴数控铣削而成，表面全渗氮黑色硬化。巨大的截面质量不仅提供了运动惯性，还加大了导轨接触面以防偏磨卡滞。",
+        "kinematicRole": "在第四阶段被活塞猛击后凭惯性向后狂奔，内槽驱动枪机旋转换向解锁，直至压缩复进簧至末端后复进；在百分之十六至百分之二十四野战分解步骤中抽出机匣。",
+        "designHighlight": "厚重的方砖构型赋予其极大的运动惯性，配合长行程缓冲行程，使得SCAR在全自动射击时射速被自然抑制在极为温顺的每分钟六百二十五发，极其易控。",
+        "audioScript": "这块质感厚重的矩形枪机框，直接决定了SCAR极其平稳的连发手感。它承接活塞顶杆的猛烈冲力，凭借自重惯性平稳后移，内部的螺旋导槽顺势旋开枪机。较大的运动质量把连发射速控制在每分钟六百二十发左右，点射非常容易控枪。",
+        "audioUrl": "audio/scar/parts/scar_bolt_carrier_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Low-Cyclic Inertial Mass / Helical Cam Slot Actuator",
+        "overview": "Operating within the extruded upper receiver rails, this heavy alloy steel carrier acts as the primary reciprocating engine. It captures the rotating bolt while its forward nose receives the piston tappet strike.",
+        "craftAndMaterial": "Forged and five-axis milled from structural ordnance steel with a deep QPQ salt-bath nitride case hardening. Symmetrical full-length guide rails maximize sliding surface area against the aluminum housing.",
+        "kinematicRole": "Recoils rearward in Phase 4, turning the cam pin to unlock the bolt head; slides out the rear receiver aperture between 16% and 24% of the field disassembly sequence.",
+        "designHighlight": "The heavy monolithic mass yields high momentum and lowers the cyclic firing rate down to a remarkably manageable 625 rounds per minute, dramatically improving off-hand burst grouping.",
+        "audioScript": "This massive rectangular bolt carrier gives the SCAR its smooth recoil rhythm. Shoved back by the piston impulse, its heavy mass glides on internal rails while its curved cam path forces the bolt to unlock. This weight naturally tames the cyclic rate to a steady six hundred and twenty-five rounds per minute.",
+        "audioUrl": "audio/scar/parts/scar_bolt_carrier_en.mp3"
+      }
+    },
+    "scar_charging_handle": {
+      "partId": "scar_charging_handle",
+      "bomCode": "U-06",
+      "calloutLabelEn": "Side Charging Handle",
+      "zh": {
+        "roleTag": "直接插锁枪机框 / 兼具强行推机助推器功能",
+        "overview": "横向深插在枪机框前端侧槽内的圆柱拉机柄，把手凸出于机匣侧面导槽。射手拉动它即可手动带动机架构件后坐上膛，亦可左右对调安装。",
+        "craftAndMaterial": "采用高抗扭高韧性合金钢制成，握持端滚花粗糙防滑且端头带有倒角；表面经过耐磨黑色磷化处理以承受恶劣射击震动。",
+        "kinematicRole": "在所有射击循环中与枪机框刚性同步高速往复；在百分之十二至百分之十六拆卸阶段拉至上机匣后部让位孔处拔出分离。",
+        "designHighlight": "与机框刚性直接联动，在枪机因沙尘未完全复进时，可直接充当物理撞击助推杆强行推机上膛，战术脱困能力远胜AR拉机柄。",
+        "audioScript": "这根带有滚花防滑纹的随动拉机柄直接插在机框上，射手可以根据习惯快速拆下、安装到左侧或右侧。射击时它会随枪机高速往复。遭遇风沙阻滞上膛不到位时，它还能直接当成强推助进器，一巴掌拍紧枪机。",
+        "audioUrl": "audio/scar/parts/scar_charging_handle_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Direct Carrier Coupler / Integrated Forward Assist",
+        "overview": "Inserted crosswise into the forward socket of the bolt carrier, this knurled charging handle protrudes through the side receiver track. It permits manual cycling and can be swapped ambidextrously without tools.",
+        "craftAndMaterial": "Machined from high-tensile alloy steel with a heavily knurled cylindrical grip and phosphate finish. The root spindle features a hardened locking detent to secure solid lockup in the carrier mortise.",
+        "kinematicRole": "Reciprocates synchronously with the bolt carrier during Phases 4 through 6; pulls back to the receiver teardown relief port and separates between 12% and 16% disassembly.",
+        "designHighlight": "Because it links directly to the bolt carrier, it doubles as a true forward assist, allowing operators to manually force the bolt into battery if mud or sand fouls the chamber.",
+        "audioScript": "This knurled reciprocating charging handle locks directly into the bolt carrier. Operators can quickly swap it from left to right side. Because it is directly coupled, it acts as a reliable forward assist, allowing you to manually force the bolt into battery if battlefield debris causes a jam.",
+        "audioUrl": "audio/scar/parts/scar_charging_handle_en.mp3"
+      }
+    },
+    "scar_bolt": {
+      "partId": "scar_bolt",
+      "bomCode": "U-07",
+      "calloutLabelEn": "7-Lug Rotating Bolt",
+      "zh": {
+        "roleTag": "22.5° 小转角多突笋均载闭锁 / 宽爪强力抽壳",
+        "overview": "位于枪机框前端腹腔内的核心受力闭锁件，前端分布七个闭锁突笋并集成有大面积宽爪抽壳钩。推弹入膛后与枪管节套实现紧密刚性啮合。",
+        "craftAndMaterial": "采用航空级高强度不锈钢锻造精车，通体光洁度高并经抗疲劳喷丸处理。第七与第八齿槽之间让位给宽大的加厚型弹力抽壳抓爪。",
+        "kinematicRole": "在第四阶段被机框凸轮销驱动自转二十二点五度完成解锁，向后拉出弹壳，第六阶段推弹入膛并回转重新闭锁；在百分之三十四至百分之五十六分解阶段滑脱。",
+        "designHighlight": "相比传统AR的转角与齿数布局，SCAR的七突笋闭锁齿根部过渡极为圆润，彻底杜绝了长期射击导致突笋齿根微裂纹剪切崩损的致命隐患。",
+        "audioScript": "前端带有七枚粗壮闭锁突笋的回转枪机，是承受弹药爆燃压力的安全闸口。当枪机复进到位，凸轮销带动它旋转二十二点五度，严丝合缝地锁入枪管节套。第七齿槽内镶嵌的超宽抽壳钩，确保了极其粗暴可靠的抽壳动作。",
+        "audioUrl": "audio/scar/parts/scar_bolt_zh.mp3"
+      },
+      "en": {
+        "roleTag": "22.5° Rotation Multi-Lug Lockup / Heavy Duty Extraction",
+        "overview": "Positioned inside the forward bore of the bolt carrier, this rotating bolt head locks directly into the barrel extension. Its front face carries seven thick locking lugs, a plunger ejector, and a wide-claw extractor.",
+        "craftAndMaterial": "Machined from premium stainless ordnance alloy with high-stress shot-peened lug roots. Features generous radii at stress concentration zones to eliminate mechanical shear fractures.",
+        "kinematicRole": "Rotates 22.5 degrees counter-clockwise to unlock in Phase 4, extracts the spent case in Phase 5, and cams closed in Phase 6; extracts from the carrier between 34% and 56% disassembly.",
+        "designHighlight": "Its seven robust locking lugs distribute firing chamber forces evenly across the barrel extension, completely resolving the cracked lug failures commonly suffered by M4 bolts under sustained rapid fire.",
+        "audioScript": "This seven-lug rotating bolt head handles the extreme pressure of the chamber. Driven by the cam pin, it twists twenty-two point five degrees to lock squarely into the barrel extension. Its oversized extractor claw grips the brass rim firmly, preventing catastrophic extraction failures even when scorching hot.",
+        "audioUrl": "audio/scar/parts/scar_bolt_en.mp3"
+      }
+    },
+    "scar_firing_pin": {
+      "partId": "scar_firing_pin",
+      "bomCode": "U-08",
+      "calloutLabelEn": "Stainless Firing Pin",
+      "zh": {
+        "roleTag": "传递回转击锤打击动能 / 引燃 5.56mm NATO 底火",
+        "overview": "纵向贯穿枪机框与枪机中心孔的细长高韧性不锈钢销杆。尾部受旋转击锤敲击，针尖穿出机面撞击弹药底火引燃发射药。",
+        "craftAndMaterial": "由特级抗疲劳耐磨不锈钢无心研磨制成，头部球形钝化修圆防止击穿底火；中段带有台阶配合复位阻尼弹簧以消除惯性击发风险。",
+        "kinematicRole": "在第二阶段受击锤猛击前冲引爆底火，随后依靠弹药回弹或机框后移复位；在机框组件分解阶段约百分之三十六至百分之五十八处自后部抽出。",
+        "designHighlight": "击针尾端受枪机闭锁姿态严密机械干涉保护，只有当机头旋转完全咬死在节套中时，击针才允许暴露于击锤打击轴线上，构筑了刚性防早炸防线。",
+        "audioScript": "贯穿枪机内膛的不锈钢长击针，负责将击锤的动能传递到五点五六毫米弹药的底火上。针尖经过精密抛光处理，既能瞬间引燃底火，又不会击穿铜皮。只有枪机完全旋转到位闭锁后，它才会对正击锤，防止发生炸膛事故。",
+        "audioUrl": "audio/scar/parts/scar_firing_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Impact Transfer / 5.56 NATO Primer Ignition",
+        "overview": "Piercing the full central axis of the bolt carrier and rotating bolt, this stainless pin transfers kinetic energy from the falling hammer directly to the cartridge primer.",
+        "craftAndMaterial": "Centerless ground from premium fatigue-resistant stainless steel. The striking tip is hemispherical and micro-polished to prevent pierced primers or gas erosion along the firing pin channel.",
+        "kinematicRole": "Drives forward under hammer impact during Phase 2 to initiate ignition; slides straight out of the rear of the carrier during detailed bolt teardown from 36% to 58% disassembly.",
+        "designHighlight": "A dedicated internal spring cushion and carrier geometry shield the pin from hammer contact unless the bolt is 100% rotated into safe battery, preventing dangerous out-of-battery discharge.",
+        "audioScript": "Running straight through the heart of the bolt, this stainless steel firing pin transfers the hammer strike to the primer. Its rounded tip delivers a clean strike without puncturing the primer pocket. Mechanical locks keep the pin shielded until the bolt has completed its rotation into safe lockup.",
+        "audioUrl": "audio/scar/parts/scar_firing_pin_en.mp3"
+      }
+    },
+    "scar_recoil_rod": {
+      "partId": "scar_recoil_rod",
+      "bomCode": "U-09",
+      "calloutLabelEn": "Buffer & Guide Rod",
+      "zh": {
+        "roleTag": "封闭上机匣尾腔 / 无缓冲管折叠托架构核心",
+        "overview": "封堵在上机匣后端顶部的缓冲尾盖组合件，向前伸出细长的复进簧导引杆。它是整个复进储能机构的导轨依托兼机匣后壁减震器。",
+        "craftAndMaterial": "合金钢尾座外包高吸能聚氨酯防撞缓冲橡胶块，中轴采用淬硬发黑碳钢杆以抵抗高频屈曲变形；表面做深层防腐磷化处理。",
+        "kinematicRole": "在全阶段限制并吸收后坐机框的终点冲击冲量；在野战分解起始阶段（约百分之十至百分之二十）由下机匣压下解脱后向后拔出。",
+        "designHighlight": "将复进簧体系完全收拢于上机匣内部顶部空间，彻底告别了传统AR系列伸入后枪托的缓冲管，为SCAR实现侧向折叠枪托并在折叠状态下正常射击提供了先决条件。",
+        "audioScript": "这根带有聚氨酯减震尾盖的复进簧导杆，巧妙地安装在上机匣上部。正是因为把复进机构完整容纳在机匣内部，SCAR彻底抛弃了AR步枪尾部的长缓冲管，让枪托不仅能大角度向侧面折叠，而且折叠后依然可以正常扣扳机击发。",
+        "audioUrl": "audio/scar/parts/scar_recoil_rod_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Receiver Tail Closure / Buffer-Tube-Free Architecture",
+        "overview": "Locking into the upper receiver tail, this assembly carries a forward guide rod and an elastomeric impact buffer. It guides the recoil spring while protecting the alloy chassis from bolt carrier slamming.",
+        "craftAndMaterial": "Features a high-durometer polyurethane buffer vulcanized to an alloy steel retaining cap. The guide rod is hardened spring steel finished with matte black anti-corrosion phosphate.",
+        "kinematicRole": "Cushions residual bolt carrier rearward inertia at the end of Phase 4 and Phase 5; unlatches and pulls rearward out of the receiver between 10% and 20% disassembly.",
+        "designHighlight": "Locating the entire reciprocating spring assembly fully inside the upper receiver frees the rifle from the traditional AR buffer tube, enabling a folding buttstock that fires reliably even when stowed.",
+        "audioScript": "Locking the back of the upper receiver, this captive recoil guide rod and rubber buffer absorb bolt impact. By containing the entire recoil system within the upper receiver, FN eliminated the awkward stock buffer tube, allowing the buttstock to fold flat while maintaining complete firing capability.",
+        "audioUrl": "audio/scar/parts/scar_recoil_rod_en.mp3"
+      }
+    },
+    "scar_recoil_spring": {
+      "partId": "scar_recoil_spring",
+      "bomCode": "U-10",
+      "calloutLabelEn": "Recoil Spring",
+      "zh": {
+        "roleTag": "吸收矩形枪机框后坐能量 / 恒力驱动推弹闭锁",
+        "overview": "预压穿套在复进导杆外部的长螺旋弹簧，前端深入重型枪机框上部的盲孔槽内。后坐时压缩吸收冲击储能，随后释放弹力推机复进。",
+        "craftAndMaterial": "采用高抗疲劳进口琴钢丝紧密卷制，经低温去应力退火与喷丸硬化处理，能够承受数十万次高速反复压缩循环而不发生弹力衰减。",
+        "kinematicRole": "在第四、五阶段被后退机框压缩储能，在第六阶段释放势能平稳推动机框剥弹上膛；在分解阶段百分之十至百分之二十随导杆一同整体抽出。",
+        "designHighlight": "设计有均匀的弹力递增梯度，有效缓和了机框撞击尾盖时的峰值顿挫感，为射手提供了如液压机构般平稳连续的后坐反馈。",
+        "audioScript": "这根套在导杆上的俘获式复进簧，负责储存枪机后坐的所有剩余能量。当枪机狂暴后冲时，它被均匀压缩吸收冲击；后坐到位后，弹簧迅速舒展，将枪机框平稳推回前方，完成推弹入膛和锁死枪机。",
+        "audioUrl": "audio/scar/parts/scar_recoil_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Recoil Energy Absorber / Forward Battery Driver",
+        "overview": "Pre-tensioned along the guide rod, this helical spring extends inside the upper cavern of the bolt carrier. It arrests carrier momentum during recoil and releases stored force to chamber fresh cartridges.",
+        "craftAndMaterial": "Coiled from high-grade aerospace spring steel with stress-relief heat treatment and shot peening. Provides extraordinary endurance under rapid sustained automatic fire cycles without fatigue sag.",
+        "kinematicRole": "Compresses in Phases 4 and 5 to arrest the bolt carrier; expands in Phase 6 to strip a round from the magazine into battery; withdraws captive on the rod at 10% to 20% disassembly.",
+        "designHighlight": "Engineered with a progressive spring rate that smooths out the mechanical peak spike as the heavy carrier reaches full stroke, yielding an exceptionally flat shooting sensation.",
+        "audioScript": "Wound around the guide rod, this high-durability recoil spring tames the rearward strike of the bolt carrier. Compressing cleanly under recoil, it immediately launches the carrier forward to strip a fresh round from the STANAG magazine and push the system back into battery.",
+        "audioUrl": "audio/scar/parts/scar_recoil_spring_en.mp3"
+      }
+    },
+    "scar_lower_receiver": {
+      "partId": "scar_lower_receiver",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Polymer Lower Receiver",
+      "zh": {
+        "roleTag": "全枪拆解零位基准 / 集成冬季大护圈与双侧人机工效键",
+        "overview": "构筑整枪握持与火控核心的下半部分机匣，包含一体成型的大容积冬季手套扳机护圈、喇叭口弹匣井、双侧快慢机旋钮与乒乓球拍空挂释放板。",
+        "craftAndMaterial": "采用高抗冲玻纤增强聚酰胺精密注塑，呈哑光狼棕色，与上机匣阳极氧化色形成经典双色阶差。握把与下壳体结合处加固了防扭曲加强筋。",
+        "kinematicRole": "作为全部拆解的零位基准构件在演示中固定；击发阶段作为火控机构刚性依托，引导弹匣卡笋与空仓挂机杠杆的纵横联动。",
+        "designHighlight": "全对称双侧操控设计让左撇子射手无需任何改装即可顺畅操作弹匣释放钮与快慢机，大幅扩大的喇叭口弹匣井使夜间盲操插拔弹匣极其流畅。",
+        "audioScript": "这件哑光狼棕色的玻纤增强聚合物下机匣，是全枪人机工效的集中体现。它不仅集成了容纳厚重手套的大扳机护圈，还拥有完全对称的双侧弹匣释放钮和快慢机。扩大的喇叭口弹匣井，让射手在黑暗混乱的环境中也能飞速换弹。",
+        "audioUrl": "audio/scar/parts/scar_lower_receiver_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Disassembly Datum Base / Fully Ambidextrous Control Frame",
+        "overview": "Forming the ergonomic grip and fire control chassis, this polymer module includes an enlarged winter trigger guard, flared magazine well, dual selectors, and bolt release levers.",
+        "craftAndMaterial": "Injection-molded from high-impact glass-reinforced polymer in matte coyote tan. Strategic internal webbing and thicker cross-sections at hinge pins provide rigidity while cutting overall mass.",
+        "kinematicRole": "Serves as the static world coordinate reference during complete weapon disassembly; supports pivoting triggers, magazine latches, and bolt stop trip levers during cycling.",
+        "designHighlight": "True ambidextrous selector levers and magazine releases are standard from the factory, paired with a beveled magazine well mouth for instinctive reload speeds in adverse field conditions.",
+        "audioScript": "Molded from impact-resistant polymer in coyote tan, this lower receiver handles all critical ergonomics. It integrates an enlarged winter trigger guard, ambidextrous fire selectors, and dual-sided magazine releases. The flared magwell allows rapid, blind reloads in the heat of combat.",
+        "audioUrl": "audio/scar/parts/scar_lower_receiver_en.mp3"
+      }
+    },
+    "scar_barrel": {
+      "partId": "scar_barrel",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Quick-Change Barrel",
+      "zh": {
+        "roleTag": "模块化几分钟切换 CQC/标准/狙击管长且保持归零",
+        "overview": "全枪的弹道动力核心，中后段带有闭锁节套与安装法兰，直接悬伸穿过一体铝机匣前段。支持使用专用扭矩扳手松开螺栓在野战条件下快速抽换。",
+        "craftAndMaterial": "由特级枪钢在埃斯塔勒兵工厂经冷精锻工艺打造，内膛镀有厚硬铬层，具备一比七英寸缠距。外轮廓精密车削并做发黑耐磨钝化。",
+        "kinematicRole": "在第一至第三阶段承受数千个大气压的高压弹道燃气并赋予弹头高速自转，本身相对机匣悬浮保持固定；在百分之六十八至百分之九十二全分解阶段脱离机匣。",
+        "designHighlight": "真正做到全段自由浮置，枪管与护木完全脱开，只有基座与机匣紧锁，彻底规避了依托掩体或外挂脚架射击时枪管形变对弹道落点的负面影响。",
+        "audioScript": "这根十四英寸冷精锻镀铬枪管是SCAR模块化的精髓所在。它的一比七缠距内膛极为耐磨，且完全悬浮于一体上机匣内部。单兵使用一把定扭扳手，几分钟内就能在近战短管与狙击长管之间切换，还能牢牢锁死射击归零点。",
+        "audioUrl": "audio/scar/parts/scar_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Modular Quick-Detachable Barrel / Zero-Retention System",
+        "overview": "The ballistic foundation of the rifle, this fourteen-inch barrel carries the locking extension and gas journal. It slides securely into the forward channel of the monolithic receiver chassis.",
+        "craftAndMaterial": "Cold-hammer-forged in Herstal from proprietary ordnance steel with a heavy internal chrome lining. Features a 1:7 twist rifling optimized to stabilize heavy 62 to 77-grain military projectiles.",
+        "kinematicRole": "Houses the combustion pressure chamber across Phases 1 to 3 while remaining rigidly clamped; withdraws forward from the receiver between 68% and 92% armorer strip.",
+        "designHighlight": "Truly free-floated ahead of the receiver block, preventing sling tension or bipod loading from flexing the barrel harmonics, thus guaranteeing sub-MOA repeatable combat accuracy.",
+        "audioScript": "Cold-hammer forged and chrome-lined, this fourteen-inch quick-change barrel is designed for harsh continuous fire. Clamped directly to the upper extrusion, it is completely free-floated. Soldiers can swap from standard barrel to a compact CQC profile in minutes without losing their optic zero.",
+        "audioUrl": "audio/scar/parts/scar_barrel_en.mp3"
+      }
+    },
+    "scar_flash_suppressor": {
+      "partId": "scar_flash_suppressor",
+      "bomCode": "F-03",
+      "calloutLabelEn": "3-Prong Suppressor",
+      "zh": {
+        "roleTag": "彻底消除微光夜视眩光 / AAC 快拆消音器闭锁棘轮",
+        "overview": "螺纹旋装在枪管膛口最前端的开放式三叉消焰器。除破坏膛口燃气涡环外，外围根部还车削有专用快拆消音器定位阶梯与锁止棘齿。",
+        "craftAndMaterial": "由高强铬钼钢切削而成，通体经渗氮发黑防锈处理。三片音叉式叉叶间隙非对称切削，抑制气流共鸣并分散高温膛口射流。",
+        "kinematicRole": "在第三阶段导流并混合喷出膛口的高压未燃火药气体；在百分之三十六至百分之五十六枪口分解阶段自枪管旋下脱出。",
+        "designHighlight": "独特的非均等音叉三刃几何设计能打碎超音速未燃气体火焰环，使夜间枪口焰消除率高达百分之九十九以上，彻底杜绝了夜视仪被瞬间白光烧蚀致盲。",
+        "audioScript": "旋拧在枪管前端的三叉消焰器，是特战枪械的标配。开叉结构能有效打碎喷出的炽热燃气涡环，消除近百分之百的夜间枪口火光，避免夜视仪闪烁致盲。基座上车削的棘齿，允许战术队员瞬间卡入并锁紧快拆消音器。",
+        "audioUrl": "audio/scar/parts/scar_flash_suppressor_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Signature Reduction / Fast-Attach Suppressor Ratchet",
+        "overview": "Threaded directly onto the muzzle crown, this open-tine flash hider breaks apart expanding muzzle gases while providing an external ratcheting base for quick-detach suppressors.",
+        "craftAndMaterial": "Milled from heat-treated chrome-moly steel with an anti-reflective nitrided finish. The three tines feature unequal lengths and relief angles to cancel harmonic resonance and pinging rings.",
+        "kinematicRole": "Vents Phase 3 combustion gases and residual blast forward and sideways; unthreads clockwise from muzzle threads between 36% and 56% component disassembly.",
+        "designHighlight": "Open-tine geometry disrupts expanding flash rings to eliminate over 99% of visible night flash, preserving night-vision sensor clarity during low-light room-clearing operations.",
+        "audioScript": "This three-prong open-tine flash suppressor threads onto the muzzle. It cuts up expanding fireball vortices to eliminate almost all visible night muzzle flash, protecting night vision optics. The precision ratcheting teeth at the base allow an operator to mount a quick-detach suppressor in seconds.",
+        "audioUrl": "audio/scar/parts/scar_flash_suppressor_en.mp3"
+      }
+    },
+    "scar_barrel_crossbolts": {
+      "partId": "scar_barrel_crossbolts",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Barrel Retention Bolts",
+      "zh": {
+        "roleTag": "62 英寸磅定扭矩夹紧枪管节套 / 换管重复归零保证",
+        "overview": "这是镶嵌在上机匣前下部的硬化钢质承力鞍座以及左右各三枚共六枚高强度 T25 星形防脱横栓。它们将冷锻重型枪管总成牢固抱死在铝合金挤压上机匣的基准安装面上。",
+        "craftAndMaterial": "鞍座采用热处理合金钢氮化硬化加工，螺栓选用高抗剪军规合金钢制成并带有耐腐蚀防脱涂层。星形凹槽可承受反复高扭矩拆装而不滑丝损坏。",
+        "kinematicRole": "在击发与后坐全程保持绝对静止，吸收火药燃气膨胀与枪管微振动。在大修分解进度达到百分之六十四至百分之八十八时被拧出，释放整个前部枪管总成。",
+        "designHighlight": "通过原厂扭力扳手施加规定的六十二英寸磅恒定扭矩，特战队员仅需两分钟即可在野战条件下更换不同长度枪管，且射击弹着点偏移小于一角分。",
+        "audioScript": "这组六枚星形锁紧横栓与下方的钢制鞍座，是SCAR实现模块化快速换管的核心。只要使用专用扳手拧紧到六十二英寸磅的额定扭矩，重新装上的枪管就能立刻恢复原先的零位，弹着点偏差不超过一角分。",
+        "audioUrl": "audio/scar/parts/scar_barrel_crossbolts_zh.mp3"
+      },
+      "en": {
+        "roleTag": "62 In-Lb Barrel Clamping / Return-To-Zero Lockup",
+        "overview": "This assembly comprises the hardened steel bedding yoke and six captured T25 Torx retention cross-bolts mounted beneath the front receiver. It rigidly locks the cold hammer-forged barrel assembly into the extruded aluminum upper receiver.",
+        "craftAndMaterial": "Machined from high-tensile ordnance alloy steel with black nitride finishing. The Torx drive sockets resist stripping under repeated field-level barrel swaps while steel-on-steel sleeves prevent aluminum receiver wear.",
+        "kinematicRole": "Remains static under extreme vibrational shock during all firing cycles. During deep armorer disassembly between sixty-four and eighty-eight percent progress, these six bolts release the barrel group forward.",
+        "designHighlight": "Torqued to a strict factory specification of sixty-two inch-pounds, it ensures modular barrel replacement in under two minutes while maintaining repeatable point-of-impact return within one minute of angle.",
+        "audioScript": "These six Torx cross-bolts and their steel bedding yoke are the secret behind the SCAR modular barrel system. Torqued precisely to sixty-two inch-pounds, an operator can swap between standard and short barrels in minutes while guaranteeing that shot dispersion shifts by less than one minute of angle.",
+        "audioUrl": "audio/scar/parts/scar_barrel_crossbolts_en.mp3"
+      }
+    },
+    "scar_pistol_grip": {
+      "partId": "scar_pistol_grip",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Ergonomic Pistol Grip",
+      "zh": {
+        "roleTag": "24 度后掠舒适握持角 / 菱形防滑纹与海狸尾护翼",
+        "overview": "这是固定在聚合物下机匣底部的原厂深沙色战术握把。它通过垂直内六角长螺栓紧固在扳机护圈后方，构成了单手控枪与食指快速就位的主支撑点。",
+        "craftAndMaterial": "采用高抗冲注塑阻燃尼龙聚合物注塑成型，表面压印有高摩擦力菱形防滑颗粒。后上沿设计有包裹虎口的海狸尾过渡弧面，前侧设有一道中指支撑凸棱。",
+        "kinematicRole": "射击与连发射击全程作为射手单手抗扭与后坐力传导基准面，保持刚性静止。在底盘深层拆解进度达到百分之六十八至百分之九十二时由底部长螺母拆离。",
+        "designHighlight": "原厂接口完全兼容美军标准 M16 与 M4 系列步枪握把，特战队员可根据个人掌形自由更换市面上带有防水储物仓或平直角度的战术握把。",
+        "audioScript": "深沙色握把拥有二十四度后掠的人体工学角度，后方隆起的海狸尾护翼能引导虎口紧紧卡在受力点。它兼容标准的步枪握把接口，即使在潮湿或者戴着战术手套出汗的情况下，细密的菱形颗粒也能提供绝佳的防滑阻力。",
+        "audioUrl": "audio/scar/parts/scar_pistol_grip_zh.mp3"
+      },
+      "en": {
+        "roleTag": "24-Degree Swept Grip / Textured Anti-Slip Beavertail",
+        "overview": "This is the factory flat dark earth polymer pistol grip secured to the lower trigger housing frame. Fastened via a single internal socket screw, it serves as the primary single-hand control interface.",
+        "craftAndMaterial": "Injection-molded from high-impact glass-reinforced polymer with stippled diamond-grid texture along the flanks. A curved upper beavertail protects the shooter's thumb web while a molded finger index ledge stabilizes grip purchase.",
+        "kinematicRole": "Statically transmits recoil impulse to the operator's firing hand throughout all semi and automatic bursts. Removed between sixty-eight and ninety-two percent disassembly progress by unthreading the internal retention bolt.",
+        "designHighlight": "Engineered to retain standard AR platform mounting compatibility, allowing combat personnel to swap the factory grip for custom aftermarket designs without frame modifications.",
+        "audioScript": "Featuring a swept twenty-four degree ergonomic angle, this polymer grip provides excellent weapon retention. Its aggressive diamond stippling and extended beavertail prevent slipping even in wet conditions, and it accepts standard AR pattern replacement grips effortlessly.",
+        "audioUrl": "audio/scar/parts/scar_pistol_grip_en.mp3"
+      }
+    },
+    "scar_buttstock": {
+      "partId": "scar_buttstock",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Folding Ugg-Boot Stock",
+      "zh": {
+        "roleTag": "6 档托长快调加右侧折叠卡扣 / 经典雪地靴造型",
+        "overview": "这是铰接在机匣尾端的多功能折叠伸缩枪托。因其宽大上翘的尾部轮廓与暖沙配色极具辨识度，被全球军迷与使用者形象地昵称为雪地靴枪托。",
+        "craftAndMaterial": "主体由抗低温冲击工程聚合物高压注塑制成，铰链受力轴套内嵌钢制销栓。内部设有带定位槽的滑动导轨与大号圆钮锁止卡榫，侧面有三道纵向结构加强筋。",
+        "kinematicRole": "在射击阶段承受枪托传递的全部后坐能量。在日常野战不完全分解初期即可整体向右折叠或沿机匣滑轨向下抽脱，全面分解阶段在百分之六十六至百分之九十处细化解脱。",
+        "designHighlight": "提供六档长度伸缩并可直接向右侧折叠锁死，折叠后完全不遮挡抛壳口与扳机护圈，即使在机动车辆内折托状态下仍可直接击发出膛紧急交火。",
+        "audioScript": "这便是著名的雪地靴枪托。它不仅拥有六档长度调节，还能一键向右侧折叠，折叠后整枪长度大幅缩短，非常适合在装甲车或者狭窄门廊作战，而且折叠状态下完全不妨碍抛壳，依然能直接扣扳机开火。",
+        "audioUrl": "audio/scar/parts/scar_buttstock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "6-Position Extension & Right-Folding / Ugg-Boot Profile",
+        "overview": "This is the modular side-folding telescoping buttstock mounted to the rear receiver dovetail. Its distinct flared profile and tan tone have earned it the worldwide moniker of the Ugg-Boot stock.",
+        "craftAndMaterial": "Constructed from impact-resistant aerospace polymer with steel hinge pins and internal lock detents. Features three longitudinal reinforcement ribs and an oversized push-button telescoping release latch.",
+        "kinematicRole": "Absorbs and transfers buffer spring recoil force into the shooter's shoulder during the firing cycle. Slides down off receiver rails at field strip and fully separates between sixty-six and ninety percent disassembly.",
+        "designHighlight": "Folds securely to the right receiver wall without obstructing the ejection port or trigger access, allowing emergency firing from cramped vehicle platforms with the stock fully folded.",
+        "audioScript": "Dubbed the Ugg Boot by military operators, this side-folding buttstock is a masterpiece of combat versatility. It offers six positions of length adjustment and folds flush against the right receiver, remaining fully shootable from inside cramped vehicles without blocking spent casings.",
+        "audioUrl": "audio/scar/parts/scar_buttstock_en.mp3"
+      }
+    },
+    "scar_cheek_riser": {
+      "partId": "scar_cheek_riser",
+      "bomCode": "F-07",
+      "calloutLabelEn": "Adjustable Cheek Riser",
+      "zh": {
+        "roleTag": "机械瞄具平放 / 高基线瞄具一键抬高贴腮线",
+        "overview": "这是安装在靴形枪托上脊背处的前铰接两档可调贴腮板。它由前端微型横轴铰接在枪托前部，可根据射手所使用的光学瞄具高度快速向上掀开调整高度。",
+        "craftAndMaterial": "选用比枪身略微浅色的特种耐磨工程塑料注塑成型，呈现出五十度沙色的标志性色差分层。侧面设有一键式按压解脱滑扣，底面加工有强化支撑卡脚。",
+        "kinematicRole": "射击时为射手面颊提供坚实稳定的贴靠瞄准基准面，随枪托整体动作。在大修分解阶段进度达到百分之六十八至百分之九十四时连同微型弹簧脱扣取下。",
+        "designHighlight": "原厂两档调节完美兼顾了超低基线的折叠机械瞄具与高基线的全息瞄准镜，只需拇指侧压卡扣即可一秒抬升，消除了射手悬空贴腮造成的射击散布。",
+        "audioScript": "安装在枪托脊背上的两档贴腮板，是确保快速瞄准的关键。使用机械瞄具时平放，当换装高基线的全息或微光瞄准镜时，只需按压侧扣就能向上抬高一档，让射手的视线瞬间对准瞄准中心线。",
+        "audioUrl": "audio/scar/parts/scar_cheek_riser_zh.mp3"
+      },
+      "en": {
+        "roleTag": "2-Position Cheek Comb / Rapid Line-Of-Sight Alignment",
+        "overview": "This is the front-hinged two-position adjustable cheek riser pinned atop the comb of the buttstock. It pivots upward to optimize cheek weld according to sight height requirements.",
+        "craftAndMaterial": "Molded from lightweight tactical polymer exhibiting a distinct tan hue that contributes to the signature fifty shades of FDE finish. Integrates a lateral spring-loaded release catch and internal locating lugs.",
+        "kinematicRole": "Maintains an immovable anatomical head support datum while firing. Accompanies the buttstock during initial disassembly and separates individually between sixty-eight and ninety-four percent disassembly progress.",
+        "designHighlight": "Allows immediate transition between low-profile folding iron sights and raised combat optics, eliminating inaccurate chin welds during stress-filled dynamic target acquisition.",
+        "audioScript": "This two-position adjustable cheek riser provides the proper eye relief whether running low iron sights or elevated optical platforms. Pressing the side release latch instantly snaps the comb upward, locking your cheek securely behind the reticle.",
+        "audioUrl": "audio/scar/parts/scar_cheek_riser_en.mp3"
+      }
+    },
+    "scar_buttpad": {
+      "partId": "scar_buttpad",
+      "bomCode": "F-08",
+      "calloutLabelEn": "Ribbed Rubber Buttpad",
+      "zh": {
+        "roleTag": "防滑贴合防弹插板肩窝 / 缓冲后坐冲击",
+        "overview": "这是包覆于靴形枪托尾端大受力截面处的黑色微弧形橡胶托底板。它作为步枪与射手肩膀战术背心之间的最终接触缓冲界面。",
+        "craftAndMaterial": "采用高抗撕裂的高阻尼合成耐候橡胶硫化成型，表面压铸有八道横向止滑深槽。微凹的弧面边缘经过钝化圆角修整，防止挂蹭战术装具边缘。",
+        "kinematicRole": "在复进簧吸收大部分冲击后，将残余后坐能量柔和分散传递至射手肩胛，吸收高频震颤。在机匣深拆阶段达到百分之六十八至百分之九十四时由内部卡槽卸下。",
+        "designHighlight": "微凹表面能自动贴合重型陶瓷防弹插板的突起轮廓，横向深槽可刮除泥沙污垢并紧抓背心织物，确保在湿滑或泥泞作战中抵肩射击不发生偏移。",
+        "audioScript": "这块黑色橡胶托底板表面带有八道粗大的横向防滑凹槽。它微凹的人体工学弧面能紧扣射手的防弹背心肩部，有效缓冲连发射击时的后坐冲击力，防止在雨雪泥泞环境中出枪滑脱。",
+        "audioUrl": "audio/scar/parts/scar_buttpad_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Shock-Absorbing Recoil Pad / Plate Carrier Non-Slip Grip",
+        "overview": "This is the contoured black synthetic rubber recoil pad capping the wide buttstock terminal face. It serves as the primary shock-dissipation interface between the rifle and the operator's shoulder gear.",
+        "craftAndMaterial": "Molded from high-density elastomeric rubber compound engineered for oil and UV resistance. Formed with a concave curve and eight deep transverse traction ridges to prevent lateral shifting.",
+        "kinematicRole": "Dampens final impulse forces transmitted from the receiver buffer assembly into the torso during firing phases four and five. Disassembled between sixty-eight and ninety-four percent progress.",
+        "designHighlight": "The concave profile nests cleanly against composite armor plates and tactical plate carriers, holding weapon orientation firm against ballistic vests even in heavy rain or mud.",
+        "audioScript": "Fitted with eight aggressive traction ridges, this rubber recoil buttpad is contoured to bite directly into tactical body armor. It cushions residual recoil impulse and prevents the buttstock from shifting on slick nylon gear during sustained rapid fire.",
+        "audioUrl": "audio/scar/parts/scar_buttpad_en.mp3"
+      }
+    },
+    "scar_hammer": {
+      "partId": "scar_hammer",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Rotary Hammer & Spring",
+      "zh": {
+        "roleTag": "绕横轴高速前旋敲击击针 / 枪机框后坐自动压倒待击",
+        "overview": "这是安装在聚合物下机匣前轴套内的回转式精铸硬化击锤总成，两侧套有强劲的双翼主扭簧。它负责将击发机构积蓄的机械能瞬间转化为撞击击针的动能。",
+        "craftAndMaterial": "采用高纯度马氏体不锈钢经精密锻压与数控铣削制成，工作卡爪面镜面研磨硬化。双翼主弹簧由耐疲劳铬硅弹簧钢绕制而成，抗高温回火与应力松弛。",
+        "kinematicRole": "阶段一扣动扳机时受扭簧驱动绕横轴向顺时针高速旋冲撞击长击针；阶段四枪机框后坐时将击锤强行压回并锁定在待击位置。在大修分解百分之七十至九十四阶段冲出横轴取出。",
+        "designHighlight": "精密的质量平衡布局确保击锤在极端泥沙进入下机匣时，仍具有足够的击打力矩击碎厚底火，同时避开了枪机框高速后坐产生的自锁干扰。",
+        "audioScript": "不锈钢击锤由一对强韧的双翼扭簧驱动。扣动扳机时，击锤绕着横轴瞬间高速前冲，击打长击针底端引爆底火；而在枪机框向后后坐时，又顺势将击锤压倒，重新挂在阻铁上等待下一发射击。",
+        "audioUrl": "audio/scar/parts/scar_hammer_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Pivot Hammer & Dual Torsion Spring / High Strike Velocity",
+        "overview": "This is the precision-machined stainless rotary hammer and dual-coil torsion mainspring assembly installed in the lower fire control frame. It transfers stored spring energy into forward kinetic momentum.",
+        "craftAndMaterial": "Machined from premium stainless steel with case-hardened engagement notches, driven by dual-strand chrome-silicon spring steel legs rated for extensive duty cycles.",
+        "kinematicRole": "Pivots clockwise at high angular velocity in phase one to strike the firing pin; driven rearward and reset downward by the recoiling bolt carrier in phase four. Removed between seventy and ninety-four percent explode progress.",
+        "designHighlight": "Optimized mass distribution guarantees positive primer ignition through harsh sand ingress without causing cyclic bounce or hammer interference against the carrier underside.",
+        "audioScript": "Driven by twin torsion springs, this stainless hammer snaps forward on an ultra-crisp pivot when the trigger drops. Striking the firing pin to initiate ignition, it is immediately driven back down by the recoiling bolt carrier to lock into cocked battery.",
+        "audioUrl": "audio/scar/parts/scar_hammer_en.mp3"
+      }
+    },
+    "scar_trigger": {
+      "partId": "scar_trigger",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Curved Trigger & Sear",
+      "zh": {
+        "roleTag": "扣住待击击锤下缺口 / 干脆解脱击发",
+        "overview": "这是探出扳机护圈供射手食指操控的弧形军用扳机，其上方与前主阻铁鼻一体成型。它是射手控制武器发射的直接人机物理接口。",
+        "craftAndMaterial": "采用高抗磨军规铬钼合金钢精密下料并经过全淬火与深层盐浴氮化处理。前阻铁接触面具有纳米级抛光微观几何倒角，赋予其干脆的扣动触感。",
+        "kinematicRole": "阶段一受食指后拉克服扳机簧力回偏，前阻铁鼻沉下释放击锤待击缺口；阶段七松开手指后在小簧推力下复位回位。在百分之七十至九十四深拆进度中卸出销钉分离。",
+        "designHighlight": "与下机匣聚合物轴孔精确配合，阻铁台阶具有自清洁刮垢槽设计，保证在阿富汗极度细微的粉尘环境中扳机释发力度恒定在四至五磅而无生涩拉扯感。",
+        "audioScript": "军用弧形扳机的上方与主阻铁鼻是一体成型的。手指扣压扳机时，阻铁鼻向下移动，瞬间释放击锤缺口完成击发。其精磨的接触面确保了干脆利落的扳机手感，不会因粉尘堆积而卡滞变涩。",
+        "audioUrl": "audio/scar/parts/scar_trigger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Curved Trigger Bow & Primary Sear / Crisp Break Action",
+        "overview": "This is the curved military trigger bow projecting down into the trigger guard, monolithic with the forward primary sear nose. It serves as the shooter's primary physical fire command interface.",
+        "craftAndMaterial": "Precision drop-forged from chrome-moly alloy steel and treated with a salt bath ferritic nitrocarburizing process. The sear contact ledge is micro-polished for consistent break characteristics.",
+        "kinematicRole": "Pivots rearward against spring tension in phase one, depressing the primary sear to loose the hammer; resets forward in phase seven. Pinned out between seventy and ninety-four percent disassembly progress.",
+        "designHighlight": "Features self-cleaning debris clearance grooves along its pivot surfaces, ensuring a consistent four-point-five to five-pound pull even under fine talcum sand exposure.",
+        "audioScript": "Forged with an integral forward sear nose, this curved military trigger delivers a decisive tactile break. Pulling the trigger drops the sear out of the hammer notch to initiate the firing stroke, while internal debris channels prevent grit buildup from altering trigger weight.",
+        "audioUrl": "audio/scar/parts/scar_trigger_en.mp3"
+      }
+    },
+    "scar_disconnector": {
+      "partId": "scar_disconnector",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Semi-Auto Disconnector",
+      "zh": {
+        "roleTag": "单发档中途捕获回压击锤 / 松扳机交接复位",
+        "overview": "这是嵌套在扳机中央槽内的半自动单发阻铁片与微型复位压簧。它专用于在半自动单发射击模式下拦截后坐被压倒的击锤，防止出现连发走火。",
+        "craftAndMaterial": "采用不锈钢板经精密冲压、热处理并研磨工作钩爪成型。复位簧为高回弹耐腐蚀圆柱螺旋压簧，尾端卡死在扳机内部专门加工的容纳盲孔中。",
+        "kinematicRole": "阶段四在射手持续扣住扳机不放时，其前钩截获被枪机框推下的击锤后凸耳；阶段七射手松开扳机前移时，单发阻铁顺滑将击锤交回主阻铁。在百分之七十二至九十六进度拆卸。",
+        "designHighlight": "独特的交接行程几何控制确保半自动单发射击时绝无二次击发现象，同时交接手感平顺微不可察，大幅提升了后续瞄准补火的连贯性。",
+        "audioScript": "藏在扳机内部的单发阻铁，是半自动射击安全的核心守护者。如果你扣着扳机不松开，后坐枪机框压下的击锤就会被它的钩爪一把咬住；只有当你稍微松开扳机，击锤才会平稳交接回前主阻铁，等待下一发。",
+        "audioUrl": "audio/scar/parts/scar_disconnector_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Secondary Hammer Capture / Semi-Auto Trigger Reset",
+        "overview": "This is the spring-loaded hook disconnector nested inside the central channel of the trigger bow. It captures the rear hammer hook during semi-automatic cycling while the trigger remains depressed.",
+        "craftAndMaterial": "Manufactured from hardened stainless sheet steel with micro-ground arrest hooks and fitted with a high-tensile music wire miniature compression coil spring.",
+        "kinematicRole": "Captures the hammer's rear hook during phase four when the trigger is held back; releases the hammer smoothly onto the primary sear during trigger reset in phase seven. Stripped between seventy-two and ninety-six percent progress.",
+        "designHighlight": "Timed engagement geometry guarantees strictly one round per trigger pull in semi-auto mode without hammer bounce, resetting with an audible tactile click.",
+        "audioScript": "Nestled inside the trigger channel, this disconnector catches the hammer as the bolt carrier cycles rearward in semi-auto mode. As you release the trigger finger forward, it hands the hammer off onto the main sear with a distinct tactile reset.",
+        "audioUrl": "audio/scar/parts/scar_disconnector_en.mp3"
+      }
+    },
+    "scar_selector": {
+      "partId": "scar_selector",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "Ambi Fire Selector Levers",
+      "zh": {
+        "roleTag": "左右对称水滴形拨杆 / 对齐黑红保险单发全自动档位",
+        "overview": "这是横向贯穿下机匣火控仓的双侧联动快慢机凸轮轴与对称水滴形选择拨杆。射手无需改变握持姿态即可用强弱侧拇指单指切换保险、单发或连发状态。",
+        "craftAndMaterial": "凸轮轴选用高硬度渗碳钢经数控车削铣出不同深度的工作切口，两侧操作杆为轻量化高强度哑光黑色工程聚合物，配有高摩擦防滑指槽。",
+        "kinematicRole": "静止控制火控机构工作状态。旋至保险阻断扳机后部行程；单发释放单发阻铁起作用；连发锁止单发阻铁使其失活。在百分之六十八至九十二大修进度时拔出。",
+        "designHighlight": "采用短行程回转设计，在保险与单发之间换挡极其轻巧迅速，两端拨杆对称排布使得无论左撇子射手还是在掩体后换肩射击都能毫无迟滞地进入交火。",
+        "audioScript": "双侧水滴形快慢机杆横穿下机匣，大拇指不用改变握把姿势就能在保险、单发和全自动三档之间清脆切换。其中凸轮轴精确阻断或放行阻铁动作，完全对称的布局对左右手射手同样友好快捷。",
+        "audioUrl": "audio/scar/parts/scar_selector_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dual Ambidextrous Selector / S-1-A Cam Drum Controls",
+        "overview": "This is the cross-receiver fire selector cam axle featuring symmetrical teardrop levers on both left and right sides. It governs Safe, Semi-Auto, and Full-Auto firing modes effortlessly.",
+        "craftAndMaterial": "Machined from high-carbon nitrocarburized steel with micro-cut profile flats, mated to textured low-glare polymer indicator wings on each flank.",
+        "kinematicRole": "Rotates to mechanically block or free the trigger and disconnector tails. Stationary during the actual 7-stage firing stroke. Separates crosswise from lower housing between sixty-eight and ninety-two percent disassembly.",
+        "designHighlight": "Features an ergonomic short-throw rotational arc allowing instantaneous index finger or thumb manipulation without shifting firing grip during dynamic room clearing.",
+        "audioScript": "These ambidextrous selector levers are keyed together through a central steel cam cylinder. Rotating crisply between Safe, Semi, and Auto, they let both left and right-handed shooters toggle fire controls without ever breaking their firing grip.",
+        "audioUrl": "audio/scar/parts/scar_selector_en.mp3"
+      }
+    },
+    "scar_mag_body": {
+      "partId": "scar_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "30-Rd STANAG Magazine",
+      "zh": {
+        "roleTag": "北约通用弹匣接口 / 干膜润滑沙色涂层与四道横向加强筋",
+        "overview": "这是原厂冲压成型的三十发五点五六毫米北约制式金属弹匣外壳。它通过弹匣扣挂锁在下机匣弹匣井内，为整枪提供连续可靠的双排交错供弹通道。",
+        "craftAndMaterial": "采用高抗压碳钢板冷冲压拉深成形，两侧压出四道抗变形加强筋与止动凸台。内外表面经过磷化处理并加涂特氟龙沙色耐磨干膜固体润滑涂层。",
+        "kinematicRole": "插入下机匣后保持定位不动，为内部托弹机构提供无摩擦导向滑道。在日常分解最开头的百分之二至百分之十进度按下弹匣扣即可直接向下脱卸拔出。",
+        "designHighlight": "微弯弧形下段完美吻合五点五六毫米无缘步枪弹底缘的锥度累积，干膜涂层在沙尘泥浆环境下无需润滑油即可保证弹药顺滑上浮，彻底避免吸附灰尘。",
+        "audioScript": "三十发北约标准金属弹匣表面喷涂了耐磨的沙色干膜润滑层，四周压有四道凸出的冲压加强筋。这层自润滑涂层在极度干燥多沙的战场上不需要涂任何润滑油，彻底杜绝了油泥粘连造成的供弹故障。",
+        "audioUrl": "audio/scar/parts/scar_mag_body_zh.mp3"
+      },
+      "en": {
+        "roleTag": "30-Rd STANAG 4179 Steel Shell / Dry-Film Anti-Friction Finish",
+        "overview": "This is the FN factory stamped 30-round 5.56 NATO metal magazine body. Locked inside the lower magazine well, it serves as the rigid guide enclosure for continuous dual-column feed geometry.",
+        "craftAndMaterial": "Deep-drawn from high-grade sheet carbon steel featuring four anti-crush lateral stiffening ribs and internal guide ridges. Treated with tan dry-film solid lubricant over phosphate base.",
+        "kinematicRole": "Remains seated stationary in the magazine well during cycling. Stripped downward instantly at the very start of disassembly between two and ten percent progress upon magazine catch release.",
+        "designHighlight": "Combines a straight upper insert neck with a gentle lower curvature matching cartridge case taper, eliminating feed binding without requiring wet lubricants that attract talcum grit.",
+        "audioScript": "Stamped from high-strength steel with four lateral reinforcing ribs, this thirty-round STANAG magazine is finished in a specialized tan dry-film lubricant. It keeps the internal cartridge stack gliding smoothly without wet oils that turn desert sand into grinding paste.",
+        "audioUrl": "audio/scar/parts/scar_mag_body_en.mp3"
+      }
+    },
+    "scar_mag_follower": {
+      "partId": "scar_mag_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Anti-Tilt Orange Follower",
+      "zh": {
+        "roleTag": "消除双排供弹卡滞 / 打空末发顶起左侧空仓挂机杆",
+        "overview": "这是在弹匣壳体内上下平移的醒目橙色防倾侧托弹板。它负责将双排交错排列的三十发枪弹匀速向上推送，并在最后一发打完时顶起机匣挂机卡笋。",
+        "craftAndMaterial": "选用加入固体润滑填料的改性聚甲醛注塑制造，呈现鲜明警示橙色。前后设计有超长导裙，防止在非对称受力下在弹匣内腔前后倾翻翘头卡死。",
+        "kinematicRole": "在阶段六随托弹簧逐发将弹药推升至抱弹口供枪机推弹入膛；最后一发击发后其左后凸台顶起空仓挂机杆卡死枪机框。在百分之三十四至五十六弹匣细拆时取出。",
+        "designHighlight": "四向长导裙彻底解决了早期北约老式铝弹匣容易翘头导致双弹卡壳的顽疾，明亮的橙色使射手在检查抛壳窗时能一秒确认弹药已经完全打空。",
+        "audioScript": "这枚高可视度的橙色托弹板拥有超长的前后支撑裙边。这种四向防倾侧设计杜绝了传统弹匣容易前翘卡死的顽疾，不仅确保三十发弹药顺畅上供，还能在打空时向上顶起空仓挂机杆卡住枪机。",
+        "audioUrl": "audio/scar/parts/scar_mag_follower_zh.mp3"
+      },
+      "en": {
+        "roleTag": "4-Way Anti-Tilt Feeder / High-Visibility Bolt Stop Actuator",
+        "overview": "This is the high-visibility orange anti-tilt follower that travels vertically within the steel magazine body. It lifts the double-stack ammunition column and engages the bolt stop upon exhausting the magazine.",
+        "craftAndMaterial": "Molded from self-lubricating high-impact polyoxymethylene polymer in safety orange. Engineered with extended front and rear anti-tilt stabilizer skirts.",
+        "kinematicRole": "Ascends sequentially in phase six pushing fresh cartridges into bolt feeding path; elevates the bolt stop lever after the final round is ejected. Stripped between thirty-four and fifty-six percent progress.",
+        "designHighlight": "Extended stabilizing skirts prevent fore-and-aft nose diving under heavy recoil, while the radiant orange tint delivers instantaneous visual empty chamber confirmation.",
+        "audioScript": "Featuring extended fore and aft guide skirts, this bright orange polymer follower completely eliminates follower tilting and nose-dive jams. As the final round clears the chamber, its shoulder lifts the external bolt catch to lock the bolt carrier open.",
+        "audioUrl": "audio/scar/parts/scar_mag_follower_en.mp3"
+      }
+    },
+    "scar_mag_spring": {
+      "partId": "scar_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Magazine Drive Spring",
+      "zh": {
+        "roleTag": "满载长期储存不衰减 / 稳定推升 30 发枪弹",
+        "overview": "这是置于弹匣体内底部的矩形变截面螺旋托弹簧。它向上顶住防倾侧托弹板，为整个弹药柱提供持续、充沛且衰减极小的恒定上托力矩。",
+        "craftAndMaterial": "由航空级沉淀硬化不锈钢扁线经多道精密冷卷成型并经退火去应力处理。具有顶级的抗海水腐蚀性能以及极其优异的长期满弹压紧抗疲劳衰减指标。",
+        "kinematicRole": "阶段六每击发并抛出一发弹壳，弹簧便伸展一步推动弹板上行；枪机复进时克服弹簧顶部摩擦力推弹入膛。在弹匣分解百分之三十四至五十八阶段抽离出腔。",
+        "designHighlight": "矩形螺旋轮廓与弹匣微弧侧壁内轮廓完全重合，多次压缩行程中圈与圈之间绝不发生横向纠缠交叠，在零下四十度极寒环境下弹力依旧充沛稳定。",
+        "audioScript": "藏在弹匣深处的不锈钢托弹簧由优质沉淀硬化钢线卷制而成。即使三十发枪弹压满数月长期战备，其弹力也不会衰减，在涉水登陆或泥沙浸泡后依然能稳定上推每一发弹药。",
+        "audioUrl": "audio/scar/parts/scar_mag_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Corrosion-Resistant Coil / Continuous Feed Pressure Spring",
+        "overview": "This is the heavy-duty rectangular steel coil spring positioned inside the magazine casing beneath the follower. It provides the upward driving force that feeds the thirty-round cartridge column smoothly.",
+        "craftAndMaterial": "Wound from precipitation-hardened 17-7PH stainless spring steel with stress-relief baking. Highly resistant to saltwater oxidation and long-term full-compression set.",
+        "kinematicRole": "Expands incrementally in phase six as each round discharges, continually elevating the remaining ammunition stack. Pulled out from the bottom between thirty-four and fifty-eight percent disassembly.",
+        "designHighlight": "Its rectangular winding contours precisely match the tapered STANAG body interior, eliminating lateral binding and maintaining constant tension across thousands of combat duty cycles.",
+        "audioScript": "Manufactured from hardened stainless spring steel, this magazine spring maintains reliable tension even after remaining fully loaded for extended operational tours. It pushes thirty rounds upward with consistent timing through mud, dust, and maritime water exposure.",
+        "audioUrl": "audio/scar/parts/scar_mag_spring_en.mp3"
+      }
+    },
+    "scar_mag_floorplate": {
+      "partId": "scar_mag_floorplate",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Tactical Ranger Floorplate",
+      "zh": {
+        "roleTag": "严丝合缝抱合弹匣底口 / 战术快拔拉环与防摔缓冲",
+        "overview": "这是扣合在弹匣下开口处的战术快拔环 FDE 沙色底盖。它不仅密封锁紧了内部托弹簧，底部一体化成型的柔性指环更方便特战队员单指快速抽拔弹匣。",
+        "craftAndMaterial": "由高韧性热塑性聚氨酯弹性体包胶与内部钢质加强骨架复合注塑而成。外表为防滑哑光沙色，底部环孔经过圆润倒角设计，利于食指瞬间穿入扣取。",
+        "kinematicRole": "承托整个托弹簧底端的压缩反作用力，保持锁止不动。在弹匣维护分解进度达到百分之三十四至五十八时，按压中间卡扣侧向滑出，释放内部弹簧。",
+        "designHighlight": "集成了游骑兵快拔环与重型跌落防撞垫双重功能，弹匣空仓换弹脱落砸在水泥或岩石地面时能吸收致命冲击，保护弹匣抱弹口不会变形开裂。",
+        "audioScript": "这块带有拉环的快拔底盖是特种作战的标配。底部的大指环让射手在胸挂弹药袋中单指就能快速将弹匣拉出，而且下方的橡胶包胶在紧急换弹让空弹匣直接砸向水泥地面时，能起到极佳的防跌落缓冲保护。",
+        "audioUrl": "audio/scar/parts/scar_mag_floorplate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "FDE Pull-Loop Floorplate / Impact Bumper & Rapid Extraction",
+        "overview": "This is the FDE tactical pull-loop floorplate capping the bottom opening of the steel magazine body. It retains the internal spring assembly while presenting an ergonomic finger loop for high-speed draws.",
+        "craftAndMaterial": "Engineered with a co-molded reinforced polymer skeleton overmolded with impact-dampening santoprene elastomer in matching flat dark earth tone.",
+        "kinematicRole": "Acts as the rigid bottom reactionary footing for the compressed magazine spring. Depressed and slid forward during magazine maintenance between thirty-four and fifty-eight percent progress.",
+        "designHighlight": "Combines a tactical extraction loop with an impact-absorbing drop bumper, preventing critical lip deformation when spent magazines are dropped freely onto concrete surfaces.",
+        "audioScript": "This tactical Ranger floorplate combines a quick-draw finger loop with an impact-absorbing rubber base. It lets an operator yank a fresh magazine from a tight chest rig in one fluid motion, while protecting the feed lips if an empty mag is dropped onto hard concrete.",
+        "audioUrl": "audio/scar/parts/scar_mag_floorplate_en.mp3"
+      }
+    }
+  }
+}

@@ -920,7 +920,7 @@ describe('10-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contra
       expect(bundle.weaponId).toBe(wid);
       expect(bundle.generatorModels.text).toBe('gemini-3.8-flash');
       expect(bundle.generatorModels.storyTts).toBe('gemini-3.8-flash-tts');
-      expect(bundle.generatorModels.partTts).toBe('gemini-3.8-flash-lite-tts');
+      expect(bundle.generatorModels.partTts).toBe('gemini-3.8-flash-tts');
 
       // Verify all timeline presets & firing phases have English translations
       for (const preset of plugin.timelinePresets) {
@@ -1048,12 +1048,27 @@ describe('10-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contra
 
     store.getState().setStoryOpen(true);
     expect(store.getState().storyOpen).toBe(true);
+    expect(store.getState().storyMinimized).toBe(false);
+    store.getState().setStoryMinimized(true);
+    expect(store.getState().storyMinimized).toBe(true);
+    store.getState().toggleStoryOpen();
+    expect(store.getState().storyOpen).toBe(true);
+    expect(store.getState().storyMinimized).toBe(false);
+
     store.getState().focusStoryPart('ak_bolt');
     expect(store.getState().screen).toBe('workbench');
-    expect(store.getState().storyOpen).toBe(false);
+    expect(store.getState().storyOpen).toBe(true);
+    expect(store.getState().storyMinimized).toBe(true);
     expect(store.getState().xrayShells).toBe(true);
     expect(store.getState().selectedPartId).toBe('ak_bolt');
 
+    store.getState().setInspectorMinimized(true);
+    expect(store.getState().inspectorMinimized).toBe(true);
+    store.getState().selectPart(null);
+    expect(store.getState().inspectorMinimized).toBe(false);
+
     store.getState().returnToArmory();
+    expect(store.getState().storyOpen).toBe(false);
+    expect(store.getState().storyMinimized).toBe(false);
   });
 });
