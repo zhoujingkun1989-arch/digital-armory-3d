@@ -1,20 +1,23 @@
 #!/usr/bin/env python3
 """
-Google Gemini Bilingual R&D Story, 253-Part Engineering Narration & TTS Audio Builder.
+Google Gemini Bilingual R&D Story, 278-Part Engineering Narration & TTS Audio Builder.
 
-Models used (via Google GenAI Interactions & Batch APIs v1beta — zero video models):
+Models & Voice Constitution (AGENTS.md Red Line #6 — strictly immutable):
   - Text & Structured JSON: `gemini-3.8-flash`
-  - Unified Weapon 4-Act R&D Story & 253-Part Voiceover (CN + EN): `gemini-3.8-flash-tts` (Voice: `Charon`)
+  - Unified Weapon 4-Act R&D Story & All-Part Voiceover (CN + EN):
+    `gemini-3.8-flash-tts` with Voice `Charon` (24 kHz mono 64 kbps MP3)
+  - Third-party TTS engines (`edge-tts`, `say`, etc.) are STRICTLY FORBIDDEN.
 
 Safety & Cost Guardrails:
   - Reads GEMINI_API_KEY from environment, `.env`, `.env.local`, or `GEMINI_ENV_FILE` (never logged).
   - Halts immediately (`StopSpending`) on 402 / 429 / RESOURCE_EXHAUSTED / billing / quota errors.
-  - SHA-256 content-addressed caching: existing MP3 files matching current `audioScript` hash are skipped.
+  - SHA-256 content-addressed caching (`scripts/narrations/.cache/<id>_tts_hashes.json`):
+    existing MP3 files matching `sha256("gemini-3.8-flash-tts|Charon|<style>|<audioScript>")` are skipped.
 
 Usage:
-  python3 scripts/build_narrations.py --weapon ak15 --dry-run
-  python3 scripts/build_narrations.py --weapon ak15
-  python3 scripts/build_narrations.py --all
+  uv run --with google-genai --with pydantic python3 scripts/build_narrations.py --weapon p90 --dry-run
+  uv run --with google-genai --with pydantic python3 scripts/build_narrations.py --weapon p90 --batch-tts --force-audio
+  uv run --with google-genai --with pydantic python3 scripts/build_narrations.py --all --batch-tts
 """
 from __future__ import annotations
 
@@ -31,7 +34,6 @@ import json
 import os
 from pathlib import Path
 import re
-import shutil
 import subprocess
 import sys
 import threading
@@ -77,11 +79,6 @@ STORY_TTS_MIN_INTERVAL_SEC = 6.5
 _STORY_TTS_RATE_LOCK = threading.Lock()
 _LAST_STORY_TTS_MONO: float = 0.0
 _STORY_TTS_STAMP_FILE = TTS_CACHE_DIR / ".story_tts_rate.stamp"
-
-EDGE_FALLBACK_VOICES: dict[str, str] = {
-    "zh": "zh-CN-YunxiNeural",
-    "en": "en-US-ChristopherNeural",
-}
 
 STYLE_STORY_ZH = (
     "沉稳磁性、富有历史厚重感与精密机械工程严谨度的纪录片旁白，"
@@ -862,220 +859,6 @@ def run_batch_tts_queue(
     )
 
 
-def resolve_edge_tts_cmd() -> list[str]:
-    env_bin = os.environ.get("EDGE_TTS_BIN")
-    if env_bin and Path(env_bin).is_file():
-        return [env_bin]
-    which_bin = shutil.which("edge-tts")
-    if which_bin:
-        return [which_bin]
-    return [sys.executable, "-m", "edge_tts"]
-
-
-def synthesize_edge_fallback_mp3(
-    *,
-    edge_cmd: list[str],
-    voice: str,
-    text: str,
-    out_mp3: Path,
-    bitrate: str = "48k",
-) -> int:
-    out_mp3.parent.mkdir(parents=True, exist_ok=True)
-    uid = f"{os.getpid()}_{threading.get_ident()}_{time.monotonic_ns()}"
-    txt_tmp = out_mp3.with_name(f".{out_mp3.stem}.{uid}.txt")
-    raw_tmp = out_mp3.with_name(f".{out_mp3.stem}.{uid}.edge.mp3")
-    conv_tmp = out_mp3.with_name(f".{out_mp3.stem}.{uid}.out.mp3")
-    try:
-        clean_text = re.sub(r"\s+", " ", text).strip()
-        if not clean_text:
-            raise RuntimeError(f"Empty audioScript for {out_mp3.name}")
-        txt_tmp.write_text(clean_text, encoding="utf-8")
-
-        last_err = ""
-        for attempt in range(1, 4):
-            raw_tmp.unlink(missing_ok=True)
-            edge_proc = subprocess.run(
-                [
-                    *edge_cmd,
-                    "-v",
-                    voice,
-                    "-f",
-                    str(txt_tmp),
-                    "--no-progress",
-                    "--write-media",
-                    str(raw_tmp),
-                ],
-                capture_output=True,
-                text=True,
-                check=False,
-                timeout=90,
-            )
-            if (
-                edge_proc.returncode == 0
-                and raw_tmp.is_file()
-                and raw_tmp.stat().st_size > 512
-            ):
-                break
-            last_err = (edge_proc.stderr or edge_proc.stdout or "").strip()
-            if attempt < 3:
-                time.sleep(1.2 * attempt)
-        else:
-            raise RuntimeError(
-                f"edge-tts failed for {out_mp3.name}: {last_err[:240]}"
-            )
-
-        ffmpeg_proc = subprocess.run(
-            [
-                "ffmpeg",
-                "-y",
-                "-hide_banner",
-                "-loglevel",
-                "error",
-                "-i",
-                str(raw_tmp),
-                "-vn",
-                "-ar",
-                "24000",
-                "-ac",
-                "1",
-                "-codec:a",
-                "libmp3lame",
-                "-b:a",
-                bitrate,
-                str(conv_tmp),
-            ],
-            capture_output=True,
-            text=True,
-            check=False,
-            timeout=60,
-        )
-        if (
-            ffmpeg_proc.returncode != 0
-            or not conv_tmp.is_file()
-            or conv_tmp.stat().st_size <= 1024
-        ):
-            err_txt = (ffmpeg_proc.stderr or "").strip()
-            raise RuntimeError(
-                f"ffmpeg conversion failed for {out_mp3.name}: {err_txt[:240]}"
-            )
-
-        os.replace(conv_tmp, out_mp3)
-        return out_mp3.stat().st_size
-    finally:
-        txt_tmp.unlink(missing_ok=True)
-        raw_tmp.unlink(missing_ok=True)
-        conv_tmp.unlink(missing_ok=True)
-
-
-def run_fallback_part_tts(
-    weapon_id: str,
-    *,
-    json_path: Path,
-    dry_run: bool = False,
-    workers: int = 3,
-) -> None:
-    if not json_path.is_file():
-        sys.exit(
-            f"Missing {json_path.relative_to(ROOT_DIR)}: `--fallback-part-tts` requires `<weapon_id>.json` to already exist."
-        )
-
-    bundle = json.loads(json_path.read_text(encoding="utf-8"))
-    parts_map = bundle.get("parts")
-    if not isinstance(parts_map, dict) or not parts_map:
-        sys.exit(f"Invalid `parts` map in {json_path.relative_to(ROOT_DIR)}.")
-
-    jobs: list[dict[str, Any]] = []
-    preserved_count = 0
-
-    for _pid, p_entry in parts_map.items():
-        for lang in ("zh", "en"):
-            loc_p = p_entry[lang]
-            rel_url = loc_p["audioUrl"]
-            out_file = ROOT_DIR / "public" / rel_url
-            if out_file.is_file() and out_file.stat().st_size > 1024:
-                preserved_count += 1
-                continue
-            jobs.append(
-                {
-                    "rel_url": rel_url,
-                    "out_file": out_file,
-                    "voice": EDGE_FALLBACK_VOICES[lang],
-                    "text": loc_p["audioScript"],
-                }
-            )
-
-    if dry_run:
-        print(
-            f"  [DRY-RUN] `--fallback-part-tts` for `{weapon_id}`: "
-            f"{len(jobs)} missing part MP3s to synthesize via edge-tts "
-            f"({preserved_count} existing valid MP3s preserved untouched; 0 cache hash writes)."
-        )
-        return
-
-    if not jobs:
-        print(
-            f"  [FALLBACK-TTS] All {preserved_count} part MP3s for `{weapon_id}` "
-            f"already exist (>1 KB); preserved untouched."
-        )
-        return
-
-    edge_cmd = resolve_edge_tts_cmd()
-    print(
-        f"  [FALLBACK-TTS] Synthesizing {len(jobs)} missing part MP3s for `{weapon_id}` "
-        f"via edge-tts (workers={workers}, preserved={preserved_count} existing MP3s, "
-        f"skipping tts_hashes cache)..."
-    )
-
-    lock = threading.Lock()
-    completed_count = 0
-    total_bytes = 0
-    errors_list: list[BaseException] = []
-
-    def fallback_worker(idx_job: tuple[int, dict[str, Any]]) -> None:
-        nonlocal completed_count, total_bytes
-        idx, job = idx_job
-        if errors_list:
-            return
-        time.sleep(0.08 * (idx % max(1, workers)))
-        if errors_list:
-            return
-        try:
-            nbytes = synthesize_edge_fallback_mp3(
-                edge_cmd=edge_cmd,
-                voice=job["voice"],
-                text=job["text"],
-                out_mp3=job["out_file"],
-                bitrate="48k",
-            )
-            with lock:
-                completed_count += 1
-                total_bytes += nbytes
-                print(
-                    f"    [{completed_count}/{len(jobs)}] OK (edge-tts) {job['rel_url']} "
-                    f"({nbytes / 1024:.1f} KB)"
-                )
-        except Exception as exc:
-            with lock:
-                errors_list.append(exc)
-                print(
-                    f"    [ERROR] Failed fallback {job['rel_url']}: {sanitize_error(exc)}",
-                    file=sys.stderr,
-                )
-
-    with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
-        futures = [pool.submit(fallback_worker, (i, j)) for i, j in enumerate(jobs)]
-        for fut in as_completed(futures):
-            fut.result()
-
-    if errors_list:
-        sys.exit(f"Fallback TTS aborted due to error: {sanitize_error(errors_list[0])}")
-
-    print(
-        f"  [DONE] `{weapon_id}` fallback part TTS complete! Generated {completed_count} interim MP3s "
-        f"({total_bytes / (1024 * 1024):.2f} MB), preserved {preserved_count} existing MP3s."
-    )
-
-
 # ==================== End-to-End Weapon Build Pipeline ====================
 
 
@@ -1087,13 +870,9 @@ def build_weapon(
     force_audio: bool = False,
     skip_audio: bool = False,
     story_audio_only: bool = False,
-    fallback_part_tts: bool = False,
     workers: int = 3,
     collect_jobs_out: Optional[list[dict[str, Any]]] = None,
 ) -> None:
-    if story_audio_only and fallback_part_tts:
-        sys.exit("Cannot combine `--story-audio-only` and `--fallback-part-tts`.")
-
     print(f"\n==================== [{weapon_id.upper()}] Extracting 1:1 weapon spec ====================")
     spec = dump_weapon_spec(weapon_id)
     parts_list: list[dict[str, Any]] = spec["parts"]
@@ -1105,15 +884,6 @@ def build_weapon(
 
     json_path = NARRATIONS_OUT_DIR / f"{weapon_id}.json"
     hashes_path = TTS_CACHE_DIR / f"{weapon_id}_tts_hashes.json"
-
-    if fallback_part_tts:
-        run_fallback_part_tts(
-            weapon_id,
-            json_path=json_path,
-            dry_run=dry_run,
-            workers=workers,
-        )
-        return
 
     if dry_run:
         batch_count = (len(parts_list) + 12) // 13
@@ -1539,7 +1309,7 @@ def main() -> None:
     parser.add_argument(
         "--all",
         action="store_true",
-        help="Generate across all 10 weapons sequentially.",
+        help="Generate across all 11 weapons sequentially.",
     )
     parser.add_argument(
         "--dry-run",
@@ -1565,11 +1335,6 @@ def main() -> None:
         "--story-audio-only",
         action="store_true",
         help="Ensure <weapon_id>.json exists and synthesize ONLY the 8 four-act story MP3s (skip part MP3s).",
-    )
-    parser.add_argument(
-        "--fallback-part-tts",
-        action="store_true",
-        help="Require existing <weapon_id>.json, skip Gemini API completely, and fill ONLY missing part MP3s via edge-tts without writing tts_hashes.",
     )
     parser.add_argument(
         "--workers",
@@ -1599,7 +1364,7 @@ def main() -> None:
     # Prioritize g17 first when building --all so flagship reference voice is always updated first
     all_ordered = ["g17"] + [w for w in ALL_WEAPON_IDS if w != "g17"]
     targets = all_ordered if args.all else [args.weapon]
-    batch_pool: Optional[list[dict[str, Any]]] = [] if (args.batch_tts and not args.dry_run and not args.fallback_part_tts) else None
+    batch_pool: Optional[list[dict[str, Any]]] = [] if (args.batch_tts and not args.dry_run) else None
 
     for wid in targets:
         try:
@@ -1610,7 +1375,6 @@ def main() -> None:
                 force_audio=args.force_audio,
                 skip_audio=args.skip_audio,
                 story_audio_only=args.story_audio_only,
-                fallback_part_tts=args.fallback_part_tts,
                 workers=args.workers,
                 collect_jobs_out=batch_pool,
             )
