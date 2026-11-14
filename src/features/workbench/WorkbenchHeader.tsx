@@ -81,7 +81,7 @@ export const WorkbenchHeader: React.FC = () => {
         </div>
       </div>
 
-      <div className="toolbar-cluster">
+      <div className="toolbar-cluster toolbar-cluster-primary">
         <StudioEnvironmentBar compact />
 
         <LanguageSwitchPill compact />
@@ -95,9 +95,9 @@ export const WorkbenchHeader: React.FC = () => {
           <BookOpen size={13} />
           <span>{ui.storyChip}</span>
         </button>
+      </div>
 
-        <div className="toolbar-divider" />
-
+      <div className="toolbar-cluster toolbar-cluster-tools">
         <div className="camera-pills">
           <Camera size={13} className="cam-icon" />
           {VIEW_ANGLE_KEYS.map((key) => (

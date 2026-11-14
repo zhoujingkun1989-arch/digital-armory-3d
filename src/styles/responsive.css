@@ -1,42 +1,41 @@
 /* ==================== Responsive Breakpoint Rules ==================== */
-@media (max-width: 1560px) {
+@media (max-width: 1680px) {
   .brand-sub {
     display: none;
   }
-}
 
-@media (max-width: 1420px) {
-  .top-bar .brand-badge {
-    display: none;
+  .top-bar,
+  .armory-header {
+    padding: 6px 12px;
+    gap: 5px 10px;
   }
-  .top-bar {
-    padding: 7px 11px;
-    gap: 6px 8px;
+
+  .toolbar-cluster-tools,
+  .armory-actions-utility {
+    flex: 1 1 100%;
+    justify-content: flex-end;
+    padding-top: 4px;
+    border-top: 1px solid var(--border-divider);
   }
+
   .top-bar .toolbar-cluster {
-    gap: 4px;
+    gap: 5px;
   }
+
   .top-bar .toggle-chip {
-    padding: 4px 7px;
+    padding: 4px 7.5px;
     font-size: 11px;
     gap: 4px;
   }
+
   .top-bar .cam-btn {
-    padding: 4px 6px;
+    padding: 3.5px 6.5px;
     font-size: 11px;
   }
+
   .top-bar .env-seg-btn {
     padding: 3.5px 6px;
     font-size: 10.5px;
-  }
-}
-
-@media (max-width: 1260px) {
-  .top-bar,
-  .toolbar-cluster,
-  .armory-header,
-  .armory-header-actions {
-    flex-wrap: wrap;
   }
 
   .hud-collapsed-btn,
@@ -44,20 +43,29 @@
   .part-sidebar,
   .inspector-card,
   .inspector-mini-pill,
-  .geo-build-banner {
+  .geo-build-banner,
+  .ballistics-telemetry-slot,
+  .armory-hero-plaque,
+  .armory-stage-controls,
+  .story-drawer,
+  .story-mini-player {
     top: 108px;
   }
 
-  .ballistics-telemetry-slot {
-    top: 108px;
+  .armory-hero-plaque,
+  .inspector-card {
+    max-height: calc(100vh - 328px);
   }
 
   .ballistics-telemetry-slot.sidebar-collapsed {
-    top: 152px;
+    top: 154px;
   }
 }
 
 @media (max-width: 1120px) {
+  .top-bar .brand-badge {
+    display: none;
+  }
   .armory-hero-plaque {
     display: none;
   }
@@ -66,7 +74,7 @@
   }
   .ballistics-telemetry-slot {
     left: 16px;
-    top: 152px;
+    top: 154px;
     width: min(392px, calc(100vw - 348px));
   }
 }

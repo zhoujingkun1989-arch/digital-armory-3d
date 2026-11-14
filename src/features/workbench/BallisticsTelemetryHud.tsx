@@ -322,12 +322,16 @@ function renderBackground(
   ctx.fillStyle = C_SAFE;
   ctx.fillRect(xSafe, r.y0, Math.max(0, Math.min(r.x1, xUnlockEnd) - xSafe), ph);
   ctx.font = '600 9px ui-monospace, Menlo, monospace';
-  ctx.fillStyle = 'rgba(74, 222, 128, 0.85)';
-  ctx.textAlign = 'left';
-  ctx.fillText(s.safeUnlock, xSafe + 4, r.y0 + 10);
-  ctx.fillStyle = 'rgba(248, 113, 113, 0.75)';
-  ctx.textAlign = 'right';
-  ctx.fillText(s.pressureLocked, xSafe - 4, r.y0 + 10);
+  if (r.x1 - xSafe >= 76) {
+    ctx.fillStyle = 'rgba(74, 222, 128, 0.85)';
+    ctx.textAlign = 'left';
+    ctx.fillText(s.safeUnlock, Math.max(r.x0 + 4, xSafe + 4), r.y0 + 10);
+  }
+  if (xSafe - Math.max(r.x0, xIgn) >= 88) {
+    ctx.fillStyle = 'rgba(248, 113, 113, 0.75)';
+    ctx.textAlign = 'right';
+    ctx.fillText(s.pressureLocked, xSafe - 4, r.y0 + 10);
+  }
 
   // Graticule: 10 × 4 divisions
   ctx.lineWidth = 1;
@@ -361,14 +365,16 @@ function renderBackground(
   ctx.textAlign = 'right';
   ctx.fillText('m/s', c.cssW - 4, r.y0 + 2);
 
-  // Event markers
+  // Event markers (sorted & label-decollided so full-cycle 0..1 never overlaps)
   const markers: [number, string][] = [
     [c.timing.ignitionF, s.ignition],
     [c.timing.muzzleExitF, s.muzzleExit],
     [c.timing.ejectF, s.eject],
   ];
   if (c.gasF !== null) markers.push([c.gasF, s.gasPort]);
+  markers.sort((a, b) => a[0] - b[0]);
   ctx.setLineDash([3, 3]);
+  let lastLabelRight = -Infinity;
   for (let i = 0; i < markers.length; i++) {
     const [f, label] = markers[i];
     if (f < c.fMin || f > c.fMax) continue;
@@ -378,9 +384,16 @@ function renderBackground(
     ctx.moveTo(x, r.y0);
     ctx.lineTo(x, r.y1);
     ctx.stroke();
-    ctx.fillStyle = C_MUTED;
-    ctx.textAlign = 'center';
-    ctx.fillText(label, x, r.y1 + 11);
+
+    const estW = Math.max(ctx.measureText(label).width, label.length * 6.5);
+    const halfW = estW * 0.5 + 3;
+    const lx = Math.max(r.x0 + halfW, Math.min(r.x1 - halfW, x));
+    if (lx - halfW >= lastLabelRight + 8) {
+      ctx.fillStyle = C_MUTED;
+      ctx.textAlign = 'center';
+      ctx.fillText(label, lx, r.y1 + 11);
+      lastLabelRight = lx + halfW;
+    }
   }
   ctx.setLineDash([]);
 
@@ -427,7 +440,7 @@ function renderBackground(
   ctx.stroke();
   ctx.shadowBlur = 0;
 
-  // Peak pressure tag
+  // Peak pressure tag (clamped clear of top window header row)
   const xPeak = fToX(c, r, c.peakF);
   const spec = getCaliberBallisticsSpec(c.caliber);
   const yPeak = r.y1 - (spec.peakPressureMPa / c.pAxisMax) * ph;
@@ -437,7 +450,9 @@ function renderBackground(
   ctx.fill();
   ctx.fillStyle = '#fca5a5';
   ctx.textAlign = 'left';
-  ctx.fillText(`${spec.peakPressureMPa} MPa`, xPeak + 5, yPeak + 3);
+  const peakTag = `${spec.peakPressureMPa} MPa`;
+  const peakY = Math.max(r.y0 + 21, yPeak + 4);
+  ctx.fillText(peakTag, Math.min(r.x1 - 54, xPeak + 6), peakY);
 
   // Full-cycle strip (0..1) with zoom window + battery marker
   ctx.fillStyle = 'rgba(30, 41, 59, 0.9)';

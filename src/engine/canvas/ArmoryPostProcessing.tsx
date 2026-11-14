@@ -74,7 +74,7 @@ export const ARMORY_POSTFX_DEFAULTS = {
     pdSamples: 16,
   },
   bloom: {
-    threshold: 1.18,
+    threshold: 3.2,
     strength: 0.32,
     radius: 0.45,
   },
@@ -84,7 +84,7 @@ export function getPostProcessingPresetParams(
   preset: ArmoryEnvironmentPreset = DEFAULT_ARMORY_ENVIRONMENT
 ): ArmoryPostProcessingParams {
   const env = getArmoryEnvironment(preset);
-  const bloomThreshold = preset === 'blueprint_daylight' ? 1.22 : 1.18;
+  const bloomThreshold = preset === 'blueprint_daylight' ? 3.5 : 3.2;
   return {
     preset: env.id,
     toneMapping: THREE.AgXToneMapping,
@@ -176,6 +176,33 @@ export function resolveGtaoBlendIntensity(
   if (xrayShells) return baseIntensity * 0.58;
   if (sectionCut) return baseIntensity * 0.88;
   return baseIntensity;
+}
+
+/**
+ * Resolves effective HDR bloom strength per frame so sliced inner `-Z` steel walls in
+ * `Section Cut (C)` and cold metal outside `firing` mode never blow out in white specular haze,
+ * while preserving crisp pyrotechnic HDR muzzle-flash & shock-diamond bloom during firing.
+ */
+export function resolveEffectiveBloomStrength(
+  baseStrength: number,
+  sectionCut: boolean,
+  isFiringMode: boolean
+): number {
+  if (sectionCut) {
+    return isFiringMode ? baseStrength * 0.42 : 0;
+  }
+  return isFiringMode ? baseStrength : baseStrength * 0.32;
+}
+
+export function resolveEffectiveBloomThreshold(
+  baseThreshold: number,
+  sectionCut: boolean,
+  isFiringMode: boolean
+): number {
+  if (sectionCut) {
+    return Math.max(baseThreshold, 4.8);
+  }
+  return isFiringMode ? baseThreshold : Math.max(baseThreshold, 3.8);
 }
 
 function shouldExcludeMaterialFromGtao(
@@ -282,7 +309,14 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
   const baseGtaoIntensityRef = useRef<number>(
     getPostProcessingPresetParams(environmentPreset).gtao.blendIntensity
   );
+  const baseBloomStrengthRef = useRef<number>(
+    getPostProcessingPresetParams(environmentPreset).bloom.strength
+  );
+  const baseBloomThresholdRef = useRef<number>(
+    getPostProcessingPresetParams(environmentPreset).bloom.threshold
+  );
   const enableGtaoRef = useRef<boolean>(enableGtao);
+  const enableBloomRef = useRef<boolean>(enableBloom);
 
   // Build EffectComposer + passes once per (gl, scene, camera) lifecycle
   useEffect(() => {
@@ -423,10 +457,13 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
   // Sync preset & pass toggles without tearing down GPU targets
   useEffect(() => {
     enableGtaoRef.current = enableGtao;
+    enableBloomRef.current = enableBloom;
     const rig = rigRef.current;
     if (!rig) return;
     const params = getPostProcessingPresetParams(environmentPreset);
     baseGtaoIntensityRef.current = params.gtao.blendIntensity;
+    baseBloomStrengthRef.current = params.bloom.strength;
+    baseBloomThresholdRef.current = params.bloom.threshold;
 
     rig.gtaoPass.enabled = enableGtao;
     rig.gtaoPass.blendIntensity = params.gtao.blendIntensity;
@@ -446,8 +483,9 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
     const rig = rigRef.current;
     if (!rig) return;
 
+    const st = useAppStore.getState();
+
     if (enableGtaoRef.current) {
-      const st = useAppStore.getState();
       const targetBlend = resolveGtaoBlendIntensity(
         baseGtaoIntensityRef.current,
         st.xrayShells,
@@ -457,6 +495,26 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
       rig.gtaoPass.blendIntensity = targetBlend;
     } else {
       rig.gtaoPass.enabled = false;
+    }
+
+    if (enableBloomRef.current) {
+      const isFiringMode = st.screen === 'workbench' && st.mode === 'firing';
+      const targetStrength = resolveEffectiveBloomStrength(
+        baseBloomStrengthRef.current,
+        st.sectionCut,
+        isFiringMode
+      );
+      rig.bloomPass.enabled = targetStrength > 0.001;
+      if (rig.bloomPass.enabled) {
+        rig.bloomPass.strength = targetStrength;
+        rig.bloomPass.threshold = resolveEffectiveBloomThreshold(
+          baseBloomThresholdRef.current,
+          st.sectionCut,
+          isFiringMode
+        );
+      }
+    } else {
+      rig.bloomPass.enabled = false;
     }
 
     rig.composer.render(Math.min(delta, 0.1));

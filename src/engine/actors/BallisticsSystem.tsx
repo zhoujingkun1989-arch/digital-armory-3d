@@ -940,13 +940,14 @@ function getMuzzleJets(weaponId: WeaponId): BuiltJet[] {
   return built;
 }
 
-// HDR (> 1.0) additive colours so ONLY muzzle VFX cross the bloom threshold
-const HDR_CORE = new THREE.Color(5.2, 3.6, 1.5);
-const HDR_FLAME = new THREE.Color(3.4, 1.35, 0.32);
-const HDR_DIAMOND = new THREE.Color(4.6, 4.0, 2.6);
-const HDR_JET_CORE = new THREE.Color(4.2, 2.8, 1.1);
-const HDR_JET_SHEATH = new THREE.Color(2.6, 0.95, 0.22);
-const HDR_VENT = new THREE.Color(3.0, 1.6, 0.5);
+// HDR (>> 3.2) additive colours so ONLY pyrotechnic muzzle VFX cross the bloom threshold,
+// never specular Lightformer reflections off machined steel or cutaway walls
+const HDR_CORE = new THREE.Color(8.4, 5.8, 2.4);
+const HDR_FLAME = new THREE.Color(5.6, 2.3, 0.52);
+const HDR_DIAMOND = new THREE.Color(7.4, 6.4, 4.2);
+const HDR_JET_CORE = new THREE.Color(6.8, 4.5, 1.8);
+const HDR_JET_SHEATH = new THREE.Color(4.4, 1.65, 0.38);
+const HDR_VENT = new THREE.Color(5.0, 2.7, 0.85);
 const BRASS_GLOW = new THREE.Color('#ff6a1a');
 const SMOKE_GREY = new THREE.Color('#a8a29e');
 const SMOKE_HAZE = new THREE.Color('#cbd5e1');

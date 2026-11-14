@@ -13,6 +13,8 @@ import {
   computeGtaoInternalSize,
   createArmoryComposerRenderTarget,
   getPostProcessingPresetParams,
+  resolveEffectiveBloomStrength,
+  resolveEffectiveBloomThreshold,
   resolveGtaoBlendIntensity,
   shouldExcludeFromGtaoPass,
 } from '../src/engine/canvas/ArmoryPostProcessing';
@@ -362,9 +364,9 @@ describe('native Three.js r169 post-processing pipeline & stencil buffer invaria
     }
   });
 
-  it('configures AgX tone mapping, 1.8cm GTAO radius & selective HDR bloom (threshold >= 1.18)', () => {
+  it('configures AgX tone mapping, 1.8cm GTAO radius & selective HDR bloom (threshold >= 3.2)', () => {
     expect(ARMORY_POSTFX_DEFAULTS.gtao.radius).toBeCloseTo(1.8, 5);
-    expect(ARMORY_POSTFX_DEFAULTS.bloom.threshold).toBeCloseTo(1.18, 5);
+    expect(ARMORY_POSTFX_DEFAULTS.bloom.threshold).toBeCloseTo(3.2, 5);
     expect(ARMORY_POSTFX_DEFAULTS.bloom.strength).toBeCloseTo(0.32, 5);
     expect(ARMORY_POSTFX_DEFAULTS.bloom.radius).toBeCloseTo(0.45, 5);
 
@@ -373,7 +375,7 @@ describe('native Three.js r169 post-processing pipeline & stencil buffer invaria
       expect(p.toneMapping).toBe(THREE.AgXToneMapping);
       expect(p.gtao.radius).toBeCloseTo(1.8, 5);
       expect(p.gtao.screenSpaceRadius).toBe(false);
-      expect(p.bloom.threshold).toBeGreaterThanOrEqual(1.18);
+      expect(p.bloom.threshold).toBeGreaterThanOrEqual(3.2);
       expect(p.bloom.strength).toBeGreaterThan(0);
     }
 
@@ -388,6 +390,12 @@ describe('native Three.js r169 post-processing pipeline & stencil buffer invaria
     expect(resolveGtaoBlendIntensity(0.95, false, false)).toBeCloseTo(0.95, 5);
     expect(resolveGtaoBlendIntensity(0.95, true, false)).toBeLessThan(0.65);
     expect(resolveGtaoBlendIntensity(0.95, false, true)).toBeLessThan(0.95);
+
+    // Cutaway inner steel walls must never haze in white bloom outside firing mode
+    expect(resolveEffectiveBloomStrength(0.36, true, false)).toBe(0);
+    expect(resolveEffectiveBloomStrength(0.36, true, true)).toBeLessThan(0.2);
+    expect(resolveEffectiveBloomStrength(0.36, false, true)).toBeCloseTo(0.36, 5);
+    expect(resolveEffectiveBloomThreshold(3.2, true, true)).toBeGreaterThanOrEqual(4.8);
   });
 
   it('excludes X-Ray shells, stencil cap helpers, section-clipped housings, grid shaders & additive VFX from GTAO G-buffer', () => {

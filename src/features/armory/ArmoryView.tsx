@@ -136,7 +136,7 @@ export const ArmoryView: React.FC = () => {
           </div>
         </div>
 
-        <div className="armory-header-actions">
+        <div className="armory-header-actions armory-actions-filters">
           <div
             className="armory-filter-pills"
             role="tablist"
@@ -160,7 +160,9 @@ export const ArmoryView: React.FC = () => {
               );
             })}
           </div>
+        </div>
 
+        <div className="armory-header-actions armory-actions-utility">
           <StudioEnvironmentBar compact />
 
           <LanguageSwitchPill compact />
