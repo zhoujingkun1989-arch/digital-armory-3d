@@ -31,6 +31,46 @@ const keyListeners = new Map<string, Set<() => void>>();
 
 let loaderInstance: THREE.TextureLoader | null = null;
 
+/** Hard ceiling for texture anisotropic filtering (16x is the WebGL practical max). */
+export const PBR_MAX_ANISOTROPY = 16;
+/** Safe default before the renderer reports its capability (most GPUs support >= 12). */
+export const PBR_DEFAULT_ANISOTROPY = 12;
+
+let textureAnisotropy = PBR_DEFAULT_ANISOTROPY;
+
+export function getPbrTextureAnisotropy(): number {
+  return textureAnisotropy;
+}
+
+/**
+ * Clamps PBR anisotropic filtering to `min(16, renderer max)` and re-applies it to every
+ * cached texture. Idempotent: repeated calls with the same capability are no-ops.
+ */
+export function configurePbrTextureAnisotropy(rendererMaxAnisotropy: number): number {
+  const cap =
+    Number.isFinite(rendererMaxAnisotropy) && rendererMaxAnisotropy >= 1
+      ? Math.floor(rendererMaxAnisotropy)
+      : PBR_DEFAULT_ANISOTROPY;
+  const next = Math.max(1, Math.min(PBR_MAX_ANISOTROPY, cap));
+  if (next === textureAnisotropy) return textureAnisotropy;
+  textureAnisotropy = next;
+  texCache.forEach((rec) => {
+    if (rec.tex.anisotropy !== next) {
+      rec.tex.anisotropy = next;
+      if (isTextureLoaded(rec.tex)) rec.tex.needsUpdate = true;
+    }
+  });
+  return textureAnisotropy;
+}
+
+/** Trilinear mip filtering + anisotropy for crisp grazing-angle micro-detail. */
+export function applyPbrTextureFiltering(tex: THREE.Texture): void {
+  tex.generateMipmaps = true;
+  tex.minFilter = THREE.LinearMipmapLinearFilter;
+  tex.magFilter = THREE.LinearFilter;
+  tex.anisotropy = textureAnisotropy;
+}
+
 function notifyKeyReady(key: string): void {
   const set = keyListeners.get(key);
   if (set) {
@@ -132,7 +172,7 @@ function loadCachedTexture(
     notifyKeyReady(key);
   });
   tex.colorSpace = opts.srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;
-  tex.anisotropy = 8;
+  applyPbrTextureFiltering(tex);
 
   if (opts.repeat && opts.repeat > 1) {
     tex.wrapS = THREE.RepeatWrapping;
