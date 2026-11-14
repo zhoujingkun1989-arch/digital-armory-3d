@@ -29,20 +29,20 @@
   position: sticky;
   top: 0;
   z-index: 40;
-  padding: 10px 24px;
-  background: rgba(11, 17, 32, 0.86);
+  padding: 9px 18px;
+  background: rgba(11, 17, 32, 0.88);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   border-bottom: 1px solid rgba(148, 163, 184, 0.18);
 }
 
 .showcase-nav-inner {
-  max-width: 1320px;
+  max-width: 1440px;
   margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
 }
 
 .showcase-brand {
@@ -76,12 +76,21 @@
 .showcase-nav-links {
   display: flex;
   align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
   gap: 4px;
   min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.showcase-nav-links::-webkit-scrollbar {
+  display: none;
 }
 
 .showcase-nav-links button {
-  padding: 6px 10px;
+  flex-shrink: 0;
+  padding: 6px 9px;
   border-radius: 8px;
   font-size: 12.5px;
   font-weight: 600;
@@ -1795,7 +1804,26 @@
   color: #ffffff;
 }
 
+@media (max-width: 1520px) {
+  .showcase-brand-ver {
+    display: none;
+  }
+
+  .showcase-nav-links {
+    gap: 2px;
+  }
+
+  .showcase-nav-links button {
+    padding: 5px 8px;
+    font-size: 12px;
+  }
+}
+
 @media (max-width: 1080px) {
+  .showcase-nav-links {
+    display: none;
+  }
+
   .doc-showcase-grid {
     grid-template-columns: 1fr;
   }

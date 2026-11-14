@@ -1283,7 +1283,6 @@
   position: relative;
   flex: 1;
   min-width: 150px;
-  padding-bottom: 13px;
 }
 
 .explode-slider {
@@ -1325,23 +1324,34 @@
 }
 
 .stage-ticks {
-  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
   width: 100%;
   margin-top: 4px;
-  font-size: 10.5px;
+  font-size: 10px;
+  line-height: 1.2;
   color: var(--color-text-muted);
+  overflow: hidden;
 }
 
 .stage-ticks span {
-  position: absolute;
-  transform: translateX(-50%);
   white-space: nowrap;
+  flex-shrink: 0;
 }
-.stage-ticks span:first-child {
-  transform: translateX(0);
+
+.stage-ticks span.tick-milestone {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.stage-ticks span:last-child {
-  transform: translateX(-100%);
+
+@media (max-width: 1480px) {
+  .stage-ticks .tick-optional {
+    display: none;
+  }
 }
 
 .pct-readout {

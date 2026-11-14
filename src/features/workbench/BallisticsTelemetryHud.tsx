@@ -160,7 +160,7 @@ const SUB_STYLE: React.CSSProperties = {
 
 const READOUT_ROW_STYLE: React.CSSProperties = {
   display: 'grid',
-  gridTemplateColumns: 'repeat(6, minmax(0, 1fr))',
+  gridTemplateColumns: 'repeat(3, minmax(0, 1fr))',
   gap: 6,
   marginTop: 6,
 };
@@ -168,7 +168,7 @@ const READOUT_ROW_STYLE: React.CSSProperties = {
 const CELL_STYLE: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
-  padding: '3px 6px',
+  padding: '3.5px 7px',
   borderRadius: 6,
   background: 'rgba(15, 23, 42, 0.72)',
   border: '1px solid rgba(51, 65, 85, 0.6)',
@@ -176,9 +176,9 @@ const CELL_STYLE: React.CSSProperties = {
 };
 
 const CELL_LABEL_STYLE: React.CSSProperties = {
-  fontSize: 9,
-  color: 'rgba(148,163,184,0.8)',
-  letterSpacing: '0.06em',
+  fontSize: 9.5,
+  color: 'rgba(148,163,184,0.86)',
+  letterSpacing: '0.04em',
   whiteSpace: 'nowrap',
   overflow: 'hidden',
   textOverflow: 'ellipsis',

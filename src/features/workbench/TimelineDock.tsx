@@ -319,10 +319,10 @@ export const TimelineDock: React.FC = () => {
                 className="explode-slider"
               />
               <div className="stage-ticks">
-                <span style={{ left: '0%' }}>{ui.ticksExplode[0]}</span>
-                <span style={{ left: '30%' }}>{ui.ticksExplode[1]}</span>
-                <span style={{ left: '65%' }}>{ui.ticksExplode[2]}</span>
-                <span style={{ left: '100%' }}>{ui.ticksExplode[3]}</span>
+                <span>{ui.ticksExplode[0]}</span>
+                <span>{ui.ticksExplode[1]}</span>
+                <span>{ui.ticksExplode[2]}</span>
+                <span>{ui.ticksExplode[3]}</span>
               </div>
             </div>
 
@@ -449,16 +449,16 @@ export const TimelineDock: React.FC = () => {
                 }}
                 className="explode-slider firing-slider"
               />
-              <div className="stage-ticks">
-                <span style={{ left: '0%' }}>{ui.ticksFiring.cocked}</span>
-                <span style={{ left: '22%' }}>{ui.ticksFiring.ignition}</span>
-                <span style={{ left: '34%' }}>
+              <div className="stage-ticks firing-stage-ticks">
+                <span>{ui.ticksFiring.cocked}</span>
+                <span className="tick-optional">{ui.ticksFiring.ignition}</span>
+                <span className="tick-milestone">
                   {displayMeta.firingMilestoneLabel ||
                     ui.ticksFiring.unlockFallback}
                 </span>
-                <span style={{ left: '54%' }}>{ui.ticksFiring.eject}</span>
-                <span style={{ left: '78%' }}>{ui.ticksFiring.feedLock}</span>
-                <span style={{ left: '100%' }}>{ui.ticksFiring.reset}</span>
+                <span>{ui.ticksFiring.eject}</span>
+                <span>{ui.ticksFiring.feedLock}</span>
+                <span>{ui.ticksFiring.reset}</span>
               </div>
             </div>
 
