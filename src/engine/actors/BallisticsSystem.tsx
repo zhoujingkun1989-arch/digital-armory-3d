@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { Edges } from '@react-three/drei';
@@ -7,6 +7,20 @@ import { getWeaponManifest } from '../../weapons/manifests';
 import { getLoadedWeaponPlugin } from '../../weapons/registry';
 import type { CaliberProfile, WeaponId } from '../../weapons/types';
 import { playbackClock } from '../clock/playbackClock';
+import {
+  SMOKE_WISP_POOL_SIZE,
+  SPENT_CASING_POOL_SIZE,
+  computeGasPortUncoverF,
+  createArmoryPhysicsInput,
+  createInternalBallisticsSample,
+  evaluateInternalBallisticsInto,
+  getArmoryPhysicsState,
+  getCaliberBallisticsSpec,
+  getSmokeWispPool,
+  getSpentCasingPool,
+  getWeaponFiringTiming,
+  stepArmoryPhysics,
+} from '../physics/armoryPhysics';
 
 // ============================================================================
 // 1:1 SAAMI / CIP Cartridge Case, Projectile & Boxer Primer Lathe Builders
@@ -655,9 +669,519 @@ function computeMuzzleRecoilShiftX(weaponId: WeaponId, f: number): number {
   return -2.3 * (1 - t * t * (3 - 2 * t));
 }
 
-const BRAKE_SIDES = [1, -1] as const;
 
-export const BallisticsSystem: React.FC = () => {
+// ============================================================================
+// Physics bridge: quantitative ballistics + rigid-body brass + smoke wisps
+// ============================================================================
+
+/** Takedown-mat neoprene thickness above `workbenchMeta.gridY` (cm) */
+const MAT_SURFACE_OFFSET = 0.45;
+const MAT_HALF_X = 55;
+const MAT_HALF_Z = 26;
+
+const CALIBER_CASE_COLORS: Record<CaliberProfile, THREE.Color> = {
+  '9mm_para': new THREE.Color(CALIBER_VISUAL_SPECS['9mm_para'].caseColor),
+  '762_m43': new THREE.Color(CALIBER_VISUAL_SPECS['762_m43'].caseColor),
+  '556_nato': new THREE.Color(CALIBER_VISUAL_SPECS['556_nato'].caseColor),
+  '57_28': new THREE.Color(CALIBER_VISUAL_SPECS['57_28'].caseColor),
+  '338_lapua': new THREE.Color(CALIBER_VISUAL_SPECS['338_lapua'].caseColor),
+  '50_bmg': new THREE.Color(CALIBER_VISUAL_SPECS['50_bmg'].caseColor),
+  '50_ae': new THREE.Color(CALIBER_VISUAL_SPECS['50_ae'].caseColor),
+};
+
+interface EjectionSpawnSpec {
+  px: number;
+  py: number;
+  pz: number;
+  rx: number;
+  ry: number;
+  rz: number;
+  hasVent: boolean;
+  vx: number;
+  vy: number;
+  vz: number;
+}
+
+const ejectionSpawnCache = new Map<WeaponId, EjectionSpawnSpec>();
+
+/**
+ * Samples each plugin's own kinematics ONCE at the ejection instant so the
+ * rigid-body brass takes over exactly where the scripted extraction ends.
+ */
+function getEjectionSpawnSpec(
+  weaponId: WeaponId,
+  plugin: NonNullable<ReturnType<typeof getLoadedWeaponPlugin>>
+): EjectionSpawnSpec {
+  const cached = ejectionSpawnCache.get(weaponId);
+  if (cached) return cached;
+  const timing = getWeaponFiringTiming(weaponId);
+  const atEject = plugin.computeBallisticsState(timing.ejectF);
+  const caliber = getWeaponManifest(weaponId).caliberProfile;
+  const gasF =
+    computeGasPortUncoverF(caliber, timing) ?? timing.muzzleExitF + 0.02;
+  const atGas = plugin.computeBallisticsState(Math.max(gasF, timing.muzzleExitF));
+  const spec: EjectionSpawnSpec = {
+    px: atEject.spentCasePos[0],
+    py: atEject.spentCasePos[1],
+    pz: atEject.spentCasePos[2],
+    rx: atEject.spentCaseRot[0],
+    ry: atEject.spentCaseRot[1],
+    rz: atEject.spentCaseRot[2],
+    hasVent: timing.gasPortTravel !== null,
+    vx: atGas.gasPortPos[0],
+    vy: atGas.gasPortPos[1],
+    vz: atGas.gasPortPos[2],
+  };
+  if (weaponId === 'm4a1') {
+    // Stoner bolt-carrier exhaust vents blow out the right-side ejection port
+    spec.vx = spec.px + 0.9;
+    spec.vy = spec.py + 0.35;
+    spec.vz = spec.pz + 0.45;
+  }
+  ejectionSpawnCache.set(weaponId, spec);
+  return spec;
+}
+
+const _physicsInput = createArmoryPhysicsInput();
+const _ballisticsSample = createInternalBallisticsSample();
+
+// ============================================================================
+// Muzzle-device gas dynamics specs (data-driven brake jets & flash-hider prongs)
+// ============================================================================
+
+interface MuzzleJetSpec {
+  /** Port offset along the bore from `muzzlePos` (cm, negative = rearward) */
+  offsetX: number;
+  offsetY: number;
+  offsetZ: number;
+  /** Jet axis direction (normalized at build time) */
+  dir: [number, number, number];
+  length: number;
+  radius: number;
+  /** 0 = hot core jet, 1 = outer turbulent sheath */
+  layer: 0 | 1;
+  intensity: number;
+}
+
+interface MuzzleDeviceSpec {
+  kind: 'brake' | 'flash_hider' | 'bare';
+  /** Forward-plume damping (brakes divert gas laterally) */
+  forwardDamp: number;
+  jets: MuzzleJetSpec[];
+}
+
+const DEG35 = (35 * Math.PI) / 180;
+
+/** Rearward-lateral ±35° brake jets on both flanks. */
+function lateralBrakeJets(
+  offsets: readonly number[],
+  length: number,
+  radius: number,
+  sideOffsetZ: number
+): MuzzleJetSpec[] {
+  const jets: MuzzleJetSpec[] = [];
+  for (let i = 0; i < offsets.length; i++) {
+    const falloff = 1 - i * 0.22;
+    for (const side of [1, -1] as const) {
+      const dir: [number, number, number] = [
+        -Math.sin(DEG35),
+        0.04,
+        side * Math.cos(DEG35),
+      ];
+      jets.push({
+        offsetX: offsets[i],
+        offsetY: 0,
+        offsetZ: side * sideOffsetZ,
+        dir,
+        length: length * falloff,
+        radius: radius * falloff,
+        layer: 1,
+        intensity: 0.7 * falloff,
+      });
+      jets.push({
+        offsetX: offsets[i],
+        offsetY: 0,
+        offsetZ: side * sideOffsetZ,
+        dir,
+        length: length * 0.58 * falloff,
+        radius: radius * 0.42 * falloff,
+        layer: 0,
+        intensity: 0.95 * falloff,
+      });
+    }
+  }
+  return jets;
+}
+
+/** Forward-slanted radial flash-hider prong / birdcage slot jets. */
+function radialProngJets(
+  anglesDeg: readonly number[],
+  length: number,
+  radius: number
+): MuzzleJetSpec[] {
+  const jets: MuzzleJetSpec[] = [];
+  for (let i = 0; i < anglesDeg.length; i++) {
+    const a = (anglesDeg[i] * Math.PI) / 180;
+    const cy = Math.cos(a);
+    const sz = Math.sin(a);
+    jets.push({
+      offsetX: -0.35,
+      offsetY: cy * 0.32,
+      offsetZ: sz * 0.32,
+      dir: [0.55, cy, sz],
+      length,
+      radius,
+      layer: 1,
+      intensity: 0.55,
+    });
+    jets.push({
+      offsetX: -0.35,
+      offsetY: cy * 0.32,
+      offsetZ: sz * 0.32,
+      dir: [0.55, cy, sz],
+      length: length * 0.55,
+      radius: radius * 0.38,
+      layer: 0,
+      intensity: 0.85,
+    });
+  }
+  return jets;
+}
+
+const MUZZLE_DEVICE_SPECS: Record<WeaponId, MuzzleDeviceSpec> = {
+  // Barrett 2-chamber arrowhead brake (~65% recoil reduction)
+  m82a1: {
+    kind: 'brake',
+    forwardDamp: 0.62,
+    jets: lateralBrakeJets([-0.95, -0.28], 5.2, 1.25, 0.44),
+  },
+  // AI AWM 2-chamber tactical brake
+  awm: {
+    kind: 'brake',
+    forwardDamp: 0.72,
+    jets: lateralBrakeJets([-0.55, -0.14], 3.1, 0.72, 0.26),
+  },
+  // AK-15 slotted brake + asymmetric up-right anti-climb compensator port
+  ak15: {
+    kind: 'brake',
+    forwardDamp: 0.82,
+    jets: [
+      ...lateralBrakeJets([-0.48], 2.4, 0.56, 0.22),
+      {
+        offsetX: -0.82,
+        offsetY: 0.2,
+        offsetZ: 0.12,
+        dir: [-0.15, 0.92, 0.36],
+        length: 1.6,
+        radius: 0.36,
+        layer: 1,
+        intensity: 0.6,
+      },
+    ],
+  },
+  // A2 birdcage: top & side slots, closed bottom (anti-dust signature)
+  m4a1: {
+    kind: 'flash_hider',
+    forwardDamp: 0.9,
+    jets: radialProngJets([0, 60, 120, -60, -120], 1.35, 0.3),
+  },
+  scar: {
+    kind: 'flash_hider',
+    forwardDamp: 0.9,
+    jets: radialProngJets([0, 120, -120], 1.35, 0.32),
+  },
+  aug: {
+    kind: 'flash_hider',
+    forwardDamp: 0.9,
+    jets: radialProngJets([60, 180, -60], 1.25, 0.3),
+  },
+  p90: {
+    kind: 'flash_hider',
+    forwardDamp: 0.9,
+    jets: radialProngJets([45, 135, -45, -135], 1.0, 0.24),
+  },
+  g17: { kind: 'bare', forwardDamp: 1, jets: [] },
+  p320: { kind: 'bare', forwardDamp: 1, jets: [] },
+  deagle: { kind: 'bare', forwardDamp: 1, jets: [] },
+  mp5: { kind: 'bare', forwardDamp: 1, jets: [] },
+};
+
+const _jetUp = new THREE.Vector3(0, 1, 0);
+const _jetDir = new THREE.Vector3();
+const _jetQuat = new THREE.Quaternion();
+
+interface BuiltJet {
+  geometry: THREE.BufferGeometry;
+  quaternion: THREE.Quaternion;
+  spec: MuzzleJetSpec;
+}
+
+const jetGeoCache = new Map<WeaponId, BuiltJet[]>();
+
+/** Cone with apex at the port and the expanding plume along the jet axis. */
+function getMuzzleJets(weaponId: WeaponId): BuiltJet[] {
+  const cached = jetGeoCache.get(weaponId);
+  if (cached) return cached;
+  const built: BuiltJet[] = MUZZLE_DEVICE_SPECS[weaponId].jets.map((spec) => {
+    const geo = new THREE.ConeGeometry(
+      spec.radius,
+      spec.length,
+      spec.layer === 0 ? 12 : 16,
+      1,
+      spec.layer === 1
+    );
+    geo.rotateX(Math.PI);
+    geo.translate(0, spec.length / 2, 0);
+    _jetDir.set(spec.dir[0], spec.dir[1], spec.dir[2]).normalize();
+    _jetQuat.setFromUnitVectors(_jetUp, _jetDir);
+    return { geometry: geo, quaternion: _jetQuat.clone(), spec };
+  });
+  jetGeoCache.set(weaponId, built);
+  return built;
+}
+
+// HDR (> 1.0) additive colours so ONLY muzzle VFX cross the bloom threshold
+const HDR_CORE = new THREE.Color(5.2, 3.6, 1.5);
+const HDR_FLAME = new THREE.Color(3.4, 1.35, 0.32);
+const HDR_DIAMOND = new THREE.Color(4.6, 4.0, 2.6);
+const HDR_JET_CORE = new THREE.Color(4.2, 2.8, 1.1);
+const HDR_JET_SHEATH = new THREE.Color(2.6, 0.95, 0.22);
+const HDR_VENT = new THREE.Color(3.0, 1.6, 0.5);
+const BRASS_GLOW = new THREE.Color('#ff6a1a');
+const SMOKE_GREY = new THREE.Color('#a8a29e');
+const SMOKE_HAZE = new THREE.Color('#cbd5e1');
+
+const MAX_SHOCK_DIAMONDS = 5;
+const DIAMOND_SLOTS = [0, 1, 2, 3, 4] as const;
+const CASING_SLOTS = Array.from({ length: SPENT_CASING_POOL_SIZE }, (_, i) => i);
+const SMOKE_SLOTS = Array.from({ length: SMOKE_WISP_POOL_SIZE }, (_, i) => i);
+
+// ============================================================================
+// Physical recoil transform for the weapon assembly (Wave-2 ArmoryViewport hook)
+// ============================================================================
+
+export interface WeaponRecoilTransformOptions {
+  /** Grip pivot [x, y] in weapon space (defaults derived from workbench meta) */
+  pivot?: [number, number];
+  /** Visual gain multiplier on the physical recoil (default 1) */
+  gain?: number;
+}
+
+/**
+ * Applies the 60Hz spring-damper recoil kick (−X), bolt battery micro-bounce,
+ * bore rise (+Y) and muzzle-climb torque (rotation about the grip pivot, Z axis)
+ * to `groupRef` imperatively inside `useFrame` (zero React re-renders, zero GC).
+ * Restores the identity transform outside of Workbench firing mode.
+ */
+export function useWeaponRecoilTransform(
+  groupRef: React.RefObject<THREE.Object3D | null>,
+  options?: WeaponRecoilTransformOptions
+): void {
+  const optsRef = useRef(options);
+  useEffect(() => {
+    optsRef.current = options;
+  }, [options]);
+
+  useFrame(() => {
+    const g = groupRef.current;
+    if (!g) return;
+    const st = useAppStore.getState();
+    if (st.screen !== 'workbench' || st.mode !== 'firing') {
+      if (g.position.x !== 0 || g.position.y !== 0 || g.rotation.z !== 0) {
+        g.position.set(0, 0, 0);
+        g.rotation.set(0, 0, 0);
+      }
+      return;
+    }
+    const phys = getArmoryPhysicsState();
+    const opts = optsRef.current;
+    const gain = opts?.gain ?? 1;
+    const meta = getWeaponManifest(st.activeWeaponId).workbenchMeta;
+    const isPistol = meta.scaleProfile === 'pistol';
+    const px = opts?.pivot?.[0] ?? meta.chamberGlowPos[0] - (isPistol ? 2.5 : 4.5);
+    const py = opts?.pivot?.[1] ?? meta.chamberGlowPos[1] - (isPistol ? 4.5 : 5.5);
+    const th = phys.recoilPitchZ * gain;
+    const c = Math.cos(th);
+    const s = Math.sin(th);
+    const dx = (phys.recoilOffsetX + phys.boltBounceX * 0.35) * gain;
+    const dy = phys.recoilOffsetY * gain;
+    // p' = R(p − P) + P + offset  →  position = P − R·P + offset
+    g.rotation.set(0, 0, th);
+    g.position.set(px - (px * c - py * s) + dx, py - (px * s + py * c) + dy, 0);
+  });
+}
+
+/** Declarative wrapper: `<WeaponRecoilGroup>{parts}</WeaponRecoilGroup>`. */
+export const WeaponRecoilGroup: React.FC<
+  React.PropsWithChildren<WeaponRecoilTransformOptions>
+> = ({ children, pivot, gain }) => {
+  const ref = useRef<THREE.Group>(null);
+  useWeaponRecoilTransform(ref, { pivot, gain });
+  return <group ref={ref}>{children}</group>;
+};
+
+// ============================================================================
+// World-space persistent FX: rigid-body spent brass on the mat + smoke wisps
+// (kept OUTSIDE any recoil group so resting brass never jitters with the gun)
+// ============================================================================
+
+export const ArmoryWorldFx: React.FC = () => {
+  const mode = useAppStore((s) => s.mode);
+  const casingGroupRefs = useRef<(THREE.Group | null)[]>([]);
+  const casingMeshRefs = useRef<(THREE.Mesh | null)[]>([]);
+  const casingPrimerRefs = useRef<(THREE.Mesh | null)[]>([]);
+  const casingSootRefs = useRef<(THREE.Mesh | null)[]>([]);
+  const casingMatRefs = useRef<(THREE.MeshStandardMaterial | null)[]>([]);
+  const smokeMeshRefs = useRef<(THREE.Mesh | null)[]>([]);
+  const smokeMatRefs = useRef<(THREE.MeshBasicMaterial | null)[]>([]);
+
+  const smokeGeo = useMemo(() => new THREE.IcosahedronGeometry(1, 2), []);
+  const initialBundle = useMemo(() => getCaliberGeometries('9mm_para'), []);
+
+  useFrame(() => {
+    const casings = getSpentCasingPool();
+    for (let i = 0; i < casings.length; i++) {
+      const c = casings[i];
+      const grp = casingGroupRefs.current[i];
+      if (!grp) continue;
+      grp.visible = c.active;
+      if (!c.active) continue;
+      const bundle = getCaliberGeometries(c.caliber);
+      const mesh = casingMeshRefs.current[i];
+      if (mesh && mesh.geometry !== bundle.caseGeo) {
+        mesh.geometry = bundle.caseGeo;
+        const primer = casingPrimerRefs.current[i];
+        if (primer) primer.geometry = bundle.spentPrimerGeo;
+        const soot = casingSootRefs.current[i];
+        if (soot) soot.geometry = bundle.sootRingGeo;
+        const mat = casingMatRefs.current[i];
+        if (mat) mat.color.copy(CALIBER_CASE_COLORS[c.caliber]);
+      }
+      grp.position.set(c.px, c.py, c.pz);
+      grp.rotation.set(c.rx, c.ry, c.rz);
+      grp.scale.setScalar(c.scale);
+      const mat = casingMatRefs.current[i];
+      if (mat) mat.emissiveIntensity = c.heat01 * 0.85;
+    }
+
+    const wisps = getSmokeWispPool();
+    for (let i = 0; i < wisps.length; i++) {
+      const w = wisps[i];
+      const mesh = smokeMeshRefs.current[i];
+      if (!mesh) continue;
+      const show = w.active && w.opacity > 0.004;
+      mesh.visible = show;
+      if (!show) continue;
+      mesh.position.set(w.px, w.py, w.pz);
+      mesh.scale.set(w.size * 1.15, w.size, w.size);
+      const mat = smokeMatRefs.current[i];
+      if (mat) {
+        mat.opacity = w.opacity;
+        mat.color.copy(w.kind === 3 ? SMOKE_HAZE : SMOKE_GREY);
+      }
+    }
+  });
+
+  if (mode !== 'firing') return null;
+
+  return (
+    <group>
+      {CASING_SLOTS.map((i) => (
+        <group
+          key={`casing-${i}`}
+          ref={(el) => {
+            casingGroupRefs.current[i] = el;
+          }}
+          visible={false}
+        >
+          <mesh
+            ref={(el) => {
+              casingMeshRefs.current[i] = el;
+            }}
+            geometry={initialBundle.caseGeo}
+            castShadow
+            renderOrder={2}
+          >
+            <meshStandardMaterial
+              ref={(el) => {
+                casingMatRefs.current[i] = el;
+              }}
+              color={CALIBER_VISUAL_SPECS['9mm_para'].caseColor}
+              metalness={0.88}
+              roughness={0.24}
+              emissive={BRASS_GLOW}
+              emissiveIntensity={0}
+            />
+          </mesh>
+          <mesh
+            ref={(el) => {
+              casingPrimerRefs.current[i] = el;
+            }}
+            geometry={initialBundle.spentPrimerGeo}
+            renderOrder={2}
+          >
+            <meshStandardMaterial color="#cbd5e1" metalness={0.88} roughness={0.25} />
+          </mesh>
+          <mesh
+            ref={(el) => {
+              casingSootRefs.current[i] = el;
+            }}
+            geometry={initialBundle.sootRingGeo}
+            renderOrder={3}
+          >
+            <meshStandardMaterial
+              color="#1c1917"
+              metalness={0.08}
+              roughness={0.92}
+              polygonOffset
+              polygonOffsetFactor={-1}
+              polygonOffsetUnits={-1}
+            />
+          </mesh>
+        </group>
+      ))}
+
+      {SMOKE_SLOTS.map((i) => (
+        <mesh
+          key={`smoke-${i}`}
+          ref={(el) => {
+            smokeMeshRefs.current[i] = el;
+          }}
+          geometry={smokeGeo}
+          visible={false}
+          renderOrder={11}
+        >
+          <meshBasicMaterial
+            ref={(el) => {
+              smokeMatRefs.current[i] = el;
+            }}
+            color={SMOKE_GREY}
+            transparent
+            opacity={0}
+            depthWrite={false}
+          />
+        </mesh>
+      ))}
+    </group>
+  );
+};
+
+// ============================================================================
+// BallisticsSystem — in-gun cartridge kinematics + muzzle / gas VFX + physics
+// ============================================================================
+
+export interface BallisticsSystemProps {
+  /**
+   * Render the world-space brass & smoke field inside this component (default).
+   * Pass `false` when wrapping BallisticsSystem in `WeaponRecoilGroup` and
+   * mounting `<ArmoryWorldFx />` outside the recoiling assembly instead.
+   */
+  worldFx?: boolean;
+}
+
+export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
+  worldFx = true,
+}) => {
   const mode = useAppStore((s) => s.mode);
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const showEdges = useAppStore((s) => s.showEdges);
@@ -667,6 +1191,8 @@ export const BallisticsSystem: React.FC = () => {
   const meta = manifest.workbenchMeta;
   const calSpec = CALIBER_VISUAL_SPECS[caliberProfile];
   const roundFit = WEAPON_ROUND_FIT[activeWeaponId];
+  const ballisticSpec = getCaliberBallisticsSpec(caliberProfile);
+  const deviceSpec = MUZZLE_DEVICE_SPECS[activeWeaponId];
 
   const {
     caseGeo,
@@ -677,11 +1203,12 @@ export const BallisticsSystem: React.FC = () => {
     craterSootGeo,
   } = useMemo(() => getCaliberGeometries(caliberProfile), [caliberProfile]);
 
-  const isM82Brake = activeWeaponId === 'm82a1';
-  const isAwmBrake = activeWeaponId === 'awm';
-  const isAk15Brake = activeWeaponId === 'ak15';
+  const jets = useMemo(() => getMuzzleJets(activeWeaponId), [activeWeaponId]);
+
   const is50Bmg = caliberProfile === '50_bmg';
   const is50Ae = caliberProfile === '50_ae';
+  const isM82Brake = activeWeaponId === 'm82a1';
+  const diamondCount = Math.min(MAX_SHOCK_DIAMONDS, ballisticSpec.shockDiamonds);
 
   const spentCaseRef = useRef<THREE.Group>(null);
   const spentCaseMatRef = useRef<THREE.MeshStandardMaterial>(null);
@@ -698,16 +1225,23 @@ export const BallisticsSystem: React.FC = () => {
   const chamberLightRef = useRef<THREE.PointLight>(null);
 
   const gasPortFlashRef = useRef<THREE.Mesh>(null);
+  const ventFlashRef = useRef<THREE.Mesh>(null);
+  const ventFlashMatRef = useRef<THREE.MeshBasicMaterial>(null);
 
   const muzzleGroupRef = useRef<THREE.Group>(null);
   const muzzleOuterMatRef = useRef<THREE.MeshBasicMaterial>(null);
   const muzzleCoreMatRef = useRef<THREE.MeshBasicMaterial>(null);
-  const brakeOuterMatRefs = useRef<(THREE.MeshBasicMaterial | null)[]>([]);
-  const brakeSecondaryMatRefs = useRef<(THREE.MeshBasicMaterial | null)[]>([]);
-  const brakeCoreMatRefs = useRef<(THREE.MeshBasicMaterial | null)[]>([]);
+  const muzzleBallRef = useRef<THREE.Mesh>(null);
+  const muzzleBallMatRef = useRef<THREE.MeshBasicMaterial>(null);
+  const diamondMeshRefs = useRef<(THREE.Mesh | null)[]>([]);
+  const diamondMatRefs = useRef<(THREE.MeshBasicMaterial | null)[]>([]);
+  const jetMatRefs = useRef<(THREE.MeshBasicMaterial | null)[]>([]);
+  const muzzleLightRef = useRef<THREE.PointLight>(null);
 
-  const shockRingRef = useRef<THREE.Mesh>(null);
+  const shockRingRef = useRef<THREE.Group | THREE.Mesh>(null);
   const shockRingMatRef = useRef<THREE.MeshBasicMaterial>(null);
+  const blastRingRef = useRef<THREE.Mesh>(null);
+  const blastRingMatRef = useRef<THREE.MeshBasicMaterial>(null);
   const magnumRingRef = useRef<THREE.Group>(null);
   const magnumRingOuterMatRef = useRef<THREE.MeshBasicMaterial>(null);
   const magnumRingCoreMatRef = useRef<THREE.MeshBasicMaterial>(null);
@@ -716,6 +1250,49 @@ export const BallisticsSystem: React.FC = () => {
   const nextRoundInnerRef = useRef<THREE.Group>(null);
   const reserveRoundRef = useRef<THREE.Group>(null);
   const reserveRoundInnerRef = useRef<THREE.Group>(null);
+
+  // 60Hz quantitative physics step — runs every frame (barrels keep cooling
+  // and brass keeps settling even while paused), events only in firing mode.
+  useFrame((_, delta) => {
+    const state = useAppStore.getState();
+    const weaponId = state.activeWeaponId;
+    const curManifest = getWeaponManifest(weaponId);
+    const curMeta = curManifest.workbenchMeta;
+    const plugin = getLoadedWeaponPlugin(weaponId);
+    const firing = state.screen === 'workbench' && state.mode === 'firing';
+    const f = playbackClock.getState().animatedFireProgress;
+
+    const inp = _physicsInput;
+    inp.weaponId = weaponId;
+    inp.caliber = curManifest.caliberProfile;
+    inp.fireProgress = f;
+    inp.firing = firing && !!plugin;
+    inp.floorY = curMeta.gridY + MAT_SURFACE_OFFSET;
+    inp.matMinX = curMeta.chamberGlowPos[0] - MAT_HALF_X;
+    inp.matMaxX = curMeta.chamberGlowPos[0] + MAT_HALF_X;
+    inp.matMinZ = -MAT_HALF_Z;
+    inp.matMaxZ = MAT_HALF_Z;
+    inp.muzzleX = curMeta.muzzlePos[0] + computeMuzzleRecoilShiftX(weaponId, f);
+    inp.muzzleY = curMeta.muzzlePos[1];
+    inp.muzzleZ = curMeta.muzzlePos[2];
+    inp.casingScale = WEAPON_ROUND_FIT[weaponId].roundScale;
+    if (plugin) {
+      const ej = getEjectionSpawnSpec(weaponId, plugin);
+      inp.ejectPortX = ej.px;
+      inp.ejectPortY = ej.py;
+      inp.ejectPortZ = ej.pz;
+      inp.ejectRotX = ej.rx;
+      inp.ejectRotY = ej.ry;
+      inp.ejectRotZ = ej.rz;
+      inp.hasGasVent = ej.hasVent;
+      inp.gasVentX = ej.vx;
+      inp.gasVentY = ej.vy;
+      inp.gasVentZ = ej.vz;
+    }
+    // Slow-motion playback scales physical time so brass & smoke slow down too
+    const timeScale = firing ? state.fireSpeedMultiplier : 1;
+    stepArmoryPhysics(Math.min(delta, 0.05) * timeScale, inp);
+  });
 
   useFrame(() => {
     const state = useAppStore.getState();
@@ -731,11 +1308,22 @@ export const BallisticsSystem: React.FC = () => {
     const curMeta = curManifest.workbenchMeta;
     const curSpec = CALIBER_VISUAL_SPECS[curProfile];
     const curFit = WEAPON_ROUND_FIT[weaponId];
+    const curBallistic = getCaliberBallisticsSpec(curProfile);
+    const curDevice = MUZZLE_DEVICE_SPECS[weaponId];
+    const timing = getWeaponFiringTiming(weaponId);
     const st = plugin.computeBallisticsState(f);
     const muzzleShiftX = computeMuzzleRecoilShiftX(weaponId, f);
+    const phys = getArmoryPhysicsState();
+    const ib = evaluateInternalBallisticsInto(
+      curProfile,
+      f,
+      _ballisticsSample,
+      timing
+    );
 
+    // 1. Chambered / extracting case — handed over to the rigid-body pool at ejectF
     if (spentCaseRef.current && spentCaseMatRef.current) {
-      spentCaseRef.current.visible = st.spentCaseVisible;
+      spentCaseRef.current.visible = st.spentCaseVisible && f < timing.ejectF;
       spentCaseRef.current.position.set(
         st.spentCasePos[0],
         st.spentCasePos[1],
@@ -747,6 +1335,11 @@ export const BallisticsSystem: React.FC = () => {
         st.spentCaseRot[2]
       );
       spentCaseRef.current.scale.setScalar(curFit.roundScale);
+
+      // Fresh-fired brass glows faintly from residual propellant heat
+      const caseHeat =
+        f >= timing.ignitionF ? Math.min(1, (f - timing.ignitionF) / 0.08) : 0;
+      spentCaseMatRef.current.emissiveIntensity = caseHeat * 0.55;
 
       const isTrans = st.spentCaseOpacity < 0.99;
       spentCaseMatRef.current.opacity = st.spentCaseOpacity;
@@ -771,11 +1364,12 @@ export const BallisticsSystem: React.FC = () => {
       }
     }
 
+    // 2. Projectile + supersonic trail
     if (bulletGroupRef.current) {
       bulletGroupRef.current.visible = st.bulletVisible;
       bulletGroupRef.current.position.set(
         st.bulletPos[0],
-        st.bulletPos[1],
+        st.bulletPos[1] + phys.barrelWhipY,
         st.bulletPos[2]
       );
       bulletGroupRef.current.rotation.set(f * 42, 0, 0);
@@ -793,38 +1387,44 @@ export const BallisticsSystem: React.FC = () => {
         );
         streakMeshRef.current.position.set(
           st.bulletPos[0] - st.streakLength * 0.5 - 0.35,
-          st.bulletPos[1],
+          st.bulletPos[1] + phys.barrelWhipY,
           st.bulletPos[2]
         );
       }
     }
 
+    // 3. Chamber ignition glow, scaled by instantaneous chamber pressure
+    const p01 = ib.pressure01;
     if (chamberFlashRef.current) {
-      chamberFlashRef.current.visible = st.chamberFlashIntensity > 0.02;
+      const intensity = Math.max(st.chamberFlashIntensity, p01 * 0.9);
+      chamberFlashRef.current.visible = intensity > 0.02;
       chamberFlashRef.current.position.set(
         curMeta.chamberGlowPos[0] + muzzleShiftX * 0.65,
         curMeta.chamberGlowPos[1],
         curMeta.chamberGlowPos[2]
       );
       const baseChamberScale =
-        curProfile === '50_bmg'
-          ? 1.25
-          : curProfile === '338_lapua'
-            ? 1.05
-            : 0.72;
-      const s = baseChamberScale + st.chamberFlashIntensity * 0.75;
+        curProfile === '50_bmg' ? 1.25 : curProfile === '338_lapua' ? 1.05 : 0.72;
+      const s = baseChamberScale + intensity * 0.75;
       chamberFlashRef.current.scale.set(s * 1.45, s, s);
       (chamberFlashRef.current.material as THREE.MeshBasicMaterial).opacity =
-        st.chamberFlashIntensity * 0.86;
+        intensity * 0.86;
     }
 
     if (chamberLightRef.current) {
       const lightBoost = curProfile === '50_bmg' ? 7.5 : 4.5;
-      chamberLightRef.current.intensity = st.chamberFlashIntensity * lightBoost;
+      chamberLightRef.current.intensity =
+        Math.max(st.chamberFlashIntensity, p01) * lightBoost;
     }
 
+    // 3b. Gas-block / piston port tap glow (driven by quantitative port pressure)
+    const gasPort01 = Math.min(
+      1,
+      ib.gasPortPressureMPa / Math.max(1, curBallistic.peakPressureMPa * 0.25)
+    );
     if (gasPortFlashRef.current) {
-      const activeGas = st.gasPortFlashIntensity > 0.02;
+      const gi = Math.max(st.gasPortFlashIntensity, gasPort01);
+      const activeGas = gi > 0.02;
       gasPortFlashRef.current.visible = activeGas;
       if (activeGas) {
         gasPortFlashRef.current.position.set(
@@ -832,62 +1432,104 @@ export const BallisticsSystem: React.FC = () => {
           st.gasPortPos[1],
           st.gasPortPos[2]
         );
-        const gs = 0.65 + st.gasPortFlashIntensity * 0.85;
+        const gs = 0.65 + gi * 0.85;
         gasPortFlashRef.current.scale.set(gs * 1.6, gs, gs);
         (gasPortFlashRef.current.material as THREE.MeshBasicMaterial).opacity =
-          st.gasPortFlashIntensity * 0.85;
+          gi * 0.85;
       }
     }
 
-    if (
-      muzzleGroupRef.current &&
-      muzzleOuterMatRef.current &&
-      muzzleCoreMatRef.current
-    ) {
-      const active = st.muzzlePlumeOpacity > 0.02;
-      muzzleGroupRef.current.visible = active;
-      if (active) {
+    // 3c. M4A1 bolt-carrier gas-key exhaust vent puff (right-side ejection port)
+    if (ventFlashRef.current && ventFlashMatRef.current) {
+      let vi = 0;
+      if (weaponId === 'm4a1' && f > timing.muzzleExitF) {
+        const u = (f - timing.muzzleExitF) / 0.07;
+        vi = u < 1 ? Math.sin(u * Math.PI) * Math.max(0.35, gasPort01) : 0;
+      }
+      ventFlashRef.current.visible = vi > 0.02;
+      if (vi > 0.02) {
+        const ej = getEjectionSpawnSpec(weaponId, plugin);
+        const vs = 0.35 + vi * 0.75;
+        ventFlashRef.current.position.set(ej.vx, ej.vy, ej.vz + vs * 0.4);
+        ventFlashRef.current.scale.set(vs * 1.3, vs * 0.8, vs * 1.6);
+        ventFlashMatRef.current.opacity = vi * 0.75;
+      }
+    }
+
+    // 4. Muzzle blast: core fireball + flame cone + Mach shock diamonds + device jets
+    const plumeOpacity = st.muzzlePlumeOpacity;
+    const plumeActive = plumeOpacity > 0.02;
+    const flicker = 0.86 + 0.14 * Math.sin(phys.simTimeSec * 97.0);
+    if (muzzleGroupRef.current) {
+      muzzleGroupRef.current.visible = plumeActive;
+      if (plumeActive) {
         muzzleGroupRef.current.position.set(
           curMeta.muzzlePos[0] + muzzleShiftX,
-          curMeta.muzzlePos[1],
+          curMeta.muzzlePos[1] + phys.barrelWhipY,
           curMeta.muzzlePos[2]
         );
         const s = st.muzzlePlumeScale * curSpec.flashScaleMult;
-        muzzleGroupRef.current.scale.set(s * 1.3, s, s);
-        const forwardDamp = weaponId === 'm82a1' ? 0.68 : 1.0;
-        muzzleOuterMatRef.current.opacity =
-          st.muzzlePlumeOpacity * 0.56 * forwardDamp;
-        muzzleCoreMatRef.current.opacity =
-          st.muzzlePlumeOpacity * 0.9 * forwardDamp;
+        muzzleGroupRef.current.scale.setScalar(s);
+        const fwd = curDevice.forwardDamp;
 
-        const outerOpacity = st.muzzlePlumeOpacity * 0.68;
-        const outerList = brakeOuterMatRefs.current;
-        for (let i = 0; i < outerList.length; i++) {
-          const mat = outerList[i];
-          if (mat) mat.opacity = outerOpacity;
+        if (muzzleOuterMatRef.current) {
+          muzzleOuterMatRef.current.opacity = plumeOpacity * 0.5 * fwd * flicker;
         }
-        const secOpacity = st.muzzlePlumeOpacity * 0.54;
-        const secList = brakeSecondaryMatRefs.current;
-        for (let i = 0; i < secList.length; i++) {
-          const mat = secList[i];
-          if (mat) mat.opacity = secOpacity;
+        if (muzzleCoreMatRef.current) {
+          muzzleCoreMatRef.current.opacity = plumeOpacity * 0.85 * fwd;
         }
-        const coreOpacity = st.muzzlePlumeOpacity * 0.92;
-        const coreList = brakeCoreMatRefs.current;
-        for (let i = 0; i < coreList.length; i++) {
-          const mat = coreList[i];
-          if (mat) mat.opacity = coreOpacity;
+        if (muzzleBallRef.current && muzzleBallMatRef.current) {
+          muzzleBallMatRef.current.opacity = plumeOpacity * 0.9 * flicker;
+          const bs = 0.55 + 0.25 * flicker;
+          muzzleBallRef.current.scale.set(bs * 1.25, bs, bs);
+        }
+
+        // Supersonic under-expanded jet: standing Mach diamonds along +X
+        for (let i = 0; i < MAX_SHOCK_DIAMONDS; i++) {
+          const mesh = diamondMeshRefs.current[i];
+          const mat = diamondMatRefs.current[i];
+          if (!mesh || !mat) continue;
+          const on = i < curBallistic.shockDiamonds;
+          mesh.visible = on;
+          if (!on) continue;
+          const spacing = 0.95 + i * 0.08;
+          mesh.position.x = 0.75 + i * spacing;
+          const shrink = 1 - i * 0.14;
+          const pulse = 0.92 + 0.08 * Math.sin(phys.simTimeSec * 140 + i * 1.7);
+          mesh.scale.set(0.42 * shrink * pulse, 0.2 * shrink, 0.2 * shrink);
+          mat.opacity = plumeOpacity * (0.95 - i * 0.15) * fwd;
+        }
+
+        const jetsNow = getMuzzleJets(weaponId);
+        for (let i = 0; i < jetsNow.length; i++) {
+          const mat = jetMatRefs.current[i];
+          if (mat) {
+            mat.opacity =
+              plumeOpacity *
+              jetsNow[i].spec.intensity *
+              (jetsNow[i].spec.layer === 0 ? 1 : flicker);
+          }
         }
       }
     }
 
+    if (muzzleLightRef.current) {
+      muzzleLightRef.current.intensity =
+        plumeOpacity * (isHighMagnumCaliber(curProfile) ? 9 : 5);
+      muzzleLightRef.current.position.set(
+        curMeta.muzzlePos[0] + muzzleShiftX + 1.2,
+        curMeta.muzzlePos[1] + phys.barrelWhipY,
+        curMeta.muzzlePos[2] + 0.6
+      );
+    }
+
+    // 4b. Primary shock collar at the crown
     if (shockRingRef.current && shockRingMatRef.current) {
-      const active = st.muzzlePlumeOpacity > 0.02;
-      shockRingRef.current.visible = active;
-      if (active) {
+      shockRingRef.current.visible = plumeActive;
+      if (plumeActive) {
         shockRingRef.current.position.set(
           curMeta.muzzlePos[0] + 0.25 + muzzleShiftX,
-          curMeta.muzzlePos[1],
+          curMeta.muzzlePos[1] + phys.barrelWhipY,
           curMeta.muzzlePos[2]
         );
         const ringBoost =
@@ -900,7 +1542,25 @@ export const BallisticsSystem: React.FC = () => {
                 : 1.5;
         const rs = st.muzzlePlumeScale * ringBoost;
         shockRingRef.current.scale.set(rs, rs, rs);
-        shockRingMatRef.current.opacity = st.muzzlePlumeOpacity * 0.68;
+        shockRingMatRef.current.opacity = plumeOpacity * 0.62;
+      }
+    }
+
+    // 4c. Expanding spherical blast-wave front (Mach disk → acoustic shock)
+    if (blastRingRef.current && blastRingMatRef.current) {
+      const u = (f - timing.muzzleExitF) / 0.1;
+      const on = u > 0 && u < 1;
+      blastRingRef.current.visible = on;
+      if (on) {
+        const energyScale = Math.cbrt(curBallistic.muzzleEnergyJ / 1500);
+        const rad = (0.6 + 7.5 * Math.sqrt(u)) * energyScale;
+        blastRingRef.current.position.set(
+          curMeta.muzzlePos[0] + muzzleShiftX + rad * 0.35,
+          curMeta.muzzlePos[1],
+          curMeta.muzzlePos[2]
+        );
+        blastRingRef.current.scale.setScalar(rad);
+        blastRingMatRef.current.opacity = (1 - u) * (1 - u) * 0.38;
       }
     }
 
@@ -909,40 +1569,36 @@ export const BallisticsSystem: React.FC = () => {
       magnumRingOuterMatRef.current &&
       magnumRingCoreMatRef.current
     ) {
-      const activeMagnum =
-        curProfile === '50_ae' && st.muzzlePlumeOpacity > 0.02;
+      const activeMagnum = curProfile === '50_ae' && plumeActive;
       magnumRingRef.current.visible = activeMagnum;
       if (activeMagnum) {
         const ms = 0.85 + st.muzzlePlumeScale * 1.45;
         magnumRingRef.current.position.set(
           curMeta.muzzlePos[0] + 1.4 + st.muzzlePlumeScale * 1.65,
-          curMeta.muzzlePos[1],
+          curMeta.muzzlePos[1] + phys.barrelWhipY,
           curMeta.muzzlePos[2]
         );
         magnumRingRef.current.scale.set(ms * 0.85, ms, ms);
-        magnumRingOuterMatRef.current.opacity = st.muzzlePlumeOpacity * 0.78;
-        magnumRingCoreMatRef.current.opacity = st.muzzlePlumeOpacity * 0.95;
+        magnumRingOuterMatRef.current.opacity = plumeOpacity * 0.78;
+        magnumRingCoreMatRef.current.opacity = plumeOpacity * 0.95;
       }
     }
 
+    // 5. Magazine feed rounds
     if (nextRoundRef.current) {
       nextRoundRef.current.position.set(
         st.nextRoundPos[0],
         st.nextRoundPos[1],
         st.nextRoundPos[2]
       );
-      nextRoundRef.current.rotation.set(
-        0,
-        st.nextRoundRotY ?? 0,
-        st.nextRoundRotZ
-      );
+      nextRoundRef.current.rotation.set(0, st.nextRoundRotY ?? 0, st.nextRoundRotZ);
       nextRoundRef.current.scale.setScalar(curFit.roundScale);
     }
     if (nextRoundInnerRef.current) {
       const uFeed = THREE.MathUtils.clamp((f - 0.58) / 0.24, 0, 1);
       const feedBlend = uFeed * uFeed * (3 - 2 * uFeed);
       nextRoundInnerRef.current.position.x =
-        curFit.magLocalShiftX * (1 - feedBlend);
+        curFit.magLocalShiftX * (1 - feedBlend) + phys.boltBounceX * feedBlend;
     }
     if (reserveRoundRef.current) {
       reserveRoundRef.current.position.set(
@@ -966,28 +1622,24 @@ export const BallisticsSystem: React.FC = () => {
 
   return (
     <group>
-      {/* 1. Chambered / Extracted / Ejected Brass Case + Live/Struck Boxer Primer */}
-      <group
-        ref={spentCaseRef}
-        position={meta.chamberGlowPos}
-        scale={roundFit.roundScale}
-      >
+      {worldFx && <ArmoryWorldFx />}
+
+      {/* 1. Chambered / Extracted Brass Case + Live/Struck Boxer Primer */}
+      <group ref={spentCaseRef} position={meta.chamberGlowPos} scale={roundFit.roundScale}>
         <mesh geometry={caseGeo} renderOrder={2}>
           <meshStandardMaterial
             ref={spentCaseMatRef}
             color={calSpec.caseColor}
             metalness={0.86}
             roughness={0.21}
+            emissive={BRASS_GLOW}
+            emissiveIntensity={0}
           />
           {showEdges && <Edges threshold={36} color="#854d0e" />}
         </mesh>
 
         {/* Un-struck Nickel Boxer Primer Cup (visible before firing-pin strike) */}
-        <mesh
-          ref={chamberLivePrimerRef}
-          geometry={livePrimerGeo}
-          renderOrder={2}
-        >
+        <mesh ref={chamberLivePrimerRef} geometry={livePrimerGeo} renderOrder={2}>
           <meshStandardMaterial
             ref={chamberLivePrimerMatRef}
             color={calSpec.primerColor}
@@ -1032,11 +1684,7 @@ export const BallisticsSystem: React.FC = () => {
       </group>
 
       {/* 2. Fired Jacketed Projectile */}
-      <group
-        ref={bulletGroupRef}
-        position={meta.chamberGlowPos}
-        scale={roundFit.roundScale}
-      >
+      <group ref={bulletGroupRef} position={meta.chamberGlowPos} scale={roundFit.roundScale}>
         <mesh geometry={bulletGeo} renderOrder={2}>
           <meshStandardMaterial
             color={calSpec.bulletColor}
@@ -1059,12 +1707,7 @@ export const BallisticsSystem: React.FC = () => {
       </mesh>
 
       {/* 3. Internal Chamber Ignition Glow */}
-      <mesh
-        ref={chamberFlashRef}
-        position={meta.chamberGlowPos}
-        visible={false}
-        renderOrder={9}
-      >
+      <mesh ref={chamberFlashRef} position={meta.chamberGlowPos} visible={false} renderOrder={9}>
         <sphereGeometry args={[0.52, 16, 12]} />
         <meshBasicMaterial
           color="#f97316"
@@ -1092,8 +1735,35 @@ export const BallisticsSystem: React.FC = () => {
         />
       </mesh>
 
-      {/* 4. Caliber-Specific Muzzle Gas Plume & Directional Rifle Brake Lobes */}
+      {/* 3c. Bolt-Carrier Gas-Key Exhaust Vent Puff (M4A1 right-side port) */}
+      <mesh ref={ventFlashRef} visible={false} renderOrder={9}>
+        <sphereGeometry args={[0.5, 14, 10]} />
+        <meshBasicMaterial
+          ref={ventFlashMatRef}
+          color={HDR_VENT}
+          transparent
+          opacity={0}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+          toneMapped={false}
+        />
+      </mesh>
+
+      {/* 4. Muzzle Blast: fireball + flame cone + Mach diamonds + device jets */}
       <group ref={muzzleGroupRef} position={meta.muzzlePos} visible={false}>
+        <mesh ref={muzzleBallRef} position={[0.35, 0, 0]} renderOrder={10}>
+          <sphereGeometry args={[0.6, 18, 12]} />
+          <meshBasicMaterial
+            ref={muzzleBallMatRef}
+            color={HDR_CORE}
+            transparent
+            opacity={0}
+            depthWrite={false}
+            blending={THREE.AdditiveBlending}
+            toneMapped={false}
+          />
+        </mesh>
+
         <mesh
           rotation={[0, 0, -Math.PI / 2]}
           position={[is50Ae ? 1.35 : isM82Brake ? 1.25 : 1.65, 0, 0]}
@@ -1110,266 +1780,97 @@ export const BallisticsSystem: React.FC = () => {
           />
           <meshBasicMaterial
             ref={muzzleOuterMatRef}
-            color="#f59e0b"
+            color={HDR_FLAME}
             transparent
             opacity={0}
             side={THREE.DoubleSide}
             depthWrite={false}
+            blending={THREE.AdditiveBlending}
+            toneMapped={false}
           />
         </mesh>
 
         <mesh
           rotation={[0, 0, -Math.PI / 2]}
           position={[isM82Brake ? 0.72 : 0.95, 0, 0]}
-          renderOrder={9}
+          renderOrder={10}
         >
           <coneGeometry
-            args={[
-              is50Ae ? 0.78 : isM82Brake ? 0.42 : 0.52,
-              isM82Brake ? 1.45 : 1.95,
-              16,
-            ]}
+            args={[is50Ae ? 0.78 : isM82Brake ? 0.42 : 0.52, isM82Brake ? 1.45 : 1.95, 16]}
           />
           <meshBasicMaterial
             ref={muzzleCoreMatRef}
-            color={is50Bmg || is50Ae ? '#fef08a' : '#ea580c'}
+            color={is50Bmg || is50Ae ? HDR_CORE : HDR_JET_CORE}
             transparent
             opacity={0}
             depthWrite={false}
+            blending={THREE.AdditiveBlending}
+            toneMapped={false}
           />
         </mesh>
 
-        {/* Barrett M82A1 2-Chamber 33° Rearward-Swept Arrowhead Brake Twin Chevron Blast */}
-        {isM82Brake && (
-          <>
-            {BRAKE_SIDES.map((side, idx) => (
-              <group key={`m82-brake-${side}`}>
-                {/* Chamber 1 Primary Rearward-Swept Gas Wing */}
-                <group
-                  position={[-0.95, 0, side * 0.44]}
-                  rotation={[0, side * -0.58, 0]}
-                >
-                  <mesh
-                    rotation={[side * (Math.PI / 2), 0, 0]}
-                    position={[0, 0, side * 2.45]}
-                    renderOrder={9}
-                  >
-                    <coneGeometry args={[1.22, 4.85, 18, 1, true]} />
-                    <meshBasicMaterial
-                      ref={(el) => {
-                        brakeOuterMatRefs.current[idx] = el;
-                      }}
-                      color="#f97316"
-                      transparent
-                      opacity={0}
-                      side={THREE.DoubleSide}
-                      depthWrite={false}
-                    />
-                  </mesh>
-                  <mesh
-                    rotation={[side * (Math.PI / 2), 0, 0]}
-                    position={[0, 0, side * 1.45]}
-                    renderOrder={9}
-                  >
-                    <coneGeometry args={[0.56, 2.85, 14]} />
-                    <meshBasicMaterial
-                      ref={(el) => {
-                        brakeCoreMatRefs.current[idx * 2] = el;
-                      }}
-                      color="#fef3c7"
-                      transparent
-                      opacity={0}
-                      depthWrite={false}
-                    />
-                  </mesh>
-                </group>
+        {/* Supersonic Mach shock diamonds (barrel-stretched octahedra) */}
+        {DIAMOND_SLOTS.map((i) => (
+          <mesh
+            key={`diamond-${i}`}
+            ref={(el) => {
+              diamondMeshRefs.current[i] = el;
+            }}
+            position={[0.75 + i, 0, 0]}
+            visible={i < diamondCount}
+            renderOrder={11}
+          >
+            <octahedronGeometry args={[1, 0]} />
+            <meshBasicMaterial
+              ref={(el) => {
+                diamondMatRefs.current[i] = el;
+              }}
+              color={HDR_DIAMOND}
+              transparent
+              opacity={0}
+              depthWrite={false}
+              blending={THREE.AdditiveBlending}
+              toneMapped={false}
+            />
+          </mesh>
+        ))}
 
-                {/* Chamber 2 Secondary Rearward-Swept Gas Wing */}
-                <group
-                  position={[-0.28, 0, side * 0.38]}
-                  rotation={[0, side * -0.56, 0]}
-                >
-                  <mesh
-                    rotation={[side * (Math.PI / 2), 0, 0]}
-                    position={[0, 0, side * 1.85]}
-                    renderOrder={9}
-                  >
-                    <coneGeometry args={[0.92, 3.65, 16, 1, true]} />
-                    <meshBasicMaterial
-                      ref={(el) => {
-                        brakeSecondaryMatRefs.current[idx] = el;
-                      }}
-                      color="#fb923c"
-                      transparent
-                      opacity={0}
-                      side={THREE.DoubleSide}
-                      depthWrite={false}
-                    />
-                  </mesh>
-                  <mesh
-                    rotation={[side * (Math.PI / 2), 0, 0]}
-                    position={[0, 0, side * 1.05]}
-                    renderOrder={9}
-                  >
-                    <coneGeometry args={[0.4, 2.05, 12]} />
-                    <meshBasicMaterial
-                      ref={(el) => {
-                        brakeCoreMatRefs.current[idx * 2 + 1] = el;
-                      }}
-                      color="#fef3c7"
-                      transparent
-                      opacity={0}
-                      depthWrite={false}
-                    />
-                  </mesh>
-                </group>
-              </group>
-            ))}
-          </>
-        )}
-
-        {/* Accuracy International AWM 2-Chamber Lateral Flat Tactical Brake Lobes */}
-        {isAwmBrake && (
-          <>
-            {BRAKE_SIDES.map((side, idx) => (
-              <group key={`awm-brake-${side}`}>
-                <group
-                  position={[-0.55, 0, side * 0.26]}
-                  rotation={[0, side * -0.28, 0]}
-                >
-                  <mesh
-                    rotation={[side * (Math.PI / 2), 0, 0]}
-                    position={[0, 0, side * 1.42]}
-                    renderOrder={9}
-                  >
-                    <coneGeometry args={[0.68, 2.8, 16, 1, true]} />
-                    <meshBasicMaterial
-                      ref={(el) => {
-                        brakeOuterMatRefs.current[idx] = el;
-                      }}
-                      color="#f59e0b"
-                      transparent
-                      opacity={0}
-                      side={THREE.DoubleSide}
-                      depthWrite={false}
-                    />
-                  </mesh>
-                  <mesh
-                    rotation={[side * (Math.PI / 2), 0, 0]}
-                    position={[0, 0, side * 0.85]}
-                    renderOrder={9}
-                  >
-                    <coneGeometry args={[0.32, 1.65, 12]} />
-                    <meshBasicMaterial
-                      ref={(el) => {
-                        brakeCoreMatRefs.current[idx] = el;
-                      }}
-                      color="#fde68a"
-                      transparent
-                      opacity={0}
-                      depthWrite={false}
-                    />
-                  </mesh>
-                </group>
-                <group
-                  position={[-0.14, 0, side * 0.24]}
-                  rotation={[0, side * -0.22, 0]}
-                >
-                  <mesh
-                    rotation={[side * (Math.PI / 2), 0, 0]}
-                    position={[0, 0, side * 1.02]}
-                    renderOrder={9}
-                  >
-                    <coneGeometry args={[0.48, 1.95, 14, 1, true]} />
-                    <meshBasicMaterial
-                      ref={(el) => {
-                        brakeSecondaryMatRefs.current[idx] = el;
-                      }}
-                      color="#fb923c"
-                      transparent
-                      opacity={0}
-                      side={THREE.DoubleSide}
-                      depthWrite={false}
-                    />
-                  </mesh>
-                </group>
-              </group>
-            ))}
-          </>
-        )}
-
-        {/* Kalashnikov AK-15 6P71M Slotted Brake Side Jets & Anti-Climb Top-Right Vent */}
-        {isAk15Brake && (
-          <>
-            {BRAKE_SIDES.map((side, idx) => (
-              <group
-                key={`ak15-brake-${side}`}
-                position={[-0.48, 0, side * 0.22]}
-                rotation={[0, side * -0.15, 0]}
-              >
-                <mesh
-                  rotation={[side * (Math.PI / 2), 0, 0]}
-                  position={[0, 0, side * 1.08]}
-                  renderOrder={9}
-                >
-                  <coneGeometry args={[0.52, 2.15, 14, 1, true]} />
-                  <meshBasicMaterial
-                    ref={(el) => {
-                      brakeOuterMatRefs.current[idx] = el;
-                    }}
-                    color="#f97316"
-                    transparent
-                    opacity={0}
-                    side={THREE.DoubleSide}
-                    depthWrite={false}
-                  />
-                </mesh>
-                <mesh
-                  rotation={[side * (Math.PI / 2), 0, 0]}
-                  position={[0, 0, side * 0.65]}
-                  renderOrder={9}
-                >
-                  <coneGeometry args={[0.24, 1.25, 12]} />
-                  <meshBasicMaterial
-                    ref={(el) => {
-                      brakeCoreMatRefs.current[idx] = el;
-                    }}
-                    color="#fef08a"
-                    transparent
-                    opacity={0}
-                    depthWrite={false}
-                  />
-                </mesh>
-              </group>
-            ))}
-            {/* Asymmetric 6P71M upward-right compensator port jet countering muzzle climb */}
-            <group position={[-0.82, 0.2, 0.12]} rotation={[-0.42, 0, -0.16]}>
-              <mesh position={[0, 0.72, 0]} renderOrder={9}>
-                <coneGeometry args={[0.34, 1.42, 12, 1, true]} />
-                <meshBasicMaterial
-                  ref={(el) => {
-                    brakeSecondaryMatRefs.current[2] = el;
-                  }}
-                  color="#fb923c"
-                  transparent
-                  opacity={0}
-                  side={THREE.DoubleSide}
-                  depthWrite={false}
-                />
-              </mesh>
-            </group>
-          </>
-        )}
+        {/* Directional brake jets (±35° rearward-lateral) / flash-hider prongs */}
+        {jets.map((jet, idx) => (
+          <mesh
+            key={`${activeWeaponId}-jet-${idx}`}
+            geometry={jet.geometry}
+            position={[jet.spec.offsetX, jet.spec.offsetY, jet.spec.offsetZ]}
+            quaternion={jet.quaternion}
+            renderOrder={jet.spec.layer === 0 ? 10 : 9}
+          >
+            <meshBasicMaterial
+              ref={(el) => {
+                jetMatRefs.current[idx] = el;
+              }}
+              color={jet.spec.layer === 0 ? HDR_JET_CORE : HDR_JET_SHEATH}
+              transparent
+              opacity={0}
+              side={THREE.DoubleSide}
+              depthWrite={false}
+              blending={THREE.AdditiveBlending}
+              toneMapped={false}
+            />
+          </mesh>
+        ))}
       </group>
+      <pointLight
+        ref={muzzleLightRef}
+        position={meta.muzzlePos}
+        color="#fb923c"
+        intensity={0}
+        distance={deviceSpec.kind === 'brake' ? 22 : 16}
+      />
 
-      {/* Primary Concussion Shockwave Ring */}
+      {/* Primary Concussion Shock Collar */}
       <mesh
-        ref={shockRingRef}
-        position={[
-          meta.muzzlePos[0] + 0.25,
-          meta.muzzlePos[1],
-          meta.muzzlePos[2],
-        ]}
+        ref={shockRingRef as React.RefObject<THREE.Mesh>}
+        position={[meta.muzzlePos[0] + 0.25, meta.muzzlePos[1], meta.muzzlePos[2]]}
         rotation={[0, Math.PI / 2, 0]}
         visible={false}
         renderOrder={9}
@@ -1377,21 +1878,32 @@ export const BallisticsSystem: React.FC = () => {
         <torusGeometry args={[0.98, is50Bmg ? 0.1 : 0.06, 12, 32]} />
         <meshBasicMaterial
           ref={shockRingMatRef}
-          color="#f97316"
+          color={HDR_FLAME}
           transparent
           opacity={0}
           depthWrite={false}
+          blending={THREE.AdditiveBlending}
+          toneMapped={false}
+        />
+      </mesh>
+
+      {/* Expanding blast-wave front (translucent shock shell) */}
+      <mesh ref={blastRingRef} visible={false} renderOrder={8}>
+        <sphereGeometry args={[1, 28, 16]} />
+        <meshBasicMaterial
+          ref={blastRingMatRef}
+          color="#e2e8f0"
+          transparent
+          opacity={0}
+          depthWrite={false}
+          side={THREE.BackSide}
         />
       </mesh>
 
       {/* Signature .50 AE Desert Eagle Luminous Magnum Fireball Ring */}
       <group
         ref={magnumRingRef}
-        position={[
-          meta.muzzlePos[0] + 2.2,
-          meta.muzzlePos[1],
-          meta.muzzlePos[2],
-        ]}
+        position={[meta.muzzlePos[0] + 2.2, meta.muzzlePos[1], meta.muzzlePos[2]]}
         rotation={[0, Math.PI / 2, 0]}
         visible={false}
       >
@@ -1399,30 +1911,31 @@ export const BallisticsSystem: React.FC = () => {
           <torusGeometry args={[1.42, 0.28, 16, 36]} />
           <meshBasicMaterial
             ref={magnumRingOuterMatRef}
-            color="#f97316"
+            color={HDR_FLAME}
             transparent
             opacity={0}
             depthWrite={false}
+            blending={THREE.AdditiveBlending}
+            toneMapped={false}
           />
         </mesh>
         <mesh renderOrder={10}>
           <torusGeometry args={[1.42, 0.12, 14, 36]} />
           <meshBasicMaterial
             ref={magnumRingCoreMatRef}
-            color="#fef08a"
+            color={HDR_CORE}
             transparent
             opacity={0}
             depthWrite={false}
+            blending={THREE.AdditiveBlending}
+            toneMapped={false}
           />
         </mesh>
       </group>
 
       {/* 5. Next Complete Cartridge in Magazine (with Nickel Boxer Primer Cup) */}
       <group ref={nextRoundRef} scale={roundFit.roundScale}>
-        <group
-          ref={nextRoundInnerRef}
-          position={[roundFit.magLocalShiftX, 0, 0]}
-        >
+        <group ref={nextRoundInnerRef} position={[roundFit.magLocalShiftX, 0, 0]}>
           <mesh geometry={caseGeo} renderOrder={2}>
             <meshStandardMaterial
               color={calSpec.caseColor}
@@ -1455,10 +1968,7 @@ export const BallisticsSystem: React.FC = () => {
 
       {/* 6. Reserve Cartridge below in Magazine Stack (with Nickel Boxer Primer Cup) */}
       <group ref={reserveRoundRef} scale={roundFit.roundScale}>
-        <group
-          ref={reserveRoundInnerRef}
-          position={[roundFit.magLocalShiftX, 0, 0]}
-        >
+        <group ref={reserveRoundInnerRef} position={[roundFit.magLocalShiftX, 0, 0]}>
           <mesh geometry={caseGeo} renderOrder={2}>
             <meshStandardMaterial
               color={calSpec.reserveCaseColor}
@@ -1467,25 +1977,21 @@ export const BallisticsSystem: React.FC = () => {
             />
           </mesh>
           <mesh geometry={livePrimerGeo} renderOrder={2}>
-            <meshStandardMaterial
-              color="#cbd5e1"
-              metalness={0.88}
-              roughness={0.22}
-            />
+            <meshStandardMaterial color="#cbd5e1" metalness={0.88} roughness={0.22} />
           </mesh>
           <mesh
             geometry={bulletGeo}
             position={[calSpec.bulletLocalOffset, 0, 0]}
             renderOrder={2}
           >
-            <meshStandardMaterial
-              color="#9a3412"
-              metalness={0.78}
-              roughness={0.26}
-            />
+            <meshStandardMaterial color="#9a3412" metalness={0.78} roughness={0.26} />
           </mesh>
         </group>
       </group>
     </group>
   );
 };
+
+function isHighMagnumCaliber(p: CaliberProfile): boolean {
+  return p === '50_bmg' || p === '338_lapua';
+}

@@ -1,0 +1,765 @@
+import React, { useEffect, useRef, useState } from 'react';
+import { playbackClock } from '../../engine/clock/playbackClock';
+import {
+  computeGasPortUncoverF,
+  computeSafeUnlockF,
+  createInternalBallisticsSample,
+  evaluateInternalBallisticsInto,
+  getArmoryPhysicsState,
+  getCaliberBallisticsSpec,
+  getWeaponFiringTiming,
+  type BallisticPhaseId,
+  type WeaponFiringTiming,
+} from '../../engine/physics/armoryPhysics';
+import type { LanguageCode } from '../../narration/types';
+import { useAppStore } from '../../store/useAppStore';
+import { getWeaponManifest } from '../../weapons/manifests';
+import type { CaliberProfile, WeaponId } from '../../weapons/types';
+
+// ============================================================================
+// WP-04 · Real-Time Internal Ballistics Telemetry Oscilloscope
+// 60fps Canvas2D trace driven by `requestAnimationFrame` + `playbackClock`
+// (ZERO 60Hz React state updates — digital readouts are written imperatively).
+// ============================================================================
+
+export const TELEMETRY_HUD_STRINGS = {
+  zh: {
+    title: '内弹道实时遥测示波器',
+    subtitle: 'SAAMI / CIP 膛压 P(t) · 弹头膛内速度 V(t)',
+    pressure: '膛压',
+    velocity: '弹速',
+    energy: '动能',
+    barrelTemp: '枪管温度',
+    shots: '射弹数',
+    fouling: '积碳',
+    peak: '峰值膛压',
+    muzzleVelocity: '初速',
+    muzzleEnergy: '枪口动能',
+    safeUnlock: '安全开锁窗口',
+    pressureLocked: '高压闭锁区',
+    gasPort: '导气孔',
+    ignition: '击发点火',
+    muzzleExit: '弹头出膛',
+    eject: '抛壳',
+    battery: '复进闭锁',
+    scrubHint: '拖拽曲线可逐帧控制击发进度',
+    overPressure: '膛压未泄 · 禁止开锁',
+    safeToUnlock: '残压安全 · 允许开锁',
+    phaseCocked: '待击',
+    phasePressureRise: '点火升压',
+    phaseBoreTravel: '膛内加速',
+    phaseBlowdown: '出膛泄压',
+    phaseExtraction: '开锁抽壳',
+    phaseEjectionFeed: '抛壳供弹',
+    phaseLockup: '复进闭锁',
+    zoomBore: '膛内放大',
+    fullCycle: '全周期 0–100%',
+  },
+  en: {
+    title: 'Internal Ballistics Telemetry Scope',
+    subtitle: 'SAAMI / CIP Chamber Pressure P(t) · Bore Velocity V(t)',
+    pressure: 'Pressure',
+    velocity: 'Velocity',
+    energy: 'Energy',
+    barrelTemp: 'Barrel',
+    shots: 'Shots',
+    fouling: 'Fouling',
+    peak: 'Peak P',
+    muzzleVelocity: 'V₀',
+    muzzleEnergy: 'E₀',
+    safeUnlock: 'Safe Unlock Window',
+    pressureLocked: 'Pressure-Locked',
+    gasPort: 'Gas Port',
+    ignition: 'Ignition',
+    muzzleExit: 'Muzzle Exit',
+    eject: 'Eject',
+    battery: 'Battery',
+    scrubHint: 'Drag the trace to scrub the firing cycle',
+    overPressure: 'Chamber pressurised · unlock inhibited',
+    safeToUnlock: 'Residual pressure safe · unlock permitted',
+    phaseCocked: 'Cocked',
+    phasePressureRise: 'Ignition / Pressure Rise',
+    phaseBoreTravel: 'In-Bore Acceleration',
+    phaseBlowdown: 'Muzzle Blowdown',
+    phaseExtraction: 'Unlock / Extraction',
+    phaseEjectionFeed: 'Ejection / Feed',
+    phaseLockup: 'Lockup',
+    zoomBore: 'Bore Zoom',
+    fullCycle: 'Full Cycle 0–100%',
+  },
+} as const;
+
+type HudStrings = (typeof TELEMETRY_HUD_STRINGS)[LanguageCode];
+
+const PHASE_LABEL_KEY: Record<BallisticPhaseId, keyof HudStrings> = {
+  cocked: 'phaseCocked',
+  pressure_rise: 'phasePressureRise',
+  bore_travel: 'phaseBoreTravel',
+  blowdown: 'phaseBlowdown',
+  extraction: 'phaseExtraction',
+  ejection_feed: 'phaseEjectionFeed',
+  lockup: 'phaseLockup',
+};
+
+const TRACE_SAMPLES = 320;
+const PLOT_PAD_L = 44;
+const PLOT_PAD_R = 46;
+const PLOT_PAD_T = 14;
+const STRIP_H = 10;
+const STRIP_GAP = 18;
+const HUD_HEIGHT = 168;
+
+const C_BG = 'rgba(6, 10, 16, 0.86)';
+const C_GRID = 'rgba(148, 163, 184, 0.12)';
+const C_GRID_MAJOR = 'rgba(148, 163, 184, 0.24)';
+const C_PRESSURE = '#f59e0b';
+const C_PRESSURE_HOT = '#dc2626';
+const C_VELOCITY = '#22d3ee';
+const C_SAFE = 'rgba(34, 197, 94, 0.13)';
+const C_LOCKED = 'rgba(220, 38, 38, 0.10)';
+const C_TEXT = 'rgba(203, 213, 225, 0.82)';
+const C_MUTED = 'rgba(148, 163, 184, 0.62)';
+const C_CURSOR = '#f8fafc';
+
+const ROOT_STYLE: React.CSSProperties = {
+  position: 'relative',
+  width: '100%',
+  borderRadius: 10,
+  border: '1px solid rgba(148, 163, 184, 0.22)',
+  background: 'linear-gradient(180deg, rgba(8,12,20,0.94), rgba(4,7,12,0.94))',
+  boxShadow: '0 8px 28px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.04)',
+  color: '#cbd5e1',
+  fontFamily:
+    "'JetBrains Mono', 'SFMono-Regular', ui-monospace, Menlo, Consolas, monospace",
+  padding: '8px 10px 8px',
+  boxSizing: 'border-box',
+  userSelect: 'none',
+};
+
+const HEADER_STYLE: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'baseline',
+  justifyContent: 'space-between',
+  gap: 12,
+  marginBottom: 4,
+  flexWrap: 'wrap',
+};
+
+const TITLE_STYLE: React.CSSProperties = {
+  fontSize: 11,
+  fontWeight: 700,
+  letterSpacing: '0.08em',
+  textTransform: 'uppercase',
+  color: '#fbbf24',
+};
+
+const SUB_STYLE: React.CSSProperties = {
+  fontSize: 10,
+  color: 'rgba(148,163,184,0.78)',
+};
+
+const READOUT_ROW_STYLE: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: 'repeat(6, minmax(0, 1fr))',
+  gap: 6,
+  marginTop: 6,
+};
+
+const CELL_STYLE: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  padding: '3px 6px',
+  borderRadius: 6,
+  background: 'rgba(15, 23, 42, 0.72)',
+  border: '1px solid rgba(51, 65, 85, 0.6)',
+  minWidth: 0,
+};
+
+const CELL_LABEL_STYLE: React.CSSProperties = {
+  fontSize: 9,
+  color: 'rgba(148,163,184,0.8)',
+  letterSpacing: '0.06em',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+};
+
+const CELL_VALUE_STYLE: React.CSSProperties = {
+  fontSize: 13,
+  fontWeight: 700,
+  fontVariantNumeric: 'tabular-nums',
+  whiteSpace: 'nowrap',
+};
+
+const STATUS_STYLE: React.CSSProperties = {
+  fontSize: 10,
+  marginTop: 5,
+  display: 'flex',
+  justifyContent: 'space-between',
+  gap: 8,
+  color: 'rgba(148,163,184,0.85)',
+};
+
+const CANVAS_STYLE: React.CSSProperties = {
+  display: 'block',
+  width: '100%',
+  height: HUD_HEIGHT,
+  cursor: 'ew-resize',
+  touchAction: 'none',
+};
+
+interface TraceCache {
+  key: string;
+  caliber: CaliberProfile;
+  timing: Readonly<WeaponFiringTiming>;
+  fMin: number;
+  fMax: number;
+  pAxisMax: number;
+  vAxisMax: number;
+  safeF: number;
+  gasF: number | null;
+  peakF: number;
+  pressure: Float32Array;
+  velocity: Float32Array;
+  background: HTMLCanvasElement | null;
+  cssW: number;
+  dpr: number;
+}
+
+function niceCeil(v: number, step: number): number {
+  return Math.ceil(v / step) * step;
+}
+
+function buildTraceCache(
+  weaponId: WeaponId,
+  lang: LanguageCode,
+  cssW: number,
+  dpr: number,
+  zoomBore: boolean
+): TraceCache {
+  const caliber = getWeaponManifest(weaponId).caliberProfile;
+  const spec = getCaliberBallisticsSpec(caliber);
+  const timing = getWeaponFiringTiming(weaponId);
+  const fMin = zoomBore ? Math.max(0, timing.ignitionF - 0.06) : 0;
+  const fMax = zoomBore ? Math.min(1, timing.ejectF + 0.12) : 1;
+  const sample = createInternalBallisticsSample(caliber);
+  const pressure = new Float32Array(TRACE_SAMPLES + 1);
+  const velocity = new Float32Array(TRACE_SAMPLES + 1);
+  for (let i = 0; i <= TRACE_SAMPLES; i++) {
+    const f = fMin + ((fMax - fMin) * i) / TRACE_SAMPLES;
+    evaluateInternalBallisticsInto(caliber, f, sample, timing);
+    pressure[i] = sample.pressureMPa;
+    velocity[i] = sample.velocityMps;
+  }
+  const cache: TraceCache = {
+    key: `${weaponId}|${lang}|${cssW}|${dpr}|${zoomBore ? 1 : 0}`,
+    caliber,
+    timing,
+    fMin,
+    fMax,
+    pAxisMax: niceCeil(spec.peakPressureMPa * 1.12, 50),
+    vAxisMax: niceCeil(spec.muzzleVelocityMps * 1.12, 100),
+    safeF: computeSafeUnlockF(caliber, timing),
+    gasF: computeGasPortUncoverF(caliber, timing),
+    peakF: timing.ignitionF + spec.peakU * (timing.muzzleExitF - timing.ignitionF),
+    pressure,
+    velocity,
+    background: null,
+    cssW,
+    dpr,
+  };
+  cache.background = renderBackground(cache, TELEMETRY_HUD_STRINGS[lang]);
+  return cache;
+}
+
+interface PlotRect {
+  x0: number;
+  x1: number;
+  y0: number;
+  y1: number;
+  stripY: number;
+}
+
+function plotRect(cssW: number): PlotRect {
+  const y1 = HUD_HEIGHT - STRIP_H - STRIP_GAP;
+  return {
+    x0: PLOT_PAD_L,
+    x1: Math.max(PLOT_PAD_L + 40, cssW - PLOT_PAD_R),
+    y0: PLOT_PAD_T,
+    y1,
+    stripY: HUD_HEIGHT - STRIP_H - 2,
+  };
+}
+
+function fToX(c: TraceCache, r: PlotRect, f: number): number {
+  return r.x0 + ((f - c.fMin) / (c.fMax - c.fMin)) * (r.x1 - r.x0);
+}
+
+function renderBackground(
+  c: TraceCache,
+  s: HudStrings
+): HTMLCanvasElement | null {
+  if (typeof document === 'undefined') return null;
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.max(1, Math.round(c.cssW * c.dpr));
+  canvas.height = Math.round(HUD_HEIGHT * c.dpr);
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+  ctx.scale(c.dpr, c.dpr);
+  const r = plotRect(c.cssW);
+  const pw = r.x1 - r.x0;
+  const ph = r.y1 - r.y0;
+
+  ctx.fillStyle = C_BG;
+  ctx.fillRect(0, 0, c.cssW, HUD_HEIGHT);
+
+  // Pressure-locked (red) and safe-unlock (green) windows
+  const xIgn = fToX(c, r, c.timing.ignitionF);
+  const xSafe = fToX(c, r, c.safeF);
+  const xUnlockEnd = fToX(c, r, c.timing.batteryF);
+  ctx.fillStyle = C_LOCKED;
+  ctx.fillRect(xIgn, r.y0, xSafe - xIgn, ph);
+  ctx.fillStyle = C_SAFE;
+  ctx.fillRect(xSafe, r.y0, Math.max(0, Math.min(r.x1, xUnlockEnd) - xSafe), ph);
+  ctx.font = '600 9px ui-monospace, Menlo, monospace';
+  ctx.fillStyle = 'rgba(74, 222, 128, 0.85)';
+  ctx.textAlign = 'left';
+  ctx.fillText(s.safeUnlock, xSafe + 4, r.y0 + 10);
+  ctx.fillStyle = 'rgba(248, 113, 113, 0.75)';
+  ctx.textAlign = 'right';
+  ctx.fillText(s.pressureLocked, xSafe - 4, r.y0 + 10);
+
+  // Graticule: 10 × 4 divisions
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 10; i++) {
+    const x = Math.round(r.x0 + (pw * i) / 10) + 0.5;
+    ctx.strokeStyle = i % 5 === 0 ? C_GRID_MAJOR : C_GRID;
+    ctx.beginPath();
+    ctx.moveTo(x, r.y0);
+    ctx.lineTo(x, r.y1);
+    ctx.stroke();
+  }
+  ctx.font = '9px ui-monospace, Menlo, monospace';
+  for (let j = 0; j <= 4; j++) {
+    const y = Math.round(r.y1 - (ph * j) / 4) + 0.5;
+    ctx.strokeStyle = j === 0 ? C_GRID_MAJOR : C_GRID;
+    ctx.beginPath();
+    ctx.moveTo(r.x0, y);
+    ctx.lineTo(r.x1, y);
+    ctx.stroke();
+    ctx.fillStyle = C_PRESSURE;
+    ctx.textAlign = 'right';
+    ctx.fillText(String(Math.round((c.pAxisMax * j) / 4)), r.x0 - 5, y + 3);
+    ctx.fillStyle = C_VELOCITY;
+    ctx.textAlign = 'left';
+    ctx.fillText(String(Math.round((c.vAxisMax * j) / 4)), r.x1 + 5, y + 3);
+  }
+  ctx.fillStyle = C_PRESSURE;
+  ctx.textAlign = 'left';
+  ctx.fillText('MPa', 4, r.y0 + 2);
+  ctx.fillStyle = C_VELOCITY;
+  ctx.textAlign = 'right';
+  ctx.fillText('m/s', c.cssW - 4, r.y0 + 2);
+
+  // Event markers
+  const markers: [number, string][] = [
+    [c.timing.ignitionF, s.ignition],
+    [c.timing.muzzleExitF, s.muzzleExit],
+    [c.timing.ejectF, s.eject],
+  ];
+  if (c.gasF !== null) markers.push([c.gasF, s.gasPort]);
+  ctx.setLineDash([3, 3]);
+  for (let i = 0; i < markers.length; i++) {
+    const [f, label] = markers[i];
+    if (f < c.fMin || f > c.fMax) continue;
+    const x = Math.round(fToX(c, r, f)) + 0.5;
+    ctx.strokeStyle = 'rgba(203, 213, 225, 0.28)';
+    ctx.beginPath();
+    ctx.moveTo(x, r.y0);
+    ctx.lineTo(x, r.y1);
+    ctx.stroke();
+    ctx.fillStyle = C_MUTED;
+    ctx.textAlign = 'center';
+    ctx.fillText(label, x, r.y1 + 11);
+  }
+  ctx.setLineDash([]);
+
+  // Pressure trace (amber → crimson gradient, filled)
+  const grad = ctx.createLinearGradient(0, r.y1, 0, r.y0);
+  grad.addColorStop(0, C_PRESSURE);
+  grad.addColorStop(1, C_PRESSURE_HOT);
+  ctx.beginPath();
+  for (let i = 0; i <= TRACE_SAMPLES; i++) {
+    const x = r.x0 + (pw * i) / TRACE_SAMPLES;
+    const y = r.y1 - (c.pressure[i] / c.pAxisMax) * ph;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.lineTo(r.x1, r.y1);
+  ctx.lineTo(r.x0, r.y1);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(245, 158, 11, 0.10)';
+  ctx.fill();
+  ctx.beginPath();
+  for (let i = 0; i <= TRACE_SAMPLES; i++) {
+    const x = r.x0 + (pw * i) / TRACE_SAMPLES;
+    const y = r.y1 - (c.pressure[i] / c.pAxisMax) * ph;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.strokeStyle = grad;
+  ctx.lineWidth = 1.8;
+  ctx.shadowColor = 'rgba(245, 158, 11, 0.55)';
+  ctx.shadowBlur = 6;
+  ctx.stroke();
+
+  // Velocity trace (cyan)
+  ctx.beginPath();
+  for (let i = 0; i <= TRACE_SAMPLES; i++) {
+    const x = r.x0 + (pw * i) / TRACE_SAMPLES;
+    const y = r.y1 - (c.velocity[i] / c.vAxisMax) * ph;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.strokeStyle = C_VELOCITY;
+  ctx.lineWidth = 1.6;
+  ctx.shadowColor = 'rgba(34, 211, 238, 0.55)';
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Peak pressure tag
+  const xPeak = fToX(c, r, c.peakF);
+  const spec = getCaliberBallisticsSpec(c.caliber);
+  const yPeak = r.y1 - (spec.peakPressureMPa / c.pAxisMax) * ph;
+  ctx.fillStyle = C_PRESSURE_HOT;
+  ctx.beginPath();
+  ctx.arc(xPeak, yPeak, 2.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#fca5a5';
+  ctx.textAlign = 'left';
+  ctx.fillText(`${spec.peakPressureMPa} MPa`, xPeak + 5, yPeak + 3);
+
+  // Full-cycle strip (0..1) with zoom window + battery marker
+  ctx.fillStyle = 'rgba(30, 41, 59, 0.9)';
+  ctx.fillRect(r.x0, r.stripY, pw, STRIP_H);
+  const sx0 = r.x0 + c.fMin * pw;
+  const sx1 = r.x0 + c.fMax * pw;
+  ctx.fillStyle = 'rgba(245, 158, 11, 0.22)';
+  ctx.fillRect(sx0, r.stripY, sx1 - sx0, STRIP_H);
+  ctx.fillStyle = 'rgba(34, 197, 94, 0.45)';
+  const bx = r.x0 + c.timing.batteryF * pw;
+  ctx.fillRect(bx - 1, r.stripY, 2, STRIP_H);
+  ctx.fillStyle = C_MUTED;
+  ctx.textAlign = 'right';
+  ctx.fillText(s.battery, bx - 3, r.stripY + 8);
+  ctx.textAlign = 'left';
+  ctx.fillStyle = C_TEXT;
+  ctx.fillText('0', r.x0 - 10, r.stripY + 8);
+  ctx.textAlign = 'right';
+  ctx.fillText('1', r.x1 + 12, r.stripY + 8);
+
+  return canvas;
+}
+
+function formatFixed(v: number, digits: number): string {
+  return v.toFixed(digits);
+}
+
+export interface BallisticsTelemetryHudProps {
+  /** Override the active weapon (defaults to the store's `activeWeaponId`) */
+  weaponId?: WeaponId;
+  className?: string;
+  style?: React.CSSProperties;
+  /** Render even when the Workbench is not in firing mode */
+  alwaysVisible?: boolean;
+}
+
+/**
+ * Military-grade precision 60fps internal-ballistics oscilloscope:
+ * Chamber Pressure P(t) (MPa, amber/crimson) + Bore Velocity V(t) (m/s, cyan),
+ * shaded Safe-Unlock Window, live playhead and pointer-drag scrubbing that
+ * drives `playbackClock.setFireProgress(f, true)` while pausing auto-fire.
+ */
+export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
+  weaponId,
+  className,
+  style,
+  alwaysVisible = false,
+}) => {
+  const storeWeaponId = useAppStore((s) => s.activeWeaponId);
+  const lang = useAppStore((s) => s.lang);
+  const mode = useAppStore((s) => s.mode);
+  const activeWeaponId = weaponId ?? storeWeaponId;
+  const s = TELEMETRY_HUD_STRINGS[lang];
+  const [zoomBore, setZoomBore] = useState(false);
+
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const pRef = useRef<HTMLSpanElement>(null);
+  const vRef = useRef<HTMLSpanElement>(null);
+  const eRef = useRef<HTMLSpanElement>(null);
+  const tRef = useRef<HTMLSpanElement>(null);
+  const nRef = useRef<HTMLSpanElement>(null);
+  const foulRef = useRef<HTMLSpanElement>(null);
+  const statusRef = useRef<HTMLSpanElement>(null);
+  const phaseRef = useRef<HTMLSpanElement>(null);
+
+  const visible = alwaysVisible || mode === 'firing';
+  const caliber = getWeaponManifest(activeWeaponId).caliberProfile;
+  const spec = getCaliberBallisticsSpec(caliber);
+
+  useEffect(() => {
+    if (!visible) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const strings = TELEMETRY_HUD_STRINGS[lang];
+    const sample = createInternalBallisticsSample(caliber);
+    let cache: TraceCache | null = null;
+    let raf = 0;
+    let lastText = -1;
+    let lastPhase: BallisticPhaseId | null = null;
+    let lastLocked: boolean | null = null;
+    let dragMode: 0 | 1 | 2 = 0; // 0 idle, 1 scope zoom window, 2 full-cycle strip
+
+    const ensureCache = (): TraceCache | null => {
+      const cssW = Math.max(120, Math.round(canvas.clientWidth));
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      const key = `${activeWeaponId}|${lang}|${cssW}|${dpr}|${zoomBore ? 1 : 0}`;
+      if (!cache || cache.key !== key) {
+        cache = buildTraceCache(activeWeaponId, lang, cssW, dpr, zoomBore);
+        canvas.width = Math.round(cssW * dpr);
+        canvas.height = Math.round(HUD_HEIGHT * dpr);
+      }
+      return cache;
+    };
+
+    const draw = () => {
+      raf = requestAnimationFrame(draw);
+      const c = ensureCache();
+      if (!c) return;
+      const r = plotRect(c.cssW);
+      const pw = r.x1 - r.x0;
+      const ph = r.y1 - r.y0;
+      const f = playbackClock.getState().animatedFireProgress;
+      evaluateInternalBallisticsInto(c.caliber, f, sample, c.timing);
+
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (c.background) ctx.drawImage(c.background, 0, 0);
+      ctx.setTransform(c.dpr, 0, 0, c.dpr, 0, 0);
+
+      // Live playhead inside the zoomed scope window
+      if (f >= c.fMin && f <= c.fMax) {
+        const x = fToX(c, r, f);
+        ctx.strokeStyle = C_CURSOR;
+        ctx.globalAlpha = 0.75;
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(x, r.y0);
+        ctx.lineTo(x, r.y1);
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+        const yP = r.y1 - (sample.pressureMPa / c.pAxisMax) * ph;
+        const yV = r.y1 - (sample.velocityMps / c.vAxisMax) * ph;
+        ctx.fillStyle = sample.isOverSafeUnlockThreshold
+          ? C_PRESSURE_HOT
+          : C_PRESSURE;
+        ctx.beginPath();
+        ctx.arc(x, yP, 3.4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = C_VELOCITY;
+        ctx.beginPath();
+        ctx.arc(x, yV, 3.2, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      // Full-cycle strip head
+      const sx = r.x0 + f * pw;
+      ctx.fillStyle = C_CURSOR;
+      ctx.fillRect(sx - 1, r.stripY - 2, 2, STRIP_H + 4);
+
+      // Imperative digital readouts (~20 Hz text refresh, zero React renders)
+      const phys = getArmoryPhysicsState();
+      const now = performance.now();
+      if (now - lastText > 48) {
+        lastText = now;
+        if (pRef.current)
+          pRef.current.textContent = formatFixed(sample.pressureMPa, 1);
+        if (vRef.current)
+          vRef.current.textContent = formatFixed(sample.velocityMps, 0);
+        if (eRef.current)
+          eRef.current.textContent = formatFixed(sample.energyJ, 0);
+        if (tRef.current)
+          tRef.current.textContent = formatFixed(phys.barrelTempC, 1);
+        if (nRef.current) nRef.current.textContent = String(phys.shotCount);
+        if (foulRef.current)
+          foulRef.current.textContent = formatFixed(phys.carbonFouling01 * 100, 0);
+      }
+      if (sample.phase !== lastPhase && phaseRef.current) {
+        lastPhase = sample.phase;
+        phaseRef.current.textContent = strings[PHASE_LABEL_KEY[sample.phase]];
+      }
+      if (sample.isOverSafeUnlockThreshold !== lastLocked && statusRef.current) {
+        lastLocked = sample.isOverSafeUnlockThreshold;
+        statusRef.current.textContent = lastLocked
+          ? strings.overPressure
+          : strings.safeToUnlock;
+        statusRef.current.style.color = lastLocked ? '#f87171' : '#4ade80';
+      }
+    };
+
+    const pointerToF = (clientX: number): number => {
+      const c = cache;
+      if (!c) return 0;
+      const rect = canvas.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const r = plotRect(c.cssW);
+      const u = Math.min(1, Math.max(0, (x - r.x0) / (r.x1 - r.x0)));
+      return dragMode === 2 ? u : c.fMin + u * (c.fMax - c.fMin);
+    };
+
+    const scrubTo = (clientX: number) => {
+      playbackClock.setFireProgress(pointerToF(clientX), true);
+    };
+
+    const onPointerDown = (e: PointerEvent) => {
+      const c = cache;
+      if (!c) return;
+      const rect = canvas.getBoundingClientRect();
+      const y = e.clientY - rect.top;
+      const r = plotRect(c.cssW);
+      dragMode = y >= r.stripY - 6 ? 2 : 1;
+      const st = useAppStore.getState();
+      if (st.isFiringPlaying) st.stopFiringPlay();
+      canvas.setPointerCapture(e.pointerId);
+      scrubTo(e.clientX);
+      e.preventDefault();
+    };
+    const onPointerMove = (e: PointerEvent) => {
+      if (dragMode === 0) return;
+      scrubTo(e.clientX);
+    };
+    const onPointerUp = (e: PointerEvent) => {
+      if (dragMode === 0) return;
+      dragMode = 0;
+      if (canvas.hasPointerCapture(e.pointerId)) {
+        canvas.releasePointerCapture(e.pointerId);
+      }
+    };
+
+    canvas.addEventListener('pointerdown', onPointerDown);
+    canvas.addEventListener('pointermove', onPointerMove);
+    canvas.addEventListener('pointerup', onPointerUp);
+    canvas.addEventListener('pointercancel', onPointerUp);
+    raf = requestAnimationFrame(draw);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      canvas.removeEventListener('pointerdown', onPointerDown);
+      canvas.removeEventListener('pointermove', onPointerMove);
+      canvas.removeEventListener('pointerup', onPointerUp);
+      canvas.removeEventListener('pointercancel', onPointerUp);
+    };
+  }, [visible, activeWeaponId, caliber, lang, zoomBore]);
+
+  if (!visible) return null;
+
+  const caliberLabel = lang === 'zh' ? spec.labelZh : spec.labelEn;
+
+  return (
+    <div
+      className={className}
+      style={style ? { ...ROOT_STYLE, ...style } : ROOT_STYLE}
+      data-testid="ballistics-telemetry-hud"
+    >
+      <div style={HEADER_STYLE}>
+        <span style={TITLE_STYLE}>{s.title}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <span style={SUB_STYLE}>
+            {caliberLabel} · {spec.standard} · {s.peak} {spec.peakPressureMPa} MPa ·{' '}
+            {s.muzzleVelocity} {spec.muzzleVelocityMps} m/s · {s.muzzleEnergy}{' '}
+            {Math.round(spec.muzzleEnergyJ).toLocaleString('en-US')} J
+          </span>
+          <button
+            type="button"
+            onClick={() => setZoomBore((z) => !z)}
+            style={{
+              fontSize: 9,
+              fontFamily: 'inherit',
+              fontWeight: 600,
+              padding: '2px 6px',
+              borderRadius: 4,
+              border: '1px solid rgba(251, 191, 36, 0.35)',
+              background: zoomBore
+                ? 'rgba(245, 158, 11, 0.24)'
+                : 'rgba(15, 23, 42, 0.85)',
+              color: zoomBore ? '#fde68a' : '#cbd5e1',
+              cursor: 'pointer',
+            }}
+          >
+            {zoomBore ? s.fullCycle : s.zoomBore}
+          </button>
+        </div>
+      </div>
+
+      <canvas
+        ref={canvasRef}
+        style={CANVAS_STYLE}
+        title={s.scrubHint}
+        aria-label={`${s.title} — ${s.scrubHint}`}
+        role="img"
+      />
+
+      <div style={READOUT_ROW_STYLE}>
+        <div style={CELL_STYLE}>
+          <span style={CELL_LABEL_STYLE}>{s.pressure} · MPa</span>
+          <span ref={pRef} style={{ ...CELL_VALUE_STYLE, color: C_PRESSURE }}>
+            0.0
+          </span>
+        </div>
+        <div style={CELL_STYLE}>
+          <span style={CELL_LABEL_STYLE}>{s.velocity} · m/s</span>
+          <span ref={vRef} style={{ ...CELL_VALUE_STYLE, color: C_VELOCITY }}>
+            0
+          </span>
+        </div>
+        <div style={CELL_STYLE}>
+          <span style={CELL_LABEL_STYLE}>{s.energy} · J</span>
+          <span ref={eRef} style={{ ...CELL_VALUE_STYLE, color: '#e2e8f0' }}>
+            0
+          </span>
+        </div>
+        <div style={CELL_STYLE}>
+          <span style={CELL_LABEL_STYLE}>{s.barrelTemp} · °C</span>
+          <span ref={tRef} style={{ ...CELL_VALUE_STYLE, color: '#fb923c' }}>
+            22.0
+          </span>
+        </div>
+        <div style={CELL_STYLE}>
+          <span style={CELL_LABEL_STYLE}>{s.fouling} · %</span>
+          <span ref={foulRef} style={{ ...CELL_VALUE_STYLE, color: '#a8a29e' }}>
+            0
+          </span>
+        </div>
+        <div style={CELL_STYLE}>
+          <span style={CELL_LABEL_STYLE}>{s.shots}</span>
+          <span ref={nRef} style={{ ...CELL_VALUE_STYLE, color: '#e2e8f0' }}>
+            0
+          </span>
+        </div>
+      </div>
+
+      <div style={STATUS_STYLE}>
+        <span ref={phaseRef} style={{ color: '#fbbf24' }}>
+          {s.phaseCocked}
+        </span>
+        <span ref={statusRef} style={{ color: '#4ade80' }}>
+          {s.safeToUnlock}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+export default BallisticsTelemetryHud;
