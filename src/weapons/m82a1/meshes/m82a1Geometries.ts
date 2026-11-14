@@ -33,6 +33,13 @@ import {
   M82_SPRING_STEEL,
   M82_TURRET_DRUM,
 } from './m82a1ExtraGeometries';
+import {
+  arrayAlongX,
+  buildDovetailBar,
+  buildHelicalLands,
+  buildStadiumPunchZ,
+  mergeCutters,
+} from './m82a1CadDetail';
 
 // ============================================================================
 // GROUP 1 ('slide'): RECOILING BARREL, ARROWHEAD BRAKE, UPPER, SCOPE & BOLT
@@ -64,18 +71,16 @@ export function buildM82MuzzleBrakeGeometry(): THREE.BufferGeometry {
   corePlan.lineTo(-0.26, 0.82); // Rear neck right
   corePlan.closePath();
 
+  // Core V-shaped arrowhead body in (X, Z), spanning Y ∈ [-0.53, +0.53] (tucked cleanly inside top/bottom plates)
   const brakeCore = new THREE.ExtrudeGeometry(corePlan, {
-    depth: 1.12,
-    bevelEnabled: true,
-    bevelThickness: 0.035,
-    bevelSize: 0.03,
-    bevelSegments: 2,
+    depth: 1.06,
+    bevelEnabled: false,
   });
   brakeCore.rotateX(Math.PI / 2);
-  brakeCore.translate(0, 0.56, 0);
+  brakeCore.translate(0, 0.53, 0);
   paintGeometry(brakeCore, M82_PARKERIZED);
 
-  // Distinct Top & Bottom Horizontal Baffle Plates (Y ∈ [±0.52, ±0.78]) framing the open side-vent chambers
+  // Distinct Top & Bottom Horizontal Baffle Plates (Y ∈ [±0.495, ±0.795]) framing the open side-vent chambers
   const platePlan = new THREE.Shape();
   platePlan.moveTo(-0.28, -0.86);
   platePlan.lineTo(-0.58, -1.54);
@@ -94,7 +99,7 @@ export function buildM82MuzzleBrakeGeometry(): THREE.BufferGeometry {
     bevelEnabled: true,
     bevelThickness: 0.025,
     bevelSize: 0.025,
-    bevelSegments: 2,
+    bevelSegments: 1,
   });
   topBafflePlate.rotateX(Math.PI / 2);
   topBafflePlate.translate(0, 0.77, 0);
@@ -105,82 +110,98 @@ export function buildM82MuzzleBrakeGeometry(): THREE.BufferGeometry {
     bevelEnabled: true,
     bevelThickness: 0.025,
     bevelSize: 0.025,
-    bevelSegments: 2,
+    bevelSegments: 1,
   });
   botBafflePlate.rotateX(Math.PI / 2);
   botBafflePlate.translate(0, -0.52, 0);
   paintGeometry(botBafflePlate, M82_CHAMFER_STEEL);
 
-  // Rear cylindrical threaded collar + bottom split-collar clamp block
-  const rearCollar = paintGeometry(
-    new THREE.CylinderGeometry(0.84, 0.84, 0.78, 28)
-      .rotateZ(Math.PI / 2)
-      .translate(-0.52, 0, 0),
-    M82_PARKERIZED
+  // Rear threaded barrel collar built as a clean closed hollow LatheGeometry (R_in=0.59, R_out=0.84) +
+  // twin split-collar clamping ears separated by a 0.08 kerf — eliminates 3 CSG passes & seam slivers!
+  const rearCollar = new THREE.LatheGeometry(
+    [
+      new THREE.Vector2(0.59, -0.91),
+      new THREE.Vector2(0.84, -0.91),
+      new THREE.Vector2(0.84, -0.13),
+      new THREE.Vector2(0.59, -0.13),
+      new THREE.Vector2(0.59, -0.91),
+    ],
+    28
   );
-  const clampLug = paintGeometry(
-    new THREE.BoxGeometry(0.74, 0.38, 0.68).translate(-0.54, -0.84, 0),
+  rearCollar.rotateZ(-Math.PI / 2);
+  paintGeometry(rearCollar, M82_PARKERIZED);
+
+  const clampEarL = paintGeometry(
+    new THREE.BoxGeometry(0.74, 0.38, 0.3).translate(-0.54, -0.84, -0.19),
+    M82_DARK_STEEL
+  );
+  const clampEarR = paintGeometry(
+    new THREE.BoxGeometry(0.74, 0.38, 0.3).translate(-0.54, -0.84, 0.19),
     M82_DARK_STEEL
   );
 
-  const rawBrake = csgUnion([
-    brakeCore,
-    topBafflePlate,
-    botBafflePlate,
-    rearCollar,
-    clampLug,
+  // Core CSG Cutters batched into 3 clean passes on the 40-tri arrowhead prism:
+  const centralBore = paintGeometry(
+    new THREE.CylinderGeometry(0.33, 0.33, 3.3, 24)
+      .rotateZ(Math.PI / 2)
+      .translate(0.95, 0, 0),
+    M82_INNER_DARK
+  );
+
+  const crownProfile = new THREE.LatheGeometry(
+    [
+      new THREE.Vector2(0.001, 2.18),
+      new THREE.Vector2(0.33, 2.18),
+      new THREE.Vector2(0.45, 2.38), // 11° recessed blast crown cone
+      new THREE.Vector2(0.49, 2.38), // Stepped crown land
+      new THREE.Vector2(0.49, 2.5),
+      new THREE.Vector2(0.001, 2.5),
+    ],
+    24
+  );
+  crownProfile.rotateZ(-Math.PI / 2);
+  const axialPlenums = mergeCutters([
+    paintGeometry(
+      new THREE.CylinderGeometry(0.59, 0.59, 0.5, 24)
+        .rotateZ(Math.PI / 2)
+        .translate(-0.42, 0, 0),
+      M82_INNER_DARK
+    ),
+    paintGeometry(
+      new THREE.CylinderGeometry(0.48, 0.44, 0.56, 22)
+        .rotateZ(Math.PI / 2)
+        .translate(0.2, 0, 0),
+      M82_INNER_DARK
+    ),
+    paintGeometry(
+      new THREE.CylinderGeometry(0.46, 0.42, 0.54, 22)
+        .rotateZ(Math.PI / 2)
+        .translate(1.31, 0, 0),
+      M82_INNER_DARK
+    ),
+    paintGeometry(crownProfile, M82_INNER_DARK),
   ]);
 
-  // CSG Cutters:
-  // 1) Central .50 BMG bullet passage (R = 0.33), recessed front exit dish & rear threaded barrel socket (R = 0.59)
-  // 2) Two deep 33° rearward-swept V-chambers piercing left (-Z) & right (+Z) between the top/bottom horizontal plates
-  // 3) Top/bottom horizontal plate pressure-equalizing oblong slots & bottom clamp split kerf
-  const cutters: THREE.BufferGeometry[] = [
-    paintGeometry(
-      new THREE.CylinderGeometry(0.33, 0.33, 4.1, 24)
-        .rotateZ(Math.PI / 2)
-        .translate(0.7, 0, 0),
-      M82_INNER_DARK
-    ),
-    paintGeometry(
-      new THREE.CylinderGeometry(0.46, 0.33, 0.26, 24)
-        .rotateZ(Math.PI / 2)
-        .translate(2.36, 0, 0),
-      M82_INNER_DARK
-    ),
-    paintGeometry(
-      new THREE.CylinderGeometry(0.59, 0.59, 0.92, 24)
-        .rotateZ(Math.PI / 2)
-        .translate(-0.66, 0, 0),
-      M82_INNER_DARK
-    ),
-    // Split kerf along bottom clamping collar
-    paintGeometry(
-      new THREE.BoxGeometry(0.82, 0.55, 0.08).translate(-0.54, -0.82, 0),
-      M82_INNER_DARK
-    ),
-  ];
-
-  // Swept-back Chamber 1 (rear) & Chamber 2 (front) on Left (-1) and Right (+1), leaving a thick central V-baffle rib
+  const chamberCutters: THREE.BufferGeometry[] = [];
+  const ventCutters: THREE.BufferGeometry[] = [];
   for (const side of [-1, 1]) {
-    cutters.push(
+    chamberCutters.push(
       paintGeometry(
-        new THREE.BoxGeometry(0.74, 1.04, 1.85)
+        new THREE.BoxGeometry(0.74, 1.12, 1.92)
           .rotateY(side * 0.58)
-          .translate(0.22, 0, side * 0.98),
+          .translate(0.2, 0, side * 0.94),
         M82_INNER_DARK
       ),
       paintGeometry(
-        new THREE.BoxGeometry(0.68, 1.04, 1.62)
+        new THREE.BoxGeometry(0.68, 1.12, 1.68)
           .rotateY(side * 0.58)
-          .translate(1.34, 0, side * 0.88),
+          .translate(1.33, 0, side * 0.85),
         M82_INNER_DARK
       )
     );
 
-    // Angled pressure-equalizing vent slots through top & bottom horizontal baffle plates
-    for (const vx of [0.3, 1.38]) {
-      cutters.push(
+    for (const vx of [0.28, 1.36]) {
+      ventCutters.push(
         paintGeometry(
           new THREE.BoxGeometry(0.38, 1.95, 0.24)
             .rotateY(side * 0.56)
@@ -191,17 +212,47 @@ export function buildM82MuzzleBrakeGeometry(): THREE.BufferGeometry {
     }
   }
 
-  const carved = csgSubtract(rawBrake, cutters);
+  const carvedCore = csgSubtract(brakeCore, [
+    centralBore,
+    axialPlenums,
+    mergeCutters(chamberCutters),
+  ]);
+  const carvedPlates = csgSubtract(
+    mergeCutters([topBafflePlate, botBafflePlate]),
+    [
+      mergeCutters([
+        ...ventCutters,
+        paintGeometry(
+          new THREE.CylinderGeometry(0.59, 0.59, 0.92, 22)
+            .rotateZ(Math.PI / 2)
+            .translate(-0.66, 0, 0),
+          M82_INNER_DARK
+        ),
+      ]),
+    ]
+  );
 
-  // Hexagonal barrel jam nut (X ∈ [-1.02, -0.86]), stainless timing shims / peel washer,
-  // clamp socket bolts, and 8-groove rifling lands visible inside the front bore throat!
+  // True 6-flat hexagonal barrel jam nut (X ∈ [-1.03, -0.87], max Y = 0.86) + chamfer bevel collar,
+  // stainless peel-washer stack, internal baffle jet-stripper ring, socket clamp bolts, and
+  // 8 helical .50 BMG rifling lands visible inside the barrel socket / crown throat!
   const details: THREE.BufferGeometry[] = [
-    carved,
+    carvedCore,
+    carvedPlates,
+    rearCollar,
+    clampEarL,
+    clampEarR,
     paintGeometry(
-      new THREE.CylinderGeometry(0.86, 0.86, 0.16, 8)
+      new THREE.CylinderGeometry(0.86, 0.86, 0.14, 6)
         .rotateZ(Math.PI / 2)
+        .rotateX(Math.PI / 6)
         .translate(-0.95, 0, 0),
       M82_BOLT_STEEL
+    ),
+    paintGeometry(
+      new THREE.CylinderGeometry(0.81, 0.81, 0.16, 28)
+        .rotateZ(Math.PI / 2)
+        .translate(-0.95, 0, 0),
+      M82_CHAMFER_STEEL
     ),
     paintGeometry(
       new THREE.CylinderGeometry(0.76, 0.76, 0.05, 28)
@@ -215,32 +266,65 @@ export function buildM82MuzzleBrakeGeometry(): THREE.BufferGeometry {
         .translate(-0.85, 0, 0),
       M82_BRIGHT_STEEL
     ),
+    // Machined stainless jet-stripper aperture ring on the central V-splitter baffle bore
     paintGeometry(
-      new THREE.CylinderGeometry(0.085, 0.085, 0.78, 12)
-        .rotateX(Math.PI / 2)
-        .translate(-0.72, -0.84, 0),
-      M82_BRIGHT_STEEL
-    ),
-    paintGeometry(
-      new THREE.CylinderGeometry(0.085, 0.085, 0.78, 12)
-        .rotateX(Math.PI / 2)
-        .translate(-0.36, -0.84, 0),
-      M82_BRIGHT_STEEL
+      new THREE.TorusGeometry(0.345, 0.022, 8, 24)
+        .rotateY(Math.PI / 2)
+        .translate(0.76, 0, 0),
+      M82_BOLT_STEEL
     ),
   ];
 
-  // 8 subtle .50 BMG rifling lands inside the muzzle crown throat (X ∈ [-0.25, +0.25])
-  for (let r = 0; r < 8; r++) {
-    const ang = (r * Math.PI) / 4;
+  // Recessed socket-head clamp bolts + hex nuts on bottom split clamping lug
+  for (const bx of [-0.72, -0.36]) {
     details.push(
       paintGeometry(
-        new THREE.BoxGeometry(0.65, 0.032, 0.055)
-          .translate(0, 0.315, 0)
-          .rotateX(ang),
+        new THREE.CylinderGeometry(0.082, 0.082, 0.76, 12)
+          .rotateX(Math.PI / 2)
+          .translate(bx, -0.84, 0),
+        M82_BRIGHT_STEEL
+      ),
+      paintGeometry(
+        new THREE.CylinderGeometry(0.125, 0.125, 0.09, 14)
+          .rotateX(Math.PI / 2)
+          .translate(bx, -0.84, -0.38),
+        M82_BOLT_STEEL
+      ),
+      paintGeometry(
+        new THREE.CylinderGeometry(0.125, 0.125, 0.08, 6)
+          .rotateX(Math.PI / 2)
+          .translate(bx, -0.84, 0.38),
         M82_BOLT_STEEL
       )
     );
   }
+
+  // Internal female thread rings inside rear socket + 8 helical .50 BMG throat rifling lands
+  for (const tx of [-0.88, -0.68, -0.48]) {
+    details.push(
+      paintGeometry(
+        new THREE.TorusGeometry(0.585, 0.018, 6, 24)
+          .rotateY(Math.PI / 2)
+          .translate(tx, 0, 0),
+        M82_BOLT_STEEL
+      )
+    );
+  }
+  details.push(
+    paintGeometry(
+      buildHelicalLands({
+        count: 8,
+        boreRadius: 0.33,
+        height: 0.026,
+        halfAngle: 0.095,
+        x0: -0.22,
+        x1: 0.32,
+        twist: (Math.PI * 2) / 38.1,
+        segments: 4,
+      }),
+      M82_BOLT_STEEL
+    )
+  );
 
   return mergeParts(details);
 }
@@ -270,29 +354,39 @@ export function buildM82BarrelGeometry(): THREE.BufferGeometry {
     new THREE.Vector2(0.74, 29.92), // Muzzle swell & timing shim shoulder
     new THREE.Vector2(0.74, 30.58), // Abuts muzzle brake jam-nut/shims at 30.55
     new THREE.Vector2(0.58, 30.61), // Threaded 7/8"-14UNF muzzle tenon inside brake collar
-    new THREE.Vector2(0.58, 31.45),
-    new THREE.Vector2(0.38, 31.45),
-    new THREE.Vector2(0.3, 31.32), // Recessed 11° target muzzle crown dish
+    new THREE.Vector2(0.58, 31.43),
+    new THREE.Vector2(0.56, 31.45), // 45° crown edge break
+    new THREE.Vector2(0.47, 31.45), // Flat crown land
+    new THREE.Vector2(0.47, 31.415), // Recessed crown step
+    // True 11° target crown: (0.47 - 0.285) · tan(11°) ≈ 0.036 deep cone into the bore
+    new THREE.Vector2(0.285, 31.379),
+    // ---- closed hollow profile: 12.7 mm bore runs back to the chamber ----
+    new THREE.Vector2(0.285, 8.25),
+    new THREE.Vector2(0.305, 8.0), // Leade / freebore throat cone
+    new THREE.Vector2(0.305, 7.62), // Case neck
+    new THREE.Vector2(0.4, 7.24), // .50 BMG case shoulder
+    new THREE.Vector2(0.43, 4.35), // Tapered case body
+    new THREE.Vector2(0.47, 4.2), // Breech face chamfer / extractor relief
+    new THREE.Vector2(0.42, 4.15),
   ];
   const outerLathe = new THREE.LatheGeometry(pts, 36);
   outerLathe.rotateZ(-Math.PI / 2);
   paintGeometry(outerLathe, M82_PARKERIZED);
+  // Dark bore / chamber walls (inner faces of the closed lathe)
+  {
+    const pos = outerLathe.getAttribute('position');
+    const col = outerLathe.getAttribute('color');
+    const dark = new THREE.Color(M82_INNER_DARK);
+    for (let i = 0; i < pos.count; i++) {
+      const r = Math.hypot(pos.getY(i), pos.getZ(i));
+      const x = pos.getX(i);
+      if (r < 0.475 && x > 4.17 && x < 31.42) {
+        col.setXYZ(i, dark.r, dark.g, dark.b);
+      }
+    }
+  }
 
-  const cutters: THREE.BufferGeometry[] = [
-    // Full-length 12.7mm (.50 cal) bore + bottleneck .50 BMG chamber cavity
-    paintGeometry(
-      new THREE.CylinderGeometry(0.285, 0.285, 28.0, 22)
-        .rotateZ(Math.PI / 2)
-        .translate(17.9, 0, 0),
-      M82_INNER_DARK
-    ),
-    paintGeometry(
-      new THREE.CylinderGeometry(0.38, 0.49, 3.65, 22)
-        .rotateZ(Math.PI / 2)
-        .translate(5.98, 0, 0),
-      M82_INNER_DARK
-    ),
-  ];
+  const cutters: THREE.BufferGeometry[] = [];
 
   // 8 deep longitudinal CNC flutes forward of front bushing + 8 aligned rear cooling flutes + spanner notches on locking collar
   for (let k = 0; k < 8; k++) {
@@ -333,7 +427,8 @@ export function buildM82BarrelGeometry(): THREE.BufferGeometry {
     }
   }
 
-  const flutedBarrel = csgSubtract(outerLathe, cutters);
+  // All 16 flutes + 4 spanner notches are mutually disjoint -> ONE merged CSG brush
+  const flutedBarrel = csgSubtract(outerLathe, [mergeCutters(cutters)]);
 
   const subParts: THREE.BufferGeometry[] = [
     flutedBarrel,
@@ -352,18 +447,39 @@ export function buildM82BarrelGeometry(): THREE.BufferGeometry {
     ),
   ];
 
-  // 8 internal .50 BMG rifling lands inside muzzle bore (X ∈ [28.6, 31.32])
-  for (let r = 0; r < 8; r++) {
-    const ang = (r * Math.PI) / 4 + 0.12;
-    subParts.push(
-      paintGeometry(
-        new THREE.BoxGeometry(2.65, 0.028, 0.05)
-          .translate(29.96, 0.272, 0)
-          .rotateX(ang),
-        M82_BOLT_STEEL
-      )
-    );
-  }
+  // 8 helical .50 BMG rifling lands (1:15" = 38.1 cm right-hand twist) swept through the
+  // muzzle bore (X ∈ [27.4, 31.37]) and the leade ahead of the chamber (X ∈ [8.3, 10.6])
+  const twist = (Math.PI * 2) / 38.1;
+  subParts.push(
+    paintGeometry(
+      buildHelicalLands({
+        count: 8,
+        boreRadius: 0.285,
+        height: 0.03,
+        halfAngle: 0.1,
+        x0: 27.4,
+        x1: 31.37,
+        twist,
+        segments: 10,
+        phase: 0.12,
+      }),
+      M82_BOLT_STEEL
+    ),
+    paintGeometry(
+      buildHelicalLands({
+        count: 8,
+        boreRadius: 0.285,
+        height: 0.03,
+        halfAngle: 0.1,
+        x0: 8.3,
+        x1: 10.6,
+        twist,
+        segments: 6,
+        phase: 0.12,
+      }),
+      M82_BOLT_STEEL
+    )
+  );
 
   return mergeParts(subParts);
 }
@@ -393,53 +509,18 @@ export function buildM82BarrelExtensionGeometry(): THREE.BufferGeometry {
     M82_DARK_STEEL
   );
 
+  // springAnchorCollar (+1.92) and acceleratorTripBlock (-2.12) are disjoint -> merge into 1 brush
   const solid = csgUnion([
     outerSleeve,
     keyRail,
-    springAnchorCollar,
-    acceleratorTripBlock,
+    mergeCutters([springAnchorCollar, acceleratorTripBlock]),
   ]);
 
-  // Hollow internal bore + 3-lug raceway channels + right ejection relief + polished dual feed ramp
-  const cutters: THREE.BufferGeometry[] = [
-    paintGeometry(
-      new THREE.CylinderGeometry(0.68, 0.68, 5.2, 26)
-        .rotateZ(Math.PI / 2)
-        .translate(-0.2, 0, 0),
-      M82_INNER_DARK
-    ),
-    // Internal locking lug abutment ring pocket (X_local ∈ [-1.65, -0.75])
-    paintGeometry(
-      new THREE.CylinderGeometry(0.83, 0.83, 0.92, 26)
-        .rotateZ(Math.PI / 2)
-        .translate(-1.2, 0, 0),
-      M82_INNER_DARK
-    ),
-    // Right-side extractor/ejection clearance cutout
-    paintGeometry(
-      new THREE.BoxGeometry(1.65, 0.78, 0.85).translate(-1.55, 0.14, 0.68),
-      M82_INNER_DARK
-    ),
-    // Bolt cam-pin entry clearance slot
-    paintGeometry(
-      new THREE.BoxGeometry(1.35, 0.48, 0.48)
-        .rotateY(-0.38)
-        .translate(-1.85, 0.68, 0.12),
-      M82_INNER_DARK
-    ),
-    // Polished .50 BMG feed ramp throat at bottom rear
-    paintGeometry(
-      new THREE.BoxGeometry(1.48, 0.68, 0.94)
-        .rotateZ(0.38)
-        .translate(-2.08, -0.68, 0),
-      M82_BRIGHT_STEEL
-    ),
-  ];
-
-  // Three 120°-spaced rear bolt-lug entry raceways (X_local ∈ [-2.75, -1.55])
+  //Three 120°-spaced rear bolt-lug entry raceways (X_local ∈ [-2.75, -1.55]) — mutually disjoint!
+  const lugRaceways: THREE.BufferGeometry[] = [];
   for (let i = 0; i < 3; i++) {
     const ang = (i * Math.PI * 2) / 3 + Math.PI / 2;
-    cutters.push(
+    lugRaceways.push(
       paintGeometry(
         new THREE.BoxGeometry(1.28, 0.46, 0.44)
           .translate(-2.12, 0.64, 0)
@@ -449,23 +530,75 @@ export function buildM82BarrelExtensionGeometry(): THREE.BufferGeometry {
     );
   }
 
-  const extensionBody = csgSubtract(solid, cutters);
-
-  // Left & Right stainless spring-anchor pins at X_local = +1.96 (world X = 7.36), Z = ±0.84
-  const anchorPinL = paintGeometry(
-    new THREE.CylinderGeometry(0.085, 0.085, 0.68, 12).translate(
-      1.96,
-      0,
-      -0.84
+  const extensionBody = csgSubtract(solid, [
+    paintGeometry(
+      new THREE.CylinderGeometry(0.68, 0.68, 5.2, 28)
+        .rotateZ(Math.PI / 2)
+        .translate(-0.2, 0, 0),
+      M82_INNER_DARK
     ),
-    M82_BRIGHT_STEEL
-  );
-  const anchorPinR = paintGeometry(
-    new THREE.CylinderGeometry(0.085, 0.085, 0.68, 12).translate(1.96, 0, 0.84),
-    M82_BRIGHT_STEEL
+    paintGeometry(
+      new THREE.CylinderGeometry(0.83, 0.83, 0.92, 28)
+        .rotateZ(Math.PI / 2)
+        .translate(-1.2, 0, 0),
+      M82_INNER_DARK
+    ),
+    mergeCutters(lugRaceways),
+    // Right-side ejection relief & bottom feed-ramp throat are disjoint in Y/Z
+    mergeCutters([
+      paintGeometry(
+        new THREE.BoxGeometry(1.65, 0.78, 0.85).translate(-1.55, 0.14, 0.68),
+        M82_INNER_DARK
+      ),
+      paintGeometry(
+        new THREE.BoxGeometry(1.48, 0.68, 0.94)
+          .rotateZ(0.38)
+          .translate(-2.08, -0.68, 0),
+        M82_BRIGHT_STEEL
+      ),
+    ]),
+    paintGeometry(
+      new THREE.BoxGeometry(1.35, 0.48, 0.48)
+        .rotateY(-0.38)
+        .translate(-1.85, 0.68, 0.12),
+      M82_INNER_DARK
+    ),
+  ]);
+
+  // 3 hardened internal locking abutment lugs (120°-spaced between raceways at X_local = -1.92) +
+  // Left & Right stainless spring-anchor pins at X_local = +1.96 (world X = 7.36), Z = ±0.84
+  const extParts: THREE.BufferGeometry[] = [extensionBody];
+  for (let i = 0; i < 3; i++) {
+    const ang = (i * Math.PI * 2) / 3 + Math.PI / 6;
+    extParts.push(
+      paintGeometry(
+        new THREE.BoxGeometry(0.38, 0.18, 0.34)
+          .translate(-1.92, 0.74, 0)
+          .rotateX(ang),
+        M82_BOLT_STEEL
+      )
+    );
+  }
+  extParts.push(
+    paintGeometry(
+      new THREE.CylinderGeometry(0.085, 0.085, 0.68, 12).translate(
+        1.96,
+        0,
+        -0.84
+      ),
+      M82_BRIGHT_STEEL
+    ),
+    paintGeometry(
+      new THREE.CylinderGeometry(0.085, 0.085, 0.68, 12).translate(
+        1.96,
+        0,
+        0.84
+      ),
+      M82_BRIGHT_STEEL
+    )
   );
 
-  return mergeParts([extensionBody, anchorPinL, anchorPinR]);
+  return mergeParts(extParts);
 }
 
 /**
@@ -537,71 +670,70 @@ export function buildM82UpperReceiverGeometry(): THREE.BufferGeometry {
   crossSec.lineTo(1.16, 0.2); // Vertical right wall
   crossSec.closePath();
 
+  // Subdivide along X (`steps: 32`) so BVH leaves isolate each forend cooling vent instead of
+  // splitting one 37.3-unit triangle across all 14 vents simultaneously (3.5x faster CSG!).
   const rawUpper = new THREE.ExtrudeGeometry(crossSec, {
     depth: 37.3,
+    steps: 32,
     bevelEnabled: true,
     bevelThickness: 0.03,
     bevelSize: 0.03,
-    bevelSegments: 2,
+    bevelSegments: 1,
   });
   rawUpper.rotateY(Math.PI / 2);
   rawUpper.translate(-20.8, 0, 0);
   paintGeometry(rawUpper, M82_PARKERIZED);
 
-  // Hollow interior tunnel + massive .50 BMG right-side ejection port + charging handle slot + 28 oblong cooling vents
-  const cutters: THREE.BufferGeometry[] = [
-    paintGeometry(
-      new THREE.BoxGeometry(36.7, 2.02, 1.94).translate(-2.15, 1.15, 0),
-      M82_INNER_DARK
-    ),
-    // Front barrel passage bore
-    paintGeometry(
-      new THREE.CylinderGeometry(0.82, 0.82, 2.2, 24)
-        .rotateZ(Math.PI / 2)
-        .translate(16.1, 1.25, 0),
-      M82_INNER_DARK
-    ),
-    // Massive 12.7x99mm (.50 BMG) Right-Side Ejection Port (X ∈ [2.15, 7.85])
-    paintGeometry(
-      new THREE.BoxGeometry(5.7, 1.24, 1.1).translate(5.0, 1.32, 0.85),
-      M82_INNER_DARK
-    ),
-    // Right-Side Reciprocating Charging Handle Track Slot (X ∈ [-7.05, 2.25], clears full -7.60u carrier stroke!)
-    paintGeometry(
-      new THREE.BoxGeometry(9.3, 0.5, 1.1).translate(-2.4, 1.25, 0.85),
-      M82_INNER_DARK
-    ),
-  ];
-
-  // Signature Barrett Ventilated Forend: 2 rows x 7 true oblong stadium cooling vents per side (28 total, X ∈ [8.35, 15.35])!
+  // Signature Barrett Ventilated Forend: 2 rows x 7 true oblong stadium cooling vents per side
+  // (28 openings total, X ∈ [8.35, 15.35]) — ALL 14 thru-punches are mutually disjoint in X & Y!
+  const ventCutters: THREE.BufferGeometry[] = [];
   for (let i = 0; i < 7; i++) {
     const vx = 8.5 + i * 1.1;
-    // Upper sloped-shoulder row of oblong vents
-    cutters.push(
+    ventCutters.push(
       paintGeometry(
-        new THREE.CapsuleGeometry(0.18, 0.42, 4, 10)
-          .rotateZ(Math.PI / 2)
-          .scale(1, 1, 8.5)
-          .translate(vx, 1.98, 0),
+        buildStadiumPunchZ(0.21, 0.18, 1.35, 6).translate(vx, 1.98, 0),
         M82_INNER_DARK
-      )
-    );
-    // Lower side-wall row of oblong vents
-    cutters.push(
+      ),
       paintGeometry(
-        new THREE.CapsuleGeometry(0.19, 0.46, 4, 10)
-          .rotateZ(Math.PI / 2)
-          .scale(1, 1, 8.5)
-          .translate(vx, 1.06, 0),
+        buildStadiumPunchZ(0.23, 0.19, 1.35, 6).translate(vx, 1.06, 0),
         M82_INNER_DARK
       )
     );
   }
 
-  const upperShell = csgSubtract(rawUpper, cutters);
+  const upperShell = csgSubtract(rawUpper, [
+    // Interior tunnel (-20.5..+16.2), front barrel bore (+15.0..+17.2), ejection port & charging slot
+    paintGeometry(
+      new THREE.BoxGeometry(36.7, 2.02, 1.94, 24, 1, 1).translate(
+        -2.15,
+        1.15,
+        0
+      ),
+      M82_INNER_DARK
+    ),
+    mergeCutters([
+      paintGeometry(
+        new THREE.CylinderGeometry(0.82, 0.82, 2.2, 24)
+          .rotateZ(Math.PI / 2)
+          .translate(16.1, 1.25, 0),
+        M82_INNER_DARK
+      ),
+      // Massive 12.7x99mm (.50 BMG) Right-Side Ejection Port (X ∈ [2.15, 7.85])
+      paintGeometry(
+        new THREE.BoxGeometry(5.7, 1.24, 1.1).translate(5.0, 1.32, 0.85),
+        M82_INNER_DARK
+      ),
+    ]),
+    // Right-Side Reciprocating Charging Handle Track Slot (X ∈ [-7.05, 2.25])
+    paintGeometry(
+      new THREE.BoxGeometry(9.3, 0.5, 1.1).translate(-2.4, 1.25, 0.85),
+      M82_INNER_DARK
+    ),
+    mergeCutters(ventCutters),
+  ]);
   const subParts: THREE.BufferGeometry[] = [upperShell];
 
-  // Welded lower split-seam reinforcement strips along left & right edges
+  // Welded lower split-seam reinforcement strips + internal bolt-carrier guide rails
   for (const side of [-1, 1]) {
     subParts.push(
       paintGeometry(
@@ -611,25 +743,36 @@ export function buildM82UpperReceiverGeometry(): THREE.BufferGeometry {
           side * 1.17
         ),
         M82_DARK_STEEL
+      ),
+      paintGeometry(
+        new THREE.BoxGeometry(19.5, 0.12, 0.09).translate(
+          -1.8,
+          1.45,
+          side * 0.91
+        ),
+        M82_CHAMFER_STEEL
       )
     );
   }
 
-  // Front Nylatron-lined barrel guide bushing collar (X = +16.28, Y = +1.25) + internal spring anchor blocks
-  const bushingOuter = paintGeometry(
-    new THREE.CylinderGeometry(1.03, 1.05, 0.78, 28)
-      .rotateZ(Math.PI / 2)
-      .translate(16.28, 1.25, 0),
-    M82_DARK_STEEL
+  // Front Nylatron-lined barrel guide bushing collar (X = +16.28, Y = +1.25) built as a zero-CSG hollow lathe
+  const bushingLathe = new THREE.LatheGeometry(
+    [
+      new THREE.Vector2(0.765, 15.89),
+      new THREE.Vector2(1.05, 15.89),
+      new THREE.Vector2(1.05, 16.05),
+      new THREE.Vector2(1.01, 16.12), // Machined relief groove
+      new THREE.Vector2(1.03, 16.58),
+      new THREE.Vector2(0.98, 16.67), // Front chamfered rim
+      new THREE.Vector2(0.765, 16.67),
+      new THREE.Vector2(0.765, 15.89),
+    ],
+    28
   );
-  const bushingHole = paintGeometry(
-    new THREE.CylinderGeometry(0.765, 0.765, 1.15, 26)
-      .rotateZ(Math.PI / 2)
-      .translate(16.28, 1.25, 0),
-    M82_INNER_DARK
-  );
+  bushingLathe.rotateZ(-Math.PI / 2);
+  bushingLathe.translate(0, 1.25, 0);
   subParts.push(
-    csgSubtract(bushingOuter, [bushingHole]),
+    paintGeometry(bushingLathe, M82_DARK_STEEL),
     paintGeometry(
       new THREE.TorusGeometry(0.84, 0.055, 8, 24)
         .rotateY(Math.PI / 2)
@@ -650,39 +793,64 @@ export function buildM82UpperReceiverGeometry(): THREE.BufferGeometry {
     );
   }
 
-  // Full-Length 27-MOA MIL-STD-1913 Picatinny Top Rail (X ∈ [-14.4, +15.85], Y ∈ [2.42, 2.74])
+  // Full-Length 27-MOA MIL-STD-1913 Picatinny Top Rail w/ authentic 45° dovetail flank bevels!
+  // Base riser spine (X ∈ [-14.43, +15.87], Y ∈ [2.41, 2.58]) + 36 dovetail recoil lugs (Y ∈ [2.56, 2.74], Z ∈ [-0.54, +0.54])
   subParts.push(
     paintGeometry(
-      new THREE.BoxGeometry(30.3, 0.18, 0.86).translate(0.72, 2.5, 0),
+      buildDovetailBar({
+        xStart: -14.43,
+        length: 30.3,
+        yBottom: 2.41,
+        yTop: 2.58,
+        halfWidthBottom: 0.45,
+        halfWidthMax: 0.49,
+        topChamfer: 0.055,
+      }),
       M82_DARK_STEEL
     )
   );
+  const lugXs: number[] = [];
   for (let s = 0; s < 36; s++) {
-    const rx = -13.95 + s * 0.84;
-    subParts.push(
-      paintGeometry(
-        new THREE.BoxGeometry(0.46, 0.16, 1.08).translate(rx, 2.66, 0),
-        M82_CHAMFER_STEEL
-      )
-    );
+    lugXs.push(-13.95 + s * 0.84);
   }
+  const dovetailLugTemplate = paintGeometry(
+    buildDovetailBar({
+      xStart: -0.23,
+      length: 0.46,
+      yBottom: 2.56,
+      yTop: 2.74,
+      halfWidthBottom: 0.43,
+      halfWidthMax: 0.54,
+      topChamfer: 0.055,
+    }),
+    M82_CHAMFER_STEEL
+  );
+  subParts.push(arrayAlongX(dovetailLugTemplate, lugXs));
 
-  // 1) Folding Hooded Backup Front Iron Sight at X = +15.35 (pivot base, detent pin, protective hood & post)
-  const frontHoodOuter = paintGeometry(
-    new THREE.CylinderGeometry(0.39, 0.39, 0.54, 22)
-      .rotateZ(Math.PI / 2)
-      .translate(15.35, 3.18, 0),
-    M82_DARK_STEEL
+  // 1) Folding Hooded Backup Front Iron Sight at X = +15.35 (zero-CSG hollow lathe hood, max Y = 3.566)
+  const frontHoodLathe = new THREE.LatheGeometry(
+    [
+      new THREE.Vector2(0.29, 15.08),
+      new THREE.Vector2(0.386, 15.08),
+      new THREE.Vector2(0.386, 15.62),
+      new THREE.Vector2(0.29, 15.62),
+      new THREE.Vector2(0.29, 15.08),
+    ],
+    22
   );
-  const frontHoodHole = paintGeometry(
-    new THREE.CylinderGeometry(0.29, 0.29, 0.78, 20)
-      .rotateZ(Math.PI / 2)
-      .translate(15.35, 3.18, 0),
-    M82_INNER_DARK
-  );
+  frontHoodLathe.rotateZ(-Math.PI / 2);
+  frontHoodLathe.translate(0, 3.18, 0);
   subParts.push(
     paintGeometry(
-      new THREE.BoxGeometry(0.76, 0.24, 0.88).translate(15.35, 2.82, 0),
+      buildDovetailBar({
+        xStart: 14.97,
+        length: 0.76,
+        yBottom: 2.7,
+        yTop: 2.94,
+        halfWidthBottom: 0.4,
+        halfWidthMax: 0.46,
+        topChamfer: 0.04,
+      }),
       M82_DARK_STEEL
     ),
     paintGeometry(
@@ -691,7 +859,7 @@ export function buildM82UpperReceiverGeometry(): THREE.BufferGeometry {
         .translate(15.35, 2.82, 0),
       M82_BRIGHT_STEEL
     ),
-    csgSubtract(frontHoodOuter, [frontHoodHole]),
+    paintGeometry(frontHoodLathe, M82_DARK_STEEL),
     paintGeometry(
       new THREE.CylinderGeometry(0.042, 0.055, 0.34, 10).translate(
         15.35,
@@ -702,7 +870,7 @@ export function buildM82UpperReceiverGeometry(): THREE.BufferGeometry {
     )
   );
 
-  // 2) Folding Rear Backup Peep Iron Sight at X = -13.8 (hinge base, windage knob & folded peep aperture leaf)
+  // 2) Folding Rear Backup Peep Iron Sight at X = -13.8 (hinge base, knurled windage drum & peep leaf)
   const rearLeafRaw = paintGeometry(
     new THREE.BoxGeometry(1.18, 0.16, 0.56).translate(-14.32, 2.94, 0),
     M82_PARKERIZED
@@ -713,7 +881,15 @@ export function buildM82UpperReceiverGeometry(): THREE.BufferGeometry {
   );
   subParts.push(
     paintGeometry(
-      new THREE.BoxGeometry(0.84, 0.24, 0.92).translate(-13.8, 2.84, 0),
+      buildDovetailBar({
+        xStart: -14.22,
+        length: 0.84,
+        yBottom: 2.72,
+        yTop: 2.96,
+        halfWidthBottom: 0.42,
+        halfWidthMax: 0.48,
+        topChamfer: 0.04,
+      }),
       M82_DARK_STEEL
     ),
     paintGeometry(
@@ -725,13 +901,27 @@ export function buildM82UpperReceiverGeometry(): THREE.BufferGeometry {
     csgSubtract(rearLeafRaw, [rearPeepHole])
   );
 
-  // Angled steel brass deflector block behind right-side .50 BMG ejection port
+  // Stamped ejection-port flange reinforcement + multi-facet angled steel .50 BMG brass deflector (max Z = 1.47)
+  const deflPlan = new THREE.Shape();
+  deflPlan.moveTo(1.38, 1.02);
+  deflPlan.lineTo(2.14, 1.02);
+  deflPlan.lineTo(1.98, 1.45); // Angled brass-kiss Strike face
+  deflPlan.lineTo(1.52, 1.38);
+  deflPlan.closePath();
+  const deflectorGeo = new THREE.ExtrudeGeometry(deflPlan, {
+    depth: 0.94,
+    bevelEnabled: true,
+    bevelThickness: 0.02,
+    bevelSize: 0.02,
+    bevelSegments: 2,
+  });
+  deflectorGeo.rotateX(Math.PI / 2);
+  deflectorGeo.translate(0, 1.79, 0);
   subParts.push(
+    paintGeometry(deflectorGeo, M82_DARK_STEEL),
     paintGeometry(
-      new THREE.BoxGeometry(0.82, 0.96, 0.34)
-        .rotateY(0.38)
-        .translate(1.82, 1.32, 1.16),
-      M82_DARK_STEEL
+      new THREE.BoxGeometry(5.86, 0.1, 0.08).translate(5.0, 1.98, 1.12),
+      M82_CHAMFER_STEEL
     )
   );
 
@@ -959,16 +1149,31 @@ export function buildM82ScopeRingsGeometry(): THREE.BufferGeometry {
   const parts: THREE.BufferGeometry[] = [];
 
   for (const rx of [-3.35, 3.05]) {
-    const baseBlock = paintGeometry(
-      new THREE.BoxGeometry(1.36, 0.96, 1.34).translate(rx, 0.36, 0),
-      M82_DARK_STEEL
-    );
+    // Tapered CNC saddle pedestal w/ lower 45° Picatinny dovetail clamp jaws
+    const baseProfile = new THREE.Shape();
+    baseProfile.moveTo(-0.56, -0.02);
+    baseProfile.lineTo(0.56, -0.02);
+    baseProfile.lineTo(0.67, 0.12);
+    baseProfile.lineTo(0.67, 0.78);
+    baseProfile.lineTo(0.58, 0.86);
+    baseProfile.lineTo(-0.58, 0.86);
+    baseProfile.lineTo(-0.67, 0.78);
+    baseProfile.lineTo(-0.67, 0.12);
+    baseProfile.closePath();
+    const baseBlock = new THREE.ExtrudeGeometry(baseProfile, {
+      depth: 1.36,
+      bevelEnabled: false,
+    });
+    baseBlock.rotateY(Math.PI / 2);
+    baseBlock.translate(rx - 0.68, 0, 0);
+    paintGeometry(baseBlock, M82_DARK_STEEL);
+
     const recoilLug = paintGeometry(
       new THREE.BoxGeometry(0.36, 0.18, 1.08).translate(rx, -0.06, 0),
       M82_DARK_STEEL
     );
     const ringOuter = paintGeometry(
-      new THREE.CylinderGeometry(0.84, 0.84, 1.32, 30)
+      new THREE.CylinderGeometry(0.84, 0.84, 1.32, 32)
         .rotateZ(Math.PI / 2)
         .translate(rx, 1.36, 0),
       M82_DARK_STEEL
@@ -977,45 +1182,64 @@ export function buildM82ScopeRingsGeometry(): THREE.BufferGeometry {
       new THREE.BoxGeometry(1.32, 0.26, 1.92).translate(rx, 1.36, 0),
       M82_CHAMFER_STEEL
     );
-    const ringSolid = csgUnion([baseBlock, recoilLug, ringOuter, capFlange]);
+    const ringSolid = csgUnion([
+      baseBlock,
+      mergeCutters([recoilLug, capFlange]),
+      ringOuter,
+    ]);
 
     const scopeBore = paintGeometry(
-      new THREE.CylinderGeometry(0.565, 0.565, 1.65, 30)
+      new THREE.CylinderGeometry(0.565, 0.565, 1.65, 32)
         .rotateZ(Math.PI / 2)
         .translate(rx, 1.36, 0),
       M82_INNER_DARK
     );
-    const capSplitGap = paintGeometry(
-      new THREE.BoxGeometry(1.45, 0.04, 2.05).translate(rx, 1.36, 0),
-      M82_INNER_DARK
-    );
-    const weightHole = paintGeometry(
-      new THREE.CylinderGeometry(0.2, 0.2, 1.6, 16)
-        .rotateX(Math.PI / 2)
-        .translate(rx, 0.5, 0),
-      M82_INNER_DARK
-    );
-    parts.push(csgSubtract(ringSolid, [scopeBore, capSplitGap, weightHole]));
+    // capSplitGap (Y=1.36) and weightHole (Y=0.50) are disjoint in Y -> merge into 1 brush
+    const splitAndHole = mergeCutters([
+      paintGeometry(
+        new THREE.BoxGeometry(1.45, 0.04, 2.05).translate(rx, 1.36, 0),
+        M82_INNER_DARK
+      ),
+      paintGeometry(
+        new THREE.CylinderGeometry(0.22, 0.22, 1.6, 18)
+          .rotateX(Math.PI / 2)
+          .translate(rx, 0.5, 0),
+        M82_INNER_DARK
+      ),
+    ]);
+    parts.push(csgSubtract(ringSolid, [scopeBore, splitAndHole]));
 
-    // Heavy 1/2" hex rail clamp nut + 6 stainless Torx cap screws (3 per side)
+    // Heavy 1/2" hex rail clamp nut + cross-bolt + 6 stainless Torx cap screws w/ dark socket recesses
     parts.push(
       paintGeometry(
         new THREE.CylinderGeometry(0.22, 0.22, 1.62, 6)
           .rotateX(Math.PI / 2)
           .translate(rx, 0.1, 0),
         M82_BRIGHT_STEEL
+      ),
+      paintGeometry(
+        new THREE.BoxGeometry(1.34, 0.2, 0.12).translate(rx, 0.1, -0.72),
+        M82_CHAMFER_STEEL
       )
     );
     for (const sx of [-0.42, 0, 0.42]) {
       for (const sz of [-0.78, 0.78]) {
         parts.push(
           paintGeometry(
-            new THREE.CylinderGeometry(0.072, 0.072, 0.36, 10).translate(
+            new THREE.CylinderGeometry(0.076, 0.076, 0.36, 12).translate(
               rx + sx,
               1.42,
               sz
             ),
             M82_BRIGHT_STEEL
+          ),
+          paintGeometry(
+            new THREE.CylinderGeometry(0.042, 0.042, 0.03, 6).translate(
+              rx + sx,
+              1.595,
+              sz
+            ),
+            M82_INNER_DARK
           )
         );
       }
@@ -1027,15 +1251,31 @@ export function buildM82ScopeRingsGeometry(): THREE.BufferGeometry {
 
 /**
  * U-09: Machined Steel Bolt Carrier w/ Helical Cam Slot, Accelerator Arm Linkage Clevis & Charging Handle
- * (assembledPos: [-1.2, 1.25, 0], spans local X ∈ [-5.42, +3.60] -> world X ∈ [-6.62, +2.40])
+ * (assembledPos: [-1.2, 1.25, 0], spans local X ∈ [-5.72, +3.445] -> world X ∈ [-6.92, +2.245])
  */
 export function buildM82BoltCarrierGeometry(): THREE.BufferGeometry {
-  const mainBlock = paintGeometry(
-    new THREE.BoxGeometry(8.25, 1.38, 1.58).translate(-0.68, 0, 0),
-    M82_DARK_STEEL
-  );
+  // Machined octagonal-beveled CNC steel carrier cross-section in (Z, Y), extruded over X ∈ [-4.805, +3.445]
+  const carrierSec = new THREE.Shape();
+  carrierSec.moveTo(-0.65, -0.69);
+  carrierSec.lineTo(0.65, -0.69);
+  carrierSec.lineTo(0.79, -0.55);
+  carrierSec.lineTo(0.79, 0.49);
+  carrierSec.lineTo(0.59, 0.69); // 45° upper octagonal carrier shoulder bevels
+  carrierSec.lineTo(-0.59, 0.69);
+  carrierSec.lineTo(-0.79, 0.49);
+  carrierSec.lineTo(-0.79, -0.55);
+  carrierSec.closePath();
+
+  const mainBlock = new THREE.ExtrudeGeometry(carrierSec, {
+    depth: 8.25,
+    bevelEnabled: false,
+  });
+  mainBlock.rotateY(Math.PI / 2);
+  mainBlock.translate(-4.805, 0, 0);
+  paintGeometry(mainBlock, M82_DARK_STEEL);
+
   const rearBufferTail = paintGeometry(
-    new THREE.CylinderGeometry(0.56, 0.58, 1.44, 24)
+    new THREE.CylinderGeometry(0.56, 0.58, 1.44, 26)
       .rotateZ(Math.PI / 2)
       .translate(-5.0, 0, 0),
     M82_BOLT_STEEL
@@ -1045,61 +1285,84 @@ export function buildM82BoltCarrierGeometry(): THREE.BufferGeometry {
     new THREE.BoxGeometry(1.12, 0.62, 1.24).translate(-2.2, -0.66, 0),
     M82_DARK_STEEL
   );
-  const rawCarrier = csgUnion([mainBlock, rearBufferTail, accelClevis]);
+  // rearBufferTail (-5.72..-4.28) and accelClevis (-2.76..-1.64) are disjoint in X -> 1 union brush!
+  const rawCarrier = csgUnion([
+    mainBlock,
+    mergeCutters([rearBufferTail, accelClevis]),
+  ]);
 
-  // Bolt stem bore + helical cam slot + side receiver guide rails + accelerator linkage slot + striker slot
-  const cutters: THREE.BufferGeometry[] = [
-    paintGeometry(
-      new THREE.CylinderGeometry(0.53, 0.53, 4.9, 24)
-        .rotateZ(Math.PI / 2)
-        .translate(1.5, 0, 0),
-      M82_INNER_DARK
-    ),
-    // Helical cam-pin track driving 60° 3-lug bolt rotation
-    paintGeometry(
-      new THREE.BoxGeometry(1.62, 0.56, 0.52)
-        .rotateY(0.52)
-        .translate(2.05, 0.58, 0.16),
-      M82_INNER_DARK
-    ),
-    // Left & right longitudinal guide rail channels
-    paintGeometry(
-      new THREE.BoxGeometry(6.8, 0.38, 0.28).translate(-1.0, 0.2, -0.82),
-      M82_INNER_DARK
-    ),
-    paintGeometry(
-      new THREE.BoxGeometry(5.2, 0.38, 0.28).translate(-1.8, 0.2, 0.82),
-      M82_INNER_DARK
-    ),
-    // Full-length bottom clearance channel (X_local ∈ [-4.95, +3.65], roof worldY = +0.97) so recoiling carrier glides cleanly over upright striker (worldY <= +0.85)
-    paintGeometry(
-      new THREE.BoxGeometry(8.6, 0.82, 0.64).translate(-0.65, -0.69, 0),
-      M82_INNER_DARK
-    ),
-    // Upper pocket around X_local = -2.25 housing the accelerator arm upper linkage roller
-    paintGeometry(
-      new THREE.BoxGeometry(1.45, 1.22, 0.64).translate(-2.25, -0.15, 0),
-      M82_INNER_DARK
-    ),
-  ];
+  // Batch disjoint cutters:
+  //  - Group 1: front bolt-stem bore (+1.50) + rear accelerator roller pocket (-2.25) [disjoint in X]
+  //  - Group 2: left/right longitudinal receiver guide rail slots + sand-relief cuts [disjoint in Z/Y]
+  //  - Group 3: full-length bottom striker clearance channel (-0.69) + upper helical cam-pin slot (+0.58) [disjoint in Y]
+  const carrierBody = csgSubtract(rawCarrier, [
+    mergeCutters([
+      paintGeometry(
+        new THREE.CylinderGeometry(0.53, 0.53, 3.89, 26)
+          .rotateZ(Math.PI / 2)
+          .translate(1.5, 0, 0),
+        M82_INNER_DARK
+      ),
+      paintGeometry(
+        new THREE.BoxGeometry(1.45, 1.22, 0.64).translate(-2.25, -0.15, 0),
+        M82_INNER_DARK
+      ),
+    ]),
+    mergeCutters([
+      paintGeometry(
+        new THREE.BoxGeometry(6.8, 0.38, 0.28).translate(-1.0, 0.18, -0.82),
+        M82_INNER_DARK
+      ),
+      paintGeometry(
+        new THREE.BoxGeometry(5.2, 0.38, 0.28).translate(-1.8, 0.18, 0.82),
+        M82_INNER_DARK
+      ),
+      // Machined sand/debris lightening fullers along upper side walls
+      paintGeometry(
+        new THREE.BoxGeometry(5.6, 0.18, 0.1).translate(-0.9, 0.46, -0.78),
+        M82_CHAMFER_STEEL
+      ),
+      paintGeometry(
+        new THREE.BoxGeometry(4.4, 0.18, 0.1).translate(-1.5, 0.46, 0.78),
+        M82_CHAMFER_STEEL
+      ),
+    ]),
+    mergeCutters([
+      paintGeometry(
+        new THREE.BoxGeometry(8.4, 0.82, 0.64).translate(-0.65, -0.69, 0),
+        M82_INNER_DARK
+      ),
+      paintGeometry(
+        new THREE.BoxGeometry(1.62, 0.56, 0.52)
+          .rotateY(0.52)
+          .translate(2.05, 0.58, 0.16),
+        M82_INNER_DARK
+      ),
+    ]),
+  ]);
 
-  const carrierBody = csgSubtract(rawCarrier, cutters);
+  // Hollowed cylindrical grooved Right-Side Charging Handle (LatheGeometry w/ recessed tip cup, Z <= 2.215) +
+  // stainless accelerator linkage cross-pin
+  const handleLathe = new THREE.LatheGeometry(
+    [
+      new THREE.Vector2(0.001, 0.7),
+      new THREE.Vector2(0.23, 0.7),
+      new THREE.Vector2(0.19, 1.16),
+      new THREE.Vector2(0.29, 1.2),
+      new THREE.Vector2(0.29, 2.02),
+      new THREE.Vector2(0.25, 2.04),
+      new THREE.Vector2(0.16, 2.04),
+      new THREE.Vector2(0.16, 1.88), // Hollow lightened charging knob recess
+      new THREE.Vector2(0.001, 1.88),
+    ],
+    24
+  );
+  handleLathe.rotateX(Math.PI / 2);
+  handleLathe.translate(2.35, 0, 0);
 
-  // Heavy cylindrical grooved Right-Side Charging Handle + stainless accelerator linkage cross-pin
   const subParts: THREE.BufferGeometry[] = [
     carrierBody,
-    paintGeometry(
-      new THREE.CylinderGeometry(0.19, 0.23, 0.56, 16)
-        .rotateX(Math.PI / 2)
-        .translate(2.35, 0, 0.98),
-      M82_DARK_STEEL
-    ),
-    paintGeometry(
-      new THREE.CylinderGeometry(0.29, 0.29, 0.86, 22)
-        .rotateX(Math.PI / 2)
-        .translate(2.35, 0, 1.6),
-      M82_PARKERIZED
-    ),
+    paintGeometry(handleLathe, M82_PARKERIZED),
     paintGeometry(
       new THREE.CylinderGeometry(0.14, 0.14, 1.32, 14)
         .rotateX(Math.PI / 2)
@@ -1182,23 +1445,44 @@ export function buildM82AcceleratorGeometry(): THREE.BufferGeometry {
  * (assembledPos: [2.4, 1.25, 0], spans local X ∈ [-1.85, +1.80] -> world X ∈ [0.55, 4.20])
  */
 export function buildM82BoltGeometry(): THREE.BufferGeometry {
-  const stem = paintGeometry(
-    new THREE.CylinderGeometry(0.48, 0.48, 3.15, 26)
-      .rotateZ(Math.PI / 2)
-      .translate(-0.26, 0, 0),
-    M82_BRIGHT_STEEL
+  // Precision stepped CNC bolt stem w/ rear firing-pin bore, gas/sand seal rings & neck relief undercut
+  const stemLathe = new THREE.LatheGeometry(
+    [
+      new THREE.Vector2(0.18, -1.835),
+      new THREE.Vector2(0.46, -1.835),
+      new THREE.Vector2(0.48, -1.78),
+      new THREE.Vector2(0.48, -1.08),
+      new THREE.Vector2(0.445, -1.06), // Twin oil/debris relief ring #1
+      new THREE.Vector2(0.445, -0.96),
+      new THREE.Vector2(0.48, -0.94),
+      new THREE.Vector2(0.48, -0.82),
+      new THREE.Vector2(0.445, -0.8), // Twin oil/debris relief ring #2
+      new THREE.Vector2(0.445, -0.7),
+      new THREE.Vector2(0.48, -0.68),
+      new THREE.Vector2(0.48, 0.78),
+      new THREE.Vector2(0.435, 0.82), // Locking-lug neck relief undercut
+      new THREE.Vector2(0.435, 1.0),
+      new THREE.Vector2(0.18, 1.0),
+      new THREE.Vector2(0.18, -1.835),
+    ],
+    28
   );
+  stemLathe.rotateZ(-Math.PI / 2);
+  paintGeometry(stemLathe, M82_BRIGHT_STEEL);
 
   // Rounded equilateral-triangular 3-lug .50 BMG bolt head profile in (Z, Y) extruded along X ∈ [1.02, 1.80]
+  // with crisp radial lug shoulders & anti-bind crest relief scallops
   const triHead = new THREE.Shape();
   const lugCount = 3;
   const rOuter = 0.82;
-  const rRoot = 0.57;
+  const rRoot = 0.565;
   for (let i = 0; i < lugCount; i++) {
     const baseAng = (i * Math.PI * 2) / 3 - Math.PI / 2;
     const a0 = baseAng - 0.36;
-    const a1 = baseAng - 0.24;
-    const a2 = baseAng + 0.24;
+    const a1 = baseAng - 0.25;
+    const aMidL = baseAng - 0.065;
+    const aMidR = baseAng + 0.065;
+    const a2 = baseAng + 0.25;
     const a3 = baseAng + 0.36;
     const nextRoot = baseAng + (Math.PI * 2) / 3 - 0.36;
 
@@ -1209,15 +1493,30 @@ export function buildM82BoltGeometry(): THREE.BufferGeometry {
 
     triHead.lineTo(Math.cos(a1) * rOuter, Math.sin(a1) * rOuter);
     triHead.quadraticCurveTo(
-      Math.cos(baseAng) * (rOuter + 0.055),
-      Math.sin(baseAng) * (rOuter + 0.055),
+      Math.cos(baseAng - 0.14) * (rOuter + 0.032),
+      Math.sin(baseAng - 0.14) * (rOuter + 0.032),
+      Math.cos(aMidL) * (rOuter + 0.015),
+      Math.sin(aMidL) * (rOuter + 0.015)
+    );
+    // Subtle anti-bind longitudinal sand-relief groove along lug crest
+    triHead.lineTo(
+      Math.cos(baseAng) * (rOuter - 0.022),
+      Math.sin(baseAng) * (rOuter - 0.022)
+    );
+    triHead.lineTo(
+      Math.cos(aMidR) * (rOuter + 0.015),
+      Math.sin(aMidR) * (rOuter + 0.015)
+    );
+    triHead.quadraticCurveTo(
+      Math.cos(baseAng + 0.14) * (rOuter + 0.032),
+      Math.sin(baseAng + 0.14) * (rOuter + 0.032),
       Math.cos(a2) * rOuter,
       Math.sin(a2) * rOuter
     );
     triHead.lineTo(Math.cos(a3) * rRoot, Math.sin(a3) * rRoot);
     triHead.quadraticCurveTo(
-      Math.cos(baseAng + Math.PI / 3) * (rRoot * 1.03),
-      Math.sin(baseAng + Math.PI / 3) * (rRoot * 1.03),
+      Math.cos(baseAng + Math.PI / 3) * (rRoot * 1.025),
+      Math.sin(baseAng + Math.PI / 3) * (rRoot * 1.025),
       Math.cos(nextRoot) * rRoot,
       Math.sin(nextRoot) * rRoot
     );
@@ -1235,7 +1534,43 @@ export function buildM82BoltGeometry(): THREE.BufferGeometry {
   headGeo.translate(1.02, 0, 0);
   paintGeometry(headGeo, M82_BRIGHT_STEEL);
 
-  // Helical Bolt Cam Pin + rectangular cam guide shoe at X_local = -0.35, Y = +0.58
+  // Carve recessed .50 BMG bolt face cup (20.4mm rim!), central firing-pin hole, counterbored dual ejector
+  // plunger wells (Y = ±0.15, Z = -0.24), and right-side pivoting extractor mortise into headGeo ONLY!
+  const hollowedHead = csgSubtract(headGeo, [
+    paintGeometry(
+      new THREE.CylinderGeometry(0.455, 0.455, 0.2, 28)
+        .rotateZ(Math.PI / 2)
+        .translate(1.75, 0, 0),
+      M82_INNER_DARK
+    ),
+    // Firing-pin aperture (Y=0,Z=0), dual ejector plunger counterbores (Z=-0.24), and extractor mortise (Z=+0.56) are mutually disjoint!
+    mergeCutters([
+      paintGeometry(
+        new THREE.CylinderGeometry(0.078, 0.078, 0.72, 14)
+          .rotateZ(Math.PI / 2)
+          .translate(1.42, 0, 0),
+        M82_INNER_DARK
+      ),
+      paintGeometry(
+        new THREE.CylinderGeometry(0.088, 0.088, 0.34, 14)
+          .rotateZ(Math.PI / 2)
+          .translate(1.56, 0.15, -0.24),
+        M82_INNER_DARK
+      ),
+      paintGeometry(
+        new THREE.CylinderGeometry(0.088, 0.088, 0.34, 14)
+          .rotateZ(Math.PI / 2)
+          .translate(1.56, -0.15, -0.24),
+        M82_INNER_DARK
+      ),
+      paintGeometry(
+        new THREE.BoxGeometry(1.22, 0.32, 0.3).translate(1.25, 0.08, 0.57),
+        M82_INNER_DARK
+      ),
+    ]),
+  ]);
+
+  // Helical Bolt Cam Pin + rectangular cam guide shoe at X_local = -0.35, Y = +0.58 + rear firing-pin retainer pin
   const camPin = paintGeometry(
     new THREE.CylinderGeometry(0.17, 0.17, 0.58, 16).translate(-0.35, 0.56, 0),
     M82_DARK_STEEL
@@ -1244,58 +1579,71 @@ export function buildM82BoltGeometry(): THREE.BufferGeometry {
     new THREE.BoxGeometry(0.42, 0.16, 0.38).translate(-0.35, 0.82, 0),
     M82_BOLT_STEEL
   );
-
-  const solidBolt = mergeParts([stem, headGeo, camPin, camShoe]);
-
-  // Recessed .50 BMG bolt face cup (20.4mm rim!) + firing-pin aperture + right extractor pocket
-  const cutters: THREE.BufferGeometry[] = [
-    paintGeometry(
-      new THREE.CylinderGeometry(0.45, 0.45, 0.22, 24)
-        .rotateZ(Math.PI / 2)
-        .translate(1.74, 0, 0),
-      M82_INNER_DARK
-    ),
-    paintGeometry(
-      new THREE.CylinderGeometry(0.08, 0.08, 0.6, 12)
-        .rotateZ(Math.PI / 2)
-        .translate(1.62, 0, 0),
-      M82_INNER_DARK
-    ),
-    paintGeometry(
-      new THREE.BoxGeometry(1.22, 0.32, 0.28).translate(1.24, 0.08, 0.56),
-      M82_INNER_DARK
-    ),
-  ];
-  const hollowedBolt = csgSubtract(solidBolt, cutters);
-
-  // Heavy right-side pivoting Claw Extractor + Dual left bolt-face Plunger Ejectors
-  const extractor = paintGeometry(
-    new THREE.BoxGeometry(1.18, 0.26, 0.22).translate(1.22, 0.08, 0.54),
+  const retainerPin = paintGeometry(
+    new THREE.CylinderGeometry(0.055, 0.055, 0.92, 10)
+      .rotateX(Math.PI / 2)
+      .translate(-1.42, 0.18, 0),
     M82_DARK_STEEL
   );
-  const extractorHook = paintGeometry(
-    new THREE.BoxGeometry(0.14, 0.28, 0.18).translate(1.76, 0.08, 0.44),
-    M82_DARK_STEEL
+
+  // Contoured pivoting heavy Claw Extractor in (X, Z) w/ undercut .50 BMG rim-hook bevel & pivot pin!
+  const extPlan = new THREE.Shape();
+  extPlan.moveTo(0.65, 0.44);
+  extPlan.lineTo(1.66, 0.44);
+  extPlan.lineTo(1.68, 0.35); // Undercut rim-biting claw hook throat
+  extPlan.lineTo(1.83, 0.35);
+  extPlan.lineTo(1.908, 0.46); // Angled cartridge-rim snap-over feed bevel
+  extPlan.lineTo(1.86, 0.64);
+  extPlan.lineTo(1.28, 0.66); // Pivoting extractor fulcrum swell
+  extPlan.lineTo(0.65, 0.61);
+  extPlan.closePath();
+  const extractorGeo = new THREE.ExtrudeGeometry(extPlan, {
+    depth: 0.25,
+    bevelEnabled: true,
+    bevelThickness: 0.015,
+    bevelSize: 0.012,
+    bevelSegments: 1,
+  });
+  extractorGeo.rotateX(Math.PI / 2);
+  extractorGeo.translate(0, 0.205, 0);
+  paintGeometry(extractorGeo, M82_DARK_STEEL);
+
+  const extractorPivotPin = paintGeometry(
+    new THREE.CylinderGeometry(0.052, 0.052, 0.36, 10).translate(
+      1.28,
+      0.08,
+      0.56
+    ),
+    M82_BRIGHT_STEEL
   );
-  const ejectorTop = paintGeometry(
-    new THREE.CylinderGeometry(0.072, 0.072, 0.26, 12)
-      .rotateZ(Math.PI / 2)
-      .translate(1.68, 0.15, -0.24),
-    M82_BOLT_STEEL
-  );
-  const ejectorBot = paintGeometry(
-    new THREE.CylinderGeometry(0.072, 0.072, 0.26, 12)
-      .rotateZ(Math.PI / 2)
-      .translate(1.68, -0.15, -0.24),
-    M82_BOLT_STEEL
-  );
+
+  // Dual spring-loaded rounded-tip Plunger Ejectors seated inside the bolt-face counterbores
+  const buildEjectorPlunger = (yOff: number) => {
+    const p = new THREE.LatheGeometry(
+      [
+        new THREE.Vector2(0.001, 1.48),
+        new THREE.Vector2(0.068, 1.48),
+        new THREE.Vector2(0.068, 1.77),
+        new THREE.Vector2(0.052, 1.805),
+        new THREE.Vector2(0.001, 1.815),
+      ],
+      14
+    );
+    p.rotateZ(-Math.PI / 2);
+    p.translate(0, yOff, -0.24);
+    return paintGeometry(p, M82_BOLT_STEEL);
+  };
 
   return mergeParts([
-    hollowedBolt,
-    extractor,
-    extractorHook,
-    ejectorTop,
-    ejectorBot,
+    stemLathe,
+    hollowedHead,
+    camPin,
+    camShoe,
+    retainerPin,
+    extractorGeo,
+    extractorPivotPin,
+    buildEjectorPlunger(0.15),
+    buildEjectorPlunger(-0.15),
   ]);
 }
 

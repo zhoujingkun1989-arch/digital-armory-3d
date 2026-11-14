@@ -11,6 +11,7 @@ import {
   mergeParts,
   paintGeometry,
 } from '../../../engine/geometry/csgBuilder';
+import { extrudeAlongX, latheAlongX, mergeCutters } from './mp5CadDetail';
 
 const HK_DARK_STEEL = '#454f5e';
 const HK_STEEL_HIGHLIGHT = '#586476';
@@ -240,10 +241,21 @@ export function buildMp5BoltCarrierGeometry(): THREE.BufferGeometry {
  * Spans X_local in [-0.85, +0.90] => world X in [0.90, 2.65], roller windows at X_local = +0.40 (world 2.15)!
  */
 export function buildMp5BoltHeadGeometry(): THREE.BufferGeometry {
-  const mainBody = paintGeometry(
-    new THREE.BoxGeometry(1.75, 0.82, 0.84).translate(0.025, 0, 0),
-    HK_CHROME_STEEL
-  );
+  // Radiused-corner bolt-head forging (Z ±0.42, Y ±0.41, R0.16 corners) with chamfered edges
+  const hw = 0.42;
+  const hh = 0.41;
+  const rc = 0.16;
+  const section = new THREE.Shape();
+  section.moveTo(-hw + rc, -hh);
+  section.lineTo(hw - rc, -hh);
+  section.quadraticCurveTo(hw, -hh, hw, -hh + rc);
+  section.lineTo(hw, hh - rc);
+  section.quadraticCurveTo(hw, hh, hw - rc, hh);
+  section.lineTo(-hw + rc, hh);
+  section.quadraticCurveTo(-hw, hh, -hw, hh - rc);
+  section.lineTo(-hw, -hh + rc);
+  section.quadraticCurveTo(-hw, -hh, -hw + rc, -hh);
+  const mainBody = extrudeAlongX(section, -0.85, 1.75, HK_CHROME_STEEL, 0.035, 4);
   // Bottom cartridge-stripping lug
   const stripLug = paintGeometry(
     new THREE.BoxGeometry(1.35, 0.14, 0.26).translate(0.18, -0.44, 0.08),
@@ -251,79 +263,85 @@ export function buildMp5BoltHeadGeometry(): THREE.BufferGeometry {
   );
   const rawHead = csgUnion([mainBody, stripLug]);
 
-  // Cutters:
-  // 1) Internal 45-deg locking-piece wedge pocket
-  const wedgePocket = paintGeometry(
-    new THREE.BoxGeometry(1.42, 0.56, 0.52).translate(-0.2, 0, 0),
+  // Cutters (grouped into non-overlapping merged brushes -> 3 CSG passes instead of 7):
+  //  G1: 45° locking-piece wedge pocket + chamfered 9×19mm breech cup + extractor wire-spring channel
+  //  G2: bilateral roller windows (Ø8mm rollers protrude from both flanks)
+  //  G3: firing-pin aperture + right stepped extractor seat + left-bottom ejector blade slot
+  const g1 = mergeCutters(
+    [
+      new THREE.BoxGeometry(1.42, 0.56, 0.52).translate(-0.2, 0, 0),
+      new THREE.CylinderGeometry(0.27, 0.305, 0.2, 28)
+        .rotateZ(Math.PI / 2)
+        .translate(0.86, 0, 0),
+      new THREE.BoxGeometry(0.95, 0.12, 0.12).translate(0.05, 0.08, 0.39),
+    ],
     HK_INNER_DARK
   );
-  // 2) Bilateral rectangular roller windows (so the two Ø8mm cylindrical rollers protrude from bolt head sides!)
-  const rollerWinSlot = paintGeometry(
+  const g2 = paintGeometry(
     new THREE.BoxGeometry(0.42, 0.62, 1.12).translate(0.4, 0, 0),
     HK_INNER_DARK
   );
-  // 3) Recessed 9×19mm breech face cup + central firing-pin aperture bore!
-  const breechCup = paintGeometry(
-    new THREE.CylinderGeometry(0.285, 0.285, 0.2, 22)
-      .rotateZ(Math.PI / 2)
-      .translate(0.86, 0, 0),
+  const g3 = mergeCutters(
+    [
+      new THREE.CylinderGeometry(0.06, 0.06, 0.55, 14)
+        .rotateZ(Math.PI / 2)
+        .translate(0.68, 0, 0),
+      new THREE.BoxGeometry(0.82, 0.26, 0.18).translate(0.52, 0.08, 0.37),
+      new THREE.BoxGeometry(1.9, 0.28, 0.15).translate(0.02, -0.32, -0.18),
+    ],
     HK_INNER_DARK
   );
-  const firingPinHole = paintGeometry(
-    new THREE.CylinderGeometry(0.06, 0.06, 0.55, 14)
-      .rotateZ(Math.PI / 2)
-      .translate(0.68, 0, 0),
-    HK_INNER_DARK
-  );
-  // 4) Right-side stepped extractor & wire-spring milled cut (+Z flank)!
-  const extractorCut = paintGeometry(
-    new THREE.BoxGeometry(0.82, 0.26, 0.18).translate(0.52, 0.08, 0.37),
-    HK_INNER_DARK
-  );
-  const extractorSpringCut = paintGeometry(
-    new THREE.BoxGeometry(0.95, 0.12, 0.12).translate(0.05, 0.08, 0.39),
-    HK_INNER_DARK
-  );
-  // 5) Full-length left-bottom longitudinal ejector blade slot (-Z flank)!
-  const ejectorGroove = paintGeometry(
-    new THREE.BoxGeometry(1.9, 0.28, 0.15).translate(0.02, -0.32, -0.18),
-    HK_INNER_DARK
-  );
+  const boltShell = csgSubtract(rawHead, [g1, g2, g3]);
 
-  const boltShell = csgSubtract(rawHead, [
-    wedgePocket,
-    rollerWinSlot,
-    breechCup,
-    firingPinHole,
-    extractorCut,
-    extractorSpringCut,
-    ejectorGroove,
-  ]);
-
-  // Hardened steel extractor claw w/ inward rim hook + Copper-beryllium HK wire extractor spring + Roller retainer pin!
-  const extractorClaw = paintGeometry(
-    new THREE.BoxGeometry(0.68, 0.2, 0.13).translate(0.56, 0.08, 0.37),
-    HK_DARK_STEEL
-  );
+  // Hardened extractor claw (profiled: tapered nose + undercut hook catching the 9mm rim)
+  const clawProfile = new THREE.Shape();
+  clawProfile.moveTo(0.22, -0.1);
+  clawProfile.lineTo(0.84, -0.1);
+  clawProfile.lineTo(0.92, -0.04);
+  clawProfile.lineTo(0.92, 0.06);
+  clawProfile.lineTo(0.84, 0.1);
+  clawProfile.lineTo(0.22, 0.1);
+  clawProfile.closePath();
+  const extractorClaw = new THREE.ExtrudeGeometry(clawProfile, {
+    depth: 0.13,
+    bevelEnabled: false,
+  });
+  extractorClaw.translate(0, 0.08, 0.305);
+  paintGeometry(extractorClaw, HK_DARK_STEEL);
   const extractorHook = paintGeometry(
-    new THREE.BoxGeometry(0.12, 0.2, 0.2).translate(0.86, 0.08, 0.32),
+    new THREE.BoxGeometry(0.1, 0.18, 0.14).translate(0.86, 0.08, 0.29),
     HK_DARK_STEEL
   );
   const extractorSpringWire = paintGeometry(
-    new THREE.BoxGeometry(0.78, 0.065, 0.075).translate(0.08, 0.08, 0.41),
+    new THREE.CylinderGeometry(0.034, 0.034, 0.78, 10)
+      .rotateZ(Math.PI / 2)
+      .translate(0.08, 0.08, 0.41),
     HK_COPPER
   );
   const retainerPin = paintGeometry(
     new THREE.CylinderGeometry(0.048, 0.048, 0.83, 12).translate(0.68, 0, 0.26),
     HK_DARK_STEEL
   );
-
+  // Firing-pin bushing collar standing proud of the cup floor
+  const pinBushing = latheAlongX(
+    [
+      [0.06, 0.755],
+      [0.095, 0.755],
+      [0.095, 0.77],
+      [0.08, 0.78],
+      [0.06, 0.78],
+      [0.06, 0.755],
+    ],
+    20,
+    HK_BRIGHT_STEEL
+  );
   return mergeParts([
     boltShell,
     extractorClaw,
     extractorHook,
     extractorSpringWire,
     retainerPin,
+    pinBushing,
   ]);
 }
 
@@ -1019,21 +1037,56 @@ export function buildMp5MagBodyGeometry(): THREE.BufferGeometry {
       )
     );
   }
-  const sculptedMag = csgSubtract(rawMag, ribCutters);
+  // Throat, 12 flank flutes and 3 witness holes never overlap -> ONE merged brush, one CSG pass
+  const sculptedMag = csgSubtract(rawMag, [
+    mergeCutters(ribCutters, HK_INNER_DARK),
+  ]);
 
-  // Open Left & Right Curved Stamped Steel Double-Stack Feed Lips + Stop Collar + Rear Paddle Catch Lug!
-  const feedLipL = paintGeometry(
-    new THREE.BoxGeometry(1.66, 0.24, 0.18)
-      .rotateX(0.28)
-      .translate(0.02, 1.24, -0.34),
-    HK_BRIGHT_STEEL
-  );
-  const feedLipR = paintGeometry(
-    new THREE.BoxGeometry(1.66, 0.24, 0.18)
-      .rotateX(-0.28)
-      .translate(0.02, 1.24, 0.34),
-    HK_BRIGHT_STEEL
-  );
+  // Open Left & Right rolled double-stack feed lips: stamped wall rising out of the flank and
+  // curling inward over the top round (Z tip ±0.19), with chamfered ends.
+  const feedLip = (s: 1 | -1): THREE.BufferGeometry => {
+    const lip = new THREE.Shape();
+    lip.moveTo(s * 0.47, 1.02);
+    lip.lineTo(s * 0.47, 1.24);
+    lip.quadraticCurveTo(s * 0.47, 1.375, s * 0.3, 1.378);
+    lip.lineTo(s * 0.2, 1.37);
+    lip.quadraticCurveTo(s * 0.18, 1.34, s * 0.2, 1.312);
+    lip.lineTo(s * 0.29, 1.318);
+    lip.quadraticCurveTo(s * 0.41, 1.31, s * 0.41, 1.22);
+    lip.lineTo(s * 0.41, 1.02);
+    lip.closePath();
+    return extrudeAlongX(lip, -0.81, 1.66, HK_BRIGHT_STEEL, 0.025, 6);
+  };
+  const feedLipL = feedLip(-1);
+  const feedLipR = feedLip(1);
+
+  // Twin stamped longitudinal stiffening beads pressed into each flank, following the R=16 arc
+  const flankBeads: THREE.BufferGeometry[] = [];
+  for (const rBead of [15.4, 16.6]) {
+    const arcPts: THREE.Vector3[] = [];
+    for (let i = 0; i <= 16; i++) {
+      const ang = 0.12 + (i / 16) * 0.38;
+      arcPts.push(
+        new THREE.Vector3(
+          MAG_CX - Math.cos(ang) * rBead,
+          MAG_CY - Math.sin(ang) * rBead,
+          0
+        )
+      );
+    }
+    for (const side of [-1, 1]) {
+      const bead = new THREE.TubeGeometry(
+        new THREE.CatmullRomCurve3(arcPts),
+        24,
+        0.05,
+        8,
+        false
+      );
+      bead.scale(1, 1, 0.4);
+      bead.translate(0, 0, side * 0.49);
+      flankBeads.push(paintGeometry(bead, HK_STEEL_HIGHLIGHT));
+    }
+  }
   const frontGuideLip = paintGeometry(
     new THREE.BoxGeometry(0.2, 0.24, 0.78).translate(0.8, 1.16, 0),
     HK_BRIGHT_STEEL
@@ -1056,6 +1109,7 @@ export function buildMp5MagBodyGeometry(): THREE.BufferGeometry {
     frontGuideLip,
     stopCollar,
     catchLug,
+    ...flankBeads,
   ]);
 }
 
@@ -1068,9 +1122,16 @@ export function buildMp5MagFollowerGeometry(): THREE.BufferGeometry {
     HK_FOLLOWER_ORANGE
   );
   const stepBead = paintGeometry(
-    new THREE.CylinderGeometry(0.11, 0.11, 1.44, 14)
+    new THREE.CylinderGeometry(0.11, 0.11, 1.44, 18)
       .rotateZ(Math.PI / 2 + 0.08)
       .translate(0, 0.28, -0.14),
+    HK_FOLLOWER_ORANGE
+  );
+  // Secondary right-side cartridge guide rib + anti-tilt side flutes + bottom spring-retention boss
+  const rightGuideBead = paintGeometry(
+    new THREE.CylinderGeometry(0.065, 0.065, 1.38, 14)
+      .rotateZ(Math.PI / 2 + 0.08)
+      .translate(0, 0.23, 0.22),
     HK_FOLLOWER_ORANGE
   );
   const skirtF = paintGeometry(
@@ -1085,7 +1146,34 @@ export function buildMp5MagFollowerGeometry(): THREE.BufferGeometry {
       .translate(-0.66, -0.28, 0),
     HK_FOLLOWER_ORANGE
   );
-  return mergeParts([topDeck, stepBead, skirtF, skirtR]);
+  const springPost = paintGeometry(
+    new THREE.BoxGeometry(0.68, 0.34, 0.32)
+      .rotateZ(0.08)
+      .translate(0, -0.14, 0),
+    HK_POLYMER_ACCENT
+  );
+  const sideFluteL = paintGeometry(
+    new THREE.BoxGeometry(0.96, 0.12, 0.05)
+      .rotateZ(0.08)
+      .translate(0, -0.08, -0.305),
+    HK_POLYMER_ACCENT
+  );
+  const sideFluteR = paintGeometry(
+    new THREE.BoxGeometry(0.96, 0.12, 0.05)
+      .rotateZ(0.08)
+      .translate(0, -0.08, 0.305),
+    HK_POLYMER_ACCENT
+  );
+  return mergeParts([
+    topDeck,
+    stepBead,
+    rightGuideBead,
+    skirtF,
+    skirtR,
+    springPost,
+    sideFluteL,
+    sideFluteR,
+  ]);
 }
 
 /**
@@ -1128,9 +1216,16 @@ export function buildMp5MagFloorplateGeometry(): THREE.BufferGeometry {
       .rotateZ(MAG_ANG_END),
     HK_DARK_STEEL
   );
+  // Rolled C-channel retainer rails + inner spring-locking plate + recessed button collar + traction ribs
   const lipRailL = paintGeometry(
     new THREE.BoxGeometry(1.92, 0.12, 0.1)
       .translate(0, 0.06, -0.47)
+      .rotateZ(MAG_ANG_END),
+    HK_STEEL_HIGHLIGHT
+  );
+  const lipInwardL = paintGeometry(
+    new THREE.BoxGeometry(1.88, 0.045, 0.16)
+      .translate(0, 0.1, -0.41)
       .rotateZ(MAG_ANG_END),
     HK_STEEL_HIGHLIGHT
   );
@@ -1140,11 +1235,51 @@ export function buildMp5MagFloorplateGeometry(): THREE.BufferGeometry {
       .rotateZ(MAG_ANG_END),
     HK_STEEL_HIGHLIGHT
   );
+  const lipInwardR = paintGeometry(
+    new THREE.BoxGeometry(1.88, 0.045, 0.16)
+      .translate(0, 0.1, 0.41)
+      .rotateZ(MAG_ANG_END),
+    HK_STEEL_HIGHLIGHT
+  );
+  const innerLockPlate = paintGeometry(
+    new THREE.BoxGeometry(1.66, 0.06, 0.68)
+      .translate(0, 0.06, 0)
+      .rotateZ(MAG_ANG_END),
+    HK_INNER_DARK
+  );
+  const buttonCollar = paintGeometry(
+    new THREE.TorusGeometry(0.18, 0.025, 8, 20)
+      .rotateX(Math.PI / 2)
+      .translate(0, -0.155, 0)
+      .rotateZ(MAG_ANG_END),
+    HK_INNER_DARK
+  );
   const lockButton = paintGeometry(
-    new THREE.CylinderGeometry(0.14, 0.14, 0.22, 16)
+    new THREE.CylinderGeometry(0.14, 0.14, 0.22, 20)
       .translate(0, -0.08, 0)
       .rotateZ(MAG_ANG_END),
     HK_BRIGHT_STEEL
   );
-  return mergeParts([basePlate, lipRailL, lipRailR, lockButton]);
+  const pullRibs: THREE.BufferGeometry[] = [];
+  for (const rx of [-0.62, -0.38, 0.38, 0.62]) {
+    pullRibs.push(
+      paintGeometry(
+        new THREE.BoxGeometry(0.08, 0.03, 0.78)
+          .translate(rx, -0.16, 0)
+          .rotateZ(MAG_ANG_END),
+        HK_STEEL_HIGHLIGHT
+      )
+    );
+  }
+  return mergeParts([
+    basePlate,
+    lipRailL,
+    lipInwardL,
+    lipRailR,
+    lipInwardR,
+    innerLockPlate,
+    buttonCollar,
+    lockButton,
+    ...pullRibs,
+  ]);
 }

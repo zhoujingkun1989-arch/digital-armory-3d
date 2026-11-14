@@ -5,6 +5,7 @@ import {
   mergeParts,
   paintGeometry,
 } from '../../../engine/geometry/csgBuilder';
+import { csgSubtractBatched } from './batchedCsg';
 import { applyMagAtlasUVs } from './uvAtlasHelper';
 
 /**
@@ -74,6 +75,14 @@ export function buildMagBodyGeometry(): THREE.BufferGeometry {
       .translate(0.05, 5.48, 0.43),
     STEEL_LINER
   );
+  const feedLipCurls = [-1, 1].map((sign) =>
+    paintGeometry(
+      new THREE.CylinderGeometry(0.068, 0.068, 1.98, 14)
+        .rotateZ(Math.PI / 2)
+        .translate(0.05, 5.6, sign * 0.35),
+      STEEL_LINER
+    )
+  );
   const rearRimBackstop = paintGeometry(
     new THREE.BoxGeometry(0.16, 0.42, 0.96).translate(-0.96, 5.38, 0),
     STEEL_LINER
@@ -86,15 +95,16 @@ export function buildMagBodyGeometry(): THREE.BufferGeometry {
     steelLinerTube,
     feedLipL,
     feedLipR,
+    ...feedLipCurls,
     rearRimBackstop,
   ]);
 
   const cutters: THREE.BufferGeometry[] = [];
 
-  // Hollow internal double-stack cartridge column
+  // Hollow internal double-stack cartridge column (stops below Y = 5.20 so stamped steel feed lips join liner cleanly)
   cutters.push(
     paintGeometry(
-      new THREE.BoxGeometry(2.1, 10.95, 1.28).translate(0, -0.1, 0),
+      new THREE.BoxGeometry(2.1, 10.75, 1.28).translate(0, -0.2, 0),
       '#1e242d'
     )
   );
@@ -162,7 +172,7 @@ export function buildMagBodyGeometry(): THREE.BufferGeometry {
     );
   }
 
-  return applyMagAtlasUVs(csgSubtract(solidMag, cutters));
+  return applyMagAtlasUVs(csgSubtractBatched(solidMag, cutters));
 }
 
 /** M-02: High-Visibility Stepped Orange Polymer Magazine Follower */

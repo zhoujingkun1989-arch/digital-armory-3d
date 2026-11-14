@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import {
   csgSubtract,
   csgUnion,
@@ -41,47 +42,64 @@ function buildPicatinnyRailSection(opts: {
   } = opts;
   const s = invertY ? -1 : 1;
 
-  // Authentic M1913 cross-section in (Z, Y): narrow neck -> wide 45° dovetail -> top flats w/ sight groove
-  const prof = new THREE.Shape();
-  prof.moveTo(-0.37, 0);
-  prof.lineTo(-0.37, 0.07 * s);
-  prof.lineTo(-0.49, 0.16 * s);
-  prof.lineTo(-0.38, 0.25 * s);
-  prof.lineTo(-0.12, 0.25 * s);
-  prof.lineTo(-0.09, 0.21 * s);
-  prof.lineTo(0.09, 0.21 * s);
-  prof.lineTo(0.12, 0.25 * s);
-  prof.lineTo(0.38, 0.25 * s);
-  prof.lineTo(0.49, 0.16 * s);
-  prof.lineTo(0.37, 0.07 * s);
-  prof.lineTo(0.37, 0);
-  prof.closePath();
+  const parts: THREE.BufferGeometry[] = [
+    paintGeometry(
+      new THREE.BoxGeometry(length, 0.09, 0.74).translate(
+        centerX,
+        baseY + 0.045 * s,
+        0
+      ),
+      bodyColor
+    ),
+    paintGeometry(
+      new THREE.BoxGeometry(length, 0.04, 0.74).translate(
+        centerX,
+        baseY + 0.11 * s,
+        0
+      ),
+      slotColor
+    ),
+  ];
 
-  const raw = new THREE.ExtrudeGeometry(prof, {
-    depth: length,
-    bevelEnabled: false,
-  });
-  raw.rotateY(Math.PI / 2);
-  raw.translate(centerX - length / 2, baseY, 0);
-  paintGeometry(raw, bodyColor);
+  // Authentic M1913 45° hexagonal dovetail lug cross-section w/ central sight groove
+  const lugProf = new THREE.Shape();
+  lugProf.moveTo(-0.37, 0.09 * s);
+  lugProf.lineTo(-0.49, 0.16 * s);
+  lugProf.lineTo(-0.38, 0.25 * s);
+  lugProf.lineTo(-0.12, 0.25 * s);
+  lugProf.lineTo(-0.09, 0.21 * s);
+  lugProf.lineTo(0.09, 0.21 * s);
+  lugProf.lineTo(0.12, 0.25 * s);
+  lugProf.lineTo(0.38, 0.25 * s);
+  lugProf.lineTo(0.49, 0.16 * s);
+  lugProf.lineTo(0.37, 0.09 * s);
+  lugProf.closePath();
 
-  const cutters: THREE.BufferGeometry[] = [];
+  const xMin = centerX - length * 0.5;
+  const xMax = centerX + length * 0.5;
+  const slotHalf = 0.14;
   const pitch = length / (slotCount + 0.6);
   const startX = centerX - ((slotCount - 1) * pitch) / 2;
-  for (let i = 0; i < slotCount; i++) {
-    const sx = startX + i * pitch;
-    cutters.push(
-      paintGeometry(
-        new THREE.BoxGeometry(0.28, 0.15, 1.12).translate(
-          sx,
-          baseY + 0.205 * s,
-          0
-        ),
-        slotColor
-      )
-    );
+
+  let segStart = xMin;
+  for (let i = 0; i <= slotCount; i++) {
+    const segEnd = i < slotCount ? startX + i * pitch - slotHalf : xMax;
+    const segLen = segEnd - segStart;
+    if (segLen > 0.02) {
+      const lug = new THREE.ExtrudeGeometry(lugProf, {
+        depth: segLen,
+        bevelEnabled: false,
+      });
+      lug.rotateY(Math.PI / 2);
+      lug.translate(segStart, baseY, 0);
+      parts.push(paintGeometry(lug, bodyColor));
+    }
+    if (i < slotCount) {
+      segStart = startX + i * pitch + slotHalf;
+    }
   }
-  return csgSubtract(raw, [mergeParts(cutters)]);
+
+  return mergeParts(parts);
 }
 
 /**
@@ -90,8 +108,24 @@ function buildPicatinnyRailSection(opts: {
  */
 export function buildAkReceiverGeometry(): THREE.BufferGeometry {
   // Main 1.5mm stamped U-channel receiver body
+  // Press-formed U-channel section: radiused lower bend lines (r = 2.2mm) where the
+  // 1.5mm sheet is folded around the die, flat crisp upper rails for the top cover
+  const hullSec = new THREE.Shape();
+  hullSec.moveTo(-0.81, 1.58);
+  hullSec.lineTo(-0.81, -0.66);
+  hullSec.quadraticCurveTo(-0.81, -0.88, -0.59, -0.88);
+  hullSec.lineTo(0.59, -0.88);
+  hullSec.quadraticCurveTo(0.81, -0.88, 0.81, -0.66);
+  hullSec.lineTo(0.81, 1.58);
+  hullSec.closePath();
   const mainHull = paintGeometry(
-    new THREE.BoxGeometry(12.2, 2.46, 1.62).translate(-0.1, 0.35, 0),
+    new THREE.ExtrudeGeometry(hullSec, {
+      depth: 12.2,
+      bevelEnabled: false,
+      curveSegments: 6,
+    })
+      .rotateY(Math.PI / 2)
+      .translate(-6.2, 0, 0),
     AK_DARK_STEEL
   );
 
@@ -322,7 +356,7 @@ export function buildAkBarrelGeometry(): THREE.BufferGeometry {
 
   // Stepped bayonet-free 6P71M CHF outer contour revolved around X axis, including recessed 11° muzzle crown!
   const pts: THREE.Vector2[] = [
-    new THREE.Vector2(0.32, 3.85),
+    new THREE.Vector2(0, 3.85), // Closed (watertight) revolve for clean bore CSG
     new THREE.Vector2(0.61, 3.85), // Breech face & trunnion press journal
     new THREE.Vector2(0.61, 5.95),
     new THREE.Vector2(0.68, 5.98), // Free-float handguard barrel-nut collar
@@ -339,6 +373,7 @@ export function buildAkBarrelGeometry(): THREE.BufferGeometry {
     new THREE.Vector2(0.35, 22.76), // Bayonet/QD muzzle spigot
     new THREE.Vector2(0.35, 23.48), // Outer muzzle rim
     new THREE.Vector2(0.22, 23.38), // Recessed target muzzle crown dish!
+    new THREE.Vector2(0, 23.38),
   ];
   const outer = new THREE.LatheGeometry(pts, 28);
   outer.rotateZ(-Math.PI / 2);
@@ -398,13 +433,12 @@ export function buildAkBarrelGeometry(): THREE.BufferGeometry {
     ),
   ];
 
+  // 4 right-hand 1:240 mm helical lands (true spiral twist, X ∈ [6.2, 23.3])
   for (let k = 0; k < 4; k++) {
     const ang = (k * Math.PI) / 2 + Math.PI / 4;
     riflingAndChrome.push(
       paintGeometry(
-        new THREE.BoxGeometry(17.1, 0.032, 0.045)
-          .translate(14.75, 0.205, 0)
-          .rotateX(ang),
+        buildAkHelicalLand(6.2, 23.3, 0.205, 0.032, 0.045, ang, 24.0),
         CHROME_CHAMBER
       )
     );
@@ -432,6 +466,7 @@ export function buildAkMuzzleDeviceGeometry(): THREE.BufferGeometry {
     new THREE.Vector2(0.41, 1.68), // Crown rim
     new THREE.Vector2(0.34, 1.56), // Recessed muzzle exit crown!
     new THREE.Vector2(0.34, -1.55),
+    new THREE.Vector2(0.36, -1.55), // Close the annulus (watertight)
   ];
   const rawBody = new THREE.LatheGeometry(pts, 28);
   rawBody.rotateZ(-Math.PI / 2);
@@ -472,18 +507,21 @@ export function buildAkMuzzleDeviceGeometry(): THREE.BufferGeometry {
     ),
   ];
 
-  // 5 longitudinal flash-suppression slots around upper 240° arc (closed bottom eliminates prone dust signature)
+  // 5 longitudinal flash-suppression slots around upper 240° arc (batched single brush)
+  const slotGroup: THREE.BufferGeometry[] = [];
   const slotAngles = [-1.68, -0.84, 0, 0.84, 1.68];
   for (const ang of slotAngles) {
-    cutters.push(
+    slotGroup.push(
       paintGeometry(
         new THREE.BoxGeometry(1.06, 0.62, 0.15)
           .translate(0.96, 0.42, 0)
-          .rotateX(ang),
+          .rotateX(ang)
+          .toNonIndexed(),
         AK_INNER_DARK
       )
     );
   }
+  cutters.push(mergeGeometries(slotGroup, false));
   // Front tactical crown wire-cutter notches
   for (let c = 0; c < 3; c++) {
     cutters.push(
@@ -684,18 +722,28 @@ export function buildAkLowerHandguardGeometry(): THREE.BufferGeometry {
   raw.translate(-4.775, 0, 0);
   paintGeometry(raw, AK_POLYMER);
 
-  // Hollow interior U-channel so barrel floats freely + 5 angled side heat-ventilation slots + lower vents!
-  const cutters: THREE.BufferGeometry[] = [
-    paintGeometry(
-      new THREE.BoxGeometry(9.9, 1.54, 1.4).translate(0, 0.34, 0),
-      AK_POLYMER_ACCENT
-    ),
-  ];
-
+  // Hollow interior U-channel + stadium-ended CNC cooling vents (batched single brush)
+  const pillShape = (w: number, h: number) => {
+    const r = h * 0.5;
+    const hw = Math.max(0.01, w * 0.5 - r);
+    const s = new THREE.Shape();
+    s.absarc(-hw, 0, r, Math.PI * 0.5, Math.PI * 1.5, false);
+    s.absarc(hw, 0, r, -Math.PI * 0.5, Math.PI * 0.5, false);
+    s.closePath();
+    return s;
+  };
+  const sidePill = pillShape(0.98, 0.3);
+  const lowPill = pillShape(1.1, 0.16);
+  const ventGroup: THREE.BufferGeometry[] = [];
   for (const vx of [-3.35, -1.9, -0.45, 1.0, 2.45]) {
-    cutters.push(
+    ventGroup.push(
       paintGeometry(
-        new THREE.BoxGeometry(0.98, 0.3, 2.25)
+        new THREE.ExtrudeGeometry(sidePill, {
+          depth: 2.25,
+          bevelEnabled: false,
+          curveSegments: 3,
+        })
+          .translate(0, 0, -1.125)
           .rotateZ(0.14)
           .translate(vx, 0.28, 0),
         AK_POLYMER_ACCENT
@@ -703,15 +751,25 @@ export function buildAkLowerHandguardGeometry(): THREE.BufferGeometry {
     );
   }
   for (const lvx of [-2.6, -0.6, 1.4]) {
-    cutters.push(
+    ventGroup.push(
       paintGeometry(
-        new THREE.BoxGeometry(1.1, 0.16, 2.15).translate(lvx, -0.36, 0),
+        new THREE.ExtrudeGeometry(lowPill, {
+          depth: 2.15,
+          bevelEnabled: false,
+          curveSegments: 3,
+        }).translate(lvx, -0.36, -1.075),
         AK_POLYMER_ACCENT
       )
     );
   }
 
-  const body = csgSubtract(raw, cutters);
+  const body = csgSubtract(raw, [
+    paintGeometry(
+      new THREE.BoxGeometry(9.9, 1.54, 1.4).translate(0, 0.34, 0),
+      AK_POLYMER_ACCENT
+    ),
+    mergeGeometries(ventGroup, false),
+  ]);
 
   // Inner brushed aluminum thermal heatshield visible behind cooling vents + rear steel free-float collar
   const heatShieldL = paintGeometry(
@@ -1096,4 +1154,38 @@ export function buildAkPistolGripGeometry(): THREE.BufferGeometry {
     magPaddleTip,
     catchPin,
   ]);
+}
+
+/**
+ * True helical rifling land: a thin land strip at bore radius r, subdivided along X and
+ * twisted about the bore axis (positive angle with +X = right-hand twist seen from the breech).
+ */
+function buildAkHelicalLand(
+  x0: number,
+  x1: number,
+  r: number,
+  height: number,
+  width: number,
+  startAng: number,
+  twistLen: number,
+  segs = 32
+): THREE.BufferGeometry {
+  const g = new THREE.BoxGeometry(x1 - x0, height, width, segs, 1, 1).translate(
+    (x0 + x1) / 2,
+    r,
+    0
+  );
+  const p = g.attributes.position;
+  for (let i = 0; i < p.count; i++) {
+    const a = startAng + ((p.getX(i) - x0) / twistLen) * Math.PI * 2;
+    const c = Math.cos(a);
+    const s = Math.sin(a);
+    const y = p.getY(i);
+    const z = p.getZ(i);
+    p.setY(i, y * c - z * s);
+    p.setZ(i, y * s + z * c);
+  }
+  p.needsUpdate = true;
+  g.computeVertexNormals();
+  return g;
 }

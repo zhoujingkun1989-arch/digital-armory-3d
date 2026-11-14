@@ -12,6 +12,7 @@ import {
   mergeParts,
   paintGeometry,
 } from '../../../engine/geometry/csgBuilder';
+import { mergeCutters } from './augCadDetail';
 
 // Authentic Steyr AUG A1 (StG 77) color palette (used when PBR toggled off & for vertex-color UV tagging)
 export const AUG_OLIVE = '#4b5841';
@@ -834,17 +835,17 @@ export function buildAugReceiverOpticGeometry(): THREE.BufferGeometry {
   ]);
 
   // Subtract upper octagonal chamfers, barrel bore, twin guide-rod bores, side lightening grooves, and left charging slot + hold-open notch
+  // (non-overlapping same-color cuts merged -> 9 CSG passes reduced to 6!)
   const recCutters: THREE.BufferGeometry[] = [
-    paintGeometry(
-      new THREE.BoxGeometry(8.6, 0.48, 0.48)
-        .rotateX(Math.PI / 4)
-        .translate(1.675, 2.12, 0.85),
-      AUG_CHAMFER_STEEL
-    ),
-    paintGeometry(
-      new THREE.BoxGeometry(8.6, 0.48, 0.48)
-        .rotateX(Math.PI / 4)
-        .translate(1.675, 2.12, -0.85),
+    mergeCutters(
+      [
+        new THREE.BoxGeometry(8.6, 0.48, 0.48)
+          .rotateX(Math.PI / 4)
+          .translate(1.675, 2.12, 0.85),
+        new THREE.BoxGeometry(8.6, 0.48, 0.48)
+          .rotateX(Math.PI / 4)
+          .translate(1.675, 2.12, -0.85),
+      ],
       AUG_CHAMFER_STEEL
     ),
     paintGeometry(
@@ -853,16 +854,15 @@ export function buildAugReceiverOpticGeometry(): THREE.BufferGeometry {
         .translate(1.65, 1.05, 0),
       AUG_INNER_DARK
     ),
-    paintGeometry(
-      new THREE.CylinderGeometry(0.21, 0.21, 8.8, 16)
-        .rotateZ(Math.PI / 2)
-        .translate(1.65, 1.52, 0.52),
-      AUG_INNER_DARK
-    ),
-    paintGeometry(
-      new THREE.CylinderGeometry(0.21, 0.21, 8.8, 16)
-        .rotateZ(Math.PI / 2)
-        .translate(1.65, 1.52, -0.52),
+    mergeCutters(
+      [
+        new THREE.CylinderGeometry(0.21, 0.21, 8.8, 16)
+          .rotateZ(Math.PI / 2)
+          .translate(1.65, 1.52, 0.52),
+        new THREE.CylinderGeometry(0.21, 0.21, 8.8, 16)
+          .rotateZ(Math.PI / 2)
+          .translate(1.65, 1.52, -0.52),
+      ],
       AUG_INNER_DARK
     ),
     paintGeometry(
@@ -875,12 +875,11 @@ export function buildAugReceiverOpticGeometry(): THREE.BufferGeometry {
       AUG_INNER_DARK
     ),
     // Subtle die-cast receiver lower flank fuller recesses (preserving mid engraving zone!)
-    paintGeometry(
-      new THREE.BoxGeometry(4.8, 0.2, 0.12).translate(1.1, 0.58, 0.84),
-      AUG_ANODIZED_GREY
-    ),
-    paintGeometry(
-      new THREE.BoxGeometry(4.8, 0.2, 0.12).translate(1.1, 0.58, -0.84),
+    mergeCutters(
+      [
+        new THREE.BoxGeometry(4.8, 0.2, 0.12).translate(1.1, 0.58, 0.84),
+        new THREE.BoxGeometry(4.8, 0.2, 0.12).translate(1.1, 0.58, -0.84),
+      ],
       AUG_ANODIZED_GREY
     ),
   ];

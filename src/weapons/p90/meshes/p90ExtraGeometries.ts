@@ -8,6 +8,7 @@ import {
   mergeParts,
   paintGeometry,
 } from '../../../engine/geometry/csgBuilder';
+import { extrudeAlongX, latheAlongX, mergeCutters } from './p90CadDetail';
 
 const P90_DARK_STEEL = '#444e5d';
 const P90_CHAMFER_STEEL = '#596678';
@@ -58,64 +59,142 @@ export function buildP90BoltGeometry(): THREE.BufferGeometry {
   );
   const rawBolt = csgUnion([mainBlock, topFeedHorn, sideRailsL, sideRailsR]);
 
-  const breechRecess = paintGeometry(
-    new THREE.CylinderGeometry(0.28, 0.28, 0.24, 22)
-      .rotateZ(Math.PI / 2)
-      .translate(2.52, 0.13, 0),
+  // Group non-overlapping cutters into 2 composite brushes (7+ passes -> 2 passes):
+  //  G1: chamfered Ø5.7×28mm breech cup + twin guide-rod bores + dual CNC side lightening pockets
+  //  G2: firing-pin bore + bottom downward ejection chute + right stepped extractor seat + left ejector bore
+  const cutGroupA = mergeCutters(
+    [
+      new THREE.CylinderGeometry(0.265, 0.305, 0.24, 28)
+        .rotateZ(Math.PI / 2)
+        .translate(2.52, 0.13, 0),
+      new THREE.CylinderGeometry(0.15, 0.15, 5.6, 16)
+        .rotateZ(Math.PI / 2)
+        .translate(0, 0.52, -0.52),
+      new THREE.CylinderGeometry(0.15, 0.15, 5.6, 16)
+        .rotateZ(Math.PI / 2)
+        .translate(0, 0.52, 0.52),
+      new THREE.BoxGeometry(2.6, 0.44, 0.22).translate(-0.55, -0.14, -0.76),
+      new THREE.BoxGeometry(2.6, 0.44, 0.22).translate(-0.55, -0.14, 0.76),
+    ],
     P90_INNER_DARK
   );
-  const rodBoreL = paintGeometry(
-    new THREE.CylinderGeometry(0.15, 0.15, 5.6, 16)
-      .rotateZ(Math.PI / 2)
-      .translate(0, 0.52, -0.52),
-    P90_INNER_DARK
-  );
-  const rodBoreR = paintGeometry(
-    new THREE.CylinderGeometry(0.15, 0.15, 5.6, 16)
-      .rotateZ(Math.PI / 2)
-      .translate(0, 0.52, 0.52),
-    P90_INNER_DARK
-  );
-  const firingPinChannel = paintGeometry(
-    new THREE.CylinderGeometry(0.085, 0.085, 5.6, 14)
-      .rotateZ(Math.PI / 2)
-      .translate(0, 0.13, 0),
-    P90_INNER_DARK
-  );
-  const bottomChuteSlot = paintGeometry(
-    new THREE.BoxGeometry(3.4, 0.56, 0.68).translate(0.95, -0.52, 0),
-    P90_INNER_DARK
-  );
-  const sideLighteningL = paintGeometry(
-    new THREE.BoxGeometry(2.6, 0.44, 0.22).translate(-0.55, -0.14, -0.76),
-    P90_INNER_DARK
-  );
-  const sideLighteningR = paintGeometry(
-    new THREE.BoxGeometry(2.6, 0.44, 0.22).translate(-0.55, -0.14, 0.76),
+  const cutGroupB = mergeCutters(
+    [
+      new THREE.CylinderGeometry(0.075, 0.075, 5.6, 14)
+        .rotateZ(Math.PI / 2)
+        .translate(0, 0.13, 0),
+      new THREE.BoxGeometry(3.4, 0.56, 0.68).translate(0.95, -0.52, 0),
+      // Milled right-hand (+Z) claw extractor pocket & spring recess
+      new THREE.BoxGeometry(1.48, 0.26, 0.22).translate(1.9, 0.13, 0.36),
+      // Counterbored left-side (-Z) spring-plunger ejector hole on bolt face
+      new THREE.CylinderGeometry(0.062, 0.062, 0.55, 14)
+        .rotateZ(Math.PI / 2)
+        .translate(2.38, 0.13, -0.165),
+    ],
     P90_INNER_DARK
   );
 
-  const machinedBolt = csgSubtract(rawBolt, [
-    breechRecess,
-    rodBoreL,
-    rodBoreR,
-    firingPinChannel,
-    bottomChuteSlot,
-    sideLighteningL,
-    sideLighteningR,
-  ]);
+  const machinedBolt = csgSubtract(rawBolt, [cutGroupA, cutGroupB]);
 
-  // Hardened right-side extractor claw & pivot pin + bright bolt-face ring
-  const extractorClaw = paintGeometry(
-    new THREE.BoxGeometry(1.38, 0.22, 0.15).translate(1.92, 0.13, 0.34),
+  // Profiled hardened-steel right-side claw extractor w/ undercut rim hook, vertical pivot pin & buffer spring
+  const clawShape = new THREE.Shape();
+  clawShape.moveTo(1.24, -0.1);
+  clawShape.lineTo(2.48, -0.1);
+  clawShape.lineTo(2.58, -0.04);
+  clawShape.lineTo(2.58, 0.06);
+  clawShape.lineTo(2.48, 0.1);
+  clawShape.lineTo(1.24, 0.1);
+  clawShape.closePath();
+  const extractorClaw = new THREE.ExtrudeGeometry(clawShape, {
+    depth: 0.14,
+    bevelEnabled: false,
+  });
+  extractorClaw.translate(0, 0.13, 0.27);
+  paintGeometry(extractorClaw, P90_STAINLESS);
+  const extractorHook = paintGeometry(
+    new THREE.BoxGeometry(0.11, 0.18, 0.14).translate(2.53, 0.13, 0.255),
+    P90_CHROME
+  );
+  const extractorPivotPin = paintGeometry(
+    new THREE.CylinderGeometry(0.055, 0.055, 0.52, 12).translate(
+      1.96,
+      0.13,
+      0.35
+    ),
+    P90_CHROME
+  );
+  const extractorSpring = paintGeometry(
+    createHelicalSpring({
+      axis: 'x',
+      start: 1.24,
+      end: 1.68,
+      centerY: 0.13,
+      centerZ: 0.41,
+      coilRadius: 0.055,
+      wireRadius: 0.014,
+      coils: 5,
+      radialSegments: 6,
+      tubularSegmentsPerCoil: 10,
+    }),
+    P90_SPRING_STEEL
+  );
+
+  // Spring-loaded left-side plunger ejector + stainless firing-pin bushing collar on bolt face
+  const ejectorPlunger = latheAlongX(
+    [
+      [0.015, 2.34],
+      [0.052, 2.34],
+      [0.052, 2.55],
+      [0.038, 2.585],
+      [0.015, 2.585],
+      [0.015, 2.34],
+    ],
+    16,
+    P90_CHROME
+  );
+  ejectorPlunger.translate(0, 0.13, -0.165);
+
+  const pinBushing = latheAlongX(
+    [
+      [0.075, 2.41],
+      [0.115, 2.41],
+      [0.115, 2.435],
+      [0.075, 2.435],
+      [0.075, 2.41],
+    ],
+    20,
     P90_STAINLESS
+  );
+  pinBushing.translate(0, 0.13, 0);
+
+  // Polished feed-horn stripping ramp + charging-handle cross-lug + rear hammer-strike anvil pad
+  const feedHornTip = paintGeometry(
+    new THREE.BoxGeometry(0.32, 0.18, 0.4)
+      .rotateZ(-0.22)
+      .translate(2.43, 0.99, 0),
+    P90_CHROME
   );
   const chargingEngageLug = paintGeometry(
     new THREE.BoxGeometry(0.46, 0.32, 1.72).translate(2.15, 0.72, 0),
     P90_CHAMFER_STEEL
   );
+  const hammerAnvil = paintGeometry(
+    new THREE.BoxGeometry(0.18, 0.56, 0.52).translate(-2.5, -0.12, 0),
+    P90_STAINLESS
+  );
 
-  return mergeParts([machinedBolt, extractorClaw, chargingEngageLug]);
+  return mergeParts([
+    machinedBolt,
+    extractorClaw,
+    extractorHook,
+    extractorPivotPin,
+    extractorSpring,
+    ejectorPlunger,
+    pinBushing,
+    feedHornTip,
+    chargingEngageLug,
+    hammerAnvil,
+  ]);
 }
 
 /**
@@ -522,6 +601,7 @@ export function buildP90MagBodyGeometry(): THREE.BufferGeometry {
     new THREE.BoxGeometry(20.8, 1.4, 2.54),
     P90_MAG_SMOKED
   );
+  // Non-overlapping inner cavity + rear helical-turret throat cut -> 2 clean cuts
   const innerCavity = paintGeometry(
     new THREE.BoxGeometry(20.1, 1.1, 2.18).translate(0.15, -0.02, 0),
     P90_MAG_DARK_RIB
@@ -535,37 +615,65 @@ export function buildP90MagBodyGeometry(): THREE.BufferGeometry {
 
   const parts: THREE.BufferGeometry[] = [shell];
 
-  // Molded structural polycarbonate top & side gripping ribs
+  // Molded structural polycarbonate top & wrap-around flank gripping ribs
   for (let i = 0; i < 9; i++) {
     const rx = -8.6 + i * 2.15;
     parts.push(
       paintGeometry(
         new THREE.BoxGeometry(0.22, 0.08, 2.58).translate(rx, 0.72, 0),
         P90_MAG_DARK_RIB
+      ),
+      paintGeometry(
+        new THREE.BoxGeometry(0.2, 1.24, 0.04).translate(rx, 0.04, -1.27),
+        P90_MAG_DARK_RIB
+      ),
+      paintGeometry(
+        new THREE.BoxGeometry(0.2, 1.24, 0.04).translate(rx, 0.04, 1.27),
+        P90_MAG_DARK_RIB
       )
     );
   }
 
-  // Rear circular turret boss collar above the 90° helical feed ramp (local X = +0.35 -> world X = -3.45)
-  const turretRing = csgSubtract(
-    paintGeometry(
-      new THREE.CylinderGeometry(1.16, 1.16, 0.34, 28).translate(
-        0.35,
-        -0.58,
-        0
-      ),
-      P90_MAG_SMOKED
-    ),
-    [
+  // Molded round-count witness index ridges (10 / 25 / 50 rounds) + internal staggered cartridge-guide roof spine
+  for (const wx of [-2.4, 1.85, 6.15]) {
+    parts.push(
       paintGeometry(
-        new THREE.CylinderGeometry(0.92, 0.92, 0.5, 24).translate(
-          0.35,
-          -0.58,
-          0
-        ),
+        new THREE.BoxGeometry(0.1, 0.05, 0.68).translate(wx, 0.725, -0.68),
         P90_MAG_DARK_RIB
-      ),
-    ]
+      )
+    );
+  }
+  parts.push(
+    paintGeometry(
+      new THREE.BoxGeometry(17.8, 0.14, 0.12).translate(0.4, 0.48, 0),
+      P90_MAG_DARK_RIB
+    ),
+    // Rear ambidextrous magazine-catch locking lugs & front upper-receiver hook nose
+    paintGeometry(
+      new THREE.BoxGeometry(0.76, 0.24, 0.16).translate(-1.15, -0.56, -1.18),
+      P90_MAG_DARK_RIB
+    ),
+    paintGeometry(
+      new THREE.BoxGeometry(0.76, 0.24, 0.16).translate(-1.15, -0.56, 1.18),
+      P90_MAG_DARK_RIB
+    ),
+    paintGeometry(
+      new THREE.BoxGeometry(0.72, 0.16, 1.18).translate(9.88, -0.66, 0),
+      P90_MAG_DARK_RIB
+    )
+  );
+
+  // Rear circular turret boss collar above the 90° helical feed ramp (closed annular lathe -> zero CSG!)
+  const turretPts = [
+    new THREE.Vector2(0.92, -0.75),
+    new THREE.Vector2(1.16, -0.75),
+    new THREE.Vector2(1.16, -0.41),
+    new THREE.Vector2(0.92, -0.41),
+    new THREE.Vector2(0.92, -0.75),
+  ];
+  const turretRing = paintGeometry(
+    new THREE.LatheGeometry(turretPts, 32).translate(0.35, 0, 0),
+    P90_MAG_SMOKED
   );
   parts.push(turretRing);
 
@@ -604,9 +712,10 @@ export function buildP90HelicalRampGeometry(): THREE.BufferGeometry {
     upperEntrySlot,
   ]);
 
-  // Sculpted 90° helical spiral guide rails (sweeping from Z-axis sideways at top to X-axis forward at bottom!)
+  // Sculpted 90° helical spiral guide rails (upper shoulder rails + lower case-rim guide tracks!)
   const spiralPtsA: THREE.Vector3[] = [];
   const spiralPtsB: THREE.Vector3[] = [];
+  const rimPtsA: THREE.Vector3[] = [];
   const steps = 20;
   for (let i = 0; i <= steps; i++) {
     const u = i / steps;
@@ -618,6 +727,10 @@ export function buildP90HelicalRampGeometry(): THREE.BufferGeometry {
     );
     spiralPtsB.push(
       new THREE.Vector3(-Math.cos(yaw) * r, y, Math.sin(yaw) * r)
+    );
+    const rRim = 0.82 - u * 0.18;
+    rimPtsA.push(
+      new THREE.Vector3(-Math.cos(yaw) * rRim, y - 0.08, Math.sin(yaw) * rRim)
     );
   }
   const helixRailA = paintGeometry(
@@ -640,14 +753,47 @@ export function buildP90HelicalRampGeometry(): THREE.BufferGeometry {
     ),
     P90_STAINLESS
   );
-
-  // Hardened steel lower feed lips & bolt-lug clearance channel
-  const feedLipL = paintGeometry(
-    new THREE.BoxGeometry(1.92, 0.16, 0.18).translate(0.18, -0.68, -0.38),
+  const helixRimTrack = paintGeometry(
+    new THREE.TubeGeometry(
+      new THREE.CatmullRomCurve3(rimPtsA),
+      20,
+      0.052,
+      8,
+      false
+    ),
     P90_STAINLESS
   );
-  const feedLipR = paintGeometry(
-    new THREE.BoxGeometry(1.92, 0.16, 0.18).translate(0.18, -0.68, 0.38),
+
+  // Central conical cartridge-pivot spindle guiding bullet neck vs case rim through the 90° turn
+  const spindlePts = [
+    new THREE.Vector2(0.03, -0.34),
+    new THREE.Vector2(0.18, -0.34),
+    new THREE.Vector2(0.12, 0.42),
+    new THREE.Vector2(0.03, 0.46),
+  ];
+  const centerSpindle = paintGeometry(
+    new THREE.LatheGeometry(spindlePts, 20).translate(-0.04, 0, 0),
+    P90_POLYMER_BLACK
+  );
+
+  // Rolled C-hook hardened stainless lower feed lips (open central slot Z ∈ [-0.21, +0.21] for bolt feed horn!)
+  const buildFeedLip = (s: 1 | -1): THREE.BufferGeometry => {
+    const lip = new THREE.Shape();
+    lip.moveTo(s * 0.48, -0.5);
+    lip.lineTo(s * 0.48, -0.68);
+    lip.quadraticCurveTo(s * 0.48, -0.77, s * 0.34, -0.775);
+    lip.lineTo(s * 0.22, -0.77);
+    lip.quadraticCurveTo(s * 0.2, -0.74, s * 0.22, -0.715);
+    lip.lineTo(s * 0.33, -0.72);
+    lip.quadraticCurveTo(s * 0.41, -0.71, s * 0.41, -0.65);
+    lip.lineTo(s * 0.41, -0.5);
+    lip.closePath();
+    return extrudeAlongX(lip, -0.78, 1.92, P90_STAINLESS, 0.02, 5);
+  };
+  const feedLipL = buildFeedLip(-1);
+  const feedLipR = buildFeedLip(1);
+  const rearCartridgeStop = paintGeometry(
+    new THREE.BoxGeometry(0.16, 0.26, 0.56).translate(-1.02, -0.62, 0),
     P90_STAINLESS
   );
 
@@ -655,8 +801,11 @@ export function buildP90HelicalRampGeometry(): THREE.BufferGeometry {
     hollowedTurret,
     helixRailA,
     helixRailB,
+    helixRimTrack,
+    centerSpindle,
     feedLipL,
     feedLipR,
+    rearCartridgeStop,
   ]);
 }
 
@@ -670,26 +819,65 @@ export function buildP90MagFollowerGeometry(): THREE.BufferGeometry {
     new THREE.BoxGeometry(1.15, 0.78, 1.92).translate(0.32, 0, 0),
     P90_FOLLOWER_ORANGE
   );
-  const rollerUpper = paintGeometry(
-    new THREE.CylinderGeometry(0.22, 0.22, 1.84, 20)
-      .rotateX(Math.PI / 2)
-      .translate(-0.32, 0.22, 0),
-    P90_POLYMER_BLACK
+  // Profiled 5.7×28mm bottleneck dummy-round rollers oriented sideways along -Z (bullet pointing left -Z!)
+  const dummyRoundRoller = (color: string): THREE.BufferGeometry => {
+    const pts = [
+      new THREE.Vector2(0.06, -0.92), // Bullet ogive tip (-Z)
+      new THREE.Vector2(0.135, -0.56), // 5.7mm neck
+      new THREE.Vector2(0.135, -0.36),
+      new THREE.Vector2(0.215, -0.18), // Bottleneck shoulder
+      new THREE.Vector2(0.22, 0.78), // Case body
+      new THREE.Vector2(0.18, 0.82), // Extractor rim groove
+      new THREE.Vector2(0.18, 0.87),
+      new THREE.Vector2(0.22, 0.89), // Case head rim (+Z)
+      new THREE.Vector2(0.22, 0.92),
+      new THREE.Vector2(0.06, 0.92),
+    ];
+    return paintGeometry(
+      new THREE.LatheGeometry(pts, 22).rotateX(Math.PI / 2),
+      color
+    );
+  };
+  const rollerUpper = dummyRoundRoller(P90_POLYMER_BLACK).translate(
+    -0.32,
+    0.22,
+    0
   );
-  const rollerLower = paintGeometry(
-    new THREE.CylinderGeometry(0.22, 0.22, 1.84, 20)
-      .rotateX(Math.PI / 2)
-      .translate(-0.12, -0.22, 0),
-    P90_COPPER_TIP
+  const rollerLower = dummyRoundRoller(P90_COPPER_TIP).translate(
+    -0.12,
+    -0.22,
+    0
   );
-  const axlePins = paintGeometry(
+  const axleUpper = paintGeometry(
     new THREE.CylinderGeometry(0.06, 0.06, 1.98, 12)
       .rotateX(Math.PI / 2)
       .translate(-0.32, 0.22, 0),
     P90_CHROME
   );
+  const axleLower = paintGeometry(
+    new THREE.CylinderGeometry(0.06, 0.06, 1.96, 12)
+      .rotateX(Math.PI / 2)
+      .translate(-0.12, -0.22, 0),
+    P90_CHROME
+  );
+  const guideRailL = paintGeometry(
+    new THREE.BoxGeometry(0.96, 0.16, 0.04).translate(0.36, 0, -0.965),
+    P90_POLYMER_BLACK
+  );
+  const guideRailR = paintGeometry(
+    new THREE.BoxGeometry(0.96, 0.16, 0.04).translate(0.36, 0, 0.965),
+    P90_POLYMER_BLACK
+  );
 
-  return mergeParts([carriage, rollerUpper, rollerLower, axlePins]);
+  return mergeParts([
+    carriage,
+    rollerUpper,
+    rollerLower,
+    axleUpper,
+    axleLower,
+    guideRailL,
+    guideRailR,
+  ]);
 }
 
 /**
@@ -721,12 +909,55 @@ export function buildP90MagFloorplateGeometry(): THREE.BufferGeometry {
     new THREE.BoxGeometry(0.52, 1.04, 2.08).translate(-0.35, 0, 0),
     P90_MAG_DARK_RIB
   );
-  const lockButton = paintGeometry(
-    new THREE.CylinderGeometry(0.18, 0.18, 0.28, 16)
-      .rotateZ(Math.PI / 2)
-      .translate(0.22, 0, 0),
+  // Twin side slide-rail retainer lips + spring-guide boss + concentric-grooved lock button + traction ribs
+  const slideLipL = paintGeometry(
+    new THREE.BoxGeometry(0.36, 1.28, 0.1).translate(-0.26, 0, -1.22),
+    P90_POLYMER_BLACK
+  );
+  const slideLipR = paintGeometry(
+    new THREE.BoxGeometry(0.36, 1.28, 0.1).translate(-0.26, 0, 1.22),
+    P90_POLYMER_BLACK
+  );
+  const buttonBezel = latheAlongX(
+    [
+      [0.18, 0.21],
+      [0.24, 0.21],
+      [0.24, 0.26],
+      [0.18, 0.26],
+      [0.18, 0.21],
+    ],
+    20,
+    P90_INNER_DARK
+  );
+  const lockButton = latheAlongX(
+    [
+      [0.04, 0.08],
+      [0.18, 0.08],
+      [0.18, 0.34],
+      [0.15, 0.36],
+      [0.04, 0.36],
+      [0.04, 0.08],
+    ],
+    22,
     P90_STAINLESS
   );
+  const tractionRibs: THREE.BufferGeometry[] = [];
+  for (const rz of [-0.95, -0.68, 0.68, 0.95]) {
+    tractionRibs.push(
+      paintGeometry(
+        new THREE.BoxGeometry(0.05, 1.12, 0.09).translate(0.245, 0, rz),
+        P90_MAG_DARK_RIB
+      )
+    );
+  }
 
-  return mergeParts([capPlate, innerPlug, lockButton]);
+  return mergeParts([
+    capPlate,
+    innerPlug,
+    slideLipL,
+    slideLipR,
+    buttonBezel,
+    lockButton,
+    ...tractionRibs,
+  ]);
 }

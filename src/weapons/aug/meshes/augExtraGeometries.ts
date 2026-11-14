@@ -32,6 +32,14 @@ import {
   AUG_SPRING_STEEL,
   sanitizeAugMesh,
 } from './augGeometries';
+import {
+  arcLug,
+  extrudeAlongX,
+  latheAlongX,
+  mergeCutters,
+  surfaceRidges,
+  twistedRiflingLands,
+} from './augCadDetail';
 
 // ============================================================================
 // 1. QUICK-CHANGE 20" BARREL, GAS SYSTEM & TWIN-ROD BOLT GROUP (9 Builders)
@@ -42,125 +50,171 @@ import {
  * (assembledPos: [0, 1.05, 0]) — spans local/world X ∈ [-8.20, +18.85]
  */
 export function buildAugBarrelGeometry(): THREE.BufferGeometry {
-  const pts: THREE.Vector2[] = [
-    new THREE.Vector2(0.32, -8.2),
-    new THREE.Vector2(0.58, -8.2), // 7-lug steel breech extension collar
-    new THREE.Vector2(0.58, -6.55),
-    new THREE.Vector2(0.5, -6.25), // Rear trunnion journal inside stock/receiver
-    new THREE.Vector2(0.5, 2.85),
-    new THREE.Vector2(0.54, 3.02), // Interrupted quick-change locking flange base
-    new THREE.Vector2(0.54, 4.38),
-    new THREE.Vector2(0.45, 4.55), // Receiver front bearing journal
-    new THREE.Vector2(0.44, 7.85),
-    new THREE.Vector2(0.49, 7.95), // Slanted gas-block seat journal (X ∈ [7.95, 9.75])
-    new THREE.Vector2(0.49, 9.75),
-    new THREE.Vector2(0.4, 9.88), // Forward heavy 20" CHF barrel contour
-    new THREE.Vector2(0.4, 15.65),
-    new THREE.Vector2(0.44, 15.75), // NATO 22mm rifle-grenade alignment ring
-    new THREE.Vector2(0.44, 16.15),
-    new THREE.Vector2(0.39, 16.25),
-    new THREE.Vector2(0.39, 18.25),
-    new THREE.Vector2(0.32, 18.3), // M13x1 LH muzzle thread spigot inside tulip flash hider
-    new THREE.Vector2(0.32, 18.85),
-    new THREE.Vector2(0.17, 18.85),
-  ];
+  // Closed hollow 20" (508mm) CHF Steyr AUG barrel lathe (X ∈ [-8.20, +18.85]):
+  // 7-lug breech extension -> trunnion journal -> interrupted locking spline hub ->
+  // stepped CNC gas-port shoulder w/ gas-seal grooves -> forward heavy contour ->
+  // 22mm NATO grenade ring -> M13×1 LH muzzle spigot -> 11° recessed target crown dish ->
+  // Ø5.56mm chrome bore -> bottleneck cone -> 5.56×45mm chamber (zero CSG, zero bore stubs!).
+  const crownRim = 0.275;
+  const crownBore = 0.172;
+  const crownDepth = (crownRim - crownBore) * Math.tan((11 * Math.PI) / 180);
+  const barrelTube = latheAlongX(
+    [
+      [0.39, -8.2], // Breech extension mouth
+      [0.58, -8.2], // 7-lug steel breech extension collar
+      [0.58, -6.55],
+      [0.5, -6.25], // Rear trunnion bearing journal
+      [0.5, 2.85],
+      [0.535, 3.02], // Interrupted quick-change locking flange base
+      [0.535, 4.38],
+      [0.45, 4.55], // Receiver front bearing journal
+      [0.44, 7.82],
+      [0.49, 7.9], // Rear gas-block locating shoulder (X ∈ [7.90, 9.78])
+      [0.49, 8.18],
+      [0.465, 8.22], // Rear gas-seal circumferential groove
+      [0.465, 8.32],
+      [0.49, 8.36],
+      [0.49, 8.7],
+      [0.505, 8.75], // Precision ground gas-port metering collar
+      [0.505, 9.1],
+      [0.49, 9.15],
+      [0.49, 9.44],
+      [0.465, 9.48], // Front gas-seal circumferential groove
+      [0.465, 9.58],
+      [0.49, 9.62],
+      [0.49, 9.76], // Front gas-block shoulder
+      [0.4, 9.88], // Forward heavy 20" CHF barrel contour
+      [0.4, 15.65],
+      [0.443, 15.75], // NATO 22mm rifle-grenade alignment ring
+      [0.443, 16.15],
+      [0.39, 16.25],
+      [0.39, 18.2],
+      [0.295, 18.25], // M13×1 LH thread-relief undercut groove
+      [0.295, 18.32],
+      [0.32, 18.35], // M13×1 LH muzzle thread spigot inside tulip flash hider
+      [0.32, 18.81],
+      [0.295, 18.85], // Outer 45° crown chamfer
+      [crownRim, 18.85], // Flat target crown rim
+      [crownBore, 18.85 - crownDepth], // Recessed 11° target crown dish
+      [0.16, 18.85 - crownDepth - 0.018], // Bore-edge break
+      [0.16, -5.65], // Chrome-lined Ø5.56mm bore
+      [0.175, -5.72], // Leade / throat
+      [0.285, -6.12], // 5.56×45mm NATO bottleneck shoulder
+      [0.305, -7.82], // Chamber body
+      [0.39, -7.86], // Internal locking-lug recess wall
+      [0.39, -8.2], // Breech mouth (closes loop)
+    ],
+    32,
+    AUG_DARK_STEEL
+  );
 
-  const outer = new THREE.LatheGeometry(pts, 28);
-  outer.rotateZ(-Math.PI / 2);
-  paintGeometry(outer, AUG_DARK_STEEL);
+  const extras: THREE.BufferGeometry[] = [barrelTube];
 
-  // Hollow 5.56mm bore + 5.56×45mm chamber cavity + recessed muzzle crown + slanted gas port
-  const bore = paintGeometry(
-    new THREE.CylinderGeometry(0.16, 0.16, 27.6, 18)
-      .rotateZ(Math.PI / 2)
-      .translate(5.4, 0, 0),
-    AUG_INNER_DARK
-  );
-  const chamber = paintGeometry(
-    new THREE.CylinderGeometry(0.28, 0.31, 2.35, 18)
-      .rotateZ(Math.PI / 2)
-      .translate(-7.08, 0, 0),
-    AUG_INNER_DARK
-  );
-  const muzzleCrownRecess = paintGeometry(
-    new THREE.CylinderGeometry(0.23, 0.16, 0.18, 18)
-      .rotateZ(Math.PI / 2)
-      .translate(18.78, 0, 0),
-    AUG_INNER_DARK
-  );
-  const feedRampCut = paintGeometry(
-    new THREE.BoxGeometry(0.42, 0.24, 0.34)
-      .rotateZ(0.42)
-      .translate(-8.06, -0.26, 0),
-    AUG_CHROME_STEEL
-  );
-  const hollowed = csgSubtract(outer, [
-    bore,
-    chamber,
-    muzzleCrownRecess,
-    feedRampCut,
-  ]);
-
-  // 8 interrupted quick-change barrel locking rings at X ∈ [3.10, 4.30] w/ radial spline interruptions!
-  const lockRingsRaw: THREE.BufferGeometry[] = [];
+  // 8 interrupted quick-change barrel locking rings × 4 angular spline sectors (32 chamfered spline teeth, 0 CSG!)
   for (let i = 0; i < 8; i++) {
-    lockRingsRaw.push(
-      paintGeometry(
-        new THREE.CylinderGeometry(0.585, 0.585, 0.085, 24)
-          .rotateZ(Math.PI / 2)
-          .translate(3.12 + i * 0.165, 0, 0),
-        AUG_BRIGHT_STEEL
-      )
-    );
+    const x0 = 3.08 + i * 0.162;
+    for (let s = 0; s < 4; s++) {
+      const ang = (s * Math.PI) / 2 + (3 * Math.PI) / 8;
+      extras.push(
+        arcLug(
+          0.525,
+          0.585,
+          ang,
+          (46 * Math.PI) / 180,
+          x0,
+          0.092,
+          AUG_BRIGHT_STEEL,
+          0.014
+        )
+      );
+    }
   }
-  const splineCutters: THREE.BufferGeometry[] = [];
-  for (let s = 0; s < 4; s++) {
-    const ang = (s * Math.PI) / 2 + Math.PI / 8;
-    splineCutters.push(
-      paintGeometry(
-        new THREE.BoxGeometry(1.45, 0.18, 1.35)
-          .rotateX(ang)
-          .translate(3.7, 0, 0),
-        AUG_CHAMFER_STEEL
-      )
-    );
-  }
-  const interruptedSpline = csgSubtract(
-    mergeParts(lockRingsRaw),
-    splineCutters
-  );
 
-  // 6 internal 5.56mm right-hand rifling lands inside bore + chrome breech extension collar + grenade ring band
-  const extras: THREE.BufferGeometry[] = [
-    hollowed,
-    interruptedSpline,
+  // 7 internal breech-extension locking lugs inside rear barrel extension (matching 7-lug bolt + extractor gap!)
+  for (let k = 1; k < 8; k++) {
+    const ang = (k * Math.PI * 2) / 8;
+    extras.push(
+      arcLug(
+        0.305,
+        0.392,
+        ang,
+        (24 * Math.PI) / 180,
+        -8.16,
+        0.28,
+        AUG_CHROME_STEEL,
+        0.012
+      )
+    );
+  }
+
+  // 45° slanted top-right gas-port metering boss & dark drilled gas orifice on gas-block journal (X = 8.92)
+  extras.push(
     paintGeometry(
-      new THREE.CylinderGeometry(0.443, 0.443, 0.36, 28)
-        .rotateZ(Math.PI / 2)
-        .translate(15.95, 0, 0),
+      new THREE.CylinderGeometry(0.115, 0.125, 0.08, 16)
+        .rotateZ(-Math.PI / 4)
+        .rotateY(-Math.PI / 2)
+        .translate(8.92, 0.355, 0.355),
       AUG_CHAMFER_STEEL
     ),
     paintGeometry(
-      new THREE.TorusGeometry(0.38, 0.055, 10, 24)
-        .rotateY(Math.PI / 2)
-        .translate(-8.18, 0, 0),
+      new THREE.CylinderGeometry(0.062, 0.062, 0.09, 14)
+        .rotateZ(-Math.PI / 4)
+        .rotateY(-Math.PI / 2)
+        .translate(8.92, 0.358, 0.358),
+      AUG_INNER_DARK
+    ),
+    // NATO 22mm grenade ring band + M13×1 LH muzzle threads + chrome breech collar & feed ramp + crown dish ring
+    latheAlongX(
+      [
+        [0.44, 15.77],
+        [0.446, 15.77],
+        [0.446, 16.13],
+        [0.44, 16.13],
+        [0.44, 15.77],
+      ],
+      32,
+      AUG_CHAMFER_STEEL
+    ),
+    surfaceRidges({
+      count: 16,
+      r: 0.318,
+      height: 0.008,
+      width: 0.028,
+      x0: 18.37,
+      x1: 18.79,
+      twistCm: -1.3,
+      color: AUG_BRIGHT_STEEL,
+      segments: 6,
+    }),
+    paintGeometry(
+      new THREE.BoxGeometry(0.32, 0.18, 0.34)
+        .rotateZ(0.4)
+        .translate(-7.98, -0.29, 0),
       AUG_CHROME_STEEL
     ),
-  ];
-
-  for (let r = 0; r < 6; r++) {
-    const ang = (r * Math.PI) / 3;
-    const ry = Math.cos(ang) * 0.152;
-    const rz = Math.sin(ang) * 0.152;
-    extras.push(
-      paintGeometry(
-        new THREE.BoxGeometry(22.4, 0.024, 0.028)
-          .rotateX(ang)
-          .translate(7.4, ry, rz),
-        AUG_CHROME_STEEL
-      )
-    );
-  }
+    latheAlongX(
+      [
+        [crownBore, 18.85 - crownDepth],
+        [crownRim - 0.004, 18.849],
+        [crownRim - 0.004, 18.846],
+        [crownBore, 18.847 - crownDepth],
+        [crownBore, 18.85 - crownDepth],
+      ],
+      32,
+      AUG_CHROME_STEEL
+    ),
+    // 6 right-hand 1:9" (22.86 cm) helical 5.56mm rifling lands visible inside bore & recessed crown
+    twistedRiflingLands({
+      count: 6,
+      boreR: 0.16,
+      depth: 0.018,
+      width: 0.032,
+      x0: -5.6,
+      x1: 18.85 - crownDepth - 0.022,
+      twistCm: 22.86,
+      color: AUG_CHROME_STEEL,
+    })
+  );
 
   return sanitizeAugMesh(mergeParts(extras));
 }
@@ -170,63 +224,64 @@ export function buildAugBarrelGeometry(): THREE.BufferGeometry {
  * Spans local X ∈ [-1.15, +1.10] => world X ∈ [+18.25, +20.50] (exact muzzle tip at X = +20.50!).
  */
 export function buildAugFlashHiderGeometry(): THREE.BufferGeometry {
-  const tulipPts: THREE.Vector2[] = [
-    new THREE.Vector2(0.33, -1.15),
-    new THREE.Vector2(0.49, -1.15), // Rear check-nut collar
-    new THREE.Vector2(0.49, -0.58),
-    new THREE.Vector2(0.535, -0.48), // Knurled 22mm NATO rifle-grenade spring ring
-    new THREE.Vector2(0.535, -0.18),
-    new THREE.Vector2(0.495, -0.05), // Tulip body swell
-    new THREE.Vector2(0.465, 0.84),
-    new THREE.Vector2(0.41, 1.1), // Closed-prong tapered tulip crown!
-    new THREE.Vector2(0.22, 1.1),
+  // Closed hollow Steyr AUG A1 tulip lathe: rear check-nut -> 22mm grenade collar ->
+  // tapered tulip expansion chamber -> closed front ring w/ recessed 11° exit dish (zero bore-stub leak!).
+  const rawBody = latheAlongX(
+    [
+      [0.325, -1.15], // M13×1 LH thread socket
+      [0.49, -1.15], // Rear check-nut collar
+      [0.49, -0.58],
+      [0.535, -0.48], // Knurled 22mm NATO rifle-grenade spring collar
+      [0.535, -0.18],
+      [0.495, -0.05], // Tulip body swell
+      [0.465, 0.84],
+      [0.41, 1.1], // Closed-prong tapered tulip crown
+      [0.35, 1.1], // Crown rim
+      [0.245, 0.94], // Recessed front expansion exit cone
+      [0.285, 0.82], // Internal flash-expansion chamber
+      [0.285, -0.52],
+      [0.325, -0.58], // Barrel muzzle stop shoulder
+      [0.325, -1.15],
+    ],
+    32,
+    AUG_DARK_STEEL
+  );
+
+  // 3 deep 120° radial flash-suppression slots (preserving closed front tulip ring X ∈ [0.84, 1.10])
+  // + 4 rear check-nut wrench flats + 3 front wire-cutter crown V-notches -> ONE merged CSG brush!
+  const allCuts: THREE.BufferGeometry[] = [
+    new THREE.BoxGeometry(0.42, 0.18, 0.86).translate(-0.88, 0.53, 0),
+    new THREE.BoxGeometry(0.42, 0.18, 0.86).translate(-0.88, -0.53, 0),
+    new THREE.BoxGeometry(0.42, 0.72, 0.18).translate(-0.88, 0, 0.53),
+    new THREE.BoxGeometry(0.42, 0.72, 0.18).translate(-0.88, 0, -0.53),
   ];
-
-  const rawBody = new THREE.LatheGeometry(tulipPts, 30);
-  rawBody.rotateZ(-Math.PI / 2);
-  paintGeometry(rawBody, AUG_DARK_STEEL);
-
-  const cutters: THREE.BufferGeometry[] = [
-    // Internal expansion bore + front recessed cone
-    paintGeometry(
-      new THREE.CylinderGeometry(0.28, 0.28, 2.5, 22)
-        .rotateZ(Math.PI / 2)
-        .translate(0, 0, 0),
-      AUG_INNER_DARK
-    ),
-    paintGeometry(
-      new THREE.CylinderGeometry(0.34, 0.25, 0.35, 22)
-        .rotateZ(Math.PI / 2)
-        .translate(0.95, 0, 0),
-      AUG_INNER_DARK
-    ),
-    // Wrench flats on rear check nut (top/bottom & left/right)
-    paintGeometry(
-      new THREE.BoxGeometry(0.42, 0.2, 1.1).translate(-0.88, 0.54, 0),
-      AUG_CHAMFER_STEEL
-    ),
-    paintGeometry(
-      new THREE.BoxGeometry(0.42, 0.2, 1.1).translate(-0.88, -0.54, 0),
-      AUG_CHAMFER_STEEL
-    ),
-  ];
-
-  // 3 radial flash-suppression slots spaced 120° apart (closed front tulip ring preserved at X_local ∈ [+0.84, +1.10]!)
   for (let k = 0; k < 3; k++) {
     const ang = (k * Math.PI * 2) / 3 + Math.PI / 6;
-    cutters.push(
-      paintGeometry(
-        new THREE.BoxGeometry(0.82, 0.42, 0.165)
-          .translate(0.36, 0.36, 0)
-          .rotateX(ang),
-        AUG_INNER_DARK
-      )
+    allCuts.push(
+      new THREE.BoxGeometry(0.84, 0.3, 0.17)
+        .translate(0.36, 0.38, 0)
+        .rotateX(ang),
+      // Subtle wire-cutter serration notch on front rim aligned between the 3 main prongs
+      new THREE.BoxGeometry(0.12, 0.18, 0.085)
+        .translate(1.08, 0.38, 0)
+        .rotateX(ang + Math.PI / 3)
     );
   }
 
-  const slottedTulip = csgSubtract(rawBody, cutters);
+  const slottedTulip = csgSubtract(rawBody, [
+    mergeCutters(allCuts, AUG_INNER_DARK),
+  ]);
 
-  // Wire retention spring band in grenade ring groove
+  // Axial knurling ridges on the 22mm grenade collar + captive wire grenade retention spring clip
+  const grenadeKnurling = surfaceRidges({
+    count: 20,
+    r: 0.532,
+    height: 0.012,
+    width: 0.032,
+    x0: -0.46,
+    x1: -0.2,
+    color: AUG_CHAMFER_STEEL,
+  });
   const grenadeSpringClip = paintGeometry(
     new THREE.TorusGeometry(0.525, 0.025, 8, 24)
       .rotateY(Math.PI / 2)
@@ -234,7 +289,9 @@ export function buildAugFlashHiderGeometry(): THREE.BufferGeometry {
     AUG_BRIGHT_STEEL
   );
 
-  return sanitizeAugMesh(mergeParts([slottedTulip, grenadeSpringClip]));
+  return sanitizeAugMesh(
+    mergeParts([slottedTulip, grenadeKnurling, grenadeSpringClip])
+  );
 }
 
 /**
@@ -607,90 +664,168 @@ export function buildAugBoltCarrierGeometry(): THREE.BufferGeometry {
  * U-07: 7-Lug Rotating Bolt Head, Claw Extractor, Spring Plunger Ejector & Cam Pin (assembledPos: [-8.05, 1.05, 0])
  */
 export function buildAugBoltGeometry(): THREE.BufferGeometry {
-  // Bolt cam guide sleeve + stepped stainless bolt stem + front bolt head
-  const sleeve = paintGeometry(
-    new THREE.CylinderGeometry(0.38, 0.38, 2.05, 22)
-      .rotateZ(Math.PI / 2)
-      .translate(-1.15, 0, 0),
-    AUG_DARK_STEEL
-  );
-  const stem = paintGeometry(
-    new THREE.CylinderGeometry(0.29, 0.29, 2.68, 22)
-      .rotateZ(Math.PI / 2)
-      .translate(-0.74, 0, 0),
+  // Closed hollow stepped CNC bolt body + guide sleeve (X ∈ [-2.175, +0.85]):
+  // guide sleeve -> oil-grooved stainless stem -> bolt head -> chamfered Ø5.56×45mm breech cup -> firing-pin bore.
+  const boltCore = latheAlongX(
+    [
+      [0.14, -2.175], // Rear firing-pin tail bore
+      [0.38, -2.175], // Bolt cam guide sleeve rear face
+      [0.38, -0.125],
+      [0.29, -0.1], // Stepped stainless bolt stem
+      [0.29, 0.02],
+      [0.265, 0.04], // Circumferential lubrication / gas-seal groove
+      [0.265, 0.11],
+      [0.29, 0.13],
+      [0.29, 0.2],
+      [0.365, 0.22], // Bolt head root cylinder
+      [0.365, 0.85], // Front bolt rim
+      [0.265, 0.85], // Chamfered breech-cup mouth
+      [0.245, 0.825],
+      [0.245, 0.7], // Recessed 5.56×45mm case-head cup floor
+      [0.055, 0.7], // Central firing-pin aperture
+      [0.055, -0.45],
+      [0.14, -0.55], // Internal firing-pin channel
+      [0.14, -2.175],
+    ],
+    32,
     AUG_BRIGHT_STEEL
   );
-  const head = paintGeometry(
-    new THREE.CylinderGeometry(0.365, 0.365, 0.64, 24)
-      .rotateZ(Math.PI / 2)
-      .translate(0.52, 0, 0),
-    AUG_CHROME_STEEL
+
+  // Carve right-side (+Z) extractor seat & left-lower (-Z) counterbored ejector-plunger pocket in 1 pass
+  const coreCarved = csgSubtract(boltCore, [
+    mergeCutters(
+      [
+        new THREE.BoxGeometry(0.96, 0.2, 0.22).translate(0.4, 0, 0.34),
+        new THREE.CylinderGeometry(0.062, 0.062, 0.42, 14)
+          .rotateZ(Math.PI / 2)
+          .translate(0.66, -0.06, -0.14),
+      ],
+      AUG_INNER_DARK
+    ),
+  ]);
+
+  // Dark parkerized rear cam-sleeve jacket over X ∈ [-2.17, -0.13]
+  const sleeveJacket = latheAlongX(
+    [
+      [0.376, -2.17],
+      [0.382, -2.17],
+      [0.382, -0.13],
+      [0.376, -0.13],
+      [0.376, -2.17],
+    ],
+    28,
+    AUG_DARK_STEEL
   );
 
-  // 7 radial locking lugs (positions 1..7 of 8) + 8th-position wide spring-loaded claw extractor on right (+Z)!
+  // 7 radial chamfered annular-sector locking lugs (positions k=1..7 around +X; k=0 at +Z right is the extractor!)
   const lugs: THREE.BufferGeometry[] = [];
-  for (let k = 0; k < 8; k++) {
-    const ang = (k * Math.PI * 2) / 8;
-    if (k === 0) {
-      // Right-side (+Z) heavy spring-loaded claw extractor + hook lip
-      lugs.push(
-        paintGeometry(
-          new THREE.BoxGeometry(1.02, 0.16, 0.18).translate(0.34, 0, 0.42),
-          AUG_DARK_STEEL
-        ),
-        paintGeometry(
-          new THREE.BoxGeometry(0.14, 0.17, 0.22).translate(0.8, 0, 0.37),
-          AUG_BRIGHT_STEEL
-        )
-      );
-    } else {
-      lugs.push(
-        paintGeometry(
-          new THREE.BoxGeometry(0.46, 0.145, 0.185)
-            .translate(0.52, 0, 0.42)
-            .rotateX(ang),
-          AUG_CHROME_STEEL
-        )
-      );
-    }
+  for (let k = 1; k < 8; k++) {
+    const ang = Math.PI / 2 + (k * Math.PI * 2) / 8;
+    lugs.push(
+      arcLug(
+        0.345,
+        0.51,
+        ang,
+        (24 * Math.PI) / 180,
+        0.38,
+        0.47,
+        AUG_CHROME_STEEL,
+        0.02
+      )
+    );
   }
 
-  // Helical cam pin rising atop bolt stem (rides in carrier's helical cam slot)
+  // 8th-position (+Z right side) wide spring-loaded Steyr claw extractor + undercut rim hook + pivot pin + coil spring
+  const clawShape = new THREE.Shape();
+  clawShape.moveTo(-0.14, -0.085);
+  clawShape.lineTo(0.82, -0.085);
+  clawShape.lineTo(0.895, -0.035);
+  clawShape.lineTo(0.895, 0.055);
+  clawShape.lineTo(0.82, 0.085);
+  clawShape.lineTo(-0.14, 0.085);
+  clawShape.closePath();
+  const extractorBody = new THREE.ExtrudeGeometry(clawShape, {
+    depth: 0.16,
+    bevelEnabled: false,
+  });
+  extractorBody.translate(0, 0, 0.35);
+  paintGeometry(extractorBody, AUG_DARK_STEEL);
+  const extractorHook = paintGeometry(
+    new THREE.BoxGeometry(0.11, 0.17, 0.16).translate(0.84, 0, 0.31),
+    AUG_CHROME_STEEL
+  );
+  const extractorPivotPin = paintGeometry(
+    new THREE.CylinderGeometry(0.048, 0.048, 0.34, 12).translate(0.32, 0, 0.41),
+    AUG_BRIGHT_STEEL
+  );
+  const extractorSpring = paintGeometry(
+    createHelicalSpring({
+      axis: 'y',
+      start: 0.25,
+      end: 0.36,
+      centerX: 0.02,
+      centerZ: 0,
+      coilRadius: 0.055,
+      wireRadius: 0.013,
+      coils: 4,
+      radialSegments: 6,
+      tubularSegmentsPerCoil: 10,
+    }).rotateX(Math.PI / 2),
+    AUG_SPRING_STEEL
+  );
+
+  // Spring-loaded left-lower (-Z) plunger ejector w/ domed face + transverse retainer roll-pin
+  const ejectorPlunger = latheAlongX(
+    [
+      [0.015, 0.56],
+      [0.048, 0.56],
+      [0.048, 0.81],
+      [0.034, 0.845],
+      [0.015, 0.845],
+      [0.015, 0.56],
+    ],
+    16,
+    AUG_CHROME_STEEL
+  );
+  ejectorPlunger.translate(0, -0.06, -0.14);
+  const ejectorRollPin = paintGeometry(
+    new THREE.CylinderGeometry(0.032, 0.032, 0.42, 10).translate(
+      0.52,
+      -0.06,
+      -0.14
+    ),
+    AUG_DARK_STEEL
+  );
+
+  // Stepped helical cam pin rising atop bolt stem w/ milled carrier-track bearing flats
   const camPin = paintGeometry(
-    new THREE.CylinderGeometry(0.145, 0.145, 0.62, 18).translate(
+    new THREE.CylinderGeometry(0.145, 0.145, 0.62, 20).translate(
       -0.55,
       0.43,
       0
     ),
     AUG_BRIGHT_STEEL
   );
-
-  // Recessed bolt face cup + central firing-pin aperture
-  const rawBolt = mergeParts([sleeve, stem, head, ...lugs, camPin]);
-  const hollowedBolt = csgSubtract(rawBolt, [
-    paintGeometry(
-      new THREE.CylinderGeometry(0.245, 0.245, 0.28, 20)
-        .rotateZ(Math.PI / 2)
-        .translate(0.8, 0, 0),
-      AUG_INNER_DARK
-    ),
-    paintGeometry(
-      new THREE.CylinderGeometry(0.055, 0.055, 0.45, 12)
-        .rotateZ(Math.PI / 2)
-        .translate(0.68, 0, 0),
-      AUG_INNER_DARK
-    ),
-  ]);
-
-  // Spring-loaded plunger ejector protruding on left-lower (-Z) side of recessed bolt face (throws brass +Z right!)
-  const ejectorPlunger = paintGeometry(
-    new THREE.CylinderGeometry(0.048, 0.048, 0.22, 12)
-      .rotateZ(Math.PI / 2)
-      .translate(0.76, -0.06, -0.14),
-    AUG_BRIGHT_STEEL
+  const camShoe = paintGeometry(
+    new THREE.BoxGeometry(0.26, 0.18, 0.25).translate(-0.55, 0.58, 0),
+    AUG_CHROME_STEEL
   );
 
-  return sanitizeAugMesh(mergeParts([hollowedBolt, ejectorPlunger]));
+  return sanitizeAugMesh(
+    mergeParts([
+      coreCarved,
+      sleeveJacket,
+      ...lugs,
+      extractorBody,
+      extractorHook,
+      extractorPivotPin,
+      extractorSpring,
+      ejectorPlunger,
+      ejectorRollPin,
+      camPin,
+      camShoe,
+    ])
+  );
 }
 
 /**
@@ -1257,15 +1392,40 @@ export function buildAugMagBodyGeometry(): THREE.BufferGeometry {
     }
   }
 
-  // Polymer top double-stack feed lips + front magwell guide lug + rear paddle-catch locking lug
+  // Contoured Steyr olive-dark polymer double-stack C-section feed lips (painted AUG_OLIVE_DARK so
+  // applyAugMagUVs routes them to the olive polymer UV island) + front bullet ramp + magwell stop lugs!
+  const buildAugFeedLip = (s: 1 | -1): THREE.BufferGeometry => {
+    const lip = new THREE.Shape();
+    lip.moveTo(s * 0.53, 0.05);
+    lip.lineTo(s * 0.53, 0.26);
+    lip.quadraticCurveTo(s * 0.53, 0.358, s * 0.36, 0.36);
+    lip.lineTo(s * 0.22, 0.352);
+    lip.quadraticCurveTo(s * 0.195, 0.32, s * 0.22, 0.292);
+    lip.lineTo(s * 0.35, 0.298);
+    lip.quadraticCurveTo(s * 0.44, 0.29, s * 0.44, 0.21);
+    lip.lineTo(s * 0.44, 0.05);
+    lip.closePath();
+    return extrudeAlongX(lip, -1.13, 2.26, AUG_OLIVE_DARK, 0.025, 5);
+  };
   parts.push(
+    buildAugFeedLip(-1),
+    buildAugFeedLip(1),
+    // Front bullet-guide ramp collar & magwell over-insertion stop shelves
     paintGeometry(
-      new THREE.BoxGeometry(2.26, 0.28, 0.3).translate(0, 0.22, -0.38),
+      new THREE.BoxGeometry(0.22, 0.22, 0.92).translate(1.02, 0.08, 0),
       AUG_OLIVE_DARK
     ),
     paintGeometry(
-      new THREE.BoxGeometry(2.26, 0.28, 0.3).translate(0, 0.22, 0.38),
-      AUG_OLIVE_DARK
+      new THREE.BoxGeometry(2.34, 0.14, 0.06)
+        .rotateZ(0.18)
+        .translate(0.02, -3.12, -0.585),
+      AUG_AMBER_MAG
+    ),
+    paintGeometry(
+      new THREE.BoxGeometry(2.34, 0.14, 0.06)
+        .rotateZ(0.18)
+        .translate(0.02, -3.12, 0.585),
+      AUG_AMBER_MAG
     ),
     paintGeometry(
       new THREE.BoxGeometry(0.28, 0.42, 0.84).translate(1.3, -3.28, 0),
@@ -1290,9 +1450,15 @@ export function buildAugMagFollowerGeometry(): THREE.BufferGeometry {
     AUG_BLACK_POLYMER
   );
   const stackStep = paintGeometry(
-    new THREE.CylinderGeometry(0.12, 0.12, 1.98, 14)
+    new THREE.CylinderGeometry(0.12, 0.12, 1.98, 18)
       .rotateZ(Math.PI / 2 + 0.06)
       .translate(0, 0.28, -0.16),
+    AUG_OLIVE
+  );
+  const rightGuideBead = paintGeometry(
+    new THREE.CylinderGeometry(0.075, 0.075, 1.92, 14)
+      .rotateZ(Math.PI / 2 + 0.06)
+      .translate(0, 0.24, 0.24),
     AUG_OLIVE
   );
   const legFront = paintGeometry(
@@ -1307,8 +1473,37 @@ export function buildAugMagFollowerGeometry(): THREE.BufferGeometry {
       .translate(-0.9, -0.3, 0),
     AUG_BLACK_POLYMER
   );
+  const springBoss = paintGeometry(
+    new THREE.BoxGeometry(0.86, 0.36, 0.38)
+      .rotateZ(0.06)
+      .translate(0, -0.16, 0),
+    AUG_OLIVE_DARK
+  );
+  const antiTiltRibL = paintGeometry(
+    new THREE.BoxGeometry(1.36, 0.12, 0.05)
+      .rotateZ(0.06)
+      .translate(0, -0.08, -0.38),
+    AUG_OLIVE_DARK
+  );
+  const antiTiltRibR = paintGeometry(
+    new THREE.BoxGeometry(1.36, 0.12, 0.05)
+      .rotateZ(0.06)
+      .translate(0, -0.08, 0.38),
+    AUG_OLIVE_DARK
+  );
 
-  return sanitizeAugMesh(mergeParts([deck, stackStep, legFront, legRear]));
+  return sanitizeAugMesh(
+    mergeParts([
+      deck,
+      stackStep,
+      rightGuideBead,
+      legFront,
+      legRear,
+      springBoss,
+      antiTiltRibL,
+      antiTiltRibR,
+    ])
+  );
 }
 
 /**
@@ -1359,12 +1554,52 @@ export function buildAugMagFloorplateGeometry(): THREE.BufferGeometry {
       .translate(-0.08, 0.16, 0),
     AUG_OLIVE_DARK
   );
+  const slideRailL = paintGeometry(
+    new THREE.BoxGeometry(2.48, 0.08, 0.12)
+      .translate(-0.04, 0.2, -0.55)
+      .rotateZ(AUG_MAG_ANG_END),
+    AUG_BLACK_POLYMER
+  );
+  const slideRailR = paintGeometry(
+    new THREE.BoxGeometry(2.48, 0.08, 0.12)
+      .translate(-0.04, 0.2, 0.55)
+      .rotateZ(AUG_MAG_ANG_END),
+    AUG_BLACK_POLYMER
+  );
+  const lockBezel = paintGeometry(
+    new THREE.TorusGeometry(0.21, 0.025, 8, 20)
+      .rotateX(Math.PI / 2)
+      .translate(0.02, -0.17, 0)
+      .rotateZ(AUG_MAG_ANG_END),
+    AUG_INNER_DARK
+  );
   const lockTab = paintGeometry(
-    new THREE.CylinderGeometry(0.18, 0.18, 0.24, 16)
-      .rotateZ(AUG_MAG_ANG_END)
-      .translate(0.08, -0.14, 0),
+    new THREE.CylinderGeometry(0.17, 0.17, 0.24, 20)
+      .translate(0.02, -0.13, 0)
+      .rotateZ(AUG_MAG_ANG_END),
     AUG_OLIVE_DARK
   );
+  const tractionRibs: THREE.BufferGeometry[] = [];
+  for (const rx of [-0.92, -0.58, 0.58, 0.92]) {
+    tractionRibs.push(
+      paintGeometry(
+        new THREE.BoxGeometry(0.1, 0.035, 1.08)
+          .translate(rx, -0.175, 0)
+          .rotateZ(AUG_MAG_ANG_END),
+        AUG_OLIVE_DARK
+      )
+    );
+  }
 
-  return sanitizeAugMesh(mergeParts([basePlate, retainFlange, lockTab]));
+  return sanitizeAugMesh(
+    mergeParts([
+      basePlate,
+      retainFlange,
+      slideRailL,
+      slideRailR,
+      lockBezel,
+      lockTab,
+      ...tractionRibs,
+    ])
+  );
 }

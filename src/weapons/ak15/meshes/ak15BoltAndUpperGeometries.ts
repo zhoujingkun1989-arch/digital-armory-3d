@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import {
   csgSubtract,
   csgUnion,
@@ -33,42 +34,65 @@ function buildTopPicatinnyRail(opts: {
 }): THREE.BufferGeometry {
   const { length, centerX, baseY, slotCount, bodyColor, slotColor } = opts;
 
-  const prof = new THREE.Shape();
-  prof.moveTo(-0.37, 0);
-  prof.lineTo(-0.37, 0.07);
-  prof.lineTo(-0.49, 0.16);
-  prof.lineTo(-0.38, 0.25);
-  prof.lineTo(-0.12, 0.25);
-  prof.lineTo(-0.09, 0.205);
-  prof.lineTo(0.09, 0.205);
-  prof.lineTo(0.12, 0.25);
-  prof.lineTo(0.38, 0.25);
-  prof.lineTo(0.49, 0.16);
-  prof.lineTo(0.37, 0.07);
-  prof.lineTo(0.37, 0);
-  prof.closePath();
+  // Continuous neck spine + recessed recoil-slot floor
+  const parts: THREE.BufferGeometry[] = [
+    paintGeometry(
+      new THREE.BoxGeometry(length, 0.09, 0.74).translate(
+        centerX,
+        baseY + 0.045,
+        0
+      ),
+      bodyColor
+    ),
+    paintGeometry(
+      new THREE.BoxGeometry(length, 0.04, 0.74).translate(
+        centerX,
+        baseY + 0.11,
+        0
+      ),
+      slotColor
+    ),
+  ];
 
-  const raw = new THREE.ExtrudeGeometry(prof, {
-    depth: length,
-    bevelEnabled: false,
-  });
-  raw.rotateY(Math.PI / 2);
-  raw.translate(centerX - length / 2, baseY, 0);
-  paintGeometry(raw, bodyColor);
+  // Crisp MIL-STD-1913 45° hexagonal dovetail cross-section w/ central sight groove
+  const lugProf = new THREE.Shape();
+  lugProf.moveTo(-0.37, 0.09);
+  lugProf.lineTo(-0.49, 0.16);
+  lugProf.lineTo(-0.38, 0.25);
+  lugProf.lineTo(-0.12, 0.25);
+  lugProf.lineTo(-0.09, 0.205);
+  lugProf.lineTo(0.09, 0.205);
+  lugProf.lineTo(0.12, 0.25);
+  lugProf.lineTo(0.38, 0.25);
+  lugProf.lineTo(0.49, 0.16);
+  lugProf.lineTo(0.37, 0.09);
+  lugProf.closePath();
 
-  const cutters: THREE.BufferGeometry[] = [];
+  const xMin = centerX - length * 0.5;
+  const xMax = centerX + length * 0.5;
+  const slotHalf = 0.14;
   const pitch = length / (slotCount + 0.6);
   const startX = centerX - ((slotCount - 1) * pitch) / 2;
-  for (let i = 0; i < slotCount; i++) {
-    const sx = startX + i * pitch;
-    cutters.push(
-      paintGeometry(
-        new THREE.BoxGeometry(0.28, 0.15, 1.12).translate(sx, baseY + 0.205, 0),
-        slotColor
-      )
-    );
+
+  let segStart = xMin;
+  for (let i = 0; i <= slotCount; i++) {
+    const segEnd = i < slotCount ? startX + i * pitch - slotHalf : xMax;
+    const segLen = segEnd - segStart;
+    if (segLen > 0.02) {
+      const lug = new THREE.ExtrudeGeometry(lugProf, {
+        depth: segLen,
+        bevelEnabled: false,
+      });
+      lug.rotateY(Math.PI / 2);
+      lug.translate(segStart, baseY, 0);
+      parts.push(paintGeometry(lug, bodyColor));
+    }
+    if (i < slotCount) {
+      segStart = startX + i * pitch + slotHalf;
+    }
   }
-  return csgSubtract(raw, [mergeParts(cutters)]);
+
+  return mergeParts(parts);
 }
 
 /**
@@ -131,24 +155,21 @@ export function buildAkDustCoverGeometry(): THREE.BufferGeometry {
 
   const subParts: THREE.BufferGeometry[] = [coverShell, topRail];
 
-  // Stamped Kalashnikov side rigidity ribs on left & rear flanks + rolled ejection port flare
-  for (const rx of [-3.85, -1.75, 0.15]) {
-    subParts.push(
-      paintGeometry(
-        new THREE.BoxGeometry(0.26, 0.62, 0.07).translate(rx, -0.14, -0.86),
-        AK_STEEL_HIGHLIGHT
-      )
+  // Die-embossed Kalashnikov transverse rigidity ribs (radiused capsule swages) on both
+  // flanks + rolled ejection port flare
+  const embossRib = (rx: number, side: number) =>
+    paintGeometry(
+      new THREE.CapsuleGeometry(0.11, 0.42, 4, 10)
+        .scale(1, 1, 0.32)
+        .translate(rx, -0.14, side * 0.855),
+      AK_STEEL_HIGHLIGHT
     );
+  for (const rx of [-3.85, -1.75, 0.15]) {
+    subParts.push(embossRib(rx, -1));
   }
   subParts.push(
-    paintGeometry(
-      new THREE.BoxGeometry(0.26, 0.62, 0.07).translate(-3.85, -0.14, 0.86),
-      AK_STEEL_HIGHLIGHT
-    ),
-    paintGeometry(
-      new THREE.BoxGeometry(0.26, 0.62, 0.07).translate(-1.75, -0.14, 0.86),
-      AK_STEEL_HIGHLIGHT
-    ),
+    embossRib(-3.85, 1),
+    embossRib(-1.75, 1),
     // Rolled brass-deflector lip at rear of ejection port
     paintGeometry(
       new THREE.BoxGeometry(0.18, 0.72, 0.12).translate(0.42, -0.24, 0.85),
@@ -433,15 +454,46 @@ export function buildAkBoltGeometry(): THREE.BufferGeometry {
       .translate(1.12, 0, 0),
     AK_BRIGHT_STEEL
   );
-  // Left locking lug (with helical camming lead bevel) & oversized Right locking/extractor lug
+  // Left locking lug (with helical camming lead bevel) & oversized Right locking/extractor lug.
+  // Side profile (X-Y) is CNC-milled: chamfered muzzle-side lead-in that cams into the trunnion
+  // recess and an angled rear locking face that bears against the trunnion shoulder.
+  const lugProfile = (len: number, h: number) => {
+    const s = new THREE.Shape();
+    const hx = len / 2;
+    const hy = h / 2;
+    s.moveTo(-hx + 0.06, -hy);
+    s.lineTo(hx - 0.13, -hy);
+    s.lineTo(hx, -hy + 0.12);
+    s.lineTo(hx, hy - 0.08);
+    s.lineTo(hx - 0.09, hy);
+    s.lineTo(-hx, hy);
+    s.lineTo(-hx, -hy + 0.06);
+    s.closePath();
+    return s;
+  };
   const lugLeft = paintGeometry(
-    new THREE.BoxGeometry(0.68, 0.36, 0.35)
+    new THREE.ExtrudeGeometry(lugProfile(0.68, 0.36), {
+      depth: 0.31,
+      bevelEnabled: true,
+      bevelThickness: 0.02,
+      bevelSize: 0.012,
+      bevelSegments: 1,
+    })
+      .translate(0, 0, -0.155)
       .rotateX(-0.08)
       .translate(1.08, 0.04, -0.53),
     AK_BRIGHT_STEEL
   );
   const lugRight = paintGeometry(
-    new THREE.BoxGeometry(0.7, 0.4, 0.36).translate(1.08, -0.02, 0.53),
+    new THREE.ExtrudeGeometry(lugProfile(0.7, 0.4), {
+      depth: 0.32,
+      bevelEnabled: true,
+      bevelThickness: 0.02,
+      bevelSize: 0.012,
+      bevelSegments: 1,
+    })
+      .translate(0, 0, -0.16)
+      .translate(1.08, -0.02, 0.53),
     AK_BRIGHT_STEEL
   );
   // Upper-right master rotary camming lug engaging carrier's helical cam slot
@@ -722,18 +774,22 @@ export function buildAkUpperHandguardGeometry(): THREE.BufferGeometry {
       .translate(0, -0.16, 0),
     AK_POLYMER_ACCENT
   );
-  const vents: THREE.BufferGeometry[] = [innerTunnel];
+  const ventSlots: THREE.BufferGeometry[] = [];
   for (const vx of [-2.85, -0.95, 0.95, 2.85]) {
-    vents.push(
+    ventSlots.push(
       paintGeometry(
         new THREE.BoxGeometry(1.08, 0.24, 2.1)
           .rotateZ(0.14)
-          .translate(vx, -0.1, 0),
+          .translate(vx, -0.1, 0)
+          .toNonIndexed(),
         AK_POLYMER_ACCENT
       )
     );
   }
-  const body = csgSubtract(raw, vents);
+  const body = csgSubtract(raw, [
+    innerTunnel,
+    mergeGeometries(ventSlots, false),
+  ]);
 
   // Co-planar MIL-STD-1913 Top Picatinny Rail w/ 12 CSG recoil slots (top at Y_local = +0.74 => world Y = 3.12!)
   const topRail = buildTopPicatinnyRail({
@@ -776,20 +832,21 @@ export function buildAkGasTubeGeometry(): THREE.BufferGeometry {
     AK_INNER_DARK
   );
 
-  // 6 stamped longitudinal piston-guiding/cooling flutes around outer wall
-  const fluteCutters: THREE.BufferGeometry[] = [bore];
+  // 6 stamped longitudinal piston-guiding/cooling flutes around outer wall (single batched brush)
+  const fluteGroup: THREE.BufferGeometry[] = [];
   for (let k = 0; k < 6; k++) {
     const ang = (k * Math.PI) / 3 + Math.PI / 6;
-    fluteCutters.push(
+    fluteGroup.push(
       paintGeometry(
         new THREE.BoxGeometry(7.2, 0.06, 0.14)
           .translate(0.1, 0.49, 0)
-          .rotateX(ang),
+          .rotateX(ang)
+          .toNonIndexed(),
         AK_INNER_DARK
       )
     );
   }
-  const tube = csgSubtract(outer, fluteCutters);
+  const tube = csgSubtract(outer, [bore, mergeGeometries(fluteGroup, false)]);
 
   // Heavy rear cantilever barrel-nut collar + front gas-block sealing ferrule
   const rearCollar = paintGeometry(

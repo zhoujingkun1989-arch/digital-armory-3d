@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import {
   clampUv01 as clamp01,
   fractPos,
@@ -394,8 +395,10 @@ export function buildScarUpperReceiverGeometry(): THREE.BufferGeometry {
   ];
 
   // Recessed counterbore scallops around the 6 quick-change barrel Torx cross-bolts (X = 4.28, 5.10, 5.92)
+  // (non-overlapping cutters are batched into single merged brushes: 21 → 9 CSG passes)
+  const scallops: THREE.BufferGeometry[] = [];
   for (const bx of [4.28, 5.1, 5.92]) {
-    cutters.push(
+    scallops.push(
       paintGeometry(
         new THREE.CylinderGeometry(0.26, 0.26, 0.22, 16)
           .rotateX(Math.PI / 2)
@@ -410,10 +413,12 @@ export function buildScarUpperReceiverGeometry(): THREE.BufferGeometry {
       )
     );
   }
+  cutters.push(mergeGeometries(scallops, false));
 
   // Forend dual-row stadium cooling vents (4 upper exposing gas piston + 4 lower exposing CHF barrel)
+  const vents: THREE.BufferGeometry[] = [];
   for (const vx of [6.95, 8.75, 10.55, 12.35]) {
-    cutters.push(
+    vents.push(
       paintGeometry(
         new THREE.BoxGeometry(1.18, 0.32, 2.05).translate(vx, 2.08, 0),
         SCAR_INNER_DARK
@@ -424,6 +429,7 @@ export function buildScarUpperReceiverGeometry(): THREE.BufferGeometry {
       )
     );
   }
+  cutters.push(mergeGeometries(vents, false));
 
   const carvedUpper = csgSubtract(rawMonolith, cutters);
   const parts: THREE.BufferGeometry[] = [carvedUpper];
@@ -501,11 +507,25 @@ export function buildScarUpperReceiverGeometry(): THREE.BufferGeometry {
   }
 
   // Signature SCAR Angled Polymer Brass Deflector + Folded-Stock Retention Catch behind Right Ejection Port
+  // Swept wedge: shallow forward ramp turns ejected brass, steep rear buttress, radiused edges
+  const deflPlan = new THREE.Shape();
+  deflPlan.moveTo(0.5, 0.84);
+  deflPlan.lineTo(-0.08, 1.15);
+  deflPlan.quadraticCurveTo(-0.2, 1.21, -0.28, 1.12);
+  deflPlan.lineTo(-0.3, 0.84);
+  deflPlan.closePath();
   parts.push(
     paintGeometry(
-      new THREE.BoxGeometry(0.78, 0.88, 0.28)
-        .rotateY(-0.34)
-        .translate(0.12, 1.24, 0.94),
+      new THREE.ExtrudeGeometry(deflPlan, {
+        depth: 0.78,
+        bevelEnabled: true,
+        bevelThickness: 0.02,
+        bevelSize: 0.02,
+        bevelSegments: 2,
+        curveSegments: 5,
+      })
+        .rotateX(Math.PI / 2)
+        .translate(0, 1.64, 0),
       SCAR_POLYMER_DARK
     ),
     paintGeometry(
@@ -1019,7 +1039,7 @@ export function buildScarBoltGeometry(): THREE.BufferGeometry {
     const lz = Math.cos(ang) * 0.43;
     parts.push(
       paintGeometry(
-        new THREE.BoxGeometry(0.39, 0.165, 0.19)
+        buildScarLockingLug(0.39, 0.0745, 0.19)
           .rotateX(-ang)
           .translate(1.31, ly, lz),
         SCAR_BRIGHT_STEEL
@@ -1030,11 +1050,7 @@ export function buildScarBoltGeometry(): THREE.BufferGeometry {
   // Slot 0 (Z = +0.42): Heavy SCAR/AR-18 Claw Extractor w/ Rim Hook & Extractor Pivot Pin
   parts.push(
     paintGeometry(
-      new THREE.BoxGeometry(1.04, 0.2, 0.18).translate(0.98, 0, 0.42),
-      SCAR_DARK_STEEL
-    ),
-    paintGeometry(
-      new THREE.BoxGeometry(0.14, 0.21, 0.12).translate(1.44, 0, 0.35),
+      buildScarClawExtractor(0.46, 1.51, 0.33, 0.51, 0.29, 0.21),
       SCAR_DARK_STEEL
     ),
     paintGeometry(
@@ -1151,8 +1167,25 @@ export function buildScarFiringPinGeometry(): THREE.BufferGeometry {
  * U-09: Captive Recoil Guide Rod & Rear Receiver Backplate Buffer (assembledPos: [-6.15, 2.15, 0])
  */
 export function buildScarRecoilRodGeometry(): THREE.BufferGeometry {
+  // Contoured SCAR receiver backplate matching the monolithic upper's chamfered roof shoulders
+  const plateSec = new THREE.Shape();
+  plateSec.moveTo(-0.82, -1.76);
+  plateSec.lineTo(-0.82, 0.32);
+  plateSec.lineTo(-0.52, 0.64);
+  plateSec.lineTo(0.52, 0.64);
+  plateSec.lineTo(0.82, 0.32);
+  plateSec.lineTo(0.82, -1.76);
+  plateSec.closePath();
   const endPlate = paintGeometry(
-    new THREE.BoxGeometry(0.54, 2.44, 1.68).translate(-0.04, -0.56, 0),
+    new THREE.ExtrudeGeometry(plateSec, {
+      depth: 0.5,
+      bevelEnabled: true,
+      bevelThickness: 0.02,
+      bevelSize: 0.02,
+      bevelSegments: 2,
+    })
+      .rotateY(Math.PI / 2)
+      .translate(-0.29, 0, 0),
     SCAR_RUBBER_BLACK
   );
   const dovetailRibL = paintGeometry(
@@ -1164,8 +1197,27 @@ export function buildScarRecoilRodGeometry(): THREE.BufferGeometry {
     SCAR_DARK_STEEL
   );
   const bufferPad = paintGeometry(
-    new THREE.BoxGeometry(0.28, 1.52, 1.18).translate(0.34, -0.45, 0),
+    new THREE.BoxGeometry(0.24, 1.52, 1.18).translate(0.32, -0.45, 0),
     SCAR_DARK_STEEL
+  );
+  // Molded elastomer carrier-impact cushion ribs on the forward buffer face
+  const cushionRibs: THREE.BufferGeometry[] = [];
+  for (const ry of [-0.95, -0.62, -0.28, 0.05]) {
+    cushionRibs.push(
+      paintGeometry(
+        new THREE.CapsuleGeometry(0.055, 0.88, 4, 8)
+          .rotateX(Math.PI / 2)
+          .scale(0.65, 1, 1)
+          .translate(0.44, ry, 0),
+        SCAR_RUBBER_BLACK
+      )
+    );
+  }
+  const springSeatCollar = paintGeometry(
+    new THREE.CylinderGeometry(0.24, 0.28, 0.22, 20)
+      .rotateZ(Math.PI / 2)
+      .translate(0.34, 0.13, 0),
+    SCAR_BRIGHT_STEEL
   );
   const guideRod = paintGeometry(
     new THREE.CylinderGeometry(0.115, 0.115, 8.2, 18)
@@ -1179,14 +1231,23 @@ export function buildScarRecoilRodGeometry(): THREE.BufferGeometry {
       .translate(8.35, 0.13, 0),
     SCAR_DARK_STEEL
   );
+  const frontCClip = paintGeometry(
+    new THREE.TorusGeometry(0.155, 0.025, 8, 18)
+      .rotateY(Math.PI / 2)
+      .translate(8.24, 0.13, 0),
+    SCAR_BRIGHT_STEEL
+  );
   return sanitizeScarGeometry(
     mergeParts([
       endPlate,
       dovetailRibL,
       dovetailRibR,
       bufferPad,
+      ...cushionRibs,
+      springSeatCollar,
       guideRod,
       frontStop,
+      frontCClip,
     ])
   );
 }
@@ -1222,7 +1283,7 @@ export function buildScarRecoilSpringGeometry(): THREE.BufferGeometry {
  */
 export function buildScarBarrelGeometry(): THREE.BufferGeometry {
   const pts: THREE.Vector2[] = [
-    new THREE.Vector2(0.24, 3.35),
+    new THREE.Vector2(0, 3.35), // Closed (watertight) revolve for clean bore CSG
     new THREE.Vector2(0.62, 3.35), // Barrel extension breech face
     new THREE.Vector2(0.62, 4.75),
     new THREE.Vector2(0.685, 4.78), // Barrel extension locating flange
@@ -1238,6 +1299,7 @@ export function buildScarBarrelGeometry(): THREE.BufferGeometry {
     new THREE.Vector2(0.32, 22.12), // Threaded muzzle spigot inside 3-prong flash suppressor
     new THREE.Vector2(0.32, 22.85),
     new THREE.Vector2(0.168, 22.75), // Recessed 11° CHF muzzle crown!
+    new THREE.Vector2(0, 22.75),
   ];
   const outer = new THREE.LatheGeometry(pts, 32);
   outer.rotateZ(-Math.PI / 2);
@@ -1267,18 +1329,21 @@ export function buildScarBarrelGeometry(): THREE.BufferGeometry {
       .translate(3.58, -0.28, 0.14),
     SCAR_BRIGHT_STEEL
   );
-  const hollowed = csgSubtract(outer, [bore, chamber, rampL, rampR]);
+  // Short-stroke piston gas port drilled up through the gas-block journal
+  const gasPort = paintGeometry(
+    new THREE.CylinderGeometry(0.045, 0.045, 0.55, 12).translate(14.7, 0.27, 0),
+    SCAR_INNER_DARK
+  );
+  const hollowed = csgSubtract(outer, [bore, chamber, rampL, rampR, gasPort]);
 
   const parts: THREE.BufferGeometry[] = [hollowed];
 
-  // 6 Right-Hand 5.56mm (1:7") Chrome-Lined Rifling Lands inside Bore (X ∈ [6.0, 22.72])
+  // 6 Right-Hand 1:7" (17.78 cm) helical chrome-lined 5.56mm rifling lands (X ∈ [6.0, 22.72])
   for (let r = 0; r < 6; r++) {
     const ang = (r * Math.PI * 2) / 6 + 0.18;
     parts.push(
       paintGeometry(
-        new THREE.BoxGeometry(16.72, 0.036, 0.044)
-          .rotateX(-ang)
-          .translate(14.36, Math.sin(ang) * 0.156, Math.cos(ang) * 0.156),
+        buildScarHelicalLand(6.0, 22.72, 0.156, 0.036, 0.044, ang, 17.78),
         SCAR_BRIGHT_STEEL
       )
     );
@@ -1346,29 +1411,37 @@ export function buildScarFlashSuppressorGeometry(): THREE.BufferGeometry {
     ),
   ];
 
-  // 3 Deep Open Longitudinal Tuning-Fork Prong Cutouts at 120° + Outer Tine Mass-Relief Flutes!
+  // 3 Deep Open Longitudinal Tuning-Fork Prong Cutouts at 120° + Outer Tine Mass-Relief Flutes (batched brushes)
+  const prongGroup: THREE.BufferGeometry[] = [];
+  const tineFluteGroup: THREE.BufferGeometry[] = [];
   for (let i = 0; i < 3; i++) {
     const ang = (i * Math.PI * 2) / 3 + Math.PI / 6;
     const cy = Math.sin(ang) * 0.35;
     const cz = Math.cos(ang) * 0.35;
-    cutters.push(
+    prongGroup.push(
       paintGeometry(
         new THREE.BoxGeometry(1.52, 0.35, 0.37)
           .rotateX(-ang)
-          .translate(0.88, cy, cz),
+          .translate(0.88, cy, cz)
+          .toNonIndexed(),
         SCAR_INNER_DARK
       )
     );
     const tineAng = ang + Math.PI / 3;
-    cutters.push(
+    tineFluteGroup.push(
       paintGeometry(
         new THREE.BoxGeometry(1.18, 0.12, 0.12)
           .rotateX(-tineAng)
-          .translate(0.84, Math.sin(tineAng) * 0.51, Math.cos(tineAng) * 0.51),
+          .translate(0.84, Math.sin(tineAng) * 0.51, Math.cos(tineAng) * 0.51)
+          .toNonIndexed(),
         SCAR_INNER_DARK
       )
     );
   }
+  cutters.push(
+    mergeGeometries(prongGroup, false),
+    mergeGeometries(tineFluteGroup, false)
+  );
 
   const threeProng = csgSubtract(rawBody, cutters);
 
@@ -1449,4 +1522,92 @@ export function buildScarBarrelCrossboltsGeometry(): THREE.BufferGeometry {
   }
 
   return sanitizeScarGeometry(mergeParts(parts));
+}
+
+/**
+ * Top-view (X-Z) CNC claw-extractor profile: tapered spring tail, full-length body and an
+ * inward-hooked rim claw at the muzzle end; extruded through Y (thickness h).
+ */
+function buildScarClawExtractor(
+  x0: number,
+  x1: number,
+  zIn: number,
+  zOut: number,
+  hookZ: number,
+  h: number
+): THREE.BufferGeometry {
+  const s = new THREE.Shape();
+  s.moveTo(x0, zIn + 0.03);
+  s.lineTo(x0, zOut - 0.02);
+  s.lineTo(x0 + 0.06, zOut);
+  s.lineTo(x1 - 0.05, zOut);
+  s.lineTo(x1, zOut - 0.05);
+  s.lineTo(x1, hookZ);
+  s.lineTo(x1 - 0.11, hookZ);
+  s.lineTo(x1 - 0.15, zIn);
+  s.lineTo(x0 + 0.06, zIn);
+  s.closePath();
+  return new THREE.ExtrudeGeometry(s, {
+    depth: h,
+    bevelEnabled: false,
+  })
+    .rotateX(Math.PI / 2)
+    .translate(0, h / 2, 0);
+}
+
+/**
+ * Radial locking-lug tooth (tangential half-width hw, radial height hr, axial length len)
+ * with chamfered camming lead-in, ready for rotateX(-ang) + translate like the old box.
+ */
+function buildScarLockingLug(len: number, hw: number, hr: number): THREE.BufferGeometry {
+  const s = new THREE.Shape();
+  const hx = len / 2;
+  s.moveTo(-hx, -hw);
+  s.lineTo(hx - 0.08, -hw);
+  s.lineTo(hx, -hw * 0.42);
+  s.lineTo(hx, hw * 0.42);
+  s.lineTo(hx - 0.08, hw);
+  s.lineTo(-hx, hw);
+  s.closePath();
+  return new THREE.ExtrudeGeometry(s, {
+    depth: hr - 0.02,
+    bevelEnabled: true,
+    bevelThickness: 0.01,
+    bevelSize: 0.008,
+    bevelSegments: 1,
+  }).translate(0, 0, -(hr - 0.02) / 2);
+}
+
+/**
+ * True helical rifling land: a thin land strip at bore radius r, subdivided along X and
+ * twisted about the bore axis (positive angle with +X = right-hand twist seen from the breech).
+ */
+function buildScarHelicalLand(
+  x0: number,
+  x1: number,
+  r: number,
+  height: number,
+  width: number,
+  startAng: number,
+  twistLen: number,
+  segs = 32
+): THREE.BufferGeometry {
+  const g = new THREE.BoxGeometry(x1 - x0, height, width, segs, 1, 1).translate(
+    (x0 + x1) / 2,
+    r,
+    0
+  );
+  const p = g.attributes.position;
+  for (let i = 0; i < p.count; i++) {
+    const a = startAng + ((p.getX(i) - x0) / twistLen) * Math.PI * 2;
+    const c = Math.cos(a);
+    const s = Math.sin(a);
+    const y = p.getY(i);
+    const z = p.getZ(i);
+    p.setY(i, y * c - z * s);
+    p.setZ(i, y * s + z * c);
+  }
+  p.needsUpdate = true;
+  g.computeVertexNormals();
+  return g;
 }

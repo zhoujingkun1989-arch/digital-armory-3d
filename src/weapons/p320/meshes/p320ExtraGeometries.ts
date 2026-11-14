@@ -11,6 +11,7 @@ import {
   mergeParts,
   paintGeometry,
 } from '../../../engine/geometry/csgBuilder';
+import { csgSubtractBatched } from './batchedCsg';
 
 /**
  * Maps p320_slide triangles onto the 2048x2048 p320_m17_{albedo,normal,roughness}.png atlas:
@@ -716,12 +717,22 @@ export function buildP320MagBodyGeometry(): THREE.BufferGeometry {
     FEED_STEEL
   );
 
+  // Inward-rolled feed-lip curls (formed radius along the top edge of each lip that retains the top round)
+  const lipCurls = [-1, 1].map((sign) =>
+    paintGeometry(
+      new THREE.CylinderGeometry(0.075, 0.075, 1.86, 14)
+        .rotateZ(Math.PI / 2)
+        .translate(0.06, 5.19, sign * 0.33),
+      FEED_STEEL
+    )
+  );
+
   const bottomFlange = paintGeometry(
     new THREE.BoxGeometry(2.52, 0.14, 1.68).translate(0, -4.74, 0),
     MAG_STEEL
   );
 
-  const rawMag = mergeParts([tube, neck, lipL, lipR, bottomFlange]);
+  const rawMag = mergeParts([tube, neck, lipL, lipR, ...lipCurls, bottomFlange]);
 
   const cutters: THREE.BufferGeometry[] = [
     // Hollow steel interior + top cartridge feed throat
@@ -770,7 +781,7 @@ export function buildP320MagBodyGeometry(): THREE.BufferGeometry {
     );
   }
 
-  // SIG 5 / 10 / 15 / 17 witness holes on rear spine (+ right-flank round-count witness holes)
+  // SIG 5 / 10 / 15 / 17 witness holes on rear spine + staggered side-flank round-count witness holes
   for (let i = 0; i < 4; i++) {
     const wy = 1.9 - i * 1.55;
     cutters.push(
@@ -781,9 +792,18 @@ export function buildP320MagBodyGeometry(): THREE.BufferGeometry {
         MAG_DARK
       )
     );
+    const sideX = -0.52 + (i % 2) * 0.2;
+    cutters.push(
+      paintGeometry(
+        new THREE.CylinderGeometry(0.105, 0.105, 1.74, 14)
+          .rotateX(Math.PI / 2)
+          .translate(sideX, wy - 0.18, 0),
+        MAG_DARK
+      )
+    );
   }
 
-  return csgSubtract(rawMag, cutters);
+  return csgSubtractBatched(rawMag, cutters);
 }
 
 /** M-02: Stepped Anti-Tilt Polymer Follower */

@@ -6,6 +6,7 @@ import {
   mergeParts,
   paintGeometry,
 } from '../../../engine/geometry/csgBuilder';
+import { csgSubtractBatched } from './batchedCsg';
 import { applyDeagleChromeUVs, applyDeagleGripUVs } from './deagleGeometries';
 
 export const DEAGLE_GRIP_ANGLE = (-15 * Math.PI) / 180;
@@ -161,19 +162,21 @@ export function buildDeagleFrameGeometry(): THREE.BufferGeometry {
     )
   );
 
-  // Horizontal traction serrations across gleaming chrome front strap!
-  for (let i = 0; i < 9; i++) {
-    const u = i / 8;
-    const fx = -2.35 - u * 1.25;
-    const fy = -3.15 - u * 5.85;
-    cutters.push(
-      paintGeometry(
-        new THREE.BoxGeometry(0.18, 0.1, 2.75)
-          .rotateZ(DEAGLE_GRIP_ANGLE)
-          .translate(fx, fy, 0),
-        MILLED_DARK
-      )
-    );
+  // Horizontal traction serrations across gleaming chrome front strap (even/odd interleave for batched CSG)
+  for (const parity of [0, 1]) {
+    for (let i = parity; i < 9; i += 2) {
+      const u = i / 8;
+      const fx = -2.35 - u * 1.25;
+      const fy = -3.15 - u * 5.85;
+      cutters.push(
+        paintGeometry(
+          new THREE.BoxGeometry(0.18, 0.1, 2.75)
+            .rotateZ(DEAGLE_GRIP_ANGLE)
+            .translate(fx, fy, 0),
+          MILLED_DARK
+        )
+      );
+    }
   }
 
   // Cross-pin holes: Takedown cam (3.15, 0.36), Trigger pin (0.35, -0.35), Sear (-6.68, 0.45), Hammer (-7.55, 0.62)
@@ -194,7 +197,7 @@ export function buildDeagleFrameGeometry(): THREE.BufferGeometry {
     );
   }
 
-  return applyDeagleChromeUVs(csgSubtract(solidFrame, cutters), {
+  return applyDeagleChromeUVs(csgSubtractBatched(solidFrame, cutters), {
     xMin: -10.5,
     xSpan: 26.3,
     yMin: -0.4,
@@ -436,7 +439,7 @@ export function buildDeagleGripGeometry(): THREE.BufferGeometry {
     );
   }
 
-  return applyDeagleGripUVs(csgSubtract(swelledGrip, cutters));
+  return applyDeagleGripUVs(csgSubtractBatched(swelledGrip, cutters));
 }
 
 /**
@@ -687,21 +690,25 @@ export function buildDeagleMagBodyGeometry(): THREE.BufferGeometry {
   tube.translate(0, -6.1, 0);
   paintGeometry(tube, MAG_BLUED);
 
-  // Angled Single-Feed Steel Feed Lips at top (ly = +5.30 .. +5.62)
-  const lipL = paintGeometry(
-    new THREE.BoxGeometry(3.58, 0.4, 0.14)
-      .rotateX(0.36)
-      .translate(-0.12, 5.42, -0.52),
+  // Hardened steel upper feed-lip liner & inward-rolled top retention curls within the [−6.10, +5.30] envelope
+  const feedLipLiner = paintGeometry(
+    new THREE.BoxGeometry(3.84, 0.42, 1.38).translate(-0.04, 5.08, 0),
     CHROME_BODY
   );
-  const lipR = paintGeometry(
-    new THREE.BoxGeometry(3.58, 0.4, 0.14)
-      .rotateX(-0.36)
-      .translate(-0.12, 5.42, 0.52),
+  const feedLipCurlL = paintGeometry(
+    new THREE.CylinderGeometry(0.072, 0.072, 3.36, 14)
+      .rotateZ(Math.PI / 2)
+      .translate(-0.08, 5.225, -0.44),
+    CHROME_BODY
+  );
+  const feedLipCurlR = paintGeometry(
+    new THREE.CylinderGeometry(0.072, 0.072, 3.36, 14)
+      .rotateZ(Math.PI / 2)
+      .translate(-0.08, 5.225, 0.44),
     CHROME_BODY
   );
 
-  const solid = mergeParts([tube, lipL, lipR]);
+  const solid = mergeParts([tube, feedLipLiner, feedLipCurlL, feedLipCurlR]);
 
   const cutters: THREE.BufferGeometry[] = [
     // Exact bottom plane cutter matching grip/baseplate slope ly(lx) = -5.484 + 0.1848*lx
@@ -711,18 +718,35 @@ export function buildDeagleMagBodyGeometry(): THREE.BufferGeometry {
         .translate(0, -6.684, 0),
       MAG_DARK
     ),
-    // Hollow internal .50 AE cartridge column
+    // Hollow internal .50 AE cartridge column (stops at Y = +4.87 so inward-formed steel feed lips remain intact!)
     paintGeometry(
-      new THREE.BoxGeometry(3.82, 11.6, 1.32).translate(0, 0.05, 0),
+      new THREE.BoxGeometry(3.82, 10.62, 1.32).translate(0, -0.44, 0),
       MAG_DARK
     ),
-    // Top center cartridge stripping slot & front bullet-ogive feed-ramp notch
+    // Outer upper neck taper chamfers forming the inward-angled single-feed steel lips up to Y = +5.30
     paintGeometry(
-      new THREE.BoxGeometry(3.85, 0.95, 0.84).translate(0.15, 5.38, 0),
+      new THREE.BoxGeometry(3.72, 0.46, 0.28)
+        .rotateX(0.42)
+        .translate(-0.02, 5.16, -0.8),
+      CHROME_BODY
+    ),
+    paintGeometry(
+      new THREE.BoxGeometry(3.72, 0.46, 0.28)
+        .rotateX(-0.42)
+        .translate(-0.02, 5.16, 0.8),
+      CHROME_BODY
+    ),
+    // Top center single-feed cartridge stripping slot, semicircular .50 AE ogive feed-ramp scoop & rear ejector cut
+    paintGeometry(
+      new THREE.BoxGeometry(3.52, 0.72, 0.76).translate(0.16, 5.16, 0),
       MAG_DARK
     ),
     paintGeometry(
-      new THREE.BoxGeometry(0.72, 0.65, 1.8).translate(1.92, 5.18, 0),
+      new THREE.CylinderGeometry(0.56, 0.56, 0.82, 18).translate(1.88, 5.12, 0),
+      MAG_DARK
+    ),
+    paintGeometry(
+      new THREE.BoxGeometry(0.54, 0.48, 0.28).translate(-1.78, 5.16, -0.26),
       MAG_DARK
     ),
     // Left-front magazine catch locking window
@@ -732,7 +756,7 @@ export function buildDeagleMagBodyGeometry(): THREE.BufferGeometry {
     ),
   ];
 
-  // Side reinforcement ribs + 7 Round-Count Witness Holes on both flanks!
+  // Side reinforcement ribs + 7 Countersunk Round-Count Witness Holes (1..7) on both flanks + rear full-load witness!
   for (const sign of [-1, 1]) {
     cutters.push(
       paintGeometry(
@@ -745,19 +769,41 @@ export function buildDeagleMagBodyGeometry(): THREE.BufferGeometry {
       )
     );
   }
+  // Group all 7 through-holes first (1 merged CSG brush), then all 14 outer counterbores (1 merged CSG brush)
   for (let i = 0; i < 7; i++) {
     const wy = 3.2 - i * 1.15;
     cutters.push(
       paintGeometry(
-        new THREE.CylinderGeometry(0.135, 0.135, 1.85, 14)
+        new THREE.CylinderGeometry(0.125, 0.125, 1.85, 14)
           .rotateX(Math.PI / 2)
           .translate(-0.95, wy, 0),
-        CHROME_BODY
+        MAG_DARK
       )
     );
   }
+  for (let i = 0; i < 7; i++) {
+    const wy = 3.2 - i * 1.15;
+    for (const sign of [-1, 1]) {
+      cutters.push(
+        paintGeometry(
+          new THREE.CylinderGeometry(0.165, 0.165, 0.1, 14)
+            .rotateX(Math.PI / 2)
+            .translate(-0.95, wy, sign * 0.76),
+          CHROME_BODY
+        )
+      );
+    }
+  }
+  cutters.push(
+    paintGeometry(
+      new THREE.CylinderGeometry(0.115, 0.115, 0.38, 14)
+        .rotateZ(Math.PI / 2)
+        .translate(-2.0, -3.7, 0),
+      MAG_DARK
+    )
+  );
 
-  return csgSubtract(solid, cutters);
+  return csgSubtractBatched(solid, cutters);
 }
 
 /**

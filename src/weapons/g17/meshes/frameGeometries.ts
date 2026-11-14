@@ -4,6 +4,7 @@ import {
   mergeParts,
   paintGeometry,
 } from '../../../engine/geometry/csgBuilder';
+import { csgSubtractBatched } from './batchedCsg';
 import { applyFrameAtlasUVs } from './uvAtlasHelper';
 
 const GRIP_ANGLE_RAD = (-20 * Math.PI) / 180;
@@ -242,7 +243,7 @@ export function buildFrameGeometry(): THREE.BufferGeometry {
     cutters.push(hole);
   }
 
-  const carvedPolymer = csgSubtract(
+  const carvedPolymer = csgSubtractBatched(
     mergeParts([mainBody, triggerGuard]),
     cutters
   );
@@ -453,11 +454,17 @@ export function buildSlideStopLeverGeometry(): THREE.BufferGeometry {
 
 /** F-05: Magazine Catch with Serrated Thumb Pad, Internal Locking Tooth & Tempered Wire Spring */
 export function buildMagazineCatchGeometry(): THREE.BufferGeometry {
-  const block = paintGeometry(
+  const blockRaw = paintGeometry(
     new THREE.BoxGeometry(0.58, 0.88, 2.48)
       .rotateZ(GRIP_ANGLE_RAD)
       .translate(-2.28, -2.05, -0.04),
     '#313640'
+  );
+  const springSlot = paintGeometry(
+    new THREE.BoxGeometry(0.22, 0.62, 1.45)
+      .rotateZ(GRIP_ANGLE_RAD)
+      .translate(-2.28, -2.1, 0.12),
+    '#242830'
   );
 
   const rawBtn = paintGeometry(
@@ -466,6 +473,21 @@ export function buildMagazineCatchGeometry(): THREE.BufferGeometry {
       .translate(-2.28, -2.05, -1.32),
     '#3b4452'
   );
+  const btnGrooves: THREE.BufferGeometry[] = [];
+  for (let i = -2; i <= 2; i++) {
+    const off = i * 0.14;
+    btnGrooves.push(
+      paintGeometry(
+        new THREE.BoxGeometry(0.56, 0.055, 0.06)
+          .translate(0, off, 0)
+          .rotateZ(GRIP_ANGLE_RAD)
+          .translate(-2.28, -2.05, -1.41),
+        '#242830'
+      )
+    );
+  }
+  const btn = csgSubtractBatched(rawBtn, btnGrooves);
+  const block = csgSubtract(blockRaw, [springSlot]);
 
   // Internal right-side locking catch tooth engaging magazine body notch
   const lockTooth = paintGeometry(
@@ -476,13 +498,13 @@ export function buildMagazineCatchGeometry(): THREE.BufferGeometry {
   );
 
   const wireSpring = paintGeometry(
-    new THREE.CylinderGeometry(0.045, 0.045, 2.35, 12)
+    new THREE.CylinderGeometry(0.045, 0.045, 2.35, 16)
       .rotateZ(GRIP_ANGLE_RAD)
       .translate(-2.68, -3.1, 0.12),
     '#cbd5e1'
   );
 
-  return mergeParts([block, rawBtn, lockTooth, wireSpring]);
+  return mergeParts([block, btn, lockTooth, wireSpring]);
 }
 
 /** F-06, F-07, F-08: Precision Ground Cross-Pins with Chamfered Ends */

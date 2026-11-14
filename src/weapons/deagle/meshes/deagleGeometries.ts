@@ -11,13 +11,81 @@ import {
   mergeParts,
   paintGeometry,
 } from '../../../engine/geometry/csgBuilder';
+import { csgSubtractBatched } from './batchedCsg';
 
 export const DEAGLE_CHROME = '#b4c0ce';
 export const DEAGLE_CHROME_MIRROR = '#c2cdd9';
+export const DEAGLE_FLUTE_SATIN = '#758396'; // linear R > 0.12 -> keeps side chrome UV mapping with machined recess contrast
 export const DEAGLE_MILLED_DARK = '#252b36';
 export const DEAGLE_RIFLING_DARK = '#2c3340'; // linear R = 0.025 < 0.12 -> maps to 'milled' UV swatch
 export const DEAGLE_NITRIDE = '#454f5e';
 export const DEAGLE_RUBBER = '#242830';
+
+/**
+ * Builds a convex 8-vertex closed hexahedral flute cutter (12 triangles, strictly outward normals)
+ * whose cross-section tapers from `hyOut` at `z = +zOut` to a narrow root `hyIn` at `z = -depth`
+ * (carving crisp V-angled triangular flute walls) and ramps smoothly up at both X ends.
+ */
+function buildTriangularFluteCutter(opts: {
+  length: number;
+  endRamp: number;
+  hyOut: number;
+  hyIn: number;
+  depth: number;
+  zOut?: number;
+}): THREE.BufferGeometry {
+  const { length, endRamp, hyOut, hyIn, depth, zOut = 0.18 } = opts;
+  const hxOut = length * 0.5;
+  const hxIn = Math.max(0.05, hxOut - endRamp);
+  const v = [
+    [-hxOut, -hyOut, zOut],
+    [hxOut, -hyOut, zOut],
+    [hxOut, hyOut, zOut],
+    [-hxOut, hyOut, zOut],
+    [-hxIn, -hyIn, -depth],
+    [hxIn, -hyIn, -depth],
+    [hxIn, hyIn, -depth],
+    [-hxIn, hyIn, -depth],
+  ];
+  const quads = [
+    [0, 1, 2, 3],
+    [4, 7, 6, 5],
+    [0, 4, 5, 1],
+    [1, 5, 6, 2],
+    [2, 6, 7, 3],
+    [3, 7, 4, 0],
+  ];
+  const pos: number[] = [];
+  for (const [a, b, c, d] of quads) {
+    for (const [i0, i1, i2] of [
+      [a, b, c],
+      [a, c, d],
+    ]) {
+      const p0 = v[i0];
+      const p1 = v[i1];
+      const p2 = v[i2];
+      const ux = p1[0] - p0[0];
+      const uy = p1[1] - p0[1];
+      const uz = p1[2] - p0[2];
+      const vx = p2[0] - p0[0];
+      const vy = p2[1] - p0[1];
+      const vz = p2[2] - p0[2];
+      const nx = uy * vz - uz * vy;
+      const ny = uz * vx - ux * vz;
+      const nz = ux * vy - uy * vx;
+      // Origin (0,0,0) lies strictly inside the frustum, so outward normal satisfies n · p0 > 0
+      if (nx * p0[0] + ny * p0[1] + nz * p0[2] >= 0) {
+        pos.push(...p0, ...p1, ...p2);
+      } else {
+        pos.push(...p0, ...p2, ...p1);
+      }
+    }
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  geo.computeVertexNormals();
+  return geo;
+}
 
 /**
  * Removes zero-area degenerate CSG sliver triangles (`‖(b - a) × (c - a)‖ < 1e-9`) and guarantees
@@ -280,11 +348,14 @@ export function applyDeagleGripUVs(
  * longitudinal gas conduit & forward honed gas cylinder cup w/ front gas plug.
  */
 export function buildDeagleBarrelGeometry(): THREE.BufferGeometry {
-  // 1. Signature Mark XIX Triangular Barrel Cross-Section in (Z, Y) w/ overhanging Weaver/Picatinny scope rail
+  // 1. Signature Mark XIX Multi-Faceted Polygonal Teardrop Barrel Cross-Section in (Z, Y):
+  //    bottom flat + twin 45° lower polygonal belly chamfers + vertical cheek flats + steep 20° triangular upper
+  //    flanks tapering into the necked-in overhanging 21.2mm Weaver/Picatinny scope rail
   const triSec = new THREE.Shape();
-  triSec.moveTo(-1.38, 1.7);
-  triSec.lineTo(1.38, 1.7);
-  triSec.lineTo(1.38, 2.36);
+  triSec.moveTo(-1.14, 1.7);
+  triSec.lineTo(1.14, 1.7);
+  triSec.lineTo(1.38, 1.94);
+  triSec.lineTo(1.38, 2.38);
   // Mark XIX flat angled triangular upper flanks tapering to recessed rail neck
   triSec.lineTo(0.84, 3.84);
   triSec.lineTo(0.76, 3.92);
@@ -295,7 +366,8 @@ export function buildDeagleBarrelGeometry(): THREE.BufferGeometry {
   triSec.lineTo(-0.94, 4.03);
   triSec.lineTo(-0.76, 3.92);
   triSec.lineTo(-0.84, 3.84);
-  triSec.lineTo(-1.38, 2.36);
+  triSec.lineTo(-1.38, 2.38);
+  triSec.lineTo(-1.38, 1.94);
   triSec.closePath();
 
   const barrelBody = new THREE.ExtrudeGeometry(triSec, {
@@ -334,9 +406,6 @@ export function buildDeagleBarrelGeometry(): THREE.BufferGeometry {
   const feedRamp = csgSubtract(feedRampRaw, [rampScoop]);
 
   // 3. Under-Barrel Gas Conduit Web, Front Muzzle Gas Cylinder Block & Brazed Front Gas Plug
-  // Note: Integral muzzle gas cylinder block sits at the front muzzle (X in [13.92, 15.92], Y = 1.48, R = 0.43),
-  // while behind X = 13.92 the underside stays >= 1.82 so the slide's lower front crosspiece (X in [12.55, 13.85])
-  // and forward-pointing gas piston stroke -4.95 cm rearward cleanly with zero collision!
   const gasConduitWeb = paintGeometry(
     new THREE.BoxGeometry(11.6, 0.24, 0.96).translate(8.95, 1.84, 0),
     DEAGLE_CHROME
@@ -368,14 +437,11 @@ export function buildDeagleBarrelGeometry(): THREE.BufferGeometry {
   lockLug.translate(0, 0, -0.46);
   paintGeometry(lockLug, DEAGLE_CHROME);
 
+  // Pack mutually-disjoint bosses into 2 union brushes instead of 6 sequential unions
   const rawBarrel = csgUnion([
     barrelBody,
-    chamberRing,
-    feedRamp,
-    gasConduitWeb,
-    gasCylinderBoss,
-    frontGasPlug,
-    lockLug,
+    mergeParts([chamberRing, lockLug, gasCylinderBoss], 0),
+    mergeParts([feedRamp, gasConduitWeb, frontGasPlug], 0),
   ]);
 
   const cutters: THREE.BufferGeometry[] = [];
@@ -383,7 +449,7 @@ export function buildDeagleBarrelGeometry(): THREE.BufferGeometry {
   // Massive .50 Action Express (12.7mm) Hollow Bore & Stepped Chamber Pocket
   cutters.push(
     paintGeometry(
-      new THREE.CylinderGeometry(0.545, 0.545, 17.2, 28)
+      new THREE.CylinderGeometry(0.545, 0.545, 17.2, 32)
         .rotateZ(Math.PI / 2)
         .translate(7.7, 2.6, 0),
       DEAGLE_MILLED_DARK
@@ -391,7 +457,7 @@ export function buildDeagleBarrelGeometry(): THREE.BufferGeometry {
   );
   cutters.push(
     paintGeometry(
-      new THREE.CylinderGeometry(0.59, 0.59, 2.45, 24)
+      new THREE.CylinderGeometry(0.59, 0.59, 2.45, 28)
         .rotateZ(Math.PI / 2)
         .translate(0.68, 2.6, 0),
       DEAGLE_MILLED_DARK
@@ -412,10 +478,10 @@ export function buildDeagleBarrelGeometry(): THREE.BufferGeometry {
     );
   }
 
-  // Recessed 11° Target Muzzle Crown Dish + Outer Crown Step at X = +16.0
+  // Recessed 11° Target Muzzle Crown Dish opening outward to X = +16.0 (Cylinder top -> -X after rotateZ(+PI/2))
   cutters.push(
     paintGeometry(
-      new THREE.CylinderGeometry(0.69, 0.535, 0.22, 30)
+      new THREE.CylinderGeometry(0.545, 0.72, 0.22, 32)
         .rotateZ(Math.PI / 2)
         .translate(15.94, 2.6, 0),
       DEAGLE_MILLED_DARK
@@ -432,7 +498,15 @@ export function buildDeagleBarrelGeometry(): THREE.BufferGeometry {
     )
   );
 
-  // 8 Integral Mark XIX Top Picatinny / Weaver Scope Cross-Slots (X = 3.25 .. 12.21)
+  // Central longitudinal anti-glare sighting gutter milled along the top of the 8-slot Weaver rib
+  cutters.push(
+    paintGeometry(
+      new THREE.BoxGeometry(12.5, 0.12, 0.34).translate(8.3, 4.17, 0),
+      DEAGLE_CHROME_MIRROR
+    )
+  );
+
+  // 8 Integral Mark XIX Top Picatinny / Weaver Scope Cross-Slots (X = 3.25 .. 12.21, AABB-disjoint)
   for (let i = 0; i < 8; i++) {
     const sx = 3.25 + i * 1.28;
     cutters.push(
@@ -451,17 +525,34 @@ export function buildDeagleBarrelGeometry(): THREE.BufferGeometry {
     )
   );
 
-  // Mark XIX Signature Side Lightening Flutes along both angled triangular flanks
+  // Mark XIX Signature Twin Parallel Triangular-Profile Lightening Flutes on both angled polygonal flanks
+  const flankSlope = Math.atan2(1.38 - 0.84, 3.84 - 2.38); // ~0.354 rad (20.3°)
   for (const sign of [-1, 1]) {
-    cutters.push(
-      paintGeometry(
-        new THREE.CylinderGeometry(0.23, 0.23, 9.1, 18)
-          .rotateZ(Math.PI / 2)
-          .rotateX(sign * 0.32)
-          .translate(8.85, 2.98, sign * 1.15),
-        DEAGLE_CHROME_MIRROR
-      )
-    );
+    const mainFlute = buildTriangularFluteCutter({
+      length: 10.6,
+      endRamp: 0.68,
+      hyOut: 0.26,
+      hyIn: 0.055,
+      depth: 0.175,
+    });
+    if (sign < 0) mainFlute.rotateY(Math.PI);
+    mainFlute
+      .rotateX(-sign * flankSlope)
+      .translate(8.95, 2.74, sign * 1.247);
+    cutters.push(paintGeometry(mainFlute, DEAGLE_FLUTE_SATIN));
+
+    const upperFlute = buildTriangularFluteCutter({
+      length: 9.8,
+      endRamp: 0.62,
+      hyOut: 0.21,
+      hyIn: 0.045,
+      depth: 0.145,
+    });
+    if (sign < 0) upperFlute.rotateY(Math.PI);
+    upperFlute
+      .rotateX(-sign * flankSlope)
+      .translate(8.95, 3.34, sign * 1.025);
+    cutters.push(paintGeometry(upperFlute, DEAGLE_FLUTE_SATIN));
   }
 
   // Rearward-opening Honed Gas Cylinder Bore at Front Muzzle (receives Slide's forward-pointing gas piston at Y = 1.48!)
@@ -521,35 +612,25 @@ export function buildDeagleBarrelGeometry(): THREE.BufferGeometry {
     )
   );
 
-  const hollowedBarrel = csgSubtract(rawBarrel, cutters);
+  const hollowedBarrel = csgSubtractBatched(rawBarrel, cutters);
 
-  // 6 Right-Hand Helical Hexagonal Polygonal Rifling Lands inside 6" .50 AE Bore (1:19" twist)
-  const riflingLands: THREE.BufferGeometry[] = [];
-  const xStart = 2.05;
-  const xEnd = 15.72;
-  const totalTwist = ((xEnd - xStart) / 48.26) * Math.PI * 2;
-  for (let k = 0; k < 6; k++) {
-    const basePhi = (k * Math.PI * 2) / 6;
-    const pts: THREE.Vector3[] = [];
-    for (let s = 0; s <= 12; s++) {
-      const t = s / 12;
-      const x = xStart + (xEnd - xStart) * t;
-      const phi = basePhi + totalTwist * t;
-      pts.push(
-        new THREE.Vector3(x, 2.6 + Math.cos(phi) * 0.53, Math.sin(phi) * 0.53)
-      );
-    }
-    const landCurve = new THREE.CatmullRomCurve3(pts);
-    riflingLands.push(
-      paintGeometry(
-        new THREE.TubeGeometry(landCurve, 16, 0.032, 6, false),
-        DEAGLE_RIFLING_DARK
-      )
-    );
-  }
+  // 6-Land Right-Hand Hexagonal Polygonal Rifling Bore Surface inside 6" .50 AE Bore (1:19" = 48.26 cm twist)
+  const polygonalBore = paintGeometry(
+    buildDeaglePolygonalBore({
+      xStart: 1.95,
+      xEnd: 15.82,
+      centerY: 2.6,
+      boreRadius: 0.545,
+      meanRadius: 0.526,
+      amplitude: 0.016,
+      lobes: 6,
+      twistLength: 48.26,
+    }),
+    DEAGLE_RIFLING_DARK
+  );
 
   return applyDeagleChromeUVs(
-    sanitizeCsgGeometry(mergeParts([hollowedBarrel, ...riflingLands])),
+    sanitizeCsgGeometry(mergeParts([hollowedBarrel, polygonalBore])),
     {
       xMin: -9.6,
       xSpan: 25.6,
@@ -721,77 +802,112 @@ export function buildDeagleSlideGeometry(): THREE.BufferGeometry {
     )
   );
 
+  // Mark XIX Slide Lightening Flutes:
+  // (a) Longitudinal triangular-chamfered flutes along both forward lower bridge rails (X in [2.55, 11.95], Y = 1.32)
+  // (b) Matching angled triangular flutes along both upper breech-hood shoulders (X in [-6.65, -1.15], Y = 3.28)
+  const slideFlankSlope = Math.atan2(1.41 - 0.86, 3.98 - 2.38); // ~0.331 rad (19.0°)
+  for (const sign of [-1, 1]) {
+    const railFlute = buildTriangularFluteCutter({
+      length: 9.4,
+      endRamp: 0.55,
+      hyOut: 0.22,
+      hyIn: 0.055,
+      depth: 0.135,
+    });
+    if (sign < 0) railFlute.rotateY(Math.PI);
+    railFlute.translate(7.25, 1.32, sign * 1.41);
+    cutters.push(paintGeometry(railFlute, DEAGLE_FLUTE_SATIN));
+
+    const hoodFlute = buildTriangularFluteCutter({
+      length: 5.4,
+      endRamp: 0.5,
+      hyOut: 0.23,
+      hyIn: 0.055,
+      depth: 0.125,
+    });
+    if (sign < 0) hoodFlute.rotateY(Math.PI);
+    hoodFlute
+      .rotateX(-sign * slideFlankSlope)
+      .translate(-3.9, 3.28, sign * 1.1);
+    cutters.push(paintGeometry(hoodFlute, DEAGLE_FLUTE_SATIN));
+  }
+
   // 9 Crisp Angled (-14°) Desert Eagle Rear Cocking Serrations on Left & Right Breech Walls
-  for (let i = 0; i < 9; i++) {
-    const sx = -8.35 + i * 0.42;
-    for (const sign of [-1, 1]) {
-      cutters.push(
-        paintGeometry(
-          new THREE.BoxGeometry(0.19, 1.68, 0.22)
-            .rotateZ(-0.24)
-            .translate(sx, 1.98, sign * 1.4),
-          DEAGLE_MILLED_DARK
-        )
-      );
+  // (even/odd interleave packs all 18 serration cuts into 2 AABB-disjoint CSG brushes)
+  for (const parity of [0, 1]) {
+    for (let i = parity; i < 9; i += 2) {
+      const sx = -8.35 + i * 0.42;
+      for (const sign of [-1, 1]) {
+        cutters.push(
+          paintGeometry(
+            new THREE.BoxGeometry(0.19, 1.68, 0.22)
+              .rotateZ(-0.24)
+              .translate(sx, 1.98, sign * 1.4),
+            DEAGLE_MILLED_DARK
+          )
+        );
+      }
     }
   }
 
-  const carvedSlide = csgSubtract(rawHull, cutters);
+  const carvedSlide = csgSubtractBatched(rawHull, cutters);
 
   // 4. Integrated Forward-Pointing (+X) Mark XIX Stainless Gas Piston Rod w/ 3 Gas-Sealing Labyrinth Lands
-  // Cantilevered forward from front crosspiece (X = 13.85) to 15.41 inside the [13.84, 15.60] honed gas cylinder!
-  const pistonRoot = paintGeometry(
-    new THREE.CylinderGeometry(0.2, 0.2, 0.4, 22)
-      .rotateZ(Math.PI / 2)
-      .translate(13.7, 1.44, 0),
-    DEAGLE_CHROME_MIRROR
-  );
-  const pistonNeck = paintGeometry(
-    new THREE.CylinderGeometry(0.22, 0.2, 1.04, 22)
-      .rotateZ(Math.PI / 2)
-      .translate(14.34, 1.48, 0),
-    DEAGLE_CHROME_MIRROR
-  );
-  const pistonHeadRaw = paintGeometry(
-    new THREE.CylinderGeometry(0.325, 0.325, 0.54, 24)
-      .rotateZ(Math.PI / 2)
-      .translate(15.1, 1.48, 0),
-    '#c8b28a' // Subtle warm heat-tinted hard chrome piston head!
-  );
-  // Carve 2 labyrinth gas-ring grooves around piston head circumference -> 3 distinct sealing lands!
-  const ringGrooves: THREE.BufferGeometry[] = [];
-  for (const gx of [14.99, 15.21]) {
-    const ringOuter = paintGeometry(
-      new THREE.CylinderGeometry(0.35, 0.35, 0.055, 24)
+  // Built directly as clean stepped coaxial cylinders (zero CSG unions on the 6k-tri slide!) from X=13.50 to X=15.41
+  const pistonParts: THREE.BufferGeometry[] = [
+    paintGeometry(
+      new THREE.CylinderGeometry(0.2, 0.2, 0.36, 24)
         .rotateZ(Math.PI / 2)
-        .translate(gx, 1.48, 0),
-      DEAGLE_MILLED_DARK
-    );
-    const ringCore = paintGeometry(
-      new THREE.CylinderGeometry(0.275, 0.275, 0.12, 24)
+        .translate(13.68, 1.44, 0),
+      DEAGLE_CHROME_MIRROR
+    ),
+    paintGeometry(
+      new THREE.CylinderGeometry(0.22, 0.2, 0.99, 24)
         .rotateZ(Math.PI / 2)
-        .translate(gx, 1.48, 0),
+        .translate(14.335, 1.48, 0),
+      DEAGLE_CHROME_MIRROR
+    ),
+    // 3 warm heat-tinted hard-chrome sealing lands separated by 2 dark labyrinth gas-ring grooves
+    paintGeometry(
+      new THREE.CylinderGeometry(0.325, 0.325, 0.132, 26)
+        .rotateZ(Math.PI / 2)
+        .translate(14.896, 1.48, 0),
+      '#c8b28a'
+    ),
+    paintGeometry(
+      new THREE.CylinderGeometry(0.275, 0.275, 0.056, 24)
+        .rotateZ(Math.PI / 2)
+        .translate(14.99, 1.48, 0),
       DEAGLE_MILLED_DARK
-    );
-    ringGrooves.push(csgSubtract(ringOuter, [ringCore]));
-  }
-  const pistonHead = csgSubtract(pistonHeadRaw, ringGrooves);
-
-  const pistonCarbonFace = paintGeometry(
-    new THREE.CylinderGeometry(0.31, 0.31, 0.06, 22)
-      .rotateZ(Math.PI / 2)
-      .translate(15.38, 1.48, 0),
-    DEAGLE_MILLED_DARK
-  );
+    ),
+    paintGeometry(
+      new THREE.CylinderGeometry(0.325, 0.325, 0.164, 26)
+        .rotateZ(Math.PI / 2)
+        .translate(15.1, 1.48, 0),
+      '#c8b28a'
+    ),
+    paintGeometry(
+      new THREE.CylinderGeometry(0.275, 0.275, 0.056, 24)
+        .rotateZ(Math.PI / 2)
+        .translate(15.21, 1.48, 0),
+      DEAGLE_MILLED_DARK
+    ),
+    paintGeometry(
+      new THREE.CylinderGeometry(0.325, 0.325, 0.112, 26)
+        .rotateZ(Math.PI / 2)
+        .translate(15.294, 1.48, 0),
+      '#c8b28a'
+    ),
+    paintGeometry(
+      new THREE.CylinderGeometry(0.31, 0.31, 0.06, 24)
+        .rotateZ(Math.PI / 2)
+        .translate(15.38, 1.48, 0),
+      DEAGLE_MILLED_DARK
+    ),
+  ];
 
   const fullSlide = sanitizeCsgGeometry(
-    csgUnion([
-      carvedSlide,
-      pistonRoot,
-      pistonNeck,
-      pistonHead,
-      pistonCarbonFace,
-    ])
+    mergeParts([carvedSlide, ...pistonParts])
   );
 
   return applyDeagleChromeUVs(fullSlide, {
@@ -805,16 +921,39 @@ export function buildDeagleSlideGeometry(): THREE.BufferGeometry {
 /**
  * B-03: Rifle-Style 4-Lug Rotating Bolt Head (assembledPos: [-1.45, 2.60, 0])
  * Centered strictly on bore axis (Y = 2.60, Z = 0) so rotating rx in firing kinematics spins concentrically!
+ * Features distinct undercut radial locking lugs w/ front cam bevels, recessed .50 AE rebated-rim cup face,
+ * stepped right-side extractor mortise & pivot pin bore, and counterbored spring-loaded flat ejector plunger.
  */
 export function buildDeagleBoltGeometry(): THREE.BufferGeometry {
-  const stem = paintGeometry(
-    new THREE.CylinderGeometry(0.62, 0.62, 2.88, 28)
-      .rotateZ(Math.PI / 2)
-      .translate(-0.48, 0, 0),
+  // Closed axisymmetric LatheGeometry profile in (radius, X): builds the rear stem ([-1.92, +0.52]),
+  // undercut lug-relief neck ([+0.52, +0.68]), front bolt-head rim wall (to +1.25), recessed .50 AE
+  // breech face (at +1.10), and central firing-pin bore (r=0.11) as a single 100%-manifold solid!
+  const lathePts = [
+    new THREE.Vector2(0.11, -1.92),
+    new THREE.Vector2(0.62, -1.92),
+    new THREE.Vector2(0.62, 0.52),
+    new THREE.Vector2(0.545, 0.54),
+    new THREE.Vector2(0.545, 0.68),
+    new THREE.Vector2(0.59, 0.68),
+    new THREE.Vector2(0.59, 1.25),
+    new THREE.Vector2(0.485, 1.25),
+    new THREE.Vector2(0.485, 1.1),
+    new THREE.Vector2(0.11, 1.1),
+    new THREE.Vector2(0.11, -1.92),
+  ];
+  const coreBody = paintGeometry(
+    new THREE.LatheGeometry(lathePts, 32).rotateZ(-Math.PI / 2),
     DEAGLE_CHROME_MIRROR
   );
+  // Darken the recessed .50 AE breech floor & inner firing-pin bore with a thin flush liner disc
+  const breechFloorDisc = paintGeometry(
+    new THREE.RingGeometry(0.112, 0.483, 28)
+      .rotateY(Math.PI / 2)
+      .translate(1.102, 0, 0),
+    DEAGLE_MILLED_DARK
+  );
 
-  // Longitudinal carrier guide & anti-friction ribs along bolt stem
+  // Longitudinal carrier guide & bottom cartridge-stripping ribs + 4 Radial Locking Lugs at 45°/135°/225°/315°
   const guideRibTop = paintGeometry(
     new THREE.BoxGeometry(1.72, 0.14, 0.24).translate(-0.62, 0.62, 0),
     DEAGLE_CHROME
@@ -823,51 +962,58 @@ export function buildDeagleBoltGeometry(): THREE.BufferGeometry {
     new THREE.BoxGeometry(1.45, 0.22, 0.28).translate(0.38, -0.64, 0),
     DEAGLE_CHROME
   );
-
-  // 4 Heavy Radial Locking Lugs w/ chamfered leading locking shoulders (lx in [+0.68, +1.22])
   const lugs: THREE.BufferGeometry[] = [];
   for (let k = 0; k < 4; k++) {
     const ang = (k * Math.PI) / 2 + Math.PI / 4;
-    const lug = paintGeometry(
-      new THREE.BoxGeometry(0.54, 0.43, 0.39)
-        .translate(0.95, 0.66, 0)
-        .rotateX(ang),
-      DEAGLE_CHROME
-    );
-    lugs.push(lug);
+    // Trapezoidal-nose extruded lug (X in [+0.68, +1.25], radial span [0.445, 0.875], width 0.39 -> Y/Z max = 0.757)
+    const lugShape = new THREE.Shape();
+    lugShape.moveTo(0.68, 0.445);
+    lugShape.lineTo(1.25, 0.445);
+    lugShape.lineTo(1.25, 0.805);
+    lugShape.lineTo(1.17, 0.875);
+    lugShape.lineTo(0.68, 0.875);
+    lugShape.closePath();
+    const lug = new THREE.ExtrudeGeometry(lugShape, {
+      depth: 0.39,
+      bevelEnabled: false,
+    });
+    lug.translate(0, 0, -0.195);
+    lug.rotateX(ang);
+    lugs.push(paintGeometry(lug, DEAGLE_CHROME));
   }
 
-  // Spring-loaded Ejector Plunger Pin protruding on left-lower .50 AE bolt face
-  const ejectorPin = paintGeometry(
-    new THREE.CylinderGeometry(0.085, 0.085, 0.26, 14)
-      .rotateZ(Math.PI / 2)
-      .translate(1.18, -0.18, -0.24),
-    '#94a3b8'
-  );
-
-  const solidBolt = mergeParts([
-    stem,
-    guideRibTop,
-    stripLugBottom,
-    ...lugs,
-    ejectorPin,
+  const unionBolt = csgUnion([
+    coreBody,
+    mergeParts([guideRibTop, stripLugBottom], 0),
+    mergeParts(lugs, 0),
   ]);
 
-  // Recessed .50 AE Rebated-Rim Bolt Face + Firing Pin Bore + Extractor Pocket + Cam Pin Cross-Bore
-  const facePocket = paintGeometry(
-    new THREE.CylinderGeometry(0.48, 0.48, 0.22, 24)
-      .rotateZ(Math.PI / 2)
-      .translate(1.18, 0, 0),
-    DEAGLE_MILLED_DARK
-  );
-  const fpBore = paintGeometry(
-    new THREE.CylinderGeometry(0.135, 0.135, 3.85, 18)
-      .rotateZ(Math.PI / 2)
-      .translate(-0.3, 0, 0),
-    DEAGLE_MILLED_DARK
-  );
+  // Stepped right-side (+Z) extractor groove slicing cleanly through the rim wall between +45°/-45° lugs + pivot pin hole
   const extSlot = paintGeometry(
-    new THREE.BoxGeometry(1.42, 0.36, 0.46).translate(0.62, 0.08, 0.56),
+    new THREE.BoxGeometry(1.52, 0.34, 0.48).translate(0.62, 0.08, 0.54),
+    DEAGLE_MILLED_DARK
+  );
+  const extPinBore = paintGeometry(
+    new THREE.CylinderGeometry(0.075, 0.075, 0.66, 14).translate(
+      0.36,
+      0.08,
+      0.52
+    ),
+    DEAGLE_MILLED_DARK
+  );
+  // Counterbored ejector plunger pocket on lower-left (-Y, -Z) bolt face (180° opposite extractor claw) + retaining roll-pin hole
+  const ejectorCounterbore = paintGeometry(
+    new THREE.CylinderGeometry(0.105, 0.105, 0.72, 16)
+      .rotateZ(Math.PI / 2)
+      .translate(0.84, -0.18, -0.24),
+    DEAGLE_MILLED_DARK
+  );
+  const ejectorRollPin = paintGeometry(
+    new THREE.CylinderGeometry(0.048, 0.048, 0.72, 12).translate(
+      0.56,
+      -0.18,
+      -0.24
+    ),
     DEAGLE_MILLED_DARK
   );
   const camHole = paintGeometry(
@@ -875,7 +1021,23 @@ export function buildDeagleBoltGeometry(): THREE.BufferGeometry {
     DEAGLE_MILLED_DARK
   );
 
-  return csgSubtract(solidBolt, [facePocket, fpBore, extSlot, camHole]);
+  const carvedBolt = csgSubtractBatched(unionBolt, [
+    extSlot,
+    ejectorCounterbore,
+    camHole,
+    extPinBore,
+    ejectorRollPin,
+  ]);
+
+  // Spring-loaded flat-faced Ejector Plunger emerging intact from its counterbore out to X = +1.31
+  const ejectorPlunger = paintGeometry(
+    new THREE.CylinderGeometry(0.08, 0.085, 0.34, 18)
+      .rotateZ(Math.PI / 2)
+      .translate(1.14, -0.18, -0.24),
+    '#94a3b8'
+  );
+
+  return mergeParts([carvedBolt, breechFloorDisc, ejectorPlunger]);
 }
 
 /** B-04: Bolt Helical Cam Control Pin (assembledPos: [-2.25, 2.60, 0]) */
@@ -1268,4 +1430,75 @@ export function buildDeagleRecoilSpringsGeometry(): THREE.BufferGeometry {
     '#9aa8ba'
   );
   return mergeParts([springL, springR]);
+}
+
+function buildDeaglePolygonalBore(opts: {
+  xStart: number;
+  xEnd: number;
+  centerY: number;
+  boreRadius: number;
+  meanRadius: number;
+  amplitude: number;
+  lobes: number;
+  twistLength: number;
+  radialSegments?: number;
+  axialSegments?: number;
+}): THREE.BufferGeometry {
+  const {
+    xStart,
+    xEnd,
+    centerY,
+    boreRadius,
+    meanRadius,
+    amplitude,
+    lobes,
+    twistLength,
+    radialSegments = 48,
+    axialSegments = 22,
+  } = opts;
+  const positions: number[] = [];
+  const indices: number[] = [];
+  const ringStride = radialSegments + 1;
+  const twistTotal = ((xEnd - xStart) / twistLength) * Math.PI * 2;
+  const polyR = (t: number) => meanRadius - amplitude * Math.cos(lobes * t);
+  const pushRing = (
+    x: number,
+    phase: number,
+    radiusFn: (t: number) => number
+  ) => {
+    for (let j = 0; j <= radialSegments; j++) {
+      const theta = (j / radialSegments) * Math.PI * 2;
+      const r = radiusFn(theta - phase);
+      positions.push(x, centerY + Math.cos(theta) * r, Math.sin(theta) * r);
+    }
+  };
+  for (let i = 0; i <= axialSegments; i++) {
+    const u = i / axialSegments;
+    pushRing(xStart + (xEnd - xStart) * u, u * twistTotal, polyR);
+  }
+  for (let i = 0; i < axialSegments; i++) {
+    for (let j = 0; j < radialSegments; j++) {
+      const a = i * ringStride + j;
+      const b = a + ringStride;
+      indices.push(a, b, a + 1, b, b + 1, a + 1);
+    }
+  }
+  const addCap = (x: number, phase: number, facingPlusX: boolean) => {
+    const inner = positions.length / 3;
+    pushRing(x, phase, polyR);
+    const outer = positions.length / 3;
+    pushRing(x, phase, () => boreRadius);
+    for (let j = 0; j < radialSegments; j++) {
+      const a = inner + j;
+      const b = outer + j;
+      if (facingPlusX) indices.push(a, b, a + 1, b, b + 1, a + 1);
+      else indices.push(a, a + 1, b, b, a + 1, b + 1);
+    }
+  };
+  addCap(xStart, 0, false);
+  addCap(xEnd, twistTotal, true);
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geo.setIndex(indices);
+  return geo;
 }

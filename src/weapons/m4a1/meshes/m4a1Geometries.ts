@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import {
   clampUv01 as clamp01,
   fractPos,
@@ -385,13 +386,25 @@ export function buildM4a1UpperReceiverGeometry(): THREE.BufferGeometry {
     )
   );
 
-  // Sculpted Pyramidal Brass Shell Deflector ("Brunton Bump") behind right ejection port
+  // Sculpted forged Brass Shell Deflector ("Brunton Bump") behind right ejection port:
+  // long forward ramp that turns ejected brass, steep rear buttress, radiused CNC edges
+  const deflPlan = new THREE.Shape();
+  deflPlan.moveTo(0.12, 0.7);
+  deflPlan.lineTo(-0.42, 1.06);
+  deflPlan.quadraticCurveTo(-0.5, 1.1, -0.56, 1.05);
+  deflPlan.lineTo(-0.78, 0.7);
+  deflPlan.closePath();
   const deflectorPrism = paintGeometry(
-    new THREE.ConeGeometry(0.44, 0.56, 4)
+    new THREE.ExtrudeGeometry(deflPlan, {
+      depth: 0.66,
+      bevelEnabled: true,
+      bevelThickness: 0.04,
+      bevelSize: 0.03,
+      bevelSegments: 2,
+      curveSegments: 4,
+    })
       .rotateX(Math.PI / 2)
-      .rotateZ(Math.PI / 4)
-      .scale(1.18, 0.96, 0.88)
-      .translate(-0.32, 1.05, 0.94),
+      .translate(0, 1.38, 0),
     M4_ANODIZED_CHARCOAL
   );
   parts.push(deflectorPrism);
@@ -638,8 +651,19 @@ export function buildM4a1CarryHandleGeometry(): THREE.BufferGeometry {
  * U-03: T-Shaped Forged 7075-T6 Charging Handle & Spring-Loaded Tactical Latch (assembledPos: [-2.25, 1.66, 0])
  */
 export function buildM4a1ChargingHandleGeometry(): THREE.BufferGeometry {
+  // Forged stem with chamfered top edges (extruded YZ section along X)
+  const stemSec = new THREE.Shape();
+  stemSec.moveTo(-0.18, -0.125);
+  stemSec.lineTo(-0.18, 0.07);
+  stemSec.lineTo(-0.125, 0.125);
+  stemSec.lineTo(0.125, 0.125);
+  stemSec.lineTo(0.18, 0.07);
+  stemSec.lineTo(0.18, -0.125);
+  stemSec.closePath();
   const shaft = paintGeometry(
-    new THREE.BoxGeometry(7.15, 0.25, 0.36).translate(0.1, 0, 0),
+    new THREE.ExtrudeGeometry(stemSec, { depth: 7.15, bevelEnabled: false })
+      .rotateY(Math.PI / 2)
+      .translate(-3.475, 0, 0),
     M4_ANODIZED_CHARCOAL
   );
   const gasKeyChannel = paintGeometry(
@@ -648,8 +672,27 @@ export function buildM4a1ChargingHandleGeometry(): THREE.BufferGeometry {
   );
   const stem = csgSubtract(shaft, [gasKeyChannel]);
 
+  // Swept T-handle: tapered wings with radiused finger pulls (top-view profile extruded in Y)
+  const tPlan = new THREE.Shape();
+  tPlan.moveTo(-3.82, -1.16);
+  tPlan.lineTo(-3.82, 1.16);
+  tPlan.quadraticCurveTo(-3.62, 1.2, -3.36, 1.06);
+  tPlan.lineTo(-3.28, 0.3);
+  tPlan.lineTo(-3.28, -0.3);
+  tPlan.lineTo(-3.36, -1.06);
+  tPlan.quadraticCurveTo(-3.62, -1.2, -3.82, -1.16);
+  tPlan.closePath();
   const tBar = paintGeometry(
-    new THREE.BoxGeometry(0.54, 0.34, 2.32).translate(-3.55, 0, 0),
+    new THREE.ExtrudeGeometry(tPlan, {
+      depth: 0.3,
+      bevelEnabled: true,
+      bevelThickness: 0.02,
+      bevelSize: 0.02,
+      bevelSegments: 2,
+      curveSegments: 6,
+    })
+      .rotateX(Math.PI / 2)
+      .translate(0, 0.15, 0),
     M4_ANODIZED_CHARCOAL
   );
   const fingerCurlL = paintGeometry(
@@ -709,13 +752,29 @@ export function buildM4a1ChargingHandleGeometry(): THREE.BufferGeometry {
  * Hinge axis at local Y = 0, Z = 0 so rx > 0 flips door down-outward during firing!
  */
 export function buildM4a1DustCoverGeometry(): THREE.BufferGeometry {
+  // Die-formed curved door skin following the upper receiver radius (outward crown bulge)
   const door = paintGeometry(
-    new THREE.BoxGeometry(3.08, 0.84, 0.065).translate(0, 0.42, 0.02),
+    bendDustCoverSkin(
+      new THREE.BoxGeometry(3.08, 0.84, 0.065, 1, 10, 1).translate(0, 0.42, 0.02),
+      0.045
+    ),
     M4_PARKERIZED_STEEL
   );
+  // Embossed longitudinal stiffening rib with radiused ends
   const outerRib = paintGeometry(
-    new THREE.BoxGeometry(2.38, 0.36, 0.085).translate(0, 0.42, 0.055),
+    bendDustCoverSkin(
+      new THREE.CapsuleGeometry(0.12, 2.14, 4, 12)
+        .rotateZ(Math.PI / 2)
+        .scale(1, 1, 0.22)
+        .translate(0, 0.42, 0.058),
+      0.045
+    ),
     M4_RAIL_BEVEL
+  );
+  // Upper formed catch flange that snaps under the receiver ball-detent rim
+  const catchFlange = paintGeometry(
+    new THREE.BoxGeometry(2.62, 0.06, 0.13).translate(0, 0.83, -0.02),
+    M4_PARKERIZED_STEEL
   );
   // Rolled hinge knuckles wrapping around hinge rod at Y = 0, Z = 0
   const knuckleL = paintGeometry(
@@ -769,6 +828,7 @@ export function buildM4a1DustCoverGeometry(): THREE.BufferGeometry {
     mergeParts([
       door,
       outerRib,
+      catchFlange,
       knuckleL,
       knuckleR,
       detentHousing,
@@ -778,6 +838,21 @@ export function buildM4a1DustCoverGeometry(): THREE.BufferGeometry {
       hingeSpring,
     ])
   );
+}
+
+/** Bows a flat door skin outward (+Z) along local Y ∈ [0, 0.84] like the stamped M4 cover. */
+function bendDustCoverSkin(
+  geo: THREE.BufferGeometry,
+  crown: number
+): THREE.BufferGeometry {
+  const p = geo.attributes.position;
+  for (let i = 0; i < p.count; i++) {
+    const t = Math.min(1, Math.max(0, p.getY(i) / 0.84));
+    p.setZ(i, p.getZ(i) + Math.sin(t * Math.PI) * crown);
+  }
+  p.needsUpdate = true;
+  geo.computeVertexNormals();
+  return geo;
 }
 
 /**
@@ -985,28 +1060,46 @@ export function buildM4a1BoltGeometry(): THREE.BufferGeometry {
   }
 
   // 7 Radial Carpenter-158 Star Locking Lugs spaced at 45° (leaving k=0 at +Z for the Extractor!)
+  // Each lug is a CNC-profiled tooth: chamfered camming lead-in on the muzzle face and
+  // radiused rear locking shoulder so it indexes into the barrel-extension star.
+  const lugShape = new THREE.Shape();
+  lugShape.moveTo(-0.23, -0.0825);
+  lugShape.lineTo(0.15, -0.0825);
+  lugShape.lineTo(0.23, -0.035);
+  lugShape.lineTo(0.23, 0.035);
+  lugShape.lineTo(0.15, 0.0825);
+  lugShape.lineTo(-0.23, 0.0825);
+  lugShape.closePath();
   for (let k = 1; k <= 7; k++) {
     const ang = (k * Math.PI) / 4;
     const ly = Math.sin(ang) * 0.415;
     const lz = Math.cos(ang) * 0.415;
-    subParts.push(
-      paintGeometry(
-        new THREE.BoxGeometry(0.46, 0.165, 0.22)
-          .rotateX(-ang)
-          .translate(1.06, ly, lz),
-        M4_STAINLESS
-      )
-    );
+    const lug = new THREE.ExtrudeGeometry(lugShape, {
+      depth: 0.2,
+      bevelEnabled: true,
+      bevelThickness: 0.01,
+      bevelSize: 0.008,
+      bevelSegments: 1,
+    })
+      .translate(0, 0, -0.1)
+      .rotateX(-ang)
+      .translate(1.06, ly, lz);
+    subParts.push(paintGeometry(lug, M4_STAINLESS));
   }
+  // Radiused bolt-head shoulder collar marking the lug-row / cam-body transition
+  subParts.push(
+    paintGeometry(
+      new THREE.TorusGeometry(0.336, 0.018, 6, 28)
+        .rotateY(Math.PI / 2)
+        .translate(0.79, 0, 0),
+      M4_BRIGHT_STEEL
+    )
+  );
 
   // Right-side (+Z, k=0) Spring-Loaded Claw Extractor w/ Rim-Grabbing Hook & Pivot Pin
   subParts.push(
     paintGeometry(
-      new THREE.BoxGeometry(1.22, 0.18, 0.18).translate(0.68, 0, 0.4),
-      M4_PARKERIZED_STEEL
-    ),
-    paintGeometry(
-      new THREE.BoxGeometry(0.14, 0.19, 0.12).translate(1.25, 0, 0.33),
+      buildM4ClawExtractor(0.07, 1.32, 0.31, 0.49, 0.27, 0.19),
       M4_PARKERIZED_STEEL
     ),
     paintGeometry(
@@ -1261,16 +1354,21 @@ export function buildM4a1RasUpperGeometry(): THREE.BufferGeometry {
     ),
   ];
 
+  // Each flank's 7 non-overlapping vents are merged into ONE cutter brush (2 CSG ops instead of 14)
+  const ventsR: THREE.BufferGeometry[] = [];
+  const ventsL: THREE.BufferGeometry[] = [];
   for (let v = 0; v < 7; v++) {
     const vx = -3.3 + v * 1.1;
-    cutters.push(
+    ventsR.push(
       paintGeometry(
         new THREE.CylinderGeometry(0.2, 0.2, 2.2, 14)
           .scale(1.18, 1, 0.86)
           .rotateX(Math.PI / 4)
           .translate(vx, 0.56, 0.56),
         M4_ANODIZED_DARK
-      ),
+      )
+    );
+    ventsL.push(
       paintGeometry(
         new THREE.CylinderGeometry(0.2, 0.2, 2.2, 14)
           .scale(1.18, 1, 0.86)
@@ -1280,6 +1378,7 @@ export function buildM4a1RasUpperGeometry(): THREE.BufferGeometry {
       )
     );
   }
+  cutters.push(mergeGeometries(ventsR, false), mergeGeometries(ventsL, false));
 
   const upperBody = csgSubtract(outerRaw, cutters);
   const parts: THREE.BufferGeometry[] = [upperBody];
@@ -1381,16 +1480,20 @@ export function buildM4a1RasLowerGeometry(): THREE.BufferGeometry {
     ),
   ];
 
+  const ventsR: THREE.BufferGeometry[] = [];
+  const ventsL: THREE.BufferGeometry[] = [];
   for (let v = 0; v < 7; v++) {
     const vx = -3.3 + v * 1.1;
-    cutters.push(
+    ventsR.push(
       paintGeometry(
         new THREE.CylinderGeometry(0.19, 0.19, 2.2, 14)
           .scale(1.18, 1, 0.86)
           .rotateX(-Math.PI / 4)
           .translate(vx, -0.54, 0.54),
         M4_ANODIZED_DARK
-      ),
+      )
+    );
+    ventsL.push(
       paintGeometry(
         new THREE.CylinderGeometry(0.19, 0.19, 2.2, 14)
           .scale(1.18, 1, 0.86)
@@ -1400,6 +1503,7 @@ export function buildM4a1RasLowerGeometry(): THREE.BufferGeometry {
       )
     );
   }
+  cutters.push(mergeGeometries(ventsR, false), mergeGeometries(ventsL, false));
 
   const lowerBody = csgSubtract(outerRaw, cutters);
   const parts: THREE.BufferGeometry[] = [lowerBody];
@@ -1429,4 +1533,35 @@ export function buildM4a1RasLowerGeometry(): THREE.BufferGeometry {
   }
 
   return sanitizeM4Geometry(mergeParts(parts));
+}
+
+/**
+ * Top-view (X-Z) CNC claw-extractor profile: tapered spring tail, full-length body and an
+ * inward-hooked rim claw at the muzzle end; extruded through Y (thickness h).
+ */
+function buildM4ClawExtractor(
+  x0: number,
+  x1: number,
+  zIn: number,
+  zOut: number,
+  hookZ: number,
+  h: number
+): THREE.BufferGeometry {
+  const s = new THREE.Shape();
+  s.moveTo(x0, zIn + 0.03);
+  s.lineTo(x0, zOut - 0.02);
+  s.lineTo(x0 + 0.06, zOut);
+  s.lineTo(x1 - 0.05, zOut);
+  s.lineTo(x1, zOut - 0.05);
+  s.lineTo(x1, hookZ);
+  s.lineTo(x1 - 0.11, hookZ);
+  s.lineTo(x1 - 0.15, zIn);
+  s.lineTo(x0 + 0.06, zIn);
+  s.closePath();
+  return new THREE.ExtrudeGeometry(s, {
+    depth: h,
+    bevelEnabled: false,
+  })
+    .rotateX(Math.PI / 2)
+    .translate(0, h / 2, 0);
 }
