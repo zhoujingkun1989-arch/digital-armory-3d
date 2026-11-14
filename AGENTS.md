@@ -28,11 +28,13 @@
 ## 2. 当前基线概览（Current Baseline）
 
 本仓库已建成的核心工程与内容底座如下：
-- **11 款馆藏名枪 / 278 个程序化与 CSG 运动零件**：覆盖 `ak15`、`m4a1`、`mp5`、`g17`、`m82a1`、`awm`、`scar`、`deagle`、`aug`、`p320`、`p90`，全量通过法线、体积、UV 与运动学防穿模契约测试。
-- **64 张 2K 5 通道 Packed ORM WebP 贴图**：由 `scripts/pbr_core/` 离线烘焙并在 `public/textures/` 提供，配套浏览器内 PBR 贴图图集检视器（`TextureAtlasModal`）。
-- **GPU 纵向中轴军械剖视（`C`）与剖面穿透拾取**：通过 `sectionAwareMeshRaycast` 实现穿透虚空剖切面精准点选内部火控与枪机零件；支持外壳 X-Ray 透视（`X`）、CAD 硬边轮廓线（`E`）与零回流 3D 引线编号标签（`L`）。
-- **7 阶段耦合运动学 + 7 口径 SAAMI/CIP 实弹内弹道**：位于 `src/engine/actors/BallisticsSystem.tsx`，覆盖 `9×19mm`、`5.7×28mm`、`5.56 NATO`、`7.62×39mm`、`.50 AE`、`.338 Lapua`、`.50 BMG`，含 `90°` 螺旋旋转供弹、底火击发凹坑、碳烟环、膛口冲击波与抛壳轨迹。
-- **全馆藏中英双语四幕研发纪录片 + 644 个 Gemini TTS 语音导览 + 3D 导演运镜 & Web Audio 实弹声场**：包含 `public/narrations/*.json`、`public/audio/`、浏览器 `speechSynthesis` 兜底（`src/narration/audioPlayer.ts`）、四幕自动镜头编排与同步字幕（`src/narration/storyDirector.ts`）、程序化 7 口径实弹与 8 点军械咬合合成声场（`src/engine/audio/mechanicalSoundEngine.ts`），以及全站与 `ShowcaseView` 100% 中英双语体验。
+- **11 款馆藏名枪 / 278 个程序化与 CSG 运动零件**：覆盖 `ak15`、`m4a1`、`mp5`、`g17`、`m82a1`、`awm`、`scar`、`deagle`、`aug`、`p320`、`p90`，内置二面角 CNC 棱边曲率顶点属性（`aCurvature`）与 GPU 等线径螺旋弹簧变形属性（`aSpringParam`），全量通过法线、体积、UV 与运动学防穿模契约测试。
+- **64 张 2K 5 通道 Packed ORM WebP 贴图 + 多层定制 GLSL PBR 着色器**：由 `scripts/pbr_core/` 离线烘焙并在 `public/textures/` 提供，叠加 CNC 刀痕各向异性微法线、棱边银白磨损、枪管连续射击黑体热辐射红热与膛口积碳（`armoryShader.ts`），配套浏览器内 PBR 贴图图集检视器（`TextureAtlasModal`）。
+- **Two-Pass WebGL Stencil 实体纵剖面（`C`）与剖面穿透拾取**：通过双通道模板缓冲（Stencil Buffer）封口渲染带 `45°` ISO 128 工程剖面斜线（钢材冷银蓝、铝合金阳极灰、铜材黄铜金、聚合物哑光暖灰）的实心金属壁厚，配合 `sectionAwareMeshRaycast` 穿透剖切面精准点选内部火控与枪机零件；支持外壳 X-Ray 透视（`X`）、CAD 硬边轮廓线（`E`）与零回流 3D 引线编号标签（`L`）。
+- **三档影棚环境（暗室展厅 / 军械匠人台 / 工程白昼）+ GTAO/HDR/AgX 后处理**：内置程序化氯丁橡胶拆枪垫与磁吸零件盘（`GunsmithStageMat.tsx`）、自适应暗色军械师 / 亮色工程蓝图双主题 UI，以及半分辨率 GTAO 环境光遮蔽、HDR 膛口焰辉光与 AgX 色调映射管线（`ArmoryPostProcessing.tsx`）。
+- **7 阶段耦合运动学 + 7 口径 SAAMI/CIP 实弹内弹道、刚体抛壳与实时遥测示波器（`WP-04`）**：位于 `src/engine/actors/BallisticsSystem.tsx`、`src/engine/physics/armoryPhysics.ts` 与 `src/features/workbench/BallisticsTelemetryHud.tsx`，覆盖 `9×19mm`、`5.7×28mm`、`5.56 NATO`、`7.62×39mm`、`.50 AE`、`.338 Lapua`、`.50 BMG`，含 60fps 零重绘膛压 $P(t)$（`MPa`）/ 膛内初速 $V(t)$（`m/s`）示波器与反向拖拽控制、二阶弹簧阻尼枪身后坐上跳与枪管谐振鞭动、桌面碰撞弹跳刚体抛壳及枪管温升积碳演化。
+- **直接手操拉机柄/套筒、膛内验枪（`Press-Check [P]`）与快慢机多档位火控交互（`WP-08`）**：位于 `src/engine/interaction/InteractiveActionController.tsx`，支持 3D 视口直接拖拽套筒/拉机柄、微拉套筒露铜验枪（`P`）、切换 `SAFE / SEMI / AUTO` 快慢机档位（`V`）以及按住扳机（`F`）感受保险锁死、单发断连器截获复位与全自动循环差异。
+- **全馆藏中英双语四幕研发纪录片 + 644 个 Gemini TTS 语音导览 + 3D 导演运镜 & 立体声卷积混响 / 钢材频散波导声场**：包含 `public/narrations/*.json`、`public/audio/`、浏览器 `speechSynthesis` 兜底（`src/narration/audioPlayer.ts`）、四幕自动镜头编排与同步字幕（`src/narration/storyDirector.ts`）、3 档立体声卷积脉冲响应（`bench_close` / `tactical_hall` / `indoor_range`）与欧拉-伯努利钢材频散波导 + 抛壳落地清脆弹跳声场（`src/engine/audio/mechanicalSoundEngine.ts`），以及全站与 `ShowcaseView` 100% 中英双语体验。
 
 ---
 
@@ -50,9 +52,9 @@
   - **交付与验收**：与 7 阶段击发相位硬绑定，实现 6 口径差异化枪口冲击波（`.50 BMG` 重低频轰鸣 vs `9×19mm` 清脆短促）；在 `0.25x` 慢放时清晰分离阻铁释放咔哒 → 击针撞击 → 枪机回转开锁碰撞 → 弹壳抛飞 → 复进簧摩擦闭锁声；接入拆装/点选金属卡笋反馈音、TTS 人声自动闪避（Audio Ducking）与独立静音开关。
 
 ### 阶段二：定量物理与内弹道可视化
-- [ ] **WP-04｜实时内弹道遥测示波器（Chamber Pressure & Velocity HUD）**
-  - **目标模块**：`src/features/workbench/TimelineDock.tsx`、`src/engine/clock/playbackClock.ts`
-  - **交付与验收**：建立 6 口径真实内弹道曲线模型，在击发模式下以 60fps 零重绘方式同步绘制膛压（`MPa`）、弹头膛内初速（`m/s`）与安全开锁泄压窗口曲线，直观诠释自由行程与滚柱延迟比，支持拖拽曲线反向控制 `fireProgress`。
+- [x] **WP-04｜实时内弹道遥测示波器（Chamber Pressure & Velocity HUD）**
+  - **目标模块**：`src/features/workbench/BallisticsTelemetryHud.tsx`、`src/engine/physics/armoryPhysics.ts`、`src/features/workbench/TimelineDock.tsx`、`src/engine/clock/playbackClock.ts`
+  - **交付与验收**：建立 7 口径 SAAMI/CIP 真实内弹道曲线模型，在击发模式下以 60fps 零重绘方式同步绘制膛压（`MPa`）、弹头膛内初速（`m/s`）与安全开锁泄压窗口曲线，直观诠释自由行程与滚柱延迟比，支持拖拽曲线反向控制 `fireProgress`。
 - [ ] **WP-05｜燃气流向与功能件工程分色视图（Engineering Flow & Functional Tint）**
   - **目标模块**：`src/engine/actors/PartActor.tsx`、`src/engine/actors/BallisticsSystem.tsx`、`src/store/useAppStore.ts`
   - **交付与验收**：提供「工程原理分色模式」，按闭锁件、导气件、火控件与弹性储能件赋予清晰语义色，并动态可视化高压火药燃气从导气孔冲击活塞头或斯通纳气匙的气流路径。
@@ -64,9 +66,9 @@
 - [ ] **WP-07｜引导式野战勤务拆装实操（Hands-On Field-Strip Mode）**
   - **目标模块**：`src/weapons/types.ts`、各武器 `plugin.ts`、`src/features/workbench/`
   - **交付与验收**：为每款武器定义有向拆装依赖图（DAG，如 `卸弹匣 → 拉栓验枪 → 拆机匣盖 → 取复进簧 → 抽枪机框 → 旋出枪机`），支持在 3D 视口直接点击零件完成逐步拆解与复装；若顺序错误，高亮机械干涉部位并弹出军械规范提示。
-- [ ] **WP-08｜快慢机多档位（`SAFE / SEMI / AUTO`）火控交互**
-  - **目标模块**：`src/weapons/types.ts`、`src/weapons/*/plugin.ts`、`src/features/workbench/`
-  - **交付与验收**：扩展火控运动学接口，支持在拆解台切换快慢机档位，实时对比 `SAFE` 阻铁锁死、`SEMI` 单发挂钩截获击锤与松扳机复位、`AUTO` 不到位保险联动连发循环的啮合差异。
+- [x] **WP-08｜快慢机多档位（`SAFE / SEMI / AUTO`）火控交互**
+  - **目标模块**：`src/engine/interaction/InteractiveActionController.tsx`、`src/features/workbench/TimelineDock.tsx`、`src/weapons/types.ts`、`src/weapons/*/plugin.ts`
+  - **交付与验收**：扩展火控运动学接口与直接 3D 手操控制器，支持在拆解台切换快慢机档位（`V`）、微拉套筒验枪（`P`）与按住扳机（`F`），实时对比 `SAFE` 阻铁锁死、`SEMI` 单发断连器截获与松扳机复位、`AUTO` 不到位保险联动连发循环的啮合差异。
 - [ ] **WP-09｜经典枪械故障剖视排障室（Malfunction Diagnostics）**
   - **目标模块**：`src/engine/actors/`、`src/features/workbench/`、`src/i18n/`
   - **交付与验收**：内置 4 类典型故障与安全保护定格（`烟囱卡壳 Stovepipe`、`双进弹 Double Feed`、`底火轻敲拒发 Light Strike`、`未闭锁击发阻断 Out-of-Battery Safety`），支持一键剖视定位卡阻成因并演示标准排障步骤。

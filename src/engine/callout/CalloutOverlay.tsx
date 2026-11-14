@@ -134,8 +134,9 @@ export function updateCalloutOverlay60fps(
 
   const isCompact = viewportW < 820;
   const minY = viewportW < 720 ? 174 : viewportW < 920 ? 116 : 76;
-  const dockHalfW = Math.min(860, viewportW - 24) * 0.5 + 10;
+  const dockHalfW = Math.min(920, viewportW - 24) * 0.5 + 10;
   const centerX = viewportW * 0.5;
+  const isDark = state.environmentPreset !== 'blueprint_daylight';
 
   const silhouettes: ScreenRectBox[] = [];
   const candidates: Candidate[] = [];
@@ -469,7 +470,13 @@ export function updateCalloutOverlay60fps(
       dPath = `M ${c.sx.toFixed(1)} ${c.sy.toFixed(1)} L ${c.sx.toFixed(1)} ${ly.toFixed(1)} L ${edgeX.toFixed(1)} ${ly.toFixed(1)}`;
     }
 
-    const strokeColor = c.isHighlighted ? '#0284c7' : 'rgba(51, 65, 85, 0.52)';
+    const strokeColor = c.isHighlighted
+      ? isDark
+        ? '#38bdf8'
+        : '#0284c7'
+      : isDark
+        ? 'rgba(148, 163, 184, 0.56)'
+        : 'rgba(51, 65, 85, 0.52)';
     const strokeWidth = c.isHighlighted ? '1.5' : '0.95';
 
     refs.svgGroup!.style.opacity = c.alpha.toFixed(3);
@@ -480,8 +487,26 @@ export function updateCalloutOverlay60fps(
     refs.dot!.setAttribute('cx', c.sx.toFixed(1));
     refs.dot!.setAttribute('cy', c.sy.toFixed(1));
     refs.dot!.setAttribute('r', c.isHighlighted ? '3.2' : '2.1');
-    refs.dot!.setAttribute('fill', c.isHighlighted ? '#0284c7' : '#f8fafc');
-    refs.dot!.setAttribute('stroke', c.isHighlighted ? '#ffffff' : '#1e293b');
+    refs.dot!.setAttribute(
+      'fill',
+      c.isHighlighted
+        ? isDark
+          ? '#38bdf8'
+          : '#0284c7'
+        : isDark
+          ? '#0f172a'
+          : '#f8fafc'
+    );
+    refs.dot!.setAttribute(
+      'stroke',
+      c.isHighlighted
+        ? isDark
+          ? '#0f172a'
+          : '#ffffff'
+        : isDark
+          ? '#94a3b8'
+          : '#1e293b'
+    );
 
     refs.label!.style.opacity = c.alpha.toFixed(3);
     refs.label!.style.fontSize = isCompact ? '10.5px' : '11.5px';
@@ -495,6 +520,8 @@ export const CalloutOverlay: React.FC = () => {
   const lang = useAppStore((s) => s.lang);
   const storyOpen = useAppStore((s) => s.storyOpen);
   const screen = useAppStore((s) => s.screen);
+  const mode = useAppStore((s) => s.mode);
+  const telemetryHudOpen = useAppStore((s) => s.telemetryHudOpen);
   const sidebarCollapsed = useAppStore((s) => s.sidebarCollapsed);
   const selectedPartId = useAppStore((s) => s.selectedPartId);
   const hoveredPartId = useAppStore((s) => s.hoveredPartId);
@@ -513,6 +540,8 @@ export const CalloutOverlay: React.FC = () => {
     scheduleHudBoundsRefresh();
   }, [
     screen,
+    mode,
+    telemetryHudOpen,
     sidebarCollapsed,
     selectedPartId,
     activeWeaponId,

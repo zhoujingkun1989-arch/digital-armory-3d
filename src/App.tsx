@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useEffect } from 'react';
 import { Sparkles } from 'lucide-react';
 import { useKeyboardShortcuts } from './app/useKeyboardShortcuts';
 import { useUrlStateSync } from './app/useUrlStateSync';
@@ -8,6 +8,7 @@ import { CalloutOverlay } from './engine/callout/CalloutOverlay';
 import { ArmoryViewport } from './engine/canvas/ArmoryViewport';
 import { ArmoryView } from './features/armory/ArmoryView';
 import { WeaponStoryDrawer } from './features/story/WeaponStoryDrawer';
+import { BallisticsTelemetryHud } from './features/workbench/BallisticsTelemetryHud';
 import { BomTreeSidebar } from './features/workbench/BomTreeSidebar';
 import { GeometryBuildBanner } from './features/workbench/GeometryBuildBanner';
 import { PartInspectorCard } from './features/workbench/PartInspectorCard';
@@ -29,11 +30,29 @@ export const App: React.FC = () => {
   useStoryDirectorController();
 
   const screen = useAppStore((s) => s.screen);
+  const mode = useAppStore((s) => s.mode);
   const lang = useAppStore((s) => s.lang);
   const textureModalOpen = useAppStore((s) => s.textureModalOpen);
+  const environmentPreset = useAppStore((s) => s.environmentPreset);
+  const telemetryHudOpen = useAppStore((s) => s.telemetryHudOpen);
+  const sidebarCollapsed = useAppStore((s) => s.sidebarCollapsed);
+
+  const uiTheme =
+    environmentPreset === 'blueprint_daylight' ? 'light' : 'dark';
+
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.dataset.theme = uiTheme;
+      document.documentElement.dataset.env = environmentPreset;
+    }
+  }, [uiTheme, environmentPreset]);
 
   return (
-    <div className="app-shell">
+    <div
+      className="app-shell"
+      data-theme={uiTheme}
+      data-env={environmentPreset}
+    >
       {/* Persistent Fullscreen Interactive 3D Viewport (seamless Showcase <-> Armory <-> Workbench transition) */}
       <div className="canvas-container">
         <ViewportErrorBoundary>
@@ -57,6 +76,15 @@ export const App: React.FC = () => {
         <>
           <WorkbenchHeader />
           <BomTreeSidebar />
+          {mode === 'firing' && telemetryHudOpen && (
+            <div
+              className={`ballistics-telemetry-slot ${
+                sidebarCollapsed ? 'sidebar-collapsed' : 'sidebar-open'
+              }`}
+            >
+              <BallisticsTelemetryHud />
+            </div>
+          )}
           <PartInspectorCard />
           <TimelineDock />
         </>

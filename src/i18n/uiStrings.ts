@@ -1,3 +1,5 @@
+import type { ArmoryEnvironmentPreset } from '../engine/canvas/GunsmithStageMat';
+import type { FireSelectorMode } from '../engine/interaction/InteractiveActionController';
 import type { LanguageCode } from '../narration/types';
 import type {
   ArmoryCategory,
@@ -8,6 +10,19 @@ import type {
 export interface UiDictionary {
   watermark: string;
   langToggleTitle: string;
+  geoBuildBanner: (shortLabel: string, ready: number, total: number) => string;
+  studio: {
+    envGroupAria: string;
+    presets: Record<
+      ArmoryEnvironmentPreset,
+      {
+        label: string;
+        title: string;
+      }
+    >;
+    postFxChip: string;
+    postFxTitle: (enabled: boolean) => string;
+  };
   armory: {
     title: string;
     subtitle: string;
@@ -133,8 +148,20 @@ export interface UiDictionary {
     loopOn: string;
     loopOff: string;
     loopTitle: string;
+    hudPill: string;
+    hudTitle: (open: boolean) => string;
     sfxPill: string;
     sfxTitle: string;
+    selectorGroupAria: string;
+    selectorShort: Record<FireSelectorMode, string>;
+    selectorBlockedHint: string;
+    pressCheckBtn: string;
+    pressCheckActiveBtn: string;
+    pressCheckTitle: string;
+    holdTriggerBtn: string;
+    holdTriggerSafeBtn: string;
+    holdTriggerResetBtn: string;
+    holdTriggerTitle: string;
     pause: string;
     autoExplode: string;
     playExplodeTitle: (playing: boolean) => string;
@@ -190,6 +217,33 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
     watermark:
       '1:1 精密机械结构与 5 通道 ORM 物理材质还原 · Google Gemini 中英双语研发故事与零件语音导览',
     langToggleTitle: '一键切换全站中英文讲解与语音导览 (中文 / English)',
+    geoBuildBanner: (shortLabel, ready, total) =>
+      `正在异步构建 ${shortLabel} CSG 机械内构 · ${ready} / ${total}`,
+    studio: {
+      envGroupAria: '军械展厅光影环境预设',
+      presets: {
+        tactical_vault: {
+          label: '军械暗室',
+          title:
+            '战术暗室金库 (Tactical Vault)：冷蓝钨丝背光 + 深黑阳极氧化金属反射穹顶 + 靶场混响声场',
+        },
+        gunsmith_bench: {
+          label: '匠人台',
+          title:
+            '军械师工作台 (Gunsmith Bench)：暖钨顶灯 + 1:1 氯丁橡胶拆解垫 + 近场工作台声学 IR',
+        },
+        blueprint_daylight: {
+          label: '工程白昼',
+          title:
+            '工程蓝图白昼 (Blueprint Daylight)：高对比度测绘白昼漫反射棚 + 浅色工程图纸界面',
+        },
+      },
+      postFxChip: 'GTAO',
+      postFxTitle: (enabled) =>
+        enabled
+          ? '已启用 GTAO 毫米级接触环境光遮蔽 + HDR 选择性辉光 + AgX 电影级色调映射 + SMAA 抗锯齿'
+          : '点击开启 GTAO 环境光遮蔽 + HDR 辉光与 AgX 后处理管线',
+    },
     armory: {
       title: '枪械内部结构 3D 数字枪库',
       subtitle:
@@ -235,7 +289,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       sectionOn: '军械剖视已启用',
       sectionOff: '军械剖视预览',
       sectionTitle:
-        '沿纵向中轴切开外层机匣/套筒/弹匣右侧壳体，原色直视内部膛线、闭锁突笋与实弹供弹机构 (C)',
+        '双通道 Stencil 实心金属阴影线纵剖切面：切开右侧机匣/套筒/弹匣壳体，直视内部膛线、闭锁突笋与实弹供弹机构 (C)',
       stageHint: '拖拽检视 · 单击枪体直达分解',
       rackAria: '枪库十一槽武器展架',
       rackTitle: '枪库武器陈列架 · 11-BAY WEAPON VAULT RACK',
@@ -271,7 +325,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       xrayChipTitle: '将外层机匣/套筒、护木与弹匣壳体切换为半透明透视材质 (X)',
       sectionChip: '军械剖视',
       sectionChipTitle:
-        '沿纵向中轴切开外层机匣/套筒/弹匣右侧壳体，原色直视内部膛线、闭锁突笋与实弹供弹机构 (C)',
+        '双通道 Stencil 实心金属剖面线纵剖切面：切开右侧机匣/套筒/弹匣壳体，直视内部膛线、闭锁突笋与实弹供弹机构 (C)',
       edgesChip: 'CAD 描边',
       edgesChipTitle: '开启/关闭工业 CAD 硬边轮廓线 (E)',
       labelsChip: '零件标签',
@@ -346,8 +400,29 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       loopOn: '连续循环',
       loopOff: '单发停止',
       loopTitle: '切换连续循环击发或单发停止',
+      hudPill: 'HUD 示波',
+      hudTitle: (open) =>
+        open
+          ? '显示/隐藏实时 SAAMI/CIP 膛压 P(t) 与初速 V(t) 内弹道遥测示波器'
+          : '点击展开实时 SAAMI/CIP 内弹道膛压与初速遥测示波器',
       sfxPill: '实弹声场',
-      sfxTitle: '开启/静音 7 阶段机械咬合与 7 口径实弹合成声效 (M)',
+      sfxTitle: '开启/静音立体声卷积混响与 7 口径实弹合成声效 (M)',
+      selectorGroupAria: '快慢机火控档位切换 (V)',
+      selectorShort: {
+        safe: '保险 SAFE',
+        semi: '半自动 SEMI',
+        auto: '全自动 AUTO',
+      },
+      selectorBlockedHint: '保险锁死 · 禁止击发',
+      pressCheckBtn: '半拉验膛 [P]',
+      pressCheckActiveBtn: '松手复进 [P]',
+      pressCheckTitle:
+        '半拉套筒/拉机柄 28% 执行军械验膛 (Press-Check)，检视弹膛内黄铜实弹状态 (快捷键 P，也可直接在 3D 中拖拽套筒/枪机)',
+      holdTriggerBtn: '按住扣扳机 [F]',
+      holdTriggerSafeBtn: '保险锁死 [F]',
+      holdTriggerResetBtn: '松开复位 [F]',
+      holdTriggerTitle:
+        '按住模拟两道火扳机行程与阻铁释放 (快捷键 F)：SAFE 机械阻断，SEMI 单发阻铁截获需松手复位，AUTO 闭锁连发',
       pause: '暂停',
       autoExplode: '自动拆解',
       playExplodeTitle: (playing) =>
@@ -406,6 +481,33 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       '1:1 Precision Mechanical CAD & 5-Channel ORM PBR · Google Gemini Bilingual R&D Story & Part Voice Guide',
     langToggleTitle:
       'Switch language & voice narration between Chinese and English',
+    geoBuildBanner: (shortLabel, ready, total) =>
+      `Streaming ${shortLabel} manifold CSG internals · ${ready} / ${total}`,
+    studio: {
+      envGroupAria: 'Studio lighting environment preset',
+      presets: {
+        tactical_vault: {
+          label: 'Vault',
+          title:
+            'Tactical Vault: Deep anodized gunmetal dark room with cool rim softboxes & indoor range convolution IR',
+        },
+        gunsmith_bench: {
+          label: 'Bench',
+          title:
+            'Gunsmith Bench: Warm overhead tungsten task lighting, 1:1 neoprene takedown mat & close-mic bench IR',
+        },
+        blueprint_daylight: {
+          label: 'Blueprint',
+          title:
+            'Blueprint Daylight: High-contrast metrology daylight cyclorama & crisp light engineering HUD',
+        },
+      },
+      postFxChip: 'GTAO',
+      postFxTitle: (enabled) =>
+        enabled
+          ? 'GTAO Sub-mm Contact Ambient Occlusion + Selective HDR Bloom + AgX Tone Mapping + SMAA active'
+          : 'Enable GTAO Contact Ambient Occlusion + HDR Bloom & AgX PostFX pipeline',
+    },
     armory: {
       title: '3D Digital Firearm Armory & Cutaway Vault',
       subtitle:
@@ -451,7 +553,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       sectionOn: 'Section Cut: ON',
       sectionOff: 'Armorer Section Cut',
       sectionTitle:
-        'Slice outer receiver/slide/magazine along centerline to inspect rifling, lugs & feed path (C)',
+        'Two-pass WebGL Stencil solid cross-section cutaway with ISO 128 metallic hatching revealing chamber, rifling & feed path (C)',
       stageHint: 'Drag to orbit · Click firearm to enter workbench',
       rackAria: '11-Bay Weapon Vault Rack',
       rackTitle: '11-BAY WEAPON VAULT RACK · INTERACTIVE COLLECTION',
@@ -490,7 +592,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         'Render receiver, handguard & magazine shells translucent (X)',
       sectionChip: 'Section Cut',
       sectionChipTitle:
-        'Longitudinal centerline cutaway revealing chamber, rifling & lockup (C)',
+        'Two-pass WebGL Stencil solid cross-section cutaway with ISO 128 metallic hatching revealing chamber, rifling & lockup (C)',
       edgesChip: 'CAD Edges',
       edgesChipTitle: 'Toggle industrial CAD hard-edge wireframe overlay (E)',
       labelsChip: 'Callouts',
@@ -568,8 +670,30 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       loopOn: 'Loop Cycle',
       loopOff: 'Single Cycle',
       loopTitle: 'Toggle continuous loop vs single-cycle stop',
+      hudPill: 'HUD Scope',
+      hudTitle: (open) =>
+        open
+          ? 'Toggle real-time SAAMI/CIP chamber pressure P(t) & bore velocity V(t) oscilloscope HUD'
+          : 'Open real-time SAAMI/CIP chamber pressure P(t) & bore velocity V(t) oscilloscope HUD',
       sfxPill: 'Acoustic SFX',
-      sfxTitle: 'Toggle 7-phase mechanical & 7-caliber ballistic Web Audio SFX (M)',
+      sfxTitle:
+        'Toggle stereo convolution IR & 7-caliber waveguide ballistic Web Audio SFX (M)',
+      selectorGroupAria: 'Fire-control selector mode (V)',
+      selectorShort: {
+        safe: 'SAFE',
+        semi: 'SEMI',
+        auto: 'AUTO',
+      },
+      selectorBlockedHint: 'SAFE engaged · Sear blocked',
+      pressCheckBtn: 'Press-Check [P]',
+      pressCheckActiveBtn: 'Release Bolt [P]',
+      pressCheckTitle:
+        'Retract slide/bolt 28% for armorer Press-Check chamber inspection (Key P, or drag slide/bolt directly in 3D)',
+      holdTriggerBtn: 'Hold Trigger [F]',
+      holdTriggerSafeBtn: 'SAFE Locked [F]',
+      holdTriggerResetBtn: 'Release Reset [F]',
+      holdTriggerTitle:
+        'Hold for two-stage trigger take-up & sear break (Key F): SAFE blocks sear, SEMI requires release for disconnector reset, AUTO cycles continuously',
       pause: 'Pause',
       autoExplode: 'Auto Strip',
       playExplodeTitle: (playing) =>

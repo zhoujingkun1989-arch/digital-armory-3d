@@ -6,7 +6,7 @@ export interface ScreenRectBox {
 }
 
 const HUD_OBSTACLE_SELECTOR =
-  '.top-bar, .hud-collapsed-btn, .part-sidebar, .floating-cutaway-pill, .inspector-card, .inspector-mini-pill, .timeline-dock, .geo-build-banner, .story-drawer, .story-mini-player';
+  '.top-bar, .hud-collapsed-btn, .part-sidebar, .ballistics-telemetry-slot, .floating-cutaway-pill, .inspector-card, .inspector-mini-pill, .timeline-dock, .geo-build-banner, .story-drawer, .story-mini-player';
 
 let cachedBoxes: ScreenRectBox[] = [];
 let initialized = false;

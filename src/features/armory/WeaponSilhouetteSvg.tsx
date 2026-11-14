@@ -7,10 +7,19 @@ export interface WeaponSilhouetteSvgProps {
 
 export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
   React.memo(({ id, available }) => {
-    const stroke = available ? '#0f172a' : '#64748b';
-    const fill = available ? '#1e293b' : '#cbd5e1';
-    const subFill = available ? '#334155' : '#94a3b8';
-    const accent = available ? '#0284c7' : '#94a3b8';
+    const stroke = available
+      ? 'var(--silhouette-stroke, #cbd5e1)'
+      : '#64748b';
+    const fill = available
+      ? 'var(--silhouette-fill, #334155)'
+      : 'rgba(100, 116, 139, 0.35)';
+    const subFill = available
+      ? 'var(--silhouette-subfill, #475569)'
+      : 'rgba(148, 163, 184, 0.45)';
+    const accent = available
+      ? 'var(--silhouette-accent, #38bdf8)'
+      : '#94a3b8';
+    const cutout = 'var(--silhouette-cutout, #0d1420)';
 
     switch (id) {
       case 'ak15':
@@ -336,7 +345,7 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
               stroke={stroke}
               strokeWidth="1.2"
             />
-            <rect x="73" y="40" width="18" height="14" rx="3" fill="#eef2f6" />
+            <rect x="73" y="40" width="18" height="14" rx="3" fill={cutout} />
             <path
               d="M83 40 Q84 48 80 51"
               fill="none"
@@ -353,7 +362,7 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
               strokeWidth="1.6"
             />
             {/* Gen3 Universal Rail Cross-Slot */}
-            <rect x="133" y="37.5" width="3" height="2.6" fill="#eef2f6" />
+            <rect x="133" y="37.5" width="3" height="2.6" fill={cutout} />
           </svg>
         );
 
@@ -458,7 +467,7 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
               strokeLinejoin="round"
             />
             {/* Thumbhole Cutout + Black Adjustable Cheekpiece */}
-            <rect x="42" y="40" width="9" height="11" rx="3.2" fill="#eef2f6" />
+            <rect x="42" y="40" width="9" height="11" rx="3.2" fill={cutout} />
             <path d="M16 27.5 L35 27.5 L36 31 L15 31 Z" fill={stroke} />
             {/* Steel Action + S&B PM II 5-25x56 Scope + Bolt Handle */}
             <rect x="52" y="29" width="36" height="5" fill={fill} />
@@ -689,7 +698,7 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
               width="18"
               height="14"
               rx="3.5"
-              fill="#eef2f6"
+              fill={cutout}
             />
             <path
               d="M84 41 Q85 49 81 52"
@@ -722,7 +731,7 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
             {/* Enclosed Full-Hand Guard Opening + Progressive Sliding Trigger */}
             <polygon
               points="78,43 94,43 88,59 75,59"
-              fill="#eef2f6"
+              fill={cutout}
               stroke={stroke}
               strokeWidth="0.9"
             />
@@ -815,7 +824,7 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
                 y="39.2"
                 width="3"
                 height="2"
-                fill="#eef2f6"
+                fill={cutout}
               />
             ))}
             {/* Serialized Stainless FCU Window + M17 Manual Safety + Coyote Baseplate */}
@@ -844,7 +853,7 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
               width="18"
               height="14"
               rx="3.2"
-              fill="#eef2f6"
+              fill={cutout}
             />
             <path
               d="M84 41 Q85 48.5 81 51.5"
@@ -867,7 +876,11 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
         const smokedMag = available ? '#8a6f52' : '#78716c';
         const opticAlloy = available ? '#3f4a59' : '#64748b';
         return (
-          <svg viewBox="0 0 210 88" className="weapon-svg" aria-hidden="true">
+          <svg
+            viewBox="0 0 210 88"
+            className="weapon-silhouette-svg"
+            aria-hidden="true"
+          >
             {/* Top-Mounted Horizontal 50-Rd Smoked Translucent Polycarbonate Magazine */}
             <rect
               x="23"
@@ -926,7 +939,7 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
               cy="56"
               rx="8.5"
               ry="9.5"
-              fill="#eef2f6"
+              fill={cutout}
               stroke={stroke}
               strokeWidth="1.05"
             />
@@ -935,7 +948,7 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
               cy="53.5"
               rx="8.5"
               ry="9"
-              fill="#eef2f6"
+              fill={cutout}
               stroke={stroke}
               strokeWidth="1.05"
             />

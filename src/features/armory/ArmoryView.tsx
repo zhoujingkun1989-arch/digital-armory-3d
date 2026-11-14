@@ -35,6 +35,7 @@ import { ARMORY_WEAPONS, matchesArmoryCategory } from '../../weapons/manifests';
 import { preloadWeaponPlugin } from '../../weapons/registry';
 import type { ArmoryCategory, ArmoryWeaponItem } from '../../weapons/types';
 import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
+import { StudioEnvironmentBar } from '../workbench/StudioEnvironmentBar';
 import { WeaponSilhouetteSvg } from './WeaponSilhouetteSvg';
 
 const CATEGORY_KEYS: ArmoryCategory[] = [
@@ -160,7 +161,9 @@ export const ArmoryView: React.FC = () => {
             })}
           </div>
 
-          <LanguageSwitchPill />
+          <StudioEnvironmentBar compact />
+
+          <LanguageSwitchPill compact />
 
           <button
             type="button"

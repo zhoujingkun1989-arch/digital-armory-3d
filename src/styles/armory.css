@@ -18,23 +18,23 @@
   gap: 8px 12px;
   padding: 8px 14px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--surface-glass);
   border: 1px solid var(--border-subtle);
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(18px);
   box-shadow: var(--shadow-bar);
   pointer-events: auto;
 }
 
 .armory-vault-badge {
-  background: rgba(15, 23, 42, 0.9);
-  border-color: var(--color-text-primary);
-  color: var(--surface-subtle);
+  background: var(--surface-cyan-tint);
+  border-color: rgba(56, 189, 248, 0.42);
+  color: var(--color-accent-cyan);
 }
 
 .armory-header-actions {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   flex-wrap: nowrap;
   flex-shrink: 0;
 }
@@ -45,8 +45,8 @@
   gap: 2px;
   padding: 2px 3px;
   border-radius: 8px;
-  background: rgba(241, 245, 249, 0.95);
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: var(--surface-pill);
+  border: 1px solid var(--border-subtle);
 }
 
 .armory-filter-btn {
@@ -54,21 +54,22 @@
   border-radius: 6px;
   font-size: 11px;
   font-weight: 500;
-  color: #475569;
+  color: var(--color-text-secondary);
   white-space: nowrap;
   transition: all 0.15s ease;
 }
 
 .armory-filter-btn:hover {
   color: var(--color-text-primary);
-  background: rgba(15, 23, 42, 0.05);
+  background: var(--surface-ghost-hover);
 }
 
 .armory-filter-btn.active {
-  background: #ffffff;
+  background: var(--surface-active-seg);
   color: var(--color-accent-cyan);
-  font-weight: 600;
-  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
+  font-weight: 700;
+  border: 1px solid rgba(56, 189, 248, 0.34);
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.16);
 }
 
 .armory-showcase-btn {
@@ -77,18 +78,30 @@
   gap: 5px;
   padding: 6px 10px;
   border-radius: 8px;
-  background: rgba(15, 23, 42, 0.9);
-  color: #38bdf8;
+  background: var(--surface-pill);
+  border: 1px solid rgba(56, 189, 248, 0.34);
+  color: var(--color-accent-cyan-text);
   font-size: 11.5px;
   font-weight: 700;
   white-space: nowrap;
   transition: all 0.16s ease;
 }
 
+[data-theme='light'] .armory-showcase-btn {
+  background: rgba(15, 23, 42, 0.9);
+  border-color: rgba(15, 23, 42, 0.9);
+  color: #38bdf8;
+}
+
 .armory-showcase-btn:hover {
-  background: #0f172a;
+  border-color: var(--color-accent-cyan);
+  background: var(--surface-hover);
   color: #7dd3fc;
   transform: translateY(-1px);
+}
+
+[data-theme='light'] .armory-showcase-btn:hover {
+  background: #0f172a;
 }
 
 .armory-quick-enter-btn {
@@ -97,12 +110,12 @@
   gap: 6px;
   padding: 6px 11px;
   border-radius: 8px;
-  background: var(--color-accent-cyan);
+  background: var(--color-accent-cyan-solid);
   color: #ffffff;
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.28);
   transition: all 0.16s ease;
 }
 
@@ -124,7 +137,7 @@
   background: var(--surface-glass);
   border: 1px solid var(--border-subtle);
   backdrop-filter: blur(18px);
-  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+  box-shadow: var(--shadow-card);
   pointer-events: auto;
 }
 
@@ -133,7 +146,7 @@
 }
 
 .armory-hero-plaque::-webkit-scrollbar-thumb {
-  background: rgba(100, 116, 139, 0.28);
+  background: rgba(100, 116, 139, 0.34);
   border-radius: 4px;
 }
 
@@ -158,10 +171,11 @@
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.05em;
-  color: #475569;
+  color: var(--color-text-secondary);
   padding: 2px 5px;
   border-radius: 4px;
-  background: #e2e8f0;
+  background: var(--surface-pill);
+  border: 1px solid var(--border-subtle);
   white-space: nowrap;
 }
 
@@ -173,9 +187,9 @@
   border-radius: 4px;
   font-size: 10px;
   font-weight: 600;
-  color: var(--color-accent-cyan-dark);
-  background: rgba(2, 132, 199, 0.1);
-  border: 1px solid rgba(2, 132, 199, 0.22);
+  color: var(--color-accent-cyan-text);
+  background: var(--surface-cyan-tint);
+  border: 1px solid rgba(56, 189, 248, 0.26);
   white-space: nowrap;
 }
 
@@ -187,9 +201,9 @@
   border-radius: 999px;
   font-size: 10px;
   font-weight: 600;
-  color: #047857;
-  background: rgba(16, 185, 129, 0.14);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: var(--color-accent-emerald-text);
+  background: rgba(16, 185, 129, 0.16);
+  border: 1px solid rgba(16, 185, 129, 0.34);
   white-space: nowrap;
 }
 
@@ -213,7 +227,7 @@
 .plaque-desc {
   font-size: 11px;
   line-height: 1.45;
-  color: #475569;
+  color: var(--color-text-secondary);
   margin-bottom: 6px;
   display: -webkit-box;
   -webkit-line-clamp: 3;
@@ -231,8 +245,8 @@
 .plaque-spec-cell {
   padding: 4px 7px;
   border-radius: 7px;
-  background: rgba(241, 245, 249, 0.9);
-  border: 1px solid rgba(15, 23, 42, 0.06);
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
   min-width: 0;
 }
 
@@ -264,12 +278,8 @@
 .plaque-metrology-box {
   padding: 6px 7px 7px;
   border-radius: 9px;
-  background: linear-gradient(
-    180deg,
-    rgba(240, 249, 255, 0.72) 0%,
-    rgba(241, 245, 249, 0.88) 100%
-  );
-  border: 1px solid rgba(2, 132, 199, 0.2);
+  background: var(--surface-cyan-grad);
+  border: 1px solid rgba(56, 189, 248, 0.26);
   margin-bottom: 6px;
 }
 
@@ -288,7 +298,7 @@
   gap: 4px;
   font-size: 10px;
   font-weight: 700;
-  color: var(--color-accent-cyan-dark);
+  color: var(--color-accent-cyan-text);
 }
 
 .plaque-metrology-tag {
@@ -296,9 +306,9 @@
   font-size: 9px;
   font-weight: 700;
   letter-spacing: 0.05em;
-  color: #0f766e;
-  background: rgba(13, 148, 136, 0.12);
-  border: 1px solid rgba(13, 148, 136, 0.25);
+  color: var(--color-accent-teal-text);
+  background: rgba(20, 184, 166, 0.14);
+  border: 1px solid rgba(20, 184, 166, 0.3);
   padding: 1px 5px;
   border-radius: 4px;
 }
@@ -312,8 +322,8 @@
 .metrology-cell {
   padding: 3.5px 6px;
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(15, 23, 42, 0.06);
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle);
   min-width: 0;
 }
 
@@ -329,9 +339,9 @@
   border-radius: 5px;
   font-size: 9.5px;
   font-weight: 600;
-  color: var(--color-accent-cyan-dark);
-  background: rgba(2, 132, 199, 0.09);
-  border: 1px solid rgba(2, 132, 199, 0.2);
+  color: var(--color-accent-cyan-text);
+  background: var(--surface-cyan-tint);
+  border: 1px solid rgba(56, 189, 248, 0.24);
 }
 
 .plaque-primary-cta {
@@ -346,13 +356,13 @@
   color: #ffffff;
   font-size: 12px;
   font-weight: 700;
-  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.3);
+  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.32);
   transition: all 0.16s ease;
 }
 
 .plaque-primary-cta:hover {
   transform: translateY(-1px);
-  box-shadow: 0 8px 22px rgba(2, 132, 199, 0.38);
+  box-shadow: 0 8px 22px rgba(2, 132, 199, 0.42);
 }
 
 /* Right Stage Controls */
@@ -368,9 +378,10 @@
 }
 
 .armory-ctrl-chip {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(12px);
-  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+  background: var(--surface-glass-strong);
+  border-color: var(--border-subtle);
+  backdrop-filter: blur(14px);
+  box-shadow: var(--shadow-bar);
 }
 
 .armory-stage-hint {
@@ -379,10 +390,11 @@
   gap: 5px;
   padding: 5px 10px;
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.82);
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: var(--surface-glass);
+  border: 1px solid var(--border-subtle);
+  backdrop-filter: blur(12px);
   font-size: 11px;
-  color: #475569;
+  color: var(--color-text-secondary);
 }
 
 /* Toast Banner */
@@ -393,16 +405,17 @@
   transform: translateX(-50%);
   padding: 7px 15px;
   border-radius: 999px;
-  background: rgba(15, 23, 42, 0.92);
-  color: var(--surface-subtle);
+  background: rgba(15, 23, 42, 0.94);
+  border: 1px solid rgba(56, 189, 248, 0.36);
+  color: #f8fafc;
   font-size: 12px;
   font-weight: 500;
   white-space: nowrap;
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.2);
+  box-shadow: var(--shadow-bar);
   pointer-events: auto;
 }
 
-/* Bottom Compact Single-Row 10-Bay Armory Weapon Rack (~176px tall) */
+/* Bottom Compact Single-Row Armory Weapon Rack */
 .armory-rack-dock {
   position: absolute;
   bottom: 20px;
@@ -413,7 +426,7 @@
   background: var(--surface-glass);
   border: 1px solid var(--border-subtle);
   backdrop-filter: blur(18px);
-  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+  box-shadow: var(--shadow-dock);
   pointer-events: auto;
 }
 
@@ -432,7 +445,7 @@
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.04em;
-  color: #1e293b;
+  color: var(--color-text-primary);
 }
 
 .rack-icon {
@@ -442,7 +455,7 @@
 .rack-count-pill {
   padding: 1px 6px;
   border-radius: 999px;
-  background: rgba(2, 132, 199, 0.11);
+  background: var(--surface-cyan-tint);
   color: var(--color-accent-cyan);
   font-family: var(--font-mono);
   font-size: 10px;
@@ -475,13 +488,13 @@
   justify-content: center;
   border-radius: 6px;
   background: var(--surface-pill);
-  border: 1px solid rgba(15, 23, 42, 0.12);
+  border: 1px solid var(--border-subtle);
   color: var(--color-text-secondary);
   transition: all 0.15s ease;
 }
 
 .rack-scroll-btn:hover {
-  background: var(--color-accent-cyan);
+  background: var(--color-accent-cyan-solid);
   border-color: var(--color-accent-cyan);
   color: #ffffff;
 }
@@ -517,31 +530,31 @@
 }
 
 .armory-weapon-card.is-ready {
-  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  background: var(--surface-card-ready);
   border-color: var(--border-strong);
 }
 
 .armory-weapon-card.is-ready.is-on-turntable {
-  background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);
+  background: var(--surface-card-active);
   border-color: var(--color-accent-cyan);
-  box-shadow: 0 5px 16px rgba(2, 132, 199, 0.18);
+  box-shadow: 0 5px 18px rgba(2, 132, 199, 0.26);
 }
 
 .armory-weapon-card.is-ready:hover {
   border-color: var(--color-accent-cyan);
   transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.18);
+  box-shadow: 0 8px 20px rgba(2, 132, 199, 0.24);
 }
 
 .armory-weapon-card.is-planned {
-  opacity: 0.84;
-  background: rgba(248, 250, 252, 0.78);
+  opacity: 0.78;
+  background: var(--surface-subtle);
   border-style: dashed;
 }
 
 .armory-weapon-card.is-planned:hover {
-  opacity: 0.96;
-  border-color: #94a3b8;
+  opacity: 0.94;
+  border-color: var(--border-strong);
 }
 
 .wcard-top-row {
@@ -568,10 +581,10 @@
   white-space: nowrap;
   font-size: 9.5px;
   font-weight: 600;
-  color: #475569;
+  color: var(--color-text-secondary);
   padding: 1px 5px;
   border-radius: 4px;
-  background: rgba(226, 232, 240, 0.65);
+  background: var(--surface-pill);
   text-align: center;
 }
 
@@ -585,14 +598,14 @@
 }
 
 .wcard-status.ready {
-  color: #047857;
+  color: var(--color-accent-emerald-text);
 }
 
 .wcard-status.turntable-active {
   color: var(--color-accent-cyan);
   padding: 1px 5px;
   border-radius: 999px;
-  background: rgba(2, 132, 199, 0.12);
+  background: var(--surface-cyan-tint);
 }
 
 .wcard-status.planned {
@@ -604,7 +617,7 @@
   height: 6px;
   border-radius: 50%;
   background: var(--color-accent-emerald);
-  box-shadow: 0 0 0 2.5px rgba(16, 185, 129, 0.22);
+  box-shadow: 0 0 0 2.5px rgba(16, 185, 129, 0.24);
 }
 
 .wcard-silhouette-box {
@@ -614,11 +627,12 @@
   justify-content: center;
   margin: 2px 0 4px;
   border-radius: 7px;
-  background: rgba(226, 232, 240, 0.42);
+  background: var(--surface-silhouette);
+  border: 1px solid var(--border-divider);
 }
 
 .armory-weapon-card.is-ready .wcard-silhouette-box {
-  background: rgba(224, 242, 254, 0.55);
+  background: var(--surface-silhouette-ready);
 }
 
 .weapon-silhouette-svg {
@@ -650,7 +664,7 @@
 
 .wcard-meta {
   font-size: 10px;
-  color: #475569;
+  color: var(--color-text-secondary);
   margin-top: 1px;
   margin-bottom: 4px;
   white-space: nowrap;
@@ -660,7 +674,7 @@
 
 .wcard-footer {
   padding-top: 4px;
-  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  border-top: 1px solid var(--border-divider);
 }
 
 .wcard-enter-cta,
@@ -676,7 +690,7 @@
 }
 
 .wcard-enter-cta-btn:hover {
-  color: var(--color-accent-cyan-dark);
+  color: var(--color-accent-cyan-text);
   text-decoration: underline;
 }
 

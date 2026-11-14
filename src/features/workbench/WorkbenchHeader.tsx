@@ -21,6 +21,7 @@ import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
 import type { CameraPresetType } from '../../weapons/types';
 import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
+import { StudioEnvironmentBar } from './StudioEnvironmentBar';
 
 const VIEW_ANGLE_KEYS: Extract<
   CameraPresetType,
@@ -81,6 +82,8 @@ export const WorkbenchHeader: React.FC = () => {
       </div>
 
       <div className="toolbar-cluster">
+        <StudioEnvironmentBar compact />
+
         <LanguageSwitchPill compact />
 
         <button

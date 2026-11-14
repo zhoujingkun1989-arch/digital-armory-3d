@@ -1,12 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import {
-  Environment,
-  Grid,
-  Lightformer,
-  OrbitControls,
-} from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
@@ -16,9 +11,14 @@ import type {
   WeaponCameraMap,
   WeaponScaleProfile,
 } from '../../weapons/types';
-import { BallisticsSystem } from '../actors/BallisticsSystem';
+import {
+  ArmoryWorldFx,
+  BallisticsSystem,
+  WeaponRecoilGroup,
+} from '../actors/BallisticsSystem';
 import { ExhibitionTurntable } from '../actors/ExhibitionTurntable';
 import { PartActor } from '../actors/PartActor';
+import { playBrassCasingBounceSound } from '../audio/mechanicalSoundEngine';
 import { updateCalloutOverlay60fps } from '../callout/CalloutOverlay';
 import { playbackClock } from '../clock/playbackClock';
 import {
@@ -26,10 +26,24 @@ import {
   getPartLocalCenter,
   useWeaponGeometries,
 } from '../geometry/geometryService';
+import { InteractiveActionController } from '../interaction/InteractiveActionController';
 import { computePartTransform } from '../kinematics/math';
 import {
+  type ArmoryThermalVisualState,
+  setArmoryThermalVisualState,
+} from '../materials/armoryShader';
+import {
+  getArmoryPhysicsState,
+  setBrassFloorImpactListener,
+} from '../physics/armoryPhysics';
+import { ArmoryPostProcessing } from './ArmoryPostProcessing';
+import {
+  ArmoryStudioEnvironment,
+  GunsmithStageMat,
+  getArmoryEnvironment,
+} from './GunsmithStageMat';
+import {
   computeTurntableFraming,
-  evaluateWeaponTurntableEnvelopeInto,
   isShowcaseUserDragging,
   registerTurntableDragHandler,
   subscribeShowcaseDragging,
@@ -39,12 +53,17 @@ import {
 const BASE_FIRING_RATE = 0.42;
 const INITIAL_TURNTABLE_AZIMUTH = 0.24;
 
-// Module-pooled scratch math primitives for zero heap churn on camera focus
+// Module-pooled scratch math primitives for zero heap churn on camera focus & 60Hz thermal sync
 const _focusWorldCenter = new THREE.Vector3();
 const _focusEuler = new THREE.Euler();
 const _focusPartPos = new THREE.Vector3();
 const _focusCurrentTarget = new THREE.Vector3();
 const _focusViewDir = new THREE.Vector3();
+const _thermalSync: ArmoryThermalVisualState = {
+  weaponId: 'ak15',
+  barrelHeat01: 0,
+  carbonFouling01: 0,
+};
 
 function applyWorkbenchFraming(
   cfg: WeaponCameraMap[CameraPresetType],
@@ -100,51 +119,6 @@ function applyWorkbenchFraming(
   );
 }
 
-const StageFloorGrid: React.FC = () => {
-  const groupRef = useRef<THREE.Group>(null);
-  const activeWeaponId = useAppStore((s) => s.activeWeaponId);
-  const screen = useAppStore((s) => s.screen);
-  const workbenchGridY = getWeaponManifest(activeWeaponId).workbenchMeta.gridY;
-
-  useFrame(() => {
-    if (!groupRef.current) return;
-    const st = useAppStore.getState();
-    if (st.screen === 'workbench') {
-      groupRef.current.position.y = getWeaponManifest(
-        st.activeWeaponId
-      ).workbenchMeta.gridY;
-    } else {
-      const env = evaluateWeaponTurntableEnvelopeInto(
-        st.activeWeaponId,
-        playbackClock.getState().animatedProgress
-      );
-      groupRef.current.position.y = env.gridFloorY;
-    }
-  });
-
-  const initialY =
-    screen === 'workbench'
-      ? workbenchGridY
-      : evaluateWeaponTurntableEnvelopeInto(activeWeaponId, 0).gridFloorY;
-
-  return (
-    <group ref={groupRef} position={[0, initialY, 0]}>
-      <Grid
-        position={[0, 0, 0]}
-        args={[160, 160]}
-        cellSize={2}
-        cellThickness={0.6}
-        cellColor="#cbd5e1"
-        sectionSize={10}
-        sectionThickness={1.1}
-        sectionColor="#94a3b8"
-        fadeDistance={130}
-        fadeStrength={1.3}
-      />
-    </group>
-  );
-};
-
 const DisassemblyRig: React.FC = () => {
   const controlsRef = useRef<OrbitControlsImpl>(null);
   const { camera, size } = useThree();
@@ -187,6 +161,7 @@ const DisassemblyRig: React.FC = () => {
   const armoryAutoRotate = useAppStore((s) => s.armoryAutoRotate);
   const selectedPartId = useAppStore((s) => s.selectedPartId);
   const cameraCommand = useAppStore((s) => s.cameraCommand);
+  const environmentPreset = useAppStore((s) => s.environmentPreset);
 
   const plugin = useWeaponPlugin(activeWeaponId);
   // Triggers background Web Worker CSG build & re-renders as part batches stream in
@@ -565,7 +540,14 @@ const DisassemblyRig: React.FC = () => {
       }
     }
 
-    // 5. Project 3D anchors -> 2D vertical hairline leader callouts at 60fps
+    // 5. Pipe 60Hz barrel thermal glow & carbon fouling into AAA Armory surface shader (Zero-GC)
+    const phys = getArmoryPhysicsState();
+    _thermalSync.weaponId = state.activeWeaponId;
+    _thermalSync.barrelHeat01 = phys.barrelHeat01;
+    _thermalSync.carbonFouling01 = phys.carbonFouling01;
+    setArmoryThermalVisualState(_thermalSync);
+
+    // 6. Project 3D anchors -> 2D vertical hairline leader callouts at 60fps
     const finalClock = playbackClock.getState();
     updateCalloutOverlay60fps(
       camera,
@@ -601,22 +583,28 @@ const DisassemblyRig: React.FC = () => {
         }}
       />
 
-      <ExhibitionTurntable weaponId={activeWeaponId} />
+      <ExhibitionTurntable
+        weaponId={activeWeaponId}
+        environmentPreset={environmentPreset}
+      />
 
       {plugin && (
-        <group>
-          {weaponParts.map((part) => (
-            <PartActor
-              key={part.id}
-              weaponId={activeWeaponId}
-              part={part}
-              geometry={getCachedPartGeometry(activeWeaponId, part.id)}
-              customPbrBinding={plugin.pbrBindings[part.id]}
-              computeKinematics={plugin.computeFiringKinematics}
-            />
-          ))}
-          <BallisticsSystem />
-        </group>
+        <>
+          <WeaponRecoilGroup>
+            {weaponParts.map((part) => (
+              <PartActor
+                key={part.id}
+                weaponId={activeWeaponId}
+                part={part}
+                geometry={getCachedPartGeometry(activeWeaponId, part.id)}
+                customPbrBinding={plugin.pbrBindings[part.id]}
+                computeKinematics={plugin.computeFiringKinematics}
+              />
+            ))}
+            <BallisticsSystem worldFx={false} />
+          </WeaponRecoilGroup>
+          <ArmoryWorldFx />
+        </>
       )}
     </>
   );
@@ -624,6 +612,23 @@ const DisassemblyRig: React.FC = () => {
 
 export const ArmoryViewport: React.FC = () => {
   const selectPart = useAppStore((s) => s.selectPart);
+  const activeWeaponId = useAppStore((s) => s.activeWeaponId);
+  const environmentPreset = useAppStore((s) => s.environmentPreset);
+  const postFxEnabled = useAppStore((s) => s.postFxEnabled);
+
+  const envCfg = getArmoryEnvironment(environmentPreset);
+  const workbenchMeta = getWeaponManifest(activeWeaponId).workbenchMeta;
+
+  useEffect(() => {
+    setBrassFloorImpactListener((caliber, speed) => {
+      if (!useAppStore.getState().sfxMuted) {
+        playBrassCasingBounceSound(caliber, speed);
+      }
+    });
+    return () => {
+      setBrassFloorImpactListener(null);
+    };
+  }, []);
 
   return (
     <Canvas
@@ -631,9 +636,11 @@ export const ArmoryViewport: React.FC = () => {
       dpr={[1, 2]}
       gl={{
         localClippingEnabled: true,
+        stencil: true,
         antialias: true,
-        toneMapping: THREE.ACESFilmicToneMapping,
-        toneMappingExposure: 1.06,
+        powerPreference: 'high-performance',
+        toneMapping: THREE.AgXToneMapping,
+        toneMappingExposure: envCfg.toneMappingExposure,
       }}
       camera={{ position: [14.5, 2.2, 54.0], fov: 41, near: 0.1, far: 560 }}
       onPointerMissed={() => {
@@ -643,119 +650,21 @@ export const ArmoryViewport: React.FC = () => {
       }}
       style={{ width: '100%', height: '100%' }}
     >
-      <color attach="background" args={['#e2e8f0']} />
-      <fog attach="fog" args={['#e2e8f0', 250, 460]} />
+      <ArmoryStudioEnvironment preset={environmentPreset} />
 
-      <ambientLight intensity={0.42} color="#f8fafc" />
-      <hemisphereLight
-        args={['#f8fafc', '#64748b', 0.68]}
-        position={[0, 30, 0]}
+      <GunsmithStageMat
+        preset={environmentPreset}
+        centerX={workbenchMeta.chamberGlowPos[0]}
       />
-      {/* Bilateral direct key, top-edge rim & low under-fill lights for symmetric 360° structural definition */}
-      <directionalLight
-        position={[18, 24, 24]}
-        intensity={2.15}
-        color="#fffaf2"
-        castShadow
-        shadow-mapSize={[2048, 2048]}
-        shadow-bias={-0.0002}
-        shadow-camera-left={-38}
-        shadow-camera-right={38}
-        shadow-camera-top={24}
-        shadow-camera-bottom={-28}
-        shadow-camera-near={1}
-        shadow-camera-far={110}
-      />
-      <directionalLight
-        position={[-18, 22, -24]}
-        intensity={1.95}
-        color="#f8fafc"
-      />
-      <directionalLight
-        position={[-4, 28, 4]}
-        intensity={1.15}
-        color="#ffffff"
-      />
-      <directionalLight
-        position={[10, -12, 22]}
-        intensity={0.62}
-        color="#e2e8f0"
-      />
-      <directionalLight
-        position={[-10, -12, -22]}
-        intensity={0.58}
-        color="#dbeafe"
-      />
-
-      {/* Bilateral Gunsmith Studio reflection dome (#384454 base + +Z/-Z camera-side grazing softboxes + bottom bounce) */}
-      <Environment resolution={512}>
-        <color attach="background" args={['#384454']} />
-        {/* Overhead main softbox strip aligned along barrel X-axis */}
-        <Lightformer
-          intensity={3.1}
-          rotation={[Math.PI / 2, 0, 0]}
-          position={[0, 15, 0]}
-          scale={[48, 10, 1]}
-          color="#ffffff"
-        />
-        {/* +Z right-flank bilateral camera-facing grazing softboxes */}
-        <Lightformer
-          intensity={2.6}
-          position={[12, 8, 24]}
-          target={[0, 0, 0]}
-          scale={[28, 12, 1]}
-          color="#fffcf5"
-        />
-        <Lightformer
-          intensity={2.15}
-          position={[-14, 5, 22]}
-          target={[0, 0, 0]}
-          scale={[26, 11, 1]}
-          color="#f1f5f9"
-        />
-        {/* -Z left-flank bilateral camera-facing grazing softboxes */}
-        <Lightformer
-          intensity={2.6}
-          position={[-12, 8, -24]}
-          target={[0, 0, 0]}
-          scale={[28, 12, 1]}
-          color="#fffcf5"
-        />
-        <Lightformer
-          intensity={2.15}
-          position={[14, 5, -22]}
-          target={[0, 0, 0]}
-          scale={[26, 11, 1]}
-          color="#f1f5f9"
-        />
-        {/* Axial muzzle & buttstock wrap-around rim softboxes */}
-        <Lightformer
-          intensity={1.75}
-          position={[28, 4, 0]}
-          target={[0, 0, 0]}
-          scale={[24, 9, 1]}
-          color="#f8fafc"
-        />
-        <Lightformer
-          intensity={1.75}
-          position={[-28, 4, 0]}
-          target={[0, 0, 0]}
-          scale={[24, 9, 1]}
-          color="#e0f2fe"
-        />
-        {/* Wide bottom bounce cyclorama illuminating trigger guards, magwells & handguard undersides */}
-        <Lightformer
-          intensity={1.25}
-          rotation={[-Math.PI / 2, 0, 0]}
-          position={[0, -12, 0]}
-          scale={[52, 28, 1]}
-          color="#64748b"
-        />
-      </Environment>
-
-      <StageFloorGrid />
 
       <DisassemblyRig />
+
+      <InteractiveActionController />
+
+      <ArmoryPostProcessing
+        enabled={postFxEnabled}
+        environmentPreset={environmentPreset}
+      />
     </Canvas>
   );
 };

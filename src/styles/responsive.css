@@ -1,11 +1,11 @@
 /* ==================== Responsive Breakpoint Rules ==================== */
-@media (max-width: 1480px) {
+@media (max-width: 1560px) {
   .brand-sub {
     display: none;
   }
 }
 
-@media (max-width: 1360px) {
+@media (max-width: 1420px) {
   .top-bar .brand-badge {
     display: none;
   }
@@ -25,11 +25,17 @@
     padding: 4px 6px;
     font-size: 11px;
   }
+  .top-bar .env-seg-btn {
+    padding: 3.5px 6px;
+    font-size: 10.5px;
+  }
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1260px) {
   .top-bar,
-  .toolbar-cluster {
+  .toolbar-cluster,
+  .armory-header,
+  .armory-header-actions {
     flex-wrap: wrap;
   }
 
@@ -37,21 +43,45 @@
   .floating-cutaway-pill,
   .part-sidebar,
   .inspector-card,
+  .inspector-mini-pill,
   .geo-build-banner {
     top: 108px;
+  }
+
+  .ballistics-telemetry-slot {
+    top: 108px;
+  }
+
+  .ballistics-telemetry-slot.sidebar-collapsed {
+    top: 152px;
   }
 }
 
 @media (max-width: 1120px) {
-  .armory-header,
-  .armory-header-actions {
-    flex-wrap: wrap;
-  }
   .armory-hero-plaque {
     display: none;
   }
   .rack-dock-tip {
     display: none;
+  }
+  .ballistics-telemetry-slot {
+    left: 16px;
+    top: 152px;
+    width: min(392px, calc(100vw - 348px));
+  }
+}
+
+@media (max-width: 960px) {
+  .timeline-scrubber-row {
+    flex-wrap: wrap;
+  }
+  .slider-wrapper {
+    flex: 1 1 100%;
+    order: 10;
+  }
+  .pct-readout {
+    order: 11;
+    margin-left: auto;
   }
 }
 
@@ -62,6 +92,13 @@
   .tex-channels-grid {
     grid-template-columns: 1fr;
   }
+  .ballistics-telemetry-slot,
+  .ballistics-telemetry-slot.sidebar-collapsed {
+    left: 16px;
+    right: 16px;
+    width: auto;
+    min-width: 0;
+  }
 }
 
 @media (max-width: 720px) {
@@ -69,7 +106,17 @@
   .floating-cutaway-pill,
   .part-sidebar,
   .inspector-card,
+  .inspector-mini-pill,
   .geo-build-banner {
-    top: 138px;
+    top: 142px;
+  }
+
+  .ballistics-telemetry-slot,
+  .ballistics-telemetry-slot.sidebar-collapsed {
+    top: 184px;
+  }
+
+  .firing-phases-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 }

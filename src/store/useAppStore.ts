@@ -1,5 +1,13 @@
 import { create } from 'zustand';
+import {
+  type AcousticEnvironmentPreset,
+  setAcousticEnvironment,
+} from '../engine/audio/mechanicalSoundEngine';
+import type { ArmoryEnvironmentPreset } from '../engine/canvas/GunsmithStageMat';
 import { playbackClock } from '../engine/clock/playbackClock';
+import { interactiveActionStore } from '../engine/interaction/InteractiveActionController';
+import { setArmoryThermalVisualState } from '../engine/materials/armoryShader';
+import { resetArmoryPhysics } from '../engine/physics/armoryPhysics';
 import {
   getNarrationAudioSnapshot,
   stopNarrationAudio,
@@ -16,6 +24,43 @@ import { isWeaponId } from '../weapons/types';
 
 export type AppScreen = 'showcase' | 'armory' | 'workbench';
 export type AppViewMode = 'explode' | 'firing';
+
+const ENVIRONMENT_PRESET_CYCLE: readonly ArmoryEnvironmentPreset[] = [
+  'tactical_vault',
+  'gunsmith_bench',
+  'blueprint_daylight',
+];
+
+/**
+ * Maps visual studio environment + active workbench mode to the matching
+ * stereo convolution IR room preset in `mechanicalSoundEngine`.
+ */
+export function resolveAcousticEnvironmentForState(
+  environmentPreset: ArmoryEnvironmentPreset,
+  mode: AppViewMode
+): AcousticEnvironmentPreset {
+  if (environmentPreset === 'tactical_vault') {
+    return mode === 'firing' ? 'indoor_range' : 'tactical_hall';
+  }
+  return 'bench_close';
+}
+
+function resetWeaponPhysicsAndAction(
+  weaponId: WeaponId,
+  fullActionReset: boolean
+): void {
+  resetArmoryPhysics();
+  setArmoryThermalVisualState({
+    weaponId,
+    barrelHeat01: 0,
+    carbonFouling01: 0,
+  });
+  if (fullActionReset) {
+    interactiveActionStore.reset(weaponId);
+  } else {
+    interactiveActionStore.syncWeapon(weaponId);
+  }
+}
 
 export interface StoryDirectorStageSpec {
   weaponId: WeaponId;
@@ -62,6 +107,11 @@ export interface AppState {
   isFiringPlaying: boolean;
   fireLoop: boolean;
   fireSpeedMultiplier: 0.25 | 0.5 | 1.0;
+
+  /** Studio lighting/stage environment, post-processing & telemetry HUD */
+  environmentPreset: ArmoryEnvironmentPreset;
+  postFxEnabled: boolean;
+  telemetryHudOpen: boolean;
 
   /** Visual toggles */
   pbrTexturesEnabled: boolean;
@@ -121,6 +171,14 @@ export interface AppState {
   toggleFireLoop: () => void;
   setFireSpeedMultiplier: (mult: 0.25 | 0.5 | 1.0) => void;
 
+  // Studio Environment, PostFX & Telemetry HUD Actions
+  setEnvironmentPreset: (preset: ArmoryEnvironmentPreset) => void;
+  cycleEnvironmentPreset: () => void;
+  setPostFxEnabled: (enabled: boolean) => void;
+  togglePostFx: () => void;
+  setTelemetryHudOpen: (open: boolean) => void;
+  toggleTelemetryHud: () => void;
+
   // Shared Visual & Selection Actions
   togglePbrTextures: () => void;
   setTextureModalOpen: (open: boolean) => void;
@@ -162,6 +220,10 @@ export const useAppStore = create<AppState>((set, get) => ({
   isFiringPlaying: false,
   fireLoop: true,
   fireSpeedMultiplier: 0.5,
+
+  environmentPreset: 'tactical_vault',
+  postFxEnabled: true,
+  telemetryHudOpen: true,
 
   pbrTexturesEnabled: true,
   textureModalOpen: false,
@@ -217,6 +279,11 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   applyStoryDirectorStage: (stage) => {
     const cur = get();
+    if (cur.activeWeaponId !== stage.weaponId) {
+      resetWeaponPhysicsAndAction(stage.weaponId, false);
+    } else {
+      interactiveActionStore.syncWeapon(stage.weaponId);
+    }
     if (stage.mode === 'firing') {
       playbackClock.setTargetProgress(0, true);
       if (cur.mode !== 'firing' || cur.activeWeaponId !== stage.weaponId) {
@@ -377,6 +444,9 @@ export const useAppStore = create<AppState>((set, get) => ({
     const weaponId: WeaponId = isWeaponId(weaponIdRaw) ? weaponIdRaw : 'ak15';
     if (get().activeWeaponId !== weaponId) {
       stopNarrationAudio();
+      resetWeaponPhysicsAndAction(weaponId, false);
+    } else {
+      interactiveActionStore.syncWeapon(weaponId);
     }
     playbackClock.setTargetProgress(0, false);
     playbackClock.setFireProgress(0, true);
@@ -400,6 +470,9 @@ export const useAppStore = create<AppState>((set, get) => ({
     const sameWeapon = nextWeaponId === s.activeWeaponId;
     if (!sameWeapon) {
       stopNarrationAudio();
+      resetWeaponPhysicsAndAction(nextWeaponId, false);
+    } else {
+      interactiveActionStore.syncWeapon(nextWeaponId);
     }
     const keepStoryMini = sameWeapon && s.storyOpen;
     if (initialMode === 'firing') {
@@ -587,6 +660,28 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   setFireSpeedMultiplier: (fireSpeedMultiplier) => set({ fireSpeedMultiplier }),
 
+  setEnvironmentPreset: (environmentPreset) => {
+    if (!ENVIRONMENT_PRESET_CYCLE.includes(environmentPreset)) return;
+    set({ environmentPreset });
+  },
+
+  cycleEnvironmentPreset: () =>
+    set((s) => {
+      const idx = ENVIRONMENT_PRESET_CYCLE.indexOf(s.environmentPreset);
+      const next =
+        ENVIRONMENT_PRESET_CYCLE[(idx + 1) % ENVIRONMENT_PRESET_CYCLE.length];
+      return { environmentPreset: next };
+    }),
+
+  setPostFxEnabled: (postFxEnabled) => set({ postFxEnabled }),
+
+  togglePostFx: () => set((s) => ({ postFxEnabled: !s.postFxEnabled })),
+
+  setTelemetryHudOpen: (telemetryHudOpen) => set({ telemetryHudOpen }),
+
+  toggleTelemetryHud: () =>
+    set((s) => ({ telemetryHudOpen: !s.telemetryHudOpen })),
+
   togglePbrTextures: () =>
     set((s) => ({ pbrTexturesEnabled: !s.pbrTexturesEnabled })),
   setTextureModalOpen: (textureModalOpen) => set({ textureModalOpen }),
@@ -669,6 +764,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   resetAll: () => {
+    const activeId = get().activeWeaponId;
+    resetWeaponPhysicsAndAction(activeId, true);
     playbackClock.setTargetProgress(0, false);
     playbackClock.setFireProgress(0, true);
     set((s) => ({
@@ -685,5 +782,20 @@ export const useAppStore = create<AppState>((set, get) => ({
       hiddenGroups: { ...DEFAULT_HIDDEN_GROUPS },
       cameraCommand: { preset: 'iso', seq: s.cameraCommand.seq + 1 },
     }));
+    setAcousticEnvironment(
+      resolveAcousticEnvironmentForState(get().environmentPreset, 'explode')
+    );
   },
 }));
+
+// Keep convolution IR room preset synchronized with visual studio environment & mode
+useAppStore.subscribe((state, prevState) => {
+  if (
+    state.environmentPreset !== prevState.environmentPreset ||
+    state.mode !== prevState.mode
+  ) {
+    setAcousticEnvironment(
+      resolveAcousticEnvironmentForState(state.environmentPreset, state.mode)
+    );
+  }
+});

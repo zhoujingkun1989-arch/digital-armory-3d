@@ -99,14 +99,14 @@ button {
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: radial-gradient(circle at 50% 42%, #f8fafc 0%, #e2e8f0 100%);
+  background: var(--color-bg-studio);
 }
 
 .viewport-error-card {
   max-width: 420px;
   padding: 24px 26px;
   border-radius: 16px;
-  background: rgba(255, 255, 255, 0.94);
+  background: var(--surface-glass-strong);
   border: 1px solid var(--border-strong);
   box-shadow: var(--shadow-dock);
   text-align: center;
@@ -144,7 +144,7 @@ button {
   gap: 6px;
   padding: 8px 16px;
   border-radius: 9px;
-  background: var(--color-accent-cyan);
+  background: var(--color-accent-cyan-solid);
   color: #ffffff;
   font-size: 12.5px;
   font-weight: 700;

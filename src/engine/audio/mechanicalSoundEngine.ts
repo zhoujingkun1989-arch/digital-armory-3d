@@ -319,7 +319,7 @@ class ProceduralGunsmithSoundEngine {
   private noiseBuffer: AudioBuffer | null = null;
   private saturatorCurve: Float32Array | null = null;
   private lastScrubSoundMs = 0;
-  private environmentPreset: AcousticEnvironmentPreset = 'indoor_range';
+  private environmentPreset: AcousticEnvironmentPreset = 'tactical_hall';
   private activeSpeedMultiplier: 0.25 | 0.5 | 1.0 = 1.0;
 
   private getAudioContextConstructor(): typeof AudioContext | null {

@@ -1,10 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import {
+  Activity,
+  Crosshair,
   Flame,
   Layers,
   Pause,
   Play,
   Repeat,
+  ShieldAlert,
   Volume2,
   VolumeX,
   Zap,
@@ -18,6 +21,16 @@ import {
   useActiveFiringPhase,
   useActiveTimelinePresetId,
 } from '../../engine/clock/playbackClock';
+import {
+  getSelectorModeMetadata,
+  getSupportedSelectorModes,
+  interactiveActionStore,
+  pressInteractiveTrigger,
+  releaseInteractiveTrigger,
+  setFireSelectorMode,
+  togglePressCheck,
+  useInteractiveActionStore,
+} from '../../engine/interaction/InteractiveActionController';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import {
   resolveFiringPhaseText,
@@ -59,6 +72,12 @@ export const TimelineDock: React.FC = () => {
   const setFireSpeedMultiplier = useAppStore((s) => s.setFireSpeedMultiplier);
   const sfxMuted = useAppStore((s) => s.sfxMuted);
   const toggleSfxMuted = useAppStore((s) => s.toggleSfxMuted);
+  const telemetryHudOpen = useAppStore((s) => s.telemetryHudOpen);
+  const toggleTelemetryHud = useAppStore((s) => s.toggleTelemetryHud);
+
+  // Hands-on 3D Fire-Control Group (FCG) & Press-Check state
+  const actionSnap = useInteractiveActionStore();
+  const supportedSelectorModes = getSupportedSelectorModes(activeWeaponId);
 
   const plugin = useWeaponPlugin(activeWeaponId);
   const { bundle } = useWeaponNarration(activeWeaponId);
@@ -73,6 +92,32 @@ export const TimelineDock: React.FC = () => {
 
   const sliderRef = useRef<HTMLInputElement>(null);
   const pctRef = useRef<HTMLDivElement>(null);
+  const selectorGroupRef = useRef<HTMLDivElement>(null);
+  const holdTriggerBtnRef = useRef<HTMLButtonElement>(null);
+  const prevSafetyBlockedRef = useRef<number>(actionSnap.safetyBlockedSeq);
+
+  // Flash SAFE selector & trigger button amber/crimson when trigger is pulled on SAFE (0 React state churn)
+  useEffect(() => {
+    if (actionSnap.safetyBlockedSeq === prevSafetyBlockedRef.current) {
+      return;
+    }
+    prevSafetyBlockedRef.current = actionSnap.safetyBlockedSeq;
+    if (actionSnap.safetyBlockedSeq <= 0) return;
+
+    const targets = [selectorGroupRef.current, holdTriggerBtnRef.current];
+    for (const el of targets) {
+      if (!el) continue;
+      el.classList.remove('is-safe-blocked');
+      void el.offsetWidth;
+      el.classList.add('is-safe-blocked');
+    }
+    const timer = window.setTimeout(() => {
+      for (const el of targets) {
+        el?.classList.remove('is-safe-blocked');
+      }
+    }, 620);
+    return () => window.clearTimeout(timer);
+  }, [actionSnap.safetyBlockedSeq]);
 
   // Imperatively sync 60fps progress into range slider & percentage label (0 React re-renders)
   useEffect(() => {
@@ -122,6 +167,40 @@ export const TimelineDock: React.FC = () => {
 
         {mode === 'firing' && (
           <div className="firing-sub-controls">
+            <div
+              ref={selectorGroupRef}
+              className="fcg-selector-group"
+              role="group"
+              aria-label={ui.selectorGroupAria}
+            >
+              {supportedSelectorModes.map((selMode) => {
+                const isActive = actionSnap.selectorMode === selMode;
+                const selMeta = getSelectorModeMetadata(
+                  activeWeaponId,
+                  selMode
+                );
+                const tooltip = selMeta
+                  ? lang === 'zh'
+                    ? `${selMeta.labelZh} — ${selMeta.tooltipZh}`
+                    : `${selMeta.labelEn} — ${selMeta.tooltipEn}`
+                  : ui.selectorGroupAria;
+                return (
+                  <button
+                    key={selMode}
+                    type="button"
+                    className={`fcg-pill mode-${selMode} ${
+                      isActive ? 'active' : ''
+                    }`}
+                    aria-pressed={isActive}
+                    title={tooltip}
+                    onClick={() => setFireSelectorMode(selMode)}
+                  >
+                    <span>{ui.selectorShort[selMode]}</span>
+                  </button>
+                );
+              })}
+            </div>
+
             <div className="speed-group">
               {SPEED_VALUES.map((val) => {
                 const key = String(val) as '0.25' | '0.5' | '1';
@@ -147,6 +226,20 @@ export const TimelineDock: React.FC = () => {
             >
               <Repeat size={12} aria-hidden="true" />
               <span>{fireLoop ? ui.loopOn : ui.loopOff}</span>
+            </button>
+
+            <button
+              type="button"
+              className={`loop-pill hud-pill ${telemetryHudOpen ? 'active' : ''}`}
+              aria-pressed={telemetryHudOpen}
+              onClick={() => {
+                playWorkbenchFoley('toggle_switch');
+                toggleTelemetryHud();
+              }}
+              title={ui.hudTitle(telemetryHudOpen)}
+            >
+              <Activity size={12} aria-hidden="true" />
+              <span>{ui.hudPill}</span>
             </button>
 
             <button
@@ -264,6 +357,62 @@ export const TimelineDock: React.FC = () => {
           </div>
 
           <div className="timeline-scrubber-row">
+            <button
+              type="button"
+              className={`press-check-btn ${
+                actionSnap.isPressCheck ? 'active' : ''
+              }`}
+              aria-pressed={actionSnap.isPressCheck}
+              onClick={() => togglePressCheck()}
+              title={ui.pressCheckTitle}
+            >
+              <Crosshair size={13} aria-hidden="true" />
+              <span>
+                {actionSnap.isPressCheck
+                  ? ui.pressCheckActiveBtn
+                  : ui.pressCheckBtn}
+              </span>
+            </button>
+
+            <button
+              ref={holdTriggerBtnRef}
+              type="button"
+              className={`hold-trigger-btn ${
+                actionSnap.isTriggerHeld ? 'is-held' : ''
+              } ${
+                actionSnap.selectorMode === 'safe' ? 'is-safe-mode' : ''
+              } ${
+                actionSnap.awaitingDisconnectorReset ? 'is-awaiting-reset' : ''
+              }`}
+              title={ui.holdTriggerTitle}
+              onPointerDown={(e) => {
+                if (e.button !== 0) return;
+                e.currentTarget.setPointerCapture(e.pointerId);
+                pressInteractiveTrigger();
+              }}
+              onPointerUp={() => releaseInteractiveTrigger()}
+              onPointerCancel={() => releaseInteractiveTrigger()}
+              onLostPointerCapture={() => releaseInteractiveTrigger()}
+              onPointerLeave={() => {
+                if (interactiveActionStore.getState().isTriggerHeld) {
+                  releaseInteractiveTrigger();
+                }
+              }}
+            >
+              {actionSnap.selectorMode === 'safe' ? (
+                <ShieldAlert size={13} aria-hidden="true" />
+              ) : (
+                <Flame size={13} aria-hidden="true" />
+              )}
+              <span>
+                {actionSnap.selectorMode === 'safe'
+                  ? ui.holdTriggerSafeBtn
+                  : actionSnap.awaitingDisconnectorReset
+                    ? ui.holdTriggerResetBtn
+                    : ui.holdTriggerBtn}
+              </span>
+            </button>
+
             <button
               className="single-shot-btn"
               onClick={triggerSingleShot}
