@@ -28,6 +28,7 @@ import {
   buildAwmTriggerShoeGeometry,
   sanitizeAwmMesh,
 } from './awmExtraGeometries';
+import { buildAwmHelicalLands, mergeAwmCutters } from './awmCadDetail';
 
 export {
   buildAwmBoltBodyGeometry,
@@ -229,78 +230,8 @@ export function buildAwmChassisSkinsGeometry(): THREE.BufferGeometry {
   extruded.translate(0, 0, -0.83);
   paintGeometry(extruded, AWM_OD_GREEN);
 
-  // CSG Interior Channels: CNC beam slot, Action bedding, Free-float barrel channel, Magwell, Bolt-handle scoop, Seam & Bolt counterbores
-  const cutters: THREE.BufferGeometry[] = [
-    // Internal CNC aluminum chassis beam cavity
-    paintGeometry(
-      new THREE.BoxGeometry(22.9, 1.35, 1.12).translate(2.35, -0.18, 0),
-      AWM_OD_GREEN
-    ),
-    // Flat-sided Magnum steel action receiver bedding channel
-    paintGeometry(
-      new THREE.BoxGeometry(10.15, 1.6, 1.38).translate(-0.28, 0.65, 0),
-      AWM_OD_GREEN
-    ),
-    // Rear bolt shroud tang channel
-    paintGeometry(
-      new THREE.BoxGeometry(4.6, 0.95, 0.98).translate(-7.1, 0.72, 0),
-      AWM_OD_GREEN
-    ),
-    // Free-float 27" heavy barrel U-channel along forend (Y = +1.05, R = 0.82)
-    paintGeometry(
-      new THREE.CylinderGeometry(0.82, 0.82, 10.2, 24)
-        .rotateZ(Math.PI / 2)
-        .translate(9.1, 1.05, 0),
-      AWM_OD_GREEN
-    ),
-    // Front Parker-Hale bipod spigot bore at X = +13.8, Y = -0.35
-    paintGeometry(
-      new THREE.CylinderGeometry(0.36, 0.36, 1.8, 18)
-        .rotateZ(Math.PI / 2)
-        .translate(13.5, -0.35, 0),
-      AWM_OD_GREEN
-    ),
-    // Long-Action .338 LM Rectangular Magazine Well through-cut (X in [-1.85, +4.55])
-    paintGeometry(
-      new THREE.BoxGeometry(6.42, 3.2, 1.32).translate(1.35, -0.95, 0),
-      AWM_OD_GREEN
-    ),
-    // Trigger box & trigger blade + paddle mag-catch through-slot
-    paintGeometry(
-      new THREE.BoxGeometry(2.55, 2.35, 0.86).translate(-2.95, -0.92, 0),
-      AWM_OD_GREEN
-    ),
-    // Right-side spherical bolt-knob clearance scoop
-    paintGeometry(
-      new THREE.SphereGeometry(0.64, 18, 14).translate(-4.88, 0.2, 1.12),
-      AWM_OD_GREEN
-    ),
-    // Forend side fuller grooves (left & right)
-    paintGeometry(
-      new THREE.BoxGeometry(7.6, 0.24, 0.16).translate(9.2, -0.18, 0.9),
-      AWM_OD_GREEN
-    ),
-    paintGeometry(
-      new THREE.BoxGeometry(7.6, 0.24, 0.16).translate(9.2, -0.18, -0.9),
-      AWM_OD_GREEN
-    ),
-    // Two-piece clam-shell skin parting seam along underside of forend & grip bridge (Z = 0)
-    paintGeometry(
-      new THREE.BoxGeometry(8.6, 0.08, 0.05).translate(9.2, -1.24, 0),
-      AWM_OD_GREEN
-    ),
-    paintGeometry(
-      new THREE.BoxGeometry(4.4, 0.1, 0.05).translate(-6.9, -5.18, 0),
-      AWM_OD_GREEN
-    ),
-    // Left-forend AI flush-cup / bar sling slot
-    paintGeometry(
-      new THREE.BoxGeometry(0.42, 0.86, 0.24).translate(11.45, -0.58, -0.88),
-      AWM_OD_GREEN
-    ),
-  ];
-
-  // Recessed hex-socket skin-fastening screws on both flanks (authentic AI two-piece skin assembly!)
+  // Group exterior counterbores, fuller grooves, parting seams & sling slot into ONE merged cutter brush,
+  // and group mutually-disjoint axial interior pockets into merged brushes (27 sequential CSG passes -> 4!).
   const boltCoords: [number, number][] = [
     [-8.55, -1.85],
     [-4.95, -2.15],
@@ -311,7 +242,6 @@ export function buildAwmChassisSkinsGeometry(): THREE.BufferGeometry {
     [12.7, -0.58],
   ];
   const extras: THREE.BufferGeometry[] = [
-    // Left-forend steel sling cross-bar inside recessed sling slot
     paintGeometry(
       new THREE.CylinderGeometry(0.065, 0.065, 0.88, 12).translate(
         11.45,
@@ -321,11 +251,37 @@ export function buildAwmChassisSkinsGeometry(): THREE.BufferGeometry {
       AWM_DARK_STEEL
     ),
   ];
+  const exteriorDisjointCutters: THREE.BufferGeometry[] = [
+    paintGeometry(
+      new THREE.BoxGeometry(7.6, 0.24, 0.16).translate(9.2, -0.18, 0.9),
+      AWM_OD_GREEN
+    ),
+    paintGeometry(
+      new THREE.BoxGeometry(7.6, 0.24, 0.16).translate(9.2, -0.18, -0.9),
+      AWM_OD_GREEN
+    ),
+    paintGeometry(
+      new THREE.BoxGeometry(8.6, 0.08, 0.05).translate(9.2, -1.24, 0),
+      AWM_OD_GREEN
+    ),
+    paintGeometry(
+      new THREE.BoxGeometry(4.4, 0.1, 0.05).translate(-6.9, -5.18, 0),
+      AWM_OD_GREEN
+    ),
+    paintGeometry(
+      new THREE.BoxGeometry(0.42, 0.86, 0.24).translate(11.45, -0.58, -0.88),
+      AWM_OD_GREEN
+    ),
+    paintGeometry(
+      new THREE.SphereGeometry(0.64, 18, 14).translate(-4.88, 0.2, 1.12),
+      AWM_OD_GREEN
+    ),
+  ];
   for (const [bx, by] of boltCoords) {
     for (const side of [-1, 1]) {
-      cutters.push(
+      exteriorDisjointCutters.push(
         paintGeometry(
-          new THREE.CylinderGeometry(0.165, 0.165, 0.22, 16)
+          new THREE.CylinderGeometry(0.165, 0.165, 0.22, 14)
             .rotateX(Math.PI / 2)
             .translate(bx, by, side * 0.88),
           AWM_OD_GREEN
@@ -342,7 +298,47 @@ export function buildAwmChassisSkinsGeometry(): THREE.BufferGeometry {
     }
   }
 
-  const carved = csgSubtract(extruded, cutters);
+  const carved = csgSubtract(extruded, [
+    paintGeometry(
+      new THREE.BoxGeometry(22.9, 1.35, 1.12).translate(2.35, -0.18, 0),
+      AWM_OD_GREEN
+    ),
+    // Rear shroud (-7.1), free-float barrel U-channel (+9.1) & front spigot bore (+13.5, Y=-0.35) are disjoint!
+    mergeAwmCutters([
+      paintGeometry(
+        new THREE.BoxGeometry(4.6, 0.95, 0.98).translate(-7.1, 0.72, 0),
+        AWM_OD_GREEN
+      ),
+      paintGeometry(
+        new THREE.CylinderGeometry(0.82, 0.82, 10.2, 24)
+          .rotateZ(Math.PI / 2)
+          .translate(9.1, 1.05, 0),
+        AWM_OD_GREEN
+      ),
+      paintGeometry(
+        new THREE.CylinderGeometry(0.36, 0.36, 1.8, 18)
+          .rotateZ(Math.PI / 2)
+          .translate(13.5, -0.35, 0),
+        AWM_OD_GREEN
+      ),
+    ]),
+    // Action bedding (-0.28, Y=+0.65) + disjoint lower trigger (-2.95) & magwell (+1.35)
+    paintGeometry(
+      new THREE.BoxGeometry(10.15, 1.6, 1.38).translate(-0.28, 0.65, 0),
+      AWM_OD_GREEN
+    ),
+    mergeAwmCutters([
+      paintGeometry(
+        new THREE.BoxGeometry(6.42, 3.2, 1.32).translate(1.35, -0.95, 0),
+        AWM_OD_GREEN
+      ),
+      paintGeometry(
+        new THREE.BoxGeometry(2.55, 2.35, 0.86).translate(-2.95, -0.92, 0),
+        AWM_OD_GREEN
+      ),
+    ]),
+    mergeAwmCutters(exteriorDisjointCutters),
+  ]);
   const merged = sanitizeAwmMesh(mergeParts([carved, ...extras]));
   return applyAwmChassisUVs(merged, -9.2, 23.0);
 }
@@ -388,32 +384,19 @@ export function buildAwmChassisBeamGeometry(): THREE.BufferGeometry {
     AWM_DARK_STEEL
   );
 
-  const cutters: THREE.BufferGeometry[] = [
-    // Octagonal V-bedding cradle w/ epoxy-bonding channels for flat-sided steel Magnum action
-    paintGeometry(
-      new THREE.BoxGeometry(10.08, 0.56, 0.92).translate(-0.28, 0.26, 0),
-      AWM_INNER_DARK
-    ),
-    // Front recoil-lug mortise pocket at X = +4.45
-    paintGeometry(
-      new THREE.BoxGeometry(0.38, 0.44, 1.12).translate(4.45, 0.12, 0),
-      AWM_INNER_DARK
-    ),
-    // Magwell internal opening (matches 6.32-unit .338 LM box mag)
+  // CNC-milled rectangular lightening truss pockets along forend beam [5.8..12.2] + disjoint trigger & magwell cuts
+  const disjointBeamCutters: THREE.BufferGeometry[] = [
     paintGeometry(
       new THREE.BoxGeometry(6.36, 2.55, 1.02).translate(1.35, -0.85, 0),
       AWM_INNER_DARK
     ),
-    // Trigger box cassette clearance pocket
     paintGeometry(
       new THREE.BoxGeometry(2.42, 1.62, 0.78).translate(-3.05, -0.55, 0),
       AWM_INNER_DARK
     ),
   ];
-
-  // CNC-milled rectangular lightening truss pockets along forend beam [5.8..12.2]
   for (const px of [5.85, 7.95, 10.05, 12.15]) {
-    cutters.push(
+    disjointBeamCutters.push(
       paintGeometry(
         new THREE.BoxGeometry(1.52, 0.68, 1.3).translate(px, -0.26, 0),
         AWM_INNER_DARK
@@ -422,8 +405,21 @@ export function buildAwmChassisBeamGeometry(): THREE.BufferGeometry {
   }
 
   const machinedBeam = csgSubtract(
-    csgUnion([mainBeam, magwellSkirt, gripCoreTang, rearHingeBlock]),
-    cutters
+    csgUnion([
+      mainBeam,
+      mergeAwmCutters([magwellSkirt, gripCoreTang, rearHingeBlock]),
+    ]),
+    [
+      paintGeometry(
+        new THREE.BoxGeometry(10.08, 0.56, 0.92).translate(-0.28, 0.26, 0),
+        AWM_INNER_DARK
+      ),
+      paintGeometry(
+        new THREE.BoxGeometry(0.38, 0.44, 1.12).translate(4.45, 0.12, 0),
+        AWM_INNER_DARK
+      ),
+      mergeAwmCutters(disjointBeamCutters),
+    ]
   );
 
   // Action-bolting steel pillars + hardened stainless front Parker-Hale bipod spigot w/ detent plunger
@@ -478,88 +474,60 @@ export function buildAwmChassisBeamGeometry(): THREE.BufferGeometry {
  * assembledPos: [0, 1.05, 0] -> Local X in [-5.3, +4.75], World Y in [+0.22, +2.26]
  */
 export function buildAwmActionReceiverGeometry(): THREE.BufferGeometry {
-  // Iconic AI thick flat-sided octagonal slab ordnance-steel Magnum receiver
-  const rawBlock = paintGeometry(
-    new THREE.BoxGeometry(10.05, 1.76, 1.56).translate(-0.28, 0.05, 0),
-    AWM_DARK_STEEL
-  );
-  // Integral 11mm AI dovetail + MIL-STD-1913 Picatinny top rail (World Y up to +2.26 -> local Y up to +1.21)
-  const topRail = paintGeometry(
-    new THREE.BoxGeometry(9.8, 0.34, 0.84).translate(-0.25, 1.04, 0),
-    AWM_PARKERIZED
-  );
+  // Iconic Portsmouth AI flat-sided octagonal ordnance-steel Magnum receiver + integral 11mm AI dovetail &
+  // 45°-beveled MIL-STD-1913 Picatinny top rail extruded directly from one crisp 2D profile (eliminates 5 CSG passes!)
+  const recProfile = new THREE.Shape();
+  recProfile.moveTo(-0.56, -0.83); // Bottom V-bedding flat
+  recProfile.lineTo(0.56, -0.83);
+  recProfile.lineTo(0.78, -0.61); // Lower 45° V-bedding bevel
+  recProfile.lineTo(0.78, 0.56); // Flat vertical side slab
+  recProfile.lineTo(0.41, 0.93); // Upper 45° octagonal shoulder bevel
+  recProfile.lineTo(0.35, 0.93); // Integral rail undercut neck (11mm dovetail root)
+  recProfile.lineTo(0.42, 1.01); // 45° lower Picatinny dovetail flare
+  recProfile.lineTo(0.42, 1.155);
+  recProfile.lineTo(0.365, 1.21); // 45° upper Picatinny dovetail chamfer
+  recProfile.lineTo(-0.365, 1.21); // Top rail deck (Y = +1.21 -> World Y = +2.26)
+  recProfile.lineTo(-0.42, 1.155);
+  recProfile.lineTo(-0.42, 1.01);
+  recProfile.lineTo(-0.35, 0.93);
+  recProfile.lineTo(-0.41, 0.93);
+  recProfile.lineTo(-0.78, 0.56);
+  recProfile.lineTo(-0.78, -0.61);
+  recProfile.closePath();
 
-  const cutters: THREE.BufferGeometry[] = [
-    // Upper 45-deg octagonal shoulder bevels
-    paintGeometry(
-      new THREE.BoxGeometry(10.4, 0.65, 0.65)
-        .rotateX(Math.PI / 4)
-        .translate(-0.28, 0.92, -0.82),
-      AWM_DARK_STEEL
-    ),
-    paintGeometry(
-      new THREE.BoxGeometry(10.4, 0.65, 0.65)
-        .rotateX(Math.PI / 4)
-        .translate(-0.28, 0.92, 0.82),
-      AWM_DARK_STEEL
-    ),
-    // Lower 45-deg V-bedding bevels mating into CNC aluminum spine beam
-    paintGeometry(
-      new THREE.BoxGeometry(10.4, 0.36, 0.36)
-        .rotateX(Math.PI / 4)
-        .translate(-0.28, -0.82, -0.78),
-      AWM_DARK_STEEL
-    ),
-    paintGeometry(
-      new THREE.BoxGeometry(10.4, 0.36, 0.36)
-        .rotateX(Math.PI / 4)
-        .translate(-0.28, -0.82, 0.78),
-      AWM_DARK_STEEL
-    ),
-    // Central bolt raceway & chamber tenon bore (R = 0.56)
-    paintGeometry(
-      new THREE.CylinderGeometry(0.56, 0.56, 10.5, 28)
-        .rotateZ(Math.PI / 2)
-        .translate(-0.28, 0, 0),
-      AWM_INNER_DARK
-    ),
-    // Compact high-rigidity right-side .338 Lapua Magnum ejection port (Local X in [-1.55, +2.85])
-    paintGeometry(
-      new THREE.BoxGeometry(4.4, 0.72, 0.95)
-        .rotateX(-0.22)
-        .translate(0.65, 0.28, 0.55),
-      AWM_INNER_DARK
-    ),
-    // Left-front overpressure emergency gas-relief port at breech ring (X = +2.95, Z = -0.78)
+  const rawReceiver = new THREE.ExtrudeGeometry(recProfile, {
+    depth: 10.05,
+    steps: 18,
+    bevelEnabled: false,
+  });
+  rawReceiver.rotateY(Math.PI / 2);
+  rawReceiver.translate(-5.305, 0, 0);
+  paintGeometry(rawReceiver, AWM_DARK_STEEL);
+
+  // 15 MIL-STD-1913 Picatinny recoil cross-slots + left emergency gas-relief port + right bolt-handle notch — ALL mutually disjoint!
+  const slotAndPortCutters: THREE.BufferGeometry[] = [
     paintGeometry(
       new THREE.CylinderGeometry(0.095, 0.095, 0.45, 14)
         .rotateX(Math.PI / 2)
         .translate(2.95, 0.24, -0.68),
       AWM_INNER_DARK
     ),
-    // Right-rear bolt-handle turn-in locking & primary-extraction cam notch at Local X = -4.18
     paintGeometry(
       new THREE.BoxGeometry(0.8, 0.7, 0.86).translate(-4.18, -0.12, 0.55),
       AWM_INNER_DARK
     ),
-    // Bottom .338 LM magazine feed slot & rear sear/shroud tang slot
+    // Trim rail ends cleanly at [-5.15, +4.65] so front/rear receiver ring shoulders step down authentically
     paintGeometry(
-      new THREE.BoxGeometry(5.96, 0.76, 0.94).translate(1.32, -0.65, 0),
-      AWM_INNER_DARK
+      new THREE.BoxGeometry(0.36, 0.34, 1.0).translate(-5.25, 1.09, 0),
+      AWM_PARKERIZED
     ),
     paintGeometry(
-      new THREE.BoxGeometry(2.35, 0.68, 0.42).translate(-4.12, -0.62, 0),
-      AWM_INNER_DARK
-    ),
-    paintGeometry(
-      new THREE.BoxGeometry(1.48, 0.68, 0.44).translate(-3.15, -0.65, 0),
-      AWM_INNER_DARK
+      new THREE.BoxGeometry(0.24, 0.34, 1.0).translate(4.72, 1.09, 0),
+      AWM_PARKERIZED
     ),
   ];
-
-  // 15 MIL-STD-1913 Picatinny recoil cross-slots along integral top rail
   for (let sx = -4.75; sx <= 4.35; sx += 0.65) {
-    cutters.push(
+    slotAndPortCutters.push(
       paintGeometry(
         new THREE.BoxGeometry(0.24, 0.14, 1.0).translate(sx, 1.18, 0),
         AWM_INNER_DARK
@@ -567,7 +535,34 @@ export function buildAwmActionReceiverGeometry(): THREE.BufferGeometry {
     );
   }
 
-  const receiverShell = csgSubtract(csgUnion([rawBlock, topRail]), cutters);
+  const receiverShell = csgSubtract(rawReceiver, [
+    // Central bolt raceway & chamber tenon bore (R = 0.56)
+    paintGeometry(
+      new THREE.CylinderGeometry(0.56, 0.56, 10.5, 28)
+        .rotateZ(Math.PI / 2)
+        .translate(-0.28, 0, 0),
+      AWM_INNER_DARK
+    ),
+    // Right-side .338 LM ejection port (+0.65, Y=+0.28) & bottom magwell feed slot (+1.32, Y=-0.65) are disjoint in Y!
+    mergeAwmCutters([
+      paintGeometry(
+        new THREE.BoxGeometry(4.4, 0.72, 0.95)
+          .rotateX(-0.22)
+          .translate(0.65, 0.28, 0.55),
+        AWM_INNER_DARK
+      ),
+      paintGeometry(
+        new THREE.BoxGeometry(5.96, 0.76, 0.94).translate(1.32, -0.65, 0),
+        AWM_INNER_DARK
+      ),
+    ]),
+    // Rear sear/shroud tang slots
+    paintGeometry(
+      new THREE.BoxGeometry(2.86, 0.68, 0.44).translate(-3.82, -0.64, 0),
+      AWM_INNER_DARK
+    ),
+    mergeAwmCutters(slotAndPortCutters),
+  ]);
 
   // Bright-steel internal 6-lug locking abutment rings, 3 longitudinal raceway rails & integral front recoil lug
   const lockRingFront = paintGeometry(
@@ -610,44 +605,57 @@ export function buildAwmActionReceiverGeometry(): THREE.BufferGeometry {
 
 /**
  * F-04: 27" Longitudinally Fluted Free-Floated Stainless Match Barrel (.338 Lapua Magnum, 1:10" Twist)
- * assembledPos: [0, 1.05, 0] -> Spans X in [+2.88, +29.0] (threads into receiver [+2.88..+4.75] & brake [+28.05..+29.0]!)
+ * assembledPos: [0, 1.05, 0] -> Spans X in [+2.84, +29.0] (threads into receiver [+2.88..+4.75] & brake [+28.05..+29.0]!)
  */
 export function buildAwmBarrelGeometry(): THREE.BufferGeometry {
-  // All Lathe radii >= 0.215 (> 0) for clean non-degenerate triangles!
+  // Closed watertight hollow LatheGeometry: M27 breech tenon -> heavy chamber -> 27" match taper -> M18 spigot ->
+  // recessed 11° target crown dish -> full .338 (8.6mm) bore -> bottleneck .338 Lapua Magnum 70mm chamber!
   const pts: THREE.Vector2[] = [
-    new THREE.Vector2(0.36, 2.88),
-    new THREE.Vector2(0.54, 2.88), // Threaded M27 breech tenon inside steel Magnum action
-    new THREE.Vector2(0.54, 4.73),
-    new THREE.Vector2(0.74, 4.77), // Heavy chamber cylinder flush against receiver front face X = +4.75
+    new THREE.Vector2(0.39, 2.88),
+    new THREE.Vector2(0.54, 2.88), // Threaded M27x2 breech tenon inside steel Magnum action
+    new THREE.Vector2(0.54, 4.64),
+    new THREE.Vector2(0.515, 4.67), // Precision thread-relief undercut groove ahead of receiver face
+    new THREE.Vector2(0.515, 4.73),
+    new THREE.Vector2(0.74, 4.76), // Heavy chamber cylinder flush against receiver front face X = +4.75
     new THREE.Vector2(0.74, 8.15),
     new THREE.Vector2(0.68, 8.85), // Match contour taper start
     new THREE.Vector2(0.55, 27.25), // 27" free-floating heavy sniper contour
     new THREE.Vector2(0.55, 28.05), // Muzzle brake shoulder flush at X = +28.05
-    new THREE.Vector2(0.43, 28.1), // M18x1.5 threaded muzzle spigot inside AI muzzle brake
-    new THREE.Vector2(0.43, 29.0),
-    new THREE.Vector2(0.215, 29.0),
+    new THREE.Vector2(0.41, 28.08), // Thread relief undercut
+    new THREE.Vector2(0.43, 28.12), // M18x1.5 threaded muzzle spigot inside AI muzzle brake
+    new THREE.Vector2(0.43, 28.98),
+    new THREE.Vector2(0.41, 29.0), // 45° outer crown chamfer
+    new THREE.Vector2(0.355, 29.0), // Flat outer crown rim
+    new THREE.Vector2(0.355, 28.972), // Recessed crown counterbore step
+    // True 11° target muzzle crown cone: (0.355 - 0.215) * tan(11°) ≈ 0.027 deep into the .338 bore
+    new THREE.Vector2(0.215, 28.945),
+    // ---- closed hollow bore & .338 Lapua Magnum chamber ----
+    new THREE.Vector2(0.215, 6.72),
+    new THREE.Vector2(0.245, 6.42), // Freebore leade throat cone
+    new THREE.Vector2(0.245, 5.98), // .338 LM case neck
+    new THREE.Vector2(0.348, 5.66), // 20° bottleneck shoulder
+    new THREE.Vector2(0.378, 3.04), // Tapered 14.9mm-base .338 LM case body
+    new THREE.Vector2(0.415, 2.92), // Polished breech chamber throat chamfer
+    new THREE.Vector2(0.39, 2.88),
   ];
   const outer = new THREE.LatheGeometry(pts, 36);
   outer.rotateZ(-Math.PI / 2);
   paintGeometry(outer, AWM_MATCH_BARREL);
+  {
+    const pos = outer.getAttribute('position');
+    const col = outer.getAttribute('color');
+    const dark = new THREE.Color(AWM_INNER_DARK);
+    for (let i = 0; i < pos.count; i++) {
+      const r = Math.hypot(pos.getY(i), pos.getZ(i));
+      const x = pos.getX(i);
+      if (r < 0.395 && x > 2.91 && x < 28.98) {
+        col.setXYZ(i, dark.r, dark.g, dark.b);
+      }
+    }
+  }
 
-  // 6 deep ball-milled longitudinal cooling/stiffening flutes along X in [8.85, 26.65] + .338LM chamber, bore & wrench flats!
-  const cutters: THREE.BufferGeometry[] = [
-    // .338 (8.6mm) bore core
-    paintGeometry(
-      new THREE.CylinderGeometry(0.215, 0.215, 26.6, 22)
-        .rotateZ(Math.PI / 2)
-        .translate(16.0, 0, 0),
-      AWM_INNER_DARK
-    ),
-    // .338 Lapua Magnum tapered 70mm chamber & throat
-    paintGeometry(
-      new THREE.CylinderGeometry(0.36, 0.395, 3.85, 24)
-        .rotateZ(Math.PI / 2)
-        .translate(4.85, 0, 0),
-      AWM_INNER_DARK
-    ),
-    // Authentic AI quick-barrel-change spanner wrench flats on chamber reinforce (X = +5.35, Z = +/- 0.70)
+  // 6 ball-endmill longitudinal flutes (hemispherical ends!) + 2 AI barrel-wrench flats — ALL 8 mutually disjoint!
+  const fluteAndFlatCutters: THREE.BufferGeometry[] = [
     paintGeometry(
       new THREE.BoxGeometry(0.68, 0.72, 0.18).translate(5.35, 0, 0.74),
       AWM_FLUTE_BRIGHT
@@ -657,26 +665,28 @@ export function buildAwmBarrelGeometry(): THREE.BufferGeometry {
       AWM_FLUTE_BRIGHT
     ),
   ];
-
-  // 6 longitudinal barrel flutes
   for (let k = 0; k < 6; k++) {
     const ang = (k * Math.PI) / 3;
     const rMid = 0.635;
     const fy = Math.cos(ang) * rMid;
     const fz = Math.sin(ang) * rMid;
-    const fluteCutter = new THREE.CylinderGeometry(0.145, 0.125, 17.8, 16);
+    const fluteCutter = new THREE.CapsuleGeometry(0.135, 17.5, 4, 12);
     fluteCutter.rotateZ(Math.PI / 2);
     const tilt = 0.0065;
     fluteCutter.rotateY(Math.sin(ang) * tilt);
     fluteCutter.rotateZ(Math.cos(ang) * -tilt);
     fluteCutter.translate(17.75, fy, fz);
     paintGeometry(fluteCutter, AWM_FLUTE_BRIGHT);
-    cutters.push(fluteCutter);
+    fluteAndFlatCutters.push(fluteCutter);
   }
 
-  const flutedBarrel = csgSubtract(outer, cutters);
+  const flutedBarrel = csgSubtract(outer, [
+    mergeAwmCutters(fluteAndFlatCutters),
+  ]);
 
-  // Polished stainless chamber feed cone + 6 internal .338 bore rifling lands visible at breech & muzzle
+  // Polished stainless chamber feed cone + 6 helical 1:10" (25.4cm) right-hand twist .338 rifling lands
+  // visible inside the recessed 11° muzzle crown & chamber leade!
+  const twist = (Math.PI * 2) / 25.4;
   const extras: THREE.BufferGeometry[] = [
     flutedBarrel,
     paintGeometry(
@@ -685,16 +695,35 @@ export function buildAwmBarrelGeometry(): THREE.BufferGeometry {
         .translate(2.9, 0, 0),
       AWM_STAINLESS
     ),
+    paintGeometry(
+      buildAwmHelicalLands({
+        count: 6,
+        boreRadius: 0.215,
+        height: 0.024,
+        halfAngle: 0.12,
+        x0: 25.2,
+        x1: 28.94,
+        twist,
+        segments: 10,
+        phase: 0.15,
+      }),
+      AWM_STAINLESS
+    ),
+    paintGeometry(
+      buildAwmHelicalLands({
+        count: 6,
+        boreRadius: 0.215,
+        height: 0.024,
+        halfAngle: 0.12,
+        x0: 6.75,
+        x1: 9.25,
+        twist,
+        segments: 6,
+        phase: 0.15,
+      }),
+      AWM_STAINLESS
+    ),
   ];
-  for (let r = 0; r < 6; r++) {
-    const rAng = (r * Math.PI) / 3;
-    const ly = Math.cos(rAng) * 0.2;
-    const lz = Math.sin(rAng) * 0.2;
-    const land = new THREE.BoxGeometry(22.0, 0.028, 0.042);
-    land.rotateX(-rAng + 0.12);
-    land.translate(17.85, ly, lz);
-    extras.push(paintGeometry(land, AWM_STAINLESS));
-  }
 
   return sanitizeAwmMesh(mergeParts(extras));
 }
@@ -704,114 +733,184 @@ export function buildAwmBarrelGeometry(): THREE.BufferGeometry {
  * assembledPos: [29.5, 1.05, 0] -> Local X in [-1.50, +1.50] -> World X in [+28.0, +31.0] (exact crown at +31.0!)
  */
 export function buildAwmMuzzleBrakeGeometry(): THREE.BufferGeometry {
-  // Rear threaded AI tactical suppressor-attachment collar (local X in [-1.50, -0.76])
-  const rearCollar = paintGeometry(
-    new THREE.CylinderGeometry(0.61, 0.59, 0.74, 28)
-      .rotateZ(Math.PI / 2)
-      .translate(-1.13, 0, 0),
-    AWM_DARK_STEEL
+  // Rear threaded AI tactical suppressor-attachment collar built as a closed hollow LatheGeometry (local X in [-1.50, -0.74])
+  const rearCollar = new THREE.LatheGeometry(
+    [
+      new THREE.Vector2(0.43, -1.5),
+      new THREE.Vector2(0.59, -1.5),
+      new THREE.Vector2(0.61, -0.74),
+      new THREE.Vector2(0.43, -0.74),
+      new THREE.Vector2(0.43, -1.5),
+    ],
+    28
   );
-  // Iconic slab-sided rectangular double-baffle AI brake body (local X in [-0.78, +1.50])
-  const slabRaw = paintGeometry(
-    new THREE.BoxGeometry(2.28, 1.32, 1.68).translate(0.36, 0, 0),
-    AWM_DARK_STEEL
+  rearCollar.rotateZ(-Math.PI / 2);
+  paintGeometry(rearCollar, AWM_DARK_STEEL);
+
+  // Iconic chamfered octagonal-slab AI double-baffle brake body extruded directly from 2D profile (local X in [-0.78, +1.50])
+  const slabSec = new THREE.Shape();
+  slabSec.moveTo(-0.56, -0.66);
+  slabSec.lineTo(0.56, -0.66);
+  slabSec.lineTo(0.84, -0.38); // 45° longitudinal corner bevels (eliminates 4 CSG bevel passes!)
+  slabSec.lineTo(0.84, 0.38);
+  slabSec.lineTo(0.56, 0.66);
+  slabSec.lineTo(-0.56, 0.66);
+  slabSec.lineTo(-0.84, 0.38);
+  slabSec.lineTo(-0.84, -0.38);
+  slabSec.closePath();
+
+  const slabRaw = new THREE.ExtrudeGeometry(slabSec, {
+    depth: 2.28,
+    steps: 8,
+    bevelEnabled: false,
+  });
+  slabRaw.rotateY(Math.PI / 2);
+  slabRaw.translate(-0.78, 0, 0);
+  paintGeometry(slabRaw, AWM_DARK_STEEL);
+
+  // Stepped 11° target exit crown cutter profile at X = +1.50 (World X = +31.00!)
+  const crownDish = new THREE.LatheGeometry(
+    [
+      new THREE.Vector2(0.001, 1.24),
+      new THREE.Vector2(0.235, 1.24),
+      new THREE.Vector2(0.42, 1.44), // 11° recessed target exit dish
+      new THREE.Vector2(0.47, 1.44), // Stepped crown land
+      new THREE.Vector2(0.47, 1.56),
+      new THREE.Vector2(0.001, 1.56),
+    ],
+    24
   );
+  crownDish.rotateZ(-Math.PI / 2);
 
-  const cutters: THREE.BufferGeometry[] = [
-    // Central .338 projectile bore channel
+  // 3 clean merged CSG passes on the slab body:
+  //   Pass 1: Central .338 projectile passage (R = 0.235)
+  //   Pass 2: Disjoint axial plenums — rear spigot socket (-0.78..-0.48), Ch.1 plenum (-0.18), Ch.2 plenum (+0.76), 11° exit crown (+1.44)
+  //   Pass 3: Disjoint rearward-swept Ch.1 & Ch.2 exhaust ports (piercing straight through Z so hollow baffles are open!) + top gas-biasing ports
+  const brakeSlab = csgSubtract(slabRaw, [
     paintGeometry(
-      new THREE.CylinderGeometry(0.235, 0.235, 3.4, 22)
+      new THREE.CylinderGeometry(0.235, 0.235, 2.6, 24)
         .rotateZ(Math.PI / 2)
-        .translate(0, 0, 0),
+        .translate(0.36, 0, 0),
       AWM_INNER_DARK
     ),
-    // Recessed 11-degree target-crowned .338 muzzle exit dish at X = +1.50 (World X = +31.00!)
-    paintGeometry(
-      new THREE.CylinderGeometry(0.46, 0.24, 0.22, 24)
-        .rotateZ(Math.PI / 2)
-        .translate(1.42, 0, 0),
-      AWM_INNER_DARK
-    ),
-    // Chamber 1 & Chamber 2 wide rearward-swept gas-deflecting expansion windows (symmetric left & right!)
-    paintGeometry(
-      new THREE.BoxGeometry(0.62, 0.86, 1.05)
-        .rotateY(0.2)
-        .translate(-0.18, 0, 0.52),
-      AWM_INNER_DARK
-    ),
-    paintGeometry(
-      new THREE.BoxGeometry(0.62, 0.86, 1.05)
-        .rotateY(-0.2)
-        .translate(-0.18, 0, -0.52),
-      AWM_INNER_DARK
-    ),
-    paintGeometry(
-      new THREE.BoxGeometry(0.62, 0.86, 1.05)
-        .rotateY(0.2)
-        .translate(0.76, 0, 0.52),
-      AWM_INNER_DARK
-    ),
-    paintGeometry(
-      new THREE.BoxGeometry(0.62, 0.86, 1.05)
-        .rotateY(-0.2)
-        .translate(0.76, 0, -0.52),
-      AWM_INNER_DARK
-    ),
-    // Internal expansion chamber cavities around bore
-    paintGeometry(
-      new THREE.CylinderGeometry(0.42, 0.42, 0.52, 20)
-        .rotateZ(Math.PI / 2)
-        .translate(-0.16, 0, 0),
-      AWM_INNER_DARK
-    ),
-    paintGeometry(
-      new THREE.CylinderGeometry(0.42, 0.42, 0.52, 20)
-        .rotateZ(Math.PI / 2)
-        .translate(0.78, 0, 0),
-      AWM_INNER_DARK
-    ),
-    // Longitudinal 45-deg edge chamfers on slab brake
-    paintGeometry(
-      new THREE.BoxGeometry(2.6, 0.46, 0.46)
-        .rotateX(Math.PI / 4)
-        .translate(0.36, 0.68, 0.86),
-      AWM_PARKERIZED
-    ),
-    paintGeometry(
-      new THREE.BoxGeometry(2.6, 0.46, 0.46)
-        .rotateX(Math.PI / 4)
-        .translate(0.36, 0.68, -0.86),
-      AWM_PARKERIZED
-    ),
-    paintGeometry(
-      new THREE.BoxGeometry(2.6, 0.46, 0.46)
-        .rotateX(Math.PI / 4)
-        .translate(0.36, -0.68, 0.86),
-      AWM_PARKERIZED
-    ),
-    paintGeometry(
-      new THREE.BoxGeometry(2.6, 0.46, 0.46)
-        .rotateX(Math.PI / 4)
-        .translate(0.36, -0.68, -0.86),
-      AWM_PARKERIZED
-    ),
-  ];
+    mergeAwmCutters([
+      paintGeometry(
+        new THREE.CylinderGeometry(0.435, 0.435, 0.38, 22)
+          .rotateZ(Math.PI / 2)
+          .translate(-0.64, 0, 0),
+        AWM_INNER_DARK
+      ),
+      paintGeometry(
+        new THREE.CylinderGeometry(0.46, 0.43, 0.56, 22)
+          .rotateZ(Math.PI / 2)
+          .translate(-0.18, 0, 0),
+        AWM_INNER_DARK
+      ),
+      paintGeometry(
+        new THREE.CylinderGeometry(0.45, 0.42, 0.56, 22)
+          .rotateZ(Math.PI / 2)
+          .translate(0.76, 0, 0),
+        AWM_INNER_DARK
+      ),
+      paintGeometry(crownDish, AWM_INNER_DARK),
+    ]),
+    mergeAwmCutters([
+      // Swept Chamber 1 & Chamber 2 exhaust ports (Left & Right) exposing internal V-splitter & front baffle walls
+      paintGeometry(
+        new THREE.BoxGeometry(0.64, 0.86, 1.05)
+          .rotateY(0.22)
+          .translate(-0.18, 0, 0.5),
+        AWM_INNER_DARK
+      ),
+      paintGeometry(
+        new THREE.BoxGeometry(0.64, 0.86, 1.05)
+          .rotateY(-0.22)
+          .translate(-0.18, 0, -0.5),
+        AWM_INNER_DARK
+      ),
+      paintGeometry(
+        new THREE.BoxGeometry(0.64, 0.86, 1.05)
+          .rotateY(0.22)
+          .translate(0.76, 0, 0.5),
+        AWM_INNER_DARK
+      ),
+      paintGeometry(
+        new THREE.BoxGeometry(0.64, 0.86, 1.05)
+          .rotateY(-0.22)
+          .translate(0.76, 0, -0.5),
+        AWM_INNER_DARK
+      ),
+      // Top anti-muzzle-rise pressure-equalizing compensator ports into Ch.1 & Ch.2
+      paintGeometry(
+        new THREE.CylinderGeometry(0.085, 0.085, 0.36, 12).translate(
+          -0.16,
+          0.56,
+          -0.24
+        ),
+        AWM_INNER_DARK
+      ),
+      paintGeometry(
+        new THREE.CylinderGeometry(0.085, 0.085, 0.36, 12).translate(
+          -0.16,
+          0.56,
+          0.24
+        ),
+        AWM_INNER_DARK
+      ),
+      paintGeometry(
+        new THREE.CylinderGeometry(0.08, 0.08, 0.36, 12).translate(
+          0.78,
+          0.56,
+          -0.24
+        ),
+        AWM_INNER_DARK
+      ),
+      paintGeometry(
+        new THREE.CylinderGeometry(0.08, 0.08, 0.36, 12).translate(
+          0.78,
+          0.56,
+          0.24
+        ),
+        AWM_INNER_DARK
+      ),
+    ]),
+  ]);
 
-  const brakeBody = csgSubtract(csgUnion([rearCollar, slabRaw]), cutters);
-
-  // Fine external suppressor-mounting thread rings + knurled locking ring + recessed crown rifling ring
+  // Fine external AI suppressor-mounting thread rings + knurled shoulder ring (max Y = 0.673) +
+  // stainless internal baffle jet-stripper aperture rings + 6 helical .338 throat rifling lands!
   const extras: THREE.BufferGeometry[] = [
-    brakeBody,
+    rearCollar,
+    brakeSlab,
     paintGeometry(
       new THREE.TorusGeometry(0.625, 0.048, 10, 28)
         .rotateY(Math.PI / 2)
         .translate(-0.82, 0, 0),
       AWM_PARKERIZED
     ),
+    // Internal baffle jet-stripper rings on Ch.1->Ch.2 splitter (X=+0.29) & front baffle throat (X=+1.24)
+    paintGeometry(
+      new THREE.TorusGeometry(0.245, 0.02, 8, 22)
+        .rotateY(Math.PI / 2)
+        .translate(0.29, 0, 0),
+      AWM_STAINLESS
+    ),
     paintGeometry(
       new THREE.TorusGeometry(0.245, 0.018, 8, 22)
         .rotateY(Math.PI / 2)
-        .translate(1.33, 0, 0),
+        .translate(1.24, 0, 0),
+      AWM_STAINLESS
+    ),
+    paintGeometry(
+      buildAwmHelicalLands({
+        count: 6,
+        boreRadius: 0.235,
+        height: 0.02,
+        halfAngle: 0.11,
+        x0: -0.62,
+        x1: -0.44,
+        twist: (Math.PI * 2) / 25.4,
+        segments: 3,
+      }),
       AWM_STAINLESS
     ),
   ];
@@ -948,7 +1047,7 @@ export function buildAwmFoldingStockGeometry(): THREE.BufferGeometry {
     }
   }
 
-  const carvedStock = csgSubtract(extruded, cutters);
+  const carvedStock = csgSubtract(extruded, [mergeAwmCutters(cutters)]);
   const merged = sanitizeAwmMesh(mergeParts([carvedStock, ...hardware]));
   return applyAwmChassisUVs(merged, -10.3, 10.3);
 }
@@ -1053,20 +1152,22 @@ export function buildAwmButtpadSpacersGeometry(): THREE.BufferGeometry {
       .translate(-1.15, -1.55, 0),
     AWM_INNER_DARK
   );
-  const ribCutters: THREE.BufferGeometry[] = [
-    shoulderCurveCut,
+  const ribOnlyCutters: THREE.BufferGeometry[] = [
     screwAccessTop,
     screwAccessBot,
   ];
   for (let ry = -2.1; ry <= 2.1; ry += 0.42) {
-    ribCutters.push(
+    ribOnlyCutters.push(
       paintGeometry(
         new THREE.BoxGeometry(0.24, 0.12, 1.7).translate(-1.46, ry, 0),
         AWM_MATTE_BLACK
       )
     );
   }
-  const rubberPad = csgSubtract(padRaw, ribCutters);
+  const rubberPad = csgSubtract(padRaw, [
+    shoulderCurveCut,
+    mergeAwmCutters(ribOnlyCutters),
+  ]);
 
   // Twin recessed stainless steel mounting cap screws
   const screwTop = paintGeometry(
@@ -1134,7 +1235,7 @@ export function buildAwmBipodGeometry(): THREE.BufferGeometry {
       new THREE.BoxGeometry(0.32, 2.55, 0.26).translate(0.14, -1.48, 0),
       AWM_INNER_DARK
     );
-    const holeCutters: THREE.BufferGeometry[] = [channelSlot];
+    const holeCutters: THREE.BufferGeometry[] = [];
     for (const hy of [-0.75, -1.42, -2.08]) {
       holeCutters.push(
         paintGeometry(
@@ -1145,7 +1246,9 @@ export function buildAwmBipodGeometry(): THREE.BufferGeometry {
         )
       );
     }
-    legGroup.push(csgSubtract(upperLegRaw, holeCutters));
+    legGroup.push(
+      csgSubtract(upperLegRaw, [channelSlot, mergeAwmCutters(holeCutters)])
+    );
 
     // Telescoping notched stainless inner leg tube (extends down to -4.675 along leg)
     legGroup.push(

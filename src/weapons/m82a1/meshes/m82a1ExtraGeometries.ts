@@ -11,6 +11,7 @@ import {
   mergeParts,
   paintGeometry,
 } from '../../../engine/geometry/csgBuilder';
+import { buildDovetailBar, mergeCutters } from './m82a1CadDetail';
 
 export const M82_PARKERIZED = '#46505e';
 export const M82_DARK_STEEL = '#3a4350';
@@ -336,11 +337,10 @@ export function buildM82LowerReceiverGeometry(): THREE.BufferGeometry {
     M82_INNER_DARK
   );
 
+  // buttstockCavity (-20.4..-5.6), triggerSlot (-1.65..+0.55) & magwellThrough (+2.09..+8.41) are mutually disjoint in X!
   const shell = csgSubtract(rawHull, [
     upperTrough,
-    buttstockCavity,
-    magwellThrough,
-    triggerSlot,
+    mergeCutters([buttstockCavity, magwellThrough, triggerSlot]),
   ]);
 
   // Thick Ribbed Sorbothane Recoil-Absorbing Buttpad (X ∈ [-22.0, -20.8]) + steel baseplate
@@ -362,22 +362,22 @@ export function buildM82LowerReceiverGeometry(): THREE.BufferGeometry {
       )
     );
   }
-  const sorbothanePad = csgSubtract(padMain, padCutters);
+  const sorbothanePad = csgSubtract(padMain, [mergeCutters(padCutters)]);
 
-  // Internal cylindrical buffer housing tube at rear + internal accelerator abutment block
-  const rearBufferTube = paintGeometry(
-    new THREE.CylinderGeometry(0.76, 0.76, 4.2, 22)
-      .rotateZ(Math.PI / 2)
-      .translate(-18.6, 1.25, 0),
-    M82_DARK_STEEL
+  // Internal cylindrical buffer housing tube at rear (zero-CSG closed hollow lathe) + internal accelerator abutment block
+  const bufferCollar = new THREE.LatheGeometry(
+    [
+      new THREE.Vector2(0.62, -20.7),
+      new THREE.Vector2(0.76, -20.7),
+      new THREE.Vector2(0.76, -16.5),
+      new THREE.Vector2(0.62, -16.5),
+      new THREE.Vector2(0.62, -20.7),
+    ],
+    22
   );
-  const rearBufferHole = paintGeometry(
-    new THREE.CylinderGeometry(0.62, 0.62, 4.6, 20)
-      .rotateZ(Math.PI / 2)
-      .translate(-18.6, 1.25, 0),
-    M82_INNER_DARK
-  );
-  const bufferCollar = csgSubtract(rearBufferTube, [rearBufferHole]);
+  bufferCollar.rotateZ(-Math.PI / 2);
+  bufferCollar.translate(0, 1.25, 0);
+  paintGeometry(bufferCollar, M82_DARK_STEEL);
 
   const acceleratorStopBlock = paintGeometry(
     new THREE.BoxGeometry(0.72, 0.42, 1.62).translate(-5.85, 0.12, 0),
@@ -466,7 +466,7 @@ export function buildM82LowerReceiverGeometry(): THREE.BufferGeometry {
     );
   }
 
-  // Front Bipod Mounting Yoke Clevis Ears (X = +14.7) + Rear buttstock monopod rail boss (X = -17.4)
+  // Front Bipod Mounting Yoke Clevis Ears (X = +14.7) + Rear buttstock dovetail monopod rail boss (X = -17.35)
   subParts.push(
     paintGeometry(
       new THREE.BoxGeometry(1.78, 0.56, 0.24).translate(14.7, -0.95, -0.68),
@@ -477,7 +477,16 @@ export function buildM82LowerReceiverGeometry(): THREE.BufferGeometry {
       M82_DARK_STEEL
     ),
     paintGeometry(
-      new THREE.BoxGeometry(2.4, 0.28, 0.86)
+      buildDovetailBar({
+        xStart: -1.2,
+        length: 2.4,
+        yBottom: -0.14,
+        yTop: 0.14,
+        halfWidthBottom: 0.36,
+        halfWidthMax: 0.43,
+        topChamfer: 0.04,
+      })
+        .rotateX(Math.PI)
         .rotateZ(0.23)
         .translate(-17.35, -3.72, 0),
       M82_DARK_STEEL
@@ -631,7 +640,7 @@ export function buildM82BipodGeometry(): THREE.BufferGeometry {
         )
       );
     }
-    legGroup.push(csgSubtract(outerLegRaw, lightenHoles));
+    legGroup.push(csgSubtract(outerLegRaw, [mergeCutters(lightenHoles)]));
 
     // External locking spring, latch lever & quick-release pull ring
     legGroup.push(
@@ -1018,7 +1027,7 @@ export function buildM82TriggerGeometry(): THREE.BufferGeometry {
       )
     );
   }
-  const groovedShoe = csgSubtract(rawShoe, grooveCutters);
+  const groovedShoe = csgSubtract(rawShoe, [mergeCutters(grooveCutters)]);
 
   // Upper trigger bow yoke engaging the twin-rail transfer bar + overtravel stop screw
   const upperBow = paintGeometry(
@@ -1124,22 +1133,11 @@ export function buildM82MagBodyGeometry(): THREE.BufferGeometry {
   rawBox.translate(0, 0, -0.86);
   paintGeometry(rawBox, M82_PARKERIZED);
 
-  // Hollow internal magazine shaft + top dual-feed throat + 4 stamped vertical rib grooves & rear witness holes
-  const cutters: THREE.BufferGeometry[] = [
-    paintGeometry(
-      new THREE.BoxGeometry(5.68, 7.65, 1.42).translate(0, -1.35, 0),
-      M82_INNER_DARK
-    ),
-    paintGeometry(
-      new THREE.BoxGeometry(5.46, 2.2, 1.18).translate(-0.05, 2.1, 0),
-      M82_INNER_DARK
-    ),
-  ];
-
-  // 4 vertical stamped strengthening ribs on both Left & Right steel flanks
+  // All 8 vertical stamped rib capsules + 3 rear round-count witness holes (4, 7, 10 rd) are mutually disjoint!
+  const flankAndWitnessCutters: THREE.BufferGeometry[] = [];
   for (const rx of [-2.05, -0.7, 0.65, 2.0]) {
     for (const side of [-1, 1]) {
-      cutters.push(
+      flankAndWitnessCutters.push(
         paintGeometry(
           new THREE.CapsuleGeometry(0.135, 5.35, 4, 10).translate(
             rx,
@@ -1151,12 +1149,10 @@ export function buildM82MagBodyGeometry(): THREE.BufferGeometry {
       );
     }
   }
-
-  // Round cartridge witness holes along rear spine (5 & 10 rd indicators)
-  for (const wy of [-1.4, -3.6]) {
-    cutters.push(
+  for (const wy of [-0.55, -2.15, -3.75]) {
+    flankAndWitnessCutters.push(
       paintGeometry(
-        new THREE.CylinderGeometry(0.14, 0.14, 0.55, 12)
+        new THREE.CylinderGeometry(0.13, 0.13, 0.55, 14)
           .rotateZ(Math.PI / 2)
           .translate(-2.98, wy, 0),
         M82_INNER_DARK
@@ -1164,9 +1160,20 @@ export function buildM82MagBodyGeometry(): THREE.BufferGeometry {
     );
   }
 
-  const magShell = csgSubtract(rawBox, cutters);
+  const magShell = csgSubtract(rawBox, [
+    paintGeometry(
+      new THREE.BoxGeometry(5.68, 7.65, 1.42).translate(0, -1.35, 0),
+      M82_INNER_DARK
+    ),
+    paintGeometry(
+      new THREE.BoxGeometry(5.46, 2.2, 1.18).translate(-0.05, 2.1, 0),
+      M82_INNER_DARK
+    ),
+    mergeCutters(flankAndWitnessCutters),
+  ]);
 
-  // Welded front rock-in magwell hook + rear paddle-catch locking shelf + curved stainless feed lips
+  // Welded front rock-in magwell hook + rear paddle-catch locking shelf + folded rear spine rib +
+  // precision inwardly-curved stamped stainless .50 BMG feed lips (Y_max <= 2.70)!
   const frontHook = paintGeometry(
     new THREE.BoxGeometry(0.3, 0.5, 1.4).translate(3.15, 0.45, 0),
     M82_BRIGHT_STEEL
@@ -1175,21 +1182,36 @@ export function buildM82MagBodyGeometry(): THREE.BufferGeometry {
     new THREE.BoxGeometry(0.34, 0.44, 1.34).translate(-3.16, -0.05, 0),
     M82_BRIGHT_STEEL
   );
-  const feedLipL = paintGeometry(
-    new THREE.BoxGeometry(5.52, 0.24, 0.26).translate(-0.05, 2.58, -0.68),
-    M82_BRIGHT_STEEL
+  const rearSpineRib = paintGeometry(
+    new THREE.BoxGeometry(0.08, 8.2, 0.52).translate(-3.09, -2.0, 0),
+    M82_DARK_STEEL
   );
-  const feedLipR = paintGeometry(
-    new THREE.BoxGeometry(5.52, 0.24, 0.26).translate(-0.05, 2.58, 0.68),
-    M82_BRIGHT_STEEL
-  );
+
+  // Contoured C-section .50 BMG feed lips in (Z, Y) curving inward over the double-stack cartridge shoulders
+  const buildCurvedFeedLip = (side: -1 | 1) => {
+    const s = new THREE.Shape();
+    s.moveTo(side * 0.84, 2.38);
+    s.lineTo(side * 0.84, 2.6);
+    s.quadraticCurveTo(side * 0.78, 2.7, side * 0.5, 2.695);
+    s.lineTo(side * 0.46, 2.62);
+    s.quadraticCurveTo(side * 0.7, 2.61, side * 0.72, 2.38);
+    s.closePath();
+    const g = new THREE.ExtrudeGeometry(s, {
+      depth: 5.38,
+      bevelEnabled: false,
+    });
+    g.rotateY(Math.PI / 2);
+    g.translate(-2.78, 0, 0);
+    return paintGeometry(g, M82_BRIGHT_STEEL);
+  };
 
   const merged = mergeParts([
     magShell,
     frontHook,
     rearCatchLug,
-    feedLipL,
-    feedLipR,
+    rearSpineRib,
+    buildCurvedFeedLip(-1),
+    buildCurvedFeedLip(1),
   ]);
   return applyM82MagUVs(merged);
 }
@@ -1199,29 +1221,56 @@ export function buildM82MagBodyGeometry(): THREE.BufferGeometry {
  * Positioned cleanly beneath the 2nd (.50 BMG reserve) cartridge at worldY = -2.54!
  */
 export function buildM82MagFollowerGeometry(): THREE.BufferGeometry {
-  const deck = paintGeometry(
-    new THREE.BoxGeometry(5.36, 0.3, 1.32).rotateZ(0.08).translate(0, 0.12, 0),
-    M82_FOLLOWER_STEEL
-  );
-  const stepRidge = paintGeometry(
-    new THREE.CylinderGeometry(0.24, 0.24, 5.24, 18)
-      .rotateZ(Math.PI / 2 + 0.08)
-      .translate(0, 0.34, -0.26),
-    M82_FOLLOWER_STEEL
-  );
+  // Contoured stepped cartridge-cradle cross-section in (Z, Y) for staggered .50 BMG brass cases
+  const cradleSec = new THREE.Shape();
+  cradleSec.moveTo(-0.66, -0.06);
+  cradleSec.lineTo(0.66, -0.06);
+  cradleSec.lineTo(0.66, 0.24);
+  cradleSec.quadraticCurveTo(0.32, 0.08, 0.04, 0.22); // Right lower cartridge trough
+  cradleSec.quadraticCurveTo(-0.22, 0.59, -0.48, 0.575); // Left raised staggered cartridge step
+  cradleSec.lineTo(-0.66, 0.4);
+  cradleSec.closePath();
+  const deck = new THREE.ExtrudeGeometry(cradleSec, {
+    depth: 5.31,
+    bevelEnabled: false,
+  });
+  deck.rotateY(Math.PI / 2);
+  deck.translate(-2.64, 0, 0);
+  deck.rotateZ(0.08);
+  paintGeometry(deck, M82_FOLLOWER_STEEL);
+
   const frontLeg = paintGeometry(
-    new THREE.BoxGeometry(0.26, 1.15, 1.24).translate(2.46, -0.4, 0),
+    new THREE.BoxGeometry(0.24, 1.15, 1.24).translate(2.46, -0.4, 0),
     M82_FOLLOWER_STEEL
   );
   const rearLeg = paintGeometry(
-    new THREE.BoxGeometry(0.26, 1.35, 1.24).translate(-2.46, -0.56, 0),
+    new THREE.BoxGeometry(0.24, 1.35, 1.24).translate(-2.46, -0.56, 0),
+    M82_FOLLOWER_STEEL
+  );
+  const sideRailL = paintGeometry(
+    new THREE.BoxGeometry(4.9, 0.18, 0.1)
+      .rotateZ(0.08)
+      .translate(0, -0.32, -0.57),
+    M82_FOLLOWER_STEEL
+  );
+  const sideRailR = paintGeometry(
+    new THREE.BoxGeometry(4.9, 0.18, 0.1)
+      .rotateZ(0.08)
+      .translate(0, -0.32, 0.57),
     M82_FOLLOWER_STEEL
   );
   const springBoss = paintGeometry(
-    new THREE.BoxGeometry(3.8, 0.22, 0.88).rotateZ(0.08).translate(0, -0.08, 0),
+    new THREE.BoxGeometry(3.8, 0.22, 0.88).rotateZ(0.08).translate(0, -0.14, 0),
     M82_FOLLOWER_STEEL
   );
-  return mergeParts([deck, stepRidge, frontLeg, rearLeg, springBoss]);
+  return mergeParts([
+    deck,
+    frontLeg,
+    rearLeg,
+    sideRailL,
+    sideRailR,
+    springBoss,
+  ]);
 }
 
 /**

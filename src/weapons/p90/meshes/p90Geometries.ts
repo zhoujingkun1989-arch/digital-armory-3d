@@ -12,6 +12,13 @@ import {
   paintGeometry,
 } from '../../../engine/geometry/csgBuilder';
 import {
+  extrudeAlongX,
+  latheAlongX,
+  mergeCutters,
+  surfaceRidges,
+  twistedRiflingLands,
+} from './p90CadDetail';
+import {
   buildP90BoltGeometry,
   buildP90FiringPinGeometry,
   buildP90GuideRodsGeometry,
@@ -420,14 +427,17 @@ export function buildP90UpperReceiverGeometry(): THREE.BufferGeometry {
   paintGeometry(receiverRaw, P90_UPPER_ALLOY);
 
   // Subtract bore shroud tunnel, central Ring Sight window, top iron-sight trough & charging slots
-  const boreTunnel = paintGeometry(
-    new THREE.CylinderGeometry(0.62, 0.62, 13.8, 24)
-      .rotateZ(Math.PI / 2)
-      .translate(8.5, 0.85, 0),
-    P90_INNER_DARK
-  );
-  const opticWindow = paintGeometry(
-    new THREE.BoxGeometry(5.1, 1.66, 2.4).translate(9.65, 4.32, 0),
+  // (5 non-overlapping cuts merged into ONE brush + axial port -> 2 CSG passes instead of 6!)
+  const receiverCutGroupA = mergeCutters(
+    [
+      new THREE.CylinderGeometry(0.62, 0.62, 13.8, 24)
+        .rotateZ(Math.PI / 2)
+        .translate(8.5, 0.85, 0),
+      new THREE.BoxGeometry(5.1, 1.66, 2.4).translate(9.65, 4.32, 0),
+      new THREE.BoxGeometry(5.6, 0.34, 0.56).translate(9.95, 5.62, 0),
+      new THREE.BoxGeometry(6.8, 0.34, 0.45).translate(9.45, 1.48, -0.95),
+      new THREE.BoxGeometry(6.8, 0.34, 0.45).translate(9.45, 1.48, 0.95),
+    ],
     P90_INNER_DARK
   );
   const opticAxialPort = paintGeometry(
@@ -436,26 +446,10 @@ export function buildP90UpperReceiverGeometry(): THREE.BufferGeometry {
       .translate(10.2, 4.32, 0),
     P90_INNER_DARK
   );
-  const backupSightChannel = paintGeometry(
-    new THREE.BoxGeometry(5.6, 0.34, 0.56).translate(9.95, 5.62, 0),
-    P90_INNER_DARK
-  );
-  const chargingSlotL = paintGeometry(
-    new THREE.BoxGeometry(6.8, 0.34, 0.45).translate(9.45, 1.48, -0.95),
-    P90_INNER_DARK
-  );
-  const chargingSlotR = paintGeometry(
-    new THREE.BoxGeometry(6.8, 0.34, 0.45).translate(9.45, 1.48, 0.95),
-    P90_INNER_DARK
-  );
 
   const hollowedReceiver = csgSubtract(receiverRaw, [
-    boreTunnel,
-    opticWindow,
+    receiverCutGroupA,
     opticAxialPort,
-    backupSightChannel,
-    chargingSlotL,
-    chargingSlotR,
   ]);
 
   // Right-flank MIL-STD-1913 Picatinny accessory rail & top backup sight blades
@@ -490,69 +484,140 @@ export function buildP90UpperReceiverGeometry(): THREE.BufferGeometry {
  * (assembledPos: [0, 0.85, 0]) — Fixed barrel w/ 6-groove rifling & bottleneck chamber!
  */
 export function buildP90BarrelGeometry(): THREE.BufferGeometry {
-  const chamberBlock = paintGeometry(
-    new THREE.CylinderGeometry(0.56, 0.58, 4.4, 28)
-      .rotateZ(Math.PI / 2)
-      .translate(-0.35, 0, 0),
+  // Closed hollow CHF 5.7×28mm barrel lathe: heavy breech cylinder -> trunnion journal ->
+  // tapered 10.4" barrel -> M12×1 LH muzzle thread spigot -> 11° recessed target crown dish ->
+  // Ø5.7mm chrome bore -> bottleneck shoulder -> 5.7×28mm chamber (zero CSG needed!).
+  const crownRim = 0.258;
+  const crownBore = 0.172;
+  const crownDepth = (crownRim - crownBore) * Math.tan((11 * Math.PI) / 180);
+  const barrelTube = latheAlongX(
+    [
+      [0.31, -2.55], // Chamfered chamber mouth
+      [0.58, -2.55], // Heavy breech face (matches bolt face at X = -2.55)
+      [0.58, -1.65],
+      [0.56, 1.82], // Heavy chamber block
+      [0.45, 1.86], // Trunnion press-fit journal
+      [0.45, 3.24],
+      [0.42, 3.3], // Forward barrel step
+      [0.4, 9.5],
+      [0.38, 14.68], // Tapered 10.4" CHF contour
+      [0.335, 14.73], // Muzzle shoulder chamfer
+      [0.276, 14.76], // M12×1 LH thread-relief undercut groove
+      [0.276, 14.84],
+      [0.3, 14.87], // Muzzle spigot OD
+      [0.3, 15.34],
+      [0.275, 15.375], // 45° outer crown chamfer
+      [crownRim, 15.375], // Flat target crown rim
+      [crownBore, 15.375 - crownDepth], // Recessed 11° target crown dish
+      [0.16, 15.375 - crownDepth - 0.018], // Bore-mouth break
+      [0.16, -0.24], // Chrome-lined Ø5.7mm bore
+      [0.172, -0.28], // Throat / leade
+      [0.27, -0.6], // 5.7×28mm bottleneck shoulder cone
+      [0.28, -2.51], // Bottleneck chamber wall
+      [0.31, -2.55], // Chamber mouth bevel (closes loop)
+    ],
+    32,
     P90_DARK_STEEL
   );
-  const trunnionCollar = paintGeometry(
-    new THREE.BoxGeometry(1.45, 1.08, 1.08).translate(2.55, 0, 0),
-    P90_CHAMFER_STEEL
-  );
-  const mainTube = paintGeometry(
-    new THREE.CylinderGeometry(0.38, 0.42, 11.55, 28)
-      .rotateZ(Math.PI / 2)
-      .translate(9.05, 0, 0),
-    P90_DARK_STEEL
-  );
-  const muzzleTenon = paintGeometry(
-    new THREE.CylinderGeometry(0.3, 0.3, 0.65, 24)
-      .rotateZ(Math.PI / 2)
-      .translate(15.05, 0, 0),
+
+  // Bright stainless M12×1 LH muzzle spigot sleeve + fine left-hand threads
+  const spigotSleeve = latheAlongX(
+    [
+      [0.298, 14.87],
+      [0.302, 14.87],
+      [0.302, 15.335],
+      [0.298, 15.335],
+      [0.298, 14.87],
+    ],
+    28,
     P90_BRIGHT_STEEL
   );
-  const outerBarrel = csgUnion([
-    chamberBlock,
-    trunnionCollar,
-    mainTube,
-    muzzleTenon,
-  ]);
+  const muzzleThreads = surfaceRidges({
+    count: 14,
+    r: 0.298,
+    height: 0.008,
+    width: 0.028,
+    x0: 14.9,
+    x1: 15.31,
+    twistCm: -1.4,
+    color: P90_CHROME_STEEL,
+    segments: 6,
+  });
 
-  // Subtract 5.7mm chrome-lined bore, 6 rifling grooves & 5.7×28mm bottleneck chamber
-  const cutters: THREE.BufferGeometry[] = [
-    paintGeometry(
-      new THREE.CylinderGeometry(0.16, 0.16, 18.4, 22)
-        .rotateZ(Math.PI / 2)
-        .translate(6.4, 0, 0),
-      P90_BRIGHT_STEEL
-    ),
-    paintGeometry(
-      new THREE.CylinderGeometry(0.27, 0.28, 1.95, 22)
-        .rotateZ(Math.PI / 2)
-        .translate(-1.58, 0, 0),
-      P90_CHROME_STEEL
-    ),
-    paintGeometry(
-      new THREE.CylinderGeometry(0.17, 0.27, 0.36, 20)
-        .rotateZ(Math.PI / 2)
-        .translate(-0.42, 0, 0),
-      P90_CHROME_STEEL
-    ),
-  ];
-  for (let g = 0; g < 6; g++) {
-    const ang = (g / 6) * Math.PI * 2;
-    cutters.push(
-      paintGeometry(
-        new THREE.BoxGeometry(15.6, 0.045, 0.045)
-          .rotateX(ang)
-          .translate(7.4, Math.cos(ang) * 0.165, Math.sin(ang) * 0.165),
-        P90_CHROME_STEEL
-      )
-    );
-  }
+  // Chamfered CNC square barrel-trunnion block (X ∈ [1.825, 3.275], Y/Z ∈ [-0.54, +0.54]) w/ bore hole
+  const trunnionShape = new THREE.Shape();
+  const th = 0.54;
+  const tr = 0.09;
+  trunnionShape.moveTo(-th + tr, -th);
+  trunnionShape.lineTo(th - tr, -th);
+  trunnionShape.quadraticCurveTo(th, -th, th, -th + tr);
+  trunnionShape.lineTo(th, th - tr);
+  trunnionShape.quadraticCurveTo(th, th, th - tr, th);
+  trunnionShape.lineTo(-th + tr, th);
+  trunnionShape.quadraticCurveTo(-th, th, -th, th - tr);
+  trunnionShape.lineTo(-th, -th + tr);
+  trunnionShape.quadraticCurveTo(-th, -th, -th + tr, -th);
+  const boreHole = new THREE.Path();
+  boreHole.absarc(0, 0, 0.44, 0, Math.PI * 2, true);
+  trunnionShape.holes.push(boreHole);
+  const trunnionCollar = extrudeAlongX(
+    trunnionShape,
+    1.825,
+    1.45,
+    P90_CHAMFER_STEEL,
+    0.035,
+    6
+  );
+  const trunnionPin = paintGeometry(
+    new THREE.CylinderGeometry(0.085, 0.085, 1.09, 14)
+      .rotateX(Math.PI / 2)
+      .translate(2.55, -0.36, 0),
+    P90_BRIGHT_STEEL
+  );
 
-  return sanitizeP90Mesh(csgSubtract(outerBarrel, cutters));
+  // Polished breech feed ramp & chrome crown dish ring
+  const feedRamp = paintGeometry(
+    new THREE.BoxGeometry(0.28, 0.16, 0.36)
+      .rotateZ(0.38)
+      .translate(-2.36, -0.33, 0),
+    P90_CHROME_STEEL
+  );
+  const crownDishRing = latheAlongX(
+    [
+      [crownBore, 15.375 - crownDepth],
+      [crownRim - 0.004, 15.374],
+      [crownRim - 0.004, 15.371],
+      [crownBore, 15.372 - crownDepth],
+      [crownBore, 15.375 - crownDepth],
+    ],
+    32,
+    P90_CHROME_STEEL
+  );
+
+  // 6 right-hand 1:9" (22.86 cm) helical 5.7×28mm rifling lands visible inside bore & recessed crown
+  const rifling = twistedRiflingLands({
+    count: 6,
+    boreR: 0.16,
+    depth: 0.018,
+    width: 0.032,
+    x0: -0.2,
+    x1: 15.375 - crownDepth - 0.022,
+    twistCm: 22.86,
+    color: P90_CHROME_STEEL,
+  });
+
+  return sanitizeP90Mesh(
+    mergeParts([
+      barrelTube,
+      spigotSleeve,
+      muzzleThreads,
+      trunnionCollar,
+      trunnionPin,
+      feedRamp,
+      crownDishRing,
+      rifling,
+    ])
+  );
 }
 
 /**
@@ -560,43 +625,77 @@ export function buildP90BarrelGeometry(): THREE.BufferGeometry {
  * (assembledPos: [15.85, 0.85, 0]) — Spans world X ∈ [15.05, 16.80].
  */
 export function buildP90FlashHiderGeometry(): THREE.BufferGeometry {
-  const body = paintGeometry(
-    new THREE.CylinderGeometry(0.43, 0.43, 1.78, 28)
-      .rotateZ(Math.PI / 2)
-      .translate(0.08, 0, 0),
+  // Stepped closed hollow lathe: rear wrench collar -> lock-ring groove -> birdcage cylinder ->
+  // internal stepped expansion chamber (r=0.305 thread socket -> r=0.235 baffle -> r=0.285 exit cone).
+  const body = latheAlongX(
+    [
+      [0.305, -0.81],
+      [0.42, -0.81], // Rear face
+      [0.43, -0.78],
+      [0.43, -0.45], // Rear wrench-flat collar
+      [0.39, -0.42], // Circumferential lock-ring groove
+      [0.39, -0.35],
+      [0.43, -0.32], // Main birdcage compensator body
+      [0.43, 0.94],
+      [0.405, 0.97], // Front bottom lip bevel
+      [0.29, 0.97],
+      [0.24, 0.72], // Tapered muzzle exit cone
+      [0.24, -0.22], // Central expansion chamber
+      [0.305, -0.3], // Internal baffle step
+      [0.305, -0.81], // Rear M12×1 LH thread socket
+    ],
+    28,
     P90_DARK_STEEL
   );
-  const rearWrenchCollar = paintGeometry(
-    new THREE.BoxGeometry(0.36, 0.78, 0.78).translate(-0.62, 0, 0),
-    P90_CHAMFER_STEEL
-  );
-  const rawHider = csgUnion([body, rearWrenchCollar]);
 
-  // 32° downward-slanted front compensator face + central bore + 4 radial flash slots
+  // 32° downward-slanted front muzzle compensator face (leaves bottom lip at X = +0.97)
   const slantCut = paintGeometry(
     new THREE.BoxGeometry(1.2, 1.6, 1.4)
       .rotateZ(-0.56)
       .translate(1.26, -0.25, 0),
     P90_INNER_DARK
   );
-  const centerBore = paintGeometry(
-    new THREE.CylinderGeometry(0.24, 0.24, 2.4, 22)
-      .rotateZ(Math.PI / 2)
-      .translate(0.1, 0, 0),
-    P90_INNER_DARK
-  );
-  const slotHoriz = paintGeometry(
-    new THREE.BoxGeometry(0.76, 0.16, 1.15).translate(0.18, 0.12, 0),
-    P90_INNER_DARK
-  );
-  const slotUpper = paintGeometry(
-    new THREE.BoxGeometry(0.76, 0.65, 0.16).translate(0.18, 0.32, 0),
+
+  // 4 radial angled upper/lateral birdcage flash-compensation ports (closed bottom prone dust shield!)
+  // + 4 rear 15mm wrench flats — all non-overlapping -> ONE merged cutter brush!
+  const allPortsAndFlats = mergeCutters(
+    [
+      new THREE.BoxGeometry(0.74, 0.28, 0.125)
+        .translate(0.18, 0.32, 0)
+        .rotateX(0.62),
+      new THREE.BoxGeometry(0.74, 0.28, 0.125)
+        .translate(0.18, 0.32, 0)
+        .rotateX(-0.62),
+      new THREE.BoxGeometry(0.74, 0.28, 0.125)
+        .translate(0.18, 0.32, 0)
+        .rotateX(1.47),
+      new THREE.BoxGeometry(0.74, 0.28, 0.125)
+        .translate(0.18, 0.32, 0)
+        .rotateX(-1.47),
+      new THREE.BoxGeometry(0.32, 0.14, 0.82).translate(-0.62, 0.45, 0),
+      new THREE.BoxGeometry(0.32, 0.14, 0.82).translate(-0.62, -0.45, 0),
+      new THREE.BoxGeometry(0.32, 0.72, 0.14).translate(-0.62, 0, 0.45),
+      new THREE.BoxGeometry(0.32, 0.72, 0.14).translate(-0.62, 0, -0.45),
+    ],
     P90_INNER_DARK
   );
 
-  return sanitizeP90Mesh(
-    csgSubtract(rawHider, [slantCut, centerBore, slotHoriz, slotUpper])
+  const carved = csgSubtract(body, [slantCut, allPortsAndFlats]);
+
+  // Internal bright-steel expansion baffle ring visible through the birdcage slots
+  const baffleRing = latheAlongX(
+    [
+      [0.235, -0.26],
+      [0.285, -0.26],
+      [0.285, -0.21],
+      [0.235, -0.21],
+      [0.235, -0.26],
+    ],
+    24,
+    P90_BRIGHT_STEEL
   );
+
+  return sanitizeP90Mesh(mergeParts([carved, baffleRing]));
 }
 
 /**
@@ -749,59 +848,42 @@ export function buildP90StockGeometry(): THREE.BufferGeometry {
   paintGeometry(stockRaw, P90_STOCK_BLACK);
 
   // Subtract ergonomic oval thumbhole, enclosed trigger window, internal bolt/pack bays & downward chute!
-  const thumbholeCut = paintGeometry(
-    new THREE.CylinderGeometry(1.42, 1.42, 2.8, 28)
-      .rotateX(Math.PI / 2)
-      .scale(1.02, 1.16, 1)
-      .translate(3.05, -4.35, 0),
+  // Non-overlapping cutters grouped into 3 composite brushes (9 CSG passes -> 3 passes, identical result!)
+  const stockCutGroupA = mergeCutters(
+    [
+      new THREE.CylinderGeometry(1.42, 1.42, 2.8, 28)
+        .rotateX(Math.PI / 2)
+        .scale(1.02, 1.16, 1)
+        .translate(3.05, -4.35, 0),
+      new THREE.BoxGeometry(18.2, 1.98, 1.76).translate(-7.1, 0.78, 0),
+      new THREE.BoxGeometry(1.75, 0.44, 2.6).translate(-13.85, -3.65, 0),
+    ],
     P90_STOCK_DARK
   );
-  const triggerWindowCut = paintGeometry(
-    new THREE.CylinderGeometry(1.55, 1.55, 2.8, 28)
-      .rotateX(Math.PI / 2)
-      .scale(1.06, 1.24, 1)
-      .translate(6.95, -3.72, 0),
+  const stockCutGroupB = mergeCutters(
+    [
+      new THREE.CylinderGeometry(1.55, 1.55, 2.8, 28)
+        .rotateX(Math.PI / 2)
+        .scale(1.06, 1.24, 1)
+        .translate(6.95, -3.72, 0),
+      new THREE.BoxGeometry(6.8, 2.35, 1.56).translate(-12.95, -0.78, 0),
+      new THREE.BoxGeometry(2.95, 0.85, 1.66).translate(-3.45, 1.72, 0),
+      new THREE.BoxGeometry(11.8, 1.15, 1.52).translate(7.8, -0.35, 0),
+    ],
     P90_STOCK_DARK
   );
-  const selectorDialSlot = paintGeometry(
-    new THREE.BoxGeometry(1.35, 1.15, 2.6).translate(5.95, -3.38, 0),
-    P90_STOCK_DARK
-  );
-  const upperBoltChamber = paintGeometry(
-    new THREE.BoxGeometry(18.2, 1.98, 1.76).translate(-7.1, 0.78, 0),
-    P90_STOCK_DARK
-  );
-  const rearHammerBay = paintGeometry(
-    new THREE.BoxGeometry(6.8, 2.35, 1.56).translate(-12.95, -0.78, 0),
-    P90_STOCK_DARK
-  );
-  const helicalThroatPort = paintGeometry(
-    new THREE.BoxGeometry(2.95, 0.85, 1.66).translate(-3.45, 1.72, 0),
-    P90_STOCK_DARK
-  );
-  const downwardEjectionChute = paintGeometry(
-    new THREE.BoxGeometry(2.75, 5.1, 1.08).translate(-3.9, -1.95, 0),
-    P90_STOCK_DARK
-  );
-  const rearSlingSlotCut = paintGeometry(
-    new THREE.BoxGeometry(1.75, 0.44, 2.6).translate(-13.85, -3.65, 0),
-    P90_STOCK_DARK
-  );
-  const foreChannel = paintGeometry(
-    new THREE.BoxGeometry(11.8, 1.15, 1.52).translate(7.8, -0.35, 0),
+  const stockCutGroupC = mergeCutters(
+    [
+      new THREE.BoxGeometry(1.35, 1.15, 2.6).translate(5.95, -3.38, 0),
+      new THREE.BoxGeometry(2.75, 5.1, 1.08).translate(-3.9, -1.95, 0),
+    ],
     P90_STOCK_DARK
   );
 
   const hollowedStock = csgSubtract(stockRaw, [
-    thumbholeCut,
-    triggerWindowCut,
-    selectorDialSlot,
-    upperBoltChamber,
-    rearHammerBay,
-    helicalThroatPort,
-    downwardEjectionChute,
-    rearSlingSlotCut,
-    foreChannel,
+    stockCutGroupA,
+    stockCutGroupB,
+    stockCutGroupC,
   ]);
 
   return sanitizeP90Mesh(applyP90StockUVs(hollowedStock));
@@ -926,11 +1008,33 @@ export function buildP90EjectionCoverGeometry(): THREE.BufferGeometry {
     new THREE.BoxGeometry(2.68, 0.16, 1.18),
     P90_STOCK_BLACK
   );
-  const hingeTube = paintGeometry(
-    new THREE.CylinderGeometry(0.11, 0.11, 2.74, 16)
+  // Divided hinge knuckles + central torsion return spring + twin stamped stiffening ribs + latch lip
+  const hingeKnuckleF = paintGeometry(
+    new THREE.CylinderGeometry(0.11, 0.11, 0.92, 16)
       .rotateZ(Math.PI / 2)
-      .translate(0, 0.08, -0.58),
+      .translate(0.91, 0.08, -0.58),
     P90_DARK_STEEL
+  );
+  const hingeKnuckleR = paintGeometry(
+    new THREE.CylinderGeometry(0.11, 0.11, 0.92, 16)
+      .rotateZ(Math.PI / 2)
+      .translate(-0.91, 0.08, -0.58),
+    P90_DARK_STEEL
+  );
+  const torsionCoil = paintGeometry(
+    createHelicalSpring({
+      axis: 'x',
+      start: -0.38,
+      end: 0.38,
+      centerY: 0.08,
+      centerZ: -0.58,
+      coilRadius: 0.085,
+      wireRadius: 0.016,
+      coils: 7,
+      radialSegments: 6,
+      tubularSegmentsPerCoil: 10,
+    }),
+    P90_SPRING_STEEL
   );
   const hingePin = paintGeometry(
     new THREE.CylinderGeometry(0.055, 0.055, 2.96, 12)
@@ -938,13 +1042,30 @@ export function buildP90EjectionCoverGeometry(): THREE.BufferGeometry {
       .translate(0, 0.08, -0.58),
     P90_BRIGHT_STEEL
   );
-  const stiffeningRib = paintGeometry(
-    new THREE.BoxGeometry(2.2, 0.08, 0.28).translate(0, -0.1, 0.12),
+  const ribA = paintGeometry(
+    new THREE.BoxGeometry(2.34, 0.06, 0.16).translate(0, -0.11, -0.1),
     P90_CHAMFER_STEEL
+  );
+  const ribB = paintGeometry(
+    new THREE.BoxGeometry(2.34, 0.06, 0.16).translate(0, -0.11, 0.28),
+    P90_CHAMFER_STEEL
+  );
+  const brassDeflectorPad = paintGeometry(
+    new THREE.BoxGeometry(2.1, 0.05, 0.62).translate(0, 0.1, 0.06),
+    P90_RUBBER_BUTT
   );
 
   return sanitizeP90Mesh(
-    mergeParts([flapDoor, hingeTube, hingePin, stiffeningRib])
+    mergeParts([
+      flapDoor,
+      hingeKnuckleF,
+      hingeKnuckleR,
+      torsionCoil,
+      hingePin,
+      ribA,
+      ribB,
+      brassDeflectorPad,
+    ])
   );
 }
 

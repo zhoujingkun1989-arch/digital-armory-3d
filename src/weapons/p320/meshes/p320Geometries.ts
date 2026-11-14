@@ -19,6 +19,7 @@ import {
   buildP320TriggerBarGeometry,
   buildP320TriggerShoeGeometry,
 } from './p320ExtraGeometries';
+import { csgSubtractBatched } from './batchedCsg';
 
 /** P320 M17 natural ergonomic grip angle: -18 degrees (swept rearward -X as Y goes down) */
 export const P320_GRIP_ANGLE_RAD = (-18 * Math.PI) / 180;
@@ -304,7 +305,7 @@ export function buildP320SlideGeometry(): THREE.BufferGeometry {
   );
   cutters.push(
     paintGeometry(
-      new THREE.BoxGeometry(3.2, 1.48, 1.45).translate(1.05, 2.86, 0.68),
+      new THREE.BoxGeometry(3.18, 1.48, 1.45).translate(1.05, 2.86, 0.68),
       SLIDE_MILLED
     )
   );
@@ -416,36 +417,59 @@ export function buildP320SlideGeometry(): THREE.BufferGeometry {
     );
   }
 
+  // 7b. Nitron-style top-front nose chamfer: 30° rake from just ahead of the front-sight dovetail
+  //     (X≈11.02 on the top deck) down to the muzzle face (Y≈3.25), completing the SIG bullnose
+  cutters.push(
+    paintGeometry(
+      new THREE.BoxGeometry(1.6, 0.6, 3.0)
+        .rotateZ(-0.52)
+        .translate(11.48, 3.7, 0),
+      SLIDE_COYOTE
+    )
+  );
+  // 7c. Forward-raked ejection-port front lip flare (brass-clearance relief on the right wall)
+  cutters.push(
+    paintGeometry(
+      new THREE.BoxGeometry(0.42, 1.1, 0.5)
+        .rotateY(0.62)
+        .translate(2.66, 2.98, 1.02),
+      SLIDE_MILLED
+    )
+  );
+
   // 8. Authentic 18° Forward-Raked Front (5) & Rear (6) Cocking Serrations
-  for (let i = 0; i < 5; i++) {
-    const fx = 7.72 + i * 0.48;
-    for (const sign of [-1, 1]) {
-      cutters.push(
-        paintGeometry(
-          new THREE.BoxGeometry(0.2, 1.58, 0.19)
-            .rotateZ(-0.31)
-            .translate(fx, 1.78, sign * 1.29),
-          SLIDE_MILLED
-        )
-      );
+  //    (even/odd interleave keeps each run AABB-disjoint so the batched CSG merges them into 2 brushes)
+  for (const parity of [0, 1]) {
+    for (let i = parity; i < 5; i += 2) {
+      const fx = 7.72 + i * 0.48;
+      for (const sign of [-1, 1]) {
+        cutters.push(
+          paintGeometry(
+            new THREE.BoxGeometry(0.2, 1.58, 0.19)
+              .rotateZ(-0.31)
+              .translate(fx, 1.78, sign * 1.29),
+            SLIDE_MILLED
+          )
+        );
+      }
     }
-  }
-  for (let i = 0; i < 6; i++) {
-    const rx = -6.94 + i * 0.48;
-    for (const sign of [-1, 1]) {
-      cutters.push(
-        paintGeometry(
-          new THREE.BoxGeometry(0.2, 1.88, 0.19)
-            .rotateZ(-0.31)
-            .translate(rx, 1.92, sign * 1.29),
-          SLIDE_MILLED
-        )
-      );
+    for (let i = parity; i < 6; i += 2) {
+      const rx = -6.94 + i * 0.48;
+      for (const sign of [-1, 1]) {
+        cutters.push(
+          paintGeometry(
+            new THREE.BoxGeometry(0.2, 1.88, 0.19)
+              .rotateZ(-0.31)
+              .translate(rx, 1.92, sign * 1.29),
+            SLIDE_MILLED
+          )
+        );
+      }
     }
   }
 
   return applyP320SlideAtlasUVs(
-    sanitizeCsgGeometry(csgSubtract(rawSlide, cutters))
+    sanitizeCsgGeometry(csgSubtractBatched(rawSlide, cutters))
   );
 }
 
@@ -684,8 +708,10 @@ export function buildP320BarrelGeometry(): THREE.BufferGeometry {
     NITRIDE_BARREL
   );
 
+  // Outer muzzle chamfer collar narrowing from r=0.65 to r=0.585 at the muzzle face (X=11.80)
+  // (CylinderGeometry top maps to -X after rotateZ(+90°))
   const crownCollar = paintGeometry(
-    new THREE.CylinderGeometry(0.585, 0.65, 0.16, 32)
+    new THREE.CylinderGeometry(0.65, 0.585, 0.16, 32)
       .rotateZ(Math.PI / 2)
       .translate(11.72, 2.68, 0),
     POLISHED
@@ -766,8 +792,9 @@ export function buildP320BarrelGeometry(): THREE.BufferGeometry {
       .translate(0.42, 2.68, 0),
     BORE_DARK
   );
+  // Recessed target crown: conical dish opening from the bore at X=11.69 to r≈0.52 at the muzzle face
   const crownDish = paintGeometry(
-    new THREE.CylinderGeometry(0.56, 0.42, 0.16, 28)
+    new THREE.CylinderGeometry(0.455, 0.56, 0.16, 32)
       .rotateZ(Math.PI / 2)
       .translate(11.77, 2.68, 0),
     POLISHED
@@ -787,7 +814,7 @@ export function buildP320BarrelGeometry(): THREE.BufferGeometry {
     NITRIDE_BARREL
   );
 
-  const hollowedBarrel = csgSubtract(solidBarrel, [
+  const hollowedBarrel = csgSubtractBatched(solidBarrel, [
     bore,
     chamberPocket,
     crownDish,
@@ -796,36 +823,25 @@ export function buildP320BarrelGeometry(): THREE.BufferGeometry {
     guideRodSeat,
   ]);
 
-  // 6 Right-Hand Helical Rifling Lands inside 4.7" 9x19mm bore (twist ~1:10")
-  const riflingLands: THREE.BufferGeometry[] = [];
-  const xStart = 1.45;
-  const xEnd = 11.62;
-  const totalTwist = ((xEnd - xStart) / 25.4) * Math.PI * 2;
-  for (let k = 0; k < 6; k++) {
-    const basePhi = (k * Math.PI * 2) / 6;
-    const pts: THREE.Vector3[] = [];
-    for (let s = 0; s <= 12; s++) {
-      const t = s / 12;
-      const x = xStart + (xEnd - xStart) * t;
-      const phi = basePhi + totalTwist * t;
-      pts.push(
-        new THREE.Vector3(
-          x,
-          2.68 + Math.cos(phi) * 0.442,
-          Math.sin(phi) * 0.442
-        )
-      );
-    }
-    const landCurve = new THREE.CatmullRomCurve3(pts);
-    riflingLands.push(
-      paintGeometry(
-        new THREE.TubeGeometry(landCurve, 16, 0.024, 6, false),
-        '#586476'
-      )
-    );
-  }
+  // Conventional 6-land / 6-groove right-hand rifling (1:10") as a continuous twisted bore surface:
+  // raised flat lands (r=0.418) between radiused grooves (r=0.452), with annular end faces so the
+  // land/groove pattern reads crisply through the recessed crown and at the chamber throat.
+  const rifledBore = paintGeometry(
+    buildRifledBoreSurface({
+      xStart: 1.45,
+      xEnd: 11.62,
+      centerY: 2.68,
+      boreRadius: 0.455,
+      landRadius: 0.418,
+      grooveRadius: 0.452,
+      grooves: 6,
+      landFraction: 0.42,
+      twistLength: 25.4,
+    }),
+    '#586476'
+  );
 
-  return mergeParts([hollowedBarrel, ...riflingLands]);
+  return mergeParts([hollowedBarrel, rifledBore]);
 }
 
 /**
@@ -1383,7 +1399,7 @@ export function buildP320GripModuleGeometry(): THREE.BufferGeometry {
 
   return applyP320GripAtlasUVs(
     sanitizeCsgGeometry(
-      csgSubtract(mergeParts([mainGrip, triggerGuard]), cutters)
+      csgSubtractBatched(mergeParts([mainGrip, triggerGuard]), cutters)
     )
   );
 }
@@ -1649,3 +1665,81 @@ export const P320_GEOMETRY_BUILDERS: Record<
   p320_mag_spring: buildP320MagSpringGeometry,
   p320_mag_baseplate: buildP320MagBaseplateGeometry,
 };
+
+/**
+ * Builds an inward-facing twisted land-and-groove bore surface (smooth-stepped square-wave radius profile)
+ * with annular end faces bridging to the reamed bore radius. Purely additive (no CSG).
+ */
+export function buildRifledBoreSurface(opts: {
+  xStart: number;
+  xEnd: number;
+  centerY: number;
+  boreRadius: number;
+  landRadius: number;
+  grooveRadius: number;
+  grooves: number;
+  landFraction: number;
+  twistLength: number;
+  radialSegments?: number;
+  axialSegments?: number;
+}): THREE.BufferGeometry {
+  const {
+    xStart,
+    xEnd,
+    centerY,
+    boreRadius,
+    landRadius,
+    grooveRadius,
+    grooves,
+    landFraction,
+    twistLength,
+    radialSegments = 72,
+    axialSegments = 22,
+  } = opts;
+  const positions: number[] = [];
+  const indices: number[] = [];
+  const ringStride = radialSegments + 1;
+  const twistTotal = ((xEnd - xStart) / twistLength) * Math.PI * 2;
+  const profileR = (t: number) => {
+    const f = (((t / (Math.PI * 2)) * grooves) % 1 + 1) % 1; // 0..1 within one land+groove pitch
+    const d = Math.abs(f - 0.5) * 2; // 0 at pitch centre (land), 1 at edges (groove)
+    const edge = THREE.MathUtils.smoothstep(d, landFraction - 0.12, landFraction + 0.12);
+    return landRadius + (grooveRadius - landRadius) * edge;
+  };
+  const pushRing = (x: number, phase: number, radiusFn: (t: number) => number) => {
+    for (let j = 0; j <= radialSegments; j++) {
+      const theta = (j / radialSegments) * Math.PI * 2;
+      const r = radiusFn(theta - phase);
+      positions.push(x, centerY + Math.cos(theta) * r, Math.sin(theta) * r);
+    }
+  };
+  for (let i = 0; i <= axialSegments; i++) {
+    const u = i / axialSegments;
+    pushRing(xStart + (xEnd - xStart) * u, u * twistTotal, profileR);
+  }
+  for (let i = 0; i < axialSegments; i++) {
+    for (let j = 0; j < radialSegments; j++) {
+      const a = i * ringStride + j;
+      const b = a + ringStride;
+      indices.push(a, b, a + 1, b, b + 1, a + 1);
+    }
+  }
+  const addCap = (x: number, phase: number, facingPlusX: boolean) => {
+    const inner = positions.length / 3;
+    pushRing(x, phase, profileR);
+    const outer = positions.length / 3;
+    pushRing(x, phase, () => boreRadius);
+    for (let j = 0; j < radialSegments; j++) {
+      const a = inner + j;
+      const b = outer + j;
+      if (facingPlusX) indices.push(a, b, a + 1, b, b + 1, a + 1);
+      else indices.push(a, a + 1, b, b, a + 1, b + 1);
+    }
+  };
+  addCap(xStart, 0, false);
+  addCap(xEnd, twistTotal, true);
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geo.setIndex(indices);
+  return geo;
+}

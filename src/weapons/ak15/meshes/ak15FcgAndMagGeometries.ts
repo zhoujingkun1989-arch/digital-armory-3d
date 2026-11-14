@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import {
   csgSubtract,
   createHelicalSpring,
@@ -426,13 +427,28 @@ export function buildAkMagBodyGeometry(): THREE.BufferGeometry {
   winCutL.translate(0, 0, -0.68);
   paintGeometry(winCutL, AK_POLYMER_ACCENT);
 
-  // Hollow top feed throat so follower & cartridges remain visible through open steel feed lips!
+  // Hollow top feed throat + AK-12/15 rear-spine 30-rd full-capacity witness hole!
   const throatCut = paintGeometry(
     new THREE.BoxGeometry(1.92, 1.85, 0.86).translate(-0.05, 0.15, 0),
     AK_POLYMER_ACCENT
   );
+  const witAng = 0.78;
+  const rearWitnessHole = paintGeometry(
+    new THREE.CylinderGeometry(0.085, 0.085, 0.48, 12)
+      .rotateZ(Math.PI / 2 + witAng)
+      .translate(
+        ARC_CX - Math.cos(witAng) * 12.92,
+        ARC_CY - Math.sin(witAng) * 12.92,
+        0
+      ),
+    AK_INNER_DARK
+  );
 
-  const sculpted = csgSubtract(rawBody, [throatCut, winCutR, winCutL]);
+  const sculpted = csgSubtract(rawBody, [
+    throatCut,
+    mergeGeometries([winCutR, winCutL], false),
+    rearWitnessHole,
+  ]);
 
   // Molded tactile grip ribs along front & rear spines (avoiding the center window!)
   const extras: THREE.BufferGeometry[] = [sculpted];
@@ -479,20 +495,9 @@ export function buildAkMagBodyGeometry(): THREE.BufferGeometry {
         .translate(-1.34, -0.64, 0),
       AK_BRIGHT_STEEL
     ),
-    // Left steel-reinforced feed lip (curved inward at top while leaving center presentation channel open!)
-    paintGeometry(
-      new THREE.BoxGeometry(2.12, 0.28, 0.22)
-        .rotateX(0.26)
-        .translate(-0.05, 0.56, -0.41),
-      AK_BRIGHT_STEEL
-    ),
-    // Right steel-reinforced feed lip
-    paintGeometry(
-      new THREE.BoxGeometry(2.12, 0.28, 0.22)
-        .rotateX(-0.26)
-        .translate(-0.05, 0.56, 0.41),
-      AK_BRIGHT_STEEL
-    ),
+    // Left & right stamped C-curl steel-reinforced feed lips (inward presentation curl + forward release flare)
+    paintGeometry(buildAkRolledFeedLip(-1), AK_BRIGHT_STEEL),
+    paintGeometry(buildAkRolledFeedLip(1), AK_BRIGHT_STEEL),
     // Front steel cartridge bullet-tip guide collar
     paintGeometry(
       new THREE.BoxGeometry(0.24, 0.32, 0.96).translate(0.95, 0.44, 0),
@@ -501,6 +506,46 @@ export function buildAkMagBodyGeometry(): THREE.BufferGeometry {
   );
 
   return applyAkMagUVs(mergeParts(extras));
+}
+
+/**
+ * Stamped C-curl steel feed lip insert for the AK-15 magazine, flaring open on the forward
+ * third so 7.62×39mm tapered cartridges release nose-up onto the trunnion bullet guide.
+ */
+function buildAkRolledFeedLip(side: -1 | 1): THREE.BufferGeometry {
+  const s = new THREE.Shape();
+  const zw = (z: number) => -z * side;
+  s.moveTo(zw(0.52), 0.38);
+  s.lineTo(zw(0.52), 0.62);
+  s.quadraticCurveTo(zw(0.52), 0.72, zw(0.41), 0.72);
+  s.lineTo(zw(0.27), 0.69);
+  s.quadraticCurveTo(zw(0.23), 0.66, zw(0.26), 0.62);
+  s.lineTo(zw(0.39), 0.6);
+  s.quadraticCurveTo(zw(0.43), 0.59, zw(0.43), 0.52);
+  s.lineTo(zw(0.43), 0.38);
+  s.closePath();
+  const lip = new THREE.ExtrudeGeometry(s, {
+    depth: 2.12,
+    bevelEnabled: true,
+    bevelThickness: 0.012,
+    bevelSize: 0.008,
+    bevelSegments: 1,
+    curveSegments: 5,
+  });
+  lip.rotateY(Math.PI / 2);
+  lip.translate(-1.11, 0, 0);
+  const p = lip.attributes.position;
+  for (let i = 0; i < p.count; i++) {
+    const x = p.getX(i);
+    const y = p.getY(i);
+    if (x > 0.32 && y > 0.56) {
+      const t = Math.min(1, (x - 0.32) / 0.68);
+      p.setY(i, y - t * 0.07 * ((y - 0.56) / 0.16));
+    }
+  }
+  p.needsUpdate = true;
+  lip.computeVertexNormals();
+  return lip;
 }
 
 /**
@@ -585,12 +630,14 @@ export function buildAkMagFloorplateGeometry(): THREE.BufferGeometry {
   for (let g = -2; g <= 2; g++) {
     grooves.push(
       paintGeometry(
-        new THREE.BoxGeometry(0.14, 0.12, 1.5).translate(g * 0.44, -0.18, 0),
+        new THREE.BoxGeometry(0.14, 0.12, 1.5)
+          .translate(g * 0.44, -0.18, 0)
+          .toNonIndexed(),
         AK_INNER_DARK
       )
     );
   }
-  const bumper = csgSubtract(plateRaw, grooves);
+  const bumper = csgSubtract(plateRaw, [mergeGeometries(grooves, false)]);
   bumper.rotateZ(0.88);
 
   // Slide-on steel retaining lips & central takedown locking button stud

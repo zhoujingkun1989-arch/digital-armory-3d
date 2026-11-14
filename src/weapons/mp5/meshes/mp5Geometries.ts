@@ -11,6 +11,14 @@ import {
   paintGeometry,
 } from '../../../engine/geometry/csgBuilder';
 import {
+  arcLug,
+  latheAlongX,
+  mergeCutters,
+  surfaceRidges,
+  tigWeldSeam,
+  twistedRiflingLands,
+} from './mp5CadDetail';
+import {
   buildMp5BoltCarrierGeometry,
   buildMp5BoltHeadGeometry,
   buildMp5ChargingHandleGeometry,
@@ -145,16 +153,16 @@ export function buildMp5UpperReceiverGeometry(): THREE.BufferGeometry {
 
   // Cutters: hollow bolt/carrier tunnels, right ejection port, magwell throat, lower FCG opening,
   // twin MP5A3 stock-rail guide channels, and 6 PBR-aligned vertical magwell reinforcement flutes!
-  const lowerTunnel = paintGeometry(
-    new THREE.CylinderGeometry(0.62, 0.62, 11.4, 24)
-      .rotateZ(Math.PI / 2)
-      .translate(0, 1.0, 0),
-    HK_INNER_DARK
-  );
-  const upperTunnel = paintGeometry(
-    new THREE.CylinderGeometry(0.41, 0.41, 11.4, 20)
-      .rotateZ(Math.PI / 2)
-      .translate(0, 2.08, 0),
+  // Non-overlapping cutters are merged into composite brushes to cut CSG passes from 14 -> 6.
+  const dualTunnels = mergeCutters(
+    [
+      new THREE.CylinderGeometry(0.62, 0.62, 11.4, 24)
+        .rotateZ(Math.PI / 2)
+        .translate(0, 1.0, 0),
+      new THREE.CylinderGeometry(0.41, 0.41, 11.4, 20)
+        .rotateZ(Math.PI / 2)
+        .translate(0, 2.08, 0),
+    ],
     HK_INNER_DARK
   );
   const webSlot = paintGeometry(
@@ -174,48 +182,101 @@ export function buildMp5UpperReceiverGeometry(): THREE.BufferGeometry {
     HK_INNER_DARK
   );
 
-  // Stamped longitudinal MP5A3 retractable stock guide channels along Z = ±0.80, Y = 1.00!
-  const stockFluteL = paintGeometry(
+  // Stamped longitudinal MP5A3 retractable stock guide channels + 6 magwell flutes (all non-overlapping)
+  const stampedFluteCutters: THREE.BufferGeometry[] = [
     new THREE.BoxGeometry(7.2, 0.3, 0.18).translate(-1.9, 1.0, -0.8),
-    HK_DARK_STEEL
-  );
-  const stockFluteR = paintGeometry(
     new THREE.BoxGeometry(7.2, 0.3, 0.18).translate(-1.9, 1.0, 0.8),
-    HK_DARK_STEEL
-  );
-
-  // 3 vertical stamped reinforcement flutes on each side of magwell aligned 1:1 with mp5_receiver PBR (.685/.735/.785)!
-  const magFlutes: THREE.BufferGeometry[] = [];
+  ];
   for (const fx of [2.17, 2.75, 3.33]) {
     for (const side of [-1, 1]) {
-      magFlutes.push(
-        paintGeometry(
-          new THREE.BoxGeometry(0.22, 1.38, 0.12).translate(
-            fx,
-            -0.82,
-            side * 0.72
-          ),
-          HK_DARK_STEEL
+      stampedFluteCutters.push(
+        new THREE.BoxGeometry(0.22, 1.38, 0.12).translate(
+          fx,
+          -0.82,
+          side * 0.72
         )
       );
     }
   }
+  const externalFlutes = mergeCutters(stampedFluteCutters, HK_DARK_STEEL);
 
   const shell = csgSubtract(hullUnion, [
-    lowerTunnel,
-    upperTunnel,
+    dualTunnels,
     webSlot,
     fcgBottomSlot,
     ejectionPort,
     magwellCavity,
-    stockFluteL,
-    stockFluteR,
-    ...magFlutes,
+    externalFlutes,
   ]);
 
   const details: THREE.BufferGeometry[] = [shell];
 
-  // Iconic HK 4-point STANAG Optic Claw-Mount Locking Bosses w/ undercut lateral clamping ledges & recoil stop!
+  // Stamped figure-8 waist stiffening crimp ribs, folded lower FCG lip flanges & magwell collar ribs
+  for (const side of [-1, 1] as const) {
+    details.push(
+      paintGeometry(
+        new THREE.BoxGeometry(10.5, 0.075, 0.08).translate(
+          0,
+          1.82,
+          side * 0.585
+        ),
+        HK_STEEL_HIGHLIGHT
+      ),
+      paintGeometry(
+        new THREE.BoxGeometry(6.1, 0.07, 0.06).translate(
+          -1.95,
+          0.17,
+          side * 0.74
+        ),
+        HK_STEEL_HIGHLIGHT
+      ),
+      paintGeometry(
+        new THREE.BoxGeometry(2.58, 0.08, 0.06).translate(
+          2.775,
+          -0.08,
+          side * 0.725
+        ),
+        HK_STEEL_HIGHLIGHT
+      ),
+      // Magwell-to-receiver horizontal TIG fillet weld ripple seam
+      tigWeldSeam(
+        [1.52, 0.15, side * 0.72],
+        [4.02, 0.15, side * 0.72],
+        0.028,
+        14,
+        HK_STEEL_HIGHLIGHT
+      )
+    );
+    // Pressed-trunnion plug-weld rosettes on receiver flanks (seated inside ±0.81 envelope)
+    for (const wx of [3.48, 4.42]) {
+      details.push(
+        paintGeometry(
+          new THREE.TorusGeometry(0.085, 0.022, 8, 16)
+            .rotateX(Math.PI / 2)
+            .translate(wx, 1.38, side * 0.72),
+          HK_STEEL_HIGHLIGHT
+        ),
+        paintGeometry(
+          new THREE.CylinderGeometry(0.062, 0.062, 0.03, 14)
+            .rotateX(Math.PI / 2)
+            .translate(wx, 1.38, side * 0.715),
+          HK_INNER_DARK
+        )
+      );
+    }
+  }
+  // Stamped rear magwell vertical fold seam bead + front cocking-tube circumferential TIG weld collar
+  details.push(
+    tigWeldSeam([1.44, -1.58, 0], [1.44, 0.08, 0], 0.03, 11, HK_STEEL_HIGHLIGHT),
+    paintGeometry(
+      new THREE.TorusGeometry(0.46, 0.032, 8, 24)
+        .rotateY(Math.PI / 2)
+        .translate(5.41, 2.08, 0),
+      HK_STEEL_HIGHLIGHT
+    )
+  );
+
+  // Iconic HK 4-point STANAG Optic Claw-Mount Locking Bosses w/ undercut clamping ledges & TIG base welds!
   for (const cx of [-2.85, -1.85, -0.15, 0.85]) {
     const bossUpper = paintGeometry(
       new THREE.BoxGeometry(0.48, 0.12, 0.98).translate(cx, 2.55, 0),
@@ -225,7 +286,12 @@ export function buildMp5UpperReceiverGeometry(): THREE.BufferGeometry {
       new THREE.BoxGeometry(0.44, 0.12, 0.78).translate(cx, 2.45, 0),
       HK_DARK_STEEL
     );
-    details.push(bossUpper, bossNeck);
+    details.push(
+      bossUpper,
+      bossNeck,
+      tigWeldSeam([cx - 0.2, 2.41, -0.39], [cx + 0.2, 2.41, -0.39], 0.022, 5, HK_STEEL_HIGHLIGHT),
+      tigWeldSeam([cx - 0.2, 2.41, 0.39], [cx + 0.2, 2.41, 0.39], 0.022, 5, HK_STEEL_HIGHLIGHT)
+    );
   }
   // Welded top optical recoil-stop cross-block on receiver spine
   details.push(
@@ -250,10 +316,11 @@ export function buildMp5UpperReceiverGeometry(): THREE.BufferGeometry {
         .rotateY(-0.28)
         .translate(1.42, 1.06, 0.78),
       HK_DARK_STEEL
-    )
+    ),
+    tigWeldSeam([1.36, 0.65, 0.75], [1.36, 1.47, 0.75], 0.024, 7, HK_STEEL_HIGHLIGHT)
   );
 
-  // HK Ambidextrous Paddle Magazine Release + Hinge Bracket + Right Serrated Push-Button
+  // HK Ambidextrous Paddle Magazine Release + Hinge Bracket + Right Concentric-Serrated Push-Button
   details.push(
     paintGeometry(
       new THREE.BoxGeometry(0.38, 0.34, 0.76).translate(1.36, -1.48, 0),
@@ -272,12 +339,17 @@ export function buildMp5UpperReceiverGeometry(): THREE.BufferGeometry {
       HK_BRIGHT_STEEL
     ),
     paintGeometry(
-      new THREE.CylinderGeometry(0.16, 0.16, 0.24, 16)
+      new THREE.CylinderGeometry(0.16, 0.16, 0.24, 20)
         .rotateX(Math.PI / 2)
         .translate(1.58, -1.3, 0.72),
       HK_BRIGHT_STEEL
     ),
-    // Front lower grip-housing shelf lug + front forearm tab + rear takedown pin tabs
+    paintGeometry(
+      new THREE.TorusGeometry(0.105, 0.015, 6, 18)
+        .translate(1.58, -1.3, 0.84),
+      HK_DARK_STEEL
+    ),
+    // Front lower grip-housing shelf lug + front forearm tab + rear takedown pin tabs + pin bushings
     paintGeometry(
       new THREE.BoxGeometry(0.46, 0.38, 0.92).translate(1.38, -0.1, 0),
       HK_DARK_STEEL
@@ -287,8 +359,32 @@ export function buildMp5UpperReceiverGeometry(): THREE.BufferGeometry {
       HK_DARK_STEEL
     ),
     paintGeometry(
+      new THREE.CylinderGeometry(0.135, 0.135, 0.92, 16)
+        .rotateX(Math.PI / 2)
+        .translate(5.18, 0.18, 0),
+      HK_STEEL_HIGHLIGHT
+    ),
+    paintGeometry(
+      new THREE.CylinderGeometry(0.095, 0.095, 0.95, 14)
+        .rotateX(Math.PI / 2)
+        .translate(5.18, 0.18, 0),
+      HK_INNER_DARK
+    ),
+    paintGeometry(
       new THREE.BoxGeometry(0.58, 0.48, 0.96).translate(-5.18, 0.08, 0),
       HK_DARK_STEEL
+    ),
+    paintGeometry(
+      new THREE.CylinderGeometry(0.145, 0.145, 1.0, 16)
+        .rotateX(Math.PI / 2)
+        .translate(-5.18, 0.08, 0),
+      HK_STEEL_HIGHLIGHT
+    ),
+    paintGeometry(
+      new THREE.CylinderGeometry(0.1, 0.1, 1.03, 14)
+        .rotateX(Math.PI / 2)
+        .translate(-5.18, 0.08, 0),
+      HK_INNER_DARK
     )
   );
 
@@ -374,16 +470,12 @@ export function buildMp5BarrelGeometry(): THREE.BufferGeometry {
     HK_INNER_DARK
   );
   // Twin roller locking recesses w/ 45° forward camming abutments at X = 2.15, Z = ±0.40!
-  const rollerRecessR = paintGeometry(
-    new THREE.CylinderGeometry(0.225, 0.225, 0.74, 20).translate(2.15, 0, 0.41),
-    HK_INNER_DARK
-  );
-  const rollerRecessL = paintGeometry(
-    new THREE.CylinderGeometry(0.225, 0.225, 0.74, 20).translate(
-      2.15,
-      0,
-      -0.41
-    ),
+  // (non-overlapping recesses merged into ONE brush -> single CSG pass)
+  const rollerRecesses = mergeCutters(
+    [
+      new THREE.CylinderGeometry(0.225, 0.225, 0.74, 20).translate(2.15, 0, 0.41),
+      new THREE.CylinderGeometry(0.225, 0.225, 0.74, 20).translate(2.15, 0, -0.41),
+    ],
     HK_INNER_DARK
   );
   const rearBoltEntry = paintGeometry(
@@ -392,117 +484,119 @@ export function buildMp5BarrelGeometry(): THREE.BufferGeometry {
   );
   const trunnion = csgSubtract(trunnionOuter, [
     trunnionBore,
-    rollerRecessR,
-    rollerRecessL,
+    rollerRecesses,
     rearBoltEntry,
   ]);
 
-  // 2. 8.85" Cold-Hammer-Forged Navy Barrel Lathe Profile w/ Recessed Target Muzzle Crown!
-  const pts: THREE.Vector2[] = [
-    new THREE.Vector2(0.22, 2.65),
-    new THREE.Vector2(0.49, 2.65), // Breech face at X = 2.65
-    new THREE.Vector2(0.49, 5.4), // Heavy chamber section
-    new THREE.Vector2(0.41, 5.85), // Taper under Tropical forearm
-    new THREE.Vector2(0.4, 14.7),
-    new THREE.Vector2(0.45, 14.8), // Front sight tower journal (X in [14.8, 16.08])
-    new THREE.Vector2(0.45, 16.08),
-    new THREE.Vector2(0.39, 16.15), // Neck before 3-lug mount
-    new THREE.Vector2(0.39, 17.2),
-    new THREE.Vector2(0.425, 17.25), // 3-lug QD hub journal (X in [17.25, 18.20])
-    new THREE.Vector2(0.425, 18.18),
-    new THREE.Vector2(0.38, 18.22), // Thread relief / suppressor O-ring groove
-    new THREE.Vector2(0.38, 18.28),
-    new THREE.Vector2(0.445, 18.32), // Knurled Navy 1/2×28 thread protector collar!
-    new THREE.Vector2(0.445, 19.44),
-    new THREE.Vector2(0.39, 19.52), // Outer muzzle rim
-    new THREE.Vector2(0.2, 19.41), // Recessed 11° target muzzle crown dish!
-  ];
-  const barrelOuter = new THREE.LatheGeometry(pts, 28);
-  barrelOuter.rotateZ(-Math.PI / 2);
-  paintGeometry(barrelOuter, HK_DARK_STEEL);
+  // 2. 8.85" Cold-Hammer-Forged Navy Barrel as a CLOSED hollow lathe (outer contour -> 11° recessed
+  // target crown -> Ø9mm bore -> forcing cone -> chamber), so the bore wall is real geometry and no
+  // bore cutter can leave stubs behind (old open profile leaked a 2.3mm bore tube past the muzzle).
+  const crownRim = 0.35;
+  const crownBore = 0.215;
+  const crownDepth = (crownRim - crownBore) * Math.tan((11 * Math.PI) / 180);
+  const barrelOuter = latheAlongX(
+    [
+      [0.28, 2.65], // Chamber mouth
+      [0.46, 2.65], // Breech face
+      [0.49, 2.68], // Breech edge break
+      [0.49, 5.4], // Heavy chamber section
+      [0.41, 5.85], // Taper under Tropical forearm
+      [0.4, 14.7],
+      [0.45, 14.8], // Front sight tower journal (X in [14.8, 16.08])
+      [0.45, 16.08],
+      [0.39, 16.15], // Neck before 3-lug mount
+      [0.39, 17.2],
+      [0.425, 17.25], // 3-lug QD hub journal (X in [17.25, 18.20])
+      [0.425, 18.18],
+      [0.38, 18.22], // Thread relief / suppressor O-ring groove
+      [0.38, 18.28],
+      [0.445, 18.32], // Knurled Navy 1/2×28 thread protector collar
+      [0.445, 19.44],
+      [0.405, 19.52], // 45° outer muzzle chamfer
+      [crownRim, 19.52], // Flat crown rim
+      [crownBore, 19.52 - crownDepth], // Recessed 11° target crown dish
+      [0.195, 19.52 - crownDepth - 0.02], // Bore-edge break
+      [0.195, 4.75], // Ø9mm rifled bore
+      [0.27, 4.55], // Forcing cone / leade
+      [0.28, 2.65], // Chamber wall (closes the profile)
+    ],
+    32,
+    HK_DARK_STEEL
+  );
 
-  // Hollow 9mm bore + chamber + right extractor cut + 12 HK Chamber Gas-Fluting Grooves!
-  const barrelCutters: THREE.BufferGeometry[] = [
-    paintGeometry(
-      new THREE.CylinderGeometry(0.195, 0.195, 17.3, 20)
-        .rotateZ(Math.PI / 2)
-        .translate(11.1, 0, 0),
-      HK_INNER_DARK
-    ),
-    paintGeometry(
-      new THREE.CylinderGeometry(0.27, 0.28, 2.1, 20)
-        .rotateZ(Math.PI / 2)
-        .translate(3.65, 0, 0),
-      HK_INNER_DARK
-    ),
-    paintGeometry(
-      new THREE.BoxGeometry(0.26, 0.24, 0.28).translate(2.72, 0.06, 0.36),
-      HK_INNER_DARK
-    ),
+  // Right extractor cut + 12 HK chamber gas-fluting grooves (all non-overlapping -> one merged brush)
+  const fluteCutters: THREE.BufferGeometry[] = [
+    new THREE.BoxGeometry(0.26, 0.24, 0.28).translate(2.72, 0.06, 0.36),
   ];
-
-  // 12 longitudinal HK chamber flutes for gas-assisted case flotation
   for (let fIdx = 0; fIdx < 12; fIdx++) {
-    const fAng = (fIdx * Math.PI * 2) / 12;
-    barrelCutters.push(
-      paintGeometry(
-        new THREE.BoxGeometry(1.55, 0.03, 0.03)
-          .translate(3.75, 0.28, 0)
-          .rotateX(fAng),
-        HK_INNER_DARK
-      )
+    const fAng = (fIdx * Math.PI * 2) / 12 + Math.PI / 12;
+    fluteCutters.push(
+      new THREE.BoxGeometry(1.55, 0.03, 0.03)
+        .translate(3.75, 0.28, 0)
+        .rotateX(fAng)
     );
   }
-  const barrelCarved = csgSubtract(barrelOuter, barrelCutters);
+  const barrelCarved = csgSubtract(barrelOuter, [
+    mergeCutters(fluteCutters, HK_INNER_DARK),
+  ]);
 
   const subParts: THREE.BufferGeometry[] = [trunnion, barrelCarved];
 
-  // 3. Iconic HK Navy 3-Lug Quick-Detach Suppressor Mount Lugs (120° apart at X = 17.68) + Rear Stop Ring!
+  // 3. Iconic HK Navy 3-Lug Quick-Detach Suppressor Mount: rear stop ring + 3 chamfered arc lugs
+  // (120° apart, 40° wide) with suppressor-latch notch ramps on their trailing faces.
   subParts.push(
-    paintGeometry(
-      new THREE.CylinderGeometry(0.46, 0.46, 0.16, 24)
-        .rotateZ(Math.PI / 2)
-        .translate(17.32, 0, 0),
+    latheAlongX(
+      [
+        [0.42, 17.24],
+        [0.445, 17.24],
+        [0.46, 17.26],
+        [0.46, 17.38],
+        [0.445, 17.4],
+        [0.42, 17.4],
+        [0.42, 17.24],
+      ],
+      32,
       HK_BRIGHT_STEEL
     )
   );
   for (let k = 0; k < 3; k++) {
     const ang = (k * Math.PI * 2) / 3 + Math.PI / 6;
     subParts.push(
-      paintGeometry(
-        new THREE.BoxGeometry(0.56, 0.17, 0.23)
-          .translate(17.72, 0.455, 0)
-          .rotateX(ang),
-        HK_BRIGHT_STEEL
-      )
+      arcLug(0.415, 0.54, ang, (40 * Math.PI) / 180, 17.46, 0.52, HK_BRIGHT_STEEL, 0.035),
+      arcLug(0.415, 0.5, ang + (24 * Math.PI) / 180, (8 * Math.PI) / 180, 17.98, 0.14, HK_BRIGHT_STEEL, 0.02)
     );
   }
 
-  // 4. Fine Axial Knurling Ridges around the Navy 1/2×28 Thread Protector (X in [18.36, 19.40])!
-  for (let n = 0; n < 16; n++) {
-    const knurlAng = (n * Math.PI * 2) / 16;
+  // 4. Diamond knurl on the Navy 1/2×28 thread protector (X in [18.36, 19.40]): two opposite helices
+  for (const dir of [1, -1]) {
     subParts.push(
-      paintGeometry(
-        new THREE.BoxGeometry(1.02, 0.025, 0.038)
-          .translate(18.88, 0.448, 0)
-          .rotateX(knurlAng),
-        HK_STEEL_HIGHLIGHT
-      )
+      surfaceRidges({
+        count: 18,
+        r: 0.44,
+        height: 0.018,
+        width: 0.034,
+        x0: 18.38,
+        x1: 19.38,
+        twistCm: dir * 6.0,
+        color: HK_STEEL_HIGHLIGHT,
+        segments: 6,
+      })
     );
   }
 
-  // 5. 6 Right-Hand 9×19mm Rifling Lands inside the bore & visible at the recessed muzzle crown!
-  for (let r = 0; r < 6; r++) {
-    const rAng = (r * Math.PI * 2) / 6;
-    subParts.push(
-      paintGeometry(
-        new THREE.BoxGeometry(14.5, 0.026, 0.038)
-          .translate(12.1, 0.186, 0)
-          .rotateX(rAng),
-        HK_CHROME_STEEL
-      )
-    );
-  }
+  // 5. 6 right-hand 1:10" (25.4 cm) helical rifling lands on the bore wall, visible at the crown
+  subParts.push(
+    twistedRiflingLands({
+      count: 6,
+      boreR: 0.195,
+      depth: 0.022,
+      width: 0.045,
+      x0: 4.8,
+      x1: 19.52 - crownDepth - 0.025,
+      twistCm: 25.4,
+      color: HK_CHROME_STEEL,
+    })
+  );
 
   // Polished feed ramp & heavy barrel press cross-pin inside trunnion
   subParts.push(
@@ -770,22 +864,23 @@ export function buildMp5ForearmGeometry(): THREE.BufferGeometry {
     HK_POLYMER_ACCENT
   );
 
-  const cutters: THREE.BufferGeometry[] = [barrelChannel, frontTaper];
+  const grooveCutters: THREE.BufferGeometry[] = [];
   for (let g = -3; g <= 3; g++) {
     const gx = g * 1.05;
-    cutters.push(
-      paintGeometry(
-        new THREE.BoxGeometry(0.18, 0.95, 2.35)
-          .rotateZ(0.18)
-          .translate(gx, -0.18, 0),
-        HK_POLYMER_ACCENT
-      )
+    grooveCutters.push(
+      new THREE.BoxGeometry(0.18, 0.95, 2.35)
+        .rotateZ(0.18)
+        .translate(gx, -0.18, 0)
     );
   }
 
-  const body = csgSubtract(rawForearm, cutters);
+  const body = csgSubtract(rawForearm, [
+    barrelChannel,
+    frontTaper,
+    mergeCutters(grooveCutters, HK_POLYMER_ACCENT),
+  ]);
 
-  // Molded bottom mold-seam spine rib + internal aluminum heatshield + captive HK push-pin w/ detent balls!
+  // Molded bottom mold-seam spine rib + corrugated internal aluminum heatshields + captive HK push-pin w/ detent balls!
   const bottomSpine = paintGeometry(
     new THREE.BoxGeometry(7.2, 0.08, 0.24).translate(-0.6, -0.99, 0),
     HK_POLYMER_ACCENT
@@ -798,6 +893,21 @@ export function buildMp5ForearmGeometry(): THREE.BufferGeometry {
     new THREE.BoxGeometry(8.2, 0.68, 0.04).translate(-0.2, 0.12, 0.68),
     '#94a3b8'
   );
+  const shieldRibs: THREE.BufferGeometry[] = [];
+  for (let i = -3; i <= 3; i++) {
+    for (const side of [-1, 1]) {
+      shieldRibs.push(
+        paintGeometry(
+          new THREE.BoxGeometry(0.14, 0.56, 0.035).translate(
+            -0.2 + i * 1.1,
+            0.12,
+            side * 0.655
+          ),
+          HK_BRIGHT_STEEL
+        )
+      );
+    }
+  }
   const frontPushPin = paintGeometry(
     new THREE.CylinderGeometry(0.135, 0.135, 1.54, 16)
       .rotateX(Math.PI / 2)
@@ -820,6 +930,7 @@ export function buildMp5ForearmGeometry(): THREE.BufferGeometry {
     bottomSpine,
     shieldL,
     shieldR,
+    ...shieldRibs,
     frontPushPin,
     pinHeadCap,
     pinDetentBall,
@@ -924,18 +1035,17 @@ export function buildMp5ButtstockGeometry(): THREE.BufferGeometry {
   buttpadRaw.translate(0, 0, -0.62);
   paintGeometry(buttpadRaw, HK_RUBBER);
 
-  // Horizontal anti-slip shoulder serration grooves along concave rear face
+  // Horizontal anti-slip shoulder serration grooves along concave rear face (8 non-overlapping -> 1 brush)
   const padGrooves: THREE.BufferGeometry[] = [];
   for (let g = 0; g < 8; g++) {
     const gy = -2.55 + g * 0.46;
     padGrooves.push(
-      paintGeometry(
-        new THREE.BoxGeometry(0.32, 0.13, 1.38).translate(-0.88, gy, 0),
-        HK_POLYMER_ACCENT
-      )
+      new THREE.BoxGeometry(0.32, 0.13, 1.38).translate(-0.88, gy, 0)
     );
   }
-  const buttpad = csgSubtract(buttpadRaw, padGrooves);
+  const buttpad = csgSubtract(buttpadRaw, [
+    mergeCutters(padGrooves, HK_POLYMER_ACCENT),
+  ]);
 
   // Cast metal A3 fork yoke clamping the twin steel rails + cross roll-pins + rear sling eyelet
   const forkYoke = paintGeometry(

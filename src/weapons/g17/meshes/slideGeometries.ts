@@ -6,6 +6,7 @@ import {
   mergeParts,
   paintGeometry,
 } from '../../../engine/geometry/csgBuilder';
+import { csgSubtractBatched } from './batchedCsg';
 import { applyBarrelAtlasUVs, applySlideAtlasUVs } from './uvAtlasHelper';
 
 /**
@@ -258,7 +259,7 @@ export function buildSlideGeometry(): THREE.BufferGeometry {
   );
   cutters.push(
     paintGeometry(
-      new THREE.BoxGeometry(3.12, 1.5, 1.5).translate(1.03, 2.8, 0.68),
+      new THREE.BoxGeometry(3.1, 1.5, 1.5).translate(1.03, 2.8, 0.68),
       SLIDE_MILLED
     )
   );
@@ -285,17 +286,36 @@ export function buildSlideGeometry(): THREE.BufferGeometry {
     )
   );
 
-  // 4. Stepped External Extractor & Gen3 LCI pocket on right wall behind ejection port
+  // 4. Stepped External Extractor & Gen3 LCI pocket on right wall behind ejection port:
+  //    inner deep body/trunnion mortise + narrower outer stepped LCI window + 15° rear plunger ramp
   cutters.push(
     paintGeometry(
-      new THREE.BoxGeometry(1.3, 0.56, 0.68).translate(-1.08, 2.55, 1.08),
+      new THREE.BoxGeometry(1.3, 0.52, 0.46).translate(-1.08, 2.55, 0.97),
       SLIDE_MILLED
     )
   );
   cutters.push(
     paintGeometry(
-      new THREE.BoxGeometry(0.76, 0.34, 0.28).translate(-0.95, 2.55, 1.24),
+      new THREE.BoxGeometry(1.1, 0.44, 0.28).translate(-0.98, 2.55, 1.25),
       SLIDE_MILLED
+    )
+  );
+  cutters.push(
+    paintGeometry(
+      new THREE.CylinderGeometry(0.17, 0.17, 0.6, 16).translate(
+        -1.22,
+        2.55,
+        1.06
+      ),
+      SLIDE_MILLED
+    )
+  );
+  cutters.push(
+    paintGeometry(
+      new THREE.BoxGeometry(0.42, 0.4, 0.34)
+        .rotateY(0.26)
+        .translate(-1.66, 2.55, 0.96),
+      SLIDE_CHAMFER
     )
   );
 
@@ -379,25 +399,61 @@ export function buildSlideGeometry(): THREE.BufferGeometry {
     );
   }
 
-  // 8. 7 Deep Crisp Rear Cocking Serrations on both sides (X: -6.88 to -4.66)
-  for (let i = 0; i < 7; i++) {
-    const sx = -6.88 + i * 0.37;
-    for (const sign of [-1, 1]) {
-      cutters.push(
-        paintGeometry(
-          new THREE.BoxGeometry(0.18, 1.98, 0.18).translate(
-            sx,
-            2.08,
-            sign * 1.27
-          ),
-          SLIDE_MILLED
-        )
-      );
+  // 7b. Bullnose top-front nose chamfer (27° rake from ahead of the front sight down to the muzzle face)
+  cutters.push(
+    paintGeometry(
+      new THREE.BoxGeometry(1.6, 0.6, 3.0)
+        .rotateZ(-0.47)
+        .translate(11.07, 3.63, 0),
+      SLIDE_CHAMFER
+    )
+  );
+
+  // 7c. Forward-raked ejection-port front lip flare (brass-clearance relief on the right wall)
+  cutters.push(
+    paintGeometry(
+      new THREE.BoxGeometry(0.42, 1.1, 0.5)
+        .rotateY(0.62)
+        .translate(2.62, 2.92, 1.02),
+      SLIDE_CHAMFER
+    )
+  );
+
+  // 8. 7 Deep Crisp Rear Cocking Serrations on both sides (X: -6.88 to -4.66), raked 6° rearward
+  //    to follow the slide's rear slope, plus 6 Gen5-style forward cocking serrations (X: 7.55 to 9.25)
+  // Interleaved (even, then odd) ordering keeps each raked-serration run AABB-disjoint so the batched
+  // CSG packs all 26 serration cuts into just two merged cutter brushes.
+  for (const parity of [0, 1]) {
+    for (let i = parity; i < 7; i += 2) {
+      const sx = -6.88 + i * 0.37;
+      for (const sign of [-1, 1]) {
+        cutters.push(
+          paintGeometry(
+            new THREE.BoxGeometry(0.18, 1.98, 0.18)
+              .rotateZ(0.105)
+              .translate(sx, 2.08, sign * 1.27),
+            SLIDE_MILLED
+          )
+        );
+      }
+    }
+    for (let i = parity; i < 6; i += 2) {
+      const sx = 7.55 + i * 0.34;
+      for (const sign of [-1, 1]) {
+        cutters.push(
+          paintGeometry(
+            new THREE.BoxGeometry(0.16, 1.62, 0.16)
+              .rotateZ(-0.105)
+              .translate(sx, 2.16, sign * 1.285),
+            SLIDE_MILLED
+          )
+        );
+      }
     }
   }
 
   return applySlideAtlasUVs(
-    sanitizeCsgGeometry(csgSubtract(rawSlide, cutters))
+    sanitizeCsgGeometry(csgSubtractBatched(rawSlide, cutters))
   );
 }
 
@@ -509,8 +565,10 @@ export function buildBarrelGeometry(): THREE.BufferGeometry {
     BARREL_STEEL
   );
 
+  // Outer muzzle chamfer collar: r=0.65 blending from the tube down to r=0.585 at the muzzle face (X=11.32)
+  // (CylinderGeometry top maps to -X after rotateZ(+90°))
   const muzzleCrownBevel = paintGeometry(
-    new THREE.CylinderGeometry(0.585, 0.65, 0.14, 32)
+    new THREE.CylinderGeometry(0.65, 0.585, 0.14, 32)
       .rotateZ(Math.PI / 2)
       .translate(11.25, 2.55, 0),
     POLISHED_STEEL
@@ -592,10 +650,11 @@ export function buildBarrelGeometry(): THREE.BufferGeometry {
     )
   );
 
-  // 2. Recessed 11° Muzzle Target Crown Dish at X = +11.24..11.34
+  // 2. Recessed Muzzle Target Crown Dish: conical counter-sink opening from the 0.462 bore at X=11.18 out to
+  //    r≈0.543 at the muzzle face (X=11.32), leaving a thin flat crown land protecting the rifling exit
   cutters.push(
     paintGeometry(
-      new THREE.CylinderGeometry(0.555, 0.46, 0.16, 32)
+      new THREE.CylinderGeometry(0.46, 0.555, 0.16, 32)
         .rotateZ(Math.PI / 2)
         .translate(11.26, 2.55, 0),
       POLISHED_STEEL
@@ -634,45 +693,26 @@ export function buildBarrelGeometry(): THREE.BufferGeometry {
     )
   );
 
-  const carvedBarrel = csgSubtract(solidBarrel, cutters);
+  const carvedBarrel = csgSubtractBatched(solidBarrel, cutters);
 
-  // 5. Glock Cold-Hammer-Forged Right-Hand Hexagonal Polygonal Rifling (6 helical rounded lands, 1:250mm twist)
-  const riflingLands: THREE.BufferGeometry[] = [];
-  const xStart = 2.12;
-  const xEnd = 11.12;
-  const twistTotal = ((xEnd - xStart) / 25.0) * Math.PI * 2;
-  const landRadius = 0.456;
-  const steps = 16;
+  // 5. Glock Cold-Hammer-Forged Right-Hand Hexagonal Polygonal Rifling: a continuous twisted rounded-hexagon
+  //    bore surface (6 flat lands / 6 shallow radiused grooves, 1:250 mm RH twist) seated inside the 9 mm bore,
+  //    with annular end faces so the hex land edges read crisply at the recessed crown and the chamber throat.
+  const polygonalBore = paintGeometry(
+    buildPolygonalBoreSurface({
+      xStart: 2.12,
+      xEnd: 11.12,
+      centerY: 2.55,
+      boreRadius: 0.462,
+      meanRadius: 0.447,
+      amplitude: 0.013,
+      lobes: 6,
+      twistLength: 25.0,
+    }),
+    BORE_DARK
+  );
 
-  for (let k = 0; k < 6; k++) {
-    const basePhi = (k * Math.PI) / 3;
-    const pts: THREE.Vector3[] = [];
-    for (let s = 0; s <= steps; s++) {
-      const u = s / steps;
-      const x = xStart + (xEnd - xStart) * u;
-      const phi = basePhi + u * twistTotal;
-      pts.push(
-        new THREE.Vector3(
-          x,
-          2.55 + Math.cos(phi) * landRadius,
-          Math.sin(phi) * landRadius
-        )
-      );
-    }
-    const landTube = paintGeometry(
-      new THREE.TubeGeometry(
-        new THREE.CatmullRomCurve3(pts),
-        steps,
-        0.028,
-        6,
-        false
-      ),
-      BORE_DARK
-    );
-    riflingLands.push(landTube);
-  }
-
-  return applyBarrelAtlasUVs(mergeParts([carvedBarrel, ...riflingLands]));
+  return applyBarrelAtlasUVs(mergeParts([carvedBarrel, polygonalBore]));
 }
 
 /** U-05: Polymer Recoil Guide Rod with Stainless Washer Collar & Front Hex Socket */
@@ -930,56 +970,75 @@ export function buildFiringPinSafetyGeometry(): THREE.BufferGeometry {
   return mergeParts([bottomHead, dome, waist, topCap, safetySpring]);
 }
 
-/** U-11: Gen3 15° External Extractor with Tactile/Visual Loaded Chamber Indicator (LCI) Step */
+/** U-11: Gen3 15° MIM External Extractor with Contoured Rim Claw, Cylindrical Pivot Trunnions & Tactile LCI Step */
 export function buildExtractorGeometry(): THREE.BufferGeometry {
-  const mainBody = paintGeometry(
-    new THREE.BoxGeometry(1.22, 0.46, 0.3),
+  // Top-down (X, Z) contoured Gen3 extractor beam w/ undercut front hook claw & 15° angled rear plunger heel
+  // Note: ExtrudeGeometry extrudes in +Z_local; after rotateX(PI/2), shape Y maps to +Z_world and depth maps to -Y_world
+  const extShape = new THREE.Shape();
+  extShape.moveTo(-0.56, 0.14);
+  extShape.lineTo(0.58, 0.14);
+  extShape.quadraticCurveTo(0.63, 0.14, 0.63, 0.04);
+  // Front angled extractor nose & sharp undercut 9mm case-rim hook claw at Z = -0.39
+  extShape.lineTo(0.63, -0.32);
+  extShape.quadraticCurveTo(0.63, -0.39, 0.54, -0.39);
+  extShape.lineTo(0.45, -0.39);
+  // Recessed rim-relief throat behind hook claw
+  extShape.lineTo(0.43, -0.2);
+  extShape.quadraticCurveTo(0.28, -0.16, 0.08, -0.15);
+  extShape.lineTo(-0.44, -0.15);
+  // 15° inward-cantilevered rear depressor plunger bearing heel (reaches X = -0.81, Z = -0.24)
+  extShape.lineTo(-0.76, -0.24);
+  extShape.quadraticCurveTo(-0.81, -0.22, -0.8, -0.12);
+  extShape.lineTo(-0.72, 0.06);
+  extShape.quadraticCurveTo(-0.66, 0.14, -0.56, 0.14);
+  extShape.closePath();
+
+  const bodyRaw = new THREE.ExtrudeGeometry(extShape, {
+    depth: 0.44,
+    bevelEnabled: true,
+    bevelThickness: 0.01,
+    bevelSize: 0.01,
+    bevelSegments: 2,
+    curveSegments: 10,
+  });
+  bodyRaw.rotateX(Math.PI / 2);
+  bodyRaw.translate(0, 0.22, 0);
+  paintGeometry(bodyRaw, '#454f5e');
+
+  // Bottom feeding cam bevel under hook claw + spherical rear plunger cup seat
+  const clawBottomBevel = paintGeometry(
+    new THREE.BoxGeometry(0.28, 0.18, 0.28)
+      .rotateX(-0.55)
+      .translate(0.54, -0.24, -0.32),
+    '#586476'
+  );
+  const plungerCup = paintGeometry(
+    new THREE.SphereGeometry(0.14, 14, 10).translate(-0.81, 0, -0.09),
+    '#dce4ee'
+  );
+  const body = csgSubtract(bodyRaw, [clawBottomBevel, plungerCup]);
+
+  // Cylindrical top & bottom slide pivot retention trunnions (Y in [-0.28, +0.28])
+  const pivotTrunnion = paintGeometry(
+    new THREE.CylinderGeometry(0.155, 0.155, 0.56, 20).translate(
+      -0.14,
+      0,
+      -0.01
+    ),
     '#454f5e'
   );
 
-  // Undercut front rim-engagement hook claw with bottom feeding bevel
-  const rawClaw = paintGeometry(
-    new THREE.BoxGeometry(0.26, 0.46, 0.4).translate(0.51, 0, -0.2),
-    '#586476'
-  );
-  const clawGroove = paintGeometry(
-    new THREE.BoxGeometry(0.14, 0.5, 0.16).translate(0.39, 0, -0.34),
-    '#262c36'
-  );
-  const claw = csgSubtract(rawClaw, [clawGroove]);
-
-  // Authentic Gen3 tactile & visual Loaded Chamber Indicator (LCI) raised step on outer +Z flank
+  // Authentic Gen3 tactile & visual Loaded Chamber Indicator (LCI) stepped pad on outer +Z flank
   const lciBase = paintGeometry(
-    new THREE.BoxGeometry(0.74, 0.3, 0.09).translate(0.08, 0, 0.18),
+    new THREE.BoxGeometry(0.74, 0.3, 0.08).translate(0.08, 0, 0.18),
     '#3b4452'
   );
   const lciTactileStep = paintGeometry(
-    new THREE.BoxGeometry(0.46, 0.22, 0.055).translate(0.18, 0, 0.235),
+    new THREE.BoxGeometry(0.46, 0.22, 0.052).translate(0.18, 0, 0.236),
     '#586476'
   );
 
-  // Top & bottom slide pivot retention trunnion pads
-  const trunnionPads = paintGeometry(
-    new THREE.BoxGeometry(0.34, 0.56, 0.18).translate(-0.14, 0, -0.02),
-    '#454f5e'
-  );
-
-  // Angled 15° rear depressor plunger bearing heel
-  const rearHeel = paintGeometry(
-    new THREE.BoxGeometry(0.34, 0.36, 0.28)
-      .rotateY(0.26)
-      .translate(-0.62, 0, -0.12),
-    '#dce4ee'
-  );
-
-  return mergeParts([
-    mainBody,
-    claw,
-    lciBase,
-    lciTactileStep,
-    trunnionPads,
-    rearHeel,
-  ]);
+  return mergeParts([body, pivotTrunnion, lciBase, lciTactileStep]);
 }
 
 /** U-12: Stainless Extractor Depressor Plunger, Coil Spring & Stepped Black Polymer SLB Bearing */
@@ -1040,4 +1099,86 @@ export function buildExtractorPlungerGeometry(): THREE.BufferGeometry {
     bearingBody,
     bearingTail,
   ]);
+}
+
+/**
+ * Builds a twisted polygonal-rifling bore surface (inward-facing) with r(θ) = mean − amp·cos(lobes·(θ − φ(x))),
+ * where φ advances linearly with X for a right-hand twist, plus annular end faces bridging out to the
+ * smooth reamed bore radius. Purely additive (no CSG) so it costs well under 1 ms.
+ */
+export function buildPolygonalBoreSurface(opts: {
+  xStart: number;
+  xEnd: number;
+  centerY: number;
+  boreRadius: number;
+  meanRadius: number;
+  amplitude: number;
+  lobes: number;
+  twistLength: number;
+  radialSegments?: number;
+  axialSegments?: number;
+}): THREE.BufferGeometry {
+  const {
+    xStart,
+    xEnd,
+    centerY,
+    boreRadius,
+    meanRadius,
+    amplitude,
+    lobes,
+    twistLength,
+    radialSegments = 48,
+    axialSegments = 20,
+  } = opts;
+  const positions: number[] = [];
+  const indices: number[] = [];
+  const ringStride = radialSegments + 1;
+  const twistTotal = ((xEnd - xStart) / twistLength) * Math.PI * 2;
+
+  const pushRing = (x: number, phase: number, radiusFn: (t: number) => number) => {
+    for (let j = 0; j <= radialSegments; j++) {
+      const theta = (j / radialSegments) * Math.PI * 2;
+      const r = radiusFn(theta - phase);
+      positions.push(x, centerY + Math.cos(theta) * r, Math.sin(theta) * r);
+    }
+  };
+  const polyR = (t: number) => meanRadius - amplitude * Math.cos(lobes * t);
+
+  for (let i = 0; i <= axialSegments; i++) {
+    const u = i / axialSegments;
+    pushRing(xStart + (xEnd - xStart) * u, u * twistTotal, polyR);
+  }
+  for (let i = 0; i < axialSegments; i++) {
+    for (let j = 0; j < radialSegments; j++) {
+      const a = i * ringStride + j;
+      const b = a + ringStride;
+      const c = a + 1;
+      const d = b + 1;
+      // Winding gives inward-facing normals (viewed from inside the bore)
+      indices.push(a, b, c, b, d, c);
+    }
+  }
+
+  // Annular end faces: rear (-X facing) and muzzle (+X facing)
+  const addCap = (x: number, phase: number, facingPlusX: boolean) => {
+    const inner = positions.length / 3;
+    pushRing(x, phase, polyR);
+    const outer = positions.length / 3;
+    pushRing(x, phase, () => boreRadius);
+    for (let j = 0; j < radialSegments; j++) {
+      const a = inner + j;
+      const b = outer + j;
+      const c = inner + j + 1;
+      const d = outer + j + 1;
+      if (facingPlusX) indices.push(a, b, c, b, d, c);
+      else indices.push(a, c, b, b, c, d);
+    }
+  };
+  addCap(xStart, 0, false);
+  addCap(xEnd, twistTotal, true);
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geo.setIndex(indices);
+  return geo;
 }

@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import {
   createHelicalSpring,
   csgSubtract,
@@ -223,7 +224,7 @@ export function buildM4a1LowerReceiverGeometry(): THREE.BufferGeometry {
  */
 export function buildM4a1BarrelGeometry(): THREE.BufferGeometry {
   const pts: THREE.Vector2[] = [
-    new THREE.Vector2(0.24, 3.55),
+    new THREE.Vector2(0, 3.55), // Closed (watertight) revolve so the bore cutter leaves no CSG stubs
     new THREE.Vector2(0.56, 3.55), // Steel M4 barrel extension breech
     new THREE.Vector2(0.56, 4.8),
     new THREE.Vector2(0.615, 4.82), // Extension locating flange
@@ -242,6 +243,7 @@ export function buildM4a1BarrelGeometry(): THREE.BufferGeometry {
     new THREE.Vector2(0.295, 21.87), // 1/2"-28 UNEF muzzle thread tenon
     new THREE.Vector2(0.295, 22.38), // Outer muzzle rim
     new THREE.Vector2(0.168, 22.29), // Recessed 11° USGI target muzzle crown!
+    new THREE.Vector2(0, 22.29),
   ];
 
   const lathe = new THREE.LatheGeometry(pts, 32);
@@ -273,18 +275,21 @@ export function buildM4a1BarrelGeometry(): THREE.BufferGeometry {
       .translate(3.75, -0.26, 0.13),
     M4_STAINLESS
   );
-  const hollowed = csgSubtract(lathe, [bore, chamber, rampL, rampR]);
+  // Carbine-length .070" gas port drilled vertically through the top of the FSB journal
+  const gasPort = paintGeometry(
+    new THREE.CylinderGeometry(0.045, 0.045, 0.5, 12).translate(15.3, 0.25, 0),
+    M4_ANODIZED_DARK
+  );
+  const hollowed = csgSubtract(lathe, [bore, chamber, rampL, rampR, gasPort]);
 
   const parts: THREE.BufferGeometry[] = [hollowed];
 
-  // 6 Right-Hand 5.56mm (.223") Chrome-Lined Rifling Lands inside Bore (X ∈ [6.0, 22.26])
+  // 6 Right-Hand 1:7" (17.78 cm) helical chrome-lined 5.56mm rifling lands (X ∈ [6.0, 22.26])
   for (let r = 0; r < 6; r++) {
     const ang = (r * Math.PI * 2) / 6 + 0.26;
     parts.push(
       paintGeometry(
-        new THREE.BoxGeometry(16.26, 0.036, 0.044)
-          .rotateX(-ang)
-          .translate(14.13, Math.sin(ang) * 0.156, Math.cos(ang) * 0.156),
+        buildM4HelicalLand(6.0, 22.26, 0.156, 0.036, 0.044, ang, 17.78),
         M4_STAINLESS
       )
     );
@@ -347,7 +352,7 @@ export function buildM4a1BarrelGeometry(): THREE.BufferGeometry {
  */
 export function buildM4a1FlashHiderGeometry(): THREE.BufferGeometry {
   const pts: THREE.Vector2[] = [
-    new THREE.Vector2(0.22, -1.05),
+    new THREE.Vector2(0, -1.05),
     new THREE.Vector2(0.42, -1.05),
     new THREE.Vector2(0.45, -0.98),
     new THREE.Vector2(0.45, -0.52),
@@ -358,6 +363,7 @@ export function buildM4a1FlashHiderGeometry(): THREE.BufferGeometry {
     new THREE.Vector2(0.42, 1.15), // Front chamfered muzzle face
     new THREE.Vector2(0.235, 1.15), // Closed A2 front ring aperture
     new THREE.Vector2(0.215, 1.04), // Recessed 11° muzzle crown dish
+    new THREE.Vector2(0, 1.04),
   ];
   const body = new THREE.LatheGeometry(pts, 30);
   body.rotateZ(-Math.PI / 2);
@@ -391,16 +397,19 @@ export function buildM4a1FlashHiderGeometry(): THREE.BufferGeometry {
 
   // 5 Top/Side Birdcage Flash-Suppression Ports strictly across upper hemisphere (-72°, -36°, 0°, +36°, +72° from +Y)
   // Bottom 180° (-Y) remains completely solid closed to suppress dust kick-up when firing prone!
+  const portGroup: THREE.BufferGeometry[] = [];
   for (const ang of [-1.256, -0.628, 0, 0.628, 1.256]) {
-    cutters.push(
+    portGroup.push(
       paintGeometry(
         new THREE.BoxGeometry(0.98, 0.34, 0.135)
           .translate(0.38, 0.37, 0)
-          .rotateX(ang),
+          .rotateX(ang)
+          .toNonIndexed(),
         M4_ANODIZED_DARK
       )
     );
   }
+  cutters.push(mergeGeometries(portGroup, false));
 
   return sanitizeM4Geometry(csgSubtract(body, cutters));
 }
@@ -1221,52 +1230,153 @@ export function buildM4a1MagBodyGeometry(): THREE.BufferGeometry {
   rawMag.translate(0, 0, -0.52);
   paintGeometry(rawMag, M4_STANAG_GREY);
 
-  // Hollow top feed throat, rear bolt-catch follower clearance notch & left STANAG mag-catch window!
+  // Hollow top feed throat, batched magwell notches & STANAG 20/30-rd rear-spine witness holes!
   const throatHole = paintGeometry(
     new THREE.BoxGeometry(2.38, 1.95, 0.84).translate(0, 0.35, 0),
     M4_ANODIZED_DARK
   );
-  const boltCatchCutout = paintGeometry(
-    new THREE.BoxGeometry(0.45, 0.36, 0.56).translate(-1.26, 0.98, 0),
-    M4_ANODIZED_DARK
-  );
-  const frontBulletNotch = paintGeometry(
-    new THREE.CylinderGeometry(0.28, 0.28, 0.35, 14).translate(1.34, 1.02, 0),
-    M4_ANODIZED_DARK
-  );
-  const catchSlot = paintGeometry(
-    new THREE.BoxGeometry(0.58, 0.28, 0.26).translate(-0.55, 0.25, -0.52),
-    M4_ANODIZED_DARK
-  );
+  const magNotches: THREE.BufferGeometry[] = [
+    paintGeometry(
+      new THREE.BoxGeometry(0.45, 0.36, 0.56)
+        .translate(-1.26, 0.98, 0)
+        .toNonIndexed(),
+      M4_ANODIZED_DARK
+    ),
+    paintGeometry(
+      new THREE.CylinderGeometry(0.28, 0.28, 0.35, 14)
+        .translate(1.34, 1.02, 0)
+        .toNonIndexed(),
+      M4_ANODIZED_DARK
+    ),
+    paintGeometry(
+      new THREE.BoxGeometry(0.58, 0.28, 0.26)
+        .translate(-0.55, 0.25, -0.52)
+        .toNonIndexed(),
+      M4_ANODIZED_DARK
+    ),
+  ];
+  for (const wAng of [0.14, 0.3]) {
+    magNotches.push(
+      paintGeometry(
+        new THREE.CylinderGeometry(0.08, 0.08, 0.42, 12)
+          .rotateZ(Math.PI / 2 + wAng)
+          .translate(
+            STANAG_ARC_CX - Math.cos(wAng) * (STANAG_R_OUTER - 0.1),
+            STANAG_ARC_CY - Math.sin(wAng) * (STANAG_R_OUTER - 0.1),
+            0
+          )
+          .toNonIndexed(),
+        M4_ANODIZED_DARK
+      )
+    );
+  }
   const magShell = csgSubtract(rawMag, [
     throatHole,
-    boltCatchCutout,
-    frontBulletNotch,
-    catchSlot,
+    mergeGeometries(magNotches, false),
   ]);
 
-  // Inward-curved stamped USGI STANAG feed lips retaining staggered 5.56mm rounds
-  const feedLipL = paintGeometry(
-    new THREE.BoxGeometry(2.05, 0.15, 0.22)
-      .rotateX(0.24)
-      .translate(-0.14, 1.11, -0.39),
-    M4_STANAG_GREY
-  );
-  const feedLipR = paintGeometry(
-    new THREE.BoxGeometry(2.05, 0.15, 0.22)
-      .rotateX(-0.24)
-      .translate(-0.14, 1.11, 0.39),
-    M4_STANAG_GREY
-  );
+  // Inward-rolled stamped USGI STANAG feed lips (true C-curl cross-section, tapering open
+  // toward the front cartridge-release window) retaining staggered 5.56mm rounds
+  const feedLipL = paintGeometry(buildStanagRolledFeedLip(-1), M4_STANAG_GREY);
+  const feedLipR = paintGeometry(buildStanagRolledFeedLip(1), M4_STANAG_GREY);
   // Rear over-insertion stop tab on spine
   const rearStopTab = paintGeometry(
     new THREE.BoxGeometry(0.08, 0.24, 0.44).translate(-1.39, -1.08, 0),
     M4_STANAG_GREY
   );
 
+  // Twin die-stamped longitudinal stiffening ribs per flank following the 20.6° arc
+  // (kept strictly below the magwell skirt so the tower still slides into the lower)
+  const stampedRibs: THREE.BufferGeometry[] = [];
+  for (const side of [-1, 1] as const) {
+    for (const rMid of [STANAG_R_INNER + 0.78, STANAG_R_OUTER - 0.78]) {
+      stampedRibs.push(
+        paintGeometry(buildStanagArcRib(rMid, side), M4_STANAG_GREY)
+      );
+    }
+  }
+
   return applyM4a1MagUVs(
-    mergeParts([magShell, feedLipL, feedLipR, rearStopTab])
+    mergeParts([magShell, feedLipL, feedLipR, rearStopTab, ...stampedRibs])
   );
+}
+
+/**
+ * Rolled C-curl STANAG feed lip: cross-section drawn in (Z, Y) and extruded along X,
+ * with the forward 30% chamfered down so the round releases nose-up into the chamber.
+ */
+function buildStanagRolledFeedLip(side: -1 | 1): THREE.BufferGeometry {
+  const s = new THREE.Shape();
+  // shape.x = -Z_world after rotateY(+π/2); mirror per side
+  const zw = (z: number) => -z * side;
+  s.moveTo(zw(0.5), 0.94);
+  s.lineTo(zw(0.5), 1.1);
+  s.quadraticCurveTo(zw(0.5), 1.2, zw(0.4), 1.2);
+  s.lineTo(zw(0.27), 1.18);
+  s.quadraticCurveTo(zw(0.22), 1.16, zw(0.25), 1.12);
+  s.lineTo(zw(0.36), 1.1);
+  s.quadraticCurveTo(zw(0.41), 1.09, zw(0.41), 1.03);
+  s.lineTo(zw(0.41), 0.94);
+  s.closePath();
+  const lip = new THREE.ExtrudeGeometry(s, {
+    depth: 2.05,
+    bevelEnabled: true,
+    bevelThickness: 0.012,
+    bevelSize: 0.008,
+    bevelSegments: 1,
+    curveSegments: 5,
+  });
+  lip.rotateY(Math.PI / 2);
+  lip.translate(-1.165, 0, 0);
+  // Front release taper: drop the forward lip crest so it flares open
+  const p = lip.attributes.position;
+  for (let i = 0; i < p.count; i++) {
+    const x = p.getX(i);
+    const y = p.getY(i);
+    if (x > 0.3 && y > 1.06) {
+      const t = Math.min(1, (x - 0.3) / 0.6);
+      p.setY(i, y - t * 0.06 * ((y - 1.06) / 0.14));
+    }
+  }
+  p.needsUpdate = true;
+  lip.computeVertexNormals();
+  return lip;
+}
+
+/**
+ * Raised stamped rib following the STANAG arc between ±0.07 of rMid, on the given flank.
+ */
+function buildStanagArcRib(rMid: number, side: -1 | 1): THREE.BufferGeometry {
+  const steps = 18;
+  const a0 = 0.035;
+  const a1 = STANAG_ANG_END - 0.03;
+  const rIn = rMid - 0.07;
+  const rOut = rMid + 0.07;
+  const s = new THREE.Shape();
+  for (let i = 0; i <= steps; i++) {
+    const a = a0 + ((a1 - a0) * i) / steps;
+    const px = STANAG_ARC_CX - Math.cos(a) * rOut;
+    const py = STANAG_ARC_CY - Math.sin(a) * rOut;
+    if (i === 0) s.moveTo(px, py);
+    else s.lineTo(px, py);
+  }
+  for (let i = steps; i >= 0; i--) {
+    const a = a0 + ((a1 - a0) * i) / steps;
+    s.lineTo(
+      STANAG_ARC_CX - Math.cos(a) * rIn,
+      STANAG_ARC_CY - Math.sin(a) * rIn
+    );
+  }
+  s.closePath();
+  const rib = new THREE.ExtrudeGeometry(s, {
+    depth: 0.022,
+    bevelEnabled: true,
+    bevelThickness: 0.006,
+    bevelSize: 0.02,
+    bevelSegments: 1,
+  });
+  rib.translate(0, 0, side > 0 ? 0.543 : -0.565);
+  return rib;
 }
 
 /**
@@ -1372,4 +1482,38 @@ export function buildM4a1MagFloorplateGeometry(): THREE.BufferGeometry {
   return sanitizeM4Geometry(
     mergeParts([basePlate, railL, railR, lockTab, pryDimple])
   );
+}
+
+/**
+ * True helical rifling land: a thin land strip at bore radius r, subdivided along X and
+ * twisted about the bore axis (positive angle with +X = right-hand twist seen from the breech).
+ */
+function buildM4HelicalLand(
+  x0: number,
+  x1: number,
+  r: number,
+  height: number,
+  width: number,
+  startAng: number,
+  twistLen: number,
+  segs = 32
+): THREE.BufferGeometry {
+  const g = new THREE.BoxGeometry(x1 - x0, height, width, segs, 1, 1).translate(
+    (x0 + x1) / 2,
+    r,
+    0
+  );
+  const p = g.attributes.position;
+  for (let i = 0; i < p.count; i++) {
+    const a = startAng + ((p.getX(i) - x0) / twistLen) * Math.PI * 2;
+    const c = Math.cos(a);
+    const s = Math.sin(a);
+    const y = p.getY(i);
+    const z = p.getZ(i);
+    p.setY(i, y * c - z * s);
+    p.setZ(i, y * s + z * c);
+  }
+  p.needsUpdate = true;
+  g.computeVertexNormals();
+  return g;
 }

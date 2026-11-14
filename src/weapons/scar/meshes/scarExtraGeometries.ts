@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import {
   createHelicalSpring,
   csgSubtract,
@@ -1153,36 +1154,56 @@ export function buildScarMagBodyGeometry(): THREE.BufferGeometry {
   rawBody.translate(0, 0, -0.56);
   paintGeometry(rawBody, SCAR_FDE_MAG);
 
-  // Hollow top feed throat + front bullet ramp notch + rear bolt-catch follower slot + ambi mag-catch cutouts
-  const magCutters: THREE.BufferGeometry[] = [
+  // Hollow top feed throat + batched magwell notches + 10/20/30-rd rear-spine witness holes!
+  const throatCut = paintGeometry(
+    new THREE.BoxGeometry(2.32, 2.35, 0.88).translate(0, 1.58, 0),
+    SCAR_INNER_DARK
+  );
+  const notchBatch: THREE.BufferGeometry[] = [
     paintGeometry(
-      new THREE.BoxGeometry(2.32, 2.35, 0.88).translate(0, 1.58, 0),
+      new THREE.BoxGeometry(0.42, 0.34, 0.72)
+        .translate(1.28, 2.48, 0)
+        .toNonIndexed(),
       SCAR_INNER_DARK
     ),
-    // Front bullet-tip clearance scoop
     paintGeometry(
-      new THREE.BoxGeometry(0.42, 0.34, 0.72).translate(1.28, 2.48, 0),
+      new THREE.BoxGeometry(0.42, 0.42, 0.46)
+        .translate(-1.28, 2.42, -0.18)
+        .toNonIndexed(),
       SCAR_INNER_DARK
     ),
-    // Rear bolt-catch trip cutout
     paintGeometry(
-      new THREE.BoxGeometry(0.42, 0.42, 0.46).translate(-1.28, 2.42, -0.18),
+      new THREE.BoxGeometry(0.54, 0.28, 0.22)
+        .translate(-0.82, 1.05, -0.58)
+        .toNonIndexed(),
       SCAR_INNER_DARK
     ),
-    // Left STANAG magazine catch locking window
     paintGeometry(
-      new THREE.BoxGeometry(0.54, 0.28, 0.22).translate(-0.82, 1.05, -0.58),
-      SCAR_INNER_DARK
-    ),
-    // Right ambidextrous SCAR magazine catch notch
-    paintGeometry(
-      new THREE.BoxGeometry(0.54, 0.28, 0.22).translate(-0.82, 1.05, 0.58),
+      new THREE.BoxGeometry(0.54, 0.28, 0.22)
+        .translate(-0.82, 1.05, 0.58)
+        .toNonIndexed(),
       SCAR_INNER_DARK
     ),
   ];
-  const hollowed = csgSubtract(rawBody, magCutters);
+  for (const wy of [-1.65, -3.95, -6.15]) {
+    const wcx = stanagCenterX(wy);
+    const wAng = 0.15 * ((-1.2 - wy) / 6.4);
+    notchBatch.push(
+      paintGeometry(
+        new THREE.CylinderGeometry(0.08, 0.08, 0.42, 12)
+          .rotateZ(Math.PI / 2 + wAng)
+          .translate(wcx - Math.cos(wAng) * 1.34, wy - Math.sin(wAng) * 1.34, 0)
+          .toNonIndexed(),
+        SCAR_INNER_DARK
+      )
+    );
+  }
+  const hollowed = csgSubtract(rawBody, [
+    throatCut,
+    mergeGeometries(notchBatch, false),
+  ]);
 
-  // Stamped STANAG side anti-crush ribs + over-insertion stop bead + inward-curled steel feed lips
+  // Stamped STANAG side anti-crush ribs + over-insertion stop bead + rolled C-curl stainless feed lips
   const parts: THREE.BufferGeometry[] = [
     hollowed,
     // Magwell insertion stop tab on rear spine
@@ -1205,22 +1226,52 @@ export function buildScarMagBodyGeometry(): THREE.BufferGeometry {
     );
   }
 
-  // Twin inward-formed bright stainless STANAG feed lips w/ central presentation channel!
-  const feedLipL = paintGeometry(
-    new THREE.BoxGeometry(2.28, 0.22, 0.28)
-      .rotateX(-0.28)
-      .translate(-0.04, 2.58, -0.35),
-    SCAR_BRIGHT_STEEL
-  );
-  const feedLipR = paintGeometry(
-    new THREE.BoxGeometry(2.28, 0.22, 0.28)
-      .rotateX(0.28)
-      .translate(-0.04, 2.58, 0.35),
-    SCAR_BRIGHT_STEEL
-  );
+  // Twin rolled C-curl bright stainless STANAG feed lips w/ forward cartridge-release flare!
+  const feedLipL = paintGeometry(buildScarRolledFeedLip(-1), SCAR_BRIGHT_STEEL);
+  const feedLipR = paintGeometry(buildScarRolledFeedLip(1), SCAR_BRIGHT_STEEL);
   parts.push(feedLipL, feedLipR);
 
   return applyScarMagUVs(mergeParts(parts));
+}
+
+/**
+ * Rolled C-curl stainless STANAG feed lip for the SCAR magazine, tapering open on the forward
+ * third so 5.56mm NATO cartridges release cleanly up the dual feed ramps.
+ */
+function buildScarRolledFeedLip(side: -1 | 1): THREE.BufferGeometry {
+  const s = new THREE.Shape();
+  const zw = (z: number) => -z * side;
+  s.moveTo(zw(0.49), 2.44);
+  s.lineTo(zw(0.49), 2.61);
+  s.quadraticCurveTo(zw(0.49), 2.71, zw(0.39), 2.71);
+  s.lineTo(zw(0.25), 2.69);
+  s.quadraticCurveTo(zw(0.21), 2.66, zw(0.24), 2.62);
+  s.lineTo(zw(0.36), 2.6);
+  s.quadraticCurveTo(zw(0.4), 2.59, zw(0.4), 2.52);
+  s.lineTo(zw(0.4), 2.44);
+  s.closePath();
+  const lip = new THREE.ExtrudeGeometry(s, {
+    depth: 2.28,
+    bevelEnabled: true,
+    bevelThickness: 0.012,
+    bevelSize: 0.008,
+    bevelSegments: 1,
+    curveSegments: 5,
+  });
+  lip.rotateY(Math.PI / 2);
+  lip.translate(-1.18, 0, 0);
+  const p = lip.attributes.position;
+  for (let i = 0; i < p.count; i++) {
+    const x = p.getX(i);
+    const y = p.getY(i);
+    if (x > 0.35 && y > 2.56) {
+      const t = Math.min(1, (x - 0.35) / 0.72);
+      p.setY(i, y - t * 0.06 * ((y - 2.56) / 0.15));
+    }
+  }
+  p.needsUpdate = true;
+  lip.computeVertexNormals();
+  return lip;
 }
 
 /**

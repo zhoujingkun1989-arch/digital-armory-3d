@@ -11,6 +11,7 @@ import {
   mergeParts,
   paintGeometry,
 } from '../../../engine/geometry/csgBuilder';
+import { mergeAwmCutters } from './awmCadDetail';
 
 const AWM_DARK_STEEL = '#46505f';
 const AWM_PARKERIZED = '#586476';
@@ -496,6 +497,13 @@ export function buildAwmScopeMountGeometry(): THREE.BufferGeometry {
     new THREE.BoxGeometry(7.2, 0.24, 0.86).translate(0, -0.65, 0),
     AWM_INNER_DARK
   );
+  // 45-deg MIL-STD-1913 / AI dovetail undercut along left fixed jaw
+  const leftDovetailV = paintGeometry(
+    new THREE.BoxGeometry(7.2, 0.14, 0.14)
+      .rotateX(Math.PI / 4)
+      .translate(0, -0.58, -0.43),
+    AWM_INNER_DARK
+  );
   // Central weight-reduction bridge pocket & triangulated side lightening scallops
   const bridgeCut = paintGeometry(
     new THREE.BoxGeometry(2.45, 0.34, 1.6).translate(-0.05, -0.26, 0),
@@ -507,6 +515,7 @@ export function buildAwmScopeMountGeometry(): THREE.BufferGeometry {
   );
   const baseBar = csgSubtract(railBaseRaw, [
     railGroove,
+    leftDovetailV,
     bridgeCut,
     sideScallopL,
   ]);
@@ -514,6 +523,12 @@ export function buildAwmScopeMountGeometry(): THREE.BufferGeometry {
   // Separate full-length right-side dovetail/Picatinny clamping jaw bar + underside recoil stop keys
   const clampJawBar = paintGeometry(
     new THREE.BoxGeometry(6.75, 0.34, 0.18).translate(0, -0.53, 0.69),
+    AWM_DARK_STEEL
+  );
+  const rightJawBevel = paintGeometry(
+    new THREE.BoxGeometry(6.75, 0.11, 0.11)
+      .rotateX(Math.PI / 4)
+      .translate(0, -0.58, 0.56),
     AWM_DARK_STEEL
   );
   const recoilStopKey1 = paintGeometry(
@@ -530,6 +545,7 @@ export function buildAwmScopeMountGeometry(): THREE.BufferGeometry {
   const ringParts: THREE.BufferGeometry[] = [
     baseBar,
     clampJawBar,
+    rightJawBevel,
     recoilStopKey1,
     recoilStopKey2,
   ];
@@ -573,12 +589,16 @@ export function buildAwmScopeMountGeometry(): THREE.BufferGeometry {
     );
     ringParts.push(
       csgSubtract(
-        csgUnion([outerRing, stanchion, flangeL, flangeR, topCapRib]),
-        [bore, splitSlotL, splitSlotR]
+        csgUnion([
+          outerRing,
+          stanchion,
+          mergeAwmCutters([flangeL, flangeR, topCapRib]),
+        ]),
+        [bore, mergeAwmCutters([splitSlotL, splitSlotR])]
       )
     );
 
-    // 4 socket-head cap screws per ring (8 total)
+    // 4 socket-head cap screws + hex Allen drive recesses per ring (8 total)
     for (const dx of [-0.33, 0.33]) {
       for (const side of [-1, 1]) {
         ringParts.push(
@@ -589,6 +609,14 @@ export function buildAwmScopeMountGeometry(): THREE.BufferGeometry {
               side * 0.92
             ),
             AWM_STAINLESS
+          ),
+          paintGeometry(
+            new THREE.CylinderGeometry(0.044, 0.044, 0.025, 6).translate(
+              rx + dx,
+              0.872,
+              side * 0.92
+            ),
+            AWM_INNER_DARK
           )
         );
       }
@@ -630,33 +658,26 @@ export function buildAwmScopeMountGeometry(): THREE.BufferGeometry {
 export function buildAwmBoltBodyGeometry(): THREE.BufferGeometry {
   // Cylindrical stainless Magnum bolt body (R = 0.45, spans [-4.52, +2.92])
   const mainCyl = paintGeometry(
-    new THREE.CylinderGeometry(0.45, 0.45, 7.44, 30)
+    new THREE.CylinderGeometry(0.45, 0.45, 7.44, 32, 8)
       .rotateZ(Math.PI / 2)
       .translate(-0.8, 0, 0),
     AWM_STAINLESS
   );
 
-  // 6 Arctic anti-bind / ice-relief longitudinal grooves along bolt shaft [-3.55, +1.68]
-  const cutters: THREE.BufferGeometry[] = [
-    // Hollow internal firing-pin & spring channel
+  // Brush 1 (mutually disjoint): striker bore, recessed .338 LM bolt-face cup, tandem lug bridge groove & 6 ball-endmill Arctic ice flutes
+  const primaryDisjointCutters: THREE.BufferGeometry[] = [
+    // Hollow internal firing-pin & spring channel (stops behind solid bolt-head bulkhead at X = 2.56)
     paintGeometry(
-      new THREE.CylinderGeometry(0.285, 0.285, 7.45, 20)
+      new THREE.CylinderGeometry(0.285, 0.285, 7.1, 20)
         .rotateZ(Math.PI / 2)
-        .translate(-0.92, 0, 0),
+        .translate(-0.97, 0, 0),
       AWM_INNER_DARK
     ),
-    // Recessed .338 Lapua Magnum bolt face cup at X = +2.83
+    // Recessed .338 Lapua Magnum bolt face cup (14.93mm rim pocket) at X = +2.83
     paintGeometry(
-      new THREE.CylinderGeometry(0.385, 0.385, 0.22, 24)
+      new THREE.CylinderGeometry(0.388, 0.388, 0.22, 28)
         .rotateZ(Math.PI / 2)
         .translate(2.85, 0, 0),
-      AWM_INNER_DARK
-    ),
-    // Central firing-pin tip hole through recessed bolt face
-    paintGeometry(
-      new THREE.CylinderGeometry(0.068, 0.068, 0.45, 14)
-        .rotateZ(Math.PI / 2)
-        .translate(2.72, 0, 0),
       AWM_INNER_DARK
     ),
     // Circumferential locking-ring bridge relief groove separating front & rear lug rows (X = 2.35)
@@ -666,20 +687,16 @@ export function buildAwmBoltBodyGeometry(): THREE.BufferGeometry {
         .translate(2.35, 0, 0),
       AWM_SATIN_STEEL
     ),
-    // Extractor slot along upper-right lug column
-    paintGeometry(
-      new THREE.BoxGeometry(2.48, 0.16, 0.22).translate(1.82, 0.12, 0.44),
-      AWM_INNER_DARK
-    ),
   ];
 
+  // 6 Arctic anti-bind / ice-relief ball-endmill longitudinal flutes along bolt shaft [-3.46, +1.62]
   for (let k = 0; k < 6; k++) {
     const ang = (k * Math.PI) / 3 + Math.PI / 6;
     const fy = Math.cos(ang) * 0.468;
     const fz = Math.sin(ang) * 0.468;
-    cutters.push(
+    primaryDisjointCutters.push(
       paintGeometry(
-        new THREE.CylinderGeometry(0.115, 0.115, 5.1, 14)
+        new THREE.CapsuleGeometry(0.112, 4.86, 4, 10)
           .rotateZ(Math.PI / 2)
           .translate(-0.92, fy, fz),
         AWM_SATIN_STEEL
@@ -687,32 +704,106 @@ export function buildAwmBoltBodyGeometry(): THREE.BufferGeometry {
     );
   }
 
-  const flutedBody = csgSubtract(mainCyl, cutters);
+  // Brush 2 (mutually disjoint): central striker pin aperture, counterbored plunger-ejector pocket & extractor mortise
+  const boltHeadDetailCutters: THREE.BufferGeometry[] = [
+    paintGeometry(
+      new THREE.CylinderGeometry(0.066, 0.066, 0.46, 14)
+        .rotateZ(Math.PI / 2)
+        .translate(2.73, 0, 0),
+      AWM_INNER_DARK
+    ),
+    paintGeometry(
+      new THREE.CylinderGeometry(0.072, 0.072, 0.28, 14)
+        .rotateZ(Math.PI / 2)
+        .translate(2.72, -0.16, -0.16),
+      AWM_INNER_DARK
+    ),
+    paintGeometry(
+      new THREE.BoxGeometry(2.48, 0.16, 0.22).translate(1.82, 0.12, 0.44),
+      AWM_INNER_DARK
+    ),
+  ];
 
-  // Authentic Portsmouth AI 6-Lug Bolt Head: TWO tandem rows of 3 radially ALIGNED lugs (120 deg apart)
-  // Both rows pass cleanly through 3 receiver raceways and lock into 6 abutments with a crisp 60-degree throw!
+  const flutedBody = csgSubtract(mainCyl, [
+    mergeAwmCutters(primaryDisjointCutters),
+    mergeAwmCutters(boltHeadDetailCutters),
+  ]);
+
+  // Authentic Portsmouth AI 6-Lug Bolt Head: TWO tandem rows of 3 concentric arc-crowned lugs (120 deg apart)
+  // Each lug features a central radial anti-icing crest flute and chamfered primary-extraction cam bevels.
+  const lugShape = new THREE.Shape();
+  const rIn = 0.415;
+  const rOut = 0.594;
+  const halfAng = 0.355;
+  lugShape.moveTo(Math.sin(-halfAng) * rIn, Math.cos(-halfAng) * rIn);
+  lugShape.lineTo(Math.sin(-halfAng) * rOut, Math.cos(-halfAng) * rOut);
+  const arcSteps = 14;
+  for (let i = 1; i <= arcSteps; i++) {
+    const a = -halfAng + (2 * halfAng * i) / arcSteps;
+    // Central radial anti-icing relief groove dipped into lug crest
+    const notchDip = Math.abs(a) < 0.075 ? 0.022 : 0;
+    const r = rOut - notchDip;
+    lugShape.lineTo(Math.sin(a) * r, Math.cos(a) * r);
+  }
+  lugShape.lineTo(Math.sin(halfAng) * rIn, Math.cos(halfAng) * rIn);
+  lugShape.closePath();
+
+  const baseLugGeo = new THREE.ExtrudeGeometry(lugShape, {
+    depth: 0.4,
+    bevelEnabled: true,
+    bevelSegments: 2,
+    steps: 1,
+    bevelSize: 0.01,
+    bevelThickness: 0.01,
+  });
+  // Extrude in (x_shape=Z, y_shape=Y, z_extrude=X): rotateY(PI/2) maps (x_s, y_s, z_e) -> (z_e, y_s, -x_s)
+  baseLugGeo.rotateY(Math.PI / 2);
+  baseLugGeo.translate(-0.2, 0, 0);
+
   const lugs: THREE.BufferGeometry[] = [];
   const rowXs = [2.66, 2.04];
   for (const lx of rowXs) {
     for (let k = 0; k < 3; k++) {
+      // Skip upper-right front/rear corner interference with extractor mortise by trimming only inside slot?
+      // Note: k=0 (0 deg, +Y), k=1 (120 deg), k=2 (240 deg) match receiver raceways cleanly.
       const ang = (k * 2 * Math.PI) / 3;
-      const lugRaw = paintGeometry(
-        new THREE.BoxGeometry(0.42, 0.25, 0.34)
-          .translate(0, 0.48, 0)
-          .rotateX(ang)
-          .translate(lx, 0, 0),
-        AWM_STAINLESS
-      );
-      lugs.push(lugRaw);
+      const lugGeo = baseLugGeo
+        .clone()
+        .rotateX(ang)
+        .translate(lx, 0, 0);
+      lugs.push(paintGeometry(lugGeo, AWM_STAINLESS));
     }
   }
+  baseLugGeo.dispose();
 
-  // Spring-loaded plunger ejector on recessed bolt face (opposing upper-right claw extractor!)
+  // Spring-loaded hemispherical-tip plunger ejector seated inside counterbored bolt-face pocket + retaining cross-pin
+  const ejectorPts = [
+    new THREE.Vector2(0.0, -0.1),
+    new THREE.Vector2(0.056, -0.1),
+    new THREE.Vector2(0.056, 0.065),
+    new THREE.Vector2(0.048, 0.092),
+    new THREE.Vector2(0.028, 0.108),
+    new THREE.Vector2(0.0, 0.114),
+  ];
   const plungerPin = paintGeometry(
-    new THREE.CylinderGeometry(0.055, 0.055, 0.22, 12)
-      .rotateZ(Math.PI / 2)
-      .translate(2.79, -0.16, -0.16),
+    new THREE.LatheGeometry(ejectorPts, 14)
+      .rotateZ(-Math.PI / 2)
+      .translate(2.77, -0.16, -0.16),
     AWM_GOLD_BRASS
+  );
+  const ejectorRetainPin = paintGeometry(
+    new THREE.CylinderGeometry(0.026, 0.026, 0.34, 8)
+      .rotateX(Math.PI / 4)
+      .translate(2.58, -0.24, -0.24),
+    AWM_DARK_STEEL
+  );
+
+  // Bolt-head gas-relief vent port on left flank
+  const gasVentDimple = paintGeometry(
+    new THREE.CylinderGeometry(0.048, 0.048, 0.04, 10)
+      .rotateX(Math.PI / 2)
+      .translate(1.78, 0.06, -0.44),
+    AWM_INNER_DARK
   );
 
   // Rear bolt handle root collar w/ cock-on-opening V-cam notch & primary-extraction cam bevel
@@ -765,6 +856,8 @@ export function buildAwmBoltBodyGeometry(): THREE.BufferGeometry {
       flutedBody,
       ...lugs,
       plungerPin,
+      ejectorRetainPin,
+      gasVentDimple,
       rearCollar,
       handleRootBoss,
       handleStem,
@@ -961,26 +1054,62 @@ export function buildAwmFiringPinSpringGeometry(): THREE.BufferGeometry {
  * S-07: Heavy External Leaf-Spring Claw Extractor (Coaxial at [0, 1.05, 0] with bolt body!)
  */
 export function buildAwmExtractorGeometry(): THREE.BufferGeometry {
-  const springLeaf = paintGeometry(
-    new THREE.BoxGeometry(2.18, 0.135, 0.14).translate(1.68, 0.12, 0.44),
+  // Contoured external Sako/AI leaf-spring claw extractor profile in (X, Z), extruded along Y
+  const leafShape = new THREE.Shape();
+  leafShape.moveTo(0.76, 0.365);
+  leafShape.quadraticCurveTo(1.65, 0.502, 2.56, 0.488);
+  leafShape.lineTo(2.955, 0.468);
+  // Angled snap-over rim entry cam bevel at X = 3.00
+  leafShape.lineTo(2.992, 0.388);
+  leafShape.lineTo(2.992, 0.292);
+  // Sharp undercut .338 Lapua Magnum rim-grabbing claw hook (Z_min = 0.283 - 0.008 = 0.275)
+  leafShape.lineTo(2.835, 0.283);
+  leafShape.lineTo(2.79, 0.354);
+  leafShape.lineTo(2.54, 0.378);
+  leafShape.quadraticCurveTo(1.68, 0.392, 0.76, 0.365);
+
+  const springClaw = paintGeometry(
+    new THREE.ExtrudeGeometry(leafShape, {
+      depth: 0.156,
+      bevelEnabled: true,
+      bevelSegments: 2,
+      steps: 1,
+      bevelSize: 0.008,
+      bevelThickness: 0.008,
+    })
+      .rotateX(Math.PI / 2)
+      .translate(0, 0.198, 0),
+    AWM_STAINLESS
+  );
+
+  // Tempered leaf-spring tension rib along outer spine
+  const tensionSpine = paintGeometry(
+    new THREE.BoxGeometry(1.68, 0.075, 0.035).translate(1.66, 0.12, 0.49),
     AWM_DARK_STEEL
   );
-  const clawBody = paintGeometry(
-    new THREE.BoxGeometry(0.32, 0.19, 0.23).translate(2.84, 0.12, 0.39),
-    AWM_STAINLESS
-  );
-  const clawBevelCut = paintGeometry(
-    new THREE.BoxGeometry(0.24, 0.28, 0.2)
-      .rotateY(0.55)
-      .translate(3.02, 0.12, 0.29),
-    AWM_STAINLESS
-  );
-  const clawHook = csgSubtract(clawBody, [clawBevelCut]);
-  const retainCollar = paintGeometry(
+
+  // Rear dovetail retaining collar w/ snap-ring clip groove
+  const collarRaw = paintGeometry(
     new THREE.BoxGeometry(0.28, 0.22, 0.19).translate(0.66, 0.12, 0.42),
     AWM_PARKERIZED
   );
-  return sanitizeAwmMesh(mergeParts([springLeaf, clawHook, retainCollar]));
+  const clipGroove = paintGeometry(
+    new THREE.BoxGeometry(0.08, 0.25, 0.055).translate(0.66, 0.12, 0.495),
+    AWM_INNER_DARK
+  );
+  const retainCollar = csgSubtract(collarRaw, [clipGroove]);
+
+  // Brass extractor spring-detent guide boss
+  const detentBoss = paintGeometry(
+    new THREE.CylinderGeometry(0.042, 0.042, 0.075, 12)
+      .rotateX(Math.PI / 2)
+      .translate(1.04, 0.12, 0.36),
+    AWM_GOLD_BRASS
+  );
+
+  return sanitizeAwmMesh(
+    mergeParts([springClaw, tensionSpine, retainCollar, detentBoss])
+  );
 }
 
 // ============================================================================
@@ -1207,27 +1336,28 @@ export function buildAwmMagCatchGeometry(): THREE.BufferGeometry {
  */
 export function buildAwmMagBodyGeometry(): THREE.BufferGeometry {
   const outerBox = paintGeometry(
-    new THREE.BoxGeometry(6.32, 4.44, 1.26).translate(0, -0.13, 0),
+    new THREE.BoxGeometry(6.32, 4.44, 1.26, 8, 6, 2).translate(0, -0.13, 0),
     AWM_DARK_STEEL
   );
   const innerCavity = paintGeometry(
     new THREE.BoxGeometry(6.02, 4.36, 1.04).translate(0, -0.04, 0),
     AWM_INNER_DARK
   );
-  // Precision center-feed opening between inwardly curved steel feed lips
+  // Wide top opening between stamped walls so curled center-feed lips define the true feed throat
   const topFeedSlot = paintGeometry(
-    new THREE.BoxGeometry(5.96, 0.46, 0.66).translate(0.06, 2.08, 0),
+    new THREE.BoxGeometry(5.96, 0.46, 0.96).translate(0.06, 2.08, 0),
     AWM_INNER_DARK
   );
-  // Front bullet-ogive clearance ramp notch on front wall
-  const frontRampNotch = paintGeometry(
-    new THREE.BoxGeometry(0.72, 0.44, 0.92).translate(2.9, 1.98, 0),
-    AWM_INNER_DARK
-  );
-  // Rear round-count witness holes on rear spine
-  const witnessCutters: THREE.BufferGeometry[] = [];
+
+  // Batch disjoint front bullet-ogive ramp notch + 3 rear spine witness holes + 3 right-flank round-count witness holes
+  const detailCutters: THREE.BufferGeometry[] = [
+    paintGeometry(
+      new THREE.BoxGeometry(0.72, 0.44, 1.04).translate(2.9, 1.98, 0),
+      AWM_INNER_DARK
+    ),
+  ];
   for (const wy of [-1.55, -0.65, 0.25]) {
-    witnessCutters.push(
+    detailCutters.push(
       paintGeometry(
         new THREE.CylinderGeometry(0.085, 0.085, 0.4, 12)
           .rotateZ(Math.PI / 2)
@@ -1236,16 +1366,56 @@ export function buildAwmMagBodyGeometry(): THREE.BufferGeometry {
       )
     );
   }
+  for (const wy of [-1.45, -0.55, 0.35]) {
+    detailCutters.push(
+      paintGeometry(
+        new THREE.CylinderGeometry(0.072, 0.072, 0.24, 12)
+          .rotateX(Math.PI / 2)
+          .translate(-1.62, wy, 0.58),
+        AWM_INNER_DARK
+      )
+    );
+  }
 
   const shell = csgSubtract(outerBox, [
     innerCavity,
     topFeedSlot,
-    frontRampNotch,
-    ...witnessCutters,
+    mergeAwmCutters(detailCutters),
   ]);
 
-  // Pressed vertical corrugation ribs (5 per flank), rear folded weld seam, spot-weld dimples & front/rear catch lugs
+  // Inwardly-curled stamped sheet-steel .338 Lapua Magnum center-feed lips (X in [-2.96, +2.38])
+  const buildFeedLip = (side: -1 | 1): THREE.BufferGeometry => {
+    const s = new THREE.Shape();
+    // Cross-section in (x_s = Z, y_s = Y), extruded along X via rotateY(PI/2) -> (z_e, y_s, -x_s)
+    // Wait: rotateY(PI/2) maps x_s -> -Z, so pass zSign = -side into x_s!
+    const zs = -side;
+    s.moveTo(zs * 0.625, 1.84);
+    s.lineTo(zs * 0.628, 1.985);
+    s.quadraticCurveTo(zs * 0.615, 2.082, zs * 0.46, 2.082);
+    s.lineTo(zs * 0.305, 2.035);
+    s.lineTo(zs * 0.325, 1.985);
+    s.lineTo(zs * 0.465, 2.026);
+    s.quadraticCurveTo(zs * 0.568, 2.024, zs * 0.572, 1.965);
+    s.lineTo(zs * 0.572, 1.84);
+    s.closePath();
+
+    const g = new THREE.ExtrudeGeometry(s, {
+      depth: 5.32,
+      bevelEnabled: true,
+      bevelSegments: 2,
+      steps: 1,
+      bevelSize: 0.006,
+      bevelThickness: 0.008,
+    });
+    g.rotateY(Math.PI / 2);
+    g.translate(-2.95, 0, 0);
+    return paintGeometry(g, AWM_STAINLESS);
+  };
+
+  // Pressed vertical corrugation ribs (5 per flank), curled feed lips, rear folded weld seam & catch lugs
   const extras: THREE.BufferGeometry[] = [
+    buildFeedLip(-1),
+    buildFeedLip(1),
     // Rear magazine-catch locking lug
     paintGeometry(
       new THREE.BoxGeometry(0.24, 0.34, 0.68).translate(-3.2, -0.02, 0),
@@ -1263,20 +1433,33 @@ export function buildAwmMagBodyGeometry(): THREE.BufferGeometry {
     ),
   ];
 
+  // Smooth press-formed rounded corrugation rib template (|Z| <= 0.682 <= 0.683)
+  const buildCorrugationRib = (
+    rx: number,
+    side: -1 | 1
+  ): THREE.BufferGeometry => {
+    const rs = new THREE.Shape();
+    rs.moveTo(-0.095, 0);
+    rs.quadraticCurveTo(-0.085, 0.042, 0, 0.042);
+    rs.quadraticCurveTo(0.085, 0.042, 0.095, 0);
+    rs.closePath();
+    const rg = new THREE.ExtrudeGeometry(rs, {
+      depth: 3.58,
+      bevelEnabled: true,
+      bevelSegments: 2,
+      steps: 1,
+      bevelSize: 0.01,
+      bevelThickness: 0.018,
+    });
+    // Map (x_s=X, y_s=+outward Z, z_e=Y): rotateX(-PI/2) maps (x_s, y_s, z_e) -> (x_s, z_e, -y_s)
+    rg.rotateX(side > 0 ? Math.PI / 2 : -Math.PI / 2);
+    rg.translate(rx, side > 0 ? 1.43 : -2.15, side * 0.63);
+    return paintGeometry(rg, AWM_PARKERIZED);
+  };
+
   // 5 pressed vertical strengthening ribs per side across upper & lower magazine flanks
   for (const rx of [-2.16, -1.08, 0.0, 1.08, 2.16]) {
-    for (const side of [-1, 1]) {
-      extras.push(
-        paintGeometry(
-          new THREE.BoxGeometry(0.22, 3.65, 0.075).translate(
-            rx,
-            -0.36,
-            side * 0.645
-          ),
-          AWM_PARKERIZED
-        )
-      );
-    }
+    extras.push(buildCorrugationRib(rx, -1), buildCorrugationRib(rx, 1));
   }
 
   // Spot-weld dimple bosses along front & rear spine
@@ -1300,33 +1483,66 @@ export function buildAwmMagBodyGeometry(): THREE.BufferGeometry {
  * assembledPos: [1.35, -2.35, 0]
  */
 export function buildAwmMagFollowerGeometry(): THREE.BufferGeometry {
-  const plate = paintGeometry(
-    new THREE.BoxGeometry(5.84, 0.22, 0.96).translate(0, 0.06, 0),
+  // Contoured center-feed .338 LM cartridge cradle cross-section in (Z, Y), extruded along X
+  const cradleShape = new THREE.Shape();
+  cradleShape.moveTo(-0.472, -0.042);
+  cradleShape.lineTo(-0.472, 0.225);
+  cradleShape.quadraticCurveTo(-0.46, 0.262, -0.34, 0.262);
+  cradleShape.lineTo(-0.26, 0.215);
+  // Concave central saddle cradling 14.9mm .338 Lapua Magnum brass case body
+  cradleShape.quadraticCurveTo(0, 0.055, 0.26, 0.215);
+  cradleShape.lineTo(0.34, 0.262);
+  cradleShape.quadraticCurveTo(0.46, 0.262, 0.472, 0.225);
+  cradleShape.lineTo(0.472, -0.042);
+  cradleShape.closePath();
+
+  const cradleDeck = paintGeometry(
+    new THREE.ExtrudeGeometry(cradleShape, {
+      depth: 5.824,
+      bevelEnabled: true,
+      bevelSegments: 2,
+      steps: 1,
+      bevelSize: 0.008,
+      bevelThickness: 0.008,
+    })
+      .rotateY(Math.PI / 2)
+      .translate(-2.912, 0, 0),
     AWM_FOLLOWER_COL
   );
+
+  // Front & rear anti-tilt guide skirts w/ side friction-relief slots (Y_min = -0.51)
   const guideSkirtF = paintGeometry(
-    new THREE.BoxGeometry(0.22, 0.62, 0.92).translate(2.81, -0.2, 0),
+    new THREE.BoxGeometry(0.22, 0.56, 0.92).translate(2.81, -0.23, 0),
     AWM_FOLLOWER_COL
   );
   const guideSkirtR = paintGeometry(
-    new THREE.BoxGeometry(0.22, 0.62, 0.92).translate(-2.81, -0.2, 0),
+    new THREE.BoxGeometry(0.22, 0.56, 0.92).translate(-2.81, -0.23, 0),
     AWM_FOLLOWER_COL
   );
-  // Center-feed raised side rails cradling the 14.9mm rim of a .338 Lapua Magnum case on centerline Z = 0
-  const railL = paintGeometry(
-    new THREE.BoxGeometry(5.76, 0.14, 0.18).translate(0, 0.2, -0.36),
+  // Rear bolt-stop engagement riser step
+  const rearStopStep = paintGeometry(
+    new THREE.BoxGeometry(0.42, 0.09, 0.34).translate(-2.66, 0.21, 0),
     AWM_FOLLOWER_COL
   );
-  const railR = paintGeometry(
-    new THREE.BoxGeometry(5.76, 0.14, 0.18).translate(0, 0.2, 0.36),
-    AWM_FOLLOWER_COL
-  );
+  // Bottom oval-spring retention boss & guide rib
   const springBoss = paintGeometry(
-    new THREE.BoxGeometry(2.6, 0.16, 0.44).translate(0, -0.1, 0),
+    new THREE.BoxGeometry(2.6, 0.16, 0.44).translate(0, -0.11, 0),
     AWM_DARK_STEEL
   );
+  const centerKeel = paintGeometry(
+    new THREE.BoxGeometry(5.36, 0.22, 0.14).translate(0, -0.15, 0),
+    AWM_FOLLOWER_COL
+  );
+
   return sanitizeAwmMesh(
-    mergeParts([plate, guideSkirtF, guideSkirtR, railL, railR, springBoss])
+    mergeParts([
+      cradleDeck,
+      guideSkirtF,
+      guideSkirtR,
+      rearStopStep,
+      springBoss,
+      centerKeel,
+    ])
   );
 }
 
