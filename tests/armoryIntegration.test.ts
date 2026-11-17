@@ -21,12 +21,25 @@ import {
   toggleBrowserFullscreen,
 } from '../src/app/useFullscreen';
 import { getDefaultEntryScreen } from '../src/app/useUrlStateSync';
+import {
+  ARCHERY_ROLE_META,
+  ENGINEERING_ROLE_ORDER,
+  getEngineeringRoleMeta,
+} from '../src/engine/materials/engineeringRoles';
+import {
+  ATLAS_EN_STRINGS,
+  getLocalizedAtlasHeading,
+  getLocalizedAtlasSuite,
+} from '../src/i18n/atlasStrings';
 import { SHOWCASE_STRINGS } from '../src/i18n/showcaseStrings';
 import { UI_STRINGS } from '../src/i18n/uiStrings';
 import {
   resolveAcousticEnvironmentForState,
   useAppStore,
 } from '../src/store/useAppStore';
+import { getWeaponManifest } from '../src/weapons/manifests';
+import { loadWeaponPlugin } from '../src/weapons/registry';
+import { WEAPON_IDS } from '../src/weapons/types';
 
 function collectStructuralMismatches(
   zhNode: unknown,
@@ -385,5 +398,239 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
     expect(storyCss).toContain('var(--hud-top-offset');
     expect(storyCss).not.toMatch(/top:\s*7[0-9]px/);
     expect(responsiveCss).not.toMatch(/\btop:\s*108px/);
+  });
+
+  it('covers 100% of WEAPON_IDS headings and pbrSuites in atlasStrings.ts with zero CJK leaks in English', async () => {
+    const cjkRe = /[\u4e00-\u9fff]/;
+
+    expect(Object.keys(ATLAS_EN_STRINGS).sort()).toEqual([...WEAPON_IDS].sort());
+    expect(WEAPON_IDS.length).toBe(13);
+
+    let totalSuites = 0;
+    for (const weaponId of WEAPON_IDS) {
+      const manifest = getWeaponManifest(weaponId);
+      const plugin = await loadWeaponPlugin(weaponId);
+
+      const enHeading = getLocalizedAtlasHeading(
+        weaponId,
+        'en',
+        manifest.atlasHeadingCn
+      );
+      const zhHeading = getLocalizedAtlasHeading(
+        weaponId,
+        'zh',
+        manifest.atlasHeadingCn
+      );
+
+      expect(enHeading.trim().length).toBeGreaterThan(8);
+      expect(enHeading).not.toBe(manifest.atlasHeadingCn);
+      expect(enHeading).not.toMatch(cjkRe);
+      expect(zhHeading).toBe(manifest.atlasHeadingCn);
+
+      expect(Object.keys(ATLAS_EN_STRINGS[weaponId].suites).sort()).toEqual(
+        plugin.pbrSuites.map((s) => s.id).sort()
+      );
+
+      plugin.pbrSuites.forEach((suite, idx) => {
+        totalSuites += 1;
+        const enSuite = getLocalizedAtlasSuite(weaponId, suite, 'en', idx);
+        const zhSuite = getLocalizedAtlasSuite(weaponId, suite, 'zh', idx);
+
+        expect(enSuite.id).toBe(suite.id);
+        expect(enSuite.weapon).toBe(weaponId);
+        expect(enSuite.title.trim().length).toBeGreaterThan(4);
+        expect(enSuite.tabTitle.trim().length).toBeGreaterThan(2);
+        expect(enSuite.partTag.trim().length).toBeGreaterThan(1);
+        expect(enSuite.resolution.trim().length).toBeGreaterThan(2);
+        expect(enSuite.summary.trim().length).toBeGreaterThan(12);
+        expect(enSuite.highlights.length).toBe(suite.highlights.length);
+        expect(enSuite.channels.length).toBe(suite.channels.length);
+
+        expect(enSuite.title).not.toMatch(cjkRe);
+        expect(enSuite.tabTitle).not.toMatch(cjkRe);
+        expect(enSuite.partTag).not.toMatch(cjkRe);
+        expect(enSuite.resolution).not.toMatch(cjkRe);
+        expect(enSuite.summary).not.toMatch(cjkRe);
+
+        for (const h of enSuite.highlights) {
+          expect(h.trim().length).toBeGreaterThan(4);
+          expect(h).not.toMatch(cjkRe);
+        }
+
+        for (const ch of enSuite.channels) {
+          expect(ch.label.trim().length).toBeGreaterThan(2);
+          expect(ch.note.trim().length).toBeGreaterThan(4);
+          expect(ch.fileName.trim().length).toBeGreaterThan(4);
+          expect(ch.label).not.toMatch(cjkRe);
+          expect(ch.note).not.toMatch(cjkRe);
+        }
+
+        expect(zhSuite.title.trim().length).toBeGreaterThan(2);
+        expect(zhSuite.tabTitle.trim().length).toBeGreaterThan(1);
+        expect(zhSuite.summary.trim().length).toBeGreaterThan(8);
+        expect(zhSuite.channels.length).toBe(suite.channels.length);
+      });
+    }
+
+    expect(totalSuites).toBeGreaterThanOrEqual(37);
+  });
+
+  it('keeps atlasModal and all archery UI dictionaries complete and free of firearm jargon', () => {
+    const cjkRe = /[\u4e00-\u9fff]/;
+    const zhFirearmJargonRe =
+      /枪管|膛线|枪口|空枪|枪械|全枪|火药燃气|弹膛|枪机|套筒|抛壳|推弹|弹匣|闭锁|底火|射速/;
+    const enFirearmJargonRe =
+      /\b(firearm|rifling|muzzle|chamber|breech|eject|ejecting|propellant|spent brass|brass casing|brass case|cartridge|magazine|striker|slide|bolt\s*carrier|rate of fire|pull trigger|SAAMI|CIP)\b/i;
+
+    const collectStrings = (node: unknown, out: string[] = []): string[] => {
+      if (typeof node === 'string') {
+        out.push(node);
+      } else if (typeof node === 'function') {
+        const fn = node as (arg: unknown) => string;
+        out.push(fn('LIFT 33'));
+      } else if (Array.isArray(node)) {
+        for (const item of node) collectStrings(item, out);
+      } else if (node !== null && typeof node === 'object') {
+        for (const val of Object.values(node as Record<string, unknown>)) {
+          collectStrings(val, out);
+        }
+      }
+      return out;
+    };
+
+    // 1. atlasModal completeness & zero CJK in English
+    for (const lang of ['zh', 'en'] as const) {
+      const modal = UI_STRINGS[lang].atlasModal;
+      const strings = [
+        ...collectStrings(modal),
+        modal.downloadTitle('ak15_receiver_albedo.webp'),
+        modal.loadingFallback('LIFT 33'),
+      ];
+      for (const s of strings) {
+        expect(s.trim().length).toBeGreaterThan(0);
+        if (lang === 'en') {
+          expect(s).not.toMatch(cjkRe);
+        }
+      }
+      expect(modal.subtitle).toContain('76');
+      expect(modal.subtitle).toContain('327');
+      expect(modal.kicker).toContain('13');
+    }
+
+    // 2. Archery UI sub-dictionaries: completeness, zero CJK in EN, zero leftover firearm jargon
+    const archerySlices = {
+      'armory.archeryPlaque': [
+        UI_STRINGS.zh.armory.archeryPlaque,
+        UI_STRINGS.en.armory.archeryPlaque,
+      ],
+      'timeline.archery': [
+        UI_STRINGS.zh.timeline.archery,
+        UI_STRINGS.en.timeline.archery,
+      ],
+      'caliper.archery': [
+        UI_STRINGS.zh.caliper.archery,
+        UI_STRINGS.en.caliper.archery,
+      ],
+      'engineeringTint.archery': [
+        UI_STRINGS.zh.engineeringTint.archery,
+        UI_STRINGS.en.engineeringTint.archery,
+      ],
+      'inspector.archery': [
+        UI_STRINGS.zh.inspector.archery,
+        UI_STRINGS.en.inspector.archery,
+      ],
+    } as const;
+
+    for (const [sliceName, [zhSlice, enSlice]] of Object.entries(
+      archerySlices
+    )) {
+      const zhStrings = collectStrings(zhSlice);
+      const enStrings = collectStrings(enSlice);
+      if (sliceName === 'timeline.archery') {
+        zhStrings.push(UI_STRINGS.zh.timeline.archery.hudTitle(false));
+        enStrings.push(UI_STRINGS.en.timeline.archery.hudTitle(false));
+      }
+
+      for (const s of zhStrings) {
+        expect(s.trim().length, `${sliceName} zh empty`).toBeGreaterThan(0);
+        expect(s, `${sliceName} zh jargon leak`).not.toMatch(
+          zhFirearmJargonRe
+        );
+      }
+
+      for (const s of enStrings) {
+        expect(s.trim().length, `${sliceName} en empty`).toBeGreaterThan(0);
+        expect(s, `${sliceName} en CJK leak`).not.toMatch(cjkRe);
+        expect(s, `${sliceName} en jargon leak`).not.toMatch(
+          enFirearmJargonRe
+        );
+      }
+    }
+
+    // 3. ARCHERY_ROLE_META & getEngineeringRoleMeta consistency for archery exhibits
+    for (const role of ENGINEERING_ROLE_ORDER) {
+      const meta = ARCHERY_ROLE_META[role];
+      expect(getEngineeringRoleMeta(role, 'lift33')).toBe(meta);
+      expect(getEngineeringRoleMeta(role, 'r500')).toBe(meta);
+      expect(`${meta.labelZh} ${meta.shortZh} ${meta.descZh}`).not.toMatch(
+        zhFirearmJargonRe
+      );
+      expect(`${meta.labelEn} ${meta.shortEn} ${meta.descEn}`).not.toMatch(
+        cjkRe
+      );
+      expect(`${meta.labelEn} ${meta.shortEn} ${meta.descEn}`).not.toMatch(
+        enFirearmJargonRe
+      );
+    }
+  });
+
+  it('synchronizes SHOWCASE_STRINGS metrics (13 / 327 / 758 / 76) with WEAPON_IDS, plugins, audio & public/textures', async () => {
+    const texturesDir = path.resolve(__dirname, '../public/textures');
+    const audioDir = path.resolve(__dirname, '../public/audio');
+
+    const textureFiles = fs
+      .readdirSync(texturesDir)
+      .filter((f) => f.endsWith('.webp'));
+    expect(textureFiles.length).toBe(76);
+
+    const countMp3Files = (dir: string): number => {
+      let count = 0;
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) count += countMp3Files(full);
+        else if (entry.isFile() && entry.name.endsWith('.mp3')) count += 1;
+      }
+      return count;
+    };
+    expect(countMp3Files(audioDir)).toBe(758);
+
+    let totalParts = 0;
+    for (const weaponId of WEAPON_IDS) {
+      const plugin = await loadWeaponPlugin(weaponId);
+      totalParts += plugin.parts.length;
+    }
+    expect(WEAPON_IDS.length).toBe(13);
+    expect(totalParts).toBe(327);
+
+    for (const lang of ['zh', 'en'] as const) {
+      const showcase = SHOWCASE_STRINGS[lang];
+      const metricValues = showcase.metrics.map((m) => m.val).join(' | ');
+      expect(metricValues).toContain('13');
+      expect(metricValues).toContain('327');
+      expect(metricValues).toContain('76');
+      expect(metricValues).toContain('758');
+
+      expect(showcase.hero.eyebrow).toContain('13');
+      expect(showcase.hero.eyebrow).toContain('758');
+      expect(showcase.hero.subPartsStrong).toContain('327');
+      expect(showcase.hero.subMapsStrong).toContain('76');
+      expect(showcase.hero.subAudioStrong).toContain('758');
+
+      const caliberText = showcase.documentary.caliberRows
+        .map((r) => `${r.caliber} ${r.weaponTag} ${r.signature}`)
+        .join(' ');
+      expect(caliberText).toContain('LIFT 33');
+      expect(caliberText).toContain('Ravin R500');
+    }
   });
 });

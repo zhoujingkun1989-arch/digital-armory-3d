@@ -3,6 +3,19 @@ import path from 'node:path';
 import * as THREE from 'three';
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
+  ENGINEERING_ROLE_ORDER,
+  getEngineeringRoleMeta,
+} from '../src/engine/materials/engineeringRoles';
+import {
+  getWeaponFiringTiming,
+  isArcheryWeapon,
+} from '../src/engine/physics/armoryPhysics';
+import { resolveShotForWeapon } from '../src/features/monograph/MonographCaptureRig';
+import {
+  getMonographDomainLabels,
+  getMonographLocalizedStrings,
+} from '../src/features/monograph/monographStrings';
+import {
   projectExplodedPartAnchors,
   solveExplodedPinLayout,
 } from '../src/features/monograph/explodedPinLayout';
@@ -227,5 +240,459 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
     );
     expect(cachedReqId).toBe(0);
     expect(getMonographCaptureState().activeRequest).toBeNull();
+  });
+
+  it('emits archery malfunction codes, getEngineeringRoleMeta labels, and archery domain copy for lift33 and r500', async () => {
+    const narrationsDir = path.resolve(__dirname, '../public/narrations');
+    const firearmMalfunctionRe =
+      /Stovepipe|Double Feed|Light Strike|Out-of-Battery|烟囱卡壳|双进弹|底火轻敲|弹匣/i;
+    const firearmRoleLeakRe =
+      /breech|propellant|striker|magazine|膛压|火药燃气|枪机框|弹匣/i;
+
+    for (const archeryId of ['lift33', 'r500'] as const) {
+      const plugin = await loadWeaponPlugin(archeryId);
+      const bundle = JSON.parse(
+        fs.readFileSync(path.join(narrationsDir, `${archeryId}.json`), 'utf8')
+      ) as WeaponNarrationBundle;
+
+      for (const lang of ['zh', 'en'] as const) {
+        const dossier = assembleMonographDossier(
+          archeryId,
+          plugin,
+          lang,
+          bundle,
+          'https://armory.example.org/'
+        );
+
+        expect(dossier.isArchery).toBe(true);
+        expect(dossier.malfunctionCards.map((c) => c.code)).toEqual([
+          'ARCHERY · VANE',
+          'ARCHERY · NOCK',
+          'ARCHERY · LATCH',
+          'SAFETY · ADF',
+        ]);
+        for (const card of dossier.malfunctionCards) {
+          const text = `${card.badge} ${card.title} ${card.rootCause} ${card.drillSummary}`;
+          expect(text).not.toMatch(firearmMalfunctionRe);
+        }
+
+        expect(dossier.roleSummaries.length).toBe(
+          ENGINEERING_ROLE_ORDER.length
+        );
+        for (const summary of dossier.roleSummaries) {
+          const expectedMeta = getEngineeringRoleMeta(summary.role, archeryId);
+          const firearmMeta = getEngineeringRoleMeta(summary.role, 'ak15');
+          expect(summary.label).toBe(
+            lang === 'zh' ? expectedMeta.labelZh : expectedMeta.labelEn
+          );
+          expect(summary.shortLabel).toBe(
+            lang === 'zh' ? expectedMeta.shortZh : expectedMeta.shortEn
+          );
+          expect(summary.desc).toBe(
+            lang === 'zh' ? expectedMeta.descZh : expectedMeta.descEn
+          );
+          expect(summary.colorHex).toBe(expectedMeta.colorHex);
+          expect(summary.label).not.toBe(
+            lang === 'zh' ? firearmMeta.labelZh : firearmMeta.labelEn
+          );
+          expect(`${summary.label} ${summary.desc}`).not.toMatch(
+            firearmRoleLeakRe
+          );
+          expect(summary.kidTeamTitle).not.toMatch(
+            /安全锁小队|往返滑块队|Safety Lock Team|Sliding Carrier Team/
+          );
+        }
+
+        const domainLabels = getMonographDomainLabels(lang, true);
+        const microStrings = getMonographLocalizedStrings(lang);
+        if (lang === 'en') {
+          expect(JSON.stringify(domainLabels)).not.toMatch(/[\u4e00-\u9fff]/);
+          expect(microStrings.focusPrefix).toBe('FOCUS: ');
+        } else {
+          expect(microStrings.focusPrefix).toBe('聚焦零件：');
+        }
+        expect(domainLabels.barrelLabel).not.toMatch(/Rifling|枪管/);
+        expect(domainLabels.muzzleVelLabel).not.toMatch(/Muzzle|枪口/);
+      }
+    }
+
+    // Firearms continue to emit standard TYPE-1/2/3/OOB diagnostics and firearm role metadata
+    for (const firearmId of ['ak15', 'g17'] as const) {
+      const plugin = await loadWeaponPlugin(firearmId);
+      const dossier = assembleMonographDossier(
+        firearmId,
+        plugin,
+        'en',
+        null,
+        'https://armory.example.org/'
+      );
+      expect(dossier.isArchery).toBe(false);
+      expect(dossier.malfunctionCards.map((c) => c.code)).toEqual([
+        'TYPE-2 · FTE',
+        'TYPE-3 · DBL',
+        'TYPE-1 · FTF',
+        'SAFETY · OOB',
+      ]);
+      for (const summary of dossier.roleSummaries) {
+        expect(summary.label).toBe(
+          getEngineeringRoleMeta(summary.role, firearmId).labelEn
+        );
+      }
+    }
+  });
+
+  it('resolves all 17 SHOT_PLAN plates via resolveShotForWeapon across all 13 weapons with calibrated milestones', () => {
+    type ShotInput = Parameters<typeof resolveShotForWeapon>[0];
+    const baseShotPlan: readonly ShotInput[] = [
+      {
+        key: 'cover_hero',
+        explodeT: 0,
+        showTurntable: true,
+        sectionCut: false,
+        xrayShells: false,
+        engineeringTint: false,
+        azimuthDeg: 18,
+        elevationDeg: 9.5,
+        fillX: 0.85,
+        fillY: 0.8,
+      },
+      {
+        key: 'ortho_right',
+        explodeT: 0,
+        showTurntable: false,
+        sectionCut: false,
+        xrayShells: false,
+        engineeringTint: false,
+        azimuthDeg: 0,
+        elevationDeg: 1,
+        fillX: 0.88,
+        fillY: 0.82,
+      },
+      {
+        key: 'ortho_left',
+        explodeT: 0,
+        showTurntable: false,
+        sectionCut: false,
+        xrayShells: false,
+        engineeringTint: false,
+        azimuthDeg: 180,
+        elevationDeg: 1,
+        fillX: 0.88,
+        fillY: 0.82,
+      },
+      {
+        key: 'ortho_top',
+        explodeT: 0,
+        showTurntable: false,
+        sectionCut: false,
+        xrayShells: false,
+        engineeringTint: false,
+        azimuthDeg: 0,
+        elevationDeg: 83,
+        fillX: 0.88,
+        fillY: 0.78,
+      },
+      {
+        key: 'xray_magic',
+        explodeT: 0,
+        showTurntable: false,
+        sectionCut: false,
+        xrayShells: true,
+        engineeringTint: false,
+        azimuthDeg: 11,
+        elevationDeg: 7,
+        fillX: 0.87,
+        fillY: 0.82,
+      },
+      {
+        key: 'stencil_cutaway',
+        explodeT: 0,
+        showTurntable: false,
+        sectionCut: true,
+        xrayShells: false,
+        engineeringTint: false,
+        azimuthDeg: 3.5,
+        elevationDeg: 3.5,
+        fillX: 0.88,
+        fillY: 0.82,
+      },
+      {
+        key: 'functional_roles',
+        explodeT: 0.34,
+        showTurntable: false,
+        sectionCut: false,
+        xrayShells: false,
+        engineeringTint: true,
+        azimuthDeg: 22,
+        elevationDeg: 15,
+        fillX: 0.86,
+        fillY: 0.8,
+      },
+      {
+        key: 'exploded_bom',
+        explodeT: 1.0,
+        showTurntable: false,
+        sectionCut: false,
+        xrayShells: false,
+        engineeringTint: false,
+        azimuthDeg: 10,
+        elevationDeg: 7.5,
+        fillX: 0.85,
+        fillY: 0.67,
+      },
+      {
+        key: 'group_slide',
+        explodeT: 0.25,
+        isolatedGroup: 'slide',
+        showTurntable: false,
+        sectionCut: false,
+        xrayShells: false,
+        engineeringTint: false,
+        azimuthDeg: 20,
+        elevationDeg: 14,
+        fillX: 0.82,
+        fillY: 0.78,
+      },
+      {
+        key: 'group_frame',
+        explodeT: 0.2,
+        isolatedGroup: 'frame',
+        showTurntable: false,
+        sectionCut: false,
+        xrayShells: false,
+        engineeringTint: false,
+        azimuthDeg: 18,
+        elevationDeg: 12,
+        fillX: 0.84,
+        fillY: 0.78,
+      },
+      {
+        key: 'group_fcg',
+        explodeT: 0.28,
+        isolatedGroup: 'fire_control',
+        showTurntable: false,
+        sectionCut: false,
+        xrayShells: false,
+        engineeringTint: false,
+        azimuthDeg: 22,
+        elevationDeg: 15,
+        fillX: 0.8,
+        fillY: 0.76,
+      },
+      {
+        key: 'group_mag',
+        explodeT: 0.26,
+        isolatedGroup: 'magazine',
+        showTurntable: false,
+        sectionCut: false,
+        xrayShells: false,
+        engineeringTint: false,
+        azimuthDeg: 24,
+        elevationDeg: 14,
+        fillX: 0.8,
+        fillY: 0.78,
+      },
+      {
+        key: 'comic_1_ready',
+        explodeT: 0,
+        firingF: 0.02,
+        showTurntable: false,
+        sectionCut: true,
+        xrayShells: false,
+        engineeringTint: false,
+        azimuthDeg: 8,
+        elevationDeg: 5,
+        fillX: 0.87,
+        fillY: 0.82,
+      },
+      {
+        key: 'comic_2_ignition',
+        explodeT: 0,
+        firingF: 0.17,
+        showTurntable: false,
+        sectionCut: true,
+        xrayShells: false,
+        engineeringTint: false,
+        azimuthDeg: 8,
+        elevationDeg: 5,
+        fillX: 0.87,
+        fillY: 0.82,
+      },
+      {
+        key: 'comic_3_eject',
+        explodeT: 0,
+        firingF: 0.48,
+        showTurntable: false,
+        sectionCut: true,
+        xrayShells: false,
+        engineeringTint: false,
+        azimuthDeg: 10,
+        elevationDeg: 7,
+        fillX: 0.87,
+        fillY: 0.82,
+      },
+      {
+        key: 'comic_4_reload',
+        explodeT: 0,
+        firingF: 0.8,
+        showTurntable: false,
+        sectionCut: false,
+        xrayShells: true,
+        engineeringTint: false,
+        azimuthDeg: 10,
+        elevationDeg: 7,
+        fillX: 0.87,
+        fillY: 0.82,
+      },
+      {
+        key: 'breech_closeup',
+        explodeT: 0,
+        showTurntable: false,
+        sectionCut: false,
+        xrayShells: true,
+        engineeringTint: false,
+        azimuthDeg: 14,
+        elevationDeg: 10,
+        fillX: 0.86,
+        fillY: 0.8,
+        useManifestCloseFocus: true,
+      },
+    ];
+
+    expect(baseShotPlan.map((s) => s.key)).toEqual(MONOGRAPH_PLATE_KEYS);
+
+    for (const weaponId of WEAPON_IDS) {
+      const resolved = baseShotPlan.map((s) =>
+        resolveShotForWeapon(s, weaponId)
+      );
+      const byKey = new Map(resolved.map((s) => [s.key, s]));
+
+      for (const shot of resolved) {
+        expect(Number.isFinite(shot.explodeT)).toBe(true);
+        expect(shot.explodeT).toBeGreaterThanOrEqual(0);
+        expect(shot.explodeT).toBeLessThanOrEqual(1);
+        if (shot.firingF !== undefined) {
+          expect(Number.isFinite(shot.firingF)).toBe(true);
+          expect(shot.firingF).toBeGreaterThanOrEqual(0);
+          expect(shot.firingF).toBeLessThanOrEqual(1);
+        }
+      }
+
+      if (isArcheryWeapon(weaponId)) {
+        for (const comicKey of [
+          'comic_1_ready',
+          'comic_2_ignition',
+          'comic_3_eject',
+          'comic_4_reload',
+        ] as const) {
+          expect(byKey.get(comicKey)?.sectionCut).toBe(false);
+        }
+        expect(byKey.get('comic_1_ready')?.firingF).toBeCloseTo(0.27, 6);
+        expect(byKey.get('comic_2_ignition')?.firingF).toBeCloseTo(0.36, 6);
+        expect(byKey.get('comic_3_eject')?.firingF).toBeCloseTo(0.5, 6);
+        expect(byKey.get('comic_4_reload')?.firingF).toBeCloseTo(0.78, 6);
+        expect(byKey.get('stencil_cutaway')?.sectionCut).toBe(true);
+
+        if (weaponId === 'lift33') {
+          expect(byKey.get('breech_closeup')?.xrayShells).toBe(false);
+          expect(byKey.get('comic_4_reload')?.xrayShells).toBe(false);
+        } else {
+          expect(byKey.get('breech_closeup')?.xrayShells).toBe(true);
+          expect(byKey.get('comic_4_reload')?.xrayShells).toBe(true);
+        }
+      } else {
+        const timing = getWeaponFiringTiming(weaponId);
+        expect(byKey.get('comic_2_ignition')?.firingF).toBeCloseTo(
+          (timing.ignitionF + timing.muzzleExitF) * 0.52,
+          6
+        );
+        expect(byKey.get('comic_3_eject')?.firingF).toBeCloseTo(
+          Math.min(0.74, timing.ejectF + 0.02),
+          6
+        );
+      }
+    }
+
+    // Explicit regression guard on slow bolt-action (awm) and short-recoil (m82a1) milestones
+    const comic2 = baseShotPlan.find((s) => s.key === 'comic_2_ignition')!;
+    const comic3 = baseShotPlan.find((s) => s.key === 'comic_3_eject')!;
+    const awmIgnition = resolveShotForWeapon(comic2, 'awm').firingF!;
+    const awmEject = resolveShotForWeapon(comic3, 'awm').firingF!;
+    expect(awmIgnition).not.toBeCloseTo(0.17, 2);
+    expect(awmIgnition).toBeCloseTo((0.252 + 0.345) * 0.52, 6);
+    expect(awmEject).not.toBeCloseTo(0.48, 2);
+    expect(awmEject).toBeCloseTo(0.715, 6);
+
+    const m82Ignition = resolveShotForWeapon(comic2, 'm82a1').firingF!;
+    const m82Eject = resolveShotForWeapon(comic3, 'm82a1').firingF!;
+    expect(m82Ignition).toBeCloseTo((0.138 + 0.195) * 0.52, 6);
+    expect(m82Eject).not.toBeCloseTo(0.48, 2);
+    expect(m82Eject).toBeCloseTo(0.41, 6);
+  });
+
+  it('computes accurate archery speed similes and kids summary stats for lift33 and r500 in zh and en', async () => {
+    const expectedVelocity: Record<
+      'lift33' | 'r500',
+      {
+        value: string;
+        kmh: string;
+        zhKeyword: string;
+        enKeyword: string;
+      }
+    > = {
+      lift33: {
+        value: '106 m/s',
+        kmh: '382 km/h',
+        zhKeyword: '高铁',
+        enKeyword: 'high-speed train',
+      },
+      r500: {
+        value: '152.4 m/s',
+        kmh: '549 km/h',
+        zhKeyword: '声音传播速度的一半',
+        enKeyword: 'half the speed of sound',
+      },
+    };
+
+    for (const archeryId of ['lift33', 'r500'] as const) {
+      const plugin = await loadWeaponPlugin(archeryId);
+      const spec = expectedVelocity[archeryId];
+
+      for (const lang of ['zh', 'en'] as const) {
+        const dossier = assembleMonographDossier(
+          archeryId,
+          plugin,
+          lang,
+          null,
+          'https://armory.example.org/'
+        );
+
+        const [lenStat, weightStat, partsStat, speedStat] = dossier.kidsFunStats;
+        expect(lenStat.value).toMatch(/mm$/);
+        expect(weightStat.value).toMatch(/kg$/);
+        expect(partsStat.funCompare).toContain(
+          lang === 'zh' ? '碳纤维' : 'carbon & alloy'
+        );
+
+        expect(speedStat.value).toBe(spec.value);
+        expect(speedStat.funCompare).toContain(spec.kmh);
+        expect(speedStat.funCompare).toContain(
+          lang === 'zh' ? spec.zhKeyword : spec.enKeyword
+        );
+        expect(speedStat.funCompare).not.toMatch(/超音速|faster than sound/i);
+
+        if (lang === 'en') {
+          expect(
+            dossier.kidsFunStats
+              .map((s) => `${s.label} ${s.value} ${s.funCompare}`)
+              .join(' ')
+          ).not.toMatch(/[\u4e00-\u9fff]/);
+        }
+
+        expect(dossier.comicFrames.map((f) => f.title).join(' ')).not.toMatch(
+          /抛壳|Eject/
+        );
+      }
+    }
   });
 });

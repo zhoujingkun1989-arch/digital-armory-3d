@@ -11,9 +11,9 @@ import {
   MALFUNCTION_ORDER,
 } from '../../engine/malfunctions/malfunctionSpecs';
 import {
-  ENGINEERING_ROLE_META,
   ENGINEERING_ROLE_ORDER,
   type EngineeringRole,
+  getEngineeringRoleMeta,
   resolvePartEngineeringRole,
 } from '../../engine/materials/engineeringRoles';
 import {
@@ -660,7 +660,7 @@ export function assembleMonographDossier(
 
   const roleSummaries: MonographRoleSummary[] = ENGINEERING_ROLE_ORDER.map(
     (role) => {
-      const meta = ENGINEERING_ROLE_META[role];
+      const meta = getEngineeringRoleMeta(role, weaponId);
       const kidCopy = isArchery
         ? KID_ARCHERY_ROLE_COPY[role]
         : KID_ROLE_COPY[role];
