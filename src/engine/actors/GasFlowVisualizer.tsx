@@ -25,6 +25,21 @@ const _scaleVec = new THREE.Vector3();
 const _mat4 = new THREE.Matrix4();
 const _hiddenMat4 = new THREE.Matrix4().makeScale(0, 0, 0);
 const _colorWork = new THREE.Color();
+const _ringAxisZ = new THREE.Quaternion();
+const _ringAxisY = new THREE.Quaternion().setFromAxisAngle(
+  new THREE.Vector3(1, 0, 0),
+  Math.PI * 0.5
+);
+const _ringAxisX = new THREE.Quaternion().setFromAxisAngle(
+  new THREE.Vector3(0, 1, 0),
+  Math.PI * 0.5
+);
+const _armAStart = new THREE.Vector3();
+const _armAEnd = new THREE.Vector3();
+const _armBStart = new THREE.Vector3();
+const _armBEnd = new THREE.Vector3();
+const _nockVec = new THREE.Vector3();
+const _tmpVec = new THREE.Vector3();
 
 // Calibrated engineering palette (reads cleanly under AgX + half-res Bloom without whiteout)
 const COL_PEAK_PLASMA = new THREE.Color('#fde68a');
@@ -105,11 +120,228 @@ export const GasFlowVisualizer: React.FC = () => {
     }
 
     const weaponId = appState.activeWeaponId;
+    const isArchery =
+      (weaponId as string) === 'lift33' || (weaponId as string) === 'r500';
     const manifest = getWeaponManifest(weaponId);
     const caliber = manifest.caliberProfile;
     const timing = getWeaponFiringTiming(weaponId);
-    const manifold = WEAPON_GAS_MANIFOLD_PROFILES[weaponId];
+    const manifold =
+      WEAPON_GAS_MANIFOLD_PROFILES[
+        weaponId as keyof typeof WEAPON_GAS_MANIFOLD_PROFILES
+      ];
     const f = playbackClock.getState().animatedFireProgress;
+
+    if (isArchery) {
+      const isBow = (weaponId as string) === 'lift33';
+      const exitF = isBow ? 0.5 : 0.48;
+      if (f < 0.015 || f > 0.66) {
+        root.visible = false;
+        return;
+      }
+      root.visible = true;
+
+      // Elastic draw displacement & kinetic release ratio
+      const releaseF = 0.32;
+      let strain01: number;
+      let nockX: number;
+      const boreY = isBow ? 2.4 : 1.8;
+      if (f < 0.24) {
+        const u = clamp01((f - 0.015) / 0.225);
+        strain01 = u;
+        nockX = isBow ? -16.5 - 27.5 * u : 14.0 - 36.0 * u;
+      } else if (f < releaseF) {
+        strain01 = 1;
+        nockX = isBow ? -44.0 : -22.0;
+      } else if (f <= exitF) {
+        const u = clamp01((f - releaseF) / Math.max(0.01, exitF - releaseF));
+        strain01 = 1 - u;
+        nockX = isBow ? -44.0 + 27.5 * u : -22.0 + 36.0 * u;
+      } else {
+        strain01 = Math.max(0, 1 - clamp01((f - exitF) / 0.14)) * 0.25;
+        nockX = isBow ? -16.5 : 14.0;
+      }
+
+      const isPowerStroke = f >= releaseF && f <= 0.62;
+      const releaseFade =
+        f <= exitF ? 1 : 1 - clamp01((f - exitF) / Math.max(0.02, 0.66 - exitF));
+      const beamAlpha = isPowerStroke
+        ? clamp01(0.86 * releaseFade)
+        : clamp01(0.28 + 0.56 * strain01);
+
+      if (isBow) {
+        _armAStart.set(-1.4, 32.4, 0);
+        _armAEnd.set(-12.6 - 2.4 * strain01, 41.5 - 2.1 * strain01, 0);
+        _armBStart.set(-1.4, -32.4, 0);
+        _armBEnd.set(-12.6 - 2.4 * strain01, -41.5 + 2.1 * strain01, 0);
+      } else {
+        const cockZ = 9.65 - 5.0 * strain01;
+        _armAStart.set(26.2, 1.8, 2.4);
+        _armAEnd.set(25.2 - 1.8 * strain01, 1.8, cockZ);
+        _armBStart.set(26.2, 1.8, -2.4);
+        _armBEnd.set(25.2 - 1.8 * strain01, 1.8, -cockZ);
+      }
+      _nockVec.set(nockX, boreY, 0);
+
+      _colorWork
+        .copy(COL_GAS_TAP_CYAN)
+        .lerp(COL_HIGH_PRESSURE, clamp01(strain01 * 0.9))
+        .lerp(COL_SAFE_UNLOCK, isPowerStroke ? 0.45 : 0);
+
+      // Upper / right & lower / left limb strain beams
+      if (riserMeshRef.current && riserMatRef.current) {
+        _tmpVec.subVectors(_armAEnd, _armAStart);
+        const lenA = _tmpVec.length();
+        riserMeshRef.current.visible = beamAlpha > 0.03 && lenA > 0.2;
+        riserMeshRef.current.position.addVectors(_armAStart, _armAEnd).multiplyScalar(0.5);
+        _dirVec.copy(_tmpVec).normalize();
+        _quat.setFromUnitVectors(_upAxis, _dirVec);
+        riserMeshRef.current.quaternion.copy(_quat);
+        const radA = 0.22 + 0.16 * strain01;
+        riserMeshRef.current.scale.set(radA, lenA, radA);
+        riserMatRef.current.color.copy(_colorWork);
+        riserMatRef.current.opacity = beamAlpha * 0.62;
+      }
+      if (manifoldTubeRef.current && manifoldMatRef.current) {
+        _tmpVec.subVectors(_armBEnd, _armBStart);
+        const lenB = _tmpVec.length();
+        manifoldTubeRef.current.visible = beamAlpha > 0.03 && lenB > 0.2;
+        manifoldTubeRef.current.position
+          .addVectors(_armBStart, _armBEnd)
+          .multiplyScalar(0.5);
+        _dirVec.copy(_tmpVec).normalize();
+        _quat.setFromUnitVectors(_upAxis, _dirVec);
+        manifoldTubeRef.current.quaternion.copy(_quat);
+        const radB = 0.22 + 0.16 * strain01;
+        manifoldTubeRef.current.scale.set(radB, lenB, radB);
+        manifoldMatRef.current.color.copy(_colorWork);
+        manifoldMatRef.current.opacity = beamAlpha * 0.62;
+      }
+
+      // Kinetic forward power-stroke / draw thrust beam along arrow/bolt trajectory
+      const frontX = isPowerStroke
+        ? nockX + Math.max(8, (isBow ? 52 : 60) * clamp01((f - releaseF) / 0.22))
+        : isBow
+          ? 24.0
+          : 26.0;
+      const beamSpan = Math.max(1.0, frontX - nockX);
+      if (boreOuterRef.current && boreOuterMatRef.current) {
+        boreOuterRef.current.visible = isPowerStroke && beamAlpha > 0.03;
+        boreOuterRef.current.position.set(nockX + beamSpan * 0.5, boreY, 0);
+        boreOuterRef.current.scale.set(0.28, beamSpan, 0.28);
+        boreOuterMatRef.current.color.copy(
+          isPowerStroke ? COL_SAFE_UNLOCK : COL_GAS_TAP_CYAN
+        );
+        boreOuterMatRef.current.opacity = beamAlpha * 0.42;
+      }
+      if (boreCoreRef.current && boreCoreMatRef.current) {
+        boreCoreRef.current.visible = isPowerStroke && beamAlpha > 0.03;
+        boreCoreRef.current.position.set(nockX + beamSpan * 0.5, boreY, 0);
+        boreCoreRef.current.scale.set(0.13, beamSpan, 0.13);
+        boreCoreMatRef.current.color
+          .copy(COL_SAFE_UNLOCK)
+          .lerp(COL_PEAK_PLASMA, 0.45);
+        boreCoreMatRef.current.opacity = beamAlpha * 0.72;
+      }
+
+      // Twin Cam Torque Rings on upper/lower or right/left cams
+      const camScale = (isBow ? 2.4 : 2.1) * (0.78 + 0.35 * strain01);
+      if (breechRingRef.current && breechRingMatRef.current) {
+        breechRingRef.current.visible = beamAlpha > 0.03;
+        breechRingRef.current.position.copy(_armAEnd);
+        breechRingRef.current.quaternion.copy(isBow ? _ringAxisZ : _ringAxisY);
+        breechRingRef.current.scale.set(camScale, camScale, camScale);
+        breechRingMatRef.current.color.copy(_colorWork);
+        breechRingMatRef.current.opacity = beamAlpha * 0.78;
+      }
+      if (impulseHeadRef.current && impulseHeadMatRef.current) {
+        impulseHeadRef.current.visible = beamAlpha > 0.03;
+        impulseHeadRef.current.position.copy(_armBEnd);
+        impulseHeadRef.current.quaternion.copy(isBow ? _ringAxisZ : _ringAxisY);
+        impulseHeadRef.current.scale.set(camScale, camScale, camScale);
+        impulseHeadMatRef.current.color.copy(_colorWork);
+        impulseHeadMatRef.current.opacity = beamAlpha * 0.78;
+      }
+      if (ventPlumeRef.current) {
+        ventPlumeRef.current.visible = false;
+      }
+
+      // Animated elastic strain chevrons: cams -> nock -> +X arrow launch trajectory
+      const inst = chevronsRef.current;
+      if (!inst) return;
+      const phaseScroll = (state.clock.elapsedTime * 2.8) % 1;
+      let cursor = 0;
+
+      // 3 chevrons along Arm A cam -> nock + 3 along Arm B cam -> nock
+      const armChevronPairs: [THREE.Vector3, THREE.Vector3][] = [
+        [_armAEnd, _nockVec],
+        [_armBEnd, _nockVec],
+      ];
+      for (let p = 0; p < armChevronPairs.length; p++) {
+        const from = isPowerStroke ? armChevronPairs[p][0] : _nockVec;
+        const to = isPowerStroke ? _nockVec : armChevronPairs[p][0];
+        _dirVec.subVectors(to, from);
+        const segLen = _dirVec.length();
+        if (segLen > 0.25) {
+          _dirVec.divideScalar(segLen);
+          _quat.setFromUnitVectors(_upAxis, _dirVec);
+        }
+        for (let i = 0; i < 3 && cursor < STREAM_CHEVRON_COUNT; i++) {
+          const u = ((i + phaseScroll) / 3) % 1;
+          _posVec.lerpVectors(from, to, u);
+          const s = 0.85 + 0.25 * Math.sin(u * Math.PI);
+          _scaleVec.set(s, s, s);
+          _mat4.compose(_posVec, _quat, _scaleVec);
+          inst.setMatrixAt(cursor, _mat4);
+          inst.setColorAt(cursor, _colorWork);
+          cursor++;
+        }
+      }
+
+      // 10 chevrons along +X arrow/bolt acceleration corridor during power-stroke (or pullback on draw)
+      _dirVec.set(isPowerStroke ? 1 : -1, 0, 0);
+      _quat.setFromUnitVectors(_upAxis, _dirVec);
+      for (let i = 0; i < 8 && cursor < STREAM_CHEVRON_COUNT; i++) {
+        const u = ((i + phaseScroll) / 8) % 1;
+        if (isPowerStroke) {
+          _posVec.set(nockX + beamSpan * u, boreY, 0);
+          const s = 0.9 + 0.35 * Math.sin(u * Math.PI);
+          _scaleVec.set(s, s, s);
+          _mat4.compose(_posVec, _quat, _scaleVec);
+          inst.setMatrixAt(cursor, _mat4);
+          inst.setColorAt(cursor, COL_SAFE_UNLOCK);
+        } else if (strain01 > 0.04) {
+          const braceX = isBow ? -16.5 : 14.0;
+          _posVec.set(braceX + (nockX - braceX) * u, boreY, 0);
+          _scaleVec.set(0.82, 0.82, 0.82);
+          _mat4.compose(_posVec, _quat, _scaleVec);
+          inst.setMatrixAt(cursor, _mat4);
+          inst.setColorAt(cursor, COL_GAS_TAP_CYAN);
+        } else {
+          inst.setMatrixAt(cursor, _hiddenMat4);
+        }
+        cursor++;
+      }
+
+      while (cursor < STREAM_CHEVRON_COUNT) {
+        inst.setMatrixAt(cursor, _hiddenMat4);
+        cursor++;
+      }
+      inst.instanceMatrix.needsUpdate = true;
+      if (inst.instanceColor) inst.instanceColor.needsUpdate = true;
+      if (chevronMatRef.current) {
+        chevronMatRef.current.opacity = beamAlpha * 0.9;
+      }
+      return;
+    }
+
+    // Restore firearm default orientation for riserMesh, manifoldTube, breechRing & impulseHead
+    if (riserMeshRef.current) riserMeshRef.current.quaternion.identity();
+    if (manifoldTubeRef.current)
+      manifoldTubeRef.current.rotation.set(0, 0, -Math.PI * 0.5);
+    if (breechRingRef.current)
+      breechRingRef.current.quaternion.copy(_ringAxisX);
+    if (impulseHeadRef.current)
+      impulseHeadRef.current.quaternion.copy(_ringAxisX);
 
     evaluateInternalBallisticsInto(caliber, f, _sample, timing);
 

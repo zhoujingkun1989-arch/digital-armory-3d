@@ -226,13 +226,15 @@ function findBenchmarkTargetPart(
     return (
       parts.find((p) => /(?:^|_)barrel$/.test(p.id)) ??
       parts.find((p) => /barrel/.test(p.id) && !/spring|lock|cross/.test(p.id)) ??
+      parts.find((p) => p.id === 'lift33_arrow_shaft' || p.id === 'r500_flight_rail') ??
       null
     );
   }
-  // bolt_lug_span: prefer rotating/locking bolt head, else slide
+  // bolt_lug_span: prefer rotating/locking bolt head, else slide, else bow riser/latch
   return (
     parts.find((p) => /(?:^|_)(?:bolt|bolt_head|bolt_body)$/.test(p.id)) ??
     parts.find((p) => /(?:^|_)slide$/.test(p.id)) ??
+    parts.find((p) => p.id === 'lift33_riser' || p.id === 'r500_cam_axles') ??
     parts[0] ??
     null
   );
@@ -408,6 +410,86 @@ class CaliperRuntimeController {
     scratchPose: MutablePartPose
   ): boolean {
     this.weaponId = weaponId;
+
+    // Dedicated 1:1 archery benchmarks:
+    // - lift33: Axle-to-Axle (830mm Y), Power-Stroke/Arrow Span (X), Brace Height (string->grip X)
+    // - r500: Overall Length (X), Flight Track Power Stroke (X), Axle-to-Axle Cam Width (Z)
+    if ((weaponId as string) === 'lift33') {
+      const findPart = (id: string) => parts.find((p) => p.id === id);
+      if (kind === 'overall_envelope') {
+        const up = findPart('lift33_upper_cam');
+        const lo = findPart('lift33_lower_cam');
+        if (up && lo) {
+          const uEnv = computeWeaponEnvelopeMetrics([up], getGeometry, evaluatePose, scratchPose);
+          const lEnv = computeWeaponEnvelopeMetrics([lo], getGeometry, evaluatePose, scratchPose);
+          if (uEnv && lEnv) {
+            this.pointA = {
+              partId: lo.id,
+              pos: [lEnv.center[0], lEnv.center[1], lEnv.center[2]],
+              normal: [0, -1, 0],
+            };
+            this.pointB = {
+              partId: up.id,
+              pos: [uEnv.center[0], uEnv.center[1], uEnv.center[2]],
+              normal: [0, 1, 0],
+            };
+            this.activeBenchmark = kind;
+            playWorkbenchFoley('preset_detent');
+            this.emit();
+            return true;
+          }
+        }
+      } else if (kind === 'bolt_lug_span') {
+        const str = findPart('lift33_bowstring');
+        const grip = findPart('lift33_grip');
+        if (str && grip) {
+          const sEnv = computeWeaponEnvelopeMetrics([str], getGeometry, evaluatePose, scratchPose);
+          const gEnv = computeWeaponEnvelopeMetrics([grip], getGeometry, evaluatePose, scratchPose);
+          if (sEnv && gEnv) {
+            this.pointA = {
+              partId: str.id,
+              pos: [sEnv.center[0], gEnv.center[1], 0],
+              normal: [-1, 0, 0],
+            };
+            this.pointB = {
+              partId: grip.id,
+              pos: [gEnv.center[0], gEnv.center[1], 0],
+              normal: [1, 0, 0],
+            };
+            this.activeBenchmark = kind;
+            playWorkbenchFoley('preset_detent');
+            this.emit();
+            return true;
+          }
+        }
+      }
+    } else if ((weaponId as string) === 'r500') {
+      const findPart = (id: string) => parts.find((p) => p.id === id);
+      if (kind === 'bolt_lug_span') {
+        const lc = findPart('r500_left_cam');
+        const rc = findPart('r500_right_cam');
+        if (lc && rc) {
+          const lEnv = computeWeaponEnvelopeMetrics([lc], getGeometry, evaluatePose, scratchPose);
+          const rEnv = computeWeaponEnvelopeMetrics([rc], getGeometry, evaluatePose, scratchPose);
+          if (lEnv && rEnv) {
+            this.pointA = {
+              partId: lc.id,
+              pos: [lEnv.center[0], lEnv.center[1], lEnv.center[2]],
+              normal: [0, 0, -1],
+            };
+            this.pointB = {
+              partId: rc.id,
+              pos: [rEnv.center[0], rEnv.center[1], rEnv.center[2]],
+              normal: [0, 0, 1],
+            };
+            this.activeBenchmark = kind;
+            playWorkbenchFoley('preset_detent');
+            this.emit();
+            return true;
+          }
+        }
+      }
+    }
 
     if (kind === 'overall_envelope') {
       const env = computeWeaponEnvelopeMetrics(

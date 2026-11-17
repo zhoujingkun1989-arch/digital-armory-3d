@@ -38,7 +38,7 @@ export interface FieldStripStepSpec {
 }
 
 export interface FieldStripWeaponPlan {
-  weaponId: WeaponId;
+  weaponId: WeaponId | 'lift33' | 'r500';
   manualCodeZh: string;
   manualCodeEn: string;
   steps: readonly FieldStripStepSpec[];
@@ -52,7 +52,7 @@ function bind(
 }
 
 export const FIELD_STRIP_PLANS: Readonly<
-  Record<WeaponId, FieldStripWeaponPlan>
+  Record<WeaponId | 'lift33' | 'r500', FieldStripWeaponPlan>
 > = {
   // ===========================================================================
   // 1. Kalashnikov AK-15M1 (7.62×39mm) — 6-Step Russian Service Field Strip
@@ -1706,6 +1706,311 @@ export const FIELD_STRIP_PLANS: Readonly<
         reassembleBlockedNoteEn: '',
         triggerPartIds: ['p90_hammer_pack', 'p90_hammer'],
         bindings: [bind('p90_hammer_pack', 0), bind('p90_hammer', 0)],
+      },
+    ],
+  },
+
+  lift33: {
+    weaponId: 'lift33',
+    manualCodeZh: 'Mathews LIFT 33 SwitchWeight-X 弓匠标准勤务保养教范',
+    manualCodeEn: 'Mathews LIFT 33 SwitchWeight-X Technician Service SOP',
+    steps: [
+      {
+        id: 'lift33_strip_arrow',
+        orderLabel: '01',
+        titleZh: '卸下搭弦 400 gr 碳纤维猎箭与三刃猎箭头',
+        titleEn: 'Un-Nock 400 gr Carbon Arrow & 3-Blade Broadhead',
+        actionHintZh:
+          '点击 3D 碳箭或猎箭头，先将实弹箭矢从 D 环与下落式箭台叉片上安全取下。',
+        actionHintEn:
+          'Click the carbon arrow or broadhead to un-nock and clear the live arrow from the launcher fork.',
+        requires: [],
+        stripBlockedNoteZh: '',
+        stripBlockedNoteEn: '',
+        reassembleBlockedNoteZh:
+          '复装箭支前必须确保 QAD 下落式箭台、弓弦与 D 环已完整复位！',
+        reassembleBlockedNoteEn:
+          'Reinstall the drop-away rest, bowstring, and D-loop before nocking the carbon arrow!',
+        triggerPartIds: ['lift33_arrow_shaft', 'lift33_broadhead'],
+        bindings: [
+          bind('lift33_arrow_shaft', 0),
+          bind('lift33_broadhead', 0, 1),
+        ],
+      },
+      {
+        id: 'lift33_strip_quiver',
+        orderLabel: '02',
+        titleZh: '解锁 LowPro 快拆拨扣并拆下五支装箭壶总成',
+        titleEn: 'Unlatch & Detach LowPro 5-Arrow Quiver Assembly',
+        actionHintZh:
+          '点击箭壶骨架或快拆拨扣，将侧挂 LowPro 五箭壶连同护头罩向右移出弓身。',
+        actionHintEn:
+          'Click the LowPro quiver frame or latch to release and detach the 5-arrow quiver assembly.',
+        requires: [],
+        stripBlockedNoteZh: '',
+        stripBlockedNoteEn: '',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: [
+          'lift33_quiver_frame',
+          'lift33_quiver_latch',
+          'lift33_quiver_hood',
+        ],
+        bindings: [
+          bind('lift33_quiver_latch', 0),
+          bind('lift33_quiver_frame', 0),
+          bind('lift33_quiver_hood', 0),
+        ],
+      },
+      {
+        id: 'lift33_strip_stabilizer',
+        orderLabel: '03',
+        titleZh: '旋松止付锁紧并抽下 Bridge-Lock 10 英寸减震平衡杆',
+        titleEn: 'Unlock & Withdraw 10" Bridge-Lock Stabilizer',
+        actionHintZh:
+          '点击前方碳纤维平衡杆，顺轴向前抽离 Bridge-Lock 贯穿安装槽。',
+        actionHintEn:
+          'Click the front carbon stabilizer to draw it forward out of the Bridge-Lock riser pass-through.',
+        requires: [],
+        stripBlockedNoteZh: '',
+        stripBlockedNoteEn: '',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: ['lift33_stabilizer'],
+        bindings: [bind('lift33_stabilizer', 0)],
+      },
+      {
+        id: 'lift33_strip_sight_rest',
+        orderLabel: '04',
+        titleZh: '拆下五针燕尾瞄准器与 QAD Integrate 下落式箭台',
+        titleEn: 'Remove Bridge-Lock 5-Pin Sight & QAD Drop-Away Rest',
+        actionHintZh:
+          '点击瞄准器框体或下落式箭台座，将瞄准光学件与叉片组件分离弓把。',
+        actionHintEn:
+          'Click the sight housing or QAD rest body to clear the optics and drop-away launcher assembly.',
+        requires: ['lift33_strip_arrow'],
+        stripBlockedNoteZh:
+          '箭杆仍穿过箭台叉片与瞄准环窗口，必须先卸下搭弦碳箭（步骤 01）！',
+        stripBlockedNoteEn:
+          'The nocked arrow passes directly through the rest launcher—un-nock the arrow (Step 01) first!',
+        reassembleBlockedNoteZh:
+          '主弦与同步缆正从箭台驱动位置穿过，必须先挂回弓弦总成再锁固瞄具与箭台！',
+        reassembleBlockedNoteEn:
+          'Reinstall the bowstring and bus cables before remounting the QAD drop-away rest and sight!',
+        triggerPartIds: [
+          'lift33_sight_housing',
+          'lift33_sight_pins',
+          'lift33_drop_away_rest',
+          'lift33_launcher_fork',
+        ],
+        bindings: [
+          bind('lift33_sight_housing', 0),
+          bind('lift33_sight_pins', 0, 1),
+          bind('lift33_drop_away_rest', 0),
+          bind('lift33_launcher_fork', 0),
+        ],
+      },
+      {
+        id: 'lift33_strip_strings_cables',
+        orderLabel: '05',
+        titleZh: '架上弓压机卸张力并取下主弓弦、D 环与 Y 形同步缆',
+        titleEn: 'Press Bow & Remove Bowstring, D-Loop, Yoke Cables & Dampeners',
+        actionHintZh:
+          '点击主弓弦、D 环或副缆，卸除弹性预紧并脱离双偏心轮弦槽。',
+        actionHintEn:
+          'Click the bowstring, D-loop, or yoke cables to lift the string set clear of both cam tracks.',
+        requires: ['lift33_strip_arrow', 'lift33_strip_sight_rest'],
+        stripBlockedNoteZh:
+          '必须先清空搭弦箭矢并拆除下落式箭台（步骤 01、04），避免卸弦时拉断驱动缆或刮伤叉片！',
+        stripBlockedNoteEn:
+          'Un-nock the arrow and clear the drop-away rest (Steps 01 & 04) before pressing and unhooking the bowstring!',
+        reassembleBlockedNoteZh:
+          '请先将 SwitchWeight-X 偏心轮与四分体碳弓片插回弓兜并穿入轮轴，再挂装主弦与同步缆！',
+        reassembleBlockedNoteEn:
+          'Reinstall the SwitchWeight-X cams, axles, and split limbs into the pockets before stringing the bow!',
+        triggerPartIds: [
+          'lift33_bowstring',
+          'lift33_d_loop',
+          'lift33_yoke_cables',
+          'lift33_limb_dampeners',
+        ],
+        bindings: [
+          bind('lift33_bowstring', 0),
+          bind('lift33_d_loop', 0),
+          bind('lift33_yoke_cables', 0),
+          bind('lift33_limb_dampeners', 0),
+        ],
+      },
+      {
+        id: 'lift33_strip_cams_limbs',
+        orderLabel: '06',
+        titleZh: '抽出钛合金轮轴并分解 SwitchWeight-X 凸轮与四分体弓片',
+        titleEn: 'Pull Cam Axles & Strip SwitchWeight-X Cams, Limbs & Pockets',
+        actionHintZh:
+          '点击上下偏心轮或轮轴，完整分解双同步凸轮、四分体碳弓片与上下弓片兜。',
+        actionHintEn:
+          'Click either SwitchWeight-X cam or axle to disassemble both cams, split limbs, and limb pockets.',
+        requires: ['lift33_strip_strings_cables'],
+        stripBlockedNoteZh:
+          '主弓弦与 Y 形副缆在数百牛顿张力下将凸轮与弓片锁死在轮轴上，严禁带弦强行拔轴！请先完成步骤 05。',
+        stripBlockedNoteEn:
+          'String and yoke cable tension locks the cams onto the axles—unhook the strings/cables (Step 05) first!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: [
+          'lift33_upper_cam',
+          'lift33_lower_cam',
+          'lift33_cam_axles',
+          'lift33_upper_limbs',
+          'lift33_lower_limbs',
+        ],
+        bindings: [
+          bind('lift33_cam_axles', 0),
+          bind('lift33_upper_cam', 0),
+          bind('lift33_lower_cam', 0),
+          bind('lift33_upper_limbs', 0),
+          bind('lift33_lower_limbs', 0),
+          bind('lift33_upper_pocket', 0),
+          bind('lift33_lower_pocket', 0),
+        ],
+      },
+    ],
+  },
+
+  r500: {
+    weaponId: 'r500',
+    manualCodeZh: 'Ravin R500 HexCoil 军械级勤务保养与滑座拆装教范',
+    manualCodeEn: 'Ravin R500 HexCoil Armorer Service & Sled Maintenance SOP',
+    steps: [
+      {
+        id: 'r500_strip_quiver',
+        orderLabel: '01',
+        titleZh: '拆下侧挂三支装低阻力碳箭壶总成',
+        titleEn: 'Detach Side-Mount 3-Bolt Carbon Quiver',
+        actionHintZh:
+          '点击右侧挂箭壶体，沿横向导座将三箭箭壶总成向右侧整体拆离机匣。',
+        actionHintEn:
+          'Click the side-mounted quiver frame to slide the 3-bolt quiver clear to the right.',
+        requires: [],
+        stripBlockedNoteZh: '',
+        stripBlockedNoteEn: '',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: ['r500_quiver_frame'],
+        bindings: [bind('r500_quiver_frame', 0)],
+      },
+      {
+        id: 'r500_strip_scope',
+        orderLabel: '02',
+        titleZh: '旋松快拆夹具取下 1–8×24 发光测距弩镜',
+        titleEn: 'Unclamp 1–8×24 Illuminated Ballistic Crossbow Scope',
+        actionHintZh:
+          '点击顶部 1–8×24 弩镜，将其从悬空飞轨皮卡汀尼瞄镜桥上垂直取下。',
+        actionHintEn:
+          'Click the top 1–8×24 scope to lift it upward off the Picatinny optical bridge.',
+        requires: [],
+        stripBlockedNoteZh: '',
+        stripBlockedNoteEn: '',
+        reassembleBlockedNoteZh:
+          '必须先将顶部悬浮飞轨及皮卡汀尼瞄镜桥锁固回位，才能重新架装光学弩镜！',
+        reassembleBlockedNoteEn:
+          'Reinstall the top flight track optical bridge before clamping the 1–8×24 scope back on!',
+        triggerPartIds: ['r500_scope'],
+        bindings: [bind('r500_scope', 0)],
+      },
+      {
+        id: 'r500_strip_bolt',
+        orderLabel: '03',
+        titleZh: '抬起弹簧压箭片并向前抽出 20 英寸竞赛碳纤维弩箭',
+        titleEn: 'Lift Bolt Retention Arm & Unload 20" Match Carbon Bolt',
+        actionHintZh:
+          '点击压箭弹片或碳纤维弩箭，释放尾扣压力并将实弹弩箭向前端安全退出。',
+        actionHintEn:
+          'Click the retention arm or carbon bolt to clear tension and slide the 20" bolt forward.',
+        requires: [],
+        stripBlockedNoteZh: '',
+        stripBlockedNoteEn: '',
+        reassembleBlockedNoteZh:
+          '必须在顶部飞轨与 Trac-Trigger 滑座就位后，再装入碳箭并压紧防跳压片！',
+        reassembleBlockedNoteEn:
+          'Ensure the top flight track and Trac-Trigger sled are seated before reloading the carbon bolt!',
+        triggerPartIds: ['r500_carbon_bolt', 'r500_retention_arm'],
+        bindings: [
+          bind('r500_carbon_bolt', 0),
+          bind('r500_retention_arm', 0),
+        ],
+      },
+      {
+        id: 'r500_strip_buttstock_crank',
+        orderLabel: '04',
+        titleZh: '拆下无托镂空枪托并抽出 Versa-Drive 双向丝杠驱动轴',
+        titleEn: 'Remove Bullpup Buttstock & Withdraw Versa-Drive Leadscrew',
+        actionHintZh:
+          '点击尾部抵肩枪托或双向螺旋丝杠，从主机匣后端向后抽出精密传动丝杠。',
+        actionHintEn:
+          'Click the bullpup buttstock or Versa-Drive leadscrew to withdraw the crank screw rearward.',
+        requires: [],
+        stripBlockedNoteZh: '',
+        stripBlockedNoteEn: '',
+        reassembleBlockedNoteZh:
+          '必须先将 Trac-Trigger 滑座复位入轨，再穿入 Versa-Drive 丝杠并闭合无托尾段！',
+        reassembleBlockedNoteEn:
+          'Seat the Trac-Trigger sled inside the rail bay before threading in the Versa-Drive leadscrew!',
+        triggerPartIds: ['r500_buttstock', 'r500_versadrive_screw'],
+        bindings: [
+          bind('r500_buttstock', 0),
+          bind('r500_versadrive_screw', 0, 1),
+        ],
+      },
+      {
+        id: 'r500_strip_flight_rail',
+        orderLabel: '05',
+        titleZh: '拆除高架悬空飞轨与皮卡汀尼瞄具桥盖',
+        titleEn: 'Lift Elevated Zero-Friction Flight Track & Optical Bridge',
+        actionHintZh:
+          '点击顶部悬空飞轨桥壳，垂直抬起敞开内部 Trac-Trigger 悬浮火控滑道。',
+        actionHintEn:
+          'Click the top flight track bridge to lift the upper housing clear of the sled channel.',
+        requires: ['r500_strip_scope', 'r500_strip_bolt'],
+        stripBlockedNoteZh:
+          '顶部光学瞄具与压紧中的 20 英寸弩箭卡住飞轨桥体，请先拆下弩镜并退出碳箭（步骤 02、03）！',
+        stripBlockedNoteEn:
+          'The mounted scope and retained 20" bolt pin down the flight rail—remove the scope and bolt (Steps 02 & 03) first!',
+        reassembleBlockedNoteZh:
+          '必须先将 Trac-Trigger 悬浮滑座、挂弦爪与防空放阻铁装回滑道内，再闭合顶部飞轨桥！',
+        reassembleBlockedNoteEn:
+          'Reinstall the Trac-Trigger sled, string latch, and anti-dry-fire lock before closing the flight track!',
+        triggerPartIds: ['r500_flight_rail'],
+        bindings: [bind('r500_flight_rail', 0)],
+      },
+      {
+        id: 'r500_strip_trigger_sled',
+        orderLabel: '06',
+        titleZh: '取出 Trac-Trigger 悬浮挂弦滑座、防空放阻块与复位簧',
+        titleEn: 'Withdraw Trac-Trigger Sled, String Latch & Anti-Dry-Fire Pack',
+        actionHintZh:
+          '点击内部悬浮火控滑座、挂弦卡爪或铜色防空放锁，将精密释放总成整体升起取出。',
+        actionHintEn:
+          'Click the floating trigger sled, string latch, or anti-dry-fire safety to lift the release assembly out.',
+        requires: ['r500_strip_flight_rail', 'r500_strip_buttstock_crank'],
+        stripBlockedNoteZh:
+          'Trac-Trigger 滑座被顶部飞轨桥遮盖且内孔仍啮合在 Versa-Drive 丝杠上，请先拆飞轨并抽出丝杠（步骤 04、05）！',
+        stripBlockedNoteEn:
+          'The flight bridge encloses the sled and the Versa-Drive screw threads through it—remove the rail and crank screw (Steps 04 & 05) first!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: [
+          'r500_trigger_sled',
+          'r500_string_latch',
+          'r500_anti_dry_fire',
+          'r500_trigger_spring',
+        ],
+        bindings: [
+          bind('r500_trigger_sled', 0),
+          bind('r500_string_latch', 0),
+          bind('r500_anti_dry_fire', 0),
+          bind('r500_trigger_spring', 0),
+        ],
       },
     ],
   },

@@ -8,8 +8,9 @@ import {
   X,
 } from 'lucide-react';
 import {
+  getMalfunctionScenario,
+  isArcheryMalfunctionWeapon,
   MALFUNCTION_ORDER,
-  MALFUNCTION_SCENARIOS,
 } from '../../engine/malfunctions/malfunctionSpecs';
 import { malfunctionStore } from '../../engine/malfunctions/malfunctionStore';
 import { UI_STRINGS } from '../../i18n/uiStrings';
@@ -26,8 +27,9 @@ export const MalfunctionHud: React.FC = () => {
     malfunctionStore.getSnapshot
   );
 
+  const isArchery = isArcheryMalfunctionWeapon(activeWeaponId);
   const ui = UI_STRINGS[lang].malfunction;
-  const scenario = MALFUNCTION_SCENARIOS[snap.activeKind];
+  const scenario = getMalfunctionScenario(snap.activeKind, activeWeaponId);
   const isZh = lang === 'zh';
 
   return (
@@ -37,7 +39,7 @@ export const MalfunctionHud: React.FC = () => {
         <div className="malf-title-cluster">
           <span className="malf-badge">
             <ShieldAlert size={12} aria-hidden="true" />
-            <span>{ui.badge}</span>
+            <span>{isArchery ? ui.archeryBadge : ui.badge}</span>
           </span>
           <span className="malf-progress-pill">
             {ui.progressLabel(snap.completedSteps, snap.totalSteps)}
@@ -81,7 +83,7 @@ export const MalfunctionHud: React.FC = () => {
       {/* 4 Canonical Malfunction & Safety Scenario Selector Tabs */}
       <div className="malf-scenario-tabs">
         {MALFUNCTION_ORDER.map((kind) => {
-          const item = MALFUNCTION_SCENARIOS[kind];
+          const item = getMalfunctionScenario(kind, activeWeaponId);
           const isSelected = snap.activeKind === kind;
           return (
             <button
@@ -118,8 +120,11 @@ export const MalfunctionHud: React.FC = () => {
               aria-hidden="true"
             />
             <div>
-              <strong>{ui.clearedTitle}</strong>
-              <span className="malf-diag-sub"> {ui.clearedDesc}</span>
+              <strong>{isArchery ? ui.archeryClearedTitle : ui.clearedTitle}</strong>
+              <span className="malf-diag-sub">
+                {' '}
+                {isArchery ? ui.archeryClearedDesc : ui.clearedDesc}
+              </span>
             </div>
           </div>
         ) : (
@@ -133,14 +138,20 @@ export const MalfunctionHud: React.FC = () => {
                 {isZh ? scenario.titleZh : scenario.titleEn}
               </strong>
               <p className="malf-diag-cause">
-                <strong>{ui.rootCauseLabel}</strong>{' '}
+                <strong>
+                  {isArchery ? ui.archeryRootCauseLabel : ui.rootCauseLabel}
+                </strong>{' '}
                 {isZh ? scenario.rootCauseZh : scenario.rootCauseEn}
               </p>
             </div>
             <div className="malf-safety-box">
-              <span className="malf-safety-label">{ui.safetyNoteLabel}</span>
+              <span className="malf-safety-label">
+                {isArchery ? ui.archerySafetyNoteLabel : ui.safetyNoteLabel}
+              </span>
               <span>{isZh ? scenario.safetyNoteZh : scenario.safetyNoteEn}</span>
-              <span className="malf-click-hint">{ui.click3dHint}</span>
+              <span className="malf-click-hint">
+                {isArchery ? ui.archeryClick3dHint : ui.click3dHint}
+              </span>
             </div>
           </div>
         )}

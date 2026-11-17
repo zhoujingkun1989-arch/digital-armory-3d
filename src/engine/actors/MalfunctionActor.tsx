@@ -4,7 +4,10 @@ import { useFrame } from '@react-three/fiber';
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
 import { getLoadedWeaponPlugin } from '../../weapons/registry';
-import { WEAPON_MALFUNCTION_PROFILES } from '../malfunctions/malfunctionSpecs';
+import {
+  isArcheryMalfunctionWeapon,
+  WEAPON_MALFUNCTION_PROFILES,
+} from '../malfunctions/malfunctionSpecs';
 import { malfunctionStore } from '../malfunctions/malfunctionStore';
 import { getWeaponFiringTiming } from '../physics/armoryPhysics';
 import {
@@ -26,6 +29,42 @@ const OOB_GAP_COLLAR_GEO = (() => {
   return g;
 })();
 
+// Module-cached archery carbon arrow/bolt shaft + broadhead + nock + fletching geometries
+// (`1 unit = 1 cm`; zero floating brass rifle shells on `lift33` or `r500`!)
+const ARCHERY_SHAFT_GEO = (() => {
+  const g = new THREE.CylinderGeometry(0.32, 0.32, 34, 14);
+  g.rotateZ(-Math.PI / 2);
+  g.translate(17, 0, 0);
+  return g;
+})();
+
+const ARCHERY_BROADHEAD_GEO = (() => {
+  const g = new THREE.ConeGeometry(0.66, 3.2, 3);
+  g.rotateZ(-Math.PI / 2);
+  g.translate(35.4, 0, 0);
+  return g;
+})();
+
+const ARCHERY_NOCK_GEO = (() => {
+  const g = new THREE.CylinderGeometry(0.37, 0.37, 1.35, 14);
+  g.rotateZ(-Math.PI / 2);
+  g.translate(-0.5, 0, 0);
+  return g;
+})();
+
+const ARCHERY_VANES_GEO = (() => {
+  const g = new THREE.ConeGeometry(0.92, 4.2, 3);
+  g.rotateZ(-Math.PI / 2);
+  g.translate(3.2, 0, 0);
+  return g;
+})();
+
+const ARCHERY_DIAG_RING_GEO = (() => {
+  const g = new THREE.TorusGeometry(1.1, 0.08, 10, 28);
+  g.rotateY(Math.PI / 2);
+  return g;
+})();
+
 /**
  * WP-09 — Classic Firearm Malfunction 3D Cutaway Cartridge & Stoppage Actor
  * -------------------------------------------------------------------------
@@ -40,11 +79,21 @@ export const MalfunctionActor: React.FC = () => {
 
   const manifest = getWeaponManifest(activeWeaponId);
   const caliberProfile = manifest.caliberProfile;
-  const calSpec = CALIBER_VISUAL_SPECS[caliberProfile];
-  const roundFit = WEAPON_ROUND_FIT[activeWeaponId];
+  const isArchery = isArcheryMalfunctionWeapon(activeWeaponId);
+  const calSpec =
+    CALIBER_VISUAL_SPECS[caliberProfile] ?? CALIBER_VISUAL_SPECS['556_nato'];
+  const roundFit = WEAPON_ROUND_FIT[activeWeaponId] ?? {
+    roundScale: 0.72,
+    magLocalShiftX: 0,
+    ignitionF: 0.32,
+  };
+  const safeCaliberKey =
+    CALIBER_VISUAL_SPECS[caliberProfile] !== undefined
+      ? caliberProfile
+      : ('556_nato' as const);
 
   const { caseGeo, bulletGeo, livePrimerGeo, spentPrimerGeo, sootRingGeo, xHead } =
-    useMemo(() => getCaliberGeometries(caliberProfile), [caliberProfile]);
+    useMemo(() => getCaliberGeometries(safeCaliberKey), [safeCaliberKey]);
 
   const primaryGroupRef = useRef<THREE.Group>(null);
   const primaryBulletRef = useRef<THREE.Mesh>(null);
@@ -66,9 +115,14 @@ export const MalfunctionActor: React.FC = () => {
 
     const vis = malfunctionStore.getTransientVisuals();
     const weaponId = st.activeWeaponId;
+    const isArcheryActive = isArcheryMalfunctionWeapon(weaponId);
     const curManifest = getWeaponManifest(weaponId);
     const meta = curManifest.workbenchMeta;
-    const fit = WEAPON_ROUND_FIT[weaponId];
+    const fit = WEAPON_ROUND_FIT[weaponId] ?? {
+      roundScale: 0.72,
+      magLocalShiftX: 0,
+      ignitionF: 0.32,
+    };
     const prof = WEAPON_MALFUNCTION_PROFILES[weaponId];
     const plugin = getLoadedWeaponPlugin(weaponId);
     const timing = getWeaponFiringTiming(weaponId);
@@ -80,6 +134,112 @@ export const MalfunctionActor: React.FC = () => {
     const cz = meta.chamberGlowPos[2];
     const isDownwardEject = prof.ejectionUpSign < 0;
     const ejectZ = 1;
+
+    if (isArcheryActive) {
+      const isBow = (weaponId as string) === 'lift33';
+      const nockBaseX = isBow ? -16.5 : -22.0;
+      const boreY = isBow ? 2.4 : 1.8;
+      const shaftScale = isBow ? 1.15 : 0.92;
+      const pGrp = primaryGroupRef.current;
+      if (pGrp) {
+        const clr = vis.caseClearAlpha;
+        pGrp.visible = clr < 0.995;
+        if (pGrp.visible) {
+          pGrp.scale.setScalar(shaftScale * (1 - 0.14 * clr));
+          if (vis.kind === 'stovepipe') {
+            // Vane / Rest Timing Hang-Up: skewed carbon shaft tilted near launcher fork / retention arm
+            pGrp.position.set(
+              nockBaseX + (isBow ? 5.5 : 18.0) + 12.0 * clr,
+              boreY + 0.45 + 3.2 * clr,
+              cz + 1.2 * clr
+            );
+            pGrp.rotation.set(0.08 * (1 - clr), 0.11 * (1 - clr), -0.14 * (1 - clr));
+            if (primaryDiagRingRef.current) {
+              primaryDiagRingRef.current.visible = clr < 0.25;
+              primaryDiagRingRef.current.position.set(isBow ? 17.5 : 8.5, 0, 0);
+              primaryDiagRingRef.current.scale.setScalar(0.95 + 0.22 * pulse);
+            }
+          } else if (vis.kind === 'double_feed') {
+            // Nock Pinch: shaft canted upward off string serving
+            pGrp.position.set(
+              nockBaseX - 3.5 * clr,
+              boreY + 0.65 + 4.5 * clr,
+              cz + 1.5 * clr
+            );
+            pGrp.rotation.set(0.05, -0.09, 0.12 * (1 - clr));
+            if (primaryDiagRingRef.current) {
+              primaryDiagRingRef.current.visible = clr < 0.25;
+              primaryDiagRingRef.current.position.set(-0.5, 0, 0);
+              primaryDiagRingRef.current.scale.setScalar(0.9 + 0.2 * pulse);
+            }
+          } else if (vis.kind === 'light_strike') {
+            // Incomplete Latch / Release Check: pulsing amber ring at nock / D-loop datum
+            pGrp.position.set(nockBaseX - 4.0 * clr, boreY + 2.6 * clr, cz);
+            pGrp.rotation.set(0, 0, 0.04 * (1 - clr));
+            if (primaryDiagRingRef.current) {
+              primaryDiagRingRef.current.visible = clr < 0.25;
+              primaryDiagRingRef.current.position.set(-0.5, 0, 0);
+              primaryDiagRingRef.current.scale.setScalar(1.0 + 0.24 * pulse);
+            }
+          } else {
+            // Anti-Dry-Fire / Cam Track Block: unseated nock offset rearward from latch / ADF pawl
+            pGrp.position.set(nockBaseX - 3.2 - 3.0 * clr, boreY + 2.0 * clr, cz);
+            pGrp.rotation.set(0, 0, 0);
+            if (primaryDiagRingRef.current) primaryDiagRingRef.current.visible = false;
+          }
+          if (primaryDiagRingMatRef.current) {
+            primaryDiagRingMatRef.current.color.setHex(0xf59e0b);
+            primaryDiagRingMatRef.current.opacity = 0.65 + 0.32 * pulse;
+          }
+        }
+      }
+
+      const secGrp = secondRoundGroupRef.current;
+      if (secGrp) {
+        const drop = vis.secondRoundDropAlpha;
+        secGrp.visible = vis.kind === 'double_feed' && drop < 0.995;
+        if (secGrp.visible) {
+          secGrp.position.set(
+            nockBaseX + (isBow ? 1.5 : 4.0),
+            boreY - 0.5 - 2.5 * drop,
+            cz + 2.4 + 4.8 * drop
+          );
+          secGrp.rotation.set(0.18 * drop, -0.22 * (1 - drop), isBow ? Math.PI * 0.45 : -0.15);
+          secGrp.scale.setScalar(shaftScale * 0.88 * (1 - 0.12 * drop));
+        }
+      }
+
+      const collar = oobCollarRef.current;
+      const collarMat = oobCollarMatRef.current;
+      if (collar && collarMat) {
+        const showOob = vis.kind === 'out_of_battery' && vis.caseClearAlpha < 0.35;
+        const showCleared = vis.cleared && vis.freshChamberAlpha > 0.5;
+        collar.visible = showOob || showCleared;
+        if (showOob) {
+          collar.position.set(nockBaseX, boreY, cz);
+          collar.scale.setScalar(1.6 + 0.28 * pulse);
+          collarMat.color.setHex(0xef4444);
+          collarMat.opacity = 0.52 + 0.4 * pulse;
+        } else if (showCleared) {
+          collar.position.set(nockBaseX, boreY, cz);
+          collar.scale.setScalar(1.55);
+          collarMat.color.setHex(0x10b981);
+          collarMat.opacity = 0.48;
+        }
+      }
+
+      const freshGrp = freshRoundGroupRef.current;
+      if (freshGrp) {
+        const fa = vis.freshChamberAlpha;
+        freshGrp.visible = fa > 0.02;
+        if (freshGrp.visible) {
+          freshGrp.position.set(nockBaseX - (1 - fa) * 4.0, boreY, cz);
+          freshGrp.rotation.set(0, 0, 0);
+          freshGrp.scale.setScalar(shaftScale);
+        }
+      }
+      return;
+    }
 
     // Optional plugin ballistics anchor for feed-lip / port alignment
     const ejectSample = plugin
@@ -239,6 +399,146 @@ export const MalfunctionActor: React.FC = () => {
 
   if (screen !== 'workbench' || !malfunctionActive) {
     return null;
+  }
+
+  if (isArchery) {
+    return (
+      <group>
+        {/* 1. Primary Obstructed / Pinched Carbon Arrow or Crossbow Bolt */}
+        <group ref={primaryGroupRef} position={manifest.workbenchMeta.chamberGlowPos}>
+          <mesh geometry={ARCHERY_SHAFT_GEO} renderOrder={4}>
+            <meshStandardMaterial
+              color="#1e293b"
+              metalness={0.22}
+              roughness={0.44}
+              emissive="#f59e0b"
+              emissiveIntensity={0.22}
+            />
+          </mesh>
+          <mesh geometry={ARCHERY_BROADHEAD_GEO} renderOrder={4}>
+            <meshStandardMaterial
+              color="#e2e8f0"
+              metalness={0.86}
+              roughness={0.22}
+            />
+          </mesh>
+          <mesh geometry={ARCHERY_VANES_GEO} renderOrder={4}>
+            <meshStandardMaterial
+              color="#f97316"
+              metalness={0.08}
+              roughness={0.48}
+            />
+          </mesh>
+          <mesh geometry={ARCHERY_NOCK_GEO} renderOrder={4}>
+            <meshStandardMaterial
+              color="#22d3ee"
+              metalness={0.18}
+              roughness={0.32}
+              emissive="#f59e0b"
+              emissiveIntensity={0.35}
+            />
+          </mesh>
+          <mesh
+            ref={primaryDiagRingRef}
+            geometry={ARCHERY_DIAG_RING_GEO}
+            visible={false}
+            renderOrder={14}
+          >
+            <meshBasicMaterial
+              ref={primaryDiagRingMatRef}
+              color="#f59e0b"
+              transparent
+              opacity={0.82}
+              depthTest={false}
+            />
+          </mesh>
+        </group>
+
+        {/* 2. Intrusive Side-Quiver Backup Carbon Arrow / Bolt (Nock-Pinch Drill) */}
+        <group ref={secondRoundGroupRef} visible={false}>
+          <mesh geometry={ARCHERY_SHAFT_GEO} renderOrder={3}>
+            <meshStandardMaterial
+              color="#0f172a"
+              metalness={0.2}
+              roughness={0.46}
+              emissive="#ef4444"
+              emissiveIntensity={0.25}
+            />
+          </mesh>
+          <mesh geometry={ARCHERY_BROADHEAD_GEO} renderOrder={3}>
+            <meshStandardMaterial
+              color="#cbd5e1"
+              metalness={0.84}
+              roughness={0.24}
+            />
+          </mesh>
+          <mesh geometry={ARCHERY_VANES_GEO} renderOrder={3}>
+            <meshStandardMaterial
+              color="#f97316"
+              metalness={0.08}
+              roughness={0.5}
+            />
+          </mesh>
+          <mesh geometry={ARCHERY_NOCK_GEO} renderOrder={3}>
+            <meshStandardMaterial
+              color="#ef4444"
+              metalness={0.15}
+              roughness={0.38}
+            />
+          </mesh>
+        </group>
+
+        {/* 3. Anti-Dry-Fire / Cam Track Diagnostic Warning Collar */}
+        <mesh
+          ref={oobCollarRef}
+          geometry={OOB_GAP_COLLAR_GEO}
+          visible={false}
+          renderOrder={14}
+        >
+          <meshBasicMaterial
+            ref={oobCollarMatRef}
+            color="#ef4444"
+            transparent
+            opacity={0.78}
+            depthTest={false}
+          />
+        </mesh>
+
+        {/* 4. Fresh Seated Carbon Arrow / Bolt Upon Clearing Completion */}
+        <group ref={freshRoundGroupRef} visible={false}>
+          <mesh geometry={ARCHERY_SHAFT_GEO} renderOrder={3}>
+            <meshStandardMaterial
+              color="#1e293b"
+              metalness={0.24}
+              roughness={0.4}
+              emissive="#10b981"
+              emissiveIntensity={0.18}
+            />
+          </mesh>
+          <mesh geometry={ARCHERY_BROADHEAD_GEO} renderOrder={3}>
+            <meshStandardMaterial
+              color="#e2e8f0"
+              metalness={0.88}
+              roughness={0.2}
+            />
+          </mesh>
+          <mesh geometry={ARCHERY_VANES_GEO} renderOrder={3}>
+            <meshStandardMaterial
+              color="#22d3ee"
+              metalness={0.1}
+              roughness={0.45}
+            />
+          </mesh>
+          <mesh geometry={ARCHERY_NOCK_GEO} renderOrder={3}>
+            <meshStandardMaterial
+              color="#10b981"
+              metalness={0.2}
+              roughness={0.3}
+            />
+          </mesh>
+        </group>
+      </group>
+    );
   }
 
   return (

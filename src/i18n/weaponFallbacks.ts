@@ -31,7 +31,10 @@ export interface WeaponEnglishFallback {
   firingMilestoneLabel: string;
 }
 
-export const WEAPON_EN_FALLBACKS: Record<WeaponId, WeaponEnglishFallback> = {
+export const WEAPON_EN_FALLBACKS: Record<
+  WeaponId | 'lift33' | 'r500',
+  WeaponEnglishFallback
+> = {
   ak15: {
     shortLabel: 'AK-15M1',
     name: 'Kalashnikov AK-15M1 Assault Rifle',
@@ -339,6 +342,62 @@ export const WEAPON_EN_FALLBACKS: Record<WeaponId, WeaponEnglishFallback> = {
     searchPlaceholder:
       'Search part name / BOM code (e.g. helical, Ring Sight, M-02)...',
     firingMilestoneLabel: 'Blowback',
+  },
+  lift33: {
+    shortLabel: 'LIFT 33',
+    name: 'Mathews LIFT 33 SwitchWeight-X Compound Bow',
+    originCountry: 'United States',
+    weaponType: 'Binary-Cam Compound Bow',
+    statusLabel: 'In Vault · Ready',
+    actionMechanism: 'SwitchWeight-X Binary Cams · 85% Let-Off Split-Limb Storage',
+    overallLengthMm: '838 mm (33" ATA · 165 mm Brace)',
+    barrelSpec: '597 mm Power Stroke · Dual Split Limbs',
+    rateOfFire: 'Manual Draw / Release',
+    description:
+      'Mathews’ flagship 33-inch axle-to-axle compound hunting bow machined around a bridged aluminum truss riser and SwitchWeight-X synchronized binary cams: draws to a crisp 70 lb peak before collapsing 85% to a 10.5 lb holding valley, propelling a 400 gr micro-diameter carbon arrow at 348 FPS (145.6 J) through an integrated QAD drop-away rest and 10" Bridge-Lock carbon stabilizer.',
+    highlights: [
+      'SwitchWeight-X Synchronized Binary Cams (85% Let-Off)',
+      'Bridged Aluminum Truss Riser + Split Quad Carbon Limbs',
+      'QAD Drop-Away Rest, 5-Pin Sight & LowPro 5-Arrow Quiver',
+      '348 FPS / 145.6 J Elastic Power-Stroke Kinematics',
+    ],
+    workbenchTitle: 'Mathews LIFT 33 3D Disassembly & Draw-Cycle Simulation',
+    workbenchSubtitle:
+      '4 Assemblies · 24 CAD Parts · Binary-Cam 85% Let-Off & Drop-Away Launcher Kinematics',
+    cutawayLabel: 'Riser & Cam Track Focus',
+    cutawayTitle:
+      'Inspect bridged aluminum riser pockets, SwitchWeight-X cam axles & drop-away launcher timing',
+    searchPlaceholder:
+      'Search part name / BOM code (e.g. cam, riser, C-03)...',
+    firingMilestoneLabel: 'Full Draw / Launch',
+  },
+  r500: {
+    shortLabel: 'RAVIN R500',
+    name: 'Ravin R500 HexCoil Compound Crossbow',
+    originCountry: 'United States',
+    weaponType: 'Helical-Cam Bullpup Crossbow',
+    statusLabel: 'In Vault · Ready',
+    actionMechanism: 'HexCoil 360° Helical Cams · Frictionless Trac-Trigger Sled',
+    overallLengthMm: '711 mm (28" OAL · 91 mm Cocked Width)',
+    barrelSpec: '381 mm Zero-Rail Power Stroke',
+    rateOfFire: 'Versa-Drive Crank / Single',
+    description:
+      'Ravin’s ultra-narrow bullpup crossbow powered by patent-pending HexCoil 360° dual helical cam stacks that coil strings tightly around cam drums—shrinking cocked axle-to-axle width to just 3.6 inches (91 mm). Driven by the enclosed Versa-Drive bidirectional clutch screw and floating Trac-Trigger sled with Anti-Dry-Fire interlock, it launches a 400 gr carbon bolt at 500 FPS (301 J).',
+    highlights: [
+      'HexCoil 360° Dual Helical Cams (3.6" Cocked Axle Width)',
+      'Frictionless Flight Track + Floating Trac-Trigger Sled',
+      'Versa-Drive Leadscrew Crank & Copper Anti-Dry-Fire Lock',
+      '500 FPS / 301 J Kinetic Power-Stroke with 1–8×24 Optic',
+    ],
+    workbenchTitle: 'Ravin R500 3D Disassembly & HexCoil Firing Simulation',
+    workbenchSubtitle:
+      '4 Assemblies · 25 CAD Parts · 360° Helical Cam Storage & Trac-Trigger Release Cycle',
+    cutawayLabel: 'Trac-Trigger Sled Cutaway',
+    cutawayTitle:
+      'Slice the bullpup flight bridge open to reveal the floating Trac-Trigger latch, ADF lock & Versa-Drive screw',
+    searchPlaceholder:
+      'Search part name / BOM code (e.g. HexCoil, sled, T-01)...',
+    firingMilestoneLabel: '500 FPS Launch',
   },
 };
 

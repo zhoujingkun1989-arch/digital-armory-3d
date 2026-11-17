@@ -1,4 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
+import {
+  getArcheryProjectileMeta,
+  type ArcheryProjectileSpec,
+} from '../../engine/cartridges/cartridgeSpecs';
 import { playbackClock } from '../../engine/clock/playbackClock';
 import {
   computeGasPortUncoverF,
@@ -9,6 +13,7 @@ import {
   getCaliberBallisticsSpec,
   getWeaponFiringTiming,
   type BallisticPhaseId,
+  type InternalBallisticsSample,
   type WeaponFiringTiming,
 } from '../../engine/physics/armoryPhysics';
 import type { LanguageCode } from '../../narration/types';
@@ -54,6 +59,30 @@ export const TELEMETRY_HUD_STRINGS = {
     phaseLockup: '复进闭锁',
     zoomBore: '膛内放大',
     fullCycle: '全周期 0–100%',
+    archeryTitle: '复合弓弩拉距力与弹速遥测仪',
+    archerySubtitle: 'ATA / IBO 拉力曲线 F(x) · 矢箭做功速度 V(t)',
+    archeryForce: '瞬时拉力',
+    archeryVelocity: '箭速',
+    archeryPeakDraw: '峰值拉力',
+    archeryLetOff: '省力比',
+    archeryBrace: '弓档距',
+    archeryPowerStroke: '做功行程',
+    archeryKinetic: '矢箭动能',
+    archeryValley: '省力谷',
+    archeryRelease: '撒放离弦',
+    archeryLaunch: '脱轨飞出',
+    archeryReNock: '复位待箭',
+    archeryDrawBand: '拉弓凸轮储能',
+    archeryStrokeBand: '做功加速段',
+    archeryZoomStroke: '做功段放大',
+    archeryChargedAlert: '弓臂储能拉满 · 严禁空放',
+    archerySafeAlert: '抗干射保护待命 · 弓弦正常',
+    archeryPhaseReady: '搭箭待拉',
+    archeryPhaseDraw: '凸轮储能拉弓',
+    archeryPhaseValley: '省力谷稳瞄',
+    archeryPhaseLaunch: '弦推加速离弦',
+    archeryPhaseClear: '弓臂阻尼回稳',
+    archeryPhaseReNock: '箭壶补箭归位',
   },
   en: {
     title: 'Internal Ballistics Telemetry Scope',
@@ -86,6 +115,30 @@ export const TELEMETRY_HUD_STRINGS = {
     phaseLockup: 'Lockup',
     zoomBore: 'Bore Zoom',
     fullCycle: 'Full Cycle 0–100%',
+    archeryTitle: 'Archery Draw-Force & Launch Telemetry Scope',
+    archerySubtitle: 'ATA / IBO Draw-Force Curve F(x) · Power-Stroke Velocity V(t)',
+    archeryForce: 'Draw Force',
+    archeryVelocity: 'Arrow V',
+    archeryPeakDraw: 'Peak Draw',
+    archeryLetOff: 'Let-Off',
+    archeryBrace: 'Brace Ht',
+    archeryPowerStroke: 'Stroke',
+    archeryKinetic: 'KE',
+    archeryValley: 'Valley',
+    archeryRelease: 'Release',
+    archeryLaunch: 'Arrow Exit',
+    archeryReNock: 'Re-Nock',
+    archeryDrawBand: 'Cam Draw / Store',
+    archeryStrokeBand: 'Power-Stroke Thrust',
+    archeryZoomStroke: 'Power Zoom',
+    archeryChargedAlert: 'Limbs fully loaded · never dry-fire',
+    archerySafeAlert: 'Anti-dry-fire ready · string clear',
+    archeryPhaseReady: 'Nocked / Ready',
+    archeryPhaseDraw: 'Cam Draw & Storage',
+    archeryPhaseValley: 'Full-Draw Let-Off',
+    archeryPhaseLaunch: 'Power-Stroke Launch',
+    archeryPhaseClear: 'Limb / Vane Damping',
+    archeryPhaseReNock: 'Quiver Re-Nock',
   },
 } as const;
 
@@ -211,6 +264,10 @@ const CANVAS_STYLE: React.CSSProperties = {
 interface TraceCache {
   key: string;
   caliber: CaliberProfile;
+  isArchery: boolean;
+  archeryMeta: ArcheryProjectileSpec | null;
+  hasNativeArcherySpec: boolean;
+  peakValue: number;
   timing: Readonly<WeaponFiringTiming>;
   fMin: number;
   fMax: number;
@@ -226,6 +283,95 @@ interface TraceCache {
   dpr: number;
 }
 
+function isArcheryWeaponId(id: WeaponId | string): boolean {
+  return id === 'lift33' || id === 'r500';
+}
+
+function resolveArcheryMetaForWeapon(
+  weaponId: WeaponId | string,
+  caliber: string
+): ArcheryProjectileSpec | null {
+  if (caliber === 'arrow_400gr' || caliber === 'bolt_400gr') {
+    return getArcheryProjectileMeta(caliber);
+  }
+  if (weaponId === 'lift33') return getArcheryProjectileMeta('arrow_400gr');
+  if (weaponId === 'r500') return getArcheryProjectileMeta('bolt_400gr');
+  return null;
+}
+
+function clamp01Archery(v: number): number {
+  return v < 0 ? 0 : v > 1 ? 1 : v;
+}
+
+function evaluateArcherySample(
+  meta: ArcheryProjectileSpec,
+  f: number,
+  out: InternalBallisticsSample,
+  timing: Readonly<WeaponFiringTiming>,
+  hasNativeSpec: boolean,
+  caliber: CaliberProfile
+): void {
+  if (hasNativeSpec) {
+    evaluateInternalBallisticsInto(caliber, f, out, timing);
+    return;
+  }
+  const exitF = meta.caliber === 'arrow_400gr' ? 0.5 : 0.48;
+  const peakN = meta.peakDrawForceN;
+  const holdN = peakN * (1 - meta.letOffPercent / 100);
+  let forceN = 0;
+  let velMps = 0;
+
+  if (f > 0.01 && f < 0.24) {
+    const u = (f - 0.01) / 0.23;
+    if (u < 0.65) {
+      forceN = peakN * Math.sin((u / 0.65) * (Math.PI * 0.5));
+    } else {
+      const d = (u - 0.65) / 0.35;
+      const smooth = d * d * (3 - 2 * d);
+      forceN = peakN - (peakN - holdN) * smooth;
+    }
+  } else if (f >= 0.24 && f < 0.32) {
+    forceN = holdN;
+  } else if (f >= 0.32 && f <= exitF) {
+    const u = clamp01Archery((f - 0.32) / Math.max(0.01, exitF - 0.32));
+    // Reverse of draw force-draw profile: surges to cam peak near mid-stroke then tapers at brace
+    const hump = Math.sin(u * Math.PI);
+    forceN = holdN * (1 - u) + peakN * 0.94 * Math.pow(hump, 0.85);
+    velMps = meta.muzzleVelocityMps * Math.pow(Math.sin(u * Math.PI * 0.5), 0.78);
+  }
+
+  out.pressureMPa = forceN;
+  out.velocityMps = velMps;
+  out.energyJ = 0.5 * (meta.projectileMassG / 1000) * velMps * velMps;
+  out.isOverSafeUnlockThreshold = f >= 0.06 && f < 0.32;
+  out.phase =
+    f < 0.01
+      ? 'cocked'
+      : f < 0.24
+        ? 'pressure_rise'
+        : f < exitF
+          ? 'bore_travel'
+          : f < 0.62
+            ? 'blowdown'
+            : f < 0.78
+              ? 'extraction'
+              : f < 0.94
+                ? 'ejection_feed'
+                : 'lockup';
+}
+
+function getArcheryPhaseLabelKey(
+  f: number,
+  exitF: number
+): keyof HudStrings {
+  if (f < 0.015 || f >= 0.985) return 'archeryPhaseReady';
+  if (f < 0.24) return 'archeryPhaseDraw';
+  if (f < 0.32) return 'archeryPhaseValley';
+  if (f <= exitF) return 'archeryPhaseLaunch';
+  if (f < 0.66) return 'archeryPhaseClear';
+  return 'archeryPhaseReNock';
+}
+
 function niceCeil(v: number, step: number): number {
   return Math.ceil(v / step) * step;
 }
@@ -239,29 +385,83 @@ function buildTraceCache(
 ): TraceCache {
   const caliber = getWeaponManifest(weaponId).caliberProfile;
   const spec = getCaliberBallisticsSpec(caliber);
+  const isArchery = isArcheryWeaponId(weaponId);
+  const archeryMeta = isArchery
+    ? resolveArcheryMetaForWeapon(weaponId, caliber as string)
+    : null;
+  const hasNativeArcherySpec =
+    isArchery && (spec.caliber as string) === (caliber as string);
   const timing = getWeaponFiringTiming(weaponId);
-  const fMin = zoomBore ? Math.max(0, timing.ignitionF - 0.06) : 0;
-  const fMax = zoomBore ? Math.min(1, timing.ejectF + 0.12) : 1;
+  const effectiveExitF = isArchery && archeryMeta
+    ? archeryMeta.caliber === 'arrow_400gr'
+      ? 0.5
+      : 0.48
+    : timing.muzzleExitF;
+  const fMin = zoomBore
+    ? isArchery
+      ? 0
+      : Math.max(0, timing.ignitionF - 0.06)
+    : 0;
+  const fMax = zoomBore
+    ? isArchery
+      ? Math.min(1, effectiveExitF + 0.14)
+      : Math.min(1, timing.ejectF + 0.12)
+    : 1;
   const sample = createInternalBallisticsSample(caliber);
   const pressure = new Float32Array(TRACE_SAMPLES + 1);
   const velocity = new Float32Array(TRACE_SAMPLES + 1);
   for (let i = 0; i <= TRACE_SAMPLES; i++) {
     const f = fMin + ((fMax - fMin) * i) / TRACE_SAMPLES;
-    evaluateInternalBallisticsInto(caliber, f, sample, timing);
+    if (isArchery && archeryMeta) {
+      evaluateArcherySample(
+        archeryMeta,
+        f,
+        sample,
+        timing,
+        hasNativeArcherySpec,
+        caliber
+      );
+    } else {
+      evaluateInternalBallisticsInto(caliber, f, sample, timing);
+    }
     pressure[i] = sample.pressureMPa;
     velocity[i] = sample.velocityMps;
   }
+  const peakValue =
+    isArchery && archeryMeta
+      ? hasNativeArcherySpec
+        ? spec.peakPressureMPa
+        : archeryMeta.peakDrawForceN
+      : spec.peakPressureMPa;
+  const topV =
+    isArchery && archeryMeta
+      ? hasNativeArcherySpec
+        ? spec.muzzleVelocityMps
+        : archeryMeta.muzzleVelocityMps
+      : spec.muzzleVelocityMps;
+
   const cache: TraceCache = {
     key: `${weaponId}|${lang}|${cssW}|${dpr}|${zoomBore ? 1 : 0}`,
     caliber,
-    timing,
+    isArchery,
+    archeryMeta,
+    hasNativeArcherySpec,
+    peakValue,
+    timing: isArchery && !hasNativeArcherySpec
+      ? { ...timing, ignitionF: 0.32, muzzleExitF: effectiveExitF }
+      : timing,
     fMin,
     fMax,
-    pAxisMax: niceCeil(spec.peakPressureMPa * 1.12, 50),
-    vAxisMax: niceCeil(spec.muzzleVelocityMps * 1.12, 100),
-    safeF: computeSafeUnlockF(caliber, timing),
-    gasF: computeGasPortUncoverF(caliber, timing),
-    peakF: timing.ignitionF + spec.peakU * (timing.muzzleExitF - timing.ignitionF),
+    pAxisMax: niceCeil(
+      peakValue * 1.15,
+      isArchery ? (peakValue > 500 ? 200 : 50) : 50
+    ),
+    vAxisMax: niceCeil(topV * 1.15, isArchery ? 25 : 100),
+    safeF: isArchery ? 0.32 : computeSafeUnlockF(caliber, timing),
+    gasF: isArchery ? null : computeGasPortUncoverF(caliber, timing),
+    peakF: isArchery
+      ? 0.16
+      : timing.ignitionF + spec.peakU * (timing.muzzleExitF - timing.ignitionF),
     pressure,
     velocity,
     background: null,
@@ -313,24 +513,45 @@ function renderBackground(
   ctx.fillStyle = C_BG;
   ctx.fillRect(0, 0, c.cssW, HUD_HEIGHT);
 
-  // Pressure-locked (red) and safe-unlock (green) windows
-  const xIgn = fToX(c, r, c.timing.ignitionF);
-  const xSafe = fToX(c, r, c.safeF);
-  const xUnlockEnd = fToX(c, r, c.timing.batteryF);
-  ctx.fillStyle = C_LOCKED;
-  ctx.fillRect(xIgn, r.y0, xSafe - xIgn, ph);
-  ctx.fillStyle = C_SAFE;
-  ctx.fillRect(xSafe, r.y0, Math.max(0, Math.min(r.x1, xUnlockEnd) - xSafe), ph);
-  ctx.font = '600 9px ui-monospace, Menlo, monospace';
-  if (r.x1 - xSafe >= 76) {
-    ctx.fillStyle = 'rgba(74, 222, 128, 0.85)';
-    ctx.textAlign = 'left';
-    ctx.fillText(s.safeUnlock, Math.max(r.x0 + 4, xSafe + 4), r.y0 + 10);
-  }
-  if (xSafe - Math.max(r.x0, xIgn) >= 88) {
-    ctx.fillStyle = 'rgba(248, 113, 113, 0.75)';
-    ctx.textAlign = 'right';
-    ctx.fillText(s.pressureLocked, xSafe - 4, r.y0 + 10);
+  // Pressure-locked (red) and safe-unlock (green) windows — or Archery Draw & Power-Stroke bands
+  if (c.isArchery) {
+    const xDraw0 = fToX(c, r, 0.02);
+    const xRel = fToX(c, r, 0.32);
+    const xExit = fToX(c, r, c.timing.muzzleExitF);
+    ctx.fillStyle = C_LOCKED;
+    ctx.fillRect(xDraw0, r.y0, Math.max(0, xRel - xDraw0), ph);
+    ctx.fillStyle = C_SAFE;
+    ctx.fillRect(xRel, r.y0, Math.max(0, Math.min(r.x1, xExit) - xRel), ph);
+    ctx.font = '600 9px ui-monospace, Menlo, monospace';
+    if (xRel - Math.max(r.x0, xDraw0) >= 84) {
+      ctx.fillStyle = 'rgba(251, 191, 36, 0.85)';
+      ctx.textAlign = 'center';
+      ctx.fillText(s.archeryDrawBand, (Math.max(r.x0, xDraw0) + xRel) * 0.5, r.y0 + 10);
+    }
+    if (Math.min(r.x1, xExit) - xRel >= 76) {
+      ctx.fillStyle = 'rgba(74, 222, 128, 0.85)';
+      ctx.textAlign = 'left';
+      ctx.fillText(s.archeryStrokeBand, xRel + 4, r.y0 + 10);
+    }
+  } else {
+    const xIgn = fToX(c, r, c.timing.ignitionF);
+    const xSafe = fToX(c, r, c.safeF);
+    const xUnlockEnd = fToX(c, r, c.timing.batteryF);
+    ctx.fillStyle = C_LOCKED;
+    ctx.fillRect(xIgn, r.y0, xSafe - xIgn, ph);
+    ctx.fillStyle = C_SAFE;
+    ctx.fillRect(xSafe, r.y0, Math.max(0, Math.min(r.x1, xUnlockEnd) - xSafe), ph);
+    ctx.font = '600 9px ui-monospace, Menlo, monospace';
+    if (r.x1 - xSafe >= 76) {
+      ctx.fillStyle = 'rgba(74, 222, 128, 0.85)';
+      ctx.textAlign = 'left';
+      ctx.fillText(s.safeUnlock, Math.max(r.x0 + 4, xSafe + 4), r.y0 + 10);
+    }
+    if (xSafe - Math.max(r.x0, xIgn) >= 88) {
+      ctx.fillStyle = 'rgba(248, 113, 113, 0.75)';
+      ctx.textAlign = 'right';
+      ctx.fillText(s.pressureLocked, xSafe - 4, r.y0 + 10);
+    }
   }
 
   // Graticule: 10 × 4 divisions
@@ -360,18 +581,25 @@ function renderBackground(
   }
   ctx.fillStyle = C_PRESSURE;
   ctx.textAlign = 'left';
-  ctx.fillText('MPa', 4, r.y0 + 2);
+  ctx.fillText(c.isArchery ? 'N' : 'MPa', 4, r.y0 + 2);
   ctx.fillStyle = C_VELOCITY;
   ctx.textAlign = 'right';
   ctx.fillText('m/s', c.cssW - 4, r.y0 + 2);
 
   // Event markers (sorted & label-decollided so full-cycle 0..1 never overlaps)
-  const markers: [number, string][] = [
-    [c.timing.ignitionF, s.ignition],
-    [c.timing.muzzleExitF, s.muzzleExit],
-    [c.timing.ejectF, s.eject],
-  ];
-  if (c.gasF !== null) markers.push([c.gasF, s.gasPort]);
+  const markers: [number, string][] = c.isArchery
+    ? [
+        [0.16, s.archeryPeakDraw],
+        [0.24, s.archeryValley],
+        [0.32, s.archeryRelease],
+        [c.timing.muzzleExitF, s.archeryLaunch],
+      ]
+    : [
+        [c.timing.ignitionF, s.ignition],
+        [c.timing.muzzleExitF, s.muzzleExit],
+        [c.timing.ejectF, s.eject],
+      ];
+  if (!c.isArchery && c.gasF !== null) markers.push([c.gasF, s.gasPort]);
   markers.sort((a, b) => a[0] - b[0]);
   ctx.setLineDash([3, 3]);
   let lastLabelRight = -Infinity;
@@ -440,21 +668,22 @@ function renderBackground(
   ctx.stroke();
   ctx.shadowBlur = 0;
 
-  // Peak pressure tag (clamped clear of top window header row)
+  // Peak pressure/force tag (clamped clear of top window header row)
   const xPeak = fToX(c, r, c.peakF);
-  const spec = getCaliberBallisticsSpec(c.caliber);
-  const yPeak = r.y1 - (spec.peakPressureMPa / c.pAxisMax) * ph;
+  const yPeak = r.y1 - (c.peakValue / c.pAxisMax) * ph;
   ctx.fillStyle = C_PRESSURE_HOT;
   ctx.beginPath();
   ctx.arc(xPeak, yPeak, 2.5, 0, Math.PI * 2);
   ctx.fill();
   ctx.fillStyle = '#fca5a5';
   ctx.textAlign = 'left';
-  const peakTag = `${spec.peakPressureMPa} MPa`;
+  const peakTag = c.isArchery
+    ? `${Math.round(c.peakValue)} N`
+    : `${c.peakValue} MPa`;
   const peakY = Math.max(r.y0 + 21, yPeak + 4);
   ctx.fillText(peakTag, Math.min(r.x1 - 54, xPeak + 6), peakY);
 
-  // Full-cycle strip (0..1) with zoom window + battery marker
+  // Full-cycle strip (0..1) with zoom window + battery/re-nock marker
   ctx.fillStyle = 'rgba(30, 41, 59, 0.9)';
   ctx.fillRect(r.x0, r.stripY, pw, STRIP_H);
   const sx0 = r.x0 + c.fMin * pw;
@@ -466,7 +695,7 @@ function renderBackground(
   ctx.fillRect(bx - 1, r.stripY, 2, STRIP_H);
   ctx.fillStyle = C_MUTED;
   ctx.textAlign = 'right';
-  ctx.fillText(s.battery, bx - 3, r.stripY + 8);
+  ctx.fillText(c.isArchery ? s.archeryReNock : s.battery, bx - 3, r.stripY + 8);
   ctx.textAlign = 'left';
   ctx.fillStyle = C_TEXT;
   ctx.fillText('0', r.x0 - 10, r.stripY + 8);
@@ -521,6 +750,10 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
   const visible = alwaysVisible || mode === 'firing';
   const caliber = getWeaponManifest(activeWeaponId).caliberProfile;
   const spec = getCaliberBallisticsSpec(caliber);
+  const isArchery = isArcheryWeaponId(activeWeaponId);
+  const archeryMeta = isArchery
+    ? resolveArcheryMetaForWeapon(activeWeaponId, caliber as string)
+    : null;
 
   useEffect(() => {
     if (!visible) return;
@@ -534,7 +767,7 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
     let cache: TraceCache | null = null;
     let raf = 0;
     let lastText = -1;
-    let lastPhase: BallisticPhaseId | null = null;
+    let lastPhaseKey: keyof HudStrings | null = null;
     let lastLocked: boolean | null = null;
     let dragMode: 0 | 1 | 2 = 0; // 0 idle, 1 scope zoom window, 2 full-cycle strip
 
@@ -558,7 +791,18 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
       const pw = r.x1 - r.x0;
       const ph = r.y1 - r.y0;
       const f = playbackClock.getState().animatedFireProgress;
-      evaluateInternalBallisticsInto(c.caliber, f, sample, c.timing);
+      if (c.isArchery && c.archeryMeta) {
+        evaluateArcherySample(
+          c.archeryMeta,
+          f,
+          sample,
+          c.timing,
+          c.hasNativeArcherySpec,
+          c.caliber
+        );
+      } else {
+        evaluateInternalBallisticsInto(c.caliber, f, sample, c.timing);
+      }
 
       ctx.setTransform(1, 0, 0, 1, 0, 0);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -599,27 +843,48 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
       const now = performance.now();
       if (now - lastText > 48) {
         lastText = now;
-        if (pRef.current)
-          pRef.current.textContent = formatFixed(sample.pressureMPa, 1);
-        if (vRef.current)
-          vRef.current.textContent = formatFixed(sample.velocityMps, 0);
-        if (eRef.current)
-          eRef.current.textContent = formatFixed(sample.energyJ, 0);
-        if (tRef.current)
-          tRef.current.textContent = formatFixed(phys.barrelTempC, 1);
-        if (nRef.current) nRef.current.textContent = String(phys.shotCount);
-        if (foulRef.current)
-          foulRef.current.textContent = formatFixed(phys.carbonFouling01 * 100, 0);
+        if (c.isArchery && c.archeryMeta) {
+          if (pRef.current)
+            pRef.current.textContent = formatFixed(sample.pressureMPa, 0);
+          if (vRef.current)
+            vRef.current.textContent = formatFixed(sample.velocityMps, 1);
+          if (eRef.current)
+            eRef.current.textContent = formatFixed(sample.energyJ, 1);
+          if (tRef.current)
+            tRef.current.textContent = String(c.archeryMeta.letOffPercent);
+          if (foulRef.current)
+            foulRef.current.textContent = String(c.archeryMeta.braceHeightMm);
+          if (nRef.current) nRef.current.textContent = String(phys.shotCount);
+        } else {
+          if (pRef.current)
+            pRef.current.textContent = formatFixed(sample.pressureMPa, 1);
+          if (vRef.current)
+            vRef.current.textContent = formatFixed(sample.velocityMps, 0);
+          if (eRef.current)
+            eRef.current.textContent = formatFixed(sample.energyJ, 0);
+          if (tRef.current)
+            tRef.current.textContent = formatFixed(phys.barrelTempC, 1);
+          if (foulRef.current)
+            foulRef.current.textContent = formatFixed(phys.carbonFouling01 * 100, 0);
+          if (nRef.current) nRef.current.textContent = String(phys.shotCount);
+        }
       }
-      if (sample.phase !== lastPhase && phaseRef.current) {
-        lastPhase = sample.phase;
-        phaseRef.current.textContent = strings[PHASE_LABEL_KEY[sample.phase]];
+      const nextPhaseKey: keyof HudStrings = c.isArchery
+        ? getArcheryPhaseLabelKey(f, c.timing.muzzleExitF)
+        : PHASE_LABEL_KEY[sample.phase];
+      if (nextPhaseKey !== lastPhaseKey && phaseRef.current) {
+        lastPhaseKey = nextPhaseKey;
+        phaseRef.current.textContent = strings[nextPhaseKey];
       }
       if (sample.isOverSafeUnlockThreshold !== lastLocked && statusRef.current) {
         lastLocked = sample.isOverSafeUnlockThreshold;
-        statusRef.current.textContent = lastLocked
-          ? strings.overPressure
-          : strings.safeToUnlock;
+        statusRef.current.textContent = c.isArchery
+          ? lastLocked
+            ? strings.archeryChargedAlert
+            : strings.archerySafeAlert
+          : lastLocked
+            ? strings.overPressure
+            : strings.safeToUnlock;
         statusRef.current.style.color = lastLocked ? '#f87171' : '#4ade80';
       }
     };
@@ -680,7 +945,19 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
 
   if (!visible) return null;
 
-  const caliberLabel = lang === 'zh' ? spec.labelZh : spec.labelEn;
+  const caliberLabel =
+    isArchery && archeryMeta
+      ? lang === 'zh'
+        ? archeryMeta.nameZh
+        : archeryMeta.nameEn
+      : lang === 'zh'
+        ? spec.labelZh
+        : spec.labelEn;
+  const headerTitle = isArchery ? s.archeryTitle : s.title;
+  const headerSummary =
+    isArchery && archeryMeta
+      ? `${caliberLabel} · ATA/IBO · ${s.archeryPeakDraw} ${archeryMeta.peakDrawForceLb} lb (${archeryMeta.peakDrawForceN} N) · ${s.muzzleVelocity} ${archeryMeta.velocityFps} FPS (${archeryMeta.muzzleVelocityMps} m/s) · ${s.archeryKinetic} ${archeryMeta.muzzleEnergyJ.toFixed(1)} J`
+      : `${caliberLabel} · ${spec.standard} · ${s.peak} ${spec.peakPressureMPa} MPa · ${s.muzzleVelocity} ${spec.muzzleVelocityMps} m/s · ${s.muzzleEnergy} ${Math.round(spec.muzzleEnergyJ).toLocaleString('en-US')} J`;
 
   return (
     <div
@@ -689,13 +966,9 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
       data-testid="ballistics-telemetry-hud"
     >
       <div style={HEADER_STYLE}>
-        <span style={TITLE_STYLE}>{s.title}</span>
+        <span style={TITLE_STYLE}>{headerTitle}</span>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-          <span style={SUB_STYLE}>
-            {caliberLabel} · {spec.standard} · {s.peak} {spec.peakPressureMPa} MPa ·{' '}
-            {s.muzzleVelocity} {spec.muzzleVelocityMps} m/s · {s.muzzleEnergy}{' '}
-            {Math.round(spec.muzzleEnergyJ).toLocaleString('en-US')} J
-          </span>
+          <span style={SUB_STYLE}>{headerSummary}</span>
           <button
             type="button"
             onClick={() => setZoomBore((z) => !z)}
@@ -713,7 +986,7 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
               cursor: 'pointer',
             }}
           >
-            {zoomBore ? s.fullCycle : s.zoomBore}
+            {zoomBore ? s.fullCycle : isArchery ? s.archeryZoomStroke : s.zoomBore}
           </button>
         </div>
       </div>
@@ -722,39 +995,53 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
         ref={canvasRef}
         style={CANVAS_STYLE}
         title={s.scrubHint}
-        aria-label={`${s.title} — ${s.scrubHint}`}
+        aria-label={`${headerTitle} — ${s.scrubHint}`}
         role="img"
       />
 
       <div style={READOUT_ROW_STYLE}>
         <div style={CELL_STYLE}>
-          <span style={CELL_LABEL_STYLE}>{s.pressure} · MPa</span>
+          <span style={CELL_LABEL_STYLE}>
+            {isArchery ? `${s.archeryForce} · N` : `${s.pressure} · MPa`}
+          </span>
           <span ref={pRef} style={{ ...CELL_VALUE_STYLE, color: C_PRESSURE }}>
-            0.0
+            {isArchery ? '0' : '0.0'}
           </span>
         </div>
         <div style={CELL_STYLE}>
-          <span style={CELL_LABEL_STYLE}>{s.velocity} · m/s</span>
+          <span style={CELL_LABEL_STYLE}>
+            {isArchery ? `${s.archeryVelocity} · m/s` : `${s.velocity} · m/s`}
+          </span>
           <span ref={vRef} style={{ ...CELL_VALUE_STYLE, color: C_VELOCITY }}>
-            0
+            {isArchery ? '0.0' : '0'}
           </span>
         </div>
         <div style={CELL_STYLE}>
           <span style={CELL_LABEL_STYLE}>{s.energy} · J</span>
           <span ref={eRef} style={{ ...CELL_VALUE_STYLE, color: '#e2e8f0' }}>
-            0
+            {isArchery ? '0.0' : '0'}
           </span>
         </div>
         <div style={CELL_STYLE}>
-          <span style={CELL_LABEL_STYLE}>{s.barrelTemp} · °C</span>
-          <span ref={tRef} style={{ ...CELL_VALUE_STYLE, color: '#fb923c' }}>
-            22.0
+          <span style={CELL_LABEL_STYLE}>
+            {isArchery ? `${s.archeryLetOff} · %` : `${s.barrelTemp} · °C`}
+          </span>
+          <span
+            ref={tRef}
+            style={{
+              ...CELL_VALUE_STYLE,
+              color: isArchery ? '#38bdf8' : '#fb923c',
+            }}
+          >
+            {isArchery && archeryMeta ? String(archeryMeta.letOffPercent) : '22.0'}
           </span>
         </div>
         <div style={CELL_STYLE}>
-          <span style={CELL_LABEL_STYLE}>{s.fouling} · %</span>
+          <span style={CELL_LABEL_STYLE}>
+            {isArchery ? `${s.archeryBrace} · mm` : `${s.fouling} · %`}
+          </span>
           <span ref={foulRef} style={{ ...CELL_VALUE_STYLE, color: '#a8a29e' }}>
-            0
+            {isArchery && archeryMeta ? String(archeryMeta.braceHeightMm) : '0'}
           </span>
         </div>
         <div style={CELL_STYLE}>
@@ -767,10 +1054,10 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
 
       <div style={STATUS_STYLE}>
         <span ref={phaseRef} style={{ color: '#fbbf24' }}>
-          {s.phaseCocked}
+          {isArchery ? s.archeryPhaseReady : s.phaseCocked}
         </span>
         <span ref={statusRef} style={{ color: '#4ade80' }}>
-          {s.safeToUnlock}
+          {isArchery ? s.archerySafeAlert : s.safeToUnlock}
         </span>
       </div>
     </div>

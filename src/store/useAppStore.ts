@@ -6,6 +6,7 @@ import {
 import type { ArmoryEnvironmentPreset } from '../engine/canvas/GunsmithStageMat';
 import { playbackClock } from '../engine/clock/playbackClock';
 import { caliperStore } from '../engine/caliper/caliperStore';
+import { isCaliberProfile } from '../engine/cartridges/cartridgeSpecs';
 import { fieldStripStore } from '../engine/fieldstrip/fieldStripStore';
 import { interactiveActionStore } from '../engine/interaction/InteractiveActionController';
 import { malfunctionStore } from '../engine/malfunctions/malfunctionStore';
@@ -606,8 +607,11 @@ export const useAppStore = create<AppState>((set, get) => ({
     caliperStore.clearTransientHover();
     playbackClock.setTargetProgress(0, false);
     playbackClock.setFireProgress(0, true);
-    const nextCaliber: CaliberProfile =
+    const rawCaliber =
       caliber ?? getWeaponManifest(s.activeWeaponId).caliberProfile;
+    const nextCaliber: CaliberProfile = isCaliberProfile(rawCaliber)
+      ? rawCaliber
+      : '556_nato';
     set({
       screen: 'cartridges',
       mode: 'explode',
@@ -636,7 +640,9 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   selectLabCartridge: (caliber, focusCamera = true) =>
     set((s) => ({
-      activeCartridgeCaliber: caliber,
+      activeCartridgeCaliber: isCaliberProfile(caliber)
+        ? caliber
+        : '556_nato',
       cartridgeLineupOverview: focusCamera ? false : s.cartridgeLineupOverview,
       cartridgeCameraSeq: s.cartridgeCameraSeq + 1,
     })),

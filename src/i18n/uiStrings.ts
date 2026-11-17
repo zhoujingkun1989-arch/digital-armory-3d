@@ -35,7 +35,7 @@ export interface UiDictionary {
     title: string;
     subtitle: string;
     filterAria: string;
-    categories: Record<ArmoryCategory, string>;
+    categories: Record<ArmoryCategory | 'archery', string>;
     showcaseBtn: string;
     showcaseTitle: string;
     cartridgeLabBtn: string;
@@ -282,6 +282,12 @@ export interface UiDictionary {
     click3dHint: string;
     clearedTitle: string;
     clearedDesc: string;
+    archeryBadge: string;
+    archeryRootCauseLabel: string;
+    archerySafetyNoteLabel: string;
+    archeryClick3dHint: string;
+    archeryClearedTitle: string;
+    archeryClearedDesc: string;
   };
   caliper: {
     badge: string;
@@ -472,16 +478,17 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       immersiveBarAria: '纯净展示浮动控制栏',
     },
     armory: {
-      title: '枪械内部结构 3D 数字枪库',
+      title: '枪械与弓弩内部结构 3D 数字兵器库',
       subtitle:
-        '十一款世界名枪交互式陈列馆 · Google Gemini 中英研发史纪录片与全零件语音拆解导览',
-      filterAria: '枪械类别筛选',
+        '十三款世界名枪与特种复合弓弩交互式陈列馆 · Google Gemini 中英研发史纪录片与全零件语音拆解导览',
+      filterAria: '装备类别筛选',
       categories: {
         all: '全部馆藏',
         assault: '突击/卡宾/无托',
         smg: '冲锋枪 / PDW',
         sniper: '狙击/反器材',
         pistol: '半自动手枪',
+        archery: '复合弓 / 弩',
       },
       showcaseBtn: '产品宣传页',
       showcaseTitle: '打开项目官方宣传与架构展示主页',
@@ -524,8 +531,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       tintTitle:
         '按闭锁承压、导气驱动、自动机框、火控击发、储能弹簧与机匣供弹 6 大机械职能实时分色渲染 (T)',
       stageHint: '拖拽检视 · 单击枪体直达分解',
-      rackAria: '枪库十一槽武器展架',
-      rackTitle: '枪库武器陈列架 · 11-BAY WEAPON VAULT RACK',
+      rackAria: '兵器库十三槽展架',
+      rackTitle: '兵器库陈列展架 · 13-BAY WEAPON VAULT RACK',
       rackTip: '单击卡片切换展台预览 · 再次点击或点蓝字进入 3D 拆解台',
       scrollLeft: '向左滚动查看槽位',
       scrollRight: '向右滚动查看槽位',
@@ -779,6 +786,14 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       clearedTitle: '故障已彻底排除 · 新弹已推入膛内完全闭锁！',
       clearedDesc:
         '卡阻弹壳与供弹干涉已按标准军械教范清除，闭锁突笋恢复 100% 啮合，可切换其他故障继续演练。',
+      archeryBadge: 'WP-09 · 弓弩机械故障剖视排障室',
+      archeryRootCauseLabel: '弓弩机械诱因：',
+      archerySafetyNoteLabel: '防空放安全规范：',
+      archeryClick3dHint:
+        '可直接点击 3D 高亮机械件（弓弦 / D环 / 箭台 / 滑座 / 挂弦锁）或下方按钮逐步排障',
+      archeryClearedTitle: '矢箭干涉已解除 · 弦轮同步与安全挂弦复原！',
+      archeryClearedDesc:
+        '羽片刮擦、夹箭与空放隐患已按弓弩技师教范排除，滑轮凸轮组与弓弦恢复标准支距啮合，可切换其他工况演练。',
     },
     caliper: {
       badge: 'WP-10 · 1:1 3D 军械游标卡尺',
@@ -986,16 +1001,17 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       immersiveBarAria: 'Clean showcase floating controls',
     },
     armory: {
-      title: '3D Digital Firearm Armory & Cutaway Vault',
+      title: '3D Digital Armory & Mechanical Cutaway Vault',
       subtitle:
-        '11 Iconic World Firearms · Google Gemini R&D Documentary & Component-by-Component Voice Disassembly',
-      filterAria: 'Filter firearms by category',
+        '13 Iconic World Firearms & Compound Archery Systems · Google Gemini R&D Documentary & Component Voice Disassembly',
+      filterAria: 'Filter collection by category',
       categories: {
         all: 'All Vault',
         assault: 'Rifle / Carbine',
         smg: 'SMG / PDW',
         sniper: 'Sniper / Anti-Materiel',
         pistol: 'Service Pistol',
+        archery: 'Bow / Crossbow',
       },
       showcaseBtn: 'Showcase',
       showcaseTitle: 'Open official product & engineering showcase page',
@@ -1038,8 +1054,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       tintTitle:
         'Color-code all components by 6 mechanical engineering roles: Locking, Gas System, Carrier, Fire Control, Springs & Housing (T)',
       stageHint: 'Drag to orbit · Click firearm to enter workbench',
-      rackAria: '11-Bay Weapon Vault Rack',
-      rackTitle: '11-BAY WEAPON VAULT RACK · INTERACTIVE COLLECTION',
+      rackAria: '13-Bay Weapon Vault Rack',
+      rackTitle: '13-BAY WEAPON VAULT RACK · INTERACTIVE COLLECTION',
       rackTip:
         'Click card to preview on turntable · Click again to enter 3D Workbench',
       scrollLeft: 'Scroll rack left',
@@ -1320,6 +1336,15 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         'Stoppage Cleared · Fresh Cartridge Seated in Full Battery!',
       clearedDesc:
         'All jammed brass and feed obstructions were cleared per military Remedial Action doctrine, restoring 100% bolt lockup.',
+      archeryBadge: 'WP-09 · ARCHERY TIMING & STOP DIAGNOSTICS',
+      archeryRootCauseLabel: 'Archery Root Cause:',
+      archerySafetyNoteLabel: 'Anti-Dry-Fire Safety Protocol:',
+      archeryClick3dHint:
+        'Click highlighted 3D archery parts (bowstring/D-loop/rest/sled/latch) directly or use the step button',
+      archeryClearedTitle:
+        'Stoppage Cleared · Cam Timing & String Latch Restored!',
+      archeryClearedDesc:
+        'All vane contact, nock pinch, and dry-fire interlock hazards were cleared per pro-shop technician doctrine, restoring proper brace alignment.',
     },
     caliper: {
       badge: 'WP-10 · 1:1 3D VERNIER CALIPER',
