@@ -569,7 +569,7 @@ export function buildR500ScopeGeometry(): THREE.BufferGeometry {
   // Turned main scope tube + objective & ocular bells around optical axis (local Y = +0.70)
   const scopeShell = latheAlongX(
     [
-      [0.015, -10.5],
+      [0, -10.5],
       [1.82, -10.5],
       [2.04, -10.2],
       [2.04, -6.5],
@@ -582,7 +582,7 @@ export function buildR500ScopeGeometry(): THREE.BufferGeometry {
       [1.72, 12.8],
       [1.55, 12.8],
       [1.55, 11.4], // recessed objective lens hood
-      [0.015, 11.4],
+      [0, 11.4],
     ],
     32,
     R500_SCOPE_MATTE
@@ -870,20 +870,33 @@ export function buildR500CarbonBoltGeometry(): THREE.BufferGeometry {
     R500_CARBON_SHAFT
   );
 
-  // Brass half-moon nock with rear string notch: local X in [-25.4, -24.4]
-  const nockBase = paintGeometry(
-    new THREE.CylinderGeometry(0.38, 0.38, 1.0, 20)
+  // Brass half-moon nock with watertight CNC U-notch: local X in [-25.4, -24.4]
+  const nockCollar = paintGeometry(
+    new THREE.CylinderGeometry(0.38, 0.38, 0.65, 20)
       .rotateZ(Math.PI / 2)
-      .translate(-24.9, 0, 0),
+      .translate(-24.725, 0, 0),
     R500_BRASS_NOCK
   );
-  const nockCut = new THREE.CylinderGeometry(0.14, 0.14, 1.1, 14)
-    .rotateX(Math.PI / 2)
-    .translate(-25.42, 0, 0);
-  const halfMoonNock = csgSubtract(nockBase, [nockCut]);
-  nockBase.dispose();
-  nockCut.dispose();
-  paintGeometry(halfMoonNock, R500_BRASS_NOCK);
+  const nockEarShape = new THREE.Shape();
+  nockEarShape.moveTo(-25.05, -0.36);
+  nockEarShape.lineTo(-24.9, -0.36);
+  nockEarShape.lineTo(-24.9, 0.36);
+  nockEarShape.lineTo(-25.05, 0.36);
+  nockEarShape.lineTo(-25.4, 0.28);
+  nockEarShape.lineTo(-25.4, 0.14);
+  nockEarShape.lineTo(-25.12, 0.12);
+  nockEarShape.lineTo(-25.12, -0.12);
+  nockEarShape.lineTo(-25.4, -0.14);
+  nockEarShape.lineTo(-25.4, -0.28);
+  nockEarShape.closePath();
+  const halfMoonEars = extrudeAlongZ(
+    nockEarShape,
+    -0.28,
+    0.56,
+    R500_BRASS_NOCK,
+    0.02,
+    6
+  );
 
   // 3 Helical 2" polymer fletching vanes (120° apart, local X in [-23.4, -18.2], r_tip = 0.88)
   const vaneShape = new THREE.Shape();
@@ -917,11 +930,11 @@ export function buildR500CarbonBoltGeometry(): THREE.BufferGeometry {
   );
   const broadheadFerrule = latheAlongX(
     [
-      [0.01, 22.6],
+      [0, 22.6],
       [0.4, 22.6],
       [0.38, 23.6],
       [0.24, 24.6],
-      [0.01, 25.4],
+      [0, 25.4],
     ],
     18,
     R500_BROADHEAD_STEEL
@@ -950,7 +963,8 @@ export function buildR500CarbonBoltGeometry(): THREE.BufferGeometry {
   return sanitizeR500Mesh(
     mergeParts([
       shaft,
-      halfMoonNock,
+      nockCollar,
+      halfMoonEars,
       ...vanes,
       collar,
       broadheadFerrule,

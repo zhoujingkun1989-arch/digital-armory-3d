@@ -780,14 +780,16 @@ export function computeLift33BallisticsState(
     ? 5.6 * Math.sin(linearSeg(f, 0.34, 0.62) * Math.PI)
     : 0;
 
-  // Quiver Slot 0 rests at [-1.80, +1.00, +4.95] vertical (+PI/2); during 0.44..0.58 lifts clear
-  // toward the rest/bow center [-11.50, +2.40, +0.85] and stays clear through f = 1.0 so Slot 1 -> Slot 0
-  // passes all magazineAmmoStack anti-collision checks with > 4 cm clearance!
-  const feedOut = seg(f, 0.44, 0.58);
-  const nextX = -1.8 + (-11.5 - -1.8) * feedOut;
-  const nextY = 1.0 + (2.4 - 1.0) * feedOut;
-  const nextZ = 4.95 + (0.85 - 4.95) * feedOut;
-  const nextRZ = Math.PI * 0.5 * (1 - feedOut);
+  // Quiver Slot 0 rests at [-1.80, +1.00, +4.95] vertical (+PI/2).
+  // Phase A (0.40..0.49): translate strictly -Z (4.95 -> 0.85) & -X (-1.80 -> -3.80) BEFORE tilting,
+  // guaranteeing zero broadhead sweep across Slot 1..4 while inside the quiver!
+  // Phase B (0.49..0.60): rotate +PI/2 -> 0 and position at rest [-11.50, +2.40, +0.85] through f = 1.0.
+  const zClear = seg(f, 0.4, 0.49);
+  const rotT = seg(f, 0.49, 0.6);
+  const nextX = -1.8 - 2.0 * zClear + (-11.5 - -3.8) * rotT;
+  const nextY = 1.0 + (2.4 - 1.0) * rotT;
+  const nextZ = 4.95 + (0.85 - 4.95) * zClear;
+  const nextRZ = Math.PI * 0.5 * (1 - rotT);
 
   return {
     bulletVisible,
