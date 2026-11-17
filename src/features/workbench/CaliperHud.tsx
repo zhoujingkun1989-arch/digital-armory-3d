@@ -17,6 +17,7 @@ import {
   createMutablePose,
   evaluatePartPoseInto,
 } from '../../engine/kinematics/math';
+import { isArcheryWeapon } from '../../engine/physics/armoryPhysics';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import { resolvePartCalloutLabel } from '../../i18n/weaponFallbacks';
 import { useWeaponNarration } from '../../narration/narrationService';
@@ -117,7 +118,10 @@ export const CaliperHud: React.FC = () => {
     return null;
   }
 
-  const ui = UI_STRINGS[lang].caliper;
+  const rawUi = UI_STRINGS[lang].caliper;
+  const ui = isArcheryWeapon(activeWeaponId)
+    ? { ...rawUi, ...rawUi.archery }
+    : rawUi;
 
   const resolvePartName = (partId: string): string => {
     const spec = plugin?.parts.find((p) => p.id === partId);

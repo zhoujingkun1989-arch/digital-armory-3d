@@ -11,6 +11,12 @@ import {
   normalizeTextureFileName,
   resolveTextureUrl,
 } from '../../engine/utils/assetUrl';
+import {
+  getLocalizedAtlasHeading,
+  getLocalizedAtlasSuite,
+} from '../../i18n/atlasStrings';
+import { UI_STRINGS } from '../../i18n/uiStrings';
+import { getLocalizedShortWeaponLabel } from '../../i18n/weaponFallbacks';
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest, WEAPON_MANIFESTS } from '../../weapons/manifests';
 import { preloadWeaponPlugin, useWeaponPlugin } from '../../weapons/registry';
@@ -20,6 +26,7 @@ export const TextureAtlasModal: React.FC = () => {
   const open = useAppStore((s) => s.textureModalOpen);
   const setOpen = useAppStore((s) => s.setTextureModalOpen);
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
+  const lang = useAppStore((s) => s.lang);
   const pbrEnabled = useAppStore((s) => s.pbrTexturesEnabled);
   const togglePbr = useAppStore((s) => s.togglePbrTextures);
 
@@ -32,7 +39,14 @@ export const TextureAtlasModal: React.FC = () => {
 
   if (!open) return null;
 
-  const current = suites.find((s) => s.id === activeSuiteId) ?? suites[0];
+  const atlasUi = UI_STRINGS[lang].atlasModal;
+  const activeIndex = suites.findIndex((s) => s.id === activeSuiteId);
+  const currentIdx = activeIndex >= 0 ? activeIndex : 0;
+  const rawCurrent = suites[currentIdx];
+  const current = rawCurrent
+    ? getLocalizedAtlasSuite(weaponTab, rawCurrent, lang, currentIdx)
+    : null;
+  const tabShortLabel = getLocalizedShortWeaponLabel(weaponTab, lang);
 
   return (
     <div
@@ -40,7 +54,7 @@ export const TextureAtlasModal: React.FC = () => {
       onClick={() => setOpen(false)}
       role="dialog"
       aria-modal="true"
-      aria-label="PBR 真实贴图图集检视器"
+      aria-label={atlasUi.dialogAria}
     >
       <div className="tex-modal-card" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
@@ -49,12 +63,12 @@ export const TextureAtlasModal: React.FC = () => {
             <div className="tex-badge-row">
               <span className="tex-modal-badge">
                 <ImageIcon size={12} />
-                13-EXHIBIT 2K PBR ATLAS
+                {atlasUi.kicker}
               </span>
               <div
                 className="tex-weapon-switcher"
                 role="tablist"
-                aria-label="十三款馆藏兵器 PBR 贴图库切换"
+                aria-label={atlasUi.weaponSwitcherAria}
               >
                 {WEAPON_MANIFESTS.map((m) => (
                   <button
@@ -69,18 +83,21 @@ export const TextureAtlasModal: React.FC = () => {
                       setActiveSuiteId('');
                     }}
                   >
-                    {m.catalog.bayCode.replace('BAY-', '#')} {m.shortLabel}
+                    {m.catalog.bayCode.replace('BAY-', '#')}{' '}
+                    {getLocalizedShortWeaponLabel(m.id, lang)}
                   </button>
                 ))}
               </div>
             </div>
             <div>
-              <h2 className="tex-modal-title">{tabManifest.atlasHeadingCn}</h2>
-              <p className="tex-modal-sub">
-                全馆十三款名枪与弓弩共 76 张定制高清 WebP
-                物理材质贴图（public/textures/*.webp）· 已按三角面 UV
-                实时绑定至全部 327 个精密零件
-              </p>
+              <h2 className="tex-modal-title">
+                {getLocalizedAtlasHeading(
+                  weaponTab,
+                  lang,
+                  tabManifest.atlasHeadingCn
+                )}
+              </h2>
+              <p className="tex-modal-sub">{atlasUi.subtitle}</p>
             </div>
           </div>
 
@@ -91,16 +108,14 @@ export const TextureAtlasModal: React.FC = () => {
               onClick={togglePbr}
             >
               {pbrEnabled ? <Check size={14} /> : <Layers size={14} />}
-              <span>
-                {pbrEnabled ? '3D 实时贴图：已开启' : '3D 实时贴图：已关闭'}
-              </span>
+              <span>{pbrEnabled ? atlasUi.liveOn : atlasUi.liveOff}</span>
             </button>
 
             <button
               type="button"
               className="tex-close-btn"
               onClick={() => setOpen(false)}
-              aria-label="关闭贴图检视窗口"
+              aria-label={atlasUi.closeAria}
             >
               <X size={16} />
             </button>
@@ -116,28 +131,29 @@ export const TextureAtlasModal: React.FC = () => {
                 gridTemplateColumns: `repeat(${suites.length}, minmax(0, 1fr))`,
               }}
             >
-              {suites.map((s) => (
-                <button
-                  key={s.id}
-                  type="button"
-                  className={`tex-suite-tab ${
-                    s.id === current.id ? 'active' : ''
-                  }`}
-                  onClick={() => setActiveSuiteId(s.id)}
-                >
-                  <span className="tex-tab-tag">{s.partTag}</span>
-                  <span className="tex-tab-name">
-                    {s.titleCn.replace(/贴图组|无缝细节贴图|无缝贴图/, '')}
-                  </span>
-                </button>
-              ))}
+              {suites.map((s, idx) => {
+                const locTab = getLocalizedAtlasSuite(weaponTab, s, lang, idx);
+                return (
+                  <button
+                    key={s.id}
+                    type="button"
+                    className={`tex-suite-tab ${
+                      s.id === current.id ? 'active' : ''
+                    }`}
+                    onClick={() => setActiveSuiteId(s.id)}
+                  >
+                    <span className="tex-tab-tag">{locTab.partTag}</span>
+                    <span className="tex-tab-name">{locTab.tabTitle}</span>
+                  </button>
+                );
+              })}
             </div>
 
             {/* Suite Metadata Banner */}
             <div className="tex-suite-info">
               <div className="tex-info-main">
                 <div className="tex-info-headline">
-                  <h3>{current.titleCn}</h3>
+                  <h3>{current.title}</h3>
                   <span className="tex-res-pill">{current.resolution}</span>
                 </div>
                 <p>{current.summary}</p>
@@ -168,20 +184,20 @@ export const TextureAtlasModal: React.FC = () => {
                           className={`tex-ch-badge kind-${ch.kind.toLowerCase()}`}
                         >
                           {ch.kind === 'Roughness'
-                            ? 'ORM · R/G/B'
+                            ? atlasUi.ormBadge
                             : ch.kind.toUpperCase()}
                         </span>
                         <span className="tex-ch-title">
                           {ch.kind === 'Roughness'
-                            ? 'ORM 复合通道 (R:AO · G:粗糙 · B:金属)'
-                            : ch.labelCn}
+                            ? atlasUi.ormChannelTitle
+                            : ch.label}
                         </span>
                       </div>
                       <a
                         href={resolvedUrl}
                         download={cleanFile}
                         className="tex-download-link"
-                        title={`下载 ${cleanFile}`}
+                        title={atlasUi.downloadTitle(cleanFile)}
                       >
                         <Download size={12} />
                         <span>WEBP</span>
@@ -189,7 +205,7 @@ export const TextureAtlasModal: React.FC = () => {
                     </div>
 
                     <div className="tex-img-frame">
-                      <img src={resolvedUrl} alt={ch.labelCn} loading="lazy" />
+                      <img src={resolvedUrl} alt={ch.label} loading="lazy" />
                     </div>
 
                     <div className="tex-ch-foot">
@@ -203,7 +219,7 @@ export const TextureAtlasModal: React.FC = () => {
           </>
         ) : (
           <div className="tex-suite-info">
-            <p>正在按需加载 {tabManifest.shortLabel} 材质图集元数据...</p>
+            <p>{atlasUi.loadingFallback(tabShortLabel)}</p>
           </div>
         )}
       </div>

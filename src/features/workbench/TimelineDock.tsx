@@ -33,6 +33,7 @@ import {
   togglePressCheck,
   useInteractiveActionStore,
 } from '../../engine/interaction/InteractiveActionController';
+import { isArcheryWeapon } from '../../engine/physics/armoryPhysics';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import {
   resolveFiringPhaseText,
@@ -97,7 +98,10 @@ export const TimelineDock: React.FC = () => {
   const activePresetId = useActiveTimelinePresetId(timelinePresets);
   const activePhase = useActiveFiringPhase(firingPhases);
 
-  const ui = UI_STRINGS[lang].timeline;
+  const rawUi = UI_STRINGS[lang].timeline;
+  const ui = isArcheryWeapon(activeWeaponId)
+    ? { ...rawUi, ...rawUi.archery }
+    : rawUi;
   const displayMeta = resolveWeaponDisplayMeta(activeWeaponId, lang, bundle);
 
   const sliderRef = useRef<HTMLInputElement>(null);

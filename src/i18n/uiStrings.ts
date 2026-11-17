@@ -83,6 +83,32 @@ export interface UiDictionary {
     partsNodeSuffix: (count: number) => string;
     cardEnterCta: string;
     plannedToast: (name: string) => string;
+    archeryPlaque: {
+      caliberLabel: string;
+      mechanismLabel: string;
+      metrologyTitle: string;
+      oalLabel: string;
+      barrelLabel: string;
+      weightLabel: string;
+      muzzleVelLabel: string;
+      rangeLabel: string;
+      rofLabel: string;
+      plaquePrimaryCta: (shortTag: string) => string;
+      stageHint: string;
+    };
+  };
+  atlasModal: {
+    dialogAria: string;
+    kicker: string;
+    weaponSwitcherAria: string;
+    subtitle: string;
+    liveOn: string;
+    liveOff: string;
+    closeAria: string;
+    ormBadge: string;
+    ormChannelTitle: string;
+    downloadTitle: (fileName: string) => string;
+    loadingFallback: (shortLabel: string) => string;
   };
   workbench: {
     backBtn: string;
@@ -162,6 +188,14 @@ export interface UiDictionary {
     isolateExit: string;
     prevPart: string;
     nextPart: string;
+    archery: {
+      firingBadge: (stepNum: string) => string;
+      minimizeTitle: string;
+      materialLabel: string;
+      materials: Record<MaterialKind, string>;
+      secKinematics: string;
+      openStoryLink: string;
+    };
   };
   timeline: {
     modeExplode: string;
@@ -204,6 +238,32 @@ export interface UiDictionary {
       feedLock: string;
       reset: string;
     };
+    archery: {
+      modeFiring: string;
+      hudTitle: (open: boolean) => string;
+      gasFlowPill: string;
+      gasFlowTitle: string;
+      sfxTitle: string;
+      selectorGroupAria: string;
+      selectorShort: Record<FireSelectorMode, string>;
+      pressCheckBtn: string;
+      pressCheckActiveBtn: string;
+      pressCheckTitle: string;
+      holdTriggerBtn: string;
+      holdTriggerSafeBtn: string;
+      holdTriggerResetBtn: string;
+      holdTriggerTitle: string;
+      singleShot: string;
+      singleShotTitle: string;
+      ticksFiring: {
+        cocked: string;
+        ignition: string;
+        unlockFallback: string;
+        eject: string;
+        feedLock: string;
+        reset: string;
+      };
+    };
   };
   story: {
     badge: string;
@@ -235,6 +295,9 @@ export interface UiDictionary {
     pendingDesc: string;
     switchToAk15Btn: string;
     aiAttribution: string;
+    playbackRateTitle: string;
+    archeryDrawerSubtitle: string;
+    archeryMinimizeTitle: string;
   };
   engineeringTint: {
     badge: string;
@@ -244,6 +307,11 @@ export interface UiDictionary {
     gasFlowToggle: string;
     gasFlowToggleTitle: string;
     liveGasCta: string;
+    archery: {
+      gasFlowToggle: string;
+      gasFlowToggleTitle: string;
+      liveGasCta: string;
+    };
   };
   fieldStrip: {
     badge: string;
@@ -315,6 +383,17 @@ export interface UiDictionary {
       heightMm: string,
       widthMm: string
     ) => string;
+    archery: {
+      unitNote: string;
+      promptPointA: string;
+      deltaX: string;
+      benchmarks: Record<
+        'overall_envelope' | 'barrel_length' | 'bolt_lug_span',
+        string
+      >;
+      envelopeRulerBtn: string;
+      envelopeRulerTitle: string;
+    };
   };
   cartridgeLab: {
     badge: string;
@@ -596,6 +675,34 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       cardEnterCta: '进入 3D 内部拆解与发射演示',
       plannedToast: (name) =>
         `「${name}」模块正在接入中，当前可预览并拆解已入库枪械`,
+      archeryPlaque: {
+        caliberLabel: '箭矢与磅数',
+        mechanismLabel: '核心凸轮与储能原理',
+        metrologyTitle: '1:1 原厂测绘与弓弩动力学参数',
+        oalLabel: '轮轴距 / 全长',
+        barrelLabel: '做功行程 / 弓档',
+        weightLabel: '裸弓 / 裸弩质量',
+        muzzleVelLabel: '离弦箭速',
+        rangeLabel: '有效射程',
+        rofLabel: '峰值拉力 / 省力',
+        plaquePrimaryCta: (tag) => `进入 ${tag} 分解与发射演示`,
+        stageHint: '拖拽检视 · 单击弓弩直达分解',
+      },
+    },
+    atlasModal: {
+      dialogAria: 'PBR 真实贴图图集检视器',
+      kicker: '13-EXHIBIT 2K PBR ATLAS',
+      weaponSwitcherAria: '十三款馆藏兵器 PBR 贴图库切换',
+      subtitle:
+        '全馆十三款名枪与弓弩共 76 张定制高清 WebP 物理材质贴图（public/textures/*.webp）· 已按三角面 UV 实时绑定至全部 327 个精密零件',
+      liveOn: '3D 实时贴图：已开启',
+      liveOff: '3D 实时贴图：已关闭',
+      closeAria: '关闭贴图检视窗口',
+      ormBadge: 'ORM · R/G/B',
+      ormChannelTitle: 'ORM 复合通道 (R:AO · G:粗糙 · B:金属)',
+      downloadTitle: (fileName) => `下载 ${fileName}`,
+      loadingFallback: (shortLabel) =>
+        `正在按需加载 ${shortLabel} 材质图集元数据...`,
     },
     workbench: {
       backBtn: '枪库',
@@ -697,6 +804,22 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       isolateExit: '退出单独隔离',
       prevPart: '上一个零件',
       nextPart: '下一个零件',
+      archery: {
+        firingBadge: (step) => `做功发射实时解析 · ${step} / 07`,
+        minimizeTitle: '收起详情卡片，不中断语音继续自由观察 3D 弓弩 (Esc)',
+        materialLabel: '复合材质 / 合金',
+        materials: {
+          nitride_steel: 'CNC 硬质阳极氧化 7075-T6 铝合金',
+          barrel_steel: '精密冷锻高强合金钢',
+          stainless: '17-4PH 精密不锈钢与 Ti-6Al-4V 钛合金',
+          polymer_frame: '3K 碳纤维增强复合材质与玻纤聚合物',
+          spring_steel: 'BCY-X 高模量编织弦索与琴钢丝弹簧',
+          follower_orange: '高弹吸振弹性体与高可视工程聚合物',
+          copper_accent: '古铜金硬质阳极铝与防空放青铜合金',
+        },
+        secKinematics: '拉放做功运动与拆解时序',
+        openStoryLink: '查看弓弩完整研发故事',
+      },
     },
     timeline: {
       modeExplode: '结构爆炸拆解模式',
@@ -754,6 +877,42 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         feedLock: '推弹闭锁',
         reset: '复位',
       },
+      archery: {
+        modeFiring: '弓弩拉弦储能与发射演示',
+        hudTitle: (open) =>
+          open
+            ? '显示/隐藏实时 ATA/IBO 拉力曲线 F(x) 与矢箭速度 V(t) 遥测示波器'
+            : '点击展开实时 ATA/IBO 拉力曲线与矢箭速度遥测示波器',
+        gasFlowPill: '弹性势能流',
+        gasFlowTitle:
+          '显示/隐藏 60fps 碳纤弓片弹性储能弯曲与凸轮做功轨迹流线',
+        sfxTitle: '开启/静音立体声卷积混响与复合弓弩弦轮声效 (M)',
+        selectorGroupAria: '撒放安全保险档位切换 (V)',
+        selectorShort: {
+          safe: '保险 SAFE',
+          semi: '实射 LIVE',
+          auto: '连发 AUTO',
+        },
+        pressCheckBtn: '拉距检查 [P]',
+        pressCheckActiveBtn: '松弦回位 [P]',
+        pressCheckTitle:
+          '轻拉弓弦 28% 检查凸轮同步与箭尾扣合状态 (快捷键 P，也可直接在 3D 中拖拽弓弦/滑架)',
+        holdTriggerBtn: '按住撒放 [F]',
+        holdTriggerSafeBtn: '保险锁死 [F]',
+        holdTriggerResetBtn: '松手复位 [F]',
+        holdTriggerTitle:
+          '按住模拟拉弦蓄能与扳机脱扣撒放 (快捷键 F)：SAFE 锁死防空放，实射档需松手复位',
+        singleShot: '放箭',
+        singleShotTitle: '从 0% 完整演示一次拉弓储能、撒放与箭矢推射循环',
+        ticksFiring: {
+          cocked: '搭箭待发',
+          ignition: '凸轮拉弓',
+          unlockFallback: '撒放做功',
+          eject: '离弦飞出',
+          feedLock: '回弦补箭',
+          reset: '复位',
+        },
+      },
     },
     story: {
       badge: 'GEMINI R&D DOCUMENTARY',
@@ -788,6 +947,9 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       switchToAk15Btn: '切换至 AK-15M1 研发故事档案',
       aiAttribution:
         '文本与语音由 Google Gemini 3.8 Flash & Gemini TTS 基于 1:1 军械测绘参数生成',
+      playbackRateTitle: '播放倍速：1.0x / 1.25x / 1.5x',
+      archeryDrawerSubtitle: '复合弓弩研发历史全景纪录 · 机械突破与 3D 零件联动导览',
+      archeryMinimizeTitle: '最小化为顶部迷你播放条，边看 3D 弓弩边听讲解 (Esc)',
     },
     engineeringTint: {
       badge: 'WP-05 · 机械职能语义分色',
@@ -798,6 +960,12 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       gasFlowToggleTitle:
         '在发射演示模式下动态显示膛内燃气膨胀与导气分流轨迹',
       liveGasCta: '切至发射看导气',
+      archery: {
+        gasFlowToggle: '弹性储能流线',
+        gasFlowToggleTitle:
+          '在发射演示模式下动态显示碳纤弓片蓄能弯曲与凸轮做功轨迹',
+        liveGasCta: '演示弹性储能流',
+      },
     },
     fieldStrip: {
       badge: 'WP-07 · 军械教范引导拆装',
@@ -872,6 +1040,18 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       clearBtn: '清零重测',
       clearTitle: '清除当前 A/B 测点重新拾取',
       envelopeSummary: (l, h, w) => `包络：长 ${l} × 高 ${h} × 宽 ${w} mm`,
+      archery: {
+        unitNote: '1 场景单位 = 10.0 mm · 支持穿透剖面精准测绘弓把、凸轮与箭矢跨度',
+        promptPointA: '第 1 步：在 3D 弓弩表面单击拾取测量基准点 A',
+        deltaX: '|ΔX| 轴跨',
+        benchmarks: {
+          overall_envelope: '整弓全幅包络',
+          barrel_length: '箭矢 / 滑轨跨度',
+          bolt_lug_span: '弓把 / 轮轴跨度',
+        },
+        envelopeRulerBtn: '整弓包络标尺',
+        envelopeRulerTitle: '开关 3D 全幅外包络长×高×宽毫米刻度标尺线框',
+      },
     },
     cartridgeLab: {
       badge: 'WP-06 · SAAMI / CIP 1:1 实弹纵剖馆',
@@ -1178,6 +1358,34 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       cardEnterCta: 'Enter 3D Disassembly & Firing',
       plannedToast: (name) =>
         `"${name}" module is being integrated; select an active vault firearm to inspect.`,
+      archeryPlaque: {
+        caliberLabel: 'Projectile & Draw',
+        mechanismLabel: 'Cam & Energy System',
+        metrologyTitle: '1:1 Factory Metrology & Bow Kinetics',
+        oalLabel: 'ATA / Overall Len',
+        barrelLabel: 'Power Stroke / Brace',
+        weightLabel: 'Bare Weight',
+        muzzleVelLabel: 'Arrow Velocity',
+        rangeLabel: 'Effective Range',
+        rofLabel: 'Draw Wt / Cycle',
+        plaquePrimaryCta: (tag) => `Enter ${tag} 3D Disassembly & Launch`,
+        stageHint: 'Drag to orbit · Click exhibit to enter workbench',
+      },
+    },
+    atlasModal: {
+      dialogAria: 'PBR Texture Atlas Inspector',
+      kicker: '13-EXHIBIT 2K PBR ATLAS',
+      weaponSwitcherAria: 'Switch 13-exhibit PBR texture library',
+      subtitle:
+        '76 custom 2K WebP PBR textures (public/textures/*.webp) across all 13 vault firearms & archery exhibits · UV-bound live to all 327 precision CAD parts',
+      liveOn: 'Live 3D Textures: ON',
+      liveOff: 'Live 3D Textures: OFF',
+      closeAria: 'Close PBR texture atlas inspector',
+      ormBadge: 'ORM · R/G/B',
+      ormChannelTitle: 'ORM · R:AO · G:Rough · B:Metal',
+      downloadTitle: (fileName) => `Download ${fileName}`,
+      loadingFallback: (shortLabel) =>
+        `Loading ${shortLabel} PBR atlas metadata on demand...`,
     },
     workbench: {
       backBtn: 'Vault',
@@ -1284,6 +1492,23 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       isolateExit: 'Exit Part Isolation',
       prevPart: 'Previous component',
       nextPart: 'Next component',
+      archery: {
+        firingBadge: (step) => `LIVE LAUNCH CYCLE · PHASE ${step} / 07`,
+        minimizeTitle:
+          'Minimize card to inspect 3D bow/crossbow without stopping narration (Esc)',
+        materialLabel: 'Composite / Alloy',
+        materials: {
+          nitride_steel: 'CNC Hard-Anodized 7075-T6 Aluminum Alloy',
+          barrel_steel: 'Precision Forged High-Strength Alloy Steel',
+          stainless: '17-4PH Precision Stainless & Ti-6Al-4V Titanium',
+          polymer_frame: '3K Carbon-Fiber Composite & Reinforced Polymer',
+          spring_steel: 'BCY-X High-Modulus Bowstring & Music-Wire Spring',
+          follower_orange: 'High-Visibility Elastomer & Low-Friction Polymer',
+          copper_accent: 'Bronze-Anodized Alloy & Anti-Dry-Fire Brass',
+        },
+        secKinematics: '7-Stage Draw & Launch Kinematics',
+        openStoryLink: 'Open Full Archery R&D Story',
+      },
     },
     timeline: {
       modeExplode: 'Exploded Disassembly',
@@ -1349,6 +1574,44 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         feedLock: 'Feed & Lock',
         reset: 'Reset',
       },
+      archery: {
+        modeFiring: 'Draw & Power-Stroke Cycle',
+        hudTitle: (open) =>
+          open
+            ? 'Toggle real-time ATA/IBO draw-force F(x) & arrow velocity V(t) oscilloscope HUD'
+            : 'Open real-time ATA/IBO draw-force F(x) & arrow velocity V(t) oscilloscope HUD',
+        gasFlowPill: 'Elastic Flow',
+        gasFlowTitle:
+          'Toggle 60fps split-limb elastic strain storage & cam power-stroke streamlines',
+        sfxTitle:
+          'Toggle stereo convolution IR & compound cam / bowstring Web Audio SFX (M)',
+        selectorGroupAria: 'Release & safety selector mode (V)',
+        selectorShort: {
+          safe: 'SAFE',
+          semi: 'LIVE',
+          auto: 'AUTO',
+        },
+        pressCheckBtn: 'Draw-Check [P]',
+        pressCheckActiveBtn: 'Let-Down [P]',
+        pressCheckTitle:
+          'Partial 28% Draw-Check to inspect cam timing & nock alignment (Key P, or drag bowstring/sled directly in 3D)',
+        holdTriggerBtn: 'Hold to Release [F]',
+        holdTriggerSafeBtn: 'SAFE Locked [F]',
+        holdTriggerResetBtn: 'Release Reset [F]',
+        holdTriggerTitle:
+          'Hold to draw / trip release sear (Key F): SAFE locks sear against dry-fire; LIVE cycles single shot & resets on release',
+        singleShot: 'Loose Arrow',
+        singleShotTitle:
+          'Run a complete 7-phase draw, power-stroke & arrow launch cycle from 0%',
+        ticksFiring: {
+          cocked: 'Ready',
+          ignition: 'Cam Draw',
+          unlockFallback: 'Release',
+          eject: 'Exit',
+          feedLock: 'Re-Nock',
+          reset: 'Reset',
+        },
+      },
     },
     story: {
       badge: 'GEMINI R&D DOCUMENTARY',
@@ -1388,6 +1651,11 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       switchToAk15Btn: 'Switch to AK-15M1 R&D Archive',
       aiAttribution:
         'Authored & voiced with Google Gemini 3.8 Flash & Gemini TTS grounded in 1:1 CAD specs',
+      playbackRateTitle: 'Narration Speed: 1.0x / 1.25x / 1.5x',
+      archeryDrawerSubtitle:
+        'Complete Archery R&D History · Mechanical Breakthroughs & 3D Part Links',
+      archeryMinimizeTitle:
+        'Minimize to floating bar so you can inspect the 3D bow/crossbow while listening (Esc)',
     },
     engineeringTint: {
       badge: 'WP-05 · FUNCTIONAL ROLE TINT',
@@ -1398,6 +1666,12 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       gasFlowToggleTitle:
         'Visualize bore propellant plasma & gas-port flow streamlines in Live Cycle mode',
       liveGasCta: 'Watch Gas Flow',
+      archery: {
+        gasFlowToggle: 'Elastic Streamlines',
+        gasFlowToggleTitle:
+          'Visualize split-limb elastic strain storage & cam power-stroke streamlines in Live Cycle mode',
+        liveGasCta: 'Watch Elastic Flow',
+      },
     },
     fieldStrip: {
       badge: 'WP-07 · GUIDED FIELD-STRIP DAG',
@@ -1484,6 +1758,21 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       clearBtn: 'Clear Points',
       clearTitle: 'Clear A/B surface points to measure a new span',
       envelopeSummary: (l, h, w) => `Envelope: L ${l} × H ${h} × W ${w} mm`,
+      archery: {
+        unitNote:
+          '1 world unit = 10.0 mm · Raycasts through cutaway planes onto riser, cam & arrow surfaces',
+        promptPointA:
+          'Step 1: Click any 3D bow or crossbow surface to place Jaw A datum',
+        deltaX: '|ΔX| Span',
+        benchmarks: {
+          overall_envelope: 'Overall Span',
+          barrel_length: 'Arrow / Rail Span',
+          bolt_lug_span: 'Riser / Axle Span',
+        },
+        envelopeRulerBtn: 'Envelope Ruler',
+        envelopeRulerTitle:
+          'Toggle full-platform 3D CAD bounding length × height × width millimeter scale frame',
+      },
     },
     cartridgeLab: {
       badge: 'WP-06 · SAAMI / CIP 1:1 CARTRIDGE CUTAWAY LAB',

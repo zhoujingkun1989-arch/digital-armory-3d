@@ -20,6 +20,7 @@ import {
   getCachedPartGeometry,
   subscribeGeometryStatus,
 } from '../../engine/geometry/geometryService';
+import { isArcheryWeapon } from '../../engine/physics/armoryPhysics';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import {
   resolveFiringPhaseText,
@@ -134,7 +135,10 @@ export const PartInspectorCard: React.FC = () => {
     localizedPartNarration,
   ]);
 
-  const ui = UI_STRINGS[lang].inspector;
+  const rawUi = UI_STRINGS[lang].inspector;
+  const ui = isArcheryWeapon(activeWeaponId)
+    ? { ...rawUi, ...rawUi.archery }
+    : rawUi;
   const displayMeta = resolveWeaponDisplayMeta(activeWeaponId, lang, bundle);
 
   if (!selectedPartId) {

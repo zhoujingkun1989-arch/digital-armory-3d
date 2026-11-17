@@ -2,11 +2,12 @@ import React from 'react';
 import { Flame, Palette, Wind, X } from 'lucide-react';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import {
-  ENGINEERING_ROLE_META,
   ENGINEERING_ROLE_ORDER,
+  getEngineeringRoleMeta,
   WEAPON_GAS_MANIFOLD_PROFILES,
   type EngineeringRole,
 } from '../../engine/materials/engineeringRoles';
+import { isArcheryWeapon } from '../../engine/physics/armoryPhysics';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import { useAppStore } from '../../store/useAppStore';
 
@@ -34,7 +35,10 @@ export const EngineeringTintLegend: React.FC<EngineeringTintLegendProps> = ({
 
   if (!engineeringTint) return null;
 
-  const ui = UI_STRINGS[lang].engineeringTint;
+  const rawUi = UI_STRINGS[lang].engineeringTint;
+  const ui = isArcheryWeapon(activeWeaponId)
+    ? { ...rawUi, ...rawUi.archery }
+    : rawUi;
   const manifold = WEAPON_GAS_MANIFOLD_PROFILES[activeWeaponId];
   const familyTitle =
     lang === 'zh' ? manifold.familyTitleZh : manifold.familyTitleEn;
@@ -86,7 +90,7 @@ export const EngineeringTintLegend: React.FC<EngineeringTintLegendProps> = ({
 
       <div className="eng-role-grid">
         {ENGINEERING_ROLE_ORDER.map((role) => {
-          const meta = ENGINEERING_ROLE_META[role];
+          const meta = getEngineeringRoleMeta(role, activeWeaponId);
           const isFocused = focusedEngineeringRole === role;
           const isDimmed =
             focusedEngineeringRole !== null && !isFocused;

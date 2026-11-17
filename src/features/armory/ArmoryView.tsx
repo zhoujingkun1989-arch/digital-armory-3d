@@ -22,6 +22,7 @@ import {
   Sparkles,
   Wrench,
 } from 'lucide-react';
+import { isArcheryWeapon } from '../../engine/physics/armoryPhysics';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import {
   getLocalizedShortWeaponLabel,
@@ -85,6 +86,9 @@ export const ArmoryView: React.FC = () => {
 
   const ui = UI_STRINGS[lang].armory;
   const monoUi = UI_STRINGS[lang].monograph;
+  const plaqueUi = isArcheryWeapon(featuredWeapon.id)
+    ? ui.archeryPlaque
+    : ui;
   const featuredDisplay = resolveWeaponDisplayMeta(
     featuredWeapon.id,
     lang,
@@ -254,7 +258,7 @@ export const ArmoryView: React.FC = () => {
 
         <div className="plaque-spec-grid">
           <div className="plaque-spec-cell">
-            <span className="spec-k">{ui.caliberLabel}</span>
+            <span className="spec-k">{plaqueUi.caliberLabel}</span>
             <span className="spec-v">{featuredWeapon.caliber}</span>
           </div>
           <div className="plaque-spec-cell">
@@ -267,7 +271,7 @@ export const ArmoryView: React.FC = () => {
             </span>
           </div>
           <div className="plaque-spec-cell full">
-            <span className="spec-k">{ui.mechanismLabel}</span>
+            <span className="spec-k">{plaqueUi.mechanismLabel}</span>
             <span className="spec-v">{featuredDisplay.actionMechanism}</span>
           </div>
         </div>
@@ -276,43 +280,43 @@ export const ArmoryView: React.FC = () => {
           <div className="plaque-metrology-head">
             <span className="plaque-metrology-title">
               <Ruler size={11} />
-              <span>{ui.metrologyTitle}</span>
+              <span>{plaqueUi.metrologyTitle}</span>
             </span>
             <span className="plaque-metrology-tag">FACTORY 1:1</span>
           </div>
           <div className="plaque-metrology-grid">
             <div className="metrology-cell">
-              <span className="spec-k">{ui.oalLabel}</span>
+              <span className="spec-k">{plaqueUi.oalLabel}</span>
               <span className="spec-v tabular">
                 {featuredDisplay.overallLengthMm}
               </span>
             </div>
             <div className="metrology-cell">
-              <span className="spec-k">{ui.barrelLabel}</span>
+              <span className="spec-k">{plaqueUi.barrelLabel}</span>
               <span className="spec-v tabular">
                 {featuredDisplay.barrelSpec}
               </span>
             </div>
             <div className="metrology-cell">
-              <span className="spec-k">{ui.weightLabel}</span>
+              <span className="spec-k">{plaqueUi.weightLabel}</span>
               <span className="spec-v tabular">
                 {featuredWeapon.specs1To1.emptyWeightKg}
               </span>
             </div>
             <div className="metrology-cell">
-              <span className="spec-k">{ui.muzzleVelLabel}</span>
+              <span className="spec-k">{plaqueUi.muzzleVelLabel}</span>
               <span className="spec-v tabular">
                 {featuredWeapon.specs1To1.muzzleVelocityMs}
               </span>
             </div>
             <div className="metrology-cell">
-              <span className="spec-k">{ui.rangeLabel}</span>
+              <span className="spec-k">{plaqueUi.rangeLabel}</span>
               <span className="spec-v tabular">
                 {featuredWeapon.specs1To1.effectiveRangeM}
               </span>
             </div>
             <div className="metrology-cell">
-              <span className="spec-k">{ui.rofLabel}</span>
+              <span className="spec-k">{plaqueUi.rofLabel}</span>
               <span className="spec-v tabular">
                 {featuredDisplay.rateOfFire}
               </span>
@@ -369,7 +373,7 @@ export const ArmoryView: React.FC = () => {
           onClick={() => enterWorkbench(featuredWeapon.id)}
         >
           <Layers size={16} />
-          <span>{ui.plaquePrimaryCta(shortWeaponTag)}</span>
+          <span>{plaqueUi.plaquePrimaryCta(shortWeaponTag)}</span>
           <ArrowRight size={16} />
         </button>
       </aside>
@@ -452,7 +456,7 @@ export const ArmoryView: React.FC = () => {
 
         <div className="armory-stage-hint">
           <MousePointerClick size={13} />
-          <span>{ui.stageHint}</span>
+          <span>{plaqueUi.stageHint}</span>
         </div>
       </div>
 
@@ -461,7 +465,7 @@ export const ArmoryView: React.FC = () => {
         <div className="armory-toast-banner">{plannedToast}</div>
       )}
 
-      {/* Bottom Compact Single-Row 10-Bay Armory Weapon Vault Rack (~176px tall) */}
+      {/* Bottom Compact Single-Row 13-Bay Armory Weapon Vault Rack (~176px tall) */}
       <section className="armory-rack-dock" aria-label={ui.rackAria}>
         <div className="rack-dock-header">
           <div className="rack-dock-title">

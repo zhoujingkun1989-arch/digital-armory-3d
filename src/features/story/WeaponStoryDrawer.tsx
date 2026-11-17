@@ -15,6 +15,7 @@ import {
   Volume2,
   X,
 } from 'lucide-react';
+import { isArcheryWeapon } from '../../engine/physics/armoryPhysics';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import { resolveWeaponDisplayMeta } from '../../i18n/weaponFallbacks';
 import {
@@ -58,6 +59,11 @@ export const WeaponStoryDrawer: React.FC = () => {
   const activeBeat = useActiveDirectorBeat();
 
   const ui = UI_STRINGS[lang].story;
+  const isArchery = isArcheryWeapon(activeWeaponId);
+  const drawerSubtitle = isArchery
+    ? ui.archeryDrawerSubtitle
+    : ui.drawerSubtitle;
+  const minimizeTitle = isArchery ? ui.archeryMinimizeTitle : ui.minimizeTitle;
   const manifest = getWeaponManifest(activeWeaponId);
   const displayMeta = resolveWeaponDisplayMeta(activeWeaponId, lang, bundle);
   const localizedStory = bundle?.story[lang] ?? null;
@@ -259,7 +265,7 @@ export const WeaponStoryDrawer: React.FC = () => {
             type="button"
             className="story-rate-btn"
             onClick={cycleNarrationPlaybackRate}
-            title="1.0x / 1.25x / 1.5x"
+            title={ui.playbackRateTitle}
           >
             {audio.playbackRate}x
           </button>
@@ -335,7 +341,7 @@ export const WeaponStoryDrawer: React.FC = () => {
             </span>
           </div>
           <h2 className="story-weapon-name">{displayMeta.name}</h2>
-          <p className="story-drawer-sub">{ui.drawerSubtitle}</p>
+          <p className="story-drawer-sub">{drawerSubtitle}</p>
         </div>
 
         <div className="story-header-controls">
@@ -344,7 +350,7 @@ export const WeaponStoryDrawer: React.FC = () => {
             type="button"
             className="story-minimize-btn"
             onClick={() => setStoryMinimized(true)}
-            title={ui.minimizeTitle}
+            title={minimizeTitle}
           >
             <Minimize2 size={13} aria-hidden="true" />
             <span>{ui.minimizeBtn}</span>
@@ -411,7 +417,7 @@ export const WeaponStoryDrawer: React.FC = () => {
               type="button"
               className="story-rate-btn"
               onClick={cycleNarrationPlaybackRate}
-              title="1.0x / 1.25x / 1.5x"
+              title={ui.playbackRateTitle}
             >
               {audio.playbackRate}x
             </button>

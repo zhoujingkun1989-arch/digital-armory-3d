@@ -4,13 +4,14 @@ import type {
   WeaponId,
   WeaponPartSpec,
 } from '../../weapons/types';
+import { isArcheryWeapon } from '../physics/armoryPhysics';
 
 /**
- * WP-05 — Engineering Functional Role Classification & Operating Gas-Flow Profiles
- * --------------------------------------------------------------------------------
- * Maps all 278 procedural/CSG firearm parts across 11 firearms into 6 canonical
- * mechanical engineering functional roles, enabling Matt Rittman-style color-coded
- * cutaway pedagogy with zero WebGL shader recompilation.
+ * WP-05 — Engineering Functional Role Classification & Operating Energy-Flow Profiles
+ * ----------------------------------------------------------------------------------
+ * Maps all 327 procedural/CSG parts across 13 vault exhibits (11 firearms & 2 compound
+ * archery systems) into 6 canonical mechanical engineering functional roles, enabling
+ * Matt Rittman-style color-coded cutaway pedagogy with zero WebGL shader recompilation.
  */
 
 export type EngineeringRole =
@@ -142,6 +143,101 @@ export const ENGINEERING_ROLE_META: Readonly<
     mixStrength: 0.74,
   },
 };
+
+function defineArcheryRole(
+  role: EngineeringRole,
+  labels: Pick<
+    EngineeringRoleMeta,
+    'labelZh' | 'labelEn' | 'shortZh' | 'shortEn' | 'descZh' | 'descEn'
+  >
+): EngineeringRoleMeta {
+  const base = ENGINEERING_ROLE_META[role];
+  return {
+    ...base,
+    ...labels,
+  };
+}
+
+/**
+ * Archery-domain subsystem labels & descriptions preserving canonical role IDs,
+ * shader tint hexes, and ISO 128 stencil cross-section cap palettes.
+ */
+export const ARCHERY_ROLE_META: Readonly<
+  Record<EngineeringRole, EngineeringRoleMeta>
+> = {
+  locking: defineArcheryRole('locking', {
+    labelZh: '凸轮主轴与承力锁止',
+    labelEn: 'Cam & Axle Load',
+    shortZh: '凸轮承力',
+    shortEn: 'Cam / Axle',
+    descZh:
+      '承受满拉峰值张力与偏心扭矩的二进制/螺旋凸轮、钛合金轮轴、弓片座及防空放抓弦锁。',
+    descEn:
+      'High-load cam & lockup parts: SwitchWeight-X / HexCoil cams, titanium axles, limb pockets, and anti-dry-fire latches.',
+  }),
+  gas_drive: defineArcheryRole('gas_drive', {
+    labelZh: '弯曲弓片与传动缆索',
+    labelEn: 'Flex Limbs & Cables',
+    shortZh: '弓片力缆',
+    shortEn: 'Limbs/Cables',
+    descZh:
+      '弯曲蓄积数百磅弹性势能的分体碳纤维弓片、Y 型分叉副弦与螺旋交叉传动动力缆索。',
+    descEn:
+      'Elastic energy-storage assembly: split quad carbon limbs, Y-yoke control cables, and helical power cables.',
+  }),
+  bolt_carrier: defineArcheryRole('bolt_carrier', {
+    labelZh: '主弦推射与驱动滑架',
+    labelEn: 'Bowstring & Drive Sled',
+    shortZh: '弦索滑架',
+    shortEn: 'String/Sled',
+    descZh:
+      '沿做功行程传递推力的 BCY 编织主弓弦、VersaDrive 上弦丝杠、悬浮滑架、分弦滚轮与落箭拨叉。',
+    descEn:
+      'Power-stroke transfer assembly: BCY bowstring, VersaDrive leadscrew, floating sled, cable guard, and launcher fork.',
+  }),
+  fire_control: defineArcheryRole('fire_control', {
+    labelZh: '撒放火控与箭台瞄具',
+    labelEn: 'Release & Rest',
+    shortZh: '撒放箭台',
+    shortEn: 'Release/Rest',
+    descZh:
+      '控制 D 环撒放、联动落箭让位、匹配阻铁脱扣、自动防空放保险及多层弹道标定瞄具的精准机构。',
+    descEn:
+      'Release & aiming control: D-loop peep, drop-away arrow rest, match sear, safety selector, and fiber-optic sight pins.',
+  }),
+  energy_spring: defineArcheryRole('energy_spring', {
+    labelZh: '谐波阻尼与复位弹簧',
+    labelEn: 'Dampers & Springs',
+    shortZh: '阻尼弹簧',
+    shortEn: 'Dampers',
+    descZh:
+      '吸收撒放后高频弓片余振、刹停主弓弦并驱动抓弦爪迅速回弹锁弦的弹性体阻尼与琴钢丝弹簧。',
+    descEn:
+      'Vibration control & return springs: elastomer limb/string dampeners and high-fatigue coil springs for latch reset.',
+  }),
+  housing_feed: defineArcheryRole('housing_feed', {
+    labelZh: '弓把托架与箭壶箭矢',
+    labelEn: 'Riser, Stock & Quiver',
+    shortZh: '弓把箭壶',
+    shortEn: 'Riser/Quiver',
+    descZh:
+      '提供桥式桁架刚性支撑与人机握持的 CNC 弓把、无托底盘、光学桥镜、快拆箭壶与 400 格令碳素矢箭。',
+    descEn:
+      'Structural chassis & arrow feed: 7075-T6 truss riser, bullpup stock, flight rail/optic, quick-detach quiver, and 400 gr arrows/bolts.',
+  }),
+};
+
+/**
+ * Resolves subsystem role metadata tailored to the active platform (firearm vs archery).
+ */
+export function getEngineeringRoleMeta(
+  role: EngineeringRole,
+  weaponId?: WeaponId | string | null
+): EngineeringRoleMeta {
+  return isArcheryWeapon(weaponId)
+    ? ARCHERY_ROLE_META[role]
+    : ENGINEERING_ROLE_META[role];
+}
 
 export type GasOperatingFamily =
   | 'long_stroke_piston'
