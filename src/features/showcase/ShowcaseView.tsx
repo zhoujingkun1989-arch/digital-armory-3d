@@ -23,6 +23,7 @@ import {
   Minimize2,
   Orbit,
   Play,
+  Printer,
   Ruler,
   Scissors,
   Shield,
@@ -56,10 +57,7 @@ import {
 import { preloadWeaponNarration } from '../../narration/narrationService';
 import { launchDirectorDocumentary } from '../../narration/storyDirector';
 import { useAppStore } from '../../store/useAppStore';
-import {
-  ARMORY_WEAPONS,
-  matchesArmoryCategory,
-} from '../../weapons/manifests';
+import { ARMORY_WEAPONS, matchesArmoryCategory } from '../../weapons/manifests';
 import { preloadWeaponPlugin } from '../../weapons/registry';
 import type { ArmoryCategory, WeaponId } from '../../weapons/types';
 import { WeaponSilhouetteSvg } from '../armory/WeaponSilhouetteSvg';
@@ -96,7 +94,9 @@ npm install
 npm run dev`;
 
 export const ShowcaseView: React.FC = () => {
-  const [heroMode, setHeroMode] = useState<HeroStageMode>('pbr');
+  const [baseHeroMode, setBaseHeroMode] = useState<'pbr' | 'explode'>(() =>
+    playbackClock.getState().targetProgress > 0.05 ? 'explode' : 'pbr'
+  );
   const [category, setCategory] = useState<ShowcaseFilterCategory>('all');
   const [docWeaponId, setDocWeaponId] = useState<WeaponId>('ak15');
   const [copied, setCopied] = useState(false);
@@ -124,6 +124,8 @@ export const ShowcaseView: React.FC = () => {
   const returnToArmory = useAppStore((s) => s.returnToArmory);
   const enterWorkbench = useAppStore((s) => s.enterWorkbench);
   const toggleArmoryAutoRotate = useAppStore((s) => s.toggleArmoryAutoRotate);
+  const sectionCut = useAppStore((s) => s.sectionCut);
+  const xrayShells = useAppStore((s) => s.xrayShells);
   const setSectionCut = useAppStore((s) => s.setSectionCut);
   const setXrayShells = useAppStore((s) => s.setXrayShells);
   const setHudHidden = useAppStore((s) => s.setHudHidden);
@@ -132,6 +134,7 @@ export const ShowcaseView: React.FC = () => {
   const studioUi = UI_STRINGS[lang].studio;
   const setTargetProgress = useAppStore((s) => s.setTargetProgress);
   const setTextureModalOpen = useAppStore((s) => s.setTextureModalOpen);
+  const openMonographModal = useAppStore((s) => s.openMonographModal);
 
   const s = SHOWCASE_STRINGS[lang];
 
@@ -226,38 +229,40 @@ export const ShowcaseView: React.FC = () => {
     matchesArmoryCategory(w, category as ArmoryCategory)
   );
 
-  const applyHeroStageMode = (nextMode: HeroStageMode) => {
-    setHeroMode(nextMode);
-    if (nextMode === 'pbr') {
+  const heroMode: HeroStageMode = sectionCut
+    ? 'section'
+    : xrayShells
+      ? 'xray'
+      : baseHeroMode;
+
+  const syncHeroStageStore = (targetMode: HeroStageMode) => {
+    if (targetMode === 'pbr') {
       setSectionCut(false);
       setXrayShells(false);
       setTargetProgress(0);
-    } else if (nextMode === 'section') {
+    } else if (targetMode === 'section') {
+      setXrayShells(false);
       setSectionCut(true);
       setTargetProgress(0);
-    } else if (nextMode === 'xray') {
+    } else if (targetMode === 'xray') {
+      setSectionCut(false);
       setXrayShells(true);
       setTargetProgress(0);
-    } else if (nextMode === 'explode') {
+    } else if (targetMode === 'explode') {
       setSectionCut(false);
       setXrayShells(false);
       setTargetProgress(0.58);
     }
   };
 
+  const applyHeroStageMode = (nextMode: HeroStageMode) => {
+    setBaseHeroMode(nextMode === 'explode' ? 'explode' : 'pbr');
+    syncHeroStageStore(nextMode);
+  };
+
   const handleHeroWeaponSwitch = (weaponId: WeaponId) => {
     selectArmoryWeapon(weaponId);
-    if (heroMode === 'section') {
-      setSectionCut(true);
-      setTargetProgress(0);
-    } else if (heroMode === 'xray') {
-      setXrayShells(true);
-      setTargetProgress(0);
-    } else if (heroMode === 'explode') {
-      setSectionCut(false);
-      setXrayShells(false);
-      setTargetProgress(0.58);
-    }
+    syncHeroStageStore(heroMode);
   };
 
   const launchSectionWorkbench = (weaponId: WeaponId) => {
@@ -458,6 +463,16 @@ export const ShowcaseView: React.FC = () => {
             >
               <Flame size={14} aria-hidden="true" />
               <span>{s.hero.ctaFiring}</span>
+            </button>
+
+            <button
+              type="button"
+              className="showcase-cta-ghost"
+              onClick={() => openMonographModal(featuredWeapon.id)}
+              title={s.hero.ctaMonographTitle}
+            >
+              <Printer size={14} aria-hidden="true" />
+              <span>{s.hero.ctaMonograph(shortWeaponTag)}</span>
             </button>
           </div>
         </div>
@@ -844,10 +859,20 @@ export const ShowcaseView: React.FC = () => {
                     <BookOpen size={14} aria-hidden="true" />
                     <span>{s.documentary.openDrawerCta}</span>
                   </button>
+
+                  <button
+                    type="button"
+                    className="showcase-cta-ghost"
+                    onClick={() => openMonographModal(docWeaponId)}
+                    title={s.documentary.monographCtaTitle}
+                  >
+                    <Printer size={14} aria-hidden="true" />
+                    <span>{s.documentary.monographCta(docShortTag)}</span>
+                  </button>
                 </div>
               </div>
 
-              {/* Right Panel: Procedural Web Audio 6-Caliber & 7-Stage Foley Matrix */}
+              {/* Right Panel: Procedural Web Audio 7-Caliber + Archery & 7-Stage Foley Matrix */}
               <div className="doc-showcase-panel doc-sound-panel">
                 <div className="doc-panel-badge sound">
                   <Volume2 size={13} aria-hidden="true" />
@@ -937,11 +962,8 @@ export const ShowcaseView: React.FC = () => {
           </div>
         </section>
 
-        {/* SECTION 3: 10-WEAPON MASTER ARSENAL MATRIX */}
-        <section
-          id="arsenal"
-          className="showcase-section showcase-section-alt"
-        >
+        {/* SECTION 3: 13-EXHIBIT MASTER ARSENAL MATRIX */}
+        <section id="arsenal" className="showcase-section showcase-section-alt">
           <div className="showcase-container">
             <div className="section-header">
               <span className="section-kicker">{s.arsenal.kicker}</span>
