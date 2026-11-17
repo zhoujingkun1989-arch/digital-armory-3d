@@ -17,7 +17,18 @@ import type { CaliberProfile, WeaponId } from '../../weapons/types';
  *   6. Internal dual-core hardened steel penetrator cone + lead/aluminum rear slug
  */
 
-export const CARTRIDGE_LAB_ORDER: readonly CaliberProfile[] = [
+export type MetallicCaliberProfile =
+  | '9mm_para'
+  | '57_28'
+  | '50_ae'
+  | '762_m43'
+  | '556_nato'
+  | '338_lapua'
+  | '50_bmg';
+
+export type ArcheryCaliberProfile = 'arrow_400gr' | 'bolt_400gr';
+
+export const CARTRIDGE_LAB_ORDER: readonly MetallicCaliberProfile[] = [
   '9mm_para',
   '57_28',
   '50_ae',
@@ -29,11 +40,17 @@ export const CARTRIDGE_LAB_ORDER: readonly CaliberProfile[] = [
 
 export function isCaliberProfile(
   val: string | null | undefined
-): val is CaliberProfile {
+): val is MetallicCaliberProfile {
   return (
     typeof val === 'string' &&
     (CARTRIDGE_LAB_ORDER as readonly string[]).includes(val)
   );
+}
+
+export function isArcheryCaliberProfile(
+  val: string | null | undefined
+): val is ArcheryCaliberProfile {
+  return val === 'arrow_400gr' || val === 'bolt_400gr';
 }
 
 export type ProjectileCoreKind =
@@ -97,8 +114,8 @@ export interface CartridgeLabSpec {
   propellantColor: string;
 }
 
-export const CARTRIDGE_LAB_SPECS: Readonly<
-  Record<CaliberProfile, CartridgeLabSpec>
+const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
+  Record<MetallicCaliberProfile, CartridgeLabSpec>
 > = {
   '9mm_para': {
     caliber: '9mm_para',
@@ -416,6 +433,198 @@ export const CARTRIDGE_LAB_SPECS: Readonly<
   },
 };
 
+export const CARTRIDGE_LAB_SPECS: Readonly<
+  Record<CaliberProfile, CartridgeLabSpec>
+> = METALLIC_CARTRIDGE_LAB_SPECS as unknown as Readonly<
+  Record<CaliberProfile, CartridgeLabSpec>
+>;
+
+export interface ArcheryProjectileSpec {
+  caliber: ArcheryCaliberProfile;
+  code: string;
+  standard: 'ATA / IBO';
+  nameZh: string;
+  nameEn: string;
+  loadSubtitleZh: string;
+  loadSubtitleEn: string;
+  primaryWeaponId: 'lift33' | 'r500';
+  oalMm: number;
+  shaftLengthMm: number;
+  shaftDiameterMm: number;
+  broadheadDiameterMm: number;
+  broadheadGrain: number;
+  projectileGrain: number;
+  projectileMassG: number;
+  peakDrawForceLb: number;
+  peakDrawForceN: number;
+  letOffPercent: number;
+  holdingForceLb: number;
+  holdingForceN: number;
+  powerStrokeMm: number;
+  braceHeightMm: number;
+  axleToAxleMm: number;
+  velocityFps: number;
+  muzzleVelocityMps: number;
+  muzzleEnergyJ: number;
+  coreAnatomyZh: string;
+  coreAnatomyEn: string;
+  energyDriveZh: string;
+  energyDriveEn: string;
+  nockLatchZh: string;
+  nockLatchEn: string;
+  highlightZh: string;
+  highlightEn: string;
+  shaftColor: string;
+  broadheadColor: string;
+  vaneColor: string;
+  nockColor: string;
+}
+
+export const ARCHERY_PROJECTILE_SPECS: Readonly<
+  Record<ArcheryCaliberProfile, ArcheryProjectileSpec>
+> = {
+  arrow_400gr: {
+    caliber: 'arrow_400gr',
+    code: '400 gr Arrow',
+    standard: 'ATA / IBO',
+    nameZh: '400 格令微径碳纤维猎箭（Mathews LIFT 33）',
+    nameEn: '400 gr Micro-Diameter Carbon Arrow (Mathews LIFT 33)',
+    loadSubtitleZh: '29" 高模量碳杆 + 100 格令三刃机械猎箭头 + 三片螺旋尾羽',
+    loadSubtitleEn: '29" High-Modulus Carbon Shaft + 100 gr 3-Blade Broadhead + Helical Vanes',
+    primaryWeaponId: 'lift33',
+    oalMm: 736.6,
+    shaftLengthMm: 711.2,
+    shaftDiameterMm: 5.2,
+    broadheadDiameterMm: 28.6,
+    broadheadGrain: 100,
+    projectileGrain: 400,
+    projectileMassG: 25.92,
+    peakDrawForceLb: 70,
+    peakDrawForceN: 311.4,
+    letOffPercent: 85,
+    holdingForceLb: 10.5,
+    holdingForceN: 46.7,
+    powerStrokeMm: 597,
+    braceHeightMm: 165.1,
+    axleToAxleMm: 838.2,
+    velocityFps: 348,
+    muzzleVelocityMps: 106.0,
+    muzzleEnergyJ: 145.6,
+    coreAnatomyZh: '高模量 5.2mm 微径碳纤维缠绕杆体 + 铝制半内置插套 + 100格令三刃不锈钢猎箭头',
+    coreAnatomyEn: '5.2mm High-Modulus Carbon-Composite Shaft + Half-Out Insert + 100 gr 3-Blade Broadhead',
+    energyDriveZh: 'SwitchWeight-X 双同步凸轮 70 lb 峰值拉力 · 85% 省力谷区蓄能',
+    energyDriveEn: 'SwitchWeight-X Binary-Cam 70 lb Peak Elastic Storage · 85% Let-Off',
+    nockLatchZh: '聚碳酸酯发光箭尾扣 + Dyneema D-Loop 撒放环',
+    nockLatchEn: 'Illuminated Polycarbonate Micro-Nock + Dyneema Release D-Loop',
+    highlightZh:
+      '无火药发射体：依靠四分体碳纤弓片弯曲储能（57.6 J 蓄能与极低 10.5 lb 满弓持力），在 597mm 做功行程中将 25.92g 碳箭平稳加速至 106 m/s (348 FPS)。',
+    highlightEn:
+      'Smokeless elastic-propulsion projectile: SwitchWeight-X binary cams yield 85% let-off (10.5 lb hold) and accelerate a 400 gr arrow to 348 FPS (145.6 J) along a 23.5" power stroke.',
+    shaftColor: '#1e293b',
+    broadheadColor: '#cbd5e1',
+    vaneColor: '#f97316',
+    nockColor: '#22d3ee',
+  },
+  bolt_400gr: {
+    caliber: 'bolt_400gr',
+    code: '400 gr Bolt',
+    standard: 'ATA / IBO',
+    nameZh: '400 格令竞赛级碳纤维弩箭（Ravin R500）',
+    nameEn: '400 gr Match Carbon Crossbow Bolt (Ravin R500)',
+    primaryWeaponId: 'r500',
+    loadSubtitleZh: '20" 高刚度碳杆 + 黄铜半月尾扣 + 100 格令穿甲猎箭头',
+    loadSubtitleEn: '20" Match Carbon Shaft + Brass Half-Moon Nock + 100 gr Broadhead',
+    oalMm: 508.0,
+    shaftLengthMm: 476.0,
+    shaftDiameterMm: 7.6,
+    broadheadDiameterMm: 27.0,
+    broadheadGrain: 100,
+    projectileGrain: 400,
+    projectileMassG: 25.92,
+    peakDrawForceLb: 300,
+    peakDrawForceN: 1334.5,
+    letOffPercent: 38,
+    holdingForceLb: 186,
+    holdingForceN: 827.4,
+    powerStrokeMm: 381.0,
+    braceHeightMm: 114.3,
+    axleToAxleMm: 193.0,
+    velocityFps: 500,
+    muzzleVelocityMps: 152.4,
+    muzzleEnergyJ: 301.0,
+    coreAnatomyZh: '20 英寸高刚度碳纤维箭杆 + 三片高偏转尾羽 + 100格令不锈钢一体猎箭头',
+    coreAnatomyEn: '20" High-Stiffness Carbon Bolt + 3 High-Offset Vanes + 100 gr Stainless Broadhead',
+    energyDriveZh: 'HexCoil 360° 螺旋凸轮 300 lb 弹性势能驱动（无轨悬空发射）',
+    energyDriveEn: 'HexCoil 360° Helical Cam 300 lb Elastic Strain (Frictionless Zero-Rail Flight)',
+    nockLatchZh: '精密车削黄铜半月护尾扣 + Trac-Trigger 悬浮卡爪 + 防空放联锁',
+    nockLatchEn: 'Machined Brass Half-Moon Nock + Trac-Trigger Floating Sear & ADF Lock',
+    highlightZh:
+      '依靠 HexCoil 360° 螺旋缠绕轮组将 300 lb 峰值拉力浓缩于仅 91mm 宽的满弦跨距，在 381mm (15") 做功行程上推射 400 格令碳箭飙出 500 FPS (152.4 m/s, 301 J) 惊人动能。',
+    highlightEn:
+      'HexCoil 360° helical cams coil to a 3.6" cocked axle width at 300 lb draw, launching a 400 gr bolt over a 15" frictionless power stroke at 500 FPS (152.4 m/s · 301 J).',
+    shaftColor: '#0f172a',
+    broadheadColor: '#e2e8f0',
+    vaneColor: '#f59e0b',
+    nockColor: '#eab308',
+  },
+};
+
+export function getArcheryProjectileMeta(
+  caliber: string | null | undefined
+): ArcheryProjectileSpec | null {
+  if (caliber === 'arrow_400gr' || caliber === 'bolt_400gr') {
+    return ARCHERY_PROJECTILE_SPECS[caliber];
+  }
+  return null;
+}
+
+export function archeryProjectileToLabSpec(
+  meta: ArcheryProjectileSpec
+): CartridgeLabSpec {
+  return {
+    caliber: meta.caliber as CaliberProfile,
+    code: meta.code,
+    standard: 'SAAMI',
+    nameZh: meta.nameZh,
+    nameEn: meta.nameEn,
+    loadSubtitleZh: meta.loadSubtitleZh,
+    loadSubtitleEn: meta.loadSubtitleEn,
+    representativeWeapons: [meta.primaryWeaponId as WeaponId],
+    primaryWeaponId: meta.primaryWeaponId as WeaponId,
+    lineupXCm: 0,
+    caseLengthMm: meta.shaftLengthMm,
+    oalMm: meta.oalMm,
+    bulletDiameterMm: meta.shaftDiameterMm,
+    neckDiameterMm: meta.shaftDiameterMm,
+    shoulderDiameterMm: null,
+    baseDiameterMm: meta.shaftDiameterMm,
+    rimDiameterMm: meta.shaftDiameterMm,
+    rimThicknessMm: 2,
+    caseCapacityMl: 0,
+    propellantMassG: meta.projectileMassG,
+    propellantFillRatio: 0,
+    propellantTypeZh: meta.energyDriveZh,
+    propellantTypeEn: meta.energyDriveEn,
+    primerTypeZh: meta.nockLatchZh,
+    primerTypeEn: meta.nockLatchEn,
+    projectileMassG: meta.projectileMassG,
+    projectileGrain: meta.projectileGrain,
+    coreKind: 'fmj_lead',
+    coreAnatomyZh: meta.coreAnatomyZh,
+    coreAnatomyEn: meta.coreAnatomyEn,
+    peakPressureMPa: Math.round(meta.peakDrawForceN),
+    muzzleVelocityMps: meta.muzzleVelocityMps,
+    muzzleEnergyJ: meta.muzzleEnergyJ,
+    highlightZh: meta.highlightZh,
+    highlightEn: meta.highlightEn,
+    caseColor: meta.shaftColor,
+    jacketColor: meta.broadheadColor,
+    penetratorColor: meta.vaneColor,
+    coreSlugColor: meta.nockColor,
+    propellantColor: '#0f172a',
+  };
+}
+
 export interface CartridgeCutawayMeshBundle {
   caseGeo: THREE.BufferGeometry;
   primerCupGeo: THREE.BufferGeometry;
@@ -560,11 +769,14 @@ export function getCartridgeLabMeshBundle(
   caliber: CaliberProfile,
   cutaway: boolean
 ): CartridgeCutawayMeshBundle {
-  const key = `${caliber}|${cutaway ? 'cut' : 'full'}`;
+  const safeCaliber: MetallicCaliberProfile = isCaliberProfile(caliber)
+    ? caliber
+    : '556_nato';
+  const key = `${safeCaliber}|${cutaway ? 'cut' : 'full'}`;
   const cached = cutawayCache.get(key);
   if (cached) return cached;
 
-  const s = CARTRIDGE_LAB_SPECS[caliber];
+  const s = CARTRIDGE_LAB_SPECS[safeCaliber];
   const caseH = s.caseLengthMm / 10;
   const oalH = s.oalMm / 10;
   const rRim = s.rimDiameterMm / 20;

@@ -2,6 +2,9 @@ import React, { useId, useMemo } from 'react';
 import {
   CARTRIDGE_LAB_ORDER,
   CARTRIDGE_LAB_SPECS,
+  getArcheryProjectileMeta,
+  isArcheryCaliberProfile,
+  type ArcheryProjectileSpec,
 } from '../../engine/cartridges/cartridgeSpecs';
 import {
   computeGasPortUncoverF,
@@ -202,6 +205,39 @@ export const ExplodedPlateVectorOverlay: React.FC<{
 /**
  * Pure Vector Dual-Axis Internal Ballistics Chart (Chamber Pressure P(t) in MPa & Bore Velocity V(t) in m/s).
  */
+function evalArcheryChartCurve(
+  meta: ArcheryProjectileSpec,
+  f: number
+): { forceN: number; velMps: number } {
+  const exitF = meta.caliber === 'arrow_400gr' ? 0.5 : 0.48;
+  const peakN = meta.peakDrawForceN;
+  const holdN = peakN * (1 - meta.letOffPercent / 100);
+  if (f > 0.01 && f < 0.24) {
+    const u = (f - 0.01) / 0.23;
+    if (u < 0.65) {
+      return {
+        forceN: peakN * Math.sin((u / 0.65) * (Math.PI * 0.5)),
+        velMps: 0,
+      };
+    }
+    const d = (u - 0.65) / 0.35;
+    const smooth = d * d * (3 - 2 * d);
+    return { forceN: peakN - (peakN - holdN) * smooth, velMps: 0 };
+  }
+  if (f >= 0.24 && f < 0.32) {
+    return { forceN: holdN, velMps: 0 };
+  }
+  if (f >= 0.32 && f <= exitF) {
+    const u = Math.max(0, Math.min(1, (f - 0.32) / Math.max(0.01, exitF - 0.32)));
+    const hump = Math.sin(u * Math.PI);
+    return {
+      forceN: holdN * (1 - u) + peakN * 0.94 * Math.pow(hump, 0.85),
+      velMps: meta.muzzleVelocityMps * Math.pow(Math.sin(u * Math.PI * 0.5), 0.78),
+    };
+  }
+  return { forceN: 0, velMps: 0 };
+}
+
 export const BallisticsVectorChart: React.FC<{
   weaponId: WeaponId;
   caliber: CaliberProfile;
@@ -212,14 +248,38 @@ export const BallisticsVectorChart: React.FC<{
   const isZh = lang === 'zh';
   const isBlueprint = edition === 'blueprint_manual';
 
+  const isArchery =
+    isArcheryCaliberProfile(caliber as string) ||
+    (weaponId as string) === 'lift33' ||
+    (weaponId as string) === 'r500';
+  const archeryMeta = isArchery
+    ? getArcheryProjectileMeta(
+        isArcheryCaliberProfile(caliber as string)
+          ? (caliber as string)
+          : (weaponId as string) === 'lift33'
+            ? 'arrow_400gr'
+            : 'bolt_400gr'
+      )
+    : null;
+
   const spec = getCaliberBallisticsSpec(caliber);
+  const hasNativeArcherySpec =
+    isArchery && (spec.caliber as string) === (caliber as string);
   const timing = getWeaponFiringTiming(weaponId);
-  const peakF = computePeakPressureF(caliber, timing);
-  const safeUnlockF = computeSafeUnlockF(caliber, timing);
-  const gasPortF = computeGasPortUncoverF(caliber, timing);
+  const peakF = isArchery ? 0.16 : computePeakPressureF(caliber, timing);
+  const safeUnlockF = isArchery ? 0.32 : computeSafeUnlockF(caliber, timing);
+  const gasPortF = isArchery ? null : computeGasPortUncoverF(caliber, timing);
+  const effectiveExitF =
+    isArchery && archeryMeta
+      ? archeryMeta.caliber === 'arrow_400gr'
+        ? 0.5
+        : 0.48
+      : timing.muzzleExitF;
 
   // Zoom horizontal domain to [0..maxDomainF] so high-speed bore & blowdown dynamics fill 85% of plot
-  const maxDomainF = Math.min(1, Math.max(0.58, safeUnlockF + 0.14));
+  const maxDomainF = isArchery
+    ? Math.min(1, effectiveExitF + 0.14)
+    : Math.min(1, Math.max(0.58, safeUnlockF + 0.14));
 
   const W = 760;
   const H = 300;
@@ -230,8 +290,23 @@ export const BallisticsVectorChart: React.FC<{
   const plotW = W - padL - padR;
   const plotH = H - padT - padB;
 
-  const pCeil = Math.ceil((spec.peakPressureMPa * 1.12) / 50) * 50;
-  const vCeil = Math.ceil((spec.muzzleVelocityMps * 1.12) / 100) * 100;
+  const topForceOrPressure =
+    isArchery && archeryMeta
+      ? hasNativeArcherySpec
+        ? spec.peakPressureMPa
+        : archeryMeta.peakDrawForceN
+      : spec.peakPressureMPa;
+  const topVelocity =
+    isArchery && archeryMeta
+      ? hasNativeArcherySpec
+        ? spec.muzzleVelocityMps
+        : archeryMeta.muzzleVelocityMps
+      : spec.muzzleVelocityMps;
+
+  const pStep = isArchery ? (topForceOrPressure > 500 ? 200 : 50) : 50;
+  const vStep = isArchery ? 25 : 100;
+  const pCeil = Math.ceil((topForceOrPressure * 1.14) / pStep) * pStep;
+  const vCeil = Math.ceil((topVelocity * 1.14) / vStep) * vStep;
 
   const xOf = (f: number) =>
     padL + Math.max(0, Math.min(1, f / maxDomainF)) * plotW;
@@ -247,10 +322,20 @@ export const BallisticsVectorChart: React.FC<{
     const vPts: string[] = [];
     for (let i = 0; i <= N; i++) {
       const f = (i / N) * maxDomainF;
-      evaluateInternalBallisticsInto(caliber, f, sample, timing);
+      let yPVal: number;
+      let yVVal: number;
+      if (isArchery && archeryMeta && !hasNativeArcherySpec) {
+        const res = evalArcheryChartCurve(archeryMeta, f);
+        yPVal = res.forceN;
+        yVVal = res.velMps;
+      } else {
+        evaluateInternalBallisticsInto(caliber, f, sample, timing);
+        yPVal = sample.pressureMPa;
+        yVVal = sample.velocityMps;
+      }
       const sx = xOf(f).toFixed(1);
-      const syP = yOfP(sample.pressureMPa).toFixed(1);
-      const syV = yOfV(sample.velocityMps).toFixed(1);
+      const syP = yOfP(yPVal).toFixed(1);
+      const syV = yOfV(yVVal).toFixed(1);
       pPts.push(`${i === 0 ? 'M' : 'L'}${sx} ${syP}`);
       vPts.push(`${i === 0 ? 'M' : 'L'}${sx} ${syV}`);
     }
@@ -263,7 +348,7 @@ export const BallisticsVectorChart: React.FC<{
       velocityPath: vPts.join(' '),
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [caliber, weaponId, maxDomainF, pCeil, vCeil]);
+  }, [caliber, weaponId, maxDomainF, pCeil, vCeil, isArchery, hasNativeArcherySpec]);
 
   const axisColor = isBlueprint ? '#334155' : '#94a3b8';
   const gridColor = isBlueprint
@@ -273,11 +358,12 @@ export const BallisticsVectorChart: React.FC<{
   const vStroke = isBlueprint ? '#0369a1' : '#38bdf8';
   const textPrimary = isBlueprint ? '#0f172a' : '#f1f5f9';
 
-  const ignX = xOf(timing.ignitionF);
+  const ignX = xOf(isArchery ? 0.01 : timing.ignitionF);
   const peakX = xOf(peakF);
-  const exitX = xOf(timing.muzzleExitF);
+  const exitX = xOf(effectiveExitF);
   const safeX = xOf(safeUnlockF);
   const gasX = gasPortF !== null ? xOf(gasPortF) : null;
+  const valleyX = xOf(0.24);
 
   return (
     <svg
@@ -285,9 +371,13 @@ export const BallisticsVectorChart: React.FC<{
       viewBox={`0 0 ${W} ${H}`}
       role="img"
       aria-label={
-        isZh
-          ? `${spec.labelZh} 膛压与膛内初速定量曲线`
-          : `${spec.labelEn} Chamber Pressure & Bore Velocity Curve`
+        isArchery && archeryMeta
+          ? isZh
+            ? `${archeryMeta.nameZh} 拉力与箭速定量曲线`
+            : `${archeryMeta.nameEn} Draw-Force & Launch Velocity Curve`
+          : isZh
+            ? `${spec.labelZh} 膛压与膛内初速定量曲线`
+            : `${spec.labelEn} Chamber Pressure & Bore Velocity Curve`
       }
     >
       <defs>
@@ -297,7 +387,7 @@ export const BallisticsVectorChart: React.FC<{
         </linearGradient>
       </defs>
 
-      {/* Pressure-Locked vs Safe-Unlock Background Shading */}
+      {/* Pressure-Locked vs Safe-Unlock Background Shading (or Draw vs Power-Stroke for Archery) */}
       <rect
         x={ignX}
         y={padT}
@@ -310,7 +400,7 @@ export const BallisticsVectorChart: React.FC<{
       <rect
         x={safeX}
         y={padT}
-        width={Math.max(0, padL + plotW - safeX)}
+        width={Math.max(0, (isArchery ? exitX : padL + plotW) - safeX)}
         height={plotH}
         fill={
           isBlueprint ? 'rgba(5, 150, 105, 0.07)' : 'rgba(16, 185, 129, 0.11)'
@@ -367,9 +457,13 @@ export const BallisticsVectorChart: React.FC<{
         fill={pStroke}
         fontFamily="ui-monospace, SFMono-Regular, monospace"
       >
-        {isZh
-          ? `▲ 膛压 P(t) [MPa · ${spec.standard}]`
-          : `▲ Pressure P(t) [MPa · ${spec.standard}]`}
+        {isArchery
+          ? isZh
+            ? '▲ 凸轮拉力 F(x) [N · ATA / IBO]'
+            : '▲ Draw Force F(x) [N · ATA / IBO]'
+          : isZh
+            ? `▲ 膛压 P(t) [MPa · ${spec.standard}]`
+            : `▲ Pressure P(t) [MPa · ${spec.standard}]`}
       </text>
       <text
         x={padL + plotW}
@@ -380,50 +474,88 @@ export const BallisticsVectorChart: React.FC<{
         fill={vStroke}
         fontFamily="ui-monospace, SFMono-Regular, monospace"
       >
-        {isZh ? '弹头初速 V(t) [m/s] ▲' : 'Bore Velocity V(t) [m/s] ▲'}
+        {isArchery
+          ? isZh
+            ? '矢箭初速 V(t) [m/s] ▲'
+            : 'Launch Velocity V(t) [m/s] ▲'
+          : isZh
+            ? '弹头初速 V(t) [m/s] ▲'
+            : 'Bore Velocity V(t) [m/s] ▲'}
       </text>
 
       {/* Event Milestone Hairlines */}
-      {[
-        {
-          x: ignX,
-          label: isZh ? '底火击发' : 'Ignition',
-          color: axisColor,
-          yOff: plotH - 8,
-        },
-        {
-          x: peakX,
-          label: `${spec.peakPressureMPa} MPa`,
-          color: pStroke,
-          yOff: 14,
-        },
-        ...(gasX !== null
-          ? [
-              {
-                x: gasX,
-                label: isZh ? '导气孔开启' : 'Gas Port',
-                color: '#06b6d4',
-                yOff: 30,
-              },
-            ]
-          : []),
-        {
-          x: exitX,
-          label: isZh
-            ? `出膛 ${spec.muzzleVelocityMps} m/s`
-            : `Exit ${spec.muzzleVelocityMps} m/s`,
-          color: vStroke,
-          yOff: 46,
-        },
-        {
-          x: safeX,
-          label: isZh
-            ? `安全开锁 (<${spec.safeUnlockPressureMPa}MPa)`
-            : `Safe Unlock (<${spec.safeUnlockPressureMPa}MPa)`,
-          color: '#10b981',
-          yOff: 18,
-        },
-      ].map((m, idx) => (
+      {(isArchery && archeryMeta
+        ? [
+            {
+              x: peakX,
+              label: `${archeryMeta.peakDrawForceN} N (${archeryMeta.peakDrawForceLb} lb)`,
+              color: pStroke,
+              yOff: 14,
+            },
+            {
+              x: valleyX,
+              label: isZh
+                ? `${archeryMeta.letOffPercent}% 省力谷`
+                : `${archeryMeta.letOffPercent}% Let-Off`,
+              color: '#06b6d4',
+              yOff: 30,
+            },
+            {
+              x: safeX,
+              label: isZh ? '撒放做功' : 'Release',
+              color: '#10b981',
+              yOff: 18,
+            },
+            {
+              x: exitX,
+              label: isZh
+                ? `离弦 ${archeryMeta.velocityFps} FPS (${archeryMeta.muzzleVelocityMps} m/s)`
+                : `Exit ${archeryMeta.velocityFps} FPS (${archeryMeta.muzzleVelocityMps} m/s)`,
+              color: vStroke,
+              yOff: 46,
+            },
+          ]
+        : [
+            {
+              x: ignX,
+              label: isZh ? '底火击发' : 'Ignition',
+              color: axisColor,
+              yOff: plotH - 8,
+            },
+            {
+              x: peakX,
+              label: `${spec.peakPressureMPa} MPa`,
+              color: pStroke,
+              yOff: 14,
+            },
+            ...(gasX !== null
+              ? [
+                  {
+                    x: gasX,
+                    label: isZh ? '导气孔开启' : 'Gas Port',
+                    color: '#06b6d4',
+                    yOff: 30,
+                  },
+                ]
+              : []),
+            {
+              x: exitX,
+              label: isZh
+                ? `出膛 ${spec.muzzleVelocityMps} m/s`
+                : `Exit ${spec.muzzleVelocityMps} m/s`,
+              color: vStroke,
+              yOff: 46,
+            },
+            {
+              x: safeX,
+              label: isZh
+                ? `安全开锁 (<${spec.safeUnlockPressureMPa}MPa)`
+                : `Safe Unlock (<${spec.safeUnlockPressureMPa}MPa)`,
+              color: '#10b981',
+              yOff: 18,
+            },
+          ]
+      ).map((m, idx) => (
         <g key={idx}>
           <line
             x1={m.x}
@@ -463,10 +595,10 @@ export const BallisticsVectorChart: React.FC<{
         strokeLinejoin="round"
       />
 
-      {/* Peak Pressure Dot */}
+      {/* Peak Pressure / Draw Force Dot */}
       <circle
         cx={peakX}
-        cy={yOfP(spec.peakPressureMPa)}
+        cy={yOfP(topForceOrPressure)}
         r={4}
         fill={pStroke}
         stroke={isBlueprint ? '#ffffff' : '#080c12'}
@@ -490,9 +622,13 @@ export const BallisticsVectorChart: React.FC<{
         fill={textPrimary}
         opacity={0.78}
       >
-        {isZh
-          ? `内弹道循环相位 (膛内驻留时间 ≈ ${spec.boreTimeMs.toFixed(2)} ms · 基准枪管 ${spec.referenceBarrelMm} mm)`
-          : `Internal Ballistic Cycle Phase (In-Bore Transit ≈ ${spec.boreTimeMs.toFixed(2)} ms · Ref Barrel ${spec.referenceBarrelMm} mm)`}
+        {isArchery && archeryMeta
+          ? isZh
+            ? `弹力蓄能与做功相位 (有效做功行程 ${archeryMeta.powerStrokeMm} mm · 弓档距 ${archeryMeta.braceHeightMm} mm · 动能 ${archeryMeta.muzzleEnergyJ.toFixed(1)} J)`
+            : `Elastic Draw & Power-Stroke Cycle (Power Stroke ${archeryMeta.powerStrokeMm} mm · Brace Height ${archeryMeta.braceHeightMm} mm · KE ${archeryMeta.muzzleEnergyJ.toFixed(1)} J)`
+          : isZh
+            ? `内弹道循环相位 (膛内驻留时间 ≈ ${spec.boreTimeMs.toFixed(2)} ms · 基准枪管 ${spec.referenceBarrelMm} mm)`
+            : `Internal Ballistic Cycle Phase (In-Bore Transit ≈ ${spec.boreTimeMs.toFixed(2)} ms · Ref Barrel ${spec.referenceBarrelMm} mm)`}
       </text>
     </svg>
   );
@@ -510,6 +646,229 @@ export const CartridgeCutawayDiagram: React.FC<{
   const powderId = useId();
   const isZh = lang === 'zh';
   const isBlueprint = edition === 'blueprint_manual';
+
+  const archeryMeta = isArcheryCaliberProfile(caliber as string)
+    ? getArcheryProjectileMeta(caliber as string)
+    : null;
+  if (archeryMeta) {
+    const meta = archeryMeta;
+    const W = 380;
+    const H = 310;
+    const cx = 160;
+    const botY = 272;
+    const topY = 30;
+    const shaftStroke = isBlueprint ? '#0f172a' : '#e2e8f0';
+    const dimColor = isBlueprint ? '#0369a1' : '#38bdf8';
+    const textMuted = isBlueprint ? '#334155' : '#94a3b8';
+    const carbonFill = isBlueprint ? '#334155' : '#1e293b';
+    const bronzeFill = isBlueprint ? '#b45309' : '#d97706';
+    const nockColor = '#22d3ee';
+
+    return (
+      <svg
+        className="monograph-vector-svg"
+        viewBox={`0 0 ${W} ${H}`}
+        role="img"
+        aria-label={
+          isZh
+            ? `${meta.nameZh} 纵剖工程结构图`
+            : `${meta.nameEn} Cutaway Schematic`
+        }
+      >
+        <defs>
+          <pattern
+            id={hatchId}
+            width="5"
+            height="5"
+            patternTransform="rotate(45 0 0)"
+            patternUnits="userSpaceOnUse"
+          >
+            <line
+              x1="0"
+              y1="0"
+              x2="0"
+              y2="5"
+              stroke={shaftStroke}
+              strokeWidth="1.2"
+              strokeOpacity="0.48"
+            />
+          </pattern>
+        </defs>
+
+        {/* Center Axis */}
+        <line
+          x1={cx}
+          y1={16}
+          x2={cx}
+          y2={botY + 14}
+          stroke={dimColor}
+          strokeWidth={1}
+          strokeDasharray="6 3 2 3"
+          opacity={0.75}
+        />
+
+        {/* Machined 3-Blade Broadhead + Brass/Aluminum Insert */}
+        <polygon
+          points={`${cx},${topY} ${cx - 19},${topY + 46} ${cx - 6},${topY + 46} ${cx - 6},${topY + 62} ${cx},${topY + 62}`}
+          fill={isBlueprint ? '#475569' : '#94a3b8'}
+          stroke={shaftStroke}
+          strokeWidth={1.1}
+        />
+        <polygon
+          points={`${cx},${topY} ${cx + 19},${topY + 46} ${cx + 6},${topY + 46} ${cx + 6},${topY + 62} ${cx},${topY + 62}`}
+          fill={`url(#${hatchId})`}
+          stroke={shaftStroke}
+          strokeWidth={1.1}
+        />
+        <rect
+          x={cx - 8}
+          y={topY + 58}
+          width={8}
+          height={20}
+          fill={bronzeFill}
+          stroke={shaftStroke}
+          strokeWidth={0.9}
+        />
+        <rect
+          x={cx}
+          y={topY + 58}
+          width={8}
+          height={20}
+          fill={`url(#${hatchId})`}
+          stroke={shaftStroke}
+          strokeWidth={0.9}
+        />
+
+        {/* High-Modulus Carbon Shaft: Left Exterior / Right Micro-ID Cutaway */}
+        <rect
+          x={cx - 10}
+          y={topY + 78}
+          width={10}
+          height={150}
+          fill={carbonFill}
+          stroke={shaftStroke}
+          strokeWidth={1.1}
+        />
+        <rect
+          x={cx}
+          y={topY + 78}
+          width={10}
+          height={150}
+          fill={`url(#${hatchId})`}
+          stroke={shaftStroke}
+          strokeWidth={1.1}
+        />
+        <rect
+          x={cx + 0.5}
+          y={topY + 78}
+          width={5}
+          height={150}
+          fill={isBlueprint ? '#f8fafc' : '#090e17'}
+          opacity={0.9}
+        />
+
+        {/* Helical Fletching Vanes */}
+        <polygon
+          points={`${cx - 10},${botY - 62} ${cx - 28},${botY - 34} ${cx - 28},${botY - 22} ${cx - 10},${botY - 22}`}
+          fill={isBlueprint ? '#0284c7' : '#38bdf8'}
+          fillOpacity={0.65}
+          stroke={shaftStroke}
+          strokeWidth={0.9}
+        />
+        <polygon
+          points={`${cx + 10},${botY - 62} ${cx + 28},${botY - 34} ${cx + 28},${botY - 22} ${cx + 10},${botY - 22}`}
+          fill={isBlueprint ? '#d97706' : '#f59e0b'}
+          fillOpacity={0.65}
+          stroke={shaftStroke}
+          strokeWidth={0.9}
+        />
+
+        {/* Precision Collar + Half-Moon / Lighted Nock */}
+        <rect
+          x={cx - 10}
+          y={botY - 14}
+          width={20}
+          height={14}
+          rx={2}
+          fill={nockColor}
+          fillOpacity={0.8}
+          stroke={shaftStroke}
+          strokeWidth={1}
+        />
+        <circle
+          cx={cx}
+          cy={botY - 2}
+          r={4.2}
+          fill={isBlueprint ? '#ffffff' : '#080c12'}
+        />
+
+        {/* Dimension Annotations */}
+        <line
+          x1={cx - 46}
+          y1={topY}
+          x2={cx - 46}
+          y2={botY}
+          stroke={dimColor}
+          strokeWidth={1}
+        />
+        <text
+          x={cx - 52}
+          y={(topY + botY) * 0.5}
+          textAnchor="middle"
+          fontSize={9.5}
+          fontWeight={700}
+          fill={dimColor}
+          transform={`rotate(-90 ${cx - 52} ${(topY + botY) * 0.5})`}
+        >
+          OAL {meta.oalMm.toFixed(0)} mm
+        </text>
+
+        <g fontSize={9.5} fill={textMuted} fontFamily="ui-monospace, monospace">
+          <text x={cx + 38} y={topY + 28} fontWeight={700} fill={shaftStroke}>
+            {isZh ? '3刃切削机械猎箭头' : 'Fixed/Mech Broadhead'}
+          </text>
+          <text x={cx + 38} y={topY + 68}>
+            {isZh ? '铝合金/黄铜配重插栓' : 'Brass / 7075 Insert'}
+          </text>
+          <text x={cx + 38} y={topY + 132} fontWeight={700} fill={shaftStroke}>
+            {isZh
+              ? `高模量碳纤维杆 (Ø${meta.shaftDiameterMm} mm)`
+              : `Carbon Shaft (Ø${meta.shaftDiameterMm} mm OD)`}
+          </text>
+          <text x={cx + 38} y={topY + 148}>
+            {isZh
+              ? `净重 ${meta.projectileGrain} gr (${meta.projectileMassG} g)`
+              : `Total Mass ${meta.projectileGrain} gr (${meta.projectileMassG} g)`}
+          </text>
+          <text x={cx + 38} y={botY - 40}>
+            {isZh ? '3片高速螺旋尾羽' : '3x Helical Polymer Vanes'}
+          </text>
+          <text x={cx + 38} y={botY - 6} fontWeight={700} fill={dimColor}>
+            {meta.caliber === 'bolt_400gr'
+              ? isZh
+                ? '半月防空放弩箭尾扣'
+                : 'Ravin Clip-On Nock'
+              : isZh
+                ? '高分子荧光尾扣 (Micro ID)'
+                : 'Micro-ID Lighted Nock'}
+          </text>
+        </g>
+
+        <text
+          x={W * 0.5}
+          y={H - 8}
+          textAnchor="middle"
+          fontSize={9}
+          fill={textMuted}
+        >
+          {isZh
+            ? `左：碳箭外轮廓 · 右：45° 中轴剖切壁厚 | 初速 ${meta.velocityFps} FPS · 动能 ${meta.muzzleEnergyJ.toFixed(1)} J`
+            : `Left: Carbon Exterior · Right: 45° Section Cut | ${meta.velocityFps} FPS · ${meta.muzzleEnergyJ.toFixed(1)} J`}
+        </text>
+      </svg>
+    );
+  }
+
   const spec = CARTRIDGE_LAB_SPECS[caliber];
 
   const W = 380;
@@ -876,9 +1235,32 @@ export const CaliberEnergyLadder: React.FC<{
 }> = ({ activeCaliber, lang }) => {
   const isZh = lang === 'zh';
   const maxSqrt = Math.sqrt(18050);
+  const archeryRow = isArcheryCaliberProfile(activeCaliber as string)
+    ? getArcheryProjectileMeta(activeCaliber as string)
+    : null;
 
   return (
     <div className="monograph-energy-ladder">
+      {archeryRow ? (
+        <div key={archeryRow.caliber} className="m-energy-row is-current">
+          <span className="m-energy-code">{archeryRow.code}</span>
+          <div className="m-energy-bar-track">
+            <div
+              className="m-energy-bar-fill"
+              style={{
+                width: `${Math.max(
+                  6,
+                  Math.min(100, (Math.sqrt(archeryRow.muzzleEnergyJ) / maxSqrt) * 100)
+                ).toFixed(1)}%`,
+              }}
+            />
+          </div>
+          <span className="m-energy-val">
+            {archeryRow.muzzleEnergyJ.toFixed(1)} J · {archeryRow.muzzleVelocityMps}{' '}
+            m/s ({archeryRow.velocityFps} FPS)
+          </span>
+        </div>
+      ) : null}
       {CARTRIDGE_LAB_ORDER.map((cal) => {
         const s = CARTRIDGE_LAB_SPECS[cal];
         const isCurrent = cal === activeCaliber;

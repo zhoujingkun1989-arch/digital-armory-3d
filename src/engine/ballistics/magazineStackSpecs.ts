@@ -645,6 +645,51 @@ export const MAGAZINE_STACK_SPECS: Readonly<
     },
     slots: buildP90HelicalAndHorizontalSlots(2.52),
   },
+
+  lift33: {
+    weaponId: 'lift33',
+    magBodyPartId: 'lift33_quiver_frame',
+    followerPartId: 'lift33_quiver_latch',
+    throatPartId: 'lift33_quiver_hood',
+    roundCount: 5,
+    firingHandoffSlotIndex: 0,
+    feedWindow: [0.54, 0.82],
+    replenishWindow: [0.84, 0.96],
+    magSubStripStartT: 0.56,
+    followerDeckPlane: {
+      point: [0.6, 1.0, 2.95],
+      normal: [0, 0, 1],
+    },
+    slots: [
+      makeSlot(-1.8, 1.0, 4.95, 0, 0, Math.PI * 0.5),
+      makeSlot(-0.6, 1.0, 4.95, 0, 0, Math.PI * 0.5),
+      makeSlot(0.6, 1.0, 4.95, 0, 0, Math.PI * 0.5),
+      makeSlot(1.8, 1.0, 4.95, 0, 0, Math.PI * 0.5),
+      makeSlot(3.0, 1.0, 4.95, 0, 0, Math.PI * 0.5),
+      makeSlot(3.0, 1.0, 4.95, 0, 0, Math.PI * 0.5),
+    ],
+  },
+
+  r500: {
+    weaponId: 'r500',
+    magBodyPartId: 'r500_quiver_frame',
+    followerPartId: 'r500_retention_arm',
+    roundCount: 3,
+    firingHandoffSlotIndex: 0,
+    feedWindow: [0.52, 0.66],
+    replenishWindow: [0.85, 0.97],
+    magSubStripStartT: 0.35,
+    followerDeckPlane: {
+      point: [6.8, -6.15, 4.85],
+      normal: [0, 1, 0],
+    },
+    slots: [
+      makeSlot(6.8, -2.05, 4.85, 0, 0, 0),
+      makeSlot(6.8, -3.6, 4.85, 0, 0, 0),
+      makeSlot(6.8, -5.15, 4.85, 0, 0, 0),
+      makeSlot(6.8, -5.15, 4.85, 0, 0, 0),
+    ],
+  },
 };
 
 /** Maximum instanced capacity needed across all 11 weapons (`roundCount + 1` replacement) */

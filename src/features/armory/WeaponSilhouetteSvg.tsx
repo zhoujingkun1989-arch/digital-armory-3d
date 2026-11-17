@@ -782,8 +782,7 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
         );
       }
 
-      case 'p320':
-      default: {
+      case 'p320': {
         const pvdSlide = available ? '#9d8363' : '#cbd5e1';
         const fdeGrip = available ? '#8d7251' : '#94a3b8';
         return (
@@ -965,6 +964,374 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
               height="33.8"
               rx="1"
               fill={stroke}
+            />
+          </svg>
+        );
+      }
+
+      case 'lift33': {
+        const riserTan = available ? '#7e7668' : '#94a3b8';
+        const limbCarbon = available ? '#1e293b' : '#475569';
+        const camBronze = available ? '#b98f58' : '#cbd5e1';
+        const shaftGold = available ? '#d4a359' : '#94a3b8';
+        return (
+          <svg
+            viewBox="0 0 180 86"
+            className="weapon-silhouette-svg"
+            aria-hidden
+          >
+            {/* Bowstring & Bus/Control Cables */}
+            <line
+              x1="56.5"
+              y1="9.5"
+              x2="56.5"
+              y2="76.5"
+              stroke={stroke}
+              strokeWidth="1.05"
+            />
+            <line
+              x1="63"
+              y1="12.5"
+              x2="77.5"
+              y2="41.5"
+              stroke={subFill}
+              strokeWidth="0.9"
+            />
+            <line
+              x1="63"
+              y1="73.5"
+              x2="77.5"
+              y2="41.5"
+              stroke={subFill}
+              strokeWidth="0.9"
+            />
+            <line
+              x1="65"
+              y1="14"
+              x2="65"
+              y2="72"
+              stroke={subFill}
+              strokeWidth="0.75"
+              strokeDasharray="2 1.5"
+            />
+            {/* D-Loop & Cable Guard Roller Rod */}
+            <path
+              d="M56.5 34.8 C53 34.8 53 37.8 56.5 37.8"
+              fill="none"
+              stroke={accent}
+              strokeWidth="1.2"
+            />
+            <rect x="73" y="40.2" width="13" height="2.4" rx="1" fill={fill} />
+            <circle cx="77.5" cy="41.4" r="2.1" fill={camBronze} />
+
+            {/* Top & Bottom Quad Split Limbs */}
+            <path
+              d="M61.5 13 C69 15.5 79 19 88.5 23.5 L86 27 C77 22.5 68 18.8 60.5 16 Z"
+              fill={limbCarbon}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            <path
+              d="M61.5 73 C69 70.5 79 67 88.5 62.5 L86 59 C77 63.5 68 67.2 60.5 70 Z"
+              fill={limbCarbon}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            {/* Limb Pockets */}
+            <rect
+              x="83.5"
+              y="21"
+              width="7.5"
+              height="6.2"
+              rx="1.2"
+              fill={fill}
+              stroke={stroke}
+              strokeWidth="0.9"
+            />
+            <rect
+              x="83.5"
+              y="58.8"
+              width="7.5"
+              height="6.2"
+              rx="1.2"
+              fill={fill}
+              stroke={stroke}
+              strokeWidth="0.9"
+            />
+
+            {/* SwitchWeight-X Binary Cams (Top & Bottom) */}
+            <ellipse
+              cx="61.5"
+              cy="12.5"
+              rx="5.6"
+              ry="4.2"
+              transform="rotate(-14 61.5 12.5)"
+              fill={camBronze}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            <circle cx="62" cy="12.5" r="1.4" fill={cutout} />
+            <ellipse
+              cx="61.5"
+              cy="73.5"
+              rx="5.6"
+              ry="4.2"
+              transform="rotate(14 61.5 73.5)"
+              fill={camBronze}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            <circle cx="62" cy="73.5" r="1.4" fill={cutout} />
+
+            {/* Bridged Truss Riser & Engage Grip */}
+            <path
+              d="M86 24 L92.5 24 L94 34 L91 40 L89.5 47 L93 54 L92 62 L85.5 62 L86.5 52 L83.5 45 L86 35 Z"
+              fill={riserTan}
+              stroke={stroke}
+              strokeWidth="1.25"
+              strokeLinejoin="round"
+            />
+            <polygon points="88,27 91,27 91.5,33 88,33" fill={cutout} />
+            <polygon points="87.5,53 91,53 90.5,59 87,59" fill={cutout} />
+            <path
+              d="M84.2 43.5 C82.4 45.5 82.4 49.5 84.5 52 L89.2 51.5 L89.5 44 Z"
+              fill={limbCarbon}
+              stroke={stroke}
+              strokeWidth="0.9"
+            />
+
+            {/* Sight Housing + Drop-Away Rest + Bridge-Lock 10" Stabilizer */}
+            <rect
+              x="92.5"
+              y="30.2"
+              width="12.5"
+              height="2.3"
+              rx="0.8"
+              fill={fill}
+            />
+            <circle
+              cx="106.5"
+              cy="31.3"
+              r="3.6"
+              fill={cutout}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            <circle cx="106.5" cy="31.3" r="1" fill={accent} />
+            <path d="M91.5 37 L96 36.4 L96.5 39 L91.5 39 Z" fill={subFill} />
+            <rect
+              x="92"
+              y="55.2"
+              width="42"
+              height="3.2"
+              rx="1.4"
+              fill={limbCarbon}
+              stroke={stroke}
+              strokeWidth="0.9"
+            />
+            <rect x="129.5" y="54.2" width="6.5" height="5.2" rx="1.2" fill={fill} />
+            <circle cx="127" cy="56.8" r="1.1" fill={accent} />
+
+            {/* Nocked 400gr Carbon Arrow & 3-Blade Broadhead */}
+            <line
+              x1="56.5"
+              y1="36.3"
+              x2="151"
+              y2="36.3"
+              stroke={shaftGold}
+              strokeWidth="1.8"
+            />
+            <polygon points="58.5,36.3 67.5,33.5 69,36.3" fill={accent} />
+            <polygon points="58.5,36.3 67.5,39.1 69,36.3" fill={accent} />
+            <polygon
+              points="151,33.6 161,36.3 151,39"
+              fill={stroke}
+              stroke={stroke}
+              strokeWidth="0.6"
+            />
+          </svg>
+        );
+      }
+
+      case 'r500':
+      default: {
+        const chassisSlate = available ? '#475569' : '#94a3b8';
+        const railDark = available ? '#1e293b' : '#475569';
+        const hexBronze = available ? '#c2924c' : '#cbd5e1';
+        const opticAlloy = available ? '#334155' : '#64748b';
+        return (
+          <svg
+            viewBox="0 0 180 86"
+            className="weapon-silhouette-svg"
+            aria-hidden
+          >
+            {/* Folding Foot Stirrup & Riser Bridge */}
+            <path
+              d="M148 39 L164 39 L167 43.5 L164 48 L148 48"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="1.6"
+              strokeLinejoin="round"
+            />
+            {/* Bullpup Skeletonized Stock, Versa-Drive Crank & Pistol Grip */}
+            <path
+              d="M12 37 L58 37 L64 41 L148 41 L148 47.5 L92 48.5 L83 54.5 L68 54.5 L62 63 L48 63 L44 55.5 L16 57 L12 53 Z"
+              fill={chassisSlate}
+              stroke={stroke}
+              strokeWidth="1.35"
+              strokeLinejoin="round"
+            />
+            {/* Stock Thumbhole Cutout & Rubber Buttplate */}
+            <polygon
+              points="21,42 48,42 46,51.5 21,52.5"
+              fill={cutout}
+              stroke={stroke}
+              strokeWidth="0.9"
+            />
+            <rect
+              x="9.5"
+              y="36.2"
+              width="3.6"
+              height="21.5"
+              rx="1.2"
+              fill={railDark}
+              stroke={stroke}
+              strokeWidth="0.9"
+            />
+            {/* Ergonomic Bullpup Pistol Grip & Trigger Guard */}
+            <path
+              d="M72 48.5 L80 48.5 L77 67.5 L67.5 67.5 Z"
+              fill={railDark}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            <path
+              d="M80 48.5 L93 48.5 L91 56 L78.5 56"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="1.2"
+            />
+            <path
+              d="M85.5 48.5 L87 54 L84 54.5 Z"
+              fill={accent}
+            />
+            {/* Versa-Drive Silent Crank Wheel */}
+            <circle
+              cx="53.5"
+              cy="46"
+              r="4.2"
+              fill={opticAlloy}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            <circle cx="53.5" cy="46" r="1.4" fill={hexBronze} />
+
+            {/* 1-8x24 Illuminated Crossbow Scope & Picatinny Bridge */}
+            <rect
+              x="60"
+              y="34"
+              width="48"
+              height="5"
+              rx="1"
+              fill={railDark}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            <rect x="69" y="29" width="5.5" height="5.5" rx="0.8" fill={fill} />
+            <rect x="92" y="29" width="5.5" height="5.5" rx="0.8" fill={fill} />
+            <path
+              d="M46 21 L59 22.5 L97 22.5 L112 20 L112 29 L97 26.8 L59 26.8 L46 28.2 Z"
+              fill={opticAlloy}
+              stroke={stroke}
+              strokeWidth="1.25"
+            />
+            <rect x="78" y="19.2" width="7" height="3.2" rx="0.8" fill={hexBronze} />
+            <line
+              x1="112"
+              y1="21.5"
+              x2="112"
+              y2="27.5"
+              stroke={accent}
+              strokeWidth="1.4"
+            />
+
+            {/* Twin Tight-Profile Quad Split Limbs Sweeping to HexCoil Cams */}
+            <path
+              d="M148 39.5 C139 33 125 29.5 113 30.5 L114 34.2 C125 33.5 137 36.2 145.5 41.5 Z"
+              fill={railDark}
+              stroke={stroke}
+              strokeWidth="1.05"
+            />
+            <path
+              d="M148 47.5 C139 54 125 57.5 113 56.5 L114 52.8 C125 53.5 137 50.8 145.5 45.5 Z"
+              fill={railDark}
+              stroke={stroke}
+              strokeWidth="1.05"
+            />
+            {/* Multi-Stage HexCoil Helical Cam Stacks + Taut String/Cable */}
+            <rect
+              x="110"
+              y="26.5"
+              width="8.5"
+              height="9"
+              rx="2.5"
+              fill={hexBronze}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            <rect
+              x="110"
+              y="51.5"
+              width="8.5"
+              height="9"
+              rx="2.5"
+              fill={hexBronze}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            <line
+              x1="114"
+              y1="30"
+              x2="75"
+              y2="37.2"
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            <line
+              x1="114"
+              y1="56"
+              x2="75"
+              y2="40.5"
+              stroke={stroke}
+              strokeWidth="1"
+            />
+
+            {/* Trac-Trigger Sled & 20-Inch 400gr Carbon Bolt + Broadhead */}
+            <rect
+              x="71"
+              y="36.2"
+              width="11"
+              height="4.4"
+              rx="1.2"
+              fill={hexBronze}
+              stroke={stroke}
+              strokeWidth="0.9"
+            />
+            <line
+              x1="78"
+              y1="38.2"
+              x2="157"
+              y2="38.2"
+              stroke={accent}
+              strokeWidth="1.8"
+            />
+            <polygon points="82,38.2 90,35.6 91.5,38.2" fill={hexBronze} />
+            <polygon points="82,38.2 90,40.8 91.5,38.2" fill={hexBronze} />
+            <polygon
+              points="157,35.4 168.5,38.2 157,41"
+              fill={stroke}
+              stroke={stroke}
+              strokeWidth="0.6"
             />
           </svg>
         );

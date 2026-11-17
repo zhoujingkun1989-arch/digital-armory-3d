@@ -148,7 +148,7 @@ export interface ShowcaseDictionary {
     title: string;
     desc: string;
     filterAria: string;
-    categories: Record<ArmoryCategory, string>;
+    categories: Record<ArmoryCategory | 'archery', string>;
     partsPill: (count: number) => string;
     specCaliber: string;
     specOal: string;
@@ -228,8 +228,8 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       weaponPillsAria: '快速切换舞台展示枪械',
     },
     metrics: [
-      { val: '11 款', lbl: '传奇制式名枪 · 7 大闭锁与供弹原理' },
-      { val: '278 件', lbl: '实时 CSG 布尔零件 · 零穿模' },
+      { val: '13 款', lbl: '传奇名枪与特种弓弩 · 9 大闭锁与储能原理' },
+      { val: '327 件', lbl: '实时 CSG 布尔零件 · 零穿模' },
       { val: '64 张', lbl: '2K 5 通道 ORM 物理材质贴图' },
       { val: '644 段', lbl: '中英双语 AI 研发故事与零件配音' },
       { val: 'Web Audio', lbl: '7 口径实弹声浪 · 7 阶段机械咬合' },
@@ -428,9 +428,9 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       ],
     },
     arsenal: {
-      kicker: '11-BAY MASTER ROSTER · FACTORY 1:1',
-      title: '十一大世界经典名枪 1:1 测绘馆藏矩阵',
-      desc: '涵盖俄、美、德、奥、英、比、以七国代表性轻武器体系，每款均配备双语四幕研发纪录片、全零件配音、独立总成与自动闭锁运动学方程。',
+      kicker: '13-BAY MASTER ROSTER · FACTORY 1:1',
+      title: '十三大世界经典名枪与复合弓弩 1:1 测绘馆藏矩阵',
+      desc: '涵盖热兵器与精密机械复合弓/弩体系，每款均配备双语四幕研发纪录片、全零件配音、独立总成与物理耦合运动学方程。',
       filterAria: '馆藏分类筛选',
       categories: {
         all: '全部馆藏',
@@ -438,6 +438,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         smg: '冲锋枪 / PDW',
         sniper: '狙击 / 反器材',
         pistol: '半自动手枪',
+        archery: '复合弓 / 弩',
       },
       partsPill: (n) => `${n} 零件`,
       specCaliber: '口径',
@@ -579,8 +580,8 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       weaponPillsAria: 'Switch live stage firearm',
     },
     metrics: [
-      { val: '11 Icons', lbl: 'Service Firearms · 7 Feed & Lock Systems' },
-      { val: '278 Parts', lbl: 'Manifold CSG Nodes · Zero Clipping' },
+      { val: '13 Icons', lbl: 'Firearms & Compound Archery · 9 Drive Systems' },
+      { val: '327 Parts', lbl: 'Manifold CSG Nodes · Zero Clipping' },
       { val: '64 Maps', lbl: '2K 5-Channel Packed ORM Textures' },
       { val: '644 Clips', lbl: 'Bilingual Gemini TTS R&D & Part Audio' },
       { val: 'Web Audio', lbl: '7-Caliber Blasts · 7-Stage Mech Foley' },
@@ -783,9 +784,9 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       ],
     },
     arsenal: {
-      kicker: '11-BAY MASTER ROSTER · FACTORY 1:1',
-      title: '11 Iconic World Firearms · 1:1 Metrology Vault Matrix',
-      desc: 'Spanning Russian, American, German, Austrian, British, Belgian, and Israeli small-arms lineages—each complete with a 4-act bilingual documentary, spoken part guides, and coupled kinematics.',
+      kicker: '13-BAY MASTER ROSTER · FACTORY 1:1',
+      title: '13 Iconic Firearms & Archery Systems · 1:1 Metrology Matrix',
+      desc: 'Spanning firearms and precision binary/helical-cam compound archery—each complete with a 4-act bilingual documentary, spoken part guides, and coupled kinematics.',
       filterAria: 'Filter vault collection by category',
       categories: {
         all: 'All Vault',
@@ -793,6 +794,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         smg: 'SMG / PDW',
         sniper: 'Sniper / Anti-Materiel',
         pistol: 'Service Pistol',
+        archery: 'Bow / Crossbow',
       },
       partsPill: (n) => `${n} Parts`,
       specCaliber: 'Caliber',

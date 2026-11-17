@@ -24,7 +24,7 @@ export interface SelectorModeTooltipMeta {
 }
 
 export interface WeaponFireControlProfile {
-  weaponId: WeaponId;
+  weaponId: WeaponId | 'lift33' | 'r500';
   supportedModes: readonly FireSelectorMode[];
   mechanismSummaryZh: string;
   mechanismSummaryEn: string;
@@ -40,7 +40,7 @@ const SELECT_FIRE_MODES: readonly FireSelectorMode[] = [
 const SEMI_ONLY_MODES: readonly FireSelectorMode[] = ['safe', 'semi'] as const;
 
 const WEAPON_SELECTOR_CAPABILITIES: Record<
-  WeaponId,
+  WeaponId | 'lift33' | 'r500',
   readonly FireSelectorMode[]
 > = {
   // Select-fire military assault rifles, SMGs & PDWs
@@ -50,19 +50,21 @@ const WEAPON_SELECTOR_CAPABILITIES: Record<
   scar: SELECT_FIRE_MODES,
   aug: SELECT_FIRE_MODES,
   p90: SELECT_FIRE_MODES,
-  // Semi-automatic / bolt-action pistols & precision rifles
+  // Semi-automatic / bolt-action / compound archery systems
   g17: SEMI_ONLY_MODES,
   p320: SEMI_ONLY_MODES,
   deagle: SEMI_ONLY_MODES,
   m82a1: SEMI_ONLY_MODES,
   awm: SEMI_ONLY_MODES,
+  lift33: SEMI_ONLY_MODES,
+  r500: SEMI_ONLY_MODES,
 };
 
 /**
  * Bilingual authentic Fire-Control Group (FCG) selector documentation per firearm.
  */
 export const WEAPON_FIRE_CONTROL_PROFILES: Record<
-  WeaponId,
+  WeaponId | 'lift33' | 'r500',
   WeaponFireControlProfile
 > = {
   ak15: {
@@ -432,7 +434,73 @@ export const WEAPON_FIRE_CONTROL_PROFILES: Record<
       },
     },
   },
+  lift33: {
+    weaponId: 'lift33',
+    supportedModes: SEMI_ONLY_MODES,
+    mechanismSummaryZh:
+      'SwitchWeight-X 85% 省力谷闭锁 + D-Loop 防误触撒放保险',
+    mechanismSummaryEn:
+      'SwitchWeight-X Binary-Cam 85% Let-Off Valley + D-Loop Release Safety Lock',
+    modes: {
+      safe: {
+        mode: 'safe',
+        code: 'SAFE',
+        labelZh: '撒放安全锁定 (SAFE)',
+        labelEn: 'RELEASE SAFE',
+        tooltipZh:
+          '物理锁住机械卡钳撒放器扳机销，确保搭箭拉弦过程不发生走火或空放。',
+        tooltipEn:
+          'Locks caliper release sear jaw to prevent premature draw discharge or dry-fire.',
+      },
+      semi: {
+        mode: 'semi',
+        code: 'DRAW',
+        labelZh: '拉弦撒放实射 (SEMI)',
+        labelEn: 'LIVE RELEASE',
+        tooltipZh:
+          '拖拽主弦/D环进入满弓 85% 省力谷或按住扳机完成 597mm 做功行程推射，松手复位。',
+        tooltipEn:
+          'Draw string or hold trigger through 85% let-off valley to loose the 400 gr carbon arrow.',
+      },
+    },
+  },
+  r500: {
+    weaponId: 'r500',
+    supportedModes: SEMI_ONLY_MODES,
+    mechanismSummaryZh:
+      'Trac-Trigger 悬浮自动保险 + 铜制半月尾扣防空放阻块 (ADF)',
+    mechanismSummaryEn:
+      'Trac-Trigger Automatic Tang Safety + Anti-Dry-Fire (ADF) Pawl Lock',
+    modes: {
+      safe: {
+        mode: 'safe',
+        code: 'SAFE',
+        labelZh: '自动保险 + ADF 自锁 (SAFE)',
+        labelEn: 'AUTO SAFE / ADF',
+        tooltipZh:
+          '悬浮滑座推挂弓弦瞬间自动顶出手动保险，未装实箭时铜色 ADF 阻铁亦刚性锁死扳机。',
+        tooltipEn:
+          'Engages automatic tang safety upon string latch; copper ADF pawl physically blocks trigger without a seated bolt.',
+      },
+      semi: {
+        mode: 'semi',
+        code: 'FIRE',
+        labelZh: '500 FPS 悬轨单发 (SEMI)',
+        labelEn: 'SINGLE RELEASE',
+        tooltipZh:
+          '381mm 零摩擦悬空做功发射 400 gr 碳纤维弩箭，发射后自动锁回防空放安全态。',
+        tooltipEn:
+          'Crisp frictionless floating-sled sear release launching the 400 gr bolt at 500 FPS.',
+      },
+    },
+  },
 };
+
+function isArcheryInteractiveWeapon(
+  weaponId: WeaponId | string | null | undefined
+): boolean {
+  return weaponId === 'lift33' || weaponId === 'r500';
+}
 
 /**
  * Returns the authentic real-world fire-control selector modes supported by a weapon.
@@ -456,7 +524,10 @@ export function getSelectorModeMetadata(
   return WEAPON_FIRE_CONTROL_PROFILES[weaponId]?.modes[mode] ?? null;
 }
 
-const EXPLICIT_WEAPON_ACTION_PARTS: Record<WeaponId, readonly string[]> = {
+const EXPLICIT_WEAPON_ACTION_PARTS: Record<
+  WeaponId | 'lift33' | 'r500',
+  readonly string[]
+> = {
   ak15: ['ak_bolt_carrier', 'ak_bolt'],
   m4a1: ['m4a1_charging_handle', 'm4a1_bolt_carrier', 'm4a1_bolt'],
   mp5: ['mp5_charging_handle', 'mp5_bolt_carrier', 'mp5_bolt_head'],
@@ -473,6 +544,8 @@ const EXPLICIT_WEAPON_ACTION_PARTS: Record<WeaponId, readonly string[]> = {
   aug: ['aug_charging_handle', 'aug_bolt_carrier', 'aug_bolt'],
   p320: ['p320_slide'],
   p90: ['p90_charging_handles', 'p90_bolt'],
+  lift33: ['lift33_bowstring', 'lift33_d_loop'],
+  r500: ['r500_trigger_sled', 'r500_bowstring', 'r500_versadrive_screw'],
 };
 
 const GENERIC_ACTION_PART_INCLUDE_RE =
@@ -505,17 +578,22 @@ export function isWeaponActionPart(
 
 /**
  * Maps manual slide/bolt retraction `[0..1]` onto the unlocking & extraction stroke
- * `[0.32 .. 0.62]` (returning `0.0` at full forward battery so chamber/muzzle ignition
- * VFX in `[0.14 .. 0.30]` never trigger during manual manipulation).
+ * `[0.32 .. 0.62]` (or `[0.0 .. 0.30]` draw/cocking stroke for compound archery).
  */
-export function mapManualRackToFireProgress(rackProgress01: number): number {
+export function mapManualRackToFireProgress(
+  rackProgress01: number,
+  weaponId?: WeaponId | string
+): number {
   const r = clamp01(rackProgress01);
   if (r <= 0.0005) return 0.0;
+  if (isArcheryInteractiveWeapon(weaponId)) {
+    return r * 0.3;
+  }
   return 0.32 + r * 0.3;
 }
 
 /**
- * Computes simulated recoil-spring counter-tension (Newtons) along the retraction stroke.
+ * Computes simulated recoil-spring / compound-cam draw resistance (Newtons) along the stroke.
  */
 export function computeRecoilSpringForceN(
   weaponId: WeaponId,
@@ -523,6 +601,25 @@ export function computeRecoilSpringForceN(
 ): number {
   const r = clamp01(rackProgress01);
   if (r <= 0.0001) return 0;
+
+  if ((weaponId as string) === 'lift33') {
+    const peakN = 311.4;
+    const holdN = 46.7;
+    if (r < 0.65) {
+      return peakN * Math.sin((r / 0.65) * (Math.PI * 0.5));
+    }
+    const d = (r - 0.65) / 0.35;
+    return peakN - (peakN - holdN) * (d * d * (3 - 2 * d));
+  }
+  if ((weaponId as string) === 'r500') {
+    const peakN = 1334.5;
+    const holdN = 827.4;
+    if (r < 0.72) {
+      return peakN * Math.sin((r / 0.72) * (Math.PI * 0.5));
+    }
+    const d = (r - 0.72) / 0.28;
+    return peakN - (peakN - holdN) * (d * d * (3 - 2 * d));
+  }
 
   let preloadN = 52;
   let rateN = 46;
@@ -669,7 +766,10 @@ function finalizeRackRelease(): void {
     return;
   }
 
-  if (r >= RACK_CHAMBER_ROUND_MIN_RATIO) {
+  if (
+    r >= RACK_CHAMBER_ROUND_MIN_RATIO &&
+    !isArcheryInteractiveWeapon(currentSnapshot.weaponId)
+  ) {
     // Racked past 85%: strip fresh round from feed lips & lock into battery (0.68 -> 1.0)
     rackPhase = 'chamber_round';
     chamberSweepF = 0.68;
@@ -716,7 +816,9 @@ export const interactiveActionStore = {
   },
 
   syncWeapon(weaponId: WeaponId): void {
-    if (!WEAPON_IDS.includes(weaponId)) return;
+    if (!WEAPON_IDS.includes(weaponId) && !isArcheryInteractiveWeapon(weaponId)) {
+      return;
+    }
     const supported = getSupportedSelectorModes(weaponId);
     const nextMode = supported.includes(currentSnapshot.selectorMode)
       ? currentSnapshot.selectorMode
@@ -816,7 +918,7 @@ export const interactiveActionStore = {
       initialRack
     );
     playbackClock.setFireProgress(
-      mapManualRackToFireProgress(initialRack),
+      mapManualRackToFireProgress(initialRack, weaponId),
       true
     );
 
@@ -850,7 +952,10 @@ export const interactiveActionStore = {
       weaponId,
       next
     );
-    playbackClock.setFireProgress(mapManualRackToFireProgress(next), true);
+    playbackClock.setFireProgress(
+      mapManualRackToFireProgress(next, weaponId),
+      true
+    );
   },
 
   endActionDrag(): void {
@@ -1045,7 +1150,10 @@ export const interactiveActionStore = {
         weaponId,
         next
       );
-      playbackClock.setFireProgress(mapManualRackToFireProgress(next), true);
+      playbackClock.setFireProgress(
+        mapManualRackToFireProgress(next, weaponId),
+        true
+      );
     } else if (rackPhase === 'press_check_hold') {
       const cur = transientState.manualRackProgress;
       const next = THREE.MathUtils.damp(cur, PRESS_CHECK_RACK_RATIO, 18, dt);
@@ -1055,7 +1163,10 @@ export const interactiveActionStore = {
         weaponId,
         next
       );
-      playbackClock.setFireProgress(mapManualRackToFireProgress(next), true);
+      playbackClock.setFireProgress(
+        mapManualRackToFireProgress(next, weaponId),
+        true
+      );
     } else if (rackPhase === 'snap_battery') {
       const cur = transientState.manualRackProgress;
       const returnSpeed = 5.2 + 6.4 * cur;
@@ -1074,7 +1185,10 @@ export const interactiveActionStore = {
         rackPhase = 'idle';
         playbackClock.setFireProgress(0, true);
       } else {
-        playbackClock.setFireProgress(mapManualRackToFireProgress(next), true);
+        playbackClock.setFireProgress(
+          mapManualRackToFireProgress(next, weaponId),
+          true
+        );
       }
     } else if (rackPhase === 'chamber_round') {
       // Counter-recoil strip & chamber sweep across [0.68 -> 1.0]

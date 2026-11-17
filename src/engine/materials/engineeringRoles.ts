@@ -152,10 +152,12 @@ export type GasOperatingFamily =
   | 'straight_blowback'
   | 'short_recoil_tilting'
   | 'short_recoil_accelerator'
-  | 'manual_bolt_action';
+  | 'manual_bolt_action'
+  | 'compound_bow_binary_cam'
+  | 'compound_crossbow_helical_cam';
 
 export interface WeaponGasManifoldProfile {
-  weaponId: WeaponId;
+  weaponId: WeaponId | 'lift33' | 'r500';
   family: GasOperatingFamily;
   hasGasTap: boolean;
   familyTitleZh: string;
@@ -181,7 +183,7 @@ export interface WeaponGasManifoldProfile {
 }
 
 export const WEAPON_GAS_MANIFOLD_PROFILES: Readonly<
-  Record<WeaponId, WeaponGasManifoldProfile>
+  Record<WeaponId | 'lift33' | 'r500', WeaponGasManifoldProfile>
 > = {
   ak15: {
     weaponId: 'ak15',
@@ -392,6 +394,44 @@ export const WEAPON_GAS_MANIFOLD_PROFILES: Readonly<
     gasTargetX: -6.4,
     ventPos: [-3.9, -2.6, 0],
   },
+  lift33: {
+    weaponId: 'lift33',
+    family: 'compound_bow_binary_cam',
+    hasGasTap: false,
+    familyTitleZh: 'SwitchWeight-X 双同步偏心轮 · 四分体弹性储能',
+    familyTitleEn: 'SwitchWeight-X Binary Cams · Split-Limb Elastic Strain Drive',
+    flowNoteZh:
+      '无火药燃气发射：拉弦时上下碳纤四分体弓片蓄积 57.6 J 弹性能并通过偏心轮降省至 15% 持力；撒放瞬间做功行程将 400 gr 碳箭平顺推射至 348 FPS (106 m/s)。',
+    flowNoteEn:
+      'Smokeless elastic propulsion: drawing stores energy across split carbon limbs through synchronized binary cams to an 85% let-off valley, then delivers 145.6 J over a 597 mm power stroke.',
+    chamberX: -16.5,
+    muzzleX: 35.5,
+    boreY: 2.4,
+    gasPortX: -12.6,
+    gasChannelY: 41.5,
+    gasChannelZ: 0,
+    gasTargetX: -1.4,
+    ventPos: [-12.6, -41.5, 0],
+  },
+  r500: {
+    weaponId: 'r500',
+    family: 'compound_crossbow_helical_cam',
+    hasGasTap: false,
+    familyTitleZh: 'HexCoil 360° 螺旋凸轮 · 悬浮零摩擦滑轨推射',
+    familyTitleEn: 'HexCoil 360° Helical Cams · Frictionless Flight Power-Stroke',
+    flowNoteZh:
+      '300 lb 高刚度弓片弹性势能驱动：Versa-Drive 绞盘拉挂后，HexCoil 双叠螺旋轮将能量高度集中于 91 mm 宽跨距，由 Trac-Trigger 悬浮挂爪释放 500 FPS (301 J) 动能。',
+    flowNoteEn:
+      '300 lb compound limb strain: HexCoil 360° cams coil cables around opposing helical grooves for zero rail friction, releasing the bolt at 500 FPS (152.4 m/s · 301 J) from the floating trigger sled.',
+    chamberX: -22.0,
+    muzzleX: 38.5,
+    boreY: 1.8,
+    gasPortX: 25.2,
+    gasChannelY: 1.8,
+    gasChannelZ: 9.65,
+    gasTargetX: 26.2,
+    ventPos: [25.2, 1.8, -9.65],
+  },
 };
 
 /**
@@ -515,6 +555,59 @@ const EXPLICIT_PART_ROLE_OVERRIDES: Readonly<Record<string, EngineeringRole>> =
     p90_guide_rods: 'bolt_carrier',
     p90_firing_pin: 'fire_control',
     p90_helical_ramp: 'housing_feed',
+
+    // Mathews LIFT 33 Compound Bow (24 parts)
+    lift33_riser: 'housing_feed',
+    lift33_grip: 'housing_feed',
+    lift33_upper_pocket: 'locking',
+    lift33_lower_pocket: 'locking',
+    lift33_cable_guard: 'bolt_carrier',
+    lift33_stabilizer: 'housing_feed',
+    lift33_upper_limbs: 'gas_drive',
+    lift33_lower_limbs: 'gas_drive',
+    lift33_upper_cam: 'locking',
+    lift33_lower_cam: 'locking',
+    lift33_cam_axles: 'locking',
+    lift33_bowstring: 'bolt_carrier',
+    lift33_yoke_cables: 'gas_drive',
+    lift33_limb_dampeners: 'energy_spring',
+    lift33_drop_away_rest: 'fire_control',
+    lift33_launcher_fork: 'bolt_carrier',
+    lift33_sight_housing: 'fire_control',
+    lift33_sight_pins: 'fire_control',
+    lift33_d_loop: 'fire_control',
+    lift33_quiver_frame: 'housing_feed',
+    lift33_quiver_hood: 'housing_feed',
+    lift33_quiver_latch: 'housing_feed',
+    lift33_arrow_shaft: 'housing_feed',
+    lift33_broadhead: 'housing_feed',
+
+    // Ravin R500 HexCoil Crossbow (25 parts)
+    r500_chassis: 'housing_feed',
+    r500_forend_grip: 'housing_feed',
+    r500_pistol_grip: 'housing_feed',
+    r500_buttstock: 'housing_feed',
+    r500_foot_stirrup: 'housing_feed',
+    r500_flight_rail: 'housing_feed',
+    r500_riser_head: 'locking',
+    r500_left_limbs: 'gas_drive',
+    r500_right_limbs: 'gas_drive',
+    r500_left_cam: 'locking',
+    r500_right_cam: 'locking',
+    r500_cam_axles: 'locking',
+    r500_bowstring: 'bolt_carrier',
+    r500_power_cables: 'gas_drive',
+    r500_versadrive_screw: 'bolt_carrier',
+    r500_trigger_sled: 'bolt_carrier',
+    r500_string_latch: 'locking',
+    r500_anti_dry_fire: 'locking',
+    r500_trigger_sear: 'fire_control',
+    r500_safety_selector: 'fire_control',
+    r500_trigger_spring: 'energy_spring',
+    r500_scope: 'housing_feed',
+    r500_quiver_frame: 'housing_feed',
+    r500_retention_arm: 'housing_feed',
+    r500_carbon_bolt: 'housing_feed',
   };
 
 export interface EngineeringPartClassifierInput {

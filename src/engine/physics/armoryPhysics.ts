@@ -34,7 +34,7 @@ export const BARREL_WHIP_HZ = 220;
 export const BOLT_BOUNCE_AMPLITUDE_CM = 0.12;
 export const BOLT_BOUNCE_HZ = 38;
 
-/** Ordered caliber list used by UI, tests and data tables. */
+/** Ordered firearm caliber list used by SAAMI/CIP UI, tests and data tables. */
 export const BALLISTIC_CALIBERS: readonly CaliberProfile[] = [
   '9mm_para',
   '57_28',
@@ -44,6 +44,26 @@ export const BALLISTIC_CALIBERS: readonly CaliberProfile[] = [
   '338_lapua',
   '50_bmg',
 ];
+
+/** Ordered archery projectile profiles (compound bow & helical-cam crossbow). */
+export const ARCHERY_PROFILES: readonly CaliberProfile[] = [
+  'arrow_400gr',
+  'bolt_400gr',
+];
+
+/** True for compound bow / crossbow arrow & bolt profiles. */
+export function isArcheryCaliber(
+  caliber: CaliberInput | string | null | undefined
+): boolean {
+  return caliber === 'arrow_400gr' || caliber === 'bolt_400gr';
+}
+
+/** True for archery platforms (`lift33` compound bow & `r500` compound crossbow). */
+export function isArcheryWeapon(
+  weaponId: WeaponId | string | null | undefined
+): boolean {
+  return weaponId === 'lift33' || weaponId === 'r500';
+}
 
 /** Accepts canonical `CaliberProfile` keys as well as shorthand `'9x19'` / `'57x28'` aliases. */
 export type CaliberInput = CaliberProfile | '9x19' | '57x28';
@@ -58,13 +78,36 @@ export function normalizeCaliberProfile(caliber: CaliberInput): CaliberProfile {
 // 1. Caliber engineering data
 // ----------------------------------------------------------------------------
 
+export interface ArcheryBallisticsMeta {
+  /** Peak draw weight in pounds-force (e.g. 70 lbf / 300 lbf) */
+  peakDrawForceLb: number;
+  /** Peak draw / power-stroke thrust force in Newtons (311 N / 1334 N) */
+  peakDrawForceN: number;
+  /** Binary/helical cam let-off percentage at full draw */
+  letOffPercent: number;
+  /** Holding force in the full-draw valley in Newtons */
+  holdingForceN: number;
+  /** Holding weight in pounds-force */
+  holdingForceLb: number;
+  /** Brace height in mm */
+  braceHeightMm: number;
+  /** Power stroke travel in mm */
+  powerStrokeMm: number;
+  /** Axle-to-axle span in mm */
+  axleToAxleMm: number;
+  /** Projectile total mass in grains */
+  grainWeight: number;
+  /** ATA/IBO velocity rating in FPS */
+  velocityFps: number;
+}
+
 export interface CaliberBallisticsSpec {
   caliber: CaliberProfile;
   labelEn: string;
   labelZh: string;
-  /** Pressure standard the peak pressure is quoted against */
-  standard: 'SAAMI' | 'CIP' | 'NATO EPVAT';
-  /** Maximum average (peak) chamber pressure (MPa) */
+  /** Pressure / thrust standard the peak load is quoted against */
+  standard: 'SAAMI' | 'CIP' | 'NATO EPVAT' | 'ATA / IBO';
+  /** Maximum average (peak) chamber pressure (MPa) — or peak thrust force (N) for archery */
   peakPressureMPa: number;
   /** Service-load muzzle velocity (m/s) */
   muzzleVelocityMps: number;
@@ -76,7 +119,7 @@ export interface CaliberBallisticsSpec {
   safeUnlockPressureMPa: number;
   /** Projectile in-bore transit time from shot-start to muzzle exit (ms) */
   boreTimeMs: number;
-  /** Reference barrel length the velocity/time figures correspond to (mm) */
+  /** Reference barrel / power-stroke length the velocity/time figures correspond to (mm) */
   referenceBarrelMm: number;
   /** Pressure-curve shape exponent (higher = sharper peak, lower muzzle pressure) */
   pressureShapeK: number;
@@ -104,6 +147,8 @@ export interface CaliberBallisticsSpec {
   caseMassG: number;
   /** Number of visible supersonic Mach shock diamonds in the muzzle plume */
   shockDiamonds: number;
+  /** Archery-specific physical telemetry (draw force, let-off, brace height, power stroke) */
+  archerySpec?: ArcheryBallisticsMeta;
 }
 
 type CaliberSeed = Omit<CaliberBallisticsSpec, 'muzzleEnergyJ'>;
@@ -294,6 +339,80 @@ export const CALIBER_BALLISTICS: Readonly<
     caseMassG: 56,
     shockDiamonds: 5,
   }),
+  arrow_400gr: defineCaliber({
+    caliber: 'arrow_400gr',
+    labelEn: '400gr Carbon Arrow (70 lb · 348 FPS)',
+    labelZh: '400格令 碳纤维猎箭 (70磅 · 348 FPS)',
+    standard: 'ATA / IBO',
+    peakPressureMPa: 311, // 70 lbf peak draw / power-stroke thrust mapped in Newtons (N)
+    muzzleVelocityMps: 106.0,
+    projectileMassG: 25.92,
+    safeUnlockPressureMPa: 18,
+    boreTimeMs: 10.4,
+    referenceBarrelMm: 572,
+    pressureShapeK: 2.2,
+    peakU: 0.44,
+    heatPerShotC: 0,
+    foulingPerShot: 0,
+    recoilKickCm: 0.08,
+    recoilRiseCm: 0.02,
+    muzzleClimbRad: 0.005,
+    barrelWhipCm: 0,
+    ejectSpeedCmS: 0,
+    caseHalfLenCm: 34.0,
+    caseRadiusCm: 0.33,
+    caseMassG: 0,
+    shockDiamonds: 0,
+    archerySpec: {
+      peakDrawForceLb: 70,
+      peakDrawForceN: 311,
+      letOffPercent: 85,
+      holdingForceN: 47,
+      holdingForceLb: 10.5,
+      braceHeightMm: 165.1,
+      powerStrokeMm: 571.5,
+      axleToAxleMm: 838,
+      grainWeight: 400,
+      velocityFps: 348,
+    },
+  }),
+  bolt_400gr: defineCaliber({
+    caliber: 'bolt_400gr',
+    labelEn: '400gr Crossbow Bolt (300 lb · 500 FPS)',
+    labelZh: '400格令 碳素弩箭 (300磅 · 500 FPS)',
+    standard: 'ATA / IBO',
+    peakPressureMPa: 1334, // 300 lbf peak draw / power-stroke thrust mapped in Newtons (N)
+    muzzleVelocityMps: 152.4,
+    projectileMassG: 25.92,
+    safeUnlockPressureMPa: 45,
+    boreTimeMs: 4.8,
+    referenceBarrelMm: 381,
+    pressureShapeK: 2.4,
+    peakU: 0.44,
+    heatPerShotC: 0,
+    foulingPerShot: 0,
+    recoilKickCm: 0.14,
+    recoilRiseCm: 0.03,
+    muzzleClimbRad: 0.008,
+    barrelWhipCm: 0,
+    ejectSpeedCmS: 0,
+    caseHalfLenCm: 24.0,
+    caseRadiusCm: 0.36,
+    caseMassG: 0,
+    shockDiamonds: 0,
+    archerySpec: {
+      peakDrawForceLb: 300,
+      peakDrawForceN: 1334,
+      letOffPercent: 38,
+      holdingForceN: 827,
+      holdingForceLb: 186,
+      braceHeightMm: 190.5,
+      powerStrokeMm: 381,
+      axleToAxleMm: 193,
+      grainWeight: 400,
+      velocityFps: 500,
+    },
+  }),
 };
 
 export function getCaliberBallisticsSpec(
@@ -381,6 +500,10 @@ export const WEAPON_FIRING_TIMING: Readonly<
   deagle: timing(0.185, 0.295, 0.48, 0.845, 0.15, -0.3, 0.6, 0.74),
   // Straight blowback, downward ejection through the grip chute
   p90: timing(0.18, 0.275, 0.46, 0.845, null, -0.05, -1, 0.12),
+  // Mathews LIFT 33 binary-cam compound bow (draw 0..0.32, release 0.32, arrow clear 0.50)
+  lift33: timing(0.32, 0.5, 0.68, 0.86, null, 0, -0.5, 0.86),
+  // Ravin R500 HexCoil helical-cam crossbow (cock/arm 0..0.32, release 0.32, bolt clear 0.48)
+  r500: timing(0.32, 0.48, 0.66, 0.84, null, 0, -0.5, 0.86),
 };
 
 export function getWeaponFiringTiming(
@@ -419,17 +542,68 @@ function pressureShape(u: number, peakU: number, k: number): number {
   return Math.pow(r, k) * Math.exp(k * (1 - r));
 }
 
+function getArcheryLetOffRatio(spec: CaliberBallisticsSpec): number {
+  return spec.archerySpec ? 1 - spec.archerySpec.letOffPercent / 100 : 0.15;
+}
+
+/**
+ * Compound bow / crossbow power-stroke thrust curve: starts continuously from
+ * the full-draw let-off valley (`letOffRatio`), surges to peak cam leverage at `peakU`,
+ * and tapers smoothly to brace-height equilibrium (`u = 1`).
+ */
+function archeryPowerStrokeShape(
+  u: number,
+  peakU: number,
+  letOffRatio: number
+): number {
+  if (u <= 0) return letOffRatio;
+  if (u <= peakU) {
+    const t = u / Math.max(1e-6, peakU);
+    return letOffRatio + (1 - letOffRatio) * Math.sin(t * Math.PI * 0.5);
+  }
+  const t = (u - peakU) / Math.max(1e-6, 1 - peakU);
+  return Math.cos(Math.min(1, t) * Math.PI * 0.44);
+}
+
+/**
+ * Compound cam draw-force curve across `[0..ignitionF]`: limb preload ramp -> peak draw
+ * plateau -> smooth roll-over into the holding let-off valley before release.
+ */
+function archeryDrawForceShape(
+  f: number,
+  ignitionF: number,
+  letOffRatio: number
+): number {
+  if (f <= 0 || ignitionF <= 0) return 0;
+  const drawEnd = ignitionF * 0.75;
+  if (f >= drawEnd) return letOffRatio;
+  const uDraw = f / drawEnd;
+  if (uDraw <= 0.55) {
+    return 0.98 * Math.sin((uDraw / 0.55) * Math.PI * 0.5);
+  }
+  const tDrop = (uDraw - 0.55) / 0.45;
+  const s = tDrop * tDrop * (3 - 2 * tDrop);
+  return 0.98 + (letOffRatio - 0.98) * s;
+}
+
 function buildCurveTable(spec: CaliberBallisticsSpec): CaliberCurveTable {
   const n = CURVE_SAMPLES;
   const vel = new Float32Array(n + 1);
   const trav = new Float32Array(n + 1);
   const du = 1 / n;
+  const isArchery = isArcheryCaliber(spec.caliber);
+  const letOffRatio = getArcheryLetOffRatio(spec);
+  const shapeAt = (u: number) =>
+    isArchery
+      ? archeryPowerStrokeShape(u, spec.peakU, letOffRatio)
+      : pressureShape(u, spec.peakU, spec.pressureShapeK);
+
   let cumP = 0;
   let cumV = 0;
-  let prevG = 0;
+  let prevG = shapeAt(0);
   let prevV = 0;
   for (let i = 1; i <= n; i++) {
-    const g = pressureShape(i * du, spec.peakU, spec.pressureShapeK);
+    const g = shapeAt(i * du);
     cumP += 0.5 * (g + prevG) * du;
     prevG = g;
     vel[i] = cumP;
@@ -444,12 +618,12 @@ function buildCurveTable(spec: CaliberBallisticsSpec): CaliberCurveTable {
   return {
     vel01: vel,
     travel01: trav,
-    exitPressureRatio: pressureShape(1, spec.peakU, spec.pressureShapeK),
+    exitPressureRatio: shapeAt(1),
   };
 }
 
 const CURVE_TABLES = {} as Record<CaliberProfile, CaliberCurveTable>;
-for (const cal of BALLISTIC_CALIBERS) {
+for (const cal of [...BALLISTIC_CALIBERS, ...ARCHERY_PROFILES]) {
   CURVE_TABLES[cal] = buildCurveTable(CALIBER_BALLISTICS[cal]);
 }
 
@@ -585,22 +759,29 @@ export function evaluateInternalBallisticsInto(
   const safeUnlockF = computeSafeUnlockF(spec.caliber, t);
   const massKg = spec.projectileMassG / 1000;
 
+  const isArchery = isArcheryCaliber(spec.caliber);
+  const letOffRatio = getArcheryLetOffRatio(spec);
+
   let p01 = 0;
   let v01 = 0;
   let travel = 0;
 
-  if (f >= t.ignitionF) {
-    if (f <= t.muzzleExitF) {
-      const u = (f - t.ignitionF) / span;
-      p01 = pressureShape(u, spec.peakU, spec.pressureShapeK);
-      v01 = sampleTable(table.vel01, u);
-      travel = sampleTable(table.travel01, u);
-    } else {
-      p01 =
-        table.exitPressureRatio * Math.exp(-(f - t.muzzleExitF) / BLOWDOWN_TAU_F);
-      v01 = 1;
-      travel = 1;
+  if (f < t.ignitionF) {
+    if (isArchery) {
+      p01 = archeryDrawForceShape(f, t.ignitionF, letOffRatio);
     }
+  } else if (f <= t.muzzleExitF) {
+    const u = (f - t.ignitionF) / span;
+    p01 = isArchery
+      ? archeryPowerStrokeShape(u, spec.peakU, letOffRatio)
+      : pressureShape(u, spec.peakU, spec.pressureShapeK);
+    v01 = sampleTable(table.vel01, u);
+    travel = sampleTable(table.travel01, u);
+  } else {
+    p01 =
+      table.exitPressureRatio * Math.exp(-(f - t.muzzleExitF) / BLOWDOWN_TAU_F);
+    v01 = 1;
+    travel = 1;
   }
 
   const pressureMPa = p01 * spec.peakPressureMPa;
@@ -1358,6 +1539,8 @@ export function stepArmoryPhysics(
 
   const t = getWeaponFiringTiming(input.weaponId);
   const f = input.fireProgress;
+  const isArchery =
+    isArcheryWeapon(input.weaponId) || isArcheryCaliber(input.caliber);
 
   // ---- 1. Discrete firing-cycle events --------------------------------------
   if (s.hasLastFire && input.firing) {
@@ -1365,22 +1548,30 @@ export function stepArmoryPhysics(
     if (crossedForward(prev, f, t.ignitionF)) {
       applyArmoryShot(input.caliber);
     }
-    if (crossedForward(prev, f, t.muzzleExitF)) {
-      spawnMuzzleSmoke(input);
-    }
-    if (input.hasGasVent && crossedForward(prev, f, t.muzzleExitF + 0.02)) {
-      spawnVentSmoke(input);
-    }
-    if (crossedForward(prev, f, t.ejectF)) {
-      spawnSpentCasing(input, t);
-      spawnChamberSmoke(input);
-    }
-    if (crossedForward(prev, f, t.batteryF)) {
-      applyBoltBattery();
+    if (!isArchery) {
+      if (crossedForward(prev, f, t.muzzleExitF)) {
+        spawnMuzzleSmoke(input);
+      }
+      if (input.hasGasVent && crossedForward(prev, f, t.muzzleExitF + 0.02)) {
+        spawnVentSmoke(input);
+      }
+      if (crossedForward(prev, f, t.ejectF)) {
+        spawnSpentCasing(input, t);
+        spawnChamberSmoke(input);
+      }
+      if (crossedForward(prev, f, t.batteryF)) {
+        applyBoltBattery();
+      }
     }
   }
   s.lastFireProgress = f;
   s.hasLastFire = true;
+
+  if (isArchery) {
+    s.barrelTempC = AMBIENT_TEMP_C;
+    s.barrelHeat01 = 0;
+    s.carbonFouling01 = 0;
+  }
 
   if (dt <= 0) return s;
   s.simTimeSec += dt;

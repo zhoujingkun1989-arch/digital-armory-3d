@@ -100,6 +100,11 @@ function applyWorkbenchFraming(
     horizScale = (0.92 + tCam * 0.64) / aspect;
     xShift = 2.2 * tCam;
     yShift = -1.6 - (3.1 + (aspect < 0.85 ? 2.6 : 0)) * tCam;
+  } else if (scaleProfile === 'compound_bow') {
+    vertScale = 1.24 + tCam * 0.72;
+    horizScale = (0.94 + tCam * 0.66) / aspect;
+    xShift = 0.8 * tCam;
+    yShift = -1.5 - (2.8 + (aspect < 0.85 ? 2.8 : 0)) * tCam;
   } else if (scaleProfile === 'rifle') {
     vertScale = 1.16 + tCam * 0.62;
     horizScale = (0.88 + tCam * 0.56) / aspect;
@@ -463,13 +468,17 @@ const DisassemblyRig: React.FC = () => {
         ? spec.isShell
           ? 34
           : 19.5
-        : scaleProfile === 'rifle'
+        : scaleProfile === 'compound_bow'
           ? spec.isShell
-            ? 27
-            : 16.5
-          : spec.isShell
-            ? 20
-            : 14.5;
+            ? 38
+            : 20
+          : scaleProfile === 'rifle'
+            ? spec.isShell
+              ? 27
+              : 16.5
+            : spec.isShell
+              ? 20
+              : 14.5;
 
     turntableRigRef.current.active = false;
     flyRef.current.goalTarget.copy(_focusWorldCenter);
@@ -723,7 +732,7 @@ const DisassemblyRig: React.FC = () => {
         autoRotate={isTurntableScreen && armoryAutoRotate && !showcaseDragging}
         autoRotateSpeed={1.65}
         minDistance={3}
-        maxDistance={280}
+        maxDistance={520}
         onStart={() => {
           flyRef.current.active = false;
           turntableRigRef.current.active = false;

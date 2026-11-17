@@ -41,16 +41,19 @@ import { EngineeringTintLegend } from '../workbench/EngineeringTintLegend';
 import { StudioEnvironmentBar } from '../workbench/StudioEnvironmentBar';
 import { WeaponSilhouetteSvg } from './WeaponSilhouetteSvg';
 
-const CATEGORY_KEYS: ArmoryCategory[] = [
+type ArmoryFilterCategory = ArmoryCategory | 'archery';
+
+const CATEGORY_KEYS: ArmoryFilterCategory[] = [
   'all',
   'assault',
   'smg',
   'sniper',
   'pistol',
+  'archery',
 ];
 
 export const ArmoryView: React.FC = () => {
-  const [category, setCategory] = useState<ArmoryCategory>('all');
+  const [category, setCategory] = useState<ArmoryFilterCategory>('all');
   const [plannedToast, setPlannedToast] = useState<string | null>(null);
   const rackScrollRef = useRef<HTMLDivElement>(null);
 
@@ -90,7 +93,7 @@ export const ArmoryView: React.FC = () => {
   const shortWeaponTag = getLocalizedShortWeaponLabel(featuredWeapon.id, lang);
 
   const filteredWeapons = ARMORY_WEAPONS.filter((w) =>
-    matchesArmoryCategory(w, category)
+    matchesArmoryCategory(w, category as ArmoryCategory)
   );
 
   const scrollRackBy = (dir: -1 | 1) => {
@@ -147,12 +150,13 @@ export const ArmoryView: React.FC = () => {
         <div className="armory-header-actions armory-actions-filters">
           <div
             className="armory-filter-pills"
+            style={{ flexWrap: 'wrap', maxWidth: '100%' }}
             role="tablist"
             aria-label={ui.filterAria}
           >
             {CATEGORY_KEYS.map((key) => {
               const count = ARMORY_WEAPONS.filter((w) =>
-                matchesArmoryCategory(w, key)
+                matchesArmoryCategory(w, key as ArmoryCategory)
               ).length;
               return (
                 <button

@@ -14,6 +14,8 @@ const PLUGIN_LOADERS: Record<WeaponId, () => Promise<WeaponRuntimePlugin>> = {
   aug: () => import('./aug/plugin').then((m) => m.AUG_PLUGIN),
   p320: () => import('./p320/plugin').then((m) => m.P320_PLUGIN),
   p90: () => import('./p90/plugin').then((m) => m.P90_PLUGIN),
+  lift33: () => import('./lift33/plugin').then((m) => m.LIFT33_PLUGIN),
+  r500: () => import('./r500/plugin').then((m) => m.R500_PLUGIN),
 };
 
 const pluginCache = new Map<WeaponId, WeaponRuntimePlugin>();

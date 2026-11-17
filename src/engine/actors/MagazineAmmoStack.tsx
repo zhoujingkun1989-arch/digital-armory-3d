@@ -15,6 +15,7 @@ import {
 } from '../ballistics/magazineStackSpecs';
 import { playbackClock } from '../clock/playbackClock';
 import { fieldStripStore } from '../fieldstrip/fieldStripStore';
+import { isArcheryCaliber } from '../physics/armoryPhysics';
 import {
   clamp01,
   createMutablePose,
@@ -338,6 +339,7 @@ export const MagazineAmmoStack: React.FC = () => {
   const manifest = getWeaponManifest(activeWeaponId);
   const caliberProfile = manifest.caliberProfile;
   const calSpec = CALIBER_VISUAL_SPECS[caliberProfile];
+  const isArchery = isArcheryCaliber(caliberProfile);
 
   const { caseGeo, livePrimerGeo, bulletGeo } = useMemo(
     () => getCaliberGeometries(caliberProfile),
@@ -386,9 +388,10 @@ export const MagazineAmmoStack: React.FC = () => {
         renderOrder={2}
       >
         <meshStandardMaterial
-          color={calSpec.caseColor}
-          metalness={0.86}
-          roughness={0.22}
+          color={isArchery ? '#ffffff' : calSpec.caseColor}
+          vertexColors={isArchery}
+          metalness={isArchery ? 0.24 : 0.86}
+          roughness={isArchery ? 0.44 : 0.22}
         />
       </instancedMesh>
 
@@ -402,8 +405,8 @@ export const MagazineAmmoStack: React.FC = () => {
       >
         <meshStandardMaterial
           color={calSpec.primerColor}
-          metalness={0.92}
-          roughness={0.18}
+          metalness={isArchery ? 0.42 : 0.92}
+          roughness={isArchery ? 0.28 : 0.18}
         />
       </instancedMesh>
 
@@ -416,7 +419,8 @@ export const MagazineAmmoStack: React.FC = () => {
         renderOrder={2}
       >
         <meshStandardMaterial
-          color={calSpec.bulletColor}
+          color={isArchery ? '#ffffff' : calSpec.bulletColor}
+          vertexColors={isArchery}
           metalness={0.82}
           roughness={0.22}
         />

@@ -70,12 +70,15 @@ const GITHUB_REPO_URL =
 
 type HeroStageMode = 'pbr' | 'section' | 'xray' | 'explode';
 
-const CATEGORY_KEYS: readonly ArmoryCategory[] = [
+type ShowcaseFilterCategory = ArmoryCategory | 'archery';
+
+const CATEGORY_KEYS: readonly ShowcaseFilterCategory[] = [
   'all',
   'assault',
   'smg',
   'sniper',
   'pistol',
+  'archery',
 ];
 
 const ARCH_ICONS: Record<ShowcaseArchPillarCopy['iconKey'], LucideIcon> = {
@@ -94,7 +97,7 @@ npm run dev`;
 
 export const ShowcaseView: React.FC = () => {
   const [heroMode, setHeroMode] = useState<HeroStageMode>('pbr');
-  const [category, setCategory] = useState<ArmoryCategory>('all');
+  const [category, setCategory] = useState<ShowcaseFilterCategory>('all');
   const [docWeaponId, setDocWeaponId] = useState<WeaponId>('ak15');
   const [copied, setCopied] = useState(false);
   const [lightboxItemId, setLightboxItemId] = useState<string | null>(null);
@@ -220,7 +223,7 @@ export const ShowcaseView: React.FC = () => {
   const docShortTag = getLocalizedShortWeaponLabel(docWeaponId, lang);
 
   const filteredWeapons = ARMORY_WEAPONS.filter((w) =>
-    matchesArmoryCategory(w, category)
+    matchesArmoryCategory(w, category as ArmoryCategory)
   );
 
   const applyHeroStageMode = (nextMode: HeroStageMode) => {
@@ -953,7 +956,7 @@ export const ShowcaseView: React.FC = () => {
             >
               {CATEGORY_KEYS.map((catKey) => {
                 const count = ARMORY_WEAPONS.filter((w) =>
-                  matchesArmoryCategory(w, catKey)
+                  matchesArmoryCategory(w, catKey as ArmoryCategory)
                 ).length;
                 const isSelected = category === catKey;
                 return (

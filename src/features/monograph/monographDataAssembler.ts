@@ -1,12 +1,15 @@
 import {
+  archeryProjectileToLabSpec,
   CARTRIDGE_LAB_SPECS,
+  getArcheryProjectileMeta,
+  isArcheryCaliberProfile,
   type CartridgeLabSpec,
 } from '../../engine/cartridges/cartridgeSpecs';
 import { FIELD_STRIP_PLANS } from '../../engine/fieldstrip/fieldStripSpecs';
 import { getCachedPartGeometry } from '../../engine/geometry/geometryService';
 import {
+  getMalfunctionScenario,
   MALFUNCTION_ORDER,
-  MALFUNCTION_SCENARIOS,
 } from '../../engine/malfunctions/malfunctionSpecs';
 import {
   ENGINEERING_ROLE_META,
@@ -215,8 +218,42 @@ export function assembleMonographDossier(
   const displayMeta = resolveWeaponDisplayMeta(weaponId, lang, bundle);
   const shortTag = getLocalizedShortWeaponLabel(weaponId, lang);
   const caliberProfile = manifest.caliberProfile;
-  const cartridgeSpec = CARTRIDGE_LAB_SPECS[caliberProfile];
-  const ballisticsSpec = getCaliberBallisticsSpec(caliberProfile);
+  const isArcheryWeapon =
+    (weaponId as string) === 'lift33' || (weaponId as string) === 'r500';
+  const isArcheryCal =
+    isArcheryCaliberProfile(caliberProfile as string) || isArcheryWeapon;
+  const archeryMeta = isArcheryCal
+    ? getArcheryProjectileMeta(
+        isArcheryCaliberProfile(caliberProfile as string)
+          ? caliberProfile
+          : (weaponId as string) === 'lift33'
+            ? 'arrow_400gr'
+            : 'bolt_400gr'
+      )
+    : null;
+  const cartridgeSpec: CartridgeLabSpec = archeryMeta
+    ? archeryProjectileToLabSpec(archeryMeta)
+    : CARTRIDGE_LAB_SPECS[caliberProfile];
+  const rawBallisticsSpec = getCaliberBallisticsSpec(caliberProfile);
+  const ballisticsSpec: CaliberBallisticsSpec =
+    archeryMeta && (rawBallisticsSpec.caliber as string) !== (caliberProfile as string)
+      ? {
+          ...rawBallisticsSpec,
+          caliber: caliberProfile,
+          labelZh: archeryMeta.nameZh,
+          labelEn: archeryMeta.nameEn,
+          standard: 'ATA / IBO' as CaliberBallisticsSpec['standard'],
+          peakPressureMPa: archeryMeta.peakDrawForceN,
+          safeUnlockPressureMPa: Math.round(
+            archeryMeta.peakDrawForceN * (1 - archeryMeta.letOffPercent / 100)
+          ),
+          muzzleVelocityMps: archeryMeta.muzzleVelocityMps,
+          projectileMassG: archeryMeta.projectileMassG,
+          muzzleEnergyJ: archeryMeta.muzzleEnergyJ,
+          referenceBarrelMm: archeryMeta.powerStrokeMm,
+          boreTimeMs: archeryMeta.caliber === 'arrow_400gr' ? 11.4 : 6.7,
+        }
+      : rawBallisticsSpec;
   const inspUi = UI_STRINGS[lang].inspector;
 
   const serialTag = shortTag.replace(/[^A-Za-z0-9]/g, '').toUpperCase() || weaponId.toUpperCase();
@@ -335,7 +372,7 @@ export function assembleMonographDossier(
   });
 
   // Field-Strip DAG & Interference Warnings
-  const fsPlan = FIELD_STRIP_PLANS[weaponId];
+  const fsPlan = FIELD_STRIP_PLANS[weaponId] ?? FIELD_STRIP_PLANS.ak15;
   const fieldStripManualTitle = isZh
     ? fsPlan.manualCodeZh
     : fsPlan.manualCodeEn;
@@ -351,7 +388,7 @@ export function assembleMonographDossier(
   // 4 Canonical Stoppage Cards
   const malfunctionCards: MonographMalfunctionCard[] = MALFUNCTION_ORDER.map(
     (kind) => {
-      const sc = MALFUNCTION_SCENARIOS[kind];
+      const sc = getMalfunctionScenario(kind, weaponId);
       const stepTitles = sc.steps
         .map((st) => `${st.orderLabel}. ${isZh ? st.titleZh : st.titleEn}`)
         .join(' → ');
@@ -392,7 +429,7 @@ export function assembleMonographDossier(
       muzzleVelocity: catalog.specs1To1.muzzleVelocityMs,
       effectiveRange: catalog.specs1To1.effectiveRangeM,
       rateOfFire: displayMeta.rateOfFire,
-      muzzleEnergyJ: `${cartridgeSpec.muzzleEnergyJ.toLocaleString('en-US')} J`,
+      muzzleEnergyJ: `${archeryMeta ? archeryMeta.muzzleEnergyJ.toFixed(1) : cartridgeSpec.muzzleEnergyJ.toLocaleString('en-US')} J`,
     },
     headline: localizedStory.headline,
     deck: localizedStory.deck,
