@@ -5,6 +5,14 @@ export interface ScreenRectBox {
   yMax: number;
 }
 
+export interface HudClearance {
+  topPx: number;
+  bottomPx: number;
+}
+
+const DEFAULT_TOP_OFFSET_PX = 72;
+const DEFAULT_BOTTOM_OFFSET_PX = 220;
+
 const HUD_OBSTACLE_SELECTOR =
   '.top-bar, .hud-collapsed-btn, .part-sidebar, .ballistics-telemetry-slot, .engineering-tint-legend, .field-strip-hud, .malfunction-hud, .caliper-hud, .floating-cutaway-pill, .inspector-card, .inspector-mini-pill, .timeline-dock, .geo-build-banner, .story-drawer, .story-mini-player';
 const HUD_HEADER_SELECTOR = '.armory-header, .top-bar, .cartridge-header';
@@ -144,4 +152,16 @@ export function initHudBoundsObserver(): () => void {
  */
 export function getCachedHudBoxes(): readonly ScreenRectBox[] {
   return cachedBoxes;
+}
+
+/**
+ * Returns pre-measured top header and bottom dock clearance offsets (in CSS px) in O(1)
+ * without triggering synchronous layout reflow inside `useFrame`.
+ */
+export function getCachedHudClearance(): HudClearance {
+  return {
+    topPx: lastTopOffsetPx > 0 ? lastTopOffsetPx : DEFAULT_TOP_OFFSET_PX,
+    bottomPx:
+      lastBottomOffsetPx > 0 ? lastBottomOffsetPx : DEFAULT_BOTTOM_OFFSET_PX,
+  };
 }

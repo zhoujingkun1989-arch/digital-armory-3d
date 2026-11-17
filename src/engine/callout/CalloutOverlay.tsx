@@ -17,6 +17,7 @@ import { createMutablePose, evaluatePartPoseInto } from '../kinematics/math';
 import { malfunctionStore } from '../malfunctions/malfunctionStore';
 import {
   getCachedHudBoxes,
+  getCachedHudClearance,
   initHudBoundsObserver,
   scheduleHudBoundsRefresh,
   type ScreenRectBox,
@@ -135,7 +136,9 @@ export function updateCalloutOverlay60fps(
   if (!plugin || activeParts.length === 0) return;
 
   const isCompact = viewportW < 820;
-  const minY = viewportW < 720 ? 174 : viewportW < 920 ? 116 : 76;
+  const staticMinY = viewportW < 720 ? 174 : viewportW < 920 ? 116 : 76;
+  const { topPx, bottomPx } = getCachedHudClearance();
+  const minY = Math.max(staticMinY, topPx + 6);
   const dockHalfW = Math.min(920, viewportW - 24) * 0.5 + 10;
   const centerX = viewportW * 0.5;
   const isDark = state.environmentPreset !== 'blueprint_daylight';
@@ -216,7 +219,11 @@ export function updateCalloutOverlay60fps(
         sharedPose
       );
       if (state.malfunctionActive) {
-        malfunctionStore.applyPartPoseDelta(activeWeaponId, part.id, sharedPose);
+        malfunctionStore.applyPartPoseDelta(
+          activeWeaponId,
+          part.id,
+          sharedPose
+        );
       }
     }
 
@@ -357,7 +364,7 @@ export function updateCalloutOverlay60fps(
 
     const absMinX = 8 + halfW;
     const absMaxX = Math.max(absMinX, viewportW - 8 - halfW);
-    const absMinY = 12 + labelH * 0.5;
+    const absMinY = Math.max(12 + labelH * 0.5, topPx + 6);
     const absMaxY = viewportH - 14 - labelH * 0.5;
 
     let colTopY = c.sy;
@@ -371,7 +378,9 @@ export function updateCalloutOverlay60fps(
     }
 
     const overBottomDock = Math.abs(c.sx - centerX) < dockHalfW + halfW * 0.4;
-    const approxFloorLimit = overBottomDock ? viewportH - 168 : viewportH - 26;
+    const approxFloorLimit = overBottomDock
+      ? viewportH - Math.max(168, bottomPx)
+      : viewportH - 26;
 
     let dir: 'up' | 'down' = c.part.calloutDir;
     if (
@@ -647,7 +656,9 @@ export const CalloutOverlay: React.FC = () => {
                   return;
                 }
                 if (st.malfunctionActive && !e.shiftKey) {
-                  if (malfunctionStore.handlePartClick(activeWeaponId, part.id)) {
+                  if (
+                    malfunctionStore.handlePartClick(activeWeaponId, part.id)
+                  ) {
                     return;
                   }
                 }

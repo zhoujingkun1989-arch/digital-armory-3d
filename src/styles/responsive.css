@@ -53,10 +53,19 @@
   .rack-dock-tip {
     display: none;
   }
-  .ballistics-telemetry-slot {
+  .ballistics-telemetry-slot,
+  .ballistics-telemetry-slot.sidebar-collapsed {
     left: 16px;
     top: calc(var(--hud-top-offset, 108px) + 46px);
     width: min(392px, calc(100% - 348px));
+    max-block-size: calc(
+      100vh - var(--hud-top-offset, 108px) - var(--hud-bottom-offset, 148px) -
+        66px
+    );
+    max-block-size: calc(
+      100dvh - var(--hud-top-offset, 108px) - var(--hud-bottom-offset, 148px) -
+        66px
+    );
   }
 }
 
@@ -97,5 +106,90 @@
 
   .firing-phases-grid {
     grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Short-viewport clearance guards (preserve narrow mobile breakpoints) */
+@media (max-height: 820px) {
+  .inspector-card,
+  .inspector-card.has-deep-narration {
+    max-height: calc(
+      100vh - var(--hud-top-offset, 72px) - var(--hud-bottom-offset, 220px) -
+        12px
+    );
+    max-height: calc(
+      100dvh - var(--hud-top-offset, 72px) - var(--hud-bottom-offset, 220px) -
+        12px
+    );
+    max-block-size: calc(
+      100vh - var(--hud-top-offset, 72px) - var(--hud-bottom-offset, 220px) -
+        12px
+    );
+    max-block-size: calc(
+      100dvh - var(--hud-top-offset, 72px) - var(--hud-bottom-offset, 220px) -
+        12px
+    );
+    padding: 10px 13px;
+  }
+
+  .inspector-card .part-title-en {
+    margin-bottom: 7px;
+  }
+
+  .inspector-card .part-voice-bar {
+    margin-bottom: 7px;
+  }
+
+  .inspector-card .meta-grid {
+    margin-bottom: 8px;
+    padding: 7px 9px;
+  }
+
+  .inspector-card .inspector-scroll-area {
+    min-height: 0;
+    margin-bottom: 8px;
+  }
+
+  .armory-stage-controls {
+    max-block-size: min(
+      100%,
+      calc(
+        100vh - var(--hud-top-offset, 72px) - var(--hud-bottom-offset, 204px) -
+          8px
+      )
+    );
+    max-block-size: min(
+      100%,
+      calc(
+        100dvh - var(--hud-top-offset, 72px) - var(--hud-bottom-offset, 204px) -
+          8px
+      )
+    );
+    gap: 5px;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
+
+  .armory-stage-controls::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .armory-stage-controls::-webkit-scrollbar-thumb {
+    background: rgba(100, 116, 139, 0.34);
+    border-radius: 4px;
+  }
+
+  .armory-stage-controls > * {
+    flex-shrink: 0;
+  }
+
+  .armory-stage-controls .armory-ctrl-chip {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
+
+  .armory-stage-controls .armory-stage-hint {
+    padding: 4px 8px;
+    font-size: 10.5px;
   }
 }

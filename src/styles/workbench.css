@@ -166,6 +166,16 @@
   gap: 8px;
   width: min(412px, calc(100% - 628px));
   min-width: 288px;
+  max-block-size: calc(
+    100vh - var(--hud-top-offset, 72px) - var(--hud-bottom-offset, 148px) - 20px
+  );
+  max-block-size: calc(
+    100dvh - var(--hud-top-offset, 72px) - var(--hud-bottom-offset, 148px) -
+      20px
+  );
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
   pointer-events: none;
   transition:
     left 0.18s ease,
@@ -173,7 +183,18 @@
     width 0.18s ease;
 }
 
+.ballistics-telemetry-slot::-webkit-scrollbar {
+  width: 4px;
+}
+
+.ballistics-telemetry-slot::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.34);
+  border-radius: 4px;
+}
+
 .ballistics-telemetry-slot > * {
+  flex-shrink: 0;
+  max-width: 100%;
   pointer-events: auto;
 }
 
@@ -181,6 +202,13 @@
   top: calc(var(--hud-top-offset, 72px) + 46px);
   left: 16px;
   width: min(416px, calc(100% - 360px));
+  max-block-size: calc(
+    100vh - var(--hud-top-offset, 72px) - var(--hud-bottom-offset, 148px) - 66px
+  );
+  max-block-size: calc(
+    100dvh - var(--hud-top-offset, 72px) - var(--hud-bottom-offset, 148px) -
+      66px
+  );
 }
 
 .floating-cutaway-pill {
@@ -578,6 +606,15 @@
   border: 1px solid var(--border-subtle);
   backdrop-filter: blur(18px);
   box-shadow: var(--shadow-card);
+}
+
+.inspector-card::-webkit-scrollbar {
+  width: 4px;
+}
+
+.inspector-card::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.34);
+  border-radius: 4px;
 }
 
 .firing-guide-card {

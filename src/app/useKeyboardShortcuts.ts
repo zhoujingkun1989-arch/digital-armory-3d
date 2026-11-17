@@ -31,22 +31,25 @@ function isEditableElement(target: EventTarget | null): boolean {
  * - `L` (Workbench, Explode mode): Toggle 3D part leader labels
  * - `H` (All screens): Hide / Show all UI buttons & HUD panels for clean 3D showcase (`隐藏按钮`)
  * - `R` (Workbench): Reset view & assembled (0%) state
+ * - `Ctrl/Cmd+P` (Global): Open Monograph Print Studio, or trigger formatted monograph print when open
  */
 export function useKeyboardShortcuts(): void {
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       const state = useAppStore.getState();
 
-      // Intercept Ctrl+P / Cmd+P outside the Monograph Studio so users never print a broken HUD canvas
+      // Intercept Ctrl+P / Cmd+P so Print Studio opens or dispatches formatted monograph printing
       if (
         (e.metaKey || e.ctrlKey) &&
         !e.altKey &&
         !e.shiftKey &&
         e.key.toLowerCase() === 'p'
       ) {
+        e.preventDefault();
         if (!state.monographModalOpen) {
-          e.preventDefault();
           state.openMonographModal(state.activeWeaponId);
+        } else {
+          window.dispatchEvent(new CustomEvent('armory:monograph-print'));
         }
         return;
       }
