@@ -580,7 +580,17 @@ export function assembleMonographDossier(
     ? archeryProjectileToLabSpec(archMeta)
     : CARTRIDGE_LAB_SPECS[caliberProfile as keyof typeof CARTRIDGE_LAB_SPECS];
   const ballisticsSpec = getCaliberBallisticsSpec(caliberProfile);
-  const inspUi = UI_STRINGS[lang].inspector;
+  const rawInspUi = UI_STRINGS[lang].inspector;
+  const inspUi = isArchery
+    ? {
+        ...rawInspUi,
+        ...rawInspUi.archery,
+        materials: {
+          ...rawInspUi.materials,
+          ...rawInspUi.archery.materials,
+        },
+      }
+    : rawInspUi;
 
   const serialTag =
     shortTag.replace(/[^A-Za-z0-9]/g, '').toUpperCase() ||

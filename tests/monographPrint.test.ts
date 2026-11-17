@@ -15,6 +15,7 @@ import {
   getMonographDomainLabels,
   getMonographLocalizedStrings,
 } from '../src/features/monograph/monographStrings';
+import { UI_STRINGS } from '../src/i18n/uiStrings';
 import {
   projectExplodedPartAnchors,
   solveExplodedPinLayout,
@@ -313,10 +314,26 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
         }
         expect(domainLabels.barrelLabel).not.toMatch(/Rifling|枪管/);
         expect(domainLabels.muzzleVelLabel).not.toMatch(/Muzzle|枪口/);
+
+        const partById = new Map(plugin.parts.map((p) => [p.id, p]));
+        const archMaterials = UI_STRINGS[lang].inspector.archery.materials;
+        for (const row of dossier.bomRows) {
+          const part = partById.get(row.partId)!;
+          expect(row.materialLabel).toBe(archMaterials[part.material]);
+          expect(row.materialLabel).not.toMatch(
+            /Cartridge Alloy|Chrome-Lined Barrel|Phosphated Alloy|碳氮共渗|冷锻精密枪管钢|黄铜合金示意/
+          );
+        }
+        const allMaterialsText = dossier.bomRows
+          .map((r) => r.materialLabel)
+          .join(' | ');
+        expect(allMaterialsText).toContain('7075-T6');
+        expect(allMaterialsText).toContain('3K');
+        expect(allMaterialsText).toContain('BCY-X');
       }
     }
 
-    // Firearms continue to emit standard TYPE-1/2/3/OOB diagnostics and firearm role metadata
+    // Firearms continue to emit standard TYPE-1/2/3/OOB diagnostics, firearm role metadata, and firearm BOM materials
     for (const firearmId of ['ak15', 'g17'] as const) {
       const plugin = await loadWeaponPlugin(firearmId);
       const dossier = assembleMonographDossier(
@@ -336,6 +353,13 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
       for (const summary of dossier.roleSummaries) {
         expect(summary.label).toBe(
           getEngineeringRoleMeta(summary.role, firearmId).labelEn
+        );
+      }
+      const partById = new Map(plugin.parts.map((p) => [p.id, p]));
+      for (const row of dossier.bomRows) {
+        const part = partById.get(row.partId)!;
+        expect(row.materialLabel).toBe(
+          UI_STRINGS.en.inspector.materials[part.material]
         );
       }
     }
