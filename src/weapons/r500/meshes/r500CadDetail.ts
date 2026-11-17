@@ -607,14 +607,14 @@ export function createAcmeThreadHelix(opts: {
     }
   }
 
-  // End caps of thread helix
+  // End caps of thread helix (rStart opposes rA[k1]->rA[k]; rEnd opposes rB[k]->rB[k1])
   const rStart = rings[0];
-  pushT(rStart[0], rStart[2], rStart[1]);
-  pushT(rStart[0], rStart[3], rStart[2]);
+  pushT(rStart[0], rStart[1], rStart[2]);
+  pushT(rStart[0], rStart[2], rStart[3]);
 
   const rEnd = rings[totalSteps];
-  pushT(rEnd[0], rEnd[1], rEnd[2]);
-  pushT(rEnd[0], rEnd[2], rEnd[3]);
+  pushT(rEnd[0], rEnd[2], rEnd[1]);
+  pushT(rEnd[0], rEnd[3], rEnd[2]);
 
   const geo = new THREE.BufferGeometry();
   geo.setAttribute(

@@ -850,12 +850,15 @@ export function computeR500BallisticsState(
     streakLength = 6.2 * Math.sin(linearSeg(f, 0.36, 0.58) * Math.PI);
   }
 
-  // Next bolt in quiver Slot 0 -> lifted smoothly onto rail staging [3.4, 1.80, 0]
-  const uFeed = seg(f, 0.48, 0.78);
-  const nextX = 6.8 + (3.4 - 6.8) * uFeed;
-  const nextY = -2.05 + (1.8 - -2.05) * uFeed;
-  const nextZ = 4.85 * (1 - uFeed);
-  const nextRZ = 0.14 * Math.sin(uFeed * Math.PI);
+  // Next bolt in quiver Slot 0 -> clears quiver along -Z [0.40..0.50] BEFORE feedWindow [0.52..0.66],
+  // then lifts to rail staging [3.4, 1.80, 0] with zero tail-tilt collision against rising Slot 1!
+  const zOut = seg(f, 0.4, 0.5);
+  const yLift = seg(f, 0.44, 0.62);
+  const xSlide = seg(f, 0.44, 0.68);
+  const nextX = 6.8 + (3.4 - 6.8) * xSlide;
+  const nextY = -2.05 + (1.8 - -2.05) * yLift;
+  const nextZ = 4.85 * (1 - zOut);
+  const nextRZ = 0;
 
   // Reserve bolt in Slot 1 advances upward toward Slot 0 (`0.52..0.66`)
   const uRes = seg(f, 0.52, 0.66);
