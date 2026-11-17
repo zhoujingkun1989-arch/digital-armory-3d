@@ -89,6 +89,8 @@ export const THERMAL_PART_ID_PATTERN =
 export const FOULING_PART_ID_PATTERN =
   /bolt|carrier|breech|chamber|extractor|firing_pin/;
 const SPRING_ID_EXCLUSION_PATTERN = /spring/;
+const ARCHERY_ID_EXCLUSION_PATTERN =
+  /^(?:lift33|r500)_|limb|bowstring|yoke_cable|power_cable|broadhead|quiver/;
 /** Parts whose heat follows the chamber -> throat -> muzzle longitudinal profile. */
 const BARREL_PROFILE_PATTERN = /barrel/;
 
@@ -98,6 +100,7 @@ export interface ArmoryPartLike {
 }
 
 export function isThermalBearingPart(part: ArmoryPartLike): boolean {
+  if (ARCHERY_ID_EXCLUSION_PATTERN.test(part.id)) return false;
   if (part.material === 'barrel_steel') return true;
   if (
     part.material === 'spring_steel' ||
@@ -111,6 +114,7 @@ export function isThermalBearingPart(part: ArmoryPartLike): boolean {
 }
 
 export function isCarbonFoulingPart(part: ArmoryPartLike): boolean {
+  if (ARCHERY_ID_EXCLUSION_PATTERN.test(part.id)) return false;
   return isThermalBearingPart(part) || FOULING_PART_ID_PATTERN.test(part.id);
 }
 
@@ -125,6 +129,7 @@ export function usesBarrelThermalProfile(part: ArmoryPartLike): boolean {
 export const SPRING_AXIS_NONE = 0;
 export const SPRING_AXIS_X = 1;
 export const SPRING_AXIS_Y = 2;
+export const SPRING_AXIS_FLEX = 3;
 
 /**
  * Constant-wire-diameter compression: only the coil centreline is scaled about the
@@ -151,8 +156,10 @@ export function computeSpringCompressedCoord(
  *   into `p.px`, so scaling coil centers around local `0` (`center * springScale + wireDx`) matches
  *   `p.px + center * sx` 100% identically across rear- and front-pinned springs while keeping
  *   round wire diameter (`wireDx`) strictly invariant.
- * - Y-axis coils (`w >= 1.5`): scales coil centers around `aSpringParam.z` (`anchorStartCoord`)
+ * - Y-axis coils (`1.5 <= w < 2.5`): scales coil centers around `aSpringParam.z` (`anchorStartCoord`)
  *   while preserving `wireDy`.
+ * - Flex deformation (`w >= 2.5`): adds parametric displacement `(dx, dy, dz) * (springScale - 1)`
+ *   for compound bow/crossbow limbs, bowstrings & cables.
  * - Merged `w < 0.5` sub-parts inside a spring geometry (cups, sleeves, hook-eyes): scales `x`
  *   around `0` (`x *= springScale`) so end-fittings track `p.px + x * sx` in lockstep.
  */
@@ -165,13 +172,18 @@ export function applySpringCompressionInto(
   if (mode > 0.5 && mode < 1.5) {
     const wireDx = out.x - springParam[1];
     out.x = springParam[1] * springScale + wireDx;
-  } else if (mode >= 1.5) {
+  } else if (mode >= 1.5 && mode < 2.5) {
     out.y = computeSpringCompressedCoord(
       out.y,
       springParam[1],
       springParam[2],
       springScale
     );
+  } else if (mode >= 2.5) {
+    const flexAmt = springScale - 1.0;
+    out.x += springParam[0] * flexAmt;
+    out.y += springParam[1] * flexAmt;
+    out.z += springParam[2] * flexAmt;
   } else if (mode < 0.5) {
     out.x *= springScale;
   }
@@ -371,7 +383,7 @@ export interface ArmoryShaderFeatures {
   triplanarMap?: boolean;
 }
 
-export const ARMORY_SHADER_VERSION = 4;
+export const ARMORY_SHADER_VERSION = 5;
 
 export function getArmoryProgramCacheKey(f: ArmoryShaderFeatures): string {
   return `armory-v${ARMORY_SHADER_VERSION}|s${f.spring ? 1 : 0}|c${f.curvature ? 1 : 0}|t${f.thermal ? 1 : 0}|f${f.fouling ? 1 : 0}|tm${f.triplanarMap ? 1 : 0}`;
@@ -422,19 +434,22 @@ const VERTEX_PARS = /* glsl */ `
 
 const VERTEX_SPRING = /* glsl */ `
 #ifdef ARMORY_SPRING
-  // Constant-wire-diameter compression:
+  // Constant-wire-diameter compression & parametric flex:
   // - X-axis coils (0.5 < w < 1.5): scale coil centreline around local 0 so p.px + center * uSpringScale
   //   matches every weapon plugin dx = anchor * (1 - scaleX) identically (both rear- and front-pinned)
   //   while preserving exact wire cross-section offset wireDx.
-  // - Y-axis coils (w >= 1.5): scale coil centreline around aSpringParam.z (anchor).
+  // - Y-axis coils (1.5 <= w < 2.5): scale coil centreline around aSpringParam.z (anchor).
+  // - Parametric flex (w >= 2.5): displace along aSpringParam.xyz * (uSpringScale - 1.0).
   // - Merged w < 0.5 end-fittings (cups, sleeves, hook-eyes): scale transformed.x around 0 so they
   //   remain welded to p.px + x * uSpringScale.
   if ( aSpringParam.w > 0.5 && aSpringParam.w < 1.5 ) {
     float wireDx = transformed.x - aSpringParam.y;
     transformed.x = aSpringParam.y * uSpringScale + wireDx;
-  } else if ( aSpringParam.w >= 1.5 ) {
+  } else if ( aSpringParam.w >= 1.5 && aSpringParam.w < 2.5 ) {
     float wireDy = transformed.y - aSpringParam.y;
     transformed.y = aSpringParam.z + ( aSpringParam.y - aSpringParam.z ) * uSpringScale + wireDy;
+  } else if ( aSpringParam.w >= 2.5 ) {
+    transformed += aSpringParam.xyz * ( uSpringScale - 1.0 );
   } else if ( aSpringParam.w < 0.5 ) {
     transformed.x *= uSpringScale;
   }

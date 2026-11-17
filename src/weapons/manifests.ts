@@ -745,6 +745,144 @@ export const WEAPON_MANIFESTS: readonly WeaponManifest[] = [
       firingMilestoneLabel: '惯性直退',
     },
   },
+  {
+    id: 'lift33',
+    orderIndex: 12,
+    shortLabel: 'LIFT 33',
+    caliberProfile: 'arrow_400gr',
+    atlasHeadingCn:
+      'Mathews LIFT 33 SwitchWeight-X 复合弓贴图库 (Albedo / Normal / Packed ORM)',
+    catalog: {
+      id: 'lift33',
+      bayCode: 'BAY-12',
+      modelCode: 'MATHEWS LIFT 33 · SWITCHWEIGHT-X',
+      nameCn: 'Mathews LIFT 33 复合弓',
+      subtitleEn: 'SwitchWeight-X Binary-Cam 33" ATA Hunting Compound Bow',
+      originCountryCn: '美国',
+      weaponTypeCn: '双凸轮复合弓',
+      category: 'archery',
+      categoryCn: '复合弓',
+      caliber: '400 gr 碳纤维猎箭 (70 lb · 348 FPS)',
+      actionMechanism:
+        'SwitchWeight-X 同步双偏心凸轮 · 85% 省力谷 + 落箭台联动释放',
+      specs1To1: {
+        overallLengthMm: '838 mm (33" 轮轴距 ATA)',
+        barrelSpec: '571.5 mm 做功行程 (29" 拉距 / 165.1 mm 弓档)',
+        emptyWeightKg: '1.79 kg (3.94 lb 裸弓)',
+        muzzleVelocityMs: '106 m/s (348 FPS IBO)',
+        effectiveRangeM: '70 m (有效猎射)',
+        rateOfFire: '70 lb 拉力 · 85% 省力',
+      },
+      assembliesCount: 4,
+      partsCount: 24,
+      firingStagesCount: 7,
+      available: true,
+      statusLabel: '已入库 · 可拆解',
+      description:
+        '美国 Mathews 于 2024 年推出的旗舰猎弓 LIFT 33。采用 7075-T6 铝合金高刚度桥式镂空桁架弓把与 Bridge-Lock 一体式燕尾槽光学瞄具/箭座接口；上下分体四片式抛物线碳玻复合弓片协同 SwitchWeight-X 双同步偏心凸轮，以 1.79 kg 超轻裸重实现 85% 满拉省力比与 348 FPS 初速；配合 QAD 联动落箭台与 Centergy 阻尼稳定杆，把弹性势能高效转化为箭矢动能。',
+      highlights: [
+        'SwitchWeight-X 双偏心凸轮 + 85% 省力谷',
+        '7075-T6 桥式镂空桁架弓把 & Bridge-Lock 接口',
+        '分体四片碳玻抛物线弓片实时弯曲形变',
+        'QAD 联动落箭台 · 348 FPS / 145.6 J 猎箭动能',
+      ],
+    },
+    cameraPresets: {
+      armory_showcase: { pos: [18, 4, 142], target: [7.5, -4, 0] },
+      iso: { pos: [26, 14, 136], target: [6, 0, 0] },
+      right: { pos: [6, 0, 138], target: [6, 0, 0] },
+      left: { pos: [6, 0, -138], target: [6, 0, 0] },
+      top: { pos: [6, 138, 8], target: [6, 0, 0] },
+      cutaway_focus: { pos: [2, 4, 28], target: [0.5, 2.4, 0] },
+      firing_view: { pos: [-6, 6, 144], target: [-4, 1, 0] },
+    },
+    workbenchMeta: {
+      badge: 'MATHEWS · SWITCHWEIGHT-X',
+      title: 'Mathews LIFT 33 复合弓 3D 拆解与双凸轮储能发射演示',
+      subtitle:
+        '4 大总成 · 24 核心节点 · Split Quad 分体弓片实时弯曲与 85% 省力凸轮同步做功',
+      cutawayLabel: '桥式弓把与落箭台特写',
+      cutawayTitle:
+        '切换至合拢透视状态并聚焦 7075-T6 桥式桁架弓把、弓片口袋与 QAD 落箭台联动特写',
+      cutawayFocusPartId: 'lift33_riser',
+      searchPlaceholder:
+        '搜索零件名 / 编号 (如 凸轮, 弓弦, 弓片, 落箭台, C-03)...',
+      muzzlePos: [3.8, 2.4, 0],
+      chamberGlowPos: [0, 2.4, 0],
+      scaleProfile: 'compound_bow',
+      gridY: -54.0,
+      firingMilestoneLabel: '撒放做功',
+    },
+  },
+  {
+    id: 'r500',
+    orderIndex: 13,
+    shortLabel: 'Ravin R500',
+    caliberProfile: 'bolt_400gr',
+    atlasHeadingCn:
+      'Ravin R500 HexCoil 螺旋凸轮复合弩贴图库 (Albedo / Normal / Packed ORM)',
+    catalog: {
+      id: 'r500',
+      bayCode: 'BAY-13',
+      modelCode: 'RAVIN R500 · HEXCOIL HELICAL CAM',
+      nameCn: 'Ravin R500 螺旋凸轮复合弩',
+      subtitleEn: '500 FPS HexCoil 360° Helical-Cam Bullpup Crossbow',
+      originCountryCn: '美国',
+      weaponTypeCn: '螺旋凸轮复合弩',
+      category: 'archery',
+      categoryCn: '复合弩',
+      caliber: '400 gr 碳素弩箭 (300 lb · 500 FPS)',
+      actionMechanism:
+        'HexCoil 360° 多层螺旋凸轮 · VersaDrive 丝杠上弦 + 零轨悬浮滑台',
+      specs1To1: {
+        overallLengthMm: '711 mm (28" 无托全长)',
+        barrelSpec: '381 mm 做功行程 (15" 行程 / 91–193 mm 轮距)',
+        emptyWeightKg: '3.81 kg (8.40 lb 裸弩)',
+        muzzleVelocityMs: '152.4 m/s (500 FPS)',
+        effectiveRangeM: '100+ m (100 yd BDC 光学镜)',
+        rateOfFire: '300 lb 拉力 · VersaDrive 曲柄',
+      },
+      assembliesCount: 4,
+      partsCount: 25,
+      firingStagesCount: 7,
+      available: true,
+      statusLabel: '已入库 · 可拆解',
+      description:
+        '美国 Ravin Crossbows 标志性的无托超高速猎弩 R500。核心采用革命性的 HexCoil 多层螺旋槽凸轮，在满拉状态下实现 360° 超大缠绕角，将水平四分体碳纤维弓片轮轴距剧烈收窄至仅 91 mm（3.6 英寸），并在 381 mm 做功行程内把 400 格令碳素弩箭推进至惊人的 500 FPS（152.4 m/s，301 J）；配合 VersaDrive 内置梯形丝杠棘轮上弦系统与 Trac-Trigger 悬浮阻铁滑台，彻底消除箭尾弦槽磨损并实现防空放安全闭锁。',
+      highlights: [
+        'HexCoil 360° 多层螺旋凸轮 · 轮距收窄至 91 mm',
+        'VersaDrive 梯形丝杠曲柄 + 双向棘轮离合',
+        'Trac-Trigger 零磨擦悬浮滑台 & 防空放互锁',
+        '500 FPS (152.4 m/s) · 301 J 超高初速碳素弩箭',
+      ],
+    },
+    cameraPresets: {
+      armory_showcase: { pos: [16.5, 4.5, 76.0], target: [3.5, -1.5, 0] },
+      iso: { pos: [20.0, 14.0, 74.0], target: [3.5, 0.2, 0] },
+      right: { pos: [3.5, 0.5, 76.0], target: [3.5, 0.2, 0] },
+      left: { pos: [3.5, 0.5, -76.0], target: [3.5, 0.2, 0] },
+      top: { pos: [3.5, 78.0, 6.0], target: [3.5, 0.2, 0] },
+      cutaway_focus: { pos: [12.0, 3.8, 22.0], target: [8.0, 1.2, 0.1] },
+      firing_view: { pos: [14.0, 6.8, 72.0], target: [4.5, 0.8, 0] },
+    },
+    workbenchMeta: {
+      badge: 'RAVIN R500 · 500 FPS',
+      title: 'Ravin R500 螺旋凸轮复合弩 3D 拆解与 500 FPS 做功演示',
+      subtitle:
+        '4 大总成 · 25 核心节点 · HexCoil 360° 螺旋凸轮收放 & Trac-Trigger 悬浮滑台',
+      cutawayLabel: '悬浮扳机滑台纵剖特写',
+      cutawayTitle:
+        '切换至合拢透视状态并聚焦 Trac-Trigger 悬浮阻铁滑台、弦钩与防空放互锁机构特写',
+      cutawayFocusPartId: 'r500_trigger_sled',
+      searchPlaceholder:
+        '搜索零件名 / 编号 (如 螺旋凸轮, 滑台, 丝杠, 弓片, T-01)...',
+      muzzlePos: [38.5, 1.8, 0],
+      chamberGlowPos: [-22.0, 1.8, 0],
+      scaleProfile: 'compound_bow',
+      gridY: -22.5,
+      firingMilestoneLabel: '击发释放',
+    },
+  },
 ];
 
 const MANIFEST_MAP: Record<WeaponId, WeaponManifest> = Object.fromEntries(
@@ -783,10 +921,19 @@ export function matchesArmoryCategory(
     item.category === 'sniper' ||
     typeTag.includes('狙击') ||
     typeTag.includes('反器材');
+  const isArchery =
+    item.id === 'lift33' ||
+    item.id === 'r500' ||
+    item.category === 'archery' ||
+    typeTag.includes('弓') ||
+    typeTag.includes('弩');
 
   if (filter === 'pistol') return isPistol;
   if (filter === 'smg') return isSmg;
   if (filter === 'sniper') return isSniper;
-  if (filter === 'assault') return !isPistol && !isSmg && !isSniper;
+  if (filter === 'archery') return isArchery;
+  if (filter === 'assault') {
+    return !isPistol && !isSmg && !isSniper && !isArchery;
+  }
   return true;
 }

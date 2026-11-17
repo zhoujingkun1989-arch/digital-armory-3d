@@ -12,11 +12,19 @@ export const WEAPON_IDS = [
   'aug',
   'p320',
   'p90',
+  'lift33',
+  'r500',
 ] as const;
 
 export type WeaponId = (typeof WEAPON_IDS)[number];
 
-export type ArmoryCategory = 'all' | 'assault' | 'smg' | 'sniper' | 'pistol';
+export type ArmoryCategory =
+  | 'all'
+  | 'assault'
+  | 'smg'
+  | 'sniper'
+  | 'pistol'
+  | 'archery';
 
 export type AssemblyGroupKey = 'slide' | 'frame' | 'fire_control' | 'magazine';
 
@@ -36,9 +44,15 @@ export type CaliberProfile =
   | '9mm_para'
   | '50_bmg'
   | '338_lapua'
-  | '50_ae';
+  | '50_ae'
+  | 'arrow_400gr'
+  | 'bolt_400gr';
 
-export type WeaponScaleProfile = 'pistol' | 'rifle' | 'heavy_sniper';
+export type WeaponScaleProfile =
+  | 'pistol'
+  | 'rifle'
+  | 'heavy_sniper'
+  | 'compound_bow';
 
 export type CameraPresetType =
   | 'armory_showcase'
@@ -221,7 +235,7 @@ export interface ArmoryWeaponItem {
   subtitleEn: string;
   originCountryCn?: string;
   weaponTypeCn?: string;
-  category: 'pistol' | 'rifle' | 'smg' | 'sniper';
+  category: 'pistol' | 'rifle' | 'smg' | 'sniper' | 'archery';
   categoryCn: string;
   caliber: string;
   actionMechanism: string;

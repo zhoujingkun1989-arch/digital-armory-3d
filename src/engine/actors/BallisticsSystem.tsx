@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
+import { mergeGeometries } from 'three/examples/jsm/utils/BufferGeometryUtils.js';
 import { useFrame } from '@react-three/fiber';
 import { Edges } from '@react-three/drei';
 import { useAppStore } from '../../store/useAppStore';
@@ -20,6 +21,7 @@ import {
   getSmokeWispPool,
   getSpentCasingPool,
   getWeaponFiringTiming,
+  isArcheryWeapon,
   stepArmoryPhysics,
 } from '../physics/armoryPhysics';
 
@@ -507,6 +509,219 @@ function build57x28Geometries(): CaliberGeometryBundle {
   };
 }
 
+const _archeryColor = new THREE.Color();
+
+function paintSubGeo(
+  geo: THREE.BufferGeometry,
+  hexColor: string
+): THREE.BufferGeometry {
+  const nonIdx = geo.index ? geo.toNonIndexed() : geo;
+  if (nonIdx !== geo) geo.dispose();
+  if (!nonIdx.getAttribute('normal')) nonIdx.computeVertexNormals();
+  const pos = nonIdx.getAttribute('position');
+  const count = pos.count;
+  if (!nonIdx.getAttribute('uv')) {
+    nonIdx.setAttribute(
+      'uv',
+      new THREE.BufferAttribute(new Float32Array(count * 2), 2)
+    );
+  }
+  _archeryColor.set(hexColor);
+  const colors = new Float32Array(count * 3);
+  for (let i = 0; i < count; i++) {
+    colors[i * 3] = _archeryColor.r;
+    colors[i * 3 + 1] = _archeryColor.g;
+    colors[i * 3 + 2] = _archeryColor.b;
+  }
+  nonIdx.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+  return nonIdx;
+}
+
+function buildHelicalVaneGeo(
+  xStart: number,
+  xEnd: number,
+  rShaft: number,
+  rOuter: number,
+  angleRad: number,
+  helicalTwistRad: number,
+  hexColor: string
+): THREE.BufferGeometry {
+  const len = xEnd - xStart;
+  const h = rOuter - rShaft;
+  const vane = new THREE.BoxGeometry(len, h, 0.045, 6, 1, 1);
+  vane.translate(xStart + len * 0.5, rShaft + h * 0.45, 0);
+  const pos = vane.getAttribute('position');
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i);
+    const y = pos.getY(i);
+    const z = pos.getZ(i);
+    const u = Math.min(1, Math.max(0, (x - xStart) / Math.max(1e-4, len)));
+    // Taper front & rear vane leading edge into shaft cleanly
+    const profileScale =
+      u < 0.18 ? 0.35 + (u / 0.18) * 0.65 : u > 0.82 ? 0.4 + ((1 - u) / 0.18) * 0.6 : 1;
+    const yTaper = rShaft + (y - rShaft) * profileScale;
+    const phi = angleRad + u * helicalTwistRad;
+    const c = Math.cos(phi);
+    const s = Math.sin(phi);
+    pos.setXYZ(i, x, yTaper * c - z * s, yTaper * s + z * c);
+  }
+  vane.computeVertexNormals();
+  return paintSubGeo(vane, hexColor);
+}
+
+function buildBroadheadBladeGeo(
+  rShaft: number,
+  rBlade: number,
+  angleRad: number,
+  hexColor: string
+): THREE.BufferGeometry {
+  const blade = new THREE.BoxGeometry(2.6, rBlade - rShaft * 0.5, 0.04, 4, 1, 1);
+  const pos = blade.getAttribute('position');
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i);
+    const y = pos.getY(i);
+    const z = pos.getZ(i);
+    const u = (x + 1.3) / 2.6; // 0 = rear barb, 1 = chisel nose
+    const radial = (y + (rBlade - rShaft * 0.5) * 0.5) * (1 - u * 0.85) + rShaft * 0.5;
+    const c = Math.cos(angleRad);
+    const s = Math.sin(angleRad);
+    pos.setXYZ(i, 0.1 + u * 2.75, radial * c - z * s, radial * s + z * c);
+  }
+  blade.computeVertexNormals();
+  return paintSubGeo(blade, hexColor);
+}
+
+/**
+ * 8 & 9. 400gr Carbon Arrow (`arrow_400gr`) & Crossbow Bolt (`bolt_400gr`):
+ * Woven carbon shaft + aluminum insert collar + 3 helical fletching vanes in `caseGeo`,
+ * CNC 3-blade broadhead in `bulletGeo`, and notched nock collar in `livePrimerGeo`.
+ */
+function buildArcheryBundle(opts: {
+  xHead: number;
+  xFront: number;
+  rShaft: number;
+  rVaneOuter: number;
+  vaneStart: number;
+  vaneEnd: number;
+  vaneColorPrimary: string;
+  vaneColorCock: string;
+  nockColor: string;
+  broadheadLen: number;
+  rBladeOuter: number;
+}): CaliberGeometryBundle {
+  const {
+    xHead,
+    xFront,
+    rShaft,
+    rVaneOuter,
+    vaneStart,
+    vaneEnd,
+    vaneColorPrimary,
+    vaneColorCock,
+    nockColor,
+    broadheadLen,
+    rBladeOuter,
+  } = opts;
+
+  const collarX = xFront - 1.4;
+  const shaftPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, xHead),
+    new THREE.Vector2(rShaft * 0.92, xHead),
+    new THREE.Vector2(rShaft, xHead + 0.25),
+    new THREE.Vector2(rShaft, collarX),
+    new THREE.Vector2(rShaft * 1.08, collarX + 0.08),
+    new THREE.Vector2(rShaft * 1.08, xFront),
+    new THREE.Vector2(0, xFront),
+  ];
+  const shaftGeo = paintSubGeo(finalizeLathe(shaftPts, 20), '#2b303a');
+
+  const collarPts: THREE.Vector2[] = [
+    new THREE.Vector2(rShaft * 1.09, collarX + 0.1),
+    new THREE.Vector2(rShaft * 1.12, collarX + 0.15),
+    new THREE.Vector2(rShaft * 1.12, xFront - 0.05),
+    new THREE.Vector2(rShaft * 1.05, xFront),
+  ];
+  const insertGeo = paintSubGeo(finalizeLathe(collarPts, 20), '#cbd5e1');
+
+  const vanes: THREE.BufferGeometry[] = [];
+  for (let k = 0; k < 3; k++) {
+    const ang = (k * Math.PI * 2) / 3;
+    vanes.push(
+      buildHelicalVaneGeo(
+        vaneStart,
+        vaneEnd,
+        rShaft * 0.96,
+        rVaneOuter,
+        ang,
+        0.28,
+        k === 0 ? vaneColorCock : vaneColorPrimary
+      )
+    );
+  }
+  const caseParts = [shaftGeo, insertGeo, ...vanes];
+  const caseGeo = mergeGeometries(caseParts, false);
+  for (const p of caseParts) p.dispose();
+  caseGeo.computeBoundingBox();
+  caseGeo.computeBoundingSphere();
+
+  // Machined 3-blade broadhead ferrule + chisel point (`bulletGeo`)
+  const ferrulePts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -0.4),
+    new THREE.Vector2(rShaft * 0.88, -0.4),
+    new THREE.Vector2(rShaft * 1.06, -0.2),
+    new THREE.Vector2(rShaft * 1.04, 0.2),
+    new THREE.Vector2(rShaft * 0.78, broadheadLen * 0.45),
+    new THREE.Vector2(rShaft * 0.42, broadheadLen * 0.78),
+    new THREE.Vector2(0.06, broadheadLen - 0.12),
+    new THREE.Vector2(0, broadheadLen),
+  ];
+  const ferruleGeo = paintSubGeo(finalizeLathe(ferrulePts, 20), '#94a3b8');
+  const blades: THREE.BufferGeometry[] = [];
+  for (let k = 0; k < 3; k++) {
+    blades.push(
+      buildBroadheadBladeGeo(
+        rShaft,
+        rBladeOuter,
+        (k * Math.PI * 2) / 3,
+        '#e2e8f0'
+      )
+    );
+  }
+  const bulletParts = [ferruleGeo, ...blades];
+  const bulletGeo = mergeGeometries(bulletParts, false);
+  for (const p of bulletParts) p.dispose();
+  bulletGeo.computeBoundingBox();
+  bulletGeo.computeBoundingSphere();
+
+  // Rear aluminum / illuminated nock collar (`livePrimerGeo` & `spentPrimerGeo`)
+  const nockPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, xHead - 0.55),
+    new THREE.Vector2(rShaft * 0.72, xHead - 0.55),
+    new THREE.Vector2(rShaft * 0.96, xHead - 0.32),
+    new THREE.Vector2(rShaft * 0.98, xHead + 0.1),
+    new THREE.Vector2(0, xHead + 0.1),
+  ];
+  const livePrimerGeo = paintSubGeo(finalizeLathe(nockPts, 18), nockColor);
+  const spentPrimerGeo = livePrimerGeo.clone();
+
+  const sootRingGeo = new THREE.RingGeometry(0.001, 0.002, 6);
+  sootRingGeo.rotateY(-Math.PI / 2);
+  sootRingGeo.translate(xHead, 0, 0);
+  sootRingGeo.computeBoundingBox();
+  sootRingGeo.computeBoundingSphere();
+  const craterSootGeo = sootRingGeo.clone();
+
+  return {
+    caseGeo,
+    bulletGeo,
+    livePrimerGeo,
+    spentPrimerGeo,
+    sootRingGeo,
+    craterSootGeo,
+    xHead,
+  };
+}
+
 export interface CaliberVisualSpec {
   caseColor: string;
   reserveCaseColor: string;
@@ -589,6 +804,26 @@ export const CALIBER_VISUAL_SPECS: Record<CaliberProfile, CaliberVisualSpec> = {
     flashScaleMult: 1.44,
     streakThickness: 0.28,
   },
+  arrow_400gr: {
+    caseColor: '#2b303a',
+    reserveCaseColor: '#1f242c',
+    bulletColor: '#cbd5e1',
+    primerColor: '#f97316',
+    bulletLocalOffset: 33.0,
+    reserveTiltZ: 0,
+    flashScaleMult: 0,
+    streakThickness: 0.09,
+  },
+  bolt_400gr: {
+    caseColor: '#272c36',
+    reserveCaseColor: '#1d222a',
+    bulletColor: '#e2e8f0',
+    primerColor: '#eab308',
+    bulletLocalOffset: 23.2,
+    reserveTiltZ: 0,
+    flashScaleMult: 0,
+    streakThickness: 0.1,
+  },
 };
 
 export interface WeaponRoundFitSpec {
@@ -613,6 +848,8 @@ export const WEAPON_ROUND_FIT: Record<WeaponId, WeaponRoundFitSpec> = {
   m82a1: { roundScale: 0.68, magLocalShiftX: -0.89, ignitionF: 0.14 },
   deagle: { roundScale: 1.0, magLocalShiftX: -0.05, ignitionF: 0.1 },
   p90: { roundScale: 0.68, magLocalShiftX: -0.385, ignitionF: 0.18 },
+  lift33: { roundScale: 0.68, magLocalShiftX: 0, ignitionF: 0.32 },
+  r500: { roundScale: 1.0, magLocalShiftX: 0, ignitionF: 0.32 },
 };
 
 const caliberGeoCache = new Map<CaliberProfile, CaliberGeometryBundle>();
@@ -642,6 +879,36 @@ export function getCaliberGeometries(
       break;
     case '50_ae':
       built = build50AeGeometries();
+      break;
+    case 'arrow_400gr':
+      built = buildArcheryBundle({
+        xHead: -34.0,
+        xFront: 33.0,
+        rShaft: 0.33,
+        rVaneOuter: 0.68,
+        vaneStart: -32.2,
+        vaneEnd: -26.5,
+        vaneColorPrimary: '#ea580c',
+        vaneColorCock: '#f8fafc',
+        nockColor: '#fb923c',
+        broadheadLen: 3.8,
+        rBladeOuter: 0.62,
+      });
+      break;
+    case 'bolt_400gr':
+      built = buildArcheryBundle({
+        xHead: -24.0,
+        xFront: 23.2,
+        rShaft: 0.36,
+        rVaneOuter: 0.68,
+        vaneStart: -22.6,
+        vaneEnd: -17.4,
+        vaneColorPrimary: '#dc2626',
+        vaneColorCock: '#fde047',
+        nockColor: '#eab308',
+        broadheadLen: 3.6,
+        rBladeOuter: 0.6,
+      });
       break;
     case '9mm_para':
     default:
@@ -690,6 +957,8 @@ const CALIBER_CASE_COLORS: Record<CaliberProfile, THREE.Color> = {
   '338_lapua': new THREE.Color(CALIBER_VISUAL_SPECS['338_lapua'].caseColor),
   '50_bmg': new THREE.Color(CALIBER_VISUAL_SPECS['50_bmg'].caseColor),
   '50_ae': new THREE.Color(CALIBER_VISUAL_SPECS['50_ae'].caseColor),
+  arrow_400gr: new THREE.Color(CALIBER_VISUAL_SPECS.arrow_400gr.caseColor),
+  bolt_400gr: new THREE.Color(CALIBER_VISUAL_SPECS.bolt_400gr.caseColor),
 };
 
 interface EjectionSpawnSpec {
@@ -907,6 +1176,8 @@ const MUZZLE_DEVICE_SPECS: Record<WeaponId, MuzzleDeviceSpec> = {
   p320: { kind: 'bare', forwardDamp: 1, jets: [] },
   deagle: { kind: 'bare', forwardDamp: 1, jets: [] },
   mp5: { kind: 'bare', forwardDamp: 1, jets: [] },
+  lift33: { kind: 'bare', forwardDamp: 1, jets: [] },
+  r500: { kind: 'bare', forwardDamp: 1, jets: [] },
 };
 
 const _jetUp = new THREE.Vector3(0, 1, 0);
@@ -1218,6 +1489,7 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
   const is50Bmg = caliberProfile === '50_bmg';
   const is50Ae = caliberProfile === '50_ae';
   const isM82Brake = activeWeaponId === 'm82a1';
+  const isArcheryActive = isArcheryWeapon(activeWeaponId);
   const diamondCount = Math.min(MAX_SHOCK_DIAMONDS, ballisticSpec.shockDiamonds);
 
   const spentCaseRef = useRef<THREE.Group>(null);
@@ -1331,6 +1603,7 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
     const st = plugin.computeBallisticsState(f);
     const muzzleShiftX = computeMuzzleRecoilShiftX(weaponId, f);
     const phys = getArmoryPhysicsState();
+    const isArchery = isArcheryWeapon(weaponId);
     const ib = evaluateInternalBallisticsInto(
       curProfile,
       f,
@@ -1340,7 +1613,8 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
 
     // 1. Chambered / extracting case — handed over to the rigid-body pool at ejectF
     if (spentCaseRef.current && spentCaseMatRef.current) {
-      spentCaseRef.current.visible = st.spentCaseVisible && f < timing.ejectF;
+      spentCaseRef.current.visible =
+        !isArchery && st.spentCaseVisible && f < timing.ejectF;
       spentCaseRef.current.position.set(
         st.spentCasePos[0],
         st.spentCasePos[1],
@@ -1381,9 +1655,11 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
       }
     }
 
-    // 2. Projectile + supersonic trail
+    // 2. Projectile + supersonic / aerodynamic flight trail
+    // For archery platforms, the hero CSG arrow/bolt BOM parts already fly along `bulletPos`
+    // in PartActor; hide duplicate `bulletGroupRef` to avoid Z-fighting while keeping air-wake streak.
     if (bulletGroupRef.current) {
-      bulletGroupRef.current.visible = st.bulletVisible;
+      bulletGroupRef.current.visible = !isArchery && st.bulletVisible;
       bulletGroupRef.current.position.set(
         st.bulletPos[0],
         st.bulletPos[1] + phys.barrelWhipY,
@@ -1413,8 +1689,10 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
     // 3. Chamber ignition glow, scaled by instantaneous chamber pressure
     const p01 = ib.pressure01;
     if (chamberFlashRef.current) {
-      const intensity = Math.max(st.chamberFlashIntensity, p01 * 0.9);
-      chamberFlashRef.current.visible = intensity > 0.02;
+      const intensity = isArchery
+        ? 0
+        : Math.max(st.chamberFlashIntensity, p01 * 0.9);
+      chamberFlashRef.current.visible = !isArchery && intensity > 0.02;
       chamberFlashRef.current.position.set(
         curMeta.chamberGlowPos[0] + muzzleShiftX * 0.65,
         curMeta.chamberGlowPos[1],
@@ -1430,18 +1708,21 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
 
     if (chamberLightRef.current) {
       const lightBoost = curProfile === '50_bmg' ? 7.5 : 4.5;
-      chamberLightRef.current.intensity =
-        Math.max(st.chamberFlashIntensity, p01) * lightBoost;
+      chamberLightRef.current.intensity = isArchery
+        ? 0
+        : Math.max(st.chamberFlashIntensity, p01) * lightBoost;
     }
 
     // 3b. Gas-block / piston port tap glow (driven by quantitative port pressure)
-    const gasPort01 = Math.min(
-      1,
-      ib.gasPortPressureMPa / Math.max(1, curBallistic.peakPressureMPa * 0.25)
-    );
+    const gasPort01 = isArchery
+      ? 0
+      : Math.min(
+          1,
+          ib.gasPortPressureMPa / Math.max(1, curBallistic.peakPressureMPa * 0.25)
+        );
     if (gasPortFlashRef.current) {
-      const gi = Math.max(st.gasPortFlashIntensity, gasPort01);
-      const activeGas = gi > 0.02;
+      const gi = isArchery ? 0 : Math.max(st.gasPortFlashIntensity, gasPort01);
+      const activeGas = !isArchery && gi > 0.02;
       gasPortFlashRef.current.visible = activeGas;
       if (activeGas) {
         gasPortFlashRef.current.position.set(
@@ -1474,8 +1755,8 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
     }
 
     // 4. Muzzle blast: core fireball + flame cone + Mach shock diamonds + device jets
-    const plumeOpacity = st.muzzlePlumeOpacity;
-    const plumeActive = plumeOpacity > 0.02;
+    const plumeOpacity = isArchery ? 0 : st.muzzlePlumeOpacity;
+    const plumeActive = !isArchery && plumeOpacity > 0.02;
     const flicker = 0.86 + 0.14 * Math.sin(phys.simTimeSec * 97.0);
     if (muzzleGroupRef.current) {
       muzzleGroupRef.current.visible = plumeActive;
@@ -1531,8 +1812,9 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
     }
 
     if (muzzleLightRef.current) {
-      muzzleLightRef.current.intensity =
-        plumeOpacity * (isHighMagnumCaliber(curProfile) ? 9 : 5);
+      muzzleLightRef.current.intensity = isArchery
+        ? 0
+        : plumeOpacity * (isHighMagnumCaliber(curProfile) ? 9 : 5);
       muzzleLightRef.current.position.set(
         curMeta.muzzlePos[0] + muzzleShiftX + 1.2,
         curMeta.muzzlePos[1] + phys.barrelWhipY,
@@ -1566,7 +1848,7 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
     // 4c. Expanding spherical blast-wave front (Mach disk → acoustic shock)
     if (blastRingRef.current && blastRingMatRef.current) {
       const u = (f - timing.muzzleExitF) / 0.1;
-      const on = u > 0 && u < 1;
+      const on = !isArchery && u > 0 && u < 1;
       blastRingRef.current.visible = on;
       if (on) {
         const energyScale = Math.cbrt(curBallistic.muzzleEnergyJ / 1500);
@@ -1586,7 +1868,7 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
       magnumRingOuterMatRef.current &&
       magnumRingCoreMatRef.current
     ) {
-      const activeMagnum = curProfile === '50_ae' && plumeActive;
+      const activeMagnum = !isArchery && curProfile === '50_ae' && plumeActive;
       magnumRingRef.current.visible = activeMagnum;
       if (activeMagnum) {
         const ms = 0.85 + st.muzzlePlumeScale * 1.45;
@@ -1601,8 +1883,9 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
       }
     }
 
-    // 5. Magazine feed round (Slot 0 stripped into chamber; reserve stack rendered by MagazineAmmoStack)
+    // 5. Magazine / Quiver feed round (Slot 0; reserve stack rendered by MagazineAmmoStack)
     if (nextRoundRef.current) {
+      nextRoundRef.current.visible = !isArchery || f < 0.56;
       nextRoundRef.current.position.set(
         st.nextRoundPos[0],
         st.nextRoundPos[1],
@@ -1612,10 +1895,14 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
       nextRoundRef.current.scale.setScalar(curFit.roundScale);
     }
     if (nextRoundInnerRef.current) {
-      const uFeed = THREE.MathUtils.clamp((f - 0.58) / 0.24, 0, 1);
-      const feedBlend = uFeed * uFeed * (3 - 2 * uFeed);
-      nextRoundInnerRef.current.position.x =
-        curFit.magLocalShiftX * (1 - feedBlend) + phys.boltBounceX * feedBlend;
+      if (isArchery) {
+        nextRoundInnerRef.current.position.x = curFit.magLocalShiftX;
+      } else {
+        const uFeed = THREE.MathUtils.clamp((f - 0.58) / 0.24, 0, 1);
+        const feedBlend = uFeed * uFeed * (3 - 2 * uFeed);
+        nextRoundInnerRef.current.position.x =
+          curFit.magLocalShiftX * (1 - feedBlend) + phys.boltBounceX * feedBlend;
+      }
     }
   });
 
@@ -1689,9 +1976,10 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
 
       {/* 2. Fired Jacketed Projectile */}
       <group ref={bulletGroupRef} position={meta.chamberGlowPos} scale={roundFit.roundScale}>
-        <mesh geometry={bulletGeo} renderOrder={2}>
+        <mesh key={`bullet-${caliberProfile}`} geometry={bulletGeo} renderOrder={2}>
           <meshStandardMaterial
-            color={calSpec.bulletColor}
+            color={isArcheryActive ? '#ffffff' : calSpec.bulletColor}
+            vertexColors={isArcheryActive}
             metalness={0.82}
             roughness={0.22}
           />
@@ -1699,13 +1987,13 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
         </mesh>
       </group>
 
-      {/* Supersonic Projectile Motion Trail */}
+      {/* Supersonic Projectile Motion Trail / Aerodynamic Arrow Air-Wake */}
       <mesh ref={streakMeshRef} visible={false} renderOrder={8}>
         <boxGeometry args={[1, 1, 1]} />
         <meshBasicMaterial
-          color="#ea580c"
+          color={isArcheryActive ? '#e2e8f0' : '#ea580c'}
           transparent
-          opacity={0.55}
+          opacity={isArcheryActive ? 0.28 : 0.55}
           depthWrite={false}
         />
       </mesh>
@@ -1937,31 +2225,34 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
         </mesh>
       </group>
 
-      {/* 5. Next Complete Cartridge in Magazine (with Nickel Boxer Primer Cup) */}
+      {/* 5. Next Complete Cartridge / Quiver Arrow (with Boxer Primer / Nock Collar) */}
       <group ref={nextRoundRef} scale={roundFit.roundScale}>
         <group ref={nextRoundInnerRef} position={[roundFit.magLocalShiftX, 0, 0]}>
-          <mesh geometry={caseGeo} renderOrder={2}>
+          <mesh key={`next-case-${caliberProfile}`} geometry={caseGeo} renderOrder={2}>
             <meshStandardMaterial
-              color={calSpec.caseColor}
-              metalness={0.86}
-              roughness={0.21}
+              color={isArcheryActive ? '#ffffff' : calSpec.caseColor}
+              vertexColors={isArcheryActive}
+              metalness={isArcheryActive ? 0.24 : 0.86}
+              roughness={isArcheryActive ? 0.44 : 0.21}
             />
             {showEdges && <Edges threshold={36} color="#854d0e" />}
           </mesh>
-          <mesh geometry={livePrimerGeo} renderOrder={2}>
+          <mesh key={`next-primer-${caliberProfile}`} geometry={livePrimerGeo} renderOrder={2}>
             <meshStandardMaterial
               color={calSpec.primerColor}
-              metalness={0.92}
-              roughness={0.17}
+              metalness={isArcheryActive ? 0.42 : 0.92}
+              roughness={isArcheryActive ? 0.28 : 0.17}
             />
           </mesh>
           <mesh
+            key={`next-bullet-${caliberProfile}`}
             geometry={bulletGeo}
             position={[calSpec.bulletLocalOffset, 0, 0]}
             renderOrder={2}
           >
             <meshStandardMaterial
-              color={calSpec.bulletColor}
+              color={isArcheryActive ? '#ffffff' : calSpec.bulletColor}
+              vertexColors={isArcheryActive}
               metalness={0.82}
               roughness={0.22}
             />

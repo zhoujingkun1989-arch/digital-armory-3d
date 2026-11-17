@@ -12,6 +12,7 @@ import type {
   WeaponId,
 } from '../../weapons/types';
 import { playbackClock } from '../clock/playbackClock';
+import { isArcheryCaliber, isArcheryWeapon } from '../physics/armoryPhysics';
 import {
   ACOUSTIC_ENVIRONMENT_CONFIGS,
   ACOUSTIC_ENVIRONMENT_PRESETS,
@@ -34,7 +35,9 @@ export type MechanismAcousticStyle =
   | 'compact_9mm'
   | 'short_recoil_heavy'
   | 'bolt_action'
-  | 'gas_magnum_pistol';
+  | 'gas_magnum_pistol'
+  | 'compound_bow'
+  | 'compound_crossbow';
 
 export interface CaliberAcousticProfile {
   caliber: CaliberProfile;
@@ -152,7 +155,36 @@ export const CALIBER_ACOUSTIC_PROFILES: Record<
     casingRingHz: 3560,
     mechanismStyle: 'compact_9mm',
   },
+  arrow_400gr: {
+    caliber: 'arrow_400gr',
+    labelEn: '400gr Carbon Arrow · 348 FPS',
+    labelZh: '400格令 碳纤维猎箭 · 348 FPS',
+    subFreqHz: 54,
+    punchDecaySec: 0.14,
+    blastTailSec: 0.24,
+    crackCutoffHz: 1850,
+    peakGain: 0.56,
+    brakeRoarGain: 0.0,
+    casingRingHz: 920,
+    mechanismStyle: 'compound_bow',
+  },
+  bolt_400gr: {
+    caliber: 'bolt_400gr',
+    labelEn: '400gr Crossbow Bolt · 500 FPS',
+    labelZh: '400格令 碳素弩箭 · 500 FPS',
+    subFreqHz: 46,
+    punchDecaySec: 0.18,
+    blastTailSec: 0.3,
+    crackCutoffHz: 2450,
+    peakGain: 0.68,
+    brakeRoarGain: 0.0,
+    casingRingHz: 1140,
+    mechanismStyle: 'compound_crossbow',
+  },
 };
+
+/** Stretched partials for high-tension braided BCY-X bowstrings. */
+const BOWSTRING_TWANG_PARTIALS = [1.0, 2.04, 3.11, 4.24] as const;
 
 /**
  * Exact Euler-Bernoulli free-free ordnance steel bar transverse eigenfrequency
@@ -714,6 +746,14 @@ class ProceduralGunsmithSoundEngine {
     const now = ctx.currentTime + 0.002;
     const isSlowMo = speedMultiplier <= 0.25;
 
+    if (
+      profile.mechanismStyle === 'compound_bow' ||
+      profile.mechanismStyle === 'compound_crossbow'
+    ) {
+      this.playArcheryFiringEvent(kind, profile, now, isSlowMo);
+      return;
+    }
+
     switch (kind) {
       case 'sear_release': {
         // Hardened S7/4140 steel sear escapement snap + hammer/striker spring release
@@ -987,6 +1027,266 @@ class ProceduralGunsmithSoundEngine {
   }
 
   /**
+   * Procedural Web Audio synthesis for compound bows & helical-cam crossbows:
+   * roller/ratchet draw whirr, let-off draw-stop / latch arming, crisp D-loop/sear
+   * release snap, composite limb sub-thud, multi-partial braided bowstring twang
+   * waveguide decay, and aerodynamic arrow/bolt whoosh.
+   */
+  private playArcheryFiringEvent(
+    kind: FiringSoundEventKind,
+    profile: CaliberAcousticProfile,
+    now: number,
+    isSlowMo: boolean
+  ): void {
+    const isCrossbow = profile.mechanismStyle === 'compound_crossbow';
+
+    switch (kind) {
+      case 'sear_release': {
+        // Phase 0 (0..0.24): Draw Stroke & Cable Take-Up / VersaDrive Ratchet Cocking
+        if (isCrossbow) {
+          const step = isSlowMo ? 0.042 : 0.022;
+          for (let i = 0; i < 4; i++) {
+            this.emitSteelWaveguideStrike({
+              startTime: now + i * step,
+              fundamentalHz: 1920 + i * 115,
+              baseDecaySec: 0.022,
+              gainPeak: 0.14,
+              hardness01: 0.84,
+              bus: 'mechanical',
+            });
+          }
+          this.emitNoiseBurst({
+            startTime: now,
+            duration: step * 4,
+            filterType: 'bandpass',
+            freqStart: 1180,
+            freqEnd: 1840,
+            q: 3.2,
+            gainPeak: 0.11,
+            attack: 0.008,
+            bus: 'mechanical',
+          });
+        } else {
+          // Roller cable-guard glide & ABEC-7 cam axle bearing draw whirr
+          this.emitNoiseBurst({
+            startTime: now,
+            duration: isSlowMo ? 0.15 : 0.085,
+            filterType: 'bandpass',
+            freqStart: 820,
+            freqEnd: 1520,
+            q: 2.8,
+            gainPeak: 0.11,
+            attack: 0.012,
+            bus: 'mechanical',
+          });
+          this.emitModalPing({
+            startTime: now,
+            duration: isSlowMo ? 0.14 : 0.08,
+            freqStart: 195,
+            freqEnd: 285,
+            type: 'triangle',
+            gainPeak: 0.075,
+            bus: 'mechanical',
+          });
+        }
+        break;
+      }
+
+      case 'primer_ignition': {
+        // Phase 1 (0.24..0.32): Full Draw Valley / Draw-Stop Peg & Latch Arming
+        if (isCrossbow) {
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 1680,
+            baseDecaySec: 0.028,
+            gainPeak: 0.18,
+            hardness01: 0.82,
+            massBodyHz: 240,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + (isSlowMo ? 0.022 : 0.011),
+            fundamentalHz: 2340,
+            baseDecaySec: 0.02,
+            gainPeak: 0.12,
+            hardness01: 0.88,
+            bus: 'mechanical',
+          });
+        } else {
+          // Binary cam draw-stop peg contact + drop-away launcher cradle click
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 780,
+            baseDecaySec: 0.032,
+            gainPeak: 0.14,
+            hardness01: 0.52,
+            massBodyHz: 165,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + 0.01,
+            fundamentalHz: 2140,
+            baseDecaySec: 0.022,
+            gainPeak: 0.1,
+            hardness01: 0.78,
+            bus: 'mechanical',
+          });
+        }
+        break;
+      }
+
+      case 'gas_or_recoil': {
+        // Phase 2 (0.32..0.36): Crisp Release Aid / Trac-Trigger Sear Break
+        this.emitSteelWaveguideStrike({
+          startTime: now,
+          fundamentalHz: isCrossbow ? 2480 : 2260,
+          baseDecaySec: 0.03,
+          gainPeak: 0.28,
+          hardness01: 0.9,
+          massBodyHz: isCrossbow ? 320 : 270,
+          bus: 'mechanical',
+        });
+        break;
+      }
+
+      case 'cam_unlock': {
+        // Phase 3 (0.36..0.50): Power Stroke -> Limb Thud + Bowstring Twang Waveguide + Arrow Whoosh
+        // 1. Composite split-limb & riser harmonic sub-thud
+        this.emitModalPing({
+          startTime: now,
+          duration: profile.punchDecaySec,
+          freqStart: profile.subFreqHz * 2.25,
+          freqEnd: profile.subFreqHz,
+          type: 'sine',
+          gainPeak: profile.peakGain * 0.72,
+          bus: 'ballistic',
+        });
+
+        // 2. Multi-partial braided BCY-X bowstring twang waveguide decay
+        const fString = isCrossbow ? 184 : 142;
+        const stringDur = profile.blastTailSec * (isSlowMo ? 1.25 : 1.0);
+        for (let i = 0; i < BOWSTRING_TWANG_PARTIALS.length; i++) {
+          const ratio = BOWSTRING_TWANG_PARTIALS[i];
+          this.emitModalPing({
+            startTime: now + 0.002,
+            duration: stringDur / (1 + i * 0.58),
+            freqStart: fString * ratio * 1.045,
+            freqEnd: fString * ratio * 0.955,
+            type: i === 0 ? 'triangle' : 'sine',
+            gainPeak: (profile.peakGain * 0.32) / (1 + i * 0.72),
+            bus: 'ballistic',
+          });
+        }
+
+        // 3. Aerodynamic helical-vane arrow/bolt air-shear whoosh
+        this.emitNoiseBurst({
+          startTime: now + (isSlowMo ? 0.012 : 0.005),
+          duration: isSlowMo ? 0.2 : 0.11,
+          filterType: 'bandpass',
+          freqStart: isCrossbow ? 1150 : 780,
+          freqEnd: isCrossbow ? 3600 : 2400,
+          q: 1.75,
+          gainPeak: profile.peakGain * 0.66,
+          attack: 0.008,
+          bus: 'ballistic',
+        });
+        break;
+      }
+
+      case 'extract_eject': {
+        // Phase 4 (0.50..0.68): String-Stop Bumper Dampening & Launcher Drop / Flight Wake
+        this.emitModalPing({
+          startTime: now,
+          duration: 0.085,
+          freqStart: 132,
+          freqEnd: 74,
+          type: 'sine',
+          gainPeak: 0.22,
+          bus: 'mechanical',
+        });
+        if (isCrossbow) {
+          this.emitNoiseBurst({
+            startTime: now + 0.004,
+            duration: isSlowMo ? 0.14 : 0.08,
+            filterType: 'bandpass',
+            freqStart: 2700,
+            freqEnd: 1250,
+            q: 2.2,
+            gainPeak: 0.18,
+            attack: 0.005,
+            bus: 'ballistic',
+          });
+        } else {
+          this.emitSteelWaveguideStrike({
+            startTime: now + 0.005,
+            fundamentalHz: 1520,
+            baseDecaySec: 0.028,
+            gainPeak: 0.14,
+            hardness01: 0.72,
+            bus: 'mechanical',
+          });
+        }
+        break;
+      }
+
+      case 'spring_feed': {
+        // Phase 5a (0.68..0.82): Harmonic Dampening / VersaDrive Sled Return
+        if (isCrossbow) {
+          this.emitNoiseBurst({
+            startTime: now,
+            duration: isSlowMo ? 0.11 : 0.06,
+            filterType: 'bandpass',
+            freqStart: 1450,
+            freqEnd: 2150,
+            q: 3.8,
+            gainPeak: 0.15,
+            attack: 0.006,
+            bus: 'mechanical',
+          });
+        } else {
+          this.emitModalPing({
+            startTime: now,
+            duration: 0.09,
+            freqStart: 98,
+            freqEnd: 66,
+            type: 'sine',
+            gainPeak: 0.09,
+            bus: 'mechanical',
+          });
+        }
+        break;
+      }
+
+      case 'battery_lockup': {
+        // Phase 5b: Sled Dock / Re-Nock Rest Seat
+        this.emitSteelWaveguideStrike({
+          startTime: now,
+          fundamentalHz: 1040,
+          baseDecaySec: 0.036,
+          gainPeak: 0.16,
+          hardness01: 0.68,
+          massBodyHz: 165,
+          bus: 'mechanical',
+        });
+        break;
+      }
+
+      case 'sear_reset': {
+        // Phase 6 (0.86..1.00): Brace-Height Equilibrium / Sear Ready Click
+        this.emitSteelWaveguideStrike({
+          startTime: now,
+          fundamentalHz: 2240,
+          baseDecaySec: 0.024,
+          gainPeak: 0.15,
+          hardness01: 0.84,
+          bus: 'mechanical',
+        });
+        break;
+      }
+    }
+  }
+
+  /**
    * Synthesizes spent brass cartridge casing hitting the gunsmith bench / range floor
    * with velocity-scaled cylindrical C26000 brass shell modes + rim tip-over micro-clink.
    */
@@ -994,7 +1294,13 @@ class ProceduralGunsmithSoundEngine {
     caliber: CaliberProfile,
     impactSpeedCmS: number
   ): void {
-    if (impactSpeedCmS <= 6 || useAppStore.getState().sfxMuted) return;
+    if (
+      isArcheryCaliber(caliber) ||
+      impactSpeedCmS <= 6 ||
+      useAppStore.getState().sfxMuted
+    ) {
+      return;
+    }
     const ctx = this.unlock();
     if (!ctx || ctx.state !== 'running') return;
 
@@ -1149,6 +1455,29 @@ class ProceduralGunsmithSoundEngine {
 
     const now = ctx.currentTime + 0.001;
     const isPull = direction === 'pull' || direction === 'back';
+    if (isArcheryWeapon(useAppStore.getState().activeWeaponId)) {
+      this.emitNoiseBurst({
+        startTime: now,
+        duration: isPull ? 0.075 : 0.055,
+        filterType: 'bandpass',
+        freqStart: isPull ? 920 : 1480,
+        freqEnd: isPull ? 1560 : 880,
+        q: 3.1,
+        gainPeak: 0.14,
+        attack: 0.006,
+        bus: 'mechanical',
+      });
+      this.emitModalPing({
+        startTime: now + (isPull ? 0.01 : 0.02),
+        duration: 0.09,
+        freqStart: isPull ? 180 : 148,
+        freqEnd: isPull ? 210 : 128,
+        type: 'triangle',
+        gainPeak: 0.12,
+        bus: 'mechanical',
+      });
+      return;
+    }
 
     if (isPull) {
       // Braided recoil spring compression rasp + partial lug cam-out click

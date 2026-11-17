@@ -30,6 +30,7 @@ const tmpColor = new THREE.Color();
 export const SPRING_AXIS_MODE_NONE = 0;
 export const SPRING_AXIS_MODE_X = 1;
 export const SPRING_AXIS_MODE_Y = 2;
+export const SPRING_AXIS_MODE_FLEX = 3;
 
 interface CapturedSpringChunk {
   pos: Float32Array;
@@ -79,7 +80,7 @@ export function validateSpringParamAlignment(
       if (dx < minDx1) minDx1 = dx;
       if (dx > maxDx1) maxDx1 = dx;
       n1++;
-    } else if (w >= 1.5) {
+    } else if (w >= 1.5 && w < 2.5) {
       const dy = pos.getY(i) - c;
       if (dy < minDy2) minDy2 = dy;
       if (dy > maxDy2) maxDy2 = dy;
@@ -116,7 +117,7 @@ export function validateSpringParamAlignment(
         arr[o + 2] = 0;
         arr[o + 3] = 0;
       }
-    } else if (w >= 1.5) {
+    } else if (w >= 1.5 && w < 2.5) {
       if (yValid) {
         if (Math.abs(yShift) > 1e-4) {
           arr[o + 1] += yShift;
@@ -134,6 +135,9 @@ export function validateSpringParamAlignment(
         arr[o + 2] = 0;
         arr[o + 3] = 0;
       }
+    } else if (w >= 2.5) {
+      // Parametric flex displacement vector (dx, dy, dz, 3) for bow limbs/strings/cables
+      anyActive = true;
     }
   }
 

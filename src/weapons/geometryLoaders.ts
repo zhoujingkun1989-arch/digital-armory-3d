@@ -19,6 +19,8 @@ export const GEOMETRY_MODULE_LOADERS: Record<
   aug: () => import('./aug/geometries').then((m) => m.GEOMETRY_BUILDERS),
   p320: () => import('./p320/geometries').then((m) => m.GEOMETRY_BUILDERS),
   p90: () => import('./p90/geometries').then((m) => m.GEOMETRY_BUILDERS),
+  lift33: () => import('./lift33/geometries').then((m) => m.GEOMETRY_BUILDERS),
+  r500: () => import('./r500/geometries').then((m) => m.GEOMETRY_BUILDERS),
 };
 
 export function loadWeaponGeometryBuilders(

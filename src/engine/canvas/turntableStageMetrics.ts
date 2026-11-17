@@ -99,6 +99,20 @@ export const WEAPON_TURNTABLE_BOUNDS: Readonly<
     spanX: 33.6,
     explode58: { cx: 1.4, minY: -13.2, maxY: 15.8, spanX: 52.8 },
   },
+  lift33: {
+    cx: 8.84,
+    minY: -44.32,
+    maxY: 44.32,
+    spanX: 53.82,
+    explode58: { cx: 12.44, minY: -52.82, maxY: 52.82, spanX: 82.62 },
+  },
+  r500: {
+    cx: 3.5,
+    minY: -11.2,
+    maxY: 9.28,
+    spanX: 70.98,
+    explode58: { cx: 2.18, minY: -17.0, maxY: 15.08, spanX: 87.23 },
+  },
 };
 
 export function getTurntableRadius(weaponId: WeaponId): number {
@@ -309,7 +323,13 @@ export function computeTurntableFraming(
   const fillX = hudHidden ? 0.84 : screen === 'showcase' ? 0.76 : 0.82;
 
   const baseDist =
-    scaleProfile === 'heavy_sniper' ? 66 : scaleProfile === 'rifle' ? 54 : 35;
+    scaleProfile === 'heavy_sniper'
+      ? 66
+      : scaleProfile === 'compound_bow'
+        ? 72
+        : scaleProfile === 'rifle'
+          ? 54
+          : 35;
 
   const aspect = Math.max(0.35, viewportW / Math.max(1, viewportH));
   const dVert =
