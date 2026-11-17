@@ -7,6 +7,11 @@ import type {
   MonographPageMode,
 } from './monographCaptureStore';
 import {
+  formatMonographDriveSpec,
+  getMonographDomainLabels,
+  getMonographLocalizedStrings,
+} from './monographStrings';
+import {
   BallisticsVectorChart,
   CaliberEnergyLadder,
   CartridgeCutawayDiagram,
@@ -78,7 +83,8 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
   const isZh = lang === 'zh';
   const ui = UI_STRINGS[lang].monograph;
   const armoryUi = UI_STRINGS[lang].armory;
-  const cartUi = UI_STRINGS[lang].cartridgeLab;
+  const domain = getMonographDomainLabels(lang, dossier.isArchery);
+  const mStrings = getMonographLocalizedStrings(lang);
 
   const editionStamp =
     edition === 'blueprint_manual'
@@ -115,7 +121,7 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
 
         <div className="m-cover-body">
           <div className="m-cover-kicker-row">
-            <span className="m-cover-tag">{ui.coverMonographTag}</span>
+            <span className="m-cover-tag">{domain.coverMonographTag}</span>
             <span className="m-cover-origin">{dossier.originTag}</span>
           </div>
 
@@ -123,7 +129,7 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
           <div className="m-cover-model-code">{dossier.modelCode}</div>
 
           <div className="m-cover-mechanism-banner">
-            <span className="m-mech-k">{armoryUi.mechanismLabel}</span>
+            <span className="m-mech-k">{domain.mechanismLabel}</span>
             <span className="m-mech-v">{dossier.actionMechanism}</span>
           </div>
 
@@ -136,7 +142,9 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
                 className="m-plate-img"
               />
             ) : (
-              <PlatePlaceholder label={`${dossier.shortTag} · HERO STUDIO`} />
+              <PlatePlaceholder
+                label={mStrings.placeholders.hero(dossier.shortTag)}
+              />
             )}
             <div className="m-hero-corner-tl" />
             <div className="m-hero-corner-tr" />
@@ -158,27 +166,27 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
           {/* 6-Cell 1:1 Factory Metrology Bar */}
           <div className="m-cover-specs-grid">
             <div className="m-spec-box">
-              <span className="m-sk">{armoryUi.oalLabel}</span>
+              <span className="m-sk">{domain.oalLabel}</span>
               <strong className="m-sv">{dossier.metrics.oal}</strong>
             </div>
             <div className="m-spec-box">
-              <span className="m-sk">{armoryUi.barrelLabel}</span>
+              <span className="m-sk">{domain.barrelLabel}</span>
               <strong className="m-sv">{dossier.metrics.barrel}</strong>
             </div>
             <div className="m-spec-box">
-              <span className="m-sk">{armoryUi.weightLabel}</span>
+              <span className="m-sk">{domain.weightLabel}</span>
               <strong className="m-sv">{dossier.metrics.weight}</strong>
             </div>
             <div className="m-spec-box">
-              <span className="m-sk">{armoryUi.muzzleVelLabel}</span>
+              <span className="m-sk">{domain.muzzleVelLabel}</span>
               <strong className="m-sv">{dossier.metrics.muzzleVelocity}</strong>
             </div>
             <div className="m-spec-box">
-              <span className="m-sk">{armoryUi.rangeLabel}</span>
+              <span className="m-sk">{domain.rangeLabel}</span>
               <strong className="m-sv">{dossier.metrics.effectiveRange}</strong>
             </div>
             <div className="m-spec-box is-accent">
-              <span className="m-sk">{cartUi.muzzleEnergy}</span>
+              <span className="m-sk">{domain.muzzleEnergy}</span>
               <strong className="m-sv">{dossier.metrics.muzzleEnergyJ}</strong>
             </div>
           </div>
@@ -288,23 +296,26 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
                 <p className="m-chapter-sub">{ui.secChronicleIISub}</p>
               </div>
 
-              {/* Plate #2: Breech & Fire-Control X-Ray Macro */}
+              {/* Plate #2: Breech / Core Mechanism X-Ray Macro */}
               <figure className="m-wide-plate-card">
                 <div className="m-wide-plate-crop">
                   {plates?.breech_closeup ? (
                     <img
                       src={plates.breech_closeup}
-                      alt={ui.plateBreechCaption}
+                      alt={domain.plateBreechCaption}
                       className="m-plate-img"
                     />
                   ) : (
                     <PlatePlaceholder
-                      label={`${dossier.shortTag} · BREECH X-RAY`}
+                      label={mStrings.placeholders.breech(
+                        dossier.shortTag,
+                        dossier.isArchery
+                      )}
                     />
                   )}
                 </div>
                 <figcaption className="m-plate-caption">
-                  {ui.plateBreechCaption}
+                  {domain.plateBreechCaption}
                 </figcaption>
               </figure>
 
@@ -336,7 +347,10 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
                       <h4 className="m-bt-title">{bt.title}</h4>
                       <p className="m-bt-desc">{bt.summary}</p>
                       <div className="m-bt-focus">
-                        <span>FOCUS: {bt.focusPartLabel}</span>
+                        <span>
+                          {mStrings.focusPrefix}
+                          {bt.focusPartLabel}
+                        </span>
                       </div>
                     </div>
                   ))}
@@ -378,15 +392,17 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
                 {plates?.stencil_cutaway ? (
                   <img
                     src={plates.stencil_cutaway}
-                    alt={ui.plateStencilCaption}
+                    alt={domain.plateStencilCaption}
                     className="m-plate-img"
                   />
                 ) : (
-                  <PlatePlaceholder label="STENCIL CUTAWAY 45°" />
+                  <PlatePlaceholder
+                    label={mStrings.placeholders.stencilCutaway}
+                  />
                 )}
               </div>
               <figcaption className="m-plate-caption">
-                {ui.plateStencilCaption}
+                {domain.plateStencilCaption}
               </figcaption>
             </figure>
 
@@ -395,15 +411,17 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
                 {plates?.functional_roles ? (
                   <img
                     src={plates.functional_roles}
-                    alt={ui.plateRolesCaption}
+                    alt={domain.plateRolesCaption}
                     className="m-plate-img"
                   />
                 ) : (
-                  <PlatePlaceholder label="6-ROLE FUNCTIONAL TINT" />
+                  <PlatePlaceholder
+                    label={mStrings.placeholders.functionalRoles}
+                  />
                 )}
               </div>
               <figcaption className="m-plate-caption">
-                {ui.plateRolesCaption}
+                {domain.plateRolesCaption}
               </figcaption>
             </figure>
           </div>
@@ -480,14 +498,14 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
             <p className="m-chapter-sub">{ui.secExplodedPlateSub}</p>
           </div>
 
-          {/* Full 1920x1200 Exploded 3D Render + Infinite-DPI Vector Pin Overlay */}
+          {/* Full 1440×900 Exploded 3D Render + Infinite-DPI Vector Pin Overlay (1920×1200 viewBox) */}
           <figure className="m-exploded-poster-frame">
             <div className="m-exploded-stage">
               {plates?.exploded_bom ? (
                 <>
                   <img
                     src={plates.exploded_bom}
-                    alt={`${dossier.name} 100% Exploded Blueprint`}
+                    alt={mStrings.explodedAlt(dossier.name)}
                     className="m-plate-img"
                   />
                   <ExplodedPlateVectorOverlay
@@ -497,12 +515,12 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
                 </>
               ) : (
                 <PlatePlaceholder
-                  label={`${dossier.shortTag} · 100% EXPLODED CAD`}
+                  label={mStrings.placeholders.explodedCad(dossier.shortTag)}
                 />
               )}
             </div>
             <figcaption className="m-plate-caption">
-              {ui.explodedLegendNote}
+              {domain.explodedLegendNote}
             </figcaption>
           </figure>
 
@@ -542,7 +560,7 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
               editionStamp={editionStamp}
             />
 
-            <div className="m-page-content">
+            <div className="m-page-content is-bom-page">
               <div className="m-chapter-head compact">
                 <span className="m-chapter-kicker">{ui.secBomLedger}</span>
                 <p className="m-chapter-sub">
@@ -553,7 +571,11 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
                 </p>
               </div>
 
-              <table className="m-bom-table">
+              <table
+                className={`m-bom-table ${
+                  dossier.bomRows.length >= 26 ? 'is-dense' : ''
+                }`}
+              >
                 <thead>
                   <tr>
                     <th scope="col" className="col-code">
@@ -563,7 +585,7 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
                       {ui.bomColComponent}
                     </th>
                     <th scope="col" className="col-mat">
-                      {ui.bomColMaterial}
+                      {domain.bomColMaterial}
                     </th>
                     <th scope="col" className="col-env">
                       {ui.bomColEnvelope}
@@ -593,7 +615,11 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
                       </td>
                       <td className="td-mat">{row.materialLabel}</td>
                       <td className="td-env">{row.envelopeMm}</td>
-                      <td className="td-prin">{row.principleText}</td>
+                      <td className="td-prin">
+                        <span className="m-bom-prin-clamp">
+                          {row.principleText}
+                        </span>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -618,14 +644,14 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
 
             <div className="m-page-content">
               <div className="m-chapter-head compact">
-                <span className="m-chapter-kicker">{ui.secBallistics}</span>
-                <p className="m-chapter-sub">{ui.secBallisticsSub}</p>
+                <span className="m-chapter-kicker">{domain.secBallistics}</span>
+                <p className="m-chapter-sub">{domain.secBallisticsSub}</p>
               </div>
 
-              {/* Vector Chamber Pressure P(t) & Bore Velocity V(t) Plot */}
+              {/* Vector Chamber Pressure / Draw Force & Velocity Plot */}
               <section className="m-chart-panel">
                 <div className="m-subsec-bar">
-                  <span>{ui.chartPressureTitle}</span>
+                  <span>{domain.chartPressureTitle}</span>
                 </div>
                 <BallisticsVectorChart
                   weaponId={dossier.weaponId}
@@ -635,11 +661,11 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
                 />
               </section>
 
-              {/* Split Row: 1:1 Cartridge Half-Section Vector Schematic + Quantitative Anatomy Specs */}
+              {/* Split Row: 1:1 Projectile Half-Section Vector Schematic + Quantitative Anatomy Specs */}
               <div className="m-cartridge-split">
                 <div className="m-cartridge-diagram-card">
                   <div className="m-subsec-bar">
-                    <span>{ui.chartCartridgeTitle}</span>
+                    <span>{domain.chartCartridgeTitle}</span>
                   </div>
                   <CartridgeCutawayDiagram
                     caliber={dossier.caliberProfile}
@@ -658,22 +684,23 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
                     </div>
                     <div className="m-cmeta-kv-list">
                       <div>
-                        <span>{cartUi.coreAnatomyLabel}</span>
+                        <span>{domain.coreAnatomyLabel}</span>
                         <strong>
                           {isZh ? cSpec.coreAnatomyZh : cSpec.coreAnatomyEn}
                         </strong>
                       </div>
                       <div>
-                        <span>{cartUi.propellantLabel}</span>
+                        <span>{domain.propellantLabel}</span>
                         <strong>
-                          {isZh
-                            ? cSpec.propellantTypeZh
-                            : cSpec.propellantTypeEn}{' '}
-                          ({cSpec.propellantMassG.toFixed(2)} g)
+                          {formatMonographDriveSpec(
+                            cSpec,
+                            dossier.isArchery,
+                            lang
+                          )}
                         </strong>
                       </div>
                       <div>
-                        <span>{cartUi.primerLabel}</span>
+                        <span>{domain.primerLabel}</span>
                         <strong>
                           {isZh ? cSpec.primerTypeZh : cSpec.primerTypeEn}
                         </strong>
@@ -686,7 +713,7 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
 
                   <div className="m-cmeta-box">
                     <div className="m-subsec-bar">
-                      <span>{ui.energyLadderTitle}</span>
+                      <span>{domain.energyLadderTitle}</span>
                     </div>
                     <CaliberEnergyLadder
                       activeCaliber={dossier.caliberProfile}
@@ -718,15 +745,15 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
 
         <div className="m-page-content">
           <div className="m-chapter-head compact">
-            <span className="m-chapter-kicker">{ui.secArmorerManual}</span>
-            <p className="m-chapter-sub">{ui.secArmorerManualSub}</p>
+            <span className="m-chapter-kicker">{domain.secArmorerManual}</span>
+            <p className="m-chapter-sub">{domain.secArmorerManualSub}</p>
           </div>
 
-          {/* In 4-page compact mode, include compact P(t)/V(t) curve right at the top of Page 4 */}
+          {/* In 4-page compact mode, include compact curve right at the top of Page 4 */}
           {pageMode === 'compact_4p' && (
             <section className="m-chart-panel compact-chart">
               <div className="m-subsec-bar">
-                <span>{ui.chartPressureTitle}</span>
+                <span>{domain.chartPressureTitle}</span>
               </div>
               <BallisticsVectorChart
                 weaponId={dossier.weaponId}
@@ -741,7 +768,7 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
           <section className="m-fieldstrip-section">
             <div className="m-subsec-bar">
               <span>
-                {ui.fieldStripHeading} · {dossier.fieldStripManualTitle}
+                {domain.fieldStripHeading} · {dossier.fieldStripManualTitle}
               </span>
             </div>
             <div className="m-fs-grid">
@@ -767,7 +794,7 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
           {pageMode === 'full_8p' && (
             <section className="m-malf-section">
               <div className="m-subsec-bar">
-                <span>{ui.malfunctionsHeading}</span>
+                <span>{domain.malfunctionsHeading}</span>
               </div>
               <div className="m-malf-grid">
                 {dossier.malfunctionCards.map((mc) => (

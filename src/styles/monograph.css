@@ -1,5 +1,6 @@
 /* ==========================================================================
-   Collector Military Monograph & Pre-Press Print Studio (`monograph.css`)
+   17-Plate 3D Illustrated Picture Book & Pro Monograph Print Studio (`monograph.css`)
+   Across All 13 Digital Armory Exhibits · Kids Pictorial & Pro Technical Editions
    ========================================================================== */
 
 .monograph-print-portal {
@@ -606,6 +607,11 @@
   gap: 8px;
   padding: 7px 0;
   min-height: 0;
+}
+
+.m-page-content.is-bom-page {
+  justify-content: flex-start;
+  gap: 7px;
 }
 
 .m-chapter-head {
@@ -1274,66 +1280,132 @@
 /* ==================== PAGE 06: PRECISION BOM LEDGER ==================== */
 .m-bom-table {
   width: 100%;
+  table-layout: fixed;
   border-collapse: collapse;
-  font-size: 8.5px;
+  font-size: 8px;
   background: var(--m-surface);
   border: 0.8pt solid var(--m-border-subtle);
 }
 
 .m-bom-table th {
-  padding: 4.5px 6px;
+  padding: 3.5px 4.5px;
   text-align: left;
   background: var(--m-accent-soft);
   border-bottom: 1pt solid var(--m-border);
   font-family: var(--font-mono);
-  font-size: 8.2px;
+  font-size: 7.8px;
   font-weight: 800;
   color: var(--m-accent-strong);
 }
 
+.m-bom-table .col-code {
+  width: 42px;
+}
+
+.m-bom-table .col-comp {
+  width: 192px;
+}
+
+.m-bom-table .col-mat {
+  width: 108px;
+}
+
+.m-bom-table .col-env {
+  width: 104px;
+}
+
 .m-bom-table td {
-  padding: 3.3px 6px;
+  padding: 2.3px 4.5px;
   border-bottom: 0.5pt solid var(--m-border-subtle);
   vertical-align: middle;
 }
 
+.m-bom-table.is-dense {
+  font-size: 7.7px;
+}
+
+.m-bom-table.is-dense th {
+  padding: 3px 4px;
+  font-size: 7.5px;
+}
+
+.m-bom-table.is-dense td {
+  padding: 1.85px 4px;
+}
+
 .m-bom-badge {
   display: inline-block;
-  padding: 0.5px 4.5px;
+  padding: 0.5px 4px;
   border-radius: 3px;
   border: 0.8pt solid currentColor;
   font-family: var(--font-mono);
-  font-size: 7.8px;
+  font-size: 7.4px;
   font-weight: 800;
+}
+
+.td-comp {
+  line-height: 1.2;
+}
+
+.m-bom-table.is-dense .td-comp {
+  line-height: 1.18;
 }
 
 .td-comp strong {
   display: inline;
   font-weight: 800;
   color: var(--m-text);
-  margin-right: 5px;
+  margin-right: 4px;
 }
 
 .td-comp span {
   color: var(--m-text-muted);
-  font-size: 7.8px;
+  font-size: 7.3px;
+}
+
+.m-bom-table.is-dense .td-comp span {
+  font-size: 7.1px;
 }
 
 .td-mat {
   color: var(--m-text-sec);
-  white-space: nowrap;
+  font-size: 7.5px;
+  line-height: 1.2;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.m-bom-table.is-dense .td-mat {
+  font-size: 7.2px;
+  line-height: 1.18;
 }
 
 .td-env {
   font-family: var(--font-mono);
-  font-size: 8px;
+  font-size: 7.4px;
   color: var(--m-cyan);
   white-space: nowrap;
 }
 
+.m-bom-table.is-dense .td-env {
+  font-size: 7.2px;
+}
+
 .td-prin {
   color: var(--m-text-sec);
-  line-height: 1.28;
+  line-height: 1.24;
+}
+
+.m-bom-table.is-dense .td-prin {
+  line-height: 1.2;
+}
+
+.m-bom-prin-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* ==================== PAGE 07: BALLISTICS & 1:1 CARTRIDGE ==================== */

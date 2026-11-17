@@ -18,6 +18,7 @@ import type {
   MonographEdition,
   MonographPageMode,
 } from './monographCaptureStore';
+import { getMonographLocalizedStrings } from './monographStrings';
 import {
   CartridgeCutawayDiagram,
   ExplodedPlateVectorOverlay,
@@ -85,6 +86,7 @@ export const MonographKidsDocument: React.FC<MonographKidsDocumentProps> = ({
   const isZh = lang === 'zh';
   const ui = UI_STRINGS[lang].monograph;
   const kui = ui.kids;
+  const kp = getMonographLocalizedStrings(lang).kidsPlaceholders;
 
   const editionLabel =
     edition === 'blueprint_manual' ? kui.editionBright : kui.editionDark;
@@ -133,7 +135,7 @@ export const MonographKidsDocument: React.FC<MonographKidsDocumentProps> = ({
                 className="km-plate-img"
               />
             ) : (
-              <KidsPlatePlaceholder label={`${dossier.shortTag} · 3D HERO`} />
+              <KidsPlatePlaceholder label={kp.hero(dossier.shortTag)} />
             )}
             <figcaption className="km-hero-floating-sticker">
               <Boxes size={13} aria-hidden="true" />
@@ -222,7 +224,7 @@ export const MonographKidsDocument: React.FC<MonographKidsDocumentProps> = ({
                       className="km-plate-img"
                     />
                   ) : (
-                    <KidsPlatePlaceholder label="RIGHT SIDE 3D" />
+                    <KidsPlatePlaceholder label={kp.orthoRight} />
                   )}
                 </div>
                 <figcaption className="km-turnaround-badge tone-sky">
@@ -240,7 +242,7 @@ export const MonographKidsDocument: React.FC<MonographKidsDocumentProps> = ({
                       className="km-plate-img"
                     />
                   ) : (
-                    <KidsPlatePlaceholder label="LEFT SIDE 3D" />
+                    <KidsPlatePlaceholder label={kp.orthoLeft} />
                   )}
                 </div>
                 <figcaption className="km-turnaround-badge tone-emerald">
@@ -258,7 +260,7 @@ export const MonographKidsDocument: React.FC<MonographKidsDocumentProps> = ({
                       className="km-plate-img"
                     />
                   ) : (
-                    <KidsPlatePlaceholder label="TOP-DOWN 3D" />
+                    <KidsPlatePlaceholder label={kp.orthoTop} />
                   )}
                 </div>
                 <figcaption className="km-turnaround-badge tone-amber">
@@ -311,7 +313,7 @@ export const MonographKidsDocument: React.FC<MonographKidsDocumentProps> = ({
                     className="km-plate-img"
                   />
                 ) : (
-                  <KidsPlatePlaceholder label="X-RAY VISION 3D" />
+                  <KidsPlatePlaceholder label={kp.xrayVision} />
                 )}
               </div>
               <figcaption className="km-giant-caption tone-sky">
@@ -332,7 +334,7 @@ export const MonographKidsDocument: React.FC<MonographKidsDocumentProps> = ({
                     className="km-plate-img"
                   />
                 ) : (
-                  <KidsPlatePlaceholder label="HALF CUTAWAY 3D" />
+                  <KidsPlatePlaceholder label={kp.halfCutaway} />
                 )}
               </div>
               <figcaption className="km-giant-caption tone-amber">
@@ -383,7 +385,7 @@ export const MonographKidsDocument: React.FC<MonographKidsDocumentProps> = ({
                   className="km-plate-img"
                 />
               ) : (
-                <KidsPlatePlaceholder label="RAINBOW 6-TEAM 3D" />
+                <KidsPlatePlaceholder label={kp.rainbowTeams} />
               )}
             </figure>
 
@@ -470,7 +472,7 @@ export const MonographKidsDocument: React.FC<MonographKidsDocumentProps> = ({
                   />
                 </>
               ) : (
-                <KidsPlatePlaceholder label="100% EXPLODED 3D POSTER" />
+                <KidsPlatePlaceholder label={kp.explodedPoster} />
               )}
             </div>
           </figure>
@@ -690,6 +692,7 @@ export const MonographKidsDocument: React.FC<MonographKidsDocumentProps> = ({
                 </span>
                 <h3 className="km-qr-title">{kui.qrTitle}</h3>
                 <p className="km-qr-sub">{kui.qrSub}</p>
+                <div className="km-qr-url">{dossier.deepLinkUrl}</div>
               </div>
             </section>
           )}
@@ -733,7 +736,7 @@ export const MonographKidsDocument: React.FC<MonographKidsDocumentProps> = ({
                     className="km-plate-img"
                   />
                 ) : (
-                  <KidsPlatePlaceholder label="MACRO CORE ZOOM 3D" />
+                  <KidsPlatePlaceholder label={kp.macroCoreZoom} />
                 )}
               </div>
               <figcaption className="km-turnaround-badge tone-sky">

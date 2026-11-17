@@ -7,8 +7,8 @@ import {
 import { FIELD_STRIP_PLANS } from '../../engine/fieldstrip/fieldStripSpecs';
 import { getCachedPartGeometry } from '../../engine/geometry/geometryService';
 import {
+  getMalfunctionScenario,
   MALFUNCTION_ORDER,
-  MALFUNCTION_SCENARIOS,
 } from '../../engine/malfunctions/malfunctionSpecs';
 import {
   ENGINEERING_ROLE_META,
@@ -219,6 +219,48 @@ const KID_ROLE_COPY: Record<
   },
 };
 
+const KID_ARCHERY_ROLE_COPY: Record<
+  EngineeringRole,
+  { zhTitle: string; zhTip: string; enTitle: string; enTip: string }
+> = {
+  locking: {
+    zhTitle: '橙色 · 凸轮与轮轴队',
+    zhTip: '用偏心滑轮省力转弯，稳稳锁住超大拉力',
+    enTitle: 'Orange · Cam & Axle Team',
+    enTip: 'Spins offset cams to ease draw and lock high tension',
+  },
+  gas_drive: {
+    zhTitle: '青色 · 弯曲弓片队',
+    zhTip: '把碳纤维弓片压弯蓄满弹力，联动副缆同步转',
+    enTitle: 'Cyan · Flex Limb & Cable Team',
+    enTip: 'Bends carbon limbs and sync cables to store launch power',
+  },
+  bolt_carrier: {
+    zhTitle: '蓝色 · 弓弦推射队',
+    zhTip: '像弹力弹弓一样前后高速推进，把箭笔直射出',
+    enTitle: 'Blue · Bowstring Drive Team',
+    enTip: 'Drives the bowstring and sled forward to launch straight',
+  },
+  fire_control: {
+    zhTitle: '红色 · 撒放瞄准队',
+    zhTip: '精准瞄准锁定目标，一按开关瞬间松弦放箭',
+    enTitle: 'Red · Aim & Release Team',
+    enTip: 'Lines up sights and releases the string with one click',
+  },
+  energy_spring: {
+    zhTitle: '绿色 · 减震回弹队',
+    zhTip: '吸收发射后的震动余波，让弹簧与止弦器快速回稳',
+    enTitle: 'Green · Damper & Spring Team',
+    enTip: 'Soaks up vibration and snaps release latches back steady',
+  },
+  housing_feed: {
+    zhTitle: '银灰 · 弓把与箭壶队',
+    zhTip: '坚固镂空主骨架加上侧挂箭壶，保护并携带好碳箭',
+    enTitle: 'Grey · Riser & Quiver Team',
+    enTip: 'Strong truss frame and side quiver holding carbon arrows',
+  },
+};
+
 const GROUP_TO_PLATE: Record<
   AssemblyGroupKey,
   KidsSubAssemblyPhotoCard['plateKey']
@@ -239,7 +281,8 @@ function buildKidsFunStats(
   weightStr: string,
   partsCount: number,
   velMps: number,
-  lang: LanguageCode
+  lang: LanguageCode,
+  isArchery = false
 ): [KidsFunStatCard, KidsFunStatCard, KidsFunStatCard, KidsFunStatCard] {
   const isZh = lang === 'zh';
   const oalMm = parseFirstFloat(oalStr, 750);
@@ -247,6 +290,10 @@ function buildKidsFunStats(
   const rulers = Math.max(1, Math.round((oalMm / 300) * 10) / 10);
   const bottles = Math.max(1, Math.round(weightKg / 0.5));
   const mach = velMps / 340;
+  const kmh = Math.round(velMps * 3.6);
+  const formattedVel = Number.isInteger(velMps)
+    ? `${velMps}`
+    : velMps.toFixed(1);
 
   const lengthCompare = isZh
     ? oalMm < 260
@@ -269,16 +316,28 @@ function buildKidsFunStats(
     : `Weighs about ${bottles} water bottles`;
 
   const partsCompare = isZh
-    ? '像金属乐高积木一样层层咬合'
-    : 'Interlocks just like precision LEGO bricks';
+    ? isArchery
+      ? '像碳纤维与金属乐高积木一样严丝合缝'
+      : '像金属乐高积木一样层层咬合'
+    : isArchery
+      ? 'Interlocks just like carbon & alloy LEGO bricks'
+      : 'Interlocks just like precision LEGO bricks';
 
   const speedCompare = isZh
     ? mach >= 1.05
       ? `超音速 ${mach.toFixed(1)} 倍！比声音跑得还快`
-      : `相当于高速汽车的 ${Math.max(2, Math.round((velMps * 3.6) / 100))} 倍快！`
+      : kmh >= 420
+        ? `时速约 ${kmh} km/h，接近声音传播速度的一半！`
+        : kmh >= 250
+          ? `时速约 ${kmh} km/h，比飞驰的高铁列车还要快！`
+          : `时速约 ${kmh} km/h，比猎豹冲刺还快！`
     : mach >= 1.05
       ? `Mach ${mach.toFixed(1)} — faster than sound!`
-      : `${Math.round(velMps * 3.6)} km/h — race-car fast!`;
+      : kmh >= 420
+        ? `${kmh} km/h — nearly half the speed of sound!`
+        : kmh >= 250
+          ? `${kmh} km/h — faster than a high-speed train!`
+          : `${kmh} km/h — faster than a sprinting cheetah!`;
 
   return [
     {
@@ -298,7 +357,7 @@ function buildKidsFunStats(
     },
     {
       label: isZh ? '发射速度' : 'Launch Speed',
-      value: `${Math.round(velMps)} m/s`,
+      value: `${formattedVel} m/s`,
       funCompare: speedCompare,
     },
   ];
@@ -549,7 +608,8 @@ export function assembleMonographDossier(
     catalog.specs1To1.emptyWeightKg,
     plugin.parts.length,
     cartridgeSpec.muzzleVelocityMps,
-    lang
+    lang,
+    isArchery
   );
 
   // 4 Sub-Assembly Isolated Photo Cards
@@ -601,7 +661,9 @@ export function assembleMonographDossier(
   const roleSummaries: MonographRoleSummary[] = ENGINEERING_ROLE_ORDER.map(
     (role) => {
       const meta = ENGINEERING_ROLE_META[role];
-      const kidCopy = KID_ROLE_COPY[role];
+      const kidCopy = isArchery
+        ? KID_ARCHERY_ROLE_COPY[role]
+        : KID_ROLE_COPY[role];
       return {
         role,
         label: isZh ? meta.labelZh : meta.labelEn,
@@ -699,10 +761,10 @@ export function assembleMonographDossier(
       : st.stripBlockedNoteEn || st.reassembleBlockedNoteEn,
   }));
 
-  // 4 Canonical Stoppage Cards
+  // 4 Canonical Stoppage Cards (automatically selects archery diagnostics for lift33 / r500)
   const malfunctionCards: MonographMalfunctionCard[] = MALFUNCTION_ORDER.map(
     (kind) => {
-      const sc = MALFUNCTION_SCENARIOS[kind];
+      const sc = getMalfunctionScenario(kind, weaponId);
       const stepTitles = sc.steps
         .map((st) => `${st.orderLabel}. ${isZh ? st.titleZh : st.titleEn}`)
         .join(' → ');

@@ -31,6 +31,10 @@ import {
   getPartPbrBundle,
   isTextureLoaded,
 } from '../../engine/materials/pbrManager';
+import {
+  getWeaponFiringTiming,
+  isArcheryWeapon,
+} from '../../engine/physics/armoryPhysics';
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
 import { loadWeaponPlugin } from '../../weapons/registry';
@@ -299,6 +303,53 @@ const SHOT_PLAN: readonly ShotSpec[] = [
   },
 ];
 
+/**
+ * Tailors base studio shot specs to each exhibit's actual firing kinematics
+ * and frame architecture (archery cam/arrow milestones vs. per-firearm timings).
+ */
+export function resolveShotForWeapon(
+  shot: ShotSpec,
+  weaponId: WeaponId
+): ShotSpec {
+  if (isArcheryWeapon(weaponId)) {
+    switch (shot.key) {
+      case 'comic_1_ready':
+        return { ...shot, firingF: 0.27, sectionCut: false };
+      case 'comic_2_ignition':
+        return { ...shot, firingF: 0.36, sectionCut: false };
+      case 'comic_3_eject':
+        return { ...shot, firingF: 0.5, sectionCut: false };
+      case 'comic_4_reload':
+        return {
+          ...shot,
+          firingF: 0.78,
+          sectionCut: false,
+          xrayShells: weaponId === 'lift33' ? false : shot.xrayShells,
+        };
+      case 'breech_closeup':
+        return weaponId === 'lift33' ? { ...shot, xrayShells: false } : shot;
+      default:
+        return shot;
+    }
+  }
+
+  const timing = getWeaponFiringTiming(weaponId);
+  switch (shot.key) {
+    case 'comic_2_ignition':
+      return {
+        ...shot,
+        firingF: (timing.ignitionF + timing.muzzleExitF) * 0.52,
+      };
+    case 'comic_3_eject':
+      return {
+        ...shot,
+        firingF: Math.min(0.74, timing.ejectF + 0.02),
+      };
+    default:
+      return shot;
+  }
+}
+
 interface SavedViewportSnapshot {
   screen: ReturnType<typeof useAppStore.getState>['screen'];
   activeWeaponId: WeaponId;
@@ -501,6 +552,7 @@ interface ActiveCaptureSession {
   weaponId: WeaponId;
   edition: MonographEdition;
   plugin: WeaponRuntimePlugin;
+  shots: readonly ShotSpec[];
   saved: SavedViewportSnapshot;
   shotIndex: number;
   settleCounter: number;
@@ -768,14 +820,18 @@ const ActiveMonographCaptureWorker: React.FC<{
       const imageData = ctx2d.createImageData(CAPTURE_W, CAPTURE_H);
       const rawRgba = new Uint8Array(CAPTURE_W * CAPTURE_H * 4);
 
-      applyShotStateToStore(weaponId, edition, SHOT_PLAN[0]);
-      updateMonographCaptureProgress(requestId, 0, SHOT_PLAN[0].key);
+      const shots = SHOT_PLAN.map((shot) =>
+        resolveShotForWeapon(shot, weaponId)
+      );
+      applyShotStateToStore(weaponId, edition, shots[0]);
+      updateMonographCaptureProgress(requestId, 0, shots[0].key);
 
       sessionRef.current = {
         requestId,
         weaponId,
         edition,
         plugin,
+        shots,
         saved,
         shotIndex: 0,
         settleCounter: 0,
@@ -812,7 +868,7 @@ const ActiveMonographCaptureWorker: React.FC<{
     const s = sessionRef.current;
     if (!s) return;
 
-    const shot = SHOT_PLAN[s.shotIndex];
+    const shot = s.shots[s.shotIndex];
     if (!shot) return;
 
     const fireF = shot.firingF ?? 0;
@@ -821,8 +877,13 @@ const ActiveMonographCaptureWorker: React.FC<{
     playbackClock.setTargetProgress(shot.explodeT, true);
     playbackClock.setAnimatedProgress(shot.explodeT);
 
+    // Extra settle guard when transitioning out of CartridgeCutawayStage so DisassemblyRig / PartActor finish mounting
+    const requiredSettleFrames =
+      s.shotIndex === 0 && s.saved.screen === 'cartridges'
+        ? SETTLE_FRAMES_PER_SHOT + 2
+        : SETTLE_FRAMES_PER_SHOT;
     s.settleCounter += 1;
-    if (s.settleCounter < SETTLE_FRAMES_PER_SHOT) {
+    if (s.settleCounter < requiredSettleFrames) {
       return;
     }
 
@@ -884,8 +945,8 @@ const ActiveMonographCaptureWorker: React.FC<{
     }
 
     const completedCount = s.shotIndex + 1;
-    if (completedCount < SHOT_PLAN.length) {
-      const nextShot = SHOT_PLAN[completedCount];
+    if (completedCount < s.shots.length) {
+      const nextShot = s.shots[completedCount];
       s.shotIndex = completedCount;
       s.settleCounter = 0;
       applyShotStateToStore(s.weaponId, s.edition, nextShot);

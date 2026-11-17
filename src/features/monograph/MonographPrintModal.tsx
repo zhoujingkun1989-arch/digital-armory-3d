@@ -1,4 +1,11 @@
-import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   BookOpen,
   Camera,
@@ -67,7 +74,7 @@ export const MonographPrintModal: React.FC = () => {
   const ui = UI_STRINGS[lang].monograph;
   const shortTag = getLocalizedShortWeaponLabel(weaponId, lang);
 
-  // Trigger offscreen 5-plate WebGL capture whenever (weaponId, edition) lacks a cached bundle
+  // Trigger offscreen 17-plate WebGL capture whenever (weaponId, edition) lacks a cached bundle
   useEffect(() => {
     if (!open) return;
     if (!getCachedMonographBundle(weaponId, edition)) {
@@ -132,29 +139,9 @@ export const MonographPrintModal: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [weaponId, plugin, lang, narrationBundle, geoStatus.version]);
 
-  if (!open) return null;
-
-  const totalPages = pageMode === 'full_8p' ? 8 : 4;
   const readyToPrint = Boolean(dossier && cachedCapture && !isCapturingThis);
 
-  const scrollToPreviewPage = (pageNum: number) => {
-    const root = previewScrollRef.current;
-    if (!root) return;
-    const target = root.querySelector<HTMLElement>(
-      `.monograph-page[data-page="${pageNum}"]`
-    );
-    if (target) {
-      const prefersReduced =
-        typeof window !== 'undefined' &&
-        Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
-      target.scrollIntoView({
-        behavior: prefersReduced ? 'auto' : 'smooth',
-        block: 'start',
-      });
-    }
-  };
-
-  const handleTriggerPrint = () => {
+  const handleTriggerPrint = useCallback(() => {
     if (typeof window === 'undefined') return;
     playWorkbenchFoley('preset_detent');
     const prevTitle = document.title;
@@ -171,6 +158,63 @@ export const MonographPrintModal: React.FC = () => {
     window.addEventListener('afterprint', restoreTitle);
     window.print();
     window.setTimeout(restoreTitle, 1500);
+  }, [shortTag, styleMode, edition]);
+
+  // Listen for `armory:monograph-print` CustomEvent and Ctrl/Cmd+P while open so printing uses curated filename
+  useEffect(() => {
+    if (!open) return;
+
+    const onMonographPrintEvent = () => {
+      if (readyToPrint) {
+        handleTriggerPrint();
+      }
+    };
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (
+        (e.metaKey || e.ctrlKey) &&
+        !e.altKey &&
+        !e.shiftKey &&
+        e.key.toLowerCase() === 'p'
+      ) {
+        if (e.defaultPrevented) return;
+        e.preventDefault();
+        if (readyToPrint) {
+          handleTriggerPrint();
+        }
+      }
+    };
+
+    window.addEventListener('armory:monograph-print', onMonographPrintEvent);
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      window.removeEventListener(
+        'armory:monograph-print',
+        onMonographPrintEvent
+      );
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [open, readyToPrint, handleTriggerPrint]);
+
+  if (!open) return null;
+
+  const totalPages = pageMode === 'full_8p' ? 8 : 4;
+
+  const scrollToPreviewPage = (pageNum: number) => {
+    const root = previewScrollRef.current;
+    if (!root) return;
+    const target = root.querySelector<HTMLElement>(
+      `.monograph-page[data-page="${pageNum}"]`
+    );
+    if (target) {
+      const prefersReduced =
+        typeof window !== 'undefined' &&
+        Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
+      target.scrollIntoView({
+        behavior: prefersReduced ? 'auto' : 'smooth',
+        block: 'start',
+      });
+    }
   };
 
   return (
@@ -259,7 +303,7 @@ export const MonographPrintModal: React.FC = () => {
           </div>
         </div>
 
-        {/* Second Toolbar Row: 11-Weapon Selector + Edition Theme + Page Count + Collector Stamp */}
+        {/* Second Toolbar Row: 13-Exhibit Selector + Edition Theme + Page Count + Collector Stamp */}
         <div className="monograph-studio-controls">
           <div
             className="ms-weapon-strip"
@@ -410,7 +454,7 @@ export const MonographPrintModal: React.FC = () => {
           </div>
         </div>
 
-        {/* Live Offscreen Darkroom Capture Banner (shown during ~1.5s 5-shot render) */}
+        {/* Live Offscreen Darkroom Capture Banner (shown during 17-plate offscreen render) */}
         {isCapturingThis && (
           <div className="ms-capture-progress-bar">
             <div className="ms-cp-left">
@@ -486,7 +530,7 @@ export const MonographPrintModal: React.FC = () => {
         </div>
       </dialog>
 
-      {/* Dedicated Static Print-Flow Portal: hidden on screen, expands cleanly across 8 A4 pages in @media print */}
+      {/* Dedicated Static Print-Flow Portal: hidden on screen, expands cleanly across 4/8 A4 pages in @media print */}
       {dossier && (
         <div className="monograph-print-portal" aria-hidden="true">
           {styleMode === 'kids_pictorial' ? (
