@@ -368,6 +368,10 @@ export interface UiDictionary {
     studioTitle: string;
     studioSub: string;
     weaponSelectAria: string;
+    styleKids: string;
+    styleKidsTip: string;
+    stylePro: string;
+    styleProTip: string;
     editionObsidian: string;
     editionObsidianTip: string;
     editionBlueprint: string;
@@ -430,6 +434,56 @@ export interface UiDictionary {
     backQrSub: string;
     backColophon: string;
     footerPage: (idx: number, total: number) => string;
+    kids: {
+      seriesHeader: string;
+      editionBright: string;
+      editionDark: string;
+      explorerLabel: string;
+      defaultExplorer: string;
+      coverBadge: string;
+      heroSticker: (partsCount: number) => string;
+      funFeaturesLabel: string;
+      p2Kicker: string;
+      p2Title: string;
+      p2Sub: string;
+      viewRightTag: string;
+      viewLeftTag: string;
+      viewTopTag: string;
+      p3Kicker: string;
+      p3Title: string;
+      p3Sub: string;
+      xrayBadge: string;
+      xrayTip: string;
+      cutawayBadge: string;
+      cutawayTip: string;
+      p4Kicker: string;
+      p4Title: string;
+      p4Sub: string;
+      teamPartsUnit: (n: number) => string;
+      p5Kicker: string;
+      p5Title: string;
+      p5Sub: string;
+      treasureHuntLabel: (n: number) => string;
+      p6Kicker: string;
+      p6Title: string;
+      p6Sub: string;
+      bagLabel: (num: string) => string;
+      p7Kicker: string;
+      p7Title: string;
+      p7Sub: string;
+      ammoStripBadge: (isArchery: boolean) => string;
+      statSpeed: string;
+      statEnergy: string;
+      p8Kicker: string;
+      p8Title: string;
+      p8Sub: string;
+      macroZoomBadge: string;
+      stepsTitle: (n: number) => string;
+      qrTitle: string;
+      qrSub: string;
+      qrCertBadge: string;
+      pageFooter: (idx: number, total: number) => string;
+    };
   };
 }
 
@@ -867,35 +921,41 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
     monograph: {
       entryChip: '宣传图册',
       entryChipTitle:
-        '打开典藏级军事宣传图册印前工坊：生成 8 页 A4 高清 3D 剖视、爆炸编号总图、内弹道曲线与军械教范画册 (Ctrl/Cmd + P)',
-      plaqueCtaMain: '印制典藏级军事宣传图册 (A4 画册 / 矢量 PDF)',
-      plaqueCtaSub: '8 页防务专刊 · 5 幅 3D 影棚冲印 · 爆炸标号总图 · 内弹道与快拆教范',
-      studioBadge: 'ORDNANCE MONOGRAPH PRINT STUDIO',
-      studioTitle: '典藏级军事宣传图册 · 印前排版与冲印工坊',
+        '打开 3D 机械绘本与军事宣传图册印前工坊：一键打印 17 幅高清 3D 大图少儿绘本或专业军工档案 (Ctrl/Cmd + P)',
+      plaqueCtaMain: '打印 3D 机械图解绘本 / 典藏军事图册 (A4 / PDF)',
+      plaqueCtaSub: '17 幅高清 3D 实景大图 · 少儿多图科普绘本 / 专业军工档案双模式切换',
+      studioBadge: '3D ILLUSTRATED MONOGRAPH STUDIO',
+      studioTitle: '3D 机械图解绘本 & 典藏宣传图册 · 印前工坊',
       studioSub:
-        '实时离屏冲印 5 幅 1920×1200 影棚级 PBR/剖视图版 + 纯矢量爆炸标引、SAAMI 内弹道与军械教范',
-      weaponSelectAria: '选择要印制图册的馆藏枪械',
-      editionObsidian: '黑金典藏画册版',
+        '实时离屏冲印 17 幅高清 3D 透视/分解/四格连环画大图 · 支持「少儿多图绘本」与「专业军工档案」一键切换',
+      weaponSelectAria: '选择要印制图册的馆藏装备',
+      styleKids: '少儿多图绘本',
+      styleKidsTip:
+        '专为儿童与青少年设计：17 幅无裁切高清 3D 大图铺满全页，配大字短句贴纸、乐高分装包特写与四格慢动作连环画',
+      stylePro: '专业军工档案',
+      styleProTip:
+        '硬核军迷收藏版：包含四幕研发史深度长文、全零件冶金包络总表、SAAMI 内弹道示波曲线与排障教范',
+      editionObsidian: '炫酷暗黑画册版',
       editionObsidianTip:
-        'Vickers Guide / 防务展奢华暗调画册风格，最适合导出高清 PDF 收藏或铜版相纸满版彩印',
-      editionBlueprint: '军工蓝图省墨版',
+        '深邃影棚暗调画册风格，最适合平板阅读、导出高清 PDF 收藏或铜版相纸满版彩印',
+      editionBlueprint: '明亮绘本省墨版',
       editionBlueprintTip:
-        'ISO 128 / 军械师原厂白底工程制图风格，节省约 90% 黑色墨粉，最适合家用/办公激光与喷墨打印',
-      mode8p: '8 页全本典藏刊',
-      mode4p: '4 页战术精粹版',
-      callsignLabel: '收藏署名',
-      callsignPlaceholder: '输入收藏者呼号/姓名（印入图签）',
-      reshootBtn: '重拍图版',
-      reshootTitle: '重新执行 5 镜头 WebGL 离屏高清渲染采样',
-      printCta: '打印图册 / 导出典藏 PDF',
-      printCapturingCta: (done, total) => `正在冲印图版 (${done}/${total})…`,
+        '清爽白底彩色绘本与工程图风格，节省约 90% 黑色墨水，最适合家用彩色喷墨/激光打印机装订成册',
+      mode8p: '8 页全彩完整本',
+      mode4p: '4 页精选速印版',
+      callsignLabel: '专属署名',
+      callsignPlaceholder: '输入小朋友姓名或收藏呼号（印入封面证书）',
+      reshootBtn: '重拍大图',
+      reshootTitle: '重新执行全部 17 镜头 WebGL 离屏高清 3D 渲染采样',
+      printCta: '立即打印画册 / 导出 PDF',
+      printCapturingCta: (done, total) => `正在拍摄 3D 大图 (${done}/${total})…`,
       printHint:
-        '提示：在系统打印窗口建议选择「A4 纵向 · 边距：无」，勾选「背景图形（Background graphics）」即可输出无白边矢量画册。',
+        '打印小贴士：在系统打印窗口选择「A4 纵向 · 边距：无」，并勾选「背景图形（Background graphics）」即可输出满版彩色绘本。',
       closeTitle: '关闭图册印前工坊 (Esc)',
       capturingTitle: (tag, done, total) =>
-        `正在离屏冲印 ${tag} 1920×1200 军械影棚图版 (${done} / ${total})`,
+        `正在拍摄 ${tag} 高清 3D 绘本大图 (${done} / ${total})`,
       capturingSub:
-        '正在执行 2K 5 通道 PBR 光照、Stencil 45° 实心金属剖切与全零件矢量标引投影…',
+        '正在渲染三视图、X 光透视、激光切半、彩虹分工、乐高分装包与四格慢动作连环画…',
       seriesHeader: 'DIGITAL ARMORY 3D · 典藏级轻武器防务技术专刊',
       editionStampObsidian: 'COLLECTOR DARK FOLIO · 典藏黑金装帧',
       editionStampBlueprint: 'ISO 128 ORDNANCE MANUAL · 军工蓝图教范',
@@ -954,6 +1014,58 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         '本图册全部三维渲染图版、毫米级包络与内弹道曲线均由 Digital Armory 3D 引擎实时解算生成 · 仅供轻武器机械工程历史科普与学术收藏鉴赏，不含任何制造加工公差图纸。',
       footerPage: (idx, total) =>
         `PAGE ${String(idx).padStart(2, '0')} / ${String(total).padStart(2, '0')}`,
+      kids: {
+        seriesHeader: '3D 趣味机械科学大画册 · 少儿多图探索版',
+        editionBright: '明亮彩印绘本',
+        editionDark: '暗夜炫酷绘本',
+        explorerLabel: '小小机械探索家',
+        defaultExplorer: '未来小工程师',
+        coverBadge: '1:1 真实比例 · 3D 机械积木图鉴',
+        heroSticker: (partsCount) => `共 ${partsCount} 块 3D 精密机械积木`,
+        funFeaturesLabel: '三大超酷机械亮点',
+        p2Kicker: '第 1 站 · 360° 转圈看一看',
+        p2Title: '右边、左边和头顶全景大照片',
+        p2Sub: '绕着它转一圈仔细瞧，你能找出左右两边哪里长得不一样吗？',
+        viewRightTag: '右侧全景视图 · RIGHT VIEW',
+        viewLeftTag: '左侧全景视图 · LEFT VIEW',
+        viewTopTag: '头顶俯视全景 · TOP-DOWN VIEW',
+        p3Kicker: '第 2 站 · 神奇透视超能力',
+        p3Title: 'X 光透明外壳 vs 正中间切开一半',
+        p3Sub: '不用拆螺丝！打开透视眼，一眼看清肚子里面藏着什么秘密机关',
+        xrayBadge: '透视超能力 ① · X 光半透明外壳',
+        xrayTip: '把外面的壳变透明，藏在里面的弹簧、滑块和杠杆全都现身啦！',
+        cutawayBadge: '透视超能力 ② · 激光正中切开一半',
+        cutawayTip: '像切西瓜一样从正中间剖开，看清内部通道与严丝合缝的积木咬合！',
+        p4Kicker: '第 3 站 · 彩虹六小队分工图',
+        p4Title: '六种鲜艳颜色 · 一眼认出谁负责干什么',
+        p4Sub: '每一种颜色代表一支机械小分队，大家齐心协力才能顺利运转！',
+        teamPartsUnit: (n) => `${n} 块零件`,
+        p5Kicker: '第 4 站 · 超级零件大爆炸海报',
+        p5Title: '所有积木飞到空中排好队！',
+        p5Sub: '顺着图上的彩色编号细线找一找，看看每一块零件原来躲在哪里',
+        treasureHuntLabel: (n) => `寻宝对号卡（全部 ${n} 块零件名称）`,
+        p6Kicker: '第 5 站 · 四大积木分装包相册',
+        p6Title: '像拼乐高一样分成 4 大核心组件包',
+        p6Sub: '把每个组件包单独拿到放大镜下拍特写，细节看得清清楚楚！',
+        bagLabel: (num) => `第 ${num} 号积木包`,
+        p7Kicker: '第 6 站 · 四格 3D 慢动作连环画',
+        p7Title: '把时间放慢 100 倍！四步看懂机械动作',
+        p7Sub: '一眨眼的功夫里，里面的弹簧和滑块其实完成了超精彩的接力赛',
+        ammoStripBadge: (isArchery) =>
+          isArchery ? '1:1 碳纤维箭矢内部结构放大图' : '1:1 铜壳解剖放大图（科学模型）',
+        statSpeed: '飞行速度',
+        statEnergy: '运动能量',
+        p8Kicker: '第 7 站 · 核心微距放大镜 & 动手拆装闯关',
+        p8Title: '按顺序一步步拆装 + 扫码变 3D 互动玩具台',
+        p8Sub: '记住正确的先后顺序，还能用爸妈手机扫码亲手旋转拆装 3D 模型！',
+        macroZoomBadge: '核心机械咬合微距大特写 · MACRO ZOOM',
+        stepsTitle: (n) => `小小工程师拆装顺序卡（共 ${n} 步）`,
+        qrTitle: '手机扫一扫 · 纸质画册秒变 3D 互动玩具台！',
+        qrSub: '免下载打开网页，就能用手指 360° 旋转、开关 X 光透视、亲手点击拆装每一个零件，还有语音讲故事！',
+        qrCertBadge: '少年机械科学探索纪念章',
+        pageFooter: (idx, total) =>
+          `第 ${String(idx).padStart(2, '0')} 页 / 共 ${String(total).padStart(2, '0')} 页`,
+      },
     },
   },
   en: {
@@ -1423,37 +1535,43 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       colWeapons: 'Vault Firearms',
     },
     monograph: {
-      entryChip: 'Monograph',
+      entryChip: 'Picture Book',
       entryChipTitle:
-        'Open Collector Military Monograph Print Studio: generate an 8-page A4 folio with 3D studio plates, vector-pinned exploded blueprint, ballistics & armorer manual (Ctrl/Cmd + P)',
-      plaqueCtaMain: 'Print Collector Military Monograph (A4 Folio / Vector PDF)',
-      plaqueCtaSub: '8-Page Defense Folio · 5 Studio 3D Plates · Pinned Exploded Blueprint · Ballistics & Field-Strip',
-      studioBadge: 'ORDNANCE MONOGRAPH PRINT STUDIO',
-      studioTitle: 'Collector Military Monograph · Pre-Press & Darkroom Studio',
+        'Open 3D Illustrated Picture Book & Military Monograph Print Studio: print a 17-plate 3D visual album for kids or a full technical dossier (Ctrl/Cmd + P)',
+      plaqueCtaMain: 'Print 3D Illustrated Picture Book / Collector Monograph (A4 / PDF)',
+      plaqueCtaSub: '17 Big 3D Studio Plates · Kids Multi-Picture Book & Pro Technical Dossier Modes',
+      studioBadge: '3D ILLUSTRATED MONOGRAPH STUDIO',
+      studioTitle: '3D Mechanical Picture Book & Collector Monograph · Print Studio',
       studioSub:
-        'Offscreen 1920×1200 2K PBR & Stencil cutaway plates + infinite-DPI vector BOM callouts, SAAMI ballistics & armorer manual',
-      weaponSelectAria: 'Select firearm for monograph printing',
-      editionObsidian: 'Obsidian Collector Folio',
+        'Renders 17 offscreen HD 3D studio plates (360° views, X-Ray, Cutaway, LEGO Sub-Assemblies & 4-Panel Action Comic) · Switch between Kids Picture Book & Pro Dossier',
+      weaponSelectAria: 'Select exhibit for picture book printing',
+      styleKids: 'Kids Picture Book',
+      styleKidsTip:
+        'Designed for young explorers: 17 giant uncropped 3D pictures, short playful stickers, LEGO-style sub-assembly bags & 4-panel slow-motion comic',
+      stylePro: 'Pro Technical Dossier',
+      styleProTip:
+        'Collector defense edition: 4-act R&D history essays, full BOM metallurgy ledger, SAAMI pressure/velocity curves & clearing drills',
+      editionObsidian: 'Dark Studio Album',
       editionObsidianTip:
-        'Vickers Guide / Defense-catalog dark luxury aesthetic — ideal for PDF archiving or full-bleed matte photo paper',
-      editionBlueprint: 'Ordnance Blueprint (Ink-Saver)',
+        'Rich dark studio aesthetic — great for tablet reading, PDF archiving, or full-bleed glossy photo paper',
+      editionBlueprint: 'Bright Picture-Book (Ink-Saver)',
       editionBlueprintTip:
-        'ISO 128 / TM 9-1005 archival light blueprint layout — saves ~90% black ink/toner on home and office printers',
-      mode8p: '8-Page Full Monograph',
-      mode4p: '4-Page Tactical Brief',
-      callsignLabel: 'Collector Stamp',
-      callsignPlaceholder: 'Callsign / Collector Name (stamped on folio)',
-      reshootBtn: 'Re-Shoot Plates',
-      reshootTitle: 'Re-render all 5 offscreen 1920×1200 WebGL studio plates',
-      printCta: 'Print Booklet / Export Vector PDF',
-      printCapturingCta: (done, total) => `Developing Plates (${done}/${total})…`,
+        'Crisp bright white & sky-blue picture-book paper — saves ~90% black ink on home color printers',
+      mode8p: '8-Page Full Color Book',
+      mode4p: '4-Page Quick Print',
+      callsignLabel: 'Name Stamp',
+      callsignPlaceholder: 'Child Name / Collector Callsign (printed on cover)',
+      reshootBtn: 'Re-Shoot 3D',
+      reshootTitle: 'Re-render all 17 offscreen HD WebGL 3D studio plates',
+      printCta: 'Print Picture Book / Export PDF',
+      printCapturingCta: (done, total) => `Shooting 3D Plates (${done}/${total})…`,
       printHint:
-        'Print Tip: Select "A4 Portrait · Margins: None" and enable "Background graphics" in your browser print dialog for full-bleed vector output.',
-      closeTitle: 'Close Monograph Print Studio (Esc)',
+        'Print Tip: Choose "A4 Portrait · Margins: None" and check "Background graphics" in your print dialog for edge-to-edge color pages.',
+      closeTitle: 'Close Print Studio (Esc)',
       capturingTitle: (tag, done, total) =>
-        `Developing ${tag} 1920×1200 Studio Plates (${done} / ${total})`,
+        `Shooting ${tag} HD 3D Picture Plates (${done} / ${total})`,
       capturingSub:
-        'Computing 2K 5-channel PBR reflections, ISO 128 Stencil cross-sections & vector BOM callout projections…',
+        'Rendering 360° turnaround, X-Ray vision, laser half-cutaway, rainbow teams, LEGO bags & 4-panel slow-mo comic…',
       seriesHeader: 'DIGITAL ARMORY 3D · ORDNANCE ENGINEERING MONOGRAPH SERIES',
       editionStampObsidian: 'COLLECTOR DARK FOLIO · LIMITED ARCHIVE EDITION',
       editionStampBlueprint: 'ISO 128 ORDNANCE TECHNICAL MANUAL · INK-SAVER',
@@ -1500,9 +1618,6 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       secArmorerManual: 'CHAPTER 07 · FIELD-STRIP DAG, STOPPAGE DRILLS & COLOPHON',
       secArmorerManualSub:
         'Directed Topological Field-Strip Procedure, Mechanical Interference Locks, Four Clearing Drills & QR Deep-Link',
-      fieldStripHeading: 'AUTHORIZED FIELD-STRIP SEQUENCE (DAG)',
-      interferencePrefix: 'Interference Lock: ',
-      malfunctionsHeading: 'FOUR CANONICAL STOPPAGE & SAFETY DIAGNOSTICS',
       backSealBadge: 'AUTHENTICATED DIGITAL ARMORY MONOGRAPH',
       backSealTitle: 'Digital Armory 3D · 1:1 Engineering Certificate Seal',
       backQrTitle: 'Scan for Live 3D Disassembly & Voice Documentary',
@@ -1510,8 +1625,63 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         'Scan this vector QR code with your phone camera to launch interactive 3D cutaway inspection, guided field-strip, and bilingual voiceover directly in your browser.',
       backColophon:
         'All 3D PBR/cutaway plates, millimeter envelopes, and ballistic curves in this monograph are synthesized in real time by Digital Armory 3D · Educational mechanical history edition; contains zero manufacturing tolerances.',
+      fieldStripHeading: 'AUTHORIZED FIELD-STRIP SEQUENCE (DAG)',
+      interferencePrefix: 'Interference Lock: ',
+      malfunctionsHeading: 'FOUR CANONICAL STOPPAGE & SAFETY DIAGNOSTICS',
       footerPage: (idx, total) =>
         `PAGE ${String(idx).padStart(2, '0')} / ${String(total).padStart(2, '0')}`,
+      kids: {
+        seriesHeader: '3D MECHANICAL SCIENCE PICTURE BOOK · JUNIOR EXPLORER EDITION',
+        editionBright: 'BRIGHT PICTURE BOOK',
+        editionDark: 'DARK STUDIO BOOK',
+        explorerLabel: 'JUNIOR EXPLORER',
+        defaultExplorer: 'Future Young Engineer',
+        coverBadge: '1:1 REAL SCALE · 3D MECHANICAL BRICK ATLAS',
+        heroSticker: (partsCount) => `${partsCount} Interlocking 3D Parts`,
+        funFeaturesLabel: '3 COOL MECHANICAL HIGHLIGHTS',
+        p2Kicker: 'STOP 01 · 360° ALL-AROUND LOOK',
+        p2Title: 'Right Side, Left Side & Top-Down Giant Photos',
+        p2Sub: 'Walk all the way around it — can you spot the differences between the left and right sides?',
+        viewRightTag: 'RIGHT SIDE FULL VIEW',
+        viewLeftTag: 'LEFT SIDE FULL VIEW',
+        viewTopTag: 'TOP-DOWN BIRD’S-EYE VIEW',
+        p3Kicker: 'STOP 02 · SUPER X-RAY VISION',
+        p3Title: 'See-Through Shell vs Sliced Right Down the Middle',
+        p3Sub: 'Turn on X-Ray eyes to peek at the secret springs, levers, and sliders hiding inside!',
+        xrayBadge: 'SUPERPOWER ① · X-RAY SEE-THROUGH SHELL',
+        xrayTip: 'Makes the outer cover translucent so every hidden spring and moving block pops into view!',
+        cutawayBadge: 'SUPERPOWER ② · SLICED IN HALF',
+        cutawayTip: 'Sliced cleanly along the center line to reveal inner tunnels and interlocking metal parts!',
+        p4Kicker: 'STOP 03 · RAINBOW 6-TEAM COLOR MAP',
+        p4Title: 'Six Bright Colors Show Each Team’s Job',
+        p4Sub: 'Every color is a special mechanical squad working together like a relay team!',
+        teamPartsUnit: (n) => `${n} pcs`,
+        p5Kicker: 'STOP 04 · GIANT LEGO-STYLE EXPLODED POSTER',
+        p5Title: 'Every Single Part Floating in Mid-Air!',
+        p5Sub: 'Follow the numbered lines like a treasure map to find where each piece belongs',
+        treasureHuntLabel: (n) => `Part Name Treasure Map (All ${n} Pieces)`,
+        p6Kicker: 'STOP 05 · 4 SUB-ASSEMBLY BRICK BAGS',
+        p6Title: 'Grouped into 4 Core Building Bags Like LEGO',
+        p6Sub: 'Close-up studio photos of each group all by itself so every detail shines!',
+        bagLabel: (num) => `BAG #${num}`,
+        p7Kicker: 'STOP 06 · 4-PANEL 3D SLOW-MO COMIC',
+        p7Title: '100× Slow Motion! Watch How It Cycles in 4 Steps',
+        p7Sub: 'In the blink of an eye, springs and sliders complete an amazing mechanical relay race',
+        ammoStripBadge: (isArchery) =>
+          isArchery ? '1:1 Carbon Arrow Anatomy Cutaway' : '1:1 Brass Cutaway Science Diagram',
+        statSpeed: 'Launch Speed',
+        statEnergy: 'Kinetic Energy',
+        p8Kicker: 'STOP 07 · MACRO ZOOM & STEP-BY-STEP PUZZLE',
+        p8Title: 'Take-Apart Order Cards & Scan for 3D Toy Bench',
+        p8Sub: 'Follow the numbered order — then scan with a phone to spin and take it apart in 3D!',
+        macroZoomBadge: 'CORE MECHANISM MACRO ZOOM',
+        stepsTitle: (n) => `Junior Engineer Step-by-Step Order (${n} Steps)`,
+        qrTitle: 'Scan with a Phone · Turn Paper into a Live 3D Toy Bench!',
+        qrSub: 'Opens instantly in the browser — spin 360°, toggle X-Ray vision, click parts to take them apart, and listen to voice stories!',
+        qrCertBadge: 'JUNIOR MECHANICAL EXPLORER SEAL',
+        pageFooter: (idx, total) =>
+          `PAGE ${String(idx).padStart(2, '0')} OF ${String(total).padStart(2, '0')}`,
+      },
     },
   },
 };

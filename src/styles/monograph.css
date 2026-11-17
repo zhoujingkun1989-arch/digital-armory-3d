@@ -283,6 +283,12 @@
   font-weight: 800;
 }
 
+.ms-seg-btn.active-kids {
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: #ffffff;
+  font-weight: 800;
+}
+
 .ms-callsign-field {
   display: inline-flex;
   align-items: center;
@@ -1708,6 +1714,1071 @@
 
 [data-theme='light'] .plaque-monograph-icon {
   color: #b45309;
+}
+
+/* ==========================================================================
+   Kids' Multi-Picture 3D Science Album (`.kids-monograph`)
+   ========================================================================== */
+
+.kids-monograph.edition-blueprint_manual {
+  --km-pill-sky-bg: #e0f2fe;
+  --km-pill-sky-fg: #0369a1;
+  --km-pill-sky-bd: #7dd3fc;
+  --km-pill-emerald-bg: #d1fae5;
+  --km-pill-emerald-fg: #047857;
+  --km-pill-emerald-bd: #6ee7b7;
+  --km-pill-amber-bg: #fef3c7;
+  --km-pill-amber-fg: #b45309;
+  --km-pill-amber-bd: #fcd34d;
+  --km-pill-rose-bg: #ffe4e6;
+  --km-pill-rose-fg: #be123c;
+  --km-pill-rose-bd: #fda4af;
+}
+
+.kids-monograph.edition-obsidian_folio {
+  --km-pill-sky-bg: rgba(14, 165, 233, 0.16);
+  --km-pill-sky-fg: #7dd3fc;
+  --km-pill-sky-bd: rgba(56, 189, 248, 0.42);
+  --km-pill-emerald-bg: rgba(16, 185, 129, 0.16);
+  --km-pill-emerald-fg: #6ee7b7;
+  --km-pill-emerald-bd: rgba(52, 211, 153, 0.42);
+  --km-pill-amber-bg: rgba(245, 158, 11, 0.18);
+  --km-pill-amber-fg: #fde68a;
+  --km-pill-amber-bd: rgba(251, 191, 36, 0.44);
+  --km-pill-rose-bg: rgba(244, 63, 94, 0.16);
+  --km-pill-rose-fg: #fda4af;
+  --km-pill-rose-bd: rgba(251, 113, 133, 0.42);
+}
+
+.monograph-page.km-page {
+  padding: 8mm 10mm 7.5mm;
+}
+
+.monograph-page.km-page::before {
+  inset: 4mm;
+  border-radius: 10px;
+  border-width: 1pt;
+}
+
+/* Kids Header & Footer */
+.km-page-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-block-end: 6px;
+  border-block-end: 1.4pt solid var(--m-border);
+  flex-shrink: 0;
+}
+
+.km-ph-left,
+.km-ph-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.km-ph-bay {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--km-pill-sky-bg);
+  border: 0.9pt solid var(--km-pill-sky-bd);
+  color: var(--km-pill-sky-fg);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.km-ph-series {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: var(--m-text-sec);
+}
+
+.km-ph-model {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 900;
+  color: var(--m-text);
+}
+
+.km-ph-edition {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--km-pill-amber-bg);
+  border: 0.9pt solid var(--km-pill-amber-bd);
+  color: var(--km-pill-amber-fg);
+  font-size: 8.5px;
+  font-weight: 800;
+}
+
+.km-page-footer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-block-start: 5px;
+  border-block-start: 1pt solid var(--m-border-subtle);
+  font-size: 9px;
+  color: var(--m-text-muted);
+  flex-shrink: 0;
+}
+
+.km-pf-serial {
+  font-family: var(--font-mono);
+  font-weight: 700;
+}
+
+.km-pf-explorer strong {
+  color: var(--m-text);
+  font-weight: 800;
+}
+
+.km-pf-page {
+  font-family: var(--font-mono);
+  font-weight: 900;
+  color: var(--m-accent-strong);
+}
+
+/* Kids Page Body Container */
+.km-page-body {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 0;
+  min-block-size: 0;
+  margin-block: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+/* Uncropped 3D Studio Plate Image */
+.km-plate-img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
+.km-plate-img.is-exact-stage {
+  object-fit: fill;
+}
+
+/* Section Heading Block (Short, Big & Friendly) */
+.km-sec-head {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.km-sec-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2.5px 9px;
+  border-radius: 999px;
+  background: var(--km-pill-sky-bg);
+  border: 0.9pt solid var(--km-pill-sky-bd);
+  color: var(--km-pill-sky-fg);
+  font-size: 9.5px;
+  font-weight: 900;
+}
+
+.km-sec-title {
+  font-size: 18.5px;
+  font-weight: 900;
+  line-height: 1.22;
+  color: var(--m-text);
+  text-wrap: balance;
+}
+
+.km-sec-sub {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--m-text-sec);
+}
+
+/* ==================== KIDS P1: HERO COVER ==================== */
+.km-cover-top {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.km-cover-pill-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.km-kicker-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--km-pill-emerald-bg);
+  border: 1pt solid var(--km-pill-emerald-bd);
+  color: var(--km-pill-emerald-fg);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.km-origin-pill {
+  padding: 2.5px 9px;
+  border-radius: 999px;
+  background: var(--m-surface-alt);
+  border: 0.85pt solid var(--m-border-subtle);
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--m-text-sec);
+}
+
+.km-cover-title {
+  font-size: 27px;
+  font-weight: 900;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--m-text);
+  text-wrap: balance;
+}
+
+.km-cover-tagline {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--m-accent-strong);
+}
+
+.km-hero-stage {
+  position: relative;
+  flex: 1 1 0;
+  min-block-size: 0;
+  border-radius: 14px;
+  overflow: clip;
+  background: var(--m-plate-bg);
+  border: 1.5pt solid var(--m-border);
+}
+
+.km-hero-floating-sticker {
+  position: absolute;
+  inset-block-end: 12px;
+  inset-inline-end: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.86);
+  border: 1pt solid rgba(56, 189, 248, 0.55);
+  color: #f8fafc;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.km-fun-stats-grid {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.km-fun-stat-card {
+  padding: 8px 11px;
+  border-radius: 11px;
+  background: var(--m-surface);
+  border: 1.1pt solid var(--m-border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.km-fun-stat-card.tone-sky {
+  border-color: var(--km-pill-sky-bd);
+}
+.km-fun-stat-card.tone-emerald {
+  border-color: var(--km-pill-emerald-bd);
+}
+.km-fun-stat-card.tone-amber {
+  border-color: var(--km-pill-amber-bd);
+}
+.km-fun-stat-card.tone-rose {
+  border-color: var(--km-pill-rose-bd);
+}
+
+.km-fs-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.km-fs-icon {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--km-pill-sky-bg);
+  color: var(--km-pill-sky-fg);
+  flex-shrink: 0;
+}
+
+.tone-emerald .km-fs-icon {
+  background: var(--km-pill-emerald-bg);
+  color: var(--km-pill-emerald-fg);
+}
+.tone-amber .km-fs-icon {
+  background: var(--km-pill-amber-bg);
+  color: var(--km-pill-amber-fg);
+}
+.tone-rose .km-fs-icon {
+  background: var(--km-pill-rose-bg);
+  color: var(--km-pill-rose-fg);
+}
+
+.km-fs-label {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--m-text-sec);
+}
+
+.km-fs-val {
+  margin-inline-start: auto;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 900;
+  color: var(--m-text);
+}
+
+.km-fs-compare {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--m-accent-strong);
+  line-height: 1.3;
+}
+
+.km-explorer-banner {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: 1fr 205px;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 11px;
+  background: var(--m-surface);
+  border: 1.2pt solid var(--m-border);
+}
+
+.km-eb-kicker {
+  display: block;
+  font-size: 9.5px;
+  font-weight: 900;
+  color: var(--m-accent-strong);
+  margin-block-end: 4px;
+}
+
+.km-eb-chips {
+  display: flex;
+  flex-wrap: wrap;
+  flex-wrap: balance;
+  gap: 5px;
+}
+
+.km-feature-chip {
+  padding: 2.5px 8px;
+  border-radius: 999px;
+  background: var(--m-surface-alt);
+  border: 0.8pt solid var(--m-border-subtle);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--m-text);
+}
+
+.km-eb-stamp {
+  border-inline-start: 1.1pt dashed var(--m-border);
+  padding-inline-start: 11px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+}
+
+.km-eb-stamp-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 9px;
+  font-weight: 900;
+  color: var(--km-pill-amber-fg);
+}
+
+.km-eb-stamp-name {
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--m-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==================== KIDS P2: 360° 3 GIANT VIEWS ==================== */
+.km-turnaround-stack {
+  flex: 1 1 0;
+  min-block-size: 0;
+  display: grid;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.km-turnaround-card {
+  border-radius: 12px;
+  overflow: clip;
+  background: var(--m-plate-bg);
+  border: 1.2pt solid var(--m-border);
+  display: flex;
+  flex-direction: column;
+  min-block-size: 0;
+}
+
+.km-turnaround-img-box {
+  flex: 1 1 0;
+  min-block-size: 0;
+}
+
+.km-turnaround-badge {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  background: var(--m-surface);
+  border-block-start: 0.9pt solid var(--m-border-subtle);
+  font-size: 11px;
+  color: var(--m-text);
+}
+
+.km-step-dot {
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--km-pill-sky-bg);
+  color: var(--km-pill-sky-fg);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.tone-emerald .km-step-dot {
+  background: var(--km-pill-emerald-bg);
+  color: var(--km-pill-emerald-fg);
+}
+.tone-amber .km-step-dot {
+  background: var(--km-pill-amber-bg);
+  color: var(--km-pill-amber-fg);
+}
+
+/* ==================== KIDS P3: X-RAY & CUTAWAY DOUBLE GIANT ==================== */
+.km-double-giant-stack {
+  flex: 1 1 0;
+  min-block-size: 0;
+  display: grid;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 11px;
+}
+
+.km-giant-cutaway-card {
+  border-radius: 13px;
+  overflow: clip;
+  background: var(--m-plate-bg);
+  border: 1.3pt solid var(--m-border);
+  display: flex;
+  flex-direction: column;
+  min-block-size: 0;
+}
+
+.km-giant-cutaway-img {
+  flex: 1 1 0;
+  min-block-size: 0;
+}
+
+.km-giant-caption {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 7px 12px;
+  background: var(--m-surface);
+  border-block-start: 1pt solid var(--m-border-subtle);
+}
+
+.km-gc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2.5px 9px;
+  border-radius: 999px;
+  background: var(--km-pill-sky-bg);
+  color: var(--km-pill-sky-fg);
+  font-size: 10.5px;
+  flex-shrink: 0;
+}
+
+.km-giant-caption.tone-amber .km-gc-badge {
+  background: var(--km-pill-amber-bg);
+  color: var(--km-pill-amber-fg);
+}
+
+.km-gc-tip {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--m-text-sec);
+  text-align: right;
+}
+
+/* ==================== KIDS P4: RAINBOW 6-TEAM COLOR MAP ==================== */
+.km-rainbow-hero-stage {
+  flex: 1 1 0;
+  min-block-size: 0;
+  border-radius: 13px;
+  overflow: clip;
+  background: var(--m-plate-bg);
+  border: 1.3pt solid var(--m-border);
+}
+
+.km-teams-grid {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.km-team-card {
+  padding: 7px 9px;
+  border-radius: 10px;
+  background: var(--m-surface);
+  border: 0.9pt solid var(--m-border-subtle);
+  border-block-start-width: 3pt;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.km-tc-head {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.km-tc-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.km-tc-title {
+  font-size: 10.5px;
+  font-weight: 900;
+  color: var(--m-text);
+  min-inline-size: 0;
+}
+
+.km-tc-count {
+  margin-inline-start: auto;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--m-text-muted);
+  white-space: nowrap;
+}
+
+.km-tc-tip {
+  font-size: 9.6px;
+  font-weight: 600;
+  line-height: 1.32;
+  color: var(--m-text-sec);
+}
+
+.km-tc-pills {
+  display: flex;
+  flex-wrap: wrap;
+  flex-wrap: balance;
+  gap: 3.5px;
+  margin-block-start: auto;
+}
+
+.km-mini-pill {
+  padding: 1.5px 5.5px;
+  border-radius: 5px;
+  background: var(--m-surface-alt);
+  font-size: 8.5px;
+  font-weight: 600;
+  color: var(--m-text-sec);
+}
+
+.km-mini-pill b {
+  font-family: var(--font-mono);
+  font-weight: 900;
+  color: var(--m-text);
+}
+
+/* ==================== KIDS P5: 100% EXPLODED POSTER ==================== */
+.km-exploded-frame {
+  flex-shrink: 0;
+  border-radius: 13px;
+  overflow: clip;
+  background: var(--m-plate-bg);
+  border: 1.3pt solid var(--m-border);
+}
+
+.km-treasure-box {
+  flex: 1 1 0;
+  min-block-size: 0;
+  padding: 8px 10px;
+  border-radius: 11px;
+  background: var(--m-surface);
+  border: 1pt solid var(--m-border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.km-treasure-bar {
+  font-size: 10.5px;
+  font-weight: 900;
+  color: var(--m-accent-strong);
+  padding-block-end: 4px;
+  border-block-end: 0.8pt dashed var(--m-border-subtle);
+}
+
+.km-treasure-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4.5px 7px;
+  align-content: start;
+}
+
+.km-treasure-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-inline-size: 0;
+  padding: 2.5px 5px;
+  border-radius: 6px;
+  background: var(--m-surface-alt);
+}
+
+.km-treasure-code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 8.2px;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.km-treasure-name {
+  font-size: 9.2px;
+  font-weight: 700;
+  color: var(--m-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==================== KIDS P6: 4 LEGO BAGS PHOTO ALBUM ==================== */
+.km-bags-grid {
+  flex: 1 1 0;
+  min-block-size: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.km-bag-card {
+  border-radius: 13px;
+  overflow: clip;
+  background: var(--m-plate-bg);
+  border: 1.25pt solid var(--m-border);
+  display: flex;
+  flex-direction: column;
+  min-block-size: 0;
+}
+
+.km-bag-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  background: var(--m-surface);
+  border-block-end: 0.9pt solid var(--m-border-subtle);
+}
+
+.km-bag-num {
+  padding: 2px 8px;
+  border-radius: 999px;
+  color: #ffffff;
+  font-size: 9.5px;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.km-bag-title {
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--m-text);
+  min-inline-size: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.km-bag-count {
+  margin-inline-start: auto;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 800;
+  color: var(--m-text-muted);
+  white-space: nowrap;
+}
+
+.km-bag-photo-box {
+  flex: 1 1 0;
+  min-block-size: 0;
+}
+
+.km-bag-tags {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  flex-wrap: balance;
+  gap: 4px;
+  padding: 6px 9px;
+  background: var(--m-surface);
+  border-block-start: 0.9pt solid var(--m-border-subtle);
+}
+
+/* ==================== KIDS P7: 4-PANEL 3D SLOW-MO COMIC ==================== */
+.km-comic-grid {
+  flex: 1 1 0;
+  min-block-size: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.km-comic-panel {
+  border-radius: 13px;
+  overflow: clip;
+  background: var(--m-plate-bg);
+  border: 1.3pt solid var(--m-border);
+  display: flex;
+  flex-direction: column;
+  min-block-size: 0;
+}
+
+.km-comic-panel.tone-sky {
+  border-color: var(--km-pill-sky-bd);
+}
+.km-comic-panel.tone-emerald {
+  border-color: var(--km-pill-emerald-bd);
+}
+.km-comic-panel.tone-amber {
+  border-color: var(--km-pill-amber-bd);
+}
+.km-comic-panel.tone-rose {
+  border-color: var(--km-pill-rose-bd);
+}
+
+.km-comic-top {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  background: var(--m-surface);
+  border-block-end: 0.9pt solid var(--m-border-subtle);
+}
+
+.km-comic-step {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--km-pill-sky-bg);
+  color: var(--km-pill-sky-fg);
+  font-size: 9.5px;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.tone-emerald .km-comic-step {
+  background: var(--km-pill-emerald-bg);
+  color: var(--km-pill-emerald-fg);
+}
+.tone-amber .km-comic-step {
+  background: var(--km-pill-amber-bg);
+  color: var(--km-pill-amber-fg);
+}
+.tone-rose .km-comic-step {
+  background: var(--km-pill-rose-bg);
+  color: var(--km-pill-rose-fg);
+}
+
+.km-comic-title {
+  font-size: 12.5px;
+  font-weight: 900;
+  color: var(--m-text);
+}
+
+.km-comic-img-box {
+  flex: 1 1 0;
+  min-block-size: 0;
+}
+
+.km-comic-caption {
+  flex-shrink: 0;
+  padding: 6px 10px;
+  background: var(--m-surface);
+  border-block-start: 0.9pt solid var(--m-border-subtle);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1.34;
+  color: var(--m-text-sec);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-clamp: 2;
+  overflow: clip;
+}
+
+.km-ammo-visual-strip {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: 335px 1fr;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 11px;
+  border-radius: 12px;
+  background: var(--m-surface);
+  border: 1.1pt solid var(--m-border);
+}
+
+.km-ammo-diagram-col .monograph-vector-svg {
+  max-block-size: 142px;
+}
+
+.km-ammo-stats-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.km-ammo-badge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--km-pill-amber-bg);
+  color: var(--km-pill-amber-fg);
+  font-size: 9.5px;
+  font-weight: 900;
+}
+
+.km-ammo-name {
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--m-text);
+}
+
+.km-ammo-kv-pills {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+  inline-size: 100%;
+}
+
+.km-akv-pill {
+  padding: 6px 9px;
+  border-radius: 8px;
+  background: var(--m-surface-alt);
+  border: 0.8pt solid var(--m-border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.km-akv-pill span {
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--m-text-muted);
+}
+
+.km-akv-pill strong {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--m-accent-strong);
+}
+
+/* ==================== KIDS P8: MACRO ZOOM, STEP ORDER & QR TOY BENCH ==================== */
+.km-macro-zoom-card {
+  flex: 1 1 0;
+  min-block-size: 0;
+  border-radius: 13px;
+  overflow: clip;
+  background: var(--m-plate-bg);
+  border: 1.3pt solid var(--m-border);
+  display: flex;
+  flex-direction: column;
+}
+
+.km-macro-zoom-img {
+  flex: 1 1 0;
+  min-block-size: 0;
+}
+
+.km-steps-section {
+  flex-shrink: 0;
+  padding: 8px 10px;
+  border-radius: 11px;
+  background: var(--m-surface);
+  border: 1pt solid var(--m-border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.km-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.km-step-card {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: var(--m-surface-alt);
+  border: 0.85pt solid var(--m-border-subtle);
+  min-inline-size: 0;
+}
+
+.km-step-num {
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: var(--km-pill-sky-bg);
+  color: var(--km-pill-sky-fg);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+.km-step-name {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: var(--m-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.km-qr-playground-card {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: 118px 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  background: var(--m-surface);
+  border: 1.4pt solid var(--m-border);
+}
+
+.km-qr-playground-card.is-compact {
+  grid-template-columns: 104px 1fr;
+}
+
+.km-qr-box {
+  width: 118px;
+  height: 118px;
+  padding: 5px;
+  border-radius: 9px;
+  background: #ffffff;
+  border: 1pt solid var(--m-border);
+}
+
+.km-qr-playground-card.is-compact .km-qr-box {
+  width: 104px;
+  height: 104px;
+}
+
+.km-qr-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-block-end: 4px;
+}
+
+.km-qr-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2.5px 9px;
+  border-radius: 999px;
+  background: var(--km-pill-emerald-bg);
+  color: var(--km-pill-emerald-fg);
+  font-size: 9.5px;
+  font-weight: 900;
+}
+
+.km-qr-explorer-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--km-pill-amber-bg);
+  color: var(--km-pill-amber-fg);
+  font-size: 9.5px;
+  font-weight: 900;
+}
+
+.km-qr-title {
+  font-size: 14px;
+  font-weight: 900;
+  color: var(--m-text);
+  margin-block-end: 3px;
+}
+
+.km-qr-sub {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--m-text-sec);
+}
+
+.km-qr-url {
+  margin-block-start: 4px;
+  font-family: var(--font-mono);
+  font-size: 8.2px;
+  font-weight: 700;
+  color: var(--m-accent-strong);
+  word-break: break-all;
 }
 
 /* ==========================================================================

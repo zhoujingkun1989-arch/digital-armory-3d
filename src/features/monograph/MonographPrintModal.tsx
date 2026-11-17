@@ -3,6 +3,7 @@ import {
   BookOpen,
   Camera,
   FileText,
+  Images,
   Loader2,
   Printer,
   RefreshCw,
@@ -28,10 +29,12 @@ import {
   getCachedMonographBundle,
   type MonographEdition,
   type MonographPageMode,
+  type MonographStyleMode,
   requestMonographCapture,
   useMonographCaptureState,
 } from './monographCaptureStore';
 import { MonographDocument } from './MonographDocument';
+import { MonographKidsDocument } from './MonographKidsDocument';
 
 export const MonographPrintModal: React.FC = () => {
   const titleId = useId();
@@ -45,7 +48,9 @@ export const MonographPrintModal: React.FC = () => {
   const closeModal = useAppStore((s) => s.closeMonographModal);
   const lang = useAppStore((s) => s.lang);
 
-  const [edition, setEdition] = useState<MonographEdition>('obsidian_folio');
+  const [styleMode, setStyleMode] =
+    useState<MonographStyleMode>('kids_pictorial');
+  const [edition, setEdition] = useState<MonographEdition>('blueprint_manual');
   const [pageMode, setPageMode] = useState<MonographPageMode>('full_8p');
   const [collectorCallsign, setCollectorCallsign] = useState<string>('');
 
@@ -154,8 +159,10 @@ export const MonographPrintModal: React.FC = () => {
     playWorkbenchFoley('preset_detent');
     const prevTitle = document.title;
     const safeTag = shortTag.replace(/\s+/g, '-');
-    const editionSlug = edition === 'blueprint_manual' ? 'Blueprint' : 'Folio';
-    document.title = `Digital-Armory-3D-${safeTag}-${editionSlug}-Monograph`;
+    const styleSlug =
+      styleMode === 'kids_pictorial' ? 'Kids-3D-Picture-Book' : 'Pro-Monograph';
+    const editionSlug = edition === 'blueprint_manual' ? 'Bright' : 'Dark';
+    document.title = `Digital-Armory-3D-${safeTag}-${styleSlug}-${editionSlug}`;
 
     const restoreTitle = () => {
       document.title = prevTitle;
@@ -288,23 +295,42 @@ export const MonographPrintModal: React.FC = () => {
           </div>
 
           <div className="ms-options-cluster">
-            {/* Edition Theme Switcher */}
-            <div className="ms-seg-group" role="group" aria-label="Edition">
+            {/* Audience Style Switcher: Kids Multi-Picture Book vs Pro Technical Dossier */}
+            <div className="ms-seg-group" role="group" aria-label="Book Style">
               <button
                 type="button"
                 className={`ms-seg-btn ${
-                  edition === 'obsidian_folio' ? 'active-gold' : ''
+                  styleMode === 'kids_pictorial' ? 'active-kids' : ''
                 }`}
-                aria-pressed={edition === 'obsidian_folio'}
-                title={ui.editionObsidianTip}
+                aria-pressed={styleMode === 'kids_pictorial'}
+                title={ui.styleKidsTip}
                 onClick={() => {
                   playWorkbenchFoley('toggle_switch');
-                  setEdition('obsidian_folio');
+                  setStyleMode('kids_pictorial');
+                }}
+              >
+                <Images size={12} aria-hidden="true" />
+                <span>{ui.styleKids}</span>
+              </button>
+              <button
+                type="button"
+                className={`ms-seg-btn ${
+                  styleMode === 'pro_dossier' ? 'active' : ''
+                }`}
+                aria-pressed={styleMode === 'pro_dossier'}
+                title={ui.styleProTip}
+                onClick={() => {
+                  playWorkbenchFoley('toggle_switch');
+                  setStyleMode('pro_dossier');
                 }}
               >
                 <BookOpen size={12} aria-hidden="true" />
-                <span>{ui.editionObsidian}</span>
+                <span>{ui.stylePro}</span>
               </button>
+            </div>
+
+            {/* Edition Theme Switcher */}
+            <div className="ms-seg-group" role="group" aria-label="Edition">
               <button
                 type="button"
                 className={`ms-seg-btn ${
@@ -319,6 +345,21 @@ export const MonographPrintModal: React.FC = () => {
               >
                 <FileText size={12} aria-hidden="true" />
                 <span>{ui.editionBlueprint}</span>
+              </button>
+              <button
+                type="button"
+                className={`ms-seg-btn ${
+                  edition === 'obsidian_folio' ? 'active-gold' : ''
+                }`}
+                aria-pressed={edition === 'obsidian_folio'}
+                title={ui.editionObsidianTip}
+                onClick={() => {
+                  playWorkbenchFoley('toggle_switch');
+                  setEdition('obsidian_folio');
+                }}
+              >
+                <Sparkles size={12} aria-hidden="true" />
+                <span>{ui.editionObsidian}</span>
               </button>
             </div>
 
@@ -412,13 +453,23 @@ export const MonographPrintModal: React.FC = () => {
 
           <div className="monograph-preview-sheets">
             {dossier ? (
-              <MonographDocument
-                dossier={dossier}
-                captureBundle={cachedCapture}
-                edition={edition}
-                pageMode={pageMode}
-                collectorCallsign={collectorCallsign}
-              />
+              styleMode === 'kids_pictorial' ? (
+                <MonographKidsDocument
+                  dossier={dossier}
+                  captureBundle={cachedCapture}
+                  edition={edition}
+                  pageMode={pageMode}
+                  collectorCallsign={collectorCallsign}
+                />
+              ) : (
+                <MonographDocument
+                  dossier={dossier}
+                  captureBundle={cachedCapture}
+                  edition={edition}
+                  pageMode={pageMode}
+                  collectorCallsign={collectorCallsign}
+                />
+              )
             ) : (
               <div className="ms-loading-dossier">
                 <Loader2 size={22} className="spin-icon" aria-hidden="true" />
@@ -438,13 +489,23 @@ export const MonographPrintModal: React.FC = () => {
       {/* Dedicated Static Print-Flow Portal: hidden on screen, expands cleanly across 8 A4 pages in @media print */}
       {dossier && (
         <div className="monograph-print-portal" aria-hidden="true">
-          <MonographDocument
-            dossier={dossier}
-            captureBundle={cachedCapture}
-            edition={edition}
-            pageMode={pageMode}
-            collectorCallsign={collectorCallsign}
-          />
+          {styleMode === 'kids_pictorial' ? (
+            <MonographKidsDocument
+              dossier={dossier}
+              captureBundle={cachedCapture}
+              edition={edition}
+              pageMode={pageMode}
+              collectorCallsign={collectorCallsign}
+            />
+          ) : (
+            <MonographDocument
+              dossier={dossier}
+              captureBundle={cachedCapture}
+              edition={edition}
+              pageMode={pageMode}
+              collectorCallsign={collectorCallsign}
+            />
+          )}
         </div>
       )}
     </>

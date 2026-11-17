@@ -23,7 +23,10 @@ import {
   ensureWeaponGeometries,
   getCachedPartGeometry,
 } from '../../engine/geometry/geometryService';
-import { computePartTransform } from '../../engine/kinematics/math';
+import {
+  createMutablePose,
+  evaluatePartPoseInto,
+} from '../../engine/kinematics/math';
 import {
   getPartPbrBundle,
   isTextureLoaded,
@@ -34,7 +37,6 @@ import { loadWeaponPlugin } from '../../weapons/registry';
 import type {
   AssemblyGroupKey,
   WeaponId,
-  WeaponPartSpec,
   WeaponRuntimePlugin,
 } from '../../weapons/types';
 import {
@@ -51,15 +53,17 @@ import {
   useMonographCaptureState,
 } from './monographCaptureStore';
 
-const CAPTURE_W = 1920;
-const CAPTURE_H = 1200;
+const CAPTURE_W = 1440;
+const CAPTURE_H = 900;
 const CAPTURE_ASPECT = CAPTURE_W / CAPTURE_H;
 const CAPTURE_FOV_DEG = 36;
-const SETTLE_FRAMES_PER_SHOT = 3;
+const SETTLE_FRAMES_PER_SHOT = 2;
 
 interface ShotSpec {
   key: MonographPlateKey;
   explodeT: number;
+  firingF?: number;
+  isolatedGroup?: AssemblyGroupKey;
   showTurntable: boolean;
   sectionCut: boolean;
   xrayShells: boolean;
@@ -72,6 +76,7 @@ interface ShotSpec {
 }
 
 const SHOT_PLAN: readonly ShotSpec[] = [
+  // 1. Hero Cover 3/4 Turntable Photo
   {
     key: 'cover_hero',
     explodeT: 0,
@@ -81,21 +86,58 @@ const SHOT_PLAN: readonly ShotSpec[] = [
     engineeringTint: false,
     azimuthDeg: 18,
     elevationDeg: 9.5,
-    fillX: 0.84,
-    fillY: 0.78,
+    fillX: 0.85,
+    fillY: 0.8,
+  },
+  // 2..4. 360° Three-View Turnaround (Right / Left / Top-Down)
+  {
+    key: 'ortho_right',
+    explodeT: 0,
+    showTurntable: false,
+    sectionCut: false,
+    xrayShells: false,
+    engineeringTint: false,
+    azimuthDeg: 0,
+    elevationDeg: 1,
+    fillX: 0.88,
+    fillY: 0.82,
   },
   {
-    key: 'breech_closeup',
+    key: 'ortho_left',
+    explodeT: 0,
+    showTurntable: false,
+    sectionCut: false,
+    xrayShells: false,
+    engineeringTint: false,
+    azimuthDeg: 180,
+    elevationDeg: 1,
+    fillX: 0.88,
+    fillY: 0.82,
+  },
+  {
+    key: 'ortho_top',
+    explodeT: 0,
+    showTurntable: false,
+    sectionCut: false,
+    xrayShells: false,
+    engineeringTint: false,
+    azimuthDeg: 0,
+    elevationDeg: 83,
+    fillX: 0.88,
+    fillY: 0.78,
+  },
+  // 5 & 6. Full-Weapon X-Ray Vision & Laser Half-Cutaway
+  {
+    key: 'xray_magic',
     explodeT: 0,
     showTurntable: false,
     sectionCut: false,
     xrayShells: true,
     engineeringTint: false,
-    azimuthDeg: 14,
-    elevationDeg: 10,
-    fillX: 0.86,
-    fillY: 0.8,
-    useManifestCloseFocus: true,
+    azimuthDeg: 11,
+    elevationDeg: 7,
+    fillX: 0.87,
+    fillY: 0.82,
   },
   {
     key: 'stencil_cutaway',
@@ -109,6 +151,7 @@ const SHOT_PLAN: readonly ShotSpec[] = [
     fillX: 0.88,
     fillY: 0.82,
   },
+  // 7. Rainbow 6-Role Functional Color Map
   {
     key: 'functional_roles',
     explodeT: 0.34,
@@ -118,9 +161,10 @@ const SHOT_PLAN: readonly ShotSpec[] = [
     engineeringTint: true,
     azimuthDeg: 22,
     elevationDeg: 15,
-    fillX: 0.85,
-    fillY: 0.78,
+    fillX: 0.86,
+    fillY: 0.8,
   },
+  // 8. Full 100% Exploded LEGO-Style Blueprint Poster
   {
     key: 'exploded_bom',
     explodeT: 1.0,
@@ -130,9 +174,128 @@ const SHOT_PLAN: readonly ShotSpec[] = [
     engineeringTint: false,
     azimuthDeg: 10,
     elevationDeg: 7.5,
-    // Leave 15% top & bottom studio margin for non-overlapping vector BOM callout rails
     fillX: 0.85,
     fillY: 0.67,
+  },
+  // 9..12. Four Isolated Sub-Assembly Macro Photo Cards
+  {
+    key: 'group_slide',
+    explodeT: 0.25,
+    isolatedGroup: 'slide',
+    showTurntable: false,
+    sectionCut: false,
+    xrayShells: false,
+    engineeringTint: false,
+    azimuthDeg: 20,
+    elevationDeg: 14,
+    fillX: 0.82,
+    fillY: 0.78,
+  },
+  {
+    key: 'group_frame',
+    explodeT: 0.2,
+    isolatedGroup: 'frame',
+    showTurntable: false,
+    sectionCut: false,
+    xrayShells: false,
+    engineeringTint: false,
+    azimuthDeg: 18,
+    elevationDeg: 12,
+    fillX: 0.84,
+    fillY: 0.78,
+  },
+  {
+    key: 'group_fcg',
+    explodeT: 0.28,
+    isolatedGroup: 'fire_control',
+    showTurntable: false,
+    sectionCut: false,
+    xrayShells: false,
+    engineeringTint: false,
+    azimuthDeg: 22,
+    elevationDeg: 15,
+    fillX: 0.8,
+    fillY: 0.76,
+  },
+  {
+    key: 'group_mag',
+    explodeT: 0.26,
+    isolatedGroup: 'magazine',
+    showTurntable: false,
+    sectionCut: false,
+    xrayShells: false,
+    engineeringTint: false,
+    azimuthDeg: 24,
+    elevationDeg: 14,
+    fillX: 0.8,
+    fillY: 0.78,
+  },
+  // 13..16. 4-Frame 3D Slow-Motion Action Comic Strip
+  {
+    key: 'comic_1_ready',
+    explodeT: 0,
+    firingF: 0.02,
+    showTurntable: false,
+    sectionCut: true,
+    xrayShells: false,
+    engineeringTint: false,
+    azimuthDeg: 8,
+    elevationDeg: 5,
+    fillX: 0.87,
+    fillY: 0.82,
+  },
+  {
+    key: 'comic_2_ignition',
+    explodeT: 0,
+    firingF: 0.17,
+    showTurntable: false,
+    sectionCut: true,
+    xrayShells: false,
+    engineeringTint: false,
+    azimuthDeg: 8,
+    elevationDeg: 5,
+    fillX: 0.87,
+    fillY: 0.82,
+  },
+  {
+    key: 'comic_3_eject',
+    explodeT: 0,
+    firingF: 0.48,
+    showTurntable: false,
+    sectionCut: true,
+    xrayShells: false,
+    engineeringTint: false,
+    azimuthDeg: 10,
+    elevationDeg: 7,
+    fillX: 0.87,
+    fillY: 0.82,
+  },
+  {
+    key: 'comic_4_reload',
+    explodeT: 0,
+    firingF: 0.8,
+    showTurntable: false,
+    sectionCut: false,
+    xrayShells: true,
+    engineeringTint: false,
+    azimuthDeg: 10,
+    elevationDeg: 7,
+    fillX: 0.87,
+    fillY: 0.82,
+  },
+  // 17. Macro Breech Focus (for Pro Dossier toggle)
+  {
+    key: 'breech_closeup',
+    explodeT: 0,
+    showTurntable: false,
+    sectionCut: false,
+    xrayShells: true,
+    engineeringTint: false,
+    azimuthDeg: 14,
+    elevationDeg: 10,
+    fillX: 0.86,
+    fillY: 0.8,
+    useManifestCloseFocus: true,
   },
 ];
 
@@ -167,18 +330,23 @@ interface SavedViewportSnapshot {
 
 const _corner = new THREE.Vector3();
 const _euler = new THREE.Euler();
+const _pose = createMutablePose();
 
 function computeWeaponWorldBounds(
   weaponId: WeaponId,
-  parts: readonly WeaponPartSpec[],
-  explodeT: number,
-  includeTurntable: boolean
+  plugin: WeaponRuntimePlugin,
+  shot: ShotSpec
 ): THREE.Box3 {
   const box = new THREE.Box3();
   let hasAny = false;
+  const isFiring = shot.firingF !== undefined;
+  const fireF = shot.firingF ?? 0;
 
-  for (let i = 0; i < parts.length; i++) {
-    const part = parts[i];
+  for (let i = 0; i < plugin.parts.length; i++) {
+    const part = plugin.parts[i];
+    if (shot.isolatedGroup && part.group !== shot.isolatedGroup) {
+      continue;
+    }
     const geo = getCachedPartGeometry(weaponId, part.id);
     if (!geo) continue;
     if (!geo.boundingBox) {
@@ -187,17 +355,24 @@ function computeWeaponWorldBounds(
     const gb = geo.boundingBox;
     if (!gb) continue;
 
-    const { position, rotation } = computePartTransform(part, explodeT);
-    _euler.set(rotation[0], rotation[1], rotation[2]);
+    evaluatePartPoseInto(
+      part,
+      shot.explodeT,
+      isFiring,
+      fireF,
+      plugin.computeFiringKinematics,
+      _pose
+    );
+    _euler.set(_pose.rx, _pose.ry, _pose.rz);
 
     for (let mask = 0; mask < 8; mask++) {
-      const lx = mask & 1 ? gb.max.x : gb.min.x;
+      const lx = (mask & 1 ? gb.max.x : gb.min.x) * _pose.sx;
       const ly = mask & 2 ? gb.max.y : gb.min.y;
       const lz = mask & 4 ? gb.max.z : gb.min.z;
       _corner.set(lx, ly, lz).applyEuler(_euler);
-      _corner.x += position[0];
-      _corner.y += position[1];
-      _corner.z += position[2];
+      _corner.x += _pose.px;
+      _corner.y += _pose.py;
+      _corner.z += _pose.pz;
       box.expandByPoint(_corner);
       hasAny = true;
     }
@@ -208,8 +383,8 @@ function computeWeaponWorldBounds(
     box.max.set(25, 6, 3);
   }
 
-  if (includeTurntable) {
-    const env = evaluateWeaponTurntableEnvelopeInto(weaponId, explodeT);
+  if (shot.showTurntable) {
+    const env = evaluateWeaponTurntableEnvelopeInto(weaponId, shot.explodeT);
     const rim = env.radius * 1.06;
     box.expandByPoint(_corner.set(env.cx - rim, env.platterTopY - 0.65, -rim));
     box.expandByPoint(_corner.set(env.cx + rim, env.maxY, rim));
@@ -221,13 +396,13 @@ function computeWeaponWorldBounds(
 function positionStudioShotCamera(
   cam: THREE.PerspectiveCamera,
   weaponId: WeaponId,
-  parts: readonly WeaponPartSpec[],
+  plugin: WeaponRuntimePlugin,
   shot: ShotSpec
 ): void {
   cam.fov = CAPTURE_FOV_DEG;
   cam.aspect = CAPTURE_ASPECT;
   cam.near = 0.1;
-  cam.far = 640;
+  cam.far = 680;
   cam.clearViewOffset();
 
   if (shot.useManifestCloseFocus) {
@@ -244,12 +419,7 @@ function positionStudioShotCamera(
     return;
   }
 
-  const bounds = computeWeaponWorldBounds(
-    weaponId,
-    parts,
-    shot.explodeT,
-    shot.showTurntable
-  );
+  const bounds = computeWeaponWorldBounds(weaponId, plugin, shot);
   const cx = (bounds.min.x + bounds.max.x) * 0.5;
   const cy = (bounds.min.y + bounds.max.y) * 0.5;
   const cz = (bounds.min.z + bounds.max.z) * 0.5;
@@ -262,14 +432,13 @@ function positionStudioShotCamera(
     Math.cos(az) * Math.cos(el)
   ).normalize();
 
-  // Build camera basis right/up vectors to project exact oriented bounding extents
   const worldUp = new THREE.Vector3(0, 1, 0);
   const right = new THREE.Vector3().crossVectors(worldUp, viewDir).normalize();
   const up = new THREE.Vector3().crossVectors(viewDir, right).normalize();
 
-  let maxProjX = 2;
-  let maxProjY = 2;
-  let maxDepthTowardCam = 1;
+  let maxProjX = 1.5;
+  let maxProjY = 1.5;
+  let maxDepthTowardCam = 0.8;
 
   for (let mask = 0; mask < 8; mask++) {
     const vx = (mask & 1 ? bounds.max.x : bounds.min.x) - cx;
@@ -289,7 +458,8 @@ function positionStudioShotCamera(
 
   const distY = maxProjY / (tanHalfV * shot.fillY) + maxDepthTowardCam;
   const distX = maxProjX / (tanHalfH * shot.fillX) + maxDepthTowardCam;
-  const dist = Math.max(14, distX, distY);
+  const minSafeDist = shot.isolatedGroup ? 8.5 : 14;
+  const dist = Math.max(minSafeDist, distX, distY);
 
   cam.position.set(
     cx + viewDir.x * dist,
@@ -304,7 +474,7 @@ function positionStudioShotCamera(
 async function waitForWeaponTexturesWarm(
   weaponId: WeaponId,
   plugin: WeaponRuntimePlugin,
-  maxWaitMs = 420
+  maxWaitMs = 400
 ): Promise<void> {
   const textures: THREE.Texture[] = [];
   for (const part of plugin.parts) {
@@ -322,7 +492,7 @@ async function waitForWeaponTexturesWarm(
     if (textures.every((t) => isTextureLoaded(t))) {
       return;
     }
-    await new Promise<void>((r) => setTimeout(r, 35));
+    await new Promise<void>((r) => setTimeout(r, 30));
   }
 }
 
@@ -351,6 +521,25 @@ interface ActiveCaptureSession {
   imageData: ImageData;
 }
 
+function buildHiddenGroupsForShot(
+  isolatedGroup?: AssemblyGroupKey
+): Record<AssemblyGroupKey, boolean> {
+  if (!isolatedGroup) {
+    return {
+      slide: false,
+      frame: false,
+      fire_control: false,
+      magazine: false,
+    };
+  }
+  return {
+    slide: isolatedGroup !== 'slide',
+    frame: isolatedGroup !== 'frame',
+    fire_control: isolatedGroup !== 'fire_control',
+    magazine: isolatedGroup !== 'magazine',
+  };
+}
+
 function applyShotStateToStore(
   weaponId: WeaponId,
   edition: MonographEdition,
@@ -358,16 +547,18 @@ function applyShotStateToStore(
 ): void {
   const envPreset: ArmoryEnvironmentPreset =
     edition === 'blueprint_manual' ? 'blueprint_daylight' : 'tactical_vault';
+  const isFiring = shot.firingF !== undefined;
+  const fireF = shot.firingF ?? 0;
 
-  playbackClock.setFireProgress(0, true);
-  playbackClock.setAnimatedFireProgress(0);
+  playbackClock.setFireProgress(fireF, true);
+  playbackClock.setAnimatedFireProgress(fireF);
   playbackClock.setTargetProgress(shot.explodeT, true);
   playbackClock.setAnimatedProgress(shot.explodeT);
 
   useAppStore.setState({
     activeWeaponId: weaponId,
     screen: shot.showTurntable ? 'armory' : 'workbench',
-    mode: 'explode',
+    mode: isFiring ? 'firing' : 'explode',
     environmentPreset: envPreset,
     sectionCut: shot.sectionCut,
     xrayShells: shot.xrayShells,
@@ -384,12 +575,7 @@ function applyShotStateToStore(
     isPlaying: false,
     isFiringPlaying: false,
     armoryAutoRotate: false,
-    hiddenGroups: {
-      slide: false,
-      frame: false,
-      fire_control: false,
-      magazine: false,
-    },
+    hiddenGroups: buildHiddenGroupsForShot(shot.isolatedGroup),
   });
 }
 
@@ -492,7 +678,7 @@ const ActiveMonographCaptureWorker: React.FC<{
         CAPTURE_FOV_DEG,
         CAPTURE_ASPECT,
         0.1,
-        640
+        680
       );
       const hdrTarget = createArmoryComposerRenderTarget(CAPTURE_W, CAPTURE_H);
       const composer = new EffectComposer(gl, hdrTarget);
@@ -629,7 +815,9 @@ const ActiveMonographCaptureWorker: React.FC<{
     const shot = SHOT_PLAN[s.shotIndex];
     if (!shot) return;
 
-    // Reinforce exact non-damped explode scalar while waiting for PartActor/Environment commit
+    const fireF = shot.firingF ?? 0;
+    playbackClock.setFireProgress(fireF, true);
+    playbackClock.setAnimatedFireProgress(fireF);
     playbackClock.setTargetProgress(shot.explodeT, true);
     playbackClock.setAnimatedProgress(shot.explodeT);
 
@@ -638,16 +826,9 @@ const ActiveMonographCaptureWorker: React.FC<{
       return;
     }
 
-    // Position camera & render 1920x1200 offscreen studio plate
     scene.updateMatrixWorld(true);
-    positionStudioShotCamera(
-      s.captureCam,
-      s.weaponId,
-      s.plugin.parts,
-      shot
-    );
+    positionStudioShotCamera(s.captureCam, s.weaponId, s.plugin, shot);
 
-    // Disable GTAO on pure X-Ray or Stencil cutaway if needed for crisp interior steel clarity
     s.gtaoPass.enabled = !shot.xrayShells;
 
     const envPreset: ArmoryEnvironmentPreset =
@@ -682,7 +863,6 @@ const ActiveMonographCaptureWorker: React.FC<{
       applyRendererToneMapping(gl, prevToneMapping, prevExposure);
     }
 
-    // Flip WebGL bottom-up rows into top-down 2D Canvas ImageData (fast typed-array row copy)
     const rowBytes = CAPTURE_W * 4;
     const dst = s.imageData.data;
     for (let y = 0; y < CAPTURE_H; y++) {
@@ -691,7 +871,7 @@ const ActiveMonographCaptureWorker: React.FC<{
       dst.set(s.rawRgba.subarray(srcOffset, srcOffset + rowBytes), dstOffset);
     }
     s.ctx2d.putImageData(s.imageData, 0, 0);
-    s.plates[shot.key] = s.canvas2d.toDataURL('image/jpeg', 0.92);
+    s.plates[shot.key] = s.canvas2d.toDataURL('image/jpeg', 0.9);
 
     if (shot.key === 'exploded_bom') {
       const anchors = projectExplodedPartAnchors(
@@ -713,7 +893,6 @@ const ActiveMonographCaptureWorker: React.FC<{
       return;
     }
 
-    // All 5 high-DPI plates captured: clean up GPU targets, restore user state & publish bundle
     sessionRef.current = null;
     disposeSessionGpuResources(s);
     restoreSavedSnapshot(s.saved);

@@ -1,15 +1,14 @@
 import {
   archeryProjectileToLabSpec,
   CARTRIDGE_LAB_SPECS,
-  getArcheryProjectileMeta,
-  isArcheryCaliberProfile,
   type CartridgeLabSpec,
+  getArcheryProjectileMeta,
 } from '../../engine/cartridges/cartridgeSpecs';
 import { FIELD_STRIP_PLANS } from '../../engine/fieldstrip/fieldStripSpecs';
 import { getCachedPartGeometry } from '../../engine/geometry/geometryService';
 import {
-  getMalfunctionScenario,
   MALFUNCTION_ORDER,
+  MALFUNCTION_SCENARIOS,
 } from '../../engine/malfunctions/malfunctionSpecs';
 import {
   ENGINEERING_ROLE_META,
@@ -41,6 +40,7 @@ import type {
   WeaponId,
   WeaponRuntimePlugin,
 } from '../../weapons/types';
+import type { MonographPlateKey } from './monographCaptureStore';
 import { buildQrSvgPath, encodeQrMatrix } from './qrCodeSvg';
 
 export interface MonographBomRow {
@@ -61,6 +61,8 @@ export interface MonographRoleSummary {
   role: EngineeringRole;
   label: string;
   shortLabel: string;
+  kidTeamTitle: string;
+  kidShortTip: string;
   desc: string;
   colorHex: string;
   parts: { bomCode: string; name: string }[];
@@ -88,8 +90,38 @@ export interface MonographMalfunctionCard {
   drillSummary: string;
 }
 
+export interface KidsSubAssemblyPhotoCard {
+  groupKey: AssemblyGroupKey;
+  plateKey: Extract<
+    MonographPlateKey,
+    'group_slide' | 'group_frame' | 'group_fcg' | 'group_mag'
+  >;
+  bagNumber: string;
+  title: string;
+  badgeColor: string;
+  partCount: number;
+  partTags: { bomCode: string; name: string }[];
+}
+
+export interface KidsComicFrameSpec {
+  stepBadge: string;
+  plateKey: Extract<
+    MonographPlateKey,
+    'comic_1_ready' | 'comic_2_ignition' | 'comic_3_eject' | 'comic_4_reload'
+  >;
+  title: string;
+  caption: string;
+}
+
+export interface KidsFunStatCard {
+  label: string;
+  value: string;
+  funCompare: string;
+}
+
 export interface MonographDossierData {
   weaponId: WeaponId;
+  isArchery: boolean;
   lang: LanguageCode;
   serialCode: string;
   bayCode: string;
@@ -103,6 +135,7 @@ export interface MonographDossierData {
   caliberProfile: CaliberProfile;
   actionMechanism: string;
   description: string;
+  kidTagline: string;
   highlights: string[];
   metrics: {
     oal: string;
@@ -113,6 +146,19 @@ export interface MonographDossierData {
     rateOfFire: string;
     muzzleEnergyJ: string;
   };
+  kidsFunStats: [
+    KidsFunStatCard,
+    KidsFunStatCard,
+    KidsFunStatCard,
+    KidsFunStatCard,
+  ];
+  subAssemblyCards: KidsSubAssemblyPhotoCard[];
+  comicFrames: [
+    KidsComicFrameSpec,
+    KidsComicFrameSpec,
+    KidsComicFrameSpec,
+    KidsComicFrameSpec,
+  ];
   headline: string;
   deck: string;
   acts: StoryActItem[];
@@ -129,6 +175,254 @@ export interface MonographDossierData {
   malfunctionCards: MonographMalfunctionCard[];
   deepLinkUrl: string;
   qrSvg: { pathD: string; viewSize: number };
+}
+
+const KID_ROLE_COPY: Record<
+  EngineeringRole,
+  { zhTitle: string; zhTip: string; enTitle: string; enTip: string }
+> = {
+  locking: {
+    zhTitle: '橙色 · 安全锁小队',
+    zhTip: '牢牢锁紧核心结构，引导直线前进',
+    enTitle: 'Orange · Safety Lock Team',
+    enTip: 'Locks tightly and guides straight motion',
+  },
+  gas_drive: {
+    zhTitle: '青色 · 能量推手队',
+    zhTip: '巧妙借用气流或杠杆力往后推动',
+    enTitle: 'Cyan · Power Boost Team',
+    enTip: 'Channels gas or cam leverage to drive motion',
+  },
+  bolt_carrier: {
+    zhTitle: '蓝色 · 往返滑块队',
+    zhTip: '像小火车一样前后滑行完成循环',
+    enTitle: 'Blue · Sliding Carrier Team',
+    enTip: 'Glides back and forth like a mini train',
+  },
+  fire_control: {
+    zhTitle: '红色 · 扳机开关队',
+    zhTip: '手指轻轻一按，精准发出启动口令',
+    enTitle: 'Red · Trigger Switch Team',
+    enTip: 'Releases the start signal with one press',
+  },
+  energy_spring: {
+    zhTitle: '绿色 · 大力弹簧队',
+    zhTip: '压扁蓄满力气，把零件推回原位',
+    enTitle: 'Green · Super Spring Team',
+    enTip: 'Stores elastic energy to snap parts home',
+  },
+  housing_feed: {
+    zhTitle: '银灰 · 盔甲与弹盒队',
+    zhTip: '保护内部零件的外壳与排队等候仓',
+    enTitle: 'Grey · Armor & Feed Box',
+    enTip: 'Protective outer body and waiting bay',
+  },
+};
+
+const GROUP_TO_PLATE: Record<
+  AssemblyGroupKey,
+  KidsSubAssemblyPhotoCard['plateKey']
+> = {
+  slide: 'group_slide',
+  frame: 'group_frame',
+  fire_control: 'group_fcg',
+  magazine: 'group_mag',
+};
+
+function parseFirstFloat(str: string, fallback: number): number {
+  const m = str.match(/(\d+(?:\.\d+)?)/);
+  return m ? Number(m[1]) : fallback;
+}
+
+function buildKidsFunStats(
+  oalStr: string,
+  weightStr: string,
+  partsCount: number,
+  velMps: number,
+  lang: LanguageCode
+): [KidsFunStatCard, KidsFunStatCard, KidsFunStatCard, KidsFunStatCard] {
+  const isZh = lang === 'zh';
+  const oalMm = parseFirstFloat(oalStr, 750);
+  const weightKg = parseFirstFloat(weightStr, 3.0);
+  const rulers = Math.max(1, Math.round((oalMm / 300) * 10) / 10);
+  const bottles = Math.max(1, Math.round(weightKg / 0.5));
+  const mach = velMps / 340;
+
+  const lengthCompare = isZh
+    ? oalMm < 260
+      ? '差不多等于 1 支新铅笔的长度'
+      : oalMm < 580
+        ? '差不多有小朋友的书包那么高'
+        : oalMm < 980
+          ? `大约等于 ${rulers} 把 30cm 学生尺连起来`
+          : '快赶上小朋友的身高啦！'
+    : oalMm < 260
+      ? 'About as long as 1 new pencil'
+      : oalMm < 580
+        ? 'About as tall as a school backpack'
+        : oalMm < 980
+          ? `About ${rulers} school rulers end-to-end`
+          : 'Almost as tall as a young explorer!';
+
+  const weightCompare = isZh
+    ? `大约等于 ${bottles} 瓶矿泉水的重量`
+    : `Weighs about ${bottles} water bottles`;
+
+  const partsCompare = isZh
+    ? '像金属乐高积木一样层层咬合'
+    : 'Interlocks just like precision LEGO bricks';
+
+  const speedCompare = isZh
+    ? mach >= 1.05
+      ? `超音速 ${mach.toFixed(1)} 倍！比声音跑得还快`
+      : `相当于高速汽车的 ${Math.max(2, Math.round((velMps * 3.6) / 100))} 倍快！`
+    : mach >= 1.05
+      ? `Mach ${mach.toFixed(1)} — faster than sound!`
+      : `${Math.round(velMps * 3.6)} km/h — race-car fast!`;
+
+  return [
+    {
+      label: isZh ? '总长度' : 'Total Length',
+      value: `${Math.round(oalMm)} mm`,
+      funCompare: lengthCompare,
+    },
+    {
+      label: isZh ? '机身重量' : 'Total Weight',
+      value: `${weightKg.toFixed(2)} kg`,
+      funCompare: weightCompare,
+    },
+    {
+      label: isZh ? '积木零件数' : '3D Parts Count',
+      value: isZh ? `${partsCount} 块` : `${partsCount} pcs`,
+      funCompare: partsCompare,
+    },
+    {
+      label: isZh ? '发射速度' : 'Launch Speed',
+      value: `${Math.round(velMps)} m/s`,
+      funCompare: speedCompare,
+    },
+  ];
+}
+
+function buildKidsComicFrames(
+  isArchery: boolean,
+  lang: LanguageCode
+): [
+  KidsComicFrameSpec,
+  KidsComicFrameSpec,
+  KidsComicFrameSpec,
+  KidsComicFrameSpec,
+] {
+  const isZh = lang === 'zh';
+  if (isArchery) {
+    return isZh
+      ? [
+          {
+            stepBadge: '第 ① 格',
+            plateKey: 'comic_1_ready',
+            title: '拉满蓄力',
+            caption: '弓片弯成满月储存满满弹性势能，偏心凸轮进入省力谷',
+          },
+          {
+            stepBadge: '第 ② 格',
+            plateKey: 'comic_2_ignition',
+            title: '撒放加速',
+            caption: '扣动开关松开弓弦，双凸轮同步翻转推着箭矢飞驰',
+          },
+          {
+            stepBadge: '第 ③ 格',
+            plateKey: 'comic_3_eject',
+            title: '离弦飞出',
+            caption: '落箭台瞬间让路，尾羽引导碳箭笔直飞向前方',
+          },
+          {
+            stepBadge: '第 ④ 格',
+            plateKey: 'comic_4_reload',
+            title: '减震归位',
+            caption: '阻尼器吸收多余震动，弓片与弓弦稳稳回到初始位置',
+          },
+        ]
+      : [
+          {
+            stepBadge: 'STEP ①',
+            plateKey: 'comic_1_ready',
+            title: 'Full Draw Energy',
+            caption: 'Limbs flex to store elastic energy as cams settle into let-off',
+          },
+          {
+            stepBadge: 'STEP ②',
+            plateKey: 'comic_2_ignition',
+            title: 'String Release',
+            caption: 'Latch opens and twin cams uncoil smoothly to launch the arrow',
+          },
+          {
+            stepBadge: 'STEP ③',
+            plateKey: 'comic_3_eject',
+            title: 'Clean Flight',
+            caption: 'Rest drops clear while vanes stabilize straight-line flight',
+          },
+          {
+            stepBadge: 'STEP ④',
+            plateKey: 'comic_4_reload',
+            title: 'Damped Return',
+            caption: 'Dampers absorb vibration as limbs settle back to brace',
+          },
+        ];
+  }
+
+  return isZh
+    ? [
+        {
+          stepBadge: '第 ① 格',
+          plateKey: 'comic_1_ready',
+          title: '整装待命',
+          caption: '小弹头安静停在起点，击锤与弹簧已经蓄满能量',
+        },
+        {
+          stepBadge: '第 ② 格',
+          plateKey: 'comic_2_ignition',
+          title: '点火冲刺',
+          caption: '扳机释放撞针，膨胀气流推着弹头沿旋转膛线飞出',
+        },
+        {
+          stepBadge: '第 ③ 格',
+          plateKey: 'comic_3_eject',
+          title: '后退抛壳',
+          caption: '滑块向后滑动压紧大弹簧，顺便把空铜壳高高抛出去',
+        },
+        {
+          stepBadge: '第 ④ 格',
+          plateKey: 'comic_4_reload',
+          title: '弹簧推回',
+          caption: '复进大弹簧伸展发力，把滑块和下一颗新弹推回原位',
+        },
+      ]
+    : [
+        {
+          stepBadge: 'STEP ①',
+          plateKey: 'comic_1_ready',
+          title: 'Locked & Ready',
+          caption: 'Springs hold stored energy while the breech stays safely locked',
+        },
+        {
+          stepBadge: 'STEP ②',
+          plateKey: 'comic_2_ignition',
+          title: 'Launch Impulse',
+          caption: 'Expanding gas accelerates the projectile down the rifled bore',
+        },
+        {
+          stepBadge: 'STEP ③',
+          plateKey: 'comic_3_eject',
+          title: 'Slide Recoil & Eject',
+          caption: 'Carrier glides back, compressing the main spring & tossing brass',
+        },
+        {
+          stepBadge: 'STEP ④',
+          plateKey: 'comic_4_reload',
+          title: 'Spring Return',
+          caption: 'Main spring expands forward to seat the next round into lockup',
+        },
+      ];
 }
 
 function buildFallbackStory(
@@ -152,7 +446,9 @@ function buildFallbackStory(
     const pName = isZh ? p.nameZh : p.nameEn;
     return {
       id: `fallback_act_${idx + 1}`,
-      actNumber: isZh ? `第${['一', '二', '三', '四'][idx]}幕` : `ACT ${['I', 'II', 'III', 'IV'][idx]}`,
+      actNumber: isZh
+        ? `第${['一', '二', '三', '四'][idx]}幕`
+        : `ACT ${['I', 'II', 'III', 'IV'][idx]}`,
       eraTag: `STAGE 0${idx + 1}`,
       title: isZh ? `${pName}与总体机械布局` : `${pName} & System Architecture`,
       paragraphs: [description, p.description],
@@ -218,45 +514,18 @@ export function assembleMonographDossier(
   const displayMeta = resolveWeaponDisplayMeta(weaponId, lang, bundle);
   const shortTag = getLocalizedShortWeaponLabel(weaponId, lang);
   const caliberProfile = manifest.caliberProfile;
-  const isArcheryWeapon =
-    (weaponId as string) === 'lift33' || (weaponId as string) === 'r500';
-  const isArcheryCal =
-    isArcheryCaliberProfile(caliberProfile as string) || isArcheryWeapon;
-  const archeryMeta = isArcheryCal
-    ? getArcheryProjectileMeta(
-        isArcheryCaliberProfile(caliberProfile as string)
-          ? caliberProfile
-          : (weaponId as string) === 'lift33'
-            ? 'arrow_400gr'
-            : 'bolt_400gr'
-      )
-    : null;
-  const cartridgeSpec: CartridgeLabSpec = archeryMeta
-    ? archeryProjectileToLabSpec(archeryMeta)
-    : CARTRIDGE_LAB_SPECS[caliberProfile];
-  const rawBallisticsSpec = getCaliberBallisticsSpec(caliberProfile);
-  const ballisticsSpec: CaliberBallisticsSpec =
-    archeryMeta && (rawBallisticsSpec.caliber as string) !== (caliberProfile as string)
-      ? {
-          ...rawBallisticsSpec,
-          caliber: caliberProfile,
-          labelZh: archeryMeta.nameZh,
-          labelEn: archeryMeta.nameEn,
-          standard: 'ATA / IBO' as CaliberBallisticsSpec['standard'],
-          peakPressureMPa: archeryMeta.peakDrawForceN,
-          safeUnlockPressureMPa: Math.round(
-            archeryMeta.peakDrawForceN * (1 - archeryMeta.letOffPercent / 100)
-          ),
-          muzzleVelocityMps: archeryMeta.muzzleVelocityMps,
-          projectileMassG: archeryMeta.projectileMassG,
-          muzzleEnergyJ: archeryMeta.muzzleEnergyJ,
-          referenceBarrelMm: archeryMeta.powerStrokeMm,
-          boreTimeMs: archeryMeta.caliber === 'arrow_400gr' ? 11.4 : 6.7,
-        }
-      : rawBallisticsSpec;
+
+  const archMeta = getArcheryProjectileMeta(caliberProfile);
+  const isArchery = Boolean(archMeta) || catalog.category === 'archery';
+  const cartridgeSpec = archMeta
+    ? archeryProjectileToLabSpec(archMeta)
+    : CARTRIDGE_LAB_SPECS[caliberProfile as keyof typeof CARTRIDGE_LAB_SPECS];
+  const ballisticsSpec = getCaliberBallisticsSpec(caliberProfile);
   const inspUi = UI_STRINGS[lang].inspector;
 
-  const serialTag = shortTag.replace(/[^A-Za-z0-9]/g, '').toUpperCase() || weaponId.toUpperCase();
+  const serialTag =
+    shortTag.replace(/[^A-Za-z0-9]/g, '').toUpperCase() ||
+    weaponId.toUpperCase();
   const serialCode = `DA-2026-${catalog.bayCode}-${serialTag}`;
 
   const localizedStory =
@@ -270,17 +539,59 @@ export function assembleMonographDossier(
       displayMeta.description
     );
 
+  // Kid-friendly short 1-liner for cover
+  const kidTagline = isZh
+    ? `由 ${plugin.parts.length} 块精密 3D 机械积木拼成 · 核心原理：${displayMeta.actionMechanism}`
+    : `Built from ${plugin.parts.length} interlocking 3D parts · ${displayMeta.actionMechanism}`;
+
+  const kidsFunStats = buildKidsFunStats(
+    displayMeta.overallLengthMm,
+    catalog.specs1To1.emptyWeightKg,
+    plugin.parts.length,
+    cartridgeSpec.muzzleVelocityMps,
+    lang
+  );
+
+  // 4 Sub-Assembly Isolated Photo Cards
+  const groupOrder: AssemblyGroupKey[] = [
+    'slide',
+    'frame',
+    'fire_control',
+    'magazine',
+  ];
+  const subAssemblyCards: KidsSubAssemblyPhotoCard[] = groupOrder.map(
+    (gKey, idx) => {
+      const grp = plugin.partGroups.find((g) => g.key === gKey);
+      const gParts = plugin.parts.filter((p) => p.group === gKey);
+      return {
+        groupKey: gKey,
+        plateKey: GROUP_TO_PLATE[gKey],
+        bagNumber: `0${idx + 1}`,
+        title: isZh ? (grp?.nameZh ?? gKey) : (grp?.nameEn ?? gKey),
+        badgeColor: grp?.badgeColor ?? '#0284c7',
+        partCount: gParts.length,
+        partTags: gParts.slice(0, 6).map((p) => ({
+          bomCode: p.bomCode,
+          name: isZh ? p.nameZh : p.nameEn,
+        })),
+      };
+    }
+  );
+
+  const comicFrames = buildKidsComicFrames(isArchery, lang);
+
   // 6-Role Functional Classification Matrix
-  const roleBuckets = new Map<EngineeringRole, { bomCode: string; name: string }[]>();
+  const roleBuckets = new Map<
+    EngineeringRole,
+    { bomCode: string; name: string }[]
+  >();
   for (const r of ENGINEERING_ROLE_ORDER) {
     roleBuckets.set(r, []);
   }
   for (const part of plugin.parts) {
     const role = resolvePartEngineeringRole(weaponId, part);
     const partNarr = bundle?.parts?.[part.id];
-    const pName = isZh
-      ? part.nameZh
-      : (partNarr?.calloutLabelEn || part.nameEn);
+    const pName = isZh ? part.nameZh : partNarr?.calloutLabelEn || part.nameEn;
     roleBuckets.get(role)?.push({
       bomCode: part.bomCode,
       name: pName,
@@ -290,10 +601,13 @@ export function assembleMonographDossier(
   const roleSummaries: MonographRoleSummary[] = ENGINEERING_ROLE_ORDER.map(
     (role) => {
       const meta = ENGINEERING_ROLE_META[role];
+      const kidCopy = KID_ROLE_COPY[role];
       return {
         role,
         label: isZh ? meta.labelZh : meta.labelEn,
         shortLabel: isZh ? meta.shortZh : meta.shortEn,
+        kidTeamTitle: isZh ? kidCopy.zhTitle : kidCopy.enTitle,
+        kidShortTip: isZh ? kidCopy.zhTip : kidCopy.enTip,
         desc: isZh ? meta.descZh : meta.descEn,
         colorHex: meta.colorHex,
         parts: roleBuckets.get(role) ?? [],
@@ -372,7 +686,7 @@ export function assembleMonographDossier(
   });
 
   // Field-Strip DAG & Interference Warnings
-  const fsPlan = FIELD_STRIP_PLANS[weaponId] ?? FIELD_STRIP_PLANS.ak15;
+  const fsPlan = FIELD_STRIP_PLANS[weaponId];
   const fieldStripManualTitle = isZh
     ? fsPlan.manualCodeZh
     : fsPlan.manualCodeEn;
@@ -388,7 +702,7 @@ export function assembleMonographDossier(
   // 4 Canonical Stoppage Cards
   const malfunctionCards: MonographMalfunctionCard[] = MALFUNCTION_ORDER.map(
     (kind) => {
-      const sc = getMalfunctionScenario(kind, weaponId);
+      const sc = MALFUNCTION_SCENARIOS[kind];
       const stepTitles = sc.steps
         .map((st) => `${st.orderLabel}. ${isZh ? st.titleZh : st.titleEn}`)
         .join(' → ');
@@ -408,6 +722,7 @@ export function assembleMonographDossier(
 
   return {
     weaponId,
+    isArchery,
     lang,
     serialCode,
     bayCode: catalog.bayCode,
@@ -421,6 +736,7 @@ export function assembleMonographDossier(
     caliberProfile,
     actionMechanism: displayMeta.actionMechanism,
     description: displayMeta.description,
+    kidTagline,
     highlights: displayMeta.highlights,
     metrics: {
       oal: displayMeta.overallLengthMm,
@@ -429,8 +745,11 @@ export function assembleMonographDossier(
       muzzleVelocity: catalog.specs1To1.muzzleVelocityMs,
       effectiveRange: catalog.specs1To1.effectiveRangeM,
       rateOfFire: displayMeta.rateOfFire,
-      muzzleEnergyJ: `${archeryMeta ? archeryMeta.muzzleEnergyJ.toFixed(1) : cartridgeSpec.muzzleEnergyJ.toLocaleString('en-US')} J`,
+      muzzleEnergyJ: `${cartridgeSpec.muzzleEnergyJ.toLocaleString('en-US')} J`,
     },
+    kidsFunStats,
+    subAssemblyCards,
+    comicFrames,
     headline: localizedStory.headline,
     deck: localizedStory.deck,
     acts: localizedStory.acts,

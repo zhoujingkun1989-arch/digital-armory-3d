@@ -12,6 +12,8 @@ import {
   completeMonographCapture,
   getCachedMonographBundle,
   getMonographCaptureState,
+  MONOGRAPH_PLATE_KEYS,
+  type MonographPlateKey,
   requestMonographCapture,
   updateMonographCaptureProgress,
 } from '../src/features/monograph/monographCaptureStore';
@@ -88,6 +90,19 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
 
         expect(dossier.weaponId).toBe(weaponId);
         expect(dossier.serialCode).toContain('DA-2026-BAY-');
+        expect(dossier.kidTagline.length).toBeGreaterThan(8);
+        expect(dossier.kidsFunStats.length).toBe(4);
+        expect(dossier.subAssemblyCards.length).toBe(4);
+        for (const bag of dossier.subAssemblyCards) {
+          expect(bag.partCount).toBeGreaterThan(0);
+          expect(MONOGRAPH_PLATE_KEYS).toContain(bag.plateKey);
+        }
+        expect(dossier.comicFrames.length).toBe(4);
+        for (const frame of dossier.comicFrames) {
+          expect(frame.title.length).toBeGreaterThan(1);
+          expect(frame.caption.length).toBeGreaterThan(4);
+          expect(MONOGRAPH_PLATE_KEYS).toContain(frame.plateKey);
+        }
         expect(dossier.acts.length).toBe(4);
         expect(dossier.breakthroughs.length).toBeGreaterThanOrEqual(3);
         expect(dossier.milestones.length).toBeGreaterThanOrEqual(4);
@@ -97,6 +112,10 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
         expect(dossier.malfunctionCards.length).toBe(4);
 
         // Sum of parts assigned across the 6 engineering roles equals total parts count
+        for (const r of dossier.roleSummaries) {
+          expect(r.kidTeamTitle.length).toBeGreaterThan(2);
+          expect(r.kidShortTip.length).toBeGreaterThan(4);
+        }
         const totalRoleParts = dossier.roleSummaries.reduce(
           (acc, r) => acc + r.parts.length,
           0
@@ -160,25 +179,25 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
     expect(useAppStore.getState().textureModalOpen).toBe(false);
     expect(useAppStore.getState().hudHidden).toBe(false);
 
+    expect(MONOGRAPH_PLATE_KEYS.length).toBe(17);
     const reqId = requestMonographCapture('m82a1', 'obsidian_folio', true);
     expect(reqId).toBeGreaterThan(0);
     expect(getMonographCaptureState().activeRequest?.weaponId).toBe('m82a1');
+    expect(getMonographCaptureState().totalPlates).toBe(17);
 
-    updateMonographCaptureProgress(reqId, 3, 'stencil_cutaway');
-    expect(getMonographCaptureState().completedPlates).toBe(3);
+    updateMonographCaptureProgress(reqId, 6, 'stencil_cutaway');
+    expect(getMonographCaptureState().completedPlates).toBe(6);
+
+    const mockPlates = Object.fromEntries(
+      MONOGRAPH_PLATE_KEYS.map((k) => [k, `data:image/jpeg;base64,${k}`])
+    ) as Record<MonographPlateKey, string>;
 
     completeMonographCapture(reqId, {
       cacheKey: buildMonographCacheKey('m82a1', 'obsidian_folio'),
       weaponId: 'm82a1',
       edition: 'obsidian_folio',
       capturedAtIso: '2026-11-17T00:00:00.000Z',
-      plates: {
-        cover_hero: 'data:image/jpeg;base64,AA',
-        breech_closeup: 'data:image/jpeg;base64,BB',
-        stencil_cutaway: 'data:image/jpeg;base64,CC',
-        functional_roles: 'data:image/jpeg;base64,DD',
-        exploded_bom: 'data:image/jpeg;base64,EE',
-      },
+      plates: mockPlates,
       explodedPins: [],
     });
 

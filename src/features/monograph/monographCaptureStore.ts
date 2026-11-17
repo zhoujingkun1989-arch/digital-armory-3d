@@ -4,20 +4,45 @@ import type { ExplodedPinItem } from './explodedPinLayout';
 
 export type MonographEdition = 'obsidian_folio' | 'blueprint_manual';
 export type MonographPageMode = 'full_8p' | 'compact_4p';
+export type MonographStyleMode = 'kids_pictorial' | 'pro_dossier';
 
 export type MonographPlateKey =
   | 'cover_hero'
   | 'breech_closeup'
+  | 'ortho_right'
+  | 'ortho_left'
+  | 'ortho_top'
+  | 'xray_magic'
   | 'stencil_cutaway'
   | 'functional_roles'
-  | 'exploded_bom';
+  | 'exploded_bom'
+  | 'group_slide'
+  | 'group_frame'
+  | 'group_fcg'
+  | 'group_mag'
+  | 'comic_1_ready'
+  | 'comic_2_ignition'
+  | 'comic_3_eject'
+  | 'comic_4_reload';
 
 export const MONOGRAPH_PLATE_KEYS: readonly MonographPlateKey[] = [
   'cover_hero',
-  'breech_closeup',
+  'ortho_right',
+  'ortho_left',
+  'ortho_top',
+  'xray_magic',
   'stencil_cutaway',
   'functional_roles',
   'exploded_bom',
+  'group_slide',
+  'group_frame',
+  'group_fcg',
+  'group_mag',
+  'comic_1_ready',
+  'comic_2_ignition',
+  'comic_3_eject',
+  'comic_4_reload',
+  'breech_closeup',
 ];
 
 export interface MonographCaptureBundle {
@@ -44,7 +69,7 @@ export interface MonographCaptureState {
   version: number;
 }
 
-const MAX_CACHED_BUNDLES = 6;
+const MAX_CACHED_BUNDLES = 4;
 const bundleCache = new Map<string, MonographCaptureBundle>();
 const bundleLru: string[] = [];
 const listeners = new Set<() => void>();
@@ -70,7 +95,7 @@ export function buildMonographCacheKey(
   weaponId: WeaponId,
   edition: MonographEdition
 ): string {
-  return `${weaponId}:${edition}`;
+  return `${weaponId}:${edition}:v2`;
 }
 
 export function getCachedMonographBundle(
