@@ -7,6 +7,7 @@ import { getWeaponManifest } from '../../weapons/manifests';
 import { getLoadedWeaponPlugin } from '../../weapons/registry';
 import type { CaliberProfile, WeaponId } from '../../weapons/types';
 import { playbackClock } from '../clock/playbackClock';
+import { GasFlowVisualizer } from './GasFlowVisualizer';
 import {
   SMOKE_WISP_POOL_SIZE,
   SPENT_CASING_POOL_SIZE,
@@ -35,7 +36,7 @@ interface PrimerPocketSpec {
   pocketDepth: number;
 }
 
-interface CaliberGeometryBundle {
+export interface CaliberGeometryBundle {
   caseGeo: THREE.BufferGeometry;
   bulletGeo: THREE.BufferGeometry;
   livePrimerGeo: THREE.BufferGeometry;
@@ -506,7 +507,7 @@ function build57x28Geometries(): CaliberGeometryBundle {
   };
 }
 
-interface CaliberVisualSpec {
+export interface CaliberVisualSpec {
   caseColor: string;
   reserveCaseColor: string;
   bulletColor: string;
@@ -517,7 +518,7 @@ interface CaliberVisualSpec {
   streakThickness: number;
 }
 
-const CALIBER_VISUAL_SPECS: Record<CaliberProfile, CaliberVisualSpec> = {
+export const CALIBER_VISUAL_SPECS: Record<CaliberProfile, CaliberVisualSpec> = {
   '9mm_para': {
     caseColor: '#e5b318',
     reserveCaseColor: '#c7920e',
@@ -590,7 +591,7 @@ const CALIBER_VISUAL_SPECS: Record<CaliberProfile, CaliberVisualSpec> = {
   },
 };
 
-interface WeaponRoundFitSpec {
+export interface WeaponRoundFitSpec {
   roundScale: number;
   magLocalShiftX: number;
   ignitionF: number;
@@ -600,7 +601,7 @@ interface WeaponRoundFitSpec {
  * Static zero-allocation per-weapon fit & primer-strike timing lookup table.
  * Verified against every weapon's magazine cavity, feed lips, chamber, and ejection port!
  */
-const WEAPON_ROUND_FIT: Record<WeaponId, WeaponRoundFitSpec> = {
+export const WEAPON_ROUND_FIT: Record<WeaponId, WeaponRoundFitSpec> = {
   g17: { roundScale: 0.96, magLocalShiftX: -0.44, ignitionF: 0.09 },
   p320: { roundScale: 0.95, magLocalShiftX: -0.44, ignitionF: 0.09 },
   mp5: { roundScale: 0.54, magLocalShiftX: -0.32, ignitionF: 0.1 },
@@ -616,7 +617,9 @@ const WEAPON_ROUND_FIT: Record<WeaponId, WeaponRoundFitSpec> = {
 
 const caliberGeoCache = new Map<CaliberProfile, CaliberGeometryBundle>();
 
-function getCaliberGeometries(profile: CaliberProfile): CaliberGeometryBundle {
+export function getCaliberGeometries(
+  profile: CaliberProfile
+): CaliberGeometryBundle {
   const cached = caliberGeoCache.get(profile);
   if (cached) return cached;
 
@@ -1027,7 +1030,9 @@ export const WeaponRecoilGroup: React.FC<
 // ============================================================================
 
 export const ArmoryWorldFx: React.FC = () => {
+  const screen = useAppStore((s) => s.screen);
   const mode = useAppStore((s) => s.mode);
+  const malfunctionActive = useAppStore((s) => s.malfunctionActive);
   const casingGroupRefs = useRef<(THREE.Group | null)[]>([]);
   const casingMeshRefs = useRef<(THREE.Mesh | null)[]>([]);
   const casingPrimerRefs = useRef<(THREE.Mesh | null)[]>([]);
@@ -1083,7 +1088,9 @@ export const ArmoryWorldFx: React.FC = () => {
     }
   });
 
-  if (mode !== 'firing') return null;
+  if (screen !== 'workbench' || mode !== 'firing' || malfunctionActive) {
+    return null;
+  }
 
   return (
     <group>
@@ -1183,7 +1190,9 @@ export interface BallisticsSystemProps {
 export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
   worldFx = true,
 }) => {
+  const screen = useAppStore((s) => s.screen);
   const mode = useAppStore((s) => s.mode);
+  const malfunctionActive = useAppStore((s) => s.malfunctionActive);
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const showEdges = useAppStore((s) => s.showEdges);
 
@@ -1249,8 +1258,6 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
 
   const nextRoundRef = useRef<THREE.Group>(null);
   const nextRoundInnerRef = useRef<THREE.Group>(null);
-  const reserveRoundRef = useRef<THREE.Group>(null);
-  const reserveRoundInnerRef = useRef<THREE.Group>(null);
 
   // 60Hz quantitative physics step — runs every frame (barrels keep cooling
   // and brass keeps settling even while paused), events only in firing mode.
@@ -1260,7 +1267,10 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
     const curManifest = getWeaponManifest(weaponId);
     const curMeta = curManifest.workbenchMeta;
     const plugin = getLoadedWeaponPlugin(weaponId);
-    const firing = state.screen === 'workbench' && state.mode === 'firing';
+    const firing =
+      state.screen === 'workbench' &&
+      state.mode === 'firing' &&
+      !state.malfunctionActive;
     const f = playbackClock.getState().animatedFireProgress;
 
     const inp = _physicsInput;
@@ -1297,7 +1307,13 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
 
   useFrame(() => {
     const state = useAppStore.getState();
-    if (state.mode !== 'firing') return;
+    if (
+      state.screen !== 'workbench' ||
+      state.mode !== 'firing' ||
+      state.malfunctionActive
+    ) {
+      return;
+    }
 
     const weaponId = state.activeWeaponId;
     const plugin = getLoadedWeaponPlugin(weaponId);
@@ -1585,7 +1601,7 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
       }
     }
 
-    // 5. Magazine feed rounds
+    // 5. Magazine feed round (Slot 0 stripped into chamber; reserve stack rendered by MagazineAmmoStack)
     if (nextRoundRef.current) {
       nextRoundRef.current.position.set(
         st.nextRoundPos[0],
@@ -1601,29 +1617,16 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
       nextRoundInnerRef.current.position.x =
         curFit.magLocalShiftX * (1 - feedBlend) + phys.boltBounceX * feedBlend;
     }
-    if (reserveRoundRef.current) {
-      reserveRoundRef.current.position.set(
-        st.reserveRoundPos[0],
-        st.reserveRoundPos[1],
-        st.reserveRoundPos[2]
-      );
-      reserveRoundRef.current.rotation.set(
-        0,
-        st.reserveRoundRotY ?? 0,
-        curSpec.reserveTiltZ
-      );
-      reserveRoundRef.current.scale.setScalar(curFit.roundScale);
-    }
-    if (reserveRoundInnerRef.current) {
-      reserveRoundInnerRef.current.position.x = curFit.magLocalShiftX;
-    }
   });
 
-  if (mode !== 'firing') return null;
+  if (screen !== 'workbench' || mode !== 'firing' || malfunctionActive) {
+    return null;
+  }
 
   return (
     <group>
       {worldFx && <ArmoryWorldFx />}
+      <GasFlowVisualizer />
 
       {/* 1. Chambered / Extracted Brass Case + Live/Struck Boxer Primer */}
       <group ref={spentCaseRef} position={meta.chamberGlowPos} scale={roundFit.roundScale}>
@@ -1963,29 +1966,6 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
               roughness={0.22}
             />
             {showEdges && <Edges threshold={36} color="#7c2d12" />}
-          </mesh>
-        </group>
-      </group>
-
-      {/* 6. Reserve Cartridge below in Magazine Stack (with Nickel Boxer Primer Cup) */}
-      <group ref={reserveRoundRef} scale={roundFit.roundScale}>
-        <group ref={reserveRoundInnerRef} position={[roundFit.magLocalShiftX, 0, 0]}>
-          <mesh geometry={caseGeo} renderOrder={2}>
-            <meshStandardMaterial
-              color={calSpec.reserveCaseColor}
-              metalness={0.82}
-              roughness={0.26}
-            />
-          </mesh>
-          <mesh geometry={livePrimerGeo} renderOrder={2}>
-            <meshStandardMaterial color="#cbd5e1" metalness={0.88} roughness={0.22} />
-          </mesh>
-          <mesh
-            geometry={bulletGeo}
-            position={[calSpec.bulletLocalOffset, 0, 0]}
-            renderOrder={2}
-          >
-            <meshStandardMaterial color="#9a3412" metalness={0.78} roughness={0.26} />
           </mesh>
         </group>
       </group>

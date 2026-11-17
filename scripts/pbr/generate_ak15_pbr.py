@@ -265,47 +265,50 @@ def build_ak_receiver_suite():
     _save("ak_receiver", albedo, height, roughness, metalness, cavity, 2.4)
 
 
-def _window_cartridges(albedo, cavity, glass, w, h):
-    """12 shaped rounds behind a flat smoked pane, without bulging its normal."""
-    x0, x1 = int(.40 * w), int(.60 * w) + 1
+def _window_cartridges(albedo, cavity, glass, w, h, u0, u1, direction):
+    """12 shaped 7.62x39mm rounds behind a flat smoked pane; bullet tips point toward +X muzzle."""
+    x0, x1 = int(u0 * w), int(u1 * w) + 1
     y0, y1 = int(.22 * h), int(.78 * h) + 1
     uu = (np.arange(x0, x1, dtype=np.float32)[None, :] + .5) / w
     vv = 1 - (np.arange(h - y1, h - y0, dtype=np.float32)[:, None] + .5) / h
+    rel_u = (uu - u0) / (u1 - u0)
+    fwd_u = rel_u if direction > 0 else (1.0 - rel_u)
+
     rgb = np.empty((len(vv), uu.shape[1], 3), dtype=np.float32)
     rgb[:] = (.020, .025, .026)
     visibility = np.full(rgb.shape[:2], .60, dtype=np.float32)
     rng = np.random.default_rng(825)
+    x = (fwd_u - .045) / .910
+    radius = np.interp(x, [0, .030, .048, .078, .67, .76, .82, 1.0],
+                       [.0165, .0165, .0125, .0158, .0135, .0083, .0083, 0]).astype(np.float32)
+    bullet_t = np.clip((x - .81) / .19, 0, 1)
+    radius = np.where(x > .81, .0083 * np.sqrt(np.maximum(0, 1 - bullet_t ** 1.65)), radius)
+    x_mask = (x >= 0) & (x <= 1)
+    bullet = np.broadcast_to(x >= .81, rgb.shape[:2])
+    shoulder = ((x > .67) & (x < .76)).astype(np.float32)
+    rim = ((x >= 0) & (x < .030)).astype(np.float32)
+    groove = ((x >= .038) & (x < .065)).astype(np.float32)
+    sealant = np.broadcast_to((x >= .775) & (x <= .795), rgb.shape[:2])
     for i in range(12):
-        center = .257 + i * .0447 + rng.uniform(-.00065, .00065)
-        centerline = center + (uu - .5) * rng.uniform(-.020, .020)
-        x = (uu - .409 - rng.uniform(-.0004, .0004)) / .182
-        radius = np.interp(x, [0, .030, .048, .078, .67, .76, .82, 1.0],
-                           [.0165, .0165, .0125, .0158, .0135, .0083, .0083, 0]).astype(np.float32)
-        bullet_t = np.clip((x - .81) / .19, 0, 1)
-        radius = np.where(x > .81, .0083 * np.sqrt(np.maximum(0, 1 - bullet_t ** 1.65)), radius)
+        # Strictly parallel along banana mag radial fan lines with uniform pitch (.0445) above follower
+        centerline = .262 + i * .0445
         dy = vv - centerline
-        coverage = np.clip((radius - np.abs(dy)) * h + .5, 0, 1) * ((x >= 0) & (x <= 1))
+        coverage = np.clip((radius - np.abs(dy)) * h + .5, 0, 1) * x_mask
         radial = np.clip(dy / np.maximum(radius, 1e-5), -1, 1)
         cylinder = np.sqrt(np.maximum(0, 1 - radial * radial))
         shine = .30 + .62 * cylinder + .12 * np.exp(-((radial - .38) / .13) ** 2)
-        case = np.array((.56, .405, .185) if i not in (2, 7, 10) else (.40, .355, .205), dtype=np.float32)
+        case = np.array((.56, .405, .185), dtype=np.float32)
         color = np.broadcast_to(case, rgb.shape).copy()
-        color += rng.uniform(-.015, .015)
-        bullet = np.broadcast_to(x >= .81, coverage.shape)
+        color += rng.uniform(-.008, .008)
         color[bullet] = (.65, .345, .19)
-        shoulder = ((x > .67) & (x < .76)).astype(np.float32)
-        shine *= 1.0 - shoulder * .11
-        rim = ((x >= 0) & (x < .030)).astype(np.float32)
-        groove = ((x >= .038) & (x < .065)).astype(np.float32)
-        shine *= 1.0 + rim * .16 - groove * .67
-        color *= shine[..., None]
-        sealant = np.broadcast_to((x >= .775) & (x <= .795), coverage.shape)
+        round_shine = shine * (1.0 - shoulder * .11) * (1.0 + rim * .16 - groove * .67)
+        color *= round_shine[..., None]
         color[sealant] = np.stack((.34 + cylinder * .10, .028 + cylinder * .018,
                                   .025 + cylinder * .01), axis=-1)[sealant]
         color = color * .67 + np.array((.009, .013, .013), dtype=np.float32)
         _mix(rgb, color, coverage)
         _mix(visibility, .71 + cylinder * .23 - groove * .12, coverage)
-    follower = ((vv >= .228) & (vv <= .240) & (uu >= .411) & (uu <= .589)).astype(np.float32)
+    follower = ((vv >= .228) & (vv <= .240) & (rel_u >= .055) & (rel_u <= .945)).astype(np.float32)
     follower = bevel_mask(follower, width_px=2, profile="trapezoid")
     _mix(rgb, (.31, .045, .033), follower)
     _mix(visibility, .78, follower)
@@ -316,11 +319,11 @@ def _window_cartridges(albedo, cavity, glass, w, h):
 
 
 def build_ak_mag_suite():
-    w, h = 1024, 1024
+    w, h = 2048, 1024
     u, v = _uv(w, h)
-    cells, edges = worley_cellular(h, w, 260, 260, seed=801)
+    cells, edges = worley_cellular(h, w, 260, 520, seed=801)
     grain = (.42 - cells) * .8 + (edges - .17) * .4
-    wipe = fbm_noise(h, w, base_freq=10, octaves=3, seed=802)
+    wipe = fbm_noise(h, w, base_freq=10, octaves=3, aniso_x=2.0, seed=802)
     albedo = np.empty((h, w, 3), dtype=np.float32)
     albedo[:] = (.192, .204, .220)
     albedo += (grain * .014 + wipe * .003)[..., None]
@@ -329,61 +332,85 @@ def build_ak_mag_suite():
     metalness = np.full((h, w), .03, dtype=np.float32)
     cavity = np.ones((h, w), dtype=np.float32)
 
+    # Separate right [0.04, 0.46] and left [0.54, 0.96] flank panels (equal 860 px width -> 320 px/cm)
+    # so both keep upright L->R stamps while pointing 7.62x39mm spitzer tips toward +X muzzle!
+    flanks = (
+        ("right", .04, .46, +1, "left"),
+        ("left", .54, .96, -1, "right"),
+    )
+
     rib_mask = np.zeros((h, w), dtype=np.float32)
-    for center in (.25, .361111, .472222, .583333, .694444, .805556):
-        for a, b in ((.08, .355), (.645, .92)):
-            rib_mask = np.maximum(rib_mask, _box(u, v, a, b, center - .014, center + .014))
+    win_mask = np.zeros((h, w), dtype=np.float32)
+    glass_mask = np.zeros((h, w), dtype=np.float32)
+    insert_mask = np.zeros((h, w), dtype=np.float32)
+    win_specs = []
+    for _, pu0, pu1, direction, tick_side in flanks:
+        span = pu1 - pu0
+        wu0 = pu0 + .381 * span
+        wu1 = pu0 + .619 * span
+        gu0 = pu0 + .388 * span
+        gu1 = pu0 + .612 * span
+        win_specs.append((wu0, wu1, direction))
+        for center in (.25, .361111, .472222, .583333, .694444, .805556):
+            for ra, rb in ((.00, .255), (.745, 1.00)):
+                rib_mask = np.maximum(rib_mask, _box(u, v, pu0 + ra * span, pu0 + rb * span, center - .014, center + .014))
+        win_mask = np.maximum(win_mask, _box(u, v, wu0, wu1, .22, .78))
+        glass_mask = np.maximum(glass_mask, _box(u, v, gu0, gu1, .226, .774))
+        insert_mask = np.maximum(insert_mask, _box(u, v, pu0, pu1, .82, .96))
+
     ribs = bevel_mask(rib_mask, width_px=3.5, profile="trapezoid")
     height += ribs * .82
     roughness -= ribs * .045
     albedo += (ribs * .008)[..., None]
     cavity *= 1.0 - .10 * _edge(rib_mask, 2)
 
-    window = _box(u, v, .40, .60, .22, .78)
-    glass = _box(u, v, .406, .594, .226, .774)
-    rim = np.clip(window - glass, 0, 1)
-    height -= .82 * bevel_mask(window, width_px=4, profile="trapezoid")
+    rim = np.clip(win_mask - glass_mask, 0, 1)
+    height -= .82 * bevel_mask(win_mask, width_px=4, profile="trapezoid")
     height += .20 * bevel_mask(rim, width_px=1.8, profile="trapezoid")
-    _mix(height, -.79, glass)  # optically flat PC front surface
+    _mix(height, -.79, glass_mask)  # optically flat PC front surface
     _mix(roughness, .43, rim)
-    _mix(roughness, .08, glass)
-    _mix(metalness, .04, glass)  # Makrolon polycarbonate dielectric B <= 0.05
+    _mix(roughness, .08, glass_mask)
+    _mix(metalness, .04, glass_mask)  # Makrolon polycarbonate dielectric B <= 0.05
     cavity *= 1.0 - rim * .27
-    _window_cartridges(albedo, cavity, glass, w, h)
-    cavity *= 1.0 - _edge(glass, 4) * .23
+    for wu0, wu1, direction in win_specs:
+        _window_cartridges(albedo, cavity, glass_mask, w, h, wu0, wu1, direction)
+    cavity *= 1.0 - _edge(glass_mask, 4) * .23
     _mix(albedo, (.148, .158, .172), rim * .78)
 
-    insertion = _box(u, v, .08, .92, .82, .96)
-    scuffs = scratch_field(h, w, count=520, min_len=12, max_len=105,
-                          angle_deg=90, angle_spread=5, seed=809, mask=insertion)
+    scuffs = scratch_field(h, w, count=900, min_len=12, max_len=105,
+                           angle_deg=90, angle_spread=5, seed=809, mask=insert_mask)
     _mix(albedo, (.255, .266, .282), scuffs * .58)
     roughness -= scuffs * .14
     height -= scuffs * .04
 
-    conv_mag = smoothstep(.08, .48, compute_convexity(height, sigma=2.0)) * (1.0 - glass)
+    conv_mag = smoothstep(.08, .48, compute_convexity(height, sigma=2.0)) * (1.0 - glass_mask)
     albedo += (conv_mag * .026)[..., None]
     roughness -= conv_mag * .045
 
     # World-proportional 1:1 magazine witness numbers & caliber stamp!
-    # applyAkMagUVs maps rSpan=2.70 cm -> u=.08..92 (318.6 px/cm) and
-    # arcSpan=10.86 cm -> v=.10..95 (80.2 px/cm): px/py = 3.975x!
-    # Using isotropic 320 px/cm -> 864 x 3475 px un-squashes text 3.98x on the 3D mag!
+    # Each flank maps rSpan=2.70 cm -> 0.42*2048 = 860 px and arcSpan=10.86 cm -> 0.85*1024 = 870 px (3.975x aspect):
+    # Using isotropic 320 px/cm -> 864 x 3475 px un-squashes text 3.98x cleanly on both left & right panels.
     mw, mh = 864, 3475
-    mag_canvas = Image.new("L", (mw, mh), 0)
-    dm = ImageDraw.Draw(mag_canvas)
     font_num = load_font(FONT_COND, 86)
-    for label, v_val in (("10", .72), ("15", .60), ("20", .48), ("25", .36), ("30", .25)):
-        cy = int((1.0 - (v_val - .10) / .85) * mh)
-        x_tick0 = int((.603 - .08) / .84 * mw)
-        x_tick1 = int((.624 - .08) / .84 * mw)
-        dm.line([(x_tick0, cy), (x_tick1, cy)], fill=255, width=7)
-        dm.text((x_tick1 + 14, cy), label, fill=255, font=font_num, anchor="lm")
-
-    cy_cal = int((1.0 - (.155 - .10) / .85) * mh)
-    dm.text((mw // 2, cy_cal), "7,62×39", fill=255, font=load_font(FONT_COND, 102), anchor="mm")
-
+    font_cal = load_font(FONT_COND, 102)
     lettering = np.zeros((h, w), dtype=np.float32)
-    _paste_world(lettering, mag_canvas, .08, .92, .10, .95)
+    for _, pu0, pu1, _, tick_side in flanks:
+        mag_canvas = Image.new("L", (mw, mh), 0)
+        dm = ImageDraw.Draw(mag_canvas)
+        for label, v_val in (("10", .72), ("15", .60), ("20", .48), ("25", .36), ("30", .25)):
+            cy = int((1.0 - (v_val - .10) / .85) * mh)
+            if tick_side == "right":
+                x_t0, x_t1 = int(.623 * mw), int(.646 * mw)
+                dm.line([(x_t0, cy), (x_t1, cy)], fill=255, width=7)
+                dm.text((x_t1 + 14, cy), label, fill=255, font=font_num, anchor="lm")
+            else:
+                x_t0, x_t1 = int(.354 * mw), int(.377 * mw)
+                dm.line([(x_t0, cy), (x_t1, cy)], fill=255, width=7)
+                dm.text((x_t0 - 14, cy), label, fill=255, font=font_num, anchor="rm")
+        cy_cal = int((1.0 - (.155 - .10) / .85) * mh)
+        dm.text((mw // 2, cy_cal), "7,62×39", fill=255, font=font_cal, anchor="mm")
+        _paste_world(lettering, mag_canvas, pu0, pu1, .10, .95)
+
     height += .32 * bevel_mask(lettering, width_px=1.0, profile="trapezoid")
     _mix(albedo, (.52, .54, .55), lettering * .88)
     roughness -= lettering * .05

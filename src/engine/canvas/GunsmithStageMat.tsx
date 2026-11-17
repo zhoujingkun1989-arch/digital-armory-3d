@@ -1604,6 +1604,8 @@ export const GunsmithStageMat: React.FC<GunsmithStageMatProps> = React.memo(
       const st = useAppStore.getState();
       if (st.screen === 'workbench') {
         g.position.y = getWeaponManifest(st.activeWeaponId).workbenchMeta.gridY;
+      } else if (st.screen === 'cartridges') {
+        g.position.y = -4.75;
       } else {
         g.position.y = evaluateWeaponTurntableEnvelopeInto(
           st.activeWeaponId,
@@ -1615,7 +1617,9 @@ export const GunsmithStageMat: React.FC<GunsmithStageMatProps> = React.memo(
     const isWorkbench = screen === 'workbench';
     const initialY = isWorkbench
       ? getWeaponManifest(activeWeaponId).workbenchMeta.gridY
-      : evaluateWeaponTurntableEnvelopeInto(activeWeaponId, 0).gridFloorY;
+      : screen === 'cartridges'
+        ? -4.75
+        : evaluateWeaponTurntableEnvelopeInto(activeWeaponId, 0).gridFloorY;
 
     const spec = TAKEDOWN_MAT_SPEC;
 

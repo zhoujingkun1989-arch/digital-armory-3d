@@ -12,7 +12,9 @@ import {
   getCachedPartGeometry,
   getPartLocalCenter,
 } from '../geometry/geometryService';
+import { fieldStripStore } from '../fieldstrip/fieldStripStore';
 import { createMutablePose, evaluatePartPoseInto } from '../kinematics/math';
+import { malfunctionStore } from '../malfunctions/malfunctionStore';
 import {
   getCachedHudBoxes,
   initHudBoundsObserver,
@@ -92,7 +94,7 @@ export function updateCalloutOverlay60fps(
   animatedFireF: number
 ): void {
   const state = useAppStore.getState();
-  if (state.screen !== 'workbench') {
+  if (state.screen !== 'workbench' || state.hudHidden) {
     for (const refs of domRegistry.values()) {
       if (refs.svgGroup) refs.svgGroup.style.opacity = '0';
       if (refs.label) {
@@ -180,6 +182,8 @@ export function updateCalloutOverlay60fps(
   };
 
   const isFiring = mode === 'firing';
+  const isFieldStrip = state.fieldStripActive && mode === 'explode';
+  const nowMs = isFieldStrip ? performance.now() : 0;
 
   for (let i = 0; i < activeParts.length; i++) {
     const part = activeParts[i];
@@ -200,14 +204,21 @@ export function updateCalloutOverlay60fps(
     const ghostedByIsolate =
       isolateSelected && selectedPartId !== null && !isSelected;
 
-    evaluatePartPoseInto(
-      part,
-      animatedExplodeT,
-      isFiring,
-      animatedFireF,
-      plugin.computeFiringKinematics,
-      sharedPose
-    );
+    if (isFieldStrip) {
+      fieldStripStore.evaluatePartPoseInto(activeWeaponId, part, sharedPose);
+    } else {
+      evaluatePartPoseInto(
+        part,
+        animatedExplodeT,
+        isFiring,
+        animatedFireF,
+        plugin.computeFiringKinematics,
+        sharedPose
+      );
+      if (state.malfunctionActive) {
+        malfunctionStore.applyPartPoseDelta(activeWeaponId, part.id, sharedPose);
+      }
+    }
 
     const { px, py, pz, rx, ry, rz, sx: sxScale } = sharedPose;
     tmpEuler.set(rx, ry, rz);
@@ -250,6 +261,23 @@ export function updateCalloutOverlay60fps(
     if (!groupHidden && !ghostedByIsolate) {
       if (isSelected) {
         alpha = 1;
+      } else if (isFieldStrip && showLabels) {
+        const movedDist =
+          Math.abs(px - part.assembledPos[0]) +
+          Math.abs(py - part.assembledPos[1]) +
+          Math.abs(pz - part.assembledPos[2]);
+        const hl = fieldStripStore.getPartHighlight(
+          activeWeaponId,
+          part.id,
+          nowMs
+        );
+        if (hl !== 'none' || part.labelAppearAt <= 0.01) {
+          alpha = 1;
+        } else if (movedDist > 0.06) {
+          alpha = smoothAlpha(0.06, 0.45, movedDist);
+        } else if (xrayShells && part.group === 'fire_control') {
+          alpha = 0.88;
+        }
       } else if (mode === 'explode' && showLabels) {
         if (part.labelAppearAt <= 0.01) {
           alpha = 1;
@@ -522,6 +550,8 @@ export const CalloutOverlay: React.FC = () => {
   const screen = useAppStore((s) => s.screen);
   const mode = useAppStore((s) => s.mode);
   const telemetryHudOpen = useAppStore((s) => s.telemetryHudOpen);
+  const engineeringTint = useAppStore((s) => s.engineeringTint);
+  const fieldStripActive = useAppStore((s) => s.fieldStripActive);
   const sidebarCollapsed = useAppStore((s) => s.sidebarCollapsed);
   const selectedPartId = useAppStore((s) => s.selectedPartId);
   const hoveredPartId = useAppStore((s) => s.hoveredPartId);
@@ -542,6 +572,8 @@ export const CalloutOverlay: React.FC = () => {
     screen,
     mode,
     telemetryHudOpen,
+    engineeringTint,
+    fieldStripActive,
     sidebarCollapsed,
     selectedPartId,
     activeWeaponId,
@@ -604,7 +636,23 @@ export const CalloutOverlay: React.FC = () => {
                 isSelected ? 'selected' : ''
               } ${isHovered ? 'hovered' : ''}`}
               style={{ opacity: 0, pointerEvents: 'none' }}
-              onClick={() => selectPart(isSelected ? null : part.id)}
+              onClick={(e) => {
+                const st = useAppStore.getState();
+                if (
+                  st.fieldStripActive &&
+                  st.mode === 'explode' &&
+                  !e.shiftKey
+                ) {
+                  fieldStripStore.attemptPartClick(activeWeaponId, part.id);
+                  return;
+                }
+                if (st.malfunctionActive && !e.shiftKey) {
+                  if (malfunctionStore.handlePartClick(activeWeaponId, part.id)) {
+                    return;
+                  }
+                }
+                selectPart(isSelected ? null : part.id);
+              }}
               onMouseEnter={() => hoverPart(part.id)}
               onMouseLeave={() => hoverPart(null)}
             >

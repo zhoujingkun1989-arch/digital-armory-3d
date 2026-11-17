@@ -1,0 +1,1771 @@
+/* ==========================================================================
+   Collector Military Monograph & Pre-Press Print Studio (`monograph.css`)
+   ========================================================================== */
+
+.monograph-print-portal {
+  display: none;
+}
+
+/* Native <dialog> Modal Studio Shell (strictly scoped to [open] per dialog guide) */
+.monograph-dialog {
+  margin: auto;
+  width: min(1380px, calc(100vw - 24px));
+  height: min(94dvh, 1080px);
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  border-radius: 16px;
+  border: 1px solid rgba(245, 158, 11, 0.34);
+  background: #0b1018;
+  color: #f1f5f9;
+  box-shadow: 0 32px 88px rgba(0, 0, 0, 0.82);
+  overflow: hidden;
+}
+
+.monograph-dialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.monograph-dialog:modal {
+  overscroll-behavior: contain;
+}
+
+.monograph-dialog::backdrop {
+  overflow: hidden;
+  overscroll-behavior: contain;
+  background: rgba(3, 7, 14, 0.84);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Studio Top Header */
+.monograph-studio-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  padding: 12px 18px 10px;
+  background: linear-gradient(180deg, #111927 0%, #0d1420 100%);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+  flex-shrink: 0;
+}
+
+.ms-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
+.ms-studio-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 5px;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.44);
+  color: #fbbf24;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+}
+
+.ms-serial-pill {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #38bdf8;
+}
+
+.ms-studio-title {
+  font-size: 15.5px;
+  font-weight: 800;
+  color: #f8fafc;
+  line-height: 1.25;
+}
+
+.ms-studio-sub {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 1px;
+}
+
+.ms-header-right {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.ms-reshoot-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-block-size: 32px;
+  padding: 5px 11px;
+  border-radius: 8px;
+  background: rgba(30, 41, 59, 0.78);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  color: #e2e8f0;
+  font-size: 11.5px;
+  font-weight: 600;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.ms-reshoot-btn:hover:not(:disabled) {
+  background: rgba(51, 65, 85, 0.85);
+  border-color: #38bdf8;
+}
+
+.ms-reshoot-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.ms-print-primary-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-block-size: 34px;
+  padding: 6px 15px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+  border: 1px solid rgba(251, 191, 36, 0.65);
+  color: #ffffff;
+  font-size: 12.5px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  box-shadow: 0 6px 18px rgba(217, 119, 6, 0.35);
+  transition: filter 0.15s ease, opacity 0.15s ease;
+}
+
+.ms-print-primary-btn:hover:not(:disabled) {
+  filter: brightness(1.08);
+}
+
+.ms-print-primary-btn:disabled {
+  opacity: 0.72;
+  cursor: wait;
+}
+
+.ms-close-form {
+  display: inline-flex;
+}
+
+.ms-close-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 32px;
+  min-inline-size: 32px;
+  border-radius: 8px;
+  background: rgba(30, 41, 59, 0.72);
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  color: #cbd5e1;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.ms-close-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: #fca5a5;
+}
+
+/* Second Toolbar Row */
+.monograph-studio-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 9px 18px;
+  background: #0d131d;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.15);
+  flex-shrink: 0;
+}
+
+.ms-weapon-strip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  padding-bottom: 2px;
+}
+
+.ms-weapon-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-block-size: 26px;
+  padding: 3px 9px;
+  border-radius: 7px;
+  background: rgba(30, 41, 59, 0.65);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  color: #cbd5e1;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: background-color 0.14s ease, border-color 0.14s ease;
+}
+
+.ms-weapon-pill:hover {
+  background: rgba(51, 65, 85, 0.78);
+}
+
+.ms-weapon-pill.active {
+  background: rgba(245, 158, 11, 0.18);
+  border-color: #f59e0b;
+  color: #fde68a;
+  font-weight: 800;
+}
+
+.ms-wp-bay {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  opacity: 0.75;
+}
+
+.ms-options-cluster {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+
+.ms-seg-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.ms-seg-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-block-size: 26px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #94a3b8;
+  white-space: nowrap;
+  transition: background-color 0.14s ease, color 0.14s ease;
+}
+
+.ms-seg-btn:hover {
+  color: #f1f5f9;
+}
+
+.ms-seg-btn.active {
+  background: #0284c7;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.ms-seg-btn.active-gold {
+  background: linear-gradient(135deg, #b45309, #d97706);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.ms-seg-btn.active-blueprint {
+  background: #f0f9ff;
+  color: #0c4a6e;
+  font-weight: 800;
+}
+
+.ms-callsign-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-left: auto;
+}
+
+.ms-callsign-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fbbf24;
+  white-space: nowrap;
+}
+
+.ms-callsign-input {
+  width: 215px;
+  min-block-size: 28px;
+  padding: 4px 9px;
+  border-radius: 7px;
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #f8fafc;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.ms-callsign-input:focus-visible {
+  outline: 2px solid #f59e0b;
+  outline-offset: 1px;
+}
+
+/* Capture Progress Banner */
+.ms-capture-progress-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 7px 18px;
+  background: rgba(217, 119, 6, 0.14);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.34);
+  flex-shrink: 0;
+}
+
+.ms-cp-left {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 11.5px;
+}
+
+.ms-cp-icon {
+  color: #fbbf24;
+  flex-shrink: 0;
+}
+
+.ms-cp-left strong {
+  display: block;
+  color: #fef3c7;
+  font-size: 11.5px;
+}
+
+.ms-cp-left span {
+  display: block;
+  color: #cbd5e1;
+  font-size: 10.5px;
+}
+
+.ms-cp-progress {
+  width: 180px;
+  height: 7px;
+  accent-color: #f59e0b;
+  flex-shrink: 0;
+}
+
+/* Preview Stage */
+.monograph-preview-stage {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: radial-gradient(circle at 50% 0%, #172030 0%, #090d14 75%);
+  padding: 12px 18px 36px;
+}
+
+.ms-page-jump-rail {
+  position: sticky;
+  top: 0;
+  z-index: 12;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 7px 11px;
+  margin-bottom: 14px;
+  border-radius: 10px;
+  background: rgba(13, 19, 30, 0.9);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  backdrop-filter: blur(12px);
+}
+
+.ms-page-jump-pill {
+  min-block-size: 24px;
+  min-inline-size: 32px;
+  padding: 2px 8px;
+  border-radius: 5px;
+  background: rgba(30, 41, 59, 0.8);
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  color: #e2e8f0;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+.ms-page-jump-pill:hover {
+  border-color: #f59e0b;
+  color: #fde68a;
+}
+
+.ms-print-tip-inline {
+  margin-left: auto;
+  font-size: 10.5px;
+  color: #94a3b8;
+}
+
+.monograph-preview-sheets {
+  display: flex;
+  justify-content: center;
+}
+
+.ms-loading-dossier {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 64px 24px;
+  color: #e2e8f0;
+  font-size: 13px;
+}
+
+/* ==========================================================================
+   A4 Page Typography & Dual Collector Edition Design System (210mm × 297mm)
+   ========================================================================== */
+
+.monograph-document {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+/* Edition 1: Obsidian & Brass Collector Folio (Vickers / H&K Grey Room) */
+.monograph-document.edition-obsidian_folio {
+  --m-bg: #090d14;
+  --m-surface: #0f1622;
+  --m-surface-alt: #131c2b;
+  --m-plate-bg: #070b11;
+  --m-text: #f8fafc;
+  --m-text-sec: #cbd5e1;
+  --m-text-muted: #94a3b8;
+  --m-accent: #f59e0b;
+  --m-accent-strong: #fbbf24;
+  --m-accent-soft: rgba(245, 158, 11, 0.14);
+  --m-cyan: #38bdf8;
+  --m-border: rgba(245, 158, 11, 0.28);
+  --m-border-subtle: rgba(148, 163, 184, 0.2);
+  --m-warn-bg: rgba(239, 68, 68, 0.12);
+  --m-warn-text: #fca5a5;
+}
+
+/* Edition 2: NATO / ISO 128 Ordnance Blueprint Manual (90% Ink-Saver) */
+.monograph-document.edition-blueprint_manual {
+  --m-bg: #faf9f5;
+  --m-surface: #ffffff;
+  --m-surface-alt: #f1f5f9;
+  --m-plate-bg: #e6edf5;
+  --m-text: #0f172a;
+  --m-text-sec: #334155;
+  --m-text-muted: #64748b;
+  --m-accent: #0369a1;
+  --m-accent-strong: #0c4a6e;
+  --m-accent-soft: rgba(3, 105, 161, 0.1);
+  --m-cyan: #b45309;
+  --m-border: rgba(3, 105, 161, 0.38);
+  --m-border-subtle: rgba(15, 23, 42, 0.15);
+  --m-warn-bg: #fef2f2;
+  --m-warn-text: #b91c1c;
+}
+
+.monograph-page {
+  position: relative;
+  width: 210mm;
+  height: 297mm;
+  padding: 8.5mm 10.5mm 8mm;
+  background: var(--m-bg);
+  color: var(--m-text);
+  border: 1px solid var(--m-border);
+  box-shadow: 0 22px 58px rgba(0, 0, 0, 0.62);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  box-sizing: border-box;
+  font-family: var(--font-sans);
+}
+
+/* Inner architectural hairline rule */
+.monograph-page::before {
+  content: '';
+  position: absolute;
+  inset: 4.5mm;
+  border: 0.75pt solid var(--m-border);
+  pointer-events: none;
+}
+
+@media screen and (max-width: 900px) {
+  .monograph-preview-sheets .monograph-document {
+    zoom: 0.68;
+  }
+}
+
+/* Running Header & ISO Footer */
+.m-page-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1.2pt solid var(--m-border);
+  flex-shrink: 0;
+}
+
+.m-ph-left,
+.m-ph-right {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.m-ph-bay {
+  padding: 1.5px 6px;
+  border-radius: 3px;
+  background: var(--m-accent-soft);
+  border: 0.8pt solid var(--m-accent);
+  color: var(--m-accent-strong);
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.m-ph-series {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 700;
+  color: var(--m-text-muted);
+  letter-spacing: 0.05em;
+}
+
+.m-ph-model {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 700;
+  color: var(--m-text-sec);
+}
+
+.m-ph-stamp {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 800;
+  color: var(--m-accent);
+}
+
+.m-page-footer {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding-top: 5px;
+  border-top: 1pt solid var(--m-border);
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  color: var(--m-text-muted);
+  flex-shrink: 0;
+}
+
+.m-pf-center {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 700;
+  color: var(--m-text-sec);
+}
+
+.m-pf-right {
+  text-align: right;
+}
+
+.m-pf-page-num {
+  font-weight: 800;
+  color: var(--m-accent-strong);
+}
+
+/* Shared Page Content Flow */
+.m-page-content {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 0;
+  min-height: 0;
+}
+
+.m-chapter-head {
+  border-left: 3px solid var(--m-accent);
+  padding-left: 9px;
+}
+
+.m-chapter-kicker {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--m-accent);
+}
+
+.m-chapter-title {
+  font-size: 16.5px;
+  font-weight: 900;
+  line-height: 1.25;
+  color: var(--m-text);
+  margin-top: 2px;
+}
+
+.m-chapter-deck {
+  font-size: 10.5px;
+  line-height: 1.48;
+  color: var(--m-text-sec);
+  margin-top: 3px;
+}
+
+.m-chapter-sub {
+  font-size: 9.8px;
+  color: var(--m-text-muted);
+  margin-top: 1px;
+}
+
+.m-subsec-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 8px;
+  margin-bottom: 5px;
+  background: var(--m-accent-soft);
+  border-left: 2.5px solid var(--m-accent);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: var(--m-accent-strong);
+}
+
+/* ==================== PAGE 01: COVER POSTER ==================== */
+.m-cover-body {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0 6px;
+}
+
+.m-cover-kicker-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.m-cover-tag {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--m-accent);
+}
+
+.m-cover-origin {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--m-surface-alt);
+  border: 0.8pt solid var(--m-border-subtle);
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--m-text-sec);
+}
+
+.m-cover-title {
+  font-size: 27px;
+  font-weight: 900;
+  line-height: 1.14;
+  letter-spacing: -0.01em;
+  color: var(--m-text);
+}
+
+.m-cover-model-code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--m-cyan);
+  margin-top: -3px;
+}
+
+.m-cover-mechanism-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 11px;
+  border-radius: 6px;
+  background: var(--m-accent-soft);
+  border: 0.9pt solid var(--m-border);
+}
+
+.m-mech-k {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--m-accent);
+  text-transform: uppercase;
+}
+
+.m-mech-v {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--m-text);
+}
+
+.m-cover-hero-frame {
+  position: relative;
+  width: 100%;
+  height: 365px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--m-plate-bg);
+  border: 1pt solid var(--m-border);
+}
+
+.m-plate-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.m-hero-corner-tl,
+.m-hero-corner-tr,
+.m-hero-corner-bl,
+.m-hero-corner-br {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-color: var(--m-accent);
+  border-style: solid;
+  pointer-events: none;
+}
+
+.m-hero-corner-tl {
+  top: 8px;
+  left: 8px;
+  border-width: 1.6pt 0 0 1.6pt;
+}
+.m-hero-corner-tr {
+  top: 8px;
+  right: 8px;
+  border-width: 1.6pt 1.6pt 0 0;
+}
+.m-hero-corner-bl {
+  bottom: 8px;
+  left: 8px;
+  border-width: 0 0 1.6pt 1.6pt;
+}
+.m-hero-corner-br {
+  bottom: 8px;
+  right: 8px;
+  border-width: 0 1.6pt 1.6pt 0;
+}
+
+.m-cover-hero-badge {
+  position: absolute;
+  bottom: 9px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  border-radius: 4px;
+  background: rgba(9, 13, 20, 0.82);
+  border: 0.75pt solid rgba(245, 158, 11, 0.45);
+  color: #fde68a;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 700;
+}
+
+.m-cover-deck {
+  font-size: 10.5px;
+  line-height: 1.56;
+  color: var(--m-text-sec);
+  text-align: justify;
+}
+
+.m-cover-specs-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.m-spec-box {
+  padding: 6px 9px;
+  border-radius: 5px;
+  background: var(--m-surface);
+  border: 0.8pt solid var(--m-border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.m-spec-box.is-accent {
+  background: var(--m-accent-soft);
+  border-color: var(--m-border);
+}
+
+.m-sk {
+  font-size: 8.5px;
+  font-weight: 700;
+  color: var(--m-text-muted);
+}
+
+.m-sv {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 800;
+  color: var(--m-text);
+}
+
+.m-iso-title-block {
+  display: grid;
+  grid-template-columns: 1fr 205px;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  background: var(--m-surface);
+  border: 1pt solid var(--m-border);
+}
+
+.m-iso-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--m-accent);
+  margin-bottom: 4px;
+}
+
+.m-cover-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.m-cover-chip {
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: var(--m-surface-alt);
+  border: 0.75pt solid var(--m-border-subtle);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--m-text-sec);
+}
+
+.m-iso-stamp-box {
+  border-left: 0.9pt dashed var(--m-border);
+  padding-left: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.m-iso-callsign {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 900;
+  color: var(--m-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.m-iso-serial {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  color: var(--m-cyan);
+  margin-top: 2px;
+}
+
+/* ==================== PAGE 02 & 03: CHRONICLE & BREAKTHROUGHS ==================== */
+.m-two-col-acts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.m-act-block {
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: var(--m-surface);
+  border: 0.8pt solid var(--m-border-subtle);
+}
+
+.m-act-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 3px;
+}
+
+.m-act-num {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 800;
+  color: var(--m-accent);
+}
+
+.m-act-era {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  color: var(--m-text-muted);
+}
+
+.m-act-title {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--m-text);
+  margin-bottom: 5px;
+}
+
+.m-act-paras {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.m-act-paras p {
+  font-size: 9.4px;
+  line-height: 1.54;
+  color: var(--m-text-sec);
+  text-align: justify;
+}
+
+.m-dropcap-p::first-letter {
+  float: left;
+  font-size: 23px;
+  font-weight: 900;
+  line-height: 0.92;
+  padding-right: 5px;
+  padding-top: 2px;
+  color: var(--m-accent);
+}
+
+.m-milestones-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.m-ms-card {
+  padding: 6px 8px;
+  border-radius: 5px;
+  background: var(--m-surface);
+  border: 0.75pt solid var(--m-border-subtle);
+}
+
+.m-ms-top {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin-bottom: 2px;
+}
+
+.m-ms-year {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 900;
+  color: var(--m-accent);
+}
+
+.m-ms-title {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: var(--m-text);
+}
+
+.m-ms-detail {
+  font-size: 8.6px;
+  line-height: 1.42;
+  color: var(--m-text-sec);
+}
+
+.m-wide-plate-card {
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--m-plate-bg);
+  border: 0.9pt solid var(--m-border);
+}
+
+.m-wide-plate-crop {
+  width: 100%;
+  height: 245px;
+  overflow: hidden;
+}
+
+.m-plate-caption {
+  padding: 4px 9px;
+  background: var(--m-surface);
+  border-top: 0.75pt solid var(--m-border-subtle);
+  font-family: var(--font-mono);
+  font-size: 8.3px;
+  color: var(--m-text-muted);
+}
+
+.m-bt-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.m-bt-card {
+  padding: 7px 9px;
+  border-radius: 6px;
+  background: var(--m-surface);
+  border: 0.85pt solid var(--m-border);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.m-bt-tag {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 800;
+  color: var(--m-accent);
+}
+
+.m-bt-title {
+  font-size: 10.2px;
+  font-weight: 800;
+  color: var(--m-text);
+  line-height: 1.28;
+}
+
+.m-bt-desc {
+  font-size: 8.7px;
+  line-height: 1.46;
+  color: var(--m-text-sec);
+  flex: 1 1 auto;
+}
+
+.m-bt-focus {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--m-cyan);
+}
+
+/* ==================== PAGE 04: CUTAWAY, 6 ROLES & 7 PHASES ==================== */
+.m-dual-plates-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.m-half-plate-card {
+  border-radius: 6px;
+  overflow: hidden;
+  background: var(--m-plate-bg);
+  border: 0.9pt solid var(--m-border);
+}
+
+.m-half-plate-box {
+  width: 100%;
+  height: 205px;
+}
+
+.m-roles-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.m-role-card {
+  padding: 6px 8px;
+  border-radius: 5px;
+  background: var(--m-surface);
+  border: 0.75pt solid var(--m-border-subtle);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.m-role-head {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.m-role-swatch {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.m-role-name {
+  font-size: 9.6px;
+  font-weight: 800;
+  color: var(--m-text);
+}
+
+.m-role-count {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 800;
+  color: var(--m-text-muted);
+}
+
+.m-role-desc {
+  font-size: 8.2px;
+  line-height: 1.38;
+  color: var(--m-text-sec);
+}
+
+.m-role-parts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-top: 1px;
+}
+
+.m-role-pill {
+  padding: 1px 4.5px;
+  border-radius: 3px;
+  background: var(--m-surface-alt);
+  font-size: 7.8px;
+  color: var(--m-text-sec);
+}
+
+.m-role-pill b {
+  font-family: var(--font-mono);
+  color: var(--m-text);
+}
+
+.m-cycle7-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.m-phase-cell {
+  padding: 5px 5.5px;
+  border-radius: 4px;
+  background: var(--m-surface);
+  border: 0.75pt solid var(--m-border-subtle);
+}
+
+.m-phase-top {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-bottom: 3px;
+}
+
+.m-phase-num {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 900;
+  color: var(--m-accent);
+}
+
+.m-phase-short {
+  font-size: 8.6px;
+  font-weight: 800;
+  color: var(--m-text);
+}
+
+.m-phase-desc {
+  font-size: 7.6px;
+  line-height: 1.36;
+  color: var(--m-text-sec);
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ==================== PAGE 05: 100% EXPLODED VECTOR BLUEPRINT ==================== */
+.m-exploded-poster-frame {
+  border-radius: 7px;
+  overflow: hidden;
+  background: var(--m-plate-bg);
+  border: 1pt solid var(--m-border);
+}
+
+.m-exploded-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+}
+
+.monograph-exploded-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.m-poster-index-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 3.5px 6px;
+  padding: 7px 8px;
+  border-radius: 6px;
+  background: var(--m-surface);
+  border: 0.8pt solid var(--m-border-subtle);
+}
+
+.m-poster-idx-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  font-size: 8.2px;
+}
+
+.m-poster-idx-code {
+  padding: 0.5px 4px;
+  border-radius: 3px;
+  border: 0.75pt solid currentColor;
+  font-family: var(--font-mono);
+  font-size: 7.8px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.m-poster-idx-name {
+  font-weight: 700;
+  color: var(--m-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.m-poster-idx-env {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 7.2px;
+  color: var(--m-text-muted);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ==================== PAGE 06: PRECISION BOM LEDGER ==================== */
+.m-bom-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 8.5px;
+  background: var(--m-surface);
+  border: 0.8pt solid var(--m-border-subtle);
+}
+
+.m-bom-table th {
+  padding: 4.5px 6px;
+  text-align: left;
+  background: var(--m-accent-soft);
+  border-bottom: 1pt solid var(--m-border);
+  font-family: var(--font-mono);
+  font-size: 8.2px;
+  font-weight: 800;
+  color: var(--m-accent-strong);
+}
+
+.m-bom-table td {
+  padding: 3.3px 6px;
+  border-bottom: 0.5pt solid var(--m-border-subtle);
+  vertical-align: middle;
+}
+
+.m-bom-badge {
+  display: inline-block;
+  padding: 0.5px 4.5px;
+  border-radius: 3px;
+  border: 0.8pt solid currentColor;
+  font-family: var(--font-mono);
+  font-size: 7.8px;
+  font-weight: 800;
+}
+
+.td-comp strong {
+  display: inline;
+  font-weight: 800;
+  color: var(--m-text);
+  margin-right: 5px;
+}
+
+.td-comp span {
+  color: var(--m-text-muted);
+  font-size: 7.8px;
+}
+
+.td-mat {
+  color: var(--m-text-sec);
+  white-space: nowrap;
+}
+
+.td-env {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  color: var(--m-cyan);
+  white-space: nowrap;
+}
+
+.td-prin {
+  color: var(--m-text-sec);
+  line-height: 1.28;
+}
+
+/* ==================== PAGE 07: BALLISTICS & 1:1 CARTRIDGE ==================== */
+.m-chart-panel {
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: var(--m-surface);
+  border: 0.85pt solid var(--m-border-subtle);
+}
+
+.m-chart-panel.compact-chart .monograph-vector-svg {
+  max-height: 195px;
+}
+
+.monograph-vector-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.m-cartridge-split {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 8px;
+}
+
+.m-cartridge-diagram-card,
+.m-cmeta-box {
+  padding: 7px 9px;
+  border-radius: 6px;
+  background: var(--m-surface);
+  border: 0.8pt solid var(--m-border-subtle);
+}
+
+.m-cartridge-meta-col {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.m-cmeta-title {
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--m-text);
+}
+
+.m-cmeta-sub {
+  font-size: 9px;
+  color: var(--m-accent);
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+
+.m-cmeta-kv-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 6px;
+}
+
+.m-cmeta-kv-list > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 8.6px;
+  border-bottom: 0.5pt dashed var(--m-border-subtle);
+  padding-bottom: 2px;
+}
+
+.m-cmeta-kv-list span {
+  color: var(--m-text-muted);
+}
+
+.m-cmeta-kv-list strong {
+  color: var(--m-text);
+  text-align: right;
+}
+
+.m-cmeta-note {
+  font-size: 8.5px;
+  line-height: 1.45;
+  color: var(--m-text-sec);
+}
+
+.monograph-energy-ladder {
+  display: flex;
+  flex-direction: column;
+  gap: 4.5px;
+}
+
+.m-energy-row {
+  display: grid;
+  grid-template-columns: 74px 1fr 112px;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 8.2px;
+  color: var(--m-text-sec);
+}
+
+.m-energy-row.is-current {
+  color: var(--m-accent-strong);
+  font-weight: 800;
+}
+
+.m-energy-bar-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--m-surface-alt);
+  overflow: hidden;
+}
+
+.m-energy-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--m-text-muted);
+}
+
+.m-energy-row.is-current .m-energy-bar-fill {
+  background: var(--m-accent);
+}
+
+.m-energy-val {
+  text-align: right;
+}
+
+/* ==================== PAGE 08: FIELD-STRIP, STOPPAGES & QR SEAL ==================== */
+.m-fs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.m-fs-card {
+  padding: 6px 8px;
+  border-radius: 5px;
+  background: var(--m-surface);
+  border: 0.75pt solid var(--m-border-subtle);
+}
+
+.m-fs-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.m-fs-step {
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: var(--m-accent-soft);
+  color: var(--m-accent-strong);
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 900;
+}
+
+.m-fs-title {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: var(--m-text);
+}
+
+.m-fs-hint {
+  font-size: 8.4px;
+  line-height: 1.4;
+  color: var(--m-text-sec);
+}
+
+.m-fs-warn {
+  margin-top: 3px;
+  padding: 2.5px 6px;
+  border-radius: 3px;
+  background: var(--m-warn-bg);
+  color: var(--m-warn-text);
+  font-size: 7.9px;
+  line-height: 1.35;
+}
+
+.m-malf-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.m-malf-card {
+  padding: 6px 8px;
+  border-radius: 5px;
+  background: var(--m-surface);
+  border: 0.75pt solid var(--m-border-subtle);
+}
+
+.m-malf-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.m-malf-code {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 800;
+  color: var(--m-accent);
+}
+
+.m-malf-title {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: var(--m-text);
+}
+
+.m-malf-cause {
+  font-size: 8.2px;
+  line-height: 1.38;
+  color: var(--m-text-sec);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.m-malf-drill {
+  margin-top: 3px;
+  font-family: var(--font-mono);
+  font-size: 7.8px;
+  font-weight: 700;
+  color: var(--m-cyan);
+}
+
+.m-back-seal-card {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 11px;
+  border-radius: 7px;
+  background: var(--m-surface);
+  border: 1.1pt solid var(--m-border);
+}
+
+.m-qr-frame {
+  width: 112px;
+  height: 112px;
+  padding: 5px;
+  border-radius: 6px;
+  background: #ffffff;
+  border: 1pt solid var(--m-border);
+}
+
+.m-qr-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.m-seal-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 3px;
+}
+
+.m-seal-badge {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: var(--m-accent);
+}
+
+.m-seal-serial {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 800;
+  color: var(--m-cyan);
+}
+
+.m-seal-title {
+  font-size: 12px;
+  font-weight: 900;
+  color: var(--m-text);
+  margin-bottom: 3px;
+}
+
+.m-seal-sub {
+  font-size: 8.6px;
+  line-height: 1.42;
+  color: var(--m-text-sec);
+}
+
+.m-seal-url {
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 7.8px;
+  color: var(--m-accent-strong);
+  word-break: break-all;
+}
+
+.m-seal-colophon {
+  margin-top: 4px;
+  font-size: 7.6px;
+  line-height: 1.38;
+  color: var(--m-text-muted);
+}
+
+/* Plate Loading Placeholder */
+.m-plate-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: var(--m-text-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.m-plate-spinner {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--m-border-subtle);
+  border-top-color: var(--m-accent);
+  @media (prefers-reduced-motion: no-preference) {
+    animation: m-spin 0.9s linear infinite;
+  }
+}
+
+@keyframes m-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Armory Plaque Monograph CTA Button */
+.plaque-monograph-cta {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 11px;
+  margin-top: 7px;
+  border-radius: 10px;
+  background: linear-gradient(
+    135deg,
+    rgba(217, 119, 6, 0.18) 0%,
+    rgba(180, 83, 9, 0.12) 100%
+  );
+  border: 1px solid rgba(245, 158, 11, 0.44);
+  color: var(--color-text-primary);
+  text-align: left;
+  transition:
+    border-color 0.16s ease,
+    background-color 0.16s ease;
+}
+
+.plaque-monograph-cta:hover {
+  border-color: #fbbf24;
+  background: rgba(217, 119, 6, 0.25);
+}
+
+.plaque-monograph-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(245, 158, 11, 0.22);
+  color: #fbbf24;
+  flex-shrink: 0;
+}
+
+[data-theme='light'] .plaque-monograph-icon {
+  color: #b45309;
+}
+
+/* ==========================================================================
+   Zero-Margin A4 Vector Print Stylesheet (`@media print`)
+   ========================================================================== */
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
+@media print {
+  html,
+  body,
+  #root,
+  .app-shell {
+    width: 210mm !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    background: transparent !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .canvas-container,
+  .callout-overlay-root,
+  .immersive-floating-bar,
+  .hud-chrome-layer,
+  .monograph-dialog,
+  .tex-modal-backdrop {
+    display: none !important;
+  }
+
+  .monograph-print-portal {
+    display: block !important;
+    position: static !important;
+    width: 210mm !important;
+  }
+
+  .monograph-document {
+    display: block !important;
+    gap: 0 !important;
+  }
+
+  .monograph-page {
+    width: 210mm !important;
+    height: 297mm !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    break-after: page;
+    page-break-after: always;
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .monograph-page:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+}

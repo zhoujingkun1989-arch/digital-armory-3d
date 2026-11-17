@@ -16,18 +16,27 @@ import {
   BallisticsSystem,
   WeaponRecoilGroup,
 } from '../actors/BallisticsSystem';
+import {
+  CARTRIDGE_STAGE_DATUM_Y,
+  CartridgeCutawayStage,
+} from '../actors/CartridgeCutawayStage';
 import { ExhibitionTurntable } from '../actors/ExhibitionTurntable';
+import { MagazineAmmoStack } from '../actors/MagazineAmmoStack';
+import { MalfunctionActor } from '../actors/MalfunctionActor';
 import { PartActor } from '../actors/PartActor';
 import { playBrassCasingBounceSound } from '../audio/mechanicalSoundEngine';
 import { updateCalloutOverlay60fps } from '../callout/CalloutOverlay';
+import { CARTRIDGE_LAB_SPECS } from '../cartridges/cartridgeSpecs';
 import { playbackClock } from '../clock/playbackClock';
+import { fieldStripStore } from '../fieldstrip/fieldStripStore';
 import {
   getCachedPartGeometry,
   getPartLocalCenter,
   useWeaponGeometries,
 } from '../geometry/geometryService';
 import { InteractiveActionController } from '../interaction/InteractiveActionController';
-import { computePartTransform } from '../kinematics/math';
+import { computePartTransform, createMutablePose } from '../kinematics/math';
+import { malfunctionStore } from '../malfunctions/malfunctionStore';
 import {
   type ArmoryThermalVisualState,
   setArmoryThermalVisualState,
@@ -37,6 +46,8 @@ import {
   setBrassFloorImpactListener,
 } from '../physics/armoryPhysics';
 import { ArmoryPostProcessing } from './ArmoryPostProcessing';
+import { CaliperActor } from './CaliperActor';
+import { MonographCaptureRig } from '../../features/monograph/MonographCaptureRig';
 import {
   ArmoryStudioEnvironment,
   GunsmithStageMat,
@@ -59,6 +70,7 @@ const _focusEuler = new THREE.Euler();
 const _focusPartPos = new THREE.Vector3();
 const _focusCurrentTarget = new THREE.Vector3();
 const _focusViewDir = new THREE.Vector3();
+const _focusFieldStripPose = createMutablePose();
 const _thermalSync: ArmoryThermalVisualState = {
   weaponId: 'ak15',
   barrelHeat01: 0,
@@ -162,6 +174,12 @@ const DisassemblyRig: React.FC = () => {
   const selectedPartId = useAppStore((s) => s.selectedPartId);
   const cameraCommand = useAppStore((s) => s.cameraCommand);
   const environmentPreset = useAppStore((s) => s.environmentPreset);
+  const hudHidden = useAppStore((s) => s.hudHidden);
+  const activeCartridgeCaliber = useAppStore((s) => s.activeCartridgeCaliber);
+  const cartridgeLineupOverview = useAppStore(
+    (s) => s.cartridgeLineupOverview
+  );
+  const cartridgeCameraSeq = useAppStore((s) => s.cartridgeCameraSeq);
 
   const plugin = useWeaponPlugin(activeWeaponId);
   // Triggers background Web Worker CSG build & re-renders as part batches stream in
@@ -193,8 +211,56 @@ const DisassemblyRig: React.FC = () => {
     });
   }, []);
 
+  // Frame 1:1 SAAMI Cartridge Cutaway Lab (full 7-caliber lineup vs single specimen closeup)
+  useEffect(() => {
+    if (screen !== 'cartridges' || size.width <= 0 || size.height <= 0) return;
+
+    const perspCam = camera as THREE.PerspectiveCamera;
+    perspCam.clearViewOffset();
+    turntableRigRef.current.active = false;
+    userOrbitedRef.current = false;
+
+    const aspect = Math.max(0.45, size.width / Math.max(1, size.height));
+    if (cartridgeLineupOverview) {
+      const distZ = Math.max(29.5, 36.0 / aspect);
+      flyRef.current.goalTarget.set(1.6, CARTRIDGE_STAGE_DATUM_Y + 5.8, 0);
+      flyRef.current.goalPos.set(1.6, CARTRIDGE_STAGE_DATUM_Y + 7.2, distZ);
+    } else {
+      const spec = CARTRIDGE_LAB_SPECS[activeCartridgeCaliber];
+      const oalCm = spec.oalMm / 10;
+      const midY = CARTRIDGE_STAGE_DATUM_Y + oalCm * 0.52;
+      const closeupZ =
+        Math.max(8.2, oalCm * 1.72) * Math.max(1, 0.92 / aspect);
+      flyRef.current.goalTarget.set(spec.lineupXCm, midY, 0);
+      flyRef.current.goalPos.set(
+        spec.lineupXCm + 1.05,
+        midY + oalCm * 0.14,
+        closeupZ
+      );
+    }
+
+    if (!hasSnappedInitialRef.current && controlsRef.current) {
+      camera.position.copy(flyRef.current.goalPos);
+      controlsRef.current.target.copy(flyRef.current.goalTarget);
+      controlsRef.current.update();
+      flyRef.current.active = false;
+      hasSnappedInitialRef.current = true;
+    } else {
+      flyRef.current.active = true;
+    }
+  }, [
+    screen,
+    activeCartridgeCaliber,
+    cartridgeLineupOverview,
+    cartridgeCameraSeq,
+    size.width,
+    size.height,
+    camera,
+  ]);
+
   // Respond to explicit camera preset buttons, weapon switches, screen transitions & viewport/window rect changes
   useEffect(() => {
+    if (screen === 'cartridges') return;
     const manifest = getWeaponManifest(activeWeaponId);
     const presets = manifest.cameraPresets;
     const meta = manifest.workbenchMeta;
@@ -215,7 +281,8 @@ const DisassemblyRig: React.FC = () => {
         t,
         screen,
         size.width,
-        size.height
+        size.height,
+        useAppStore.getState().hudHidden
       );
       perspCam.setViewOffset(
         size.width,
@@ -282,6 +349,51 @@ const DisassemblyRig: React.FC = () => {
     camera,
   ]);
 
+  // Smoothly re-center or restore turntable view-offset when Clean View (`hudHidden`) toggles on Showcase / Armory
+  useEffect(() => {
+    if (
+      screen === 'workbench' ||
+      screen === 'cartridges' ||
+      cameraCommand.preset !== 'armory_showcase' ||
+      size.width <= 0 ||
+      size.height <= 0
+    ) {
+      return;
+    }
+    const manifest = getWeaponManifest(activeWeaponId);
+    const t = playbackClock.getState().targetProgress;
+    const tf = computeTurntableFraming(
+      activeWeaponId,
+      manifest.workbenchMeta.scaleProfile,
+      t,
+      screen,
+      size.width,
+      size.height,
+      hudHidden
+    );
+    const perspCam = camera as THREE.PerspectiveCamera;
+    perspCam.setViewOffset(
+      size.width,
+      size.height,
+      tf.viewOffsetX,
+      tf.viewOffsetY,
+      size.width,
+      size.height
+    );
+    turntableRigRef.current.goalTarget.set(tf.targetX, tf.targetY, tf.targetZ);
+    turntableRigRef.current.goalHorizRadius = tf.horizRadius;
+    turntableRigRef.current.goalOffsetY = tf.offsetY;
+    turntableRigRef.current.active = true;
+  }, [
+    hudHidden,
+    screen,
+    activeWeaponId,
+    cameraCommand.preset,
+    size.width,
+    size.height,
+    camera,
+  ]);
+
   // Smoothly focus camera when user selects a part in Workbench
   useEffect(() => {
     if (!selectedPartId) return;
@@ -302,14 +414,32 @@ const DisassemblyRig: React.FC = () => {
     const spec = loadedPlugin?.parts.find((p) => p.id === selectedPartId);
     if (!spec) return;
 
-    const { position, rotation } = computePartTransform(
-      spec,
-      clock.targetProgress
-    );
     const localCenter = getPartLocalCenter(state.activeWeaponId, spec.id);
 
-    _focusEuler.set(rotation[0], rotation[1], rotation[2]);
-    _focusPartPos.set(position[0], position[1], position[2]);
+    if (state.fieldStripActive && state.mode === 'explode') {
+      fieldStripStore.evaluatePartPoseInto(
+        state.activeWeaponId,
+        spec,
+        _focusFieldStripPose
+      );
+      _focusEuler.set(
+        _focusFieldStripPose.rx,
+        _focusFieldStripPose.ry,
+        _focusFieldStripPose.rz
+      );
+      _focusPartPos.set(
+        _focusFieldStripPose.px,
+        _focusFieldStripPose.py,
+        _focusFieldStripPose.pz
+      );
+    } else {
+      const { position, rotation } = computePartTransform(
+        spec,
+        clock.targetProgress
+      );
+      _focusEuler.set(rotation[0], rotation[1], rotation[2]);
+      _focusPartPos.set(position[0], position[1], position[2]);
+    }
     _focusWorldCenter
       .set(localCenter[0], localCenter[1], localCenter[2])
       .applyEuler(_focusEuler)
@@ -378,8 +508,17 @@ const DisassemblyRig: React.FC = () => {
     );
     playbackClock.setAnimatedProgress(nextAnimatedT);
 
+    // 2b. Step 60fps per-part Field-Strip DAG & Malfunction Clearing trajectories (Zero-GC)
+    if (state.fieldStripActive && state.mode === 'explode') {
+      fieldStripStore.stepAnimations(dt);
+    }
+    if (state.malfunctionActive && state.screen === 'workbench') {
+      malfunctionStore.stepAnimations(dt);
+    }
+
     if (
       state.screen !== 'workbench' &&
+      state.screen !== 'cartridges' &&
       state.cameraCommand.preset === 'armory_showcase' &&
       Math.abs(nextAnimatedT - lastFramedTRef.current) > 0.002 &&
       size.width > 0 &&
@@ -392,7 +531,8 @@ const DisassemblyRig: React.FC = () => {
         nextAnimatedT,
         state.screen,
         size.width,
-        size.height
+        size.height,
+        state.hudHidden
       );
       turntableRigRef.current.goalTarget.set(
         tf.targetX,
@@ -433,7 +573,11 @@ const DisassemblyRig: React.FC = () => {
 
     // 3. Firing cycle simulation playback
     if (state.mode === 'firing') {
-      if (state.isFiringPlaying && nextAnimatedT < 0.02) {
+      if (
+        state.isFiringPlaying &&
+        !state.malfunctionActive &&
+        nextAnimatedT < 0.02
+      ) {
         const step = BASE_FIRING_RATE * state.fireSpeedMultiplier * dt;
         const nextF = playbackClock.getState().fireProgress + step;
         if (nextF >= 1) {
@@ -449,27 +593,31 @@ const DisassemblyRig: React.FC = () => {
         }
       }
 
-      const curClock = playbackClock.getState();
-      const targetF = curClock.fireProgress;
-      if (Math.abs(targetF - curClock.animatedFireProgress) > 0.5) {
-        playbackClock.setAnimatedFireProgress(targetF);
-      } else {
-        playbackClock.setAnimatedFireProgress(
-          THREE.MathUtils.damp(
-            curClock.animatedFireProgress,
-            targetF,
-            state.isFiringPlaying ? 24 : 12,
-            dt
-          )
-        );
+      if (!state.malfunctionActive) {
+        const curClock = playbackClock.getState();
+        const targetF = curClock.fireProgress;
+        if (Math.abs(targetF - curClock.animatedFireProgress) > 0.5) {
+          playbackClock.setAnimatedFireProgress(targetF);
+        } else {
+          playbackClock.setAnimatedFireProgress(
+            THREE.MathUtils.damp(
+              curClock.animatedFireProgress,
+              targetF,
+              state.isFiringPlaying ? 24 : 12,
+              dt
+            )
+          );
+        }
       }
     } else {
       playbackClock.setAnimatedFireProgress(0);
     }
 
-    // 4. Initial snap + smooth cylindrical turntable framing (Showcase/Armory) or Cartesian fly-to (Workbench)
+    // 4. Initial snap + smooth cylindrical turntable framing (Showcase/Armory) or Cartesian fly-to (Workbench / Cartridge Lab)
+    const onTurntable =
+      state.screen === 'showcase' || state.screen === 'armory';
     if (!hasSnappedInitialRef.current && controlsRef.current) {
-      if (state.screen !== 'workbench') {
+      if (onTurntable) {
         const gt = turntableRigRef.current.goalTarget;
         const gr = turntableRigRef.current.goalHorizRadius;
         const gy = turntableRigRef.current.goalOffsetY;
@@ -491,7 +639,7 @@ const DisassemblyRig: React.FC = () => {
     } else if (
       turntableRigRef.current.active &&
       controlsRef.current &&
-      state.screen !== 'workbench'
+      onTurntable
     ) {
       const ctrl = controlsRef.current;
       const gt = turntableRigRef.current.goalTarget;
@@ -559,7 +707,7 @@ const DisassemblyRig: React.FC = () => {
   });
 
   const weaponParts = plugin?.parts ?? [];
-  const isTurntableScreen = screen !== 'workbench';
+  const isTurntableScreen = screen === 'showcase' || screen === 'armory';
 
   return (
     <>
@@ -568,13 +716,13 @@ const DisassemblyRig: React.FC = () => {
         makeDefault
         enableDamping
         dampingFactor={0.07}
-        enableZoom={screen !== 'showcase'}
+        enableZoom={screen !== 'showcase' || hudHidden}
         enablePan={!isTurntableScreen}
         minPolarAngle={isTurntableScreen ? Math.PI * 0.3 : 0}
         maxPolarAngle={isTurntableScreen ? Math.PI * 0.58 : Math.PI}
         autoRotate={isTurntableScreen && armoryAutoRotate && !showcaseDragging}
         autoRotateSpeed={1.65}
-        minDistance={4}
+        minDistance={3}
         maxDistance={280}
         onStart={() => {
           flyRef.current.active = false;
@@ -583,27 +731,36 @@ const DisassemblyRig: React.FC = () => {
         }}
       />
 
-      <ExhibitionTurntable
-        weaponId={activeWeaponId}
-        environmentPreset={environmentPreset}
-      />
-
-      {plugin && (
+      {screen === 'cartridges' ? (
+        <CartridgeCutawayStage />
+      ) : (
         <>
-          <WeaponRecoilGroup>
-            {weaponParts.map((part) => (
-              <PartActor
-                key={part.id}
-                weaponId={activeWeaponId}
-                part={part}
-                geometry={getCachedPartGeometry(activeWeaponId, part.id)}
-                customPbrBinding={plugin.pbrBindings[part.id]}
-                computeKinematics={plugin.computeFiringKinematics}
-              />
-            ))}
-            <BallisticsSystem worldFx={false} />
-          </WeaponRecoilGroup>
-          <ArmoryWorldFx />
+          <ExhibitionTurntable
+            weaponId={activeWeaponId}
+            environmentPreset={environmentPreset}
+          />
+
+          {plugin && (
+            <>
+              <WeaponRecoilGroup>
+                {weaponParts.map((part) => (
+                  <PartActor
+                    key={part.id}
+                    weaponId={activeWeaponId}
+                    part={part}
+                    geometry={getCachedPartGeometry(activeWeaponId, part.id)}
+                    customPbrBinding={plugin.pbrBindings[part.id]}
+                    computeKinematics={plugin.computeFiringKinematics}
+                  />
+                ))}
+                <MagazineAmmoStack />
+                <BallisticsSystem worldFx={false} />
+                <MalfunctionActor />
+              </WeaponRecoilGroup>
+              <CaliperActor />
+              <ArmoryWorldFx />
+            </>
+          )}
         </>
       )}
     </>
@@ -665,6 +822,8 @@ export const ArmoryViewport: React.FC = () => {
         enabled={postFxEnabled}
         environmentPreset={environmentPreset}
       />
+
+      <MonographCaptureRig />
     </Canvas>
   );
 };

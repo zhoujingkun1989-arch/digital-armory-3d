@@ -130,10 +130,10 @@
 /* ==================== R&D Documentary Drawer (`WeaponStoryDrawer`) ==================== */
 .story-drawer {
   position: absolute;
-  top: 72px;
+  top: var(--hud-top-offset, 72px);
   right: 16px;
   bottom: 24px;
-  width: min(468px, calc(100vw - 32px));
+  width: min(468px, calc(100% - 32px));
   z-index: calc(var(--z-hud) + 5);
   display: flex;
   flex-direction: column;
@@ -770,17 +770,24 @@
 
 /* ==================== Upgraded PartInspectorCard Voice & Deep Sections ==================== */
 .inspector-card.has-deep-narration {
-  width: min(352px, calc(100vw - 32px));
-  max-height: calc(100vh - 232px);
+  width: min(352px, calc(100% - 32px));
+  max-height: calc(
+    100vh - var(--hud-top-offset, 72px) - var(--hud-bottom-offset, 220px)
+  );
+  max-height: calc(
+    100dvh - var(--hud-top-offset, 72px) - var(--hud-bottom-offset, 220px)
+  );
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  overflow: clip;
   padding: 12px 14px;
 }
 
 .inspector-scroll-area {
   flex: 1;
   overflow-y: auto;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
   padding-right: 2px;
   margin-bottom: 10px;
 }
@@ -929,10 +936,10 @@
 
 .story-mini-player {
   position: absolute;
-  top: 70px;
+  top: var(--hud-top-offset, 72px);
   left: 50%;
   transform: translateX(-50%);
-  width: min(640px, calc(100vw - 28px));
+  width: min(640px, calc(100% - 28px));
   z-index: calc(var(--z-hud) + 5);
   padding: 7px 10px;
   border-radius: 12px;
@@ -1134,9 +1141,9 @@
 
 .inspector-mini-pill {
   position: absolute;
-  top: 72px;
+  top: var(--hud-top-offset, 72px);
   right: 16px;
-  max-width: min(392px, calc(100vw - 32px));
+  max-width: min(392px, calc(100% - 32px));
   z-index: var(--z-hud);
   display: flex;
   align-items: center;
@@ -1240,24 +1247,15 @@
   color: #ffffff;
 }
 
-@media (max-width: 1260px) {
-  .story-drawer,
-  .story-mini-player {
-    top: 108px;
-  }
-}
-
 @media (max-width: 720px) {
   .story-drawer {
-    top: 142px;
     left: 12px;
     right: 12px;
     width: auto;
   }
 
   .story-mini-player {
-    top: 142px;
-    width: calc(100vw - 24px);
+    width: calc(100% - 24px);
   }
 
   .story-mini-acts {

@@ -578,15 +578,20 @@ export const SCAR_PARTS: WeaponPartSpec[] = [
     nameEn: '4-Way Anti-Tilt High-Visibility Follower',
     group: 'magazine',
     material: 'follower_orange',
-    assembledPos: [2.45, -1.35, 0],
+    assembledPos: [2.847, -7.75, 0],
+    assembledRot: [0, 0, 0.15],
     explodeSteps: [
       ...SCAR_MAG_STAGE1,
-      { range: [0.34, 0.56], offset: [-0.3, 2.9, 0] },
+      {
+        range: [0.35, 0.56],
+        offset: [-0.4, 9.3, 0],
+        rotation: [0, 0, -0.15],
+      },
     ],
     calloutDir: 'down',
     calloutStem: 46,
     calloutAnchor: [0, 0.2, 0],
-    labelAppearAt: 0.34,
+    labelAppearAt: 0.35,
     roleTag: '消除双排供弹卡滞 / 打空末发顶起左侧空仓挂机杆',
     description:
       '采用前后长导裙防倾侧自润滑聚合物制造（SCAR 原厂改进重点之一），确保双排交错 5.56mm 枪弹平顺上托，并在最后一发弹射尽后顶起左侧乒乓球拍空挂卡笋挂住枪机。',
@@ -602,11 +607,11 @@ export const SCAR_PARTS: WeaponPartSpec[] = [
     assembledPos: [2.45, -1.8, 0],
     explodeSteps: [
       ...SCAR_MAG_STAGE1,
-      { range: [0.34, 0.58], offset: [1.2, -3.4, 0] },
+      { range: [0.34, 0.58], offset: [1.55, -3.4, 0] },
     ],
     calloutDir: 'down',
     calloutStem: 36,
-    calloutAnchor: [0.5, -6.5, 0],
+    calloutAnchor: [0.55, -6.85, 0],
     labelAppearAt: 0.34,
     roleTag: '满载长期储存不衰减 / 稳定推升 30 发 5.56mm NATO 弹药',
     description:
@@ -810,7 +815,15 @@ export function computeScarFiringKinematics(
 
     case 'scar_mag_follower': {
       const feedPulse = seg(f, 0.52, 0.63) - seg(f, 0.66, 0.8);
-      dy = 0.38 * feedPulse;
+      dx = -0.057 * feedPulse;
+      dy = 0.376 * feedPulse;
+      break;
+    }
+
+    case 'scar_mag_spring': {
+      const feedPulse = seg(f, 0.52, 0.63) - seg(f, 0.66, 0.8);
+      dx = -0.028 * feedPulse;
+      dy = 0.188 * feedPulse;
       break;
     }
 

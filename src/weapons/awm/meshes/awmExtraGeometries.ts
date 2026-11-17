@@ -1581,13 +1581,13 @@ class WideOvalHelixCurve extends THREE.Curve<THREE.Vector3> {
 }
 
 /**
- * M-03: Heavy Wide-Oval Stainless .338 LM Magazine Spring
- * assembledPos: [1.35, -3.28, 0] -> Spans Local Y in [-0.88, +0.88] -> World Y in [-4.16, -2.40] (flush!)
+ * M-03: Heavy Wide-Oval Stainless .338 LM Magazine Spring (compressed under full 5-rd load)
+ * assembledPos: [1.35, -3.82, 0] -> Spans Local Y in [-0.224, +0.224] -> World Y in [-4.044, -3.596]
  * Built from a true parametric wide-oval 3D helix with uniform wire cross-section (zero non-uniform normal distortion!).
  */
 export function buildAwmMagSpringGeometry(): THREE.BufferGeometry {
-  const curve = new WideOvalHelixCurve(-0.84, 0.84, 2.38, 0.36, 5.5);
-  const tube = new THREE.TubeGeometry(curve, 160, 0.048, 8, false);
+  const curve = new WideOvalHelixCurve(-0.19, 0.19, 2.38, 0.36, 5.0);
+  const tube = new THREE.TubeGeometry(curve, 160, 0.034, 8, false);
   paintGeometry(tube, AWM_SPRING_STEEL);
   return sanitizeAwmMesh(finalizeGeometry(tube));
 }

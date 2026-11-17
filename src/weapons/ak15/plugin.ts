@@ -573,15 +573,24 @@ export const AK15_PARTS: WeaponPartSpec[] = [
     nameEn: 'Anti-Tilt Red Polymer Follower',
     group: 'magazine',
     material: 'follower_orange',
-    assembledPos: [2.65, -1.65, 0],
+    assembledPos: [5.599, -8.29, 0],
+    assembledRot: [0, 0, 0.62],
     explodeSteps: [
-      ...AK_MAG_STAGE1,
-      { range: [0.34, 0.56], offset: [-0.8, 2.8, 0] },
+      {
+        range: [0.02, 0.1],
+        offset: [3.105, -5.379, 0],
+        rotation: [0, 0, 0.12],
+      },
+      {
+        range: [0.35, 0.56],
+        offset: [-4.154, 9.119, 0],
+        rotation: [0, 0, -0.74],
+      },
     ],
     calloutDir: 'down',
     calloutStem: 48,
-    calloutAnchor: [0, -0.2, 0],
-    labelAppearAt: 0.34,
+    calloutAnchor: [0, 0.15, 0],
+    labelAppearAt: 0.35,
     roleTag: '双排双进平顺托弹 / 观察窗余弹刻度指示',
     description:
       '贴合 7.62×39mm 弹匣曲率的长裙边防卡滞托弹板，鲜艳橙红配色既便于从抛壳口快速确认空仓状态，又在透明侧窗内充当直观的余弹数指示游标。',
@@ -597,11 +606,11 @@ export const AK15_PARTS: WeaponPartSpec[] = [
     assembledPos: [2.55, -0.55, 0],
     explodeSteps: [
       ...AK_MAG_STAGE1,
-      { range: [0.34, 0.58], offset: [2.4, -3.6, 0] },
+      { range: [0.34, 0.58], offset: [1.75, -3.35, 0] },
     ],
     calloutDir: 'down',
     calloutStem: 34,
-    calloutAnchor: [3.2, -9.2, 0],
+    calloutAnchor: [3.85, -8.35, 0],
     labelAppearAt: 0.34,
     roleTag: '沿香蕉弯道恒力推升 30 发重型 7.62 步枪弹',
     description:
@@ -617,8 +626,12 @@ export const AK15_PARTS: WeaponPartSpec[] = [
     material: 'nitride_steel',
     assembledPos: [6.94, -9.54, 0],
     explodeSteps: [
-      ...AK_MAG_STAGE1,
-      { range: [0.34, 0.58], offset: [3.4, -4.6, 0] },
+      {
+        range: [0.02, 0.1],
+        offset: [3.244, -5.21, 0],
+        rotation: [0, 0, 0.12],
+      },
+      { range: [0.34, 0.58], offset: [3.156, -5.19, 0] },
     ],
     calloutDir: 'down',
     calloutStem: 34,
@@ -850,16 +863,18 @@ export function computeAk15FiringKinematics(
     }
 
     case 'ak_mag_follower': {
-      // Upward feed pulse along curved banana path when stripping next cartridge
+      // Upward feed pulse along curved banana tangent (ang = 0.74 rad) when stripping next cartridge
       const pulse = seg(f, 0.52, 0.63) - seg(f, 0.66, 0.8);
-      dx = -0.08 * pulse;
-      dy = 0.42 * pulse;
+      dx = -0.283 * pulse;
+      dy = 0.31 * pulse;
+      rz = -0.035 * pulse;
       break;
     }
 
     case 'ak_mag_spring': {
       const pulse = seg(f, 0.52, 0.63) - seg(f, 0.66, 0.8);
-      dy = 0.18 * pulse;
+      dx = -0.14 * pulse;
+      dy = 0.155 * pulse;
       break;
     }
 
@@ -1050,9 +1065,9 @@ export const AK15_PBR_SUITES: PbrSuiteItem[] = [
     weapon: 'ak15',
     titleCn: '7.62×39mm 透明观察窗弧形弹匣贴图组',
     partTag: 'M-01 WINDOWED MAG',
-    resolution: '1024 × 1024 px',
+    resolution: '2048 × 1024 px',
     summary:
-      '专为新一代 AK-15 30 发玻纤聚酰胺 (ПА6С) 大弯弧弹匣制作：包含斜向防滑加强筋、10/15/20/25/30 发余弹白字刻度、烟熏聚碳酸酯透明侧窗内双排黄铜/覆铜 7.62mm 实弹视觉层，以及前后钢衬抱弹口磨损。',
+      '专为新一代 AK-15 30 发玻纤聚酰胺 (ПА6С) 大弯弧弹匣制作（左右独立侧壁展板）：包含斜向防滑加强筋、双侧正字 10/15/20/25/30 发余弹白字刻度、烟熏聚碳酸酯透明侧窗内弹尖朝枪口前指的双排黄铜/覆铜 7.62mm 实弹视觉层，以及前后钢衬抱弹口磨损。',
     highlights: [
       '烟熏透明观察窗内 7.62×39mm 实弹叠排细节',
       '侧壁 10 / 15 / 20 / 25 / 30 余弹刻度钢印',

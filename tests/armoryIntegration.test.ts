@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { getAcousticEnvironment } from '../src/engine/audio/mechanicalSoundEngine';
 import {
@@ -13,6 +15,12 @@ import {
   getArmoryPhysicsState,
 } from '../src/engine/physics/armoryPhysics';
 import { TELEMETRY_HUD_STRINGS } from '../src/features/workbench/BallisticsTelemetryHud';
+import {
+  isBrowserFullscreenActive,
+  isBrowserFullscreenSupported,
+  toggleBrowserFullscreen,
+} from '../src/app/useFullscreen';
+import { getDefaultEntryScreen } from '../src/app/useUrlStateSync';
 import { SHOWCASE_STRINGS } from '../src/i18n/showcaseStrings';
 import { UI_STRINGS } from '../src/i18n/uiStrings';
 import {
@@ -103,6 +111,7 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
   });
 
   it('initializes studio environment, GTAO PostFX & telemetry HUD defaults and cycles cleanly', () => {
+    expect(getDefaultEntryScreen()).toBe('showcase');
     const s0 = useAppStore.getState();
     expect(s0.environmentPreset).toBe('tactical_vault');
     expect(s0.postFxEnabled).toBe(true);
@@ -258,6 +267,107 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
       expect(UI_STRINGS[lang].timeline.hudTitle(false).length).toBeGreaterThan(
         4
       );
+      expect(
+        UI_STRINGS[lang].studio.fullscreenTitle(true).length
+      ).toBeGreaterThan(4);
+      expect(
+        UI_STRINGS[lang].studio.fullscreenTitle(false).length
+      ).toBeGreaterThan(4);
     }
+  });
+
+  it('toggles clean showcase HUD visibility (hudHidden) and browser fullscreen API cleanly', async () => {
+    expect(useAppStore.getState().hudHidden).toBe(false);
+
+    useAppStore.getState().setTextureModalOpen(true);
+    expect(useAppStore.getState().textureModalOpen).toBe(true);
+
+    // Entering clean HUD-hidden presentation automatically dismisses texture modal
+    useAppStore.getState().setHudHidden(true);
+    expect(useAppStore.getState().hudHidden).toBe(true);
+    expect(useAppStore.getState().textureModalOpen).toBe(false);
+
+    // Opening story drawer or texture modal automatically restores HUD visibility
+    useAppStore.getState().setStoryOpen(true);
+    expect(useAppStore.getState().hudHidden).toBe(false);
+
+    useAppStore.getState().toggleHudHidden();
+    expect(useAppStore.getState().hudHidden).toBe(true);
+
+    useAppStore.getState().resetAll();
+    expect(useAppStore.getState().hudHidden).toBe(false);
+
+    // Browser Fullscreen API helper (standard + Safari webkit + rejection resilience)
+    expect(isBrowserFullscreenSupported(null)).toBe(false);
+    expect(isBrowserFullscreenActive(null)).toBe(false);
+    expect(await toggleBrowserFullscreen(null)).toBe(false);
+
+    let fsEl: object | null = null;
+    const mockRoot = {
+      requestFullscreen: async () => {
+        fsEl = mockRoot;
+      },
+    };
+    const mockDoc = {
+      fullscreenEnabled: true,
+      get fullscreenElement() {
+        return fsEl;
+      },
+      documentElement: mockRoot,
+      exitFullscreen: async () => {
+        fsEl = null;
+      },
+    } as unknown as Document;
+
+    expect(isBrowserFullscreenSupported(mockDoc)).toBe(true);
+    expect(isBrowserFullscreenActive(mockDoc)).toBe(false);
+    expect(await toggleBrowserFullscreen(mockDoc)).toBe(true);
+    expect(isBrowserFullscreenActive(mockDoc)).toBe(true);
+    expect(await toggleBrowserFullscreen(mockDoc)).toBe(false);
+    expect(isBrowserFullscreenActive(mockDoc)).toBe(false);
+
+    // Restricted iframe rejection returns false without throwing
+    const blockedDoc = {
+      fullscreenEnabled: true,
+      fullscreenElement: null,
+      documentElement: {
+        requestFullscreen: async () => {
+          throw new Error('Permissions check failed');
+        },
+      },
+    } as unknown as Document;
+    expect(await toggleBrowserFullscreen(blockedDoc)).toBe(false);
+  });
+
+  it('prevents Armory & Workbench HUD panels from overlapping wrapped header buttons', () => {
+    const stylesDir = path.resolve(__dirname, '../src/styles');
+    const armoryCss = fs.readFileSync(
+      path.join(stylesDir, 'armory.css'),
+      'utf8'
+    );
+    const workbenchCss = fs.readFileSync(
+      path.join(stylesDir, 'workbench.css'),
+      'utf8'
+    );
+    const storyCss = fs.readFileSync(path.join(stylesDir, 'story.css'), 'utf8');
+    const responsiveCss = fs.readFileSync(
+      path.join(stylesDir, 'responsive.css'),
+      'utf8'
+    );
+
+    // Armory overlay uses 3-row CSS Grid (`header` / `plaque controls` / `rack`) so plaque never covers header buttons
+    expect(armoryCss).toContain('grid-template-areas:');
+    expect(armoryCss).toContain('grid-area: header');
+    expect(armoryCss).toContain('grid-area: plaque');
+    expect(armoryCss).toContain('grid-area: controls');
+    expect(armoryCss).toContain('grid-area: rack');
+    expect(armoryCss).not.toMatch(/top:\s*7[0-9]px/);
+
+    // Workbench & Story overlays dynamically track `--hud-top-offset` instead of fixed `top: 72px / 108px`
+    expect(workbenchCss).toContain('var(--hud-top-offset');
+    expect(workbenchCss).not.toMatch(/top:\s*7[0-9]px/);
+    expect(storyCss).toContain('var(--hud-top-offset');
+    expect(storyCss).not.toMatch(/top:\s*7[0-9]px/);
+    expect(responsiveCss).not.toMatch(/\btop:\s*108px/);
   });
 });

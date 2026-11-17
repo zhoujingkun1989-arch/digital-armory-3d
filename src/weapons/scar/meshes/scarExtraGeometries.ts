@@ -4,7 +4,6 @@ import {
   createHelicalSpring,
   csgSubtract,
   csgUnion,
-  finalizeGeometry,
   mergeParts,
   paintGeometry,
 } from '../../../engine/geometry/csgBuilder';
@@ -1275,7 +1274,8 @@ function buildScarRolledFeedLip(side: -1 | 1): THREE.BufferGeometry {
 }
 
 /**
- * M-02: 4-Way Anti-Tilt Polymer STANAG Follower (assembledPos: [2.45, -1.35, 0])
+ * M-02: 4-Way Anti-Tilt Polymer STANAG Follower
+ * (assembledPos: [2.847, -7.75, 0], assembledRot: [0, 0, 0.15] — loaded-full bottom position!)
  */
 export function buildScarMagFollowerGeometry(): THREE.BufferGeometry {
   const deck = paintGeometry(
@@ -1314,31 +1314,61 @@ export function buildScarMagFollowerGeometry(): THREE.BufferGeometry {
 }
 
 /**
- * M-03: Curved Rectangular STANAG Magazine Coil Spring (assembledPos: [2.45, -1.80, 0])
+ * M-03: Compressed Rectangular STANAG Magazine Coil Spring (assembledPos: [2.45, -1.80, 0])
+ * 9 compressed rectangular/oval coils nested cleanly in the bottom pocket between the Ranger
+ * floorplate inner plane (y_local = -7.60, rz = 0.15) and the underside of lowered scar_mag_follower!
  */
 export function buildScarMagSpringGeometry(): THREE.BufferGeometry {
-  const coils = 12;
-  const stepsPerCoil = 24;
+  const coils = 9;
+  const stepsPerCoil = 28;
   const totalSteps = coils * stepsPerCoil;
+  const wireRadius = 0.036;
+  const cosTilt = Math.cos(0.15);
+  const sinTilt = Math.sin(0.15);
   const points: THREE.Vector3[] = [];
 
   for (let i = 0; i <= totalSteps; i++) {
     const u = i / totalSteps;
-    const yMid = -7.28 + u * 7.68; // -7.28 at floorplate -> +0.40 under follower
+    const yMid = -7.46 + u * 1.24; // -7.46 above floorplate -> -6.22 under follower springBoss
     const xMid = stanagCenterX(yMid);
     const theta = u * coils * Math.PI * 2;
     const cosT = Math.cos(theta);
     const sinT = Math.sin(theta);
-    const dx = Math.sign(cosT) * Math.pow(Math.abs(cosT), 0.6) * 0.86;
-    const dz = Math.sign(sinT) * Math.pow(Math.abs(sinT), 0.6) * 0.32;
-    points.push(new THREE.Vector3(xMid + dx, yMid, dz));
+    const radialOff = Math.sign(cosT) * Math.pow(Math.abs(cosT), 0.6) * 0.74;
+    const dz = Math.sign(sinT) * Math.pow(Math.abs(sinT), 0.6) * 0.3;
+    points.push(
+      new THREE.Vector3(
+        xMid + cosTilt * radialOff,
+        yMid + sinTilt * radialOff,
+        dz
+      )
+    );
   }
 
   const curve = new THREE.CatmullRomCurve3(points);
-  const tube = new THREE.TubeGeometry(curve, totalSteps, 0.044, 8, false);
-  return sanitizeScarGeometry(
-    finalizeGeometry(paintGeometry(tube, SCAR_SPRING_STEEL))
+  const tube = paintGeometry(
+    new THREE.TubeGeometry(curve, totalSteps, wireRadius, 8, false),
+    SCAR_SPRING_STEEL
   );
+  const pStart = points[0];
+  const pEnd = points[points.length - 1];
+  const capStart = paintGeometry(
+    new THREE.SphereGeometry(wireRadius, 8, 6).translate(
+      pStart.x,
+      pStart.y,
+      pStart.z
+    ),
+    SCAR_SPRING_STEEL
+  );
+  const capEnd = paintGeometry(
+    new THREE.SphereGeometry(wireRadius, 8, 6).translate(
+      pEnd.x,
+      pEnd.y,
+      pEnd.z
+    ),
+    SCAR_SPRING_STEEL
+  );
+  return sanitizeScarGeometry(mergeParts([tube, capStart, capEnd]));
 }
 
 /**

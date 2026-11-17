@@ -1442,53 +1442,44 @@ export function buildAugMagBodyGeometry(): THREE.BufferGeometry {
 }
 
 /**
- * M-02: Anti-Tilt Polymer Follower (assembledPos: [-9.85, -1.45, 0])
+ * M-02: Anti-Tilt Polymer Follower (assembledPos: [-8.70, -6.14, 0], assembledRot: [0, 0, 0.375])
+ * Seated at full-capacity bottom arc angle ang = 0.375 rad (~1.66 cm above floorplate inner flange).
  */
 export function buildAugMagFollowerGeometry(): THREE.BufferGeometry {
   const deck = paintGeometry(
-    new THREE.BoxGeometry(2.08, 0.26, 0.82).rotateZ(0.06).translate(0, 0.14, 0),
+    new THREE.BoxGeometry(2.02, 0.24, 0.8).translate(0, 0.12, 0),
     AUG_BLACK_POLYMER
   );
   const stackStep = paintGeometry(
-    new THREE.CylinderGeometry(0.12, 0.12, 1.98, 18)
-      .rotateZ(Math.PI / 2 + 0.06)
-      .translate(0, 0.28, -0.16),
+    new THREE.CylinderGeometry(0.115, 0.115, 1.94, 18)
+      .rotateZ(Math.PI / 2)
+      .translate(0, 0.26, -0.16),
     AUG_OLIVE
   );
   const rightGuideBead = paintGeometry(
-    new THREE.CylinderGeometry(0.075, 0.075, 1.92, 14)
-      .rotateZ(Math.PI / 2 + 0.06)
-      .translate(0, 0.24, 0.24),
+    new THREE.CylinderGeometry(0.075, 0.075, 1.88, 14)
+      .rotateZ(Math.PI / 2)
+      .translate(0, 0.22, 0.24),
     AUG_OLIVE
   );
   const legFront = paintGeometry(
-    new THREE.BoxGeometry(0.2, 0.92, 0.76)
-      .rotateZ(0.08)
-      .translate(0.9, -0.3, 0),
+    new THREE.BoxGeometry(0.16, 0.68, 0.74).translate(0.88, -0.22, 0),
     AUG_BLACK_POLYMER
   );
   const legRear = paintGeometry(
-    new THREE.BoxGeometry(0.2, 0.92, 0.76)
-      .rotateZ(0.08)
-      .translate(-0.9, -0.3, 0),
+    new THREE.BoxGeometry(0.16, 0.68, 0.74).translate(-0.88, -0.22, 0),
     AUG_BLACK_POLYMER
   );
   const springBoss = paintGeometry(
-    new THREE.BoxGeometry(0.86, 0.36, 0.38)
-      .rotateZ(0.06)
-      .translate(0, -0.16, 0),
+    new THREE.BoxGeometry(0.68, 0.22, 0.28).translate(0, -0.11, 0),
     AUG_OLIVE_DARK
   );
   const antiTiltRibL = paintGeometry(
-    new THREE.BoxGeometry(1.36, 0.12, 0.05)
-      .rotateZ(0.06)
-      .translate(0, -0.08, -0.38),
+    new THREE.BoxGeometry(1.32, 0.12, 0.05).translate(0, -0.08, -0.375),
     AUG_OLIVE_DARK
   );
   const antiTiltRibR = paintGeometry(
-    new THREE.BoxGeometry(1.36, 0.12, 0.05)
-      .rotateZ(0.06)
-      .translate(0, -0.08, 0.38),
+    new THREE.BoxGeometry(1.32, 0.12, 0.05).translate(0, -0.08, 0.375),
     AUG_OLIVE_DARK
   );
 
@@ -1507,23 +1498,24 @@ export function buildAugMagFollowerGeometry(): THREE.BufferGeometry {
 }
 
 /**
- * M-03: Curved Rectangular Magazine Coil Spring matching the exact AUG 5.56mm arc (assembledPos: [-9.95, 0.45, 0])
+ * M-03: Compressed Curved Rectangular Magazine Coil Spring in bottom pocket (assembledPos: [-9.95, 0.45, 0])
+ * Fits cleanly between lowered follower (ang = 0.375) and floorplate inner flange (ang = 0.471).
  */
 export function buildAugMagSpringGeometry(): THREE.BufferGeometry {
-  const coils = 10;
+  const coils = 8.5;
   const stepsPerCoil = 24;
-  const totalSteps = coils * stepsPerCoil;
+  const totalSteps = Math.round(coils * stepsPerCoil);
   const points: THREE.Vector3[] = [];
   const rMid = (AUG_MAG_R_INNER + AUG_MAG_R_OUTER) * 0.5;
 
   for (let i = 0; i <= totalSteps; i++) {
     const u = i / totalSteps;
-    const ang = 0.115 + u * 0.335;
+    const ang = 0.382 + u * 0.086;
     const theta = u * coils * Math.PI * 2;
     const cosT = Math.cos(theta);
     const sinT = Math.sin(theta);
-    const radialOffset = Math.sign(cosT) * Math.pow(Math.abs(cosT), 0.6) * 0.82;
-    const zOffset = Math.sign(sinT) * Math.pow(Math.abs(sinT), 0.6) * 0.32;
+    const radialOffset = Math.sign(cosT) * Math.pow(Math.abs(cosT), 0.6) * 0.7;
+    const zOffset = Math.sign(sinT) * Math.pow(Math.abs(sinT), 0.6) * 0.28;
 
     const rCur = rMid + radialOffset;
     const px = AUG_MAG_ARC_CX - Math.cos(ang) * rCur;
@@ -1532,7 +1524,7 @@ export function buildAugMagSpringGeometry(): THREE.BufferGeometry {
   }
 
   const curve = new THREE.CatmullRomCurve3(points);
-  const tube = new THREE.TubeGeometry(curve, totalSteps, 0.044, 8, false);
+  const tube = new THREE.TubeGeometry(curve, totalSteps, 0.035, 8, false);
   paintGeometry(tube, AUG_SPRING_STEEL);
   return sanitizeAugMesh(finalizeGeometry(tube));
 }

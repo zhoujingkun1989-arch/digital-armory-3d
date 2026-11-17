@@ -444,11 +444,11 @@ export function buildAkMagBodyGeometry(): THREE.BufferGeometry {
     AK_INNER_DARK
   );
 
-  const sculpted = csgSubtract(rawBody, [
-    throatCut,
-    mergeGeometries([winCutR, winCutL], false),
-    rearWitnessHole,
-  ]);
+  const sculpted = csgSubtract(
+    rawBody,
+    [throatCut, mergeGeometries([winCutR, winCutL], false), rearWitnessHole],
+    Math.PI / 8
+  );
 
   // Molded tactile grip ribs along front & rear spines (avoiding the center window!)
   const extras: THREE.BufferGeometry[] = [sculpted];
@@ -505,7 +505,8 @@ export function buildAkMagBodyGeometry(): THREE.BufferGeometry {
     )
   );
 
-  return applyAkMagUVs(mergeParts(extras));
+  // Split 26.5° extrusion bevel steps cleanly so planar flank walls & recessed windows stay optically flat
+  return applyAkMagUVs(mergeParts(extras, Math.PI / 8));
 }
 
 /**
@@ -549,7 +550,8 @@ function buildAkRolledFeedLip(side: -1 | 1): THREE.BufferGeometry {
 }
 
 /**
- * M-02: Anti-Tilt Red/Orange Polymer Follower (assembledPos: [2.65, -1.65, 0])
+ * M-02: Anti-Tilt Red/Orange Polymer Follower
+ * (assembledPos: [5.599, -8.29, 0], assembledRot: [0, 0, 0.62] — loaded-full bottom banana position!)
  */
 export function buildAkMagFollowerGeometry(): THREE.BufferGeometry {
   const topPlatform = paintGeometry(
@@ -589,22 +591,25 @@ export function buildAkMagFollowerGeometry(): THREE.BufferGeometry {
 }
 
 /**
- * M-03: Curved Rectangular Magazine Spring following the exact 7.62×39mm banana arc! (assembledPos: [2.55, -0.55, 0])
+ * M-03: Compressed Rectangular Magazine Spring following the exact 7.62×39mm banana arc!
+ * (assembledPos: [2.55, -0.55, 0]) — 9 compressed rectangular/oval coils in ang ∈ [0.768, 0.870]
+ * seated cleanly between ak_mag_floorplate (ang = 0.88) and lowered ak_mag_follower (ang = 0.74)!
  */
 export function buildAkMagSpringGeometry(): THREE.BufferGeometry {
-  const coils = 11;
-  const stepsPerCoil = 24;
+  const coils = 9;
+  const stepsPerCoil = 28;
   const totalSteps = coils * stepsPerCoil;
+  const wireRadius = 0.036;
   const points: THREE.Vector3[] = [];
 
   for (let i = 0; i <= totalSteps; i++) {
     const u = i / totalSteps;
-    const ang = 0.08 + u * 0.75;
+    const ang = 0.87 - u * (0.87 - 0.768); // 0.870 above floorplate -> 0.768 under follower springBoss
     const theta = u * coils * Math.PI * 2;
     const cosT = Math.cos(theta);
     const sinT = Math.sin(theta);
-    const radialOffset = Math.sign(cosT) * Math.pow(Math.abs(cosT), 0.6) * 0.78;
-    const zOffset = Math.sign(sinT) * Math.pow(Math.abs(sinT), 0.6) * 0.34;
+    const radialOffset = Math.sign(cosT) * Math.pow(Math.abs(cosT), 0.6) * 0.68;
+    const zOffset = Math.sign(sinT) * Math.pow(Math.abs(sinT), 0.6) * 0.3;
 
     const rCur = 11.85 + radialOffset;
     const px = ARC_CX - Math.cos(ang) * rCur;
@@ -613,8 +618,29 @@ export function buildAkMagSpringGeometry(): THREE.BufferGeometry {
   }
 
   const curve = new THREE.CatmullRomCurve3(points);
-  const tube = new THREE.TubeGeometry(curve, totalSteps, 0.048, 8, false);
-  return mergeParts([paintGeometry(tube, AK_SPRING_METAL)]);
+  const tube = paintGeometry(
+    new THREE.TubeGeometry(curve, totalSteps, wireRadius, 8, false),
+    AK_SPRING_METAL
+  );
+  const pStart = points[0];
+  const pEnd = points[points.length - 1];
+  const capStart = paintGeometry(
+    new THREE.SphereGeometry(wireRadius, 8, 6).translate(
+      pStart.x,
+      pStart.y,
+      pStart.z
+    ),
+    AK_SPRING_METAL
+  );
+  const capEnd = paintGeometry(
+    new THREE.SphereGeometry(wireRadius, 8, 6).translate(
+      pEnd.x,
+      pEnd.y,
+      pEnd.z
+    ),
+    AK_SPRING_METAL
+  );
+  return mergeParts([tube, capStart, capEnd]);
 }
 
 /**

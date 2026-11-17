@@ -188,9 +188,9 @@ export function buildMagFollowerGeometry(): THREE.BufferGeometry {
     '#fb923c'
   );
 
-  // Left-front slide-stop lever actuator shelf
+  // Left-front slide-stop lever actuator shelf (tucked strictly inside 1.28 inner liner cavity)
   const stopLedge = paintGeometry(
-    new THREE.BoxGeometry(0.58, 0.3, 0.26).translate(0.68, 0.24, -0.65),
+    new THREE.BoxGeometry(0.58, 0.3, 0.24).translate(0.68, 0.24, -0.5),
     '#ea580c'
   );
 
@@ -206,15 +206,15 @@ export function buildMagFollowerGeometry(): THREE.BufferGeometry {
   return mergeParts([base, ridge, stopLedge, skirtF, skirtR]);
 }
 
-/** M-03: Tempered Rectangular Coil Magazine Spring */
+/** M-03: Tempered Rectangular Coil Magazine Spring (compressed under full 17-rd load) */
 export function buildMagSpringGeometry(): THREE.BufferGeometry {
   return paintGeometry(
     createRectangularMagSpring({
-      height: 6.5,
-      widthX: 1.92,
-      depthZ: 1.15,
-      wireRadius: 0.058,
-      coils: 9,
+      height: 1.1,
+      widthX: 1.44,
+      depthZ: 1.04,
+      wireRadius: 0.045,
+      coils: 8,
     }),
     '#9aa8ba'
   );

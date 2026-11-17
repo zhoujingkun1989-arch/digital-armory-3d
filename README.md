@@ -1,182 +1,216 @@
 <div align="center">
 
-# Digital Armory 3D · 枪械内部结构 3D 数字仓库
+<p>
+  <strong>English</strong>
+  &nbsp;·&nbsp;
+  <a href="README.zh-CN.md">简体中文</a>
+</p>
 
-**把十一款世界传奇名枪的 1:1 机械内构，装进你的浏览器**
+# Digital Armory 3D
+
+**The Browser-Native Open-Source 3D Firearms Mechanical Museum & Interactive Engineering Encyclopedia**
 
 [![CI](https://github.com/zhoujingkun1989-arch/digital-armory-3d/actions/workflows/ci.yml/badge.svg)](https://github.com/zhoujingkun1989-arch/digital-armory-3d/actions/workflows/ci.yml)
-[![GitHub Pages](https://github.com/zhoujingkun1989-arch/digital-armory-3d/actions/workflows/deploy-pages.yml/badge.svg)](https://zhoujingkun1989-arch.github.io/digital-armory-3d/showcase.html)
+[![GitHub Pages](https://github.com/zhoujingkun1989-arch/digital-armory-3d/actions/workflows/deploy-pages.yml/badge.svg)](https://zhoujingkun1989-arch.github.io/digital-armory-3d/showcase.html?lang=en)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6_Strict-3178c6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Three.js](https://img.shields.io/badge/Three.js-WebGL_2.0_PBR-000000?logo=threedotjs)](https://threejs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-10b981.svg)](LICENSE)
 
 <h3>
-  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/showcase.html">✦ 访问官方交互式宣传主页 (Showcase)</a>
+  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/showcase.html?lang=en">✦ Interactive Live Showcase</a>
   &nbsp;·&nbsp;
-  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/">🚀 直接进入 11 槽 3D 数字枪库</a>
+  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=armory&lang=en">🚀 Enter 11-Bay 3D Vault</a>
   &nbsp;·&nbsp;
-  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=ak15&screen=workbench">🔧 直达 AK-15M1 拆解台</a>
+  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=cartridges&lang=en">🧪 1:1 Cartridge Cutaway Lab</a>
+  &nbsp;·&nbsp;
+  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=ak15&screen=workbench&lang=en">🔧 Open AK-15M1 Disassembly Bench</a>
 </h3>
 
 </div>
 
 ---
 
-> 基于 **React 18 + TypeScript + Three.js (`@react-three/fiber` / Web Worker `three-bvh-csg` / Web Audio API)** 构建的工业级浏览器端交互式 **十一款世界经典名枪 1:1 机械内构拆解、双语 AI 四幕研发纪录片（3D 导演自动运镜）、GPU 纵向军械剖视与 7 阶段声画内弹道仿真博物馆**。
+> Built with **React 18 + TypeScript + Three.js (`@react-three/fiber` / Web Worker `three-bvh-csg` / Web Audio API)** — with **zero external `.glb` / `.gltf` mesh files**.
 >
-> A zero-external-mesh WebGL 2.0 3D Firearms Mechanical Museum featuring **11 self-contained weapon plugins**, **278 procedurally & CSG-modeled moving parts** streamed from a background Web Worker, **64 2K 5-channel Packed ORM WebP textures**, **644 bilingual Google Gemini TTS voiceovers**, automated **3D Story Director choreography** with synced click-to-seek captions, longitudinal GPU section-cut (`C`), and a **procedural Web Audio 7-caliber & 7-stage gunsmith acoustic engine**.
+> Every single one of the **278 moving components across 11 iconic world firearms** is synthesized procedurally via manifold boolean CSG in a background Web Worker and streamed zero-copy to WebGL 2.0. Combine **Two-Pass Stencil Solid Cross-Section Cutaways (`[C]`)**, **6-Role Functional Color-Coding & 60fps Propellant Gas-Flow Streamlines (`[T]`)**, **Hands-On Military Field-Strip DAG Disassembly (`[G]`)**, **SAAMI/CIP Chamber Pressure $P(t)$ & Bore Velocity $V(t)$ Oscilloscope Telemetry**, **Interactive `SAFE / SEMI / AUTO` Fire-Control & Press-Check (`[P] / [V] / [F]`)**, and **644 Bilingual Google Gemini TTS Voiceovers** with automated **3D Documentary Camera Choreography**.
 
 ![Digital Armory 3D Official Showcase Hero](docs/screenshots/showcase-landing.jpg)
 
-![10-Bay Digital Armory Showcase](docs/screenshots/armory-showcase.jpg)
+![11-Bay Digital Armory Showcase](docs/screenshots/armory-showcase.jpg)
 
 ---
 
-## 核心亮点 | Highlights
+## Why Digital Armory 3D Stands Out
 
-- **✦ 全站中英双语（`中文 / EN`）与实时交互宣传页（Live 3D Showcase v3.0）**：支持通过 `showcase.html`、`?screen=showcase` 或 `?lang=en` 打开双语全景产品发布页，首屏内嵌 **60 FPS 实时 WebGL 3D 检视窗**，无需跳转即可在宣传页切换 11 款名枪、体验「真铁 PBR / 纵向剖视 / X-Ray 透视 / 悬浮半爆炸」或一键启动 3D 导演纪录片。
-- **✦ AI 四幕研发纪录片 &「3D 导演自动运镜模式」**：全馆藏内置 **644 段双语语音导览**（88 段四幕研发史配音 + 556 段独立零件中英讲解，支持 `speechSynthesis` 离线兜底）。开启 **3D 导演运镜** 后，随旁白自动切入拆解工作台、飞跃聚焦核心零件、按剧情节拍切换纵向剖视 `C` / X-Ray / `52%` 二级分解与 `0.25x` 超慢放实弹循环，并配套可点击跳转的逐句滚动高亮字幕与悬浮影院字幕条。
-- **✦ 程序化 Web Audio 军械机械声效 & 7 口径实弹声场**：零外部音频膨胀，与 `playbackClock` 7 阶段击发相位硬绑定——`1.0x` 标准射速清晰区分 `.50 BMG` 38Hz 超低频震波与 `5.7×28mm / 9×19mm` 清脆爆响；`0.25x` 超慢放精准分离阻铁释放、击针撞底火、导气/后坐、凸轮开锁、旋转黄铜弹壳清鸣与复进簧闭锁声，并在语音播报时自动执行 `-12.4 dB` 智能闪避（Audio Ducking）。
-- **11 展位 3D 数字枪库与 1:1 原厂测绘铭牌**：支持按「全部馆藏 / 突击·卡宾·无托 / 冲锋枪·PDW / 狙击·反器材 / 半自动手枪」分类筛选，配备原厂全枪长 (OAL)、枪管缠距、空枪质量、初速与射程铭牌，支持卡片悬停预热加载与一键直达拆解台。
-- **GPU 纵向中轴军械剖视（`C`）与剖面穿透拾取**：按下 `C` 键即可沿枪膛纵轴实时剖开右侧机匣、套筒与弹匣壳体，原色直视内部膛线、闭锁突笋、导气活塞、复进簧与实弹托弹簧；定制 `sectionAwareMeshRaycast` 让鼠标直接穿透虚空切面点选内部火控构件。
-- **5 通道 Packed ORM 物理材质与双侧掠射柔光棚**：基于 `scripts/pbr_core/` 离线烘焙 `Albedo + Normal + ORM (R:高度积分AO · G:微粗糙度 · B:逐纹素金属度)` 共 **64 张 `.webp` 贴图**；配合 ACES Filmic 双侧 `±Z` 掠射柔光箱与磷化转化膜 + 枪油清漆层曲线，清晰分离锰系磷化钢、硬质阳极铝、CNC 导轨倒角、玻纤尼龙与硫化橡胶五级深色质感。
-- **7 阶段耦合运动学与 7 口径 SAAMI/CIP 实弹内弹道**：完整还原长/短行程导气活塞、斯通纳气吹、FN P90 顶置水平弹匣 `90°` 螺旋旋转供弹 + 底部垂直抛壳、MP5 `4:1` 双滚柱延迟、巴雷特整管短后坐加速子、AWM `60°` 六突笋防冰栓动及布朗宁闭锁下倾，含 Boxer 底火击发凹坑与 `.50 BMG` 双室箭头制退侧喷冲击波。
-- **Web Worker 零拷贝 CSG 流式建模 & 60Hz 零重渲染时钟**：重度 `three-bvh-csg` 布尔运算隔离在后台 Worker 并以 `Transferable Float32Array` 流式回传，配合非受控瞬态时钟 `playbackClock.ts` 与有界 LRU 几何/纹理显存池，恒定丝滑 60 FPS。
+| Inspiration Benchmark | What We Synthesize & Advance |
+| :--- | :--- |
+| **Matt Rittman 3D Cutaway Animations** | Real-time interactive **6-role functional color-coding (`[T]`)**, dynamic **high-pressure bore & gas-port flow streamlines**, and synchronized 3D documentary camera choreography — pause, orbit, slice, or inspect any part at any millisecond. |
+| **World of Guns: Gun Disassembly** | **Hands-on military field-strip & reverse-reassembly DAGs (`[G]`)** with real mechanical interference diagnostics, `SAFE / SEMI / AUTO` sear/disconnector mechanics, and zero client downloads or paywalls. |
+| **Bartosz Ciechanowski (`ciechanow.ski`)** | Instant browser load, direct 3D slide/bolt manipulation, and 1:1 coupling between **SAAMI/CIP internal ballistics curves ($P(t)$, $V(t)$)** and 7-stage mechanical kinematics at 60 FPS with zero React re-renders. |
+| **Smithsonian 3D & Royal Armouries** | Bilingual (`EN / 中文`) 4-act R&D histories, factory `1:1` CAD metrology (`1 unit = 1 cm`), and MIT-licensed procedural geometry & PBR pipelines. |
 
 ---
 
-## 实机渲染画廊 | Live WebGL 2.0 Gallery
+## Key Engineering Capabilities
 
-| AK-15M1 纵向中轴军械剖视 (`C`) 与内部供弹/击发咬合 | Barrett M82A1 `.50 BMG` 整管短后坐与 60° 箭头制退冲击波 |
+- **✦ Functional Role Tint (`[T]`) & 60fps Propellant Gas-Flow Streamlines (`WP-05`)**: Color-codes all 278 parts across **Locking & Breech, Gas Tap & Piston, Carrier & Slide, Fire Control & Striker, Energy Springs, and Receiver & Magazine** with **zero WebGL shader recompilation** (preserving CNC edge-silvering and synchronizing Stencil cutaway hatching). Click any role chip to spotlight that subsystem, and watch live propellant plasma expand down the bore, tap through the gas port, strike AK/SCAR/AUG pistons, pressurize the Stoner M4A1 internal BCG chamber, or duct forward beneath the Desert Eagle barrel.
+- **✦ Hands-On Guided Military Field-Strip & Reverse Reassembly (`[G]`, `WP-07`)**: Authentic 5–6 step Directed Acyclic Graphs (DAGs) for all 11 firearms (e.g., `Drop Magazine → Remove Dust Cover → Extract Recoil Spring → Withdraw Carrier → Rotate & Strip Bolt → Release Gas Tube`). Click parts directly in the 3D viewport to strip (`0 → 100%`) and reinstall in strict reverse topological order (`100% → 0%`). Out-of-order clicks trigger crimson/amber interference pulses on blocking prerequisites, dry mechanical block audio, and armorer manual notes.
+- **✦ Classic Malfunction Cutaway & Clearing Diagnostics (`[J]`, `WP-09`)**: Interactive stoppage simulator across all 11 firearms covering **Stovepipe (`FTE`)**, **Type-3 Double-Feed**, **Shallow Primer Light-Strike**, and **Out-of-Battery (`OOB`) Safety Interception**. Visualizes upright pinched brass, wedged dual rounds, shallow primer indents, and `3.8 mm` breech lockup gaps while pulsing causal components and guiding step-by-step `Tap-Rack` or `Lock-Rip-Work-Reload` clearing drills.
+- **✦ 1:1 3D Armorer Vernier Caliper & Envelope Scale Ruler (`[K]`, `WP-10`)**: Pick any two 3D surface points (including internal sear/bolt faces right through Stencil cutaway planes) to measure exact millimeter spans (`1 world unit = 1 cm = 10 mm`), orthogonal `|ΔX| / |ΔY| / |ΔZ|` deltas, 60fps live hover preview, 1-click CAD datum benchmarks (overall length, barrel bore length, bolt/slide span), and a toggleable 3D full-weapon bounding envelope ruler.
+- **✦ 7-Caliber SAAMI / CIP 1:1 Cartridge Cutaway Lab (`[B]` / `?screen=cartridges`, `WP-06`)**: Dedicated ammunition museum hall displaying `9×19mm`, `5.7×28mm`, `.50 AE`, `7.62×39mm`, `5.56 NATO`, `.338 Lapua`, and `.50 BMG` side-by-side at exact `1:1` CAD scale (`29.69 mm` vs `138.43 mm`, `518 J` vs `18,050 J`) with `180°` longitudinal cutaways, an axial component explode slider (brass web & flash hole, Boxer primer cup, anvil, propellant charge, copper jacket, steel penetrator & core), and a quantitative comparison matrix.
+- **✦ Quantitative SAAMI / CIP Internal Ballistics HUD & Rigid-Body Brass (`WP-04`)**: Live 60fps zero-redraw oscilloscope plotting chamber pressure $P(t)$ (`MPa`), projectile bore velocity $V(t)$ (`m/s`), gas-port uncover timing, and safe bolt-unlock blowdown windows across 7 calibers (`9×19mm`, `5.7×28mm`, `5.56 NATO`, `7.62×39mm`, `.50 AE`, `.338 Lapua`, `.50 BMG`) — with reverse scrubbing, 2nd-order spring-damper recoil climb, 220 Hz barrel whip, floor-bouncing spent brass, and Stefan-Boltzmann $T^4$ barrel blackbody thermal glow.
+- **✦ Direct 3D Action Manipulation, Press-Check (`[P]`) & `SAFE / SEMI / AUTO` FCG (`WP-08`)**: Drag slides or charging handles directly in 3D, press `P` for a 28% armorer Press-Check exposing chambered brass, cycle `SAFE / SEMI / AUTO` (`V`), and hold the trigger (`F`) to feel safety sear block, semi-auto disconnector trap & reset, and full-auto out-of-battery sear release.
+- **✦ Two-Pass WebGL Stencil Solid Cross-Section (`[C]`) & Cut-Plane Raycasting**: Caps sliced receiver, slide, and magazine walls with anti-aliased `±45°` ISO 128 engineering section hatching while `sectionAwareMeshRaycast` lets pointers pick internal firing pins, locking rollers, and sears straight through the cut plane.
+- **✦ 4-Act AI R&D Documentaries, 644 Voiceovers & Waveguide Acoustics (`WP-01 ~ WP-03`)**: Automatic browser locale detection (`en` / `zh`, overridable via `?lang=en|zh`), 3D Story Director camera choreography with click-to-seek captions, and a procedural Web Audio engine pairing 3 stereo convolution IR rooms (`bench_close`, `tactical_hall`, `indoor_range`) with Euler-Bernoulli dispersive steel waveguides and `-12.4 dB` TTS audio ducking.
+- **✦ Zero-External-Mesh Web Worker CSG & 60Hz Zero-GC Architecture**: Heavy `three-bvh-csg` boolean synthesis runs off-thread and streams `Transferable Float32Array` buffers with precomputed dihedral CNC edge curvature (`aCurvature`) and constant-wire-diameter GPU spring deformation (`aSpringParam`) into an LRU GPU pool.
+
+---
+
+## Live WebGL 2.0 Gallery
+
+| AK-15M1 Longitudinal Stencil Cutaway (`[C]`) & Internal Lockup | Barrett M82A1 `.50 BMG` Short-Recoil & Arrowhead Brake Shockwave |
 | :---: | :---: |
 | ![AK-15M1 Longitudinal Section Cut](docs/screenshots/ak15-section.jpg) | ![Barrett M82A1 Firing Simulation](docs/screenshots/m82a1-firing.jpg) |
 
-| Colt M4A1 军械级 100% 全零件爆炸图与防遮挡引线 | Desert Eagle Mark XIX `.50 AE` 拉丝硬铬与正向导气活塞 |
+| Colt M4A1 100% Exploded BOM & Obstacle-Aware Hairline Callouts | Desert Eagle Mark XIX `.50 AE` Brushed Chrome & Forward Gas Piston |
 | :---: | :---: |
 | ![M4A1 100% Exploded View](docs/screenshots/m4a1-exploded.jpg) | ![Desert Eagle Chrome](docs/screenshots/deagle-chrome.jpg) |
 
-| Steyr AUG A1 施华洛世奇瞄具与半透明琥珀弹匣 | 内置 2K 三通道 PBR 贴图图集检视器 (Albedo / Normal / ORM) |
+| Steyr AUG A1 Swarovski Optic & Translucent Waffle Magazine | Built-In 2K 5-Channel Packed ORM PBR Texture Atlas Inspector |
 | :---: | :---: |
 | ![Steyr AUG A1](docs/screenshots/aug-armory.jpg) | ![PBR Texture Atlas Modal](docs/screenshots/pbr-atlas.jpg) |
 
 ---
 
-## 馆藏十一款经典名枪矩阵 | 11-Weapon Roster
+## 11-Weapon Collection Matrix (278 Procedural / CSG Parts)
 
-| 展位 | 型号 | 国家 / 类型 | 口径 | 核心自动与闭锁机构 | 零件数 | 在线直达 |
+| Bay | Firearm | Origin / Class | Caliber | Operating & Locking Mechanism | Parts | Live Bench |
 | :--- | :--- | :--- | :--- | :--- | :---: | :---: |
-| `BAY-01` | **Kalashnikov AK-15M1 (6П71М)** | 俄罗斯 · 突击步枪 | `7.62×39mm (M43)` | 长行程导气活塞 · 双突笋 35° 回转枪机闭锁 | 26 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=ak15&screen=workbench) |
-| `BAY-02` | **Colt M4A1 Carbine** | 美国 · 卡宾枪 | `5.56×45mm NATO` | 斯通纳气吹式导气 (DI) · 七突笋回转枪机 + 尾托缓冲簧 | 26 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=m4a1&screen=workbench) |
-| `BAY-03` | **Heckler & Koch MP5A3** | 德国 · 冲锋枪 | `9×19mm Parabellum` | 双 Ø8mm 滚柱 + 45° 闭锁楔 4:1 延迟半自由枪机 | 26 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=mp5&screen=workbench) |
-| `BAY-04` | **Glock 17 Gen3** | 奥地利 · 半自动手枪 | `9×19mm Parabellum` | 枪管短后坐偏移下倾闭锁 · Safe Action 三重保险击针 | 28 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=g17&screen=workbench) |
-| `BAY-05` | **Barrett M82A1** | 美国 · 反器材步枪 | `.50 BMG (12.7×99mm)` | 29" 开槽重枪管短后坐 · 加速子撬动三突笋枪机 + 箭头制退 | 24 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=m82a1&screen=workbench) |
-| `BAY-06` | **Accuracy International AWM** | 英国 · 狙击步枪 | `.338 Lapua Magnum` | 手动 60° 六突笋防冰槽旋转后拉枪机 · 铝合金贯穿底盘 | 24 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=awm&screen=workbench) |
-| `BAY-07` | **FN SCAR-L Mk 16 Mod 0** | 比利时 · 模块化步枪 | `5.56×45mm NATO` | 短行程导气活塞 · 七突笋回转枪机 + 一体铝挤 FDE 上机匣 | 26 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=scar&screen=workbench) |
-| `BAY-08` | **Desert Eagle Mark XIX** | 以色列/美国 · 半自动手枪 | `.50 Action Express` | 固定枪管膛底正向三环导气活塞 · 四突笋回转枪机 + 双复进簧 | 24 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=deagle&screen=workbench) |
-| `BAY-09` | **Steyr AUG A1 (StG 77)** | 奥地利 · 无托步枪 | `5.56×45mm NATO` | 无托后置弹匣 · 短行程活塞双长导杆 + 贯通双连杆全塑击锤包 | 25 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=aug&screen=workbench) |
-| `BAY-10` | **SIG Sauer P320 M17** | 美国/德国 · 半自动手枪 | `9×19mm Parabellum` | 模块化可拆不锈钢 FCU 火控内胆 · 布朗宁闭锁下倾平移击针 | 24 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=p320&screen=workbench) |
-| `BAY-11` | **FN P90 PDW** | 比利时 · 个人防卫武器 | `5.7×28mm FN SS190` | 顶置 50 发透明水平弹匣 · 90° 螺旋坡道旋转供弹 + 自由枪机底部抛壳 | 25 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=p90&screen=workbench) |
+| `BAY-01` | **Kalashnikov AK-15M1 (6P71M)** | Russia · Assault Rifle | `7.62×39mm (M43)` | Long-stroke gas piston · 2-lug 35° rotating bolt | 26 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=ak15&screen=workbench&lang=en) |
+| `BAY-02` | **Colt M4A1 Carbine** | USA · Carbine | `5.56×45mm NATO` | Stoner direct impingement (internal BCG piston) · 7-lug bolt | 26 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=m4a1&screen=workbench&lang=en) |
+| `BAY-03` | **Heckler & Koch MP5A3** | Germany · SMG | `9×19mm Parabellum` | Dual Ø8mm roller-delayed blowback (4:1 ratio) · Fluted chamber | 26 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=mp5&screen=workbench&lang=en) |
+| `BAY-04` | **Glock 17 Gen3** | Austria · Service Pistol | `9×19mm Parabellum` | Browning short-recoil tilting barrel · Safe Action triple safety | 28 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=g17&screen=workbench&lang=en) |
+| `BAY-05` | **Barrett M82A1** | USA · Anti-Materiel | `.50 BMG (12.7×99mm)` | Short-recoil 29" fluted barrel · Accelerator lever & 3-lug bolt | 24 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=m82a1&screen=workbench&lang=en) |
+| `BAY-06` | **Accuracy International AWM** | UK · Sniper Rifle | `.338 Lapua Magnum` | Manual 60° 6-lug anti-icing bolt action · Bonded alloy chassis | 24 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=awm&screen=workbench&lang=en) |
+| `BAY-07` | **FN SCAR-L Mk 16 Mod 0** | Belgium · Modular Rifle | `5.56×45mm NATO` | Short-stroke gas tappet · 7-lug rotating bolt & monolithic upper | 26 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=scar&screen=workbench&lang=en) |
+| `BAY-08` | **Desert Eagle Mark XIX** | Israel/USA · Pistol | `.50 Action Express` | Forward under-barrel gas piston · 4-lug rotating bolt & dual rods | 24 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=deagle&screen=workbench&lang=en) |
+| `BAY-09` | **Steyr AUG A1 (StG 77)** | Austria · Bullpup Rifle | `5.56×45mm NATO` | Offset short-stroke piston · Twin guide rods & polymer hammer pack | 25 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=aug&screen=workbench&lang=en) |
+| `BAY-10` | **SIG Sauer P320 M17** | USA/Germany · Pistol | `9×19mm Parabellum` |Serialized removable stainless FCU chassis · Tilting-barrel striker | 24 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=p320&screen=workbench&lang=en) |
+| `BAY-11` | **FN P90 PDW** | Belgium · PDW | `5.7×28mm FN SS190` | Top horizontal 50-rd magazine · 90° helical feed ramp & bottom eject | 25 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=p90&screen=workbench&lang=en) |
 
 ---
 
-## 键盘快捷键与深度链接 | Shortcuts & Deep Links
+## Keyboard Shortcuts & Deep Links
 
-- **多入口与深度链接**：
-  - 官方双语宣传页：`/showcase.html`、`/?screen=showcase` 或 `/showcase.html?lang=en`
-  - 11 槽数字枪库：`/?weapon=ak15`、`/?weapon=p90` 或 `/?weapon=p90&lang=en`
-  - 直达拆解/击发台：`/?weapon=m82a1&screen=workbench&mode=firing`
-- **全局工程快捷键**：
-  - `Space`：播放 / 暂停自动拆解或实弹击发循环演示
-  - `C`：开启 / 关闭 1:1 纵向中轴军械剖视切面（`军械剖视`）
-  - `X`：开启 / 关闭机匣与套筒外壳 X-Ray 半透明透视
-  - `M`：开启 / 静音 Web Audio 军械机械咬合声与 7 口径实弹声场
-  - `E`：开启 / 关闭工业 CAD 硬边轮廓线
-  - `L`：显示 / 隐藏 3D 空间零件编号引出标签（拆解模式）
-  - `R`：一键重置回默认合拢态与默认等轴测视角
-  - `Esc`：依次收起全屏抽屉为悬浮字幕条 → 取消当前选中零件 → 返回 3D 数字枪库
+### URL Deep-Link Parameters
+- Interactive Product Showcase: `/showcase.html?lang=en` or `/?screen=showcase&lang=en`
+- 11-Bay Armory Turntable: `/?screen=armory&weapon=p90&lang=en`
+- 7-Caliber 1:1 Cartridge Cutaway Lab: `/?screen=cartridges&lang=en` (or `/?screen=cartridges&caliber=50_bmg&lang=en`)
+- Direct Live-Firing Workbench: `/?weapon=m82a1&screen=workbench&mode=firing&lang=en`
+
+### Workbench & Vault Hotkeys
+| Key | Action |
+| :---: | :--- |
+| `Space` | Play / pause staged explosion or 7-phase live firing cycle |
+| `C` | Toggle Two-Pass WebGL Stencil longitudinal solid cross-section cutaway |
+| `T` | Toggle **6-Role Engineering Functional Color-Coding** & cutaway cap tint |
+| `G` | Toggle **Hands-On Guided Military Field-Strip & Reassembly DAG Mode** |
+| `J` | Toggle **Malfunction Cutaway & Clearing Diagnostics** (`Stovepipe / Double-Feed / Light-Strike / OOB`) |
+| `K` | Toggle **1:1 3D Armorer Vernier Caliper** (`mm`) & 3D envelope scale ruler |
+| `B` | Open / exit standalone **7-Caliber SAAMI/CIP 1:1 Cartridge Cutaway Lab** |
+| `X` | Toggle optical X-Ray translucent receiver / slide / magazine housings |
+| `P` | Retract slide / bolt 28% for armorer **Press-Check** chamber inspection |
+| `V` | Cycle fire-control selector mode (`SAFE` → `SEMI` → `AUTO`) |
+| `F` | Hold to pull trigger through sear break; release to reset disconnector |
+| `E` | Toggle industrial CAD hard-edge wireframe overlay |
+| `L` | Show / hide obstacle-aware 3D hairline leader callouts |
+| `M` | Mute / unmute procedural Web Audio mechanical & ballistic acoustics |
+| `R` | Reset to `0%` assembled state and default isometric framing |
+| `Esc` | Minimize open story/inspector drawer → deselect part → return to Armory Vault |
 
 ---
 
-## 快速启动与质量门禁 | Quick Start & Verification
+## Quick Start & Quality Gates
 
-### 环境要求 | Prerequisites
+### Prerequisites
 - **Node.js** `>= 20`
-- （可选，仅在重新离线烘焙 PBR 贴图时需要）**Python** `>= 3.10` + `numpy` + `Pillow`
+- *(Optional, only if regenerating offline PBR textures)* **Python** `>= 3.10` + `numpy` + `Pillow`
 
-### 常用命令 | Commands
+### Commands
 
 ```bash
-# 1. 安装依赖
+# 1. Install dependencies
 npm install
 
-# 2. 启动本地开发服务器 (同时支持 / 与 /showcase.html)
+# 2. Start local Vite dev server (serves both / and /showcase.html)
 npm run dev
 
-# 3. 执行全量静态检查与 11 武器 278 零件契约测试
+# 3. Run all 4 engineering quality gates (strict TS, ESLint, Vitest contracts, multi-entry build)
 npm run typecheck
 npm run lint
 npm test
-
-# 4. 生产环境多入口分包构建
 npm run build
 ```
 
-### 重新烘焙 5 通道 Packed ORM WebP 贴图（可选）
+### Optional: Regenerate 2K 5-Channel Packed ORM WebP Textures
 
-仓库 `public/textures/` 目录已内置全部 64 张高画质 `.webp` 贴图，开箱即用。如需调整表面转化膜色温、滚印或磨损参数：
+All 64 `.webp` textures (`Albedo + Normal + Packed ORM`) ship pre-baked in `public/textures/`. To tweak metallurgy conversion-coating curves or knurling parameters:
 
 ```bash
-# 运行 Python PBR 算子自测 + 重新生成全部 11 款武器贴图
 python3 -B -m scripts.pbr_core.selftest
 npm run textures:build
 ```
 
 ---
 
-## 项目架构目录 | Project Architecture
+## Architecture Overview
 
 ```text
 digital-armory-3d/
-├── index.html                     # 3D 数字枪库与拆解工作台主入口
-├── showcase.html                  # 官方交互式产品宣传页独立入口
+├── index.html                     # Primary 3D Vault & Disassembly Workbench entry
+├── showcase.html                  # Standalone interactive bilingual Showcase entry
 ├── public/
-│   ├── audio/                     # 644 段双语四幕研发史与全零件 Gemini TTS MP3 语音
-│   ├── narrations/                # 11 款武器结构化双语研发故事与零件工程档案 JSON
-│   ├── showcase/                  # 实机 WebGL 2.0 高清宣传页画廊资产 (WebP)
-│   └── textures/                  # 64 张 2K / Seamless 5-Ch ORM WebP 贴图
+│   ├── audio/                     # 644 bilingual 4-act R&D & part voiceovers (Gemini TTS MP3)
+│   ├── narrations/                # Structured zh/en R&D documentaries & part engineering JSONs
+│   ├── showcase/                  # Live WebGL 2.0 showcase gallery captures (WebP)
+│   └── textures/                  # 64 pre-baked 2K 5-Channel Packed ORM WebP textures
 ├── scripts/
-│   ├── pbr_core/                  # Python 共享 Worley/滚花/法线积分AO/曲率提亮算子库
-│   ├── pbr/                       # 11 款武器独立贴图生成器 (generate_*_pbr.py)
-│   └── build_textures.py          # 统一贴图生成与 WebP 编码流水线 CLI
+│   ├── pbr_core/                  # Procedural Worley, knurling, normal-integrated AO & curvature
+│   ├── pbr/                       # Per-weapon PBR generators (generate_*_pbr.py)
+│   └── build_textures.py          # Batch texture baker & WebP encoder CLI
 ├── src/
-│   ├── app/                       # URL 双向深度链接、语言标题同步、快捷键与 ErrorBoundary
-│   ├── engine/                    # 通用 3D 机械拆解、剖视、内弹道与程序化声学引擎层
-│   │   ├── actors/                # PartActor (转化膜+清漆层 PBR) + BallisticsSystem
-│   │   ├── audio/                 # Web Audio 7 口径实弹声浪、8 点机械咬合与 TTS 闪避引擎
-│   │   ├── callout/               # ResizeObserver 零回流避障与 60fps 引线投影器
-│   │   ├── canvas/                # ArmoryViewport 双侧掠射柔光棚与阻尼相机飞跃控制
-│   │   ├── clock/                 # playbackClock 60fps 瞬态时钟 (零 React 重渲染)
-│   │   ├── geometry/              # Web Worker 异步 CSG、剖视穿透射线与 LRU 几何池
-│   │   ├── kinematics/            # 零 GC 分配关键帧插值与运动学纯函数库
-│   │   └── materials/             # BASE_URL 自适应 WebP PBR 加载与 LRU 纹理池
-│   ├── i18n/                      # 全站与宣传页中英双语词典及武器元数据兜底表
-│   ├── narration/                 # 语音播放队列、speechSynthesis 兜底与 3D 导演编排器
-│   ├── weapons/                   # 11 款自包含武器插件包 (支持 Rollup 独立分包懒加载)
-│   ├── features/                  # 模块化视图层 (showcase / armory / workbench / story / atlas)
-│   ├── store/                     # useAppStore 强类型交互状态库
-│   └── styles/                    # 设计令牌与按视图模块拆分的样式体系
-├── tests/                         # Vitest 278 零件几何/UV/运动学/防死黑契约测试
-└── .github/workflows/             # CI 门禁 (ci.yml) + GitHub Pages 自动部署 (deploy-pages.yml)
+│   ├── app/                       # Bidirectional URL sync, auto-locale, hotkeys & ErrorBoundary
+│   ├── engine/
+│   │   ├── actors/                # PartActor, StencilSectionCap, BallisticsSystem, GasFlowVisualizer
+│   │   ├── audio/                 # Stereo convolution IR + waveguide gunsmith Web Audio engine
+│   │   ├── callout/               # ResizeObserver HUD obstacle cache & 60fps hairline callouts
+│   │   ├── canvas/                # ArmoryViewport, GunsmithStageMat & GTAO/Bloom/AgX PostFX
+│   │   ├── caliper/               # 1:1 3D Vernier caliper (`1u = 10mm`) & envelope metrology
+│   │   ├── cartridges/            # 7-caliber exact 1:1 SAAMI/CIP standing cutaway lathe specs
+│   │   ├── clock/                 # Transient 60Hz playbackClock (zero React re-renders)
+│   │   ├── fieldstrip/            # 11-weapon military field-strip DAG specs & Zero-GC runtime
+│   │   ├── geometry/              # Off-thread Web Worker CSG, cut-aware raycast & LRU pool
+│   │   ├── interaction/           # Direct 3D slide drag, Press-Check & SAFE/SEMI/AUTO FCG
+│   │   ├── kinematics/            # Zero-GC keyframe & multi-stage pose evaluators
+│   │   ├── malfunctions/          # 4-stoppage diagnostic profiles & clearing drill state machine
+│   │   ├── materials/             # Custom GLSL armoryShader, 6-role functional tint & PBR LRU
+│   │   └── physics/               # SAAMI/CIP internal ballistics, recoil harmonics & brass pool
+│   ├── features/                  # Modular UI views (showcase / armory / workbench / story / atlas)
+│   ├── i18n/                      # Strictly parity-checked zh/en dictionaries & fallbacks
+│   ├── narration/                 # Audio queue, speechSynthesis fallback & 3D Story Director
+│   ├── store/                     # Strongly typed Zustand store (useAppStore)
+│   └── weapons/                   # 11 lazy-loaded self-contained weapon plugins (CSG + kinematics)
+└── tests/                         # Vitest geometry, UV, kinematics, ballistics, DAG & i18n contracts
 ```
 
 ---
 
-## 声明 | Disclaimer
+## Educational Disclaimer
 
-本项目所有三维模型均为**原理示意级（Schematic / Educational Level）**浏览器端机械科普与交互可视化开源作品，重点展示机械自动原理、闭锁方式与运动学配合关系，**不包含任何真实工业制造公差、CAD 加工图纸或可打印构件尺寸**。
+All 3D models in this repository are **schematic / educational visualizations** created strictly to illustrate mechanical engineering principles, operating systems, internal ballistics, and armorer safety procedures. They **do not contain manufacturing tolerances, chambering blueprints, or 3D-printable dimensions**.
 
 ---
 
-## 开源协议 | License
+## License
 
-本项目基于 [MIT License](LICENSE) 开源。
+Released under the [MIT License](LICENSE).

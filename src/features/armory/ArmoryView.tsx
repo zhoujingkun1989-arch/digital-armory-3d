@@ -13,6 +13,8 @@ import {
   Layers,
   MousePointerClick,
   Orbit,
+  Palette,
+  Printer,
   Rotate3d,
   Ruler,
   Scissors,
@@ -35,6 +37,7 @@ import { ARMORY_WEAPONS, matchesArmoryCategory } from '../../weapons/manifests';
 import { preloadWeaponPlugin } from '../../weapons/registry';
 import type { ArmoryCategory, ArmoryWeaponItem } from '../../weapons/types';
 import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
+import { EngineeringTintLegend } from '../workbench/EngineeringTintLegend';
 import { StudioEnvironmentBar } from '../workbench/StudioEnvironmentBar';
 import { WeaponSilhouetteSvg } from './WeaponSilhouetteSvg';
 
@@ -57,6 +60,7 @@ export const ArmoryView: React.FC = () => {
   const toggleStoryOpen = useAppStore((s) => s.toggleStoryOpen);
   const setStoryOpen = useAppStore((s) => s.setStoryOpen);
   const openShowcase = useAppStore((s) => s.openShowcase);
+  const openCartridgeLab = useAppStore((s) => s.openCartridgeLab);
   const selectArmoryWeapon = useAppStore((s) => s.selectArmoryWeapon);
   const enterWorkbench = useAppStore((s) => s.enterWorkbench);
   const armoryAutoRotate = useAppStore((s) => s.armoryAutoRotate);
@@ -65,15 +69,19 @@ export const ArmoryView: React.FC = () => {
   const toggleXrayShells = useAppStore((s) => s.toggleXrayShells);
   const sectionCut = useAppStore((s) => s.sectionCut);
   const toggleSectionCut = useAppStore((s) => s.toggleSectionCut);
+  const engineeringTint = useAppStore((s) => s.engineeringTint);
+  const toggleEngineeringTint = useAppStore((s) => s.toggleEngineeringTint);
   const pbrTexturesEnabled = useAppStore((s) => s.pbrTexturesEnabled);
   const togglePbrTextures = useAppStore((s) => s.togglePbrTextures);
   const setTextureModalOpen = useAppStore((s) => s.setTextureModalOpen);
+  const openMonographModal = useAppStore((s) => s.openMonographModal);
 
   const featuredWeapon =
     ARMORY_WEAPONS.find((w) => w.id === activeWeaponId) ?? ARMORY_WEAPONS[0];
   const { bundle: featuredBundle } = useWeaponNarration(featuredWeapon.id);
 
   const ui = UI_STRINGS[lang].armory;
+  const monoUi = UI_STRINGS[lang].monograph;
   const featuredDisplay = resolveWeaponDisplayMeta(
     featuredWeapon.id,
     lang,
@@ -175,6 +183,26 @@ export const ArmoryView: React.FC = () => {
           >
             <BookOpen size={13} />
             <span>{ui.storyBtn}</span>
+          </button>
+
+          <button
+            type="button"
+            className="armory-showcase-btn"
+            onClick={() => openMonographModal(featuredWeapon.id)}
+            title={monoUi.entryChipTitle}
+          >
+            <Printer size={13} aria-hidden="true" />
+            <span>{monoUi.entryChip}</span>
+          </button>
+
+          <button
+            type="button"
+            className="armory-showcase-btn"
+            onClick={() => openCartridgeLab()}
+            title={ui.cartridgeLabTitle}
+          >
+            <Layers size={13} aria-hidden="true" />
+            <span>{ui.cartridgeLabBtn}</span>
           </button>
 
           <button
@@ -315,6 +343,24 @@ export const ArmoryView: React.FC = () => {
 
         <button
           type="button"
+          className="plaque-monograph-cta"
+          onClick={() => openMonographModal(featuredWeapon.id)}
+          title={monoUi.entryChipTitle}
+        >
+          <div className="plaque-story-cta-left">
+            <span className="plaque-monograph-icon">
+              <Printer size={14} aria-hidden="true" />
+            </span>
+            <div>
+              <span className="plaque-story-main">{monoUi.plaqueCtaMain}</span>
+              <span className="plaque-story-sub">{monoUi.plaqueCtaSub}</span>
+            </div>
+          </div>
+          <ArrowRight size={14} aria-hidden="true" />
+        </button>
+
+        <button
+          type="button"
           className="plaque-primary-cta"
           onClick={() => enterWorkbench(featuredWeapon.id)}
         >
@@ -377,12 +423,28 @@ export const ArmoryView: React.FC = () => {
           className={`toggle-chip armory-ctrl-chip ${
             sectionCut ? 'active-teal' : ''
           }`}
+          aria-pressed={sectionCut}
           onClick={toggleSectionCut}
           title={ui.sectionTitle}
         >
-          <Scissors size={14} />
+          <Scissors size={14} aria-hidden="true" />
           <span>{sectionCut ? ui.sectionOn : ui.sectionOff}</span>
         </button>
+
+        <button
+          type="button"
+          className={`toggle-chip armory-ctrl-chip ${
+            engineeringTint ? 'active-amber' : ''
+          }`}
+          aria-pressed={engineeringTint}
+          onClick={toggleEngineeringTint}
+          title={ui.tintTitle}
+        >
+          <Palette size={14} aria-hidden="true" />
+          <span>{ui.tintBtn}</span>
+        </button>
+
+        <EngineeringTintLegend compact />
 
         <div className="armory-stage-hint">
           <MousePointerClick size={13} />

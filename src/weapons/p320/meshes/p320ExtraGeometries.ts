@@ -820,7 +820,7 @@ export function buildP320MagFollowerGeometry(): THREE.BufferGeometry {
     '#fb923c'
   );
   const catchShelf = paintGeometry(
-    new THREE.BoxGeometry(0.56, 0.28, 0.26).translate(0.64, 0.22, -0.62),
+    new THREE.BoxGeometry(0.56, 0.28, 0.24).translate(0.64, 0.22, -0.5),
     '#ea580c'
   );
   const legF = paintGeometry(
@@ -834,15 +834,15 @@ export function buildP320MagFollowerGeometry(): THREE.BufferGeometry {
   return mergeParts([base, step, catchShelf, legF, legR]);
 }
 
-/** M-03: Rectangular Coil Magazine Spring */
+/** M-03: Rectangular Coil Magazine Spring (compressed under full 17-rd load) */
 export function buildP320MagSpringGeometry(): THREE.BufferGeometry {
   return paintGeometry(
     createRectangularMagSpring({
-      height: 6.7,
-      widthX: 1.86,
-      depthZ: 1.12,
-      wireRadius: 0.056,
-      coils: 9,
+      height: 1.1,
+      widthX: 1.38,
+      depthZ: 1.06,
+      wireRadius: 0.045,
+      coils: 8,
     }),
     '#9aa8ba'
   );

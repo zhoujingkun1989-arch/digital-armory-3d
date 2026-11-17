@@ -1,6 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import type { AssemblyGroupKey, MaterialKind } from '../../weapons/types';
+import {
+  ENGINEERING_ROLE_META,
+  type EngineeringRole,
+} from '../materials/engineeringRoles';
 
 /**
  * Two-Pass WebGL Stencil Solid Cross-Section Capping
@@ -49,13 +53,15 @@ const GROUP_HATCH: Record<AssemblyGroupKey, { dir: 1 | -1; spacing: number }> = 
 
 export function getSectionCapStyle(
   kind: MaterialKind,
-  group: AssemblyGroupKey
+  group: AssemblyGroupKey,
+  engineeringRole?: EngineeringRole | null
 ): SectionCapStyle {
   const h = GROUP_HATCH[group] ?? GROUP_HATCH.frame;
+  let style: SectionCapStyle;
   switch (kind) {
     case 'polymer_frame':
       // Dark fibreglass-reinforced nylon
-      return {
+      style = {
         base: '#334155',
         hatch: '#64748b',
         hatchDir: h.dir,
@@ -63,8 +69,9 @@ export function getSectionCapStyle(
         spec: 0.08,
         brushed: 0,
       };
+      break;
     case 'follower_orange':
-      return {
+      style = {
         base: '#f97316',
         hatch: '#9a3412',
         hatchDir: h.dir,
@@ -72,9 +79,10 @@ export function getSectionCapStyle(
         spec: 0.12,
         brushed: 0,
       };
+      break;
     case 'copper_accent':
       // Warm phosphor-bronze / cartridge brass
-      return {
+      style = {
         base: '#c2853f',
         hatch: '#7c2d12',
         hatchDir: h.dir,
@@ -82,13 +90,14 @@ export function getSectionCapStyle(
         spec: 0.42,
         brushed: 1,
       };
+      break;
     case 'nitride_steel':
     case 'barrel_steel':
     case 'stainless':
     case 'spring_steel':
     default:
       // Bright machined / brushed steel
-      return {
+      style = {
         base: '#94a3b8',
         hatch: '#475569',
         hatchDir: h.dir,
@@ -96,7 +105,17 @@ export function getSectionCapStyle(
         spec: 0.36,
         brushed: 1,
       };
+      break;
   }
+  if (engineeringRole) {
+    const roleMeta = ENGINEERING_ROLE_META[engineeringRole];
+    return {
+      ...style,
+      base: roleMeta.capBaseHex,
+      hatch: roleMeta.capHatchHex,
+    };
+  }
+  return style;
 }
 
 const CAP_VERTEX = /* glsl */ `
@@ -142,19 +161,23 @@ void main() {
   vec3 base = uBaseColor * mix( grainStipple, grainBrushed, uBrushed );
 
   vec3 N = vec3( 0.0, 0.0, 1.0 );
-  vec3 V = normalize( cameraPosition - vCapWorldPos );
+  vec3 rawV = cameraPosition - vCapWorldPos;
+  float lenVSq = dot( rawV, rawV );
+  vec3 V = lenVSq > 1e-8 ? ( rawV * inversesqrt( lenVSq ) ) : vec3( 0.0, 0.0, 1.0 );
   if ( dot( N, V ) < 0.0 ) N = -N;
   vec3 L = normalize( vec3( 0.35, 0.62, 0.70 ) );
-  vec3 H = normalize( L + V );
+  vec3 rawH = L + V;
+  float lenHSq = dot( rawH, rawH );
+  vec3 H = lenHSq > 1e-8 ? ( rawH * inversesqrt( lenHSq ) ) : N;
   float ndl = max( dot( N, L ), 0.0 );
   vec3 col = base * ( 0.6 + 0.4 * ndl );
   col = mix( col, uHatchColor, line * 0.85 );
 
   // Anisotropic brushed specular streak (stretched along X) + soft isotropic lobe
-  float nh = max( dot( N, H ), 0.0 );
-  float aniso = pow( max( 1.0 - abs( H.y ), 0.0 ), 18.0 ) * uBrushed;
+  float nh = max( dot( N, H ), 1e-5 );
+  float aniso = pow( max( 1.0 - abs( H.y ), 1e-5 ), 18.0 ) * uBrushed;
   float spec = ( pow( nh, 48.0 ) + 0.35 * aniso ) * uSpec;
-  col += vec3( spec );
+  col = clamp( col + vec3( spec ), vec3( 0.0 ), vec3( 16.0 ) );
 
   gl_FragColor = vec4( col, 1.0 );
   #include <tonemapping_fragment>
@@ -164,15 +187,16 @@ void main() {
 
 const capMaterialCache = new Map<string, THREE.ShaderMaterial>();
 
-/** Builds the CNC cross-section cap material (cached per material kind × assembly group). */
+/** Builds the CNC cross-section cap material (cached per material kind × assembly group × role). */
 export function getSectionCapMaterial(
   kind: MaterialKind,
-  group: AssemblyGroupKey
+  group: AssemblyGroupKey,
+  engineeringRole?: EngineeringRole | null
 ): THREE.ShaderMaterial {
-  const key = `${kind}|${group}`;
+  const key = `${kind}|${group}|${engineeringRole ?? 'none'}`;
   const cached = capMaterialCache.get(key);
   if (cached) return cached;
-  const style = getSectionCapStyle(kind, group);
+  const style = getSectionCapStyle(kind, group, engineeringRole);
   const mat = new THREE.ShaderMaterial({
     name: `SectionCap:${key}`,
     uniforms: {
@@ -372,6 +396,7 @@ export interface StencilSectionCapProps {
   material: MaterialKind;
   group: AssemblyGroupKey;
   clippingPlanes: THREE.Plane[];
+  engineeringRole?: EngineeringRole | null;
   /**
    * Optional zero-GC visibility/bounds sync hook called by PartActor in `useFrame`.
    */
@@ -391,6 +416,7 @@ export const StencilSectionCap: React.FC<StencilSectionCapProps> = ({
   material,
   group,
   clippingPlanes,
+  engineeringRole = null,
   syncRef,
 }) => {
   const backRef = useRef<THREE.Mesh>(null);
@@ -398,7 +424,7 @@ export const StencilSectionCap: React.FC<StencilSectionCapProps> = ({
   const capRef = useRef<THREE.Mesh>(null);
 
   const passMats = getSectionStencilPassMaterials(clippingPlanes);
-  const capMat = getSectionCapMaterial(material, group);
+  const capMat = getSectionCapMaterial(material, group, engineeringRole);
 
   useEffect(() => {
     const slot = acquireSectionCapSlot();

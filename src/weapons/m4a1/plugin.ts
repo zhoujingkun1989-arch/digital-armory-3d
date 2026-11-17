@@ -602,15 +602,20 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     nameEn: 'USGI Enhanced Tan 4-Way Anti-Tilt Polymer Follower',
     group: 'magazine',
     material: 'follower_orange',
-    assembledPos: [2.4, -1.2, 0],
+    assembledPos: [3.052, -7.051, 0],
+    assembledRot: [0, 0, 0.27],
     explodeSteps: [
       ...M4A1_MAG_DROP,
-      { range: [0.34, 0.56], offset: [-0.1, 2.05, 0] },
+      {
+        range: [0.35, 0.56],
+        offset: [1.45, 8.15, 0],
+        rotation: [0, 0, -0.27],
+      },
     ],
     calloutDir: 'down',
     calloutStem: 44,
-    calloutAnchor: [0.1, -0.3, 0],
-    labelAppearAt: 0.34,
+    calloutAnchor: [0.1, 0.15, 0],
+    labelAppearAt: 0.35,
     roleTag: '前后加长导裙彻底根治卡弹倾覆 / 打光最后一发顶起左侧空仓挂机拍',
     description:
       '美军 M4A1 改进型自润滑沙色聚合物托弹板：顶部双阶凸脊引导 5.56mm 弹药形成精准双排双进交错排列，前后超长防倾导裙防止单侧按压卡死，后端凸舌在射完第 30 发弹后自动顶升下机匣空仓挂机卡笋。',
@@ -626,11 +631,11 @@ export const M4A1_PARTS: WeaponPartSpec[] = [
     assembledPos: [2.4, -1.0, 0],
     explodeSteps: [
       ...M4A1_MAG_DROP,
-      { range: [0.34, 0.58], offset: [5.4, -3.4, 0] },
+      { range: [0.34, 0.58], offset: [5.2, -3.1, 0] },
     ],
     calloutDir: 'down',
     calloutStem: 40,
-    calloutAnchor: [1.1, -6.4, 0],
+    calloutAnchor: [0.95, -6.85, 0],
     labelAppearAt: 0.34,
     roleTag:
       '贴合 STANAG 弯弧腔体提供恒定供弹张力 / 适应约 850 发/分全自动高射速',
@@ -831,7 +836,16 @@ export function computeM4a1FiringKinematics(
 
     case 'm4a1_mag_follower': {
       const feedPulse = seg(f, 0.52, 0.63) - seg(f, 0.66, 0.8);
-      dy = 0.36 * feedPulse;
+      dx = -0.096 * feedPulse;
+      dy = 0.347 * feedPulse;
+      rz = -0.02 * feedPulse;
+      break;
+    }
+
+    case 'm4a1_mag_spring': {
+      const feedPulse = seg(f, 0.52, 0.63) - seg(f, 0.66, 0.8);
+      dx = -0.048 * feedPulse;
+      dy = 0.174 * feedPulse;
       break;
     }
 

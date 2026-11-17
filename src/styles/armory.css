@@ -4,15 +4,22 @@
   inset: 0;
   z-index: var(--z-hud);
   pointer-events: none;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    'header header'
+    'plaque controls'
+    'rack   rack';
+  gap: 10px 16px;
+  padding: 12px 16px 20px;
 }
 
 .armory-header {
-  position: absolute;
-  top: 12px;
-  left: 16px;
-  right: 16px;
+  grid-area: header;
+  min-inline-size: 0;
   display: flex;
-  align-items: center;
+  align-items: safe center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 6px 12px;
@@ -33,11 +40,12 @@
 
 .armory-header-actions {
   display: flex;
-  align-items: center;
+  align-items: safe center;
   justify-content: flex-end;
   gap: 7px;
   flex-wrap: wrap;
-  min-width: 0;
+  min-inline-size: 0;
+  margin-inline-start: auto;
 }
 
 .armory-filter-pills {
@@ -127,12 +135,14 @@
 
 /* Left Featured Weapon Plaque */
 .armory-hero-plaque {
-  position: absolute;
-  top: 72px;
-  left: 16px;
-  width: 348px;
-  max-height: calc(100vh - 292px);
+  grid-area: plaque;
+  align-self: start;
+  justify-self: start;
+  width: min(348px, 100%);
+  max-block-size: 100%;
   overflow-y: auto;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
   padding: 11px 13px;
   border-radius: 14px;
   background: var(--surface-glass);
@@ -214,6 +224,7 @@
   color: var(--color-text-primary);
   letter-spacing: -0.01em;
   line-height: 1.24;
+  text-wrap: balance;
 }
 
 .plaque-weapon-sub {
@@ -233,7 +244,8 @@
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
-  overflow: hidden;
+  line-clamp: 3;
+  overflow: clip;
 }
 
 .plaque-spec-grid {
@@ -331,6 +343,7 @@
 .plaque-feature-chips {
   display: flex;
   flex-wrap: wrap;
+  flex-wrap: balance;
   gap: 4px;
   margin-bottom: 8px;
 }
@@ -368,13 +381,19 @@
 
 /* Right Stage Controls */
 .armory-stage-controls {
-  position: absolute;
-  top: 74px;
-  right: 16px;
+  grid-area: controls;
+  align-self: start;
+  justify-self: end;
+  max-block-size: 100%;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: 7px;
+  pointer-events: none;
+}
+
+.armory-stage-controls > * {
   pointer-events: auto;
 }
 
@@ -401,7 +420,7 @@
 /* Toast Banner */
 .armory-toast-banner {
   position: absolute;
-  bottom: 204px;
+  bottom: var(--hud-bottom-offset, 204px);
   left: 50%;
   transform: translateX(-50%);
   padding: 7px 15px;
@@ -418,10 +437,8 @@
 
 /* Bottom Compact Single-Row Armory Weapon Rack */
 .armory-rack-dock {
-  position: absolute;
-  bottom: 20px;
-  left: 16px;
-  right: 16px;
+  grid-area: rack;
+  min-inline-size: 0;
   padding: 8px 12px 9px;
   border-radius: 14px;
   background: var(--surface-glass);

@@ -394,7 +394,8 @@ export const ExhibitionTurntable: React.FC<ExhibitionTurntableProps> =
             color={tt.chassis}
             metalness={0.94}
             roughness={0.3}
-            anisotropy={0.6}
+            clearcoat={0.22}
+            clearcoatRoughness={0.26}
             envMapIntensity={1.2}
           />
         </mesh>

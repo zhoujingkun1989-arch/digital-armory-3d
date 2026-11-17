@@ -34,6 +34,11 @@
 - **三档影棚环境（暗室展厅 / 军械匠人台 / 工程白昼）+ GTAO/HDR/AgX 后处理**：内置程序化氯丁橡胶拆枪垫与磁吸零件盘（`GunsmithStageMat.tsx`）、自适应暗色军械师 / 亮色工程蓝图双主题 UI，以及半分辨率 GTAO 环境光遮蔽、HDR 膛口焰辉光与 AgX 色调映射管线（`ArmoryPostProcessing.tsx`）。
 - **7 阶段耦合运动学 + 7 口径 SAAMI/CIP 实弹内弹道、刚体抛壳与实时遥测示波器（`WP-04`）**：位于 `src/engine/actors/BallisticsSystem.tsx`、`src/engine/physics/armoryPhysics.ts` 与 `src/features/workbench/BallisticsTelemetryHud.tsx`，覆盖 `9×19mm`、`5.7×28mm`、`5.56 NATO`、`7.62×39mm`、`.50 AE`、`.338 Lapua`、`.50 BMG`，含 60fps 零重绘膛压 $P(t)$（`MPa`）/ 膛内初速 $V(t)$（`m/s`）示波器与反向拖拽控制、二阶弹簧阻尼枪身后坐上跳与枪管谐振鞭动、桌面碰撞弹跳刚体抛壳及枪管温升积碳演化。
 - **直接手操拉机柄/套筒、膛内验枪（`Press-Check [P]`）与快慢机多档位火控交互（`WP-08`）**：位于 `src/engine/interaction/InteractiveActionController.tsx`，支持 3D 视口直接拖拽套筒/拉机柄、微拉套筒露铜验枪（`P`）、切换 `SAFE / SEMI / AUTO` 快慢机档位（`V`）以及按住扳机（`F`）感受保险锁死、单发断连器截获复位与全自动循环差异。
+- **6 大机械职能语义分色（`[T]`）与 60fps 高压火药燃气导流可视化（`WP-05`）**：位于 `src/engine/materials/engineeringRoles.ts`、`src/engine/actors/GasFlowVisualizer.tsx` 与 `src/features/workbench/EngineeringTintLegend.tsx`，零着色器重编译实现 278 零件按闭锁承压、导气驱动、自动机框、火控击发、储能弹簧、机匣供弹分色（与 Stencil 纵剖面同步换色）及动态膛内膨胀与导气分流轨迹渲染。
+- **军械师引导式野战勤务拆装实操（`[G]`，`WP-07`）**：位于 `src/engine/fieldstrip/fieldStripSpecs.ts`、`src/engine/fieldstrip/fieldStripStore.ts` 与 `src/features/workbench/FieldStripHud.tsx`，内置全部 11 款武器真实军械教范有向拆装依赖图（DAG），支持 3D 直接点选拆解与逆序拓扑复装、机械干涉脉冲高亮与排障规范提示。
+- **经典枪械故障剖视排障室（`[J]`，`WP-09`）**：位于 `src/engine/malfunctions/malfunctionSpecs.ts`、`src/engine/malfunctions/malfunctionStore.ts`、`src/engine/actors/MalfunctionActor.tsx` 与 `src/features/workbench/MalfunctionHud.tsx`，覆盖全部 11 款武器的 4 类典型卡阻与安全阻断（`烟囱卡壳 Stovepipe`、`双进弹 Double Feed`、`底火轻敲拒发 Light Strike`、`未闭锁击发阻断 Out-of-Battery`），支持 3D 卡壳/双弹卡膛/浅敲底火/不到位间隙可视化、成因零件脉冲定位与按序排障实操演练。
+- **1:1 3D 军械游标卡尺与空间包络标尺（`[K]`，`WP-10`）**：位于 `src/engine/caliper/caliperStore.ts`、`src/engine/canvas/CaliperActor.tsx` 与 `src/features/workbench/CaliperHud.tsx`，严格基于 `1 world unit = 1 cm = 10 mm` 实现穿透纵剖切面的任意两点 3D 表面拾取、60fps 悬停橡皮筋实时跨度预览、正交 `|ΔX| / |ΔY| / |ΔZ|` 分量解算、3 类一键 CAD 基准量测及全枪三维包络标尺。
+- **7 大口径 SAAMI/CIP 实弹 1:1 纵剖对比实验室（`[B]` / `?screen=cartridges`，`WP-06`）**：位于 `src/engine/cartridges/cartridgeSpecs.ts`、`src/engine/actors/CartridgeCutawayStage.tsx` 与 `src/features/cartridges/CartridgeLabView.tsx`，独立博物馆弹药展厅将 `9×19mm`、`5.7×28mm`、`.50 AE`、`7.62×39mm`、`5.56 NATO`、`.338 Lapua`、`.50 BMG` 按 `1:1` 绝对物理比例（`29.69 mm` 至 `138.43 mm`）同台 `180°` 纵剖陈列，支持轴向分解滑块（弹壳传火孔、底火杯、黄铜砧座、发射药柱、被甲与硬化钢穿甲锥/铅芯）及定量参数对照矩阵。
 - **全馆藏中英双语四幕研发纪录片 + 644 个 Gemini TTS 语音导览 + 3D 导演运镜 & 立体声卷积混响 / 钢材频散波导声场**：包含 `public/narrations/*.json`、`public/audio/`、浏览器 `speechSynthesis` 兜底（`src/narration/audioPlayer.ts`）、四幕自动镜头编排与同步字幕（`src/narration/storyDirector.ts`）、3 档立体声卷积脉冲响应（`bench_close` / `tactical_hall` / `indoor_range`）与欧拉-伯努利钢材频散波导 + 抛壳落地清脆弹跳声场（`src/engine/audio/mechanicalSoundEngine.ts`），以及全站与 `ShowcaseView` 100% 中英双语体验。
 
 ---
@@ -51,31 +56,31 @@
   - **目标模块**：`src/engine/audio/mechanicalSoundEngine.ts`、`src/engine/clock/playbackClock.ts`、`src/store/useAppStore.ts`
   - **交付与验收**：与 7 阶段击发相位硬绑定，实现 6 口径差异化枪口冲击波（`.50 BMG` 重低频轰鸣 vs `9×19mm` 清脆短促）；在 `0.25x` 慢放时清晰分离阻铁释放咔哒 → 击针撞击 → 枪机回转开锁碰撞 → 弹壳抛飞 → 复进簧摩擦闭锁声；接入拆装/点选金属卡笋反馈音、TTS 人声自动闪避（Audio Ducking）与独立静音开关。
 
-### 阶段二：定量物理与内弹道可视化
+### 阶段二：定量物理与内弹道可视化（已完成）
 - [x] **WP-04｜实时内弹道遥测示波器（Chamber Pressure & Velocity HUD）**
   - **目标模块**：`src/features/workbench/BallisticsTelemetryHud.tsx`、`src/engine/physics/armoryPhysics.ts`、`src/features/workbench/TimelineDock.tsx`、`src/engine/clock/playbackClock.ts`
   - **交付与验收**：建立 7 口径 SAAMI/CIP 真实内弹道曲线模型，在击发模式下以 60fps 零重绘方式同步绘制膛压（`MPa`）、弹头膛内初速（`m/s`）与安全开锁泄压窗口曲线，直观诠释自由行程与滚柱延迟比，支持拖拽曲线反向控制 `fireProgress`。
-- [ ] **WP-05｜燃气流向与功能件工程分色视图（Engineering Flow & Functional Tint）**
-  - **目标模块**：`src/engine/actors/PartActor.tsx`、`src/engine/actors/BallisticsSystem.tsx`、`src/store/useAppStore.ts`
+- [x] **WP-05｜燃气流向与功能件工程分色视图（Engineering Flow & Functional Tint）**
+  - **目标模块**：`src/engine/materials/engineeringRoles.ts`、`src/engine/materials/armoryShader.ts`、`src/engine/actors/PartActor.tsx`、`src/engine/actors/GasFlowVisualizer.tsx`、`src/features/workbench/EngineeringTintLegend.tsx`
   - **交付与验收**：提供「工程原理分色模式」，按闭锁件、导气件、火控件与弹性储能件赋予清晰语义色，并动态可视化高压火药燃气从导气孔冲击活塞头或斯通纳气匙的气流路径。
-- [ ] **WP-06｜6 大口径 SAAMI 实弹 1:1 剖视对比实验室（Cartridge Cutaway Lab）**
-  - **目标模块**：`src/engine/actors/BallisticsSystem.tsx`、`src/features/`（弹药对比视图）
-  - **交付与验收**：复用并扩展 SAAMI 车削几何，构建独立弹药展厅，将 `9×19mm`、`5.56 NATO`、`7.62×39mm`、`.50 AE`、`.338 Lapua`、`.50 BMG` 按 `1:1` 绝对比例并排纵剖陈列，定量对比装药容积、被甲弹芯、底火砧座与枪口动能（`500 J` vs `18,000 J`）。
+- [x] **WP-06｜6+1 大口径 SAAMI 实弹 1:1 剖视对比实验室（Cartridge Cutaway Lab）**
+  - **目标模块**：`src/engine/cartridges/cartridgeSpecs.ts`、`src/engine/actors/CartridgeCutawayStage.tsx`、`src/features/cartridges/CartridgeLabView.tsx`
+  - **交付与验收**：复用并扩展 SAAMI/CIP 车削几何，构建独立弹药展厅（`?screen=cartridges`），将 `9×19mm`、`5.7×28mm`、`.50 AE`、`7.62×39mm`、`5.56 NATO`、`.338 Lapua`、`.50 BMG` 按 `1:1` 绝对比例并排纵剖陈列，定量对比装药容积、被甲弹芯、底火砧座与枪口动能（`518 J` vs `18,050 J`）。
 
-### 阶段三：亲手操作与军械排障教学
-- [ ] **WP-07｜引导式野战勤务拆装实操（Hands-On Field-Strip Mode）**
-  - **目标模块**：`src/weapons/types.ts`、各武器 `plugin.ts`、`src/features/workbench/`
+### 阶段三：亲手操作与军械排障教学（已完成）
+- [x] **WP-07｜引导式野战勤务拆装实操（Hands-On Field-Strip Mode）**
+  - **目标模块**：`src/engine/fieldstrip/fieldStripSpecs.ts`、`src/engine/fieldstrip/fieldStripStore.ts`、`src/features/workbench/FieldStripHud.tsx`、`src/engine/actors/PartActor.tsx`
   - **交付与验收**：为每款武器定义有向拆装依赖图（DAG，如 `卸弹匣 → 拉栓验枪 → 拆机匣盖 → 取复进簧 → 抽枪机框 → 旋出枪机`），支持在 3D 视口直接点击零件完成逐步拆解与复装；若顺序错误，高亮机械干涉部位并弹出军械规范提示。
 - [x] **WP-08｜快慢机多档位（`SAFE / SEMI / AUTO`）火控交互**
   - **目标模块**：`src/engine/interaction/InteractiveActionController.tsx`、`src/features/workbench/TimelineDock.tsx`、`src/weapons/types.ts`、`src/weapons/*/plugin.ts`
   - **交付与验收**：扩展火控运动学接口与直接 3D 手操控制器，支持在拆解台切换快慢机档位（`V`）、微拉套筒验枪（`P`）与按住扳机（`F`），实时对比 `SAFE` 阻铁锁死、`SEMI` 单发断连器截获与松扳机复位、`AUTO` 不到位保险联动连发循环的啮合差异。
-- [ ] **WP-09｜经典枪械故障剖视排障室（Malfunction Diagnostics）**
-  - **目标模块**：`src/engine/actors/`、`src/features/workbench/`、`src/i18n/`
+- [x] **WP-09｜经典枪械故障剖视排障室（Malfunction Diagnostics）**
+  - **目标模块**：`src/engine/malfunctions/malfunctionSpecs.ts`、`src/engine/malfunctions/malfunctionStore.ts`、`src/engine/actors/MalfunctionActor.tsx`、`src/features/workbench/MalfunctionHud.tsx`
   - **交付与验收**：内置 4 类典型故障与安全保护定格（`烟囱卡壳 Stovepipe`、`双进弹 Double Feed`、`底火轻敲拒发 Light Strike`、`未闭锁击发阻断 Out-of-Battery Safety`），支持一键剖视定位卡阻成因并演示标准排障步骤。
 
 ### 阶段四：博物馆级测绘工具与横向百科串联
-- [ ] **WP-10｜1:1 3D 军械游标卡尺与空间标尺（CAD Caliper Tool）**
-  - **目标模块**：`src/engine/canvas/`、`src/features/workbench/`
+- [x] **WP-10｜1:1 3D 军械游标卡尺与空间标尺（CAD Caliper Tool）**
+  - **目标模块**：`src/engine/caliper/caliperStore.ts`、`src/engine/canvas/CaliperActor.tsx`、`src/features/workbench/CaliperHud.tsx`
   - **交付与验收**：基于 `1 world unit = 1 cm` 精确坐标，支持在拆解台拾取任意两处 3D 表面点测量毫米级距离（枪管实长、闭锁突笋厚度、后坐行程）并支持开关全枪包络标尺。
 - [ ] **WP-11｜自动原理流派对照矩阵（Mechanism Showdown）**
   - **目标模块**：`src/features/armory/ArmoryView.tsx`、`src/weapons/manifests.ts`

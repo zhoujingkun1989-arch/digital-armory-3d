@@ -810,28 +810,32 @@ export function buildP90HelicalRampGeometry(): THREE.BufferGeometry {
 }
 
 /**
- * M-03: Twin-Roller Horizontal Polymer Follower (assembledPos: [-1.85, 2.66, 0])
+ * M-03: Twin-Roller Horizontal Polymer Follower (assembledPos: [3.35, 2.66, 0])
  * Pushes sideways cartridges rearward (-X) toward the helical feed throat; two staggered
  * horizontal polymer rollers mimic a pair of 5.7×28mm cases to feed the final round!
  */
 export function buildP90MagFollowerGeometry(): THREE.BufferGeometry {
   const carriage = paintGeometry(
-    new THREE.BoxGeometry(1.15, 0.78, 1.92).translate(0.32, 0, 0),
+    new THREE.BoxGeometry(0.82, 0.74, 1.9).translate(0.18, 0, 0),
     P90_FOLLOWER_ORANGE
+  );
+  const springBoss = paintGeometry(
+    new THREE.BoxGeometry(0.08, 0.38, 1.12).translate(0.62, 0, 0),
+    P90_POLYMER_BLACK
   );
   // Profiled 5.7×28mm bottleneck dummy-round rollers oriented sideways along -Z (bullet pointing left -Z!)
   const dummyRoundRoller = (color: string): THREE.BufferGeometry => {
     const pts = [
-      new THREE.Vector2(0.06, -0.92), // Bullet ogive tip (-Z)
-      new THREE.Vector2(0.135, -0.56), // 5.7mm neck
-      new THREE.Vector2(0.135, -0.36),
-      new THREE.Vector2(0.215, -0.18), // Bottleneck shoulder
-      new THREE.Vector2(0.22, 0.78), // Case body
-      new THREE.Vector2(0.18, 0.82), // Extractor rim groove
-      new THREE.Vector2(0.18, 0.87),
-      new THREE.Vector2(0.22, 0.89), // Case head rim (+Z)
-      new THREE.Vector2(0.22, 0.92),
-      new THREE.Vector2(0.06, 0.92),
+      new THREE.Vector2(0.055, -0.92), // Bullet ogive tip (-Z)
+      new THREE.Vector2(0.128, -0.56), // 5.7mm neck
+      new THREE.Vector2(0.128, -0.36),
+      new THREE.Vector2(0.202, -0.18), // Bottleneck shoulder
+      new THREE.Vector2(0.205, 0.78), // Case body
+      new THREE.Vector2(0.168, 0.82), // Extractor rim groove
+      new THREE.Vector2(0.168, 0.87),
+      new THREE.Vector2(0.205, 0.89), // Case head rim (+Z)
+      new THREE.Vector2(0.205, 0.92),
+      new THREE.Vector2(0.055, 0.92),
     ];
     return paintGeometry(
       new THREE.LatheGeometry(pts, 22).rotateX(Math.PI / 2),
@@ -840,37 +844,38 @@ export function buildP90MagFollowerGeometry(): THREE.BufferGeometry {
   };
   const rollerUpper = dummyRoundRoller(P90_POLYMER_BLACK).translate(
     -0.32,
-    0.22,
+    0.185,
     0
   );
   const rollerLower = dummyRoundRoller(P90_COPPER_TIP).translate(
     -0.12,
-    -0.22,
+    -0.185,
     0
   );
   const axleUpper = paintGeometry(
-    new THREE.CylinderGeometry(0.06, 0.06, 1.98, 12)
+    new THREE.CylinderGeometry(0.058, 0.058, 1.96, 12)
       .rotateX(Math.PI / 2)
-      .translate(-0.32, 0.22, 0),
+      .translate(-0.32, 0.185, 0),
     P90_CHROME
   );
   const axleLower = paintGeometry(
-    new THREE.CylinderGeometry(0.06, 0.06, 1.96, 12)
+    new THREE.CylinderGeometry(0.058, 0.058, 1.96, 12)
       .rotateX(Math.PI / 2)
-      .translate(-0.12, -0.22, 0),
+      .translate(-0.12, -0.185, 0),
     P90_CHROME
   );
   const guideRailL = paintGeometry(
-    new THREE.BoxGeometry(0.96, 0.16, 0.04).translate(0.36, 0, -0.965),
+    new THREE.BoxGeometry(0.8, 0.16, 0.04).translate(0.24, 0, -0.96),
     P90_POLYMER_BLACK
   );
   const guideRailR = paintGeometry(
-    new THREE.BoxGeometry(0.96, 0.16, 0.04).translate(0.36, 0, 0.965),
+    new THREE.BoxGeometry(0.8, 0.16, 0.04).translate(0.24, 0, 0.96),
     P90_POLYMER_BLACK
   );
 
   return mergeParts([
     carriage,
+    springBoss,
     rollerUpper,
     rollerLower,
     axleUpper,
@@ -881,16 +886,16 @@ export function buildP90MagFollowerGeometry(): THREE.BufferGeometry {
 }
 
 /**
- * M-04: Horizontal Rectangular Magazine Drive Spring (assembledPos: [2.25, 2.66, 0])
- * Spans horizontally along X inside the front half of the top magazine, pushing rearward (-X).
+ * M-04: Compressed Horizontal Rectangular Magazine Drive Spring (assembledPos: [4.96, 2.66, 0])
+ * Fits neatly in the ~1.89 cm front (+X) pocket between `p90_mag_follower` and `p90_mag_floorplate`.
  */
 export function buildP90MagSpringGeometry(): THREE.BufferGeometry {
   const springRaw = createRectangularMagSpring({
-    height: 7.4,
-    widthX: 0.78,
-    depthZ: 1.72,
-    wireRadius: 0.036,
-    coils: 13,
+    height: 1.76,
+    widthX: 0.66,
+    depthZ: 1.66,
+    wireRadius: 0.032,
+    coils: 10,
   });
   springRaw.rotateZ(-Math.PI / 2);
   paintGeometry(springRaw, P90_SPRING_STEEL);

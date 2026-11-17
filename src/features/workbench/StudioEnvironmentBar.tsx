@@ -1,5 +1,14 @@
 import React from 'react';
-import { Aperture, Lightbulb, Moon, Sun } from 'lucide-react';
+import {
+  Aperture,
+  EyeOff,
+  Lightbulb,
+  Maximize2,
+  Minimize2,
+  Moon,
+  Sun,
+} from 'lucide-react';
+import { useBrowserFullscreen } from '../../app/useFullscreen';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import {
   ARMORY_ENVIRONMENT_PRESETS,
@@ -26,8 +35,25 @@ export const StudioEnvironmentBar: React.FC<StudioEnvironmentBarProps> = ({
   const setEnvironmentPreset = useAppStore((s) => s.setEnvironmentPreset);
   const postFxEnabled = useAppStore((s) => s.postFxEnabled);
   const togglePostFx = useAppStore((s) => s.togglePostFx);
+  const setHudHidden = useAppStore((s) => s.setHudHidden);
 
+  const { isFullscreen, isSupported, toggleFullscreen } =
+    useBrowserFullscreen();
   const studioUi = UI_STRINGS[lang].studio;
+
+  const handleFullscreenClick = async () => {
+    playWorkbenchFoley('toggle_switch');
+    if (!isSupported) {
+      setHudHidden(true);
+      return;
+    }
+    const wasFullscreen = isFullscreen;
+    const activeAfter = await toggleFullscreen();
+    if (!wasFullscreen && !activeAfter) {
+      // Fallback to viewport-clean presentation if host container blocks native fullscreen
+      setHudHidden(true);
+    }
+  };
 
   return (
     <div className={`studio-env-cluster ${compact ? 'is-compact' : ''}`}>
@@ -72,6 +98,39 @@ export const StudioEnvironmentBar: React.FC<StudioEnvironmentBarProps> = ({
       >
         <Aperture size={13} aria-hidden="true" />
         <span>{studioUi.postFxChip}</span>
+      </button>
+
+      <button
+        type="button"
+        className="toggle-chip"
+        title={studioUi.hideUiTitle}
+        onClick={() => {
+          playWorkbenchFoley('toggle_switch');
+          setHudHidden(true);
+        }}
+      >
+        <EyeOff size={13} aria-hidden="true" />
+        <span>{studioUi.hideUiChip}</span>
+      </button>
+
+      <button
+        type="button"
+        className={`toggle-chip ${isFullscreen ? 'active-cyan' : ''}`}
+        title={studioUi.fullscreenTitle(isFullscreen)}
+        onClick={() => {
+          void handleFullscreenClick();
+        }}
+      >
+        {isFullscreen ? (
+          <Minimize2 size={13} aria-hidden="true" />
+        ) : (
+          <Maximize2 size={13} aria-hidden="true" />
+        )}
+        <span>
+          {isFullscreen
+            ? studioUi.fullscreenExitChip
+            : studioUi.fullscreenEnterChip}
+        </span>
       </button>
     </div>
   );

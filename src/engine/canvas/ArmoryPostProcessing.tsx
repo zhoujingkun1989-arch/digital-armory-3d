@@ -273,6 +273,162 @@ export function applyRendererToneMapping(
   }
 }
 
+/**
+ * Hardens `GTAOPass` against upstream Three.js r169 `NaN` hazards on Apple Metal / ANGLE:
+ * 1. Switches internal `[0, 1]` AO targets (`gtaoRenderTarget`, `pdRenderTarget`) from `HalfFloatType`
+ *    to `UnsignedByteType` (`RGBA8` UNORM) so GPU ROP hardware physically flushes `NaN` -> 0 and clamps `[0, 1]`.
+ * 2. Patches `GTAOShader` & `PoissonDenoiseShader` to guard `normalize(vec3(0.0))` when same-texel
+ *    depth samples produce `viewDelta == 0`, clamp `cosHorizons` inside `[-0.99999, 0.99999]` before
+ *    `acos()` / `sqrt(1 - c^2)`, and guard `pow(0.0, y)` `log2(0)` evaluations.
+ */
+export function hardenGtaoPassAgainstNaN(gtaoPass: GTAOPass): void {
+  gtaoPass.gtaoRenderTarget.texture.type = THREE.UnsignedByteType;
+  gtaoPass.pdRenderTarget.texture.type = THREE.UnsignedByteType;
+
+  gtaoPass.gtaoMaterial.fragmentShader = gtaoPass.gtaoMaterial.fragmentShader
+    .replace(
+      'vec3 normalInSlice = normalize(viewNormal - sliceBitangent * dot(viewNormal, sliceBitangent));',
+      'vec3 rawNormalInSlice = viewNormal - sliceBitangent * dot(viewNormal, sliceBitangent); vec3 normalInSlice = dot(rawNormalInSlice, rawNormalInSlice) > 1e-8 ? rawNormalInSlice * inversesqrt(dot(rawNormalInSlice, rawNormalInSlice)) : viewDir;'
+    )
+    .split('if (abs(viewDelta.z) < thickness) {')
+    .join(
+      'if (abs(viewDelta.z) < thickness && dot(viewDelta, viewDelta) > 1e-8) {'
+    )
+    .replace(
+      'vec2 sinHorizons = sqrt(1. - cosHorizons * cosHorizons);',
+      'cosHorizons = clamp(cosHorizons, vec2(-0.99999), vec2(0.99999)); vec2 sinHorizons = sqrt(max(vec2(0.0), 1. - cosHorizons * cosHorizons));'
+    )
+    .replace('ao = pow(ao, scale);', 'ao = pow(max(ao, 1e-5), scale);');
+  gtaoPass.gtaoMaterial.needsUpdate = true;
+
+  gtaoPass.pdMaterial.fragmentShader =
+    gtaoPass.pdMaterial.fragmentShader.replace(
+      'float normalSimilarity = pow(max(normalDiff, 0.), normalPhi);',
+      'float normalSimilarity = pow(max(normalDiff, 1e-5), normalPhi);'
+    );
+  gtaoPass.pdMaterial.needsUpdate = true;
+}
+
+const SAFE_BLOOM_HIGHPASS_FRAGMENT = /* glsl */ `
+uniform sampler2D tDiffuse;
+uniform vec3 defaultColor;
+uniform float defaultOpacity;
+uniform float luminosityThreshold;
+uniform float smoothWidth;
+
+varying vec2 vUv;
+
+vec3 armorySanitizeHdrRgb( vec3 c ) {
+  uvec3 bits = floatBitsToUint( c );
+  bvec3 bad = greaterThanEqual( bits & uvec3( 0x7f800000u ), uvec3( 0x7f800000u ) );
+  vec3 safe = vec3(
+    bad.r ? 0.0 : c.r,
+    bad.g ? 0.0 : c.g,
+    bad.b ? 0.0 : c.b
+  );
+  return clamp( safe, vec3( 0.0 ), vec3( 64.0 ) );
+}
+
+void main() {
+  vec4 texel = texture2D( tDiffuse, vUv );
+  vec3 safeRgb = armorySanitizeHdrRgb( texel.rgb );
+  float v = luminance( safeRgb );
+  vec4 outputColor = vec4( defaultColor.rgb, defaultOpacity );
+  float alpha = smoothstep( luminosityThreshold, luminosityThreshold + smoothWidth, v );
+  gl_FragColor = mix( outputColor, vec4( safeRgb, 1.0 ), alpha );
+}
+`;
+
+/**
+ * Installs an IEEE-754 integer bitmask (`floatBitsToUint`) `NaN` / `Infinity` / `fp16`-overflow
+ * firewall at the entrance of `UnrealBloomPass` (`materialHighPassFilter`) so a rogue non-finite
+ * HDR pixel can NEVER expand across the 5-mip separable Gaussian pyramid into a ~516×516 black square.
+ */
+export function hardenBloomPassAgainstNaN(bloomPass: UnrealBloomPass): void {
+  bloomPass.materialHighPassFilter.fragmentShader =
+    SAFE_BLOOM_HIGHPASS_FRAGMENT;
+  bloomPass.materialHighPassFilter.needsUpdate = true;
+}
+
+const SAFE_OUTPUT_VERTEX = /* glsl */ `
+precision highp float;
+
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+
+in vec3 position;
+in vec2 uv;
+
+out vec2 vUv;
+
+void main() {
+  vUv = uv;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}
+`;
+
+const SAFE_OUTPUT_FRAGMENT = /* glsl */ `
+precision highp float;
+
+uniform sampler2D tDiffuse;
+
+#include <tonemapping_pars_fragment>
+#include <colorspace_pars_fragment>
+
+in vec2 vUv;
+layout(location = 0) out highp vec4 pc_fragColor;
+
+vec3 armorySanitizeHdrRgb( vec3 c ) {
+  uvec3 bits = floatBitsToUint( c );
+  bvec3 bad = greaterThanEqual( bits & uvec3( 0x7f800000u ), uvec3( 0x7f800000u ) );
+  vec3 safe = vec3(
+    bad.r ? 0.0 : c.r,
+    bad.g ? 0.0 : c.g,
+    bad.b ? 0.0 : c.b
+  );
+  return clamp( safe, vec3( 0.0 ), vec3( 64.0 ) );
+}
+
+void main() {
+  vec4 texel = texture( tDiffuse, vUv );
+  float safeA = ( ( floatBitsToUint( texel.a ) & 0x7f800000u ) == 0x7f800000u )
+    ? 1.0
+    : clamp( texel.a, 0.0, 1.0 );
+  vec4 outColor = vec4( armorySanitizeHdrRgb( texel.rgb ), safeA );
+
+  #ifdef LINEAR_TONE_MAPPING
+    outColor.rgb = LinearToneMapping( outColor.rgb );
+  #elif defined( REINHARD_TONE_MAPPING )
+    outColor.rgb = ReinhardToneMapping( outColor.rgb );
+  #elif defined( CINEON_TONE_MAPPING )
+    outColor.rgb = CineonToneMapping( outColor.rgb );
+  #elif defined( ACES_FILMIC_TONE_MAPPING )
+    outColor.rgb = ACESFilmicToneMapping( outColor.rgb );
+  #elif defined( AGX_TONE_MAPPING )
+    outColor.rgb = AgXToneMapping( outColor.rgb );
+  #elif defined( NEUTRAL_TONE_MAPPING )
+    outColor.rgb = NeutralToneMapping( outColor.rgb );
+  #endif
+
+  #ifdef SRGB_TRANSFER
+    outColor = sRGBTransferOETF( outColor );
+  #endif
+
+  pc_fragColor = outColor;
+}
+`;
+
+/**
+ * Upgrades `OutputPass` (`RawShaderMaterial`) to GLSL ES 3.00 (`THREE.GLSL3`) and applies an
+ * IEEE-754 `floatBitsToUint` `NaN` / `Infinity` sanitizer prior to `AgXToneMapping`.
+ */
+export function hardenOutputPassAgainstNaN(outputPass: OutputPass): void {
+  outputPass.material.glslVersion = THREE.GLSL3;
+  outputPass.material.vertexShader = SAFE_OUTPUT_VERTEX;
+  outputPass.material.fragmentShader = SAFE_OUTPUT_FRAGMENT;
+  outputPass.material.needsUpdate = true;
+}
+
 // =====================================================================================
 // 2. Active EffectComposer Pipeline (mounted only when `enabled === true`)
 // =====================================================================================
@@ -395,19 +551,22 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
       samples: initialParams.gtao.pdSamples,
     });
     gtaoPass.blendIntensity = initialParams.gtao.blendIntensity;
+    hardenGtaoPassAgainstNaN(gtaoPass);
     composer.addPass(gtaoPass);
 
-    // 3. Selective HDR Emissive UnrealBloomPass (threshold = 1.18+ so lit surfaces stay razor crisp)
+    // 3. Selective HDR Emissive UnrealBloomPass (threshold = 3.2+ with IEEE-754 NaN/Inf firewall)
     const bloomPass = new UnrealBloomPass(
       new THREE.Vector2(effW, effH),
       initialParams.bloom.strength,
       initialParams.bloom.radius,
       initialParams.bloom.threshold
     );
+    hardenBloomPassAgainstNaN(bloomPass);
     composer.addPass(bloomPass);
 
     // 4. Single AgX Tone-Mapping + Linear->sRGB OutputPass (reads gl.toneMapping & gl.toneMappingExposure)
     const outputPass = new OutputPass();
+    hardenOutputPassAgainstNaN(outputPass);
     composer.addPass(outputPass);
 
     // 5. Perceptual LDR Subpixel Morphological Anti-Aliasing (SMAAPass)

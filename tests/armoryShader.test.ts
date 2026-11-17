@@ -242,6 +242,13 @@ describe('AAA Armory Surface Shader, GPU Spring Compression & Stencil Cutaway Ca
     expect(mockShader.fragmentShader).toContain('fwidth( vNormal )');
     expect(mockShader.fragmentShader).toContain('armoryBlackbody');
     expect(mockShader.fragmentShader).toContain('totalEmissiveRadiance +=');
+    // IEEE-754 bitwise NaN/Inf firewall & pure-multiply triplanar weights (no pow(0, 4.0) hazard)
+    expect(mockShader.fragmentShader).toContain('floatBitsToUint');
+    expect(mockShader.fragmentShader).toContain('armorySafeNormalize');
+    expect(mockShader.fragmentShader).toContain(
+      'gl_FragColor.rgb = armorySanitizeHdrRgb( gl_FragColor.rgb );'
+    );
+    expect(mockShader.fragmentShader).not.toContain('pow( abs( armoryObjN )');
 
     // Profile resync mutates existing uniform structs in place
     syncArmoryUniformProfile(uniforms, 'polymer_frame');

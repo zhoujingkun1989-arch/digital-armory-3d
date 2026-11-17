@@ -9,6 +9,7 @@ import {
   Copy,
   Cpu,
   Eye,
+  EyeOff,
   Flame,
   Gauge,
   GitBranch,
@@ -18,6 +19,8 @@ import {
   Keyboard,
   Layers,
   type LucideIcon,
+  Maximize2,
+  Minimize2,
   Orbit,
   Play,
   Ruler,
@@ -31,6 +34,7 @@ import {
   X,
   Zap,
 } from 'lucide-react';
+import { useBrowserFullscreen } from '../../app/useFullscreen';
 import { unlockMechanicalAudio } from '../../engine/audio/mechanicalSoundEngine';
 import {
   dragTurntableBy,
@@ -44,6 +48,7 @@ import {
   type ShowcaseArchPillarCopy,
   type ShowcaseGalleryItemCopy,
 } from '../../i18n/showcaseStrings';
+import { UI_STRINGS } from '../../i18n/uiStrings';
 import {
   getLocalizedShortWeaponLabel,
   resolveWeaponDisplayMeta,
@@ -118,6 +123,10 @@ export const ShowcaseView: React.FC = () => {
   const toggleArmoryAutoRotate = useAppStore((s) => s.toggleArmoryAutoRotate);
   const setSectionCut = useAppStore((s) => s.setSectionCut);
   const setXrayShells = useAppStore((s) => s.setXrayShells);
+  const setHudHidden = useAppStore((s) => s.setHudHidden);
+  const { isFullscreen, isSupported, toggleFullscreen } =
+    useBrowserFullscreen();
+  const studioUi = UI_STRINGS[lang].studio;
   const setTargetProgress = useAppStore((s) => s.setTargetProgress);
   const setTextureModalOpen = useAppStore((s) => s.setTextureModalOpen);
 
@@ -532,6 +541,42 @@ export const ShowcaseView: React.FC = () => {
                 <Orbit size={13} aria-hidden="true" />
                 <span>
                   {armoryAutoRotate ? s.hero.rotateOn : s.hero.rotateOff}
+                </span>
+              </button>
+              <button
+                type="button"
+                className="stage-mode-btn"
+                title={studioUi.hideUiTitle}
+                onClick={() => setHudHidden(true)}
+              >
+                <EyeOff size={13} aria-hidden="true" />
+                <span>{studioUi.hideUiChip}</span>
+              </button>
+              <button
+                type="button"
+                className={`stage-mode-btn ${isFullscreen ? 'active' : ''}`}
+                title={studioUi.fullscreenTitle(isFullscreen)}
+                onClick={async () => {
+                  if (!isSupported) {
+                    setHudHidden(true);
+                    return;
+                  }
+                  const wasFs = isFullscreen;
+                  const activeAfter = await toggleFullscreen();
+                  if (!wasFs && !activeAfter) {
+                    setHudHidden(true);
+                  }
+                }}
+              >
+                {isFullscreen ? (
+                  <Minimize2 size={13} aria-hidden="true" />
+                ) : (
+                  <Maximize2 size={13} aria-hidden="true" />
+                )}
+                <span>
+                  {isFullscreen
+                    ? studioUi.fullscreenExitChip
+                    : studioUi.fullscreenEnterChip}
                 </span>
               </button>
             </div>

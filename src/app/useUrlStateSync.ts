@@ -1,21 +1,30 @@
 import { useEffect, useRef } from 'react';
+import {
+  CARTRIDGE_LAB_SPECS,
+  isCaliberProfile,
+} from '../engine/cartridges/cartridgeSpecs';
 import type { LanguageCode } from '../narration/types';
 import {
   type AppScreen,
   type AppViewMode,
+  detectBrowserDefaultLanguage,
   useAppStore,
 } from '../store/useAppStore';
 import { getShortWeaponLabel } from '../weapons/manifests';
-import { isWeaponId, type WeaponId } from '../weapons/types';
+import {
+  type CaliberProfile,
+  isWeaponId,
+  type WeaponId,
+} from '../weapons/types';
 
-function getDefaultEntryScreen(): 'showcase' | 'armory' {
+export function getDefaultEntryScreen(): 'showcase' | 'armory' {
   if (
     typeof window !== 'undefined' &&
-    window.__DIGITAL_ARMORY_ENTRY__ === 'showcase'
+    window.__DIGITAL_ARMORY_ENTRY__ === 'armory'
   ) {
-    return 'showcase';
+    return 'armory';
   }
-  return 'armory';
+  return 'showcase';
 }
 
 function applyLocationToStore(): void {
@@ -25,10 +34,13 @@ function applyLocationToStore(): void {
   const rawScreen = params.get('screen');
   const rawMode = params.get('mode');
   const rawLang = params.get('lang');
+  const rawCaliber = params.get('caliber');
 
   const current = useAppStore.getState();
   if (rawLang === 'en' || rawLang === 'zh') {
     current.setLang(rawLang);
+  } else {
+    current.setLang(detectBrowserDefaultLanguage());
   }
   const weaponId: WeaponId = isWeaponId(rawWeapon)
     ? rawWeapon
@@ -37,15 +49,24 @@ function applyLocationToStore(): void {
   const targetScreen: AppScreen =
     rawScreen === 'workbench'
       ? 'workbench'
-      : rawScreen === 'showcase'
-        ? 'showcase'
-        : rawScreen === 'armory'
-          ? 'armory'
-          : defaultScreen;
+      : rawScreen === 'cartridges'
+        ? 'cartridges'
+        : rawScreen === 'showcase'
+          ? 'showcase'
+          : rawScreen === 'armory'
+            ? 'armory'
+            : defaultScreen;
   const targetMode: AppViewMode = rawMode === 'firing' ? 'firing' : 'explode';
 
   if (targetScreen === 'workbench') {
     current.enterWorkbench(weaponId, targetMode);
+  } else if (targetScreen === 'cartridges') {
+    if (rawWeapon && isWeaponId(rawWeapon)) {
+      current.selectArmoryWeapon(rawWeapon);
+    }
+    current.openCartridgeLab(
+      isCaliberProfile(rawCaliber) ? rawCaliber : undefined
+    );
   } else if (targetScreen === 'showcase') {
     if (current.screen !== 'showcase') {
       current.openShowcase();
@@ -67,7 +88,9 @@ function buildSearchString(
   weaponId: WeaponId,
   screen: AppScreen,
   mode: AppViewMode,
-  lang: LanguageCode
+  lang: LanguageCode,
+  activeCartridgeCaliber: CaliberProfile,
+  cartridgeLineupOverview: boolean
 ): string {
   const params = new URLSearchParams(window.location.search);
   const defaultScreen = getDefaultEntryScreen();
@@ -75,16 +98,28 @@ function buildSearchString(
   if (screen === 'workbench') {
     params.set('screen', 'workbench');
     params.set('mode', mode);
+    params.delete('caliber');
+  } else if (screen === 'cartridges') {
+    params.set('screen', 'cartridges');
+    params.delete('mode');
+    if (cartridgeLineupOverview) {
+      params.delete('caliber');
+    } else {
+      params.set('caliber', activeCartridgeCaliber);
+    }
   } else {
     params.delete('mode');
+    params.delete('caliber');
     if (screen === defaultScreen) {
       params.delete('screen');
     } else {
       params.set('screen', screen);
     }
   }
-  if (lang === 'en') {
-    params.set('lang', 'en');
+  const browserDefaultLang = detectBrowserDefaultLanguage();
+  const explicitParamLang = params.get('lang');
+  if (lang !== browserDefaultLang || explicitParamLang === lang) {
+    params.set('lang', lang);
   } else {
     params.delete('lang');
   }
@@ -101,6 +136,10 @@ export function useUrlStateSync(): void {
   const screen = useAppStore((s) => s.screen);
   const mode = useAppStore((s) => s.mode);
   const lang = useAppStore((s) => s.lang);
+  const activeCartridgeCaliber = useAppStore((s) => s.activeCartridgeCaliber);
+  const cartridgeLineupOverview = useAppStore(
+    (s) => s.cartridgeLineupOverview
+  );
 
   const initializedRef = useRef(false);
   const applyingPopStateRef = useRef(false);
@@ -137,6 +176,12 @@ export function useUrlStateSync(): void {
         lang === 'en'
           ? 'Digital Armory 3D — Open-Source 1:1 Firearm Mechanical Museum & AI Documentary'
           : 'Digital Armory 3D — 开源 1:1 枪械内部结构 3D 数字博物馆与双语声画纪录片';
+    } else if (screen === 'cartridges') {
+      const calCode = CARTRIDGE_LAB_SPECS[activeCartridgeCaliber].code;
+      document.title =
+        lang === 'en'
+          ? `${calCode} · 1:1 SAAMI Cartridge Cutaway Lab — Digital Armory 3D`
+          : `${calCode} · 1:1 实弹纵剖对比实验室 — Digital Armory 3D`;
     } else if (screen === 'workbench') {
       document.title =
         lang === 'en'
@@ -148,7 +193,7 @@ export function useUrlStateSync(): void {
           ? `${shortTag} · 3D Digital Armory Vault`
           : `${shortTag} · 枪械内部结构 3D 数字枪库`;
     }
-  }, [activeWeaponId, screen, mode, lang]);
+  }, [activeWeaponId, screen, mode, lang, activeCartridgeCaliber]);
 
   // Push/replace URL query parameters when store navigation changes
   useEffect(() => {
@@ -168,12 +213,21 @@ export function useUrlStateSync(): void {
       live.activeWeaponId !== activeWeaponId ||
       live.screen !== screen ||
       live.mode !== mode ||
-      live.lang !== lang
+      live.lang !== lang ||
+      live.activeCartridgeCaliber !== activeCartridgeCaliber ||
+      live.cartridgeLineupOverview !== cartridgeLineupOverview
     ) {
       return;
     }
 
-    const nextSearch = buildSearchString(activeWeaponId, screen, mode, lang);
+    const nextSearch = buildSearchString(
+      activeWeaponId,
+      screen,
+      mode,
+      lang,
+      activeCartridgeCaliber,
+      cartridgeLineupOverview
+    );
     if (window.location.search === nextSearch) {
       prevScreenRef.current = screen;
       return;
@@ -186,5 +240,12 @@ export function useUrlStateSync(): void {
       window.history.replaceState(null, '', nextUrl);
     }
     prevScreenRef.current = screen;
-  }, [activeWeaponId, screen, mode, lang]);
+  }, [
+    activeWeaponId,
+    screen,
+    mode,
+    lang,
+    activeCartridgeCaliber,
+    cartridgeLineupOverview,
+  ]);
 }

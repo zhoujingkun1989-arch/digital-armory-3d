@@ -236,6 +236,8 @@ export interface ArmoryShaderUniforms {
   uTriplanarScale: { value: number };
   uTriplanarDetail: { value: number };
   uDetailGrainMode: { value: number };
+  uFunctionalTint: { value: THREE.Color };
+  uFunctionalTintMix: { value: number };
 }
 
 /** Module-shared constant uniforms (identical across every armory material). */
@@ -351,6 +353,8 @@ export function createArmoryShaderUniforms(
     uTriplanarScale: { value: prof.triplanarScale },
     uTriplanarDetail: { value: prof.triplanarDetail },
     uDetailGrainMode: { value: prof.detailGrainMode },
+    uFunctionalTint: { value: new THREE.Color('#ffffff') },
+    uFunctionalTintMix: { value: 0 },
   };
 }
 
@@ -367,7 +371,7 @@ export interface ArmoryShaderFeatures {
   triplanarMap?: boolean;
 }
 
-export const ARMORY_SHADER_VERSION = 3;
+export const ARMORY_SHADER_VERSION = 4;
 
 export function getArmoryProgramCacheKey(f: ArmoryShaderFeatures): string {
   return `armory-v${ARMORY_SHADER_VERSION}|s${f.spring ? 1 : 0}|c${f.curvature ? 1 : 0}|t${f.thermal ? 1 : 0}|f${f.fouling ? 1 : 0}|tm${f.triplanarMap ? 1 : 0}`;
@@ -460,6 +464,8 @@ uniform vec3 uEdgeWearColor;
 uniform float uTriplanarScale;
 uniform float uTriplanarDetail;
 uniform float uDetailGrainMode;
+uniform vec3 uFunctionalTint;
+uniform float uFunctionalTintMix;
 uniform vec3 uHeatCherry;
 uniform vec3 uHeatOrange;
 uniform vec3 uHeatAmber;
@@ -532,11 +538,39 @@ vec3 armoryBlackbody( float h ) {
   vec3 c = mix( uHeatCherry, uHeatOrange, smoothstep( 0.2, 0.68, h ) );
   return mix( c, uHeatAmber, smoothstep( 0.68, 1.0, h ) );
 }
+
+// IEEE-754 integer bitmask check (immune to Apple Metal / ANGLE -ffast-math NaN elision)
+bool armoryIsFiniteVec3( vec3 v ) {
+  uvec3 bits = floatBitsToUint( v );
+  return all( lessThan( bits & uvec3( 0x7f800000u ), uvec3( 0x7f800000u ) ) );
+}
+
+vec3 armorySafeNormalize( vec3 v, vec3 fallback ) {
+  if ( !armoryIsFiniteVec3( v ) ) return fallback;
+  float lenSq = dot( v, v );
+  return ( lenSq > 1e-8 ) ? ( v * inversesqrt( lenSq ) ) : fallback;
+}
+
+vec3 armorySanitizeHdrRgb( vec3 c ) {
+  uvec3 bits = floatBitsToUint( c );
+  bvec3 bad = greaterThanEqual( bits & uvec3( 0x7f800000u ), uvec3( 0x7f800000u ) );
+  vec3 safe = vec3(
+    bad.r ? 0.0 : c.r,
+    bad.g ? 0.0 : c.g,
+    bad.b ? 0.0 : c.b
+  );
+  return clamp( safe, vec3( 0.0 ), vec3( 64.0 ) );
+}
 `;
 
 const FRAGMENT_SURFACE = /* glsl */ `
 #ifdef ARMORY_SHADER
 {
+  // --- WP-05: Engineering functional role tint (zero shader recompilation) ---
+  if ( uFunctionalTintMix > 0.0001 ) {
+    diffuseColor.rgb = mix( diffuseColor.rgb, uFunctionalTint, clamp( uFunctionalTintMix, 0.0, 1.0 ) );
+  }
+
   // --- CNC curvature edge silvering & cavity CLP gun-oil / grime ---
   float armoryEdge = smoothstep( 0.25, 0.85, vArmoryCurvature );
   float armoryCavity = smoothstep( 0.25, 0.85, -vArmoryCurvature );
@@ -575,16 +609,20 @@ const FRAGMENT_SURFACE = /* glsl */ `
 const FRAGMENT_NORMAL_TRIPLANAR = /* glsl */ `
 #ifdef ARMORY_SHADER
 {
-  // --- Object-space triplanar detail normal blending ---
-  // Eliminates planar-UV sidewall stretching on CSG boolean cuts, flutes, and stippled grips.
-  float armoryObjLen = length( vArmoryObjNormal );
-  vec3 armoryObjN = armoryObjLen > 1e-4 ? ( vArmoryObjNormal / armoryObjLen ) : vec3( 0.0, 1.0, 0.0 );
-  vec3 armoryTriW = pow( abs( armoryObjN ), vec3( 4.0 ) );
+  // --- Sanitize interpolated normals & object-space triplanar detail normal blending ---
+  // Guards against zero-length interpolated vNormal across sharp 180° CSG creases and
+  // eliminates planar-UV sidewall stretching on CSG boolean cuts, flutes, and stippled grips.
+  nonPerturbedNormal = armorySafeNormalize( nonPerturbedNormal, vec3( 0.0, 0.0, 1.0 ) );
+  normal = armorySafeNormalize( normal, nonPerturbedNormal );
+
+  vec3 armoryObjN = armorySafeNormalize( vArmoryObjNormal, vec3( 0.0, 1.0, 0.0 ) );
+  vec3 armoryN2 = armoryObjN * armoryObjN;
+  vec3 armoryTriW = armoryN2 * armoryN2;
   armoryTriW /= max( armoryTriW.x + armoryTriW.y + armoryTriW.z, 1e-5 );
 
-  // Fade procedural high-frequency grain smoothly with screen-space derivative to prevent aliasing
+  // Fade high-frequency grain with pixel footprint AND suppress mould stipple on optically smooth glass/chrome
   float armoryPixSpan = max( length( fwidth( vArmoryObjPos ) ), 1e-4 );
-  float armoryGrainFade = 1.0 - smoothstep( 0.06, 0.28, armoryPixSpan );
+  float armoryGrainFade = ( 1.0 - smoothstep( 0.06, 0.28, armoryPixSpan ) ) * smoothstep( 0.12, 0.30, roughnessFactor );
 
   vec2 sX = armoryMicroSlope2D( vArmoryObjPos.zy, uDetailGrainMode );
   vec2 sY = armoryMicroSlope2D( vArmoryObjPos.xz, uDetailGrainMode );
@@ -605,13 +643,13 @@ const FRAGMENT_NORMAL_TRIPLANAR = /* glsl */ `
       vec3( mZ.x, mZ.y, 0.0 ) * armoryTriW.z;
     vec3 armoryTriView = normalMatrix * armoryTriMapObj;
     armoryTriView -= nonPerturbedNormal * dot( armoryTriView, nonPerturbedNormal );
-    vec3 armoryTriNormal = normalize( nonPerturbedNormal + armoryTriView * faceDirection );
-    normal = normalize( mix( normal, armoryTriNormal, 0.55 ) );
+    vec3 armoryTriNormal = armorySafeNormalize( nonPerturbedNormal + armoryTriView * faceDirection, nonPerturbedNormal );
+    normal = armorySafeNormalize( mix( normal, armoryTriNormal, 0.55 ), nonPerturbedNormal );
   #endif
 
   vec3 armoryViewPerturb = normalMatrix * armoryObjPerturb;
   armoryViewPerturb -= normal * dot( armoryViewPerturb, normal );
-  normal = normalize( normal + armoryViewPerturb * faceDirection );
+  normal = armorySafeNormalize( normal + armoryViewPerturb * faceDirection, nonPerturbedNormal );
 }
 #endif
 `;
@@ -635,11 +673,18 @@ const FRAGMENT_THERMAL = /* glsl */ `
 #endif
 `;
 
+const FRAGMENT_OUTPUT_SANITIZE = /* glsl */ `
+#ifdef ARMORY_SHADER
+  gl_FragColor.rgb = armorySanitizeHdrRgb( gl_FragColor.rgb );
+#endif
+`;
+
 export const ARMORY_VERTEX_ANCHOR = '#include <begin_vertex>';
 export const ARMORY_COMMON_ANCHOR = '#include <common>';
 export const ARMORY_SURFACE_ANCHOR = '#include <metalnessmap_fragment>';
 export const ARMORY_NORMAL_ANCHOR = '#include <normal_fragment_maps>';
 export const ARMORY_EMISSIVE_ANCHOR = '#include <emissivemap_fragment>';
+export const ARMORY_OPAQUE_ANCHOR = '#include <opaque_fragment>';
 
 function injectAfter(src: string, anchor: string, chunk: string): string {
   if (!src.includes(anchor)) return src;
@@ -669,6 +714,7 @@ export function injectArmoryFragmentShader(
   f = injectAfter(f, ARMORY_SURFACE_ANCHOR, FRAGMENT_SURFACE);
   f = injectAfter(f, ARMORY_NORMAL_ANCHOR, FRAGMENT_NORMAL_TRIPLANAR);
   f = injectAfter(f, ARMORY_EMISSIVE_ANCHOR, FRAGMENT_THERMAL);
+  f = injectAfter(f, ARMORY_OPAQUE_ANCHOR, FRAGMENT_OUTPUT_SANITIZE);
   return buildDefines(features) + f;
 }
 

@@ -106,10 +106,10 @@ export function applyAkCarrierUVs(
 }
 
 /**
- * Unwraps M-01 30-Round 7.62×39mm Curved Windowed Magazine onto 1024x1024 ak_mag_{albedo,normal,roughness}.png:
- *  - Arc center in local mag coords: (cxArc = 12.2, cyArc = 0.2), R_mid = 12.2
- *  - Side polymer flanks map along arc angle -> v in [0.08, 0.95] and radial thickness -> u in [0.08, 0.92]
- *    (revealing clear ammo observation window with 7.62x39 cartridges & 10/15/20/25/30 witness marks!)
+ * Unwraps M-01 30-Round 7.62×39mm Curved Windowed Magazine onto 2048x1024 ak_mag_{albedo,normal,roughness}.webp:
+ *  - Right flank: u in [0.04, 0.46], v in [0.10, 0.95] (+X muzzle toward u = 0.46)
+ *  - Left flank:  u in [0.54, 0.96], v in [0.10, 0.95] (+X muzzle toward u = 0.54)
+ *  Both panels read left-to-right on their respective side while orienting cartridges toward +X muzzle!
  *  - Steel locking lugs & feed lips: u in [0.80, 0.98], v in [0.01, 0.06]
  */
 export function applyAkMagUVs(geo: THREE.BufferGeometry): THREE.BufferGeometry {
@@ -150,17 +150,18 @@ export function applyAkMagUVs(geo: THREE.BufferGeometry): THREE.BufferGeometry {
         // Angle from (-1, 0) downward-forward: at top (x~0, y~0), atan2(-dy, -dx) ~ 0; at bottom (x~3.8, y~-10.3), ~ 0.88 rad
         const ang = Math.atan2(-dy, -dx);
         const sNorm = clamp01((ang - -0.03) / 0.92); // 0 at top -> 1 at bottom
-        const rNorm = clamp01((rad - 10.45) / 2.7); // 0 at front concave edge -> 1 at rear convex spine
+        // Centered on mid-radius 11.85 cm so the [11.55, 12.15] window sits at 0.50 on both walls
+        const rNorm = clamp01((rad - 10.5) / 2.7); // 0 at front concave edge (+X) -> 1 at rear convex spine (-X)
 
         if (mode === 'right') {
-          u = 0.08 + (1.0 - rNorm) * 0.84;
+          u = 0.04 + (1.0 - rNorm) * 0.42;
           v = 0.95 - sNorm * 0.85;
         } else if (mode === 'left') {
-          u = 0.08 + rNorm * 0.84;
+          u = 0.54 + rNorm * 0.42;
           v = 0.95 - sNorm * 0.85;
         } else {
-          // Front/rear spine ribs avoid the center window [0.36..0.64]
-          u = 0.08 + clamp01((z + 0.65) / 1.3) * 0.2;
+          // Front/rear spine ribs sample solid ribbed polymer band on Panel R (avoiding window [0.20..0.30])
+          u = 0.04 + clamp01((z + 0.65) / 1.3) * 0.1;
           v = 0.95 - sNorm * 0.85;
         }
       }

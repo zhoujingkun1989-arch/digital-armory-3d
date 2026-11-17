@@ -6,7 +6,6 @@ import {
 import {
   csgSubtract,
   createHelicalSpring,
-  createRectangularMagSpring,
   finalizeGeometry,
   mergeParts,
   paintGeometry,
@@ -1217,18 +1216,18 @@ export function buildM82MagBodyGeometry(): THREE.BufferGeometry {
 }
 
 /**
- * M-02: Double-Stack .50 BMG Stepped Anti-Tilt Follower (assembledPos: [5.3, -3.55, 0])
- * Positioned cleanly beneath the 2nd (.50 BMG reserve) cartridge at worldY = -2.54!
+ * M-02: Double-Stack .50 BMG Stepped Anti-Tilt Follower (assembledPos: [5.3, -6.18, 0])
+ * Positioned at the full-capacity 10-round bottom pocket cleanly above the magazine inner floor.
  */
 export function buildM82MagFollowerGeometry(): THREE.BufferGeometry {
   // Contoured stepped cartridge-cradle cross-section in (Z, Y) for staggered .50 BMG brass cases
   const cradleSec = new THREE.Shape();
   cradleSec.moveTo(-0.66, -0.06);
   cradleSec.lineTo(0.66, -0.06);
-  cradleSec.lineTo(0.66, 0.24);
-  cradleSec.quadraticCurveTo(0.32, 0.08, 0.04, 0.22); // Right lower cartridge trough
-  cradleSec.quadraticCurveTo(-0.22, 0.59, -0.48, 0.575); // Left raised staggered cartridge step
-  cradleSec.lineTo(-0.66, 0.4);
+  cradleSec.lineTo(0.66, 0.2);
+  cradleSec.quadraticCurveTo(0.32, 0.06, 0.04, 0.18); // Right lower cartridge trough
+  cradleSec.quadraticCurveTo(-0.22, 0.39, -0.48, 0.38); // Left raised staggered cartridge step
+  cradleSec.lineTo(-0.66, 0.28);
   cradleSec.closePath();
   const deck = new THREE.ExtrudeGeometry(cradleSec, {
     depth: 5.31,
@@ -1236,31 +1235,31 @@ export function buildM82MagFollowerGeometry(): THREE.BufferGeometry {
   });
   deck.rotateY(Math.PI / 2);
   deck.translate(-2.64, 0, 0);
-  deck.rotateZ(0.08);
+  deck.rotateZ(0.05);
   paintGeometry(deck, M82_FOLLOWER_STEEL);
 
   const frontLeg = paintGeometry(
-    new THREE.BoxGeometry(0.24, 1.15, 1.24).translate(2.46, -0.4, 0),
+    new THREE.BoxGeometry(0.24, 0.72, 1.24).translate(2.46, -0.24, 0),
     M82_FOLLOWER_STEEL
   );
   const rearLeg = paintGeometry(
-    new THREE.BoxGeometry(0.24, 1.35, 1.24).translate(-2.46, -0.56, 0),
+    new THREE.BoxGeometry(0.24, 0.88, 1.24).translate(-2.46, -0.46, 0),
     M82_FOLLOWER_STEEL
   );
   const sideRailL = paintGeometry(
     new THREE.BoxGeometry(4.9, 0.18, 0.1)
-      .rotateZ(0.08)
-      .translate(0, -0.32, -0.57),
+      .rotateZ(0.05)
+      .translate(0, -0.28, -0.57),
     M82_FOLLOWER_STEEL
   );
   const sideRailR = paintGeometry(
     new THREE.BoxGeometry(4.9, 0.18, 0.1)
-      .rotateZ(0.08)
-      .translate(0, -0.32, 0.57),
+      .rotateZ(0.05)
+      .translate(0, -0.28, 0.57),
     M82_FOLLOWER_STEEL
   );
   const springBoss = paintGeometry(
-    new THREE.BoxGeometry(3.8, 0.22, 0.88).rotateZ(0.08).translate(0, -0.14, 0),
+    new THREE.BoxGeometry(3.8, 0.18, 0.88).rotateZ(0.05).translate(0, -0.12, 0),
     M82_FOLLOWER_STEEL
   );
   return mergeParts([
@@ -1274,19 +1273,38 @@ export function buildM82MagFollowerGeometry(): THREE.BufferGeometry {
 }
 
 /**
- * M-03: Heavy-Duty Rectangular .50 BMG Magazine Coil Spring (assembledPos: [5.3, -5.65, 0])
+ * M-03: Heavy-Duty Rectangular .50 BMG Magazine Coil Spring (assembledPos: [5.3, -6.85, 0])
+ * Compressed 7-coil rectangular spring nestled cleanly between the magazine floor and lowered follower.
  */
 export function buildM82MagSpringGeometry(): THREE.BufferGeometry {
-  const spring = createRectangularMagSpring({
-    height: 3.15,
-    widthX: 4.82,
-    depthZ: 1.14,
-    wireRadius: 0.068,
-    coils: 8,
-  });
-  spring.rotateZ(0.241);
-  paintGeometry(spring, M82_SPRING_STEEL);
-  return finalizeGeometry(spring);
+  const coils = 7;
+  const stepsPerCoil = 28;
+  const totalSteps = coils * stepsPerCoil;
+  const rx = 2.16;
+  const rz = 0.54;
+  const wireRadius = 0.044;
+  const points: THREE.Vector3[] = [];
+
+  for (let i = 0; i <= totalSteps; i++) {
+    const u = i / totalSteps;
+    const theta = u * coils * Math.PI * 2;
+    const cosT = Math.cos(theta);
+    const sinT = Math.sin(theta);
+    const sx = Math.sign(cosT) * Math.pow(Math.abs(cosT), 0.55) * rx;
+    const sz = Math.sign(sinT) * Math.pow(Math.abs(sinT), 0.55) * rz;
+    const yBot = -0.4 + 0.055 * Math.max(0, sx);
+    const yTop = 0.39 + 0.05 * sx;
+    const sy = (1 - u) * yBot + u * yTop;
+    points.push(new THREE.Vector3(sx, sy, sz));
+  }
+
+  const curve = new THREE.CatmullRomCurve3(points);
+  const tube = paintGeometry(
+    new THREE.TubeGeometry(curve, totalSteps, wireRadius, 8, false),
+    M82_SPRING_STEEL
+  );
+  const res = finalizeGeometry(tube);
+  return res;
 }
 
 /**

@@ -1,5 +1,9 @@
 /* ==================== Responsive Breakpoint Rules ==================== */
 @media (max-width: 1680px) {
+  :root {
+    --hud-top-offset: 108px;
+  }
+
   .brand-sub {
     display: none;
   }
@@ -37,29 +41,6 @@
     padding: 3.5px 6px;
     font-size: 10.5px;
   }
-
-  .hud-collapsed-btn,
-  .floating-cutaway-pill,
-  .part-sidebar,
-  .inspector-card,
-  .inspector-mini-pill,
-  .geo-build-banner,
-  .ballistics-telemetry-slot,
-  .armory-hero-plaque,
-  .armory-stage-controls,
-  .story-drawer,
-  .story-mini-player {
-    top: 108px;
-  }
-
-  .armory-hero-plaque,
-  .inspector-card {
-    max-height: calc(100vh - 328px);
-  }
-
-  .ballistics-telemetry-slot.sidebar-collapsed {
-    top: 154px;
-  }
 }
 
 @media (max-width: 1120px) {
@@ -74,8 +55,8 @@
   }
   .ballistics-telemetry-slot {
     left: 16px;
-    top: 154px;
-    width: min(392px, calc(100vw - 348px));
+    top: calc(var(--hud-top-offset, 108px) + 46px);
+    width: min(392px, calc(100% - 348px));
   }
 }
 
@@ -110,18 +91,8 @@
 }
 
 @media (max-width: 720px) {
-  .hud-collapsed-btn,
-  .floating-cutaway-pill,
-  .part-sidebar,
-  .inspector-card,
-  .inspector-mini-pill,
-  .geo-build-banner {
-    top: 142px;
-  }
-
-  .ballistics-telemetry-slot,
-  .ballistics-telemetry-slot.sidebar-collapsed {
-    top: 184px;
+  :root {
+    --hud-top-offset: 142px;
   }
 
   .firing-phases-grid {

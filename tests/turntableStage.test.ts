@@ -119,4 +119,47 @@ describe('turntable stage framing & zero-overlap showcase window contract', () =
       }
     }
   });
+
+  it('re-centers turntable viewOffset to (0, 0) for full-bleed 3D showcase when hudHidden is true', () => {
+    for (const weapon of ARMORY_WEAPONS) {
+      const scaleProfile = getWeaponManifest(weapon.id).workbenchMeta
+        .scaleProfile;
+      const normalArmory = computeTurntableFraming(
+        weapon.id,
+        scaleProfile,
+        0,
+        'armory',
+        1440,
+        900,
+        false
+      );
+      const cleanArmory = computeTurntableFraming(
+        weapon.id,
+        scaleProfile,
+        0,
+        'armory',
+        1440,
+        900,
+        true
+      );
+      const cleanShowcase = computeTurntableFraming(
+        weapon.id,
+        scaleProfile,
+        0.58,
+        'showcase',
+        1440,
+        900,
+        true
+      );
+
+      expect(normalArmory.viewOffsetX).not.toBe(0);
+      expect(cleanArmory.viewOffsetX).toBe(0);
+      expect(cleanArmory.viewOffsetY).toBe(0);
+      expect(cleanShowcase.viewOffsetX).toBe(0);
+      expect(cleanShowcase.viewOffsetY).toBe(0);
+      expect(cleanArmory.horizRadius).toBeLessThanOrEqual(
+        normalArmory.horizRadius
+      );
+    }
+  });
 });

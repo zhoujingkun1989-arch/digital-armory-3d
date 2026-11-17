@@ -602,7 +602,7 @@ export const MP5_PARTS: WeaponPartSpec[] = [
     assembledPos: [2.9, -0.45, 0],
     explodeSteps: steps(
       { range: [0.0, 0.25], offset: [1.2, -3.8, 0] },
-      { range: [0.25, 1.0], offset: [1.0, -1.0, 0] }
+      { range: [0.36, 0.58], offset: [0.2, 0.2, 0] }
     ),
     calloutDir: 'down',
     calloutStem: 58,
@@ -621,15 +621,20 @@ export const MP5_PARTS: WeaponPartSpec[] = [
     group: 'magazine',
     material: 'follower_orange',
     isShell: false,
-    assembledPos: [3.04, -1.52, 0],
+    assembledPos: [4.37, -6.7, 0],
+    assembledRot: [0, 0, 0.432],
     explodeSteps: steps(
       { range: [0.0, 0.25], offset: [1.2, -3.8, 0] },
-      { range: [0.64, 0.98], offset: [0.6, 1.4, -2.6] }
+      {
+        range: [0.36, 0.58],
+        offset: [-1.4, 4.2, -2.0],
+        rotation: [0, 0, -0.432],
+      }
     ),
     calloutDir: 'down',
     calloutStem: 46,
-    calloutAnchor: [0, 0.35, -0.3],
-    labelAppearAt: 0.66,
+    calloutAnchor: [0, 0.15, -0.25],
+    labelAppearAt: 0.42,
     roleTag: '圆弧双排交替导向托弹',
     description:
       '沿弹匣内壁圆弧导轨顺滑升降的双排交错高可视度托弹板，保证 800 发/分高射速连发时最末发弹药仍以准确迎角推入节套坡道。',
@@ -646,12 +651,12 @@ export const MP5_PARTS: WeaponPartSpec[] = [
     assembledPos: [2.9, -0.45, 0],
     explodeSteps: steps(
       { range: [0.0, 0.25], offset: [1.2, -3.8, 0] },
-      { range: [0.6, 0.95], offset: [1.8, -4.0, 2.8] }
+      { range: [0.36, 0.58], offset: [2.8, 0.8, 2.0] }
     ),
     calloutDir: 'down',
     calloutStem: 52,
-    calloutAnchor: [1.1, -4.0, 0.3],
-    labelAppearAt: 0.64,
+    calloutAnchor: [1.84, -7.0, 0.25],
+    labelAppearAt: 0.42,
     roleTag: '恒力高速连发供弹储能',
     description:
       '顺应弹匣圆弧曲率绕制的耐腐蚀弹簧钢矩形托弹簧，在满载 30 发至打空全行程提供恒定供弹上托力。',
@@ -668,12 +673,12 @@ export const MP5_PARTS: WeaponPartSpec[] = [
     assembledPos: [5.18, -8.23, 0],
     explodeSteps: steps(
       { range: [0.0, 0.25], offset: [1.2, -3.8, 0] },
-      { range: [0.55, 0.88], offset: [2.2, -3.4, 0] }
+      { range: [0.36, 0.58], offset: [3.2, -0.2, 0] }
     ),
     calloutDir: 'down',
     calloutStem: 48,
     calloutAnchor: [0, -0.35, 0],
-    labelAppearAt: 0.6,
+    labelAppearAt: 0.4,
     roleTag: '翻边滑轨快拆封闭底盖',
     description:
       '扣合于弯弹匣底缘翻边导轨并由弹簧锁片定位的冲压钢底盖，按压中心圆孔锁扣即可滑出清沙保养。',
@@ -896,8 +901,8 @@ export function computeMp5FiringKinematics(
     case 'mp5_mag_follower': {
       const lift = seg(f, 0.54, 0.67) - seg(f, 0.69, 0.83);
       return {
-        pos: [-0.05 * lift, 0.28 * lift, 0],
-        rot: [0, 0, 0],
+        pos: [-0.1 * lift, 0.22 * lift, 0],
+        rot: [0, 0, -0.015 * lift],
         scaleX: 1,
       };
     }
@@ -905,7 +910,7 @@ export function computeMp5FiringKinematics(
     case 'mp5_mag_spring': {
       const lift = seg(f, 0.54, 0.67) - seg(f, 0.69, 0.83);
       return {
-        pos: [0, 0.13 * lift, 0],
+        pos: [-0.05 * lift, 0.11 * lift, 0],
         rot: [0, 0, 0],
         scaleX: 1,
       };

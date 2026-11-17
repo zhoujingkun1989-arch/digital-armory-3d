@@ -1,4 +1,7 @@
 import * as THREE from 'three';
+import { GTAOPass } from 'three/examples/jsm/postprocessing/GTAOPass.js';
+import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
+import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { describe, expect, it } from 'vitest';
 import {
   AZIMUTH_DIAL_TEXTURE_SIZE,
@@ -13,6 +16,9 @@ import {
   computeGtaoInternalSize,
   createArmoryComposerRenderTarget,
   getPostProcessingPresetParams,
+  hardenBloomPassAgainstNaN,
+  hardenGtaoPassAgainstNaN,
+  hardenOutputPassAgainstNaN,
   resolveEffectiveBloomStrength,
   resolveEffectiveBloomThreshold,
   resolveGtaoBlendIntensity,
@@ -468,6 +474,58 @@ describe('native Three.js r169 post-processing pipeline & stencil buffer invaria
       edgeLine.material.dispose();
     } finally {
       geo.dispose();
+    }
+  });
+
+  it('hardens GTAOPass, UnrealBloomPass & OutputPass against HalfFloat NaN / Infinity black-box artifacts', () => {
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(41, 16 / 9, 0.1, 560);
+    const gtaoPass = new GTAOPass(scene, camera, 512, 512);
+    const bloomPass = new UnrealBloomPass(
+      new THREE.Vector2(512, 512),
+      0.32,
+      0.45,
+      3.2
+    );
+    const outputPass = new OutputPass();
+
+    try {
+      hardenGtaoPassAgainstNaN(gtaoPass);
+      expect(gtaoPass.gtaoRenderTarget.texture.type).toBe(
+        THREE.UnsignedByteType
+      );
+      expect(gtaoPass.pdRenderTarget.texture.type).toBe(THREE.UnsignedByteType);
+      expect(gtaoPass.gtaoMaterial.fragmentShader).toContain(
+        'dot(viewDelta, viewDelta) > 1e-8'
+      );
+      expect(gtaoPass.gtaoMaterial.fragmentShader).toContain(
+        'clamp(cosHorizons, vec2(-0.99999), vec2(0.99999))'
+      );
+      expect(gtaoPass.gtaoMaterial.fragmentShader).toContain(
+        'pow(max(ao, 1e-5), scale)'
+      );
+      expect(gtaoPass.pdMaterial.fragmentShader).toContain(
+        'pow(max(normalDiff, 1e-5), normalPhi)'
+      );
+
+      hardenBloomPassAgainstNaN(bloomPass);
+      expect(bloomPass.materialHighPassFilter.fragmentShader).toContain(
+        'floatBitsToUint'
+      );
+      expect(bloomPass.materialHighPassFilter.fragmentShader).toContain(
+        'armorySanitizeHdrRgb'
+      );
+
+      hardenOutputPassAgainstNaN(outputPass);
+      expect(outputPass.material.glslVersion).toBe(THREE.GLSL3);
+      expect(outputPass.material.fragmentShader).toContain('floatBitsToUint');
+      expect(outputPass.material.fragmentShader).toContain(
+        'armorySanitizeHdrRgb'
+      );
+    } finally {
+      gtaoPass.dispose();
+      bloomPass.dispose();
+      outputPass.dispose();
     }
   });
 });

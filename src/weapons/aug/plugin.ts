@@ -580,14 +580,19 @@ export const AUG_PARTS: WeaponPartSpec[] = [
     nameEn: 'Anti-Tilt Polymer Magazine Follower',
     group: 'magazine',
     material: 'polymer_frame',
-    assembledPos: [-9.85, -1.45, 0],
+    assembledPos: [-8.7, -6.14, 0],
+    assembledRot: [0, 0, 0.375],
     explodeSteps: [
       ...AUG_MAG_STAGE1,
-      { range: [0.36, 0.58], offset: [-0.4, 2.8, 0] },
+      {
+        range: [0.36, 0.58],
+        offset: [-0.8, 1.6, -2.0],
+        rotation: [0, 0, -0.375],
+      },
     ],
     calloutDir: 'down',
     calloutStem: 44,
-    calloutAnchor: [0, -0.2, 0],
+    calloutAnchor: [0, 0.12, 0],
     labelAppearAt: 0.36,
     roleTag: '双排双进平顺导引 5.56mm 北约弹',
     description:
@@ -604,11 +609,11 @@ export const AUG_PARTS: WeaponPartSpec[] = [
     assembledPos: [-9.95, 0.45, 0],
     explodeSteps: [
       ...AUG_MAG_STAGE1,
-      { range: [0.36, 0.6], offset: [2.2, -3.6, 0] },
+      { range: [0.36, 0.58], offset: [3.2, -1.4, 2.0] },
     ],
     calloutDir: 'down',
     calloutStem: 34,
-    calloutAnchor: [1.8, -7.2, 0],
+    calloutAnchor: [1.6, -7.42, 0],
     labelAppearAt: 0.36,
     roleTag: '满载长期储存抗松弛 / 恒力推弹上供',
     description:
@@ -625,7 +630,7 @@ export const AUG_PARTS: WeaponPartSpec[] = [
     assembledPos: [-7.84, -8.0, 0],
     explodeSteps: [
       ...AUG_MAG_STAGE1,
-      { range: [0.36, 0.6], offset: [2.6, -4.6, 0] },
+      { range: [0.36, 0.58], offset: [2.8, -3.2, 0] },
     ],
     calloutDir: 'down',
     calloutStem: 34,
@@ -805,8 +810,16 @@ export function computeAugFiringKinematics(
 
     case 'aug_mag_follower': {
       const pulse = seg(f, 0.52, 0.63) - seg(f, 0.66, 0.81);
-      dx = -0.05 * pulse;
-      dy = 0.36 * pulse;
+      dx = -0.095 * pulse;
+      dy = 0.242 * pulse;
+      rz = -0.014 * pulse;
+      break;
+    }
+
+    case 'aug_mag_spring': {
+      const pulse = seg(f, 0.52, 0.63) - seg(f, 0.66, 0.81);
+      dx = -0.048 * pulse;
+      dy = 0.121 * pulse;
       break;
     }
 

@@ -4,15 +4,21 @@ import {
   BookOpen,
   Box,
   Camera,
+  Crosshair,
   Eye,
   Flame,
   Image as ImageIcon,
+  Palette,
+  Printer,
   RotateCcw,
+  Ruler,
   Scissors,
+  ShieldAlert,
   Sparkles,
   Tag,
   Volume2,
   VolumeX,
+  Wrench,
 } from 'lucide-react';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import { resolveWeaponDisplayMeta } from '../../i18n/weaponFallbacks';
@@ -39,6 +45,10 @@ export const WorkbenchHeader: React.FC = () => {
   const pbrTexturesEnabled = useAppStore((s) => s.pbrTexturesEnabled);
   const xrayShells = useAppStore((s) => s.xrayShells);
   const sectionCut = useAppStore((s) => s.sectionCut);
+  const engineeringTint = useAppStore((s) => s.engineeringTint);
+  const fieldStripActive = useAppStore((s) => s.fieldStripActive);
+  const malfunctionActive = useAppStore((s) => s.malfunctionActive);
+  const caliperActive = useAppStore((s) => s.caliperActive);
   const showEdges = useAppStore((s) => s.showEdges);
   const showLabels = useAppStore((s) => s.showLabels);
   const sfxMuted = useAppStore((s) => s.sfxMuted);
@@ -46,8 +56,14 @@ export const WorkbenchHeader: React.FC = () => {
 
   const togglePbrTextures = useAppStore((s) => s.togglePbrTextures);
   const setTextureModalOpen = useAppStore((s) => s.setTextureModalOpen);
+  const openMonographModal = useAppStore((s) => s.openMonographModal);
   const toggleXrayShells = useAppStore((s) => s.toggleXrayShells);
   const toggleSectionCut = useAppStore((s) => s.toggleSectionCut);
+  const toggleEngineeringTint = useAppStore((s) => s.toggleEngineeringTint);
+  const toggleFieldStripMode = useAppStore((s) => s.toggleFieldStripMode);
+  const toggleMalfunctionMode = useAppStore((s) => s.toggleMalfunctionMode);
+  const toggleCaliperMode = useAppStore((s) => s.toggleCaliperMode);
+  const openCartridgeLab = useAppStore((s) => s.openCartridgeLab);
   const toggleShowEdges = useAppStore((s) => s.toggleShowEdges);
   const toggleShowLabels = useAppStore((s) => s.toggleShowLabels);
   const toggleSfxMuted = useAppStore((s) => s.toggleSfxMuted);
@@ -59,6 +75,7 @@ export const WorkbenchHeader: React.FC = () => {
   const meta = manifest.workbenchMeta;
   const partsCount = manifest.catalog.partsCount;
   const ui = UI_STRINGS[lang].workbench;
+  const monoUi = UI_STRINGS[lang].monograph;
   const displayMeta = resolveWeaponDisplayMeta(activeWeaponId, lang, bundle);
 
   return (
@@ -95,6 +112,16 @@ export const WorkbenchHeader: React.FC = () => {
           <BookOpen size={13} />
           <span>{ui.storyChip}</span>
         </button>
+
+        <button
+          type="button"
+          className="toggle-chip active-amber"
+          onClick={() => openMonographModal(activeWeaponId)}
+          title={monoUi.entryChipTitle}
+        >
+          <Printer size={13} aria-hidden="true" />
+          <span>{monoUi.entryChip}</span>
+        </button>
       </div>
 
       <div className="toolbar-cluster toolbar-cluster-tools">
@@ -114,12 +141,65 @@ export const WorkbenchHeader: React.FC = () => {
         <div className="toolbar-divider" />
 
         <button
-          className={`toggle-chip ${mode === 'firing' ? 'active-orange' : ''}`}
-          onClick={() => setMode(mode === 'firing' ? 'explode' : 'firing')}
+          type="button"
+          className={`toggle-chip ${
+            fieldStripActive && mode === 'explode' ? 'active-emerald' : ''
+          }`}
+          aria-pressed={fieldStripActive && mode === 'explode'}
+          onClick={toggleFieldStripMode}
+          title={ui.fieldStripChipTitle}
+        >
+          <Wrench size={13} aria-hidden="true" />
+          <span>{ui.fieldStripChip}</span>
+        </button>
+
+        <button
+          type="button"
+          className={`toggle-chip ${
+            mode === 'firing' && !malfunctionActive ? 'active-orange' : ''
+          }`}
+          aria-pressed={mode === 'firing' && !malfunctionActive}
+          onClick={() =>
+            setMode(
+              mode === 'firing' && !malfunctionActive ? 'explode' : 'firing'
+            )
+          }
           title={ui.firingChipTitle}
         >
-          <Flame size={14} />
+          <Flame size={14} aria-hidden="true" />
           <span>{ui.firingChip}</span>
+        </button>
+
+        <button
+          type="button"
+          className={`toggle-chip ${malfunctionActive ? 'active-amber' : ''}`}
+          aria-pressed={malfunctionActive}
+          onClick={toggleMalfunctionMode}
+          title={ui.malfunctionChipTitle}
+        >
+          <ShieldAlert size={13} aria-hidden="true" />
+          <span>{ui.malfunctionChip}</span>
+        </button>
+
+        <button
+          type="button"
+          className={`toggle-chip ${caliperActive ? 'active-cyan' : ''}`}
+          aria-pressed={caliperActive}
+          onClick={toggleCaliperMode}
+          title={ui.caliperChipTitle}
+        >
+          <Ruler size={13} aria-hidden="true" />
+          <span>{ui.caliperChip}</span>
+        </button>
+
+        <button
+          type="button"
+          className="toggle-chip"
+          onClick={() => openCartridgeLab()}
+          title={ui.cartridgeChipTitle}
+        >
+          <Crosshair size={13} aria-hidden="true" />
+          <span>{ui.cartridgeChip}</span>
         </button>
 
         <button
@@ -150,12 +230,25 @@ export const WorkbenchHeader: React.FC = () => {
         </button>
 
         <button
+          type="button"
           className={`toggle-chip ${sectionCut ? 'active-teal' : ''}`}
+          aria-pressed={sectionCut}
           onClick={toggleSectionCut}
           title={ui.sectionChipTitle}
         >
-          <Scissors size={14} />
+          <Scissors size={14} aria-hidden="true" />
           <span>{ui.sectionChip}</span>
+        </button>
+
+        <button
+          type="button"
+          className={`toggle-chip ${engineeringTint ? 'active-amber' : ''}`}
+          aria-pressed={engineeringTint}
+          onClick={toggleEngineeringTint}
+          title={ui.tintChipTitle}
+        >
+          <Palette size={14} aria-hidden="true" />
+          <span>{ui.tintChip}</span>
         </button>
 
         <button

@@ -18,26 +18,52 @@ function isEditableElement(target: EventTarget | null): boolean {
 
 /**
  * Global engineering keyboard shortcuts:
- * - `Esc`: Close Texture Atlas -> Clear selected part -> Return to Armory
+ * - `Esc`: Close Texture Atlas -> Clear selected part / active diagnostic tool -> Return to Armory
  * - `Space` (Workbench): Play / Pause disassembly or firing animation
- * - `C` (Armory / Workbench): Toggle 1:1 longitudinal armorer section-cut (`军械剖视`)
+ * - `C` (Armory / Workbench / Cartridge Lab): Toggle 1:1 longitudinal armorer section-cut (`军械剖视`)
  * - `X` (Armory / Workbench): Toggle X-Ray shell transparency
+ * - `T` (Armory / Workbench): Toggle functional engineering role color tint (`原理分色`)
+ * - `B` (Armory / Workbench / Cartridge Lab): Open / Return from 1:1 SAAMI Cartridge Cutaway Lab (`弹药剖视馆`)
+ * - `G` (Workbench): Toggle hands-on guided military field-strip mode (`亲手快拆`)
+ * - `J` (Workbench): Toggle classic firearm malfunction cutaway & clearing diagnostics (`故障排障`)
+ * - `K` (Workbench): Toggle 1:1 3D armorer vernier caliper & envelope ruler (`游标卡尺`)
  * - `E` (Workbench): Toggle CAD hard-edge wireframe
  * - `L` (Workbench, Explode mode): Toggle 3D part leader labels
+ * - `H` (All screens): Hide / Show all UI buttons & HUD panels for clean 3D showcase (`隐藏按钮`)
  * - `R` (Workbench): Reset view & assembled (0%) state
  */
 export function useKeyboardShortcuts(): void {
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.metaKey || e.ctrlKey || e.altKey) return;
-
       const state = useAppStore.getState();
+
+      // Intercept Ctrl+P / Cmd+P outside the Monograph Studio so users never print a broken HUD canvas
+      if (
+        (e.metaKey || e.ctrlKey) &&
+        !e.altKey &&
+        !e.shiftKey &&
+        e.key.toLowerCase() === 'p'
+      ) {
+        if (!state.monographModalOpen) {
+          e.preventDefault();
+          state.openMonographModal(state.activeWeaponId);
+        }
+        return;
+      }
+
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      if (state.monographModalOpen) return;
 
       if (e.key === 'Escape') {
         const audioSnap = getNarrationAudioSnapshot();
         if (state.textureModalOpen) {
           e.preventDefault();
           state.setTextureModalOpen(false);
+          return;
+        }
+        if (state.hudHidden) {
+          e.preventDefault();
+          state.setHudHidden(false);
           return;
         }
         if (state.storyOpen && !state.storyMinimized) {
@@ -72,6 +98,21 @@ export function useKeyboardShortcuts(): void {
           }
           return;
         }
+        if (state.screen === 'workbench' && state.caliperActive) {
+          e.preventDefault();
+          state.setCaliperActive(false);
+          return;
+        }
+        if (state.screen === 'workbench' && state.malfunctionActive) {
+          e.preventDefault();
+          state.setMalfunctionActive(false);
+          return;
+        }
+        if (state.screen === 'workbench' && state.fieldStripActive) {
+          e.preventDefault();
+          state.setFieldStripActive(false);
+          return;
+        }
         if (state.storyOpen && state.storyMinimized) {
           e.preventDefault();
           if (audioSnap.activeKind === 'story') {
@@ -80,7 +121,11 @@ export function useKeyboardShortcuts(): void {
           state.setStoryOpen(false);
           return;
         }
-        if (state.screen === 'workbench' || state.screen === 'showcase') {
+        if (
+          state.screen === 'workbench' ||
+          state.screen === 'showcase' ||
+          state.screen === 'cartridges'
+        ) {
           e.preventDefault();
           state.returnToArmory();
         }
@@ -90,12 +135,37 @@ export function useKeyboardShortcuts(): void {
       if (isEditableElement(e.target) || state.textureModalOpen) return;
 
       const lowerKey = e.key.toLowerCase();
-      if (lowerKey === 'c') {
-        state.toggleSectionCut();
+      if (lowerKey === 'h') {
+        e.preventDefault();
+        state.toggleHudHidden();
         return;
       }
-      if (lowerKey === 'x') {
+      if (lowerKey === 'b' && state.screen !== 'showcase') {
+        if (state.screen === 'cartridges') {
+          state.returnToArmory();
+        } else {
+          state.openCartridgeLab();
+        }
+        return;
+      }
+      if (lowerKey === 'c') {
+        if (state.screen === 'cartridges') {
+          state.toggleCartridgeSectionCut();
+        } else {
+          state.toggleSectionCut();
+        }
+        return;
+      }
+      if (lowerKey === 'x' && state.screen !== 'cartridges') {
         state.toggleXrayShells();
+        return;
+      }
+      if (
+        lowerKey === 't' &&
+        state.screen !== 'showcase' &&
+        state.screen !== 'cartridges'
+      ) {
+        state.toggleEngineeringTint();
         return;
       }
       if (lowerKey === 'm') {
@@ -116,6 +186,15 @@ export function useKeyboardShortcuts(): void {
       }
 
       switch (lowerKey) {
+        case 'g':
+          state.toggleFieldStripMode();
+          break;
+        case 'j':
+          state.toggleMalfunctionMode();
+          break;
+        case 'k':
+          state.toggleCaliperMode();
+          break;
         case 'e':
           state.toggleShowEdges();
           break;

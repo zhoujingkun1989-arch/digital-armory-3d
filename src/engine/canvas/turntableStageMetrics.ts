@@ -252,7 +252,8 @@ export function computeTurntableFraming(
   explodeT: number,
   screen: 'showcase' | 'armory',
   viewportW: number,
-  viewportH: number
+  viewportH: number,
+  hudHidden = false
 ): TurntableFramingResult {
   const env = evaluateWeaponTurntableEnvelopeInto(weaponId, explodeT);
 
@@ -261,7 +262,12 @@ export function computeTurntableFraming(
   let availW: number;
   let availH: number;
 
-  if (screen === 'showcase') {
+  if (hudHidden) {
+    winCx = viewportW * 0.5;
+    winCy = viewportH * 0.5;
+    availW = Math.max(240, viewportW - 48);
+    availH = Math.max(180, viewportH - 48);
+  } else if (screen === 'showcase') {
     const fallbackTop = Math.min(viewportH * 0.34, 240);
     const fallbackBottom = Math.max(fallbackTop + 160, viewportH - 98);
     const rawTop = showcaseWindowRect ? showcaseWindowRect.topPx : fallbackTop;
@@ -299,8 +305,8 @@ export function computeTurntableFraming(
   const spanY = Math.max(8, topVisualY - bottomVisualY);
   const effectiveSpanX = Math.max(env.spanX, rimR * 2.04);
 
-  const fillY = screen === 'showcase' ? 0.74 : 0.78;
-  const fillX = screen === 'showcase' ? 0.76 : 0.82;
+  const fillY = hudHidden ? 0.8 : screen === 'showcase' ? 0.74 : 0.78;
+  const fillX = hudHidden ? 0.84 : screen === 'showcase' ? 0.76 : 0.82;
 
   const baseDist =
     scaleProfile === 'heavy_sniper' ? 66 : scaleProfile === 'rifle' ? 54 : 35;

@@ -1114,54 +1114,45 @@ export function buildMp5MagBodyGeometry(): THREE.BufferGeometry {
 }
 
 /**
- * M-02: Stepped Anti-Tilt Follower (assembledPos: [2.95, -0.85, 0])
+ * M-02: Stepped Anti-Tilt Follower (assembledPos: [4.37, -6.70, 0], assembledRot: [0, 0, 0.432])
+ * Seated at full-capacity bottom arc angle ang = 0.432 rad (~1.64 cm above floorplate inner lock plate).
  */
 export function buildMp5MagFollowerGeometry(): THREE.BufferGeometry {
   const topDeck = paintGeometry(
-    new THREE.BoxGeometry(1.52, 0.22, 0.68).rotateZ(0.08).translate(0, 0.14, 0),
+    new THREE.BoxGeometry(1.48, 0.2, 0.68).translate(0, 0.1, 0),
     HK_FOLLOWER_ORANGE
   );
   const stepBead = paintGeometry(
-    new THREE.CylinderGeometry(0.11, 0.11, 1.44, 18)
-      .rotateZ(Math.PI / 2 + 0.08)
-      .translate(0, 0.28, -0.14),
+    new THREE.CylinderGeometry(0.105, 0.105, 1.42, 18)
+      .rotateZ(Math.PI / 2)
+      .translate(0, 0.23, -0.14),
     HK_FOLLOWER_ORANGE
   );
   // Secondary right-side cartridge guide rib + anti-tilt side flutes + bottom spring-retention boss
   const rightGuideBead = paintGeometry(
-    new THREE.CylinderGeometry(0.065, 0.065, 1.38, 14)
-      .rotateZ(Math.PI / 2 + 0.08)
-      .translate(0, 0.23, 0.22),
+    new THREE.CylinderGeometry(0.065, 0.065, 1.36, 14)
+      .rotateZ(Math.PI / 2)
+      .translate(0, 0.19, 0.21),
     HK_FOLLOWER_ORANGE
   );
   const skirtF = paintGeometry(
-    new THREE.BoxGeometry(0.18, 0.82, 0.64)
-      .rotateZ(0.08)
-      .translate(0.66, -0.28, 0),
+    new THREE.BoxGeometry(0.15, 0.64, 0.64).translate(0.65, -0.22, 0),
     HK_FOLLOWER_ORANGE
   );
   const skirtR = paintGeometry(
-    new THREE.BoxGeometry(0.18, 0.82, 0.64)
-      .rotateZ(0.08)
-      .translate(-0.66, -0.28, 0),
+    new THREE.BoxGeometry(0.15, 0.64, 0.64).translate(-0.65, -0.22, 0),
     HK_FOLLOWER_ORANGE
   );
   const springPost = paintGeometry(
-    new THREE.BoxGeometry(0.68, 0.34, 0.32)
-      .rotateZ(0.08)
-      .translate(0, -0.14, 0),
+    new THREE.BoxGeometry(0.56, 0.22, 0.26).translate(0, -0.11, 0),
     HK_POLYMER_ACCENT
   );
   const sideFluteL = paintGeometry(
-    new THREE.BoxGeometry(0.96, 0.12, 0.05)
-      .rotateZ(0.08)
-      .translate(0, -0.08, -0.305),
+    new THREE.BoxGeometry(0.92, 0.12, 0.05).translate(0, -0.06, -0.315),
     HK_POLYMER_ACCENT
   );
   const sideFluteR = paintGeometry(
-    new THREE.BoxGeometry(0.96, 0.12, 0.05)
-      .rotateZ(0.08)
-      .translate(0, -0.08, 0.305),
+    new THREE.BoxGeometry(0.92, 0.12, 0.05).translate(0, -0.06, 0.315),
     HK_POLYMER_ACCENT
   );
   return mergeParts([
@@ -1177,22 +1168,23 @@ export function buildMp5MagFollowerGeometry(): THREE.BufferGeometry {
 }
 
 /**
- * M-03: Curved Rectangular Magazine Spring following the exact R=16.0 MP5 arc (assembledPos: [2.90, -0.45, 0])
+ * M-03: Compressed Curved Rectangular Magazine Spring in bottom pocket (assembledPos: [2.90, -0.45, 0])
+ * Fits cleanly between lowered follower (ang = 0.432) and floorplate inner plate (ang = 0.534).
  */
 export function buildMp5MagSpringGeometry(): THREE.BufferGeometry {
-  const coils = 11;
+  const coils = 8.5;
   const stepsPerCoil = 24;
-  const totalSteps = coils * stepsPerCoil;
+  const totalSteps = Math.round(coils * stepsPerCoil);
   const points: THREE.Vector3[] = [];
 
   for (let i = 0; i <= totalSteps; i++) {
     const u = i / totalSteps;
-    const ang = 0.105 + u * 0.405;
+    const ang = 0.44 + u * 0.089;
     const theta = u * coils * Math.PI * 2;
     const cosT = Math.cos(theta);
     const sinT = Math.sin(theta);
-    const radialOff = Math.sign(cosT) * Math.pow(Math.abs(cosT), 0.58) * 0.64;
-    const zOff = Math.sign(sinT) * Math.pow(Math.abs(sinT), 0.58) * 0.26;
+    const radialOff = Math.sign(cosT) * Math.pow(Math.abs(cosT), 0.58) * 0.51;
+    const zOff = Math.sign(sinT) * Math.pow(Math.abs(sinT), 0.58) * 0.23;
 
     const rCur = 16.0 + radialOff;
     const px = MAG_CX - Math.cos(ang) * rCur;
@@ -1201,7 +1193,7 @@ export function buildMp5MagSpringGeometry(): THREE.BufferGeometry {
   }
 
   const curve = new THREE.CatmullRomCurve3(points);
-  const tube = new THREE.TubeGeometry(curve, totalSteps, 0.042, 8, false);
+  const tube = new THREE.TubeGeometry(curve, totalSteps, 0.035, 8, false);
   return mergeParts([paintGeometry(tube, HK_SPRING_STEEL)]);
 }
 

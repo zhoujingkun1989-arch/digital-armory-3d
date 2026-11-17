@@ -1381,7 +1381,7 @@ function buildStanagArcRib(rMid: number, side: -1 | 1): THREE.BufferGeometry {
 
 /**
  * M-02: USGI Enhanced Tan 4-Way Anti-Tilt Polymer Follower w/ Cartridge Step & Bolt-Catch Trip Shelf
- * (assembledPos: [2.40, -0.35, 0])
+ * (assembledPos: [3.052, -7.051, 0], assembledRot: [0, 0, 0.27] — loaded-full bottom position!)
  */
 export function buildM4a1MagFollowerGeometry(): THREE.BufferGeometry {
   const deck = paintGeometry(
@@ -1414,44 +1414,55 @@ export function buildM4a1MagFollowerGeometry(): THREE.BufferGeometry {
 }
 
 /**
- * M-03: Curved Rectangular 17-7PH Stainless STANAG Magazine Spring (assembledPos: [2.40, -1.00, 0])
+ * M-03: Compressed Rectangular 17-7PH Stainless STANAG Magazine Spring (assembledPos: [2.40, -1.00, 0])
+ * 9 compressed rectangular/oval coils along the exact R_mid = 18.0 STANAG arc (ang ∈ [0.276, 0.352])
+ * nested cleanly between the slide-on floorplate (ang = 0.36) and lowered m4a1_mag_follower (ang = 0.27)!
  */
 export function buildM4a1MagSpringGeometry(): THREE.BufferGeometry {
-  const coils = 11;
-  const stepsPerCoil = 24;
+  const coils = 9;
+  const stepsPerCoil = 28;
   const totalSteps = coils * stepsPerCoil;
+  const wireRadius = 0.036;
   const points: THREE.Vector3[] = [];
 
   for (let i = 0; i <= totalSteps; i++) {
     const u = i / totalSteps;
+    const ang = 0.352 - u * (0.352 - 0.276); // 0.352 above floorplate -> 0.276 under follower deck
     const theta = u * coils * Math.PI * 2;
     const cosT = Math.cos(theta);
     const sinT = Math.sin(theta);
-    const radialOff = Math.sign(cosT) * Math.pow(Math.abs(cosT), 0.6) * 0.92;
-    const zOff = Math.sign(sinT) * Math.pow(Math.abs(sinT), 0.6) * 0.33;
-
-    let px: number;
-    let py: number;
-    if (u < 0.16) {
-      const su = u / 0.16;
-      px = radialOff;
-      // Starts at local py = -0.38 (worldY = -1.38) right underneath lowered m4a1_mag_follower!
-      py = -0.38 - su * 0.87;
-    } else {
-      const cu = (u - 0.16) / 0.84;
-      const ang = cu * 0.345;
-      const rCur = 18.0 - radialOff;
-      px = STANAG_ARC_CX - Math.cos(ang) * rCur;
-      py = STANAG_ARC_CY - Math.sin(ang) * rCur;
-    }
+    const radialOff = Math.sign(cosT) * Math.pow(Math.abs(cosT), 0.6) * 0.8;
+    const zOff = Math.sign(sinT) * Math.pow(Math.abs(sinT), 0.6) * 0.3;
+    const rCur = 18.0 - radialOff;
+    const px = STANAG_ARC_CX - Math.cos(ang) * rCur;
+    const py = STANAG_ARC_CY - Math.sin(ang) * rCur;
     points.push(new THREE.Vector3(px, py, zOff));
   }
 
   const curve = new THREE.CatmullRomCurve3(points);
-  const tube = new THREE.TubeGeometry(curve, totalSteps, 0.045, 8, false);
-  return sanitizeM4Geometry(
-    finalizeGeometry(paintGeometry(tube, M4_SPRING_STEEL))
+  const tube = paintGeometry(
+    new THREE.TubeGeometry(curve, totalSteps, wireRadius, 8, false),
+    M4_SPRING_STEEL
   );
+  const pStart = points[0];
+  const pEnd = points[points.length - 1];
+  const capStart = paintGeometry(
+    new THREE.SphereGeometry(wireRadius, 8, 6).translate(
+      pStart.x,
+      pStart.y,
+      pStart.z
+    ),
+    M4_SPRING_STEEL
+  );
+  const capEnd = paintGeometry(
+    new THREE.SphereGeometry(wireRadius, 8, 6).translate(
+      pEnd.x,
+      pEnd.y,
+      pEnd.z
+    ),
+    M4_SPRING_STEEL
+  );
+  return sanitizeM4Geometry(mergeParts([tube, capStart, capEnd]));
 }
 
 /**

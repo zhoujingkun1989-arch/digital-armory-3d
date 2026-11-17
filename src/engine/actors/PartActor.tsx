@@ -11,7 +11,10 @@ import type {
   WeaponPartSpec,
 } from '../../weapons/types';
 import { playbackClock } from '../clock/playbackClock';
+import { caliperStore } from '../caliper/caliperStore';
+import { fieldStripStore } from '../fieldstrip/fieldStripStore';
 import { createMutablePose, evaluatePartPoseInto } from '../kinematics/math';
+import { malfunctionStore } from '../malfunctions/malfunctionStore';
 import {
   computeThermalSpanInto,
   createArmoryMaterialHooks,
@@ -23,6 +26,10 @@ import {
   syncArmoryUniformProfile,
   usesBarrelThermalProfile,
 } from '../materials/armoryShader';
+import {
+  ENGINEERING_ROLE_META,
+  resolvePartEngineeringRole,
+} from '../materials/engineeringRoles';
 import {
   configurePbrTextureAnisotropy,
   getPartPbrBundle,
@@ -38,10 +45,6 @@ interface ArmoryMaterialConfig {
   clearcoatRoughness: number;
   envMapIntensity: number;
   edgeColor: string;
-  /** Three.js r169 physical anisotropy strength (brushed / machined grain) */
-  anisotropy: number;
-  /** Anisotropy direction in tangent space (radians) */
-  anisotropyRotation: number;
   /** CLP gun-oil thin-film interference strength */
   iridescence: number;
   sheen: number;
@@ -54,7 +57,14 @@ const GUN_OIL_IRIDESCENCE_IOR = 1.38;
 const GUN_OIL_THICKNESS_RANGE: [number, number] = [120, 380];
 const NO_THICKNESS_RANGE: [number, number] = [100, 400];
 
-/** Authentic gunsmith metallurgy presets (albedo comes from per-part vertex colours / atlases). */
+/**
+ * Authentic gunsmith metallurgy presets (albedo comes from per-part vertex colours / atlases).
+ * Note: Three.js `anisotropy` (`USE_ANISOTROPY`) is intentionally kept at 0 on procedural CSG
+ * parts lacking vertex `tangent` attributes — screen-space `getTangentFrame()` yields zero T/B
+ * vectors on CSG cut faces with degenerate UV derivatives, triggering `0/0 = NaN` in
+ * `D_GGX_Anisotropic` (which `UnrealBloomPass` then expands into a 516×516 black NaN square).
+ * Directional brushed CNC lathe grain is provided tangent-free in `armoryShader.ts`.
+ */
 const MATERIAL_CONFIGS: Record<MaterialKind, ArmoryMaterialConfig> = {
   // Deep QPQ / Tenifer / Parkerized gunmetal: dark, satin, oil-wetted
   nitride_steel: {
@@ -64,8 +74,6 @@ const MATERIAL_CONFIGS: Record<MaterialKind, ArmoryMaterialConfig> = {
     clearcoatRoughness: 0.3,
     envMapIntensity: 1.5,
     edgeColor: '#475569',
-    anisotropy: 0.42,
-    anisotropyRotation: 0,
     iridescence: 0.16,
     sheen: 0,
     sheenRoughness: 0.5,
@@ -79,8 +87,6 @@ const MATERIAL_CONFIGS: Record<MaterialKind, ArmoryMaterialConfig> = {
     clearcoatRoughness: 0.22,
     envMapIntensity: 1.58,
     edgeColor: '#475569',
-    anisotropy: 0.52,
-    anisotropyRotation: 0,
     iridescence: 0.16,
     sheen: 0,
     sheenRoughness: 0.5,
@@ -94,8 +100,6 @@ const MATERIAL_CONFIGS: Record<MaterialKind, ArmoryMaterialConfig> = {
     clearcoatRoughness: 0.14,
     envMapIntensity: 1.6,
     edgeColor: '#475569',
-    anisotropy: 0.58,
-    anisotropyRotation: 0,
     iridescence: 0.16,
     sheen: 0,
     sheenRoughness: 0.5,
@@ -109,8 +113,6 @@ const MATERIAL_CONFIGS: Record<MaterialKind, ArmoryMaterialConfig> = {
     clearcoatRoughness: 0.6,
     envMapIntensity: 1.15,
     edgeColor: '#334155',
-    anisotropy: 0,
-    anisotropyRotation: 0,
     iridescence: 0,
     sheen: 0.14,
     sheenRoughness: 0.82,
@@ -124,8 +126,6 @@ const MATERIAL_CONFIGS: Record<MaterialKind, ArmoryMaterialConfig> = {
     clearcoatRoughness: 0.18,
     envMapIntensity: 1.5,
     edgeColor: '#475569',
-    anisotropy: 0.34,
-    anisotropyRotation: 0,
     iridescence: 0.16,
     sheen: 0,
     sheenRoughness: 0.5,
@@ -139,8 +139,6 @@ const MATERIAL_CONFIGS: Record<MaterialKind, ArmoryMaterialConfig> = {
     clearcoatRoughness: 0.4,
     envMapIntensity: 1.1,
     edgeColor: '#9a3412',
-    anisotropy: 0,
-    anisotropyRotation: 0,
     iridescence: 0,
     sheen: 0,
     sheenRoughness: 0.5,
@@ -154,8 +152,6 @@ const MATERIAL_CONFIGS: Record<MaterialKind, ArmoryMaterialConfig> = {
     clearcoatRoughness: 0.2,
     envMapIntensity: 1.55,
     edgeColor: '#78350f',
-    anisotropy: 0,
-    anisotropyRotation: 0,
     iridescence: 0,
     sheen: 0,
     sheenRoughness: 0.5,
@@ -167,6 +163,7 @@ const MATERIAL_CONFIGS: Record<MaterialKind, ArmoryMaterialConfig> = {
 const SECTION_CUT_PLANES: THREE.Plane[] = [
   new THREE.Plane(new THREE.Vector3(0, 0, -1), 0.06),
 ];
+const _caliperWorldNormal = new THREE.Vector3(0, 1, 0);
 
 function sectionAwareMeshRaycast(
   this: THREE.Mesh,
@@ -200,7 +197,11 @@ export interface PartActorProps {
 export const PartActor: React.FC<PartActorProps> = React.memo(
   ({ weaponId, part, geometry, customPbrBinding, computeKinematics }) => {
     const groupRef = useRef<THREE.Group>(null);
+    const matRef = useRef<THREE.MeshPhysicalMaterial>(null);
     const poseRef = useRef(createMutablePose());
+    const hadTransientHighlightRef = useRef(false);
+    const baseEmissiveRef = useRef<string>('#000000');
+    const baseEmissiveIntensityRef = useRef<number>(0);
 
     // Boolean-granular Zustand selectors so pointer hover only re-renders the 1-2 affected parts
     const pbrTexturesEnabled = useAppStore((s) => s.pbrTexturesEnabled);
@@ -220,9 +221,16 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
     const xrayShells = useAppStore((s) => s.xrayShells);
     const sectionCut = useAppStore((s) => s.sectionCut);
     const showEdges = useAppStore((s) => s.showEdges);
+    const engineeringTint = useAppStore((s) => s.engineeringTint);
+    const focusedEngineeringRole = useAppStore((s) => s.focusedEngineeringRole);
     const isGroupHidden = useAppStore((s) => s.hiddenGroups[part.group]);
     const selectPart = useAppStore((s) => s.selectPart);
     const hoverPart = useAppStore((s) => s.hoverPart);
+
+    const partRole = useMemo(
+      () => resolvePartEngineeringRole(weaponId, part),
+      [weaponId, part]
+    );
 
     const matCfg = MATERIAL_CONFIGS[part.material];
     const pbr = useMemo(
@@ -293,22 +301,58 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
         : 0;
     }, [geometry, armoryUniforms, part]);
 
+    // WP-05: Update functional role tint uniforms in-place (zero WebGL shader recompilation)
+    useEffect(() => {
+      if (!engineeringTint) {
+        armoryUniforms.uFunctionalTintMix.value = 0;
+        return;
+      }
+      const roleMeta = ENGINEERING_ROLE_META[partRole];
+      if (focusedEngineeringRole === null) {
+        armoryUniforms.uFunctionalTint.value.set(roleMeta.colorHex);
+        armoryUniforms.uFunctionalTintMix.value = roleMeta.mixStrength;
+      } else if (focusedEngineeringRole === partRole) {
+        armoryUniforms.uFunctionalTint.value.set(roleMeta.colorHex);
+        armoryUniforms.uFunctionalTintMix.value = Math.min(
+          0.94,
+          roleMeta.mixStrength + 0.08
+        );
+      } else {
+        armoryUniforms.uFunctionalTint.value.set('#1e293b');
+        armoryUniforms.uFunctionalTintMix.value = 0.86;
+      }
+    }, [armoryUniforms, engineeringTint, focusedEngineeringRole, partRole]);
+
     const capSyncRef = useRef<SectionCapSyncFn | null>(null);
 
     useFrame(() => {
       const grp = groupRef.current;
       if (!grp) return;
       const clock = playbackClock.getState();
-      const isFiring = useAppStore.getState().mode === 'firing';
+      const appState = useAppStore.getState();
+      const isFiring = appState.mode === 'firing';
+      const isFieldStrip =
+        appState.screen === 'workbench' &&
+        appState.fieldStripActive &&
+        appState.mode === 'explode';
+      const isMalfunction =
+        appState.screen === 'workbench' && appState.malfunctionActive;
 
-      evaluatePartPoseInto(
-        part,
-        clock.animatedProgress,
-        isFiring,
-        clock.animatedFireProgress,
-        computeKinematics,
-        poseRef.current
-      );
+      if (isFieldStrip) {
+        fieldStripStore.evaluatePartPoseInto(weaponId, part, poseRef.current);
+      } else {
+        evaluatePartPoseInto(
+          part,
+          clock.animatedProgress,
+          isFiring,
+          clock.animatedFireProgress,
+          computeKinematics,
+          poseRef.current
+        );
+        if (isMalfunction) {
+          malfunctionStore.applyPartPoseDelta(weaponId, part.id, poseRef.current);
+        }
+      }
 
       const p = poseRef.current;
       grp.position.set(p.px, p.py, p.pz);
@@ -332,6 +376,50 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       } else {
         u.uThermalHeat.value = 0;
         u.uCarbonFouling.value = 0;
+      }
+
+      // WP-07 & WP-09: Zero-GC transient interference / diagnostic pulsing
+      const mat = matRef.current;
+      if (mat) {
+        const nowMs = performance.now();
+        const hl = isFieldStrip
+          ? fieldStripStore.getPartHighlight(weaponId, part.id, nowMs)
+          : 'none';
+        const mRole =
+          hl === 'none' && isMalfunction
+            ? malfunctionStore.getPartDiagnosticRole(weaponId, part.id)
+            : 'none';
+        if (hl !== 'none') {
+          const pulse = 0.5 + 0.5 * Math.sin(nowMs * 0.011);
+          if (hl === 'blocking') {
+            mat.emissive.setHex(0xef4444);
+            mat.emissiveIntensity = 0.32 + 0.46 * pulse;
+          } else if (hl === 'blocked') {
+            mat.emissive.setHex(0xf59e0b);
+            mat.emissiveIntensity = 0.22 + 0.34 * pulse;
+          } else {
+            mat.emissive.setHex(0x10b981);
+            mat.emissiveIntensity = 0.26 + 0.42 * pulse;
+          }
+          hadTransientHighlightRef.current = true;
+        } else if (mRole !== 'none') {
+          const pulse = 0.5 + 0.5 * Math.sin(nowMs * 0.0085);
+          if (mRole === 'causal') {
+            mat.emissive.setHex(0xf59e0b);
+            mat.emissiveIntensity = 0.22 + 0.36 * pulse;
+          } else if (mRole === 'action') {
+            mat.emissive.setHex(0x0ea5e9);
+            mat.emissiveIntensity = 0.16 + 0.28 * pulse;
+          } else {
+            mat.emissive.setHex(0x10b981);
+            mat.emissiveIntensity = 0.22;
+          }
+          hadTransientHighlightRef.current = true;
+        } else if (hadTransientHighlightRef.current) {
+          mat.emissive.set(baseEmissiveRef.current);
+          mat.emissiveIntensity = baseEmissiveIntensityRef.current;
+          hadTransientHighlightRef.current = false;
+        }
       }
 
       const syncCap = capSyncRef.current;
@@ -374,7 +462,16 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
     } else if (isHovered && !isGhostByIsolate) {
       emissive = '#0ea5e9';
       emissiveIntensity = isXrayHousing ? 0.1 : 0.16;
+    } else if (
+      engineeringTint &&
+      focusedEngineeringRole === partRole &&
+      !isGhostByIsolate
+    ) {
+      emissive = ENGINEERING_ROLE_META[partRole].colorHex;
+      emissiveIntensity = isXrayHousing ? 0.08 : 0.18;
     }
+    baseEmissiveRef.current = emissive;
+    baseEmissiveIntensityRef.current = emissiveIntensity;
 
     const edgeColor = isSelected
       ? '#0284c7'
@@ -386,18 +483,45 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
 
     const handlePointerOver = (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation();
-      if (useAppStore.getState().screen !== 'workbench') {
+      const st = useAppStore.getState();
+      if (st.screen !== 'workbench') {
         document.body.style.cursor = 'pointer';
         return;
       }
       hoverPart(part.id);
-      document.body.style.cursor = 'pointer';
+      document.body.style.cursor = st.caliperActive ? 'crosshair' : 'pointer';
+    };
+
+    const handlePointerMove = (e: ThreeEvent<PointerEvent>) => {
+      const st = useAppStore.getState();
+      if (st.screen !== 'workbench' || !st.caliperActive) return;
+      e.stopPropagation();
+      if (e.face) {
+        _caliperWorldNormal
+          .copy(e.face.normal)
+          .transformDirection(e.object.matrixWorld);
+      } else {
+        _caliperWorldNormal.set(0, 1, 0);
+      }
+      caliperStore.setTransientHover(
+        part.id,
+        e.point.x,
+        e.point.y,
+        e.point.z,
+        _caliperWorldNormal.x,
+        _caliperWorldNormal.y,
+        _caliperWorldNormal.z
+      );
     };
 
     const handlePointerOut = (e: ThreeEvent<PointerEvent>) => {
       e.stopPropagation();
-      if (useAppStore.getState().hoveredPartId === part.id) {
+      const st = useAppStore.getState();
+      if (st.hoveredPartId === part.id) {
         hoverPart(null);
+      }
+      if (st.caliperActive) {
+        caliperStore.clearTransientHover(part.id);
       }
       document.body.style.cursor = 'auto';
     };
@@ -410,6 +534,44 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
           st.enterWorkbench(st.activeWeaponId);
         }
         return;
+      }
+      if (st.caliperActive && !e.nativeEvent.shiftKey) {
+        if (e.delta <= 6) {
+          if (e.face) {
+            _caliperWorldNormal
+              .copy(e.face.normal)
+              .transformDirection(e.object.matrixWorld);
+          } else {
+            _caliperWorldNormal.set(0, 1, 0);
+          }
+          caliperStore.recordSurfacePoint(
+            weaponId,
+            part.id,
+            [e.point.x, e.point.y, e.point.z],
+            [
+              _caliperWorldNormal.x,
+              _caliperWorldNormal.y,
+              _caliperWorldNormal.z,
+            ]
+          );
+        }
+        return;
+      }
+      if (
+        st.fieldStripActive &&
+        st.mode === 'explode' &&
+        !e.nativeEvent.shiftKey
+      ) {
+        if (e.delta <= 6) {
+          fieldStripStore.attemptPartClick(weaponId, part.id);
+        }
+        return;
+      }
+      if (st.malfunctionActive && !e.nativeEvent.shiftKey) {
+        if (e.delta <= 6) {
+          const handled = malfunctionStore.handlePartClick(weaponId, part.id);
+          if (handled) return;
+        }
       }
       selectPart(isSelected ? null : part.id);
     };
@@ -443,11 +605,13 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
             castShadow={!isTransparent}
             receiveShadow={!isTransparent}
             onPointerOver={handlePointerOver}
+            onPointerMove={handlePointerMove}
             onPointerOut={handlePointerOut}
             onClick={handleClick}
             {...depthMaterialProps}
           >
             <meshPhysicalMaterial
+              ref={matRef}
               key={matShaderKey}
               {...armoryMaterialProps}
               vertexColors={useVertexColors}
@@ -480,8 +644,6 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
               clearcoatRoughness={
                 isXrayHousing ? 0.14 : matCfg.clearcoatRoughness
               }
-              anisotropy={isXrayHousing ? 0 : matCfg.anisotropy}
-              anisotropyRotation={matCfg.anisotropyRotation}
               iridescence={isXrayHousing ? 0 : matCfg.iridescence}
               iridescenceIOR={GUN_OIL_IRIDESCENCE_IOR}
               iridescenceThicknessRange={
@@ -534,6 +696,7 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
               material={part.material}
               group={part.group}
               clippingPlanes={SECTION_CUT_PLANES}
+              engineeringRole={engineeringTint ? partRole : null}
               syncRef={capSyncRef}
             />
           )}

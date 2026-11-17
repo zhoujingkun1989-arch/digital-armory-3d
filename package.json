@@ -1,7 +1,7 @@
 {
   "name": "digital-armory-3d",
   "version": "1.0.0",
-  "description": "Interactive Web 3D Digital Armory & Firearm Internal Structure Disassembly / Dynamic Firing Simulation (10 Iconic World Firearms, 253 CSG Parts, 2K Procedural PBR)",
+  "description": "Browser-Native Open-Source 3D Firearms Mechanical Museum & Interactive Engineering Encyclopedia (11 Iconic Firearms, 278 Procedural CSG Parts, Stencil Cutaway, SAAMI Internal Ballistics, Guided Field-Strip DAG & Bilingual Gemini Voiceovers)",
   "license": "MIT",
   "type": "module",
   "repository": {
@@ -11,12 +11,15 @@
   "keywords": [
     "threejs",
     "react-three-fiber",
-    "webgl",
+    "webgl2",
     "3d-disassembly",
     "exploded-view",
     "csg",
     "pbr",
-    "mechanical-simulation",
+    "internal-ballistics",
+    "cutaway",
+    "web-audio",
+    "mechanical-engineering",
     "digital-armory"
   ],
   "scripts": {

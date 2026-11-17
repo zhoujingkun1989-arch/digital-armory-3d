@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import {
   csgSubtract,
   createHelicalSpring,
-  createRectangularMagSpring,
   mergeParts,
   paintGeometry,
 } from '../../../engine/geometry/csgBuilder';
@@ -808,7 +807,7 @@ export function buildDeagleMagBodyGeometry(): THREE.BufferGeometry {
 
 /**
  * M-02: .50 AE Concave Cartridge-Saddle Follower
- * (assembledPos: [-4.12, -0.05, 0], assembledRot: [0, 0, DEAGLE_GRIP_ANGLE])
+ * (assembledPos: [-6.334, -8.321, 0], assembledRot: [0, 0, DEAGLE_GRIP_ANGLE])
  */
 export function buildDeagleMagFollowerGeometry(): THREE.BufferGeometry {
   const baseBlock = paintGeometry(
@@ -822,7 +821,7 @@ export function buildDeagleMagFollowerGeometry(): THREE.BufferGeometry {
     '#fb923c'
   );
   const stopActuator = paintGeometry(
-    new THREE.BoxGeometry(0.68, 0.32, 0.28).translate(1.28, 0.24, -0.62),
+    new THREE.BoxGeometry(0.68, 0.32, 0.26).translate(1.28, 0.24, -0.5),
     '#ea580c'
   );
   const frontSkirt = paintGeometry(
@@ -843,20 +842,40 @@ export function buildDeagleMagFollowerGeometry(): THREE.BufferGeometry {
 }
 
 /**
- * M-03: Heavy-Duty .50 AE Rectangular Coil Magazine Spring
- * (assembledPos: [-5.67, -5.86, 0], assembledRot: [0, 0, DEAGLE_GRIP_ANGLE])
+ * M-03: Heavy-Duty .50 AE Rectangular Coil Magazine Spring (compressed under full 7-rd load)
+ * (assembledPos: [-6.546, -9.113, 0], assembledRot: [0, 0, DEAGLE_GRIP_ANGLE])
+ * Wedged coil progression matches the 0.1848*lx sloped floorplate at u=0 and flat follower base at u=1.
  */
 export function buildDeagleMagSpringGeometry(): THREE.BufferGeometry {
-  return paintGeometry(
-    createRectangularMagSpring({
-      height: 6.2,
-      widthX: 3.35,
-      depthZ: 1.12,
-      wireRadius: 0.064,
-      coils: 8,
-    }),
+  const coils = 7;
+  const stepsPerCoil = 28;
+  const totalSteps = coils * stepsPerCoil;
+  const rx = 1.44;
+  const rz = 0.52;
+  const wireRadius = 0.05;
+  const points: THREE.Vector3[] = [];
+
+  for (let i = 0; i <= totalSteps; i++) {
+    const u = i / totalSteps;
+    const theta = u * coils * Math.PI * 2;
+    const cosT = Math.cos(theta);
+    const sinT = Math.sin(theta);
+    const sx = Math.sign(cosT) * Math.pow(Math.abs(cosT), 0.55) * rx;
+    const sz = Math.sign(sinT) * Math.pow(Math.abs(sinT), 0.55) * rz;
+    const yBot = -0.505 + 0.1848 * sx;
+    const yTop = 0.505;
+    const sy = (1 - u) * yBot + u * yTop;
+    points.push(new THREE.Vector3(sx, sy, sz));
+  }
+
+  const curve = new THREE.CatmullRomCurve3(points);
+  const tube = paintGeometry(
+    new THREE.TubeGeometry(curve, totalSteps, wireRadius, 8, false),
     '#9aa8ba'
   );
+  const res = mergeParts([tube]);
+  tube.dispose();
+  return res;
 }
 
 /**

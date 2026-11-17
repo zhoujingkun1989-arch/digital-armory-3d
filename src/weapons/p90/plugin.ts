@@ -543,11 +543,12 @@ export const P90_PARTS: WeaponPartSpec[] = [
     nameEn: 'Twin-Roller Horizontal Polymer Follower',
     group: 'magazine',
     material: 'follower_orange',
-    assembledPos: [-1.85, 2.66, 0],
+    assembledPos: [3.35, 2.66, 0],
+    assembledRot: [0, 0, 0],
     explodeSteps: [
       { range: [0.04, 0.26], offset: [0, 5.2, 0] },
-      { range: [0.35, 0.65], offset: [3.2, 3.2, 0] },
-      { range: [0.65, 1.0], offset: [4.6, 4.4, 0] },
+      { range: [0.35, 0.65], offset: [5.1, 3.2, 0] },
+      { range: [0.65, 1.0], offset: [1.2, 3.0, 0] },
     ],
     calloutDir: 'up',
     calloutStem: 46,
@@ -564,11 +565,11 @@ export const P90_PARTS: WeaponPartSpec[] = [
     nameEn: 'Horizontal Magazine Drive Spring',
     group: 'magazine',
     material: 'spring_steel',
-    assembledPos: [2.25, 2.66, 0],
+    assembledPos: [4.96, 2.66, 0],
     explodeSteps: [
       { range: [0.04, 0.26], offset: [0, 5.2, 0] },
-      { range: [0.35, 0.65], offset: [6.8, 3.2, 0] },
-      { range: [0.65, 1.0], offset: [8.4, 5.2, 0] },
+      { range: [0.35, 0.65], offset: [6.65, 3.2, 0] },
+      { range: [0.65, 1.0], offset: [2.2, 3.4, 0] },
     ],
     calloutDir: 'up',
     calloutStem: 52,
@@ -588,8 +589,8 @@ export const P90_PARTS: WeaponPartSpec[] = [
     assembledPos: [6.52, 2.66, 0],
     explodeSteps: [
       { range: [0.04, 0.26], offset: [0, 5.2, 0] },
-      { range: [0.35, 0.65], offset: [10.4, 3.2, 0] },
-      { range: [0.65, 1.0], offset: [12.6, 5.6, 0] },
+      { range: [0.35, 0.65], offset: [8.2, 3.2, 0] },
+      { range: [0.65, 1.0], offset: [3.0, 3.8, 0] },
     ],
     calloutDir: 'up',
     calloutStem: 40,
@@ -748,15 +749,15 @@ export function computeP90FiringKinematics(
     case 'p90_mag_follower': {
       // Twin-roller follower pushes horizontally rearward (-X) to advance horizontal stack into 90° ramp
       const push = seg(f, 0.53, 0.66) - seg(f, 0.69, 0.84);
-      dx = -0.62 * push;
+      dx = -0.26 * push;
       break;
     }
 
     case 'p90_mag_spring': {
-      // Horizontal magazine spring anchored near front floorplate expands slightly as follower advances
+      // Horizontal magazine spring (L0 = 1.76, anchor at -X follower end) expands rearward while +X stays pinned at floorplate!
       const push = seg(f, 0.53, 0.66) - seg(f, 0.69, 0.84);
-      scaleX = 1 + 0.06 * push;
-      dx = -0.22 * push;
+      dx = -0.26 * push;
+      scaleX = 1 + (0.26 / 1.76) * push;
       break;
     }
 

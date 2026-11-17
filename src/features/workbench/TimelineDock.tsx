@@ -10,6 +10,8 @@ import {
   ShieldAlert,
   Volume2,
   VolumeX,
+  Wind,
+  Wrench,
   Zap,
 } from 'lucide-react';
 import {
@@ -41,6 +43,8 @@ import { useWeaponNarration } from '../../narration/narrationService';
 import { useAppStore } from '../../store/useAppStore';
 import { useWeaponPlugin } from '../../weapons/registry';
 import type { FiringPhaseInfo, TimelinePresetItem } from '../../weapons/types';
+import { FieldStripHud } from './FieldStripHud';
+import { MalfunctionHud } from './MalfunctionHud';
 
 const EMPTY_PRESETS: readonly TimelinePresetItem[] = [];
 const EMPTY_PHASES: readonly FiringPhaseInfo[] = [];
@@ -74,6 +78,12 @@ export const TimelineDock: React.FC = () => {
   const toggleSfxMuted = useAppStore((s) => s.toggleSfxMuted);
   const telemetryHudOpen = useAppStore((s) => s.telemetryHudOpen);
   const toggleTelemetryHud = useAppStore((s) => s.toggleTelemetryHud);
+  const gasFlowVisible = useAppStore((s) => s.gasFlowVisible);
+  const toggleGasFlowVisible = useAppStore((s) => s.toggleGasFlowVisible);
+  const fieldStripActive = useAppStore((s) => s.fieldStripActive);
+  const setFieldStripActive = useAppStore((s) => s.setFieldStripActive);
+  const malfunctionActive = useAppStore((s) => s.malfunctionActive);
+  const setMalfunctionActive = useAppStore((s) => s.setMalfunctionActive);
 
   // Hands-on 3D Fire-Control Group (FCG) & Press-Check state
   const actionSnap = useInteractiveActionStore();
@@ -137,7 +147,7 @@ export const TimelineDock: React.FC = () => {
     }
     syncDom(snap.fireProgress);
     return playbackClock.subscribeFireProgress(syncDom);
-  }, [mode, activeWeaponId]);
+  }, [mode, fieldStripActive, activeWeaponId]);
 
   const initialScalar =
     mode === 'explode'
@@ -150,22 +160,57 @@ export const TimelineDock: React.FC = () => {
       <div className="dock-mode-bar">
         <div className="mode-tabs">
           <button
-            className={`mode-tab ${mode === 'explode' ? 'active-explode' : ''}`}
-            onClick={() => setMode('explode')}
+            type="button"
+            className={`mode-tab ${
+              mode === 'explode' && !fieldStripActive ? 'active-explode' : ''
+            }`}
+            aria-pressed={mode === 'explode' && !fieldStripActive}
+            onClick={() => {
+              if (fieldStripActive) setFieldStripActive(false);
+              setMode('explode');
+            }}
           >
-            <Layers size={14} />
+            <Layers size={14} aria-hidden="true" />
             <span>{ui.modeExplode}</span>
           </button>
           <button
-            className={`mode-tab ${mode === 'firing' ? 'active-firing' : ''}`}
+            type="button"
+            className={`mode-tab ${
+              mode === 'explode' && fieldStripActive ? 'active-fieldstrip' : ''
+            }`}
+            aria-pressed={mode === 'explode' && fieldStripActive}
+            onClick={() =>
+              setFieldStripActive(!(mode === 'explode' && fieldStripActive))
+            }
+          >
+            <Wrench size={14} aria-hidden="true" />
+            <span>{ui.modeFieldStrip}</span>
+          </button>
+          <button
+            type="button"
+            className={`mode-tab ${
+              mode === 'firing' && !malfunctionActive ? 'active-firing' : ''
+            }`}
+            aria-pressed={mode === 'firing' && !malfunctionActive}
             onClick={() => setMode('firing')}
           >
-            <Flame size={14} />
+            <Flame size={14} aria-hidden="true" />
             <span>{ui.modeFiring}</span>
+          </button>
+          <button
+            type="button"
+            className={`mode-tab ${
+              malfunctionActive ? 'active-malfunction' : ''
+            }`}
+            aria-pressed={malfunctionActive}
+            onClick={() => setMalfunctionActive(!malfunctionActive)}
+          >
+            <ShieldAlert size={14} aria-hidden="true" />
+            <span>{ui.modeMalfunction}</span>
           </button>
         </div>
 
-        {mode === 'firing' && (
+        {mode === 'firing' && !malfunctionActive && (
           <div className="firing-sub-controls">
             <div
               ref={selectorGroupRef}
@@ -244,6 +289,20 @@ export const TimelineDock: React.FC = () => {
 
             <button
               type="button"
+              className={`loop-pill gas-pill ${gasFlowVisible ? 'active' : ''}`}
+              aria-pressed={gasFlowVisible}
+              onClick={() => {
+                playWorkbenchFoley('toggle_switch');
+                toggleGasFlowVisible();
+              }}
+              title={ui.gasFlowTitle}
+            >
+              <Wind size={12} aria-hidden="true" />
+              <span>{ui.gasFlowPill}</span>
+            </button>
+
+            <button
+              type="button"
               className={`loop-pill ${!sfxMuted ? 'active' : ''}`}
               aria-pressed={!sfxMuted}
               onClick={toggleSfxMuted}
@@ -260,7 +319,11 @@ export const TimelineDock: React.FC = () => {
         )}
       </div>
 
-      {mode === 'explode' ? (
+      {malfunctionActive ? (
+        <MalfunctionHud key="malfunction-dock-body" />
+      ) : mode === 'explode' && fieldStripActive ? (
+        <FieldStripHud key="field-strip-dock-body" />
+      ) : mode === 'explode' ? (
         <div key="explode-dock-body">
           <div className="timeline-presets">
             {timelinePresets.map((preset) => {

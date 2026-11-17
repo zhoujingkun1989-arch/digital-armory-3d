@@ -5,8 +5,13 @@ import {
 } from '../engine/audio/mechanicalSoundEngine';
 import type { ArmoryEnvironmentPreset } from '../engine/canvas/GunsmithStageMat';
 import { playbackClock } from '../engine/clock/playbackClock';
+import { caliperStore } from '../engine/caliper/caliperStore';
+import { fieldStripStore } from '../engine/fieldstrip/fieldStripStore';
 import { interactiveActionStore } from '../engine/interaction/InteractiveActionController';
+import { malfunctionStore } from '../engine/malfunctions/malfunctionStore';
+import type { MalfunctionKind } from '../engine/malfunctions/malfunctionSpecs';
 import { setArmoryThermalVisualState } from '../engine/materials/armoryShader';
+import type { EngineeringRole } from '../engine/materials/engineeringRoles';
 import { resetArmoryPhysics } from '../engine/physics/armoryPhysics';
 import {
   getNarrationAudioSnapshot,
@@ -17,12 +22,13 @@ import { getWeaponManifest } from '../weapons/manifests';
 import { getLoadedWeaponPlugin, loadWeaponPlugin } from '../weapons/registry';
 import type {
   AssemblyGroupKey,
+  CaliberProfile,
   CameraPresetType,
   WeaponId,
 } from '../weapons/types';
 import { isWeaponId } from '../weapons/types';
 
-export type AppScreen = 'showcase' | 'armory' | 'workbench';
+export type AppScreen = 'showcase' | 'armory' | 'workbench' | 'cartridges';
 export type AppViewMode = 'explode' | 'firing';
 
 const ENVIRONMENT_PRESET_CYCLE: readonly ArmoryEnvironmentPreset[] = [
@@ -80,6 +86,59 @@ const DEFAULT_HIDDEN_GROUPS: Record<AssemblyGroupKey, boolean> = {
   magazine: false,
 };
 
+export interface NavigatorLanguageLike {
+  language?: string;
+  languages?: readonly string[];
+}
+
+/**
+ * Resolves the browser's natural preferred UI language (`'zh'` for `zh*` locales,
+ * `'en'` for all international browser locales, and deterministic `'zh'` in headless Node/SSR).
+ */
+export function detectBrowserDefaultLanguage(
+  navOverride?: NavigatorLanguageLike | null
+): LanguageCode {
+  const nav: NavigatorLanguageLike | null =
+    navOverride !== undefined
+      ? navOverride
+      : typeof window !== 'undefined' && typeof navigator !== 'undefined'
+        ? navigator
+        : null;
+  if (!nav) return 'zh';
+
+  const primary =
+    (Array.isArray(nav.languages) && nav.languages.length > 0
+      ? nav.languages[0]
+      : nav.language) ?? '';
+  const normalized = primary.trim().toLowerCase();
+  if (!normalized) return 'zh';
+  return normalized.startsWith('zh') ? 'zh' : 'en';
+}
+
+/**
+ * Resolves initial UI language, honoring explicit `?lang=zh|en` query overrides first,
+ * then falling back to `detectBrowserDefaultLanguage`.
+ */
+export function detectPreferredLanguage(
+  navOverride?: NavigatorLanguageLike | null,
+  searchOverride?: string
+): LanguageCode {
+  const rawSearch =
+    searchOverride !== undefined
+      ? searchOverride
+      : typeof window !== 'undefined'
+        ? window.location.search
+        : '';
+  if (rawSearch) {
+    const params = new URLSearchParams(rawSearch);
+    const qLang = params.get('lang');
+    if (qLang === 'en' || qLang === 'zh') {
+      return qLang;
+    }
+  }
+  return detectBrowserDefaultLanguage(navOverride);
+}
+
 export interface AppState {
   /** Top-level navigation screen: Armory Vault vs 3D Disassembly Workbench */
   screen: AppScreen;
@@ -116,12 +175,37 @@ export interface AppState {
   /** Visual toggles */
   pbrTexturesEnabled: boolean;
   textureModalOpen: boolean;
+  monographModalOpen: boolean;
+  monographWeaponId: WeaponId;
   xrayShells: boolean;
   sectionCut: boolean;
   showEdges: boolean;
   showLabels: boolean;
   isolateSelected: boolean;
   sidebarCollapsed: boolean;
+  hudHidden: boolean;
+
+  /** WP-05 Engineering Functional Role Tint & Gas Flow Streamlines */
+  engineeringTint: boolean;
+  focusedEngineeringRole: EngineeringRole | null;
+  gasFlowVisible: boolean;
+
+  /** WP-07 Hands-On Guided Military Field-Strip Mode */
+  fieldStripActive: boolean;
+
+  /** WP-09 Classic Firearm Malfunction Cutaway & Clearing Diagnostics */
+  malfunctionActive: boolean;
+
+  /** WP-10 1:1 3D Armorer Vernier Caliper & Envelope Scale Ruler */
+  caliperActive: boolean;
+  envelopeRulerVisible: boolean;
+
+  /** WP-06 1:1 SAAMI/CIP Cartridge Cutaway Lab */
+  activeCartridgeCaliber: CaliberProfile;
+  cartridgeLineupOverview: boolean;
+  cartridgeSectionCut: boolean;
+  cartridgeExplodeProgress: number;
+  cartridgeCameraSeq: number;
 
   /** Group visibility filters */
   hiddenGroups: Record<AssemblyGroupKey, boolean>;
@@ -149,8 +233,13 @@ export interface AppState {
   toggleSfxMuted: () => void;
   focusStoryPart: (partId: string) => void;
 
-  // Armory <-> Workbench <-> Showcase Navigation Actions
+  // Armory <-> Workbench <-> Showcase <-> Cartridge Lab Navigation Actions
   openShowcase: () => void;
+  openCartridgeLab: (caliber?: CaliberProfile) => void;
+  selectLabCartridge: (caliber: CaliberProfile, focusCamera?: boolean) => void;
+  setCartridgeLineupOverview: (overview: boolean) => void;
+  toggleCartridgeSectionCut: () => void;
+  setCartridgeExplodeProgress: (val: number) => void;
   selectArmoryWeapon: (weaponId: string) => void;
   enterWorkbench: (weaponId?: string, initialMode?: AppViewMode) => void;
   returnToArmory: () => void;
@@ -182,6 +271,9 @@ export interface AppState {
   // Shared Visual & Selection Actions
   togglePbrTextures: () => void;
   setTextureModalOpen: (open: boolean) => void;
+  openMonographModal: (weaponId?: WeaponId) => void;
+  closeMonographModal: () => void;
+  setMonographWeaponId: (weaponId: WeaponId) => void;
   toggleXrayShells: () => void;
   setXrayShells: (val: boolean) => void;
   toggleSectionCut: () => void;
@@ -190,6 +282,21 @@ export interface AppState {
   toggleShowLabels: () => void;
   toggleIsolateSelected: () => void;
   setSidebarCollapsed: (collapsed: boolean) => void;
+  setHudHidden: (hidden: boolean) => void;
+  toggleHudHidden: () => void;
+  setEngineeringTint: (enabled: boolean) => void;
+  toggleEngineeringTint: () => void;
+  setFocusedEngineeringRole: (role: EngineeringRole | null) => void;
+  setGasFlowVisible: (visible: boolean) => void;
+  toggleGasFlowVisible: () => void;
+  setFieldStripActive: (active: boolean) => void;
+  toggleFieldStripMode: () => void;
+  setMalfunctionActive: (active: boolean, kind?: MalfunctionKind) => void;
+  toggleMalfunctionMode: () => void;
+  setCaliperActive: (active: boolean) => void;
+  toggleCaliperMode: () => void;
+  setEnvelopeRulerVisible: (visible: boolean) => void;
+  toggleEnvelopeRuler: () => void;
   toggleGroupVisibility: (group: AssemblyGroupKey) => void;
   selectPart: (partId: string | null) => void;
   hoverPart: (partId: string | null) => void;
@@ -199,11 +306,11 @@ export interface AppState {
 }
 
 export const useAppStore = create<AppState>((set, get) => ({
-  screen: 'armory',
+  screen: 'showcase',
   activeWeaponId: 'ak15',
   armoryAutoRotate: true,
 
-  lang: 'zh',
+  lang: detectPreferredLanguage(),
   storyOpen: false,
   storyMinimized: false,
   storyDirectorMode: true,
@@ -227,12 +334,29 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   pbrTexturesEnabled: true,
   textureModalOpen: false,
+  monographModalOpen: false,
+  monographWeaponId: 'ak15',
   xrayShells: false,
   sectionCut: false,
   showEdges: false,
   showLabels: true,
   isolateSelected: false,
   sidebarCollapsed: true,
+  hudHidden: false,
+
+  engineeringTint: false,
+  focusedEngineeringRole: null,
+  gasFlowVisible: true,
+  fieldStripActive: false,
+  malfunctionActive: false,
+  caliperActive: false,
+  envelopeRulerVisible: false,
+
+  activeCartridgeCaliber: '556_nato',
+  cartridgeLineupOverview: true,
+  cartridgeSectionCut: true,
+  cartridgeExplodeProgress: 0,
+  cartridgeCameraSeq: 0,
 
   hiddenGroups: { ...DEFAULT_HIDDEN_GROUPS },
 
@@ -253,17 +377,22 @@ export const useAppStore = create<AppState>((set, get) => ({
     set((s) => ({ lang: s.lang === 'zh' ? 'en' : 'zh' }));
   },
 
-  setStoryOpen: (storyOpen) => set({ storyOpen, storyMinimized: false }),
+  setStoryOpen: (storyOpen) =>
+    set((s) => ({
+      storyOpen,
+      storyMinimized: false,
+      hudHidden: storyOpen ? false : s.hudHidden,
+    })),
 
   setStoryMinimized: (storyMinimized) => set({ storyMinimized }),
 
   toggleStoryOpen: () =>
     set((s) => {
       if (!s.storyOpen) {
-        return { storyOpen: true, storyMinimized: false };
+        return { storyOpen: true, storyMinimized: false, hudHidden: false };
       }
       if (s.storyMinimized) {
-        return { storyMinimized: false };
+        return { storyMinimized: false, hudHidden: false };
       }
       const snap = getNarrationAudioSnapshot();
       if (snap.activeKind === 'story' && snap.isPlaying) {
@@ -279,6 +408,10 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   applyStoryDirectorStage: (stage) => {
     const cur = get();
+    fieldStripStore.syncWeapon(stage.weaponId, true);
+    malfunctionStore.syncWeapon(stage.weaponId, false);
+    caliperStore.syncWeapon(stage.weaponId, true);
+    caliperStore.clearTransientHover();
     if (cur.activeWeaponId !== stage.weaponId) {
       resetWeaponPhysicsAndAction(stage.weaponId, false);
     } else {
@@ -293,6 +426,10 @@ export const useAppStore = create<AppState>((set, get) => ({
         screen: 'workbench',
         activeWeaponId: stage.weaponId,
         mode: 'firing',
+        fieldStripActive: false,
+        malfunctionActive: false,
+        caliperActive: false,
+        envelopeRulerVisible: false,
         isPlaying: false,
         isFiringPlaying: true,
         fireLoop: true,
@@ -323,6 +460,10 @@ export const useAppStore = create<AppState>((set, get) => ({
         screen: 'workbench',
         activeWeaponId: stage.weaponId,
         mode: 'explode',
+        fieldStripActive: false,
+        malfunctionActive: false,
+        caliperActive: false,
+        envelopeRulerVisible: false,
         isPlaying: false,
         isFiringPlaying: false,
         textureModalOpen: false,
@@ -372,6 +513,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   focusStoryPart: (partId) => {
     const s = get();
     const weaponId = s.activeWeaponId;
+    fieldStripStore.reset(weaponId, true);
+    caliperStore.clearTransientHover();
     playbackClock.setTargetProgress(0, false);
     playbackClock.setFireProgress(0, true);
 
@@ -380,6 +523,10 @@ export const useAppStore = create<AppState>((set, get) => ({
       set({
         screen: 'workbench',
         mode: 'explode',
+        fieldStripActive: false,
+        malfunctionActive: false,
+        caliperActive: false,
+        envelopeRulerVisible: false,
         storyOpen: cur.storyOpen,
         storyMinimized: cur.storyOpen,
         inspectorMinimized: false,
@@ -415,11 +562,18 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   openShowcase: () => {
     stopNarrationAudio();
+    fieldStripStore.reset(get().activeWeaponId, true);
+    caliperStore.clearTransientHover();
     playbackClock.setTargetProgress(0, false);
     playbackClock.setFireProgress(0, true);
     set((s) => ({
       screen: 'showcase',
       mode: 'explode',
+      fieldStripActive: false,
+      malfunctionActive: false,
+      caliperActive: false,
+      envelopeRulerVisible: false,
+      focusedEngineeringRole: null,
       armoryAutoRotate: true,
       storyOpen: false,
       storyMinimized: false,
@@ -440,18 +594,88 @@ export const useAppStore = create<AppState>((set, get) => ({
     }));
   },
 
+  openCartridgeLab: (caliber) => {
+    const s = get();
+    const snap = getNarrationAudioSnapshot();
+    const keepStoryMini =
+      s.storyOpen && snap.activeKind === 'story' && snap.isPlaying;
+    if (!keepStoryMini) {
+      stopNarrationAudio();
+    }
+    fieldStripStore.reset(s.activeWeaponId, true);
+    caliperStore.clearTransientHover();
+    playbackClock.setTargetProgress(0, false);
+    playbackClock.setFireProgress(0, true);
+    const nextCaliber: CaliberProfile =
+      caliber ?? getWeaponManifest(s.activeWeaponId).caliberProfile;
+    set({
+      screen: 'cartridges',
+      mode: 'explode',
+      fieldStripActive: false,
+      malfunctionActive: false,
+      caliperActive: false,
+      envelopeRulerVisible: false,
+      focusedEngineeringRole: null,
+      activeCartridgeCaliber: nextCaliber,
+      cartridgeLineupOverview: caliber === undefined,
+      cartridgeSectionCut: true,
+      cartridgeExplodeProgress: 0,
+      cartridgeCameraSeq: s.cartridgeCameraSeq + 1,
+      storyOpen: keepStoryMini,
+      storyMinimized: keepStoryMini,
+      inspectorMinimized: false,
+      isPlaying: false,
+      isFiringPlaying: false,
+      textureModalOpen: false,
+      isolateSelected: false,
+      selectedPartId: null,
+      hoveredPartId: null,
+      hiddenGroups: { ...DEFAULT_HIDDEN_GROUPS },
+    });
+  },
+
+  selectLabCartridge: (caliber, focusCamera = true) =>
+    set((s) => ({
+      activeCartridgeCaliber: caliber,
+      cartridgeLineupOverview: focusCamera ? false : s.cartridgeLineupOverview,
+      cartridgeCameraSeq: s.cartridgeCameraSeq + 1,
+    })),
+
+  setCartridgeLineupOverview: (cartridgeLineupOverview) =>
+    set((s) => ({
+      cartridgeLineupOverview,
+      cartridgeCameraSeq: s.cartridgeCameraSeq + 1,
+    })),
+
+  toggleCartridgeSectionCut: () =>
+    set((s) => ({ cartridgeSectionCut: !s.cartridgeSectionCut })),
+
+  setCartridgeExplodeProgress: (val) =>
+    set({
+      cartridgeExplodeProgress: Math.max(0, Math.min(1, val)),
+    }),
+
   selectArmoryWeapon: (weaponIdRaw) => {
     const weaponId: WeaponId = isWeaponId(weaponIdRaw) ? weaponIdRaw : 'ak15';
     if (get().activeWeaponId !== weaponId) {
       stopNarrationAudio();
       resetWeaponPhysicsAndAction(weaponId, false);
+      fieldStripStore.syncWeapon(weaponId, true);
+      malfunctionStore.syncWeapon(weaponId, false);
+      caliperStore.syncWeapon(weaponId, true);
     } else {
       interactiveActionStore.syncWeapon(weaponId);
     }
+    caliperStore.clearTransientHover();
     playbackClock.setTargetProgress(0, false);
     playbackClock.setFireProgress(0, true);
     set((s) => ({
       activeWeaponId: weaponId,
+      fieldStripActive: false,
+      malfunctionActive: false,
+      caliperActive: false,
+      envelopeRulerVisible: false,
+      focusedEngineeringRole: null,
       inspectorMinimized: false,
       selectedPartId: null,
       hoveredPartId: null,
@@ -471,9 +695,16 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (!sameWeapon) {
       stopNarrationAudio();
       resetWeaponPhysicsAndAction(nextWeaponId, false);
+      fieldStripStore.syncWeapon(nextWeaponId, true);
+      malfunctionStore.syncWeapon(nextWeaponId, false);
+      caliperStore.syncWeapon(nextWeaponId, true);
     } else {
       interactiveActionStore.syncWeapon(nextWeaponId);
+      fieldStripStore.syncWeapon(nextWeaponId, false);
+      malfunctionStore.syncWeapon(nextWeaponId, false);
+      caliperStore.syncWeapon(nextWeaponId, false);
     }
+    caliperStore.clearTransientHover();
     const keepStoryMini = sameWeapon && s.storyOpen;
     if (initialMode === 'firing') {
       playbackClock.setTargetProgress(0, false);
@@ -482,6 +713,10 @@ export const useAppStore = create<AppState>((set, get) => ({
         screen: 'workbench',
         activeWeaponId: nextWeaponId,
         mode: 'firing',
+        fieldStripActive: false,
+        malfunctionActive: false,
+        caliperActive: false,
+        envelopeRulerVisible: false,
         storyOpen: keepStoryMini,
         storyMinimized: keepStoryMini,
         inspectorMinimized: false,
@@ -507,6 +742,10 @@ export const useAppStore = create<AppState>((set, get) => ({
         screen: 'workbench',
         activeWeaponId: nextWeaponId,
         mode: 'explode',
+        fieldStripActive: sameWeapon ? s.fieldStripActive : false,
+        malfunctionActive: false,
+        caliperActive: false,
+        envelopeRulerVisible: false,
         storyOpen: keepStoryMini,
         storyMinimized: keepStoryMini,
         inspectorMinimized: false,
@@ -532,11 +771,18 @@ export const useAppStore = create<AppState>((set, get) => ({
     if (!keepStoryMini) {
       stopNarrationAudio();
     }
+    fieldStripStore.reset(get().activeWeaponId, true);
+    caliperStore.clearTransientHover();
     playbackClock.setTargetProgress(0, false);
     playbackClock.setFireProgress(0, true);
     set((s) => ({
       screen: 'armory',
       mode: 'explode',
+      fieldStripActive: false,
+      malfunctionActive: false,
+      caliperActive: false,
+      envelopeRulerVisible: false,
+      focusedEngineeringRole: null,
       storyOpen: keepStoryMini,
       storyMinimized: keepStoryMini,
       inspectorMinimized: false,
@@ -562,10 +808,13 @@ export const useAppStore = create<AppState>((set, get) => ({
   setMode: (mode) => {
     const s = get();
     if (mode === 'firing') {
+      fieldStripStore.reset(s.activeWeaponId, true);
       playbackClock.setTargetProgress(0, false);
       playbackClock.setFireProgress(0, true);
       set({
         mode: 'firing',
+        fieldStripActive: false,
+        malfunctionActive: false,
         isPlaying: false,
         xrayShells: !s.sectionCut,
         isolateSelected: false,
@@ -575,12 +824,13 @@ export const useAppStore = create<AppState>((set, get) => ({
         cameraCommand: { preset: 'firing_view', seq: s.cameraCommand.seq + 1 },
       });
     } else {
-      if (s.mode === 'firing') {
+      if (s.mode === 'firing' || s.malfunctionActive) {
         playbackClock.setTargetProgress(0, false);
       }
       playbackClock.setFireProgress(0, true);
       set({
         mode: 'explode',
+        malfunctionActive: false,
         isFiringPlaying: false,
         xrayShells: false,
         cameraCommand: { preset: 'iso', seq: s.cameraCommand.seq + 1 },
@@ -589,11 +839,19 @@ export const useAppStore = create<AppState>((set, get) => ({
   },
 
   setTargetProgress: (t) => {
+    const s = get();
+    if (s.fieldStripActive || s.malfunctionActive) {
+      fieldStripStore.reset(s.activeWeaponId, true);
+      set({ fieldStripActive: false, malfunctionActive: false });
+    }
     playbackClock.setTargetProgress(t, false);
   },
 
   togglePlay: () => {
     const s = get();
+    if (s.fieldStripActive) {
+      fieldStripStore.reset(s.activeWeaponId, true);
+    }
     const { targetProgress } = playbackClock.getState();
     if (!s.isPlaying) {
       let dir: 1 | -1 = 1;
@@ -601,6 +859,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       else if (targetProgress <= 0.01) dir = 1;
       set({
         mode: 'explode',
+        fieldStripActive: false,
+        malfunctionActive: false,
         isPlaying: true,
         playDirection: dir,
         cameraCommand: s.selectedPartId
@@ -617,19 +877,25 @@ export const useAppStore = create<AppState>((set, get) => ({
   setPlaySpeed: (playSpeed) => set({ playSpeed }),
 
   setFireProgress: (f) => {
+    if (get().malfunctionActive) {
+      set({ malfunctionActive: false });
+    }
     playbackClock.setFireProgress(f, false);
   },
 
   toggleFiringPlay: () => {
-    const { isFiringPlaying } = get();
+    const { isFiringPlaying, activeWeaponId, malfunctionActive } = get();
     const { fireProgress } = playbackClock.getState();
-    if (!isFiringPlaying) {
+    if (!isFiringPlaying || malfunctionActive) {
+      fieldStripStore.reset(activeWeaponId, true);
       playbackClock.setTargetProgress(0, false);
-      if (fireProgress >= 0.99) {
+      if (fireProgress >= 0.99 || malfunctionActive) {
         playbackClock.setFireProgress(0, true);
       }
       set({
         mode: 'firing',
+        fieldStripActive: false,
+        malfunctionActive: false,
         isFiringPlaying: true,
       });
     } else {
@@ -641,16 +907,19 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   triggerSingleShot: () => {
     const s = get();
+    fieldStripStore.reset(s.activeWeaponId, true);
     playbackClock.setTargetProgress(0, false);
     playbackClock.setFireProgress(0, true);
     set({
       mode: 'firing',
+      fieldStripActive: false,
+      malfunctionActive: false,
       isPlaying: false,
       xrayShells: !s.sectionCut,
       fireLoop: false,
       isFiringPlaying: true,
       cameraCommand:
-        s.mode === 'firing'
+        s.mode === 'firing' && !s.malfunctionActive
           ? s.cameraCommand
           : { preset: 'firing_view', seq: s.cameraCommand.seq + 1 },
     });
@@ -684,7 +953,26 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   togglePbrTextures: () =>
     set((s) => ({ pbrTexturesEnabled: !s.pbrTexturesEnabled })),
-  setTextureModalOpen: (textureModalOpen) => set({ textureModalOpen }),
+  setTextureModalOpen: (textureModalOpen) =>
+    set((s) => ({
+      textureModalOpen,
+      monographModalOpen: textureModalOpen ? false : s.monographModalOpen,
+      hudHidden: textureModalOpen ? false : s.hudHidden,
+    })),
+  openMonographModal: (weaponId) =>
+    set((s) => ({
+      monographModalOpen: true,
+      monographWeaponId:
+        weaponId && isWeaponId(weaponId) ? weaponId : s.activeWeaponId,
+      textureModalOpen: false,
+      hudHidden: false,
+    })),
+  closeMonographModal: () => set({ monographModalOpen: false }),
+  setMonographWeaponId: (weaponId) => {
+    if (isWeaponId(weaponId)) {
+      set({ monographWeaponId: weaponId });
+    }
+  },
   toggleXrayShells: () =>
     set((s) => {
       const next = !s.xrayShells;
@@ -716,6 +1004,150 @@ export const useAppStore = create<AppState>((set, get) => ({
   toggleIsolateSelected: () =>
     set((s) => ({ isolateSelected: !s.isolateSelected })),
   setSidebarCollapsed: (sidebarCollapsed) => set({ sidebarCollapsed }),
+  setHudHidden: (hudHidden) =>
+    set((s) => ({
+      hudHidden,
+      textureModalOpen: hudHidden ? false : s.textureModalOpen,
+      monographModalOpen: hudHidden ? false : s.monographModalOpen,
+    })),
+  toggleHudHidden: () =>
+    set((s) => {
+      const next = !s.hudHidden;
+      return {
+        hudHidden: next,
+        textureModalOpen: next ? false : s.textureModalOpen,
+        monographModalOpen: next ? false : s.monographModalOpen,
+      };
+    }),
+
+  setEngineeringTint: (engineeringTint) =>
+    set((s) => ({
+      engineeringTint,
+      focusedEngineeringRole: engineeringTint ? s.focusedEngineeringRole : null,
+    })),
+
+  toggleEngineeringTint: () =>
+    set((s) => {
+      const next = !s.engineeringTint;
+      return {
+        engineeringTint: next,
+        focusedEngineeringRole: next ? s.focusedEngineeringRole : null,
+      };
+    }),
+
+  setFocusedEngineeringRole: (role) =>
+    set((s) => ({
+      engineeringTint: role !== null ? true : s.engineeringTint,
+      focusedEngineeringRole: s.focusedEngineeringRole === role ? null : role,
+    })),
+
+  setGasFlowVisible: (gasFlowVisible) => set({ gasFlowVisible }),
+
+  toggleGasFlowVisible: () =>
+    set((s) => ({ gasFlowVisible: !s.gasFlowVisible })),
+
+  setFieldStripActive: (active) => {
+    const s = get();
+    if (active) {
+      fieldStripStore.reset(s.activeWeaponId, true);
+      caliperStore.clearTransientHover();
+      playbackClock.setTargetProgress(0, true);
+      playbackClock.setFireProgress(0, true);
+      set({
+        screen: 'workbench',
+        mode: 'explode',
+        fieldStripActive: true,
+        malfunctionActive: false,
+        caliperActive: false,
+        envelopeRulerVisible: false,
+        isPlaying: false,
+        isFiringPlaying: false,
+        isolateSelected: false,
+        selectedPartId: null,
+        hiddenGroups: { ...DEFAULT_HIDDEN_GROUPS },
+        cameraCommand: { preset: 'iso', seq: s.cameraCommand.seq + 1 },
+      });
+    } else {
+      fieldStripStore.reset(s.activeWeaponId, true);
+      set({ fieldStripActive: false });
+    }
+  },
+
+  toggleFieldStripMode: () => {
+    const s = get();
+    s.setFieldStripActive(!s.fieldStripActive);
+  },
+
+  setMalfunctionActive: (active, kind) => {
+    const s = get();
+    if (active) {
+      fieldStripStore.reset(s.activeWeaponId, true);
+      caliperStore.clearTransientHover();
+      interactiveActionStore.reset(s.activeWeaponId);
+      playbackClock.setTargetProgress(0, true);
+      malfunctionStore.activate(s.activeWeaponId, kind);
+      set({
+        screen: 'workbench',
+        mode: 'firing',
+        malfunctionActive: true,
+        fieldStripActive: false,
+        caliperActive: false,
+        envelopeRulerVisible: false,
+        isPlaying: false,
+        isFiringPlaying: false,
+        sectionCut: true,
+        xrayShells: false,
+        isolateSelected: false,
+        selectedPartId: null,
+        hiddenGroups: { ...DEFAULT_HIDDEN_GROUPS },
+        cameraCommand: {
+          preset: 'cutaway_focus',
+          seq: s.cameraCommand.seq + 1,
+        },
+      });
+    } else {
+      playbackClock.setFireProgress(0, true);
+      playbackClock.setAnimatedFireProgress(0);
+      set({ malfunctionActive: false });
+    }
+  },
+
+  toggleMalfunctionMode: () => {
+    const s = get();
+    s.setMalfunctionActive(!s.malfunctionActive);
+  },
+
+  setCaliperActive: (active) => {
+    const s = get();
+    if (active) {
+      caliperStore.syncWeapon(s.activeWeaponId, false);
+      set({
+        screen: 'workbench',
+        caliperActive: true,
+        envelopeRulerVisible: true,
+        fieldStripActive: false,
+        isPlaying: false,
+        isFiringPlaying: false,
+      });
+    } else {
+      caliperStore.clearTransientHover();
+      set({
+        caliperActive: false,
+        envelopeRulerVisible: false,
+      });
+    }
+  },
+
+  toggleCaliperMode: () => {
+    const s = get();
+    s.setCaliperActive(!s.caliperActive);
+  },
+
+  setEnvelopeRulerVisible: (envelopeRulerVisible) =>
+    set({ envelopeRulerVisible }),
+
+  toggleEnvelopeRuler: () =>
+    set((s) => ({ envelopeRulerVisible: !s.envelopeRulerVisible })),
 
   toggleGroupVisibility: (group) =>
     set((s) => ({
@@ -744,12 +1176,15 @@ export const useAppStore = create<AppState>((set, get) => ({
     })),
 
   activateCutawayFocus: () => {
+    fieldStripStore.reset(get().activeWeaponId, true);
     playbackClock.setTargetProgress(0, false);
     playbackClock.setFireProgress(0, true);
     set((s) => {
       const meta = getWeaponManifest(s.activeWeaponId).workbenchMeta;
       return {
         mode: 'explode',
+        fieldStripActive: false,
+        malfunctionActive: false,
         isPlaying: false,
         isFiringPlaying: false,
         xrayShells: !s.sectionCut,
@@ -766,10 +1201,22 @@ export const useAppStore = create<AppState>((set, get) => ({
   resetAll: () => {
     const activeId = get().activeWeaponId;
     resetWeaponPhysicsAndAction(activeId, true);
+    fieldStripStore.reset(activeId, true);
+    malfunctionStore.syncWeapon(activeId, false);
+    caliperStore.clearPoints();
+    caliperStore.clearTransientHover();
     playbackClock.setTargetProgress(0, false);
     playbackClock.setFireProgress(0, true);
+    playbackClock.setAnimatedFireProgress(0);
     set((s) => ({
       mode: 'explode',
+      fieldStripActive: false,
+      malfunctionActive: false,
+      caliperActive: false,
+      envelopeRulerVisible: false,
+      engineeringTint: false,
+      focusedEngineeringRole: null,
+      gasFlowVisible: true,
       isPlaying: false,
       isFiringPlaying: false,
       pbrTexturesEnabled: true,
@@ -778,6 +1225,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       showEdges: false,
       showLabels: true,
       isolateSelected: false,
+      hudHidden: false,
       selectedPartId: null,
       hiddenGroups: { ...DEFAULT_HIDDEN_GROUPS },
       cameraCommand: { preset: 'iso', seq: s.cameraCommand.seq + 1 },

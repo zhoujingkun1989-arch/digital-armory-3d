@@ -1023,6 +1023,13 @@ export const interactiveActionStore = {
     if (st.activeWeaponId !== currentSnapshot.weaponId) {
       this.syncWeapon(st.activeWeaponId);
     }
+    if (
+      st.screen !== 'workbench' ||
+      st.malfunctionActive ||
+      st.caliperActive
+    ) {
+      return;
+    }
     const weaponId = currentSnapshot.weaponId;
 
     // -------------------------------------------------------------------------
@@ -1330,6 +1337,8 @@ export const InteractiveActionController: React.FC = () => {
       if (
         st.screen !== 'workbench' ||
         st.mode !== 'firing' ||
+        st.malfunctionActive ||
+        st.caliperActive ||
         st.isFiringPlaying ||
         st.textureModalOpen
       ) {
@@ -1442,7 +1451,15 @@ export const InteractiveActionController: React.FC = () => {
       if (isEditableDomTarget(e.target)) return;
 
       const st = useAppStore.getState();
-      if (st.screen !== 'workbench' || st.textureModalOpen) return;
+      if (
+        st.screen !== 'workbench' ||
+        st.malfunctionActive ||
+        st.caliperActive ||
+        st.textureModalOpen ||
+        st.monographModalOpen
+      ) {
+        return;
+      }
 
       const key = e.key.toLowerCase();
 
