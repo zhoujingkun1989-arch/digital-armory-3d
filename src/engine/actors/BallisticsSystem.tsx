@@ -1884,8 +1884,9 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
     }
 
     // 5. Magazine / Quiver feed round (Slot 0; reserve stack rendered by MagazineAmmoStack)
+    // Delay hiding archery handoff round until f >= 0.70 so lift33 `rotT` (0.60) & r500 `yLift/xSlide` (0.62/0.68) complete cleanly
     if (nextRoundRef.current) {
-      nextRoundRef.current.visible = !isArchery || f < 0.56;
+      nextRoundRef.current.visible = !isArchery || f < 0.7;
       nextRoundRef.current.position.set(
         st.nextRoundPos[0],
         st.nextRoundPos[1],

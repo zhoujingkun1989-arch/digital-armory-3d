@@ -67,7 +67,7 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
     expect(svg.pathD.length).toBeGreaterThan(200);
   });
 
-  it('assembles complete bilingual 8-page monograph dossiers across all 11 firearms using real narration bundles', async () => {
+  it('assembles complete bilingual 8-page monograph dossiers across all 13 weapons using real narration bundles', async () => {
     const narrationsDir = path.resolve(__dirname, '../public/narrations');
 
     for (const weaponId of WEAPON_IDS) {
@@ -111,7 +111,7 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
     }
   });
 
-  it('computes monotonic non-overlapping top/bottom exploded BOM callout rails across all 11 firearms', async () => {
+  it('computes monotonic non-overlapping top/bottom exploded BOM callout rails across all 13 weapons', async () => {
     const cam = new THREE.PerspectiveCamera(36, 1920 / 1200, 0.1, 640);
     cam.position.set(12, 8, 92);
     cam.lookAt(2, -1, 0);
@@ -150,7 +150,7 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
     }
   });
 
-  it('coordinates store modal state and bounded LRU capture cache cleanly', () => {
+  it('coordinates store modal state and bounded LRU capture cache cleanly', async () => {
     useAppStore.getState().setTextureModalOpen(true);
     useAppStore.getState().setHudHidden(true);
 
@@ -184,6 +184,21 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
 
     expect(getMonographCaptureState().activeRequest).toBeNull();
     expect(getCachedMonographBundle('m82a1', 'obsidian_folio')).not.toBeNull();
+
+    // Verify fallback archery monograph assembly (when bundle is null) resolves ATA/IBO & carbon projectile specs
+    for (const archeryId of ['lift33', 'r500'] as const) {
+      const plugin = await loadWeaponPlugin(archeryId);
+      const dossier = assembleMonographDossier(
+        archeryId,
+        plugin,
+        'en',
+        null,
+        'https://armory.example.org/'
+      );
+      expect(dossier.ballisticsSpec.standard).toBe('ATA / IBO');
+      expect(dossier.bomRows.length).toBe(plugin.parts.length);
+      expect(dossier.acts.length).toBe(4);
+    }
 
     // Subsequent non-forced request hits cache immediately without spawning activeRequest
     const cachedReqId = requestMonographCapture(

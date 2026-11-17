@@ -504,9 +504,9 @@ export const ARCHERY_PROJECTILE_SPECS: Readonly<
     letOffPercent: 85,
     holdingForceLb: 10.5,
     holdingForceN: 46.7,
-    powerStrokeMm: 597,
+    powerStrokeMm: 571.5,
     braceHeightMm: 165.1,
-    axleToAxleMm: 838.2,
+    axleToAxleMm: 838,
     velocityFps: 348,
     muzzleVelocityMps: 106.0,
     muzzleEnergyJ: 145.6,
@@ -517,9 +517,9 @@ export const ARCHERY_PROJECTILE_SPECS: Readonly<
     nockLatchZh: '聚碳酸酯发光箭尾扣 + Dyneema D-Loop 撒放环',
     nockLatchEn: 'Illuminated Polycarbonate Micro-Nock + Dyneema Release D-Loop',
     highlightZh:
-      '无火药发射体：依靠四分体碳纤弓片弯曲储能（57.6 J 蓄能与极低 10.5 lb 满弓持力），在 597mm 做功行程中将 25.92g 碳箭平稳加速至 106 m/s (348 FPS)。',
+      '无火药发射体：依靠四分体碳纤弓片弯曲储能（57.6 J 蓄能与极低 10.5 lb 满弓持力），在 571.5 mm 做功行程中将 25.92g 碳箭平稳加速至 106 m/s (348 FPS)。',
     highlightEn:
-      'Smokeless elastic-propulsion projectile: SwitchWeight-X binary cams yield 85% let-off (10.5 lb hold) and accelerate a 400 gr arrow to 348 FPS (145.6 J) along a 23.5" power stroke.',
+      'Smokeless elastic-propulsion projectile: SwitchWeight-X binary cams yield 85% let-off (10.5 lb hold) and accelerate a 400 gr arrow to 348 FPS (145.6 J) along a 22.5" (571.5 mm) power stroke.',
     shaftColor: '#1e293b',
     broadheadColor: '#cbd5e1',
     vaneColor: '#f97316',

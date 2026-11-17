@@ -38,6 +38,8 @@ const MIN_ROUND_COUNTS: Readonly<Record<WeaponId, number>> = {
   aug: 18,
   mp5: 18,
   p90: 25,
+  lift33: 5,
+  r500: 3,
 };
 
 function computePartWorldBox(
@@ -68,7 +70,7 @@ function computePartWorldBox(
   return worldBox;
 }
 
-describe('11-Weapon Full-Capacity 3D Magazine Cartridge Stack Contracts', () => {
+describe('13-Weapon Full-Capacity 3D Magazine & Quiver Stack Contracts', () => {
   it('verifies round counts, single/staggered geometry, Slot 0 anchors, P90 90° helical rotation, and zero mag_body / mag_follower clipping', async () => {
     const pose = createMutableMagazineRoundPose();
     const qRound = new THREE.Quaternion();

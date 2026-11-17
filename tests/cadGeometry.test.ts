@@ -14,6 +14,7 @@ import {
   finishPartSpringCapture,
   mergeParts,
   paintGeometry,
+  SPRING_AXIS_MODE_FLEX,
   SPRING_AXIS_MODE_X,
   SPRING_AXIS_MODE_Y,
 } from '../src/engine/geometry/csgBuilder';
@@ -651,7 +652,7 @@ describe('worker zero-copy serialization of CAD attributes', () => {
     expect(boxGeo.getAttribute('aSpringParam')).toBeUndefined();
   });
 
-  it('preserves aSpringParam & aCurvature across all 14 dynamic weapon springs (including sanitized meshes) and main-thread geometryService fallback', async () => {
+  it('preserves aSpringParam & aCurvature across all 15 helical weapon springs, w=3 archery flex parts, and main-thread geometryService fallback', async () => {
     const dynamicSprings: Readonly<Record<WeaponId, readonly string[]>> = {
       ak15: ['ak_recoil_spring'],
       m4a1: ['m4a1_buffer_spring'],
@@ -664,6 +665,8 @@ describe('worker zero-copy serialization of CAD attributes', () => {
       aug: ['aug_recoil_springs'],
       p320: ['p320_recoil_spring', 'p320_striker_spring'],
       p90: ['p90_recoil_springs'],
+      lift33: [],
+      r500: ['r500_trigger_spring'],
     };
 
     for (const [wid, partIds] of Object.entries(dynamicSprings) as Array<
@@ -711,6 +714,72 @@ describe('worker zero-copy serialization of CAD attributes', () => {
       }
     }
 
+    // Verify w = 3 (SPRING_AXIS_MODE_FLEX) parametric flex attribute on lift33 & r500
+    const flexParts: ReadonlyArray<{ weaponId: WeaponId; partIds: readonly string[] }> = [
+      {
+        weaponId: 'lift33',
+        partIds: [
+          'lift33_bowstring',
+          'lift33_yoke_cables',
+          'lift33_upper_limbs',
+          'lift33_lower_limbs',
+          'lift33_cam_axles',
+        ],
+      },
+      {
+        weaponId: 'r500',
+        partIds: [
+          'r500_bowstring',
+          'r500_power_cables',
+          'r500_left_limbs',
+          'r500_right_limbs',
+          'r500_cam_axles',
+        ],
+      },
+    ];
+
+    for (const { weaponId, partIds } of flexParts) {
+      const builders = await loadWeaponGeometryBuilders(weaponId);
+      for (const partId of partIds) {
+        let built: THREE.BufferGeometry | null = null;
+        beginPartSpringCapture();
+        try {
+          built = builders[partId]();
+        } finally {
+          finishPartSpringCapture(built);
+        }
+        const transfers: Transferable[] = [];
+        const serialized = serializeGeometry(partId, built!, transfers);
+        expect(
+          serialized.springParam,
+          `${weaponId}/${partId}: expected non-null flex springParam`
+        ).not.toBeNull();
+
+        const restored = reconstructBufferGeometry(serialized);
+        const sp = restored.getAttribute('aSpringParam');
+        expect(sp, `${weaponId}/${partId}: missing aSpringParam`).toBeDefined();
+        let flexVerts = 0;
+        let maxFlexDisp = 0;
+        for (let i = 0; i < sp.count; i++) {
+          if (sp.getW(i) === SPRING_AXIS_MODE_FLEX) {
+            flexVerts++;
+            const disp = Math.hypot(sp.getX(i), sp.getY(i), sp.getZ(i));
+            if (disp > maxFlexDisp) maxFlexDisp = disp;
+          }
+        }
+        expect(
+          flexVerts,
+          `${weaponId}/${partId}: expected active w=3 flex vertices`
+        ).toBeGreaterThan(24);
+        expect(
+          maxFlexDisp,
+          `${weaponId}/${partId}: expected non-zero flex displacement vector`
+        ).toBeGreaterThan(0.5);
+        curvatureOf(restored);
+        restored.dispose();
+      }
+    }
+
     // Verify main-thread sliced fallback in geometryService attaches both attributes
     await ensureWeaponGeometries('g17', ['slide', 'recoil_spring']);
     const slideGeo = getCachedPartGeometry('g17', 'slide');
@@ -722,4 +791,44 @@ describe('worker zero-copy serialization of CAD attributes', () => {
     curvatureOf(recoilGeo!);
     expect(recoilGeo!.getAttribute('aSpringParam')?.itemSize).toBe(4);
   });
+
+  it('builds all 24 lift33 and 25 r500 archery geometries with unit normals, positive volume, aCurvature & watertight analytical parts', async () => {
+    // Boolean three-bvh-csg cuts introduce T-junction split vertices (same as firearm receivers/rails)
+    const r500CsgParts = new Set([
+      'r500_chassis',
+      'r500_buttstock',
+      'r500_flight_rail',
+      'r500_riser_head',
+      'r500_left_cam',
+      'r500_right_cam',
+      'r500_trigger_sled',
+      'r500_quiver_frame',
+      'r500_trigger_spring', // Three.js TubeGeometry open ends (shared with all helical firearm springs)
+    ]);
+    for (const [wid, expectedCount] of [
+      ['lift33', 24],
+      ['r500', 25],
+    ] as const) {
+      const builders = await loadWeaponGeometryBuilders(wid);
+      const entries = Object.entries(builders);
+      expect(entries).toHaveLength(expectedCount);
+      for (const [partId, buildFn] of entries) {
+        const label = `${wid}/${partId}`;
+        const geo = buildFn();
+        try {
+          expectFiniteArray(geo.getAttribute('position').array, `${label} pos`);
+          expectFiniteArray(geo.getAttribute('normal').array, `${label} normal`);
+          expectFiniteArray(geo.getAttribute('uv').array, `${label} uv`);
+          if (wid === 'lift33' || !r500CsgParts.has(partId)) {
+            expectWatertight(geo, label);
+          }
+          expectUnitNormals(geo, label);
+          expect(signedVolume(geo), `${label}: positive signed volume`).toBeGreaterThan(0);
+          curvatureOf(geo);
+        } finally {
+          geo.dispose();
+        }
+      }
+    }
+  }, 60000);
 });

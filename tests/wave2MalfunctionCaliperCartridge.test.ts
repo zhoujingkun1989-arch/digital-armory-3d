@@ -8,9 +8,12 @@ import {
   WORLD_UNIT_TO_MM,
 } from '../src/engine/caliper/caliperStore';
 import {
+  ARCHERY_PROJECTILE_SPECS,
   CARTRIDGE_LAB_ORDER,
   CARTRIDGE_LAB_SPECS,
+  getArcheryProjectileMeta,
   getCartridgeLabMeshBundle,
+  isArcheryCaliberProfile,
   isCaliberProfile,
 } from '../src/engine/cartridges/cartridgeSpecs';
 import { playbackClock } from '../src/engine/clock/playbackClock';
@@ -23,6 +26,9 @@ import {
   evaluatePartPoseInto,
 } from '../src/engine/kinematics/math';
 import {
+  ARCHERY_MALFUNCTION_SCENARIOS,
+  getMalfunctionScenario,
+  isArcheryMalfunctionWeapon,
   MALFUNCTION_ORDER,
   MALFUNCTION_SCENARIOS,
   WEAPON_MALFUNCTION_PROFILES,
@@ -66,26 +72,36 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
     caliperStore.clearPoints();
   });
 
-  it('WP-09: validates malfunction profiles & valid part IDs across all 11 firearms and bilingual scenario specs', async () => {
+  it('WP-09: validates malfunction profiles & valid part IDs across all 13 weapons and bilingual scenario specs', async () => {
     for (const kind of MALFUNCTION_ORDER) {
-      const spec = MALFUNCTION_SCENARIOS[kind];
-      expect(spec.kind).toBe(kind);
-      expect(spec.titleZh.length).toBeGreaterThan(4);
-      expect(spec.titleEn.length).toBeGreaterThan(4);
-      expect(spec.symptomZh.length).toBeGreaterThan(8);
-      expect(spec.symptomEn.length).toBeGreaterThan(8);
-      expect(spec.rootCauseZh.length).toBeGreaterThan(8);
-      expect(spec.rootCauseEn.length).toBeGreaterThan(8);
-      expect(spec.safetyNoteZh.length).toBeGreaterThan(6);
-      expect(spec.safetyNoteEn.length).toBeGreaterThan(6);
-      expect(spec.steps.length).toBeGreaterThanOrEqual(3);
+      for (const spec of [
+        MALFUNCTION_SCENARIOS[kind],
+        ARCHERY_MALFUNCTION_SCENARIOS[kind],
+      ]) {
+        expect(spec.kind).toBe(kind);
+        expect(spec.titleZh.length).toBeGreaterThan(4);
+        expect(spec.titleEn.length).toBeGreaterThan(4);
+        expect(spec.symptomZh.length).toBeGreaterThan(8);
+        expect(spec.symptomEn.length).toBeGreaterThan(8);
+        expect(spec.rootCauseZh.length).toBeGreaterThan(8);
+        expect(spec.rootCauseEn.length).toBeGreaterThan(8);
+        expect(spec.safetyNoteZh.length).toBeGreaterThan(6);
+        expect(spec.safetyNoteEn.length).toBeGreaterThan(6);
+        expect(spec.steps.length).toBeGreaterThanOrEqual(3);
 
-      for (const step of spec.steps) {
-        expect(step.titleZh.length).toBeGreaterThan(3);
-        expect(step.titleEn.length).toBeGreaterThan(3);
-        expect(step.detailZh.length).toBeGreaterThan(6);
-        expect(step.detailEn.length).toBeGreaterThan(6);
+        for (const step of spec.steps) {
+          expect(step.titleZh.length).toBeGreaterThan(3);
+          expect(step.titleEn.length).toBeGreaterThan(3);
+          expect(step.detailZh.length).toBeGreaterThan(6);
+          expect(step.detailEn.length).toBeGreaterThan(6);
+        }
       }
+      expect(getMalfunctionScenario(kind, 'lift33')).toBe(
+        ARCHERY_MALFUNCTION_SCENARIOS[kind]
+      );
+      expect(getMalfunctionScenario(kind, 'm4a1')).toBe(
+        MALFUNCTION_SCENARIOS[kind]
+      );
     }
 
     for (const weaponId of WEAPON_IDS) {
@@ -100,6 +116,9 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
       if (weaponId === 'p90') {
         expect(prof.ejectionUpSign).toBe(-1);
         expect(prof.magStripOffsetCm[1]).toBeGreaterThan(0);
+      } else if (isArcheryMalfunctionWeapon(weaponId)) {
+        expect(prof.ejectionUpSign).toBe(1);
+        expect(prof.magStripOffsetCm[2]).toBeGreaterThan(0);
       } else {
         expect(prof.ejectionUpSign).toBe(1);
         expect(prof.magStripOffsetCm[1]).toBeLessThan(0);
@@ -142,7 +161,7 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
   it('WP-09: executes all 4 clearing drills end-to-end with stoppage freeze frames, mag rip pose delta, and battery recovery', () => {
     const pose = createMutablePose();
 
-    for (const weaponId of ['ak15', 'g17', 'p90'] as const) {
+    for (const weaponId of ['ak15', 'g17', 'p90', 'lift33', 'r500'] as const) {
       const prof = WEAPON_MALFUNCTION_PROFILES[weaponId];
 
       for (const kind of MALFUNCTION_ORDER) {
@@ -205,7 +224,7 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
               prof.magazinePartIds[0],
               pose
             );
-            expect(Math.abs(pose.py)).toBeGreaterThan(1.5);
+            expect(Math.hypot(pose.px, pose.py, pose.pz)).toBeGreaterThan(1.5);
           }
         }
 
@@ -304,6 +323,51 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
       expect(snap.measurement).not.toBeNull();
       expect(snap.measurement!.distanceMm).toBeGreaterThan(35);
     }
+
+    // Archery CAD envelopes & 1:1 benchmark presets (lift33 ATA / brace height, r500 axle width / rail)
+    for (const wid of ['lift33', 'r500'] as const) {
+      const plugin = await loadWeaponPlugin(wid);
+      await ensureWeaponGeometries(
+        wid,
+        plugin.parts.map((p) => p.id)
+      );
+      const evalArchery = (
+        part: (typeof plugin.parts)[number],
+        out: typeof scratch
+      ) =>
+        evaluatePartPoseInto(
+          part,
+          0,
+          false,
+          0,
+          plugin.computeFiringKinematics,
+          out
+        );
+      const archEnv = computeWeaponEnvelopeMetrics(
+        plugin.parts,
+        (partId) => getCachedPartGeometry(wid, partId),
+        evalArchery,
+        scratch
+      );
+      expect(archEnv).not.toBeNull();
+      expect(archEnv!.lengthMm).toBeGreaterThan(500);
+
+      for (const bench of CALIPER_BENCHMARK_ORDER) {
+        const ok = caliperStore.applyBenchmarkPreset(
+          wid,
+          bench,
+          plugin.parts,
+          (partId) => getCachedPartGeometry(wid, partId),
+          evalArchery,
+          scratch
+        );
+        expect(ok, `${wid}: failed caliper benchmark ${bench}`).toBe(true);
+        const snap = caliperStore.getSnapshot();
+        expect(snap.activeBenchmark).toBe(bench);
+        expect(snap.measurement).not.toBeNull();
+        expect(snap.measurement!.distanceMm).toBeGreaterThan(100);
+      }
+    }
   });
 
   it('WP-06: builds all 7 SAAMI/CIP cartridges at exact 1:1 CAD height (9x19mm = 29.69 mm vs .50 BMG = 138.43 mm)', () => {
@@ -372,6 +436,23 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
     expect(CARTRIDGE_LAB_SPECS['50_bmg'].muzzleEnergyJ).toBeGreaterThan(
       CARTRIDGE_LAB_SPECS['9mm_para'].muzzleEnergyJ * 30
     );
+
+    // Archery projectile metadata preserved separately from the 7 metallic SAAMI/CIP lineup
+    expect(isArcheryCaliberProfile('arrow_400gr')).toBe(true);
+    expect(isArcheryCaliberProfile('bolt_400gr')).toBe(true);
+    expect(isArcheryCaliberProfile('556_nato')).toBe(false);
+    expect(Object.keys(ARCHERY_PROJECTILE_SPECS)).toEqual([
+      'arrow_400gr',
+      'bolt_400gr',
+    ]);
+    expect(getArcheryProjectileMeta('arrow_400gr')?.muzzleEnergyJ).toBeCloseTo(
+      145.6,
+      0
+    );
+    expect(getArcheryProjectileMeta('bolt_400gr')?.muzzleEnergyJ).toBeCloseTo(
+      301.0,
+      0
+    );
   });
 
   it('manages mutually exclusive Wave 2 store modes and preserves 100% zh/en UI string key parity', () => {
@@ -399,7 +480,11 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
     s.getState().setMalfunctionActive(false);
     expect(s.getState().malfunctionActive).toBe(false);
 
-    // Opening Cartridge Cutaway Lab switches screen to 'cartridges'
+    // Opening Cartridge Cutaway Lab switches screen to 'cartridges' (and falls back cleanly for archery profiles)
+    s.getState().openCartridgeLab('arrow_400gr');
+    expect(s.getState().screen).toBe('cartridges');
+    expect(s.getState().activeCartridgeCaliber).toBe('556_nato');
+
     s.getState().openCartridgeLab('338_lapua');
     expect(s.getState().screen).toBe('cartridges');
     expect(s.getState().activeCartridgeCaliber).toBe('338_lapua');

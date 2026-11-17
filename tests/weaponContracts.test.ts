@@ -57,6 +57,19 @@ const DYNAMIC_SPRING_PARTS: Readonly<Record<WeaponId, readonly string[]>> = {
   aug: ['aug_recoil_springs'],
   p320: ['p320_recoil_spring', 'p320_striker_spring'],
   p90: ['p90_recoil_springs'],
+  lift33: [
+    'lift33_bowstring',
+    'lift33_yoke_cables',
+    'lift33_upper_limbs',
+    'lift33_lower_limbs',
+  ],
+  r500: [
+    'r500_trigger_spring',
+    'r500_bowstring',
+    'r500_power_cables',
+    'r500_left_limbs',
+    'r500_right_limbs',
+  ],
 };
 
 const ROTATING_BOLT_PARTS: ReadonlyArray<{
@@ -157,20 +170,20 @@ function findFirstNonFiniteIndex(arr: ArrayLike<number>): number {
   return -1;
 }
 
-describe('11-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contracts', () => {
-  it('registers all 11 iconic firearms totaling 278 parts with accurate category filtering & camera presets', () => {
-    expect(WEAPON_MANIFESTS).toHaveLength(11);
-    expect(ARMORY_WEAPONS).toHaveLength(11);
+describe('13-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contracts', () => {
+  it('registers all 13 iconic weapons totaling 327 parts with accurate category filtering & camera presets', () => {
+    expect(WEAPON_MANIFESTS).toHaveLength(13);
+    expect(ARMORY_WEAPONS).toHaveLength(13);
 
     const totalCatalogParts = WEAPON_MANIFESTS.reduce(
       (sum, m) => sum + m.catalog.partsCount,
       0
     );
-    expect(totalCatalogParts).toBe(278);
+    expect(totalCatalogParts).toBe(327);
 
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'all'))
-    ).toHaveLength(11);
+    ).toHaveLength(13);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'assault'))
     ).toHaveLength(4);
@@ -183,6 +196,9 @@ describe('11-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contra
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'pistol'))
     ).toHaveLength(3);
+    expect(
+      ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'archery'))
+    ).toHaveLength(2);
 
     for (const manifest of WEAPON_MANIFESTS) {
       expect(manifest.atlasHeadingCn).toContain('Packed ORM');
@@ -219,7 +235,7 @@ describe('11-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contra
     }
   });
 
-  it('enforces 1:1 BOM metadata, disassembly keyframes, dense [0..1] kinematic sweeps, and mechanism-specific motion laws across all 11 plugins', async () => {
+  it('enforces 1:1 BOM metadata, disassembly keyframes, dense [0..1] kinematic sweeps, and mechanism-specific motion laws across all 13 plugins', async () => {
     const globalPartIds = new Set<string>();
     let totalRuntimeParts = 0;
     const poseScratch = createMutablePose();
@@ -400,8 +416,8 @@ describe('11-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contra
       }
     }
 
-    expect(totalRuntimeParts).toBe(278);
-    expect(globalPartIds.size).toBe(278);
+    expect(totalRuntimeParts).toBe(327);
+    expect(globalPartIds.size).toBe(327);
 
     // 1. M82A1 short-recoil barrel + accelerator motion law
     const m82Plugin = loadedPlugins.get('m82a1')!;
@@ -538,6 +554,26 @@ describe('11-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contra
       0.35
     );
 
+    // 3b. Compound Archery (lift33 binary cams + r500 HexCoil helical cams): zero brass/flash/plume across all f
+    for (const archeryId of ['lift33', 'r500'] as const) {
+      const archPlugin = loadedPlugins.get(archeryId)!;
+      for (const f of DENSE_FIRING_SWEEP) {
+        const b = archPlugin.computeBallisticsState(f);
+        expect(b.spentCaseVisible, `${archeryId} f=${f}: zero brass`).toBe(false);
+        expect(b.chamberFlashIntensity, `${archeryId} f=${f}: zero flash`).toBe(0);
+        expect(b.muzzlePlumeOpacity, `${archeryId} f=${f}: zero plume`).toBe(0);
+        expect(b.gasPortFlashIntensity, `${archeryId} f=${f}: zero gas flash`).toBe(0);
+      }
+    }
+
+    const liftPlugin = loadedPlugins.get('lift33')!;
+    expect(Math.abs(liftPlugin.computeFiringKinematics('lift33_upper_cam', 0.28).rot[2])).toBeGreaterThan(1.4);
+    expect(liftPlugin.computeFiringKinematics('lift33_launcher_fork', 0.44).rot[2]).toBeLessThan(-0.5);
+
+    const r500Plugin = loadedPlugins.get('r500')!;
+    expect(Math.abs(r500Plugin.computeFiringKinematics('r500_left_cam', 0.28).rot[1])).toBeGreaterThan(4.5);
+    expect(r500Plugin.computeFiringKinematics('r500_trigger_sled', 0.28).pos[0]).toBeLessThan(-35.0);
+
     // 4. Endpoint continuity across f = 0.995 -> 1.0 (catches modulo wrap-around snaps on single-shot completion)
     for (const [wid, plugin] of loadedPlugins.entries()) {
       for (const part of plugin.parts) {
@@ -580,7 +616,7 @@ describe('11-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contra
     }
   });
 
-  it('builds all 278 CSG/parametric BufferGeometries with finite attributes, unit normals, positive 3D volume, and [0, 1] custom-atlas UVs', async () => {
+  it('builds all 327 CSG/parametric BufferGeometries with finite attributes, unit normals, positive 3D volume, and [0, 1] custom-atlas UVs', async () => {
     let builtPartsCount = 0;
 
     for (const manifest of WEAPON_MANIFESTS) {
@@ -779,10 +815,10 @@ describe('11-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contra
       }
     }
 
-    expect(builtPartsCount).toBe(278);
+    expect(builtPartsCount).toBe(327);
   }, 120000);
 
-  it('verifies all 64 WebP PBR textures exist on disk (0 PNGs) and all 22 *_roughness.webp ORM maps have valid RGB WebP headers', async () => {
+  it('verifies all 76 WebP PBR textures exist on disk (0 PNGs) and all 26 *_roughness.webp ORM maps have valid RGB WebP headers', async () => {
     expect(fs.existsSync(TEXTURES_DIR)).toBe(true);
     const diskFiles = fs.readdirSync(TEXTURES_DIR);
     const webpFiles = diskFiles.filter((f) => f.endsWith('.webp')).sort();
@@ -792,10 +828,10 @@ describe('11-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contra
     );
     const normalFiles = webpFiles.filter((f) => f.endsWith('_normal.webp'));
 
-    expect(webpFiles).toHaveLength(64);
+    expect(webpFiles).toHaveLength(76);
     expect(pngFiles).toHaveLength(0);
-    expect(roughnessFiles).toHaveLength(22);
-    expect(normalFiles).toHaveLength(22);
+    expect(roughnessFiles).toHaveLength(26);
+    expect(normalFiles).toHaveLength(26);
 
     // Binary RIFF/WEBP header validation across all 58 textures
     for (const fileName of webpFiles) {
@@ -930,7 +966,7 @@ describe('11-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contra
     expect(playbackClock.getState().targetProgress).toBe(0);
   });
 
-  it('verifies Google Gemini bilingual R&D stories, all 278 part narrations, all 644 MP3 voiceover clips across all 11 firearms, and bilingual store/fallback contracts', async () => {
+  it('verifies Google Gemini bilingual R&D stories, all 327 part narrations, all 758 MP3 voiceover clips across all 13 weapons, and bilingual store/fallback contracts', async () => {
     let totalNarratedParts = 0;
     const allReferencedAudioPaths: string[] = [];
 
@@ -1052,9 +1088,9 @@ describe('11-Weapon Digital Armory 1:1 plugin, geometry, kinematics & PBR contra
       expect(metaEn.highlights.length).toBeGreaterThanOrEqual(4);
     }
 
-    // 278 total parts across 11 weapons -> 88 story MP3s + 556 part MP3s = 644 MP3 files
-    expect(totalNarratedParts).toBe(278);
-    expect(allReferencedAudioPaths).toHaveLength(644);
+    // 327 total parts across 13 weapons -> 104 story MP3s + 654 part MP3s = 758 MP3 files
+    expect(totalNarratedParts).toBe(327);
+    expect(allReferencedAudioPaths).toHaveLength(758);
 
     for (const relAudio of allReferencedAudioPaths) {
       const fullMp3Path = path.join(ROOT_DIR, 'public', relAudio);

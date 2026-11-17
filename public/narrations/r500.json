@@ -1,0 +1,911 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "r500",
+  "generatedAt": "2026-11-17T06:26:38.742522+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "Ravin R500 Helical Cam Crossbow",
+    "subtitle": "500 FPS HexCoil 360° Helical-Cam Bullpup Crossbow",
+    "originCountry": "United States",
+    "weaponType": "Helical-Cam Compound Crossbow",
+    "categoryLabel": "Compound Crossbow",
+    "actionMechanism": "HexCoil 360° Multi-Tier Helical Cams · VersaDrive Acme Leadscrew & Trac-Trigger Floating Carriage",
+    "statusLabel": "In Vault · Strippable",
+    "description": "The Ravin R500 represents the pinnacle of modern ultra-high-velocity hunting crossbow engineering, surpassing the 500 FPS ballistic barrier in an ultra-compact 28-inch bullpup architecture. Its revolutionary HexCoil multi-tier helical cams rotate a full 360 degrees to coil cables along spiral tracks, compressing the horizontal quad limbs to an axle-to-axle width of just 3.6 inches while propelling a 400-grain carbon bolt with 301 joules of kinetic energy. Paired with the internal VersaDrive Acme cocking leadscrew and frictionless Trac-Trigger floating carriage, the R500 completely eliminates rail friction and dry-fire risk.",
+    "highlights": [
+      "HexCoil 360° Helical Cams · 3.6-Inch Cocked Axle Width",
+      "VersaDrive Internal Acme Leadscrew & Bi-Directional Clutch",
+      "Trac-Trigger Frictionless Floating Sled & Auto Dry-Fire Lock",
+      "500 FPS (152.4 m/s) · 301 Joules Kinetic Arrow Energy"
+    ],
+    "workbenchTitle": "Ravin R500 Helical Cam Crossbow 3D Disassembly & 500 FPS Kinematics",
+    "workbenchSubtitle": "4 Modular Groups · 25 Core Components · HexCoil 360° Cam Coil & Trac-Trigger Floating Carriage",
+    "cutawayLabel": "Floating Trigger Sled Cutaway",
+    "cutawayTitle": "Switch to closed cutaway focus on Trac-Trigger sear carriage, catch jaws, and anti-dry-fire interlock",
+    "searchPlaceholder": "Search component name / code (e.g., Helical Cam, Sled, Leadscrew, Quad Limbs, T-01)...",
+    "firingMilestoneLabel": "Sear Release",
+    "rateOfFire": "300 lb Draw · VersaDrive Crank",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0% Assembled",
+        "desc": "Standard display configuration of the Ravin R500: 710 mm overall length, 193 mm uncocked axle-to-axle width (collapsing to 92 mm at full draw), 360° HexCoil cams, Trac-Trigger floating carriage, 1–8×24 BDC optic, and side-mounted 3-bolt quiver."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30% Field Strip",
+        "desc": "Rapid field disassembly of peripheral tactical gear: detaches the quick-detach 3-bolt quiver, 1–8×24 illuminated BDC optic, folding stainless foot stirrup, textured safety forend, and buttstock clutch cover."
+      },
+      "sub_assembly": {
+        "label": "Sub-Assembly",
+        "subLabel": "65% Sub-Assembly",
+        "desc": "Separation of forward CNC riser block and horizontal quad carbon limbs, exposing the 360° HexCoil multi-tier cams, high-tenacity bowstring, helical power cables, and extraction of the Trac-Trigger carriage."
+      },
+      "full_exploded": {
+        "label": "Full Exploded View",
+        "subLabel": "100% Full Exploded",
+        "desc": "All 25 core precision components fully exploded in 3D space: showcasing the VersaDrive 404 mm Acme leadscrew, dual-ratchet helical clutch, pivoting string catch jaws, titanium cam axles, and 20-inch 500 FPS carbon bolt."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "VersaDrive Cocking",
+        "title": "VersaDrive leadscrew retracts floating sled 360 mm as HexCoil cams rotate 310°",
+        "description": "Cranking the rear VersaDrive Acme leadscrew drives the Trac-Trigger carriage rearward 360 mm to full draw, causing twin HexCoil cams to rotate 310 degrees and compressing axle-to-axle width from 193 mm down to 92 mm."
+      },
+      "phase_2": {
+        "shortLabel": "Bolt Loading & Safe",
+        "title": "20-inch carbon bolt seats half-moon nock, lifts ADF lever, and releases ambidextrous safety",
+        "description": "The 400-grain carbon bolt slides under the front retention arm until its brass half-moon nock seats against the bowstring, tripping the anti-dry-fire lever and allowing the manual safety selector to flip to FIRE."
+      },
+      "phase_3": {
+        "shortLabel": "Sear Release",
+        "title": "Clean 3.5 lb match trigger breaks, releasing dual pivoting string catch jaws",
+        "description": "Pressing the crisp 3.5 lb trigger shoe shifts the transfer rod to disengage the main sear, allowing internal coil springs to open the symmetrical hardened catch jaws instantly with zero lateral deflection."
+      },
+      "phase_4": {
+        "shortLabel": "500 FPS Power Stroke",
+        "title": "HexCoil cams uncoil dynamically, accelerating the carbon bolt to 152.4 m/s (500 FPS)",
+        "description": "Quad high-modulus carbon limbs recoil forward in 14 milliseconds, rotating both HexCoil cams 310 degrees to convert 301 joules of stored elastic energy into pure arrow velocity with zero flight-rail friction."
+      },
+      "phase_5": {
+        "shortLabel": "Exit & Oscillation",
+        "title": "Carbon bolt clears riser with helical stability while limb vibration dampers absorb residual shock",
+        "description": "Three offset helical vanes stabilize the bolt along its flat trajectory while bowstring harmonic oscillations subside through quad limb elastomer stops, returning the anti-dry-fire sensor to locked posture."
+      },
+      "phase_6": {
+        "shortLabel": "Carriage Reset",
+        "title": "VersaDrive leadscrew reverses to glide floating sled 360 mm forward toward resting string",
+        "description": "Disengaging the anti-reverse clutch allows reverse rotation of the Acme cocking screw, sending the empty Trac-Trigger carriage smoothly back down the internal chassis track toward the bowstring rest position."
+      },
+      "phase_7": {
+        "shortLabel": "Catch Re-Engagement",
+        "title": "Spring-loaded catch jaws latch around bowstring serving, restoring ready baseline",
+        "description": "Reaching the forward resting position, the dual catch jaws snap shut around the served bowstring under return spring tension, re-indexing the trigger linkage and completing the mechanical cycle."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "破障五百英尺：Ravin R500 螺旋凸轮与零轨悬浮的弹道革命",
+      "deck": "从 360 度多层 HexCoil 螺旋凸轮到无摩擦 Trac-Trigger 悬浮滑台，Ravin R500 彻底颠覆传统猎弩的力学极限。它以仅 9.1 厘米的满拉轮距将 400 格令碳素弩箭推上 500 FPS 超高速神坛，开启了微型无托复合弩的全新纪元。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "2015–2017",
+          "title": "突破传统导轨：无摩擦发射与轮距宿命",
+          "paragraphs": [
+            "在二十一世纪初的复合弩工程领域，高初速与紧凑便携似乎是一对不可调和的物理死敌。传统狩猎弩严重依赖宽大的横向弓臂来获取做功行程，未上弦时的轮轴距往往宽达六十厘米以上，不仅在密林中极易刮蹭树丛，更带来了严重的头重脚轻失衡感。更致命的是，传统弩箭必须贴合漫长的金属箭道滑行，高速出弦时弓弦与箭尾对铝制箭道产生剧烈的滑动摩擦，造成严重的能量损耗、护弦线磨损以及微小的箭尾跳动偏差。",
+            "位于美国威斯康星州苏必利尔的 Ravin 工程师团队敏锐意识到，要实现弹道精度的质的飞跃，必须从根本上重构箭弦耦合与导向模型。2016年，Ravin 率先推出了革命性的 Helical 螺旋凸轮技术与 Frictionless Flight 无摩擦箭道系统，将传统平面旋转的凸轮升级为立体螺旋缠绕槽，首次在 R9 和 R15 上实现了箭体完全悬浮于导轨上方发射。然而，450 英尺每秒的工业天花板依然横亘眼前，弓臂形变极限与极度紧凑机匣的空间冲突亟待一场更彻底的机械裂变。"
+          ],
+          "audioScript": "长期以来，狩猎复合弩都受制于宽大笨重的横向弓臂与严重的导轨摩擦。威斯康星州拉文工程团队在两千一十六年打破常规，提出无摩擦悬浮飞行与立体螺旋凸轮概念，让箭矢彻底脱离传统滑槽。这一开创性构想不仅将轮距急剧收窄，更奠定了日后冲击五百英尺每秒超高初速的力学基石。",
+          "audioUrl": "audio/r500/story_act1_zh.mp3",
+          "focusPartId": "r500_flight_rail",
+          "focusPartLabel": "无摩擦悬臂光学桥与皮卡汀尼瞄具轨"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "2018–2020",
+          "title": "无托架构重构：HexCoil 360度凸轮诞生",
+          "paragraphs": [
+            "为了在保持 71 厘米无托短小全长的同时榨取出高达 381 毫米（15英寸）的超长做功行程，Ravin 首席工程团队开启了代号为 R500 的极限研发计划。传统的双凸轮在旋转超过 240 度后，弓弦与力缆槽便会发生致命的重叠干涉与轴向偏载倾斜。工程师们打破常规思维，研发出史无前例的 HexCoil 360 度多层多曲率螺旋轮系。通过精密 CNC 铣削在铝合金凸轮柱体上开出多层独立的螺旋跑道，使力缆在整个蓄能拉距过程中如同卷轴般沿着轴向层叠缠绕。",
+            "这一设计允许凸轮实现惊人的 310 至 360 度全行程旋转，彻底消除了凸轮偏心下倾引发的弓片扭转。配合四片高模量水平分体碳纤维弓片，R500 在满拉蓄力状态下，两端轮轴距被疯狂压缩至不可思议的 91 毫米（仅 3.6 英寸）——其横截面宽度甚至小于一支带光学镜的传统步枪。在无数次台架疲劳破断测试与高速摄影机监测下，高强度钛合金轴销与精密滚针轴承承受住了高达 300 磅的瞬时暴击拉力，验证了极窄结构在极限形变下的绝对结构稳定性。"
+          ],
+          "audioScript": "为了在二十八英寸极短全长内实现深达十五英寸的超长做功行程，研发团队倾力打造出革命性的六角线圈三百六十度立体螺旋凸轮。通过多层轴向缠绕凹槽，凸轮能平稳旋转超过三百一十度，将弓臂满拉轴距极限压窄至九十一毫米，甚至比普通步枪更加纤窄，展现出令人惊叹的储能效率。",
+          "audioUrl": "audio/r500/story_act2_zh.mp3",
+          "focusPartId": "r500_left_cam",
+          "focusPartLabel": "左HexCoil 360°多层螺旋凸轮组"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "2020–2021",
+          "title": "精密传动之核：VersaDrive 丝杠与悬浮火控",
+          "paragraphs": [
+            "面对高达 300 磅的强悍拉力，传统的徒手上弦钩或简易尼龙拉绳不仅费力，更因人为发力不均极易造成主弓弦左右受力不对称，从而严重恶化中远距离落点散布。为此，Ravin 设计出全内置的 VersaDrive 机械驱动系统。核心采用一根长达 404 毫米的高精度 17-4PH 不锈钢梯形 Acme 丝杠，由尾托内部的双向静音微型棘轮离合器驱动，射手只需以不到 12 磅的极其轻柔曲柄摇动力，就能平顺驱动前方的火控滑台后退。",
+            "更具革命性的是名为 Trac-Trigger 的悬浮火控滑台系统（TTFS）。该滑台如同一辆轻量化的磁浮列车，沿无托铝合金主桁架内槽平稳滑动，两只精密热处理的对称对开抓弦爪从正中心牢固咬合弓弦。滑台内置灵敏的青铜防空放互锁探针，唯有在 20 英寸碳素弩箭的半月尾扣完全推到底部并顶起杠杆时，扳机保险方可解脱；若无箭上膛，阻铁将被物理绝对闭锁。这套机构不仅杜绝了空放碎弓的灾难性隐患，更实现了 3.5 磅比赛级无蠕动的清脆扣发体验。"
+          ],
+          "audioScript": "面对三百磅的惊人储能，拉文设计了内置梯形丝杠与双棘轮离合的机械传动系统，不仅让上弦摇动力降低至十二磅以下，更能随时悬停退弦。与之匹配的悬浮火控滑台自中央稳固扣紧主弦，配合灵敏的机械防空放传感器，构筑起万无一失的安全防线与比赛级的清脆击发质感。",
+          "audioUrl": "audio/r500/story_act3_zh.mp3",
+          "focusPartId": "r500_versadrive_screw",
+          "focusPartLabel": "VersaDrive梯形丝杠与双棘轮离合齿轮"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "2021–2024",
+          "title": "跨越声障边缘：300焦耳动能与远射传奇",
+          "paragraphs": [
+            "2021年，Ravin R500 正式在全球射箭界震撼登场，以量产猎弩身份首次击穿了 500 FPS（152.4 米/秒）的物理极速大关。当射手扣动扳机，阻铁瞬间脱扣，四片碳纤维弓片在短短 14 毫秒内将储存的 301 焦耳强悍弹性势能全部倾泻至 400 格令比赛级碳素弩箭上。凭借悬浮箭道带来的零摩擦加速，箭体在出弦初段几乎没有任何侧向摆震，其平直的弹道彻底改变了百码中远距离的狩猎射击规则。",
+            "配备专门校准的 1–8×24 高清高亮 100 码 BDC 弹道标尺光学瞄准镜，R500 允许射手在百码外轻松射出相当于步枪亚角分（Sub-MOA）级别的惊人密集弹群，箭体携带着高达 222 磅英尺的残余动能，足以穿透北美及非洲各种大型猎物的厚重骨骼。作为当代机械蓄能武器工业设计的巅峰之作，Ravin R500 彻底改写了现代弓弩的性能界碑，并在全球顶级军械与现代轻武器博物馆中占据了不可动摇的现代工程展位。"
+          ],
+          "audioScript": "两千二十一年，拉文五百正式跨越了五百英尺每秒的极速门槛。四百格令碳素猎箭在短短十四毫秒内喷薄而出，释放超过三百焦耳的狂暴动能。结合百码弹道补偿光学镜，它在一百码距离上展现出比肩精密步枪的惊人弹群密集度，成为现代冷兵器弹道工程无可争议的传奇之作。",
+          "audioUrl": "audio/r500/story_act4_zh.mp3",
+          "focusPartId": "r500_carbon_bolt",
+          "focusPartLabel": "20吋500 FPS比赛级碳箭（配100格令猎箭头）"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "HexCoil 360° 多层螺旋凸轮与 91 mm 极窄轮距",
+          "tag": "三维螺旋卷线系统",
+          "summary": "突破传统凸轮单层平面缠绕引发的缆绳重叠干涉瓶颈，采用 3D 多层螺旋深槽技术实现 310° 超大转角旋转，在 381 mm 超长做功行程下将满拉轮轴距极限收窄至 91 mm，彻底消除了弓片侧向倾覆扭矩。",
+          "focusPartId": "r500_left_cam",
+          "focusPartLabel": "左HexCoil 360°多层螺旋凸轮组"
+        },
+        {
+          "id": "bt2",
+          "title": "Trac-Trigger 悬浮火控滑台与机械防空放互锁",
+          "tag": "零摩擦悬浮火控",
+          "summary": "将扳机阻铁与抓弦爪集成于独立的导轨滑架内，全程悬浮承托主弦，彻底消除滑槽摩擦与弦槽磨损；内置高灵敏青铜传感器杠杆，无箭时坚决物理闭锁扳机，确保满拉 300 磅状态下的绝对防空放安全。",
+          "focusPartId": "r500_trigger_sled",
+          "focusPartLabel": "Trac-Trigger悬浮扳机滑架"
+        },
+        {
+          "id": "bt3",
+          "title": "VersaDrive 梯形丝杠与双向离合曲柄机构",
+          "tag": "丝杠无损上弦/退弦",
+          "summary": "采用 404 mm 17-4PH 高强度不锈钢梯形螺杆取代传统易磨损易受潮的拉绳系统，结合内置双棘轮超静音离合器，将 300 磅拉力转化为仅需 12 磅的轻柔曲柄旋转，并支持在拉距行程中任意位置安全暂停或倒转退弦。",
+          "focusPartId": "r500_versadrive_screw",
+          "focusPartLabel": "VersaDrive梯形丝杠与双棘轮离合齿轮"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "2016",
+          "title": "Helical 螺旋凸轮与无摩擦箭道概念确立",
+          "detail": "Ravin 团队首发专利 Helical Cam 螺旋多槽凸轮，首次摆脱传统复合弩宽大笨重的下沉导轨，开启窄轮轴距研发浪潮。"
+        },
+        {
+          "year": "2018",
+          "title": "R26 极致紧凑无托平台问世",
+          "detail": "推出长仅 26 英寸的超短无托猎弩 R26，满拉轮距缩小至 5.75 英寸，全面验证了短轴距高密度储能理论的可行性。"
+        },
+        {
+          "year": "2020",
+          "title": "HexCoil 360° 旋转原型台架验证",
+          "detail": "成功试制第一代 HexCoil 多层螺旋分缆凸轮与钛合金主轴，攻克旋转 310° 状态下高模量碳纤四分体弓片的抗疲劳极限。"
+        },
+        {
+          "year": "2021",
+          "title": "Ravin R500 正式发布并击破 500 FPS 纪录",
+          "detail": "R500 量产下线，以 400 格令碳箭达成 152.4 m/s (500 FPS) 与 301 焦耳动能，将满拉轮距推向 3.6 英寸行业极限纪录。"
+        },
+        {
+          "year": "2022",
+          "title": "电动自走式 VersaDrive Drive-Motor 选件拓展",
+          "detail": "推出基于 VersaDrive 丝杠接口的外接 12V 锂电自动上弦模块，使单手一键上弦与静音退弦步入猎场实用阶段。"
+        },
+        {
+          "year": "2024",
+          "title": "全球现代弹道博物馆与百码精度典范确立",
+          "detail": "Ravin R500 作为现代弹道蓄能武器精密机械化的里程碑展品，被全球多家权威军械与射箭工程博物馆永久收藏。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Breaking the 500 FPS Frontier: Ravin R500's Helical Cam & Zero-Rail Ballistic Revolution",
+      "deck": "From 360-degree HexCoil multi-tier helical cams to the frictionless Trac-Trigger floating carriage, the Ravin R500 completely rewrote the kinematic limits of archery. Collapsing to an unheralded 3.6-inch cocked axle width, it propelled a 400-grain match carbon bolt beyond 500 FPS, establishing the modern golden standard for ultra-compact bullpup hunting crossbows.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "2015–2017",
+          "title": "Transcending the Flight Rail: Frictionless Archery Foundations",
+          "paragraphs": [
+            "Throughout the early twenty-first century, compound crossbow design remained trapped in a fundamental mechanical dilemma: the relentless trade-off between kinetic velocity and physical compactness. Conventional crossbows relied on sprawling horizontal limbs exceeding twenty-four inches in axle-to-axle width, resulting in clumsy, front-heavy platforms prone to snagging dense underbrush. Worse still, traditional systems forced both bowstring and arrow nock to grind across a full-length aluminum flight deck, generating severe friction, rapid serving wear, and subtle nock deflection that degraded long-range downrange consistency.",
+            "In Superior, Wisconsin, the engineering vanguard at Ravin Crossbows recognized that achieving rifle-grade ballistic accuracy demanded an entirely new arrow-launching paradigm. In 2016, Ravin unveiled its patented Helical Cam and Frictionless Flight technology across the R9 and R15 platforms. By spiraling power cables through three-dimensional cam channels, the arrow was suspended frictionlessly between the front roller and rear trigger latch. Yet the industry's four-hundred-and-fifty feet-per-second ceiling held firm, challenging designers to execute an even more radical mechanical leap."
+          ],
+          "audioScript": "For decades, hunting crossbows were constrained by cumbersome horizontal limbs and heavy flight rail friction that degraded downrange accuracy. In twenty sixteen, Wisconsin engineers at Ravin pioneered frictionless flight and helical cam coiling, suspending the arrow entirely above the barrel rail. This pivotal breakthrough eliminated frictional serving wear and laid the foundation to breach the five hundred feet per second barrier.",
+          "audioUrl": "audio/r500/story_act1_en.mp3",
+          "focusPartId": "r500_flight_rail",
+          "focusPartLabel": "Frictionless Zero-Rail Optical Bridge & Picatinny Rail"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "2018–2020",
+          "title": "The Bullpup Re-Architecture: Genesis of the HexCoil 360° Cam",
+          "paragraphs": [
+            "To harvest an astonishing fifteen-inch (381 mm) power stroke within a compact twenty-eight-inch bullpup footprint, Ravin embarked on the ambitious R500 development program. Traditional flat compound cams suffered catastrophic cable stacking, track overlap, and axle deflection once rotational travel exceeded two hundred and forty degrees. Ravin answered with the HexCoil 360-degree multi-tier helical cam stack, precision-machined from aircraft billet aluminum with independent spiral grooves that coil string and harness cables along the vertical axis like a precision winch.",
+            "This geometry permitted an extraordinary 310 to 360 degrees of rotation while maintaining zero cam lean. Paired with horizontal split quad carbon limbs, the R500 collapsed its cocked axle-to-axle stance down to an unprecedented 3.6 inches (91 mm)—slimmer than the profile of a scoped bolt-action rifle. High-speed photogrammetry and abusive strain-gauge cycles proved that the grade-five titanium axles and miniature needle bearings could withstand three hundred pounds of limb tension with surgical repeatability."
+          ],
+          "audioScript": "To generate a fifteen-inch power stroke inside a twenty-eight-inch chassis, the engineering team engineered the revolutionary HexCoil three-hundred-and-sixty degree helical cam stack. By stacking independent spiral tracks along a vertical axis, the cams rotate three hundred and ten degrees, collapsing cocked axle width to an unbelievable three point six inches while eliminating cam lean and structural fatigue.",
+          "audioUrl": "audio/r500/story_act2_en.mp3",
+          "focusPartId": "r500_left_cam",
+          "focusPartLabel": "Left HexCoil 360° Multi-Tier Helical Cam Stack"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "2020–2021",
+          "title": "Kinematic Powertrain: VersaDrive Leadscrew & Floating Sear",
+          "paragraphs": [
+            "Harnessing three hundred pounds of stored elastic potential demanded an uncompromised cocking mechanism. Traditional manual rope cockers and loose sleds introduced human error, canting the bowstring unevenly across the latch and degrading long-range arrow groups. Ravin engineers devised the VersaDrive cocking powertrain, centered around a 404 mm precision-machined 17-4PH stainless steel Acme leadscrew coupled to an internal dual-ratchet anti-reverse clutch inside the skeletonized buttstock. With less than twelve pounds of crank effort, the shooter could effortlessly draw the bow or pause at any point in the cycle.",
+            "At the leading edge of this screw traveled the Trac-Trigger Floating Sear Carriage (TTFS). Functioning like a miniature high-speed rail car, the carriage engaged the served center string with twin pivoting, spring-loaded hardened steel catch jaws. An integral copper-bronze Anti-Dry-Fire sensor lever mechanically barricaded the 3.5 lb match trigger until a twenty-inch carbon bolt half-moon nock was fully seated against the bowstring. This locked out catastrophic dry fires while delivering an extraordinarily crisp, creep-free trigger break."
+          ],
+          "audioScript": "Taming three hundred pounds of draw weight required the revolutionary VersaDrive internal Acme leadscrew, allowing effortless cocking and safe de-cocking with under twelve pounds of handle force. At its core, the floating Trac-Trigger carriage grips the string perfectly centered, while an internal sensor blocks the crisp three-and-a-half-pound match trigger until an arrow is completely seated.",
+          "audioUrl": "audio/r500/story_act3_en.mp3",
+          "focusPartId": "r500_versadrive_screw",
+          "focusPartLabel": "VersaDrive Acme Cocking Screw & Helical Clutch"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "2021–2024",
+          "title": "Sound Barrier Frontier: 301 Joules & Long-Range Supremacy",
+          "paragraphs": [
+            "In 2021, the commercial launch of the Ravin R500 sent shockwaves through the ballistic archery universe, becoming the first commercial hunting crossbow to officially shatter the 500 FPS (152.4 m/s) threshold. When the match sear breaks, the quad carbon limbs recoil in just fourteen milliseconds, channeling 301 joules (222 ft-lbs) of raw kinetic energy directly into a 400-grain match carbon bolt. Free of barrel friction, the projectile exits the riser with laser-flat trajectory and zero initial yaw.",
+            "Paired with a customized 1–8×24 illuminated hundred-yard BDC optic, the R500 demonstrated sub-MOA grouping potential at one hundred yards, carrying devastating terminal penetration capable of taking the largest global game animals. Standing as a masterwork of modern mechanical integration, composite energy storage, and helical kinematics, the Ravin R500 established an enduring legacy in premier military and precision arms collections worldwide."
+          ],
+          "audioScript": "In twenty twenty-one, the Ravin R500 crossed the five hundred feet per second barrier, launching a four-hundred-grain match carbon bolt in just fourteen milliseconds with over three hundred joules of energy. Paired with a hundred-yard optical reticle, it delivers sub minute-of-angle accuracy at extreme distances, cementing its place as a mechanical masterpiece in modern arms collections.",
+          "audioUrl": "audio/r500/story_act4_en.mp3",
+          "focusPartId": "r500_carbon_bolt",
+          "focusPartLabel": "20\" Match Carbon Bolt w/ Half-Moon Nock & Broadhead"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "HexCoil 360° Multi-Tier Helical Cams & 3.6\" Cocked Profile",
+          "tag": "3D Helical Coiling Architecture",
+          "summary": "Eliminates power cable overlap and cam lean through vertical multi-tier helical tracks, rotating 310 degrees to compress axle-to-axle width to an unprecedented 3.6 inches while driving a 15-inch power stroke.",
+          "focusPartId": "r500_left_cam",
+          "focusPartLabel": "Left HexCoil 360° Multi-Tier Helical Cam Stack"
+        },
+        {
+          "id": "bt2",
+          "title": "Trac-Trigger Floating Sear Carriage & ADF Interlock",
+          "tag": "Frictionless Floating Fire Control",
+          "summary": "Integrates the match sear and symmetrical pivoting catch jaws into an autonomous carriage that tracks seamlessly along the chassis, featuring a physical copper-bronze sensor that prohibits trigger release without a seated nock.",
+          "focusPartId": "r500_trigger_sled",
+          "focusPartLabel": "Trac-Trigger Floating Sear Carriage (TTFS)"
+        },
+        {
+          "id": "bt3",
+          "title": "VersaDrive Acme Cocking Leadscrew & Bi-Directional Clutch",
+          "tag": "Leadscrew Mechanical Cocking",
+          "summary": "Replaces vulnerable cocking cords with a 404 mm 17-4PH stainless steel Acme threaded screw and dual-ratchet silent clutch, reducing cocking effort to under 12 pounds while permitting safe pause-anywhere de-cocking.",
+          "focusPartId": "r500_versadrive_screw",
+          "focusPartLabel": "VersaDrive Acme Cocking Screw & Helical Clutch"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "2016",
+          "title": "Helical Cam & Frictionless Flight Technology Conceived",
+          "detail": "Ravin files initial patents on multi-groove helical cams and frictionless zero-rail arrow launch, pioneering ultra-narrow hunting crossbow configurations."
+        },
+        {
+          "year": "2018",
+          "title": "Ultra-Compact Bullpup R26 Introduced",
+          "detail": "Ravin debuts the 26-inch R26 with a 5.75-inch cocked axle-to-axle width, validating high-density energy storage within micro bullpup architectures."
+        },
+        {
+          "year": "2020",
+          "title": "HexCoil 360° Cam Dynamometer Validation",
+          "detail": "Engineering prototypes demonstrate full 310-degree cam rotation on titanium needle-bearing axles under sustained 300-pound limb tension cycles."
+        },
+        {
+          "year": "2021",
+          "title": "Ravin R500 Commercial Release & 500 FPS Barrier Shattered",
+          "detail": "The production R500 achieves 500 FPS (152.4 m/s) and 301 joules with 400-grain carbon bolts, locking in an industry-record 3.6-inch cocked axle stance."
+        },
+        {
+          "year": "2022",
+          "title": "VersaDrive Electric Drive-Motor Modular Integration",
+          "detail": "Introduction of the quick-attach 12V motorized cocking drive, establishing push-button silent cocking and de-cocking in demanding hunting environments."
+        },
+        {
+          "year": "2024",
+          "title": "Permanent Museum Induction & Hundred-Yard Precision Standard",
+          "detail": "The R500 is inducted into international precision engineering and mechanical arms exhibits as the definitive benchmark of 21st-century compound archery."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "r500_chassis": {
+      "partId": "r500_chassis",
+      "bomCode": "B-01",
+      "calloutLabelEn": "CNC Bullpup Chassis",
+      "zh": {
+        "roleTag": "无摩擦悬浮导轨基座 · 镂空桁架CNC机匣",
+        "overview": "7075-T6 航空铝整块 CNC 铣削的主机匣构成了 R500 紧凑无托架构的承载龙骨。其内部贯穿 430 毫米长内导槽，为 VersaDrive 丝杠和 Trac-Trigger 悬浮滑台提供刚性运行轨道。",
+        "craftAndMaterial": "采用高抗拉强度的 7075-T6 铝合金并经黑色三级硬质阳极氧化处理，侧壁镂空成对角桁架窗以极致削减冗余质量并保持极佳抗扭刚度。",
+        "kinematicRole": "在全射击循环中作为静止基准基座承载反作用力，引导滑架后退 360 毫米并支撑前端弓头；在全部分解阶段始终作为装配核心框架保留在位。",
+        "designHighlight": "通过取消传统贯通式箭道导轨并改为顶部悬浮开口，彻底消除了弓弦与滑道摩擦，使每焦耳势能都能完全转化为弩箭的初速输出。",
+        "audioScript": "眼前的无托机匣是由整块七零七五铝材精铣而成的机械龙骨。它内部开辟了长达四百三十毫米的内置精密导槽，既容纳了静音丝杠，又让滑台在全行程中完全悬空行进，消除了传统弩轨的剧烈磨损。",
+        "audioUrl": "audio/r500/parts/r500_chassis_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Zero-Friction Base · Skeletonized CNC Receiver",
+        "overview": "The skeletonized chassis serves as the load-bearing spine of the R500 bullpup crossbow. It encases a 430-millimeter internal channel to guide the VersaDrive leadscrew and floating carriage.",
+        "craftAndMaterial": "Billet-machined from 7075-T6 aerospace aluminum with Type III hardcoat anodizing, featuring triangulated truss cutouts that eliminate dead weight while stiffening against torsional flex.",
+        "kinematicRole": "Functions as the structural datum throughout all seven cycle phases, guiding the carriage backward 360 millimeters; remains anchored as the central core during disassembly.",
+        "designHighlight": "Eliminates the traditional full-length flight deck in favor of an open top slot, completely removing string-to-rail friction to channel maximum kinetic energy into bolt propulsion.",
+        "audioScript": "This CNC-machined skeletonized chassis is the structural backbone of the R500. It houses an internal guide channel over four hundred millimeters long, allowing the floating carriage to cycle friction-free while maintaining unyielding torsional rigidity under three hundred pounds of draw force.",
+        "audioUrl": "audio/r500/parts/r500_chassis_en.mp3"
+      }
+    },
+    "r500_forend_grip": {
+      "partId": "r500_forend_grip",
+      "bomCode": "B-02",
+      "calloutLabelEn": "Anti-Thumb Forend Grip",
+      "zh": {
+        "roleTag": "手指防切护翼 · 人机防滑掌托",
+        "overview": "这是安装在无托机匣前下方的增强尼龙前握把，提供稳定的辅助手支撑。外延宽达三厘米的水平防护翼，将射手手指严密隔绝在弓弦运动平面之下。",
+        "craftAndMaterial": "采用高抗冲玻璃纤维增强尼龙一次注塑成型，表面带有防滑纹理，两侧集成宽大外展护翼以抵抗剧烈后坐力与意外位移。",
+        "kinematicRole": "发射循环中为手部提供绝对安全的静止抓握点，防止手指向工况危险区上翘；分解时在百分之八至百分之三十四进度向下拆卸分离。",
+        "designHighlight": "每秒五百英尺的弓弦扫掠足以瞬间造成严重断指创伤，外展护翼在人机工效学上强制拇指保持在安全高度以下，构建起机械物理防线。",
+        "audioScript": "这块前握把特别设计了宽幅外展护翼。在弓弦以每秒一百五十二米疾速回弹时，它可以形成一道物理屏障，强制确保射手的拇指与支撑手绝对处于危险回转平面之下，杜绝击发伤手隐患。",
+        "audioUrl": "audio/r500/parts/r500_forend_grip_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Finger Flare Deflector · Ergonomic Palm Rest",
+        "overview": "Mounted to the lower forward receiver, this glass-filled polymer grip provides a firm forward support handhold. Its prominent lateral flares isolate the operator's digits well beneath the string path.",
+        "craftAndMaterial": "Molded from high-impact glass-filled nylon with aggressive tactile micro-texturing, featuring oversized horizontal safety wings extending over three centimeters outward.",
+        "kinematicRole": "Provides an ergonomic non-moving grip interface throughout the cocking and launching cycle; drops downward between eight and thirty-four percent disassembly progress.",
+        "designHighlight": "At five hundred feet per second, an errant thumb entering the string travel path can cause severe injury; these flared wings physically block improper hand placement.",
+        "audioScript": "The textured forend grip features broad protective wings that project outward along the lower rim. When the bowstring snaps forward at five hundred feet per second, these wings physically prevent the shooter's fingers from drifting into the line of fire.",
+        "audioUrl": "audio/r500/parts/r500_forend_grip_en.mp3"
+      }
+    },
+    "r500_pistol_grip": {
+      "partId": "r500_pistol_grip",
+      "bomCode": "B-03",
+      "calloutLabelEn": "Bullpup Pistol Grip",
+      "zh": {
+        "roleTag": "18°倾角握持支点 · 冬季加宽扳机护圈",
+        "overview": "该组件集成了符合人体工程学的手枪式小握把与下护圈，紧凑布置于机匣下中部。其倾斜角度经过精准优化，能将整弩质心完美拉向射手肩窝。",
+        "craftAndMaterial": "采用抗冲击聚合物压模成型，表面覆盖 VDI-27 微火花防滑蚀纹，护圈内部留有充裕间隙，方便在戴厚手套时轻松操控比赛级扳机。",
+        "kinematicRole": "保持固定，为扣发三点五磅扳机提供杠杆支点；在分解流程达到百分之十时拆下固定螺栓，向下方分离脱离机匣。",
+        "designHighlight": "通过将击发握把前移至无托布局平衡点，大幅缩短了整弩总长并改善了立姿端枪瞄准时的指向稳定性与抗疲劳度。",
+        "audioScript": "这个前置小握把拥有十八度黄金倾角，它把全弩重心收拢在贴腮与肩窝之间。加宽的护圈即使戴着厚重的冬季防寒手套也能顺畅击发，给比赛级扳机提供了绝佳的手感和操控空间。",
+        "audioUrl": "audio/r500/parts/r500_pistol_grip_zh.mp3"
+      },
+      "en": {
+        "roleTag": "18-Degree Grip Index · Oversized Glove Guard",
+        "overview": "This ergonomic pistol grip and integrated trigger guard assembly mounts to the mid-lower chassis. Its forward location shifts the center of gravity closer to the shooter's shoulder pocket.",
+        "craftAndMaterial": "Injection-molded from glass-reinforced polymer with VDI-27 anti-slip stippling, featuring an enlarged trigger loop configured for thick cold-weather gloves.",
+        "kinematicRole": "Serves as the stationary firing control platform for pulling the three-and-a-half-pound match trigger; drops downward at ten percent of the disassembly sequence.",
+        "designHighlight": "By repositioning the firing control forward into a true bullpup configuration, the weapon maintains an ultra-short overall envelope without sacrificing natural off-hand balance.",
+        "audioScript": "Positioned forward along the receiver, this ergonomic pistol grip features an eighteen-degree angle that brings the overall balance close to the shoulder. Its enlarged guard offers ample clearance for gloved fingers to cleanly break the match trigger.",
+        "audioUrl": "audio/r500/parts/r500_pistol_grip_en.mp3"
+      }
+    },
+    "r500_buttstock": {
+      "partId": "r500_buttstock",
+      "bomCode": "B-04",
+      "calloutLabelEn": "Skeletonized Buttstock",
+      "zh": {
+        "roleTag": "双棘轮离合容腔 · 橡胶防滑肩垫",
+        "overview": "安装在机匣后端的轻量化镂空尾托，是抵肩瞄准与 VersaDrive 传动链的后端支承。其内部开有精密内孔，用于收纳离合齿轮与摇把驱动轴。",
+        "craftAndMaterial": "骨架由硬化工程塑料与铝合金嵌件组合制成，尾端硫化附着高弹性微孔橡胶垫，能有效吸收发射反冲能量并防止抵肩滑移。",
+        "kinematicRole": "在丝杠上弦期间作为离合传动轴的径向与轴向止推轴承座；在分解进度达百分之五至百分之二十八时向后滑出卸离机匣。",
+        "designHighlight": "内藏式防逆转双棘轮离合器使射手可以在上弦或卸弦过程中的任意位置随停随放，完全杜绝了传统弩摇把反打打伤手臂的安全风险。",
+        "audioScript": "镂空尾托内部藏有精密镗孔，是静音离合机构的核心舱室。尾端的高弹性橡胶垫不仅能舒适抵肩，内置的双棘轮离合器更允许射手在转动摇把时随时松手，绝不会发生摇把飞旋失控的险情。",
+        "audioUrl": "audio/r500/parts/r500_buttstock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dual-Ratchet Clutch Cavity · Anti-Slip Recoil Pad",
+        "overview": "Attached to the rear of the aluminum chassis, this skeletonized buttstock interfaces with the shooter's shoulder while anchoring the VersaDrive transmission train.",
+        "craftAndMaterial": "Constructed from high-tensile polymer with aluminum core reinforcements and a vulcanized microcellular rubber recoil pad designed to absorb peak shock impulses.",
+        "kinematicRole": "Acts as the rigid thrust housing for the leadscrew clutch during cocking; slides rearward off the chassis between five and twenty-eight percent disassembly.",
+        "designHighlight": "The precision clutch bore incorporates internal anti-reverse ratchets, allowing the cocking handle to be stopped safely at any degree of rotation without violently springing back.",
+        "audioScript": "The skeletonized buttstock houses the internal dual-ratchet anti-reverse clutch for the drive screw. Its vulcanized pad provides a non-slip cheek and shoulder weld, while the internal cavity ensures cocking can be paused at any point with total safety.",
+        "audioUrl": "audio/r500/parts/r500_buttstock_en.mp3"
+      }
+    },
+    "r500_foot_stirrup": {
+      "partId": "r500_foot_stirrup",
+      "bomCode": "B-05",
+      "calloutLabelEn": "Folding Foot Stirrup",
+      "zh": {
+        "roleTag": "17-4PH不锈钢蹬环 · 滚花防滑踩踏杆",
+        "overview": "铰接在弓头最前方的金属脚蹬，在地面上弦或靠地待机时提供踩踏支点。其下沉式结构完全避开了碳箭的水平飞出轨迹。",
+        "craftAndMaterial": "由高强度 17-4PH 沉淀硬化不锈钢弯折焊接并钝化处理，踏杆中部套有细密滚花防滑套管，具备出色的抗泥水耐候与承载能力。",
+        "kinematicRole": "上弦前折叠下放并由双脚踏稳，为主体承受拉力反作用；在分解进度百分之六至百分之三十向前方脱出弓头插座。",
+        "designHighlight": "巧妙的下沉几何曲率即使在使用大迎风面狩猎机械宽头刀片时，也能确保箭羽和刀刃顺畅飞掠，彻底消除了触碰干涉风险。",
+        "audioScript": "这只折叠脚蹬由沉淀硬化不锈钢锻造而成，表面加工了深细滚花防滑纹。下沉式的弧度设计非常考究，在为踩踏上弦提供沉稳支点的同时，给高速飞出的猎用宽刃箭头留出了绝对充裕的净空。",
+        "audioUrl": "audio/r500/parts/r500_foot_stirrup_zh.mp3"
+      },
+      "en": {
+        "roleTag": "17-4PH Stainless Ring · Knurled Traction Crossbar",
+        "overview": "Hinged to the forward nose of the riser, this robust metal foot stirrup provides ground purchase during cocking and serves as a forward resting stand.",
+        "craftAndMaterial": "Fabricated from 17-4PH precipitation-hardened stainless steel with passivated finish, featuring diamond-knurled sleeves for positive footwear grip in mud or snow.",
+        "kinematicRole": "Folded down to bear full ground counter-reaction loads while drawing; detaches forward from the riser nose between six and thirty percent disassembly progress.",
+        "designHighlight": "Its dropped-center geometry dips comfortably below the projectile flight line, guaranteeing ample clearance for expanding broadheads at release.",
+        "audioScript": "Formed from high-strength stainless steel, this folding foot stirrup incorporates diamond knurling for dependable boot traction. Its dropped clearance profile ensures wide hunting broadheads exit cleanly without the slightest risk of snagging.",
+        "audioUrl": "audio/r500/parts/r500_foot_stirrup_en.mp3"
+      }
+    },
+    "r500_flight_rail": {
+      "partId": "r500_flight_rail",
+      "bomCode": "B-06",
+      "calloutLabelEn": "Zero-Rail Optical Bridge",
+      "zh": {
+        "roleTag": "后跨悬臂高刚度桥架 · MIL-STD-1913齿槽",
+        "overview": "高耸跨立在机匣上方的全金属光学桥，为测距仪或百码弹道瞄准镜提供牢靠基座。它的双立柱完全锚定在滑架行程之后，使箭身全程悬空。",
+        "craftAndMaterial": "整件由 6061-T6 铝合金精雕铣制并做无光黑阳极化处理，上表面带有长达 245 毫米的标准皮卡汀尼导轨，具有优异的耐振动重合精度。",
+        "kinematicRole": "保持绝对刚性静止，阻挡光学瞄准镜在 500 FPS 剧烈发射震动下产生微米级位移；在拆卸流程达到百分之十二至百分之三十八时向上分离。",
+        "designHighlight": "彻底舍弃传统弩的全长支撑轨，光学桥仅从后部挑起悬臂，不仅减重百分之三十，更从根本上实现了碳箭离弦发射时的零接触与零摩擦。",
+        "audioScript": "这就是实现零导轨悬浮发射的关键桥架。它从满拉后方升起高刚度双立柱，向上延伸出全长皮卡汀尼导轨。由于取消了传统的托箭导轨，不仅减轻了重量，更彻底消除了弓弦刮擦轨道的摩擦阻力。",
+        "audioUrl": "audio/r500/parts/r500_flight_rail_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Rear-Cantilever Truss · MIL-STD-1913 Scope Rail",
+        "overview": "Straddling the upper receiver, this monolithic cantilever bridge provides a rigid foundation for high-magnification ballistic optics while leaving the bolt path completely unobstructed.",
+        "craftAndMaterial": "CNC-machined from 6061-T6 aluminum with matte-black hardcoat, offering a 245-millimeter MIL-STD-1913 Picatinny top rail designed to hold zero through heavy shock cycles.",
+        "kinematicRole": "Remains static to preserve precise optical zero during release; unfastens and lifts upward off the chassis pillars between twelve and thirty-eight percent disassembly.",
+        "designHighlight": "By anchoring solely behind the full-draw carriage point, it allows the bolt to float mid-air between nock and front rest, achieving an authentic zero-friction launch.",
+        "audioScript": "This cantilever optical bridge forms the backbone of the frictionless flight system. Anchored strictly behind the cocking stroke, it provides a rigid platform for long-range scopes while keeping the entire forward flight corridor entirely clear of drag.",
+        "audioUrl": "audio/r500/parts/r500_flight_rail_en.mp3"
+      }
+    },
+    "r500_riser_head": {
+      "partId": "r500_riser_head",
+      "bomCode": "H-01",
+      "calloutLabelEn": "CNC Forward Riser Head",
+      "zh": {
+        "roleTag": "300磅张力承载枢纽 · 前V型无摩擦托箭滚轮座",
+        "overview": "安装在机匣最前端的强化合金弓头，是左右四组分体碳纤维弓片的固定枢纽。其中央底座还集成了两个精巧的双滚轮，用于无摩擦导引前部箭体。",
+        "craftAndMaterial": "选用超高强度 7075 锻铝进行重载多轴数控加工，两侧开有斜角内倾的弓片深腔，底面配置带微型低阻滚珠轴承的金属前托座。",
+        "kinematicRole": "承受弓片弯曲时传递的逾 300 磅内聚集中应力，并引导箭杆平稳飞出弓体；在分解阶段百分之十至百分之三十六处向前脱出机匣。",
+        "designHighlight": "将传统的毛刷箭台升级为前置双微型转动滚轮，与尾部悬浮滑架完美配合，确保碳箭在飞出前仅有两个微小接触点，一致性显著提升。",
+        "audioScript": "前弓头是整弩承载力最大的枢纽件，牢固锁止着左右四片分体弓臂。它的正中嵌入了双滚轮箭托，在击发瞬间只通过微型轴承支撑箭杆，把飞行动能损耗降到了接近于零。",
+        "audioUrl": "audio/r500/parts/r500_riser_head_zh.mp3"
+      },
+      "en": {
+        "roleTag": "300 lb Tension Anchor · V-Roller Rest Hub",
+        "overview": "Bolted to the front of the aluminum chassis, this heavy-duty riser head anchors the quadruplet limbs while housing the dual micro-roller forward bolt rest.",
+        "craftAndMaterial": "Engineered from billet 7075-T6 alloy with angled pockets machined to exact limb tapers, incorporating a dual miniature ball-bearing V-rest at its center line.",
+        "kinematicRole": "Withstands over three hundred pounds of inward limb tension while keeping the projectile centered; slides forward off the receiver between ten and thirty-six percent disassembly.",
+        "designHighlight": "Replaces standard friction-heavy arrow rests with free-spinning rolling bearings, providing only two localized contact points across the entire bolt launch sequence.",
+        "audioScript": "Machined from high-strength aircraft alloy, this forward riser head supports the extreme limb forces. At its center, a pair of miniature roller bearings forms an ultra-low-friction rest, maintaining perfect projectile alignment as the bolt departs.",
+        "audioUrl": "audio/r500/parts/r500_riser_head_en.mp3"
+      }
+    },
+    "r500_left_limbs": {
+      "partId": "r500_left_limbs",
+      "bomCode": "H-02",
+      "calloutLabelEn": "Left Split Quad Limbs",
+      "zh": {
+        "roleTag": "3K高模量碳玻复合 · 抛物线大挠度储能",
+        "overview": "对称夹持在左弓头上下两层的双片高强度分体弓片，是左侧系统的蓄能发动机。待机时向外伸展，并在上弦过程中大幅弯曲内收蓄积势能。",
+        "craftAndMaterial": "采用高密度航天级碳纤维与高应变连续环氧树脂经精密模压层压固化，表层附有耐候哑光涂层以抵抗高湿与极端紫外线老化。",
+        "kinematicRole": "在上弦阶段内弯内收 50.5 毫米储存超过 300 磅回弹势能，击发时瞬间爆发驱动左凸轮旋转；在分解百分之四十至百分之七十二阶段向左侧分离。",
+        "designHighlight": "采用窄体水平分体式布局，在弓臂满弯状态下能够实现惊人的九十二毫米极窄轴对轴距，极大缩小了整弩横向轮廓。",
+        "audioScript": "左侧分体碳纤维弓片采用了多层复合工艺。在上弦拉力下，弓臂尖端会向内收缩五十多毫米，在仅有九十多毫米的超窄轴距内蓄积超过三百磅的强大弹性势能，爆发力极其惊人。",
+        "audioUrl": "audio/r500/parts/r500_left_limbs_zh.mp3"
+      },
+      "en": {
+        "roleTag": "3K Carbon Composite · Deep-Deflection Spring",
+        "overview": "Clamped horizontally in upper and lower tiers on the left side of the riser, these split limbs act as the left-side kinetic spring power plant of the R500.",
+        "craftAndMaterial": "Manufactured from proprietary multi-directional carbon fiber and aerospace resin prepreg, engineered for extreme flexural strength and maximum fatigue endurance.",
+        "kinematicRole": "Deflects inward over fifty millimeters during cocking to store over three hundred pounds of strain energy, snapping outward upon release; detaches laterally between forty and seventy-two percent disassembly.",
+        "designHighlight": "The horizontal split design flexes symmetrically under massive load, enabling an astonishing three-point-six-inch axle-to-axle width at full draw.",
+        "audioScript": "These layered left split carbon limbs store the core energy of the system. During the cocking cycle, they bend inward by more than fifty millimeters, creating a super-compact three-point-six-inch stance while holding over three hundred pounds of draw tension.",
+        "audioUrl": "audio/r500/parts/r500_left_limbs_en.mp3"
+      }
+    },
+    "r500_right_limbs": {
+      "partId": "r500_right_limbs",
+      "bomCode": "H-03",
+      "calloutLabelEn": "Right Split Quad Limbs",
+      "zh": {
+        "roleTag": "镜像对称四片弓臂 · 消除侧向扭矩",
+        "overview": "安装在弓头右侧的上下分体复合弓片，与左侧弓片构成精确的动力力学镜像平衡。在弓弦满拉时与左弓片共同收敛至超窄间距。",
+        "craftAndMaterial": "经电脑配重与刚度动态筛选的预浸碳纤维层压板热压成型，严格匹配左右挠度曲线以确保回弹同步率达到百分之九十九点九。",
+        "kinematicRole": "与左片同频同步弯曲蓄能并在击发瞬间对称释放，完全抵消弓身横向侧扭；在分解进度百分之四十至百分之七十二时向右脱出片座。",
+        "designHighlight": "成对分体设计彻底消除了单片实心弓臂中央打孔造成的局部应力集中，赋予整机极长的连续击发寿命和卓越的零振感。",
+        "audioScript": "右侧的四片式弓臂与左侧经过了严格的刚度配对。在释放瞬间，双侧弓片如同镜像般完全同步回弹，彻底抵消了向左或向右的扭力偏移，保证了弩箭笔直离弦。",
+        "audioUrl": "audio/r500/parts/r500_right_limbs_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Mirrored Carbon Limbs · Lateral Torque Cancellation",
+        "overview": "Secured to the right side of the riser block, these twin split limbs mirror the left assembly to create a balanced dual-action dynamic power source.",
+        "craftAndMaterial": "Formed from computerized spine-matched continuous carbon filament matrices, batch-sorted to harmonize deflection curves with zero dynamic variation.",
+        "kinematicRole": "Flexes inward and returns symmetrically during the firing cycle to cancel out all horizontal canting forces; separates outward to the right between forty and seventy-two percent disassembly.",
+        "designHighlight": "Split configuration avoids center-bore mounting stress concentrations, greatly extending limb service life while preserving absolute straight-line string travel.",
+        "audioScript": "The right split limbs are dynamically spine-matched to the left set. When releasing their massive stored energy, they spring back with perfect symmetry, nullifying lateral torque and keeping string travel aligned with surgical precision.",
+        "audioUrl": "audio/r500/parts/r500_right_limbs_en.mp3"
+      }
+    },
+    "r500_left_cam": {
+      "partId": "r500_left_cam",
+      "bomCode": "H-04",
+      "calloutLabelEn": "HexCoil Helical Cam (L)",
+      "zh": {
+        "roleTag": "310°大转角螺旋缠绕 · 三层独立弦/缆槽",
+        "overview": "枢接在左弓片尖端的 HexCoil 三维偏心螺旋凸轮，是整弩动力放大的核心机构。其独特的三层螺旋深槽在旋转过程中引导弦缆呈螺旋上升缠绕。",
+        "craftAndMaterial": "选用高模量航空合金进行复杂的微米级五轴 CNC 铣切成型，外表施以高硬度香槟金耐磨阳极氧化层以降低缆绳表面摩擦力。",
+        "kinematicRole": "拉弦时绕主轴旋转 310 度，将主弓弦从切线放出并将力缆螺旋卷入；在分解进度达百分之七十二至百分之一百时向上脱出轴位。",
+        "designHighlight": "突破传统二维凸轮的偏磨极限，采用三维螺旋分层排缆技术，使得凸轮能够完成超过三百一十度的大行程回转，实现了每秒五百英尺的惊人箭速。",
+        "audioScript": "这就是革命性的 HexCoil 螺旋凸轮。它采用三层立体的螺旋盘管设计，在拉紧时能整整转动三百一十度。多层缠绕不仅避免了缆绳互相刮蹭，更在极短的弓臂行程内榨取出了每秒五百英尺的骇人初速。",
+        "audioUrl": "audio/r500/parts/r500_left_cam_zh.mp3"
+      },
+      "en": {
+        "roleTag": "310° Helical Rotation · 3-Tier Cable Spirals",
+        "overview": "Pivoted at the left limb tip, this patented HexCoil multi-tier cam orchestrates the system's force magnification. Its three-dimensional spiral grooves coil the cables in continuous layers.",
+        "craftAndMaterial": "Sculpted from high-strength aerospace alloy using continuous 5-axis CNC machining, treated with hard-anodized champagne-bronze finish for maximum lubricity.",
+        "kinematicRole": "Rotates three hundred and ten degrees through draw, spooling cables up multi-level tracks while unwinding the string; lifts away between seventy-two and one hundred percent disassembly.",
+        "designHighlight": "Overcomes traditional flat-cam limits by utilizing true 3D helical winding, enabling over three hundred degrees of rotation to unlock unprecedented 500 FPS launching speeds.",
+        "audioScript": "The patented HexCoil cam stack rotates an astounding three hundred and ten degrees. Its multi-tiered helical tracks allow the cables to wind smoothly without scrubbing against each other, transferring incredible limb energy into five-hundred-feet-per-second velocity.",
+        "audioUrl": "audio/r500/parts/r500_left_cam_en.mp3"
+      }
+    },
+    "r500_right_cam": {
+      "partId": "r500_right_cam",
+      "bomCode": "H-05",
+      "calloutLabelEn": "HexCoil Helical Cam (R)",
+      "zh": {
+        "roleTag": "同步二进制螺旋轮 · ±310°零偏心同步",
+        "overview": "位于右弓臂末端的镜像螺旋凸轮组，通过精密控制缆与左凸轮建立机械刚性同步。三层深沟槽在满拉时将弓臂内收至极限距离。",
+        "craftAndMaterial": "经精密动力平衡动平衡测试的航空锻铝五轴切削件，轮槽边缘过渡倒角极其平滑，能完全防止纤维缆绳在高应力缠绕时发生切伤磨损。",
+        "kinematicRole": "与左凸轮以完全相同的角速度反向回旋 310 度，确保箭尾扣始终行进在机匣几何中心线上；拆解在百分之七十二至百分之一百向上卸离。",
+        "designHighlight": "双凸轮通过螺旋立体收放完全消除了弓轮倾斜，使弓弦在释放初期的推力矢量完全平行，从源头上消除了箭杆的横向摆动。",
+        "audioScript": "右凸轮与左凸轮通过交叉控制缆完全锁死同步。它不仅具有完美的动平衡切削轮廓，其立体回转更杜绝了任何轮轴倾斜，让中央箭尾始终沿着机匣轴线绝对笔直地前冲。",
+        "audioUrl": "audio/r500/parts/r500_right_cam_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Synchronized Cam Stack · Cam-Lean Elimination",
+        "overview": "Stationed at the right limb tips, this helical cam operates in mechanical lockstep with the left cam via cross-coupled power cables to maintain absolute center timing.",
+        "craftAndMaterial": "5-axis CNC-contoured from balanced billet alloy with micro-radiused track edges that protect individual string strands during high-stress spooling.",
+        "kinematicRole": "Mirrors the left cam by spinning three hundred and ten degrees in the opposite direction, keeping the nock point centered; lifts upward at seventy-two to one hundred percent teardown.",
+        "designHighlight": "The helical tracking geometry eliminates cam lean throughout the draw and recovery cycles, keeping the string pushing in an exact, unswerving linear vector.",
+        "audioScript": "This right-side HexCoil cam stack rotates in tight synchronization with its left counterpart. By stacking cables in tiered spirals, it avoids cam lean entirely, guaranteeing that the string drives the arrow nock along a dead-straight center path.",
+        "audioUrl": "audio/r500/parts/r500_right_cam_en.mp3"
+      }
+    },
+    "r500_cam_axles": {
+      "partId": "r500_cam_axles",
+      "bomCode": "H-06",
+      "calloutLabelEn": "Titanium Cam Axles",
+      "zh": {
+        "roleTag": "Ti-6Al-4V精密磨削轴 · 低阻推力垫片",
+        "overview": "穿透分体弓片和凸轮中心的垂直主轴组件，包含微型滚针轴承与耐磨止推垫片。它是旋转凸轮承受数百磅拉紧弯矩的转动支撑中枢。",
+        "craftAndMaterial": "主轴采用高韧性五级钛合金精密无心磨削并抛光，轴承座圈内嵌耐腐蚀滚针，配以抗撕裂 E 型弹簧卡圈实现轴向紧密锁定。",
+        "kinematicRole": "在全周期内提供低摩擦回转枢轴基准，承受巨大的径向剪切力；在全拆卸状态百分之七十二至百分之一百处向上拔出分离。",
+        "designHighlight": "以钛合金替代传统高碳钢轴不仅减轻了弓臂外围转动惯量，更在发射瞬间的剧烈冲击下展现出卓越的抗剪切疲劳性能与韧性恢复能力。",
+        "audioScript": "这两根纤细的凸轮主轴由五级钛合金精磨制成，内部配有高速精密滚针轴承。它不仅承受了数百磅的巨大剪切力，钛金属的轻量化特性更显著降低了弓臂末端的死重，让回弹初速更快。",
+        "audioUrl": "audio/r500/parts/r500_cam_axles_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Ti-6Al-4V Precision Pins · Needle Bearing Trunnions",
+        "overview": "These vertical pivot pins pass through the split limbs and cam hubs, secured with miniature needle bearings to provide the rotational trunnion axes for the cams.",
+        "craftAndMaterial": "Centerless ground from Grade 5 Ti-6Al-4V titanium alloy, matched with low-friction caged needle rollers, Teflon-bronze thrust washers, and retention clips.",
+        "kinematicRole": "Maintains precise rotational alignment under heavy shearing forces throughout the 310-degree stroke; pulls upward at seventy-two to one hundred percent teardown.",
+        "designHighlight": "Switching to titanium reduces peripheral limb-tip weight by forty percent compared to steel, lowering limb inertia to directly boost arrow launch speed.",
+        "audioScript": "Machined from high-grade titanium and fitted with caged needle bearings, these cam axles endure massive radial shock without flexing. Their light weight minimizes limb-tip inertia, directly contributing to five-hundred-feet-per-second arrow speeds.",
+        "audioUrl": "audio/r500/parts/r500_cam_axles_en.mp3"
+      }
+    },
+    "r500_bowstring": {
+      "partId": "r500_bowstring",
+      "bomCode": "H-07",
+      "calloutLabelEn": "High-Tenacity Bowstring",
+      "zh": {
+        "roleTag": "BCY超分子缠绕护弦 · -36cm后拉储力",
+        "overview": "连接左右双凸轮主弦槽的高分子编织主弓弦，是直接与滑架咬合并将能量转化为推力的动力带。其中央紧密缠绕着耐磨高韧性护弦线。",
+        "craftAndMaterial": "采用高模量超高分子量聚乙烯原丝多股编织而成，中央箭扣接触区采用特制高耐磨聚合丝线高张力紧密护缠，杜绝长期受压磨损脱丝。",
+        "kinematicRole": "拉弦时被滑架抓弦爪咬住后拉 360 毫米至击发位，发射时瞬间释放推挤碳箭并在终端平顺止振；在分解进度百分之四十二至百分之七十六处拆解脱出。",
+        "designHighlight": "专为无导轨悬浮系统定制的弦体设计，在全行程中无任何底面摩擦磨损，不仅极大延长了护弦寿命，更实现了不可思议的能量转换效率。",
+        "audioScript": "这根高抗拉主弓弦由特种超高分子聚乙烯原丝精密编织，中央被 Trac-Trigger 滑台稳固咬合。当拉长三十六厘米到达蓄力点后，它能在几毫秒内将储存的四百多焦耳动能完整灌注进碳素弩箭。",
+        "audioUrl": "audio/r500/parts/r500_bowstring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Served HMPE Strand · 15\" Power Stroke",
+        "overview": "Spanning between the two HexCoil cams, this high-tenacity bowstring links the carriage catch to the energy system, driving the projectile along its 15-inch stroke.",
+        "craftAndMaterial": "Braided from ultra-high-molecular-weight polyethylene fiber with zero creep, tightly wrapped around its center working zone with high-tensile protective serving filaments.",
+        "kinematicRole": "Captured by the carriage jaws and drawn rearward 360 millimeters to the latch position, then released to propel the bolt; frees up between forty-two and seventy-six percent disassembly.",
+        "designHighlight": "Because the string never drags along an aluminum rail bed, friction burn and serving abrasion are practically eliminated, ensuring exceptional shot-to-shot consistency.",
+        "audioScript": "Braided from ultra-strong polymer fibers, this bowstring is grasped directly by the carriage claws. Over a fifteen-inch power stroke, it draws back three hundred and sixty millimeters, launching the four-hundred-grain carbon bolt at four hundred and thirty kilometers per hour.",
+        "audioUrl": "audio/r500/parts/r500_bowstring_en.mp3"
+      }
+    },
+    "r500_power_cables": {
+      "partId": "r500_power_cables",
+      "bomCode": "H-08",
+      "calloutLabelEn": "Dual Helical Cables",
+      "zh": {
+        "roleTag": "上下交叉力缆同步 · 箭道下方低阻分缆器",
+        "overview": "双螺旋交叉力缆与低阻分缆滑块安装于弓头底部与中央机匣之间。四股高模量编织力缆分别连接两侧六盘位凸轮，控制弓臂对称压缩并同步回弹能量。",
+        "craftAndMaterial": "采用高强度超高分子量聚乙烯多股浸胶编织线绳，耐磨套管全包裹；分缆滑块由二硫化钼自润滑工程聚合物精密注塑成型，有效隔离交叉摩擦缆线。",
+        "kinematicRole": "上弦行程中随六盘位凸轮旋转被卷入下层深螺旋槽，分缆滑块在主轴下方直线滑移；击发瞬间瞬间释放张力回卷；全拆卸阶段在百分之七十六进度脱离分缆槽。",
+        "designHighlight": "通过将交叉分缆轴线压低至箭道基准面以下五点六毫米，彻底根除了传统大磅数复合弩缆线刮擦箭羽导致的翻滚偏航，保障五百英尺初速下的激光级弹道精度。",
+        "audioScript": "这组高分子交叉力缆是压紧四片碳纤维弓臂的能量经络。下沉五点六毫米的自润滑分缆滑块将上下线缆完全隔开，在三百度螺旋回卷释放巨大张力时，绝不刮擦下方疾驰飞过的箭羽。",
+        "audioUrl": "audio/r500/parts/r500_power_cables_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Synchronized Helical Cables · Sub-Rail Cable Slide",
+        "overview": "The dual helical power cables and low-friction slide link the upper and lower tiers of both HexCoil cams beneath the central barrel. They equalize limb loading across the power stroke and maintain dead-level cam timing.",
+        "craftAndMaterial": "Braided from ultra-high-molecular-weight polyethylene fibers with high-density serving wraps; the cable slide is precision molded from molybdenum-disulfide impregnated fluoropolymer.",
+        "kinematicRole": "During cocking, the cables wrap tightly into the lower helical grooves as the limbs flex inward; upon release, they pay out instantly to drive cam rotation, separating at seventy-six percent disassembly.",
+        "designHighlight": "Routing the crossing cables 5.6 millimeters beneath the arrow flight plane completely clears fletching clearance, eliminating vane slap and flight deflection at extreme 500 FPS velocities.",
+        "audioScript": "These heavy-duty braided power cables harness the full flex of the split limbs. Guided by a self-lubricating slide sitting well below the flight rail, they wind into the multi-tier cams without ever contacting the arrow fletching as the bolt launches at extreme speed.",
+        "audioUrl": "audio/r500/parts/r500_power_cables_en.mp3"
+      }
+    },
+    "r500_versadrive_screw": {
+      "partId": "r500_versadrive_screw",
+      "bomCode": "H-09",
+      "calloutLabelEn": "VersaDrive Leadscrew",
+      "zh": {
+        "roleTag": "404mm不锈钢梯形螺杆 · 静音防逆转棘轮",
+        "overview": "贯穿全无托机匣中央内膛的高精度梯形导程丝杠，尾部通过联轴节装配十二齿青铜双棘轮离合器。它是将手摇曲柄扭矩转化为滑架长行程直线拉力的核心传动枢纽。",
+        "craftAndMaterial": "选用高强度沉淀硬化马氏体不锈钢精密切削研磨成型，螺牙表面微米级滚压抛光；尾部双棘轮齿盘采用耐磨铝青铜合金，确保无润滑工况下的静音自锁咬合。",
+        "kinematicRole": "上弦与退弦时由曲柄或电动电机驱动顺时针旋转，驱动内嵌螺母带动滑架往复行进三百六十毫米；任何时刻停止旋转均自动锁止；在百分之三十六阶段向后抽离机匣。",
+        "designHighlight": "双向梯形螺杆与内嵌双向棘轮离合器实现了革命性的安全退弦功能，射手无需对地发射牺牲箭支，中途松手即由棘轮无声定锁，消除断齿打手风险。",
+        "audioScript": "这根长达四百零四毫米的不锈钢梯形丝杠是无轨上弦系统的中枢。顺时针转动时推动滑架匀速抓弦，尾部的双棘轮机构能随时静音咬死，让射手在任何野外姿势下都能随时停手或安全退弦。",
+        "audioUrl": "audio/r500/parts/r500_versadrive_screw_zh.mp3"
+      },
+      "en": {
+        "roleTag": "404mm Stainless Leadscrew · Anti-Reverse Silent Clutch",
+        "overview": "Spanning the lower bore of the bullpup receiver, this heavy-duty Acme leadscrew couples to a 12-tooth bronze ratchet clutch. It translates manual crank or electric motor rotation into smooth linear sled displacement.",
+        "craftAndMaterial": "CNC turned and thread-whirled from precipitation-hardened stainless steel with burnished Acme crests; mated to a wear-resistant phosphor-bronze twin pawl and ratchet assembly.",
+        "kinematicRole": "Rotates continuously to drive the floating carriage across 360 millimeters of cocking travel; locks instantaneously when input torque ceases; slides rearward out of the receiver at thirty-six percent teardown.",
+        "designHighlight": "The leadscrew architecture enables full de-cocking under limb load without firing an arrow, while the bidirectional clutch automatically locks the draw at any stroke position silently and safely.",
+        "audioScript": "Spanning the length of the chassis, this 404-millimeter precision leadscrew translates crank rotation into effortless draw power. Its internal twelve-tooth bronze clutch lets you pause cocking or safely de-cock anywhere along the stroke without releasing stored energy.",
+        "audioUrl": "audio/r500/parts/r500_versadrive_screw_en.mp3"
+      }
+    },
+    "r500_trigger_sled": {
+      "partId": "r500_trigger_sled",
+      "bomCode": "T-01",
+      "calloutLabelEn": "Floating Sear Carriage",
+      "zh": {
+        "roleTag": "360mm导轨悬浮滑车 · 全程无接触承托弦爪",
+        "overview": "精密加工的 Trac-Trigger 独立悬浮滑架位于机匣内导轨内部，前部铰接双抓弦爪，内腔集成撞块与梯形螺母。它在弓弦与发射机之间构筑了一道完全浮动的承托平台。",
+        "craftAndMaterial": "由航空级七零七五超硬铝合金实心数控掏空并经微弧硬化阳极氧化处理，内套磷青铜螺母座；与导轨接触面设有低摩擦耐磨自润滑导向条。",
+        "kinematicRole": "在上弦初始阶段沿机匣内轨前推抓死弓弦，随后在丝杠牵引下全程悬空后移三百六十毫米锁入发射点；击发后随主弦复位；在分解百分之七十时脱出导槽。",
+        "designHighlight": "通过让扣弦爪与扳机阻铁作为独立移动车体运行，消除了传统全长箭轨与弓弦之间的重度摩擦磨损，不仅提升了能量传递效率，更将主弦使用寿命延长数倍。",
+        "audioScript": "这就是开创性的无轨悬浮滑车。它在丝杠牵引下从前方精准咬死主弦，随后悬空后撤三百六十毫米直抵待击尾部，全程绝不接触或磨损主铝合金轨道，确保弓弦获得完美同轴推力。",
+        "audioUrl": "audio/r500/parts/r500_trigger_sled_zh.mp3"
+      },
+      "en": {
+        "roleTag": "360mm Floating Carriage · Rail-Free Frictionless Sear Base",
+        "overview": "The Trac-Trigger Floating Sear Carriage rides within the internal chassis channels, housing the string catch jaws and internal thread nut. It travels forward to capture the bowstring and retreats to full cock.",
+        "craftAndMaterial": "Milled from aerospace 7075-T6 aluminum with hardcoat PTFE-impregnated anodizing; lined with self-lubricating phosphor-bronze guide inserts to minimize sliding friction.",
+        "kinematicRole": "Translates forward along the 360-millimeter path to grab the resting bowstring, retreats under leadscrew tension to the trigger sear, and separates from internal rails at seventy percent disassembly.",
+        "designHighlight": "By decoupling the string catch mechanism from a fixed aluminum rail, it completely eliminates downward string friction, preserving bowstring serving life while delivering true free-flight arrow ballistics.",
+        "audioScript": "The Trac-Trigger sled rides inside an internal track completely isolated from the arrow flight deck. Driven forward to grasp the string and pulled backward under leadscrew torque, it eliminates string-to-rail friction and delivers perfectly centered launch alignment.",
+        "audioUrl": "audio/r500/parts/r500_trigger_sled_en.mp3"
+      }
+    },
+    "r500_string_latch": {
+      "partId": "r500_string_latch",
+      "bomCode": "T-02",
+      "calloutLabelEn": "Pivoting Catch Jaws",
+      "zh": {
+        "roleTag": "自对中上下爪钳 · 300磅零偏摆瞬间脱扣",
+        "overview": "对开铰接于悬浮滑架前部的双硬化抓弦爪，在闭合时形成高精度圆弧钳口。它们在三百磅极限张力下拉持主弦中央护弦段，待击发脱扣时同步向上下两端弹开。",
+        "craftAndMaterial": "采用高抗冲击四一四零铬钼合金钢经真空淬火至五十五洛氏硬度，表面经过渗氮黑化与特氟龙涂层抛光，钳口圆角半径与复合主弦保护套达到微米级贴合。",
+        "kinematicRole": "在上弦起点被推向弓弦时张开并闭锁咬死；在满拉待发时受主阻铁托持；扳机击发瞬间上下分体向外翻转释放弓弦；在百分之七十拆卸阶段卸下铰接轴。",
+        "designHighlight": "上下对开自对中设计彻底克服了传统单爪侧向脱扣造成的弓弦微扭偏摆，将脱扣瞬间的轴向偏移量归零，为箭支提供绝对对称纯轴向飞离推力。",
+        "audioScript": "这两枚经过深冷淬火的硬化合金钢抓弦爪，在上弦行程中如同虎口般咬合住主弓弦。当扣动扳机的瞬间，上下双爪毫秒级同步弹开，没有任何单侧刮擦或扭矩，让射出的碳箭完美居中。",
+        "audioUrl": "audio/r500/parts/r500_string_latch_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Self-Centering Dual Claws · Zero-Torque 300 lb String Release",
+        "overview": "Pivoting vertically at the front of the floating carriage, these twin symmetrical catch jaws clamp the served center of the bowstring. They sustain three hundred pounds of draw force until trigger break.",
+        "craftAndMaterial": "CNC machined from vacuum-heat-treated 4140 chromoly steel hardened to 55 HRC, finished with salt-bath nitriding and micro-polished cradle radii matching string contours.",
+        "kinematicRole": "Snaps shut over the string during forward engagement, holds limb tension during the cocking stroke, and splits open instantaneously on sear release; detaches at seventy percent strip.",
+        "designHighlight": "The opposed pivoting geometry neutralizes lateral nock roll and cable deflection inherent in traditional single-jaw catches, ensuring purely axial force delivery into the arrow rear.",
+        "audioScript": "Machined from hardened chromoly steel, these opposed catch jaws cradle the bowstring at dead center under three hundred pounds of limb load. When tripped, both jaws open simultaneously, eliminating string torque and delivering flawless arrow flight.",
+        "audioUrl": "audio/r500/parts/r500_string_latch_en.mp3"
+      }
+    },
+    "r500_anti_dry_fire": {
+      "partId": "r500_anti_dry_fire",
+      "bomCode": "T-03",
+      "calloutLabelEn": "Anti-Dry-Fire Lever",
+      "zh": {
+        "roleTag": "无箭绝不解锁 · 机械顶推式物理互锁",
+        "overview": "防空放互锁杠杆与箭尾传感器安装在悬浮滑架上部凹槽中，前端探爪直接伸入落箭槽后端。该部件是阻止在未装填弩箭时释放三百磅能量的物理安保核心。",
+        "craftAndMaterial": "选用耐磨磷青铜经数控精密铣削成型，前端弧形触角圆滑抛光以防刮伤碳纤维箭轴；配备高疲劳寿命不锈钢复位扭簧提供常闭预紧力。",
+        "kinematicRole": "空载时杠杆在扭簧推力下沉，其尾部物理凸笋直接阻断主阻铁旋转路径；仅当二十英寸碳箭尾部半月扣完全推入到底时，顶起传感器解锁；分解进度达七成后取出。",
+        "designHighlight": "采用严格的机械物理全行程传感设计，只有具备特定轮廓深度与外径的半月箭尾完全压到位才能抬起锁舌，杜绝了普通树枝或异物误顶导致误击毁弓的致命隐患。",
+        "audioScript": "这枚青铜色的防空放杠杆是复合弩的最后一道安全防线。未装填箭支时，阻铁被死死卡死；只有合格的碳箭半月尾扣推到位顶起前端探爪，整个击发机构才会解除物理锁定。",
+        "audioUrl": "audio/r500/parts/r500_anti_dry_fire_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Bolt-Actuated Safety Lock · Mechanical Anti-Dry-Fire Sensor",
+        "overview": "Nested inside the upper channel of the floating sear carriage, this pivoting bronze sensor arm projects into the nock seating zone. It prevents dry firing by locking the sear until a bolt is seated.",
+        "craftAndMaterial": "Precision CNC milled from tough phosphor-bronze with polished probe ramps to prevent nock scoring; backed by a dedicated stainless steel torsion spring that forces it into default-locked position.",
+        "kinematicRole": "Resting downward to wedge against the trigger release block when unloaded, it pivots upward to clear the sear only when pressed by a half-moon nock, dismounting at seventy percent disassembly.",
+        "designHighlight": "Its stepped cam profile strictly verifies full nock insertion depth before releasing the interlock, preventing partial-seat firing that would otherwise shatter carbon limbs under full stored potential energy.",
+        "audioScript": "This phosphor-bronze anti-dry-fire lever acts as a failsafe sentinel inside the sled. Unless an authorized 20-inch carbon bolt is pushed fully flush against the string nock, this lever physically blocks sear travel, preventing catastrophic blank firings.",
+        "audioUrl": "audio/r500/parts/r500_anti_dry_fire_en.mp3"
+      }
+    },
+    "r500_trigger_sear": {
+      "partId": "r500_trigger_sear",
+      "bomCode": "T-04",
+      "calloutLabelEn": "Match Trigger & Sear",
+      "zh": {
+        "roleTag": "1.59kg清脆扳机力 · 长行程不锈钢传动杆",
+        "overview": "火控组件由握把上方的前置弯月形比赛扳机鞋、长达两百七十四毫米的贯穿机匣不锈钢传力杆以及滑架阻铁组成。它为射手提供与高端栓动步枪无异的清脆断弦扳机手感。",
+        "craftAndMaterial": "扳机鞋为轻量化铝合金镂空抛光，传力推杆采用高刚性三零四不锈钢实心精密拉丝制造；后端释放爪和阻铁采用轴承钢精研抛光，摩擦面经超精微滚压。",
+        "kinematicRole": "手指施加三点五磅扣力时，扳机鞋绕销轴转动向后拉动刚性推杆，推杆尾端推开主阻铁斜切啮合面释放悬浮滑架抓弦爪；在百分之七十八分解时由机匣下部取出。",
+        "designHighlight": "通过将前置无托构型的长行程连杆转化为拉压复合平衡态，辅以微米级滚阻搭接面设计，完全排除了长行程连杆机构常见的松垮蠕动，实现一点五九公斤零蠕动脆发。",
+        "audioScript": "由前置弯月扳机和两百七十四毫米高强度不锈钢连杆组成的击发总成，调校出了三点五磅的比赛级清脆手感。没有丝毫生涩蠕动，扣引瞬间连杆直接拉脱阻铁，触发雷霆一击。",
+        "audioUrl": "audio/r500/parts/r500_trigger_sear_zh.mp3"
+      },
+      "en": {
+        "roleTag": "3.5 lb Crisp Break · 274mm Bullpup Match Linkage Rod",
+        "overview": "The fire control assembly comprises the forward match trigger shoe, a 274-millimeter rigid stainless transfer rod through the chassis, and the rear precision-ground sear block. It delivers a match-rifle trigger press.",
+        "craftAndMaterial": "Skeletonized 6061-T6 aluminum trigger shoe linked to a drawn stainless steel transfer tie-rod; sear surfaces are formed from hardened 52100 bearing steel with diamond-polished engagement flats.",
+        "kinematicRole": "Pivots backward under 3.5 pounds of index pressure, drawing the transfer bar rearward to trip the sear interface in the carriage; unships from the lower receiver at seventy-eight percent disassembly.",
+        "designHighlight": "Overcomes typical bullpup linkage sponginess through rigid tension-rod geometry and micro-honed sear engagement steps, yielding an instantaneous break with less than one millimeter of overtravel.",
+        "audioScript": "This precision trigger linkage connects the bullpup trigger shoe across 274 millimeters to the rearward sear. Engineered for zero creep and a crisp three-and-a-half-pound break, it gives the archer precision rifle-grade trigger control on every shot.",
+        "audioUrl": "audio/r500/parts/r500_trigger_sear_en.mp3"
+      }
+    },
+    "r500_safety_selector": {
+      "partId": "r500_safety_selector",
+      "bomCode": "T-05",
+      "calloutLabelEn": "Ambi Safety Selector",
+      "zh": {
+        "roleTag": "上弦自动入保险 · 醒目橙双侧拨片",
+        "overview": "双侧对称的人体工程学安全拇指保险拨杆位于握把上方，通过贯穿联动轴控制机匣内部锁止凸轮。它确保滑架到位后自动锁死击发连杆，由射手拇指主动压下后方能射击。",
+        "craftAndMaterial": "外部拨片由高抗冲击尼龙工程塑料一体注塑，采用醒目安全橙色表面；内部锁止轴为四十五号中碳钢经高频淬火与防腐黑磷化处理，保证抗剪切刚度。",
+        "kinematicRole": "滑架后拉到底待击瞬间被后退撞销自动推入 SAFE 安全锁止档位，阻断传力杆行程；推弹到位瞄准后由拇指压向前方 FIRE 档位解锁；在分解百分之七十八时横向推出。",
+        "designHighlight": "全行程自动激活联动凸轮，当悬浮火控架后拉至待击端点时自动卡入安全位置，无需射手人工记忆，彻底规避了大负荷复合弩蓄能完毕后的误触走火隐患。",
+        "audioScript": "这对显眼的安全橙色双侧保险拨杆位于拇指最自然贴合处。滑架一旦拉至满弓待击，内部凸轮便会被自动推入保险状态；只有当碳箭完全就位且瞄准后，推入射击档才能击发。",
+        "audioUrl": "audio/r500/parts/r500_safety_selector_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Auto-Engaging SAFE/FIRE · High-Vis Ambidextrous Selector",
+        "overview": "Arranged ambidextrously above the pistol grip, this safety selector rotates an internal cam pin to block the trigger transfer rod. It automatically engages during cocking and requires deliberate manual release.",
+        "craftAndMaterial": "Molded from high-impact safety-orange thermoplastic over a high-tensile 1045 medium carbon steel crosspin, heat-treated with a black phosphate corrosion-resistant finish.",
+        "kinematicRole": "Driven to the SAFE detent automatically as the sled contacts the cocked stop pin; flipped manually forward to FIRE before discharge; slides laterally out at seventy-eight percent teardown.",
+        "designHighlight": "Features mechanical automatic engagement upon reaching the cocked boundary, eliminating human oversight during cocking and ensuring absolute drop-safety while traversing rugged terrain.",
+        "audioScript": "Positioned right where your thumb rests, these ambidextrous orange levers control an internal cross-locking cam. The system automatically snaps into safe whenever the carriage reaches full draw, requiring deliberate forward rotation to fire.",
+        "audioUrl": "audio/r500/parts/r500_safety_selector_en.mp3"
+      }
+    },
+    "r500_trigger_spring": {
+      "partId": "r500_trigger_spring",
+      "bomCode": "T-06",
+      "calloutLabelEn": "Sear Return Springs",
+      "zh": {
+        "roleTag": "等线径琴钢丝压簧 · 驱动抓弦爪复位",
+        "overview": "安装在悬浮滑架内部腔体中的复位弹簧组，由主阻铁回位簧与抓弦爪开闭压簧构成。它们为脱扣爪的瞬间重闭与阻铁自锁复位提供持续恒定的动力源。",
+        "craftAndMaterial": "选用高疲劳强度进口琴钢丝紧密冷卷成型，两端平面磨平倒角并经退火去应力与钝化防锈处理，能够在数十万次极限压缩循环中保持弹性恒定。",
+        "kinematicRole": "在击发抓弦爪脱扣张开时蓄能，随后在滑架前推再次触碰主弦时释放能量弹跳闭合爪钳；在上弦全程提供阻铁归位推力；在全分解百分之七十时从滑架内腔取出。",
+        "designHighlight": "精密计算的递进弹力曲线，确保在上弦推抵主弦时双爪能以极低阻力平滑咬死，而在击发瞬间提供毫秒级的极速弹跳开启动力，避免刮擦中央主弦护股。",
+        "audioScript": "滑架内部的琴钢丝螺旋复位簧是火控爪动作的幕后推手。它不仅在滑架前推时驱使抓弦爪瞬间闭合咬死主弦，更在脱扣瞬间迅速撑开双爪，给释放出膛的弓弦让出无阻通道。",
+        "audioUrl": "audio/r500/parts/r500_trigger_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Piano-Wire Compression Springs · Rapid Jaw Reset Dynamics",
+        "overview": "Tucked inside the internal pockets of the floating carriage, these compression springs bias the string catch jaws and trigger sear. They ensure positive claw latching and instant sear engagement.",
+        "craftAndMaterial": "Wound from certified music-wire spring steel, tempered for high fatigue life with squared and ground ends, treated with dry-film lubricant for rust prevention.",
+        "kinematicRole": "Compresses as the catch jaws pop open upon sear trip, expands to snap the jaws shut when re-engaging the resting bowstring, and slips out of the sled pocket at seventy percent disassembly.",
+        "designHighlight": "Engineered with tailored force deflection rates so the jaws snap shut over the bowstring with minimal resistance, yet instantly blow clear during release to prevent bowstring wear.",
+        "audioScript": "Deep inside the carriage body, these tempered music-wire springs control every cycle of the string jaws. They supply the snapping force needed to capture the string on contact, then power the jaws wide open during instantaneous release.",
+        "audioUrl": "audio/r500/parts/r500_trigger_spring_en.mp3"
+      }
+    },
+    "r500_scope": {
+      "partId": "r500_scope",
+      "bomCode": "Q-01",
+      "calloutLabelEn": "1-8x24 BDC Scope",
+      "zh": {
+        "roleTag": "500 FPS弹道标尺 · 100码BDC与双悬臂镜环",
+        "overview": "专为五百英尺每秒超高初速标定的全天候一至八倍可调倍率弩用瞄准镜，通过一体化悬臂快拆镜桥刚性锁紧在机匣上皮卡汀尼导轨上。它是确保百码极限远程精准命中的光学中枢。",
+        "craftAndMaterial": "镜身采用三十毫米单件式航空六零六一铝合金管材数控车削，表面哑光阳极氧化防反光；内部充氮防水防雾，全多层绿膜高透光率低色散光学玻璃组装配。",
+        "kinematicRole": "牢固锚定在机匣上方作为光学基准，承受击发瞬间强烈的双向前后振动波冲击；上弦与击发全过程保持稳定零位；在百分之六十五分解时旋松快拆螺栓卸下。",
+        "designHighlight": "分划板内嵌从二十码至一百码精密测距与弹道落点补偿刻度，其弹道补偿弧线经实际五百英尺初速弩箭测速严格校准，使百码猎击无需射手凭借经验估算抬枪高度。",
+        "audioScript": "这台一到八倍变倍瞄准镜是专门为五百英尺初速超高速弹道定制的。双悬臂镜桥稳固锁在顶轨上，内部的一百码刻度分划板经过精准风阻与重力补偿标定，让百码狙击轻而易举。",
+        "audioUrl": "audio/r500/parts/r500_scope_zh.mp3"
+      },
+      "en": {
+        "roleTag": "500 FPS Ballistic Reticle · 100-Yard BDC Scope on Cantilever Mount",
+        "overview": "Calibrated for 500 FPS hyper-velocity arrow flight, this 1-8x24 variable magnification scope mounts to the top receiver rail via a cantilever bridge. It serves as the primary long-range targeting sight.",
+        "craftAndMaterial": "Monolithic 30mm aircraft-grade 6061-T6 aluminum tube with matte black hard anodizing, nitrogen-purged for waterproof, fogproof durability, housing multi-coated low-dispersion glass.",
+        "kinematicRole": "Remains static on the optical rail as the central sighting reference, absorbing severe bidirectional recoil impulses during launch, and detaching at sixty-five percent teardown.",
+        "designHighlight": "Etched with a proprietary 100-yard bullet-drop reticle calibrated specifically to the flat trajectory of a 400-grain bolt, turning long-range holdover calculations into intuitive point-and-shoot accuracy.",
+        "audioScript": "Calibrated directly to this crossbow five-hundred-feet-per-second velocity, the one-to-eight power scope mounts rigidly along the cantilever rail. Its illuminated glass-etched reticle provides drop marks out to one hundred yards without complex field math.",
+        "audioUrl": "audio/r500/parts/r500_scope_en.mp3"
+      }
+    },
+    "r500_quiver_frame": {
+      "partId": "r500_quiver_frame",
+      "bomCode": "Q-02",
+      "calloutLabelEn": "Quick-Detach Quiver",
+      "zh": {
+        "roleTag": "3箭侧挂快拆 · 吸音泡沫狩猎箭头护罩",
+        "overview": "快拆式三箭侧挂箭壶安装于机匣右下方独立底座上，前端设有一体成型的厚实机械猎箭头保护套。它为随身携带三支二十英寸比赛级碳箭提供静音安全收纳。",
+        "craftAndMaterial": "主框架为碳纤增强改性工程聚合物轻量注塑成型，内衬高密度闭孔吸音微孔橡胶泡棉；箭夹由柔性耐候硅胶制成，在极寒极热气候下均不硬化老化。",
+        "kinematicRole": "整体固定在枪身右侧不参与击发运动；紧凑包裹三刃机械猎箭头刀片以防野外刮伤；按压快拆锁定卡扣即可整组取下；在百分之二十八拆卸阶段分离。",
+        "designHighlight": "超薄侧置纵轴布局将整箭收纳紧贴主梁机匣外轮廓，彻底避开水平弓臂和上下螺旋力缆的行程包络线，保证潜伏与林间穿行时实现零枝条挂扯与零异响震动。",
+        "audioScript": "紧贴机匣右下侧的快拆三箭箭壶，是猎手最可靠的弹药库。高密度闭孔海绵安全包裹锋利的机械猎箭头，柔性硅胶爪牢牢固定三支二十英寸碳箭，按压快拆钮即可在一秒内卸下。",
+        "audioUrl": "audio/r500/parts/r500_quiver_frame_zh.mp3"
+      },
+      "en": {
+        "roleTag": "3-Bolt Side Quiver · Silent Broadhead Hood Protection",
+        "overview": "The quick-detach side quiver mounts on the lower-right chassis, featuring a molded protective hood that shields sharp broadheads. It carries three 20-inch match carbon bolts securely in the field.",
+        "craftAndMaterial": "Molded from carbon-fiber reinforced polymer with high-density closed-cell microcellular foam inserts; equipped with weather-resistant dual elastomeric gripper clips.",
+        "kinematicRole": "Static accessory rigidly docked during shooting; keeps broadhead blades safely isolated from the archer and limbs, releasing instantly via a cam latch at twenty-eight percent teardown.",
+        "designHighlight": "Engineered with an ultra-slim contour that tucks arrows tightly against the receiver, keeping them completely outside the rotating cam plane to avoid brush snagging in heavy timber.",
+        "audioScript": "Mounted close against the right side of the receiver, this three-bolt quick-detach quiver secures hunting ammo silently. High-density foam encapsulates razor-sharp broadheads while elastomeric jaws hold each bolt firm during transport.",
+        "audioUrl": "audio/r500/parts/r500_quiver_frame_en.mp3"
+      }
+    },
+    "r500_retention_arm": {
+      "partId": "r500_retention_arm",
+      "bomCode": "Q-03",
+      "calloutLabelEn": "Retention Arm & Roller",
+      "zh": {
+        "roleTag": "无摩擦顶压定位 · 俯仰颠簸零脱弦",
+        "overview": "弹簧加载压箭臂与无摩擦前滚轮悬臂安装在瞄准镜桥最前端下沿，俯向悬浮于箭道上方。它通过前端的柔性滚轮轻柔顶压碳箭中央，防止箭体在颠簸时滑移脱位。",
+        "craftAndMaterial": "悬臂采用韧性不锈钢弹簧钢冲压成型，表面涂覆醒目防空放警示橙色涂层；前端滚轮由耐磨聚甲醛棒料微型数控车削，内嵌微型不锈钢免维护滚珠轴承。",
+        "kinematicRole": "装填时被碳箭杆身抬起，依靠滚轮恒定轻压箭身中段；射击发射时滚轮以极低滚动摩擦引导碳箭无振动飞出；在百分之三十八拆卸阶段从镜桥底座拧下螺钉拆离。",
+        "designHighlight": "以无摩擦精密滚轮彻底取代了传统弓弩的固定金属摩擦压簧片，消除了每次出箭时由滑动摩擦导致的箭速衰减与箭轴划伤，保证超高速脱离时的微米级轴向直线度。",
+        "audioScript": "悬挂在镜桥前端的橙色压箭臂，前端装配了一枚微型轴承滚轮。在剧烈俯仰晃动下，它能把碳箭牢牢稳在射击轴线上，击发时滚轮提供零阻力滚动引导，让碳箭毫无磨损地激射而出。",
+        "audioUrl": "audio/r500/parts/r500_retention_arm_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Frictionless Arrow Hold-Down · Secure Multi-Angle Bolt Retention",
+        "overview": "Cantilevered beneath the forward optical rail, this spring-loaded retention arm terminates in a micro roller bearing. It applies consistent downward pressure onto the carbon bolt shaft.",
+        "craftAndMaterial": "Formed from high-tensile spring steel sheet finished in high-visibility safety orange; fitted with a miniature delrin guide roller running on a sealed stainless ball bearing.",
+        "kinematicRole": "Lifts slightly as an arrow slides into the sled, pressing downward to keep the bolt indexed; rolls friction-free as the bolt accelerates forward at 500 FPS, detaching at thirty-eight percent strip.",
+        "designHighlight": "Replaces crude sliding friction retention leaves with a true rolling contact element, eliminating shaft drag, fletching clearance issues, and velocity loss during ultra-high-speed acceleration.",
+        "audioScript": "Positioned under the forward optical rail, this spring-tensioned retention arm features an integrated low-friction roller. It securely holds the carbon arrow down during steep angled stalking while letting it launch at full velocity without drag.",
+        "audioUrl": "audio/r500/parts/r500_retention_arm_en.mp3"
+      }
+    },
+    "r500_carbon_bolt": {
+      "partId": "r500_carbon_bolt",
+      "bomCode": "Q-04",
+      "calloutLabelEn": "20-Inch Carbon Bolt",
+      "zh": {
+        "roleTag": "400格令微径碳杆 · 152.4 m/s (500 FPS) 穿甲动能",
+        "overview": "为五百英尺每秒极限速度量身定制的二十英寸高直度比赛级碳纤维弩箭，前配一百格令三刃猎箭头，尾部嵌有精密半月形尾扣。它是承载三百零一焦耳恐怖动能的终极杀伤弹药。",
+        "craftAndMaterial": "箭杆采用多轴向交叉碳纤维卷管工艺制造，直度达正负千分之一英寸；尾扣为精密硬化青铜车削而成，配装三片后倾两度微螺旋抗撕裂流线型聚合物尾羽。",
+        "kinematicRole": "装入后尾扣顶起防空放开关；击发瞬间在三百磅推力下以一百五十二点四米每秒速度飞离导轨；离弦后尾羽驱动其高速自旋稳定飞行；在分解最初百分之三十阶段取下退膛。",
+        "designHighlight": "通过将总质量精确平衡在四百格令并在尾部配置抗超高冲击青铜半月扣，既杜绝了五百英尺出膛瞬间超高轴向过载导致碳管爆裂，又达成了破障如切纸般的极致贯穿毁伤动能。",
+        "audioScript": "这支二十英寸碳纤维比赛箭总重四百格令，直度误差不超过千分之一英寸。装填后黄铜半月尾扣顶起防空放开关，击发瞬间在三百零一焦耳动能驱动下以五百英尺初速咆哮出膛。",
+        "audioUrl": "audio/r500/parts/r500_carbon_bolt_zh.mp3"
+      },
+      "en": {
+        "roleTag": "400-Grain Micro-Diameter Bolt · 500 FPS / 301 Joules Kinetic Punch",
+        "overview": "Engineered for extreme 500 FPS launch speeds, this 20-inch carbon match arrow mounts a 100-grain mechanical broadhead and a machined half-moon nock. It delivers 301 Joules of target penetration.",
+        "craftAndMaterial": "Cross-wound high-modulus carbon fiber construction holding straightness tolerances within plus or minus 0.001 inches, finished with durable helical vanes and a precision brass half-moon nock.",
+        "kinematicRole": "Inserts into the carriage to trip the ADF sensor; absorbs three hundred pounds of immediate acceleration to launch at 152.4 meters per second; extracted during initial field clearing at thirty percent strip.",
+        "designHighlight": "Optimized weight distribution and high-strength brass nock insert withstand extreme launch g-forces, preventing carbon structural failure while maximizing downrange terminal momentum.",
+        "audioScript": "Weighing four hundred grains, this twenty-inch carbon bolt is straight to one thousandth of an inch. Its brass half-moon nock trips the safety sensor when seated, ready to absorb full release power and deliver three hundred joules of energy at five hundred feet per second.",
+        "audioUrl": "audio/r500/parts/r500_carbon_bolt_en.mp3"
+      }
+    }
+  }
+}

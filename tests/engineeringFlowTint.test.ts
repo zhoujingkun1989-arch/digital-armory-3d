@@ -21,6 +21,7 @@ import {
   detectPreferredLanguage,
   useAppStore,
 } from '../src/store/useAppStore';
+import { isArcheryWeapon } from '../src/engine/physics/armoryPhysics';
 import { getWeaponManifest } from '../src/weapons/manifests';
 import { loadWeaponPlugin } from '../src/weapons/registry';
 import { WEAPON_IDS, type WeaponId } from '../src/weapons/types';
@@ -31,6 +32,11 @@ const GAS_OPERATED_WEAPONS: ReadonlySet<WeaponId> = new Set([
   'scar',
   'deagle',
   'aug',
+]);
+
+const ELASTIC_DRIVE_WEAPONS: ReadonlySet<WeaponId> = new Set([
+  'lift33',
+  'r500',
 ]);
 
 describe('WP-05 Engineering Functional Role Tint & Gas-Flow Contracts', () => {
@@ -60,7 +66,7 @@ describe('WP-05 Engineering Functional Role Tint & Gas-Flow Contracts', () => {
     }
   });
 
-  it('classifies all 278 procedural/CSG parts across 11 firearms with exact gas-system fidelity', async () => {
+  it('classifies all 327 procedural/CSG parts across 13 weapons with exact gas & elastic-drive fidelity', async () => {
     const validRoles = new Set<EngineeringRole>(ENGINEERING_ROLE_ORDER);
     let totalParts = 0;
 
@@ -75,22 +81,23 @@ describe('WP-05 Engineering Functional Role Tint & Gas-Flow Contracts', () => {
         roleCounts.set(role, (roleCounts.get(role) ?? 0) + 1);
       }
 
-      // Every firearm must cover locking, reciprocating carrier/slide, fire control, springs, and housing/feed
+      // Every weapon must cover locking/cam, carrier/string, fire control, springs/dampers, and housing/feed
       expect(roleCounts.get('locking') ?? 0).toBeGreaterThan(0);
       expect(roleCounts.get('bolt_carrier') ?? 0).toBeGreaterThan(0);
       expect(roleCounts.get('fire_control') ?? 0).toBeGreaterThan(0);
       expect(roleCounts.get('energy_spring') ?? 0).toBeGreaterThan(0);
       expect(roleCounts.get('housing_feed') ?? 0).toBeGreaterThan(0);
 
-      // Gas-operated firearms must classify gas manifold parts as 'gas_drive'; recoil/blowback/manual must not
-      if (GAS_OPERATED_WEAPONS.has(weaponId)) {
+      // Gas-operated firearms & elastic-limb archery platforms classify energy-drive parts as 'gas_drive';
+      // recoil/blowback/manual firearms must not.
+      if (GAS_OPERATED_WEAPONS.has(weaponId) || ELASTIC_DRIVE_WEAPONS.has(weaponId)) {
         expect(roleCounts.get('gas_drive') ?? 0).toBeGreaterThan(0);
       } else {
         expect(roleCounts.get('gas_drive') ?? 0).toBe(0);
       }
     }
 
-    expect(totalParts).toBe(278);
+    expect(totalParts).toBe(327);
   });
 
   it('keeps WebGL shader program cache keys 100% invariant when functional tint uniforms toggle', () => {
@@ -126,7 +133,7 @@ describe('WP-05 Engineering Functional Role Tint & Gas-Flow Contracts', () => {
     }
   });
 
-  it('aligns all 11 weapon gas-manifold profiles with SAAMI/CIP internal ballistics gas-port timing', () => {
+  it('aligns all 13 weapon energy-manifold profiles with internal ballistics gas-port timing', () => {
     const sample = createInternalBallisticsSample();
 
     for (const weaponId of WEAPON_IDS) {
@@ -160,7 +167,9 @@ describe('WP-05 Engineering Functional Role Tint & Gas-Flow Contracts', () => {
         );
         expect(sample.gasPortPressureMPa).toBeGreaterThan(0);
       } else {
-        expect(profile.gasPortX).toBeNull();
+        if (!isArcheryWeapon(weaponId)) {
+          expect(profile.gasPortX).toBeNull();
+        }
         evaluateInternalBallisticsInto(
           manifest.caliberProfile,
           timing.muzzleExitF,

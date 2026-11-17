@@ -403,7 +403,7 @@ export const WEAPON_GAS_MANIFOLD_PROFILES: Readonly<
     flowNoteZh:
       '无火药燃气发射：拉弦时上下碳纤四分体弓片蓄积 57.6 J 弹性能并通过偏心轮降省至 15% 持力；撒放瞬间做功行程将 400 gr 碳箭平顺推射至 348 FPS (106 m/s)。',
     flowNoteEn:
-      'Smokeless elastic propulsion: drawing stores energy across split carbon limbs through synchronized binary cams to an 85% let-off valley, then delivers 145.6 J over a 597 mm power stroke.',
+      'Smokeless elastic propulsion: drawing stores energy across split carbon limbs through synchronized binary cams to an 85% let-off valley, then delivers 145.6 J over a 571.5 mm power stroke.',
     chamberX: -16.5,
     muzzleX: 35.5,
     boreY: 2.4,

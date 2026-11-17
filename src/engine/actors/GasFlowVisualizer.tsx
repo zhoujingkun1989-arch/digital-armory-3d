@@ -40,6 +40,10 @@ const _armBStart = new THREE.Vector3();
 const _armBEnd = new THREE.Vector3();
 const _nockVec = new THREE.Vector3();
 const _tmpVec = new THREE.Vector3();
+const _armChevronPairs: readonly [THREE.Vector3, THREE.Vector3][] = [
+  [_armAEnd, _nockVec],
+  [_armBEnd, _nockVec],
+];
 
 // Calibrated engineering palette (reads cleanly under AgX + half-res Bloom without whiteout)
 const COL_PEAK_PLASMA = new THREE.Color('#fde68a');
@@ -271,14 +275,10 @@ export const GasFlowVisualizer: React.FC = () => {
       const phaseScroll = (state.clock.elapsedTime * 2.8) % 1;
       let cursor = 0;
 
-      // 3 chevrons along Arm A cam -> nock + 3 along Arm B cam -> nock
-      const armChevronPairs: [THREE.Vector3, THREE.Vector3][] = [
-        [_armAEnd, _nockVec],
-        [_armBEnd, _nockVec],
-      ];
-      for (let p = 0; p < armChevronPairs.length; p++) {
-        const from = isPowerStroke ? armChevronPairs[p][0] : _nockVec;
-        const to = isPowerStroke ? _nockVec : armChevronPairs[p][0];
+      // 3 chevrons along Arm A cam -> nock + 3 along Arm B cam -> nock (module-pooled Zero-GC)
+      for (let p = 0; p < _armChevronPairs.length; p++) {
+        const from = isPowerStroke ? _armChevronPairs[p][0] : _armChevronPairs[p][1];
+        const to = isPowerStroke ? _armChevronPairs[p][1] : _armChevronPairs[p][0];
         _dirVec.subVectors(to, from);
         const segLen = _dirVec.length();
         if (segLen > 0.25) {

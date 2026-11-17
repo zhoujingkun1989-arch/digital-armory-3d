@@ -730,7 +730,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       loadingDesc: '正在读取 Google Gemini 生成的双语工程档案。',
       pendingTitle: '双语研发档案未能加载',
       pendingDesc:
-        '请检查本地静态资源服务是否正常运行（全部 11 款馆藏名枪的四幕研发故事、278 枚零件双语讲解与 644 段 Google Gemini TTS 语音均已内置于 public/ 目录）。',
+        '请检查本地静态资源服务是否正常运行（全部 13 款馆藏名枪与弓弩的四幕研发故事、327 枚零件双语讲解与 758 段 Google Gemini TTS 语音均已内置于 public/ 目录）。',
       switchToAk15Btn: '切换至 AK-15M1 研发故事档案',
       aiAttribution:
         '文本与语音由 Google Gemini 3.8 Flash & Gemini TTS 基于 1:1 军械测绘参数生成',
@@ -1272,7 +1272,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       loadingDesc: 'Fetching structured history & voiceover metadata.',
       pendingTitle: 'Unable to Load Bilingual R&D Archive',
       pendingDesc:
-        'Please verify your static asset server is reachable. Full 4-act R&D documentaries, 278 component breakdowns, and 644 Google Gemini TTS voiceovers across all 11 vault firearms are bundled under public/.',
+        'Please verify your static asset server is reachable. Full 4-act R&D documentaries, 327 component breakdowns, and 758 Google Gemini TTS voiceovers across all 13 vault exhibits are bundled under public/.',
       switchToAk15Btn: 'Switch to AK-15M1 R&D Archive',
       aiAttribution:
         'Authored & voiced with Google Gemini 3.8 Flash & Gemini TTS grounded in 1:1 CAD specs',

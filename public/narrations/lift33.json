@@ -1,0 +1,888 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "lift33",
+  "generatedAt": "2026-11-17T06:22:40.890542+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "Mathews LIFT 33 Compound Bow",
+    "subtitle": "SwitchWeight-X Binary-Cam 33\" ATA Hunting Compound Bow",
+    "originCountry": "United States",
+    "weaponType": "Binary-Cam Compound Bow",
+    "categoryLabel": "Compound Archery Platform",
+    "actionMechanism": "SwitchWeight-X Synchronized Binary Cams · 85% Let-Off Valley & QAD Drop-Away Kinematics",
+    "statusLabel": "In Vault · Fully Exploded Ready",
+    "description": "Introduced by Mathews Archery in 2024, the flagship LIFT 33 hunting compound bow features a lightweight CNC 7075-T6 bridged truss riser integrated with Bridge-Lock internal dovetail mounting channels. Synchronized SwitchWeight-X binary cams and split quad carbon-glass parabolic limbs achieve an 85% let-off and 348 FPS IBO rating at a bare weight of just 3.94 pounds. Coupled with a QAD Integrate MX drop-away rest and Centergy dampening systems, it converts 145.6 joules of elastic potential energy into pure arrow kinetic power.",
+    "highlights": [
+      "SwitchWeight-X Binary Cams & 85% Let-Off",
+      "7075-T6 Bridged Truss Riser & Bridge-Lock Slots",
+      "Split Quad Carbon-Glass Parabolic Limbs",
+      "QAD Drop-Away Rest · 348 FPS / 145.6 J Arrow Kinetic Energy"
+    ],
+    "workbenchTitle": "Mathews LIFT 33 Compound Bow 3D Disassembly & Dual-Cam Ballistic Workbench",
+    "workbenchSubtitle": "4 Major Assemblies · 24 Core Nodes · Split Quad Limb Flexion & 85% Let-Off Cam Kinetic Cycle",
+    "cutawayLabel": "Bridged Riser & Rest Cutaway",
+    "cutawayTitle": "Switch to assembled cutaway view and focus on the 7075-T6 bridged truss riser, limb pockets, and QAD drop-away rest linkage",
+    "searchPlaceholder": "Search parts or BOM code (e.g., Cam, Bowstring, Limbs, Arrow Rest, C-03)...",
+    "firingMilestoneLabel": "Release Cycle",
+    "rateOfFire": "70 lb Draw Weight · 85% Let-Off",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Assembled at Rest",
+        "subLabel": "0% Assembled",
+        "desc": "Mathews LIFT 33 in its nominal 6.5-inch brace height configuration: 33-inch axle-to-axle SwitchWeight-X binary cams and split quad limbs under balanced static preload, with a 400-grain carbon hunting arrow nocked on the Dyneema D-loop and QAD launcher."
+      },
+      "field_strip": {
+        "label": "Modular Field Strip",
+        "subLabel": "30% Field Strip",
+        "desc": "Rapid detachment along internal Bridge-Lock dovetails and Integrate rails, removing the LowPro 5-arrow quiver, 10-inch carbon front stabilizer, 5-pin sight housing, roller cable guard, Engage grip, and 3-blade mechanical hunting arrow."
+      },
+      "sub_assembly": {
+        "label": "Cams & Limbs Sub-Assembly",
+        "subLabel": "65% Sub-Assembly",
+        "desc": "Disengagement of split quad parabolic limbs, pivoting limb pockets, and draw-weight limb bolts, isolating titanium cam axles, ABEC-7 bearing races, and SwitchWeight-X let-off modules to expose binary synchronization geometry."
+      },
+      "full_exploded": {
+        "label": "Full Exploded View",
+        "subLabel": "100% Full Exploded",
+        "desc": "All 24 mechanical components arrayed in spatial explosion: from the skeletonized 7075-T6 bridged riser and split-yoke buss cables to the spring-loaded rest launcher, mechanical broadhead, and 0.019-inch fiber-optic sight pins."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "Draw & Energy Storage",
+        "title": "Phase 1 · Full Draw Stroke & 95° Cam Rotation",
+        "description": "Drawing the D-loop rearward through a 27.5-centimeter stroke rotates both SwitchWeight-X binary cams ninety-five degrees. The harness flexes the split quad limbs inward to store 145.6 joules of elastic potential energy while the QAD rest elevates the arrow."
+      },
+      "phase_2": {
+        "shortLabel": "85% Let-Off Valley",
+        "title": "Phase 2 · Cam Valley Rollover & Solid Back Wall",
+        "description": "Cams roll past peak draw weight into an eighty-five percent let-off valley, dropping holding effort from seventy pounds down to ten and a half pounds. Titanium draw-stop pegs arrest against the buss cable to create a rock-solid aiming wall."
+      },
+      "phase_3": {
+        "shortLabel": "Sear Trip & Release",
+        "title": "Phase 3 · Mechanical Release & D-Loop Disengagement",
+        "description": "Actuation of the release sear disengages the caliper jaws from the Dyneema D-loop without lateral torque. The BCY-X bowstring instantly escapes static detention to begin violent forward acceleration."
+      },
+      "phase_4": {
+        "shortLabel": "Cam Stroke & Arrow Launch",
+        "title": "Phase 4 · Dynamic Cam Stroke & Drop-Away Clearance",
+        "description": "Parabolic limbs snap forward, rotating binary cams in reverse and transferring 145.6 joules into the 400-grain arrow. Within four milliseconds, the spring-loaded rest launcher collapses clear, allowing helical fletchings to pass at 348 feet per second."
+      },
+      "phase_5": {
+        "shortLabel": "Free Flight & String Stop",
+        "title": "Phase 5 · Ballistic Arrow Flight & String Deceleration",
+        "description": "The stabilized arrow cruises downrange under three-fletch rotational torque. The bowstring crosses its neutral brace position and impacts the rear elastomer string-stop, rapidly shedding primary shock waves."
+      },
+      "phase_6": {
+        "shortLabel": "Dampening & Re-Nocking",
+        "title": "Phase 6 · Harmonic Decay & Follow-Up Arrow Placement",
+        "description": "Inter-limb bridged elastomer dampeners and the forward carbon stabilizer absorb remaining high-frequency stress waves. The QAD launcher returns to its indexing rest position to receive the next hunting shaft."
+      },
+      "phase_7": {
+        "shortLabel": "Static Equilibrium Reset",
+        "title": "Phase 7 · Brace Height Static Equilibrium Reset",
+        "description": "SwitchWeight-X cams, buss cables, and split quad limbs settle into static equilibrium at the nominal 6.5-inch brace height, concluding the complete kinetic cycle and standing ready for subsequent draw cycles."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "轻量化刚度与动能传输的几何巅峰：Mathews LIFT 33 复合弓研发史诗",
+      "deck": "从霍利斯·艾伦的早期复合滑轮构想到斯巴达工坊的模块化二进制双凸轮，Mathews 历经三十余载拓荒，在 LIFT 33 上将桥式镂空刚度与极致射速推向全新维度。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1966–1992",
+          "title": "滑轮革命与力矩破局：复合储能的黎明",
+          "paragraphs": [
+            "现代射箭工程的范式转移始于二十世纪六十年代中叶。密苏里州发明家霍利斯·艾伦为了解决传统反曲弓在满弓瞄准时负荷过大、且能量转化效率随位移衰减的物理瓶颈，首次在弓臂两端装配了偏心滑轮。这种借助杠杆力矩突变实现弓弦省力的机械结构，直接打破了几个世纪以来的胡克定律线性载荷束缚，并在满弓状态下创造出前所未有的减力谷，使猎手得以在极低持弓拉力下稳定瞄准。",
+            "然而，早期的复合弓饱受质量沉重、滑轮异步偏摆以及弓身剧烈手震的困扰。传统的木质与铸造铝合金弓把在数十磅拉力形变下极易产生侧向扭转，弓弦离开平衡位置时更会诱发不可控的水平共振。直到一九九二年，马特·麦克弗森在威斯康星州斯巴达创立麦修斯射箭公司，并率先推向单偏心轮系统，才真正拉开了现代精密机械复合弓向高同步、低谐振进军的技术大幕。"
+          ],
+          "audioScript": "二十世纪六十年代，偏心滑轮的引入彻底颠覆了传统射箭的物理定律。艾伦的专利打破了胡克定律的线性负荷，创造出令猎手能够在极低拉力下沉着瞄准的减力谷。然而，早期的滑轮系统饱受弓身侧扭与剧烈振动的困扰。直到一九九二年麦修斯工坊成立，一场追逐极致同步与能量转化效率的精密机械革命才正式启航。",
+          "audioUrl": "audio/lift33/story_act1_zh.mp3",
+          "focusPartId": "lift33_bowstring",
+          "focusPartLabel": "BCY-X 编织主弓弦与中央护弦线"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "2017–2023",
+          "title": "骨骼减重与内嵌拓扑：桥式桁架的结构破壁",
+          "paragraphs": [
+            "进入二十一世纪第二个十年，北美猎弓行业陷入了盲目堆叠减震配件而导致整弓负重失衡的泥潭。三十三英寸以上轴距的传统猎弓为了抵抗高磅数下的扭转形变，往往采用厚重的铝合金锻件，导致裸弓重量普遍逼近甚至突破四点七磅。猎手在荒野深山长途跋涉时，过重的器械与外挂凸出的瞄具极大消耗了体能与机动性，微小的外挂磕碰更容易摧毁射击归零点。",
+            "麦修斯研发工程团队决定从底层的受力拓扑出发，彻底重构弓把受力架构。总工程师团队借助有限元应力分析，在航空级七零七五铝合金实心棒料上进行大面积跨距镂空，开创了外凸式的桥式桁架骨架。与此同时，团队打破了百年来附件外挂螺纹连接的传统，研发出将瞄具导轨与减震配重杆直接贯穿插入弓身重心的内嵌燕尾槽接口，在将裸弓压低至三点九四磅的同时，实现了弓体抗扭刚度的几何倍数攀升。"
+          ],
+          "audioScript": "为了打破传统长轴距猎弓笨重易扭的僵局，麦修斯团队采用航空级七零七五铝合金，通过高精度的桥式镂空桁架重塑弓身受力。他们更大胆废除了百年来外挂附件的传统，让瞄具与减震杆直接穿透弓把重心内嵌锁定。裸弓重量骤降至三点九四磅，整弓在极限拉力下的抗扭刚度却达到了前所未有的稳固境界。",
+          "audioUrl": "audio/lift33/story_act2_zh.mp3",
+          "focusPartId": "lift33_riser",
+          "focusPartLabel": "CNC 7075-T6 桥接桁架弓把"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "2023–2024",
+          "title": "二进制双轮与四分弹性体：储能释放的动能狂飙",
+          "paragraphs": [
+            "在 LIFT 33 的动力核心研发中，麦修斯团队将目标锁定在全新的 SwitchWeight-X 二进制同步滑轮系统。与传统固定凸轮需要依赖笨重开弓器更换弓片来调磅不同，工程师在超轻凸轮盘上加工出互锁式可换模块，仅凭两颗高强度螺栓即可在六十、六十五、七十甚至八十磅拉力与拉距之间精确切换，同时通过钛合金止点柱死死抵住副弦，构筑起毫无虚位弹性的岩壁级后止点。",
+            "为了驱动四百格令的碳素箭矢越过每秒三百四十八英尺的速度标杆，上下四分抛物线碳玻复合弓片被置于宽幅铰接铝合金弓片口袋中，形成了超越平行的极限预应力姿态。当射手扣动撒放器、阻铁脱开 Dyneema 环的千分之四秒内，QAD 联动落箭叉受弹簧驱动瞬间向下折叠让位，多达一百四十五点六焦耳的弹性势能近乎零损耗地灌注给箭轴，螺旋尾羽在穿过弓窗时实现了真正意义上的零擦碰自由离弓。"
+          ],
+          "audioScript": "在 LIFT 33 的动力心脏内部，全新的双偏心滑轮系统展现出力矩变换的工程奇迹。射手无需开弓器即可通过轻量化模块变换磅数，并在拉弓尽头获得如岩壁般坚实的瞄准止点。四片超平行碳玻弓片在数毫秒内爆发出一千多牛顿的剧烈回弹，落箭台闪电下翻让位，猎箭以每秒三百四十八英尺的迅猛初速撕裂空气呼啸而出。",
+          "audioUrl": "audio/lift33/story_act3_zh.mp3",
+          "focusPartId": "lift33_upper_cam",
+          "focusPartLabel": "上 SwitchWeight-X 双偏心滑轮与减力模块"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "2024–未来",
+          "title": "旷野试炼与现代军械图腾：复合射箭的新范式",
+          "paragraphs": [
+            "二零二四年全面量产并交付后，LIFT 33 迅速在北美落基山脉的极地耐寒测试与全美立体三维射箭巡回锦标赛中掀起了技术风暴。在零下二十五摄氏度的极寒荒野中，精密滚珠轴承、钛合金轮轴与航空复合弓片经受住了连续数千次满负荷干冷拉放的残酷考验；三十三英寸轴距带来的极佳弦角，让远距离精准瞄准呈现出堪比室内竞标弓的极致稳定性。",
+            "作为现代复合弹道物理学与精密机加结合的巅峰之作，Mathews LIFT 33 不仅代表了轻量化狩猎复合弓的设计极限，更确立了模块化快拆、弓身内嵌附件与极低振动衰减的工业设计新范式。被永久陈列于现代弹道机械典藏馆之中，它以晶莹剔透的七零七五铝材切削光泽与严丝合缝的偏心轮组，向世人静默诉说着人类驯服机械弹性势能的永恒求索。"
+          ],
+          "audioScript": "自二零二四年问世以来，LIFT 33 在落基山脉的冰封荒野与全美巡回赛场中证明了非凡价值。即便处于零下二十五度的极寒绝境，钛合金轴系与复合弓片依然表现出惊人的弹道一致性。它不仅是轻量化狩猎机械的里程碑，更以兼具刚度与速度的纯粹机械美学，确立了新世代复合射箭工程的黄金基准。",
+          "audioUrl": "audio/lift33/story_act4_zh.mp3",
+          "focusPartId": "lift33_drop_away_rest",
+          "focusPartLabel": "QAD Integrate MX 联动落箭台底座"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "7075-T6 桥式拓扑镂空弓把与 Bridge-Lock 内嵌中轴架构",
+          "tag": "结构刚度与低重心接口",
+          "summary": "通过将受力截面重构为外拱形多跨桁架，并在弓身中心线开凿贯穿式精密燕尾滑道，彻底解决了传统复合弓外挂附件破坏横向平衡与扭转失准的隐患，在 3.94 磅超轻裸重下赋予弓把惊人的抗扭刚度。",
+          "focusPartId": "lift33_riser",
+          "focusPartLabel": "CNC 7075-T6 桥接桁架弓把"
+        },
+        {
+          "id": "bt2",
+          "title": "SwitchWeight-X 同步偏心轮与 85% 减力模块化力矩控制",
+          "tag": "二进制可换模块与硬止点",
+          "summary": "双偏心轮采用免开弓器可拆卸模块设计，在实现 85% 深度省力谷的同时利用钛合金止弦立柱抵死副弦，构筑出毫无形变余量的岩壁级后止点，完美消除了上下凸轮异步诱发的垂直箭尾甩动。",
+          "focusPartId": "lift33_upper_cam",
+          "focusPartLabel": "上 SwitchWeight-X 双偏心滑轮与减力模块"
+        },
+        {
+          "id": "bt3",
+          "title": "Integrate MX 燕尾直装落箭台联动下弹避让机构",
+          "tag": "毫秒级避让与零接触飞行",
+          "summary": "直接利用弓把背面 CNC 燕尾导轨安装落箭机构，彻底摒弃侧向连接螺栓；通过副弦张力联动与内置抗震发条，在撒放瞬间以小于 4 毫秒的速度向下翻转让位，确保宽幅猎刃与箭羽实现绝对零擦碰出弓。",
+          "focusPartId": "lift33_drop_away_rest",
+          "focusPartLabel": "QAD Integrate MX 联动落箭台底座"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1966",
+          "title": "偏心滑轮力矩革命确立",
+          "detail": "霍利斯·艾伦提交复合弓基础发明专利，借助偏心杠杆产生满弓减力谷，开创了现代储能射箭机械新纪元。"
+        },
+        {
+          "year": "1992",
+          "title": "麦修斯射箭公司于斯巴达创立",
+          "detail": "马特·麦克弗森在威斯康星州创立 Mathews Archery，并推出 SoloCam 单凸轮技术，奠定现代高平顺射箭工程基石。"
+        },
+        {
+          "year": "2017",
+          "title": "Centergy 平衡架构与双同步轮演进",
+          "detail": "麦修斯推出 Crosscentric 凸轮与优化人机握把重心几何，使复合弓在满弦瞄准时的垂直抖动降低超过三成。"
+        },
+        {
+          "year": "2020",
+          "title": "SwitchWeight 模块化磅数变换技术诞生",
+          "detail": "工程团队攻克免压弓调磅技术瓶颈，通过直接更换凸轮周边模块实现拉重与省力比的高精度微调。"
+        },
+        {
+          "year": "2022",
+          "title": "Bridge-Lock 内嵌式几何配件生态落地",
+          "detail": "研发并普及弓身贯穿式瞄具与减震杆燕尾槽，消除侧向挂载扭矩，显著提升野外苛刻环境下的零位保持能力。"
+        },
+        {
+          "year": "2024",
+          "title": "Mathews LIFT 33 旗舰猎弓全球发布",
+          "detail": "以 3.94 磅超轻裸重、33 英寸黄金猎射轴距与 348 FPS 箭速横空出世，成为现代二进制复合弓工程化集大成者。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "The Geometry of Kinetic Purity: The Engineering Saga of the Mathews LIFT 33",
+      "deck": "From Hollis Allen's foundational compound patents to the precision CNC laboratories of Sparta, Wisconsin, Mathews reinvented the modern hunting bow by synthesizing extreme truss rigidity, ultralight metallurgy, and synchronized binary cams into the LIFT 33.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1966–1992",
+          "title": "The Pulley Revolution: Overcoming Hooke's Linear Constraint",
+          "paragraphs": [
+            "The modern science of archery underwent a seismic transformation in the mid-1960s when Missouri inventor Hollis Wilbur Allen filed his landmark patent for a compound archery bow. For millennia, traditional recurves and longbows were bound by Hooke's linear elasticity, forcing archers to hold the absolute maximum draw force precisely when aiming. Allen countered this by mounting eccentric pulleys to limb tips, utilizing mechanical leverage to alter the torque curve and introduce a dramatic let-off valley at full draw.",
+            "Early compound platforms, however, were plagued by asymmetric cam rollover, violent hand shock, and heavy cast-aluminum handles susceptible to torsional warping. The sport was transformed in 1992 when Matt McPherson founded Mathews Archery in Sparta, Wisconsin. McPherson introduced the SoloCam system, systematically eliminating vertical nock travel and establishing a relentless engineering culture aimed at converting pure kinetic energy into arrow velocity with minimal harmonic disturbance."
+          ],
+          "audioScript": "In the mid-nineteen sixties, Hollis Allen broke centuries of linear physics by mounting eccentric pulleys to an archery bow. The resultant let-off valley freed archers from holding crushing peak weights at full draw. Yet early platforms suffered from violent vibration and asymmetric timing. In nineteen ninety-two, Matt McPherson established Mathews in Wisconsin, embarking on a thirty-year campaign to perfect cam synchronization and dynamic stability.",
+          "audioUrl": "audio/lift33/story_act1_en.mp3",
+          "focusPartId": "lift33_bowstring",
+          "focusPartLabel": "Braided BCY-X Bowstring & Speed Nocks"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "2017–2023",
+          "title": "Topology Optimization: Birth of the Bridged Truss & Inline Dovetails",
+          "paragraphs": [
+            "By the close of the 2010s, modern compound bows risked becoming victims of accessory bloat. Archery hunters trekking across backcountry alpine environments carried setups tipping past six pounds once bulky sights, stabilizers, and quivers were bolted onto exterior riser bushings. These cantilevered masses introduced severe off-axis rotational inertia and rendered sighting zero fragile against trail strikes.",
+            "Mathews engineers met this challenge by subjecting aerospace-grade 7075-T6 aluminum to exhaustive finite element topology optimization. Instead of a solid beam, they carved an aggressively skeletonized bridged truss riser that multiplied torsional stiffness while shearing off critical ounces. Simultaneously, they engineered the Bridge-Lock system, carving high-precision dovetail tracks directly through the center plane of the riser. Sights and carbon stabilizers now slotted directly through the centerline, lowering bare bow weight to an astounding 3.94 pounds while achieving a rock-solid center of mass."
+          ],
+          "audioScript": "To eliminate the cumbersome bulk of traditional hunting platforms, Mathews applied aerospace-grade topology optimization to high-strength seven thousand series aluminum. By milling an ultra-rigid bridged truss and routing internal dovetail slots directly through the riser core, engineers allowed sights and stabilizers to mount in-line along the bow centerline. The bare riser dropped to three point nine four pounds while doubling its resistance to torsional twist.",
+          "audioUrl": "audio/lift33/story_act2_en.mp3",
+          "focusPartId": "lift33_riser",
+          "focusPartLabel": "CNC 7075-T6 Bridged Truss Riser"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "2023–2024",
+          "title": "SwitchWeight-X Mechanics: Synchronized Binary Energy Delivery",
+          "paragraphs": [
+            "At the core of the LIFT 33 sits the SwitchWeight-X binary cam system. Traditionally, altering draw weight or draw length required swapping stiff composite limbs in heavy hydraulic bow presses. Mathews engineers eliminated this compromise by machining interchangeable weight and let-off modules directly into the cam perimeter, permitting precise draw tuning from sixty to eighty pounds while retaining an eighty-five percent let-off and locking a titanium draw-stop solidly against the buss cable.",
+            "To transfer 145.6 joules of energy into a 400-grain carbon hunting arrow at 348 feet per second, split quad carbon-glass limbs were clamped into precision-pivoting pockets past parallel geometry. When the mechanical release sear snaps open, the Dyneema loop is instantly freed; within four milliseconds, the QAD Integrate MX drop-away launcher collapses flush beneath the riser window, ensuring zero vane contact as the arrow accelerates cleanly into free flight."
+          ],
+          "audioScript": "The heart of the LIFT thirty-three is the SwitchWeight-X binary cam assembly. Modular cam pods allow hunters to alter peak draw weights without a bow press, culminating in a concrete back wall secured by titanium stops. Upon release, split quad limbs unleash over one hundred and forty-five joules of kinetic energy, driving a carbon arrow to three hundred and forty-eight feet per second while the rest launcher instantly drops clear.",
+          "audioUrl": "audio/lift33/story_act3_en.mp3",
+          "focusPartId": "lift33_upper_cam",
+          "focusPartLabel": "Upper SwitchWeight-X Binary Cam & Let-Off Module"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "2024–Future",
+          "title": "Backcountry Validation: The Modern Apex of Kinetic Ballistics",
+          "paragraphs": [
+            "Upon its full commercial rollout in 2024, the Mathews LIFT 33 demonstrated overwhelming mechanical dominance across both rigorous sub-zero mountain test programs and high-stakes 3D competitive circuits. Operating under temperatures well below minus twenty degrees Celsius, the titanium axle pins and sealed ABEC-7 bearing races maintained absolute rotational concentricity through tens of thousands of dry-weather draw cycles.",
+            "The bow's 33-inch axle-to-axle footprint produces an optimal string angle at the archer's nose and eye, delivering tournament-level aiming stability within a lightweight backcountry hunting footprint. Now permanently cataloged in the museum collection, the LIFT 33 represents the apex of modern mechanical archery: an uncompromising testament to human ingenuity in taming elastic strain energy and transforming it into pinpoint kinetic impact."
+          ],
+          "audioScript": "Following its launch in twenty twenty-four, the LIFT thirty-three proved its resilience across frozen mountain trails and elite archery championships. Operating seamlessly in harsh sub-zero wilderness, its titanium axles and composite limbs maintained flawless concentricity. Combining the generous string angle of a thirty-three-inch axle span with featherweight speed, it stands as the benchmark for contemporary compound bow engineering.",
+          "audioUrl": "audio/lift33/story_act4_en.mp3",
+          "focusPartId": "lift33_drop_away_rest",
+          "focusPartLabel": "QAD Integrate MX Drop-Away Rest Housing"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "7075-T6 Bridged Truss Riser & Bridge-Lock Centerline Geometry",
+          "tag": "Torsional Rigidity & In-Line Dovetail Mounting",
+          "summary": "By redesigning the riser as an externally arched multi-span truss and boring precision dovetail channels along its centerline, engineers eliminated accessory-induced torque and maintained laser-straight zero retention at an ultralight 3.94-pound bare mass.",
+          "focusPartId": "lift33_riser",
+          "focusPartLabel": "CNC 7075-T6 Bridged Truss Riser"
+        },
+        {
+          "id": "bt2",
+          "title": "SwitchWeight-X Synchronized Binary Cams & 85% Let-Off Module",
+          "tag": "Press-Free Modular Tuning & Solid Back Wall",
+          "summary": "This binary cam platform allows archers to adjust peak draw weight and draw length directly on the perimeter modules without a bow press. Integrated titanium stop pegs arrest against the buss cable to create an unyielding, rock-solid back wall that eliminates vertical nock travel.",
+          "focusPartId": "lift33_upper_cam",
+          "focusPartLabel": "Upper SwitchWeight-X Binary Cam & Let-Off Module"
+        },
+        {
+          "id": "bt3",
+          "title": "Integrate MX Dovetail Direct-Mount Drop-Away Mechanism",
+          "tag": "Sub-4ms Rapid Clearance & Zero Vane Contact",
+          "summary": "Mounting directly to the rear CNC dovetail of the riser without external bracket bolts, this rest utilizes cable-driven synchronization and an internal clock-spring to snap the V-launcher down in under 4 milliseconds, ensuring flawless broadhead and helical fletching clearance.",
+          "focusPartId": "lift33_drop_away_rest",
+          "focusPartLabel": "QAD Integrate MX Drop-Away Rest Housing"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1966",
+          "title": "Compound Levering Mechanics Patented",
+          "detail": "Hollis Wilbur Allen files the foundational patent for a compound archery bow, introducing eccentric pulleys to create the mechanical let-off valley."
+        },
+        {
+          "year": "1992",
+          "title": "Founding of Mathews Archery",
+          "detail": "Matt McPherson founds Mathews Archery in Sparta, Wisconsin, debuting the revolutionary SoloCam single-cam platform."
+        },
+        {
+          "year": "2017",
+          "title": "Centergy Grip & Crosscentric Architecture",
+          "detail": "Mathews introduces low-torque grip geometry and dual synchronized perimeter-weighted cam architectures to minimize aiming oscillation."
+        },
+        {
+          "year": "2020",
+          "title": "SwitchWeight Modular Cam Technology",
+          "detail": "Engineers unveil modular weight-changing cam pods, enabling peak weight and let-off adjustments without changing bow limbs."
+        },
+        {
+          "year": "2022",
+          "title": "Bridge-Lock In-Riser Accessory System",
+          "detail": "Through-riser dovetail integration is introduced, eliminating conventional cantilever mounting hardware for sights and stabilizers."
+        },
+        {
+          "year": "2024",
+          "title": "Mathews LIFT 33 Worldwide Debut",
+          "detail": "The LIFT 33 is released, achieving 348 FPS IBO speeds with an ultra-light 3.94-pound bare weight and SwitchWeight-X binary cams."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "lift33_riser": {
+      "partId": "lift33_riser",
+      "bomCode": "R-01",
+      "calloutLabelEn": "Bridged Truss Riser",
+      "zh": {
+        "roleTag": "核心承力骨架 · Bridge-Lock 内嵌与低重心箭窗",
+        "overview": "这是整弓的基准承力框架，贯穿于上下弓片袋与各附件安装基座之间。它为偏心滑轮组、缆绳系统以及瞄具提供高刚性几何依托。",
+        "craftAndMaterial": "采用整块航空级 7075-T6 铝合金五轴联动精密铣削成型，表面经高耐磨硬质阳极氧化处理。独特的双向平行抗扭桁架与三角形减重格栅，将整机本体重量压缩至一点九三千克。",
+        "kinematicRole": "在七段射击全周期中作为静止的绝对测量基准，吸收偏心轮与弓片传递的轴向应力；在分解模拟中它是最终保留的零级核心骨架，不发生爆炸平移。",
+        "designHighlight": "通过将 Bridge-Lock 燕尾导轨直接穿透弓把轴线，消除了外挂配件引入的侧向悬臂力矩，使开弓晃动显著降低。",
+        "audioScript": "眼前的弓把由单块七零七五铝材五轴联动雕琢而成。独特的三角形桁架结构不仅抗扭刚性极强，更将整弓裸重压低到两千克以内。嵌入式导轨让瞄具直接穿透弓身中心线，彻底抹平了震颤悬臂。",
+        "audioUrl": "audio/lift33/parts/lift33_riser_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Core Structural Datum · Integrated Bridge-Lock Mounting",
+        "overview": "This monolithic bridged frame serves as the core rigid skeleton connecting upper and lower limb pockets. It provides absolute alignment for the binary cam harness, arrow rest, and aiming sights.",
+        "craftAndMaterial": "Five-axis CNC machined from solid 7075-T6 aircraft aluminum with hard-coat anodizing. Double-bridged skeletal truss cutouts strip total riser mass down to 1.93 kilograms while boosting torsional stiffness.",
+        "kinematicRole": "Acts as the rigid stationary baseline across all seven firing phases, resisting flex under 70-pound limb tension; remains stationary at zero offset during full disassembly.",
+        "designHighlight": "Features through-riser Bridge-Lock dovetails that place the sight and stabilizer directly on the riser centerline, eliminating off-axis torque common with surface-bolted brackets.",
+        "audioScript": "Machined from a single billet of aircraft-grade 7075 aluminum, this bridged truss riser forms the bow's rigid backbone. Internal through-pocket cutouts house the sight and stabilizer on center, completely neutralizing off-axis cant and holding weight under two kilograms.",
+        "audioUrl": "audio/lift33/parts/lift33_riser_en.mp3"
+      }
+    },
+    "lift33_grip": {
+      "partId": "lift33_grip",
+      "bomCode": "R-02",
+      "calloutLabelEn": "Engage Ergonomic Grip",
+      "zh": {
+        "roleTag": "推弓接触基准 · 低扭矩低摩擦复合包胶",
+        "overview": "贴合安装于弓把喉部中心线位置，直接承载射手持弓手虎口的推力。它在满弓持弓与瞬间释放时确立唯一且可重复的受力截面。",
+        "craftAndMaterial": "采用高抗冲工程聚合物骨架二次注塑热塑性弹性体胶面，具备微纹理防滑吸汗槽。窄颈锥度轮廓旨在减少手掌肉垫与弓身的接触面积。",
+        "kinematicRole": "在拉开至八十五百分比省力谷时将手掌推力恒定汇聚在射面中心；在拆卸演示进度百分之六至百分之二十八时向左后侧分离退出。",
+        "designHighlight": "极为狭窄的背脊曲面强制射手以正确的虎口骨骼受力，彻底避免手掌脂肪组织在微小旋转中给弓把施加侧向力矩。",
+        "audioScript": "这块 Engage 人机工程握把采用双色注塑成型。极为收窄的脊背轮廓能迫使手掌骨骼笔直对准弓把轴线，在八十五百分比省力谷持弓时，从源头上切断了手腕扭力对箭矢弹道的干扰。",
+        "audioUrl": "audio/lift33/parts/lift33_grip_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Low-Torque Interface · Precision Thumb-Web Contact",
+        "overview": "Mounts over the narrow throat of the riser directly against the archer's hand web. It provides a repeatable, neutral interface during full draw and dynamic release.",
+        "craftAndMaterial": "Engineered polymer core overmolded with textured thermal elastomer for slip resistance. The thin profile minimizes contact area between soft palm tissue and the aluminum core.",
+        "kinematicRole": "Directs linear pushing force along the riser centerline through full 70-pound peak draw and valley holding; translates left-rearward between 6% and 28% disassembly progress.",
+        "designHighlight": "The steep narrow edge profile forces proper skeletal hand placement, virtually eliminating hand-induced riser torque when holding in the eighty-five percent let-off valley.",
+        "audioScript": "The Engage grip utilizes a slim profile overmolded with textured elastomer. By forcing the hand's pressure onto the skeletal bone rather than soft muscle, it eliminates grip torque and ensures the arrow releases cleanly along the true shot plane.",
+        "audioUrl": "audio/lift33/parts/lift33_grip_en.mp3"
+      }
+    },
+    "lift33_upper_pocket": {
+      "partId": "lift33_upper_pocket",
+      "bomCode": "R-03",
+      "calloutLabelEn": "Upper Limb Pocket",
+      "zh": {
+        "roleTag": "上弓片枢转铰座 · 钛合金预紧调磅轴承孔",
+        "overview": "牢固安装于弓把上端，作为上部两片四分碳玻叠层弓片根部的精密限位座。它通过主调磅螺栓调节弓片工作倾角，精确匹配设定拉力。",
+        "craftAndMaterial": "由航空铝合金整体铣削成双轨分叉卡槽，表面进行哑光防眩黑化处理。槽内配有自润滑工程垫片以消除金属与复合材料片根的微动摩擦。",
+        "kinematicRole": "在拉弓时承受弓片根部的巨大翻转力矩并微量绕轴枢转；在拆卸进度百分之十四至百分之四十二时沿倾斜路径向上移出。",
+        "designHighlight": "创新的零间隙双槽铰轴结构确保弓片在连续上千次循环变形中始终绝对居中，无任何横向间隙与侧滑旷量。",
+        "audioScript": "上弓片袋犹如坚固的铰链底座，用零间隙公差紧密锁死上部分叉弓片。顶部粗壮的内六角螺栓可改变弓片预弯曲角度，以精细微调峰值拉力，并消弭大磅数工作下的侧偏磨损。",
+        "audioUrl": "audio/lift33/parts/lift33_upper_pocket_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Upper Limb Pivot Cradle · Precision Weight Adjustment",
+        "overview": "Bolts securely to the riser upper terminus, capturing the root tangs of the split quad limbs. It regulates pre-load flex angle via a high-tensile socket-head weight bolt.",
+        "craftAndMaterial": "Precision CNC milled aluminum alloy with matte black finish and self-lubricating synthetic sleeve inserts. Dual-channel slot walls maintain zero-tolerance limb alignment.",
+        "kinematicRole": "Pivots minutely under draw load while clamping the flexed limbs securely against thirty-degree axial moment arms; detaches upward between 14% and 42% disassembly progress.",
+        "designHighlight": "Zero-tolerance limb pocket alignment isolates limb butt movement entirely, eliminating side play throughout the entire draw and dry-fire recovery cycles.",
+        "audioScript": "Machined to exact aircraft tolerances, the upper limb pocket cradles the dual limb butts without a fraction of play. Turning the heavy drive bolt alters the limb angle, allowing precise draw weight tuning while keeping the limb tips strictly planar.",
+        "audioUrl": "audio/lift33/parts/lift33_upper_pocket_en.mp3"
+      }
+    },
+    "lift33_lower_pocket": {
+      "partId": "lift33_lower_pocket",
+      "bomCode": "R-04",
+      "calloutLabelEn": "Lower Limb Pocket",
+      "zh": {
+        "roleTag": "下弓片枢转铰座 · 轴距对称受力定位基准",
+        "overview": "对称布置在弓把底端，夹持下四分碳玻弓片根部并连接底调磅螺栓。它保证下轮组与上轮组在几何空间上的严格对称平衡。",
+        "craftAndMaterial": "锻铣高强铝合金主体，经硬质阳极黑化并集成精密枢轴衬套。底座配合阶梯止推垫片，分散下弓片大曲度回弹瞬间的压应力。",
+        "kinematicRole": "在撒放做功阶段作为下轮系的动态受力基座，消除震波对下弓臂的晃动；在百分之十四至百分之四十二拆卸进度中向下方分离。",
+        "designHighlight": "几何轮廓与上片袋呈精确动力学配对，确保三十三英寸轮轴距在受拉与释放全程维持严格等应力形变。",
+        "audioScript": "下弓片袋在结构上与上片袋形成完全对称的动力学镜像。它牢牢束缚住下弓片根部，不仅分担满弓时高达七十磅的强劲剪切力，还保障下偏心轮在拉弓时具有与上轮完全一致的转动轨迹。",
+        "audioUrl": "audio/lift33/parts/lift33_lower_pocket_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Lower Limb Pivot Cradle · Symmetrical Pre-Load Anchor",
+        "overview": "Mirrors the upper limb pocket at the lower extremity of the riser to retain the split limbs. It maintains exact cam tracking symmetry across the 33-inch axle-to-axle plane.",
+        "craftAndMaterial": "Forged and CNC finished aerospace aluminum with anodized coat. Features composite interface shims that prevent micro-galling between the carbon limbs and alloy walls.",
+        "kinematicRole": "Anchors lower limb roots under 145.6 joules of total bow energy release; translates downward and rearward between 14% and 42% disassembly progress.",
+        "designHighlight": "Symmetrically balanced against the upper pocket to ensure both limb sets store and release elastic energy in absolute synchrony without nock height drift.",
+        "audioScript": "Positioned at the base of the riser, the lower limb pocket mirrors the upper assembly perfectly. It withstands massive bending stress during the draw cycle, guiding the lower limbs to track identical to the upper pair across the thirty-three-inch span.",
+        "audioUrl": "audio/lift33/parts/lift33_lower_pocket_en.mp3"
+      }
+    },
+    "lift33_cable_guard": {
+      "partId": "lift33_cable_guard",
+      "bomCode": "R-05",
+      "calloutLabelEn": "Roller Cable Guard",
+      "zh": {
+        "roleTag": "侧向索系导向机构 · 桥接碳杆与双滚轮导槽",
+        "overview": "悬臂插装在握把上方的专用通孔内，末端双轮横向拉开两组副弦与控制弦。它使索线完全避开箭道中心，为箭支与箭羽让出充足飞行空间。",
+        "craftAndMaterial": "主杆由高模量碳纤维实心棒精密磨削制成，末端框架安装不锈钢滑轮与双列微型密封滚珠轴承，耐磨导槽覆盖低阻特氟龙涂层。",
+        "kinematicRole": "拉弓时副弦拉力增大，滚轮顺畅滚动并引导副弦滑移，阻止缆线偏摆；在拆卸进度百分之二十二至百分之五十四时向右侧平移脱出。",
+        "designHighlight": "碳纤维刚性悬臂有效吸纳侧向扭矩，配合双滚轮将传统滑块的滑动摩擦转化为滚动摩擦，将摩擦力损耗降低近百分之八十。",
+        "audioScript": "这根碳纤维分弦杆连接着双密封轴承滚轮。它将张力巨大的两根副弦侧向拨离一点七厘米，为高速出膛的猎箭羽片开辟畅通无阻的通道，更将滑弦摩擦损耗降到了微不足道的水平。",
+        "audioUrl": "audio/lift33/parts/lift33_cable_guard_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Lateral Cable Offset System · Carbon Rod & Sealed Rollers",
+        "overview": "Projects rearward from the middle of the riser above the arrow shelf. It guides the buss and control cables laterally away from the arrow flight corridor.",
+        "craftAndMaterial": "Constructed from an 8.5-millimeter high-modulus carbon rod tipped with CNC stainless housing, dual sealed ball bearings, and grooved low-friction pulleys.",
+        "kinematicRole": "Maintains lateral cable clearance while pulleys spin freely as the harness shifts during the draw; separates laterally between 22% and 54% disassembly progress.",
+        "designHighlight": "Replaces standard friction sliders with twin rolling elements, reducing cable wear and draw-cycle parasitic drag by up to eighty percent.",
+        "audioScript": "Extending from the riser shelf, this high-modulus carbon cable guard terminates in twin bearing-supported rollers. By rolling instead of sliding, it deflects the buss cables clear of the arrow vanes while recovering precious energy during the draw.",
+        "audioUrl": "audio/lift33/parts/lift33_cable_guard_en.mp3"
+      }
+    },
+    "lift33_stabilizer": {
+      "partId": "lift33_stabilizer",
+      "bomCode": "R-06",
+      "calloutLabelEn": "10\" Carbon Stabilizer",
+      "zh": {
+        "roleTag": "前置抑振稳定杆 · 谐波减震环与配重端头",
+        "overview": "通过 Bridge-Lock 锁定座内嵌锁紧在下弓把前方。它通过将质量延伸向前下方，大幅提升瞄准时的转动惯量并吸收撒放残余冲击。",
+        "craftAndMaterial": "采用高刚度 3K 编织碳纤维薄壁管身，前端配有丁腈橡胶谐波阻尼块和多片可拆卸不锈钢配重片，外表呈消光碳纤纹理。",
+        "kinematicRole": "在瞄准阶段抑制微小抖动，在撒放瞬间通过前端弹性体谐波震动衰减残余能量；在百分之八至百分之三十四拆卸进度中向前平移拔出。",
+        "designHighlight": "直接穿过弓身中心线的直插式接口省去了外接笨重的转接快拆头，使整弓重心前移且结构一体度极高。",
+        "audioScript": "这根十英寸碳纤维稳定杆直接插装在弓把前端。高刚度碳管与前端的橡胶谐波减震环相互配合，在满弓瞄准时牢牢稳住准心，并在箭矢离弦后将多余的爆震微颤在瞬间吸收殆尽。",
+        "audioUrl": "audio/lift33/parts/lift33_stabilizer_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Forward Inertia Anchor · Harmonic Tuner & Stacked Weights",
+        "overview": "Mounts inline into the lower riser through the integrated Bridge-Lock channel. It extends bow mass forward to increase roll inertia and absorb post-shot resonance.",
+        "craftAndMaterial": "Constructed of woven 3K carbon composite tube capped with CNC stainless steel end caps, nitrile harmonic damper rings, and modular disc weights.",
+        "kinematicRole": "Stabilizes bow pitch during anchor and damps recoil impulse during the arrow release phase; decouples forward between 8% and 34% disassembly progress.",
+        "designHighlight": "The through-riser dovetail mounting eliminates bulky external quick-disconnect brackets, aligning stabilizing mass precisely along the weapon's longitudinal axis.",
+        "audioScript": "Directly integrated through the bow frame, this ten-inch carbon stabilizer shifts critical mass forward. Tuned rubber harmonic dampeners and modular steel weights suppress muzzle jump, holding your sight pin dead steady in the wind.",
+        "audioUrl": "audio/lift33/parts/lift33_stabilizer_en.mp3"
+      }
+    },
+    "lift33_upper_limbs": {
+      "partId": "lift33_upper_limbs",
+      "bomCode": "C-01",
+      "calloutLabelEn": "Split Upper Limbs",
+      "zh": {
+        "roleTag": "超平行主储能弓臂 · 双分叉四片碳玻叠层",
+        "overview": "安装在上弓片袋与上滑轮轴之间，左右各包含一对独立弯折的复合叶片。它们在拉满弓时呈现超越平行的极致后掠姿态。",
+        "craftAndMaterial": "由预浸高模量单向玻璃纤维与表面 3K 碳纤维布在高温高压模具中一体层压成形。边缘经过无应力集中抛光倒角处理。",
+        "kinematicRole": "拉弦阶段向上向后大幅下压形变，储存约七十三焦耳的弹性势能；在撒放后四毫秒内剧烈回弹恢复；在百分之十六至百分之四十八拆卸进度中向上分离。",
+        "designHighlight": "独特的超平行几何构型使得回弹时上下弓片的垂直分力完美互相抵消，实现了近乎零手部跳动和极低噪音。",
+        "audioScript": "呈对称分叉的上弓片采用航空级碳玻复合材料模压成型。在开弓过程中，它们被强制弯曲成超平行弧线，将数十公斤的拉力封印在微米级的纤维形变中，释放时更以反向对冲抵消回弹冲击。",
+        "audioUrl": "audio/lift33/parts/lift33_upper_limbs_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Beyond-Parallel Elastic Storage · Quad-Layer Carbon Composite",
+        "overview": "Spans between the upper limb pocket and the upper cam axle in a dual-split arrangement. It forms the top flexure engine storing potential energy.",
+        "craftAndMaterial": "Continuous unidirectional fiberglass and 3K carbon weave high-pressure hot-press laminated with toughened epoxy resin. Edges are contoured to prevent interlaminar shear.",
+        "kinematicRole": "Flexes downward and rearward past horizontal during the 27.5 cm draw to store half the system energy; springs back in 4 ms; separates upward between 16% and 48% disassembly.",
+        "designHighlight": "Beyond-parallel limb orientation causes equal-and-opposite vertical vector cancellation upon release, completely eliminating upward hand shock.",
+        "audioScript": "These split upper limbs represent the power plant of the Mathews system. High-pressure carbon and fiberglass laminates flex past parallel at full draw, trapping massive kinetic energy that releases with near-zero residual vibration.",
+        "audioUrl": "audio/lift33/parts/lift33_upper_limbs_en.mp3"
+      }
+    },
+    "lift33_lower_limbs": {
+      "partId": "lift33_lower_limbs",
+      "bomCode": "C-02",
+      "calloutLabelEn": "Split Lower Limbs",
+      "zh": {
+        "roleTag": "下部能量发生核心 · 高对称抗扭复合弓片",
+        "overview": "布置在下弓片袋与下滑轮轴之间，与上弓片保持严格匹配的挠度与弹性模量。它承载着下轮组的高速做功回转反作用力。",
+        "craftAndMaterial": "材料与上片一致，采用超强热固性碳纤玻纤叠层，表面附有数码迷彩或哑黑耐磨涂层。梢耳经过高精度扩孔以容纳钛合金轴系套筒。",
+        "kinematicRole": "与上弓片同步对称下压弯曲并瞬态释放，共同输出高达一百四十五点六焦耳的总动能；在百分之十六至百分之四十八拆卸进度中向下分离。",
+        "designHighlight": "宽间距分叉轮廓为中央大直径偏心轮提供了充裕的运转槽位，在承受侧向引弦分力时表现出极强的抗扭转刚度。",
+        "audioScript": "与上方完全呼应的下弓片组由相同的严苛工艺锻造而成。双片宽距布局犹如稳固的门架，牢固支撑住高速旋转的下偏心轮，即使面对大张力拉弓也能彻底杜绝弓臂扭曲侧倾。",
+        "audioUrl": "audio/lift33/parts/lift33_lower_limbs_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Lower Elastic Powerplant · Matched Quad-Layer Limbs",
+        "overview": "Connects the lower limb pocket to the lower cam axle, paired in strict deflection ratings with the upper limbs. It delivers dynamic thrust to drive the lower harness.",
+        "craftAndMaterial": "Engineered hot-press fiberglass and carbon composite laminate with protective anti-delamination coating. Cam axle pin bores are precision CNC reamed.",
+        "kinematicRole": "Bends synchronously with the upper limbs, releasing stored potential to propel the 400-grain arrow to 348 feet per second; separates downward between 16% and 48% disassembly.",
+        "designHighlight": "The wide-stance split geometry provides superior torsional resistance against cable offset forces while housing the oversized SwitchWeight-X cam without binding.",
+        "audioScript": "Strictly deflection-matched to the upper set, these split lower limbs complete the symmetrical energy loop. Their wide footprint resists the twisting forces exerted by the offset cables, driving the cam forward along a razor-straight path.",
+        "audioUrl": "audio/lift33/parts/lift33_lower_limbs_en.mp3"
+      }
+    },
+    "lift33_upper_cam": {
+      "partId": "lift33_upper_cam",
+      "bomCode": "C-03",
+      "calloutLabelEn": "Upper SwitchWeight Cam",
+      "zh": {
+        "roleTag": "同步偏心二进制凸轮 · 85%减力模块与止点柱",
+        "overview": "枢接在上弓片梢端的钛合金轮轴上，是主弦与分叉副弦的关键动力变换构件。其上搭载可调拉距模块与抵死副弦的钛合金拉距止点柱。",
+        "craftAndMaterial": "由整块 7075-T6 高强度铝合金 CNC 铣出深导向弦槽，并施以金铜色耐磨硬质阳极氧化，配装钛合金止弦限位柱螺丝。",
+        "kinematicRole": "拉弓时由主弦拉动绕轴逆向旋转九十五度，并借由偏心力臂减免拉力进入省力谷；在百分之二十二至百分之五十六拆卸进度中斜向左上移开。",
+        "designHighlight": "将拉距与拉力调整集成在独立的 SwitchWeight 模块中，射手无需弓压机拆解弓片即可快速调整磅数与拉距设置。",
+        "audioScript": "上方这枚古铜色 SwitchWeight-X 偏心轮由整块航空铝铣制。偏心槽道在开弓后段迅速转入极佳的八十五百分比减力谷，凸出的钛合金止点柱硬生生抵住副弦，提供如同撞墙一般的极稳瞄准手感。",
+        "audioUrl": "audio/lift33/parts/lift33_upper_cam_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Synchronized Binary Cam · 85% Let-Off & Solid Wall Stop",
+        "overview": "Pivots on the upper titanium axle within the upper limb tips, routing the bowstring and buss cables. It carries the modular SwitchWeight let-off module and cable draw stop.",
+        "craftAndMaterial": "CNC milled from 7075-T6 aluminum with deep string tracks and bronze-gold anodized finish. Fitted with a titanium mechanical cable stop peg.",
+        "kinematicRole": "Rotates 95 degrees during the draw stroke, flexing the limbs and shifting leverage into the 85% let-off valley; separates up and left between 22% and 56% disassembly.",
+        "designHighlight": "The SwitchWeight module system allows bowhunters to alter peak draw weight and draw length directly on the cam without needing a bow press to swap limbs.",
+        "audioScript": "Crafted from 7075 aluminum in an unmistakable bronze finish, this upper SwitchWeight cam dictates the draw cycle. Its aggressive ramp yields an eighty-five percent let-off, locking against the buss cable with a titanium peg for a dead-solid back wall.",
+        "audioUrl": "audio/lift33/parts/lift33_upper_cam_en.mp3"
+      }
+    },
+    "lift33_lower_cam": {
+      "partId": "lift33_lower_cam",
+      "bomCode": "C-04",
+      "calloutLabelEn": "Lower SwitchWeight Cam",
+      "zh": {
+        "roleTag": "从动镜像偏心凸轮 · 消除箭尾垂直游离",
+        "overview": "安装在下弓片梢轴上，与上滑轮通过控制副弦强耦合运转。它负责在开弓和击发全程镜像同步上轮的角位移与绕弦行程。",
+        "craftAndMaterial": "采用高精度 7075 铝雕刻成深凹弧度防脱轨弦槽，表面附着极硬耐磨氧化皮膜，核心孔与微型轴承精密过盈配合。",
+        "kinematicRole": "拉弦时与上轮以精密相反的旋转方向旋转九十五度，释放时同步回弹；在百分之二十二至百分之五十六拆卸进度中向左下方分离脱出。",
+        "designHighlight": "严格计算的凸轮展成曲线使得在整个撒放冲程中，主弦中部的搭箭点保持水平绝对直线推进，消除垂直方向跳动。",
+        "audioScript": "下偏心轮与上偏心轮构成了严密的二进制咬合体系。二者角位移通过副弦死死捆绑，确保不论拉弓还是释放，搭箭点都能保持绝对的水平直线推进，杜绝箭尾在空中上下乱摆。",
+        "audioUrl": "audio/lift33/parts/lift33_lower_cam_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Slaved Synchronous Cam · Level Nock Travel Geometry",
+        "overview": "Rotates on the lower limb tips, coupled in lockstep with the upper cam via the control harness. It mirrors the upper profile to eliminate vertical nock deviation.",
+        "craftAndMaterial": "Five-axis milled 7075-T6 billet aluminum featuring deep anti-derailment string grooves and an anodized surface hardened against high-tension cable wear.",
+        "kinematicRole": "Spins in reverse-mirror unison across a 95-degree rotation during draw; translates away downward and rearward between 22% and 56% disassembly progress.",
+        "designHighlight": "Engineered cam perimeter profile forces both payout and take-up tracks to cycle evenly, yielding dead-level nock travel for pinpoint broadhead grouping.",
+        "audioScript": "Mirroring the top cam, the lower SwitchWeight cam works in continuous binary lockstep. Controlled by interconnected buss cables, it ensures perfectly level horizontal nock travel, allowing broadhead-tipped arrows to slice cleanly through the air.",
+        "audioUrl": "audio/lift33/parts/lift33_lower_cam_en.mp3"
+      }
+    },
+    "lift33_cam_axles": {
+      "partId": "lift33_cam_axles",
+      "bomCode": "C-05",
+      "calloutLabelEn": "Titanium Axle & Bearings",
+      "zh": {
+        "roleTag": "轮轴支撑总成 · 钛合金无心磨轴配密封轴承",
+        "overview": "分别横穿上下两组四分弓片梢部与偏心轮中心孔，支撑滑轮高速回转。两端由精密垫片和防脱卡簧可靠限位锁固。",
+        "craftAndMaterial": "轴体由六铝四钒钛合金精密无心磨削加工制成，轴承采用双列 ABEC-7 级高速不锈钢密封滚珠轴承，填注长效合成润滑脂。",
+        "kinematicRole": "在击发瞬间承受剧烈的径向冲击荷载并为偏心轮提供零旷量旋转支点；在拆卸进度百分之二十四至百分之五十八时向轴向右侧拔出。",
+        "designHighlight": "采用高强度钛合金替代传统低碳钢，使梢部运动件总惯性质量减轻了近百分之三十，直接提振了整弓箭速。",
+        "audioScript": "这根无心磨削的钛合金主轴贯穿了弓片梢耳与滑轮轴心。内部密封的工业级滚珠轴承几乎毫无摩擦，钛合金卓越的轻量化特性极大地削减了梢端旋转惯量，为突破每秒三百四十八英尺箭速奠定了基础。",
+        "audioUrl": "audio/lift33/parts/lift33_cam_axles_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Cam Pivot Centerline · Titanium Spindle & ABEC-7 Bearings",
+        "overview": "Passes through the tips of the split limbs and the center hub of each cam. It provides a low-friction structural pivot under hundreds of pounds of string tension.",
+        "craftAndMaterial": "Centerless ground Ti-6Al-4V Grade 5 titanium alloy spindle mated to paired ABEC-7 stainless steel sealed deep-groove ball bearings with synthetic grease.",
+        "kinematicRole": "Withstands massive radial g-forces and bending loads during the 4 ms arrow launch phase; pulls axially outward between 24% and 58% disassembly progress.",
+        "designHighlight": "Swapping steel for aerospace titanium strips valuable rotating mass from the extreme limb tips, boosting IBO arrow velocity by several critical feet per second.",
+        "audioScript": "These centerless ground titanium axles and ABEC-7 precision bearings carry the cams. By replacing heavy steel pins with aerospace titanium, Mathews shaved critical ounces from the limb tips, squeezing maximum speed from every single grain of arrow weight.",
+        "audioUrl": "audio/lift33/parts/lift33_cam_axles_en.mp3"
+      }
+    },
+    "lift33_bowstring": {
+      "partId": "lift33_bowstring",
+      "bomCode": "C-06",
+      "calloutLabelEn": "Braided BCY-X Bowstring",
+      "zh": {
+        "roleTag": "高模量发射主弦 · 超低延展与双加速消音豆",
+        "overview": "悬挂在上下偏心轮的主放弦槽之间，正中设有搭箭点与 D 环供撒放器挂接。它是射手储能输入与动能向箭矢释放的唯一柔性媒介。",
+        "craftAndMaterial": "采用高模量聚乙烯与 Vectran 混纺的 BCY-X 弦线高张力紧密编织，中央缠绕耐磨护弦线，上下端对称卡装金属加速消音豆。",
+        "kinematicRole": "拉弦时向后位移二十七点五厘米带动偏心轮转动，撒放后在四毫秒内将箭加速至三百四十八英尺每秒；在拆卸进度百分之六至百分之三十时向后脱离。",
+        "designHighlight": "经过万次预拉伸与冷定型工序，彻底消除了由温差与长期高负荷存放导致的弓弦蠕变拉伸，保证窥孔永远不转偏。",
+        "audioScript": "采用高科技纤维混纺而成的 BCY-X 主弓弦几乎具有零蠕变特性。中央结实的护弦线耐磨抗拉，上下两侧镶嵌的黄铜加速豆能在回弹终点平抑弦体微颤，将一百多焦耳的能量悉数推进箭尾。",
+        "audioUrl": "audio/lift33/parts/lift33_bowstring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Primary Kinetic Transfer Line · Zero-Creep Vectran-Blend String",
+        "overview": "Stretches between the payout tracks of both SwitchWeight cams, carrying the center nocking point and D-loop. It connects the archer's pull directly to arrow propulsion.",
+        "craftAndMaterial": "Pre-stretched braided BCY-X fibers blending HMPE and Vectran yarns, wrapped with abrasion-resistant center serving and twin brass speed nocks.",
+        "kinematicRole": "Drawn rearward 27.5 cm to rotate cams and compress limbs, then snaps forward to launch the 400-grain arrow; lifts away rearward between 6% and 30% disassembly.",
+        "designHighlight": "Factory pre-stretched under high tension to eliminate thermal stretching, guaranteeing that your peep sight stays perfectly aligned across thousands of shots.",
+        "audioScript": "Braided from ultra-high-modulus BCY-X fiber, this bowstring exhibits zero creep under tension. Twin brass speed nocks near each cam yield extra velocity, transferring over a hundred and forty joules directly into the arrow shaft.",
+        "audioUrl": "audio/lift33/parts/lift33_bowstring_en.mp3"
+      }
+    },
+    "lift33_yoke_cables": {
+      "partId": "lift33_yoke_cables",
+      "bomCode": "C-07",
+      "calloutLabelEn": "Buss & Control Cables",
+      "zh": {
+        "roleTag": "双凸轮从动传动索系 · 分叉 Y 型抗轮倾拉索",
+        "overview": "由副弦与控制弦交叉布置在弓把后侧，穿过分弦滚轮连接上下轮轴与导向槽。它们强迫双偏心轮以机械刚性维持绝对同步角位移。",
+        "craftAndMaterial": "同为主模量多股复合编织索线，两端经机械紧密打圈包裹防护线，Y 型分叉梢端通过旋转绞数调节两臂的微小张力差。",
+        "kinematicRole": "在拉弓全程拉紧并卷入对应凸轮卷索槽，带动弓片最大化弯曲，并维持双轮步调一致；在拆卸进度百分之十二至百分之四十二时向侧后移开。",
+        "designHighlight": "两端分叉的 Y 型索头直接跨接在滑轮轴左右两侧，技术人员仅需对单边分叉拧转半圈，就能在几秒内完全矫正滑轮倾斜角。",
+        "audioScript": "这套副弦与控制弦构成了整弓的传动中枢。它们从分弦滚轮穿过并分叉扣住轮轴两侧，强制上下滑轮保持绝对同步运转，技术人员更可以通过旋转分叉索头，直接微调消除任何侧向轮倾。",
+        "audioUrl": "audio/lift33/parts/lift33_yoke_cables_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Binary Cam Harness System · Split-Yoke Lean Control Cables",
+        "overview": "Crosses diagonally behind the riser through the roller guard to link both SwitchWeight cams. It mechanically slaves the rotation of one cam directly to the other.",
+        "craftAndMaterial": "Multi-strand pre-stretched BCY-X construction with durable end loop servings. The split buss yoke splits over the cam axle ends for fine individual twist adjustment.",
+        "kinematicRole": "Takes up cable wrap as limbs flex, equalizing strain across upper and lower tips and driving synchronous rotation; disengages between 12% and 42% disassembly.",
+        "designHighlight": "Split-yoke anchors clamp both sides of the cam axle, allowing bow technicians to tune out lateral cam lean simply by adding half-twists to the cable legs.",
+        "audioScript": "These buss and control cables form the nerve center of the binary cam design. Routed across the twin roller guard, they keep both cams turning in absolute synchronization while enabling precision cam-lean adjustments through the split-yoke loops.",
+        "audioUrl": "audio/lift33/parts/lift33_yoke_cables_en.mp3"
+      }
+    },
+    "lift33_limb_dampeners": {
+      "partId": "lift33_limb_dampeners",
+      "bomCode": "C-08",
+      "calloutLabelEn": "Limb & String Dampeners",
+      "zh": {
+        "roleTag": "高频余振阻尼吸收 · 止弦杯瞬态刹停",
+        "overview": "该组件包含横跨上下四分弓片间隙的桥接弹性体减震块，以及固定于下部弓身伸向主弦的碳纤止弦杆橡胶杯。它们协同在猎箭离弦瞬间耗散多余动能，将射击余振与声响抑制至隐形狩猎标准。",
+        "craftAndMaterial": "采用高阻尼聚氨酯弹性体配合内部悬浮金属惯性配重，止弦杆身由轻量化碳纤维管包裹，接触杯为抗撕裂硅胶。双凸耳燕尾桥接造型精确卡入弓片间隙，无需螺栓即可提供强劲剪切阻尼。",
+        "kinematicRole": "拉弓与蓄能阶段随弓片受力弯曲而微量位移；撒放第5阶段主弦急速回冲归位至6.5英寸弓档时，止弦杯瞬间吸收主弦纵向动量，弹性块耗散高频振颤。分解时在10%至36%首批滑移脱离。",
+        "designHighlight": "复合弓撒放时超过20%的储能会转化为余振与声波。桥接减震结构打破了单片振动驻波，直接将高频残余冲击吸收在弓片源头，防止声波在野外猎场惊扰猎物。",
+        "audioScript": "请看这组桥接减震块与止弦杯。当箭矢以每秒一百零六米射出的瞬间，主弦会猛烈撞击止弦胶杯并立刻静止，而四片弓片间的弹性体则迅速吃掉所有高频蜂鸣，让整弓在撒放后瞬间归于极度寂静。",
+        "audioUrl": "audio/lift33/parts/lift33_limb_dampeners_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Harmonic Vibration Damping & String Deceleration",
+        "overview": "This assembly comprises bridged elastomer dampers wedged between split limbs and a rearward carbon string-stop bumper. Mounted directly along critical harmonic nodes, it halts post-shot resonance to deliver whisper-quiet hunting performance.",
+        "craftAndMaterial": "Engineered from proprietary high-hysteresis polyurethane with embedded inertia masses, paired with a lightweight carbon rod and tear-resistant silicone bumper cup. The keyed elastomer geometry bridges the split limbs without hardware fasteners.",
+        "kinematicRole": "Remains static during draw, then dynamically absorbs violent shock in Phase 5 as the BCY-X bowstring slams into the stop at brace height. Disassembles early in the 10% to 36% field strip bracket.",
+        "designHighlight": "Residual kinetic energy translates directly into noise and hand shock. Bridging the split limbs mechanically interrupts resonant harmonic frequencies at their origin, eliminating string slap without bleeding arrow launch velocity.",
+        "audioScript": "These bridged limb dampers and the carbon string stop tame violent post-shot oscillation. When the bowstring snaps forward at over three hundred feet per second, the silicone bumper arrests it cleanly, while internal dampeners swallow residual vibrations instantly.",
+        "audioUrl": "audio/lift33/parts/lift33_limb_dampeners_en.mp3"
+      }
+    },
+    "lift33_drop_away_rest": {
+      "partId": "lift33_drop_away_rest",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Integrate MX Rest Base",
+      "zh": {
+        "roleTag": "直装燕尾阻尼离合仓 · 全包裹防脱箭护弓",
+        "overview": "这是直接咬合在弓把背部燕尾导轨上的QAD Integrate MX落箭台主壳体与调节机匣。它承载内部离合机构与防落箭护圈，为碳箭提供零晃动的基准支撑发射平台。",
+        "craftAndMaterial": "主体由7075-T6航空铝合金经五轴精密数控铣削成形，外层做哑光氮化防刮与黑化防眩处理。侧壁带有激光蚀刻的风偏与俯仰双向微米级刻度鼓轮，抗扭刚性极高。",
+        "kinematicRole": "刚性紧固于弓身贯穿射箭窗口，在整个7阶段循环中充当精密基准面，内部离合轴连接驱动绳由副弦牵引。在分解进度18%至48%时松脱燕尾螺栓并整体向侧后方滑出。",
+        "designHighlight": "相较于传统贝加尔螺栓侧挂式箭台，Integrate导轨将落箭台重心直接内收进弓把轴心线，彻底杜绝了长期射击震动导致的落箭台侧倾位移难题。",
+        "audioScript": "这是全金属打造的落箭台底座。它摒弃了传统的侧面螺栓，通过双燕尾槽直接嵌锁在弓身背部，不但将整体重心居中，更配备了双向微调旋钮，确保每一箭的初位都绝对归零。",
+        "audioUrl": "audio/lift33/parts/lift33_drop_away_rest_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dovetail Interface Chassis & Micro-Click Housing",
+        "overview": "This is the machined chassis of the QAD Integrate MX drop-away arrow rest, mounted directly onto the riser's rear dovetail rail. It encloses the spring clutch mechanism and micro-click elevation and windage drive blocks.",
+        "craftAndMaterial": "CNC milled from aircraft-grade 7075-T6 aluminum billet with a non-reflective matte nitride finish. Features laser-etched vernier adjustment scales and an integrated full-capture safety cage to secure the arrow during rough maneuvers.",
+        "kinematicRole": "Acts as the rigid datum throughout all 7 firing phases, holding internal spring-actuated clutch components linked to the downward buss cable. Separates horizontally between 18% and 48% disassembly.",
+        "designHighlight": "Eliminates conventional single-bolt side brackets by clamping directly into machined channels on the riser spine, neutralizing torque and guaranteeing absolute zero retention in harsh backcountry environments.",
+        "audioScript": "Mounted seamlessly to the riser dovetail, this rest housing brings the arrow support dead-center into the bow frame. Micro-adjustable knobs let archers tune windage and elevation with precision, eliminating mounting-screw rotation during rigorous stalking.",
+        "audioUrl": "audio/lift33/parts/lift33_drop_away_rest_en.mp3"
+      }
+    },
+    "lift33_launcher_fork": {
+      "partId": "lift33_launcher_fork",
+      "bomCode": "F-02",
+      "calloutLabelEn": "V-Launcher Rest Fork",
+      "zh": {
+        "roleTag": "拉弓上扬托箭 · 撒放毫秒级下弹让位",
+        "overview": "这是安装在落箭台主转轴上的植绒消音V型合金托箭叉。在开弓后段它平稳抬起支撑箭杆，并在撒放瞬间受内置扭簧驱动毫秒级向下砸落让出通道。",
+        "craftAndMaterial": "采用高强度模具钢转轴压配超轻耐冲击聚合物复合V型叉体，表面整体覆盖自粘特氟龙微孔植绒布。独特的深V几何槽口确保箭身在各种仰俯射角下均居中对齐且无刮擦摩擦。",
+        "kinematicRole": "阶段1随拉弦由同步拉绳升至垂直锁死托起箭身；阶段4撒放时阻铁解脱，受扭簧驱动在4毫秒内砸到底面；全分解第22%至54%区间自落箭台转轴拆卸抽出。",
+        "designHighlight": "落箭叉必须在箭羽到达前完全伏倒，否则螺旋副羽与叉体碰撞会导致箭道严重偏航。极轻的旋转转动惯量与毫秒级复位响应是其实现348英尺时速无干涉射击的保障。",
+        "audioScript": "这座带植绒护垫的V型落箭拨叉极为关键。拉满弓时它立起稳托箭身，而撒放瞬间，它会在四毫秒之内闪电般向下平伏，让高速掠过的三片螺旋箭羽凌空飞过，不产生任何物理刮碰。",
+        "audioUrl": "audio/lift33/parts/lift33_launcher_fork_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Rapid Cam-Actuated Dynamic Arrow Support",
+        "overview": "This is the felt-padded spring-driven V-launcher arm pivoted within the drop-away rest housing. It raises during the draw stroke to support the arrow and drops flat milliseconds post-release.",
+        "craftAndMaterial": "Fabricated from a tempered stainless pivot core molded with high-strength composite polymers, surfaced with sound-deadening synthetic micro-felt. The sculpted V-profile accommodates diverse carbon shaft diameters silently.",
+        "kinematicRole": "Rises to full lock in Phase 1 as the cable tightens; in Phase 4 release, internal torsion springs slap the fork downward within 4 milliseconds before the vanes arrive. Explodes free between 22% and 54% disassembly.",
+        "designHighlight": "High-velocity helical vanes require zero contact at 348 feet per second. Extremely low rotational inertia ensures complete clearance within four milliseconds, preventing tail strikes that would otherwise ruin broadhead flight.",
+        "audioScript": "Notice the velvet-lined V launcher fork. As you draw, it rises smoothly to cradle the carbon shaft. Upon release, heavy-duty torsion springs snap it downward in roughly four milliseconds, granting the fletchings complete clearance.",
+        "audioUrl": "audio/lift33/parts/lift33_launcher_fork_en.mp3"
+      }
+    },
+    "lift33_sight_housing": {
+      "partId": "lift33_sight_housing",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Bridge-Lock Dovetail Sight",
+      "zh": {
+        "roleTag": "中轴内嵌燕尾导轨 · 齿轮微调与防斜倾水泡",
+        "overview": "这是穿透弓把中空通道安装的Bridge-Lock五针光学瞄准镜架总成。它通过超长燕尾锁臂实现轴心内嵌，前端配置滚花齿轮微调转盘与发光水平气泡仪。",
+        "craftAndMaterial": "主延长臂与镜框采用航空级6061-T6硬质阳极氧化铝，配合不锈钢微调丝杆。镜框底部密封内嵌带阻尼抗冻液的荧光绿高灵敏度水平水泡，高低风偏带有精密锁紧拨片。",
+        "kinematicRole": "在击发与拉弓各阶段保持为绝对刚性瞄准瞄线基准，不参与动力变形；在分解第12%至40%阶段，旋松弓把锁止旋钮后沿燕尾槽向前滑动抽出脱离。",
+        "designHighlight": "传统瞄架挂在弓身右侧会产生杠杆侧翻力矩。通过将瞄准臂直接内穿并锁紧于弓把中心肋骨内部，消除了侧重不平衡，大幅降低风阻并使开弓推弓更加自然直正。",
+        "audioScript": "这里是集成水平仪的Bridge-Lock五针瞄准镜架。它直接穿过弓身正中心的燕尾通道锁死，不仅彻底解决了传统侧挂瞄具头重脚轻的偏沉弊端，更提供了极为细腻的齿轮微调手感。",
+        "audioUrl": "audio/lift33/parts/lift33_sight_housing_zh.mp3"
+      },
+      "en": {
+        "roleTag": "In-Riser Dovetail Mount & Vernier Sight Ring",
+        "overview": "This is the Bridge-Lock 5-pin sight housing and dovetail extension bar mounted directly through the machined centerline of the riser. It houses micro-click adjustment turrets and a luminous anti-cant bubble level.",
+        "craftAndMaterial": "Machined from 6061-T6 hard-anodized billet aluminum paired with stainless lead screws and brass wear strips. Includes a high-visibility fluorescent green bubble level set in an anti-glare sight ring aperture.",
+        "kinematicRole": "Serves as the static optical and mechanical aiming datum across all 7 cycle phases without flexing. Slides forward out of the Bridge-Lock receiver during disassembly stages 12% through 40%.",
+        "designHighlight": "Passing directly through the riser core rather than hanging off the outer face eliminates lateral lever arm torque, yielding perfect bow balance in hand and eliminating third-axis sight vibration.",
+        "audioScript": "This 5-pin sight housing utilizes Mathews' Bridge-Lock architecture. By sliding directly through the riser's center window rather than mounting on the side, it keeps the bow's mass centered, resisting cant and stabilizing your aim.",
+        "audioUrl": "audio/lift33/parts/lift33_sight_housing_en.mp3"
+      }
+    },
+    "lift33_sight_pins": {
+      "partId": "lift33_sight_pins",
+      "bomCode": "F-04",
+      "calloutLabelEn": "0.019 Multi-Pin Cluster",
+      "zh": {
+        "roleTag": "20–60码分层弹道标定 · 高聚光光纤点",
+        "overview": "这是安装在瞄框内部的五枚0.019英寸超细立柱式光纤准星针组。它们分别标定二十到六十码狩猎射程，在微光环境下依靠盘卷光纤自发光指示瞄准落点。",
+        "craftAndMaterial": "针身由高韧性防撞不锈钢薄板线切割而成，针尖嵌入长达数十厘米的导光聚苯乙烯光纤端头。多余光纤沿瞄框外围护圈整齐盘绕，通过顶部透明聚碳透镜高效采集环境漫射光。",
+        "kinematicRole": "在整个射击循环中作为弹道高度与瞄准分划参照物；在维护保养与全分解阶段第18%至50%区间，自瞄框内部导轨滑移分拆。",
+        "designHighlight": "0.019英寸的超细瞄针能有效减少远距离目标被遮挡的面积，而无需电池的长盘卷光纤保证在黎明和黄昏等黄金狩猎时刻依然呈现清晰明亮的绿色与橙色准星光斑。",
+        "audioScript": "这五枚零点零一九英寸超细光纤瞄针，按照二十至六十码的弹道落差垂直排布。外部盘卷的集光纤维能吸聚树林间的微弱光线，在完全不需要电池供电的情况下，让准星在破晓时分亮丽耀眼。",
+        "audioUrl": "audio/lift33/parts/lift33_sight_pins_zh.mp3"
+      },
+      "en": {
+        "roleTag": "20-to-60 Yard Ballistic Staged Aiming Array",
+        "overview": "This is the vertical cluster of five 0.019-inch micro-machined fiber-optic sight pins calibrated for 20 through 60-yard ballistic trajectories. Coiled around the outer shroud, light-gathering fibers illuminate tiny aiming dots.",
+        "craftAndMaterial": "Constructed from laser-cut stainless steel support blading carrying precision polystyrene light-gathering fiber strands. The exterior perimeter channels house wrapped fiber spools protected by a clear polycarbonate daylight collector.",
+        "kinematicRole": "Maintains precise line-of-sight elevation and windage reticles through all firing steps. Disassembles from the internal dovetail tracks between 18% and 50% explode steps.",
+        "designHighlight": "Ultra-fine 0.019-inch pin tips prevent target obscuration on distant 60-yard vitals, while lengthy coiled fiber strands collect ambient forest light to produce intensely visible aiming dots without battery failure risk.",
+        "audioScript": "Arranged for twenty to sixty-yard ballistic drops, these five micro-pins feature coiled optical fibers that harvest ambient woodland light. They provide crisp, battery-free glowing aiming dots without blocking small vitals at extended range.",
+        "audioUrl": "audio/lift33/parts/lift33_sight_pins_en.mp3"
+      }
+    },
+    "lift33_d_loop": {
+      "partId": "lift33_d_loop",
+      "bomCode": "F-05",
+      "calloutLabelEn": "D-Loop & Peep Sight",
+      "zh": {
+        "roleTag": "零侧扭力撒放接口 · 1/4吋斜切防眩窥孔",
+        "overview": "该组件由紧密扎在主弦搭箭点的超强Dyneema编织D环、上下定位黄铜护口，以及嵌于主弦股线间的斜切窥孔组成。它是撒放器咬合与建立两点一线视准轴的心脏机构。",
+        "craftAndMaterial": "D环绳采用超高分子量聚乙烯编织绳，经热熔球化封尾抗拉破裂强度超两百公斤；窥孔为6061铝合金数控切出三十七度斜切角；定位箭扣为退火铜冲压咬合件。",
+        "kinematicRole": "阶段1承受拉力牵引主弦后移，阶段2维持85%省力谷咬合；阶段3受撒放钳口释放；阶段5伴随主弦回冲并带动后视准心回位。在分解6%至30%首批随弦解绑拆卸。",
+        "designHighlight": "D环的存在消除了撒放器对弦丝的直接扭转应力，使箭羽能以绝对水平姿态被推出；精心调教的窥孔倾角确保满弓靠位时与前瞄准圆环同心套准。",
+        "audioScript": "这是复合弓的触发控制核心：D环与弦上窥孔。高强迪尼玛编织的D环供撒放器钳住开弓，避免对主弦造成侧向拧力；而上方的斜角窥孔在拉满时正好与前瞄重合，构成狙击步枪般的瞄准线。",
+        "audioUrl": "audio/lift33/parts/lift33_d_loop_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Torque-Free Release Interface & Rear Peep Aperture",
+        "overview": "This set includes the Dyneema woven release D-loop knotted to the nocking point, brass string collars, and an angled aluminum peep sight split into the main string strands. It interfaces directly with the archer's release aid.",
+        "craftAndMaterial": "Crafted from ultra-high-molecular-weight polyethylene braided cord heat-balled at the anchors, paired with an anodized 6061 aluminum 37-degree hooded peep aperture and soft brass crimp collars.",
+        "kinematicRole": "Carries full 70 lb draw tension in Phase 1, anchors at 85% let-off in Phase 2, releases the bowstring in Phase 3, and recoils forward in Phase 5. Demounts between 6% and 30% during field strip.",
+        "designHighlight": "A dedicated D-loop isolates the bowstring from release jaw twisting torque, guaranteeing clean horizontal push. The peep angle matches the steep string geometry of the 33-inch axle-to-axle chassis perfectly at full draw.",
+        "audioScript": "Here is the release D-loop and rear peep sight. Clamped into the Dyneema strands, the loop allows your release aid to draw seventy pounds without torquing the bowstring. At full draw, the peep aligns coaxially with the front housing.",
+        "audioUrl": "audio/lift33/parts/lift33_d_loop_en.mp3"
+      }
+    },
+    "lift33_quiver_frame": {
+      "partId": "lift33_quiver_frame",
+      "bomCode": "Q-01",
+      "calloutLabelEn": "LowPro Quiver Spine",
+      "zh": {
+        "roleTag": "超贴身右侧快拆携行架 · 五槽弹性夹持梳",
+        "overview": "这是紧贴弓把右侧几何外壳布置的LowPro五箭快拆箭壶主支架骨架。它以双碳纤维立柱连接顶部护罩与下部箭杆弹性卡夹，在极端狩猎行进中稳固固定五支穿甲碳箭。",
+        "craftAndMaterial": "主立柱采用轻量化高模量哑光编织碳纤维管材，端部支座由高韧性玻璃纤维增强尼龙注塑成形。下部安装耐严寒不变形的模压热塑性橡胶弹性五指夹槽。",
+        "kinematicRole": "作为随弓携行储箭子系统，整体刚性锁止于弓身右侧阻尼燕尾座，在全开弓与击发过程中不发生相对位移；在分解8%至34%初期即可整体无工具拆除脱离。",
+        "designHighlight": "传统箭壶安装外挑过大造成重心严重偏右。LowPro架构将五支箭矢的圆弧排列尽可能压缩在弓片与弓把外轮廓凹槽中，使得带箭射击与裸弓手感近乎一致。",
+        "audioScript": "请看这具LowPro超贴身五箭壶支架。两根坚韧的碳素立柱连接起上下夹持卡槽。它的轮廓极度贴合弓身右侧的机械型面，把备用箭矢的重量牢固收拢在中轴线附近，大幅降低行进摆动。",
+        "audioUrl": "audio/lift33/parts/lift33_quiver_frame_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Ultra-Tight Low-Profile 5-Arrow Detachable Spine",
+        "overview": "This is the Mathews LowPro 5-arrow quick-detach quiver spine mounted tightly against the right contour of the riser. Composed of dual carbon rods and rubberized shaft grippers, it securely carries five hunting arrows.",
+        "craftAndMaterial": "Engineered with twin rigid high-modulus carbon fiber support struts bound to injection-molded glass-filled nylon mounting brackets. The lower arrow gripper uses cold-weather weather-resistant thermoplastic elastomers.",
+        "kinematicRole": "Remains locked rigidly to the riser frame during all 7 operational steps to minimize handling flutter. Detaches cleanly during initial field-strip stages 8% through 34%.",
+        "designHighlight": "Standard quivers project outwards, creating asymmetrical lever forces. The LowPro contour draws all five arrows inward against the riser window, minimizing side torque and streamlining brush penetration.",
+        "audioScript": "The LowPro quiver spine holds five hunting arrows closer to the riser than ever before. Constructed from twin carbon fiber rods, its low-profile geometry hugs the bow's profile, eliminating lateral wind drag during backcountry stalks.",
+        "audioUrl": "audio/lift33/parts/lift33_quiver_frame_en.mp3"
+      }
+    },
+    "lift33_quiver_hood": {
+      "partId": "lift33_quiver_hood",
+      "bomCode": "Q-02",
+      "calloutLabelEn": "Broadhead Foam Hood",
+      "zh": {
+        "roleTag": "宽幅猎刃物理隔离仓 · 零刀刃磨损",
+        "overview": "这是固定在箭壶碳纤支架顶部的加宽型箭头防护罩总成。其内部装有专用消音吸能微孔泡沫，旨在完全包裹并物理隔离五支三刃机械狩猎箭头。",
+        "craftAndMaterial": "外罩壳体采用抗冲击聚合物复合材料经精密注塑而成，表面做消光迷彩转印；内部内衬为高密度闭孔EVA与开孔记忆聚氨酯复合泡沫，经防腐与抗刀割强化处理。",
+        "kinematicRole": "牢靠罩住五枚锋利猎箭头，避免其刃口与外界树枝撞击或发生刃间摩擦；在全分解阶段第8%至34%随支架总成移开，62%至96%深度拆解时与碳立柱分拆。",
+        "designHighlight": "传统泡沫罩往往过深易压迫机械刀片致使其意外弹开。该防护罩内部具备梯级容纳槽，刀刃在悬空不接触硬壁的前提下被微孔柔性包裹，保护锋利度如手术刀般持久。",
+        "audioScript": "这是箭壶顶部的箭头防护罩。加宽的消音防护罩内部填充了高密度微孔泡棉。五支锋利的三刃机械箭头插入时，刀刃会被柔软地悬空隔开，不仅彻底消除摩擦异响，更确保刀锋永不钝化。",
+        "audioUrl": "audio/lift33/parts/lift33_quiver_hood_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Impact-Resistant Mechanical Blade Enclosure",
+        "overview": "This is the protective polymer hood affixed to the top of the quiver frame, enclosing an acoustic vibration-damping foam insert. It houses and isolates five 3-blade mechanical broadheads safely.",
+        "craftAndMaterial": "Injection molded from ruggedized, impact-resistant polymer composites featuring a non-reflective matte finish. The interior employs high-density closed-cell micro-pore foam that resists cutting and moisture absorption.",
+        "kinematicRole": "Static protective barrier that shields razor-sharp cutting tips throughout all dynamic draw and launch cycles. Disengages with the quiver frame between 8% and 34%, fully separating by 96%.",
+        "designHighlight": "Designed specifically for expandable broadheads: internal relief pockets prevent premature mechanical blade deployment while preventing delicate surgical edges from bumping against internal walls.",
+        "audioScript": "The quiver hood encloses broadheads in acoustic micro-cell foam. Specially designed internal chambers isolate each three-blade mechanical head, preventing premature deployment or dulling from metal-on-metal contact while stalking.",
+        "audioUrl": "audio/lift33/parts/lift33_quiver_hood_en.mp3"
+      }
+    },
+    "lift33_quiver_latch": {
+      "partId": "lift33_quiver_latch",
+      "bomCode": "Q-03",
+      "calloutLabelEn": "Quiver Detach Lever",
+      "zh": {
+        "roleTag": "单手盲操偏心锁紧 · 零虚位抗震锁定",
+        "overview": "这是安装在箭壶固定底座上的阳极氧化橙色偏心凸轮快拆锁止手柄。它通过压簧定位销直接锁定在弓把侧面预设的快拆导轨上，实现箭壶的一秒无声装卸。",
+        "craftAndMaterial": "凸轮手柄由7075-T6铝合金精雕加工并经亮橙色阳极电泳上色，内部转轴与波形定位垫圈为304不锈钢，接触块带有耐磨聚甲醛自润滑垫片。",
+        "kinematicRole": "提供强劲夹紧预紧力将箭壶锚固在弓身上；需要减重或树架狩猎时，徒手搬动即可解除锁止；全分解过程第8%至34%开启释放整座箭壶。",
+        "designHighlight": "锁止机构采用过死点偏心自锁几何原理，射击时的剧烈振动只会让锁块咬合更紧，而单手下压手柄却能极为轻盈、无声地快速取下整套储箭架。",
+        "audioScript": "这枚醒目的亮橙色快拆拨锁，是箭壶系统的机械机关。它采用偏心凸轮机构，只需要单手拇指轻轻一推，就能在不到一秒内悄无声息地将整套箭壶卸下，在树架高位狩猎时极为实用。",
+        "audioUrl": "audio/lift33/parts/lift33_quiver_latch_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Over-Center Cam Lock & Silent Quick-Detach Lever",
+        "overview": "This is the anodized orange eccentric cam-lock latch mounted to the quiver's receiver interface. It secures the entire quiver assembly to the riser's low-profile mount via a spring detent mechanism.",
+        "craftAndMaterial": "CNC milled from 7075-T6 aluminum and treated with an eye-catching orange anodized finish. Features a tempered stainless steel pivot pin, internal detent spring, and POM wear-resistant friction pads.",
+        "kinematicRole": "Maintains clamping preload against the mounting dovetail during all shooting and transport stages. Operates between 8% and 34% explode steps to disengage the quiver from the bow frame.",
+        "designHighlight": "Employs an over-center cam geometry that tightens under bow vibration rather than shaking loose, allowing silent single-handed release with zero metallic clatter during stand hunting.",
+        "audioScript": "This anodized orange release lever controls the quiver detach mechanism. Utilizing an over-center cam lock, it clamps the frame rock-solid against vibration, yet lets you silently remove the entire quiver in one second with a thumb flick.",
+        "audioUrl": "audio/lift33/parts/lift33_quiver_latch_en.mp3"
+      }
+    },
+    "lift33_arrow_shaft": {
+      "partId": "lift33_arrow_shaft",
+      "bomCode": "Q-04",
+      "calloutLabelEn": "29\" Carbon Arrow Shaft",
+      "zh": {
+        "roleTag": "400格令竞赛狩猎配重 · 3片螺旋尾羽稳流",
+        "overview": "这是总长29英寸、全箭总重400格令的高模量微径碳纤维猎箭箭杆与后置发光箭尾组件。它搭载三片呈螺旋偏角的低剖面箭羽，是将主弦弹性动能转化为杀伤贯穿的载体。",
+        "craftAndMaterial": "杆身由多层纵向与交叉编织高模量超纯碳纤维管构成，内径4毫米，直线度达正负千分之一英寸；尾部装配带惯性触发开关的聚碳发光箭尾，并粘附三片聚氨酯强旋扰流箭羽。",
+        "kinematicRole": "阶段1搭箭；阶段4在348FPS极速加速下发生微量动态挠曲并飞离落箭台；阶段5高速自旋巡航穿云；在分解展示0%至30%作为主发射弹药向前飞出抽出。",
+        "designHighlight": "4毫米微径杆身显著减小横风偏航阻力与靶体入肉摩擦力，同时经过严格动态刚度匹配，确保在70磅猛烈加速瞬间箭杆不会发生过大弓手悖论弯折。",
+        "audioScript": "这支二十九英寸的高模量碳素微径猎箭，直线精度达到千分之一英寸。尾部贴附三片螺旋导流羽，发射瞬间内置绿光箭尾会自动点亮。它能以每秒一百零六米的高速破空穿梭，弹道平直至极。",
+        "audioUrl": "audio/lift33/parts/lift33_arrow_shaft_zh.mp3"
+      },
+      "en": {
+        "roleTag": "400-Grain Micro-Diameter Ballistic Flight Body",
+        "overview": "This is the 29-inch, 400-grain micro-diameter carbon fiber arrow shaft fitted with three helical stabilizing vanes and an inertia-activated lighted nock. It translates the bow's 145.6 joules of stored energy into penetrating momentum.",
+        "craftAndMaterial": "Constructed from continuous multi-directional high-modulus carbon wraps with a straightness tolerance of plus-or-minus 0.001 inches. Outfitted with high-adhesion urethane vanes offset at three degrees and a transparent polycarbonate nock.",
+        "kinematicRole": "Stationary in Phases 1-3, flexes under Phase 4 rapid acceleration to launch at 348 FPS, and stabilizes via Phase 5 helical spin. Separates forward at 6% to 30% disassembly.",
+        "designHighlight": "The slim 4 mm micro-diameter cross-section minimizes crosswind drift and target friction, while fine-tuned dynamic spine stiffness ensures flawless recovery from archer's paradox during release.",
+        "audioScript": "Meet the primary projectile: a 29-inch micro-diameter carbon shaft weighing four hundred grains. Clocking a launch speed of 348 feet per second, its three-degree helical fletchings impart stabilizing spin while the lighted nock illuminates its path.",
+        "audioUrl": "audio/lift33/parts/lift33_arrow_shaft_en.mp3"
+      }
+    },
+    "lift33_broadhead": {
+      "partId": "lift33_broadhead",
+      "bomCode": "Q-05",
+      "calloutLabelEn": "3-Blade Mechanical Head",
+      "zh": {
+        "roleTag": "100格令硬化钢破甲凿尖 · 三刃扩创杀伤",
+        "overview": "这是通过半外径不锈钢螺纹衬套旋入碳箭前端的100格令CNC切削三刃机械狩猎箭头。其前端为坚硬破骨的凿头棱尖，后方三片收折的不锈钢剃刀刀片在命中瞬间展开。",
+        "craftAndMaterial": "中心柱与凿尖由硬化420不锈钢精密CNC数控车铣制成，洛氏硬度达HRC52；三片厚度0.035英寸的高碳不锈钢后掠刀片配有高韧性防意外展开的氟橡胶阻尼领圈。",
+        "kinematicRole": "全程紧固于箭杆最前端，飞行阶段保持刀刃闭锁获得野战练习靶头般的平直弹道；撞击猎物瞬间阻尼圈破裂，刀刃呈一百二十度完全弹开扩创。分解时旋转脱出。",
+        "designHighlight": "机械式猎箭在飞行中收拢外径只有微小截面，彻底消除了固定刀翼在高速超三百英尺时速下的风阻滑翔偏航问题，同时提供高达两英寸以上的惊人创口直径。",
+        "audioScript": "这是旋接在箭头的这一百格令三刃机械猎箭头。飞行时三片手术刀级刀刃紧密收拢，拥有与练习箭头相同的低风阻超平弹道；而在撞击目标的千分之一秒内，三片刀刃瞬间张开，造成巨大扩创。",
+        "audioUrl": "audio/lift33/parts/lift33_broadhead_zh.mp3"
+      },
+      "en": {
+        "roleTag": "100-Grain Bone-Chiseling Trocar Broadhead",
+        "overview": "This is the 100-grain CNC-machined 3-blade mechanical hunting broadhead threaded into the arrow's half-out front insert. It features a hardened chisel tip and expandable rear-deploying razor blades.",
+        "craftAndMaterial": "Precision machined from heat-treated 420 stainless steel with a Rockwell hardness exceeding HRC 52. Equipped with three 0.035-inch surgical stainless steel blades retained by a fluoroelastomer shock collar.",
+        "kinematicRole": "Remains streamlined and folded through draw, launch, and flight steps 1 through 5. Upon impact, the blades swing outward along pivots to cut a broad wound channel. Unthreads during stage 6% to 30%.",
+        "designHighlight": "Streamlined in-flight profile eliminates aerodynamic wind-planing common to fixed blades at 348 FPS, yielding field-point ballistic consistency while opening to a massive two-inch cutting diameter upon penetration.",
+        "audioScript": "This 100-grain three-blade mechanical broadhead provides surgical lethality. In flight, the blades remain folded tight behind a hardened bone-splitting trocar tip to fly true like a field point, deploying instantly upon impact for devastating terminal energy transfer.",
+        "audioUrl": "audio/lift33/parts/lift33_broadhead_en.mp3"
+      }
+    }
+  }
+}

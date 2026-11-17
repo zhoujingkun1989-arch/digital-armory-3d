@@ -458,7 +458,7 @@ export const WEAPON_FIRE_CONTROL_PROFILES: Record<
         labelZh: '拉弦撒放实射 (SEMI)',
         labelEn: 'LIVE RELEASE',
         tooltipZh:
-          '拖拽主弦/D环进入满弓 85% 省力谷或按住扳机完成 597mm 做功行程推射，松手复位。',
+          '拖拽主弦/D环进入满弓 85% 省力谷或按住扳机完成 571.5 mm 做功行程推射，松手复位。',
         tooltipEn:
           'Draw string or hold trigger through 85% let-off valley to loose the 400 gr carbon arrow.',
       },

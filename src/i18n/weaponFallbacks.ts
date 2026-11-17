@@ -350,8 +350,8 @@ export const WEAPON_EN_FALLBACKS: Record<
     weaponType: 'Binary-Cam Compound Bow',
     statusLabel: 'In Vault · Ready',
     actionMechanism: 'SwitchWeight-X Binary Cams · 85% Let-Off Split-Limb Storage',
-    overallLengthMm: '838 mm (33" ATA · 165 mm Brace)',
-    barrelSpec: '597 mm Power Stroke · Dual Split Limbs',
+    overallLengthMm: '838 mm (33" ATA · 165.1 mm Brace)',
+    barrelSpec: '571.5 mm Power Stroke (29" Draw / 165.1 mm Brace)',
     rateOfFire: 'Manual Draw / Release',
     description:
       'Mathews’ flagship 33-inch axle-to-axle compound hunting bow machined around a bridged aluminum truss riser and SwitchWeight-X synchronized binary cams: draws to a crisp 70 lb peak before collapsing 85% to a 10.5 lb holding valley, propelling a 400 gr micro-diameter carbon arrow at 348 FPS (145.6 J) through an integrated QAD drop-away rest and 10" Bridge-Lock carbon stabilizer.',
@@ -379,7 +379,7 @@ export const WEAPON_EN_FALLBACKS: Record<
     statusLabel: 'In Vault · Ready',
     actionMechanism: 'HexCoil 360° Helical Cams · Frictionless Trac-Trigger Sled',
     overallLengthMm: '711 mm (28" OAL · 91 mm Cocked Width)',
-    barrelSpec: '381 mm Zero-Rail Power Stroke',
+    barrelSpec: '381 mm (15") Zero-Rail Power Stroke',
     rateOfFire: 'Versa-Drive Crank / Single',
     description:
       'Ravin’s ultra-narrow bullpup crossbow powered by patent-pending HexCoil 360° dual helical cam stacks that coil strings tightly around cam drums—shrinking cocked axle-to-axle width to just 3.6 inches (91 mm). Driven by the enclosed Versa-Drive bidirectional clutch screw and floating Trac-Trigger sled with Anti-Dry-Fire interlock, it launches a 400 gr carbon bolt at 500 FPS (301 J).',

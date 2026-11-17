@@ -91,7 +91,7 @@ describe('Phase 1 (WP-01 ~ WP-03): Multimodal Audio-Visual Immersion Contracts',
     );
   });
 
-  it('WP-02: splits all 88 bilingual act audioScripts into valid monotonic cues without breaking decimals', () => {
+  it('WP-02: splits all 104 bilingual act audioScripts into valid monotonic cues without breaking decimals', () => {
     for (const weaponId of WEAPON_IDS) {
       const jsonPath = path.resolve(
         process.cwd(),
@@ -197,7 +197,7 @@ describe('Phase 1 (WP-01 ~ WP-03): Multimodal Audio-Visual Immersion Contracts',
     useAppStore.getState().returnToArmory();
   });
 
-  it('WP-03: enforces physical 7-caliber acoustic hierarchy, 8-event slow-mo phase separation, and TTS ducking', async () => {
+  it('WP-03: enforces physical 7-caliber + 2-archery acoustic hierarchy, 8-event slow-mo phase separation, and TTS ducking', async () => {
     const p50 = CALIBER_ACOUSTIC_PROFILES['50_bmg'];
     const p338 = CALIBER_ACOUSTIC_PROFILES['338_lapua'];
     const p50ae = CALIBER_ACOUSTIC_PROFILES['50_ae'];
@@ -205,6 +205,16 @@ describe('Phase 1 (WP-01 ~ WP-03): Multimodal Audio-Visual Immersion Contracts',
     const p556 = CALIBER_ACOUSTIC_PROFILES['556_nato'];
     const p57 = CALIBER_ACOUSTIC_PROFILES['57_28'];
     const p9 = CALIBER_ACOUSTIC_PROFILES['9mm_para'];
+    const pArrow = CALIBER_ACOUSTIC_PROFILES.arrow_400gr;
+    const pBolt = CALIBER_ACOUSTIC_PROFILES.bolt_400gr;
+
+    // Archery acoustic profiles (zero muzzle brake gas roar; compound crossbow louder/heavier than bow)
+    expect(pArrow.mechanismStyle).toBe('compound_bow');
+    expect(pBolt.mechanismStyle).toBe('compound_crossbow');
+    expect(pArrow.brakeRoarGain).toBe(0);
+    expect(pBolt.brakeRoarGain).toBe(0);
+    expect(pBolt.peakGain).toBeGreaterThan(pArrow.peakGain);
+    expect(pBolt.subFreqHz).toBeLessThan(pArrow.subFreqHz);
 
     // Fundamental sub-bass frequency scales inversely with cartridge impulse energy
     expect(p50.subFreqHz).toBeLessThan(p338.subFreqHz);
@@ -240,7 +250,7 @@ describe('Phase 1 (WP-01 ~ WP-03): Multimodal Audio-Visual Immersion Contracts',
       'sear_reset',
     ];
 
-    // Verify all 10 weapon plugins emit all 8 mechanical & ballistic events in exact order during a 0.25x cycle
+    // Verify all 13 weapon plugins emit all 8 mechanical & ballistic events in exact order during a 0.25x cycle
     for (const weaponId of WEAPON_IDS) {
       const plugin = await loadWeaponPlugin(weaponId);
       const cues = computeWeaponFiringSoundCues(plugin.firingPhases);

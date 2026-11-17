@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Google Gemini Bilingual R&D Story, 278-Part Engineering Narration & TTS Audio Builder.
+Google Gemini Bilingual R&D Story, 327-Part Engineering Narration & TTS Audio Builder.
 
 Models & Voice Constitution (AGENTS.md Red Line #6 — strictly immutable):
   - Text & Structured JSON: `gemini-3.8-flash`
@@ -68,7 +68,73 @@ ALL_WEAPON_IDS = [
     "aug",
     "p320",
     "p90",
+    "lift33",
+    "r500",
 ]
+
+WEAPON_CONTEXT_HINTS: dict[str, dict[str, str]] = {
+    "lift33": {
+        "historicalContext": (
+            "Mathews Archery Inc. (Sparta, Wisconsin, USA; founded by Matt McPherson in 1992 on the "
+            "lineage of Hollis Wilbur Allen's 1966/1969 compound bow patent) pioneered SoloCam, "
+            "Perimeter-Weighted cams, Centergy low-torque geometry, Crosscentric, and SwitchWeight modular "
+            "draw systems. Released for the 2024 flagship lineup, the Mathews LIFT 33 pairs a 33-inch "
+            "axle-to-axle (838 mm) CNC 7075-T6 bridged truss riser with a 6.5-inch (165.1 mm) brace height, "
+            "29-inch draw length, and ultra-light 3.94 lb (1.79 kg) bare weight. It integrates Bridge-Lock "
+            "in-riser dovetail channels for the 5-pin sight and 10-inch carbon stabilizer, an Integrate MX "
+            "dovetail rest track, Engage low-torque grip, and LowPro inline 5-arrow quick-detach quiver."
+        ),
+        "mechanicalCore": (
+            "SwitchWeight-X Synchronized Binary Cams riding on Ti-6Al-4V titanium axles and ABEC-7 bearings "
+            "couple via split-yoke buss and control cables (routed laterally by the Bridge-Lock carbon cable "
+            "guard and twin rollers). Drawing the Dyneema D-loop and BCY-X bowstring 27.5 cm rearward rotates "
+            "both cams 95 degrees and flexes the beyond-parallel Split Quad Carbon-Glass Limbs clamped in CNC "
+            "pivoting pockets. After peaking at 70 lb, cam geometry drops into an 85% let-off valley (10.5 lb "
+            "holding weight) locked by a titanium Draw-Stop peg against the buss cable. Upon release, 145.6 J "
+            "of stored elastic energy drives a 400-grain micro-diameter carbon arrow with a 3-blade mechanical "
+            "broadhead to 348 FPS IBO (106 m/s) while the QAD Integrate MX drop-away V-launcher drops clear "
+            "in ~4 ms and bridged elastomer limb dampeners plus the string-stop suppress post-shot vibration."
+        ),
+        "milestoneAnchors": (
+            "1966-1969 (Hollis Allen compound bow patent) -> 1992 (Matt McPherson founds Mathews & SoloCam) "
+            "-> 2017-2021 (Centergy grip, Crosscentric & SwitchWeight modular cam pods) "
+            "-> 2022-2023 (Bridge-Lock internal dovetails & LowPro inline accessories) "
+            "-> 2024 (Mathews LIFT 33 SwitchWeight-X debuts at 3.94 lb & 348 FPS)"
+        ),
+    },
+    "r500": {
+        "historicalContext": (
+            "Engineered by Ravin Crossbows (Superior, Wisconsin, USA) on the foundation of its patented "
+            "Helical Cam and Frictionless Flight technologies, the Ravin R500 debuted in 2021 to surpass the "
+            "500 FPS hunting crossbow barrier inside a compact 28-inch (711 mm) CNC billet aluminum bullpup "
+            "chassis weighing 8.40 lb (3.81 kg). Traditional wide-limb crossbows suffered from heavy front "
+            "overhang, rail-induced arrow friction, nock wear, and uneven manual rope cocking. The R500 "
+            "eliminates flight-rail friction and collapses axle-to-axle width from 7.6 inches (193 mm) "
+            "uncocked down to 3.6 inches (91-92 mm) at full draw—narrower than a scoped hunting rifle."
+        ),
+        "mechanicalCore": (
+            "Patented HexCoil 360-degree multi-tier helical cam stacks on Ti-6Al-4V axles and needle bearings "
+            "rotate 310 to 360 degrees, coiling the high-tenacity bowstring and helical power/control cables "
+            "around stacked spiral grooves while bending horizontal split quad carbon limbs inward across a "
+            "300 lb, 15-inch (381 mm) power stroke. The enclosed VersaDrive 404 mm stainless Acme leadscrew "
+            "and 12-tooth bronze dual-ratchet anti-reverse clutch inside the skeletonized buttstock translate "
+            "the Trac-Trigger Floating Sear Carriage (TTFS) smoothly along a 360 mm internal track for silent "
+            "cocking and safe pause-anywhere de-cocking. Dual spring-loaded self-centering catch jaws grip "
+            "the string dead-center, while an automatic ambidextrous SAFE/FIRE selector and copper-bronze "
+            "Anti-Dry-Fire (ADF) bolt sensor interlock block the 3.5 lb zero-creep match trigger until a "
+            "20-inch 400-grain carbon bolt half-moon nock seats flush. Suspended between the carriage and front "
+            "roller/retention arm under a rear-cantilevered 1-8x24 100-yard BDC optical bridge, the bolt "
+            "launches frictionlessly at 500 FPS (152.4 m/s, 301 J)."
+        ),
+        "milestoneAnchors": (
+            "2016-2017 (Ravin R9/R15 debuts Helical Cam & Frictionless Flight) -> "
+            "2018-2019 (R20 & R26 ultra-compact bullpup & VersaDrive clutch refinements) -> "
+            "2020 (HexCoil 360-degree cam & 3.6-inch cocked width validation) -> "
+            "2021 (Ravin R500 shatters 500 FPS / 301 J benchmark) -> "
+            "2022-2024 (100-yard precision crossbow optics & field adoption)"
+        ),
+    },
+}
 
 TEXT_MODEL = "gemini-3.8-flash"
 STORY_TTS_MODEL = "gemini-3.8-flash-tts"
@@ -119,12 +185,12 @@ class FiringPhaseTranslationItem(BaseModel):
 
 
 class WeaponUiMetaEnSchema(BaseModel):
-    name: str = Field(description="Full official English firearm title.")
+    name: str = Field(description="Full official English weapon or archery platform title.")
     subtitle: str = Field(description="Concise technical English subtitle.")
-    originCountry: str = Field(description="Country of origin in English, e.g. 'Russia'.")
-    weaponType: str = Field(description="Weapon type in English, e.g. 'Assault Rifle'.")
+    originCountry: str = Field(description="Country of origin in English, e.g. 'Russia' or 'United States'.")
+    weaponType: str = Field(description="Weapon/platform type in English, e.g. 'Assault Rifle' or 'Binary-Cam Compound Bow'.")
     categoryLabel: str = Field(description="Category badge in English.")
-    actionMechanism: str = Field(description="Operating & locking mechanism in concise technical English.")
+    actionMechanism: str = Field(description="Operating, locking, or cam/energy-storage mechanism in concise technical English.")
     statusLabel: str = Field(description="Vault status pill in English, e.g. 'In Vault · Ready'.")
     description: str = Field(description="Rich 2-3 sentence museum plaque overview in English.")
     highlights: List[str] = Field(description="4 concise English feature chips matching the 4 Chinese highlights.")
@@ -133,8 +199,8 @@ class WeaponUiMetaEnSchema(BaseModel):
     cutawayLabel: str = Field(description="Compact English floating cutaway button label.")
     cutawayTitle: str = Field(description="English tooltip for cutaway focus button.")
     searchPlaceholder: str = Field(description="English BOM search input placeholder.")
-    firingMilestoneLabel: str = Field(description="Short English label for the 34% firing timeline tick.")
-    rateOfFire: str = Field(description="Rate of fire in English, e.g. '700 rpm' or 'Semi-Auto'.")
+    firingMilestoneLabel: str = Field(description="Short English label for the 34% release/firing timeline tick.")
+    rateOfFire: str = Field(description="Rate of fire or draw-cycle rating in English, e.g. '700 rpm', 'Semi-Auto', or '70 lb · 85% Let-Off'.")
     timelinePresets: List[PresetTranslationItem]
     firingPhases: List[FiringPhaseTranslationItem]
 
@@ -325,10 +391,35 @@ def generate_story_and_meta(
         for p in spec["parts"]
     ]
 
-    prompt = f"""You are a world-class firearms historian, museum curator, and mechanical ordnance engineer.
-Generate the complete bilingual (Chinese `storyZh` + English `storyEn`) R&D history story and full English UI metadata (`uiMetaEn`) for this 1:1 3D firearm exhibit in Digital Armory 3D.
+    is_archery = spec.get("catalog", {}).get("category") == "archery"
+    context_hint = WEAPON_CONTEXT_HINTS.get(spec["id"])
+    context_block = (
+        f"\n### Authoritative Engineering & Historical Context Hints:\n{json.dumps(context_hint, ensure_ascii=False, indent=2)}\n"
+        if context_hint
+        else ""
+    )
 
-### Ground-Truth Firearm Specification (100% authoritative — do NOT invent nonexistent parts):
+    if is_archery:
+        curator_role = "world-class archery & ballistic mechanisms historian, museum curator, and precision mechanical engineer"
+        exhibit_noun = "1:1 3D archery mechanism exhibit"
+        act_guidance = """     - Act 1: Historical roots of compound/helical archery, kinetic efficiency & compactness challenges, and design bottlenecks that demanded this platform.
+     - Act 2: Chief engineers/inventors, prototyping trials, riser/cam/limb structural optimization, and tournament/field validation.
+     - Act 3: Mechanical soul — cam synchronization & let-off or helical coiling geometry, split-limb elastic energy storage, floating sear / anti-dry-fire or drop-away rest kinematics, composites & metallurgy.
+     - Act 4: Commercial, hunting & precision adoption, ballistic velocity/energy benchmarks, influence on modern archery, and museum standing."""
+        en_domain_note = "authentic archery & precision mechanical engineering English"
+    else:
+        curator_role = "world-class firearms historian, museum curator, and mechanical ordnance engineer"
+        exhibit_noun = "1:1 3D firearm exhibit"
+        act_guidance = """     - Act 1: Historical roots, tactical doctrine shift, and operational pain points that demanded this weapon/variant.
+     - Act 2: Chief designers, factory/bureau engineering trials, prototype setbacks, and field-feedback redesigns.
+     - Act 3: Mechanical soul — locking geometry, gas/recoil kinematics, metallurgy, and optics/ergonomic integration.
+     - Act 4: Service adoption, combat evolution, global influence, and historical standing."""
+        en_domain_note = "authentic military/ordnance English"
+
+    prompt = f"""You are a {curator_role}.
+Generate the complete bilingual (Chinese `storyZh` + English `storyEn`) R&D history story and full English UI metadata (`uiMetaEn`) for this {exhibit_noun} in Digital Armory 3D.
+
+### Ground-Truth Specification (100% authoritative — do NOT invent nonexistent parts):
 {json.dumps({
     "id": spec["id"],
     "catalog": spec["catalog"],
@@ -337,19 +428,16 @@ Generate the complete bilingual (Chinese `storyZh` + English `storyEn`) R&D hist
     "firingPhases": spec["firingPhases"],
     "parts": parts_summary,
 }, ensure_ascii=False, indent=2)}
-
+{context_block}
 ### Strict Quality & Grounding Requirements:
 1. **Four-Act R&D Story (`storyZh` & `storyEn`)**:
    - Must contain **exactly 4 chronological acts** (`act1`..`act4`):
-     - Act 1: Historical roots, tactical doctrine shift, and operational pain points that demanded this weapon/variant.
-     - Act 2: Chief designers, factory/bureau engineering trials, prototype setbacks, and field-feedback redesigns.
-     - Act 3: Mechanical soul — locking geometry, gas/recoil kinematics, metallurgy, and optics/ergonomic integration.
-     - Act 4: Service adoption, combat evolution, global influence, and historical standing.
-   - Each act must have 2–3 vivid, historically accurate paragraphs (`paragraphs`) AND a smooth spoken documentary narration script (`audioScript`: ~170–230 Chinese chars for ZH; ~115–160 English words for EN; write natural spoken numbers/units like "七点六二乘三十九毫米" or "seven-point-six-two millimeter" so TTS pronounces them smoothly without awkward symbols like `×` or `6П71М` raw Cyrillic—transliterate or explain gracefully in spoken text!).
+{act_guidance}
+   - Each act must have 2–3 vivid, historically accurate paragraphs (`paragraphs`) AND a smooth spoken documentary narration script (`audioScript`: ~170–230 Chinese chars for ZH; ~115–160 English words for EN; write natural spoken numbers/units like "三百四十八英尺每秒" or "five hundred feet per second" so TTS pronounces them smoothly without awkward symbols like `×` or `1/4"` raw fractions/symbols in spoken text!).
    - Every `focusPartId` MUST be an exact `id` from `parts` above.
    - Include **exactly 3 `breakthroughs`** (each bound to a distinct, iconic `focusPartId` from `parts`) and **6 chronological `milestones`**.
 2. **English UI Metadata (`uiMetaEn`)**:
-   - Translate every `timelinePresets` item (preserving exact `id`) and every `firingPhases` item (preserving exact `id`) into crisp, authentic military/ordnance English.
+   - Translate every `timelinePresets` item (preserving exact `id`) and every `firingPhases` item (preserving exact `id`) into crisp, {en_domain_note}.
 """
 
     last_err: Optional[Exception] = None
@@ -410,14 +498,37 @@ def generate_parts_batch(
     batch_idx: int,
     total_batches: int,
 ) -> list[GeneratedPartNarrationItem]:
-    prompt = f"""You are a master armorer and mechanical CAD engineer narrating an interactive 1:1 3D firearm disassembly & firing simulation for **{spec["catalog"]["nameCn"]} ({spec["catalog"]["modelCode"]})**.
+    is_archery = spec.get("catalog", {}).get("category") == "archery"
+    context_hint = WEAPON_CONTEXT_HINTS.get(spec["id"])
+    context_block = (
+        f"- Engineering Background: {context_hint['mechanicalCore']}\n"
+        if context_hint
+        else ""
+    )
+    expert_role = (
+        "master archery technician and mechanical CAD engineer"
+        if is_archery
+        else "master armorer and mechanical CAD engineer"
+    )
+    cycle_noun = (
+        "draw, storage, release & recovery cycle"
+        if is_archery
+        else "firing cycle"
+    )
+    kinematic_examples = (
+        "(stationary structural datum vs flexing limb, rotating cam, traveling string/cable, dropping rest, or translating trigger sled)"
+        if is_archery
+        else "(stationary structural datum vs recoiling/rotating/compressing)"
+    )
+
+    prompt = f"""You are a {expert_role} narrating an interactive 1:1 3D disassembly & firing/launch simulation for **{spec["catalog"]["nameCn"]} ({spec["catalog"]["modelCode"]})**.
 
 Generate deep, museum-grade Chinese (`zh`) and English (`en`) component descriptions and spoken audio-guide scripts for Batch {batch_idx}/{total_batches} ({len(batch_parts)} components).
 
-### Weapon Context:
-- Caliber: {spec["catalog"]["caliber"]}
+### Exhibit Context:
+- Caliber / Projectile: {spec["catalog"]["caliber"]}
 - Mechanism: {spec["catalog"]["actionMechanism"]}
-- 7 Firing Phases: {json.dumps([{"step": ph["stepNum"], "title": ph["title"]} for ph in spec["firingPhases"]], ensure_ascii=False)}
+{context_block}- 7 Cycle Phases: {json.dumps([{"step": ph["stepNum"], "title": ph["title"]} for ph in spec["firingPhases"]], ensure_ascii=False)}
 - Disassembly Stages: 0% Assembled, 30% Field Strip, 65% Sub-assembly Strip, 100% Full Armorer Explode.
 
 ### Target Components in This Batch (preserve exact `partId` = `id` for all {len(batch_parts)} items):
@@ -425,14 +536,14 @@ Generate deep, museum-grade Chinese (`zh`) and English (`en`) component descript
 
 ### Requirements for EVERY component:
 1. Return **all {len(batch_parts)} items** with exact `partId`.
-2. `calloutLabelEn`: Ultra-concise 2–4 word English 3D viewport callout label (<= 24 characters, e.g. "Railed Top Cover", "2-Lug Rotating Bolt", "30-Rd Windowed Mag").
-3. Both `zh` and `en` must be rich, mechanically precise, and grounded strictly in this weapon's real engineering & the provided `explodeSteps` / `material` / `description`:
+2. `calloutLabelEn`: Ultra-concise 2–4 word English 3D viewport callout label (<= 24 characters, e.g. "Bridged Truss Riser", "SwitchWeight-X Cam", "HexCoil Helical Cam").
+3. Both `zh` and `en` must be rich, mechanically precise, and grounded strictly in this exhibit's real engineering & the provided `explodeSteps` / `material` / `description`:
    - `roleTag`: Concise functional positioning phrase.
    - `overview`: 2 clear sentences on what this component is and where it mounts.
-   - `craftAndMaterial`: Metallurgy / polymer / coating process + why its 3D geometry is shaped that way.
-   - `kinematicRole`: Exact behavior during the 7-stage firing cycle (stationary structural datum vs recoiling/rotating/compressing) AND at what disassembly stage (`explodeSteps` range) it comes off.
-   - `designHighlight`: R&D story detail, combat reliability lesson, or clever mechanical trade-off behind this specific part.
-   - `audioScript`: Engaging, natural spoken narration for TTS when the user clicks this part in 3D (~95–130 Chinese chars for `zh`; ~60–85 English words for `en`). Write dimensions/calibers in natural spoken form (avoid raw `×`, `/`, `rad`, or unpronounceable symbols) so TTS reads effortlessly like a Discovery Channel armorer!
+   - `craftAndMaterial`: Metallurgy / carbon composite / polymer / coating process + why its 3D geometry is shaped that way.
+   - `kinematicRole`: Exact behavior during the 7-stage {cycle_noun} {kinematic_examples} AND at what disassembly stage (`explodeSteps` range) it comes off.
+   - `designHighlight`: R&D story detail, field reliability lesson, or clever mechanical trade-off behind this specific part.
+   - `audioScript`: Engaging, natural spoken narration for TTS when the user clicks this part in 3D (~95–130 Chinese chars for `zh`; ~60–85 English words for `en`). Write dimensions/calibers/fractions in natural spoken form (avoid raw `×`, `/`, `"`, `rad`, or unpronounceable symbols) so TTS reads effortlessly like a Discovery Channel engineer!
 """
 
     last_err: Optional[Exception] = None
@@ -1309,7 +1420,7 @@ def main() -> None:
     parser.add_argument(
         "--all",
         action="store_true",
-        help="Generate across all 11 weapons sequentially.",
+        help="Generate across all weapons sequentially.",
     )
     parser.add_argument(
         "--dry-run",
@@ -1345,7 +1456,7 @@ def main() -> None:
     parser.add_argument(
         "--batch-tts",
         action="store_true",
-        help="Synthesize TTS clips asynchronously via Gemini Batch API (`client.batches.create`) at 50% cost & separate quota.",
+        help="Synthesize TTS clips asynchronously via Gemini Batch API (`client.batches.create`) at 50%% cost & separate quota.",
     )
     parser.add_argument(
         "--batch-chunk-size",

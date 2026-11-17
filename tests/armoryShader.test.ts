@@ -32,6 +32,7 @@ import {
   resolveThermalForWeapon,
   setArmoryThermalState,
   setArmoryThermalVisualState,
+  SPRING_AXIS_FLEX,
   SPRING_AXIS_NONE,
   SPRING_AXIS_X,
   SPRING_AXIS_Y,
@@ -167,6 +168,19 @@ describe('AAA Armory Surface Shader, GPU Spring Compression & Stencil Cutaway Ca
         material: 'nitride_steel',
       })
     ).toBe(false);
+
+    // Archery platforms never glow red-hot or accumulate gunpowder carbon soot
+    for (const archeryPart of [
+      { id: 'lift33_bowstring', material: 'spring_steel' as const },
+      { id: 'lift33_upper_limbs', material: 'polymer_frame' as const },
+      { id: 'lift33_riser', material: 'nitride_steel' as const },
+      { id: 'r500_left_limbs', material: 'polymer_frame' as const },
+      { id: 'r500_riser_head', material: 'nitride_steel' as const },
+      { id: 'r500_trigger_sled', material: 'nitride_steel' as const },
+    ]) {
+      expect(isThermalBearingPart(archeryPart)).toBe(false);
+      expect(isCarbonFoulingPart(archeryPart)).toBe(false);
+    }
   });
 
   it('produces deterministic program cache keys and injects valid Three.js physical & depth GLSL chunks', () => {
@@ -272,10 +286,14 @@ describe('AAA Armory Surface Shader, GPU Spring Compression & Stencil Cutaway Ca
       'transformed.x = aSpringParam.y * uSpringScale + wireDx;'
     );
     expect(depthShader.vertexShader).toContain('transformed.x *= uSpringScale;');
+    expect(depthShader.vertexShader).toContain('aSpringParam.w >= 2.5');
     expect(mockShader.vertexShader).toContain(
       'transformed.x = aSpringParam.y * uSpringScale + wireDx;'
     );
     expect(mockShader.vertexShader).toContain('transformed.x *= uSpringScale;');
+    expect(mockShader.vertexShader).toContain(
+      'transformed += aSpringParam.xyz * ( uSpringScale - 1.0 );'
+    );
     expect(depthShader.uniforms.uSpringScale).toBe(uniforms.uSpringScale);
 
     geo.dispose();
@@ -373,6 +391,24 @@ describe('AAA Armory Surface Shader, GPU Spring Compression & Stencil Cutaway Ca
     );
     expect(topWire.y - botWire.y).toBeCloseTo(wireRadius * 2, 6);
     expect(computeSpringCompressedCoord(4.2, 0, 0, 0.25)).toBeCloseTo(4.2, 6);
+
+    // 3. Parametric flex mode (w = 3 >= 2.5) CPU/shader displacement mirror for compound limbs & bowstrings
+    expect(SPRING_AXIS_FLEX).toBe(3);
+    const flexPt = { x: 0, y: 2.4, z: 0 };
+    applySpringCompressionInto(flexPt, [-27.5, 0, 0, SPRING_AXIS_FLEX], 2.0);
+    expect(flexPt.x).toBeCloseTo(-27.5, 6);
+    expect(flexPt.y).toBeCloseTo(2.4, 6);
+    expect(flexPt.z).toBeCloseTo(0, 6);
+
+    const overshootPt = { x: -1.2, y: 41.5, z: 0 };
+    applySpringCompressionInto(
+      overshootPt,
+      [-1.2, -2.4, 5.05, SPRING_AXIS_FLEX],
+      0.95
+    );
+    expect(overshootPt.x).toBeCloseTo(-1.2 + -1.2 * -0.05, 6);
+    expect(overshootPt.y).toBeCloseTo(41.5 + -2.4 * -0.05, 6);
+    expect(overshootPt.z).toBeCloseTo(5.05 * -0.05, 6);
   });
 
   it('configures Two-Pass WebGL Stencil Cross-Section Capping & PBR max anisotropy cleanly', () => {

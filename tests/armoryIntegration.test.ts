@@ -226,6 +226,22 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
     expect(getArmoryPhysicsState().shotCount).toBe(0);
     expect(interactiveActionStore.getState().weaponId).toBe('p90');
     expect(getSupportedSelectorModes('p90')).toEqual(['safe', 'semi', 'auto']);
+
+    // 4. Switching to archery (`lift33` / `r500`) clamps FCG to `safe / semi` & preserves zero thermal/fouling
+    useAppStore.getState().enterWorkbench('lift33', 'firing');
+    expect(interactiveActionStore.getState().weaponId).toBe('lift33');
+    expect(getSupportedSelectorModes('lift33')).toEqual(['safe', 'semi']);
+    expect(interactiveActionStore.getState().selectorMode).toBe('semi');
+    applyArmoryShot('arrow_400gr');
+    expect(getArmoryPhysicsState().barrelHeat01).toBe(0);
+    expect(getArmoryPhysicsState().carbonFouling01).toBe(0);
+
+    useAppStore.getState().selectArmoryWeapon('r500');
+    expect(interactiveActionStore.getState().weaponId).toBe('r500');
+    expect(getSupportedSelectorModes('r500')).toEqual(['safe', 'semi']);
+    applyArmoryShot('bolt_400gr');
+    expect(getArmoryPhysicsState().barrelHeat01).toBe(0);
+    expect(getArmoryPhysicsState().carbonFouling01).toBe(0);
   });
 
   it('enforces 100% zh/en structural key parity across UI_STRINGS, SHOWCASE_STRINGS & TELEMETRY_HUD_STRINGS', () => {

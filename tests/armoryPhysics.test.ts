@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
   AMBIENT_TEMP_C,
+  ARCHERY_PROFILES,
   BALLISTIC_CALIBERS,
   BRASS_AUDIBLE_IMPACT_CMS,
   BRASS_MAX_AUDIBLE_BOUNCES,
@@ -21,6 +22,8 @@ import {
   getArmoryPhysicsState,
   getSmokeWispPool,
   getSpentCasingPool,
+  isArcheryCaliber,
+  isArcheryWeapon,
   resetArmoryPhysics,
   seedArmoryPhysicsRng,
   setBrassFloorImpactListener,
@@ -39,6 +42,8 @@ const EXPECTED_PMAX: Record<CaliberProfile, number> = {
   '50_ae': 248,
   '338_lapua': 420,
   '50_bmg': 379,
+  arrow_400gr: 311,
+  bolt_400gr: 1334,
 };
 
 const DT = 1 / 60;
@@ -171,13 +176,77 @@ describe('SAAMI / CIP internal ballistics model', () => {
     ).toBe(0);
   });
 
-  it('defines ordered firing timing for all 11 weapons', () => {
+  it('defines ordered firing timing for all 13 weapons', () => {
     for (const id of WEAPON_IDS) {
       const t = WEAPON_FIRING_TIMING[id];
       expect(t.ignitionF).toBeLessThan(t.muzzleExitF);
       expect(t.muzzleExitF).toBeLessThan(t.ejectF);
       expect(t.ejectF).toBeLessThan(t.batteryF);
       expect(Math.hypot(t.ejectDirX, t.ejectDirY, t.ejectDirZ)).toBeCloseTo(1, 6);
+    }
+  });
+
+  it('models archery draw-force, let-off & power-stroke curves for arrow_400gr and bolt_400gr with zero heat, brass or smoke', () => {
+    expect(ARCHERY_PROFILES).toEqual(['arrow_400gr', 'bolt_400gr']);
+    expect(isArcheryCaliber('arrow_400gr')).toBe(true);
+    expect(isArcheryCaliber('bolt_400gr')).toBe(true);
+    expect(isArcheryCaliber('556_nato')).toBe(false);
+    expect(isArcheryWeapon('lift33')).toBe(true);
+    expect(isArcheryWeapon('r500')).toBe(true);
+    expect(isArcheryWeapon('m4a1')).toBe(false);
+
+    for (const [cal, wid] of [
+      ['arrow_400gr', 'lift33'],
+      ['bolt_400gr', 'r500'],
+    ] as const) {
+      const spec = CALIBER_BALLISTICS[cal];
+      const timing = WEAPON_FIRING_TIMING[wid];
+      expect(spec.standard).toBe('ATA / IBO');
+      expect(spec.peakPressureMPa).toBe(EXPECTED_PMAX[cal]);
+      expect(spec.heatPerShotC).toBe(0);
+      expect(spec.foulingPerShot).toBe(0);
+      expect(spec.ejectSpeedCmS).toBe(0);
+      expect(spec.shockDiamonds).toBe(0);
+      expect(spec.archerySpec).toBeDefined();
+      expect(spec.muzzleEnergyJ).toBeCloseTo(
+        0.5 * (spec.projectileMassG / 1000) * spec.muzzleVelocityMps ** 2,
+        5
+      );
+
+      // Draw ramp -> let-off valley before release -> power-stroke acceleration to V0
+      const valley = evaluateInternalBallistics(cal, timing.ignitionF - 0.02, timing);
+      expect(valley.velocityMps).toBe(0);
+      expect(valley.pressureMPa).toBeCloseTo(spec.archerySpec!.holdingForceN, 0);
+
+      let prevV = 0;
+      for (let f = timing.ignitionF; f <= timing.muzzleExitF + 1e-6; f += 0.01) {
+        const s = evaluateInternalBallistics(cal, f, timing);
+        expect(s.velocityMps).toBeGreaterThanOrEqual(prevV - 1e-6);
+        expect(s.gasPortPressureMPa).toBe(0);
+        prevV = s.velocityMps;
+      }
+      const exitSample = evaluateInternalBallistics(cal, timing.muzzleExitF, timing);
+      expect(exitSample.velocityMps).toBeCloseTo(spec.muzzleVelocityMps, 2);
+      expect(exitSample.boreTravelRatio).toBeCloseTo(1, 5);
+    }
+
+    // stepArmoryPhysics spawns zero spent brass, zero smoke wisps, and keeps ambient barrel temp
+    resetArmoryPhysics();
+    for (const [wid, cal] of [
+      ['lift33', 'arrow_400gr'],
+      ['r500', 'bolt_400gr'],
+    ] as const) {
+      const input = makeInput(wid);
+      input.caliber = cal;
+      input.hasGasVent = false;
+      for (let i = 0; i < 5; i++) playCycle(input, 4);
+      const st = getArmoryPhysicsState();
+      expect(st.shotCount).toBe(5);
+      expect(st.barrelTempC).toBe(AMBIENT_TEMP_C);
+      expect(st.barrelHeat01).toBe(0);
+      expect(st.carbonFouling01).toBe(0);
+      expect(countActiveSpentCasings()).toBe(0);
+      expect(getSmokeWispPool().some((w) => w.active)).toBe(false);
     }
   });
 

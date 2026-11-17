@@ -50,7 +50,7 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
     setAcousticEnvironment('indoor_range');
   });
 
-  it('maps authentic SAFE / SEMI / AUTO fire-control capabilities & bilingual tooltips across all 11 weapons', () => {
+  it('maps authentic SAFE / SEMI / AUTO fire-control capabilities & bilingual tooltips across all 13 weapons', () => {
     const selectFireWeapons: WeaponId[] = [
       'ak15',
       'm4a1',
@@ -65,6 +65,8 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
       'deagle',
       'm82a1',
       'awm',
+      'lift33',
+      'r500',
     ];
 
     expect(selectFireWeapons.length + semiOnlyWeapons.length).toBe(
@@ -111,7 +113,7 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
     expect(setFireSelectorMode('auto')).toBe('semi');
   });
 
-  it('identifies authentic reciprocating slide/bolt/charging-handle parts on all 11 weapons without matching pins/locks', async () => {
+  it('identifies authentic reciprocating slide/bolt/charging-handle & archery draw parts on all 13 weapons without matching pins/locks', async () => {
     for (const weaponId of WEAPON_IDS) {
       const plugin = await loadWeaponPlugin(weaponId);
       const partIdSet = new Set(plugin.parts.map((p) => p.id));
@@ -303,6 +305,21 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
       0
     );
     expect(playbackClock.getState().fireProgress).toBe(0);
+
+    // 4. Archery draw-stroke mapping [0..0.30] & compound cam let-off curve (85% on lift33, 38% on r500)
+    expect(mapManualRackToFireProgress(0, 'lift33')).toBe(0);
+    expect(mapManualRackToFireProgress(1, 'lift33')).toBeCloseTo(0.3, 6);
+    expect(mapManualRackToFireProgress(0.5, 'r500')).toBeCloseTo(0.15, 6);
+    const bowPeak = computeRecoilSpringForceN('lift33', 0.65);
+    const bowValley = computeRecoilSpringForceN('lift33', 1.0);
+    expect(bowPeak).toBeCloseTo(311.4, 1);
+    expect(bowValley).toBeCloseTo(46.7, 1);
+    expect(bowValley).toBeLessThan(bowPeak * 0.2);
+
+    const xbowPeak = computeRecoilSpringForceN('r500', 0.72);
+    const xbowValley = computeRecoilSpringForceN('r500', 1.0);
+    expect(xbowPeak).toBeCloseTo(1334.5, 1);
+    expect(xbowValley).toBeCloseTo(827.4, 1);
   });
 
   it('generates stereo Room Impulse Responses (bench_close, indoor_range, tactical_hall) & Euler-Bernoulli steel waveguides', () => {
