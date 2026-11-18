@@ -1153,6 +1153,496 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
         );
       }
 
+      case 'python': {
+        const royalBlue = available ? '#1e3252' : fill;
+        const royalUnderlug = available ? '#2c446b' : subFill;
+        const walnutGrip = available ? '#7c4a27' : subFill;
+        const walnutCheck = available ? '#5c3419' : fill;
+        const goldMedallion = available ? '#f59e0b' : '#94a3b8';
+        const redRamp = available ? '#ef4444' : stroke;
+        return (
+          <svg
+            viewBox="0 0 180 86"
+            className="weapon-silhouette-svg"
+            aria-hidden
+          >
+            {/* Wide Target Spur DA/SA Hammer */}
+            <path
+              d="M50 22 L38 15.5 L40.5 20.5 L46 25.5"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="2.3"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            {/* Forged Colt I-Frame, Top Strap, Recoil Shield & Trigger Guard */}
+            <path
+              d="M46 20 L97 20 L97 39 L91 40 L90 54 Q89 58 84 58 L69 58 Q65 56 64 51 L55 77 L33 74 L45 45 Q47 38 41 34 L43 24 Z"
+              fill={royalBlue}
+              stroke={stroke}
+              strokeWidth="1.3"
+              strokeLinejoin="round"
+            />
+            {/* Colt Accro Adjustable Micrometer Target Rear Sight */}
+            <polygon
+              points="50,20 60,20 59,15.2 52,16.2"
+              fill={stroke}
+            />
+            {/* Pull-Back Teardrop Cylinder Latch */}
+            <ellipse
+              cx="56.5"
+              cy="28"
+              rx="3.4"
+              ry="2.1"
+              fill={royalUnderlug}
+              stroke={stroke}
+              strokeWidth="0.9"
+            />
+            {/* Swing-Out 6-Shot Fluted .357 Magnum Cylinder */}
+            <rect
+              x="66.5"
+              y="22.2"
+              width="28.5"
+              height="16.8"
+              rx="1.8"
+              fill={royalUnderlug}
+              stroke={stroke}
+              strokeWidth="1.25"
+            />
+            <rect
+              x="70"
+              y="27.2"
+              width="21"
+              height="5.4"
+              rx="2.7"
+              fill={royalBlue}
+              stroke={stroke}
+              strokeWidth="0.85"
+            />
+            <line
+              x1="68.5"
+              y1="23.2"
+              x2="68.5"
+              y2="38"
+              stroke={goldMedallion}
+              strokeWidth="1"
+              opacity="0.75"
+            />
+            {/* 6" Heavy Barrel w/ 3-Slot Ventilated Rib & Full-Length Ejector Underlug */}
+            <path
+              d="M95 18.2 L162 18.2 L163 27.5 L95 27.5 Z"
+              fill={royalBlue}
+              stroke={stroke}
+              strokeWidth="1.3"
+            />
+            <path
+              d="M95 27.5 L161 27.5 L158.5 33.8 L95 34.2 Z"
+              fill={royalUnderlug}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            {/* 3 Signature Rectangular Cooling Rib Vents */}
+            {[104, 121, 138].map((vx) => (
+              <rect
+                key={vx}
+                x={vx}
+                y="19.8"
+                width="10.5"
+                height="2.9"
+                rx="0.7"
+                fill={cutout}
+                stroke={stroke}
+                strokeWidth="0.7"
+              />
+            ))}
+            {/* Pinned Red-Insert Baughman Ramped Front Sight */}
+            <polygon
+              points="152,18.2 160.5,18.2 159,12.6 155,13.2"
+              fill={stroke}
+            />
+            <line
+              x1="152.8"
+              y1="17.5"
+              x2="155.3"
+              y2="13.5"
+              stroke={redRamp}
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+            {/* Trigger Guard Window & Grooved Curved Target Trigger */}
+            <rect
+              x="68"
+              y="40.5"
+              width="18.5"
+              height="13.8"
+              rx="4.2"
+              fill={cutout}
+            />
+            <path
+              d="M78 41 Q79.5 48.5 75 51.5"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="2.2"
+              strokeLinecap="round"
+            />
+            {/* Flared American Black Walnut Target Grip, 22-LPI Checkering & 24K Gold Colt Medallion */}
+            <path
+              d="M46 39 L61 41 L54 78 L31 74 L42 46 Z"
+              fill={walnutGrip}
+              stroke={stroke}
+              strokeWidth="1.2"
+              strokeLinejoin="round"
+            />
+            <polygon
+              points="46,48 56.5,50 51.5,73.5 36.5,70.5"
+              fill={walnutCheck}
+              stroke={stroke}
+              strokeWidth="0.75"
+            />
+            <circle
+              cx="50.5"
+              cy="44.5"
+              r="2.2"
+              fill={goldMedallion}
+            />
+          </svg>
+        );
+      }
+
+      case 'benellim4': {
+        const receiverAlloy = available ? '#334155' : fill;
+        const barrelPhos = available ? '#475569' : subFill;
+        const polyFurniture = available ? '#1e293b' : subFill;
+        const argoStainless = available ? '#cbd5e1' : stroke;
+        const safetyRed = available ? '#ef4444' : '#94a3b8';
+        return (
+          <svg
+            viewBox="0 0 180 86"
+            className="weapon-silhouette-svg"
+            aria-hidden
+          >
+            {/* 14-Deg Angled 3-Position Recoil Tube + M1014 Skeletonized Telestock & Cheekpiece */}
+            <line
+              x1="49"
+              y1="34.5"
+              x2="12"
+              y2="43.5"
+              stroke={barrelPhos}
+              strokeWidth="4.2"
+              strokeLinecap="round"
+            />
+            <path
+              d="M9 31 L36 30.5 L38 36.5 L28 45.5 L13 56.5 L9 55.5 Z"
+              fill={polyFurniture}
+              stroke={stroke}
+              strokeWidth="1.25"
+              strokeLinejoin="round"
+            />
+            {/* Raised Elastomer Comb Cheekpiece + Skeletonized Buttstock Window + Rubber Pad */}
+            <path
+              d="M15 28 L34 28 L36 31.2 L14 31.5 Z"
+              fill={barrelPhos}
+              stroke={stroke}
+              strokeWidth="0.9"
+            />
+            <polygon
+              points="15,36.5 30,36 23,46.5 15,49"
+              fill={cutout}
+            />
+            <rect
+              x="6.8"
+              y="30.8"
+              width="3.6"
+              height="25.5"
+              rx="1.1"
+              fill={stroke}
+            />
+            {/* Independent Stippled M1014 Pistol Grip + Removable Trigger Guard + Red Safety */}
+            <path
+              d="M47 39.5 L57 39.5 L51 62.5 L41 60.5 Z"
+              fill={polyFurniture}
+              stroke={stroke}
+              strokeWidth="1.2"
+            />
+            <path
+              d="M57 39.5 L71 39.5 L70 47.5 L57 47.5"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="1.25"
+            />
+            <path
+              d="M64 39.8 Q65 44.5 62.5 46"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="1.7"
+              strokeLinecap="round"
+            />
+            <circle cx="59.5" cy="41.5" r="1.4" fill={safetyRed} />
+            {/* MIL-STD Type-III Anodized Receiver + Top Picatinny Rail + LPA Ghost-Ring Rear Sight */}
+            <path
+              d="M48 26.5 L99 26.5 L99 39.8 L48 39.8 Z"
+              fill={receiverAlloy}
+              stroke={stroke}
+              strokeWidth="1.3"
+            />
+            <line
+              x1="57"
+              y1="25"
+              x2="96"
+              y2="25"
+              stroke={accent}
+              strokeWidth="1.6"
+              strokeDasharray="2.3 1.7"
+            />
+            <polygon
+              points="50,26.5 57.5,26.5 56.5,20.2 51.5,21"
+              fill={stroke}
+            />
+            {/* 3" Magnum Ejection Port + Knurled Rotating Tactical Bolt Handle */}
+            <rect
+              x="74"
+              y="29"
+              width="19"
+              height="5.2"
+              rx="1"
+              fill={argoStainless}
+              opacity="0.85"
+            />
+            <rect
+              x="88"
+              y="30.2"
+              width="6.5"
+              height="2.8"
+              rx="1.2"
+              fill={stroke}
+            />
+            {/* Pivoting Stainless Shell Elevator Spoon Hint Beneath Receiver */}
+            <line
+              x1="74"
+              y1="40.3"
+              x2="94"
+              y2="40.3"
+              stroke={argoStainless}
+              strokeWidth="1.3"
+            />
+            {/* 2-Piece Ribbed Polymer Forend Shielding Twin ARGO Cylinders */}
+            <path
+              d="M99 30.8 L136 31.2 L134 41.2 L99 41.2 Z"
+              fill={polyFurniture}
+              stroke={stroke}
+              strokeWidth="1.2"
+            />
+            {[105, 111, 117, 123, 129].map((rx) => (
+              <line
+                key={rx}
+                x1={rx}
+                y1="32.5"
+                x2={rx}
+                y2="39.8"
+                stroke="#64748b"
+                strokeWidth="1.1"
+              />
+            ))}
+            {/* Twin Symmetrical ARGO Gas Cylinder Front Plugs */}
+            <rect
+              x="136"
+              y="31.3"
+              width="5.5"
+              height="3.3"
+              rx="0.8"
+              fill={argoStainless}
+              stroke={stroke}
+              strokeWidth="0.85"
+            />
+            {/* 18.5" Chrome-Lined 12ga Barrel + Full-Length 7-Rd Tubular Magazine + Ghost-Ring Front Sight */}
+            <rect
+              x="99"
+              y="27"
+              width="70"
+              height="3.8"
+              fill={barrelPhos}
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+            <rect
+              x="135"
+              y="35"
+              width="33"
+              height="4"
+              fill={receiverAlloy}
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+            <rect
+              x="168"
+              y="34.5"
+              width="4.5"
+              height="5"
+              rx="1"
+              fill={stroke}
+            />
+            <polygon
+              points="159.5,27 166,27 164.5,20.2 161.5,20.8"
+              fill={stroke}
+            />
+          </svg>
+        );
+      }
+
+      case 'garand': {
+        const walnutStock = available ? '#7c4622' : subFill;
+        const walnutHandguard = available ? '#8f532b' : subFill;
+        const parkerized = available ? '#3b444b' : fill;
+        const gasStainless = available ? '#cbd5e1' : stroke;
+        const clipAmber = available ? '#f59e0b' : '#94a3b8';
+        return (
+          <svg
+            viewBox="0 0 180 86"
+            className="weapon-silhouette-svg"
+            aria-hidden
+          >
+            {/* Full-Length American Black Walnut Stock + Semi-Pistol Wrist + Checkered Steel Buttplate */}
+            <path
+              d="M9 32.5 L40 31.5 L52 34 L120 33.5 L120 39.5 L92 41.5 L58 41.5 L49 51 L41 51 L37 45.5 L12 56.5 L9 55.5 Z"
+              fill={walnutStock}
+              stroke={stroke}
+              strokeWidth="1.25"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M7.2 32.2 L10.5 32.2 L10.5 56.2 L7.2 55.2 Z"
+              fill={parkerized}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            {/* Forged Heeled Open-Top Springfield Receiver + 8-Rd En-Bloc Clip Rim + T105 Rear Sight */}
+            <path
+              d="M52 26.2 L88 26.2 L88 34.5 L50 34.5 Z"
+              fill={parkerized}
+              stroke={stroke}
+              strokeWidth="1.25"
+            />
+            <rect
+              x="67"
+              y="24.6"
+              width="12"
+              height="1.8"
+              rx="0.6"
+              fill={clipAmber}
+            />
+            <path
+              d="M52.5 26.2 L55 20 L61.5 20.5 L62 26.2 Z"
+              fill={parkerized}
+              stroke={stroke}
+              strokeWidth="1.05"
+            />
+            <circle cx="57.5" cy="23.2" r="2.1" fill={stroke} />
+            {/* Walnut Rear & Front Handguards + Barrel Lower Band & Front Sling Swivel */}
+            <path
+              d="M88 27 L117 27.5 L117 33.8 L88 33.8 Z"
+              fill={walnutHandguard}
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+            <rect
+              x="117"
+              y="26.8"
+              width="3.2"
+              height="13.5"
+              rx="0.6"
+              fill={parkerized}
+              stroke={stroke}
+              strokeWidth="0.9"
+            />
+            <circle
+              cx="118.6"
+              cy="42"
+              r="2"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+            <path
+              d="M120.2 27.8 L147 28.2 L147 35.8 L120.2 37.5 Z"
+              fill={walnutHandguard}
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+            {/* Curved Right-Side Long-Stroke Operating Rod Handle & Cam Hump */}
+            <line
+              x1="77"
+              y1="31.2"
+              x2="147"
+              y2="33"
+              stroke={stroke}
+              strokeWidth="1.6"
+            />
+            <rect
+              x="76"
+              y="28.8"
+              width="7.5"
+              height="3.2"
+              rx="1"
+              fill={stroke}
+            />
+            {/* Quick-Detach Milled Trigger Housing, Pivoting Trigger Guard & Winter Safety */}
+            <path
+              d="M56 41.5 L73 41.5 L72 48.8 L58 48.8 Z"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="1.25"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M64.5 41.8 Q65.5 46 63 47.5"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="1.6"
+              strokeLinecap="round"
+            />
+            <line
+              x1="71.5"
+              y1="42"
+              x2="74"
+              y2="46"
+              stroke={accent}
+              strokeWidth="1.3"
+              strokeLinecap="round"
+            />
+            {/* 24" .30-06 Stepped Barrel + Stainless Muzzle Gas Cylinder, Bayonet Lug & Winged Front Sight */}
+            <rect
+              x="147"
+              y="27.8"
+              width="25.5"
+              height="2.9"
+              fill={parkerized}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            <path
+              d="M147.5 30.7 L166 30.7 L166 35.4 L154 35.4 L152 37.8 L148.5 37.8 Z"
+              fill={gasStainless}
+              stroke={stroke}
+              strokeWidth="1.05"
+            />
+            <rect
+              x="166"
+              y="30.9"
+              width="3.2"
+              height="4.2"
+              rx="0.7"
+              fill={stroke}
+            />
+            <polygon
+              points="156.5,27.8 162,27.8 160.8,21.5 158,22"
+              fill={parkerized}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+          </svg>
+        );
+      }
+
       case 'r500':
       default: {
         const chassisSlate = available ? '#475569' : '#94a3b8';

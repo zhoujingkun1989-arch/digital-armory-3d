@@ -549,10 +549,15 @@ function positionStudioShotCamera(
   const minSafeDist = shot.isolatedGroup ? 8.5 : 14;
   const baseDist = Math.max(minSafeDist, distX, distY);
 
-  // Nudge compact pistols upward and slightly closer on cover_hero so they sit centered above the turntable rim
+  // Nudge compact pistols & revolvers upward and slightly closer on cover_hero so they sit centered above the turntable rim
+  const wid = weaponId as string;
   const isPistolCover =
     shot.key === 'cover_hero' &&
-    manifest.workbenchMeta.scaleProfile === 'pistol';
+    (manifest.workbenchMeta.scaleProfile === 'pistol' ||
+      wid === 'g17' ||
+      wid === 'p320' ||
+      wid === 'deagle' ||
+      wid === 'python');
   if (isPistolCover) {
     cy -= 1.05;
   }

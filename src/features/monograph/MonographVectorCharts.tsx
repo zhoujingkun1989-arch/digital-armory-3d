@@ -5,6 +5,7 @@ import {
   getArcheryProjectileMeta,
   isArcheryCaliberProfile,
   type ArcheryProjectileSpec,
+  type CartridgeLabSpec,
 } from '../../engine/cartridges/cartridgeSpecs';
 import {
   computeGasPortUncoverF,
@@ -23,6 +24,125 @@ import type {
 } from '../../weapons/types';
 import type { ExplodedPinItem } from './explodedPinLayout';
 import type { MonographEdition } from './monographCaptureStore';
+
+export type MonographWeaponId = WeaponId | 'python' | 'benellim4' | 'garand';
+export type MonographCaliberProfile =
+  | CaliberProfile
+  | '357_magnum'
+  | '12_gauge'
+  | '30_06';
+
+interface CartridgeDiagramFallbackSpec {
+  code: string;
+  standard: 'SAAMI' | 'CIP' | 'NATO STANAG';
+  nameZh: string;
+  nameEn: string;
+  caseLengthMm: number;
+  oalMm: number;
+  bulletDiameterMm: number;
+  neckDiameterMm: number;
+  shoulderDiameterMm: number | null;
+  baseDiameterMm: number;
+  rimDiameterMm: number;
+  rimThicknessMm: number;
+  propellantMassG: number;
+  propellantFillRatio: number;
+  projectileGrain: number;
+  muzzleVelocityMps: number;
+  muzzleEnergyJ: number;
+  caseColor: string;
+  jacketColor: string;
+  penetratorColor: string;
+}
+
+const WAVE2_CARTRIDGE_FALLBACK_SPECS: Readonly<
+  Record<'357_magnum' | '12_gauge' | '30_06', CartridgeDiagramFallbackSpec>
+> = {
+  '357_magnum': {
+    code: '.357 Magnum',
+    standard: 'SAAMI',
+    nameZh: '.357 S&W 马格南转轮手枪弹',
+    nameEn: '.357 S&W Magnum (158 gr JSP)',
+    caseLengthMm: 32.77,
+    oalMm: 40.39,
+    bulletDiameterMm: 9.07,
+    neckDiameterMm: 9.63,
+    shoulderDiameterMm: null,
+    baseDiameterMm: 9.63,
+    rimDiameterMm: 11.18,
+    rimThicknessMm: 1.52,
+    propellantMassG: 0.94,
+    propellantFillRatio: 0.82,
+    projectileGrain: 158,
+    muzzleVelocityMps: 435,
+    muzzleEnergyJ: 969,
+    caseColor: '#dbe4ef',
+    jacketColor: '#c2511a',
+    penetratorColor: '#94a3b8',
+  },
+  '12_gauge': {
+    code: '12 Gauge',
+    standard: 'SAAMI',
+    nameZh: '12号 2¾英寸 00号军用鹿弹 (70mm)',
+    nameEn: '12 Gauge 2.75" 00 Buckshot (9-Pellet)',
+    caseLengthMm: 69.85,
+    oalMm: 69.85,
+    bulletDiameterMm: 18.53,
+    neckDiameterMm: 20.05,
+    shoulderDiameterMm: null,
+    baseDiameterMm: 20.42,
+    rimDiameterMm: 22.45,
+    rimThicknessMm: 1.8,
+    propellantMassG: 1.95,
+    propellantFillRatio: 0.28,
+    projectileGrain: 490,
+    muzzleVelocityMps: 405,
+    muzzleEnergyJ: 2605,
+    caseColor: '#dc2626',
+    jacketColor: '#e5b318',
+    penetratorColor: '#64748b',
+  },
+  '30_06': {
+    code: '.30-06',
+    standard: 'SAAMI',
+    nameZh: '.30-06 春田 M2 普通步枪弹 (7.62×63mm)',
+    nameEn: '.30-06 Springfield M2 Ball (150 gr)',
+    caseLengthMm: 63.35,
+    oalMm: 84.84,
+    bulletDiameterMm: 7.82,
+    neckDiameterMm: 8.63,
+    shoulderDiameterMm: 11.2,
+    baseDiameterMm: 11.96,
+    rimDiameterMm: 12.01,
+    rimThicknessMm: 1.24,
+    propellantMassG: 3.24,
+    propellantFillRatio: 0.88,
+    projectileGrain: 150,
+    muzzleVelocityMps: 853,
+    muzzleEnergyJ: 3536,
+    caseColor: '#d6a432',
+    jacketColor: '#c04e18',
+    penetratorColor: '#64748b',
+  },
+};
+
+function resolveCartridgeDiagramSpec(
+  caliber: MonographCaliberProfile
+): CartridgeDiagramFallbackSpec {
+  const labMap = CARTRIDGE_LAB_SPECS as Readonly<
+    Record<string, CartridgeLabSpec | undefined>
+  >;
+  const live = labMap[caliber];
+  if (live) return live;
+  if (
+    caliber === '357_magnum' ||
+    caliber === '12_gauge' ||
+    caliber === '30_06'
+  ) {
+    return WAVE2_CARTRIDGE_FALLBACK_SPECS[caliber];
+  }
+  return CARTRIDGE_LAB_SPECS['556_nato'];
+}
 
 const GROUP_ACCENT_DARK: Record<
   AssemblyGroupKey,
@@ -239,14 +359,16 @@ function evalArcheryChartCurve(
 }
 
 export const BallisticsVectorChart: React.FC<{
-  weaponId: WeaponId;
-  caliber: CaliberProfile;
+  weaponId: MonographWeaponId;
+  caliber: MonographCaliberProfile;
   edition: MonographEdition;
   lang: LanguageCode;
 }> = ({ weaponId, caliber, edition, lang }) => {
   const gradId = useId();
   const isZh = lang === 'zh';
   const isBlueprint = edition === 'blueprint_manual';
+  const runtimeCaliber = caliber as CaliberProfile;
+  const runtimeWeaponId = weaponId as WeaponId;
 
   const isArchery =
     isArcheryCaliberProfile(caliber as string) ||
@@ -262,13 +384,17 @@ export const BallisticsVectorChart: React.FC<{
       )
     : null;
 
-  const spec = getCaliberBallisticsSpec(caliber);
+  const spec = getCaliberBallisticsSpec(runtimeCaliber);
   const hasNativeArcherySpec =
     isArchery && (spec.caliber as string) === (caliber as string);
-  const timing = getWeaponFiringTiming(weaponId);
-  const peakF = isArchery ? 0.16 : computePeakPressureF(caliber, timing);
-  const safeUnlockF = isArchery ? 0.32 : computeSafeUnlockF(caliber, timing);
-  const gasPortF = isArchery ? null : computeGasPortUncoverF(caliber, timing);
+  const timing = getWeaponFiringTiming(runtimeWeaponId);
+  const peakF = isArchery ? 0.16 : computePeakPressureF(runtimeCaliber, timing);
+  const safeUnlockF = isArchery
+    ? 0.32
+    : computeSafeUnlockF(runtimeCaliber, timing);
+  const gasPortF = isArchery
+    ? null
+    : computeGasPortUncoverF(runtimeCaliber, timing);
   const effectiveExitF =
     isArchery && archeryMeta
       ? archeryMeta.caliber === 'arrow_400gr'
@@ -316,7 +442,7 @@ export const BallisticsVectorChart: React.FC<{
     padT + plotH - Math.max(0, Math.min(1, v / vCeil)) * plotH;
 
   const { pressurePath, pressureArea, velocityPath } = useMemo(() => {
-    const sample = createInternalBallisticsSample(caliber);
+    const sample = createInternalBallisticsSample(runtimeCaliber);
     const N = 220;
     const pPts: string[] = [];
     const vPts: string[] = [];
@@ -329,7 +455,7 @@ export const BallisticsVectorChart: React.FC<{
         yPVal = res.forceN;
         yVVal = res.velMps;
       } else {
-        evaluateInternalBallisticsInto(caliber, f, sample, timing);
+        evaluateInternalBallisticsInto(runtimeCaliber, f, sample, timing);
         yPVal = sample.pressureMPa;
         yVVal = sample.velocityMps;
       }
@@ -640,14 +766,16 @@ export const BallisticsVectorChart: React.FC<{
  * Precision CAD Half-Section Schematic of the SAAMI/CIP Cartridge (`Left: Exterior`, `Right: 45° Section Cut`).
  */
 export const CartridgeCutawayDiagram: React.FC<{
-  caliber: CaliberProfile;
+  caliber: MonographCaliberProfile;
   edition: MonographEdition;
   lang: LanguageCode;
 }> = ({ caliber, edition, lang }) => {
   const hatchId = useId();
+  const hullHatchId = useId();
   const powderId = useId();
   const isZh = lang === 'zh';
   const isBlueprint = edition === 'blueprint_manual';
+  const caliberKey = caliber as string;
 
   const archeryMeta = isArcheryCaliberProfile(caliber as string)
     ? getArcheryProjectileMeta(caliber as string)
@@ -871,15 +999,443 @@ export const CartridgeCutawayDiagram: React.FC<{
     );
   }
 
-  const spec = CARTRIDGE_LAB_SPECS[caliber];
+  const spec = resolveCartridgeDiagramSpec(caliber);
 
   const W = 380;
   const H = 310;
   const cx = 162;
   const botY = 268;
   const topPad = 34;
+  const dimStroke = isBlueprint ? '#0369a1' : '#f59e0b';
+  const labelFill = isBlueprint ? '#0f172a' : '#e2e8f0';
+  const mutedFill = isBlueprint ? '#475569' : '#94a3b8';
 
-  // Auto-scale cartridge height so both 9x19mm (29.7mm) and .50 BMG (138.4mm) render with crisp detail
+  // Dedicated 12-Gauge Combat Shotshell Cutaway Branch (High-Brass Cup + Crimson Hull + Plastic Wad + 9× 00 Buckshot)
+  if (caliberKey === '12_gauge') {
+    const availH = botY - topPad;
+    const pxPerMm = Math.min(3.8, availH / Math.max(58, spec.oalMm));
+    const hullPx = spec.oalMm * pxPerMm;
+    const yTop = botY - hullPx;
+    const rimThkPx = Math.max(3.6, spec.rimThicknessMm * pxPerMm);
+    const yRimTop = botY - rimThkPx;
+    const brassH = hullPx * 0.27;
+    const yBrassTop = botY - brassH;
+
+    const rRim = (spec.rimDiameterMm * 0.5) * pxPerMm;
+    const rHull = (spec.baseDiameterMm * 0.5) * pxPerMm;
+    const hullWall = Math.max(2.6, rHull * 0.13);
+    const rInner = Math.max(8, rHull - hullWall);
+
+    const baseWadH = Math.max(10, hullPx * 0.085);
+    const primerR = Math.min(rHull * 0.28, 8.2);
+    const primerH = Math.min(baseWadH + 2, 11.5);
+    const powderH = Math.max(18, hullPx * 0.16);
+    const yPowderBottom = botY - baseWadH;
+    const yPowderTop = yPowderBottom - powderH;
+
+    const wadSkirtH = Math.max(14, hullPx * 0.11);
+    const yWadCupBottom = yPowderTop - wadSkirtH;
+    const yCrimpFold = yTop + Math.max(5.5, hullPx * 0.045);
+
+    // 9× 00 Lead Buckshot Spheres (Ø8.38mm -> 3 tiers × 3 pellets inside polyethylene shot cup)
+    const pelletR = Math.min((rInner - 2.2) * 0.44, Math.max(5.8, 4.19 * pxPerMm * 0.78));
+    const tierSpan = Math.max(pelletR * 2.02, (yWadCupBottom - yCrimpFold - pelletR * 2.4) * 0.46);
+    const tierBaseY = yWadCupBottom - pelletR - 2.5;
+    const buckshotPellets: { px: number; py: number; sectioned: boolean }[] = [
+      // Tier 1 (Bottom 3× 00 Buck)
+      { px: cx - pelletR * 0.92, py: tierBaseY, sectioned: false },
+      { px: cx + pelletR * 0.96, py: tierBaseY, sectioned: false },
+      { px: cx + pelletR * 0.12, py: tierBaseY - pelletR * 0.34, sectioned: true },
+      // Tier 2 (Middle 3× 00 Buck)
+      { px: cx - pelletR * 0.88, py: tierBaseY - tierSpan, sectioned: false },
+      { px: cx + pelletR * 0.94, py: tierBaseY - tierSpan, sectioned: false },
+      { px: cx + pelletR * 0.08, py: tierBaseY - tierSpan - pelletR * 0.32, sectioned: true },
+      // Tier 3 (Top 3× 00 Buck)
+      { px: cx - pelletR * 0.9, py: tierBaseY - tierSpan * 2, sectioned: false },
+      { px: cx + pelletR * 0.92, py: tierBaseY - tierSpan * 2, sectioned: false },
+      { px: cx + pelletR * 0.1, py: tierBaseY - tierSpan * 2 - pelletR * 0.3, sectioned: true },
+    ];
+
+    const leftBrassPath = [
+      `M ${cx} ${botY}`,
+      `L ${cx - rRim} ${botY}`,
+      `L ${cx - rRim} ${yRimTop}`,
+      `L ${cx - rHull - 0.8} ${yRimTop - 0.8}`,
+      `L ${cx - rHull - 0.8} ${yBrassTop}`,
+      `L ${cx} ${yBrassTop}`,
+      `Z`,
+    ].join(' ');
+
+    const leftHullPath = [
+      `M ${cx} ${yBrassTop}`,
+      `L ${cx - rHull} ${yBrassTop}`,
+      `L ${cx - rHull} ${yCrimpFold}`,
+      `Q ${cx - rHull} ${yTop} ${cx - rHull + 5} ${yTop}`,
+      `L ${cx} ${yTop}`,
+      `Z`,
+    ].join(' ');
+
+    const rightHullWallPath = [
+      `M ${cx + rHull} ${yBrassTop}`,
+      `L ${cx + rHull} ${yCrimpFold}`,
+      `Q ${cx + rHull} ${yTop} ${cx + rHull - 5} ${yTop}`,
+      `L ${cx + 2} ${yTop}`,
+      `L ${cx + 2} ${yCrimpFold}`,
+      `L ${cx + rInner} ${yCrimpFold}`,
+      `L ${cx + rInner} ${yBrassTop}`,
+      `Z`,
+    ].join(' ');
+
+    const rightBrassWallPath = [
+      `M ${cx + primerR} ${botY}`,
+      `L ${cx + rRim} ${botY}`,
+      `L ${cx + rRim} ${yRimTop}`,
+      `L ${cx + rHull + 0.8} ${yRimTop - 0.8}`,
+      `L ${cx + rHull + 0.8} ${yBrassTop}`,
+      `L ${cx + rInner} ${yBrassTop}`,
+      `L ${cx + rInner} ${yPowderBottom}`,
+      `L ${cx + primerR} ${yPowderBottom}`,
+      `Z`,
+    ].join(' ');
+
+    const dimOalX = cx + rRim + 38;
+    const dimBrassX = cx - rRim - 28;
+    const crimsonHull = '#dc2626';
+    const brassHead = '#e5b318';
+
+    return (
+      <svg
+        className="monograph-vector-svg"
+        viewBox={`0 0 ${W} ${H}`}
+        role="img"
+        aria-label={
+          isZh ? `${spec.nameZh} 纵剖工程图` : `${spec.nameEn} Cutaway Schematic`
+        }
+      >
+        <defs>
+          <pattern
+            id={hatchId}
+            width={6}
+            height={6}
+            patternTransform="rotate(45)"
+            patternUnits="userSpaceOnUse"
+          >
+            <rect width={6} height={6} fill={brassHead} fillOpacity={0.34} />
+            <line
+              x1={0}
+              y1={0}
+              x2={0}
+              y2={6}
+              stroke={isBlueprint ? '#92400e' : '#fbbf24'}
+              strokeWidth={1.25}
+            />
+          </pattern>
+          <pattern
+            id={hullHatchId}
+            width={5}
+            height={5}
+            patternTransform="rotate(-45)"
+            patternUnits="userSpaceOnUse"
+          >
+            <rect width={5} height={5} fill={crimsonHull} fillOpacity={0.35} />
+            <line
+              x1={0}
+              y1={0}
+              x2={0}
+              y2={5}
+              stroke={isBlueprint ? '#991b1b' : '#f87171'}
+              strokeWidth={1.2}
+            />
+          </pattern>
+          <pattern
+            id={powderId}
+            width={5}
+            height={5}
+            patternUnits="userSpaceOnUse"
+          >
+            <rect width={5} height={5} fill="#1e293b" />
+            <rect x={1} y={1} width={1.8} height={1.1} fill="#94a3b8" />
+            <rect x={3} y={3.1} width={1.6} height={1.1} fill="#64748b" />
+          </pattern>
+        </defs>
+
+        {/* Center Datum Axis */}
+        <line
+          x1={cx}
+          y1={14}
+          x2={cx}
+          y2={H - 12}
+          stroke={mutedFill}
+          strokeWidth={1}
+          strokeDasharray="6 3 1.5 3"
+        />
+
+        {/* Right Interior Cavity Backdrop + Double-Base Flake Powder Bed */}
+        <rect
+          x={cx - rInner * 0.94}
+          y={yCrimpFold}
+          width={rInner * 1.9}
+          height={yPowderBottom - yCrimpFold}
+          fill={isBlueprint ? '#f8fafc' : '#0b1120'}
+        />
+        <rect
+          x={cx}
+          y={yPowderTop}
+          width={rInner}
+          height={powderH}
+          fill={`url(#${powderId})`}
+        />
+
+        {/* One-Piece Polyethylene Shot-Cup H-Wad (Obturator Skirt + Cushion Legs + Shot Petals) */}
+        <rect
+          x={cx}
+          y={yPowderTop - 3.5}
+          width={rInner}
+          height={3.5}
+          fill="#e2e8f0"
+          stroke="#64748b"
+          strokeWidth={0.75}
+        />
+        <line
+          x1={cx + rInner * 0.35}
+          y1={yPowderTop - 3.5}
+          x2={cx + rInner * 0.65}
+          y2={yWadCupBottom + 3}
+          stroke="#cbd5e1"
+          strokeWidth={2}
+        />
+        <line
+          x1={cx + rInner * 0.75}
+          y1={yPowderTop - 3.5}
+          x2={cx + rInner * 0.35}
+          y2={yWadCupBottom + 3}
+          stroke="#cbd5e1"
+          strokeWidth={2}
+        />
+        <path
+          d={`M ${cx - rInner + 1.5} ${yWadCupBottom + 3} L ${cx + rInner} ${yWadCupBottom + 3} L ${cx + rInner} ${yCrimpFold + 2} L ${cx + rInner - 2.3} ${yCrimpFold + 2} L ${cx + rInner - 2.3} ${yWadCupBottom} L ${cx - rInner + 1.5} ${yWadCupBottom} Z`}
+          fill="#e2e8f0"
+          fillOpacity={0.88}
+          stroke="#64748b"
+          strokeWidth={0.85}
+        />
+
+        {/* 9× 00 Antimonial Lead Buckshot Spheres (Ø8.38 mm) */}
+        {buckshotPellets.map((p, idx) => (
+          <g key={idx}>
+            <circle
+              cx={p.px}
+              cy={p.py}
+              r={pelletR}
+              fill={p.sectioned ? `url(#${hatchId})` : '#64748b'}
+              stroke={isBlueprint ? '#1e293b' : '#e2e8f0'}
+              strokeWidth={1}
+            />
+            {!p.sectioned && (
+              <circle
+                cx={p.px - pelletR * 0.3}
+                cy={p.py - pelletR * 0.3}
+                r={pelletR * 0.28}
+                fill="#cbd5e1"
+                opacity={0.7}
+              />
+            )}
+          </g>
+        ))}
+
+        {/* Left Exterior: Crimson Ribbed Polymer Hull + C26000 High-Brass Cup (Masking Left Buckshot Half) */}
+        <path
+          d={leftHullPath}
+          fill={crimsonHull}
+          fillOpacity={0.94}
+          stroke={isBlueprint ? '#7f1d1d' : '#fca5a5'}
+          strokeWidth={1.15}
+        />
+        {[0.28, 0.54, 0.78].map((u) => (
+          <line
+            key={u}
+            x1={cx - rHull * u}
+            y1={yTop + 4}
+            x2={cx - rHull * u}
+            y2={yBrassTop - 1}
+            stroke={isBlueprint ? '#991b1b' : '#f87171'}
+            strokeWidth={0.75}
+            opacity={0.6}
+          />
+        ))}
+        <path
+          d={leftBrassPath}
+          fill={brassHead}
+          fillOpacity={0.92}
+          stroke={isBlueprint ? '#78350f' : '#fde68a'}
+          strokeWidth={1.15}
+        />
+
+        {/* Right 45° Sectioned Crimson Polymer Hull Wall + High-Brass Cup + 209 Primer */}
+        <path
+          d={rightHullWallPath}
+          fill={`url(#${hullHatchId})`}
+          stroke={isBlueprint ? '#991b1b' : '#f87171'}
+          strokeWidth={1.1}
+        />
+        <path
+          d={rightBrassWallPath}
+          fill={`url(#${hatchId})`}
+          stroke={isBlueprint ? '#92400e' : '#fbbf24'}
+          strokeWidth={1.15}
+        />
+        <rect
+          x={cx}
+          y={botY - primerH}
+          width={primerR}
+          height={primerH}
+          fill="#cbd5e1"
+          stroke="#475569"
+          strokeWidth={0.9}
+        />
+
+        {/* CAD Dimension Callout: OAL (Right) */}
+        <line
+          x1={cx + 4}
+          y1={yTop}
+          x2={dimOalX + 5}
+          y2={yTop}
+          stroke={dimStroke}
+          strokeWidth={0.85}
+          strokeOpacity={0.65}
+        />
+        <line
+          x1={cx + rRim + 3}
+          y1={botY}
+          x2={dimOalX + 5}
+          y2={botY}
+          stroke={dimStroke}
+          strokeWidth={0.85}
+          strokeOpacity={0.65}
+        />
+        <line
+          x1={dimOalX}
+          y1={yTop}
+          x2={dimOalX}
+          y2={botY}
+          stroke={dimStroke}
+          strokeWidth={1.2}
+        />
+        <text
+          x={dimOalX + 6}
+          y={(yTop + botY) * 0.5 - 4}
+          fontSize={9.5}
+          fontWeight={800}
+          fill={dimStroke}
+          fontFamily="ui-monospace, SFMono-Regular, monospace"
+        >
+          {isZh ? '壳长' : 'HULL'}
+        </text>
+        <text
+          x={dimOalX + 6}
+          y={(yTop + botY) * 0.5 + 9}
+          fontSize={10}
+          fontWeight={800}
+          fill={labelFill}
+          fontFamily="ui-monospace, SFMono-Regular, monospace"
+        >
+          {spec.oalMm.toFixed(1)} mm
+        </text>
+
+        {/* Left Callout: High-Brass Head Cup */}
+        <line
+          x1={dimBrassX - 4}
+          y1={yBrassTop}
+          x2={cx - rHull - 3}
+          y2={yBrassTop}
+          stroke={mutedFill}
+          strokeWidth={0.85}
+        />
+        <line
+          x1={dimBrassX - 4}
+          y1={botY}
+          x2={cx - rRim - 3}
+          y2={botY}
+          stroke={mutedFill}
+          strokeWidth={0.85}
+        />
+        <line
+          x1={dimBrassX}
+          y1={yBrassTop}
+          x2={dimBrassX}
+          y2={botY}
+          stroke={mutedFill}
+          strokeWidth={1.1}
+        />
+        <text
+          x={dimBrassX - 5}
+          y={(yBrassTop + botY) * 0.5 - 3}
+          textAnchor="end"
+          fontSize={8.8}
+          fontWeight={700}
+          fill={mutedFill}
+          fontFamily="ui-monospace, SFMono-Regular, monospace"
+        >
+          {isZh ? '高黄铜杯' : 'HIGH BRASS'}
+        </text>
+        <text
+          x={dimBrassX - 5}
+          y={(yBrassTop + botY) * 0.5 + 9}
+          textAnchor="end"
+          fontSize={9}
+          fontWeight={800}
+          fill={labelFill}
+          fontFamily="ui-monospace, SFMono-Regular, monospace"
+        >
+          {isZh ? '凸缘 Ø22.5' : 'Rim Ø22.5'}
+        </text>
+
+        {/* Right Anatomy Labels */}
+        <text
+          x={dimOalX + 6}
+          y={yTop + 18}
+          fontSize={8.8}
+          fontWeight={700}
+          fill={mutedFill}
+        >
+          {isZh ? '9× Ø8.4mm 00鹿弹' : '9× Ø8.4mm 00 Buck'}
+        </text>
+        <text
+          x={dimOalX + 6}
+          y={yWadCupBottom + 10}
+          fontSize={8.8}
+          fontWeight={700}
+          fill={mutedFill}
+        >
+          {isZh ? '一体塑料花瓣弹托' : 'Poly Shot-Cup Wad'}
+        </text>
+        <text
+          x={dimOalX + 6}
+          y={botY - 6}
+          fontSize={8.8}
+          fontWeight={700}
+          fill={mutedFill}
+        >
+          {isZh ? '209 霰弹底火' : '209 Primer Cup'}
+        </text>
+
+        <text
+          x={W * 0.5}
+          y={H - 12}
+          textAnchor="middle"
+          fontSize={9.5}
+          fontWeight={700}
+          fill={labelFill}
+          fontFamily="ui-monospace, SFMono-Regular, monospace"
+        >
+          {spec.code} · {spec.standard} · {spec.projectileGrain}gr ·{' '}
+          {spec.propellantMassG.toFixed(2)}g
+        </text>
+      </svg>
+    );
+  }
+
+  // Auto-scale metallic cartridge height so .357 Mag (40.4mm), .30-06 (84.8mm) & .50 BMG (138.4mm) render crisply
   const availH = botY - topPad;
   const pxPerMm = Math.min(5.2, availH / spec.oalMm);
 
@@ -896,11 +1452,22 @@ export const CartridgeCutawayDiagram: React.FC<{
   const rNeck = (spec.neckDiameterMm * 0.5) * pxPerMm;
   const rBullet = (spec.bulletDiameterMm * 0.5) * pxPerMm;
 
+  const isRimmedRevolver =
+    caliberKey === '357_magnum' || spec.rimDiameterMm > spec.baseDiameterMm * 1.08;
+  const is3006 = caliberKey === '30_06';
   const isBottleneck =
     spec.shoulderDiameterMm !== null &&
     spec.shoulderDiameterMm > spec.neckDiameterMm * 1.06;
-  const shoulderStartPx = isBottleneck ? casePx * 0.72 : casePx * 0.92;
-  const neckStartPx = isBottleneck ? casePx * 0.85 : casePx;
+  const shoulderStartPx = is3006
+    ? casePx * 0.782
+    : isBottleneck
+      ? casePx * 0.72
+      : casePx * 0.94;
+  const neckStartPx = is3006
+    ? casePx * 0.852
+    : isBottleneck
+      ? casePx * 0.85
+      : casePx;
 
   const yTop = botY - oalPx;
   const yCaseMouth = botY - casePx;
@@ -920,73 +1487,161 @@ export const CartridgeCutawayDiagram: React.FC<{
   const powderH = cavityH * spec.propellantFillRatio;
   const yPowderTop = botY - webH - powderH;
 
-  // Left half exterior profile path
-  const leftExteriorPath = [
-    `M ${cx} ${botY}`,
-    `L ${cx - rRim} ${botY}`,
-    `L ${cx - rRim} ${yRimTop}`,
-    `L ${cx - rGroove} ${yRimTop - 1.2}`,
-    `L ${cx - rGroove} ${yGrooveTop}`,
-    `L ${cx - rBase} ${yGrooveTop - 1.5}`,
-    `L ${cx - rShoulder} ${yShoulderStart}`,
-    `L ${cx - rNeck} ${yNeckStart}`,
-    `L ${cx - rNeck} ${yCaseMouth}`,
-    `L ${cx} ${yCaseMouth}`,
-    `Z`,
-  ].join(' ');
+  // Left half exterior profile path (Rimmed straight-wall for .357 Magnum vs Rimless extractor groove)
+  const leftExteriorPath = isRimmedRevolver
+    ? [
+        `M ${cx} ${botY}`,
+        `L ${cx - rRim} ${botY}`,
+        `L ${cx - rRim} ${yRimTop}`,
+        `L ${cx - rBase} ${yRimTop}`,
+        `L ${cx - rNeck} ${yCaseMouth}`,
+        `L ${cx} ${yCaseMouth}`,
+        `Z`,
+      ].join(' ')
+    : [
+        `M ${cx} ${botY}`,
+        `L ${cx - rRim} ${botY}`,
+        `L ${cx - rRim} ${yRimTop}`,
+        `L ${cx - rGroove} ${yRimTop - 1.2}`,
+        `L ${cx - rGroove} ${yGrooveTop}`,
+        `L ${cx - rBase} ${yGrooveTop - 1.5}`,
+        `L ${cx - rShoulder} ${yShoulderStart}`,
+        `L ${cx - rNeck} ${yNeckStart}`,
+        `L ${cx - rNeck} ${yCaseMouth}`,
+        `L ${cx} ${yCaseMouth}`,
+        `Z`,
+      ].join(' ');
 
-  // Left half bullet exterior ogive
-  const leftBulletPath = [
-    `M ${cx} ${yCaseMouth}`,
-    `L ${cx - rBullet} ${yCaseMouth}`,
-    `Q ${cx - rBullet} ${yTop + (yCaseMouth - yTop) * 0.42} ${cx} ${yTop}`,
-    `Z`,
-  ].join(' ');
+  // Projectile ogive: Truncated flat-meplat JSP for .357 Magnum, sharp M2 spitzer for .30-06, standard ogive otherwise
+  const jspMeplatR = Math.max(2.4, rBullet * 0.48);
+  const yJspJacketStop = yTop + (yCaseMouth - yTop) * 0.3;
+
+  const leftBulletPath =
+    caliberKey === '357_magnum'
+      ? [
+          `M ${cx} ${yCaseMouth}`,
+          `L ${cx - rBullet} ${yCaseMouth}`,
+          `L ${cx - rBullet * 0.92} ${yJspJacketStop}`,
+          `L ${cx} ${yJspJacketStop}`,
+          `Z`,
+        ].join(' ')
+      : is3006
+        ? [
+            `M ${cx} ${yCaseMouth}`,
+            `L ${cx - rBullet} ${yCaseMouth}`,
+            `C ${cx - rBullet} ${yCaseMouth - (yCaseMouth - yTop) * 0.46} ${cx - rBullet * 0.38} ${yTop + (yCaseMouth - yTop) * 0.24} ${cx} ${yTop}`,
+            `Z`,
+          ].join(' ')
+        : [
+            `M ${cx} ${yCaseMouth}`,
+            `L ${cx - rBullet} ${yCaseMouth}`,
+            `Q ${cx - rBullet} ${yTop + (yCaseMouth - yTop) * 0.42} ${cx} ${yTop}`,
+            `Z`,
+          ].join(' ');
+
+  const leftExposedJspLeadPath =
+    caliberKey === '357_magnum'
+      ? [
+          `M ${cx} ${yJspJacketStop}`,
+          `L ${cx - rBullet * 0.92} ${yJspJacketStop}`,
+          `L ${cx - jspMeplatR} ${yTop}`,
+          `L ${cx} ${yTop}`,
+          `Z`,
+        ].join(' ')
+      : null;
 
   // Right half cutaway case wall
-  const rightCaseWallPath = [
-    `M ${cx} ${botY}`,
-    `L ${cx + rRim} ${botY}`,
-    `L ${cx + rRim} ${yRimTop}`,
-    `L ${cx + rGroove} ${yRimTop - 1.2}`,
-    `L ${cx + rGroove} ${yGrooveTop}`,
-    `L ${cx + rBase} ${yGrooveTop - 1.5}`,
-    `L ${cx + rShoulder} ${yShoulderStart}`,
-    `L ${cx + rNeck} ${yNeckStart}`,
-    `L ${cx + rNeck} ${yCaseMouth}`,
-    `L ${cx + Math.max(1.5, rNeck - wallThk)} ${yCaseMouth}`,
-    `L ${cx + Math.max(1.5, rNeck - wallThk)} ${yNeckStart}`,
-    `L ${cx + Math.max(2, rShoulder - wallThk * 1.15)} ${yShoulderStart}`,
-    `L ${cx + Math.max(2.5, rBase - wallThk * 1.5)} ${botY - webH}`,
-    `L ${cx + 1.4} ${botY - webH}`,
-    `L ${cx + 1.4} ${botY - primerH}`,
-    `L ${cx + primerR} ${botY - primerH}`,
-    `L ${cx + primerR} ${botY}`,
-    `Z`,
-  ].join(' ');
+  const rightCaseWallPath = isRimmedRevolver
+    ? [
+        `M ${cx} ${botY}`,
+        `L ${cx + rRim} ${botY}`,
+        `L ${cx + rRim} ${yRimTop}`,
+        `L ${cx + rBase} ${yRimTop}`,
+        `L ${cx + rNeck} ${yCaseMouth}`,
+        `L ${cx + Math.max(1.5, rNeck - wallThk)} ${yCaseMouth}`,
+        `L ${cx + Math.max(2.2, rBase - wallThk * 1.25)} ${botY - webH}`,
+        `L ${cx + 1.4} ${botY - webH}`,
+        `L ${cx + 1.4} ${botY - primerH}`,
+        `L ${cx + primerR} ${botY - primerH}`,
+        `L ${cx + primerR} ${botY}`,
+        `Z`,
+      ].join(' ')
+    : [
+        `M ${cx} ${botY}`,
+        `L ${cx + rRim} ${botY}`,
+        `L ${cx + rRim} ${yRimTop}`,
+        `L ${cx + rGroove} ${yRimTop - 1.2}`,
+        `L ${cx + rGroove} ${yGrooveTop}`,
+        `L ${cx + rBase} ${yGrooveTop - 1.5}`,
+        `L ${cx + rShoulder} ${yShoulderStart}`,
+        `L ${cx + rNeck} ${yNeckStart}`,
+        `L ${cx + rNeck} ${yCaseMouth}`,
+        `L ${cx + Math.max(1.5, rNeck - wallThk)} ${yCaseMouth}`,
+        `L ${cx + Math.max(1.5, rNeck - wallThk)} ${yNeckStart}`,
+        `L ${cx + Math.max(2, rShoulder - wallThk * 1.15)} ${yShoulderStart}`,
+        `L ${cx + Math.max(2.5, rBase - wallThk * 1.5)} ${botY - webH}`,
+        `L ${cx + 1.4} ${botY - webH}`,
+        `L ${cx + 1.4} ${botY - primerH}`,
+        `L ${cx + primerR} ${botY - primerH}`,
+        `L ${cx + primerR} ${botY}`,
+        `Z`,
+      ].join(' ');
 
   // Right half bullet jacket + internal core
-  const rightBulletOuterPath = [
-    `M ${cx} ${yBulletBase}`,
-    `L ${cx + rBullet} ${yBulletBase}`,
-    `L ${cx + rBullet} ${yCaseMouth}`,
-    `Q ${cx + rBullet} ${yTop + (yCaseMouth - yTop) * 0.42} ${cx} ${yTop}`,
-    `Z`,
-  ].join(' ');
+  const rightBulletOuterPath =
+    caliberKey === '357_magnum'
+      ? [
+          `M ${cx} ${yBulletBase}`,
+          `L ${cx + rBullet} ${yBulletBase}`,
+          `L ${cx + rBullet} ${yCaseMouth}`,
+          `L ${cx + rBullet * 0.92} ${yJspJacketStop}`,
+          `L ${cx} ${yJspJacketStop}`,
+          `Z`,
+        ].join(' ')
+      : is3006
+        ? [
+            `M ${cx} ${yBulletBase}`,
+            `L ${cx + rBullet} ${yBulletBase}`,
+            `L ${cx + rBullet} ${yCaseMouth}`,
+            `C ${cx + rBullet} ${yCaseMouth - (yCaseMouth - yTop) * 0.46} ${cx + rBullet * 0.38} ${yTop + (yCaseMouth - yTop) * 0.24} ${cx} ${yTop}`,
+            `Z`,
+          ].join(' ')
+        : [
+            `M ${cx} ${yBulletBase}`,
+            `L ${cx + rBullet} ${yBulletBase}`,
+            `L ${cx + rBullet} ${yCaseMouth}`,
+            `Q ${cx + rBullet} ${yTop + (yCaseMouth - yTop) * 0.42} ${cx} ${yTop}`,
+            `Z`,
+          ].join(' ');
 
   const rCore = Math.max(1.6, rBullet - 1.9);
   const yCoreTip = yTop + Math.max(4, (yCaseMouth - yTop) * 0.14);
-  const rightCorePath = [
-    `M ${cx} ${yBulletBase - 1.2}`,
-    `L ${cx + rCore} ${yBulletBase - 1.2}`,
-    `L ${cx + rCore} ${yCaseMouth}`,
-    `Q ${cx + rCore} ${yCoreTip + (yCaseMouth - yCoreTip) * 0.44} ${cx} ${yCoreTip}`,
-    `Z`,
-  ].join(' ');
-
-  const dimStroke = isBlueprint ? '#0369a1' : '#f59e0b';
-  const labelFill = isBlueprint ? '#0f172a' : '#e2e8f0';
-  const mutedFill = isBlueprint ? '#475569' : '#94a3b8';
+  const rightCorePath =
+    caliberKey === '357_magnum'
+      ? [
+          `M ${cx} ${yBulletBase - 1.2}`,
+          `L ${cx + rCore} ${yBulletBase - 1.2}`,
+          `L ${cx + rCore} ${yJspJacketStop}`,
+          `L ${cx + rBullet * 0.92} ${yJspJacketStop}`,
+          `L ${cx + jspMeplatR} ${yTop}`,
+          `L ${cx} ${yTop}`,
+          `Z`,
+        ].join(' ')
+      : is3006
+        ? [
+            `M ${cx} ${yBulletBase - 1.2}`,
+            `L ${cx + rCore} ${yBulletBase - 1.2}`,
+            `L ${cx + rCore} ${yCaseMouth}`,
+            `C ${cx + rCore} ${yCaseMouth - (yCaseMouth - yCoreTip) * 0.46} ${cx + rCore * 0.36} ${yCoreTip + (yCaseMouth - yCoreTip) * 0.24} ${cx} ${yCoreTip}`,
+            `Z`,
+          ].join(' ')
+        : [
+            `M ${cx} ${yBulletBase - 1.2}`,
+            `L ${cx + rCore} ${yBulletBase - 1.2}`,
+            `L ${cx + rCore} ${yCaseMouth}`,
+            `Q ${cx + rCore} ${yCoreTip + (yCaseMouth - yCoreTip) * 0.44} ${cx} ${yCoreTip}`,
+            `Z`,
+          ].join(' ');
 
   const dimOalX = cx + Math.max(rRim, rBase) + 46;
   const dimCaseX = cx - Math.max(rRim, rBase) - 34;
@@ -1048,14 +1703,40 @@ export const CartridgeCutawayDiagram: React.FC<{
         fill={`url(#${powderId})`}
       />
 
-      {/* Left Exterior Brass Case & Bullet */}
+      {/* Left Exterior Brass/Nickel Case & Bullet (+ JSP Exposed Lead Nose / .357 Cannelure / .30-06 Annealed Neck) */}
       <path
         d={leftExteriorPath}
         fill={spec.caseColor}
-        fillOpacity={0.86}
-        stroke={isBlueprint ? '#78350f' : '#fde68a'}
+        fillOpacity={0.88}
+        stroke={
+          caliberKey === '357_magnum'
+            ? isBlueprint
+              ? '#475569'
+              : '#f1f5f9'
+            : isBlueprint
+              ? '#78350f'
+              : '#fde68a'
+        }
         strokeWidth={1.1}
       />
+      {caliberKey === '357_magnum' && (
+        <line
+          x1={cx - rBase}
+          y1={botY - casePx * 0.56}
+          x2={cx}
+          y2={botY - casePx * 0.56}
+          stroke={isBlueprint ? '#64748b' : '#94a3b8'}
+          strokeWidth={1.2}
+          strokeDasharray="1.8 1.2"
+        />
+      )}
+      {is3006 && (
+        <polygon
+          points={`${cx},${yCaseMouth} ${cx - rNeck},${yCaseMouth} ${cx - rNeck},${yNeckStart} ${cx - rShoulder},${yShoulderStart} ${cx},${yShoulderStart}`}
+          fill="#b45309"
+          fillOpacity={0.22}
+        />
+      )}
       <path
         d={leftBulletPath}
         fill={spec.jacketColor}
@@ -1063,6 +1744,25 @@ export const CartridgeCutawayDiagram: React.FC<{
         stroke={isBlueprint ? '#7c2d12' : '#fed7aa'}
         strokeWidth={1.1}
       />
+      {leftExposedJspLeadPath && (
+        <path
+          d={leftExposedJspLeadPath}
+          fill={spec.penetratorColor}
+          stroke={isBlueprint ? '#334155' : '#e2e8f0'}
+          strokeWidth={1.0}
+        />
+      )}
+      {is3006 && (
+        <line
+          x1={cx - rBullet}
+          y1={yCaseMouth}
+          x2={cx + rBullet}
+          y2={yCaseMouth}
+          stroke="#dc2626"
+          strokeWidth={1.3}
+          opacity={0.75}
+        />
+      )}
 
       {/* Right Cutaway Case Wall (45° ISO Hatching) & Primer Cup */}
       <path
@@ -1229,17 +1929,29 @@ export const CartridgeCutawayDiagram: React.FC<{
 };
 
 /**
- * 7-Caliber Muzzle Kinetic Energy Comparison Ladder (`518 J` -> `18,050 J`).
+ * 7->10 Caliber Muzzle Kinetic Energy Comparison Ladder (`513 J` -> `18,050 J`).
  */
 export const CaliberEnergyLadder: React.FC<{
-  activeCaliber: CaliberProfile;
+  activeCaliber: MonographCaliberProfile;
   lang: LanguageCode;
 }> = ({ activeCaliber, lang }) => {
   const isZh = lang === 'zh';
   const maxSqrt = Math.sqrt(18050);
-  const archeryRow = isArcheryCaliberProfile(activeCaliber as string)
-    ? getArcheryProjectileMeta(activeCaliber as string)
+  const activeKey = activeCaliber as string;
+  const archeryRow = isArcheryCaliberProfile(activeKey)
+    ? getArcheryProjectileMeta(activeKey)
     : null;
+  const isRegisteredLabCaliber = (
+    CARTRIDGE_LAB_ORDER as readonly string[]
+  ).includes(activeKey);
+  const pendingWave2Spec =
+    !archeryRow &&
+    !isRegisteredLabCaliber &&
+    (activeKey === '357_magnum' ||
+      activeKey === '12_gauge' ||
+      activeKey === '30_06')
+      ? WAVE2_CARTRIDGE_FALLBACK_SPECS[activeKey]
+      : null;
 
   return (
     <div className="monograph-energy-ladder">
@@ -1263,9 +1975,32 @@ export const CaliberEnergyLadder: React.FC<{
           </span>
         </div>
       ) : null}
+      {pendingWave2Spec ? (
+        <div key={activeKey} className="m-energy-row is-current">
+          <span className="m-energy-code">{pendingWave2Spec.code}</span>
+          <div className="m-energy-bar-track">
+            <div
+              className="m-energy-bar-fill"
+              style={{
+                width: `${Math.max(
+                  6,
+                  Math.min(
+                    100,
+                    (Math.sqrt(pendingWave2Spec.muzzleEnergyJ) / maxSqrt) * 100
+                  )
+                ).toFixed(1)}%`,
+              }}
+            />
+          </div>
+          <span className="m-energy-val">
+            {pendingWave2Spec.muzzleEnergyJ.toLocaleString('en-US')} J ·{' '}
+            {pendingWave2Spec.muzzleVelocityMps} {isZh ? 'm/s' : 'm/s'}
+          </span>
+        </div>
+      ) : null}
       {CARTRIDGE_LAB_ORDER.map((cal) => {
         const s = CARTRIDGE_LAB_SPECS[cal];
-        const isCurrent = cal === activeCaliber;
+        const isCurrent = (cal as string) === activeKey;
         const widthPct = Math.max(
           6,
           Math.min(100, (Math.sqrt(s.muzzleEnergyJ) / maxSqrt) * 100)

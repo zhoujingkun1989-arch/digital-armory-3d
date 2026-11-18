@@ -65,6 +65,14 @@ export const CartridgeLabView: React.FC = () => {
 
   const ui = UI_STRINGS[lang].cartridgeLab;
   const isZh = lang === 'zh';
+  const caliberCount = CARTRIDGE_LAB_ORDER.length;
+  const isMultiRowDock = caliberCount > 7;
+  const zhCaliberCountWord =
+    caliberCount === 10
+      ? '十'
+      : caliberCount === 7
+        ? '七'
+        : String(caliberCount);
   const spec = CARTRIDGE_LAB_SPECS[activeCaliber];
   const primaryWeaponLabel = getLocalizedShortWeaponLabel(
     spec.primaryWeaponId,
@@ -197,7 +205,7 @@ export const CartridgeLabView: React.FC = () => {
                     ? '展开弹药工程解剖档案'
                     : 'Expand ammunition dossier'
                   : isZh
-                    ? '收起左栏全宽检视七弹全景'
+                    ? `收起左栏全宽检视${zhCaliberCountWord}弹全景`
                     : 'Collapse dossier for full-width view'
               }
               onClick={() => setCartridgeDossierCollapsed(!dossierCollapsed)}
@@ -441,9 +449,19 @@ export const CartridgeLabView: React.FC = () => {
         </section>
       )}
 
-      {/* Bottom 7-Caliber 1:1 Scale Selector Dock */}
-      <nav className="cartridge-dock" aria-label={ui.caliberSelectorAria}>
-        <div className="cartridge-dock-strip">
+      {/* Bottom 1:1 Scale Selector Dock (Single-Row <= 7, 5×2 Grid for 10 Calibers) */}
+      <nav
+        className={`cartridge-dock cartridge-switcher-dock ${
+          isMultiRowDock ? 'is-multi-row' : ''
+        }`}
+        data-caliber-count={caliberCount}
+        aria-label={ui.caliberSelectorAria}
+      >
+        <div
+          className={`cartridge-dock-strip ${
+            isMultiRowDock ? 'is-multi-row-grid' : ''
+          }`}
+        >
           {CARTRIDGE_LAB_ORDER.map((cal) => {
             const item = CARTRIDGE_LAB_SPECS[cal];
             const isSelected = cal === activeCaliber;

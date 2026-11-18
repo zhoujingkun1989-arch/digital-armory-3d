@@ -148,7 +148,7 @@ export interface ShowcaseDictionary {
     title: string;
     desc: string;
     filterAria: string;
-    categories: Record<ArmoryCategory | 'archery', string>;
+    categories: Record<ArmoryCategory | 'shotgun' | 'archery', string>;
     partsPill: (count: number) => string;
     specCaliber: string;
     specOal: string;
@@ -354,6 +354,13 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
             'P90 90° 螺旋供弹高速连发缓冲 / M4 缓冲簧余韵 / 9mm 弹壳清鸣',
         },
         {
+          caliber: '.30-06 / 12 Gauge / .357 Magnum',
+          weaponTag: 'M1 Garand / Benelli M4 / Python',
+          freqTag: '62 Hz 轰鸣 + 1.74 kHz 漏夹长鸣',
+          signature:
+            '伽兰德 8 发弹簧钢漏夹末发「PING!」音叉高亢共鸣 / 双 ARGO 撞击与托弹舌咔哒 / 转轮 60° 棘爪分度',
+        },
+        {
           caliber: '400 gr Carbon Arrow / Bolt · 348–500 FPS',
           weaponTag: 'LIFT 33 / Ravin R500',
           freqTag: '46–54 Hz 弦阻尼闷响',
@@ -451,10 +458,11 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       filterAria: '馆藏分类筛选',
       categories: {
         all: '全部馆藏',
-        assault: '突击 / 卡宾 / 无托',
+        assault: '突击 / 步枪 / 无托',
         smg: '冲锋枪 / PDW',
         sniper: '狙击 / 反器材',
-        pistol: '半自动手枪',
+        shotgun: '战术霰弹',
+        pistol: '手枪 / 转轮',
         archery: '复合弓 / 弩',
       },
       partsPill: (n) => `${n} 零件`,
@@ -545,7 +553,11 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         { key: 'K', label: '开启 / 退出 1:1 3D 军械游标卡尺 (mm) 与包络标尺' },
         {
           key: 'B',
-          label: '进入 / 退出 7 大口径 SAAMI/CIP 实弹 1:1 纵剖实验室',
+          label: '进入 / 退出 SAAMI/CIP 实弹 1:1 纵剖对比实验室',
+        },
+        {
+          key: 'S',
+          label: '打开 / 关闭自动原理流派谱系矩阵与双展品同屏对照实验室',
         },
         { key: 'P / V / F', label: '半拉验膛 / 切换快慢机 / 按住两道火扣扳机' },
         { key: 'X', label: '切换外层机匣与套筒 X-Ray 透视' },
@@ -743,6 +755,13 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
             'P90 90° helical feed & elastomer buffer / M4 buffer twang / 9mm brass ring',
         },
         {
+          caliber: '.30-06 / 12 Gauge / .357 Magnum',
+          weaponTag: 'M1 Garand / Benelli M4 / Python',
+          freqTag: '62 Hz Boom + 1.74 kHz Clip Ping',
+          signature:
+            'WWII M1 Garand spring-steel en-bloc clip "PING!" ring / Twin ARGO tappet clink & 12ga elevator / 60° revolver ratchet click',
+        },
+        {
           caliber: '400 gr Carbon Arrow / Bolt · 348–500 FPS',
           weaponTag: 'LIFT 33 / Ravin R500',
           freqTag: '46–54 Hz String Dampener Thump',
@@ -844,7 +863,8 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         assault: 'Rifle / Carbine / Bullpup',
         smg: 'SMG / PDW',
         sniper: 'Sniper / Anti-Materiel',
-        pistol: 'Service Pistol',
+        shotgun: 'Shotguns',
+        pistol: 'Pistol / Revolver',
         archery: 'Bow / Crossbow',
       },
       partsPill: (n) => `${n} Parts`,
@@ -945,7 +965,12 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         },
         {
           key: 'B',
-          label: 'Open / Exit 7-Caliber SAAMI/CIP 1:1 Cartridge Cutaway Lab',
+          label: 'Open / Exit SAAMI/CIP 1:1 Cartridge Cutaway Lab',
+        },
+        {
+          key: 'S',
+          label:
+            'Open / Close 3-Axis Mechanism Showdown & Dual-Exhibit Comparison Lab',
         },
         {
           key: 'P / V / F',

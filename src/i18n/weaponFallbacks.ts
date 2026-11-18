@@ -36,8 +36,16 @@ export interface WeaponEnglishFallback {
   firingMilestoneLabel: string;
 }
 
+export type FallbackWeaponId =
+  | WeaponId
+  | 'lift33'
+  | 'r500'
+  | 'python'
+  | 'benellim4'
+  | 'garand';
+
 export const WEAPON_EN_FALLBACKS: Record<
-  WeaponId | 'lift33' | 'r500',
+  FallbackWeaponId,
   WeaponEnglishFallback
 > = {
   ak15: {
@@ -414,10 +422,112 @@ export const WEAPON_EN_FALLBACKS: Record<
       'Search part name / BOM code (e.g. HexCoil, sled, T-01)...',
     firingMilestoneLabel: '500 FPS Launch',
   },
+  python: {
+    shortLabel: 'Colt Python',
+    name: 'Colt Python 6" .357 Magnum Revolver',
+    originCountry: 'United States',
+    weaponType: 'DA/SA Revolver',
+    statusLabel: 'In Vault · Ready',
+    caliber: '.357 Magnum (9×33mmR)',
+    compactCaliber: '.357 Magnum',
+    actionMechanism:
+      'Hand-Tuned DA/SA Clockwork · 60° Ratchet & Stop-Bolt Lockup',
+    overallLengthMm: '292 mm (6" Barrel)',
+    barrelSpec: '152.4 mm (6") · 6-RH 1:356mm (1:14")',
+    weightKg: '1.19 kg',
+    muzzleVelocityMs: '435 m/s',
+    effectiveRangeM: '50 m',
+    rateOfFire: 'DA / SA (6-Round Cylinder)',
+    description:
+      'Colt’s 1955 Hartford flagship .357 Magnum revolver built on the forged I-frame in mirror-polished Royal Blue: pairs a 6-inch 3-vent rib barrel and full-length ejector underlug with a swing-out 6-shot fluted cylinder, two-step bank-vault hand/bolt lockup, folded V-leaf mainspring, positive rebound safety lever, and checkered American walnut target grips.',
+    highlights: [
+      '6" Ventilated-Rib & Full-Underlug Barrel',
+      'Swing-Out 6-Rd Cylinder & HKS Speedloader',
+      'Folded V-Mainspring + Bank-Vault Lockup',
+      '2K Royal Blue Steel & 24K Medallion Walnut PBR',
+    ],
+    workbenchTitle: 'Colt Python 6" 3D Disassembly & DA/SA Revolving Cycle',
+    workbenchSubtitle:
+      '4 Assemblies · 25 CAD Parts · 60° Ratchet Indexing, V-Mainspring & .357 Magnum Cycle',
+    cutawayLabel: 'DA/SA Clockwork & Ratchet Focus',
+    cutawayTitle:
+      'Switch to cutaway view and frame the sideplate DA/SA clockwork, V-mainspring & 6-point ratchet star',
+    searchPlaceholder:
+      'Search part name / BOM code (e.g. cylinder, hand, FC-04)...',
+    firingMilestoneLabel: '60° Lock & Ignite',
+  },
+  benellim4: {
+    shortLabel: 'Benelli M4',
+    name: 'Benelli M4 Super 90 (M1014) Combat Shotgun',
+    originCountry: 'Italy',
+    weaponType: 'Combat Shotgun',
+    statusLabel: 'In Vault · Ready',
+    caliber: '12 Gauge (18.5×70mm / 76mm 00 Buck)',
+    compactCaliber: '12 Gauge · 00 Buck',
+    actionMechanism:
+      'Dual ARGO Short-Stroke Gas Pistons · 2-Lug Rotating Bolt',
+    overallLengthMm: '886 mm (772 mm collapsed)',
+    barrelSpec: '470 mm (18.5") · Ø18.5mm Chrome Smoothbore',
+    weightKg: '3.82 kg',
+    muzzleVelocityMs: '405 m/s',
+    effectiveRangeM: '50 m (Buckshot) / 100 m (Slug)',
+    rateOfFire: 'Semi-Auto (7+1 Rd)',
+    description:
+      'Benelli Armi’s U.S. Marine Corps M1014 Joint Service Combat Shotgun: departs from recoil inertia in favor of patented dual symmetrical stainless A.R.G.O. (Auto-Regulating Gas-Operated) short-stroke pistons ahead of the chamber, driving a hard-chrome 2-lug rotating bolt, 7-round underbarrel tubular magazine with pivoting stainless shell elevator, LPA ghost-ring sights, and 3-position skeletonized M1014 telestock.',
+    highlights: [
+      'Dual Stainless ARGO Auto-Regulating Pistons',
+      'Hard-Chrome 2-Lug Bolt & Angled Recoil Tube',
+      '7-Rd Tube Mag + Pivoting Shell Carrier Elevator',
+      'LPA Ghost-Ring Sights & M1014 Collapsible Stock',
+    ],
+    workbenchTitle: 'Benelli M4 (M1014) 3D Disassembly & ARGO 12ga Simulation',
+    workbenchSubtitle:
+      '4 Assemblies · 26 CAD Parts · Twin ARGO Short-Stroke Pistons & Tubular Shell Elevator Cycle',
+    cutawayLabel: 'Twin ARGO & Shell Elevator Focus',
+    cutawayTitle:
+      'Switch to cutaway view and frame the dual ARGO gas pistons, 2-lug bolt & pivoting shell elevator',
+    searchPlaceholder:
+      'Search part name / BOM code (e.g. ARGO, elevator, B-02)...',
+    firingMilestoneLabel: 'ARGO Unlock',
+  },
+  garand: {
+    shortLabel: 'M1 Garand',
+    name: 'U.S. Rifle, Caliber .30, M1 Garand',
+    originCountry: 'United States',
+    weaponType: 'Semi-Auto Battle Rifle',
+    statusLabel: 'In Vault · Ready',
+    caliber: '.30-06 Springfield (7.62×63mm M2 Ball)',
+    compactCaliber: '.30-06 M2 Ball',
+    actionMechanism:
+      'Muzzle Gas Cylinder Long-Stroke Op-Rod · 2-Lug Bolt & En-Bloc Clip',
+    overallLengthMm: '1,105 mm',
+    barrelSpec: '610 mm (24") · 4-RH 1:254mm (1:10")',
+    weightKg: '4.31 kg',
+    muzzleVelocityMs: '853 m/s',
+    effectiveRangeM: '457 m (500 yd)',
+    rateOfFire: 'Semi-Auto (40–50 rpm · 8-Rd Clip)',
+    description:
+      'John Cantius Garand’s Springfield Armory masterpiece—history’s first standard-issue semi-automatic infantry rifle: taps low-pressure muzzle gas inside a stainless cylinder to drive a curved long-stroke operating rod with a 4mm safety dwell cam hump and 2-lug rotating bolt, fed from a reversible 8-round spring-steel en-bloc clip that automatically ejects skyward with an iconic metallic "PING!" on the final shot.',
+    highlights: [
+      '8-Rd Spring-Steel En-Bloc Clip Auto-Eject ("PING!")',
+      '24" Barrel + Muzzle Gas Cylinder & Curved Op-Rod',
+      'Dual-Purpose Op-Rod Spring + Follower Arm Linkage',
+      'American Black Walnut DAS Stock & T105 Peep Sight',
+    ],
+    workbenchTitle: 'U.S. M1 Garand 3D Disassembly & .30-06 En-Bloc Simulation',
+    workbenchSubtitle:
+      '4 Assemblies · 26 CAD Parts · Long-Stroke Op-Rod Cam Hump & 8-Rd En-Bloc Clip Cycle',
+    cutawayLabel: 'En-Bloc Clip & Op-Rod Cam Focus',
+    cutawayTitle:
+      'Switch to cutaway view and frame the 8-round en-bloc clip, follower arm & 2-lug rotating bolt',
+    searchPlaceholder:
+      'Search part name / BOM code (e.g. en-bloc, op-rod, M-01)...',
+    firingMilestoneLabel: 'Op-Rod Cam Unlock',
+  },
 };
 
 export function getLocalizedShortWeaponLabel(
-  weaponId: WeaponId,
+  weaponId: FallbackWeaponId,
   lang: LanguageCode
 ): string {
   if (lang === 'en') {
@@ -428,13 +538,16 @@ export function getLocalizedShortWeaponLabel(
   return getShortWeaponLabel(weaponId);
 }
 
-const COMPACT_ZH_CALIBER: Partial<Record<WeaponId, string>> = {
+const COMPACT_ZH_CALIBER: Partial<Record<FallbackWeaponId, string>> = {
   lift33: '400 gr 碳纤猎箭 · 70 lb',
   r500: '400 gr 碳素弩箭 · 300 lb',
+  python: '.357 马格南',
+  benellim4: '12号 00鹿弹',
+  garand: '.30-06 春田步枪弹',
 };
 
 export function getLocalizedCatalogSpecs(
-  weaponId: WeaponId,
+  weaponId: FallbackWeaponId,
   lang: LanguageCode
 ) {
   const manifest = getWeaponManifest(weaponId);
@@ -466,7 +579,7 @@ export function getLocalizedCatalogSpecs(
 }
 
 export function resolveWeaponDisplayMeta(
-  weaponId: WeaponId,
+  weaponId: FallbackWeaponId,
   lang: LanguageCode,
   bundle: WeaponNarrationBundle | null
 ) {

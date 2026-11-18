@@ -6,7 +6,7 @@ Usage:
   1. Convert existing PNG maps in public/textures/ to high-fidelity WebP (and clean PNGs):
        python3 scripts/build_textures.py --convert-existing --clean-png
 
-  2. Procedurally regenerate all 58 maps directly as WebP across all 10 weapons:
+  2. Procedurally regenerate all 94 maps directly as WebP across all 16 exhibits:
        python3 scripts/build_textures.py --regenerate
        python3 scripts/build_textures.py --regenerate --weapon m4a1
 """
@@ -40,6 +40,9 @@ WEAPON_GENERATORS: dict[str, str] = {
     "p90": "generate_p90_pbr.py",
     "lift33": "generate_lift33_pbr.py",
     "r500": "generate_r500_pbr.py",
+    "python": "generate_python_pbr.py",
+    "benellim4": "generate_benellim4_pbr.py",
+    "garand": "generate_garand_pbr.py",
 }
 
 

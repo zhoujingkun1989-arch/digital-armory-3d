@@ -1,5 +1,10 @@
 import type { LanguageCode } from '../narration/types';
-import type { PbrChannelMeta, PbrSuiteItem, WeaponId } from '../weapons/types';
+import {
+  WEAPON_IDS,
+  type PbrChannelMeta,
+  type PbrSuiteItem,
+  type WeaponId,
+} from '../weapons/types';
 
 export interface AtlasChannelTranslation {
   label?: string;
@@ -44,15 +49,24 @@ const CHANNEL_LABEL_EN_MAP: Readonly<Record<string, string>> = {
   'Roughness 物理粗糙度': 'Roughness (Packed ORM)',
   'Roughness 物理粗糙度 (Packed ORM)': 'Roughness (Packed ORM)',
   '金属 CNC 拉丝法线 (Seamless)': 'Brushed CNC Metal Normal (Seamless)',
+  '金属 CNC 车铣拉丝法线 (Seamless)': 'Turned & Milled CNC Metal Normal (Seamless)',
+  '精密白钢推磨拉丝法线 (Seamless)': 'Hand-Stoned Stainless Brushed Normal (Seamless)',
   '金属拉丝油膜粗糙度 (Seamless)': 'Brushed Metal Oil-Film Roughness (Seamless)',
+  '金属拉丝与枪油膜粗糙度 (Seamless)': 'Brushed Steel & Oil-Film Roughness (Seamless)',
+  '军械金属油膜粗糙度 (Seamless)': 'Ordnance Metal Oil-Film Roughness (Seamless)',
   '工程聚酰胺皮纹法线 (Seamless)': 'Engineered Polyamide Stipple Normal (Seamless)',
   '工程塑料皮纹法线 (Seamless)': 'Engineered Polymer Texture Normal (Seamless)',
-  '工程弹性体皮纹法线 (Seamless)': 'Engineered Elastomer Grip Normal (Seamless)',
+  '工程聚合物微皮纹法线 (Seamless)': 'Engineered Polymer Micro-Grain Normal (Seamless)',
+  '阳极旋钮微细纹理法线 (Seamless)': 'Anodized Knurled Knob Micro-Normal (Seamless)',
+  '微细颗粒基底法线 (Seamless)': 'Micro-Grain Substrate Normal (Seamless)',
   '复合弹性体皮纹法线 (Seamless)': 'Composite Elastomer Grip Normal (Seamless)',
+  '工程弹性体皮纹法线 (Seamless)': 'Engineered Elastomer Grip Normal (Seamless)',
 };
 
-export const ATLAS_EN_STRINGS: Readonly<
-  Record<WeaponId, AtlasWeaponTranslation>
+export type AtlasWeaponId = WeaponId | 'python' | 'benellim4' | 'garand';
+
+export const ALL_ATLAS_EN_STRINGS: Readonly<
+  Record<AtlasWeaponId, AtlasWeaponTranslation>
 > = {
   ak15: {
     heading:
@@ -946,19 +960,250 @@ export const ATLAS_EN_STRINGS: Readonly<
       },
     },
   },
+  python: {
+    heading:
+      'Colt Python 6" (.357 Magnum) Royal Blue PBR Atlas (Albedo / Normal / Packed ORM)',
+    suites: {
+      python_frame: {
+        title:
+          'Hartford Royal Blue Mirror Steel, Ventilated Rib & 6-Rd Fluted Cylinder Suite',
+        tabTitle: 'Royal Blue & Cylinder',
+        summary:
+          '2K 5-channel ORM atlas baked for the 1955 Hartford-built Colt Python 6-inch revolver: reproduces multi-wheel hand-buffed midnight Prussian hot-salt bluing (Colt Royal Blue, Roughness G≈0.15, Metalness B≈0.96) contrasted against the matte bead-blasted anti-glare top rib (G≈0.56); features crisp left-barrel "PYTHON .357 / * .357 MAGNUM CTG. *" and right-barrel Hartford address rollmarks, left-frame Rampant Colt + VP proof stamp, and circumferential cylinder stop turn-line wear.',
+        highlights: [
+          'Hand-buffed Hartford Royal Blue mirror flats vs matte anti-glare serrated top rib',
+          'Dual-flank PYTHON .357 & HARTFORD, CONN. U.S.A. serif rollmarks + Rampant Colt stamp',
+          'C6 symmetric cylinder bolt turn-line burnishing & subtle flute edge silver wear',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Deep midnight Royal Blue mirror steel / bright rollmarks / cylinder turn line',
+          },
+          {
+            note: 'Linear · Top-rib anti-glare serrations + recessed serif rollmarks + fine hand-buffed grain',
+          },
+          {
+            note: 'Linear · R:Rollmark & notch AO / G:Mirror blue(0.15)-Matte rib(0.56) / B:Forged steel(0.96)',
+          },
+        ],
+      },
+      python_walnut: {
+        title:
+          'American Black Walnut Target Grips, 22-LPI Checkering & 24K Gold Medallion Suite',
+        tabTitle: 'Walnut & Gold Medallion',
+        summary:
+          'Captures the warmth of first-generation Colt Python flared target grips: linseed-oiled American black walnut burl heartwood (Metalness B=0.0, satin oil sheen G≈0.58), bordered 22-LPI hand-cut diamond checkering pyramids (G≈0.72 with deep valley AO), flush-inlaid 24K gold-plated Rampant Colt medallions (Metalness B=0.92, polished gold G≈0.24), and brass grip-screw escutcheons.',
+        highlights: [
+          'Linseed-oiled American black walnut burl pores, cathedral grain & double-line border',
+          '22-LPI sharp hand-cut diamond checkering pyramid normals & valley AO shadows',
+          'Flush 24K gold Rampant Colt medallion (B:0.92 / G:0.24) cleanly separated from wood (B:0.0)',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Warm black walnut burl grain + matte checkered shield + 24K gold Colt medallion',
+          },
+          {
+            note: 'Linear · Longitudinal walnut vessel pores + 22-LPI diamond pyramids + high-relief medallion',
+          },
+          {
+            note: 'Linear · R:Checkering AO / G:Gold(0.24)-Oiled walnut(0.58)-Checkering(0.72) / B:Gold(0.92) vs Wood(0.0)',
+          },
+        ],
+      },
+      python_seamless_detail: {
+        title:
+          'Hand-Stoned DA/SA Clockwork, Folded V-Mainspring & Speedloader Seamless Maps',
+        tabTitle: 'DA/SA Clockwork',
+        summary:
+          'Provides micron-scale hand-stoned stainless brushed normals and gun-oil sheen variation for the wide target spur hammer, hammer stirrup, Colt positive rebound safety lever, two-step indexing hand, 6-point ratchet extractor star, tapered folded V-leaf mainspring, knurled ejector rod, and HKS rotary speedloader.',
+        highlights: [
+          'Hand-stoned stainless flats across target hammer flanks, two-step hand & 6-tooth ratchet star',
+          'Tempered spring-steel oil sheen on the folded V-leaf mainspring & center extractor spring',
+          'Shared seamlessly across all 19 precision revolver lockwork & cylinder components',
+        ],
+        channels: [
+          {
+            note: 'Linear · Applied to target hammer, rebound lever, two-step hand, ratchet star & ejector rod',
+          },
+          {
+            note: 'Linear · Micro-roughness oil sheen across blued steel, white steel & .357 brass',
+          },
+          {
+            note: 'Linear · Applied to front-sight red insert & rotary speedloader knurled knob',
+          },
+        ],
+      },
+    },
+  },
+  benellim4: {
+    heading:
+      'Benelli M4 Super 90 / U.S. M1014 (12 Gauge) PBR Atlas (Albedo / Normal / Packed ORM)',
+    suites: {
+      benellim4_receiver: {
+        title:
+          'Urbino Hard-Anodized Receiver, MIL-STD-1913 Rail & Parkerized ARGO Barrel Suite',
+        tabTitle: 'Receiver & ARGO Barrel',
+        summary:
+          '2K 5-channel Packed ORM atlas engineered for the Benelli M4 Super 90 (U.S. Marine Corps M1014): lower panel renders matte charcoal MIL-STD-8625 Type-III anodized 7075-T6 receiver flanks laser-etched with "BENELLI ARMI S.P.A. URBINO MADE IN ITALY · M4 SUPER 90" and "U.S. M1014 JOINT SERVICE COMBAT SHOTGUN" plus CNC edge silvering; middle strip isolates T2–T14 Picatinny slot numbers and LPA ghost-ring ticks; upper strip contrasts gray-green manganese-phosphated 18.5" barrel & dual ARGO gas block against the hard-chrome barrel extension.',
+        highlights: [
+          'Dual-flank Urbino factory & U.S. M1014 military laser markings with CNC edge wear',
+          'MIL-STD-1913 top rail T2..T14 slot indices & LPA ghost-ring windage graduations',
+          'Gray-green Parkerized 18.5" barrel / twin ARGO block (0.48) vs hard-chrome extension (0.18)',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Charcoal anodized alloy receiver / Parkerized barrel & mag tube / hard-chrome extension',
+          },
+          {
+            note: 'Linear · Micro-blasted anodize grain + laser-etched lettering + knurled ARGO end-caps',
+          },
+          {
+            note: 'Linear · R:Multi-scale AO / G:Hard-chrome(0.18)-Anodize(0.42)-Phosphate(0.48) / B:Metalness',
+          },
+        ],
+      },
+      benellim4_furniture: {
+        title:
+          'Ribbed Polymer Forend, M1014 Skeletonized Telestock & Crimson 12ga 00 Buck Hull Suite',
+        tabTitle: 'M1014 Stock & 12ga Hull',
+        summary:
+          'Combines tactical glass-filled polymer ergonomics with iconic 12-gauge combat shotshell materials in a 2K 5-channel ORM atlas: lower strip maps 2-piece ribbed nylon forend heat shields, laser-stippled M1014 pistol grip, and 3-position notched steel recoil tube; middle strip isolates the skeletonized buttstock, elastomer cheekpiece comb, and ribbed rubber recoil pad; top strip renders extruded crimson ribbed "12 GA 70mm 00 BUCK" polyethylene hulls and C26000 high-brass headstamps.',
+        highlights: [
+          'Two-piece heat-shield forend ribs & M1014 pistol grip high-density laser stippling',
+          'Skeletonized telestock comb cheekpiece, ribbed rubber pad & 3-notch steel recoil tube',
+          'Crimson ribbed 12 GA 70mm 00 BUCK polymer hull (0.04 metalness) vs C26000 brass cup (0.94)',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Matte black glass-nylon furniture / crimson 12ga 00 Buck hull / C26000 high-brass base',
+          },
+          {
+            note: 'Linear · VDI-27 mold grain + forend ribs + grip stipple + longitudinal hull extrusion flutes',
+          },
+          {
+            note: 'Linear · Rubber pad(0.80) / Glass-nylon(0.64) / Crimson PE hull(0.35) / Brass head(0.23)',
+          },
+        ],
+      },
+      benellim4_seamless_detail: {
+        title:
+          'Twin Stainless ARGO Pistons, Hard-Chrome 2-Lug Bolt & Shell Elevator Seamless Maps',
+        tabTitle: 'ARGO & Bolt Internals',
+        summary:
+          'Delivers micron-level CNC turning/milling normals and CLP oil-film roughness variation across the twin symmetrical 17-4PH stainless fluted short-stroke ARGO pistons, heavy machined bolt carrier, hard-chrome 2-lug rotating bolt head, floating firing pin, forged rotary hammer, three music-wire helical springs, and stamped stainless forked shell elevator.',
+        highlights: [
+          'Precision ground brushed normals on twin stainless ARGO tappets & hard-chrome 2-lug bolt',
+          'CLP gun-oil micro-roughness across stamped stainless shell elevator, carrier & knurled handle',
+          'Shared seamlessly across all 14 internal action nodes & high-vis orange fluted follower',
+        ],
+        channels: [
+          {
+            note: 'Linear · Applied to twin ARGO pistons, heavy bolt carrier, 2-lug bolt head & shell elevator',
+          },
+          {
+            note: 'Linear · Micro-surface gun-oil sheen variation across stainless, hard-chrome & spring steel',
+          },
+          {
+            note: 'Linear · Applied to high-visibility anodized/polymer fluted cup follower surface',
+          },
+        ],
+      },
+    },
+  },
+  garand: {
+    heading:
+      'U.S. Rifle Cal. .30 M1 Garand (Springfield 1944) PBR Atlas (Albedo / Normal / Packed ORM)',
+    suites: {
+      garand_walnut: {
+        title:
+          'WWII Linseed-Oiled American Black Walnut Stock, Handguards & DAS Cartouche Suite',
+        tabTitle: 'Black Walnut & DAS Stamp',
+        summary:
+          '2K 5-channel Packed ORM atlas crafted for a 1944 Springfield Armory M1 Garand walnut stock set: captures kiln-dried American black walnut (Juglans nigra) cathedral grain, longitudinal vessel-pore normals, and warm raw-linseed-oil satin patina (Roughness ≈ 0.52, dielectric wood 0.02 vs Parkerized ferrules 0.78); crisply embosses the WWII Defense Eagle "DAS" acceptance box, Springfield crossed-cannons ordnance wheel on the left wrist, and circled "[P]" proof firing stamp.',
+        highlights: [
+          'American black walnut cathedral heartwood grain, vessel pores & linseed-oil patina (0.52)',
+          'Left-cheek WWII Springfield crossed-cannons wheel & boxed DAS Defense Eagle cartouche',
+          'Pistol-grip wrist circled "[P]" high-pressure proof mark & Parkerized ferrule separation',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Linseed-oiled American black walnut / DAS & crossed-cannons cartouches / steel ferrules',
+          },
+          {
+            note: 'Linear · Longitudinal walnut pores + recessed DAS & [P] wood stamps + ferrule steps',
+          },
+          {
+            note: 'Linear · R:Pore & stamp AO / G:Oiled walnut(0.52) / B:Wood(0.02)-Parkerized ferrule(0.78)',
+          },
+        ],
+      },
+      garand_parkerized: {
+        title:
+          'Springfield Manganese-Phosphate Receiver, T105 Sight & 8-Rd En-Bloc Clip Suite',
+        tabTitle: 'Parkerized & En-Bloc Clip',
+        summary:
+          'Faithfully reproduces WWII olive-slate manganese-phosphate Parkerizing crystals soaked in Cosmoline/gun oil: upper band deep-stamps the heeled receiver bridge with five-line "U.S. RIFLE / CAL. .30 M1 / SPRINGFIELD ARMORY / 2841944" markings alongside white 200–1200 yd T105 elevation drum graduations; middle band contrasts the bright centerless-ground stainless op-rod piston against burnished 2-lug bolt wear; lower band renders the 8-round spring-steel en-bloc clip "SA" stamp, retention nibs, and .30-06 brass rub tracks.',
+        highlights: [
+          'Deep-stamped receiver heel U.S. RIFLE CAL. .30 M1 SPRINGFIELD ARMORY 2841944 rollmark',
+          'WWII olive-slate manganese-phosphate grain, T105 yardage scale & bright stainless gas piston',
+          '8-round spring-steel en-bloc clip SA stamp, worn side nibs & .30-06 brass friction streaks',
+        ],
+        channels: [
+          {
+            note: 'sRGB · WWII olive-slate Parkerized steel / Springfield heel stamp / bright stainless piston & lugs',
+          },
+          {
+            note: 'Linear · Manganese-phosphate crystal grain + deep receiver stamp + T105 knurling & clip ribs',
+          },
+          {
+            note: 'Linear · Oil-retaining Parkerizing (0.43) vs centerless-ground piston & burnished lugs (0.19)',
+          },
+        ],
+      },
+      garand_seamless_detail: {
+        title:
+          '24" .30-06 Stepped Barrel, Stainless Gas Cylinder & Trigger-Group Seamless Maps',
+        tabTitle: '24" Barrel & FCG Internals',
+        summary:
+          'Provides micron-grade lathe turning rings and ordnance oil-film roughness across all 17 internal steel components, including the 24-inch 4-groove .30-06 stepped barrel, 410 stainless muzzle gas cylinder, cross-valve lock screw, tang-blocked firing pin, dual-purpose op-rod spring, checkered steel trapdoor buttplate, dual-hook hammer, two-stage trigger, and follower arm linkage.',
+        highlights: [
+          'Lathe-turned ring grain, muzzle 3-spline grooves & 4-groove rifling highlights on 24" barrel',
+          'Milled brushed steel normals on 410 stainless gas cylinder, checkered buttplate & trigger guard',
+          'Shared seamlessly across all 17 WWII standard-issue rifle pressure & fire-control parts',
+        ],
+        channels: [
+          {
+            note: 'Linear · Applied to 24" barrel, stainless gas cylinder, firing pin, trigger, follower arm & buttplate',
+          },
+          {
+            note: 'Linear · Retained ordnance gun-oil micro-roughness sheen on Parkerized & stainless steel',
+          },
+          {
+            note: 'Linear · Micro-grain anti-glare contact surface relief on sight & buttplate checkering',
+          },
+        ],
+      },
+    },
+  },
 };
 
+export const ATLAS_EN_STRINGS: Readonly<
+  Record<WeaponId, AtlasWeaponTranslation>
+> = Object.fromEntries(
+  WEAPON_IDS.map((id) => [id, ALL_ATLAS_EN_STRINGS[id]])
+) as Readonly<Record<WeaponId, AtlasWeaponTranslation>>;
+
 export function getLocalizedAtlasHeading(
-  weaponId: WeaponId,
+  weaponId: AtlasWeaponId,
   lang: LanguageCode,
   fallbackZh: string
 ): string {
   if (lang === 'zh') return fallbackZh;
-  return ATLAS_EN_STRINGS[weaponId]?.heading ?? fallbackZh;
+  return ALL_ATLAS_EN_STRINGS[weaponId]?.heading ?? fallbackZh;
 }
 
 export function getLocalizedAtlasSuite(
-  weaponId: WeaponId,
+  weaponId: AtlasWeaponId,
   suite: PbrSuiteItem,
   lang: LanguageCode,
   suiteIndex = 0
@@ -982,7 +1227,7 @@ export function getLocalizedAtlasSuite(
     };
   }
 
-  const weaponSuites = ATLAS_EN_STRINGS[weaponId]?.suites;
+  const weaponSuites = ALL_ATLAS_EN_STRINGS[weaponId]?.suites;
   const fallbackByIndex = weaponSuites
     ? Object.values(weaponSuites)[suiteIndex]
     : undefined;

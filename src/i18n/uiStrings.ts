@@ -1,11 +1,31 @@
 import type { ArmoryEnvironmentPreset } from '../engine/canvas/GunsmithStageMat';
 import type { FireSelectorMode } from '../engine/interaction/InteractiveActionController';
 import type { LanguageCode } from '../narration/types';
-import type {
-  ArmoryCategory,
-  CameraPresetType,
-  MaterialKind,
+import {
+  WEAPON_IDS,
+  type ArmoryCategory,
+  type CameraPresetType,
+  type MaterialKind,
 } from '../weapons/types';
+
+const VAULT_EXHIBIT_COUNT = (WEAPON_IDS as readonly string[]).length;
+const IS_SIXTEEN_EXHIBIT_VAULT = VAULT_EXHIBIT_COUNT >= 16;
+const VAULT_EXHIBIT_ZH =
+  VAULT_EXHIBIT_COUNT === 16
+    ? '十六'
+    : VAULT_EXHIBIT_COUNT === 13
+      ? '十三'
+      : String(VAULT_EXHIBIT_COUNT);
+const VAULT_PARTS_TOTAL = IS_SIXTEEN_EXHIBIT_VAULT ? 404 : 327;
+const VAULT_TEXTURES_TOTAL = IS_SIXTEEN_EXHIBIT_VAULT ? 94 : 76;
+const VAULT_AUDIO_TOTAL = IS_SIXTEEN_EXHIBIT_VAULT ? 936 : 758;
+const LAB_CALIBER_TOTAL = IS_SIXTEEN_EXHIBIT_VAULT ? 10 : 7;
+const LAB_CALIBER_ZH =
+  LAB_CALIBER_TOTAL === 10
+    ? '十'
+    : LAB_CALIBER_TOTAL === 7
+      ? '七'
+      : String(LAB_CALIBER_TOTAL);
 
 export interface UiDictionary {
   watermark: string;
@@ -35,7 +55,7 @@ export interface UiDictionary {
     title: string;
     subtitle: string;
     filterAria: string;
-    categories: Record<ArmoryCategory | 'archery', string>;
+    categories: Record<ArmoryCategory | 'shotgun' | 'archery', string>;
     showcaseBtn: string;
     showcaseTitle: string;
     cartridgeLabBtn: string;
@@ -676,22 +696,21 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
     },
     armory: {
       title: '枪械与弓弩内部结构 3D 数字兵器库',
-      subtitle:
-        '十三款世界名枪与特种复合弓弩交互式陈列馆 · Google Gemini 中英研发史纪录片与全零件语音拆解导览',
+      subtitle: `${VAULT_EXHIBIT_ZH}款世界名枪与特种复合弓弩交互式陈列馆 · Google Gemini 中英研发史纪录片与全零件语音拆解导览`,
       filterAria: '装备类别筛选',
       categories: {
         all: '全部馆藏',
-        assault: '突击/卡宾/无托',
+        assault: '突击/步枪/无托',
         smg: '冲锋枪 / PDW',
         sniper: '狙击/反器材',
-        pistol: '半自动手枪',
+        shotgun: '战术霰弹',
+        pistol: '手枪 / 转轮',
         archery: '复合弓 / 弩',
       },
       showcaseBtn: '产品宣传页',
       showcaseTitle: '打开项目官方宣传与架构展示主页',
       cartridgeLabBtn: '1:1 实弹剖视馆',
-      cartridgeLabTitle:
-        '打开 7 口径 SAAMI/CIP 1:1 实弹纵剖对比实验室：并排纵剖陈列 9×19mm 至 .50 BMG 弹道解剖与定量对比矩阵 (B)',
+      cartridgeLabTitle: `打开 ${LAB_CALIBER_TOTAL} 口径 SAAMI/CIP 1:1 实弹纵剖对比实验室：并排纵剖陈列 9×19mm 至 .50 BMG 弹道解剖与定量对比矩阵 (B)`,
       storyBtn: '枪械研发故事',
       storyBtnTitle: '打开当前枪械完整四幕研发历史故事与双语语音纪录片',
       enterBenchBtn: (tag) => `进入 ${tag} 拆解台`,
@@ -728,8 +747,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       tintTitle:
         '按闭锁承压、导气驱动、自动机框、火控击发、储能弹簧与机匣供弹 6 大机械职能实时分色渲染 (T)',
       stageHint: '拖拽检视 · 单击枪体直达分解',
-      rackAria: '兵器库十三槽展架',
-      rackTitle: '兵器库陈列展架 · 13-BAY WEAPON VAULT RACK',
+      rackAria: `兵器库${VAULT_EXHIBIT_ZH}槽展架`,
+      rackTitle: `兵器库陈列展架 · ${VAULT_EXHIBIT_COUNT}-BAY WEAPON VAULT RACK`,
       rackTip: '单击卡片切换展台预览 · 再次点击或点蓝字进入 3D 拆解台',
       scrollLeft: '向左滚动查看槽位',
       scrollRight: '向右滚动查看槽位',
@@ -755,10 +774,9 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
     },
     atlasModal: {
       dialogAria: 'PBR 真实贴图图集检视器',
-      kicker: '13-EXHIBIT 2K PBR ATLAS',
-      weaponSwitcherAria: '十三款馆藏兵器 PBR 贴图库切换',
-      subtitle:
-        '全馆十三款名枪与弓弩共 76 张定制高清 WebP 物理材质贴图（public/textures/*.webp）· 已按三角面 UV 实时绑定至全部 327 个精密零件',
+      kicker: `${VAULT_EXHIBIT_COUNT}-EXHIBIT 2K PBR ATLAS`,
+      weaponSwitcherAria: `${VAULT_EXHIBIT_ZH}款馆藏兵器 PBR 贴图库切换`,
+      subtitle: `全馆${VAULT_EXHIBIT_ZH}款名枪与弓弩共 ${VAULT_TEXTURES_TOTAL} 张定制高清 WebP 物理材质贴图（public/textures/*.webp）· 已按三角面 UV 实时绑定至全部 ${VAULT_PARTS_TOTAL} 个精密零件`,
       liveOn: '3D 实时贴图：已开启',
       liveOff: '3D 实时贴图：已关闭',
       closeAria: '关闭贴图检视窗口',
@@ -804,7 +822,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       caliperChipTitle:
         '开启 1:1 3D 军械游标卡尺与空间包络标尺：在 3D 表面点选任意两点测量毫米级间距与轴向分量 (K)',
       cartridgeChip: '实弹馆',
-      cartridgeChipTitle: '打开 7 口径 SAAMI/CIP 1:1 实弹纵剖对比实验室 (B)',
+      cartridgeChipTitle: `打开 ${LAB_CALIBER_TOTAL} 口径 SAAMI/CIP 1:1 实弹纵剖对比实验室 (B)`,
       edgesChip: 'CAD 描边',
       edgesChipTitle: '开启/关闭工业 CAD 硬边轮廓线 (E)',
       labelsChip: '零件标签',
@@ -813,7 +831,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       sfxChipTitle: (muted) =>
         muted
           ? '军械机械咬合与实弹声场已静音，点击开启 (M)'
-          : '开启/静音 Web Audio 军械机械咬合声与 7 口径实弹声场 (M)',
+          : `开启/静音 Web Audio 军械机械咬合声与 ${LAB_CALIBER_TOTAL} 口径实弹声场 (M)`,
       resetChip: '复位',
       resetChipTitle: '重置回默认合拢态与标准视角 (R)',
     },
@@ -906,7 +924,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       gasFlowTitle:
         '显示/隐藏 60fps 高压火药燃气膛内膨胀、导气孔分流与活塞/气匙冲击流线',
       sfxPill: '实弹声场',
-      sfxTitle: '开启/静音立体声卷积混响与 7 口径实弹合成声效 (M)',
+      sfxTitle: `开启/静音立体声卷积混响与 ${LAB_CALIBER_TOTAL} 口径实弹合成声效 (M)`,
       selectorGroupAria: '快慢机火控档位切换 (V)',
       selectorShort: {
         safe: '保险 SAFE',
@@ -1004,8 +1022,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       loadingTitle: '正在加载研发历史与双语讲解资源...',
       loadingDesc: '正在读取 Google Gemini 生成的双语工程档案。',
       pendingTitle: '双语研发档案未能加载',
-      pendingDesc:
-        '请检查本地静态资源服务是否正常运行（全部 13 款馆藏名枪与弓弩的四幕研发故事、327 枚零件双语讲解与 758 段 Google Gemini TTS 语音均已内置于 public/ 目录）。',
+      pendingDesc: `请检查本地静态资源服务是否正常运行（全部 ${VAULT_EXHIBIT_COUNT} 款馆藏名枪与弓弩的四幕研发故事、${VAULT_PARTS_TOTAL} 枚零件双语讲解与 ${VAULT_AUDIO_TOTAL} 段 Google Gemini TTS 语音均已内置于 public/ 目录）。`,
       switchToAk15Btn: '切换至 AK-15M1 研发故事档案',
       aiAttribution:
         '文本与语音由 Google Gemini 3.8 Flash & Gemini TTS 基于 1:1 军械测绘参数生成',
@@ -1120,27 +1137,26 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
     },
     cartridgeLab: {
       badge: 'WP-06 · SAAMI / CIP 1:1 实弹纵剖馆',
-      title: '七大口径实弹 1:1 纵剖对比实验室',
+      title: `${LAB_CALIBER_ZH}大口径实弹 1:1 纵剖对比实验室`,
       subtitle:
-        '严格遵循 1 单位 = 10mm 绝对比例并排纵剖陈列 · 直视发射药柱、三脚底火砧座、双芯钢穿甲锥与枪口动能跨度',
+        '严格遵循 1 单位 = 10mm 绝对比例并排纵剖陈列 · 直视发射药柱、底火砧座、12号鹿弹碗塞与双芯穿甲锥结构',
       backVaultBtn: '返回数字枪库',
       backVaultTitle: '返回 3D 数字枪库武器展厅 (Esc / B)',
-      lineupBtn: '1:1 七弹同框全景',
-      lineupTitle: '拉远镜头以 1:1 绝对比例同屏并排对比全部 7 款口径实弹',
+      lineupBtn: `1:1 ${LAB_CALIBER_ZH}弹同框全景`,
+      lineupTitle: `拉远镜头以 1:1 绝对比例同屏并排对比全部 ${LAB_CALIBER_TOTAL} 款口径实弹`,
       focusSpecimenBtn: '微距聚焦当前弹种',
       focusSpecimenTitle: '推近镜头微距检视当前选中实弹的底火砧座与弹芯纵剖面',
       cutawayOn: '180° 纵剖已开启 [C]',
       cutawayOff: '切换全壳外观 [C]',
-      cutawayTitle: '切换 180° 轴向纵剖切面与完整黄铜弹壳外观 (C)',
+      cutawayTitle: '切换 180° 轴向纵剖切面与完整弹壳外观 (C)',
       edgesBtn: 'CAD 轮廓线',
       edgesTitle: '开启或关闭实弹几何硬边 CAD 轮廓描边',
       matrixToggleOpen: '定量对比总表',
       matrixToggleClose: '收起对比总表',
-      matrixToggleTitle:
-        '展开或收起 7 大口径装药量、膛压、初速与枪口动能定量对比矩阵表',
+      matrixToggleTitle: `展开或收起 ${LAB_CALIBER_TOTAL} 大口径装药量、膛压、初速与枪口动能定量对比矩阵表`,
       explodeLabel: '弹体结构轴向分解',
       explodeReset: '复位合拢',
-      caliberSelectorAria: '馆藏七大口径实弹切换栏',
+      caliberSelectorAria: `馆藏${LAB_CALIBER_ZH}大口径实弹切换栏`,
       anatomyCardBadge: '1:1 弹药工程解剖档案',
       dimOalCase: '全弹长 / 壳长',
       dimRimBullet: '弹头径 / 底缘径',
@@ -1152,8 +1168,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       primerLabel: '底火与传火孔',
       coreAnatomyLabel: '被甲与弹芯解剖',
       chamberInWeaponBtn: (w) => `装填入 ${w} 发射演示`,
-      tableCaption:
-        'SAAMI / CIP / NATO 七大馆藏口径实弹 1:1 几何尺寸与内弹道定量对比矩阵',
+      tableCaption: `SAAMI / CIP / NATO ${LAB_CALIBER_ZH}大馆藏口径实弹 1:1 几何尺寸与内弹道定量对比矩阵`,
       colCaliber: '口径代号',
       colStandard: '标准规范',
       colCaseOal: '壳长 / 全长 (mm)',
@@ -1242,12 +1257,11 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       bomColEnvelope: '1:1 包络 (L×H×W)',
       bomColPrinciple: '机械职能与装配啮合关系',
       secBallistics: 'CHAPTER 06 · SAAMI/CIP 实弹纵剖解剖与内弹道定量示波',
-      secBallisticsSub:
-        '膛压 P(t) 与膛内初速 V(t) 双轴定量曲线 · 1:1 制式弹药半剖尺寸图与馆藏七口径动能天梯',
+      secBallisticsSub: `膛压 P(t) 与膛内初速 V(t) 双轴定量曲线 · 1:1 制式弹药半剖尺寸图与馆藏${LAB_CALIBER_ZH}口径动能天梯`,
       chartPressureTitle:
         'FIG 6.1 · 击发膛压 P(t) [MPa] 与弹头初速 V(t) [m/s] 耦合曲线',
       chartCartridgeTitle: 'FIG 6.2 · 配用制式实弹 1:1 半剖结构与装药参数',
-      energyLadderTitle: '馆藏 7 大制式口径枪口动能横向标尺 (J)',
+      energyLadderTitle: `馆藏 ${LAB_CALIBER_TOTAL} 大制式口径枪口动能横向标尺 (J)`,
       secArmorerManual: 'CHAPTER 07 · 野战勤务快拆教范、排障卡与防伪封底',
       secArmorerManualSub:
         '原厂级有向拓扑野战分解规程、机械干涉红线、四大典型故障排障口诀与数字交互防伪印鉴',
@@ -1442,22 +1456,21 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
     },
     armory: {
       title: '3D Digital Armory & Mechanical Cutaway Vault',
-      subtitle:
-        '13 Iconic World Firearms & Compound Archery Systems · Google Gemini R&D Documentary & Component Voice Disassembly',
+      subtitle: `${VAULT_EXHIBIT_COUNT} Iconic World Firearms & Compound Archery Systems · Google Gemini R&D Documentary & Component Voice Disassembly`,
       filterAria: 'Filter collection by category',
       categories: {
         all: 'All Vault',
         assault: 'Rifle / Carbine',
         smg: 'SMG / PDW',
         sniper: 'Sniper / Anti-Materiel',
-        pistol: 'Service Pistol',
+        shotgun: 'Shotguns',
+        pistol: 'Pistol / Revolver',
         archery: 'Bow / Crossbow',
       },
       showcaseBtn: 'Showcase',
       showcaseTitle: 'Open official product & engineering showcase page',
       cartridgeLabBtn: '1:1 Cartridge Lab',
-      cartridgeLabTitle:
-        'Open 7-Caliber SAAMI/CIP 1:1 Cartridge Cutaway Lab: side-by-side cutaway anatomy & quantitative ballistics from 9×19mm to .50 BMG (B)',
+      cartridgeLabTitle: `Open ${LAB_CALIBER_TOTAL}-Caliber SAAMI/CIP 1:1 Cartridge Cutaway Lab: side-by-side cutaway anatomy & quantitative ballistics from 9×19mm to .50 BMG (B)`,
       storyBtn: 'R&D Story',
       storyBtnTitle: 'Open 4-Act Firearm R&D Documentary & Bilingual Voiceover',
       enterBenchBtn: (tag) => `Inspect ${tag}`,
@@ -1494,8 +1507,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       tintTitle:
         'Color-code all components by 6 mechanical engineering roles: Locking, Gas System, Carrier, Fire Control, Springs & Housing (T)',
       stageHint: 'Drag to orbit · Click firearm to enter workbench',
-      rackAria: '13-Bay Weapon Vault Rack',
-      rackTitle: '13-BAY WEAPON VAULT RACK · INTERACTIVE COLLECTION',
+      rackAria: `${VAULT_EXHIBIT_COUNT}-Bay Weapon Vault Rack`,
+      rackTitle: `${VAULT_EXHIBIT_COUNT}-BAY WEAPON VAULT RACK · INTERACTIVE COLLECTION`,
       rackTip:
         'Click card to preview on turntable · Click again to enter 3D Workbench',
       scrollLeft: 'Scroll rack left',
@@ -1522,10 +1535,9 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
     },
     atlasModal: {
       dialogAria: 'PBR Texture Atlas Inspector',
-      kicker: '13-EXHIBIT 2K PBR ATLAS',
-      weaponSwitcherAria: 'Switch 13-exhibit PBR texture library',
-      subtitle:
-        '76 custom 2K WebP PBR textures (public/textures/*.webp) across all 13 vault firearms & archery exhibits · UV-bound live to all 327 precision CAD parts',
+      kicker: `${VAULT_EXHIBIT_COUNT}-EXHIBIT 2K PBR ATLAS`,
+      weaponSwitcherAria: `Switch ${VAULT_EXHIBIT_COUNT}-exhibit PBR texture library`,
+      subtitle: `${VAULT_TEXTURES_TOTAL} custom 2K WebP PBR textures (public/textures/*.webp) across all ${VAULT_EXHIBIT_COUNT} vault firearms & archery exhibits · UV-bound live to all ${VAULT_PARTS_TOTAL} precision CAD parts`,
       liveOn: 'Live 3D Textures: ON',
       liveOff: 'Live 3D Textures: OFF',
       closeAria: 'Close PBR texture atlas inspector',
@@ -1573,8 +1585,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       caliperChipTitle:
         'Toggle 1:1 3D armorer vernier caliper & CAD envelope scale ruler: click any 2 surface points for millimeter measurement (K)',
       cartridgeChip: 'Ammo Lab',
-      cartridgeChipTitle:
-        'Open 7-Caliber SAAMI/CIP 1:1 Cartridge Cutaway Lab (B)',
+      cartridgeChipTitle: `Open ${LAB_CALIBER_TOTAL}-Caliber SAAMI/CIP 1:1 Cartridge Cutaway Lab (B)`,
       edgesChip: 'CAD Edges',
       edgesChipTitle: 'Toggle industrial CAD hard-edge wireframe overlay (E)',
       labelsChip: 'Callouts',
@@ -1584,7 +1595,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       sfxChipTitle: (muted) =>
         muted
           ? 'Gunsmith mechanical & ballistic SFX muted — click to unmute (M)'
-          : 'Toggle Web Audio gunsmith mechanical clicks & 7-caliber ballistic SFX (M)',
+          : `Toggle Web Audio gunsmith mechanical clicks & ${LAB_CALIBER_TOTAL}-caliber ballistic SFX (M)`,
       resetChip: 'Reset',
       resetChipTitle:
         'Reset to 0% assembled state & default isometric camera (R)',
@@ -1680,8 +1691,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       gasFlowTitle:
         'Toggle 60fps propellant bore expansion, gas-port tap & piston/BCG flow streamlines',
       sfxPill: 'Acoustic SFX',
-      sfxTitle:
-        'Toggle stereo convolution IR & 7-caliber waveguide ballistic Web Audio SFX (M)',
+      sfxTitle: `Toggle stereo convolution IR & ${LAB_CALIBER_TOTAL}-caliber waveguide ballistic Web Audio SFX (M)`,
       selectorGroupAria: 'Fire-control selector mode (V)',
       selectorShort: {
         safe: 'SAFE',
@@ -1794,8 +1804,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       loadingTitle: 'Loading R&D Documentary & Bilingual Archive...',
       loadingDesc: 'Fetching structured history & voiceover metadata.',
       pendingTitle: 'Unable to Load Bilingual R&D Archive',
-      pendingDesc:
-        'Please verify your static asset server is reachable. Full 4-act R&D documentaries, 327 component breakdowns, and 758 Google Gemini TTS voiceovers across all 13 vault exhibits are bundled under public/.',
+      pendingDesc: `Please verify your static asset server is reachable. Full 4-act R&D documentaries, ${VAULT_PARTS_TOTAL} component breakdowns, and ${VAULT_AUDIO_TOTAL} Google Gemini TTS voiceovers across all ${VAULT_EXHIBIT_COUNT} vault exhibits are bundled under public/.`,
       switchToAk15Btn: 'Switch to AK-15M1 R&D Archive',
       aiAttribution:
         'Authored & voiced with Google Gemini 3.8 Flash & Gemini TTS grounded in 1:1 CAD specs',
@@ -1924,27 +1933,25 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
     },
     cartridgeLab: {
       badge: 'WP-06 · SAAMI / CIP 1:1 CARTRIDGE CUTAWAY LAB',
-      title: '7-Caliber 1:1 SAAMI Cartridge Cutaway Lab',
+      title: `${LAB_CALIBER_TOTAL}-Caliber 1:1 SAAMI Cartridge Cutaway Lab`,
       subtitle:
-        'True 1:1 side-by-side longitudinal cutaways (1 unit = 10 mm) · Compare propellant charge columns, Boxer anvils, dual-core penetrators & muzzle energy',
+        'True 1:1 side-by-side longitudinal cutaways (1 unit = 10 mm) · Compare propellant columns, Boxer anvils, 12ga buckshot wads, dual-core penetrators & muzzle energy',
       backVaultBtn: 'Return to Vault',
       backVaultTitle: 'Return to 3D Digital Armory Vault (Esc / B)',
-      lineupBtn: '1:1 Full 7-Caliber Lineup',
-      lineupTitle:
-        'Frame all 7 cartridges side-by-side at exact 1:1 physical scale',
+      lineupBtn: `1:1 Full ${LAB_CALIBER_TOTAL}-Caliber Lineup`,
+      lineupTitle: `Frame all ${LAB_CALIBER_TOTAL} cartridges side-by-side at exact 1:1 physical scale`,
       focusSpecimenBtn: 'Macro Specimen Focus',
       focusSpecimenTitle:
         'Zoom into the active cartridge cutaway to inspect primer anvil & bullet core',
       cutawayOn: '180° Cutaway: ON [C]',
-      cutawayOff: 'Full Brass Case [C]',
+      cutawayOff: 'Full Case / Hull [C]',
       cutawayTitle:
         'Toggle 180° longitudinal cross-section cutaway vs intact cartridge case (C)',
       edgesBtn: 'CAD Edges',
       edgesTitle: 'Toggle crisp CAD hard-edge wireframe on cartridge anatomy',
       matrixToggleOpen: 'Quantitative Matrix',
       matrixToggleClose: 'Hide Matrix',
-      matrixToggleTitle:
-        'Toggle 7-caliber quantitative comparison table (dimensions, charge, pressure & energy)',
+      matrixToggleTitle: `Toggle ${LAB_CALIBER_TOTAL}-caliber quantitative comparison table (dimensions, charge, pressure & energy)`,
       explodeLabel: 'Axial Anatomy Explode',
       explodeReset: 'Collapse',
       caliberSelectorAria: 'Select caliber specimen in 1:1 cutaway lineup',
@@ -1959,8 +1966,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       primerLabel: 'Primer & Flash Hole',
       coreAnatomyLabel: 'Jacket & Core Anatomy',
       chamberInWeaponBtn: (w) => `Chamber in ${w} Live Cycle`,
-      tableCaption:
-        'SAAMI / CIP / NATO 7-Caliber 1:1 Dimensional & Internal Ballistics Comparison Matrix',
+      tableCaption: `SAAMI / CIP / NATO ${LAB_CALIBER_TOTAL}-Caliber 1:1 Dimensional & Internal Ballistics Comparison Matrix`,
       colCaliber: 'Caliber',
       colStandard: 'Standard',
       colCaseOal: 'Case / OAL (mm)',
@@ -2058,13 +2064,12 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       bomColPrinciple: 'Mechanical Function & Mating Interface',
       secBallistics:
         'CHAPTER 06 · 1:1 SAAMI CARTRIDGE CUTAWAY & INTERNAL BALLISTICS',
-      secBallisticsSub:
-        'Coupled Chamber Pressure P(t) & Bore Velocity V(t) Curves · 1:1 Half-Section Schematic & 7-Caliber Energy Ladder',
+      secBallisticsSub: `Coupled Chamber Pressure P(t) & Bore Velocity V(t) Curves · 1:1 Half-Section Schematic & ${LAB_CALIBER_TOTAL}-Caliber Energy Ladder`,
       chartPressureTitle:
         'FIG 6.1 · Coupled Chamber Pressure P(t) [MPa] & Bore Velocity V(t) [m/s]',
       chartCartridgeTitle:
         'FIG 6.2 · 1:1 Service Cartridge Half-Section & Propellant Spec',
-      energyLadderTitle: '7-Caliber Vault Muzzle Kinetic Energy Scale (J)',
+      energyLadderTitle: `${LAB_CALIBER_TOTAL}-Caliber Vault Muzzle Kinetic Energy Scale (J)`,
       secArmorerManual:
         'CHAPTER 07 · FIELD-STRIP DAG, STOPPAGE DRILLS & COLOPHON',
       secArmorerManualSub:

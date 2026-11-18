@@ -594,8 +594,9 @@
   }
 }
 
-/* Bottom 7-Caliber 1:1 Scale Selector Dock */
-.cartridge-dock {
+/* Bottom 1:1 Scale Selector Dock (7-Col Single Row -> 5×2 Grid for 10 Calibers) */
+.cartridge-dock,
+.cartridge-switcher-dock {
   position: absolute;
   left: 50%;
   bottom: 20px;
@@ -610,12 +611,25 @@
   pointer-events: auto;
 }
 
+.cartridge-switcher-dock.is-multi-row {
+  bottom: 12px;
+  width: min(1060px, calc(100vw - 24px));
+  padding: 7px 10px;
+}
+
 .cartridge-dock-strip {
   display: grid;
   grid-template-columns: repeat(7, minmax(146px, 1fr));
   gap: 6px;
   overflow-x: auto;
   scrollbar-width: thin;
+}
+
+.cartridge-switcher-dock.is-multi-row .cartridge-dock-strip,
+.cartridge-dock-strip.is-multi-row-grid {
+  grid-template-columns: repeat(5, minmax(156px, 1fr));
+  gap: 6px 7px;
+  overflow-x: auto;
 }
 
 .cartridge-dock-card {
@@ -630,6 +644,24 @@
   color: var(--color-text-secondary);
   text-align: left;
   transition: all 0.14s ease;
+}
+
+.cartridge-switcher-dock.is-multi-row .cartridge-dock-card {
+  min-width: 156px;
+  padding: 5px 8px;
+}
+
+.cartridge-switcher-dock.is-multi-row .c-dock-bar-track {
+  height: 28px;
+}
+
+@media (max-width: 860px) {
+  .cartridge-switcher-dock.is-multi-row .cartridge-dock-strip,
+  .cartridge-dock-strip.is-multi-row-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    max-height: 108px;
+    overflow-y: auto;
+  }
 }
 
 .cartridge-dock-card:hover {
