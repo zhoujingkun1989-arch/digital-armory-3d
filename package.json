@@ -1,7 +1,7 @@
 {
   "name": "digital-armory-3d",
   "version": "1.0.0",
-  "description": "Browser-Native Open-Source 3D Firearms & Archery Mechanical Museum & Interactive Engineering Encyclopedia (13 Exhibits incl. Mathews LIFT 33 & Ravin R500, 327 Procedural CSG Parts, 76 2K ORM Textures, 758 Bilingual Gemini Voiceovers, Stencil Cutaway, SAAMI Ballistics, Guided Field-Strip DAG, 17-Plate Monograph & Kids Picture Book Print Studio & Clean Fullscreen)",
+  "description": "Browser-Native Open-Source 3D Firearms & Archery Mechanical Museum & Interactive Engineering Encyclopedia (16 Exhibits incl. Colt Python .357, Benelli M4 M1014, M1 Garand .30-06, Mathews LIFT 33 & Ravin R500, 404 Procedural CSG Parts, 94 2K ORM Textures, 936 Bilingual Gemini Voiceovers, Mechanism Showdown, 10-Caliber Cutaway Lab, Stencil Cutaway, SAAMI Ballistics, Guided Field-Strip DAG & 17-Plate Monograph Print Studio)",
   "license": "MIT",
   "type": "module",
   "repository": {

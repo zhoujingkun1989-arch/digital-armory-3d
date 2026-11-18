@@ -1,3 +1,4 @@
+import { isArcheryWeapon } from '../engine/physics/armoryPhysics';
 import type {
   LanguageCode,
   PartNarrationEntry,
@@ -10,6 +11,7 @@ import type {
   WeaponId,
   WeaponPartSpec,
 } from '../weapons/types';
+import { UI_STRINGS } from './uiStrings';
 
 export interface WeaponEnglishFallback {
   shortLabel: string;
@@ -36,13 +38,7 @@ export interface WeaponEnglishFallback {
   firingMilestoneLabel: string;
 }
 
-export type FallbackWeaponId =
-  | WeaponId
-  | 'lift33'
-  | 'r500'
-  | 'python'
-  | 'benellim4'
-  | 'garand';
+export type FallbackWeaponId = WeaponId;
 
 export const WEAPON_EN_FALLBACKS: Record<
   FallbackWeaponId,
@@ -433,10 +429,10 @@ export const WEAPON_EN_FALLBACKS: Record<
     actionMechanism:
       'Hand-Tuned DA/SA Clockwork · 60° Ratchet & Stop-Bolt Lockup',
     overallLengthMm: '292 mm (6" Barrel)',
-    barrelSpec: '152.4 mm (6") · 6-RH 1:356mm (1:14")',
-    weightKg: '1.19 kg',
-    muzzleVelocityMs: '435 m/s',
-    effectiveRangeM: '50 m',
+    barrelSpec: '152.4 mm (6") · 6-LH 1:356mm (1:14")',
+    weightKg: '1.23 kg (43.5 oz)',
+    muzzleVelocityMs: '385 m/s (158 gr JSP)',
+    effectiveRangeM: '75 m',
     rateOfFire: 'DA / SA (6-Round Cylinder)',
     description:
       'Colt’s 1955 Hartford flagship .357 Magnum revolver built on the forged I-frame in mirror-polished Royal Blue: pairs a 6-inch 3-vent rib barrel and full-length ejector underlug with a swing-out 6-shot fluted cylinder, two-step bank-vault hand/bolt lockup, folded V-leaf mainspring, positive rebound safety lever, and checkered American walnut target grips.',
@@ -466,11 +462,11 @@ export const WEAPON_EN_FALLBACKS: Record<
     compactCaliber: '12 Gauge · 00 Buck',
     actionMechanism:
       'Dual ARGO Short-Stroke Gas Pistons · 2-Lug Rotating Bolt',
-    overallLengthMm: '886 mm (772 mm collapsed)',
+    overallLengthMm: '886–1,010 mm (Telestock)',
     barrelSpec: '470 mm (18.5") · Ø18.5mm Chrome Smoothbore',
     weightKg: '3.82 kg',
-    muzzleVelocityMs: '405 m/s',
-    effectiveRangeM: '50 m (Buckshot) / 100 m (Slug)',
+    muzzleVelocityMs: '404 m/s (9-Pellet 00 Buck)',
+    effectiveRangeM: '50 m (Buck) / 125 m (Slug)',
     rateOfFire: 'Semi-Auto (7+1 Rd)',
     description:
       'Benelli Armi’s U.S. Marine Corps M1014 Joint Service Combat Shotgun: departs from recoil inertia in favor of patented dual symmetrical stainless A.R.G.O. (Auto-Regulating Gas-Operated) short-stroke pistons ahead of the chamber, driving a hard-chrome 2-lug rotating bolt, 7-round underbarrel tubular magazine with pivoting stainless shell elevator, LPA ghost-ring sights, and 3-position skeletonized M1014 telestock.',
@@ -647,6 +643,40 @@ export function resolveWeaponDisplayMeta(
     searchPlaceholder: uiEn?.searchPlaceholder ?? fb.searchPlaceholder,
     firingMilestoneLabel: uiEn?.firingMilestoneLabel ?? fb.firingMilestoneLabel,
   };
+}
+
+const WALNUT_HARDWOOD_PART_IDS = new Set<string>([
+  'python_grip_left',
+  'python_grip_right',
+  'garand_walnut_stock',
+  'garand_rear_handguard',
+  'garand_front_handguard',
+]);
+
+/**
+ * Resolves the localized engineering material description for a part, rendering
+ * historically accurate American Black Walnut hardwood copy for Colt Python target grips
+ * and M1 Garand stocks/handguards while preserving standard firearm/archery material tables.
+ */
+export function resolvePartMaterialLabel(
+  weaponId: WeaponId,
+  part: Pick<WeaponPartSpec, 'id' | 'material'>,
+  lang: LanguageCode
+): string {
+  if (
+    (weaponId === 'python' || weaponId === 'garand') &&
+    part.material === 'polymer_frame' &&
+    WALNUT_HARDWOOD_PART_IDS.has(part.id)
+  ) {
+    return lang === 'zh'
+      ? '亚麻籽油浸润北美黑胡桃实木'
+      : 'Linseed-Oiled American Black Walnut Hardwood';
+  }
+  const insp = UI_STRINGS[lang].inspector;
+  if (isArcheryWeapon(weaponId)) {
+    return insp.archery.materials[part.material] ?? insp.materials[part.material];
+  }
+  return insp.materials[part.material];
 }
 
 /**

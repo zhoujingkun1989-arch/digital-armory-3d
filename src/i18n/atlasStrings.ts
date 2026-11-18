@@ -1,9 +1,8 @@
 import type { LanguageCode } from '../narration/types';
-import {
-  WEAPON_IDS,
-  type PbrChannelMeta,
-  type PbrSuiteItem,
-  type WeaponId,
+import type {
+  PbrChannelMeta,
+  PbrSuiteItem,
+  WeaponId,
 } from '../weapons/types';
 
 export interface AtlasChannelTranslation {
@@ -63,7 +62,7 @@ const CHANNEL_LABEL_EN_MAP: Readonly<Record<string, string>> = {
   '工程弹性体皮纹法线 (Seamless)': 'Engineered Elastomer Grip Normal (Seamless)',
 };
 
-export type AtlasWeaponId = WeaponId | 'python' | 'benellim4' | 'garand';
+export type AtlasWeaponId = WeaponId;
 
 export const ALL_ATLAS_EN_STRINGS: Readonly<
   Record<AtlasWeaponId, AtlasWeaponTranslation>
@@ -1189,9 +1188,7 @@ export const ALL_ATLAS_EN_STRINGS: Readonly<
 
 export const ATLAS_EN_STRINGS: Readonly<
   Record<WeaponId, AtlasWeaponTranslation>
-> = Object.fromEntries(
-  WEAPON_IDS.map((id) => [id, ALL_ATLAS_EN_STRINGS[id]])
-) as Readonly<Record<WeaponId, AtlasWeaponTranslation>>;
+> = ALL_ATLAS_EN_STRINGS;
 
 export function getLocalizedAtlasHeading(
   weaponId: AtlasWeaponId,

@@ -32,6 +32,8 @@ const GAS_OPERATED_WEAPONS: ReadonlySet<WeaponId> = new Set([
   'scar',
   'deagle',
   'aug',
+  'benellim4',
+  'garand',
 ]);
 
 const ELASTIC_DRIVE_WEAPONS: ReadonlySet<WeaponId> = new Set([
@@ -66,7 +68,7 @@ describe('WP-05 Engineering Functional Role Tint & Gas-Flow Contracts', () => {
     }
   });
 
-  it('classifies all 327 procedural/CSG parts across 13 weapons with exact gas & elastic-drive fidelity', async () => {
+  it('classifies all 404 procedural/CSG parts across 16 exhibits with exact gas & elastic-drive fidelity', async () => {
     const validRoles = new Set<EngineeringRole>(ENGINEERING_ROLE_ORDER);
     let totalParts = 0;
 
@@ -97,7 +99,7 @@ describe('WP-05 Engineering Functional Role Tint & Gas-Flow Contracts', () => {
       }
     }
 
-    expect(totalParts).toBe(327);
+    expect(totalParts).toBe(404);
   });
 
   it('keeps WebGL shader program cache keys 100% invariant when functional tint uniforms toggle', () => {
@@ -133,7 +135,7 @@ describe('WP-05 Engineering Functional Role Tint & Gas-Flow Contracts', () => {
     }
   });
 
-  it('aligns all 13 weapon energy-manifold profiles with internal ballistics gas-port timing', () => {
+  it('aligns all 16 exhibit energy-manifold profiles with internal ballistics gas-port timing', () => {
     const sample = createInternalBallisticsSample();
 
     for (const weaponId of WEAPON_IDS) {

@@ -24,6 +24,7 @@ import { isArcheryWeapon } from '../../engine/physics/armoryPhysics';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import {
   resolveFiringPhaseText,
+  resolvePartMaterialLabel,
   resolveWeaponDisplayMeta,
 } from '../../i18n/weaponFallbacks';
 import {
@@ -426,7 +427,9 @@ export const PartInspectorCard: React.FC = () => {
           </div>
           <div className="meta-row">
             <span className="meta-label">{ui.materialLabel}</span>
-            <span className="meta-value">{ui.materials[part.material]}</span>
+            <span className="meta-value">
+              {resolvePartMaterialLabel(activeWeaponId, part, lang)}
+            </span>
           </div>
           <div className="meta-row" title={ui.envelopeTitle}>
             <span className="meta-label">{ui.envelopeLabel}</span>

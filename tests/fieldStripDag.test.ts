@@ -41,7 +41,7 @@ describe('WP-07 Hands-On Guided Military Field-Strip DAG & Runtime Contracts', (
     useAppStore.getState().resetAll();
   });
 
-  it('validates acyclic DAG topology, valid part IDs, and non-overlapping explodeSteps across all 13 weapons', async () => {
+  it('validates acyclic DAG topology, valid part IDs, and non-overlapping explodeSteps across all 16 exhibits', async () => {
     for (const weaponId of WEAPON_IDS) {
       const plan = FIELD_STRIP_PLANS[weaponId];
       expect(plan).toBeDefined();
@@ -105,7 +105,7 @@ describe('WP-07 Hands-On Guided Military Field-Strip DAG & Runtime Contracts', (
     }
   });
 
-  it('enforces forward strip interference, hint pulsing, reverse-order reassembly blocking, and full-cycle pose restoration on all 13 weapons', async () => {
+  it('enforces forward strip interference, hint pulsing, reverse-order reassembly blocking, and full-cycle pose restoration on all 16 exhibits', async () => {
     const pose = createMutablePose();
 
     for (const weaponId of WEAPON_IDS) {

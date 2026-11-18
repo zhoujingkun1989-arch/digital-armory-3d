@@ -38,7 +38,7 @@ export interface FieldStripStepSpec {
 }
 
 export interface FieldStripWeaponPlan {
-  weaponId: WeaponId | 'lift33' | 'r500';
+  weaponId: WeaponId;
   manualCodeZh: string;
   manualCodeEn: string;
   steps: readonly FieldStripStepSpec[];
@@ -52,7 +52,7 @@ function bind(
 }
 
 export const FIELD_STRIP_PLANS: Readonly<
-  Record<WeaponId | 'lift33' | 'r500', FieldStripWeaponPlan>
+  Record<WeaponId, FieldStripWeaponPlan>
 > = {
   // ===========================================================================
   // 1. Kalashnikov AK-15M1 (7.62×39mm) — 6-Step Russian Service Field Strip

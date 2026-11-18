@@ -411,11 +411,11 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
     expect(armoryCss).not.toContain('.schematic-watermark');
   });
 
-  it('resolves getLocalizedCatalogSpecs & resolveWeaponDisplayMeta in English with zero CJK characters across all 13 WEAPON_IDS', () => {
+  it('resolves getLocalizedCatalogSpecs & resolveWeaponDisplayMeta in English with zero CJK characters across all 16 WEAPON_IDS', () => {
     const cjkRe = /[\u4e00-\u9fff]/;
     const narrationsDir = path.resolve(__dirname, '../public/narrations');
 
-    expect(WEAPON_IDS.length).toBe(13);
+    expect(WEAPON_IDS.length).toBe(16);
 
     for (const id of WEAPON_IDS) {
       const specs = getLocalizedCatalogSpecs(id, 'en');
@@ -472,7 +472,7 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
     const cjkRe = /[\u4e00-\u9fff]/;
 
     expect(Object.keys(ATLAS_EN_STRINGS).sort()).toEqual([...WEAPON_IDS].sort());
-    expect(WEAPON_IDS.length).toBe(13);
+    expect(WEAPON_IDS.length).toBe(16);
 
     let totalSuites = 0;
     for (const weaponId of WEAPON_IDS) {
@@ -540,7 +540,7 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
       });
     }
 
-    expect(totalSuites).toBeGreaterThanOrEqual(37);
+    expect(totalSuites).toBeGreaterThanOrEqual(46);
   });
 
   it('keeps atlasModal and all archery UI dictionaries complete and free of firearm jargon', () => {
@@ -580,9 +580,9 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
           expect(s).not.toMatch(cjkRe);
         }
       }
-      expect(modal.subtitle).toContain('76');
-      expect(modal.subtitle).toContain('327');
-      expect(modal.kicker).toContain('13');
+      expect(modal.subtitle).toContain('94');
+      expect(modal.subtitle).toContain('404');
+      expect(modal.kicker).toContain('16');
     }
 
     // 2. Archery UI sub-dictionaries: completeness, zero CJK in EN, zero leftover firearm jargon
@@ -652,14 +652,14 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
     }
   });
 
-  it('synchronizes SHOWCASE_STRINGS metrics (13 / 327 / 758 / 76) with WEAPON_IDS, plugins, audio & public/textures', async () => {
+  it('synchronizes SHOWCASE_STRINGS metrics (16 / 404 / 936 / 94) with WEAPON_IDS, plugins, audio & public/textures', async () => {
     const texturesDir = path.resolve(__dirname, '../public/textures');
     const audioDir = path.resolve(__dirname, '../public/audio');
 
     const textureFiles = fs
       .readdirSync(texturesDir)
       .filter((f) => f.endsWith('.webp'));
-    expect(textureFiles.length).toBe(76);
+    expect(textureFiles.length).toBe(94);
 
     const countMp3Files = (dir: string): number => {
       let count = 0;
@@ -670,35 +670,38 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
       }
       return count;
     };
-    expect(countMp3Files(audioDir)).toBe(758);
+    expect(countMp3Files(audioDir)).toBe(936);
 
     let totalParts = 0;
     for (const weaponId of WEAPON_IDS) {
       const plugin = await loadWeaponPlugin(weaponId);
       totalParts += plugin.parts.length;
     }
-    expect(WEAPON_IDS.length).toBe(13);
-    expect(totalParts).toBe(327);
+    expect(WEAPON_IDS.length).toBe(16);
+    expect(totalParts).toBe(404);
 
     for (const lang of ['zh', 'en'] as const) {
       const showcase = SHOWCASE_STRINGS[lang];
       const metricValues = showcase.metrics.map((m) => m.val).join(' | ');
-      expect(metricValues).toContain('13');
-      expect(metricValues).toContain('327');
-      expect(metricValues).toContain('76');
-      expect(metricValues).toContain('758');
+      expect(metricValues).toContain('16');
+      expect(metricValues).toContain('404');
+      expect(metricValues).toContain('94');
+      expect(metricValues).toContain('936');
 
-      expect(showcase.hero.eyebrow).toContain('13');
-      expect(showcase.hero.eyebrow).toContain('758');
-      expect(showcase.hero.subPartsStrong).toContain('327');
-      expect(showcase.hero.subMapsStrong).toContain('76');
-      expect(showcase.hero.subAudioStrong).toContain('758');
+      expect(showcase.hero.eyebrow).toContain('16');
+      expect(showcase.hero.eyebrow).toContain('936');
+      expect(showcase.hero.subPartsStrong).toContain('404');
+      expect(showcase.hero.subMapsStrong).toContain('94');
+      expect(showcase.hero.subAudioStrong).toContain('936');
 
       const caliberText = showcase.documentary.caliberRows
         .map((r) => `${r.caliber} ${r.weaponTag} ${r.signature}`)
         .join(' ');
       expect(caliberText).toContain('LIFT 33');
       expect(caliberText).toContain('Ravin R500');
+      expect(caliberText).toContain('M1 Garand');
+      expect(caliberText).toContain('Benelli M4');
+      expect(caliberText).toContain('Python');
     }
   });
 });

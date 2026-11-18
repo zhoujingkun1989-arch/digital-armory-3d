@@ -25,12 +25,8 @@ import type {
 import type { ExplodedPinItem } from './explodedPinLayout';
 import type { MonographEdition } from './monographCaptureStore';
 
-export type MonographWeaponId = WeaponId | 'python' | 'benellim4' | 'garand';
-export type MonographCaliberProfile =
-  | CaliberProfile
-  | '357_magnum'
-  | '12_gauge'
-  | '30_06';
+export type MonographWeaponId = WeaponId;
+export type MonographCaliberProfile = CaliberProfile;
 
 interface CartridgeDiagramFallbackSpec {
   code: string;

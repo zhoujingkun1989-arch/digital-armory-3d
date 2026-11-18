@@ -9,7 +9,7 @@ import { isArcheryWeapon } from '../physics/armoryPhysics';
 /**
  * WP-05 — Engineering Functional Role Classification & Operating Energy-Flow Profiles
  * ----------------------------------------------------------------------------------
- * Maps all 327 procedural/CSG parts across 13 vault exhibits (11 firearms & 2 compound
+ * Maps all 404 procedural/CSG parts across 16 vault exhibits (14 firearms & 2 compound
  * archery systems) into 6 canonical mechanical engineering functional roles, enabling
  * Matt Rittman-style color-coded cutaway pedagogy with zero WebGL shader recompilation.
  */
@@ -256,7 +256,7 @@ export type GasOperatingFamily =
   | 'compound_crossbow_helical_cam';
 
 export interface WeaponGasManifoldProfile {
-  weaponId: WeaponId | 'lift33' | 'r500';
+  weaponId: WeaponId;
   family: GasOperatingFamily;
   hasGasTap: boolean;
   familyTitleZh: string;
@@ -282,7 +282,7 @@ export interface WeaponGasManifoldProfile {
 }
 
 export const WEAPON_GAS_MANIFOLD_PROFILES: Readonly<
-  Record<WeaponId | 'lift33' | 'r500', WeaponGasManifoldProfile>
+  Record<WeaponId, WeaponGasManifoldProfile>
 > = {
   ak15: {
     weaponId: 'ak15',
@@ -767,6 +767,8 @@ const EXPLICIT_PART_ROLE_OVERRIDES: Readonly<Record<string, EngineeringRole>> =
 
     // Colt Python 6" .357 Magnum Revolver (25 parts — non-gas-operated: 0 gas_drive!)
     python_barrel: 'locking',
+    python_barrel_pin: 'locking',
+    python_detent_plunger: 'locking',
     python_cylinder: 'locking',
     python_cylinder_bolt: 'locking',
     python_crane: 'locking',
@@ -787,9 +789,7 @@ const EXPLICIT_PART_ROLE_OVERRIDES: Readonly<Record<string, EngineeringRole>> =
     python_grip_left: 'housing_feed',
     python_grip_right: 'housing_feed',
     python_front_sight: 'housing_feed',
-    python_rear_sight_base: 'housing_feed',
-    python_rear_sight_leaf: 'housing_feed',
-    python_muzzle_crown_insert: 'housing_feed',
+    python_rear_sight: 'housing_feed',
     python_speedloader: 'housing_feed',
 
     // Benelli M4 (M1014) 12 Gauge Combat Shotgun (26 parts)
@@ -809,11 +809,10 @@ const EXPLICIT_PART_ROLE_OVERRIDES: Readonly<Record<string, EngineeringRole>> =
     benellim4_mag_spring: 'energy_spring',
     benellim4_receiver: 'housing_feed',
     benellim4_picatinny_rail: 'housing_feed',
-    benellim4_ghost_ring_sight: 'housing_feed',
+    benellim4_rear_sight: 'housing_feed',
     benellim4_front_sight: 'housing_feed',
     benellim4_forend: 'housing_feed',
     benellim4_recoil_tube: 'housing_feed',
-    benellim4_pistol_grip: 'housing_feed',
     benellim4_telestock: 'housing_feed',
     benellim4_trigger_housing: 'housing_feed',
     benellim4_mag_tube: 'housing_feed',

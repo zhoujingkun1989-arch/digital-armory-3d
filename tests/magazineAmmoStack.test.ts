@@ -40,6 +40,9 @@ const MIN_ROUND_COUNTS: Readonly<Record<WeaponId, number>> = {
   p90: 25,
   lift33: 5,
   r500: 3,
+  python: 5,
+  benellim4: 6,
+  garand: 8,
 };
 
 function computePartWorldBox(
@@ -70,7 +73,7 @@ function computePartWorldBox(
   return worldBox;
 }
 
-describe('13-Weapon Full-Capacity 3D Magazine & Quiver Stack Contracts', () => {
+describe('16-Exhibit Full-Capacity 3D Magazine, Cylinder, Tubular, En-Bloc & Quiver Stack Contracts', () => {
   it('verifies round counts, single/staggered geometry, Slot 0 anchors, P90 90° helical rotation, and zero mag_body / mag_follower clipping', async () => {
     const pose = createMutableMagazineRoundPose();
     const qRound = new THREE.Quaternion();
@@ -441,6 +444,32 @@ describe('13-Weapon Full-Capacity 3D Magazine & Quiver Stack Contracts', () => {
             Math.abs(pose.ry),
             `p90 horizontal spine slot[${i}] expected ~90° sideways yaw`
           ).toBeGreaterThan(1.2);
+        }
+      }
+
+      // 5. Colt Python 6-chamber circular ring, Benelli M4 horizontal tube, and M1 Garand staggered en-bloc clip geometry
+      if (weaponId === 'python') {
+        expect(spec.roundCount).toBe(5);
+        for (let i = 0; i < spec.roundCount; i++) {
+          evaluateMagazineRoundSlotInto('python', i, 0, pose);
+          const radialDist = Math.hypot(pose.py - 1.17, pose.pz);
+          expect(radialDist).toBeCloseTo(1.18, 2);
+        }
+      } else if (weaponId === 'benellim4') {
+        expect(spec.roundCount).toBe(6);
+        let prevX = -Infinity;
+        for (let i = 0; i < spec.roundCount; i++) {
+          evaluateMagazineRoundSlotInto('benellim4', i, 0, pose);
+          // All 6 shells stack coaxially along the underbarrel magazine tube (`py = -1.25`)
+          expect(pose.py).toBeCloseTo(-1.25, 3);
+          expect(pose.px).toBeGreaterThan(prevX);
+          prevX = pose.px;
+        }
+      } else if (weaponId === 'garand') {
+        expect(spec.roundCount).toBe(8);
+        for (let i = 1; i < spec.roundCount; i++) {
+          evaluateMagazineRoundSlotInto('garand', i, 0, pose);
+          expect(Math.abs(pose.pz)).toBeCloseTo(0.22, 2);
         }
       }
     }

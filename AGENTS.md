@@ -27,20 +27,21 @@
 
 ## 2. 当前基线概览（Current Baseline）
 
-本仓库已建成的核心工程与内容底座如下：
-- **13 款馆藏名枪与复合弓弩 / 327 个程序化与 CSG 运动零件**：覆盖 `ak15`、`m4a1`、`mp5`、`g17`、`m82a1`、`awm`、`scar`、`deagle`、`aug`、`p320`、`p90`、`lift33`（Mathews LIFT 33 复合弓）、`r500`（Ravin R500 螺旋凸轮复合弩），内置二面角 CNC 棱边曲率顶点属性（`aCurvature`）与 GPU 等线径螺旋弹簧变形属性（`aSpringParam`），全量通过法线、体积、UV 与运动学防穿模契约测试。
-- **76 张 2K 5 通道 Packed ORM WebP 贴图 + 多层定制 GLSL PBR 着色器**：由 `scripts/pbr_core/` 离线烘焙并在 `public/textures/` 提供，叠加 CNC 刀痕各向异性微法线、棱边银白磨损、枪管连续射击黑体热辐射红热与膛口积碳（`armoryShader.ts`），配套浏览器内 PBR 贴图图集检视器（`TextureAtlasModal`）。
+本仓库已建成的核心工程与内容底座如下（`WP-01` ~ `WP-12` 全部 12 个工程包已 100% 闭环交付）：
+- **16 款馆藏名枪与复合弓弩 / 404 个程序化与 CSG 运动零件**：覆盖 14 款传奇名枪（`ak15`、`m4a1`、`mp5`、`g17`、`m82a1`、`awm`、`scar`、`deagle`、`aug`、`p320`、`p90`、`python` 柯尔特蟒蛇 `.357`、`benellim4` 伯奈利 M4 `M1014`、`garand` 美国 M1 加兰德 `.30-06`）与 2 款复合弓弩（`lift33` Mathews LIFT 33 复合弓、`r500` Ravin R500 螺旋凸轮复合弩），内置二面角 CNC 棱边曲率顶点属性（`aCurvature`）与 GPU 等线径螺旋弹簧 / V 形主簧 / 复合弓片变形属性（`aSpringParam`），全量通过法线、体积、UV 与运动学防穿模契约测试。
+- **94 张 2K 5 通道 Packed ORM WebP 贴图 + 多层定制 GLSL PBR 着色器**：由 `scripts/pbr_core/` 离线烘焙并在 `public/textures/` 提供，叠加 CNC 刀痕各向异性微法线、棱边银白磨损、皇家烤蓝、亚麻籽油黑胡桃实木、枪管连续射击黑体热辐射红热与膛口积碳（`armoryShader.ts`），配套浏览器内 PBR 贴图图集检视器（`TextureAtlasModal`）。
 - **Two-Pass WebGL Stencil 实体纵剖面（`C`）与剖面穿透拾取**：通过双通道模板缓冲（Stencil Buffer）封口渲染带 `45°` ISO 128 工程剖面斜线（钢材冷银蓝、铝合金阳极灰、铜材黄铜金、聚合物哑光暖灰）的实心金属壁厚，配合 `sectionAwareMeshRaycast` 穿透剖切面精准点选内部火控与枪机零件；支持外壳 X-Ray 透视（`X`）、CAD 硬边轮廓线（`E`）、零回流 3D 引线编号标签（`L`）与纯净全屏展示（`H` / `ImmersiveFloatingBar.tsx` + `useFullscreen.ts`）。
 - **三档影棚环境（暗室展厅 / 军械匠人台 / 工程白昼）+ GTAO/HDR/AgX 后处理**：内置程序化氯丁橡胶拆枪垫与磁吸零件盘（`GunsmithStageMat.tsx`）、自适应暗色军械师 / 亮色工程蓝图双主题 UI，以及半分辨率 GTAO 环境光遮蔽、HDR 膛口焰辉光与 AgX 色调映射管线（`ArmoryPostProcessing.tsx`）。
-- **7 阶段耦合运动学 + 7 口径 SAAMI/CIP 与复合弓弩内弹道、刚体抛壳与实时遥测示波器（`WP-04`）**：位于 `src/engine/actors/BallisticsSystem.tsx`、`src/engine/physics/armoryPhysics.ts` 与 `src/features/workbench/BallisticsTelemetryHud.tsx`，覆盖 `9×19mm`、`5.7×28mm`、`5.56 NATO`、`7.62×39mm`、`.50 AE`、`.338 Lapua`、`.50 BMG` 及 `400 gr` 碳纤维猎箭/弩箭曲线，含 60fps 零重绘膛压 $P(t)$（`MPa`）/ 膛内初速 $V(t)$（`m/s`）示波器与反向拖拽控制、二阶弹簧阻尼枪身后坐上跳与枪管谐振鞭动、桌面碰撞弹跳刚体抛壳及枪管温升积碳演化。
+- **7 阶段耦合运动学 + 10 口径 SAAMI/CIP 实弹与霰弹及复合弓弩内弹道、刚体抛壳与实时遥测示波器（`WP-04`）**：位于 `src/engine/actors/BallisticsSystem.tsx`、`src/engine/physics/armoryPhysics.ts` 与 `src/features/workbench/BallisticsTelemetryHud.tsx`，覆盖 `9×19mm`、`5.7×28mm`、`.357 Magnum`、`5.56 NATO`、`7.62×39mm`、`.50 AE`、`12 Gauge`、`.30-06 Springfield`、`.338 Lapua`、`.50 BMG` 及 `400 gr` 碳纤维猎箭/弩箭曲线，含 60fps 零重绘膛压 $P(t)$（`MPa`）/ 膛内初速 $V(t)$（`m/s`）示波器与反向拖拽控制、二阶弹簧阻尼枪身后坐上跳与枪管谐振鞭动、桌面碰撞弹跳刚体抛壳及枪管温升积碳演化。
 - **直接手操拉机柄/套筒、膛内验枪（`Press-Check [P]`）与快慢机多档位火控交互（`WP-08`）**：位于 `src/engine/interaction/InteractiveActionController.tsx`，支持 3D 视口直接拖拽套筒/拉机柄、微拉套筒露铜验枪（`P`）、切换 `SAFE / SEMI / AUTO` 快慢机档位（`V`）以及按住扳机（`F`）感受保险锁死、单发断连器截获复位与全自动循环差异。
-- **6 大机械职能语义分色（`[T]`）与 60fps 高压火药燃气导流可视化（`WP-05`）**：位于 `src/engine/materials/engineeringRoles.ts`、`src/engine/actors/GasFlowVisualizer.tsx` 与 `src/features/workbench/EngineeringTintLegend.tsx`，零着色器重编译实现全库 327 个零件按闭锁承压、导气驱动、自动机框、火控击发、储能弹簧、机匣供弹分色（与 Stencil 纵剖面同步换色）及动态膛内膨胀与导气分流轨迹渲染。
-- **军械师引导式野战勤务拆装实操（`[G]`，`WP-07`）**：位于 `src/engine/fieldstrip/fieldStripSpecs.ts`、`src/engine/fieldstrip/fieldStripStore.ts` 与 `src/features/workbench/FieldStripHud.tsx`，内置全部 13 款展品（11 款枪械 + 2 款复合弓弩）真实军械教范有向拆装依赖图（DAG），支持 3D 直接点选拆解与逆序拓扑复装、机械干涉脉冲高亮与排障规范提示。
-- **经典枪械与弓弩故障剖视排障室（`[J]`，`WP-09`）**：位于 `src/engine/malfunctions/malfunctionSpecs.ts`、`src/engine/malfunctions/malfunctionStore.ts`、`src/engine/actors/MalfunctionActor.tsx` 与 `src/features/workbench/MalfunctionHud.tsx`，覆盖全部 13 款展品的 4 类典型卡阻与安全阻断（`烟囱卡壳 Stovepipe`、`双进弹 Double Feed`、`底火轻敲拒发 Light Strike`、`未闭锁击发阻断 Out-of-Battery`，含弓弩箭羽/箭尾/弦钩/防空放诊断），支持 3D 故障可视化、成因零件脉冲定位与按序排障实操演练。
+- **6 大机械职能语义分色（`[T]`）与 60fps 高压火药燃气导流可视化（`WP-05`）**：位于 `src/engine/materials/engineeringRoles.ts`、`src/engine/actors/GasFlowVisualizer.tsx` 与 `src/features/workbench/EngineeringTintLegend.tsx`，零着色器重编译实现全库 404 个零件按闭锁承压、导气驱动、自动机框、火控击发、储能弹簧、机匣供弹分色（与 Stencil 纵剖面同步换色）及动态膛内膨胀与导气分流轨迹渲染。
+- **军械师引导式野战勤务拆装实操（`[G]`，`WP-07`）**：位于 `src/engine/fieldstrip/fieldStripSpecs.ts`、`src/engine/fieldstrip/fieldStripStore.ts` 与 `src/features/workbench/FieldStripHud.tsx`，内置全部 16 款展品（14 款枪械 + 2 款复合弓弩）真实军械教范有向拆装依赖图（DAG），支持 3D 直接点选拆解与逆序拓扑复装、机械干涉脉冲高亮与排障规范提示。
+- **经典枪械、转轮与弓弩故障剖视排障室（`[J]`，`WP-09`）**：位于 `src/engine/malfunctions/malfunctionSpecs.ts`、`src/engine/malfunctions/malfunctionStore.ts`、`src/engine/actors/MalfunctionActor.tsx` 与 `src/features/workbench/MalfunctionHud.tsx`，覆盖全部 16 款展品的 4 类典型卡阻与安全阻断（`烟囱卡壳 Stovepipe`、`双进弹 Double Feed`、`底火轻敲拒发 Light Strike`、`未闭锁击发阻断 Out-of-Battery`，含双动转轮星盘越齿/弹巢卡滞/V形主簧/回弹安全杆与弓弩箭羽/箭尾/弦钩/防空放诊断），支持 3D 故障可视化、成因零件脉冲定位与按序排障实操演练。
 - **1:1 3D 军械游标卡尺与空间包络标尺（`[K]`，`WP-10`）**：位于 `src/engine/caliper/caliperStore.ts`、`src/engine/canvas/CaliperActor.tsx` 与 `src/features/workbench/CaliperHud.tsx`，严格基于 `1 world unit = 1 cm = 10 mm` 实现穿透纵剖切面的任意两点 3D 表面拾取、60fps 悬停橡皮筋实时跨度预览、正交 `|ΔX| / |ΔY| / |ΔZ|` 分量解算、3 类一键 CAD 基准量测及全枪三维包络标尺。
-- **7 大口径 SAAMI/CIP 实弹 1:1 纵剖对比实验室（`[B]` / `?screen=cartridges`，`WP-06`）**：位于 `src/engine/cartridges/cartridgeSpecs.ts`、`src/engine/actors/CartridgeCutawayStage.tsx` 与 `src/features/cartridges/CartridgeLabView.tsx`，独立博物馆弹药展厅将 `9×19mm`、`5.7×28mm`、`.50 AE`、`7.62×39mm`、`5.56 NATO`、`.338 Lapua`、`.50 BMG` 按 `1:1` 绝对物理比例（`29.69 mm` 至 `138.43 mm`）同台 `180°` 纵剖陈列，支持轴向分解滑块（弹壳传火孔、底火杯、黄铜砧座、发射药柱、被甲与硬化钢穿甲锥/铅芯）及定量参数对照矩阵。
+- **自动原理流派谱系矩阵与双展品同屏对照实验室（`[S]`，`WP-11`）**：位于 `src/features/armory/mechanismShowdownSpecs.ts`、`src/features/armory/MechanismShowdownModal.tsx` 与 `src/features/armory/ArmoryView.tsx`，按 **7 类自动机能量驱动、5 类弹膛闭锁泄压、6 类空间供弹排布** 三大正交谱系完整归类全馆 16 款展品，内置 10 组跨时代经典对决预设、双枪膛压 $P(f)$ / 初速 $V(f)$ 同屏叠加曲线、定量工程参数对照与一键剖视工作台跳转。
+- **10 大口径 SAAMI/CIP 实弹与霰弹 1:1 纵剖对比实验室（`[B]` / `?screen=cartridges`，`WP-06`）**：位于 `src/engine/cartridges/cartridgeSpecs.ts`、`src/engine/actors/CartridgeCutawayStage.tsx` 与 `src/features/cartridges/CartridgeLabView.tsx`，独立博物馆弹药展厅将 `9×19mm`、`5.7×28mm`、`.357 Magnum`、`.50 AE`、`12 Gauge (00 鹿弹)`、`7.62×39mm`、`5.56 NATO`、`.30-06 Springfield`、`.338 Lapua`、`.50 BMG` 按 `1:1` 绝对物理比例（`29.69 mm` 至 `138.43 mm`）同台 `180°` 纵剖陈列，支持轴向分解滑块（弹壳传火孔/高铜底霰弹塑料壳、底火杯、黄铜砧座、发射药柱、被甲/花瓣弹托与硬化钢穿甲锥/叠装鹿弹丸/铅芯）及定量参数对照矩阵。
 - **17 图版收藏图鉴与儿童 3D 机械绘本打印工坊（`Ctrl/Cmd+P`）**：位于 `src/features/monograph/`（`MonographPrintModal.tsx`、`MonographCaptureRig.tsx`、`MonographDocument.tsx`、`MonographKidsDocument.tsx`、`monographDataAssembler.ts`），支持离屏抓拍 17 幅高清 3D 图版并排版输出 A4/Letter 矢量打印版 **儿童 3D 绘本**（8 页精装 / 4 页紧凑）与 **收藏工程图鉴**（黑曜石 / 蓝图版）。
-- **全馆藏中英双语四幕研发纪录片 + 758 个 Gemini TTS 语音导览 + 3D 导演运镜 & 立体声卷积混响 / 钢材频散波导声场**：包含 `public/narrations/*.json`、`public/audio/`、浏览器 `speechSynthesis` 兜底（`src/narration/audioPlayer.ts`）、四幕自动镜头编排与同步字幕（`src/narration/storyDirector.ts`）、3 档立体声卷积脉冲响应（`bench_close` / `tactical_hall` / `indoor_range`）与欧拉-伯努利钢材频散波导 + 复合弓弦阻尼合成 + 抛壳落地清脆弹跳声场（`src/engine/audio/mechanicalSoundEngine.ts`），以及全站与 `ShowcaseView` 100% 中英双语体验。
+- **全馆藏中英双语四幕研发纪录片 + 936 个 Gemini TTS 语音导览 + 3D 导演运镜 & 立体声卷积混响 / 钢材频散波导声场**：包含 `public/narrations/*.json`（16 套）、`public/audio/`（936 条 `Charon` 语音）、浏览器 `speechSynthesis` 兜底（`src/narration/audioPlayer.ts`）、四幕自动镜头编排与同步字幕（`src/narration/storyDirector.ts`）、3 档立体声卷积脉冲响应（`bench_close` / `tactical_hall` / `indoor_range`）与欧拉-伯努利钢材频散波导（含 M1 加兰德末发漏夹 `"PING!"` 模态共鸣）+ 复合弓弦阻尼合成 + 抛壳落地清脆弹跳声场（`src/engine/audio/mechanicalSoundEngine.ts`），以及全站与 `ShowcaseView` 100% 中英双语体验。
 
 ---
 
@@ -79,22 +80,22 @@
   - **目标模块**：`src/engine/malfunctions/malfunctionSpecs.ts`、`src/engine/malfunctions/malfunctionStore.ts`、`src/engine/actors/MalfunctionActor.tsx`、`src/features/workbench/MalfunctionHud.tsx`
   - **交付与验收**：内置 4 类典型故障与安全保护定格（`烟囱卡壳 Stovepipe`、`双进弹 Double Feed`、`底火轻敲拒发 Light Strike`、`未闭锁击发阻断 Out-of-Battery Safety`），支持一键剖视定位卡阻成因并演示标准排障步骤。
 
-### 阶段四：博物馆级测绘工具与横向百科串联
+### 阶段四：博物馆级测绘工具与横向百科串联（已完成）
 - [x] **WP-10｜1:1 3D 军械游标卡尺与空间标尺（CAD Caliper Tool）**
   - **目标模块**：`src/engine/caliper/caliperStore.ts`、`src/engine/canvas/CaliperActor.tsx`、`src/features/workbench/CaliperHud.tsx`
   - **交付与验收**：基于 `1 world unit = 1 cm` 精确坐标，支持在拆解台拾取任意两处 3D 表面点测量毫米级距离（枪管实长、闭锁突笋厚度、后坐行程）并支持开关全枪包络标尺。
-- [ ] **WP-11｜自动原理流派对照矩阵（Mechanism Showdown）**
-  - **目标模块**：`src/features/armory/ArmoryView.tsx`、`src/weapons/manifests.ts`
-  - **交付与验收**：在数字枪库增加机械流派谱系图与双枪同屏对照面板（如 `长行程活塞 vs 短行程活塞 vs 斯通纳气吹`、`滚柱延迟 vs 枪管偏移 vs 膛底导气`）。
+- [x] **WP-11｜自动原理流派对照矩阵（Mechanism Showdown）**
+  - **目标模块**：`src/features/armory/mechanismShowdownSpecs.ts`、`src/features/armory/MechanismShowdownModal.tsx`、`src/features/armory/ArmoryView.tsx`、`src/weapons/manifests.ts`
+  - **交付与验收**：在数字枪库增加三轴机械流派谱系图与双展品同屏对照面板（如 `长行程活塞 vs 短行程活塞 vs 斯通纳气吹`、`滚柱延迟 vs 枪管偏移 vs 膛底导气`、`柯尔特蟒蛇双动转轮 vs 沙漠之鹰导气回转`、`AK-15 vs M1 加兰德`）。
 
-### 阶段五：馆藏版图终极补完（填补最后 4 类空白机械流派）
-- [ ] **WP-12｜扩充 `BAY-11 ~ BAY-14` 四款异构原理名枪**
-  - **目标模块**：`src/weapons/{p90,benellim4,python,...}/`、`scripts/pbr/`、`public/narrations/`、`tests/weaponContracts.test.ts`
-  - **交付与验收**：每款均需补齐完整 CSG 几何、2K 5-Ch ORM 贴图、7 阶段内弹道、全量契约测试与中英双语四幕语音：
+### 阶段五：馆藏版图终极补完（填补最后 4 类空白机械流派，已完成）
+- [x] **WP-12｜扩充 `BAY-11` 及 `BAY-14 ~ BAY-16` 四款异构原理名枪**
+  - **目标模块**：`src/weapons/{p90,python,benellim4,garand}/`、`scripts/pbr/`、`public/narrations/`、`tests/weaponContracts.test.ts`
+  - **交付与验收**：每款均已补齐完整 CSG 几何、2K 5-Ch ORM 贴图、7 阶段内弹道、全量契约测试与中英双语四幕 `Charon` 语音：
     1. [x] `BAY-11` **FN P90**：置顶水平透明弹匣 + `90°` 螺旋坡道子弹旋转供弹（已完成）；
-    2. `BAY-12` **Benelli M4 (M1014)**：ARGO 双短行程活塞 + 管式弹仓升降托弹板供弹 + `12 Gauge` 多弹丸内弹道；
-    3. `BAY-13` **Colt Python (.357 Magnum)**：双动/单动转轮棘轮拨齿分度与止转笋啮合；
-    4. `BAY-14` **M1 Garand 或 M249 SAW**：8 发漏夹末发自动弹射 或 双程拨弹滑板弹链开膛机枪。
+    2. [x] `BAY-14` **Colt Python (.357 Magnum)**：双动/单动转轮 `60°` 棘轮拨齿分度、折叠 V 形主簧与止转笋啮合（已完成）；
+    3. [x] `BAY-15` **Benelli M4 (M1014)**：ARGO 双短行程自调导气活塞 + 管式弹仓升降托弹板供弹 + `12 Gauge` 多弹丸内弹道（已完成）；
+    4. [x] `BAY-16` **U.S. Rifle M1 Garand (.30-06 Springfield)**：枪口导气筒长行程弯拉杆 + 8 发弹簧钢漏夹末发自动弹射（`"PING!"`）（已完成）。
 
 ---
 

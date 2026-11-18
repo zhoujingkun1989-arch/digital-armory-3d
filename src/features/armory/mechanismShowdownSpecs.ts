@@ -1220,20 +1220,20 @@ export const SHOWDOWN_EXHIBIT_SPECS: Readonly<
       },
       caliber: { zh: '.357 Magnum', en: '.357 Magnum' },
       compactCaliber: { zh: '.357 Magnum', en: '.357 Magnum' },
-      caliberProfileFallback: '9mm_para',
+      caliberProfileFallback: '357_magnum',
       isArchery: false,
       peakLoadValue: 241,
       peakLoadFormatted: { zh: '241 MPa', en: '241 MPa' },
       standardLabel: 'SAAMI',
-      muzzleVelocityMps: 440,
-      projectileMassG: 10.24,
+      muzzleVelocityMps: 385,
+      projectileMassG: 10.25,
       overallLengthMm: 292,
       barrelOrStrokeMm: 152.4,
-      emptyWeightKg: 1.19,
+      emptyWeightKg: 1.23,
       partsCount: 25,
       cyclicRateRpm: null,
-      rateOfFireDisplay: { zh: '双动 / 单动', en: 'DA / SA Revolver' },
-      timing: makeWave2Timing(0.2, 0.34, 0.62, 0.88, null),
+      rateOfFireDisplay: { zh: '双动 / 单动', en: 'DA / SA (6-Round Cylinder)' },
+      timing: makeWave2Timing(0.2, 0.34, 0.5, 0.86, null),
     },
   },
   benellim4: {
@@ -1279,20 +1279,20 @@ export const SHOWDOWN_EXHIBIT_SPECS: Readonly<
         en: '12 Gauge (2.75" / 3" 00 Buck)',
       },
       compactCaliber: { zh: '12 Gauge 霰弹', en: '12 Gauge 00 Buck' },
-      caliberProfileFallback: '50_ae',
+      caliberProfileFallback: '12_gauge',
       isArchery: false,
       peakLoadValue: 79,
       peakLoadFormatted: { zh: '79 MPa', en: '79 MPa' },
-      standardLabel: 'SAAMI',
-      muzzleVelocityMps: 405,
-      projectileMassG: 35.0,
-      overallLengthMm: 886,
+      standardLabel: 'SAAMI / CIP',
+      muzzleVelocityMps: 404,
+      projectileMassG: 30.2,
+      overallLengthMm: 1010,
       barrelOrStrokeMm: 470,
       emptyWeightKg: 3.82,
       partsCount: 26,
       cyclicRateRpm: null,
-      rateOfFireDisplay: { zh: '半自动', en: 'Semi-Auto' },
-      timing: makeWave2Timing(0.14, 0.29, 0.44, 0.86, 0.18),
+      rateOfFireDisplay: { zh: '半自动 (7+1发)', en: 'Semi-Auto (7+1 Rd)' },
+      timing: makeWave2Timing(0.12, 0.29, 0.44, 0.9, 0.15),
     },
   },
   garand: {
@@ -1341,23 +1341,23 @@ export const SHOWDOWN_EXHIBIT_SPECS: Readonly<
         en: '.30-06 Springfield M2 Ball',
       },
       compactCaliber: { zh: '.30-06 M2 普通弹', en: '.30-06 M2 Ball' },
-      caliberProfileFallback: '762_m43',
+      caliberProfileFallback: '30_06',
       isArchery: false,
       peakLoadValue: 345,
       peakLoadFormatted: { zh: '345 MPa', en: '345 MPa' },
-      standardLabel: 'SAAMI',
+      standardLabel: 'SAAMI / USGI M2',
       muzzleVelocityMps: 853,
-      projectileMassG: 9.72,
+      projectileMassG: 9.73,
       overallLengthMm: 1105,
       barrelOrStrokeMm: 610,
       emptyWeightKg: 4.31,
       partsCount: 26,
       cyclicRateRpm: null,
       rateOfFireDisplay: {
-        zh: '半自动 (40–50发/分)',
-        en: 'Semi-Auto (40–50 rpm)',
+        zh: '40–50 发/分 · 8发漏夹',
+        en: 'Semi-Auto (40–50 rpm · 8-Rd Clip)',
       },
-      timing: makeWave2Timing(0.12, 0.21, 0.45, 0.86, 0.92),
+      timing: makeWave2Timing(0.1, 0.21, 0.45, 0.88, 0.92),
     },
   },
 };
@@ -1553,6 +1553,32 @@ export const CLASSIC_RIVALRY_SEEDS: readonly ClassicRivalrySeed[] = [
 // 4. Runtime Filtering, Quantitative Metric Extraction & Curve Sampling
 // ----------------------------------------------------------------------------
 
+export interface PendingShowdownLaunch {
+  mode: 'matrix' | 'showdown';
+  weaponA: string;
+  weaponB: string;
+}
+
+let pendingShowdownLaunch: PendingShowdownLaunch | null = null;
+
+export function queueMechanismShowdownLaunch(
+  mode: 'matrix' | 'showdown',
+  weaponA: string,
+  weaponB?: string
+): void {
+  pendingShowdownLaunch = {
+    mode,
+    weaponA,
+    weaponB: weaponB ?? getSuggestedRivalWeaponId(weaponA),
+  };
+}
+
+export function consumePendingShowdownLaunch(): PendingShowdownLaunch | null {
+  const req = pendingShowdownLaunch;
+  pendingShowdownLaunch = null;
+  return req;
+}
+
 export function getActiveShowdownWeaponIds(
   weaponIds?: readonly string[]
 ): string[] {
@@ -1718,11 +1744,12 @@ function parseCyclicRpm(raw: string): number | null {
     const lo = Number(nums[0]);
     const hi = Number(nums[1]);
     if (Number.isFinite(lo) && Number.isFinite(hi) && hi >= lo) {
-      return Math.round((lo + hi) * 0.5);
+      const avg = Math.round((lo + hi) * 0.5);
+      return avg >= 200 ? avg : null;
     }
   }
   const val = Number(nums[0]);
-  return Number.isFinite(val) && val > 0 ? Math.round(val) : null;
+  return Number.isFinite(val) && val >= 200 ? Math.round(val) : null;
 }
 
 /**

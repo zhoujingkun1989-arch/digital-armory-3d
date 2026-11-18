@@ -20,10 +20,10 @@ import {
   type CaliberBallisticsSpec,
   getCaliberBallisticsSpec,
 } from '../../engine/physics/armoryPhysics';
-import { UI_STRINGS } from '../../i18n/uiStrings';
 import {
   getLocalizedShortWeaponLabel,
   resolveFiringPhaseText,
+  resolvePartMaterialLabel,
   resolveWeaponDisplayMeta,
 } from '../../i18n/weaponFallbacks';
 import type {
@@ -594,17 +594,6 @@ export function assembleMonographDossier(
     ? archeryProjectileToLabSpec(archMeta)
     : CARTRIDGE_LAB_SPECS[caliberProfile as keyof typeof CARTRIDGE_LAB_SPECS];
   const ballisticsSpec = getCaliberBallisticsSpec(caliberProfile);
-  const rawInspUi = UI_STRINGS[lang].inspector;
-  const inspUi = isArchery
-    ? {
-        ...rawInspUi,
-        ...rawInspUi.archery,
-        materials: {
-          ...rawInspUi.materials,
-          ...rawInspUi.archery.materials,
-        },
-      }
-    : rawInspUi;
 
   const serialTag =
     shortTag.replace(/[^A-Za-z0-9]/g, '').toUpperCase() ||
@@ -764,7 +753,7 @@ export function assembleMonographDossier(
       groupKey: part.group,
       groupTitle,
       badgeColor,
-      materialLabel: inspUi.materials[part.material],
+      materialLabel: resolvePartMaterialLabel(weaponId, part, lang),
       envelopeMm,
       triangles: tris,
       principleText,

@@ -364,9 +364,42 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
         );
       }
     }
+
+    // Colt Python emits dedicated revolver diagnostic cards & American Black Walnut grip material labels
+    const pyPlugin = await loadWeaponPlugin('python');
+    const pyDossierEn = assembleMonographDossier(
+      'python',
+      pyPlugin,
+      'en',
+      null,
+      'https://armory.example.org/'
+    );
+    expect(pyDossierEn.malfunctionCards.map((c) => c.code)).toEqual([
+      'REVOLVER · STAR',
+      'REVOLVER · BIND',
+      'REVOLVER · V-SPRING',
+      'SAFETY · REBOUND',
+    ]);
+    expect(
+      pyDossierEn.bomRows.find((r) => r.partId === 'python_grip_left')
+        ?.materialLabel
+    ).toBe('Linseed-Oiled American Black Walnut Hardwood');
+
+    const garandPlugin = await loadWeaponPlugin('garand');
+    const garandDossierZh = assembleMonographDossier(
+      'garand',
+      garandPlugin,
+      'zh',
+      null,
+      'https://armory.example.org/'
+    );
+    expect(
+      garandDossierZh.bomRows.find((r) => r.partId === 'garand_walnut_stock')
+        ?.materialLabel
+    ).toBe('亚麻籽油浸润北美黑胡桃实木');
   });
 
-  it('resolves all 17 SHOT_PLAN plates via resolveShotForWeapon across all 13 weapons with calibrated milestones', () => {
+  it('resolves all 17 SHOT_PLAN plates via resolveShotForWeapon across all 16 exhibits with calibrated milestones', () => {
     type ShotInput = Parameters<typeof resolveShotForWeapon>[0];
     const baseShotPlan: readonly ShotInput[] = [
       {
@@ -721,7 +754,7 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
     }
   });
 
-  it('locks single-source-of-truth English monograph specs and BOM material labels with zero CJK characters across lift33, r500, g17, and p90', async () => {
+  it('locks single-source-of-truth English monograph specs and BOM material labels with zero CJK characters across lift33, r500, g17, p90, python, benellim4, and garand', async () => {
     const cjkRe = /[\u4e00-\u9fff]/;
     const narrationsDir = path.resolve(__dirname, '../public/narrations');
     const assemblerSrc = fs.readFileSync(
@@ -733,7 +766,15 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
     );
     expect(assemblerSrc).not.toContain('ARCHERY_EN_SPEC_OVERRIDES');
 
-    for (const id of ['lift33', 'r500', 'g17', 'p90'] as const) {
+    for (const id of [
+      'lift33',
+      'r500',
+      'g17',
+      'p90',
+      'python',
+      'benellim4',
+      'garand',
+    ] as const) {
       const plugin = await loadWeaponPlugin(id);
       const narrationBundle = JSON.parse(
         fs.readFileSync(path.join(narrationsDir, `${id}.json`), 'utf8')

@@ -51,7 +51,7 @@ export interface MalfunctionScenarioSpec {
 }
 
 export interface WeaponMalfunctionProfile {
-  weaponId: WeaponId | 'lift33' | 'r500';
+  weaponId: WeaponId;
   actionPartIds: readonly string[];
   lockingPartIds: readonly string[];
   extractorPartId: string;
@@ -796,7 +796,7 @@ export function getMalfunctionScenario(
 }
 
 export const WEAPON_MALFUNCTION_PROFILES: Readonly<
-  Record<WeaponId | 'lift33' | 'r500', WeaponMalfunctionProfile>
+  Record<WeaponId, WeaponMalfunctionProfile>
 > = {
   ak15: {
     weaponId: 'ak15',

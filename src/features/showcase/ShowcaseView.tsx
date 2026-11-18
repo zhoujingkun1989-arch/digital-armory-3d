@@ -13,6 +13,7 @@ import {
   Flame,
   Gauge,
   GitBranch,
+  GitCompareArrows,
   Globe2,
   Headphones,
   Image as ImageIcon,
@@ -64,6 +65,7 @@ import { useAppStore } from '../../store/useAppStore';
 import { ARMORY_WEAPONS, matchesArmoryCategory } from '../../weapons/manifests';
 import { preloadWeaponPlugin } from '../../weapons/registry';
 import type { ArmoryCategory, WeaponId } from '../../weapons/types';
+import { queueMechanismShowdownLaunch } from '../armory/mechanismShowdownSpecs';
 import { WeaponSilhouetteSvg } from '../armory/WeaponSilhouetteSvg';
 import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
 
@@ -72,13 +74,12 @@ const GITHUB_REPO_URL =
 
 type HeroStageMode = 'pbr' | 'section' | 'xray' | 'explode';
 
-type ShowcaseFilterCategory = ArmoryCategory | 'archery';
-
-const CATEGORY_KEYS: readonly ShowcaseFilterCategory[] = [
+const CATEGORY_KEYS: readonly ArmoryCategory[] = [
   'all',
   'assault',
   'smg',
   'sniper',
+  'shotgun',
   'pistol',
   'archery',
 ];
@@ -101,7 +102,7 @@ export const ShowcaseView: React.FC = () => {
   const [baseHeroMode, setBaseHeroMode] = useState<'pbr' | 'explode'>(() =>
     playbackClock.getState().targetProgress > 0.05 ? 'explode' : 'pbr'
   );
-  const [category, setCategory] = useState<ShowcaseFilterCategory>('all');
+  const [category, setCategory] = useState<ArmoryCategory>('all');
   const [docWeaponId, setDocWeaponId] = useState<WeaponId>('ak15');
   const [copied, setCopied] = useState(false);
   const [lightboxItemId, setLightboxItemId] = useState<string | null>(null);
@@ -139,6 +140,7 @@ export const ShowcaseView: React.FC = () => {
   const setTargetProgress = useAppStore((s) => s.setTargetProgress);
   const setTextureModalOpen = useAppStore((s) => s.setTextureModalOpen);
   const openMonographModal = useAppStore((s) => s.openMonographModal);
+  const openCartridgeLab = useAppStore((s) => s.openCartridgeLab);
 
   const s = SHOWCASE_STRINGS[lang];
 
@@ -492,6 +494,29 @@ export const ShowcaseView: React.FC = () => {
             >
               <Flame size={14} aria-hidden="true" />
               <span>{s.hero.ctaFiring}</span>
+            </button>
+
+            <button
+              type="button"
+              className="showcase-cta-ghost"
+              onClick={() => {
+                queueMechanismShowdownLaunch('matrix', featuredWeapon.id);
+                returnToArmory();
+              }}
+              title={s.hero.ctaShowdownTitle}
+            >
+              <GitCompareArrows size={14} aria-hidden="true" />
+              <span>{s.hero.ctaShowdown}</span>
+            </button>
+
+            <button
+              type="button"
+              className="showcase-cta-ghost"
+              onClick={() => openCartridgeLab()}
+              title={s.hero.ctaCartridgesTitle}
+            >
+              <Ruler size={14} aria-hidden="true" />
+              <span>{s.hero.ctaCartridges}</span>
             </button>
 
             <button

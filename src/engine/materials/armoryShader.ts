@@ -85,9 +85,9 @@ export function resolveThermalForWeapon(weaponId: string): {
 // ------------------------------------------------------------------
 
 export const THERMAL_PART_ID_PATTERN =
-  /barrel|gas_block|gas_tube|piston|suppressor|muzzle|flash_hider|compensator/;
+  /barrel|gas_block|gas_tube|gas_cylinder|argo_plug|piston|suppressor|muzzle|flash_hider|compensator/;
 export const FOULING_PART_ID_PATTERN =
-  /bolt|carrier|breech|chamber|extractor|firing_pin/;
+  /bolt|carrier|breech|chamber|python_cylinder|op_rod|extractor|firing_pin/;
 const SPRING_ID_EXCLUSION_PATTERN = /spring/;
 const ARCHERY_ID_EXCLUSION_PATTERN =
   /^(?:lift33|r500)_|limb|bowstring|yoke_cable|power_cable|broadhead|quiver/;

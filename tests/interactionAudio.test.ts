@@ -8,7 +8,9 @@ import {
   PRIMARY_SLAPBACK_DELAYS_MS,
 } from '../src/engine/audio/acousticImpulse';
 import {
+  CALIBER_ACOUSTIC_PROFILES,
   computeSteelWaveguideModalSpec,
+  GARAND_ENBLOC_PING_PARTIALS_HZ,
   getAcousticEnvironment,
   playBrassCasingBounceSound,
   playPressCheckSpringSound,
@@ -50,7 +52,7 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
     setAcousticEnvironment('indoor_range');
   });
 
-  it('maps authentic SAFE / SEMI / AUTO fire-control capabilities & bilingual tooltips across all 13 weapons', () => {
+  it('maps authentic SAFE / SEMI / AUTO fire-control capabilities & bilingual tooltips across all 16 exhibits', () => {
     const selectFireWeapons: WeaponId[] = [
       'ak15',
       'm4a1',
@@ -67,6 +69,9 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
       'awm',
       'lift33',
       'r500',
+      'python',
+      'benellim4',
+      'garand',
     ];
 
     expect(selectFireWeapons.length + semiOnlyWeapons.length).toBe(
@@ -113,7 +118,7 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
     expect(setFireSelectorMode('auto')).toBe('semi');
   });
 
-  it('identifies authentic reciprocating slide/bolt/charging-handle & archery draw parts on all 13 weapons without matching pins/locks', async () => {
+  it('identifies authentic reciprocating slide/bolt/charging-handle & archery draw parts on all 16 exhibits without matching pins/locks', async () => {
     for (const weaponId of WEAPON_IDS) {
       const plugin = await loadWeaponPlugin(weaponId);
       const partIdSet = new Set(plugin.parts.map((p) => p.id));
@@ -425,7 +430,17 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
       expect(getAcousticEnvironment()).toBe(preset);
     }
 
-    // Euler-Bernoulli cold-forged steel waveguide partials & thermoelastic damping
+    // Euler-Bernoulli cold-forged steel waveguide partials, WWII M1 Garand "PING!" eigenfrequencies & thermoelastic damping
+    expect(GARAND_ENBLOC_PING_PARTIALS_HZ).toEqual([1740, 3510, 5260, 6890]);
+    expect(CALIBER_ACOUSTIC_PROFILES['357_magnum'].mechanismStyle).toBe(
+      'revolver_magnum'
+    );
+    expect(CALIBER_ACOUSTIC_PROFILES['12_gauge'].mechanismStyle).toBe(
+      'argo_shotgun'
+    );
+    expect(CALIBER_ACOUSTIC_PROFILES['30_06'].mechanismStyle).toBe(
+      'garand_enbloc'
+    );
     expect(STEEL_BAR_EULER_BERNOULLI_PARTIALS).toEqual([
       1.0, 2.756, 5.404, 8.933,
     ]);
@@ -441,6 +456,8 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
     expect(() => {
       playBrassCasingBounceSound('50_bmg', 180);
       playBrassCasingBounceSound('9mm_para', 95);
+      playBrassCasingBounceSound('12_gauge', 90);
+      playBrassCasingBounceSound('30_06', 140);
       playSelectorDetentSound('safe');
       playSelectorDetentSound('semi');
       playSelectorDetentSound('auto');

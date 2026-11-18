@@ -44,6 +44,7 @@ import { EngineeringTintLegend } from '../workbench/EngineeringTintLegend';
 import { StudioEnvironmentBar } from '../workbench/StudioEnvironmentBar';
 import type { ShowdownViewMode } from './MechanismShowdownModal';
 import {
+  consumePendingShowdownLaunch,
   getShowdownExhibitProfile,
   getSuggestedRivalWeaponId,
 } from './mechanismShowdownSpecs';
@@ -53,9 +54,7 @@ const LazyMechanismShowdownModal = lazy(
   () => import('./MechanismShowdownModal')
 );
 
-type ArmoryFilterCategory = ArmoryCategory | 'shotgun' | 'archery';
-
-const CATEGORY_KEYS: ArmoryFilterCategory[] = [
+const CATEGORY_KEYS: readonly ArmoryCategory[] = [
   'all',
   'assault',
   'smg',
@@ -65,34 +64,14 @@ const CATEGORY_KEYS: ArmoryFilterCategory[] = [
   'archery',
 ];
 
-function isShotgunExhibit(item: ArmoryWeaponItem): boolean {
-  const cat = item.category as string;
-  const typeTag = `${item.weaponTypeCn ?? ''} ${item.categoryCn}`;
-  return (
-    (item.id as string) === 'benellim4' ||
-    cat === 'shotgun' ||
-    typeTag.includes('霰弹')
-  );
-}
-
-function matchesArmoryFilterCategory(
-  item: ArmoryWeaponItem,
-  filter: ArmoryFilterCategory
-): boolean {
-  if (filter === 'all') return true;
-  if (filter === 'shotgun') return isShotgunExhibit(item);
-  if (filter === 'assault' && isShotgunExhibit(item)) return false;
-  return matchesArmoryCategory(item, filter as ArmoryCategory);
-}
-
 export const ArmoryView: React.FC = () => {
-  const [category, setCategory] = useState<ArmoryFilterCategory>('all');
+  const [category, setCategory] = useState<ArmoryCategory>('all');
   const [plannedToast, setPlannedToast] = useState<string | null>(null);
   const [showdownRequest, setShowdownRequest] = useState<{
     mode: ShowdownViewMode;
     weaponA: string;
     weaponB: string;
-  } | null>(null);
+  } | null>(() => consumePendingShowdownLaunch());
   const rackScrollRef = useRef<HTMLDivElement>(null);
 
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
@@ -176,7 +155,7 @@ export const ArmoryView: React.FC = () => {
   }, [showdownRequest, featuredWeapon.id, suggestedRivalId]);
 
   const filteredWeapons = ARMORY_WEAPONS.filter((w) =>
-    matchesArmoryFilterCategory(w, category)
+    matchesArmoryCategory(w, category)
   );
 
   const scrollRackBy = (dir: -1 | 1) => {
@@ -239,7 +218,7 @@ export const ArmoryView: React.FC = () => {
           >
             {CATEGORY_KEYS.map((key) => {
               const count = ARMORY_WEAPONS.filter((w) =>
-                matchesArmoryFilterCategory(w, key)
+                matchesArmoryCategory(w, key)
               ).length;
               if (count === 0 && key !== 'all' && category !== key) {
                 return null;

@@ -133,8 +133,23 @@ describe('AAA Armory Surface Shader, GPU Spring Compression & Stencil Cutaway Ca
     expect(
       isThermalBearingPart({ id: 'ak_compensator', material: 'nitride_steel' })
     ).toBe(true);
+    expect(
+      isThermalBearingPart({ id: 'python_barrel', material: 'barrel_steel' })
+    ).toBe(true);
+    expect(
+      isThermalBearingPart({
+        id: 'benellim4_argo_pistons',
+        material: 'stainless',
+      })
+    ).toBe(true);
+    expect(
+      isThermalBearingPart({
+        id: 'garand_gas_cylinder',
+        material: 'stainless',
+      })
+    ).toBe(true);
 
-    // Barrel recoil springs & polymer housings must NEVER glow like hot ordnance steel
+    // Barrel recoil springs, walnut hardwood stocks/grips & polymer housings must NEVER glow like hot ordnance steel
     expect(
       isThermalBearingPart({
         id: 'm82a1_barrel_springs',
@@ -143,6 +158,18 @@ describe('AAA Armory Surface Shader, GPU Spring Compression & Stencil Cutaway Ca
     ).toBe(false);
     expect(
       isThermalBearingPart({ id: 'g17_frame', material: 'polymer_frame' })
+    ).toBe(false);
+    expect(
+      isThermalBearingPart({
+        id: 'python_grip_left',
+        material: 'polymer_frame',
+      })
+    ).toBe(false);
+    expect(
+      isThermalBearingPart({
+        id: 'garand_walnut_stock',
+        material: 'polymer_frame',
+      })
     ).toBe(false);
     expect(
       isThermalBearingPart({ id: 'mag_follower', material: 'follower_orange' })

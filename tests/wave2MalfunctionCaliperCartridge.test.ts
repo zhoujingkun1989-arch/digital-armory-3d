@@ -31,6 +31,7 @@ import {
   isArcheryMalfunctionWeapon,
   MALFUNCTION_ORDER,
   MALFUNCTION_SCENARIOS,
+  REVOLVER_MALFUNCTION_SCENARIOS,
   WEAPON_MALFUNCTION_PROFILES,
 } from '../src/engine/malfunctions/malfunctionSpecs';
 import { malfunctionStore } from '../src/engine/malfunctions/malfunctionStore';
@@ -72,11 +73,12 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
     caliperStore.clearPoints();
   });
 
-  it('WP-09: validates malfunction profiles & valid part IDs across all 13 weapons and bilingual scenario specs', async () => {
+  it('WP-09: validates malfunction profiles & valid part IDs across all 16 exhibits and firearm / revolver / archery bilingual scenario specs', async () => {
     for (const kind of MALFUNCTION_ORDER) {
       for (const spec of [
         MALFUNCTION_SCENARIOS[kind],
         ARCHERY_MALFUNCTION_SCENARIOS[kind],
+        REVOLVER_MALFUNCTION_SCENARIOS[kind],
       ]) {
         expect(spec.kind).toBe(kind);
         expect(spec.titleZh.length).toBeGreaterThan(4);
@@ -99,7 +101,16 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
       expect(getMalfunctionScenario(kind, 'lift33')).toBe(
         ARCHERY_MALFUNCTION_SCENARIOS[kind]
       );
+      expect(getMalfunctionScenario(kind, 'python')).toBe(
+        REVOLVER_MALFUNCTION_SCENARIOS[kind]
+      );
       expect(getMalfunctionScenario(kind, 'm4a1')).toBe(
+        MALFUNCTION_SCENARIOS[kind]
+      );
+      expect(getMalfunctionScenario(kind, 'benellim4')).toBe(
+        MALFUNCTION_SCENARIOS[kind]
+      );
+      expect(getMalfunctionScenario(kind, 'garand')).toBe(
         MALFUNCTION_SCENARIOS[kind]
       );
     }
@@ -161,7 +172,16 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
   it('WP-09: executes all 4 clearing drills end-to-end with stoppage freeze frames, mag rip pose delta, and battery recovery', () => {
     const pose = createMutablePose();
 
-    for (const weaponId of ['ak15', 'g17', 'p90', 'lift33', 'r500'] as const) {
+    for (const weaponId of [
+      'ak15',
+      'g17',
+      'p90',
+      'lift33',
+      'r500',
+      'python',
+      'benellim4',
+      'garand',
+    ] as const) {
       const prof = WEAPON_MALFUNCTION_PROFILES[weaponId];
 
       for (const kind of MALFUNCTION_ORDER) {
@@ -192,7 +212,7 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
           malfunctionStore.getPartDiagnosticRole(weaponId, actionPart)
         ).not.toBe('none');
 
-        const totalSteps = MALFUNCTION_SCENARIOS[kind].steps.length;
+        const totalSteps = getMalfunctionScenario(kind, weaponId).steps.length;
         for (let stepIdx = 0; stepIdx < totalSteps; stepIdx++) {
           if (stepIdx === 0) {
             // 1st step via direct 3D viewport part click
@@ -324,8 +344,14 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
       expect(snap.measurement!.distanceMm).toBeGreaterThan(35);
     }
 
-    // Archery CAD envelopes & 1:1 benchmark presets (lift33 ATA / brace height, r500 axle width / rail)
-    for (const wid of ['lift33', 'r500'] as const) {
+    // Archery & Wave-2 heterogeneous CAD envelopes + 1:1 benchmark presets (lift33, r500, python, benellim4, garand)
+    for (const wid of [
+      'lift33',
+      'r500',
+      'python',
+      'benellim4',
+      'garand',
+    ] as const) {
       const plugin = await loadWeaponPlugin(wid);
       await ensureWeaponGeometries(
         wid,
@@ -350,7 +376,7 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
         scratch
       );
       expect(archEnv).not.toBeNull();
-      expect(archEnv!.lengthMm).toBeGreaterThan(500);
+      expect(archEnv!.lengthMm).toBeGreaterThan(wid === 'python' ? 240 : 500);
 
       for (const bench of CALIPER_BENCHMARK_ORDER) {
         const ok = caliperStore.applyBenchmarkPreset(
@@ -365,14 +391,19 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
         const snap = caliperStore.getSnapshot();
         expect(snap.activeBenchmark).toBe(bench);
         expect(snap.measurement).not.toBeNull();
-        expect(snap.measurement!.distanceMm).toBeGreaterThan(100);
+        expect(snap.measurement!.distanceMm).toBeGreaterThan(
+          wid === 'python' ? 25 : 50
+        );
       }
     }
   });
 
-  it('WP-06: builds all 7 SAAMI/CIP cartridges at exact 1:1 CAD height (9x19mm = 29.69 mm vs .50 BMG = 138.43 mm)', () => {
-    expect(CARTRIDGE_LAB_ORDER).toHaveLength(7);
+  it('WP-06: builds all 10 SAAMI/CIP cartridges & shotshells at exact 1:1 CAD height (9x19mm = 29.69 mm vs .50 BMG = 138.43 mm)', () => {
+    expect(CARTRIDGE_LAB_ORDER).toHaveLength(10);
     expect(isCaliberProfile('50_bmg')).toBe(true);
+    expect(isCaliberProfile('357_magnum')).toBe(true);
+    expect(isCaliberProfile('12_gauge')).toBe(true);
+    expect(isCaliberProfile('30_06')).toBe(true);
     expect(isCaliberProfile('unknown_cal')).toBe(false);
 
     let prevSlotX = -Infinity;

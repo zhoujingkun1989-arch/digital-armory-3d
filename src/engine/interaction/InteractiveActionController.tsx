@@ -24,7 +24,7 @@ export interface SelectorModeTooltipMeta {
 }
 
 export interface WeaponFireControlProfile {
-  weaponId: WeaponId | 'lift33' | 'r500';
+  weaponId: WeaponId;
   supportedModes: readonly FireSelectorMode[];
   mechanismSummaryZh: string;
   mechanismSummaryEn: string;
@@ -40,7 +40,7 @@ const SELECT_FIRE_MODES: readonly FireSelectorMode[] = [
 const SEMI_ONLY_MODES: readonly FireSelectorMode[] = ['safe', 'semi'] as const;
 
 const WEAPON_SELECTOR_CAPABILITIES: Record<
-  WeaponId | 'lift33' | 'r500',
+  WeaponId,
   readonly FireSelectorMode[]
 > = {
   // Select-fire military assault rifles, SMGs & PDWs
@@ -67,7 +67,7 @@ const WEAPON_SELECTOR_CAPABILITIES: Record<
  * Bilingual authentic Fire-Control Group (FCG) selector documentation per firearm.
  */
 export const WEAPON_FIRE_CONTROL_PROFILES: Record<
-  WeaponId | 'lift33' | 'r500',
+  WeaponId,
   WeaponFireControlProfile
 > = {
   ak15: {
@@ -617,10 +617,7 @@ export function getSelectorModeMetadata(
   return WEAPON_FIRE_CONTROL_PROFILES[weaponId]?.modes[mode] ?? null;
 }
 
-const EXPLICIT_WEAPON_ACTION_PARTS: Record<
-  WeaponId | 'lift33' | 'r500',
-  readonly string[]
-> = {
+const EXPLICIT_WEAPON_ACTION_PARTS: Record<WeaponId, readonly string[]> = {
   ak15: ['ak_bolt_carrier', 'ak_bolt'],
   m4a1: ['m4a1_charging_handle', 'm4a1_bolt_carrier', 'm4a1_bolt'],
   mp5: ['mp5_charging_handle', 'mp5_bolt_carrier', 'mp5_bolt_head'],

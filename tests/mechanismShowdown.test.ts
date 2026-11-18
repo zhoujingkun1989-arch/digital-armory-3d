@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import {
   buildShowdownDualSvgGeometry,
   CLASSIC_RIVALRY_SEEDS,
+  consumePendingShowdownLaunch,
   DRIVE_FAMILIES,
   FEED_FAMILIES,
   findMatchingRivalryPreset,
@@ -16,6 +17,7 @@ import {
   interpolateShowdownCurveAt,
   LOCKING_FAMILIES,
   MECHANISM_TAXONOMY_AXES,
+  queueMechanismShowdownLaunch,
   sampleShowdownBallisticsCurve,
   SHOWDOWN_EXHIBIT_SPECS,
 } from '../src/features/armory/mechanismShowdownSpecs';
@@ -26,9 +28,9 @@ import { WEAPON_IDS } from '../src/weapons/types';
 const CJK_RE = /[\u4e00-\u9fff]/;
 
 describe('WP-11 · Mechanism Showdown Lineage Matrix & Dual-Exhibit Lab', () => {
-  it('partitions every active WEAPON_ID cleanly across all 3 canonical taxonomy axes', () => {
+  it('partitions all 16 active WEAPON_IDS cleanly across all 3 canonical taxonomy axes with zero empty families', () => {
     const activeIds = getActiveShowdownWeaponIds();
-    expect(activeIds.length).toBeGreaterThanOrEqual(13);
+    expect(activeIds).toHaveLength(16);
     expect(activeIds).toEqual(ARMORY_WEAPONS.map((w) => w.id));
     expect(new Set(activeIds)).toEqual(new Set(WEAPON_IDS));
 
@@ -350,6 +352,18 @@ describe('WP-11 · Mechanism Showdown Lineage Matrix & Dual-Exhibit Lab', () => 
     expect(lift.peakLoadUnit).toBe('N');
     expect(lift.cyclicRateRpm).toBeNull();
 
+    // Verify live Wave-2 exhibit profiles (python .357, benellim4 12ga, garand .30-06)
+    const python = getShowdownExhibitProfile('python', 'en');
+    const benelli = getShowdownExhibitProfile('benellim4', 'en');
+    const garand = getShowdownExhibitProfile('garand', 'en');
+    expect(python.peakLoadValue).toBe(241);
+    expect(python.cyclicRateRpm).toBeNull();
+    expect(benelli.peakLoadValue).toBe(79);
+    expect(benelli.overallLengthMm).toBe(1010);
+    expect(garand.peakLoadValue).toBe(345);
+    expect(garand.cyclicRateRpm).toBeNull();
+    expect(garand.muzzleEnergyJ).toBeGreaterThan(3500);
+
     // Verify SVG dual-curve path builder & cross-domain safeguard
     const sameDomainGeo = buildShowdownDualSvgGeometry(
       'ak15',
@@ -379,9 +393,19 @@ describe('WP-11 · Mechanism Showdown Lineage Matrix & Dual-Exhibit Lab', () => 
     expect(crossDomainGeo.effectiveScaleMode).toBe('normalized');
   });
 
-  it('provides valid symmetric rivalry presets, distinct suggested rivals, and clean Armory/CSS wiring', () => {
+  it('provides all 10 symmetric rivalry presets, distinct suggested rivals, Showcase handoff queue, and clean Armory/CSS wiring', () => {
     const activePresets = getClassicRivalryPresets('zh');
-    expect(activePresets.length).toBeGreaterThanOrEqual(7);
+    expect(activePresets).toHaveLength(CLASSIC_RIVALRY_SEEDS.length);
+    expect(activePresets).toHaveLength(10);
+
+    queueMechanismShowdownLaunch('matrix', 'garand');
+    const queued = consumePendingShowdownLaunch();
+    expect(queued).toEqual({
+      mode: 'matrix',
+      weaponA: 'garand',
+      weaponB: 'ak15',
+    });
+    expect(consumePendingShowdownLaunch()).toBeNull();
 
     for (const preset of activePresets) {
       expect(preset.weaponA).not.toBe(preset.weaponB);

@@ -51,6 +51,10 @@ export interface ShowcaseDictionary {
     ctaDirector: (shortTag: string) => string;
     ctaExplode: (shortTag: string) => string;
     ctaFiring: string;
+    ctaShowdown: string;
+    ctaShowdownTitle: string;
+    ctaCartridges: string;
+    ctaCartridgesTitle: string;
     ctaMonograph: (shortTag: string) => string;
     ctaMonographTitle: string;
     dragStageTitle: string;
@@ -148,7 +152,7 @@ export interface ShowcaseDictionary {
     title: string;
     desc: string;
     filterAria: string;
-    categories: Record<ArmoryCategory | 'shotgun' | 'archery', string>;
+    categories: Record<ArmoryCategory, string>;
     partsPill: (count: number) => string;
     specCaliber: string;
     specOal: string;
@@ -187,33 +191,39 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
   zh: {
     nav: {
       ariaLabel: '产品宣传页主导航',
-      versionBadge: 'v3.0 · 声画合一版',
+      versionBadge: 'v3.0 · 16 馆藏终局版',
       capabilities: '四大核心模式',
       documentary: 'AI 导演纪录片',
       gallery: '实机渲染画廊',
-      arsenal: '十三款馆藏兵器',
+      arsenal: '十六款馆藏兵器',
       architecture: '三维引擎架构',
       quickstart: '开源快速部署',
       launchArmory: '进入 3D 数字枪库',
     },
     hero: {
       eyebrow:
-        'OPEN-SOURCE WEBGL 2.0 MUSEUM · 13 EXHIBITS · 758 AI VOICE CLIPS · 17-PLATE PRINT STUDIO',
-      titlePrefix: '把十三款世界传奇名枪与复合弓弩的 ',
+        'OPEN-SOURCE WEBGL 2.0 MUSEUM · 16 EXHIBITS · 936 AI VOICE CLIPS · MECHANISM SHOWDOWN',
+      titlePrefix: '把十六款世界传奇名枪与复合弓弩的 ',
       titleHighlight: '1:1 机械内构与声画纪录片',
       titleSuffix: '，装进你的浏览器',
       subLead: '纯代码实时 CSG 布尔建模 ',
-      subPartsStrong: '327 个独立运动零件',
+      subPartsStrong: '404 个独立运动零件',
       subMid1: '、',
-      subMapsStrong: '76 张 2K 5 通道 ORM 物理贴图',
+      subMapsStrong: '94 张 2K 5 通道 ORM 物理贴图',
       subMid2: ' 与 ',
-      subAudioStrong: '758 段双语语音 + Web Audio 分口径声场',
+      subAudioStrong: '936 段双语语音 + Web Audio 分口径声场',
       subTail:
-        '。零客户端下载，一键开启 3D 导演运镜、纯净全屏展示（H）与 17 图版绘本 / 收藏图鉴打印工坊（Ctrl/Cmd+P），60 FPS 丝滑透视每一根膛线、闭锁突笋与螺旋凸轮。',
+        '。零客户端下载，一键开启 3D 导演运镜、自动原理流派对照矩阵（S）、10 口径实弹纵剖馆（B）、纯净全屏展示（H）与 17 图版绘本 / 收藏图鉴打印工坊（Ctrl/Cmd+P），60 FPS 丝滑透视每一根膛线、闭锁突笋、转轮棘轮与 8 发漏夹。',
       ctaArmory: '立即进入 3D 数字枪库',
       ctaDirector: (tag) => `3D 导演连播 ${tag} 纪录片`,
       ctaExplode: (tag) => `直达 ${tag} 爆炸拆解台`,
       ctaFiring: '播放实弹击发与声浪',
+      ctaShowdown: '原理流派对照矩阵 (S)',
+      ctaShowdownTitle:
+        '打开三轴机械谱系矩阵与双展品同屏定量对照实验室 (快捷键: S)',
+      ctaCartridges: '10 口径实弹纵剖馆 (B)',
+      ctaCartridgesTitle:
+        '进入 10 大口径 SAAMI/CIP 实弹与霰弹 1:1 纵剖对比实验室 (快捷键: B)',
       ctaMonograph: (tag) => `打印 ${tag} 3D 绘本 / 图鉴`,
       ctaMonographTitle:
         '打开 17 图版 3D 绘本与收藏图鉴打印工坊 (快捷键: Ctrl/Cmd+P)',
@@ -231,19 +241,19 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       weaponPillsAria: '快速切换舞台展示枪械',
     },
     metrics: [
-      { val: '13 款', lbl: '传奇名枪与特种弓弩 · 9 大闭锁与储能原理' },
-      { val: '327 件', lbl: '实时 CSG 布尔零件 · 零穿模' },
-      { val: '76 张', lbl: '2K 5 通道 ORM 物理材质贴图' },
-      { val: '758 段', lbl: '中英双语 AI 研发故事与零件配音' },
+      { val: '16 款', lbl: '14 款传奇名枪 + 2 款复合弓弩 · 三轴流派全覆盖' },
+      { val: '404 件', lbl: '实时 CSG 布尔零件 · 零穿模' },
+      { val: '94 张', lbl: '2K 5 通道 ORM 物理材质贴图' },
+      { val: '936 段', lbl: '中英双语 AI 研发故事与零件配音' },
       {
-        val: '17 图版 · Audio',
-        lbl: '绘本 / 收藏图鉴打印 · 7 口径 + 弓弩声场',
+        val: '10 口径 · 17 图版',
+        lbl: '实弹纵剖对比 · 原理对照矩阵 · 绘本打印',
       },
     ],
     capabilities: {
       kicker: 'FOUR CORE CAPABILITIES',
       title: '四大军械级三维检视与仿真模式',
-      desc: '从外层磷化钢滚印到腔内闭锁突笋与螺旋凸轮，全部 13 款展品 327 个零件均打通「多级爆炸拆解、7 阶段内弹道、纵向中轴剖视、5 通道 ORM 贴图」，支持纯净全屏展示（H）与 17 图版绘本 / 图鉴打印（Ctrl/Cmd+P）。',
+      desc: '从磷化钢滚印、胡桃木防滑纹到腔内闭锁突笋、双 ARGO 活塞与螺旋凸轮，全部 16 款展品 404 个零件均打通「多级爆炸拆解、7 阶段内弹道、纵向中轴剖视、5 通道 ORM 贴图」，并配套自动原理流派对照矩阵（S）、10 口径弹药馆（B）与 17 图版绘本 / 图鉴打印（Ctrl/Cmd+P）。',
       cards: {
         explode: {
           alt: 'AK-15M1 零回流引线与多级爆炸拆解工作台',
@@ -257,8 +267,8 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         firing: {
           alt: 'Barrett M82A1 .50 BMG 整管短后坐与箭头制退侧喷',
           tag: 'MODE 02 · 7-STAGE KINEMATICS & BALLISTICS',
-          title: '7 阶段真实运动学循环 + 7 口径 SAAMI/CIP 实弹与复合弓弩内弹道',
-          desc: '严格遵循各枪与弓弩机械定律：长/短行程活塞、斯通纳气吹、P90 90° 螺旋供弹、MP5 4:1 滚柱延迟、M82A1 整管短后坐、AWM 60° 栓动、布朗宁闭锁下倾，以及 LIFT 33 85% 省力双凸轮与 Ravin R500 500 FPS 螺旋凸轮储能释放；同步触发分口径/弓弩声浪。',
+          title: '7 阶段真实运动学循环 + 10 口径 SAAMI/CIP 实弹与复合弓弩内弹道',
+          desc: '严格遵循各枪与弓弩机械定律：长/短行程活塞、双 ARGO 活塞与升降托弹板、M1 加兰德 8 发漏夹自动弹射、柯尔特蟒蛇双动转轮棘轮分度、斯通纳气吹、P90 90° 螺旋供弹、MP5 滚柱延迟、M82A1 短后坐、AWM 栓动、枪管下倾，以及双凸轮弓与螺旋弩；同步触发分口径声浪。',
           cta: '体验巴雷特 .50 BMG 慢放击发',
         },
         section: {
@@ -273,16 +283,16 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         pbr: {
           alt: '5 通道 Packed ORM 物理贴图图集检视器',
           tag: 'MODE 04 · 5-CHANNEL PACKED ORM PBR',
-          title: 'Khronos 校准五级深色金属/聚合物分离与图集检视',
-          desc: '针对锰系磷化钢、硬质阳极铝、CNC 导轨倒角、玻纤尼龙与硫化橡胶建立五级光学梯度，内置按需加载的 2K WebP 三通道贴图检视与原图下载面板。',
-          cta: '打开 76 张 PBR 贴图图集检视器',
+          title: 'Khronos 校准五级深色金属/胡桃木/聚合物分离与图集检视',
+          desc: '针对锰系磷化钢、皇家烤蓝、硬质阳极铝、亚麻籽油黑胡桃实木、玻纤尼龙与硫化橡胶建立光学梯度，内置按需加载的 2K WebP 三通道贴图检视与原图下载面板。',
+          cta: '打开 94 张 PBR 贴图图集检视器',
         },
       },
     },
     documentary: {
       kicker: 'MULTIMODAL AUDIO-VISUAL ENGINE · V3.0',
       title: 'AI 四幕双语研发纪录片 · 3D 导演运镜 & 军械声场',
-      desc: '告别无声手动拖拽模型的传统看图模式：全馆藏 13 款名枪与弓弩内置中英双语四幕研发史、327 枚零件独立配音、自动镜头编排器与程序化 Web Audio 机械合成声效。',
+      desc: '告别无声手动拖拽模型的传统看图模式：全馆藏 16 款名枪与弓弩内置中英双语四幕研发史、404 枚零件独立配音、自动镜头编排器与程序化 Web Audio 机械合成声效。',
       directorBadge: '3D STORY DIRECTOR · 自动运镜编排',
       directorTitle: '四幕研发纪录片「3D 导演自动运镜模式」',
       directorDesc:
@@ -324,9 +334,9 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       monographCtaTitle:
         '一键离线抓拍 17 图版并排版打印双语绘本与收藏图鉴 (Ctrl/Cmd+P)',
       soundBadge: 'PROCEDURAL WEB AUDIO · 零外部音频膨胀',
-      soundTitle: '7 口径实弹 + 复合弓弩差异化声浪 & 7 阶段咬合引擎',
+      soundTitle: '10 口径实弹 + 复合弓弩差异化声浪 & 7 阶段咬合引擎',
       soundDesc:
-        '基于 Web Audio API 实时物理建模（零额外 WAV/MP3 体积）：1.0x 标准射速清晰区分 .50 BMG 重炮轰鸣、9mm 脆响与复合弓弩凸轮退绕阻尼闷响；0.25x 超慢放精准剥离每一次金属撞击，并在播报语音时自动执行 Audio Ducking 闪避。',
+        '基于 Web Audio API 实时物理建模（零额外 WAV/MP3 体积）：1.0x 标准射速清晰区分 .50 BMG 重炮轰鸣、M1 加兰德末发漏夹高亢「PING!」金属长鸣、12 号霰弹双活塞与复合弓弩凸轮阻尼闷响；0.25x 超慢放精准剥离每一次金属撞击，并在播报语音时自动执行 Audio Ducking 闪避。',
       caliberRows: [
         {
           caliber: '12.7×99mm (.50 BMG)',
@@ -443,7 +453,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           badge: '2048×1024 WEBP · 贴图图集检视器',
           title: '内置三通道 PBR 图集检视器（Albedo / Normal / ORM）',
           subtitle:
-            '支持在浏览器内实时切换、放大并下载全库 76 张程序化烘焙贴图，无损级高压缩比极速秒开。',
+            '支持在浏览器内实时切换、放大并下载全库 94 张程序化烘焙贴图，无损级高压缩比极速秒开。',
           imageFile: 'showcase/pbr-atlas.webp',
           weaponId: 'ak15',
           actionType: 'atlas',
@@ -452,9 +462,9 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       ],
     },
     arsenal: {
-      kicker: '13-BAY MASTER ROSTER · FACTORY 1:1',
-      title: '十三大世界经典名枪与复合弓弩 1:1 测绘馆藏矩阵',
-      desc: '涵盖热兵器与精密机械复合弓/弩体系，每款均配备双语四幕研发纪录片、全零件配音、独立总成与物理耦合运动学方程。',
+      kicker: '16-BAY MASTER ROSTER · FACTORY 1:1',
+      title: '十六大世界经典名枪与复合弓弩 1:1 测绘馆藏矩阵',
+      desc: '全面覆盖人类轻武器三大正交机械谱系（7 类自动驱动、5 类弹膛闭锁、6 类空间供弹）与精密复合弓/弩体系，每款均配备双语四幕研发纪录片、全零件配音与同屏定量对照能力（S）。',
       filterAria: '馆藏分类筛选',
       categories: {
         all: '全部馆藏',
@@ -492,8 +502,8 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           code: 'ARCH-01',
           iconKey: 'git',
           title: '自包含武器插件与首屏秒开分包',
-          desc: '首屏仅加载轻量展架清单（manifests.ts）；13 款展品的零件 BOM、运动学方程、双语档案与 CSG 脚本均通过动态分包按需懒加载。',
-          metric: '13 独立插件 Chunk',
+          desc: '首屏仅加载轻量展架清单（manifests.ts）；16 款展品的零件 BOM、运动学方程、双语档案与 CSG 脚本均通过动态分包按需懒加载。',
+          metric: '16 独立插件 Chunk',
         },
         {
           code: 'ARCH-02',
@@ -506,15 +516,15 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           code: 'ARCH-03',
           iconKey: 'gauge',
           title: '60Hz 瞬态内弹道示波与卷积混响声场',
-          desc: '非受控瞬态时钟零 GC 驱动 60fps SAAMI/CIP 膛压 P(t)・初速 V(t) 示波器、刚体黄铜弹壳碰撞与立体声卷积 IR 波导军械声效。',
+          desc: '非受控瞬态时钟零 GC 驱动 60fps 10 口径 SAAMI/CIP 膛压 P(t)・初速 V(t) 示波器、双展品流派对照曲线（S）与立体声卷积 IR 波导军械声效。',
           metric: '60 FPS 零重渲染',
         },
         {
           code: 'ARCH-04',
           iconKey: 'sparkles',
           title: 'GTAO + AgX 电影级管线与 17 图版绘本打印',
-          desc: '离线 5 通道 ORM 贴图配合亚毫米 GTAO 环境光遮蔽、HDR 辉光与 AgX 色调映射；3D 导演同步 758 段 Gemini TTS 语音，内置纯净全屏（H）与 17 图版绘本 / 收藏图鉴打印工坊（Ctrl/Cmd+P）。',
-          metric: '758 语音 · 17 图版',
+          desc: '离线 5 通道 ORM 贴图配合亚毫米 GTAO 环境光遮蔽、HDR 辉光与 AgX 色调映射；3D 导演同步 936 段 Gemini TTS 语音，内置纯净全屏（H）与 17 图版绘本 / 收藏图鉴打印工坊（Ctrl/Cmd+P）。',
+          metric: '936 语音 · 17 图版',
         },
         {
           code: 'ARCH-05',
@@ -526,8 +536,8 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         {
           code: 'ARCH-06',
           iconKey: 'shield',
-          title: '401 步运动学防穿模与声画契约门禁',
-          desc: 'Vitest 自动化契约套件对全部 13 款展品 327 零件执行法线、UV、Khronos 亮度、758 段配音完整性及导演/声学相位连续性断言，锁死工业级交付标准。',
+          title: '全馆藏运动学防穿模与声画契约门禁',
+          desc: '16 套 Vitest 自动化契约套件对全部 16 款展品 404 零件执行法线、UV、Khronos 亮度、936 段配音完整性、原理流派谱系及声学相位连续性断言，锁死工业级交付标准。',
           metric: '全量自动化契约',
         },
       ],
@@ -572,7 +582,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       finalTitle: '现在进入 3D 数字枪库，开启声画同步机械探索之旅',
       finalSub:
         '支持中英双语自由切换、纯净全屏展示（H）、17 图版绘本与收藏图鉴打印（Ctrl/Cmd+P）及 URL 深度链接分享；开源免费，欢迎在 GitHub 点亮一颗 Star。',
-      finalLaunchBtn: '启动 13 槽 3D 数字枪库',
+      finalLaunchBtn: '启动 16 槽 3D 数字枪库',
       finalStarBtn: '前往 GitHub 点亮 Star',
       footerBrand: 'Digital Armory 3D · 枪械内部结构 3D 数字博物馆',
       footerDisclaimer:
@@ -582,34 +592,40 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
   en: {
     nav: {
       ariaLabel: 'Product showcase primary navigation',
-      versionBadge: 'v3.0 · AUDIO-VISUAL EDITION',
+      versionBadge: 'v3.0 · 16-EXHIBIT EDITION',
       capabilities: '4 Core Modes',
       documentary: 'AI 3D Director',
       gallery: 'Live Captures',
-      arsenal: '13-Exhibit Vault',
+      arsenal: '16-Exhibit Vault',
       architecture: 'Engine Architecture',
       quickstart: 'Quick Start',
       launchArmory: 'Enter 3D Armory',
     },
     hero: {
       eyebrow:
-        'OPEN-SOURCE WEBGL 2.0 MUSEUM · 13 EXHIBITS · 758 AI VOICE CLIPS · 17-PLATE PRINT STUDIO',
+        'OPEN-SOURCE WEBGL 2.0 MUSEUM · 16 EXHIBITS · 936 AI VOICE CLIPS · MECHANISM SHOWDOWN',
       titlePrefix: 'Explore ',
       titleHighlight: '1:1 Mechanical Cutaways & 3D AI Documentaries',
-      titleSuffix: ' of 13 Iconic Firearms & Archery Systems in Your Browser',
+      titleSuffix: ' of 16 Iconic Firearms & Archery Systems in Your Browser',
       subLead: 'Procedural real-time CSG modeling of ',
-      subPartsStrong: '327 moving CAD components',
+      subPartsStrong: '404 moving CAD components',
       subMid1: ', ',
-      subMapsStrong: '76 custom 2K 5-channel ORM textures',
+      subMapsStrong: '94 custom 2K 5-channel ORM textures',
       subMid2: ', and ',
       subAudioStrong:
-        '758 bilingual voice clips + Web Audio ballistic acoustics',
+        '936 bilingual voice clips + Web Audio ballistic acoustics',
       subTail:
-        '. Zero installs—launch 3D Director Mode, toggle Clean Fullscreen (H), or print 17-Plate Monographs & Kids Picture Books (Ctrl/Cmd+P) while inspecting rifling, locking lugs, and cams at 60 FPS.',
+        '. Zero installs—launch 3D Director Mode, compare mechanisms side-by-side in Showdown Lab (S), explore the 10-Caliber Cutaway Lab (B), toggle Clean Fullscreen (H), or print 17-Plate Monographs & Kids Picture Books (Ctrl/Cmd+P) at 60 FPS.',
       ctaArmory: 'Enter 3D Digital Armory',
       ctaDirector: (tag) => `Play ${tag} 3D Documentary`,
       ctaExplode: (tag) => `Open ${tag} Disassembly`,
       ctaFiring: 'Live Ballistics & SFX',
+      ctaShowdown: 'Mechanism Showdown (S)',
+      ctaShowdownTitle:
+        'Open 3-Axis Mechanical Lineage Matrix & Dual-Exhibit Showdown Lab (Shortcut: S)',
+      ctaCartridges: '10-Caliber Cutaway Lab (B)',
+      ctaCartridgesTitle:
+        'Open 10-Caliber SAAMI/CIP Cartridge & Shotshell 1:1 Cutaway Lab (Shortcut: B)',
       ctaMonograph: (tag) => `Print ${tag} 3D Picture Book / Monograph`,
       ctaMonographTitle:
         'Open 17-Plate 3D Picture Book & Collector Monograph Print Studio (Ctrl/Cmd+P)',
@@ -627,19 +643,22 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       weaponPillsAria: 'Switch live stage firearm',
     },
     metrics: [
-      { val: '13 Icons', lbl: 'Firearms & Compound Archery · 9 Drive Systems' },
-      { val: '327 Parts', lbl: 'Manifold CSG Nodes · Zero Clipping' },
-      { val: '76 Maps', lbl: '2K 5-Channel Packed ORM Textures' },
-      { val: '758 Clips', lbl: 'Bilingual Gemini TTS R&D & Part Audio' },
       {
-        val: '17-Plate · Audio',
-        lbl: 'Picture Book / Monograph · 7-Caliber + Archery SFX',
+        val: '16 Icons',
+        lbl: '14 Firearms & 2 Archery Systems · Full 3-Axis Lineage',
+      },
+      { val: '404 Parts', lbl: 'Manifold CSG Nodes · Zero Clipping' },
+      { val: '94 Maps', lbl: '2K 5-Channel Packed ORM Textures' },
+      { val: '936 Clips', lbl: 'Bilingual Gemini TTS R&D & Part Audio' },
+      {
+        val: '10-Caliber · 17-Plate',
+        lbl: 'Cutaway Lab · Mechanism Showdown · Print Studio',
       },
     ],
     capabilities: {
       kicker: 'FOUR CORE CAPABILITIES',
       title: 'Four Armorer-Grade 3D Inspection & Simulation Modes',
-      desc: 'From phosphated steel roll-marks to locking lugs and helical cams, all 13 exhibits (327 parts) integrate multi-stage disassembly, 7-stage ballistics, GPU cutaway, 5-channel PBR, Clean Fullscreen (H), and 17-Plate Monograph & Kids Picture Book printing (Ctrl/Cmd+P).',
+      desc: 'From phosphated steel roll-marks and oiled American walnut to locking lugs, twin ARGO pistons, and helical cams, all 16 exhibits (404 parts) integrate multi-stage disassembly, 7-stage ballistics, GPU cutaway, 5-channel PBR, Mechanism Showdown (S), 10-Caliber Cutaway Lab (B), and 17-Plate Monograph printing (Ctrl/Cmd+P).',
       cards: {
         explode: {
           alt: 'AK-15M1 zero-reflow callout leaders and multi-stage exploded workbench',
@@ -654,8 +673,8 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           alt: 'Barrett M82A1 .50 BMG barrel short-recoil and 60-degree arrowhead muzzle blast',
           tag: 'MODE 02 · 7-STAGE KINEMATICS & BALLISTICS',
           title:
-            '7-Stage Coupled Kinematics + 7-Caliber & Compound Archery Ballistics',
-          desc: 'Faithfully models long/short-stroke pistons, Stoner DI, P90 90° helical feed, MP5 4:1 roller delay, M82A1 short recoil, AWM 60° bolt lift, Browning tilting barrel, plus LIFT 33 85% let-off binary cams and Ravin R500 500 FPS helical cams.',
+            '7-Stage Coupled Kinematics + 10-Caliber & Compound Archery Ballistics',
+          desc: 'Faithfully models long/short-stroke pistons, twin ARGO pistons & carrier elevator, M1 Garand 8-round en-bloc auto-eject, Colt Python 60° DA/SA revolver ratchet, Stoner DI, P90 90° helical feed, MP5 4:1 roller delay, M82A1 short recoil, AWM 60° bolt lift, Browning tilting barrel, plus binary/helical compound archery.',
           cta: 'Launch Barrett .50 BMG Slow-Mo Cycle',
         },
         section: {
@@ -670,16 +689,16 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         pbr: {
           alt: '5-Channel Packed ORM PBR Texture Atlas Inspector',
           tag: 'MODE 04 · 5-CHANNEL PACKED ORM PBR',
-          title: 'Khronos-Calibrated 5-Tier Metal/Polymer PBR & Live Atlas',
-          desc: 'Separates manganese phosphate steel, hard-coat anodized aluminum, CNC rail chamfers, glass-filled nylon, and overmolded rubber with an in-browser 2K WebP channel inspector.',
-          cta: 'Inspect All 76 2K PBR Texture Maps',
+          title: 'Khronos-Calibrated Metal / Walnut / Polymer PBR & Live Atlas',
+          desc: 'Separates manganese phosphate steel, Colt Royal Blue, hard-coat anodized aluminum, linseed-oiled American walnut, glass-filled nylon, and overmolded rubber with an in-browser 2K WebP channel inspector.',
+          cta: 'Inspect All 94 2K PBR Texture Maps',
         },
       },
     },
     documentary: {
       kicker: 'MULTIMODAL AUDIO-VISUAL ENGINE · V3.0',
       title: 'Bilingual 4-Act AI Documentary · 3D Director & Acoustic Engine',
-      desc: 'Beyond silent manual model viewers: all 13 firearms & archery systems ship with bilingual 4-act R&D documentaries, 327 spoken component breakdowns, automated 3D camera choreography, and procedural Web Audio gunsmith acoustics.',
+      desc: 'Beyond silent manual model viewers: all 16 firearms & archery systems ship with bilingual 4-act R&D documentaries, 404 spoken component breakdowns, automated 3D camera choreography, and procedural Web Audio gunsmith acoustics.',
       directorBadge: '3D STORY DIRECTOR · AUTO-CHOREOGRAPHY',
       directorTitle: '4-Act Documentary "3D Director Auto-Tour Mode"',
       directorDesc:
@@ -722,9 +741,9 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         'Capture 17 offscreen 3D plates and print bilingual Kids Picture Book or Collector Monograph (Ctrl/Cmd+P)',
       soundBadge: 'PROCEDURAL WEB AUDIO · ZERO ASSET BLOAT',
       soundTitle:
-        '7-Caliber & Compound Archery Acoustics & 7-Stage Foley Synth',
+        '10-Caliber & Compound Archery Acoustics & 7-Stage Foley Synth',
       soundDesc:
-        'Real-time procedural Web Audio synthesis (0 KB external audio bloat): distinguishes .50 BMG shockwaves, crisp 9mm snaps, and compound bow/crossbow cam uncoil & string dampener thumps at 1.0x, separates every metallic click at 0.25x, and ducks automatically under TTS voice.',
+        'Real-time procedural Web Audio synthesis (0 KB external audio bloat): distinguishes .50 BMG shockwaves, M1 Garand en-bloc clip "PING!" ringing, 12-gauge twin ARGO clinks, and compound bow/crossbow cam uncoil & string dampener thumps at 1.0x, separates every metallic click at 0.25x, and ducks automatically under TTS voice.',
       caliberRows: [
         {
           caliber: '12.7×99mm (.50 BMG)',
@@ -845,7 +864,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           title:
             'Built-In 3-Channel PBR Atlas Inspector (Albedo / Normal / ORM)',
           subtitle:
-            'Toggle, zoom, and download all 76 procedurally baked 2K WebP maps directly in the browser with ultra-fast lossless-grade compression.',
+            'Toggle, zoom, and download all 94 procedurally baked 2K WebP maps directly in the browser with ultra-fast lossless-grade compression.',
           imageFile: 'showcase/pbr-atlas.webp',
           weaponId: 'ak15',
           actionType: 'atlas',
@@ -854,9 +873,9 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       ],
     },
     arsenal: {
-      kicker: '13-BAY MASTER ROSTER · FACTORY 1:1',
-      title: '13 Iconic Firearms & Archery Systems · 1:1 Metrology Matrix',
-      desc: 'Spanning firearms and precision binary/helical-cam compound archery—each complete with a 4-act bilingual documentary, spoken part guides, and coupled kinematics.',
+      kicker: '16-BAY MASTER ROSTER · FACTORY 1:1',
+      title: '16 Iconic Firearms & Archery Systems · 1:1 Metrology Matrix',
+      desc: 'Spanning all 3 orthogonal mechanical axes (7 operating drives, 5 breech locks, 6 feed architectures) plus binary/helical-cam compound archery—each with a 4-act bilingual documentary, spoken part guides, and Dual-Exhibit Mechanism Showdown (S).',
       filterAria: 'Filter vault collection by category',
       categories: {
         all: 'All Vault',
@@ -894,8 +913,8 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           code: 'ARCH-01',
           iconKey: 'git',
           title: 'Self-Contained Plugins & Instant Cold-Start',
-          desc: 'Initial load pulls static catalog metadata (manifests.ts); all 13 exhibit BOMs, kinematic equations, narration JSONs, and CSG builders lazy-load on demand.',
-          metric: '13 Dynamic Chunks',
+          desc: 'Initial load pulls static catalog metadata (manifests.ts); all 16 exhibit BOMs, kinematic equations, narration JSONs, and CSG builders lazy-load on demand.',
+          metric: '16 Dynamic Chunks',
         },
         {
           code: 'ARCH-02',
@@ -908,15 +927,15 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           code: 'ARCH-03',
           iconKey: 'gauge',
           title: '60Hz Ballistics Scope & Convolution IR Audio',
-          desc: 'Zero-GC transient clock drives 60fps SAAMI/CIP pressure P(t) & velocity V(t) traces, rigid-body brass impacts, and stereo convolution waveguide SFX.',
+          desc: 'Zero-GC transient clock drives 60fps 10-caliber SAAMI/CIP pressure P(t) & velocity V(t) traces, dual-exhibit Showdown curves (S), and stereo convolution waveguide SFX.',
           metric: '60 FPS Zero Re-render',
         },
         {
           code: 'ARCH-04',
           iconKey: 'sparkles',
           title: 'GTAO + AgX Cinema Pipeline & 17-Plate Print Studio',
-          desc: '5-channel ORM maps combine with sub-mm GTAO contact occlusion, HDR bloom, and AgX tone mapping; 3D Director syncs to 758 TTS clips alongside Clean Fullscreen (H) and 17-Plate Monograph & Kids Picture Book printing (Ctrl/Cmd+P).',
-          metric: '758 Clips · 17 Plates',
+          desc: '5-channel ORM maps combine with sub-mm GTAO contact occlusion, HDR bloom, and AgX tone mapping; 3D Director syncs to 936 TTS clips alongside Clean Fullscreen (H) and 17-Plate Monograph & Kids Picture Book printing (Ctrl/Cmd+P).',
+          metric: '936 Clips · 17 Plates',
         },
         {
           code: 'ARCH-05',
@@ -928,8 +947,8 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         {
           code: 'ARCH-06',
           iconKey: 'shield',
-          title: '401-Step Anti-Clipping & Audio-Visual Contracts',
-          desc: 'Automated Vitest suites verify unit normals, UV bounds, Khronos PBR luminance floors, 758 audio assets, and director/acoustic phase invariants.',
+          title: '16-Suite Anti-Clipping & Audio-Visual Contracts',
+          desc: '16 automated Vitest suites verify unit normals, UV bounds, Khronos PBR luminance floors, 936 audio assets, 3-axis Showdown lineage, and acoustic phase invariants across all 404 parts.',
           metric: 'Full Contract Suite',
         },
       ],
@@ -1000,7 +1019,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         'Step Inside the 3D Armory & Experience Interactive Engineering',
       finalSub:
         'Full Chinese/English parity, Clean Fullscreen (H), 17-Plate Monograph & Kids Picture Book printing (Ctrl/Cmd+P), and shareable URL deep links. Open-source under MIT—star the repo on GitHub if you enjoy it!',
-      finalLaunchBtn: 'Launch 13-Bay 3D Armory',
+      finalLaunchBtn: 'Launch 16-Bay 3D Armory',
       finalStarBtn: 'Star on GitHub',
       footerBrand:
         'Digital Armory 3D · Open-Source 3D Firearms Mechanical Museum',

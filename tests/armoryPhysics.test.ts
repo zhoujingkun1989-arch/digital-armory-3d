@@ -37,9 +37,12 @@ import { WEAPON_IDS } from '../src/weapons/types';
 const EXPECTED_PMAX: Record<CaliberProfile, number> = {
   '9mm_para': 241,
   '57_28': 345,
+  '357_magnum': 241,
   '556_nato': 430,
   '762_m43': 355,
   '50_ae': 248,
+  '12_gauge': 79,
+  '30_06': 345,
   '338_lapua': 420,
   '50_bmg': 379,
   arrow_400gr: 311,
@@ -76,8 +79,8 @@ function playCycle(input: ArmoryPhysicsInput, rate = 0.42): void {
 }
 
 describe('SAAMI / CIP internal ballistics model', () => {
-  it('covers all 7 calibers with authentic peak chamber pressures', () => {
-    expect(BALLISTIC_CALIBERS).toHaveLength(7);
+  it('covers all 10 firearm/shotgun calibers with authentic peak chamber pressures', () => {
+    expect(BALLISTIC_CALIBERS).toHaveLength(10);
     for (const cal of BALLISTIC_CALIBERS) {
       expect(CALIBER_BALLISTICS[cal].peakPressureMPa).toBe(EXPECTED_PMAX[cal]);
     }
@@ -100,9 +103,9 @@ describe('SAAMI / CIP internal ballistics model', () => {
       }
       expect(maxP).toBeGreaterThan(EXPECTED_PMAX[cal] * 0.995);
       expect(maxP).toBeLessThanOrEqual(EXPECTED_PMAX[cal] * 1.0001);
-      // Default timing: ignition 0.14 → peak ≈ 0.21 → muzzle exit 0.30
+      // Default timing: ignition 0.14 → peak ≈ 0.1975..0.215 → muzzle exit 0.30
       expect(maxF).toBeCloseTo(computePeakPressureF(cal), 2);
-      expect(maxF).toBeGreaterThan(0.2);
+      expect(maxF).toBeGreaterThan(0.19);
       expect(maxF).toBeLessThan(0.22);
     }
   });
@@ -168,15 +171,30 @@ describe('SAAMI / CIP internal ballistics model', () => {
     expect(before.gasPortPressureMPa).toBe(0);
     expect(after.gasPortPressureMPa).toBeGreaterThan(30);
     expect(after.gasPortPressureMPa).toBeLessThan(after.pressureMPa);
-    // Non-gas-operated weapons never tap the bore
+    // Non-gas-operated weapons never tap the bore (including Colt Python .357 revolver)
     expect(computeGasPortUncoverF('9mm_para', WEAPON_FIRING_TIMING.g17)).toBeNull();
+    expect(computeGasPortUncoverF('357_magnum', WEAPON_FIRING_TIMING.python)).toBeNull();
     expect(
       evaluateInternalBallistics('50_bmg', 0.2, WEAPON_FIRING_TIMING.m82a1)
         .gasPortPressureMPa
     ).toBe(0);
+
+    // Benelli M4 chamber-mounted ARGO (early gas tap) vs M1 Garand muzzle gas cylinder (late gas tap)
+    const argoUncover = computeGasPortUncoverF('12_gauge', WEAPON_FIRING_TIMING.benellim4);
+    const garandUncover = computeGasPortUncoverF('30_06', WEAPON_FIRING_TIMING.garand);
+    expect(argoUncover).not.toBeNull();
+    expect(garandUncover).not.toBeNull();
+    expect(
+      evaluateInternalBallistics('12_gauge', (argoUncover as number) + 0.01, WEAPON_FIRING_TIMING.benellim4)
+        .gasPortPressureMPa
+    ).toBeGreaterThan(10);
+    expect(
+      evaluateInternalBallistics('30_06', (garandUncover as number) + 0.002, WEAPON_FIRING_TIMING.garand)
+        .gasPortPressureMPa
+    ).toBeGreaterThan(15);
   });
 
-  it('defines ordered firing timing for all 13 weapons', () => {
+  it('defines ordered firing timing for all 16 exhibits and retains revolver brass inside cylinder', () => {
     for (const id of WEAPON_IDS) {
       const t = WEAPON_FIRING_TIMING[id];
       expect(t.ignitionF).toBeLessThan(t.muzzleExitF);
@@ -184,6 +202,16 @@ describe('SAAMI / CIP internal ballistics model', () => {
       expect(t.ejectF).toBeLessThan(t.batteryF);
       expect(Math.hypot(t.ejectDirX, t.ejectDirY, t.ejectDirZ)).toBeCloseTo(1, 6);
     }
+
+    // Colt Python .357 revolver retains fired brass in cylinder (`ejectSpeedCmS === 0`) while heating barrel
+    resetArmoryPhysics();
+    const pyInput = makeInput('python');
+    pyInput.caliber = '357_magnum';
+    pyInput.hasGasVent = false;
+    for (let i = 0; i < 3; i++) playCycle(pyInput, 4);
+    expect(getArmoryPhysicsState().shotCount).toBe(3);
+    expect(getArmoryPhysicsState().barrelTempC).toBeGreaterThan(AMBIENT_TEMP_C + 20);
+    expect(countActiveSpentCasings()).toBe(0);
   });
 
   it('models archery draw-force, let-off & power-stroke curves for arrow_400gr and bolt_400gr with zero heat, brass or smoke', () => {
