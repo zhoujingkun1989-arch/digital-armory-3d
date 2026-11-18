@@ -25,8 +25,8 @@ import type {
 import type { ExplodedPinItem } from './explodedPinLayout';
 import type { MonographEdition } from './monographCaptureStore';
 
-export type MonographWeaponId = WeaponId;
-export type MonographCaliberProfile = CaliberProfile;
+export type MonographWeaponId = WeaponId | 'm249' | 'p08' | 'vector';
+export type MonographCaliberProfile = CaliberProfile | '45_acp';
 
 interface CartridgeDiagramFallbackSpec {
   code: string;
@@ -52,8 +52,33 @@ interface CartridgeDiagramFallbackSpec {
 }
 
 const WAVE2_CARTRIDGE_FALLBACK_SPECS: Readonly<
-  Record<'357_magnum' | '12_gauge' | '30_06', CartridgeDiagramFallbackSpec>
+  Record<
+    '45_acp' | '357_magnum' | '12_gauge' | '30_06',
+    CartridgeDiagramFallbackSpec
+  >
 > = {
+  '45_acp': {
+    code: '.45 ACP',
+    standard: 'SAAMI',
+    nameZh: '.45 ACP 勃朗宁大威力亚音速手枪弹 (11.43×23mm)',
+    nameEn: '.45 Automatic Colt Pistol (230 gr FMJ)',
+    caseLengthMm: 22.81,
+    oalMm: 32.39,
+    bulletDiameterMm: 11.48,
+    neckDiameterMm: 12.01,
+    shoulderDiameterMm: null,
+    baseDiameterMm: 12.09,
+    rimDiameterMm: 12.19,
+    rimThicknessMm: 1.24,
+    propellantMassG: 0.36,
+    propellantFillRatio: 0.58,
+    projectileGrain: 230,
+    muzzleVelocityMps: 260,
+    muzzleEnergyJ: 504,
+    caseColor: '#d6a432',
+    jacketColor: '#c04e18',
+    penetratorColor: '#94a3b8',
+  },
   '357_magnum': {
     code: '.357 Magnum',
     standard: 'SAAMI',
@@ -131,6 +156,7 @@ function resolveCartridgeDiagramSpec(
   const live = labMap[caliber];
   if (live) return live;
   if (
+    caliber === '45_acp' ||
     caliber === '357_magnum' ||
     caliber === '12_gauge' ||
     caliber === '30_06'
@@ -1450,6 +1476,7 @@ export const CartridgeCutawayDiagram: React.FC<{
 
   const isRimmedRevolver =
     caliberKey === '357_magnum' || spec.rimDiameterMm > spec.baseDiameterMm * 1.08;
+  const is45Acp = caliberKey === '45_acp';
   const is3006 = caliberKey === '30_06';
   const isBottleneck =
     spec.shoulderDiameterMm !== null &&
@@ -1521,19 +1548,26 @@ export const CartridgeCutawayDiagram: React.FC<{
           `L ${cx} ${yJspJacketStop}`,
           `Z`,
         ].join(' ')
-      : is3006
+      : is45Acp
         ? [
             `M ${cx} ${yCaseMouth}`,
             `L ${cx - rBullet} ${yCaseMouth}`,
-            `C ${cx - rBullet} ${yCaseMouth - (yCaseMouth - yTop) * 0.46} ${cx - rBullet * 0.38} ${yTop + (yCaseMouth - yTop) * 0.24} ${cx} ${yTop}`,
+            `C ${cx - rBullet} ${yTop + (yCaseMouth - yTop) * 0.16} ${cx - rBullet * 0.56} ${yTop} ${cx} ${yTop}`,
             `Z`,
           ].join(' ')
-        : [
-            `M ${cx} ${yCaseMouth}`,
-            `L ${cx - rBullet} ${yCaseMouth}`,
-            `Q ${cx - rBullet} ${yTop + (yCaseMouth - yTop) * 0.42} ${cx} ${yTop}`,
-            `Z`,
-          ].join(' ');
+        : is3006
+          ? [
+              `M ${cx} ${yCaseMouth}`,
+              `L ${cx - rBullet} ${yCaseMouth}`,
+              `C ${cx - rBullet} ${yCaseMouth - (yCaseMouth - yTop) * 0.46} ${cx - rBullet * 0.38} ${yTop + (yCaseMouth - yTop) * 0.24} ${cx} ${yTop}`,
+              `Z`,
+            ].join(' ')
+          : [
+              `M ${cx} ${yCaseMouth}`,
+              `L ${cx - rBullet} ${yCaseMouth}`,
+              `Q ${cx - rBullet} ${yTop + (yCaseMouth - yTop) * 0.42} ${cx} ${yTop}`,
+              `Z`,
+            ].join(' ');
 
   const leftExposedJspLeadPath =
     caliberKey === '357_magnum'
@@ -1594,21 +1628,29 @@ export const CartridgeCutawayDiagram: React.FC<{
           `L ${cx} ${yJspJacketStop}`,
           `Z`,
         ].join(' ')
-      : is3006
+      : is45Acp
         ? [
             `M ${cx} ${yBulletBase}`,
             `L ${cx + rBullet} ${yBulletBase}`,
             `L ${cx + rBullet} ${yCaseMouth}`,
-            `C ${cx + rBullet} ${yCaseMouth - (yCaseMouth - yTop) * 0.46} ${cx + rBullet * 0.38} ${yTop + (yCaseMouth - yTop) * 0.24} ${cx} ${yTop}`,
+            `C ${cx + rBullet} ${yTop + (yCaseMouth - yTop) * 0.16} ${cx + rBullet * 0.56} ${yTop} ${cx} ${yTop}`,
             `Z`,
           ].join(' ')
-        : [
-            `M ${cx} ${yBulletBase}`,
-            `L ${cx + rBullet} ${yBulletBase}`,
-            `L ${cx + rBullet} ${yCaseMouth}`,
-            `Q ${cx + rBullet} ${yTop + (yCaseMouth - yTop) * 0.42} ${cx} ${yTop}`,
-            `Z`,
-          ].join(' ');
+        : is3006
+          ? [
+              `M ${cx} ${yBulletBase}`,
+              `L ${cx + rBullet} ${yBulletBase}`,
+              `L ${cx + rBullet} ${yCaseMouth}`,
+              `C ${cx + rBullet} ${yCaseMouth - (yCaseMouth - yTop) * 0.46} ${cx + rBullet * 0.38} ${yTop + (yCaseMouth - yTop) * 0.24} ${cx} ${yTop}`,
+              `Z`,
+            ].join(' ')
+          : [
+              `M ${cx} ${yBulletBase}`,
+              `L ${cx + rBullet} ${yBulletBase}`,
+              `L ${cx + rBullet} ${yCaseMouth}`,
+              `Q ${cx + rBullet} ${yTop + (yCaseMouth - yTop) * 0.42} ${cx} ${yTop}`,
+              `Z`,
+            ].join(' ');
 
   const rCore = Math.max(1.6, rBullet - 1.9);
   const yCoreTip = yTop + Math.max(4, (yCaseMouth - yTop) * 0.14);

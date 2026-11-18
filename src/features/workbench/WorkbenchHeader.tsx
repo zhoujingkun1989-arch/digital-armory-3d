@@ -4,6 +4,7 @@ import {
   BookOpen,
   Box,
   Camera,
+  Compass,
   Crosshair,
   Eye,
   Flame,
@@ -13,6 +14,7 @@ import {
   RotateCcw,
   Ruler,
   Scissors,
+  Share2,
   ShieldAlert,
   Sparkles,
   Tag,
@@ -64,6 +66,8 @@ export const WorkbenchHeader: React.FC = () => {
   const toggleMalfunctionMode = useAppStore((s) => s.toggleMalfunctionMode);
   const toggleCaliperMode = useAppStore((s) => s.toggleCaliperMode);
   const openCartridgeLab = useAppStore((s) => s.openCartridgeLab);
+  const openExternalBallistics = useAppStore((s) => s.openExternalBallistics);
+  const openPosterModal = useAppStore((s) => s.openPosterModal);
   const toggleShowEdges = useAppStore((s) => s.toggleShowEdges);
   const toggleShowLabels = useAppStore((s) => s.toggleShowLabels);
   const toggleSfxMuted = useAppStore((s) => s.toggleSfxMuted);
@@ -113,6 +117,16 @@ export const WorkbenchHeader: React.FC = () => {
         >
           <BookOpen size={13} />
           <span>{ui.storyChip}</span>
+        </button>
+
+        <button
+          type="button"
+          className="toggle-chip"
+          onClick={() => openPosterModal({ weaponId: activeWeaponId })}
+          title={ui.posterChipTitle}
+        >
+          <Share2 size={13} aria-hidden="true" />
+          <span>{ui.posterChip}</span>
         </button>
 
         <button
@@ -203,6 +217,16 @@ export const WorkbenchHeader: React.FC = () => {
         >
           <Crosshair size={13} aria-hidden="true" />
           <span>{ui.cartridgeChip}</span>
+        </button>
+
+        <button
+          type="button"
+          className="toggle-chip"
+          onClick={() => openExternalBallistics(manifest.caliberProfile)}
+          title={ui.ballisticsChipTitle}
+        >
+          <Compass size={13} aria-hidden="true" />
+          <span>{ui.ballisticsChip}</span>
         </button>
 
         <button

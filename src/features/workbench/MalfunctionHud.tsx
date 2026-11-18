@@ -9,6 +9,7 @@ import {
   Play,
   RotateCcw,
   Scissors,
+  Share2,
   ShieldAlert,
   Shuffle,
   Timer,
@@ -80,6 +81,7 @@ export const MalfunctionHud: React.FC = () => {
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const lang = useAppStore((s) => s.lang);
   const setMalfunctionActive = useAppStore((s) => s.setMalfunctionActive);
+  const openPosterModal = useAppStore((s) => s.openPosterModal);
   const sectionCut = useAppStore((s) => s.sectionCut);
   const xrayShells = useAppStore((s) => s.xrayShells);
   const toggleSectionCut = useAppStore((s) => s.toggleSectionCut);
@@ -332,6 +334,20 @@ export const MalfunctionHud: React.FC = () => {
               </div>
 
               <div className="exam-cert-actions">
+                <button
+                  type="button"
+                  className="exam-cert-share-btn"
+                  title={ui.shareCertPosterTitle}
+                  onClick={() =>
+                    openPosterModal({
+                      weaponId: activeWeaponId,
+                      armorerRank: earnedRank,
+                    })
+                  }
+                >
+                  <Share2 size={12} aria-hidden="true" />
+                  <span>{ui.shareCertPosterBtn}</span>
+                </button>
                 <button
                   type="button"
                   className="exam-cert-retry-btn"

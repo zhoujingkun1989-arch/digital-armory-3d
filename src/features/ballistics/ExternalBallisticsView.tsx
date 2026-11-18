@@ -162,6 +162,10 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
 
   const lang = useAppStore((s) => s.lang);
   const environmentPreset = useAppStore((s) => s.environmentPreset);
+  const storeBallisticsCaliber = useAppStore((s) => s.activeBallisticsCaliber);
+  const setActiveBallisticsCaliber = useAppStore(
+    (s) => s.setActiveBallisticsCaliber
+  );
   const returnToArmory = useAppStore((s) => s.returnToArmory);
   const enterWorkbench = useAppStore((s) => s.enterWorkbench);
 
@@ -171,12 +175,13 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
   const isZh = lang === 'zh';
 
   // Resolve initial preset & projectile selection
+  const resolvedInitialCaliber = initialCaliber ?? storeBallisticsCaliber;
   const defaultPreset = BALLISTICS_RANGE_PRESETS[0];
   const initialProjectiles = useMemo<ExternalProjectileId[]>(() => {
-    if (!initialCaliber) {
+    if (!resolvedInitialCaliber) {
       return [...defaultPreset.projectiles];
     }
-    const normalized = normalizeExternalProjectileId(initialCaliber);
+    const normalized = normalizeExternalProjectileId(resolvedInitialCaliber);
     const matchingPreset = BALLISTICS_RANGE_PRESETS.find((p) =>
       p.projectiles.includes(normalized)
     );
@@ -187,28 +192,28 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
       0,
       MAX_ACTIVE_PROJECTILES
     ) as ExternalProjectileId[];
-  }, [initialCaliber, defaultPreset.projectiles]);
+  }, [resolvedInitialCaliber, defaultPreset.projectiles]);
 
   const [activeProjectiles, setActiveProjectiles] =
     useState<ExternalProjectileId[]>(initialProjectiles);
   const [focusedProjectile, setFocusedProjectile] =
     useState<ExternalProjectileId>(() =>
-      initialCaliber
-        ? normalizeExternalProjectileId(initialCaliber)
+      resolvedInitialCaliber
+        ? normalizeExternalProjectileId(resolvedInitialCaliber)
         : initialProjectiles[0]
     );
 
   const [maxRangeM, setMaxRangeM] = useState<MaxRangeOptionM>(() => {
-    if (!initialCaliber) return defaultPreset.maxRangeM;
-    const norm = normalizeExternalProjectileId(initialCaliber);
+    if (!resolvedInitialCaliber) return defaultPreset.maxRangeM;
+    const norm = normalizeExternalProjectileId(resolvedInitialCaliber);
     const match = BALLISTICS_RANGE_PRESETS.find((p) =>
       p.projectiles.includes(norm)
     );
     return match ? match.maxRangeM : 300;
   });
   const [zeroRangeM, setZeroRangeM] = useState<ZeroRangeOptionM>(() => {
-    if (!initialCaliber) return defaultPreset.zeroRangeM;
-    const norm = normalizeExternalProjectileId(initialCaliber);
+    if (!resolvedInitialCaliber) return defaultPreset.zeroRangeM;
+    const norm = normalizeExternalProjectileId(resolvedInitialCaliber);
     const match = BALLISTICS_RANGE_PRESETS.find((p) =>
       p.projectiles.includes(norm)
     );
@@ -321,6 +326,7 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
     const nextList = [...preset.projectiles];
     setActiveProjectiles(nextList);
     setFocusedProjectile(nextList[0]);
+    setActiveBallisticsCaliber(nextList[0]);
     setMaxRangeM(preset.maxRangeM);
     setZeroRangeM(preset.zeroRangeM);
     setSightHeightCm(preset.sightHeightCm);
@@ -335,12 +341,14 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
     if (exists) {
       if (activeProjectiles.length <= 1) {
         setFocusedProjectile(id);
+        setActiveBallisticsCaliber(id);
         return;
       }
       const nextList = activeProjectiles.filter((item) => item !== id);
       setActiveProjectiles(nextList);
       if (effectiveFocusedProjectile === id && nextList.length > 0) {
         setFocusedProjectile(nextList[0]);
+        setActiveBallisticsCaliber(nextList[0]);
       }
       return;
     }
@@ -352,6 +360,7 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
       return next;
     });
     setFocusedProjectile(id);
+    setActiveBallisticsCaliber(id);
   };
 
   const handleChangeMaxRange = (nextMax: MaxRangeOptionM) => {
@@ -2089,6 +2098,7 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
                     onClick={() => {
                       playWorkbenchFoley('part_select');
                       setFocusedProjectile(sol.projectileId);
+                      setActiveBallisticsCaliber(sol.projectileId);
                     }}
                   >
                     <div className="eb-cal-card-top">

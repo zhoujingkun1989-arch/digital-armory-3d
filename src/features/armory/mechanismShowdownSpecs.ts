@@ -39,12 +39,15 @@ export type DriveFamilyId =
 export type LockingFamilyId =
   | 'rotating_lug_bolt'
   | 'tilting_barrel_cam'
+  | 'toggle_knee_joint'
+  | 'super_v_off_axis_cam'
   | 'roller_or_mass_blowback'
   | 'cylinder_notch_ratchet'
   | 'cam_letoff_or_adf_sled';
 
 export type FeedFamilyId =
   | 'staggered_box_magazine'
+  | 'disintegrating_belt_shuttle'
   | 'top_helical_90deg'
   | 'swing_out_cylinder'
   | 'underbarrel_tubular_elevator'
@@ -511,6 +514,56 @@ export const LOCKING_FAMILIES: readonly MechanismFamilySeed<LockingFamilyId>[] =
       },
     },
     {
+      id: 'toggle_knee_joint',
+      axis: 'locking',
+      accentHex: '#eab308',
+      badge: {
+        zh: '过死点肘节 · TOGGLE LOCK',
+        en: 'KNEE-JOINT TOGGLE LOCK',
+      },
+      title: {
+        zh: '鲁格过死点双连杆肘节屈伸闭锁',
+        en: 'Over-Center Two-Link Knee-Joint Toggle',
+      },
+      principle: {
+        zh: '前、后肘节连杆铰接中枢下沉至枪膛轴线以下 1.5 mm 过死点自锁；短后坐 7 mm 泄压后，肘节滚轮撞击机匣开锁斜坡向上折起 54° 完成抽抛壳。',
+        en: 'Articulated front and rear toggle links rest 1.5 mm below dead-center to lock rigid; after 7 mm short recoil, frame ramps cam the knee joint 54° upward.',
+      },
+      pros: {
+        zh: '枪管无上下倾斜纯直线后坐，握把重心靠后指向性极佳，机械运动极具钟表美感',
+        en: 'Purely linear non-tilting barrel travel and natural pointability with clockwork mechanical elegance',
+      },
+      cons: {
+        zh: '精密铰接销轴铣削工时昂贵，外露上折肘节在战壕泥浆中易受阻滞',
+        en: 'Expensive hand-fitted link tolerances and exposed upward-folding toggle vulnerable to trench mud',
+      },
+    },
+    {
+      id: 'super_v_off_axis_cam',
+      axis: 'locking',
+      accentHex: '#ec4899',
+      badge: {
+        zh: '110°偏轴滑块 · SUPER V CAM',
+        en: 'SUPER V 110° OFF-AXIS CAM',
+      },
+      title: {
+        zh: 'KRISS Super V 110° 偏轴下沉滑块延迟',
+        en: 'KRISS Super V 110° Off-Axis Cam-Delayed',
+      },
+      principle: {
+        zh: '铰接枪机两侧凸轮耳嵌入重型配重滑块的变斜率曲线槽：初段近垂直机械死角提供闭锁延迟，随后驱动配重沿弹匣井后方 110° 导轨向斜下方俯冲抵消上跳。',
+        en: 'Lateral bolt cam lugs ride variable-angle slots in an off-axis counterweight slider, delaying initial opening before redirecting recoil momentum 110° downward.',
+      },
+      pros: {
+        zh: '配合低于虎口的枪管轴线，将 1,200 RPM .45 ACP 连发枪口上跳压制到近乎水平',
+        en: 'Redirects high-impulse .45 ACP recoil downward below the firing hand for flat 1,200 RPM bursts',
+      },
+      cons: {
+        zh: '弹匣井后方需容纳长行程垂直滑块腔，下机匣前后高度与横向体积增大',
+        en: 'Requires a deep vertical slider housing behind the magwell, increasing lower-receiver bulk',
+      },
+    },
+    {
       id: 'roller_or_mass_blowback',
       axis: 'locking',
       accentHex: '#a78bfa',
@@ -611,6 +664,31 @@ export const FEED_FAMILIES: readonly MechanismFamilySeed<FeedFamilyId>[] = [
     cons: {
       zh: '高容量弹匣向下凸出增加卧姿火线高度，抱弹口变形易诱发双进弹',
       en: '30-round vertical magazines increase prone profile; bent feed lips cause double-feeds',
+    },
+  },
+  {
+    id: 'disintegrating_belt_shuttle',
+    axis: 'feed',
+    accentHex: '#84cc16',
+    badge: {
+      zh: '双拨爪弹链 · M27 BELT FEED',
+      en: 'M27 BELT SHUTTLE + STANAG',
+    },
+    title: {
+      zh: '受机盖 S 槽驱动双拨爪可散弹链 + 应急弹匣双供',
+      en: 'Top-Cover S-Cam Dual-Pawl Belt Shuttle & Dual Feed',
+    },
+    principle: {
+      zh: '枪机框顶部立柱滚轮嵌入受机盖 S 形曲线导槽，将前后往复转化为供弹杠杆横向摆动，驱动内外双弹簧拨齿接力横移 M27 可散钢链节，并保留侧向 STANAG 步枪弹匣应急井。',
+      en: 'A carrier top roller tracks an S-cam channel inside the top cover to swing dual spring-loaded feed pawls across M27 disintegrating links, backed by a side STANAG magwell.',
+    },
+    pros: {
+      zh: '200 发连续弹链火力无需频繁换匣，紧急断链时可直接插用同班步兵 30 发弹匣',
+      en: 'Delivers 200-round sustained suppressive fire with emergency rifle-magazine cross-compatibility',
+    },
+    cons: {
+      zh: '拉动弹链耗散部分自动机复进能量；使用高弹力步枪弹匣供弹时偶发供弹速率失配',
+      en: 'Pulling heavy belts consumes carrier energy, and high-spring-tension STANAG mags require lip clearance',
     },
   },
   {
@@ -1360,6 +1438,195 @@ export const SHOWDOWN_EXHIBIT_SPECS: Readonly<
       timing: makeWave2Timing(0.1, 0.21, 0.45, 0.88, 0.92),
     },
   },
+  m249: {
+    id: 'm249',
+    driveFamily: 'long_stroke_piston',
+    lockingFamily: 'rotating_lug_bolt',
+    feedFamily: 'disintegrating_belt_shuttle',
+    driveDetail: {
+      zh: '18.3 英寸快拆重枪管下方长行程导气活塞与双导杆滑座连成一体，开膛待击释放后整组前冲推弹闭锁并承接导气后坐。',
+      en: 'Under-barrel long-stroke gas piston and dual-rod slide travel full-stroke from an open-bolt sear, slamming forward to chamber, lock, and fire.',
+    },
+    lockingDetail: {
+      zh: '滑座立柱驱动双突笋回转枪机旋入快拆枪管节套刚性闭锁；待弹头越过导气孔泄压后，滑座先自由后退数毫米再旋出突笋并提速抽壳。',
+      en: 'Slide post cams a heavy 2-lug rotating bolt into the quick-change barrel extension, holding dwell until post-port blowdown before primary extraction.',
+    },
+    feedDetail: {
+      zh: '枪机框顶部滚轮驱动受机盖 S 形杠杆带动内外双拨爪，分两步将 200 发 M27 可散钢链横移到位，同时左下侧斜置弹匣井兼容 30 发 STANAG 弹匣。',
+      en: 'Top-cover S-cam lever swings inner and outer pawls to index 200-round M27 disintegrating links in two half-steps, supplemented by a 35° STANAG magwell.',
+    },
+    fireControlDetail: {
+      zh: '纯全自动开膛待击阻铁（Open-Bolt Sear）：停射时枪机锁在后方保持枪膛空气对流冷却，彻底杜绝持续扫射红热枪管诱发膛内自燃（Cook-Off）。',
+      en: 'Open-bolt full-auto sear holds the bolt group rearward between bursts so air cools the chamber and eliminates hot-barrel propellant cook-off.',
+    },
+    signatureAdvantage: {
+      zh: '集 200 发弹链持续压制火力、3 秒免工具快拆换管与同班步兵 STANAG 弹匣应急互通于一体',
+      en: 'Combines 200-round belt-fed suppression, 3-second quick-change barrel cooling, and emergency rifle-magazine sharing',
+    },
+    engineeringTradeoff: {
+      zh: '开膛待击扣扳机瞬间大质量活塞滑座前冲造成轻微点射散布抖动，空枪全重达 7.5 kg',
+      en: 'Forward-slamming open-bolt carrier mass nudges point-of-aim on trigger break, with 7.5 kg unloaded weight',
+    },
+    fallbackCatalog: {
+      bayCode: 'BAY-17',
+      modelCode: 'FN M249 SAW · MINIMI 5.56MM BELT-FED',
+      shortLabel: { zh: 'M249 SAW', en: 'M249 SAW' },
+      fullName: {
+        zh: 'FN M249 班用自动武器 (轻机枪)',
+        en: 'FN M249 SAW Squad Automatic Weapon',
+      },
+      originTag: {
+        zh: '比利时 / 美国 · 弹链轻机枪',
+        en: 'Belgium / USA · Belt-Fed LMG',
+      },
+      caliber: {
+        zh: '5.56×45mm NATO (M27弹链)',
+        en: '5.56×45mm NATO (M27 Belt)',
+      },
+      compactCaliber: { zh: '5.56 NATO · M27弹链', en: '5.56 NATO · M27 Belt' },
+      caliberProfileFallback: '556_nato',
+      isArchery: false,
+      peakLoadValue: 430,
+      peakLoadFormatted: { zh: '430 MPa', en: '430 MPa' },
+      standardLabel: 'NATO EPVAT',
+      muzzleVelocityMps: 915,
+      projectileMassG: 4.02,
+      overallLengthMm: 1038,
+      barrelOrStrokeMm: 465,
+      emptyWeightKg: 7.5,
+      partsCount: 26,
+      cyclicRateRpm: 800,
+      rateOfFireDisplay: { zh: '750–850 发/分', en: '750–850 rpm (Open-Bolt)' },
+      timing: makeWave2Timing(0.24, 0.35, 0.62, 0.9, 0.56),
+    },
+  },
+  p08: {
+    id: 'p08',
+    driveFamily: 'short_recoil_barrel',
+    lockingFamily: 'toggle_knee_joint',
+    feedFamily: 'staggered_box_magazine',
+    driveDetail: {
+      zh: '无全包套筒，4 英寸锥形枪管与叉形节套锁死为一体沿握把导轨纯直线短后坐约 7 mm，动能直接传递至双连杆肘节。',
+      en: 'Instead of an enclosing slide, the 4" tapered barrel and forked receiver recoil straight rearward 7 mm on frame ways before tripping the toggle.',
+    },
+    lockingDetail: {
+      zh: '方形枪机、前肘节与后肘节三铰点处于轴线下方 1.5 mm 过死点锁死；双侧滚轮撞击机匣斜坡后以 54° 向上急剧屈膝折起完成解锁。',
+      en: 'Breechblock and twin toggle links rest 1.5 mm below bore centerline in over-center lockup until frame cam ears snap the knee joint 54° skyward.',
+    },
+    feedDetail: {
+      zh: '55° 大倾角握把内嵌 8 发单排折弯薄钢板弹匣，带同心圆双耳底托与拇指助推钮，末发打空顶起空仓挂机挡铁将肘节定格高耸张开态。',
+      en: 'Steep 55° grip houses an 8-round sheet-steel single-stack magazine with a thumb follower button that trips the hold-open catch on the empty round.',
+    },
+    fireControlDetail: {
+      zh: '新月扳机推顶侧盖内 L 形横向传递杠杆压下枪机左侧扁簧阻铁释放内置平移击针，配合刻有“GESICHERT”字样的麦秆回火拇指保险杆。',
+      en: 'Crescent trigger cams a sideplate L-lever laterally against a leaf sear to release the internal striker, guarded by a straw-tempered Gesichert safety bar.',
+    },
+    signatureAdvantage: {
+      zh: '55° 自然握角与非偏移纯直线枪管缔造指向性与首发精度神话，孕育了统治百年的 9×19mm 帕拉贝鲁姆手枪弹',
+      en: '55° grip ergonomics and inline non-tilting barrel deliver legendary pointability—and birthed the universal 9×19mm Parabellum cartridge',
+    },
+    engineeringTradeoff: {
+      zh: '多连杆手工研配制造成本极高，且对弹药冲量窗口挑剔，泥沙侵入上折铰链易致不完全闭锁',
+      en: 'Labor-intensive hand-fitted toggle links are costly to machine and sensitive to weak ammunition or mud',
+    },
+    fallbackCatalog: {
+      bayCode: 'BAY-18',
+      modelCode: 'DWM PISTOLE PARABELLUM 1908 · 9×19MM',
+      shortLabel: { zh: '鲁格 P08', en: 'Luger P08' },
+      fullName: {
+        zh: '德国鲁格 P08 肘节手枪',
+        en: 'DWM Luger P08 Parabellum Pistol',
+      },
+      originTag: {
+        zh: '德国 · 肘节半自动手枪',
+        en: 'Germany · Toggle-Lock Pistol',
+      },
+      caliber: {
+        zh: '9×19mm Parabellum',
+        en: '9×19mm Parabellum',
+      },
+      compactCaliber: { zh: '9×19mm 帕拉贝鲁姆', en: '9×19mm Parabellum' },
+      caliberProfileFallback: '9mm_para',
+      isArchery: false,
+      peakLoadValue: 235,
+      peakLoadFormatted: { zh: '235 MPa', en: '235 MPa' },
+      standardLabel: 'CIP / SAAMI',
+      muzzleVelocityMps: 365,
+      projectileMassG: 8.04,
+      overallLengthMm: 222,
+      barrelOrStrokeMm: 102,
+      emptyWeightKg: 0.871,
+      partsCount: 25,
+      cyclicRateRpm: null,
+      rateOfFireDisplay: { zh: '半自动 (8发单排)', en: 'Semi-Auto (8-Rd Mag)' },
+      timing: makeWave2Timing(0.11, 0.22, 0.5, 0.88, null),
+    },
+  },
+  vector: {
+    id: 'vector',
+    driveFamily: 'delayed_or_straight_blowback',
+    lockingFamily: 'super_v_off_axis_cam',
+    feedFamily: 'staggered_box_magazine',
+    driveDetail: {
+      zh: '无导气孔固定 5.5 英寸低轴线枪管，直接利用 .45 ACP 弹底后推力驱动铰接枪机，经偏轴滑块将直线冲量折射至弹匣井后方竖井。',
+      en: 'Fixed 5.5" sub-hand barrel uses zero gas ports; .45 ACP case thrust drives an articulated bolt coupled to a vertical counterweight well.',
+    },
+    lockingDetail: {
+      zh: '枪机两侧凸轮耳在重型滑块陡峭初段槽内获得高机械减速比延迟开锁，泄压后迫使滑块沿 110° 斜轨向下猛冲压缩顶置复进簧。',
+      en: 'Steep initial cam-slot geometry delays breech opening under peak pressure before forcing the heavy slider 110° downward behind the magwell.',
+    },
+    feedDetail: {
+      zh: '前倾 66° 握把兼容标准格洛克 G21 双排双进弹匣与加长 25 发 MagEx2 弹匣，短复进行程支持高达 1,200 发/分极速连发。',
+      en: 'Accepts standard Glock 21 and extended 25-round .45 ACP MagEx2 double-stack magazines at 66°, cycling cleanly at 1,200 rpm.',
+    },
+    fireControlDetail: {
+      zh: '上机匣顶置线性回转击锤配独立双侧拇指保险与单发 / 两连发点射（2-Rd Burst） / 全自动三档快慢机，确保高射速精确控弹。',
+      en: 'Top-mounted linear hammer pack features separate ambidextrous safety levers and a 3-mode Semi / 2-Round Burst / Full-Auto selector.',
+    },
+    signatureAdvantage: {
+      zh: '虎口以下超低枪管轴线叠加 110° 下沉反冲矢量，让大冲量 .45 ACP 在 1,200 RPM 连发下保持惊人平顺聚拢',
+      en: 'Sub-hand bore axis plus 110° downward recoil redirection tames heavy 230 gr .45 ACP bursts at 1,200 RPM',
+    },
+    engineeringTradeoff: {
+      zh: '230 格令亚音速大直径弹头气动下坠剧烈，100 米外外弹道能量与落点远逊小口径高速弹',
+      en: 'Subsonic 230 gr .45 ACP suffers steep trajectory drop beyond 100 m, and the vertical Super V well adds receiver height',
+    },
+    fallbackCatalog: {
+      bayCode: 'BAY-19',
+      modelCode: 'KRISS VECTOR GEN II SDP-SB · .45 ACP SUPER V',
+      shortLabel: { zh: 'KRISS Vector', en: 'KRISS Vector' },
+      fullName: {
+        zh: 'KRISS Vector 短剑偏轴冲锋枪 (.45 ACP)',
+        en: 'KRISS Vector Gen II Super V SMG (.45 ACP)',
+      },
+      originTag: {
+        zh: '美国 / 瑞士 · 偏轴延迟冲锋枪',
+        en: 'USA / Switzerland · Off-Axis SMG',
+      },
+      caliber: {
+        zh: '.45 ACP (11.43×23mm)',
+        en: '.45 ACP (230 gr Subsonic FMJ)',
+      },
+      compactCaliber: { zh: '.45 ACP · 230 gr', en: '.45 ACP · 230 gr' },
+      caliberProfileFallback: '9mm_para',
+      isArchery: false,
+      peakLoadValue: 145,
+      peakLoadFormatted: { zh: '145 MPa', en: '145 MPa' },
+      standardLabel: 'SAAMI',
+      muzzleVelocityMps: 260,
+      projectileMassG: 14.9,
+      overallLengthMm: 617,
+      barrelOrStrokeMm: 140,
+      emptyWeightKg: 2.72,
+      partsCount: 25,
+      cyclicRateRpm: 1200,
+      rateOfFireDisplay: {
+        zh: '1,200 发/分 (单/两连/全自动)',
+        en: '1,200 rpm (Semi / 2-Rd / Auto)',
+      },
+      timing: makeWave2Timing(0.11, 0.24, 0.52, 0.89, null),
+    },
+  },
 };
 
 const DEFAULT_CLASSIFICATION: ShowdownExhibitClassification =
@@ -1545,6 +1812,58 @@ export const CLASSIC_RIVALRY_SEEDS: readonly ClassicRivalrySeed[] = [
     verdict: {
       zh: '12 号霰弹膛压峰值低（79 MPa）且衰减极快，Benelli M4 必须在紧贴弹膛前方布置双对称 ARGO 活塞截获初段高压气并配升降托弹板供弹；SCAR 则在中段截取 430 MPa 步枪燃气轻推单活塞。',
       en: 'Because 12-gauge pressure peaks low (79 MPa) and decays fast, Benelli M4 mounts twin ARGO pistons right ahead of the chamber with a carrier elevator, whereas SCAR taps 430 MPa gas mid-barrel.',
+    },
+  },
+  // V2.0 Flagship Trio Classic Rivalries:
+  {
+    id: 'p08_vs_g17',
+    weaponA: 'p08',
+    weaponB: 'g17',
+    pillLabel: {
+      zh: '鲁格 P08 过死点肘节 vs G17 勃朗宁偏移套筒',
+      en: 'Luger P08 Toggle-Lock vs Glock 17 Tilting Slide',
+    },
+    headline: {
+      zh: '跨越四分之三世纪的 9×19mm 手枪闭锁革命：1908 手工锻钢双连杆屈膝肘节 vs 1982 聚合物矩形弹膛下倾套筒',
+      en: '75 Years of 9×19mm Pistol Evolution: 1908 Forged Over-Center Knee-Joint Toggle vs 1982 Polymer Tilting-Barrel Slide',
+    },
+    verdict: {
+      zh: '鲁格 P08 缔造了 9×19mm 弹药并以非倾斜直线枪管与 55° 胡桃木握把树立精度标杆，但暴露铰链畏惧泥沙且造价高昂；格洛克 G17 以一体套筒包覆枪管偏移闭锁与 17 发双排弹匣将容弹量翻倍并减轻 28% 空重。',
+      en: 'Luger P08 pioneered 9×19mm with an inline barrel and jewel-like toggle links, whereas Glock 17 enclosed a 2-piece tilting barrel inside a Tenifer slide over a polymer 17-round frame at 28% less weight.',
+    },
+  },
+  {
+    id: 'vector_vs_mp5',
+    weaponA: 'vector',
+    weaponB: 'mp5',
+    pillLabel: {
+      zh: 'Vector 110°偏轴滑块 vs MP5 双滚柱延迟',
+      en: 'KRISS Vector Super V vs HK MP5 Roller-Delayed',
+    },
+    headline: {
+      zh: '冲锋枪延迟闭锁的两大殿堂奇观：21世纪 .45 ACP 110°下沉矢量分解 vs 冷战 9×19mm 1:4 双滚柱楔铁减速',
+      en: 'Two Masterpieces of Delayed-Blowback Physics: .45 ACP 110° Off-Axis Vector Slider vs 9mm 45° Dual-Roller Wedge',
+    },
+    verdict: {
+      zh: 'MP5 在同轴机匣内以双圆柱滚柱实现 1:4 动量放大，赋予 9mm 步枪级闭膛精度；Vector 则将枪管压至虎口下方并令配重滑块向斜下方 110° 俯冲，在 1,200 RPM 狂暴射速下驯服双倍截面积的 .45 ACP 重弹。',
+      en: 'MP5 keeps all mass coaxial via 1:4 roller-wedge mechanical leverage for surgical 800 RPM 9mm fire, while Vector drops its bore below the hand and dives a slider 110° downward to tame 1,200 RPM .45 ACP recoil.',
+    },
+  },
+  {
+    id: 'm249_vs_m4a1',
+    weaponA: 'm249',
+    weaponB: 'm4a1',
+    pillLabel: {
+      zh: 'M249 开膛弹链机枪 vs M4A1 闭膛气吹步枪',
+      en: 'M249 SAW Open-Bolt Belt vs M4A1 Closed-Bolt DI',
+    },
+    headline: {
+      zh: '美军步兵班同口径 5.56 NATO 火力黄金搭档：开膛长活塞 + 200发可散弹链快拆重管 vs 闭膛气吹 + 30发盒匣轻卡宾',
+      en: '5.56 NATO Infantry Squad Fireteam Pair: Open-Bolt Belt-Fed Quick-Change SAW vs Closed-Bolt Direct-Impingement Carbine',
+    },
+    verdict: {
+      zh: '同射 62 格令 M855 步枪弹，M4A1 以 2.92 kg 轻巧闭膛气吹保障精准快速单点；M249 则以 7.5 kg 开膛散热架构、双拨爪 M27 弹链与 3 秒快拆重管提供不惧自燃的 200 发持续火力，并可在弹尽时直接借用 M4 弹匣。',
+      en: 'Firing the exact same 5.56mm M855 round, M4A1 optimizes 2.92 kg closed-bolt point accuracy, while M249 trades 7.5 kg mass for open-bolt cooling, 200-round M27 belt suppression, a quick-change barrel, and emergency M4 mag sharing.',
     },
   },
 ];

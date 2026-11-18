@@ -9,23 +9,44 @@ import {
 } from '../weapons/types';
 
 const VAULT_EXHIBIT_COUNT = (WEAPON_IDS as readonly string[]).length;
+const IS_NINETEEN_EXHIBIT_VAULT = VAULT_EXHIBIT_COUNT >= 19;
 const IS_SIXTEEN_EXHIBIT_VAULT = VAULT_EXHIBIT_COUNT >= 16;
 const VAULT_EXHIBIT_ZH =
-  VAULT_EXHIBIT_COUNT === 16
-    ? '十六'
-    : VAULT_EXHIBIT_COUNT === 13
-      ? '十三'
-      : String(VAULT_EXHIBIT_COUNT);
-const VAULT_PARTS_TOTAL = IS_SIXTEEN_EXHIBIT_VAULT ? 404 : 327;
-const VAULT_TEXTURES_TOTAL = IS_SIXTEEN_EXHIBIT_VAULT ? 94 : 76;
-const VAULT_AUDIO_TOTAL = IS_SIXTEEN_EXHIBIT_VAULT ? 936 : 758;
-const LAB_CALIBER_TOTAL = IS_SIXTEEN_EXHIBIT_VAULT ? 10 : 7;
+  VAULT_EXHIBIT_COUNT === 19
+    ? '十九'
+    : VAULT_EXHIBIT_COUNT === 16
+      ? '十六'
+      : VAULT_EXHIBIT_COUNT === 13
+        ? '十三'
+        : String(VAULT_EXHIBIT_COUNT);
+const VAULT_PARTS_TOTAL = IS_NINETEEN_EXHIBIT_VAULT
+  ? 480
+  : IS_SIXTEEN_EXHIBIT_VAULT
+    ? 404
+    : 327;
+const VAULT_TEXTURES_TOTAL = IS_NINETEEN_EXHIBIT_VAULT
+  ? 112
+  : IS_SIXTEEN_EXHIBIT_VAULT
+    ? 94
+    : 76;
+const VAULT_AUDIO_TOTAL = IS_NINETEEN_EXHIBIT_VAULT
+  ? 1112
+  : IS_SIXTEEN_EXHIBIT_VAULT
+    ? 936
+    : 758;
+const LAB_CALIBER_TOTAL = IS_NINETEEN_EXHIBIT_VAULT
+  ? 11
+  : IS_SIXTEEN_EXHIBIT_VAULT
+    ? 10
+    : 7;
 const LAB_CALIBER_ZH =
-  LAB_CALIBER_TOTAL === 10
-    ? '十'
-    : LAB_CALIBER_TOTAL === 7
-      ? '七'
-      : String(LAB_CALIBER_TOTAL);
+  LAB_CALIBER_TOTAL === 11
+    ? '十一'
+    : LAB_CALIBER_TOTAL === 10
+      ? '十'
+      : LAB_CALIBER_TOTAL === 7
+        ? '七'
+        : String(LAB_CALIBER_TOTAL);
 
 export interface UiDictionary {
   watermark: string;
@@ -55,11 +76,21 @@ export interface UiDictionary {
     title: string;
     subtitle: string;
     filterAria: string;
-    categories: Record<ArmoryCategory | 'shotgun' | 'archery', string>;
+    categories: Record<ArmoryCategory | 'lmg' | 'shotgun' | 'archery', string>;
     showcaseBtn: string;
     showcaseTitle: string;
     cartridgeLabBtn: string;
     cartridgeLabTitle: string;
+    ballisticsLabBtn: string;
+    ballisticsLabTitle: string;
+    posterBtn: string;
+    posterTitle: string;
+    certRackTitle: (rank: string) => string;
+    certPlaqueLabel: string;
+    certPlaqueSub: (
+      stripRank: string | null,
+      triageRank: string | null
+    ) => string;
     storyBtn: string;
     storyBtnTitle: string;
     enterBenchBtn: (shortTag: string) => string;
@@ -159,6 +190,10 @@ export interface UiDictionary {
     caliperChipTitle: string;
     cartridgeChip: string;
     cartridgeChipTitle: string;
+    ballisticsChip: string;
+    ballisticsChipTitle: string;
+    posterChip: string;
+    posterChipTitle: string;
     edgesChip: string;
     edgesChipTitle: string;
     labelsChip: string;
@@ -354,6 +389,8 @@ export interface UiDictionary {
     dismissAlert: string;
     completedTitle: string;
     completedDesc: string;
+    shareCertPosterBtn: string;
+    shareCertPosterTitle: string;
   };
   malfunction: {
     badge: string;
@@ -370,6 +407,8 @@ export interface UiDictionary {
     click3dHint: string;
     clearedTitle: string;
     clearedDesc: string;
+    shareCertPosterBtn: string;
+    shareCertPosterTitle: string;
     archeryBadge: string;
     archeryRootCauseLabel: string;
     archerySafetyNoteLabel: string;
@@ -447,6 +486,8 @@ export interface UiDictionary {
     primerLabel: string;
     coreAnatomyLabel: string;
     chamberInWeaponBtn: (weaponLabel: string) => string;
+    ballisticsRangeBtn: string;
+    ballisticsRangeTitle: string;
     tableCaption: string;
     colCaliber: string;
     colStandard: string;
@@ -701,6 +742,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       categories: {
         all: '全部馆藏',
         assault: '突击/步枪/无托',
+        lmg: '机枪/弹链',
         smg: '冲锋枪 / PDW',
         sniper: '狙击/反器材',
         shotgun: '战术霰弹',
@@ -711,6 +753,15 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       showcaseTitle: '打开项目官方宣传与架构展示主页',
       cartridgeLabBtn: '1:1 实弹剖视馆',
       cartridgeLabTitle: `打开 ${LAB_CALIBER_TOTAL} 口径 SAAMI/CIP 1:1 实弹纵剖对比实验室：并排纵剖陈列 9×19mm 至 .50 BMG 弹道解剖与定量对比矩阵 (B)`,
+      ballisticsLabBtn: '1000m 外弹道 [R]',
+      ballisticsLabTitle:
+        '打开 1,000m RK4 外弹道、横风偏流、第一像面圣诞树分划板与狙击 DOPE 射表实验室 (快捷键: R)',
+      posterBtn: '剖视海报 [U]',
+      posterTitle:
+        '打开即时高清 3D 剖视社交分享海报工坊：合成 16:9 / 4:5 图鉴卡与军械师认证章 (快捷键: U)',
+      certRackTitle: (rank) => `军械师考核认证：${rank} 级资质徽章`,
+      certPlaqueLabel: '军械师考核认证',
+      certPlaqueSub: (s, t) => `快拆 ${s ?? '—'} · 排障 ${t ?? '—'}`,
       storyBtn: '枪械研发故事',
       storyBtnTitle: '打开当前枪械完整四幕研发历史故事与双语语音纪录片',
       enterBenchBtn: (tag) => `进入 ${tag} 拆解台`,
@@ -823,6 +874,12 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         '开启 1:1 3D 军械游标卡尺与空间包络标尺：在 3D 表面点选任意两点测量毫米级间距与轴向分量 (K)',
       cartridgeChip: '实弹馆',
       cartridgeChipTitle: `打开 ${LAB_CALIBER_TOTAL} 口径 SAAMI/CIP 1:1 实弹纵剖对比实验室 (B)`,
+      ballisticsChip: '外弹道',
+      ballisticsChipTitle:
+        '打开当前口径 1,000m RK4 外弹道、横风偏流与光学分划板实验室 (R)',
+      posterChip: '分享海报',
+      posterChipTitle:
+        '截取当前 3D 剖视视口生成高清 16:9 / 4:5 社交分享海报与二维码 (U)',
       edgesChip: 'CAD 描边',
       edgesChipTitle: '开启/关闭工业 CAD 硬边轮廓线 (E)',
       labelsChip: '零件标签',
@@ -833,7 +890,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
           ? '军械机械咬合与实弹声场已静音，点击开启 (M)'
           : `开启/静音 Web Audio 军械机械咬合声与 ${LAB_CALIBER_TOTAL} 口径实弹声场 (M)`,
       resetChip: '复位',
-      resetChipTitle: '重置回默认合拢态与标准视角 (R)',
+      resetChipTitle: '重置回默认合拢态与标准视角 (Shift+R)',
     },
     bom: {
       collapsedBtn: (n) => `零件目录 (${n})`,
@@ -1070,6 +1127,9 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       completedTitle: '全套野战快拆与逆序复装考核圆满完成！',
       completedDesc:
         '全部运动总成已按真实军械教范无干涉归位闭锁，可再次点击零件复练或切换发射演示检验闭锁。',
+      shareCertPosterBtn: '生成资格海报',
+      shareCertPosterTitle:
+        '生成带本枪军械师考核等级印章与扫码直达剖视台二维码的高清分享海报 (U)',
     },
     malfunction: {
       badge: 'WP-09 · 经典枪械故障剖视排障室',
@@ -1089,6 +1149,9 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       clearedTitle: '故障已彻底排除 · 新弹已推入膛内完全闭锁！',
       clearedDesc:
         '卡阻弹壳与供弹干涉已按标准军械教范清除，闭锁突笋恢复 100% 啮合，可切换其他故障继续演练。',
+      shareCertPosterBtn: '生成资格海报',
+      shareCertPosterTitle:
+        '生成带本枪排障诊断考核等级印章与扫码直达剖视台二维码的高清分享海报 (U)',
       archeryBadge: 'WP-09 · 弓弩机械故障剖视排障室',
       archeryRootCauseLabel: '弓弩机械诱因：',
       archerySafetyNoteLabel: '防空放安全规范：',
@@ -1168,6 +1231,9 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       primerLabel: '底火与传火孔',
       coreAnatomyLabel: '被甲与弹芯解剖',
       chamberInWeaponBtn: (w) => `装填入 ${w} 发射演示`,
+      ballisticsRangeBtn: '1,000m 外弹道靶场 [R]',
+      ballisticsRangeTitle:
+        '在 1,000m RK4 外弹道实验室检视当前口径下坠、横风偏流、跨音速区与圣诞树分划板 (R)',
       tableCaption: `SAAMI / CIP / NATO ${LAB_CALIBER_ZH}大馆藏口径实弹 1:1 几何尺寸与内弹道定量对比矩阵`,
       colCaliber: '口径代号',
       colStandard: '标准规范',
@@ -1461,6 +1527,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       categories: {
         all: 'All Vault',
         assault: 'Rifle / Carbine',
+        lmg: 'Belt-Fed LMG',
         smg: 'SMG / PDW',
         sniper: 'Sniper / Anti-Materiel',
         shotgun: 'Shotguns',
@@ -1471,6 +1538,15 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       showcaseTitle: 'Open official product & engineering showcase page',
       cartridgeLabBtn: '1:1 Cartridge Lab',
       cartridgeLabTitle: `Open ${LAB_CALIBER_TOTAL}-Caliber SAAMI/CIP 1:1 Cartridge Cutaway Lab: side-by-side cutaway anatomy & quantitative ballistics from 9×19mm to .50 BMG (B)`,
+      ballisticsLabBtn: '1,000m Range [R]',
+      ballisticsLabTitle:
+        'Open 1,000m RK4 External Ballistics, Crosswind Drift, FFP Reticle & Sniper DOPE Lab (Shortcut: R)',
+      posterBtn: '3D Poster [U]',
+      posterTitle:
+        'Open Instant HD 3D Cutaway Social Poster Studio: export 16:9 / 4:5 cards with QR & Armorer Rank seal (Shortcut: U)',
+      certRackTitle: (rank) => `Earned Armorer Qualification: Rank ${rank}`,
+      certPlaqueLabel: 'Armorer Qualification',
+      certPlaqueSub: (s, t) => `Strip ${s ?? '—'} · Triage ${t ?? '—'}`,
       storyBtn: 'R&D Story',
       storyBtnTitle: 'Open 4-Act Firearm R&D Documentary & Bilingual Voiceover',
       enterBenchBtn: (tag) => `Inspect ${tag}`,
@@ -1586,6 +1662,12 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         'Toggle 1:1 3D armorer vernier caliper & CAD envelope scale ruler: click any 2 surface points for millimeter measurement (K)',
       cartridgeChip: 'Ammo Lab',
       cartridgeChipTitle: `Open ${LAB_CALIBER_TOTAL}-Caliber SAAMI/CIP 1:1 Cartridge Cutaway Lab (B)`,
+      ballisticsChip: '1km Range',
+      ballisticsChipTitle:
+        'Open 1,000m RK4 External Ballistics, Crosswind & FFP Scope Lab for current caliber (R)',
+      posterChip: 'Poster',
+      posterChipTitle:
+        'Capture live 3D cutaway viewport into an HD 16:9 / 4:5 social share poster with QR deep-link (U)',
       edgesChip: 'CAD Edges',
       edgesChipTitle: 'Toggle industrial CAD hard-edge wireframe overlay (E)',
       labelsChip: 'Callouts',
@@ -1598,7 +1680,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
           : `Toggle Web Audio gunsmith mechanical clicks & ${LAB_CALIBER_TOTAL}-caliber ballistic SFX (M)`,
       resetChip: 'Reset',
       resetChipTitle:
-        'Reset to 0% assembled state & default isometric camera (R)',
+        'Reset to 0% assembled state & default isometric camera (Shift+R)',
     },
     bom: {
       collapsedBtn: (n) => `BOM Parts (${n})`,
@@ -1857,6 +1939,9 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         'Full Military Field-Strip & Reverse Reassembly Completed!',
       completedDesc:
         'All operating groups were stripped and reinstalled in strict topological order without mechanical interference.',
+      shareCertPosterBtn: 'Share Rank Poster',
+      shareCertPosterTitle:
+        'Generate an HD 3D Cutaway Share Poster stamped with your earned Armorer Qualification Rank & QR code (U)',
     },
     malfunction: {
       badge: 'WP-09 · MALFUNCTION CUTAWAY & CLEARING LAB',
@@ -1879,6 +1964,9 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         'Stoppage Cleared · Fresh Cartridge Seated in Full Battery!',
       clearedDesc:
         'All jammed brass and feed obstructions were cleared per military Remedial Action doctrine, restoring 100% bolt lockup.',
+      shareCertPosterBtn: 'Share Rank Poster',
+      shareCertPosterTitle:
+        'Generate an HD 3D Cutaway Share Poster stamped with your earned Triage Qualification Rank & QR code (U)',
       archeryBadge: 'WP-09 · ARCHERY TIMING & STOP DIAGNOSTICS',
       archeryRootCauseLabel: 'Archery Root Cause:',
       archerySafetyNoteLabel: 'Anti-Dry-Fire Safety Protocol:',
@@ -1966,6 +2054,9 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       primerLabel: 'Primer & Flash Hole',
       coreAnatomyLabel: 'Jacket & Core Anatomy',
       chamberInWeaponBtn: (w) => `Chamber in ${w} Live Cycle`,
+      ballisticsRangeBtn: '1,000m Trajectory Lab [R]',
+      ballisticsRangeTitle:
+        'Inspect drop, crosswind drift, transonic Mach 1.0 zone & FFP reticle for this caliber in the 1,000m Range Lab (R)',
       tableCaption: `SAAMI / CIP / NATO ${LAB_CALIBER_TOTAL}-Caliber 1:1 Dimensional & Internal Ballistics Comparison Matrix`,
       colCaliber: 'Caliber',
       colStandard: 'Standard',

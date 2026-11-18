@@ -26,11 +26,17 @@ const LazyShowcaseView = lazy(() => import('./features/showcase/ShowcaseView'));
 const LazyCartridgeLabView = lazy(
   () => import('./features/cartridges/CartridgeLabView')
 );
+const LazyExternalBallisticsView = lazy(
+  () => import('./features/ballistics/ExternalBallisticsView')
+);
 const LazyTextureAtlasModal = lazy(
   () => import('./features/atlas/TextureAtlasModal')
 );
 const LazyMonographPrintModal = lazy(
   () => import('./features/monograph/MonographPrintModal')
+);
+const LazyPosterShareModal = lazy(
+  () => import('./features/share/PosterShareModal')
 );
 
 export const App: React.FC = () => {
@@ -42,8 +48,12 @@ export const App: React.FC = () => {
   const screen = useAppStore((s) => s.screen);
   const mode = useAppStore((s) => s.mode);
   const lang = useAppStore((s) => s.lang);
+  const activeBallisticsCaliber = useAppStore((s) => s.activeBallisticsCaliber);
   const textureModalOpen = useAppStore((s) => s.textureModalOpen);
   const monographModalOpen = useAppStore((s) => s.monographModalOpen);
+  const posterShareModalOpen = useAppStore((s) => s.posterShareModalOpen);
+  const posterShareOptions = useAppStore((s) => s.posterShareOptions);
+  const closePosterModal = useAppStore((s) => s.closePosterModal);
   const environmentPreset = useAppStore((s) => s.environmentPreset);
   const telemetryHudOpen = useAppStore((s) => s.telemetryHudOpen);
   const engineeringTint = useAppStore((s) => s.engineeringTint);
@@ -113,6 +123,12 @@ export const App: React.FC = () => {
           <Suspense fallback={null}>
             <LazyCartridgeLabView />
           </Suspense>
+        ) : screen === 'ballistics' ? (
+          <Suspense fallback={null}>
+            <LazyExternalBallisticsView
+              initialCaliber={activeBallisticsCaliber}
+            />
+          </Suspense>
         ) : screen === 'armory' ? (
           <ArmoryView />
         ) : (
@@ -139,7 +155,7 @@ export const App: React.FC = () => {
         <WeaponStoryDrawer />
 
         {/* 1:1 CAD & 5-Channel ORM Telemetry Watermark Footer */}
-        {screen !== 'showcase' && (
+        {screen !== 'showcase' && screen !== 'ballistics' && (
           <div className="schematic-watermark">
             <Sparkles size={11} />
             <span>{UI_STRINGS[lang].watermark}</span>
@@ -158,6 +174,18 @@ export const App: React.FC = () => {
       {monographModalOpen && (
         <Suspense fallback={null}>
           <LazyMonographPrintModal />
+        </Suspense>
+      )}
+
+      {/* Lazy-loaded Instant HD 3D Cutaway Social Poster Studio (`[U]`) */}
+      {posterShareModalOpen && (
+        <Suspense fallback={null}>
+          <LazyPosterShareModal
+            open={posterShareModalOpen}
+            weaponId={posterShareOptions?.weaponId}
+            armorerRank={posterShareOptions?.armorerRank}
+            onClose={closePosterModal}
+          />
         </Suspense>
       )}
     </div>

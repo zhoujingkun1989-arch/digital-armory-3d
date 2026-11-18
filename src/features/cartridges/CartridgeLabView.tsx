@@ -5,6 +5,7 @@ import {
   Box,
   ChevronLeft,
   ChevronRight,
+  Compass,
   Crosshair,
   Flame,
   Maximize2,
@@ -62,17 +63,20 @@ export const CartridgeLabView: React.FC = () => {
   );
   const toggleShowEdges = useAppStore((s) => s.toggleShowEdges);
   const enterWorkbench = useAppStore((s) => s.enterWorkbench);
+  const openExternalBallistics = useAppStore((s) => s.openExternalBallistics);
 
   const ui = UI_STRINGS[lang].cartridgeLab;
   const isZh = lang === 'zh';
   const caliberCount = CARTRIDGE_LAB_ORDER.length;
   const isMultiRowDock = caliberCount > 7;
   const zhCaliberCountWord =
-    caliberCount === 10
-      ? '十'
-      : caliberCount === 7
-        ? '七'
-        : String(caliberCount);
+    caliberCount === 11
+      ? '十一'
+      : caliberCount === 10
+        ? '十'
+        : caliberCount === 7
+          ? '七'
+          : String(caliberCount);
   const spec = CARTRIDGE_LAB_SPECS[activeCaliber];
   const primaryWeaponLabel = getLocalizedShortWeaponLabel(
     spec.primaryWeaponId,
@@ -158,6 +162,16 @@ export const CartridgeLabView: React.FC = () => {
           >
             <Box size={13} aria-hidden="true" />
             <span>{ui.edgesBtn}</span>
+          </button>
+
+          <button
+            type="button"
+            className="toggle-chip active-cyan"
+            title={ui.ballisticsRangeTitle}
+            onClick={() => openExternalBallistics(activeCaliber)}
+          >
+            <Compass size={13} aria-hidden="true" />
+            <span>{ui.ballisticsRangeBtn}</span>
           </button>
 
           <button
@@ -345,6 +359,17 @@ export const CartridgeLabView: React.FC = () => {
                   </button>
                 ))}
               </div>
+
+              <button
+                type="button"
+                className="cartridge-ballistics-cta"
+                title={ui.ballisticsRangeTitle}
+                onClick={() => openExternalBallistics(activeCaliber)}
+              >
+                <Compass size={14} aria-hidden="true" />
+                <span>{ui.ballisticsRangeBtn}</span>
+                <ArrowRight size={14} aria-hidden="true" />
+              </button>
 
               <button
                 type="button"

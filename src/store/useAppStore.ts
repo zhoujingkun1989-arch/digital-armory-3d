@@ -15,6 +15,11 @@ import { setArmoryThermalVisualState } from '../engine/materials/armoryShader';
 import type { EngineeringRole } from '../engine/materials/engineeringRoles';
 import { resetArmoryPhysics } from '../engine/physics/armoryPhysics';
 import {
+  type ExternalProjectileId,
+  type ExternalProjectileInput,
+  normalizeExternalProjectileId,
+} from '../engine/physics/externalBallistics';
+import {
   getNarrationAudioSnapshot,
   stopNarrationAudio,
 } from '../narration/audioPlayer';
@@ -29,8 +34,19 @@ import type {
 } from '../weapons/types';
 import { isWeaponId } from '../weapons/types';
 
-export type AppScreen = 'showcase' | 'armory' | 'workbench' | 'cartridges';
+export type AppScreen =
+  | 'showcase'
+  | 'armory'
+  | 'workbench'
+  | 'cartridges'
+  | 'ballistics';
 export type AppViewMode = 'explode' | 'firing';
+export type PosterArmorerRankOption = 'S' | 'A' | 'B' | 'C';
+
+export interface PosterModalLaunchOptions {
+  weaponId?: WeaponId;
+  armorerRank?: PosterArmorerRankOption | null;
+}
 
 const ENVIRONMENT_PRESET_CYCLE: readonly ArmoryEnvironmentPreset[] = [
   'tactical_vault',
@@ -178,6 +194,8 @@ export interface AppState {
   textureModalOpen: boolean;
   monographModalOpen: boolean;
   monographWeaponId: WeaponId;
+  posterShareModalOpen: boolean;
+  posterShareOptions: PosterModalLaunchOptions | null;
   xrayShells: boolean;
   sectionCut: boolean;
   showEdges: boolean;
@@ -208,6 +226,9 @@ export interface AppState {
   cartridgeExplodeProgress: number;
   cartridgeCameraSeq: number;
 
+  /** WP-14 1,000m RK4 External Ballistics Range Lab */
+  activeBallisticsCaliber: ExternalProjectileId;
+
   /** Group visibility filters */
   hiddenGroups: Record<AssemblyGroupKey, boolean>;
 
@@ -234,13 +255,15 @@ export interface AppState {
   toggleSfxMuted: () => void;
   focusStoryPart: (partId: string) => void;
 
-  // Armory <-> Workbench <-> Showcase <-> Cartridge Lab Navigation Actions
+  // Armory <-> Workbench <-> Showcase <-> Cartridge Lab <-> External Ballistics Navigation Actions
   openShowcase: () => void;
   openCartridgeLab: (caliber?: CaliberProfile) => void;
   selectLabCartridge: (caliber: CaliberProfile, focusCamera?: boolean) => void;
   setCartridgeLineupOverview: (overview: boolean) => void;
   toggleCartridgeSectionCut: () => void;
   setCartridgeExplodeProgress: (val: number) => void;
+  openExternalBallistics: (caliber?: ExternalProjectileInput) => void;
+  setActiveBallisticsCaliber: (caliber: ExternalProjectileInput) => void;
   selectArmoryWeapon: (weaponId: string) => void;
   enterWorkbench: (weaponId?: string, initialMode?: AppViewMode) => void;
   returnToArmory: () => void;
@@ -275,6 +298,9 @@ export interface AppState {
   openMonographModal: (weaponId?: WeaponId) => void;
   closeMonographModal: () => void;
   setMonographWeaponId: (weaponId: WeaponId) => void;
+  openPosterModal: (options?: PosterModalLaunchOptions) => void;
+  closePosterModal: () => void;
+  togglePosterModal: (options?: PosterModalLaunchOptions) => void;
   toggleXrayShells: () => void;
   setXrayShells: (val: boolean) => void;
   toggleSectionCut: () => void;
@@ -337,6 +363,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   textureModalOpen: false,
   monographModalOpen: false,
   monographWeaponId: 'ak15',
+  posterShareModalOpen: false,
+  posterShareOptions: null,
   xrayShells: false,
   sectionCut: false,
   showEdges: false,
@@ -358,6 +386,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   cartridgeSectionCut: true,
   cartridgeExplodeProgress: 0,
   cartridgeCameraSeq: 0,
+  activeBallisticsCaliber: '338_lapua',
 
   hiddenGroups: { ...DEFAULT_HIDDEN_GROUPS },
 
@@ -582,6 +611,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       isPlaying: false,
       isFiringPlaying: false,
       textureModalOpen: false,
+      posterShareModalOpen: false,
+      posterShareOptions: null,
       xrayShells: false,
       sectionCut: false,
       isolateSelected: false,
@@ -631,6 +662,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       isPlaying: false,
       isFiringPlaying: false,
       textureModalOpen: false,
+      posterShareModalOpen: false,
+      posterShareOptions: null,
       isolateSelected: false,
       selectedPartId: null,
       hoveredPartId: null,
@@ -659,6 +692,53 @@ export const useAppStore = create<AppState>((set, get) => ({
   setCartridgeExplodeProgress: (val) =>
     set({
       cartridgeExplodeProgress: Math.max(0, Math.min(1, val)),
+    }),
+
+  openExternalBallistics: (caliber) => {
+    const s = get();
+    const snap = getNarrationAudioSnapshot();
+    const keepStoryMini =
+      s.storyOpen && snap.activeKind === 'story' && snap.isPlaying;
+    if (!keepStoryMini) {
+      stopNarrationAudio();
+    }
+    fieldStripStore.reset(s.activeWeaponId, true);
+    caliperStore.clearTransientHover();
+    playbackClock.setTargetProgress(0, false);
+    playbackClock.setFireProgress(0, true);
+    const fallbackCaliber = getWeaponManifest(s.activeWeaponId).caliberProfile;
+    const nextCaliber = normalizeExternalProjectileId(
+      caliber ?? fallbackCaliber
+    );
+    set({
+      screen: 'ballistics',
+      mode: 'explode',
+      fieldStripActive: false,
+      malfunctionActive: false,
+      caliperActive: false,
+      envelopeRulerVisible: false,
+      focusedEngineeringRole: null,
+      activeBallisticsCaliber: nextCaliber,
+      storyOpen: keepStoryMini,
+      storyMinimized: keepStoryMini,
+      inspectorMinimized: false,
+      isPlaying: false,
+      isFiringPlaying: false,
+      textureModalOpen: false,
+      monographModalOpen: false,
+      posterShareModalOpen: false,
+      posterShareOptions: null,
+      hudHidden: false,
+      isolateSelected: false,
+      selectedPartId: null,
+      hoveredPartId: null,
+      hiddenGroups: { ...DEFAULT_HIDDEN_GROUPS },
+    });
+  },
+
+  setActiveBallisticsCaliber: (caliber) =>
+    set({
+      activeBallisticsCaliber: normalizeExternalProjectileId(caliber),
     }),
 
   selectArmoryWeapon: (weaponIdRaw) => {
@@ -795,6 +875,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       isPlaying: false,
       isFiringPlaying: false,
       textureModalOpen: false,
+      posterShareModalOpen: false,
+      posterShareOptions: null,
       xrayShells: false,
       sectionCut: false,
       isolateSelected: false,
@@ -963,6 +1045,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     set((s) => ({
       textureModalOpen,
       monographModalOpen: textureModalOpen ? false : s.monographModalOpen,
+      posterShareModalOpen: textureModalOpen ? false : s.posterShareModalOpen,
       hudHidden: textureModalOpen ? false : s.hudHidden,
     })),
   openMonographModal: (weaponId) =>
@@ -971,12 +1054,42 @@ export const useAppStore = create<AppState>((set, get) => ({
       monographWeaponId:
         weaponId && isWeaponId(weaponId) ? weaponId : s.activeWeaponId,
       textureModalOpen: false,
+      posterShareModalOpen: false,
       hudHidden: false,
     })),
   closeMonographModal: () => set({ monographModalOpen: false }),
   setMonographWeaponId: (weaponId) => {
     if (isWeaponId(weaponId)) {
       set({ monographWeaponId: weaponId });
+    }
+  },
+  openPosterModal: (options) =>
+    set((s) => ({
+      posterShareModalOpen: true,
+      posterShareOptions: {
+        weaponId:
+          options?.weaponId && isWeaponId(options.weaponId)
+            ? options.weaponId
+            : s.activeWeaponId,
+        armorerRank: options?.armorerRank ?? null,
+      },
+      isPlaying: false,
+      isFiringPlaying: false,
+      textureModalOpen: false,
+      monographModalOpen: false,
+      hudHidden: false,
+    })),
+  closePosterModal: () =>
+    set({
+      posterShareModalOpen: false,
+      posterShareOptions: null,
+    }),
+  togglePosterModal: (options) => {
+    const cur = get();
+    if (cur.posterShareModalOpen) {
+      cur.closePosterModal();
+    } else {
+      cur.openPosterModal(options);
     }
   },
   toggleXrayShells: () =>
@@ -1015,6 +1128,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       hudHidden,
       textureModalOpen: hudHidden ? false : s.textureModalOpen,
       monographModalOpen: hudHidden ? false : s.monographModalOpen,
+      posterShareModalOpen: hudHidden ? false : s.posterShareModalOpen,
     })),
   toggleHudHidden: () =>
     set((s) => {
@@ -1023,6 +1137,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         hudHidden: next,
         textureModalOpen: next ? false : s.textureModalOpen,
         monographModalOpen: next ? false : s.monographModalOpen,
+        posterShareModalOpen: next ? false : s.posterShareModalOpen,
       };
     }),
 
@@ -1232,6 +1347,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       showLabels: true,
       isolateSelected: false,
       hudHidden: false,
+      posterShareModalOpen: false,
+      posterShareOptions: null,
       selectedPartId: null,
       hiddenGroups: { ...DEFAULT_HIDDEN_GROUPS },
       cameraCommand: { preset: 'iso', seq: s.cameraCommand.seq + 1 },

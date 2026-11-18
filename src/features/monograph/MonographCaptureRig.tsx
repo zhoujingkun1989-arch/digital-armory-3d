@@ -557,7 +557,8 @@ function positionStudioShotCamera(
       wid === 'g17' ||
       wid === 'p320' ||
       wid === 'deagle' ||
-      wid === 'python');
+      wid === 'python' ||
+      wid === 'p08');
   if (isPistolCover) {
     cy -= 1.05;
   }

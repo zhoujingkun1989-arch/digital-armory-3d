@@ -547,3 +547,259 @@
     font-size: 10.5px;
   }
 }
+
+/* ==================== Pillar D: iPad & Mobile Tablet/Phone Layout Guards ==================== */
+button,
+[role='button'],
+input[type='range'],
+select,
+a {
+  touch-action: manipulation;
+}
+
+.hold-trigger-btn,
+.canvas-container,
+.canvas-container canvas {
+  touch-action: none;
+}
+
+/* iPad Landscape (1024×768) & Narrow Tablet Viewport Overflow Guards */
+@media (max-width: 1024px) {
+  .armory-overlay,
+  .top-bar,
+  .timeline-dock,
+  .cartridge-header,
+  .cartridge-switcher-dock {
+    max-width: 100vw;
+    box-sizing: border-box;
+  }
+
+  .top-bar .toolbar-cluster-tools,
+  .armory-header .armory-actions-utility,
+  .cartridge-header .cartridge-header-actions {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    max-inline-size: 100%;
+    padding-bottom: 2px;
+  }
+
+  .top-bar .toolbar-cluster-tools::-webkit-scrollbar,
+  .armory-header .armory-actions-utility::-webkit-scrollbar,
+  .cartridge-header .cartridge-header-actions::-webkit-scrollbar {
+    display: none;
+  }
+
+  .top-bar .toolbar-cluster-tools > *,
+  .armory-header .armory-actions-utility > *,
+  .cartridge-header .cartridge-header-actions > * {
+    flex-shrink: 0;
+  }
+
+  .armory-filter-pills {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    max-width: calc(100vw - 44px) !important;
+  }
+
+  .armory-filter-pills::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* iPad Portrait (768×1024) & Large Mobile */
+@media (max-width: 768px) {
+  .armory-overlay {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      'header'
+      'controls'
+      'rack';
+    padding: 8px 10px 14px;
+    gap: 8px;
+  }
+
+  .armory-stage-controls {
+    justify-self: end;
+  }
+
+  .top-bar {
+    left: 8px;
+    right: 8px;
+    padding: 6px 9px;
+  }
+
+  .part-sidebar {
+    left: 8px;
+    width: min(236px, calc(100vw - 16px));
+  }
+
+  .inspector-card {
+    left: 8px;
+    right: 8px;
+    width: auto;
+    max-width: calc(100vw - 16px);
+  }
+
+  .timeline-dock {
+    left: 8px;
+    right: 8px;
+    width: auto;
+    transform: none;
+    padding: 8px 10px 10px;
+  }
+
+  .dock-mode-bar {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+}
+
+/* Mobile Portrait (390×844) Zero-Overflow Guards */
+@media (max-width: 440px) {
+  :root {
+    --hud-top-offset: 132px;
+  }
+
+  .brand-title {
+    font-size: 13px;
+  }
+
+  .armory-header .brand-block,
+  .top-bar .brand-block,
+  .cartridge-header .brand-block {
+    flex: 1 1 100%;
+  }
+
+  .top-bar .toolbar-cluster-primary {
+    flex: 1 1 100%;
+    justify-content: space-between;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    scrollbar-width: none;
+  }
+
+  .top-bar .toolbar-cluster-primary::-webkit-scrollbar {
+    display: none;
+  }
+
+  .armory-stage-controls {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-self: stretch;
+    overflow-x: auto;
+    max-width: calc(100vw - 20px);
+    scrollbar-width: none;
+  }
+
+  .armory-stage-controls::-webkit-scrollbar {
+    display: none;
+  }
+
+  .armory-stage-controls .armory-stage-hint {
+    display: none;
+  }
+
+  .timeline-presets {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 5px;
+  }
+
+  .firing-phases-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Coarse-Pointer Touch Target Ergonomics (iPadOS / iOS / Android Tablets & Phones) */
+@media (pointer: coarse) {
+  .toggle-chip,
+  .back-armory-btn,
+  .cam-btn,
+  .env-seg-btn,
+  .lang-seg-btn,
+  .armory-filter-btn,
+  .armory-showcase-btn,
+  .armory-story-btn,
+  .armory-showdown-btn,
+  .armory-quick-enter-btn,
+  .armory-ctrl-chip,
+  .rack-scroll-btn,
+  .plaque-compact-cta,
+  .plaque-showdown-cta,
+  .plaque-primary-cta,
+  .wcard-enter-cta-btn,
+  .mode-tab-btn,
+  .preset-pill,
+  .phase-pill,
+  .speed-pill,
+  .fcg-mode-btn,
+  .action-ctrl-btn,
+  .hold-trigger-btn,
+  .play-action-btn,
+  .fs-ctrl-btn,
+  .fs-phase-btn,
+  .fs-step-pill,
+  .malf-ctrl-btn,
+  .malf-kind-tab,
+  .malf-step-pill,
+  .caliper-bench-btn,
+  .cartridge-dock-card,
+  .cartridge-weapon-pill,
+  .cartridge-ballistics-cta,
+  .cartridge-chamber-cta,
+  .cartridge-dossier-toggle-btn,
+  .cartridge-matrix-close,
+  .exam-mode-toggle-pill,
+  .exam-cert-share-btn,
+  .exam-cert-retry-btn,
+  .exam-cert-exit-btn {
+    min-height: 40px;
+  }
+
+  .armory-quick-enter-btn,
+  .plaque-primary-cta,
+  .play-action-btn,
+  .hold-trigger-btn,
+  .cartridge-chamber-cta,
+  .cartridge-ballistics-cta,
+  .armory-weapon-card {
+    min-height: 44px;
+  }
+
+  .rack-scroll-btn,
+  .cartridge-dossier-toggle-btn,
+  .cartridge-matrix-close {
+    min-width: 40px;
+  }
+
+  .explode-slider,
+  .firing-slider,
+  .cartridge-explode-slider {
+    min-height: 36px;
+    padding-block: 8px;
+  }
+
+  .explode-slider::-webkit-slider-thumb,
+  .firing-slider::-webkit-slider-thumb,
+  .cartridge-explode-slider::-webkit-slider-thumb {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+  }
+
+  .explode-slider::-moz-range-thumb,
+  .firing-slider::-moz-range-thumb,
+  .cartridge-explode-slider::-moz-range-thumb {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+  }
+}

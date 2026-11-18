@@ -1,8 +1,9 @@
 import type { LanguageCode } from '../narration/types';
-import type {
-  PbrChannelMeta,
-  PbrSuiteItem,
-  WeaponId,
+import {
+  type PbrChannelMeta,
+  type PbrSuiteItem,
+  WEAPON_IDS,
+  type WeaponId,
 } from '../weapons/types';
 
 export interface AtlasChannelTranslation {
@@ -49,20 +50,27 @@ const CHANNEL_LABEL_EN_MAP: Readonly<Record<string, string>> = {
   'Roughness 物理粗糙度 (Packed ORM)': 'Roughness (Packed ORM)',
   '金属 CNC 拉丝法线 (Seamless)': 'Brushed CNC Metal Normal (Seamless)',
   '金属 CNC 车铣拉丝法线 (Seamless)': 'Turned & Milled CNC Metal Normal (Seamless)',
+  '精密机加工金属拉丝法线 (Seamless)':
+    'Precision-Machined Brushed Steel Normal (Seamless)',
   '精密白钢推磨拉丝法线 (Seamless)': 'Hand-Stoned Stainless Brushed Normal (Seamless)',
   '金属拉丝油膜粗糙度 (Seamless)': 'Brushed Metal Oil-Film Roughness (Seamless)',
   '金属拉丝与枪油膜粗糙度 (Seamless)': 'Brushed Steel & Oil-Film Roughness (Seamless)',
   '军械金属油膜粗糙度 (Seamless)': 'Ordnance Metal Oil-Film Roughness (Seamless)',
   '工程聚酰胺皮纹法线 (Seamless)': 'Engineered Polyamide Stipple Normal (Seamless)',
   '工程塑料皮纹法线 (Seamless)': 'Engineered Polymer Texture Normal (Seamless)',
+  '工程聚合物皮纹法线 (Seamless)':
+    'Engineered Polymer Stipple Normal (Seamless)',
   '工程聚合物微皮纹法线 (Seamless)': 'Engineered Polymer Micro-Grain Normal (Seamless)',
   '阳极旋钮微细纹理法线 (Seamless)': 'Anodized Knurled Knob Micro-Normal (Seamless)',
   '微细颗粒基底法线 (Seamless)': 'Micro-Grain Substrate Normal (Seamless)',
+  '微细纹理法线 (Seamless)': 'Micro-Grain Surface Relief Normal (Seamless)',
   '复合弹性体皮纹法线 (Seamless)': 'Composite Elastomer Grip Normal (Seamless)',
   '工程弹性体皮纹法线 (Seamless)': 'Engineered Elastomer Grip Normal (Seamless)',
 };
 
-export type AtlasWeaponId = WeaponId;
+export const CHANNEL_LABEL_EN = CHANNEL_LABEL_EN_MAP;
+
+export type AtlasWeaponId = WeaponId | 'm249' | 'p08' | 'vector';
 
 export const ALL_ATLAS_EN_STRINGS: Readonly<
   Record<AtlasWeaponId, AtlasWeaponTranslation>
@@ -1184,11 +1192,229 @@ export const ALL_ATLAS_EN_STRINGS: Readonly<
       },
     },
   },
+  m249: {
+    heading:
+      'FN M249 SAW Squad Automatic Weapon PBR Atlas (Albedo / Normal / Packed ORM)',
+    suites: {
+      m249_receiver: {
+        title: 'Stamped Steel Receiver, Heatshield & Quick-Change Barrel Suite',
+        tabTitle: 'Receiver & Barrel',
+        summary:
+          'Custom-baked 2K 5-channel PBR suite for the FN M249 Squad Automatic Weapon: captures matte dark manganese-phosphate Parkerized stamped steel receiver walls, riveted internal steel guide rails, U.S. M249 SAW 5.56MM FN MFG LLC COLUMBIA SC rollmarks, ventilated 7-slot barrel heatshield wear, and high-temperature gas-cylinder carbon toning.',
+        highlights: [
+          'Matte manganese-phosphate stamped steel & rivet boss wear',
+          'Engraved U.S. 5.56MM M249 FN MFG LLC Columbia SC rollmark',
+          'Perforated barrel heatshield & gas regulator thermal patina',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Matte manganese-phosphate steel / bright rail wear / muzzle & gas carbon toning',
+          },
+          {
+            note: 'Linear · Stamped reinforcement ribs, spot-weld dimples & FN Columbia rollmark normals',
+          },
+          {
+            note: 'Linear · R: Vent-slot & rivet AO | G: Parkerized crystal roughness (0.52–0.64) | B: Forged/stamped steel metalness',
+          },
+        ],
+      },
+      m249_beltbox: {
+        title: 'OD-Green 200-Rd Polymer Belt Box, PIP Furniture & M27 Belt Suite',
+        tabTitle: '200-Rd Box & M27 Belt',
+        summary:
+          'Covers the iconic 200-round olive-drab glass-filled nylon assault drum box with structural reinforcement ribs and LOT stenciling, matte black PIP buttstock/forend/pistol grip checkering, and C26000 cartridge brass paired with copper-jacketed M855 green-tip projectiles held in black-phosphate M27 disintegrating steel links.',
+        highlights: [
+          '200-round OD-green polymer assault box w/ structural ribs & stenciling',
+          'Matte glass-filled polyamide PIP stock, pistol grip & forend stipple',
+          'C26000 brass 5.56 NATO cases, M855 tips & M27 steel belt links',
+        ],
+        channels: [
+          {
+            note: 'sRGB · OD-green 200-rd polymer box, matte black PIP furniture & M27 linked brass zones',
+          },
+          {
+            note: 'Linear · Molded box reinforcement ribs, grip checkering & disintegrating link seam relief',
+          },
+          {
+            note: 'Linear · R: Rib & belt-pocket AO | G: Matte nylon (0.72–0.82) vs polished brass (0.24) | B: Non-metallic polymer vs metallic brass/links',
+          },
+        ],
+      },
+      m249_seamless_detail: {
+        title: '2K Seamless Micro-Surface Detail Maps (Machined Steel & Polymer)',
+        tabTitle: 'Seamless Detail',
+        summary:
+          'Three shared seamless micro-detail maps tiled across M249 bolt lugs, dual-rod piston carrier, quick-change barrel chrome, and polyamide furniture so close-up cutaway inspection preserves crisp machining toolmarks and oil-sheen variation.',
+        highlights: [
+          'Directional lathe/mill toolmarks on quick-change barrel & bolt lugs',
+          'Ordnance CLP oil-film micro-roughness breakup across carrier rails',
+          'Isotropic glass-fiber polyamide grain on PIP stock & belt box',
+        ],
+        channels: [
+          {
+            note: 'Linear · Seamless CNC lathe & end-mill toolmark micro-normal',
+          },
+          {
+            note: 'Linear · Ordnance steel CLP oil-film & belt-track friction roughness modulation',
+          },
+          {
+            note: 'Linear · Isotropic glass-filled polymer & phosphate crystal micro-normal',
+          },
+        ],
+      },
+    },
+  },
+  p08: {
+    heading:
+      'DWM Luger P08 Parabellum Rust-Blued, Straw Steel & Walnut PBR Atlas (Albedo / Normal / Packed ORM)',
+    suites: {
+      p08_blued: {
+        title: 'Imperial DWM Rust-Blued Forged Steel & 240°C Straw-Tempered Suite',
+        tabTitle: 'Rust-Blued & Straw',
+        summary:
+          'Recreates pre-war Deutsche Waffen- und Munitionsfabriken (DWM) Berlin old-world craftsmanship: deep charcoal-navy rust bluing (Streichbrunierung) across the tapered barrel, forked receiver, and articulated knee-joint toggle assembly, contrasted against authentic 240°C golden straw-tempered (Gelbangelassen) trigger, takedown lever, thumb safety, and ejector—complete with 1917 chamber date, intertwined DWM scroll monogram, Gesichert engraving, and knurled toggle ears.',
+        highlights: [
+          'Deep charcoal-navy Streichbrunierung rust bluing w/ holstered muzzle edge wear',
+          'Authentic 240°C golden straw-tempered trigger, takedown lever, safety & ejector',
+          'Engraved 1917 chamber date, DWM scroll monogram, Gesichert mark & toggle knurling',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Deep charcoal-navy rust blue, 240°C golden straw temper & silvered edge wear',
+          },
+          {
+            note: 'Linear · Diamond-checkered toggle ears, DWM scroll monogram & Gesichert safety relief',
+          },
+          {
+            note: 'Linear · R: Toggle-hinge & serration AO | G: Hand-polished rust blue (0.24–0.34) | B: Forged ordnance steel metalness (0.92)',
+          },
+        ],
+      },
+      p08_walnut: {
+        title: '20-LPI Checkered European Walnut Grips & Sheet-Steel Magazine Suite',
+        tabTitle: 'European Walnut & Mag',
+        summary:
+          'Physically-based 2K suite for the P08’s hand-checkered 55° European walnut grip panels (Juglans regia) steeped in boiled linseed oil, paired with the nickel-plated folded sheet-steel 8-round box magazine and CNC-machined concentric-ring aluminum/wood twin-ear base knob.',
+        highlights: [
+          'Warm boiled-linseed-oiled European walnut figure & pore absorption',
+          'Crisp 20-LPI hand-cut pyramidal diamond checkering & border bevels',
+          'Bright nickel-finished magazine tube & concentric-ring twin-ear base knob',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Warm European walnut heartwood grain, dark pore figure & bright magazine steel',
+          },
+          {
+            note: 'Linear · Crisp 20-LPI pyramidal diamond checkering & concentric base-knob grooves',
+          },
+          {
+            note: 'Linear · R: Checkering valley AO | G: Satin oil-rubbed walnut (0.48–0.64) | B: Non-metallic hardwood (0.0) vs metallic mag body',
+          },
+        ],
+      },
+      p08_seamless_detail: {
+        title: '2K Seamless Micro-Surface Detail Maps (Hand-Honed Steel & Oil Film)',
+        tabTitle: 'Seamless Detail',
+        summary:
+          'High-frequency seamless detail normals and oil-film roughness maps tiled across the P08’s hand-fitted forked receiver rails, breechblock flats, and toggle link pins for macro-distance museum inspection.',
+        highlights: [
+          'Fine longitudinal draw-filing & honing lines on receiver ways',
+          'Subtle gun-oil sheen variation across rust-blued & straw-tempered steel',
+          'Fine micro-grain contact texture on checkered controls & grip borders',
+        ],
+        channels: [
+          {
+            note: 'Linear · Fine German toolroom draw-filed & honed steel micro-normal',
+          },
+          {
+            note: 'Linear · Light ordnance oil-film specular breakup across blued flats',
+          },
+          {
+            note: 'Linear · Fine micro-grain contact surface relief normal',
+          },
+        ],
+      },
+    },
+  },
+  vector: {
+    heading:
+      'KRISS Vector Gen II Two-Tone FDE & Super V Mechanism PBR Atlas (Albedo / Normal / Packed ORM)',
+    suites: {
+      vector_housing: {
+        title: 'Two-Tone FDE / Matte Black Polymer Housing & Picatinny Rail Suite',
+        tabTitle: 'FDE / Black Housing',
+        summary:
+          'Dedicated 2K PBR suite for the iconic two-tone KRISS Vector Gen II SDP-SB silhouette: Flat Dark Earth (FDE) glass-reinforced polymer upper housing with full-length hardcoat-anodized Picatinny top rail, paired with the matte obsidian-black Super V lower receiver shell, molded KRISS USA VIRGINIA rollmarks, diagonal grip texturing, and extended 25-round .45 ACP MagEx2 sleeve.',
+        highlights: [
+          'Signature two-tone Flat Dark Earth upper & matte black Super V lower shell',
+          'Molded KRISS USA · VECTOR .45 ACP markings, chevron ribs & grip stippling',
+          'Extended 25-round MagEx2 .45 ACP magazine body with witness-hole accents',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Two-tone FDE / matte black glass-filled polymer, anodized rail & white T-slot numbers',
+          },
+          {
+            note: 'Linear · Molded KRISS rollmarks, Super V housing ribs & ergonomic grip stipple normals',
+          },
+          {
+            note: 'Linear · R: Recess & rail-slot AO | G: Matte tactical polymer (0.68–0.80) | B: Non-metallic composite vs anodized rail',
+          },
+        ],
+      },
+      vector_internals: {
+        title: 'Nitride Super V Articulated Bolt, 110° Tungsten Slider & Brass Pivot Suite',
+        tabTitle: 'Super V Internals',
+        summary:
+          'Captures the heart of Renaud Kerbrat’s off-axis delayed-blowback mechanism: black QPQ salt-bath nitrided articulated .45 ACP breech bolt with polished lateral cam lugs, precision-ground 110° angled steel guide rails, heavy tungsten-steel counterweight slider with bright track burnishing, low-bore 5.5" barrel, and golden C36000 brass folding charging-handle pivot.',
+        highlights: [
+          'QPQ black-nitrided articulated bolt w/ bright burnished Super V cam lugs',
+          '110° off-axis steel guide rails & heavy counterweight slider wear tracks',
+          '5.5" .45 ACP barrel, 4-prong flash hider & brass charging-handle pivot accent',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Black QPQ nitride steel, bright cam-track polish, C36000 brass pivot & .45 ACP copper/brass',
+          },
+          {
+            note: 'Linear · Precision CNC cam-slot bevels, bolt extractor cut & barrel shoulder relief',
+          },
+          {
+            note: 'Linear · R: Cam-slot & rail-channel AO | G: Burnished cam ways (0.18) vs QPQ nitride (0.42) | B: High-metalness ordnance steel & brass',
+          },
+        ],
+      },
+      vector_seamless_detail: {
+        title: '2K Seamless Micro-Surface Detail Maps (CNC Nitride & Polymer Stipple)',
+        tabTitle: 'Seamless Detail',
+        summary:
+          'Tiled micro-surface normal and roughness maps ensuring razor-sharp CNC milling marks on the Super V slider and realistic injection-molded glass-fiber texture across the FDE/black polymer shells during close-up cutaway zoom.',
+        highlights: [
+          'High-speed 5-axis CNC end-mill marks on articulated bolt & slider flats',
+          'Synthetic lubricant sheen along 110° off-axis slider guide tracks',
+          'Injection-molded glass-reinforced polymer micro-stipple relief',
+        ],
+        channels: [
+          {
+            note: 'Linear · Seamless 5-axis CNC machined steel micro-normal',
+          },
+          {
+            note: 'Linear · Synthetic CLP film & high-cadence slider track roughness map',
+          },
+          {
+            note: 'Linear · Seamless glass-filled polymer micro-stipple normal',
+          },
+        ],
+      },
+    },
+  },
 };
 
 export const ATLAS_EN_STRINGS: Readonly<
   Record<WeaponId, AtlasWeaponTranslation>
-> = ALL_ATLAS_EN_STRINGS;
+> = Object.fromEntries(
+  WEAPON_IDS.map((id) => [id, ALL_ATLAS_EN_STRINGS[id]])
+) as Record<WeaponId, AtlasWeaponTranslation>;
 
 export function getLocalizedAtlasHeading(
   weaponId: AtlasWeaponId,

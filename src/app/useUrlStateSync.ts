@@ -3,6 +3,11 @@ import {
   CARTRIDGE_LAB_SPECS,
   isCaliberProfile,
 } from '../engine/cartridges/cartridgeSpecs';
+import {
+  EXTERNAL_PROJECTILE_SPECS,
+  type ExternalProjectileId,
+  normalizeExternalProjectileId,
+} from '../engine/physics/externalBallistics';
 import type { LanguageCode } from '../narration/types';
 import {
   type AppScreen,
@@ -35,6 +40,7 @@ function applyLocationToStore(): void {
   const rawMode = params.get('mode');
   const rawLang = params.get('lang');
   const rawCaliber = params.get('caliber');
+  const rawCut = params.get('cut');
 
   const current = useAppStore.getState();
   if (rawLang === 'en' || rawLang === 'zh') {
@@ -51,15 +57,20 @@ function applyLocationToStore(): void {
       ? 'workbench'
       : rawScreen === 'cartridges'
         ? 'cartridges'
-        : rawScreen === 'showcase'
-          ? 'showcase'
-          : rawScreen === 'armory'
-            ? 'armory'
-            : defaultScreen;
+        : rawScreen === 'ballistics'
+          ? 'ballistics'
+          : rawScreen === 'showcase'
+            ? 'showcase'
+            : rawScreen === 'armory'
+              ? 'armory'
+              : defaultScreen;
   const targetMode: AppViewMode = rawMode === 'firing' ? 'firing' : 'explode';
 
   if (targetScreen === 'workbench') {
     current.enterWorkbench(weaponId, targetMode);
+    if (rawCut === '1' || rawCut === 'true') {
+      useAppStore.getState().setSectionCut(true);
+    }
   } else if (targetScreen === 'cartridges') {
     if (rawWeapon && isWeaponId(rawWeapon)) {
       current.selectArmoryWeapon(rawWeapon);
@@ -67,6 +78,11 @@ function applyLocationToStore(): void {
     current.openCartridgeLab(
       isCaliberProfile(rawCaliber) ? rawCaliber : undefined
     );
+  } else if (targetScreen === 'ballistics') {
+    if (rawWeapon && isWeaponId(rawWeapon)) {
+      current.selectArmoryWeapon(rawWeapon);
+    }
+    current.openExternalBallistics(rawCaliber ?? undefined);
   } else if (targetScreen === 'showcase') {
     if (current.screen !== 'showcase') {
       current.openShowcase();
@@ -88,9 +104,11 @@ function buildSearchString(
   weaponId: WeaponId,
   screen: AppScreen,
   mode: AppViewMode,
+  sectionCut: boolean,
   lang: LanguageCode,
   activeCartridgeCaliber: CaliberProfile,
-  cartridgeLineupOverview: boolean
+  cartridgeLineupOverview: boolean,
+  activeBallisticsCaliber: ExternalProjectileId
 ): string {
   const params = new URLSearchParams(window.location.search);
   const defaultScreen = getDefaultEntryScreen();
@@ -99,17 +117,32 @@ function buildSearchString(
     params.set('screen', 'workbench');
     params.set('mode', mode);
     params.delete('caliber');
+    if (sectionCut) {
+      params.set('cut', '1');
+    } else {
+      params.delete('cut');
+    }
   } else if (screen === 'cartridges') {
     params.set('screen', 'cartridges');
     params.delete('mode');
+    params.delete('cut');
     if (cartridgeLineupOverview) {
       params.delete('caliber');
     } else {
       params.set('caliber', activeCartridgeCaliber);
     }
+  } else if (screen === 'ballistics') {
+    params.set('screen', 'ballistics');
+    params.delete('mode');
+    params.delete('cut');
+    params.set(
+      'caliber',
+      normalizeExternalProjectileId(activeBallisticsCaliber)
+    );
   } else {
     params.delete('mode');
     params.delete('caliber');
+    params.delete('cut');
     if (screen === defaultScreen) {
       params.delete('screen');
     } else {
@@ -129,17 +162,19 @@ function buildSearchString(
 
 /**
  * Bi-directional synchronization between URL query parameters
- * (`?weapon=m4a1&screen=workbench&mode=firing&lang=en`) and `useAppStore`.
+ * (`?weapon=m4a1&screen=workbench&mode=firing&cut=1&lang=en`) and `useAppStore`.
  */
 export function useUrlStateSync(): void {
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const screen = useAppStore((s) => s.screen);
   const mode = useAppStore((s) => s.mode);
+  const sectionCut = useAppStore((s) => s.sectionCut);
   const lang = useAppStore((s) => s.lang);
   const activeCartridgeCaliber = useAppStore((s) => s.activeCartridgeCaliber);
   const cartridgeLineupOverview = useAppStore(
     (s) => s.cartridgeLineupOverview
   );
+  const activeBallisticsCaliber = useAppStore((s) => s.activeBallisticsCaliber);
 
   const initializedRef = useRef(false);
   const applyingPopStateRef = useRef(false);
@@ -182,6 +217,16 @@ export function useUrlStateSync(): void {
         lang === 'en'
           ? `${calCode} · 1:1 SAAMI Cartridge Cutaway Lab — Digital Armory 3D`
           : `${calCode} · 1:1 实弹纵剖对比实验室 — Digital Armory 3D`;
+    } else if (screen === 'ballistics') {
+      const projSpec =
+        EXTERNAL_PROJECTILE_SPECS[
+          normalizeExternalProjectileId(activeBallisticsCaliber)
+        ];
+      const calLabel = projSpec.code;
+      document.title =
+        lang === 'en'
+          ? `${calLabel} · 1,000m External Ballistics & Reticle Lab — Digital Armory 3D`
+          : `${calLabel} · 1,000m 外弹道与分划板实验室 — Digital Armory 3D`;
     } else if (screen === 'workbench') {
       document.title =
         lang === 'en'
@@ -193,7 +238,14 @@ export function useUrlStateSync(): void {
           ? `${shortTag} · 3D Digital Armory Vault`
           : `${shortTag} · 枪械内部结构 3D 数字枪库`;
     }
-  }, [activeWeaponId, screen, mode, lang, activeCartridgeCaliber]);
+  }, [
+    activeWeaponId,
+    screen,
+    mode,
+    lang,
+    activeCartridgeCaliber,
+    activeBallisticsCaliber,
+  ]);
 
   // Push/replace URL query parameters when store navigation changes
   useEffect(() => {
@@ -213,9 +265,11 @@ export function useUrlStateSync(): void {
       live.activeWeaponId !== activeWeaponId ||
       live.screen !== screen ||
       live.mode !== mode ||
+      live.sectionCut !== sectionCut ||
       live.lang !== lang ||
       live.activeCartridgeCaliber !== activeCartridgeCaliber ||
-      live.cartridgeLineupOverview !== cartridgeLineupOverview
+      live.cartridgeLineupOverview !== cartridgeLineupOverview ||
+      live.activeBallisticsCaliber !== activeBallisticsCaliber
     ) {
       return;
     }
@@ -224,9 +278,11 @@ export function useUrlStateSync(): void {
       activeWeaponId,
       screen,
       mode,
+      sectionCut,
       lang,
       activeCartridgeCaliber,
-      cartridgeLineupOverview
+      cartridgeLineupOverview,
+      activeBallisticsCaliber
     );
     if (window.location.search === nextSearch) {
       prevScreenRef.current = screen;
@@ -244,8 +300,10 @@ export function useUrlStateSync(): void {
     activeWeaponId,
     screen,
     mode,
+    sectionCut,
     lang,
     activeCartridgeCaliber,
     cartridgeLineupOverview,
+    activeBallisticsCaliber,
   ]);
 }

@@ -38,7 +38,7 @@ export interface WeaponEnglishFallback {
   firingMilestoneLabel: string;
 }
 
-export type FallbackWeaponId = WeaponId;
+export type FallbackWeaponId = WeaponId | 'm249' | 'p08' | 'vector';
 
 export const WEAPON_EN_FALLBACKS: Record<
   FallbackWeaponId,
@@ -520,6 +520,108 @@ export const WEAPON_EN_FALLBACKS: Record<
       'Search part name / BOM code (e.g. en-bloc, op-rod, M-01)...',
     firingMilestoneLabel: 'Op-Rod Cam Unlock',
   },
+  m249: {
+    shortLabel: 'M249 SAW',
+    name: 'FN M249 SAW Squad Automatic Weapon',
+    originCountry: 'Belgium / USA',
+    weaponType: 'Belt-Fed Light Machine Gun',
+    statusLabel: 'New in Vault · Ready',
+    caliber: '5.56×45mm NATO (M855 / M27 Belt)',
+    compactCaliber: '5.56 NATO · M27 Belt',
+    actionMechanism:
+      'Open-Bolt Long-Stroke Gas Piston · Dual-Lug Bolt & Dual-Pawl Belt/STANAG Feed',
+    overallLengthMm: '1,038 mm',
+    barrelSpec: '465 mm (18.3") · 6-RH 1:178mm (1:7") Quick-Change',
+    weightKg: '7.50 kg (Empty) / 10.02 kg (Loaded 200-Rd Box)',
+    muzzleVelocityMs: '915 m/s (62 gr M855)',
+    effectiveRangeM: '800 m (Point) / 1,000 m (Area)',
+    rateOfFire: '750–850 rpm (Open-Bolt Auto)',
+    description:
+      'FN Herstal and FN Manufacturing’s U.S. M249 Squad Automatic Weapon (Minimi): fires from an open bolt for sustained air-cooled barrel cooling, combining an under-barrel long-stroke gas piston and dual-lug rotating bolt with a top-cover cam roller driving dual spring-loaded feed pawls to strip M27 disintegrating steel links—plus an emergency left-side STANAG rifle magazine well and 3-second quick-change 18.3" chrome-lined barrel.',
+    highlights: [
+      'Open-Bolt Long-Stroke Piston + 2-Lug Rotating Bolt',
+      'Top-Cover Cam Channel & Dual-Pawl M27 Belt Shuttle',
+      'Dual Feed: 200-Rd OD Assault Box + Side STANAG Well',
+      '3-Second Quick-Change 18.3" Barrel, Heatshield & Bipod',
+    ],
+    workbenchTitle: 'FN M249 SAW 3D Disassembly & Belt-Fed Open-Bolt Simulation',
+    workbenchSubtitle:
+      '4 Assemblies · 26 CAD Parts · Open-Bolt Long-Stroke Piston & M27 Disintegrating Belt Shuttle',
+    cutawayLabel: 'Top-Cover Cam & Dual-Pawl Belt Focus',
+    cutawayTitle:
+      'Switch to cutaway view and frame the carrier top roller, S-cam channel, dual feed pawls & M27 belt',
+    searchPlaceholder:
+      'Search part name / BOM code (e.g. pawl, belt, barrel, M-02)...',
+    firingMilestoneLabel: 'Open-Bolt Slam & Belt Index',
+  },
+  p08: {
+    shortLabel: 'Luger P08',
+    name: 'Luger P08 Parabellum Toggle-Lock Pistol',
+    originCountry: 'Germany',
+    weaponType: 'Toggle-Lock Semi-Auto Pistol',
+    statusLabel: 'New in Vault · Ready',
+    caliber: '9×19mm Parabellum',
+    compactCaliber: '9×19mm Parabellum',
+    actionMechanism:
+      'Short-Recoil Forked Receiver · Over-Center Knee-Joint Toggle Lock',
+    overallLengthMm: '222 mm (4" Barrel)',
+    barrelSpec: '102 mm (4") · 6-RH 1:250mm',
+    weightKg: '0.871 kg (Empty)',
+    muzzleVelocityMs: '365 m/s (115–124 gr FMJ)',
+    effectiveRangeM: '50 m',
+    rateOfFire: 'Semi-Auto (8-Rd Box Mag)',
+    description:
+      'Georg Luger’s 1908 Deutsche Waffen- und Munitionsfabriken (DWM) mechanical masterpiece that gave the world the 9×19mm Parabellum cartridge: replaces a full-length slide with a short-recoil tapered barrel and forked receiver locked by an articulated two-link knee-joint toggle sitting 1.5 mm below dead-center—until twin frame cam ramps snap the checkered toggle ears skyward at 54° while exposing straw-tempered steel controls and 55° European walnut grips.',
+    highlights: [
+      'Over-Center Two-Link Knee-Joint Toggle Lock (54° Fold)',
+      'Short-Recoil Forked Receiver & S-Curved Toggle Return Ramp',
+      'Lateral L-Shaped Trigger Lever & Gesichert Thumb Safety',
+      'Rust-Blued Steel, 240°C Straw-Tempered Controls & Walnut Grips',
+    ],
+    workbenchTitle: 'Luger P08 Parabellum 3D Disassembly & Toggle-Lock Cycle',
+    workbenchSubtitle:
+      '4 Assemblies · 25 CAD Parts · Over-Center Knee-Joint Toggle Kinematics & 9×19mm Cycle',
+    cutawayLabel: 'Knee-Joint Toggle & Striker Focus',
+    cutawayTitle:
+      'Switch to cutaway view and frame the over-center breechblock, front/rear toggle links & grip mainspring',
+    searchPlaceholder:
+      'Search part name / BOM code (e.g. toggle, breechblock, B-02)...',
+    firingMilestoneLabel: '54° Toggle Break',
+  },
+  vector: {
+    shortLabel: 'KRISS Vector',
+    name: 'KRISS Vector Gen II SDP-SB (.45 ACP)',
+    originCountry: 'USA / Switzerland',
+    weaponType: 'Off-Axis Delayed-Blowback SMG',
+    statusLabel: 'New in Vault · Ready',
+    caliber: '.45 ACP (11.43×23mm 230 gr FMJ)',
+    compactCaliber: '.45 ACP · 230 gr',
+    actionMechanism:
+      'KRISS Super V Off-Axis Cam-Delayed Blowback · 110° Downward Counterweight Slider',
+    overallLengthMm: '425–617 mm (Gen II Folding Stock)',
+    barrelSpec: '140 mm (5.5") · 4-RH 1:406mm (1:16") Low-Bore',
+    weightKg: '2.72 kg (Empty)',
+    muzzleVelocityMs: '260 m/s (230 gr Subsonic FMJ)',
+    effectiveRangeM: '100 m',
+    rateOfFire: '1,200 rpm (Safe / Semi / 2-Rd / Auto)',
+    description:
+      'Renaud Kerbrat’s radical re-thinking of submachine gun recoil physics: aligns the 5.5-inch .45 ACP barrel below the shooter’s trigger-finger web to eliminate muzzle-climb leverage, while the patented KRISS Super V articulated bolt cams an angled tungsten-steel slider downward at 110° behind the Glock-pattern MagEx2 magazine well—redirecting 1,200 rpm blowback momentum vertically rather than straight into the shoulder.',
+    highlights: [
+      'KRISS Super V Articulated Bolt + 110° Off-Axis Slider',
+      'Sub-Hand Bore Axis Below Trigger Line (Zero Muzzle Climb)',
+      '1,200 RPM .45 ACP w/ Separate Safety & 3-Mode Selector',
+      'Two-Tone FDE Upper, Black Super V Lower & 25-Rd MagEx2',
+    ],
+    workbenchTitle: 'KRISS Vector Gen II 3D Disassembly & Super V .45 Simulation',
+    workbenchSubtitle:
+      '4 Assemblies · 25 CAD Parts · 110° Off-Axis Downward Slider & 1,200 RPM .45 ACP Cycle',
+    cutawayLabel: 'Super V 110° Off-Axis Cam Focus',
+    cutawayTitle:
+      'Switch to cutaway view and frame the articulated bolt cam lugs & 110° downward counterweight slider',
+    searchPlaceholder:
+      'Search part name / BOM code (e.g. Super V, slider, B-02)...',
+    firingMilestoneLabel: '110° Vector Dive',
+  },
 };
 
 export function getLocalizedShortWeaponLabel(
@@ -540,6 +642,9 @@ const COMPACT_ZH_CALIBER: Partial<Record<FallbackWeaponId, string>> = {
   python: '.357 马格南',
   benellim4: '12号 00鹿弹',
   garand: '.30-06 春田步枪弹',
+  m249: '5.56 NATO · M27弹链',
+  p08: '9×19mm 帕拉贝鲁姆',
+  vector: '.45 ACP · 230 gr',
 };
 
 export function getLocalizedCatalogSpecs(
@@ -653,24 +758,60 @@ const WALNUT_HARDWOOD_PART_IDS = new Set<string>([
   'garand_front_handguard',
 ]);
 
+const P08_EUROPEAN_WALNUT_PART_IDS = new Set<string>([
+  'p08_grip_left',
+  'p08_grip_right',
+]);
+
+const P08_STRAW_TEMPERED_PART_IDS = new Set<string>([
+  'p08_takedown_lever',
+  'p08_ejector',
+  'p08_trigger',
+  'p08_thumb_safety',
+]);
+
 /**
  * Resolves the localized engineering material description for a part, rendering
- * historically accurate American Black Walnut hardwood copy for Colt Python target grips
- * and M1 Garand stocks/handguards while preserving standard firearm/archery material tables.
+ * historically accurate American Black Walnut / European Walnut hardwood and
+ * 240°C straw-tempered steel copy while preserving standard firearm/archery tables.
  */
 export function resolvePartMaterialLabel(
   weaponId: WeaponId,
   part: Pick<WeaponPartSpec, 'id' | 'material'>,
   lang: LanguageCode
 ): string {
+  const wid = weaponId as string;
   if (
-    (weaponId === 'python' || weaponId === 'garand') &&
+    (wid === 'python' || wid === 'garand') &&
     part.material === 'polymer_frame' &&
     WALNUT_HARDWOOD_PART_IDS.has(part.id)
   ) {
     return lang === 'zh'
       ? '亚麻籽油浸润北美黑胡桃实木'
       : 'Linseed-Oiled American Black Walnut Hardwood';
+  }
+  if (
+    wid === 'p08' &&
+    part.material === 'polymer_frame' &&
+    P08_EUROPEAN_WALNUT_PART_IDS.has(part.id)
+  ) {
+    return lang === 'zh'
+      ? '亚麻籽油浸润欧洲胡桃木实木 (20线菱格)'
+      : 'Linseed-Oiled European Walnut Hardwood (20-LPI Checkered)';
+  }
+  if (
+    wid === 'p08' &&
+    part.material === 'copper_accent' &&
+    P08_STRAW_TEMPERED_PART_IDS.has(part.id)
+  ) {
+    return lang === 'zh'
+      ? '240°C 金色麦秆回火军械钢 (Gelbangelassen)'
+      : '240°C Straw-Tempered Ordnance Steel (Gelbangelassen)';
+  }
+  if (wid === 'm249' && part.id === 'm249_m27_belt') {
+    return lang === 'zh'
+      ? '锰磷化弹簧钢 M27 可散链节与黄铜实弹'
+      : 'Manganese-Phosphate M27 Steel Links & Brass Cartridges';
   }
   const insp = UI_STRINGS[lang].inspector;
   if (isArcheryWeapon(weaponId)) {

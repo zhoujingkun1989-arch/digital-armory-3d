@@ -1826,6 +1826,416 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
           </svg>
         );
       }
+
+      case 'm249': {
+        const odBox = available ? '#4d5d43' : '#94a3b8';
+        const brassBelt = available ? '#d4a238' : '#cbd5e1';
+        const heatShield = available ? '#475569' : '#94a3b8';
+        return (
+          <svg
+            viewBox="0 0 210 88"
+            className="weapon-silhouette-svg"
+            aria-hidden="true"
+          >
+            {/* Heavy Polymer PIP Buttstock + Folding Shoulder Rest */}
+            <path
+              d="M11 33 L46 33 L46 47 L37 51 L13 55 L9 51 Z"
+              fill={subFill}
+              stroke={stroke}
+              strokeWidth="1.25"
+            />
+            <line
+              x1="14"
+              y1="32"
+              x2="34"
+              y2="32"
+              stroke={stroke}
+              strokeWidth="1.8"
+              strokeLinecap="round"
+            />
+            {/* Stamped Steel Receiver + Hinged Railed Feed Cover */}
+            <path
+              d="M46 30 L110 30 L112 34 L112 46 L46 46 Z"
+              fill={fill}
+              stroke={stroke}
+              strokeWidth="1.35"
+            />
+            <path
+              d="M52 25.5 L98 25.5 L101 30 L50 30 Z"
+              fill={heatShield}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            {[56, 63, 70, 77, 84, 91].map((rx) => (
+              <rect
+                key={rx}
+                x={rx}
+                y="24"
+                width="3.2"
+                height="1.8"
+                fill={stroke}
+              />
+            ))}
+            {/* Pistol Grip & Trigger Guard */}
+            <path
+              d="M56 46 L67 46 L62 66 L51 65 Z"
+              fill={subFill}
+              stroke={stroke}
+              strokeWidth="1.2"
+            />
+            <path
+              d="M67 46 L77 46 L75 53 L66 53 Z"
+              fill={cutout}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            {/* 200-Round OD-Green Polymer Assault Box + Exposed M27 Brass Belt */}
+            <rect
+              x="75"
+              y="47"
+              width="31"
+              height="27"
+              rx="2.6"
+              fill={odBox}
+              stroke={stroke}
+              strokeWidth="1.25"
+            />
+            {[81, 90, 99].map((bx) => (
+              <line
+                key={bx}
+                x1={bx}
+                y1="50"
+                x2={bx}
+                y2="71"
+                stroke={stroke}
+                strokeWidth="0.9"
+                opacity="0.65"
+              />
+            ))}
+            {[33, 36.5, 40, 43.5].map((by, idx) => (
+              <rect
+                key={by}
+                x={88 + idx * 0.6}
+                y={by}
+                width="9.5"
+                height="2.3"
+                rx="0.8"
+                fill={brassBelt}
+                stroke={stroke}
+                strokeWidth="0.55"
+              />
+            ))}
+            {/* Quick-Change Carry Handle + Perforated 7-Slot Barrel Heatshield */}
+            <line
+              x1="104"
+              y1="29"
+              x2="117"
+              y2="21.5"
+              stroke={stroke}
+              strokeWidth="1.9"
+              strokeLinecap="round"
+            />
+            <rect
+              x="114"
+              y="19.5"
+              width="9"
+              height="3.4"
+              rx="1.4"
+              fill={subFill}
+              stroke={stroke}
+              strokeWidth="0.9"
+            />
+            <path
+              d="M112 29.5 L154 30.5 L154 36.5 L112 36.5 Z"
+              fill={heatShield}
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+            {[116, 122, 128, 134, 140, 146].map((sx) => (
+              <rect
+                key={sx}
+                x={sx}
+                y="31.8"
+                width="3.6"
+                height="2.2"
+                rx="0.6"
+                fill={cutout}
+              />
+            ))}
+            {/* Forend, Under-Barrel Gas Cylinder, Folded Bipod, 18.3" Barrel & Birdcage */}
+            <path
+              d="M112 37 L151 37 L148 44 L112 44 Z"
+              fill={subFill}
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+            <rect
+              x="148"
+              y="37.5"
+              width="24"
+              height="3.4"
+              rx="0.8"
+              fill={fill}
+              stroke={stroke}
+              strokeWidth="0.95"
+            />
+            <line
+              x1="149"
+              y1="42.5"
+              x2="118"
+              y2="46.5"
+              stroke={stroke}
+              strokeWidth="2.1"
+              strokeLinecap="round"
+            />
+            <rect x="154" y="32.2" width="35" height="3.2" fill={fill} />
+            <polygon
+              points="178,32.2 183,32.2 181.5,24.5 179,24.5"
+              fill={fill}
+              stroke={stroke}
+              strokeWidth="0.95"
+            />
+            <rect
+              x="189"
+              y="31.2"
+              width="10"
+              height="5.2"
+              rx="1"
+              fill={fill}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+          </svg>
+        );
+      }
+
+      case 'p08': {
+        const rustBlue = available ? '#283548' : '#64748b';
+        const walnutGrip = available ? '#7c4d2b' : '#94a3b8';
+        const strawGold = available ? '#eab308' : '#cbd5e1';
+        return (
+          <svg
+            viewBox="0 0 180 86"
+            className="weapon-silhouette-svg"
+            aria-hidden="true"
+          >
+            {/* 4-Inch Tapered Rust-Blued Barrel + Dove-Tailed Front Sight */}
+            <path
+              d="M98 22.5 L156 24.2 L156 28.4 L98 29.8 Z"
+              fill={rustBlue}
+              stroke={stroke}
+              strokeWidth="1.25"
+            />
+            <polygon
+              points="149,24.2 155,24.2 153.5,19.2 150.5,19.2"
+              fill={rustBlue}
+              stroke={stroke}
+              strokeWidth="0.95"
+            />
+            {/* Forked Receiver, Over-Center Knee-Joint Toggle & Knurled Toggle Ears */}
+            <path
+              d="M35 21.5 L99 21.5 L99 31.5 L32 31.5 Q28 28 35 21.5 Z"
+              fill={rustBlue}
+              stroke={stroke}
+              strokeWidth="1.35"
+            />
+            <circle
+              cx="53"
+              cy="22.2"
+              r="5.6"
+              fill={rustBlue}
+              stroke={stroke}
+              strokeWidth="1.3"
+            />
+            <circle
+              cx="53"
+              cy="22.2"
+              r="2.6"
+              fill="none"
+              stroke={strawGold}
+              strokeWidth="0.85"
+            />
+            <line
+              x1="58.5"
+              y1="23.5"
+              x2="82"
+              y2="24.5"
+              stroke={accent}
+              strokeWidth="1.2"
+            />
+            {/* S-Curved Toggle Ramp Frame + Iconic 55° Grip Frame */}
+            <path
+              d="M27 31.5 L96 31.5 L94 37.5 L88 37.5 L88 50 Q88 55 81 55 L69 55 L52 76 L32 72 L47 42 Q34 39 27 31.5 Z"
+              fill={rustBlue}
+              stroke={stroke}
+              strokeWidth="1.3"
+            />
+            {/* 20-LPI Checkered European Walnut Grip Panel */}
+            <polygon
+              points="49,38 68,39 51,71 35,68"
+              fill={walnutGrip}
+              stroke={stroke}
+              strokeWidth="1.05"
+            />
+            {/* Rounded Luger Trigger Guard + Straw-Tempered Trigger, Takedown & Safety */}
+            <ellipse
+              cx="77.5"
+              cy="45.2"
+              rx="8.2"
+              ry="6.8"
+              fill={cutout}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            <path
+              d="M78.5 40 Q80 45.5 76 48.5"
+              fill="none"
+              stroke={strawGold}
+              strokeWidth="2.2"
+              strokeLinecap="round"
+            />
+            <rect
+              x="86.5"
+              y="33"
+              width="5.5"
+              height="3.2"
+              rx="0.8"
+              fill={strawGold}
+            />
+            <line
+              x1="35"
+              y1="33.5"
+              x2="43"
+              y2="31.5"
+              stroke={strawGold}
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+            {/* Concentric Twin-Ear Magazine Base Knob */}
+            <circle
+              cx="41.5"
+              cy="75"
+              r="4.2"
+              fill={subFill}
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+            <circle cx="41.5" cy="75" r="1.6" fill={strawGold} />
+          </svg>
+        );
+      }
+
+      case 'vector': {
+        const fdeUpper = available ? '#a38764' : '#94a3b8';
+        const superVLower = available ? '#242c38' : '#64748b';
+        const brassPivot = available ? '#eab308' : '#cbd5e1';
+        return (
+          <svg
+            viewBox="0 0 210 88"
+            className="weapon-silhouette-svg"
+            aria-hidden="true"
+          >
+            {/* Gen II Skeletonized Right-Folding Stock */}
+            <path
+              d="M12 25 L54 26.5 L54 34 L21 43 L12 47 Z"
+              fill={superVLower}
+              stroke={stroke}
+              strokeWidth="1.25"
+            />
+            <polygon
+              points="19,30 46,30.5 46,33.5 22,39.5"
+              fill={cutout}
+              stroke={stroke}
+              strokeWidth="0.85"
+            />
+            {/* Flat Dark Earth Upper Receiver + Full-Length Picatinny Rail & Flip Sights */}
+            <path
+              d="M54 23 L147 23 L150 26.5 L150 35 L54 35 Z"
+              fill={fdeUpper}
+              stroke={stroke}
+              strokeWidth="1.3"
+            />
+            {[60, 70, 80, 90, 100, 110, 120, 130, 140].map((rx) => (
+              <rect
+                key={rx}
+                x={rx}
+                y="21"
+                width="4"
+                height="2"
+                fill={stroke}
+              />
+            ))}
+            <rect x="57" y="17.5" width="6" height="4" rx="0.8" fill={stroke} />
+            <rect
+              x="141"
+              y="17.5"
+              width="5.5"
+              height="4"
+              rx="0.8"
+              fill={stroke}
+            />
+            {/* Brass Charging Handle Pivot + Deep Black Super V 110° Off-Axis Lower Housing */}
+            <circle cx="117" cy="29.5" r="2.1" fill={brassPivot} />
+            <path
+              d="M58 35 L150 35 L148 56 L124 59 L106 58 L98 46 L81 46 L76 68 L63 67 L67 44 L58 41 Z"
+              fill={superVLower}
+              stroke={stroke}
+              strokeWidth="1.35"
+            />
+            {/* 110° Super V Angled Track Accent Line */}
+            <line
+              x1="112"
+              y1="37"
+              x2="119"
+              y2="55"
+              stroke={accent}
+              strokeWidth="1.5"
+              strokeDasharray="2.5 1.8"
+            />
+            {/* Trigger Cutout Between Grip & Super V Magwell */}
+            <polygon
+              points="80,38 99,38 103,47 79,47"
+              fill={cutout}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            <path
+              d="M89 38.5 Q90 43 87 45"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="2"
+              strokeLinecap="round"
+            />
+            {/* Steep 66° Extended 25-Round .45 ACP MagEx2 Magazine */}
+            <polygon
+              points="126,57 141,55 129,82 114,80"
+              fill={fdeUpper}
+              stroke={stroke}
+              strokeWidth="1.2"
+            />
+            {/* Ultra-Low-Bore 5.5" .45 ACP Barrel (Aligned w/ Lower Housing!) & Prong Flash Hider */}
+            <rect
+              x="150"
+              y="44.2"
+              width="19"
+              height="4.2"
+              fill={fill}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            <rect
+              x="169"
+              y="43.3"
+              width="10"
+              height="6"
+              rx="1"
+              fill={superVLower}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+          </svg>
+        );
+      }
     }
   });
 

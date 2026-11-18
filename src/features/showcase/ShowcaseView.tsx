@@ -6,6 +6,7 @@ import {
   Box,
   Check,
   Clapperboard,
+  Compass,
   Copy,
   Cpu,
   Eye,
@@ -27,6 +28,7 @@ import {
   Printer,
   Ruler,
   Scissors,
+  Share2,
   Shield,
   Sparkles,
   Star,
@@ -64,7 +66,11 @@ import { launchDirectorDocumentary } from '../../narration/storyDirector';
 import { useAppStore } from '../../store/useAppStore';
 import { ARMORY_WEAPONS, matchesArmoryCategory } from '../../weapons/manifests';
 import { preloadWeaponPlugin } from '../../weapons/registry';
-import type { ArmoryCategory, WeaponId } from '../../weapons/types';
+import type {
+  ArmoryCategory,
+  ArmoryWeaponItem,
+  WeaponId,
+} from '../../weapons/types';
 import { queueMechanismShowdownLaunch } from '../armory/mechanismShowdownSpecs';
 import { WeaponSilhouetteSvg } from '../armory/WeaponSilhouetteSvg';
 import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
@@ -73,16 +79,33 @@ const GITHUB_REPO_URL =
   'https://github.com/zhoujingkun1989-arch/digital-armory-3d';
 
 type HeroStageMode = 'pbr' | 'section' | 'xray' | 'explode';
+type ShowcaseFilterKey = ArmoryCategory | 'lmg';
 
-const CATEGORY_KEYS: readonly ArmoryCategory[] = [
+const CATEGORY_KEYS: readonly ShowcaseFilterKey[] = [
   'all',
   'assault',
+  'lmg',
   'smg',
   'sniper',
   'shotgun',
   'pistol',
   'archery',
 ];
+
+function matchesShowcaseCategory(
+  item: ArmoryWeaponItem,
+  filter: ShowcaseFilterKey
+): boolean {
+  if (filter === 'all') return true;
+  const typeTag = `${item.weaponTypeCn ?? ''} ${item.categoryCn}`;
+  const isLmg =
+    (item.id as string) === 'm249' ||
+    (item.category as string) === 'lmg' ||
+    typeTag.includes('机枪');
+  if (filter === 'lmg') return isLmg;
+  if (filter === 'assault' && isLmg) return false;
+  return matchesArmoryCategory(item, filter as ArmoryCategory);
+}
 
 const ARCH_ICONS: Record<ShowcaseArchPillarCopy['iconKey'], LucideIcon> = {
   git: GitBranch,
@@ -102,7 +125,7 @@ export const ShowcaseView: React.FC = () => {
   const [baseHeroMode, setBaseHeroMode] = useState<'pbr' | 'explode'>(() =>
     playbackClock.getState().targetProgress > 0.05 ? 'explode' : 'pbr'
   );
-  const [category, setCategory] = useState<ArmoryCategory>('all');
+  const [category, setCategory] = useState<ShowcaseFilterKey>('all');
   const [docWeaponId, setDocWeaponId] = useState<WeaponId>('ak15');
   const [copied, setCopied] = useState(false);
   const [lightboxItemId, setLightboxItemId] = useState<string | null>(null);
@@ -141,6 +164,8 @@ export const ShowcaseView: React.FC = () => {
   const setTextureModalOpen = useAppStore((s) => s.setTextureModalOpen);
   const openMonographModal = useAppStore((s) => s.openMonographModal);
   const openCartridgeLab = useAppStore((s) => s.openCartridgeLab);
+  const openExternalBallistics = useAppStore((s) => s.openExternalBallistics);
+  const openPosterModal = useAppStore((s) => s.openPosterModal);
 
   const s = SHOWCASE_STRINGS[lang];
 
@@ -242,7 +267,7 @@ export const ShowcaseView: React.FC = () => {
   const docShortTag = getLocalizedShortWeaponLabel(docWeaponId, lang);
 
   const filteredWeapons = ARMORY_WEAPONS.filter((w) =>
-    matchesArmoryCategory(w, category as ArmoryCategory)
+    matchesShowcaseCategory(w, category)
   );
 
   const heroMode: HeroStageMode = sectionCut
@@ -512,11 +537,31 @@ export const ShowcaseView: React.FC = () => {
             <button
               type="button"
               className="showcase-cta-ghost"
+              onClick={() => openExternalBallistics()}
+              title={s.hero.ctaBallisticsTitle}
+            >
+              <Compass size={14} aria-hidden="true" />
+              <span>{s.hero.ctaBallistics}</span>
+            </button>
+
+            <button
+              type="button"
+              className="showcase-cta-ghost"
               onClick={() => openCartridgeLab()}
               title={s.hero.ctaCartridgesTitle}
             >
               <Ruler size={14} aria-hidden="true" />
               <span>{s.hero.ctaCartridges}</span>
+            </button>
+
+            <button
+              type="button"
+              className="showcase-cta-ghost"
+              onClick={() => openPosterModal({ weaponId: featuredWeapon.id })}
+              title={s.hero.ctaPosterTitle}
+            >
+              <Share2 size={14} aria-hidden="true" />
+              <span>{s.hero.ctaPoster}</span>
             </button>
 
             <button
@@ -1032,8 +1077,11 @@ export const ShowcaseView: React.FC = () => {
             >
               {CATEGORY_KEYS.map((catKey) => {
                 const count = ARMORY_WEAPONS.filter((w) =>
-                  matchesArmoryCategory(w, catKey as ArmoryCategory)
+                  matchesShowcaseCategory(w, catKey)
                 ).length;
+                if (count === 0 && catKey !== 'all' && category !== catKey) {
+                  return null;
+                }
                 const isSelected = category === catKey;
                 return (
                   <button

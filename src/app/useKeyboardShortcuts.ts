@@ -24,13 +24,14 @@ function isEditableElement(target: EventTarget | null): boolean {
  * - `X` (Armory / Workbench): Toggle X-Ray shell transparency
  * - `T` (Armory / Workbench): Toggle functional engineering role color tint (`原理分色`)
  * - `B` (Armory / Workbench / Cartridge Lab): Open / Return from 1:1 SAAMI Cartridge Cutaway Lab (`弹药剖视馆`)
+ * - `R` (Global): Open / Return from 1,000m RK4 External Ballistics Range Lab (`外弹道靶场`); `Shift+R` resets Workbench
+ * - `U` (Global): Open / Close Instant HD 3D Cutaway Social Poster Studio (`海报分享`)
  * - `G` (Workbench): Toggle hands-on guided military field-strip mode (`亲手快拆`)
  * - `J` (Workbench): Toggle classic firearm malfunction cutaway & clearing diagnostics (`故障排障`)
  * - `K` (Workbench): Toggle 1:1 3D armorer vernier caliper & envelope ruler (`游标卡尺`)
  * - `E` (Workbench): Toggle CAD hard-edge wireframe
  * - `L` (Workbench, Explode mode): Toggle 3D part leader labels
  * - `H` (All screens): Hide / Show all UI buttons & HUD panels for clean 3D showcase (`隐藏按钮`)
- * - `R` (Workbench): Reset view & assembled (0%) state
  * - `Ctrl/Cmd+P` (Global): Open Monograph Print Studio, or trigger formatted monograph print when open
  */
 export function useKeyboardShortcuts(): void {
@@ -59,6 +60,11 @@ export function useKeyboardShortcuts(): void {
 
       if (e.key === 'Escape') {
         const audioSnap = getNarrationAudioSnapshot();
+        if (state.posterShareModalOpen) {
+          e.preventDefault();
+          state.closePosterModal();
+          return;
+        }
         if (state.textureModalOpen) {
           e.preventDefault();
           state.setTextureModalOpen(false);
@@ -127,7 +133,8 @@ export function useKeyboardShortcuts(): void {
         if (
           state.screen === 'workbench' ||
           state.screen === 'showcase' ||
-          state.screen === 'cartridges'
+          state.screen === 'cartridges' ||
+          state.screen === 'ballistics'
         ) {
           e.preventDefault();
           state.returnToArmory();
@@ -138,6 +145,33 @@ export function useKeyboardShortcuts(): void {
       if (isEditableElement(e.target) || state.textureModalOpen) return;
 
       const lowerKey = e.key.toLowerCase();
+
+      if (state.posterShareModalOpen) {
+        if (!e.shiftKey && lowerKey === 'u') {
+          e.preventDefault();
+          state.closePosterModal();
+        }
+        return;
+      }
+
+      if (!e.shiftKey && lowerKey === 'u') {
+        e.preventDefault();
+        state.togglePosterModal({ weaponId: state.activeWeaponId });
+        return;
+      }
+
+      if (!e.shiftKey && lowerKey === 'r') {
+        e.preventDefault();
+        if (state.screen === 'ballistics') {
+          state.returnToArmory();
+        } else if (state.screen === 'cartridges') {
+          state.openExternalBallistics(state.activeCartridgeCaliber);
+        } else {
+          state.openExternalBallistics();
+        }
+        return;
+      }
+
       if (lowerKey === 'h') {
         e.preventDefault();
         state.toggleHudHidden();
@@ -151,7 +185,7 @@ export function useKeyboardShortcuts(): void {
         }
         return;
       }
-      if (lowerKey === 'c') {
+      if (lowerKey === 'c' && state.screen !== 'ballistics') {
         if (state.screen === 'cartridges') {
           state.toggleCartridgeSectionCut();
         } else {
@@ -159,14 +193,19 @@ export function useKeyboardShortcuts(): void {
         }
         return;
       }
-      if (lowerKey === 'x' && state.screen !== 'cartridges') {
+      if (
+        lowerKey === 'x' &&
+        state.screen !== 'cartridges' &&
+        state.screen !== 'ballistics'
+      ) {
         state.toggleXrayShells();
         return;
       }
       if (
         lowerKey === 't' &&
         state.screen !== 'showcase' &&
-        state.screen !== 'cartridges'
+        state.screen !== 'cartridges' &&
+        state.screen !== 'ballistics'
       ) {
         state.toggleEngineeringTint();
         return;
@@ -207,7 +246,9 @@ export function useKeyboardShortcuts(): void {
           }
           break;
         case 'r':
-          state.resetAll();
+          if (e.shiftKey) {
+            state.resetAll();
+          }
           break;
         default:
           break;

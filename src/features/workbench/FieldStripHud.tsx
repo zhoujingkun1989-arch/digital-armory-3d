@@ -8,6 +8,7 @@ import {
   Lightbulb,
   Lock,
   RotateCcw,
+  Share2,
   Timer,
   Trophy,
   Wrench,
@@ -74,6 +75,7 @@ export const FieldStripHud: React.FC = () => {
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const lang = useAppStore((s) => s.lang);
   const setFieldStripActive = useAppStore((s) => s.setFieldStripActive);
+  const openPosterModal = useAppStore((s) => s.openPosterModal);
 
   const snap = useSyncExternalStore(
     fieldStripStore.subscribe,
@@ -386,6 +388,20 @@ export const FieldStripHud: React.FC = () => {
               </div>
 
               <div className="exam-cert-actions">
+                <button
+                  type="button"
+                  className="exam-cert-share-btn"
+                  title={ui.shareCertPosterTitle}
+                  onClick={() =>
+                    openPosterModal({
+                      weaponId: activeWeaponId,
+                      armorerRank: earnedRank,
+                    })
+                  }
+                >
+                  <Share2 size={12} aria-hidden="true" />
+                  <span>{ui.shareCertPosterBtn}</span>
+                </button>
                 <button
                   type="button"
                   className="exam-cert-retry-btn"

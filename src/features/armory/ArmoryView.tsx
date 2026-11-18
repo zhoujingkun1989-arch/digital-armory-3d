@@ -1,11 +1,13 @@
 import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import {
   ArrowRight,
+  Award,
   BookOpen,
   CheckCircle2,
   ChevronLeft,
   ChevronRight,
   Clock,
+  Crosshair,
   Eye,
   GitCompareArrows,
   Globe2,
@@ -19,17 +21,20 @@ import {
   Rotate3d,
   Ruler,
   Scissors,
+  Share2,
   Shield,
   Sparkles,
   Wrench,
 } from 'lucide-react';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
+import { useWeaponExamSummary } from '../../engine/exam/armorerExamStore';
 import { isArcheryWeapon } from '../../engine/physics/armoryPhysics';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import {
   getLocalizedShortWeaponLabel,
   resolveWeaponDisplayMeta,
 } from '../../i18n/weaponFallbacks';
+import type { LanguageCode } from '../../narration/types';
 import {
   getLoadedNarrationBundle,
   preloadWeaponNarration,
@@ -38,7 +43,11 @@ import {
 import { useAppStore } from '../../store/useAppStore';
 import { ARMORY_WEAPONS, matchesArmoryCategory } from '../../weapons/manifests';
 import { preloadWeaponPlugin } from '../../weapons/registry';
-import type { ArmoryCategory, ArmoryWeaponItem } from '../../weapons/types';
+import type {
+  ArmoryCategory,
+  ArmoryWeaponItem,
+  WeaponId,
+} from '../../weapons/types';
 import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
 import { EngineeringTintLegend } from '../workbench/EngineeringTintLegend';
 import { StudioEnvironmentBar } from '../workbench/StudioEnvironmentBar';
@@ -54,9 +63,12 @@ const LazyMechanismShowdownModal = lazy(
   () => import('./MechanismShowdownModal')
 );
 
-const CATEGORY_KEYS: readonly ArmoryCategory[] = [
+type ArmoryFilterKey = ArmoryCategory | 'lmg';
+
+const CATEGORY_KEYS: readonly ArmoryFilterKey[] = [
   'all',
   'assault',
+  'lmg',
   'smg',
   'sniper',
   'shotgun',
@@ -64,8 +76,152 @@ const CATEGORY_KEYS: readonly ArmoryCategory[] = [
   'archery',
 ];
 
+function matchesCategoryWithLmg(
+  item: ArmoryWeaponItem,
+  filter: ArmoryFilterKey
+): boolean {
+  if (filter === 'all') return true;
+  const typeTag = `${item.weaponTypeCn ?? ''} ${item.categoryCn}`;
+  const isLmg =
+    (item.id as string) === 'm249' ||
+    (item.category as string) === 'lmg' ||
+    typeTag.includes('机枪');
+  if (filter === 'lmg') return isLmg;
+  if (filter === 'assault' && isLmg) return false;
+  return matchesArmoryCategory(item, filter as ArmoryCategory);
+}
+
+interface ArmoryRackBayCardProps {
+  item: ArmoryWeaponItem;
+  isOnTurntable: boolean;
+  lang: LanguageCode;
+  ui: (typeof UI_STRINGS)['zh']['armory'];
+  onCardClick: (item: ArmoryWeaponItem, el: HTMLDivElement) => void;
+  onEnterWorkbench: (weaponId: WeaponId) => void;
+}
+
+const ArmoryRackBayCard: React.FC<ArmoryRackBayCardProps> = ({
+  item,
+  isOnTurntable,
+  lang,
+  ui,
+  onCardClick,
+  onEnterWorkbench,
+}) => {
+  const examSummary = useWeaponExamSummary(item.id);
+  const itemMeta = resolveWeaponDisplayMeta(
+    item.id,
+    lang,
+    getLoadedNarrationBundle(item.id)
+  );
+
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      className={`armory-weapon-card bay-card ${
+        item.available ? 'is-ready' : 'is-planned'
+      } ${isOnTurntable ? 'is-on-turntable' : ''}`}
+      onMouseEnter={() => {
+        if (item.available) {
+          preloadWeaponPlugin(item.id);
+          preloadWeaponNarration(item.id);
+        }
+      }}
+      onFocus={() => {
+        if (item.available) {
+          preloadWeaponPlugin(item.id);
+          preloadWeaponNarration(item.id);
+        }
+      }}
+      onClick={(e) => onCardClick(item, e.currentTarget)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onCardClick(item, e.currentTarget);
+        }
+      }}
+    >
+      <div className="wcard-top-row">
+        <span className="wcard-bay">{item.bayCode}</span>
+        <span className="wcard-origin-tag">{itemMeta.originTag}</span>
+        {examSummary.isCertified && examSummary.overallRank && (
+          <span
+            className={`wcard-rank-badge rank-${examSummary.overallRank}`}
+            title={ui.certRackTitle(examSummary.overallRank)}
+          >
+            <span className="wcard-rank-letter">{examSummary.overallRank}</span>
+            <span className="wcard-rank-stars" aria-hidden="true">
+              {'★'.repeat(examSummary.stars)}
+            </span>
+          </span>
+        )}
+        {item.available ? (
+          <span
+            className={`wcard-status ${
+              isOnTurntable ? 'turntable-active' : 'ready'
+            }`}
+          >
+            {isOnTurntable ? (
+              <>
+                <Rotate3d size={10} />
+                <span>{ui.previewingBadge}</span>
+              </>
+            ) : (
+              <span className="live-dot" title={itemMeta.statusLabel} />
+            )}
+          </span>
+        ) : (
+          <span className="wcard-status planned">
+            <Clock size={10} />
+            <span>{ui.plannedBadge}</span>
+          </span>
+        )}
+      </div>
+
+      <div className="wcard-silhouette-box">
+        <WeaponSilhouetteSvg id={item.id} available={item.available} />
+      </div>
+
+      <div className="wcard-body">
+        <div className="wcard-title-row">
+          <span className="wcard-name">{itemMeta.name}</span>
+        </div>
+        <div className="wcard-meta">
+          <span className="wcard-caliber" title={itemMeta.caliber}>
+            {itemMeta.compactCaliber}
+          </span>
+          <span className="wcard-parts-pill">
+            {lang === 'zh'
+              ? `${item.partsCount} 零件`
+              : `${item.partsCount} Parts`}
+          </span>
+        </div>
+      </div>
+
+      <div className="wcard-footer">
+        {item.available ? (
+          <button
+            type="button"
+            className="wcard-enter-cta-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              onEnterWorkbench(item.id);
+            }}
+          >
+            <span>{ui.cardEnterCta}</span>
+            <ArrowRight size={12} />
+          </button>
+        ) : (
+          <span className="wcard-planned-note">{itemMeta.actionMechanism}</span>
+        )}
+      </div>
+    </div>
+  );
+};
+
 export const ArmoryView: React.FC = () => {
-  const [category, setCategory] = useState<ArmoryCategory>('all');
+  const [category, setCategory] = useState<ArmoryFilterKey>('all');
   const [plannedToast, setPlannedToast] = useState<string | null>(null);
   const [showdownRequest, setShowdownRequest] = useState<{
     mode: ShowdownViewMode;
@@ -81,6 +237,8 @@ export const ArmoryView: React.FC = () => {
   const setStoryOpen = useAppStore((s) => s.setStoryOpen);
   const openShowcase = useAppStore((s) => s.openShowcase);
   const openCartridgeLab = useAppStore((s) => s.openCartridgeLab);
+  const openExternalBallistics = useAppStore((s) => s.openExternalBallistics);
+  const openPosterModal = useAppStore((s) => s.openPosterModal);
   const selectArmoryWeapon = useAppStore((s) => s.selectArmoryWeapon);
   const enterWorkbench = useAppStore((s) => s.enterWorkbench);
   const armoryAutoRotate = useAppStore((s) => s.armoryAutoRotate);
@@ -99,6 +257,7 @@ export const ArmoryView: React.FC = () => {
   const featuredWeapon =
     ARMORY_WEAPONS.find((w) => w.id === activeWeaponId) ?? ARMORY_WEAPONS[0];
   const { bundle: featuredBundle } = useWeaponNarration(featuredWeapon.id);
+  const featuredExam = useWeaponExamSummary(featuredWeapon.id);
 
   const ui = UI_STRINGS[lang].armory;
   const monoUi = UI_STRINGS[lang].monograph;
@@ -136,6 +295,7 @@ export const ArmoryView: React.FC = () => {
         s.screen !== 'armory' ||
         s.textureModalOpen ||
         s.monographModalOpen ||
+        s.posterShareModalOpen ||
         s.hudHidden
       ) {
         return;
@@ -155,7 +315,7 @@ export const ArmoryView: React.FC = () => {
   }, [showdownRequest, featuredWeapon.id, suggestedRivalId]);
 
   const filteredWeapons = ARMORY_WEAPONS.filter((w) =>
-    matchesArmoryCategory(w, category)
+    matchesCategoryWithLmg(w, category)
   );
 
   const scrollRackBy = (dir: -1 | 1) => {
@@ -218,7 +378,7 @@ export const ArmoryView: React.FC = () => {
           >
             {CATEGORY_KEYS.map((key) => {
               const count = ARMORY_WEAPONS.filter((w) =>
-                matchesArmoryCategory(w, key)
+                matchesCategoryWithLmg(w, key)
               ).length;
               if (count === 0 && key !== 'all' && category !== key) {
                 return null;
@@ -273,6 +433,31 @@ export const ArmoryView: React.FC = () => {
           >
             <GitCompareArrows size={13} aria-hidden="true" />
             <span>{showdownUi.entryBtn}</span>
+          </button>
+
+          <button
+            type="button"
+            className="armory-showcase-btn armory-ballistics-btn"
+            onClick={() => openExternalBallistics()}
+            title={ui.ballisticsLabTitle}
+          >
+            <Crosshair size={13} aria-hidden="true" />
+            <span>{ui.ballisticsLabBtn}</span>
+          </button>
+
+          <button
+            type="button"
+            className="armory-showcase-btn armory-poster-btn"
+            onClick={() =>
+              openPosterModal({
+                weaponId: featuredWeapon.id,
+                armorerRank: featuredExam.overallRank,
+              })
+            }
+            title={ui.posterTitle}
+          >
+            <Share2 size={13} aria-hidden="true" />
+            <span>{ui.posterBtn}</span>
           </button>
 
           <button
@@ -336,6 +521,42 @@ export const ArmoryView: React.FC = () => {
 
           <h2 className="plaque-weapon-title">{featuredDisplay.name}</h2>
           <div className="plaque-weapon-sub">{featuredWeapon.modelCode}</div>
+
+          {featuredExam.isCertified && featuredExam.overallRank && (
+            <button
+              type="button"
+              className={`plaque-exam-cert-banner rank-${featuredExam.overallRank}`}
+              title={ui.posterTitle}
+              onClick={() =>
+                openPosterModal({
+                  weaponId: featuredWeapon.id,
+                  armorerRank: featuredExam.overallRank,
+                })
+              }
+            >
+              <span
+                className={`plaque-exam-rank-seal rank-${featuredExam.overallRank}`}
+              >
+                {featuredExam.overallRank}
+              </span>
+              <span className="plaque-exam-meta">
+                <span className="plaque-exam-kicker">
+                  <Award size={11} aria-hidden="true" />
+                  <span>{ui.certPlaqueLabel}</span>
+                  <span className="plaque-exam-stars" aria-hidden="true">
+                    {'★'.repeat(featuredExam.stars)}
+                  </span>
+                </span>
+                <span className="plaque-exam-sub">
+                  {ui.certPlaqueSub(
+                    featuredExam.fieldStripRank,
+                    featuredExam.triageRank
+                  )}
+                </span>
+              </span>
+              <Share2 size={12} className="plaque-exam-share-icon" aria-hidden="true" />
+            </button>
+          )}
 
           <p className="plaque-desc">{featuredDisplay.description}</p>
 
@@ -596,116 +817,17 @@ export const ArmoryView: React.FC = () => {
         </div>
 
         <div ref={rackScrollRef} className="armory-cards-grid">
-          {filteredWeapons.map((item) => {
-            const isOnTurntable = item.id === activeWeaponId;
-            const itemMeta = resolveWeaponDisplayMeta(
-              item.id,
-              lang,
-              getLoadedNarrationBundle(item.id)
-            );
-
-            return (
-              <div
-                key={item.id}
-                role="button"
-                tabIndex={0}
-                className={`armory-weapon-card bay-card ${
-                  item.available ? 'is-ready' : 'is-planned'
-                } ${isOnTurntable ? 'is-on-turntable' : ''}`}
-                onMouseEnter={() => {
-                  if (item.available) {
-                    preloadWeaponPlugin(item.id);
-                    preloadWeaponNarration(item.id);
-                  }
-                }}
-                onFocus={() => {
-                  if (item.available) {
-                    preloadWeaponPlugin(item.id);
-                    preloadWeaponNarration(item.id);
-                  }
-                }}
-                onClick={(e) => handleCardBodyClick(item, e.currentTarget)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    handleCardBodyClick(item, e.currentTarget);
-                  }
-                }}
-              >
-                <div className="wcard-top-row">
-                  <span className="wcard-bay">{item.bayCode}</span>
-                  <span className="wcard-origin-tag">{itemMeta.originTag}</span>
-                  {item.available ? (
-                    <span
-                      className={`wcard-status ${
-                        isOnTurntable ? 'turntable-active' : 'ready'
-                      }`}
-                    >
-                      {isOnTurntable ? (
-                        <>
-                          <Rotate3d size={10} />
-                          <span>{ui.previewingBadge}</span>
-                        </>
-                      ) : (
-                        <span
-                          className="live-dot"
-                          title={itemMeta.statusLabel}
-                        />
-                      )}
-                    </span>
-                  ) : (
-                    <span className="wcard-status planned">
-                      <Clock size={10} />
-                      <span>{ui.plannedBadge}</span>
-                    </span>
-                  )}
-                </div>
-
-                <div className="wcard-silhouette-box">
-                  <WeaponSilhouetteSvg
-                    id={item.id}
-                    available={item.available}
-                  />
-                </div>
-
-                <div className="wcard-body">
-                  <div className="wcard-title-row">
-                    <span className="wcard-name">{itemMeta.name}</span>
-                  </div>
-                  <div className="wcard-meta">
-                    <span className="wcard-caliber" title={itemMeta.caliber}>
-                      {itemMeta.compactCaliber}
-                    </span>
-                    <span className="wcard-parts-pill">
-                      {lang === 'zh'
-                        ? `${item.partsCount} 零件`
-                        : `${item.partsCount} Parts`}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="wcard-footer">
-                  {item.available ? (
-                    <button
-                      type="button"
-                      className="wcard-enter-cta-btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        enterWorkbench(item.id);
-                      }}
-                    >
-                      <span>{ui.cardEnterCta}</span>
-                      <ArrowRight size={12} />
-                    </button>
-                  ) : (
-                    <span className="wcard-planned-note">
-                      {itemMeta.actionMechanism}
-                    </span>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+          {filteredWeapons.map((item) => (
+            <ArmoryRackBayCard
+              key={item.id}
+              item={item}
+              isOnTurntable={item.id === activeWeaponId}
+              lang={lang}
+              ui={ui}
+              onCardClick={handleCardBodyClick}
+              onEnterWorkbench={enterWorkbench}
+            />
+          ))}
         </div>
       </section>
 
