@@ -1,0 +1,1064 @@
+/* ==========================================================================
+   WP-14 · 1,000m External Ballistics, Wind Drift & Transonic Decay Range Lab
+   Adaptive across Tactical Vault, Gunsmith Bench & Blueprint Daylight Themes
+   ========================================================================== */
+
+.eb-lab-screen {
+  --eb-slot-0: #38bdf8;
+  --eb-slot-1: #f59e0b;
+  --eb-slot-2: #34d399;
+  --eb-slot-3: #fb7185;
+  --eb-chart-bg: rgba(7, 11, 19, 0.88);
+  --eb-chart-grid: rgba(148, 163, 184, 0.12);
+  --eb-chart-grid-major: rgba(148, 163, 184, 0.24);
+  --eb-chart-axis-text: rgba(203, 213, 225, 0.82);
+  --eb-chart-muted-text: rgba(148, 163, 184, 0.68);
+  --eb-los-stroke: rgba(226, 232, 240, 0.56);
+  --eb-sonic-stroke: #f43f5e;
+  --eb-transonic-band: rgba(244, 63, 94, 0.09);
+  --eb-cursor-stroke: rgba(248, 250, 252, 0.82);
+  --eb-scope-glass: radial-gradient(
+    circle at 50% 44%,
+    rgba(18, 30, 46, 0.92) 0%,
+    rgba(8, 14, 24, 0.98) 68%,
+    rgba(3, 6, 12, 1) 100%
+  );
+  --eb-reticle-line: rgba(226, 232, 240, 0.78);
+  --eb-reticle-sub: rgba(148, 163, 184, 0.45);
+
+  position: absolute;
+  inset: 0;
+  z-index: 22;
+  pointer-events: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  padding: 10px 14px 44px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  background:
+    radial-gradient(
+      1100px 520px at 18% 8%,
+      rgba(14, 165, 233, 0.11),
+      transparent 65%
+    ),
+    radial-gradient(
+      900px 480px at 86% 14%,
+      rgba(245, 158, 11, 0.09),
+      transparent 62%
+    ),
+    rgba(6, 10, 17, 0.88);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+[data-env='gunsmith_bench'] .eb-lab-screen {
+  --eb-chart-bg: rgba(15, 13, 11, 0.9);
+  background:
+    radial-gradient(
+      1000px 500px at 20% 8%,
+      rgba(245, 158, 11, 0.1),
+      transparent 65%
+    ),
+    rgba(12, 10, 8, 0.9);
+}
+
+:is([data-theme='light'], .theme-light) .eb-lab-screen {
+  --eb-slot-0: #0284c7;
+  --eb-slot-1: #d97706;
+  --eb-slot-2: #059669;
+  --eb-slot-3: #e11d48;
+  --eb-chart-bg: rgba(255, 255, 255, 0.95);
+  --eb-chart-grid: rgba(15, 23, 42, 0.07);
+  --eb-chart-grid-major: rgba(15, 23, 42, 0.16);
+  --eb-chart-axis-text: #334155;
+  --eb-chart-muted-text: #64748b;
+  --eb-los-stroke: rgba(15, 23, 42, 0.52);
+  --eb-sonic-stroke: #dc2626;
+  --eb-transonic-band: rgba(225, 29, 72, 0.065);
+  --eb-cursor-stroke: rgba(15, 23, 42, 0.72);
+  --eb-scope-glass: radial-gradient(
+    circle at 50% 44%,
+    #f8fafc 0%,
+    #e2e8f0 74%,
+    #cbd5e1 100%
+  );
+  --eb-reticle-line: rgba(15, 23, 42, 0.84);
+  --eb-reticle-sub: rgba(51, 65, 85, 0.45);
+  background:
+    radial-gradient(
+      1100px 520px at 16% 6%,
+      rgba(2, 132, 199, 0.09),
+      transparent 64%
+    ),
+    radial-gradient(
+      900px 460px at 85% 12%,
+      rgba(217, 119, 6, 0.07),
+      transparent 60%
+    ),
+    rgba(238, 242, 246, 0.94);
+}
+
+/* ==================== Top Exhibition Header ==================== */
+.eb-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  padding: 8px 13px;
+  border-radius: 12px;
+  background: var(--surface-glass-strong);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-bar);
+  flex-shrink: 0;
+}
+
+.eb-brand-cluster {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  min-width: 0;
+}
+
+.eb-badge {
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, #0284c7, #0d9488);
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.eb-title-wrap {
+  min-width: 0;
+}
+
+.eb-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.24;
+  color: var(--color-text-primary);
+}
+
+.eb-subtitle {
+  margin: 1px 0 0;
+  font-size: 11px;
+  color: var(--color-text-muted);
+  line-height: 1.3;
+}
+
+.eb-header-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-inline-start: auto;
+}
+
+.eb-dope-jump-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: var(--surface-amber-tint);
+  border: 1px solid rgba(245, 158, 11, 0.42);
+  color: var(--color-accent-orange-text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.eb-dope-jump-btn:hover {
+  background: linear-gradient(135deg, #ea580c, #d97706);
+  border-color: #f59e0b;
+  color: #ffffff;
+}
+
+/* ==================== Showdown Presets & 13-Projectile Selector Deck ==================== */
+.eb-selector-deck {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  background: var(--surface-glass-strong);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-bar);
+  flex-shrink: 0;
+}
+
+.eb-presets-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 7px 12px;
+}
+
+.eb-presets-left {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.eb-section-kicker {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-accent-cyan-text);
+  white-space: nowrap;
+}
+
+.eb-preset-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4.5px 9px;
+  border-radius: 7px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  transition: all 0.14s ease;
+}
+
+.eb-preset-pill:hover {
+  background: var(--surface-pill);
+  border-color: var(--color-accent-cyan);
+  color: var(--color-text-primary);
+}
+
+.eb-preset-pill.is-active {
+  background: var(--surface-cyan-tint);
+  border-color: var(--color-accent-cyan);
+  color: var(--color-text-primary);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.18);
+}
+
+.eb-isa-cluster {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.eb-isa-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3.5px 9px;
+  border-radius: 999px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-secondary);
+}
+
+.eb-reset-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3.5px 8px;
+  border-radius: 7px;
+  background: var(--surface-pill);
+  border: 1px solid var(--border-subtle);
+  color: var(--color-text-secondary);
+  font-size: 10.5px;
+  font-weight: 700;
+  transition: all 0.14s ease;
+}
+
+.eb-reset-btn:hover {
+  border-color: var(--color-accent-cyan);
+  color: var(--color-accent-cyan-text);
+}
+
+.eb-caliber-strip-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+}
+
+.eb-slot-hint {
+  font-size: 10.5px;
+  color: var(--color-text-muted);
+}
+
+.eb-caliber-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(136px, 1fr));
+  gap: 5px;
+}
+
+.eb-caliber-chip {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
+  color: var(--color-text-secondary);
+  text-align: left;
+  transition: all 0.14s ease;
+  min-width: 0;
+}
+
+.eb-caliber-chip:hover {
+  background: var(--surface-pill);
+  border-color: var(--border-strong);
+  color: var(--color-text-primary);
+}
+
+.eb-caliber-chip.is-selected {
+  background: var(--surface-elevated);
+  border-color: var(--chip-slot-color, var(--color-accent-cyan));
+  color: var(--color-text-primary);
+  box-shadow: inset 3px 0 0 var(--chip-slot-color, var(--color-accent-cyan));
+}
+
+.eb-caliber-chip.is-focused {
+  box-shadow:
+    inset 3px 0 0 var(--chip-slot-color, var(--color-accent-cyan)),
+    0 0 0 1px var(--chip-slot-color, var(--color-accent-cyan));
+}
+
+.eb-chip-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  flex-shrink: 0;
+  background: rgba(148, 163, 184, 0.35);
+}
+
+.eb-caliber-chip.is-selected .eb-chip-dot {
+  background: var(--chip-slot-color, var(--color-accent-cyan));
+  box-shadow: 0 0 8px var(--chip-slot-color, var(--color-accent-cyan));
+}
+
+.eb-chip-body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+
+.eb-chip-code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.eb-chip-meta {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--color-text-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==================== Environmental & Range Control Console ==================== */
+.eb-controls-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  background: var(--surface-glass-strong);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-bar);
+  flex-shrink: 0;
+}
+
+.eb-ctrl-group {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 5px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-divider);
+  min-width: 0;
+}
+
+.eb-ctrl-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+}
+
+.eb-ctrl-val {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-accent-cyan-text);
+}
+
+.eb-seg-row {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.eb-seg-btn {
+  flex: 1 1 0;
+  padding: 3.5px 5px;
+  border-radius: 6px;
+  background: var(--surface-pill);
+  border: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  transition: all 0.13s ease;
+}
+
+.eb-seg-btn:hover {
+  color: var(--color-text-primary);
+  border-color: var(--border-strong);
+}
+
+.eb-seg-btn.is-active {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  border-color: #38bdf8;
+  color: #ffffff;
+}
+
+.eb-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.eb-range-input {
+  flex: 1 1 auto;
+  width: 100%;
+  accent-color: #0ea5e9;
+  cursor: pointer;
+  height: 16px;
+}
+
+.eb-wind-dir-btn {
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: var(--surface-pill);
+  border: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--color-accent-orange-text);
+  white-space: nowrap;
+}
+
+.eb-wind-dir-btn:hover {
+  border-color: var(--color-accent-amber);
+}
+
+/* ==================== Main 2-Column Interactive Range Workspace ==================== */
+.eb-main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.72fr) minmax(330px, 1fr);
+  gap: 10px;
+  align-items: start;
+}
+
+.eb-charts-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.eb-right-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.eb-panel-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px;
+  border-radius: 13px;
+  background: var(--surface-glass-strong);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
+  min-width: 0;
+}
+
+.eb-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+}
+
+.eb-panel-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.eb-panel-kicker {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--color-accent-cyan-text);
+}
+
+.eb-panel-title {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+.eb-panel-sub {
+  margin: 0;
+  font-size: 10.5px;
+  color: var(--color-text-muted);
+  line-height: 1.35;
+}
+
+.eb-chart-tabs {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.eb-tab-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 7px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  transition: all 0.14s ease;
+}
+
+.eb-tab-btn:hover {
+  color: var(--color-text-primary);
+  border-color: var(--border-strong);
+}
+
+.eb-tab-btn.is-active {
+  background: var(--surface-cyan-tint);
+  border-color: var(--color-accent-cyan);
+  color: var(--color-accent-cyan-text);
+}
+
+.eb-svg-frame {
+  position: relative;
+  width: 100%;
+  border-radius: 10px;
+  background: var(--eb-chart-bg);
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+  user-select: none;
+}
+
+.eb-vector-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: crosshair;
+  touch-action: pan-y;
+}
+
+.eb-chart-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  font-size: 10.5px;
+  color: var(--color-text-muted);
+}
+
+.eb-legend-pills {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.eb-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+}
+
+.eb-legend-swatch {
+  width: 12px;
+  height: 3px;
+  border-radius: 999px;
+}
+
+.eb-clamp-note {
+  font-size: 10px;
+  color: var(--color-accent-orange-text);
+}
+
+/* ==================== Optical FFP Christmas-Tree Scope Reticle ==================== */
+.eb-reticle-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.eb-reticle-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.eb-scope-ocular-wrap {
+  width: min(304px, 100%);
+  aspect-ratio: 1 / 1;
+  border-radius: 999px;
+  padding: 6px;
+  background: linear-gradient(145deg, #1e293b, #090d16);
+  border: 2px solid rgba(148, 163, 184, 0.34);
+  box-shadow:
+    inset 0 2px 12px rgba(0, 0, 0, 0.75),
+    0 10px 28px rgba(2, 6, 14, 0.45);
+}
+
+:is([data-theme='light'], .theme-light) .eb-scope-ocular-wrap {
+  background: linear-gradient(145deg, #cbd5e1, #94a3b8);
+  border-color: rgba(15, 23, 42, 0.24);
+  box-shadow:
+    inset 0 2px 8px rgba(15, 23, 42, 0.18),
+    0 8px 22px rgba(15, 23, 42, 0.12);
+}
+
+.eb-reticle-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--eb-scope-glass);
+}
+
+.eb-turret-readout-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.eb-turret-box {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
+}
+
+.eb-turret-label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.eb-turret-primary {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-accent-orange-text);
+}
+
+.eb-turret-secondary {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-secondary);
+}
+
+.eb-buckshot-banner {
+  width: 100%;
+  padding: 5px 8px;
+  border-radius: 7px;
+  background: var(--surface-amber-tint);
+  border: 1px solid rgba(245, 158, 11, 0.38);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--color-accent-orange-text);
+  text-align: center;
+}
+
+/* ==================== Live Multi-Caliber Telemetry Cards ==================== */
+.eb-telemetry-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.eb-cal-card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
+  box-shadow: inset 3px 0 0 var(--card-slot-color, var(--color-accent-cyan));
+  cursor: pointer;
+  transition: all 0.14s ease;
+}
+
+.eb-cal-card:hover {
+  background: var(--surface-elevated);
+  border-color: var(--border-strong);
+}
+
+.eb-cal-card.is-focused {
+  background: var(--surface-elevated);
+  border-color: var(--card-slot-color, var(--color-accent-cyan));
+}
+
+.eb-cal-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.eb-cal-card-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+.eb-cal-bc-tag {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--surface-pill);
+  border: 1px solid var(--border-subtle);
+  color: var(--color-text-secondary);
+}
+
+.eb-focus-pill {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1.5px 6px;
+  border-radius: 999px;
+  background: var(--surface-cyan-tint);
+  border: 1px solid var(--color-accent-cyan);
+  color: var(--color-accent-cyan-text);
+}
+
+.eb-regime-pill {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 800;
+  padding: 1.5px 6px;
+  border-radius: 999px;
+}
+
+.eb-regime-pill.regime-supersonic {
+  background: rgba(16, 185, 129, 0.14);
+  border: 1px solid rgba(16, 185, 129, 0.42);
+  color: var(--color-accent-emerald-text);
+}
+
+.eb-regime-pill.regime-transonic {
+  background: rgba(245, 158, 11, 0.16);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  color: var(--color-accent-orange-text);
+}
+
+.eb-regime-pill.regime-subsonic {
+  background: rgba(148, 163, 184, 0.16);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  color: var(--color-text-secondary);
+}
+
+.eb-cal-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.eb-mini-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: var(--surface-glass);
+  border: 1px solid var(--border-divider);
+  min-width: 0;
+}
+
+.eb-mini-k {
+  font-size: 9px;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.eb-mini-v {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.eb-cal-card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.eb-cal-note {
+  font-size: 10.5px;
+  color: var(--color-text-muted);
+  line-height: 1.35;
+}
+
+.eb-weapon-jump-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.eb-weapon-link-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: var(--surface-pill);
+  border: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+  transition: all 0.13s ease;
+}
+
+.eb-weapon-link-pill:hover {
+  border-color: var(--color-accent-cyan);
+  color: var(--color-accent-cyan-text);
+}
+
+/* ==================== Bottom Multi-Range Sniper DOPE Drop Card ==================== */
+.eb-dope-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 11px 14px;
+  border-radius: 13px;
+  background: var(--surface-glass-strong);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
+  flex-shrink: 0;
+}
+
+.eb-dope-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.eb-dope-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: 9px;
+  border: 1px solid var(--border-subtle);
+  background: var(--eb-chart-bg);
+}
+
+.eb-dope-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.eb-dope-table th,
+.eb-dope-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border-divider);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.eb-dope-table th:first-child,
+.eb-dope-table td:first-child {
+  text-align: left;
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--surface-elevated);
+  font-family: var(--font-mono);
+  font-weight: 800;
+}
+
+.eb-dope-table thead th {
+  background: var(--surface-elevated);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.eb-dope-table tbody tr {
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.eb-dope-table tbody tr:hover td {
+  background: var(--surface-pill);
+}
+
+.eb-dope-table tbody tr.is-scrub-near td {
+  background: var(--surface-cyan-tint);
+}
+
+.eb-dope-table tbody tr.is-zero-row td {
+  border-bottom-color: rgba(56, 189, 248, 0.38);
+}
+
+.eb-dope-mono {
+  font-family: var(--font-mono);
+}
+
+.eb-dope-elev {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--color-accent-orange-text);
+}
+
+.eb-dope-wind {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  color: var(--color-accent-cyan-text);
+}
+
+.eb-zero-tag {
+  margin-inline-start: 6px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--surface-cyan-tint);
+  border: 1px solid var(--color-accent-cyan);
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--color-accent-cyan-text);
+}
+
+/* ==================== Responsive Breakpoints (Tablet & Mobile) ==================== */
+@media (max-width: 1160px) {
+  .eb-main-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .eb-right-col {
+    display: grid;
+    grid-template-columns: minmax(290px, 360px) minmax(0, 1fr);
+    gap: 10px;
+    align-items: start;
+  }
+}
+
+@media (max-width: 820px) {
+  .eb-lab-screen {
+    padding: 8px 8px 36px;
+  }
+
+  .eb-right-col {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .eb-caliber-grid {
+    grid-template-columns: repeat(auto-fill, minmax(122px, 1fr));
+  }
+
+  .eb-cal-metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.eb-lab-screen button:focus-visible,
+.eb-lab-screen input:focus-visible {
+  outline: 2px solid var(--color-accent-cyan);
+  outline-offset: 2px;
+}
