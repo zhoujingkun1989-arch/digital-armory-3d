@@ -1,0 +1,934 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "benellim4",
+  "generatedAt": "2026-11-18T12:54:39.622222+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "Benelli M4 Super 90 (M1014 JSCS)",
+    "subtitle": "12-Gauge Twin-ARGO Gas-Operated Semi-Automatic Combat Shotgun",
+    "originCountry": "Italy",
+    "weaponType": "Combat Shotgun",
+    "categoryLabel": "Combat Shotgun",
+    "actionMechanism": "Twin-ARGO Short-Stroke Piston · Dual-Lug Rotary Bolt · Tubular Magazine Carrier Feed",
+    "statusLabel": "Vault Master · Field Strippable",
+    "description": "Developed in 1998 by Benelli Armi S.p.A. in Urbino, Italy for the U.S. Armed Forces Joint Service Combat Shotgun trials and adopted in 1999 as the M1014, the Benelli M4 broke away from traditional inertia mechanisms to guarantee flawless cycling with heavy tactical accessories. Featuring the patented A.R.G.O. twin stainless-steel short-stroke gas pistons tapping clean propellant gas directly ahead of the chamber, a 38-degree rotary locking bolt head, a 7-round magazine tube with a forked shell elevator, and an M1014 three-position collapsible skeleton stock, it remains the gold standard of semi-automatic military shotguns.",
+    "highlights": [
+      "Patented A.R.G.O. Twin Stainless-Steel Short-Stroke Self-Cleaning Gas Pistons",
+      "Hard-Chrome 2-Lug 38° Rotary Bolt Head & 14° Angled Stock Recoil System",
+      "7-Round Underbarrel Magazine Tube with Forked Stainless Shell Elevator",
+      "M1014 3-Position Skeleton Collapsible Stock & LPA Winged Ghost-Ring Sights"
+    ],
+    "workbenchTitle": "Benelli M4 (M1014) 3D Disassembly & ARGO Cycle Analysis",
+    "workbenchSubtitle": "4 Key Assemblies · 26 Critical Components · Symmetrical Gas-Piston Rotary Lock & 12ga Shell Feed Simulation",
+    "cutawayLabel": "ARGO Pistons & Shell Carrier Cutaway",
+    "cutawayTitle": "Switch to internal cutaway view focusing on twin ARGO tappets, rotary bolt head, and shell elevator timing",
+    "searchPlaceholder": "Search component name / code (e.g., ARGO, Piston, Elevator, Ghost Ring, B-02)...",
+    "firingMilestoneLabel": "ARGO Carrier Impact / Exit",
+    "rateOfFire": "Semi-Automatic",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0% Assembled",
+        "desc": "Standard battery condition of the Benelli M4 Super 90 (U.S. Military M1014 JSCS): 18.5-inch chrome-lined smoothbore barrel flanked by twin underbarrel ARGO gas cylinders and a 7-round magazine tube, with the skeletonized buttstock fully extended to 886 mm."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30% Field Strip",
+        "desc": "Tool-less tactical takedown following Marine Corps TM 10698A-10/1: unscrew the magazine cap, slide off the 18.5-inch barrel with the dual ARGO gas block and two-piece polymer forend, pull out the knurled bolt handle, slide out the bolt carrier group, and push out the trigger group retaining pin."
+      },
+      "sub_assembly": {
+        "label": "Sub-Assembly",
+        "subLabel": "65% Sub-Assembly",
+        "desc": "Unscrew the dual knurled gas plugs to extract the twin fluted stainless tappet pistons, withdraw the bolt cam pin to release the hard-chrome rotary bolt head and firing pin, and slide the magazine spring and orange fluted follower from the steel tube."
+      },
+      "full_exploded": {
+        "label": "Full Exploded View",
+        "subLabel": "100% Full Exploded",
+        "desc": "All 26 precision components separated without interference: from the twin ARGO gas cylinders, hard-chrome bolt head, LPA ghost-ring sights, and three-position recoil tube to the forked shell elevator, illustrating the pinnacle of modern combat shotgun engineering."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "Trigger & Hammer",
+        "title": "Phase 1 · Trigger Squeeze & Hammer Release",
+        "description": "With the cross-bolt safety disengaged, pressing the combat trigger drops the sear hook. The heavy-duty helical hammer spring drives the forged stainless hammer upward through the trigger housing to strike the floating firing pin."
+      },
+      "phase_2": {
+        "shortLabel": "Ignition & Gas Tap",
+        "title": "Phase 2 · 12-Gauge Ignition & Twin High-Pressure Gas Tap",
+        "description": "The firing pin crushes the 12-gauge primer, igniting propellant and building peak chamber pressure of 79 megapascals. Just forward of the forcing cone, dual gas ports siphon incandescent, debris-free gas into the symmetrical ARGO stainless cylinders."
+      },
+      "phase_3": {
+        "shortLabel": "Piston Throw & Unlock",
+        "title": "Phase 3 · 15mm ARGO Piston Impingement & 38° Bolt Unlock",
+        "description": "The twin stainless fluted pistons dart rearward 15 millimeters, striking the symmetrical front shoulders of the heavy bolt carrier. As the 9-pellet 00 buckshot payload exits the muzzle, the carrier cam track rotates the dual-lug bolt head 38 degrees out of battery."
+      },
+      "phase_4": {
+        "shortLabel": "Recoil & Ejection",
+        "title": "Phase 4 · Full Recoil Stroke, Recoil Spring Compression & Hull Ejection",
+        "description": "The twin ARGO tappets spring back into their forward seats to isolate fouling gas while the bolt carrier recoils rearward. The hinged link compresses the 14-degree angled recoil spring, and the spent crimson hull is flung outward through the receiver port."
+      },
+      "phase_5": {
+        "shortLabel": "Feed & Shell Elevate",
+        "title": "Phase 5 · Magazine Tube Feed & Forked Carrier Elevation",
+        "description": "The cartridge latch releases the next 12-gauge shell from the tubular magazine onto the stamped stainless carrier. The shell elevator pivots upward approximately 20 degrees, aligning the fresh cartridge directly with the chrome-lined chamber."
+      },
+      "phase_6": {
+        "shortLabel": "Chambering Stroke",
+        "title": "Phase 6 · Forward Stroke, Chambering & Carrier Reset",
+        "description": "The compressed stock-tube recoil spring thrusts the bolt carrier forward via the rat-tail link. The bolt head strips the shell from the lifted carrier and guides it into the chamber while camming the elevator down to seal the loading port."
+      },
+      "phase_7": {
+        "shortLabel": "Rotary Lock Reset",
+        "title": "Phase 7 · 38° Dual-Lug Lockup & Disconnector Hand-Off",
+        "description": "Upon final lockup, the cam pin forces the two hardened bolt lugs to rotate 38 degrees into the barrel extension. Releasing the trigger transfers the hammer from the disconnector hook back to the primary sear, resetting the system for the next round."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "破界之息：A.R.G.O. 双活塞与美军 M1014 战斗霰弹枪传奇",
+      "deck": "从布鲁诺·奇沃拉尼经典的惯性后坐物理瓶颈，到乌尔比诺工程师在弹膛正前方锻造的双对称不锈钢导气气室，伯奈利 M4 以无懈可击的军规可靠性重塑了现代战术霰弹枪的工程标准。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1997–1998",
+          "title": "惯性的黄昏与五角大楼的苛求",
+          "paragraphs": [
+            "在20世纪90年代末，全球军警霰弹枪市场几乎是泵动式武器与伯奈利惯性后坐系统的天下。自1967年布鲁诺·奇沃拉尼发明惯性闭锁机构以来，伯奈利 Super 90 系列凭借轻盈的枪身和极为简化的零件赢得了民用狩猎与警务部门的赞誉。然而，现代特种作战环境的急剧演变却给这一经典物理结构投下了阴影。美军特种作战司令部与海军陆战队在近距离室内清剿、破门突击以及反恐演练中，开始在霰弹枪上大批量加挂重型战术强光手电、红外激光指示器、昼夜全息瞄具以及高容量侧挂弹药鞍座。",
+            "战术配件的急剧堆砌无情地打破了惯性后坐系统的力学平衡。奇沃拉尼系统的核心依赖全枪在后坐初期的自由后冲来压缩枪机内部的主惯性弹簧，而剧增的机匣质量与射手抵肩姿态的微小差异，极易导致惯性行程不足，从而引发致命的抽壳不尽或供弹卡死。1998年5月，美国陆军军备研究开发与工程中心联合海军陆战队正式发布了代号为 DAAE30-98-R-0401 的联合勤务战斗霰弹枪招标书。美军明确要求新一代武器必须是发射 12 号口径弹药的半自动平台，且无论挂载何种战术配件、处于何种极端射击姿态，都必须维持绝对的自闭循环可靠性。"
+          ],
+          "audioScript": "二十世纪末，特种作战的严苛需求给经典的惯性后坐霰弹枪带来了巨大挑战。当美军士兵在枪身加挂重型战术灯、激光瞄具和侧挂弹仓时，增加的机匣自重直接削弱了惯性行程，导致频繁的供弹卡壳。一九九八年，五角大楼启动了联合勤务战斗霰弹枪竞标，要求新枪必须在任何极限负重与姿态下保持绝对可靠。面对军方近乎苛刻的指标，意大利伯奈利公司决定打破自己赖以成名的传统法则。",
+          "audioUrl": "audio/benellim4/story_act1_zh.mp3",
+          "focusPartId": "benellim4_receiver",
+          "focusPartLabel": "硬质阳极氧化 7075 铝合金机匣"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1998",
+          "title": "乌尔比诺的决断：A.R.G.O. 系统的诞生",
+          "paragraphs": [
+            "面对美军军规招标的生死大考，坐落于意大利历史名城乌尔比诺的伯奈利军械工程师团队做出了一个令业界震惊的决断：彻底摒弃引以为傲的纯惯性系统，为美军量身打造一套前所未有的导气式自动机。传统霰弹枪导气孔大多开设在枪管中前段，该区域的火药燃气已经膨胀降温，未充分燃烧的塑料弹托残渣与碳垢极易堵塞细长的导气管路，需要射手高频拆解维护，这在战火纷飞的前线无疑是致命隐患。",
+            "伯奈利总工程师团队另辟蹊径，构想出一种颠覆性的紧凑架构并迅速申请了第 5827992 号美国专利，即著名的 A.R.G.O.（自调节导气操作系统）。设计团队在 18.5 英寸枪管紧邻弹膛正前方的坡膛延伸段，对称开设了两个微型导气孔，直接引入刚刚爆燃成型、高达 79 兆帕且温度极高的纯净火药燃气。两枚由特种不锈钢精密切削而成的短行程活塞与导气室内壁之间加工有纵向刮碳槽，高温高压燃气在瞬间推动活塞急冲 15 毫米的同时，借由气流与机械往复自行动刮除残渣，实现了免人工维护的自洁稳压闭环。"
+          ],
+          "audioScript": "为了拿下美军竞标，伯奈利工程师在意大利乌尔比诺展开了绝密研发。他们放弃了传统的惯性系统，设计出颠覆性的自调节导气机构，简称阿果系统。设计师将两个独立的导气室直接布置在紧邻弹膛的前端，利用刚刚爆燃产生的高温洁净燃气驱动一对不锈钢活塞。活塞仅需后冲十五毫米便能完成撞击推框，其表面的精密刮碳槽借助气流自行清除火药残渣，彻底消除了传统导气霰弹枪容易积碳卡死的顽疾。",
+          "audioUrl": "audio/benellim4/story_act2_zh.mp3",
+          "focusPartId": "benellim4_argo_pistons",
+          "focusPartLabel": "双联对称不锈钢开槽短行程活塞"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1998–1999",
+          "title": "阿伯丁炼狱：刚性闭锁与极限动力学",
+          "paragraphs": [
+            "1998年8月，首批 XM1014 原型枪运抵马里兰州阿伯丁武器试验场，接受了美军历史上最为严苛的轻武器地狱级考核。在持续数月的盲测中，样枪历经零下四十度的北极严寒冷冻、烈日下的高浓度盐雾腐蚀、泥浆渗透、以及在未添加任何润滑油状态下的沙尘狂暴吹袭，累计发射超过两万五千发重型马格南鹿弹与破门弹。在全寿命测试中，XM1014 展现出近乎零故障的恐怖机械稳定性，以压倒性优势击败了所有跨国军工巨头的竞标原型。",
+            "这一非凡表现的背后，是伯奈利对内部传动机构的千锤百炼。由于采用了弹膛下方左右完全对称的双活塞布局，燃气冲击力被均匀平衡地传递至机加工重型枪机框的双前肩台面上，彻底根除了单导气活塞常见的气缸倾斜力矩与轨道偏磨缺陷。枪机框后坐过程中，圆柱形硬化凸轮销在精密螺旋滑槽的强力导引下，驱动硬铬双突笋枪机头在节套内精准旋转 38 度完成刚性解脱，并通过铰接的鼠尾连杆将后坐冲量线性导入后方倾斜 14 度的枪托复进尾管中，确保了极为柔和且可控的后坐力曲线。"
+          ],
+          "audioScript": "在一九九八年美军阿伯丁试验场进行的严酷测试中，伯奈利样枪经历了极寒、泥浆、浓盐雾与数万发重装鹿弹的无润滑射击测试，以惊人的零故障表现震撼了军方评审团。这得益于其对称布局的双活塞设计，它将燃气冲量平稳传递给机框，彻底消除了轨道偏磨问题。机头通过坚固的双突笋回转三十八度实现刚性闭锁，不仅能承受马格南重弹的巨大膛压，更能确保击发循环行云流水。",
+          "audioUrl": "audio/benellim4/story_act3_zh.mp3",
+          "focusPartId": "benellim4_bolt_head",
+          "focusPartLabel": "硬铬双突笋回转闭锁枪机头"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1999 至今",
+          "title": "M1014 军锋：从费卢杰到全球执法巅峰",
+          "paragraphs": [
+            "1999年，美国国防部正式签署采购合同，将伯奈利 M4 命名为“M1014 联合勤务战斗霰弹枪”，并全面装备美国海军陆战队第一远征军及特种作战部队。随后，英国国防部以 L128A1 为代号将其列装皇家海军陆战队与特种空勤团，全球数十个国家的顶尖反恐特警单位也相继将其确立为主力攻坚武器。从伊拉克费卢杰残酷的逐屋巷战、阿富汗坎大哈的阵地防御，到亚丁湾反海盗强行登舰突袭，M1014 凭借凶悍的压制火力和在沙尘暴中抓起即射的可靠性，成为名副其实的近战破坚之王。",
+            "作为现代轻武器设计史上的里程碑，伯奈利 M4 证明了纯粹军械工程对实战环境的深刻洞察。下挂的 7 发全长钢制管式弹仓搭配叉形冲压不锈钢升降托弹板，赋予了其战术单发补弹乃至 7 加 1 加 1 的“幽灵上膛”能力；机匣顶部的皮卡汀尼导轨与意大利 LPA 氚光护翼鬼环瞄具，则将传统霰弹枪在 50 米距离上的快速首发命中精度推向了步枪化水准。历经二十余年血与火的洗礼，M1014 依旧伫立在半自动战斗霰弹枪的王座之上，未曾动摇。"
+          ],
+          "audioScript": "一九九九年，美军正式列装伯奈利 M4 并定型为 M1014 联合勤务战斗霰弹枪。随后，英军特种空勤团与全球多国反恐精英也将其作为制式装备。从费卢杰的狭窄街巷到反海盗登舰突袭，它凭借卓越的鬼环快速瞄准、七发下挂管仓供弹以及坚不可摧的机械结构，经受住了现代战争最残酷的考验。二十多年过去，它依然是全球公认的半自动战斗霰弹枪巅峰之作。",
+          "audioUrl": "audio/benellim4/story_act4_zh.mp3",
+          "focusPartId": "benellim4_telestock",
+          "focusPartLabel": "M1014 镂空伸缩枪托与贴腮板"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "A.R.G.O. 弹膛前双对称自洁短行程导气系统",
+          "tag": "自调节导气架构",
+          "summary": "摒弃传统中置细导气管，紧邻弹膛前方直接引取高温洁净燃气，双短行程不锈钢活塞配备自刮碳槽，无需人工维护与气体调节阀即可在轻重装药间自适应平衡，彻底解决了传统霰弹枪塑料弹托积碳卡死的工程通病。",
+          "focusPartId": "benellim4_argo_pistons",
+          "focusPartLabel": "双联对称不锈钢开槽活塞"
+        },
+        {
+          "id": "bt2",
+          "title": "38° 硬铬双突笋刚性回转闭锁机头",
+          "tag": "高承压回转闭锁",
+          "summary": "不同于传统霰弹枪常见的单摆动闭锁块，M4 采用厚实的双突笋螺旋回转闭锁结构，以 38 度咬合角直接锁入冷锻高强枪管节套，可承受全寿命发射 3 英寸马格南重弹的巨大峰值压力，并有效消除机匣拉伸应力。",
+          "focusPartId": "benellim4_bolt_head",
+          "focusPartLabel": "硬铬双突笋回转枪机头"
+        },
+        {
+          "id": "bt3",
+          "title": "下挂管仓叉口升降托弹与战术幽灵供弹机构",
+          "tag": "快速战术供弹",
+          "summary": "冲压不锈钢叉形托弹板在击锤释放与机框后坐间隙精准实现 20 度上下摆动，不仅支持单手盲操连续压弹，更可通过红点放弹拨片实现 7 加 1 加 1 发的 9 发极限载弹量，为高压近战提供持续火力输送。",
+          "focusPartId": "benellim4_shell_elevator",
+          "focusPartLabel": "冲压不锈钢叉口升降托弹板"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1967",
+          "title": "奇沃拉尼惯性系统奠基",
+          "detail": "布鲁诺·奇沃拉尼发明惯性后坐旋转枪机，在乌尔比诺创立伯奈利军械公司，确立了民用与警用半自动霰弹枪的轻量化标杆。"
+        },
+        {
+          "year": "1998 年 5 月",
+          "title": "美军启动 XM1014 联合战斗霰弹枪竞标",
+          "detail": "美国陆军军备研究开发中心联合海军陆战队发布军规招标，严苛要求在加挂战术附件与极端恶劣环境下保持绝对半自动循环。"
+        },
+        {
+          "year": "1998 年 8 月",
+          "title": "A.R.G.O. 专利确立与阿伯丁盲测全胜",
+          "detail": "伯奈利获得 A.R.G.O. 双对称短活塞美国专利，并在阿伯丁试验场通过两万五千发重型鹿弹泥沙冰冻地狱考核，全面击溃所有对手。"
+        },
+        {
+          "year": "1999",
+          "title": "美军正式定型列装 M1014",
+          "detail": "五角大楼将伯奈利 M4 命名为 M1014 联合勤务战斗霰弹枪，率先配发美国海军陆战队第一远征军作为核心攻坚武器。"
+        },
+        {
+          "year": "2004–2009",
+          "title": "实战淬火与北约盟军全面扩散",
+          "detail": "M1014 在伊拉克费卢杰战役与阿富汗战场经受严酷巷战检验，英国国防部采购并定型为 L128A1，奠定北约首选近战霰弹枪地位。"
+        },
+        {
+          "year": "2010 至今",
+          "title": "全球战术战斗霰弹枪黄金基准",
+          "detail": "历经二十余年反恐战场与特警执法洗礼，其双对称导气闭锁架构被公认为人类机械史上最可靠的战斗霰弹枪技术典范。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Breath of the Breach: The ARGO Twin-Piston Legacy of the Benelli M4 (M1014)",
+      "deck": "Forged to overcome the physical limits of Bruno Civolani's inertia-driven system under heavy tactical payloads, the Benelli M4 introduced the world to twin symmetrical gas tappets, setting an enduring benchmark for combat shotgun reliability.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1997–1998",
+          "title": "The Inertia Dilemma & The Pentagon's Mandate",
+          "paragraphs": [
+            "By the late 1990s, the tactical shotgun landscape was dominated by pump actions and Benelli's celebrated inertia-driven platforms. Engineered in 1967 by Bruno Civolani, the inertia system utilized the shotgun's initial recoil movement to compress an internal spring within the bolt group, offering an elegant, lightweight mechanism devoid of gas rings or underbarrel linkages. For hunting and routine police work, it was near perfection. However, the modernization of specialized military doctrine introduced an insurmountable physical challenge: the widespread integration of heavy accessories.",
+            "As operators in the United States Marine Corps and special operations units began outfitting shotguns with high-output weaponlights, thermal and night-vision sights, side-saddle ammunition carriers, and heavy collapsible stocks, the weapon's overall mass increased dramatically. Under basic Newtonian mechanics, added receiver inertia prevented the critical rearward snap required to cycle the internal bolt spring, resulting in debilitating short-stroking and extraction failures. In May 1998, the U.S. Army TACOM-ARDEC and the Marine Corps issued Solicitation DAAE30-98-R-0401 for the Joint Service Combat Shotgun (JSCS), demanding a 12-gauge semi-automatic weapon capable of flawlessly cycling full-power tactical loads regardless of attached accessories or shooting angles."
+          ],
+          "audioScript": "By the late nineteen nineties, tactical combat doctrine was rapidly changing. When military operators mounted heavy flashlights, red dot sights, and extra ammunition carriers onto shotguns, the added mass choked traditional inertia driven actions, causing catastrophic cycling failures. In May nineteen ninety eight, the Pentagon issued a historic solicitation for a new joint service combat shotgun. It demanded an ultra reliable twelve gauge semi automatic weapon that would cycle regardless of shooting stance or mounted tactical accessories. Benelli engineers in Urbino knew that meeting this demand meant breaking away from their own legendary past.",
+          "audioUrl": "audio/benellim4/story_act1_en.mp3",
+          "focusPartId": "benellim4_receiver",
+          "focusPartLabel": "MIL-STD Type-III Hard-Anodized 7075 Receiver"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1998",
+          "title": "The Urbino Gambit: Invention of the A.R.G.O. Architecture",
+          "paragraphs": [
+            "Faced with the strict demands of the American military, the engineering department of Benelli Armi S.p.A. in Urbino, Italy, made an audacious decision: they would abandon the inertia mechanism entirely and build a military-grade gas operating system from scratch. Traditional gas-operated shotguns suffered from significant drawbacks; by bleeding gas far down the barrel, the propellant was already cooler and carried unburned powder residues and melted plastic wad shavings, which rapidly clogged small gas orifices and fouled return mechanisms.",
+            "The Italian design team patented a radically compact solution: the A.R.G.O. (Auto-Regulating Gas-Operated) system under U.S. Patent 5,827,992. Rather than tapping gas near the muzzle, Benelli placed twin gas cylinders directly ahead of the chamber along the 18.5-inch barrel. Here, propellant gas is at its hottest and cleanest, reaching peak pressures up to 79 megapascals without molten plastic debris. Two independent, short-stroke fluted stainless-steel tappet pistons were housed inside parallel cylinders beneath the barrel. The pistons possessed longitudinal scraping ribs that mechanically purged carbon during their brief 15-millimeter stroke, achieving a truly self-cleaning, low-maintenance power stroke."
+          ],
+          "audioScript": "Rather than modifying existing hunting actions, the Benelli engineering team in Urbino developed a clean sheet gas architecture named the Argo system. By placing twin gas cylinders directly in front of the barrel chamber, the system captures pristine, high temperature gas before plastic wads can melt and foul the ports. Two fluted stainless steel tappet pistons dart rearward just fifteen millimeters, using precision longitudinal ribs to scrape away carbon deposits on every stroke. This revolutionary design provided immense cycling energy while eliminating the maintenance headaches that had long plagued combat shotguns.",
+          "audioUrl": "audio/benellim4/story_act2_en.mp3",
+          "focusPartId": "benellim4_argo_pistons",
+          "focusPartLabel": "Twin Symmetrical Fluted Stainless ARGO Pistons"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1998–1999",
+          "title": "Trials at Aberdeen: Rotary Lockup & Dynamic Balance",
+          "paragraphs": [
+            "In August 1998, five prototype XM1014 shotguns were delivered to Aberdeen Proving Ground in Maryland to endure an exhaustive series of military torture tests. The weapons were subjected to minus forty-degree Arctic freezes, blistering desert heat, fine sand dust storms, heavy mud immersion, and saline ocean fog. Over a grueling twenty-five thousand round endurance evaluation with full-power 00 buckshot and slugs, the prototypes fired thousands of consecutive rounds without a single parts breakage or unassisted failure, overwhelmingly outperforming all competitor entries.",
+            "The mechanical brilliance of the Benelli M4 lay in its structural balance. With two symmetrical gas pistons pushing simultaneously against the left and right front shoulders of the bolt carrier, the mechanism eliminated all carrier tilt and asymmetric wear on the receiver rails. The heavy steel bolt carrier guided a hard-chrome dual-lug bolt head that rotated 38 degrees into the barrel extension via a hardened cam pin, providing absolute lockup against magnum chamber pressures. Recoil impulse was channeled smoothly down an angled rat-tail link directly into the stock's 14-degree buffer tube, keeping muzzle rise predictable and flat."
+          ],
+          "audioScript": "At the Aberdeen Proving Ground in nineteen ninety eight, Benelli prototypes underwent brutal military torture tests. Frozen to minus forty degrees and submerged in mud and salt fog, the shotgun fired over twenty five thousand full power rounds with peerless reliability. Its twin pistons struck both shoulders of the bolt carrier in perfect unison, preventing any frame binding. The rotary bolt head locked two robust lugs thirty eight degrees into the steel barrel extension, effortlessly containing high pressure magnum loads while venting excess gases automatically.",
+          "audioUrl": "audio/benellim4/story_act3_en.mp3",
+          "focusPartId": "benellim4_bolt_head",
+          "focusPartLabel": "Hard-Chrome Dual-Lug Rotating Bolt Head"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "1999–Present",
+          "title": "The M1014 in Battle: From Fallujah to Global Preeminence",
+          "paragraphs": [
+            "In 1999, the United States Department of Defense formally adopted the Benelli M4, classifying it as the M1014 Joint Service Combat Shotgun. It was rapidly deployed with the 1st Marine Expeditionary Force and saw intense close-quarters combat throughout the urban battles of Iraq and Afghanistan. During the intense room-clearing operations of Operation Phantom Fury in Fallujah, the M1014 proved invaluable, battering through reinforced doors and neutralizing hostile fighters in confined corridors under heavy sandstorm conditions.",
+            "The design's global influence spread quickly. The British Armed Forces adopted it as the L128A1, while elite counter-terrorist and special operations forces across NATO made it their premier tactical shotgun. Featuring a full-length 7-round tubular magazine, rapid ghost-ring sighting by LPA, and the famous 'ghost load' capability allowing an extra shell to sit atop the carrier, the M1014 has solidified its reputation as one of the finest close-combat infantry arms ever manufactured, reigning supreme for over two decades."
+          ],
+          "audioScript": "Adopted in nineteen ninety nine as the M ten fourteen by the United States Marine Corps, and later by British and allied special forces, this combat shotgun earned its legendary reputation in modern battlefields. In the door to door fighting of Fallujah, it provided devastating stopping power and flawless semi automatic cycling. Featuring an intuitive ghost ring sight, an adjustable skeleton stock, and rugged seven round tubular capacity, the Benelli M four remains the uncontested gold standard of military shotguns worldwide.",
+          "audioUrl": "audio/benellim4/story_act4_en.mp3",
+          "focusPartId": "benellim4_telestock",
+          "focusPartLabel": "M1014 Skeletonized Collapsible Buttstock"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "A.R.G.O. Twin Forward Self-Cleaning Tappet Gas Architecture",
+          "tag": "Auto-Regulating Gas",
+          "summary": "Taps high-temperature, clean gas immediately ahead of the chamber, utilizing twin stainless pistons with longitudinal flutes that mechanically scrape carbon on every stroke, eliminating fouling and manual regulator adjustments.",
+          "focusPartId": "benellim4_argo_pistons",
+          "focusPartLabel": "Twin Symmetrical Fluted Stainless ARGO Pistons"
+        },
+        {
+          "id": "bt2",
+          "title": "38-Degree Hard-Chrome Dual-Lug Rotary Locking Head",
+          "tag": "High-Pressure Lockup",
+          "summary": "Replaces vulnerable tilting locking blocks with a rigid 2-lug rotary bolt head driven by a cam pin, engaging the steel barrel extension directly to withstand 3-inch Magnum chamber pressures while relieving receiver stress.",
+          "focusPartId": "benellim4_bolt_head",
+          "focusPartLabel": "Hard-Chrome Dual-Lug Rotating Bolt Head"
+        },
+        {
+          "id": "bt3",
+          "title": "Forked Shell Carrier Elevator & Ghost-Loading Feed Geometry",
+          "tag": "Combat Feed Action",
+          "summary": "A stamped stainless shell elevator swings 20 degrees in tight sync with carrier recoil, feeding rounds smoothly from the 7-round tube while supporting combat single-shell loading and an extra 'ghost-loaded' shell on the carrier floor.",
+          "focusPartId": "benellim4_shell_elevator",
+          "focusPartLabel": "Forked Stainless Shell Carrier Elevator"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1967",
+          "title": "Inertia-Driven Foundation in Urbino",
+          "detail": "Bruno Civolani creates the inertia-driven operating system, establishing Benelli Armi S.p.A. as a world-leading shotgun manufacturer."
+        },
+        {
+          "year": "May 1998",
+          "title": "Pentagon Issues XM1014 JSCS Solicitation",
+          "detail": "The U.S. Army and Marine Corps launch an open competition for a new semi-automatic combat shotgun that must cycle regardless of tactical payload."
+        },
+        {
+          "year": "Aug 1998",
+          "title": "ARGO Patent Granted & Aberdeen Proving Ground Victory",
+          "detail": "Benelli files U.S. Patent 5,827,992 for the twin-piston ARGO system; prototypes pass a grueling 25,000-round mud, cold, and sand trial."
+        },
+        {
+          "year": "1999",
+          "title": "Formal Adoption as the USMC M1014",
+          "detail": "The Benelli M4 is officially designated the M1014 Joint Service Combat Shotgun, entering service with the U.S. Marine Corps."
+        },
+        {
+          "year": "2004–2009",
+          "title": "Combat Proving in Iraq & NATO Expansion",
+          "detail": "Proven during intense urban combat in Fallujah; adopted by the British Armed Forces as the L128A1 and by allied counter-terror teams."
+        },
+        {
+          "year": "2010–Present",
+          "title": "The Global Tactical Standard",
+          "detail": "Continues active front-line duty across the globe, recognized as the most reliable semi-automatic combat shotgun platform in modern military history."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "benellim4_barrel": {
+      "partId": "benellim4_barrel",
+      "bomCode": "B-01",
+      "calloutLabelEn": "18.5\" Chrome Barrel",
+      "zh": {
+        "roleTag": "470mm Crio深冷镀铬滑膛 · 弹膛前双对称ARGO高压引气",
+        "overview": "全长十八点五英寸的重型滑膛枪管刚性固连于机匣前端，兼容七十毫米与七十六毫米马格南霰弹。其腹下整体精铸双联不锈钢导气室，在弹膛喉缩前方对称截取高温燃气。",
+        "craftAndMaterial": "采用高强度铬钼合金钢锻造，内壁经深冷Crio工艺与镜面硬铬电镀，外表经重度锰酸盐磷化防腐处理。内膛高硬度可承受钢珠霰弹长期磨损，双导气室与枪管整体钎焊消除气密形变风险。",
+        "kinematicRole": "射击全程作为全枪刚性弹道基准，内膛导气孔在第二阶段分流高压燃气驱动活塞；野战分解起始阶段即可连同护木向前滑脱分离机匣。",
+        "designHighlight": "将导气孔紧贴弹膛设置不仅获得了最纯净的高温高压燃气，更从源头避开了塑料弹托熔化附着的气孔堵塞难题，彻底免除战地清枪顾虑。",
+        "audioScript": "这根十八点五英寸深冷镀铬枪管是伯奈利精准与可靠的核心。它在弹膛前端直接截取高压纯净火药气体，完全杜绝了塑料弹托残留堵塞导气孔的顽疾，能在恶劣战火下稳定吞吐各类重装霰弹。",
+        "audioUrl": "audio/benellim4/parts/benellim4_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "18.5-in Crio Chrome Barrel · Dual ARGO Gas Block",
+        "overview": "The 18.5-inch heavy smoothbore barrel mounts directly into the forward receiver, chambering 2.75-inch and 3-inch Magnum shells. Symmetrical twin stainless gas blocks are braze-welded beneath the tube directly ahead of the chamber.",
+        "craftAndMaterial": "Precision forged from chrome-moly steel with cryogenic Crio treatment and internal hard-chrome lining, finished in matte manganese phosphate. The mirror bore resists steel pellet abrasion while the integrated gas cylinders ensure zero pneumatic leakage.",
+        "kinematicRole": "Serves as the rigid ballistic datum during firing, tapping high-pressure gas during Phase Two to drive the tappets; separates forward from the receiver during initial field-strip disassembly.",
+        "designHighlight": "Placing dual ports just past the forcing cone taps burning gas before plastic wads can melt, completely preventing carbon and polymer fouling without requiring gas-ring scraping.",
+        "audioScript": "This 18.5-inch Crio barrel features hard-chrome lining and integrated twin gas cylinders right in front of the chamber. By tapping clean, scorching propellant gas before plastic shot wads can melt, it eliminates fouling and guarantees cycling with light tactical or heavy magnum buckshot.",
+        "audioUrl": "audio/benellim4/parts/benellim4_barrel_en.mp3"
+      }
+    },
+    "benellim4_argo_pistons": {
+      "partId": "benellim4_argo_pistons",
+      "bomCode": "B-02",
+      "calloutLabelEn": "Dual ARGO Pistons",
+      "zh": {
+        "roleTag": "15mm 短行程双路同步冲击 · 纵向刮碳槽免维护自洁",
+        "overview": "左右成对布局于枪管腹下导气筒内，后部撞杆贯穿机匣前端直接对准枪机框承撞肩面。两枚活塞仅作十五毫米的微幅轴向急冲，将燃气能量瞬间赋予枪机总成。",
+        "craftAndMaterial": "选用十七杠四沉淀硬化耐腐蚀不锈钢车削，表面铣制多道排碳与泄气槽。高硬度钝化表面能抵抗灼热火药火花冲蚀，自刮碳刃口可在高速往复中自主剥离燃烧积垢。",
+        "kinematicRole": "第三阶段在膛内燃气高压冲击下急退十五毫米撞击枪机框，随后在气缸残余推力与限位槽反弹下复位；分解时向后抽出即可脱离导气缸体。",
+        "designHighlight": "双活塞对称平衡布置彻底消除了单侧气动结构导致的机框上下翻转力矩，使得枪机导轨磨损近乎为零，实现了两万发免工具维护的卓越耐久。",
+        "audioScript": "这两枚十七杠四不锈钢短行程活塞是阿戈系统的精髓。左右对称排布的十五毫米短促冲程，能将纯净推力均衡传递至枪机框，消除偏心扭力，配合纵向刮碳槽更实现了终身自洁。",
+        "audioUrl": "audio/benellim4/parts/benellim4_argo_pistons_zh.mp3"
+      },
+      "en": {
+        "roleTag": "15mm Short-Stroke Dual Tappets · Self-Cleaning Flutes",
+        "overview": "Arranged symmetrically inside the dual gas cylinders under the barrel, these tappets align their rear shafts against the bolt carrier shoulders. They deliver a swift 15-millimeter impulse to cycle the action.",
+        "craftAndMaterial": "Machined from 17-4PH precipitation-hardened stainless steel with longitudinal carbon-scraper flutes. The passivation treatment withstands erosive gas plumes, and the sharp flutes scrape cylinder walls automatically during cycling.",
+        "kinematicRole": "Struck rearward 15 millimeters during Phase Three to impart kinetic energy to the bolt carrier, then rebound forward to seal the block; pulled rearward to separate during sub-assembly strip.",
+        "designHighlight": "Twin symmetrical pushers eradicate the off-axis carrier tilt common to single-piston shotguns, vastly reducing receiver rail friction and enabling a 20,000-round operational lifespan without cleaning.",
+        "audioScript": "Twin 17-4 stainless short-stroke tappets form the heart of the ARGO system. Moving just 15 millimeters, they deliver balanced kinetic energy straight into the bolt carrier, eliminating tilt wear while scraping carbon clean on every cycle.",
+        "audioUrl": "audio/benellim4/parts/benellim4_argo_pistons_en.mp3"
+      }
+    },
+    "benellim4_argo_plugs": {
+      "partId": "benellim4_argo_plugs",
+      "bomCode": "B-03",
+      "calloutLabelEn": "ARGO Exhaust Plugs",
+      "zh": {
+        "roleTag": "弹簧定压自动泄流 · 轻重装药恒定后坐冲量",
+        "overview": "螺接封闭于双导气室最前端，外露细密菱形防滑滚花便于快速手拧拆卸。塞体内部集成了精密预紧碟形弹簧与自适应动态泄压阀门。",
+        "craftAndMaterial": "经QPQ氮化淬火的高强度碳钢制造，前端设有加厚耐磨防磕碰防尘台阶。内置耐热合金碟簧能够在七百摄氏度瞬态高温下长期维持设定预紧力不退火衰减。",
+        "kinematicRole": "击发时常闭；发射高压马格南弹药时内部气压克服碟簧阻力向前推开泄流口放气，击发轻弹时保持密封；维护时旋转螺纹从前方拧出。",
+        "designHighlight": "通过纯机械自调阀自动补偿了低压轻装鹿弹与超高压独头弹之间的巨大气压落差，免除了传统导气霰弹枪繁琐的人工旋钮换挡步骤。",
+        "audioScript": "带有菱形滚花的双联导气室螺塞内置自调式泄压阀。发射高膛压马格南重弹时，它能自动开启前口释放冗余高压，射击低压轻弹时则全压推动，实现真正的免调节全工况兼容。",
+        "audioUrl": "audio/benellim4/parts/benellim4_argo_plugs_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Pressure-Relief Regulator · Auto-Regulating Exhaust",
+        "overview": "Threaded into the front of the dual gas blocks, these knurled caps seal the chambers and house internal spring-loaded exhaust valves. They regulate internal chamber pressure automatically across shell varieties.",
+        "craftAndMaterial": "Crafted from QPQ-nitrided carbon steel with diamond knurling for bare-hand field maintenance. High-temperature alloy Belleville springs resist heat annealing during sustained rapid fire at extreme temperatures.",
+        "kinematicRole": "Remains sealed for low-pressure target loads, but cracks open forward under high-pressure Magnum cartridges to vent excess gas; unscrewed from the front during intermediate cleaning.",
+        "designHighlight": "Mechanically balances gas pressures between heavy slugs and light tactical buckshot, eliminating manual gas dials while protecting the internal action from harsh over-gassing.",
+        "audioScript": "These knurled cylinder caps contain self-regulating exhaust valves. When shooting high-pressure 3-inch Magnum loads, spring-loaded vents bleed off excessive gas pressure, maintaining a constant bolt speed without any manual adjustments.",
+        "audioUrl": "audio/benellim4/parts/benellim4_argo_plugs_en.mp3"
+      }
+    },
+    "benellim4_bolt_carrier": {
+      "partId": "benellim4_bolt_carrier",
+      "bomCode": "B-04",
+      "calloutLabelEn": "Steel Bolt Carrier",
+      "zh": {
+        "roleTag": "双前肩承受ARGO冲击 · 螺旋凸轮槽解锁与鼠尾连杆压缩复进簧",
+        "overview": "作为自动机运动的核心母体，滑动承托于机匣内侧精密滑轨上。其前端两侧设有双承撞肩台，尾部通过铰链销活络连接通往托底的鼠尾连杆。",
+        "craftAndMaterial": "整块优质镍铬钼合金钢整体高精度CNC铣削成型，配合渗碳淬火硬化与超光滑深层黑氮化涂层。顶部三维雕琢出三十八度变导程开闭锁螺旋曲面与直槽自由行程段。",
+        "kinematicRole": "第四阶段后坐时压平击锤并迫使凸轮销旋转带动枪机开锁，尾部连杆斜向压缩复进簧；全枪野战分解取下拉机柄后从机匣前方抽出。",
+        "designHighlight": "鼠尾复进连杆以十四度倾角巧妙借道机匣尾管，大幅压缩了机匣纵向长度，同时使后坐力矢量更平直地传递至射手肩窝，极大抑制了枪口跳动。",
+        "audioScript": "重型切削机框是全枪循环的动力核心。它通过前端双肩承受活塞推力后坐，顶部三十八度螺旋曲面引导枪机回转开锁，尾部下倾的鼠尾连杆则平顺压缩尾管复进簧，显著抑制枪口抬跳。",
+        "audioUrl": "audio/benellim4/parts/benellim4_bolt_carrier_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dual-Lug Carrier · 38-Deg Cam & Recoil Rat-Tail",
+        "overview": "Rides on the receiver's internal longitudinal guide rails, housing the rotating bolt head. Its dual front impact lugs receive piston hits while its rear hinges a curved rat-tail link descending into the stock.",
+        "craftAndMaterial": "Precision CNC milled from a solid billet of nickel-chromium-moly steel and treated with deep black ferritic nitrocarburizing. Features a precision 38-degree helical cam track with an initial dwell phase.",
+        "kinematicRole": "Driven rearward in Phase Four to cock the hammer, rotate the cam pin, and compress the mainspring via the hinged link; slid out from the front of the receiver during bolt sub-assembly stripping.",
+        "designHighlight": "Directing the recoil impulse down the 14-degree rat-tail link directly into the stock tube shortens receiver overall length and aligns recoil force with the shooter's shoulder pocket to minimize muzzle rise.",
+        "audioScript": "Machined from a solid steel forging, the bolt carrier coordinates the entire cycling sequence. Twin forward lobes soak up tappet blows, an upper cam track unlocks the rotating bolt head, and the hinged rat-tail link drives the angled recoil spring.",
+        "audioUrl": "audio/benellim4/parts/benellim4_bolt_carrier_en.mp3"
+      }
+    },
+    "benellim4_bolt_head": {
+      "partId": "benellim4_bolt_head",
+      "bomCode": "B-05",
+      "calloutLabelEn": "2-Lug Rotating Bolt",
+      "zh": {
+        "roleTag": "38° 刚性双突笋咬合节套 · 宽爪抽壳钩强力拔壳",
+        "overview": "插装于枪机框前套筒内，前端设有回转式双闭锁对称凸耳与重型机械抓壳爪。在闭锁状态下紧密咬合在枪管后端的硬化节套凹槽内。",
+        "craftAndMaterial": "特种高拉伸合金钢精工打造，全表面沉积深层镜面硬铬减摩层。抓壳钩采用弹簧钢线切割加工并附带防泥沙包裹槽，保证恶劣环境下弹壳底缘咬合绝对稳固。",
+        "kinematicRole": "第三阶段在凸轮销牵引下自转三十八度完成开锁脱出，后坐时抽拔空弹壳至抛壳挺抛出，第六阶段复进推新弹入膛并反向回转闭锁；拔出凸轮销后从机框前端脱离。",
+        "designHighlight": "承袭自伯奈利久经考验的双突笋旋转闭锁构造，闭锁截面积硕大且受力对称，能抵御高达七十九兆帕的高膛压冲击，永无断耳脱锁隐患。",
+        "audioScript": "双突笋旋转机头通体镀硬铬，抗磨损自润滑。开闭锁时精准旋转三十八度，配合强壮的大弧度抽壳钩，无论弹壳受热膨胀还是被泥水浸泡，都能实现刚猛果断的抓壳与抽拔。",
+        "audioUrl": "audio/benellim4/parts/benellim4_bolt_head_zh.mp3"
+      },
+      "en": {
+        "roleTag": "38-Deg 2-Lug Rotary Lock · Spring Claw Extractor",
+        "overview": "Mounted into the forward socket of the bolt carrier, this component features two heavy locking lugs and a reinforced claw extractor. It interfaces directly with the barrel extension to seal the chamber.",
+        "craftAndMaterial": "Forged from ultra-high-tensile alloy steel coated entirely in hard chrome for dry-film lubricity. The wide spring-loaded claw extractor is EDM cut and engineered to firmly latch over shotgun shell rims.",
+        "kinematicRole": "Rotates 38 degrees counter-clockwise to unlock in Phase Three, extracts the spent hull during recoil, and rotates clockwise to lock in Phase Seven; slides forward out of the carrier once the cam pin is lifted.",
+        "designHighlight": "The heavy dual locking lugs lock directly into the barrel extension steel rather than the aluminum receiver, completely handling 79 megapascal chamber spikes while keeping the receiver light and resilient.",
+        "audioScript": "Coated in mirror-slick hard chrome, this two-lug rotating bolt head locks directly into the steel barrel extension. Rotating thirty-eight degrees to lock and unlock, its heavy-duty claw extractor ensures uncompromising extraction even with dirty or swollen shotshell hulls.",
+        "audioUrl": "audio/benellim4/parts/benellim4_bolt_head_en.mp3"
+      }
+    },
+    "benellim4_cam_pin": {
+      "partId": "benellim4_cam_pin",
+      "bomCode": "B-06",
+      "calloutLabelEn": "Bolt Cam Pin",
+      "zh": {
+        "roleTag": "螺旋轨迹平移转回转 · 机械阻断未闭锁击针通路",
+        "overview": "垂直穿插于枪机头尾柄与枪机框螺旋槽之间，中段开有供击针平稳贯穿的轴向导孔。它将机框的直线冲程精确转换为机头的旋转开闭锁动作。",
+        "craftAndMaterial": "经热处理硬度达到五十八洛氏硬度的抗剪切轴承钢精密磨削，圆柱外表面极度光滑以降低螺旋导滑磨损。中心内孔经线切割倒角避免击针往复磨损挂滞。",
+        "kinematicRole": "自动机循环中沿机框斜向导槽平滑滚转滑动驱动机头自转；在野战分解时向外提起即可将机头与击针自机框完全解脱。",
+        "designHighlight": "兼具机械防早发保险功能：只有在机头彻底旋转到位的瞬间其中孔才与机框完全对正，杜绝了机头未闭锁到位的偶发击发事故。",
+        "audioScript": "这枚圆柱凸轮销不仅负责将后坐冲程转化为机头三十八度的扭转运动，它内部贯穿击针的通孔更充当物理防早发保险，只有在机头完全锁死时才允许击针露出撞击底火。",
+        "audioUrl": "audio/benellim4/parts/benellim4_cam_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Translational Camming Pivot · Out-Of-Battery Lockout",
+        "overview": "Inserted vertically through the bolt stem and bolt carrier cam track, this cross-pin converts carrier movement into bolt rotation. Its cross-drilled bore accommodates the long firing pin.",
+        "craftAndMaterial": "Machined from bearing-grade chromium alloy steel hardened to 58 HRC, super-finished to glide effortlessly through the carrier's angled track under severe lateral shear loads.",
+        "kinematicRole": "Tracks along the carrier's helical groove during cycling to drive 38-degree bolt head rotation; pulled vertically out of the carrier during bolt assembly field stripping.",
+        "designHighlight": "Serves as an out-of-battery firing lockout; the center passage only aligns with the firing pin when the bolt is 100 percent locked, mechanically preventing catastrophic premature detonation.",
+        "audioScript": "This hardened cam pin transforms the straight recoil stroke into bolt head rotation. Its central channel also functions as a passive safety block, preventing the firing pin from striking the primer unless the bolt is safely and completely locked.",
+        "audioUrl": "audio/benellim4/parts/benellim4_cam_pin_en.mp3"
+      }
+    },
+    "benellim4_firing_pin": {
+      "partId": "benellim4_firing_pin",
+      "bomCode": "B-07",
+      "calloutLabelEn": "Floating Firing Pin",
+      "zh": {
+        "roleTag": "轴向贯穿枪机框 · 防惯性走火限位环",
+        "overview": "轴向深置于枪机头与机框同心孔内，由后方的限位横销与套在身上的复位弹簧保持常态缩回。前尖端正对底火，后端外露供击锤正面叩击。",
+        "craftAndMaterial": "采用高抗冲击特种工具钢数控微细切削，头部与尾部经高频局部回火避免脆性断裂。表面经特氟龙浸渗磷化，具有极佳的干摩擦耐磨性与抗腐蚀表现。",
+        "kinematicRole": "击发阶段被击锤猛力撞击前冲激发底火，随后在弹簧张力下即刻回弹缩入机面；取下机框尾部固定卡销后即可从后方抽离。",
+        "designHighlight": "精心调校的针身台阶限位环配合复位簧阻尼，能抵御剧烈枪机推弹上膛复进时的剧烈冲击，彻底规避了高惯性浮动导致的意外走火隐患。",
+        "audioScript": "这根阶梯形合金工具钢长击针贯穿整个枪机中心。配合内置的回位弹簧与惯性阻尼环，能在高速推弹上膛撞击弹膛的一瞬间，坚决杜绝因惯性冲顶而产生的底火走火风险。",
+        "audioUrl": "audio/benellim4/parts/benellim4_firing_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Axial Impact Striker · Inertial Strike Barrier",
+        "overview": "Housed co-axially through the bolt head and carrier, held in a retracted position by an internal return spring. The rear face receives the hammer strike while the tip strikes the shell primer.",
+        "craftAndMaterial": "CNC turned from impact-resistant S7 tool steel, selectively tempered at both strike faces to prevent deformation and chipping under hard hammer blows, finished with anti-corrosion dry film.",
+        "kinematicRole": "Flies forward against spring pressure in Phase One to ignite the primer when struck, bouncing back immediately; slides out from the carrier rear once the retaining cross-pin is disengaged.",
+        "designHighlight": "An integrated shoulder ring and matched return spring eliminate inertial slam-fires when the heavy bolt slams shut on a loaded chamber during aggressive rapid loading drills.",
+        "audioScript": "The floating firing pin runs directly through the center of the bolt. Equipped with an internal return spring and tuned kinetic mass, it prevents accidental inertia slam-fires during rapid forward feeding strikes.",
+        "audioUrl": "audio/benellim4/parts/benellim4_firing_pin_en.mp3"
+      }
+    },
+    "benellim4_charging_handle": {
+      "partId": "benellim4_charging_handle",
+      "bomCode": "B-08",
+      "calloutLabelEn": "Tactical Bolt Handle",
+      "zh": {
+        "roleTag": "戴厚手套顺畅拉栓 · 弹簧钢珠卡锁免工具旋转拔出",
+        "overview": "插装固定于枪机框右侧槽口并伸出机匣抛壳窗外侧，是射手手动拉栓上膛、清弹与故障排除的唯一直接操纵界面。",
+        "craftAndMaterial": "经防滑粗滚花切削的高强度碳素工具钢打造，表面经抗磨损深黑QPQ液体渗氮硬化。圆柱形柄身外圈可自由旋转，极大缓解重手套大力抽拉时的摩擦磨损。",
+        "kinematicRole": "随枪机框整体在机匣右侧纵槽内高速往复滑动；不完全分解第一步只需略微旋转并向外用力拉拔即可脱离机框卡槽。",
+        "designHighlight": "独特的弹簧钢珠卡入式自定心锁销结构无需任何拆装扳手，徒手旋转到释放角便能迅速拔离，是全枪实现三分钟无工具野战分解的关键锁匙。",
+        "audioScript": "外露于抛壳窗的滚花战术拉机柄专为厚重防寒手套优化。其套筒在拉动时可自由自转以减轻手部磨擦，野战拆枪时无需任何工具，徒手稍作旋转用力即可轻松拔出。",
+        "audioUrl": "audio/benellim4/parts/benellim4_charging_handle_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Knurled Free-Rotating Cocking Knob · Tool-Less Detent Pull",
+        "overview": "Plugs directly into the right side of the bolt carrier, projecting through the receiver ejection port. It provides the manual interface for chambering, clearing stoppages, and cocking the action.",
+        "craftAndMaterial": "Turned from high-grade carbon steel with aggressive diamond knurling and deep QPQ salt-bath nitriding. The outer knurled sleeve rotates freely around its arbor to prevent glove drag during urgent racking.",
+        "kinematicRole": "Reciprocates synchronously with the bolt carrier during the firing cycle; removed by rotating and pulling outward as the initial step in field stripping the bolt assembly.",
+        "designHighlight": "Features a spring-loaded retention ball detent that secures it tightly under heavy 12-gauge vibrations, yet permits quick tool-less extraction with a simple manual twist and pull.",
+        "audioScript": "This knurled tactical bolt handle provides a secure grip in wet mud or with heavy winter gloves. The knurled cylinder rotates freely on its shaft, and a quick manual pull detaches it instantly without tools during field maintenance.",
+        "audioUrl": "audio/benellim4/parts/benellim4_charging_handle_en.mp3"
+      }
+    },
+    "benellim4_recoil_spring": {
+      "partId": "benellim4_recoil_spring",
+      "bomCode": "B-09",
+      "calloutLabelEn": "Angled Recoil Spring",
+      "zh": {
+        "roleTag": "14° 下倾尾管长行程蓄能 · 驱动剥弹上膛与回转闭锁",
+        "overview": "密封安装于机匣尾端斜向下倾延伸十四度的不锈钢储能管内，前端顶靠着滑动导向顶杯，受枪机框鼠尾连杆持续推顶。",
+        "craftAndMaterial": "采用高疲劳极限航天级六十五锰琴钢丝严密密绕卷制，表面喷涂特氟龙防锈润滑膜。导向顶杯由自润滑铜铝合金精制，确保管内往复运动静音平滑无卡顿。",
+        "kinematicRole": "第四阶段受压吸收后坐余能并软化后坐峰值，第六阶段强力回弹释放动能推射枪机剥弹入膛并紧锁；枪托总成深度分解时从尾管后方取出。",
+        "designHighlight": "十四度下倾布局不仅使枪机后坐冲量更深地传递到射手锁骨下方胸膛以抑制翻转，更避免了管内泥沙滞留，保证了严寒冰雪条件下的复进到位率。",
+        "audioScript": "深藏于十四度下倾尾管内的螺旋复进簧配合金属导顶，在后坐时吸收猛烈的后坐动能，随后在复进阶段释放磅礴能量，稳定将粗壮的十二号霰弹推进弹膛完成闭锁。",
+        "audioUrl": "audio/benellim4/parts/benellim4_recoil_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "14-Deg Receiver Tube Spring · Stripping & Lockup Drive",
+        "overview": "Housed inside the 14-degree angled receiver extension tube within the buttstock assembly, capped by a sliding stainless plunger. It engages the bolt carrier's rear rat-tail link directly.",
+        "craftAndMaterial": "Wound from shot-peened aerospace-grade music spring wire with dry-film anti-friction coating. The nose plunger is precision machined from brass alloy to slide smoothly without galling the tube wall.",
+        "kinematicRole": "Compresses along the 14-degree angle during Phase Four to store recoil impulse, driving the carrier forward in Phase Six to chamber and lock shells; removed during full armorer strip.",
+        "designHighlight": "The down-angled trajectory directs the recoil push slightly downward and backward into the chest pocket, directly mitigating barrel jump while allowing a shorter receiver frame.",
+        "audioScript": "Sealed within the angled buttstock extension tube, this heavy helical recoil spring absorbs recoil force from the rat-tail link. It then surges forward with decisive authority to strip, chamber, and lock the next 12-gauge round.",
+        "audioUrl": "audio/benellim4/parts/benellim4_recoil_spring_en.mp3"
+      }
+    },
+    "benellim4_receiver": {
+      "partId": "benellim4_receiver",
+      "bomCode": "F-01",
+      "calloutLabelEn": "7075-T6 Receiver",
+      "zh": {
+        "roleTag": "全枪拆解零位基准 · 3英寸宽大右抛壳窗与喇叭装弹口",
+        "overview": "作为承载全枪所有运动机构与附属件的母体基座，前端固连枪管与弹仓，尾部锁固枪托尾管。其右侧开设有大尺寸抛壳窗，腹下设有导向装弹坡面槽口。",
+        "craftAndMaterial": "整块航空级七零七五铝合金锻坯通过五轴数控中心整体精铣，全表面经军标三级哑光黑色硬质阳极氧化，在严苛盐雾与海滨潮湿环境下拥有极强抗腐蚀性能。",
+        "kinematicRole": "全射击循环中保持静止，作为枪机滑动与弹仓托弹的刚性导向参考基准；在分解全阶段中作为静止母体，其他所有零部件均依次自其脱落。",
+        "designHighlight": "巧妙利用高应力区全钢闭锁节套承受膛压，使机匣壳体得以完全采用轻质铝合金制造，在确保全枪刚度坚固如磐的同时大幅减轻了近战携行负重。",
+        "audioScript": "由整块航空级七零七五铝合金锻造的机匣经过三级硬质阳极氧化，坚固耐盐雾腐蚀。它为枪机滑动和弹仓供弹提供了绝对精确的运行导轨，是全枪所有构件的装配基准。",
+        "audioUrl": "audio/benellim4/parts/benellim4_receiver_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Structural Chassis Datum · 3-in Port & Chamfered Well",
+        "overview": "Forms the central structural skeleton of the shotgun, mounting the barrel, magazine, trigger group, and stock. It features a wide ejection window on the right and an enlarged loading well underneath.",
+        "craftAndMaterial": "Milled from a solid forging of aircraft-grade 7075-T6 aluminum and treated with MIL-A-8625 Type-III matte hardcoat anodization, offering extreme resistance to maritime salt spray and scratches.",
+        "kinematicRole": "Remains static throughout all firing phases, providing guide rails and stop surfaces for moving groups; serves as the zero-datum frame from which all assemblies dismount.",
+        "designHighlight": "Because locking forces are fully absorbed by the steel barrel extension, the receiver can leverage lightweight aluminum, optimizing the shotgun's balance without sacrificing combat durability.",
+        "audioScript": "Machined from a solid billet of 7075-T6 aerospace aluminum, this Type Three hardcoat anodized receiver anchors the entire firearm. It delivers supreme structural rigidity and corrosion resistance while keeping the overall combat load manageable.",
+        "audioUrl": "audio/benellim4/parts/benellim4_receiver_en.mp3"
+      }
+    },
+    "benellim4_picatinny_rail": {
+      "partId": "benellim4_picatinny_rail",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Picatinny Top Rail",
+      "zh": {
+        "roleTag": "T2-T14 激光槽位编号 · 兼容红点全息镜且不挡鬼环瞄具",
+        "overview": "通过四枚高拉伸不锈钢螺钉平稳锁紧在机匣顶桥正上方，提供军规级的光学观瞄转接平台。其中央纵向铣削有下沉通视槽，不遮挡原厂机械鬼环视野。",
+        "craftAndMaterial": "采用七零七五铝合金高精挤压拉伸后经数控铣削皮卡汀尼卡槽，槽位表面激光蚀刻白色槽位标号，经硬质阳极氧化防反光处理以适应强光暴晒环境。",
+        "kinematicRole": "射击与拆解全程刚性静止于机匣顶部，稳固承载重型战术瞄具后坐冲击；在高级军械师全分解阶段拧松固定螺钉方可拆下。",
+        "designHighlight": "中央透孔凹槽的人体工学深度经过极致推敲，即便加装了低位微型红点镜，射手依然能借助下方空隙通视前准星，实现零秒快速备份瞄准互锁。",
+        "audioScript": "通过螺钉刚性紧固于机匣顶部的皮卡汀尼导轨，采用军规标准并带有激光槽位标号。它中央开有让位槽，即使加装了红点反射镜，射手依然可以通视原厂鬼环照门应急瞄准。",
+        "audioUrl": "audio/benellim4/parts/benellim4_picatinny_rail_zh.mp3"
+      },
+      "en": {
+        "roleTag": "MIL-STD-1913 Rail · Co-Witness Channel Profile",
+        "overview": "Secured directly to the receiver top bridge by four high-strength screws, providing a rock-solid platform for combat optics. A deep center channel ensures an unobstructed sight line through the iron sights.",
+        "craftAndMaterial": "Extruded and CNC cut from 7075-T6 aluminum with laser-etched T-marks, finished in a non-reflective MIL-SPEC hardcoat anodize designed to withstand severe optic clamping force.",
+        "kinematicRole": "Static structural fixture on the receiver through all firing and strip steps; removed exclusively at the 100 percent armorer level by backing out its Torx mounting fasteners.",
+        "designHighlight": "The channel through the rail center permits immediate co-witnessing with the factory ghost-ring sights if an attached electronic red-dot sight suffers battery failure or damage.",
+        "audioScript": "Secured firmly atop the receiver, this MIL-STD-1913 Picatinny rail accommodates duty optics and holographic sights. Its central longitudinal groove preserves a clear line of sight for the iron ghost ring.",
+        "audioUrl": "audio/benellim4/parts/benellim4_picatinny_rail_en.mp3"
+      }
+    },
+    "benellim4_front_sight": {
+      "partId": "benellim4_front_sight",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Winged Front Sight",
+      "zh": {
+        "roleTag": "外扩防撞钢护耳 · 昼夜高对比氚光柱状准星",
+        "overview": "坚固焊接固定于十八点五英寸枪管口部上方，左右伸出两片加厚防磕碰护翼。中心直立有高对比白色环形围绕的夜光自发光氚光小柱。",
+        "craftAndMaterial": "高碳弹簧钢整体锻压焊接底座，表面经哑光深黑磷化处理。双护翼弧度经过防挂扯优化，中心准星柱螺接安装并配有精密防松自锁花键螺母。",
+        "kinematicRole": "在击发与后坐振动中与枪管保持绝对刚性共振；分解中与枪管连成一体前移移出机匣，不可单独随手拆离。",
+        "designHighlight": "厚重护耳能抵御 CQB 破门、破窗以及硬地摔跌造成的猛烈横向冲击，确保归零校正永不漂移，内嵌微量氚光晶体保障了无光暗夜下的瞬间出枪捕标。",
+        "audioScript": "焊接于枪管口部的战术前准星座两侧带有坚硬的防撞钢护翼，足以承受严酷的破门冲击。中心立柱镶嵌长效自发光氚气管，在伸手不见五指的黑夜中提供清晰的瞄准亮点。",
+        "audioUrl": "audio/benellim4/parts/benellim4_front_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Armored Front Post · Self-Luminous Tritium Dot",
+        "overview": "Silver-brazed to the top muzzle end of the 18.5-inch barrel, flanked by rigid steel protective ears. The central blade holds a sealed tritium self-illuminating glass lamp surrounded by a white outline.",
+        "craftAndMaterial": "Forged steel base with black manganese phosphating. Symmetrical protective ears flare outwards to shed vegetation, and the threaded sight post is locked with a serrated adjustment nut.",
+        "kinematicRole": "Rigidly attached to the barrel throughout firing, recoil vibration, and field disassembly; remains unitized with the barrel assembly during routine field maintenance.",
+        "designHighlight": "Heavily reinforced side wings withstand brutal door-breaching impacts without losing elevation or windage zero, while the tritium lamp ensures rapid target acquisition in total darkness.",
+        "audioScript": "Braze-welded near the muzzle, this winged front sight features stout steel ears that shield the aiming post from drops and dynamic door breaching. A glowing tritium insert allows instant target capture in pitch black.",
+        "audioUrl": "audio/benellim4/parts/benellim4_front_sight_en.mp3"
+      }
+    },
+    "benellim4_rear_sight": {
+      "partId": "benellim4_rear_sight",
+      "bomCode": "F-04",
+      "calloutLabelEn": "LPA Ghost Ring Sight",
+      "zh": {
+        "roleTag": "大孔径近战秒瞄鬼环 · 弹尖即可调节风偏高低鼓轮",
+        "overview": "安装在机匣尾桥后部正中，由意大利顶级瞄具厂 LPA 打造。宽大的全金属觇孔圆环由两侧倾斜护翼严密保护，并配有精细刻度的调节旋钮。",
+        "craftAndMaterial": "全钢精铸与微型线切割结合制造，表面做重度哑光抗反光发黑氧化。高低与风偏卡阻轮内部装有硬质合金棘爪定位珠，单响调校清脆且绝不松脱。",
+        "kinematicRole": "瞄准时使近眼大孔径边缘在视网膜自然模糊虚化，射手只需本能将前准星白点套入光环中心；在机匣深度分解阶段方由螺母卸除。",
+        "designHighlight": "独特的鬼环光学视效大幅降低了近战瞄准的认知负荷，而且其调节槽口专门设计为兼容十二号霰弹凸缘，无需专用螺丝刀仅凭子弹壳底即可现场精准归零。",
+        "audioScript": "安装在机匣后部的意大利LPA鬼环照门采用大口径透视环。近距离瞄准时圆环在眼底自然虚化，两眼能本能将前准星快速套向目标，调节螺栓更可直接用霰弹底边转动归零。",
+        "audioUrl": "audio/benellim4/parts/benellim4_rear_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "LPA Close-Quarter Ring · Rim-Adjustable Windage",
+        "overview": "Mounted on the rear receiver bridge, manufactured by LPA specifically for the combat shotgun. Features a heavy-duty ghost-ring aperture flanked by protective shielding wings.",
+        "craftAndMaterial": "Manufactured from investment-cast tool steel with crisp matte black Parkerizing. Click-adjustable detents incorporate spring-loaded steel detent balls to hold windage and elevation settings under recoil.",
+        "kinematicRole": "Stationary aiming datum; creates an optical blur that automatically centers the eye on the front tritium post during firing, separated during complete receiver disassembly.",
+        "designHighlight": "The broad ring aperture provides instantaneous aiming without occluding situational awareness, and the adjustment dials are slotted to be dialed directly using a 12-gauge shell rim in the field.",
+        "audioScript": "Crafted in Italy by LPA, this heavy-duty ghost-ring aperture mounts securely to the rear of the receiver. The large ring blurs naturally to focus your vision on the front sight, and its click-dials can be adjusted using an ordinary shotshell rim.",
+        "audioUrl": "audio/benellim4/parts/benellim4_rear_sight_en.mp3"
+      }
+    },
+    "benellim4_forend": {
+      "partId": "benellim4_forend",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Ribbed Polymer Forend",
+      "zh": {
+        "roleTag": "全包覆隔热保护双ARGO气室 · 横向深防滑肋与底排气百叶",
+        "overview": "这是左右对合卡接于枪管导气箍与机匣前壁之间的战术护木。它将高热的短行程活塞气室全包覆隔绝，并提供射手在潮湿环境下的稳定据枪界面。",
+        "craftAndMaterial": "选用高耐热短切玻纤增强尼龙注塑成型，内腔开设有避让双导气筒的对称半圆隔热舱，外表布置深凹槽横向肋条并于腹部设置两组倾斜散热百叶窗。",
+        "kinematicRole": "在全射击循环中作为静止外部支承件阻隔烫手高温与火药喷溅；野战分解在拧开弹仓螺盖后，沿外下向于百分之八至百分之二十八进程左右分离剥离。",
+        "designHighlight": "摒弃传统泵动霰弹枪的一体滑动筒身，分片式紧凑设计不仅大幅收窄握持周长，腹部排气百叶更能借助活塞前排气流形成烟囱抽风效应加速冷却导气室。",
+        "audioScript": "两片式战术护木由高抗冲玻纤尼龙模压成型。它严密包裹弹膛下方的双联气室，阻隔高达数百度的燃气热辐射。底部排气百叶能定向排出高温废气，横向密布的防滑深肋即使浸泡在泥浆和海水里也能让射手稳固控枪。",
+        "audioUrl": "audio/benellim4/parts/benellim4_forend_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dual ARGO Chamber Thermal Shield & Louvered Grip",
+        "overview": "This two-piece glass-reinforced tactical forend clamshells securely between the barrel gas block and receiver front face. It encapsulates the scorching twin ARGO gas cylinders while offering a positive gripping surface in adverse field conditions.",
+        "craftAndMaterial": "Injection molded from high-temperature glass-reinforced polyamide, featuring internal thermal standoff cavities, deep lateral grip ribs, and downward-facing exhaust cooling louvers.",
+        "kinematicRole": "Remains static during firing to insulate the operator from extreme piston temperatures; separates laterally and slides forward during field stripping between 8 and 28 percent disassembly.",
+        "designHighlight": "Eliminating pump-action slide clearances allowed Benelli to drastically slim the forend circumference, while lower louvers use piston vent pulses to actively evacuate trapped heat.",
+        "audioScript": "Molded from high-impact glass-filled nylon, this two-piece forend acts as a dedicated heat shield over the twin ARGO gas cylinders. Lower exhaust louvers bleed off venting propellant gases, while aggressive molded ribs provide a locked-in grip under mud, rain, or heavy recoil.",
+        "audioUrl": "audio/benellim4/parts/benellim4_forend_en.mp3"
+      }
+    },
+    "benellim4_recoil_tube": {
+      "partId": "benellim4_recoil_tube",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Notched Recoil Tube & Grip",
+      "zh": {
+        "roleTag": "旋转滑移三档锁槽 · 包胶菱纹独立手枪握把",
+        "overview": "该组件由拧入机匣尾部十四度下倾的特种钢复进簧套管及前段锁固的独立握把构成。它容纳枪机连杆与复进弹簧，并构筑全枪人机操控核心基底。",
+        "craftAndMaterial": "复进管采用高强度铬钼合金钢精密车铣并经军规锰磷化防腐处理，外壁精铣三道螺旋定位卡槽；独立握把为坚固聚合物骨架外覆防滑微点硫化橡胶。",
+        "kinematicRole": "内腔在射击全流程中承载枪机尾连杆与复进簧的剧烈压缩往复；在深度军械员级分解阶段于百分之六十六至百分之九十六范围向斜下方整体旋离。",
+        "designHighlight": "美军军规特有的三档螺旋卡槽设计让射手可在全展、重装防弹衣中位及全缩携行三种姿态间一秒旋转锁定，十四度倾角则让后坐冲量线性顺滑地传导至肩部。",
+        "audioScript": "三档刻槽复进管采用铬钼合金钢车铣制成，具备军规十四度下倾角，内部容纳枪机大行程复进簧。管壁精密铣出三段闭锁卡槽，配合包胶手枪握把，让战士即使穿戴厚重防弹衣也能瞬间调整出最舒适的据枪死角。",
+        "audioUrl": "audio/benellim4/parts/benellim4_recoil_tube_zh.mp3"
+      },
+      "en": {
+        "roleTag": "3-Position Indexing Tube & Ergonomic Pistol Grip",
+        "overview": "This assembly comprises an alloy steel recoil extension tube threaded at a 14-degree angle into the receiver rear, alongside an overmolded tactical pistol grip. It houses the bolt carrier link and recoil spring while anchoring the shooter's dominant hand.",
+        "craftAndMaterial": "Machined from high-tensile chrome-moly steel with mil-spec manganese phosphating and three circumferential locking tracks; the grip features a glass-filled nylon core with overmolded traction rubber.",
+        "kinematicRole": "Houses the bolt carrier rat-tail link and absorbing spring throughout dynamic cycling; dismounts rearward during deep armorer-level strip between 66 and 96 percent.",
+        "designHighlight": "The three-notch indexing geometry allows instantaneous single-hand transitions between full, body-armor mid, and stowed settings without tools, matching tactical operational envelopes.",
+        "audioScript": "Threaded into the rear of the receiver at a fourteen-degree angle, this steel extension houses the main recoil spring. Three precision-milled locking detents let operators collapse the stock instantly for vehicle operations, while the rubberized pistol grip cushions 12-gauge kick.",
+        "audioUrl": "audio/benellim4/parts/benellim4_recoil_tube_en.mp3"
+      }
+    },
+    "benellim4_telestock": {
+      "partId": "benellim4_telestock",
+      "bomCode": "F-07",
+      "calloutLabelEn": "M1014 Skeleton Stock",
+      "zh": {
+        "roleTag": "按键旋滑瞬缩114mm · 抬高贴腮鞍座与厚重吸能胶垫",
+        "overview": "这是美军标配镂空战术伸缩枪托，包含整体成型铝合金斜撑杆、人体工程贴腮鞍座与后部吸能橡胶垫。它套设于复进管上，提供坚如磐石的抵肩支撑。",
+        "craftAndMaterial": "主梁采用航空级锻造铝合金铣削后硬质阳极氧化，贴腮板为工程热塑聚合物一体嵌件，枪托底板附硫化高阻尼合成橡胶厚缓冲垫。",
+        "kinematicRole": "发射时承受并分散每一发全威力鹿弹向后的峰值反作用力；在野战分解第一阶段通过压下解脱钮并顺时针微旋四十五度，于百分之八至百分之二十六行程向后滑退拔除。",
+        "designHighlight": "镂空几何造型使整托重量仅数百克却具备抵御破门冲击的高刚度，内置快速下压旋转机构能在零点八秒内将枪身缩短一百一十四毫米便于登车机动。",
+        "audioScript": "标志性的镂空伸缩尾托是马润战斗霰弹枪的灵魂。按下右侧大圆按钮顺时针轻旋四十五度，就能将枪身瞬缩一百一十四毫米。高位贴腮板让双眼自然对准鬼环瞄具，尾部加厚的橡胶垫大幅吸收十二号鹿弹的猛烈后坐撞击。",
+        "audioUrl": "audio/benellim4/parts/benellim4_telestock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "114mm Rapid Collapsible Stock & Shock-Absorbing Pad",
+        "overview": "This iconic USMC skeletonized telestock integrates a rigid forged aluminum strut, an elevated cheekpiece, and a thick butt pad. It sleeves over the recoil tube, providing rock-solid shoulder purchase under heavy combat loads.",
+        "craftAndMaterial": "CNC milled from aircraft-grade aluminum forging with hardcoat anodizing, combined with a tough molded polymer cheek rest and a vulcanized high-durometer rubber recoil pad.",
+        "kinematicRole": "Directs linear recoil forces into the shooter's shoulder pocket during firing; depresses its cross-bolt lock to twist 45 degrees and slide off between 8 and 26 percent disassembly.",
+        "designHighlight": "Its skeletal triangle truss achieves extreme torsional rigidity for door-breaching while dropping weight, permitting a rapid 114 mm overall length reduction for tight armored vehicle quarters.",
+        "audioScript": "The iconic M1014 skeleton stock slides directly over the recoil tube. Pressing the release button and twisting 45 degrees collapses the shotgun by 114 millimeters in less than a second. An integrated cheek rest aligns perfectly with the ghost ring sights, while the thick rubber pad tames brutal magnum recoil.",
+        "audioUrl": "audio/benellim4/parts/benellim4_telestock_en.mp3"
+      }
+    },
+    "benellim4_trigger_housing": {
+      "partId": "benellim4_trigger_housing",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Alloy Trigger Housing",
+      "zh": {
+        "roleTag": "单销免工具整盒下拆 · 集成冬季大护圈与右侧止弹笋",
+        "overview": "该部件是卡装在机匣底部的火控组集成下机匣铝制框架。它集中容纳扳机、击锤、阻铁及管式弹仓止弹卡笋，构成了紧凑独立的半自动点火模块。",
+        "craftAndMaterial": "采用高强度航空级七零七五铝合金锻造后一体精密铣削成型，表面实施哑光耐磨硬质阳极氧化，销孔部位镶嵌硬化衬套以承受往复冲击。",
+        "kinematicRole": "在全自动供弹与击发循环中提供各销轴精密基准，其内侧止弹板受机框驱动左右摆动；野战分解时退出固定横销即可于百分之十二至百分之二十八进程整组下卸。",
+        "designHighlight": "超宽幅度的下沉式冬季扳机护圈允许特战人员佩戴防寒手套自如操作，且单横销自锁设计支持在无工具状态下用拉机柄直接顶出下机匣清沙。",
+        "audioScript": "这是一体铣削成型的铝合金火控底座。它将扳机、击锤、保险和止弹卡笋精密整合为独立模块。无需专用工具，用拉机柄尖端向外一顶固定横销，就能整盒拔下火控组清理泥沙，宽大的护圈即使戴着防寒厚手套也能自如扣击。",
+        "audioUrl": "audio/benellim4/parts/benellim4_trigger_housing_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Drop-Out Modularity Frame & Winter Trigger Guard",
+        "overview": "This component is the modular trigger pack chassis secured into the lower receiver well by a single retaining pin. It houses the trigger, disconnector, hammer, and magazine shell latch in one self-contained fire-control group.",
+        "craftAndMaterial": "Precision CNC-machined from forged 7075-T6 aluminum with matte-black hardcoat anodization, engineered with reinforced steel-bushed pin holes for high shock resilience.",
+        "kinematicRole": "Anchors all rotational pivots during fire control cycling; drops straight out from the receiver bottom during field stripping between 12 and 28 percent once the cross-pin is drifted.",
+        "designHighlight": "Features an enlarged combat winter trigger guard for heavy combat gloves, and enables toolless field extraction using nothing more than the weapon's own charging handle tip.",
+        "audioScript": "Precision CNC-machined from forged aircraft aluminum, this trigger housing locks into the receiver via a single retention pin. It houses the entire fire-control group and shell latch. The oversized winter trigger guard accommodates heavy gloved fingers and pops out cleanly for rapid field maintenance.",
+        "audioUrl": "audio/benellim4/parts/benellim4_trigger_housing_en.mp3"
+      }
+    },
+    "benellim4_trigger": {
+      "partId": "benellim4_trigger",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Combat Trigger & Disconnector",
+      "zh": {
+        "roleTag": "干脆一段式军用扳机力 · 单发截获防偶发连发",
+        "overview": "该机构安装于火控盒中央，由射手食指操控的弧形主扳机与顶端铰接的次级断连阻铁组成。它负责释放击锤点火，并在每次击发后可靠截获回冲击锤。",
+        "craftAndMaterial": "扳机采用军规碳素工具钢精密模锻及渗碳淬火，断连钩采用高韧性不锈钢冲压，接触滑块经微米级研磨以确保清脆无拖泥带口的击发手感。",
+        "kinematicRole": "第一阶段扣动向后回转六度脱开主阻铁；第四阶段在手指未松开时断连钩钩住倒转击锤；第七阶段回弹完成两阻铁交接；在百分之六十八至百分之九十八行程分解拆卸。",
+        "designHighlight": "军规调校约二十五牛顿干脆行程，两段式安全断连机构能在后坐暴冲瞬间死死扣住击锤，彻底杜绝半自动极端工况下的偶发自发连发事故。",
+        "audioScript": "弧形战斗扳机与铰接的不锈钢断连器协同工作。扣下扳机释放主阻铁点火后，枪机框后坐强行压低击锤，此时尚未松开的手指使断连钩率先挂住击锤后耳，松开扳机再平顺交接回前主阻铁，带来极高节奏的半自动速射安全性。",
+        "audioUrl": "audio/benellim4/parts/benellim4_trigger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Crisp Combat Single-Stage Pull & Semi-Auto Disconnector",
+        "overview": "Pivot-pinned inside the trigger pack, this curved combat trigger mates with an articulated top-mounted disconnector hook. It controls the primary sear release of the hammer and prevents out-of-battery doubling during rapid fire.",
+        "craftAndMaterial": "Forged from high-grade carbon tool steel, case-hardened to 58 HRC with polished engagement bents, while the disconnector is laser-profiled from high-tensile stainless steel.",
+        "kinematicRole": "Pivots 6 degrees rearward during Phase 1 to trip the hammer sear; disconnector catches the hammer tail in Phase 4 until trigger reset in Phase 7; extracts between 68 and 98 percent explode.",
+        "designHighlight": "Tuned to a clean, creep-free 5.5-pound military break, its positive reset geometry prevents trigger bounce or inadvertent slam-firing under heavy 12-gauge inertia waves.",
+        "audioScript": "Forged from carbon steel, the combat trigger pairs with an articulated stainless disconnector. Pulling the trigger drops the hammer, while bolt recoil drives the hammer backward where it is instantly caught by the disconnector hook, ensuring positive single-fire separation even during lightning-fast splits.",
+        "audioUrl": "audio/benellim4/parts/benellim4_trigger_en.mp3"
+      }
+    },
+    "benellim4_hammer": {
+      "partId": "benellim4_hammer",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Stainless Rotating Hammer",
+      "zh": {
+        "roleTag": "高动能前旋敲击长击针 · 联动释放托弹板抱弹锁",
+        "overview": "击锤装配在火控盒前轴上，是一块带有加厚击打面的回转储能打击件。它由强力压簧驱动向上猛烈前旋击打长击针底火，并联动解除托弹板锁定。",
+        "craftAndMaterial": "采用高强度沉淀硬化不锈钢热模锻并经固溶时效热处理，阻铁卡口处深层渗氮硬化，侧壁开有减重凹槽优化角加速度。",
+        "kinematicRole": "第一阶段在压簧蓄力下向上前旋六十四度击发；第四阶段被后坐枪机底面强行压倒六十四度重新挂机；在百分之六十八至百分之九十八分步向斜前上方旋出。",
+        "designHighlight": "击锤根部特别设计下伸偏心突耳，击发瞬间撞击供弹解脱拨爪，将托弹板由常闭锁定位瞬间解脱，机械式联动保证了高速供弹时序的零延迟。",
+        "audioScript": "这枚锻造不锈钢回转击锤是全枪点火的心脏。扣动扳机瞬间，它在导柱弹簧强力推动下向上猛旋六十四度，以极高的角动能敲击枪机框长击针点燃底火，同时根部的偏心凸轮顺势触发弹仓释放爪，开始备战下一发供弹。",
+        "audioUrl": "audio/benellim4/parts/benellim4_hammer_zh.mp3"
+      },
+      "en": {
+        "roleTag": "High-Kinetic 64-Degree Striker & Carrier Latch Trip",
+        "overview": "Journaled on the forward fire-control pin, this heavy hammer serves as the kinetic striker of the ignition train. Driven by a dedicated plunger spring, it pivots upward to strike the inertia firing pin while unlocking the carrier.",
+        "craftAndMaterial": "Hot forged from 17-4 PH precipitation-hardened stainless steel, vacuum heat-treated with nitrided sear hooks, featuring fluted side flats to balance rotational inertia.",
+        "kinematicRole": "Swings 64 degrees forward in Phase 1 to strike the firing pin; recocks under downward camming of the bolt carrier in Phase 4; pivots out between 68 and 98 percent disassembly.",
+        "designHighlight": "An engineered eccentric lower toe mechanically strikes the shell latch drop lever the instant the hammer falls, automatically cycling the underbarrel feed magazine in perfect lockstep.",
+        "audioScript": "Machined from heat-treated 17-4PH stainless steel, this rotating hammer delivers reliable primer strikes. When released, it sweeps forward 64 degrees to hit the spring-loaded firing pin. Its lower lobe simultaneously trips the cartridge release lever, ensuring flawless feeding cadence.",
+        "audioUrl": "audio/benellim4/parts/benellim4_hammer_en.mp3"
+      }
+    },
+    "benellim4_hammer_spring": {
+      "partId": "benellim4_hammer_spring",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "Helical Hammer Drive Spring",
+      "zh": {
+        "roleTag": "封闭导柱高劲度蓄能 · 严寒防军规硬底火拒发",
+        "overview": "这是横向深埋于火控盒后腔盲孔内的螺旋高压驱动弹簧与前端不锈钢滑动顶柱。它持续顶压击锤下偏心叉槽，为击锤提供恒定充沛的旋转打击力矩。",
+        "craftAndMaterial": "选用超高抗疲劳军标琴钢丝精密密绕并经喷丸去应力退火处理，表面涂布润滑二硫化钼干膜，滑块为耐磨不锈钢车削成型。",
+        "kinematicRole": "击发阶段一急剧舒张推动击锤前冲，后坐阶段四被倒压蓄能十毫米行程；在分解百分之六十八至百分之九十八阶段自火控盒后腔滑移拔出。",
+        "designHighlight": "摒弃了民用猎枪常见的易疲劳易积泥扭簧，采用全封闭式盲孔导柱压簧架构，即使零下四十度极寒冻结或浸没海水也能确保一次击穿军规厚硬底火。",
+        "audioScript": "位于火控盒后方盲孔内的螺旋琴钢丝压簧，始终紧密顶推不锈钢传力柱。相比容易变形的传统扭簧，全封闭导柱压簧抗疲劳寿命大幅提升，即便在零下四十度的极端严寒环境下，也能释放充沛能量粉碎任何军规硬底火。",
+        "audioUrl": "audio/benellim4/parts/benellim4_hammer_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "High-Tension Enclosed Plunger Drive for Hard Primers",
+        "overview": "Housed within an enclosed cylindrical bore in the rear of the trigger guard, this heavy coil spring powers a stainless steel plunger. It impinges against the lower hammer notch, exerting immense torque across the rotational sweep.",
+        "craftAndMaterial": "Wound from mil-spec music wire spring steel, shot-peened and stress-relieved with a dry-film molybdenum disulfide coating, riding an ultra-smooth stainless thrust guide.",
+        "kinematicRole": "Expands in Phase 1 to launch the hammer upward, compresses 10 mm in Phase 4 as the carrier pushes the hammer down; removes rearward during sub-assembly strip at 68 to 98 percent.",
+        "designHighlight": "Choosing an enclosed axial compression coil over exposed torsion springs prevents mud seizing and cold embrittlement, ensuring reliable primer indentation at minus forty degrees.",
+        "audioScript": "Buried in a rear cavity inside the trigger housing, this heavy helical music wire spring pushes a steel drive plunger. By avoiding traditional torsion springs, Benelli guarantees maximum strike velocity, easily punching through thick military-spec primers even in sub-zero blizzard environments.",
+        "audioUrl": "audio/benellim4/parts/benellim4_hammer_spring_en.mp3"
+      }
+    },
+    "benellim4_safety_button": {
+      "partId": "benellim4_safety_button",
+      "bomCode": "FC-05",
+      "calloutLabelEn": "Cross-Bolt Safety & Lever",
+      "zh": {
+        "roleTag": "左露鲜红火圈视觉/触觉确认 · 支持Benelli幽灵第9发上膛",
+        "overview": "该组件包含横穿扳机护圈后上部的双向大三角截面安全推栓，以及护圈前右侧外露带红点的放弹拨片。推栓机械阻隔扳机，拨片则用于手动释放管仓霰弹。",
+        "craftAndMaterial": "保险横柱为硬化合金钢表面黑色渗氮，左端数控车削凹槽填注鲜红珐琅漆；放弹拨片采用高弹性冲压不锈钢板弯折成型并做耐磨黑化。",
+        "kinematicRole": "射击前推向左侧解脱扳机位移，射击后推向右侧锁死扳机尾部；在火控盒深度分解阶段于百分之六十八至百分之九十八区间自护圈向侧向抽离。",
+        "designHighlight": "横栓保险的人体工程加大三角截面让食指可盲操推压；红点放弹拨片更孕育了伯奈利著名的七加一再加一等于九发幽灵装填战术绝技。",
+        "audioScript": "位于扳机后方的加大三角形横推保险，向左推开时会露出醒目的鲜红警示环，即使戴厚手套也能凭触觉确认。护圈前方的红点放弹拨片不仅能快速退出弹仓实弹，更能通过手动放弹实现传奇的七加一再加一发幽灵装填。",
+        "audioUrl": "audio/benellim4/parts/benellim4_safety_button_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Tactile Cross-Bolt Block & 9-Round Ghost Loading Lever",
+        "overview": "This dual-control group comprises an oversized triangular cross-bolt safety button positioned behind the trigger and a stamped cartridge drop lever riding forward. It mechanically immobilizes trigger sear travel while controlling magazine shell feed on demand.",
+        "craftAndMaterial": "Case-hardened carbon steel bar with precision detent grooves and red high-visibility enamel inlays, coupled with a heat-treated stainless spring-steel shell release lever.",
+        "kinematicRole": "Shifted laterally across weapon centerline to block/clear trigger rear travel; drop lever trips during cycling to release shells; separates sideways between 68 and 98 percent explode.",
+        "designHighlight": "The enlarged triangular profile provides positive tactile indexing in pitch darkness, while the cartridge drop lever enables Benelli's renowned nine-round ghost-loading capability.",
+        "audioScript": "Positioned behind the trigger, the triangular cross-bolt safety clicks firmly to the left, revealing a red firing band that can be confirmed by touch alone. The red-dotted cartridge drop lever allows tactical ammo changes and unlocks Benelli's famous nine-round ghost load configuration.",
+        "audioUrl": "audio/benellim4/parts/benellim4_safety_button_en.mp3"
+      }
+    },
+    "benellim4_mag_tube": {
+      "partId": "benellim4_mag_tube",
+      "bomCode": "M-01",
+      "calloutLabelEn": "7-Round Steel Mag Tube",
+      "zh": {
+        "roleTag": "同轴下挂7发70mm鹿弹 · 前端双侧可翻转战术背带环",
+        "overview": "这是旋固于机匣前下螺纹孔并与十八点五英寸枪管平齐延伸的全长储弹总成。其管腔内以单列串联方式稳固容纳七发全威力标准规格霰弹。",
+        "craftAndMaterial": "采用高精度冷拔薄壁无缝四一四零铬钼合金钢管车削制成，内外壁经重重重防腐黑色磷酸锰涂覆，前端预置双面背带扣卡簧环槽与导环螺纹。",
+        "kinematicRole": "作为静态供弹储能容器，承载托弹簧与托弹杯往复推送实弹；在分解阶段于百分之三十八至百分之六十五向右前方旋出，百分之六十五至一百完全分离。",
+        "designHighlight": "相较于早期受限于民用进口法的短管仓加接驳加长管，原厂军规全长一体通管彻底消除了弹仓内壁接缝阻滞，确保马格南大底缘霰弹滑行零卡涩。",
+        "audioScript": "这根十八点五英寸全长管式弹仓，采用无缝高强铬钼钢管精密冷拔拉延，表面经军规锰磷化重度防腐处理。它能顺畅串联容纳七发七十毫米标准鹿弹，一体通体结构杜绝了接驳缝隙卡壳的隐患，枪口端更附带可左右翻转的背带环。",
+        "audioUrl": "audio/benellim4/parts/benellim4_mag_tube_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Full-Length 7-Round Reservoir & Swappable Sling Loop",
+        "overview": "Threaded directly into the receiver forward face, this full-length tubular magazine extends parallel beneath the 18.5-inch barrel. It stores seven 2.75-inch 12-gauge tactical shells in a linear spring-pushed column.",
+        "craftAndMaterial": "Cold-drawn seamless 4140 chrome-moly steel tubing with precision-honed internal bore, treated with dark Parkerized manganese phosphate, featuring a front sling-plate snap groove.",
+        "kinematicRole": "Acts as a structural ammo conduit guiding rounds axially toward the lifter; threads free from the receiver during armorer disassembly between 38 and 65 percent progress.",
+        "designHighlight": "Unlike segmented civilian extension tubes, the military M1014 one-piece tube eliminates internal stepped seams, guaranteeing perfectly snag-free feeding under full spring compression.",
+        "audioScript": "Stretching under the entire eighteen-point-five inch barrel, this seamless chrome-moly steel magazine tube holds seven standard 12-gauge shells. Precision-honed on the inside and Parkerized on the outside, its continuous one-piece body prevents rim jams during high-speed combat feeding.",
+        "audioUrl": "audio/benellim4/parts/benellim4_mag_tube_en.mp3"
+      }
+    },
+    "benellim4_mag_cap": {
+      "partId": "benellim4_mag_cap",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Ratcheting Mag Cap",
+      "zh": {
+        "roleTag": "全枪唯一免工具拆解锁母 · 弹簧棘齿抗连发射击松脱",
+        "overview": "这是拧紧在管式弹仓最前端、死死箍压枪管前导向支撑环的加厚带滚花钢制螺帽。它是整枪野战分解的第一道机械闭锁锁母。",
+        "craftAndMaterial": "特种合金钢数控车削并经深层化学黑化处理，外圆周雕琢深槽防滑滚花，内贴合端面精铣一整圈高密度放射状自锁单向棘齿槽。",
+        "kinematicRole": "射击时承受枪管与弹仓向前的分离拉扭力矩；野战分解第一步在百分之二至百分之十六区间徒手逆时针拧转两圈半并向前滑脱拔除。",
+        "designHighlight": "端面内嵌的弹簧棘齿销与枪管前导环逐格产生清脆棘轮啮合，连续射击数百发重装马格南弹绝不震松，徒手即可拧开启动分解。",
+        "audioScript": "防松滚花端盖是全枪野战分解的唯一主锁扣。内端面带有精密放射状止退棘齿，旋紧时会与枪管导环上的弹簧顶销逐格卡死，任凭数百发全威力鹿弹暴烈震动也不会自行松脱，射手徒手即可拧下开始野战拆解。",
+        "audioUrl": "audio/benellim4/parts/benellim4_mag_cap_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Toolless Field Strip Anchor & Anti-Vibration Detent",
+        "overview": "Threaded onto the extreme muzzle end of the magazine tube, this knurled steel cap clamps the barrel gas bracket rigidly against the receiver. It represents the primary toolless retaining fastener for field stripping.",
+        "craftAndMaterial": "Machined from high-carbon alloy steel with anti-corrosion black oxide finish, patterned with aggressive diamond knurling and radial internal ratcheting teeth.",
+        "kinematicRole": "Bears continuous axial harmonic stresses keeping barrel and tube tied; twists off manually in Phase 1 teardown between 2 and 16 percent disassembly with 2.4-turn spin.",
+        "designHighlight": "Radial teeth on the inner collar interface with a spring-loaded barrel guide detent pin, clicking audibly to resist dynamic loosening without requiring any wrenches or pins.",
+        "audioScript": "This knurled steel end-cap is the single locking nut required to field-strip the entire shotgun. Its inner face features a radial ratchet that interlocks with a spring pin on the barrel collar. It resists vibration from thousands of magnum firings yet twists off cleanly by hand.",
+        "audioUrl": "audio/benellim4/parts/benellim4_mag_cap_en.mp3"
+      }
+    },
+    "benellim4_mag_spring": {
+      "partId": "benellim4_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Tubular Magazine Spring",
+      "zh": {
+        "roleTag": "恒压水平向后推弹 · 瞬间将次发霰弹送入升降托弹板",
+        "overview": "这是深嵌于长管弹仓内、从枪口向机匣方向全程伸展的超长特种弹簧。它持续向后推动托弹杯，将整列霰弹稳定推向升降托弹板与截弹止笋。",
+        "craftAndMaterial": "采用高抗蠕变特级铬硅合金弹簧钢丝绕制，经过多次预压定型和超声波强化，表面电泳沉积防锈润滑涂料以抵抗海面高盐雾腐蚀。",
+        "kinematicRole": "阶段五在止弹板闪开微秒内将次发霰弹水平向后急推十余厘米送上托弹板；弹仓分解阶段于百分之三十六至百分之六十四向右前方伸出释放。",
+        "designHighlight": "大长径比渐变螺距节距设计，既能保证最后一发推入托弹板拥有充沛末段推力，又在满载七发马格南弹时将前端极限压并力控制在安全省力区间。",
+        "audioScript": "这根高弹性特种合金管仓弹簧横贯弹仓内部。每次枪机后坐解脱止弹卡笋的几毫秒内，弹簧瞬间舒张，克服七发重装霰弹的巨大静止摩擦力，以充沛恒定的推力把最末端的新弹猛推至机匣底部的升降托弹板上。",
+        "audioUrl": "audio/benellim4/parts/benellim4_mag_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Long-Stroke Progressive Feeder & Seawater-Proof Coils",
+        "overview": "Spanning the entire interior length of the steel magazine tube, this long-stroke helical spring provides axial rearward drive against the follower cup. It feeds the loaded cartridge column directly into the receiver's shell elevator.",
+        "craftAndMaterial": "Precision coiled from premium high-tensile chrome-silicon spring alloy with stress-relieving temper and electrophoretic anti-corrosion barrier coating for marine operations.",
+        "kinematicRole": "Expands in Phase 5 to thrust the next 12-gauge shell 120 mm backward onto the carrier; uncoils forward during disassembly between 36 and 64 percent range.",
+        "designHighlight": "Engineered with a variable pitch geometry ensuring high residual pushing force on the final seventh shell, while preventing hand-fatiguing thumb resistance during initial loading.",
+        "audioScript": "Stretching the entire inside length of the magazine tube, this chrome-silicon steel spring drives the shell follower. When the bolt recoils, the spring snaps forward, instantly overcoming the friction of multiple heavy shells to seat the next round squarely onto the waiting lifter.",
+        "audioUrl": "audio/benellim4/parts/benellim4_mag_spring_en.mp3"
+      }
+    },
+    "benellim4_mag_follower": {
+      "partId": "benellim4_mag_follower",
+      "bomCode": "M-04",
+      "calloutLabelEn": "High-Vis Fluted Follower",
+      "zh": {
+        "roleTag": "一眼与盲摸双重空仓确认 · 六道纵向排沙防卡肋",
+        "overview": "这是滑行在弹仓内壁与弹簧末端之间的杯形推弹器。它直接顶住最后一发霰弹的弹头，并在全弹打空时封堵弹仓尾部，提供直观的空仓视觉与触觉反馈。",
+        "craftAndMaterial": "选用航空级六零六一铝合金精密切削，表面实施高可视鲜艳红橙色耐磨硬质阳极氧化，圆周精铣六道对称纵向导流排沙槽与中央探摸盲凹坑。",
+        "kinematicRole": "在装弹时受推向前压缩弹簧，在发射供弹时沿弹仓轴向逐格向后推弹并最终暴露于装弹口；在百分之三十六至百分之六十四行程随弹簧滑出下线。",
+        "designHighlight": "圆柱外圈的纵向排沙凹槽可将渗入管壁的泥沙粉尘刮落收纳防止推弹卡死；端面凹坑让战士在伸手不见五指的黑夜用拇指一按便知弹仓已彻底打空。",
+        "audioScript": "鲜艳的橙红阳极氧化铝合金托弹杯是射手生死攸关的信息窗口。外壁六道纵向深槽能排出泥沙防卡壳，亮眼的色泽在弹仓打空时一目了然。尾端的中心触觉凹槽，更允许战士在黑暗摸索中瞬间感知弹仓是否已经弹尽粮绝。",
+        "audioUrl": "audio/benellim4/parts/benellim4_mag_follower_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Tactile Empty Indicator & 6-Flute Debris Clearance Cup",
+        "overview": "Riding the boundary between the drive spring and the ammunition stack, this cup-shaped aluminum follower pushes cartridges rearward inside the magazine tube. When the tube empties, it presents an unmistakable visual and tactile cue.",
+        "craftAndMaterial": "CNC turned from 6061-T6 aluminum and treated with high-visibility bright orange hardcoat anodizing, milled with six self-cleaning debris flutes and a central tactile thumb pocket.",
+        "kinematicRole": "Travels linearly inside the magazine during all loading and firing cycles; ejects out of the magazine tube during field stripping between 36 and 64 percent.",
+        "designHighlight": "Fluted relief channels allow grit, sand, and seawater to bypass the cup without binding against the tube bore, while the center depression permits instant dark-adapted ammo checks.",
+        "audioScript": "Machined from aluminum and anodized in brilliant high-visibility red-orange, this follower cup caps the magazine spring. Six deep debris flutes sweep grit out of the path of travel, while a recessed center pad allows the shooter to confirm an empty magazine entirely by feel.",
+        "audioUrl": "audio/benellim4/parts/benellim4_mag_follower_en.mp3"
+      }
+    },
+    "benellim4_shell_elevator": {
+      "partId": "benellim4_shell_elevator",
+      "bomCode": "M-05",
+      "calloutLabelEn": "Forked Shell Carrier",
+      "zh": {
+        "roleTag": "管式供弹灵魂桥梁 · 承接下层霰弹向上摆起精准对准弹膛",
+        "overview": "这是铰接于火控盒前端的叉形不锈钢升降摆动托板。它横跨于下挂弹仓出弹口与上层枪管弹膛之间，承担将滑出的霰弹精确抬升对准弹膛轴线的空间搬运重任。",
+        "craftAndMaterial": "采用高抗冲三零四优质不锈钢精密冲压下料并经真空光亮退火处理，表面微米级拉丝减摩，前端冲制出标志性的深U形防夹手护指防勾挂叉口。",
+        "kinematicRole": "阶段五接住后滑霰弹，在枪机框下压凸轮驱动下向上摆起二十度将弹抬至进膛高度；阶段六枪机推弹入膛后下落归位；分解阶段于百分之三十六至百分之六十四分离。",
+        "designHighlight": "前爪深U形缺口彻底解决了老式半自动霰弹枪高速塞弹时极易咬伤夹住拇指手套的致命痼疾，摆臂仰角与枪机框下轮廓无缝配气，送料流畅顺滑。",
+        "audioScript": "这块冲压不锈钢升降托弹板是管式霰弹枪最精妙的机械桥梁。第五阶段承接从下层弹仓滑出的粗壮鹿弹后，在枪机框底部凸轮驱动下猛然向上抬起二十度，如电梯般把弹药精准送至弹膛正前方，前方的U形叉口绝不夹伤塞弹拇指。",
+        "audioUrl": "audio/benellim4/parts/benellim4_shell_elevator_zh.mp3"
+      },
+      "en": {
+        "roleTag": "20-Degree Tilting Lifter Bridge & Anti-Pinch Thumb Fork",
+        "overview": "Pivoting in the front section of the trigger housing, this stainless steel spoon elevator bridges the vertical gap between the lower magazine tube and upper barrel chamber. It lifts incoming rounds into the direct feeding path of the bolt.",
+        "craftAndMaterial": "Laser cut and stamped from heavy-gauge 304 stainless steel, bright-annealed with anti-wear electropolishing, featuring a signature radiused front U-fork thumb cutout.",
+        "kinematicRole": "Rests flat during firing; tilts 20 degrees upward in Phase 5 to align the newly presented shell with the chamber; resets downward in Phase 6; clears during strip between 36 and 64 percent.",
+        "designHighlight": "The prominent front fork notch prevents operator thumb-pinching during rapid combat tactical loading drills, while its curved body keeps long magnum shells stable during tilting.",
+        "audioScript": "Stamped from stainless steel, this pivoting shell lifter is the mechanical bridge of the feeding system. Driven by bolt carrier movement, it swings upward twenty degrees, elevating fresh shells straight in line with the chrome-plated chamber. Its front fork geometry prevents combat thumb pinches.",
+        "audioUrl": "audio/benellim4/parts/benellim4_shell_elevator_en.mp3"
+      }
+    }
+  }
+}

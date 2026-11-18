@@ -70,6 +70,9 @@ ALL_WEAPON_IDS = [
     "p90",
     "lift33",
     "r500",
+    "python",
+    "benellim4",
+    "garand",
 ]
 
 WEAPON_CONTEXT_HINTS: dict[str, dict[str, str]] = {
@@ -132,6 +135,134 @@ WEAPON_CONTEXT_HINTS: dict[str, dict[str, str]] = {
             "2020 (HexCoil 360-degree cam & 3.6-inch cocked width validation) -> "
             "2021 (Ravin R500 shatters 500 FPS / 301 J benchmark) -> "
             "2022-2024 (100-yard precision crossbow optics & field adoption)"
+        ),
+    },
+    "python": {
+        "historicalContext": (
+            "Conceived at Colt's Manufacturing Company (Hartford, Connecticut, USA) following Colt's 1953 "
+            "Trooper .38/.357 service revolver and the surging popularity of Bill Jordan's 'combat magnum' "
+            "doctrine and bullseye PPC target competition, the Colt Python debuted in 1955 under project lead "
+            "Bill Henry, plant superintendent Herman 'Al' Alenhart, and Colt's master Custom Shop polishers "
+            "and action tuners. Built upon the forged large .41-size Colt I-frame with zero budget compromises, "
+            "every early Python was individually hand-fitted, hand-honed with Arkansas oilstones, buffed on "
+            "graded felt wheels, and immersed in hot-salt baths to produce Colt's legendary mirror-deep "
+            "'Royal Blue' finish, paired with hand-checkered American black walnut target grips bearing 24K "
+            "gold-plated Rampant Colt medallions. Revered by firearms historians such as R.L. Wilson and Law "
+            "Enforcement officers worldwide as 'the Rolls-Royce of revolvers,' the 6-inch Python became an "
+            "enduring icon of American craftsmanship and later returned in modernized stainless form in 2020."
+        ),
+        "mechanicalCore": (
+            "Hand-fitted DA/SA clockwork inside the forged Colt I-frame centers on a tapered folded V-leaf "
+            "mainspring coupled to the wide target hammer via a pivoting stirrup link—eliminating coil-spring "
+            "stacking for a butter-smooth double-action pull and crisp single-action break—while the lower "
+            "mainspring limb powers the Colt Positive Safety Rebound Lever to cam the hammer rearward off the "
+            "frame-mounted floating inertial firing pin whenever the trigger is released. Pulling the grooved "
+            "target trigger first depresses the bottom pivoting cylinder stop bolt, then raises the Colt "
+            "two-step vertical indexing hand (ratchet pawl) against the 6-point extractor star to rotate the "
+            "fluted 6-chamber .357 S&W Magnum cylinder clockwise by 60 degrees. Before hammer fall, the stop "
+            "bolt snaps into the 6 o'clock cylinder notch while the lower step of the hand stays wedged hard "
+            "against the ratchet tooth, clamping the chamber dead-coaxial with the bore in Colt's famed "
+            "'bank-vault full-cock lockup' (plus front underlug detent plunger and pull-back latch pin dual "
+            "spindle lock). The 6-inch (152.4 mm) barrel integrates a 3-slot ventilated sight rib (pinned "
+            "red-insert front ramp + Colt Accro micrometric rear sight), a full-length solid ejector-rod "
+            "underlug shroud to damp .357 Magnum (241 MPa, 158 gr @ 435 m/s) muzzle flip, a recessed target "
+            "crown, and tight slightly-tapered 6-groove 1:14-inch right-hand rifling."
+        ),
+        "milestoneAnchors": (
+            "1935 (Smith & Wesson .357 Magnum cartridge debuts) -> "
+            "1953 (Colt Trooper I-frame .357 service platform introduced) -> "
+            "1955 (Bill Henry & Alenhart team unveil flagship Colt Python 6-inch Royal Blue in Hartford) -> "
+            "1960s-1970s (Highway Patrol, PPC Bullseye dominance & 'Rolls-Royce of Revolvers' acclaim) -> "
+            "1999-2005 (End of original hand-fitted Custom Shop I-frame production) -> "
+            "2020 (Colt modernizes CAD/forged stainless Python lineage for a new century)"
+        ),
+    },
+    "benellim4": {
+        "historicalContext": (
+            "Developed in 1998 by Benelli Armi S.P.A. (Urbino, Marche, Italy; Chief R&D engineers Nicola "
+            "Bandini and Vignaroli team) in direct response to the U.S. Armed Forces TACOM-ARDEC Solicitation "
+            "DAAE30-98-R-0401 for the Joint Service Combat Shotgun (JSCS), the Benelli M4 Super 90 broke "
+            "decisively with Bruno Civolani's classic 1967 Benelli Inertia-Driven system. Because combat "
+            "shotguns laden with tactical weaponlights, night-vision optics, sidesaddles, and heavy collapsible "
+            "stocks increase receiver mass—which starves inertia-driven actions of recoil energy—Benelli "
+            "invented its first gas-operated action specifically for military trials. Delivering prototypes to "
+            "Aberdeen Proving Ground in August 1998, the XM1014 defeated rival entries across mud, sand, "
+            "-40°C Arctic cold, salt fog, and 25,000-round endurance torture tests, earning formal adoption by "
+            "the U.S. Marine Corps in 1999 as the M1014 Combat Shotgun and serving across Iraq, Afghanistan, "
+            "British L128A1 forces, and global counter-terror units."
+        ),
+        "mechanicalCore": (
+            "Patent-protected A.R.G.O. (Auto-Regulating Gas-Operated, U.S. Patent 5,827,992) architecture "
+            "mounts twin symmetrical 17-4PH stainless-steel fluted short-stroke tappet pistons inside dual "
+            "underbarrel cylinders immediately ahead of the 76 mm chamber on the 18.5-inch (470 mm) chrome-lined "
+            "Crio smoothbore barrel. Tapping clean, high-temperature, high-pressure propellant gas right past "
+            "the forcing cone prevents plastic wad fouling, while spring-loaded exhaust valves in the twin "
+            "knurled front gas plugs automatically bleed excess pressure from 3-inch Magnum loads yet retain "
+            "full impulse for 2.75-inch tactical 00 buckshot (79 MPa, 9 pellets @ 404 m/s). Both ARGO tappets "
+            "throw rearward just 15 mm in balanced unison against twin shoulders on the heavy machined steel "
+            "bolt carrier—eliminating off-axis carrier tilt. After a safety free-travel lead, the carrier's "
+            "helical cam track rotates the hard-chrome 2-lug bolt head 38 degrees via the cylindrical cam pin "
+            "to unlock, extracting and ejecting the spent crimson hull while a hinged rat-tail link compresses "
+            "the 14-degree angled stock-tube recoil spring inside the 3-position notched M1014 skeletonized "
+            "telestock. Simultaneously, the 7-round underbarrel tubular magazine spring and high-visibility "
+            "fluted cup follower feed the next 12-gauge shell onto the pivoting stamped stainless forked shell "
+            "carrier elevator, which swings upward 20 degrees to align the shell with the chamber for stripping "
+            "and 2-lug relock (also supporting Benelli's famed 7+1+1 = 9-round 'Ghost Loading' via the cartridge "
+            "drop lever)."
+        ),
+        "milestoneAnchors": (
+            "1967 (Bruno Civolani inertia system founds Benelli Armi in Urbino) -> "
+            "May 1998 (U.S. Joint Service Combat Shotgun XM1014 solicitation issued) -> "
+            "Aug-Oct 1998 (ARGO patent US 5,827,992 granted & Aberdeen Proving Ground trials won) -> "
+            "1999 (Adopted by USMC as M1014 Joint Service Combat Shotgun) -> "
+            "2001-2011 (Combat proving in Afghanistan/Iraq & UK MoD L128A1 adoption) -> "
+            "Present (Unrivaled NATO benchmark for semi-automatic combat shotguns)"
+        ),
+    },
+    "garand": {
+        "historicalContext": (
+            "Designed over seventeen years (1919–1936) at the U.S. Springfield Armory in Massachusetts by "
+            "French-Canadian-born ordnance genius John Cantius Garand, the U.S. Rifle, Caliber .30, M1 made "
+            "the United States the only major nation in World War II to issue a semi-automatic battle rifle as "
+            "its standard infantry arm. Garand progressed from 1919–1924 primer-actuated blowback prototypes "
+            "(Model 1919 / T1) that failed when U.S. Ordnance switched to slower-burning progressive-powder M1 "
+            "ammunition, to gas-trap competing rifles in the 1929 Aberdeen trials in .276 Pedersen (7 mm, "
+            "10-round T3E2) against John Pedersen's toggle-delayed rifle. In January 1932, Chief of Staff "
+            "General Douglas MacArthur vetoed .276 Pedersen on logistics grounds, mandating full-power .30-06 "
+            "Springfield utilizing vast WWI stockpiles. Garand scaled up his T1E2 into the 8-round .30-06 M1, "
+            "standardized on January 9, 1936, and personally engineered automated broaching and CNC-precursor "
+            "production fixtures. After replacing the delicate early 'gas-trap' muzzle cap with the rugged "
+            "splined 1940 stainless gas cylinder under barrel splines, Springfield Armory and Winchester built "
+            "over 4.04 million M1s during WWII (5.48 million total with postwar HRA/IHC), prompting General "
+            "George S. Patton Jr. in January 1945 to hail it as 'the greatest battle implement ever devised.'"
+        ),
+        "mechanicalCore": (
+            "Firing .30-06 Springfield M2 Ball (150 gr gilding-metal spitzer @ 853 m/s, 345 MPa peak pressure) "
+            "down a 24-inch (610 mm) 4-groove 1:10-inch barrel, gas vents through a bottom port near the muzzle "
+            "into the splined 410 stainless-steel gas cylinder (locked by a figure-8 ring and cross-valve lock "
+            "screw that automatically bleeds gas when an M7 grenade launcher is mounted). Gas drives the "
+            "curved S-bend long-stroke operating rod rearward; its arched cam hump incorporates a crucial 4 mm "
+            "straight free-travel dwell—allowing the bullet to exit the muzzle and chamber pressure to drop "
+            "safely—before camming the right lug of the forged 2-lug breech bolt counterclockwise by 32 degrees "
+            "for primary extraction and 108 mm synchronized recoil (while a receiver-bridge tang block and "
+            "hammer safety notch positively prevent out-of-battery firing). Inside the hollow op-rod, a single "
+            "dual-purpose long helical spring simultaneously absorbs recoil to drive counter-recoil forward AND "
+            "presses rearward via a forked follower rod and pivoting follower arm to lift staggered cartridges "
+            "upward inside the reversible 8-round stamped spring-steel en-bloc clip! When the 8th case ejects "
+            "to 1–2 o'clock, the rising follower trips the operating-rod catch and left clip latch, allowing "
+            "the V-shaped clip ejector wire to hurl the empty steel clip skyward with the unmistakable "
+            "tuning-fork 'Garand Ping!' Insertion of a fresh 8-round clip trips the accelerator linkage "
+            "(demanding brisk thumb withdrawal to avoid 'Garand Thumb'), complemented by a 10-second tool-less "
+            "cam-locking trigger guard quick-detach milled trigger group, T105 1-MOA micrometric peep sight, "
+            "and linseed-oiled American black walnut stock."
+        ),
+        "milestoneAnchors": (
+            "1919-1924 (John C. Garand joins Springfield Armory & tests primer-actuated T1 prototypes) -> "
+            "1928-1931 (Aberdeen .276 Pedersen T3E2 gas-trap trials defeat Pedersen toggle action) -> "
+            "1932 (Gen. Douglas MacArthur mandates .30-06 Springfield; 8-round T1E2 redesigned) -> "
+            "1936 (Standardized Jan 9, 1936 as U.S. Rifle, Caliber .30, M1) -> "
+            "1939-1940 (Splined barrel & 1940 stainless gas-port cylinder replace early gas-trap) -> "
+            "1941-1957 (5.48 million built across WWII & Korea; Patton's 'greatest battle implement' tribute)"
         ),
     },
 }

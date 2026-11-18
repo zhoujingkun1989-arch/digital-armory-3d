@@ -1,0 +1,934 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "garand",
+  "generatedAt": "2026-11-18T12:59:36.367247+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "U.S. Rifle, Caliber .30, M1 Garand",
+    "subtitle": ".30-06 Long-Stroke Gas-Operated 8-Rd En-Bloc Service Rifle",
+    "originCountry": "United States",
+    "weaponType": "Semi-Automatic Service Rifle",
+    "categoryLabel": "Semi-Automatic Battle Rifle",
+    "actionMechanism": "Muzzle Gas-Operated S-Curved Long-Stroke Piston · 2-Lug Rotating Bolt & 8-Round En-Bloc Clip Ejection",
+    "statusLabel": "In Vault · Fully Strippable",
+    "description": "Standardized on January 9, 1936, following seventeen years of relentless engineering by John Cantius Garand at the Springfield Armory, the M1 Garand became the first semi-automatic battle rifle fielded en masse to front-line infantry. Hailed by General George S. Patton Jr. as 'the greatest battle implement ever devised,' it combines a 24-inch stepped .30-06 barrel, an S-curved long-stroke operating rod with 4 mm free-travel dwell and 32-degree cam hump, a dual-purpose helical spring, and an 8-round spring-steel en-bloc clip that automatically ejects upon emptying with its legendary ringing chime.",
+    "highlights": [
+      "8-Round Stamped Spring-Steel Clip · High-Pitch Harmonic 'PING!' on Empty",
+      "Stainless Muzzle Gas Cylinder & Curved Operating Rod with 4mm Dwell",
+      "Single Dual-Purpose Helical Spring Driving Both Bolt Counter-Recoil & Follower Lift",
+      "Forged Springfield Open-Top Receiver & Linseed-Oiled Black Walnut Stock"
+    ],
+    "workbenchTitle": "M1 Garand Internal Kinematics & 8-Round En-Bloc Ejection",
+    "workbenchSubtitle": "4 Modular Assemblies · 26 Precision Nodes · S-Op-Rod 32° Cam Rotation & .30-06 Feed Cycle",
+    "cutawayLabel": "Op-Rod Cam & En-Bloc Clip Cutaway",
+    "cutawayTitle": "Switch to locked-cutaway view focusing on the op-rod cam hump, 2-lug rotating bolt, and 8-round en-bloc clip feed stack",
+    "searchPlaceholder": "Search component name or code (e.g. En-Bloc, Op-Rod, Gas Cylinder, T105, B-05)...",
+    "firingMilestoneLabel": "4mm Dwell / 32° Unlock",
+    "rateOfFire": "Semi-Automatic (40–50 rounds/min combat practical)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Ready to Fire",
+        "subLabel": "0% Assembled",
+        "desc": "Standard combat-ready locked configuration of the U.S. Rifle, Cal. .30, M1: full 8-round .30-06 en-bloc clip seated inside the open-top receiver, stainless gas cylinder aligned, and dual-lug forged bolt locked tight into battery."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30% Field Strip",
+        "desc": "Conforms to U.S. Army FM 23-5 ten-second tool-less field stripping: depress the clip latch to eject the en-bloc clip, unlatch and pull down the hinged trigger guard to withdraw the complete fire control group, disengage the walnut stock, and extract the helical spring, op-rod, and rotating bolt."
+      },
+      "sub_assembly": {
+        "label": "Sub-Assembly Detail",
+        "subLabel": "65% Sub-Assembly",
+        "desc": "Unscrew the cross-valve gas cylinder lock screw to slide off the stainless gas cylinder and twin walnut handguards, then detail-strip the T105 dual-drum aperture rear sight, trigger group components, pivoting follower arm, and bullet guide."
+      },
+      "full_exploded": {
+        "label": "Full Exploded View",
+        "subLabel": "100% Full Exploded",
+        "desc": "Complete unobstructed mechanical display of all 26 precision ordnance parts: from the 24-inch stepped barrel and S-curved operating rod to the tang-blocked long firing pin and checkered trapdoor steel buttplate."
+      }
+    },
+    "firingPhases": {
+      "garand_phase_1": {
+        "shortLabel": "Trigger & Hammer",
+        "title": "Phase 1 · Two-Stage Trigger Break & Internal Hammer Release",
+        "description": "The shooter sweeps the winter safety lever forward and breaks through the second-stage trigger wall, depressing the primary sear. Driven by the compressed helical hammer spring, the forged hammer pivots upward through the receiver bridge notch to strike the long firing pin."
+      },
+      "garand_phase_2": {
+        "shortLabel": "Ignition & Gas Tap",
+        "title": "Phase 2 · .30-06 M2 Ignition & Muzzle Gas Cylinder Bleed",
+        "description": "IMR 4895 propellant generates 345 MPa of peak chamber pressure, driving the 150-grain spitzer bullet down the 24-inch barrel at 853 m/s. As the projectile clears the bottom muzzle port, superheated gas vents downward into the stainless expansion cylinder."
+      },
+      "garand_phase_3": {
+        "shortLabel": "4mm Dwell & 32° Turn",
+        "title": "Phase 3 · 4mm Free-Travel Dwell & 32-Degree Cam Unlocking",
+        "description": "Expanding muzzle gas drives the op-rod piston rearward through an essential 4 mm straight dwell stroke, permitting chamber pressure to drop safely. The op-rod cam hump then engages the bolt lug, rotating the bolt 32 degrees counterclockwise to break chamber seal."
+      },
+      "garand_phase_4": {
+        "shortLabel": "Recoil & Case Eject",
+        "title": "Phase 4 · Full 108mm Recoil Stroke & Forward-Right Ejection",
+        "description": "The operating rod and bolt assembly cycle rearward 108 mm, compressing the main spring while cocking the hammer onto the rear disconnector hook. The plunger ejector flings the spent 63.3 mm brass case outward at 1 o'clock while the en-bloc feed mechanism pulses upward."
+      },
+      "garand_phase_5": {
+        "shortLabel": "Dual-Spring Feed",
+        "title": "Phase 5 · Dual-Purpose Spring Feed Lift & Cartridge Chambering",
+        "description": "Utilizing dual-purpose mechanics, the rear of the helical spring presses the forked rod and follower arm to lift the next .30-06 cartridge, while its forward expansion thrusts the bolt into counter-recoil, stripping the round smoothly along twin polished feed ramps."
+      },
+      "garand_phase_6": {
+        "shortLabel": "32° Lock & Dwell",
+        "title": "Phase 6 · 32-Degree Clockwise Breech Lock & Forward Dwell",
+        "description": "As the cartridge seats in the chamber, the continued forward momentum of the op-rod cams the breech bolt clockwise by 32 degrees, locking twin lugs rigidly into receiver recesses before completing the final 4 mm forward safety stroke."
+      },
+      "garand_phase_7": {
+        "shortLabel": "Sear Reset Handover",
+        "title": "Phase 7 · Two-Stage Disconnector Reset to Primary Sear",
+        "description": "Releasing trigger finger pressure allows the spring disconnector to drop clear, permitting the cocked hammer to rise approximately 3 degrees before being caught cleanly by the primary sear shelf with an unmistakable mechanical click."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "巴顿口中“最伟大的战斗兵器”：春田兵工厂与 M1 伽兰德的十七载铸魂之路",
+      "deck": "从 1919 年底火作动样枪的挫折到 1936 年定型全球首款全军列装的半自动步枪，约翰·坎蒂乌斯·伽兰德用一套充满工业巧思的机械美学，让二战美军步兵以暴风雨般的单兵压制火力横扫欧亚战场。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1918–1928",
+          "title": "堑壕血痕与半自动黎明：从底火作动到导气原理的艰难探索",
+          "paragraphs": [
+            "第一次世界大战西线战场的堑壕血雨彻底击碎了传统栓动步枪的战术神话。在铁丝网与机枪交叉火网前，士兵们拉动斯普林菲尔德 M1903 枪机所耗费的每一秒，往往都是生与死的分水岭。美国陆军军械部深刻认识到，未来的步兵主力武器必须能够在不破坏瞄准基线的前提下实施连贯半自动速射，赋予单兵压倒性的射速优势。",
+            "出生于法裔加拿大商贾家庭的天才枪械设计师约翰·坎蒂乌斯·伽兰德（John Cantius Garand）应召加入马萨诸塞州春田国营兵工厂（Springfield Armory）。他最初研制了基于底火后坐原理的 T1 系列样枪，然而随着美国军用 .30-06 发射药向渐进燃烧型 IMR 火药迭代，底火冲量波动过大导致抽壳破裂频发。伽兰德果断推倒重来，全面转向更具容错裕度的导气式工作原理。"
+          ],
+          "audioScript": "一战西线的堑壕泥泞证明，传统栓动步枪的换弹间隙常常是致命的弱点。天才设计师约翰·伽兰德入职春田兵工厂后，历经底火作动方案因发射药特性变更而遭遇的挫折，毅然转向更为可靠的导气式原理。他立志要打造出一支无需手动拉栓、能让普通士兵在瞄准镜界内连续倾泻烈火的主力战斗步枪。",
+          "audioUrl": "audio/garand/story_act1_zh.mp3",
+          "focusPartId": "garand_receiver",
+          "focusPartLabel": "春田兵工厂开顶斜尾锻造钢机匣"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1929–1936",
+          "title": "阿伯丁较量与口径风云：麦克阿瑟的一锤定音与 M1 正式诞生",
+          "paragraphs": [
+            "在 1929 年著名的阿伯丁武器测试场竞标中，伽兰德研制的 T3E2 导气式步枪与约翰·佩德森（John Pedersen）的拨肘闭锁 .276 步枪展开了白热化决斗。佩德森步枪必须使用浸蜡弹壳才能可靠抽壳，而在严苛的沙尘与泥水测试中，伽兰德凭借刚猛的机械闭锁展现出极高韧性，赢得了陆军委员会的一致青睐。",
+            "然而，正当兵工厂准备全面投产点二七六口径十发步枪时，陆军参谋长道格拉斯·麦克阿瑟将军于 1932 年出于数以亿计的一战存量弹药后勤考量，一票否决了更换口径的提议，强令新枪必须兼容大威力 .30-06 斯普林菲尔德步枪弹。伽兰德展现出惊人的工程底蕴，将结构全面放大并重新分配受力，最终于 1936 年 1 月 9 日正式获封陆军标准代号：U.S. Rifle, Caliber .30, M1。"
+          ],
+          "audioScript": "在阿伯丁靶场的沙尘对决中，伽兰德步枪击败了需要浸蜡润滑的佩德森样枪。然而，麦克阿瑟将军为了消耗一战遗留的数亿发老库存，强令新枪必须兼容大威力点三零零六弹药。伽兰德顶住压力，在开顶机匣内重新校准受力结构，终于在 1936 年初让这支划时代的战具正式定型。",
+          "audioUrl": "audio/garand/story_act2_zh.mp3",
+          "focusPartId": "garand_barrel",
+          "focusPartLabel": "24英寸 .30-06 四膛线阶梯精密枪管"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1936–1940",
+          "title": "机械灵魂的蜕变：从枪口集气杯到 1940 耐蚀不锈钢导气筒",
+          "paragraphs": [
+            "早期的 M1 步枪采用了枪口集气杯（Gas-Trap）结构，但在野战演习中，刺刀座卡箍松动与积碳极易导致活塞导管变形、卡死拉机柄。伽兰德团队于 1939 至 1940 年间实施了关键的彻底革新：直接在枪管前端阶梯下钻出导气孔，并配合三道精密花键，安装了由 410 铁素体马氏体耐蚀不锈钢打造的下置导气筒，配合八字锁环与十字排气阀螺塞，彻底消除了导气系统受热变形的隐患。",
+            "在这套长行程活塞驱动系统中，那根轮廓奇绝的 S 型三维锻造拉机柄堪称神来之笔。拉机柄前段为活塞，中段弯曲以避开下护木与枪托木料，后段凸轮驼峰内藏 4 毫米直线自由行程——这宝贵的几毫秒延时确保弹头完全冲出枪口、膛压安全骤降至常压后，驼峰才拨动枪机右导柱逆时针回转 32 度开锁抽壳，实现了极为柔和且绝对安全的自动循环。"
+          ],
+          "audioScript": "早期集气杯极易因积碳卡死，伽兰德在枪管底部直接开孔，并引入耐蚀不锈钢导气筒完成了关键蜕变。那根造型奇特的 S 型长行程拉机柄，利用独特的四毫米自由行程设计，让膛内高压在抽壳前从容释放，随后的三十二度回转闭锁更是展现了工业时代纯粹而严密的几何之美。",
+          "audioUrl": "audio/garand/story_act3_zh.mp3",
+          "focusPartId": "garand_op_rod",
+          "focusPartLabel": "S型长行程导气活塞拉机柄一体件"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1941–1957",
+          "title": "诺曼底至瓜岛的清脆长鸣：五百四十八万支传奇的永恒回响",
+          "paragraphs": [
+            "从诺曼底奥马哈海滩的波涛到瓜达尔卡纳尔岛潮湿闷热的雨林，M1 伽兰德成为了盟军步兵最为信任的伙伴。其免工具快拆的整体火控盒能够让新兵在几秒内用扣锁护圈完成分解排障，而美洲黑胡桃木枪托在亚麻籽油浸润下经受住了全球战区的极端恶劣气候考验。",
+            "打空第 8 发子弹后弹射空漏夹发出的清脆“PING”声，成为了二战最具辨识度的战场音效。春田兵工厂与温彻斯特（Winchester）、战后国际收割机（IHC）及哈灵顿-理查森（HRA）累计生产了超过 548 万支 M1。乔治·巴顿将军在 1945 年 1 月的亲笔信中写道：“在我看来，M1 步枪是有史以来最伟大的战斗兵器。”它确立了美军自二十世纪中叶起在单兵半自动火力领域的绝对统治地位。"
+          ],
+          "audioScript": "从瓜达尔卡纳尔到诺曼底海滩，M1 伽兰德伴随盟军打赢了反法西斯战争的每一场恶战。打空第八发弹药时那声响彻堑壕的金属脆鸣，是二战战场最富传奇色彩的绝响。五百四十八万支的惊人总产量与巴顿将军的至高评价，早已将其铭刻在世界轻武器演进史的巅峰王座之上。",
+          "audioUrl": "audio/garand/story_act4_zh.mp3",
+          "focusPartId": "garand_enbloc_clip",
+          "focusPartLabel": "二战原厂冲压磷化弹簧钢 8 发双排漏夹"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "S 型拉机柄 4mm 自由泄压行程与 32° 旋锁驼峰",
+          "tag": "延时开锁几何",
+          "summary": "拉机柄前段活塞后退的前 4 毫米内枪机保持不动，等待 150 格令弹头离膛且 345 MPa 峰值膛压彻底宣泄；随后 32 度螺旋凸轮曲面方才驱动双突笋枪机逆时针开锁，杜绝了拉断弹壳与炸壳事故。",
+          "focusPartId": "garand_op_rod",
+          "focusPartLabel": "S型拉机柄凸轮驼峰"
+        },
+        {
+          "id": "bt2",
+          "title": "一簧双用螺旋主簧与 8 发对称漏夹末发弹射",
+          "tag": "集约储能供弹",
+          "summary": "一根修长的螺旋复进簧同时承担向前推动拉机柄复进闭锁、向后经由托弹杆臂为双排托弹板提供恒定升弹压力的双向功用；当打出第 8 发空壳时，底托上升触发卡笋，V 型弹簧瞬间将空夹高亢弹出机匣。",
+          "focusPartId": "garand_op_rod_spring",
+          "focusPartLabel": "一簧双用螺旋复进簧"
+        },
+        {
+          "id": "bt3",
+          "title": "护圈凸轮扣锁快拆两道火火控盒",
+          "tag": "免工具野战维护",
+          "summary": "将扳机护圈本身设计为整枪分解的枢轴凸轮杠杆，射手无需借助任何冲子扳手，徒手向外掰开护圈即可将整个独立火控盒从胡桃木枪托下方整座抽出，兼具极佳的抗污防砂与战场快速排障性能。",
+          "focusPartId": "garand_trigger_guard",
+          "focusPartLabel": "翻转凸轮闭锁扳机护圈"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1919–1924",
+          "title": "伽兰德入驻春田研制底火作动样枪",
+          "detail": "约翰·C·伽兰德获聘春田兵工厂首席咨询工程师，历经 T1 底火作动步枪因新型渐进发射药导致的抽壳破损挫折，毅然确立导气式技术路线。"
+        },
+        {
+          "year": "1929–1931",
+          "title": "阿伯丁 .276 口径选型击败佩德森",
+          "detail": "在阿伯丁武器试验场严苛泥水沙尘比测中，伽兰德 T3E2 步枪依靠坚固可靠的导气回转闭锁彻底击败了依赖润滑弹壳的佩德森拨肘式样枪。"
+        },
+        {
+          "year": "1932",
+          "title": "麦克阿瑟将军裁定重归 .30-06 弹药",
+          "detail": "陆军参谋长道格拉斯·麦克阿瑟否决 .276 口径换装方案，责成全面基于库存巨量 .30-06 弹药重新设计，伽兰德成功将 8 发双排漏夹机制放大融合。"
+        },
+        {
+          "year": "1936",
+          "title": "美军正式定型命名为 U.S. Rifle, Cal. .30, M1",
+          "detail": "1936 年 1 月 9 日陆军军械部正式批准入役，美国成为全球首个将半自动步枪列装为主力单兵战斗兵器的国家。"
+        },
+        {
+          "year": "1939–1940",
+          "title": "淘汰早期枪口集气杯，确立 1940 不锈钢导气筒",
+          "detail": "针对早期集气杯积碳卡壳问题，全面升级为枪管下开孔、带三花键与耐蚀 410 不锈钢气室的 1940 型成熟导气结构并形成全军改制。"
+        },
+        {
+          "year": "1941–1957",
+          "title": "二战全线列装与巴顿将军“最伟大战斗兵器”赞誉",
+          "detail": "战时由春田与温彻斯特生产逾 404 万支，全周期总产量达 548 万支，以跨时代的半自动速射火力奠定了同盟国单兵压制的战术基石。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Patton's 'Greatest Battle Implement': Springfield Armory and the Seventeen-Year Genesis of the M1 Garand",
+      "deck": "Spanning from 1919 primer-actuated trials to its 1936 adoption as the world's first mass-issued semi-automatic infantry rifle, John Cantius Garand's masterpiece gave American infantry unmatched semi-automatic firepower across every theater of World War II.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1918–1928",
+          "title": "Mud of the Western Front and the Semi-Automatic Imperative",
+          "paragraphs": [
+            "The brutal trench warfare of the Western Front shattered standard military doctrine surrounding turn-bolt rifles. Caught in no-man's-land between tangled barbed wire and interlocking machine gun fire, the seconds an infantryman spent working the bolt of a Springfield M1903 often dictated survival. The United States Army Ordnance Department arrived at an inescapable verdict: the future standard service arm had to deliver rapid, uninterrupted semi-automatic fire without breaking cheek weld or sight picture.",
+            "French-Canadian mechanical prodigy John Cantius Garand was recruited by the government-owned Springfield Armory in Massachusetts. His initial trials centered on the primer-actuating blowback Model 1919 and T1 prototypes. However, when U.S. ammunition plants switched to progressive-burning IMR propellants, unstable primer set-back frequently ruptured cartridge heads. Recognizing the limits of primer blowback, Garand decisively abandoned the mechanism and pivoted toward rugged gas operation."
+          ],
+          "audioScript": "Trench combat in World War One proved that every second spent cycling a turn-bolt rifle was an invitation to disaster. Recruited to Springfield Armory, John Garand initially explored primer-actuated designs, but shifting military propellants caused ruptured cartridge heads. Undeterred, Garand restarted from scratch, turning to gas operation to forge a rifle capable of delivering relentless precision without breaking the soldier's sight picture.",
+          "audioUrl": "audio/garand/story_act1_en.mp3",
+          "focusPartId": "garand_receiver",
+          "focusPartLabel": "Forged Open-Top Heeled Springfield Receiver"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1929–1936",
+          "title": "Aberdeen Trials and MacArthur's Mandate: The Caliber .30 Compromise",
+          "paragraphs": [
+            "During the exhaustive 1929 service rifle trials at Aberdeen Proving Ground, Garand's gas-operated T3E2 faced off against John Pedersen's toggle-delayed blowback rifle chambered in .276 Pedersen (7 mm). While Pedersen's design required wax-coated cartridges that accumulated deadly grit in sandy field evaluations, Garand's dual-lug positive mechanical camming triumphed with flawless reliability.",
+            "Yet, just as production preparations for a 10-round .276 caliber rifle were advancing, Army Chief of Staff General Douglas MacArthur intervened in January 1932. Faced with Great Depression austerity and billions of rounds of surplus World War I .30-06 ammunition, MacArthur flatly vetoed any caliber transition. Garand re-engineered the open-top forged receiver to harness the brutal chamber pressures of full-power .30-06 M2 Ball, culminating in official standardization on January 9, 1936, as the U.S. Rifle, Caliber .30, M1."
+          ],
+          "audioScript": "At the Aberdeen trials, Garand's prototype decisively outperformed John Pedersen's toggle action, which relied on fragile waxed ammunition. But in 1932, General Douglas MacArthur vetoed the smaller caliber to utilize massive stockpiles of existing ammunition. Garand brilliantly scaled his receiver to harness the thunderous power of the thirty-o-six Springfield cartridge, securing official adoption in 1936.",
+          "audioUrl": "audio/garand/story_act2_en.mp3",
+          "focusPartId": "garand_barrel",
+          "focusPartLabel": "24\" .30-06 Springfield 4-Groove Stepped Barrel"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1936–1940",
+          "title": "Engineering the Kinetic Soul: Transition to the 1940 Stainless Gas Cylinder",
+          "paragraphs": [
+            "Early production M1 rifles utilized a muzzle 'gas-trap' sleeve screwed over the barrel crown. In rugged field maneuvers, carbon fouling quickly choked the piston chamber, and bayonet mounting torqued the sleeve out of true alignment. Between 1939 and 1940, Garand engineered a definitive fix: drilling a bottom gas vent directly into the barrel wall and locking a 410 stainless-steel expansion cylinder onto three barrel splines with a figure-eight lock ring and cross-valve screw.",
+            "The kinetic centerpiece of this system is the S-curved operating rod. Designed with intricate contours to clear walnut furniture, its rear cam hump incorporates an indispensable 4 mm straight free-travel dwell. This critical fraction of a second guarantees the 150-grain spitzer bullet leaves the muzzle and chamber pressure safely plummets before the 32-degree cam track rotates the forged breech bolt out of battery, delivering remarkably smooth extraction under peak tactical stress."
+          ],
+          "audioScript": "Early gas-trap barrels fouled quickly under sustained fire, prompting Garand to drill a direct barrel port and mount a resilient stainless-steel gas cylinder. His masterpiece was the three-dimensional operating rod. Its four-millimeter free-travel dwell allows chamber pressures to safely drop before rotating the forged bolt thirty-two degrees, achieving exceptionally smooth primary extraction.",
+          "audioUrl": "audio/garand/story_act3_en.mp3",
+          "focusPartId": "garand_op_rod",
+          "focusPartLabel": "Curved Long-Stroke Operating Rod & Piston Assembly"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "1941–1957",
+          "title": "From Normandy to Guadalcanal: 5.48 Million Chimes of Victory",
+          "paragraphs": [
+            "Across the bloody surf of Omaha Beach and the suffocating green jungles of Guadalcanal, the M1 Garand proved to be the ultimate soldier's weapon. Its modular, tool-free trigger assembly unlatched via the pivoted trigger guard in seconds, while dense American black walnut stocks treated with boiled linseed oil weathered extreme global environments from arctic snow to tropical salt air.",
+            "The distinctive harmonic 'PING!' of the stamped spring-steel en-bloc clip ejecting skyward upon the eighth round became the definitive soundtrack of Allied liberation. Springfield Armory, Winchester, and postwar contractors produced over 5.48 million M1 rifles. In a celebrated January 1945 message, General George S. Patton Jr. crystallized its historic stature, calling it 'the greatest battle implement ever devised.'"
+          ],
+          "audioScript": "From the beaches of Normandy to Pacific atolls, the Garand gave American infantry overwhelming tactical superiority over Axis bolt-action adversaries. The ringing ping of its empty eight-round clip became the defining sound of Allied victory. With over five million rifles produced, Patton rightly hailed the M1 Garand as the greatest battle implement ever devised.",
+          "audioUrl": "audio/garand/story_act4_en.mp3",
+          "focusPartId": "garand_enbloc_clip",
+          "focusPartLabel": "WWII 8-Round Stamped Spring-Steel En-Bloc Clip"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "S-Curved Op-Rod 4mm Free-Travel Dwell & 32° Unlocking Cam",
+          "tag": "Delayed-Unlocking Kinematics",
+          "summary": "During the initial 4 mm of op-rod rearward travel, the bolt remains rigidly locked into battery while the 150-grain bullet exits the muzzle, dropping 345 MPa peak chamber pressure to atmospheric safety before the 32-degree cam track initiates primary extraction.",
+          "focusPartId": "garand_op_rod",
+          "focusPartLabel": "Op-Rod Cam Hump"
+        },
+        {
+          "id": "bt2",
+          "title": "Dual-Purpose Helical Spring & 8-Round En-Bloc Auto-Ejection",
+          "tag": "Integrated Energy Storage",
+          "summary": "A single long helical spring performs two independent mechanical tasks: its forward drive thrusts the operating rod and bolt into counter-recoil battery, while its rear extension presses the forked rod and follower arm upward. Upon firing the eighth round, rising follower linkage trips the clip latch, allowing the V-wire ejector to hurl the empty steel clip outward with its iconic resonant chime.",
+          "focusPartId": "garand_op_rod_spring",
+          "focusPartLabel": "Dual-Purpose Helical Spring"
+        },
+        {
+          "id": "bt3",
+          "title": "Cam-Locking Pivoting Trigger Guard & Modular Fire Control Box",
+          "tag": "Tool-Less Field Strip",
+          "summary": "The milled trigger guard serves as an eccentric locking lever. By pulling down the rear hook without punches or screwdrivers, the entire modular fire control unit withdraws downward from the walnut stock, enabling rapid mud cleaning and lightning-fast parts interchangeability.",
+          "focusPartId": "garand_trigger_guard",
+          "focusPartLabel": "Pivoting Cam-Locking Trigger Guard"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1919–1924",
+          "title": "John C. Garand Recruited to Springfield Armory",
+          "detail": "John Garand enters federal service at Springfield Armory, engineering primer-actuated blowback prototypes before pivoting to gas-operated mechanisms when military propellants change."
+        },
+        {
+          "year": "1929–1931",
+          "title": "Aberdeen Trials Triumph Over Pedersen Toggle Action",
+          "detail": "At Aberdeen Proving Ground, Garand's .276-caliber T3E2 outperforms John Pedersen's toggle-delayed system, proving superior resistance to mud, grit, and sand without lubricating ammunition."
+        },
+        {
+          "year": "1932",
+          "title": "General Douglas MacArthur Mandates .30-06 Chambering",
+          "detail": "Faced with Depression-era austerity and millions of stored WWI rounds, General MacArthur vetoes .276 caliber, prompting Garand to scale his action to accept full-power .30-06 Springfield."
+        },
+        {
+          "year": "1936",
+          "title": "Standardized as U.S. Rifle, Caliber .30, M1",
+          "detail": "On January 9, 1936, the U.S. military formally standardizes the Garand, making the United States the first nation on earth to adopt a semi-automatic service rifle for general infantry issue."
+        },
+        {
+          "year": "1939–1940",
+          "title": "Adoption of the 1940 Splined Stainless Gas Cylinder",
+          "detail": "Springfield Armory replaces the delicate muzzle gas-trap sleeve with a barrel-drilled port and 410 stainless-steel splined gas cylinder, finalizing the combat blueprint for mass production."
+        },
+        {
+          "year": "1941–1957",
+          "title": "Global Deployment & Patton's Historic Praise",
+          "detail": "Springfield and Winchester build 4.04 million M1s during WWII (5.48 million total through 1957), earning General Patton's tribute as 'the greatest battle implement ever devised.'"
+        }
+      ]
+    }
+  },
+  "parts": {
+    "garand_barrel": {
+      "partId": "garand_barrel",
+      "bomCode": "B-01",
+      "calloutLabelEn": "Stepped Rifled Barrel",
+      "zh": {
+        "roleTag": "610毫米固定枪管与三花键导气孔基准",
+        "overview": "全长二十四英寸的阶梯铬钼钢枪管螺接紧固于机匣前端。内膛刻有四条右旋高精度膛线，并在枪口底部铣出导气孔与三条精密定位花键。",
+        "craftAndMaterial": "选用高强度铬钼合金钢模锻车削而成，表面经军规锰系深灰磷化处理。阶梯外径兼顾刚度与轻量化，三花键结构确保导气筒安装轴向与角度分毫不差。",
+        "kinematicRole": "在全发射循环中作为静止内弹道基准，承受三百四十五兆帕峰值膛压；在野战全分解中段随导气系统拆卸后向机匣前上方滑移分离。",
+        "designHighlight": "枪口底部微小导气孔历经严密测算，在弹头飞临膛口即将出膛瞬间引流减压燃气，既能保证循环能量又避免剧烈冲刷枪机。",
+        "audioScript": "这根二十四英寸铬钼钢枪管是全枪射击精度的基石。它的缠距为十英寸，四条右旋膛线能让一百五十格令的普通弹以每秒八百五十三米飞出枪膛。枪口底部的垂直导气孔只在弹头飞跃的千分之一秒内引出高温燃气，驱动整套半自动循环。",
+        "audioUrl": "audio/garand/parts/garand_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "24-Inch Rifled Bore & Splined Gas Port Datum",
+        "overview": "This 24-inch chrome-moly barrel threads solidly into the front of the receiver ring. It features four right-hand grooves and incorporates three longitudinal splines with a bottom gas port near the muzzle.",
+        "craftAndMaterial": "Precision contoured from heat-treated alloy barrel steel with a rugged manganese phosphate finish. The stepped exterior balances structural stiffness against front-heavy barrel whip while indexing the muzzle assembly.",
+        "kinematicRole": "Remains the rigid thermodynamic datum throughout all seven firing phases, containing 345 MPa chamber pressure, separating forward during armorer disassembly between 35% and 65% progress.",
+        "designHighlight": "Placing the tapped gas port just an inch behind the crown ensures the operating rod only catches residual low-pressure gas, eliminating the severe fouling seen in early muzzle-trap prototypes.",
+        "audioScript": "Measuring twenty-four inches, this chrome-molybdenum barrel delivers the formidable power of the thirty-o-six Springfield cartridge. Four precision grooves stabilize the one-hundred-fifty-grain bullet, sending it downrange at over twenty-eight hundred feet per second. Its muzzle-mounted splines and vent port tap off gas at the ideal pressure curve to cycle the action.",
+        "audioUrl": "audio/garand/parts/garand_barrel_en.mp3"
+      }
+    },
+    "garand_gas_cylinder": {
+      "partId": "garand_gas_cylinder",
+      "bomCode": "B-02",
+      "calloutLabelEn": "Muzzle Gas Cylinder",
+      "zh": {
+        "roleTag": "410耐蚀不锈钢气室与双耳刺刀座",
+        "overview": "不锈钢导气筒套装在枪管前端三花键上，内腔与枪口导气孔紧密对正。底部一体化整合了美军标准刺刀卡座与多用途步兵架枪环。",
+        "craftAndMaterial": "采用四一零铁素体不锈钢精密锻造与珩磨加工，经黑色钝化防反光处理。不锈钢优异的抗烧蚀性能彻底解决了强腐蚀性雷汞底火燃气造成的生锈穿孔。",
+        "kinematicRole": "在自动循环阶段二和阶段三约束膨胀燃气并为活塞头提供往复导轨；野战维护阶段随锁紧环旋开后向枪口前方直线抽出脱离。",
+        "designHighlight": "一九四零年定型的此型打孔导气筒取代了早期脆弱的枪口套集气罩，极大提升了泥泞战壕环境下的动作可靠性与拼刺结构刚度。",
+        "audioScript": "这具导气筒采用四一零耐高温不锈钢打造。早期伽兰德步枪采用套筒集气罩，极易积碳失效，改为枪管侧钻孔直接导入该气缸后，可靠性成倍提升。它的下部还集成了坚固的架枪环与刺刀卡榫，满足严苛的白刃战需求。",
+        "audioUrl": "audio/garand/parts/garand_gas_cylinder_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Corrosion-Resistant 410 Cylinder & Bayonet Lug",
+        "overview": "Mounted securely over the barrel muzzle splines, this stainless cylinder houses the piston chamber aligned with the gas port. Its lower forging integrates the US bayonet lug and stacking swivel.",
+        "craftAndMaterial": "Forged and honed from high-grade 410 stainless steel treated with a non-reflective blackened finish. Its chemical composition resists the highly corrosive salts of World War Two chlorate primers.",
+        "kinematicRole": "Channels gas pressure against the piston head during phases two and three, sliding straight off the muzzle during intermediate field stripping once the lock screw is backed out.",
+        "designHighlight": "Adopted in 1940 to replace the troublesome gas-trap cup, this direct-impingement ported design drastically cut down carbon buildup and withstood severe bayonet thrust stresses.",
+        "audioScript": "Crafted from four-ten stainless steel, this gas cylinder corrected the infamous carbon-fouling problems of early gas-trap prototypes. It houses the reciprocating piston head directly beneath the bore. The underside also serves as a rugged mounting foundation for the standard issue bayonet and stacking swivel.",
+        "audioUrl": "audio/garand/parts/garand_gas_cylinder_en.mp3"
+      }
+    },
+    "garand_gas_lock_screw": {
+      "partId": "garand_gas_lock_screw",
+      "bomCode": "B-03",
+      "calloutLabelEn": "Gas Lock & Screw",
+      "zh": {
+        "roleTag": "八字导气筒锁紧环与十字枪榴弹泄压阀",
+        "overview": "八字形钢锁环旋合在枪口螺纹上压紧导气筒，其前端配有带十字槽的自适应泄压螺塞。该组件构成了枪口前端气室的密闭前壁与机械阻挡基准。",
+        "craftAndMaterial": "主体为高抗拉合金钢车削热处理件，内部嵌装弹簧加载的金属柱塞阀。十字槽支持通条或美军工具快速旋拧，表面为防锈深色磷化层。",
+        "kinematicRole": "在正常射击时密闭气缸前端；在加装枪榴弹发射器时被后端顶针顶开单向阀，在全枪分解百分之三十五节点最先逆时针拧松退出。",
+        "designHighlight": "内藏式十字减压阀构思极其巧妙，发射超高膛压枪榴弹空包弹时会自动放气泄压，防止瞬时暴增的高压燃气打弯细长拉机柄。",
+        "audioScript": "八字锁环旋紧在枪管前端，将导气筒死死锁住。前端十字螺塞内藏巧妙的减压弹簧阀门。平时射击它保持气室气密；当插上枪榴弹发射器时，螺塞内的阀芯会被自动顶开泄放暴增的高压气体，防止拉机柄被超大冲量打弯。",
+        "audioUrl": "audio/garand/parts/garand_gas_lock_screw_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Figure-8 Lock Ring & Cross Bleed Valve Screw",
+        "overview": "The figure-eight lock threads onto the barrel to clamp the cylinder, sealed by a cross-slotted plug. It forms the sealed front boundary of the muzzle gas chamber.",
+        "craftAndMaterial": "Machined from high-tensile alloy steel with a hardened spring-loaded internal poppet valve. The prominent cross slot accepts the armorer combination tool or a standard bayonet blade tip.",
+        "kinematicRole": "Maintains chamber seal during standard semi-automatic firing, backing off forward during initial disassembly between 32% and 58% to unlock the gas cylinder.",
+        "designHighlight": "When an M7 grenade launcher is attached, its stud depresses the internal cross-valve to bleed excess blast, protecting the slender operating rod from bending under high-pressure blanks.",
+        "audioScript": "This figure-eight locking ring screws onto the muzzle threads to firmly secure the gas cylinder. The cross-slotted screw cap conceals an internal spring poppet. When soldiers mounted grenade launchers, the valve opened automatically, venting excess pressure to protect the long operating rod.",
+        "audioUrl": "audio/garand/parts/garand_gas_lock_screw_en.mp3"
+      }
+    },
+    "garand_front_sight": {
+      "partId": "garand_front_sight",
+      "bomCode": "B-04",
+      "calloutLabelEn": "Winged Front Sight",
+      "zh": {
+        "roleTag": "燕尾槽横移归零柱状准星与防撞外张护翼",
+        "overview": "安装在导气筒顶部横向燕尾槽内的高精度机械准星。中央立有标定精度的垂直准星尖，两侧设有坚固的外张弧形冲撞保护护耳。",
+        "craftAndMaterial": "优质碳素钢经整体精密铣削与表面氮化发黑处理。中央准星柱宽度为标准零点零六二英寸，燕尾锁紧螺钉采用沉头内六角防滑防松设计。",
+        "kinematicRole": "在射击全过程中保持刚性静止，作为射手肉眼对准目标的三维前方基准点；在工场级深度分解阶段横向滑出燕尾槽分离。",
+        "designHighlight": "外扩护耳的曲率与开角经过人体工学校验，使士兵在紧张射击时视线本能汇聚在准星正中，同时跌落撞击时护耳先行吸收冲击变形。",
+        "audioScript": "高耸在导气筒上方的燕尾槽准星被标志性的双护翼紧紧保护。两片微微外张的钢质护耳能吸收跌落碰撞冲击，防止准星歪斜。中央宽约一点六毫米的准星柱与后方觇孔配合，构成了二战步兵极佳的瞄准基线。",
+        "audioUrl": "audio/garand/parts/garand_front_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dovetail Windage Sight & Protective Ears",
+        "overview": "Mounted in a transverse dovetail atop the gas cylinder, this sight provides the forward point of aim. A central blade stands between curved protective steel ears.",
+        "craftAndMaterial": "Milled from ordnance carbon steel with a non-reflective matte finish. The post measures 0.062 inches wide, locked rigidly into place by a recessed Allen-head screw.",
+        "kinematicRole": "Remains completely rigid as the forward sighting datum throughout cycling, drifting laterally out of its dovetail during complete armorer overhauls.",
+        "designHighlight": "The flared geometry of the protective ears funnels the shooter's visual focus instantly onto the center blade while surviving rough field abuse without zero loss.",
+        "audioScript": "Mounted atop the gas cylinder dovetail, this front sight is flanked by sturdy curved ears. These protective wings shield the precise sixty-two-thousandths-inch center post from drops and trench impacts while naturally guiding the rifleman's eye into proper visual alignment.",
+        "audioUrl": "audio/garand/parts/garand_front_sight_en.mp3"
+      }
+    },
+    "garand_op_rod": {
+      "partId": "garand_op_rod",
+      "bomCode": "B-05",
+      "calloutLabelEn": "Long-Stroke Op-Rod",
+      "zh": {
+        "roleTag": "四毫米自由行程泄压活塞拉机柄一体件",
+        "overview": "纵贯枪身右侧的S型长行程导气活塞拉机柄一体总成。前端活塞头伸入导气筒，尾端凸轮驼峰直接嵌合枪机右突笋提供开闭锁动力。",
+        "craftAndMaterial": "前部活塞头为耐高温不锈钢，与优质合金钢长杆焊接相连，尾部锻造凸轮框经渗碳淬火。精密成型的S形立体弯曲能完美绕过枪管与木护木内膛。",
+        "kinematicRole": "阶段三燃气冲刷后先向后空行程四毫米泄压，随后凸轮斜面扭转枪机三十二度开锁，后坐一百零八毫米完成抛壳；野战分解前段向上侧脱出机匣导轨。",
+        "designHighlight": "内切的四毫米直线自由行程是保证安全的核心设计：确保弹头完全飞离枪管、膛压跌落至常压安全区后才转动枪机，彻底杜绝高压拉断弹壳。",
+        "audioScript": "这是伽兰德步枪最具代表性的灵魂部件。前端活塞承受燃气猛推，长长的弯曲钢杆绕过护木直抵机匣。最关键的是尾端凸轮槽先有四毫米直线自由行程，等待弹头飞出枪口泄压，随后才转动枪机开锁，避免了高压下拉断弹壳。",
+        "audioUrl": "audio/garand/parts/garand_op_rod_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Curved Operating Rod & 4mm Free Dwell Hump",
+        "overview": "Spanning the weapon's right flank, this assembly connects the front piston to the rear bolt. The front piston enters the cylinder, while its rear cam hump drives the bolt lug.",
+        "craftAndMaterial": "Welded construction combining a stainless piston tip with a forged alloy steel body and case-hardened rear cam. Precision S-bends route the rod around the barrel within the tight walnut stock channel.",
+        "kinematicRole": "Moves back 4 mm in initial dwell, cams the bolt open 32 degrees, completes 108 mm recoil stroke, and disengages upward out of the receiver guide slot during field stripping.",
+        "designHighlight": "The 4 mm straight free-travel channel holds the bolt locked until the bullet exits the crown and chamber pressure drops to atmospheric safety, avoiding catastrophic case ruptures.",
+        "audioScript": "The operating rod is John Garand's engineering triumph. Welded to a stainless gas piston, its serpentine bar sweeps past the barrel into a cam hump. Upon firing, it retreats straight back for four millimeters of free travel, giving chamber pressure time to drop before camming the bolt thirty-two degrees open.",
+        "audioUrl": "audio/garand/parts/garand_op_rod_en.mp3"
+      }
+    },
+    "garand_bolt": {
+      "partId": "garand_bolt",
+      "bomCode": "B-06",
+      "calloutLabelEn": "Rotating Breech Bolt",
+      "zh": {
+        "roleTag": "双突笋三十二度回转闭锁锻造枪机",
+        "overview": "位于机匣膛室内部的重型回转闭锁机头，前端设有两枚硕大的对称闭锁突笋。右突笋外延的导柱深嵌在拉机柄凸轮槽内完成旋转动作。",
+        "craftAndMaterial": "选用八六二零号镍铬钼合金钢整体模锻切削，经深层渗碳淬火处理以抵抗数万次高压冲击。镜面抛光的圆柱支撑面确保了低摩擦平稳滑动。",
+        "kinematicRole": "在阶段一抵住弹壳底缘；阶段三被拉机柄旋转三十二度解锁；阶段四后坐抽出弹壳；阶段五推次发弹进膛；阶段六反向旋死闭锁；野战分解随拉机柄卸出。",
+        "designHighlight": "双闭锁突笋对称布置于机头两侧，将三百四十五兆帕后坐压力均匀传递至机匣闭锁槽内，有效降低了单侧疲劳断裂风险。",
+        "audioScript": "这枚由镍铬钼钢模锻而成的粗壮枪机，两端拥有极大的闭锁突笋。射击时它承受超过三千个大气压的爆炸推力。右突笋凸出的圆柱完全受拉机柄控制，通过精准的三十二度回转实现刚性闭锁与柔顺抽壳。",
+        "audioUrl": "audio/garand/parts/garand_bolt_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Forged 2-Lug 32-Degree Rotating Breech Bolt",
+        "overview": "Operating within the receiver, this massive forged bolt locks the chamber. Twin front locking lugs mate into the receiver ring, actuated by an offset driving lug in the op-rod.",
+        "craftAndMaterial": "Forged from 8620 nickel-chromium-moly steel with carburized case hardening on wear faces. Diamond-ground bearing surfaces provide silk-smooth gliding through the receiver rails.",
+        "kinematicRole": "Bears chamber thrust, cams 32 degrees to unlock during phase three, recoils rearward to extract spent brass, strips fresh cartridges forward, and slips out during bolt disassembly.",
+        "designHighlight": "Dual horizontal lugs distribute the 345 MPa peak cartridge thrust symmetrically into the receiver walls, preventing bolt twisting and extending service life under extreme combat rates.",
+        "audioScript": "Forged from tough nickel-chromium-molybdenum steel, this breech bolt seals the chamber against thirty-four thousand pounds per square inch of thrust. Its dual lugs rotate exactly thirty-two degrees to lock tight. The right lug pins directly into the operating rod cam, synchronizing extraction and feed.",
+        "audioUrl": "audio/garand/parts/garand_bolt_en.mp3"
+      }
+    },
+    "garand_firing_pin": {
+      "partId": "garand_firing_pin",
+      "bomCode": "B-07",
+      "calloutLabelEn": "Firing Pin & Extractor",
+      "zh": {
+        "roleTag": "机匣桥安全槽阻挡防早发长击针与抛壳爪",
+        "overview": "长条形击针浮置贯穿枪机中心，机头边缘集成了高弹性抽壳钩与弹簧柱塞抛壳挺。击针尾部带有显著向下凸出的防早发安全尾翼。",
+        "craftAndMaterial": "优质合金工具钢精密车磨与热处理，尖端具有极高韧性以防断针。抽壳钩由弹簧钢模锻制成，具备深抓抱力与极强的抗弹壳拉断力道。",
+        "kinematicRole": "阶段一被击锤击发点火；在枪机旋转三十二度过程中，若突笋未完全锁入凹槽，尾翼撞击机匣隔桥被刚性阻挡无法前伸；随枪机完全分解解脱。",
+        "designHighlight": "机匣桥与击针尾翼的几何干涉是绝对防早发机械互锁装置：只有枪机完全旋转闭锁对齐时尾翼方能穿过桥孔，彻底杜绝早发炸膛事故。",
+        "audioScript": "细长的长击针穿过枪机内孔，尾端有一块向下弯曲的安全凸耳。只要枪机还没旋转三十二度彻底锁死，机匣上的横梁就会死死挡住这块凸耳，哪怕击锤误敲击针，击针尖也绝不可能触碰底火，提供了百分之百的机械保险。",
+        "audioUrl": "audio/garand/parts/garand_firing_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Tang-Blocked Firing Pin & Spring Ejector",
+        "overview": "Positioned inside the bolt body, this long firing pin is accompanied by a spring claw extractor and plunger ejector. A downward safety tang projects from its rear shank.",
+        "craftAndMaterial": "Machined from high-carbon tool steel with differential temper to prevent tip peening. The heavy extractor claw is precision-ground from tempered spring steel for stubborn case extraction.",
+        "kinematicRole": "Strikes the primer in phase one; physical contact between its rear tang and the receiver bridge prevents forward travel until full 32-degree bolt rotation is achieved.",
+        "designHighlight": "This mechanical bridge interlock physically blocks out-of-battery ignition: the firing pin cannot physically contact the primer until the bolt lugs are completely turned and locked in home position.",
+        "audioScript": "Passing through the bolt core, this firing pin carries a critical downward safety tang. Unless the bolt has completely rotated and locked into the receiver walls, this tang is physically blocked by the receiver bridge. This elegant geometry makes an out-of-battery detonation mechanically impossible.",
+        "audioUrl": "audio/garand/parts/garand_firing_pin_en.mp3"
+      }
+    },
+    "garand_op_rod_spring": {
+      "partId": "garand_op_rod_spring",
+      "bomCode": "B-08",
+      "calloutLabelEn": "Dual-Action Spring",
+      "zh": {
+        "roleTag": "双向做功长螺旋复进与托弹驱动簧",
+        "overview": "长达数十公分的致密螺旋弹簧容纳在拉机柄空心管中。前端推压拉机柄向前复进，后端通过托弹杆持续向上推顶弹仓内的子弹。",
+        "craftAndMaterial": "采用高抗疲劳硅锰弹簧钢丝冷卷成型并经喷丸硬化处理，能够承受数十万次高速往复伸缩而不产生永久塑性变形与弹力衰退。",
+        "kinematicRole": "在阶段四后坐时被拉机柄压缩吸收能量；阶段五前端释放能量推动拉机柄与枪机推弹入膛，后端同时顶升次发弹；野战分解第一阶段最先取出释放张力。",
+        "designHighlight": "伽兰德最具创意的机构复用设计：只用一根主簧同时驱动枪机复进与漏夹托弹，比同类武器减少了整整一套弹仓托弹弹簧与定位空间。",
+        "audioScript": "这根长长的弹簧深藏于拉机柄内部，展现了伽兰德大师精妙的极简哲学。它同时承担两个角色的任务：前端在后坐时被压缩，然后推拉机柄复进推弹闭锁；后端则顶着托弹杆，源源不断将漏夹里的子弹往上托送，一簧两用极为精妙。",
+        "audioUrl": "audio/garand/parts/garand_op_rod_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dual-Duty Recoil & Follower Driving Spring",
+        "overview": "Housed within the hollow operating rod tube, this long helical spring powers counter-recoil. Its front acts on the op-rod while its rear drives the magazine follower arm.",
+        "craftAndMaterial": "Coiled from high-grade silicon-manganese spring steel wire and shot-peened for fatigue resistance, engineered to maintain consistent rate through hundreds of thousands of cycles.",
+        "kinematicRole": "Compresses during phases three and four absorbing recoil shock; expands in phase five driving the bolt home while pushing the follower upward, removed first in standard field strips.",
+        "designHighlight": "Dual-action mechanical economy: this single spring performs both counter-recoil return and upward cartridge feeding, eliminating the need for a separate bulky magazine follower spring.",
+        "audioScript": "Tucked inside the operating rod tube, this long helical spring performs two crucial jobs at once. When compressed during recoil, its front end drives the entire bolt group forward to chamber a fresh round, while its rear end simultaneously pivots the follower arm to push the next cartridge into line.",
+        "audioUrl": "audio/garand/parts/garand_op_rod_spring_en.mp3"
+      }
+    },
+    "garand_receiver": {
+      "partId": "garand_receiver",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Open-Top Receiver",
+      "zh": {
+        "roleTag": "机匣主承力体与上装开顶漏夹弹仓基座",
+        "overview": "整体模锻而成的全枪核心机匣骨架，后端呈标志性的斜切尾桥轮廓。机匣中段开顶以便自上而下整夹压入八发弹药，并承载机机导轨。",
+        "craftAndMaterial": "由八六二零号合金钢锻件经历一百余道精密铣削与拉削成形，全身深度军规锰系磷化呈沉稳哑光暗灰绿色，尾梁滚印春田兵工厂型号与编号铭文。",
+        "kinematicRole": "在全发射循环各阶段中作为不可动骨架支撑枪机、拉机柄、木托与击发机；在全枪三维拆卸过程中作为所有运动部件剥离的绝对基准母体。",
+        "designHighlight": "独特的开顶式架构让整组漏夹能够以极快的速度自机匣上方单手压入弹膛，同时斜尾桥完美安置了视野开阔的觇孔后瞄具。",
+        "audioScript": "这具由整块高韧性合金钢历经百道铣削锻造成的开顶机匣，是全枪骨架。它的上方完全敞开，专供八发整夹子弹自上而下拍入；机匣右侧滑轨引导拉机柄运动，斜尾桥上深深刻印着春田兵工厂的产地与专属枪号。",
+        "audioUrl": "audio/garand/parts/garand_receiver_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Forged Open-Top Receiver & Clip Housing",
+        "overview": "The central forged steel skeleton of the rifle, featuring its signature angled heeled bridge. Its open-top configuration accepts vertical en-bloc clip charging and guides the bolt.",
+        "craftAndMaterial": "Milled and broached from 8620 alloy steel forgings across more than one hundred precision setups, treated with a thick manganese phosphate Parkerized finish for heavy combat wear.",
+        "kinematicRole": "Serves as the static structural datum throughout all firing phases, anchoring the barrel, bolt track, and trigger frame while remaining the baseline piece during complete strip-down.",
+        "designHighlight": "The spacious open-top layout facilitates lightning-fast en-bloc clip reloads while positioning the heavy receiver heel comfortably low behind the eye for optimum sight alignment.",
+        "audioScript": "Forged from high-tensile alloy steel and machined through over a hundred delicate steps, this open-top receiver is the backbone of the Garand. Its cavernous top cut allows an eight-round en-bloc clip to be thumbed straight down into the magazine, while its rear heel mounts the aperture sight.",
+        "audioUrl": "audio/garand/parts/garand_receiver_en.mp3"
+      }
+    },
+    "garand_rear_sight": {
+      "partId": "garand_rear_sight",
+      "bomCode": "F-02",
+      "calloutLabelEn": "T105 Peep Rear Sight",
+      "zh": {
+        "roleTag": "千二百码齿轮升降与一分角微调觇孔照门",
+        "overview": "精密安装在机匣后尾梁上方的T105型机械后瞄准具总成。左侧旋钮调节标尺高低射程，右侧旋钮实现带清晰咔哒声的风偏微调。",
+        "craftAndMaterial": "精密冲压与微型齿轮齿条铣削结合，表面经深黑防反光磷化。靠近肉眼的觇孔片孔径精确研磨，风偏手轮内设弹簧卡销提供极清晰的单步卡位手感。",
+        "kinematicRole": "在发射与机械循环中保持设定坐标静止，为射手瞳孔提供同心圆瞄准参考；在工场三级拆解阶段自机匣尾槽分解取出。",
+        "designHighlight": "左侧高低转轮直接以码数标注一百到一千二百码射表，右侧手轮每旋转一格精确校正一分角弹着偏航，被称为二战最优秀的机械照门系统。",
+        "audioScript": "被公认为二战最佳步兵瞄具的T105觇孔照门，紧靠射手眼睛。人眼会自动将中央准星归入觇孔正中。左侧滚花旋钮可直接根据目标距离在一百到一千二百码间快速调整升降，右侧旋钮每转动一格都能清脆咔哒修正一分角风偏。",
+        "audioUrl": "audio/garand/parts/garand_rear_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "1200-Yard Elevation & 1-MOA Windage Sight",
+        "overview": "Mounted securely onto the receiver heel, this T105 peep sight assembly provides precision adjustments. The left knob dials elevation and range, while the right adjusts windage.",
+        "craftAndMaterial": "Features precision-hobbed gears and detents finished in anti-glare manganese phosphate. The close-aperture peep plate is hardened to resist combat deformation and zero shifting.",
+        "kinematicRole": "Maintains precise spatial alignment relative to the barrel bore during heavy recoil, disassembled rearward from the receiver bridge tracks during armorer-level strip stages.",
+        "designHighlight": "The elevation drum translates ranges up to twelve hundred yards directly without loose elevation ladders, with 1-MOA audible click detents on windage for sniper-grade calibration.",
+        "audioScript": "The T105 rear peep sight was celebrated as the best iron sight of World War Two. Sitting close to the rifleman's eye, it exploits the natural reflex to center the front post inside the aperture. The left knob sets bullet drop out to twelve hundred yards, while crisp clicks on the right knob shift windage by one minute of angle.",
+        "audioUrl": "audio/garand/parts/garand_rear_sight_en.mp3"
+      }
+    },
+    "garand_walnut_stock": {
+      "partId": "garand_walnut_stock",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Black Walnut Stock",
+      "zh": {
+        "roleTag": "生亚麻籽油北美黑胡桃木枪托与军验钢印",
+        "overview": "承载全枪机匣、枪管与导气总成的整体黑胡桃木枪托。采用符合人机工程的半手枪式握把，机匣左侧压印有国防验收鹰章与春田火炮钢印。",
+        "craftAndMaterial": "严选风干北美黑胡桃木心材由仿形铣床精密切割，经生亚麻籽油反复浸润擦拭。木纹致密防潮抗变形，握把前下端打有超压实弹验枪圆圈P字火印。",
+        "kinematicRole": "作为抵肩射击的人体工学界面承接全枪后坐冲量；在野战分解百分之八至二十六极早期阶段，扳开扳机护圈后即可将木托整体向下脱离机匣。",
+        "designHighlight": "无需任何螺丝或工具，仅需向下强力拉开扳机护圈，整个击发机与木托便在十秒内瞬间解脱分离，极大简化了战场泥泞环境维护。",
+        "audioScript": "这柄主枪托选用北美黑胡桃木心材精工车削而成，表面经多次生亚麻籽油手工擦拭，散发出红褐色的温润光泽。机匣左侧清晰烙有国防验收鹰章与交叉火炮军械徽记。只需用手指扳开扳机护圈，枪托就能瞬间脱开，完全无需工具。",
+        "audioUrl": "audio/garand/parts/garand_walnut_stock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Linseed-Oiled Walnut Stock w/ DAS Ordnance Stamp",
+        "overview": "The full-length stock houses the barreled receiver and internal magazine mechanism. Shaped with a semi-pistol grip, its left flank bears ordnance acceptance cartouches.",
+        "craftAndMaterial": "Milled from dense, kiln-dried American black walnut heartwood saturated with boiled linseed oil for weatherproofing. The grip base is stamped with the circled serif P proof mark.",
+        "kinematicRole": "Directs 345 MPa firing impulse into the marksman's shoulder, detaching smoothly downward from the barreled receiver at 8% to 26% of field disassembly.",
+        "designHighlight": "Secured entirely by cam tension from the swinging trigger guard: popping the guard open allows the wood stock to drop free in under five seconds with zero tools required.",
+        "audioScript": "Hand-rubbed with raw linseed oil, this dense American black walnut stock provides a rigid bedding chassis. Its side carries the Springfield crossed-cannons and military acceptance cartouches. Unlatching the trigger guard releases the internal clamping tension, allowing the entire wooden stock to drop free in seconds without tools.",
+        "audioUrl": "audio/garand/parts/garand_walnut_stock_en.mp3"
+      }
+    },
+    "garand_rear_handguard": {
+      "partId": "garand_rear_handguard",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Rear Handguard & Clip",
+      "zh": {
+        "roleTag": "拱形隔热木罩与弹簧紧定钢卡箍",
+        "overview": "卡扣在机匣前环与下护箍之间枪管上方的拱形黑胡桃木后护木。内衬冲压弹簧钢卡箍，紧密包覆枪管中段以阻隔高温。",
+        "craftAndMaterial": "经蒸气热弯与立体仿形车削的黑胡桃木薄壳构件，内壁嵌装锰磷化弹簧钢固定环。半圆拱截面设计既保证了壁厚强度又最大化消除了瞄准虚影。",
+        "kinematicRole": "在全发射循环中处于静止状态，作为弱手握持护手隔绝炙热枪管；在深度拆解阶段伴随枪管下箍松解后向上滑动取下。",
+        "designHighlight": "护木与枪管接触处通过弹性钢箍悬挂固定，既防止木料受热炭化变形，又避免了热胀冷缩直接牵扯枪管导致热弹着点发生漂移散布。",
+        "audioScript": "后上护木遮盖在机匣前方的高温枪管段上。它的内部嵌有弹簧钢卡箍紧紧抱住枪管。在持续快速射击时，枪管温度高达数百度，这块拱形黑胡桃木不仅防止灼伤士兵手掌，还能有效阻挡枪管热气蒸腾对瞄准基线造成的虚影干扰。",
+        "audioUrl": "audio/garand/parts/garand_rear_handguard_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Heat Shield Wood Guard & Spring Retaining Clip",
+        "overview": "Resting over the mid-barrel between the receiver ring and lower band, this rear wood handguard shields the user. An internal stamped spring clip secures it in place.",
+        "craftAndMaterial": "Hollow-milled from American black walnut with an arched cross-section and linseed oil finish, anchored via an internal phosphate-coated heat-treated spring steel band.",
+        "kinematicRole": "Remains static over the hot barrel during firing, disengaging upward and rearward between 34% and 62% exploded progress during deep sub-assembly cleaning.",
+        "designHighlight": "Suspended slightly away from direct barrel contact by its spring steel band, avoiding wood charring while allowing the barrel to expand freely without heat zero drift.",
+        "audioScript": "Covering the mid-barrel section, this arched walnut rear handguard protects the support hand during intense rapid fire. Held firmly by an internal spring steel clip, it insulates the marksman from blistering barrel heat and prevents rising mirage waves from obscuring the sight picture.",
+        "audioUrl": "audio/garand/parts/garand_rear_handguard_en.mp3"
+      }
+    },
+    "garand_front_handguard": {
+      "partId": "garand_front_handguard",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Front Handguard",
+      "zh": {
+        "roleTag": "下部避让空腔前护木与金属定位箍帽",
+        "overview": "位于枪管下箍与枪口导气筒之间的前段黑胡桃木护木。前端包裹有冲压钢质前箍帽，其插脚牢牢卡入导气筒后环槽内定位。",
+        "craftAndMaterial": "精选黑胡桃木深孔掏槽车削，前箍帽由低碳冷轧钢板冲压磷化而成。内腔下侧开出连续台阶形跑道通道，预留出拉机柄活塞往复的游隙空间。",
+        "kinematicRole": "在全射击过程中静止，下部内腔容纳高速往复的一百零八毫米拉机柄；在枪口导气筒拆除后沿枪管向前滑脱分离。",
+        "designHighlight": "内腔的避让凹槽尺寸极为讲究，必须确保枪管射击振动以及拉机柄以每秒数米剧烈震颤往复时，两相运动部件绝不触碰擦挂木质内壁。",
+        "audioScript": "最前端的这截前护木前端包覆着金属箍帽，稳稳插在导气筒后方。它的内部极其讲究地掏空出一道深槽，为下方高速后坐往复的拉机柄活塞留出充裕的运行空间，确保拉机柄在高速抽动时绝不会刮蹭木质内壁。",
+        "audioUrl": "audio/garand/parts/garand_front_handguard_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Walnut Forward Guard & Steel Muzzle Ferrule",
+        "overview": "Spanning the distance between the lower band and the muzzle gas cylinder, this wood piece covers the front barrel. A stamped metal ferrule reinforces its forward tip.",
+        "craftAndMaterial": "Channeled from select black walnut with a stamped steel front ferrule locked into the gas cylinder notch. The interior underbelly features a contoured operational clearance channel.",
+        "kinematicRole": "Shields the forward barrel statically while its bottom clearance channel permits 108 mm op-rod travel, sliding forward off the muzzle once the gas cylinder is stripped.",
+        "designHighlight": "Precision relieved to ensure the long operating rod vibrates freely at high cycling velocities without rubbing against the wood walls, preserving weapon accuracy and timing.",
+        "audioScript": "Capping the forward-most portion of the barrel, this front handguard terminates in a protective steel ferrule keyed into the gas cylinder. Its hollow underbelly creates a clearance channel for the long-stroke operating rod, allowing it to cycle violently without rubbing against the wood.",
+        "audioUrl": "audio/garand/parts/garand_front_handguard_en.mp3"
+      }
+    },
+    "garand_lower_band": {
+      "partId": "garand_lower_band",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Lower Band & Swivel",
+      "zh": {
+        "roleTag": "弹性卷销锚定 · 锁紧前木托与M1907背带前环",
+        "overview": "这是固定在枪管中段台阶处的拱形下枪管箍，下方通过横轴铰接宽体前背带环。它将胡桃木主枪托的前端紧密束缚在枪管下方，并作为步枪前部背带拉力的核心承力锚点。",
+        "craftAndMaterial": "选用军规锻造碳钢冲剪成型后整体渗氮磷化处理，具极高抗拉屈服强度；箍身内孔开有精准退刀倒角，通过一根横向弹性卷销紧扣在枪管环槽中，避免射击剧烈热膨胀时滑脱。",
+        "kinematicRole": "射击全周期保持刚性静止，吸收背带拉力与枪托前部共振；在野战分解至中阶工况、冲出弹性卷销后向枪口方向滑脱分解。",
+        "designHighlight": "专为美军经典的M1907双钩皮背带依托射击设计，其刚性箍紧结构使射手将皮带紧紧缠绕在手臂上以稳定瞄准时，拉力不会直接弯折细长的枪管前段，保障了精准射击基准。",
+        "audioScript": "现在看到的这圈磷化钢箍，是步枪中段的下护木箍与前背带环。一根高强度卷销将它牢牢锁定在枪管凹槽里，承受着士兵使用M1907皮背带依托射击时的巨大拉力，同时把胡桃木枪托前端紧紧抱紧在枪管下方。",
+        "audioUrl": "audio/garand/parts/garand_lower_band_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Roll-Pin Anchored Band & Front M1907 Sling Anchor",
+        "overview": "This arched carbon-steel retaining band clamps around a dedicated shoulder on the mid-barrel section, pinning the front of the walnut stock. Its integrated lower hinge supports the wide front sling swivel to anchor standard GI shooting slings.",
+        "craftAndMaterial": "Forged and stamped high-strength carbon steel treated with a dark parkerized finish; precision roll-pin bores ensure rigid lockup into the barrel's transverse locating groove without pinching bore concentricity.",
+        "kinematicRole": "Remains static throughout all firing stages to isolate stock vibrations and sling tension; slides forward off the muzzle once its cross roll-pin is driven out during armorer strip.",
+        "designHighlight": "Engineered around the tight loop-sling technique of the M1907 leather sling, transferring aggressive shooter sling tension onto the sturdy mid-barrel shoulder rather than deflecting the slender muzzle section.",
+        "audioScript": "This parkerized steel band secures the front tip of the wooden stock to the mid-barrel. Secured by a tough roll pin, its integrated bottom swivel handles heavy tension from the M1907 leather sling during competitive marksman shooting.",
+        "audioUrl": "audio/garand/parts/garand_lower_band_en.mp3"
+      }
+    },
+    "garand_buttplate": {
+      "partId": "garand_buttplate",
+      "bomCode": "F-07",
+      "calloutLabelEn": "Trapdoor Steel Buttplate",
+      "zh": {
+        "roleTag": "近战砸击撞击面 · 铰接活门内藏两格通条油壶仓",
+        "overview": "这是通过上下两枚粗壮木螺钉固联在黑胡桃木枪托尾端的厚壁锻钢托底板。表面压铸高抓握力菱形防滑格纹，并在上半部设有一扇带弹簧卡锁的翻转活门。",
+        "craftAndMaterial": "采用锻压碳钢整体成型并作深色锰系磷化防锈，抗冲击韧性极高；冲压而成的折叠活门与板体铰接，内部带有弹簧片以提供清脆自锁闭合力，彻底隔绝泥水碎屑进入木托内腔。",
+        "kinematicRole": "射击时将点火后坐能量通过大受力面均匀分散传递至射手肩窝；在全枪深度维护时，拧下上下两枚长木螺钉即可取下托底板。",
+        "designHighlight": "活门内正对胡桃木枪托预钻的双孔储物盲腔，内部收纳M3或M10组合组合工具、铰接擦枪通条与双头黄油润滑剂盒，让士兵在战壕泥泞中随手可掏出工具排除一切污垢阻滞。",
+        "audioScript": "厚重的锻钢托底板不仅能抵御三零零六全威力弹的强劲后坐力，还在近战肉搏中化身为致命铁锤。掀起带有弹簧的圆形活门，就能取出藏在木托双盲孔里的擦枪通条与枪油盒。",
+        "audioUrl": "audio/garand/parts/garand_buttplate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Checkered Recoil Interface & Double-Cavity Trapdoor",
+        "overview": "Fastened to the butt of the American black walnut stock by two heavy-duty wood screws, this forged steel buttplate features aggressive diamond checkering. A spring-loaded trapdoor hinges open on its upper half to reveal internal stock maintenance cavities.",
+        "craftAndMaterial": "Heavy-gauge forged carbon steel treated with manganese phosphate for extreme impact resistance; stamped internal latching leaf springs maintain positive closure against trench mud and ingress.",
+        "kinematicRole": "Stationary datum transmitting full rearward recoil into the shooter's shoulder; removed during stock teardown by unscrewing the upper and lower mounting screws.",
+        "designHighlight": "The spring trapdoor accesses two deep drilled channels inside the buttstock, neatly stowing the sectional M10 cleaning rod, combination combo tool, and plastic grease pot right on the battle line.",
+        "audioScript": "Engineered from heavy checkered steel, this buttplate takes the full brunt of thirty-o-six recoil and doubles as a melee weapon. Flipping open the spring trapdoor reveals twin storage holes drilled deep into the walnut buttstock for cleaning kits.",
+        "audioUrl": "audio/garand/parts/garand_buttplate_en.mp3"
+      }
+    },
+    "garand_op_rod_catch": {
+      "partId": "garand_op_rod_catch",
+      "bomCode": "F-08",
+      "calloutLabelEn": "Op-Rod Catch & Pawl",
+      "zh": {
+        "roleTag": "末发空仓挂机卡销 · 压入新漏夹联动瞬间解脱上膛",
+        "overview": "这是铰接在机匣前下方、介于子弹导引块与弹仓之间的多功能杠杆连杆机构。它一端向上延伸出钩牙用于挂住拉机柄，前端内侧则集成可摆动的加速子棘爪。",
+        "craftAndMaterial": "高强度合金钢精铣并在接触受力斜面处实施高频淬火，表面经黑色渗氮处理；精密的凸轮导角与拉簧支点配合，确保在高频往复冲击下动作零虚位、回位迅捷。",
+        "kinematicRole": "当第八发弹壳抛出、托弹臂升至顶点时，该阻铁被顶起精准钩住拉机柄缺口实现空仓挂机；压入满夹到底时，加速子被弹夹底部压迫摆动，瞬间拨开阻铁释放拉机柄进弹；在子弹导引块解脱后整体取出。",
+        "designHighlight": "它是伽兰德步枪传奇装填动作的中枢：士兵用拇指将八发漏夹强行下压到位，加速子连杆触发拉机柄解脱；若射手掌缘未及时阻挡或手指抽离过慢，枪机便会瞬间咬住大拇指，留下著名的伽兰德拇指印记。",
+        "audioScript": "这枚复杂的连杆就是拉机柄阻铁与加速子。打完第八发后它被托弹臂推起，死死钩住拉机柄形成空仓挂机。压入新漏夹时，底部的加速子会被弹夹顶开释放枪机，如果拔手稍慢，就会遭遇著名的伽兰德拇指夹伤。",
+        "audioUrl": "audio/garand/parts/garand_op_rod_catch_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Last-Round Bolt Hold-Open & Clip-Driven Release Pawl",
+        "overview": "Pivotally mounted beneath the forward receiver floor, this intricate linkage holds the operating rod locked back after the eighth round. It incorporates a spring-biased pivoting accelerator pawl to trigger forward bolt travel upon clip insertion.",
+        "craftAndMaterial": "Precision-machined high-tensile steel with induction-hardened engagement teeth and a black nitride surface to endure repetitive high-impact engagement cycles without galling.",
+        "kinematicRole": "Pivots up on empty clip ejection to mechanically snag the op-rod notch for hold-open; freshly inserted clips trip its accelerator pawl downward, instantly freeing the op-rod forward; disassembles along with the follower arm assembly.",
+        "designHighlight": "Heart of the famous Garand reload cycle. Snapping an en-bloc clip home forces this catch downward, unleashing the heavy bolt to chamber round one. Hesitant thumbs that linger too long are instantly bitten in the infamous Garand Thumb mishap.",
+        "audioScript": "This clever assembly handles both hold-open and automatic release. When the eighth cartridge is spent, it catches the operating rod. Snapping a fresh clip inside strikes the accelerator pawl, instantly freeing the bolt forward to strip the top cartridge.",
+        "audioUrl": "audio/garand/parts/garand_op_rod_catch_en.mp3"
+      }
+    },
+    "garand_trigger_housing": {
+      "partId": "garand_trigger_housing",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Milled Trigger Housing",
+      "zh": {
+        "roleTag": "整机免工具快拆下座 · 护圈前冬季手套快速保险",
+        "overview": "这是容纳整套击发阻铁、击锤与保险杠杆的整体铣削钢制火控底座。它由机匣下部滑轨定向安装，外凸的前方安全凸缘内嵌有直通扳机护圈前端的拨动式保险扳把。",
+        "craftAndMaterial": "由整块优质合金锻钢经过多道精密切削槽孔铣制而成，表面经军规深灰锰系磷化处理；侧壁开有精准配合的阻铁销孔、击锤轴承孔与保险滑槽，壁厚经过应力优化以防摔跌变形。",
+        "kinematicRole": "作为火控系统静止安装基准，内部容纳击锤与扳机的回转运动；在野战分解第一阶段，利用扳机护圈向下撬开释放锁紧耳后，整个火控盒可整体脱离机匣向下抽出。",
+        "designHighlight": "超前于时代的免工具模块化火控设计。护圈前方的冲压钢制保险片可让戴着厚实冬防手套的二战步兵，只需将食指伸进扳机护圈前缘用力向前一推，即可在零点几秒内悄无声息解脱保险，进入即发状态。",
+        "audioScript": "整块钢料掏铣而成的火控盒，是早期武器模块化设计的典范。它将击锤、扳机和冬季保险高度集成。士兵在寒冬中戴着厚手套，只需将食指伸至扳机护圈前推开保险片，就能立刻进入射击待发状态。",
+        "audioUrl": "audio/garand/parts/garand_trigger_housing_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Milled Fire-Control Chassis & Integral Winter Safety",
+        "overview": "This solid-milled steel receiver sub-housing serves as the rigid module for the hammer, trigger, and safety mechanisms. Positioned beneath the receiver, it locks the entire rifle action snugly inside the wooden stock.",
+        "craftAndMaterial": "Drop-forged carbon steel hollowed through complex multi-axis milling and finished in corrosion-resistant manganese phosphate; side walls feature reamed pin journals hardened to resist lateral pin wobble.",
+        "kinematicRole": "Stationary chassis providing precision pivot points for fire control kinematics; unlatches and pulls straight downward as an integral module once the trigger guard is swung open in field stripping.",
+        "designHighlight": "Includes a forward-jutting winter-friendly safety blade. Even with freezing hands inside thick mitten gloves, a combatant simply slips their trigger finger along the outer guard and pushes the lever forward to disengage safety silently.",
+        "audioScript": "Milled out of solid forged steel, this trigger housing groups the entire firing mechanism into a modular lower unit. Notice the flat safety lever protruding inside the trigger guard, which can be flicked forward by a heavy winter glove in sub-zero battlefields.",
+        "audioUrl": "audio/garand/parts/garand_trigger_housing_en.mp3"
+      }
+    },
+    "garand_trigger_guard": {
+      "partId": "garand_trigger_guard",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Cam-Lock Trigger Guard",
+      "zh": {
+        "roleTag": "扳机护圈 · 全枪核心快拆凸轮杠杆锁紧扳手",
+        "overview": "这是包覆在扳机外周的厚壁锻造护圈，后端加工有专用的下拉指环。它向上旋转闭合时，顶部精铣的偏心凸耳直接扣进机匣下支腿，将整支步枪的木托与机匣紧紧咬合为一个坚固整体。",
+        "craftAndMaterial": "由锻造碳钢机械加工成型，闭锁凸轮接触面进行局部渗碳淬火以承受数千次野战开合压紧；表面整体施以深灰磷化处理，内弧经圆润倒角防止割伤射手手指。",
+        "kinematicRole": "射击与携行状态下作为刚性锁扣咬紧机匣与枪托；野战分解时，将其尾环向下拉开至九十度，凸轮顶退机匣底腿，瞬间释放整套火控系统与枪管机匣组的分离自锁。",
+        "designHighlight": "枪身自带扳手的绝妙机械典范：它既是手指的物理防护罩，又是整枪免工具分解的核心增力杠杆，利用偏心凸轮原理提供巨大的夹持下压力，彻底解决了木托受潮膨胀导致的射击机匣晃动难题。",
+        "audioScript": "这不仅是扳机护圈，更是全枪唯一的快拆钥匙。闭合时它的偏心凸轮提供数十公斤的强力夹紧力，把木托与机匣锁死成一体；野战分解时，只要勾住尾环向下一扳，整支枪便能不用任何螺丝刀瞬间解体。",
+        "audioUrl": "audio/garand/parts/garand_trigger_guard_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Eccentric Clamping Cam & Action Disassembly Lever",
+        "overview": "Surrounding the trigger shoe, this forged steel loop features an ergonomic finger ring at its rear end. When pivoted upward and latched, twin machined eccentric cam lugs hook over the receiver legs, sandwiching the walnut stock tightly.",
+        "craftAndMaterial": "Forged alloy steel with induction-hardened cam hooks to resist repetitive latching wear; matte parkerized finish with smooth interior radii ensuring seamless combat handling without sharp burrs.",
+        "kinematicRole": "Stationary structural clamp during operational firing; serves as the initial breakdown lever during field stripping, swinging downward to release housing lockup from the main receiver.",
+        "designHighlight": "A stroke of genius in tool-less maintenance. John Garand turned the trigger guard into an eccentric cam wrench, providing high clamping pre-tension to prevent loose bedding in humid jungles while allowing sub-ten-second stripdowns.",
+        "audioScript": "This trigger guard acts as the rifle's built-in takedown tool. Snapping it closed clamps the wooden stock tightly between the receiver and trigger housing with cam leverage. Pulling down on its rear loop instantly releases the entire lower assembly.",
+        "audioUrl": "audio/garand/parts/garand_trigger_guard_en.mp3"
+      }
+    },
+    "garand_trigger": {
+      "partId": "garand_trigger",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Two-Stage Trigger & Sear",
+      "zh": {
+        "roleTag": "竞赛级两道火手感 · 弹簧铰接单发副阻铁防止连击",
+        "overview": "这是安装在火控盒销轴上的核心击发扳机，前端顶面整体铣出双主阻铁凸台，后部空腔内通过横销铰接有由压缩小弹簧支撑的独立副阻铁断路器。",
+        "craftAndMaterial": "高碳弹簧工具钢精密锻造研磨，主副阻铁卡齿台面经镜面抛光并深度渗碳淬火，达到极高洛氏硬度以确保长年扣扳机接触面的几何零磨损与极低摩擦阻力。",
+        "kinematicRole": "扣动时先消除第一道火自由行程，继续加力越过主阻铁壁垒释放击锤击发；枪机后坐将击锤压倒时，后方的副阻铁率先捕获击锤后挂钩；松开扳机时击锤从副阻铁清脆跳回主阻铁待击。",
+        "designHighlight": "经典的军用两道火机构：第一阶段两毫米平滑行程消除松弛，第二阶段一经加力便如折断玻璃般干脆击发，既保证了二战大兵在极度紧张下的安全性，又赋予了半自动步枪极高的射击精度。",
+        "audioScript": "这具扳机藏着极为纯正的两道火机构。前端的双凸台是主阻铁，后方铰接有带弹簧的副阻铁。扣动时壁垒感极清晰，后坐时由副阻铁拦截压倒的击锤，松手时发出清脆响声交接回主阻铁，严防意外连发。",
+        "audioUrl": "audio/garand/parts/garand_trigger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Two-Stage Crisp Trigger & Spring-Loaded Secondary Sear",
+        "overview": "Pivoting on a transverse pin in the trigger housing, this curved trigger carries twin primary sear ramps machined onto its forward extension. The spring-biased rear disconnector sear hinges within its tail slot to catch the rebounding hammer.",
+        "craftAndMaterial": "Drop-forged high-carbon steel with precision-ground contact faces; sear engagement surfaces are hardened to over fifty-eight Rockwell C to maintain razor-sharp break angles across tens of thousands of rounds.",
+        "kinematicRole": "Pivots rearward to roll the primary sear out of engagement during Phase One firing; catches hammer rebound on the rear disconnector sear during recoil, and transfers the hammer cleanly back to the front sears upon trigger reset.",
+        "designHighlight": "Renowned for delivering a crisp, match-grade two-stage pull on a mass-produced military infantry rifle. The distinct wall prevents accidental discharges under combat stress while providing exceptional single-shot accuracy.",
+        "audioScript": "Renowned for its crisp two-stage break, this trigger uses dual front sears and a spring-loaded secondary hook at the rear. When fired, the hammer recocks onto the rear disconnector, resetting forward onto the main sear as you release the trigger.",
+        "audioUrl": "audio/garand/parts/garand_trigger_en.mp3"
+      }
+    },
+    "garand_hammer": {
+      "partId": "garand_hammer",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "Forged Dual-Hook Hammer",
+      "zh": {
+        "roleTag": "前后双挂钩待击 · 头部二重闭锁不到位保险防早发",
+        "overview": "这是位于火控盒前部中央、由强力击锤压簧顶推的高速回转击锤。其下摆臂后缘精铣有前后两个挂钩，顶部打击端则带有专用的导向撞击台阶与保险切角。",
+        "craftAndMaterial": "经重型水压机模锻的高韧性铬钼合金钢，表面经深层渗碳与发黑处理；击锤头部与后挂钩经淬火回火，具备抵御枪机千万次剧烈下压与撞针猛烈冲击的抗疲劳性能。",
+        "kinematicRole": "扳机释放后在强力弹簧推动下绕轴向前上方猛烈回转撞击击针尾部；自动机后退时被枪机底面压倒后坐蓄能，分别与主阻铁或副阻铁扣合待击；分解火控组时拔出枢轴销即可卸下。",
+        "designHighlight": "锤面开有巧妙的不到位物理保险凸块：如果枪机没有完全右旋三十二度完成刚性闭锁，击锤向前挥动时其凸角会直接撞击枪机尾部斜面，迫使其旋紧闭锁，而绝不会触及击针尖，物理根除了未闭锁击发炸膛灾难。",
+        "audioScript": "这枚锻钢击锤拥有极快的击发响应。注意它底部的两个精铣挂钩，分别对应主阻铁与单发副阻铁。更巧妙的是击锤上方的凸起，枪机只要未彻底旋转闭锁，击锤就会卡在枪机尾端而够不到击针，彻底杜绝炸膛。",
+        "audioUrl": "audio/garand/parts/garand_hammer_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dual-Hook Rotating Hammer & Integrated In-Battery Safety",
+        "overview": "Pivoting in the forward section of the trigger housing, this heavy-duty rotating hammer is driven by a high-rate helical spring. Machined with both primary and secondary cocking hooks at its base, its head delivers high kinetic impact to the firing pin.",
+        "craftAndMaterial": "Drop-forged chrome-molybdenum alloy steel with case-hardened contact surfaces; engineered to withstand relentless slamming from the reciprocating bolt and extreme dry-fire impact without brittle fracturing.",
+        "kinematicRole": "Swings forward on Phase One to strike the firing pin; driven downward and rearward by the cycling bolt in Phase Four to re-engage the sears; lifts free once its pivot pin is pushed out during detail stripping.",
+        "designHighlight": "Features an out-of-battery safety projection on its face. If the bolt fails to rotate fully into lockup, the hammer strikes the bolt camming tang to mechanically force the bolt shut, preventing the firing pin from igniting the cartridge.",
+        "audioScript": "Driven by a stout coil spring, this hammer arcs up to deliver a decisive strike against the firing pin. Notice the stepped face. If the bolt has not fully rotated into battery, the hammer is physically blocked from reaching the pin, preventing disastrous breech explosions.",
+        "audioUrl": "audio/garand/parts/garand_hammer_en.mp3"
+      }
+    },
+    "garand_hammer_spring": {
+      "partId": "garand_hammer_spring",
+      "bomCode": "FC-05",
+      "calloutLabelEn": "Hammer Spring & Plunger",
+      "zh": {
+        "roleTag": "高劲度琴钢丝压簧 · 双翼导向柱稳态驱动击锤",
+        "overview": "这是一组套装在火控盒后部斜向导轨内的重叠螺旋压簧与锻造导向顶杆。顶杆前端开有承托叉头与横向导向耳，直接抵推击锤后下方的偏心滚柱突起。",
+        "craftAndMaterial": "弹簧选用顶级高疲劳寿命碳素琴钢丝精密绕制，顶杆由淬硬工具钢车铣并在导向翼面研磨光滑；组装后预紧力充沛，表面涂覆防锈防冻润滑脂。",
+        "kinematicRole": "全周期伴随击锤运动：击锤后坐压倒时弹簧被深度压缩蓄能，扣动扳机瞬间沿轴向迅速伸张，将储存的弹能毫无衰减地转化为击锤击碎军用厚底火的爆发动能。",
+        "designHighlight": "采用双耳导向顶杆配合斜向套筒的封闭式封装，有效防止弹簧大变形时的侧向失稳弯曲，并在北极极寒或泥沙混入环境依然能保证充沛的击锤打击力，杜绝半自动步枪常见的底火击发无力故障。",
+        "audioScript": "这根带有导向两翼的金属顶杆与高磅数弹簧，构成了击锤的能量核心。击锤压倒时它紧紧压缩蓄能，扣下扳机瞬间释放强大弹力推击锤疾速回转，即便在严寒泥泞中依然能干脆击穿厚实的军规底火。",
+        "audioUrl": "audio/garand/parts/garand_hammer_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "High-Rate Helical Spring & Strut Plunger Housing",
+        "overview": "Mounted diagonally within the rear recess of the trigger housing, this assembly pairs a heavy-gauge helical spring with a flanged plunger strut. The strut's forward fork rests directly against the eccentric heel of the hammer.",
+        "craftAndMaterial": "Wound from shot-peened high-carbon music wire paired with a case-hardened alloy steel strut; precision-polished side wings prevent buckled spring coils from scraping the trigger housing walls.",
+        "kinematicRole": "Compresses under high axial strain when the hammer recocks in Phase Four; violently expands upon Phase One sear release to accelerate the hammer forward into the firing pin; serviced during armorer fire-control teardown.",
+        "designHighlight": "Its rigid flanged guide tube prevents spring buckling under extreme cyclic strain, guaranteeing reliable ignition velocity even in sub-zero combat conditions where frozen gun grease often produces light strikes in lesser rifles.",
+        "audioScript": "Housed behind the hammer, this heavy music-wire spring and winged strut provide the explosive kinetic energy for firing. As the bolt pushes the hammer down, this spring compresses solid, waiting to launch the hammer forward through frozen grease and muck.",
+        "audioUrl": "audio/garand/parts/garand_hammer_spring_en.mp3"
+      }
+    },
+    "garand_enbloc_clip": {
+      "partId": "garand_enbloc_clip",
+      "bomCode": "M-01",
+      "calloutLabelEn": "8-Round En-Bloc Clip",
+      "zh": {
+        "roleTag": "上下全对称漏夹 · 弹尽高亢清脆PING长鸣自动抛出",
+        "overview": "这是由单张高弹性弹簧钢板冲压弯折成型的八发双排整装供弹夹。整夹呈上下完全对称的倒梯形包络结构，将八发点三零零六弹药紧密环抱并整组直接塞入步枪弹仓内。",
+        "craftAndMaterial": "采用高抗疲劳弹簧钢冲压折弯成型，表面经无光泽黑色锰系磷化防锈处理；夹体两侧冲压有加强筋并开有双向对称的卡笋卡槽，口部带有精准开孔的抱弹弧耳。",
+        "kinematicRole": "装填时整夹完全沉入机匣弹仓并由左侧卡笋抱死，夹壁内侧充当弹仓抱弹口；末发打完抛壳瞬间被底部的V型弹簧向上高速抛离枪体；野战压弹或卸弹时整副进出机匣。",
+        "designHighlight": "轻武器史上辨识度最高的声音符号：全对称设计让士兵黑夜中无需确认正反即可盲目下压装填；当最后一枚弹壳抛出，空弹夹因弹性收缩像音叉般颤动弹飞，敲击机匣产生清脆悦耳且响彻战场的长鸣声。",
+        "audioScript": "这就是二战中最具传奇色彩的八发漏夹。它完全对称，在黑暗中闭着眼睛都不会装反。打完第八发瞬间，这枚弹簧钢夹会像音叉一样被强力弹出枪膛，伴随着响彻战场的清脆金属声，宣告新一轮爆发装填。",
+        "audioUrl": "audio/garand/parts/garand_enbloc_clip_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Symmetrical 8-Rd Stamped Spring Steel En-Bloc Clip",
+        "overview": "Stamped from a single sheet of resilient spring steel, this reversible en-bloc clip holds eight rounds of thirty-o-six Springfield ammunition in a staggered double column. The entire clip is inserted directly into the internal receiver magazine.",
+        "craftAndMaterial": "High-grade carbon spring steel heat-treated for elastic retention and finished in deep manganese phosphate; features embossed strengthening ribs, symmetrical latching notches, and folded retention lips.",
+        "kinematicRole": "Acts as internal magazine feed lips once latched inside the receiver; automatically ejected skyward by the clip ejector spring the split-second the eighth empty casing is cleared from the chamber during Phase Four.",
+        "designHighlight": "Fully reversible geometry eliminates clumsy orientation errors under night fighting conditions. Ejecting empty like an acoustic tuning fork, it rings out with the unmistakable high-pitched metallic ping heard across every WWII battlefield.",
+        "audioScript": "The iconic Garand en-bloc clip holds eight rounds in a staggered stack. Designed symmetrically, it can be loaded with either end facing down in pitch darkness. When the last shot fires, the empty steel clip is launched into the air with the famous Garand ping.",
+        "audioUrl": "audio/garand/parts/garand_enbloc_clip_en.mp3"
+      }
+    },
+    "garand_follower": {
+      "partId": "garand_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Staggered Cartridge Follower",
+      "zh": {
+        "roleTag": "正反盲插自适应滑移 · 沿机匣导槽穿入漏夹底托升弹药",
+        "overview": "这是位于漏夹底部、沿机匣内侧滑槽上下垂直移动的托弹板组件。顶面精铣有左右落差的交错阶梯托面，下方通过铰链连接可微量横向滑移的导向滑块。",
+        "craftAndMaterial": "经高精度数控铣削与线切割成型的高韧性不锈钢，表面经哑光钝化抗蚀处理；阶梯面轮廓与点三零零六弹体收腰弧度完全吻合，边缘精细倒圆以保证滑移零刮滞。",
+        "kinematicRole": "从漏夹底部中央开槽穿入，在托弹臂持续向上顶撑下，逐发将剩余实弹推至机匣进弹线；打空第八发后升至极限最高点，其突起触角挑动拉机柄阻铁抬起触发空仓挂机与抛夹。",
+        "designHighlight": "极其精妙的自适应浮动阶梯结构：不管士兵装入的漏夹最上方第一发弹是偏在左边还是右边，下方的滑动块都能自动横向顺滑微调，精确贴合最底下一发弹壳，实现完全无故障的顺畅供弹。",
+        "audioScript": "这块带有高低阶梯的托弹板，从漏夹底部开槽伸入。其下方的滑动结构能自动横向微调，无论八发弹夹最顶层一颗偏左还是偏右，它都能稳稳托住底发弹壳。第八发打完后它升至最高点，挑开卡笋触发著名的抛夹动作。",
+        "audioUrl": "audio/garand/parts/garand_follower_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Reversible Staggered Follower & Lateral Slide Guide",
+        "overview": "Riding along internal vertical tracks inside the receiver magazine well, this component reaches through the base slot of the en-bloc clip. It features an offset stepped top surface paired with a hinged lateral slide underneath.",
+        "craftAndMaterial": "Precision-machined high-wear stainless steel treated with an anti-corrosion matte finish; contoured feed steps match the precise taper of thirty-o-six brass cases with radiused edges to eliminate snagging.",
+        "kinematicRole": "Pushed constantly upward by the follower arm to index each round to the chamber centerline during Phase Five; trips the operating rod catch and clip latch upward upon reaching its ceiling after round eight.",
+        "designHighlight": "Its floating slide design allows the follower to conform automatically to an odd or even stack, feeding smoothly whether round eight ends on the left or right lip, ensuring flawless chambering in combat.",
+        "audioScript": "Gliding inside the receiver magwell, this stepped follower lifts cartridges upward from inside the steel clip. Its sliding base compensates automatically whether the stack starts on the left or right, feeding rounds flawlessly until its final ascent triggers clip ejection.",
+        "audioUrl": "audio/garand/parts/garand_follower_en.mp3"
+      }
+    },
+    "garand_follower_arm": {
+      "partId": "garand_follower_arm",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Pivoting Follower Arm",
+      "zh": {
+        "roleTag": "杠杆托弹臂与推杆 · 将复进簧向后推力转为垂直托弹力",
+        "overview": "这是一套由曲柄托弹臂与分叉托弹推杆组成的联动机构。托弹推杆前端套接于长行程复进簧后端，后端则铰接在托弹臂的下耳孔上，托弹臂则绕子弹导引块横轴摆动。",
+        "craftAndMaterial": "选用优质合金结构钢模锻成型，表面经黑色渗氮硬化；分叉支脚与托架铰销接触面均经渗碳处理以保证在持续交变扭转应力下的抗疲劳破坏性能。",
+        "kinematicRole": "将机匣内复进簧的水平轴向弹力，通过杠杆支点巧妙地偏转九十度转化为托弹板向上的垂直升力；在全枪分解解脱托弹臂横销后向下方拉脱抽出。",
+        "designHighlight": "一簧两用的极致机构整合：伽兰德大师没有为内弹仓单独设计笨重的弹仓弹簧，而是借由这组连杆，让拉机柄内的同一根复进簧同时身兼两职：既在前端推拉机柄复进，又在后端托举整个八发弹夹。",
+        "audioScript": "这套分叉推杆与杠杆臂是伽兰德步枪最精巧的构思。它把原本向前推拉机柄的复进簧后部弹力，通过转点杠杆九十度偏转，变成向上托举八发子弹的恒定升力，用一根弹簧完美办成两件事。",
+        "audioUrl": "audio/garand/parts/garand_follower_arm_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Follower Lift Arm & Forked Operating-Spring Strut",
+        "overview": "Comprising a drop-forged rocker arm and a long forked follower rod, this assembly links the rear of the recoil operating spring to the base of the magazine follower. It pivots around the bullet guide's transverse cross pin.",
+        "craftAndMaterial": "Forged alloy structural steel with a black nitride finish; the forked tips and hinge eyes are hardened to resist constant cyclic bending moments and spring-seat friction.",
+        "kinematicRole": "Translates the horizontal rearward expansion of the internal op-rod recoil spring into an upward 90-degree vertical thrust driving the cartridge follower; separates once the follower arm pivot pin is pushed out.",
+        "designHighlight": "A masterclass in mechanical economy. John Garand eliminated the need for a separate magazine spring by using this linkage to harness the recoil spring's rearward thrust, simultaneously driving bolt counter-recoil and cartridge elevation from a single spring.",
+        "audioScript": "This forked rod and pivoting arm perform a clever kinematic trick. They redirect the rearward pressure of the recoil spring upward through ninety degrees to elevate the cartridge follower, eliminating the need for a separate magazine spring entirely.",
+        "audioUrl": "audio/garand/parts/garand_follower_arm_en.mp3"
+      }
+    },
+    "garand_bullet_guide": {
+      "partId": "garand_bullet_guide",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Twin-Ramp Bullet Guide",
+      "zh": {
+        "roleTag": "双弧面抛光进弹斜面 · 承托托弹臂枢轴与加速子基准",
+        "overview": "这是横跨夹装在机匣前壁内侧与枪管尾端之间的厚壁锻钢导向块。上方精铣有左右两道高光洁度的弧形导弹坡道，侧壁带有配合托弹臂销轴的精密支承孔与连杆定位凸耳。",
+        "craftAndMaterial": "高碳铬锰合金钢精密锻造成型，进弹斜坡面经过微米级镜面研磨抛光，表面实施整体深层渗氮强化，确保弹尖掠过时不发生拉铜被甲或积碳结垢。",
+        "kinematicRole": "作为机匣进弹口前端的固定承托基准；供弹过程中引导左右交错的弹头平缓抬高滑进弹膛口，同时其下部侧耳限制拉机柄阻铁与加速子的运动极限位置；分解火控内构时整体抽出。",
+        "designHighlight": "双通道平滑导弹曲面设计，消除了双排大威力尖头步枪弹高速进弹时的弹尖磕碰削铜现象，保障了全被甲尖头弹在极端狂风暴雨环境下的高初速弹道一致性与连发射击绝对可靠性。",
+        "audioScript": "夹在机匣前端与枪管下方的导引块，上方铣有两道镜面般光滑的进弹坡。无论子弹从左侧还是右侧被推上膛，都会顺着它的弧面平顺滑进弹膛，绝不刮伤尖锐的铜被甲弹头，同时它还是托弹臂的核心安装支座。",
+        "audioUrl": "audio/garand/parts/garand_bullet_guide_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Forged Dual Feed Ramp & Linkage Pivot Stanchion",
+        "overview": "Positioned against the lower front interior face of the receiver adjacent to the chamber mouth, this sturdy forged steel block features twin polished feed ramps on its upper deck and precision pivot lugs along its lower flange.",
+        "craftAndMaterial": "High-tensile chrome-manganese alloy steel finished with case hardening and deep nitride treatment; feed surfaces are micro-polished to minimize brass drag and copper foul accumulation.",
+        "kinematicRole": "Stationary feedway alignment stanchion that guides staggered bullets cleanly upward into the breech during Phase Five; also serves as the bearing block for the follower arm and op-rod catch pivots.",
+        "designHighlight": "Precision-angled dual feed ramps prevent blunt-nosed or spitzer bullet tips from shaving copper jackets during rapid semi-automatic feeding, preserving downrange exterior ballistics and stopping misfeed jams.",
+        "audioScript": "Nestled just below the barrel chamber, this forged block provides two highly polished ramps. As the bolt strips a fresh cartridge forward, these ramps channel the bullet tip smoothly upward into the chamber, without nicking the copper jacket.",
+        "audioUrl": "audio/garand/parts/garand_bullet_guide_en.mp3"
+      }
+    },
+    "garand_clip_latch": {
+      "partId": "garand_clip_latch",
+      "bomCode": "M-05",
+      "calloutLabelEn": "Clip Latch & Ejector",
+      "zh": {
+        "roleTag": "左侧拇指漏夹锁紧卡笋 · 强力V型抛夹簧联动弹射",
+        "overview": "这是安装在机匣左侧外壁的长条状大拇指杠杆，包含前部卡爪、外侧滚花按键、内置螺旋卡笋压簧与底部的V型弹簧钢丝抛夹簧。卡爪从机匣开窗深入弹仓扣紧漏夹中央腰槽。",
+        "craftAndMaterial": "杠杆由铬钼工具钢精铣发黑，按键区有深防滑纹；底部的V型抛夹簧由优质琴钢丝冷拔成型，经过预压定型热处理，具备瞬间爆发十数牛顿向上弹射力的弹性储能。",
+        "kinematicRole": "平时在卡笋簧作用下将漏夹稳稳锁死在内弹仓；当托弹板在第八发上升触动加速子顶开卡爪，或射手手动按压左侧按钮时，卡爪脱开，底部的V型抛夹簧瞬间将漏夹向天空凌空弹飞。",
+        "designHighlight": "兼备全自动末发抛夹与战场紧急退弹双功能：士兵无需打光子弹，在掩体中只要用左手大拇指用力按下机匣左侧的卡笋按钮，即可将未打完的漏夹连同剩余实弹完整弹出，从容换装特种弹药。",
+        "audioScript": "位于机匣左侧外壁的卡笋与底部的强力V型钢丝簧构成了抛夹系统。平时它死死咬住漏夹，第八发打完由连杆顶开卡笋，V型簧便将空夹向天空高高弹飞。士兵也可以随时用拇指按下外侧按钮，瞬间退掉未打完的实弹夹。",
+        "audioUrl": "audio/garand/parts/garand_clip_latch_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Thumb-Release Clip Latch & High-Tension V-Ejector Wire",
+        "overview": "Mounted along the left exterior side wall of the receiver, this assembly comprises an elongated pivoting thumb button, a coil latch spring, and a high-rate music-wire V-shaped clip ejector nestled in the receiver floor.",
+        "craftAndMaterial": "Precision-machined forged alloy steel latch with a checkered thumb paddle, manganese phosphated for wear resistance; the V-shaped ejector is wound from cold-drawn spring music wire with high memory retention.",
+        "kinematicRole": "Clamps the side notch of the en-bloc clip downward against the charged V-spring during feeding; pivots outward when struck by the rising follower or pressed manually, freeing the V-spring to fling the clip out of the receiver.",
+        "designHighlight": "Enables both automatic final-shot ejection and safe tactical unloading. Pressing the exterior checkered thumb button unlatches partially expended clips instantly, allowing soldiers to clear jams or swap into armor-piercing ammunition under cover.",
+        "audioScript": "Mounted on the receiver's left flank, this latch holds the en-bloc clip locked against a loaded V-spring inside. When empty, or when you depress the external thumb button, the latch pivots outward and the V-wire flings the steel clip clear out of the action.",
+        "audioUrl": "audio/garand/parts/garand_clip_latch_en.mp3"
+      }
+    }
+  }
+}

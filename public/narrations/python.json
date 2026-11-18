@@ -1,0 +1,911 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "python",
+  "generatedAt": "2026-11-18T12:50:12.731496+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "Colt Python 6\" .357 Magnum Revolver",
+    "subtitle": "6\" Ventilated-Rib DA/SA .357 Magnum Target Revolver",
+    "originCountry": "United States",
+    "weaponType": "Double-Action Revolver",
+    "categoryLabel": "Revolver",
+    "actionMechanism": "Hand-Tuned DA/SA V-Leaf Action · Swing-Out 6-Shot Cylinder w/ 60° Bank-Vault Ratchet Lockup",
+    "statusLabel": "In Vault · Strippable",
+    "description": "Introduced in 1955 by Colt's Manufacturing Company of Hartford, Connecticut, the Colt Python is universally acclaimed as the 'Rolls-Royce of Revolvers.' Engineered on Colt's forged heavy-duty I-frame, each early specimen was individually hand-honed by master gunsmiths, pairing a signature 6-inch three-slot ventilated rib barrel with a full-length underlug, mirror-polished Royal Blue finish, a tapered V-leaf clockwork action delivering zero stacking, and Colt's legendary bank-vault lockup.",
+    "highlights": [
+      "6-Inch 3-Slot Ventilated Rib & Full Underlug Royal Blue Steel",
+      "Hand-Tuned Folded V-Leaf Mainspring & Stack-Free Action",
+      "Two-Step Hand 60° Indexing w/ Bank-Vault Lockup",
+      "Swing-Out 6-Shot .357 Cylinder w/ HKS Rotary Speedloader"
+    ],
+    "workbenchTitle": "Colt Python 6\" Internal Kinematics & Double-Action Disassembly",
+    "workbenchSubtitle": "4 Modular Assemblies · 25 Critical Nodes · Hand-Tuned DA/SA V-Leaf Clockwork & 60° Ratchet Lockup Simulation",
+    "cutawayLabel": "Two-Step Hand / V-Spring Cutaway",
+    "cutawayTitle": "Switch to cutaway focus on the two-step indexing hand, locking bolt, and folded V-leaf mainspring engagement",
+    "searchPlaceholder": "Search part or code (e.g., Cylinder, Hand, Mainspring, Vent Rib, FC-04)...",
+    "firingMilestoneLabel": "Bank-Vault Lockup / Exit",
+    "rateOfFire": "Double-Action / Single-Action (6 Shots)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Ready Assembly",
+        "subLabel": "0%",
+        "desc": "Standard assembled configuration of the 1955 Hartford Colt Python 6-inch Royal Blue: three-slot ventilated top rib, full-length ejector shroud, fluted 6-round .357 Magnum cylinder, and hand-checkered walnut target grips aligned dead-coaxial with the 12 o'clock bore."
+      },
+      "field_strip": {
+        "label": "Swing-Out & Open",
+        "subLabel": "30%",
+        "desc": "Pull rearward on the teardrop cylinder latch to swing out the crane and 6-shot cylinder, aligning an HKS speedloader; remove sideplate retention screws, detach the right lockwork sideplate, and separate walnut target grips to expose the clockwork fire-control action."
+      },
+      "sub_assembly": {
+        "label": "Sub-Assembly Strip",
+        "subLabel": "65%",
+        "desc": "Disassemble the 6-point ratchet extractor star, helical return spring, knurled ejector rod, and crane arbor; withdraw the wide target hammer, stirrup link, rebound safety lever, two-step vertical hand, and cylinder locking stop bolt from the forged I-frame cavity."
+      },
+      "full_exploded": {
+        "label": "Full Ordnance Exploded",
+        "subLabel": "100%",
+        "desc": "Complete exploded array of all 25 precision components: from the 6-inch 1:14\" twist barrel, underlug detent plunger, Accro micrometric rear sight, and frame-mounted inertial firing pin to the folded V-leaf spring and speedloader assembly."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "DA Cocking Stroke",
+        "title": "Phase 1 · Trigger Stroke Depresses Cylinder Bolt as Two-Step Hand Drives 60° Rotation",
+        "description": "Smooth rearward trigger pressure causes the trigger nose to pull down the bottom stop bolt, freeing the cylinder. Simultaneously, the two-step hand rises to push against the extractor star tooth, rotating the cylinder 60 degrees while the DA strut rotates the wide-spur hammer rearward against the folded V-leaf mainspring."
+      },
+      "phase_2": {
+        "shortLabel": "Bank-Vault Lockup",
+        "title": "Phase 2 · Bolt Locks Cylinder Notch, Hand Wedges Ratchet Tooth, and Hammer Releases",
+        "description": "Just before hammer fall, the cylinder bolt snaps into the bottom cylinder notch while the upper step of the hand wedges firmly against the ratchet tooth, creating Colt's bank-vault zero-play lockup. The double-action sear slips, releasing the hammer under full mainspring force to strike the frame-mounted inertial firing pin."
+      },
+      "phase_3": {
+        "shortLabel": "Magnum Deflagration",
+        "title": "Phase 3 · 241 MPa Chamber Ignition Propels 158gr JHP Across the Cylinder Gap and Rifled Bore",
+        "description": "Ignition of the .357 Magnum propellant creates 241 MPa peak chamber pressure, forcing the 158-grain jacketed hollow-point across the 0.15 mm cylinder gap into the 11-degree forcing cone. The bullet engages six right-hand 1:14\" twist grooves and accelerates to 435 m/s through the target crown."
+      },
+      "phase_4": {
+        "shortLabel": "Underlug Damping",
+        "title": "Phase 4 · Solid Full Underlug Tames Muzzle Flip While Expanded Cartridge Cases Remain Trapped",
+        "description": "Recoil energy transfers linearly through the forged steel frame into the shooter's palm, where the heavy full-length barrel underlug significantly counteracts muzzle rise. Unlike semi-automatic pistols, expanded rimmed brass cases remain sealed within the fluted chambers without ejection disruption."
+      },
+      "phase_5": {
+        "shortLabel": "Firing Pin Retract",
+        "title": "Phase 5 · Concentric Spring Retracts Inertial Firing Pin Flush into Recoil Plate",
+        "description": "As chamber gas pressure vents and the hammer bounces slightly, a dedicated concentric coil spring forces the stepped inertial firing pin rearward out of the primer pocket, restoring a perfectly smooth breech face before the next cylinder indexing movement."
+      },
+      "phase_6": {
+        "shortLabel": "Rebound Safety Lock",
+        "title": "Phase 6 · Lower Mainspring Arm Actuates Rebound Lever to Cam Hammer onto Safety Shelf",
+        "description": "Upon trigger release, the lower limb of the V-leaf mainspring raises the Colt Positive Safety rebound lever. Its upper wedge cams the hammer backward off the firing pin, locking it against a solid mechanical shelf to prevent accidental drop discharges."
+      },
+      "phase_7": {
+        "shortLabel": "Hand Reset Stroke",
+        "title": "Phase 7 · Target Trigger Restores to Forward Battery as Hand Drops Below Successive Ratchet Tooth",
+        "description": "The rebound lever pushes the target trigger back to its forward reset position, pulling the two-step hand downward along its frame channel. The spring-loaded hand tip slips beneath the next tooth of the extractor star, holding the indexed chamber in ready alignment."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "转轮手枪的劳斯莱斯：科尔特 Python 357 马格南的巅峰机械美学",
+      "deck": "在自动手枪尚未统治执法的黄金年代，康涅狄格州哈特福德的制枪大师们用手工油石与变截面 V 形主簧，铸就了人类转轮武器史上无法逾越的机械丰碑。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1935–1953",
+          "title": "马格南狂潮与精益之求",
+          "paragraphs": [
+            "二十世纪三十年代中期，埃尔默·基思与史密斯-韦森联合开创的点三五七马格南弹药彻底改写了警用与自卫武器的威能边界。这种高膛压弹药以两百四十兆帕以上的狂暴能量，将弹头初速推过每秒四百米，不仅能击穿早期帮派分子的汽车钢板，更为执法人员提供了无可置疑的制止力。然而在随后的十余年中，市场上流通的转轮手枪普遍沿用粗放的军警量产规格，射手在追求极致精度的靶场射击与剧烈的马格南后坐力之间，难以寻觅到一支兼具极致平衡感与钟表般扳机手感的终极平台。",
+            "作为美利坚转轮工业的奠基者，科尔特公司（Colt）在 1953 年推出了基于锻钢中型底把的“警兵型”（Trooper）。尽管市场反响稳固，但科尔特高层与资深工程师们意识到，战后美国中产阶级与神射手群体对高精度竞技手枪的渴望正在急剧膨胀。他们不仅需要一支能从容吞吐高压马格南弹药的坚固转轮，更渴望拥有一件如高级怀表般严丝合缝、散发着幽蓝镜面光芒的枪械艺术品。一个代号为“战斗马格南顶级靶枪”的绝密工程在哈特福德兵工厂悄然立项。"
+          ],
+          "audioScript": "二十世纪五十年代初，点三五七马格南弹药的狂暴威力征服了全美执法界与射击靶场。然而，普通的量产转轮无法兼顾大威力与钟表级的射击手感。位于康涅狄格州哈特福德的科尔特兵工厂，决定不计工本打造一支前所未有的旗舰转轮。他们选用了高强度的锻钢大型底把，立志将严苛的靶场精度与至高无上的机械美学融为一体，开启转轮手枪黄金时代的巅峰传奇。",
+          "audioUrl": "audio/python/story_act1_zh.mp3",
+          "focusPartId": "python_frame",
+          "focusPartLabel": "锻造科尔特I型转轮框主体"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1953–1955",
+          "title": "哈特福德工匠的无暇答卷",
+          "paragraphs": [
+            "项目主管比尔·亨利与工厂制造总监赫尔曼·阿尔·阿伦哈特为新枪设定了近乎偏执的制造标准。他们摒弃了当时逐步普及的螺旋主簧降本方案，坚决采用古典而极富弹性的变截面折叠 V 形片状主簧，并由科尔特定制工坊（Custom Shop）经验在二十年以上的老师傅使用阿肯色油石逐件微米级推刀研磨。每一个火控杠杆的接触弧面都被研配得如同镜面，彻底消除了双动扣扳机行程末段因弹簧压缩形变而产生的“叠簧硬点”。",
+            "在外观与配重设计上，工程师们创造性地在重型枪管上方切割出三道矩形通风散热肋条，有效驱散连续速射时枪管上方升腾的热气虚影；枪管下方则破天荒地采用了与枪口齐平的一体实心全长下护管，不仅将细长的退壳顶杆完全包裹在钢罩内免受磕碰，更以精准计算的前置转动惯量死死压制住了马格南弹药猛烈的枪口上跳。1955年，第一支散发着深邃如海渊般皇家热盐烤蓝光泽的 6 英寸转轮手枪走下生产线，其名唤作——“蟒蛇”（Python）。"
+          ],
+          "audioScript": "在主设计师比尔·亨利的带领下，哈特福德的资深枪匠们用手工油石与羊毛轮，雕琢着每一个火控零件。他们拒绝妥协，坚持采用结构精妙的折叠 V 形主簧，彻底消除了双动射击时的生硬阻滞感。枪管上方的三孔通风散热肋条与全长实心下护管，既赋予了它无可挑剔的平衡质感，更造就了摄人心魄的工业轮廓。千锤百炼之下，一代枪王蟒蛇正式破茧而出。",
+          "audioUrl": "audio/python/story_act2_zh.mp3",
+          "focusPartId": "python_barrel",
+          "focusPartLabel": "6英寸三孔通风肋条全下护管枪管"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1955–1960",
+          "title": "金库锁闭与微米级火控",
+          "paragraphs": [
+            "科尔特蟒蛇在机械拓扑上最令后世枪械工程学叹为观止的，莫过于其独创的“金库级双向零间隙闭锁（Bank-Vault Lockup）”。不同于绝大多数转轮手枪在击锤释放瞬间弹巢仍存在细微晃动量，科尔特采用了极为罕见的双阶分度拨轮棘爪。当射手扣下扳机的刹那，底部止转锁笋率先弹入弹巢下方的止转定位槽锁死外缘；与此同时，棘爪的第二阶推进面以相反的方向死死楔入六齿退壳星的棘齿根部。弹巢在击针撞击的一瞬间被刚性夹持在两组精密零件之间，旷量几近于零，确保弹膛出膛口与枪管迫入锥实现完美的微米级绝对同轴。",
+            "而在安全性上，科尔特专利的正向回弹保险杠杆由主簧下肢直接驱动。只要扳机未被射手食指刻意扣到底，杠杆顶部的凸轮斜面就会如同一把机械铁锁，强制将宽尾击锤后推并垫在击锤台阶下，即便手枪从十米高处跌落击锤受力，惯性击针也绝无触碰底火的可能。再配以科尔特独创的一比十四英寸密集右旋靶用膛线与带微米级千分螺栓微调的 Accro 照门，蟒蛇在五十米靶场上打出了当时量产手枪难以企及的密集散布弹孔。"
+          ],
+          "audioScript": "蟒蛇的心脏蕴藏着精密绝伦的闭锁奥秘。其独创的双阶分度棘爪与底部止转笋，在击锤击发的毫秒瞬间，将弹巢从两个相反方向死死咬合，构成了名震天下的金库级零间隙闭锁。这让每一颗马格南弹头都能以绝对同轴的姿态平顺切入迫入锥。配合带有微米微调的靶用照门，蟒蛇将工业制造与精密计时的界限彻底抹平，铸就了令人惊叹的射击精度。",
+          "audioUrl": "audio/python/story_act3_zh.mp3",
+          "focusPartId": "python_hand",
+          "focusPartLabel": "双阶分度拨轮棘爪 (Hand)"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1960–至今",
+          "title": "不朽图腾与世纪复兴",
+          "paragraphs": [
+            "从六十年代起，科尔特蟒蛇迅速成为各州高速公路巡警、联邦特工以及好莱坞荧幕上最具威慑力的正义符号。在全美警察手枪锦标赛（PPC）与大口径靶枪赛场上，握持嵌有二十四开金跃马徽章黑胡桃木靶把的蟒蛇射手屡破纪录。著名枪械史学家威尔逊将其冠以“转轮手枪中的劳斯莱斯”之美誉，这不仅是因为其高达两倍于普通转轮的昂贵售价，更是因为在自动化数控机床席卷全球前，它代表了十九世纪以降美国精密枪匠手工修配技艺的最高绝唱。",
+            "尽管由于纯手工装配工时成本过高，原厂经典 I 型底把蟒蛇在二十世纪末逐渐减产并于 2005 年彻底停止订制生产，但其在收藏界的地位却与日俱增。2020年，重组后的科尔特公司运用现代现代冶金高强不锈钢与高精五轴铣削工艺，对蟒蛇的内部火控进行了耐用度优化，让这款经典传奇在二十一世纪再次重返生产线。无论岁月如何流转，那道优美的通风肋条与清脆利落的金库闭锁声，始终是全球机械枪械爱好者心中永恒的图腾。"
+          ],
+          "audioScript": "从高速巡警的腰间枪套到大银幕上的硬汉传奇，科尔特蟒蛇赢得了转轮手枪劳斯莱斯的美誉。每一支早期的皇家烤蓝蟒蛇，都凝聚着制枪大师手工推刀的微米心血。尽管纯手工生产的代价极高，但它所代表的巅峰机械质感与美学尊严，早已化作军械史上的永恒图腾。无论是老派藏家的指尖把玩，还是新世纪的数字化重生，蟒蛇的传奇从未落幕。",
+          "audioUrl": "audio/python/story_act4_zh.mp3",
+          "focusPartId": "python_grip_left",
+          "focusPartLabel": "美洲黑胡桃木菱形格纹左靶把 (嵌24K金跃马章)"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "金库级双向零间隙弹巢闭锁",
+          "tag": "双阶棘爪/止转笋锁闭",
+          "summary": "通过上行双阶垂直拨轮棘爪与弹簧止转锁笋的精密反向夹持，在击锤击发瞬间将转轮弹巢严格夹死于击发轴线，达成近乎零旷量的刚性锁死，彻底杜绝转轮隙不对称啃膛与精度离散。",
+          "focusPartId": "python_hand",
+          "focusPartLabel": "双阶分度拨轮棘爪 (Hand)"
+        },
+        {
+          "id": "bt2",
+          "title": "折叠 V 形片簧与回弹保险联动",
+          "tag": "零叠簧钟表级火控",
+          "summary": "摈弃常规螺旋弹簧，采用变截面折叠 V 形主簧：上肢经铰接挂耳连杆驱动击锤实现零叠簧顺滑双动，下肢联动回弹杠杆将击锤强制退锁至安全台阶，兼顾天花板级击发手感与机械跌落绝对安全。",
+          "focusPartId": "python_mainspring",
+          "focusPartLabel": "变截面折叠V形片状主簧"
+        },
+        {
+          "id": "bt3",
+          "title": "三孔通风散热顶肋与实心全下护管",
+          "tag": "热浪抑制与防跳配重",
+          "summary": "一体锻造重型比赛枪管上方设置三孔通风肋以驱散连续射击热气虚影，下方延伸的全长实心退壳杆护管提供极佳的前置转动惯量，从物理结构上大幅削减马格南弹药带来的枪口剧烈上跳。",
+          "focusPartId": "python_barrel",
+          "focusPartLabel": "6英寸三孔通风肋条全下护管枪管"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1935",
+          "title": ".357 S&W Magnum 弹药横空出世",
+          "detail": "两百四十兆帕超高膛压马格南弹药诞生，为大口径高精度顶级战斗/靶用转轮手枪的研发拉开了历史序幕。"
+        },
+        {
+          "year": "1953",
+          "title": "科尔特 Trooper 转轮手枪确立基底",
+          "detail": "基于锻钢 I 型底把的勤务转轮推向市场，为哈特福德工程团队打造终极奢华版靶枪积累了核心制造数据。"
+        },
+        {
+          "year": "1955",
+          "title": "科尔特 Python 6\" 皇家烤蓝旗舰发布",
+          "detail": "比尔·亨利团队正式发布 Python，集三孔通风肋、全长下护管与定制工坊手工研配 V 形火控于一身，震撼世界。"
+        },
+        {
+          "year": "1960–1970s",
+          "title": "誉满全球与「劳斯莱斯」赞词",
+          "detail": "成为全美执法精英、PPC 神射手与好莱坞影视的绝对焦点，枪械史学家威尔逊正式将其评为转轮手枪中的劳斯莱斯。"
+        },
+        {
+          "year": "1999–2005",
+          "title": "经典手工 I 框时代的绝响与停产",
+          "detail": "由于手工装配工时成本过巨，科尔特定制工坊逐步缩减产量并在 2005 年停产原版 Python，使其在收藏市场成为天价孤品。"
+        },
+        {
+          "year": "2020",
+          "title": "新时代高精数控不锈钢 Python 复兴",
+          "detail": "科尔特运用先进现代五轴 CNC 铣削与高强度现代不锈钢材料重构机芯，让蟒蛇传奇在二十一世纪焕发全新生机。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "The Rolls-Royce of Revolvers: Colt Python .357 Magnum Mechanical Perfection",
+      "deck": "In the golden era before automatic pistols dominated police holsters, master gunsmiths in Hartford, Connecticut, utilized hand-stoned clockwork and tapered V-leaf springs to create the pinnacle of wheelgun engineering.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1935–1953",
+          "title": "The Magnum Wave and the Quest for Precision",
+          "paragraphs": [
+            "In 1935, the emergence of the .357 S&W Magnum cartridge fundamentally altered the tactical doctrine of personal defense and law enforcement sidearms. Developing pressures exceeding thirty-five thousand pounds per square inch and launching a 158-grain lead projectile past fourteen hundred feet per second, the round was capable of punching through vehicle body panels and engine blocks. However, for nearly two decades thereafter, standard-issue revolvers chambering this round remained rugged utilitarian service arms that severely lacked the delicate trigger pull, refined balance, and optical ergonomics demanded by world-class target marksmen.",
+            "As America's premier historic arms maker, Colt's Manufacturing Company answered with the forged medium-frame Trooper in 1953. Yet, Colt executives and Hartford engineers recognized that the booming post-war civilian target market and elite law officers hungered for an uncompromising flagship. They envisioned a target revolver capable of absorbing relentless magnum pressures while exhibiting the silky action of a Swiss chronometer and the deep, dark mirror sheen of royal hot-salt bluing. Under strict secrecy, a dedicated skunkworks team initiated the project that would crown the wheelgun hierarchy."
+          ],
+          "audioScript": "By the early nineteen fifties, the raw power of the point three five seven magnum cartridge had taken law enforcement by storm. Yet existing revolvers were rugged mass-production tools lacking the finesse demanded by champion target marksmen. In Hartford, Connecticut, Colt set out to build an uncompromising flagship. Centering on their forged steel frame, Colt engineers aimed to fuse devastating magnum ballistic power with the silky clockwork precision of a fine watch, embarking on a quest to build the ultimate target revolver.",
+          "audioUrl": "audio/python/story_act1_en.mp3",
+          "focusPartId": "python_frame",
+          "focusPartLabel": "Forged Colt I-Frame w/ Top Strap & Grip Tang"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1953–1955",
+          "title": "Hartford's Uncompromising Craftsmen",
+          "paragraphs": [
+            "Project engineer Bill Henry and plant superintendent Herman Alenhart rejected modern manufacturing shortcuts, prioritizing perfection over cost. Rather than adopting cheap coil springs that stacked resistance towards the end of the stroke, Colt retained the classic folded V-leaf mainspring. Master fitters in Colt's Custom Shop honed every sear surface, stirrup pivot, and rebound lever using fine Arkansas oilstones until internal friction was virtually eliminated, producing a butter-smooth, non-stacking double-action stroke and a crisp, glass-rod single-action break.",
+            "Externally, Colt introduced two revolutionary barrel features. Above the precision-rifled 6-inch tube sat a ventilated sighting rib with three machined ports, allowing rising heat mirage from rapid target strings to dissipate harmlessly. Beneath it lay a solid, full-length underlug that fully shrouded the ejector rod while introducing critical forward ballast to tame the ferocious muzzle climb of high-pressure magnum loads. Finished by hand on graded felt wheels and dipped in boiling molten salts, the first 'Royal Blue' Python rolled out of Hartford in 1955 to universal acclaim."
+          ],
+          "audioScript": "Led by project engineer Bill Henry, Colt's master fitters spent countless hours stoning fire-control components by hand with Arkansas oilstones. They insisted on using a delicate folded V-leaf mainspring, eliminating the spring stacking that plagued conventional revolvers. Over the barrel, three ventilated rib slots were cut to disperse heat mirage, while a solid full-length underlug pinned down violent magnum muzzle climb. Hand-polished to a legendary Royal Blue mirror luster, the Colt Python emerged as an immediate mechanical sensation.",
+          "audioUrl": "audio/python/story_act2_en.mp3",
+          "focusPartId": "python_barrel",
+          "focusPartLabel": "6\" Ventilated-Rib & Full-Underlug Rifled Barrel"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1955–1960",
+          "title": "Bank-Vault Lockup and Internal Clockwork",
+          "paragraphs": [
+            "The mechanical crown jewel of the Colt Python is its legendary 'bank-vault lockup.' While contemporary revolvers exhibited rotational cylinder play upon hammer fall, the Python employed a proprietary two-step vertical indexing hand paired with an underside cylinder stop bolt. When the trigger is squeezed to its break point, the stop bolt locks solidly into the cylinder notch from below, while the hand's second step wedges tight against the ratchet star from behind. The cylinder is immobilized in two directions, holding the chamber bore dead-coaxial with the barrel forcing cone at the moment of ignition.",
+            "Internal safety was equally sophisticated. Colt's patented Positive Safety rebound lever, driven by the lower limb of the V-leaf mainspring, automatically interposes a hardened steel shoulder behind the hammer whenever the trigger is at rest. This mechanically prevents the firing pin from touching a primer unless the trigger is deliberately pulled through. Combined with a tight 1:14-inch right-hand target rifling twist and micrometric Accro sights, the Python delivered unmatched accuracy that set standard-bearer group records in bullseye competition."
+          ],
+          "audioScript": "At the heart of the Python lies Colt's legendary bank-vault lockup. Through a two-step indexing hand and a spring-loaded bottom stop bolt, the cylinder is wedged rigidly from two opposite directions the instant the hammer falls. This zero-play lockup ensures absolute alignment between the chamber and the barrel forcing cone. Supported by a fail-safe rebound safety lever and micrometric sights, the Python blurred the line between industrial ordnance and fine horology, setting unbeatable accuracy benchmarks.",
+          "audioUrl": "audio/python/story_act3_en.mp3",
+          "focusPartId": "python_hand",
+          "focusPartLabel": "Two-Step Vertical Indexing Ratchet Pawl (Hand)"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "1960–Present",
+          "title": "Cultural Icon and Twenty-First Century Rebirth",
+          "paragraphs": [
+            "Throughout the 1960s and 1970s, the Colt Python became an enduring badge of prestige among highway patrol officers, elite detectives, and Hollywood cinema icons. In National Police Revolver Championships and bullseye matches, marksmen gripping checkered American walnut stocks adorned with 24-karat gold Rampant Colt medallions dominated winner podiums. Renowned firearms historian R.L. Wilson famously christened it 'the Rolls-Royce of revolvers'—a testament to its peerless hand-fitted construction and deep mirror finish.",
+            "As astronomical labor costs associated with hand-tuning rendered traditional I-frame production unsustainable, Colt phased out regular production, shuttering custom orders by 2005 and sending collector values soaring. In 2020, Colt resurrected the Python, utilizing modern high-tensile stainless steel forgings and 5-axis CNC machining while reinforcing internal lockwork for modern longevity. Across generations, the unmistakable ventilated rib and the distinctive mechanical cadence of its bank-vault lockup remain an indelible monument to American ordnance craftsmanship."
+          ],
+          "audioScript": "From state trooper holsters to the silver screen, the Python rightfully earned its title as the Rolls-Royce of revolvers. Each early Royal Blue specimen encapsulated the peak of American hand craftsmanship. Although soaring manufacturing costs forced an end to traditional production in 2005, the platform became an iconic collector prize. Today, revitalized through modern high-grade stainless steel manufacturing, the Python's silhouette and legendary action remain an everlasting testament to gunsmithing perfection.",
+          "audioUrl": "audio/python/story_act4_en.mp3",
+          "focusPartId": "python_grip_left",
+          "focusPartLabel": "Left Checkered American Walnut Grip w/ Gold Colt Medallion"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Bank-Vault Full-Cock Lockup Geometry",
+          "tag": "Two-Step Hand Lockup",
+          "summary": "By coordinating an upward-driving two-step indexing hand against the ratchet star while the bottom bolt engages the cylinder notch, the cylinder is rigidly clamped from opposite directions at the moment of hammer fall, eliminating cylinder shake and chamber misalignments.",
+          "focusPartId": "python_hand",
+          "focusPartLabel": "Two-Step Vertical Indexing Ratchet Pawl (Hand)"
+        },
+        {
+          "id": "bt2",
+          "title": "Tapered Folded V-Leaf Mainspring & Positive Safety",
+          "tag": "Stack-Free Clockwork",
+          "summary": "Utilizes a hand-tuned tapered V-leaf spring where the upper limb powers the hammer via a pivoting stirrup link without stacking, while the lower limb drives the rebound safety lever to interpose a solid block behind the hammer, ensuring supreme drop safety and a match-grade trigger break.",
+          "focusPartId": "python_mainspring",
+          "focusPartLabel": "Hand-Tuned Tapered Folded V-Leaf Mainspring"
+        },
+        {
+          "id": "bt3",
+          "title": "Three-Slot Ventilated Rib & Full-Length Underlug Barrel",
+          "tag": "Heat Mitigation & Counter-Recoil",
+          "summary": "Integrates a triple-ported raised rib to channel away rising heat mirage during rapid target strings, paired with a solid, full-length ejector rod underlug that provides deliberate forward ballast to tame severe .357 Magnum muzzle flip.",
+          "focusPartId": "python_barrel",
+          "focusPartLabel": "6\" Ventilated-Rib & Full-Underlug Rifled Barrel"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1935",
+          "title": "Introduction of the .357 S&W Magnum",
+          "detail": "Debut of the 35,000 PSI cartridge establishes unprecedented handgun ballistics and initiates the demand for premium heavy-frame target revolvers."
+        },
+        {
+          "year": "1953",
+          "title": "Colt Trooper I-Frame Service Platform",
+          "detail": "Colt launches the forged I-frame service revolver, providing the engineering foundation for a dedicated luxury match gun."
+        },
+        {
+          "year": "1955",
+          "title": "Colt Python 6\" Royal Blue Unveiled",
+          "detail": "Bill Henry and master fitters launch the flagship Python, showcasing the ventilated rib, full underlug, and hand-tuned V-leaf clockwork."
+        },
+        {
+          "year": "1960–1970s",
+          "title": "PPC Dominance & 'Rolls-Royce' Moniker",
+          "detail": "The Python sweepingly dominates competitive bullseye matches and law enforcement shooting, earning global acclaim as the 'Rolls-Royce of Revolvers.'"
+        },
+        {
+          "year": "1999–2005",
+          "title": "Conclusion of Classic Hand-Fitted Era",
+          "detail": "Excessive hand-fitting production costs lead Colt to sunset original Custom Shop I-frame production, turning original Pythons into premier auction collectibles."
+        },
+        {
+          "year": "2020",
+          "title": "CNC Stainless Modern Python Rebirth",
+          "detail": "Colt reintroduces the Python built with modern aerospace 5-axis CNC machining, high-strength stainless steel, and reinforced internal lockwork."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "python_barrel": {
+      "partId": "python_barrel",
+      "bomCode": "U-01",
+      "calloutLabelEn": "6in Ventilated Barrel",
+      "zh": {
+        "roleTag": "152.4毫米比赛重管 · 通风散热肋条与全长配重护管",
+        "overview": "这是科尔特蟒蛇最具辨识度的一体锻造六英寸重型比赛靶管，以超细螺纹刚性旋入I型转轮框前部节套。管身顶部布置三孔通风肋条，下方集成全长实心下护管，枪口加工有内凹十一度比赛级保护靶冠。",
+        "craftAndMaterial": "采用高抗拉特种枪线钢整体锻造车铣成型，外表施以传奇的哈特福德皇家热盐镜面烤蓝。顶部铣通的三组矩形散热孔用于消除高热气浪造成的瞄准蜃景，全长实心下护罩则提供了决定性的重心前移配重。",
+        "kinematicRole": "击发阶段作为绝对静态弹道基准件，尾部迫入锥接纳自弹巢飞出的超音速弹头并施加右旋膛线稳定；在全枪拆解进度约百分之四时拔出锁紧销即可旋离机匣。",
+        "designHighlight": "全长实心下护管不仅收纳退壳杆，更大幅增加了枪口惯性力矩，有效抑制点三五七马格南高达两百四十兆帕膛压带来的猛烈上跳，成为高精度速射的制胜关键。",
+        "audioScript": "请看这根传奇的六英寸重型枪管。顶部的通风肋条不仅造型优雅，更能及时散去连续射击产生的高热空气，防止瞄准视线发生畸变。下方沉甸甸的实心护管为整枪提供了绝佳的前部平衡，驯服了马格南弹药的凶狠后坐力。",
+        "audioUrl": "audio/python/parts/python_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "152.4mm Target Barrel · Triple-Vent Rib & Full Underlug",
+        "overview": "This iconic six-inch match-grade forged barrel threads precisely into the front boss of the Colt I-frame. It incorporates a triple-vented top sight rib and a solid full-length underlug terminating in a recessed target crown.",
+        "craftAndMaterial": "Precision machined from ordnance-grade barrel steel and hand-polished to Hartford's legendary mirror Royal Blue finish. The three ventilated ports dissipate heat mirage over the sightline, while the solid lower shroud adds critical forward muzzle ballast.",
+        "kinematicRole": "Remains static during cycling to direct the 158-grain bullet through its 1-in-14 right-hand twist after entry via the 11-degree forcing cone; unthreads from the receiver during field teardown beyond four percent progress.",
+        "designHighlight": "Integrating a full-length solid underlug dampens the violent muzzle flip of the potent .357 Magnum cartridge, allowing target shooters to hold sight alignment seamlessly between rapid double-action shots.",
+        "audioScript": "This legendary six-inch ventilated-rib barrel is the hallmark of the Colt Python. Notice the three milled slots along the top, designed to bleed off heat shimmer that would otherwise distort your target picture. Below, the solid steel underlug adds vital forward weight, brilliantly taming the thunderous snap of the magnum cartridge.",
+        "audioUrl": "audio/python/parts/python_barrel_en.mp3"
+      }
+    },
+    "python_front_sight": {
+      "partId": "python_front_sight",
+      "bomCode": "U-02",
+      "calloutLabelEn": "Pinned Ramp Sight",
+      "zh": {
+        "roleTag": "博格曼防挂斜坡准星 · 高对比橙红导光嵌片",
+        "overview": "本准星采用经典博格曼斜坡轮廓，由横向定位圆销紧固于枪管顶部通风肋条的最前端槽口。照门视野正对的斜坡背面镶嵌有高反差橙红聚合树脂嵌片，提供醒目的前准星参考点。",
+        "craftAndMaterial": "准星基座由碳素合金钢经发蓝硬化处理，嵌片选用耐油抗紫外线的高透光率橙红丙烯酸材料。斜坡造型可防止快速拔枪时钩挂皮质或织物枪套边缘。",
+        "kinematicRole": "射击与上膛过程中与枪管整体同动，充当瞄准基线的前端几何原点；在分解至百分之四进度时，冲出横向固定销即可向上提离滑轨。",
+        "designHighlight": "红嵌片采用带倒钩燕尾槽热压成型，即便历经数万发马格南强冲击也不会松动脱落，在昏暗射击场或复杂丛林背景下能帮助射手在十分之一秒内锁定准星顶点。",
+        "audioScript": "嵌在通风肋条前端的红色斜坡准星十分醒目。这种无钩挂轮廓非常利于快速出枪，而中央镶嵌的鲜艳橙红嵌片能在恶劣光照或阴暗背景下汇聚环境光线，让射手瞬间建立精准瞄准基线。",
+        "audioUrl": "audio/python/parts/python_front_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Baughman Ramp Sight · High-Contrast Red Insert",
+        "overview": "This target front sight features a snag-free Baughman ramp pinned transversely into the muzzle-end slot of the ventilated barrel rib. Its face holds a vibrant red-orange acrylic insert angled squarely toward the shooter.",
+        "craftAndMaterial": "Machined from hardened ordnance steel with deep nitrided bluing, featuring an injection-molded acrylic insert. The smooth ramp eliminates sharp edges that could snag on leather holsters during a quick draw.",
+        "kinematicRole": "Serves as the static forward optical datum throughout all firing phases; separates upward from the barrel slot upon drifting out its retaining pin at four percent disassembly.",
+        "designHighlight": "The dovetail-anchored red insert gathers ambient light efficiently, ensuring rapid sight acquisition against dark backgrounds without the electrical vulnerability of illuminated sights.",
+        "audioScript": "Pinned securely to the ventilated rib sits the Baughman-style target front sight. Its snag-free ramp makes drawing smooth, while the vivid red insert instantly draws the shooter's eye to the exact post summit, even under poor indoor range lighting or dense field cover.",
+        "audioUrl": "audio/python/parts/python_front_sight_en.mp3"
+      }
+    },
+    "python_rear_sight": {
+      "partId": "python_rear_sight",
+      "bomCode": "U-03",
+      "calloutLabelEn": "Accro Rear Sight",
+      "zh": {
+        "roleTag": "柯尔特阿克罗千分尺照门 · 高低风偏独立精密微调",
+        "overview": "这是平嵌于转轮座顶梁尾部凹槽内的柯尔特Accro比赛级全可调机械照门。照门主体提供宽阔的方形缺口视场，由高低升降螺钉与风偏调节螺栓双向锁控。",
+        "craftAndMaterial": "采用高碳工具钢经精密线切割与防反光喷砂发蓝处理，缺口边缘带有微米级倒角并填涂白色定位框。调节螺栓内置弹簧定位滚珠，提供清晰清脆的分度咔嗒感。",
+        "kinematicRole": "承受全枪后坐冲击并始终保持调校零位，与前准星构成瞄准闭环；在机匣拆解初级阶段松开升降螺栓即可自顶梁滑槽整体抽出。",
+        "designHighlight": "每旋转一档棘轮均带来清晰明确的角分变化，配合坚固的保护侧翼，既满足二十五米手枪打孔赛的挑剔精度，又能经受恶劣执勤撞击考验。",
+        "audioScript": "机匣顶部的阿克罗千分尺可调照门体现了老派精密工匠精神。无论是高低还是风偏调节螺栓，转动时都有清晰清脆的咔嗒定位感。结实的侧翼在发生意外磕碰时能保护调节丝杆，确保归零万无一失。",
+        "audioUrl": "audio/python/parts/python_rear_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Colt Accro Target Sight · Micrometric Windage & Elevation",
+        "overview": "Recessed into the rear of the receiver top strap, this Colt Accro match sight provides a sharp rectangular notch picture. Dual fine-pitch screws offer precise, independent clicks for windage and elevation adjustments.",
+        "craftAndMaterial": "Manufactured from high-carbon alloy steel with anti-glare matte bluing on the rear face and bright blued housings. A clean white outline surrounds the notch to speed target alignment.",
+        "kinematicRole": "Maintains absolute ballistic zero through heavy recoil pulses; detaches from the frame dovetail during early receiver stripping around four percent progress.",
+        "designHighlight": "Engineered with internal spring-loaded detents delivering distinct quarter-minute clicks, combining target-grade adjustment fidelity with robust side wings capable of resisting holster abuse.",
+        "audioScript": "Settled flush into the frame's top strap is the Colt Accro target sight. Each turn of the elevation or windage screws produces a crisp, positive click. The protective steel shoulders shield the delicate screw threads from knocks, maintaining your hard-won zero.",
+        "audioUrl": "audio/python/parts/python_rear_sight_en.mp3"
+      }
+    },
+    "python_barrel_pin": {
+      "partId": "python_barrel_pin",
+      "bomCode": "U-04",
+      "calloutLabelEn": "Barrel Cross-Pin",
+      "zh": {
+        "roleTag": "枪管螺纹防旋横向锁紧销 · 机械过盈硬化插销",
+        "overview": "这是一枚横向贯通转轮座前节套与枪管螺纹结合部的淬硬高碳钢圆柱定位销。其核心功用是切向锁死枪管，阻止其在强大扭矩与振动下发生任何微小松动偏转。",
+        "craftAndMaterial": "选用不锈钢棒料经无心磨床超精研磨，表面经过深层淬火达到六十洛氏硬度。外径维持精密过盈公差，确保装配于机匣时实现微米级无缝贴合。",
+        "kinematicRole": "射击全程作为紧固结构件抵抗膛线施加在枪管上的扭转载荷；在军械师彻底拆离枪管前，必须首先在专用冲子辅助下自机匣左侧冲出。",
+        "designHighlight": "通过横穿螺纹牙顶构筑刚性物理销死，彻底杜绝了高膛压点三五七马格南弹头沿右旋膛线加速滑移时对枪管施加的反向拧卸扭矩。",
+        "audioScript": "这颗微小的不锈钢横销是蟒蛇高精度的无名功臣。它横穿机匣前套与枪管螺纹牙山，像一道坚固的机械门闩，死死锁住枪管，抵御高压弹头沿膛线高速旋转时释放的巨大扭转力矩。",
+        "audioUrl": "audio/python/parts/python_barrel_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Frame-Boss Cross-Pin · Anti-Torque Thread Lock",
+        "overview": "This precision hardened cross-pin transverses the upper portion of the frame collar and cuts across the outer threads of the barrel shank. It mechanically locks the barrel to eliminate any vibrational loosening.",
+        "craftAndMaterial": "Centerless ground from high-tensile stainless steel, hardened to 60 HRC to eliminate shearing. Finished to an interference-fit tolerance for vibration-proof retention.",
+        "kinematicRole": "Absorbs rotational reactionary torque induced by rifling during bullet acceleration; must be driven out with a brass punch before the barrel can be unscrewed from the frame.",
+        "designHighlight": "By engaging the barrel threads tangentially, it guarantees that thousands of rounds of high-pressure magnum ammunition cannot cause even microscopic rotational shift of the top sight rib.",
+        "audioScript": "Driven crosswise through the front frame boss, this hardened pin locks the barrel threads rigidly in place. As the magnum bullet engages the rifling, immense rotational torque tries to loosen the barrel, but this solid steel cross-pin ensures that the alignment never shifts by even a micron.",
+        "audioUrl": "audio/python/parts/python_barrel_pin_en.mp3"
+      }
+    },
+    "python_detent_plunger": {
+      "partId": "python_detent_plunger",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Rod Detent Plunger",
+      "zh": {
+        "roleTag": "退壳杆前端弹性锁止柱塞组 · 弹巢双支点刚性同轴闭锁",
+        "overview": "该组件包含微型锥头柱塞及预压螺旋弹簧，深嵌于枪管下护管前端的阶梯盲孔中。当弹巢摆入闭锁位置时，柱塞精准卡入退壳杆头部的内凹球窝。",
+        "craftAndMaterial": "柱塞本体由不锈钢精车成型并经表面镜面打磨，弹簧采用耐疲劳琴钢丝精密绕制。圆滑的球头弧面在提供牢靠轴向抓力的同时确保开合弹巢时推力平顺。",
+        "kinematicRole": "弹巢合拢射击时与机匣后锁销协同构筑前后双点同轴刚性支撑；拆解枪管组件时随着下护管螺栓松脱从前端盲孔弹出释放。",
+        "designHighlight": "这一前端闭锁方案弥补了机匣单点锁止刚性不足的缺陷，迫使弹巢六个分弹膛在击发瞬间与枪管迫入锥保持微米级严格共轴，大幅降低铅屑外溅。",
+        "audioScript": "藏在枪管下护管前端的这个弹簧柱塞看似不起眼，实则至关重要。当转轮合拢时，它稳稳咬合退壳杆头部，与机匣尾部的锁销形成前后两点夹紧，将弹膛牢牢稳定在与枪管完全同轴的位置。",
+        "audioUrl": "audio/python/parts/python_detent_plunger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Underlug Detent Plunger · Dual-Spindle Front Crane Lock",
+        "overview": "Housed within a blind pocket inside the front of the barrel underlug, this spring-loaded plunger engages the conical tip of the ejector rod. It completes the front lockup when the cylinder crane snaps home.",
+        "craftAndMaterial": "Turned from hardened stainless steel with a polished spherical nose and paired with a high-grade music-wire coil spring. Its contoured head allows smooth camming during cylinder closing while resisting lateral play.",
+        "kinematicRole": "Clamps the front end of the cylinder spindle coaxially with the bore during firing; decompresses and drops free during detail stripping of the front underlug subassembly.",
+        "designHighlight": "By securing the front tip of the ejector rod alongside the rear center pin, it eliminates crane deflection under magnum recoil, ensuring concentric bullet jump into the forcing cone.",
+        "audioScript": "Concealed inside the tip of the underlug is this spring-loaded plunger. When you snap the cylinder shut, its spherical nose locks cleanly into the front of the ejector rod, forming a rock-solid dual-point lock that keeps the chamber centered right on the bore axis.",
+        "audioUrl": "audio/python/parts/python_detent_plunger_en.mp3"
+      }
+    },
+    "python_frame": {
+      "partId": "python_frame",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Forged I-Frame",
+      "zh": {
+        "roleTag": "热锻合金钢I型转轮座骨架 · 皇家镜面烤蓝零位机匣",
+        "overview": "这是全枪的装配基准件与核心力学骨架，由重型合金钢热锻件整体掏铣而成。其整合了厚实的平直顶梁、半球形燃气挡盾、椭圆扳机护圈以及完整的握把龙骨。",
+        "craftAndMaterial": "精选特种低合金渗碳钢经热模锻成型，经多道工序以手工毛毡轮涂抹抛光膏精抛至无瑕镜面，随后浸入专用高温氧化盐浴获得深邃深蓝光泽，即闻名遐迩的皇家烤蓝。",
+        "kinematicRole": "在全周期作为各运动件的几何基准承载高达两百多兆帕的燃气冲量，在全枪三维爆炸拆解中固定于坐标原点维持零位不动。",
+        "designHighlight": "科尔特I型框架加厚了后坐挡板与顶梁交汇处的倒角圆弧，能够无应力集中地反复承受强装药点三五七马格南弹药的疲劳冲击，历经数十年使用依然稳固如初。",
+        "audioScript": "这便是著名的科尔特大号I型整体锻造转轮机匣，整枪的绝对核心基准。老哈特福德工匠经过数小时纯手工羊毛轮打磨，才赋予它这层如深海般沉静的皇家镜面烤蓝。粗壮的顶梁与后坐挡板足以承受马格南弹药的狂暴冲击。",
+        "audioUrl": "audio/python/parts/python_frame_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Forged Alloy-Steel I-Frame · Royal Blue Structural Chassis",
+        "overview": "The foundational skeleton of the revolver, forged from a solid alloy steel billet and precision milled. It incorporates the heavy top strap, hemispherical recoil shield, trigger guard, and full grip tang.",
+        "craftAndMaterial": "Hot drop-forged ordnance alloy steel, extensively hand-polished with wooden laps and cloth wheels before receiving Colt's iconic deep hot-salt Royal Blue finish. Internal tracks are wire-honed to tight tolerances.",
+        "kinematicRole": "Absorbs chamber pressure forces and recoil impulses while providing rigid alignment tracks for all fire-control pivots; remains stationary as the 0% assembly anchor.",
+        "designHighlight": "Engineered with generously radiused transitions at the recoil shield and front boss to eliminate stress risers, comfortably absorbing the punishing battering of proof-load .357 Magnum ammunition.",
+        "audioScript": "Here is the master chassis of the Python: the forged steel I-frame. Craftsmen spent hours hand-polishing this steel on felt wheels before giving it Hartford's legendary Royal Blue finish. Its reinforced top strap and recoil shield effortlessly withstand the punishing pressure of full-house magnum cartridges.",
+        "audioUrl": "audio/python/parts/python_frame_en.mp3"
+      }
+    },
+    "python_sideplate": {
+      "partId": "python_sideplate",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Lockwork Sideplate",
+      "zh": {
+        "roleTag": "精密研配火控侧盖板 · 钟表级内部机构封闭承力件",
+        "overview": "这是镶嵌于机匣右侧的异形火控室封闭盖板，由两枚细牙螺钉精准紧固。其内壁分布有击锤、扳机及拨爪转轴的对中支承盲孔，为内部火控机芯提供双向悬臂加固。",
+        "craftAndMaterial": "经高硬度模具钢模锻并经老师傅纯手工挫配刮研，外表面施以与机匣完全同批次的镜面烤蓝。外轮廓公差达到零间隙配合，闭合后接缝几乎肉眼不可察觉。",
+        "kinematicRole": "承受各火控轴心的侧向倾覆弯矩；在三维拆卸达到百分之四时卸下紧固螺钉后向右平行震落取下，此时内部精密钟表火控完全展露。",
+        "designHighlight": "由于盖板起到底部转轴双端支承作用，军械拆解时严禁使用金属工具硬撬边缘，必须敲击机匣握把依靠惯性震落，以保护手工研配的平整贴合边缘不发生卷刃变形。",
+        "audioScript": "转轮框右侧这块手工研配的侧盖板，体现了顶级转轮的装配境界。它的边缘配合严丝合缝，肉眼几乎看不到接缝。除了防尘，内侧盲孔更为击锤与扳机转轴提供双向承力支撑，拆解时必须靠震动使其滑出，切忌硬撬。",
+        "audioUrl": "audio/python/parts/python_sideplate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Fitted Lockwork Sideplate · Dual-Pivot Frame Closure",
+        "overview": "This contoured sideplate seals the right-hand action cavity of the frame, fastened by two slotted screws. Its interior surface contains precision blind boss holes that support the hammer, trigger, and rebound lever pivots.",
+        "craftAndMaterial": "Forged carbon steel, hand-stoned and scraped by master armorers to achieve a virtually invisible hairline seam against the frame, then finished in matching Royal Blue.",
+        "kinematicRole": "Stabilizes the internal pins against torsional deflection during heavy double-action operation; separates outward to the right at four percent disassembly once its screws are withdrawn.",
+        "designHighlight": "Fitting this plate requires delicate hand-lapping. Prying it open with metal tools can warp the critical alignment shoulders; armorers loosen it by gently tapping the frame with a wooden hammer handle.",
+        "audioScript": "This hand-fitted sideplate protects the Python's inner clockwork. Hand-stoned to create a hairline fit with the frame, its interior pockets provide rigid opposite-end support for the action pins. Armorer protocol strictly forbids prying this plate: it must be tapped out using inertia alone.",
+        "audioUrl": "audio/python/parts/python_sideplate_en.mp3"
+      }
+    },
+    "python_sideplate_screws": {
+      "partId": "python_sideplate_screws",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Sideplate Screws",
+      "zh": {
+        "roleTag": "军械级窄槽沉头侧盖紧固螺钉组 · 高强度细牙机械紧固件",
+        "overview": "这两枚螺钉分别位于火控室盖板的右后上方及前下角，呈对角线施压牢牢拉紧侧盖。螺钉头部加工有极窄一字刀槽，螺杆带超精密英制细牙螺纹。",
+        "craftAndMaterial": "采用高抗剪特种合金钢经数控车削与热处理淬火，端面经过高光同心圆镜面抛光并施加独立热盐烤蓝。极窄的螺孔槽口要求匹配专用研磨平口军械改锥拆装。",
+        "kinematicRole": "持续施加预紧夹紧力确保侧盖板在反复猛烈后坐下不产生微米级间隙移动；在拆卸程序首阶段百分之四时旋转拧出以解除侧盖物理约束。",
+        "designHighlight": "两枚螺钉螺杆长度及肩部倒角经过精心校准，防止螺尾过长干涉内部回弹杠杆或击锤的圆弧回旋行程，体现了极端紧凑布局下的精密公差控制。",
+        "audioScript": "紧固侧盖的两枚细牙一字螺钉十分考究。螺帽端面被抛光得如镜子般反光，极窄的一字刀槽专门防止普通螺丝刀打滑拧花。必须使用专用军械平口改锥拆卸，避免破坏其完美的镜面烤蓝边缘。",
+        "audioUrl": "audio/python/parts/python_sideplate_screws_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Gunsmith-Slotted Screws · Precision Torqued Fasteners",
+        "overview": "These two fine-threaded countersunk screws seat flush into the upper-rear and lower-forward corners of the sideplate. They clamp the sideplate flat to secure the internal lockwork.",
+        "craftAndMaterial": "Machined from high-shear chrome-moly steel with hardened narrow-slot heads, domed and polished to a brilliant mirror finish before being blued to match the frame.",
+        "kinematicRole": "Maintains constant clamping torque across the sideplate joints under recoil shock; backed out counter-clockwise at the earliest stage of field disassembly.",
+        "designHighlight": "Engineered with tailored thread lengths and shoulder reliefs to avoid projecting into the internal cavity where they could rub against the swinging hammer body or rebound lever.",
+        "audioScript": "These two sideplate screws feature ultra-narrow, traditional gunsmith slots and convex polished heads. Standard hardware screwdrivers will slip and mar their royal finish, requiring a hollow-ground armorer's bit to remove them cleanly during maintenance.",
+        "audioUrl": "audio/python/parts/python_sideplate_screws_en.mp3"
+      }
+    },
+    "python_grip_left": {
+      "partId": "python_grip_left",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Left Walnut Grip",
+      "zh": {
+        "roleTag": "经典美洲黑胡桃木左靶用护把 · 二十二线手工菱格纹嵌金徽章",
+        "overview": "这是符合人手握持工学的全尺寸靶用左半边握把，紧密覆裹在转轮座握把龙骨的左侧面。其上部镶嵌有一枚精美的二十四K镀金科尔特跃马浮雕铜章。",
+        "craftAndMaterial": "选用质地致密的北美高等级黑胡桃木陈化原木，由工匠手工刻画尖盾边缘与每英寸二十二线的锐利防滑菱形格纹，木材经多道天然熟亚麻籽油手工擦拭渗透固化。",
+        "kinematicRole": "射击全程作为人机接口将后坐冲击力分散传递至射手掌心与指根；在拆解至百分之四进度时松开贯穿螺钉即可向左平移脱离钢龙骨定位销。",
+        "designHighlight": "第一代宽底靶用造型下部外扩，能够有效增大接触受力面积，阻遏大威力马格南弹药发射时枪口剧烈上扬在手掌内部产生的扭擦与疼痛疲劳。",
+        "audioScript": "安装在左侧的北美黑胡桃木靶用护把，散发着老式枪械独特的温润质感。护把表面纯手工刻画出每英寸二十二线的尖锐菱形格纹，提供极佳的防滑握持力。上方的镀金科尔特跃马徽章，则是传世名枪的身份印记。",
+        "audioUrl": "audio/python/parts/python_grip_left_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Left Walnut Target Grip · 22 LPI Checkered Gold Medallion",
+        "overview": "This full-profile target grip panel mounts to the left side of the grip frame tang, tailored for target control. A gold-plated Colt Rampant medallion is inlaid flush into its upper thumb shelf.",
+        "craftAndMaterial": "Carved from premium cured American black walnut, hand-cut with crisp 22 lines-per-inch diamond checkering in a classic borderless pattern and hand-finished with multiple coats of tung and linseed oils.",
+        "kinematicRole": "Distributes magnum recoil energy into the palm and thumb web; lifts off sideways from its receiver locator pins upon loosening the through-screw at four percent disassembly.",
+        "designHighlight": "The flared target flare at the base widens the surface area against the heel of the shooting hand, counteracting the rotational torque of magnum loads to protect the shooter from wrist strain.",
+        "audioScript": "Crafted from seasoned American black walnut, the left grip panel pairs natural wood elegance with rock-solid control. Hand-cut checkering at twenty-two lines per inch provides a secure hold under rapid fire, crowned proudly by the iconic 24-karat gold-plated Rampant Colt medallion.",
+        "audioUrl": "audio/python/parts/python_grip_left_en.mp3"
+      }
+    },
+    "python_grip_right": {
+      "partId": "python_grip_right",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Right Walnut Grip",
+      "zh": {
+        "roleTag": "美洲黑胡桃木右靶用护把 · 整体包覆龙骨与内嵌黄铜螺母",
+        "overview": "这是与左护把对位锁紧的右半边黑胡桃木靶把，内侧精细掏空以容纳机匣龙骨与回弹V形主簧下端。护把中心凹孔处镶嵌有防松脱黄铜内螺纹衬套。",
+        "craftAndMaterial": "与左护板由同一块原木剖切配对以保证对称的年轮与木纹，嵌装的黄铜螺母经滚花外壁压入木胎，防止反复拆装旋扭导致实木孔洞滑牙开裂。",
+        "kinematicRole": "与左护板协同提供稳固的指槽弧面接触；拆卸时在退出贯通螺杆后，向右横向拔离机匣定位销即可实现快速分解。",
+        "designHighlight": "内侧型腔根据主簧弯折极限经过极其精准的三维雕铣，在确保木质侧壁保有充足抗冲强度的同时，为击锤压缩时主簧下肢的弹性形变留出了充裕安全间隙。",
+        "audioScript": "与左侧同料配对的右护把，内嵌有坚固的黄铜贯通螺套。它的内部经过精密掏空雕刻，既要严丝合缝地包裹金属握把骨架，又给内部剧烈压缩变形的V形主簧留出了自由摆动的运动空间。",
+        "audioUrl": "audio/python/parts/python_grip_right_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Right Walnut Target Grip · Contoured Tang Shell & Brass Escutcheon",
+        "overview": "The matching half of the two-piece grip assembly, enclosing the right side of the steel grip frame. It features a pressed-in brass threaded bushing in its recessed cross-bolt hole.",
+        "craftAndMaterial": "Pattern-matched from the same walnut blank as the left side for consistent grain flow, holding a knurled brass nut pressed firmly into the wood to guard against stripped threads over repeated maintenance.",
+        "kinematicRole": "Provides an ergonomic bearing surface for the right-hand fingertips; detaches rightward around four percent disassembly after the retention screw is backed out.",
+        "designHighlight": "Its inner relief pocket is milled with precise clearance steps, leaving room for the lower limb of the V-mainspring to flex freely during cycling without binding against the wood.",
+        "audioScript": "Milled to mirror the left grip, the right walnut panel houses a knurled brass threaded escutcheon. Its interior cavity is hollowed out to wrap cleanly around the steel frame while leaving ample running room for the lower limb of the V-shaped mainspring to flex.",
+        "audioUrl": "audio/python/parts/python_grip_right_en.mp3"
+      }
+    },
+    "python_cylinder_latch": {
+      "partId": "python_cylinder_latch",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Pull Cylinder Latch",
+      "zh": {
+        "roleTag": "科尔特后拉式泪滴形转轮锁笋 · 弹巢中心锁定销释放钮",
+        "overview": "这是布置在机匣左侧火控室后上方具有代表性的泪滴状拇指释放滑钮。其下部穿入机匣导槽连接内部推拉连杆，专门用于向后拉脱退壳星中心的锁紧轴。",
+        "craftAndMaterial": "由合金工具钢整体锻打后成型，外表面带有密集的防滑横向齿纹，整体沉着镜面皇家烤蓝。泪滴倾斜曲面专为射手右手大拇指自然向后划动的生物力学优化设计。",
+        "kinematicRole": "静止射击时在内簧作用下顶紧中轴实现闭锁；用户向后拉脱它时，抽离后定位销，解锁弹巢组件使其沿左侧摇臂平顺向外甩开；在机匣拆卸阶段随推杆组件脱出。",
+        "designHighlight": "与竞争对手史密斯-韦森的前推式解锁完全相反，科尔特的向后拉动解锁手感符合手掌向内收紧的抓握习惯，从根本上防止了猛烈后坐力迫使射手拇指意外向前误碰锁笋导致弹巢失锁。",
+        "audioScript": "请特别留意这个泪滴形弹巢锁笋。不同于常见的向前推动操作，科尔特的经典操作是向后拉动。用拇指轻轻向后拨动它，内部销轴就会收回，整组六发弹巢随即向左侧优雅地滑出框架。向后拉的设计有效避免了马格南后坐力误碰失锁。",
+        "audioUrl": "audio/python/parts/python_cylinder_latch_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Colt Pull Latch · Rear Pin Cylinder Release",
+        "overview": "Positioned on the upper left flank of the frame behind the recoil shield, this teardrop-shaped latch controls cylinder unlocking. Retracting it slides the internal bolt rearward to disengage the center ratchet pin.",
+        "craftAndMaterial": "Forged alloy steel with deeply checkered horizontal serrations across its teardrop thumb face, finished in high-polish Royal Blue to match the receiver profile.",
+        "kinematicRole": "Keeps the rear center pin locked during firing; pulled rearward by the shooter's thumb to allow the cylinder crane to pivot out to the left, and dismantled during lockwork teardown.",
+        "designHighlight": "Unlike Smith & Wesson's forward-sliding thumbpiece, Colt's pull-to-release action uses natural thumb contraction, preventing heavy magnum recoil pulses from inadvertently unlatching the cylinder.",
+        "audioScript": "Notice this iconic teardrop thumb latch on the left of the frame. In true Colt fashion, you pull this piece backwards rather than pushing forward. Drawing it rearward pulls the center pin clear of the star, letting the six-shot cylinder swing out smoothly to the left for reloading.",
+        "audioUrl": "audio/python/parts/python_cylinder_latch_en.mp3"
+      }
+    },
+    "python_hammer": {
+      "partId": "python_hammer",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Target DA/SA Hammer",
+      "zh": {
+        "roleTag": "宽尾马刺防滑双动/单动靶用击锤 · 镜面研磨击发核心构件",
+        "overview": "这是科尔特火控系统的核心回转打击件，销轴铰接在机匣火控室内。上部具备宽大的菱格防滑马刺尾，下部集成单动挂机缺口并铰接有双动顶杆，平整前端专门敲击机匣浮动击针。",
+        "craftAndMaterial": "经高硬度模具钢模锻与局部深层渗碳淬火，侧壁经过极致平整的白钢镜面拉丝手工抛光，顶部加宽马刺尾两翼有清晰滚花，前端平面具备极高抗疲劳冲击强度。",
+        "kinematicRole": "单动时后压扣入待击槽，双动时由扳机连杆顶推后翻；击发瞬间在V簧暴发力驱动下以超高角速度向前猛砸惯性击针；拆卸在百分之六左右取下挂耳后从销轴抽出。",
+        "designHighlight": "放弃了在击锤前端直接铆接击针的传统老旧设计，改为敲击机匣内浮动的独立惯性击针，不仅提升了击针寿命，而且彻底解决了意外跌落时的走火隐患。",
+        "audioScript": "这枚宽尾马刺靶用击锤是蟒蛇的机械灵魂。侧面打磨得像白钢镜面一样光亮，加宽的击锤尾部带有防滑滚花，便于拇指轻松压下单动待击。击锤前方平头直接撞击机匣内置的浮动击针，动作干脆利落，毫不拖泥带水。",
+        "audioUrl": "audio/python/parts/python_hammer_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Target DA/SA Hammer · Wide Checkered Spur Striker",
+        "overview": "The central rotational striking element inside the frame lockwork, rotating about its hardened pivot pin. It features an extra-wide checkered target spur, single-action sears, and an articulated double-action strut.",
+        "craftAndMaterial": "Precision drop-forged high-carbon alloy steel, with its flats hand-polished in bare white steel while its contours are blued. Contact faces are case-hardened to preserve sharp sear break angles.",
+        "kinematicRole": "Rotates back under thumb pressure or trigger-strut camming to load the mainspring; snaps violently forward upon sear release to strike the inertial firing pin; dissociates from its pivot pin around six percent teardown.",
+        "designHighlight": "Python abandoned nose-mounted hammer pins in favor of striking a frame-mounted floating inertial firing pin, greatly improving striker longevity and dropsafe drop security under magnum operation.",
+        "audioScript": "The wide-spur target hammer is the striking heart of this revolver. Its mirror-polished silver flats highlight Colt's hand-finishing pedigree. The enlarged checkered spur gives your thumb effortless cocking traction, while its flat face strikes a frame-housed inertial pin with lightning speed.",
+        "audioUrl": "audio/python/parts/python_hammer_en.mp3"
+      }
+    },
+    "python_hammer_stirrup": {
+      "partId": "python_hammer_stirrup",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Hammer Stirrup Link",
+      "zh": {
+        "roleTag": "击锤主簧铰接U形挂耳连杆 · 零叠簧无顿挫动力枢轴",
+        "overview": "这是铰接悬挂在击锤底部后跟的一对微型U形锻钢连接吊耳。其下端横向圆销穿入折叠V形片状主簧的上肢弯钩，充当击锤转动与主簧张拉之间的柔性摆动枢轴。",
+        "craftAndMaterial": "由高强度不锈钢微型锻造而成，承重横销表面经过硬化与超精研磨，能够经受数万次循环往复的大角度偏转拉伸而不发生卡滞或疲劳微裂纹。",
+        "kinematicRole": "在击锤回转的全行程中自适应摆动，将击锤后跟的圆弧运动无侧向摩擦阻力地传导给V簧；在拆解流程达到百分之六时，随击锤总成从主簧勾爪脱开。",
+        "designHighlight": "相比传统螺旋簧顶杆产生的侧向推力，挂耳连杆构建的纯拉力几何学彻底消除了双动末段扳机力骤然陡增的叠簧硬点，成就了蟒蛇如丝绸般平滑均匀的传奇击发手感。",
+        "audioScript": "悬挂在击锤底部的这个U形小挂耳，是消除扳机硬点的机械秘诀。它像一个摇摆吊桥，把击锤的旋转圆弧转化为对V形主簧的平稳纯拉力，彻底消除了螺旋弹簧常见的行程末端阻力陡增，赋予了蟒蛇如切黄油般的顺滑双动扳机力。",
+        "audioUrl": "audio/python/parts/python_hammer_stirrup_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Hammer Stirrup Link · Mainspring Zero-Stacking Toggle",
+        "overview": "Suspended from a cross-pin at the bottom rear heel of the hammer, this U-shaped steel stirrup cradles the hook at the tip of the upper V-mainspring leaf. It acts as a tension-aligned swinging link.",
+        "craftAndMaterial": "Forged from stainless steel and precision tumbled for frictionless pivots. The stirrup cross-pin is heat-treated to resist shearing forces under the sharp snap of the leaf spring.",
+        "kinematicRole": "Pivots angularly as the hammer cocks and drops, translating rotary motion into pure tension along the mainspring upper limb; separates from the mainspring hook at six percent disassembly.",
+        "designHighlight": "Unlike sliding struts that generate parasitic friction and heavy trigger stacking in coil-spring revolvers, this swinging stirrup delivers an exceptionally flat, buttery double-action pull curve.",
+        "audioScript": "This small U-shaped stirrup links the hammer directly to the upper limb of the folded V-mainspring. By acting as a free-swinging tension link, it eliminates side friction and mechanical stacking, giving the Python its legendary, butter-smooth double-action trigger break.",
+        "audioUrl": "audio/python/parts/python_hammer_stirrup_en.mp3"
+      }
+    },
+    "python_trigger": {
+      "partId": "python_trigger",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Target Trigger",
+      "zh": {
+        "roleTag": "火控总指挥枢纽与精密三路时序协调核心",
+        "overview": "靶用扳机横向铰接于转轮机匣下护圈内部的精密枢轴上。其加宽前曲面铣削有细密纵向防滑纹槽，上部延伸出复杂的单动与双动联动阻铁臂及下拨销。",
+        "craftAndMaterial": "采用高抗拉合金钢精密锻造成型并经氮化淬火，外露指弧面微细拉丝并倒角抛光，接触阻铁凸面经过资深枪匠油石手工研磨至镜面。",
+        "kinematicRole": "扣压时前鼻先下压止转笋解锁弹巢，后臂随即提拉棘爪推进弹巢步进六十度，最终单动阻铁脱钩释放击锤；分解自百分之六阶段开始向侧下方移出机匣。",
+        "designHighlight": "通过几何级联杠杆设计，将解锁弹巢、分度拨轮与压倒击锤三个严苛动作融合于单次扣压中，提供极其平顺无台阶的顶级双动行程。",
+        "audioScript": "这枚加宽弧面靶用扳机是蟒蛇手枪的机械大脑。当你缓缓扣下扳机，其前鼻先压下止转笋松开弹巢，后臂即刻推起棘爪旋转弹膛，最后平顺释放击锤，实现如丝般顺滑的击发体验。",
+        "audioUrl": "audio/python/parts/python_trigger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Core Timing Hub & DA Sear",
+        "overview": "The target trigger pivots on a precision transverse pin inside the lower trigger guard window. Its widened front curved pad features fine vertical traction grooves, integrating intricate upper single-action and double-action sear cams.",
+        "craftAndMaterial": "Forged from high-tensile alloy steel with liquid nitriding treatment; exposed finger contact surfaces are satin-polished while internal engagement sear angles are hand-stoned to mirror finishes.",
+        "kinematicRole": "During the pull stroke, its front nose depresses the stop bolt, its rear arm lifts the indexing hand through sixty degrees of cylinder rotation, and the sear releases the hammer; disassembles outward around six percent explode.",
+        "designHighlight": "Engineered with compounded mechanical leverages that sequence cylinder unlock, rotation, and hammer release into a butter-smooth double-action stroke with zero perceptible stacking.",
+        "audioScript": "This grooved target trigger acts as the mechanical conductor of the Python. With a single pull, its internal cams orchestrate cylinder unlocking, indexing, and hammer release in flawless, hand-tuned synchronization.",
+        "audioUrl": "audio/python/parts/python_trigger_en.mp3"
+      }
+    },
+    "python_mainspring": {
+      "partId": "python_mainspring",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "Folded V Mainspring",
+      "zh": {
+        "roleTag": "双臂独立供能主簧与线性力学源泉",
+        "overview": "变截面折叠V形片状主簧坚固地插装在握把骨架内部的定位插槽中。上长肢通过马镫形活动吊耳连接击锤根部，下短肢则向上托举回弹保险杠杆。",
+        "craftAndMaterial": "精选优质硅锰弹簧钢经多道变截面热锻、等温淬火及回火处理，由哈特福德老技师手工弯折调校，表面施加耐腐蚀发黑磷化膜。",
+        "kinematicRole": "击锤后倒时上肢向下蓄能并在击发瞬时爆发式推弹击锤敲针，击发后下肢顶升回弹保险迫使击锤脱离击针；拆卸在百分之六初始阶段向后拉出握把。",
+        "designHighlight": "彻底摆脱了传统螺旋弹簧行程越长越沉重的叠劲弊端，叶片式悬臂弹力输出极为线性，缔造了蟒蛇传世的轻柔双动和脆利单动扳机感。",
+        "audioScript": "这枚变截面折叠V形主簧堪称蟒蛇手枪的心脏。上肢通过马镫吊耳为击锤提供澎湃的击发能量，下肢同时推动回弹保险杠杆。哈特福德枪匠手工逐片调校，消除了螺旋簧的生硬滞涩感。",
+        "audioUrl": "audio/python/parts/python_mainspring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dual-Limb Linear Powerplant",
+        "overview": "The tapered folded V-leaf mainspring seats snugly within retaining slots inside the forged grip frame. Its upper limb links to the hammer via a pivoting stirrup while the lower limb powers the rebound safety lever.",
+        "craftAndMaterial": "Crafted from premium silicon-manganese spring steel through progressive tapered forging and oil quenching; hand-tuned by master gunsmiths with a corrosion-resistant black oxide finish.",
+        "kinematicRole": "Compresses downward as the hammer cocks, snapping forward to drive ignition hammer fall, then powers the rebound lever via its bottom limb; withdraws rearward from the frame at six percent disassembly.",
+        "designHighlight": "Eliminates coil spring progressive stacking forces completely, providing constant linear torque that enables the Python legendary glass-crisp break and velvet-smooth sweep.",
+        "audioScript": "Inside the grip lies this hand-tuned folded V-leaf mainspring. Its upper leaf delivers explosive driving force to the hammer, while the lower leaf resets the rebound safety, delivering an exceptionally linear trigger pull.",
+        "audioUrl": "audio/python/parts/python_mainspring_en.mp3"
+      }
+    },
+    "python_rebound_lever": {
+      "partId": "python_rebound_lever",
+      "bomCode": "FC-05",
+      "calloutLabelEn": "Rebound Safety Lever",
+      "zh": {
+        "roleTag": "跌落防护刚性台肩与安全回退操纵杆",
+        "overview": "科尔特专利回弹保险杠杆呈粗壮异形长臂结构，平卧于机匣侧盖内下侧。其后支点与握把底部铰接，前端受V形主簧下肢持续顶推并托举扳机后足。",
+        "craftAndMaterial": "采用高强度马氏体不锈钢经精密模锻与局部感应淬火制造，关键滑动斜面经超精磨处理以极大降低摩擦损耗并增强耐磨性。",
+        "kinematicRole": "击发松开扳机后在主簧托举下强力向上复位，其顶面凸台将击锤撬起向后回退约两毫米并卡入刚性保险槽；在分解拆卸百分之六节点脱离侧壁卡槽。",
+        "designHighlight": "确立了转轮手枪机械防跌落的经典范式，唯有扣死扳机时才会让出撞击间隙，任何非受控砸击击锤外露马刺均无法撼动击针。",
+        "audioScript": "专利回弹保险杠杆是防走火的坚固盾牌。射手松开扳机时，在主簧推顶下，它立刻强行将击锤撬退数毫米并刚性锁死。即便手枪摔落砸击外露击锤，击针也不会触碰底火。",
+        "audioUrl": "audio/python/parts/python_rebound_lever_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Fail-Safe Drop Hammer Rebound",
+        "overview": "This elongated safety lever rests horizontally within the lower receiver pocket beneath the side plate. Its rear tail pivots in the grip while its forward arm is constantly biased upward by the mainspring lower limb.",
+        "craftAndMaterial": "Drop-forged from high-grade stainless alloy steel with induction-hardened contact bosses, featuring micro-ground sliding flats to minimize frictional drag.",
+        "kinematicRole": "Upon trigger release, it pivots upward under mainspring pressure, wedging the hammer back into a safe rest shoulder away from the firing pin; lifts out during the initial six percent armorer strip.",
+        "designHighlight": "Establishes fail-safe mechanical drop safety, ensuring the firing pin can only be struck if the trigger is deliberately held fully to the rear, blocking accidental inertial ignition.",
+        "audioScript": "The Colt positive safety rebound lever safeguards against accidental discharge. The moment the trigger is released, this lever forces the hammer back into a locked resting shelf, preventing contact with the firing pin.",
+        "audioUrl": "audio/python/parts/python_rebound_lever_en.mp3"
+      }
+    },
+    "python_cylinder_bolt": {
+      "partId": "python_cylinder_bolt",
+      "bomCode": "FC-06",
+      "calloutLabelEn": "Cylinder Stop Bolt",
+      "zh": {
+        "roleTag": "六点钟定位闭锁笋与同轴定心基准",
+        "overview": "弹巢止转锁笋安装在机匣底桥开槽内，由复位片簧提供向上预紧力。其顶部呈矩形凸块伸出底板，直接对应弹巢外圆周上的六处铣削止转凹槽。",
+        "craftAndMaterial": "特种渗碳淬火钢冲压成形后经五轴联动精密铣削加工，表面深层渗氮硬化以承受高频次卡入弹巢缺口时的剧烈冲击载荷。",
+        "kinematicRole": "扣扳机初段被扳机侧斜面下压收入槽内让弹巢旋转，转过一定角度后提前弹起贴紧弹巢表面，并在击锤下落前咔哒卡死缺口；拆卸于百分之六阶段移出机匣。",
+        "designHighlight": "具备精密微倒角导引坡口，与后方双阶棘爪形成前后钳形合围，彻底消弭旋转方向的游隙，保证击发瞬间弹膛与枪管严密共轴。",
+        "audioScript": "安装在机匣底部的弹巢止转锁笋是弹膛对准枪管的校准标尺。扣动扳机初期它沉入槽内释放转轮，随着弹巢步进到位，它准时弹入外壁凹槽，瞬间将弹巢稳稳锁死在击发轴线上。",
+        "audioUrl": "audio/python/parts/python_cylinder_bolt_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Bottom Indexing Lock Bolt",
+        "overview": "The pivoting stop bolt seats within a longitudinal mortise at the bottom window of the frame, biased upward by a leaf spring. Its precision square lug protrudes to catch the notches milled on the cylinder perimeter.",
+        "craftAndMaterial": "Precision machined from case-hardened alloy tool steel and nitrided for extreme core toughness, preventing deformation under high-speed rotational slam-in cycles.",
+        "kinematicRole": "Cammed downward by the trigger nose to permit cylinder indexing, it springs upward mid-rotation to catch the locking notch before hammer fall; extracted at six percent of the disassembly sequence.",
+        "designHighlight": "Features a micro-beveled entry chamfer working synchronously with the indexing hand to eliminate tangential play, guaranteeing bore-to-chamber coaxial alignment under high pressure.",
+        "audioScript": "Pivoting in the lower frame, this cylinder stop bolt controls precise alignment. It drops momentarily to allow the cylinder to revolve, then snaps securely into the outer notch, locking the active chamber dead center.",
+        "audioUrl": "audio/python/parts/python_cylinder_bolt_en.mp3"
+      }
+    },
+    "python_hand": {
+      "partId": "python_hand",
+      "bomCode": "FC-07",
+      "calloutLabelEn": "Two-Step Hand Pawl",
+      "zh": {
+        "roleTag": "双阶步进推杆与金库级闭锁施压爪",
+        "overview": "双阶拨轮棘爪立式铰接在扳机后肩销轴上，从机匣反冲挡盾左侧垂直缝隙穿出。其顶部精心铣削出上下两道高低阶梯状驱动推齿。",
+        "craftAndMaterial": "选用超细晶粒高硬度不锈钢手工锉削成型并经表面镜面打磨，关键接触齿尖经受高频脉冲淬火硬化以对抗与退壳棘轮的长期挤压磨损。",
+        "kinematicRole": "扳机扣压时棘爪垂直上升，上阶推动退壳星旋转六十度，击锤下落瞬间下阶继续死死挤紧棘轮斜面形成刚性锁死；在百分之六分解时连同扳机取下。",
+        "designHighlight": "科尔特名扬天下的金库级闭锁灵魂所在：击发刹那下阶爪尖将弹巢向前向右顶死，与底部止转笋形成双向夹紧，消除传统转轮手枪的弹膛框动。",
+        "audioScript": "这枚看似不起眼的小拨爪蕴藏着科尔特的核心机密。其顶部具有精密双阶结构，上台阶负责向上拨动退壳星推进六十度，而击发瞬间下台阶则死死顶住齿面，实现零框动的金库级刚性闭锁。",
+        "audioUrl": "audio/python/parts/python_hand_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dual-Step Indexing Pawl",
+        "overview": "The two-step indexing hand pivots vertically off the trigger rear shoulder, riding upward through a broached slot in the recoil shield. Its tip is sculpted with distinct upper and lower engagement steps.",
+        "craftAndMaterial": "Hand-crafted from micro-grain stainless tool steel, ground to mirror perfection with high-frequency hardened tooth surfaces to resist abrasive contact against the extractor ratchet.",
+        "kinematicRole": "Rises vertically during trigger compression; the upper step turns the extractor star sixty degrees while the lower step wedges hard against the tooth at hammer fall; separates at six percent disassembly.",
+        "designHighlight": "The foundation of Colt celebrated bank-vault lockup: wedging against the ratchet tooth precisely at firing, it works against the stop bolt to lock the cylinder with zero radial or rotational play.",
+        "audioScript": "This two-step indexing hand holds the secret to Python accuracy. As the trigger is pulled, its upper tier drives the cylinder clockwise, while its lower tier wedges tightly against the ratchet star, locking the chamber tight.",
+        "audioUrl": "audio/python/parts/python_hand_en.mp3"
+      }
+    },
+    "python_firing_pin": {
+      "partId": "python_firing_pin",
+      "bomCode": "FC-08",
+      "calloutLabelEn": "Floating Firing Pin",
+      "zh": {
+        "roleTag": "浮动撞击点火原件与反冲阻绝机构",
+        "overview": "浮动惯性击针同轴装配在机匣火药挡盾中央的重型钢衬套内，由同心小型螺旋回位簧保持向后回缩。击针尖端正对十二点钟位置弹膛底火中心。",
+        "craftAndMaterial": "采用高冲击韧性耐热铬钒合金钢经数控车削与深层硬化处理，外层镀铬减摩并附带高强度铍铜复位弹簧与耐压承载衬套。",
+        "kinematicRole": "平时受回位簧顶推缩入套内平齐镜面，击锤下砸时将击针向前打出以惯性撞燃马格南底火，随后回位簧瞬间复位；分解在百分之六阶段冲出固定横销后取下。",
+        "designHighlight": "击针本身长度小于挡盾通道深度，取消了早期转轮直接铆接在击锤头部的击针设计，大幅减轻敲击偏航并杜绝底火反顶卡滞转轮故障。",
+        "audioScript": "不同于传统老式转轮将击针固定在击锤上，蟒蛇将这枚浮动击针深嵌在机匣挡盾中。当击锤猛烈撞击，它仅凭惯性向前穿出引爆马格南底火，并在毫秒级内自动回缩，确保弹巢回转不受阻碍。",
+        "audioUrl": "audio/python/parts/python_firing_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Inertial Ignition Assembly",
+        "overview": "The floating firing pin resides within a hardened recoil shield bushing in the frame, held rearward by a concentric coil spring. Its tapered tip centers on the primer at twelve o'clock.",
+        "craftAndMaterial": "Turned from shock-resistant chrome-vanadium alloy steel, deep-hardened and hard-chrome plated for slick travel inside the bushing, paired with a resilient spring steel wire return coil.",
+        "kinematicRole": "Resting sub-flush in the breech face, it drives forward via hammer inertia to strike the primer upon full trigger squeeze, quickly springing back; stripped out at six percent disassembly by driving out its cross pin.",
+        "designHighlight": "Its inertial floating geometry decouples impact energy from the hammer nose, eliminating primer rupture blow-by risks and preventing rotational binding during heavy magnum cartridge cycling.",
+        "audioScript": "Mounted directly in the frame rather than on the hammer nose, this inertial firing pin stays safely retracted until the hammer strikes. It punches the primer instantly, then retracts under spring tension to prevent cylinder drag.",
+        "audioUrl": "audio/python/parts/python_firing_pin_en.mp3"
+      }
+    },
+    "python_crane": {
+      "partId": "python_crane",
+      "bomCode": "M-01",
+      "calloutLabelEn": "Cylinder Crane Yoke",
+      "zh": {
+        "roleTag": "平动双轴支架与旋转摇臂主基座",
+        "overview": "转轮摇臂采用整体L形重载悬臂结构，下轴枢接在转轮座前下方的深孔绞链中，上空心管轴则向后延伸穿入弹巢中心提供旋转支持。",
+        "craftAndMaterial": "经高强度低合金锻钢整体模锻热处理而成，双平行轴颈经过超精密磨床研磨以保证零平行度误差，外表面施以华丽的皇家蓝手工抛光发蓝涂层。",
+        "kinematicRole": "向左外摆承载整个弹巢完成装填或抛壳，闭锁时紧密贴合机匣内侧成为承载整体；在拆卸百分之四阶段拧下机匣侧边固定螺丝后向前抽出。",
+        "designHighlight": "通过超高公差配合的双轴同轴度控制，使重达半公斤的实弹转轮在左摆受弹与归位闭锁时顺畅无声，经受数万发马格南射击轴孔亦不晃荡变形。",
+        "audioScript": "这枚经过高精度手工研磨的L形摇臂是弹巢左摆的核心铰链。其双轴必须保持极高的平行公差，不仅支撑着高速旋转的重型弹巢平滑摆出装填，更在合膛时提供坚固如一的刚度支承。",
+        "audioUrl": "audio/python/parts/python_crane_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Parallel-Axis Swing-Out Arbor",
+        "overview": "The swing-out crane yoke forms an L-shaped forged cantilever, its lower pivot fitting into the frame beneath the barrel while its hollow upper arbor supports the revolving cylinder.",
+        "craftAndMaterial": "Drop-forged from alloy carbon steel, heat-treated and precision ground along both parallel axes to ensure near-zero tolerance drift, finished in classic Colt Royal Blue polished bluing.",
+        "kinematicRole": "Swings leftward to expose chambers for ejection and reloading, locking tightly into the receiver recess during battery; pulls forward out of the frame at four percent disassembly once its retaining screw is backed out.",
+        "designHighlight": "Maintains meticulous axial alignment between cylinder arbor and bore centerline, engineered to endure the immense lateral shockloads generated by heavy .357 recoil cycles over decades.",
+        "audioScript": "This L-shaped crane yoke carries the entire weight of the cylinder. Precision-machined dual pivot axes allow the cylinder to swing cleanly to the left for unloading, locking back into battery with vault-like solidity.",
+        "audioUrl": "audio/python/parts/python_crane_en.mp3"
+      }
+    },
+    "python_cylinder": {
+      "partId": "python_cylinder",
+      "bomCode": "M-02",
+      "calloutLabelEn": "6-Chamber Cylinder",
+      "zh": {
+        "roleTag": "特种合金旋转弹仓与高压燃烧室",
+        "overview": "六发减重凹槽弹巢横跨在转轮框正中，套装在摇臂芯轴上。其外圆周精确分度镗削有六个深孔高压弹膛，外壁铣削有六道标志性泪滴形减重凹槽。",
+        "craftAndMaterial": "精选特种电炉铬钼合金钢整体车削，内膛经多道珩磨光洁如镜以承受两百四十兆帕峰值膛压，外部经过资深匠人细羊毛轮打磨并做高纯度发蓝处理。",
+        "kinematicRole": "在击发循环中步进旋转六十度将新弹膛精准定位至枪管后方，击发时紧包弹壳承受燃气爆轰；在拆卸百分之四阶段由摇臂芯轴上向后滑脱分离。",
+        "designHighlight": "外壁凹槽在减轻转动惯量以利高速分度的同时保留了耐压承载环，前部精密倒角优化了火药气体膨胀动力学，确保极端高压下的微量弹性形变可控。",
+        "audioScript": "由整块特种铬钼钢精雕细琢的六发弹巢，既是弹匣也是承受两百四十兆帕燃气峰值的高压燃烧室。外壁六道流畅的减重槽降低了旋转惯量，镜面般光滑的内膛让弹头毫无阻滞地跃入枪管。",
+        "audioUrl": "audio/python/parts/python_cylinder_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Fluted Pressure Vessel",
+        "overview": "The fluted cylinder resides within the main frame window, revolving around the crane spindle. It features six precision-bored chambers arranged on an eleven-point-eight millimeter pitch radius, flanked by classic flutes.",
+        "craftAndMaterial": "Machined from vacuum-degassed chrome-moly alloy steel forgings, cylinder chambers are hand-honed to a mirror polish to handle two hundred forty megapascal peak chamber pressures, wrapped in Colt mirror Royal Blue.",
+        "kinematicRole": "Indexes sixty degrees each cycle to present a fresh round directly behind the barrel cone, containing propellant combustion during firing; slides rearward off the crane arbor at four percent disassembly.",
+        "designHighlight": "Outer flutes shave critical rotational inertia for swift trigger-driven indexing while retaining thickened safety walls over critical chamber rings, keeping high-pressure volumetric expansion microscopic.",
+        "audioScript": "Machined from high-strength chrome-moly steel, this six-round cylinder withstands thirty-five thousand psi of chamber pressure. The iconic outer flutes reduce rotational inertia, while mirror-honed chambers ensure effortless extraction.",
+        "audioUrl": "audio/python/parts/python_cylinder_en.mp3"
+      }
+    },
+    "python_extractor_star": {
+      "partId": "python_extractor_star",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Ratchet Extractor Star",
+      "zh": {
+        "roleTag": "六瓣抽壳星盘与精密棘轮步进基座",
+        "overview": "退壳星与中空芯管呈一体化十字星形构型，精准嵌合在弹巢后端的沉孔环槽中。外周具备六瓣贴合底缘的托爪，中心凸出六枚不对称高低棘轮斜齿。",
+        "craftAndMaterial": "采用高抗疲劳工具钢经精密电火花线切割成型，中心棘轮齿面经过调枪大师手工细致铲刮修整，具备极高的耐磨损性能和齿尖角度一致性。",
+        "kinematicRole": "平时受拨轮爪推顶棘轮齿驱动弹巢以六十度角步进，后推顶杆时星爪向后将六枚膨胀空弹壳同时顶出弹膛；拆卸在百分之四阶段沿中轴向后抽出。",
+        "designHighlight": "双向功能集于一盘，每一枚棘轮齿的后角都决定了击发对准公差，科尔特调枪师在此处投入大量手工修锉，成就了无可挑剔的定位精度。",
+        "audioScript": "这枚退壳星兼顾了退壳与分度双重使命。外圈六片星爪托住弹壳底缘，一推即可清空弹巢；而中央凸起的六枚棘齿由枪匠手工修整，每一次受推都让弹巢分毫不差地步进六十度。",
+        "audioUrl": "audio/python/parts/python_extractor_star_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Extractor & Ratchet Indexer",
+        "overview": "The extractor star and hollow stem nest flush into a recess at the rear face of the cylinder. Its perimeter features six arched extractor claws, surrounding six center-mounted asymmetrical ratchet teeth.",
+        "craftAndMaterial": "Wire-EDM cut from high-fatigue alloy tool steel; each ratchet tooth is individually hand-stoned and scraped by master assemblers to guarantee microscopic angular consistency.",
+        "kinematicRole": "Receives vertical thrust from the hand to rotate the cylinder sixty degrees per shot, pushing rearward under rod depression to simultaneously lift six spent casings; separates rearward at four percent disassembly.",
+        "designHighlight": "Dual-purpose architectural gem: the hand-finished tooth geometry governs final lockup timing, where tiny differences in stoning define Colt hallmark zero-tolerance alignment.",
+        "audioScript": "Resting at the cylinder rear, this extractor star is a dual-purpose masterpiece. Its outer rim lifts six empty cases simultaneously, while its central ratchet teeth are hand-filed to guarantee crisp sixty-degree rotational timing.",
+        "audioUrl": "audio/python/parts/python_extractor_star_en.mp3"
+      }
+    },
+    "python_extractor_rod": {
+      "partId": "python_extractor_rod",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Knurled Ejector Rod",
+      "zh": {
+        "roleTag": "前置抛壳推杆与锁紧定位轴心",
+        "overview": "退壳顶杆位于枪管全长下护套内部的保护槽中，后端螺纹拧入退壳星中空芯轴。其前端头部略有加粗，车削有密集的交叉菱形防滑滚花与中心顶锥凹槽。",
+        "craftAndMaterial": "选用高韧性耐蚀奥氏体不锈钢细长棒料精车而成，经过表面无心磨削与滚花硬化工艺，外露滚花头耐受手掌直接高频撞击而不变形。",
+        "kinematicRole": "装弹击发时与弹巢一同顺时针旋转，弹巢向左摆出后射手手掌向后拍击滚花头驱动退壳星推出空壳；拆卸百分之四阶段通过左旋螺纹从星轴拧下分离。",
+        "designHighlight": "得益于蟒蛇独创的全包覆实心下护套，退壳杆全程受到坚固钢套遮蔽保护，彻底杜绝了传统敞开式退壳杆因意外磕碰弯折导致的卡死瘫痪。",
+        "audioScript": "这根带有菱形滚花的不锈钢退壳顶杆平时深藏在枪管下护套中。当弹巢摆出后，用手掌向后一拍，它便带动退壳星一次性推出全部六枚弹壳。全长护套设计彻底避免了顶杆碰撞弯曲卡死的隐患。",
+        "audioUrl": "audio/python/parts/python_extractor_rod_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Protected Manual Ejection Rod",
+        "overview": "The ejector rod rides enclosed within the full-length barrel underlug channel, threaded at its rear into the extractor star stem. Its expanded front tip features crisp diamond knurling and a center detent cup.",
+        "craftAndMaterial": "Centerless-ground from high-tensile austenitic stainless steel rod with cold-rolled diamond knurling on the cap, designed to absorb repeated vigorous hand strikes without bending.",
+        "kinematicRole": "Revolves in lockstep with the cylinder in battery, pushed rearward manually when swung open to purge fired brass; unscrews from the extractor stem at four percent disassembly.",
+        "designHighlight": "Shielded entirely by the solid barrel underlug, protecting the slender precision shaft from accidental impacts or drops that routinely bent exposed ejector rods on earlier revolvers.",
+        "audioScript": "Housed snugly within the full underlug, this diamond-knurled stainless steel ejector rod expels spent brass. A firm rearward strike pushes the extractor star clear, while the steel shroud prevents bent-rod jams in the field.",
+        "audioUrl": "audio/python/parts/python_extractor_rod_en.mp3"
+      }
+    },
+    "python_extractor_spring": {
+      "partId": "python_extractor_spring",
+      "bomCode": "M-05",
+      "calloutLabelEn": "Extractor Spring",
+      "zh": {
+        "roleTag": "弹巢同轴回位弹簧与退壳星复位阻尼",
+        "overview": "弹巢中心螺旋退壳复位簧套设在退壳杆光轴与摇臂芯轴之间的环形内腔中，前端抵止在弹管阶梯台阶，后端顶紧退壳衬套套圈。",
+        "craftAndMaterial": "由高强度耐疲劳琴钢丝经精密冷卷并经去应力低温退火而成，具备高度均一的圈距并喷涂防锈干式润滑涂层以确保极低伸缩阻力。",
+        "kinematicRole": "在射手按压退壳顶杆推出弹壳时被高密度轴向压缩，手掌松开瞬时释放弹性势能拉回退壳星使其平齐入槽；在拆卸百分之四阶段由杆轴滑移抽出。",
+        "designHighlight": "设计紧凑且具备出色的抗压疲劳寿命，其预压弹力经过精准平衡，既能在排弹后迅速收回星盘，又不会让推杆阻力过大影响快速装填操作。",
+        "audioScript": "隐藏在弹巢空心管内的这枚螺旋退壳复位簧采用高韧性琴钢丝制造。当你松开按压退壳顶杆的手掌，它在毫秒之间释放弹力，将退壳星迅速拉回原位，保证新一轮装弹顺畅无阻。",
+        "audioUrl": "audio/python/parts/python_extractor_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Coaxial Return Spring & Buffer",
+        "overview": "This concentric coil spring surrounds the ejector rod inside the crane arbor bore, seated between the front shoulder of the rod and the rear extractor collar sleeve.",
+        "craftAndMaterial": "Cold-wound from premium music wire spring steel, stress-relieved via low-temperature annealing, and treated with a dry-film micro-lubricant for ultra-low cycling resistance.",
+        "kinematicRole": "Compresses tightly as the ejector rod is struck to purge spent cartridges, snapping the star instantly flush back into the cylinder recess upon release; slides off during four percent teardown.",
+        "designHighlight": "Calibrated with balanced stiffness: light enough for fast, single-handed manual ejection sweeps, yet stiff enough to slam the extractor star firmly into alignment dowels even when fouled by carbon.",
+        "audioScript": "Nested within the cylinder arbor, this helical music wire spring governs ejector reset. The instant you release the ejector rod, it snaps the star back into its flush seating recess, clearing the path for swift reloading.",
+        "audioUrl": "audio/python/parts/python_extractor_spring_en.mp3"
+      }
+    },
+    "python_speedloader": {
+      "partId": "python_speedloader",
+      "bomCode": "M-06",
+      "calloutLabelEn": "6-Round Speedloader",
+      "zh": {
+        "roleTag": "便携快速装填器与点三五七六弹同心载体",
+        "overview": "快速装弹器作为关键供弹辅助套件，包含六孔阳极氧化铝合金本体与尾部带菱形滚花的旋转锁止旋钮，预装六发点三五七马格南空尖弹。",
+        "craftAndMaterial": "主体采用航空级六零六一铝合金经数控铣削并施以哑光黑阳极氧化，内部采用不锈钢锁珠机构与黄铜弹壳保持爪，旋钮做防滑滚花加工。",
+        "kinematicRole": "平时在外部同心锁持六枚弹药，装填时将其对准左摆弹巢推入六个弹膛，顺时针轻拧旋钮锁珠收缩，六枚枪弹在重力下同步滑入弹仓；拆卸从百分之四向后拉离机匣。",
+        "designHighlight": "通过十一点八毫米分度圆与弹巢弹膛实现微间隙无缝对接，使射手在极端交火压力下摆脱单发填装困扰，两秒内完成满巢六发重装。",
+        "audioScript": "这具快速装弹器是蟒蛇手枪的战术伴侣。它预先同心固定了六发马格南实弹。转轮左摆抛壳后，只需将装弹器对准推入弹膛并顺时针一拧，六枚子弹瞬时入膛，两秒内即可满弹复活。",
+        "audioUrl": "audio/python/parts/python_speedloader_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Rotary 6-Chamber Quick Loader",
+        "overview": "The speedloader is an external tactical charging device featuring a six-pocket body and a rear knurled twist knob, retaining six .357 Magnum hollow-point cartridges in radial alignment.",
+        "craftAndMaterial": "CNC milled from 6061-T6 aircraft-grade aluminum alloy with matte black anodizing, incorporating internal stainless retaining ball detents and spring-loaded brass cartridge catches.",
+        "kinematicRole": "Holds six rounds ready in matching chamber orientation, inserting straight into the open cylinder chambers where a twist of the rear knob releases all six rounds at once; lifts away at four percent disassembly.",
+        "designHighlight": "Matches the cylinder eleven-point-eight millimeter chamber radius with loose radial floats, enabling lightning-fast tactical reloads in under two seconds under high-stress combat conditions.",
+        "audioScript": "This rotary speedloader elevates the Python combat readiness. Holding six .357 rounds in precise chamber spacing, a quick push and clockwise twist of the knurled knob drops a fresh payload directly into the cylinder in seconds.",
+        "audioUrl": "audio/python/parts/python_speedloader_en.mp3"
+      }
+    }
+  }
+}
