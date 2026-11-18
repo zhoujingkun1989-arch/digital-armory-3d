@@ -43,6 +43,9 @@ const MIN_ROUND_COUNTS: Readonly<Record<WeaponId, number>> = {
   python: 5,
   benellim4: 6,
   garand: 8,
+  m249: 4,
+  p08: 8,
+  vector: 16,
 };
 
 function computePartWorldBox(
@@ -73,7 +76,7 @@ function computePartWorldBox(
   return worldBox;
 }
 
-describe('16-Exhibit Full-Capacity 3D Magazine, Cylinder, Tubular, En-Bloc & Quiver Stack Contracts', () => {
+describe('19-Exhibit Full-Capacity 3D Magazine, Belt, Cylinder, Tubular, En-Bloc & Quiver Stack Contracts', () => {
   it('verifies round counts, single/staggered geometry, Slot 0 anchors, P90 90° helical rotation, and zero mag_body / mag_follower clipping', async () => {
     const pose = createMutableMagazineRoundPose();
     const qRound = new THREE.Quaternion();

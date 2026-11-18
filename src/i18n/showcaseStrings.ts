@@ -5,38 +5,13 @@ import {
   type WeaponId,
 } from '../weapons/types';
 
-const VAULT_EXHIBIT_COUNT = (WEAPON_IDS as readonly string[]).length;
-const IS_NINETEEN_EXHIBIT_VAULT = VAULT_EXHIBIT_COUNT >= 19;
-const IS_SIXTEEN_EXHIBIT_VAULT = VAULT_EXHIBIT_COUNT >= 16;
-const VAULT_FIREARM_COUNT = Math.max(11, VAULT_EXHIBIT_COUNT - 2);
-const VAULT_EXHIBIT_ZH =
-  VAULT_EXHIBIT_COUNT === 19
-    ? '十九'
-    : VAULT_EXHIBIT_COUNT === 16
-      ? '十六'
-      : VAULT_EXHIBIT_COUNT === 13
-        ? '十三'
-        : String(VAULT_EXHIBIT_COUNT);
-const VAULT_PARTS_TOTAL = IS_NINETEEN_EXHIBIT_VAULT
-  ? 480
-  : IS_SIXTEEN_EXHIBIT_VAULT
-    ? 404
-    : 327;
-const VAULT_TEXTURES_TOTAL = IS_NINETEEN_EXHIBIT_VAULT
-  ? 112
-  : IS_SIXTEEN_EXHIBIT_VAULT
-    ? 94
-    : 76;
-const VAULT_AUDIO_TOTAL = IS_NINETEEN_EXHIBIT_VAULT
-  ? 1112
-  : IS_SIXTEEN_EXHIBIT_VAULT
-    ? 936
-    : 758;
-const LAB_CALIBER_TOTAL = IS_NINETEEN_EXHIBIT_VAULT
-  ? 11
-  : IS_SIXTEEN_EXHIBIT_VAULT
-    ? 10
-    : 7;
+const VAULT_EXHIBIT_COUNT = WEAPON_IDS.length; // 19
+const VAULT_FIREARM_COUNT = VAULT_EXHIBIT_COUNT - 2; // 17
+const VAULT_EXHIBIT_ZH = '十九';
+const VAULT_PARTS_TOTAL = 480;
+const VAULT_TEXTURES_TOTAL = 112;
+const VAULT_AUDIO_TOTAL = 1112;
+const LAB_CALIBER_TOTAL = 11;
 
 export type ShowcaseGalleryAction =
   'armory' | 'explode' | 'firing' | 'section' | 'atlas';

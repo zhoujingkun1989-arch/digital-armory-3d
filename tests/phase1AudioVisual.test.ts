@@ -91,7 +91,8 @@ describe('Phase 1 (WP-01 ~ WP-03): Multimodal Audio-Visual Immersion Contracts',
     );
   });
 
-  it('WP-02: splits all 128 bilingual act audioScripts into valid monotonic cues without breaking decimals', () => {
+  it('WP-02: splits all 152 bilingual act audioScripts across all 19 exhibits into valid monotonic cues without breaking decimals', () => {
+    expect(WEAPON_IDS).toHaveLength(19);
     for (const weaponId of WEAPON_IDS) {
       const jsonPath = path.resolve(
         process.cwd(),
@@ -197,7 +198,7 @@ describe('Phase 1 (WP-01 ~ WP-03): Multimodal Audio-Visual Immersion Contracts',
     useAppStore.getState().returnToArmory();
   });
 
-  it('WP-03: enforces physical 10-caliber + 2-archery acoustic hierarchy, 8-event slow-mo phase separation, and TTS ducking', async () => {
+  it('WP-03: enforces physical 11-caliber + 2-archery acoustic hierarchy, 8-event slow-mo phase separation across all 19 exhibits, and TTS ducking', async () => {
     const p50 = CALIBER_ACOUSTIC_PROFILES['50_bmg'];
     const p338 = CALIBER_ACOUSTIC_PROFILES['338_lapua'];
     const p12ga = CALIBER_ACOUSTIC_PROFILES['12_gauge'];
@@ -205,6 +206,7 @@ describe('Phase 1 (WP-01 ~ WP-03): Multimodal Audio-Visual Immersion Contracts',
     const p50ae = CALIBER_ACOUSTIC_PROFILES['50_ae'];
     const p762 = CALIBER_ACOUSTIC_PROFILES['762_m43'];
     const p357 = CALIBER_ACOUSTIC_PROFILES['357_magnum'];
+    const p45 = CALIBER_ACOUSTIC_PROFILES['45_acp'];
     const p556 = CALIBER_ACOUSTIC_PROFILES['556_nato'];
     const p57 = CALIBER_ACOUSTIC_PROFILES['57_28'];
     const p9 = CALIBER_ACOUSTIC_PROFILES['9mm_para'];
@@ -226,7 +228,8 @@ describe('Phase 1 (WP-01 ~ WP-03): Multimodal Audio-Visual Immersion Contracts',
     expect(p3006.subFreqHz).toBeLessThan(p50ae.subFreqHz);
     expect(p50ae.subFreqHz).toBeLessThan(p762.subFreqHz);
     expect(p762.subFreqHz).toBeLessThan(p357.subFreqHz);
-    expect(p357.subFreqHz).toBeLessThan(p556.subFreqHz);
+    expect(p357.subFreqHz).toBeLessThan(p45.subFreqHz);
+    expect(p45.subFreqHz).toBeLessThan(p556.subFreqHz);
     expect(p556.subFreqHz).toBeLessThan(p57.subFreqHz);
     expect(p57.subFreqHz).toBeLessThan(p9.subFreqHz);
 

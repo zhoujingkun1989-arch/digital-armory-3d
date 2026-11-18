@@ -360,8 +360,9 @@ describe('Bundle Code-Splitting, VITE_BASE_PATH Subpath & HD Poster Studio Contr
     }
   });
 
-  it('generates valid poster filenames, metrology, ballistics & scannable ISO 18004 QR matrices for all exhibits', () => {
+  it('generates valid poster filenames, metrology, ballistics & scannable ISO 18004 QR matrices for all 19 exhibits (16:9 & 4:5, S/A/B/C rank seals)', () => {
     const ranks: (PosterArmorerRank | null)[] = ['S', 'A', 'B', 'C', null];
+    expect(WEAPON_IDS).toHaveLength(19);
 
     WEAPON_IDS.forEach((weaponId, idx) => {
       expect(buildPosterFilename(weaponId)).toBe(
@@ -390,7 +391,15 @@ describe('Bundle Code-Splitting, VITE_BASE_PATH Subpath & HD Poster Studio Contr
       expect(metaEn.bayCode).toMatch(/^BAY-\d{2}$/);
       expect(metaEn.primaryTitle.length).toBeGreaterThan(2);
       expect(metaEn.secondaryTitle.length).toBeGreaterThan(2);
+      // Primary title & mechanism line are strictly English (0 CJK); secondaryTitle is the paired Chinese museum subtitle
+      expect(CJK_REGEX.test(metaEn.primaryTitle)).toBe(false);
+      expect(CJK_REGEX.test(metaEn.originAndMechanismPrimary)).toBe(false);
       expect(metaEn.metrologyCells).toHaveLength(4);
+      for (const cell of metaEn.metrologyCells) {
+        expect(CJK_REGEX.test(cell.label)).toBe(false);
+        expect(CJK_REGEX.test(cell.value)).toBe(false);
+        expect(CJK_REGEX.test(cell.subValue)).toBe(false);
+      }
       expect(metaEn.curveSamples.length).toBe(56);
       expect(metaEn.modeBadges[0]?.label).toBe('SECTION-CUT');
       expect(metaEn.armorerRank).toBe(rank);
@@ -406,6 +415,27 @@ describe('Bundle Code-Splitting, VITE_BASE_PATH Subpath & HD Poster Studio Contr
       expect(metaEn.qrMatrix[0][0]).toBe(true);
       expect(metaEn.qrMatrix[0][n - 1]).toBe(true);
       expect(metaEn.qrMatrix[n - 1][0]).toBe(true);
+
+      // Verify Canvas 2D compositing across both 16:9 and 4:5 for every exhibit + rank seal
+      for (const aspect of ['16:9', '4:5'] as const) {
+        const { canvas, calls } = createMockCanvasAndContext();
+        renderPosterToCanvas({
+          canvas,
+          aspect,
+          themeId: 'obsidian_gold',
+          lang: 'en',
+          metadata: metaEn,
+          viewportImage: null,
+        });
+        expect(canvas.width).toBe(POSTER_DIMENSIONS[aspect].width);
+        expect(canvas.height).toBe(POSTER_DIMENSIONS[aspect].height);
+        expect(calls.fillRectCount).toBeGreaterThan(100);
+        if (rank !== null) {
+          expect(
+            calls.fillTextLabels.some((lbl) => lbl.includes(rank))
+          ).toBe(true);
+        }
+      }
     });
   });
 

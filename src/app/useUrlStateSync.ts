@@ -32,9 +32,10 @@ export function getDefaultEntryScreen(): 'showcase' | 'armory' {
   return 'showcase';
 }
 
-function applyLocationToStore(): void {
-  if (typeof window === 'undefined') return;
-  const params = new URLSearchParams(window.location.search);
+export function applyLocationToStore(searchOverride?: string): void {
+  if (searchOverride === undefined && typeof window === 'undefined') return;
+  const rawSearch = searchOverride ?? window.location.search;
+  const params = new URLSearchParams(rawSearch);
   const rawWeapon = params.get('weapon');
   const rawScreen = params.get('screen');
   const rawMode = params.get('mode');
@@ -100,7 +101,7 @@ function applyLocationToStore(): void {
   }
 }
 
-function buildSearchString(
+export function buildSearchString(
   weaponId: WeaponId,
   screen: AppScreen,
   mode: AppViewMode,
@@ -108,9 +109,12 @@ function buildSearchString(
   lang: LanguageCode,
   activeCartridgeCaliber: CaliberProfile,
   cartridgeLineupOverview: boolean,
-  activeBallisticsCaliber: ExternalProjectileId
+  activeBallisticsCaliber: ExternalProjectileId,
+  baseSearch?: string
 ): string {
-  const params = new URLSearchParams(window.location.search);
+  const rawSearch =
+    baseSearch ?? (typeof window !== 'undefined' ? window.location.search : '');
+  const params = new URLSearchParams(rawSearch);
   const defaultScreen = getDefaultEntryScreen();
   params.set('weapon', weaponId);
   if (screen === 'workbench') {

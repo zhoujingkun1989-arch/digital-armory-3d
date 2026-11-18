@@ -20,7 +20,11 @@ import {
   isBrowserFullscreenSupported,
   toggleBrowserFullscreen,
 } from '../src/app/useFullscreen';
-import { getDefaultEntryScreen } from '../src/app/useUrlStateSync';
+import {
+  applyLocationToStore,
+  buildSearchString,
+  getDefaultEntryScreen,
+} from '../src/app/useUrlStateSync';
 import {
   ARCHERY_ROLE_META,
   ENGINEERING_ROLE_ORDER,
@@ -411,11 +415,11 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
     expect(armoryCss).not.toContain('.schematic-watermark');
   });
 
-  it('resolves getLocalizedCatalogSpecs & resolveWeaponDisplayMeta in English with zero CJK characters across all 16 WEAPON_IDS', () => {
+  it('resolves getLocalizedCatalogSpecs & resolveWeaponDisplayMeta in English with zero CJK characters across all 19 WEAPON_IDS', () => {
     const cjkRe = /[\u4e00-\u9fff]/;
     const narrationsDir = path.resolve(__dirname, '../public/narrations');
 
-    expect(WEAPON_IDS.length).toBe(16);
+    expect(WEAPON_IDS.length).toBe(19);
 
     for (const id of WEAPON_IDS) {
       const specs = getLocalizedCatalogSpecs(id, 'en');
@@ -472,7 +476,7 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
     const cjkRe = /[\u4e00-\u9fff]/;
 
     expect(Object.keys(ATLAS_EN_STRINGS).sort()).toEqual([...WEAPON_IDS].sort());
-    expect(WEAPON_IDS.length).toBe(16);
+    expect(WEAPON_IDS.length).toBe(19);
 
     let totalSuites = 0;
     for (const weaponId of WEAPON_IDS) {
@@ -580,9 +584,9 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
           expect(s).not.toMatch(cjkRe);
         }
       }
-      expect(modal.subtitle).toContain('94');
-      expect(modal.subtitle).toContain('404');
-      expect(modal.kicker).toContain('16');
+      expect(modal.subtitle).toContain('112');
+      expect(modal.subtitle).toContain('480');
+      expect(modal.kicker).toContain('19');
     }
 
     // 2. Archery UI sub-dictionaries: completeness, zero CJK in EN, zero leftover firearm jargon
@@ -652,14 +656,14 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
     }
   });
 
-  it('synchronizes SHOWCASE_STRINGS metrics (16 / 404 / 936 / 94) with WEAPON_IDS, plugins, audio & public/textures', async () => {
+  it('synchronizes SHOWCASE_STRINGS metrics (19 / 480 / 1112 / 112) with WEAPON_IDS, plugins, audio & public/textures', async () => {
     const texturesDir = path.resolve(__dirname, '../public/textures');
     const audioDir = path.resolve(__dirname, '../public/audio');
 
     const textureFiles = fs
       .readdirSync(texturesDir)
       .filter((f) => f.endsWith('.webp'));
-    expect(textureFiles.length).toBe(94);
+    expect(textureFiles.length).toBe(112);
 
     const countMp3Files = (dir: string): number => {
       let count = 0;
@@ -670,29 +674,29 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
       }
       return count;
     };
-    expect(countMp3Files(audioDir)).toBe(936);
+    expect(countMp3Files(audioDir)).toBe(1112);
 
     let totalParts = 0;
     for (const weaponId of WEAPON_IDS) {
       const plugin = await loadWeaponPlugin(weaponId);
       totalParts += plugin.parts.length;
     }
-    expect(WEAPON_IDS.length).toBe(16);
-    expect(totalParts).toBe(404);
+    expect(WEAPON_IDS.length).toBe(19);
+    expect(totalParts).toBe(480);
 
     for (const lang of ['zh', 'en'] as const) {
       const showcase = SHOWCASE_STRINGS[lang];
       const metricValues = showcase.metrics.map((m) => m.val).join(' | ');
-      expect(metricValues).toContain('16');
-      expect(metricValues).toContain('404');
-      expect(metricValues).toContain('94');
-      expect(metricValues).toContain('936');
+      expect(metricValues).toContain('19');
+      expect(metricValues).toContain('480');
+      expect(metricValues).toContain('112');
+      expect(metricValues).toContain('1112');
 
-      expect(showcase.hero.eyebrow).toContain('16');
-      expect(showcase.hero.eyebrow).toContain('936');
-      expect(showcase.hero.subPartsStrong).toContain('404');
-      expect(showcase.hero.subMapsStrong).toContain('94');
-      expect(showcase.hero.subAudioStrong).toContain('936');
+      expect(showcase.hero.eyebrow).toContain('19');
+      expect(showcase.hero.eyebrow).toContain('1112');
+      expect(showcase.hero.subPartsStrong).toContain('480');
+      expect(showcase.hero.subMapsStrong).toContain('112');
+      expect(showcase.hero.subAudioStrong).toContain('1112');
 
       const caliberText = showcase.documentary.caliberRows
         .map((r) => `${r.caliber} ${r.weaponTag} ${r.signature}`)
@@ -702,6 +706,75 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
       expect(caliberText).toContain('M1 Garand');
       expect(caliberText).toContain('Benelli M4');
       expect(caliberText).toContain('Python');
+      expect(caliberText).toContain('M249 SAW');
+      expect(caliberText).toContain('P08');
+      expect(caliberText).toContain('KRISS Vector');
     }
+  });
+
+  it('hydrates and serializes ?screen=ballistics, ?screen=cartridges, and ?cut=1 URL deep-link states cleanly', () => {
+    // 1. ?screen=workbench&weapon=vector&cut=1&lang=en -> activates longitudinal section-cut directly
+    applyLocationToStore('?screen=workbench&weapon=vector&cut=1&lang=en');
+    expect(useAppStore.getState().screen).toBe('workbench');
+    expect(useAppStore.getState().activeWeaponId).toBe('vector');
+    expect(useAppStore.getState().sectionCut).toBe(true);
+    expect(useAppStore.getState().lang).toBe('en');
+
+    const cutUrl = buildSearchString(
+      'vector',
+      'workbench',
+      'explode',
+      true,
+      'en',
+      '45_acp',
+      false,
+      '45_acp',
+      ''
+    );
+    expect(cutUrl).toContain('screen=workbench');
+    expect(cutUrl).toContain('weapon=vector');
+    expect(cutUrl).toContain('cut=1');
+
+    const uncutUrl = buildSearchString(
+      'vector',
+      'workbench',
+      'explode',
+      false,
+      'en',
+      '45_acp',
+      false,
+      '45_acp',
+      '?cut=1'
+    );
+    expect(uncutUrl).not.toContain('cut=');
+
+    // 2. ?screen=ballistics&weapon=m249&caliber=45_acp&lang=en -> opens 1,000m External Ballistics Lab on requested caliber
+    applyLocationToStore(
+      '?screen=ballistics&weapon=m249&caliber=45_acp&lang=en'
+    );
+    expect(useAppStore.getState().screen).toBe('ballistics');
+    expect(useAppStore.getState().activeWeaponId).toBe('m249');
+    expect(useAppStore.getState().activeBallisticsCaliber).toBe('45_acp');
+
+    const ballisticsUrl = buildSearchString(
+      'm249',
+      'ballistics',
+      'explode',
+      false,
+      'en',
+      '556_nato',
+      false,
+      '45_acp',
+      '?cut=1&mode=firing'
+    );
+    expect(ballisticsUrl).toContain('screen=ballistics');
+    expect(ballisticsUrl).toContain('caliber=45_acp');
+    expect(ballisticsUrl).not.toContain('cut=');
+    expect(ballisticsUrl).not.toContain('mode=');
+
+    // 3. ?screen=cartridges&weapon=vector&caliber=45_acp -> opens 11-Caliber Cutaway Lab on .45 ACP
+    applyLocationToStore('?screen=cartridges&weapon=vector&caliber=45_acp');
+    expect(useAppStore.getState().screen).toBe('cartridges');
+    expect(useAppStore.getState().activeCartridgeCaliber).toBe('45_acp');
   });
 });

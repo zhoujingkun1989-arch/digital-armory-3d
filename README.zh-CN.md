@@ -6,9 +6,9 @@
   <strong>简体中文</strong>
 </p>
 
-# Digital Armory 3D · 枪械与弓弩内部结构 3D 数字博物馆
+# Digital Armory 3D v2.0 · 枪械与弓弩内部结构 3D 数字博物馆
 
-**浏览器原生秒开 · 零外部网格 · 十六款传奇名枪与复合弓弩 1:1 机械内构、内弹道物理与勤务拆装百科全书**
+**浏览器原生秒开 · 零外部网格 · 十九款传奇名枪与复合弓弩 1:1 机械内构、千米内外弹道与军械师盲测百科全书**
 
 [![CI](https://github.com/zhoujingkun1989-arch/digital-armory-3d/actions/workflows/ci.yml/badge.svg)](https://github.com/zhoujingkun1989-arch/digital-armory-3d/actions/workflows/ci.yml)
 [![GitHub Pages](https://github.com/zhoujingkun1989-arch/digital-armory-3d/actions/workflows/deploy-pages.yml/badge.svg)](https://zhoujingkun1989-arch.github.io/digital-armory-3d/showcase.html)
@@ -19,9 +19,11 @@
 <h3>
   <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/showcase.html?lang=zh">✦ 官方交互式宣传主页 (Showcase)</a>
   &nbsp;·&nbsp;
-  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=armory&lang=zh">🚀 进入 16 槽 3D 数字枪库</a>
+  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=armory&lang=zh">🚀 进入 19 槽 3D 数字枪库</a>
   &nbsp;·&nbsp;
-  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=cartridges&lang=zh">🧪 10 口径 1:1 实弹纵剖馆</a>
+  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=ballistics&lang=zh">🎯 1,000m 千米外弹道靶场</a>
+  &nbsp;·&nbsp;
+  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=cartridges&lang=zh">🧪 11 口径 1:1 实弹纵剖馆</a>
   &nbsp;·&nbsp;
   <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=ak15&screen=workbench&lang=zh">🔧 直达 AK-15M1 军械拆解台</a>
 </h3>
@@ -30,30 +32,26 @@
 
 ---
 
-> 基于 **React 18 + TypeScript + Three.js (`@react-three/fiber` / Web Worker `three-bvh-csg` / Web Audio API)** 构建的浏览器端开源 **3D 轻武器与复合弓弩机械博物馆与交互式工程百科全书**。
+> 基于 **React 18 + TypeScript + Three.js (`@react-three/fiber` / Web Worker `three-bvh-csg` / Web Audio API)** 构建的浏览器端开源 **3D 轻武器与复合弓弩机械博物馆与交互式工程百科全书（`<800 kB` 零告警精准代码分包）**。
 >
-> 全站 **零外部 `.glb` / `.gltf` 静态模型**——全部 **16 款世界经典名枪与复合弓弩（14 款传奇名枪含柯尔特蟒蛇 `.357`、伯奈利 M4 `M1014`、M1 加兰德 `.30-06` 及 2 款复合弓弩 Mathews LIFT 33 / Ravin R500）、404 个可动机械零件** 均由纯代码参数化与布尔 CSG 在后台 Web Worker 实时生成，配套 **94 张 2K 5 通道 Packed ORM WebP 物理贴图**、**自动原理流派对照矩阵 (`S`)**、**10 口径实弹与霰弹 1:1 纵剖馆 (`B`)**、**双通道 Stencil 实心金属纵剖面 (`C`)**、**6 大机械职能语义分色与 60fps 高压燃气导流可视化 (`T`)**、**军械教范有向图引导拆装实操 (`G`)**、**SAAMI/CIP 膛压 $P(t)$ 与初速 $V(t)$ 实时示波器**、**快慢机多档位火控手操 (`P / V / F`)**、**17 图版收藏图鉴与儿童 3D 绘本打印工坊 (`Ctrl/Cmd+P`)**、**纯净全屏展示 (`H`)** 以及 **936 段 Google Gemini 中英双语语音导览与 3D 导演自动运镜纪录片**。
+> 全站 **零外部 `.glb` / `.gltf` 静态模型**——全部 **19 款世界经典名枪与复合弓弩（17 款传奇名枪含 FN M249 SAW 班用机枪、德国鲁格 P08 肘节手枪、KRISS Vector `.45 ACP` 冲锋枪、柯尔特蟒蛇 `.357`、伯奈利 M4 `M1014`、M1 加兰德 `.30-06` + 2 款复合弓弩 Mathews LIFT 33 / Ravin R500）、480 个可动机械零件** 均由纯代码参数化与布尔 CSG 在后台 Web Worker 实时生成，配套 **112 张 2K 5 通道 Packed ORM WebP 物理贴图**、**1,000m RK4 外弹道与光学分划板 DOPE 靶场 (`R`)**、**军械师限时盲拆与未知故障盲考认证 (`G / J`)**、**即时高清 3D 剖视社交分享海报工坊 (`U`)**、**自动原理流派对照矩阵 (`S`)**、**11 口径实弹与霰弹 1:1 纵剖馆 (`B`)**、**双通道 Stencil 实心金属纵剖面 (`C`)**、**6 大机械职能分色与 60fps 高压燃气导流 (`T`)**、**SAAMI/CIP 膛压 $P(t)$ 与初速 $V(t)$ 实时示波器**、**快慢机多档位火控手操 (`P / V / F`)**、**17 图版收藏图鉴与儿童 3D 绘本打印工坊 (`Ctrl/Cmd+P`)**、**iPad/移动端大触控热区适配** 以及 **1,112 段 Google Gemini `Charon` 中英双语语音导览与 3D 导演自动运镜纪录片**。
 
 ![Digital Armory 3D Official Showcase Hero](docs/screenshots/showcase-landing.jpg)
 
-![16-Bay Digital Armory Showcase](docs/screenshots/armory-showcase.jpg)
+![Digital Armory 3D Vault Showcase](docs/screenshots/armory-showcase.jpg)
 
 ---
 
-## 核心工程能力 | Engineering Highlights
+## 核心工程能力 (v2.0) | Engineering Highlights
 
-- **✦ 自动原理流派谱系矩阵与双展品同屏对照实验室 (`[S]`, `WP-11`)**：按 **7 类自动机能量驱动、5 类弹膛闭锁泄压、6 类空间供弹排布** 三大正交工程维度串联全部 16 款馆藏，内置 10 组跨时代经典对决预设（如 `AK-15 vs M4A1`、`AK-15 vs M1 加兰德`、`柯尔特蟒蛇 vs 沙漠之鹰`、`Benelli M4 vs SCAR-L`）、双枪同屏膛压/初速曲线叠加对照与一键剖视实证跳转。
-- **✦ 机械职能语义分色 (`[T]`) & 60fps 高压火药燃气导流流线 (`WP-05`)**：一键将全库 404 个零件按 **闭锁承压、导气驱动、自动机框、火控击发、弹性储能、机匣供弹** 6 大机械职能赋予高辨识度工程语义色（零 WebGL 着色器重编译，且与 Stencil 实心纵剖面斜线同步换色），支持点击图例单独聚光某类机构；在发射模式下实时绘制高压膛内燃气膨胀柱、导气孔分流立管、长/短行程活塞冲击、Benelli M4 双 ARGO 活塞、M1 加兰德枪口导气筒、斯通纳气匙内腔膨胀泄压及膛底前导气路径。
-- **✦ 军械师级野战勤务拆装实操 (`[G]`, `WP-07`)**：为全部 16 款馆藏（14 款名枪 + Mathews LIFT 33 复合弓 & Ravin R500 复合弩）建立符合真实军械教范的有向无环拆装依赖图（DAG，如 `卸弹匣 → 拆机匣盖 → 取复进簧 → 抽枪机框 → 35° 旋出枪机 → 拆导气管`）。支持直接在 3D 视口点击零件完成逐步拆解（`0 → 100%`）与逆序拓扑复装（`100% → 0%`）；若顺序错误，实时触发赤红脉冲高亮干涉前置件、阻铁干涩卡阻音效与军械规范排障提示。
-- **✦ 经典枪械与弓弩故障剖视排障室 (`[J]`, `WP-09`)**：内置 **烟囱卡壳 (`Stovepipe`)**、**双进弹卡阻 (`Type-3 Double Feed`)**、**底火轻敲拒发 (`Light Strike`)** 与 **未闭锁击发阻断 (`Out-of-Battery Safety`)** 4 类典型故障与安全保护定格，覆盖全部 16 款馆藏（含柯尔特蟒蛇双动转轮星盘越齿、弹巢前隙卡滞、V 形主簧与回弹安全杆诊断，P90 顶置弹匣上拔与下抛壳道适配，以及 LIFT 33 / Ravin R500 弓弩专项排障），支持一键剖视定位卡阻成因零件并亲手演练标准排障步骤。
-- **✦ 17 图版收藏图鉴与儿童 3D 绘本打印工坊 (`[Ctrl/Cmd+P]`) & 纯净全屏 (`[H]`)**：内置离屏 WebGL 渲染抓拍管线，一键抓拍 **封面展台、三视图、X-Ray、Stencil 纵剖、6 色职能图、100% 爆炸引出编码图、四大总成分区特写、四格击发/撒放连环画与闭锁特写** 共 17 幅高清图版，支持切换 **儿童 3D 机械科普绘本**（8 页精装 / 4 页紧凑模式）或 **军械收藏工程图鉴**（黑曜石 / 蓝图版）矢量排版并直接导出打印。按 `H` 或点击全屏按钮即可隐藏全部界面按钮进入纯净 3D 全屏展示。
-- **✦ 1:1 3D 军械游标卡尺与包络标尺 (`[K]`, `WP-10`)**：严格遵循 `1 world unit = 1 cm = 10 mm` 工程基准，支持穿透纵剖切面直接拾取任意两处 3D 零件表面点测量毫米级跨度与正交 `|ΔX| / |ΔY| / |ΔZ|` 分量，内置 60fps 悬停橡皮筋预览、一键 CAD 基准量测（全枪包络总长、枪管实长、枪机/套筒纵向跨度）与三维空间包络标尺。
-- **✦ 10 大口径 SAAMI / CIP 实弹与霰弹 1:1 纵剖对比实验室 (`[B]` / `?screen=cartridges`, `WP-06`)**：独立博物馆弹药展厅将 `9×19mm`、`5.7×28mm`、`.357 Magnum`、`.50 AE`、`12 Gauge (00 鹿弹)`、`7.62×39mm`、`5.56 NATO`、`.30-06 Springfield`、`.338 Lapua`、`.50 BMG` 按 `1:1` 绝对物理比例（`29.69 mm` 至 `138.43 mm`）同台 `180°` 纵剖陈列，支持轴向分解检视黄铜弹壳/高铜底霰弹塑料壳、底火杯、砧座、无烟发射药柱、被甲/缓冲花瓣弹托及硬化钢穿甲锥/3×3 叠装鹿弹丸，并配备响应式定量参数对照矩阵。
-- **✦ SAAMI / CIP 定量内弹道示波器 & 刚体抛壳微物理 (`WP-04`)**：内置 10 口径真实内弹道积分表与复合弓/弩拉距做功储能曲线，60fps 零重绘同步显示膛压 $P(t)$（`MPa`）、弹头初速 $V(t)$（`m/s`）与安全开锁泄压窗口，支持拖拽曲线反向操控击发相位；耦合二阶弹簧阻尼枪身后坐上跳、220Hz 枪管谐振鞭动、桌面碰撞弹跳黄铜抛壳与枪管黑体热辐射红热演化。
-- **✦ 直接 3D 手操拉栓、露铜验膛 (`[P]`) 与快慢机火控交互 (`[V] / [F]`, `WP-08`)**：支持在视口直接拖拽套筒/拉机柄感受复进簧张力，按 `P` 微拉 28% 执行军械验膛（Press-Check），按 `V` 切换 `SAFE / SEMI / AUTO` 快慢机档位，按住 `F` 体验两道火扳机行程、保险机械锁死、单发断连器截获复位与全自动不到位保险联动差异。
-- **✦ 双通道 WebGL Stencil 实心金属纵剖面 (`[C]`) & 穿透拾取**：通过模板缓冲双遍封口渲染带 `±45°` ISO 128 工程剖面斜线的实心金属/聚合物壁厚，配合 `sectionAwareMeshRaycast` 鼠标直接穿透切面点选内部击针、滚柱、阻铁与供弹坡道。
-- **✦ AI 四幕研发史纪录片、936 段双语配音 & 3D 导演自动运镜 (`WP-01 ~ WP-03`)**：全站自动识别浏览器语言（支持 `?lang=zh|en` 一键切换），内置四幕自动镜头编排与逐句点击跳转字幕；配合欧拉-伯努利钢材频散波导（含 M1 加兰德 8 发弹簧钢漏夹末发高亢「PING!」模态共鸣）+ 复合弓弦阻尼合成 + 三档立体声卷积混响（暗室靶场 / 匠人台 / 展厅）Web Audio 声学引擎与人声自动闪避（Audio Ducking）。
-- **✦ Web Worker 零拷贝 CSG 流式建模 & 60Hz Zero-GC 瞬态时钟**：重度 `three-bvh-csg` 布尔运算隔离在后台 Worker 并通过 `Transferable Float32Array` 零拷贝流式回传主线程；高频插值完全经由 `playbackClock.ts` 在 `useFrame` 原地更新矩阵，零 React 组件重渲染。
+- **✦ 1,000m RK4 千米外弹道、横风偏流与第一像面分划板 DOPE 实验室 (`[R]` / `?screen=ballistics`, `WP-14`)**：纯 TypeScript 零 GC 四阶龙格-库塔（RK4）3-DOF 质点外弹道解算器，完整预置 **13 套弹头/箭矢气动档案**（含新增 `.45 ACP 230gr FMJ` 亚音速重弹、`12 Gauge` 9 粒鹿弹锥形散布及 `400 gr` 复合弓箭/弩箭）。支持 ICAO 标准大气海拔/温度密度修正、单调三次样条 BRL G1/G7 跨音速激波阻力曲线、精确归零仰角求解器（误差 `< 0.02 cm`）、Mach 1.0 跨音速失稳边界检测、第一像面（FFP）MIL 圣诞树光学分划板实时风偏/下坠预览及 7 档距离 `MIL / MOA` 狙击手 DOPE 射表生成。
+- **✦ 军械师限时盲拆考证 & 随机未知故障盲考诊断 (`[G] / [J]`, `WP-13`)**：从「引导教学」跃升为硬核实操考证！在 **限时盲拆考核 (`[G]`)** 中完全屏蔽步骤提示与一键代拆，计时考核 `0 → N → 0` 完整拓扑拆解与逆序复装（干涉误点每次扣 `75` 分并红光警示，绝不剧透前置零件名）；在 **未知故障盲考 (`[J]`)** 中随机定格 3D 卡阻姿态并隐藏高亮，先考眼力定性故障类别（猜错扣 `120` 分），再按打乱选项逐步排障（乱序扣 `60` 分），成绩（`S / A / B / C` 级认证星章）持久化写入本地档案并联动枪库徽章与分享海报。
+- **✦ 即时高清 3D 剖视社交分享海报工坊 (`[U]`) & 平板/手机触控增强 (`WP-16`)**：一键截取当前实时 WebGL 剖视/拆解视口，在浏览器 Canvas 2D 内高清合成 `1920×1080`（`16:9`）或 `1080×1350`（`4:5`）三款博物馆主题海报（黑曜石战术金 / 工程蓝图白 / 赛博青剖视），集成双语铭牌、4 格 `1:1` 测绘参数、$P(t)/V(t)$ 特征曲线、`S/A/B/C` 军械师认证印章、收藏家呼号及可扫码直达同款剖视台的 ISO 18004 二维码（`?screen=workbench&weapon=<id>&cut=1`）；同步针对 `@media (pointer: coarse)` 触屏设备全面升级 44×44 px 触控热区与响应式抽屉布局。
+- **✦ 自动原理流派谱系矩阵与双展品同屏对照实验室 (`[S]`, `WP-11`)**：按 **7 类自动机能量驱动、7 类弹膛闭锁泄压（含双连杆屈膝肘节闭锁与 Super V 轴外凸轮延迟）、7 类空间供弹排布（含 M27 可散弹链双拨爪梭动供弹）** 三大正交谱系完整归类全馆 **19 款展品**，内置 13 组跨时代经典对决预设（含 `M249 SAW vs M4A1`、`鲁格 P08 vs Glock 17`、`KRISS Vector vs MP5A3`、`AK-15 vs M1 加兰德` 等）与双枪膛压/初速同屏叠加曲线。
+- **✦ 机械职能语义分色 (`[T]`) & 60fps 高压火药燃气导流流线 (`WP-05`)**：一键将全库 **480 个零件** 按 **闭锁承压、导气驱动、自动机框、火控击发、弹性储能、机匣供弹** 6 大机械职能赋予高辨识度语义色（零着色器重编译，且与 Stencil 实心纵剖面斜线同步换色），实时绘制膛内膨胀柱及 AK/M249/SCAR/AUG/Benelli M4 ARGO 活塞、M1 加兰德枪口导气筒、M4A1 气吹内腔与沙漠之鹰膛底前导气轨迹。
+- **✦ 11 大口径 SAAMI / CIP 实弹与霰弹 1:1 纵剖对比实验室 (`[B]` / `?screen=cartridges`, `WP-06`)**：独立弹药展厅将 `9×19mm`、`.45 ACP`、`5.7×28mm`、`.357 Magnum`、`.50 AE`、`12 Gauge (00 鹿弹)`、`7.62×39mm`、`5.56 NATO`、`.30-06 Springfield`、`.338 Lapua`、`.50 BMG` 按 `1:1` 绝对物理比例（`29.69 mm` 至 `138.43 mm`）同台 `180°` 纵剖陈列，支持轴向分解滑块与定量参数矩阵对照。
+- **✦ 17 图版收藏图鉴与儿童 3D 绘本打印工坊 (`[Ctrl/Cmd+P]`)、1:1 3D 军械游标卡尺 (`[K]`) & 双通道 Stencil 实心纵剖面 (`[C]`)**：支持穿透 `±45°` ISO 128 金属剖切面直接拾取内部零件测量毫米级距离，或一键离屏抓拍 17 幅高清 3D 图版排版输出双语绘本与收藏工程图鉴。
+- **✦ AI 四幕研发史纪录片、1,112 段 `Charon` 双语配音 & 频散波导声场 (`WP-01 ~ WP-03`)**：19 套双语四幕研发史与 **1,112 条** `gemini-3.8-flash-tts`（`Charon` 统一音色 + SHA-256 哈希锁死）MP3 语音，配合 3D 导演自动运镜、欧拉-伯努利钢材频散波导（含加兰德末发漏夹「PING!」共鸣、M249 铁链节剥离、鲁格肘节折起清响与 Vector 1,200 RPM `.45` 连射）及三档立体声卷积混响。
 
 ---
 
@@ -73,7 +71,7 @@
 
 ---
 
-## 馆藏十六款名枪与复合弓弩矩阵 | 16-Exhibit Roster (404 Moving CSG Parts)
+## 馆藏十九款名枪与复合弓弩矩阵 | 19-Exhibit Roster (480 Moving CSG Parts)
 
 | 展位 | 型号 | 国家 / 类型 | 口径 / 箭矢 | 核心自动与闭锁机构 | 零件数 | 在线直达 |
 | :--- | :--- | :--- | :--- | :--- | :---: | :---: |
@@ -93,6 +91,9 @@
 | `BAY-14` | **Colt Python 6" (.357 Mag)** | 美国 · 双动转轮手枪 | `.357 Magnum (9×33mmR)` | 双动/单动 V 形片簧精密钟表火控 · 60° 棘轮星盘分度与止转笋满锁 | 25 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=python&screen=workbench&lang=zh) |
 | `BAY-15` | **Benelli M4 (M1014)** | 意大利 · 战术霰弹枪 | `12 Gauge (00 鹿弹)` | 近膛双对称 ARGO 短行程自调导气活塞 · 双突笋枪机 + 管仓升降托弹板 | 26 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=benellim4&screen=workbench&lang=zh) |
 | `BAY-16` | **U.S. Rifle M1 Garand** | 美国 · 半自动步枪 | `.30-06 Springfield M2` | 枪口导气筒 + 右侧全长弯曲操作拉杆 · 双突笋枪机 + 8 发漏夹末发弹射 | 26 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=garand&screen=workbench&lang=zh) |
+| `BAY-17` | **FN M249 SAW 班用轻机枪** | 比利时/美国 · 班用机枪 | `5.56×45mm NATO (M27弹链/STANAG)` | 下置长行程活塞 · 开膛待击双突笋回转闭锁 + M27 双拨爪弹链/弹匣双供 | 26 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=m249&screen=workbench&lang=zh) |
+| `BAY-18` | **DWM 鲁格 P08 (1917)** | 德国 · 半自动手枪 | `9×19mm Parabellum` | 6.5mm 叉形节套管退短后坐 · 双连杆过死点向上屈膝肘节闭锁 | 25 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=p08&screen=workbench&lang=zh) |
+| `BAY-19` | **KRISS Vector 短剑 Gen II** | 美国/瑞士 · 冲锋枪 | `.45 ACP (11.43×23mm)` | Super V `-65°` 轴外钨钢配重滑块凸轮延迟半自由枪机 · 虎口下低膛轴线 | 25 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=vector&screen=workbench&lang=zh) |
 
 ---
 
@@ -100,9 +101,10 @@
 
 ### 深度链接参数
 - 官方双语宣传页：`/showcase.html`、`/?screen=showcase` 或 `/?screen=showcase&lang=zh`
-- 16 槽数字枪库：`/?screen=armory&weapon=garand&lang=zh`
-- 10 大口径 1:1 实弹与霰弹纵剖馆：`/?screen=cartridges&lang=zh`（或聚焦单发 `/?screen=cartridges&caliber=30_06&lang=zh`）
-- 直达拆解 / 击发工作台：`/?weapon=m82a1&screen=workbench&mode=firing&lang=zh`
+- 19 槽数字枪库：`/?screen=armory&weapon=m249&lang=zh`
+- 1,000m 千米外弹道与分划板 DOPE 靶场：`/?screen=ballistics&caliber=338_lapua&lang=zh`
+- 11 大口径 1:1 实弹与霰弹纵剖馆：`/?screen=cartridges&caliber=45_acp&lang=zh`
+- 直达纵剖 / 击发工作台：`/?weapon=vector&screen=workbench&cut=1&lang=zh`
 
 ### 全局工程快捷键
 | 按键 | 功能说明 |
@@ -110,10 +112,12 @@
 | `Space` | 播放 / 暂停自动拆解或 7 阶段实弹击发循环演示 |
 | `C` | 开启 / 关闭双通道 Stencil 实心金属纵向军械剖视切面 |
 | `T` | 开启 / 关闭 **6 大机械职能语义分色模式**（支持按角色聚光与剖切面同步换色） |
-| `G` | 开启 / 退出 **军械师引导式野战勤务拆装实操（Field-Strip DAG 模式）** |
-| `J` | 开启 / 退出 **经典枪械与弓弩故障剖视排障室**（烟囱卡壳 / 双进弹 / 轻敲拒发 / 未闭锁阻断，含转轮与弓弩诊断） |
+| `G` | 开启 / 退出 **军械师引导式快拆与限时盲拆考证（Field-Strip DAG 模式）** |
+| `J` | 开启 / 退出 **经典故障剖视排障室与随机未知故障盲考**（烟囱卡壳 / 双进弹 / 轻敲拒发 / 未闭锁阻断） |
 | `K` | 开启 / 退出 **1:1 3D 军械游标卡尺**（`mm` 级两点拾取）与三维包络标尺 |
-| `B` | 进入 / 退出 **10 大口径 SAAMI/CIP 实弹与霰弹 1:1 纵剖对比实验室** |
+| `R` | 进入 / 返回 **1,000m RK4 千米外弹道、横风偏流与第一像面分划板 DOPE 靶场** |
+| `U` | 打开 / 关闭 **即时高清 3D 剖视社交分享海报工坊**（`16:9 / 4:5` + 二维码 + 军械师认证章） |
+| `B` | 进入 / 退出 **11 大口径 SAAMI/CIP 实弹与霰弹 1:1 纵剖对比实验室** |
 | `S` | 打开 / 关闭 **自动原理流派谱系矩阵与双展品同屏对照实验室**（数字枪库） |
 | `X` | 开启 / 关闭机匣、套筒与弹匣外壳 X-Ray 光学透视 |
 | `P` | 微拉套筒 / 拉机柄 28% 执行军械露铜验膛（Press-Check） |
@@ -124,7 +128,7 @@
 | `M` | 开启 / 静音 Web Audio 军械机械咬合声与分口径 / 弓弩声场 |
 | `H` | 隐藏 / 恢复全部界面按钮，进入 **纯净全屏 3D 展示** |
 | `Ctrl/Cmd + P` | 打开 **17 图版收藏图鉴与儿童 3D 绘本打印工坊** |
-| `R` | 一键重置回 0% 合拢态与标准等轴测视角 |
+| `Shift + R` | 一键重置回 0% 合拢态与标准等轴测视角 |
 | `Esc` | 依次收起抽屉为迷你字幕条 → 取消选中零件 → 返回 3D 数字枪库 |
 
 ---
@@ -144,7 +148,7 @@ npm install
 # 2. 启动本地开发服务器 (同时支持 / 与 /showcase.html)
 npm run dev
 
-# 3. 执行四项工程质量门禁 (TypeScript + ESLint + Vitest 全量契约测试 + 多入口构建)
+# 3. 执行四项工程质量门禁 (TypeScript + ESLint + Vitest 全量 19 展品契约测试 + <800 kB 多入口分包构建)
 npm run typecheck
 npm run lint
 npm test
@@ -155,7 +159,7 @@ npm run build
 
 ## 声明 | Disclaimer
 
-本项目所有三维模型均为**原理示意级（Schematic / Educational Level）**浏览器端机械科普与交互可视化开源作品，重点展示自动原理、闭锁机构、内弹道物理与勤务拆装拓扑关系，**不包含任何工业制造公差、CAD 加工图纸或可打印构件尺寸**。
+本项目所有三维模型均为**原理示意级（Schematic / Educational Level）**浏览器端机械科普与交互可视化开源作品，重点展示自动原理、闭锁机构、内外弹道物理与勤务拆装拓扑关系，**不包含任何工业制造公差、CAD 加工图纸或可打印构件尺寸**。
 
 ---
 

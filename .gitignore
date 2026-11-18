@@ -11,7 +11,8 @@ dist-ssr/
 __pycache__/
 *.py[cod]
 .venv/
-scripts/narrations/.cache/
+scripts/narrations/.cache/*
+!scripts/narrations/.cache/*_tts_hashes.json
 
 # OS & Editor files
 .DS_Store

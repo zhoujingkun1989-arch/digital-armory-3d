@@ -5,8 +5,8 @@ import type { CaliberProfile } from '../../weapons/types';
 //
 // Pure, DOM-free, Three.js-free deterministic 3-DOF Point-Mass Exterior Ballistics
 // module (Zero-GC hot loop, unit-testable in Node) providing:
-//   1. All 13 canonical projectile profiles (10 SAAMI/CIP/NATO metallic & shotshell
-//      calibers + Wave-2 `.45 ACP 230gr FMJ` + 2 ATA/IBO 400gr compound bow &
+//   1. All 13 canonical projectile profiles (11 SAAMI/CIP/NATO metallic & shotshell
+//      calibers incl. `.45 ACP 230gr FMJ` + 2 ATA/IBO 400gr compound bow &
 //      crossbow carbon projectiles).
 //   2. Standard ICAO / ISA atmosphere air density ρ(h, T) & speed of sound a(T).
 //   3. Monotone-cubic Hermite BRL/McCoy G1 & G7 standard drag curves C_d(M) plus

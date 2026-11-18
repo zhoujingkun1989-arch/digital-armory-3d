@@ -231,7 +231,8 @@ describe('WP-13 Armorer Blind Field-Strip Exam & Random Unknown Stoppage Triage'
     expect(formatExamDuration(125_300)).toBe('02:05.3');
   });
 
-  it('executes full Blind Timed Field-Strip & Reassembly (0 -> N -> 0) dynamically across all 16 exhibits while locking hints/auto-solve', async () => {
+  it('executes full Blind Timed Field-Strip & Reassembly (0 -> N -> 0) dynamically across all 19 exhibits while locking hints/auto-solve', async () => {
+    expect(WEAPON_IDS).toHaveLength(19);
     for (const weaponId of WEAPON_IDS) {
       const plan = FIELD_STRIP_PLANS[weaponId];
       const topoSteps = resolveValidTopologicalOrder(plan.steps);
@@ -396,6 +397,9 @@ describe('WP-13 Armorer Blind Field-Strip Exam & Random Unknown Stoppage Triage'
       wrongGuess: (typeof MALFUNCTION_ORDER)[number];
     }> = [
       { weaponId: 'm4a1', kind: 'double_feed', wrongGuess: 'stovepipe' },
+      { weaponId: 'm249', kind: 'stovepipe', wrongGuess: 'double_feed' },
+      { weaponId: 'p08', kind: 'light_strike', wrongGuess: 'out_of_battery' },
+      { weaponId: 'vector', kind: 'out_of_battery', wrongGuess: 'stovepipe' },
       { weaponId: 'python', kind: 'out_of_battery', wrongGuess: 'light_strike' },
       { weaponId: 'lift33', kind: 'stovepipe', wrongGuess: 'double_feed' },
       { weaponId: 'r500', kind: 'light_strike', wrongGuess: 'out_of_battery' },

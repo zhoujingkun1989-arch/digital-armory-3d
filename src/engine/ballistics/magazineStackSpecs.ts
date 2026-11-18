@@ -865,7 +865,7 @@ export const MAGAZINE_STACK_SPECS: Readonly<
   },
 };
 
-/** Maximum instanced capacity needed across all 11 weapons (`roundCount + 1` replacement) */
+/** Maximum instanced capacity needed across all 19 exhibits (`roundCount + 1` replacement) */
 export const MAX_MAGAZINE_STACK_INSTANCES = 36;
 
 /**

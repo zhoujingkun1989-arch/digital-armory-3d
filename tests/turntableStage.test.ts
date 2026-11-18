@@ -15,7 +15,8 @@ describe('turntable stage framing & zero-overlap showcase window contract', () =
     setShowcaseWindowBounds(null);
   });
 
-  it('keeps all 16 exhibits (404 parts) and 3D turntable platters strictly inside the unobstructed Showcase window across 360° rotation', async () => {
+  it('keeps all 19 exhibits (480 parts) and 3D turntable platters strictly inside the unobstructed Showcase window across 360° rotation', async () => {
+    expect(ARMORY_WEAPONS).toHaveLength(19);
     const viewports = [
       { w: 1440, h: 720, topPx: 252, bottomPx: 622 },
       { w: 1920, h: 1080, topPx: 268, bottomPx: 980 },

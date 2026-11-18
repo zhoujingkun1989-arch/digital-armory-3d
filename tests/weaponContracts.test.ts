@@ -1,9 +1,12 @@
+import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
 import { playbackClock } from '../src/engine/clock/playbackClock';
 import {
+  computePartTransform,
   createMutablePose,
   evaluatePartPoseInto,
 } from '../src/engine/kinematics/math';
@@ -21,6 +24,10 @@ import {
   matchesArmoryCategory,
   WEAPON_MANIFESTS,
 } from '../src/weapons/manifests';
+import {
+  P08_TOGGLE_LINK_LEN,
+  P08_TOGGLE_OVERCENTER_RAD,
+} from '../src/weapons/p08/meshes/p08Geometries';
 import { loadWeaponPlugin } from '../src/weapons/registry';
 import type { CameraPresetType, WeaponId } from '../src/weapons/types';
 
@@ -29,6 +36,16 @@ const ROOT_DIR = path.resolve(
   '..'
 );
 const TEXTURES_DIR = path.join(ROOT_DIR, 'public', 'textures');
+const AUDIO_DIR = path.join(ROOT_DIR, 'public', 'audio');
+const TTS_CACHE_DIR = path.join(ROOT_DIR, 'scripts', 'narrations', '.cache');
+const CJK_OR_FULLWIDTH_RE =
+  /[\u2E80-\u9FFF\uF900-\uFAFF\uFE30-\uFE4F\uFF00-\uFFEF]/;
+const EXPECTED_TTS_MODEL = 'gemini-3.8-flash-tts';
+const EXPECTED_TTS_VOICE = 'Charon';
+const EXPECTED_TTS_STYLE: Readonly<Record<'zh' | 'en', string>> = {
+  zh: '沉稳磁性、富有历史厚重感与精密机械工程严谨度的纪录片旁白，语速适中自然，重点转折处略作停顿，吐字清晰饱满',
+  en: 'Authoritative, warm, articulate museum firearm historian and mechanical engineering documentary narrator, measured pace with natural cadence',
+};
 
 const CAMERA_PRESET_KEYS: readonly CameraPresetType[] = [
   'armory_showcase',
@@ -77,6 +94,9 @@ const DYNAMIC_SPRING_PARTS: Readonly<Record<WeaponId, readonly string[]>> = {
     'benellim4_mag_spring',
   ],
   garand: ['garand_op_rod_spring', 'garand_hammer_spring'],
+  m249: ['m249_recoil_spring', 'm249_sear_spring'],
+  p08: ['p08_recoil_spring', 'p08_striker_spring', 'p08_mag_spring'],
+  vector: ['vector_recoil_spring', 'vector_hammer_spring', 'vector_mag_spring'],
 };
 
 const ROTATING_BOLT_PARTS: ReadonlyArray<{
@@ -93,6 +113,7 @@ const ROTATING_BOLT_PARTS: ReadonlyArray<{
   { weaponId: 'm82a1', partId: 'm82a1_bolt', minAbsRollRad: 0.25 },
   { weaponId: 'benellim4', partId: 'benellim4_bolt_head', minAbsRollRad: 0.55 },
   { weaponId: 'garand', partId: 'garand_bolt', minAbsRollRad: 0.45 },
+  { weaponId: 'm249', partId: 'm249_bolt', minAbsRollRad: 0.45 },
 ];
 
 const FIXED_BARREL_PARTS: ReadonlyArray<{
@@ -110,6 +131,8 @@ const FIXED_BARREL_PARTS: ReadonlyArray<{
   { weaponId: 'python', partId: 'python_barrel' },
   { weaponId: 'benellim4', partId: 'benellim4_barrel' },
   { weaponId: 'garand', partId: 'garand_barrel' },
+  { weaponId: 'm249', partId: 'm249_barrel' },
+  { weaponId: 'vector', partId: 'vector_barrel' },
 ];
 
 interface ParsedWebpHeader {
@@ -182,26 +205,29 @@ function findFirstNonFiniteIndex(arr: ArrayLike<number>): number {
   return -1;
 }
 
-describe('16-Exhibit Digital Armory 1:1 plugin, geometry, kinematics & PBR contracts', () => {
-  it('registers all 16 iconic exhibits totaling 404 parts with accurate category filtering & camera presets', () => {
-    expect(WEAPON_MANIFESTS).toHaveLength(16);
-    expect(ARMORY_WEAPONS).toHaveLength(16);
+describe('19-Exhibit Digital Armory V2.0 1:1 plugin, geometry, kinematics & PBR contracts', () => {
+  it('registers all 19 iconic exhibits totaling 480 parts across all 8 categories with accurate camera presets', () => {
+    expect(WEAPON_MANIFESTS).toHaveLength(19);
+    expect(ARMORY_WEAPONS).toHaveLength(19);
 
     const totalCatalogParts = WEAPON_MANIFESTS.reduce(
       (sum, m) => sum + m.catalog.partsCount,
       0
     );
-    expect(totalCatalogParts).toBe(404);
+    expect(totalCatalogParts).toBe(480);
 
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'all'))
-    ).toHaveLength(16);
+    ).toHaveLength(19);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'assault'))
     ).toHaveLength(5);
     expect(
+      ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'lmg'))
+    ).toHaveLength(1);
+    expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'smg'))
-    ).toHaveLength(2);
+    ).toHaveLength(3);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'sniper'))
     ).toHaveLength(2);
@@ -210,7 +236,7 @@ describe('16-Exhibit Digital Armory 1:1 plugin, geometry, kinematics & PBR contr
     ).toHaveLength(1);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'pistol'))
-    ).toHaveLength(4);
+    ).toHaveLength(5);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'archery'))
     ).toHaveLength(2);
@@ -250,7 +276,7 @@ describe('16-Exhibit Digital Armory 1:1 plugin, geometry, kinematics & PBR contr
     }
   });
 
-  it('enforces 1:1 BOM metadata, disassembly keyframes, dense [0..1] kinematic sweeps, and mechanism-specific motion laws across all 16 plugins', async () => {
+  it('enforces 1:1 BOM metadata, disassembly keyframes, dense [0..1] kinematic sweeps, and mechanism-specific motion laws across all 19 plugins', async () => {
     const globalPartIds = new Set<string>();
     let totalRuntimeParts = 0;
     const poseScratch = createMutablePose();
@@ -431,8 +457,8 @@ describe('16-Exhibit Digital Armory 1:1 plugin, geometry, kinematics & PBR contr
       }
     }
 
-    expect(totalRuntimeParts).toBe(404);
-    expect(globalPartIds.size).toBe(404);
+    expect(totalRuntimeParts).toBe(480);
+    expect(globalPartIds.size).toBe(480);
 
     // 1. M82A1 short-recoil barrel + accelerator motion law
     const m82Plugin = loadedPlugins.get('m82a1')!;
@@ -651,6 +677,153 @@ describe('16-Exhibit Digital Armory 1:1 plugin, geometry, kinematics & PBR contr
     }
     expect(maxEnblocDy).toBeGreaterThan(0.15);
 
+    // 3d. V2.0 BAY-17 ~ BAY-19 Signature Mechanisms:
+    //  - M249 SAW: open-bolt forward bolt rush (+9.50 cm), >= 0.45 rad 2-lug lockup, slide-linked firing pin safety, M27 belt shuttle
+    const m249Plugin = loadedPlugins.get('m249')!;
+    let maxM249BoltDx = -Infinity;
+    let minM249BoltDx = Infinity;
+    let maxM249BoltRx = 0;
+    let minM249PawlDz = Infinity;
+    let maxM249PawlDz = -Infinity;
+    for (const f of DENSE_FIRING_SWEEP) {
+      const boltD = m249Plugin.computeFiringKinematics('m249_bolt', f);
+      const pawlD = m249Plugin.computeFiringKinematics('m249_feed_pawls', f);
+      maxM249BoltDx = Math.max(maxM249BoltDx, boltD.pos[0]);
+      minM249BoltDx = Math.min(minM249BoltDx, boltD.pos[0]);
+      maxM249BoltRx = Math.max(maxM249BoltRx, Math.abs(boltD.rot[0]));
+      minM249PawlDz = Math.min(minM249PawlDz, pawlD.pos[2]);
+      maxM249PawlDz = Math.max(maxM249PawlDz, pawlD.pos[2]);
+    }
+    expect(maxM249BoltDx).toBeGreaterThan(8.5);
+    expect(minM249BoltDx).toBeLessThan(-2.0);
+    expect(maxM249BoltRx).toBeGreaterThanOrEqual(0.45);
+    expect(maxM249PawlDz - minM249PawlDz).toBeGreaterThan(1.0);
+    // Slide-linked firing pin remains retracted behind bolt face during unlocked rush (f=0.14) and protrudes only in locked battery (f=0.24)
+    expect(
+      m249Plugin.computeFiringKinematics('m249_firing_pin', 0.14).pos[0] -
+        m249Plugin.computeFiringKinematics('m249_bolt', 0.14).pos[0]
+    ).toBeCloseTo(0, 5);
+    expect(
+      m249Plugin.computeFiringKinematics('m249_firing_pin', 0.24).pos[0] -
+        m249Plugin.computeFiringKinematics('m249_bolt', 0.24).pos[0]
+    ).toBeGreaterThan(0.3);
+    // Open-bolt empty chamber at rest (f=0 and f=1)
+    expect(m249Plugin.computeBallisticsState(0).spentCaseVisible).toBe(false);
+    expect(m249Plugin.computeBallisticsState(0).bulletVisible).toBe(false);
+    expect(m249Plugin.computeBallisticsState(1).spentCaseVisible).toBe(false);
+
+    //  - Luger P08: short-recoil barrel (-0.65 cm) + 2-bar knee-joint toggle upward buckle (dy > 2.5 cm & |rz| > 0.7 rad) + straight breechblock (< -3.5 cm)
+    const p08Plugin = loadedPlugins.get('p08')!;
+    const p08FrontToggleSpec = p08Plugin.parts.find(
+      (p) => p.id === 'p08_front_toggle'
+    )!;
+    const p08RearToggleSpec = p08Plugin.parts.find(
+      (p) => p.id === 'p08_rear_toggle'
+    )!;
+    const localRearKnee = new THREE.Vector3(
+      P08_TOGGLE_LINK_LEN * Math.cos(-P08_TOGGLE_OVERCENTER_RAD),
+      P08_TOGGLE_LINK_LEN * Math.sin(-P08_TOGGLE_OVERCENTER_RAD),
+      0
+    );
+    const localFrontKnee = new THREE.Vector3(
+      -P08_TOGGLE_LINK_LEN * Math.cos(-P08_TOGGLE_OVERCENTER_RAD),
+      P08_TOGGLE_LINK_LEN * Math.sin(-P08_TOGGLE_OVERCENTER_RAD),
+      0
+    );
+    const evalKneeWorld = (
+      partSpec: typeof p08FrontToggleSpec,
+      localKnee: THREE.Vector3,
+      f: number
+    ) => {
+      evaluatePartPoseInto(
+        partSpec,
+        0,
+        true,
+        f,
+        p08Plugin.computeFiringKinematics,
+        poseScratch
+      );
+      return localKnee
+        .clone()
+        .applyEuler(
+          new THREE.Euler(poseScratch.rx, poseScratch.ry, poseScratch.rz)
+        )
+        .add(new THREE.Vector3(poseScratch.px, poseScratch.py, poseScratch.pz));
+    };
+    const restRearKnee = evalKneeWorld(p08RearToggleSpec, localRearKnee, 0);
+    const restFrontKnee = evalKneeWorld(p08FrontToggleSpec, localFrontKnee, 0);
+    expect(restRearKnee.distanceTo(restFrontKnee)).toBeLessThan(1e-4);
+
+    let maxP08FrontToggleAbsRz = 0;
+    let maxP08RearToggleAbsRz = 0;
+    let maxP08FrontToggleKneeDy = 0;
+    let maxP08RearToggleKneeDy = 0;
+    let minP08BreechDx = 0;
+    let minP08BarrelDx = 0;
+    for (const f of DENSE_FIRING_SWEEP) {
+      const ftD = p08Plugin.computeFiringKinematics('p08_front_toggle', f);
+      const rtD = p08Plugin.computeFiringKinematics('p08_rear_toggle', f);
+      const bbD = p08Plugin.computeFiringKinematics('p08_breechblock', f);
+      const bblD = p08Plugin.computeFiringKinematics('p08_barrel', f);
+
+      maxP08FrontToggleAbsRz = Math.max(
+        maxP08FrontToggleAbsRz,
+        Math.abs(ftD.rot[2])
+      );
+      maxP08RearToggleAbsRz = Math.max(
+        maxP08RearToggleAbsRz,
+        Math.abs(rtD.rot[2])
+      );
+      minP08BreechDx = Math.min(minP08BreechDx, bbD.pos[0]);
+      minP08BarrelDx = Math.min(minP08BarrelDx, bblD.pos[0]);
+      // Pure horizontal breechblock motion (0 vertical buckle / 0 pitch)
+      expect(Math.abs(bbD.pos[1]) + Math.abs(bbD.rot[2])).toBeLessThan(1e-6);
+
+      const rk = evalKneeWorld(p08RearToggleSpec, localRearKnee, f);
+      const fk = evalKneeWorld(p08FrontToggleSpec, localFrontKnee, f);
+      expect(
+        rk.distanceTo(fk),
+        `p08 knee-joint hinge pin split apart at f=${f}`
+      ).toBeLessThan(1e-4);
+      maxP08RearToggleKneeDy = Math.max(
+        maxP08RearToggleKneeDy,
+        rk.y - restRearKnee.y
+      );
+      maxP08FrontToggleKneeDy = Math.max(
+        maxP08FrontToggleKneeDy,
+        fk.y - restFrontKnee.y
+      );
+    }
+    expect(maxP08FrontToggleAbsRz).toBeGreaterThan(0.7);
+    expect(maxP08RearToggleAbsRz).toBeGreaterThan(0.7);
+    expect(maxP08FrontToggleKneeDy).toBeGreaterThan(2.5);
+    expect(maxP08RearToggleKneeDy).toBeGreaterThan(2.5);
+    expect(minP08BreechDx).toBeLessThan(-3.5);
+    expect(minP08BarrelDx).toBeCloseTo(-0.65, 3);
+
+    //  - KRISS Vector Gen II: Super V -65° off-axis counterweight plunge (slider dy < -5.0 cm while bolt dx < -3.0 cm)
+    const vectorPlugin = loadedPlugins.get('vector')!;
+    let minVectorSliderDy = 0;
+    let minVectorSliderDx = 0;
+    let minVectorBoltDx = 0;
+    let minVectorBoltDy = 0;
+    let maxVectorHammerRz = 0;
+    for (const f of DENSE_FIRING_SWEEP) {
+      const sD = vectorPlugin.computeFiringKinematics('vector_slider', f);
+      const bD = vectorPlugin.computeFiringKinematics('vector_bolt', f);
+      const hD = vectorPlugin.computeFiringKinematics('vector_hammer', f);
+      minVectorSliderDy = Math.min(minVectorSliderDy, sD.pos[1]);
+      minVectorSliderDx = Math.min(minVectorSliderDx, sD.pos[0]);
+      minVectorBoltDx = Math.min(minVectorBoltDx, bD.pos[0]);
+      minVectorBoltDy = Math.min(minVectorBoltDy, bD.pos[1]);
+      maxVectorHammerRz = Math.max(maxVectorHammerRz, hD.rot[2]);
+    }
+    expect(minVectorSliderDy).toBeLessThan(-5.0);
+    expect(minVectorSliderDx).toBeLessThan(-2.4);
+    expect(minVectorBoltDx).toBeLessThan(-3.0);
+    expect(minVectorBoltDy).toBeLessThan(-1.0);
+    expect(maxVectorHammerRz).toBeGreaterThan(0.75);
+
     // 4. Endpoint continuity across f = 0.995 -> 1.0 (catches modulo wrap-around snaps on single-shot completion)
     for (const [wid, plugin] of loadedPlugins.entries()) {
       for (const part of plugin.parts) {
@@ -693,12 +866,13 @@ describe('16-Exhibit Digital Armory 1:1 plugin, geometry, kinematics & PBR contr
     }
   });
 
-  it('builds all 404 CSG/parametric BufferGeometries with finite attributes, unit normals, positive 3D volume, and [0, 1] custom-atlas UVs', async () => {
+  it('builds all 480 CSG/parametric BufferGeometries with finite attributes, unit normals, positive 3D volume, and [0, 1] custom-atlas UVs', async () => {
     let builtPartsCount = 0;
 
     for (const manifest of WEAPON_MANIFESTS) {
       const plugin = await loadWeaponPlugin(manifest.id);
       const builders = await loadWeaponGeometryBuilders(manifest.id);
+      const explodedWorldBoxes: Array<{ id: string; box: THREE.Box3 }> = [];
 
       for (const part of plugin.parts) {
         const label = `${manifest.id}/${part.id}`;
@@ -886,29 +1060,89 @@ describe('16-Exhibit Digital Armory 1:1 plugin, geometry, kinematics & PBR contr
               `${label}: collapsed custom-atlas V span`
             ).toBeGreaterThanOrEqual(0.09);
           }
+
+          // Compute exact world-space AABB at t = 1.0 (100% Full Exploded View)
+          const expTf = computePartTransform(part, 1.0);
+          const expMat = new THREE.Matrix4().compose(
+            new THREE.Vector3(
+              expTf.position[0],
+              expTf.position[1],
+              expTf.position[2]
+            ),
+            new THREE.Quaternion().setFromEuler(
+              new THREE.Euler(
+                expTf.rotation[0],
+                expTf.rotation[1],
+                expTf.rotation[2]
+              )
+            ),
+            new THREE.Vector3(1, 1, 1)
+          );
+          const worldBox = new THREE.Box3();
+          const tmpV = new THREE.Vector3();
+          for (let v = 0; v < pos.count; v++) {
+            tmpV.fromBufferAttribute(pos, v).applyMatrix4(expMat);
+            worldBox.expandByPoint(tmpV);
+          }
+          explodedWorldBoxes.push({ id: part.id, box: worldBox });
         } finally {
           geo.dispose();
         }
       }
+
+      // Verify zero 3D AABB overlaps at t = 1.0 across V2 exhibits (m249, p08, vector) & check separation across vault
+      if (
+        manifest.id === 'm249' ||
+        manifest.id === 'p08' ||
+        manifest.id === 'vector'
+      ) {
+        const overlaps: string[] = [];
+        for (let i = 0; i < explodedWorldBoxes.length; i++) {
+          for (let j = i + 1; j < explodedWorldBoxes.length; j++) {
+            const a = explodedWorldBoxes[i];
+            const b = explodedWorldBoxes[j];
+            if (a.box.intersectsBox(b.box)) {
+              const ix =
+                Math.min(a.box.max.x, b.box.max.x) -
+                Math.max(a.box.min.x, b.box.min.x);
+              const iy =
+                Math.min(a.box.max.y, b.box.max.y) -
+                Math.max(a.box.min.y, b.box.min.y);
+              const iz =
+                Math.min(a.box.max.z, b.box.max.z) -
+                Math.max(a.box.min.z, b.box.min.z);
+              overlaps.push(
+                `${a.id} <-> ${b.id} (${ix.toFixed(2)}x${iy.toFixed(2)}x${iz.toFixed(2)} cm)`
+              );
+            }
+          }
+        }
+        expect(
+          overlaps,
+          `${manifest.id}: 3D AABB overlaps at t=1.0 full explode`
+        ).toEqual([]);
+      }
     }
 
-    expect(builtPartsCount).toBe(404);
+    expect(builtPartsCount).toBe(480);
   }, 120000);
 
-  it('verifies all 94 WebP PBR textures exist on disk (0 PNGs) and all 32 *_roughness.webp ORM maps have valid RGB WebP headers', async () => {
+  it('verifies all 112 WebP PBR textures exist on disk (0 PNGs) and all 38 *_roughness.webp ORM maps have valid RGB WebP headers', async () => {
     expect(fs.existsSync(TEXTURES_DIR)).toBe(true);
     const diskFiles = fs.readdirSync(TEXTURES_DIR);
     const webpFiles = diskFiles.filter((f) => f.endsWith('.webp')).sort();
     const pngFiles = diskFiles.filter((f) => f.endsWith('.png'));
+    const albedoFiles = webpFiles.filter((f) => f.endsWith('_albedo.webp'));
     const roughnessFiles = webpFiles.filter((f) =>
       f.endsWith('_roughness.webp')
     );
     const normalFiles = webpFiles.filter((f) => f.endsWith('_normal.webp'));
 
-    expect(webpFiles).toHaveLength(94);
+    expect(webpFiles).toHaveLength(112);
     expect(pngFiles).toHaveLength(0);
-    expect(roughnessFiles).toHaveLength(32);
-    expect(normalFiles).toHaveLength(32);
+    expect(albedoFiles).toHaveLength(36);
+    expect(roughnessFiles).toHaveLength(38);
+    expect(normalFiles).toHaveLength(38);
 
     // Binary RIFF/WEBP header validation across all 58 textures
     for (const fileName of webpFiles) {
@@ -1043,9 +1277,37 @@ describe('16-Exhibit Digital Armory 1:1 plugin, geometry, kinematics & PBR contr
     expect(playbackClock.getState().targetProgress).toBe(0);
   });
 
-  it('verifies Google Gemini bilingual R&D stories, all 404 part narrations, all 936 MP3 voiceover clips across all 16 exhibits, and bilingual store/fallback contracts', async () => {
+  it('verifies Google Gemini bilingual R&D stories, all 480 part narrations, all 1,112 MP3 voiceover clips & 19 Charon TTS SHA-256 hash manifests with 0 CJK leaks in English', async () => {
     let totalNarratedParts = 0;
     const allReferencedAudioPaths: string[] = [];
+
+    const assertZeroCjkInEnglish = (val: unknown, ctxPath: string): void => {
+      if (typeof val === 'string') {
+        expect(
+          CJK_OR_FULLWIDTH_RE.test(val),
+          `CJK/fullwidth character leak at ${ctxPath}: "${val}"`
+        ).toBe(false);
+      } else if (Array.isArray(val)) {
+        val.forEach((item, idx) =>
+          assertZeroCjkInEnglish(item, `${ctxPath}[${idx}]`)
+        );
+      } else if (val && typeof val === 'object') {
+        for (const [k, v] of Object.entries(val as Record<string, unknown>)) {
+          assertZeroCjkInEnglish(v, `${ctxPath}.${k}`);
+        }
+      }
+    };
+
+    const sha256Hex = (input: string): string =>
+      createHash('sha256').update(input, 'utf8').digest('hex');
+
+    expect(fs.existsSync(TTS_CACHE_DIR)).toBe(true);
+    const hashFilesOnDisk = fs
+      .readdirSync(TTS_CACHE_DIR)
+      .filter((f) => f.endsWith('_tts_hashes.json'))
+      .sort();
+    expect(hashFilesOnDisk).toHaveLength(19);
+    let totalVerifiedHashes = 0;
 
     for (const manifest of WEAPON_MANIFESTS) {
       const wid = manifest.id;
@@ -1060,6 +1322,15 @@ describe('16-Exhibit Digital Armory 1:1 plugin, geometry, kinematics & PBR contr
         `missing narration bundle for ${wid}`
       ).toBe(true);
 
+      const hashPath = path.join(TTS_CACHE_DIR, `${wid}_tts_hashes.json`);
+      expect(
+        fs.existsSync(hashPath),
+        `missing Charon TTS SHA-256 hash manifest for ${wid}`
+      ).toBe(true);
+      const ttsHashes = JSON.parse(
+        fs.readFileSync(hashPath, 'utf-8')
+      ) as Record<string, string>;
+
       const bundle = JSON.parse(
         fs.readFileSync(narrationPath, 'utf-8')
       ) as WeaponNarrationBundle;
@@ -1069,8 +1340,18 @@ describe('16-Exhibit Digital Armory 1:1 plugin, geometry, kinematics & PBR contr
       expect(bundle.schemaVersion).toBe(1);
       expect(bundle.weaponId).toBe(wid);
       expect(bundle.generatorModels.text).toBe('gemini-3.8-flash');
-      expect(bundle.generatorModels.storyTts).toBe('gemini-3.8-flash-tts');
-      expect(bundle.generatorModels.partTts).toBe('gemini-3.8-flash-tts');
+      expect(bundle.generatorModels.storyTts).toBe(EXPECTED_TTS_MODEL);
+      expect(bundle.generatorModels.partTts).toBe(EXPECTED_TTS_MODEL);
+
+      // Strictly 0 CJK/fullwidth characters across all English plugin metadata & English narration fields
+      for (const grp of plugin.partGroups) {
+        assertZeroCjkInEnglish(grp.nameEn, `${wid}.partGroups.${grp.key}.nameEn`);
+      }
+      for (const p of plugin.parts) {
+        assertZeroCjkInEnglish(p.nameEn, `${wid}.parts.${p.id}.nameEn`);
+      }
+      assertZeroCjkInEnglish(bundle.uiMetaEn, `${wid}.uiMetaEn`);
+      assertZeroCjkInEnglish(bundle.story.en, `${wid}.story.en`);
 
       // Verify all timeline presets & firing phases have English translations
       for (const preset of plugin.timelinePresets) {
@@ -1091,7 +1372,10 @@ describe('16-Exhibit Digital Armory 1:1 plugin, geometry, kinematics & PBR contr
         expect(tr.description.length).toBeGreaterThan(15);
       }
 
-      // Verify 4-act bilingual R&D stories, 3 breakthroughs, and >=5 milestones
+      // Verify 4-act bilingual R&D stories, 3 breakthroughs, >=5 milestones & exact Charon TTS hashes
+      const expectedWeaponClipCount = 8 + plugin.parts.length * 2;
+      expect(Object.keys(ttsHashes)).toHaveLength(expectedWeaponClipCount);
+
       for (const lang of ['zh', 'en'] as const) {
         const story = bundle.story[lang];
         expect(story.headline.length).toBeGreaterThan(5);
@@ -1106,6 +1390,14 @@ describe('16-Exhibit Digital Armory 1:1 plugin, geometry, kinematics & PBR contr
           expect(act.audioUrl).toMatch(
             new RegExp(`^audio/${wid}/story_act[1-4]_${lang}\\.mp3$`)
           );
+          const expectedSig = sha256Hex(
+            `${EXPECTED_TTS_MODEL}|${EXPECTED_TTS_VOICE}|${EXPECTED_TTS_STYLE[lang]}|${act.audioScript}`
+          );
+          expect(
+            ttsHashes[act.audioUrl],
+            `${wid}: TTS SHA-256 hash mismatch on ${act.audioUrl}`
+          ).toBe(expectedSig);
+          totalVerifiedHashes++;
           allReferencedAudioPaths.push(act.audioUrl);
           if (act.focusPartId) {
             expect(
@@ -1124,7 +1416,7 @@ describe('16-Exhibit Digital Armory 1:1 plugin, geometry, kinematics & PBR contr
         }
       }
 
-      // Verify 100% part coverage and bilingual audio scripts
+      // Verify 100% part coverage, 0 CJK in English part entries, and bilingual Charon TTS hashes
       expect(Object.keys(bundle.parts)).toHaveLength(plugin.parts.length);
       totalNarratedParts += Object.keys(bundle.parts).length;
 
@@ -1138,6 +1430,11 @@ describe('16-Exhibit Digital Armory 1:1 plugin, geometry, kinematics & PBR contr
         expect(entry.bomCode).toBe(part.bomCode);
         expect(entry.calloutLabelEn.length).toBeGreaterThan(2);
         expect(entry.calloutLabelEn.length).toBeLessThanOrEqual(32);
+        assertZeroCjkInEnglish(
+          entry.calloutLabelEn,
+          `${wid}.parts.${part.id}.calloutLabelEn`
+        );
+        assertZeroCjkInEnglish(entry.en, `${wid}.parts.${part.id}.en`);
 
         for (const lang of ['zh', 'en'] as const) {
           const loc = entry[lang];
@@ -1150,24 +1447,47 @@ describe('16-Exhibit Digital Armory 1:1 plugin, geometry, kinematics & PBR contr
           expect(loc.audioUrl).toBe(
             `audio/${wid}/parts/${part.id}_${lang}.mp3`
           );
+          const expectedPartSig = sha256Hex(
+            `${EXPECTED_TTS_MODEL}|${EXPECTED_TTS_VOICE}|${EXPECTED_TTS_STYLE[lang]}|${loc.audioScript}`
+          );
+          expect(
+            ttsHashes[loc.audioUrl],
+            `${wid}: TTS SHA-256 hash mismatch on ${loc.audioUrl}`
+          ).toBe(expectedPartSig);
+          totalVerifiedHashes++;
           allReferencedAudioPaths.push(loc.audioUrl);
         }
 
         const labelEn = resolvePartCalloutLabel(part, 'en', entry);
         expect(labelEn.length).toBeGreaterThan(2);
+        assertZeroCjkInEnglish(labelEn, `${wid}.callout.${part.id}`);
       }
 
       // Verify English fallbacks & resolved display meta
       const fb = WEAPON_EN_FALLBACKS[wid];
       expect(fb, `missing English fallback for ${wid}`).toBeDefined();
+      assertZeroCjkInEnglish(fb, `${wid}.WEAPON_EN_FALLBACKS`);
       const metaEn = resolveWeaponDisplayMeta(wid, 'en', bundle);
       expect(metaEn.name.length).toBeGreaterThan(4);
       expect(metaEn.highlights.length).toBeGreaterThanOrEqual(4);
+      assertZeroCjkInEnglish(metaEn, `${wid}.metaEn`);
     }
 
-    // 404 total parts across 16 exhibits -> 128 story MP3s + 808 part MP3s = 936 MP3 files
-    expect(totalNarratedParts).toBe(404);
-    expect(allReferencedAudioPaths).toHaveLength(936);
+    // 480 total parts across 19 exhibits -> 152 story MP3s + 960 part MP3s = 1,112 MP3 files
+    expect(totalNarratedParts).toBe(480);
+    expect(allReferencedAudioPaths).toHaveLength(1112);
+    expect(totalVerifiedHashes).toBe(1112);
+
+    const countDiskMp3s = (dir: string): number => {
+      let n = 0;
+      for (const ent of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, ent.name);
+        if (ent.isDirectory()) n += countDiskMp3s(full);
+        else if (ent.isFile() && ent.name.endsWith('.mp3')) n += 1;
+      }
+      return n;
+    };
+    expect(countDiskMp3s(AUDIO_DIR)).toBe(1112);
 
     for (const relAudio of allReferencedAudioPaths) {
       const fullMp3Path = path.join(ROOT_DIR, 'public', relAudio);

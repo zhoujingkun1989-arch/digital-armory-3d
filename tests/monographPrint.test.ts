@@ -88,7 +88,7 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
     expect(svg.pathD.length).toBeGreaterThan(200);
   });
 
-  it('assembles complete bilingual 8-page monograph dossiers across all 13 weapons using real narration bundles', async () => {
+  it('assembles complete bilingual 8-page monograph dossiers across all 19 exhibits using real narration bundles', async () => {
     const narrationsDir = path.resolve(__dirname, '../public/narrations');
 
     for (const weaponId of WEAPON_IDS) {
@@ -149,7 +149,7 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
     }
   });
 
-  it('computes monotonic non-overlapping top/bottom exploded BOM callout rails across all 13 weapons', async () => {
+  it('computes monotonic non-overlapping top/bottom exploded BOM callout rails across all 19 exhibits', async () => {
     const cam = new THREE.PerspectiveCamera(36, 1920 / 1200, 0.1, 640);
     cam.position.set(12, 8, 92);
     cam.lookAt(2, -1, 0);
@@ -403,7 +403,7 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
     ).toBe('亚麻籽油浸润北美黑胡桃实木');
   });
 
-  it('resolves all 17 SHOT_PLAN plates via resolveShotForWeapon across all 16 exhibits with calibrated milestones', () => {
+  it('resolves all 17 SHOT_PLAN plates via resolveShotForWeapon across all 19 exhibits with calibrated milestones', () => {
     type ShotInput = Parameters<typeof resolveShotForWeapon>[0];
     const baseShotPlan: readonly ShotInput[] = [
       {
@@ -758,7 +758,7 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
     }
   });
 
-  it('strips thousands-separator commas in Kids fun stats across all 16 WEAPON_IDS (garand 1,105 mm / 110.5 cm, never 1 mm)', async () => {
+  it('strips thousands-separator commas in Kids fun stats across all 19 WEAPON_IDS (garand 1,105 mm / 110.5 cm, never 1 mm)', async () => {
     const narrationsDir = path.resolve(__dirname, '../public/narrations');
 
     for (const id of WEAPON_IDS) {
@@ -806,7 +806,7 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
     }
   });
 
-  it('locks single-source-of-truth English monograph dossiers and rendered MonographDocument/MonographKidsDocument with 0 CJK across all 16 WEAPON_IDS', async () => {
+  it('locks single-source-of-truth English monograph dossiers and rendered MonographDocument/MonographKidsDocument with 0 CJK across all 19 WEAPON_IDS', async () => {
     const cjkRe = /[\u4e00-\u9fff]/;
     const narrationsDir = path.resolve(__dirname, '../public/narrations');
     const assemblerSrc = fs.readFileSync(
@@ -847,7 +847,7 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
       return [];
     };
 
-    expect(WEAPON_IDS.length).toBe(16);
+    expect(WEAPON_IDS.length).toBe(19);
 
     for (const id of WEAPON_IDS) {
       const plugin = await loadWeaponPlugin(id);

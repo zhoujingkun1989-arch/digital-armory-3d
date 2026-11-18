@@ -36,6 +36,7 @@ import { WEAPON_IDS } from '../src/weapons/types';
 
 const EXPECTED_PMAX: Record<CaliberProfile, number> = {
   '9mm_para': 241,
+  '45_acp': 145,
   '57_28': 345,
   '357_magnum': 241,
   '556_nato': 430,
@@ -79,12 +80,13 @@ function playCycle(input: ArmoryPhysicsInput, rate = 0.42): void {
 }
 
 describe('SAAMI / CIP internal ballistics model', () => {
-  it('covers all 10 firearm/shotgun calibers with authentic peak chamber pressures', () => {
-    expect(BALLISTIC_CALIBERS).toHaveLength(10);
+  it('covers all 11 firearm/shotgun calibers with authentic peak chamber pressures', () => {
+    expect(BALLISTIC_CALIBERS).toHaveLength(11);
     for (const cal of BALLISTIC_CALIBERS) {
       expect(CALIBER_BALLISTICS[cal].peakPressureMPa).toBe(EXPECTED_PMAX[cal]);
     }
     expect(evaluateInternalBallistics('9x19', computePeakPressureF('9x19')).pressureMPa).toBeCloseTo(241, 4);
+    expect(evaluateInternalBallistics('45_acp', computePeakPressureF('45_acp')).pressureMPa).toBeCloseTo(145, 4);
     expect(evaluateInternalBallistics('57x28', computePeakPressureF('57x28')).pressureMPa).toBeCloseTo(345, 4);
   });
 
@@ -192,9 +194,20 @@ describe('SAAMI / CIP internal ballistics model', () => {
       evaluateInternalBallistics('30_06', (garandUncover as number) + 0.002, WEAPON_FIRING_TIMING.garand)
         .gasPortPressureMPa
     ).toBeGreaterThan(15);
+
+    // V2.0 BAY-17..19: M249 SAW taps underbarrel gas block, while P08 toggle-lock & Vector Super V have no gas port
+    const m249Uncover = computeGasPortUncoverF('556_nato', WEAPON_FIRING_TIMING.m249);
+    expect(m249Uncover).not.toBeNull();
+    expect(
+      evaluateInternalBallistics('556_nato', (m249Uncover as number) + 0.003, WEAPON_FIRING_TIMING.m249)
+        .gasPortPressureMPa
+    ).toBeGreaterThan(20);
+    expect(computeGasPortUncoverF('9mm_para', WEAPON_FIRING_TIMING.p08)).toBeNull();
+    expect(computeGasPortUncoverF('45_acp', WEAPON_FIRING_TIMING.vector)).toBeNull();
   });
 
-  it('defines ordered firing timing for all 16 exhibits and retains revolver brass inside cylinder', () => {
+  it('defines ordered firing timing for all 19 exhibits and retains revolver brass inside cylinder', () => {
+    expect(WEAPON_IDS).toHaveLength(19);
     for (const id of WEAPON_IDS) {
       const t = WEAPON_FIRING_TIMING[id];
       expect(t.ignitionF).toBeLessThan(t.muzzleExitF);

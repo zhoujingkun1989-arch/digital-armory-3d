@@ -52,7 +52,7 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
     setAcousticEnvironment('indoor_range');
   });
 
-  it('maps authentic SAFE / SEMI / AUTO fire-control capabilities & bilingual tooltips across all 16 exhibits', () => {
+  it('maps authentic SAFE / SEMI / AUTO fire-control capabilities & bilingual tooltips across all 19 exhibits', () => {
     const selectFireWeapons: WeaponId[] = [
       'ak15',
       'm4a1',
@@ -60,7 +60,9 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
       'scar',
       'aug',
       'p90',
+      'vector',
     ];
+    const openBoltAutoWeapons: WeaponId[] = ['m249'];
     const semiOnlyWeapons: WeaponId[] = [
       'g17',
       'p320',
@@ -72,14 +74,21 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
       'python',
       'benellim4',
       'garand',
+      'p08',
     ];
 
-    expect(selectFireWeapons.length + semiOnlyWeapons.length).toBe(
-      WEAPON_IDS.length
-    );
+    expect(
+      selectFireWeapons.length +
+        openBoltAutoWeapons.length +
+        semiOnlyWeapons.length
+    ).toBe(WEAPON_IDS.length);
 
     for (const w of selectFireWeapons) {
       expect(getSupportedSelectorModes(w)).toEqual(['safe', 'semi', 'auto']);
+    }
+
+    for (const w of openBoltAutoWeapons) {
+      expect(getSupportedSelectorModes(w)).toEqual(['safe', 'auto']);
     }
 
     for (const w of semiOnlyWeapons) {
@@ -116,9 +125,14 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
     interactiveActionStore.syncWeapon('g17');
     expect(interactiveActionStore.getSnapshot().selectorMode).toBe('semi');
     expect(setFireSelectorMode('auto')).toBe('semi');
+
+    // Open-bolt M249 SAW supports SAFE / AUTO only; requesting SEMI clamps safely to AUTO
+    useAppStore.getState().enterWorkbench('m249', 'firing');
+    interactiveActionStore.syncWeapon('m249');
+    expect(setFireSelectorMode('semi')).toBe('auto');
   });
 
-  it('identifies authentic reciprocating slide/bolt/charging-handle & archery draw parts on all 16 exhibits without matching pins/locks', async () => {
+  it('identifies authentic reciprocating slide/bolt/charging-handle & archery draw parts on all 19 exhibits without matching pins/locks', async () => {
     for (const weaponId of WEAPON_IDS) {
       const plugin = await loadWeaponPlugin(weaponId);
       const partIdSet = new Set(plugin.parts.map((p) => p.id));

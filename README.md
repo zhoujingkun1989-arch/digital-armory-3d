@@ -6,7 +6,7 @@
   <a href="README.zh-CN.md">简体中文</a>
 </p>
 
-# Digital Armory 3D
+# Digital Armory 3D · v2.0
 
 **The Browser-Native Open-Source 3D Firearms Mechanical Museum & Interactive Engineering Encyclopedia**
 
@@ -19,9 +19,11 @@
 <h3>
   <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/showcase.html?lang=en">✦ Interactive Live Showcase</a>
   &nbsp;·&nbsp;
-  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=armory&lang=en">🚀 Enter 16-Bay 3D Vault</a>
+  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=armory&lang=en">🚀 Enter 19-Bay 3D Vault</a>
   &nbsp;·&nbsp;
-  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=cartridges&lang=en">🧪 10-Caliber 1:1 Cutaway Lab</a>
+  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=ballistics&lang=en">🎯 1,000m External Ballistics Lab</a>
+  &nbsp;·&nbsp;
+  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=cartridges&lang=en">🧪 11-Caliber 1:1 Cutaway Lab</a>
   &nbsp;·&nbsp;
   <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=ak15&screen=workbench&lang=en">🔧 Open AK-15M1 Disassembly Bench</a>
 </h3>
@@ -30,13 +32,13 @@
 
 ---
 
-> Built with **React 18 + TypeScript + Three.js (`@react-three/fiber` / Web Worker `three-bvh-csg` / Web Audio API)** — with **zero external `.glb` / `.gltf` mesh files**.
+> Built with **React 18 + TypeScript + Three.js (`@react-three/fiber` / Web Worker `three-bvh-csg` / Web Audio API)** — with **zero external `.glb` / `.gltf` mesh files** and a **`<800 kB` zero-warning split bundle**.
 >
-> Every single one of the **404 moving components across 16 iconic world firearms & compound archery systems (14 firearms including Colt Python `.357`, Benelli M4 `M1014`, and U.S. Rifle M1 Garand `.30-06`, plus Mathews LIFT 33 & Ravin R500)** is synthesized procedurally via manifold boolean CSG in a background Web Worker, paired with **94 2K 5-channel Packed ORM textures**, and streamed zero-copy to WebGL 2.0. Combine **3-Axis Mechanism Showdown & Dual-Exhibit Comparison Lab (`[S]`)**, **10-Caliber SAAMI/CIP Cartridge & Shotshell Cutaway Lab (`[B]`)**, **Two-Pass Stencil Solid Cross-Section Cutaways (`[C]`)**, **6-Role Functional Color-Coding & 60fps Propellant Gas-Flow Streamlines (`[T]`)**, **Hands-On Military Field-Strip DAG Disassembly (`[G]`)**, **SAAMI/CIP Chamber Pressure $P(t)$ & Bore Velocity $V(t)$ Oscilloscope Telemetry**, **Interactive `SAFE / SEMI / AUTO` Fire-Control & Press-Check (`[P] / [V] / [F]`)**, **17-Plate Collector Monograph & Kids Picture Book Print Studio (`[Ctrl/Cmd+P]`)**, **Clean Fullscreen Showcase (`[H]`)**, and **936 Bilingual Google Gemini TTS Voiceovers** with automated **3D Documentary Camera Choreography**.
+> Every single one of the **480 moving components across 19 iconic world firearms & compound archery systems (17 legendary firearms including FN M249 SAW, Luger P08, KRISS Vector `.45 ACP`, Colt Python `.357`, Benelli M4 `M1014`, and U.S. Rifle M1 Garand `.30-06`, plus Mathews LIFT 33 & Ravin R500)** is synthesized procedurally via manifold boolean CSG in a background Web Worker, paired with **112 2K 5-channel Packed ORM WebP maps**, and streamed zero-copy to WebGL 2.0. Combine **1,000m RK4 G1/G7 External Ballistics & FFP Reticle DOPE Lab (`[R]`)**, **Armorer Blind Qualification Exam & Unknown Stoppage Triage (`[G] / [J]`)**, **Instant HD 3D Cutaway Social Poster Studio (`[U]`)**, **3-Axis Mechanism Showdown (`[S]`)**, **11-Caliber SAAMI/CIP Cartridge & Shotshell Cutaway Lab (`[B]`)**, **Two-Pass Stencil Solid Cross-Section Cutaways (`[C]`)**, **6-Role Functional Color-Coding & 60fps Propellant Gas-Flow Streamlines (`[T]`)**, **SAAMI/CIP Chamber Pressure $P(t)$ & Bore Velocity $V(t)$ Oscilloscope Telemetry**, **Interactive `SAFE / SEMI / AUTO` Fire-Control & Press-Check (`[P] / [V] / [F]`)**, **17-Plate Collector Monograph & Kids Picture Book Print Studio (`[Ctrl/Cmd+P]`)**, **iPad/Mobile Coarse-Pointer Touch Ergonomics**, and **1,112 Bilingual `Charon` (`gemini-3.8-flash-tts`) Voiceovers** with automated **3D Documentary Camera Choreography**.
 
 ![Digital Armory 3D Official Showcase Hero](docs/screenshots/showcase-landing.jpg)
 
-![16-Bay Digital Armory Showcase](docs/screenshots/armory-showcase.jpg)
+![Digital Armory 3D Vault Showcase](docs/screenshots/armory-showcase.jpg)
 
 ---
 
@@ -45,26 +47,25 @@
 | Inspiration Benchmark | What We Synthesize & Advance |
 | :--- | :--- |
 | **Matt Rittman 3D Cutaway Animations** | Real-time interactive **6-role functional color-coding (`[T]`)**, dynamic **high-pressure bore & gas-port flow streamlines**, and synchronized 3D documentary camera choreography — pause, orbit, slice, or inspect any part at any millisecond. |
-| **World of Guns: Gun Disassembly** | **Hands-on military field-strip & reverse-reassembly DAGs (`[G]`)** with real mechanical interference diagnostics, `SAFE / SEMI / AUTO` sear/disconnector mechanics, and zero client downloads or paywalls. |
-| **Bartosz Ciechanowski (`ciechanow.ski`)** | Instant browser load, direct 3D slide/bolt manipulation, and 1:1 coupling between **SAAMI/CIP internal ballistics curves ($P(t)$, $V(t)$)** and 7-stage mechanical kinematics at 60 FPS with zero React re-renders. |
-| **Smithsonian 3D & Royal Armouries** | Bilingual (`EN / 中文`) 4-act R&D histories, factory `1:1` CAD metrology (`1 unit = 1 cm`), and MIT-licensed procedural geometry & PBR pipelines. |
+| **World of Guns: Gun Disassembly** | **Hands-on military field-strip DAGs & Timed Blind Armorer Qualification Exams (`[G]`)**, **Mystery Stoppage Triage (`[J]`)**, `SAFE / SEMI / AUTO` sear/disconnector mechanics, `S / A / B / C` rank certification, and zero client downloads or paywalls. |
+| **Bartosz Ciechanowski (`ciechanow.ski`)** | Instant browser load, direct 3D slide/bolt manipulation, **1,000m RK4 3-DOF external ballistics & crosswind DOPE solver (`[R]`)**, and 1:1 coupling between **SAAMI/CIP internal ballistics curves ($P(t)$, $V(t)$)** and 7-stage kinematics at 60 FPS with zero React re-renders. |
+| **Smithsonian 3D & Royal Armouries** | Bilingual (`EN / 中文`) 4-act R&D histories, factory `1:1` CAD metrology (`1 unit = 1 cm`), **HD 3D Cutaway Share Posters (`[U]`)**, and MIT-licensed procedural geometry & PBR pipelines. |
 
 ---
 
-## Key Engineering Capabilities
+## Key Engineering Capabilities (v2.0)
 
-- **✦ 3-Axis Mechanism Showdown & Dual-Exhibit Comparison Lab (`[S]`, `WP-11`)**: Interactive museum taxonomy mapping all 16 exhibits across **7 Operating Drives, 5 Breech Locking Systems, and 6 Feed Architectures**, paired with a dual-exhibit side-by-side comparison lab featuring 10 curated classic rivalries (e.g., `AK-15 vs M4A1`, `AK-15 vs M1 Garand`, `Colt Python vs Desert Eagle`, `Benelli M4 vs SCAR-L`), overlaid $P(f)$ / $V(f)$ ballistic traces, and one-click cutaway workbench jump.
-- **✦ Functional Role Tint (`[T]`) & 60fps Propellant Gas-Flow Streamlines (`WP-05`)**: Color-codes all 404 parts across **Locking & Breech, Gas Tap & Piston, Carrier & Slide, Fire Control & Striker, Energy Springs, and Receiver & Magazine** with **zero WebGL shader recompilation** (preserving CNC edge-silvering and synchronizing Stencil cutaway hatching). Click any role chip to spotlight that subsystem, and watch live propellant plasma expand down the bore, tap through the gas port, strike AK/SCAR/AUG/Benelli M4 ARGO pistons, drive M1 Garand's muzzle gas cylinder, pressurize the Stoner M4A1 internal BCG chamber, or duct forward beneath the Desert Eagle barrel.
-- **✦ Hands-On Guided Military Field-Strip & Reverse Reassembly (`[G]`, `WP-07`)**: Authentic 5–6 step Directed Acyclic Graphs (DAGs) for all 16 exhibits (14 firearms + Mathews LIFT 33 compound bow & Ravin R500 helical-cam crossbow, e.g., `Drop Magazine → Remove Dust Cover → Extract Recoil Spring → Withdraw Carrier → Rotate & Strip Bolt → Release Gas Tube`). Click parts directly in the 3D viewport to strip (`0 → 100%`) and reinstall in strict reverse topological order (`100% → 0%`). Out-of-order clicks trigger crimson/amber interference pulses on blocking prerequisites, dry mechanical block audio, and armorer manual notes.
-- **✦ Classic Malfunction Cutaway & Clearing Diagnostics (`[J]`, `WP-09`)**: Interactive stoppage simulator across all 16 exhibits covering **Stovepipe (`FTE`)**, **Type-3 Double-Feed**, **Shallow Primer Light-Strike**, and **Out-of-Battery (`OOB`) Safety Interception** (plus dedicated DA/SA revolver star-override, cylinder-gap bind, V-mainspring & rebound-lever diagnostics on Colt Python, and archery vane, nock, latch & anti-dry-fire diagnostics on LIFT 33 & Ravin R500). Visualizes upright pinched brass, wedged dual rounds, shallow primer indents, and `3.8 mm` breech lockup gaps while pulsing causal components and guiding step-by-step clearing drills.
-- **✦ 17-Plate Collector Monograph & Kids Picture Book Print Studio (`[Ctrl/Cmd+P]`) & Clean Fullscreen (`[H]`)**: Built-in offscreen WebGL capture rig renders 17 high-resolution studio plates (`cover_hero`, three-view turnaround, X-Ray, Stencil cutaway, 6-role tint, 100% exploded BOM with numbered pins, 4 isolated sub-assemblies, 4-panel firing/uncoil comic strip, and breech macro) directly into A4/Letter vector-styled **Kids 3D Picture Books** (`8-page` / `4-page` modes) or **Collector Engineering Monographs** (`Obsidian` / `Blueprint` editions). Press `H` (or use the stage fullscreen control) for an unobstructed Clean Fullscreen showcase.
-- **✦ 1:1 3D Armorer Vernier Caliper & Envelope Scale Ruler (`[K]`, `WP-10`)**: Pick any two 3D surface points (including internal sear/bolt faces right through Stencil cutaway planes) to measure exact millimeter spans (`1 world unit = 1 cm = 10 mm`), orthogonal `|ΔX| / |ΔY| / |ΔZ|` deltas, 60fps live hover preview, 1-click CAD datum benchmarks (overall length, barrel bore length, bolt/slide span), and a toggleable 3D full-weapon bounding envelope ruler.
-- **✦ 10-Caliber SAAMI / CIP 1:1 Cartridge & Shotshell Cutaway Lab (`[B]` / `?screen=cartridges`, `WP-06`)**: Dedicated ammunition museum hall displaying `9×19mm`, `5.7×28mm`, `.357 Magnum`, `.50 AE`, `12 Gauge (00 Buckshot)`, `7.62×39mm`, `5.56 NATO`, `.30-06 Springfield`, `.338 Lapua`, and `.50 BMG` side-by-side at exact `1:1` CAD scale (`29.69 mm` vs `138.43 mm`, `513 J` vs `16,940 J`) with `180°` longitudinal cutaways, an axial component explode slider (brass web / crimson polymer hull, Boxer/209 primer cup, anvil, propellant charge, copper jacket / cushioned petal wad, steel penetrator & stacked buckshot/lead core), and a quantitative comparison matrix.
-- **✦ Quantitative SAAMI / CIP Internal Ballistics HUD & Rigid-Body Brass (`WP-04`)**: Live 60fps zero-redraw oscilloscope plotting chamber pressure $P(t)$ (`MPa`), projectile bore velocity $V(t)$ (`m/s`), gas-port uncover timing, and safe bolt-unlock blowdown windows across 10 calibers (`9×19mm`, `5.7×28mm`, `.357 Magnum`, `5.56 NATO`, `7.62×39mm`, `.50 AE`, `12 Gauge`, `.30-06`, `.338 Lapua`, `.50 BMG`) plus compound bow/crossbow power-stroke thrust curves — with reverse scrubbing, 2nd-order spring-damper recoil climb, 220 Hz barrel whip, floor-bouncing spent brass, and Stefan-Boltzmann $T^4$ barrel blackbody thermal glow.
-- **✦ Direct 3D Action Manipulation, Press-Check (`[P]`) & `SAFE / SEMI / AUTO` FCG (`WP-08`)**: Drag slides or charging handles directly in 3D, press `P` for a 28% armorer Press-Check exposing chambered brass, cycle `SAFE / SEMI / AUTO` (`V`), and hold the trigger (`F`) to feel safety sear block, semi-auto disconnector trap & reset, and full-auto out-of-battery sear release.
-- **✦ Two-Pass WebGL Stencil Solid Cross-Section (`[C]`) & Cut-Plane Raycasting**: Caps sliced receiver, slide, and magazine walls with anti-aliased `±45°` ISO 128 engineering section hatching while `sectionAwareMeshRaycast` lets pointers pick internal firing pins, locking rollers, and sears straight through the cut plane.
-- **✦ 4-Act AI R&D Documentaries, 936 Voiceovers & Waveguide Acoustics (`WP-01 ~ WP-03`)**: Automatic browser locale detection (`en` / `zh`, overridable via `?lang=en|zh`), 3D Story Director camera choreography with click-to-seek captions, and a procedural Web Audio engine pairing 3 stereo convolution IR rooms (`bench_close`, `tactical_hall`, `indoor_range`) with Euler-Bernoulli dispersive steel waveguides (including M1 Garand's iconic 1095 spring-steel en-bloc clip `"PING!"` modal ring), compound bowstring/cam dampener synthesis, and `-12.4 dB` TTS audio ducking.
-- **✦ Zero-External-Mesh Web Worker CSG & 60Hz Zero-GC Architecture**: Heavy `three-bvh-csg` boolean synthesis runs off-thread and streams `Transferable Float32Array` buffers with precomputed dihedral CNC edge curvature (`aCurvature`) and constant-wire-diameter GPU spring deformation (`aSpringParam`) into an LRU GPU pool.
+- **✦ 1,000m RK4 G1/G7 External Ballistics, Crosswind & FFP Reticle DOPE Lab (`[R]` / `?screen=ballistics`, `WP-14`)**: Pure Zero-GC 4th-order Runge-Kutta 3-DOF exterior ballistics engine across all **13 projectile profiles** (all 11 SAAMI/CIP/NATO metallic & 9-pellet `12 Gauge` buckshot loads including `.45 ACP 230gr FMJ`, plus `400 gr` carbon bow arrow & crossbow bolt). Models ICAO/ISA altitude & temperature air density $\rho(h, T)$, monotone-cubic BRL G1/G7 transonic drag curves $C_d(M)$, exact Sight-In Zero Elevation solver (`< 0.02 cm` error), Mach 1.0 transonic crossing detection, interactive First-Focal-Plane (FFP) MIL Christmas-tree scope reticle, and 7-row `MIL / MOA` Sniper DOPE Drop Cards.
+- **✦ Armorer Blind Qualification Exam & Unknown Stoppage Triage (`[G] / [J]`, `WP-13`)**: Put your mechanical mastery to the test without hints or labels! **Blind Field-Strip Exam (`[G]`)** locks hints and auto-solve while timing full `0 → N → 0` topological disassembly & reverse reassembly (`-75 pts` per interference click without leaking prerequisite names). **Mystery Stoppage Triage (`[J]`)** freezes the 3D action in an unannounced jam, suppresses causal highlights until you diagnose the stoppage (`-120 pts` wrong guess), and scrambles clearing steps (`-60 pts` out-of-order) to award persistent `S / A / B / C` Armorer Qualification ranks in `localStorage`.
+- **✦ Instant HD 3D Cutaway Social Poster Studio (`[U]`) & Coarse-Pointer Touch UX (`WP-16`)**: One-click Canvas 2D high-DPI compositor (`1920×1080` `16:9` & `1080×1350` `4:5` across `Obsidian Tactical Gold`, `Blueprint Engineering White`, and `Cyber Cyan Cutaway` themes) combining a live WebGL cutaway capture, bilingual exhibit plaque, 4-cell `1:1` metrology, $P(t)/V(t)$ signature curve, earned `S/A/B/C` Armorer Rank Seal, collector callsign, and scannable ISO/IEC 18004 QR deep-link (`?screen=workbench&weapon=<id>&cut=1`). Paired with `@media (pointer: coarse)` 44×44 px touch targets and responsive tablet/mobile drawers.
+- **✦ 3-Axis Mechanism Showdown & Dual-Exhibit Comparison Lab (`[S]`, `WP-11`)**: Interactive museum taxonomy mapping all **19 exhibits** across **7 Operating Drives, 7 Breech Locking Systems (incl. knee-joint toggle & Super V off-axis cam), and 7 Feed Architectures (incl. disintegrating M27 belt shuttle)**, paired with 13 curated classic rivalries (`AK-15 vs M4A1`, `M249 SAW vs M4A1`, `Luger P08 vs Glock 17`, `KRISS Vector vs MP5A3`, `AK-15 vs M1 Garand`, `Colt Python vs Desert Eagle`), overlaid $P(f)$ / $V(f)$ ballistic traces, and one-click cutaway workbench jump.
+- **✦ Functional Role Tint (`[T]`) & 60fps Propellant Gas-Flow Streamlines (`WP-05`)**: Color-codes all **480 parts** across **Locking & Breech, Gas Tap & Piston, Carrier & Slide, Fire Control & Striker, Energy Springs, and Receiver & Magazine** with **zero WebGL shader recompilation** (synchronizing Stencil cutaway hatching). Watch live propellant plasma expand down the bore and tap into AK/M249/SCAR/AUG/Benelli M4 ARGO pistons, M1 Garand's muzzle gas cylinder, M4A1's Stoner BCG chamber, or Desert Eagle's forward gas duct.
+- **✦ Hands-On Guided Military Field-Strip (`[G]`, `WP-07`) & Malfunction Diagnostics (`[J]`, `WP-09`)**: Authentic 5–6 step Directed Acyclic Graphs (DAGs) and 4 stoppage drills (**Stovepipe `FTE`**, **Type-3 Double-Feed**, **Light-Strike**, **Out-of-Battery `OOB`** + revolver & archery diagnostics) across all 19 exhibits.
+- **✦ 11-Caliber SAAMI / CIP 1:1 Cartridge & Shotshell Cutaway Lab (`[B]` / `?screen=cartridges`, `WP-06`)**: Dedicated ammunition museum hall displaying `9×19mm`, `.45 ACP`, `5.7×28mm`, `.357 Magnum`, `.50 AE`, `12 Gauge (00 Buckshot)`, `7.62×39mm`, `5.56 NATO`, `.30-06 Springfield`, `.338 Lapua`, and `.50 BMG` side-by-side at exact `1:1` CAD scale (`29.69 mm` to `138.43 mm`) with `180°` cutaways and axial explode slider.
+- **✦ 1:1 3D Armorer Vernier Caliper (`[K]`, `WP-10`) & Two-Pass Stencil Solid Cutaway (`[C]`)**: Measure exact millimeter spans (`1 world unit = 1 cm = 10 mm`) directly through ISO 128 hatched Stencil cross-sections via `sectionAwareMeshRaycast`.
+- **✦ 17-Plate Collector Monograph & Kids Picture Book Print Studio (`[Ctrl/Cmd+P]`) & Clean Fullscreen (`[H]`)**: Offscreen WebGL capture rig renders 17 high-resolution plates into A4/Letter vector **Kids 3D Picture Books** (`8p` / `4p`) or **Collector Engineering Monographs** (`Obsidian` / `Blueprint`).
+- **✦ 4-Act AI R&D Documentaries, 1,112 `Charon` Voiceovers & Waveguide Acoustics (`WP-01 ~ WP-03`)**: 19 bilingual 4-act R&D stories + **1,112** `gemini-3.8-flash-tts` (`Charon`) MP3 clips verified by SHA-256 hash manifests, 3D Story Director choreography, and stereo convolution IR + Euler-Bernoulli dispersive steel waveguide acoustics (including M1 Garand `"PING!"` ring, M249 belt shuttle clatter, P08 toggle snap, and Vector 1,200 RPM `.45 ACP` bursts).
+- **✦ `<800 kB` Zero-Warning Code-Split Architecture & Subpath Hardening (`Pillar 0`)**: Acyclic Vite chunk splitting (`main`, `vendor-three`, `vendor-three-postfx`, `armory-specs`, `armory-i18n`, plus 19 lazy weapon/CSG chunks) and idempotent `VITE_BASE_PATH` URL resolution for root (`/`) and GitHub Pages (`/digital-armory-3d/`).
 
 ---
 
@@ -84,7 +85,7 @@
 
 ---
 
-## 16-Exhibit Collection Matrix (404 Procedural / CSG Parts)
+## 19-Exhibit Collection Matrix (480 Procedural / CSG Parts)
 
 | Bay | Exhibit | Origin / Class | Caliber / Projectile | Operating & Locking Mechanism | Parts | Live Bench |
 | :--- | :--- | :--- | :--- | :--- | :---: | :---: |
@@ -104,6 +105,9 @@
 | `BAY-14` | **Colt Python 6" (.357 Mag)** | USA · DA/SA Revolver | `.357 Magnum (9×33mmR)` | DA/SA hand-tuned V-mainspring clockwork · 60° ratchet & stop-bolt | 25 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=python&screen=workbench&lang=en) |
 | `BAY-15` | **Benelli M4 (M1014)** | Italy · Combat Shotgun | `12 Gauge (00 Buckshot)` | Twin chamber-mounted ARGO short-stroke pistons · 2-lug bolt & carrier elevator | 26 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=benellim4&screen=workbench&lang=en) |
 | `BAY-16` | **U.S. Rifle M1 Garand** | USA · Battle Rifle | `.30-06 Springfield M2` | Muzzle gas cylinder & curved long-stroke op-rod · 2-lug bolt & 8-rd en-bloc clip | 26 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=garand&screen=workbench&lang=en) |
+| `BAY-17` | **FN M249 SAW (Minimi PIP)** | Belgium/USA · Belt-Fed LMG | `5.56×45mm NATO (M27 / STANAG)` | Open-bolt long-stroke gas piston · 2-lug bolt, dual-pawl M27 shuttle & STANAG well | 26 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=m249&screen=workbench&lang=en) |
+| `BAY-18` | **DWM Luger P08 (1917)** | Germany · Service Pistol | `9×19mm Parabellum` | 6.5mm short-recoil forked receiver · Over-center 2-bar knee-joint toggle lock | 25 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=p08&screen=workbench&lang=en) |
+| `BAY-19` | **KRISS Vector SMG Gen II** | USA/Switzerland · SMG | `.45 ACP (11.43×23mm)` | Patented Super V `-65°` off-axis tungsten slider delayed blowback · Sub-hand bore | 25 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=vector&screen=workbench&lang=en) |
 
 ---
 
@@ -111,9 +115,10 @@
 
 ### URL Deep-Link Parameters
 - Interactive Product Showcase: `/showcase.html?lang=en` or `/?screen=showcase&lang=en`
-- 16-Bay Armory Turntable: `/?screen=armory&weapon=garand&lang=en`
-- 10-Caliber 1:1 Cartridge & Shotshell Cutaway Lab: `/?screen=cartridges&lang=en` (or `/?screen=cartridges&caliber=30_06&lang=en`)
-- Direct Live-Firing Workbench: `/?weapon=m82a1&screen=workbench&mode=firing&lang=en`
+- 19-Bay Armory Turntable: `/?screen=armory&weapon=m249&lang=en`
+- 1,000m RK4 External Ballistics & Reticle DOPE Lab: `/?screen=ballistics&caliber=338_lapua&lang=en`
+- 11-Caliber 1:1 Cartridge & Shotshell Cutaway Lab: `/?screen=cartridges&caliber=45_acp&lang=en`
+- Direct Cutaway / Live-Firing Workbench: `/?weapon=vector&screen=workbench&cut=1&lang=en`
 
 ### Workbench & Vault Hotkeys
 | Key | Action |
@@ -121,10 +126,12 @@
 | `Space` | Play / pause staged explosion or 7-phase live firing cycle |
 | `C` | Toggle Two-Pass WebGL Stencil longitudinal solid cross-section cutaway |
 | `T` | Toggle **6-Role Engineering Functional Color-Coding** & cutaway cap tint |
-| `G` | Toggle **Hands-On Guided Military Field-Strip & Reassembly DAG Mode** |
-| `J` | Toggle **Malfunction Cutaway & Clearing Diagnostics** (`Stovepipe / Double-Feed / Light-Strike / OOB` + revolver & archery diagnostics) |
+| `G` | Toggle **Hands-On Guided Field-Strip & Blind Timed Qualification Exam (DAG)** |
+| `J` | Toggle **Malfunction Cutaway & Mystery Stoppage Triage Exam** (`Stovepipe / Double-Feed / Light-Strike / OOB`) |
 | `K` | Toggle **1:1 3D Armorer Vernier Caliper** (`mm`) & 3D envelope scale ruler |
-| `B` | Open / exit standalone **10-Caliber SAAMI/CIP 1:1 Cartridge & Shotshell Cutaway Lab** |
+| `R` | Open / return from **1,000m RK4 External Ballistics, Wind Drift & FFP Reticle DOPE Lab** |
+| `U` | Open / close **Instant HD 3D Cutaway Social Poster Studio** (`16:9 / 4:5` + QR + Rank Seal) |
+| `B` | Open / exit standalone **11-Caliber SAAMI/CIP 1:1 Cartridge & Shotshell Cutaway Lab** |
 | `S` | Open / close **3-Axis Mechanism Showdown & Dual-Exhibit Comparison Lab** (Armory Vault) |
 | `X` | Toggle optical X-Ray translucent receiver / slide / magazine housings |
 | `P` | Retract slide / bolt 28% for armorer **Press-Check** chamber inspection |
@@ -135,7 +142,7 @@
 | `M` | Mute / unmute procedural Web Audio mechanical & ballistic acoustics |
 | `H` | Hide / restore all UI chrome for **Clean Fullscreen Showcase** |
 | `Ctrl/Cmd + P` | Open **17-Plate Collector Monograph & Kids Picture Book Print Studio** |
-| `R` | Reset to `0%` assembled state and default isometric framing |
+| `Shift + R` | Reset to `0%` assembled state and default isometric framing |
 | `Esc` | Minimize open story/inspector drawer → deselect part → return to Armory Vault |
 
 ---
@@ -155,7 +162,7 @@ npm install
 # 2. Start local Vite dev server (serves both / and /showcase.html)
 npm run dev
 
-# 3. Run all 4 engineering quality gates (strict TS, ESLint, Vitest contracts, multi-entry build)
+# 3. Run all 4 engineering quality gates (strict TS, ESLint, Vitest contracts, <800 kB multi-entry build)
 npm run typecheck
 npm run lint
 npm test
@@ -164,7 +171,7 @@ npm run build
 
 ### Optional: Regenerate 2K 5-Channel Packed ORM WebP Textures
 
-All 94 `.webp` textures (`Albedo + Normal + Packed ORM`) ship pre-baked in `public/textures/`. To tweak metallurgy conversion-coating curves or knurling parameters:
+All 112 `.webp` textures (`Albedo + Normal + Packed ORM`) ship pre-baked in `public/textures/`. To tweak metallurgy conversion-coating curves or knurling parameters:
 
 ```bash
 python3 -B -m scripts.pbr_core.selftest
@@ -180,44 +187,47 @@ digital-armory-3d/
 ├── index.html                     # Primary 3D Vault & Disassembly Workbench entry
 ├── showcase.html                  # Standalone interactive bilingual Showcase entry
 ├── public/
-│   ├── audio/                     # 936 bilingual 4-act R&D & part voiceovers (Gemini TTS MP3)
-│   ├── narrations/                # Structured zh/en R&D documentaries & part engineering JSONs
+│   ├── audio/                     # 1,112 bilingual 4-act R&D & part voiceovers (Charon Gemini TTS MP3)
+│   ├── narrations/                # 19 structured zh/en R&D documentaries & part engineering JSONs
 │   ├── showcase/                  # Live WebGL 2.0 showcase gallery captures (WebP)
-│   └── textures/                  # 94 pre-baked 2K 5-Channel Packed ORM WebP textures
+│   └── textures/                  # 112 pre-baked 2K 5-Channel Packed ORM WebP textures
 ├── scripts/
+│   ├── narrations/.cache/         # 19 SHA-256 content-addressed Charon TTS verification manifests
 │   ├── pbr_core/                  # Procedural Worley, knurling, normal-integrated AO & curvature
 │   ├── pbr/                       # Per-weapon PBR generators (generate_*_pbr.py)
 │   └── build_textures.py          # Batch texture baker & WebP encoder CLI
 ├── src/
-│   ├── app/                       # Bidirectional URL sync, auto-locale, fullscreen, hotkeys & ErrorBoundary
+│   ├── app/                       # Bidirectional URL sync (?cut=1 / ?screen=ballistics), hotkeys & ErrorBoundary
 │   ├── engine/
 │   │   ├── actors/                # PartActor, StencilSectionCap, BallisticsSystem, GasFlowVisualizer
 │   │   ├── audio/                 # Stereo convolution IR + waveguide gunsmith & archery Web Audio engine
 │   │   ├── callout/               # ResizeObserver HUD obstacle cache & 60fps hairline callouts
 │   │   ├── canvas/                # ArmoryViewport, GunsmithStageMat & GTAO/Bloom/AgX PostFX
 │   │   ├── caliper/               # 1:1 3D Vernier caliper (`1u = 10mm`) & envelope metrology
-│   │   ├── cartridges/            # 10-caliber exact 1:1 SAAMI/CIP standing cutaway lathe specs
+│   │   ├── cartridges/            # 11-caliber exact 1:1 SAAMI/CIP standing cutaway lathe specs
 │   │   ├── clock/                 # Transient 60Hz playbackClock (zero React re-renders)
-│   │   ├── fieldstrip/            # 16-exhibit military field-strip DAG specs & Zero-GC runtime
+│   │   ├── exam/                  # Armorer Blind Field-Strip & Unknown Stoppage Triage grading store
+│   │   ├── fieldstrip/            # 19-exhibit military field-strip DAG specs & Zero-GC runtime
 │   │   ├── geometry/              # Off-thread Web Worker CSG, cut-aware raycast & LRU pool
 │   │   ├── interaction/           # Direct 3D slide drag, Press-Check & SAFE/SEMI/AUTO FCG
 │   │   ├── kinematics/            # Zero-GC keyframe & multi-stage pose evaluators
 │   │   ├── malfunctions/          # 4-stoppage diagnostic profiles & clearing drill state machine
 │   │   ├── materials/             # Custom GLSL armoryShader, 6-role functional tint & PBR LRU
-│   │   └── physics/               # SAAMI/CIP internal ballistics, recoil harmonics & brass pool
-│   ├── features/                  # Modular UI views (showcase / armory + Showdown / workbench / monograph / cartridges / story / atlas)
+│   │   ├── physics/               # SAAMI/CIP internal ballistics + 1,000m RK4 G1/G7 external ballistics
+│   │   └── utils/                 # Subpath-safe VITE_BASE_PATH asset & deep-link URL resolvers
+│   ├── features/                  # Modular UI views (showcase / armory / workbench / ballistics / share / monograph / cartridges / story / atlas)
 │   ├── i18n/                      # Strictly parity-checked zh/en dictionaries & fallbacks
 │   ├── narration/                 # Audio queue, speechSynthesis fallback & 3D Story Director
 │   ├── store/                     # Strongly typed Zustand store (useAppStore)
-│   └── weapons/                   # 16 lazy-loaded self-contained weapon & archery plugins (CSG + kinematics)
-└── tests/                         # 16 Vitest geometry, UV, kinematics, ballistics, Showdown, DAG & i18n suites
+│   └── weapons/                   # 19 lazy-loaded self-contained weapon & archery plugins (CSG + kinematics)
+└── tests/                         # 19 Vitest geometry, UV, kinematics, ballistics, Exam, Share, DAG & i18n suites
 ```
 
 ---
 
 ## Educational Disclaimer
 
-All 3D models in this repository are **schematic / educational visualizations** created strictly to illustrate mechanical engineering principles, operating systems, internal ballistics, and armorer safety procedures. They **do not contain manufacturing tolerances, chambering blueprints, or 3D-printable dimensions**.
+All 3D models in this repository are **schematic / educational visualizations** created strictly to illustrate mechanical engineering principles, operating systems, internal & external ballistics, and armorer safety procedures. They **do not contain manufacturing tolerances, chambering blueprints, or 3D-printable dimensions**.
 
 ---
 
