@@ -89,12 +89,12 @@
   }
 }
 
-/* Keep Workbench `.top-bar` strictly 2 crisp rows at 1280x760 (ZH & EN) */
-@media (max-width: 1360px) {
+/* Keep Workbench `.top-bar` strictly 2 crisp rows & HUD panels non-overlapping at <= 1400px (1366x768 & 1280x760, ZH & EN) */
+@media (max-width: 1400px) {
   .top-bar {
     left: 12px;
     right: 12px;
-    padding: 5px 9px;
+    padding: 5px 8px;
     gap: 4px 6px;
   }
 
@@ -123,14 +123,15 @@
   }
 
   .top-bar .toolbar-cluster-tools {
-    gap: 3px;
+    gap: 2.5px;
+    padding-top: 3.5px;
   }
 
   .top-bar .toolbar-cluster-tools .toggle-chip {
-    padding: 3px 5.5px;
-    gap: 3px;
+    padding: 2.5px 4.5px;
+    gap: 2.5px;
     font-size: 10.5px;
-    letter-spacing: -0.015em;
+    letter-spacing: -0.02em;
   }
 
   .top-bar .toolbar-cluster-tools svg {
@@ -140,7 +141,7 @@
   }
 
   .top-bar .camera-pills {
-    padding: 1.5px 2.5px;
+    padding: 1px 2px;
     gap: 1px;
   }
 
@@ -151,13 +152,95 @@
   }
 
   .top-bar .cam-btn {
-    padding: 2.5px 4.5px;
+    padding: 2px 4px;
     font-size: 10.5px;
+    letter-spacing: -0.015em;
   }
 
   .top-bar .toolbar-divider {
-    height: 15px;
+    height: 14px;
     margin: 0;
+  }
+
+  .part-sidebar {
+    left: 12px;
+    width: 238px;
+  }
+
+  .hud-collapsed-btn {
+    left: 12px;
+  }
+
+  .ballistics-telemetry-slot {
+    left: 262px;
+    width: min(384px, calc(100% - 586px));
+    min-width: 274px;
+  }
+
+  .ballistics-telemetry-slot.sidebar-collapsed {
+    left: 12px;
+    width: min(396px, calc(100% - 336px));
+  }
+
+  .inspector-card {
+    right: 12px;
+    width: 298px;
+  }
+}
+
+/* Lock all 17+ Row-2 pills comfortably <= 1140px inside 1280px viewport across all modes (ZH & EN) */
+@media (max-width: 1320px) {
+  .top-bar {
+    left: 10px;
+    right: 10px;
+    padding: 4.5px 7px;
+    gap: 3.5px 6px;
+  }
+
+  .top-bar .toolbar-cluster-tools {
+    gap: 2.5px;
+  }
+
+  .top-bar .toolbar-cluster-tools .toggle-chip {
+    padding: 2.5px 4px;
+    gap: 2px;
+    font-size: 10.5px;
+    letter-spacing: -0.022em;
+  }
+
+  .top-bar .toolbar-cluster-tools svg {
+    width: 10.5px;
+    height: 10.5px;
+  }
+
+  .top-bar .cam-btn {
+    padding: 2px 3.5px;
+    font-size: 10.5px;
+  }
+
+  .part-sidebar {
+    left: 10px;
+    width: 232px;
+  }
+
+  .hud-collapsed-btn {
+    left: 10px;
+  }
+
+  .ballistics-telemetry-slot {
+    left: 254px;
+    width: min(378px, calc(100% - 568px));
+    min-width: 270px;
+  }
+
+  .ballistics-telemetry-slot.sidebar-collapsed {
+    left: 10px;
+    width: min(392px, calc(100% - 328px));
+  }
+
+  .inspector-card {
+    right: 10px;
+    width: 292px;
   }
 }
 
@@ -174,11 +257,22 @@
   .rack-dock-tip {
     display: none;
   }
-  .ballistics-telemetry-slot,
+  .part-sidebar {
+    left: 10px;
+    width: 220px;
+  }
+  .hud-collapsed-btn {
+    left: 10px;
+  }
+  .ballistics-telemetry-slot {
+    left: 242px;
+    width: min(352px, calc(100% - 256px));
+    min-width: 248px;
+  }
   .ballistics-telemetry-slot.sidebar-collapsed {
-    left: 16px;
+    left: 10px;
     top: calc(var(--hud-top-offset, 100px) + 44px);
-    width: min(392px, calc(100% - 348px));
+    width: min(392px, calc(100% - 320px));
     max-block-size: calc(
       100vh - var(--hud-top-offset, 100px) - var(--hud-bottom-offset, 148px) -
         50px

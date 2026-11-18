@@ -63,6 +63,43 @@ const CAPTURE_ASPECT = CAPTURE_W / CAPTURE_H;
 const CAPTURE_FOV_DEG = 36;
 const SETTLE_FRAMES_PER_SHOT = 2;
 
+/**
+ * Pre-inverted HDR linear-sRGB studio backdrop for `blueprint_daylight` (`toneMappingExposure = 1.16`):
+ * Exact IEEE-754 binary16 (`HalfFloat`) values `[3124/1024, 2220/512, 1708/256] = [3.05078125, 4.3359375, 6.671875]`
+ * evaluate through Three.js r169 `AgXToneMapping(1.16)` + `sRGBTransferOETF` to `[237.992, 242.992, 248.001] / 255`
+ * -> `rgb(238, 243, 248)` (`#eef3f8`), matching `.edition-blueprint_manual` `--m-plate-bg: #eef3f8` within `0/255`.
+ *
+ * Uploaded via a `1×1` `HalfFloatType` `DataTexture` (`LinearSRGBColorSpace`) rather than `THREE.Color`
+ * because WebGL 2 `gl.clearColor` clamps clear arguments to `[0.0, 1.0]` even on `RGBA16F` framebuffers.
+ */
+export const BRIGHT_PLATE_HDR_LINEAR_RGB = [
+  3.05078125,
+  4.3359375,
+  6.671875,
+] as const;
+
+function createBrightPlateBackdropTexture(): THREE.DataTexture {
+  const data = new Uint16Array([
+    THREE.DataUtils.toHalfFloat(BRIGHT_PLATE_HDR_LINEAR_RGB[0]),
+    THREE.DataUtils.toHalfFloat(BRIGHT_PLATE_HDR_LINEAR_RGB[1]),
+    THREE.DataUtils.toHalfFloat(BRIGHT_PLATE_HDR_LINEAR_RGB[2]),
+    THREE.DataUtils.toHalfFloat(1.0),
+  ]);
+  const tex = new THREE.DataTexture(
+    data,
+    1,
+    1,
+    THREE.RGBAFormat,
+    THREE.HalfFloatType
+  );
+  tex.colorSpace = THREE.LinearSRGBColorSpace;
+  tex.magFilter = THREE.NearestFilter;
+  tex.minFilter = THREE.NearestFilter;
+  tex.generateMipmaps = false;
+  tex.needsUpdate = true;
+  return tex;
+}
+
 interface ShotSpec {
   key: MonographPlateKey;
   explodeT: number;
@@ -577,6 +614,7 @@ interface ActiveCaptureSession {
   copyPass: ShaderPass;
   hdrTarget: THREE.WebGLRenderTarget;
   ldrTarget: THREE.WebGLRenderTarget;
+  brightBgTexture: THREE.DataTexture | null;
   captureCam: THREE.PerspectiveCamera;
   rawRgba: Uint8Array;
   canvas2d: HTMLCanvasElement;
@@ -680,6 +718,71 @@ function disposeSessionGpuResources(session: ActiveCaptureSession): void {
   session.composer.renderTarget1.dispose();
   session.composer.renderTarget2.dispose();
   session.ldrTarget.dispose();
+  session.brightBgTexture?.dispose();
+}
+
+function withStudioCaptureBackdrop(
+  targetScene: THREE.Scene,
+  brightBgTexture: THREE.DataTexture | null,
+  renderFn: () => void
+): void {
+  if (!brightBgTexture) {
+    renderFn();
+    return;
+  }
+
+  const prevSceneBg = targetScene.background;
+  const fogColor = (targetScene.fog as THREE.Fog | null)?.color ?? null;
+  const prevFogR = fogColor ? fogColor.r : 0;
+  const prevFogG = fogColor ? fogColor.g : 0;
+  const prevFogB = fogColor ? fogColor.b : 0;
+
+  const cycFloor = targetScene.getObjectByName('studio-cyclorama-floor') as
+    | THREE.Mesh
+    | undefined;
+  const cycUniform =
+    cycFloor && (cycFloor.material as THREE.ShaderMaterial).isShaderMaterial
+      ? (((cycFloor.material as THREE.ShaderMaterial).uniforms
+          .uCycloramaColor?.value as THREE.Color | undefined) ?? null)
+      : null;
+  const prevCycR = cycUniform ? cycUniform.r : 0;
+  const prevCycG = cycUniform ? cycUniform.g : 0;
+  const prevCycB = cycUniform ? cycUniform.b : 0;
+
+  targetScene.background = brightBgTexture;
+  if (fogColor) {
+    fogColor.setRGB(
+      BRIGHT_PLATE_HDR_LINEAR_RGB[0],
+      BRIGHT_PLATE_HDR_LINEAR_RGB[1],
+      BRIGHT_PLATE_HDR_LINEAR_RGB[2],
+      THREE.LinearSRGBColorSpace
+    );
+  }
+  if (cycUniform) {
+    cycUniform.setRGB(
+      BRIGHT_PLATE_HDR_LINEAR_RGB[0],
+      BRIGHT_PLATE_HDR_LINEAR_RGB[1],
+      BRIGHT_PLATE_HDR_LINEAR_RGB[2],
+      THREE.LinearSRGBColorSpace
+    );
+  }
+
+  try {
+    renderFn();
+  } finally {
+    targetScene.background = prevSceneBg;
+    if (fogColor) {
+      fogColor.setRGB(prevFogR, prevFogG, prevFogB, THREE.LinearSRGBColorSpace);
+    }
+    if (cycUniform) {
+      cycUniform.setRGB(
+        prevCycR,
+        prevCycG,
+        prevCycB,
+        THREE.LinearSRGBColorSpace
+      );
+    }
+  }
 }
 
 const ActiveMonographCaptureWorker: React.FC<{
@@ -782,6 +885,8 @@ const ActiveMonographCaptureWorker: React.FC<{
         deltaTime,
         maskActive
       ) => {
+        const prevSceneBg = scene.background;
+        scene.background = null;
         hiddenForGtao.length = 0;
         scene.traverseVisible((obj) => {
           if (shouldExcludeFromGtaoPass(obj)) {
@@ -798,6 +903,7 @@ const ActiveMonographCaptureWorker: React.FC<{
             maskActive
           );
         } finally {
+          scene.background = prevSceneBg;
           for (let i = 0; i < hiddenForGtao.length; i++) {
             hiddenForGtao[i].visible = true;
           }
@@ -823,6 +929,11 @@ const ActiveMonographCaptureWorker: React.FC<{
         depthBuffer: false,
         stencilBuffer: false,
       });
+
+      const brightBgTexture =
+        edition === 'blueprint_manual'
+          ? createBrightPlateBackdropTexture()
+          : null;
 
       const canvas2d = document.createElement('canvas');
       canvas2d.width = CAPTURE_W;
@@ -856,6 +967,7 @@ const ActiveMonographCaptureWorker: React.FC<{
         copyPass,
         hdrTarget,
         ldrTarget,
+        brightBgTexture,
         captureCam,
         rawRgba,
         canvas2d,
@@ -875,7 +987,7 @@ const ActiveMonographCaptureWorker: React.FC<{
     };
   }, [requestId, weaponId, edition, gl, scene]);
 
-  useFrame(() => {
+  useFrame(({ gl: frameGl, scene: frameScene }) => {
     const s = sessionRef.current;
     if (!s) return;
 
@@ -898,7 +1010,7 @@ const ActiveMonographCaptureWorker: React.FC<{
       return;
     }
 
-    scene.updateMatrixWorld(true);
+    frameScene.updateMatrixWorld(true);
     positionStudioShotCamera(s.captureCam, s.weaponId, s.plugin, shot);
 
     s.gtaoPass.enabled = !shot.xrayShells;
@@ -908,21 +1020,29 @@ const ActiveMonographCaptureWorker: React.FC<{
         ? 'blueprint_daylight'
         : 'tactical_vault';
     const postParams = getPostProcessingPresetParams(envPreset);
-    const prevExposure = gl.toneMappingExposure;
-    const prevToneMapping = gl.toneMapping;
+    const prevExposure = frameGl.toneMappingExposure;
+    const prevToneMapping = frameGl.toneMapping;
 
     applyRendererToneMapping(
-      gl,
+      frameGl,
       postParams.toneMapping,
       postParams.toneMappingExposure,
       THREE.SRGBColorSpace
     );
 
-    const prevRenderTarget = gl.getRenderTarget();
+    const prevRenderTarget = frameGl.getRenderTarget();
     try {
-      s.composer.render(0.016);
-      s.copyPass.render(gl, s.ldrTarget, s.composer.readBuffer, 0, false);
-      gl.readRenderTargetPixels(
+      withStudioCaptureBackdrop(frameScene, s.brightBgTexture, () => {
+        s.composer.render(0.016);
+      });
+      s.copyPass.render(
+        frameGl,
+        s.ldrTarget,
+        s.composer.readBuffer,
+        0,
+        false
+      );
+      frameGl.readRenderTargetPixels(
         s.ldrTarget,
         0,
         0,
@@ -931,8 +1051,8 @@ const ActiveMonographCaptureWorker: React.FC<{
         s.rawRgba
       );
     } finally {
-      gl.setRenderTarget(prevRenderTarget);
-      applyRendererToneMapping(gl, prevToneMapping, prevExposure);
+      frameGl.setRenderTarget(prevRenderTarget);
+      applyRendererToneMapping(frameGl, prevToneMapping, prevExposure);
     }
 
     const rowBytes = CAPTURE_W * 4;
@@ -943,7 +1063,7 @@ const ActiveMonographCaptureWorker: React.FC<{
       dst.set(s.rawRgba.subarray(srcOffset, srcOffset + rowBytes), dstOffset);
     }
     s.ctx2d.putImageData(s.imageData, 0, 0);
-    s.plates[shot.key] = s.canvas2d.toDataURL('image/jpeg', 0.9);
+    s.plates[shot.key] = s.canvas2d.toDataURL('image/png');
 
     if (shot.key === 'exploded_bom') {
       const anchors = projectExplodedPartAnchors(
