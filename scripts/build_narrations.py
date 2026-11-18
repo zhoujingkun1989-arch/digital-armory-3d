@@ -73,6 +73,9 @@ ALL_WEAPON_IDS = [
     "python",
     "benellim4",
     "garand",
+    "m249",
+    "p08",
+    "vector",
 ]
 
 WEAPON_CONTEXT_HINTS: dict[str, dict[str, str]] = {
@@ -263,6 +266,165 @@ WEAPON_CONTEXT_HINTS: dict[str, dict[str, str]] = {
             "1936 (Standardized Jan 9, 1936 as U.S. Rifle, Caliber .30, M1) -> "
             "1939-1940 (Splined barrel & 1940 stainless gas-port cylinder replace early gas-trap) -> "
             "1941-1957 (5.48 million built across WWII & Korea; Patton's 'greatest battle implement' tribute)"
+        ),
+    },
+    "m249": {
+        "historicalContext": (
+            "Designed in the late 1970s at Fabrique Nationale (FN Herstal, Belgium) by legendary small-arms "
+            "engineer Ernest Vervier (co-architect of the FN MAG / M240), the FN Minimi ('Mini-Mitrailleuse') "
+            "answered a critical post-Vietnam tactical doctrine gap: restoring organic sustained automatic "
+            "firepower down to the 9-man infantry fireteam without the crushing 10.5 kg weight and 7.62×51mm "
+            "ammunition burden of the M60. Entering the grueling 1979–1980 U.S. Army Squad Automatic Weapon "
+            "(SAW) trials at Aberdeen Proving Ground as the XM249 against the Heckler & Koch XM262 (HK21E), "
+            "Colt CMG-2/XM106, and Ford Aerospace XM248, Vervier's design triumphed in reliability and dual-feed "
+            "versatility, winning selection in February 1982 and entering U.S. Army & Marine Corps service in "
+            "1984 as the M249 SAW. Following intense combat evaluations in the 1991 Persian Gulf War, the U.S. "
+            "M249 Product Improvement Program (PIP) added a stock-mounted hydraulic recoil buffer (replacing "
+            "early elastomeric blocks to stabilize cyclic rate around 750–850 RPM and prevent receiver cracking), "
+            "a perforated upper steel barrel heatshield, a single-port self-cleaning gas block, and an ergonomic "
+            "fish-belly polymer buttstock with folding wire shoulder rest."
+        ),
+        "mechanicalCore": (
+            "Firing 5.56×45mm NATO M855 62-grain green-tip penetrator ammunition (430 MPa peak pressure, 915 m/s "
+            "from its 18.3-inch / 465 mm 1:7-inch twist cold-hammer-forged chrome-lined barrel), the M249 fires "
+            "from an open bolt so ambient air circulates through the empty chamber between bursts to prevent "
+            "catastrophic propellant cook-off. Pressing the trigger drops the case-hardened open-bolt sear catch, "
+            "allowing the captive multi-strand driving spring to hurl the heavy underbarrel long-stroke cupped "
+            "gas piston and slide carrier forward 95 mm. As the hard-chrome AK-inspired 2-lug breech bolt strips "
+            "a round out of its disintegrating M27 metallic link into the chamber, the slide advances a final "
+            "6.5 mm—rotating the bolt 30 degrees clockwise into the barrel extension AND mechanically protruding "
+            "the slide-linked firing pin ONLY after full lockup! Gas tapped near the muzzle drives the piston "
+            "rearward past a straight safety dwell before unlocking, ejecting brass and spent M27 links to the "
+            "right, and compressing the PIP stock hydraulic damper across a 23.5 mm overtravel stroke. Crucially, "
+            "a vertical steel roller atop the piston tower rides inside the hinged die-cast top cover's MG42-derived "
+            "S-cam slot, swinging a forked feed lever and dual-stage spring shuttle pawls to advance a 200-round "
+            "under-slung polymer assault box belt across both recoil and counter-recoil—while an angled left-side "
+            "STANAG magwell lets a rifleman's 30-round M16/M4 magazine feed directly in an emergency with zero "
+            "modification, paired with a 3-second tool-less fixed-headspace quick-change barrel latch handle."
+        ),
+        "milestoneAnchors": (
+            "1974-1977 (Ernest Vervier develops FN Minimi 5.56mm 'Mini-Mitrailleuse' prototype at FN Herstal) -> "
+            "1979-1980 (XM249 defeats HK21E, Ford XM248 & Colt entries in U.S. Army SAW Aberdeen trials) -> "
+            "1982-1984 (Adopted as U.S. M249 Squad Automatic Weapon; FN Manufacturing Columbia SC production) -> "
+            "1991 (Operation Desert Storm combat proving across desert sand & sustained suppressive fire) -> "
+            "1994-1998 (M249 PIP upgrade adds hydraulic buffer, perforated barrel shroud & M1913 optic rail) -> "
+            "2001-Present (Mk 46 SOCOM / M249 Para global service as NATO's definitive fireteam LMG)"
+        ),
+        "focusPartGuidance": (
+            "Recommended exact focusPartId anchors from BOM: "
+            "Act 1 -> 'm249_receiver' (Stamped Dual Belt/STANAG Receiver); "
+            "Act 2 -> 'm249_hydraulic_buffer' (PIP Hydraulic Recoil Buffer) or 'm249_handguard' (PIP Barrel Shroud); "
+            "Act 3 -> 'm249_piston_carrier' (Long-Stroke Piston & Top Feed-Cam Roller); "
+            "Act 4 -> 'm249_barrel' (18.3-inch Quick-Change CHF Barrel); "
+            "Breakthroughs -> 'm249_receiver', 'm249_feed_lever' (or 'm249_feed_pawls'), and 'm249_barrel_handle'."
+        ),
+    },
+    "p08": {
+        "historicalContext": (
+            "Rooted in American-German inventor Hugo Borchardt's 1893 C93—the world's first commercially produced "
+            "semi-automatic pistol, whose bulky rear clockwork mainspring housing made it tail-heavy and awkward—the "
+            "Parabellum-Pistole was perfected in Berlin at Deutsche Waffen- und Munitionsfabriken (DWM) by Austrian-born "
+            "engineer Georg Johann Luger between 1898 and 1900. Luger eliminated Borchardt's clumsy rear housing, "
+            "relocated the mainspring into a sublime 55-degree (125-degree) ergonomic grip frame modeled on natural "
+            "fencing wrist alignment, and won Switzerland's 1900 military adoption in 7.65×21mm Parabellum—the first "
+            "army in history to adopt a semi-automatic service pistol. When Imperial German trials demanded greater "
+            "stopping power, Luger straightened the bottleneck 7.65mm case in 1902 to create the immortal 9×19mm "
+            "Parabellum cartridge (named from DWM's Latin telegraph address 'Si vis pacem, para bellum'—'If you seek "
+            "peace, prepare for war').Adopted by the Imperial German Navy in 1904 and, after replacing the early flat "
+            "laminated grip spring with a rugged helical coil recoil spring, standardized by Kaiser Wilhelm II for the "
+            "Imperial German Army on August 22, 1908 as the Pistole 08 (P08). Crafted by DWM Berlin (exemplified by "
+            "classic 1917 wartime production) with hand-polished rust bluing, 240°C golden straw-tempered "
+            "('Gelbangelassen') small parts, and 20-LPI European walnut grips, the Luger P08 became the aristocratic "
+            "symbol of early 20th-century precision ordnance."
+        ),
+        "mechanicalCore": (
+            "Chambered in 9×19mm Parabellum (235 MPa peak pressure, 124 gr FMJ @ 360 m/s out of its 4-inch / 102 mm "
+            "6-groove tapered barrel), the P08 employs Georg Luger's over-center articulated two-bar knee-joint "
+            "toggle lock ('Kniegelenkverschluss'). At battery, the center hinge pin Linking the DWM-monogrammed "
+            "front toggle and knurled-ear rear toggle rests 1.5 degrees BELOW the bore-axle dead-center line against "
+            "frame stops, mechanically self-locking under peak firing pressure! Upon ignition, the barrel, forked "
+            "U-channel barrel extension ('Gabelgehäuse'), rectangular sliding breechblock, and flat toggle train "
+            "recoil together as a locked unit for 6.5 mm until chamber pressure subsides. Twin cam rollers on the "
+            "rear toggle ears then strike the forged frame's curved unlocking ramps ('Kurvenstücke'), kicking the "
+            "knee joint sharply upward past dead center to buckle 53.5 degrees (~3.8 cm skyward) while pulling the "
+            "breechblock 42 mm straight back! During this lightning stroke, the top-pivoting extractor (which doubles "
+            "as history's most famous tactile/visual loaded-chamber indicator stamped 'GELADEN') pulls the brass case "
+            "against the straw-tempered right-flank leaf ejector for crisp upward ejection, the front toggle's "
+            "underside cam toe cocks the 3-flute gas-relief cylindrical internal striker, and an S-shaped coupling "
+            "link compresses the 18-coil helical recoil spring inside the 55-degree grip spine. Equally ingenious is "
+            "the removable left sideplate ('Abzugsblech') housing an L-shaped right-angle bellcrank transfer lever "
+            "that converts rearward crescent-trigger pull into an inward lateral push on the horizontal seesaw sear "
+            "bar's spring disconnector plunger, complemented by the 'GESICHERT' blocking-bar thumb safety and "
+            "8-round brushed-nickel magazine with external thumb-loading follower button."
+        ),
+        "milestoneAnchors": (
+            "1893 (Hugo Borchardt patents C93 toggle-lock semi-automatic pistol at Loewe/DWM Berlin) -> "
+            "1898-1900 (Georg Luger refines compact knee-joint & 55-degree grip; Switzerland adopts Model 1900) -> "
+            "1902 (Georg Luger creates the 9×19mm Parabellum cartridge for military stopping power) -> "
+            "1904 (Imperial German Navy adopts Pistole 04 in 9×19mm Parabellum) -> "
+            "Aug 22, 1908 (Helical grip recoil spring perfected; Kaiser Wilhelm II adopts Pistole 08 for German Army) -> "
+            "1914-1942 (Over 2 million P08s built across DWM, Erfurt & Mauser; 9×19mm becomes global NATO standard)"
+        ),
+        "focusPartGuidance": (
+            "Recommended exact focusPartId anchors from BOM: "
+            "Act 1 -> 'p08_frame' (Forged Curved-Ramp Frame w/ 55-degree Grip); "
+            "Act 2 -> 'p08_barrel' (4-inch Tapered 9x19mm Parabellum Barrel); "
+            "Act 3 -> 'p08_rear_toggle' (Articulated Rear Toggle Link w/ Knurled Ears & Cam Rollers); "
+            "Act 4 -> 'p08_takedown_lever' (Straw-Tempered Takedown Lever) or 'p08_front_toggle' (DWM Scroll Toggle); "
+            "Breakthroughs -> 'p08_rear_toggle', 'p08_trigger_lever' (Sideplate L-Bellcrank Lever), and 'p08_extractor' (GELADEN LCI Extractor)."
+        ),
+    },
+    "vector": {
+        "historicalContext": (
+            "For nearly a century from John T. Thompson's 1921 M1928 'Tommy Gun' through the M3 Grease Gun and H&K "
+            "UMP45, submachine guns firing the heavy, slow, man-stopping .45 ACP (11.43×23mm, 230-grain) cartridge "
+            "faced a fundamental Newtonian curse: a high bore axis perched well above the shooter's wrist turned "
+            "every full-auto burst into violent upward muzzle climb. In the early 2000s, French-born mechanical "
+            "engineer Renaud Kerbrat challenged a century of straight-line gun design with U.S. Patent 7,201,094, "
+            "redirecting bolt energy steeply downward off-axis rather than straight back into the shoulder. Backed by "
+            "Swiss-rooted Transformational Defense Industries (TDI, later KRISS USA in Virginia Beach / Switzerland), "
+            "experimental 'Super V' prototypes evaluated alongside U.S. Army Picatinny Arsenal engineers between "
+            "2006 and 2007 demonstrated roughly 90% less vertical muzzle climb and 60% less felt recoil than legacy "
+            ".45 ACP submachine guns—even at a blistering 1,200 RPM cyclic rate! Entering production as the KRISS "
+            "Vector Gen I around 2009 and maturing in 2015 into the refined KRISS Vector Gen II (featuring a "
+            "redesigned ergonomic trigger, 45-degree short-throw safety, push-button right-folding skeletonized "
+            "stock, and 4-pin tool-free receiver takedown), the Vector redefined close-quarters ballistic physics."
+        ),
+        "mechanicalCore": (
+            "Three synergistic geometric breakthroughs conquer .45 ACP recoil at 1,200 RPM (50 ms cycle time, "
+            "145 MPa peak pressure, 230 gr FMJ @ 260 m/s): First, the fixed 5.5-inch (140 mm) chrome-moly-vanadium "
+            "barrel sits at an ultra-low bore axis 15.3 mm BELOW the horizontal-travel pivoting trigger, aligning "
+            "propellant thrust directly through the web of the firing hand so static overturning torque approaches "
+            "zero. Second, the compact Delayed-Blowback Bolt (over 50% lighter than conventional .45 blowback bolts) "
+            "projects twin hardened lateral cylindrical cam trunnions into variable-angle cam slots milled inside the "
+            "patented tungsten-steel Super V Off-Axis Counterweight Slider ('vector_slider'). Immediately after "
+            "ignition, a steep upper cam ramp imposes a ~2.68:1 mechanical disadvantage—forcing every 1 mm of initial "
+            "bolt retreat to accelerate the heavy slider >2.6 mm downward—safely delaying breech opening until chamber "
+            "pressure drops. Passing the cam knee, the bolt strokes 36.2 mm rearward and pitches into the curved "
+            "throat to eject spent .45 brass right while driving the tungsten slider 64 mm steeply downward along a "
+            "-65-degree inclined guide rod and helical recoil spring right behind the 66-degree 25-round Glock-21 "
+            "compatible Kriss MagEx2 magazine well, generating downward counter-momentum that actively cancels muzzle "
+            "rise! Third, because the lower chassis is occupied by the low barrel and -65-degree Super V chute, the "
+            "entire CNC stainless fire-control unit ('vector_fcu_chassis') mounts inverted inside the upper FDE "
+            "polymer housing, swinging an inverted hammer downward (+47 degrees) and decoupling the lower thumb "
+            "safety (S/F) from the upper 3-mode fire selector (Semi '1', ultra-lethal 2-round hyper-burst '2', and "
+            "1,200 RPM full-auto 'A')."
+        ),
+        "milestoneAnchors": (
+            "2002-2007 (Renaud Kerbrat files off-axis Super V cam-slider kinematics; US Patent 7,201,094 granted) -> "
+            "2006-2007 (TDI & U.S. Army Picatinny Arsenal tests verify ~90% muzzle-climb reduction in .45 ACP) -> "
+            "2007-2009 (SHOT Show debut of TDI Kriss Super V XSMG & launch of production KRISS Vector Gen I) -> "
+            "2011-2014 (TDI rebrands to KRISS USA; Kriss MagEx 25/30-round Glock-21 extended magazine ecosystem) -> "
+            "2015 (KRISS Vector Gen II debuts w/ refined pivoting trigger, right-folding stock & 4-pin takedown) -> "
+            "2016-Present (Multi-caliber Gen II law-enforcement adoption & iconic modern museum benchmark)"
+        ),
+        "focusPartGuidance": (
+            "Recommended exact focusPartId anchors from BOM: "
+            "Act 1 -> 'vector_lower_chassis' (Super V Lower Chassis w/ -65° Chute & 66° Magwell); "
+            "Act 2 -> 'vector_upper_housing' (Gen II FDE Upper Housing & Top Rail); "
+            "Act 3 -> 'vector_slider' (Patented KRISS Super V Off-Axis Tungsten Counterweight Slider); "
+            "Act 4 -> 'vector_mag_body' (25-Round Glock-21 Kriss MagEx2 Magazine) or 'vector_bolt' (Cam-Trunnion Bolt); "
+            "Breakthroughs -> 'vector_slider', 'vector_barrel' (5.5-inch Sub-Trigger Low-Bore Barrel), and 'vector_hammer' (or 'vector_fcu_chassis')."
         ),
     },
 }
@@ -569,6 +731,8 @@ Generate the complete bilingual (Chinese `storyZh` + English `storyEn`) R&D hist
    - Include **exactly 3 `breakthroughs`** (each bound to a distinct, iconic `focusPartId` from `parts`) and **6 chronological `milestones`**.
 2. **English UI Metadata (`uiMetaEn`)**:
    - Translate every `timelinePresets` item (preserving exact `id`) and every `firingPhases` item (preserving exact `id`) into crisp, {en_domain_note}.
+3. **ZERO CJK IN ENGLISH**:
+   - Every single English field (`uiMetaEn` and `storyEn`, including titles, labels, highlights, paragraphs, `focusPartLabel`, and `audioScript`) MUST contain ZERO Chinese/CJK characters or fullwidth CJK punctuation! Translate all Chinese terms into idiomatic English.
 """
 
     last_err: Optional[Exception] = None
@@ -675,6 +839,7 @@ Generate deep, museum-grade Chinese (`zh`) and English (`en`) component descript
    - `kinematicRole`: Exact behavior during the 7-stage {cycle_noun} {kinematic_examples} AND at what disassembly stage (`explodeSteps` range) it comes off.
    - `designHighlight`: R&D story detail, field reliability lesson, or clever mechanical trade-off behind this specific part.
    - `audioScript`: Engaging, natural spoken narration for TTS when the user clicks this part in 3D (~95–130 Chinese chars for `zh`; ~60–85 English words for `en`). Write dimensions/calibers/fractions in natural spoken form (avoid raw `×`, `/`, `"`, `rad`, or unpronounceable symbols) so TTS reads effortlessly like a Discovery Channel engineer!
+4. **ZERO CJK IN ENGLISH**: `calloutLabelEn` and every field inside `en` (`roleTag`, `overview`, `craftAndMaterial`, `kinematicRole`, `designHighlight`, `audioScript`) MUST contain ZERO Chinese/CJK characters or fullwidth CJK punctuation!
 """
 
     last_err: Optional[Exception] = None

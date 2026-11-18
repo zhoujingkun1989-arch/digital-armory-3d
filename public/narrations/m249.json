@@ -1,0 +1,942 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "m249",
+  "generatedAt": "2026-11-18T16:40:16.781751+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "FN Minimi / U.S. M249 SAW",
+    "subtitle": "5.56×45mm NATO Belt/STANAG Dual-Feed Open-Bolt Squad Automatic Weapon",
+    "originCountry": "Belgium / United States",
+    "weaponType": "Squad Automatic Weapon / Light Machine Gun",
+    "categoryLabel": "Light Machine Gun",
+    "actionMechanism": "Open-Bolt Long-Stroke Gas Piston · 2-Lug Rotating Bolt w/ Top-Roller Dual-Pawl Belt & Mag Dual-Feed",
+    "statusLabel": "In Vault · Ready",
+    "description": "Engineered by legendary FN Herstal designer Ernest Vervier and officially adopted by the United States Armed Forces in 1984, the M249 Squad Automatic Weapon stands as the definitive sustained-fire anchor of Western infantry squads. This upgraded Product Improvement Program variant features an ingenious dual-feed architecture accepting both linked disintegrating M27 belts and STANAG box magazines without conversion, paired with an open-bolt heat-dissipating layout, a 3-second tool-less cold-hammer-forged barrel exchange system, a top-cam dual-stage feed mechanism, and an internal hydraulic buffer.",
+    "highlights": [
+      "M27 Disintegrating Belt & Angled STANAG Emergency Dual-Feed",
+      "Open-Bolt Long-Stroke Piston w/ S-Cam Dual Shuttle Feed Pawls",
+      "18.3\" CHF Chrome Barrel w/ 3-Second Quick-Release & Heat Shield",
+      "PIP Stock Hydraulic Recoil Damper & 200-Round Assault Drum"
+    ],
+    "workbenchTitle": "M249 SAW LMG 3D Teardown & Open-Bolt Cyclic Simulation",
+    "workbenchSubtitle": "4 Core Assemblies · 26 Precision Nodes · Long-Stroke Gas Operation, S-Cam Shuttle Feeding & 200-Round M27 Belt Kinetics",
+    "cutawayLabel": "Feed Roller & Cam Cutaway",
+    "cutawayTitle": "Focus cutaway perspective on long-stroke piston top roller, feed cover S-cam, rotating bolt, and open-bolt sear engagement",
+    "searchPlaceholder": "Search BOM node or code (e.g., M27 Belt, Feed Pawl, Barrel, Sear, B-04)...",
+    "firingMilestoneLabel": "Full Lock & Ignition",
+    "rateOfFire": "750–850 RPM",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Open-Bolt Ready",
+        "subLabel": "0%",
+        "desc": "Standard open-bolt combat condition: long-stroke piston carrier and dual-lug rotating bolt locked rearward by the heavy sear catch. Chamber remains open to ambient air to prevent thermal cook-off, with linked M855 ammunition positioned across the feed tray ready for immediate sustained fire."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Disassembly according to TM 9-1005-201-10: hinged top cover is unlatched and lifted, 200-round polymer assault box and belt removed. Depressing the insulated barrel latch unlocks and withdraws the 18.3-inch barrel forward, followed by rearward extraction of the driving spring and piston carrier group."
+      },
+      "sub_assembly": {
+        "label": "Feed & Trigger Detach",
+        "subLabel": "65%",
+        "desc": "Separation of feed cover internal S-cam lever and dual shuttle pawls, unscrewing the forward knurled gas collar, removing the stock hydraulic buffer plunger, and disassembling the modular pinned trigger housing containing the case-hardened sear and sear spring."
+      },
+      "full_exploded": {
+        "label": "Full Exploded View",
+        "subLabel": "100%",
+        "desc": "Complete zero-interference 26-component technical layout: from the 1-in-7 inch twist chrome-lined barrel, top roller slide carrier, and dual-feed stamped steel receiver to the M27 disintegrating belt and hydraulic damper, revealing every functional element of modern squad automatic firepower."
+      }
+    },
+    "firingPhases": {
+      "m249_sear_drop": {
+        "shortLabel": "Sear Release",
+        "title": "Phase 1 · Trigger Depressed & Open-Bolt Sear Drops",
+        "description": "Pulling the curved trigger pivots the internal yoke downward, disengaging the case-hardened sear catch from the carrier notch. The compressed driving spring instantly drives the heavy long-stroke piston assembly forward along the receiver guide rails."
+      },
+      "m249_strip_lock_ignite": {
+        "shortLabel": "Strip & Lockup",
+        "title": "Phase 2 · Cartridge Stripping, 30° Rotation & Timed Primer Strike",
+        "description": "The rotating bolt forward lugs push the lead M855 cartridge out of its M27 steel link into the chamber. The carrier completes its final 6.5 millimeter travel, camming the bolt thirty degrees into the barrel extension and driving the captive firing pin into the primer."
+      },
+      "m249_gas_tap_dwell": {
+        "shortLabel": "Gas Bleed & Dwell",
+        "title": "Phase 3 · Barrel Port Gas Tap & Delayed Carrier Dwell",
+        "description": "High-pressure propellant gas accelerates the sixty-two grain projectile to nine hundred fifteen meters per second and vents through the forward gas block into the cylinder cup. The carrier moves rearward across a straight dwell slot, allowing chamber pressure to drop safely."
+      },
+      "m249_unlock_extract_eject": {
+        "shortLabel": "Unlock & Ejection",
+        "title": "Phase 4 · Cammed Bolt Unlocking & Empty Link Ejection",
+        "description": "The cam track rotates the bolt thirty degrees counter-clockwise to unlock from the chamber extension. The claw extractor pulls the spent brass case downward and rightward through the ejection port while the spent M27 steel link falls free from the feed tray."
+      },
+      "m249_shuttle_belt_overtravel": {
+        "shortLabel": "Belt Shuttle & Cam",
+        "title": "Phase 5 · Top Roller Drives S-Cam & Dual Feed Shuttle Pawls",
+        "description": "As the carrier recoils, its vertical top roller traverses the feed cover S-cam slot, pivoting the feed lever and advancing the spring-loaded pawls to pull the next round into position. The carrier rear clears the sear notch, engaging the stock hydraulic buffer plunger."
+      },
+      "m249_buffer_rebound": {
+        "shortLabel": "Hydraulic Damping",
+        "title": "Phase 6 · Hydraulic Recoil Damping & Counter-Recoil Push",
+        "description": "Silicone fluid inside the stock-mounted PIP hydraulic damper dissipates residual recoil energy through precision orifices, preventing destructive carrier bounce. The fully compressed driving spring rebounds, thrusting the bolt carrier assembly forward."
+      },
+      "m249_open_bolt_catch": {
+        "shortLabel": "Open-Bolt Catch",
+        "title": "Phase 7 · Trigger Release Catches Carrier in Open-Bolt State",
+        "description": "Releasing the trigger allows the sear spring to elevate the heavy sear nose, catching the carrier notch and holding the action locked open to the rear. Air continues to circulate through the unchambered barrel, eliminating risk of cook-off between bursts."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "步兵班组的压制基石：从迷你机枪到美军制式 M249 SAW",
+      "deck": "从越南丛林重机枪背负之痛到阿伯丁试验场四方对决，FN Minimi 以双路供弹与开膛待击颠覆了西方步兵战术体系。数十万挺战鹰跨越海湾与反恐战争血火，通过液压缓冲与热管快拆构建起无可替代的九人步兵班火力支柱。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1974–1979",
+          "title": "丛林之殇与班用机枪的诞生",
+          "paragraphs": [
+            "在越南战场的湿热丛林中，美军步兵班组遭遇了残酷的火力结构失衡：重达十点五公斤的M60通用机枪虽具强大的压制力，却需要副射手协助供弹，难以跟随突击组进行剧烈机动；而改用快慢机锁定全自动射击的M16A1步枪则受限于闭膛待击和薄壁枪管，连发数匣便极易因弹膛炽热引发致命自燃，且二十发弹匣根本无法提供持续压制火力。",
+            "为了填补从步枪到排级机枪之间的战术鸿沟，美国陆军于七十年代启动班用自动武器计划。与此同时，比利时埃斯塔尔国家兵工厂的枪械巨匠欧内斯特·维尔维耶从FN MAG通用机枪的成功中汲取灵感，着手研发名为Minimi即迷你机枪的五点五六毫米轻量化平台。他坚决摒弃步枪加重枪管的敷衍方案，确立了纯正机枪底盘、开膛待击与弹链弹匣双路供弹的革命性构想。",
+            "当1979年美军在阿伯丁试验场启动XM249选型大比武时，维尔维耶设计的原型枪遭遇了黑克勒科赫XM262、柯尔特XM106和福特航天XM248等强劲对手的激烈围剿。在历经狂暴泥水浸泡、沙漠沙尘及零下四十度极寒测试后，比利时原型枪以惊人的机械韧性与弹链弹匣无缝切换能力脱颖而出，以绝对优势夺冠。"
+          ],
+          "audioScript": "二十世纪七十年代，越南丛林的战火揭示了步兵班组的致命软肋。十公斤重的通用机枪过于沉重，而普通步枪连发又极易枪膛过热自燃。比利时传奇设计师欧内斯特·维尔维耶决心打破僵局，将纯正机枪的开膛待击与双路供弹架构融入轻量化机匣，开创了震撼全球的迷你机枪。在阿伯丁试验场的残酷泥沙风暴中，这挺跨时代武器击败所有对手，拉开了美军装备变革的壮阔序幕。",
+          "audioUrl": "audio/m249/story_act1_zh.mp3",
+          "focusPartId": "m249_receiver",
+          "focusPartLabel": "双路供弹冲压机匣"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1980–1991",
+          "title": "列装淬炼与海湾战争沙漠实检",
+          "paragraphs": [
+            "1982年2月，美军正式宣布选定FN Minimi，并于1984年将其正式命名为M249班用自动武器交付美军陆军与海军陆战队。位于南卡罗来纳州哥伦比亚市的FN美国分厂迅速开辟现代化生产线，成千上万挺崭新的班用机枪被分发至基层步兵班组，使每个九人步兵班首次获得了两挺伴随式的全自动压制火器，实现了划时代的步兵战术革新。",
+            "1991年沙漠风暴行动爆发，M249迎来了首次大规模实战考验。在伊拉克沙特边境漫天飞舞的微细二氧化硅尘埃中，早期的双档位导气箍和橡胶缓冲垫暴露出问题：极细沙尘进入机匣导致摩擦力激增，部分恶劣工况下射速波动剧烈，甚至在超负荷高频射击下引发冲压机匣后导轨细微疲劳裂纹。",
+            "战场反馈促使美军与FN赫斯塔尔立即启动M249产品改进计划即著名的PIP工程。工程团队用全天候免调节排气导气座取代了易积碳的调气环，为暴露在外的灼热枪管加装了带七个散热孔的多孔钢制防烫罩，并在机匣尾部引入了高科技液压阻尼缓冲器，使M249彻底蜕变为一柄无懈可击的现代压制铁拳。"
+          ],
+          "audioScript": "八十年代初，正式列装美军的M249将压制火力直接普及到了单兵班组。然而1991年沙漠风暴行动的漫天风沙，给这挺年轻的机枪带来了严苛的洗礼。细微沙尘导致早期缓冲件受损与机匣震颤。面对实战反馈，军械工程师迅速推行产品改进计划，换装坚固的液压缓冲器与多孔防烫护罩，让这挺班组战鹰经受住了恶劣沙漠战场的极限锤炼。",
+          "audioUrl": "audio/m249/story_act2_zh.mp3",
+          "focusPartId": "m249_hydraulic_buffer",
+          "focusPartLabel": "枪托液压后坐缓冲器"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1992–2003",
+          "title": "双路供弹与开膛待击的机械杰作",
+          "paragraphs": [
+            "深入剖析M249的内部构造，其机械核心堪称冷战军械工程的巅峰组合。下置长行程导气活塞滑块与受德国MG42启发的顶滚轮弹链传动装置协同工作。当活塞滑块在火药燃气驱动下后坐时，其顶部立置的合金钢滚轮在受弹器顶盖内部的S型曲线导槽中强力穿梭，将纵向后坐力转换为横向拨力，驱动双级弹簧棘爪平稳推进重达数百克的重负荷弹链。",
+            "开膛待击设计是该枪克服步兵枪械过热极限的根本保障。弹药在击发前始终停留在外露通风的受弹器上，弹膛处于常开排风状态，杜绝了连续射击后由于高温枪管烘烤底火而引发的走火险情。唯有扣动扳机时，活塞滑块才猛烈前冲，顺势剥取一发五点五六毫米枪弹并推入弹膛，完成三十度刚性回转闭锁并在最后一刻击发，射击后机匣右侧即刻排出滚烫弹壳与散落的M27钢制链节。",
+            "更令人赞叹的是其兼具前瞻性的双路受弹系统。机匣左上方设有承接两百发突击弹箱的标准弹链托盘，而在受弹盘下方以四十五度倾斜角嵌入了一个M16弹匣井。这一设计使得机枪手在弹链耗尽的极端绝境下，能够直接插入步枪手递来的三十发弹匣继续射击，无需任何工具转换，赋予了小队极高的战场协同生存力。"
+          ],
+          "audioScript": "拆解这挺机枪，你会惊叹于它精巧的内部动力学。位于活塞顶部的钢制滚轮在顶盖的S型凸轮槽中穿梭，将后坐力流畅转化为横向拨弹运动，带动双级棘爪稳定拖曳两百发弹链。开膛待击使弹膛在射击间隙始终保持自然风冷，杜绝烤弹危险。而左下方独特的斜置弹匣井，更让它能在弹尽粮绝的瞬间直接借用步枪弹匣，展现出非凡的机械智慧。",
+          "audioUrl": "audio/m249/story_act3_zh.mp3",
+          "focusPartId": "m249_piston_carrier",
+          "focusPartLabel": "长行程活塞与顶拨弹滚轮滑块"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "2004–2024",
+          "title": "全球战鹰与不灭的火力基准",
+          "paragraphs": [
+            "进入二十一世纪，从阿富汗坎大哈的荒漠巡逻到伊拉克费卢杰的巷战攻坚，M249与其短管衍生型伞兵型、特种作战司令部定制的Mk46机枪一同驰骋沙场。在无数次遭遇伏击的千钧一发之际，机枪手借助免工具快拆枪管机构，仅需扳动隔热提把，便能在三秒之内徒手更换通红的枪管，继续维持每分钟八百发的可怕弹幕，拯救了无数战友的生命。",
+            "尽管随着未来单兵轻武器理念的演进，美军陆战队开始探索配备M27步兵自动步枪来提升行进间精准射击，但没有任何一把闭膛待击步枪能够真正取代M249那下挂两百发弹链所带来的源源不断的弹幕统治力。在防御筑垒、掩护撤退和压制敌方阵地时，M249依然是各北约盟国不可替代的班组火力锚点。",
+            "历经半个世纪的战火洗礼，FN Minimi及其家族不仅赢得了全球近四十个主权国家的采购信任，更以其成熟耐用的长行程活塞、精准平稳的液压缓冲及模块化受弹理念，成为世界轻武器历史上树立现代班用机枪概念的永恒图腾。"
+          ],
+          "audioScript": "从反恐前线的城市废墟到全球四十多个国家的现役部队，M249伴随一代代步兵跨越险境。三秒免工具快拆枪管，让通红灼热的枪膛在瞬息之间恢复战力，两百发下挂弹链构建起难以逾越的火力屏障。尽管新型步枪不断涌现，但M249所代表的强韧压制威慑依然无可替代，它早已作为现代班用轻机枪的黄金准则，载入了人类军械史册。",
+          "audioUrl": "audio/m249/story_act4_zh.mp3",
+          "focusPartId": "m249_barrel",
+          "focusPartLabel": "快拆冷锻镀铬枪管"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "免改装弹链/弹匣双路供弹机匣",
+          "tag": "双路供弹架构",
+          "summary": "在冲压焊接机匣中集成了左上进链口与左下四十五度倾斜STANAG弹匣井，使机枪手在耗尽200发M27弹链时，能瞬间接纳副射手或步枪手的30发M16弹匣维持火力，无需更换任何机件，大幅提升了阵地孤立环境下的生存几率。",
+          "focusPartId": "m249_receiver",
+          "focusPartLabel": "双路供弹冲压机匣"
+        },
+        {
+          "id": "bt2",
+          "title": "活塞顶滚轮S槽双棘爪拨链机构",
+          "tag": "横向拨链运动学",
+          "summary": "吸纳MG42输弹槽技术精髓，在下置长行程活塞滑块顶端设立高强度钢滚轮，直接嵌入顶盖内铣削的S型曲槽。滑块往复后坐与复进的两个行程平摊输弹做功，显著减轻了电机或弹簧阻力，保证悬空重负荷200发突击弹箱在高倾角射击时进弹毫无迟滞。",
+          "focusPartId": "m249_feed_lever",
+          "focusPartLabel": "顶盖枢轴S型拨弹杠杆"
+        },
+        {
+          "id": "bt3",
+          "title": "三秒免工具快拆预置闭锁间隙枪管",
+          "tag": "战场热换机构",
+          "summary": "枪管与节套制成不可拆卸的整体组件，由隔热携行提把弹簧扣直接锁定于机匣。过热更换时单手按压卡扣即可在3秒内向前抽换，全新枪管插回即自定闭锁间隙，无需像传统机枪那样使用塞尺重新调校，保障了阵地连续压制火网的无缝衔接。",
+          "focusPartId": "m249_barrel_handle",
+          "focusPartLabel": "快拆枪管提把与锁箍"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1974",
+          "title": "迷你机枪概念确立",
+          "detail": "FN赫斯塔尔总工程师欧内斯特·维尔维耶启动5.56毫米Minimi原型研制，确立开膛待击与纯正机枪架构。"
+        },
+        {
+          "year": "1979",
+          "title": "阿伯丁试验场夺魁",
+          "detail": "XM249在美军班用自动武器大选型中力压HK21E和柯尔特等对手，以卓越的恶劣泥沙环境可靠性脱颖而出。"
+        },
+        {
+          "year": "1982",
+          "title": "美军正式定型采购",
+          "detail": "美国陆军将XM249正式列为制式装备，定名M249 SAW，并由南卡罗来纳州哥伦比亚工厂量产供应全军。"
+        },
+        {
+          "year": "1991",
+          "title": "沙漠风暴实战洗礼",
+          "detail": "M249大规模参战海湾战争，强力压制敌阵的同时暴露沙尘积碳与机匣后坐震颤缺陷，直接催生后续现代化改进。"
+        },
+        {
+          "year": "1994",
+          "title": "PIP产品改进计划实施",
+          "detail": "全面推行液压缓冲器、七孔冲压钢枪管防烫罩、一体化排气导气座与聚合物鱼腹托，射速稳定在每分钟775发左右。"
+        },
+        {
+          "year": "2001",
+          "title": "特战改进与全球服役",
+          "detail": "衍生出伞兵短管型及Mk46轻量化特战机枪，伴随多国特遣队部署反恐前线，稳居西方班组火力标准宝座。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "The Fireteam Backbone: From Minimi to the U.S. M249 SAW",
+      "deck": "Forged to bridge the fatal firepower void between assault rifles and general-purpose machine guns, the FN Minimi conquered grueling Aberdeen trials through open-bolt endurance and dual-feed engineering. Across decades of combat from Desert Storm to global anti-terror campaigns, this weapon revolutionized modern squad tactics.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1974–1979",
+          "title": "Jungle Lessons and the Squad Automatic Dawn",
+          "paragraphs": [
+            "The brutal density of the Vietnam War exposed a critical tactical gap inside the infantry squad. The ten-and-a-half kilogram M60 general-purpose machine gun packed devastating seven-point-six-two millimeter punch, but its crushing bulk and heavy ammunition burden immobilized fast-moving rifle squads. Conversely, the M16A1 rifle fired from a closed bolt with a light barrel, rapidly cooking off live cartridges under sustained automatic fire while its twenty-round magazines ran dry in seconds.",
+            "Determined to restore organic suppressive firepower directly into the nine-man infantry fireteam, the United States Army launched the Squad Automatic Weapon program. Concurrently at Fabrique Nationale in Herstal, Belgium, master small-arms engineer Ernest Vervier—celebrated co-creator of the FN MAG—embarked on the Minimi, meaning Mini-Machine Gun. Vervier rejected simply beefing up an existing assault rifle, insisting instead on a purpose-built open-bolt machine gun platform capable of dual-feed versatility.",
+            "When XM249 prototypes arrived at Aberdeen Proving Ground in 1979 for grueling joint military trials, Vervier's design faced fierce competition from Heckler and Koch's XM262, Colt's XM106, and Ford Aerospace's XM248. Immersed in sloughs of liquid mud, buried in blowing silica sand, and chilled to negative forty degrees, the Belgian entry triumphed through superior cyclic endurance and its miraculous ability to switch effortlessly between linked belts and box magazines."
+          ],
+          "audioScript": "In the nineteen seventies, the aftermath of Vietnam forced military planners to confront an urgent tactical reality. Ten kilogram general purpose machine guns were too clumsy for dynamic infantry maneuvers, while standard rifles overheated and cooked off during prolonged firefights. At FN Herstal, legendary engineer Ernest Vervier designed the Minimi, an open bolt five point five six millimeter platform combining a rugged dedicated receiver with dual feed ingenuity. In the punishing mud and freezing trials at Aberdeen Proving Ground, his design outperformed all competitors, inaugurating a revolutionary era in modern squad automatic firepower.",
+          "audioUrl": "audio/m249/story_act1_en.mp3",
+          "focusPartId": "m249_receiver",
+          "focusPartLabel": "Dual Belt/STANAG Feed Receiver"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1980–1991",
+          "title": "Service Adoption and Persian Gulf Desert Proving",
+          "paragraphs": [
+            "In February 1982, the Department of Defense formally selected the Minimi, officially designating it the M249 Squad Automatic Weapon in 1984 for both the United States Army and Marine Corps. High-capacity tooling was swiftly established at the newly founded FN Manufacturing facility in Columbia, South Carolina. For the first time in military history, individual infantry squads received two organic belt-fed automatic weapons, fundamentally transforming small-unit fire-and-maneuver doctrine.",
+            "Operation Desert Storm in 1991 delivered the weapon's first trial by fire under combat conditions. Amidst the fine, abrasive dust storms of the Kuwaiti and Iraqi deserts, early dual-position gas collars and elastomeric recoil bumpers showed vulnerability. Ultra-fine sand infiltrated receivers, accelerating friction and driving cyclic rate spikes that induced micro-cracking along stamped internal receiver rails under relentless suppressive fire.",
+            "Field reports catalyzed an urgent joint engineering effort between the military and FN Herstal known as the Product Improvement Program. Technicians replaced the delicate two-position regulator with a robust self-cleaning single gas port, integrated an upper perforated steel shroud over the scorching barrel to protect soldier hands from burns, and installed an internal hydraulic damper inside the buttstock, creating the definitive M249 PIP."
+          ],
+          "audioScript": "Formally adopted in nineteen eighty four, the M249 gave every nine man infantry squad unprecedented organic volume of fire. Yet the harsh deserts of Operation Desert Storm in nineteen ninety one tested the system to its physical limits. Fine blowing sand degraded early gas regulators and elastomer buffers, prompting the rigorous Product Improvement Program. Engineers introduced a maintenance free gas block, perforated barrel heatshields, and a stock mounted hydraulic recoil damper, transforming the weapon into a rugged, smooth recoiling combat machine.",
+          "audioUrl": "audio/m249/story_act2_en.mp3",
+          "focusPartId": "m249_hydraulic_buffer",
+          "focusPartLabel": "Stock Hydraulic Recoil Buffer"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1992–2003",
+          "title": "Kinematic Mastery of Open-Bolt and Dual Feeding",
+          "paragraphs": [
+            "Beneath the phosphate steel chassis lies an action mechanism derived from premier ordnance principles. An underbarrel long-stroke gas piston carrier works in concert with an MG42-style feed-cam mechanism. As the carrier recoils rearward under propellant impulse, an upright hardened-steel roller traversing an S-shaped groove in the top cover swings a forked feed lever, converting linear slide movement into transverse pawl strokes that drag heavy belts effortlessly across the tray.",
+            "Operating from an open bolt guarantees superior thermal protection during long firefights. Between firing bursts, the bolt stays latched rearward while the chamber remains open to ambient airflow, completely eliminating the hazard of chamber cook-off caused by overheated metal. Upon pulling the trigger, the massive carrier lunges forward, stripping an M855 cartridge into the chamber, rotating the bolt lugs thirty degrees into locked battery, and mechanically releasing the firing pin.",
+            "The receiver's dual-feed geometry is a marvel of combat redundancy. An overhead feed tray secures disintegrating M27 belts from a two-hundred-round assault container, while a secondary magwell angled downward at forty-five degrees accepts standard thirty-round M16 magazines. If belt supplies run out in an isolated ambush, the gunner can instantly jam a rifleman's magazine into the gun and resume firing without swapping a single part."
+          ],
+          "audioScript": "Examining the internal kinematics reveals why this weapon became a mechanical benchmark. Its underbarrel long stroke piston drives a top roller inside a curved S slot, translating recoil directly into lateral feed pawl movement to lift heavy two hundred round belts. Firing from an open bolt circulates fresh air across the empty chamber between bursts, preventing dangerous cook offs. Meanwhile, the secondary angled magazine well allows the gunner to insert an ordinary thirty round rifle magazine during extreme emergencies, ensuring the suppressive fire never stops.",
+          "audioUrl": "audio/m249/story_act3_en.mp3",
+          "focusPartId": "m249_piston_carrier",
+          "focusPartLabel": "Long-Stroke Piston & Slide Carrier"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "2004–2024",
+          "title": "Global Deployment and the Unyielding Suppressive Benchmark",
+          "paragraphs": [
+            "Throughout the Global War on Terrorism, from the rugged mountains of eastern Afghanistan to intense urban close-quarters battles in Fallujah, the M249 alongside its Para and specialized Mk 46 variants stood guard across frontline operations. Gunner survival often depended on its three-second tool-less barrel change. Pressing the spring-loaded insulated carrying handle allowed gunners to slide out cherry-red barrels under fire and lock in fresh spares with zero headspace adjustment.",
+            "While modern doctrines such as the Marine Corps adoption of the M27 Infantry Automatic Rifle emphasize lighter weight and pinpoint semi-automatic accuracy for mobile maneuvers, no closed-bolt rifle can match the sheer, continuous suppressive saturation of an M249 roaring through two hundred rounds of linked ammunition. In defensive strongpoints, ambushes, and perimeter security, its presence remains irreplaceable.",
+            "Spanning five decades of active frontline deployment across forty allied nations, the Minimi family has defined modern squad automatic weapon design. Its bulletproof combination of long-stroke piston reliability, hydraulic damping, and versatile dual feeding stands as a triumphant achievement in the history of small arms engineering."
+          ],
+          "audioScript": "From urban combat in Fallujah to remote outposts in the Hindu Kush, the M249 has proven its worth across generations of war. Its three second barrel release enables gunners to swap red hot barrels under intense fire without losing headspace calibration, sustaining an avalanche of eight hundred rounds per minute. While lightweight automatic rifles have entered service, the devastating belt fed volume of the M249 remains unmatched, securing its legendary status as the bedrock of modern Western infantry firepower.",
+          "audioUrl": "audio/m249/story_act4_en.mp3",
+          "focusPartId": "m249_barrel",
+          "focusPartLabel": "Quick-Change CHF Chrome Barrel"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Dual-Feed Stamped Receiver Architecture",
+          "tag": "Combat Redundant Feedway",
+          "summary": "Combines a top-mounted belt feed tray with an angled 45-degree STANAG magazine well inside a single stamped steel receiver. This allows an emergency transition from linked belts to standard 30-round rifle magazines without changing parts or using tools, safeguarding squad survival during ammunition depletion.",
+          "focusPartId": "m249_receiver",
+          "focusPartLabel": "Dual Belt/STANAG Feed Receiver"
+        },
+        {
+          "id": "bt2",
+          "title": "Piston Top-Roller S-Cam Belt Transport",
+          "tag": "Transverse Feed Kinematics",
+          "summary": "Adapts the proven MG42 feed geometry by placing an upright roller atop the long-stroke piston slide that engages an S-shaped cam slot in the top cover. Transverse feed stroke work is distributed across both recoil and counter-recoil cycles, reducing friction and ensuring reliable feeding from heavy 200-round containers.",
+          "focusPartId": "m249_feed_lever",
+          "focusPartLabel": "Forked Belt-Feed Cam Lever"
+        },
+        {
+          "id": "bt3",
+          "title": "Three-Second Fixed-Headspace Quick Barrel Release",
+          "tag": "Rapid Thermal Maintenance",
+          "summary": "Pairs the cold-hammer-forged barrel and breech extension into a pre-timed assembly locked by an insulated carry-handle yoke. When overheated during intense suppressive bursts, the barrel can be swapped in three seconds without tools or headspace gauges, maintaining non-stop fire superiority.",
+          "focusPartId": "m249_barrel_handle",
+          "focusPartLabel": "Barrel Latch Yoke & Handle"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1974",
+          "title": "Minimi Concept Formalized",
+          "detail": "FN Herstal engineer Ernest Vervier begins development of the 5.56mm Mini-Mitrailleuse prototype, validating open-bolt belt feeding."
+        },
+        {
+          "year": "1979",
+          "title": "Aberdeen Proving Ground Victory",
+          "detail": "The XM249 prototype wins the rigorous U.S. Army Squad Automatic Weapon trials against HK, Colt, and Ford Aerospace competitors."
+        },
+        {
+          "year": "1982",
+          "title": "Official U.S. Military Adoption",
+          "detail": "The platform is formally adopted as the M249 SAW, with volume manufacturing initiated at FN's facility in Columbia, South Carolina."
+        },
+        {
+          "year": "1991",
+          "title": "Baptism of Fire in Desert Storm",
+          "detail": "Over ten thousand M249s deploy in the Persian Gulf, providing devastating firepower while revealing desert dust maintenance needs."
+        },
+        {
+          "year": "1994",
+          "title": "Product Improvement Program Standardized",
+          "detail": "Adopts the stock hydraulic recoil buffer, upper perforated barrel heatshield, and maintenance-free gas block, stabilizing rate of fire."
+        },
+        {
+          "year": "2001",
+          "title": "Special Operations Evolution & Global Service",
+          "detail": "Spawns the Mk 46 and Para variants across allied nations, solidifying its place as the premier squad automatic weapon of NATO forces."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "m249_barrel": {
+      "partId": "m249_barrel",
+      "bomCode": "B-01",
+      "calloutLabelEn": "CHF Chrome-Lined Barrel",
+      "zh": {
+        "roleTag": "465毫米冷锻重型内膛镀铬枪管 · 固定闭锁间隙快拆架构",
+        "overview": "全长四百六十五毫米的重型冷精锻枪管横卧于机匣前端。后端刚性旋接双突笋闭锁节套，前端整合了气箍与鸟笼形消焰器，构筑出五点五六毫米弹丸的高速导向通道。",
+        "craftAndMaterial": "选用高强度铬钼钒枪管钢整体精锻，内膛施加硬质镀铬以抵御高温高压烧蚀，缠距为一比七英寸六条右旋膛线，表面磷化发黑增强抗腐蚀与热辐射能力。",
+        "kinematicRole": "射击全程中作为固定发射基座承受四百三十兆帕峰值膛压；在不完全分解的第一阶段，按下快拆锁舌后沿前方水平轴线脱出机匣节套。",
+        "designHighlight": "工厂级预置节套闭锁间隙，无需野战重新校规，即使枪管发红也能在三秒内徒手完成更换，彻底解决了持续班组火力压制下的热衰退问题。",
+        "audioScript": "这根十八点三英寸的冷锻重枪管内膛镀硬铬，拥有一比七英寸的缠距。它最大的革新在于预置固定闭锁间隙，在倾泻数百发弹药枪身滚烫时，副射手无需防热手套就能在三秒内徒手拔换枪管，持续维持压制火力。",
+        "audioUrl": "audio/m249/parts/m249_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Cold Hammer-Forged Barrel With Fixed Headspace",
+        "overview": "This eighteen point three inch cold hammer-forged heavy barrel locks into the front of the receiver. It features an integral barrel extension and birdcage flash suppressor to guide fifty-five grain and sixty-two grain projectiles.",
+        "craftAndMaterial": "Forged from chromium molybdenum vanadium alloy steel with a hard chrome-plated bore and chamber, featuring a one-in-seven inch right-hand twist rate and heavy manganese phosphate exterior coating.",
+        "kinematicRole": "Remains static during the firing cycle to sustain peak propellant pressures, then detaches forward along the bore axis during initial field-stripping once the locking latch is depressed.",
+        "designHighlight": "Engineered with pre-calibrated headspace at the factory, eliminating headspace gauges during barrel swaps under fire and preventing thermal fatigue during sustained automatic bursts.",
+        "audioScript": "Forged for relentless endurance, this eighteen point three inch barrel features a hard chrome bore and a fast one-in-seven twist. Because headspace is preset right at the factory, gunners can swap an overheating barrel in under three seconds without touching a single adjustment tool.",
+        "audioUrl": "audio/m249/parts/m249_barrel_en.mp3"
+      }
+    },
+    "m249_barrel_handle": {
+      "partId": "m249_barrel_handle",
+      "bomCode": "B-02",
+      "calloutLabelEn": "Barrel Carry Handle",
+      "zh": {
+        "roleTag": "快拆闭锁卡箍联动机构 · 隔热折叠多功能携行柄",
+        "overview": "该组件铰接套设于枪管后段闭锁节套的前方。平时可向右折叠平放避免遮挡机瞄视线，展开时既作为机枪行军携行柄，也是抽换灼热枪管的操作握把。",
+        "craftAndMaterial": "承力框架由锻造碳钢冲压成形并淬火硬化，外包耐高温阻燃玻纤增强聚酰胺护套，表面密布防滑横向隔热槽以阻隔剧烈导热。",
+        "kinematicRole": "连发射击时保持静止锁定；枪管分解时，拇指按压根部弹簧锁舌，握持提把向前上方平推，直接将整根膨胀热管抽离受弹槽位。",
+        "designHighlight": "将卡箍闭锁机构与人体工学提把合二为一，避免了传统机枪需要配备厚重隔热石棉手套的繁琐战术负担，极大缩短了战位暴露时间。",
+        "audioScript": "兼具携行与换管双重功能的隔热提把，外层包裹耐高温工程塑料。战斗射击时它向右侧折叠避开瞄准视线，枪管过热时只需单手下压卡笋往上一提，就能安全拔出数百摄氏度的炽热枪管。",
+        "audioUrl": "audio/m249/parts/m249_barrel_handle_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Insulated Quick-Detach Handle And Locking Yoke",
+        "overview": "This folding handle clamps around the rear barrel collar forward of the barrel extension. It functions as both a tactical transport handle and an insulated lever to pull hot barrels.",
+        "craftAndMaterial": "Built with a heat-treated alloy steel structural bracket overmolded with glass-reinforced polyamide, featuring deep thermal dissipation ribs to protect bare hands.",
+        "kinematicRole": "Remains latched in the horizontal rest position during firing, then pivots upward and disengages the internal locking yoke when the release latch is compressed during stripping.",
+        "designHighlight": "Integrates the mechanical barrel latch directly into an insulated carry grasp, eliminating the dangerous field requirement for bulky asbestos heat mittens.",
+        "audioScript": "Folded flat to keep the gunner's sightline unobstructed, this insulated carry handle locks directly to the barrel yoke. When sustained firing makes the steel red hot, pressing the release latch lets the crew yank the glowing assembly free without burning their hands.",
+        "audioUrl": "audio/m249/parts/m249_barrel_handle_en.mp3"
+      }
+    },
+    "m249_gas_regulator": {
+      "partId": "m249_gas_regulator",
+      "bomCode": "B-03",
+      "calloutLabelEn": "Front Gas Regulator Plug",
+      "zh": {
+        "roleTag": "导气冲量节流控制塞 · 双工况排气自洁调节机构",
+        "overview": "位于枪口消焰器后方下侧的前导气箍前端。其核心用于调节引至活塞端面的燃气截面积，并排泄多余的高压火药残气。",
+        "craftAndMaterial": "采用高抗冲耐热不锈钢经数控车削制成，外表面车有粗滚花防滑纹以便戴手套拧动，表面经硬化耐腐蚀氮化处理以防积碳咬死。",
+        "kinematicRole": "射击循环阶段三中引导导气孔高压气体冲刷活塞，随后前向泄压；完全分解阶段通过旋转限位卡销由气箍正前方拔出分离。",
+        "designHighlight": "早期具备标准射速与恶劣泥沙环境增压两档，美军改进型进一步将其优化为恒压自洁孔系，在确保八百发每分射速的同时降低了自动机零件疲劳冲击。",
+        "audioScript": "位于导气箍前端的滚花调节塞直接承受初生火药燃气的猛烈冲刷。它不仅能精确控制分流给活塞的气体量，还能向前下方排出多余废气与火药残渣，确保在风沙污垢浸染下依然稳定供能。",
+        "audioUrl": "audio/m249/parts/m249_gas_regulator_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Gas Block Vent And Metering Collar",
+        "overview": "Threaded into the forward gas block directly beneath the front sight, this plug meters combustion gases ported from the bore into the lower expansion chamber.",
+        "craftAndMaterial": "Machined from high-temperature stainless steel with an aggressive outer knurling pattern for field grip, finished with an anti-carbon salt-bath ferritic nitrocarburizing coat.",
+        "kinematicRole": "Directs high-pressure gases against the piston face during cycle phase three, then detaches forward during detail field stripping once the retaining detent is backed out.",
+        "designHighlight": "FN engineered dual gas ports to boost cyclic speed under sandy mud conditions, while the PIP design balanced venting to preserve bolt carrier service life.",
+        "audioScript": "Perched on the front gas block, this knurled regulator collar throttles the superheated muzzle gases that drive the long-stroke piston. It channels high-pressure gas to break through carbon fouling while venting surplus blast forward and down.",
+        "audioUrl": "audio/m249/parts/m249_gas_regulator_en.mp3"
+      }
+    },
+    "m249_piston_carrier": {
+      "partId": "m249_piston_carrier",
+      "bomCode": "B-04",
+      "calloutLabelEn": "Long-Stroke Piston Slide",
+      "zh": {
+        "roleTag": "下置长行程导气活塞滑块总成 · 凸轮旋锁与顶滚轮供弹中枢",
+        "overview": "横贯机匣下腔的重型运动骨架，前部连接深入导气管的刮碳活塞头，后部滑块座承载枪机，顶部竖直立有凸轮拨弹滚轮。",
+        "craftAndMaterial": "整体由特种合金钢高精度锻造铣削，底部镶嵌超硬合金阻铁挂钩，活塞杆头部带有数道精密迷宫环槽，全件深层渗碳淬火。",
+        "kinematicRole": "扣动扳机后被复进簧释放前冲推弹闭锁；燃气驱动下后坐九十五毫米带动枪机开锁抛壳，顶部滚轮同步摇动顶盖凸轮；分解第二阶段由机匣后方抽出。",
+        "designHighlight": "集成了长行程活塞的高抗污驱动力、枪机旋转开闭锁斜面槽与开膛待击挂钩，顶部滚轮直接在往复间为弹链提供两段式横向步进动力。",
+        "audioScript": "这个长行程活塞滑块是全枪的运动心脏。前方活塞头深嵌在下导气筒内吸收火药能量，后方滑块带动枪机完成旋转开闭锁，顶端立起的钢质滚轮更在前后往复中驱动顶盖弹链分段步进。",
+        "audioUrl": "audio/m249/parts/m249_piston_carrier_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Primary Operating Slide Carrier And Feed Cam Roller",
+        "overview": "The central moving mass spanning the lower receiver, combining a forward long-stroke gas piston with a heavy slide carrier housing a vertical feed roller.",
+        "craftAndMaterial": "Precision machined from forged ordnance alloy steel with heat-treated sear engagement lips, hard chrome on the piston head rings, and a manganese phosphate surface.",
+        "kinematicRole": "Drives forward ninety-five millimeters under spring force to chamber and lock the round, recoils under gas impulse to unlock and extract, and slides out the receiver rear during strip.",
+        "designHighlight": "Eliminates linkage slop by mounting the feed tray drive roller directly to the slide top, converting linear reciprocating inertia into rotary link-belt feeding.",
+        "audioScript": "This massive long-stroke piston carrier forms the mechanical powerhouse of the M249. As it rides down the receiver rails, its cam track guides bolt rotation, while the vertical top roller engages the feed cover to advance belted ammunition with zero hesitation.",
+        "audioUrl": "audio/m249/parts/m249_piston_carrier_en.mp3"
+      }
+    },
+    "m249_bolt": {
+      "partId": "m249_bolt",
+      "bomCode": "B-05",
+      "calloutLabelEn": "Rotating Breech Bolt",
+      "zh": {
+        "roleTag": "双突笋三十度回转闭锁枪机 · 大截面抗剪切推弹机芯",
+        "overview": "容纳于活塞滑块前端圆筒座内的圆柱形机头。前端面设有推弹凸耳、重型爪式抽壳钩和弹性抛壳挺，用于封闭弹膛并承受击发背压。",
+        "craftAndMaterial": "选用高韧性镍铬钼合金钢锻造，全表面高光洁度硬铬电镀，闭锁突笋经深冷硬化处理以承受万发级周期交变疲劳载荷。",
+        "kinematicRole": "前冲时剥弹推入弹膛；到位后受滑块凸轮带动顺时针旋转三十度与节套完全扣合；击发后随滑块逆旋开锁并拉出弹壳；随滑块总成自机匣后部拆卸。",
+        "designHighlight": "汲取卡拉什尼科夫机头布局灵感，采用双对称宽体突笋，既留出宽裕的容垢空间，又确保能平稳兼容弹链推弹与弹匣抱弹口的严苛推弹要求。",
+        "audioScript": "采用硬铬电镀的双突笋回转枪机，具有极为扎实的大截面剪切强度。当它将弹链上的实弹推入弹膛后，会在滑块凸轮带动下顺时针回转三十度刚性锁死节套，稳固承受击发时的剧烈膛压。",
+        "audioUrl": "audio/m249/parts/m249_bolt_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Two-Lug Rotating Lock Bolt And Extractor",
+        "overview": "Housed inside the forward sleeve of the piston slide carrier, this cylindrical bolt supports the cartridge base and provides rigid breech lockup.",
+        "craftAndMaterial": "Forged from high-tensile nickel-chromium-molybdenum alloy steel, finished with a bright industrial hard-chrome plating to shed brass shavings and carbon.",
+        "kinematicRole": "Strips rounds from the link tray, rotates thirty degrees clockwise to lock into the barrel extension, counter-rotates to unlock on gas cycle, and extracts empty brass.",
+        "designHighlight": "Features oversized opposing locking lugs inspired by battle-proven assault rifles, balancing heavy-duty lock strength with exceptional debris clearance.",
+        "audioScript": "Sporting heavy-duty dual locking lugs, this chrome-plated bolt rides in the nose of the carrier. As it seats a fresh round into the chamber, it twists thirty degrees into the barrel extension, forming a rock-solid seal against explosive chamber pressures.",
+        "audioUrl": "audio/m249/parts/m249_bolt_en.mp3"
+      }
+    },
+    "m249_firing_pin": {
+      "partId": "m249_firing_pin",
+      "bomCode": "B-06",
+      "calloutLabelEn": "Timed Open-Bolt Firing Pin",
+      "zh": {
+        "roleTag": "滑块机械联动击针 · 闭锁到位刚性防早发安全结构",
+        "overview": "一根细长的高强度合金击针，贯穿安装于回转枪机的中心轴线内，其尾端通过定位横销与活塞滑块立柱刚性相连。",
+        "craftAndMaterial": "特种弹簧耐冲击工具钢车削加工，针尖及传力台阶经过高频感应淬火，针体经微弧氧化与自润滑固溶处理。",
+        "kinematicRole": "推弹入膛期间针尖始终回缩在枪机端面之内；唯当枪机回转锁死后滑块继续前冲最后六点五毫米时，针尖方刺出击发底火；随滑块拆解脱出。",
+        "designHighlight": "开膛待击机枪的防早发核心设计：无需击锤，击针动作完全受控于滑块行程，彻底杜绝了未完全闭锁状态下底火提前受撞引发炸膛的风险。",
+        "audioScript": "这根阶梯状击针尾端直接与活塞滑块刚性锁连。在推弹上膛的整个过程中，击针尖始终深藏在机头镜面内部，唯有枪机双突笋完全旋入节套锁死的瞬间，它才会被滑块推向前方击破底火。",
+        "audioUrl": "audio/m249/parts/m249_firing_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Mechanically Timed Open-Bolt Firing Pin",
+        "overview": "Running down the center of the rotating bolt, this solid-stem pin connects directly to the slide carrier via a transverse cross pin.",
+        "craftAndMaterial": "Precision ground from shock-resistant tool steel, heat-treated with induction hardened striking tips and a self-lubricating dry-film surface finish.",
+        "kinematicRole": "Held withdrawn behind the bolt face until bolt rotation finishes, then protrudes through the firing pin hole as the carrier finishes its final forward dwell.",
+        "designHighlight": "Pure mechanical timing prevents out-of-battery ignition: the firing pin cannot physically contact the primer until the locking lugs are fully turned home.",
+        "audioScript": "Pinned securely to the slide carrier, this timed firing pin floats safely inside the bolt body during feeding. Only after the bolt rotates into full battery does the carrier drive the tip forward through the bolt face, ensuring rounds never detonate out of lock.",
+        "audioUrl": "audio/m249/parts/m249_firing_pin_en.mp3"
+      }
+    },
+    "m249_charging_handle": {
+      "partId": "m249_charging_handle",
+      "bomCode": "B-07",
+      "calloutLabelEn": "Folding Charging Handle",
+      "zh": {
+        "roleTag": "右侧非随动开槽导轨拉机柄 · 折叠防钩挂挂机机构",
+        "overview": "布置在机匣右侧开槽导轨中的细长操纵总成，前部带有折叠抓手，内侧卡爪与活塞滑块前表面接触配合。",
+        "craftAndMaterial": "导轨滑块由耐磨合金钢冲压折弯，折叠拉手包覆抗冲工程塑料，表面经盐浴发黑处理，内部设有弹簧保持卡销。",
+        "kinematicRole": "手动向后拉动以克服复进簧阻力将活塞滑块挂上开膛阻铁，待击后必须前推复位锁死；连发射击期间完全静止；完全分解时从右侧导轨滑槽拉出。",
+        "designHighlight": "非随动设计避免了机枪每秒十余次高速后坐时拉手抽打射手手部或钩挂随身战术装具，折叠抓手进一步压缩了整枪收纳轮廓。",
+        "audioScript": "位于机匣右侧的折叠拉机柄采用非随动机构。装弹前向后猛拉可将整个自动机挂在后方阻铁上，随后必须将其推回前方原位锁定。连发射击时拉机柄保持静止，不会随枪机抽打弹跳。",
+        "audioUrl": "audio/m249/parts/m249_charging_handle_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Right-Side Non-Reciprocating Charging Assembly",
+        "overview": "Positioned inside an external guide slot along the right receiver wall, this handle pulls the internal slide carrier into full rearward sear engagement.",
+        "craftAndMaterial": "Constructed from carbon steel rails with an overmolded polymer folding grip, finished in anti-glare salt bath nitrocarburizing to resist salt and dust exposure.",
+        "kinematicRole": "Retracted manually to cock the open-bolt slide carrier onto the sear, pushed forward into its detent catch before firing, and slides out during armorer detail teardown.",
+        "designHighlight": "The non-reciprocating architecture keeps the folding handle rock-still while the carrier fires at eight hundred rounds per minute, protecting the gunner's hands.",
+        "audioScript": "Mounted along the right flank of the receiver, this folding charging handle is non-reciprocating. Pulling it cocked latches the slide carrier onto the rear sear, and pushing it forward locks the grip down so it stays completely still during continuous automatic fire.",
+        "audioUrl": "audio/m249/parts/m249_charging_handle_en.mp3"
+      }
+    },
+    "m249_recoil_spring": {
+      "partId": "m249_recoil_spring",
+      "bomCode": "B-08",
+      "calloutLabelEn": "Multi-Strand Main Spring",
+      "zh": {
+        "roleTag": "长行程复进储能驱动弹簧 · 多股绞合抗疲劳动力源",
+        "overview": "套在金属导管上的长螺旋压缩主簧，纵向布置在活塞滑块尾部与枪托接合部之间，构筑了开膛待击状态下的主要储能单元。",
+        "craftAndMaterial": "采用三股优质琴钢丝经精密绞合螺旋绕制而成，表面经喷丸消应力强化与防锈达克罗涂层处理，具备极其优异的屈服强度与抗蠕变性能。",
+        "kinematicRole": "开膛待击状态处于深度预压缩状态；阻铁下落后瞬间释放动能驱动滑块向前完成供弹击发；后坐阶段再次被压缩吸收后坐能量；分解中率先取出卸力。",
+        "designHighlight": "多股绞合弹簧相比单股粗簧具有自阻尼吸振效应，能在极高往复冲频下有效衰减高频颤振波，彻底消除了簧圈断裂导致的恶劣停射故障。",
+        "audioScript": "这根长行程主复进簧采用三股琴钢丝绞合编织绕制。开膛待击时它蓄满了巨大势能，一旦扳机释放阻铁，它便如离弦之箭猛推自动机前冲推弹，多股结构还能消除高频振动防止弹簧断裂。",
+        "audioUrl": "audio/m249/parts/m249_recoil_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Captive Stranded-Wire Main Driving Spring",
+        "overview": "Encircling the steel guide rod assembly inside the lower receiver, this long helical spring powers the heavy slide carrier forward from open bolt.",
+        "craftAndMaterial": "Wound from three-strand braided carbon-alloy music wire, shot-peened for extreme fatigue life, and sealed with a dry corrosion-resistant zinc flake finish.",
+        "kinematicRole": "Maintains high potential energy during open-bolt rest, unleashes forward thrust to strip rounds and lock the bolt, then cushions slide overtravel upon recoil.",
+        "designHighlight": "Multi-strand braiding dampens destructive internal shock harmonics, preventing spring coil snapping during prolonged high-rate sustained suppressive fire.",
+        "audioScript": "Woven from multiple strands of high-tensile spring wire, this main driving spring is built to resist violent cyclic shock. Pre-compressed while the gun sits in open-bolt battery, it dumps stored energy to thrust the heavy bolt forward the instant the trigger falls.",
+        "audioUrl": "audio/m249/parts/m249_recoil_spring_en.mp3"
+      }
+    },
+    "m249_hydraulic_buffer": {
+      "partId": "m249_hydraulic_buffer",
+      "bomCode": "B-09",
+      "calloutLabelEn": "Hydraulic Stock Damper",
+      "zh": {
+        "roleTag": "枪托内置液压阻尼缓冲器 · 吸收后坐峰值与稳定射速总成",
+        "overview": "紧凑装配于枪托转接座内孔中的液压阻尼活塞筒，前端露出承托活塞滑块尾端撞击的承压顶杆。",
+        "craftAndMaterial": "外壳与活塞杆由高强度不锈钢精密研磨制造，内部密封高粘度指数航空阻尼硅油，动密封圈采用聚四氟乙烯复合耐磨环以防漏油。",
+        "kinematicRole": "自动机后坐越程最后二十三点五毫米时，滑块尾部猛烈撞击阻尼顶杆，阻尼器通过油孔节流强行吸收冲量；在拆卸枪托底销后自尾部拉出。",
+        "designHighlight": "美军产品改进计划的核心升级部件，彻底取代了早期极易老化碎裂的固体聚氨酯橡胶缓冲垫，有效平抑了后坐峰值并将射速稳定在每分钟七百五十发左右。",
+        "audioScript": "作为美军改进型机枪的稳定核心，这个内置液压缓冲器取代了老式易碎的橡胶块。当滑块在后坐末端狠狠撞上缓冲活塞时，高压硅油在微孔中节流吸能，大幅降低后坐震动并保护机匣尾部。",
+        "audioUrl": "audio/m249/parts/m249_hydraulic_buffer_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Stock Hydraulic Recoil Buffer Assembly",
+        "overview": "Encapsulated inside the buttstock hinge bracket, this sealed hydraulic damper presents a spring-loaded plunger directly to the rear of the recoiling slide.",
+        "craftAndMaterial": "Precision machined from aircraft-grade stainless steel with micro-honed internal bores, filled with specialized silicone fluid and sealed by fluorocarbon elastomer rings.",
+        "kinematicRole": "Engaged during the final twenty-three point five millimeters of rearward slide overtravel to throttle peak recoil forces, pulled out rearward upon stock pin removal.",
+        "designHighlight": "Introduced in the PIP upgrade to replace crumbling rubber blocks, utilizing hydraulic fluid metering to tame muzzle climb and standardize firing cadence.",
+        "audioScript": "A cornerstone of the modern weapon package, this hydraulic recoil buffer replaces brittle vintage rubber bumpers. It catches the slamming carrier slide during rearward overtravel, metering hydraulic fluid through tiny orifices to smooth out recoil impulses.",
+        "audioUrl": "audio/m249/parts/m249_hydraulic_buffer_en.mp3"
+      }
+    },
+    "m249_receiver": {
+      "partId": "m249_receiver",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Dual-Feed Stamped Receiver",
+      "zh": {
+        "roleTag": "冲压钢点焊受力主基体 · 弹链与弹匣双路供弹机匣",
+        "overview": "作为全枪装配基准的冲压钢制箱形机匣。左侧上方设有弹链引入托口，左侧下方设有斜置四十五度的步枪弹匣插井，内部嵌有点焊硬化导轨。",
+        "craftAndMaterial": "采用高延展性冷轧含钼合金钢板数控冲压折弯，结合多点电阻点焊工艺固定内部热处理淬硬导轨，外表面施加深灰色重质锰系磷化层。",
+        "kinematicRole": "全程为枪机活塞导向提供刚性直线滑道，承受闭锁释放的反作用力；作为不可动主体结构，在三维分解阶段作为核心基准展示。",
+        "designHighlight": "独步战场的双路供弹工程奇迹：无需任何转换机构，既能吞吐二百发弹链箱，又能在机枪弹链耗尽时直接插上步枪手的三发北约标准弹匣应急自卫。",
+        "audioScript": "经高强度冷轧钢板冲压点焊而成的机匣，是整挺机枪的骨骼。它的惊艳之处在于左侧的双路供弹槽：上方咬合两百发突击弹链，左下方则开设有倾斜弹匣井，弹链打光时可直接插上步兵的步枪弹匣应急射击。",
+        "audioUrl": "audio/m249/parts/m249_receiver_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Stamped Welded Manganese-Phosphate Receiver",
+        "overview": "The structural backbone of the machine gun, this stamped steel box housing features internal welded guide rails and a unique dual-feed throat on its left flank.",
+        "craftAndMaterial": "Formed from high-strength cold-rolled alloy sheet steel, spot-welded with induction-hardened internal slide rails, and finished with a non-reflective manganese phosphate coat.",
+        "kinematicRole": "Serves as the immovable geometric chassis supporting reciprocating parts throughout all cycle phases, acting as the structural anchor in disassembly views.",
+        "designHighlight": "Incorporates both an upper link-belt feed mouth and an angled lower STANAG magazine well, allowing an operator to snap in standard rifle mags without any toolkit conversions.",
+        "audioScript": "Formed from stamped alloy steel with welded internal guide rails, this rugged receiver forms the gun's structural spine. Remarkably, it features two independent feed systems on its left side: a top feed port for disintegrating belts, and an angled lower well for rifle magazines.",
+        "audioUrl": "audio/m249/parts/m249_receiver_en.mp3"
+      }
+    },
+    "m249_top_cover": {
+      "partId": "m249_top_cover",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Feed Cover w/ S-Cam",
+      "zh": {
+        "roleTag": "受弹器铰接顶盖 · 铝压铸S型拨弹槽与战术导轨上盖",
+        "overview": "前端通过销轴铰接在机匣节套上方的活动外壳。内壁顶棚铸有精密的S形拨弹导槽，外顶部铆接全长皮卡汀尼光学瞄准镜导轨。",
+        "craftAndMaterial": "整体由高强度铝硅合金压铸成型以减轻整枪前部重量，表面经硬质阳极氧化着黑色，关键承力滑槽镶嵌耐磨不锈钢嵌件。",
+        "kinematicRole": "装弹时向上抬起约四十五度露出受弹机板；射击中盖紧锁死，内壁S槽引导活塞顶滚轮运动以驱动拨弹机构；分解初期首先开合掀起。",
+        "designHighlight": "继承了德国通用机枪经典且高效的双向受弹逻辑，通过S型凸轮将活塞往复运动平顺转化为进弹爪在后坐与复进阶段的两段式推弹，大幅降低供弹峰值载荷。",
+        "audioScript": "铰接在机匣前方的铝合金受弹器顶盖，顶部装有光学瞄具导轨。将其向上翻开即可装填弹链，合上后，其内顶部的S形凹槽与活塞顶滚轮完美啮合，将活塞的前后直线冲撞化作弹链平顺横移的动力。",
+        "audioUrl": "audio/m249/parts/m249_top_cover_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Top Feed Cover Assembly With S-Cam Channel",
+        "overview": "Hinged to the barrel trunnion above the feed tray, this cast cover encloses the feed mechanism and mounts a MIL-STD-1913 Picatinny optical rail.",
+        "craftAndMaterial": "Die-cast from lightweight high-strength aluminum alloy, treated with a hard-anodized protective finish, with heat-treated steel wear strips along high-contact cam guides.",
+        "kinematicRole": "Pivots open during link loading, clamps down during fire where its internal S-shaped channel converts linear piston motion into lateral pawl strokes, and lifts during stage one.",
+        "designHighlight": "Employs an internal S-curved cam track derived from classic belt-feed heritage, splitting belt advance across both backward recoil and forward counter-recoil strokes.",
+        "audioScript": "Hinged over the receiver feed tray, this die-cast top cover carries an optics rail on top and a sculpted S-cam track underneath. As the bolt carrier cycles, its vertical roller tracks through this curved groove, smoothly feeding linked ammo with every single shot.",
+        "audioUrl": "audio/m249/parts/m249_top_cover_en.mp3"
+      }
+    },
+    "m249_rear_sight": {
+      "partId": "m249_rear_sight",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Drum Peep Rear Sight",
+      "zh": {
+        "roleTag": "觇孔式机械照门表尺总成 · 风偏高低双鼓轮调节装置",
+        "overview": "固定安装于受弹器顶盖尾端正上方的精密瞄准部件。由左侧风偏转轮、升降表尺鼓轮以及两侧刚性防撞护翼组成。",
+        "craftAndMaterial": "照门基座与旋钮采用耐磨工具钢精密加工并经发黑防眩光处理，两侧设有厚壁冲压护耳，旋钮带有防滑滚花与弹簧定位钢珠。",
+        "kinematicRole": "射击全程中与顶盖保持固定位置，随顶盖向上翻启或锁紧；在机械分解第三阶段由顶盖后端的燕尾定位槽中拆卸分离。",
+        "designHighlight": "配备二百至一千米直读式射程装定鼓轮，每档附带清晰手感咔哒定位声，护耳能有效保护精密觇孔抵御战壕跌落与剧烈装甲车携行碰撞。",
+        "audioScript": "安装在顶盖尾部的全可调觇孔照门，两侧带有坚固的冲压钢护耳防撞击。射手通过旋转侧向和垂直鼓轮，能直接在两百至一千米射程内快速定距修正风偏，保证在无光学瞄具时精准压制目标。",
+        "audioUrl": "audio/m249/parts/m249_rear_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Protected Windage Elevation Peep Assembly",
+        "overview": "Mounted at the rear edge of the hinged top feed cover, this combat peep aperture sight is flanked by heavy protective side wings.",
+        "craftAndMaterial": "Constructed of heat-treated alloy steel components treated with an anti-glare oxide finish, featuring spring-loaded ball detents inside the adjustment dials.",
+        "kinematicRole": "Remains static on the cover during burst firing, tilting upward with the cover when reloading ammunition, and unseats during detail armorer maintenance.",
+        "designHighlight": "Calibrated with audible click dials ranging from two hundred out to one thousand meters, shielded by thick steel protective ears against severe combat drops.",
+        "audioScript": "Nestled at the back of the feed cover, this aperture rear sight gives machine gunners immediate windage and elevation control. Heavy steel wings flank the aperture, shielding the click-adjustable target drum against drops, scrapes, and harsh vehicle transport.",
+        "audioUrl": "audio/m249/parts/m249_rear_sight_en.mp3"
+      }
+    },
+    "m249_front_sight": {
+      "partId": "m249_front_sight",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Hooded Front Sight Post",
+      "zh": {
+        "roleTag": "前导气箍独立柱状准星 · 闭环圆环防磕防眩护罩",
+        "overview": "竖立紧固于快拆枪管前端导气箍上方的立柱式机械准具。准星柱垂直居中，外周包覆一体式防磕碰圆环护罩。",
+        "craftAndMaterial": "准星座与枪管导气箍一体精密铸钢成型，准星立柱为螺纹调高合金钢细件，经哑光防腐磷化处理以防强光反射刺眼。",
+        "kinematicRole": "作为瞄准基线前端的绝对光学基准与枪管同步运动；随枪管组件一并在第一阶段快拆脱离机匣，完全分解时可单独拧下调零螺套。",
+        "designHighlight": "准星直接固定在每根枪管上随管常备并独立调零，射手即便在硝烟弥漫的阵地上紧急拔换备用热枪管，也无需重新进行繁琐的归零射校即可继续开火。",
+        "audioScript": "高耸在导气箍上方的圆环护罩准星，构成了瞄准基线的前端点。最巧妙的是，每一根备用枪管都自带独立的准星并在换装前预先调零，战斗中拔换枪管后无需再次校枪，装上就能立即准确开火。",
+        "audioUrl": "audio/m249/parts/m249_front_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Barrel-Dedicated Hooded Post Sight",
+        "overview": "Fastened atop the front gas block assembly forward of the barrel heat collar, this front post is encircled by a curved glare hood.",
+        "craftAndMaterial": "Cast as an integral fixture on the gas block housing from high-strength ordnance steel, utilizing an adjustable threaded central steel post with a matte phosphate finish.",
+        "kinematicRole": "Remains permanently coupled to the barrel assembly during shooting and quick-change barrel operations, detaching along with the barrel in primary field strip.",
+        "designHighlight": "Mounting the front sight directly to each dedicated barrel ensures zero retention across hot barrel swaps, allowing gunners to change tubes without losing battlefield accuracy.",
+        "audioScript": "Sitting right on the front gas block, this post sight is shielded inside a protective steel hood. Because every spare barrel carries its own factory-zeroed front sight, troops can swap overheated barrels in combat without losing their point of aim.",
+        "audioUrl": "audio/m249/parts/m249_front_sight_en.mp3"
+      }
+    },
+    "m249_handguard": {
+      "partId": "m249_handguard",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Lower Guard & Shroud",
+      "zh": {
+        "roleTag": "PIP隔热护木与冲压钢上护罩 · 杜绝烫伤与热浪瞄准畸变",
+        "overview": "该总成由机匣底部的下护木与扣合在枪管上方的多孔拱形钢罩构成，整体包覆灼热的下导气管与枪管前端。它在为机枪手立姿抵腰扫射提供安全握持界面的同时，彻底阻断数百度的高温热辐射。",
+        "craftAndMaterial": "下护木采用抗冲击玻纤增强尼龙注塑成型，两侧分布防滑粗条纹与双脚架收纳槽；上部防烫罩由深冲压低合金钢板制成并经重磷化处理，两侧精密冲切出共计十四个椭圆形通风散热窗孔以引导气流对流冷却。",
+        "kinematicRole": "射击循环中作为静止外部护甲隔绝高压火药燃气冲刷所诱发的高温；在分解维护进入百分之三十二至百分之六十二阶段时，上罩向上弹离枪管，随后下护木整体滑脱出机匣前槽。",
+        "designHighlight": "早期原始敏尼米在沙漠连续扫射数百发后，枪管升温至数百度引发严重空气对流折射，导致瞄准基线产生剧烈波浪状光学畸变，美军通过加装上护罩彻底引导热浪横向排出并消除了烫伤隐患。",
+        "audioScript": "这套上下护木总成是美军产品改进计划的标志性特征。上方的十四个冲压椭圆孔不仅能快速散去枪管上千度的高温，更能防止升腾的热气扭曲瞄准视野，让机枪手在连续射击后仍能安全握持枪管下方进行抵腰扫射。",
+        "audioUrl": "audio/m249/parts/m249_handguard_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Heat Shield & Perforated Upper Shroud",
+        "overview": "This dual assembly consists of a lower grip shell and an arched upper perforated steel shield enclosing the hot barrel and underbarrel gas cylinder. It provides an ergonomic forward grasp point for off-hand hip firing while insulating the operator from blistering heat radiation.",
+        "craftAndMaterial": "Molded from high-impact glass-filled polyamide with external anti-slip ribbing, matched with a deep-drawn stamped sheet-steel upper shroud phosphated in matte black. The upper shroud incorporates seven pairs of punched oval vents to facilitate natural upward thermal chimney convection.",
+        "kinematicRole": "Remains static during all seven firing cycle phases as an outer protective ergonomic envelope; separates during disassembly between thirty-two and sixty-two percent along the vertical and forward release vector.",
+        "designHighlight": "Early Minimi variants suffered from severe mirage shimmering across the front sight line during prolonged automatic fire; adding the vented upper shroud vented convection currents sideways while shielding soldiers hands from barrel burns.",
+        "audioScript": "This protective assembly is a signature hallmark of the American Product Improvement Program. The upper perforated shroud features fourteen stamped venting ports that channel intense thermal updrafts away from the sight line, preventing optical mirage distortions and shielding the gunners hands during aggressive assault movement.",
+        "audioUrl": "audio/m249/parts/m249_handguard_en.mp3"
+      }
+    },
+    "m249_gas_tube": {
+      "partId": "m249_gas_tube",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Gas Cylinder Tube",
+      "zh": {
+        "roleTag": "下置无缝合金钢长导气筒 · 引导活塞平顺往复并承载脚架座",
+        "overview": "长导气筒刚性固定于机匣下腹前壁，沿枪身轴线向前平铺延伸至准星下方。其内孔为长行程导气活塞提供平顺导向通道，外壁前端一体固接双脚架旋转铰接座。",
+        "craftAndMaterial": "精选高强度四十二钼铬合金钢管经精密深孔镗削研磨内膛，内壁施加深层硬铬镀层以耐受火药残渣刮擦腐蚀；外表面经高温液体氮化着黑处理，前端焊接锻造双脚架卡套箍座。",
+        "kinematicRole": "全程为活塞头的九十五毫米长行程往复冲刺提供密封刚性导向轨道；在百分之三十四至百分之六十四分解阶段随前端锁具向右前侧拔出脱卸。",
+        "designHighlight": "将双脚架座设计在导气筒而不是枪管上，实现了战术枪管的彻底结构自由浮置，无论是脚架受力还是在三秒内快拆换装枪管，都完全不会变动机枪的原始弹道归零精度。",
+        "audioScript": "下置的长导气筒是整支机枪前部的刚性支撑骨干。其镀铬研磨内孔引导重达数百克的长行程活塞平稳往复运动，前端的锻造抱箍更直接承受双脚架的全部载荷，确保上方的高温枪管在任何射击姿势下都保持自由浮置。",
+        "audioUrl": "audio/m249/parts/m249_gas_tube_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Rigid Piston Guide Tube & Forward Bipod Mount",
+        "overview": "Rigidly anchored to the forward lower receiver face, this seamless alloy-steel cylinder extends forward beneath the barrel. It houses the reciprocating long-stroke gas piston and features a welded forward yoke that supports the bipod assembly.",
+        "craftAndMaterial": "Manufactured from thick-walled 4140 chromoly steel seamless tubing, precision bored and hard-chrome plated internally against propellant fouling; the external surface receives black salt-bath nitriding and incorporates a forged steel forward collar.",
+        "kinematicRole": "Acts as the rigid linear bearing datum guiding the ninety-five millimeter stroke of the gas piston throughout cyclic operation; disengages forward between thirty-four and sixty-four percent field strip progression.",
+        "designHighlight": "Decoupling the bipod mount from the barrel onto the gas cylinder ensures true free-floating barrel acoustics, preventing ground-reaction deflection and allowing instant three-second barrel swaps without disturbing the bipod base.",
+        "audioScript": "This underbarrel gas tube serves as the mechanical spine of the machine gun forward section. Its hard-chromed internal bore guides the heavy gas piston across its full stroke, while the forward forged collar mounts the folding bipod so the barrel stays completely free floating for consistent shot dispersion.",
+        "audioUrl": "audio/m249/parts/m249_gas_tube_en.mp3"
+      }
+    },
+    "m249_bipod": {
+      "partId": "m249_bipod",
+      "bomCode": "F-07",
+      "calloutLabelEn": "Folding Steel Bipod",
+      "zh": {
+        "roleTag": "折叠三档伸缩钢双脚架 · 配备泥雪地宽面雪橇驻锄",
+        "overview": "双脚架通过前端环箍铰接于导气筒头部下方，平时可向后收拢卡合在下护木两侧槽中。展开时双腿呈八字支撑在阵地地面，为全自动连发提供高稳定度的俯仰与横滚自适应。",
+        "craftAndMaterial": "主体采用重型冲压槽钢配合耐蚀不锈钢伸缩内管，表面经深层防腐磷化处理；支脚末端冲压有向外翻卷的雪橇状凹陷驻锄，内部集成弹簧支撑的锁紧卡销。",
+        "kinematicRole": "在卧姿射击全程将全枪震颤传递至地面，吸收连发后坐并允许射手绕中心轴线左右进行微量横滚倾斜调平；在百分之三十四至六十四阶段整体自导气筒下端拆除。",
+        "designHighlight": "冲压钢雪橇形驻锄在细沙与深雪地形能产生优异的漂浮支承效应，完全杜绝了机枪越打阵地越往下陷的下坐缺陷，且三档单手卡榫能在颠簸堑壕中快速找平火线高度。",
+        "audioScript": "这具高强度折叠双脚架能够向后紧凑收纳在下护木内。阵地架设时，它不仅提供三档高度调节，底部的弧形雪橇驻锄更能在泥沼或沙滩上提供强大的承载浮力，防止连续射击的剧烈震动使枪口陷入泥土导致阵地坍塌。",
+        "audioUrl": "audio/m249/parts/m249_bipod_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Telescoping Twin Steel Bipod w/ Ski Feet",
+        "overview": "Attached to the gas cylinder yoke, this twin-leg bipod folds rearward into recess tracks in the lower handguard. Deployed downward, its spread legs provide stable prone support with built-in cant and leveling flexibility.",
+        "craftAndMaterial": "Fabricated from heavy-gauge stamped U-channel high-tensile steel with stainless steel telescoping extension legs, finished in protective manganese phosphate. The foot pads feature wide, curled ski-type skid plates with internal spring-loaded position detents.",
+        "kinematicRole": "Anchors weapon recoil forces into natural terrain throughout continuous bursts while allowing roll traverse over uneven ground; separates alongside the gas tube between thirty-four and sixty-four percent disassembly.",
+        "designHighlight": "The stamped ski feet prevent the muzzle from sinking into fine sand, swampy turf, or deep snow during long bursts, while three-position detent stops allow instant single-handed field height adjustment on broken slopes.",
+        "audioScript": "Mounted directly beneath the gas cylinder, this rugged stamped steel bipod folds neatly flush into the lower handguard. Its flared ski feet keep the weapon from bogging down in soft sand or marshy terrain, providing an ultra-stable firing platform with variable leg length and smooth roll leveling.",
+        "audioUrl": "audio/m249/parts/m249_bipod_en.mp3"
+      }
+    },
+    "m249_buttstock": {
+      "partId": "m249_buttstock",
+      "bomCode": "F-08",
+      "calloutLabelEn": "Polymer Buttstock",
+      "zh": {
+        "roleTag": "PIP固定重型聚合物枪托 · 下凹鱼腹弱手控枪槽与折叠钢丝肩托",
+        "overview": "枪托装配于机匣最末端，通过上下两枚系留销与机匣牢固闭锁。其不仅作为全枪主要抵肩接触面，内部还纵向容纳复进簧尾座与高阻尼液压缓冲机芯。",
+        "craftAndMaterial": "外壳采用超韧性玻纤强化阻燃聚酰胺一体注塑成型，表面带有粗糙磨砂防滑质感；枪托后部固定合成橡胶减震垫，顶部铰接一条高弹性淬火折叠粗钢丝肩部翻转支板。",
+        "kinematicRole": "射击循环阶段六承受活塞尾部的最大后坐冲击并导正回推能量；在百分之十至百分之二十六的基础不完全分解初始阶段，拔出尾销即可整体向后抽离机匣。",
+        "designHighlight": "枪托下腹部独特的凹陷鱼腹轮廓，专为射手卧姿操作时用非惯用手虎口死死向下反拉枪托设计，配合翻折在肩窝上方的钢丝挂钩，能彻底抑制连发射击时枪口的上跳趋势。",
+        "audioScript": "机枪尾部的改进型固定聚合物枪托结实耐用。它的内部直接整合了液压后坐缓冲器，下方的鱼腹形收腰设计方便射手左手用力向后扣拉枪身，翻开顶部的粗钢丝肩托更能牢牢钩住肩头，极大地稳定了全自动连射散布。",
+        "audioUrl": "audio/m249/parts/m249_buttstock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Fixed Polymer Stock w/ Hinged Shoulder Rest",
+        "overview": "Affixed to the rear receiver bulkhead via twin captured takedown pins, this stock closes the receiver tube and aligns the internal hydraulic recoil buffer and driving spring guide into dynamic coaxial balance.",
+        "craftAndMaterial": "Injection-molded from glass-fiber reinforced impact-modified polyamide in matte combat black, mated to a thick ribbed synthetic-rubber recoil pad and topped with a heat-treated folding wire rest hinge.",
+        "kinematicRole": "Dissipates final bolt recoil deceleration impulses during phase six and anchors driving spring counter-recoil energy; detaches rearward during initial field stripping between ten and twenty-six percent explosion range.",
+        "designHighlight": "The lower belly features a deep undercut hook contour enabling the gunner weak-hand thumb-over grasp to drive the butt pad downward into the collar pocket, virtually locking muzzle climb during cyclic bursts.",
+        "audioScript": "Installed on the rear bulkhead, this high-impact polymer buttstock encloses the hydraulic recoil damper. Its contoured belly allows the gunner to hook their non-firing hand downward to tame muzzle rise, while the folding steel wire rest flips up over the shoulder to lock the weapon solidly against recoil.",
+        "audioUrl": "audio/m249/parts/m249_buttstock_en.mp3"
+      }
+    },
+    "m249_trigger_frame": {
+      "partId": "m249_trigger_frame",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Trigger Grip Housing",
+      "zh": {
+        "roleTag": "快拆式冲压钢火控盒与防滑握把 · 纯全自动横闩机械闭锁",
+        "overview": "火控盒总成悬挂装配在机匣中后部底面，集成手枪形握把、大型防寒扳机护圈以及内部击发杠杆机构。它是全枪射击控制中枢，赋予射手极为直接的操作输入。",
+        "craftAndMaterial": "框架由低碳冲压钢板经拼焊和磷化钝化制成，外覆带纵向防滑肋条的整体式工程塑料握把；装配有淬火钢制圆柱横闩式保险，露出红环即表示进入待发状态。",
+        "kinematicRole": "在射击循环中保持机身下部刚性定位，容纳阻铁起伏并物理阻断非法开火；在百分之八至百分之二十四阶段拔下前后定位销即可整体向下分离。",
+        "designHighlight": "完全舍弃了半自动单发机构，消除了机枪火控因断连器磨损导致的卡死隐患；加大的扳机护圈可在极寒带战场无障碍容纳厚重的冬季防寒手套射击。",
+        "audioScript": "机匣下方的火控盒与握把总成是控制射击的核心。两枚快拆销钉能让它瞬间整体分离。由于开膛机枪舍弃了复杂的单发断连机构，整套系统极为精纯可靠，横推保险露出红色警示环即可立即倾泻强力火力。",
+        "audioUrl": "audio/m249/parts/m249_trigger_frame_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Pinned Fire-Control Module & Ribbed Pistol Grip",
+        "overview": "Mounted under the lower receiver midsection via dual quick-release captive pins, this assembly combines the steel trigger housing, cold-weather trigger guard, and checkered polymer pistol grip.",
+        "craftAndMaterial": "Welded stamped-steel sheet housing phosphated for chemical resilience, fitted with an overmolded ribbed thermoplastic pistol grip and an alloy-steel cross-bolt sliding safety pin with crimson warning indicators.",
+        "kinematicRole": "Provides an ergonomic anchor datum while positioning the internal sear catch along the piston flight line; pivots downward and separates during early takedown between eight and twenty-four percent.",
+        "designHighlight": "Eliminates all delicate semi-automatic disconnector parts for maximum continuous-suppression reliability, while the enlarged winter trigger guard allows full combat glove clearance during sub-zero operational missions.",
+        "audioScript": "Retained by two captive push pins beneath the receiver, this fire control housing combines a combat-textured pistol grip with a massive winter trigger guard. It intentionally foregoes complex semi-automatic disconnectors for rugged simplicity, engaging an internal sliding safety cross-bolt that mechanically deadlocks the sear.",
+        "audioUrl": "audio/m249/parts/m249_trigger_frame_en.mp3"
+      }
+    },
+    "m249_trigger": {
+      "partId": "m249_trigger",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Curved Steel Trigger",
+      "zh": {
+        "roleTag": "宽弧面钢制机枪扳机 · 纯机械杠杆下拽重型开膛阻铁",
+        "overview": "扳机通过横轴铰接在火控盒内部，宽大的弧形扳机板伸入护圈中央。射手食指施加的拉力通过其顶部的双叉杠杆，直接将开膛阻铁头部向下扳倒。",
+        "craftAndMaterial": "采用八六二零优质结构钢精密锻造成型，扳机扣压指面呈扁平圆弧微曲面并倒有钝圆角；经液体碳氮共渗处理，兼顾抗断裂韧性与枢轴孔处的高耐磨性。",
+        "kinematicRole": "在循环阶段一受扣压力向下倾倒扳倒阻铁释放滑块；持续扣住时令阻铁维持下沉，松手瞬间随弹簧复位；分解阶段八至二十四阶段移出火控盒。",
+        "designHighlight": "扳机与阻铁之间采用大传动比短力臂直推设计，扣发行程干脆无虚位，即便在全自动连射中，熟练射手仅凭手指快速扣放即能极其稳定地打出两至三发精准短点射。",
+        "audioScript": "这具宽弧面的锻钢扳机结构简单粗暴。扣动它不会释放任何击锤，而是通过顶部的杠杆直接将下方咬合滑块的阻铁拽下。由于开膛连发行程清晰分明，经验丰富的老射手通过食指点放，就能打出节奏精湛的极短点射。",
+        "audioUrl": "audio/m249/parts/m249_trigger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Wide-Radius Trigger & Direct Sear Actuator",
+        "overview": "Pivoted within the trigger frame on a heavy transverse pin, this wide-curved trigger finger-piece extends downward into the open trigger guard. Its upper bellcrank lobe bears directly against the front shoulder of the sear.",
+        "craftAndMaterial": "Precision drop-forged from 8620 nickel-chromium-moly alloy steel, carburized for surface hardness and bead-blasted to minimize glare. The contact face is smoothly contoured with rounded edges for uniform glove pressure.",
+        "kinematicRole": "Rotates rearward during phase one to directly depress the heavy sear nose and free the gas piston; remains held down through phase seven until released, dropping out during trigger module disassembly at eight to twenty-four percent.",
+        "designHighlight": "The direct sear-actuation geometry produces crisp, predictable let-off without creep, allowing disciplined gunners to deliver controlled two-to-three-round bursts simply through muscle-memory trigger feathering.",
+        "audioScript": "Forged from tough nickel-chromium steel, this wide machine gun trigger directly pulls down the primary sear without passing through hammers or disconnectors. Its leverage ratio is tuned so precisely that an experienced operator can effortlessly feather the trigger to pop off disciplined two-round bursts.",
+        "audioUrl": "audio/m249/parts/m249_trigger_en.mp3"
+      }
+    },
+    "m249_open_bolt_sear": {
+      "partId": "m249_open_bolt_sear",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Open-Bolt Sear Catch",
+      "zh": {
+        "roleTag": "渗碳硬化重型开膛主阻铁 · 拦截高速活塞滑块防止走火",
+        "overview": "阻铁横跨在火控盒上方中央，由主销轴横向贯穿支承。其坚固的淬硬方形突鼻向上伸入机匣底槽，专职死死挂住长行程活塞底部的受力待击缺口。",
+        "craftAndMaterial": "采用高抗冲击铬镍钼锻钢经过真空深层渗碳淬火，受力剪切工作面硬度高达洛氏硬度五十八以上；前爪咬合边缘精磨成锋利耐冲撞的微倒角结构。",
+        "kinematicRole": "阶段一被扳机压下脱离滑块；阶段七松开扳机时在复位簧驱动下强行抬起，迎面截停重达数百克的高速回弹滑块组；在百分之八至二十四拆解阶段取出。",
+        "designHighlight": "在全自动射击终了截停自动机时，阻铁鼻需要瞬间吸收数千牛顿的复进冲击力；其巨大的几何厚度与深度渗碳工艺，确保哪怕经历数万发剧烈撞击也绝不滑脱崩齿。",
+        "audioScript": "这块不起眼的高强度渗碳阻铁是全枪开膛待击的安全命脉。当你松开扳机，它便强行抬起，像一道铁闸般硬生生拦截高速冲刺的活塞滑块，彻底截断射击循环，使枪膛留空对流通风以防高温走火。",
+        "audioUrl": "audio/m249/parts/m249_open_bolt_sear_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Carburized Heavy Sear Interceptor",
+        "overview": "Seated on a robust pivot transverse pin in the trigger housing, this massive hardened sear lever extends its forward arresting lug into the receiver bottom channel to interface with the underside of the piston slide.",
+        "craftAndMaterial": "Drop forged from chrome-moly steel alloy and deep vacuum carburized to a case hardness exceeding Rockwell C 58, with a precision-ground engagement ledge engineered to resist extreme cyclic shearing friction.",
+        "kinematicRole": "Depressed during stage one, then snaps upward via spring pressure in stage seven to arrest the recoiling slide carrier mid-flight; separates from the trigger block between eight and twenty-four percent explosion progression.",
+        "designHighlight": "Stopping a multi-pound bolt and piston carrier assembly charging forward under spring load generates colossal shock loads; this overbuilt sear resists notch rounding and eliminates run-away gun runaway firing risks.",
+        "audioScript": "This carburized open-bolt sear serves as the ultimate safety brake of the M249. When the trigger is released, this steel block snaps upward into the path of the forward-charging bolt carrier, arresting tons of impact inertia and holding the action wide open to circulate cool ambient air.",
+        "audioUrl": "audio/m249/parts/m249_open_bolt_sear_en.mp3"
+      }
+    },
+    "m249_sear_spring": {
+      "partId": "m249_sear_spring",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "Sear Return Spring",
+      "zh": {
+        "roleTag": "高刚度螺旋开膛阻铁复位簧 · 毫秒级抬升阻铁截停机组",
+        "overview": "阻铁复位簧垂直安装在火控盒底板的定位盲孔与阻铁下腹部之间。它处于常态恒定压缩预紧状态，全天候为开膛阻铁提供充沛强劲的向上顶升动能。",
+        "craftAndMaterial": "采用航空级顶级油淬火琴钢弹簧钢丝绕制，端面精密平磨以确保轴向垂直受压；表面镀微米级防锈达克罗涂层，具备极佳的抗长期疲劳抗力与防盐雾腐蚀能力。",
+        "kinematicRole": "扳机扣动时受压微缩蓄能，扳机松开时于几毫秒内迅速伸展顶起阻铁鼻挂住滑块；在火控总成彻底分解至百分之三十八至六十六子阶段时脱出。",
+        "designHighlight": "其刚度系数经过极为苛刻的极端环境冗余调校，即便火控盒内腔灌满泥浆细沙或火药残渣重度结焦，仍具备足够的富余弹力强行顶起重型阻铁防止滑脱溜弹。",
+        "audioScript": "这根高强度的螺旋复位簧被常年预压在阻铁下方。无论战壕中积聚了多少泥浆尘土或结垢的火药残渣，只要射手松开食指，它强大的顶升力就能在几毫秒内将阻铁顶起，确保机枪绝不会出现连发停不下来的失控溜火事故。",
+        "audioUrl": "audio/m249/parts/m249_sear_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Heavy-Duty Helical Sear Elevation Spring",
+        "overview": "Vertically captive between the bottom pocket of the trigger housing and the sear underside, this helical spring exerts continuous upward bias against the heavy arresting lug.",
+        "craftAndMaterial": "Wound from aerospace-grade oil-tempered music wire with closed and ground flat seating ends, coated in a corrosion-inhibiting phosphate or dry-film Dacromet barrier to resist environmental fatigue over millions of flex cycles.",
+        "kinematicRole": "Compresses when the trigger drops the sear in phase one, then expands instantly in phase seven to elevate the sear nose into arresting position; extracts during trigger frame explode between thirty-eight and sixty-six percent.",
+        "designHighlight": "Engineered with massive reserve preload spring rate so that even when the lower fire-control well is fouled with thick sand, dirt, or caked carbon residue, the sear snaps upward instantly to prevent runaway gun failure.",
+        "audioScript": "Captive beneath the sear lever, this high-tension helical spring exerts constant upward force. Its aggressive spring rate guarantees that the heavy sear nose pops up in milliseconds the instant the trigger is released, halting the action even if the receiver well is caked with mud and carbon fouling.",
+        "audioUrl": "audio/m249/parts/m249_sear_spring_en.mp3"
+      }
+    },
+    "m249_feed_tray": {
+      "partId": "m249_feed_tray",
+      "bomCode": "M-01",
+      "calloutLabelEn": "Belt Feed Tray",
+      "zh": {
+        "roleTag": "冲压钢横向加强筋受弹器托盘 · 双路供弹转换承载中枢",
+        "overview": "受弹盘横跨在机匣入弹口上方，前端铰接在顶盖同轴铰链销上，可独立向上掀开。它在机枪中负责承托进给的弹链，并与机匣左下方的斜向弹匣井平滑接驳。",
+        "craftAndMaterial": "采用高韧性合金钢板冲压一体拉深成型，表面压有横向纵向受力加强筋并经硬化磷化；左侧开有向下翻折的圆滑导链喇叭口，右端冲压出垂直规整的挡弹定位直壁。",
+        "kinematicRole": "阶段二与阶段四期间平稳托举弹链并由右挡壁阻滞弹头超位；当使用左侧三十发步枪弹匣供弹时向上微抬避让；在分解六至二十二阶段向上掀起并抽卸离机。",
+        "designHighlight": "托盘左侧平顺的喇叭口倒角极大消除了弹箱向上拔弹时的折弯摩擦力，托盘翻转式铰接使射手既能快放弹链，又能瞬时掀开检查弹膛与排除卡弹，操作毫不干涉。",
+        "audioScript": "冲压钢质受弹托盘横卧在机匣上口。左侧光滑的喇叭口引导二百发重弹链平稳向上爬升，右侧的限位壁则精准挡住每一发实弹的弹头。当机枪遇到紧急情况需要插入步枪弹匣时，托盘也能自如配合双路供弹通道。",
+        "audioUrl": "audio/m249/parts/m249_feed_tray_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Stamped Ribbed Belt Support Tray & Dual Feed Base",
+        "overview": "Spanning across the top opening of the receiver, this stamped steel tray is pivoted at the front hinge pin. It supports linked ammunition entering the feed path and interfaces seamlessly with the angled emergency magazine well below.",
+        "craftAndMaterial": "Stamped from sheet steel with cross-stamped reinforcing ribs for rigidity, finished in matte black manganese phosphate; features a flared downward chute on the left entry side and a rigid vertical cartridge stop face on the right.",
+        "kinematicRole": "Provides an aligned horizontal feeding table for rounds during phases two and four; accommodates STANAG magazine clearance and lifts upward to decouple from the receiver hinge between six and twenty-two percent field strip.",
+        "designHighlight": "The rolled left feed lip dramatically reduces belt drag when lifting a heavy two-hundred-round drum belt from hanging bags, while its flip-up architecture allows instant inspection of the chamber and quick clearing of link jams.",
+        "audioScript": "Spanning the receiver opening, this stamped feed tray supports the incoming ammunition belt. Its curved feed chute smooths the steep ascent of heavy belts rising from the assault drum, while the rigid right stop wall centers every cartridge precisely under the stripped bolt path.",
+        "audioUrl": "audio/m249/parts/m249_feed_tray_en.mp3"
+      }
+    },
+    "m249_feed_lever": {
+      "partId": "m249_feed_lever",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Pivoting Feed Cam Lever",
+      "zh": {
+        "roleTag": "顶盖枢轴S型分叉拨弹曲柄杠杆 · 活塞纵向运动变横向摆动",
+        "overview": "杠杆倒置铰接在受弹器机匣顶盖内侧的中央立轴上，呈现精巧的S型曲柄轮廓。其后端开有夹持双叉，前端通过球形指销深嵌在横向拨弹滑板内。",
+        "craftAndMaterial": "采用锻造碳素工具钢经过高频热处理与精密数控铣削成形，外表施以高耐磨低摩擦化学镀镍；后端双叉内壁精细抛光成镜面以减小滚轮滚动磨损。",
+        "kinematicRole": "后叉骑跨在活塞顶滚轮上，伴随活塞在阶段二、四、五的前后往复运动，将直线平移强行转换为左右往复摆动；在顶盖分解百分之二至十八阶段随盖分离。",
+        "designHighlight": "巧妙借鉴了二战著名机枪经典拨弹原理：完全摒弃电控与额外动力，直接利用活塞自身巨大后坐惯量，毫秒内完成横向十三点六毫米的弹链强制步进运动。",
+        "audioScript": "倒扣在机枪顶盖内侧的这根S形拨弹杠杆极具机械美感。它的尾叉牢牢咬住活塞滑块顶部的钢滚轮，随着活塞前后冲刺，这根杠杆如同钟摆般左右剧烈摆动，以极高的效率将枪机后坐能量转换为横向拉动弹链的磅礴动力。",
+        "audioUrl": "audio/m249/parts/m249_feed_lever_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Pivoting Forked Feed-Drive Rocker Arm",
+        "overview": "Mounted inversely on a sturdy pivot post underneath the hinged top feed cover, this S-shaped curved rocker arm connects the reciprocating slide roller to the transverse belt-feed shuttle pawls.",
+        "craftAndMaterial": "CNC machined from forged high-carbon tool steel with selective induction case-hardening and low-friction chemical nickel plating; the rear fork interior walls are polished smooth to reduce contact friction against the slide roller.",
+        "kinematicRole": "The rear fork traps the slide carrier roller, converting axial travel into oscillatory transverse swinging during phases two, four, and five; separates inside the top cover sub-assembly between two and eighteen percent strip stages.",
+        "designHighlight": "Adapted from the brilliant MG42 feed geometry: without adding dedicated motors or links, it harnesses surplus piston inertia to generate positive, high-energy transverse step feeds of thirteen point six millimeters per cycle.",
+        "audioScript": "Mounted inside the top cover, this curved steel feed lever performs a brilliant mechanical translation. Its rear fork clamps around the roller atop the moving gas piston, rocking left and right like a mechanical pendulum to convert long-stroke recoil into the horizontal drive that shuttles linked rounds into the gun.",
+        "audioUrl": "audio/m249/parts/m249_feed_lever_en.mp3"
+      }
+    },
+    "m249_feed_pawls": {
+      "partId": "m249_feed_pawls",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Shuttle Feed Pawls",
+      "zh": {
+        "roleTag": "双级弹簧棘爪横向梭动拨弹滑板组 · 分布后坐复进双步进拉链",
+        "overview": "滑板总成滑动装配在顶盖内侧底板导轨槽中，包含滑动架与多枚带下压弹簧的棘爪。它横向横跨在受弹托盘上方，在射击循环中执行接力式拉链动作。",
+        "craftAndMaterial": "滑板为高强度不锈钢冲压成型，内部两组活动棘爪采用铬钒合金钢精铸硬化制造；每枚棘爪均内置独立的耐高温微型螺旋扭簧，爪尖呈单向棘齿刀口轮廓。",
+        "kinematicRole": "在阶段四后坐时拉动弹链半格，阶段五复进时再拉动半格入位并卡死止退；在全分解百分之二至百分之十八阶段伴随顶盖组件整体脱开。",
+        "designHighlight": "两阶段分步接力拉动技术将提拉二百发沉重弹链的极限载荷均匀拆解在后坐与复进两个半周内，彻底避免了单行程过载导致的拉断弹链或卡壳死机故障。",
+        "audioScript": "顶盖下方的这套双级弹簧棘爪滑板是确保弹链供弹万无一失的核心。两组棘齿分工明确：在枪机后坐与复进两个半行程中各拉动弹链走半格，既分摊了提拉重弹箱的负荷，又像棘轮扳手一样死死卡住弹链防止倒滑退弹。",
+        "audioUrl": "audio/m249/parts/m249_feed_pawls_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dual-Stage Spring-Loaded Shuttle Feed Pawls",
+        "overview": "Riding in transverse guide slots across the underside of the feed cover, this shuttle plate carries two pairs of pivoting spring-loaded feed and retention pawls over the feed tray.",
+        "craftAndMaterial": "Formed from stamped hardened stainless steel carriers fitted with investment-cast, carbonitrided chrome-vanadium steel pawls; each pawl is biased by an internal miniature high-temperature helical torsion spring.",
+        "kinematicRole": "Slides laterally across the top of the feed tray, advancing the belt half a pitch on recoil in phase four and completing the step during counter-recoil in phase five; strips within the top cover between two and eighteen percent.",
+        "designHighlight": "Splitting the belt feed motion across both recoil and forward return strokes halves the peak tension load required to lift a suspended two-hundred-round belt box, preventing sheared links and belt-skipping malfunctions.",
+        "audioScript": "Installed underneath the feed cover, these spring-loaded feed pawls operate on a two-step cycle. By advancing the ammunition belt half a link during recoil and the remaining half on counter-recoil, they split the massive mechanical drag of heavy assault drums, guaranteeing jam-free feeding in rapid fire.",
+        "audioUrl": "audio/m249/parts/m249_feed_pawls_en.mp3"
+      }
+    },
+    "m249_m27_belt": {
+      "partId": "m249_m27_belt",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Linked M27 5.56mm Belt",
+      "zh": {
+        "roleTag": "北约M27可散钢制弹链与M855穿甲弹 · 推进散落无空链悬挂",
+        "overview": "弹链由单枚全金属冲压链节相互咬合串联，每节抱紧一枚五点五六毫米实弹，平铺悬挂于供弹口左侧。实弹在被枪机顶入弹膛的同时，空出的链节脱钩飞散散落。",
+        "craftAndMaterial": "链节采用热处理锰系高弹弹簧钢冲压成三环式包裹卡槽；串联的弹药为标准黄铜药筒、博克塞式底火及六十二格令前钢尖后铅芯覆铜绿尖M855穿甲普通弹。",
+        "kinematicRole": "阶段二由枪机推弹突笋自链环中推弹入膛，失去轴芯约束的空节在阶段四随空弹壳分别自机匣右侧抛壳窗与导链口向外抛离；分解三至十八阶段抽出受弹口。",
+        "designHighlight": "可散式链节彻底消除了不可散金属长弹链在战壕里拖泥带水或绞入装甲车轮槽的致命风险，机枪手在推进射击时脚下绝无残留废铁链阻碍行动路线。",
+        "audioScript": "美军标准的M27弹链采用巧妙的可散结构。每一枚弹药的黄铜药筒本身就是相邻两个弹簧钢链节的连接转轴。当机枪向前推弹入膛的刹那，空出的单个钢链节便失去支撑自然向右下角散落脱出，绝不会留下长长的空链缠绕手脚。",
+        "audioUrl": "audio/m249/parts/m249_m27_belt_zh.mp3"
+      },
+      "en": {
+        "roleTag": "M27 Disintegrating Steel Belt & M855 Ammunition",
+        "overview": "Composed of interconnected individual stamped spring-steel links gripping 5.56 NATO cartridges, this belt spans from the assault box into the receiver feed throat. As cartridges enter the chamber, the empty link splits away.",
+        "craftAndMaterial": "Links are stamped from heat-treated manganese spring steel with an anti-reflective phosphated surface; linked with standard C26000 cartridge brass and 62-grain M855 steel penetrator core green-tip projectiles.",
+        "kinematicRole": "Advances across stages one and five; in stage two the bolt strips the lead round forward into the chamber, freeing the loose link to drop out through the right-side ejection port in stage four; demounts at three to eighteen percent.",
+        "designHighlight": "The disintegrating design eliminates the hazardous trailing empty metal belt strips common to non-disintegrating systems, preventing snagging hazards in tight doorways or tracked fighting vehicles during assault advances.",
+        "audioScript": "The standardized M27 disintegrating belt links NATO five point five six millimeter ammunition into a continuous feed train. The brass cartridge itself acts as the hinge pin between consecutive steel loops. Once the bolt strips a round forward into the chamber, the released link drops freely out the right-hand ejection slot.",
+        "audioUrl": "audio/m249/parts/m249_m27_belt_en.mp3"
+      }
+    },
+    "m249_ammo_box": {
+      "partId": "m249_ammo_box",
+      "bomCode": "M-05",
+      "calloutLabelEn": "200-Round Ammo Box",
+      "zh": {
+        "roleTag": "下挂二百发高抗冲突击弹链箱 · 单兵持续火力基数核心",
+        "overview": "弹箱直接通过顶部T形燕尾滑轨锁定在机匣腹部下方、弹匣井正后方。其箱体内部容纳整整两百发蛇形折叠的五点五六毫米M27弹链，为单兵机枪手提供机动突击弹源。",
+        "craftAndMaterial": "整体由橄榄绿色超韧高分子抗冲击聚酰胺通过注塑成形，外壁遍布加强格栅与交叉减震筋骨；顶部配有带弹簧卡爪的金属锁定导轨和带铰链的弹簧防尘柔性链口盖板。",
+        "kinematicRole": "在全周期射击中作为机动随枪储弹库，连续向左上方的受弹托盘输送弹药；在野战分解百分之四至百分之二十阶段，按压释放卡扣即可向左下方滑脱卸除。",
+        "designHighlight": "满载二百发弹药重量超过三公斤，弹箱底部设计有专门的导向加强筋防止弹链内部乱序纠结扭曲，使单兵在奔跑、匍匐乃至翻滚突击中都能确保弹链爬升顺畅无阻滞。",
+        "audioScript": "这具挂载在机匣下方的橄榄绿聚合物弹链箱，是全班火力的持续源泉。内部以蛇形折叠容纳了足足两百发穿甲链弹。坚韧的抗冲击箱体带有减震加强肋，保证机枪手在翻滚跃进的剧烈颠簸中，内部弹链也绝不会发生缠绕卡死。",
+        "audioUrl": "audio/m249/parts/m249_ammo_box_zh.mp3"
+      },
+      "en": {
+        "roleTag": "200-Round Ribbed Polymer Assault Drum",
+        "overview": "Locked to the underside of the receiver via integral sliding T-rail latches, this box suspends directly below the feed way. It stores a continuous two-hundred-round serpentine-folded belt of belted 5.56 NATO ammunition.",
+        "craftAndMaterial": "Injection-molded from olive-drab high-impact polymer with structural stiffening ribs to survive battlefield drops; fitted with a stamped-steel retention latch and a spring-loaded flexible entry dust door on top.",
+        "kinematicRole": "Carries and feeds linked ammunition smoothly upward into the feed tray throughout firing; detaches downward and clears the receiver between four and twenty percent of weapon field strip disassembly.",
+        "designHighlight": "Holding over six pounds of loaded ammunition, internal guide partitions prevent the belt from tumbling or folding over itself during sprint maneuvers, allowing reliable rapid feeds during rough combat bounding.",
+        "audioScript": "Clamped directly beneath the receiver, this olive-drab polymer drum holds a full two-hundred-round belt of disintegrating ammunition. Its ribbed shell withstands brutal combat impacts, while internal separator baffles prevent the belt from tangling while the gunner is sprinting, diving, or firing from the hip.",
+        "audioUrl": "audio/m249/parts/m249_ammo_box_en.mp3"
+      }
+    }
+  }
+}

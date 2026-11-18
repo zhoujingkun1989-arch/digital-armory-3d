@@ -1,0 +1,917 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "p08",
+  "generatedAt": "2026-11-18T16:41:47.835711+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "DWM Luger P08 Toggle-Lock Pistol",
+    "subtitle": "9×19mm Parabellum Articulated Knee-Joint Toggle-Lock Service Pistol",
+    "originCountry": "Germany",
+    "weaponType": "Semi-Automatic Service Pistol",
+    "categoryLabel": "Semi-Automatic Pistol",
+    "actionMechanism": "Short-Recoil (-6.5mm) · Over-Center Two-Bar Toggle Lock (Kniegelenkverschluss) w/ Lateral Bellcrank Sear",
+    "statusLabel": "In Vault · Strippable",
+    "description": "Austrian-born ordnance genius Georg Luger evolved Hugo Borchardt's clumsy C93 into the aristocratic summit of early self-loading handguns at Berlin's DWM arsenal, creating the immortal 9x19mm Parabellum round in 1902 and delivering the definitive Pistole 08 for the Imperial German Army. Featuring an over-center knee-joint toggle lock that buckles 1.5 degrees below dead-center, an ergonomic 55-degree pointing grip frame, an intricate 90-degree lateral bellcrank fire control system behind a detachable sideplate, a top-mounted 'GELADEN' loaded-chamber indicator extractor, and exquisite rust bluing paired with 240°C straw-tempered components and 20-LPI European walnut stocks.",
+    "highlights": [
+      "Over-Center -1.5° Knee-Joint Toggle Lock (Kniegelenkverschluss)",
+      "Legendary 55° Natural Pointing Grip Angle & S-Coupled Recoil Spring",
+      "Detachable Sideplate w/ 90° Bellcrank Transfer Lever & Lateral Sear",
+      "DWM Monogram, 240°C Straw-Tempered Parts & GELADEN Extractor"
+    ],
+    "workbenchTitle": "Luger P08 Toggle-Lock Pistol 3D Disassembly & Kinematics",
+    "workbenchSubtitle": "4 Assemblies · 25 Precision Nodes · 6.5mm Short-Recoil 53.5° Toggle Buckle, Lateral Bellcrank & 9mm Top Ejection",
+    "cutawayLabel": "Toggle Joint & Sideplate Fire-Control Focus",
+    "cutawayTitle": "Switch to locked cutaway perspective focusing on toggle hinge, frame cam ramps, and sideplate bellcrank fire control",
+    "searchPlaceholder": "Search component name / code (e.g. Toggle, Straw-Tempered, Bellcrank, GELADEN, U-06)...",
+    "firingMilestoneLabel": "Toggle Buckle",
+    "rateOfFire": "Semi-Automatic",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Ready to Fire",
+        "subLabel": "0%",
+        "desc": "Standard locked battery state of a 1917 Berlin DWM Parabellum-Pistole 1908: 4-inch tapered 9x19mm barrel, '1917' receiver ring crest, crisp DWM toggle monogram, and straw-tempered trigger/takedown lever seamless in fit, with the two-bar toggle resting 1.5 degrees below dead-center for rigid lockup."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Execute standard German military no-tool field strip: drop the 55-degree nickel-plated magazine, rotate the straw-tempered takedown lever down 90 degrees, remove the left sideplate, and slide the barrel, forked receiver extension, and toggle-breechblock assembly forward off the frame rails."
+      },
+      "sub_assembly": {
+        "label": "Toggle & Mechanism",
+        "subLabel": "65%",
+        "desc": "Withdraw the rear toggle axle and center hinge pins to dismount the sliding breechblock, DWM front toggle, knurled-ear rear toggle, fluted striker, and bayonet spring retainer; concurrently detach the checkered walnut grip panels and grip-frame recoil spring link."
+      },
+      "full_exploded": {
+        "label": "Armory Exploded",
+        "subLabel": "100%",
+        "desc": "All 25 drop-forged, precision-milled components expanded in 3D space: from the top-mounted 'GELADEN' loaded-chamber indicator extractor to the sideplate L-shaped bellcrank, horizontal sear bar, 'GESICHERT' thumb safety, and twin-ear magazine base."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "Bellcrank Trip",
+        "title": "Phase 1 · Crescent Trigger Pull, Lateral Bellcrank Rotation & Striker Release",
+        "description": "The shooter presses the wide straw-tempered crescent trigger, driving its upper horn into the sideplate's L-shaped bellcrank. The bellcrank tilts inward, pressing the horizontal sear plunger to pivot the sear tail outward (-Z), unhooking the striker so its mainspring drives it violently forward into the primer."
+      },
+      "phase_2": {
+        "shortLabel": "Over-Center Recoil",
+        "title": "Phase 2 · 9mm Ignition, 235 MPa Peak Pressure & 6.5mm Rigid Short Recoil",
+        "description": "Ignition of the 9x19mm cartridge generates 235 MPa chamber pressure, accelerating the 124-grain FMJ bullet out the 4-inch barrel. During peak pressure, the toggle hinge rests locked 1.5 degrees below dead center, forcing the barrel, forked extension, and breechblock to recoil together as a rigid unit for 6.5 mm."
+      },
+      "phase_3": {
+        "shortLabel": "Cam Buckle",
+        "title": "Phase 3 · Rear Toggle Rollers Hit Frame Ramps & Knee Joint Buckles Upward",
+        "description": "As pressure drops to safe levels, twin cam rollers on the rear toggle strike curved ramps on the forged frame. This upward reaction kicks the center hinge up through dead center, halting the barrel extension against frame stops as the articulated two-bar toggle buckles violently skyward."
+      },
+      "phase_4": {
+        "shortLabel": "High-Angle Eject",
+        "title": "Phase 4 · Toggle Rises 3.8 cm, Breechblock Retracts 4.2 cm & Top Ejection",
+        "description": "The rear toggle pivots up 53.5 degrees, elevating the center knee joint 3.8 cm and pulling the breechblock straight back 4.2 cm along its rails. The top extractor brings the empty brass against the frame leaf ejector for vertical ejection while the toggle cam recocks the striker and compresses the grip spring via the S-link."
+      },
+      "phase_5": {
+        "shortLabel": "55° Chambering",
+        "title": "Phase 5 · 55° Magazine Feeds New Round & Compressed Grip Spring Drives Forward",
+        "description": "The 55-degree magazine follower spring lifts the next 9x19mm round to the feed lips. Stored energy in the grip helical spring violently pulls down on the S-link hook, snapping the buckling toggle downward and driving the rectangular breechblock forward to strip and chamber the fresh cartridge."
+      },
+      "phase_6": {
+        "shortLabel": "Over-Center Lock",
+        "title": "Phase 6 · Toggle Snaps 1.5° Below Dead Center & Assembly Returns +6.5mm",
+        "description": "As the fresh round seats fully, the extractor snaps over the rim, elevating its raised spine to reveal the stamped 'GELADEN' warning. The toggle links snap down 1.5 degrees below center into self-locking alignment, carrying the barrel and extension forward 6.5 mm into battery."
+      },
+      "phase_7": {
+        "shortLabel": "Sear Reset",
+        "title": "Phase 7 · Trigger Release & Bellcrank Disconnector Reset for Next Shot",
+        "description": "Releasing the crescent trigger allows the L-shaped bellcrank to rock clear, permitting the spring-loaded sear plunger to snap back into position inside the lever arm. The internal striker remains cocked on the sear notch, fully resetting the semi-automatic cycle for the next pull."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "巴拉贝鲁姆之剑：鲁格 P08 肘节闭锁手枪的机械艺术与军械传奇",
+      "deck": "从博查特 C93 的笨重雏形到柏林 DWM 兵工厂的钟表级飞跃，乔治·鲁格以过死点屈膝肘节与 9×19mm 弹药改写了全球自动手枪的发展轨迹。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1893–1898",
+          "title": "博查特的死结与鲁格的破局",
+          "paragraphs": [
+            "1893年，德裔美籍发明家雨果·博查特在柏林路德维希·洛伊公司推出了人类历史上第一款商业量产半自动手枪——C93。这款武器采用马克沁重机枪式的肘节闭锁机构，展现了惊人的自动化供弹能力。然而，博查特固执地将巨大的复进发条安装在机匣后方凸出的鼓包内，配上近乎九十度垂直的笨拙握把，整枪重心极度后偏，不加装木制枪托几乎无法稳定单手射击。当欧洲多国军械委员会对 C93 的人机工效与尺寸表示失望时，博查特却拒绝作出任何实质妥协。",
+            "彼时在柏林 DWM 兵工厂担任高级测试工程师的奥地利机械专家乔治·鲁格敏锐地察觉到了自动武器新纪元的曙光。鲁格早年在奥匈帝国军队服役，兼具老练的击剑手腕感与钟表匠般精确的几何直觉。他向 DWM 董事会立下军令状：保留博查特两连杆肘节闭锁的优越闭锁强度，但必须彻底摒弃后部的庞大发条盒，将枪身轮廓压缩至紧凑手枪的极致，打造一把真正符合军用单手快速拔枪与指向射击的现代手枪。"
+          ],
+          "audioScript": "十九世纪末，人类第一款量产自动手枪博查特 C93 问世，但它尾部巨大的钟表发条盒与笨拙的垂直握把，让各国军械官望而却步。奥地利机械大师乔治·鲁格在柏林 DWM 兵工厂决心打破死局。他保留了肘节闭锁的刚性骨架，却将整个复进机芯彻底重塑，立志为军用手枪注入前所未有的平衡与灵魂。",
+          "audioUrl": "audio/p08/story_act1_zh.mp3",
+          "focusPartId": "p08_frame",
+          "focusPartLabel": "锻造曲坡下机匣 (含55°握把框)"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1898–1904",
+          "title": "五十五度天授倾角与九毫米诞生",
+          "paragraphs": [
+            "鲁格展开了天才般的机械重构。他将复进簧从枪机后方移除，改用高弹性叠片钢板弹簧纵向垂直塞入握把背脊，并通过一根精致的 S 形牵引连杆与后肘节尾钩相连。为了给握把内部争取宝贵空间，鲁格根据击剑时手腕前倾锁定刺击的自然人体工程学，大胆将握把设计为与枪管轴线呈五十五度倾角（或称钝角一百二十五度）。这一惊世骇俗的弧度使射手闭眼抬腕即可实现完美指向，彻底确立了鲁格手枪举世闻名的外形轮廓。",
+            "1900年，瑞士联邦军队率先采购 7.65×21mm 口径鲁格手枪，成为世界上第一支列装半自动军用手枪的军队。然而在随后的德意志帝国军械测试中，军方认定 7.65mm 穿甲弹制止力严重不足，无法阻止疯狂的冲锋步兵。鲁格当机立断，在柏林厂房中将 7.65mm 瓶形弹壳颈部直接拉平扩膛，塞入一枚 9mm 圆头被甲弹头，由此诞生了军械史上最具统治力的传奇子弹——9×19mm Parabellum。1904年，德意志帝国海军率先以大口径 P04 全面换装。",
+            "伴随 9mm 弹药 235 兆帕的高膛压冲击，早期握把内脆弱的叠片板簧开始出现金属疲劳断裂。鲁格再次推倒重来，在 1906 至 1908 年间将握把簧仓重新扩孔车铣，换入耐疲劳的琴钢丝螺旋压簧，并配合新型圆柱形导杆与更粗壮的 S 连杆，为德军严苛测试扫清了最后一道障碍。"
+          ],
+          "audioScript": "为了极致的平衡，鲁格从西洋剑术中汲取灵感，独创了五十五度自然指向握把，并把复进簧巧妙暗藏其中。面对德军对弹头威力的苛求，鲁格在柏林拔出瓶形弹壳，一举催生了统治世界至今的九毫米巴拉贝鲁姆手枪弹。握把内部随之换装高强度螺旋压簧，彻底战胜了早期板簧断裂的顽疾。",
+          "audioUrl": "audio/p08/story_act2_zh.mp3",
+          "focusPartId": "p08_barrel",
+          "focusPartLabel": "4英寸锥形膛线枪管"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1908",
+          "title": "过死点屈膝闭锁与侧板钟表火控",
+          "paragraphs": [
+            "1908年8月22日，德皇威廉二世正式签署敕令，将鲁格 9mm 改进型手枪命名为 Pistole 08（P08），作为德意志帝国陆军唯一制式手枪。P08 的机械心脏是其令人叹为观止的二连杆过死点屈膝闭锁机构（Kniegelenkverschluss）。在合拢闭锁状态下，连接前、后肘节的中央铰链销并非停在直线上，而是精准停靠在枪机轴线下沉 1.5 度的过中心限位面上。击发瞬间高达 235 兆帕的燃爆膛压不仅无法顶开肘节，反而将膝铰链死死压在下机匣支撑面上，形成坚不可摧的机械自锁！",
+            "枪管、叉形节套与锁死的肘节作为一个整体，在刚性状态下仅后退 6.5 毫米。待弹头飞离枪口、膛压骤降至安全阈值后，后肘节尾部的两个滚花圆耳滚子猛烈撞击下机匣尾部锻造的弧形开锁导坡。向上的导向斜力瞬间将中央膝铰链踢过死点线，肘节如同人类膝关节猛然弯曲，高高跃起 3.8 厘米，牵引方形枪机沿导轨后退 42 毫米完成抽壳与压簧。",
+            "更令人赞叹的是其完全置于枪身左侧的侧向火控机构。由于机匣中央完全被直线往复的方形枪机占据，传统的居中扳机连杆毫无容身之处。鲁格在左侧机匣盖板内精雕细琢了一个直角 L 形换向杠杆（Abzugshebel）：扣动扳机时，上端向前推压 L 杆下臂，依靠杠杆支点将轴向运动顺畅转换为向内的九十度横向推力，推开左侧水平阻铁条前端的断连柱塞，阻铁如天平翘起外翻，释放空心三槽击针，整套运动轻盈干脆、毫无顿挫。"
+          ],
+          "audioScript": "鲁格 P08 的机械核心是过死点屈膝闭锁。闭锁时铰链落于死点线下方一点五度，峰值膛压反而让结构锁得更死。待后坐六点五毫米后，后肘节撞击导坡向上猛烈折起。而在左侧盖板下，一个精巧的直角杠杆将扣扳机的后拉力化作向内的横推力，如瑞士钟表般精妙撬开阻铁，释放击针。",
+          "audioUrl": "audio/p08/story_act3_zh.mp3",
+          "focusPartId": "p08_rear_toggle",
+          "focusPartLabel": "后肘节连杆 (含滚花圆耳与导坡凸轮)"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1914–1945",
+          "title": "壕沟血火、麦秆黄回火与不朽图腾",
+          "paragraphs": [
+            "第一次世界大战爆发后，P08 伴随德意志突击小队（Stoßtrupp）深入西线泥泞幽暗的堑壕战。在暴雨与泥浆的恶劣考验下，鲁格严苛的微米级加工公差成为一把双刃剑：在保养良好的军械官手中，其无与伦比的精准度与 360 米每秒的初速堪称神兵利器；但在壕沟黏土灌入外露肘节与侧板缝隙时，它也必须依靠士兵的高频清洗与精细上油才能保持运转。一战期间，柏林 DWM 与埃尔福特皇家兵工厂夜以继日运转，生产了超百万支刻印着帝国鹰徽与年份的 P08。",
+            "在工业制造美学上，P08 达到了早期军械制造业的工艺绝响。全枪由高韧性铬镍合金钢锻件经数百道精密铣削雕琢而成，金属表面经过复杂的木炭浸润深层防锈冷烤蓝处理；而扳机、拆解杆、抛壳挺与拇指保险等受力回位小件，则经受 240 摄氏度的精控砂浴回火，呈现出尊贵而独特的麦秆金色（Gelbangelassen）。顶部抽壳钩上蚀刻着清晰的白字「GELADEN」（有弹），当膛内推入实弹时，弹壳底缘将抽壳钩顶起，露出德文字样与凸起触感，使射手在夜战中一摸便知待击状态。",
+            "尽管在二战期间纳粹德国因高昂工时成本逐步以冲压件为主的瓦尔特 P38 取代它，鲁格 P08 依然是轴心国高级军官最梦寐以求的身份象征，更是盟军大兵竞相缴获的头号战场战利品。它不仅奠定了 9×19mm 这一北约标准弹药的不朽王座，更以不可复刻的机械艺术美感，成为世界轻武器图腾之巅。"
+          ],
+          "audioScript": "从一战泥泞的西线堑壕到二战战场的军官腰带，鲁格 P08 凭借微米级精密机加工、独特的深蓝锈蚀烤蓝，以及两百四十度麦秆黄回火小件，成为了世界军械史上无法逾越的机械艺术图腾。它所开创的九毫米巴拉贝鲁姆弹药，至今仍是全世界军警制式手枪当之无愧的绝对王者。",
+          "audioUrl": "audio/p08/story_act4_zh.mp3",
+          "focusPartId": "p08_front_toggle",
+          "focusPartLabel": "前肘节连杆 (精刻 DWM 花体铭文)"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "过死点 1.5° 刚性屈膝自锁几何",
+          "tag": "肘节闭锁几何",
+          "summary": "不同于依靠斜面摩擦或重力抵消的传统闭锁，P08 的中央膝铰销在合拢时沉入轴线下方 1.5 度，使 235 兆帕膛压不仅无法推开枪机，反而将连杆死死压向机匣支撑面形成过死点自锁；直至后坐 6.5 毫米后滚子撞击弧形导坡才强行踢开膝关节，以极小重量实现了极高膛压安全耐受。",
+          "focusPartId": "p08_rear_toggle",
+          "focusPartLabel": "后肘节连杆"
+        },
+        {
+          "id": "bt2",
+          "title": "侧盖板 90° 直角 L 形换向杠杆火控",
+          "tag": "侧向火控机构",
+          "summary": "为避开机匣中央纯直线往复的方形枪机，鲁格在可拆卸左侧盖板内开创性设置了一枚 L 形直角摆臂杠杆，将射手扣动扳机的向后拉力转化为向机身内部的横向推力，直接撬动侧置天平式水平阻铁条脱钩击针，并依靠弹膛前后相对位移实现天衣无缝的半自动单发断连。",
+          "focusPartId": "p08_trigger_lever",
+          "focusPartLabel": "侧盖板 L 形直角换向扳机杠杆"
+        },
+        {
+          "id": "bt3",
+          "title": "兼作触觉与视觉指示的「GELADEN」顶置抽壳钩",
+          "tag": "膛内有弹警示",
+          "summary": "顶部抽壳钩在抓取 9mm 弹底缘后向上翘起，不仅在左侧醒目暴露出冷钢蚀刻德文「GELADEN」（已装填）红色警示标语，更在黑暗环境中让堑壕突击士兵单凭指腹轻触即可百分之百确证弹膛处于待击状态，成为现代战术手枪有弹指示器的开山鼻祖。",
+          "focusPartId": "p08_extractor",
+          "focusPartLabel": "顶部抽壳钩与「GELADEN」指示器"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1893",
+          "title": "博查特 C93 首创肘节手枪",
+          "detail": "雨果·博查特在柏林洛伊公司获得肘节闭锁手枪专利并开始小批量制造，为现代半自动手枪奠定机械雏形。"
+        },
+        {
+          "year": "1898–1900",
+          "title": "鲁格重构肘节与瑞士率先换装",
+          "detail": "乔治·鲁格在 DWM 兵工厂将发条式机构重构为 55° 自然指向握把与内置弹簧，瑞士陆军正式列装 7.65mm 鲁格 1900 型。"
+        },
+        {
+          "year": "1902",
+          "title": "9×19mm Parabellum 弹药诞生",
+          "detail": "应军方高制止力要求，鲁格将 7.65mm 瓶形弹壳截直扩径至 9mm，创造出当今全球北约通用的手枪弹药王者。"
+        },
+        {
+          "year": "1904",
+          "title": "德意志帝国海军列装 P04",
+          "detail": "配备 150mm 较长枪管与双级照门的 9mm 鲁格海军型手枪率先进入德军现役，确立了大口径自动手枪战术地位。"
+        },
+        {
+          "year": "1908",
+          "title": "德皇威廉二世签署敕令列装 Pistole 08",
+          "detail": "握把内置螺旋复进簧彻底成熟，无握把保险、4 英寸枪管的 P08 成为德意志帝国陆军主力制式自卫手枪。"
+        },
+        {
+          "year": "1914–1945",
+          "title": "两百余万支传奇生产与全球战利品图腾",
+          "detail": "一战至二战跨越柏林 DWM、埃尔福特及毛瑟兵工厂大规模量产，成为军械史上无可替代的顶级机械收藏品。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Sword of Parabellum: Mechanical Artistry & Ordnance Legacy of the Luger P08",
+      "deck": "From Hugo Borchardt's clumsy C93 to the horological perfection of Berlin's DWM arsenal, Georg Luger rewrote automatic handgun history with his over-center knee toggle lock and immortal 9x19mm round.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1893–1898",
+          "title": "Borchardt's Impasse & Luger's Vision",
+          "paragraphs": [
+            "In 1893, German-American inventor Hugo Borchardt introduced the world's first commercially viable semi-automatic pistol, the C93, manufactured by Ludwig Loewe in Berlin. Employing an articulated toggle-lock mechanism derived from Maxim machine guns, the C93 was mechanically astounding. Yet Borchardt stubbornly housed its bulky coiled clockwork recoil spring in an enormous rearward bulge over a near-vertical ninety-degree grip. The firearm was so rear-heavy and clumsy that single-handed shooting was virtually impossible without its detachable wooden shoulder stock. When European military commissions rejected the design for its excessive bulk, Borchardt steadfastly refused to alter his blueprints.",
+            "Austrian-born ordnance engineer Georg Johann Luger, then working as a senior testing specialist at Deutsche Waffen- und Munitionsfabriken (DWM) in Berlin, recognized that automatic weaponry was on the precipice of revolution. Drawing on his military experience and the balanced instincts of a classical fencing master, Luger persuaded the DWM board to let him redesign the weapon. His pledge was uncompromising: retain the superb locking strength of Borchardt's two-bar toggle, eliminate the clumsy rear spring housing entirely, and compress the silhouette into an agile, quick-pointing military sidearm."
+          ],
+          "audioScript": "At the close of the nineteenth century, Hugo Borchardt unveiled the world's first commercial self-loading pistol, but its monstrous rear spring housing and vertical grip baffled military boards. At Berlin's DWM arsenal, Austrian engineer Georg Luger vowed to break the deadlock. Retaining the rigid toggle lock, Luger stripped away the clumsy rear bulk to forge an aristocratic sidearm built for effortless balance and swift natural pointing.",
+          "audioUrl": "audio/p08/story_act1_en.mp3",
+          "focusPartId": "p08_frame",
+          "focusPartLabel": "Forged Curved-Ramp Frame w/ 55° Grip Strap"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1898–1904",
+          "title": "The 55-Degree Grip & the Birth of Nine Millimeter",
+          "paragraphs": [
+            "Luger undertook a total mechanical reorganization. Removing the rear recoil housing, he moved the mainspring into the grip spine, connecting it to the rear toggle hook through a delicate forged S-shaped link. To maximize internal frame space, Luger modeled the grip angle after the human wrist locked in an instinctive fencing thrust, sweeping the grip back to a fifty-five-degree angle from the vertical bore axis. This radical rake gave the handgun extraordinary natural pointing ergonomics, enabling shooters to bring sights to target instinctively with eyes closed.",
+            "In 1900, the Swiss Federal Army adopted Luger's pistol in seven-point-six-five millimeter Parabellum, making Switzerland the first nation in history to adopt an automatic service sidearm. German military trials, however, criticized the seven-point-six-five bottle-necked bullet for lacking stopping power against infantry assaults. In response, Luger expanded the case neck straight in Berlin to seat a nine-millimeter projectile, birthing the legendary nine-by-nineteen millimeter Parabellum cartridge, named after DWM's motto 'Si vis pacem, para bellum'. The Imperial German Navy quickly adopted this potent combination in 1904 as the Pistole 04.",
+            "Under the punishing two-hundred-and-thirty-five megapascal peak chamber pressures of the new round, early laminated flat leaf recoil springs began experiencing metal fatigue. Luger redesigned the internal grip channel between 1906 and 1908, replacing the flat spring with a resilient multi-coil piano wire helical spring and guide rod, clearing the final obstacle for army adoption."
+          ],
+          "audioScript": "Aiming for peerless balance, Luger borrowed from the fencing arts, creating his famous fifty-five-degree grip and concealing the recoil spring inside the frame. When German trials demanded more stopping power, Luger expanded the case neck in Berlin, creating the nine-by-nineteen millimeter Parabellum, the most dominant pistol cartridge in modern military history. Inside the grip, a durable helical coil spring replaced fragile leaf springs, ensuring flawless cycling under heavy recoil.",
+          "audioUrl": "audio/p08/story_act2_en.mp3",
+          "focusPartId": "p08_barrel",
+          "focusPartLabel": "4\" Tapered Rifled 9×19mm Barrel"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1908",
+          "title": "Over-Center Kinematics & Sideplate Clockwork Fire Control",
+          "paragraphs": [
+            "On August 22, 1908, Kaiser Wilhelm II formally decreed the adoption of Luger's pistol as the Pistole 08 (P08), the primary service handgun of the Imperial German Army. At the heart of the P08 is Georg Luger's celebrated over-center knee-joint toggle lock (Kniegelenkverschluss). In battery, the center hinge pin connecting the front and rear links does not rest in a straight line; it stops exactly one-point-five degrees below dead center against frame stops. At the instant of ignition, peak chamber pressure acts directly against this downward offset, driving the hinge harder into its steel abutment and creating an unyielding mechanical self-lock.",
+            "The barrel, forked receiver extension, and locked toggle train recoil together as a rigid unit for just six-point-five millimeters. Once chamber pressure falls to safe levels, twin cam rollers on the knurled rear toggle ears strike curved unlocking ramps milled into the rear frame. The upward camming force kicks the center knee pin over dead center, causing the toggle to buckle sharply skyward like a bending human knee, rising three-point-eight centimeters while drawing the rectangular breechblock back forty-two millimeters to extract and recock.",
+            "Equally brilliant is the side-mounted fire-control train. Because the centerline of the receiver is completely occupied by the sliding breechblock, conventional trigger drawbars were unusable. Luger fitted an L-shaped right-angle bellcrank inside a detachable left-side cover plate. Squeezing the crescent trigger pivots the lower bellcrank arm forward, translating rearward pull into inward lateral movement that trips a horizontal seesaw sear bar on the receiver's left flank, dropping the internal striker cleanly without hitch or creep."
+          ],
+          "audioScript": "The mechanical heart of the Luger P08 is its over-center toggle lock. When closed, the knee hinge sits one-point-five degrees below dead center, forcing peak firing pressure to lock the mechanism tighter. After six-point-five millimeters of locked recoil, the toggle hits frame ramps and buckles sharply upward. Behind the left sideplate, an L-shaped bellcrank translates rearward trigger pull into inward force, tripping a seesaw sear with the crisp precision of a Swiss pocket watch.",
+          "audioUrl": "audio/p08/story_act3_en.mp3",
+          "focusPartId": "p08_rear_toggle",
+          "focusPartLabel": "Articulated Rear Toggle Link w/ Knurled Toggle Ears"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "1914–1945",
+          "title": "Trench Mud, Straw-Tempered Gold & Ordnance Legend",
+          "paragraphs": [
+            "When the First World War engulfed Europe, the P08 accompanied Imperial stormtroopers into the muddy trenches of the Western Front. In the grim conditions of trench warfare, Luger's watchmaker manufacturing tolerances proved a double-edged sword. Kept clean by attentive soldiers, its incredible accuracy and muzzle velocity of three-hundred-and-sixty meters per second made it lethal; yet fine silt in the toggle joints could induce stoppages. Between 1914 and 1918, Berlin's DWM and the royal arsenal at Erfurt produced over one million P08 sidearms, each bearing imperial proof marks and year crests.",
+            "In manufacturing aesthetics, the P08 stands as the pinnacle of early-twentieth-century industrial craftsmanship. Machined from solid drop-forgings of chrome-nickel steel, the pistol was finished in hand-polished rust bluing, while smaller components such as the crescent trigger, takedown lever, ejector blade, and thumb safety were heat-treated in a sand bath at two-hundred-and-forty degrees Celsius to achieve a straw-golden temper. The top-mounted extractor bore the etched word 'GELADEN' (Loaded), rising physically above the breech when a round was chambered to give soldiers instant visual and tactile confirmation even in pitch darkness.",
+            "Though Nazi Germany gradually phased in the cheaper, stamped Walther P38 during World War II, the Luger P08 remained the premier sidearm for senior officers and the most coveted war trophy among Allied combatants. It permanently established nine-millimeter Parabellum as the world standard and stands forever as an untouchable icon of functional mechanical art."
+          ],
+          "audioScript": "From the wet mud of First World War trenches to the holsters of World War Two officers, the Luger P08 combined micron-level machining, hand-polished rust bluing, and distinctive straw-tempered golden components into an ordnance masterpiece. The nine-millimeter cartridge it introduced over a century ago remains the supreme military handgun round across the globe, while the pistol itself endures as an immortal icon of firearm engineering.",
+          "audioUrl": "audio/p08/story_act4_en.mp3",
+          "focusPartId": "p08_front_toggle",
+          "focusPartLabel": "Articulated Front Toggle Link w/ DWM Monogram"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Over-Center 1.5° Knee-Joint Self-Locking Geometry",
+          "tag": "Toggle Locking Geometry",
+          "summary": "By positioning the center hinge pin one-point-five degrees below the bore centerline at battery, firing pressure forces the toggle links tighter against their frame abutments rather than unlocking them. Only after six-point-five millimeters of short recoil do the rear rollers hit frame ramps to kick the joint upward, safely taming two-hundred-and-thirty-five megapascal peak pressure.",
+          "focusPartId": "p08_rear_toggle",
+          "focusPartLabel": "Articulated Rear Toggle Link"
+        },
+        {
+          "id": "bt2",
+          "title": "Sideplate 90° Bellcrank Lateral Fire-Control Transfer",
+          "tag": "Lateral Fire Control",
+          "summary": "To bypass the centerline path of the sliding breechblock, Luger integrated an L-shaped bellcrank lever beneath a removable sideplate. This converts rearward trigger pull into an inward lateral push, disengaging a horizontal seesaw sear on the receiver wall while enabling foolproof semi-automatic disconnector timing.",
+          "focusPartId": "p08_trigger_lever",
+          "focusPartLabel": "Sideplate L-Shaped Bellcrank Transfer Lever"
+        },
+        {
+          "id": "bt3",
+          "title": "Dual Tactile & Visual 'GELADEN' Loaded-Chamber Extractor",
+          "tag": "Loaded-Chamber Indicator",
+          "summary": "Pivoting in the top center of the breechblock, the extractor springs upward when grabbing a seated cartridge rim, exposing the stamped word 'GELADEN' (Loaded) while providing a raised tactile ridge that trench stormtroopers could instantly feel in total darkness.",
+          "focusPartId": "p08_extractor",
+          "focusPartLabel": "Top-Pivoting Extractor & 'GELADEN' Indicator"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1893",
+          "title": "Hugo Borchardt Patents the C93 Toggle Pistol",
+          "detail": "Borchardt patents the first commercial toggle-lock semi-automatic pistol at Ludwig Loewe in Berlin, providing the raw mechanical proof of concept."
+        },
+        {
+          "year": "1898–1900",
+          "title": "Luger Perfects Toggle & Switzerland Adopts Model 1900",
+          "detail": "Georg Luger redesigns the platform at DWM with a fifty-five-degree grip and frame spring; Switzerland becomes the first army to adopt a semi-auto pistol."
+        },
+        {
+          "year": "1902",
+          "title": "Creation of the 9×19mm Parabellum Cartridge",
+          "detail": "Luger expands the seven-point-six-five millimeter case neck to nine millimeters to fulfill military stopping-power demands, creating the world's standard pistol cartridge."
+        },
+        {
+          "year": "1904",
+          "title": "Imperial German Navy Adopts Pistole 04",
+          "detail": "The German Navy issues the nine-millimeter Luger with a one-hundred-and-fifty millimeter barrel and dual-range rear sight, establishing large-caliber automatic service."
+        },
+        {
+          "year": "1908",
+          "title": "Kaiser Wilhelm II Adopts the Pistole 08",
+          "detail": "Featuring a refined helical grip spring and four-inch barrel without grip safety, the P08 is adopted as the primary service handgun of the German Army."
+        },
+        {
+          "year": "1914–1945",
+          "title": "Over 2 Million Built & Global Icon Status",
+          "detail": "Produced by DWM, Erfurt, and Mauser through two world wars, the P08 cements its stature as the supreme mechanical collector's piece in military history."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "p08_barrel": {
+      "partId": "p08_barrel",
+      "bomCode": "U-01",
+      "calloutLabelEn": "Tapered Rifled Barrel",
+      "zh": {
+        "roleTag": "102mm 6条右旋膛线 · 管退式短后坐 (-6.5mm)",
+        "overview": "这是鲁格 P08 经典的 4 英寸（102 毫米）轻型锥形线膛枪管，前端整合燕尾形防眩麦粒准星。其尾端通过精密细牙螺纹刚性旋入叉形枪管节套前端，构成全枪核心的一体化运动组件。",
+        "craftAndMaterial": "选用高韧性优质合金碳钢整体冷锻精车成型，内膛拉削有 6 条右旋缠角膛线，外表面覆以典雅温润的深蓝化防腐皮膜，微锥轮廓在保证枪管刚性的同时大幅削减了前部晃动惯量。",
+        "kinematicRole": "击发瞬间承受 235 兆帕膛压峰值，与枪管节套及闭锁肘节整体向后共动 6.5 毫米短后坐以卸去峰值燃气压力；在野战分解进度达到 8% 至 28% 时随上机匣总成向前滑脱脱离下机匣。",
+        "designHighlight": "专为乔治·鲁格开创的 9 毫米帕拉贝鲁姆手枪弹定制开发，极佳的内外弹道匹配度使该枪拥有优异的初速与天生平直的指向射击精度。",
+        "audioScript": "这根四英寸锥形枪管是九毫米帕拉贝鲁姆弹药的传奇摇篮。六条精密右旋膛线赋予弹头每秒三百六十米的强劲初速。击发时它与节套刚性锁结共同后坐六点五毫米，平稳卸除膛内高压，随后在导坡引导下戛然而止。",
+        "audioUrl": "audio/p08/parts/p08_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "102mm 6-Groove Barrel · 6.5mm Short-Recoil",
+        "overview": "This is the classic 4-inch (102 mm) tapered rifled barrel of the Luger P08, crowned with a dovetail-mounted barleycorn front sight. Its threaded breech shank locks permanently into the forward ring of the forked barrel extension.",
+        "craftAndMaterial": "Cold-hammer forged and precision lathe-turned from high-tensile ordnance alloy steel with 6 right-hand rifling grooves, finished in classic rust blue. The external taper sheds muzzle mass while maintaining rigid hoop strength against high pressures.",
+        "kinematicRole": "Endures 235 MPa peak pressure during ignition while recoiling rigidly with the barrel extension and toggle train for 6.5 mm; it lifts free with the upper group during field strip between 8% and 28% disassembly progress.",
+        "designHighlight": "Custom-profiled by Georg Luger to optimize powder burn for the revolutionary 9x19mm cartridge, achieving unmatched inherent mechanical accuracy.",
+        "audioScript": "This four-inch tapered rifled barrel is the birthplace of the legendary nine millimeter Parabellum round. Six precision right-hand grooves send the bullet flying at three hundred sixty meters per second. During ignition, it recoils rigidly with the receiver for six and a half millimeters to safely bleed down high chamber pressure before toggle unlock.",
+        "audioUrl": "audio/p08/parts/p08_barrel_en.mp3"
+      }
+    },
+    "p08_barrel_extension": {
+      "partId": "p08_barrel_extension",
+      "bomCode": "U-02",
+      "calloutLabelEn": "Forked Barrel Extension",
+      "zh": {
+        "roleTag": "承载方形枪机与后肘节支点 · 顶刻 1917 年份钢印",
+        "overview": "这是俗称上机匣的叉形枪管节套，是容纳往复运动枪机与肘节屈膝系统的骨架机架。前端空心环座螺接枪管，两侧对称的 U 形导轨向后延伸，尾部双耳横穿后肘节主销。",
+        "craftAndMaterial": "由高强度锻钢经多道内圆拉削与外表面铣削而成，表面呈精细军规发蓝处理。机匣环顶部刻有清晰的 1917 制造年份及德意志帝国军检鹰印。",
+        "kinematicRole": "在击发时承载枪机闭锁压力并引导枪机完成 42 毫米行程的水平直线滑动，在分解进度 8% 至 28% 时整体向前抽离下机匣，随后的分解阶段中完全脱出肘节总成。",
+        "designHighlight": "独特的双叉开口槽设计为后肘节上跃腾出了高达 3.8 厘米的屈曲空间，同时左侧壁外侧整体铣出容纳阻铁条的长槽，构思极其紧凑精妙。",
+        "audioScript": "这座叉形枪管节套是鲁格自动机的核心骨架，顶环刻有清晰的一九一七出厂年份。两侧坚固的纵向滑槽严格限定方形枪机只能作一维水平滑动，而后端双圆耳则为标志性的后肘节提供了坚不可摧的旋转支点。",
+        "audioUrl": "audio/p08/parts/p08_barrel_extension_zh.mp3"
+      },
+      "en": {
+        "roleTag": "U-Channel Slide Chassis · 1917 Chamber Ring",
+        "overview": "Known as the Gabelgehause, this forked U-channel receiver houses the sliding breechblock and forms the hinge bed for the knee-joint toggle. Its front ring permanently threads the barrel while its open rear forks anchor the rear toggle cross axle.",
+        "craftAndMaterial": "Milled from forged alloy steel through intensive interior broaching and profiling with deep rust bluing. The chamber ring displays a crisp stamped 1917 arsenal acceptance mark and Imperial German proof eagles.",
+        "kinematicRole": "Guides the breechblock through its 42 mm axial travel while transferring recoil energy to the frame; it slides off the lower frame at 8% to 28% disassembly and fully separates from the toggle train at later stages.",
+        "designHighlight": "Its open-top fork layout permits the toggle knee to buckle 3.8 cm skyward without top slide mass, integrating the lateral sear channel on its left flank.",
+        "audioScript": "This forked barrel extension serves as the upper receiver chassis, stamped with the historic nineteen seventeen arsenal mark. Dual interior guideways constrain the sliding breechblock to pure straight-line reciprocation, while the sturdy rear pivot ears anchor the bucking toggle assembly under harsh recoil loads.",
+        "audioUrl": "audio/p08/parts/p08_barrel_extension_en.mp3"
+      }
+    },
+    "p08_breechblock": {
+      "partId": "p08_breechblock",
+      "bomCode": "U-03",
+      "calloutLabelEn": "Sliding Breechblock",
+      "zh": {
+        "roleTag": "纯直线往复闭锁机头 · 行程 42mm 推弹闭膛",
+        "overview": "这是在节套导轨中作纯水平前后滑移的矩形滑动枪机，位于枪管节套内部。其前机头立面精密贴合弹壳底部，尾端铰接耳通过前铰销与前肘节连杆紧密结合。",
+        "craftAndMaterial": "选用深层渗碳淬火特种工具钢整体数控精密铣削，内部掏空以容纳击针组件，表面抛光润滑，前击针孔与抽壳钩槽拥有微米级的加工配合精度。",
+        "kinematicRole": "在闭锁阶段紧密封闭弹膛，开锁后被折起的肘节向后强行拖拽 42 毫米完成抽壳与压簧待击，在完全分解进度 34% 至 64% 时自节套导轨中抽离。",
+        "designHighlight": "区别于传统手枪的套筒，该枪机不承受任何倾覆偏角，仅作严格的一维纯直线运动，从源头上杜绝了由于部件倾斜导致的卡弹风险。",
+        "audioScript": "这块矩形滑动枪机永远只在节套导轨内做纯粹的水平一维前后运动。击发后，折起的前肘节将它笔直拉退四十二毫米完成抽壳；复进时，底部推弹肋条如钟表般精准地从弹匣中剥出下一发子弹推入弹膛。",
+        "audioUrl": "audio/p08/parts/p08_breechblock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Linear Reciprocating Bolt · 42mm Travel Stroke",
+        "overview": "This is the precision rectangular sliding breechblock that travels within the receiver guideways directly behind the chamber. Its bolt face supports the cartridge head, and its rear lug hinges directly to the front toggle link.",
+        "craftAndMaterial": "Milled from case-hardened carbon tool steel with ground bearing flats and deep bluing. The interior bore is drilled to house the firing striker assembly, with micro-toleranced clearances on the bolt face counterbore.",
+        "kinematicRole": "Maintains breech sealing until pressure drops, then recoils 42 mm straight back under toggle pulling force to extract and cock; it separates from the upper guide tracks between 34% and 64% disassembly.",
+        "designHighlight": "Unlike conventional tilting slides, it never experiences pitch deflection during cycling, ensuring totally collinear bolt thrust and flawless feeding alignment.",
+        "audioScript": "This rectangular breechblock operates in pure one-dimensional horizontal motion. Following ignition, the bucking front toggle pulls it straight back by forty-two millimeters to extract the spent brass, while its bottom feed strip strips a fresh nine millimeter cartridge cleanly into the chamber during counter-recoil.",
+        "audioUrl": "audio/p08/parts/p08_breechblock_en.mp3"
+      }
+    },
+    "p08_extractor": {
+      "partId": "p08_extractor",
+      "bomCode": "U-04",
+      "calloutLabelEn": "Loaded-Chamber Extractor",
+      "zh": {
+        "roleTag": "12点钟顶置抓弹钩 · 翘起显露德文 GELADEN 警示",
+        "overview": "这是安装在方形枪机正上方 12 点钟凹槽内的外露式铰接抽壳钩。前端坚固的抓壳唇紧扣弹壳底缘，左侧立面上模压打刻有举世闻名的德文警示字样。",
+        "craftAndMaterial": "经热处理调质的弹簧工具钢精细加工而成，表面作耐磨发蓝硬化。其弹簧座孔与枢轴孔壁厚均匀，兼具极高的疲劳强度与抗冲击韧性。",
+        "kinematicRole": "实弹推入弹膛后被底缘顶起微幅上翘，露出左侧横向刻印的德文 GELADEN；随后在开锁后坐时拉拽弹壳撞击抛壳挺，在分解进度 34% 至 64% 阶段脱离枪机。",
+        "designHighlight": "世界轻武器史上首创将刚性抽壳钩与昼夜通用有弹指示器融为一体，漆黑夜间射手只需用食指触摸枪机顶部凸起，便知膛内是否有弹。",
+        "audioScript": "装在枪机正顶部的抽壳钩兼具传奇的有弹指示功能。当实弹推入弹膛，弹底缘会将其顶端推起微凸，露出左侧清晰的德文警示词。黑夜中射手无需用眼观察，仅凭拇指触摸便能瞬间确认膛内已装填就绪。",
+        "audioUrl": "audio/p08/parts/p08_extractor_zh.mp3"
+      },
+      "en": {
+        "roleTag": "12 O'Clock Extractor · GELADEN Chamber Indicator",
+        "overview": "This is the top-mounted pivoting extractor installed inside a slot along the 12 o'clock ridge of the breechblock. Its forward claw hooks the 9mm rim while its exposed left flank bears the iconic stamped German warning.",
+        "craftAndMaterial": "Drop-forged from tempered spring steel with hardened contact claws and rust-blued skin. Designed with calibrated cross-sections to endure repetitive rim shocks without snapping or taking permanent sets.",
+        "kinematicRole": "Pivots upward when a live cartridge seats to reveal the stamped word GELADEN on its left side; it draws the empty hull back during cycling and explodes off the bolt head at 34% to 64% disassembly.",
+        "designHighlight": "Pioneered the dual-purpose extractor and tactile loaded-chamber indicator, allowing soldiers in muddy, pitch-black trenches to confirm readiness with a single finger touch.",
+        "audioScript": "Mounted atop the breechblock, this extractor doubles as history's most famous loaded-chamber indicator. When a live round chambers, its claw is levered upward, exposing the German word GELADEN on its left flank. In total darkness, an officer could confirm loaded status simply by sliding a thumb over the top slide.",
+        "audioUrl": "audio/p08/parts/p08_extractor_en.mp3"
+      }
+    },
+    "p08_front_toggle": {
+      "partId": "p08_front_toggle",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Articulated Front Toggle",
+      "zh": {
+        "roleTag": "二连杆肘节前臂 · 下压待击凸轮自动压倒击针",
+        "overview": "这是双连杆闭锁机构的前连杆臂，平卧于枪管节套正上方。其前端以横向铰销连在滑动枪机尾部，后部通过中央膝关节销与后肘节连杆平滑铰接。",
+        "craftAndMaterial": "采用整块高冲击合金钢精工立体雕刻铣削，表面呈现深邃蓝化，平整上表面以高超工艺模压出代表德国武器弹药制造厂的花体 DWM 花式缩写钢印。",
+        "kinematicRole": "闭锁时呈微幅向下俯角下潜形成几何自锁，上折时拉扯枪机直退，其下腹部的击针待击挂脚顺势将击针压倒挂机；在分解进度 34% 至 64% 时同枪机分离。",
+        "designHighlight": "巧妙利用了下腹部铸造的一体式凸尖，无需借助额外的活动连杆或滑块，仅依靠肘节上跃时的偏摆角度就顺势重置并挂紧击针弹簧。",
+        "audioScript": "前肘节连杆正面雕刻着德国武器弹药制造厂著名的花体标志。在闭锁状态下，它与后肘节一同向下沉入死点以下锁定后退。在肘节折起上跃瞬间，其底部隐藏的待击凸起便顺势将击针强行下压挂入阻铁。",
+        "audioUrl": "audio/p08/parts/p08_front_toggle_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Front Toggle Arm · Integrated Striker Cocking Cam",
+        "overview": "This is the front toggle link of the articulated knee-joint lock, bridging the top of the barrel extension. Its front lug pins to the sliding bolt while its rear fork forms the center knee joint with the rear toggle.",
+        "craftAndMaterial": "Milled from high-impact forged alloy steel with deep rust blue treatment. The top surface displays the elegant intertwined cursive DWM logo of the Deutsche Waffen- und Munitionsfabriken.",
+        "kinematicRole": "Locks 1.5 degrees below center in battery, pulls the bolt back during knee buckling, and uses an under-belly cam toe to cock the internal striker; it detaches from the toggle assembly at 34% to 64% strip.",
+        "designHighlight": "Integrates an integral downward-facing cocking cam on its underside, cocking the internal striker spring automatically during opening rotation without auxiliary linkages.",
+        "audioScript": "Adorned with the ornate DWM company monogram on its top crest, this front toggle link forms the forward half of Georg Luger's knee joint. When unlocked, its upward tilt drives an integrated underside cam backward against the striker lug, instantly compressing the firing spring into full cock.",
+        "audioUrl": "audio/p08/parts/p08_front_toggle_en.mp3"
+      }
+    },
+    "p08_rear_toggle": {
+      "partId": "p08_rear_toggle",
+      "bomCode": "U-06",
+      "calloutLabelEn": "Knurled Rear Toggle",
+      "zh": {
+        "roleTag": "标志性滚花双圆耳 · 尾部凸轮撞击机匣曲坡触发屈膝开锁",
+        "overview": "这是鲁格 P08 极具辨识度的后肘节构件，横跨于机匣后部两耳之上。两侧突出一对防滑圆耳，尾端顶部加工有瞄准用的 V 形切口照门，下端设有开锁滚轮凸轮面。",
+        "craftAndMaterial": "选用高疲劳强度锻钢精密车铣成型，外侧滚花圆耳边缘车制有密集防滑网格纹路，后横桥与照门一体化切出，表面覆以均匀发蓝涂装。",
+        "kinematicRole": "在短后坐 6.5 毫米末端，下后凸轮滚子撞击下机匣两块弧形曲坡被暴力向上撬起，带动中央膝关节屈曲 53.5 度；在分解进度 34% 至 64% 阶段脱离节套。",
+        "designHighlight": "后肘节不仅提供极佳的手动上膛抓握耳，更是动能转换的关键中介，巧妙将机匣水平后坐阻滞力转换成垂直向上飞跃的开锁旋转运动。",
+        "audioScript": "这对标志性的滚花圆耳是鲁格手枪最具辨识度的机械特征。后退六点五毫米后，其下端的凸轮受下机匣曲坡剧烈撞击，瞬间使整个膝关节向上猛烈屈折五十三度，拉动枪机完成高速后退抽壳。",
+        "audioUrl": "audio/p08/parts/p08_rear_toggle_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Rear Toggle Link · V-Sight Notch & Knurled Ears",
+        "overview": "This is the iconic rear toggle arm spanning the rear frame ramps, crowned by an integral open V-notch rear sight. Its exterior flanks flare out into two heavily checkered knurled discs known as the toggle charging ears.",
+        "craftAndMaterial": "Drop-forged from stress-relieved alloy steel with diamond-pattern knurling across both ear perimeters. Finished in durable rust blue with hand-trued rear notch sighting planes.",
+        "kinematicRole": "Rides horizontally until its lower cam ramps impact the frame ramps after 6.5 mm of recoil, kicking the joint upward by 53.5 degrees; it disassembles at 34% to 64% strip stages.",
+        "designHighlight": "Serves a dual role: it provides high-traction gripping surfaces for manual cocking and translates axial recoil impulse into high-speed upward toggle rotation.",
+        "audioScript": "Featuring iconic knurled charging ears, this rear toggle is the heart of the Parabellum silhouette. At the end of short recoil, twin cams on its underside strike the forged frame ramps, sharply kicking the knee joint upward by over fifty-three degrees to cycle the action.",
+        "audioUrl": "audio/p08/parts/p08_rear_toggle_en.mp3"
+      }
+    },
+    "p08_toggle_pins": {
+      "partId": "p08_toggle_pins",
+      "bomCode": "U-07",
+      "calloutLabelEn": "Toggle Cross Pins",
+      "zh": {
+        "roleTag": "高强铬镍钢双阶铰销 · 承受千次高速屈膝剪切冲击",
+        "overview": "这是两枚维系肘节传动的关键圆柱轴销，分别为主膝关节中央铰销与后肘节横截止推轴销。它们横贯前、后肘节连杆和节套尾耳，构成三位一体的转动铰链。",
+        "craftAndMaterial": "选用耐磨渗碳铬镍高硬度合金圆棒经微米级无心磨削精加工，表面超精抛光并实施抗剪切硬化处理，中央膝销开有微型储油内槽以降低高速运动摩擦。",
+        "kinematicRole": "在击发与屈膝运动中承受每分钟数百次的高频猛烈剪切载荷，维持前后肘节连贯旋转动作；在 34% 至 64% 分解进度时由侧方敲出以完全解脱肘节总成。",
+        "designHighlight": "两枚销钉拥有严苛的尺寸公差，其装配间隙被严格控制在几微米以内，确保肘节自锁时轴心能够极其精确地下沉并抵紧节套支承台阶。",
+        "audioScript": "这两根微米级精度的硬化铬镍合金轴销，是维系肘节机构的旋转关节。它们在极小截面上承受着每秒数百次的剧烈剪切冲击，确保双肘节始终以极高几何精度完成死点自锁与高速折曲。",
+        "audioUrl": "audio/p08/parts/p08_toggle_pins_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Hardened Hinge Pins · Dynamic Toggle Shear Pivots",
+        "overview": "This set includes the center knee-joint pivot pin and the rear toggle receiver cross axle. They pass transversely through the toggle arms and receiver ears to unite the articulated toggle assembly.",
+        "craftAndMaterial": "Centerless ground from high-yield chrome-nickel alloy steel to micron-level diametrical tolerances. Case-hardened to resist dynamic shear stress with micro-grooving for persistent grease retention.",
+        "kinematicRole": "Bears direct reciprocating shear loads during cycling while enabling frictionless 53.5-degree toggle rotation; tapped out laterally during strip stages between 34% and 64%.",
+        "designHighlight": "Engineered with exact friction fits so that toggle alignment stays completely true under recoil, preventing any lateral play that could cause breechblock binding.",
+        "audioScript": "These two precision-ground alloy steel cross pins act as the mechanical cartilage of the toggle mechanism. Engineered to withstand violent dynamic shear loads, they bind the articulated links into a rigid planar assembly while allowing silky, frictionless upward buckling.",
+        "audioUrl": "audio/p08/parts/p08_toggle_pins_en.mp3"
+      }
+    },
+    "p08_striker": {
+      "partId": "p08_striker",
+      "bomCode": "U-08",
+      "calloutLabelEn": "Fluted Striker",
+      "zh": {
+        "roleTag": "三槽泄气空心圆柱击针 · 左侧一体挂机凸笋",
+        "overview": "这是深藏于方形滑动枪机内部中心腔道的高速平移圆柱击针。其前尖端直接打击弹药底火，左侧一体凸出有方角挂机凸耳，与外部侧向阻铁相咬合。",
+        "craftAndMaterial": "选用高韧性工具钢经数控车铣与整体淬火回火制成，圆柱表面对称铣出三道深纵向泄气排渣减重长槽，圆柱尖头打磨成完美的半球抗应力微弧度。",
+        "kinematicRole": "阻铁横向释放后在击针簧推动下向前暴冲点火底火；随后在前肘节折起时被其待击凸耳挂住向后压回待击位置，在分解进度 36% 至 66% 时从枪机后腔取出。",
+        "designHighlight": "著名的三纵槽防炸底火安全设计，若遇火药燃气击穿底火，高压气体可顺着三道导槽快速安全排向枪身下方，不会向后喷溅伤害射手眼睛。",
+        "audioScript": "这根空心圆柱击针属于鲁格著名的后期改进型设计。外壁精心切出的三道纵向凹槽具有极其关键的安全作用：一旦遇到劣质子弹底火炸裂，高压火药燃气将顺槽导入内部卸压，彻底避免枪机爆裂伤人。",
+        "audioUrl": "audio/p08/parts/p08_striker_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Fluted Internal Striker · Gas-Relief Striker Body",
+        "overview": "This is the linear internal striker riding inside the hollow longitudinal tunnel of the sliding breechblock. Its tip strikes the cartridge primer while an integral lateral lug catches the horizontal sear bar.",
+        "craftAndMaterial": "Machined from high-carbon impact steel with hardened tips and quenched bearing surfaces. Three deep longitudinal flutes are milled along the cylindrical body to lighten reciprocating mass and vent gases.",
+        "kinematicRole": "Drives straight forward upon sear release to detonate the primer, then is retracted into cocked position by the front toggle cam during cycling; slides out at 36% to 66% strip.",
+        "designHighlight": "The triple-flute relief channel is an iconic safety innovation: if a brittle primer ruptures under 235 MPa pressure, escaping gas vents harmlessly downward rather than blinding the shooter.",
+        "audioScript": "Housed directly inside the breechblock, this cylindrical striker features Georg Luger's famous triple gas-relief flutes. If a defective cartridge primer blows out under intense pressure, escaping gases vent safely down through these longitudinal channels rather than exploding backward into the shooter's eyes.",
+        "audioUrl": "audio/p08/parts/p08_striker_en.mp3"
+      }
+    },
+    "p08_striker_spring": {
+      "partId": "p08_striker_spring",
+      "bomCode": "U-09",
+      "calloutLabelEn": "Striker Mainspring",
+      "zh": {
+        "roleTag": "内置琴钢丝压簧 · 旋转90°刺刀锁止尾塞",
+        "overview": "这是置于空心击针内部提供点火冲量的长螺旋击针主簧及其中央导引尾座。尾部导向杆带有刺刀式卡凸，固定在枪机后部孔洞内。",
+        "craftAndMaterial": "弹簧采用高纯度顶级琴钢丝经精密密圈热卷火淬而成，具有极佳的弹性疲劳衰减抗力；尾座为耐磨淬硬钢车件，带有用于工具旋转拆解的一字开槽与定位耳。",
+        "kinematicRole": "全行程处于恒定预压紧状态，在肘节压倒击针时被进一步高度压缩积蓄势能，释放时推动击针撞击；在分解进度 36% 至 66% 时逆时针旋解 90 度弹出。",
+        "designHighlight": "独特的免螺丝卡口式尾盖锁定设计，仅需用平口螺丝刀将其推入并旋转四分之一周即可快速拆解击针总成，极为利于战壕环境野战清洁。",
+        "audioScript": "这根高强琴钢丝螺旋弹簧始终深藏在空心击针内部。尾端的导向尾座采用了精妙的无螺钉刺刀式锁定卡口：只需向内轻推并顺势旋转九十度，便能在战壕泥泞中轻松释放并抽出整个击发击针组。",
+        "audioUrl": "audio/p08/parts/p08_striker_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Striker Mainspring Assembly · Quarter-Turn Bayonet Plug",
+        "overview": "This assembly comprises the high-rate helical piano-wire striker mainspring and its flanged rear guide stem. The guide plug locks into the tail of the breechblock via a bayonet-style cross pin.",
+        "craftAndMaterial": "Wound from tempered music wire with closed and ground ends to withstand infinite cycling. The guide stem is turned from alloy steel with a slotted screwdriver engagement face.",
+        "kinematicRole": "Maintains continuous forward preload on the striker and compresses fully when the front toggle cocks the mechanism; releases and springs free at 36% to 66% disassembly upon quarter-turn rotation.",
+        "designHighlight": "Employs an ingenious tool-less bayonet quarter-turn twist-lock that enables rapid trench maintenance without tiny threaded screws that could be lost in mud.",
+        "audioScript": "Nestled inside the hollow body of the striker, this high-rate helical spring delivers the energetic punch needed for reliable ignition. Its bayonet rear guide plug locks into the bolt tail with a simple quarter turn, enabling toolless field maintenance without tiny loose screws.",
+        "audioUrl": "audio/p08/parts/p08_striker_spring_en.mp3"
+      }
+    },
+    "p08_frame": {
+      "partId": "p08_frame",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Forged Receiver Frame",
+      "zh": {
+        "roleTag": "55°传奇指向握把角 · 尾部双弧面肘节开锁导坡",
+        "overview": "这是整把鲁格 P08 手枪的基准框架下机匣，集成了倾角握把框、扳机护圈、弹匣井和上滑轨。尾端高高隆起两条淬硬开锁弧面导坡，底部设有木枪托卡槽。",
+        "craftAndMaterial": "由整块特种碳铬合金钢经数十道复杂的立式精密铣削与手工修锉而成，表面覆以典雅温润的深蓝化层，后部圆拱导坡区域经过局部中频感应淬火以增强耐磨度。",
+        "kinematicRole": "作为全枪空间装配与运动的绝对静止基准基座，其尾部导坡在短后坐末端撞击后肘节滚轮诱发开锁，在整个 3D 分解序列中始终保持不动。",
+        "designHighlight": "其握把与枪管轴线呈 55 度的黄金工程倾角，极其契合自然手腕生理姿势，赋予了鲁格手枪举枪即瞄准的卓越指向本能。",
+        "audioScript": "这件由整块合金锻钢精密铣削而成的下机匣是全枪的基石。它不仅拥有契合人体工学的五十五度自然指向握把，其尾部两侧高耸的弧形淬硬导坡，更负责在短后坐末段如铁砧般猛烈踢起肘节，启动整枪开锁。",
+        "audioUrl": "audio/p08/parts/p08_frame_zh.mp3"
+      },
+      "en": {
+        "roleTag": "55-Degree Ergonomic Frame · Integral Buckling Ramps",
+        "overview": "This is the master lower receiver frame, integrating the 55-degree grip frame, trigger guard, magazine well, and upper slide rails. The rear housing features two hardened curved toggle ramps and a bottom carbine stock lug.",
+        "craftAndMaterial": "Machined from a single solid drop-forged block of chrome alloy ordnance steel, precision rust blued. The dual curved unlocking ears at the rear are selectively induction-hardened to withstand repeated roller impacts.",
+        "kinematicRole": "Functions as the stationary structural datum for all moving components; its rear curved ramps kick the toggle upward during short recoil, remaining completely anchored throughout all disassembly stages.",
+        "designHighlight": "Its world-famous 55-degree grip-to-bore rake angle aligns directly with the natural pointing axis of the human wrist, delivering legendary instinctive target acquisition.",
+        "audioScript": "Milled from a single solid steel forging, this lower receiver is the structural backbone of the Luger. It features the famous fifty-five degree grip angle that aligns naturally with the shooter's forearm, while its twin hardened rear ramps kick the toggle open during recoil.",
+        "audioUrl": "audio/p08/parts/p08_frame_en.mp3"
+      }
+    },
+    "p08_sideplate": {
+      "partId": "p08_sideplate",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Trigger-Lever Sideplate",
+      "zh": {
+        "roleTag": "承载 L 形换向杠杆 · 开启 X-Ray 即刻透视侧向火控",
+        "overview": "这是紧固于下机匣左侧扳机上方的重要活动覆盖板。其前内槽通过铰舌插嵌在机匣凹槽中，内侧精巧容纳着将扳机向后推力转为横向推力的 L 形杠杆。",
+        "craftAndMaterial": "经冷锻精铣成型的合金钢异形薄壁构件，内表面铣出两层微细轴坑与限位滑槽，外表面打刻有与全枪总装匹配的枪号末尾两位钢印，外观发蓝光洁。",
+        "kinematicRole": "静态时遮护内部扳机转动总成，在击发时为 L 形换向杠杆提供内侧旋转转轴；在野战分解进度 4% 至 24% 阶段随拆解杆下转而被最先取下。",
+        "designHighlight": "拆卸该侧板即可完全外露机匣火控核心，在免工具野战维护时构思极其巧妙，只需翻转前方的拆解杆偏心凸轮即可一键卸载。",
+        "audioScript": "这块左侧活动盖板覆盖着鲁格独特的横向火控机构，外表面打有与全枪一致的两位装配尾号。其内部容纳着关键的 L 形换向杠杆，能将射手食指后扣的力量精巧转化为向内的横向推力，推开阻铁释放击针。",
+        "audioUrl": "audio/p08/parts/p08_sideplate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Detachable Fire-Control Plate · Bellcrank Housing",
+        "overview": "Known as the Abzugsblech, this is the detachable sideplate fitted flush to the left receiver wall directly above the trigger. Its interior cavity seats the right-angle L-shaped trigger transfer lever.",
+        "craftAndMaterial": "Forged and precision profile-milled from alloy steel with internal fulcrum recesses and edge alignment lugs. Stamped on its exterior with matching assembly serial digits and rust blued.",
+        "kinematicRole": "Forms the outer pivot wall for the trigger lever during firing; it pops free from the frame at 4% to 24% disassembly once the takedown lever is swung down.",
+        "designHighlight": "Provides instant modular access to the complex trigger-to-sear linkage for field inspection without driving out permanent pins or requiring specialized tools.",
+        "audioScript": "This detachable sideplate encloses the Luger's sideways fire-control system, stamped with matching assembly serial numbers. Inside sits an L-shaped bellcrank lever that translates the crescent trigger's backward pull into an inward lateral push against the sear bar plunger.",
+        "audioUrl": "audio/p08/parts/p08_sideplate_en.mp3"
+      }
+    },
+    "p08_takedown_lever": {
+      "partId": "p08_takedown_lever",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Takedown Locking Lever",
+      "zh": {
+        "roleTag": "240°C 金色麦秆回火 · 向下旋 90° 一秒解锁全枪",
+        "overview": "这是位于下机匣左侧前端、扳机护圈正上方的快拆旋转手柄。其带有防滑横纹的拇指拨片外露于机匣左侧，内轴横贯机匣并带有一个半圆偏心锁紧凸轮槽。",
+        "craftAndMaterial": "选用高碳工具钢精密车铣，最显著标志是其经过 240 摄氏度氧化处理呈现出的耀眼金色麦秆黄回火色泽，与深黑色的机匣形成强烈的美学对比。",
+        "kinematicRole": "平时横向水平锁定左侧盖板和上机匣前端；分解时在 2% 至 12% 进度向下翻转 90 度，让开偏心凸轮通道，在 14% 至 30% 阶段向左横向拔出。",
+        "designHighlight": "麦秆黄回火赋予了该高频旋转承力件极优的表面自润滑性与耐磨度，是德意志精密军工在实用与机械美学结合上的巅峰体现。",
+        "audioScript": "位于机匣左前方的金色拆解杆拥有标志性的麦秆黄回火色彩。野战分解时，只需微拉肘节卸去预压，将其向下顺时针旋转九十度，其偏心横轴便会瞬间释放左侧盖板并放开上机匣向前滑出的通道。",
+        "audioUrl": "audio/p08/parts/p08_takedown_lever_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Straw-Tempered Cam Lock · 90-Degree Takedown Lever",
+        "overview": "This is the rotating takedown lever positioned on the forward left frame above the trigger bow. Its exterior knurled paddle controls a transverse eccentric shaft that locks the sideplate and barrel extension.",
+        "craftAndMaterial": "Machined from high-carbon steel and heat-treated to an authentic golden straw temper at 240 degrees Celsius, creating striking visual contrast against the blued receiver.",
+        "kinematicRole": "Maintains lockup of the sideplate and receiver during firing; rotates 90 degrees downward at 2% to 12% disassembly and withdraws completely sideways between 14% and 30%.",
+        "designHighlight": "The straw temper imparts resilient surface wear resistance, while the eccentric camming geometry enables rapid field stripping in seconds without loose fasteners.",
+        "audioScript": "Displaying a gorgeous golden straw-tempered finish, this takedown lever is the key to field stripping. By swinging its knurled paddle down ninety degrees, its eccentric axle frees the sideplate and allows the entire barrel and toggle assembly to slide forward off the frame.",
+        "audioUrl": "audio/p08/parts/p08_takedown_lever_en.mp3"
+      }
+    },
+    "p08_ejector": {
+      "partId": "p08_ejector",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Leaf-Spring Ejector",
+      "zh": {
+        "roleTag": "镶嵌于右节套壁 · 撞击9mm弹壳底缘向上猛烈踢出",
+        "overview": "这是长条形弹性片状抛壳挺，纵向严密镶嵌在叉形枪管节套的右侧壁预铣凹槽中。其前部前端微弯的淬火抛壳钩尖自右侧伸入枪机运动通道内。",
+        "craftAndMaterial": "由极高弹性的硅锰弹簧钢片冲压精修而成，整体实施 240 摄氏度经典的金色麦秆黄回火热处理，前碰撞鼻部经过特殊局部淬火硬化以承受高频冲击。",
+        "kinematicRole": "当枪机后退抽出弹壳时，其前尖端撞击 9 毫米弹壳的右下底缘，使弹壳绕抽壳钩向上旋转由顶窗抛出；在分解进度 36% 至 68% 时自节套槽内拆下。",
+        "designHighlight": "利用片状弹簧自身微弹性缓冲弹壳撞击冲量，配合完全敞开的节套顶窗，实现了鲁格手枪极具辨识度的垂直朝天抛壳抛物线。",
+        "audioScript": "这枚细长的麦秆黄弹性钢片嵌在节套右内壁。当枪机向后抽出打空的弹壳时，抛壳挺的前钩尖会猛烈撞击弹壳右底缘，配合机顶抽壳钩，将空弹壳从完全敞开的机顶窗口垂直弹射向天空。",
+        "audioUrl": "audio/p08/parts/p08_ejector_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Leaf-Spring Ejector Blade · Vertical Spent-Hull Kick",
+        "overview": "This is the slender, flexible leaf-spring ejector installed along a longitudinal slot milled into the right-hand interior wall of the forked barrel extension. Its front tip protrudes into the bolt pathway.",
+        "craftAndMaterial": "Stamped and trued from high-grade silicon-manganese spring steel, treated to a signature golden straw temper. The forward striking tip is selectively hardened to withstand repetitive impact cycles.",
+        "kinematicRole": "Stands ready in the boltway until the retreating bolt draws the spent cartridge case across its forward nose, kicking it vertically skyward; detaches from the extension at 36% to 68% disassembly.",
+        "designHighlight": "Combines a rigid striking anvil with spring compliance, producing the Luger's famous vertical ejection trajectory through the wide-open receiver top window.",
+        "audioScript": "Tucked into the right wall of the barrel extension, this straw-tempered spring blade is the firearm's ejector. As the sliding bolt pulls the spent cartridge case back, the ejector's hardened nose violently clips the brass rim, kicking the empty shell straight up into the air.",
+        "audioUrl": "audio/p08/parts/p08_ejector_en.mp3"
+      }
+    },
+    "p08_hold_open": {
+      "partId": "p08_hold_open",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Toggle Hold-Open Latch",
+      "zh": {
+        "roleTag": "托弹板侧钮联动 · 末发打空将屈曲肘节高高挂起",
+        "overview": "这是潜伏在下机匣右侧导轨凹槽内的扁平止动杠杆与复位片簧总成。它通过前端突笋实时感应弹匣内的供弹状态，在弹药打空瞬间机械拦截后退的方形枪机。",
+        "craftAndMaterial": "采用高抗冲击合金工具钢线切割与铣削成型，表面经回火发蓝防锈处理；其前端带有倾斜承接斜面，后端为刚性直角止动阻挡台阶，能够承受枪机复进时的猛烈正面撞击。",
+        "kinematicRole": "在击发前七发弹药期间被片簧压低处于潜伏状态；打完第八发后被弹匣托弹板的凸起强行挑起，在第四至第五阶段死死顶住后退至极限的枪机底部，使整套肘节高耸挂起；在全枪分解进度百分之三十八至百分之七十阶段拆卸移出。",
+        "designHighlight": "早期的博夏特手枪与1900型鲁格并无此机构，射手在战壕中极易因不知打空而空击扣火。1908年德皇陆军正式列装时强制追加了这套空仓挂机，大幅提升了战壕火拼时的装填与察知效率。",
+        "audioScript": "请看隐藏在机匣右壁的这枚小巧杠杆。当弹匣内最后一发子弹打光，弹匣托弹板上的凸钮就会向上将它挑起，其直角卡台顺势顶住方形枪机的底部，让鲁格标志性的肘节高耸在半空中锁定，清晰提示士兵立即更换弹匣。",
+        "audioUrl": "audio/p08/parts/p08_hold_open_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Last-round follower latch that locks toggle open",
+        "overview": "This is a low-profile pivoting latch and flat leaf spring concealed within the right internal frame rail. It mechanically intercepts the rectangular breechblock the instant the final round is fired.",
+        "craftAndMaterial": "Milled from high-toughness carbon tool steel with a heat-treated temper. It features an angled follower-engagement tab forward and a square vertical arrest shoulder aft designed to absorb severe breechblock impact.",
+        "kinematicRole": "Remains held down by its flat return spring through rounds one to seven; upon firing round eight, the follower button lifts it upward during Phase Four to arrest the returning breechblock before Phase Five. Removed between 38% and 70% disassembly progress.",
+        "designHighlight": "Early 1900 commercial Lugers lacked a hold-open, forcing soldiers to click on empty chambers. The German Imperial Army demanded this latch in the 1908 specifications to drastically speed up trench combat reloads.",
+        "audioScript": "Notice this slender latch tucked inside the right frame rail. When the final nine-millimeter round leaves the chamber, the magazine follower button lifts this latch directly into the path of the bolt, locking the double toggle high in the air so the gunner instantly knows it is time to reload.",
+        "audioUrl": "audio/p08/parts/p08_hold_open_en.mp3"
+      }
+    },
+    "p08_grip_left": {
+      "partId": "p08_grip_left",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Left Walnut Grip Panel",
+      "zh": {
+        "roleTag": "甄选欧洲胡桃木心材 · 满铺20线手工菱形金字塔纹",
+        "overview": "这是紧固于下机匣左侧五十五度握持骨架上的胡桃木护把。其人体工学曲面与内部精密减重空腔完美贴合机匣型面，为射手提供扎实稳定的抓握基底。",
+        "craftAndMaterial": "选用陈年风干的欧洲核桃木心材铣削加工，表面满铺每英寸二十线的手工菱形切削格纹；内壁开凿有贯通纵向通道，避让弹匣体凸起的装弹钮。",
+        "kinematicRole": "在全枪射击全循环中作为人机接触的静态基座吸收后坐震动；其左上方半月形切口为拇指保险连杆提供偏转空间；在分解进度百分之二十二至百分之五十二阶段卸下一字烤蓝螺钉后首先分离。",
+        "designHighlight": "欧洲胡桃木具备极佳的吸汗性与微弹性，比起金属握把能更柔和地消散九毫米帕拉贝鲁姆弹骤然爆发的二十三点五兆帕后坐冲量，五十五度斜角造就了天然指向性。",
+        "audioScript": "这块左护把由陈年欧洲胡桃木精雕而成。表面密布着每英寸二十线的经典菱形防滑格纹，即便在沾染雨水或机油的战壕泥泞中，射手依然能牢牢控制枪身。五十五度的倾角赋予了鲁格手枪天生的自然指向优势。",
+        "audioUrl": "audio/p08/parts/p08_grip_left_zh.mp3"
+      },
+      "en": {
+        "roleTag": "55-degree checkered European walnut left side panel",
+        "overview": "This is the left hardwood grip panel fastened against the fifty-five-degree raked grip frame. It provides an ergonomic contact surface while sheltering internal frame components.",
+        "craftAndMaterial": "Carved from seasoned European walnut and hand-cut with twenty lines-per-inch diamond checkering. The internal face features milled clearance slots for the magazine follower button.",
+        "kinematicRole": "Serves as a rigid ergonomic interface across all seven firing phases, damping recoil impulses. Detaches between 22% and 52% disassembly progress after removing the blued grip screw.",
+        "designHighlight": "Natural walnut wood provides exceptional tactile grip and subtle vibration absorption, taming the sharp recoil of high-pressure nine-millimeter ammunition far better than bare steel or stamped metal panels.",
+        "audioScript": "Carved from dense European walnut, this left grip panel sports twenty lines-per-inch diamond checkering. It matches the distinctive fifty-five-degree grip rake, granting the Luger its legendary natural pointing characteristics even in muddy trench warfare.",
+        "audioUrl": "audio/p08/parts/p08_grip_left_en.mp3"
+      }
+    },
+    "p08_grip_right": {
+      "partId": "p08_grip_right",
+      "bomCode": "F-07",
+      "calloutLabelEn": "Right Walnut Grip Panel",
+      "zh": {
+        "roleTag": "亚麻籽油浸润防潮 · 纵剖视图展现胡桃木实心壁厚",
+        "overview": "这是安装在握把框右侧的配对欧洲胡桃木护把。它与左护把共同将斜置弹匣舱与背脊复进簧机构紧密包络于下机匣内部。",
+        "craftAndMaterial": "采用与左侧对称同料的优质胡桃木，经过多道亚麻籽油深度浸润风干以增强耐潮与防开裂性能；右上方边缘铣有精巧的半月形凹口，保护弹匣释放卡榫避免意外磕碰脱扣。",
+        "kinematicRole": "在射击全过程中保持静态，作为承受手掌虎口挤压的受力构件；在分解进度百分之二十二至百分之五十二阶段通过拆卸单枚烤蓝固定螺钉取下。",
+        "designHighlight": "右侧护把上沿设有一圈微小的挡边凸唇，在剧烈战术携行时能物理隔绝外力对弹匣扣的直接撞击，彻底杜绝了泥水飞溅或腰带刮碰导致弹匣意外滑落的隐患。",
+        "audioScript": "右护把与左侧由同一块胡桃木对称开料并浸润亚麻籽油防潮。它的右上角特别切出了半月形护圈，专门用来掩护弹匣释放钮，防止在战壕攀爬或剧烈动作中发生意外掉落弹匣的严重事故。",
+        "audioUrl": "audio/p08/parts/p08_grip_right_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Matching right-hand oil-finished checkered grip panel",
+        "overview": "This is the matching right walnut grip panel secured to the lower frame skeleton. Together with the left panel, it completely encloses the angled magazine well and mainspring housing.",
+        "craftAndMaterial": "Crafted from seasoned walnut timber and soaked in linseed oil for weather protection. The top corner incorporates a protective crescent recess shielding the magazine catch button from accidental snagging.",
+        "kinematicRole": "Provides a stationary hand rest and recoil-absorbing surface during all firing cycles. Removes alongside the left grip during disassembly from 22% to 52% progress.",
+        "designHighlight": "The raised wood contour surrounding the magazine release button prevents brush, tactical harnesses, or trench dirt from unintentionally bumping the release catch, ensuring the feed system stays anchored.",
+        "audioScript": "Mirrored from the same cured walnut stock, the right panel is saturated in linseed oil to resist moisture. Notice the subtle crescent cut around the upper forward corner: this prevents web gear from bumping the magazine catch loose during combat maneuvers.",
+        "audioUrl": "audio/p08/parts/p08_grip_right_en.mp3"
+      }
+    },
+    "p08_trigger": {
+      "partId": "p08_trigger",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Straw Crescent Trigger",
+      "zh": {
+        "roleTag": "饱满新月形指腹弧面 · 上鼻顶推侧盖板L形换向杠杆",
+        "overview": "这是悬挂于下机匣扳机护圈内的宽幅新月形单动扳机。扣压时它绕固定横销微幅后摆，通过其上端精心调校的驱动鼻凸轮向上传导扳机行程。",
+        "craftAndMaterial": "由碳素钢模锻成型后经细致研磨，表面经过摄氏两百四十度麦秆黄氧化回火处理，呈现出鲁格手枪标志性的金色光泽与高表面硬度。",
+        "kinematicRole": "在第一阶段被射手向后扣动，其顶端凸轮鼻向上顶推侧盖板内的换向杠杆；在第七阶段射手松开手指后，在微型扭簧驱动下反向回弹归位；在分解进度百分之四十二至百分之七十二阶段取出。",
+        "designHighlight": "鲁格没有使用现代手枪常见的直线滑动扳机连杆，而是采用纯机械旋转凸轮将食指后拉动作无缝转化为向上垂直推力，手感清脆利落如击碎玻璃薄片。",
+        "audioScript": "这枚宽弧月牙扳机散发着两百四十度回火特有的麦秆金色。扣动它时，扳机顶端的凸轮鼻向上顶推侧盖板内的连杆。这种纯粹的旋转凸轮传力结构，赋予了鲁格手枪宛如折断玻璃般极其干脆的扳机手感。",
+        "audioUrl": "audio/p08/parts/p08_trigger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Tempered crescent finger piece with upper cam beak",
+        "overview": "This is the wide single-action finger trigger suspended inside the integral frame trigger guard. Pivoting on a horizontal pin, its upper cam beak transfers trigger pull into vertical mechanical thrust.",
+        "craftAndMaterial": "Precision forged from carbon steel and polished before undergoing two-hundred-forty-degree Celsius straw tempering. This creates the signature golden iridescent finish alongside superior wear resistance.",
+        "kinematicRole": "Depressed during Phase One to rock its upper beak upward against the bellcrank transfer lever; springs forward during Phase Seven upon reset. Extracted between 42% and 72% disassembly progress.",
+        "designHighlight": "Unlike sliding trigger stirrups on later pistols, Luger used a purely rotational cam to pivot the trigger pull into vertical leverage, yielding the crisp, glass-like trigger break revered by precision shooters.",
+        "audioScript": "Finished in a brilliant straw-tempered gold, this wide crescent trigger pivots on a tight horizontal cross pin. Pulling it lifts the upper beak into the sideplate bellcrank, delivering an exceptionally crisp, short trigger break unmatched by standard military sidearms.",
+        "audioUrl": "audio/p08/parts/p08_trigger_en.mp3"
+      }
+    },
+    "p08_trigger_lever": {
+      "partId": "p08_trigger_lever",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Bellcrank Transfer Lever",
+      "zh": {
+        "roleTag": "后拉变侧推九十度换向机构 · 兼作天然半自动断连器",
+        "overview": "这是垂直镶嵌在左侧活动盖板内部盲槽中的直角双臂摇臂杠杆。它是整支手枪最精妙的传力节点，负责将扳机的垂直推力翻转为横向挤压推力。",
+        "craftAndMaterial": "采用高抗扭合金钢精细冲压与局部硬化处理，外表镀防腐涂层；拐角处设有垂直支承销轴孔，两臂末端均经过弧形倒角抛光以减小滑移摩擦阻力。",
+        "kinematicRole": "第一阶段下臂接受扳机向上顶托，绕竖轴顺时针偏转，上臂向内侧挤压水平阻铁条；第二至第四阶段上机匣后坐使阻铁脱离其接触面实现半自动断连；在分解初期百分之六至百分之二十六随侧盖板先行拆离。",
+        "designHighlight": "由于枪管节套与阻铁在发射后需要向后运动，鲁格巧妙借用后坐行程使阻铁前端自动滑离该杠杆的推头，无须任何额外滑动断连片即实现了完美的单发断连机制。",
+        "audioScript": "镶嵌在左盖板内的这枚微型直角杠杆，是全枪最具钟表匠智慧的设计。它把食指扣动的推力原地旋转九十度变为侧向推力。每当枪机后坐，后移的阻铁就会滑离它的触头，极其优雅地完成了单发断连。",
+        "audioUrl": "audio/p08/parts/p08_trigger_lever_zh.mp3"
+      },
+      "en": {
+        "roleTag": "90-degree sideplate bellcrank and natural disconnector",
+        "overview": "This is an L-shaped vertical bellcrank rocker pivoting inside the detachable left sideplate pocket. It converts vertical upward trigger thrust into horizontal lateral inward force against the sear.",
+        "craftAndMaterial": "Stamped and milled from heat-treated alloy steel with hardened pivot points. The contact faces on both lever arms are polished to minimize friction during mechanical transfer.",
+        "kinematicRole": "Pivots horizontally in Phase One to drive the sear bar inward; during Phases Two through Four, the rearward recoiling receiver slips off the lever head, mechanically disconnecting fire control. Separates during field strip between 6% and 26%.",
+        "designHighlight": "By allowing the recoiling barrel extension to naturally carry the sear bar rearward past the stationary lever, Luger achieved flawless semi-automatic disconnect without needing separate complex disconnect linkages.",
+        "audioScript": "Concealed within the removable left sideplate, this tiny bellcrank lever pivots on a vertical axis. It converts the trigger upward stroke into a sideways push against the sear bar. As the barrel recoils, the sear rides past it, creating an effortless semi-automatic disconnector.",
+        "audioUrl": "audio/p08/parts/p08_trigger_lever_en.mp3"
+      }
+    },
+    "p08_sear_bar": {
+      "partId": "p08_sear_bar",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Horizontal Sear Bar",
+      "zh": {
+        "roleTag": "天平式跷跷板侧向阻铁 · 前压柱塞使尾齿外摆释放击针",
+        "overview": "这是水平卧装在上机匣叉形节套左侧导向槽中的长条形跷跷板式阻铁杠杆。其前端装有弹性柱塞，后端则制有直接阻挡圆柱击针尾翼的淬硬挂机齿。",
+        "craftAndMaterial": "采用高强度渗碳合金钢精密铣削制成，表面经渗氮发黑防腐处理；前端柱塞孔内嵌细密螺旋小簧，中段支点带有精密旋转销孔，后齿受力面经过高频硬化。",
+        "kinematicRole": "在第一阶段前端柱塞被压入，使整根阻铁像天平般跷起，后端挂机齿向外侧横向摆脱击针突笋完成击发；在第二至第六阶段随枪管节套整体前后往复六点五毫米；在分解进度百分之八至百分之二十八时解脱移出。",
+        "designHighlight": "水平布置在机匣外侧的阻铁完全打破了传统手枪在弹匣后方布置阻铁的陈规，为五十五度大倾角弹匣和握把内复进簧让出了宝贵的垂直空间，使整枪外廓极度紧凑低矮。",
+        "audioScript": "这根长条状阻铁水平横卧在上机匣左侧外壁。它就像一根微型天平跷跷板，前端被顶向内侧，后端挂机齿就向外摆出，瞬间放行内部的击针冲向底火。这种侧向布局为握把里的复进簧留出了宝贵的内部空间。",
+        "audioUrl": "audio/p08/parts/p08_sear_bar_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Left-flank pivoting sear bar with spring disconnector",
+        "overview": "This is a horizontal rocking sear bar seated in an external channel along the left flank of the barrel extension. Its rear hook directly restrains the spring-loaded internal striker.",
+        "craftAndMaterial": "Machined from high-carbon alloy steel with nitride surface hardening. The forward end houses a spring-loaded plunger while the rear engagement ledge undergoes precision case hardening.",
+        "kinematicRole": "Pivots laterally in Phase One as the forward plunger is pressed inward, swinging the rear hook outward to release the striker. Recoils six point five millimeters with the barrel extension throughout Phases Two to Six. Removed between 8% and 28%.",
+        "designHighlight": "Relocating the sear horizontally to the outside left rail was an engineering breakthrough that freed up vital vertical volume in the grip spine for the mainspring and the radical fifty-five-degree magazine angle.",
+        "audioScript": "Mounted along the left flank of the barrel extension, this horizontal sear bar acts like a seesaw. Pressing the spring-loaded nose pushes the rear hook outward, instantly freeing the striker to snap forward. This side placement kept the grip profile remarkably slim.",
+        "audioUrl": "audio/p08/parts/p08_sear_bar_en.mp3"
+      }
+    },
+    "p08_thumb_safety": {
+      "partId": "p08_thumb_safety",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "Knurled Thumb Safety",
+      "zh": {
+        "roleTag": "拨下显露白字安全标识 · 推出刚性钢条锁死阻铁与节套",
+        "overview": "这是安装在下机匣左后方的人工手动保险旋柄与内置闭锁连杆机构。当射手用拇指下拨操纵柄时，其内部凸轮将一根扁平钢条强制卡入阻铁槽内。",
+        "craftAndMaterial": "外露圆柄部分采用精细滚花并做麦秆金色回火处理，内部保险挡条采用高刚度弹簧钢；机匣相应凹槽底部分别嵌填鲜艳的白色漆字标识提示武器处于安全锁定姿态。",
+        "kinematicRole": "处于开启状态时，刚性阻挡条完全封死阻铁条向外摆动的空隙，并死死勾住上机匣阻止其后退；在射击循环中保持静止；在全枪深度分解百分之三十八至百分之七十阶段拆卸移出。",
+        "designHighlight": "一九零八年定型版特别将保险操作方向调整为下拨上锁并露出安全德文印字，射手在战壕中仅需余光一瞥白色标记即可确认击发机构被物理封死，安全系数极高。",
+        "audioScript": "请看机匣左后侧这枚带有麦秆黄滚花的保险扳把。将它向下扳动，机匣凹槽就会显露出德文安全字样。与此同时，内部一根坚固的钢条向前推进，死死垫在阻铁外侧，在物理层面绝对杜绝了走火可能。",
+        "audioUrl": "audio/p08/parts/p08_thumb_safety_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Knurled manual safety lever with sear blocking bar",
+        "overview": "This is the manual thumb safety lever and internal sliding blocking bar located on the rear left frame tang. Pivoting the lever drives a rigid steel flat bar forward behind the sear arm.",
+        "craftAndMaterial": "The external control tab is checkered and straw-tempered to a brass-like sheen, while the internal blocking bar is heat-treated tool steel. The frame recess displays bright white enamel German text denoting safety.",
+        "kinematicRole": "When engaged, the blocking bar prevents the sear bar from pivoting outward and locks the barrel extension in battery. Remains static during firing; disassembles between 38% and 70% progress.",
+        "designHighlight": "On the definitive 1908 military model, downward lever travel pushed the bar forward, exposing the white painted marking. This allowed troop leaders to visually confirm a soldier's sidearm was locked at a glance.",
+        "audioScript": "Mounted on the left frame tang, this checkered straw-tempered thumb lever commands a sliding blocking bar inside. Swiveling it down exposes the German word for safe, physically wedging the sear bar so the firing pin cannot trip even if dropped.",
+        "audioUrl": "audio/p08/parts/p08_thumb_safety_en.mp3"
+      }
+    },
+    "p08_recoil_spring": {
+      "partId": "p08_recoil_spring",
+      "bomCode": "FC-05",
+      "calloutLabelEn": "Recoil Spring & S-Link",
+      "zh": {
+        "roleTag": "一九零八型背脊螺旋压簧 · S形连杆下拽拉平肘节",
+        "overview": "这是纵向深埋在五十五度倾斜握把背脊空腔内的圆柱螺旋复进簧，由中心导杆支承并通过顶端标志性的双曲弯曲连杆扣挂于后肘节底面。",
+        "craftAndMaterial": "复进簧选用十八圈高疲劳寿命碳素琴钢丝精密绕制，表面涂耐温防锈滑脂；连接后肘节的传力挂钩采用韧性极佳的合金结构钢整体锻打呈紧凑的弯曲形态。",
+        "kinematicRole": "在第三至第四阶段肘节上折后坐时，通过弯曲连杆向上拉扯使螺旋簧被强行压缩储能；在第五至第六阶段复进簧猛烈回弹，拉拽弯钩向下拽平后肘节并推弹入膛；在百分之三十六至百分之六十八阶段自握把下方移出。",
+        "designHighlight": "一九零八年定型版废弃了一九零零型昂贵易疲劳开裂的握把片状板簧，全面改用圆截面螺旋压簧配合传力摇臂，这一革新让鲁格手枪的抗疲劳寿命飙升了近十倍。",
+        "audioScript": "隐藏在五十五度握把背脊深处的，是十八圈高韧性琴钢丝螺旋复进簧。它通过一个特殊的双弯连杆紧紧勾住后肘节下沿。当肘节向上折起时将弹簧狠狠压扁，随即猛烈回弹把双连杆拉回水平死点，实现强力复进推弹。",
+        "audioUrl": "audio/p08/parts/p08_recoil_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Grip mainspring, guide rod, and S-shaped toggle link",
+        "overview": "This is a heavy eighteen-coil helical recoil spring embedded down the fifty-five-degree grip spine, linked to the rear toggle arm by a characteristic double-curved coupling strut.",
+        "craftAndMaterial": "Wound from high-endurance spring steel wire and guided by a central rod. The coupling link is forged from high-tensile nickel steel to resist extreme tension impulses during rapid toggle cycling.",
+        "kinematicRole": "Compressed violently during Phases Three and Four as the rear toggle buckles upward; rebounds dynamically across Phases Five and Six, yanking the link down to snap the toggle flat. Removed between 36% and 68% disassembly.",
+        "designHighlight": "Replacing the fragile leaf mainspring of early 1900 Lugers with this grip-enclosed coil spring and connecting link solved the pistol's notorious spring breakage issues in field conditions.",
+        "audioScript": "Concealed along the rear spine of the grip frame is an eighteen-coil helical recoil spring. It hooks to the rear toggle through an S-shaped coupling link. When the toggle buckles upward, it compresses this spring, which instantly snaps the toggle flat again to chamber the next round.",
+        "audioUrl": "audio/p08/parts/p08_recoil_spring_en.mp3"
+      }
+    },
+    "p08_mag_body": {
+      "partId": "p08_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "55-Deg 8-Round Mag Tube",
+      "zh": {
+        "roleTag": "五十五度大倾角单排供弹盒 · 防锈镀镍钢板冲压折弯",
+        "overview": "这是按五十五度大倾角折弯成型的八发单排可拆卸钢板弹匣壳体。它自下而上插入下机匣弹匣井内，为整支手枪建立稳固精准的进弹几何导轨基准。",
+        "craftAndMaterial": "选用优质深冲冷轧低碳钢板经多工步冲压折弯并点焊背缝，内外表面经精细抛光并施加哑光镀镍防腐处理；左侧冲压有纵向贯通导槽，顶端收口为硬化抱弹口。",
+        "kinematicRole": "插入握把井内通过弹匣扣卡锁保持固定；其抱弹唇在第四阶段将弹壳让出，在第五阶段约束下一发待装子弹以完美锥角冲上枪膛导坡；在分解进度百分之零至百分之十四最先退出。",
+        "designHighlight": "五十五度倾斜角极大减小了握把的前后握围，同时使圆锥形九毫米帕拉贝鲁姆弹壳能够像叠瓦一样顺势微阶梯滑动，从几何上彻底规避了并排挤压卡壳问题。",
+        "audioScript": "这枚八发单排弹匣严格匹配握把五十五度的倾角。表面采用了细腻的哑光镀镍处理，不仅防汗防锈，在污浊的战壕里依然光润。顶部精心卷边的抱弹唇，能以极高精度托起子弹，顺着坡道滑入弹膛。",
+        "audioUrl": "audio/p08/parts/p08_mag_body_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Deep-drawn 55-degree nickel-plated 8-round sheet steel tube",
+        "overview": "This is the primary sheet-steel magazine body stamped at a sharp fifty-five-degree slant. Locked inside the frame magazine well, it holds eight rounds of nine-millimeter ammunition in single stack.",
+        "craftAndMaterial": "Formed from deep-drawn cold-rolled steel sheets with a seam-welded spine and brushed nickel plating to resist trench mud corrosion. Features feed lips at the top and a follower-button slot on the left flank.",
+        "kinematicRole": "Held stationary by the magazine catch during firing cycles; releases the top cartridge into the feedway during Phase Five. First item removed during field stripping between 0% and 14%.",
+        "designHighlight": "The steep fifty-five-degree slant naturally compensates for the slight taper of the nine-millimeter Parabellum casing, stacking the cartridges in a clean staggered incline that eliminates feeding jams.",
+        "audioScript": "Stamped from sheet steel and protected by brushed nickel plating, this eight-round magazine tube mirrors the steep fifty-five-degree angle of the grip. The precision-formed top feed lips align each tapered cartridge perfectly with the barrel feed ramp.",
+        "audioUrl": "audio/p08/parts/p08_mag_body_en.mp3"
+      }
+    },
+    "p08_mag_follower": {
+      "partId": "p08_mag_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Machined Mag Follower",
+      "zh": {
+        "roleTag": "下压侧钮轻松装弹 · 末发顶起空仓挂机卡笋",
+        "overview": "这是在弹匣筒内部上下滑行的机加工实心阶梯托弹板总成。其左侧壁贯穿有一枚外露的滚花圆形装弹助推手钮，方便射手克服弹簧阻力单手压弹。",
+        "craftAndMaterial": "主体由碳钢整料经多轴数控铣削精加工，上表面铣削出与九毫米弹壳匹配的圆弧阶梯承托面；外露的侧装弹钮带有精密菱形滚花防滑纹理，经深层发蓝处理。",
+        "kinematicRole": "在第一至第七阶段随每次击发逐级向上抬升弹药；在打完最后一发后到达行程最顶端，其上突起顶托机匣内部的空仓挂机卡笋使其起升截停枪机；在分解中随弹匣分解步骤取出。",
+        "designHighlight": "外露的拇指下压装弹钮是鲁格手枪最具人机亲和力的设计之一，士兵在战壕中可以用拇指直接向下拉动侧钮快速滑入子弹，完全无须忍受现代硬弹簧手抠子弹的剧痛。",
+        "audioScript": "这块阶梯状钢制托弹板滑动在弹匣内部。它左侧伸出一枚滚花拇指钮，士兵可以直接用大拇指按住侧钮下压弹簧，单手飞快地滑入八发子弹。当最后一颗打空，它就会负责挑起空仓挂机杠杆。",
+        "audioUrl": "audio/p08/parts/p08_mag_follower_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Machined follower with external knurled thumb loading stud",
+        "overview": "This is a solid steel follower sliding internally within the magazine body. It features a protruding knurled thumb button extending through the left lateral slot of the magazine housing.",
+        "craftAndMaterial": "Machined from carbon steel stock with a curved upper cradle contoured to nine-millimeter cartridges. The external knurled loading stud provides positive thumb purchase and receives a hot-blued finish.",
+        "kinematicRole": "Steps upward round by round under magazine spring tension; upon firing the final round, it trips the internal hold-open latch upward during Phase Four. Disassembled from the magazine between 46% and 74%.",
+        "designHighlight": "The external thumb stud lets the shooter pull down the follower against the heavy spring, allowing cartridges to drop in effortlessly without bruising thumbs during high-stress combat reloads.",
+        "audioScript": "Milled from solid carbon steel, this follower glides inside the magazine tube. The knurled stud on the side allows the shooter to depress the powerful spring with a thumb, dropping eight rounds in rapidly. After the last shot, it trips the hold-open latch.",
+        "audioUrl": "audio/p08/parts/p08_mag_follower_en.mp3"
+      }
+    },
+    "p08_mag_spring": {
+      "partId": "p08_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "55-Deg Mag Coil Spring",
+      "zh": {
+        "roleTag": "高弹限琴钢丝螺旋簧 · 克服高速肘节复进供弹时窗",
+        "overview": "这是安装在托弹板与底座之间的斜置椭圆截面多圈压缩螺旋弹簧。它持续向上对托弹板施加稳定推力，确保弹匣内的子弹按序被压至抱弹口待发位置。",
+        "craftAndMaterial": "选用高疲劳极限的优质琴钢弹簧丝绕制，各圈线径呈现出严密的扁椭圆截面以完全贴合五十五度斜置弹匣壳体内腔，两端线圈经过平头磨削以保证垂直轴向受力。",
+        "kinematicRole": "在装弹时逐级压缩储能；在肘节向后屈膝后坐的第四阶段极短时间窗口内，以毫秒级响应将顶层弹药向上顶紧在抱弹唇；在弹匣分解阶段百分之四十六至百分之七十四移出。",
+        "designHighlight": "鲁格肘节机构在射击时循环速度极快，供弹窗口远比滑动套筒手枪更短，因此弹簧必须拥有极高的初推力与响应速率，以防方形枪机高速回扑时发生空推或咬弹故障。",
+        "audioScript": "这根弹簧由高弹性琴钢丝按扁椭圆截面绕制，严格顺应五十五度斜角。鲁格肘节后坐复进的速度极高，供弹窗口转瞬即逝，这根弹簧必须在几毫秒内将下一发实弹顶上抱弹口，容不得半点迟疑。",
+        "audioUrl": "audio/p08/parts/p08_mag_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Angled oval-wound high-rate spring steel magazine spring",
+        "overview": "This is an angled, multi-coil compression spring positioned between the bottom floorplate and the follower. It provides continuous upward pressure to stage cartridges securely against the feed lips.",
+        "craftAndMaterial": "Wound from tempered music wire into an angled oval cross-section matching the fifty-five-degree magazine envelope. The top and bottom coils are closed and ground flat for uniform load distribution.",
+        "kinematicRole": "Compresses as cartridges are introduced; during Phase Four, expands upward within milliseconds to seat the top round before the bolt charges forward in Phase Five. Extracted between 46% and 74% progress.",
+        "designHighlight": "Because the Luger toggle mechanism cycles at an blistering instantaneous cyclic speed, this spring is engineered with high preload to reliably raise rounds into battery before the breechblock slams forward.",
+        "audioScript": "Wound from premium music wire, this compression spring has an oval profile that matches the steep magazine angle. Because the toggle opens and snaps shut in a fraction of a second, this spring must push cartridges upward instantly to prevent feed stoppages.",
+        "audioUrl": "audio/p08/parts/p08_mag_spring_en.mp3"
+      }
+    },
+    "p08_mag_base": {
+      "partId": "p08_mag_base",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Twin-Ear Pull Floorplate",
+      "zh": {
+        "roleTag": "硬铝双圆耳车削同心防滑环 · 泥泞壕沟强力拔匣",
+        "overview": "这是紧固在弹匣壳体最底端的双圆耳拉柄底座。它不仅是托弹簧底部的承托底盖，其向两侧凸出的圆形圆耳更是射手强行拔出弹匣的手指支点。",
+        "craftAndMaterial": "一战后期军用版采用轻质硬铝锻压车削成型，两侧圆耳加工出多道同心圆防滑浅槽，底面打有与枪管匹配的四位阿拉伯枪号与下挂字母钢印，并横贯销钉固定于匣体。",
+        "kinematicRole": "作为弹簧受力基底在整个射击循环中承载压应力；在战术换弹时供射手拇指与食指捏合施加向下拔拽外力；在弹匣拆解进度百分之四十六至百分之七十四冲出横销后分离。",
+        "designHighlight": "早期的木质底板在潮湿泥泞战壕中极易受潮膨胀或摔击开裂，一战改良版更换为铝制双圆耳底座，粗壮的同心圆纹理即使戴着泥泞羊毛手套也能精准发力将弹匣强行拔出。",
+        "audioScript": "弹匣底部的这枚硬铝底座两侧带有标志性的双圆耳，车有细腻的同心圆防滑纹。底面还打着与整枪一致的枪号钢印。在战壕满是泥浆或戴着厚皮手套时，射手双指捏住这对圆耳就能大力将弹匣拔出换弹。",
+        "audioUrl": "audio/p08/parts/p08_mag_base_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Concentric-grooved twin-lobed aluminum pull floorplate",
+        "overview": "This is the twin-eared magazine base plug secured into the bottom mouth of the magazine body. It supports the magazine spring while providing lateral finger flanges to assist quick magazine extraction.",
+        "craftAndMaterial": "Turned and milled from duralumin alloy with concentric non-slip annular traction grooves on both circular ears. Stamped underneath with serial numbers and pinned transversely through the sheet steel.",
+        "kinematicRole": "Acts as the rigid lower anchor for the magazine spring throughout all firing phases. Provides the primary tactile purchase for manual extraction during reloads. Separates between 46% and 74% disassembly.",
+        "designHighlight": "Replacing early fragile walnut plugs, this late-war aluminum floorplate with twin ribbed gripping lobes allowed soldiers wearing thick muddy mittens in winter trenches to positively yank stuck magazines free.",
+        "audioScript": "Securing the magazine base is this machined aluminum floorplate with twin circular pull ears. Cut with concentric non-slip rings and stamped with matching serial numbers, it gives the shooter a solid grip to pull an empty magazine free, even when wearing thick winter gloves.",
+        "audioUrl": "audio/p08/parts/p08_mag_base_en.mp3"
+      }
+    }
+  }
+}

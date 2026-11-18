@@ -1,0 +1,919 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "vector",
+  "generatedAt": "2026-11-18T16:46:18.286815+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "KRISS Vector SMG Gen II",
+    "subtitle": ".45 ACP Super V Off-Axis Downward-Recoil Submachine Gun",
+    "originCountry": "United States / Switzerland",
+    "weaponType": "Submachine Gun",
+    "categoryLabel": "Submachine Gun",
+    "actionMechanism": "KRISS Super V Variable-Angle Cam-Delayed Blowback · -65° Off-Axis Tungsten Slider & Inverted Top Hammer",
+    "statusLabel": "In Vault · Strippable",
+    "description": "Co-engineered by French designer Renaud Kerbrat and TDI/KRISS USA, the KRISS Vector Gen II stands as an icon of twenty-first-century recoil mitigation. By lowering the 5.5-inch barrel axis 15.3 mm below the trigger shoe directly into the web of the firing hand, overturning torque is virtually neutralized. Twin lateral cam trunnions on a lightweight bolt ride variable-pitch tracks inside a patented tungsten counterweight, imposing a 2.68-to-1 mechanical disadvantage during early breech opening before driving the slider 64 mm downward at negative sixty-five degrees to cancel muzzle climb, delivering twelve hundred rounds per minute of heavy point-forty-five ACP with rifle-flat control.",
+    "highlights": [
+      "Super V Cam Delay + -65° Tungsten Off-Axis Plunging Counterweight",
+      "Low Bore Axis 15.3mm Sub-Trigger · Zero Upward Muzzle Flip Moment",
+      "Inverted Top-Mounted Downward Hammer FCU · 1/2/Auto Fire Selection",
+      "25-Round Glock-21 Compatible Kriss MagEx2 Heavy .45 Extended Magazine"
+    ],
+    "workbenchTitle": "KRISS Vector SMG 3D Teardown & -65° Off-Axis Kinematics",
+    "workbenchSubtitle": "4 Modular Groups · 25 Core Nodes · Low Bore Axis, Cam-Delayed Breech, Plunging Tungsten Slider & Inverted Fire-Control Simulation",
+    "cutawayLabel": "Super V -65° Slider Focus",
+    "cutawayTitle": "Switch to assembled cutaway view and focus on low barrel axis, cam bolt, Super V tungsten slider, and inverted top hammer",
+    "searchPlaceholder": "Search component name / code (e.g. Super V, slider, hammer, MagEx2, S-05)...",
+    "firingMilestoneLabel": "Cam-Delay Plunge",
+    "rateOfFire": "1,200 rpm",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Ready to Fire",
+        "subLabel": "0% Assembled",
+        "desc": "KRISS Vector SMG Gen II (.45 ACP) in standard closed-bolt battery: Gen II skeletonized right-folding buttstock fully deployed (overall length 617 mm / 406 mm folded), 5.5-inch barrel axis seated low below the horizontal trigger, and the tungsten Super V counterweight slider resting at the upper dead center of its -65-degree guide chute."
+      },
+      "field_strip": {
+        "label": "4-Pin Field Strip",
+        "subLabel": "30% Field Strip",
+        "desc": "Official KRISS tool-free field maintenance sequence: detach the 25-round MagEx2 magazine, press out four captive takedown cross-pins, lift the polymer upper housing containing the inverted fire-control unit, and extract the cam-trunnion bolt and Super V tungsten slider assembly upward out of the lower chassis."
+      },
+      "sub_assembly": {
+        "label": "Super V & Hammer Stripping",
+        "subLabel": "65% Sub-Assembly",
+        "desc": "Decouple the lateral bolt cam trunnions from the variable-angle tracks of the tungsten slider, withdraw the -65-degree inclined recoil guide rod and helical spring from the lower well, and disassemble the inverted stainless fire-control chassis including the downward-swinging hammer, ambidextrous fire selector, and horizontal trigger transfer bar."
+      },
+      "full_exploded": {
+        "label": "Full 25-Node BOM",
+        "subLabel": "100% Full Exploded",
+        "desc": "Complete exploded array of all 25 precision ordnance components: from the 5.5-inch cold hammer-forged low-bore barrel and delayed-blowback cam bolt to the Super V -65-degree tungsten slider, inverted hammer fire-control assembly, and extended 25-round MagEx2 magazine internals, fully revealing the revolutionary off-axis recoil kinematics."
+      }
+    },
+    "firingPhases": {
+      "vector_phase_1_trigger_hammer": {
+        "shortLabel": "Trigger & Hammer Drop",
+        "title": "Phase 1 · Horizontal Trigger Pull & Inverted Top-Hammer Swing",
+        "description": "Rearward squeeze on the horizontal-travel trigger draws twin stainless transfer bars back, tripping the top sear. Mounted upside down in the upper receiver, the hardened steel hammer swings downward under top-deck spring tension to strike the floating inertial firing pin."
+      },
+      "vector_phase_2_lowbore_ignition": {
+        "shortLabel": "Low-Bore Ignition",
+        "title": "Phase 2 · 230-Grain .45 ACP Ignition along Low Web-Aligned Bore Axis",
+        "description": "Percussion primer ignition generates 145 MPa peak chamber pressure, driving the heavy 230-grain projectile down the 5.5-inch cold hammer-forged barrel. Because the bore axis sits 15.3 mm below the trigger straight into the shooter's hand web, rotational muzzle-climb torque is nearly zero."
+      },
+      "vector_phase_3_cam_delay": {
+        "shortLabel": "Variable Cam Delay",
+        "title": "Phase 3 · Steep Upper Cam Slots Force Mechanical Disadvantage Delay",
+        "description": "Chamber thrust pushes the compact bolt rearward, forcing twin lateral cam trunnions against the steep initial incline of the tungsten slider tracks. Every millimeter of rearward bolt displacement forces over 2.6 mm of downward slider travel, safely retarding breech opening until pressures fall."
+      },
+      "vector_phase_4_superv_plunge": {
+        "shortLabel": "-65° Plunge & Ejection",
+        "title": "Phase 4 · Tungsten Slider Plunges 64 mm at -65° as Spent Case Ejects",
+        "description": "Clearing the cam transition knee, the bolt strokes back 36 mm and dips into the curved relief, propelling the tungsten counterweight slider 64 mm steeply downward along the -65-degree inclined chute. This downward kinetic counter-momentum cancels muzzle rise while the fat brass casing is hurled out to the right."
+      },
+      "vector_phase_5_buffer_advance": {
+        "shortLabel": "Chute Buffer & Feed Lift",
+        "title": "Phase 5 · Slider Bottoms on Polyurethane Pad while MagEx2 Lifts Fresh Round",
+        "description": "At the base of the lower receiver chute, the tungsten slider impacts an elastomeric polyurethane buffer pad, arresting downward stroke shock smoothly. Simultaneously, the extended drive spring in the 66-degree angled MagEx2 magazine elevates the next .45 ACP cartridge to the feed lips."
+      },
+      "vector_phase_6_upward_return": {
+        "shortLabel": "+65° Cam Elevation Feed",
+        "title": "Phase 6 · Recoil Spring Elevates Slider Upward, Cams Bolt Forward into Battery",
+        "description": "The compressed -65-degree helical recoil spring expands, driving the heavy tungsten slider upward at plus sixty-five degrees. The polished cam tracks thrust the bolt forward and up back onto the horizontal bore centerline, stripping a fresh .45 ACP round off the feed lips into the polished chamber."
+      },
+      "vector_phase_7_lockup_reset": {
+        "shortLabel": "Full Lockup & Reset",
+        "title": "Phase 7 · Cam Wedges Breech Closed while Disconnector Resets Trigger Loop",
+        "description": "Reaching its upper stop, the slider's steep cam surfaces wedge the bolt firmly home against the barrel trunnion. Releasing the trigger allows the upper disconnector to hand the inverted hammer back to the primary sear hook, establishing ready-to-fire battery with zero felt disturbance."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "撕裂百年后坐桎梏的偏轴革命：KRISS Vector 短剑的力学创生史",
+      "deck": "从法国发明家雷诺·克尔布拉的几何设想到震惊五角大楼的 Super V 偏轴专利，KRISS Vector 冲锋枪以低膛轴与 -65° 钨钢下潜滑块，彻底重写了全自动大威力连发武器的力控法则。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "2000–2003",
+          "title": "大口径的世纪梦魇：翻转力矩与冲锋枪的操控死局",
+          "paragraphs": [
+            "自 1921 年约翰·汤普森推出著名的 M1928 冲锋枪起，点四五口径柯尔特自动手枪弹（.45 ACP）便以其二百三十格令大质量重弹头的强悍近身停止力，深得突击分队信赖。然而，这种低压重弹也伴随着沉重代价值：传统冲锋枪采用枪机轴向平推直线后坐设计，而枪管轴线由于瞄准基线与握把结构限制，始终高悬于射手手腕支撑点上方三至五厘米。每一次连发击发，向后的膛底反作用力都会通过这道力臂，转化为狂暴的向上抬枪力矩，将密集的弹着点无情拉扯向天空。",
+            "即使在进入二十一世纪初，装备精良特警与特种部队的现代微型冲锋枪依旧深陷这一物理铁律。为压制全自动开火时的剧烈枪口上跳，工程师们不得不尝试沉重笨拙的枪机配重、繁复的枪口制退器或强行将射速砍半。曾在法国著名军工企业长期任职的高级机械工程师雷诺·克尔布拉（Renaud Kerbrat）敏锐地意识到：修修补补的传统气吹或自由枪机方案早已触及几何天花板，唯有从根本上打破平行直线后坐这一延续了上百年的经典架构，才能迎来真正的物理破局。",
+            "克尔布拉在脑海中勾勒出一个颠覆性的数学模型：如果后坐冲量不再笔直撞入射手肩膀，而是通过一组精密计算的变角度凸轮，将初段能量以特定角度向下偏转，那么下潜部件产生的动态反冲量，是否能恰到好处地对冲掉枪口上抬的惯性力矩？这场关于枪械几何动力学的革命，在瑞士与美国投资者的注视下悄然拉开帷幕。"
+          ],
+          "audioScript": "近一个世纪以来，点四五口径冲锋枪一直被高膛轴带来的剧烈枪口上跳所困扰。两百三十格令的大威力和低压重弹，让全自动连发极难控枪。法国工程师雷诺克尔布拉决心打破这道物理枷锁。他设想通过变角度凸轮，将后坐能量沿着机匣前方急剧向下偏转，用下潜反冲直接抵消抬枪力矩。这正是改变现代自动武器几何力学的非凡开端。",
+          "audioUrl": "audio/vector/story_act1_zh.mp3",
+          "focusPartId": "vector_lower_chassis",
+          "focusPartLabel": "Super V 下机匣与 -65° 导槽井"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "2004–2007",
+          "title": "皮卡汀尼兵工厂的震撼：Super V 专利诞生与极限试炼",
+          "paragraphs": [
+            "2004 年，克尔布拉与总部位于瑞士及美国弗吉尼亚海滩的转型防务工业公司（TDI）正式联手，向美国专利局提交了日后名垂轻武器工程史的第 7,201,094 号专利——“自动武器减后坐偏轴机构”。为了在有限的机匣包裹空间内平衡杠杆力比，团队经历数百次图纸推演与数控铣削试错，最终将下潜导轨的倾角精准锚定在负六十五度。这一角度既能最大程度向垂直方向分解后坐动量，又确保了紧跟在后的六十六度前掠大容量弹匣供弹顺畅。",
+            "2006 至 2007 年间，早期 Super V 原型样枪被送往著名的美国陆军皮卡汀尼兵工厂（Picatinny Arsenal）接受严苛军标评估。在高速红外摄像机与三维六轴测力传感器的凝视下，惊人的实验数据震惊了在场的武器专家：相较于美军经典的 UMP45 与 M3 冲锋枪，Vector 原型枪在点四五口径连发射击中，枪口垂直上跳幅度骤降约百分之九十，射手体感后坐感削减近百分之六十！",
+            "更令人震撼的是，即便枪机循环射速飙升至令人血脉偾张的一千二百发每分，射手单手持枪扫射仍可将密集弹孔稳稳泼洒在人体靶胸口硬币大小的核心区内。2007 年拉斯维加斯靶场展会上，这柄轮廓奇特、宛若科幻电影道具的冲锋枪一战封神，TDI 随即全面转向该系统的量产化工程，并将其正式定名为“Vector”（短剑）。"
+          ],
+          "audioScript": "二零零四年，克尔布拉的减后坐专利正式获批。在转型防务工业团队精算下，滑块倾角被锁定在负六十五度。当样枪送抵美军皮卡汀尼兵工厂接受测试时，六轴测力仪记录下了令人难以置信的数字：连发垂直上跳减少了约百分之九十，体感后坐力下降近六成。即便射速高达一千二百发每分，弹雨依然像激光般精准可控。",
+          "audioUrl": "audio/vector/story_act2_zh.mp3",
+          "focusPartId": "vector_upper_housing",
+          "focusPartLabel": "双色 FDE 上机匣壳体"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "2008–2014",
+          "title": "机械灵魂的重构：低膛轴、变角凸轮与顶置倒装击锤",
+          "paragraphs": [
+            "KRISS Vector 的物理魔力绝非单一零件的灵光一闪，而是三大机械总成咬合共振的系统杰作。首先是膛轴线的彻底下潜：传统枪械枪管位于扳机上方，而 Vector 巧妙利用下方空出的空间，将五点五英寸高精度冷锻枪管轴线直接下压至水平扳机下方十五点三毫米处。这意味着当击发时，向后推涌的瞬时反作用力近乎严格穿过射手手掌虎口支点与前臂骨骼中心线，从源头上抹平了产生杠杆翻转力矩的几何物理距离。",
+            "核心的心脏跳动则交由专利 Super V 偏轴滑块掌控。超轻量化枪机两侧凸出硬化圆柱凸轮耳，深度嵌入重型钨钢配重滑块上端的双折线导槽中。击发瞬间，药室内一百四十五兆帕峰值膛压推压枪机，枪机凸轮耳首先撞向顶端极度陡峭的起始斜面，制造出约二点六八比一的高机械劣势延迟——枪机每微退一毫米，必须强行将钨钢滑块加速下压两毫米有余。这道强行延迟锁死让弹膛在安全泄压前严丝合缝；随后，越过拐点的凸轮耳驱动滑块沿负六十五度导杆高速猛潜六十四毫米，通过垂直反冲动量反向拉拽枪身，奇迹般将上扬力矩彻底消融。",
+            "由于下机匣被低置枪管与下潜滑块全面占据，常规手枪与冲锋枪底置火控彻底无处安放。工程团队索性力挽狂澜，将整套数控不锈钢火控总成倒挂于顶部机匣天花板之内：硬化击锤自上而下倒装下摆挥击击针，高位水平扳机通过双联拉杆跨越机械舱。更令人赞叹的是独立解耦的射控逻辑——下部拇指保险专职保全，上部三档快慢机则可自如在单发、超致命高命中率两连发以及一千二百发全自动喷吐间从容切换。"
+          ],
+          "audioScript": "短剑的机械精髓源于三大系统革新。首先，枪管轴线被直接沉降至扳机下方十五毫米，直穿射手虎口，消除翻转力臂。其次，超轻枪机双凸轮耳嵌入钨钢配重滑块，初段利用变角度导槽强行延迟开锁，中段驱使钨钢滑块沿负六十五度猛潜六十四毫米，以向下动量拉平枪口。最后，由于下部空间被占满，火控机构倒挂在顶部机匣，击锤自上而下挥击，构成了无比严密的工程闭环。",
+          "audioUrl": "audio/vector/story_act3_zh.mp3",
+          "focusPartId": "vector_slider",
+          "focusPartLabel": "Super V 钨钢垂直下潜配重滑块"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "2015–至今",
+          "title": "二代进化与传奇定格：多口径时代的战术殿堂标杆",
+          "paragraphs": [
+            "伴随品牌正式整合为 KRISS USA，工程团队在 2015 年盛大推出了代号 Gen II 的第二代大改版。吸纳全球近身特战特警与竞技射手的严酷反馈，Gen II 彻底重构了人机功效：原本笨重的圆角扳机升级为更为干脆的水平枢轴摆动扳机，手动保险角度缩短至快捷舒适的四十五度，枪托改换为带按压式锁定钮的 Gen II 右折叠镂空骨架，并实现了整枪免工具四销自锁快拆，下机匣维护与火控保养可在十秒之内徒手完成。",
+            "与此同时，供弹生态迎来了终极拼图。Vector Gen II 全面拥抱二十五发装格洛克二十一兼容 Kriss MagEx2 加长弹匣，六十六度大倾角双排单进弹仓搭配高刚度长螺旋簧，完美保障了一千二百发每分超高速吞吐下的绝对供弹可靠性。除了经典的点四五口径重炮版，Vector 系列更顺势衍生出九毫米、十毫米自动手枪弹以及点四零口径等多款模块化家族变体，广泛列装于北美及全球精锐特警攻房单元与要人护卫队。",
+            "在世界武器发展长河中，KRISS Vector 不仅是一柄外形极具未来主义工业美学的战术利刃，更代表了人类工程学勇于打破传统牛顿直线反作用力教条的惊世尝试。它用几枚凸轮、一块下潜的钨钢与一条超低轴线，向世界证明了直觉可以被重写，物理可以被驾驭——在数字军械库的三维虚空之中，它那负六十五度的每一次猛潜，都是现代兵器机械工程不可磨灭的狂想勋章。"
+          ],
+          "audioScript": "二零一五年推出的二代短剑冲锋枪，以四销免工具快拆、右折叠枪托与改进型水平扳机确立了巅峰人机工效。结合二十五发加长弹匣，无论大威力点四五还是十毫米口径，都能在极近距离爆发出毁灭性的可控火力。它不仅是一支战术突击利器，更以颠覆传统直线后坐的偏轴设计，成为二十一世纪世界轻武器力学史上的一座丰碑。",
+          "audioUrl": "audio/vector/story_act4_zh.mp3",
+          "focusPartId": "vector_mag_body",
+          "focusPartLabel": "25 发 Kriss MagEx2 弹匣体"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Super V 变角度凸轮延迟与 -65° 轴外下潜反冲",
+          "tag": "偏轴后坐偏转机构",
+          "summary": "通过将轻量枪机的横向凸轮耳卡入钨钢配重滑块的折线槽内，在开锁初段制造约 2.68:1 杠杆劣势安全闭膛，随后强制重型滑块沿 -65° 斜轨向下猛潜 64 mm，将后坐冲量转化为垂直向下的物理反冲量，主动抵消 90% 的枪口跳动。",
+          "focusPartId": "vector_slider",
+          "focusPartLabel": "Super V 钨钢垂直下潜滑块"
+        },
+        {
+          "id": "bt2",
+          "title": "虎口同轴 15.3 mm 极低膛轴布局",
+          "tag": "零翻转力臂几何",
+          "summary": "颠覆传统枪管置于扳机上方的布局，将 5.5 英寸冷锻枪管下移至水平扳机下方 15.3 mm 处，使发射药向后膨胀推力线直接穿透射手手掌虎口支点与前臂中心，从几何源头上抹除了产生翻转力矩的力臂。",
+          "focusPartId": "vector_barrel",
+          "focusPartLabel": "5.5英寸低膛轴冷锻枪管"
+        },
+        {
+          "id": "bt3",
+          "title": "顶置不锈钢副车架与倒装下摆击锤火控",
+          "tag": "倒置模块化火控架构",
+          "summary": "针对下机匣被低轴枪管与下潜导轨全部占满的极端空间挑战，将击锤倒挂于机匣顶部天花板，由上而下挥击底置击针，并实现下部拇指保险与顶置三档快慢机（含 1200 RPM 高速两连发）的独立解耦联动。",
+          "focusPartId": "vector_hammer",
+          "focusPartLabel": "顶置倒装硬化钢击锤"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "2002–2004",
+          "title": "克尔布拉偏轴动力学专利提交",
+          "detail": "法国枪械设计师雷诺·克尔布拉构想出变角度凸轮与下潜配重滑块架构，并在 TDI 资助下提交美国发明专利申请。"
+        },
+        {
+          "year": "2006–2007",
+          "title": "美军皮卡汀尼兵工厂严苛实测",
+          "detail": "Super V 原型样枪在美军测试中测得减少约 90% 垂直上跳与 60% 后坐感，以 1,200 发/分单手精准连发震撼军械界。"
+        },
+        {
+          "year": "2007",
+          "title": "US 7,201,094 核心专利获批与靶场首秀",
+          "detail": "Super V 轴外减后坐机构正式获得美国专利局授权，TDI 在拉斯维加斯 SHOT Show 展出 XSMG 概念样机引起轰动。"
+        },
+        {
+          "year": "2009–2011",
+          "title": "KRISS Vector Gen I 正式投产与品牌重组",
+          "detail": "TDI 公司正式重组更名为 KRISS USA，首代量产型 Vector Gen I .45 ACP 冲锋枪与半自动民用卡宾版进入全球市场。"
+        },
+        {
+          "year": "2015",
+          "title": "Gen II 深度迭代升级与四销快拆定型",
+          "detail": "KRISS 发布 Gen II 全面大改款，引入 45 度快慢机、优化折叠枪托、平直行程扳机与 4 销免工具野战极速拆卸系统。"
+        },
+        {
+          "year": "2016–至今",
+          "title": "多口径衍生矩阵与世界战术名枪地位确立",
+          "detail": "MagEx2 25 发加长弹匣配合 9mm、10mm Auto、.40 S&W 等多口径矩阵扩展，奠定其作为现代兵器力学革命图腾的地位。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "The Off-Axis Kinematic Revolution: Engineering the KRISS Vector",
+      "deck": "From Renaud Kerbrat's radical vector kinematics to Picatinny Arsenal's landmark trials, the KRISS Vector dismantled a century of straight-line blowback recoil through an ultra-low bore axis and a minus sixty-five degree plunging tungsten slider.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "2000–2003",
+          "title": "The Heavy-Caliber Dilemma: Overturning Moments and the Control Impasse",
+          "paragraphs": [
+            "Ever since John T. Thompson introduced the iconic 1921 Tommy Gun, the .45 ACP cartridge has stood as a paragon of heavy-hitting close-quarters stopping power. Yet its 230-grain subsonic bullet carried an unforgiving physical penalty: Newtonian recoil. In virtually every submachine gun built across the twentieth century, from the M3 Grease Gun to the modern polymer UMP45, the barrel sat high above the pivot point of the shooter's wrist. Each burst exerted chamber thrust across this moment arm, creating severe upward rotational torque that relentlessly drove muzzle climb off target during sustained automatic fire.",
+            "As counter-terror units entered the urban operations of the early 2000s, this ballistic contradiction became intolerable. Weapon engineers attempted to tame muzzle climb with bloated reciprocating bolt masses, heavy muzzle brakes, or cyclic rate limiters that choked firepower. French mechanical engineer Renaud Kerbrat recognized that these band-aids had reached a geometric dead end. To conquer the violent muzzle flip of the .45 ACP without sacrificing handling, the firearm industry had to abandon the sacred cow of inline linear recoil that had governed automatic weapons since Hiram Maxim.",
+            "Kerbrat conceptualized a bold off-axis dynamic model: what if bolt thrust was split by a variable-pitch cam and directed sharply downward into the forward chassis? By converting rearward recoil into a downward vertical vector, the momentum of a falling counterweight could directly neutralize the upward overturning torque of muzzle jump. Backed by Swiss and American defense entrepreneurs, this radical kinematic gamble began to take physical shape."
+          ],
+          "audioScript": "For nearly a century, submachine guns firing point forty-five ACP faced a severe physical curse. Because the barrel sat high above the wrist, heavy two hundred thirty grain bullets unleashed violent upward muzzle climb during full auto fire. French engineer Renaud Kerbrat chose to challenge this century old straight line layout. He envisioned redirecting rearward energy downward through a variable pitch cam, creating a downward plunging counter momentum to cancel muzzle flip. It was the spark of an ordnance revolution.",
+          "audioUrl": "audio/vector/story_act1_en.mp3",
+          "focusPartId": "vector_lower_chassis",
+          "focusPartLabel": "Super V Lower Chassis & -65° Well"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "2004–2007",
+          "title": "Picatinny Arsenal Proving Grounds: Patent 7,201,094 and the Shock Test",
+          "paragraphs": [
+            "In 2004, Kerbrat alongside Transformational Defense Industries, founded across Switzerland and Virginia Beach, filed United States Patent 7,201,094 for an off-axis recoil mitigation mechanism. Through extensive computer kinematics and CNC iterations, the engineering team honed the downward travel angle to exactly negative sixty-five degrees. This angle provided the optimum compromise between downward counter-momentum and the packaging space required by a forward-raked sixty-six-degree high-capacity magazine well.",
+            "Between 2006 and 2007, early prototypes of the TDI Kriss Super V were delivered to the United States Army Picatinny Arsenal for comprehensive evaluation. High-speed multi-axis transducers and ballistic cameras captured data that left test engineers astonished: compared against legacy .45-caliber service platforms, the Super V prototype registered approximately ninety percent less vertical muzzle displacement and nearly sixty percent less perceived shooter recoil impulse.",
+            "Even more astounding was the weapon's cyclic cadence: cycling at a blistering twelve hundred rounds per minute, shooters could hold the compact submachine gun with one hand and deposit long continuous bursts into a fist-sized target zone. The production design was christened the Vector, after its directional transformation of kinetic energy, instantly capturing international acclaim at defense expositions."
+          ],
+          "audioScript": "By two thousand four, Kerbrats groundbreaking patent was filed, locking the plunging track angle at negative sixty-five degrees. When prototypes arrived at Picatinny Arsenal for rigorous military trials, test instrumentation recorded astounding data: vertical muzzle climb was reduced by roughly ninety percent, with a sixty percent drop in felt recoil. Even at twelve hundred rounds per minute, long bursts stayed flat, transforming chaotic bullet dispersion into laser accurate patterns.",
+          "audioUrl": "audio/vector/story_act2_en.mp3",
+          "focusPartId": "vector_upper_housing",
+          "focusPartLabel": "Upper Receiver Housing & MIL-STD-1913 Rail"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "2008–2014",
+          "title": "Kinematic Anatomy: Low Bore Axis, Cam Delay, and the Inverted Hammer",
+          "paragraphs": [
+            "The mechanical brilliance of the KRISS Vector relies on a triad of interdependent ordnance breakthroughs. First is its ultra-low bore axis: while conventional weapons position the barrel above the trigger group, the Vector lowers its 5.5-inch cold hammer-forged barrel 15.3 mm below the horizontal trigger shoe. This brings the primary thrust vector directly in line with the web of the firing hand and the forearm bones, eliminating the geometric lever arm that causes upward muzzle flip before recoil even begins.",
+            "Second is the Super V delayed-blowback core. Twin hardened lateral cylindrical cam trunnions on an ultra-lightweight bolt engage variable-pitch tracks milled into a dense tungsten slider. At the millisecond of ignition, peak chamber pressure of 145 MPa thrusts against the bolt face, driving its trunnions against a steep initial ramp that enforces a 2.68-to-1 mechanical disadvantage. This locks the breech during peak pressure before guiding the slider 64 mm downward along the negative sixty-five degree guide rod, absorbing rearward shock and producing a sharp downward inertial counter-force.",
+            "Third, because the lower chassis is filled by the low-slung barrel and the plunging chute, conventional bottom-mounted fire-control parts could not fit. KRISS engineers suspended an inverted stainless steel fire-control chassis inside the upper receiver ceiling. Here, an inverted hammer swings downward to strike a low-profile firing pin. The fire control separates tactical safety into a low-profile lower thumb switch and an upper three-mode selector capable of semi-automatic, high-precision two-round hyper-bursts, and twelve hundred round per minute full-automatic fire."
+          ],
+          "audioScript": "The Vector's mechanical brilliance stems from three unified systems. First, the five and a half inch barrel is lowered fifteen millimeters beneath the trigger, channeling thrust directly through the hand web to eliminate torque. Second, the bolt cam trunnions engage a heavy tungsten slider, using variable pitch ramps to safely delay breech opening before driving the slider downward sixty-four millimeters along a negative sixty-five degree track. Finally, the hammer is inverted in the top receiver, swinging downward to complete a brilliant engineering loop.",
+          "audioUrl": "audio/vector/story_act3_en.mp3",
+          "focusPartId": "vector_slider",
+          "focusPartLabel": "Patented Super V Tungsten Slider"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "2015–Present",
+          "title": "Gen II Refinement and Legacy: Setting the Benchmark for Modern Close Quarters",
+          "paragraphs": [
+            "With TDI rebranding as KRISS USA, engineering teams unveiled the comprehensive Gen II revision in 2015. Incorporating operational feedback from SWAT teams and elite counter-terror units, the Gen II addressed field ergonomics: a crisp flat-face pivoting trigger replaced the earlier curved shoe, manual safety throws were reduced to a short-throw forty-five-degree sweep, and a robust push-button right-folding skeletonized stock allowed unhindered firing while folded. Crucially, a captive four-pin receiver takedown system was perfected, allowing complete field maintenance in under ten seconds without tools.",
+            "Feeding reliability at extreme cyclic tempos was finalized through the 25-round Glock-21 compatible Kriss MagEx2 extended magazine. Its high-tensile spring and sixty-six-degree rake angle maintained positive column lift against twenty-five heavy .45 ACP cartridges, feeding without a stutter even during twelve hundred round per minute bursts. The Gen II platform expanded into modular lower receivers chambering 9mm, 10mm Auto, and .40 S&W, becoming a premier standard in close-quarters doctrine.",
+            "In the history of automatic ordnance, the KRISS Vector stands alongside the Thompson and the MP5 not merely as a tactical icon, but as a monumental triumph of dynamic physics over convention. By daring to divert recoil off-axis with a plunging tungsten counterweight, Kerbrat and KRISS proved that recoil need not be absorbed as a punishment—it can be channeled, redirected, and conquered through mechanical genius."
+          ],
+          "audioScript": "Debuting in twenty fifteen, the Gen II Vector finalized weapon handling with a tool free four pin field strip, a right folding skeletonized stock, and refined controls. Fed by twenty-five round MagEx2 extended magazines, it unleashes devastating yet controllable firepower across point forty-five and ten millimeter calibers. It stands as a modern ordnance monument, proving that weapon recoil can be rewritten through daring off-axis kinematics.",
+          "audioUrl": "audio/vector/story_act4_en.mp3",
+          "focusPartId": "vector_mag_body",
+          "focusPartLabel": "25-Round Kriss MagEx2 Magazine Body"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Super V Variable Cam Delay & -65° Off-Axis Counter-Momentum",
+          "tag": "Off-Axis Kinematic Lock",
+          "summary": "Twin lateral bolt cam trunnions ride contoured tracks within a heavy tungsten counterweight slider, establishing an initial 2.68:1 mechanical disadvantage before driving the slider 64 mm downward at negative sixty-five degrees to neutralize roughly 90% of vertical muzzle jump.",
+          "focusPartId": "vector_slider",
+          "focusPartLabel": "Super V Tungsten Slider"
+        },
+        {
+          "id": "bt2",
+          "title": "Ultra-Low 15.3 mm Sub-Trigger In-Line Bore Axis",
+          "tag": "Zero Moment-Arm Geometry",
+          "summary": "Placing the 5.5-inch cold hammer-forged barrel 15.3 mm below the trigger shoe aligns chamber reaction thrust directly through the shooter's hand web and forearm bones, eliminating the geometric lever arm responsible for rotational muzzle climb.",
+          "focusPartId": "vector_barrel",
+          "focusPartLabel": "5.5-inch Low-Bore CHF Barrel"
+        },
+        {
+          "id": "bt3",
+          "title": "Inverted Top-Deck Stainless Sub-Frame & Downward Hammer",
+          "tag": "Inverted Modular Fire Control",
+          "summary": "Because the lower receiver is occupied by the low-line barrel and -65-degree slider chute, the entire fire-control chassis is inverted inside the upper housing roof, swinging a downward-pivoting hammer while cleanly decoupling the lower safety from the upper 3-mode fire selector.",
+          "focusPartId": "vector_hammer",
+          "focusPartLabel": "Inverted Steel Hammer"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "2002–2004",
+          "title": "Kerbrat Off-Axis Recoil Patent Filings",
+          "detail": "Renaud Kerbrat conceptualizes variable-pitch cam tracks and a plunging counterweight, submitting foundational patent claims backed by TDI defense investors."
+        },
+        {
+          "year": "2006–2007",
+          "title": "U.S. Army Picatinny Arsenal Evaluation",
+          "detail": "Super V prototypes undergo extensive testing, recording a 90% reduction in muzzle climb and a 60% drop in felt recoil while cycling at 1,200 rpm."
+        },
+        {
+          "year": "2007",
+          "title": "US Patent 7,201,094 Granted & SHOT Show Debut",
+          "detail": "The core Super V kinematic patent officially issues, and TDI reveals the experimental XSMG prototype to the global defense community in Las Vegas."
+        },
+        {
+          "year": "2009–2011",
+          "title": "Vector Gen I Production & KRISS USA Rebranding",
+          "detail": "TDI transforms into KRISS USA, delivering serial production Vector Gen I submachine guns and civilian semi-automatic variants."
+        },
+        {
+          "year": "2015",
+          "title": "KRISS Vector Gen II Platform Modernization",
+          "detail": "KRISS rolls out the Gen II system with a tool-free 4-pin takedown receiver, short-throw 45-degree selector, flat-shoe trigger, and push-button folding stock."
+        },
+        {
+          "year": "2016–Present",
+          "title": "Multi-Caliber Matrix & Modern Ordnance Icon",
+          "detail": "Deployment of the MagEx2 25-round magazine and expansion into 9mm, 10mm Auto, and .40 S&W cement the Vector as an engineering marvel of modern warfare."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "vector_barrel": {
+      "partId": "vector_barrel",
+      "bomCode": "S-01",
+      "calloutLabelEn": "5.5\" Low-Bore Barrel",
+      "zh": {
+        "roleTag": "140mm 固定冷锻枪管 · 膛轴低于扳机与虎口支点",
+        "overview": "全长140毫米冷精锻枪管刚性压装于机匣节套内，是全枪射击精度的基准核心。它的中心线破天荒布置在扳机水平线下方15.3毫米处，笔直穿过握枪手掌虎口。",
+        "craftAndMaterial": "采用4140铬钼钒合金钢经精密冷锻与QPQ盐浴氮化硬化处理，内膛为16英寸左旋膛线，后部高精度研磨宽截面进弹坡道以杜绝平头弹卡滞。",
+        "kinematicRole": "击发阶段2承担145兆帕高压燃气膨胀与弹头导向，全周期作为静态刚性基准不动；机拆进度34%至66%时向前滑移11.5单位脱出节套锁位。",
+        "designHighlight": "突破传统冲锋枪枪管高架于握把上方的布局，极低膛轴使点火后坐力直接顺着小臂骨骼后传，从物理根源上消除了枪口翻转力矩杠杆臂。",
+        "audioScript": "请看这根五点五英寸冷锻枪管。它的轴线竟然被下压到了扳机下方十五点三毫米，直接对齐射手虎口。击发点四五点大口径重弹时，后坐推力沿手臂直线传递，从几何学源头直接消灭了枪口上跳力矩。",
+        "audioUrl": "audio/vector/parts/vector_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "140mm CHF Barrel with Ultra-Low Bore Axis Below Trigger Pivot",
+        "overview": "The 5.5-inch cold-hammer-forged barrel is rigidly pressed into the steel receiver trunnion, serving as the static accuracy foundation of the weapon. Its centerline sits an unprecedented 15.3 millimeters below the trigger pivot, aligning directly with the web of the firing hand.",
+        "craftAndMaterial": "Forged from 4140 chrome-moly-vanadium steel with a QPQ salt bath nitride finish, featuring a 1-in-16 left-hand twist and a mirror-polished feed ramp optimized for wide hollow-point profiles.",
+        "kinematicRole": "Remains static throughout all firing phases while containing 145 MPa peak combustion pressure; during field stripping between 34% and 66%, it slides forward 11.5 units out of its housing trunnion.",
+        "designHighlight": "Placing the barrel axis flush with the shooter's forearm eliminates the mechanical lever arm that produces muzzle climb in conventional submachine guns.",
+        "audioScript": "Look closely at this five point five inch cold hammer forged barrel. Its centerline is engineered fifteen point three millimeters below the trigger pivot, right in line with the web of your hand. When firing forty-five caliber rounds, recoil forces push straight back into the arm, virtually canceling static muzzle flip.",
+        "audioUrl": "audio/vector/parts/vector_barrel_en.mp3"
+      }
+    },
+    "vector_muzzle_device": {
+      "partId": "vector_muzzle_device",
+      "bomCode": "S-02",
+      "calloutLabelEn": "Threaded Muzzle Device",
+      "zh": {
+        "roleTag": "M16×1 LH 反牙接口 · 抑制亚音速大口径膛口焰",
+        "overview": "旋装于枪管前端的四槽消焰器，兼具保护枪口高精度倒角的护套功能。其接口兼容欧标战术偏心消音器，满足近距离低光照潜行作战需求。",
+        "craftAndMaterial": "高强度碳钢经黑氮化耐蚀处理，圆周对称铣削四个纵向扩压泄气槽，可有效打散残余未燃双基火药微粒并平缓排气。",
+        "kinematicRole": "击发循环中随枪管保持静止，泄导火药燃气；机拆分解34%到66%行程中，向右侧旋松并向前脱离枪管前端螺纹螺距。",
+        "designHighlight": "采用欧洲标准的M16左旋公制螺纹，专为直接快拆安装偏心消音器而设计，避免消音筒体遮挡原本就极低的瞄准视线。",
+        "audioScript": "这个四开槽消焰器安装在枪管前端公制螺纹上。它不仅能在室内战中有效打散未燃发射药的膛口火光，独特的反牙接口还能快速无缝对接偏心消音器，完全不遮挡顶部的超低瞄准线。",
+        "audioUrl": "audio/vector/parts/vector_muzzle_device_zh.mp3"
+      },
+      "en": {
+        "roleTag": "M16x1 LH Threaded Flash Suppressor and Muzzle Crown Protector",
+        "overview": "Threaded onto the muzzle crown, this four-port suppressor disperses hot propellant gas and protects barrel rifling. Its precision metric interface directly accommodates quick-detach eccentric suppressors for low-light tactical operations.",
+        "craftAndMaterial": "Machined from high-tensile carbon steel with a black nitride finish, featuring four longitudinal expansion flutes engineered to decelerate expanding gases without disturbing bullet stability.",
+        "kinematicRole": "Maintains a static structural lock during firing while venting high-pressure muzzle blast; disassembles between 34% and 66% with a forward rotational unscrewing translation.",
+        "designHighlight": "The left-hand metric threading prevents accidental loosening during rapid fire and allows direct integration of offset suppressors that keep sightlines clear.",
+        "audioScript": "Threaded to the muzzle with metric left-hand threads, this four-port flash hider disperses unburnt powder flash during night operations. It also acts as a rock-solid mounting platform for eccentric suppressors, keeping your red dot sight picture completely unobstructed.",
+        "audioUrl": "audio/vector/parts/vector_muzzle_device_en.mp3"
+      }
+    },
+    "vector_bolt": {
+      "partId": "vector_bolt",
+      "bomCode": "S-03",
+      "calloutLabelEn": "Twin-Lug Blowback Bolt",
+      "zh": {
+        "roleTag": "紧凑低质量闭锁体 · 双侧圆柱凸轮耳啮合滑块斜槽",
+        "overview": "位于枪管后方的超紧凑渗碳钢枪机，负责推弹入膛、支撑弹底与抽壳动作。其尾部突出的双侧淬火凸轮耳，是驱动下方钨钢滑块的动力源泉。",
+        "craftAndMaterial": "优质合金钢经表面渗碳淬火达到60HRC硬度，精铣凹槽配装重型外露抽壳钩，两侧外伸凸轮耳经高精度无心磨削与抛光以降低滑动摩擦。",
+        "kinematicRole": "击发阶段3沿枪机框后移，双凸轮耳受压迫沿滑块陡峭曲线下压配重；阶段4后退36.2毫米并抛壳；机拆14%至32%阶段向上抽离下机匣。",
+        "designHighlight": "重量相比传统自由枪机大幅削减超过50%，将沉重惯性配重完全剥离给下潜滑块，使得枪机在极短行程内达成超高射速与平稳后坐。",
+        "audioScript": "不同于传统冲锋枪笨重的大枪机，这块超轻量渗碳钢枪机重量减半。它的左右两侧伸出粗壮的圆柱凸轮耳，直接卡进下方的钨钢滑块槽内。弹头出膛瞬间，它强行把水平后坐力转变成了向下的机械压下力。",
+        "audioUrl": "audio/vector/parts/vector_bolt_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Ultra-Lightweight Delayed Bolt with Symmetrical Cam Trunnions",
+        "overview": "Positioned behind the chamber, this compact case-hardened steel bolt feeds cartridges, supports ignition, and extracts spent brass. Its twin lateral cam trunnions transfer pure horizontal blowback energy into the descending counterweight.",
+        "craftAndMaterial": "Machined from carburized alloy steel hardened to 60 Rockwell C, housing a heavy-duty claw extractor and featuring cylindrical lateral trunnions polished to mirror tolerances.",
+        "kinematicRole": "Travels 36.2 millimeters rearward in firing phases 3 and 4, driving the slider down steep cam ramps before stripping fresh rounds in phase 6; lifts upward at 14% to 32% disassembly.",
+        "designHighlight": "Shaving more than half the reciprocating mass of standard forty-five caliber bolts allows extreme cyclic speed while offloading kinetic momentum to the downward slider.",
+        "audioScript": "Notice how incredibly compact this delayed-blowback bolt is compared to traditional heavy blocks. The twin cylindrical trunnions projecting from its sides ride inside the cam tracks of the tungsten slider, converting pure rearward bolt push into violent downward deceleration.",
+        "audioUrl": "audio/vector/parts/vector_bolt_en.mp3"
+      }
+    },
+    "vector_firing_pin": {
+      "partId": "vector_firing_pin",
+      "bomCode": "S-04",
+      "calloutLabelEn": "Inertial Firing Pin",
+      "zh": {
+        "roleTag": "高劲度击针回位簧 · 承接顶置倒装击锤下摆敲击",
+        "overview": "浮动贯穿装配在枪机轴心腔孔内的不锈钢阶梯击针，用于接收击锤动量打击底火。尾部打击砧面露出于枪机后壁，由强力防惯性回位簧常态向后推顶。",
+        "craftAndMaterial": "选用17-4PH沉淀硬化不锈钢数控车削，针尖经圆滑微弧抛光防止击穿底火，外周套装高疲劳寿命琴钢丝阶梯限位弹簧。",
+        "kinematicRole": "阶段1承受倒装击锤向下摆击产生惯性前冲撞击底火点火，随后在弹簧回推下缩回；机拆14%至32%跟随枪机整体抬出，随后抽出分离。",
+        "designHighlight": "结合滑块顶面机械干涉设计，若枪机未完全水平推弹闭锁，滑块实体会遮挡击锤敲击轨迹，天然具备物理防开膛击发的断连保险机制。",
+        "audioScript": "这根装在枪机内部的沉淀硬化不锈钢击针采用浮动设计。后端的打击砧面经过硬化研磨，刚好承接上方倒装击锤的向下挥击。高刚度琴钢丝回位簧可确保枪机剧烈晃动时绝不发生惯性走火。",
+        "audioUrl": "audio/vector/parts/vector_firing_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Stepped Inertial Firing Pin with Heavy Piano-Wire Spring",
+        "overview": "Housed longitudinally inside the bolt body, this stainless steel firing pin transfers downward hammer energy forward to strike the primer. A stiff return spring keeps the tip retracted flush until struck at full lock.",
+        "craftAndMaterial": "CNC-turned from high-strength 17-4 PH precipitation-hardened stainless steel with a micro-polished spherical striker tip and coiled music wire spring.",
+        "kinematicRole": "Driven forward by the falling inverted hammer in phase 1 to ignite the cartridge, then immediately retracted by spring tension; lifts out with the bolt during 14% to 32% disassembly.",
+        "designHighlight": "The counterweight slider physically shields the rear striking face of the firing pin until full lockup, providing an inherent mechanical out-of-battery safety.",
+        "audioScript": "Installed inside the core of the bolt, this 17-4 stainless inertial firing pin receives the strike of the inverted hammer. Its high-rate return spring prevents dangerous slam fires during rapid 1200 round per minute cycling, while the slider protects against out-of-battery ignition.",
+        "audioUrl": "audio/vector/parts/vector_firing_pin_en.mp3"
+      }
+    },
+    "vector_slider": {
+      "partId": "vector_slider",
+      "bomCode": "S-05",
+      "calloutLabelEn": "Super V Tungsten Slider",
+      "zh": {
+        "roleTag": "US 7,201,094 核心专利 · 水平后坐偏转 -65° 向下冲量",
+        "overview": "作为短剑冲锋枪的核心心脏构件，这块高密度钨钢配重滑块沿斜角滑道滑动。它通过两侧精心设计的变角度凸轮曲槽，强行接管并转化枪机的所有后坐冲量。",
+        "craftAndMaterial": "采用高强度框架镶嵌高比重钨合金内芯以获得紧凑质量，双侧精密铣削经过表面超精研的渐变角度凹槽，具备极高抗冲击抗剪切韧性。",
+        "kinematicRole": "阶段3以2.68比1的减速机械劣势延迟枪机开锁；阶段4沿负65度导轨高速下潜64毫米抵消枪口上跳；机拆14%至32%阶段连同枪机滑出机匣。",
+        "designHighlight": "不仅通过陡角延迟开锁降低膛压，更将后坐动量转向为朝下的物理加速度，完美抵消了弹头高速出膛产生的枪口上跳力矩。",
+        "audioScript": "这就是短剑冲锋枪最具革命性的专利钨钢滑块。利用上部双颊的变角度凸轮槽，它在开锁初段制造巨大的机械劣势，逼迫枪机延迟后坐。随后顺着负六十五度斜轨猛冲下潜六十四毫米，用自身剧烈的下冲反冲量直接拉住枪口。",
+        "audioUrl": "audio/vector/parts/vector_slider_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Patented -65° Articulated Tungsten Recoil Redirection Mass",
+        "overview": "Serving as the mechanical heart of the weapon, this dense counterweight glides diagonally inside the lower chassis. Its curved cam tracks force bolt blowback thrust into an inclined downward trajectory.",
+        "craftAndMaterial": "Forged steel frame inlaid with ultra-dense tungsten inserts to maximize mass within tight dimensions, cut with mirror-honed multi-angle cam slots for frictionless trunnion travel.",
+        "kinematicRole": "Imposes a 2.68 to 1 mechanical disadvantage in phase 3, then plunges 64 mm down a -65 degree vector in phase 4 to oppose muzzle rise; extracts at 14% to 32% disassembly.",
+        "designHighlight": "Transforms standard horizontal recoil energy into downward mechanical momentum, counteracting muzzle climb and keeping full-auto bursts pinpoint accurate.",
+        "audioScript": "Here is the patented KRISS Super V counterweight slider, weighted with high-density tungsten. When the cartridge fires, the bolt's cam trunnions force this heavy mass down a negative sixty-five degree slope. That dramatic downward plunge creates counter-momentum that pulls the muzzle right back on target.",
+        "audioUrl": "audio/vector/parts/vector_slider_en.mp3"
+      }
+    },
+    "vector_guide_rod": {
+      "partId": "vector_guide_rod",
+      "bomCode": "S-06",
+      "calloutLabelEn": "-65° Recoil Guide Rod",
+      "zh": {
+        "roleTag": "贯穿钨钢滑块内孔 · 聚氨酯底垫柔和吸收下潜终点冲击",
+        "overview": "以负65度倾角固定在下机匣底部的无心磨削不锈钢导向主轴，穿套在复进簧与滑块中心。其底部固定有一枚特种聚氨酯抗冲垫圈，承接滑块冲底撞击。",
+        "craftAndMaterial": "经高精度无心研磨并抛光的实心不锈钢芯轴，底座安装高邵氏硬度聚氨酯橡胶缓冲垫，具备出色的抗冲击疲劳与防剪切撕裂性能。",
+        "kinematicRole": "全程保持负65度倾角约束滑块往复升降运动轨迹；阶段5承接下潜触底瞬间冲击；机拆35%到66%行程中从下机匣井腔斜向拔除。",
+        "designHighlight": "与弹匣井平行的倾角设计使全枪下部空间利用率达到极致，聚氨酯缓冲垫大幅削减了射手手掌感受到的金属硬碰撞冲击感。",
+        "audioScript": "这根呈负六十五度倾斜的不锈钢精密导杆，贯穿钨钢滑块内部。底部的聚氨酯高分子吸能垫，在每分钟一千二百发极速射击下，能柔和化解滑块触底的硬性撞击，防止下机匣聚合物受振撕裂。",
+        "audioUrl": "audio/vector/parts/vector_guide_rod_zh.mp3"
+      },
+      "en": {
+        "roleTag": "-65° Recoil Shaft with High-Duro Polyurethane Impact Buffer",
+        "overview": "Fixed diagonally inside the lower housing, this centerless-ground stainless guide rod controls the travel axis of the main counterweight. Its lower terminus carries an elastomer buffer to absorb maximum downward stroke impacts.",
+        "craftAndMaterial": "Constructed from polished stainless steel stock with ground micro-finishes, capped with an oil-resistant 90-Durometer polyurethane shock pad at its base trunnion.",
+        "kinematicRole": "Constrains slider reciprocating motion along the -65 degree vector through all firing cycles; during sub-assembly strip from 35% to 66%, it extracts downward from the magwell well.",
+        "designHighlight": "The steep angle nests compactly behind the Glock-compatible magazine well, while the elastomer buffer softens metal-on-metal shock to the polymer lower.",
+        "audioScript": "Angled at negative sixty-five degrees behind the magazine well, this stainless steel guide rod directs the tungsten slider. At its base, a resilient polyurethane buffer ring absorbs the heavy downward collision at the bottom of the stroke, ensuring long-term polymer frame reliability.",
+        "audioUrl": "audio/vector/parts/vector_guide_rod_en.mp3"
+      }
+    },
+    "vector_recoil_spring": {
+      "partId": "vector_recoil_spring",
+      "bomCode": "S-07",
+      "calloutLabelEn": "Super V Recoil Spring",
+      "zh": {
+        "roleTag": "64mm 下潜压缩蓄能 · +65° 上推滑块经凸轮闭膛推弹",
+        "overview": "套装在斜置导杆外围的多圈螺旋高应变复进弹簧，深置于钨钢滑块内腔中。它负责吸收滑块下潜动能，并在触底后储存弹力回推整套自动机。",
+        "craftAndMaterial": "采用高抗疲劳合金琴钢丝缠绕制造，经预压定型和热喷丸强韧化处理，可在数十万次剧烈高速交变往复压缩中保持弹力平稳不衰减。",
+        "kinematicRole": "阶段4受滑块下潜压缩达56%自由长度储存弹性势能；阶段6沿正65度释放推力将滑块送回顶端；机拆进度35%至66%时沿导杆抽出。",
+        "designHighlight": "不同于常规枪机沿枪管平推弹簧，该簧采用倾斜压缩，回弹力通过凸轮槽转换为水平闭锁力，机构换向传动极其精妙。",
+        "audioScript": "套装在斜置导杆上的特种琴钢丝螺旋复进簧，承受着极速交变载荷。滑块下冲时弹簧被剧烈压缩蓄能，随后沿正六十五度方向将钨钢滑块快速顶升，再次通过凸轮斜面将枪机精准推回枪膛闭锁。",
+        "audioUrl": "audio/vector/parts/vector_recoil_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Heavy-Duty Helical Spring Providing Inclined Return Drive",
+        "overview": "Encircling the guide rod inside the slider core, this high-rate helical wire spring stores energy as the mass travels down. It drives the counterweight back upward to push the bolt closed during counter-recoil.",
+        "craftAndMaterial": "Wound from shot-peened high-fatigue alloy music wire, stress-relieved and preset under compression to prevent load degradation under continuous automatic fire.",
+        "kinematicRole": "Compresses by 56% during firing phase 4; releases explosive restoring force in phase 6 to push the slider upward; slips off the guide rod between 35% and 66% strip.",
+        "designHighlight": "Converts pure vertical-inclined spring force back into horizontal feeding thrust through the cam tracks, achieving flawless feeding from straight-angled magazines.",
+        "audioScript": "Coiled from shot-peened alloy steel, this heavy helical recoil spring absorbs the counterweight's rapid descent. At bottom dead center, it launches the tungsten block back up the incline, leveraging the cam geometry to snap the bolt shut on a fresh cartridge.",
+        "audioUrl": "audio/vector/parts/vector_recoil_spring_en.mp3"
+      }
+    },
+    "vector_upper_housing": {
+      "partId": "vector_upper_housing",
+      "bomCode": "F-01",
+      "calloutLabelEn": "FDE Upper Receiver",
+      "zh": {
+        "roleTag": "高瞄准基线平台 · 内置顶层火控舱与1/2/A快慢机座",
+        "overview": "构成全枪上半部分骨架的沙色高分子聚合物壳体，内部倒悬安置独立的不锈钢火控底盘。其顶部一体集成全长36槽皮卡汀尼战术瞄准导轨。",
+        "craftAndMaterial": "采用35%短切玻璃纤维增强聚酰胺注塑，内嵌航空铝加强骨架，外部呈现战斗沙色阳极质感并模压防滑纹理与清晰快慢机档位文字。",
+        "kinematicRole": "射击全程作为全枪瞄具平台与顶置击锤支撑基准保持静止；在机拆分解阶段8%至30%拔出快拆销后，可垂直向上完整分离。",
+        "designHighlight": "由于下机匣内部被滑块井与弹匣井完全占满，该上壳体创造性地提供了倒置火控的安装空间，将射击模式选择旋钮置于上方最佳人机工位。",
+        "audioScript": "这具战斗沙色注塑上机匣采用了百分之三十五玻纤增强尼龙。顶部是一整条金属加强战术导轨。由于下方空间被钨钢滑块占据，设计师颠覆性地将整套倒装火控模块吊挂在上机匣内，空间利用堪称极致。",
+        "audioUrl": "audio/vector/parts/vector_upper_housing_zh.mp3"
+      },
+      "en": {
+        "roleTag": "35% Glass-Filled Receiver Housing Inverted Upper Fire Control Module",
+        "overview": "Forming the upper structural spine of the SMG, this FDE polymer housing encloses the inverted stainless fire control chassis. A continuous 36-slot Picatinny rail runs along its entire top deck for optical sights.",
+        "craftAndMaterial": "Injection molded from 35% chopped glass-fiber reinforced nylon over aluminum hardpoints, finished in combat Flat Dark Earth with crisp selector engravings.",
+        "kinematicRole": "Maintains a rigid optical zero platform throughout cyclic action; separates vertically from the lower frame between 8% and 30% disassembly after pin removal.",
+        "designHighlight": "Because the lower frame is occupied by the low barrel and slide track, this upper receiver ingeniously suspends the hammer inverted to save precious chassis volume.",
+        "audioScript": "Engineered from rugged glass-reinforced polymer in flat dark earth, this upper receiver houses the suspended fire control system. Because the lower chassis is filled with the recoil chute, the hammer and sear are hung upside down in this upper shell.",
+        "audioUrl": "audio/vector/parts/vector_upper_housing_en.mp3"
+      }
+    },
+    "vector_lower_chassis": {
+      "partId": "vector_lower_chassis",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Super V Lower Frame",
+      "zh": {
+        "roleTag": "并联 66° 弹匣井与 -65° 下潜井 · 一体横桥护圈握把",
+        "overview": "构筑出短剑冲锋枪科幻方正轮廓的一体化聚合物下机匣，集成了倾斜弹匣井与下潜滑道腔。其后方通过水平横向护桥与带纹理的人体工学握把连为一体。",
+        "craftAndMaterial": "超高冲击韧性改性聚合物高压注塑一体成形，前部嵌入精密钢制机匣节套衬套，握把两侧及前后表面蚀刻有防滑点阵微结构纹理。",
+        "kinematicRole": "全程作为滑块运行、弹匣供弹与射手手持受力的核心基座不动；在最终大拆解65%至100%阶段作为核心部件下沉分解展示。",
+        "designHighlight": "极其前卫地将66度格洛克弹匣插井与负65度滑块运动导向腔以V字形并联并置，创造出短剑独步枪界的重心前移平衡配重结构。",
+        "audioScript": "具有未来感方正外形的下机匣，巧妙并联了前倾六十六度的弹匣井与负六十五度的钨钢滑块下潜井。中部的横向连桥不仅能充当射手防滑手托，更使剧烈连发射击时的结构刚度提升了数倍。",
+        "audioUrl": "audio/vector/parts/vector_lower_chassis_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dual-Chamber Polymer Chassis Housing Magwell and Recoil Chute",
+        "overview": "Defining the futuristic outline of the weapon, this integrated lower frame encases the magazine well and the -65 degree counterweight chute. A continuous wrist bridge links the trigger guard back into the stippled pistol grip.",
+        "craftAndMaterial": "Precision molded from ultra-tough impact-modified synthetic polymer with steel rail inserts, textured with aggressive stippling across user contact surfaces.",
+        "kinematicRole": "Acts as the rigid structural housing for cycling masses, ammunition feeding, and human grip forces; drops downward during the final 65% to 100% armorer teardown.",
+        "designHighlight": "The radical V-shaped spatial arrangement aligns the magazine feed angle with the recoil slide path, centralizing mass between the shooter's hands.",
+        "audioScript": "This monolithic lower chassis forms the iconic silhouette of the Vector. It nests the sixty-six degree magazine well right up against the negative sixty-five degree counterweight chute, balancing center of gravity right into the palm of your hand.",
+        "audioUrl": "audio/vector/parts/vector_lower_chassis_en.mp3"
+      }
+    },
+    "vector_charging_handle": {
+      "partId": "vector_charging_handle",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Folding Charging Handle",
+      "zh": {
+        "roleTag": "高辨识度自润滑黄铜转轴 · 贴合折叠零勾挂且射击静止",
+        "overview": "安装在下机匣左侧滑槽内的折叠式非随动拉机柄，专供射手初次推弹上膛使用。其外露的经典黄铜色铰链轴是全枪极为醒目的标志性机械细节。",
+        "craftAndMaterial": "拉机柄滑块为渗氮硬化碳钢，铰链转轴采用高品质自润滑耐磨黄铜精密车削，柄身外层包覆防冻防滑工程塑料以适应极端气候。",
+        "kinematicRole": "射击循环各阶段全程保持前位静止不随动；开火前由人工向外扳开90度并后拉驱动枪机上膛；机拆36%到68%阶段向左前方斜向滑出。",
+        "designHighlight": "非随动折叠设计彻底杜绝了高射速下高速打手或者勾挂单兵战术防弹装具的危险，黄铜铰链则确保了极其平滑的开合自润滑手感。",
+        "audioScript": "机匣左侧这套折叠拉机柄采用非随动机构。平时紧紧贴在机匣凹槽内防止勾挂，向外折开九十度即可轻松拉动枪机上膛。耀眼的自润滑黄铜转轴，在连发喷射射击时保持绝对静止，绝不打手。",
+        "audioUrl": "audio/vector/parts/vector_charging_handle_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Non-Reciprocating Left Folding Handle with Self-Lubricating Pivot",
+        "overview": "Riding in a dedicated slot on the left receiver flank, this folding charging handle allows the shooter to manually cycle the action. Its signature brass pivot trunnion stands out as an iconic mechanical element.",
+        "craftAndMaterial": "Constructed from nitrided high-strength steel with a precision-machined C26000 brass swivel hinge and overmolded anti-slip polymer grip tabs.",
+        "kinematicRole": "Remains parked forward and completely stationary during all firing phases; manually flipped out ninety degrees to charge; slips outward between 36% and 68% disassembly.",
+        "designHighlight": "The non-reciprocating architecture guarantees the charging handle never snaps against the shooter's support hand or snags web gear during rapid automatic fire.",
+        "audioScript": "Mounted to the left side, this folding charging handle does not reciprocate when firing. The exposed brass hinge pin provides natural self-lubrication. You flip it out ninety degrees to rack the bolt, and during live fire, it stays safely parked forward.",
+        "audioUrl": "audio/vector/parts/vector_charging_handle_en.mp3"
+      }
+    },
+    "vector_front_sight": {
+      "partId": "vector_front_sight",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Defiance Front Sight",
+      "zh": {
+        "roleTag": "高瞄准基线补偿低膛轴差 · 免工具快翻锁定",
+        "overview": "锁紧在全长皮卡汀尼顶导轨最前端的折叠准星座，提供应急备份机械瞄准基线。柱状准星带有护翼包覆，可通过侧面按钮单手迅速起倒。",
+        "craftAndMaterial": "基座由6061-T6高强度航空铝合金数控切削并经三级硬质阳极氧化，立柱与弹簧锁销为磷化发黑钢制件，坚固且防反光眩目。",
+        "kinematicRole": "在击发与连发全过程中作为静止瞄准点，吸收机匣震动；机拆阶段8%至30%随上机匣升起，并在65%后向右侧移出导轨滑槽。",
+        "designHighlight": "针对极低枪管轴线专门优化了高瞄准基线高度，使射手无需过度低头压腮即可在贴腮时自然捕捉目标，大幅改善人机功效。",
+        "audioScript": "这是固定在导轨前端的超薄折叠前准星。由于短剑冲锋枪的枪管位置非常低，高架的折叠机械瞄具正好为射手提供了六十四毫米的舒适瞄准高，让快速出枪和开火瞄准毫不别扭。",
+        "audioUrl": "audio/vector/parts/vector_front_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Low-Profile Spring-Loaded Folding Front Post for High-Over-Bore Line",
+        "overview": "Clamped to the front of the top Picatinny rail, this folding post sight serves as an instant backup aiming reference. Protective metal wings flank the central post against severe field drop damage.",
+        "craftAndMaterial": "CNC-machined from 6061-T6 aircraft aluminum with a Type III hardcoat anodized finish and treated matte-black steel detents.",
+        "kinematicRole": "Remains rigidly static across all seven firing phases; detaches to the right rail profile during armorer teardown between 65% and 100%.",
+        "designHighlight": "Engineered with a high sight-over-bore geometry to perfectly match the dropped barrel axis, allowing immediate sight alignment without excessive cheek weld strain.",
+        "audioScript": "Locked to the front rail, this Defiance flip-up front sight folds completely flat. Because the Vector bore axis is so low, this sight is tall enough to match the shooter's natural upright head position, allowing lightning-fast target acquisition.",
+        "audioUrl": "audio/vector/parts/vector_front_sight_en.mp3"
+      }
+    },
+    "vector_rear_sight": {
+      "partId": "vector_rear_sight",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Dual-Aperture Rear Sight",
+      "zh": {
+        "roleTag": "0.5 MOA 风偏鼓轮 · 近战大孔与精确小孔快切",
+        "overview": "锁装在顶置导轨末端靠近射手眼睛的折叠觇孔后照门，具备双孔径快速翻转功能。其侧面集成精密滚花风偏调节轮，每格刻度调节清晰有声。",
+        "craftAndMaterial": "轻质硬质阳极氧化铝合金支架结合耐磨淬火钢制觇孔叶片，内嵌弹簧钢珠定位滚轮，提供免工具快速切换孔径与高精度密位微调。",
+        "kinematicRole": "射击全程作为后瞄准基线参考保持静止；大拆解阶段65%至100%行程中，松开底部夹紧螺栓后向左后方滑脱导轨卡槽。",
+        "designHighlight": "放倒后极度扁平超薄，高度完全避开主流全息瞄准镜视野下半区；弹起后大觇孔专打近战，小觇孔支持百米精确点杀。",
+        "audioScript": "位于导轨末端的折叠后照门具有双孔径翻转设计。近战用大光圈可以瞬间套住目标，百米精确射击则切换为小觇孔。折叠后极其平整，完全不会遮挡全息红点镜的宽阔瞄准视野。",
+        "audioUrl": "audio/vector/parts/vector_rear_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Tool-Free Flip Rear Aperture with Half-MOA Windage Drum",
+        "overview": "Clamped at the rear end of the receiver rail near the shooter's eye, this aperture sight delivers rapid dual-diameter target framing. An indexed knurled wheel permits precise half-MOA windage adjustments.",
+        "craftAndMaterial": "Fabricated from hardcoat anodized aluminum with heat-treated steel peep leaves, utilizing spring-loaded detents for distinct click adjustments.",
+        "kinematicRole": "Stationary reference element throughout all firing phases; slides off the rear rail section during final teardown between 65% and 100%.",
+        "designHighlight": "Its low folded height stays completely beneath holographic red dot sights, while its dual aperture allows instant switching from close-quarters to precision modes.",
+        "audioScript": "Sitting at the rear of the Picatinny rail, this flip-up aperture sight features two selectable peep sizes. Flip down, it clears the glass of red dot sights completely; flip up, it gives half minute-of-angle adjustments for precise forty-five caliber placement.",
+        "audioUrl": "audio/vector/parts/vector_rear_sight_en.mp3"
+      }
+    },
+    "vector_takedown_pins": {
+      "partId": "vector_takedown_pins",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Captive Takedown Pins",
+      "zh": {
+        "roleTag": "弹簧钢珠防丢卡笋 · 10秒内徒手分离上下机匣",
+        "overview": "横向贯穿机匣铰接耳的四枚特种快拆固定销，负责将上机匣、下机匣与前护木牢牢锚定成刚性整体。头部加工有防滑环形拉指凹槽。",
+        "craftAndMaterial": "由40Cr优质铬合金钢经调质与表面黑磷化防锈处理，销体内置不锈钢弹簧与微型限位钢珠，具备出色的防震动移位与防跌落自锁能力。",
+        "kinematicRole": "射击循环中紧密锁合上下机匣承受剪切冲击载荷；在机拆初始阶段2%到20%最先向外顶出，释放机匣机械联锁实现野战快拆。",
+        "designHighlight": "无需任何起子或冲子等工具，单兵使用实弹弹尖即可直接将其顶开；内置防丢卡圈能将销钉安全挂靠在机匣单侧防止战地遗失。",
+        "audioScript": "这四枚快拆横向分解销贯穿锁定着整个机匣。销钉内置弹簧定位钢珠，单兵在野战环境下无需任何工具，用一颗子弹的弹尖就能轻松顶开，十秒内就能把短剑上下机匣彻底拆开维护。",
+        "audioUrl": "audio/vector/parts/vector_takedown_pins_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Steel Receiver Locking Pins with Spring-Loaded Ball Detents",
+        "overview": "Passing horizontally through receiver retention lugs, these four captive push pins hold the upper and lower receiver chassis rigidly together. Deep annular grooves allow quick manipulation by bare fingers.",
+        "craftAndMaterial": "Machined from 40Cr hardened alloy steel with a mil-spec black phosphate finish, housing captive internal detent springs and stainless retaining ball bearings.",
+        "kinematicRole": "Bear structural shear loads during firing; pushed sideways in disassembly steps 2% to 20% to unlock the entire upper and lower receiver halves.",
+        "designHighlight": "Engineered for complete tool-free field stripping, allowing an operator to pop them open using a cartridge tip while captive rings prevent losing them in the dirt.",
+        "audioScript": "These four hardened steel takedown pins secure the upper and lower receivers together. Each pin features a spring-loaded ball detent. You can push them out in seconds using a bullet tip, enabling total field stripping without losing a single pin.",
+        "audioUrl": "audio/vector/parts/vector_takedown_pins_en.mp3"
+      }
+    },
+    "vector_stock_hinge": {
+      "partId": "vector_stock_hinge",
+      "bomCode": "F-07",
+      "calloutLabelEn": "Folding Stock Hinge",
+      "zh": {
+        "roleTag": "折叠全长缩至406毫米 · 折叠态可正常射击抛壳",
+        "overview": "该铰链座嵌装于聚合物上机匣尾端，为右折式枪托提供高刚度转轴与按压开锁卡榫。其坚固的钢制构型确保枪托在剧烈战术撞击下仍能保持绝对刚性闭锁。",
+        "craftAndMaterial": "采用4140高强度合金钢锻造成型，表面经QPQ盐浴渗氮硬化处理，内部配置抗震螺旋弹簧与倒角淬火闭锁齿榫。",
+        "kinematicRole": "射击循环中作为后坐承载受力支点保持静止；分解时在36%到68%阶段向后方及侧方滑脱分离。",
+        "designHighlight": "其翻折几何经过精密三维避让校准，枪托向右折叠180度紧贴机匣时完全避开抛壳窗，即便在紧急折叠状态下也能以每分钟1200发全速抛壳射击。",
+        "audioScript": "这是短剑冲锋枪的右侧折叠枪托铰链座。轻按圆形按钮，枪托即可向右迅速翻折一百八十度，将全枪长度瞬间压缩到仅有四百零六毫米。更绝妙的是，折叠后的托体完全避开了右侧抛壳窗，在狭窄车内遭遇突发交火时，无需展开枪托也能直接开火压制。",
+        "audioUrl": "audio/vector/parts/vector_stock_hinge_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Collapses Length to 406 mm with Uninhibited Right Shell Ejection",
+        "overview": "This forged steel hinge knuckle anchors directly to the upper polymer chassis tail to support 180-degree rightward stock folding. It incorporates a spring-loaded push-button latch that maintains absolute structural rigidity under rigorous combat impact.",
+        "craftAndMaterial": "Drop-forged from 4140 chrome-moly steel with a QPQ salt-bath nitride case hardening, featuring a hardened angled lock tooth and heavy internal coil spring.",
+        "kinematicRole": "Remains a stationary rear recoil support datum during firing, detaching rearward and lateral between 36% and 68% disassembly steps.",
+        "designHighlight": "The knuckle geometry offsets the folded stock clean clear of the ejection port, permitting continuous 1200 RPM live firing even when completely folded.",
+        "audioScript": "This is the right-folding stock hinge knuckle. Pressing the steel release button instantly collapses the overall weapon length from over six hundred millimeters down to just four hundred and six millimeters. Because the stock swings tight against the right receiver without obstructing the ejection port, operators can immediately return suppressive fire from inside tight vehicles without ever unfolding the stock.",
+        "audioUrl": "audio/vector/parts/vector_stock_hinge_en.mp3"
+      }
+    },
+    "vector_folding_stock": {
+      "partId": "vector_folding_stock",
+      "bomCode": "F-08",
+      "calloutLabelEn": "Skeleton Folding Stock",
+      "zh": {
+        "roleTag": "高置直列抵肩轴线 · 三角桁架减重与横槽橡胶托底",
+        "overview": "折叠枪托安装在机匣尾部铰链座上，为射手提供稳定的抵肩射击支点与贴腮基准。其整体采用轻量化三角镂空骨架，末端硫化高阻尼防滑橡胶肩垫。",
+        "craftAndMaterial": "采用高抗冲玻璃纤维增强聚酰胺一体注塑成型，肩垫采用耐候性硫化丁腈橡胶，表面制有宽幅横向防滑排水排汗凹槽。",
+        "kinematicRole": "射击全程保持刚性静止，将残余水平后坐力平顺传导至射手肩窝；在分解阶段的36%至68%区间随铰链一同向后方抽出。",
+        "designHighlight": "上桁架轴线与枪管内膛轴线保持精准同轴直列分布，从人体工程学上彻底消除了翻转力臂，配合向下抵消上跳的滑块，形成完美的直推射击体验。",
+        "audioScript": "经典镂空折叠枪托采用高强度玻纤工程塑料成型。它的上边缘完全与枪管轴线呈直线贯通，把微弱的水平后坐力直接推入射手肩窝，配合尾部厚实的横槽橡胶垫，射击时几乎感受不到弹跳。剧烈奔袭时折向右侧，行动极为利落。",
+        "audioUrl": "audio/vector/parts/vector_folding_stock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "In-Line High Shoulder Axis Truss with Ribbed Rubber Buttpad",
+        "overview": "The skeletonized folding stock attaches to the receiver hinge to provide an ergonomic shoulder mount and cheek weld. Its triangular truss structure balances minimum mass with extreme beam rigidity, capped by a thick vulcanized rubber recoil pad.",
+        "craftAndMaterial": "Molded from high-impact glass-reinforced polyamide with a vulcanized nitrile rubber buttpad featuring deep transverse non-slip serrations.",
+        "kinematicRole": "Acts as a stationary recoil buffer during all firing phases, sliding rearward alongside the hinge knuckle between 36% and 68% disassembly.",
+        "designHighlight": "The top truss aligns directly with the bore axis, eliminating traditional vertical offset moment arms and feeding remaining linear impulse straight into the shoulder pocket.",
+        "audioScript": "Constructed from ultra-tough glass-filled polymer, this lightweight skeleton stock maintains an unbroken straight-line axis with the barrel. By channeling residual horizontal impulse directly into your shoulder pocket without any muzzle lever arm, it perfectly complements the downward Super V slider. The deeply grooved rubber buttpad locks securely into body armor, keeping sight alignment rock solid during full automatic bursts.",
+        "audioUrl": "audio/vector/parts/vector_folding_stock_en.mp3"
+      }
+    },
+    "vector_fcu_chassis": {
+      "partId": "vector_fcu_chassis",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Top CNC FCU Frame",
+      "zh": {
+        "roleTag": "悬架于枪管与滑块正上方 · 集成单发两连发棘轮凸轮",
+        "overview": "这是倒置悬挂于上机匣顶舱的不锈钢模块化火控副车架，是全枪射控中枢的精密骨架。它集中容纳倒装击锤、单发断连器及两发点射棘轮计数机构。",
+        "craftAndMaterial": "采用304沉淀硬化不锈钢经五轴CNC整体掏空切削成型，表面经微粒喷砂与钝化防腐处理，两侧精密销孔公差控制在五微米以内。",
+        "kinematicRole": "发射循环中作为静止基准，承载击锤回转及快慢机轴定位；在分解初期8%至30%阶段随上机匣开启向上抬起脱离下机匣。",
+        "designHighlight": "短剑冲锋枪下机匣被超低枪管和负六十五度滑块完全占满，工程师独具匠心地将整个击发机构翻转一百八十度倒悬在机匣天花板上，完成了空间绝杀。",
+        "audioScript": "欢迎观察这个极其罕见的顶置火控副车架。因为枪身下半部完全被低矮的枪管和下潜滑块占据，设计师不得不把整个火控系统整体倒装，吊挂在机匣顶部。这一整块精密不锈钢架构集成了击锤、阻铁以及两发点射的齿轮计数器，是机械布局的巅峰之作。",
+        "audioUrl": "audio/vector/parts/vector_fcu_chassis_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Inverted Fire-Control Subframe Housing Ratchet Cam & Sear Units",
+        "overview": "This precision CNC stainless subframe is suspended upside-down within the upper receiver top deck. It consolidates the inverted hammer, primary sear, disconnector, and a two-round burst mechanical ratchet counter.",
+        "craftAndMaterial": "Machined from a solid billet of 304 precipitation-hardened stainless steel via five-axis CNC, passivated for corrosion resistance with pin bore tolerances within five microns.",
+        "kinematicRole": "Serves as a fixed reference frame during cycling, separating vertically upward with the upper receiver shell between 8% and 30% disassembly.",
+        "designHighlight": "With the lower chassis occupied by the barrel and 65-degree counterweight chute, designers inverted the entire fire-control architecture, relocating it inside the receiver roof.",
+        "audioScript": "You are looking at the inverted stainless fire-control subframe. Because the lower chassis is packed with the low barrel and the steep Super V slider mechanism, engineers hung the entire trigger mechanism upside down inside the receiver ceiling. This precision-machined stainless housing synchronizes the inverted hammer, sears, and two-round burst ratchet counter, representing an extraordinary triumph of interior mechanical packaging.",
+        "audioUrl": "audio/vector/parts/vector_fcu_chassis_en.mp3"
+      }
+    },
+    "vector_trigger": {
+      "partId": "vector_trigger",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "High Pivoting Trigger",
+      "zh": {
+        "roleTag": "位于枪管轴线上方15.3毫米 · 近乎纯水平干脆扣压行程",
+        "overview": "扳机铰接于扳机护圈内侧，通过双联不锈钢平行传递拉杆向后上方联通顶层阻铁。其几何旋转轴位于高位，使射手手指获得近乎水平直线后滑的清脆扣压手感。",
+        "craftAndMaterial": "采用4140合金钢冲压锻造并经黑氮化处理，表面设计有纵向微细防滑纵槽，拉杆经镜面抛光以将摩擦阻力降至极限。",
+        "kinematicRole": "阶段一射手扣动使其向后平移摆动触发阻铁；阶段七释放后在复位簧推动下前复；分解阶段在38%到70%向后上方抽出。",
+        "designHighlight": "其受力点高出枪管轴线十五点三毫米，利用高位扳机与低轴线枪膛的垂直错位，巧妙配合虎口承力点，实现极度灵敏且行程短促的竞技级击发体验。",
+        "audioScript": "短剑的扳机位置极其独特，它位于枪管轴线正上方十五点三毫米处。由于采用了高位旋转轴和双联平行连杆，射手食指扣压时感觉像是在纯水平滑动，行程极短且回弹清脆，即使在每分钟一千两百发的高射速节奏下，也能实现指哪打哪的高精度控枪。",
+        "audioUrl": "audio/vector/parts/vector_trigger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Positioned 15.3 mm Above Bore Axis with Horizontal Match Pull",
+        "overview": "The high-pivoting trigger swings within the trigger guard and connects to the overhead sear assembly through twin stainless transfer bars. Its elevated geometry converts the shooter's finger pull into an exceptionally crisp, horizontal rearward stroke.",
+        "craftAndMaterial": "Formed from 4140 alloy steel with a low-friction black nitride finish, paired with mirror-polished twin side bars to eliminate tactile grittiness.",
+        "kinematicRole": "Rotates rearward during Phase 1 to trip the sear, resets forward during Phase 7, and pulls free rearward-upward between 38% and 70% disassembly.",
+        "designHighlight": "Located 15.3 millimeters above the bore line, the high pivot arm aligns finger travel naturally with hand anatomy, giving a match-grade break at extreme rates of fire.",
+        "audioScript": "Notice how high the trigger is mounted relative to the barrel. Positioned fifteen millimeters above the bore axis, this pivoting shoe uses twin parallel stainless transfer bars to trip the overhead sear. The high pivot angle gives the shooter a crisp, linear horizontal pull with virtually zero creep, allowing lightning-fast semi-automatic follow-up shots under demanding tactical conditions.",
+        "audioUrl": "audio/vector/parts/vector_trigger_en.mp3"
+      }
+    },
+    "vector_hammer": {
+      "partId": "vector_hammer",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Inverted Steel Hammer",
+      "zh": {
+        "roleTag": "自上而下挥击底置击针 · 后坐枪机顶背自动压回待击",
+        "overview": "该倒装击锤安装在顶层火控副车架前端，待击时向上方仰起并紧贴机匣顶盖内壁。释放瞬间由主簧驱动，绕横轴自上而下顺时针猛烈甩动敲击下方枪机的浮动击针。",
+        "craftAndMaterial": "采用8620镍铬钼合金钢经渗碳淬火硬化处理，撞击面硬度高达HRC58至62，下部开有契合枪机顶背凸起的回转倒角。",
+        "kinematicRole": "阶段一自上而下挥击击针引发底火；阶段四由后坐枪机顶背沿弧形倒角向上推回并被阻铁挂住；分解时在38%至70%向前下方旋落分离。",
+        "designHighlight": "与传统枪械击锤向上打不同，短剑击锤采用倒装下劈式运动，其撞击动量方向与下沉滑块同向，不仅省出下部空间，更丝毫不会对枪口造成上仰扰动。",
+        "audioScript": "这是一枚离经叛道的倒装击锤。通常枪械的击锤都是自下而上敲击，但短剑的击锤却潜伏在最顶部。击发时，它受强力主簧驱动向下猛劈四十七度，跨过上下机匣接缝狠狠砸向底置击针。枪机后坐时又像压路机一样把它重新压回顶部待击，构思精妙。",
+        "audioUrl": "audio/vector/parts/vector_hammer_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Downward-Swinging Top Hammer Reset by Recoiling Bolt Cam",
+        "overview": "Pivoting in the forward section of the top-deck fire-control subframe, this inverted hammer tucks upward against the receiver ceiling while cocked. On sear release, it whips downward forty-seven degrees across the receiver seam to strike the low-axis firing pin.",
+        "craftAndMaterial": "Case-hardened 8620 nickel-chromium-molybdenum alloy steel heat-treated to HRC 58-62, with contoured relief bevels to mate with the bolt carrier spine.",
+        "kinematicRole": "Strikes downward in Phase 1 to detonate the primer, recocks upward along the bolt ramp in Phase 4, and separates between 38% and 70% disassembly.",
+        "designHighlight": "Swinging downward instead of upward, the hammer's rotational kinetic impulse reinforces downward vectoring, ensuring zero angular muzzle pitch at trigger break.",
+        "audioScript": "This inverted hammer breaks all conventional firearm rules. Instead of swinging upward, it rests cocked against the upper receiver ceiling. When released, it swings downward forty-seven degrees to strike the low-axis firing pin. As the bolt recoils, its upper spine cams the hammer back up into the ceiling sear, ensuring consistent reset even during cyclic speeds of twelve hundred rounds per minute.",
+        "audioUrl": "audio/vector/parts/vector_hammer_en.mp3"
+      }
+    },
+    "vector_hammer_spring": {
+      "partId": "vector_hammer_spring",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "Top Helical Mainspring",
+      "zh": {
+        "roleTag": "水平储能顶推击锤上耳 · 极短击发锁时",
+        "overview": "击锤主簧水平卧放于顶层火控架上方，内部穿插不锈钢导向顶杆。其前端弹性顶抵倒装击锤上部受力耳，在微小行程内储存充沛势能。",
+        "craftAndMaterial": "采用优质琴钢丝多股紧密缠绕硬化处理，表面涂布二硫化钼干膜润滑涂层，导向顶杆由不锈钢精密车削制成。",
+        "kinematicRole": "击发阶段瞬间释放弹性势能推动击锤下劈；枪机后坐压回击锤时被轴向压缩储能；在分解38%到70%阶段随火控总成向后脱出。",
+        "designHighlight": "在每分钟一千两百发连发模式下，每发循环周期仅有五十毫秒，该主簧极高的弹性回复频率保证了极其敏捷的击发锁时与彻底杜绝击发滞后。",
+        "audioScript": "平卧在顶舱的这根高强度螺旋击锤主簧，是保证冲锋枪澎湃射速的心脏发条。在每发仅耗时五十毫秒的超高射速循环中，它必须以纳秒级的迟滞释放出充足势能，猛击击锤穿透厚重地点四五弹壳底火，无论极寒还是沙尘环境都绝不出现击发无力。",
+        "audioUrl": "audio/vector/parts/vector_hammer_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Horizontal Spring Strut Delivering Ultra-Fast Lock Time",
+        "overview": "This helical hammer mainspring lies horizontally along the upper subframe, surrounding a precision stainless steel guide strut. Its forward tip engages the hammer upper ear to store drive energy in a very compact footprint.",
+        "craftAndMaterial": "Wound from high-tensile music wire coated in dry-film molybdenum disulfide, guided by a centerless ground stainless steel strut.",
+        "kinematicRole": "Expands during Phase 1 to snap the hammer downward, compresses axially during bolt recoil in Phase 4, and extracts between 38% and 70% disassembly.",
+        "designHighlight": "Engineered for a fifty-millisecond cyclic cadence, its rapid harmonic recovery eliminates spring surge and ensures reliable primer ignition in dusty or sub-zero environments.",
+        "audioScript": "Nestled horizontally along the upper deck, this heavy-duty helical hammer spring provides relentless ignition energy. In a weapon cycling once every fifty milliseconds, the spring must snap the downward hammer instantly without harmonic resonance or sluggish rebound. Its polished stainless guide strut prevents binding, guaranteeing clean primer detonation whether operating in arctic cold or gritty desert combat.",
+        "audioUrl": "audio/vector/parts/vector_hammer_spring_en.mp3"
+      }
+    },
+    "vector_fire_selector": {
+      "partId": "vector_fire_selector",
+      "bomCode": "FC-05",
+      "calloutLabelEn": "Ambi 3-Mode Selector",
+      "zh": {
+        "roleTag": "独立射控解耦设计 · 单发两连发千二速全自动",
+        "overview": "该三档射击模式选择旋钮横穿上机匣中部，左右两侧各设有可联动的拨片。它独立控制火控阻铁与两连发计数棘轮，与下方的机械保险彻底解耦。",
+        "craftAndMaterial": "核心轴采用4140高韧性合金钢经高频表面淬火与黑色磷化防腐处理，两侧多边形操作拨片为防滑工程聚合物镶嵌结构。",
+        "kinematicRole": "由射手手动旋转切换内部凸轮角度，静态决定单发、两连发或全自动阻铁连动逻辑；分解时在42%到75%阶段向外侧抽出分离。",
+        "designHighlight": "短剑摒弃了传统快慢机兼任保险的繁琐设计，将单发、独门高杀伤两点射与全自动集中于此，两发点射以微秒级间隙出膛，几乎命中同一点。",
+        "audioScript": "上方的三档选择旋钮是短剑的火力调度核心。它完全与下方的保险分离，专门负责在单发、极速两发点射与每分钟一千两百发全自动之间切换。其中独门的两连发模式能在枪口上跳之前将两颗大威力重弹打进同一个弹孔，近身作战杀伤力惊人。",
+        "audioUrl": "audio/vector/parts/vector_fire_selector_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Decoupled Fire Control for Semi, Two-Burst, and 1200 RPM Auto",
+        "overview": "This ambidextrous fire selector axle traverses the mid-receiver, linking twin exterior levers with internal sear cams. It switches the weapon between single shot, a lethal two-round burst, and twelve hundred round per minute full-automatic fire.",
+        "craftAndMaterial": "Precision-machined 4140 steel cam core with high-frequency surface hardening, keyed to impact-resistant polymer exterior selector paddles.",
+        "kinematicRole": "Manually indexed by the operator to control sear engagements; slides outward laterally during disassembly between 42% and 75% progress.",
+        "designHighlight": "Completely isolated from the lower mechanical safety, this selector lets operators preset the burst or automatic fire mode while leaving quick readiness to the thumb safety.",
+        "audioScript": "The upper selector lever governs the firing cadence of the Vector. Operating completely independent of the safety lever, it switches smoothly between single shot, full automatic, and a signature two-round hyper-burst. That two-round burst fires two heavy forty-five caliber rounds so rapidly that they virtually hit through the exact same entrance hole before muzzle rise can register.",
+        "audioUrl": "audio/vector/parts/vector_fire_selector_en.mp3"
+      }
+    },
+    "vector_thumb_safety": {
+      "partId": "vector_thumb_safety",
+      "bomCode": "FC-06",
+      "calloutLabelEn": "Ambi Thumb Safety Lever",
+      "zh": {
+        "roleTag": "紧贴握把拇指自然扫拨 · 刚性锁死扳机连杆与阻铁",
+        "overview": "该手动保险杆置于握把上方拇指触手可及之处，左右双侧对称联动。它通过横向刚性销轴直接机械阻断扳机拉杆的向后位移，确保战备携行绝对安全。",
+        "craftAndMaterial": "采用碳素钢冲压件与耐磨工程塑料覆层组合，表面制有清晰的S安全与F射击指示槽孔及夜光填漆。",
+        "kinematicRole": "射手拇指上下拨动；处于保险状态时物理锁死扳机连杆；分解时在42%到75%阶段随销轴向两侧轴向拆离。",
+        "designHighlight": "保险与快慢机物理分离的人机设计，允许射手预设好全自动档位，出鞘同时仅凭拇指下压一步完成待发，完全契合快速反应部队实战反应流线。",
+        "audioScript": "下置的双手通用拇指保险坐落于握把黄金人体工学位置。射手保持持握瞄准姿态时，大拇指只需自然向下一扫，就能解除保险。这种独立设计让射手可以提前设定好火力模式，在遭遇突发战情出枪的一瞬间完成解脱，射击反应分秒不差。",
+        "audioUrl": "audio/vector/parts/vector_thumb_safety_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Direct Trigger Block Lever at Natural Grip Sweep Position",
+        "overview": "Located above the pistol grip, this dual-sided safety lever is placed for intuitive thumb actuation. It mechanically locks the trigger transfer bar and sear, preventing firing without affecting selector mode settings.",
+        "craftAndMaterial": "Stamped and hardened carbon steel with overmolded low-drag polymer paddles, featuring luminescent Safe and Fire position markers.",
+        "kinematicRole": "Manually rotated upward to Safe or downward to Fire; slides laterally outward with its cross-shaft between 42% and 75% disassembly.",
+        "designHighlight": "Separating the safety from the fire selector means an operator can carry in full-auto mode and bring the weapon to bear with a single downward thumb flick.",
+        "audioScript": "Positioned directly over your shooting hand thumb, this ambidextrous safety lever delivers lightning-fast weapon presentation. A simple downward sweep instantly disengages the mechanical trigger block. Because the fire selector is housed separately above, operators can keep the weapon preset to full-auto or burst mode, ensuring immediate, lethal response from the very first trigger pull.",
+        "audioUrl": "audio/vector/parts/vector_thumb_safety_en.mp3"
+      }
+    },
+    "vector_mag_body": {
+      "partId": "vector_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "25-Round MagEx2 Body",
+      "zh": {
+        "roleTag": "66°大倾角前掠双排单进 · 全钢内衬与加长防滑套筒",
+        "overview": "这是容纳二十五发大威力点四五口径重弹的加长战术弹匣体，兼容格洛克二十一弹匣标准。上半段为原装内衬全钢聚合物匣身，下半段拼接沙色加长扩容组件。",
+        "craftAndMaterial": "内部采用零点八毫米冷轧高强度冲压钢板骨架，外层包覆抗紫外线增韧尼龙聚合物，外壳设有防滑凹坑与背面观察圆孔。",
+        "kinematicRole": "以六十六度斜角插入下机匣弹匣井定位并由卡榫锁定；供弹阶段引导弹药逐发上推进膛；分解初期2%至24%阶段最先按下卡榫退弹拔出。",
+        "designHighlight": "完美继承格洛克二十一的成熟供弹口几何，下半部分加装原厂MagEx加长套，使粗壮的点四五手枪弹容量由十三发飙升至二十五发，火力翻倍。",
+        "audioScript": "这是二十五发点四五口径加长战术弹匣。它的上半截完全继承了格洛克二十一手枪弹匣的钢衬聚合物结构，下半截则加装了短剑原厂扩容套件，让弹容量直接翻倍。背部清晰排列着余弹观察孔，六十六度的前掠倾角完美顺应了内部滑块的下潜导轨空间。",
+        "audioUrl": "audio/vector/parts/vector_mag_body_zh.mp3"
+      },
+      "en": {
+        "roleTag": "66-Degree Raked Dual-Stack Body with Steel Shell and FDE Sleeve",
+        "overview": "This extended tactical magazine holds twenty-five rounds of forty-five ACP ammunition, utilizing the combat-proven Glock 21 magazine feed interface. It combines an inner steel-lined polymer core with a ruggedized Kriss MagEx2 extended lower sleeve.",
+        "craftAndMaterial": "Fabricated from a 0.8 mm cold-rolled steel stamped frame overmolded with impact-modified polymer, fitted with an FDE ribbed sleeve and witness holes.",
+        "kinematicRole": "Locked into the lower magazine well to feed rounds upward during Phase 5; released first via the mag catch between 2% and 24% disassembly.",
+        "designHighlight": "A sixty-six degree forward rake matches the steep descent angle of the Super V slider chute while doubling standard forty-five ACP magazine capacity.",
+        "audioScript": "This twenty-five round extended magazine is built around a steel-lined Glock twenty-one core, lengthened by the Kriss MagEx sleeve. It angles forward at sixty-six degrees, perfectly matching the incline of the Super V counterweight slider directly behind it. Rear indicator windows let operators verify ammunition reserves at a glance, delivering high-volume stopping power in close-quarters warfare.",
+        "audioUrl": "audio/vector/parts/vector_mag_body_en.mp3"
+      }
+    },
+    "vector_mag_follower": {
+      "partId": "vector_mag_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Anti-Tilt Orange Follower",
+      "zh": {
+        "roleTag": "匹配粗壮弹壳双排交错 · 末发顶起空仓挂机杆",
+        "overview": "该托弹板滑动支撑于弹匣体内，负责承托并顺畅引导点四五弹柱向上抬升。其左侧边缘设有精密的台阶，用于在最后一发打完时触发枪身空仓挂机机构。",
+        "craftAndMaterial": "采用高润滑自润滑聚甲醛工程塑料一体注塑，呈醒目的高可视亮橙色，具有抗磨损防倾斜的前后加长导向裙边。",
+        "kinematicRole": "发射循环中随弹药消耗逐级上推；阶段五将顶层弹药递送至抱弹口；阶段七末发顶起挂机杆锁停枪机；分解时在38%到72%向上抽出。",
+        "designHighlight": "专为粗短的点四五弹壳设计了双曲率阶梯托面，超长的防倾导向裙脚彻底杜绝了因弹匣跌落或高射速颠簸引起的低头卡壳故障。",
+        "audioScript": "这枚高可视度的亮橙色托弹板由自润滑聚甲醛材料制成。它拥有特别加长的前后防倾导向裙边，即使在满装二十五发弹药的超强弹力推压下，也不会发生任何倾斜偏摆。最后一发弹药打空后，它能精准顶起左侧的空仓挂机杆，让枪机稳稳挂起。",
+        "audioUrl": "audio/vector/parts/vector_mag_follower_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Double-Stack Stepped Geometry with Last-Round Bolt Hold-Open Cam",
+        "overview": "This anti-tilt follower guides heavy forty-five ACP rounds inside the magazine body toward the feed lips. Its lateral shelf engages the weapon bolt catch when empty to lock the action open on the final round.",
+        "craftAndMaterial": "Injection-molded from high-lubricity polyoxymethylene in high-visibility orange, featuring extended front and rear anti-tilt guide skirts.",
+        "kinematicRole": "Rises steadily as rounds are expended, tripping the bolt release in Phase 7 upon the final shot, and extracts upward between 38% and 72% disassembly.",
+        "designHighlight": "The dual-radius stepped contours prevent cartridge binding, ensuring forty-five ACP flat-nose and hollow-point ammunition feeds smoothly at twelve hundred rounds per minute.",
+        "audioScript": "Molded in high-visibility orange, this self-lubricating follower guides heavy forty-five ACP cartridges upward without binding. Its elongated front and rear skirts prevent tilt under extreme cyclic vibration. When the final twenty-fifth round leaves the feed lips, an integrated left ledge pushes the bolt catch upward, locking the bolt open and signaling an immediate empty chamber to the operator.",
+        "audioUrl": "audio/vector/parts/vector_mag_follower_en.mp3"
+      }
+    },
+    "vector_mag_spring": {
+      "partId": "vector_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Extended Mag Drive Spring",
+      "zh": {
+        "roleTag": "克服25发重弹柱重力 · 匹配1200发每分供弹节拍",
+        "overview": "该托弹簧纵贯于二十五发加长弹匣体内，底部抵在底盖上，顶部撑起橙色托弹板。它负责在极速连发状态下以恒定且强劲的弹力将整组弹柱推入抱弹口。",
+        "craftAndMaterial": "采用直径一点二毫米的高强度琴钢丝经热处理定型，表面涂布特氟龙防锈润滑涂层，圈数与变径梯度经过严苛动态配重计算。",
+        "kinematicRole": "弹匣压满时处于最大压缩状态；射击循环阶段五迅速伸展推升弹药柱；在弹匣分解阶段38%至72%沿内腔向下方抽离弹出。",
+        "designHighlight": "二十五发重弹总重超过半公斤，该簧必须在每分钟一千两百发的极限节拍下克服沉重惯性，在短短十几毫秒内将下一发弹药稳稳推到位。",
+        "audioScript": "这根加长高刚度托弹簧是高速供弹的幕后功臣。满载时，二十五颗大威力的点四五实弹重达半公斤以上。在每分钟一千两百发全自动扫射时，它必须在短短十几毫秒的开锁瞬间，顶起整列沉重的弹柱完成精准托弹，动力极其强悍。",
+        "audioUrl": "audio/vector/parts/vector_mag_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "High-Tension Spring Driving Half-Kilogram Ammunition Stack",
+        "overview": "Running the full length of the extended magazine, this high-rate helical spring rests against the baseplate and pushes the follower upward. It supplies steady feed pressure to support rapid cyclic feeding.",
+        "craftAndMaterial": "Formed from 1.2 mm high-grade music wire heat-treated for fatigue resistance, coated with Teflon dry lubricant to minimize internal wall friction.",
+        "kinematicRole": "Remains compressed when loaded, expands rapidly during Phase 5 to lift the cartridge column, and pulls free downward between 38% and 72% disassembly.",
+        "designHighlight": "With twenty-five rounds weighing more than half a kilogram, this spring must accelerate the entire ammunition column upward in just milliseconds to match the fifty-millisecond cycle.",
+        "audioScript": "Feeding a twelve hundred round per minute submachine gun requires serious mechanical muscle. When fully loaded, twenty-five heavy forty-five ACP rounds weigh more than half a kilogram. This extended high-tension spring must elevate that entire mass within a split-second feeding window, preventing nose-dive jams and keeping pace with the blistering cadence of the Super V mechanism.",
+        "audioUrl": "audio/vector/parts/vector_mag_spring_en.mp3"
+      }
+    },
+    "vector_mag_baseplate": {
+      "partId": "vector_mag_baseplate",
+      "bomCode": "M-04",
+      "calloutLabelEn": "MagEx2 Bumper Baseplate",
+      "zh": {
+        "roleTag": "抗水泥地战术快换冲击 · 按压锁销秒拆清沙",
+        "overview": "加厚底盖横向卡锁在MagEx扩容套筒的最底部，封闭并承受整个托弹簧的向下反力。其外部制有吸震缓冲凸棱，为战术快速装填提供防护支持。",
+        "craftAndMaterial": "采用耐磨抗冲击改性热塑性聚氨酯与尼龙复合成型，中心开设圆形不锈钢限位拆卸锁定孔，侧面布满横向抓握防滑纹。",
+        "kinematicRole": "射击全程作为承载弹簧底座静止；在弹匣分解维护时，按下中心底锁销即可向前方滑动拆卸分离。",
+        "designHighlight": "加厚的防摔缓冲结构经过严苛跌落测试，在室内近战换弹时自由落体砸向粗糙水泥地面也不会崩裂或脱出弹簧，兼备极佳的沙尘清理便利性。",
+        "audioScript": "这是加厚防摔缓冲弹匣底盖。在激烈的战术换弹中，打空的弹匣往往直接摔在坚硬的水泥地面上，该底盖的高韧性耐冲击材料能有效吸收下坠能量，防止弹匣开裂。按压中心锁定销，无需任何工具即可秒速向外滑脱拆卸，方便快速清理内部泥沙。",
+        "audioUrl": "audio/vector/parts/vector_mag_baseplate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Impact-Resistant Combat Bumper with Quick-Service Detent",
+        "overview": "This reinforced baseplate locks onto the bottom of the MagEx2 extension to retain the drive spring and follower. It features ribbed exterior elastomer bumpers to survive direct tactical drops onto concrete.",
+        "craftAndMaterial": "Molded from heavy-duty impact-modified thermoplastic polyurethane, featuring an internal steel locking plate and ribbed perimeter grip textures.",
+        "kinematicRole": "Remains stationary during firing cycles as a pressure base; slides forward off its locking rails when the detent is depressed during maintenance.",
+        "designHighlight": "Engineered to withstand drop testing on hard surfaces during speed reloads, allowing rapid debris clearing without requiring any specialized armorers tools.",
+        "audioScript": "This reinforced MagEx bumper baseplate absorbs brutal impacts when empty magazines are dropped onto concrete during combat speed reloads. Constructed from high-strength polymer, it locks the drive spring securely under heavy tension. Pressing the central steel detent unlocks the floorplate, allowing fast field disassembly for clearing out grit and sand after intense field operations.",
+        "audioUrl": "audio/vector/parts/vector_mag_baseplate_en.mp3"
+      }
+    }
+  }
+}
