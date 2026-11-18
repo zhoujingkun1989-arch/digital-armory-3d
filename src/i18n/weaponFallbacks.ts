@@ -800,7 +800,7 @@ export function resolveFiringPhaseText(
     GENERIC_FIRING_PHASE_EN[phase.stepNum] ?? {
       shortLabel: `Phase ${phase.stepNum}`,
       title: `Phase ${phase.stepNum}`,
-      description: phase.description,
+      description: 'Synchronized mechanical operating cycle phase.',
     }
   );
 }

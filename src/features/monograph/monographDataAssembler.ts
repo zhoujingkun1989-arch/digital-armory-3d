@@ -272,8 +272,9 @@ const GROUP_TO_PLATE: Record<
 };
 
 function parseFirstFloat(str: string, fallback: number): number {
-  const m = str.match(/(\d+(?:\.\d+)?)/);
-  return m ? Number(m[1]) : fallback;
+  const cleaned = str.replace(/,/g, '');
+  const m = cleaned.match(/(\d+(?:\.\d+)?)/);
+  return m ? parseFloat(m[1]) : fallback;
 }
 
 function buildKidsFunStats(
@@ -287,6 +288,7 @@ function buildKidsFunStats(
   const isZh = lang === 'zh';
   const oalMm = parseFirstFloat(oalStr, 750);
   const weightKg = parseFirstFloat(weightStr, 3.0);
+  const oalCm = Number((oalMm / 10).toFixed(1));
   const rulers = Math.max(1, Math.round((oalMm / 300) * 10) / 10);
   const bottles = Math.max(1, Math.round(weightKg / 0.5));
   const mach = velMps / 340;
@@ -302,14 +304,14 @@ function buildKidsFunStats(
         ? '差不多有小朋友的书包那么高'
         : oalMm < 980
           ? `大约等于 ${rulers} 把 30cm 学生尺连起来`
-          : '快赶上小朋友的身高啦！'
+          : `全长 ${oalCm} cm，快赶上小朋友的身高啦！`
     : oalMm < 260
       ? 'About as long as 1 new pencil'
       : oalMm < 580
         ? 'About as tall as a school backpack'
         : oalMm < 980
           ? `About ${rulers} school rulers end-to-end`
-          : 'Almost as tall as a young explorer!';
+          : `${oalCm} cm — almost as tall as a young explorer!`;
 
   const weightCompare = isZh
     ? `大约等于 ${bottles} 瓶矿泉水的重量`
@@ -342,7 +344,7 @@ function buildKidsFunStats(
   return [
     {
       label: isZh ? '总长度' : 'Total Length',
-      value: `${Math.round(oalMm)} mm`,
+      value: `${Math.round(oalMm).toLocaleString('en-US')} mm`,
       funCompare: lengthCompare,
     },
     {

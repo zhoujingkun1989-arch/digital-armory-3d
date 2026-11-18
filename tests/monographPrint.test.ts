@@ -1,5 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import * as THREE from 'three';
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
@@ -11,6 +13,8 @@ import {
   isArcheryWeapon,
 } from '../src/engine/physics/armoryPhysics';
 import { resolveShotForWeapon } from '../src/features/monograph/MonographCaptureRig';
+import { MonographDocument } from '../src/features/monograph/MonographDocument';
+import { MonographKidsDocument } from '../src/features/monograph/MonographKidsDocument';
 import {
   getMonographDomainLabels,
   getMonographLocalizedStrings,
@@ -754,7 +758,55 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
     }
   });
 
-  it('locks single-source-of-truth English monograph specs and BOM material labels with zero CJK characters across lift33, r500, g17, p90, python, benellim4, and garand', async () => {
+  it('strips thousands-separator commas in Kids fun stats across all 16 WEAPON_IDS (garand 1,105 mm / 110.5 cm, never 1 mm)', async () => {
+    const narrationsDir = path.resolve(__dirname, '../public/narrations');
+
+    for (const id of WEAPON_IDS) {
+      const plugin = await loadWeaponPlugin(id);
+      const narrationBundle = JSON.parse(
+        fs.readFileSync(path.join(narrationsDir, `${id}.json`), 'utf8')
+      ) as WeaponNarrationBundle;
+
+      for (const bundle of [null, narrationBundle] as const) {
+        for (const lang of ['zh', 'en'] as const) {
+          const dossier = assembleMonographDossier(
+            id,
+            plugin,
+            lang,
+            bundle,
+            'https://armory.example.org/'
+          );
+          const [lenStat, weightStat] = dossier.kidsFunStats;
+          expect(lenStat.value).not.toBe('1 mm');
+          const numericMm = Number(
+            lenStat.value.replace(/,/g, '').replace(/\s*mm$/, '')
+          );
+          expect(numericMm, `${id} (${lang}) parsed Kids OAL mm`).toBeGreaterThanOrEqual(
+            200
+          );
+          const numericKg = Number(
+            weightStat.value.replace(/,/g, '').replace(/\s*kg$/, '')
+          );
+          expect(numericKg, `${id} (${lang}) parsed Kids weight kg`).toBeGreaterThan(
+            0.5
+          );
+
+          if (id === 'garand') {
+            expect(lenStat.value).toBe('1,105 mm');
+            expect(lenStat.funCompare).toContain('110.5 cm');
+          } else if (id === 'm82a1') {
+            expect(lenStat.value).toBe('1,448 mm');
+            expect(lenStat.funCompare).toContain('144.8 cm');
+          } else if (id === 'awm') {
+            expect(lenStat.value).toBe('1,230 mm');
+            expect(lenStat.funCompare).toContain('123 cm');
+          }
+        }
+      }
+    }
+  });
+
+  it('locks single-source-of-truth English monograph dossiers and rendered MonographDocument/MonographKidsDocument with 0 CJK across all 16 WEAPON_IDS', async () => {
     const cjkRe = /[\u4e00-\u9fff]/;
     const narrationsDir = path.resolve(__dirname, '../public/narrations');
     const assemblerSrc = fs.readFileSync(
@@ -766,15 +818,38 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
     );
     expect(assemblerSrc).not.toContain('ARCHERY_EN_SPEC_OVERRIDES');
 
-    for (const id of [
-      'lift33',
-      'r500',
-      'g17',
-      'p90',
-      'python',
-      'benellim4',
-      'garand',
-    ] as const) {
+    const collectCjkLeaks = (
+      val: unknown,
+      keyPath = ''
+    ): string[] => {
+      if (typeof val === 'string') {
+        return cjkRe.test(val) ? [`${keyPath}: ${val}`] : [];
+      }
+      if (Array.isArray(val)) {
+        return val.flatMap((item, idx) =>
+          collectCjkLeaks(item, `${keyPath}[${idx}]`)
+        );
+      }
+      if (val && typeof val === 'object') {
+        const out: string[] = [];
+        for (const [k, v] of Object.entries(val)) {
+          if (
+            k.endsWith('Zh') ||
+            k === 'cartridgeSpec' ||
+            k === 'ballisticsSpec'
+          ) {
+            continue;
+          }
+          out.push(...collectCjkLeaks(v, keyPath ? `${keyPath}.${k}` : k));
+        }
+        return out;
+      }
+      return [];
+    };
+
+    expect(WEAPON_IDS.length).toBe(16);
+
+    for (const id of WEAPON_IDS) {
       const plugin = await loadWeaponPlugin(id);
       const narrationBundle = JSON.parse(
         fs.readFileSync(path.join(narrationsDir, `${id}.json`), 'utf8')
@@ -822,6 +897,11 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
           ).not.toMatch(cjkRe);
         }
 
+        expect(
+          collectCjkLeaks(dossier),
+          `${id} (${modeLabel}) dossier CJK leaks`
+        ).toEqual([]);
+
         expect(dossier.bomRows.length).toBe(plugin.parts.length);
         for (const row of dossier.bomRows) {
           expect(
@@ -833,6 +913,34 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
             `${id} (${modeLabel}) ${row.partId} materialLabel CJK leak`
           ).not.toMatch(cjkRe);
         }
+
+        const proHtml8 = renderToStaticMarkup(
+          React.createElement(MonographDocument, {
+            dossier,
+            captureBundle: null,
+            edition: 'obsidian_folio',
+            pageMode: 'full_8p',
+            collectorCallsign: '',
+          })
+        );
+        expect(
+          proHtml8,
+          `${id} (${modeLabel}) MonographDocument 8p CJK leak`
+        ).not.toMatch(cjkRe);
+
+        const kidsHtml8 = renderToStaticMarkup(
+          React.createElement(MonographKidsDocument, {
+            dossier,
+            captureBundle: null,
+            edition: 'blueprint_manual',
+            pageMode: 'full_8p',
+            collectorCallsign: '',
+          })
+        );
+        expect(
+          kidsHtml8,
+          `${id} (${modeLabel}) MonographKidsDocument 8p CJK leak`
+        ).not.toMatch(cjkRe);
       }
     }
   });

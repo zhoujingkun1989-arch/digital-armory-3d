@@ -1504,8 +1504,28 @@ const HDR_JET_CORE = new THREE.Color(6.8, 4.5, 1.8);
 const HDR_JET_SHEATH = new THREE.Color(4.4, 1.65, 0.38);
 const HDR_VENT = new THREE.Color(5.0, 2.7, 0.85);
 const BRASS_GLOW = new THREE.Color('#ff6a1a');
-const SMOKE_GREY = new THREE.Color('#a8a29e');
-const SMOKE_HAZE = new THREE.Color('#cbd5e1');
+const SMOKE_GREY = new THREE.Color('#cbc5be');
+const SMOKE_HAZE = new THREE.Color('#dbe4ee');
+const noSmokeRaycast = (): null => null;
+
+const SMOKE_WISP_VERT_GLSL = /* glsl */ `
+  varying vec3 vNormalView;
+  void main() {
+    vNormalView = normalize(normalMatrix * normal);
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+const SMOKE_WISP_FRAG_GLSL = /* glsl */ `
+  uniform vec3 uColor;
+  uniform float uOpacity;
+  varying vec3 vNormalView;
+  void main() {
+    float rim = max(0.0, normalize(vNormalView).z);
+    float feather = pow(rim, 2.55);
+    gl_FragColor = vec4(uColor, uOpacity * feather);
+  }
+`;
 
 const MAX_SHOCK_DIAMONDS = 5;
 const DIAMOND_SLOTS = [0, 1, 2, 3, 4] as const;
@@ -1591,10 +1611,33 @@ export const ArmoryWorldFx: React.FC = () => {
   const casingSootRefs = useRef<(THREE.Mesh | null)[]>([]);
   const casingMatRefs = useRef<(THREE.MeshStandardMaterial | null)[]>([]);
   const smokeMeshRefs = useRef<(THREE.Mesh | null)[]>([]);
-  const smokeMatRefs = useRef<(THREE.MeshBasicMaterial | null)[]>([]);
+  const smokeMatRefs = useRef<(THREE.ShaderMaterial | null)[]>([]);
 
   const smokeGeo = useMemo(() => new THREE.IcosahedronGeometry(1, 2), []);
+  const smokeShaderArgs = useMemo(
+    () =>
+      SMOKE_SLOTS.map(
+        () =>
+          [
+            {
+              uniforms: {
+                uColor: { value: SMOKE_GREY.clone() },
+                uOpacity: { value: 0 },
+              },
+              vertexShader: SMOKE_WISP_VERT_GLSL,
+              fragmentShader: SMOKE_WISP_FRAG_GLSL,
+            },
+          ] as [THREE.ShaderMaterialParameters]
+      ),
+    []
+  );
   const initialBundle = useMemo(() => getCaliberGeometries('9mm_para'), []);
+
+  useEffect(() => {
+    return () => {
+      smokeGeo.dispose();
+    };
+  }, [smokeGeo]);
 
   useFrame(() => {
     const casings = getSpentCasingPool();
@@ -1627,15 +1670,20 @@ export const ArmoryWorldFx: React.FC = () => {
       const w = wisps[i];
       const mesh = smokeMeshRefs.current[i];
       if (!mesh) continue;
-      const show = w.active && w.opacity > 0.004;
+      const softAlpha =
+        Math.min(0.16, w.opacity * 0.46) / (1 + 0.32 * w.size);
+      const show = w.active && softAlpha > 0.003;
       mesh.visible = show;
       if (!show) continue;
       mesh.position.set(w.px, w.py, w.pz);
-      mesh.scale.set(w.size * 1.15, w.size, w.size);
+      mesh.rotation.set(w.seed, w.ageSec * 0.45, w.seed * 0.5);
+      mesh.scale.set(w.size * 1.28, w.size * 0.88, w.size * 0.96);
       const mat = smokeMatRefs.current[i];
       if (mat) {
-        mat.opacity = w.opacity;
-        mat.color.copy(w.kind === 3 ? SMOKE_HAZE : SMOKE_GREY);
+        mat.uniforms.uOpacity.value = softAlpha;
+        mat.uniforms.uColor.value.copy(
+          w.kind === 3 ? SMOKE_HAZE : SMOKE_GREY
+        );
       }
     }
   });
@@ -1708,16 +1756,16 @@ export const ArmoryWorldFx: React.FC = () => {
             smokeMeshRefs.current[i] = el;
           }}
           geometry={smokeGeo}
+          raycast={noSmokeRaycast}
           visible={false}
           renderOrder={11}
         >
-          <meshBasicMaterial
+          <shaderMaterial
             ref={(el) => {
               smokeMatRefs.current[i] = el;
             }}
-            color={SMOKE_GREY}
+            args={smokeShaderArgs[i]}
             transparent
-            opacity={0}
             depthWrite={false}
           />
         </mesh>

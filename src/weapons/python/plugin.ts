@@ -642,7 +642,7 @@ export const PYTHON_FIRING_PHASES: FiringPhaseInfo[] = [
     title: '241 MPa 峰值膛压迸发转轮隙火光，158gr 弹头经迫入锥加速冲出 6" 枪口',
     range: [0.24, 0.38],
     description:
-      '.357 Magnum 慢燃双基球形发射药猛烈燃爆产生 241 MPa（35,000 PSI）高压：158 格令紫铜被甲空尖弹跨越 0.15 mm 弹巢前间隙挤入 11° 枪管迫入锥（伴随短暂的转轮隙横向高压火光），咬合 6 条 1:14" 右旋靶用膛线加速至 435 m/s 呼啸冲出 6 英寸内凹靶冠。',
+      '.357 Magnum 慢燃双基球形发射药猛烈燃爆产生 241 MPa（35,000 PSI）高压：158 格令紫铜被甲空尖弹跨越 0.15 mm 弹巢前间隙挤入 11° 枪管迫入锥（伴随短暂的转轮隙横向高压火光），咬合 6 条 1:14" 右旋靶用膛线加速至 385 m/s 呼啸冲出 6 英寸内凹靶冠。',
   },
   {
     id: 'phase_4',
@@ -803,7 +803,7 @@ export function computePythonFiringKinematics(
 }
 
 /**
- * Computes .357 Magnum (158gr JHP, 241 MPa SAAMI, 435 m/s from 6" barrel) internal & external ballistics:
+ * Computes .357 Magnum (158gr JHP, 241 MPa SAAMI, 385 m/s from 6" barrel) internal & external ballistics:
  *  - Bullet sits in indexed 12 o'clock chamber (`[0.85, 2.35, 0]`), ignites at `f = 0.20`, jumps forcing cone
  *    at `X = 2.21`, accelerates down 6" (`15.24 cm`) barrel, and exits muzzle crown `X = 17.42` at `f = 0.34`!
  *  - `spentCaseVisible: false` across 100% of `f ∈ [0, 1]` (revolvers retain spent brass inside the cylinder!).

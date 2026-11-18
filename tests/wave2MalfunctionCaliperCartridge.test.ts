@@ -1,6 +1,10 @@
 import * as THREE from 'three';
 import { beforeEach, describe, expect, it } from 'vitest';
 import {
+  CARTRIDGE_STAGE_DATUM_Y,
+  computeCartridgeStageOffsetInto,
+} from '../src/engine/actors/CartridgeCutawayStage';
+import {
   CALIPER_BENCHMARK_ORDER,
   caliperStore,
   computeCaliperMeasurement,
@@ -537,5 +541,82 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
     expect(Object.keys(UI_STRINGS.zh.cartridgeLab).sort()).toEqual(
       Object.keys(UI_STRINGS.en.cartridgeLab).sort()
     );
+  });
+
+  it('frames 85%–100% axially exploded cartridges cleanly inside 1280×760 Macro & Panorama bounds and locks Python 385 m/s SAAMI velocity', async () => {
+    const W = 1280;
+    const H = 760;
+    const aspect = W / H;
+    const cam = new THREE.PerspectiveCamera(41, aspect, 0.1, 500);
+
+    // 1. Macro mode (`lineupOverview = false`): 12 Gauge buckshot stack at 85% & 100% explode
+    const spec12 = CARTRIDGE_LAB_SPECS['12_gauge'];
+    const oal12 = spec12.oalMm / 10;
+    const midY12 = CARTRIDGE_STAGE_DATUM_Y + oal12 * 0.52;
+    const closeZ12 = Math.max(8.2, oal12 * 1.72) * Math.max(1, 0.92 / aspect);
+    cam.position.set(spec12.lineupXCm + 1.05, midY12 + oal12 * 0.14, closeZ12);
+    cam.lookAt(spec12.lineupXCm, midY12, 0);
+    cam.updateProjectionMatrix();
+    cam.updateMatrixWorld(true);
+
+    for (const t of [0.85, 1.0]) {
+      const off = computeCartridgeStageOffsetInto(
+        W,
+        H,
+        false,
+        '12_gauge',
+        false,
+        false,
+        t,
+        { x: 0, y: 0, z: 0 }
+      );
+      expect(off.z).toBeLessThan(-8);
+      expect(off.y).toBeLessThan(-0.5);
+      const span = Math.max(0.75, (spec12.caseLengthMm / 10) * 0.32);
+      const yBuckshotTop = oal12 + t * span * 1.72;
+      const projTop = new THREE.Vector3(
+        spec12.lineupXCm + off.x,
+        CARTRIDGE_STAGE_DATUM_Y + off.y + yBuckshotTop,
+        off.z
+      ).project(cam);
+      expect(projTop.y).toBeLessThan(0.8);
+      expect(projTop.y).toBeGreaterThan(-0.8);
+    }
+
+    // 2. Panorama mode (`lineupOverview = true`): .50 BMG exploded tip clears top-right header at 1280×760
+    const spec50 = CARTRIDGE_LAB_SPECS['50_bmg'];
+    const camZ = Math.max(29.5, 36.0 / aspect);
+    cam.position.set(1.6, CARTRIDGE_STAGE_DATUM_Y + 7.2, camZ);
+    cam.lookAt(1.6, CARTRIDGE_STAGE_DATUM_Y + 5.8, 0);
+    cam.updateProjectionMatrix();
+    cam.updateMatrixWorld(true);
+
+    for (const t of [0.85, 1.0]) {
+      const off = computeCartridgeStageOffsetInto(
+        W,
+        H,
+        true,
+        '50_bmg',
+        false,
+        false,
+        t,
+        { x: 0, y: 0, z: 0 }
+      );
+      const span50 = Math.max(0.75, (spec50.caseLengthMm / 10) * 0.32);
+      const yTip50 = spec50.oalMm / 10 + t * span50 * 2.28;
+      const projTip = new THREE.Vector3(
+        off.x + spec50.lineupXCm,
+        CARTRIDGE_STAGE_DATUM_Y + off.y + yTip50,
+        off.z
+      ).project(cam);
+      const topPx = (1 - projTip.y) * 0.5 * H;
+      expect(topPx).toBeGreaterThan(120);
+    }
+
+    // 3. Python Step 03 firing-phase prose aligns to SAAMI 385 m/s
+    const pyPlugin = await loadWeaponPlugin('python');
+    const step03 = pyPlugin.firingPhases.find((p) => p.stepNum === '03');
+    expect(step03?.description).toContain('385 m/s');
+    expect(step03?.description).not.toContain('435 m/s');
   });
 });

@@ -1281,9 +1281,47 @@
   fill: var(--color-text-muted);
 }
 
+.sd-svg-peak-pill {
+  fill: rgba(11, 18, 32, 0.86);
+  stroke-width: 1;
+}
+
+.sd-svg-peak-pill.is-a {
+  stroke: rgba(56, 189, 248, 0.42);
+}
+
+.sd-svg-peak-pill.is-b {
+  stroke: rgba(16, 185, 129, 0.42);
+}
+
+:is([data-theme='light'], .theme-light) .sd-svg-peak-pill {
+  fill: rgba(248, 250, 252, 0.92);
+}
+
+:is([data-theme='light'], .theme-light) .sd-svg-peak-pill.is-a {
+  stroke: rgba(2, 132, 199, 0.36);
+}
+
+:is([data-theme='light'], .theme-light) .sd-svg-peak-pill.is-b {
+  stroke: rgba(5, 150, 105, 0.36);
+}
+
+.sd-svg-peak-leader {
+  stroke-width: 1.1;
+  stroke-dasharray: 2 2;
+}
+
+.sd-svg-peak-leader.is-a {
+  stroke: rgba(56, 189, 248, 0.65);
+}
+
+.sd-svg-peak-leader.is-b {
+  stroke: rgba(16, 185, 129, 0.65);
+}
+
 .sd-svg-peak-label {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 700;
 }
 

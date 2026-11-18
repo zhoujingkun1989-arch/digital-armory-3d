@@ -47,16 +47,17 @@ interface StageOffsetVec {
 
 const _stageOffsetScratch: StageOffsetVec = { x: 0, y: 0, z: 0 };
 
-function computeCartridgeStageOffsetInto(
+export function computeCartridgeStageOffsetInto(
   viewportW: number,
   viewportH: number,
   lineupOverview: boolean,
+  activeCaliber: CaliberProfile,
   dossierCollapsed: boolean,
   hudHidden: boolean,
   explodeT: number,
   out: StageOffsetVec = _stageOffsetScratch
 ): StageOffsetVec {
-  if (!lineupOverview || viewportW <= 0 || viewportH <= 0) {
+  if (viewportW <= 0 || viewportH <= 0) {
     out.x = 0;
     out.y = 0;
     out.z = 0;
@@ -64,6 +65,29 @@ function computeCartridgeStageOffsetInto(
   }
 
   const aspect = Math.max(0.45, viewportW / Math.max(1, viewportH));
+
+  if (!lineupOverview) {
+    // Macro (Focus) mode: proportional Z pullback & upward target lift (-Y stage shift)
+    // so 85%–100% axially exploded buckshot/penetrator stacks stay inside top/bottom HUD bounds
+    const spec = CARTRIDGE_LAB_SPECS[activeCaliber];
+    const oalCm = spec.oalMm / 10;
+    const caseH = spec.caseLengthMm / 10;
+    const scaleSpan = Math.max(0.75, caseH * 0.32);
+    const hasPenetrator =
+      spec.coreKind === 'm33_heavy_steel' ||
+      spec.coreKind === 'steel_core_lead_shirt' ||
+      spec.coreKind === 'dual_core_penetrator' ||
+      spec.coreKind === 'ap_steel_alu';
+    const topExtra = scaleSpan * (hasPenetrator ? 2.28 : 1.72);
+    const botExtra = 0.95 + scaleSpan * 0.35;
+    const closeZ = Math.max(8.2, oalCm * 1.72) * Math.max(1, 0.92 / aspect);
+
+    out.x = 0;
+    out.y = -explodeT * ((topExtra - botExtra) * 0.52 + oalCm * 0.08);
+    out.z = -explodeT * (closeZ * 0.76 + scaleSpan * 1.45);
+    return out;
+  }
+
   const camX = 1.6;
   const camZ = Math.max(29.5, 36.0 / aspect);
 
@@ -81,18 +105,18 @@ function computeCartridgeStageOffsetInto(
   const ndcCenterX = (openCenterPx / viewportW) * 2 - 1;
 
   const stageSpanX = 39.8;
-  const stageSpanY = 17.6 + 7.6 * explodeT;
+  const stageSpanY = 17.6 + 13.8 * explodeT;
 
   const dHoriz =
     (stageSpanX * 0.5) / (TAN_HALF_FOV_41 * aspect * availFracX);
-  const dVert = (stageSpanY * 0.5) / (TAN_HALF_FOV_41 * 0.72);
+  const dVert = (stageSpanY * 0.5) / (TAN_HALF_FOV_41 * 0.68);
   const desiredDist = Math.max(34.5, dHoriz, dVert);
 
   const worldOpenCenterX =
     camX + ndcCenterX * desiredDist * TAN_HALF_FOV_41 * aspect;
 
   out.x = worldOpenCenterX - 0.1;
-  out.y = -0.55 - 1.65 * explodeT;
+  out.y = -0.55 - 3.65 * explodeT;
   out.z = camZ - desiredDist;
   return out;
 }
@@ -403,6 +427,7 @@ export const CartridgeCutawayStage: React.FC = () => {
       size.width,
       size.height,
       st.cartridgeLineupOverview,
+      st.activeCartridgeCaliber,
       cartridgeDossierCollapsed,
       st.hudHidden,
       st.cartridgeExplodeProgress
@@ -449,6 +474,7 @@ export const CartridgeCutawayStage: React.FC = () => {
     size.width,
     size.height,
     lineupOverview,
+    activeCaliber,
     cartridgeDossierCollapsed,
     useAppStore.getState().hudHidden,
     useAppStore.getState().cartridgeExplodeProgress

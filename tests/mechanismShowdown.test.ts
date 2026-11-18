@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 import {
   buildShowdownDualSvgGeometry,
   CLASSIC_RIVALRY_SEEDS,
+  computeShowdownPeakLabelLayout,
   consumePendingShowdownLaunch,
   DRIVE_FAMILIES,
   FEED_FAMILIES,
@@ -447,5 +448,45 @@ describe('WP-11 · Mechanism Showdown Lineage Matrix & Dual-Exhibit Lab', () => 
     expect(armoryViewSrc).toContain('armory-showdown-btn');
     expect(armoryViewSrc).toContain('plaque-showdown-cta');
     expect(armoryViewSrc).toContain('LazyMechanismShowdownModal');
+  });
+
+  it('separates overlaid SVG peak callout pills cleanly with zero 2D collision across all 240 weapon pairs (including AK-15 vs M1 Garand)', () => {
+    // Explicit check for AK-15 (24%) vs M1 Garand (15%): B is left ('end'), A is right ('start')
+    const akVsGarand = buildShowdownDualSvgGeometry('ak15', 'garand', 'normalized');
+    const akGarandLayout = computeShowdownPeakLabelLayout(akVsGarand);
+    expect(akGarandLayout.peakB.textAnchor).toBe('end');
+    expect(akGarandLayout.peakA.textAnchor).toBe('start');
+    expect(
+      akGarandLayout.peakB.pillX + akGarandLayout.peakB.pillW
+    ).toBeLessThan(akGarandLayout.peakA.pillX);
+
+    // Exhaustive 240-pair check in both normalized and relative modes
+    for (const idA of WEAPON_IDS) {
+      for (const idB of WEAPON_IDS) {
+        if (idA === idB) continue;
+        for (const mode of ['normalized', 'relative'] as const) {
+          const geo = buildShowdownDualSvgGeometry(idA, idB, mode, 48);
+          const { peakA, peakB } = computeShowdownPeakLabelLayout(geo);
+
+          for (const pill of [peakA, peakB]) {
+            expect(pill.pillX).toBeGreaterThanOrEqual(geo.plotLeft);
+            expect(pill.pillX + pill.pillW).toBeLessThanOrEqual(geo.plotRight);
+            expect(pill.pillY).toBeGreaterThanOrEqual(2);
+            expect(pill.pillY + pill.pillH).toBeLessThanOrEqual(geo.plotBottom);
+          }
+
+          const overlapX =
+            Math.min(peakA.pillX + peakA.pillW, peakB.pillX + peakB.pillW) -
+            Math.max(peakA.pillX, peakB.pillX);
+          const overlapY =
+            Math.min(peakA.pillY + peakA.pillH, peakB.pillY + peakB.pillH) -
+            Math.max(peakA.pillY, peakB.pillY);
+          expect(
+            overlapX > 0 && overlapY > 0,
+            `${idA} vs ${idB} (${mode}) peak pills overlapped`
+          ).toBe(false);
+        }
+      }
+    }
   });
 });

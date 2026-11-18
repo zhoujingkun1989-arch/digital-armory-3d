@@ -22,6 +22,7 @@ import { isWeaponId } from '../../weapons/types';
 import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
 import {
   buildShowdownDualSvgGeometry,
+  computeShowdownPeakLabelLayout,
   findMatchingRivalryPreset,
   getActiveShowdownWeaponIds,
   getClassicRivalryPresets,
@@ -320,16 +321,10 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
       ? interpolateShowdownCurveAt(chartGeo.traceB.points, hoverProgress)
       : null;
 
-  // Collision-avoidant peak label offsets if peakA and peakB sit closely on X
-  const peaksCloseOnX =
-    Math.abs(chartGeo.traceA.peakMarker.x - chartGeo.traceB.peakMarker.x) < 118;
-  const peakLabelAY = Math.max(15, chartGeo.traceA.peakMarker.y - 10);
-  const peakLabelBY = peaksCloseOnX
-    ? Math.min(
-        chartGeo.plotBottom - 8,
-        Math.max(32, chartGeo.traceB.peakMarker.y + 16)
-      )
-    : Math.max(15, chartGeo.traceB.peakMarker.y - 10);
+  const peakLayout = useMemo(
+    () => computeShowdownPeakLabelLayout(chartGeo),
+    [chartGeo]
+  );
 
   // Quantitative bar widths
   const [velBarA, velBarB] = computeVisualBarWidths(
@@ -1082,7 +1077,26 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
                       strokeLinejoin="round"
                     />
 
-                    {/* Peak Annotations for Exhibit A & Exhibit B */}
+                    {/* Peak Annotations for Exhibit A & Exhibit B (Smart Horizontal Separation + Pill Backing) */}
+                    {peakLayout.peakA.showLeader && (
+                      <line
+                        x1={peakLayout.peakA.leaderX1}
+                        y1={peakLayout.peakA.leaderY1}
+                        x2={peakLayout.peakA.leaderX2}
+                        y2={peakLayout.peakA.leaderY2}
+                        className="sd-svg-peak-leader is-a"
+                      />
+                    )}
+                    {peakLayout.peakB.showLeader && (
+                      <line
+                        x1={peakLayout.peakB.leaderX1}
+                        y1={peakLayout.peakB.leaderY1}
+                        x2={peakLayout.peakB.leaderX2}
+                        y2={peakLayout.peakB.leaderY2}
+                        className="sd-svg-peak-leader is-b"
+                      />
+                    )}
+
                     <circle
                       cx={chartGeo.traceA.peakMarker.x}
                       cy={chartGeo.traceA.peakMarker.y}
@@ -1091,18 +1105,6 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
                       stroke="#0f172a"
                       strokeWidth="1.4"
                     />
-                    <text
-                      x={Math.min(
-                        chartGeo.plotRight - 4,
-                        chartGeo.traceA.peakMarker.x + 6
-                      )}
-                      y={peakLabelAY}
-                      className="sd-svg-peak-label is-a"
-                    >
-                      A Peak: {chartGeo.traceA.peakMarker.valueFormatted} @{' '}
-                      {Math.round(chartGeo.traceA.peakMarker.f * 100)}%
-                    </text>
-
                     <circle
                       cx={chartGeo.traceB.peakMarker.x}
                       cy={chartGeo.traceB.peakMarker.y}
@@ -1111,17 +1113,44 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
                       stroke="#0f172a"
                       strokeWidth="1.4"
                     />
-                    <text
-                      x={Math.min(
-                        chartGeo.plotRight - 4,
-                        chartGeo.traceB.peakMarker.x + 6
-                      )}
-                      y={peakLabelBY}
-                      className="sd-svg-peak-label is-b"
-                    >
-                      B Peak: {chartGeo.traceB.peakMarker.valueFormatted} @{' '}
-                      {Math.round(chartGeo.traceB.peakMarker.f * 100)}%
-                    </text>
+
+                    <g className="sd-svg-peak-group is-a">
+                      <rect
+                        x={peakLayout.peakA.pillX}
+                        y={peakLayout.peakA.pillY}
+                        width={peakLayout.peakA.pillW}
+                        height={peakLayout.peakA.pillH}
+                        rx="4"
+                        className="sd-svg-peak-pill is-a"
+                      />
+                      <text
+                        x={peakLayout.peakA.textX}
+                        y={peakLayout.peakA.textY}
+                        textAnchor={peakLayout.peakA.textAnchor}
+                        className="sd-svg-peak-label is-a"
+                      >
+                        {peakLayout.peakA.labelText}
+                      </text>
+                    </g>
+
+                    <g className="sd-svg-peak-group is-b">
+                      <rect
+                        x={peakLayout.peakB.pillX}
+                        y={peakLayout.peakB.pillY}
+                        width={peakLayout.peakB.pillW}
+                        height={peakLayout.peakB.pillH}
+                        rx="4"
+                        className="sd-svg-peak-pill is-b"
+                      />
+                      <text
+                        x={peakLayout.peakB.textX}
+                        y={peakLayout.peakB.textY}
+                        textAnchor={peakLayout.peakB.textAnchor}
+                        className="sd-svg-peak-label is-b"
+                      >
+                        {peakLayout.peakB.labelText}
+                      </text>
+                    </g>
 
                     {/* Interactive Hover Crosshair */}
                     {hoverProgress !== null && (

@@ -2172,3 +2172,133 @@ export function buildShowdownDualSvgGeometry(
     traceB: buildTrace(profileB, pointsB),
   };
 }
+
+export interface ShowdownPeakPillPlacement {
+  slot: 'A' | 'B';
+  labelText: string;
+  textX: number;
+  textY: number;
+  textAnchor: 'start' | 'end';
+  pillX: number;
+  pillY: number;
+  pillW: number;
+  pillH: number;
+  leaderX1: number;
+  leaderY1: number;
+  leaderX2: number;
+  leaderY2: number;
+  showLeader: boolean;
+}
+
+/**
+ * Computes collision-free horizontal/vertical SVG pill callout boxes for Exhibit A & B
+ * peak pressure/thrust markers. When peaks sit close horizontally (e.g. `|peakA.f - peakB.f| <= 0.22`),
+ * anchors the left peak leftward (`textAnchor="end"`) and the right peak rightward (`textAnchor="start"`),
+ * clamped strictly inside `[plotLeft, plotRight]` with non-overlapping pill bounds.
+ */
+export function computeShowdownPeakLabelLayout(
+  chartGeo: ShowdownDualSvgGeometry
+): {
+  peakA: ShowdownPeakPillPlacement;
+  peakB: ShowdownPeakPillPlacement;
+} {
+  const mA = chartGeo.traceA.peakMarker;
+  const mB = chartGeo.traceB.peakMarker;
+  const textA = `A Peak: ${mA.valueFormatted} @ ${Math.round(mA.f * 100)}%`;
+  const textB = `B Peak: ${mB.valueFormatted} @ ${Math.round(mB.f * 100)}%`;
+
+  const padX = 6;
+  const pillH = 15;
+  const charW = 5.8;
+  const wA = Math.ceil(textA.length * charW + padX * 2);
+  const wB = Math.ceil(textB.length * charW + padX * 2);
+
+  const minX = chartGeo.plotLeft + 2;
+  const maxX = chartGeo.plotRight - 2;
+  const clampX = (x: number, w: number) =>
+    Math.max(minX, Math.min(maxX - w, x));
+  const computePillY = (dotY: number) =>
+    Math.max(3, Math.min(chartGeo.plotBottom - pillH - 2, dotY - pillH - 5));
+
+  const yA = computePillY(mA.y);
+  const yB = computePillY(mB.y);
+
+  const closeHoriz =
+    Math.abs(mA.f - mB.f) <= 0.22 ||
+    Math.abs(mA.x - mB.x) < Math.max(wA, wB) + 18;
+
+  let anchorA: 'start' | 'end';
+  let anchorB: 'start' | 'end';
+  let xA: number;
+  let xB: number;
+
+  if (closeHoriz) {
+    const aIsLeft = mA.x < mB.x || (mA.x === mB.x && mA.f <= mB.f);
+    if (aIsLeft) {
+      anchorA = 'end';
+      anchorB = 'start';
+      xA = clampX(mA.x - 7 - wA, wA);
+      xB = clampX(mB.x + 7, wB);
+      if (Math.abs(yA - yB) < pillH + 3 && xA + wA + 8 > xB) {
+        xB = clampX(xA + wA + 8, wB);
+        if (xA + wA + 8 > xB) {
+          xA = clampX(xB - 8 - wA, wA);
+        }
+      }
+    } else {
+      anchorB = 'end';
+      anchorA = 'start';
+      xB = clampX(mB.x - 7 - wB, wB);
+      xA = clampX(mA.x + 7, wA);
+      if (Math.abs(yA - yB) < pillH + 3 && xB + wB + 8 > xA) {
+        xA = clampX(xB + wB + 8, wA);
+        if (xB + wB + 8 > xA) {
+          xB = clampX(xA - 8 - wB, wB);
+        }
+      }
+    }
+  } else {
+    anchorA = mA.x + 7 + wA > maxX ? 'end' : 'start';
+    anchorB = mB.x + 7 + wB > maxX ? 'end' : 'start';
+    xA = clampX(anchorA === 'end' ? mA.x - 7 - wA : mA.x + 7, wA);
+    xB = clampX(anchorB === 'end' ? mB.x - 7 - wB : mB.x + 7, wB);
+  }
+
+  const finalize = (
+    slot: 'A' | 'B',
+    labelText: string,
+    dotX: number,
+    dotY: number,
+    pillX: number,
+    pillY: number,
+    pillW: number,
+    textAnchor: 'start' | 'end'
+  ): ShowdownPeakPillPlacement => {
+    const textX = textAnchor === 'end' ? pillX + pillW - padX : pillX + padX;
+    const textY = pillY + 10.6;
+    const nearX = Math.max(pillX + 4, Math.min(pillX + pillW - 4, dotX));
+    const nearY = pillY + pillH * 0.5 <= dotY ? pillY + pillH : pillY;
+    const showLeader = Math.hypot(nearX - dotX, nearY - dotY) > 4.5;
+    return {
+      slot,
+      labelText,
+      textX,
+      textY,
+      textAnchor,
+      pillX,
+      pillY,
+      pillW,
+      pillH,
+      leaderX1: dotX,
+      leaderY1: dotY,
+      leaderX2: nearX,
+      leaderY2: nearY,
+      showLeader,
+    };
+  };
+
+  return {
+    peakA: finalize('A', textA, mA.x, mA.y, xA, yA, wA, anchorA),
+    peakB: finalize('B', textB, mB.x, mB.y, xB, yB, wB, anchorB),
+  };
+}
