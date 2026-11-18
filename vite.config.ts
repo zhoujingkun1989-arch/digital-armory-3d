@@ -18,31 +18,59 @@ export default defineConfig({
       },
       output: {
         manualChunks(id) {
-          if (id.includes('node_modules')) {
+          const normId = id.replace(/\\/g, '/');
+          if (normId.includes('node_modules')) {
             if (
-              id.includes('three-bvh-csg') ||
-              id.includes('three-mesh-bvh')
+              normId.includes('three-bvh-csg') ||
+              normId.includes('three-mesh-bvh')
             ) {
               return 'vendor-csg';
             }
             if (
-              id.includes('@react-three/fiber') ||
-              id.includes('@react-three/drei')
+              normId.includes('@react-three/fiber') ||
+              normId.includes('@react-three/drei')
             ) {
               return 'vendor-r3f';
             }
-            if (id.includes('/three/') || id.includes('three-stdlib')) {
+            if (
+              normId.includes('/three/examples/') ||
+              normId.includes('three-stdlib')
+            ) {
+              return 'vendor-three-postfx';
+            }
+            if (normId.includes('/three/')) {
               return 'vendor-three';
             }
             if (
-              id.includes('/react/') ||
-              id.includes('/react-dom/') ||
-              id.includes('/zustand/') ||
-              id.includes('/lucide-react/')
+              normId.includes('/react/') ||
+              normId.includes('/react-dom/') ||
+              normId.includes('/zustand/') ||
+              normId.includes('/lucide-react/')
             ) {
               return 'vendor-ui';
             }
+            return undefined;
           }
+
+          if (
+            normId.includes('/src/weapons/types.ts') ||
+            normId.includes('/src/weapons/manifests.ts') ||
+            normId.includes('/src/engine/physics/armoryPhysics.ts') ||
+            normId.includes('/src/engine/fieldstrip/fieldStripSpecs.ts') ||
+            normId.includes('/src/engine/malfunctions/malfunctionSpecs.ts') ||
+            normId.includes('/src/engine/cartridges/cartridgeSpecs.ts')
+          ) {
+            return 'armory-specs';
+          }
+
+          if (
+            normId.includes('/src/i18n/uiStrings.ts') ||
+            normId.includes('/src/i18n/weaponFallbacks.ts') ||
+            normId.includes('/src/features/armory/mechanismShowdownSpecs.ts')
+          ) {
+            return 'armory-i18n';
+          }
+
           return undefined;
         },
       },
