@@ -93,7 +93,9 @@ export const WorkbenchHeader: React.FC = () => {
 
         <div className="brand-badge">{meta.badge}</div>
         <div>
-          <h1 className="brand-title">{displayMeta.workbenchTitle}</h1>
+          <h1 className="brand-title" title={displayMeta.workbenchTitle}>
+            {displayMeta.workbenchTitle}
+          </h1>
           <p className="brand-sub">{displayMeta.workbenchSubtitle}</p>
         </div>
       </div>
@@ -130,6 +132,7 @@ export const WorkbenchHeader: React.FC = () => {
           {VIEW_ANGLE_KEYS.map((key) => (
             <button
               key={key}
+              type="button"
               className={`cam-btn ${cameraPreset === key ? 'active' : ''}`}
               onClick={() => triggerCameraPreset(key)}
             >
@@ -166,7 +169,7 @@ export const WorkbenchHeader: React.FC = () => {
           }
           title={ui.firingChipTitle}
         >
-          <Flame size={14} aria-hidden="true" />
+          <Flame size={13} aria-hidden="true" />
           <span>{ui.firingChip}</span>
         </button>
 
@@ -203,29 +206,34 @@ export const WorkbenchHeader: React.FC = () => {
         </button>
 
         <button
+          type="button"
           className={`toggle-chip ${pbrTexturesEnabled ? 'active-cyan' : ''}`}
+          aria-pressed={pbrTexturesEnabled}
           onClick={togglePbrTextures}
           title={ui.pbrChipTitle}
         >
-          <Sparkles size={13} />
+          <Sparkles size={13} aria-hidden="true" />
           <span>{ui.pbrChip}</span>
         </button>
 
         <button
+          type="button"
           className="toggle-chip"
           onClick={() => setTextureModalOpen(true)}
           title={ui.atlasChipTitle}
         >
-          <ImageIcon size={13} />
+          <ImageIcon size={13} aria-hidden="true" />
           <span>{ui.atlasChip}</span>
         </button>
 
         <button
+          type="button"
           className={`toggle-chip ${xrayShells ? 'active-cyan' : ''}`}
+          aria-pressed={xrayShells}
           onClick={toggleXrayShells}
           title={ui.xrayChipTitle}
         >
-          <Eye size={14} />
+          <Eye size={13} aria-hidden="true" />
           <span>{ui.xrayChip}</span>
         </button>
 
@@ -236,7 +244,7 @@ export const WorkbenchHeader: React.FC = () => {
           onClick={toggleSectionCut}
           title={ui.sectionChipTitle}
         >
-          <Scissors size={14} aria-hidden="true" />
+          <Scissors size={13} aria-hidden="true" />
           <span>{ui.sectionChip}</span>
         </button>
 
@@ -247,16 +255,18 @@ export const WorkbenchHeader: React.FC = () => {
           onClick={toggleEngineeringTint}
           title={ui.tintChipTitle}
         >
-          <Palette size={14} aria-hidden="true" />
+          <Palette size={13} aria-hidden="true" />
           <span>{ui.tintChip}</span>
         </button>
 
         <button
+          type="button"
           className={`toggle-chip ${showEdges ? 'active' : ''}`}
+          aria-pressed={showEdges}
           onClick={toggleShowEdges}
           title={ui.edgesChipTitle}
         >
-          <Box size={14} />
+          <Box size={13} aria-hidden="true" />
           <span>{ui.edgesChip}</span>
         </button>
 
@@ -268,7 +278,7 @@ export const WorkbenchHeader: React.FC = () => {
             onClick={toggleShowLabels}
             title={ui.labelsChipTitle(partsCount)}
           >
-            <Tag size={14} aria-hidden="true" />
+            <Tag size={13} aria-hidden="true" />
             <span>{ui.labelsChip}</span>
           </button>
         )}
@@ -281,9 +291,9 @@ export const WorkbenchHeader: React.FC = () => {
           title={ui.sfxChipTitle(sfxMuted)}
         >
           {sfxMuted ? (
-            <VolumeX size={14} aria-hidden="true" />
+            <VolumeX size={13} aria-hidden="true" />
           ) : (
-            <Volume2 size={14} aria-hidden="true" />
+            <Volume2 size={13} aria-hidden="true" />
           )}
           <span>{ui.sfxChip}</span>
         </button>
@@ -294,7 +304,7 @@ export const WorkbenchHeader: React.FC = () => {
           onClick={resetAll}
           title={ui.resetChipTitle}
         >
-          <RotateCcw size={14} />
+          <RotateCcw size={13} aria-hidden="true" />
           <span>{ui.resetChip}</span>
         </button>
       </div>

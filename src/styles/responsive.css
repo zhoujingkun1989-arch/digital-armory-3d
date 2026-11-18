@@ -1,7 +1,7 @@
 /* ==================== Responsive Breakpoint Rules ==================== */
 @media (max-width: 1680px) {
   :root {
-    --hud-top-offset: 108px;
+    --hud-top-offset: 100px;
   }
 
   .brand-sub {
@@ -23,12 +23,12 @@
   }
 
   .top-bar .toolbar-cluster {
-    gap: 5px;
+    gap: 4.5px;
   }
 
   .top-bar .toggle-chip {
-    padding: 4px 7.5px;
-    font-size: 11px;
+    padding: 4px 8px;
+    font-size: 11.5px;
     gap: 4px;
   }
 
@@ -43,9 +43,130 @@
   }
 }
 
+/* Keep Workbench `.top-bar` strictly 2 crisp rows at 1440x900 (ZH & EN) */
+@media (max-width: 1520px) {
+  .top-bar {
+    left: 14px;
+    right: 14px;
+    padding: 5.5px 10px;
+    gap: 4px 8px;
+  }
+
+  .top-bar .toolbar-cluster-tools {
+    gap: 3.5px;
+  }
+
+  .top-bar .toolbar-cluster-tools .toggle-chip {
+    padding: 3.5px 6.5px;
+    gap: 3.5px;
+    font-size: 11px;
+    letter-spacing: -0.01em;
+  }
+
+  .top-bar .toolbar-cluster-tools svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+  }
+
+  .top-bar .camera-pills {
+    padding: 1.5px 3.5px;
+    gap: 1.5px;
+  }
+
+  .top-bar .cam-icon {
+    margin: 0 2px;
+  }
+
+  .top-bar .cam-btn {
+    padding: 3px 5.5px;
+    font-size: 11px;
+  }
+
+  .top-bar .toolbar-divider {
+    height: 16px;
+    margin: 0 1px;
+  }
+}
+
+/* Keep Workbench `.top-bar` strictly 2 crisp rows at 1280x760 (ZH & EN) */
+@media (max-width: 1360px) {
+  .top-bar {
+    left: 12px;
+    right: 12px;
+    padding: 5px 9px;
+    gap: 4px 6px;
+  }
+
+  .top-bar .brand-block {
+    gap: 7px;
+  }
+
+  .top-bar .brand-badge {
+    padding: 2px 6px;
+    font-size: 10px;
+  }
+
+  .top-bar .back-armory-btn {
+    padding: 4px 8px;
+    font-size: 11.5px;
+  }
+
+  .top-bar .toolbar-cluster-primary {
+    gap: 4px;
+  }
+
+  .top-bar .toolbar-cluster-primary .toggle-chip {
+    padding: 3.5px 6.5px;
+    gap: 3.5px;
+    font-size: 11px;
+  }
+
+  .top-bar .toolbar-cluster-tools {
+    gap: 3px;
+  }
+
+  .top-bar .toolbar-cluster-tools .toggle-chip {
+    padding: 3px 5.5px;
+    gap: 3px;
+    font-size: 10.5px;
+    letter-spacing: -0.015em;
+  }
+
+  .top-bar .toolbar-cluster-tools svg {
+    width: 11px;
+    height: 11px;
+    flex-shrink: 0;
+  }
+
+  .top-bar .camera-pills {
+    padding: 1.5px 2.5px;
+    gap: 1px;
+  }
+
+  .top-bar .cam-icon {
+    width: 11px;
+    height: 11px;
+    margin: 0 1px;
+  }
+
+  .top-bar .cam-btn {
+    padding: 2.5px 4.5px;
+    font-size: 10.5px;
+  }
+
+  .top-bar .toolbar-divider {
+    height: 15px;
+    margin: 0;
+  }
+}
+
 @media (max-width: 1120px) {
   .top-bar .brand-badge {
     display: none;
+  }
+  .top-bar .toolbar-cluster-primary {
+    flex-wrap: wrap;
   }
   .armory-hero-plaque {
     display: none;
@@ -56,15 +177,15 @@
   .ballistics-telemetry-slot,
   .ballistics-telemetry-slot.sidebar-collapsed {
     left: 16px;
-    top: calc(var(--hud-top-offset, 108px) + 46px);
+    top: calc(var(--hud-top-offset, 100px) + 44px);
     width: min(392px, calc(100% - 348px));
     max-block-size: calc(
-      100vh - var(--hud-top-offset, 108px) - var(--hud-bottom-offset, 148px) -
-        66px
+      100vh - var(--hud-top-offset, 100px) - var(--hud-bottom-offset, 148px) -
+        50px
     );
     max-block-size: calc(
-      100dvh - var(--hud-top-offset, 108px) - var(--hud-bottom-offset, 148px) -
-        66px
+      100dvh - var(--hud-top-offset, 100px) - var(--hud-bottom-offset, 148px) -
+        50px
     );
   }
 }
@@ -107,10 +228,149 @@
   .firing-phases-grid {
     grid-template-columns: repeat(4, 1fr);
   }
+
+  .field-strip-steps-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .field-strip-steps-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Short-viewport clearance guards (preserve narrow mobile breakpoints) */
 @media (max-height: 820px) {
+  .top-bar {
+    top: 8px;
+  }
+
+  .timeline-dock {
+    bottom: 14px;
+    padding: 8px 14px 11px;
+  }
+
+  .dock-mode-bar {
+    margin-bottom: 7px;
+    padding-bottom: 6px;
+  }
+
+  .timeline-presets,
+  .firing-phases-grid {
+    margin-bottom: 7px;
+  }
+
+  .field-strip-hud {
+    gap: 6px;
+  }
+
+  .fs-step-pill {
+    padding: 4.5px 7.5px;
+  }
+
+  .field-strip-guidance,
+  .field-strip-alert {
+    padding: 5.5px 10px;
+  }
+
+  .hud-collapsed-btn {
+    padding: 7px 12px;
+    font-size: 12px;
+  }
+
+  .ballistics-telemetry-slot {
+    gap: 6px;
+    max-block-size: calc(
+      100vh - var(--hud-top-offset, 72px) - var(--hud-bottom-offset, 148px) -
+        4px
+    );
+    max-block-size: calc(
+      100dvh - var(--hud-top-offset, 72px) - var(--hud-bottom-offset, 148px) -
+        4px
+    );
+  }
+
+  .ballistics-telemetry-slot.sidebar-collapsed {
+    top: calc(var(--hud-top-offset, 72px) + 40px);
+    max-block-size: calc(
+      100vh - var(--hud-top-offset, 72px) - var(--hud-bottom-offset, 148px) -
+        44px
+    );
+    max-block-size: calc(
+      100dvh - var(--hud-top-offset, 72px) - var(--hud-bottom-offset, 148px) -
+        44px
+    );
+  }
+
+  .caliper-hud {
+    padding: 7px 10px;
+    gap: 5px;
+  }
+
+  .caliper-lcd-box {
+    padding: 5px 8px;
+    gap: 4px;
+  }
+
+  .caliper-lcd-value {
+    font-size: 16px;
+  }
+
+  .caliper-benchmarks {
+    gap: 3px;
+  }
+
+  .caliper-bench-btn {
+    padding: 3.5px 5px;
+    font-size: 10px;
+  }
+
+  .caliper-footer-meta {
+    gap: 1px;
+    font-size: 9.5px;
+    line-height: 1.25;
+  }
+
+  .ballistics-telemetry-hud,
+  [data-testid='ballistics-telemetry-hud'] {
+    padding: 6px 9px !important;
+  }
+
+  [data-testid='ballistics-telemetry-hud'] > div:first-child {
+    gap: 4px !important;
+    margin-bottom: 3px !important;
+  }
+
+  [data-testid='ballistics-telemetry-hud'] > div:nth-of-type(2) {
+    margin-top: 4px !important;
+    gap: 4px !important;
+  }
+
+  [data-testid='ballistics-telemetry-hud'] > div:nth-of-type(2) > div {
+    padding: 2.5px 6px !important;
+  }
+
+  [data-testid='ballistics-telemetry-hud'] > div:last-child {
+    margin-top: 3px !important;
+  }
+
+  .engineering-tint-legend {
+    padding: 8px 10px;
+  }
+
+  .eng-legend-header {
+    margin-bottom: 6px;
+  }
+
+  .eng-role-grid {
+    gap: 4px;
+  }
+
+  .eng-role-chip {
+    padding: 4px 7px;
+  }
+
   .inspector-card,
   .inspector-card.has-deep-narration {
     max-height: calc(

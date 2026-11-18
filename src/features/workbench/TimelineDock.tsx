@@ -85,6 +85,9 @@ export const TimelineDock: React.FC = () => {
   const setFieldStripActive = useAppStore((s) => s.setFieldStripActive);
   const malfunctionActive = useAppStore((s) => s.malfunctionActive);
   const setMalfunctionActive = useAppStore((s) => s.setMalfunctionActive);
+  const storyOpen = useAppStore((s) => s.storyOpen);
+  const storyMinimized = useAppStore((s) => s.storyMinimized);
+  const isStoryDrawerExpanded = storyOpen && !storyMinimized;
 
   // Hands-on 3D Fire-Control Group (FCG) & Press-Check state
   const actionSnap = useInteractiveActionStore();
@@ -159,7 +162,9 @@ export const TimelineDock: React.FC = () => {
       : playbackClock.getState().fireProgress;
 
   return (
-    <div className="timeline-dock">
+    <div
+      className={`timeline-dock ${isStoryDrawerExpanded ? 'is-story-open' : ''}`}
+    >
       {/* Mode Switcher Header Row */}
       <div className="dock-mode-bar">
         <div className="mode-tabs">
@@ -333,9 +338,13 @@ export const TimelineDock: React.FC = () => {
             {timelinePresets.map((preset) => {
               const isActive = activePresetId === preset.id;
               const locPreset = resolveTimelinePresetText(preset, lang, bundle);
+              const pctBadge =
+                locPreset.subLabel.match(/^\d+%/)?.[0] ??
+                `${Math.round(preset.t * 100)}%`;
               return (
                 <button
                   key={preset.id}
+                  type="button"
                   className={`preset-pill ${isActive ? 'active' : ''}`}
                   onClick={() => {
                     stopPlay();
@@ -352,10 +361,10 @@ export const TimelineDock: React.FC = () => {
                       );
                     }
                   }}
-                  title={locPreset.desc}
+                  title={`${locPreset.label} (${pctBadge}) — ${locPreset.desc}`}
                 >
                   <span className="preset-name">{locPreset.label}</span>
-                  <span className="preset-pct">{locPreset.subLabel}</span>
+                  <span className="preset-pct">{pctBadge}</span>
                 </button>
               );
             })}

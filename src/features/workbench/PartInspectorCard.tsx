@@ -40,9 +40,19 @@ import type { FiringPhaseInfo } from '../../weapons/types';
 
 const EMPTY_FIRING_PHASES: readonly FiringPhaseInfo[] = [];
 
+const LIGHT_GROUP_BADGE_MAP: Readonly<Record<string, string>> = {
+  '#38bdf8': '#0284c7',
+  '#94a3b8': '#475569',
+  '#f59e0b': '#b45309',
+  '#fb923c': '#c2410c',
+  '#34d399': '#047857',
+  '#10b981': '#047857',
+};
+
 export const PartInspectorCard: React.FC = () => {
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const lang = useAppStore((s) => s.lang);
+  const environmentPreset = useAppStore((s) => s.environmentPreset);
   const autoPlayPartAudio = useAppStore((s) => s.autoPlayPartAudio);
   const toggleAutoPlayPartAudio = useAppStore((s) => s.toggleAutoPlayPartAudio);
   const inspectorMinimized = useAppStore((s) => s.inspectorMinimized);
@@ -171,7 +181,11 @@ export const PartInspectorCard: React.FC = () => {
   if (!part) return null;
 
   const groupMeta = partGroups.find((g) => g.key === part.group);
-  const badgeColor = groupMeta?.badgeColor ?? '#0284c7';
+  const rawBadgeColor = groupMeta?.badgeColor ?? '#0284c7';
+  const badgeColor =
+    environmentPreset === 'blueprint_daylight'
+      ? (LIGHT_GROUP_BADGE_MAP[rawBadgeColor.toLowerCase()] ?? rawBadgeColor)
+      : rawBadgeColor;
   const groupTitle =
     lang === 'en'
       ? (groupMeta?.nameEn ?? part.group)
@@ -392,6 +406,7 @@ export const PartInspectorCard: React.FC = () => {
             className={`part-auto-voice-btn ${
               autoPlayPartAudio ? 'active' : ''
             }`}
+            aria-pressed={autoPlayPartAudio}
             onClick={toggleAutoPlayPartAudio}
             title={ui.autoVoiceTitle}
           >

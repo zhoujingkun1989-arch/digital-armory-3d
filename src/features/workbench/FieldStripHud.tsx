@@ -148,7 +148,7 @@ export const FieldStripHud: React.FC = () => {
                 isRecommended ? 'is-recommended' : ''
               } ${isBlocking ? 'is-blocking' : ''}`}
               aria-pressed={isStripped}
-              title={instruction}
+              title={`${step.orderLabel} · ${title} — ${instruction}`}
               onClick={() =>
                 fieldStripStore.attemptPartClick(activeWeaponId, leadPartId)
               }

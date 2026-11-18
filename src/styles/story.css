@@ -42,6 +42,11 @@
   box-shadow: 0 2px 6px rgba(2, 132, 199, 0.28);
 }
 
+:is([data-theme='light'], .theme-light) .lang-seg-btn.active {
+  background: #2563eb;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.24);
+}
+
 /* ==================== Armory R&D Story Entry Buttons ==================== */
 .armory-story-btn {
   display: inline-flex;
@@ -132,8 +137,8 @@
   position: absolute;
   top: var(--hud-top-offset, 72px);
   right: 16px;
-  bottom: 24px;
-  width: min(468px, calc(100% - 32px));
+  bottom: 20px;
+  width: min(448px, calc(100% - 32px));
   z-index: calc(var(--z-hud) + 5);
   display: flex;
   flex-direction: column;
@@ -144,6 +149,30 @@
   box-shadow: var(--shadow-dock);
   overflow: hidden;
   pointer-events: auto;
+}
+
+/* Shift Workbench bottom TimelineDock / MalfunctionHud / FieldStripHud clear of open StoryDrawer */
+@media (min-width: 900px) {
+  .app-shell {
+    --story-drawer-w: clamp(360px, 30vw, 448px);
+  }
+
+  .story-drawer {
+    width: var(--story-drawer-w);
+  }
+
+  .timeline-dock.is-story-open,
+  .hud-chrome-layer:has(.story-drawer) .timeline-dock,
+  .app-shell:has(.story-drawer) .timeline-dock {
+    left: calc((100% - var(--story-drawer-w) - 12px) * 0.5);
+    width: min(968px, calc(100% - var(--story-drawer-w) - 44px));
+  }
+}
+
+@media (max-width: 899px) {
+  .app-shell:has(.timeline-dock) .story-drawer {
+    bottom: var(--hud-bottom-offset, 200px);
+  }
 }
 
 .story-drawer-header {
@@ -854,6 +883,119 @@
   color: #6ee7b7;
   background: rgba(16, 185, 129, 0.18);
   border: 1px solid rgba(16, 185, 129, 0.4);
+}
+
+/* Blueprint Daylight contrast harmony for PartInspectorCard voice bar & Story audio chrome */
+:is([data-theme='light'], .theme-light) .part-voice-bar {
+  background: linear-gradient(135deg, #eff6ff 0%, #e0effe 100%);
+  border-color: rgba(37, 99, 235, 0.26);
+}
+
+:is([data-theme='light'], .theme-light) .part-voice-play-btn {
+  background: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.22);
+}
+
+:is([data-theme='light'], .theme-light) .part-voice-play-btn:hover {
+  background: #1d4ed8;
+}
+
+:is([data-theme='light'], .theme-light) .part-voice-play-btn.playing {
+  background: #1e40af;
+}
+
+:is([data-theme='light'], .theme-light) .part-auto-voice-btn {
+  color: #475569;
+  background: rgba(255, 255, 255, 0.88);
+  border-color: rgba(15, 23, 42, 0.16);
+}
+
+:is([data-theme='light'], .theme-light) .part-auto-voice-btn:hover {
+  color: #0f172a;
+  background: #ffffff;
+  border-color: rgba(37, 99, 235, 0.36);
+}
+
+:is([data-theme='light'], .theme-light) .part-auto-voice-btn.active {
+  color: #ffffff;
+  background: #2563eb;
+  border-color: #1d4ed8;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.24);
+}
+
+:is([data-theme='light'], .theme-light) .story-audio-dock {
+  background: linear-gradient(135deg, #f0f7ff 0%, #e2ecf8 100%);
+  color: #0f172a;
+}
+
+:is([data-theme='light'], .theme-light) .story-play-all-btn {
+  background: #2563eb;
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.26);
+}
+
+:is([data-theme='light'], .theme-light) .story-play-all-btn:hover {
+  background: #1d4ed8;
+}
+
+:is([data-theme='light'], .theme-light) .story-chapter-pill,
+:is([data-theme='light'], .theme-light) .story-rate-btn,
+:is([data-theme='light'], .theme-light) .story-director-toggle {
+  color: #334155;
+  background: rgba(255, 255, 255, 0.84);
+  border-color: rgba(15, 23, 42, 0.14);
+}
+
+:is([data-theme='light'], .theme-light) .story-chapter-pill.active {
+  color: #ffffff;
+  background: #2563eb;
+  border-color: #1d4ed8;
+}
+
+:is([data-theme='light'], .theme-light) .story-director-toggle.active {
+  color: #065f46;
+  background: rgba(16, 185, 129, 0.18);
+  border-color: rgba(5, 150, 105, 0.5);
+}
+
+:is([data-theme='light'], .theme-light) .story-cinema-bar-btn {
+  color: #1d4ed8;
+  background: rgba(37, 99, 235, 0.1);
+  border-color: rgba(37, 99, 235, 0.28);
+}
+
+:is([data-theme='light'], .theme-light) .story-director-row,
+:is([data-theme='light'], .theme-light) .story-scrubber-row {
+  border-top-color: rgba(15, 23, 42, 0.1);
+}
+
+:is([data-theme='light'], .theme-light) .story-now-playing,
+:is([data-theme='light'], .theme-light) .story-time-readout {
+  color: #475569;
+}
+
+:is([data-theme='light'], .theme-light) .story-cues-box {
+  background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 100%);
+  border-color: rgba(37, 99, 235, 0.24);
+}
+
+:is([data-theme='light'], .theme-light) .story-cues-head {
+  color: #1d4ed8;
+}
+
+:is([data-theme='light'], .theme-light) .story-cue-line {
+  color: #475569;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+:is([data-theme='light'], .theme-light) .story-cue-line.is-past {
+  color: #334155;
+}
+
+:is([data-theme='light'], .theme-light) .story-cue-line.is-active {
+  color: #ffffff;
+  background: #2563eb;
+  border-color: #1d4ed8;
 }
 
 .part-narration-sections {

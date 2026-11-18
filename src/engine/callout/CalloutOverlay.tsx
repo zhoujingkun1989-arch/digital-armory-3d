@@ -32,29 +32,109 @@ interface CalloutDomRefs {
 
 const domRegistry = new Map<string, CalloutDomRefs>();
 
+function isNarrowAsciiGlyph(code: number): boolean {
+  return (
+    code === 32 || // ' '
+    code === 39 || // '\''
+    code === 40 || // '('
+    code === 41 || // ')'
+    code === 44 || // ','
+    code === 45 || // '-'
+    code === 46 || // '.'
+    code === 47 || // '/'
+    code === 49 || // '1'
+    code === 58 || // ':'
+    code === 59 || // ';'
+    code === 102 || // 'f'
+    code === 105 || // 'i'
+    code === 106 || // 'j'
+    code === 108 || // 'l'
+    code === 114 || // 'r'
+    code === 116 || // 't'
+    code === 124 // '|'
+  );
+}
+
 function estimateLabelWidth(text: string, compact: boolean): number {
-  const cjkW = compact ? 10.2 : 11.6;
-  const asciiW = compact ? 5.8 : 6.5;
-  let px = 10;
+  const cjkW = compact ? 11.2 : 12.6;
+  const upperWideW = compact ? 9.5 : 10.6;
+  const upperW = compact ? 7.6 : 8.5;
+  const upperIW = compact ? 4.4 : 5.0;
+  const lowerWideW = compact ? 8.8 : 9.8;
+  const digitSymW = compact ? 6.6 : 7.4;
+  const narrowW = compact ? 4.2 : 4.8;
+  const asciiW = compact ? 6.2 : 7.0;
+
+  // Horizontal pill padding (2 × 6.5px) + 2px border + bold/subpixel AA guard
+  let px = compact ? 15.5 : 18;
   for (let i = 0; i < text.length; i++) {
-    px += text.charCodeAt(i) > 255 ? cjkW : asciiW;
+    const code = text.charCodeAt(i);
+    if (code > 0x2ff) {
+      px += cjkW;
+    } else if (code === 77 || code === 87) {
+      px += upperWideW;
+    } else if (code === 73) {
+      px += upperIW;
+    } else if (code >= 65 && code <= 90) {
+      px += upperW;
+    } else if (code === 109 || code === 119) {
+      px += lowerWideW;
+    } else if (isNarrowAsciiGlyph(code)) {
+      px += narrowW;
+    } else if (
+      (code >= 48 && code <= 57) ||
+      code === 34 ||
+      code === 37 ||
+      code === 38 ||
+      code === 43 ||
+      code === 176 ||
+      code === 215
+    ) {
+      px += digitSymW;
+    } else {
+      px += asciiW;
+    }
   }
   return px;
 }
 
-function overlapsAny(box: ScreenRectBox, placed: ScreenRectBox[]): boolean {
-  for (let i = 0; i < placed.length; i++) {
+function overlapsCounted(
+  xMin: number,
+  xMax: number,
+  yMin: number,
+  yMax: number,
+  placed: readonly ScreenRectBox[],
+  count: number
+): boolean {
+  for (let i = 0; i < count; i++) {
     const b = placed[i];
-    if (
-      box.xMin < b.xMax &&
-      box.xMax > b.xMin &&
-      box.yMin < b.yMax &&
-      box.yMax > b.yMin
-    ) {
+    if (xMin < b.xMax && xMax > b.xMin && yMin < b.yMax && yMax > b.yMin) {
       return true;
     }
   }
   return false;
+}
+
+function computeOverlapPenalty(
+  xMin: number,
+  xMax: number,
+  yMin: number,
+  yMax: number,
+  placed: readonly ScreenRectBox[],
+  count: number,
+  hudCount: number
+): number {
+  let penalty = 0;
+  for (let i = 0; i < count; i++) {
+    const b = placed[i];
+    const ox = Math.min(xMax, b.xMax) - Math.max(xMin, b.xMin);
+    if (ox <= 0) continue;
+    const oy = Math.min(yMax, b.yMax) - Math.max(yMin, b.yMin);
+    if (oy <= 0) continue;
+    const isHud = i < hudCount;
+    penalty += (isHud ? 2600 : 520) + ox * oy * (isHud ? 3.5 : 1.4);
+  }
+  return penalty;
 }
 
 function smoothAlpha(edge0: number, edge1: number, x: number): number {
@@ -78,10 +158,27 @@ interface Candidate {
   isHighlighted: boolean;
 }
 
+// Pre-allocated Zero-GC scratch pools for 60Hz `useFrame` execution
+const MAX_RELAX_SLOTS = 96;
+const reusableActiveIdSet = new Set<string>();
+const silhouettePool: ScreenRectBox[] = [];
+const candidatePool: Candidate[] = [];
+const candidateOrder: number[] = [];
+const placedBoxPool: ScreenRectBox[] = [];
+
+const relaxLx = new Float64Array(MAX_RELAX_SLOTS);
+const relaxLy = new Float64Array(MAX_RELAX_SLOTS);
+const relaxHalfW = new Float64Array(MAX_RELAX_SLOTS);
+const relaxAnchorX = new Float64Array(MAX_RELAX_SLOTS);
+const relaxAnchorY = new Float64Array(MAX_RELAX_SLOTS);
+const relaxMinX = new Float64Array(MAX_RELAX_SLOTS);
+const relaxMaxX = new Float64Array(MAX_RELAX_SLOTS);
+
 const DX_CANDIDATES = [
-  0, -20, 20, -42, 42, -66, 66, -94, 94, -126, 126, -162, 162, -202, 202, -246,
-  246, -294, 294, -346, 346,
+  0, -24, 24, -50, 50, -80, 80, -114, 114, -152, 152, -194, 194, -240, 240,
+  -290, 290, -344, 344, -402, 402, -464, 464, -528, 528,
 ];
+const RELAX_ITERATIONS = 16;
 
 /**
  * Called inside R3F `useFrame` at 60fps: projects 3D component surface anchors to 2D viewport
@@ -121,10 +218,13 @@ export function updateCalloutOverlay60fps(
   const plugin = getLoadedWeaponPlugin(activeWeaponId);
   const narrationBundle = getLoadedNarrationBundle(activeWeaponId);
   const activeParts = plugin?.parts ?? [];
-  const activeIdSet = new Set(activeParts.map((p) => p.id));
+  reusableActiveIdSet.clear();
+  for (let i = 0; i < activeParts.length; i++) {
+    reusableActiveIdSet.add(activeParts[i].id);
+  }
 
   for (const [regId, refs] of domRegistry.entries()) {
-    if (!activeIdSet.has(regId)) {
+    if (!reusableActiveIdSet.has(regId)) {
       if (refs.svgGroup) refs.svgGroup.style.opacity = '0';
       if (refs.label) {
         refs.label.style.opacity = '0';
@@ -139,12 +239,20 @@ export function updateCalloutOverlay60fps(
   const staticMinY = viewportW < 720 ? 174 : viewportW < 920 ? 116 : 76;
   const { topPx, bottomPx } = getCachedHudClearance();
   const minY = Math.max(staticMinY, topPx + 6);
-  const dockHalfW = Math.min(920, viewportW - 24) * 0.5 + 10;
-  const centerX = viewportW * 0.5;
+  const storyDrawerOpen =
+    state.storyOpen && !state.storyMinimized && viewportW >= 900;
+  const storyDrawerW = Math.min(448, Math.max(360, viewportW * 0.3));
+  const centerX = storyDrawerOpen
+    ? (viewportW - storyDrawerW - 12) * 0.5
+    : viewportW * 0.5;
+  const dockAvailW = storyDrawerOpen
+    ? viewportW - storyDrawerW - 44
+    : viewportW - 32;
+  const dockHalfW = Math.min(968, Math.max(280, dockAvailW)) * 0.5 + 10;
   const isDark = state.environmentPreset !== 'blueprint_daylight';
 
-  const silhouettes: ScreenRectBox[] = [];
-  const candidates: Candidate[] = [];
+  let silhouetteCount = 0;
+  let candidateCount = 0;
 
   const pushBoxSilhouette = (
     bx0: number,
@@ -180,7 +288,17 @@ export function updateCalloutOverlay60fps(
       if (psy > yMax) yMax = psy;
     }
     if (xMin <= xMax) {
-      silhouettes.push({ xMin, xMax, yMin, yMax });
+      let slot = silhouettePool[silhouetteCount];
+      if (!slot) {
+        slot = { xMin, xMax, yMin, yMax };
+        silhouettePool[silhouetteCount] = slot;
+      } else {
+        slot.xMin = xMin;
+        slot.xMax = xMax;
+        slot.yMin = yMin;
+        slot.yMax = yMax;
+      }
+      silhouetteCount++;
     }
   };
 
@@ -339,39 +457,85 @@ export function updateCalloutOverlay60fps(
       lang,
       narrationBundle?.parts[part.id]
     );
-    candidates.push({
-      part,
-      sx,
-      sy,
-      alpha,
-      width: estimateLabelWidth(labelText, isCompact),
-      isHighlighted: isSelected || isHovered,
-    });
+    if (candidateCount < MAX_RELAX_SLOTS) {
+      let cand = candidatePool[candidateCount];
+      const estW = estimateLabelWidth(labelText, isCompact);
+      const hl = isSelected || isHovered;
+      if (!cand) {
+        cand = {
+          part,
+          sx,
+          sy,
+          alpha,
+          width: estW,
+          isHighlighted: hl,
+        };
+        candidatePool[candidateCount] = cand;
+      } else {
+        cand.part = part;
+        cand.sx = sx;
+        cand.sy = sy;
+        cand.alpha = alpha;
+        cand.width = estW;
+        cand.isHighlighted = hl;
+      }
+      candidateOrder[candidateCount] = candidateCount;
+      candidateCount++;
+    }
   }
 
-  candidates.sort((a, b) => a.sx - b.sx);
+  if (candidateCount === 0) return;
 
-  // Copy pre-cached HUD obstacle rectangles (O(1), zero getBoundingClientRect layout thrash!)
-  const placedBoxes: ScreenRectBox[] = [...getCachedHudBoxes()];
+  // In-place insertion sort on `candidateOrder[0..candidateCount)` by `sx` (Zero-GC)
+  for (let i = 1; i < candidateCount; i++) {
+    const idx = candidateOrder[i];
+    const keySx = candidatePool[idx].sx;
+    let j = i - 1;
+    while (j >= 0 && candidatePool[candidateOrder[j]].sx > keySx) {
+      candidateOrder[j + 1] = candidateOrder[j];
+      j--;
+    }
+    candidateOrder[j + 1] = idx;
+  }
 
-  const labelH = isCompact ? 15.5 : 18;
-  const rowStep = isCompact ? 17.5 : 19.5;
+  // Copy pre-cached HUD obstacle rectangles into reusable pool (O(1), zero getBoundingClientRect layout thrash!)
+  const hudBoxes = getCachedHudBoxes();
+  const hudCount = hudBoxes.length;
+  let placedCount = 0;
+  for (let h = 0; h < hudCount; h++) {
+    const src = hudBoxes[h];
+    let dst = placedBoxPool[placedCount];
+    if (!dst) {
+      dst = { xMin: src.xMin, xMax: src.xMax, yMin: src.yMin, yMax: src.yMax };
+      placedBoxPool[placedCount] = dst;
+    } else {
+      dst.xMin = src.xMin;
+      dst.xMax = src.xMax;
+      dst.yMin = src.yMin;
+      dst.yMax = src.yMax;
+    }
+    placedCount++;
+  }
 
-  for (let i = 0; i < candidates.length; i++) {
-    const c = candidates[i];
-    const refs = domRegistry.get(c.part.id)!;
+  const labelH = isCompact ? 19 : 21;
+  const padX = isCompact ? 6.5 : 8.5;
+  const padY = isCompact ? 4.5 : 5.5;
+  const rowStep = isCompact ? 24 : 27;
+  const absMinY = Math.max(12 + labelH * 0.5, topPx + 6);
+  const absMaxY = Math.max(absMinY, viewportH - 14 - labelH * 0.5);
+
+  for (let rank = 0; rank < candidateCount; rank++) {
+    const c = candidatePool[candidateOrder[rank]];
     const halfW = c.width * 0.5;
 
     const absMinX = 8 + halfW;
     const absMaxX = Math.max(absMinX, viewportW - 8 - halfW);
-    const absMinY = Math.max(12 + labelH * 0.5, topPx + 6);
-    const absMaxY = viewportH - 14 - labelH * 0.5;
 
     let colTopY = c.sy;
     let colBotY = c.sy;
-    for (let s = 0; s < silhouettes.length; s++) {
-      const sil = silhouettes[s];
-      if (c.sx >= sil.xMin - 6 && c.sx <= sil.xMax + 6) {
+    for (let s = 0; s < silhouetteCount; s++) {
+      const sil = silhouettePool[s];
+      if (c.sx >= sil.xMin - 8 && c.sx <= sil.xMax + 8) {
         if (sil.yMin < colTopY) colTopY = sil.yMin;
         if (sil.yMax > colBotY) colBotY = sil.yMax;
       }
@@ -385,20 +549,20 @@ export function updateCalloutOverlay60fps(
     let dir: 'up' | 'down' = c.part.calloutDir;
     if (
       dir === 'down' &&
-      approxFloorLimit - colBotY < 22 &&
+      approxFloorLimit - colBotY < 26 &&
       colTopY - minY > 40
     ) {
       dir = 'up';
     } else if (
       dir === 'up' &&
-      colTopY - minY < 22 &&
+      colTopY - minY < 26 &&
       approxFloorLimit - colBotY > 40
     ) {
       dir = 'down';
     }
 
-    const stemScale = isCompact ? 0.76 : 0.94;
-    const clearPad = isCompact ? 15 : 21;
+    const stemScale = isCompact ? 0.8 : 0.96;
+    const clearPad = isCompact ? 18 : 24;
     const idealLy =
       dir === 'up'
         ? Math.min(c.sy - c.part.calloutStem * stemScale, colTopY - clearPad)
@@ -407,25 +571,45 @@ export function updateCalloutOverlay60fps(
     let chosenLx = Math.max(absMinX, Math.min(absMaxX, c.sx));
     let chosenLy = Math.max(absMinY, Math.min(absMaxY, idealLy));
     let bestCost = Infinity;
+    let fallbackLx = chosenLx;
+    let fallbackLy = chosenLy;
+    let bestFallbackCost = Infinity;
 
     const trySlot = (candLx: number, candLy: number, penaltyBias: number) => {
       if (candLx < absMinX - 0.5 || candLx > absMaxX + 0.5) return;
       if (candLy < absMinY || candLy > absMaxY) return;
-      const box: ScreenRectBox = {
-        xMin: candLx - halfW - 3.5,
-        xMax: candLx + halfW + 3.5,
-        yMin: candLy - labelH * 0.5 - 1.5,
-        yMax: candLy + labelH * 0.5 + 1.5,
-      };
-      if (overlapsAny(box, placedBoxes)) return;
+      const xMin = candLx - halfW - padX;
+      const xMax = candLx + halfW + padX;
+      const yMin = candLy - labelH * 0.5 - padY;
+      const yMax = candLy + labelH * 0.5 + padY;
       const dx = Math.abs(candLx - c.sx);
-      const pureVerticalBonus = dx <= Math.max(4, halfW - 4) ? 0 : 140;
-      const cost =
-        penaltyBias + pureVerticalBonus + dx * 2.4 + Math.abs(candLy - idealLy);
-      if (cost < bestCost) {
-        bestCost = cost;
-        chosenLx = candLx;
-        chosenLy = candLy;
+      const pureVerticalBonus = dx <= Math.max(4, halfW - 4) ? 0 : 120;
+      const baseCost =
+        penaltyBias + pureVerticalBonus + dx * 2.1 + Math.abs(candLy - idealLy);
+
+      if (!overlapsCounted(xMin, xMax, yMin, yMax, placedBoxPool, placedCount)) {
+        if (baseCost < bestCost) {
+          bestCost = baseCost;
+          chosenLx = candLx;
+          chosenLy = candLy;
+        }
+      } else if (bestCost === Infinity) {
+        const ovCost =
+          baseCost +
+          computeOverlapPenalty(
+            xMin,
+            xMax,
+            yMin,
+            yMax,
+            placedBoxPool,
+            placedCount,
+            hudCount
+          );
+        if (ovCost < bestFallbackCost) {
+          bestFallbackCost = ovCost;
+          fallbackLx = candLx;
+          fallbackLy = candLy;
+        }
       }
     };
 
@@ -438,9 +622,9 @@ export function updateCalloutOverlay60fps(
       );
       let localTopY = c.sy;
       let localBotY = c.sy;
-      for (let s = 0; s < silhouettes.length; s++) {
-        const sil = silhouettes[s];
-        if (candLx >= sil.xMin - 6 && candLx <= sil.xMax + 6) {
+      for (let s = 0; s < silhouetteCount; s++) {
+        const sil = silhouettePool[s];
+        if (candLx >= sil.xMin - 8 && candLx <= sil.xMax + 8) {
           if (sil.yMin < localTopY) localTopY = sil.yMin;
           if (sil.yMax > localBotY) localBotY = sil.yMax;
         }
@@ -455,7 +639,7 @@ export function updateCalloutOverlay60fps(
               c.sy + c.part.calloutStem * stemScale,
               localBotY + clearPad
             );
-      for (let r = 0; r < 18; r++) {
+      for (let r = 0; r < 22; r++) {
         trySlot(candLx, startLy + stepSign * r * rowStep, 0);
       }
       if (dIdx === 0 && bestCost < Infinity) {
@@ -472,38 +656,197 @@ export function updateCalloutOverlay60fps(
         );
         let localTopY = c.sy;
         let localBotY = c.sy;
-        for (let s = 0; s < silhouettes.length; s++) {
-          const sil = silhouettes[s];
-          if (candLx >= sil.xMin - 6 && candLx <= sil.xMax + 6) {
+        for (let s = 0; s < silhouetteCount; s++) {
+          const sil = silhouettePool[s];
+          if (candLx >= sil.xMin - 8 && candLx <= sil.xMax + 8) {
             if (sil.yMin < localTopY) localTopY = sil.yMin;
             if (sil.yMax > localBotY) localBotY = sil.yMax;
           }
         }
         const altStartLy =
           altSign < 0 ? localTopY - clearPad : localBotY + clearPad;
-        for (let r = 0; r < 16; r++) {
-          trySlot(candLx, altStartLy + altSign * r * rowStep, 360);
+        for (let r = 0; r < 20; r++) {
+          trySlot(candLx, altStartLy + altSign * r * rowStep, 320);
         }
       }
     }
 
-    const lx = chosenLx;
-    const ly = chosenLy;
+    const initLx = bestCost < Infinity ? chosenLx : fallbackLx;
+    const initLy = bestCost < Infinity ? chosenLy : fallbackLy;
 
-    placedBoxes.push({
-      xMin: lx - halfW - 3,
-      xMax: lx + halfW + 3,
-      yMin: ly - labelH * 0.5 - 1.5,
-      yMax: ly + labelH * 0.5 + 1.5,
-    });
+    relaxLx[rank] = initLx;
+    relaxLy[rank] = initLy;
+    relaxHalfW[rank] = halfW;
+    relaxAnchorX[rank] = c.sx;
+    relaxAnchorY[rank] = c.sy;
+    relaxMinX[rank] = absMinX;
+    relaxMaxX[rank] = absMaxX;
 
-    const lineTipY = ly < c.sy ? ly + 9 : ly - 9;
+    let slotBox = placedBoxPool[placedCount];
+    if (!slotBox) {
+      slotBox = {
+        xMin: initLx - halfW - padX,
+        xMax: initLx + halfW + padX,
+        yMin: initLy - labelH * 0.5 - padY,
+        yMax: initLy + labelH * 0.5 + padY,
+      };
+      placedBoxPool[placedCount] = slotBox;
+    } else {
+      slotBox.xMin = initLx - halfW - padX;
+      slotBox.xMax = initLx + halfW + padX;
+      slotBox.yMin = initLy - labelH * 0.5 - padY;
+      slotBox.yMax = initLy + labelH * 0.5 + padY;
+    }
+    placedCount++;
+  }
+
+  // Zero-GC 16-pass iterative pairwise X+Y repulsion & HUD obstacle clearance
+  const minGapX = isCompact ? 8 : 11;
+  const minGapY = isCompact ? 5.5 : 7.5;
+  const halfH = labelH * 0.5;
+
+  for (let iter = 0; iter < RELAX_ITERATIONS; iter++) {
+    let anyOverlap = false;
+
+    for (let i = 0; i < candidateCount; i++) {
+      for (let j = i + 1; j < candidateCount; j++) {
+        const reqDx = relaxHalfW[i] + relaxHalfW[j] + minGapX;
+        const reqDy = labelH + minGapY;
+        const dx = relaxLx[j] - relaxLx[i];
+        const dy = relaxLy[j] - relaxLy[i];
+        const penX = reqDx - Math.abs(dx);
+        if (penX <= 0) continue;
+        const penY = reqDy - Math.abs(dy);
+        if (penY <= 0) continue;
+
+        anyOverlap = true;
+        const signX =
+          Math.abs(dx) > 0.5
+            ? dx > 0
+              ? 1
+              : -1
+            : relaxAnchorX[j] !== relaxAnchorX[i]
+              ? relaxAnchorX[j] > relaxAnchorX[i]
+                ? 1
+                : -1
+              : 1;
+        const signY =
+          Math.abs(dy) > 0.5
+            ? dy > 0
+              ? 1
+              : -1
+            : relaxAnchorY[j] !== relaxAnchorY[i]
+              ? relaxAnchorY[j] > relaxAnchorY[i]
+                ? 1
+                : -1
+              : j % 2 === 0
+                ? 1
+                : -1;
+
+        const roomX =
+          (signX > 0
+            ? relaxLx[i] - relaxMinX[i] + (relaxMaxX[j] - relaxLx[j])
+            : relaxMaxX[i] - relaxLx[i] + (relaxLx[j] - relaxMinX[j])) >
+          penX * 0.6;
+        const roomY =
+          (signY > 0
+            ? relaxLy[i] - absMinY + (absMaxY - relaxLy[j])
+            : absMaxY - relaxLy[i] + (relaxLy[j] - absMinY)) >
+          penY * 0.6;
+
+        if ((penY * 1.08 <= penX * 0.64 && roomY) || !roomX) {
+          const pushY = penY * 0.56;
+          const shearX = Math.min(penX, 9) * 0.16;
+          relaxLy[i] -= signY * pushY;
+          relaxLy[j] += signY * pushY;
+          relaxLx[i] -= signX * shearX;
+          relaxLx[j] += signX * shearX;
+        } else {
+          const pushX = penX * 0.56;
+          const shearY = Math.min(penY, 6) * 0.18;
+          relaxLx[i] -= signX * pushX;
+          relaxLx[j] += signX * pushX;
+          relaxLy[i] -= signY * shearY;
+          relaxLy[j] += signY * shearY;
+        }
+
+        relaxLx[i] = Math.max(relaxMinX[i], Math.min(relaxMaxX[i], relaxLx[i]));
+        relaxLx[j] = Math.max(relaxMinX[j], Math.min(relaxMaxX[j], relaxLx[j]));
+        relaxLy[i] = Math.max(absMinY, Math.min(absMaxY, relaxLy[i]));
+        relaxLy[j] = Math.max(absMinY, Math.min(absMaxY, relaxLy[j]));
+      }
+    }
+
+    // Keep relaxed pills clear of HUD obstacle boxes on first 14 passes
+    if (iter < RELAX_ITERATIONS - 2) {
+      for (let i = 0; i < candidateCount; i++) {
+        const hw = relaxHalfW[i] + 3;
+        const hh = halfH + 2;
+        for (let h = 0; h < hudCount; h++) {
+          const hb = hudBoxes[h];
+          const lx = relaxLx[i];
+          const ly = relaxLy[i];
+          if (
+            lx - hw >= hb.xMax ||
+            lx + hw <= hb.xMin ||
+            ly - hh >= hb.yMax ||
+            ly + hh <= hb.yMin
+          ) {
+            continue;
+          }
+          anyOverlap = true;
+          const escLeft = hb.xMin - hw;
+          const escRight = hb.xMax + hw;
+          const escUp = hb.yMin - hh;
+          const escDown = hb.yMax + hh;
+
+          let bestShift = Infinity;
+          let nextX = lx;
+          let nextY = ly;
+
+          if (escUp >= absMinY && Math.abs(escUp - ly) < bestShift) {
+            bestShift = Math.abs(escUp - ly);
+            nextX = lx;
+            nextY = escUp;
+          }
+          if (escDown <= absMaxY && Math.abs(escDown - ly) < bestShift) {
+            bestShift = Math.abs(escDown - ly);
+            nextX = lx;
+            nextY = escDown;
+          }
+          if (escLeft >= relaxMinX[i] && Math.abs(escLeft - lx) < bestShift) {
+            bestShift = Math.abs(escLeft - lx);
+            nextX = escLeft;
+            nextY = ly;
+          }
+          if (escRight <= relaxMaxX[i] && Math.abs(escRight - lx) < bestShift) {
+            nextX = escRight;
+            nextY = ly;
+          }
+
+          relaxLx[i] = Math.max(relaxMinX[i], Math.min(relaxMaxX[i], nextX));
+          relaxLy[i] = Math.max(absMinY, Math.min(absMaxY, nextY));
+        }
+      }
+    }
+
+    if (!anyOverlap) break;
+  }
+
+  for (let rank = 0; rank < candidateCount; rank++) {
+    const c = candidatePool[candidateOrder[rank]];
+    const refs = domRegistry.get(c.part.id)!;
+    const halfW = relaxHalfW[rank];
+    const lx = relaxLx[rank];
+    const ly = relaxLy[rank];
+
+    const lineTipY = ly < c.sy ? ly + halfH + 1 : ly - halfH - 1;
 
     let dPath: string;
-    if (Math.abs(lx - c.sx) <= Math.max(4, halfW - 4)) {
+    if (Math.abs(lx - c.sx) <= Math.max(4, halfW - 6)) {
       dPath = `M ${c.sx.toFixed(1)} ${c.sy.toFixed(1)} L ${c.sx.toFixed(1)} ${lineTipY.toFixed(1)}`;
     } else {
-      const edgeX = lx > c.sx ? lx - halfW + 2 : lx + halfW - 2;
+      const edgeX = lx > c.sx ? lx - halfW - 2 : lx + halfW + 2;
       dPath = `M ${c.sx.toFixed(1)} ${c.sy.toFixed(1)} L ${c.sx.toFixed(1)} ${ly.toFixed(1)} L ${edgeX.toFixed(1)} ${ly.toFixed(1)}`;
     }
 
@@ -556,11 +899,14 @@ export const CalloutOverlay: React.FC = () => {
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const lang = useAppStore((s) => s.lang);
   const storyOpen = useAppStore((s) => s.storyOpen);
+  const storyMinimized = useAppStore((s) => s.storyMinimized);
   const screen = useAppStore((s) => s.screen);
   const mode = useAppStore((s) => s.mode);
   const telemetryHudOpen = useAppStore((s) => s.telemetryHudOpen);
   const engineeringTint = useAppStore((s) => s.engineeringTint);
   const fieldStripActive = useAppStore((s) => s.fieldStripActive);
+  const malfunctionActive = useAppStore((s) => s.malfunctionActive);
+  const caliperActive = useAppStore((s) => s.caliperActive);
   const sidebarCollapsed = useAppStore((s) => s.sidebarCollapsed);
   const selectedPartId = useAppStore((s) => s.selectedPartId);
   const hoveredPartId = useAppStore((s) => s.hoveredPartId);
@@ -577,17 +923,22 @@ export const CalloutOverlay: React.FC = () => {
 
   useEffect(() => {
     scheduleHudBoundsRefresh();
+    const timer = window.setTimeout(scheduleHudBoundsRefresh, 240);
+    return () => window.clearTimeout(timer);
   }, [
     screen,
     mode,
     telemetryHudOpen,
     engineeringTint,
     fieldStripActive,
+    malfunctionActive,
+    caliperActive,
     sidebarCollapsed,
     selectedPartId,
     activeWeaponId,
     lang,
     storyOpen,
+    storyMinimized,
   ]);
 
   const ensureEntry = (id: string): CalloutDomRefs => {

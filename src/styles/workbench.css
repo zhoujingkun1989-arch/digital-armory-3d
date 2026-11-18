@@ -23,12 +23,13 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  min-inline-size: min(260px, 100%);
-  flex: 1 1 280px;
+  min-inline-size: 0;
+  flex: 1 1 240px;
 }
 
 .brand-block > div:last-child {
   min-inline-size: 0;
+  flex: 1 1 auto;
 }
 
 .brand-badge {
@@ -46,12 +47,14 @@
 }
 
 .brand-title {
-  font-size: 15px;
+  font-size: clamp(13.5px, 1.08vw, 16.5px);
   font-weight: 700;
   color: var(--color-text-primary);
   letter-spacing: 0.01em;
   line-height: 1.25;
-  text-wrap: balance;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .brand-sub {
@@ -94,6 +97,18 @@
   flex-wrap: wrap;
   min-inline-size: 0;
   margin-inline-start: auto;
+}
+
+.toolbar-cluster-primary {
+  flex-shrink: 0;
+  flex-wrap: nowrap;
+}
+
+.toolbar-cluster-tools {
+  flex: 1 1 100%;
+  justify-content: flex-end;
+  padding-top: 4px;
+  border-top: 1px solid var(--border-divider);
 }
 
 /* ==================== Studio Environment Switcher & GTAO PostFX ==================== */
@@ -163,33 +178,51 @@
   left: 284px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   width: min(412px, calc(100% - 628px));
   min-width: 288px;
   max-block-size: calc(
-    100vh - var(--hud-top-offset, 72px) - var(--hud-bottom-offset, 148px) - 20px
+    100vh - var(--hud-top-offset, 72px) - var(--hud-bottom-offset, 148px) - 6px
   );
   max-block-size: calc(
     100dvh - var(--hud-top-offset, 72px) - var(--hud-bottom-offset, 148px) -
-      20px
+      6px
   );
   overflow-y: auto;
   scrollbar-gutter: stable;
   overscroll-behavior: contain;
-  pointer-events: none;
+  scrollbar-width: thin;
+  pointer-events: auto;
   transition:
     left 0.18s ease,
     top 0.18s ease,
     width 0.18s ease;
 }
 
+.ballistics-telemetry-slot:empty {
+  pointer-events: none;
+}
+
 .ballistics-telemetry-slot::-webkit-scrollbar {
-  width: 4px;
+  width: 5px;
+}
+
+.ballistics-telemetry-slot::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .ballistics-telemetry-slot::-webkit-scrollbar-thumb {
-  background: rgba(100, 116, 139, 0.34);
-  border-radius: 4px;
+  background: rgba(100, 116, 139, 0.36);
+  border-radius: 999px;
+}
+
+.ballistics-telemetry-slot:hover::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.65);
+}
+
+:is([data-theme='light'], .theme-light)
+  .ballistics-telemetry-slot:hover::-webkit-scrollbar-thumb {
+  background: rgba(37, 99, 235, 0.58);
 }
 
 .ballistics-telemetry-slot > * {
@@ -199,15 +232,15 @@
 }
 
 .ballistics-telemetry-slot.sidebar-collapsed {
-  top: calc(var(--hud-top-offset, 72px) + 46px);
+  top: calc(var(--hud-top-offset, 72px) + 44px);
   left: 16px;
   width: min(416px, calc(100% - 360px));
   max-block-size: calc(
-    100vh - var(--hud-top-offset, 72px) - var(--hud-bottom-offset, 148px) - 66px
+    100vh - var(--hud-top-offset, 72px) - var(--hud-bottom-offset, 148px) - 50px
   );
   max-block-size: calc(
     100dvh - var(--hud-top-offset, 72px) - var(--hud-bottom-offset, 148px) -
-      66px
+      50px
   );
 }
 
@@ -314,6 +347,47 @@
   border-color: var(--color-accent-cyan);
   color: #ffffff;
   box-shadow: 0 3px 10px rgba(2, 132, 199, 0.28);
+}
+
+/* Harmonize Blueprint Daylight active pills & schematic watermark contrast */
+:is([data-theme='light'], .theme-light) .toggle-chip.active,
+:is([data-theme='light'], .theme-light) .toggle-chip.active-cyan {
+  background: #2563eb;
+  border-color: #1d4ed8;
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.25);
+}
+
+:is([data-theme='light'], .theme-light) .cam-btn.active,
+:is([data-theme='light'], .theme-light)
+  .env-seg-btn.active:not(.env-gunsmith_bench),
+:is([data-theme='light'], .theme-light) .isolate-btn.active,
+:is([data-theme='light'], .theme-light) .mode-tab.active-explode,
+:is([data-theme='light'], .theme-light) .play-btn:not(.fire-play-btn) {
+  background: #2563eb;
+  border-color: #1d4ed8;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.24);
+}
+
+:is([data-theme='light'], .theme-light) .play-btn:not(.fire-play-btn):hover {
+  background: #1d4ed8;
+}
+
+:is([data-theme='light'], .theme-light) .play-btn.playing {
+  background: #1e40af;
+  color: #ffffff;
+}
+
+:is([data-theme='light'], .theme-light) .schematic-watermark {
+  color: #334155;
+  font-weight: 600;
+  padding: 1.5px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.06);
 }
 
 .toggle-chip.active-orange {
@@ -561,10 +635,19 @@
   color: var(--color-text-primary);
 }
 
-.bom-part-item.active {
+.bom-part-item.active,
+.bom-part-item.active:hover,
+.bom-part-item.active.hovered {
   background: var(--color-accent-cyan-solid);
   color: #ffffff;
   font-weight: 600;
+}
+
+:is([data-theme='light'], .theme-light) .bom-part-item.active,
+:is([data-theme='light'], .theme-light) .bom-part-item.active:hover,
+:is([data-theme='light'], .theme-light) .bom-part-item.active.hovered {
+  background: #2563eb;
+  color: #ffffff;
 }
 
 .bom-part-item.disabled-item {
@@ -909,7 +992,7 @@
   bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
-  width: min(940px, calc(100vw - 32px));
+  width: min(968px, calc(100% - 32px));
   z-index: var(--z-hud);
   padding: 10px 16px 14px;
   border-radius: 14px;
@@ -917,6 +1000,9 @@
   border: 1px solid var(--border-subtle);
   backdrop-filter: blur(20px);
   box-shadow: var(--shadow-dock);
+  transition:
+    left 0.2s ease,
+    width 0.2s ease;
 }
 
 .dock-mode-bar {
@@ -1127,13 +1213,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
+  gap: 5px;
   min-width: 0;
-  padding: 6px 9px;
+  padding: 5.5px 8.5px;
   border-radius: 8px;
   background: var(--surface-subtle);
   border: 1px solid var(--border-subtle);
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--color-text-secondary);
   transition: all 0.15s ease;
 }
@@ -1159,8 +1245,12 @@
 
 .preset-pct {
   flex-shrink: 0;
+  padding: 1px 5.5px;
+  border-radius: 999px;
+  background: var(--surface-cyan-tint);
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
   color: var(--color-accent-cyan);
   font-weight: 700;
 }
@@ -1749,21 +1839,21 @@
 
 .field-strip-steps-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
-  gap: 5px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
 }
 
 .fs-step-pill {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   min-width: 0;
-  padding: 5.5px 8px;
+  padding: 4.5px 7.5px;
   border-radius: 8px;
   background: var(--surface-subtle);
   border: 1px solid var(--border-subtle);
   color: var(--color-text-secondary);
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 600;
   text-align: left;
   transition: all 0.15s ease;
@@ -2275,7 +2365,7 @@
 
 /* ==================== WP-10: 1:1 3D Armorer Vernier Caliper HUD ==================== */
 .caliper-hud {
-  width: min(352px, calc(100vw - 24px));
+  width: min(392px, calc(100vw - 24px));
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -2286,6 +2376,10 @@
   backdrop-filter: blur(18px);
   box-shadow: var(--shadow-card);
   pointer-events: auto;
+}
+
+.ballistics-telemetry-slot > .caliper-hud {
+  width: 100%;
 }
 
 .caliper-hud-header {
@@ -2304,12 +2398,14 @@
   font-weight: 800;
   letter-spacing: 0.04em;
   color: var(--color-accent-cyan-text);
+  white-space: nowrap;
 }
 
 .caliper-header-actions {
   display: flex;
   align-items: center;
   gap: 4px;
+  flex-shrink: 0;
 }
 
 .caliper-mini-btn {
@@ -2323,6 +2419,7 @@
   font-size: 10.5px;
   font-weight: 600;
   color: var(--color-text-secondary);
+  white-space: nowrap;
 }
 
 .caliper-mini-btn.active {
