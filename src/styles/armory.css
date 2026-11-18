@@ -96,12 +96,6 @@
   transition: all 0.16s ease;
 }
 
-[data-theme='light'] .armory-showcase-btn {
-  background: rgba(15, 23, 42, 0.9);
-  border-color: rgba(15, 23, 42, 0.9);
-  color: #38bdf8;
-}
-
 .armory-showcase-btn:hover {
   border-color: var(--color-accent-cyan);
   background: var(--surface-hover);
@@ -109,8 +103,44 @@
   transform: translateY(-1px);
 }
 
-[data-theme='light'] .armory-showcase-btn:hover {
-  background: #0f172a;
+:is([data-theme='light'], .theme-light) .armory-showcase-btn,
+:is([data-theme='light'], .theme-light) .armory-header .armory-story-btn {
+  background: linear-gradient(180deg, #f8fafc 0%, #eff6ff 100%);
+  border-color: rgba(2, 132, 199, 0.34);
+  color: #0f172a;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+
+:is([data-theme='light'], .theme-light) .armory-showcase-btn svg,
+:is([data-theme='light'], .theme-light) .armory-header .armory-story-btn svg {
+  color: #0284c7;
+}
+
+:is([data-theme='light'], .theme-light) .armory-showcase-btn:hover,
+:is([data-theme='light'], .theme-light) .armory-header .armory-story-btn:hover {
+  background: linear-gradient(180deg, #e0f2fe 0%, #dbeafe 100%);
+  border-color: #0284c7;
+  color: #0369a1;
+}
+
+:is([data-theme='light'], .theme-light) .armory-header .armory-story-btn.active {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  border-color: #0284c7;
+  color: #ffffff;
+}
+
+:is([data-theme='light'], .theme-light) .armory-header .armory-story-btn.active svg {
+  color: #ffffff;
+}
+
+:is([data-theme='light'], .theme-light) .schematic-watermark {
+  color: #334155;
+  font-weight: 600;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: rgba(248, 250, 252, 0.84);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  backdrop-filter: blur(8px);
 }
 
 .armory-quick-enter-btn {
@@ -133,17 +163,20 @@
   transform: translateY(-1px);
 }
 
-/* Left Featured Weapon Plaque */
-.armory-hero-plaque {
+/* Left Featured Weapon Plaque (Flex Column w/ Pinned Bottom CTA Footer) */
+.armory-hero-plaque,
+.armory-plaque {
   grid-area: plaque;
   align-self: start;
   justify-self: start;
   width: min(348px, 100%);
+  max-height: min(100%, calc(100vh - var(--hud-top-offset, 80px) - 208px));
+  max-height: min(100%, calc(100dvh - var(--hud-top-offset, 80px) - 208px));
   max-block-size: 100%;
-  overflow-y: auto;
-  scrollbar-gutter: stable;
-  overscroll-behavior: contain;
-  padding: 11px 13px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 0;
   border-radius: 14px;
   background: var(--surface-glass);
   border: 1px solid var(--border-subtle);
@@ -152,12 +185,21 @@
   pointer-events: auto;
 }
 
-.armory-hero-plaque::-webkit-scrollbar {
+.plaque-scroll-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+  overscroll-behavior: contain;
+  padding: 9px 11px 6px;
+}
+
+.plaque-scroll-body::-webkit-scrollbar {
   width: 4px;
 }
 
-.armory-hero-plaque::-webkit-scrollbar-thumb {
-  background: rgba(100, 116, 139, 0.34);
+.plaque-scroll-body::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.42);
   border-radius: 4px;
 }
 
@@ -167,7 +209,7 @@
   justify-content: space-between;
   gap: 6px;
   flex-wrap: wrap;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 
 .plaque-bay-cluster {
@@ -183,7 +225,7 @@
   font-weight: 700;
   letter-spacing: 0.05em;
   color: var(--color-text-secondary);
-  padding: 2px 5px;
+  padding: 1.5px 5px;
   border-radius: 4px;
   background: var(--surface-pill);
   border: 1px solid var(--border-subtle);
@@ -194,7 +236,7 @@
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  padding: 2px 6px;
+  padding: 1.5px 6px;
   border-radius: 4px;
   font-size: 10px;
   font-weight: 600;
@@ -208,7 +250,7 @@
   display: inline-flex;
   align-items: center;
   gap: 3px;
-  padding: 2px 7px;
+  padding: 1.5px 7px;
   border-radius: 999px;
   font-size: 10px;
   font-weight: 600;
@@ -219,28 +261,28 @@
 }
 
 .plaque-weapon-title {
-  font-size: 16.5px;
+  font-size: 15.5px;
   font-weight: 800;
   color: var(--color-text-primary);
   letter-spacing: -0.01em;
-  line-height: 1.24;
+  line-height: 1.22;
   text-wrap: balance;
 }
 
 .plaque-weapon-sub {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 600;
   color: var(--color-accent-cyan);
   margin-top: 1px;
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 
 .plaque-desc {
-  font-size: 11px;
-  line-height: 1.45;
+  font-size: 10.5px;
+  line-height: 1.4;
   color: var(--color-text-secondary);
-  margin-bottom: 6px;
+  margin-bottom: 5px;
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
@@ -248,15 +290,22 @@
   overflow: clip;
 }
 
+@media (max-height: 830px) {
+  .plaque-desc {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+}
+
 .plaque-spec-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4px;
-  margin-bottom: 6px;
+  gap: 3.5px;
+  margin-bottom: 5px;
 }
 
 .plaque-spec-cell {
-  padding: 4px 7px;
+  padding: 3.5px 6px;
   border-radius: 7px;
   background: var(--surface-subtle);
   border: 1px solid var(--border-subtle);
@@ -271,7 +320,7 @@
   display: block;
   font-size: 9.5px;
   color: var(--color-text-muted);
-  margin-bottom: 1px;
+  margin-bottom: 0.5px;
 }
 
 .spec-v {
@@ -279,7 +328,7 @@
   font-size: 10.5px;
   font-weight: 700;
   color: var(--color-text-primary);
-  line-height: 1.28;
+  line-height: 1.24;
 }
 
 .spec-v.tabular {
@@ -289,11 +338,11 @@
 
 /* 1:1 Factory Metrology & Internal Ballistics 2x3 Grid */
 .plaque-metrology-box {
-  padding: 6px 7px 7px;
-  border-radius: 9px;
+  padding: 5px 6px 5.5px;
+  border-radius: 8px;
   background: var(--surface-cyan-grad);
   border: 1px solid rgba(56, 189, 248, 0.26);
-  margin-bottom: 6px;
+  margin-bottom: 5px;
 }
 
 .plaque-metrology-head {
@@ -301,7 +350,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 6px;
-  margin-bottom: 4px;
+  margin-bottom: 3.5px;
   padding: 0 2px;
 }
 
@@ -329,11 +378,11 @@
 .plaque-metrology-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 4px;
+  gap: 3.5px;
 }
 
 .metrology-cell {
-  padding: 3.5px 6px;
+  padding: 3px 5.5px;
   border-radius: 6px;
   background: var(--surface-elevated);
   border: 1px solid var(--border-subtle);
@@ -343,13 +392,12 @@
 .plaque-feature-chips {
   display: flex;
   flex-wrap: wrap;
-  flex-wrap: balance;
-  gap: 4px;
-  margin-bottom: 8px;
+  gap: 3.5px;
+  margin-bottom: 2px;
 }
 
 .plaque-chip {
-  padding: 2px 6px;
+  padding: 1.5px 5.5px;
   border-radius: 5px;
   font-size: 9.5px;
   font-weight: 600;
@@ -358,19 +406,74 @@
   border: 1px solid rgba(56, 189, 248, 0.24);
 }
 
+.plaque-cta-footer {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5.5px;
+  padding: 7px 11px 9px;
+  background: var(--surface-elevated);
+  border-top: 1px solid var(--border-divider);
+}
+
+.plaque-secondary-ctas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.plaque-compact-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 5.5px 8px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: all 0.15s ease;
+}
+
+.plaque-compact-cta.is-story {
+  background: var(--surface-cyan-tint);
+  border: 1px solid rgba(56, 189, 248, 0.34);
+  color: var(--color-accent-cyan-text);
+}
+
+.plaque-compact-cta.is-story:hover {
+  background: var(--color-accent-cyan-solid);
+  border-color: var(--color-accent-cyan);
+  color: #ffffff;
+}
+
+.plaque-compact-cta.is-monograph {
+  background: var(--surface-amber-tint);
+  border: 1px solid rgba(245, 158, 11, 0.38);
+  color: var(--color-accent-orange-text);
+}
+
+.plaque-compact-cta.is-monograph:hover {
+  background: rgba(234, 88, 12, 0.88);
+  border-color: #fb923c;
+  color: #ffffff;
+}
+
 .plaque-primary-cta {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border-radius: 10px;
+  gap: 7px;
+  padding: 7.5px 12px;
+  border-radius: 9px;
   background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
   color: #ffffff;
   font-size: 12px;
   font-weight: 700;
-  box-shadow: 0 6px 18px rgba(2, 132, 199, 0.32);
+  box-shadow: 0 5px 16px rgba(2, 132, 199, 0.32);
   transition: all 0.16s ease;
 }
 
@@ -681,13 +784,35 @@
 }
 
 .wcard-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
   font-size: 10px;
   color: var(--color-text-secondary);
-  margin-top: 1px;
+  margin-top: 2px;
   margin-bottom: 4px;
+}
+
+.wcard-caliber {
+  min-width: 0;
+  flex: 1 1 auto;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.wcard-parts-pill {
+  flex-shrink: 0;
+  white-space: nowrap;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--surface-pill);
+  border: 1px solid var(--border-divider);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  color: var(--color-accent-cyan-text);
 }
 
 .wcard-footer {

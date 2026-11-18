@@ -1,8 +1,10 @@
-import React, { useId, useState } from 'react';
+import React, { useEffect, useId, useState, useSyncExternalStore } from 'react';
 import {
   ArrowLeft,
   ArrowRight,
   Box,
+  ChevronLeft,
+  ChevronRight,
   Crosshair,
   Flame,
   Maximize2,
@@ -11,6 +13,11 @@ import {
   Table2,
   X,
 } from 'lucide-react';
+import {
+  getCartridgeDossierCollapsed,
+  setCartridgeDossierCollapsed,
+  subscribeCartridgeDossierCollapsed,
+} from '../../engine/actors/CartridgeCutawayStage';
 import {
   CARTRIDGE_LAB_ORDER,
   CARTRIDGE_LAB_SPECS,
@@ -25,8 +32,15 @@ const MAX_OAL_MM = 138.43; // .50 BMG reference 100% bar height
 
 export const CartridgeLabView: React.FC = () => {
   const [matrixOpen, setMatrixOpen] = useState(false);
+  const dossierCollapsed = useSyncExternalStore(
+    subscribeCartridgeDossierCollapsed,
+    getCartridgeDossierCollapsed,
+    getCartridgeDossierCollapsed
+  );
   const explodeSliderId = useId();
   const tableCaptionId = useId();
+
+  useEffect(() => () => setCartridgeDossierCollapsed(false), []);
 
   const lang = useAppStore((s) => s.lang);
   const activeCaliber = useAppStore((s) => s.activeCartridgeCaliber);
@@ -153,145 +167,189 @@ export const CartridgeLabView: React.FC = () => {
         </div>
       </header>
 
-      {/* Left Curatorial Cartridge Cutaway Dossier Card */}
-      <aside className="cartridge-dossier-card">
+      {/* Left Curatorial Cartridge Cutaway Dossier Card (Collapsible for Full-Width Panorama) */}
+      <aside
+        className={`cartridge-dossier-card ${dossierCollapsed ? 'is-collapsed' : ''}`}
+      >
         <div className="cartridge-dossier-top">
           <span className="cartridge-dossier-badge">{ui.anatomyCardBadge}</span>
-          <span className="cartridge-standard-pill">{spec.standard}</span>
-        </div>
-
-        <h2 className="cartridge-specimen-title">
-          {isZh ? spec.nameZh : spec.nameEn}
-        </h2>
-        <p className="cartridge-specimen-sub">
-          {isZh ? spec.loadSubtitleZh : spec.loadSubtitleEn}
-        </p>
-
-        {/* 6-Cell Quantitative SAAMI/CIP Metrology Grid */}
-        <div className="cartridge-metrics-grid">
-          <div className="cartridge-metric-cell">
-            <span className="c-metric-label">{ui.dimOalCase}</span>
-            <strong className="c-metric-val">
-              {spec.oalMm.toFixed(2)} / {spec.caseLengthMm.toFixed(2)} mm
-            </strong>
-          </div>
-          <div className="cartridge-metric-cell">
-            <span className="c-metric-label">{ui.dimRimBullet}</span>
-            <strong className="c-metric-val">
-              Ø {spec.bulletDiameterMm.toFixed(2)} / {spec.rimDiameterMm.toFixed(2)} mm
-            </strong>
-          </div>
-          <div className="cartridge-metric-cell">
-            <span className="c-metric-label">{ui.chargeVolumeMass}</span>
-            <strong className="c-metric-val">
-              {spec.caseCapacityMl.toFixed(2)} mL · {spec.propellantMassG.toFixed(2)} g
-            </strong>
-          </div>
-          <div className="cartridge-metric-cell">
-            <span className="c-metric-label">{ui.projectileSpec}</span>
-            <strong className="c-metric-val">
-              {spec.projectileMassG.toFixed(2)} g ({spec.projectileGrain} gr)
-            </strong>
-          </div>
-          <div className="cartridge-metric-cell">
-            <span className="c-metric-label">{ui.pressureVelocity}</span>
-            <strong className="c-metric-val">
-              {spec.peakPressureMPa} MPa · {spec.muzzleVelocityMps} m/s
-            </strong>
-          </div>
-          <div className="cartridge-metric-cell highlight-energy">
-            <span className="c-metric-label">{ui.muzzleEnergy}</span>
-            <strong className="c-metric-val">
-              {spec.muzzleEnergyJ.toLocaleString()} J
-            </strong>
-          </div>
-        </div>
-
-        {/* Internal Cutaway Anatomy Breakdown */}
-        <div className="cartridge-anatomy-notes">
-          <div className="c-note-row">
-            <span className="c-note-key">{ui.coreAnatomyLabel}</span>
-            <span className="c-note-val">
-              {isZh ? spec.coreAnatomyZh : spec.coreAnatomyEn}
-            </span>
-          </div>
-          <div className="c-note-row">
-            <span className="c-note-key">{ui.propellantLabel}</span>
-            <span className="c-note-val">
-              {isZh ? spec.propellantTypeZh : spec.propellantTypeEn} (
-              {Math.round(spec.propellantFillRatio * 100)}%)
-            </span>
-          </div>
-          <div className="c-note-row">
-            <span className="c-note-key">{ui.primerLabel}</span>
-            <span className="c-note-val">
-              {isZh ? spec.primerTypeZh : spec.primerTypeEn}
-            </span>
-          </div>
-        </div>
-
-        <p className="cartridge-highlight-copy">
-          {isZh ? spec.highlightZh : spec.highlightEn}
-        </p>
-
-        {/* Axial Anatomy Explode Slider */}
-        <div className="cartridge-explode-box">
-          <div className="cartridge-explode-head">
-            <label htmlFor={explodeSliderId}>{ui.explodeLabel}</label>
-            <div className="cartridge-explode-right">
-              <span className="cartridge-explode-pct">
-                {Math.round(explodeProgress * 100)}%
-              </span>
-              {explodeProgress > 0.01 && (
-                <button
-                  type="button"
-                  className="cartridge-explode-reset"
-                  onClick={() => setCartridgeExplodeProgress(0)}
-                >
-                  <RotateCcw size={10} aria-hidden="true" />
-                  <span>{ui.explodeReset}</span>
-                </button>
+          <div className="cartridge-dossier-top-right">
+            {dossierCollapsed && (
+              <span className="cartridge-collapsed-caliber">{spec.code}</span>
+            )}
+            <span className="cartridge-standard-pill">{spec.standard}</span>
+            <button
+              type="button"
+              className="cartridge-dossier-toggle-btn"
+              aria-expanded={!dossierCollapsed}
+              aria-label={
+                dossierCollapsed
+                  ? isZh
+                    ? '展开弹药工程解剖档案'
+                    : 'Expand ammunition dossier'
+                  : isZh
+                    ? '收起左栏全宽检视'
+                    : 'Collapse dossier for full-width view'
+              }
+              title={
+                dossierCollapsed
+                  ? isZh
+                    ? '展开弹药工程解剖档案'
+                    : 'Expand ammunition dossier'
+                  : isZh
+                    ? '收起左栏全宽检视七弹全景'
+                    : 'Collapse dossier for full-width view'
+              }
+              onClick={() => setCartridgeDossierCollapsed(!dossierCollapsed)}
+            >
+              {dossierCollapsed ? (
+                <ChevronRight size={14} aria-hidden="true" />
+              ) : (
+                <ChevronLeft size={14} aria-hidden="true" />
               )}
+            </button>
+          </div>
+        </div>
+
+        {!dossierCollapsed && (
+          <>
+            <h2 className="cartridge-specimen-title">
+              {isZh ? spec.nameZh : spec.nameEn}
+            </h2>
+            <p className="cartridge-specimen-sub">
+              {isZh ? spec.loadSubtitleZh : spec.loadSubtitleEn}
+            </p>
+
+            {/* 6-Cell Quantitative SAAMI/CIP Metrology Grid */}
+            <div className="cartridge-metrics-grid">
+              <div className="cartridge-metric-cell">
+                <span className="c-metric-label">{ui.dimOalCase}</span>
+                <strong className="c-metric-val">
+                  {spec.oalMm.toFixed(2)} / {spec.caseLengthMm.toFixed(2)} mm
+                </strong>
+              </div>
+              <div className="cartridge-metric-cell">
+                <span className="c-metric-label">{ui.dimRimBullet}</span>
+                <strong className="c-metric-val">
+                  Ø {spec.bulletDiameterMm.toFixed(2)} /{' '}
+                  {spec.rimDiameterMm.toFixed(2)} mm
+                </strong>
+              </div>
+              <div className="cartridge-metric-cell">
+                <span className="c-metric-label">{ui.chargeVolumeMass}</span>
+                <strong className="c-metric-val">
+                  {spec.caseCapacityMl.toFixed(2)} mL ·{' '}
+                  {spec.propellantMassG.toFixed(2)} g
+                </strong>
+              </div>
+              <div className="cartridge-metric-cell">
+                <span className="c-metric-label">{ui.projectileSpec}</span>
+                <strong className="c-metric-val">
+                  {spec.projectileMassG.toFixed(2)} g ({spec.projectileGrain}{' '}
+                  gr)
+                </strong>
+              </div>
+              <div className="cartridge-metric-cell">
+                <span className="c-metric-label">{ui.pressureVelocity}</span>
+                <strong className="c-metric-val">
+                  {spec.peakPressureMPa} MPa · {spec.muzzleVelocityMps} m/s
+                </strong>
+              </div>
+              <div className="cartridge-metric-cell highlight-energy">
+                <span className="c-metric-label">{ui.muzzleEnergy}</span>
+                <strong className="c-metric-val">
+                  {spec.muzzleEnergyJ.toLocaleString()} J
+                </strong>
+              </div>
             </div>
-          </div>
-          <input
-            id={explodeSliderId}
-            type="range"
-            className="cartridge-explode-slider"
-            min={0}
-            max={1000}
-            value={Math.round(explodeProgress * 1000)}
-            onChange={(e) =>
-              setCartridgeExplodeProgress(Number(e.target.value) / 1000)
-            }
-          />
-        </div>
 
-        {/* Representative Vault Weapons & Direct Live-Firing Jump */}
-        <div className="cartridge-weapon-links">
-          <div className="cartridge-weapon-pills">
-            {spec.representativeWeapons.map((wId) => (
+            {/* Internal Cutaway Anatomy Breakdown */}
+            <div className="cartridge-anatomy-notes">
+              <div className="c-note-row">
+                <span className="c-note-key">{ui.coreAnatomyLabel}</span>
+                <span className="c-note-val">
+                  {isZh ? spec.coreAnatomyZh : spec.coreAnatomyEn}
+                </span>
+              </div>
+              <div className="c-note-row">
+                <span className="c-note-key">{ui.propellantLabel}</span>
+                <span className="c-note-val">
+                  {isZh ? spec.propellantTypeZh : spec.propellantTypeEn} (
+                  {Math.round(spec.propellantFillRatio * 100)}%)
+                </span>
+              </div>
+              <div className="c-note-row">
+                <span className="c-note-key">{ui.primerLabel}</span>
+                <span className="c-note-val">
+                  {isZh ? spec.primerTypeZh : spec.primerTypeEn}
+                </span>
+              </div>
+            </div>
+
+            <p className="cartridge-highlight-copy">
+              {isZh ? spec.highlightZh : spec.highlightEn}
+            </p>
+
+            {/* Axial Anatomy Explode Slider */}
+            <div className="cartridge-explode-box">
+              <div className="cartridge-explode-head">
+                <label htmlFor={explodeSliderId}>{ui.explodeLabel}</label>
+                <div className="cartridge-explode-right">
+                  <span className="cartridge-explode-pct">
+                    {Math.round(explodeProgress * 100)}%
+                  </span>
+                  {explodeProgress > 0.01 && (
+                    <button
+                      type="button"
+                      className="cartridge-explode-reset"
+                      onClick={() => setCartridgeExplodeProgress(0)}
+                    >
+                      <RotateCcw size={10} aria-hidden="true" />
+                      <span>{ui.explodeReset}</span>
+                    </button>
+                  )}
+                </div>
+              </div>
+              <input
+                id={explodeSliderId}
+                type="range"
+                className="cartridge-explode-slider"
+                min={0}
+                max={1000}
+                value={Math.round(explodeProgress * 1000)}
+                onChange={(e) =>
+                  setCartridgeExplodeProgress(Number(e.target.value) / 1000)
+                }
+              />
+            </div>
+
+            {/* Representative Vault Weapons & Direct Live-Firing Jump */}
+            <div className="cartridge-weapon-links">
+              <div className="cartridge-weapon-pills">
+                {spec.representativeWeapons.map((wId) => (
+                  <button
+                    key={wId}
+                    type="button"
+                    className="cartridge-weapon-pill"
+                    onClick={() => enterWorkbench(wId, 'firing')}
+                  >
+                    {getLocalizedShortWeaponLabel(wId, lang)}
+                  </button>
+                ))}
+              </div>
+
               <button
-                key={wId}
                 type="button"
-                className="cartridge-weapon-pill"
-                onClick={() => enterWorkbench(wId, 'firing')}
+                className="cartridge-chamber-cta"
+                onClick={() => enterWorkbench(spec.primaryWeaponId, 'firing')}
               >
-                {getLocalizedShortWeaponLabel(wId, lang)}
+                <Flame size={14} aria-hidden="true" />
+                <span>{ui.chamberInWeaponBtn(primaryWeaponLabel)}</span>
+                <ArrowRight size={14} aria-hidden="true" />
               </button>
-            ))}
-          </div>
-
-          <button
-            type="button"
-            className="cartridge-chamber-cta"
-            onClick={() => enterWorkbench(spec.primaryWeaponId, 'firing')}
-          >
-            <Flame size={14} aria-hidden="true" />
-            <span>{ui.chamberInWeaponBtn(primaryWeaponLabel)}</span>
-            <ArrowRight size={14} aria-hidden="true" />
-          </button>
-        </div>
+            </div>
+          </>
+        )}
       </aside>
 
       {/* Quantitative 7-Caliber Responsive Comparison Matrix Panel */}

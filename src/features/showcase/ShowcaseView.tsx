@@ -43,6 +43,7 @@ import {
   setShowcaseWindowBounds,
 } from '../../engine/canvas/turntableStageMetrics';
 import { playbackClock } from '../../engine/clock/playbackClock';
+import { isArcheryWeapon } from '../../engine/physics/armoryPhysics';
 import { resolveAssetUrl } from '../../engine/utils/assetUrl';
 import {
   SHOWCASE_STRINGS,
@@ -54,7 +55,10 @@ import {
   getLocalizedShortWeaponLabel,
   resolveWeaponDisplayMeta,
 } from '../../i18n/weaponFallbacks';
-import { preloadWeaponNarration } from '../../narration/narrationService';
+import {
+  getLoadedNarrationBundle,
+  preloadWeaponNarration,
+} from '../../narration/narrationService';
 import { launchDirectorDocumentary } from '../../narration/storyDirector';
 import { useAppStore } from '../../store/useAppStore';
 import { ARMORY_WEAPONS, matchesArmoryCategory } from '../../weapons/manifests';
@@ -155,6 +159,12 @@ export const ShowcaseView: React.FC = () => {
   }, [lightboxItemId]);
 
   useEffect(() => {
+    if (useAppStore.getState().cameraCommand.preset !== 'armory_showcase') {
+      useAppStore.getState().triggerCameraPreset('armory_showcase');
+    }
+  }, []);
+
+  useEffect(() => {
     const measureWindow = () => {
       const heroEl = heroSectionRef.current;
       const winEl = liveWindowRef.current;
@@ -180,7 +190,7 @@ export const ShowcaseView: React.FC = () => {
       setShowcaseWindowBounds(null);
       setShowcaseUserDragging(false);
     };
-  }, []);
+  }, [lang]);
 
   const handleStagePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (e.button !== 0 || e.pointerType === 'touch') return;
@@ -221,7 +231,11 @@ export const ShowcaseView: React.FC = () => {
 
   const featuredWeapon =
     ARMORY_WEAPONS.find((w) => w.id === activeWeaponId) ?? ARMORY_WEAPONS[0];
-  const featuredMeta = resolveWeaponDisplayMeta(featuredWeapon.id, lang, null);
+  const featuredMeta = resolveWeaponDisplayMeta(
+    featuredWeapon.id,
+    lang,
+    getLoadedNarrationBundle(featuredWeapon.id)
+  );
   const shortWeaponTag = getLocalizedShortWeaponLabel(featuredWeapon.id, lang);
   const docShortTag = getLocalizedShortWeaponLabel(docWeaponId, lang);
 
@@ -235,7 +249,10 @@ export const ShowcaseView: React.FC = () => {
       ? 'xray'
       : baseHeroMode;
 
-  const syncHeroStageStore = (targetMode: HeroStageMode) => {
+  const syncHeroStageStore = (
+    targetMode: HeroStageMode,
+    targetWeaponId: WeaponId = activeWeaponId
+  ) => {
     if (targetMode === 'pbr') {
       setSectionCut(false);
       setXrayShells(false);
@@ -251,18 +268,19 @@ export const ShowcaseView: React.FC = () => {
     } else if (targetMode === 'explode') {
       setSectionCut(false);
       setXrayShells(false);
-      setTargetProgress(0.58);
+      // Tall vertical compound bow (`lift33`, ~89 cm Y span) frames crisper and well-lit at 42% semi-explode
+      setTargetProgress(targetWeaponId === 'lift33' ? 0.42 : 0.58);
     }
   };
 
   const applyHeroStageMode = (nextMode: HeroStageMode) => {
     setBaseHeroMode(nextMode === 'explode' ? 'explode' : 'pbr');
-    syncHeroStageStore(nextMode);
+    syncHeroStageStore(nextMode, activeWeaponId);
   };
 
   const handleHeroWeaponSwitch = (weaponId: WeaponId) => {
     selectArmoryWeapon(weaponId);
-    syncHeroStageStore(heroMode);
+    syncHeroStageStore(heroMode, weaponId);
   };
 
   const launchSectionWorkbench = (weaponId: WeaponId) => {
@@ -404,8 +422,19 @@ export const ShowcaseView: React.FC = () => {
 
           <h1 className="showcase-hero-title">
             {s.hero.titlePrefix}
-            <span>{s.hero.titleHighlight}</span>
-            {s.hero.titleSuffix}
+            <span className="showcase-hero-highlight">
+              {s.hero.titleHighlight}
+            </span>
+            {lang === 'zh' ? (
+              <span className="showcase-hero-nowrap">{s.hero.titleSuffix}</span>
+            ) : s.hero.titleSuffix.endsWith(' in Your Browser') ? (
+              <>
+                {s.hero.titleSuffix.slice(0, -' in Your Browser'.length)}{' '}
+                <span className="showcase-hero-nowrap">in Your Browser</span>
+              </>
+            ) : (
+              s.hero.titleSuffix
+            )}
           </h1>
 
           <p className="showcase-hero-sub">
@@ -494,7 +523,7 @@ export const ShowcaseView: React.FC = () => {
             </div>
             <div className="live-telemetry-name">{featuredMeta.name}</div>
             <div className="live-telemetry-meta">
-              <span>{featuredWeapon.caliber}</span>
+              <span>{featuredMeta.caliber}</span>
               <span>·</span>
               <span>{s.hero.partsUnit(featuredWeapon.partsCount)}</span>
               <span>·</span>
@@ -997,8 +1026,14 @@ export const ShowcaseView: React.FC = () => {
 
             <div className="arsenal-grid">
               {filteredWeapons.map((item) => {
-                const wMeta = resolveWeaponDisplayMeta(item.id, lang, null);
+                const wMeta = resolveWeaponDisplayMeta(
+                  item.id,
+                  lang,
+                  getLoadedNarrationBundle(item.id)
+                );
                 const originLabel = wMeta.originTag;
+                const isArchery = isArcheryWeapon(item.id);
+                const archLabels = UI_STRINGS[lang].armory.archeryPlaque;
                 return (
                   <article
                     key={item.id}
@@ -1035,20 +1070,34 @@ export const ShowcaseView: React.FC = () => {
 
                     <div className="arsenal-specs">
                       <div className="a-spec">
-                        <span>{s.arsenal.specCaliber}</span>
-                        <strong>{item.caliber}</strong>
+                        <span>
+                          {isArchery
+                            ? archLabels.caliberLabel
+                            : s.arsenal.specCaliber}
+                        </span>
+                        <strong>{wMeta.caliber}</strong>
                       </div>
                       <div className="a-spec">
-                        <span>{s.arsenal.specOal}</span>
+                        <span>
+                          {isArchery ? archLabels.oalLabel : s.arsenal.specOal}
+                        </span>
                         <strong>{wMeta.overallLengthMm}</strong>
                       </div>
                       <div className="a-spec">
-                        <span>{s.arsenal.specVel}</span>
-                        <strong>{item.specs1To1.muzzleVelocityMs}</strong>
+                        <span>
+                          {isArchery
+                            ? archLabels.muzzleVelLabel
+                            : s.arsenal.specVel}
+                        </span>
+                        <strong>{wMeta.muzzleVelocityMs}</strong>
                       </div>
                       <div className="a-spec">
-                        <span>{s.arsenal.specRange}</span>
-                        <strong>{item.specs1To1.effectiveRangeM}</strong>
+                        <span>
+                          {isArchery
+                            ? archLabels.rangeLabel
+                            : s.arsenal.specRange}
+                        </span>
+                        <strong>{wMeta.effectiveRangeM}</strong>
                       </div>
                     </div>
 

@@ -1,6 +1,6 @@
 import React, { useMemo, useRef } from 'react';
 import * as THREE from 'three';
-import { type ThreeEvent, useFrame } from '@react-three/fiber';
+import { type ThreeEvent, useFrame, useThree } from '@react-three/fiber';
 import { Edges } from '@react-three/drei';
 import { useAppStore } from '../../store/useAppStore';
 import type { CaliberProfile } from '../../weapons/types';
@@ -13,7 +13,91 @@ import {
 /** Vertical datum floor of the 1:1 Cartridge Cutaway Lab (`y = -3.8 cm` in world space) */
 export const CARTRIDGE_STAGE_DATUM_Y = -3.8;
 
-const PLINTH_GEO = new THREE.BoxGeometry(44, 0.85, 11.5);
+const TAN_HALF_FOV_41 = Math.tan(THREE.MathUtils.degToRad(41 * 0.5));
+
+let cartridgeDossierCollapsed = false;
+const dossierCollapsedListeners = new Set<() => void>();
+
+export function getCartridgeDossierCollapsed(): boolean {
+  return cartridgeDossierCollapsed;
+}
+
+export function setCartridgeDossierCollapsed(collapsed: boolean): void {
+  if (cartridgeDossierCollapsed === collapsed) return;
+  cartridgeDossierCollapsed = collapsed;
+  for (const fn of dossierCollapsedListeners) {
+    fn();
+  }
+}
+
+export function subscribeCartridgeDossierCollapsed(
+  listener: () => void
+): () => void {
+  dossierCollapsedListeners.add(listener);
+  return () => {
+    dossierCollapsedListeners.delete(listener);
+  };
+}
+
+interface StageOffsetVec {
+  x: number;
+  y: number;
+  z: number;
+}
+
+const _stageOffsetScratch: StageOffsetVec = { x: 0, y: 0, z: 0 };
+
+function computeCartridgeStageOffsetInto(
+  viewportW: number,
+  viewportH: number,
+  lineupOverview: boolean,
+  dossierCollapsed: boolean,
+  hudHidden: boolean,
+  explodeT: number,
+  out: StageOffsetVec = _stageOffsetScratch
+): StageOffsetVec {
+  if (!lineupOverview || viewportW <= 0 || viewportH <= 0) {
+    out.x = 0;
+    out.y = 0;
+    out.z = 0;
+    return out;
+  }
+
+  const aspect = Math.max(0.45, viewportW / Math.max(1, viewportH));
+  const camX = 1.6;
+  const camZ = Math.max(29.5, 36.0 / aspect);
+
+  const leftOccludedPx =
+    hudHidden || dossierCollapsed || viewportW < 860
+      ? 20
+      : Math.min(358, viewportW * 0.32);
+  const rightMarginPx = 22;
+
+  const availFracX = Math.max(
+    0.42,
+    (viewportW - leftOccludedPx - rightMarginPx) / viewportW
+  );
+  const openCenterPx = (leftOccludedPx + (viewportW - rightMarginPx)) * 0.5;
+  const ndcCenterX = (openCenterPx / viewportW) * 2 - 1;
+
+  const stageSpanX = 39.8;
+  const stageSpanY = 17.6 + 7.6 * explodeT;
+
+  const dHoriz =
+    (stageSpanX * 0.5) / (TAN_HALF_FOV_41 * aspect * availFracX);
+  const dVert = (stageSpanY * 0.5) / (TAN_HALF_FOV_41 * 0.72);
+  const desiredDist = Math.max(34.5, dHoriz, dVert);
+
+  const worldOpenCenterX =
+    camX + ndcCenterX * desiredDist * TAN_HALF_FOV_41 * aspect;
+
+  out.x = worldOpenCenterX - 0.1;
+  out.y = -0.55 - 1.65 * explodeT;
+  out.z = camZ - desiredDist;
+  return out;
+}
+
+const PLINTH_GEO = new THREE.BoxGeometry(38.0, 0.85, 11.5);
 const PEDESTAL_DISC_GEO = new THREE.CylinderGeometry(1.42, 1.56, 0.16, 36);
 const ACTIVE_HALO_GEO = (() => {
   const g = new THREE.RingGeometry(1.52, 1.78, 40);
@@ -32,8 +116,8 @@ function buildElevationScaleBackdrop(): {
 } {
   const minorVerts: number[] = [];
   const majorVerts: number[] = [];
-  const xLeft = -19.2;
-  const xRight = 22.4;
+  const xLeft = -17.6;
+  const xRight = 17.8;
   const zPlane = -2.35;
 
   // Vertical left & right stiles
@@ -74,12 +158,14 @@ interface SingleCartridgeSpecimenProps {
   caliber: CaliberProfile;
   cutaway: boolean;
   isActive: boolean;
+  isDaylight: boolean;
   showEdges: boolean;
   onSelect: (caliber: CaliberProfile) => void;
 }
 
 const SingleCartridgeSpecimen: React.FC<SingleCartridgeSpecimenProps> =
-  React.memo(({ caliber, cutaway, isActive, showEdges, onSelect }) => {
+  React.memo(
+    ({ caliber, cutaway, isActive, isDaylight, showEdges, onSelect }) => {
     const spec = CARTRIDGE_LAB_SPECS[caliber];
     const bundle = useMemo(
       () => getCartridgeLabMeshBundle(caliber, cutaway),
@@ -165,11 +251,19 @@ const SingleCartridgeSpecimen: React.FC<SingleCartridgeSpecimenProps> =
           receiveShadow
         >
           <meshStandardMaterial
-            color={isActive ? '#1e293b' : '#0f172a'}
-            metalness={0.72}
-            roughness={0.34}
+            color={
+              isDaylight
+                ? isActive
+                  ? '#cbd5e1'
+                  : '#e2e8f0'
+                : isActive
+                  ? '#1e293b'
+                  : '#0f172a'
+            }
+            metalness={isDaylight ? 0.35 : 0.72}
+            roughness={isDaylight ? 0.48 : 0.34}
             emissive={isActive ? '#0284c7' : '#000000'}
-            emissiveIntensity={isActive ? 0.24 : 0}
+            emissiveIntensity={isActive ? (isDaylight ? 0.16 : 0.24) : 0}
           />
         </mesh>
 
@@ -283,23 +377,96 @@ SingleCartridgeSpecimen.displayName = 'SingleCartridgeSpecimen';
  * `180°` cutaway anatomy and a `0–150 mm` CNC elevation ruler backdrop.
  */
 export const CartridgeCutawayStage: React.FC = () => {
+  const { size } = useThree();
+  const stageGroupRef = useRef<THREE.Group>(null);
+  const initializedOffsetRef = useRef(false);
+  const animOffsetRef = useRef<StageOffsetVec>({ x: 0, y: 0, z: 0 });
+
   const screen = useAppStore((s) => s.screen);
   const activeCaliber = useAppStore((s) => s.activeCartridgeCaliber);
+  const lineupOverview = useAppStore((s) => s.cartridgeLineupOverview);
   const cutaway = useAppStore((s) => s.cartridgeSectionCut);
   const showEdges = useAppStore((s) => s.showEdges);
   const environmentPreset = useAppStore((s) => s.environmentPreset);
   const selectLabCartridge = useAppStore((s) => s.selectLabCartridge);
 
+  useFrame((_, delta) => {
+    const grp = stageGroupRef.current;
+    if (!grp) return;
+    const st = useAppStore.getState();
+    if (st.screen !== 'cartridges') {
+      initializedOffsetRef.current = false;
+      return;
+    }
+
+    const goal = computeCartridgeStageOffsetInto(
+      size.width,
+      size.height,
+      st.cartridgeLineupOverview,
+      cartridgeDossierCollapsed,
+      st.hudHidden,
+      st.cartridgeExplodeProgress
+    );
+
+    if (!initializedOffsetRef.current) {
+      animOffsetRef.current.x = goal.x;
+      animOffsetRef.current.y = goal.y;
+      animOffsetRef.current.z = goal.z;
+      initializedOffsetRef.current = true;
+    } else {
+      const dt = Math.min(delta, 0.05);
+      animOffsetRef.current.x = THREE.MathUtils.damp(
+        animOffsetRef.current.x,
+        goal.x,
+        8.5,
+        dt
+      );
+      animOffsetRef.current.y = THREE.MathUtils.damp(
+        animOffsetRef.current.y,
+        goal.y,
+        8.5,
+        dt
+      );
+      animOffsetRef.current.z = THREE.MathUtils.damp(
+        animOffsetRef.current.z,
+        goal.z,
+        8.5,
+        dt
+      );
+    }
+
+    grp.position.set(
+      animOffsetRef.current.x,
+      CARTRIDGE_STAGE_DATUM_Y + animOffsetRef.current.y,
+      animOffsetRef.current.z
+    );
+  });
+
   if (screen !== 'cartridges') return null;
 
   const isDaylight = environmentPreset === 'blueprint_daylight';
+  const initGoal = computeCartridgeStageOffsetInto(
+    size.width,
+    size.height,
+    lineupOverview,
+    cartridgeDossierCollapsed,
+    useAppStore.getState().hudHidden,
+    useAppStore.getState().cartridgeExplodeProgress
+  );
 
   return (
-    <group position={[0, CARTRIDGE_STAGE_DATUM_Y, 0]}>
+    <group
+      ref={stageGroupRef}
+      position={[
+        initGoal.x,
+        CARTRIDGE_STAGE_DATUM_Y + initGoal.y,
+        initGoal.z,
+      ]}
+    >
       {/* Machined CNC Datum Exhibition Plinth */}
       <mesh
         geometry={PLINTH_GEO}
-        position={[1.6, -0.52, -0.2]}
+        position={[0.1, -0.52, -0.2]}
         receiveShadow
       >
         <meshStandardMaterial
@@ -332,6 +499,7 @@ export const CartridgeCutawayStage: React.FC = () => {
           caliber={caliber}
           cutaway={cutaway}
           isActive={caliber === activeCaliber}
+          isDaylight={isDaylight}
           showEdges={showEdges}
           onSelect={(cal) => selectLabCartridge(cal, true)}
         />

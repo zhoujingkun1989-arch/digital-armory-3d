@@ -17,9 +17,14 @@ export interface WeaponEnglishFallback {
   originCountry: string;
   weaponType: string;
   statusLabel: string;
+  caliber?: string;
+  compactCaliber?: string;
   actionMechanism: string;
   overallLengthMm: string;
   barrelSpec: string;
+  weightKg?: string;
+  muzzleVelocityMs?: string;
+  effectiveRangeM?: string;
   rateOfFire: string;
   description: string;
   highlights: string[];
@@ -349,10 +354,15 @@ export const WEAPON_EN_FALLBACKS: Record<
     originCountry: 'United States',
     weaponType: 'Binary-Cam Compound Bow',
     statusLabel: 'In Vault · Ready',
+    caliber: '400 gr Carbon Arrow (70 lb · 348 FPS)',
+    compactCaliber: '400 gr Carbon · 70 lb',
     actionMechanism: 'SwitchWeight-X Binary Cams · 85% Let-Off Split-Limb Storage',
     overallLengthMm: '838 mm (33" ATA · 165.1 mm Brace)',
     barrelSpec: '571.5 mm Power Stroke (29" Draw / 165.1 mm Brace)',
-    rateOfFire: 'Manual Draw / Release',
+    weightKg: '1.79 kg (3.94 lb Bare Bow)',
+    muzzleVelocityMs: '106 m/s (348 FPS IBO)',
+    effectiveRangeM: '70 m (Effective Hunting)',
+    rateOfFire: '70 lb Draw · 85% Let-Off',
     description:
       'Mathews’ flagship 33-inch axle-to-axle compound hunting bow machined around a bridged aluminum truss riser and SwitchWeight-X synchronized binary cams: draws to a crisp 70 lb peak before collapsing 85% to a 10.5 lb holding valley, propelling a 400 gr micro-diameter carbon arrow at 348 FPS (145.6 J) through an integrated QAD drop-away rest and 10" Bridge-Lock carbon stabilizer.',
     highlights: [
@@ -377,10 +387,15 @@ export const WEAPON_EN_FALLBACKS: Record<
     originCountry: 'United States',
     weaponType: 'Helical-Cam Bullpup Crossbow',
     statusLabel: 'In Vault · Ready',
+    caliber: '400 gr Carbon Bolt (300 lb · 500 FPS)',
+    compactCaliber: '400 gr Bolt · 300 lb',
     actionMechanism: 'HexCoil 360° Helical Cams · Frictionless Trac-Trigger Sled',
     overallLengthMm: '711 mm (28" OAL · 91 mm Cocked Width)',
     barrelSpec: '381 mm (15") Zero-Rail Power Stroke',
-    rateOfFire: 'Versa-Drive Crank / Single',
+    weightKg: '3.81 kg (8.40 lb Bare)',
+    muzzleVelocityMs: '152.4 m/s (500 FPS)',
+    effectiveRangeM: '100+ m (100 yd BDC Optic)',
+    rateOfFire: '300 lb Draw · Versa-Drive Crank',
     description:
       'Ravin’s ultra-narrow bullpup crossbow powered by patent-pending HexCoil 360° dual helical cam stacks that coil strings tightly around cam drums—shrinking cocked axle-to-axle width to just 3.6 inches (91 mm). Driven by the enclosed Versa-Drive bidirectional clutch screw and floating Trac-Trigger sled with Anti-Dry-Fire interlock, it launches a 400 gr carbon bolt at 500 FPS (301 J).',
     highlights: [
@@ -413,6 +428,43 @@ export function getLocalizedShortWeaponLabel(
   return getShortWeaponLabel(weaponId);
 }
 
+const COMPACT_ZH_CALIBER: Partial<Record<WeaponId, string>> = {
+  lift33: '400 gr 碳纤猎箭 · 70 lb',
+  r500: '400 gr 碳素弩箭 · 300 lb',
+};
+
+export function getLocalizedCatalogSpecs(
+  weaponId: WeaponId,
+  lang: LanguageCode
+) {
+  const manifest = getWeaponManifest(weaponId);
+  const cat = manifest.catalog;
+  if (lang === 'zh') {
+    return {
+      caliber: cat.caliber,
+      compactCaliber: COMPACT_ZH_CALIBER[weaponId] ?? cat.caliber,
+      overallLengthMm: cat.specs1To1.overallLengthMm,
+      barrelSpec: cat.specs1To1.barrelSpec,
+      weightKg: cat.specs1To1.emptyWeightKg,
+      muzzleVelocityMs: cat.specs1To1.muzzleVelocityMs,
+      effectiveRangeM: cat.specs1To1.effectiveRangeM,
+      rateOfFire: cat.specs1To1.rateOfFire,
+    };
+  }
+  const fb = WEAPON_EN_FALLBACKS[weaponId];
+  const caliber = fb.caliber ?? cat.caliber;
+  return {
+    caliber,
+    compactCaliber: fb.compactCaliber ?? caliber,
+    overallLengthMm: fb.overallLengthMm,
+    barrelSpec: fb.barrelSpec,
+    weightKg: fb.weightKg ?? cat.specs1To1.emptyWeightKg,
+    muzzleVelocityMs: fb.muzzleVelocityMs ?? cat.specs1To1.muzzleVelocityMs,
+    effectiveRangeM: fb.effectiveRangeM ?? cat.specs1To1.effectiveRangeM,
+    rateOfFire: fb.rateOfFire,
+  };
+}
+
 export function resolveWeaponDisplayMeta(
   weaponId: WeaponId,
   lang: LanguageCode,
@@ -421,6 +473,7 @@ export function resolveWeaponDisplayMeta(
   const manifest = getWeaponManifest(weaponId);
   const cat = manifest.catalog;
   const wb = manifest.workbenchMeta;
+  const specs = getLocalizedCatalogSpecs(weaponId, lang);
 
   if (lang === 'zh') {
     return {
@@ -430,10 +483,15 @@ export function resolveWeaponDisplayMeta(
         ? `${cat.originCountryCn} · ${cat.weaponTypeCn ?? cat.categoryCn}`
         : cat.categoryCn,
       statusLabel: cat.statusLabel,
+      caliber: specs.caliber,
+      compactCaliber: specs.compactCaliber,
       actionMechanism: cat.actionMechanism,
-      overallLengthMm: cat.specs1To1.overallLengthMm,
-      barrelSpec: cat.specs1To1.barrelSpec,
-      rateOfFire: cat.specs1To1.rateOfFire,
+      overallLengthMm: specs.overallLengthMm,
+      barrelSpec: specs.barrelSpec,
+      weightKg: specs.weightKg,
+      muzzleVelocityMs: specs.muzzleVelocityMs,
+      effectiveRangeM: specs.effectiveRangeM,
+      rateOfFire: specs.rateOfFire,
       description: cat.description,
       highlights: cat.highlights,
       workbenchTitle: wb.title,
@@ -455,10 +513,15 @@ export function resolveWeaponDisplayMeta(
       ? `${uiEn.originCountry} · ${uiEn.weaponType}`
       : `${fb.originCountry} · ${fb.weaponType}`,
     statusLabel: uiEn?.statusLabel ?? fb.statusLabel,
+    caliber: specs.caliber,
+    compactCaliber: specs.compactCaliber,
     actionMechanism: uiEn?.actionMechanism ?? fb.actionMechanism,
-    overallLengthMm: fb.overallLengthMm,
-    barrelSpec: fb.barrelSpec,
-    rateOfFire: uiEn?.rateOfFire ?? fb.rateOfFire,
+    overallLengthMm: specs.overallLengthMm,
+    barrelSpec: specs.barrelSpec,
+    weightKg: specs.weightKg,
+    muzzleVelocityMs: specs.muzzleVelocityMs,
+    effectiveRangeM: specs.effectiveRangeM,
+    rateOfFire: uiEn?.rateOfFire ?? specs.rateOfFire,
     description: uiEn?.description ?? fb.description,
     highlights:
       uiEn?.highlights && uiEn.highlights.length > 0

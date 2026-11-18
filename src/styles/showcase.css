@@ -171,7 +171,7 @@
 
 .showcase-hero-top {
   flex-shrink: 0;
-  padding: 16px 24px 12px;
+  padding: 11px 24px 8px;
   text-align: center;
   background: linear-gradient(
     180deg,
@@ -186,7 +186,7 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 4px 12px;
+  padding: 3.5px 12px;
   border-radius: 999px;
   background: rgba(15, 23, 42, 0.92);
   border: 1px solid rgba(56, 189, 248, 0.32);
@@ -195,32 +195,38 @@
   font-size: 10.5px;
   font-weight: 700;
   letter-spacing: 0.06em;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   box-shadow: 0 6px 18px rgba(2, 6, 14, 0.36);
 }
 
 .showcase-hero-title {
-  max-width: 1180px;
-  margin: 0 auto 8px;
-  font-size: clamp(23px, 2.65vw, 38px);
+  max-width: 1020px;
+  margin: 0 auto 6px;
+  font-size: clamp(22px, 2.38vw, 35px);
   font-weight: 900;
-  line-height: 1.18;
+  line-height: 1.2;
   letter-spacing: -0.02em;
+  text-wrap: balance;
   color: #f8fafc;
 }
 
-.showcase-hero-title span {
+.showcase-hero-title .showcase-hero-highlight {
   background: linear-gradient(135deg, #38bdf8 0%, #0ea5e9 52%, #2dd4bf 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
+.showcase-hero-title .showcase-hero-nowrap {
+  white-space: nowrap;
+}
+
 .showcase-hero-sub {
-  max-width: 840px;
-  margin: 0 auto 12px;
-  font-size: clamp(12.5px, 1.08vw, 14.5px);
-  line-height: 1.55;
+  max-width: 920px;
+  margin: 0 auto 10px;
+  font-size: clamp(12px, 1.02vw, 14px);
+  line-height: 1.5;
+  text-wrap: pretty;
   color: #cbd5e1;
 }
 
@@ -234,18 +240,18 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 9px;
+  gap: 7px;
 }
 
 .showcase-cta-primary {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 9px 18px;
+  gap: 7px;
+  padding: 8px 15px;
   border-radius: 10px;
   background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
   color: #ffffff;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 800;
   box-shadow: 0 10px 24px rgba(2, 132, 199, 0.36);
   transition:
@@ -261,13 +267,13 @@
 .showcase-cta-secondary {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 9px 16px;
+  gap: 6px;
+  padding: 8px 14px;
   border-radius: 10px;
   background: rgba(15, 23, 42, 0.92);
   border: 1px solid rgba(148, 163, 184, 0.24);
   color: #f8fafc;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 700;
   box-shadow: 0 8px 20px rgba(2, 6, 14, 0.34);
   transition:
@@ -285,13 +291,13 @@
 .showcase-cta-firing {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  padding: 9px 16px;
+  gap: 6px;
+  padding: 8px 14px;
   border-radius: 10px;
   background: rgba(245, 158, 11, 0.15);
   border: 1px solid rgba(245, 158, 11, 0.46);
   color: #fbbf24;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 800;
   backdrop-filter: blur(8px);
   transition:
@@ -310,12 +316,12 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 9px 15px;
+  padding: 8px 13px;
   border-radius: 10px;
   background: rgba(30, 41, 59, 0.78);
   border: 1px solid rgba(148, 163, 184, 0.26);
   color: #f1f5f9;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 700;
   text-decoration: none;
   backdrop-filter: blur(8px);
@@ -410,15 +416,15 @@
     rgba(11, 17, 32, 0.9) 28%,
     #0b1120 100%
   );
-  padding: 16px 24px 14px;
+  padding: 10px 20px 11px;
 }
 
 .stage-dock-controls {
-  max-width: 1320px;
+  max-width: 1380px;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .stage-mode-group {
@@ -426,26 +432,26 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .stage-ctrl-label {
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
   color: #cbd5e1;
-  margin-right: 4px;
+  margin-right: 2px;
 }
 
 .stage-mode-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 7px 13px;
+  gap: 5px;
+  padding: 5.5px 11px;
   border-radius: 999px;
   background: rgba(30, 41, 59, 0.88);
   border: 1px solid rgba(148, 163, 184, 0.24);
   color: #e2e8f0;
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
   transition: all 0.16s ease;
 }
@@ -486,20 +492,28 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 5px;
+}
+
+@media (max-width: 1359px) and (min-width: 761px) {
+  .stage-weapon-pills {
+    max-width: 650px;
+    margin-inline: auto;
+  }
 }
 
 .stage-weapon-pill {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 5px 11px;
-  border-radius: 8px;
+  gap: 4px;
+  padding: 4px 8.5px;
+  border-radius: 7px;
   background: rgba(15, 23, 42, 0.82);
   border: 1px solid rgba(148, 163, 184, 0.2);
   color: #cbd5e1;
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 700;
+  white-space: nowrap;
   transition: all 0.15s ease;
 }
 
@@ -516,7 +530,7 @@
 
 .swp-bay {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 9.5px;
   color: #38bdf8;
 }
 
@@ -1529,13 +1543,13 @@
 .showcase-cta-director {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 11px 18px;
-  border-radius: 11px;
+  gap: 7px;
+  padding: 8px 15px;
+  border-radius: 10px;
   background: linear-gradient(135deg, #0d9488 0%, #0284c7 100%);
   border: 1px solid rgba(94, 234, 212, 0.45);
   color: #ffffff;
-  font-size: 13.5px;
+  font-size: 12.5px;
   font-weight: 800;
   box-shadow: 0 8px 24px rgba(13, 148, 136, 0.28);
   transition:

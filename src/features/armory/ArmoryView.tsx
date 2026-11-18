@@ -190,7 +190,11 @@ export const ArmoryView: React.FC = () => {
             title={ui.storyBtnTitle}
           >
             <BookOpen size={13} />
-            <span>{ui.storyBtn}</span>
+            <span>
+              {isArcheryWeapon(featuredWeapon.id) && lang === 'zh'
+                ? '弓弩研发故事'
+                : ui.storyBtn}
+            </span>
           </button>
 
           <button
@@ -236,146 +240,137 @@ export const ArmoryView: React.FC = () => {
       </header>
 
       {/* Left Featured Weapon Technical Plaque */}
-      <aside className="armory-hero-plaque">
-        <div className="plaque-status-row">
-          <div className="plaque-bay-cluster">
-            <span className="plaque-bay-tag">{featuredWeapon.bayCode}</span>
-            <span className="plaque-origin-pill">
-              <Globe2 size={11} />
-              <span>{featuredDisplay.originTag}</span>
+      <aside className="armory-hero-plaque armory-plaque">
+        <div className="plaque-scroll-body">
+          <div className="plaque-status-row">
+            <div className="plaque-bay-cluster">
+              <span className="plaque-bay-tag">{featuredWeapon.bayCode}</span>
+              <span className="plaque-origin-pill">
+                <Globe2 size={11} />
+                <span>{featuredDisplay.originTag}</span>
+              </span>
+            </div>
+            <span className="plaque-ready-pill">
+              <CheckCircle2 size={11} />
+              {featuredDisplay.statusLabel}
             </span>
           </div>
-          <span className="plaque-ready-pill">
-            <CheckCircle2 size={11} />
-            {featuredDisplay.statusLabel}
-          </span>
+
+          <h2 className="plaque-weapon-title">{featuredDisplay.name}</h2>
+          <div className="plaque-weapon-sub">{featuredWeapon.modelCode}</div>
+
+          <p className="plaque-desc">{featuredDisplay.description}</p>
+
+          <div className="plaque-spec-grid">
+            <div className="plaque-spec-cell">
+              <span className="spec-k">{plaqueUi.caliberLabel}</span>
+              <span className="spec-v">{featuredDisplay.caliber}</span>
+            </div>
+            <div className="plaque-spec-cell">
+              <span className="spec-k">{ui.precisionLabel}</span>
+              <span className="spec-v">
+                {ui.precisionValue(
+                  featuredWeapon.assembliesCount,
+                  featuredWeapon.partsCount
+                )}
+              </span>
+            </div>
+            <div className="plaque-spec-cell full">
+              <span className="spec-k">{plaqueUi.mechanismLabel}</span>
+              <span className="spec-v">{featuredDisplay.actionMechanism}</span>
+            </div>
+          </div>
+
+          <div className="plaque-metrology-box">
+            <div className="plaque-metrology-head">
+              <span className="plaque-metrology-title">
+                <Ruler size={11} />
+                <span>{plaqueUi.metrologyTitle}</span>
+              </span>
+              <span className="plaque-metrology-tag">FACTORY 1:1</span>
+            </div>
+            <div className="plaque-metrology-grid">
+              <div className="metrology-cell">
+                <span className="spec-k">{plaqueUi.oalLabel}</span>
+                <span className="spec-v tabular">
+                  {featuredDisplay.overallLengthMm}
+                </span>
+              </div>
+              <div className="metrology-cell">
+                <span className="spec-k">{plaqueUi.barrelLabel}</span>
+                <span className="spec-v tabular">
+                  {featuredDisplay.barrelSpec}
+                </span>
+              </div>
+              <div className="metrology-cell">
+                <span className="spec-k">{plaqueUi.weightLabel}</span>
+                <span className="spec-v tabular">
+                  {featuredDisplay.weightKg}
+                </span>
+              </div>
+              <div className="metrology-cell">
+                <span className="spec-k">{plaqueUi.muzzleVelLabel}</span>
+                <span className="spec-v tabular">
+                  {featuredDisplay.muzzleVelocityMs}
+                </span>
+              </div>
+              <div className="metrology-cell">
+                <span className="spec-k">{plaqueUi.rangeLabel}</span>
+                <span className="spec-v tabular">
+                  {featuredDisplay.effectiveRangeM}
+                </span>
+              </div>
+              <div className="metrology-cell">
+                <span className="spec-k">{plaqueUi.rofLabel}</span>
+                <span className="spec-v tabular">
+                  {featuredDisplay.rateOfFire}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="plaque-feature-chips">
+            {featuredDisplay.highlights.map((h) => (
+              <span key={h} className="plaque-chip">
+                {h}
+              </span>
+            ))}
+          </div>
         </div>
 
-        <h2 className="plaque-weapon-title">{featuredDisplay.name}</h2>
-        <div className="plaque-weapon-sub">{featuredWeapon.modelCode}</div>
+        <div className="plaque-cta-footer">
+          <div className="plaque-secondary-ctas">
+            <button
+              type="button"
+              className="plaque-compact-cta is-story"
+              onClick={() => setStoryOpen(true)}
+              title={`${ui.plaqueStoryCta} — ${ui.plaqueStorySub}`}
+            >
+              <Headphones size={13} aria-hidden="true" />
+              <span>{lang === 'zh' ? '四幕语音故事' : '4-Act Story'}</span>
+            </button>
 
-        <p className="plaque-desc">{featuredDisplay.description}</p>
+            <button
+              type="button"
+              className="plaque-compact-cta is-monograph"
+              onClick={() => openMonographModal(featuredWeapon.id)}
+              title={`${monoUi.plaqueCtaMain} — ${monoUi.plaqueCtaSub}`}
+            >
+              <Printer size={13} aria-hidden="true" />
+              <span>{monoUi.entryChip}</span>
+            </button>
+          </div>
 
-        <div className="plaque-spec-grid">
-          <div className="plaque-spec-cell">
-            <span className="spec-k">{plaqueUi.caliberLabel}</span>
-            <span className="spec-v">{featuredWeapon.caliber}</span>
-          </div>
-          <div className="plaque-spec-cell">
-            <span className="spec-k">{ui.precisionLabel}</span>
-            <span className="spec-v">
-              {ui.precisionValue(
-                featuredWeapon.assembliesCount,
-                featuredWeapon.partsCount
-              )}
-            </span>
-          </div>
-          <div className="plaque-spec-cell full">
-            <span className="spec-k">{plaqueUi.mechanismLabel}</span>
-            <span className="spec-v">{featuredDisplay.actionMechanism}</span>
-          </div>
+          <button
+            type="button"
+            className="plaque-primary-cta"
+            onClick={() => enterWorkbench(featuredWeapon.id)}
+          >
+            <Layers size={15} />
+            <span>{plaqueUi.plaquePrimaryCta(shortWeaponTag)}</span>
+            <ArrowRight size={15} />
+          </button>
         </div>
-
-        <div className="plaque-metrology-box">
-          <div className="plaque-metrology-head">
-            <span className="plaque-metrology-title">
-              <Ruler size={11} />
-              <span>{plaqueUi.metrologyTitle}</span>
-            </span>
-            <span className="plaque-metrology-tag">FACTORY 1:1</span>
-          </div>
-          <div className="plaque-metrology-grid">
-            <div className="metrology-cell">
-              <span className="spec-k">{plaqueUi.oalLabel}</span>
-              <span className="spec-v tabular">
-                {featuredDisplay.overallLengthMm}
-              </span>
-            </div>
-            <div className="metrology-cell">
-              <span className="spec-k">{plaqueUi.barrelLabel}</span>
-              <span className="spec-v tabular">
-                {featuredDisplay.barrelSpec}
-              </span>
-            </div>
-            <div className="metrology-cell">
-              <span className="spec-k">{plaqueUi.weightLabel}</span>
-              <span className="spec-v tabular">
-                {featuredWeapon.specs1To1.emptyWeightKg}
-              </span>
-            </div>
-            <div className="metrology-cell">
-              <span className="spec-k">{plaqueUi.muzzleVelLabel}</span>
-              <span className="spec-v tabular">
-                {featuredWeapon.specs1To1.muzzleVelocityMs}
-              </span>
-            </div>
-            <div className="metrology-cell">
-              <span className="spec-k">{plaqueUi.rangeLabel}</span>
-              <span className="spec-v tabular">
-                {featuredWeapon.specs1To1.effectiveRangeM}
-              </span>
-            </div>
-            <div className="metrology-cell">
-              <span className="spec-k">{plaqueUi.rofLabel}</span>
-              <span className="spec-v tabular">
-                {featuredDisplay.rateOfFire}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="plaque-feature-chips">
-          {featuredDisplay.highlights.map((h) => (
-            <span key={h} className="plaque-chip">
-              {h}
-            </span>
-          ))}
-        </div>
-
-        <button
-          type="button"
-          className="plaque-story-cta"
-          onClick={() => setStoryOpen(true)}
-        >
-          <div className="plaque-story-cta-left">
-            <span className="plaque-story-icon">
-              <Headphones size={14} />
-            </span>
-            <div>
-              <span className="plaque-story-main">{ui.plaqueStoryCta}</span>
-              <span className="plaque-story-sub">{ui.plaqueStorySub}</span>
-            </div>
-          </div>
-          <ArrowRight size={14} />
-        </button>
-
-        <button
-          type="button"
-          className="plaque-monograph-cta"
-          onClick={() => openMonographModal(featuredWeapon.id)}
-          title={monoUi.entryChipTitle}
-        >
-          <div className="plaque-story-cta-left">
-            <span className="plaque-monograph-icon">
-              <Printer size={14} aria-hidden="true" />
-            </span>
-            <div>
-              <span className="plaque-story-main">{monoUi.plaqueCtaMain}</span>
-              <span className="plaque-story-sub">{monoUi.plaqueCtaSub}</span>
-            </div>
-          </div>
-          <ArrowRight size={14} aria-hidden="true" />
-        </button>
-
-        <button
-          type="button"
-          className="plaque-primary-cta"
-          onClick={() => enterWorkbench(featuredWeapon.id)}
-        >
-          <Layers size={16} />
-          <span>{plaqueUi.plaquePrimaryCta(shortWeaponTag)}</span>
-          <ArrowRight size={16} />
-        </button>
       </aside>
 
       {/* Right Turntable Controls & Direct Click Hint */}
@@ -515,7 +510,7 @@ export const ArmoryView: React.FC = () => {
                 key={item.id}
                 role="button"
                 tabIndex={0}
-                className={`armory-weapon-card ${
+                className={`armory-weapon-card bay-card ${
                   item.available ? 'is-ready' : 'is-planned'
                 } ${isOnTurntable ? 'is-on-turntable' : ''}`}
                 onMouseEnter={() => {
@@ -579,7 +574,14 @@ export const ArmoryView: React.FC = () => {
                     <span className="wcard-name">{itemMeta.name}</span>
                   </div>
                   <div className="wcard-meta">
-                    {item.caliber} · {ui.partsNodeSuffix(item.partsCount)}
+                    <span className="wcard-caliber" title={itemMeta.caliber}>
+                      {itemMeta.compactCaliber}
+                    </span>
+                    <span className="wcard-parts-pill">
+                      {lang === 'zh'
+                        ? `${item.partsCount} 零件`
+                        : `${item.partsCount} Parts`}
+                    </span>
                   </div>
                 </div>
 
