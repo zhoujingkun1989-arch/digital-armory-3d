@@ -370,13 +370,15 @@ export const GasFlowVisualizer: React.FC = () => {
         ? 0.42
         : caliber === '50_bmg' || caliber === '50_ae'
           ? 0.34
-          : caliber === '338_lapua' ||
-              caliber === '30_06' ||
-              caliber === '762_m43' ||
-              caliber === '357_magnum' ||
-              caliber === '9mm_para'
-            ? 0.25
-            : 0.2;
+          : caliber === '45_acp'
+            ? 0.31
+            : caliber === '338_lapua' ||
+                caliber === '30_06' ||
+                caliber === '762_m43' ||
+                caliber === '357_magnum' ||
+                caliber === '9mm_para'
+              ? 0.25
+              : 0.2;
 
     // 1. Bore propellant column (chamberX -> live projectile base)
     const boreSpan = Math.max(1.0, manifold.muzzleX - manifold.chamberX);
@@ -729,9 +731,14 @@ export const GasFlowVisualizer: React.FC = () => {
         cursor++;
       }
     } else if (!manifold.hasGasTap && manifold.family !== 'manual_bolt_action') {
-      // Rearward breech-thrust chevrons for blowback / roller-delayed / short-recoil systems
+      // Rearward breech-thrust chevrons (or -65° downward Super V vectoring chevrons on KRISS Vector)
+      const isOffAxisSuperV = manifold.family === 'off_axis_delayed_blowback';
       const thrustSpan = manifold.chamberX - manifold.gasTargetX;
-      _dirVec.set(-1, 0, 0);
+      if (isOffAxisSuperV) {
+        _dirVec.set(-0.422618, -0.906308, 0);
+      } else {
+        _dirVec.set(-1, 0, 0);
+      }
       _quat.setFromUnitVectors(_upAxis, _dirVec);
       const thrustArrows = 5;
       _colorWork.copy(
@@ -740,11 +747,19 @@ export const GasFlowVisualizer: React.FC = () => {
       for (let i = 0; i < thrustArrows && cursor < STREAM_CHEVRON_COUNT; i++) {
         const u = ((i + phaseScroll) / thrustArrows) % 1;
         if (boreAlpha > 0.04 && thrustSpan > 0.4) {
-          _posVec.set(
-            manifold.chamberX - thrustSpan * u * 0.75,
-            manifold.gasChannelY,
-            manifold.gasChannelZ
-          );
+          if (isOffAxisSuperV) {
+            _posVec.set(
+              manifold.gasTargetX - 2.7 * u,
+              manifold.gasChannelY - 5.8 * u,
+              manifold.gasChannelZ
+            );
+          } else {
+            _posVec.set(
+              manifold.chamberX - thrustSpan * u * 0.75,
+              manifold.gasChannelY,
+              manifold.gasChannelZ
+            );
+          }
           _scaleVec.set(0.75, 0.75, 0.75);
           _mat4.compose(_posVec, _quat, _scaleVec);
           inst.setMatrixAt(cursor, _mat4);

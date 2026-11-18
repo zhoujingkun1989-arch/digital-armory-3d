@@ -404,6 +404,35 @@ function buildP90HelicalAndHorizontalSlots(
 const G17_GRIP_RAD = (-20 * Math.PI) / 180;
 const P320_GRIP_RAD = (-18 * Math.PI) / 180;
 const DEAGLE_GRIP_RAD = (-15 * Math.PI) / 180;
+const P08_GRIP_RAD = (-35 * Math.PI) / 180;
+const VECTOR_MAG_RAD = (66 * Math.PI) / 180;
+
+/**
+ * 19. KRISS Vector 25-Rd Glock-21 / MagEx2 `.45 ACP` Forward-Raked (`+66°`) Staggered Column
+ * (`vector_mag_body` extruded along local `+X` `[-8.10, +8.45]` at `[4.95, -9.85, 0]`).
+ */
+function buildVectorMagEx2Slots(): ReadonlyMagazineRoundSlot[] {
+  const count = 16;
+  const cosM = Math.cos(VECTOR_MAG_RAD);
+  const sinM = Math.sin(VECTOR_MAG_RAD);
+  const slots: ReadonlyMagazineRoundSlot[] = [
+    // Slot 0: Exact match to `computeVectorBallisticsState(0).nextRoundPos`!
+    makeSlot(7.95, -2.15, 0, 0, 0, 0.18),
+  ];
+
+  const lxTop = 6.55;
+  const lxBottom = -5.85;
+  for (let i = 1; i < count; i++) {
+    const u = (i - 1) / (count - 2);
+    const lx = lxTop + (lxBottom - lxTop) * u;
+    const px = 4.95 + lx * cosM;
+    const py = -9.85 + lx * sinM;
+    const pz = staggeredZ(i, 0.21, -1);
+    const rz = 0.04 + (-0.24 - 0.04) * u;
+    slots.push(makeSlot(px, py, pz, 0, 0, rz));
+  }
+  return appendReplacementSlotAtBottom(slots);
+}
 
 function normalFromTiltZ(rz: number): readonly [number, number, number] {
   return [-Math.sin(rz), Math.cos(rz), 0];
@@ -763,6 +792,76 @@ export const MAGAZINE_STACK_SPECS: Readonly<
       makeSlot(-1.4, -0.24, 0.22, 0, 0, 0.06),
       makeSlot(-1.4, -0.24, 0.22, 0, 0, 0.06),
     ],
+  },
+
+  m249: {
+    weaponId: 'm249',
+    magBodyPartId: 'm249_m27_belt',
+    followerPartId: 'm249_ammo_box',
+    throatPartId: 'm249_feed_tray',
+    roundCount: 4,
+    // Open-bolt M249: Slot 0 sits at [-0.80, 1.56, 0] (`b0.nextRoundPos`), while in live firing
+    // `nextRoundRef` strips Slot 0 [0..0.215) and then indexes Slot 1 [-0.80, 1.56, -1.36] -> Z=0 [0.36..0.68]!
+    firingHandoffSlotIndex: 1,
+    feedWindow: [0.36, 0.68],
+    replenishWindow: [0.82, 0.96],
+    magSubStripStartT: 0.05,
+    followerDeckPlane: {
+      point: [-0.8, -1.5, -2.5],
+      normal: [0, 1, 0],
+    },
+    slots: [
+      makeSlot(-0.8, 1.56, 0, 0, 0, -0.02),
+      makeSlot(-0.8, 1.5, -1.36, 0.02, 0, -0.02),
+      makeSlot(-0.8, 1.2, -2.61, 0.16, 0, -0.02),
+      makeSlot(-0.8, 0.62, -3.62, 0.54, 0, -0.02),
+      makeSlot(-0.8, 0.62, -3.62, 0.54, 0, -0.02),
+    ],
+  },
+
+  p08: {
+    weaponId: 'p08',
+    magBodyPartId: 'p08_mag_body',
+    followerPartId: 'p08_mag_follower',
+    roundCount: 8,
+    firingHandoffSlotIndex: 0,
+    feedWindow: [0.5, 0.7],
+    replenishWindow: [0.86, 0.97],
+    magSubStripStartT: 0.44,
+    followerDeckPlane: {
+      point: [-6.05, -5.85, 0],
+      normal: normalFromTiltZ(P08_GRIP_RAD),
+    },
+    slots: buildRakedPistolSlots({
+      count: 8,
+      slot0: [-0.95, 1.38, 0],
+      slot0Rz: 0.14,
+      magAssembledPos: [-4.45, -3.3],
+      gripAngleRad: P08_GRIP_RAD,
+      localXCenter: -0.02,
+      localYSlot1: 4.58,
+      localYBottom: -1.55,
+      topBodyRz: 0.06,
+      bottomRz: -0.26,
+      zHalf: 0.055,
+      firstOddSign: -1,
+    }),
+  },
+
+  vector: {
+    weaponId: 'vector',
+    magBodyPartId: 'vector_mag_body',
+    followerPartId: 'vector_mag_baseplate',
+    roundCount: 16,
+    firingHandoffSlotIndex: 0,
+    feedWindow: [0.72, 0.86],
+    replenishWindow: [0.88, 0.98],
+    magSubStripStartT: 0.36,
+    followerDeckPlane: {
+      point: [1.55, -16.65, 0],
+      normal: [Math.cos(VECTOR_MAG_RAD), Math.sin(VECTOR_MAG_RAD), 0],
+    },
+    slots: buildVectorMagEx2Slots(),
   },
 };
 

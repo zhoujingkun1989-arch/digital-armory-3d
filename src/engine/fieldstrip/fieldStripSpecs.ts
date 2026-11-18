@@ -2483,6 +2483,521 @@ export const FIELD_STRIP_PLANS: Readonly<
       },
     ],
   },
+
+  // =========================================================================
+  // 17. FN M249 SAW (5.56x45mm NATO) — Open-Bolt Belt/STANAG Squad Automatic Weapon
+  // =========================================================================
+  m249: {
+    weaponId: 'm249',
+    manualCodeZh: 'TM 9-1005-201-10 · 美军M249班用机枪野战快拆教范',
+    manualCodeEn: 'TM 9-1005-201-10 · U.S. M249 SAW Operator Field-Strip',
+    steps: [
+      {
+        id: 'm249_strip_cover_belt',
+        orderLabel: '01',
+        titleZh: '捏压尾锁栓掀开受弹器顶盖，清卸 M27 弹链与 200 发突击弹箱',
+        titleEn: 'Unlatch Top Feed Cover & Clear M27 Belt / 200-Rd SAW Box',
+        actionHintZh:
+          '点击铰接顶盖、M27 可散金属弹链、受弹器托盘或下挂 200 发聚合物弹箱，执行清枪验膛。',
+        actionHintEn:
+          'Click the hinged top cover, M27 belt, feed tray, or 200-round assault box to clear ammunition.',
+        requires: [],
+        stripBlockedNoteZh: '',
+        stripBlockedNoteEn: '',
+        reassembleBlockedNoteZh:
+          '合拢受弹器顶盖并装挂弹链前，必须先装回快拆枪管、活塞枪机组、复进簧与握把火控盒！',
+        reassembleBlockedNoteEn:
+          'Reinstall the quick-change barrel, piston/bolt group, recoil spring, and trigger frame before closing the feed cover!',
+        triggerPartIds: [
+          'm249_top_cover',
+          'm249_m27_belt',
+          'm249_ammo_box',
+          'm249_feed_tray',
+        ],
+        bindings: [
+          bind('m249_top_cover', 0),
+          bind('m249_rear_sight', 0),
+          bind('m249_feed_lever', 0),
+          bind('m249_feed_pawls', 0),
+          bind('m249_m27_belt', 0),
+          bind('m249_ammo_box', 0),
+          bind('m249_feed_tray', 0),
+        ],
+      },
+      {
+        id: 'm249_strip_barrel',
+        orderLabel: '02',
+        titleZh: '按压快拆锁舌并提握隔热提把向前秒拆 18.3 英寸镀铬重枪管',
+        titleEn: 'Depress Barrel Latch & Withdraw 18.3" Quick-Change Barrel Forward',
+        actionHintZh:
+          '点击 18.3 英寸快拆枪管、折叠隔热提把或前导气调节箍，免工具向前抽出枪管总成。',
+        actionHintEn:
+          'Click the 18.3" barrel, insulated carry handle, or gas regulator collar to slide the barrel forward.',
+        requires: ['m249_strip_cover_belt'],
+        stripBlockedNoteZh:
+          '安全红线：拆卸快拆枪管前必须先掀开受弹器顶盖、清卸 M27 弹链并确认弹膛无弹（步骤 01）！',
+        stripBlockedNoteEn:
+          'TM 9-1005-201-10 safety rule: open the top cover and clear the M27 belt (Step 01) before removing the barrel!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: [
+          'm249_barrel',
+          'm249_barrel_handle',
+          'm249_gas_regulator',
+        ],
+        bindings: [
+          bind('m249_barrel', 0),
+          bind('m249_barrel_handle', 0),
+          bind('m249_gas_regulator', 0),
+          bind('m249_front_sight', 0),
+        ],
+      },
+      {
+        id: 'm249_strip_stock_spring',
+        orderLabel: '03',
+        titleZh: '拔出机匣上横销下折枪托与液压缓冲器，向后抽出长行程复进主簧',
+        titleEn: 'Unpin Buttstock / Hydraulic Buffer & Withdraw Driving Recoil Spring',
+        actionHintZh:
+          '点击聚合物固定枪托、内置液压阻尼缓冲器或长行程螺旋复进簧，释放尾端蓄能约束。',
+        actionHintEn:
+          'Click the polymer buttstock, hydraulic buffer, or captive recoil spring to release rear spring tension.',
+        requires: ['m249_strip_cover_belt'],
+        stripBlockedNoteZh:
+          '释放高预紧度复进驱动主簧前，必须先掀开顶盖清空 M27 弹链（步骤 01），严防枪机失控前冲推弹走火！',
+        stripBlockedNoteEn:
+          'Clear the top cover and M27 belt (Step 01) before unpinning the buttstock—releasing spring tension on a live belt risks discharge!',
+        reassembleBlockedNoteZh:
+          '插回长复进主簧并锁合液压缓冲枪托前，必须先将长行程活塞枪机组与火控盒装回机匣导轨！',
+        reassembleBlockedNoteEn:
+          'Slide the piston/bolt carrier group and trigger pack back into the receiver before seating the recoil spring and buttstock!',
+        triggerPartIds: [
+          'm249_buttstock',
+          'm249_hydraulic_buffer',
+          'm249_recoil_spring',
+        ],
+        bindings: [
+          bind('m249_buttstock', 0),
+          bind('m249_hydraulic_buffer', 0),
+          bind('m249_recoil_spring', 0),
+        ],
+      },
+      {
+        id: 'm249_strip_piston_bcg',
+        orderLabel: '04',
+        titleZh: '后拉右侧拉机柄，从机匣尾口平顺抽出长行程导气活塞与枪机总成',
+        titleEn: 'Retract Charging Handle & Withdraw Long-Stroke Piston / Bolt Group',
+        actionHintZh:
+          '点击带顶部拨弹滚轮的长行程导气活塞滑块或右侧拉机柄，将自动机总成向后抽出机匣。',
+        actionHintEn:
+          'Click the long-stroke gas piston slide carrier or right-side charging handle to withdraw the moving group rearward.',
+        requires: ['m249_strip_stock_spring'],
+        stripBlockedNoteZh:
+          '机匣尾口正被聚合物枪托、液压缓冲器与长行程复进簧封堵，请先拆下尾托与复进主簧（步骤 03）！',
+        stripBlockedNoteEn:
+          'The buttstock, hydraulic buffer, and recoil spring seal the rear of the receiver—complete Step 03 first!',
+        reassembleBlockedNoteZh:
+          '将活塞滑块推入机匣导轨前，必须先将双突笋回转枪机与联动击针装回滑块塔座（步骤 05）！',
+        reassembleBlockedNoteEn:
+          'Mount the 2-lug rotating bolt and slide-linked firing pin onto the piston tower (Step 05) before inserting into the receiver!',
+        triggerPartIds: ['m249_piston_carrier', 'm249_charging_handle'],
+        bindings: [
+          bind('m249_charging_handle', 0),
+          bind('m249_piston_carrier', 0),
+          bind('m249_bolt', 0),
+          bind('m249_firing_pin', 0),
+        ],
+      },
+      {
+        id: 'm249_strip_bolt_pin',
+        orderLabel: '05',
+        titleZh: '从活塞滑块塔座上解脱双突笋回转闭锁枪机与防早发联动击针',
+        titleEn: 'Separate 2-Lug Rotating Breech Bolt & Timed Firing Pin from Piston Tower',
+        actionHintZh:
+          '点击镀铬双突笋回转枪机或滑块联动击针，将其与长行程导气活塞滑块分离擦拭积碳。',
+        actionHintEn:
+          'Click the hard-chrome 2-lug rotating bolt or firing pin to separate them from the piston slide tower.',
+        requires: ['m249_strip_piston_bcg'],
+        stripBlockedNoteZh:
+          '回转枪机与击针受机匣硬化内导轨约束锁合在活塞滑块上，请先从机匣后方抽出活塞枪机总成（步骤 04）！',
+        stripBlockedNoteEn:
+          'Receiver rails retain the bolt and firing pin on the piston carrier—withdraw the moving group (Step 04) first!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: ['m249_bolt', 'm249_firing_pin'],
+        bindings: [
+          bind('m249_piston_carrier', 1),
+          bind('m249_bolt', 1),
+          bind('m249_firing_pin', 1),
+        ],
+      },
+      {
+        id: 'm249_strip_trigger_pack',
+        orderLabel: '06',
+        titleZh: '推出机匣腹下系留横销，向下卸除快拆握把与重型开膛待击阻铁盒',
+        titleEn: 'Push Lower Cross-Pins & Drop Open-Bolt Sear Trigger Mechanism',
+        actionHintZh:
+          '点击快拆握把火控座、重型渗碳开膛阻铁或宽弧面钢扳机，整体取下下部火控模块。',
+        actionHintEn:
+          'Click the pinned trigger frame, heavy open-bolt sear, or trigger shoe to drop the fire-control module.',
+        requires: ['m249_strip_stock_spring'],
+        stripBlockedNoteZh:
+          '枪托下连接耳与复进簧预紧载荷正锁压火控横销，请先解脱枪托并取出复进主簧（步骤 03）！',
+        stripBlockedNoteEn:
+          'The buttstock lower lug and recoil-spring load retain the trigger cross-pins—complete Step 03 first!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: [
+          'm249_trigger_frame',
+          'm249_open_bolt_sear',
+          'm249_trigger',
+        ],
+        bindings: [
+          bind('m249_trigger_frame', 0),
+          bind('m249_trigger', 0),
+          bind('m249_open_bolt_sear', 0),
+          bind('m249_sear_spring', 0),
+        ],
+      },
+    ],
+  },
+
+  // =========================================================================
+  // 18. Luger P08 Parabellum (9x19mm) — Short-Recoil Over-Center Toggle Lock
+  // =========================================================================
+  p08: {
+    weaponId: 'p08',
+    manualCodeZh: 'D.V.E. Nr. 179 · 德军1908式鲁格手枪军械拆装教范',
+    manualCodeEn: 'H.Dv. 254 / Pistole 08 · Imperial & Wehrmacht Field-Strip',
+    steps: [
+      {
+        id: 'p08_strip_mag',
+        orderLabel: '01',
+        titleZh: '按压滚花卡笋向下抽出 8 发 55° 镀镍钢板弹匣并提肘节验膛',
+        titleEn: 'Depress Catch & Withdraw 8-Rd 55° Nickel Sheet-Steel Magazine',
+        actionHintZh:
+          '点击 55° 镀镍弹匣体或双耳同心圆纹底座，退出弹匣并确认顶置 GELADEN 抽壳钩平落无弹。',
+        actionHintEn:
+          'Click the 55° brushed-nickel magazine body or twin-ear pull-knob floorplate to clear the magazine.',
+        requires: [],
+        stripBlockedNoteZh: '',
+        stripBlockedNoteEn: '',
+        reassembleBlockedNoteZh:
+          '插入 8 发斜置弹匣前，必须先装回护把复进簧、滑入叉形上机匣肘节总成并锁死麦秆黄快拆杆！',
+        reassembleBlockedNoteEn:
+          'Reinstall the recoil spring/grips, upper toggle receiver, and straw takedown lever before inserting the magazine!',
+        triggerPartIds: ['p08_mag_body', 'p08_mag_base'],
+        bindings: [
+          bind('p08_mag_body', 0),
+          bind('p08_mag_follower', 0),
+          bind('p08_mag_spring', 0),
+          bind('p08_mag_base', 0),
+        ],
+      },
+      {
+        id: 'p08_strip_takedown_sideplate',
+        orderLabel: '02',
+        titleZh: '微拉上机匣将麦秆黄快拆杆下旋 90°，取下左侧 L 形换向杠杆盖板',
+        titleEn: 'Swing Straw Takedown Lever 90° Down & Lift Left Bellcrank Sideplate',
+        actionHintZh:
+          '点击麦秆黄旋转快拆锁杆、左侧火控锁盖板或 L 形换向杠杆，一秒解除上下机匣前滑闭锁。',
+        actionHintEn:
+          'Click the straw-tempered takedown lever, left sideplate, or L-bellcrank transfer lever to unlock the frame.',
+        requires: ['p08_strip_mag'],
+        stripBlockedNoteZh:
+          '德军《Pistole 08》安全铁律：下旋快拆杆分解前，必须先抽出 8 发弹匣（步骤 01）清空弹源！',
+        stripBlockedNoteEn:
+          'Pistole 08 safety rule: remove the 8-round magazine (Step 01) before rotating the takedown lever!',
+        reassembleBlockedNoteZh:
+          '扣回左侧扳机杠杆盖板并上旋锁紧麦秆黄快拆杆前，必须先将叉形枪管节套总成沿导轨推回机匣到位（步骤 03）！',
+        reassembleBlockedNoteEn:
+          'Slide the forked barrel extension and toggle group back onto the frame rails (Step 03) before locking the sideplate!',
+        triggerPartIds: [
+          'p08_takedown_lever',
+          'p08_sideplate',
+          'p08_trigger_lever',
+        ],
+        bindings: [
+          bind('p08_takedown_lever', 0, 1),
+          bind('p08_sideplate', 0),
+          bind('p08_trigger_lever', 0),
+        ],
+      },
+      {
+        id: 'p08_strip_upper',
+        orderLabel: '03',
+        titleZh: '摘脱握把 S 形复进挂钩，将 4 英寸枪管、叉形节套与肘节总成向前滑脱',
+        titleEn: 'Unhook S-Link & Slide 4" Barrel, Forked Extension & Toggle Group Forward',
+        actionHintZh:
+          '点击 4 英寸锥形枪管或顶刻 1917 钢印的叉形枪管节套，沿下机匣导轨向前平顺滑出上机匣总成。',
+        actionHintEn:
+          'Click the 4" tapered barrel or 1917 forked barrel extension to slide the upper assembly forward off the frame.',
+        requires: ['p08_strip_takedown_sideplate'],
+        stripBlockedNoteZh:
+          '左侧火控盖板与麦秆黄偏心快拆杆仍死死挡在节套前滑路径上，请先下旋快拆杆取下左盖板（步骤 02）！',
+        stripBlockedNoteEn:
+          'The left sideplate and takedown lever block forward travel of the barrel extension—complete Step 02 first!',
+        reassembleBlockedNoteZh:
+          '将上机匣滑回锻造下机匣导轨前，必须先将矩形枪机、DWM 双连杆肘节与尾轴销装入叉形节套内（步骤 04）！',
+        reassembleBlockedNoteEn:
+          'Install the breechblock, DWM toggle links, and rear cross-axle pin into the barrel extension (Step 04) first!',
+        triggerPartIds: ['p08_barrel', 'p08_barrel_extension'],
+        bindings: [
+          bind('p08_barrel', 0),
+          bind('p08_barrel_extension', 0),
+          bind('p08_breechblock', 0),
+          bind('p08_extractor', 0),
+          bind('p08_front_toggle', 0),
+          bind('p08_rear_toggle', 0),
+          bind('p08_toggle_pins', 0),
+          bind('p08_striker', 0),
+          bind('p08_striker_spring', 0),
+          bind('p08_ejector', 0),
+          bind('p08_sear_bar', 0),
+        ],
+      },
+      {
+        id: 'p08_strip_toggle_train',
+        orderLabel: '04',
+        titleZh: '向内顶出后肘节横轴大帽销，从节套尾槽抽出双圆耳肘节与矩形枪机链',
+        titleEn: 'Push Out Rear Toggle Axle Pin & Withdraw Knee-Joint Toggle / Breechblock Train',
+        actionHintZh:
+          '点击双圆耳后肘节、DWM 前肘节、矩形滑动枪机或肘节横轴销，将四杆闭锁运动链自叉形节套抽出。',
+        actionHintEn:
+          'Click the knurled rear toggle, DWM front toggle, breechblock, or toggle axle pins to withdraw the toggle train.',
+        requires: ['p08_strip_upper'],
+        stripBlockedNoteZh:
+          '下机匣高耸的弧形开锁导坡两侧完全遮蔽了后肘节横轴销孔，必须先向前滑脱上机匣总成（步骤 03）！',
+        stripBlockedNoteEn:
+          'The frame’s curved unlocking ramps shroud the rear toggle axle pin—slide off the upper assembly (Step 03) first!',
+        reassembleBlockedNoteZh:
+          '将肘节与矩形枪机滑回叉形节套前，必须先装入三槽泄气击针并旋锁刺刀式击针簧尾塞（步骤 05）！',
+        reassembleBlockedNoteEn:
+          'Insert the fluted striker and quarter-turn the bayonet mainspring guide into the breechblock (Step 05) first!',
+        triggerPartIds: [
+          'p08_rear_toggle',
+          'p08_front_toggle',
+          'p08_breechblock',
+          'p08_toggle_pins',
+        ],
+        bindings: [
+          bind('p08_toggle_pins', 1),
+          bind('p08_rear_toggle', 1),
+          bind('p08_front_toggle', 1),
+          bind('p08_breechblock', 1),
+          bind('p08_extractor', 1),
+        ],
+      },
+      {
+        id: 'p08_strip_striker',
+        orderLabel: '05',
+        titleZh: '顶压逆旋 90° 解锁刺刀尾塞，从矩形枪机空腔取出三槽泄气击针与主簧',
+        titleEn: 'Quarter-Turn Bayonet Spring Guide & Extract Fluted Striker / Mainspring',
+        actionHintZh:
+          '点击三槽泄气空心击针或螺旋击针主簧，释放琴钢丝预紧力完成击针腔细拆清洁。',
+        actionHintEn:
+          'Click the three-flute internal striker or helical mainspring to unlock the bayonet guide and extract them.',
+        requires: ['p08_strip_toggle_train'],
+        stripBlockedNoteZh:
+          '矩形枪机尾部正与前肘节铰接封堵在叉形节套滑道内，请先抽出后轴销分离肘节枪机链（步骤 04）！',
+        stripBlockedNoteEn:
+          'The breechblock rear is hinged inside the toggle train—withdraw the toggle/breechblock assembly (Step 04) first!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: ['p08_striker', 'p08_striker_spring'],
+        bindings: [
+          bind('p08_striker', 1, 2),
+          bind('p08_striker_spring', 1, 2),
+        ],
+      },
+      {
+        id: 'p08_strip_grips_recoil',
+        orderLabel: '06',
+        titleZh: '卸下两侧 20 线欧洲胡桃木菱格护把，检视握把背脊螺旋复进簧与 S 连杆',
+        titleEn: 'Remove Checkered European Walnut Grips & Unhook Grip Recoil Spring / S-Link',
+        actionHintZh:
+          '点击左/右欧洲胡桃木护把或握把内置螺旋复进簧总成，敞开 55° 握把框内腔。',
+        actionHintEn:
+          'Click the left/right checkered walnut grip panels or grip-housed recoil spring to expose the grip frame.',
+        requires: ['p08_strip_mag'],
+        stripBlockedNoteZh:
+          '拆卸胡桃木护把与握把复进簧前，请先退出握把井内的 8 发钢板弹匣（步骤 01）以免干涉内衬！',
+        stripBlockedNoteEn:
+          'Remove the 8-round sheet-steel magazine (Step 01) before detaching the walnut grips and recoil spring!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: [
+          'p08_grip_left',
+          'p08_grip_right',
+          'p08_recoil_spring',
+        ],
+        bindings: [
+          bind('p08_grip_left', 0),
+          bind('p08_grip_right', 0),
+          bind('p08_recoil_spring', 0),
+        ],
+      },
+    ],
+  },
+
+  // =========================================================================
+  // 19. KRISS Vector SMG Gen II (.45 ACP) — Super V Off-Axis Delayed Blowback
+  // =========================================================================
+  vector: {
+    weaponId: 'vector',
+    manualCodeZh: 'KRISS-GEN2-OM · 维克托 Super V 免工具四销快拆规程',
+    manualCodeEn: 'KRISS USA Gen II OM · Tool-Free 4-Pin Super V Field-Strip',
+    steps: [
+      {
+        id: 'vector_strip_mag',
+        orderLabel: '01',
+        titleZh: '按压左侧释放钮退出 25 发 Kriss MagEx2 加长 .45 ACP 双排弹匣',
+        titleEn: 'Depress Catch & Drop 25-Rd Kriss MagEx2 Extended .45 ACP Magazine',
+        actionHintZh:
+          '点击 66° 前倾 25 发 MagEx2 弹匣体、橙色防倾托弹板或防摔缓冲底盖，清空大口径弹源。',
+        actionHintEn:
+          'Click the 25-round MagEx2 .45 ACP magazine body, orange follower, or bumper baseplate to drop the magazine.',
+        requires: [],
+        stripBlockedNoteZh: '',
+        stripBlockedNoteEn: '',
+        reassembleBlockedNoteZh:
+          '插入 25 发 MagEx2 加长弹匣前，必须先装回 Super V 滑块枪机组、扣合上机匣并插紧四枚快拆横销！',
+        reassembleBlockedNoteEn:
+          'Reinstall the Super V slider/bolt group, seat the upper housing, and lock all takedown pins before inserting the magazine!',
+        triggerPartIds: [
+          'vector_mag_body',
+          'vector_mag_follower',
+          'vector_mag_baseplate',
+        ],
+        bindings: [
+          bind('vector_mag_body', 0),
+          bind('vector_mag_follower', 0),
+          bind('vector_mag_spring', 0),
+          bind('vector_mag_baseplate', 0),
+        ],
+      },
+      {
+        id: 'vector_strip_pins',
+        orderLabel: '02',
+        titleZh: '徒手向左横向推出上下机匣结合耳上的四枚自锁防丢快拆钢销',
+        titleEn: 'Push Out Captive Tool-Free Steel Receiver Takedown Pins',
+        actionHintZh:
+          '点击横穿机匣的免工具快推分解横销组，克服定位钢珠阻力将其横向拔出解锁。',
+        actionHintEn:
+          'Click the quick-push captive receiver takedown pins to unpin the upper housing from the lower chassis.',
+        requires: ['vector_strip_mag'],
+        stripBlockedNoteZh:
+          'KRISS 原厂安全规程：拔出上下机匣快拆横销前，必须先退出 25 发 .45 ACP 弹匣（步骤 01）并验膛！',
+        stripBlockedNoteEn:
+          'KRISS safety rule: drop the 25-round .45 ACP magazine (Step 01) and clear the chamber before pushing takedown pins!',
+        reassembleBlockedNoteZh:
+          '推入四枚自锁横销锁固前，必须先将带顶置火控架的双色上机匣垂直压回下机匣结合槽内（步骤 03）！',
+        reassembleBlockedNoteEn:
+          'Seat the two-tone upper housing flush onto the lower chassis (Step 03) before pushing the takedown pins home!',
+        triggerPartIds: ['vector_takedown_pins'],
+        bindings: [bind('vector_takedown_pins', 0)],
+      },
+      {
+        id: 'vector_strip_upper',
+        orderLabel: '03',
+        titleZh: '向上整体分离带顶置倒装击锤火控盒的双色 FDE 上机匣壳体',
+        titleEn: 'Lift Two-Tone Upper Housing w/ Inverted Top-Deck FCU Off Lower Chassis',
+        actionHintZh:
+          '点击战斗沙色上机匣壳体或顶置不锈钢火控副车架，将其自 Super V 下机匣上方整体抬离。',
+        actionHintEn:
+          'Click the FDE upper polymer housing or top-deck stainless FCU frame to lift the upper assembly clear.',
+        requires: ['vector_strip_pins'],
+        stripBlockedNoteZh:
+          '上下机匣与顶置火控架正由四枚淬火钢快拆横销刚性穿锁，请先横向推出快拆销（步骤 02）！',
+        stripBlockedNoteEn:
+          'Four captive steel takedown pins lock the upper and lower housings together—push out the pins (Step 02) first!',
+        reassembleBlockedNoteZh:
+          '扣合上机匣封闭 -65° 导槽井顶口前，必须先将复进簧导杆及 Super V 钨钢滑块枪机组滑入下机匣（步骤 04）！',
+        reassembleBlockedNoteEn:
+          'Lower the recoil assembly and Super V slider/bolt group into the -65° chute (Step 04) before seating the upper housing!',
+        triggerPartIds: ['vector_upper_housing', 'vector_fcu_chassis'],
+        bindings: [
+          bind('vector_upper_housing', 0),
+          bind('vector_front_sight', 0),
+          bind('vector_rear_sight', 0),
+          bind('vector_fcu_chassis', 0),
+          bind('vector_hammer', 0),
+          bind('vector_hammer_spring', 0),
+          bind('vector_fire_selector', 0),
+          bind('vector_thumb_safety', 0),
+        ],
+      },
+      {
+        id: 'vector_strip_superv_group',
+        orderLabel: '04',
+        titleZh: '从下机匣 -65° 导槽顶口直接向上提拔抽出凸轮耳枪机与 Super V 钨钢滑块',
+        titleEn: 'Draw Cam-Trunnion .45 Bolt & Super V Counterweight Slider Out of Chute',
+        actionHintZh:
+          '点击 Super V 专利钨钢垂直下潜配重滑块或横向双凸轮耳 .45 枪机，无工具向上抽出核心自动机。',
+        actionHintEn:
+          'Click the KRISS Super V tungsten counterweight slider or cam-trunnion .45 bolt to lift them out the top of the chute.',
+        requires: ['vector_strip_upper'],
+        stripBlockedNoteZh:
+          '上机匣与顶置倒装火控盒完全封闭在枪机与 -65° 下潜井正上方，必须先向上分离上机匣（步骤 03）！',
+        stripBlockedNoteEn:
+          'The upper housing and inverted FCU seal the top of the -65° Super V chute—remove the upper housing (Step 03) first!',
+        reassembleBlockedNoteZh:
+          '将钨钢滑块总成压回 -65° 导轨槽前，必须先装回斜置复进簧导杆（步骤 06）并将枪机凸轮耳重新啮合滑块导槽（步骤 05）！',
+        reassembleBlockedNoteEn:
+          'Seat the -65° recoil rod/spring (Step 06) and couple the bolt trunnions into the Super V slider (Step 05) first!',
+        triggerPartIds: ['vector_slider', 'vector_bolt'],
+        bindings: [
+          bind('vector_bolt', 0),
+          bind('vector_firing_pin', 0),
+          bind('vector_slider', 0),
+        ],
+      },
+      {
+        id: 'vector_strip_decouple_bolt',
+        orderLabel: '05',
+        titleZh: '侧向滑脱解耦 .45 枪机双凸轮耳与 Super V 钨钢滑块变角度导槽及击针',
+        titleEn: 'Decouple Bolt Lateral Cam Trunnions from Super V Slider & Firing Pin',
+        actionHintZh:
+          '点击双凸轮耳延迟枪机或阶梯式浮动击针，将水平闭锁枪机与垂直下潜钨钢配重块彻底解耦。',
+        actionHintEn:
+          'Click the cam-trunnion .45 bolt or stepped inertial firing pin to slide the bolt free of the Super V cam slots.',
+        requires: ['vector_strip_superv_group'],
+        stripBlockedNoteZh:
+          '枪机与钨钢滑块两侧正受下机匣 -65° 垂直导轨壁限位，请先将其向上抽出下机匣导槽（步骤 04）！',
+        stripBlockedNoteEn:
+          'Lower chassis rail walls confine the bolt trunnions inside the slider—lift the Super V group out of the chute (Step 04) first!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: ['vector_bolt', 'vector_firing_pin'],
+        bindings: [
+          bind('vector_bolt', 1),
+          bind('vector_firing_pin', 1),
+          bind('vector_slider', 1),
+        ],
+      },
+      {
+        id: 'vector_strip_recoil_assembly',
+        orderLabel: '06',
+        titleZh: '从下机匣 -65° 垂直井内抽出无心磨削复进导杆与高疲劳螺旋复进簧',
+        titleEn: 'Withdraw Inclined -65° Recoil Guide Rod & Helical Drive Spring',
+        actionHintZh:
+          '点击 -65° 斜置螺旋复进簧或不锈钢复进导杆与聚氨酯底缓冲垫，完成下潜腔全面清碳保养。',
+        actionHintEn:
+          'Click the inclined -65° helical recoil spring or steel guide rod to pull the recoil assembly out of the lower well.',
+        requires: ['vector_strip_superv_group'],
+        stripBlockedNoteZh:
+          '-65° 复进簧与导杆贯穿于 Super V 钨钢配重滑块中心弹簧腔内，必须先向上抽出滑块枪机组（步骤 04）！',
+        stripBlockedNoteEn:
+          'The -65° recoil rod and spring ride captive inside the Super V slider bore—withdraw the slider group (Step 04) first!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: ['vector_recoil_spring', 'vector_guide_rod'],
+        bindings: [
+          bind('vector_recoil_spring', 0),
+          bind('vector_guide_rod', 0),
+        ],
+      },
+    ],
+  },
 };
 
 export function getFieldStripPlan(weaponId: WeaponId): FieldStripWeaponPlan {

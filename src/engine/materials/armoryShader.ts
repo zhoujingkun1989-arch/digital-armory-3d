@@ -85,10 +85,10 @@ export function resolveThermalForWeapon(weaponId: string): {
 // ------------------------------------------------------------------
 
 export const THERMAL_PART_ID_PATTERN =
-  /barrel|gas_block|gas_tube|gas_cylinder|argo_plug|piston|suppressor|muzzle|flash_hider|compensator/;
+  /barrel|gas_block|gas_tube|gas_cylinder|gas_regulator|argo_plug|piston|suppressor|muzzle|flash_hider|compensator/;
 export const FOULING_PART_ID_PATTERN =
-  /bolt|carrier|breech|chamber|python_cylinder|op_rod|extractor|firing_pin/;
-const SPRING_ID_EXCLUSION_PATTERN = /spring/;
+  /bolt|carrier|breech|chamber|python_cylinder|op_rod|extractor|firing_pin|striker|slider|toggle/;
+const SPRING_ID_EXCLUSION_PATTERN = /spring|hammer|striker|trigger/;
 const ARCHERY_ID_EXCLUSION_PATTERN =
   /^(?:lift33|r500)_|limb|bowstring|yoke_cable|power_cable|broadhead|quiver/;
 /** Parts whose heat follows the chamber -> throat -> muzzle longitudinal profile. */
@@ -101,7 +101,6 @@ export interface ArmoryPartLike {
 
 export function isThermalBearingPart(part: ArmoryPartLike): boolean {
   if (ARCHERY_ID_EXCLUSION_PATTERN.test(part.id)) return false;
-  if (part.material === 'barrel_steel') return true;
   if (
     part.material === 'spring_steel' ||
     part.material === 'polymer_frame' ||
@@ -110,6 +109,7 @@ export function isThermalBearingPart(part: ArmoryPartLike): boolean {
   ) {
     return false;
   }
+  if (part.material === 'barrel_steel') return true;
   return THERMAL_PART_ID_PATTERN.test(part.id);
 }
 

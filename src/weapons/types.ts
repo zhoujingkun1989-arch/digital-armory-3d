@@ -17,6 +17,9 @@ export const WEAPON_IDS = [
   'python',
   'benellim4',
   'garand',
+  'm249',
+  'p08',
+  'vector',
 ] as const;
 
 export type WeaponId = (typeof WEAPON_IDS)[number];
@@ -24,6 +27,7 @@ export type WeaponId = (typeof WEAPON_IDS)[number];
 export type ArmoryCategory =
   | 'all'
   | 'assault'
+  | 'lmg'
   | 'smg'
   | 'sniper'
   | 'shotgun'
@@ -46,6 +50,7 @@ export type CaliberProfile =
   | '556_nato'
   | '57_28'
   | '9mm_para'
+  | '45_acp'
   | '50_bmg'
   | '338_lapua'
   | '50_ae'
@@ -242,7 +247,7 @@ export interface ArmoryWeaponItem {
   subtitleEn: string;
   originCountryCn?: string;
   weaponTypeCn?: string;
-  category: 'pistol' | 'rifle' | 'smg' | 'sniper' | 'shotgun' | 'archery';
+  category: 'pistol' | 'rifle' | 'lmg' | 'smg' | 'sniper' | 'shotgun' | 'archery';
   categoryCn: string;
   caliber: string;
   actionMechanism: string;

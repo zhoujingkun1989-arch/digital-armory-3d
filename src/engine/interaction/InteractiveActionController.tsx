@@ -39,6 +39,11 @@ const SELECT_FIRE_MODES: readonly FireSelectorMode[] = [
 
 const SEMI_ONLY_MODES: readonly FireSelectorMode[] = ['safe', 'semi'] as const;
 
+const OPEN_BOLT_AUTO_MODES: readonly FireSelectorMode[] = [
+  'safe',
+  'auto',
+] as const;
+
 const WEAPON_SELECTOR_CAPABILITIES: Record<
   WeaponId,
   readonly FireSelectorMode[]
@@ -50,6 +55,9 @@ const WEAPON_SELECTOR_CAPABILITIES: Record<
   scar: SELECT_FIRE_MODES,
   aug: SELECT_FIRE_MODES,
   p90: SELECT_FIRE_MODES,
+  vector: SELECT_FIRE_MODES,
+  // Pure open-bolt squad automatic machine gun (SAFE / AUTO)
+  m249: OPEN_BOLT_AUTO_MODES,
   // Semi-automatic / bolt-action / compound archery systems
   g17: SEMI_ONLY_MODES,
   p320: SEMI_ONLY_MODES,
@@ -61,6 +69,7 @@ const WEAPON_SELECTOR_CAPABILITIES: Record<
   python: SEMI_ONLY_MODES,
   benellim4: SEMI_ONLY_MODES,
   garand: SEMI_ONLY_MODES,
+  p08: SEMI_ONLY_MODES,
 };
 
 /**
@@ -587,6 +596,106 @@ export const WEAPON_FIRE_CONTROL_PROFILES: Record<
       },
     },
   },
+  m249: {
+    weaponId: 'm249',
+    supportedModes: OPEN_BOLT_AUTO_MODES,
+    mechanismSummaryZh:
+      '重型渗碳开膛待击主阻铁 + 握把横推保险栓（纯全自动无单发档）',
+    mechanismSummaryEn:
+      'Heavy Case-Hardened Open-Bolt Sear Catch + Cross-Bolt Safety (Full-Auto Only)',
+    modes: {
+      safe: {
+        mode: 'safe',
+        code: 'SAFE',
+        labelZh: '横栓推右锁阻铁 (SAFE)',
+        labelEn: 'CROSS-BOLT SAFE',
+        tooltipZh:
+          '枪机挂定后方开膛待击位时将横闩保险向右推入隐去红环，物理死锁开膛阻铁禁止下落。',
+        tooltipEn:
+          'With piston slide latched on the rear open-bolt sear, pushing the cross-bolt right hides the red ring and blocks sear drop.',
+      },
+      auto: {
+        mode: 'auto',
+        code: 'AUTO',
+        labelZh: '775 RPM 开膛连发 (FIRE)',
+        labelEn: 'OPEN-BOLT AUTO',
+        tooltipZh:
+          '向左推保险露出红环：扣住扳机压低开膛阻铁，预压复进主簧持续驱动活塞枪机组吞吐 M27 弹链，松手瞬间截停散热。',
+        tooltipEn:
+          'Push safety left exposing red ring; holding trigger depresses the open-bolt sear for 775 RPM belt-fed cyclic fire until release.',
+      },
+    },
+  },
+  p08: {
+    weaponId: 'p08',
+    supportedModes: SEMI_ONLY_MODES,
+    mechanismSummaryZh:
+      'GESICHERT 麦秆黄拇指保险条 + 侧盖板 L 形直角换向杠杆与水平跷跷板阻铁',
+    mechanismSummaryEn:
+      'GESICHERT Straw Thumb Safety Bar + Sideplate L-Bellcrank & Horizontal Sear Bar',
+    modes: {
+      safe: {
+        mode: 'safe',
+        code: 'GESICHERT',
+        labelZh: '拇指保险锁条 (GESICHERT)',
+        labelEn: 'GESICHERT SAFE',
+        tooltipZh:
+          '后下拨麦秆黄保险杆露出白色德文 GESICHERT，向前推出扁钢锁止条刚性顶死水平阻铁条与叉形节套。',
+        tooltipEn:
+          'Swinging the straw lever down reveals GESICHERT and drives a steel blocking bar over the horizontal sear bar and extension.',
+      },
+      semi: {
+        mode: 'semi',
+        code: 'FEUER',
+        labelZh: '9mm 肘节半自动 (SEMI)',
+        labelEn: 'TOGGLE SEMI',
+        tooltipZh:
+          '上拨保险杆解锁：扣动月牙扳机经侧盖板 L 形杠杆横向内压阻铁柱塞释放三槽击针，上机匣后坐自动断连，松手复位。',
+        tooltipEn:
+          'Crescent trigger pivots the sideplate L-bellcrank inward against the sear plunger to release the striker; recoil disconnects cleanly.',
+      },
+    },
+  },
+  vector: {
+    weaponId: 'vector',
+    supportedModes: SELECT_FIRE_MODES,
+    mechanismSummaryZh:
+      '独立双侧拇指保险 (S/F) + 上置三档射控拨杆 (1/2/A) 与顶置倒装下摆击锤',
+    mechanismSummaryEn:
+      'Separate Ambi Thumb Safety (S/F) + Upper Mode Selector (1/2/A) & Inverted Top Hammer',
+    modes: {
+      safe: {
+        mode: 'safe',
+        code: 'SAFE',
+        labelZh: '下置拇指保险 (S)',
+        labelEn: 'THUMB SAFE (S)',
+        tooltipZh:
+          '无需改动上层射控档位，拇指上拨握把上方双侧保险杆至 S 位，机械锁死高置水平扳机双联拉杆。',
+        tooltipEn:
+          'Ambidextrous lower thumb lever in S mechanically locks the twin horizontal trigger transfer bars without disturbing fire mode.',
+      },
+      semi: {
+        mode: 'semi',
+        code: '1',
+        labelZh: '.45 单发精确 (1)',
+        labelEn: 'SEMI (1)',
+        tooltipZh:
+          '上拨杆置 1 档且拇指保险置 F：顶层倒装击锤向下挥击底置击针，枪机后坐上顶击锤由单发阻铁截获，松手清脆复位。',
+        tooltipEn:
+          'Upper selector in 1 drops the inverted top hammer onto the low-bore firing pin; disconnector catches hammer until trigger reset.',
+      },
+      auto: {
+        mode: 'auto',
+        code: 'A',
+        labelZh: '1,200 RPM Super V 连发 (A)',
+        labelEn: '1,200 RPM AUTO (A)',
+        tooltipZh:
+          '上拨杆置 A 档：Super V 钨钢滑块每 50ms 沿 -65° 导槽下潜偏转后坐冲量，登顶闭锁瞬间踢放顶置连发阻铁倾泻 .45 弹雨。',
+        tooltipEn:
+          '1,200 RPM cyclic fire: -65° Super V tungsten slider plunges to cancel muzzle climb and trips the top autosear every 50 ms.',
+      },
+    },
+  },
 };
 
 function isArcheryInteractiveWeapon(
@@ -643,10 +752,13 @@ const EXPLICIT_WEAPON_ACTION_PARTS: Record<WeaponId, readonly string[]> = {
     'benellim4_bolt_head',
   ],
   garand: ['garand_op_rod', 'garand_bolt'],
+  m249: ['m249_charging_handle', 'm249_piston_carrier', 'm249_bolt'],
+  p08: ['p08_rear_toggle', 'p08_front_toggle', 'p08_breechblock'],
+  vector: ['vector_charging_handle', 'vector_bolt', 'vector_slider'],
 };
 
 const GENERIC_ACTION_PART_INCLUDE_RE =
-  /(?:^|_)(?:slide|bolt_carrier|charging_handles?|bolt_body|bolt_head|bolt|operating_rod)(?:$|_)/i;
+  /(?:^|_)(?:slide|bolt_carrier|piston_carrier|charging_handles?|bolt_body|bolt_head|bolt|breechblock|rear_toggle|front_toggle|slider|operating_rod)(?:$|_)/i;
 const GENERIC_ACTION_PART_EXCLUDE_RE =
   /(?:slide_lock|slide_stop|slide_catch|slide_cover|bolt_catch|crossbolts?|barrel_lock)/i;
 
@@ -691,6 +803,15 @@ export function mapManualRackToFireProgress(
   }
   if (weaponId === 'benellim4' || weaponId === 'garand') {
     return 0.22 + r * 0.28;
+  }
+  if (weaponId === 'm249') {
+    return 0.3 + r * 0.28;
+  }
+  if (weaponId === 'p08') {
+    return 0.2 + r * 0.23;
+  }
+  if (weaponId === 'vector') {
+    return 0.2 + r * 0.3;
   }
   return 0.32 + r * 0.3;
 }
@@ -747,6 +868,15 @@ export function computeRecoilSpringForceN(
   } else if (weaponId === 'garand') {
     preloadN = 68;
     rateN = 58;
+  } else if (weaponId === 'm249') {
+    preloadN = 74;
+    rateN = 62;
+  } else if (weaponId === 'p08') {
+    preloadN = 48;
+    rateN = 42;
+  } else if (weaponId === 'vector') {
+    preloadN = 64;
+    rateN = 56;
   }
 
   const bufferRamp = r > 0.8 ? Math.pow((r - 0.8) / 0.2, 2) * 28 : 0;
@@ -932,9 +1062,12 @@ export const interactiveActionStore = {
       return;
     }
     const supported = getSupportedSelectorModes(weaponId);
+    const defaultLiveMode: FireSelectorMode = supported.includes('semi')
+      ? 'semi'
+      : supported[supported.length - 1];
     const nextMode = supported.includes(currentSnapshot.selectorMode)
       ? currentSnapshot.selectorMode
-      : 'semi';
+      : defaultLiveMode;
 
     const weaponSwitched = currentSnapshot.weaponId !== weaponId;
     if (weaponSwitched) {
@@ -970,9 +1103,12 @@ export const interactiveActionStore = {
     this.syncWeapon(weaponId);
 
     const supported = getSupportedSelectorModes(weaponId);
+    const defaultLiveMode: FireSelectorMode = supported.includes('semi')
+      ? 'semi'
+      : supported[supported.length - 1];
     const resolvedMode: FireSelectorMode = supported.includes(requestedMode)
       ? requestedMode
-      : 'semi';
+      : defaultLiveMode;
 
     if (currentSnapshot.selectorMode !== resolvedMode) {
       playSelectorDetentSound(resolvedMode);
@@ -1417,7 +1553,9 @@ export const interactiveActionStore = {
 
     commitDiscretePatch({
       weaponId,
-      selectorMode: supported.includes('semi') ? 'semi' : supported[0],
+      selectorMode: supported.includes('semi')
+        ? 'semi'
+        : supported[supported.length - 1],
       isDraggingAction: false,
       isPressCheck: false,
       isTriggerHeld: false,

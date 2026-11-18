@@ -25,6 +25,9 @@ export const GEOMETRY_MODULE_LOADERS: Record<
   benellim4: () =>
     import('./benellim4/geometries').then((m) => m.GEOMETRY_BUILDERS),
   garand: () => import('./garand/geometries').then((m) => m.GEOMETRY_BUILDERS),
+  m249: () => import('./m249/geometries').then((m) => m.GEOMETRY_BUILDERS),
+  p08: () => import('./p08/geometries').then((m) => m.GEOMETRY_BUILDERS),
+  vector: () => import('./vector/geometries').then((m) => m.GEOMETRY_BUILDERS),
 };
 
 export function loadWeaponGeometryBuilders(

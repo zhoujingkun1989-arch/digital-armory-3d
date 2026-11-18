@@ -247,8 +247,10 @@ export type GasOperatingFamily =
   | 'muzzle_long_stroke_piston'
   | 'forward_underbarrel_piston'
   | 'roller_delayed_blowback'
+  | 'off_axis_delayed_blowback'
   | 'straight_blowback'
   | 'short_recoil_tilting'
+  | 'short_recoil_toggle_lock'
   | 'short_recoil_accelerator'
   | 'revolver_ratchet_index'
   | 'manual_bolt_action'
@@ -588,6 +590,63 @@ export const WEAPON_GAS_MANIFOLD_PROFILES: Readonly<
     gasTargetX: 48.8,
     ventPos: [56.2, -0.25, 0],
   },
+  m249: {
+    weaponId: 'm249',
+    family: 'long_stroke_piston',
+    hasGasTap: true,
+    familyTitleZh: '下置长行程导气活塞 · 开膛双突笋回转 + 顶滚轮拨链',
+    familyTitleEn: 'Underbarrel Long-Stroke Piston · Open-Bolt 2-Lug & Belt Shuttle',
+    flowNoteZh:
+      'M855 弹头越过 18.3 英寸枪管下导气孔（X=34.8）后，高压燃气经调节箍冲入下导气筒，推动长行程杯状活塞滑块全程后坐，驱动双突笋逆旋开锁并由顶滚轮横向拨动 M27 弹链。',
+    flowNoteEn:
+      'Past the 18.3" barrel gas block, propellant taps downward into the underbarrel cylinder, driving the long-stroke piston carrier to cam open the 2-lug bolt and shuttle the M27 belt.',
+    chamberX: 6.82,
+    muzzleX: 57.3,
+    boreY: 1.25,
+    gasPortX: 34.8,
+    gasChannelY: -0.65,
+    gasChannelZ: 0,
+    gasTargetX: 21.5,
+    ventPos: [37.8, -0.85, 0.25],
+  },
+  p08: {
+    weaponId: 'p08',
+    family: 'short_recoil_toggle_lock',
+    hasGasTap: false,
+    familyTitleZh: '枪管短后坐 (6.5mm) · 双连杆过死点屈膝肘节闭锁',
+    familyTitleEn: 'Short-Recoil Barrel (6.5mm) · Over-Center Knee-Joint Toggle Lock',
+    flowNoteZh:
+      '无导气孔：最高膛压期间双连杆肘节自锁于死点线下方 1.5°，随枪管与叉形节套刚性短后坐 6.5mm 泄压；随后尾滚子撞击机匣弧坡向上屈膝折起 53.5° 抽抛空壳。',
+    flowNoteEn:
+      'No gas port: the 2-bar toggle stays locked 1.5° below dead-center through 6.5mm of barrel recoil before rear rollers strike the frame ramps, buckling the knee upward 53.5°.',
+    chamberX: 2.78,
+    muzzleX: 12.2,
+    boreY: 2.15,
+    gasPortX: null,
+    gasChannelY: 2.15,
+    gasChannelZ: 0,
+    gasTargetX: -1.8,
+    ventPos: [1.2, 2.95, 0.25],
+  },
+  vector: {
+    weaponId: 'vector',
+    family: 'off_axis_delayed_blowback',
+    hasGasTap: false,
+    familyTitleZh: 'KRISS Super V 变角凸轮延迟 · -65° 钨钢滑块下潜偏转',
+    familyTitleEn: 'KRISS Super V Cam-Delayed Blowback · -65° Off-Axis Vectoring',
+    flowNoteZh:
+      '无导气孔：.45 ACP 膛底推力经紧凑枪机两侧凸轮耳压入钨钢滑块陡角延迟槽，迫使配重滑块沿弹匣后方 -65° 垂直导轨高速下潜 64mm，产生向下反冲力矩抵消枪口上跳。',
+    flowNoteEn:
+      'No gas port: .45 ACP breech thrust drives lateral bolt trunnions against variable-angle cam slots, forcing the tungsten slider 64mm down the -65° chute to cancel muzzle climb.',
+    chamberX: 11.2,
+    muzzleX: 26.1,
+    boreY: -0.95,
+    gasPortX: null,
+    gasChannelY: -0.95,
+    gasChannelZ: 0,
+    gasTargetX: 5.1,
+    ventPos: [9.2, -0.85, 0.95],
+  },
 };
 
 /**
@@ -847,6 +906,88 @@ const EXPLICIT_PART_ROLE_OVERRIDES: Readonly<Record<string, EngineeringRole>> =
     garand_follower: 'housing_feed',
     garand_bullet_guide: 'housing_feed',
     garand_clip_latch: 'housing_feed',
+
+    // FN M249 SAW 5.56×45mm NATO Open-Bolt LMG (26 parts — gas-operated)
+    m249_barrel: 'locking',
+    m249_barrel_handle: 'locking',
+    m249_bolt: 'locking',
+    m249_gas_regulator: 'gas_drive',
+    m249_gas_tube: 'gas_drive',
+    m249_piston_carrier: 'bolt_carrier',
+    m249_charging_handle: 'bolt_carrier',
+    m249_hydraulic_buffer: 'bolt_carrier',
+    m249_feed_lever: 'bolt_carrier',
+    m249_firing_pin: 'fire_control',
+    m249_trigger: 'fire_control',
+    m249_open_bolt_sear: 'fire_control',
+    m249_recoil_spring: 'energy_spring',
+    m249_sear_spring: 'energy_spring',
+    m249_receiver: 'housing_feed',
+    m249_top_cover: 'housing_feed',
+    m249_rear_sight: 'housing_feed',
+    m249_front_sight: 'housing_feed',
+    m249_handguard: 'housing_feed',
+    m249_bipod: 'housing_feed',
+    m249_buttstock: 'housing_feed',
+    m249_trigger_frame: 'housing_feed',
+    m249_feed_tray: 'housing_feed',
+    m249_feed_pawls: 'housing_feed',
+    m249_m27_belt: 'housing_feed',
+    m249_ammo_box: 'housing_feed',
+
+    // DWM Luger P08 9×19mm Toggle-Lock Pistol (25 parts — non-gas-operated: 0 gas_drive!)
+    p08_barrel: 'locking',
+    p08_barrel_extension: 'locking',
+    p08_front_toggle: 'locking',
+    p08_rear_toggle: 'locking',
+    p08_toggle_pins: 'locking',
+    p08_takedown_lever: 'locking',
+    p08_breechblock: 'bolt_carrier',
+    p08_extractor: 'bolt_carrier',
+    p08_ejector: 'bolt_carrier',
+    p08_hold_open: 'bolt_carrier',
+    p08_striker: 'fire_control',
+    p08_trigger: 'fire_control',
+    p08_trigger_lever: 'fire_control',
+    p08_sear_bar: 'fire_control',
+    p08_thumb_safety: 'fire_control',
+    p08_striker_spring: 'energy_spring',
+    p08_recoil_spring: 'energy_spring',
+    p08_mag_spring: 'energy_spring',
+    p08_frame: 'housing_feed',
+    p08_sideplate: 'housing_feed',
+    p08_grip_left: 'housing_feed',
+    p08_grip_right: 'housing_feed',
+    p08_mag_body: 'housing_feed',
+    p08_mag_follower: 'housing_feed',
+    p08_mag_base: 'housing_feed',
+
+    // KRISS Vector SMG Gen II .45 ACP (25 parts — non-gas-operated: 0 gas_drive!)
+    vector_barrel: 'locking',
+    vector_bolt: 'locking',
+    vector_takedown_pins: 'locking',
+    vector_slider: 'bolt_carrier',
+    vector_guide_rod: 'bolt_carrier',
+    vector_charging_handle: 'bolt_carrier',
+    vector_firing_pin: 'fire_control',
+    vector_fcu_chassis: 'fire_control',
+    vector_trigger: 'fire_control',
+    vector_hammer: 'fire_control',
+    vector_fire_selector: 'fire_control',
+    vector_thumb_safety: 'fire_control',
+    vector_recoil_spring: 'energy_spring',
+    vector_hammer_spring: 'energy_spring',
+    vector_mag_spring: 'energy_spring',
+    vector_muzzle_device: 'housing_feed',
+    vector_upper_housing: 'housing_feed',
+    vector_lower_chassis: 'housing_feed',
+    vector_front_sight: 'housing_feed',
+    vector_rear_sight: 'housing_feed',
+    vector_stock_hinge: 'housing_feed',
+    vector_folding_stock: 'housing_feed',
+    vector_mag_body: 'housing_feed',
+    vector_mag_follower: 'housing_feed',
+    vector_mag_baseplate: 'housing_feed',
   };
 
 export interface EngineeringPartClassifierInput {

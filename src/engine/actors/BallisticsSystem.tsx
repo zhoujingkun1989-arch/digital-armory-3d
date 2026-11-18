@@ -723,6 +723,59 @@ function build3006Geometries(): CaliberGeometryBundle {
   };
 }
 
+/**
+ * 11. .45 ACP / 11.43×23mm (SAAMI: 22.81mm straight-wall rimless case, 32.39mm OAL, 230gr FMJ-RN)
+ * Case X in [-0.92, +0.92] (1.84u), Cartridge OAL [-0.92, +1.70] (2.62u, OAL/case = 1.424).
+ */
+function build45AcpGeometries(): CaliberGeometryBundle {
+  const pocket: PrimerPocketSpec = {
+    xHead: -0.92,
+    rPocket: 0.212, // Large Pistol Boxer primer (Ø5.33mm)
+    pocketDepth: 0.092,
+  };
+  const casePts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -0.828),
+    new THREE.Vector2(0.212, -0.828),
+    new THREE.Vector2(0.212, -0.908),
+    new THREE.Vector2(0.228, -0.92),
+    new THREE.Vector2(0.464, -0.92), // Wide .45 ACP headstamp face
+    new THREE.Vector2(0.488, -0.896), // Rim entry chamfer
+    new THREE.Vector2(0.488, -0.82), // Rim OD (12.19mm)
+    new THREE.Vector2(0.412, -0.788),
+    new THREE.Vector2(0.412, -0.688), // Deep rimless extractor groove (10.39mm)
+    new THREE.Vector2(0.484, -0.625), // Base web OD (12.09mm)
+    new THREE.Vector2(0.482, 0.15), // Nearly cylindrical straight-wall .45 brass body
+    new THREE.Vector2(0.48, 0.912), // Case mouth OD (12.01mm — headspaces on mouth!)
+    new THREE.Vector2(0.476, 0.92),
+    new THREE.Vector2(0.459, 0.92), // Case mouth ID (11.48mm)
+    new THREE.Vector2(0.459, 0.32),
+    new THREE.Vector2(0.442, -0.45),
+    new THREE.Vector2(0, -0.45),
+  ];
+
+  // 230gr Copper-Jacketed Hardball Round-Nose Projectile (bulletLocalOffset = 1.36 -> tip at +1.70)
+  const bulletPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -0.88),
+    new THREE.Vector2(0.44, -0.88),
+    new THREE.Vector2(0.459, -0.82), // Seated full-caliber bearing shank
+    new THREE.Vector2(0.459, -0.44), // Flush with +0.92 case mouth at -0.44
+    new THREE.Vector2(0.452, -0.3),
+    new THREE.Vector2(0.428, -0.12),
+    new THREE.Vector2(0.382, 0.05),
+    new THREE.Vector2(0.308, 0.19),
+    new THREE.Vector2(0.205, 0.285),
+    new THREE.Vector2(0.095, 0.33),
+    new THREE.Vector2(0, 0.34),
+  ];
+
+  return {
+    caseGeo: finalizeLathe(casePts, 28),
+    bulletGeo: finalizeLathe(bulletPts, 28),
+    ...buildBoxerPrimerGeometries(pocket),
+    xHead: pocket.xHead,
+  };
+}
+
 const _archeryColor = new THREE.Color();
 
 function paintSubGeo(
@@ -958,6 +1011,16 @@ export const CALIBER_VISUAL_SPECS: Record<CaliberProfile, CaliberVisualSpec> = {
     flashScaleMult: 0.95,
     streakThickness: 0.18,
   },
+  '45_acp': {
+    caseColor: '#e2b12b',
+    reserveCaseColor: '#c2921c',
+    bulletColor: '#c4521c',
+    primerColor: '#f1f5f9',
+    bulletLocalOffset: 1.36,
+    reserveTiltZ: 0.16,
+    flashScaleMult: 1.08,
+    streakThickness: 0.24,
+  },
   '762_m43': {
     caseColor: '#b98d3b',
     reserveCaseColor: '#96702d',
@@ -1097,6 +1160,9 @@ export const WEAPON_ROUND_FIT: Record<WeaponId, WeaponRoundFitSpec> = {
   python: { roundScale: 0.88, magLocalShiftX: -0.47, ignitionF: 0.2 },
   benellim4: { roundScale: 0.44, magLocalShiftX: -0.11, ignitionF: 0.12 },
   garand: { roundScale: 0.8, magLocalShiftX: -0.515, ignitionF: 0.1 },
+  m249: { roundScale: 0.96, magLocalShiftX: -0.35, ignitionF: 0.22 },
+  p08: { roundScale: 0.76, magLocalShiftX: -0.34, ignitionF: 0.12 },
+  vector: { roundScale: 0.86, magLocalShiftX: -0.39, ignitionF: 0.11 },
 };
 
 const caliberGeoCache = new Map<CaliberProfile, CaliberGeometryBundle>();
@@ -1135,6 +1201,9 @@ export function getCaliberGeometries(
       break;
     case '30_06':
       built = build3006Geometries();
+      break;
+    case '45_acp':
+      built = build45AcpGeometries();
       break;
     case 'arrow_400gr':
       built = buildArcheryBundle({
@@ -1181,6 +1250,16 @@ export function getCaliberGeometries(
  * with zero heap allocations inside `useFrame`.
  */
 function computeMuzzleRecoilShiftX(weaponId: WeaponId, f: number): number {
+  if (weaponId === 'p08') {
+    if (f < 0.125 || f >= 0.88) return 0;
+    if (f < 0.205) {
+      const t = Math.min(1, Math.max(0, (f - 0.125) / 0.08));
+      return -0.65 * (t * t * (3 - 2 * t));
+    }
+    if (f < 0.76) return -0.65;
+    const t = Math.min(1, Math.max(0, (f - 0.76) / 0.12));
+    return -0.65 * (1 - t * t * (3 - 2 * t));
+  }
   if (weaponId !== 'm82a1') return 0;
   if (f < 0.16 || f >= 0.57) return 0;
   if (f < 0.3) {
@@ -1207,6 +1286,7 @@ const MAT_HALF_Z = 26;
 
 const CALIBER_CASE_COLORS: Record<CaliberProfile, THREE.Color> = {
   '9mm_para': new THREE.Color(CALIBER_VISUAL_SPECS['9mm_para'].caseColor),
+  '45_acp': new THREE.Color(CALIBER_VISUAL_SPECS['45_acp'].caseColor),
   '762_m43': new THREE.Color(CALIBER_VISUAL_SPECS['762_m43'].caseColor),
   '556_nato': new THREE.Color(CALIBER_VISUAL_SPECS['556_nato'].caseColor),
   '57_28': new THREE.Color(CALIBER_VISUAL_SPECS['57_28'].caseColor),
@@ -1459,6 +1539,20 @@ const MUZZLE_DEVICE_SPECS: Record<WeaponId, MuzzleDeviceSpec> = {
   benellim4: { kind: 'bare', forwardDamp: 1, jets: [] },
   // M1 Garand 24" Springfield bare crown
   garand: { kind: 'bare', forwardDamp: 1, jets: [] },
+  // FN M249 SAW 18.3" barrel w/ NATO birdcage flash suppressor
+  m249: {
+    kind: 'flash_hider',
+    forwardDamp: 0.9,
+    jets: radialProngJets([0, 60, 120, -60, -120], 1.4, 0.32),
+  },
+  // DWM Luger P08 4" tapered bare crown
+  p08: { kind: 'bare', forwardDamp: 1, jets: [] },
+  // KRISS Vector 5.5" M16x1 LH 4-slot flash suppressor
+  vector: {
+    kind: 'flash_hider',
+    forwardDamp: 0.92,
+    jets: radialProngJets([0, 90, 180, -90], 1.15, 0.28),
+  },
 };
 
 const _jetUp = new THREE.Vector3(0, 1, 0);

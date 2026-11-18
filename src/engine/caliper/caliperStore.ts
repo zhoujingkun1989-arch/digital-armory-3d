@@ -26,6 +26,78 @@ export const CALIPER_BENCHMARK_ORDER: readonly CaliperBenchmarkKind[] = [
   'bolt_lug_span',
 ];
 
+export interface CaliperBenchmarkPresetNote {
+  kind: CaliperBenchmarkKind;
+  labelZh: string;
+  labelEn: string;
+  nominalMm: number;
+}
+
+export const CALIPER_V2_BENCHMARK_NOTES: Readonly<
+  Partial<Record<WeaponId, readonly CaliperBenchmarkPresetNote[]>>
+> = {
+  m249: [
+    {
+      kind: 'overall_envelope',
+      labelZh: 'M249 全枪包络总长 (托底至消焰器)',
+      labelEn: 'M249 Overall Envelope Length (Buttpad to Birdcage)',
+      nominalMm: 1035,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '18.3" 快拆镀铬枪管总成跨度',
+      labelEn: '18.3" Quick-Change CHF Barrel Assembly Span',
+      nominalMm: 465,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '双突笋 30° 回转闭锁枪机轴向跨度',
+      labelEn: '2-Lug 30° Rotating Breech Bolt Axial Span',
+      nominalMm: 78,
+    },
+  ],
+  p08: [
+    {
+      kind: 'overall_envelope',
+      labelZh: '鲁格 P08 全枪水平包络长度',
+      labelEn: 'Luger P08 Overall Horizontal Envelope',
+      nominalMm: 222,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '4" (102mm) 锥形 9×19mm 枪管实长',
+      labelEn: '4" (102mm) Tapered 9x19mm Barrel Span',
+      nominalMm: 102,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '过死点双连杆肘节与矩形枪机闭锁链跨度',
+      labelEn: 'Over-Center Knee-Toggle & Breechblock Lockup Train',
+      nominalMm: 118,
+    },
+  ],
+  vector: [
+    {
+      kind: 'overall_envelope',
+      labelZh: 'Vector Gen II 展开全枪总长',
+      labelEn: 'KRISS Vector Gen II Stock-Extended Overall Length',
+      nominalMm: 617,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '5.5" (140mm) 低膛轴线 .45 ACP 枪管跨度',
+      labelEn: '5.5" (140mm) Low-Bore .45 ACP Barrel Span',
+      nominalMm: 140,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: 'Super V -65° 钨钢下潜配重滑块对角包络',
+      labelEn: 'Super V -65° Tungsten Counterweight Slider Span',
+      nominalMm: 115,
+    },
+  ],
+};
+
 export interface CaliperSurfacePoint {
   partId: string;
   pos: readonly [number, number, number];
@@ -230,12 +302,12 @@ function findBenchmarkTargetPart(
       null
     );
   }
-  // bolt_lug_span: prefer rotating/locking bolt head (or revolver 6-shot cylinder), else slide, else bow riser/latch
+  // bolt_lug_span: prefer rotating/locking bolt head (or revolver 6-shot cylinder / P08 toggle / Super V slider), else slide, else bow riser/latch
   return (
-    parts.find((p) => p.id === 'python_cylinder') ??
+    parts.find((p) => p.id === 'python_cylinder' || p.id === 'vector_slider') ??
     parts.find(
       (p) =>
-        /(?:^|_)(?:bolt|bolt_head|bolt_body)$/.test(p.id) &&
+        /(?:^|_)(?:bolt|bolt_head|bolt_body|breechblock)$/.test(p.id) &&
         !/cylinder_bolt/.test(p.id)
     ) ??
     parts.find((p) => /(?:^|_)slide$/.test(p.id)) ??
@@ -494,6 +566,63 @@ class CaliperRuntimeController {
           }
         }
       }
+    } else if (weaponId === 'p08' && kind === 'bolt_lug_span') {
+      const toggleParts = parts.filter(
+        (p) =>
+          p.id === 'p08_breechblock' ||
+          p.id === 'p08_front_toggle' ||
+          p.id === 'p08_rear_toggle'
+      );
+      if (toggleParts.length >= 2) {
+        const tEnv = computeWeaponEnvelopeMetrics(
+          toggleParts,
+          getGeometry,
+          evaluatePose,
+          scratchPose
+        );
+        if (tEnv) {
+          this.pointA = {
+            partId: 'p08_rear_toggle',
+            pos: [tEnv.min[0], tEnv.center[1], 0],
+            normal: [-1, 0, 0],
+          };
+          this.pointB = {
+            partId: 'p08_breechblock',
+            pos: [tEnv.max[0], tEnv.center[1], 0],
+            normal: [1, 0, 0],
+          };
+          this.activeBenchmark = kind;
+          playWorkbenchFoley('preset_detent');
+          this.emit();
+          return true;
+        }
+      }
+    } else if (weaponId === 'vector' && kind === 'bolt_lug_span') {
+      const sliderPart = parts.find((p) => p.id === 'vector_slider');
+      if (sliderPart) {
+        const sEnv = computeWeaponEnvelopeMetrics(
+          [sliderPart],
+          getGeometry,
+          evaluatePose,
+          scratchPose
+        );
+        if (sEnv) {
+          this.pointA = {
+            partId: sliderPart.id,
+            pos: [sEnv.min[0], sEnv.min[1], 0],
+            normal: [-0.4226, -0.9063, 0],
+          };
+          this.pointB = {
+            partId: sliderPart.id,
+            pos: [sEnv.max[0], sEnv.max[1], 0],
+            normal: [0.4226, 0.9063, 0],
+          };
+          this.activeBenchmark = kind;
+          playWorkbenchFoley('preset_detent');
+          this.emit();
+          return true;
+        }
+      }
     }
 
     if (kind === 'overall_envelope') {
@@ -504,8 +633,18 @@ class CaliperRuntimeController {
         scratchPose
       );
       if (!env) return false;
-      const rearPart = parts[parts.length - 1]?.id ?? 'receiver';
+      const rearPart =
+        parts.find(
+          (p) =>
+            p.id === 'm249_buttstock' ||
+            p.id === 'p08_frame' ||
+            p.id === 'vector_folding_stock' ||
+            /(?:buttstock|buttplate|walnut_stock|stock)$/.test(p.id)
+        )?.id ??
+        parts[parts.length - 1]?.id ??
+        'receiver';
       const frontPart =
+        parts.find((p) => p.id === 'vector_muzzle_device')?.id ??
         findBenchmarkTargetPart(parts, 'barrel_length')?.id ??
         parts[0]?.id ??
         'muzzle';

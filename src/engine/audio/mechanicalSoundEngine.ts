@@ -30,9 +30,12 @@ export {
 
 export type MechanismAcousticStyle =
   | 'long_stroke_piston'
+  | 'open_bolt_lmg'
   | 'gas_carbine'
   | 'pdw_blowback'
+  | 'super_v_smg'
   | 'compact_9mm'
+  | 'toggle_lock_pistol'
   | 'short_recoil_heavy'
   | 'bolt_action'
   | 'gas_magnum_pistol'
@@ -157,6 +160,19 @@ export const CALIBER_ACOUSTIC_PROFILES: Record<
     brakeRoarGain: 0.11,
     casingRingHz: 3560,
     mechanismStyle: 'compact_9mm',
+  },
+  '45_acp': {
+    caliber: '45_acp',
+    labelEn: '.45 ACP (11.43x23mm) 230gr FMJ',
+    labelZh: '.45 ACP 230格令亚音速大口径手枪弹',
+    subFreqHz: 76,
+    punchDecaySec: 0.23,
+    blastTailSec: 0.38,
+    crackCutoffHz: 1960,
+    peakGain: 0.79,
+    brakeRoarGain: 0.14,
+    casingRingHz: 2840,
+    mechanismStyle: 'super_v_smg',
   },
   arrow_400gr: {
     caliber: 'arrow_400gr',
@@ -835,6 +851,28 @@ class ProceduralGunsmithSoundEngine {
             massBodyHz: 310,
             bus: 'mechanical',
           });
+        } else if (weaponId === 'm249') {
+          // M249 SAW heavy case-hardened open-bolt sear drop + captive driving spring forward surge
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 1480,
+            baseDecaySec: 0.044,
+            gainPeak: 0.28,
+            hardness01: 0.88,
+            massBodyHz: 215,
+            bus: 'mechanical',
+          });
+          this.emitNoiseBurst({
+            startTime: now + 0.004,
+            duration: isSlowMo ? 0.085 : 0.048,
+            filterType: 'bandpass',
+            freqStart: 1620,
+            freqEnd: 2940,
+            q: 4.2,
+            gainPeak: 0.17,
+            attack: 0.004,
+            bus: 'mechanical',
+          });
         } else {
           // Hardened S7/4140 steel sear escapement snap + hammer/striker spring release
           this.emitSteelWaveguideStrike({
@@ -981,6 +1019,40 @@ class ProceduralGunsmithSoundEngine {
             hardness01: 0.92,
             bus: 'mechanical',
           });
+        } else if (
+          weaponId === 'vector' ||
+          profile.mechanismStyle === 'super_v_smg'
+        ) {
+          // KRISS Vector 1,200 RPM lateral bolt cam-trunnion transfer into -65° tungsten Super V slider plunge
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 1320,
+            baseDecaySec: 0.046,
+            gainPeak: 0.26,
+            hardness01: 0.78,
+            massBodyHz: 162,
+            bus: 'mechanical',
+          });
+          this.emitModalPing({
+            startTime: now + 0.004,
+            duration: 0.055,
+            freqStart: 185,
+            freqEnd: 96,
+            type: 'triangle',
+            gainPeak: 0.19,
+            bus: 'mechanical',
+          });
+        } else if (weaponId === 'p08') {
+          // Luger P08 6.5mm barrel + forked extension short-recoil slide impulse prior to ramp contact
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 1580,
+            baseDecaySec: 0.038,
+            gainPeak: 0.21,
+            hardness01: 0.84,
+            massBodyHz: 265,
+            bus: 'mechanical',
+          });
         } else {
           // High-pressure gas port bleed tapping chromed steel piston cup / Stoner gas key
           this.emitNoiseBurst({
@@ -1015,6 +1087,27 @@ class ProceduralGunsmithSoundEngine {
             freqEnd: 145,
             type: 'sine',
             gainPeak: 0.1,
+            bus: 'mechanical',
+          });
+          break;
+        }
+        if (weaponId === 'p08') {
+          // Luger P08 signature double-articulated metallic knee-toggle ramp strike + center-hinge buckle snap
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 2140,
+            baseDecaySec: 0.042,
+            gainPeak: 0.3,
+            hardness01: 0.91,
+            massBodyHz: 295,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + (isSlowMo ? 0.018 : 0.009),
+            fundamentalHz: 2680,
+            baseDecaySec: 0.034,
+            gainPeak: 0.24,
+            hardness01: 0.93,
             bus: 'mechanical',
           });
           break;
@@ -1097,6 +1190,49 @@ class ProceduralGunsmithSoundEngine {
             freqEnd: 394,
             type: 'sine',
             gainPeak: 0.075,
+            bus: 'mechanical',
+          });
+        } else if (weaponId === 'm249') {
+          // M249 SAW disintegrating M27 1075 spring-steel belt-link clink + PIP hydraulic buffer thud
+          const tLink = now + (isSlowMo ? 0.028 : 0.011);
+          this.emitSteelWaveguideStrike({
+            startTime: tLink,
+            fundamentalHz: 3280,
+            baseDecaySec: 0.026,
+            gainPeak: 0.18,
+            hardness01: 0.93,
+            bus: 'ballistic',
+          });
+          this.emitModalPing({
+            startTime: tLink + 0.002,
+            duration: 0.085,
+            freqStart: 4180,
+            freqEnd: 4120,
+            type: 'sine',
+            gainPeak: 0.11,
+            bus: 'ballistic',
+          });
+          this.emitModalPing({
+            startTime: tLink + 0.008,
+            duration: 0.062,
+            freqStart: 5740,
+            freqEnd: 5680,
+            type: 'sine',
+            gainPeak: 0.075,
+            bus: 'ballistic',
+          });
+        } else if (
+          weaponId === 'vector' ||
+          profile.mechanismStyle === 'super_v_smg'
+        ) {
+          // KRISS Vector -65° Super V tungsten counterweight slider bottoming on polyurethane guide-rod buffer
+          this.emitModalPing({
+            startTime: tBuffer,
+            duration: 0.072,
+            freqStart: 126,
+            freqEnd: 68,
+            type: 'sine',
+            gainPeak: 0.24,
             bus: 'mechanical',
           });
         } else if (
@@ -1198,11 +1334,13 @@ class ProceduralGunsmithSoundEngine {
         }
         // Authoritative twin-stage cold-forged bolt-into-battery lug lockup ("ka-chunk")
         const lockBase =
-          profile.mechanismStyle === 'short_recoil_heavy'
-            ? 780
-            : profile.mechanismStyle === 'compact_9mm'
-              ? 1360
-              : 1120;
+          weaponId === 'p08'
+            ? 1680
+            : profile.mechanismStyle === 'short_recoil_heavy'
+              ? 780
+              : profile.mechanismStyle === 'compact_9mm'
+                ? 1360
+                : 1120;
         // Stage 1: Extractor snap & breech face contact
         this.emitSteelWaveguideStrike({
           startTime: now,

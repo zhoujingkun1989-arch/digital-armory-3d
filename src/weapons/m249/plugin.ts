@@ -19,7 +19,7 @@ import type {
   WeaponRuntimePlugin,
 } from '../types';
 
-export const M249_ID = 'm249' as unknown as WeaponId;
+export const M249_ID: WeaponId = 'm249';
 export const M249_CALIBER: CaliberProfile = '556_nato';
 
 export const M249_PART_GROUPS: AssemblyGroupMeta[] = [

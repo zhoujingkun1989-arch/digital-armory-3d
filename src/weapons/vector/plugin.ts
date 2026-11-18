@@ -24,8 +24,8 @@ import {
   VECTOR_TRIGGER_Y,
 } from './meshes/vectorGeometries';
 
-export const VECTOR_ID = 'vector' as unknown as WeaponId;
-export const VECTOR_CALIBER = '45_acp' as unknown as CaliberProfile;
+export const VECTOR_ID: WeaponId = 'vector';
+export const VECTOR_CALIBER: CaliberProfile = '45_acp';
 
 const COS_SUPER_V = Math.cos(SUPER_V_CHUTE_ANGLE); // 0.42261826
 const SIN_SUPER_V = Math.sin(SUPER_V_CHUTE_ANGLE); // 0.90630779

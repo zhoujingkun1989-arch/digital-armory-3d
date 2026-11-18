@@ -19,6 +19,9 @@ const PLUGIN_LOADERS: Record<WeaponId, () => Promise<WeaponRuntimePlugin>> = {
   python: () => import('./python/plugin').then((m) => m.PYTHON_PLUGIN),
   benellim4: () => import('./benellim4/plugin').then((m) => m.BENELLIM4_PLUGIN),
   garand: () => import('./garand/plugin').then((m) => m.GARAND_PLUGIN),
+  m249: () => import('./m249/plugin').then((m) => m.M249_PLUGIN),
+  p08: () => import('./p08/plugin').then((m) => m.P08_PLUGIN),
+  vector: () => import('./vector/plugin').then((m) => m.VECTOR_PLUGIN),
 };
 
 const pluginCache = new Map<WeaponId, WeaponRuntimePlugin>();

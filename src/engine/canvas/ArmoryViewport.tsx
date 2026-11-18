@@ -265,7 +265,13 @@ const DisassemblyRig: React.FC = () => {
 
   // Respond to explicit camera preset buttons, weapon switches, screen transitions & viewport/window rect changes
   useEffect(() => {
-    if (screen === 'cartridges') return;
+    if (
+      screen !== 'showcase' &&
+      screen !== 'armory' &&
+      screen !== 'workbench'
+    ) {
+      return;
+    }
     const manifest = getWeaponManifest(activeWeaponId);
     const presets = manifest.cameraPresets;
     const meta = manifest.workbenchMeta;
@@ -279,7 +285,10 @@ const DisassemblyRig: React.FC = () => {
     const aspect = Math.max(0.42, size.width / Math.max(1, size.height));
     const perspCam = camera as THREE.PerspectiveCamera;
 
-    if (cameraCommand.preset === 'armory_showcase' && screen !== 'workbench') {
+    if (
+      cameraCommand.preset === 'armory_showcase' &&
+      (screen === 'showcase' || screen === 'armory')
+    ) {
       const tf = computeTurntableFraming(
         activeWeaponId,
         scaleProfile,
@@ -357,8 +366,7 @@ const DisassemblyRig: React.FC = () => {
   // Smoothly re-center or restore turntable view-offset when Clean View (`hudHidden`) toggles on Showcase / Armory
   useEffect(() => {
     if (
-      screen === 'workbench' ||
-      screen === 'cartridges' ||
+      (screen !== 'showcase' && screen !== 'armory') ||
       cameraCommand.preset !== 'armory_showcase' ||
       size.width <= 0 ||
       size.height <= 0
@@ -526,8 +534,7 @@ const DisassemblyRig: React.FC = () => {
     }
 
     if (
-      state.screen !== 'workbench' &&
-      state.screen !== 'cartridges' &&
+      (state.screen === 'showcase' || state.screen === 'armory') &&
       state.cameraCommand.preset === 'armory_showcase' &&
       Math.abs(nextAnimatedT - lastFramedTRef.current) > 0.002 &&
       size.width > 0 &&

@@ -28,7 +28,7 @@ import {
   P08_TOGGLE_SPAN_D0,
 } from './meshes/p08Geometries';
 
-export const P08_ID = 'p08' as unknown as WeaponId;
+export const P08_ID: WeaponId = 'p08';
 export const P08_CALIBER: CaliberProfile = '9mm_para';
 
 /** Peak signed knee-joint angle above bore centerline (+0.90784 rad = +52.02 deg -> -4.20 cm breech stroke!) */

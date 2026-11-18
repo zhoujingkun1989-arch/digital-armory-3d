@@ -134,6 +134,27 @@ export const WEAPON_TURNTABLE_BOUNDS: Readonly<
     spanX: 114.0,
     explode58: { cx: 7.23, minY: -35.5, maxY: 20.5, spanX: 192.0 },
   },
+  m249: {
+    cx: 5.55,
+    minY: -13.25,
+    maxY: 5.8,
+    spanX: 103.5,
+    explode58: { cx: 3.7, minY: -24.5, maxY: 25.1, spanX: 154.0 },
+  },
+  p08: {
+    cx: 0.92,
+    minY: -10.25,
+    maxY: 3.4,
+    spanX: 22.6,
+    explode58: { cx: 4.17, minY: -18.5, maxY: 10.7, spanX: 39.6 },
+  },
+  vector: {
+    cx: -4.78,
+    minY: -19.7,
+    maxY: 6.0,
+    spanX: 61.8,
+    explode58: { cx: -2.27, minY: -37.6, maxY: 15.2, spanX: 83.0 },
+  },
 };
 
 export function getTurntableRadius(weaponId: WeaponId): number {
@@ -285,7 +306,7 @@ export function computeTurntableFraming(
   weaponId: WeaponId,
   scaleProfile: WeaponScaleProfile,
   explodeT: number,
-  screen: 'showcase' | 'armory',
+  screen: 'showcase' | 'armory' | 'ballistics',
   viewportW: number,
   viewportH: number,
   hudHidden = false

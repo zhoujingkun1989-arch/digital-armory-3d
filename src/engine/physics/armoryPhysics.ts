@@ -37,6 +37,7 @@ export const BOLT_BOUNCE_HZ = 38;
 /** Ordered firearm caliber list used by SAAMI/CIP UI, tests and data tables. */
 export const BALLISTIC_CALIBERS: readonly CaliberProfile[] = [
   '9mm_para',
+  '45_acp',
   '57_28',
   '357_magnum',
   '50_ae',
@@ -191,6 +192,31 @@ export const CALIBER_BALLISTICS: Readonly<
     caseRadiusCm: 0.406,
     caseMassG: 3.9,
     shockDiamonds: 2,
+  }),
+  '45_acp': defineCaliber({
+    caliber: '45_acp',
+    labelEn: '.45 ACP (11.43×23mm) 230gr FMJ-RN',
+    labelZh: '.45 ACP (11.43×23mm) 230格令 全被甲圆头弹',
+    standard: 'SAAMI',
+    peakPressureMPa: 145,
+    muzzleVelocityMps: 260,
+    projectileMassG: 14.9,
+    safeUnlockPressureMPa: 6,
+    boreTimeMs: 0.68,
+    referenceBarrelMm: 140,
+    pressureShapeK: 2.2,
+    peakU: 0.42,
+    heatPerShotC: 7.5,
+    foulingPerShot: 0.015,
+    recoilKickCm: 0.62,
+    recoilRiseCm: 0.08,
+    muzzleClimbRad: 0.016,
+    barrelWhipCm: 0.016,
+    ejectSpeedCmS: 145,
+    caseHalfLenCm: 0.92,
+    caseRadiusCm: 0.488,
+    caseMassG: 5.7,
+    shockDiamonds: 1,
   }),
   '57_28': defineCaliber({
     caliber: '57_28',
@@ -588,6 +614,12 @@ export const WEAPON_FIRING_TIMING: Readonly<
   benellim4: timing(0.12, 0.29, 0.44, 0.9, 0.15, 0.18, 0.48, 0.86),
   // M1 Garand .30-06 long-stroke op-rod — under-muzzle gas port at ~92% bore, 1–2 o'clock ejection
   garand: timing(0.1, 0.21, 0.45, 0.88, 0.92, 0.46, 0.54, 0.7),
+  // FN M249 SAW 5.56mm open-bolt long-stroke piston — underbarrel gas port ~62% bore, right-side ejection
+  m249: timing(0.22, 0.31, 0.5, 0.79, 0.62, 0.18, 0.26, 0.95),
+  // DWM Luger P08 9×19mm short-recoil articulated knee-toggle lock — high-angle upward + right ejection
+  p08: timing(0.12, 0.19, 0.4, 0.85, null, -0.22, 0.84, 0.5),
+  // KRISS Vector SMG .45 ACP Super V -65° off-axis delayed blowback — right-flank ejection
+  vector: timing(0.11, 0.19, 0.44, 0.91, null, 0.16, 0.38, 0.91),
 };
 
 export function getWeaponFiringTiming(
@@ -1273,9 +1305,17 @@ export function applyArmoryShot(caliber: CaliberProfile): void {
   const spec = getCaliberBallisticsSpec(caliber);
   const s = physicsState;
   s.caliber = spec.caliber;
-  s.recoilVelX -= (spec.recoilKickCm * RECOIL_OMEGA) / RECOIL_PEAK_RATIO;
-  s.recoilVelY += (spec.recoilRiseCm * RECOIL_OMEGA) / RECOIL_PEAK_RATIO;
-  s.recoilPitchVel += (spec.muzzleClimbRad * PITCH_OMEGA) / PITCH_PEAK_RATIO;
+  // Platform-specific mechanical recoil mitigation:
+  // - KRISS Vector Super V -65° off-axis tungsten slider + low bore axis slashes vertical rise & climb
+  // - FN M249 SAW 7.5 kg mass + PIP hydraulic stock buffer attenuates linear kick & climb
+  const isVector = s.weaponId === 'vector';
+  const isM249 = s.weaponId === 'm249';
+  const kickMult = isM249 ? 0.68 : isVector ? 0.82 : 1;
+  const riseMult = isVector ? 0.36 : isM249 ? 0.64 : 1;
+  const climbMult = isVector ? 0.32 : isM249 ? 0.6 : 1;
+  s.recoilVelX -= ((spec.recoilKickCm * kickMult) * RECOIL_OMEGA) / RECOIL_PEAK_RATIO;
+  s.recoilVelY += ((spec.recoilRiseCm * riseMult) * RECOIL_OMEGA) / RECOIL_PEAK_RATIO;
+  s.recoilPitchVel += ((spec.muzzleClimbRad * climbMult) * PITCH_OMEGA) / PITCH_PEAK_RATIO;
   s.whipAmpCm = spec.barrelWhipCm;
   s.whipAgeSec = 0;
   s.barrelTempC = Math.min(MAX_BARREL_TEMP_C, s.barrelTempC + spec.heatPerShotC);

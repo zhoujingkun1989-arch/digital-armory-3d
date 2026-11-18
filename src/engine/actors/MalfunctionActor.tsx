@@ -268,6 +268,18 @@ export const MalfunctionActor: React.FC = () => {
               cz - 2.8 * clr
             );
             pGrp.rotation.set(0.12 * clr, -0.35 * clr, -0.26 * (1 - clr));
+          } else if (weaponId === 'p08') {
+            // Luger P08 "True Chimney" Stovepipe: spent 9mm case standing 90° upright in the open top toggle window
+            pGrp.position.set(
+              cx - 0.85 - 1.2 * clr,
+              cy + 1.12 + 2.8 * clr - 3.6 * clr * clr,
+              cz + 0.06 + 3.8 * clr
+            );
+            pGrp.rotation.set(
+              clr * 2.2,
+              0.08 + clr * 1.8,
+              1.54 + clr * 2.9
+            );
           } else {
             // Empty spent brass pinched upright ~82° in the ejection port
             const basePx = ejectSample ? ejectSample.spentCasePos[0] : cx - 0.95;
@@ -371,14 +383,21 @@ export const MalfunctionActor: React.FC = () => {
           secGrp.rotation.set(0.2 * drop, -0.25 * drop, 0.04 * (1 - drop));
           secGrp.scale.setScalar(Math.max(0.01, fit.roundScale * (1 - 0.12 * drop)));
         } else {
-          const isTopFeed = prof.magStripOffsetCm[1] > 0;
-          const wedgeY = isTopFeed ? cy + 0.72 : cy - 0.68;
+          const isTopFeed =
+            prof.magStripOffsetCm[1] > 0 || weaponId === 'm249';
+          const wedgeY =
+            weaponId === 'm249'
+              ? cy + 0.36
+              : isTopFeed
+                ? cy + 0.72
+                : cy - 0.68;
           const dropDy = isTopFeed ? 4.2 * drop * drop : -5.8 * drop * drop;
+          const dropDz = weaponId === 'm249' ? -3.4 * drop : 0;
           const pitchZ = isTopFeed ? -0.38 : 0.42;
           secGrp.position.set(
             cx - 1.95 - 0.45 * drop,
             wedgeY + dropDy,
-            cz + 0.06
+            cz + 0.06 + dropDz
           );
           secGrp.rotation.set(drop * 0.7, 0.05, pitchZ * (1 - 0.5 * drop));
           secGrp.scale.setScalar(Math.max(0.01, fit.roundScale * (1 - 0.12 * drop)));

@@ -1090,6 +1090,213 @@ export const WEAPON_MANIFESTS: readonly WeaponManifest[] = [
       firingMilestoneLabel: '出膛/开锁',
     },
   },
+  {
+    id: 'm249',
+    orderIndex: 17,
+    shortLabel: 'M249 SAW',
+    caliberProfile: '556_nato',
+    atlasHeadingCn:
+      'FN M249 SAW 班用轻机枪锰磷化/弹链箱贴图库 (Albedo / Normal / Packed ORM)',
+    catalog: {
+      id: 'm249',
+      bayCode: 'BAY-17',
+      modelCode: 'FN MINIMI · U.S. M249 SAW PIP',
+      nameCn: 'FN M249 SAW 班用轻机枪',
+      subtitleEn: '5.56×45mm NATO Open-Bolt Belt/STANAG Squad Automatic Weapon',
+      originCountryCn: '比利时 / 美国',
+      weaponTypeCn: '班用轻机枪',
+      category: 'lmg',
+      categoryCn: '轻机枪',
+      caliber: '5.56×45mm NATO (M27弹链 / STANAG)',
+      actionMechanism:
+        '长行程下置导气活塞 · 开膛待击双突笋回转闭锁 + 双路弹链/弹匣供弹',
+      specs1To1: {
+        overallLengthMm: '1,035 mm',
+        barrelSpec: '465 mm (18.3") · 6右旋 1:178mm',
+        emptyWeightKg: '7.50 kg',
+        muzzleVelocityMs: '915 m/s',
+        effectiveRangeM: '800 m',
+        rateOfFire: '750–850 RPM',
+      },
+      assembliesCount: 4,
+      partsCount: 26,
+      firingStagesCount: 7,
+      available: true,
+      statusLabel: '已入库 · 可拆解',
+      description:
+        '由比利时 FN Herstal 埃内斯特·维尔维耶（Ernest Vervier）主持研发、美军列装为 M249 SAW 的现代西方步兵班组持续火力支柱：采用开膛待击（Open-Bolt）防止高射速枪管过热烤燃自发，下置长行程镀铬导气活塞配合顶部直立滚轮与顶盖 S 形曲线槽驱动双级棘爪滑板横向拨动 200 发 M27 可散钢链，更独创左侧上下双通道供弹喉——弹链打尽时无需任何转换件即可直接插入步兵 M16/M4 STANAG 弹匣应急压制射击，且配备 3 秒免工具快拆冷锻镀铬枪管与 PIP 枪托液压后坐缓冲器。',
+      highlights: [
+        '18.3" 免工具 3 秒热管快拆冷锻镀铬枪管 + 多孔防烫罩',
+        '开膛待击防烤燃主阻铁 + 下置长行程导气活塞与双突笋回转枪机',
+        '传承 MG42 顶盖 S 槽曲柄双级棘爪拨链 + 200 发 M27 可散钢链',
+        '全球独创免改装双路供弹机匣（上进 M27 弹链 / 左斜插 STANAG 弹匣）',
+      ],
+    },
+    cameraPresets: {
+      armory_showcase: { pos: [23.0, 3.2, 96.0], target: [5.5, -3.8, 0] },
+      iso: { pos: [26.5, 15.5, 96.0], target: [5.5, -1.2, 0] },
+      right: { pos: [5.5, -1.0, 98.0], target: [5.5, -1.2, 0] },
+      left: { pos: [5.5, -1.0, -98.0], target: [5.5, -1.2, 0] },
+      top: { pos: [5.5, 102.0, 6.8], target: [5.5, 0, 0] },
+      cutaway_focus: { pos: [3.2, 3.6, 24.5], target: [-1.5, 0.8, 0.2] },
+      firing_view: { pos: [20.5, 6.8, 88.0], target: [7.5, 0.2, 0] },
+    },
+    workbenchMeta: {
+      badge: 'FN MINIMI · M249 SAW',
+      title: 'FN M249 SAW 班用轻机枪 3D 拆解与开膛拨链击发演示',
+      subtitle:
+        '4 大总成 · 26 核心节点 · 开膛待击前冲剥链、长行程活塞回转闭锁 & 顶滚轮双级棘爪横向输弹模拟',
+      cutawayLabel: '开膛阻铁与拨链滚轮特写',
+      cutawayTitle:
+        '切换至合拢透视状态并聚焦长行程活塞滑块顶滚轮、双突笋枪机、开膛阻铁与 M27 弹链受弹盘特写',
+      cutawayFocusPartId: 'm249_piston_carrier',
+      searchPlaceholder:
+        '搜索零件名 / 编号 (如 弹链, 拨弹爪, 开膛阻铁, 快拆枪管, B-04)...',
+      muzzlePos: [57.3, 1.25, 0],
+      chamberGlowPos: [6.82, 1.25, 0],
+      scaleProfile: 'rifle',
+      gridY: -25.0,
+      firingMilestoneLabel: '引气/拨链',
+    },
+  },
+  {
+    id: 'p08',
+    orderIndex: 18,
+    shortLabel: 'Luger P08',
+    caliberProfile: '9mm_para',
+    atlasHeadingCn:
+      '德国 DWM 鲁格 P08 帝国锈蚀烤蓝/麦秆黄与胡桃木贴图库 (Albedo / Normal / Packed ORM)',
+    catalog: {
+      id: 'p08',
+      bayCode: 'BAY-18',
+      modelCode: 'DWM PISTOLE 1908 · 9×19MM PARABELLUM',
+      nameCn: '鲁格 P08 肘节闭锁手枪',
+      subtitleEn: '9×19mm Parabellum Articulated Knee-Joint Toggle-Lock Pistol',
+      originCountryCn: '德国',
+      weaponTypeCn: '半自动军用手枪',
+      category: 'pistol',
+      categoryCn: '手枪',
+      caliber: '9×19mm Parabellum',
+      actionMechanism:
+        '枪管短后坐 (6.5mm) · 双连杆过死点屈膝肘节闭锁 (Kniegelenkverschluss)',
+      specs1To1: {
+        overallLengthMm: '222 mm',
+        barrelSpec: '102 mm (4") · 6右旋 1:250mm',
+        emptyWeightKg: '0.87 kg',
+        muzzleVelocityMs: '360 m/s',
+        effectiveRangeM: '50 m',
+        rateOfFire: 'Semi-Auto',
+      },
+      assembliesCount: 4,
+      partsCount: 25,
+      firingStagesCount: 7,
+      available: true,
+      statusLabel: '已入库 · 可拆解',
+      description:
+        '格奥尔格·卢格（Georg Luger）在柏林 DWM 兵工厂淬炼定型、催生出统治全球一个多世纪 9×19mm Parabellum 手枪弹的机械美学巅峰杰作（1917 年德军制式 4 英寸型）：摒弃套筒包覆结构，采用双连杆铰接肘节停靠于死点线下方 1.5° 实现刚性过中心闭锁；发射短后坐 6.5 mm 后，后肘节滚子撞击下机匣尾部双弧形导坡，像人膝弯曲般向上凌空折起 53.5° 顶窗抛壳，配合 55° 自然指向欧洲胡桃木握把、侧盖板 L 形直角换向阻铁及 240°C 金色麦秆回火小件，堪称手枪中的精密钟表。',
+      highlights: [
+        '双连杆过死点（-1.5°）肘节刚性闭锁 + 撞坡 53.5° 屈膝上折开锁',
+        'DWM 花体铭文、1917 膛环与 240°C 黄金麦秆回火（Gelbangelassen）撞色',
+        '侧盖板 L 形直角换向杠杆 + 横向跷跷板阻铁条与 GELADEN 有弹指示',
+        '55° 黄金指向欧洲胡桃木菱格握把 + S 连杆握把螺旋复进簧',
+      ],
+    },
+    cameraPresets: {
+      armory_showcase: { pos: [9.2, 1.4, 34.5], target: [1.1, -3.8, 0] },
+      iso: { pos: [12.0, 7.2, 36.5], target: [1.1, -1.2, 0] },
+      right: { pos: [1.1, -1.0, 36.0], target: [1.1, -1.2, 0] },
+      left: { pos: [1.1, -1.0, -36.0], target: [1.1, -1.2, 0] },
+      top: { pos: [1.1, 39.0, 3.8], target: [1.1, 0, 0] },
+      cutaway_focus: { pos: [1.8, 3.2, 16.5], target: [-1.4, 1.2, 0.15] },
+      firing_view: { pos: [7.8, 4.2, 33.5], target: [1.5, 0.8, 0] },
+    },
+    workbenchMeta: {
+      badge: 'DWM 1917 · PISTOLE 08',
+      title: 'Luger P08 鲁格手枪 3D 拆解与屈膝肘节闭锁演示',
+      subtitle:
+        '4 大总成 · 25 核心节点 · 过死点短后坐、双连杆 53.5° 屈膝折起抛壳 & 55° 握把 S 连杆复进模拟',
+      cutawayLabel: '屈膝肘节与侧向阻铁特写',
+      cutawayTitle:
+        '切换至合拢透视状态并聚焦 DWM 双连杆肘节、方形枪机、侧盖板 L 形杠杆与握把 S 连杆特写',
+      cutawayFocusPartId: 'p08_rear_toggle',
+      searchPlaceholder:
+        '搜索零件名 / 编号 (如 肘节, 方形枪机, 拆解杆, S连杆, U-06)...',
+      muzzlePos: [12.2, 2.15, 0],
+      chamberGlowPos: [2.78, 2.15, 0],
+      scaleProfile: 'pistol',
+      gridY: -20.5,
+      firingMilestoneLabel: '屈膝/抛壳',
+    },
+  },
+  {
+    id: 'vector',
+    orderIndex: 19,
+    shortLabel: 'KRISS Vector',
+    caliberProfile: '45_acp',
+    atlasHeadingCn:
+      'KRISS Vector SMG Gen II (.45 ACP) Super V 下潜滑块与双色机匣贴图库 (Albedo / Normal / Packed ORM)',
+    catalog: {
+      id: 'vector',
+      bayCode: 'BAY-19',
+      modelCode: 'KRISS VECTOR SMG GEN II · .45 ACP SUPER V',
+      nameCn: 'KRISS Vector 短剑冲锋枪',
+      subtitleEn: '.45 ACP Super V Off-Axis Delayed-Blowback Submachine Gun',
+      originCountryCn: '美国 / 瑞士',
+      weaponTypeCn: '轴外延迟冲锋枪',
+      category: 'smg',
+      categoryCn: '冲锋枪',
+      caliber: '.45 ACP (11.43×23mm)',
+      actionMechanism:
+        'KRISS Super V -65° 轴外钨钢滑块凸轮延迟半自由枪机 · 低膛轴线倒装击锤',
+      specs1To1: {
+        overallLengthMm: '617 mm / 406 mm',
+        barrelSpec: '140 mm (5.5") · 6左旋 1:406mm',
+        emptyWeightKg: '2.70 kg',
+        muzzleVelocityMs: '260 m/s',
+        effectiveRangeM: '100 m',
+        rateOfFire: '1,200 RPM',
+      },
+      assembliesCount: 4,
+      partsCount: 25,
+      firingStagesCount: 7,
+      available: true,
+      statusLabel: '已入库 · 可拆解',
+      description:
+        '法国工程师雷诺·克尔布拉（Renaud Kerbrat）打破百年直线后坐定式所缔造的 21 世纪近战冲锋枪工程奇迹（.45 ACP Gen II 战斗沙色型）：将 5.5 英寸冷锻枪管轴线压低至扳机下方 15.3 mm 直穿射手虎口支点（从静力学消除翻转力臂），并令紧凑双凸轮耳枪机推动高密度钨钢 Super V 配重滑块沿弹匣井后方的 -65° 垂直导槽向下猛潜 64 mm，以变角度凸轮机械劣势延迟开锁并产生向下反冲力矩，使每分钟 1,200 发的 230 格令 .45 ACP 大口径全自动连发稳如激光！',
+      highlights: [
+        'Super V 专利 -65° 钨钢垂直下潜滑块 + 变角度凸轮延迟开锁',
+        '5.5" 枪管轴线低置于虎口与水平扳机下方 15.3 mm 零翻转力矩',
+        '顶置倒装回转击锤模块 + 1/2/A（单发/两连发/1200RPM）独立快慢机',
+        '25 发 Glock-21 兼容 Kriss MagEx2 扩容弹匣 + Gen II 右折枪托',
+      ],
+    },
+    cameraPresets: {
+      armory_showcase: { pos: [14.5, 1.8, 68.0], target: [-4.5, -5.8, 0] },
+      iso: { pos: [18.5, 11.5, 68.0], target: [-4.0, -4.2, 0] },
+      right: { pos: [-4.5, -4.0, 68.0], target: [-4.5, -4.2, 0] },
+      left: { pos: [-4.5, -4.0, -68.0], target: [-4.5, -4.2, 0] },
+      top: { pos: [-4.5, 72.0, 5.5], target: [-4.5, -2.0, 0] },
+      cutaway_focus: { pos: [8.5, -0.8, 22.5], target: [4.2, -2.6, 0.2] },
+      firing_view: { pos: [15.5, 4.2, 64.0], target: [-1.5, -2.8, 0] },
+    },
+    workbenchMeta: {
+      badge: 'KRISS SUPER V · .45 ACP',
+      title: 'KRISS Vector 短剑冲锋枪 3D 拆解与 -65° 轴外下潜演示',
+      subtitle:
+        '4 大总成 · 25 核心节点 · 低膛轴线、变角凸轮延迟、-65° 钨钢滑块下潜抑跳 & 顶置倒装击锤模拟',
+      cutawayLabel: 'Super V -65° 下潜滑块特写',
+      cutawayTitle:
+        '切换至合拢透视状态并聚焦 Super V 钨钢下潜滑块变角凸轮槽、凸轮耳枪机与顶置倒装击锤特写',
+      cutawayFocusPartId: 'vector_slider',
+      searchPlaceholder:
+        '搜索零件名 / 编号 (如 下潜滑块, 倒装击锤, 凸轮耳枪机, MagEx2, S-05)...',
+      muzzlePos: [26.1, -0.95, 0],
+      chamberGlowPos: [11.2, -0.95, 0],
+      scaleProfile: 'rifle',
+      gridY: -26.5,
+      firingMilestoneLabel: '-65°下潜',
+    },
+  },
 ];
 
 const MANIFEST_MAP: Record<WeaponId, WeaponManifest> = Object.fromEntries(
@@ -1120,6 +1327,8 @@ export function matchesArmoryCategory(
   if (filter === 'all') return true;
   const typeTag = `${item.weaponTypeCn ?? ''} ${item.categoryCn}`;
   const isPistol = item.category === 'pistol' || typeTag.includes('手枪');
+  const isLmg =
+    item.id === 'm249' || item.category === 'lmg' || typeTag.includes('机枪');
   const isSmg =
     item.id === 'mp5' || item.category === 'smg' || typeTag.includes('冲锋');
   const isSniper =
@@ -1140,12 +1349,15 @@ export function matchesArmoryCategory(
     typeTag.includes('霰弹');
 
   if (filter === 'pistol') return isPistol;
+  if (filter === 'lmg') return isLmg;
   if (filter === 'smg') return isSmg;
   if (filter === 'sniper') return isSniper;
   if (filter === 'shotgun') return isShotgun;
   if (filter === 'archery') return isArchery;
   if (filter === 'assault') {
-    return !isPistol && !isSmg && !isSniper && !isShotgun && !isArchery;
+    return (
+      !isPistol && !isLmg && !isSmg && !isSniper && !isShotgun && !isArchery
+    );
   }
   return true;
 }
