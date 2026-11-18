@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
 import {
   ArrowRight,
   BookOpen,
@@ -7,6 +7,7 @@ import {
   ChevronRight,
   Clock,
   Eye,
+  GitCompareArrows,
   Globe2,
   Headphones,
   Image as ImageIcon,
@@ -22,6 +23,7 @@ import {
   Sparkles,
   Wrench,
 } from 'lucide-react';
+import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import { isArcheryWeapon } from '../../engine/physics/armoryPhysics';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import {
@@ -40,7 +42,16 @@ import type { ArmoryCategory, ArmoryWeaponItem } from '../../weapons/types';
 import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
 import { EngineeringTintLegend } from '../workbench/EngineeringTintLegend';
 import { StudioEnvironmentBar } from '../workbench/StudioEnvironmentBar';
+import type { ShowdownViewMode } from './MechanismShowdownModal';
+import {
+  getShowdownExhibitProfile,
+  getSuggestedRivalWeaponId,
+} from './mechanismShowdownSpecs';
 import { WeaponSilhouetteSvg } from './WeaponSilhouetteSvg';
+
+const LazyMechanismShowdownModal = lazy(
+  () => import('./MechanismShowdownModal')
+);
 
 type ArmoryFilterCategory = ArmoryCategory | 'archery';
 
@@ -56,6 +67,11 @@ const CATEGORY_KEYS: ArmoryFilterCategory[] = [
 export const ArmoryView: React.FC = () => {
   const [category, setCategory] = useState<ArmoryFilterCategory>('all');
   const [plannedToast, setPlannedToast] = useState<string | null>(null);
+  const [showdownRequest, setShowdownRequest] = useState<{
+    mode: ShowdownViewMode;
+    weaponA: string;
+    weaponB: string;
+  } | null>(null);
   const rackScrollRef = useRef<HTMLDivElement>(null);
 
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
@@ -86,15 +102,57 @@ export const ArmoryView: React.FC = () => {
 
   const ui = UI_STRINGS[lang].armory;
   const monoUi = UI_STRINGS[lang].monograph;
-  const plaqueUi = isArcheryWeapon(featuredWeapon.id)
-    ? ui.archeryPlaque
-    : ui;
+  const showdownUi = UI_STRINGS[lang].mechanismShowdown;
+  const plaqueUi = isArcheryWeapon(featuredWeapon.id) ? ui.archeryPlaque : ui;
   const featuredDisplay = resolveWeaponDisplayMeta(
     featuredWeapon.id,
     lang,
     featuredBundle
   );
   const shortWeaponTag = getLocalizedShortWeaponLabel(featuredWeapon.id, lang);
+  const suggestedRivalId = getSuggestedRivalWeaponId(featuredWeapon.id);
+  const suggestedRivalShort = getShowdownExhibitProfile(
+    suggestedRivalId,
+    lang
+  ).shortLabel;
+
+  // Armory keyboard shortcut `[S]` opens Mechanism Showdown without conflicting with `[M]` (SFX mute)
+  useEffect(() => {
+    if (showdownRequest !== null) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.metaKey || e.ctrlKey || e.altKey) return;
+      const target = e.target;
+      if (
+        target instanceof HTMLElement &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.tagName === 'SELECT' ||
+          target.isContentEditable)
+      ) {
+        return;
+      }
+      const s = useAppStore.getState();
+      if (
+        s.screen !== 'armory' ||
+        s.textureModalOpen ||
+        s.monographModalOpen ||
+        s.hudHidden
+      ) {
+        return;
+      }
+      if (e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        playWorkbenchFoley('preset_detent');
+        setShowdownRequest({
+          mode: 'matrix',
+          weaponA: featuredWeapon.id,
+          weaponB: suggestedRivalId,
+        });
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [showdownRequest, featuredWeapon.id, suggestedRivalId]);
 
   const filteredWeapons = ARMORY_WEAPONS.filter((w) =>
     matchesArmoryCategory(w, category as ArmoryCategory)
@@ -195,6 +253,23 @@ export const ArmoryView: React.FC = () => {
                 ? '弓弩研发故事'
                 : ui.storyBtn}
             </span>
+          </button>
+
+          <button
+            type="button"
+            className="armory-showdown-btn"
+            onClick={() => {
+              playWorkbenchFoley('preset_detent');
+              setShowdownRequest({
+                mode: 'matrix',
+                weaponA: featuredWeapon.id,
+                weaponB: suggestedRivalId,
+              });
+            }}
+            title={showdownUi.entryBtnTitle}
+          >
+            <GitCompareArrows size={13} aria-hidden="true" />
+            <span>{showdownUi.entryBtn}</span>
           </button>
 
           <button
@@ -360,6 +435,27 @@ export const ArmoryView: React.FC = () => {
               <span>{monoUi.entryChip}</span>
             </button>
           </div>
+
+          <button
+            type="button"
+            className="plaque-showdown-cta"
+            onClick={() => {
+              playWorkbenchFoley('preset_detent');
+              setShowdownRequest({
+                mode: 'showdown',
+                weaponA: featuredWeapon.id,
+                weaponB: suggestedRivalId,
+              });
+            }}
+            title={showdownUi.plaqueCompareTitle(
+              shortWeaponTag,
+              suggestedRivalShort
+            )}
+          >
+            <GitCompareArrows size={13} aria-hidden="true" />
+            <span>{showdownUi.plaqueCompareBtn(suggestedRivalShort)}</span>
+            <span className="plaque-showdown-kbd">S</span>
+          </button>
 
           <button
             type="button"
@@ -609,6 +705,17 @@ export const ArmoryView: React.FC = () => {
           })}
         </div>
       </section>
+
+      {showdownRequest && (
+        <Suspense fallback={null}>
+          <LazyMechanismShowdownModal
+            initialMode={showdownRequest.mode}
+            initialWeaponA={showdownRequest.weaponA}
+            initialWeaponB={showdownRequest.weaponB}
+            onClose={() => setShowdownRequest(null)}
+          />
+        </Suspense>
+      )}
     </div>
   );
 };

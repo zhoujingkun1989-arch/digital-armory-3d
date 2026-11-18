@@ -564,6 +564,70 @@ export interface UiDictionary {
       pageFooter: (idx: number, total: number) => string;
     };
   };
+  mechanismShowdown: {
+    entryBtn: string;
+    entryBtnTitle: string;
+    plaqueCompareBtn: (rivalShort: string) => string;
+    plaqueCompareTitle: (selfShort: string, rivalShort: string) => string;
+    dialogAria: string;
+    badge: string;
+    exhibitCountPill: (exhibits: number, axes: number) => string;
+    title: string;
+    subtitle: string;
+    modeMatrix: string;
+    modeShowdown: string;
+    closeTitle: string;
+    stagingLabel: string;
+    stagingHint: string;
+    slotALabel: string;
+    slotBLabel: string;
+    swapPairTitle: string;
+    openShowdownCta: string;
+    allAxesTab: string;
+    familyCountBadge: (count: number) => string;
+    prosLabel: string;
+    consLabel: string;
+    compareWithSlotBtn: string;
+    compareWithRivalBtn: string;
+    presetsLabel: string;
+    selectWeaponAAria: string;
+    selectWeaponBAria: string;
+    sharedTraitBadge: string;
+    diffTraitBadge: string;
+    axisShortDrive: string;
+    axisShortLocking: string;
+    axisShortFeed: string;
+    cutawayBenchBtn: (shortLabel: string) => string;
+    cutawayBenchTitle: string;
+    liveCycleBenchBtn: string;
+    liveCycleBenchTitle: string;
+    chartTitle: string;
+    chartSub: string;
+    scaleNormalized: string;
+    scaleRelative: string;
+    crossDomainNote: string;
+    legendPressure: (shortLabel: string) => string;
+    legendVelocity: (shortLabel: string) => string;
+    scrubReadoutLabel: (pct: number) => string;
+    scrubHoverHint: string;
+    axisProgressLabel: string;
+    metricsTitle: string;
+    metricsSub: string;
+    metricVelocity: string;
+    metricEnergy: string;
+    metricPeakLoad: string;
+    metricCyclic: string;
+    metricOalBarrel: string;
+    metricMassParts: string;
+    archBreakdownTitle: string;
+    rowDrive: string;
+    rowLocking: string;
+    rowFeed: string;
+    rowFireControl: string;
+    rowVerdict: string;
+    strengthTag: string;
+    tradeoffTag: string;
+  };
 }
 
 export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
@@ -740,8 +804,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       caliperChipTitle:
         '开启 1:1 3D 军械游标卡尺与空间包络标尺：在 3D 表面点选任意两点测量毫米级间距与轴向分量 (K)',
       cartridgeChip: '实弹馆',
-      cartridgeChipTitle:
-        '打开 7 口径 SAAMI/CIP 1:1 实弹纵剖对比实验室 (B)',
+      cartridgeChipTitle: '打开 7 口径 SAAMI/CIP 1:1 实弹纵剖对比实验室 (B)',
       edgesChip: 'CAD 描边',
       edgesChipTitle: '开启/关闭工业 CAD 硬边轮廓线 (E)',
       labelsChip: '零件标签',
@@ -884,8 +947,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
             ? '显示/隐藏实时 ATA/IBO 拉力曲线 F(x) 与矢箭速度 V(t) 遥测示波器'
             : '点击展开实时 ATA/IBO 拉力曲线与矢箭速度遥测示波器',
         gasFlowPill: '弹性势能流',
-        gasFlowTitle:
-          '显示/隐藏 60fps 碳纤弓片弹性储能弯曲与凸轮做功轨迹流线',
+        gasFlowTitle: '显示/隐藏 60fps 碳纤弓片弹性储能弯曲与凸轮做功轨迹流线',
         sfxTitle: '开启/静音立体声卷积混响与复合弓弩弦轮声效 (M)',
         selectorGroupAria: '撒放安全保险档位切换 (V)',
         selectorShort: {
@@ -948,8 +1010,10 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       aiAttribution:
         '文本与语音由 Google Gemini 3.8 Flash & Gemini TTS 基于 1:1 军械测绘参数生成',
       playbackRateTitle: '播放倍速：1.0x / 1.25x / 1.5x',
-      archeryDrawerSubtitle: '复合弓弩研发历史全景纪录 · 机械突破与 3D 零件联动导览',
-      archeryMinimizeTitle: '最小化为顶部迷你播放条，边看 3D 弓弩边听讲解 (Esc)',
+      archeryDrawerSubtitle:
+        '复合弓弩研发历史全景纪录 · 机械突破与 3D 零件联动导览',
+      archeryMinimizeTitle:
+        '最小化为顶部迷你播放条，边看 3D 弓弩边听讲解 (Esc)',
     },
     engineeringTint: {
       badge: 'WP-05 · 机械职能语义分色',
@@ -957,8 +1021,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       filterHint: '点击图例单独聚光该类机构 · 再次点击恢复全彩',
       showAllBtn: '全显',
       gasFlowToggle: '高压燃气流线',
-      gasFlowToggleTitle:
-        '在发射演示模式下动态显示膛内燃气膨胀与导气分流轨迹',
+      gasFlowToggleTitle: '在发射演示模式下动态显示膛内燃气膨胀与导气分流轨迹',
       liveGasCta: '切至发射看导气',
       archery: {
         gasFlowToggle: '弹性储能流线',
@@ -973,8 +1036,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       phaseReassemble: '逆序复装',
       progressLabel: (done, total) => `已拆 ${done} / ${total} 步`,
       hintBtn: '提示下一步',
-      hintTitle:
-        '在 3D 视口中以翠绿脉冲高亮当前符合军械教范的下一步待操作部件',
+      hintTitle: '在 3D 视口中以翠绿脉冲高亮当前符合军械教范的下一步待操作部件',
       autoStepBtn: '执行当前步',
       autoStepTitle: '按军械教范拓扑顺序自动执行当前推荐的拆解或复装步骤',
       resetBtn: '全部复原',
@@ -996,7 +1058,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       badge: 'WP-09 · 经典枪械故障剖视排障室',
       progressLabel: (done, total) => `排障进度 ${done} / ${total}`,
       nextStepBtn: '执行下一步排障',
-      nextStepTitle: '按标准军械排障教范执行当前步骤并同步驱动 3D 枪机/弹匣动作',
+      nextStepTitle:
+        '按标准军械排障教范执行当前步骤并同步驱动 3D 枪机/弹匣动作',
       resetDrillBtn: '复现故障定格',
       resetDrillTitle: '重置回该故障初始卡阻定格帧以便重新观察或实操排障',
       exitBtn: '退出排障室',
@@ -1004,7 +1067,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       rootCauseLabel: '机械卡阻成因：',
       safetyNoteLabel: '军械安全规范：',
       drillStepsAria: '标准排障步骤序列',
-      click3dHint: '可直接点击 3D 高亮运动件（套筒/拉机柄/弹匣）或下方按钮逐步排障',
+      click3dHint:
+        '可直接点击 3D 高亮运动件（套筒/拉机柄/弹匣）或下方按钮逐步排障',
       clearedTitle: '故障已彻底排除 · 新弹已推入膛内完全闭锁！',
       clearedDesc:
         '卡阻弹壳与供弹干涉已按标准军械教范清除，闭锁突笋恢复 100% 啮合，可切换其他故障继续演练。',
@@ -1041,7 +1105,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       clearTitle: '清除当前 A/B 测点重新拾取',
       envelopeSummary: (l, h, w) => `包络：长 ${l} × 高 ${h} × 宽 ${w} mm`,
       archery: {
-        unitNote: '1 场景单位 = 10.0 mm · 支持穿透剖面精准测绘弓把、凸轮与箭矢跨度',
+        unitNote:
+          '1 场景单位 = 10.0 mm · 支持穿透剖面精准测绘弓把、凸轮与箭矢跨度',
         promptPointA: '第 1 步：在 3D 弓弩表面单击拾取测量基准点 A',
         deltaX: '|ΔX| 轴跨',
         benchmarks: {
@@ -1071,7 +1136,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       edgesTitle: '开启或关闭实弹几何硬边 CAD 轮廓描边',
       matrixToggleOpen: '定量对比总表',
       matrixToggleClose: '收起对比总表',
-      matrixToggleTitle: '展开或收起 7 大口径装药量、膛压、初速与枪口动能定量对比矩阵表',
+      matrixToggleTitle:
+        '展开或收起 7 大口径装药量、膛压、初速与枪口动能定量对比矩阵表',
       explodeLabel: '弹体结构轴向分解',
       explodeReset: '复位合拢',
       caliberSelectorAria: '馆藏七大口径实弹切换栏',
@@ -1103,7 +1169,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       entryChipTitle:
         '打开 3D 机械绘本与军事宣传图册印前工坊：一键打印 17 幅高清 3D 大图少儿绘本或专业军工档案 (Ctrl/Cmd + P)',
       plaqueCtaMain: '打印 3D 机械图解绘本 / 典藏军事图册 (A4 / PDF)',
-      plaqueCtaSub: '17 幅高清 3D 实景大图 · 少儿多图科普绘本 / 专业军工档案双模式切换',
+      plaqueCtaSub:
+        '17 幅高清 3D 实景大图 · 少儿多图科普绘本 / 专业军工档案双模式切换',
       studioBadge: '3D ILLUSTRATED MONOGRAPH STUDIO',
       studioTitle: '3D 机械图解绘本 & 典藏宣传图册 · 印前工坊',
       studioSub:
@@ -1128,7 +1195,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       reshootBtn: '重拍大图',
       reshootTitle: '重新执行全部 17 镜头 WebGL 离屏高清 3D 渲染采样',
       printCta: '立即打印画册 / 导出 PDF',
-      printCapturingCta: (done, total) => `正在拍摄 3D 大图 (${done}/${total})…`,
+      printCapturingCta: (done, total) =>
+        `正在拍摄 3D 大图 (${done}/${total})…`,
       printHint:
         '打印小贴士：在系统打印窗口选择「A4 纵向 · 边距：无」，并勾选「背景图形（Background graphics）」即可输出满版彩色绘本。',
       closeTitle: '关闭图册印前工坊 (Esc)',
@@ -1176,7 +1244,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       secBallistics: 'CHAPTER 06 · SAAMI/CIP 实弹纵剖解剖与内弹道定量示波',
       secBallisticsSub:
         '膛压 P(t) 与膛内初速 V(t) 双轴定量曲线 · 1:1 制式弹药半剖尺寸图与馆藏七口径动能天梯',
-      chartPressureTitle: 'FIG 6.1 · 击发膛压 P(t) [MPa] 与弹头初速 V(t) [m/s] 耦合曲线',
+      chartPressureTitle:
+        'FIG 6.1 · 击发膛压 P(t) [MPa] 与弹头初速 V(t) [m/s] 耦合曲线',
       chartCartridgeTitle: 'FIG 6.2 · 配用制式实弹 1:1 半剖结构与装药参数',
       energyLadderTitle: '馆藏 7 大制式口径枪口动能横向标尺 (J)',
       secArmorerManual: 'CHAPTER 07 · 野战勤务快拆教范、排障卡与防伪封底',
@@ -1215,7 +1284,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         xrayBadge: '透视超能力 ① · X 光半透明外壳',
         xrayTip: '把外面的壳变透明，藏在里面的弹簧、滑块和杠杆全都现身啦！',
         cutawayBadge: '透视超能力 ② · 激光正中切开一半',
-        cutawayTip: '像切西瓜一样从正中间剖开，看清内部通道与严丝合缝的积木咬合！',
+        cutawayTip:
+          '像切西瓜一样从正中间剖开，看清内部通道与严丝合缝的积木咬合！',
         p4Kicker: '第 3 站 · 彩虹六小队分工图',
         p4Title: '六种鲜艳颜色 · 一眼认出谁负责干什么',
         p4Sub: '每一种颜色代表一支机械小分队，大家齐心协力才能顺利运转！',
@@ -1232,7 +1302,9 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         p7Title: '把时间放慢 100 倍！四步看懂机械动作',
         p7Sub: '一眨眼的功夫里，里面的弹簧和滑块其实完成了超精彩的接力赛',
         ammoStripBadge: (isArchery) =>
-          isArchery ? '1:1 碳纤维箭矢内部结构放大图' : '1:1 铜壳解剖放大图（科学模型）',
+          isArchery
+            ? '1:1 碳纤维箭矢内部结构放大图'
+            : '1:1 铜壳解剖放大图（科学模型）',
         statSpeed: '飞行速度',
         statEnergy: '运动能量',
         p8Kicker: '第 7 站 · 核心微距放大镜 & 动手拆装闯关',
@@ -1241,11 +1313,87 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         macroZoomBadge: '核心机械咬合微距大特写 · MACRO ZOOM',
         stepsTitle: (n) => `小小工程师拆装顺序卡（共 ${n} 步）`,
         qrTitle: '手机扫一扫 · 纸质画册秒变 3D 互动玩具台！',
-        qrSub: '免下载打开网页，就能用手指 360° 旋转、开关 X 光透视、亲手点击拆装每一个零件，还有语音讲故事！',
+        qrSub:
+          '免下载打开网页，就能用手指 360° 旋转、开关 X 光透视、亲手点击拆装每一个零件，还有语音讲故事！',
         qrCertBadge: '少年机械科学探索纪念章',
         pageFooter: (idx, total) =>
           `第 ${String(idx).padStart(2, '0')} 页 / 共 ${String(total).padStart(2, '0')} 页`,
       },
+    },
+    mechanismShowdown: {
+      entryBtn: '流派对照 [S]',
+      entryBtnTitle:
+        '打开自动原理流派对照矩阵与双展品同屏对比实验室：总览驱动/闭锁/供弹三大机械谱系并叠绘内弹道曲线 (S)',
+      plaqueCompareBtn: (rivalShort) => `与 ${rivalShort} 同屏原理对比`,
+      plaqueCompareTitle: (selfShort, rivalShort) =>
+        `打开双展品原理对照实验室：同屏对比 ${selfShort} 与 ${rivalShort} 的自动驱动、闭锁、供弹与内弹道曲线 (S)`,
+      dialogAria: '自动原理流派对照矩阵与双展品同屏对比实验室',
+      badge: 'WP-11 · 自动原理流派对照馆',
+      exhibitCountPill: (exhibits, axes) =>
+        `${exhibits} 款馆藏 · ${axes} 大正交机械轴`,
+      title: '自动原理流派谱系矩阵 & 双展品同屏对照实验室',
+      subtitle:
+        '横跨能量驱动、枪机闭锁与供弹架构三大正交工程维度 · 1:1 内弹道/做功曲线叠绘与机械取舍定量解构',
+      modeMatrix: '三维流派谱系矩阵',
+      modeShowdown: '双展品同屏对照',
+      closeTitle: '关闭原理对照矩阵 (Esc / S)',
+      stagingLabel: '当前对照席位',
+      stagingHint:
+        '点击谱系卡片内任意两款展品分配至 A / B 席位，或点「加入右侧对比」一键进入双展品同屏对决',
+      slotALabel: '展品 A',
+      slotBLabel: '展品 B',
+      swapPairTitle: '互换展品 A 与展品 B 对照席位',
+      openShowdownCta: '开启 A vs B 同屏深度对照',
+      allAxesTab: '全部三大机械轴',
+      familyCountBadge: (count) => `${count} 款展品`,
+      prosLabel: '核心工程优势',
+      consLabel: '物理与结构代价',
+      compareWithSlotBtn: '加入右侧对比',
+      compareWithRivalBtn: '与代表对手对比',
+      presetsLabel: '经典流派宿命对决：',
+      selectWeaponAAria: '选择左侧对照展品 A',
+      selectWeaponBAria: '选择右侧对照展品 B',
+      sharedTraitBadge: '同源流派',
+      diffTraitBadge: '异构分流',
+      axisShortDrive: '驱动',
+      axisShortLocking: '闭锁',
+      axisShortFeed: '供弹',
+      cutawayBenchBtn: (shortLabel) => `剖视检视 ${shortLabel} · Cutaway`,
+      cutawayBenchTitle:
+        '进入该展品 3D 拆解工作台并自动开启 Stencil 纵剖切面与 6 色机械职能分色',
+      liveCycleBenchBtn: '动态击发循环',
+      liveCycleBenchTitle: '进入 3D 工作台动态发射演示模式观察实弹循环',
+      chartTitle: '内弹道 / 做功动力学双曲线同屏叠绘',
+      chartSub:
+        '横轴为单次发射循环进度 f ∈ [0%, 100%] · 实线阴影为膛压/拉力 P(f)，虚线为弹头/箭矢速度 V(f)',
+      scaleNormalized: '归一化波形 (0–100%)',
+      scaleRelative: '同域峰值比例',
+      crossDomainNote:
+        '注：枪械火药膛压 (MPa) 与弓弩凸轮拉力 (N) 属不同物理量纲，已按各自峰值归一化叠绘时序波形',
+      legendPressure: (shortLabel) => `${shortLabel} 膛压/拉力`,
+      legendVelocity: (shortLabel) => `${shortLabel} 初速 V(t)`,
+      scrubReadoutLabel: (pct) =>
+        `循环相位 f = ${pct}% · 移动光标逐帧比对瞬时遥测`,
+      scrubHoverHint:
+        '在曲线图上移动鼠标，实时比对任一击发相位的瞬时膛压/拉力与弹速',
+      axisProgressLabel:
+        '击发/做功循环进度 f (0% 待击 → 点火/撒放 → 出膛 → 抽抛壳 → 100% 闭锁复位)',
+      metricsTitle: '六维定量工程指标横向对决',
+      metricsSub: '实时提取自 SAAMI/CIP/ATA 物理引擎与 1:1 原厂测绘档案',
+      metricVelocity: '枪口 / 离弦初速',
+      metricEnergy: '枪口 / 矢箭动能',
+      metricPeakLoad: '峰值膛压 / 峰值拉力',
+      metricCyclic: '理论射速 / 动作机制',
+      metricOalBarrel: '全长 (枪管/做功行程)',
+      metricMassParts: '空重 (3D 零件数)',
+      archBreakdownTitle: '四大机械子系统与工程取舍深度对照',
+      rowDrive: '能量来源与自动驱动',
+      rowLocking: '闭锁机构与开锁时机',
+      rowFeed: '供弹路线与抛壳几何',
+      rowFireControl: '火控击发与保险架构',
+      rowVerdict: '决定性优势 vs 工程代价',
+      strengthTag: '优势',
+      tradeoffTag: '代价',
     },
   },
   en: {
@@ -1827,10 +1975,13 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       entryChip: 'Picture Book',
       entryChipTitle:
         'Open 3D Illustrated Picture Book & Military Monograph Print Studio: print a 17-plate 3D visual album for kids or a full technical dossier (Ctrl/Cmd + P)',
-      plaqueCtaMain: 'Print 3D Illustrated Picture Book / Collector Monograph (A4 / PDF)',
-      plaqueCtaSub: '17 Big 3D Studio Plates · Kids Multi-Picture Book & Pro Technical Dossier Modes',
+      plaqueCtaMain:
+        'Print 3D Illustrated Picture Book / Collector Monograph (A4 / PDF)',
+      plaqueCtaSub:
+        '17 Big 3D Studio Plates · Kids Multi-Picture Book & Pro Technical Dossier Modes',
       studioBadge: '3D ILLUSTRATED MONOGRAPH STUDIO',
-      studioTitle: '3D Mechanical Picture Book & Collector Monograph · Print Studio',
+      studioTitle:
+        '3D Mechanical Picture Book & Collector Monograph · Print Studio',
       studioSub:
         'Renders 17 offscreen HD 3D studio plates (360° views, X-Ray, Cutaway, LEGO Sub-Assemblies & 4-Panel Action Comic) · Switch between Kids Picture Book & Pro Dossier',
       weaponSelectAria: 'Select exhibit for picture book printing',
@@ -1853,7 +2004,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       reshootBtn: 'Re-Shoot 3D',
       reshootTitle: 'Re-render all 17 offscreen HD WebGL 3D studio plates',
       printCta: 'Print Picture Book / Export PDF',
-      printCapturingCta: (done, total) => `Shooting 3D Plates (${done}/${total})…`,
+      printCapturingCta: (done, total) =>
+        `Shooting 3D Plates (${done}/${total})…`,
       printHint:
         'Print Tip: Choose "A4 Portrait · Margins: None" and check "Background graphics" in your print dialog for edge-to-edge color pages.',
       closeTitle: 'Close Print Studio (Esc)',
@@ -1870,14 +2022,18 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       coverDefaultCollector: 'DIGITAL ARMORY ARCHIVE EDITION',
       coverHighlightsHeading: 'KEY ORDNANCE ENGINEERING ATTRIBUTES',
       secChronicleI: 'CHAPTER 01 · DOCTRINAL ORIGINS & R&D GENESIS',
-      secChronicleISub: 'Operational Trials, Procurement Mandates & Material Metallurgy Evolution',
+      secChronicleISub:
+        'Operational Trials, Procurement Mandates & Material Metallurgy Evolution',
       secMilestonesHeading: 'CHRONOLOGICAL SERVICE MILESTONES',
-      secChronicleII: 'CHAPTER 02 · PRODUCTION ARCHITECTURE & CORE BREAKTHROUGHS',
-      secChronicleIISub: 'Operating Kinematics, Breech Locking Margin & Combat Refinement',
+      secChronicleII:
+        'CHAPTER 02 · PRODUCTION ARCHITECTURE & CORE BREAKTHROUGHS',
+      secChronicleIISub:
+        'Operating Kinematics, Breech Locking Margin & Combat Refinement',
       secBreakthroughsHeading: 'THREE DEFINING MECHANICAL BREAKTHROUGHS',
       plateBreechCaption:
         'FIG 2.1 · Macro X-Ray Engagement Plate: Locking Lugs, Barrel Extension & Fire-Control Sear Interface',
-      secCutawayRoles: 'CHAPTER 03 · SOLID LONGITUDINAL CUTAWAY & 6-ROLE ANATOMY',
+      secCutawayRoles:
+        'CHAPTER 03 · SOLID LONGITUDINAL CUTAWAY & 6-ROLE ANATOMY',
       secCutawayRolesSub:
         'ISO 128 45° Hatched Solid Section Cut · Six Functional Subsystem Roles & 7-Phase Kinematic Sequence',
       plateStencilCaption:
@@ -1885,12 +2041,14 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       plateRolesCaption:
         'FIG 3.2 · 34% Semi-Exploded Six-Role Functional Classification Plate (Locking / Gas / Carrier / FCG / Springs / Housing)',
       secCycle7Heading: '7-PHASE OPERATING KINEMATIC SEQUENCE',
-      secExplodedPlate: 'CHAPTER 04 · FULL 100% EXPLODED ORDNANCE BLUEPRINT PLATE',
+      secExplodedPlate:
+        'CHAPTER 04 · FULL 100% EXPLODED ORDNANCE BLUEPRINT PLATE',
       secExplodedPlateSub:
         'Collision-Free Staged Disassembly · Dual-Rail Vector BOM Callout Pins (Infinite-DPI Scalable Wall Poster)',
       explodedLegendNote:
         'Callout Palette: Cyan = Slide/Carrier Group · Emerald = Barrel/Receiver · Rose = Fire-Control Group · Amber = Magazine Feed',
-      secBomLedger: 'CHAPTER 05 · COMPLETE BILL OF MATERIALS & METALLURGY LEDGER',
+      secBomLedger:
+        'CHAPTER 05 · COMPLETE BILL OF MATERIALS & METALLURGY LEDGER',
       secBomLedgerSub: (partsCount, tris) =>
         `${partsCount} Parametric Manifold CSG Nodes · ${tris} Total Triangles · Live 1:1 Millimeter Bounding Envelopes`,
       bomColCode: 'Code',
@@ -1898,13 +2056,17 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       bomColMaterial: 'Ordnance Metallurgy & Finish',
       bomColEnvelope: '1:1 Envelope (L×H×W)',
       bomColPrinciple: 'Mechanical Function & Mating Interface',
-      secBallistics: 'CHAPTER 06 · 1:1 SAAMI CARTRIDGE CUTAWAY & INTERNAL BALLISTICS',
+      secBallistics:
+        'CHAPTER 06 · 1:1 SAAMI CARTRIDGE CUTAWAY & INTERNAL BALLISTICS',
       secBallisticsSub:
         'Coupled Chamber Pressure P(t) & Bore Velocity V(t) Curves · 1:1 Half-Section Schematic & 7-Caliber Energy Ladder',
-      chartPressureTitle: 'FIG 6.1 · Coupled Chamber Pressure P(t) [MPa] & Bore Velocity V(t) [m/s]',
-      chartCartridgeTitle: 'FIG 6.2 · 1:1 Service Cartridge Half-Section & Propellant Spec',
+      chartPressureTitle:
+        'FIG 6.1 · Coupled Chamber Pressure P(t) [MPa] & Bore Velocity V(t) [m/s]',
+      chartCartridgeTitle:
+        'FIG 6.2 · 1:1 Service Cartridge Half-Section & Propellant Spec',
       energyLadderTitle: '7-Caliber Vault Muzzle Kinetic Energy Scale (J)',
-      secArmorerManual: 'CHAPTER 07 · FIELD-STRIP DAG, STOPPAGE DRILLS & COLOPHON',
+      secArmorerManual:
+        'CHAPTER 07 · FIELD-STRIP DAG, STOPPAGE DRILLS & COLOPHON',
       secArmorerManualSub:
         'Directed Topological Field-Strip Procedure, Mechanical Interference Locks, Four Clearing Drills & QR Deep-Link',
       backSealBadge: 'AUTHENTICATED DIGITAL ARMORY MONOGRAPH',
@@ -1920,7 +2082,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       footerPage: (idx, total) =>
         `PAGE ${String(idx).padStart(2, '0')} / ${String(total).padStart(2, '0')}`,
       kids: {
-        seriesHeader: '3D MECHANICAL SCIENCE PICTURE BOOK · JUNIOR EXPLORER EDITION',
+        seriesHeader:
+          '3D MECHANICAL SCIENCE PICTURE BOOK · JUNIOR EXPLORER EDITION',
         editionBright: 'BRIGHT PICTURE BOOK',
         editionDark: 'DARK STUDIO BOOK',
         explorerLabel: 'JUNIOR EXPLORER',
@@ -1930,47 +2093,138 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         funFeaturesLabel: '3 COOL MECHANICAL HIGHLIGHTS',
         p2Kicker: 'STOP 01 · 360° ALL-AROUND LOOK',
         p2Title: 'Right Side, Left Side & Top-Down Giant Photos',
-        p2Sub: 'Walk all the way around it — can you spot the differences between the left and right sides?',
+        p2Sub:
+          'Walk all the way around it — can you spot the differences between the left and right sides?',
         viewRightTag: 'RIGHT SIDE FULL VIEW',
         viewLeftTag: 'LEFT SIDE FULL VIEW',
         viewTopTag: 'TOP-DOWN BIRD’S-EYE VIEW',
         p3Kicker: 'STOP 02 · SUPER X-RAY VISION',
         p3Title: 'See-Through Shell vs Sliced Right Down the Middle',
-        p3Sub: 'Turn on X-Ray eyes to peek at the secret springs, levers, and sliders hiding inside!',
+        p3Sub:
+          'Turn on X-Ray eyes to peek at the secret springs, levers, and sliders hiding inside!',
         xrayBadge: 'SUPERPOWER ① · X-RAY SEE-THROUGH SHELL',
-        xrayTip: 'Makes the outer cover translucent so every hidden spring and moving block pops into view!',
+        xrayTip:
+          'Makes the outer cover translucent so every hidden spring and moving block pops into view!',
         cutawayBadge: 'SUPERPOWER ② · SLICED IN HALF',
-        cutawayTip: 'Sliced cleanly along the center line to reveal inner tunnels and interlocking metal parts!',
+        cutawayTip:
+          'Sliced cleanly along the center line to reveal inner tunnels and interlocking metal parts!',
         p4Kicker: 'STOP 03 · RAINBOW 6-TEAM COLOR MAP',
         p4Title: 'Six Bright Colors Show Each Team’s Job',
-        p4Sub: 'Every color is a special mechanical squad working together like a relay team!',
+        p4Sub:
+          'Every color is a special mechanical squad working together like a relay team!',
         teamPartsUnit: (n) => `${n} pcs`,
         p5Kicker: 'STOP 04 · GIANT LEGO-STYLE EXPLODED POSTER',
         p5Title: 'Every Single Part Floating in Mid-Air!',
-        p5Sub: 'Follow the numbered lines like a treasure map to find where each piece belongs',
+        p5Sub:
+          'Follow the numbered lines like a treasure map to find where each piece belongs',
         treasureHuntLabel: (n) => `Part Name Treasure Map (All ${n} Pieces)`,
         p6Kicker: 'STOP 05 · 4 SUB-ASSEMBLY BRICK BAGS',
         p6Title: 'Grouped into 4 Core Building Bags Like LEGO',
-        p6Sub: 'Close-up studio photos of each group all by itself so every detail shines!',
+        p6Sub:
+          'Close-up studio photos of each group all by itself so every detail shines!',
         bagLabel: (num) => `BAG #${num}`,
         p7Kicker: 'STOP 06 · 4-PANEL 3D SLOW-MO COMIC',
         p7Title: '100× Slow Motion! Watch How It Cycles in 4 Steps',
-        p7Sub: 'In the blink of an eye, springs and sliders complete an amazing mechanical relay race',
+        p7Sub:
+          'In the blink of an eye, springs and sliders complete an amazing mechanical relay race',
         ammoStripBadge: (isArchery) =>
-          isArchery ? '1:1 Carbon Arrow Anatomy Cutaway' : '1:1 Brass Cutaway Science Diagram',
+          isArchery
+            ? '1:1 Carbon Arrow Anatomy Cutaway'
+            : '1:1 Brass Cutaway Science Diagram',
         statSpeed: 'Launch Speed',
         statEnergy: 'Kinetic Energy',
         p8Kicker: 'STOP 07 · MACRO ZOOM & STEP-BY-STEP PUZZLE',
         p8Title: 'Take-Apart Order Cards & Scan for 3D Toy Bench',
-        p8Sub: 'Follow the numbered order — then scan with a phone to spin and take it apart in 3D!',
+        p8Sub:
+          'Follow the numbered order — then scan with a phone to spin and take it apart in 3D!',
         macroZoomBadge: 'CORE MECHANISM MACRO ZOOM',
         stepsTitle: (n) => `Junior Engineer Step-by-Step Order (${n} Steps)`,
         qrTitle: 'Scan with a Phone · Turn Paper into a Live 3D Toy Bench!',
-        qrSub: 'Opens instantly in the browser — spin 360°, toggle X-Ray vision, click parts to take them apart, and listen to voice stories!',
+        qrSub:
+          'Opens instantly in the browser — spin 360°, toggle X-Ray vision, click parts to take them apart, and listen to voice stories!',
         qrCertBadge: 'JUNIOR MECHANICAL EXPLORER SEAL',
         pageFooter: (idx, total) =>
           `PAGE ${String(idx).padStart(2, '0')} OF ${String(total).padStart(2, '0')}`,
       },
+    },
+    mechanismShowdown: {
+      entryBtn: 'Showdown [S]',
+      entryBtnTitle:
+        'Open Mechanism Showdown 3-Axis Lineage Matrix & Dual-Exhibit Comparison Lab: compare Drive, Locking, Feed & internal ballistics (S)',
+      plaqueCompareBtn: (rivalShort) => `Compare vs ${rivalShort}`,
+      plaqueCompareTitle: (selfShort, rivalShort) =>
+        `Open A-vs-B Mechanism Showdown comparing ${selfShort} against ${rivalShort} across drive, locking, feed & ballistics (S)`,
+      dialogAria:
+        'Mechanism Showdown Lineage Matrix and Dual-Exhibit Comparison Lab',
+      badge: 'WP-11 · MECHANISM SHOWDOWN',
+      exhibitCountPill: (exhibits, axes) =>
+        `${exhibits} EXHIBITS · ${axes} TAXONOMY AXES`,
+      title: 'Mechanical Lineage Matrix & Dual-Exhibit Showdown Lab',
+      subtitle:
+        'Orthogonal taxonomy across Operating Drive, Breech Locking & Feed Architecture · Live overlaid internal ballistics & trade-off analysis',
+      modeMatrix: '3-Axis Lineage Matrix',
+      modeShowdown: 'A vs B Showdown',
+      closeTitle: 'Close Mechanism Showdown (Esc / S)',
+      stagingLabel: 'Active Showdown Pair',
+      stagingHint:
+        'Click any exhibit chip to stage into Slot A / B, or click "Compare vs A" to launch side-by-side showdown',
+      slotALabel: 'EXHIBIT A',
+      slotBLabel: 'EXHIBIT B',
+      swapPairTitle: 'Swap Exhibit A and Exhibit B',
+      openShowdownCta: 'Launch A vs B Showdown',
+      allAxesTab: 'All 3 Taxonomy Axes',
+      familyCountBadge: (count) =>
+        `${count} ${count === 1 ? 'Exhibit' : 'Exhibits'}`,
+      prosLabel: 'Engineering Advantage',
+      consLabel: 'Mechanical Trade-Off',
+      compareWithSlotBtn: 'Compare vs A',
+      compareWithRivalBtn: 'Compare Rival',
+      presetsLabel: 'Classic Rivalries:',
+      selectWeaponAAria: 'Select Exhibit A for comparison',
+      selectWeaponBAria: 'Select Exhibit B for comparison',
+      sharedTraitBadge: 'SHARED',
+      diffTraitBadge: 'DIFF',
+      axisShortDrive: 'Drive',
+      axisShortLocking: 'Locking',
+      axisShortFeed: 'Feed',
+      cutawayBenchBtn: (shortLabel) => `Cutaway ${shortLabel} in Workbench`,
+      cutawayBenchTitle:
+        'Enter 3D Workbench for this exhibit with longitudinal Stencil Section-Cut and 6-role Functional Tint enabled',
+      liveCycleBenchBtn: 'Live Cycle',
+      liveCycleBenchTitle: 'Enter 3D Workbench Live Firing Cycle mode',
+      chartTitle: 'Overlaid Internal Ballistics & Power-Stroke Curves',
+      chartSub:
+        'Cycle progress f ∈ [0%, 100%] · Solid shaded = Pressure/Draw P(f), Dashed = Projectile Velocity V(f)',
+      scaleNormalized: 'Normalized Shape',
+      scaleRelative: 'Relative Magnitude',
+      crossDomainNote:
+        'Note: Firearm breech pressure (MPa) and archery draw thrust (N) span distinct physical domains; normalized to 100% peak to compare cycle timing',
+      legendPressure: (shortLabel) => `${shortLabel} P(t) / Force`,
+      legendVelocity: (shortLabel) => `${shortLabel} Vel V(t)`,
+      scrubReadoutLabel: (pct) =>
+        `Cycle Phase f = ${pct}% · Move cursor across trace to inspect live telemetry`,
+      scrubHoverHint:
+        'Hover across the SVG trace to compare instantaneous pressure/draw and velocity at any cycle phase',
+      axisProgressLabel:
+        'Firing / Launch Cycle Progress f (0% Ready → Ignition/Release → Exit → Eject → 100% Battery)',
+      metricsTitle: 'Quantitative Engineering Showdown',
+      metricsSub:
+        'Computed live from SAAMI/CIP/ATA ballistics engine & 1:1 factory metrology',
+      metricVelocity: 'Muzzle / Launch Velocity',
+      metricEnergy: 'Muzzle Kinetic Energy',
+      metricPeakLoad: 'Peak Breech P / Peak Draw',
+      metricCyclic: 'Cyclic Rate / Action Mode',
+      metricOalBarrel: 'Overall Length (Barrel/Stroke)',
+      metricMassParts: 'Unloaded Mass (CAD Parts)',
+      archBreakdownTitle:
+        'Subsystem Architecture & Engineering Trade-Off Matrix',
+      rowDrive: 'Energy & Operating Drive',
+      rowLocking: 'Breech Locking & Unlock Timing',
+      rowFeed: 'Ammunition Feed & Ejection',
+      rowFireControl: 'Fire Control & Safety System',
+      rowVerdict: 'Signature Strength vs Penalty',
+      strengthTag: 'PRO',
+      tradeoffTag: 'CON',
     },
   },
 };
