@@ -22,6 +22,15 @@ export interface MalfunctionSnapshot {
   activeStepId: string | null;
 }
 
+export interface MalfunctionExamBridge {
+  getBlindStateForWeapon: (weaponId: WeaponId) => {
+    active: boolean;
+    phase: 'idle' | 'diagnosis' | 'clearance' | 'completed';
+  };
+  onPartClickInClearance: (weaponId: WeaponId, partId: string) => boolean;
+  onExternalResetOrChange: (weaponId: WeaponId) => void;
+}
+
 export interface MalfunctionTransientVisuals {
   weaponId: WeaponId;
   kind: MalfunctionKind;
@@ -112,6 +121,7 @@ class MalfunctionRuntimeController {
 
   private snapshot: MalfunctionSnapshot;
   private listeners = new Set<() => void>();
+  private examBridge: MalfunctionExamBridge | null = null;
 
   private readonly transientOut: MalfunctionTransientVisuals = {
     weaponId: 'ak15',
@@ -128,6 +138,11 @@ class MalfunctionRuntimeController {
   constructor() {
     this.rebuildPartSets();
     this.snapshot = this.buildSnapshot();
+  }
+
+  public registerExamBridge(bridge: MalfunctionExamBridge | null): void {
+    this.examBridge = bridge;
+    this.emit();
   }
 
   public subscribe = (listener: () => void): (() => void) => {
@@ -256,6 +271,7 @@ class MalfunctionRuntimeController {
     this.completedSteps = 0;
     this.rebuildPartSets();
     this.syncStepTargets(true);
+    this.examBridge?.onExternalResetOrChange(weaponId);
     playTriggerDryBlockSound();
     this.emit();
   }
@@ -268,6 +284,7 @@ class MalfunctionRuntimeController {
     if (applyClock) {
       this.syncStepTargets(true);
     }
+    this.examBridge?.onExternalResetOrChange(weaponId);
     this.emit();
   }
 
@@ -279,6 +296,7 @@ class MalfunctionRuntimeController {
     this.completedSteps = 0;
     this.rebuildPartSets();
     this.syncStepTargets(true);
+    this.examBridge?.onExternalResetOrChange(this.weaponId);
     playTriggerDryBlockSound();
     this.emit();
   }
@@ -286,11 +304,16 @@ class MalfunctionRuntimeController {
   public resetDrill(): void {
     this.completedSteps = 0;
     this.syncStepTargets(true);
+    this.examBridge?.onExternalResetOrChange(this.weaponId);
     playTriggerDryBlockSound();
     this.emit();
   }
 
-  public advanceClearingStep(): boolean {
+  public advanceClearingStep(fromVerifiedBlindExam = false): boolean {
+    const blind = this.examBridge?.getBlindStateForWeapon(this.weaponId);
+    if (blind?.active && !fromVerifiedBlindExam) {
+      return false;
+    }
     const spec = MALFUNCTION_SCENARIOS[this.activeKind];
     if (this.completedSteps >= spec.steps.length) {
       return false;
@@ -314,6 +337,13 @@ class MalfunctionRuntimeController {
   public handlePartClick(weaponId: WeaponId, partId: string): boolean {
     if (this.weaponId !== weaponId) {
       this.syncWeapon(weaponId, true);
+    }
+    const blind = this.examBridge?.getBlindStateForWeapon(weaponId);
+    if (blind?.active) {
+      if (blind.phase === 'clearance' && this.examBridge) {
+        return this.examBridge.onPartClickInClearance(weaponId, partId);
+      }
+      return false;
     }
     if (
       this.causalParts.has(partId) ||
@@ -408,6 +438,11 @@ class MalfunctionRuntimeController {
     partId: string
   ): MalfunctionPartRole {
     if (this.weaponId !== weaponId) return 'none';
+    const blind = this.examBridge?.getBlindStateForWeapon(weaponId);
+    if (blind?.active && blind.phase === 'diagnosis') {
+      // Suppress causal/action part highlighting until candidate diagnoses the stoppage!
+      return 'none';
+    }
     const total = MALFUNCTION_SCENARIOS[this.activeKind].steps.length;
     if (this.completedSteps >= total) {
       return this.causalParts.has(partId) ? 'cleared' : 'none';

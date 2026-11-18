@@ -1,0 +1,859 @@
+/* ==================== WP-13: Armorer Blind Exam & Stoppage Triage HUD ==================== */
+
+@keyframes examPulseBeacon {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.45);
+  }
+  50% {
+    opacity: 0.86;
+    transform: scale(1.06);
+    box-shadow: 0 0 10px 2px rgba(245, 158, 11, 0.35);
+  }
+}
+
+@keyframes examErrorShake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-3px);
+  }
+  45% {
+    transform: translateX(3px);
+  }
+  70% {
+    transform: translateX(-1.5px);
+  }
+}
+
+@keyframes examCertReveal {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.992);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Header Toggle Pill ("盲拆考核 · Blind Exam" / "随机盲测排障 · Blind Triage") */
+.exam-mode-toggle-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 9.5px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.16),
+    rgba(234, 88, 12, 0.12)
+  );
+  border: 1px solid rgba(245, 158, 11, 0.52);
+  color: #fbbf24;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.exam-mode-toggle-pill:hover {
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.26),
+    rgba(234, 88, 12, 0.2)
+  );
+  border-color: #f59e0b;
+  color: #fde68a;
+  transform: translateY(-0.5px);
+}
+
+.exam-mode-toggle-pill.is-active {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  border-color: #fbbf24;
+  color: #ffffff;
+  box-shadow: 0 2px 12px rgba(245, 158, 11, 0.34);
+}
+
+[data-theme='light'] .exam-mode-toggle-pill {
+  background: linear-gradient(135deg, #fffbeb, #fef3c7);
+  border-color: rgba(217, 119, 6, 0.55);
+  color: #92400e;
+}
+
+[data-theme='light'] .exam-mode-toggle-pill:hover {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border-color: #b45309;
+  color: #78350f;
+}
+
+[data-theme='light'] .exam-mode-toggle-pill.is-active {
+  background: linear-gradient(135deg, #d97706, #b45309);
+  border-color: #92400e;
+  color: #ffffff;
+}
+
+/* Personal-Best Mini Rank Chip inside Toggle Pill */
+.exam-pb-rank-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 17px;
+  height: 16px;
+  padding: 0 4.5px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  line-height: 1;
+}
+
+.exam-pb-rank-chip.rank-S {
+  background: linear-gradient(135deg, #fbbf24, #d97706);
+  color: #0f172a;
+  box-shadow: 0 0 8px rgba(251, 191, 36, 0.45);
+}
+
+.exam-pb-rank-chip.rank-A {
+  background: linear-gradient(135deg, #38bdf8, #0284c7);
+  color: #ffffff;
+}
+
+.exam-pb-rank-chip.rank-B {
+  background: linear-gradient(135deg, #34d399, #059669);
+  color: #064e3b;
+}
+
+.exam-pb-rank-chip.rank-C {
+  background: rgba(148, 163, 184, 0.32);
+  color: var(--color-text-primary);
+}
+
+[data-theme='light'] .exam-pb-rank-chip.rank-C {
+  background: #cbd5e1;
+  color: #1e293b;
+}
+
+/* Exam Mode Header Badge */
+.exam-active-mode-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 5px;
+  background: rgba(245, 158, 11, 0.18);
+  border: 1px solid rgba(245, 158, 11, 0.5);
+  color: #fbbf24;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+[data-theme='light'] .exam-active-mode-badge {
+  background: #fffbeb;
+  border-color: rgba(217, 119, 6, 0.52);
+  color: #b45309;
+}
+
+.exam-stage-pill {
+  padding: 2px 8.5px;
+  border-radius: 999px;
+  background: var(--surface-cyan-tint);
+  border: 1px solid rgba(56, 189, 248, 0.42);
+  color: var(--color-accent-cyan-text);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.exam-stage-pill.is-reassembly {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.48);
+  color: #34d399;
+}
+
+[data-theme='light'] .exam-stage-pill.is-reassembly {
+  background: #ecfdf5;
+  color: #047857;
+}
+
+/* Live Telemetry Cluster: Isolated 100ms Timer, Score & Mistake Readouts */
+.exam-telemetry-strip {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.exam-timer-pill,
+.exam-score-pill,
+.exam-mistake-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 7.5px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.exam-timer-pill {
+  background: rgba(15, 23, 42, 0.72);
+  border: 1px solid rgba(56, 189, 248, 0.42);
+  color: #38bdf8;
+}
+
+.exam-timer-pill.is-over-par {
+  border-color: rgba(245, 158, 11, 0.52);
+  color: #fbbf24;
+}
+
+[data-theme='light'] .exam-timer-pill {
+  background: #f0f9ff;
+  border-color: rgba(2, 132, 199, 0.36);
+  color: #0369a1;
+}
+
+[data-theme='light'] .exam-timer-pill.is-over-par {
+  background: #fffbeb;
+  border-color: rgba(217, 119, 6, 0.42);
+  color: #b45309;
+}
+
+.exam-score-pill {
+  background: rgba(245, 158, 11, 0.14);
+  border: 1px solid rgba(245, 158, 11, 0.42);
+  color: #fbbf24;
+}
+
+[data-theme='light'] .exam-score-pill {
+  background: #fffbeb;
+  border-color: rgba(217, 119, 6, 0.4);
+  color: #92400e;
+}
+
+.exam-mistake-pill {
+  background: var(--surface-pill);
+  border: 1px solid var(--border-subtle);
+  color: var(--color-text-secondary);
+}
+
+.exam-mistake-pill.has-mistakes {
+  animation: examErrorShake 0.36s ease-in-out;
+  background: rgba(239, 68, 68, 0.18);
+  border-color: rgba(239, 68, 68, 0.55);
+  color: #fca5a5;
+}
+
+[data-theme='light'] .exam-mistake-pill.has-mistakes {
+  background: #fef2f2;
+  border-color: rgba(220, 38, 38, 0.45);
+  color: #b91c1c;
+}
+
+/* Locked Hint / Auto-Step Indicator in Blind Mode */
+.fs-ctrl-btn.is-exam-locked {
+  opacity: 0.42;
+  border-style: dashed;
+  cursor: not-allowed;
+}
+
+/* ==================== Challenge 1: Numbered Blind Progress Nodes ==================== */
+.exam-blind-nodes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
+  gap: 6px;
+}
+
+.exam-blind-node {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 5.5px 8px;
+  border-radius: 8px;
+  background: var(--surface-subtle);
+  border: 1px dashed var(--border-strong);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-muted);
+  user-select: none;
+  transition: all 0.16s ease;
+}
+
+.exam-blind-node.is-done {
+  border-style: solid;
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.52);
+  color: #34d399;
+}
+
+[data-theme='light'] .exam-blind-node.is-done {
+  background: #ecfdf5;
+  border-color: rgba(5, 150, 105, 0.48);
+  color: #047857;
+}
+
+.exam-blind-node.is-current {
+  border-style: solid;
+  background: var(--surface-cyan-tint);
+  border-color: var(--color-accent-cyan);
+  color: var(--color-accent-cyan-text);
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.22);
+}
+
+.exam-blind-node.is-current .exam-node-dot {
+  display: inline-block;
+  color: #fbbf24;
+  animation: examPulseBeacon 1.3s ease-in-out infinite;
+}
+
+[data-theme='light'] .exam-blind-node.is-current .exam-node-dot {
+  color: #d97706;
+}
+
+/* ==================== Challenge 2: Blind Stoppage Triage UI ==================== */
+.malf-tab-btn.is-blind-choice {
+  position: relative;
+  border-style: solid;
+  border-color: var(--border-strong);
+}
+
+.malf-tab-btn.is-blind-choice:hover:not(:disabled) {
+  border-color: #f59e0b;
+  background: var(--surface-amber-tint);
+}
+
+.malf-tab-btn.is-wrong-guess {
+  animation: examErrorShake 0.38s ease-in-out;
+  background: rgba(239, 68, 68, 0.14);
+  border-color: rgba(239, 68, 68, 0.52);
+  opacity: 0.72;
+  cursor: not-allowed;
+}
+
+[data-theme='light'] .malf-tab-btn.is-wrong-guess {
+  background: #fef2f2;
+  border-color: rgba(220, 38, 38, 0.45);
+}
+
+.malf-tab-btn.is-confirmed-choice {
+  background: rgba(16, 185, 129, 0.16);
+  border-color: #10b981;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.24);
+}
+
+[data-theme='light'] .malf-tab-btn.is-confirmed-choice {
+  background: #ecfdf5;
+  border-color: #059669;
+}
+
+.malf-tab-btn.is-dimmed-choice {
+  opacity: 0.44;
+  cursor: default;
+}
+
+.exam-choice-top-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.exam-choice-status-tag {
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 800;
+  background: var(--surface-pill);
+  color: var(--color-text-muted);
+}
+
+.malf-tab-btn.is-wrong-guess .exam-choice-status-tag {
+  background: rgba(239, 68, 68, 0.24);
+  color: #fca5a5;
+}
+
+[data-theme='light'] .malf-tab-btn.is-wrong-guess .exam-choice-status-tag {
+  color: #b91c1c;
+}
+
+.malf-tab-btn.is-confirmed-choice .exam-choice-status-tag {
+  background: rgba(16, 185, 129, 0.24);
+  color: #34d399;
+}
+
+[data-theme='light'] .malf-tab-btn.is-confirmed-choice .exam-choice-status-tag {
+  color: #047857;
+}
+
+/* Redacted Unknown Stoppage Banner */
+.exam-redacted-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 11px;
+  border-radius: 9px;
+  background: linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.12),
+    rgba(15, 23, 42, 0.76)
+  );
+  border: 1px dashed rgba(245, 158, 11, 0.56);
+  font-size: 11.5px;
+  line-height: 1.45;
+}
+
+[data-theme='light'] .exam-redacted-banner {
+  background: linear-gradient(135deg, #fffbeb, #f8fafc);
+  border-color: rgba(217, 119, 6, 0.52);
+}
+
+.exam-redacted-banner.is-confirmed {
+  border-style: solid;
+  background: linear-gradient(
+    135deg,
+    rgba(16, 185, 129, 0.12),
+    rgba(15, 23, 42, 0.72)
+  );
+  border-color: rgba(16, 185, 129, 0.5);
+}
+
+[data-theme='light'] .exam-redacted-banner.is-confirmed {
+  background: linear-gradient(135deg, #ecfdf5, #f8fafc);
+  border-color: rgba(5, 150, 105, 0.45);
+}
+
+.exam-redacted-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+}
+
+.exam-redacted-headline {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.exam-optics-shortcuts {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.exam-optic-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2.5px 7.5px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  background: var(--surface-pill);
+  border: 1px solid var(--border-strong);
+  color: var(--color-text-secondary);
+  transition: all 0.14s ease;
+}
+
+.exam-optic-chip:hover {
+  border-color: var(--color-accent-cyan);
+  color: var(--color-accent-cyan-text);
+}
+
+.exam-optic-chip.active {
+  background: var(--surface-cyan-tint);
+  border-color: var(--color-accent-cyan);
+  color: var(--color-accent-cyan-text);
+}
+
+.exam-redacted-sub {
+  margin: 0;
+  font-size: 11px;
+  color: var(--color-text-secondary);
+}
+
+.exam-inline-error-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px;
+  border-radius: 7px;
+  animation: examErrorShake 0.38s ease-in-out;
+  background: rgba(239, 68, 68, 0.18);
+  border: 1px solid rgba(239, 68, 68, 0.56);
+  color: #fecaca;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+[data-theme='light'] .exam-inline-error-bar {
+  background: #fef2f2;
+  border-color: rgba(220, 38, 38, 0.45);
+  color: #991b1b;
+}
+
+/* Locked & Shuffled Blind Clearance Cards */
+.exam-locked-steps-strip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: var(--surface-subtle);
+  border: 1px dashed var(--border-strong);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.malf-step-item.is-blind-candidate .malf-step-btn-card {
+  cursor: pointer;
+  border-style: dashed;
+  border-color: var(--border-strong);
+}
+
+.malf-step-item.is-blind-candidate .malf-step-btn-card:hover {
+  border-style: solid;
+  border-color: var(--color-accent-cyan);
+  background: var(--surface-cyan-tint);
+}
+
+/* ==================== Armorer Qualification Certificate Card ==================== */
+.exam-certificate-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 13px;
+  border-radius: 11px;
+  animation: examCertReveal 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+  background: linear-gradient(
+    135deg,
+    rgba(19, 28, 43, 0.96) 0%,
+    rgba(11, 17, 27, 0.98) 100%
+  );
+  border: 1px solid rgba(251, 191, 36, 0.52);
+  box-shadow: 0 10px 28px rgba(2, 6, 14, 0.48);
+}
+
+.exam-certificate-card.rank-A {
+  border-color: rgba(56, 189, 248, 0.55);
+}
+
+.exam-certificate-card.rank-B {
+  border-color: rgba(16, 185, 129, 0.52);
+}
+
+.exam-certificate-card.rank-C {
+  border-color: rgba(148, 163, 184, 0.42);
+}
+
+[data-theme='light'] .exam-certificate-card {
+  background: linear-gradient(135deg, #fffbeb 0%, #ffffff 65%);
+  border-color: rgba(217, 119, 6, 0.48);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.09);
+}
+
+[data-theme='light'] .exam-certificate-card.rank-A {
+  background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 65%);
+  border-color: rgba(2, 132, 199, 0.44);
+}
+
+[data-theme='light'] .exam-certificate-card.rank-B {
+  background: linear-gradient(135deg, #ecfdf5 0%, #ffffff 65%);
+  border-color: rgba(5, 150, 105, 0.44);
+}
+
+[data-theme='light'] .exam-certificate-card.rank-C {
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 65%);
+  border-color: rgba(100, 116, 139, 0.36);
+}
+
+.exam-cert-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.exam-cert-identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.exam-rank-medallion {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 21px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.exam-rank-medallion.rank-S {
+  background: linear-gradient(135deg, #fde68a 0%, #f59e0b 55%, #b45309 100%);
+  color: #0f172a;
+  box-shadow: 0 0 18px rgba(245, 158, 11, 0.46);
+}
+
+.exam-rank-medallion.rank-A {
+  background: linear-gradient(135deg, #7dd3fc 0%, #0ea5e9 55%, #0369a1 100%);
+  color: #ffffff;
+  box-shadow: 0 0 16px rgba(14, 165, 233, 0.4);
+}
+
+.exam-rank-medallion.rank-B {
+  background: linear-gradient(135deg, #6ee7b7 0%, #10b981 55%, #047857 100%);
+  color: #064e3b;
+  box-shadow: 0 0 14px rgba(16, 185, 129, 0.34);
+}
+
+.exam-rank-medallion.rank-C {
+  background: linear-gradient(135deg, #94a3b8 0%, #475569 100%);
+  color: #f8fafc;
+}
+
+.exam-cert-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.exam-cert-overline {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: #fbbf24;
+}
+
+.exam-certificate-card.rank-A .exam-cert-overline {
+  color: #38bdf8;
+}
+
+.exam-certificate-card.rank-B .exam-cert-overline {
+  color: #34d399;
+}
+
+.exam-certificate-card.rank-C .exam-cert-overline {
+  color: var(--color-text-muted);
+}
+
+[data-theme='light'] .exam-cert-overline {
+  color: #b45309;
+}
+
+[data-theme='light'] .exam-certificate-card.rank-A .exam-cert-overline {
+  color: #0284c7;
+}
+
+[data-theme='light'] .exam-certificate-card.rank-B .exam-cert-overline {
+  color: #047857;
+}
+
+.exam-new-record-pill {
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #f59e0b, #ea580c);
+  color: #ffffff;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+}
+
+.exam-cert-main-heading {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--color-text-primary);
+}
+
+.exam-cert-sub-meta {
+  font-size: 10.5px;
+  color: var(--color-text-muted);
+}
+
+/* Certificate Quantitative Metrics Grid */
+.exam-cert-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.exam-cert-metric-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 5px 8px;
+  border-radius: 7px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
+}
+
+.exam-cert-metric-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+
+.exam-cert-metric-val {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-primary);
+}
+
+.exam-cert-metric-val.is-bonus {
+  color: #34d399;
+}
+
+[data-theme='light'] .exam-cert-metric-val.is-bonus {
+  color: #047857;
+}
+
+.exam-cert-metric-val.is-penalty {
+  color: #fca5a5;
+}
+
+[data-theme='light'] .exam-cert-metric-val.is-penalty {
+  color: #b91c1c;
+}
+
+.exam-cert-debrief {
+  padding: 5px 9px;
+  border-radius: 7px;
+  background: var(--surface-pill);
+  border: 1px solid var(--border-subtle);
+  font-size: 11px;
+  line-height: 1.42;
+  color: var(--color-text-secondary);
+}
+
+.exam-cert-debrief strong {
+  color: var(--color-text-primary);
+}
+
+.exam-cert-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.exam-cert-retry-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #d97706, #ea580c);
+  border: 1px solid rgba(251, 191, 36, 0.6);
+  color: #ffffff;
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.exam-cert-retry-btn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-0.5px);
+}
+
+.exam-cert-exit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 11px;
+  border-radius: 8px;
+  background: var(--surface-pill);
+  border: 1px solid var(--border-strong);
+  color: var(--color-text-secondary);
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.exam-cert-exit-btn:hover {
+  color: var(--color-text-primary);
+  border-color: var(--color-accent-cyan);
+}
+
+.exam-mode-toggle-pill:focus-visible,
+.exam-optic-chip:focus-visible,
+.exam-cert-retry-btn:focus-visible,
+.exam-cert-exit-btn:focus-visible {
+  outline: 2px solid var(--color-accent-cyan);
+  outline-offset: 2px;
+}
+
+/* Compact Height & Tablet / Mobile Breakpoints */
+@media (max-height: 820px) {
+  .exam-certificate-card {
+    padding: 7px 11px;
+    gap: 6px;
+  }
+
+  .exam-rank-medallion {
+    width: 34px;
+    height: 34px;
+    font-size: 18px;
+  }
+
+  .exam-cert-metric-cell {
+    padding: 4px 7px;
+  }
+}
+
+@media (max-width: 720px) {
+  .exam-cert-metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .exam-blind-nodes-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .exam-blind-nodes-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

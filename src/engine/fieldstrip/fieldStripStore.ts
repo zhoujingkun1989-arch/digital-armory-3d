@@ -52,6 +52,28 @@ export interface FieldStripClickOutcome {
   focusPartId: string | null;
 }
 
+export interface FieldStripExamBridge {
+  isBlindActiveForWeapon: (weaponId: WeaponId) => boolean;
+  isBlindCompletedForWeapon: (weaponId: WeaponId) => boolean;
+  getRedactedMessages: () => {
+    stripBlockedZh: string;
+    stripBlockedEn: string;
+    reassembleBlockedZh: string;
+    reassembleBlockedEn: string;
+    wrongPartZh: string;
+    wrongPartEn: string;
+  };
+  onAttemptOutcome: (params: {
+    weaponId: WeaponId;
+    outcome: 'stripped' | 'reassembled' | 'blocked' | 'non_strip_part';
+    strippedCount: number;
+    totalSteps: number;
+    phase: FieldStripPhase;
+    fullCycleCompleted: boolean;
+  }) => void;
+  onExternalReset: (weaponId: WeaponId) => void;
+}
+
 interface CompiledPartStepRef {
   stepIndex: number;
   explodeStepIndices: readonly number[];
@@ -164,9 +186,19 @@ class FieldStripRuntimeController {
 
   private snapshot: FieldStripSnapshot;
   private listeners = new Set<() => void>();
+  private examBridge: FieldStripExamBridge | null = null;
 
   constructor() {
     this.snapshot = this.buildSnapshot();
+  }
+
+  public registerExamBridge(bridge: FieldStripExamBridge | null): void {
+    this.examBridge = bridge;
+    this.emit();
+  }
+
+  public refreshSnapshot(): void {
+    this.emit();
   }
 
   public subscribe = (listener: () => void): (() => void) => {
@@ -232,7 +264,11 @@ class FieldStripRuntimeController {
         strippedStepIds.push(cache.plan.steps[i].id);
       }
     }
-    const rec = this.computeRecommendedStep(cache, this.phase);
+    const isBlind =
+      this.examBridge?.isBlindActiveForWeapon(this.activeWeaponId) ?? false;
+    const rec = isBlind
+      ? null
+      : this.computeRecommendedStep(cache, this.phase);
     return {
       weaponId: this.activeWeaponId,
       phase: this.phase,
@@ -242,7 +278,7 @@ class FieldStripRuntimeController {
       recommendedStepId: rec ? rec.id : null,
       fullCycleCompleted: this.fullCycleCompleted,
       interference: this.interference,
-      hintStepId: this.hintStepId,
+      hintStepId: isBlind ? null : this.hintStepId,
       hintSeq: this.hintSeq,
     };
   }
@@ -259,6 +295,7 @@ class FieldStripRuntimeController {
       this.interference = null;
       this.hintStepId = null;
       this.clearTransientHighlights();
+      this.examBridge?.onExternalReset(weaponId);
       this.emit();
     }
   }
@@ -276,10 +313,14 @@ class FieldStripRuntimeController {
     this.interference = null;
     this.hintStepId = null;
     this.clearTransientHighlights();
+    this.examBridge?.onExternalReset(targetWeapon);
     this.emit();
   }
 
   public setPhase(nextPhase: FieldStripPhase): void {
+    if (this.examBridge?.isBlindActiveForWeapon(this.activeWeaponId)) {
+      return;
+    }
     const cache = getWeaponCache(this.activeWeaponId);
     let strippedCount = 0;
     for (let i = 0; i < cache.targets.length; i++) {
@@ -308,6 +349,9 @@ class FieldStripRuntimeController {
   }
 
   public triggerHint(): string | null {
+    if (this.examBridge?.isBlindActiveForWeapon(this.activeWeaponId)) {
+      return null;
+    }
     const cache = getWeaponCache(this.activeWeaponId);
     const rec = this.computeRecommendedStep(cache, this.phase);
     if (!rec) return null;
@@ -331,6 +375,9 @@ class FieldStripRuntimeController {
    * Executes the next valid topological step automatically (for toolbar button or accessibility).
    */
   public performRecommendedStep(): FieldStripClickOutcome {
+    if (this.examBridge?.isBlindActiveForWeapon(this.activeWeaponId)) {
+      return { outcome: 'non_strip_part', stepId: null, focusPartId: null };
+    }
     const cache = getWeaponCache(this.activeWeaponId);
     const rec = this.computeRecommendedStep(cache, this.phase);
     if (!rec) {
@@ -344,7 +391,8 @@ class FieldStripRuntimeController {
   private resolveCandidateStepIndex(
     cache: CompiledWeaponFieldStripCache,
     partId: string,
-    phase: FieldStripPhase
+    phase: FieldStripPhase,
+    isBlindExam = false
   ): number | null {
     const trigSteps = cache.triggerStepsByPartId.get(partId);
     const boundRefs = cache.boundStepsByPartId.get(partId);
@@ -362,8 +410,8 @@ class FieldStripRuntimeController {
           if (cache.targets[idx] === 0) return idx;
         }
       }
-      // If all matching steps are already stripped, check if user clicked a stripped trigger to reassemble
-      if (trigSteps) {
+      // In Guided mode only, clicking an already-stripped trigger allows reversing that step
+      if (!isBlindExam && trigSteps) {
         for (let i = trigSteps.length - 1; i >= 0; i--) {
           const idx = trigSteps[i];
           if (cache.targets[idx] === 1) return idx;
@@ -395,10 +443,59 @@ class FieldStripRuntimeController {
     if (this.activeWeaponId !== weaponId) {
       this.syncWeapon(weaponId, false);
     }
+    if (this.examBridge?.isBlindCompletedForWeapon(weaponId)) {
+      return { outcome: 'non_strip_part', stepId: null, focusPartId: null };
+    }
+
+    const isBlind =
+      this.examBridge?.isBlindActiveForWeapon(weaponId) ?? false;
     const cache = getWeaponCache(weaponId);
-    const stepIdx = this.resolveCandidateStepIndex(cache, partId, this.phase);
+    const stepIdx = this.resolveCandidateStepIndex(
+      cache,
+      partId,
+      this.phase,
+      isBlind
+    );
 
     if (stepIdx === null) {
+      if (isBlind && this.examBridge) {
+        this.blockingParts.clear();
+        this.blockedParts.clear();
+        this.hintParts.clear();
+        this.blockingParts.add(partId);
+        this.blockHighlightUntilMs =
+          nowTimestampMs() + BLOCK_HIGHLIGHT_DURATION_MS;
+
+        const redacted = this.examBridge.getRedactedMessages();
+        this.alertSeq += 1;
+        this.interference = {
+          severity: 'interference',
+          attemptedPartId: partId,
+          attemptedStepId: null,
+          blockingStepIds: [],
+          blockingPartIds: [partId],
+          messageZh: redacted.wrongPartZh,
+          messageEn: redacted.wrongPartEn,
+          seq: this.alertSeq,
+        };
+
+        let curStripped = 0;
+        for (let i = 0; i < cache.targets.length; i++) {
+          if (cache.targets[i] === 1) curStripped++;
+        }
+        playTriggerDryBlockSound();
+        this.examBridge.onAttemptOutcome({
+          weaponId,
+          outcome: 'non_strip_part',
+          strippedCount: curStripped,
+          totalSteps: cache.plan.steps.length,
+          phase: this.phase,
+          fullCycleCompleted: false,
+        });
+        this.emit();
+        return { outcome: 'non_strip_part', stepId: null, focusPartId: partId };
+      }
+
       this.alertSeq += 1;
       this.interference = {
         severity: 'info',
@@ -433,6 +530,52 @@ class FieldStripRuntimeController {
       }
 
       if (unmetStepIndices.length > 0) {
+        if (isBlind && this.examBridge) {
+          // Red interference pulse ONLY on the clicked part — never highlight prerequisite parts!
+          this.blockingParts.clear();
+          this.blockedParts.clear();
+          this.hintParts.clear();
+          this.blockingParts.add(partId);
+          for (const pId of step.triggerPartIds) {
+            this.blockingParts.add(pId);
+          }
+          this.blockHighlightUntilMs =
+            nowTimestampMs() + BLOCK_HIGHLIGHT_DURATION_MS;
+
+          const redacted = this.examBridge.getRedactedMessages();
+          this.alertSeq += 1;
+          this.interference = {
+            severity: 'interference',
+            attemptedPartId: partId,
+            attemptedStepId: null,
+            blockingStepIds: [],
+            blockingPartIds: [partId],
+            messageZh: redacted.stripBlockedZh,
+            messageEn: redacted.stripBlockedEn,
+            seq: this.alertSeq,
+          };
+
+          let curStripped = 0;
+          for (let i = 0; i < cache.targets.length; i++) {
+            if (cache.targets[i] === 1) curStripped++;
+          }
+          playTriggerDryBlockSound();
+          this.examBridge.onAttemptOutcome({
+            weaponId,
+            outcome: 'blocked',
+            strippedCount: curStripped,
+            totalSteps: cache.plan.steps.length,
+            phase: this.phase,
+            fullCycleCompleted: false,
+          });
+          this.emit();
+          return {
+            outcome: 'blocked',
+            stepId: null,
+            focusPartId: partId,
+          };
+        }
+
         // Find immediate actionable prerequisites so we highlight the exact blocking parts
         const blockingStepIds = unmetStepIndices.map(
           (idx) => cache.plan.steps[idx].id
@@ -499,6 +642,16 @@ class FieldStripRuntimeController {
       }
 
       playWorkbenchFoley('preset_detent');
+      if (isBlind && this.examBridge) {
+        this.examBridge.onAttemptOutcome({
+          weaponId,
+          outcome: 'stripped',
+          strippedCount: strippedTotal,
+          totalSteps: cache.plan.steps.length,
+          phase: this.phase,
+          fullCycleCompleted: false,
+        });
+      }
       this.emit();
       return {
         outcome: 'stripped',
@@ -518,6 +671,51 @@ class FieldStripRuntimeController {
     }
 
     if (activeDependents.length > 0) {
+      if (isBlind && this.examBridge) {
+        this.blockingParts.clear();
+        this.blockedParts.clear();
+        this.hintParts.clear();
+        this.blockingParts.add(partId);
+        for (const pId of step.triggerPartIds) {
+          this.blockingParts.add(pId);
+        }
+        this.blockHighlightUntilMs =
+          nowTimestampMs() + BLOCK_HIGHLIGHT_DURATION_MS;
+
+        const redacted = this.examBridge.getRedactedMessages();
+        this.alertSeq += 1;
+        this.interference = {
+          severity: 'interference',
+          attemptedPartId: partId,
+          attemptedStepId: null,
+          blockingStepIds: [],
+          blockingPartIds: [partId],
+          messageZh: redacted.reassembleBlockedZh,
+          messageEn: redacted.reassembleBlockedEn,
+          seq: this.alertSeq,
+        };
+
+        let curStripped = 0;
+        for (let i = 0; i < cache.targets.length; i++) {
+          if (cache.targets[i] === 1) curStripped++;
+        }
+        playTriggerDryBlockSound();
+        this.examBridge.onAttemptOutcome({
+          weaponId,
+          outcome: 'blocked',
+          strippedCount: curStripped,
+          totalSteps: cache.plan.steps.length,
+          phase: this.phase,
+          fullCycleCompleted: false,
+        });
+        this.emit();
+        return {
+          outcome: 'blocked',
+          stepId: null,
+          focusPartId: partId,
+        };
+      }
+
       const blockingStepIds = activeDependents.map(
         (idx) => cache.plan.steps[idx].id
       );
@@ -584,6 +782,16 @@ class FieldStripRuntimeController {
     }
 
     playWorkbenchFoley('preset_detent');
+    if (isBlind && this.examBridge) {
+      this.examBridge.onAttemptOutcome({
+        weaponId,
+        outcome: 'reassembled',
+        strippedCount: remainingStripped,
+        totalSteps: cache.plan.steps.length,
+        phase: this.phase,
+        fullCycleCompleted: remainingStripped === 0,
+      });
+    }
     this.emit();
     return {
       outcome: 'reassembled',
