@@ -624,6 +624,47 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
                   ))}
                 </tbody>
               </table>
+
+              <section
+                className="m-bom-signoff-block"
+                aria-label={
+                  isZh
+                    ? 'CAD 几何测绘与运动学质量签审栏'
+                    : 'CAD Metrology & Quality Sign-Off'
+                }
+              >
+                <div className="m-bso-main">
+                  <span className="m-bso-kicker">
+                    {isZh
+                      ? 'ISO 128 / 7200 · CAD 几何测绘与运动学质量签审栏'
+                      : 'ISO 128 / 7200 · CAD METROLOGY & QUALITY SIGN-OFF'}
+                  </span>
+                  <strong className="m-bso-spec">
+                    {isZh
+                      ? '1:1 比例 = 10 mm/单位 · 水密流形 CSG 网格 · 零干涉运动学已核验'
+                      : '1:1 Scale = 10 mm/unit · Watertight Manifold CSG · Zero-Interference Kinematics Verified'}
+                  </strong>
+                </div>
+                <div className="m-bso-cells">
+                  <div className="m-bso-cell">
+                    <span>{isZh ? '坐标基准' : 'CAD DATUM'}</span>
+                    <strong>+X · +Y · +Z (mm)</strong>
+                  </div>
+                  <div className="m-bso-cell">
+                    <span>{isZh ? '流形网格' : 'CSG MESH'}</span>
+                    <strong>
+                      {dossier.bomRows.length} {isZh ? '件' : 'pcs'} ·{' '}
+                      {dossier.totalTrianglesFormatted} Δ
+                    </strong>
+                  </div>
+                  <div className="m-bso-cell is-verified">
+                    <span>{isZh ? '签审状态' : 'QA SIGN-OFF'}</span>
+                    <strong>
+                      {isZh ? '已核准 · REV.26' : 'VERIFIED · REV.26'}
+                    </strong>
+                  </div>
+                </div>
+              </section>
             </div>
 
             <PageIsoFooter

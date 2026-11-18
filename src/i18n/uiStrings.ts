@@ -699,7 +699,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       liveOff: '3D 实时贴图：已关闭',
       closeAria: '关闭贴图检视窗口',
       ormBadge: 'ORM · R/G/B',
-      ormChannelTitle: 'ORM 复合通道 (R:AO · G:粗糙 · B:金属)',
+      ormChannelTitle: '复合通道 (R:AO · G:粗糙 · B:金属)',
       downloadTitle: (fileName) => `下载 ${fileName}`,
       loadingFallback: (shortLabel) =>
         `正在按需加载 ${shortLabel} 材质图集元数据...`,
@@ -1382,7 +1382,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       liveOff: 'Live 3D Textures: OFF',
       closeAria: 'Close PBR texture atlas inspector',
       ormBadge: 'ORM · R/G/B',
-      ormChannelTitle: 'ORM · R:AO · G:Rough · B:Metal',
+      ormChannelTitle: 'Packed ORM (AO · Rough · Metal)',
       downloadTitle: (fileName) => `Download ${fileName}`,
       loadingFallback: (shortLabel) =>
         `Loading ${shortLabel} PBR atlas metadata on demand...`,
@@ -1849,7 +1849,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       mode8p: '8-Page Full Color Book',
       mode4p: '4-Page Quick Print',
       callsignLabel: 'Name Stamp',
-      callsignPlaceholder: 'Child Name / Collector Callsign (printed on cover)',
+      callsignPlaceholder: 'Child Name / Collector Callsign (on cover)',
       reshootBtn: 'Re-Shoot 3D',
       reshootTitle: 'Re-render all 17 offscreen HD WebGL 3D studio plates',
       printCta: 'Print Picture Book / Export PDF',
@@ -1894,7 +1894,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       secBomLedgerSub: (partsCount, tris) =>
         `${partsCount} Parametric Manifold CSG Nodes · ${tris} Total Triangles · Live 1:1 Millimeter Bounding Envelopes`,
       bomColCode: 'Code',
-      bomColComponent: 'Component Designation (EN / 中文)',
+      bomColComponent: 'Component Designation & Group',
       bomColMaterial: 'Ordnance Metallurgy & Finish',
       bomColEnvelope: '1:1 Envelope (L×H×W)',
       bomColPrinciple: 'Mechanical Function & Mating Interface',

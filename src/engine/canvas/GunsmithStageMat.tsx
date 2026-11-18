@@ -4,7 +4,6 @@ import { useFrame } from '@react-three/fiber';
 import {
   ContactShadows,
   Environment,
-  Grid,
   Lightformer,
 } from '@react-three/drei';
 import { useAppStore } from '../../store/useAppStore';
@@ -115,7 +114,7 @@ export const ARMORY_ENVIRONMENTS: Readonly<
       'Deep gunmetal obsidian void with a crisp cool-steel key and warm tungsten grazing rims that make nitrided steel, hard-anodized aluminium and brass gleam.',
     tone: 'dark',
     background: '#0b1017',
-    fog: { color: '#0b1017', near: 170, far: 430 },
+    fog: { color: '#0b1017', near: 420, far: 555 },
     ambient: { color: '#9fb4cc', intensity: 0.14 },
     hemisphere: {
       skyColor: '#94a9c6',
@@ -215,7 +214,7 @@ export const ARMORY_ENVIRONMENTS: Readonly<
       "Charcoal armorer's workshop under warm 4200K overhead shop strips with a steel-blue side fill, like a real gunsmith's repair bench.",
     tone: 'dark',
     background: '#14181f',
-    fog: { color: '#14181f', near: 180, far: 440 },
+    fog: { color: '#14181f', near: 420, far: 555 },
     ambient: { color: '#c8b9a4', intensity: 0.16 },
     hemisphere: { skyColor: '#ffe2bf', groundColor: '#0d1015', intensity: 0.5 },
     keyLight: { color: '#ffd6aa', intensity: 2.45, position: [10, 46, 30] },
@@ -306,12 +305,12 @@ export const ARMORY_ENVIRONMENTS: Readonly<
       'Clean museum engineering studio with neutral 6500K soft light for high-contrast technical diagram inspection.',
     tone: 'light',
     background: '#dce4ee',
-    fog: { color: '#dce4ee', near: 250, far: 470 },
-    ambient: { color: '#f8fafc', intensity: 0.4 },
+    fog: { color: '#dce4ee', near: 420, far: 560 },
+    ambient: { color: '#f8fafc', intensity: 0.42 },
     hemisphere: {
       skyColor: '#f8fafc',
-      groundColor: '#64748b',
-      intensity: 0.66,
+      groundColor: '#cbd5e1',
+      intensity: 0.68,
     },
     keyLight: { color: '#fffaf2', intensity: 2.1, position: [28, 42, 38] },
     rimLight: { color: '#f8fafc', intensity: 1.8, position: [-28, 34, -36] },
@@ -375,9 +374,9 @@ export const ARMORY_ENVIRONMENTS: Readonly<
         scale: [52, 28],
       },
     ],
-    toneMappingExposure: 1.0,
+    toneMappingExposure: 1.16,
     postfx: { bloomStrength: 0.22, gtaoIntensity: 0.78 },
-    grid: { cellColor: '#cbd5e1', sectionColor: '#94a3b8', fadeDistance: 130 },
+    grid: { cellColor: '#d2dce8', sectionColor: '#bdcad9', fadeDistance: 92 },
     contactShadowOpacity: 0.42,
     mat: {
       rubber: '#24364d',
@@ -1558,20 +1557,83 @@ export const ArmoryStudioEnvironment: React.FC<ArmoryStudioEnvironmentProps> =
 
 ArmoryStudioEnvironment.displayName = 'ArmoryStudioEnvironment';
 
+const STUDIO_FLOOR_GRID_VERTEX = /* glsl */ `
+  varying vec3 vWorldPos;
+  void main() {
+    vec4 wp = modelMatrix * vec4(position, 1.0);
+    vWorldPos = wp.xyz;
+    gl_Position = projectionMatrix * viewMatrix * wp;
+  }
+`;
+
+const STUDIO_FLOOR_GRID_FRAGMENT = /* glsl */ `
+  uniform vec3 uCellColor;
+  uniform vec3 uSectionColor;
+  uniform vec3 uCycloramaColor;
+  uniform vec2 uCenterXZ;
+  uniform float uFadeDistance;
+  uniform float uLineOpacity;
+  uniform float uCycloramaSheen;
+
+  varying vec3 vWorldPos;
+
+  float sampleCrispAxisGrid(vec2 coord, float stepCm, float thicknessPx) {
+    vec2 r = coord / stepCm;
+    vec2 fw = max(fwidth(r), vec2(1e-4));
+    vec2 distPx = abs(fract(r - 0.5) - 0.5) / fw;
+    // Fade lines out cleanly before grazing spacing approaches 2px to prevent moire gray sheets
+    vec2 nyquistFade = 1.0 - smoothstep(0.16, 0.40, fw);
+    vec2 lineMask = (1.0 - min(distPx + 1.0 - thicknessPx, 1.0)) * nyquistFade;
+    return max(lineMask.x, lineMask.y);
+  }
+
+  void main() {
+    vec2 relXZ = vWorldPos.xz - uCenterXZ;
+    float radialDist = length(relXZ);
+    if (radialDist >= uFadeDistance) discard;
+
+    float radialNorm = clamp(radialDist / max(uFadeDistance, 1.0), 0.0, 1.0);
+    float radialFade = pow(1.0 - smoothstep(0.0, 1.0, radialNorm), 1.65);
+
+    // Smooth grazing-angle horizon fade from active camera (eliminates mid-frame horizon bands)
+    vec3 viewVec = cameraPosition - vWorldPos;
+    float sinElev = abs(viewVec.y) / max(length(viewVec), 1e-3);
+    float horizonFade = smoothstep(0.10, 0.34, sinElev);
+
+    float gMinor = sampleCrispAxisGrid(relXZ, 2.0, 0.55) * 0.65;
+    float gMajor = sampleCrispAxisGrid(relXZ, 10.0, 0.95);
+    float gridMask = clamp(max(gMinor, gMajor), 0.0, 1.0);
+
+    vec3 gridRgb = mix(uCellColor, uSectionColor, clamp(gMajor, 0.0, 1.0));
+    float gridAlpha = gridMask * radialFade * horizonFade * uLineOpacity;
+
+    // Seamless radial studio cyclorama floor blend matching the daylight backdrop
+    float cycAlpha = radialFade * horizonFade * uCycloramaSheen;
+    float outAlpha = clamp(gridAlpha + cycAlpha * (1.0 - gridAlpha), 0.0, 1.0);
+    if (outAlpha <= 0.0015) discard;
+
+    vec3 outRgb = mix(uCycloramaColor, gridRgb, gridAlpha / max(outAlpha, 1e-4));
+    gl_FragColor = vec4(outRgb, outAlpha);
+
+    #include <tonemapping_fragment>
+    #include <colorspace_fragment>
+  }
+`;
+
 export interface GunsmithStageMatProps {
   preset?: ArmoryEnvironmentPreset;
   /** World-space X of the mat centre (the printed bore datum crosshair sits here). */
   centerX?: number;
   /** Soft real-time contact shadow pooled on the mat surface beneath the firearm */
   contactShadows?: boolean;
-  /** Infinite subtle studio floor grid surrounding the mat */
+  /** Radial cyclorama studio floor grid surrounding the mat */
   showGrid?: boolean;
 }
 
 /**
  * Workbench: 1:1 neoprene armorer's takedown mat whose top surface sits exactly at
- * `workbenchMeta.gridY` (the brass-casing floor). Showcase/Armory: only the floor grid,
- * tracking the turntable's `gridFloorY` envelope. Replaces the old pastel `StageFloorGrid`.
+ * `workbenchMeta.gridY` (the brass-casing floor). Showcase/Armory: seamless radial cyclorama
+ * studio floor grid tracking the turntable's `gridFloorY` envelope with zero horizon seam.
  */
 export const GunsmithStageMat: React.FC<GunsmithStageMatProps> = React.memo(
   ({
@@ -1586,13 +1648,54 @@ export const GunsmithStageMat: React.FC<GunsmithStageMatProps> = React.memo(
     const env = getArmoryEnvironment(preset);
 
     const geos = useMemo(() => buildTakedownMatGeometries(), []);
+    const floorGeo = useMemo(() => {
+      const plane = new THREE.PlaneGeometry(340, 340, 1, 1);
+      plane.rotateX(-Math.PI / 2);
+      return plane;
+    }, []);
+    const floorMat = useMemo(
+      () =>
+        new THREE.ShaderMaterial({
+          vertexShader: STUDIO_FLOOR_GRID_VERTEX,
+          fragmentShader: STUDIO_FLOOR_GRID_FRAGMENT,
+          transparent: true,
+          depthWrite: false,
+          side: THREE.FrontSide,
+          uniforms: {
+            uCellColor: { value: new THREE.Color('#18212c') },
+            uSectionColor: { value: new THREE.Color('#2a3748') },
+            uCycloramaColor: { value: new THREE.Color('#e3eaf3') },
+            uCenterXZ: { value: new THREE.Vector2(0, 0) },
+            uFadeDistance: { value: 135 },
+            uLineOpacity: { value: 0.72 },
+            uCycloramaSheen: { value: 0 },
+          },
+        }),
+      []
+    );
+
+    useEffect(() => {
+      const isLight = env.tone === 'light';
+      floorMat.uniforms.uCellColor.value.set(env.grid.cellColor);
+      floorMat.uniforms.uSectionColor.value.set(env.grid.sectionColor);
+      floorMat.uniforms.uCycloramaColor.value.set(
+        isLight ? '#e4ebf4' : env.background
+      );
+      floorMat.uniforms.uFadeDistance.value = env.grid.fadeDistance;
+      floorMat.uniforms.uLineOpacity.value = isLight ? 0.3 : 0.72;
+      floorMat.uniforms.uCycloramaSheen.value = isLight ? 0.24 : 0;
+      floorMat.uniforms.uCenterXZ.value.set(centerX, 0);
+    }, [env, centerX, floorMat]);
+
     useEffect(
       () => () => {
         geos.slab.dispose();
         geos.lip.dispose();
         geos.trayFloor.dispose();
+        floorGeo.dispose();
+        floorMat.dispose();
       },
-      [geos]
+      [geos, floorGeo, floorMat]
     );
 
     // Module-cached textures (shared across mounts; never disposed per unmount)
@@ -1603,14 +1706,19 @@ export const GunsmithStageMat: React.FC<GunsmithStageMatProps> = React.memo(
       if (!g) return;
       const st = useAppStore.getState();
       if (st.screen === 'workbench') {
-        g.position.y = getWeaponManifest(st.activeWeaponId).workbenchMeta.gridY;
+        const meta = getWeaponManifest(st.activeWeaponId).workbenchMeta;
+        g.position.y = meta.gridY;
+        floorMat.uniforms.uCenterXZ.value.x = meta.chamberGlowPos[0];
       } else if (st.screen === 'cartridges') {
         g.position.y = -4.75;
+        floorMat.uniforms.uCenterXZ.value.x = 1.6;
       } else {
-        g.position.y = evaluateWeaponTurntableEnvelopeInto(
+        const envl = evaluateWeaponTurntableEnvelopeInto(
           st.activeWeaponId,
           playbackClock.getState().animatedProgress
-        ).gridFloorY;
+        );
+        g.position.y = envl.gridFloorY;
+        floorMat.uniforms.uCenterXZ.value.x = envl.cx;
       }
     });
 
@@ -1626,20 +1734,14 @@ export const GunsmithStageMat: React.FC<GunsmithStageMatProps> = React.memo(
     return (
       <group ref={groupRef} position={[0, initialY, 0]}>
         {showGrid && (
-          <Grid
-            position={[0, isWorkbench ? -0.01 : 0, 0]}
-            args={[400, 400]}
-            infiniteGrid
-            cellSize={2}
-            cellThickness={0.55}
-            cellColor={env.grid.cellColor}
-            sectionSize={10}
-            sectionThickness={1.0}
-            sectionColor={env.grid.sectionColor}
-            fadeDistance={env.grid.fadeDistance}
-            fadeStrength={1.4}
+          <mesh
+            geometry={floorGeo}
+            material={floorMat}
+            position={[0, isWorkbench ? -0.015 : 0, 0]}
+            frustumCulled={false}
             raycast={noopRaycast}
             userData={{ excludeFromGtao: true }}
+            name="studio-cyclorama-floor"
           />
         )}
 

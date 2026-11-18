@@ -438,7 +438,7 @@ function computeWeaponWorldBounds(
     const env = evaluateWeaponTurntableEnvelopeInto(weaponId, shot.explodeT);
     const rim = env.radius * 1.06;
     box.expandByPoint(_corner.set(env.cx - rim, env.platterTopY - 0.65, -rim));
-    box.expandByPoint(_corner.set(env.cx + rim, env.maxY, rim));
+    box.expandByPoint(_corner.set(env.cx + rim, env.platterTopY + 0.05, rim));
   }
 
   return box;
@@ -456,8 +456,8 @@ function positionStudioShotCamera(
   cam.far = 680;
   cam.clearViewOffset();
 
+  const manifest = getWeaponManifest(weaponId);
   if (shot.useManifestCloseFocus) {
-    const manifest = getWeaponManifest(weaponId);
     const closeCfg = manifest.cameraPresets.cutaway_focus;
     cam.position.set(
       closeCfg.pos[0],
@@ -472,7 +472,7 @@ function positionStudioShotCamera(
 
   const bounds = computeWeaponWorldBounds(weaponId, plugin, shot);
   const cx = (bounds.min.x + bounds.max.x) * 0.5;
-  const cy = (bounds.min.y + bounds.max.y) * 0.5;
+  let cy = (bounds.min.y + bounds.max.y) * 0.5;
   const cz = (bounds.min.z + bounds.max.z) * 0.5;
 
   const az = THREE.MathUtils.degToRad(shot.azimuthDeg);
@@ -510,7 +510,18 @@ function positionStudioShotCamera(
   const distY = maxProjY / (tanHalfV * shot.fillY) + maxDepthTowardCam;
   const distX = maxProjX / (tanHalfH * shot.fillX) + maxDepthTowardCam;
   const minSafeDist = shot.isolatedGroup ? 8.5 : 14;
-  const dist = Math.max(minSafeDist, distX, distY);
+  const baseDist = Math.max(minSafeDist, distX, distY);
+
+  // Nudge compact pistols upward and slightly closer on cover_hero so they sit centered above the turntable rim
+  const isPistolCover =
+    shot.key === 'cover_hero' &&
+    manifest.workbenchMeta.scaleProfile === 'pistol';
+  if (isPistolCover) {
+    cy -= 1.05;
+  }
+  const dist = isPistolCover
+    ? Math.max(minSafeDist, baseDist * 0.89)
+    : baseDist;
 
   cam.position.set(
     cx + viewDir.x * dist,

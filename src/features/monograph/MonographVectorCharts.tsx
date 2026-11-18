@@ -520,7 +520,8 @@ export const BallisticsVectorChart: React.FC<{
               x: ignX,
               label: isZh ? '底火击发' : 'Ignition',
               color: axisColor,
-              yOff: plotH - 8,
+              yOff: plotH - 18,
+              align: 'end' as const,
             },
             {
               x: peakX,
@@ -567,8 +568,9 @@ export const BallisticsVectorChart: React.FC<{
             strokeDasharray="3 3"
           />
           <text
-            x={m.x + 4}
+            x={'align' in m && m.align === 'end' ? m.x - 5 : m.x + 4}
             y={padT + m.yOff}
+            textAnchor={'align' in m && m.align ? m.align : 'start'}
             fontSize={9}
             fontWeight={700}
             fill={m.color}

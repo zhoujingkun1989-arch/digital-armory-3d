@@ -34,6 +34,7 @@ import { assembleMonographDossier } from './monographDataAssembler';
 import {
   cancelMonographCapture,
   getCachedMonographBundle,
+  type MonographCaptureBundle,
   type MonographEdition,
   type MonographPageMode,
   type MonographStyleMode,
@@ -42,6 +43,43 @@ import {
 } from './monographCaptureStore';
 import { MonographDocument } from './MonographDocument';
 import { MonographKidsDocument } from './MonographKidsDocument';
+
+const MAX_MODAL_EDITION_CACHE = 6;
+const modalEditionBundleCache = new Map<string, MonographCaptureBundle>();
+
+function readModalEditionCache(
+  weaponId: string,
+  edition: MonographEdition
+): MonographCaptureBundle | null {
+  const key = `${weaponId}:${edition}`;
+  const hit = modalEditionBundleCache.get(key) ?? null;
+  if (hit) {
+    modalEditionBundleCache.delete(key);
+    modalEditionBundleCache.set(key, hit);
+  }
+  return hit;
+}
+
+function writeModalEditionCache(bundle: MonographCaptureBundle): void {
+  const key = `${bundle.weaponId}:${bundle.edition}`;
+  modalEditionBundleCache.delete(key);
+  modalEditionBundleCache.set(key, bundle);
+  while (modalEditionBundleCache.size > MAX_MODAL_EDITION_CACHE) {
+    const oldestKey = modalEditionBundleCache.keys().next().value;
+    if (oldestKey !== undefined) {
+      modalEditionBundleCache.delete(oldestKey);
+    } else {
+      break;
+    }
+  }
+}
+
+function evictModalEditionCache(
+  weaponId: string,
+  edition: MonographEdition
+): void {
+  modalEditionBundleCache.delete(`${weaponId}:${edition}`);
+}
 
 export const MonographPrintModal: React.FC = () => {
   const titleId = useId();
@@ -66,7 +104,8 @@ export const MonographPrintModal: React.FC = () => {
   const { bundle: narrationBundle } = useWeaponNarration(weaponId);
   const captureState = useMonographCaptureState();
 
-  const cachedCapture = getCachedMonographBundle(weaponId, edition);
+  const storeBundle = getCachedMonographBundle(weaponId, edition);
+  const cachedCapture = storeBundle ?? readModalEditionCache(weaponId, edition);
   const isCapturingThis =
     captureState.activeRequest?.weaponId === weaponId &&
     captureState.activeRequest?.edition === edition;
@@ -74,12 +113,24 @@ export const MonographPrintModal: React.FC = () => {
   const ui = UI_STRINGS[lang].monograph;
   const shortTag = getLocalizedShortWeaponLabel(weaponId, lang);
 
-  // Trigger offscreen 17-plate WebGL capture whenever (weaponId, edition) lacks a cached bundle
+  useEffect(() => {
+    if (storeBundle) {
+      writeModalEditionCache(storeBundle);
+    }
+  }, [storeBundle]);
+
+  // Trigger offscreen 17-plate WebGL capture only when (weaponId, edition) lacks a cached bundle;
+  // switching back to a cached edition restores instantly (0ms) and aborts any stale background job.
   useEffect(() => {
     if (!open) return;
-    if (!getCachedMonographBundle(weaponId, edition)) {
-      requestMonographCapture(weaponId, edition, false);
+    const hit =
+      getCachedMonographBundle(weaponId, edition) ??
+      readModalEditionCache(weaponId, edition);
+    if (hit) {
+      cancelMonographCapture();
+      return;
     }
+    requestMonographCapture(weaponId, edition, false);
   }, [open, weaponId, edition]);
 
   // Open native <dialog> in modal top-layer + Safari closedby="any" light-dismiss fallback
@@ -253,6 +304,7 @@ export const MonographPrintModal: React.FC = () => {
               title={ui.reshootTitle}
               onClick={() => {
                 playWorkbenchFoley('toggle_switch');
+                evictModalEditionCache(weaponId, edition);
                 requestMonographCapture(weaponId, edition, true);
               }}
             >

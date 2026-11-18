@@ -390,7 +390,7 @@ export const MonographKidsDocument: React.FC<MonographKidsDocumentProps> = ({
             </figure>
 
             {/* 6 Playful Team Color Cards */}
-            <div className="km-teams-grid">
+            <div className="km-teams-grid km-role-grid">
               {dossier.roleSummaries.map((r) => (
                 <div
                   key={r.role}

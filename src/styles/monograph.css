@@ -190,23 +190,21 @@
 .ms-weapon-strip {
   display: flex;
   align-items: center;
-  gap: 5px;
-  overflow-x: auto;
-  scrollbar-width: thin;
-  padding-bottom: 2px;
+  flex-wrap: wrap;
+  gap: 6px;
 }
 
 .ms-weapon-pill {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  min-block-size: 26px;
-  padding: 3px 9px;
+  min-block-size: 25px;
+  padding: 2px 8px;
   border-radius: 7px;
   background: rgba(30, 41, 59, 0.65);
   border: 1px solid rgba(148, 163, 184, 0.2);
   color: #cbd5e1;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
   white-space: nowrap;
   flex-shrink: 0;
@@ -294,7 +292,9 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  margin-left: auto;
+  flex: 1 1 340px;
+  justify-content: flex-end;
+  min-width: 0;
 }
 
 .ms-callsign-label {
@@ -308,14 +308,16 @@
 }
 
 .ms-callsign-input {
-  width: 215px;
+  flex: 1 1 280px;
+  min-width: 280px;
+  max-width: 390px;
   min-block-size: 28px;
-  padding: 4px 9px;
+  padding: 4px 10px;
   border-radius: 7px;
   background: rgba(15, 23, 42, 0.92);
   border: 1px solid rgba(245, 158, 11, 0.35);
   color: #f8fafc;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
   font-size: 11px;
 }
 
@@ -1288,7 +1290,7 @@
 }
 
 .m-bom-table th {
-  padding: 3.5px 4.5px;
+  padding: 4.5px 5px;
   text-align: left;
   background: var(--m-accent-soft);
   border-bottom: 1pt solid var(--m-border);
@@ -1303,11 +1305,11 @@
 }
 
 .m-bom-table .col-comp {
-  width: 192px;
+  width: 188px;
 }
 
 .m-bom-table .col-mat {
-  width: 108px;
+  width: 116px;
 }
 
 .m-bom-table .col-env {
@@ -1315,22 +1317,22 @@
 }
 
 .m-bom-table td {
-  padding: 2.3px 4.5px;
+  padding: 4.3px 5px;
   border-bottom: 0.5pt solid var(--m-border-subtle);
   vertical-align: middle;
 }
 
 .m-bom-table.is-dense {
-  font-size: 7.7px;
+  font-size: 7.8px;
 }
 
 .m-bom-table.is-dense th {
-  padding: 3px 4px;
-  font-size: 7.5px;
+  padding: 3.8px 4.5px;
+  font-size: 7.6px;
 }
 
 .m-bom-table.is-dense td {
-  padding: 1.85px 4px;
+  padding: 3.55px 4.5px;
 }
 
 .m-bom-badge {
@@ -1344,11 +1346,11 @@
 }
 
 .td-comp {
-  line-height: 1.2;
+  line-height: 1.22;
 }
 
 .m-bom-table.is-dense .td-comp {
-  line-height: 1.18;
+  line-height: 1.2;
 }
 
 .td-comp strong {
@@ -1376,7 +1378,7 @@
 }
 
 .m-bom-table.is-dense .td-mat {
-  font-size: 7.2px;
+  font-size: 7.3px;
   line-height: 1.18;
 }
 
@@ -1406,6 +1408,77 @@
   line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* ISO 7200 CAD Metrology & Quality Sign-Off Block (Page 06 Bottom Anchor) */
+.m-bom-signoff-block {
+  margin-top: auto;
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 6.5px 10px;
+  border-radius: 6px;
+  background: var(--m-surface);
+  border: 0.9pt solid var(--m-border);
+}
+
+.m-bso-main {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.m-bso-kicker {
+  font-family: var(--font-mono);
+  font-size: 7.6px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--m-accent);
+}
+
+.m-bso-spec {
+  font-family: var(--font-mono);
+  font-size: 8.2px;
+  font-weight: 700;
+  color: var(--m-text);
+  line-height: 1.3;
+}
+
+.m-bso-cells {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.m-bso-cell {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.5px;
+  padding-left: 8px;
+  border-left: 0.75pt dashed var(--m-border-subtle);
+  font-family: var(--font-mono);
+}
+
+.m-bso-cell span {
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--m-text-muted);
+}
+
+.m-bso-cell strong {
+  font-size: 8px;
+  font-weight: 800;
+  color: var(--m-text-sec);
+  white-space: nowrap;
+}
+
+.m-bso-cell.is-verified strong {
+  color: var(--m-accent-strong);
 }
 
 /* ==================== PAGE 07: BALLISTICS & 1:1 CARTRIDGE ==================== */
@@ -2330,18 +2403,19 @@
   flex-shrink: 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 7px;
+  gap: 6px;
+  margin-block-end: 10px;
 }
 
 .km-team-card {
-  padding: 7px 9px;
+  padding: 5px 8px;
   border-radius: 10px;
   background: var(--m-surface);
   border: 0.9pt solid var(--m-border-subtle);
   border-block-start-width: 3pt;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 
 .km-tc-head {

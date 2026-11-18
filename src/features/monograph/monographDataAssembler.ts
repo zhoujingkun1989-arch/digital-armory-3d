@@ -271,6 +271,31 @@ const GROUP_TO_PLATE: Record<
   magazine: 'group_mag',
 };
 
+const ARCHERY_EN_SPEC_OVERRIDES: Partial<
+  Record<
+    WeaponId,
+    {
+      caliberLabel: string;
+      weight: string;
+      muzzleVelocity: string;
+      effectiveRange: string;
+    }
+  >
+> = {
+  lift33: {
+    caliberLabel: '400 gr Carbon Hunting Arrow (70 lb · 348 FPS)',
+    weight: '1.79 kg (3.94 lb Bare Bow)',
+    muzzleVelocity: '106 m/s (348 FPS IBO)',
+    effectiveRange: '70 m (Effective Hunting)',
+  },
+  r500: {
+    caliberLabel: '400 gr Carbon Bolt (300 lb · 500 FPS)',
+    weight: '3.81 kg (8.40 lb Bare Crossbow)',
+    muzzleVelocity: '152.4 m/s (500 FPS)',
+    effectiveRange: '100+ m (100 yd BDC Scope)',
+  },
+};
+
 function parseFirstFloat(str: string, fallback: number): number {
   const m = str.match(/(\d+(?:\.\d+)?)/);
   return m ? Number(m[1]) : fallback;
@@ -499,10 +524,14 @@ function buildFallbackStory(
   milestones: StoryMilestoneItem[];
 } {
   const isZh = lang === 'zh';
+  const groupNameByKey = new Map(
+    plugin.partGroups.map((g) => [g.key, isZh ? g.nameZh : g.nameEn])
+  );
   const focusParts = plugin.parts.slice(0, 4);
   const acts: StoryActItem[] = [0, 1, 2, 3].map((idx) => {
     const p = focusParts[idx] ?? plugin.parts[0];
     const pName = isZh ? p.nameZh : p.nameEn;
+    const grpLabel = groupNameByKey.get(p.group) ?? p.group;
     return {
       id: `fallback_act_${idx + 1}`,
       actNumber: isZh
@@ -510,7 +539,12 @@ function buildFallbackStory(
         : `ACT ${['I', 'II', 'III', 'IV'][idx]}`,
       eraTag: `STAGE 0${idx + 1}`,
       title: isZh ? `${pName}与总体机械布局` : `${pName} & System Architecture`,
-      paragraphs: [description, p.description],
+      paragraphs: [
+        description,
+        isZh
+          ? p.description
+          : `${p.nameEn} (${p.bomCode}) — precision component within the ${grpLabel}.`,
+      ],
       audioScript: '',
       audioUrl: '',
       focusPartId: p.id,
@@ -520,14 +554,19 @@ function buildFallbackStory(
 
   const breakthroughs: StoryBreakthroughItem[] = plugin.parts
     .slice(0, 3)
-    .map((p, idx) => ({
-      id: `fb_bt_${idx}`,
-      title: isZh ? p.nameZh : p.nameEn,
-      tag: p.bomCode,
-      summary: p.description,
-      focusPartId: p.id,
-      focusPartLabel: isZh ? p.nameZh : p.nameEn,
-    }));
+    .map((p, idx) => {
+      const grpLabel = groupNameByKey.get(p.group) ?? p.group;
+      return {
+        id: `fb_bt_${idx}`,
+        title: isZh ? p.nameZh : p.nameEn,
+        tag: p.bomCode,
+        summary: isZh
+          ? p.description
+          : `${p.nameEn} (${p.bomCode}) — core mechanical interface in the ${grpLabel}.`,
+        focusPartId: p.id,
+        focusPartLabel: isZh ? p.nameZh : p.nameEn,
+      };
+    });
 
   const milestones: StoryMilestoneItem[] = [
     {
@@ -735,7 +774,7 @@ export function assembleMonographDossier(
     const principleRaw =
       partNarr?.kinematicRole ||
       partNarr?.overview ||
-      (isZh ? part.description : `${part.nameEn} (${part.roleTag})`);
+      (isZh ? part.description : `${part.nameEn} · ${groupTitle}`);
 
     const principleText =
       principleRaw.length > 96
@@ -746,7 +785,7 @@ export function assembleMonographDossier(
       partId: part.id,
       bomCode: part.bomCode,
       primaryName: isZh ? part.nameZh : part.nameEn,
-      secondaryName: isZh ? part.nameEn : part.nameZh,
+      secondaryName: isZh ? part.nameEn : groupTitle,
       groupKey: part.group,
       groupTitle,
       badgeColor,
@@ -792,6 +831,10 @@ export function assembleMonographDossier(
   const qrMatrix = encodeQrMatrix(deepLinkUrl);
   const qrSvg = buildQrSvgPath(qrMatrix, 2);
 
+  const enSpecOverride = !isZh
+    ? ARCHERY_EN_SPEC_OVERRIDES[weaponId]
+    : undefined;
+
   return {
     weaponId,
     isArchery,
@@ -804,7 +847,7 @@ export function assembleMonographDossier(
     name: displayMeta.name,
     subtitle: catalog.subtitleEn,
     originTag: displayMeta.originTag,
-    caliberLabel: catalog.caliber,
+    caliberLabel: enSpecOverride?.caliberLabel ?? catalog.caliber,
     caliberProfile,
     actionMechanism: displayMeta.actionMechanism,
     description: displayMeta.description,
@@ -813,9 +856,11 @@ export function assembleMonographDossier(
     metrics: {
       oal: displayMeta.overallLengthMm,
       barrel: displayMeta.barrelSpec,
-      weight: catalog.specs1To1.emptyWeightKg,
-      muzzleVelocity: catalog.specs1To1.muzzleVelocityMs,
-      effectiveRange: catalog.specs1To1.effectiveRangeM,
+      weight: enSpecOverride?.weight ?? catalog.specs1To1.emptyWeightKg,
+      muzzleVelocity:
+        enSpecOverride?.muzzleVelocity ?? catalog.specs1To1.muzzleVelocityMs,
+      effectiveRange:
+        enSpecOverride?.effectiveRange ?? catalog.specs1To1.effectiveRangeM,
       rateOfFire: displayMeta.rateOfFire,
       muzzleEnergyJ: `${cartridgeSpec.muzzleEnergyJ.toLocaleString('en-US')} J`,
     },

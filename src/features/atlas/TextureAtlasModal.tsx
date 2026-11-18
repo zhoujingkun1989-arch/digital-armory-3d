@@ -179,7 +179,7 @@ export const TextureAtlasModal: React.FC = () => {
                     className="tex-channel-card"
                   >
                     <div className="tex-ch-head">
-                      <div>
+                      <div className="tex-ch-meta">
                         <span
                           className={`tex-ch-badge kind-${ch.kind.toLowerCase()}`}
                         >
@@ -187,7 +187,14 @@ export const TextureAtlasModal: React.FC = () => {
                             ? atlasUi.ormBadge
                             : ch.kind.toUpperCase()}
                         </span>
-                        <span className="tex-ch-title">
+                        <span
+                          className="tex-ch-title"
+                          title={
+                            ch.kind === 'Roughness'
+                              ? atlasUi.ormChannelTitle
+                              : ch.label
+                          }
+                        >
                           {ch.kind === 'Roughness'
                             ? atlasUi.ormChannelTitle
                             : ch.label}
