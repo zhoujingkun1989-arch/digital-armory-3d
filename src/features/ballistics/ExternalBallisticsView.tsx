@@ -115,6 +115,30 @@ function niceStepCeiling(rawMax: number): number {
   return 10 * exp;
 }
 
+interface SvgBox {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
+function estimateSvgTextWidth(text: string, fontSizePx: number): number {
+  let units = 0;
+  for (let i = 0; i < text.length; i++) {
+    units += text.charCodeAt(i) > 0x2e7f ? 1.05 : 0.62;
+  }
+  return Math.ceil(units * fontSizePx);
+}
+
+function svgBoxesIntersect(a: SvgBox, b: SvgBox, pad = 3): boolean {
+  return (
+    a.x - pad < b.x + b.w &&
+    a.x + a.w + pad > b.x &&
+    a.y - pad < b.y + b.h &&
+    a.y + a.h + pad > b.y
+  );
+}
+
 /** De-collides vertical Y coordinates of stacked cursor callout badges inside `[minY, maxY]`. */
 function decollideBadgeYs(
   rawYs: readonly number[],
@@ -848,10 +872,185 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
 
   const dropBadgeYs = decollideBadgeYs(
     activeDropDots.map((d) => d.py),
-    17,
+    18,
     PAD_T + 10,
-    PAD_T + dropChart.plotH - 8
+    PAD_T + dropChart.plotH - 10
   );
+
+  const dropMaxPillW = activeDropDots.reduce(
+    (acc, d) => Math.max(acc, estimateSvgTextWidth(d.text, 10) + 12),
+    0
+  );
+  const dropFlipLeft =
+    dropChart.scrubPx > SVG_W - PAD_R - dropMaxPillW - 12;
+  const dropReadoutPills = activeDropDots.map((dot, i) => {
+    const pillW = estimateSvgTextWidth(dot.text, 10) + 12;
+    const pillH = 16;
+    const pillX = dropFlipLeft
+      ? dropChart.scrubPx - 8 - pillW
+      : dropChart.scrubPx + 8;
+    const pillY = dropBadgeYs[i] - 8;
+    return {
+      ...dot,
+      box: { x: pillX, y: pillY, w: pillW, h: pillH } as SvgBox,
+      textX: dropFlipLeft ? pillX + pillW - 6 : pillX + 6,
+      textY: dropBadgeYs[i] + 3.5,
+      textAnchor: (dropFlipLeft ? 'end' : 'start') as 'start' | 'end',
+    };
+  });
+
+  // Dedicated non-conflicting Zero Cross badge layout (tucked along vertical zero guide)
+  const zeroBadgeLayout = (() => {
+    if (dropChart.zeroPx === null) return null;
+    const zeroPx = dropChart.zeroPx;
+    const text = ui.zeroCrossLabel(zeroRangeM);
+    const zW = estimateSvgTextWidth(text, 9.5) + 12;
+    const zH = 15;
+    const clampX = (rawX: number) =>
+      clamp(rawX, PAD_L + 4, PAD_L + dropChart.plotW - zW - 4);
+    const candidates: SvgBox[] = [
+      {
+        x: clampX(zeroPx - zW * 0.5),
+        y: PAD_T + dropChart.plotH - zH - 4,
+        w: zW,
+        h: zH,
+      },
+      {
+        x: clampX(zeroPx + 7),
+        y: clamp(
+          dropChart.losPy + 9,
+          PAD_T + 4,
+          PAD_T + dropChart.plotH - zH - 4
+        ),
+        w: zW,
+        h: zH,
+      },
+      {
+        x: clampX(zeroPx - zW - 7),
+        y: PAD_T + 4,
+        w: zW,
+        h: zH,
+      },
+    ];
+    const chosen =
+      candidates.find((cand) =>
+        dropReadoutPills.every((rp) => !svgBoxesIntersect(cand, rp.box, 4))
+      ) ?? candidates[0];
+    return { zeroPx, text, box: chosen };
+  })();
+
+  // Staggered & collision-checked M=1.0 transonic callout badges
+  const mach1BadgeLayouts = (() => {
+    const losW = estimateSvgTextWidth(ui.losLabel, 9.5) + 8;
+    const losBox: SvgBox = {
+      x: PAD_L + dropChart.plotW - losW - 4,
+      y: Math.max(PAD_T + 1, dropChart.losPy - 15),
+      w: losW,
+      h: 13,
+    };
+
+    const items = dropChart.paths
+      .filter(
+        (
+          p
+        ): p is typeof p & {
+          mach1Marker: NonNullable<typeof p.mach1Marker>;
+        } => p.mach1Marker !== null
+      )
+      .sort((a, b) => a.mach1Marker.px - b.mach1Marker.px);
+
+    const diamondBoxes: SvgBox[] = items.map((it) => ({
+      x: it.mach1Marker.px - 6,
+      y: it.mach1Marker.py - 6,
+      w: 12,
+      h: 12,
+    }));
+
+    const placedBoxes: SvgBox[] = [];
+    let clusterPrevPx = -999;
+    let laneIdx = 0;
+
+    return items.map((it) => {
+      const m = it.mach1Marker;
+      if (m.px - clusterPrevPx < 84) {
+        laneIdx += 1;
+      } else {
+        laneIdx = 0;
+      }
+      clusterPrevPx = m.px;
+
+      const label = `M1·${Math.round(m.rangeM)}m`;
+      const mW = estimateSvgTextWidth(label, 9) + 10;
+      const mH = 14;
+      const candidateOffsets: [number, number][] = [
+        [0, -(13 + laneIdx * 18)],
+        [0, 14 + laneIdx * 18],
+        [0, -31],
+        [0, 32],
+        [-mW * 0.55, -14],
+        [mW * 0.55, -14],
+        [0, -49],
+        [0, 50],
+      ];
+
+      let chosenBox: SvgBox | null = null;
+      for (const [dx, dy] of candidateOffsets) {
+        const cand: SvgBox = {
+          x: clamp(
+            m.px + dx - mW * 0.5,
+            PAD_L + 4,
+            PAD_L + dropChart.plotW - mW - 4
+          ),
+          y: clamp(
+            m.py + dy - mH * 0.5,
+            PAD_T + 3,
+            PAD_T + dropChart.plotH - mH - 3
+          ),
+          w: mW,
+          h: mH,
+        };
+        const hitsReadout = dropReadoutPills.some((rp) =>
+          svgBoxesIntersect(cand, rp.box, 4)
+        );
+        if (hitsReadout) continue;
+        if (
+          zeroBadgeLayout &&
+          (svgBoxesIntersect(cand, zeroBadgeLayout.box, 4) ||
+            svgBoxesIntersect(
+              cand,
+              {
+                x: zeroBadgeLayout.zeroPx - 7,
+                y: dropChart.losPy - 7,
+                w: 14,
+                h: 14,
+              },
+              2
+            ))
+        ) {
+          continue;
+        }
+        if (svgBoxesIntersect(cand, losBox, 3)) continue;
+        if (diamondBoxes.some((db) => svgBoxesIntersect(cand, db, 1))) continue;
+        if (placedBoxes.some((pb) => svgBoxesIntersect(cand, pb, 3))) continue;
+
+        chosenBox = cand;
+        break;
+      }
+
+      if (chosenBox) {
+        placedBoxes.push(chosenBox);
+      }
+
+      return {
+        projectileId: it.projectileId,
+        color: it.color,
+        markerPx: m.px,
+        markerPy: m.py,
+        label,
+        box: chosenBox,
+      };
+    });
+  })();
 
   const activeSecDots = scrubSamples
     .map((s, idx) =>
@@ -872,10 +1071,32 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
 
   const secBadgeYs = decollideBadgeYs(
     activeSecDots.map((d) => d.py),
-    17,
+    18,
     PAD_T + 10,
-    PAD_T + secondaryChart.plotH - 8
+    PAD_T + secondaryChart.plotH - 10
   );
+
+  const secMaxPillW = activeSecDots.reduce(
+    (acc, d) => Math.max(acc, estimateSvgTextWidth(d.text, 10) + 12),
+    0
+  );
+  const secFlipLeft =
+    secondaryChart.scrubPx > SVG_W - PAD_R - secMaxPillW - 12;
+  const secReadoutPills = activeSecDots.map((dot, i) => {
+    const pillW = estimateSvgTextWidth(dot.text, 10) + 12;
+    const pillH = 16;
+    const pillX = secFlipLeft
+      ? secondaryChart.scrubPx - 8 - pillW
+      : secondaryChart.scrubPx + 8;
+    const pillY = secBadgeYs[i] - 8;
+    return {
+      ...dot,
+      box: { x: pillX, y: pillY, w: pillW, h: pillH } as SvgBox,
+      textX: secFlipLeft ? pillX + pillW - 6 : pillX + 6,
+      textY: secBadgeYs[i] + 3.5,
+      textAnchor: (secFlipLeft ? 'end' : 'start') as 'start' | 'end',
+    };
+  });
 
   const windSummaryText = `${windSpeedMps.toFixed(1)} m/s (${
     windSign > 0 ? '+Z' : '-Z'
@@ -1021,7 +1242,7 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
                 <div className="eb-chip-body">
                   <span className="eb-chip-code">{spec.code}</span>
                   <span className="eb-chip-meta">
-                    {spec.muzzleVelocityMps} m/s · {spec.dragModel}{' '}
+                    {Math.round(spec.muzzleVelocityMps)} m/s · {spec.dragModel}{' '}
                     {spec.bc.toFixed(3)}
                   </span>
                 </div>
@@ -1326,6 +1547,35 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
                   {ui.losLabel}
                 </text>
 
+                {/* Sight-In Zero Vertical Guide & Target Ring */}
+                {zeroBadgeLayout && (
+                  <g>
+                    <line
+                      x1={zeroBadgeLayout.zeroPx}
+                      y1={PAD_T}
+                      x2={zeroBadgeLayout.zeroPx}
+                      y2={PAD_T + dropChart.plotH}
+                      stroke="rgba(56, 189, 248, 0.28)"
+                      strokeWidth={1}
+                      strokeDasharray="3 3"
+                    />
+                    <circle
+                      cx={zeroBadgeLayout.zeroPx}
+                      cy={dropChart.losPy}
+                      r={5.5}
+                      fill="none"
+                      stroke="#38bdf8"
+                      strokeWidth={1.5}
+                    />
+                    <circle
+                      cx={zeroBadgeLayout.zeroPx}
+                      cy={dropChart.losPy}
+                      r={2.2}
+                      fill="#38bdf8"
+                    />
+                  </g>
+                )}
+
                 {/* Clipped Trajectory Curves & M=1.0 Transonic Diamond Markers */}
                 <g clipPath={`url(#${dropClipId})`}>
                   {dropChart.paths.map((p) => {
@@ -1340,60 +1590,94 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
                           strokeOpacity={isFoc ? 1 : 0.86}
                         />
                         {p.mach1Marker && (
-                          <g
+                          <polygon
                             transform={`translate(${p.mach1Marker.px}, ${p.mach1Marker.py})`}
-                          >
-                            <polygon
-                              points="0,-5.5 5.5,0 0,5.5 -5.5,0"
-                              fill="var(--eb-chart-bg)"
-                              stroke={p.color}
-                              strokeWidth={1.8}
-                            />
-                            <text
-                              x={0}
-                              y={-8}
-                              textAnchor="middle"
-                              fill={p.color}
-                              fontSize={9}
-                              fontWeight={700}
-                              fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace"
-                            >
-                              M1·{Math.round(p.mach1Marker.rangeM)}m
-                            </text>
-                          </g>
+                            points="0,-5.5 5.5,0 0,5.5 -5.5,0"
+                            fill="var(--eb-chart-bg)"
+                            stroke={p.color}
+                            strokeWidth={1.8}
+                          />
                         )}
                       </g>
                     );
                   })}
                 </g>
 
-                {/* Sight-In Zero Intersection Marker */}
-                {dropChart.zeroPx !== null && (
-                  <g
-                    transform={`translate(${dropChart.zeroPx}, ${dropChart.losPy})`}
-                  >
-                    <circle
-                      r={6}
-                      fill="none"
-                      stroke="#38bdf8"
-                      strokeWidth={1.5}
+                {/* Dedicated Non-Conflicting Sight-In Zero Badge */}
+                {zeroBadgeLayout && (
+                  <g>
+                    <rect
+                      x={zeroBadgeLayout.box.x}
+                      y={zeroBadgeLayout.box.y}
+                      width={zeroBadgeLayout.box.w}
+                      height={zeroBadgeLayout.box.h}
+                      rx={4}
+                      fill="var(--eb-chart-bg)"
+                      fillOpacity={0.92}
+                      stroke="rgba(56, 189, 248, 0.55)"
+                      strokeWidth={1}
                     />
-                    <circle r={2.2} fill="#38bdf8" />
                     <text
-                      x={0}
-                      y={-10}
+                      x={zeroBadgeLayout.box.x + zeroBadgeLayout.box.w * 0.5}
+                      y={zeroBadgeLayout.box.y + 10.5}
                       textAnchor="middle"
                       fill="#38bdf8"
                       fontSize={9.5}
                       fontWeight={700}
                       fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace"
                     >
-                      {ui.zeroCrossLabel(zeroRangeM)}
+                      {zeroBadgeLayout.text}
                     </text>
                   </g>
                 )}
 
-                {/* Synchronized Range Scrubber Playhead & De-Collided Readouts */}
+                {/* Staggered & De-Collided M=1.0 Transonic Badges */}
+                {mach1BadgeLayouts.map((mb) => {
+                  if (!mb.box) return null;
+                  const cx = mb.box.x + mb.box.w * 0.5;
+                  const cy = mb.box.y + mb.box.h * 0.5;
+                  const dist = Math.hypot(cx - mb.markerPx, cy - mb.markerPy);
+                  return (
+                    <g key={`m1-tag-${mb.projectileId}`}>
+                      {dist > 17 && (
+                        <line
+                          x1={mb.markerPx}
+                          y1={mb.markerPy}
+                          x2={cx}
+                          y2={cy}
+                          stroke={mb.color}
+                          strokeOpacity={0.5}
+                          strokeWidth={0.9}
+                        />
+                      )}
+                      <rect
+                        x={mb.box.x}
+                        y={mb.box.y}
+                        width={mb.box.w}
+                        height={mb.box.h}
+                        rx={3.5}
+                        fill="var(--eb-chart-bg)"
+                        fillOpacity={0.9}
+                        stroke={mb.color}
+                        strokeOpacity={0.5}
+                        strokeWidth={0.9}
+                      />
+                      <text
+                        x={cx}
+                        y={mb.box.y + 10}
+                        textAnchor="middle"
+                        fill={mb.color}
+                        fontSize={9}
+                        fontWeight={700}
+                        fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace"
+                      >
+                        {mb.label}
+                      </text>
+                    </g>
+                  );
+                })}
+
+                {/* Synchronized Range Scrubber Playhead & Top-Z Opaque Readout Pills */}
                 <line
                   x1={dropChart.scrubPx}
                   y1={PAD_T}
@@ -1403,35 +1687,41 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
                   strokeWidth={1.2}
                   strokeDasharray="3 3"
                 />
-                {activeDropDots.map((dot, i) => {
-                  const flipLeft = dropChart.scrubPx > SVG_W - 185;
-                  const labelX = flipLeft
-                    ? dropChart.scrubPx - 9
-                    : dropChart.scrubPx + 9;
-                  return (
-                    <g key={dot.idx}>
-                      <circle
-                        cx={dropChart.scrubPx}
-                        cy={dot.py}
-                        r={4}
-                        fill={dot.color}
-                        stroke="var(--eb-chart-bg)"
-                        strokeWidth={1.5}
-                      />
-                      <text
-                        x={labelX}
-                        y={dropBadgeYs[i] + 3.5}
-                        textAnchor={flipLeft ? 'end' : 'start'}
-                        fill={dot.color}
-                        fontSize={10}
-                        fontWeight={700}
-                        fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace"
-                      >
-                        {dot.text}
-                      </text>
-                    </g>
-                  );
-                })}
+                {dropReadoutPills.map((rp) => (
+                  <g key={rp.idx}>
+                    <circle
+                      cx={dropChart.scrubPx}
+                      cy={rp.py}
+                      r={4}
+                      fill={rp.color}
+                      stroke="var(--eb-chart-bg)"
+                      strokeWidth={1.5}
+                    />
+                    <rect
+                      x={rp.box.x}
+                      y={rp.box.y}
+                      width={rp.box.w}
+                      height={rp.box.h}
+                      rx={4}
+                      fill="var(--eb-chart-bg)"
+                      fillOpacity={0.94}
+                      stroke={rp.color}
+                      strokeOpacity={0.45}
+                      strokeWidth={1}
+                    />
+                    <text
+                      x={rp.textX}
+                      y={rp.textY}
+                      textAnchor={rp.textAnchor}
+                      fill={rp.color}
+                      fontSize={10}
+                      fontWeight={700}
+                      fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace"
+                    >
+                      {rp.text}
+                    </text>
+                  </g>
+                ))}
               </svg>
             </div>
 
@@ -1712,7 +2002,7 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
                   })}
                 </g>
 
-                {/* Synchronized Scrubber Playhead */}
+                {/* Synchronized Scrubber Playhead & Top-Z Opaque Readout Pills */}
                 <line
                   x1={secondaryChart.scrubPx}
                   y1={PAD_T}
@@ -1722,35 +2012,41 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
                   strokeWidth={1.2}
                   strokeDasharray="3 3"
                 />
-                {activeSecDots.map((dot, i) => {
-                  const flipLeft = secondaryChart.scrubPx > SVG_W - 190;
-                  const labelX = flipLeft
-                    ? secondaryChart.scrubPx - 9
-                    : secondaryChart.scrubPx + 9;
-                  return (
-                    <g key={dot.idx}>
-                      <circle
-                        cx={secondaryChart.scrubPx}
-                        cy={dot.py}
-                        r={4}
-                        fill={dot.color}
-                        stroke="var(--eb-chart-bg)"
-                        strokeWidth={1.5}
-                      />
-                      <text
-                        x={labelX}
-                        y={secBadgeYs[i] + 3.5}
-                        textAnchor={flipLeft ? 'end' : 'start'}
-                        fill={dot.color}
-                        fontSize={10}
-                        fontWeight={700}
-                        fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace"
-                      >
-                        {dot.text}
-                      </text>
-                    </g>
-                  );
-                })}
+                {secReadoutPills.map((rp) => (
+                  <g key={rp.idx}>
+                    <circle
+                      cx={secondaryChart.scrubPx}
+                      cy={rp.py}
+                      r={4}
+                      fill={rp.color}
+                      stroke="var(--eb-chart-bg)"
+                      strokeWidth={1.5}
+                    />
+                    <rect
+                      x={rp.box.x}
+                      y={rp.box.y}
+                      width={rp.box.w}
+                      height={rp.box.h}
+                      rx={4}
+                      fill="var(--eb-chart-bg)"
+                      fillOpacity={0.94}
+                      stroke={rp.color}
+                      strokeOpacity={0.45}
+                      strokeWidth={1}
+                    />
+                    <text
+                      x={rp.textX}
+                      y={rp.textY}
+                      textAnchor={rp.textAnchor}
+                      fill={rp.color}
+                      fontSize={10}
+                      fontWeight={700}
+                      fontFamily="ui-monospace, SFMono-Regular, Menlo, monospace"
+                    >
+                      {rp.text}
+                    </text>
+                  </g>
+                ))}
               </svg>
             </div>
           </article>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   ArrowLeft,
   BookOpen,
@@ -22,6 +22,7 @@ import {
   VolumeX,
   Wrench,
 } from 'lucide-react';
+import { scheduleHudBoundsRefresh } from '../../engine/callout/hudBoundsCache';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import { resolveWeaponDisplayMeta } from '../../i18n/weaponFallbacks';
 import { useWeaponNarration } from '../../narration/narrationService';
@@ -81,6 +82,10 @@ export const WorkbenchHeader: React.FC = () => {
   const ui = UI_STRINGS[lang].workbench;
   const monoUi = UI_STRINGS[lang].monograph;
   const displayMeta = resolveWeaponDisplayMeta(activeWeaponId, lang, bundle);
+
+  useEffect(() => {
+    scheduleHudBoundsRefresh();
+  }, [activeWeaponId, lang, mode, showLabels]);
 
   return (
     <header className="top-bar">

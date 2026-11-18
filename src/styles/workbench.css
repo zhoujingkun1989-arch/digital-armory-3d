@@ -96,18 +96,20 @@
   gap: 6px;
   flex-wrap: wrap;
   min-inline-size: 0;
+  max-inline-size: 100%;
   margin-inline-start: auto;
 }
 
 .toolbar-cluster-primary {
   flex-shrink: 0;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
 }
 
 .toolbar-cluster-tools {
   flex: 1 1 100%;
+  flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 5px;
+  gap: 4.5px;
   padding-top: 4px;
   border-top: 1px solid var(--border-divider);
 }
@@ -120,18 +122,22 @@
 .studio-env-cluster {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  flex-shrink: 0;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-inline-size: 0;
+  max-inline-size: 100%;
 }
 
 .env-switch-pill {
   display: inline-flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 2px;
   padding: 2px 3px;
   border-radius: 8px;
   background: var(--surface-pill);
   border: 1px solid var(--border-subtle);
+  max-inline-size: 100%;
 }
 
 .env-seg-btn {
@@ -304,11 +310,13 @@
 .camera-pills {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 2px;
   padding: 2px 5px;
   border-radius: 8px;
   background: var(--surface-pill);
   border: 1px solid var(--border-subtle);
+  max-inline-size: 100%;
 }
 
 .cam-icon {

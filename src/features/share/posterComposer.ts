@@ -443,7 +443,14 @@ export function assemblePosterMetadata(
   const compactOal = primaryMeta.overallLengthMm
     .replace(/\s*\(.*?\)/g, '')
     .trim();
-  const compactBarrel = primaryMeta.barrelSpec.split('·')[0].trim();
+  const rawBarrelFirst = primaryMeta.barrelSpec.split('·')[0].trim();
+  const compactBarrel =
+    rawBarrelFirst.length > 28
+      ? rawBarrelFirst.replace(/\s*\(.*?\)/g, '').trim()
+      : rawBarrelFirst;
+  const rawWeight = primaryMeta.weightKg;
+  const compactWeight =
+    rawWeight.length > 28 ? rawWeight.split('/')[0].trim() : rawWeight;
   const roundedPeakMpa = Math.round(ballisticsSpec.peakPressureMPa);
 
   const metrologyCells: [
@@ -477,7 +484,7 @@ export function assemblePosterMetadata(
         catalog.partsCount,
         catalog.assembliesCount
       ),
-      subValue: primaryMeta.weightKg,
+      subValue: compactWeight,
     },
   ];
 
@@ -622,6 +629,25 @@ function drawRoundedRect(
   ctx.closePath();
 }
 
+export function fitFontToWidth(
+  ctx: CanvasRenderingContext2D,
+  text: string,
+  maxWidth: number,
+  weight: number | string,
+  maxPx: number,
+  minPx: number,
+  family: string
+): number {
+  let px = maxPx;
+  ctx.font = `${weight} ${px}px ${family}`;
+  if (maxWidth <= 0 || !text) return px;
+  while (px > minPx && ctx.measureText(text).width > maxWidth) {
+    px = Math.max(minPx, Number((px - 0.5).toFixed(1)));
+    ctx.font = `${weight} ${px}px ${family}`;
+  }
+  return px;
+}
+
 function truncateTextToWidth(
   ctx: CanvasRenderingContext2D,
   text: string,
@@ -633,6 +659,84 @@ function truncateTextToWidth(
     end -= 1;
   }
   return `${text.slice(0, end).trim()}…`;
+}
+
+function createEdgeStripCanvas(
+  source: CanvasImageSource,
+  sx: number,
+  sy: number,
+  sw: number,
+  sh: number,
+  stripW: number,
+  stripH: number
+): HTMLCanvasElement | null {
+  try {
+    if (typeof document === 'undefined') return null;
+    const strip = document.createElement('canvas');
+    strip.width = stripW;
+    strip.height = stripH;
+    const sCtx = strip.getContext('2d');
+    if (!sCtx) return null;
+    sCtx.imageSmoothingEnabled = true;
+    sCtx.imageSmoothingQuality = 'high';
+    sCtx.drawImage(source, sx, sy, sw, sh, 0, 0, stripW, stripH);
+    const probe = sCtx.getImageData(0, 0, stripW, stripH).data;
+    let hasOpaque = false;
+    for (let i = 3; i < probe.length; i += 4) {
+      if (probe[i] > 32) {
+        hasOpaque = true;
+        break;
+      }
+    }
+    return hasOpaque ? strip : null;
+  } catch {
+    return null;
+  }
+}
+
+function drawFeatheredEdgeStrip(
+  ctx: CanvasRenderingContext2D,
+  strip: HTMLCanvasElement,
+  dx: number,
+  dy: number,
+  dw: number,
+  dh: number,
+  direction: 'left-to-right' | 'right-to-left' | 'top-to-bottom' | 'bottom-to-top'
+): boolean {
+  try {
+    if (typeof document === 'undefined' || dw <= 0 || dh <= 0) return false;
+    const isHoriz =
+      direction === 'left-to-right' || direction === 'right-to-left';
+    const bufW = isHoriz ? Math.max(4, Math.round(dw)) : strip.width;
+    const bufH = isHoriz ? strip.height : Math.max(4, Math.round(dh));
+    const buf = document.createElement('canvas');
+    buf.width = bufW;
+    buf.height = bufH;
+    const bCtx = buf.getContext('2d');
+    if (!bCtx) return false;
+    bCtx.imageSmoothingEnabled = true;
+    bCtx.imageSmoothingQuality = 'high';
+    bCtx.drawImage(strip, 0, 0, bufW, bufH);
+    bCtx.globalCompositeOperation = 'destination-in';
+    const grad =
+      direction === 'left-to-right'
+        ? bCtx.createLinearGradient(0, 0, bufW, 0)
+        : direction === 'right-to-left'
+          ? bCtx.createLinearGradient(bufW, 0, 0, 0)
+          : direction === 'top-to-bottom'
+            ? bCtx.createLinearGradient(0, 0, 0, bufH)
+            : bCtx.createLinearGradient(0, bufH, 0, 0);
+    grad.addColorStop(0, 'rgba(0, 0, 0, 1)');
+    grad.addColorStop(0.45, 'rgba(0, 0, 0, 0.48)');
+    grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+    bCtx.fillStyle = grad;
+    bCtx.fillRect(0, 0, bufW, bufH);
+    bCtx.globalCompositeOperation = 'source-over';
+    ctx.drawImage(buf, dx, dy, dw, dh);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function sampleImageCornerRgb(
@@ -720,8 +824,9 @@ function drawRankSeal(
     },
   };
   const pal = rankPalette[rank];
-  const w = 228;
+  const w = 248;
   const h = 74;
+  const maxTextW = w - 80;
 
   ctx.save();
   drawRoundedRect(ctx, x, y, w, h, 12);
@@ -754,24 +859,21 @@ function drawRankSeal(
   ctx.textBaseline = 'middle';
   ctx.fillText(rank, cx, cy + 1);
 
-  // Right seal text
+  // Right seal text (auto-fitted so neither headerLabel nor rankTitle ever truncates)
   ctx.textAlign = 'left';
   ctx.textBaseline = 'alphabetic';
-  ctx.font = `800 9.5px ${MONO_STACK}`;
+  fitFontToWidth(ctx, headerLabel, maxTextW, 800, 10, 8, MONO_STACK);
   ctx.fillStyle = pal.border;
-  ctx.fillText(
-    truncateTextToWidth(ctx, headerLabel, w - 78),
-    x + 70,
-    y + 24
-  );
+  ctx.fillText(truncateTextToWidth(ctx, headerLabel, maxTextW), x + 70, y + 24);
 
-  ctx.font = `800 16px ${SANS_STACK}`;
+  fitFontToWidth(ctx, rankTitle, maxTextW, 800, 16, 11, SANS_STACK);
   ctx.fillStyle = '#f8fafc';
-  ctx.fillText(truncateTextToWidth(ctx, rankTitle, w - 78), x + 70, y + 46);
+  ctx.fillText(truncateTextToWidth(ctx, rankTitle, maxTextW), x + 70, y + 46);
 
-  ctx.font = `700 11px ${MONO_STACK}`;
+  const gradeLine = `GRADE ${rank} · ${pal.stars}`;
+  fitFontToWidth(ctx, gradeLine, maxTextW, 700, 11, 9, MONO_STACK);
   ctx.fillStyle = pal.letter;
-  ctx.fillText(`GRADE ${rank} · ${pal.stars}`, x + 70, y + 63);
+  ctx.fillText(gradeLine, x + 70, y + 63);
   ctx.restore();
 }
 
@@ -984,13 +1086,218 @@ export function renderPosterToCanvas(opts: RenderPosterOptions): void {
   if (viewportImage) {
     const { width: srcW, height: srcH } = resolveImageDimensions(viewportImage);
     if (srcW > 0 && srcH > 0) {
-      // Preserve 100% of muzzle-to-buttstock horizontal span (`contain` fit with subtle overscan tolerance)
-      const scale = Math.min(sr.w / srcW, sr.h / srcH);
-      const drawW = srcW * scale;
-      const drawH = srcH * scale;
-      const drawX = sr.x + (sr.w - drawW) * 0.5;
-      const drawY = sr.y + (sr.h - drawH) * 0.5;
-      ctx.drawImage(viewportImage, drawX, drawY, drawW, drawH);
+      const srcAspect = srcW / srcH;
+      const stageAspect = sr.w / sr.h;
+
+      // Smart hybrid center-cover crop: trim up to 17% top/bottom empty HUD studio margin
+      // on horizontal viewports so wide 16:9 / 4:5 stages fill cleanly without clipping muzzle/stock.
+      let srcCropX = 0;
+      let srcCropY = 0;
+      let srcCropW = srcW;
+      let srcCropH = srcH;
+      let drawX: number;
+      let drawY: number;
+      let drawW: number;
+      let drawH: number;
+
+      if (srcAspect < stageAspect) {
+        const maxVertCropEach =
+          srcAspect >= 1.05 ? (metadata.isArchery ? 0.06 : 0.17) : 0;
+        const neededCropEach = (1 - srcW / stageAspect / srcH) * 0.5;
+        const cropEach = Math.max(0, Math.min(maxVertCropEach, neededCropEach));
+        srcCropY = srcH * cropEach;
+        srcCropH = srcH * (1 - 2 * cropEach);
+        const scale = sr.h / srcCropH;
+        drawW = Math.min(sr.w, srcCropW * scale);
+        drawH = sr.h;
+        drawX = sr.x + (sr.w - drawW) * 0.5;
+        drawY = sr.y;
+      } else {
+        const maxHorizCropEach = 0.08;
+        const neededHorizEach = (1 - (srcH * stageAspect) / srcW) * 0.5;
+        const hCrop = Math.max(0, Math.min(maxHorizCropEach, neededHorizEach));
+        srcCropX = srcW * hCrop;
+        srcCropW = srcW * (1 - 2 * hCrop);
+        const scale = sr.w / srcCropW;
+        drawW = sr.w;
+        drawH = Math.min(sr.h, srcCropH * scale);
+        drawX = sr.x;
+        drawY = sr.y + (sr.h - drawH) * 0.5;
+      }
+
+      ctx.drawImage(
+        viewportImage,
+        srcCropX,
+        srcCropY,
+        srcCropW,
+        srcCropH,
+        drawX,
+        drawY,
+        drawW,
+        drawH
+      );
+
+      // Seamless side-wing edge-column extension + inward feather blend (zero vertical seam)
+      const leftWingW = drawX - sr.x;
+      const rightWingW = sr.x + sr.w - (drawX + drawW);
+      if (leftWingW > 0.5 || rightWingW > 0.5) {
+        const sampleW = Math.max(1, Math.min(6, Math.round(srcCropW * 0.008)));
+        const featherW = Math.min(112, Math.max(24, Math.round(drawW * 0.095)));
+        const fallbackWingRgb = sampledEdgeColor ?? theme.stageBgEdge;
+
+        if (leftWingW > 0.5) {
+          const leftStrip = createEdgeStripCanvas(
+            viewportImage,
+            srcCropX,
+            srcCropY,
+            sampleW,
+            srcCropH,
+            1,
+            48
+          );
+          if (leftStrip) {
+            ctx.drawImage(
+              leftStrip,
+              sr.x,
+              sr.y,
+              Math.ceil(leftWingW) + 2,
+              sr.h
+            );
+            drawFeatheredEdgeStrip(
+              ctx,
+              leftStrip,
+              drawX - 1,
+              sr.y,
+              featherW + 1,
+              sr.h,
+              'left-to-right'
+            );
+          } else {
+            ctx.fillStyle = fallbackWingRgb;
+            ctx.fillRect(sr.x, sr.y, Math.ceil(leftWingW) + 1, sr.h);
+            const lg = ctx.createLinearGradient(
+              drawX,
+              sr.y,
+              drawX + featherW,
+              sr.y
+            );
+            lg.addColorStop(0, fallbackWingRgb);
+            lg.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = lg;
+            ctx.fillRect(drawX - 1, sr.y, featherW + 1, sr.h);
+          }
+        }
+
+        if (rightWingW > 0.5) {
+          const rightEdgeX = drawX + drawW;
+          const rightStrip = createEdgeStripCanvas(
+            viewportImage,
+            Math.max(0, srcCropX + srcCropW - sampleW),
+            srcCropY,
+            sampleW,
+            srcCropH,
+            1,
+            48
+          );
+          if (rightStrip) {
+            ctx.drawImage(
+              rightStrip,
+              Math.floor(rightEdgeX) - 2,
+              sr.y,
+              Math.ceil(rightWingW) + 3,
+              sr.h
+            );
+            drawFeatheredEdgeStrip(
+              ctx,
+              rightStrip,
+              rightEdgeX - featherW,
+              sr.y,
+              featherW + 1,
+              sr.h,
+              'right-to-left'
+            );
+          } else {
+            ctx.fillStyle = fallbackWingRgb;
+            ctx.fillRect(
+              Math.floor(rightEdgeX) - 1,
+              sr.y,
+              Math.ceil(rightWingW) + 2,
+              sr.h
+            );
+            const rg = ctx.createLinearGradient(
+              rightEdgeX,
+              sr.y,
+              rightEdgeX - featherW,
+              sr.y
+            );
+            rg.addColorStop(0, fallbackWingRgb);
+            rg.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            ctx.fillStyle = rg;
+            ctx.fillRect(rightEdgeX - featherW, sr.y, featherW + 1, sr.h);
+          }
+        }
+      }
+
+      // Symmetric top/bottom edge-row extension + feather blend if source is ultra-wide
+      const topWingH = drawY - sr.y;
+      const botWingH = sr.y + sr.h - (drawY + drawH);
+      if (topWingH > 0.5 || botWingH > 0.5) {
+        const sampleH = Math.max(1, Math.min(6, Math.round(srcCropH * 0.01)));
+        const featherH = Math.min(72, Math.max(18, Math.round(drawH * 0.1)));
+        if (topWingH > 0.5) {
+          const topStrip = createEdgeStripCanvas(
+            viewportImage,
+            srcCropX,
+            srcCropY,
+            srcCropW,
+            sampleH,
+            48,
+            1
+          );
+          if (topStrip) {
+            ctx.drawImage(topStrip, sr.x, sr.y, sr.w, Math.ceil(topWingH) + 2);
+            drawFeatheredEdgeStrip(
+              ctx,
+              topStrip,
+              sr.x,
+              drawY - 1,
+              sr.w,
+              featherH + 1,
+              'top-to-bottom'
+            );
+          }
+        }
+        if (botWingH > 0.5) {
+          const botEdgeY = drawY + drawH;
+          const botStrip = createEdgeStripCanvas(
+            viewportImage,
+            srcCropX,
+            Math.max(0, srcCropY + srcCropH - sampleH),
+            srcCropW,
+            sampleH,
+            48,
+            1
+          );
+          if (botStrip) {
+            ctx.drawImage(
+              botStrip,
+              sr.x,
+              Math.floor(botEdgeY) - 2,
+              sr.w,
+              Math.ceil(botWingH) + 3
+            );
+            drawFeatheredEdgeStrip(
+              ctx,
+              botStrip,
+              sr.x,
+              botEdgeY - featherH,
+              sr.w,
+              featherH + 1,
+              'bottom-to-top'
+            );
+          }
+        }
+      }
     }
   } else {
     // Clean CAD schematic fallback when rendered in headless environments without WebGL
@@ -1066,7 +1373,7 @@ export function renderPosterToCanvas(opts: RenderPosterOptions): void {
   if (metadata.armorerRank && metadata.armorerRankTitle) {
     drawRankSeal(
       ctx,
-      sr.x + sr.w - 252,
+      sr.x + sr.w - 272,
       sr.y + 22,
       metadata.armorerRank,
       metadata.armorerRankTitle,
@@ -1123,7 +1430,15 @@ export function renderPosterToCanvas(opts: RenderPosterOptions): void {
   ctx.textBaseline = 'alphabetic';
   const titleMaxW = ir.w - 48;
 
-  ctx.font = `900 ${aspect === '16:9' ? 30 : 32}px ${SANS_STACK}`;
+  fitFontToWidth(
+    ctx,
+    metadata.primaryTitle,
+    titleMaxW,
+    900,
+    aspect === '16:9' ? 30 : 32,
+    20,
+    SANS_STACK
+  );
   ctx.fillStyle = theme.textPrimary;
   ctx.fillText(
     truncateTextToWidth(ctx, metadata.primaryTitle, titleMaxW),
@@ -1131,7 +1446,15 @@ export function renderPosterToCanvas(opts: RenderPosterOptions): void {
     ir.y + (aspect === '16:9' ? 43 : 48)
   );
 
-  ctx.font = `600 ${aspect === '16:9' ? 15.5 : 16.5}px ${SANS_STACK}`;
+  fitFontToWidth(
+    ctx,
+    metadata.secondaryTitle,
+    titleMaxW,
+    600,
+    aspect === '16:9' ? 15.5 : 16.5,
+    12,
+    SANS_STACK
+  );
   ctx.fillStyle = theme.accentPrimary;
   ctx.fillText(
     truncateTextToWidth(ctx, metadata.secondaryTitle, titleMaxW),
@@ -1139,7 +1462,15 @@ export function renderPosterToCanvas(opts: RenderPosterOptions): void {
     ir.y + (aspect === '16:9' ? 68 : 77)
   );
 
-  ctx.font = `600 14px ${SANS_STACK}`;
+  fitFontToWidth(
+    ctx,
+    metadata.originAndMechanismPrimary,
+    titleMaxW,
+    600,
+    14,
+    11,
+    SANS_STACK
+  );
   ctx.fillStyle = theme.textSecondary;
   ctx.fillText(
     truncateTextToWidth(ctx, metadata.originAndMechanismPrimary, titleMaxW),
@@ -1148,7 +1479,15 @@ export function renderPosterToCanvas(opts: RenderPosterOptions): void {
   );
 
   if (aspect === '4:5') {
-    ctx.font = `500 12.5px ${SANS_STACK}`;
+    fitFontToWidth(
+      ctx,
+      metadata.originAndMechanismSecondary,
+      titleMaxW,
+      500,
+      12.5,
+      10,
+      SANS_STACK
+    );
     ctx.fillStyle = theme.textMuted;
     ctx.fillText(
       truncateTextToWidth(
@@ -1165,6 +1504,7 @@ export function renderPosterToCanvas(opts: RenderPosterOptions): void {
   for (let i = 0; i < 4; i++) {
     const mr = layout.metrologyRects[i];
     const cell = metadata.metrologyCells[i];
+    const cellMaxW = mr.w - 28;
 
     drawRoundedRect(ctx, mr.x, mr.y, mr.w, mr.h, 13);
     ctx.fillStyle = theme.cardBg;
@@ -1176,18 +1516,18 @@ export function renderPosterToCanvas(opts: RenderPosterOptions): void {
     ctx.textAlign = 'left';
     ctx.textBaseline = 'alphabetic';
 
-    ctx.font = `800 11px ${MONO_STACK}`;
+    fitFontToWidth(ctx, cell.label, cellMaxW, 800, 11, 8.5, MONO_STACK);
     ctx.fillStyle = theme.accentPrimary;
     ctx.fillText(
-      truncateTextToWidth(ctx, cell.label, mr.w - 28),
+      truncateTextToWidth(ctx, cell.label, cellMaxW),
       mr.x + 16,
       mr.y + 28
     );
 
-    ctx.font = `900 22px ${MONO_STACK}`;
+    fitFontToWidth(ctx, cell.value, cellMaxW, 900, 20, 9, MONO_STACK);
     ctx.fillStyle = theme.textPrimary;
     ctx.fillText(
-      truncateTextToWidth(ctx, cell.value, mr.w - 28),
+      truncateTextToWidth(ctx, cell.value, cellMaxW),
       mr.x + 16,
       mr.y + 68
     );
@@ -1200,10 +1540,10 @@ export function renderPosterToCanvas(opts: RenderPosterOptions): void {
     ctx.lineWidth = 1;
     ctx.stroke();
 
-    ctx.font = `600 12.5px ${SANS_STACK}`;
+    fitFontToWidth(ctx, cell.subValue, cellMaxW, 600, 12, 8.5, SANS_STACK);
     ctx.fillStyle = theme.textMuted;
     ctx.fillText(
-      truncateTextToWidth(ctx, cell.subValue, mr.w - 28),
+      truncateTextToWidth(ctx, cell.subValue, cellMaxW),
       mr.x + 16,
       mr.y + 114
     );
@@ -1413,44 +1753,45 @@ export function renderPosterToCanvas(opts: RenderPosterOptions): void {
     3
   );
 
-  ctx.font = `500 12.5px ${SANS_STACK}`;
+  ctx.font = `500 ${aspect === '16:9' ? 11.5 : 12.5}px ${SANS_STACK}`;
   ctx.fillStyle = theme.textSecondary;
   nextCapY = drawWrappedLines(
     copy.poster.qrSub,
     capX,
-    nextCapY + 10,
+    nextCapY + 8,
     capW,
-    18,
-    3
+    aspect === '16:9' ? 16 : 18,
+    4
   );
 
-  ctx.font = `700 10.5px ${MONO_STACK}`;
+  ctx.font = `700 10px ${MONO_STACK}`;
   ctx.fillStyle = theme.textMuted;
   drawWrappedLines(
     copy.poster.qrCutawayHint,
     capX,
-    Math.min(qr.y + qr.h - 22, nextCapY + 14),
+    Math.min(qr.y + qr.h - 22, nextCapY + 10),
     capW,
-    15,
+    14,
     2
   );
 
   // 8. Micro Colophon Footer
   const fr = layout.footerRect;
-  ctx.font = `700 11px ${MONO_STACK}`;
   ctx.fillStyle = theme.textMuted;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
+  fitFontToWidth(ctx, copy.poster.colophon, fr.w * 0.57, 700, 11, 8, MONO_STACK);
   ctx.fillText(
-    truncateTextToWidth(ctx, copy.poster.colophon, fr.w * 0.56),
+    truncateTextToWidth(ctx, copy.poster.colophon, fr.w * 0.57),
     fr.x,
     fr.y + fr.h * 0.5
   );
 
   ctx.textAlign = 'right';
   const cleanDisplayUrl = metadata.deepLinkUrl.replace(/^https?:\/\//i, '');
+  fitFontToWidth(ctx, cleanDisplayUrl, fr.w * 0.41, 700, 11, 8, MONO_STACK);
   ctx.fillText(
-    truncateTextToWidth(ctx, cleanDisplayUrl, fr.w * 0.42),
+    truncateTextToWidth(ctx, cleanDisplayUrl, fr.w * 0.41),
     fr.x + fr.w,
     fr.y + fr.h * 0.5
   );

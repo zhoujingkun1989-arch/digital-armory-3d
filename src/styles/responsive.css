@@ -17,6 +17,7 @@
   .toolbar-cluster-tools,
   .armory-actions-utility {
     flex: 1 1 100%;
+    flex-wrap: wrap;
     justify-content: flex-end;
     padding-top: 4px;
     border-top: 1px solid var(--border-divider);
@@ -37,55 +38,129 @@
     font-size: 11px;
   }
 
-  .top-bar .env-seg-btn {
+  .top-bar .env-seg-btn,
+  .armory-header .env-seg-btn {
     padding: 3.5px 6px;
     font-size: 10.5px;
   }
+
+  .armory-header .armory-actions-utility {
+    gap: 4.5px;
+  }
+
+  .armory-header .studio-env-cluster.is-compact {
+    gap: 4px;
+  }
+
+  .armory-header .toggle-chip {
+    padding: 4px 7.5px;
+    font-size: 11px;
+    gap: 3.5px;
+  }
+
+  .armory-actions-utility .armory-showcase-btn,
+  .armory-actions-utility .armory-showdown-btn,
+  .armory-actions-utility .armory-story-btn {
+    padding: 4.5px 8px;
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .armory-actions-utility .armory-quick-enter-btn {
+    padding: 4.5px 9.5px;
+    font-size: 11.5px;
+    gap: 5px;
+  }
 }
 
-/* Keep Workbench `.top-bar` strictly 2 crisp rows at 1440x900 (ZH & EN) */
+/* Keep Armory & Workbench headers crisp and non-clipping at 1440x900 (ZH & EN) */
 @media (max-width: 1520px) {
   .top-bar {
-    left: 14px;
-    right: 14px;
-    padding: 5.5px 10px;
-    gap: 4px 8px;
+    left: 12px;
+    right: 12px;
+    padding: 5px 9px;
+    gap: 4px 7px;
   }
 
   .top-bar .toolbar-cluster-tools {
-    gap: 3.5px;
+    gap: 3px;
+    flex-wrap: wrap;
   }
 
   .top-bar .toolbar-cluster-tools .toggle-chip {
-    padding: 3.5px 6.5px;
-    gap: 3.5px;
-    font-size: 11px;
-    letter-spacing: -0.01em;
+    padding: 3.5px 5.5px;
+    gap: 3px;
+    font-size: 10.75px;
+    letter-spacing: -0.012em;
   }
 
   .top-bar .toolbar-cluster-tools svg {
-    width: 12px;
-    height: 12px;
+    width: 11.5px;
+    height: 11.5px;
     flex-shrink: 0;
   }
 
   .top-bar .camera-pills {
-    padding: 1.5px 3.5px;
+    padding: 1.5px 3px;
     gap: 1.5px;
   }
 
   .top-bar .cam-icon {
-    margin: 0 2px;
+    margin: 0 1.5px;
   }
 
   .top-bar .cam-btn {
-    padding: 3px 5.5px;
-    font-size: 11px;
+    padding: 3px 5px;
+    font-size: 10.75px;
   }
 
   .top-bar .toolbar-divider {
     height: 16px;
     margin: 0 1px;
+  }
+
+  .armory-overlay {
+    padding-inline: 12px;
+  }
+
+  .armory-header {
+    padding: 5px 9px;
+    gap: 4px 7px;
+  }
+
+  .armory-header .armory-actions-utility {
+    gap: 3px;
+  }
+
+  .armory-header .studio-env-cluster.is-compact {
+    gap: 3px;
+  }
+
+  .armory-header .env-seg-btn {
+    padding: 3px 5px;
+    font-size: 10.25px;
+  }
+
+  .armory-actions-utility .armory-showcase-btn,
+  .armory-actions-utility .armory-showdown-btn,
+  .armory-actions-utility .armory-story-btn,
+  .armory-header .toggle-chip {
+    padding: 3.5px 5.5px;
+    font-size: 10.5px;
+    letter-spacing: -0.012em;
+    gap: 3px;
+  }
+
+  .armory-actions-utility svg {
+    width: 11.5px;
+    height: 11.5px;
+    flex-shrink: 0;
+  }
+
+  .armory-actions-utility .armory-quick-enter-btn {
+    padding: 3.5px 7.5px;
+    font-size: 10.75px;
+    gap: 4px;
   }
 }
 
@@ -574,8 +649,39 @@ a {
     box-sizing: border-box;
   }
 
-  .top-bar .toolbar-cluster-tools,
+  .armory-header .armory-actions-filters,
+  .armory-header .armory-filter-pills,
   .armory-header .armory-actions-utility,
+  .armory-header .studio-env-cluster,
+  .top-bar .toolbar-cluster-primary,
+  .top-bar .toolbar-cluster-tools,
+  .top-bar .studio-env-cluster {
+    flex-wrap: wrap;
+    overflow-x: visible;
+    max-inline-size: 100%;
+  }
+
+  .armory-header .armory-actions-filters,
+  .armory-header .armory-actions-utility,
+  .top-bar .toolbar-cluster-tools {
+    justify-content: flex-start;
+    gap: 5px;
+  }
+
+  .armory-header .armory-actions-filters {
+    flex: 1 1 100%;
+    margin-inline-start: 0;
+  }
+
+  .armory-filter-pills {
+    gap: 4px;
+    padding: 3px 4px;
+  }
+
+  .top-bar .toolbar-divider {
+    display: none;
+  }
+
   .cartridge-header .cartridge-header-actions {
     flex-wrap: nowrap;
     justify-content: flex-start;
@@ -587,29 +693,12 @@ a {
     padding-bottom: 2px;
   }
 
-  .top-bar .toolbar-cluster-tools::-webkit-scrollbar,
-  .armory-header .armory-actions-utility::-webkit-scrollbar,
   .cartridge-header .cartridge-header-actions::-webkit-scrollbar {
     display: none;
   }
 
-  .top-bar .toolbar-cluster-tools > *,
-  .armory-header .armory-actions-utility > *,
   .cartridge-header .cartridge-header-actions > * {
     flex-shrink: 0;
-  }
-
-  .armory-filter-pills {
-    flex-wrap: nowrap !important;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    max-width: calc(100vw - 44px) !important;
-  }
-
-  .armory-filter-pills::-webkit-scrollbar {
-    display: none;
   }
 }
 
@@ -671,22 +760,32 @@ a {
     font-size: 13px;
   }
 
+  .armory-header {
+    padding: 6px 8px;
+    gap: 5px;
+  }
+
   .armory-header .brand-block,
   .top-bar .brand-block,
   .cartridge-header .brand-block {
     flex: 1 1 100%;
   }
 
-  .top-bar .toolbar-cluster-primary {
+  .top-bar .toolbar-cluster-primary,
+  .top-bar .toolbar-cluster-tools,
+  .armory-header .armory-actions-filters,
+  .armory-header .armory-actions-utility {
     flex: 1 1 100%;
-    justify-content: space-between;
-    overflow-x: auto;
-    flex-wrap: nowrap;
-    scrollbar-width: none;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    overflow-x: visible;
+    margin-inline-start: 0;
+    gap: 4px;
   }
 
-  .top-bar .toolbar-cluster-primary::-webkit-scrollbar {
-    display: none;
+  .armory-header .studio-env-cluster,
+  .top-bar .studio-env-cluster {
+    gap: 4px;
   }
 
   .armory-stage-controls {
@@ -715,6 +814,70 @@ a {
 
   .firing-phases-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Tablet & Touch Ergonomics (`<= 1024px` headless/fine-pointer + real coarse-pointer tablets) */
+@media (pointer: coarse), (max-width: 1024px) {
+  .armory-filter-btn,
+  .armory-showcase-btn,
+  .armory-story-btn,
+  .armory-showdown-btn,
+  .armory-header .toggle-chip,
+  .armory-header .env-seg-btn,
+  .armory-header .lang-seg-btn,
+  .top-bar .toggle-chip,
+  .top-bar .back-armory-btn,
+  .top-bar .cam-btn,
+  .top-bar .env-seg-btn,
+  .top-bar .lang-seg-btn {
+    min-height: 38px;
+  }
+
+  .armory-quick-enter-btn {
+    min-height: 40px;
+  }
+}
+
+/* Phone & Full Coarse-Pointer Touch Target Ergonomics (40px–44px) */
+@media (pointer: coarse), (max-width: 640px) {
+  .armory-filter-btn,
+  .armory-showcase-btn,
+  .armory-story-btn,
+  .armory-showdown-btn,
+  .armory-header .toggle-chip,
+  .armory-header .env-seg-btn,
+  .armory-header .lang-seg-btn,
+  .top-bar .toggle-chip,
+  .top-bar .back-armory-btn,
+  .top-bar .cam-btn,
+  .top-bar .env-seg-btn,
+  .top-bar .lang-seg-btn {
+    min-height: 40px;
+  }
+
+  .armory-quick-enter-btn {
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 640px) {
+  .armory-filter-btn,
+  .armory-actions-utility .armory-showcase-btn,
+  .armory-actions-utility .armory-story-btn,
+  .armory-actions-utility .armory-showdown-btn,
+  .armory-header .toggle-chip,
+  .top-bar .toggle-chip {
+    padding-inline: 6.5px;
+    font-size: 10.5px;
+    gap: 3.5px;
+  }
+
+  .armory-header .env-seg-btn,
+  .top-bar .env-seg-btn,
+  .top-bar .cam-btn {
+    padding-inline: 5.5px;
+    font-size: 10.5px;
   }
 }
 

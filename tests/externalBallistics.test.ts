@@ -481,6 +481,8 @@ describe('WP-14 · 1,000m RK4 External Ballistics, Wind Drift & Reticle DOPE Lab
         })
       );
       expect(htmlEn).toContain('Back to Vault');
+      expect(htmlEn).toContain('6.2 cm High');
+      expect(htmlEn).toContain('152 m/s · ARROW 0.056');
       expect(htmlEn).toContain(
         'Live FFP MIL-Dot / Christmas-Tree Scope Reticle'
       );

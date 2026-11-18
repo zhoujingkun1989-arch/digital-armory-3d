@@ -17,6 +17,7 @@ import {
   buildPosterDeepLinkUrl,
   buildPosterFilename,
   computePosterLayout,
+  fitFontToWidth,
   POSTER_DIMENSIONS,
   POSTER_THEMES,
   type PosterRect,
@@ -117,7 +118,15 @@ function createMockCanvasAndContext() {
     fillText: (text: string) => {
       calls.fillTextLabels.push(text);
     },
-    measureText: (text: string) => ({ width: text.length * 7.2 }),
+    measureText: (text: string) => {
+      const m = /(\d+(?:\.\d+)?)px/.exec(ctx.font);
+      const px = m ? Number(m[1]) : 12;
+      let units = 0;
+      for (let i = 0; i < text.length; i++) {
+        units += text.charCodeAt(i) > 0x2e7f ? 1.0 : 0.56;
+      }
+      return { width: units * px };
+    },
     createLinearGradient: () => gradientStub,
     createRadialGradient: () => gradientStub,
     drawImage: () => {
@@ -434,9 +443,87 @@ describe('Bundle Code-Splitting, VITE_BASE_PATH Subpath & HD Poster Studio Contr
           expect(
             calls.fillTextLabels.some((lbl) => lbl.includes(rank))
           ).toBe(true);
+          expect(calls.fillTextLabels).toContain(
+            POSTER_SHARE_STRINGS.en.rankStampHeader
+          );
+          expect(calls.fillTextLabels).toContain(
+            POSTER_SHARE_STRINGS.en.rankTitles[rank]
+          );
         }
+        // Zero-ellipsis guarantee across all metrology cells & rank seals
+        expect(calls.fillTextLabels.some((lbl) => lbl.includes('…'))).toBe(
+          false
+        );
       }
     });
+  });
+
+  it('auto-fits long metrology strings (fitFontToWidth) and blends 1440x900 viewport captures seamlessly across 16:9 & 4:5', () => {
+    expect(POSTER_SHARE_STRINGS.zh.rankStampHeader).toBe('军械师资格认证');
+    expect(POSTER_SHARE_STRINGS.en.rankStampHeader).toBe('ARMORER CERTIFIED');
+
+    const { canvas: fitCanvas } = createMockCanvasAndContext();
+    const fitCtx = fitCanvas.getContext('2d')!;
+    const fittedPx = fitFontToWidth(
+      fitCtx,
+      '.45 ACP (11.43×23mm)',
+      210,
+      900,
+      20,
+      10,
+      'monospace'
+    );
+    expect(fittedPx).toBeLessThanOrEqual(20);
+    expect(fittedPx).toBeGreaterThanOrEqual(10);
+    expect(fitCtx.measureText('.45 ACP (11.43×23mm)').width).toBeLessThanOrEqual(
+      210
+    );
+
+    const mockViewport = {
+      width: 1440,
+      height: 900,
+    } as unknown as HTMLCanvasElement;
+
+    const vectorMetaEn = assemblePosterMetadata({
+      weaponId: 'vector',
+      lang: 'en',
+      activeModes: {
+        sectionCut: true,
+        xrayShells: false,
+        engineeringTint: false,
+        explodeProgress: 0,
+        firingMode: false,
+      },
+      armorerRank: 'B',
+    });
+
+    for (const themeId of [
+      'obsidian_gold',
+      'blueprint_white',
+      'cyber_cyan',
+    ] as const) {
+      for (const aspect of ['16:9', '4:5'] as const) {
+        const { canvas, calls } = createMockCanvasAndContext();
+        renderPosterToCanvas({
+          canvas,
+          aspect,
+          themeId,
+          lang: 'en',
+          metadata: vectorMetaEn,
+          viewportImage: mockViewport,
+        });
+        expect(calls.drawImageCount).toBeGreaterThanOrEqual(1);
+        expect(calls.fillTextLabels).toContain(
+          vectorMetaEn.metrologyCells[0].value
+        );
+        expect(calls.fillTextLabels).toContain('25 PCS · 4 GROUPS');
+        expect(calls.fillTextLabels).toContain('ARMORER CERTIFIED');
+        expect(calls.fillTextLabels).toContain('Qualified Armorer');
+        expect(calls.fillTextLabels.some((lbl) => lbl.includes('…'))).toBe(
+          false
+        );
+      }
+    }
   });
 
   it('renders high-DPI Canvas 2D posters across all 3 themes & aspect ratios and SSR-renders PosterShareModal cleanly', () => {

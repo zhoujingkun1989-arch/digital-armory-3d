@@ -27,6 +27,7 @@ import {
   Wrench,
 } from 'lucide-react';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
+import { scheduleHudBoundsRefresh } from '../../engine/callout/hudBoundsCache';
 import { useWeaponExamSummary } from '../../engine/exam/armorerExamStore';
 import { isArcheryWeapon } from '../../engine/physics/armoryPhysics';
 import { UI_STRINGS } from '../../i18n/uiStrings';
@@ -275,6 +276,10 @@ export const ArmoryView: React.FC = () => {
     lang
   ).shortLabel;
 
+  useEffect(() => {
+    scheduleHudBoundsRefresh();
+  }, [category, lang]);
+
   // Armory keyboard shortcut `[S]` opens Mechanism Showdown without conflicting with `[M]` (SFX mute)
   useEffect(() => {
     if (showdownRequest !== null) return;
@@ -372,7 +377,6 @@ export const ArmoryView: React.FC = () => {
         <div className="armory-header-actions armory-actions-filters">
           <div
             className="armory-filter-pills"
-            style={{ flexWrap: 'wrap', maxWidth: '100%' }}
             role="tablist"
             aria-label={ui.filterAria}
           >

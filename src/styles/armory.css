@@ -18,6 +18,7 @@
 .armory-header {
   grid-area: header;
   min-inline-size: 0;
+  max-inline-size: 100%;
   display: flex;
   align-items: safe center;
   justify-content: space-between;
@@ -42,23 +43,30 @@
   display: flex;
   align-items: safe center;
   justify-content: flex-end;
-  gap: 7px;
+  gap: 6px;
   flex-wrap: wrap;
   min-inline-size: 0;
+  max-inline-size: 100%;
   margin-inline-start: auto;
 }
 
 .armory-filter-pills {
   display: flex;
   align-items: center;
-  gap: 2px;
+  flex-wrap: wrap;
+  gap: 2.5px;
   padding: 2px 3px;
   border-radius: 8px;
   background: var(--surface-pill);
   border: 1px solid var(--border-subtle);
+  min-inline-size: 0;
+  max-inline-size: 100%;
 }
 
 .armory-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 4px 8px;
   border-radius: 6px;
   font-size: 11px;
