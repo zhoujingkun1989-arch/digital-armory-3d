@@ -690,6 +690,80 @@ export const MAGAZINE_STACK_SPECS: Readonly<
       makeSlot(6.8, -5.15, 4.85, 0, 0, 0),
     ],
   },
+
+  python: {
+    weaponId: 'python',
+    magBodyPartId: 'python_cylinder',
+    followerPartId: 'python_extractor_rod',
+    roundCount: 5,
+    firingHandoffSlotIndex: 0,
+    feedWindow: [0.16, 0.28],
+    replenishWindow: [0.87, 0.98],
+    magSubStripStartT: 0.4,
+    followerDeckPlane: {
+      point: [2.2, 1.17, 0],
+      normal: [-1, 0, 0],
+    },
+    slots: [
+      // 6-chamber cylinder ring (R = 1.18 around [0.10, 1.17, 0]; 0° top chamber holds active round)
+      makeSlot(0.1, 1.76, -1.022, 0, 0, 0),
+      makeSlot(0.1, 0.58, -1.022, 0, 0, 0),
+      makeSlot(0.1, -0.01, 0, 0, 0, 0),
+      makeSlot(0.1, 0.58, 1.022, 0, 0, 0),
+      makeSlot(0.1, 1.76, 1.022, 0, 0, 0),
+      makeSlot(0.1, 1.76, 1.022, 0, 0, 0),
+    ],
+  },
+
+  benellim4: {
+    weaponId: 'benellim4',
+    magBodyPartId: 'benellim4_mag_tube',
+    followerPartId: 'benellim4_mag_follower',
+    roundCount: 6,
+    firingHandoffSlotIndex: 0,
+    feedWindow: [0.53, 0.63],
+    replenishWindow: [0.93, 0.99],
+    magSubStripStartT: 0.36,
+    followerDeckPlane: {
+      point: [18.45, -1.25, 0],
+      normal: [-1, 0, 0],
+    },
+    slots: [
+      makeSlot(10.55, -1.25, 0.045, 0, 0, 0),
+      makeSlot(11.7, -1.25, -0.045, 0, 0, 0),
+      makeSlot(12.85, -1.25, 0.045, 0, 0, 0),
+      makeSlot(14.0, -1.25, -0.045, 0, 0, 0),
+      makeSlot(15.15, -1.25, 0.045, 0, 0, 0),
+      makeSlot(16.3, -1.25, -0.045, 0, 0, 0),
+      makeSlot(16.3, -1.25, -0.045, 0, 0, 0),
+    ],
+  },
+
+  garand: {
+    weaponId: 'garand',
+    magBodyPartId: 'garand_enbloc_clip',
+    followerPartId: 'garand_follower',
+    roundCount: 8,
+    firingHandoffSlotIndex: 0,
+    feedWindow: [0.68, 0.76],
+    replenishWindow: [0.85, 0.96],
+    magSubStripStartT: 0.08,
+    followerDeckPlane: {
+      point: [-1.4, -0.52, 0],
+      normal: [0, 1, 0],
+    },
+    slots: [
+      makeSlot(-1.38, 1.12, -0.2, 0, 0, 0.06),
+      makeSlot(-1.4, 0.92, 0.22, 0, 0, 0.06),
+      makeSlot(-1.4, 0.72, -0.22, 0, 0, 0.06),
+      makeSlot(-1.4, 0.52, 0.22, 0, 0, 0.06),
+      makeSlot(-1.4, 0.32, -0.22, 0, 0, 0.06),
+      makeSlot(-1.4, 0.12, 0.22, 0, 0, 0.06),
+      makeSlot(-1.4, -0.06, -0.22, 0, 0, 0.06),
+      makeSlot(-1.4, -0.24, 0.22, 0, 0, 0.06),
+      makeSlot(-1.4, -0.24, 0.22, 0, 0, 0.06),
+    ],
+  },
 };
 
 /** Maximum instanced capacity needed across all 11 weapons (`roundCount + 1` replacement) */

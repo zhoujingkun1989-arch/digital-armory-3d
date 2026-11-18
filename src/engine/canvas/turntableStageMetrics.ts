@@ -113,6 +113,27 @@ export const WEAPON_TURNTABLE_BOUNDS: Readonly<
     spanX: 70.98,
     explode58: { cx: 2.18, minY: -17.0, maxY: 15.08, spanX: 87.23 },
   },
+  python: {
+    cx: 2.85,
+    minY: -11.4,
+    maxY: 5.2,
+    spanX: 30.5,
+    explode58: { cx: 2.41, minY: -17.2, maxY: 11.2, spanX: 48.5 },
+  },
+  benellim4: {
+    cx: 9.2,
+    minY: -14.8,
+    maxY: 6.2,
+    spanX: 91.0,
+    explode58: { cx: 17.62, minY: -19.5, maxY: 19.5, spanX: 132.0 },
+  },
+  garand: {
+    cx: 7.74,
+    minY: -15.5,
+    maxY: 6.5,
+    spanX: 114.0,
+    explode58: { cx: 7.23, minY: -35.5, maxY: 20.5, spanX: 192.0 },
+  },
 };
 
 export function getTurntableRadius(weaponId: WeaponId): number {

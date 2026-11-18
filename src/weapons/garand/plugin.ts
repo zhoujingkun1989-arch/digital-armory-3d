@@ -20,8 +20,8 @@ import type {
   WeaponRuntimePlugin,
 } from '../types';
 
-export const GARAND_ID = 'garand' as unknown as WeaponId;
-export const GARAND_CALIBER = '30_06' as unknown as CaliberProfile;
+export const GARAND_ID: WeaponId = 'garand';
+export const GARAND_CALIBER: CaliberProfile = '30_06';
 
 export const GARAND_PART_GROUPS: AssemblyGroupMeta[] = [
   {
@@ -867,15 +867,15 @@ export function computeGarandFiringKinematics(
     }
 
     case 'garand_follower': {
-      // Lifts next staggered .30-06 cartridge upward inside the en-bloc clip [0.46, 0.72]
-      const lift = seg(f, 0.46, 0.56) - seg(f, 0.64, 0.76);
-      dy = 0.52 * lift;
+      // Lifts next staggered .30-06 cartridge upward inside the en-bloc clip once top round strips clear [0.66, 0.83]
+      const lift = seg(f, 0.66, 0.76) - seg(f, 0.78, 0.83);
+      dy = 0.34 * lift;
       break;
     }
 
     case 'garand_follower_arm': {
       // Pivoting follower arm swings upward under op-rod spring rear thrust to lift follower!
-      const lift = seg(f, 0.46, 0.56) - seg(f, 0.64, 0.76);
+      const lift = seg(f, 0.66, 0.76) - seg(f, 0.78, 0.83);
       rz = -0.095 * lift;
       dy = 0.22 * lift;
       break;
@@ -981,31 +981,36 @@ export function computeGarandBallisticsState(
   }
 
   // 4. Next .30-06 Cartridge in 8-Rd En-Bloc Clip -> Lifted by Follower -> Stripped up Bullet Guide into Chamber!
-  let nextX = -0.95;
-  let nextY = 0.28;
-  let nextRZ = 0.08;
+  let nextX = -1.38;
+  let nextY = 1.12;
+  let nextZ = -0.2;
+  let nextRZ = 0.06;
 
   if (f >= 0.46 && f < 0.58) {
     const u = seg(f, 0.46, 0.58);
-    nextX = -0.95 + 0.25 * u;
-    nextY = 0.28 + 0.58 * u;
-    nextRZ = 0.08 + 0.06 * u;
+    nextX = -1.38 + 0.73 * u;
+    nextY = 1.12 + 0.24 * u;
+    nextZ = -0.2 * (1 - u);
+    nextRZ = 0.06 + 0.06 * u;
   } else if (f >= 0.58 && f < 0.82) {
     const u = seg(f, 0.58, 0.82);
-    const guideArc = Math.sin(u * Math.PI) * 0.24;
-    nextX = -0.7 + (5.15 - -0.7) * u;
-    nextY = 0.86 + (1.15 - 0.86) * u + guideArc;
-    nextRZ = 0.14 * (1 - u);
+    const guideArc = Math.sin(u * Math.PI) * 0.18;
+    nextX = -0.65 + (5.15 - -0.65) * u;
+    nextY = 1.36 + (1.15 - 1.36) * u + guideArc;
+    nextZ = 0;
+    nextRZ = 0.12 * (1 - u);
   } else if (f >= 0.82) {
     nextX = 5.15;
     nextY = 1.15;
+    nextZ = 0;
     nextRZ = 0;
   }
 
   // 5. Staggered Reserve .30-06 Cartridge in En-Bloc Clip rising one half-step
-  const clipAdvance = seg(f, 0.46, 0.68);
-  const resX = -0.95;
-  const resY = -0.52 + (0.28 - -0.52) * clipAdvance;
+  const clipAdvance = seg(f, 0.68, 0.76);
+  const resX = -1.4 + (-1.38 - -1.4) * clipAdvance;
+  const resY = 0.92 + (1.12 - 0.92) * clipAdvance;
+  const resZ = 0.22 + (-0.2 - 0.22) * clipAdvance;
 
   return {
     bulletVisible,
@@ -1020,9 +1025,9 @@ export function computeGarandBallisticsState(
     gasPortPos: [59.6, 0.25, 0],
     muzzlePlumeScale,
     muzzlePlumeOpacity,
-    nextRoundPos: [nextX, nextY, 0],
+    nextRoundPos: [nextX, nextY, nextZ],
     nextRoundRotZ: nextRZ,
-    reserveRoundPos: [resX, resY, -0.22],
+    reserveRoundPos: [resX, resY, resZ],
   };
 }
 

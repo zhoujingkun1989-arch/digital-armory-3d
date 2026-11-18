@@ -21,6 +21,10 @@ export const GEOMETRY_MODULE_LOADERS: Record<
   p90: () => import('./p90/geometries').then((m) => m.GEOMETRY_BUILDERS),
   lift33: () => import('./lift33/geometries').then((m) => m.GEOMETRY_BUILDERS),
   r500: () => import('./r500/geometries').then((m) => m.GEOMETRY_BUILDERS),
+  python: () => import('./python/geometries').then((m) => m.GEOMETRY_BUILDERS),
+  benellim4: () =>
+    import('./benellim4/geometries').then((m) => m.GEOMETRY_BUILDERS),
+  garand: () => import('./garand/geometries').then((m) => m.GEOMETRY_BUILDERS),
 };
 
 export function loadWeaponGeometryBuilders(

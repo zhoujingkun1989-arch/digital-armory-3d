@@ -230,9 +230,14 @@ function findBenchmarkTargetPart(
       null
     );
   }
-  // bolt_lug_span: prefer rotating/locking bolt head, else slide, else bow riser/latch
+  // bolt_lug_span: prefer rotating/locking bolt head (or revolver 6-shot cylinder), else slide, else bow riser/latch
   return (
-    parts.find((p) => /(?:^|_)(?:bolt|bolt_head|bolt_body)$/.test(p.id)) ??
+    parts.find((p) => p.id === 'python_cylinder') ??
+    parts.find(
+      (p) =>
+        /(?:^|_)(?:bolt|bolt_head|bolt_body)$/.test(p.id) &&
+        !/cylinder_bolt/.test(p.id)
+    ) ??
     parts.find((p) => /(?:^|_)slide$/.test(p.id)) ??
     parts.find((p) => p.id === 'lift33_riser' || p.id === 'r500_cam_axles') ??
     parts[0] ??

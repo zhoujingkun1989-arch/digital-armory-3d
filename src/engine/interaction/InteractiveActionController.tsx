@@ -58,6 +58,9 @@ const WEAPON_SELECTOR_CAPABILITIES: Record<
   awm: SEMI_ONLY_MODES,
   lift33: SEMI_ONLY_MODES,
   r500: SEMI_ONLY_MODES,
+  python: SEMI_ONLY_MODES,
+  benellim4: SEMI_ONLY_MODES,
+  garand: SEMI_ONLY_MODES,
 };
 
 /**
@@ -494,6 +497,96 @@ export const WEAPON_FIRE_CONTROL_PROFILES: Record<
       },
     },
   },
+  python: {
+    weaponId: 'python',
+    supportedModes: SEMI_ONLY_MODES,
+    mechanismSummaryZh:
+      'Colt 回弹安全杠杆被动跌落保险 + 手工精调双动/单动 V 簧火控',
+    mechanismSummaryEn:
+      'Colt Rebound-Lever Passive Drop Safety + Hand-Tuned DA/SA V-Mainspring Lockwork',
+    modes: {
+      safe: {
+        mode: 'safe',
+        code: 'REBOUND SAFE',
+        labelZh: '回弹安全杠杆锁止 (SAFE)',
+        labelEn: 'REBOUND SAFE',
+        tooltipZh:
+          '工作台安全态：未扣扳机时回弹安全杠杆前臂刚性垫在击锤安全台肩下方，物理阻隔击锤触碰框内浮动击针。',
+        tooltipEn:
+          'Rebound lever cam blocks the hammer safety stud unless the trigger is deliberately pulled, isolating the inertial firing pin.',
+      },
+      semi: {
+        mode: 'semi',
+        code: 'DA / SA',
+        labelZh: '双动分度单发 (DA/SA)',
+        labelEn: 'DA / SA FIRE',
+        tooltipZh:
+          '丝滑扣动扳机驱动双阶拨爪（Hand）将 6 发弹巢旋转 60° 并由止转笋提前满锁，折叠 V 型主簧释放击锤激发 .357 马格南。',
+        tooltipEn:
+          'Silky pull indexes the 6-shot cylinder 60° into zero-play bolt lockup before the V-mainspring drops the hammer.',
+      },
+    },
+  },
+  benellim4: {
+    weaponId: 'benellim4',
+    supportedModes: SEMI_ONLY_MODES,
+    mechanismSummaryZh:
+      '护圈加大三角形横推保险栓 + 单发阻铁与托弹板放弹联动火控',
+    mechanismSummaryEn:
+      'Oversized Triangular Cross-Bolt Safety + Disconnector & Cartridge-Drop FCG',
+    modes: {
+      safe: {
+        mode: 'safe',
+        code: 'SAFE',
+        labelZh: '横栓推右锁止 (SAFE)',
+        labelEn: 'CROSS-BOLT SAFE',
+        tooltipZh:
+          '扳机护圈后上方三角形保险钮向右推入隐藏红圈，横栓圆柱面直接锁死扳机舌上抬行程。',
+        tooltipEn:
+          'Triangular cross-bolt button pushed right hides the crimson band and physically blocks upward trigger travel.',
+      },
+      semi: {
+        mode: 'semi',
+        code: 'FIRE',
+        labelZh: '12号双活塞半自动 (SEMI)',
+        labelEn: '12GA SEMI',
+        tooltipZh:
+          '向左推保险露出鲜红火圈：每扣一发激发 9 粒 00 号鹿弹并释放管仓次发滑上升降托弹板，松手完成单发阻铁复位。',
+        tooltipEn:
+          'Push safety left exposing red fire band; ARGO twin pistons cycle the rotating bolt and shell elevator per pull.',
+      },
+    },
+  },
+  garand: {
+    weaponId: 'garand',
+    supportedModes: SEMI_ONLY_MODES,
+    mechanismSummaryZh:
+      '扳机护圈前缘冬季勾压保险片 + 双钩二道火半自动军用火控',
+    mechanismSummaryEn:
+      'Trigger-Guard Front Rocker Safety + Two-Stage Double-Hook Service Rifle FCG',
+    modes: {
+      safe: {
+        mode: 'safe',
+        code: 'SAFE',
+        labelZh: '护圈拨后锁锤 (SAFE)',
+        labelEn: 'GUARD SAFE',
+        tooltipZh:
+          '将护圈前缘保险片向后钩入护圈内：保险肩直接钩住待击击锤凸耳并将其微抬脱离阻铁，戴厚手套亦可盲操确认。',
+        tooltipEn:
+          'Rocking the safety rearward into the trigger guard hooks the cocked hammer lug and blocks trigger movement.',
+      },
+      semi: {
+        mode: 'semi',
+        code: 'FIRE',
+        labelZh: '.30-06 两道火半自动 (SEMI)',
+        labelEn: '.30-06 SEMI',
+        tooltipZh:
+          '食指向前推开护圈保险：清晰一段空程后突破军规二道火释放击锤，长行程拉机柄完成抛壳与漏夹供弹循环。',
+        tooltipEn:
+          'Push safety forward out of guard; crisp two-stage military trigger breaks to cycle the long-stroke op-rod.',
+      },
+    },
+  },
 };
 
 function isArcheryInteractiveWeapon(
@@ -546,6 +639,13 @@ const EXPLICIT_WEAPON_ACTION_PARTS: Record<
   p90: ['p90_charging_handles', 'p90_bolt'],
   lift33: ['lift33_bowstring', 'lift33_d_loop'],
   r500: ['r500_trigger_sled', 'r500_bowstring', 'r500_versadrive_screw'],
+  python: ['python_hammer', 'python_cylinder'],
+  benellim4: [
+    'benellim4_charging_handle',
+    'benellim4_bolt_carrier',
+    'benellim4_bolt_head',
+  ],
+  garand: ['garand_op_rod', 'garand_bolt'],
 };
 
 const GENERIC_ACTION_PART_INCLUDE_RE =
@@ -588,6 +688,12 @@ export function mapManualRackToFireProgress(
   if (r <= 0.0005) return 0.0;
   if (isArcheryInteractiveWeapon(weaponId)) {
     return r * 0.3;
+  }
+  if (weaponId === 'python') {
+    return r * 0.165;
+  }
+  if (weaponId === 'benellim4' || weaponId === 'garand') {
+    return 0.22 + r * 0.28;
   }
   return 0.32 + r * 0.3;
 }
@@ -635,6 +741,15 @@ export function computeRecoilSpringForceN(
   } else if (weaponId === 'deagle') {
     preloadN = 76;
     rateN = 64;
+  } else if (weaponId === 'python') {
+    preloadN = 34;
+    rateN = 26;
+  } else if (weaponId === 'benellim4') {
+    preloadN = 58;
+    rateN = 52;
+  } else if (weaponId === 'garand') {
+    preloadN = 68;
+    rateN = 58;
   }
 
   const bufferRamp = r > 0.8 ? Math.pow((r - 0.8) / 0.2, 2) * 28 : 0;

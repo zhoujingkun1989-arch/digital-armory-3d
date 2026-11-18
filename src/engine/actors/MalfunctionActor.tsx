@@ -80,6 +80,8 @@ export const MalfunctionActor: React.FC = () => {
   const manifest = getWeaponManifest(activeWeaponId);
   const caliberProfile = manifest.caliberProfile;
   const isArchery = isArcheryMalfunctionWeapon(activeWeaponId);
+  const useMultiToneCartridge =
+    caliberProfile === '12_gauge' || caliberProfile === '357_magnum';
   const calSpec =
     CALIBER_VISUAL_SPECS[caliberProfile] ?? CALIBER_VISUAL_SPECS['556_nato'];
   const roundFit = WEAPON_ROUND_FIT[activeWeaponId] ?? {
@@ -258,23 +260,33 @@ export const MalfunctionActor: React.FC = () => {
         pGrp.scale.setScalar(Math.max(0.01, s));
 
         if (vis.kind === 'stovepipe') {
-          // Empty spent brass pinched upright ~82° in the ejection port
-          const basePx = ejectSample ? ejectSample.spentCasePos[0] : cx - 0.95;
-          const basePy = isDownwardEject ? cy - 1.15 : cy + 0.88;
-          const basePz = isDownwardEject ? cz : cz + ejectZ * 0.56;
+          if (weaponId === 'python') {
+            // Revolver Under-Extractor Rim Slip: swelled .357 case canted beneath extractor star at rear of cylinder
+            pGrp.position.set(
+              0.1 - 1.35 - 2.6 * clr,
+              2.35 + 0.32 + 1.2 * clr,
+              cz - 2.8 * clr
+            );
+            pGrp.rotation.set(0.12 * clr, -0.35 * clr, -0.26 * (1 - clr));
+          } else {
+            // Empty spent brass pinched upright ~82° in the ejection port
+            const basePx = ejectSample ? ejectSample.spentCasePos[0] : cx - 0.95;
+            const basePy = isDownwardEject ? cy - 1.15 : cy + 0.88;
+            const basePz = isDownwardEject ? cz : cz + ejectZ * 0.56;
 
-          const clearDx = -1.6 * clr;
-          const clearDy = isDownwardEject
-            ? -5.4 * clr * clr
-            : 2.2 * clr - 3.6 * clr * clr;
-          const clearDz = isDownwardEject ? 0.6 * clr : ejectZ * 4.8 * clr;
+            const clearDx = -1.6 * clr;
+            const clearDy = isDownwardEject
+              ? -5.4 * clr * clr
+              : 2.2 * clr - 3.6 * clr * clr;
+            const clearDz = isDownwardEject ? 0.6 * clr : ejectZ * 4.8 * clr;
 
-          pGrp.position.set(basePx + clearDx, basePy + clearDy, basePz + clearDz);
-          pGrp.rotation.set(
-            clr * 2.4,
-            ejectZ * 0.28 + clr * 1.9,
-            (isDownwardEject ? -1.42 : 1.38) + clr * 3.1
-          );
+            pGrp.position.set(basePx + clearDx, basePy + clearDy, basePz + clearDz);
+            pGrp.rotation.set(
+              clr * 2.4,
+              ejectZ * 0.28 + clr * 1.9,
+              (isDownwardEject ? -1.42 : 1.38) + clr * 3.1
+            );
+          }
 
           if (primaryBulletRef.current) primaryBulletRef.current.visible = false;
           if (primaryLivePrimerRef.current)
@@ -342,24 +354,35 @@ export const MalfunctionActor: React.FC = () => {
       }
     }
 
-    // 2. Wedged 2nd Live Cartridge (Type-3 Double-Feed only)
+    // 2. Wedged 2nd Live Cartridge (Type-3 Double-Feed / Revolver Bullet-Jump Bind)
     const secGrp = secondRoundGroupRef.current;
     if (secGrp) {
       const drop = vis.secondRoundDropAlpha;
       const showSecond = vis.kind === 'double_feed' && drop < 0.995;
       secGrp.visible = showSecond;
       if (showSecond) {
-        const isTopFeed = prof.magStripOffsetCm[1] > 0;
-        const wedgeY = isTopFeed ? cy + 0.72 : cy - 0.68;
-        const dropDy = isTopFeed ? 4.2 * drop * drop : -5.8 * drop * drop;
-        const pitchZ = isTopFeed ? -0.38 : 0.42;
-        secGrp.position.set(
-          cx - 1.95 - 0.45 * drop,
-          wedgeY + dropDy,
-          cz + 0.06
-        );
-        secGrp.rotation.set(drop * 0.7, 0.05, pitchZ * (1 - 0.5 * drop));
-        secGrp.scale.setScalar(Math.max(0.01, fit.roundScale * (1 - 0.12 * drop)));
+        if (weaponId === 'python') {
+          // Recoil crimp-jumped .357 round protruding forward out of adjacent chamber into forcing cone
+          secGrp.position.set(
+            0.95 - 2.4 * drop,
+            1.76 - 2.2 * drop * drop,
+            -1.02 - 2.6 * drop
+          );
+          secGrp.rotation.set(0.2 * drop, -0.25 * drop, 0.04 * (1 - drop));
+          secGrp.scale.setScalar(Math.max(0.01, fit.roundScale * (1 - 0.12 * drop)));
+        } else {
+          const isTopFeed = prof.magStripOffsetCm[1] > 0;
+          const wedgeY = isTopFeed ? cy + 0.72 : cy - 0.68;
+          const dropDy = isTopFeed ? 4.2 * drop * drop : -5.8 * drop * drop;
+          const pitchZ = isTopFeed ? -0.38 : 0.42;
+          secGrp.position.set(
+            cx - 1.95 - 0.45 * drop,
+            wedgeY + dropDy,
+            cz + 0.06
+          );
+          secGrp.rotation.set(drop * 0.7, 0.05, pitchZ * (1 - 0.5 * drop));
+          secGrp.scale.setScalar(Math.max(0.01, fit.roundScale * (1 - 0.12 * drop)));
+        }
       }
     }
 
@@ -549,25 +572,28 @@ export const MalfunctionActor: React.FC = () => {
         position={manifest.workbenchMeta.chamberGlowPos}
         scale={roundFit.roundScale}
       >
-        <mesh geometry={caseGeo} renderOrder={3}>
+        <mesh key={`malf-p-case-${caliberProfile}`} geometry={caseGeo} renderOrder={3}>
           <meshStandardMaterial
-            color={calSpec.caseColor}
-            metalness={0.86}
-            roughness={0.23}
+            color={useMultiToneCartridge ? '#ffffff' : calSpec.caseColor}
+            vertexColors={useMultiToneCartridge}
+            metalness={caliberProfile === '12_gauge' ? 0.35 : 0.86}
+            roughness={caliberProfile === '12_gauge' ? 0.42 : 0.23}
             emissive="#f59e0b"
             emissiveIntensity={0.08}
           />
         </mesh>
         <mesh
+          key={`malf-p-bullet-${caliberProfile}`}
           ref={primaryBulletRef}
           geometry={bulletGeo}
           position={[calSpec.bulletLocalOffset, 0, 0]}
           renderOrder={3}
         >
           <meshStandardMaterial
-            color={calSpec.bulletColor}
-            metalness={0.84}
-            roughness={0.24}
+            color={useMultiToneCartridge ? '#ffffff' : calSpec.bulletColor}
+            vertexColors={useMultiToneCartridge}
+            metalness={caliberProfile === '12_gauge' ? 0.48 : 0.84}
+            roughness={caliberProfile === '12_gauge' ? 0.34 : 0.24}
           />
         </mesh>
         <mesh ref={primaryLivePrimerRef} geometry={livePrimerGeo} renderOrder={3}>
@@ -619,24 +645,27 @@ export const MalfunctionActor: React.FC = () => {
         visible={false}
         scale={roundFit.roundScale}
       >
-        <mesh geometry={caseGeo} renderOrder={3}>
+        <mesh key={`malf-s-case-${caliberProfile}`} geometry={caseGeo} renderOrder={3}>
           <meshStandardMaterial
-            color={calSpec.caseColor}
-            metalness={0.86}
-            roughness={0.22}
+            color={useMultiToneCartridge ? '#ffffff' : calSpec.caseColor}
+            vertexColors={useMultiToneCartridge}
+            metalness={caliberProfile === '12_gauge' ? 0.35 : 0.86}
+            roughness={caliberProfile === '12_gauge' ? 0.42 : 0.22}
             emissive="#ef4444"
             emissiveIntensity={0.12}
           />
         </mesh>
         <mesh
+          key={`malf-s-bullet-${caliberProfile}`}
           geometry={bulletGeo}
           position={[calSpec.bulletLocalOffset, 0, 0]}
           renderOrder={3}
         >
           <meshStandardMaterial
-            color={calSpec.bulletColor}
-            metalness={0.85}
-            roughness={0.22}
+            color={useMultiToneCartridge ? '#ffffff' : calSpec.bulletColor}
+            vertexColors={useMultiToneCartridge}
+            metalness={caliberProfile === '12_gauge' ? 0.48 : 0.85}
+            roughness={caliberProfile === '12_gauge' ? 0.34 : 0.22}
             emissive="#ef4444"
             emissiveIntensity={0.1}
           />
@@ -672,24 +701,27 @@ export const MalfunctionActor: React.FC = () => {
         visible={false}
         scale={roundFit.roundScale}
       >
-        <mesh geometry={caseGeo} renderOrder={3}>
+        <mesh key={`malf-f-case-${caliberProfile}`} geometry={caseGeo} renderOrder={3}>
           <meshStandardMaterial
-            color={calSpec.caseColor}
-            metalness={0.88}
-            roughness={0.19}
+            color={useMultiToneCartridge ? '#ffffff' : calSpec.caseColor}
+            vertexColors={useMultiToneCartridge}
+            metalness={caliberProfile === '12_gauge' ? 0.35 : 0.88}
+            roughness={caliberProfile === '12_gauge' ? 0.4 : 0.19}
             emissive="#10b981"
             emissiveIntensity={0.08}
           />
         </mesh>
         <mesh
+          key={`malf-f-bullet-${caliberProfile}`}
           geometry={bulletGeo}
           position={[calSpec.bulletLocalOffset, 0, 0]}
           renderOrder={3}
         >
           <meshStandardMaterial
-            color={calSpec.bulletColor}
-            metalness={0.86}
-            roughness={0.2}
+            color={useMultiToneCartridge ? '#ffffff' : calSpec.bulletColor}
+            vertexColors={useMultiToneCartridge}
+            metalness={caliberProfile === '12_gauge' ? 0.48 : 0.86}
+            roughness={caliberProfile === '12_gauge' ? 0.34 : 0.2}
           />
         </mesh>
         <mesh geometry={livePrimerGeo} renderOrder={3}>

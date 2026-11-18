@@ -243,11 +243,14 @@ export type GasOperatingFamily =
   | 'long_stroke_piston'
   | 'direct_impingement'
   | 'short_stroke_piston'
+  | 'dual_short_stroke_argo'
+  | 'muzzle_long_stroke_piston'
   | 'forward_underbarrel_piston'
   | 'roller_delayed_blowback'
   | 'straight_blowback'
   | 'short_recoil_tilting'
   | 'short_recoil_accelerator'
+  | 'revolver_ratchet_index'
   | 'manual_bolt_action'
   | 'compound_bow_binary_cam'
   | 'compound_crossbow_helical_cam';
@@ -528,6 +531,63 @@ export const WEAPON_GAS_MANIFOLD_PROFILES: Readonly<
     gasTargetX: 26.2,
     ventPos: [25.2, 1.8, -9.65],
   },
+  python: {
+    weaponId: 'python',
+    family: 'revolver_ratchet_index',
+    hasGasTap: false,
+    familyTitleZh: '转轮棘轮拨齿分度 · 弹巢坡口间隙径向泄气',
+    familyTitleEn: 'DA/SA Ratchet Cylinder Index · Forcing-Cone Gap Flash',
+    flowNoteZh:
+      '无导气孔：.357 马格南燃气推动弹头跃过弹巢前端与枪管坡口（Forcing Cone）之间的微米级间隙，产生特征性 360° 径向火光并沿 6 英寸锥度膛加速出膛，空弹壳留驻弹巢内。',
+    flowNoteEn:
+      'No gas tap: .357 Magnum propellant drives the JSP bullet across the cylinder-to-forcing-cone gap with a signature radial flash ring while brass remains sealed in the 6-shot cylinder.',
+    chamberX: 0.1,
+    muzzleX: 17.42,
+    boreY: 2.35,
+    gasPortX: null,
+    gasChannelY: 2.35,
+    gasChannelZ: 0,
+    gasTargetX: -1.9,
+    ventPos: [2.2, 2.35, 0.35],
+  },
+  benellim4: {
+    weaponId: 'benellim4',
+    family: 'dual_short_stroke_argo',
+    hasGasTap: true,
+    familyTitleZh: 'ARGO 膛前双路自调短行程活塞 · 双突笋回转闭锁',
+    familyTitleEn: 'ARGO Twin Short-Stroke Gas Pistons · 2-Lug Rotating Bolt',
+    flowNoteZh:
+      '紧贴弹膛前方的左右对称双导气孔在最高温洁净区截取高压燃气，同步冲击枪管下方 ±Z 并列双不锈钢短行程活塞顶杆推动枪机框解锁。',
+    flowNoteEn:
+      'Twin symmetrical ports just ahead of the 12ga chamber tap hot clean gas into dual ±Z under-barrel stainless ARGO short-stroke pistons, impinging the bolt carrier.',
+    chamberX: 10.8,
+    muzzleX: 53.5,
+    boreY: 1.35,
+    gasPortX: 16.2,
+    gasChannelY: 0.12,
+    gasChannelZ: 1.18,
+    gasTargetX: 11.4,
+    ventPos: [16.8, 0.12, 1.45],
+  },
+  garand: {
+    weaponId: 'garand',
+    family: 'muzzle_long_stroke_piston',
+    hasGasTap: true,
+    familyTitleZh: '枪口下方导气筒长行程拉机柄 · 双突笋回转 + 8发漏夹弹射',
+    familyTitleEn: 'Under-Muzzle Long-Stroke Op-Rod · 2-Lug Bolt & En-Bloc Clip',
+    flowNoteZh:
+      '弹头临近 24 英寸枪口（92% 膛程）越过底导气孔后，燃气下冲入不锈钢导气筒推动 S 形弯曲长行程拉机柄后坐，经自由行程泄压后由螺旋凸轮槽旋开枪机。',
+    flowNoteEn:
+      'At 92% of the 24" barrel, gas taps down into the stainless under-muzzle cylinder, driving the S-curved long-stroke op-rod rearward through free dwell before camming the bolt open.',
+    chamberX: 8.35,
+    muzzleX: 63.0,
+    boreY: 1.15,
+    gasPortX: 59.6,
+    gasChannelY: 0.25,
+    gasChannelZ: 0,
+    gasTargetX: 48.8,
+    ventPos: [56.2, -0.25, 0],
+  },
 };
 
 /**
@@ -704,6 +764,90 @@ const EXPLICIT_PART_ROLE_OVERRIDES: Readonly<Record<string, EngineeringRole>> =
     r500_quiver_frame: 'housing_feed',
     r500_retention_arm: 'housing_feed',
     r500_carbon_bolt: 'housing_feed',
+
+    // Colt Python 6" .357 Magnum Revolver (25 parts — non-gas-operated: 0 gas_drive!)
+    python_barrel: 'locking',
+    python_cylinder: 'locking',
+    python_cylinder_bolt: 'locking',
+    python_crane: 'locking',
+    python_hand: 'bolt_carrier',
+    python_extractor_star: 'bolt_carrier',
+    python_extractor_rod: 'bolt_carrier',
+    python_cylinder_latch: 'bolt_carrier',
+    python_trigger: 'fire_control',
+    python_hammer: 'fire_control',
+    python_hammer_stirrup: 'fire_control',
+    python_rebound_lever: 'fire_control',
+    python_firing_pin: 'fire_control',
+    python_mainspring: 'energy_spring',
+    python_extractor_spring: 'energy_spring',
+    python_frame: 'housing_feed',
+    python_sideplate: 'housing_feed',
+    python_sideplate_screws: 'housing_feed',
+    python_grip_left: 'housing_feed',
+    python_grip_right: 'housing_feed',
+    python_front_sight: 'housing_feed',
+    python_rear_sight_base: 'housing_feed',
+    python_rear_sight_leaf: 'housing_feed',
+    python_muzzle_crown_insert: 'housing_feed',
+    python_speedloader: 'housing_feed',
+
+    // Benelli M4 (M1014) 12 Gauge Combat Shotgun (26 parts)
+    benellim4_barrel: 'locking',
+    benellim4_bolt_head: 'locking',
+    benellim4_cam_pin: 'locking',
+    benellim4_argo_pistons: 'gas_drive',
+    benellim4_argo_plugs: 'gas_drive',
+    benellim4_bolt_carrier: 'bolt_carrier',
+    benellim4_charging_handle: 'bolt_carrier',
+    benellim4_firing_pin: 'fire_control',
+    benellim4_trigger: 'fire_control',
+    benellim4_hammer: 'fire_control',
+    benellim4_safety_button: 'fire_control',
+    benellim4_recoil_spring: 'energy_spring',
+    benellim4_hammer_spring: 'energy_spring',
+    benellim4_mag_spring: 'energy_spring',
+    benellim4_receiver: 'housing_feed',
+    benellim4_picatinny_rail: 'housing_feed',
+    benellim4_ghost_ring_sight: 'housing_feed',
+    benellim4_front_sight: 'housing_feed',
+    benellim4_forend: 'housing_feed',
+    benellim4_recoil_tube: 'housing_feed',
+    benellim4_pistol_grip: 'housing_feed',
+    benellim4_telestock: 'housing_feed',
+    benellim4_trigger_housing: 'housing_feed',
+    benellim4_mag_tube: 'housing_feed',
+    benellim4_mag_cap: 'housing_feed',
+    benellim4_mag_follower: 'housing_feed',
+    benellim4_shell_elevator: 'housing_feed',
+
+    // U.S. Rifle Cal. .30 M1 Garand (26 parts)
+    garand_barrel: 'locking',
+    garand_bolt: 'locking',
+    garand_gas_cylinder: 'gas_drive',
+    garand_gas_lock_screw: 'gas_drive',
+    garand_op_rod: 'gas_drive',
+    garand_follower_arm: 'bolt_carrier',
+    garand_op_rod_catch: 'bolt_carrier',
+    garand_firing_pin: 'fire_control',
+    garand_trigger: 'fire_control',
+    garand_hammer: 'fire_control',
+    garand_lower_band: 'housing_feed',
+    garand_op_rod_spring: 'energy_spring',
+    garand_hammer_spring: 'energy_spring',
+    garand_receiver: 'housing_feed',
+    garand_rear_sight: 'housing_feed',
+    garand_front_sight: 'housing_feed',
+    garand_walnut_stock: 'housing_feed',
+    garand_front_handguard: 'housing_feed',
+    garand_rear_handguard: 'housing_feed',
+    garand_buttplate: 'housing_feed',
+    garand_trigger_housing: 'housing_feed',
+    garand_trigger_guard: 'housing_feed',
+    garand_enbloc_clip: 'housing_feed',
+    garand_follower: 'housing_feed',
+    garand_bullet_guide: 'housing_feed',
+    garand_clip_latch: 'housing_feed',
   };
 
 export interface EngineeringPartClassifierInput {

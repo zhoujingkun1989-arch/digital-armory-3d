@@ -2014,6 +2014,475 @@ export const FIELD_STRIP_PLANS: Readonly<
       },
     ],
   },
+
+  python: {
+    weaponId: 'python',
+    manualCodeZh: 'Colt 1955 军械师保养手册 · I型转轮框与V簧发条拆装教范',
+    manualCodeEn: 'Colt 1955 Factory Shop Manual · I-Frame & V-Spring Clockwork SOP',
+    steps: [
+      {
+        id: 'python_strip_latch',
+        orderLabel: '01',
+        titleZh: '向后拉动左侧水滴形防滑弹巢解脱栓',
+        titleEn: 'Pull Rearward Checkered Teardrop Cylinder Latch',
+        actionHintZh:
+          '点击转轮框左侧滚花水滴形开锁推钮，向后抽退中心定位销解脱弹巢前锁。',
+        actionHintEn:
+          'Click the left-side checkered teardrop thumbpiece to retract the center pin and unlock the cylinder.',
+        requires: [],
+        stripBlockedNoteZh: '',
+        stripBlockedNoteEn: '',
+        reassembleBlockedNoteZh:
+          '复装锁栓归位前，必须先将摇臂与 6 发弹巢总成合拢锁入转轮框窗内！',
+        reassembleBlockedNoteEn:
+          'Close the crane and 6-shot cylinder back into the frame window before resetting the thumbpiece latch!',
+        triggerPartIds: ['python_cylinder_latch'],
+        bindings: [bind('python_cylinder_latch', 0)],
+      },
+      {
+        id: 'python_strip_swing_cylinder',
+        orderLabel: '02',
+        titleZh: '向左摆出摇臂与6发弹巢并移开快装器验枪',
+        titleEn: 'Swing Out Crane & 6-Shot Cylinder Assembly to Clear',
+        actionHintZh:
+          '点击6发凹槽弹巢、摇臂或快装器，将弹巢总成沿左侧铰链轴摆出框窗清空弹膛。',
+        actionHintEn:
+          'Click the fluted cylinder, crane yoke, or speedloader to swing the cylinder assembly clear to the left.',
+        requires: ['python_strip_latch'],
+        stripBlockedNoteZh:
+          '中心定位销仍锁死弹巢尾端，严禁强行硬掰摇臂！请先向后拉动左侧弹巢解脱栓（步骤 01）。',
+        stripBlockedNoteEn:
+          'The center pin still locks the cylinder—pull back the teardrop cylinder latch (Step 01) before swinging out the crane!',
+        reassembleBlockedNoteZh:
+          '合拢摇臂前必须先将星形退壳器、退壳杆与复位簧旋紧装回弹巢孔内！',
+        reassembleBlockedNoteEn:
+          'Reassemble the extractor star, ejector rod, and return spring into the cylinder before closing the crane!',
+        triggerPartIds: ['python_cylinder', 'python_crane', 'python_speedloader'],
+        bindings: [
+          bind('python_crane', 0),
+          bind('python_cylinder', 0),
+          bind('python_extractor_star', 0),
+          bind('python_extractor_rod', 0),
+          bind('python_extractor_spring', 0),
+          bind('python_speedloader', 0),
+        ],
+      },
+      {
+        id: 'python_strip_extractor',
+        orderLabel: '03',
+        titleZh: '逆旋拧下左旋螺纹退壳杆并分解星形退壳器组',
+        titleEn: 'Unscrew Left-Hand Ejector Rod & Strip Extractor Star Assembly',
+        actionHintZh:
+          '点击滚花退壳顶杆或六角星形退壳器，拆出中心退壳杆、复位压簧与棘轮星形盘。',
+        actionHintEn:
+          'Click the knurled ejector rod or extractor star to separate the rod, return spring, and 6-star ratchet.',
+        requires: ['python_strip_swing_cylinder'],
+        stripBlockedNoteZh:
+          '退壳杆被枪管下方全长护罩严密包覆，必须先摆出弹巢摇臂总成（步骤 02）！',
+        stripBlockedNoteEn:
+          'The full-lug underbarrel shroud encloses the ejector rod—swing out the cylinder assembly (Step 02) first!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: [
+          'python_extractor_rod',
+          'python_extractor_star',
+          'python_extractor_spring',
+        ],
+        bindings: [
+          bind('python_crane', 1),
+          bind('python_cylinder', 1),
+          bind('python_extractor_star', 1),
+          bind('python_extractor_rod', 1),
+          bind('python_extractor_spring', 1),
+          bind('python_speedloader', 1),
+        ],
+      },
+      {
+        id: 'python_strip_grips',
+        orderLabel: '04',
+        titleZh: '旋下握把贯通螺钉并取下左右胡桃木靶用护片',
+        titleEn: 'Unscrew & Detach Checkered American Walnut Target Grips',
+        actionHintZh:
+          '点击左或右侧菱格纹美洲胡桃木握把护片，露握把骨架内的折叠 V 型主发条簧。',
+        actionHintEn:
+          'Click either checkered American walnut target grip panel to expose the frame grip strap and V-mainspring.',
+        requires: ['python_strip_swing_cylinder'],
+        stripBlockedNoteZh:
+          '军械师拆装铁律：进入内部火控拆解前必须先摆出弹巢清空验枪（步骤 02）！',
+        stripBlockedNoteEn:
+          'Armorer safety rule: swing out and clear the 6-shot cylinder (Step 02) before stripping grips or lockwork!',
+        reassembleBlockedNoteZh:
+          '装回胡桃木握把护片前，必须先装妥全部火控机件并锁紧左侧机匣盖板与螺钉！',
+        reassembleBlockedNoteEn:
+          'Reinstall the V-mainspring, lockwork, and fitted sideplate screws before mounting the walnut grip panels!',
+        triggerPartIds: ['python_grip_left', 'python_grip_right'],
+        bindings: [bind('python_grip_left', 0), bind('python_grip_right', 0)],
+      },
+      {
+        id: 'python_strip_sideplate',
+        orderLabel: '05',
+        titleZh: '用专用平口起子旋出盖板螺钉并轻敲震落侧盖板',
+        titleEn: 'Remove Gunsmith Sideplate Screws & Tap Off Fitted Sideplate',
+        actionHintZh:
+          '点击机匣侧盖板或螺钉（严禁撬动边缘），垂直平移取下精配严丝合缝的侧盖板。',
+        actionHintEn:
+          'Click the fitted lockwork sideplate or screws to lift the sideplate straight off without prying.',
+        requires: ['python_strip_grips'],
+        stripBlockedNoteZh:
+          '后下方盖板边缘延伸至胡桃木靶用握把护片下方遮挡，请先拆下胡桃木握把（步骤 04）！',
+        stripBlockedNoteEn:
+          'The target walnut grips overlap the lower sideplate heel—remove the walnut grips (Step 04) first!',
+        reassembleBlockedNoteZh:
+          '合上侧盖板前必须先将双动击锤、扳机、回弹杠杆、双阶拨爪与 V 型主簧装回销轴！',
+        reassembleBlockedNoteEn:
+          'Seat the DA/SA hammer, trigger, rebound lever, hand, and V-mainspring onto their studs before closing the sideplate!',
+        triggerPartIds: ['python_sideplate', 'python_sideplate_screws'],
+        bindings: [
+          bind('python_sideplate_screws', 0),
+          bind('python_sideplate', 0),
+        ],
+      },
+      {
+        id: 'python_strip_clockwork',
+        orderLabel: '06',
+        titleZh: '摘除折叠V型主簧并依次取出击锤、回弹杆与拨爪组',
+        titleEn: 'Unhook Folded V-Mainspring & Lift DA/SA Lockwork Assembly',
+        actionHintZh:
+          '点击折叠 V 型板簧、宽大靶用击锤或回弹安全杠杆，完整分解柯尔特手工调校钟表级火控组。',
+        actionHintEn:
+          'Click the V-mainspring, wide target hammer, or rebound lever to strip the hand-tuned Colt clockwork.',
+        requires: ['python_strip_sideplate'],
+        stripBlockedNoteZh:
+          '火控机件与销轴全数封闭于机匣侧盖板内腔，请先拆下侧盖板与螺钉（步骤 05）！',
+        stripBlockedNoteEn:
+          'All lockwork pivots are enclosed beneath the fitted sideplate—remove the sideplate (Step 05) first!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: [
+          'python_mainspring',
+          'python_hammer',
+          'python_rebound_lever',
+          'python_trigger',
+          'python_hand',
+          'python_cylinder_bolt',
+        ],
+        bindings: [
+          bind('python_mainspring', 0),
+          bind('python_hammer', 0),
+          bind('python_hammer_stirrup', 0),
+          bind('python_rebound_lever', 0),
+          bind('python_trigger', 0),
+          bind('python_hand', 0),
+          bind('python_cylinder_bolt', 0),
+          bind('python_firing_pin', 0),
+        ],
+      },
+    ],
+  },
+
+  benellim4: {
+    weaponId: 'benellim4',
+    manualCodeZh: 'USMC TM 10698A-10/1 · M1014 免工具野战勤务分解教范',
+    manualCodeEn: 'USMC TM 10698A-10/1 · M1014 Combat Shotgun Tool-Less Field-Strip',
+    steps: [
+      {
+        id: 'bm4_strip_mag_cap',
+        orderLabel: '01',
+        titleZh: '验枪清仓后徒手旋下防松棘齿管仓前端盖',
+        titleEn: 'Clear Chamber/Tube & Unscrew Ratcheting Magazine End-Cap',
+        actionHintZh:
+          '点击弹仓最前端粗滚花钢制螺盖，克服弹簧定位销咔哒棘齿阻力向前旋出。',
+        actionHintEn:
+          'Click the knurled front magazine tube end-cap to unscrew it past the spring-loaded detentclicks.',
+        requires: [],
+        stripBlockedNoteZh: '',
+        stripBlockedNoteEn: '',
+        reassembleBlockedNoteZh:
+          '旋紧弹仓前端螺盖前，必须先将 18.5 英寸枪管导环与双片式护木套回管式弹仓上！',
+        reassembleBlockedNoteEn:
+          'Slide the 18.5" barrel guide ring and two-piece forend back over the magazine tube before threading the cap!',
+        triggerPartIds: ['benellim4_mag_cap'],
+        bindings: [bind('benellim4_mag_cap', 0)],
+      },
+      {
+        id: 'bm4_strip_barrel_forend',
+        orderLabel: '02',
+        titleZh: '向前拔出 18.5 英寸枪管（连同 ARGO 导气座）与双片护木',
+        titleEn: 'Pull Forward 18.5" Barrel Assembly & Two-Piece Polymer Forend',
+        actionHintZh:
+          '点击镀铬滑膛枪管或聚合物护木，顺弹仓轴线向前整体抽离铝机匣节套。',
+        actionHintEn:
+          'Click the 18.5" barrel or polymer forend to draw the barrel/ARGO block assembly forward off the receiver.',
+        requires: ['bm4_strip_mag_cap'],
+        stripBlockedNoteZh:
+          '枪管导环与护木前端被防松棘齿弹仓端盖死死压紧固定，请先旋下弹仓前端螺盖（步骤 01）！',
+        stripBlockedNoteEn:
+          'The ratcheting magazine end-cap clamps the barrel guide ring and forend—unscrew the cap (Step 01) first!',
+        reassembleBlockedNoteZh:
+          '插回枪管前，必须先将双路不锈钢 ARGO 活塞装回导气筒并将枪机框总成推入机匣导轨！',
+        reassembleBlockedNoteEn:
+          'Reinstall the twin ARGO pistons/plugs and seat the bolt carrier group into the receiver before fitting the barrel!',
+        triggerPartIds: ['benellim4_barrel', 'benellim4_forend'],
+        bindings: [
+          bind('benellim4_barrel', 0),
+          bind('benellim4_front_sight', 0),
+          bind('benellim4_argo_plugs', 0),
+          bind('benellim4_argo_pistons', 0),
+          bind('benellim4_forend', 0),
+        ],
+      },
+      {
+        id: 'bm4_strip_argo',
+        orderLabel: '03',
+        titleZh: '以拉机柄作扳手旋下导气塞并抽出左右双路 ARGO 活塞',
+        titleEn: 'Unscrew Dual Gas Plugs & Withdraw Twin Stainless ARGO Pistons',
+        actionHintZh:
+          '点击枪管下方左右并列导气螺塞或不锈钢短行程活塞杆，向前抽出自清洁双活塞组。',
+        actionHintEn:
+          'Click the dual ARGO front gas plugs or stainless short-stroke pistons to extract both gas tappets.',
+        requires: ['bm4_strip_barrel_forend'],
+        stripBlockedNoteZh:
+          '护木前罩遮挡导气筒操作空间，请先向前拆下枪管与护木总成（步骤 02）！',
+        stripBlockedNoteEn:
+          'Remove the barrel and two-piece forend assembly (Step 02) before servicing the dual ARGO gas plugs!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: ['benellim4_argo_plugs', 'benellim4_argo_pistons'],
+        bindings: [
+          bind('benellim4_argo_plugs', 1),
+          bind('benellim4_argo_pistons', 1),
+        ],
+      },
+      {
+        id: 'bm4_strip_charging_bcg',
+        orderLabel: '04',
+        titleZh: '旋转拔出滚花拉机柄并将回转枪机框总成向前滑出机匣',
+        titleEn: 'Twist-Pull Knurled Charging Handle & Slide Bolt Carrier Group Out',
+        actionHintZh:
+          '点击右侧拉机柄或枪机框体，旋转解锁拉机柄卡槽后将枪机组顺机匣前口滑出。',
+        actionHintEn:
+          'Click the knurled charging handle or bolt carrier to twist-pull the handle and slide the BCG forward.',
+        requires: ['bm4_strip_barrel_forend'],
+        stripBlockedNoteZh:
+          '枪管节套封堵机匣前端且拉机柄阻挡枪机框前移，请先拆下 18.5 英寸枪管总成（步骤 02）！',
+        stripBlockedNoteEn:
+          'The barrel extension closes the front of the receiver—pull off the barrel assembly (Step 02) first!',
+        reassembleBlockedNoteZh:
+          '将枪机框推回机匣前，必须先合装硬铬双突笋枪机头、凸轮销与长击针，并先装回火控盒！',
+        reassembleBlockedNoteEn:
+          'Reassemble the bolt head, cam pin, and firing pin into the carrier and seat the trigger pack before sliding the BCG in!',
+        triggerPartIds: ['benellim4_charging_handle', 'benellim4_bolt_carrier'],
+        bindings: [
+          bind('benellim4_charging_handle', 0),
+          bind('benellim4_bolt_carrier', 0),
+          bind('benellim4_bolt_head', 0),
+          bind('benellim4_cam_pin', 0),
+          bind('benellim4_firing_pin', 0),
+        ],
+      },
+      {
+        id: 'bm4_strip_bolt_head',
+        orderLabel: '05',
+        titleZh: '抽出枪机凸轮销并分离硬铬双突笋枪机头与长击针',
+        titleEn: 'Pull Cam Pin & Separate Hard-Chrome 2-Lug Bolt Head & Firing Pin',
+        actionHintZh:
+          '点击硬铬双突笋枪机头、凸轮销或击针，完整分解枪机螺旋解锁核心组件。',
+        actionHintEn:
+          'Click the hard-chrome 2-lug bolt head, cam pin, or firing pin to field-strip the rotating bolt group.',
+        requires: ['bm4_strip_charging_bcg'],
+        stripBlockedNoteZh:
+          '凸轮销被铝机匣内导轨侧面限位封闭，必须先拔拉机柄并滑出枪机框总成（步骤 04）！',
+        stripBlockedNoteEn:
+          'Receiver guide rails retain the cam pin—extract the charging handle and bolt carrier group (Step 04) first!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: [
+          'benellim4_bolt_head',
+          'benellim4_cam_pin',
+          'benellim4_firing_pin',
+        ],
+        bindings: [
+          bind('benellim4_cam_pin', 1),
+          bind('benellim4_bolt_head', 1),
+          bind('benellim4_firing_pin', 1),
+          bind('benellim4_bolt_carrier', 1),
+        ],
+      },
+      {
+        id: 'bm4_strip_trigger_pack',
+        orderLabel: '06',
+        titleZh: '用拉机柄尖端顶出机匣横销并向下取出火控盒与升降托弹板',
+        titleEn: 'Push Receiver Cross-Pin & Drop Modular Trigger Pack w/ Shell Elevator',
+        actionHintZh:
+          '点击铝合金扳机护圈座或不锈钢升降托弹板，压住放弹片将模块化火控总成向前下方抽出。',
+        actionHintEn:
+          'Click the aluminum trigger housing or stainless shell elevator to drop the modular trigger group free.',
+        requires: ['bm4_strip_charging_bcg'],
+        stripBlockedNoteZh:
+          '机匣内的枪机框底面压制击锤与托弹板连杆，请先滑出枪机框总成（步骤 04）再拆火控盒！',
+        stripBlockedNoteEn:
+          'Clear the bolt carrier group (Step 04) from the receiver before dropping the trigger pack and shell elevator!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: [
+          'benellim4_trigger_housing',
+          'benellim4_trigger',
+          'benellim4_shell_elevator',
+        ],
+        bindings: [
+          bind('benellim4_trigger_housing', 0),
+          bind('benellim4_trigger', 0),
+          bind('benellim4_hammer', 0),
+          bind('benellim4_hammer_spring', 0),
+          bind('benellim4_safety_button', 0),
+          bind('benellim4_shell_elevator', 0),
+        ],
+      },
+    ],
+  },
+
+  garand: {
+    weaponId: 'garand',
+    manualCodeZh: 'US Army FM 23-5 · M1 加兰德步枪三大总成与机件野战分解教范',
+    manualCodeEn: 'US Army FM 23-5 · U.S. Rifle Cal. .30 M1 Garand Field-Strip SOP',
+    steps: [
+      {
+        id: 'garand_strip_clip',
+        orderLabel: '01',
+        titleZh: '后拉挂机按压左侧漏夹卡笋弹出 8 发弹簧钢整装漏夹',
+        titleEn: 'Lock Action, Depress Clip Latch & Eject 8-Round En-Bloc Clip',
+        actionHintZh:
+          '点击开顶机匣内的黑色弹簧钢 8 发漏夹，排空弹仓并闭合枪机后拨上护圈冬季保险。',
+        actionHintEn:
+          'Click the parked 8-round spring-steel en-bloc clip to eject it from the receiver well and clear the rifle.',
+        requires: [],
+        stripBlockedNoteZh: '',
+        stripBlockedNoteEn: '',
+        reassembleBlockedNoteZh:
+          '压入 8 发弹簧钢整装漏夹前，必须先将枪机、拉机柄、胡桃木枪托与火控组全部复装锁紧！',
+        reassembleBlockedNoteEn:
+          'Complete full rifle reassembly—bolt, op-rod, stock, and latched trigger guard—before inserting the en-bloc clip!',
+        triggerPartIds: ['garand_enbloc_clip'],
+        bindings: [bind('garand_enbloc_clip', 0)],
+      },
+      {
+        id: 'garand_strip_trigger_group',
+        orderLabel: '02',
+        titleZh: '向后上方勾开铣削扳机护圈锁耳并垂直抽出快拆火控总成',
+        titleEn: 'Unlatch Milled Trigger Guard & Lift Out Trigger Housing Group',
+        actionHintZh:
+          '点击冬季大扳机护圈或锻钢火控盒，以护圈作杠杆解脱机匣挂耳并整体抽出火控组。',
+        actionHintEn:
+          'Click the milled trigger guard or trigger housing to unlatch the locking lugs and pull the trigger group free.',
+        requires: ['garand_strip_clip'],
+        stripBlockedNoteZh:
+          '军械安全死命令：严禁带夹带弹分解火控盒！必须先按压卡笋弹出 8 发漏夹清空弹膛（步骤 01）。',
+        stripBlockedNoteEn:
+          'FM 23-5 safety rule: eject the 8-round en-bloc clip and clear the chamber (Step 01) before unlatching the trigger guard!',
+        reassembleBlockedNoteZh:
+          '锁紧扳机护圈前必须先将机匣枪管总成压入美洲黑胡桃木全枪托槽内定位（扳机护圈兼作机匣与木托的主锁紧楔）！',
+        reassembleBlockedNoteEn:
+          'Seat the barreled receiver into the American black walnut stock before latching the clamping trigger group!',
+        triggerPartIds: [
+          'garand_trigger_guard',
+          'garand_trigger_housing',
+          'garand_trigger',
+        ],
+        bindings: [
+          bind('garand_trigger_guard', 0, 1),
+          bind('garand_trigger_housing', 0),
+          bind('garand_trigger', 0),
+          bind('garand_hammer', 0),
+          bind('garand_hammer_spring', 0),
+        ],
+      },
+      {
+        id: 'garand_strip_stock',
+        orderLabel: '03',
+        titleZh: '将机匣枪管金属总成向上抬离油浸美洲黑胡桃木全枪托',
+        titleEn: 'Separate Barreled Receiver Group from American Black Walnut Stock',
+        actionHintZh:
+          '点击一体式胡桃木枪托或钢制枪托底板，使金属受压总成与木托彻底分离为三大勤务组件。',
+        actionHintEn:
+          'Click the walnut stock or steel buttplate to separate the barreled receiver from the stock group.',
+        requires: ['garand_strip_trigger_group'],
+        stripBlockedNoteZh:
+          '扳机护圈锁耳将机匣与胡桃木枪托上下紧紧楔死咬合，请先勾开护圈拆出火控总成（步骤 02）！',
+        stripBlockedNoteEn:
+          'The latched trigger housing clamps the receiver into the walnut bedding—remove the trigger group (Step 02) first!',
+        reassembleBlockedNoteZh:
+          '扣合胡桃木枪托前必须先装回回转枪机、长行程拉机柄并将复进簧叉钩挂回托弹臂！',
+        reassembleBlockedNoteEn:
+          'Reinstall the rotating bolt, curved op-rod, and operating-rod spring onto the receiver before bedding the stock!',
+        triggerPartIds: ['garand_walnut_stock', 'garand_buttplate'],
+        bindings: [
+          bind('garand_walnut_stock', 0),
+          bind('garand_buttplate', 0),
+        ],
+      },
+      {
+        id: 'garand_strip_op_rod_spring',
+        orderLabel: '04',
+        titleZh: '摘脱托弹臂叉口并从拉机柄空心管内抽出超长复进簧',
+        titleEn: 'Unhook Follower Rod Fork & Withdraw Long Op-Rod Recoil Spring',
+        actionHintZh:
+          '点击枪管下方长行程螺旋复进簧，稳控预紧弹力解除叉口啮合并向后平顺抽出弹簧。',
+        actionHintEn:
+          'Click the long operating-rod recoil spring to unhook the follower rod fork and withdraw the spring rearward.',
+        requires: ['garand_strip_stock'],
+        stripBlockedNoteZh:
+          '下托弹臂与复进簧后段深藏在胡桃木枪托前护木槽内，请先分离胡桃木枪托（步骤 03）！',
+        stripBlockedNoteEn:
+          'The walnut stock forend encloses the follower rod and recoil spring—separate the stock (Step 03) first!',
+        reassembleBlockedNoteZh:
+          '穿入长行程复进簧前，必须先将 S 形弯曲拉机柄导笋压回机匣右侧导槽内就位！',
+        reassembleBlockedNoteEn:
+          'Seat the curved S-bend operating rod back onto its receiver track before inserting the recoil spring!',
+        triggerPartIds: ['garand_op_rod_spring'],
+        bindings: [bind('garand_op_rod_spring', 0)],
+      },
+      {
+        id: 'garand_strip_op_rod',
+        orderLabel: '05',
+        titleZh: '后拉对准机匣分解缺口并向上外挑脱出 S 形弯曲长行程拉机柄',
+        titleEn: 'Align Dismount Notch & Lift S-Curved Operating Rod Off Track',
+        actionHintZh:
+          '点击右侧 S 形避让弯曲长行程拉机柄，对准机匣导轨分解缺口上提并向前抽出不锈钢导气筒。',
+        actionHintEn:
+          'Click the S-curved long-stroke operating rod to lift its tab out of the dismount notch and draw it clear.',
+        requires: ['garand_strip_op_rod_spring'],
+        stripBlockedNoteZh:
+          '拉机柄空心管内仍穿有高预紧度复进簧顶死，严禁带簧强撬拉机柄！请先抽出复进簧（步骤 04）。',
+        stripBlockedNoteEn:
+          'High recoil-spring tension loads the op-rod tube—unhook and withdraw the op-rod spring (Step 04) first!',
+        reassembleBlockedNoteZh:
+          '装回拉机柄前必须先将双突笋回转枪机与长击针斜旋压入机匣导轨，使右侧开锁突笋等待嵌入拉机柄驼峰凸轮槽！',
+        reassembleBlockedNoteEn:
+          'Cam the 2-lug rotating bolt and firing pin into the receiver bridge before engaging the op-rod cam hump!',
+        triggerPartIds: ['garand_op_rod'],
+        bindings: [bind('garand_op_rod', 0)],
+      },
+      {
+        id: 'garand_strip_bolt',
+        orderLabel: '06',
+        titleZh: '向前上方斜推旋出双突笋回转闭锁枪机与防惯性长击针',
+        titleEn: 'Cam 2-Lug Rotating Breech Bolt & Firing Pin Forward-Upward Out',
+        actionHintZh:
+          '点击开顶机匣内的双突笋回转枪机或长击针，令右闭锁突笋滑离机匣桥槽向上取出枪机。',
+        actionHintEn:
+          'Click the 2-lug rotating bolt or firing pin to cam the right lug free of the receiver tang and lift out.',
+        requires: ['garand_strip_op_rod'],
+        stripBlockedNoteZh:
+          '枪机右侧操作突笋正嵌在拉机柄螺旋驼峰凸轮槽内锁合，必须先卸下 S 形拉机柄（步骤 05）！',
+        stripBlockedNoteEn:
+          'The bolt’s right operating lug rides captive inside the op-rod cam hump—remove the op-rod (Step 05) first!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: ['garand_bolt', 'garand_firing_pin'],
+        bindings: [bind('garand_bolt', 0), bind('garand_firing_pin', 0)],
+      },
+    ],
+  },
 };
 
 export function getFieldStripPlan(weaponId: WeaponId): FieldStripWeaponPlan {

@@ -38,9 +38,12 @@ export const BOLT_BOUNCE_HZ = 38;
 export const BALLISTIC_CALIBERS: readonly CaliberProfile[] = [
   '9mm_para',
   '57_28',
-  '556_nato',
-  '762_m43',
+  '357_magnum',
   '50_ae',
+  '12_gauge',
+  '762_m43',
+  '556_nato',
+  '30_06',
   '338_lapua',
   '50_bmg',
 ];
@@ -339,6 +342,81 @@ export const CALIBER_BALLISTICS: Readonly<
     caseMassG: 56,
     shockDiamonds: 5,
   }),
+  '357_magnum': defineCaliber({
+    caliber: '357_magnum',
+    labelEn: '.357 Magnum 158gr JSP',
+    labelZh: '.357 马格南 158格令 半被甲软尖弹',
+    standard: 'SAAMI',
+    peakPressureMPa: 241,
+    muzzleVelocityMps: 385,
+    projectileMassG: 10.25,
+    safeUnlockPressureMPa: 8,
+    boreTimeMs: 0.54,
+    referenceBarrelMm: 152.4,
+    pressureShapeK: 2.5,
+    peakU: 0.42,
+    heatPerShotC: 10,
+    foulingPerShot: 0.016,
+    recoilKickCm: 0.92,
+    recoilRiseCm: 0.22,
+    muzzleClimbRad: 0.072,
+    barrelWhipCm: 0.022,
+    ejectSpeedCmS: 95,
+    caseHalfLenCm: 1.02,
+    caseRadiusCm: 0.38,
+    caseMassG: 5.1,
+    shockDiamonds: 2,
+  }),
+  '12_gauge': defineCaliber({
+    caliber: '12_gauge',
+    labelEn: '12 Gauge 2.75" 9-Pellet 00 Buckshot',
+    labelZh: '12号 70mm 9粒 00号军用鹿弹',
+    standard: 'SAAMI',
+    peakPressureMPa: 79,
+    muzzleVelocityMps: 404,
+    projectileMassG: 30.2,
+    safeUnlockPressureMPa: 4,
+    boreTimeMs: 1.55,
+    referenceBarrelMm: 470,
+    pressureShapeK: 2.3,
+    peakU: 0.36,
+    heatPerShotC: 11,
+    foulingPerShot: 0.024,
+    recoilKickCm: 1.65,
+    recoilRiseCm: 0.28,
+    muzzleClimbRad: 0.038,
+    barrelWhipCm: 0.032,
+    ejectSpeedCmS: 165,
+    caseHalfLenCm: 0.82,
+    caseRadiusCm: 0.46,
+    caseMassG: 8.4,
+    shockDiamonds: 1,
+  }),
+  '30_06': defineCaliber({
+    caliber: '30_06',
+    labelEn: '.30-06 Springfield 150gr M2 Ball',
+    labelZh: '.30-06 春田 150格令 M2 普通弹',
+    standard: 'SAAMI',
+    peakPressureMPa: 345,
+    muzzleVelocityMps: 853,
+    projectileMassG: 9.73,
+    safeUnlockPressureMPa: 11,
+    boreTimeMs: 1.28,
+    referenceBarrelMm: 610,
+    pressureShapeK: 4.1,
+    peakU: 0.44,
+    heatPerShotC: 18,
+    foulingPerShot: 0.017,
+    recoilKickCm: 1.28,
+    recoilRiseCm: 0.22,
+    muzzleClimbRad: 0.025,
+    barrelWhipCm: 0.042,
+    ejectSpeedCmS: 195,
+    caseHalfLenCm: 1.45,
+    caseRadiusCm: 0.31,
+    caseMassG: 12.6,
+    shockDiamonds: 4,
+  }),
   arrow_400gr: defineCaliber({
     caliber: 'arrow_400gr',
     labelEn: '400gr Carbon Arrow (70 lb · 348 FPS)',
@@ -504,6 +582,12 @@ export const WEAPON_FIRING_TIMING: Readonly<
   lift33: timing(0.32, 0.5, 0.68, 0.86, null, 0, -0.5, 0.86),
   // Ravin R500 HexCoil helical-cam crossbow (cock/arm 0..0.32, release 0.32, bolt clear 0.48)
   r500: timing(0.32, 0.48, 0.66, 0.84, null, 0, -0.5, 0.86),
+  // Colt Python 6" .357 Magnum DA/SA revolver (no gas tap; brass retained in cylinder)
+  python: timing(0.2, 0.34, 0.5, 0.86, null, 0, 0.4, 0.92),
+  // Benelli M4 (M1014) 12ga dual short-stroke ARGO pistons — chamber-forward ports at ~15% bore
+  benellim4: timing(0.12, 0.29, 0.44, 0.9, 0.15, 0.18, 0.48, 0.86),
+  // M1 Garand .30-06 long-stroke op-rod — under-muzzle gas port at ~92% bore, 1–2 o'clock ejection
+  garand: timing(0.1, 0.21, 0.45, 0.88, 0.92, 0.46, 0.54, 0.7),
 };
 
 export function getWeaponFiringTiming(
@@ -1556,7 +1640,9 @@ export function stepArmoryPhysics(
         spawnVentSmoke(input);
       }
       if (crossedForward(prev, f, t.ejectF)) {
-        spawnSpentCasing(input, t);
+        if (input.weaponId !== 'python') {
+          spawnSpentCasing(input, t);
+        }
         spawnChamberSmoke(input);
       }
       if (crossedForward(prev, f, t.batteryF)) {

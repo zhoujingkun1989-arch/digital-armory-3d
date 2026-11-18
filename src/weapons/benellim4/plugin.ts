@@ -19,8 +19,8 @@ import type {
 } from '../types';
 import { BENELLIM4_STOCK_ANGLE } from './meshes/benellim4Geometries';
 
-export const BENELLIM4_ID = 'benellim4' as unknown as WeaponId;
-export const BENELLIM4_CALIBER = '12_gauge' as unknown as CaliberProfile;
+export const BENELLIM4_ID: WeaponId = 'benellim4';
+export const BENELLIM4_CALIBER: CaliberProfile = '12_gauge';
 
 export const BENELLIM4_PART_GROUPS: AssemblyGroupMeta[] = [
   {
@@ -816,14 +816,14 @@ export function computeBenelliM4FiringKinematics(
     }
 
     case 'benellim4_mag_spring': {
-      // Front end pinned at local x = 0 inside mag cap; rear coil (-30.6) expands rearward (scaleX: 1.0 -> 1.16)
-      scaleX = 1 + 0.16 * magFeedPulse;
+      // Front end pinned at local x = 0 inside mag cap; rear coil (-30.6) expands rearward (scaleX: 1.0 -> 1.095)
+      scaleX = 1 + 0.095 * magFeedPulse;
       break;
     }
 
     case 'benellim4_mag_follower': {
-      // Slides rearward (-X) along tubular magazine axis Y = -1.25 tracking mag_spring expansion (-30.6 * 0.16 = -4.90)
-      dx = -4.9 * magFeedPulse;
+      // Slides rearward (-X) along tubular magazine axis Y = -1.25 by one shell pitch (-1.70 cm)
+      dx = -1.7 * magFeedPulse;
       break;
     }
 
@@ -920,40 +920,46 @@ export function computeBenelliM4BallisticsState(
     muzzlePlumeOpacity = Math.sin(u * Math.PI) * 0.9;
   }
 
-  // 4. Next 12ga Shell: Underbarrel Mag Tube [13.8, -1.25, 0] -> Shell Elevator [2.2, -1.28, 0] ->
+  // 4. Next 12ga Shell: Underbarrel Mag Tube [10.55, -1.25, 0.045] -> Shell Elevator [2.2, -1.28, 0] ->
   //    Elevator Upward Lift [3.4, +1.08, 0] -> Bolt Chambers into [9.2, 1.35, 0]!
-  let nextX = 13.8;
+  let nextX = 10.55;
   let nextY = -1.25;
+  let nextZ = 0.045;
   let nextRZ = 0;
 
   if (f >= 0.51 && f < 0.59) {
     // Ejected rearward from tubular magazine onto pivoting stainless shell elevator
     const u = seg(f, 0.51, 0.59);
-    nextX = 13.8 + (2.2 - 13.8) * u;
+    nextX = 10.55 + (2.2 - 10.55) * u;
     nextY = -1.25 + (-1.28 - -1.25) * u;
+    nextZ = 0.045 * (1 - u);
     nextRZ = 0.03 * u;
   } else if (f >= 0.59 && f < 0.7) {
     // Lifted UPWARD by `benellim4_shell_elevator` (`rz = +0.34 rad`) to bore centerline!
     const u = seg(f, 0.59, 0.7);
     nextX = 2.2 + (3.4 - 2.2) * u;
     nextY = -1.28 + (1.08 - -1.28) * u;
+    nextZ = 0;
     nextRZ = 0.03 + 0.19 * u;
   } else if (f >= 0.7 && f < 0.87) {
     // Stripped forward off the elevator spoon straight into the 12ga chamber [9.2, 1.35, 0]!
     const u = seg(f, 0.7, 0.87);
     nextX = 3.4 + (9.2 - 3.4) * u;
     nextY = 1.08 + (1.35 - 1.08) * u;
+    nextZ = 0;
     nextRZ = 0.22 * (1 - u);
   } else if (f >= 0.87) {
     nextX = 9.2;
     nextY = 1.35;
+    nextZ = 0;
     nextRZ = 0;
   }
 
   // 5. Reserve 12ga Shell advancing rearward (-X) inside underbarrel tubular magazine (`Y = -1.25`)
-  const tubeShift = seg(f, 0.51, 0.7);
-  const resX = 20.8 + (13.8 - 20.8) * tubeShift;
+  const tubeShift = seg(f, 0.53, 0.63);
+  const resX = 11.7 + (10.55 - 11.7) * tubeShift;
   const resY = -1.25;
+  const resZ = -0.045 + (0.045 - -0.045) * tubeShift;
 
   return {
     bulletVisible,
@@ -968,9 +974,9 @@ export function computeBenelliM4BallisticsState(
     gasPortPos: [16.2, 0.12, 1.18],
     muzzlePlumeScale,
     muzzlePlumeOpacity,
-    nextRoundPos: [nextX, nextY, 0],
+    nextRoundPos: [nextX, nextY, nextZ],
     nextRoundRotZ: nextRZ,
-    reserveRoundPos: [resX, resY, 0],
+    reserveRoundPos: [resX, resY, resZ],
   };
 }
 

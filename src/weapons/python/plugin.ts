@@ -18,8 +18,8 @@ import type {
   WeaponRuntimePlugin,
 } from '../types';
 
-export const PYTHON_ID = 'python' as unknown as WeaponId;
-export const PYTHON_CALIBER = '357_magnum' as unknown as CaliberProfile;
+export const PYTHON_ID: WeaponId = 'python';
+export const PYTHON_CALIBER: CaliberProfile = '357_magnum';
 
 export const PYTHON_PART_GROUPS: AssemblyGroupMeta[] = [
   {

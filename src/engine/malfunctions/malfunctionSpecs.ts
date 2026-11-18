@@ -548,12 +548,249 @@ export const ARCHERY_MALFUNCTION_SCENARIOS: Readonly<
   },
 };
 
+export const REVOLVER_MALFUNCTION_SCENARIOS: Readonly<
+  Record<MalfunctionKind, MalfunctionScenarioSpec>
+> = {
+  stovepipe: {
+    kind: 'stovepipe',
+    code: 'REVOLVER · STAR',
+    shortZh: '退壳越缘',
+    shortEn: 'Rim Slip',
+    titleZh: '星形退壳器越缘滑脱卡壳（Under-Extractor Rim Slip）',
+    titleEn: 'Under-Extractor Rim Slip & Fouled Chamber Stick',
+    badgeZh: '退壳卡阻 · 空壳越星',
+    badgeEn: 'Extraction Jam · Rim Slip',
+    symptomZh:
+      '摆出弹巢拍击退壳杆时，未燃烧火药残渣垫起六角星形退壳器，导致膨胀 .357 空壳底缘滑入星形盘背下方死死卡住弹巢摇臂无法合拢。',
+    symptomEn:
+      'Unburned powder flakes under the 6-point extractor star allow a swelled .357 case rim to slip beneath the star, jamming the cylinder open.',
+    rootCauseZh:
+      '退壳时不按教范枪口朝天垂直拍杆（水平侧倾拍杆导致碎火药粒掉入星形盘定位销槽），或大量练习低压 .38 弹后弹膛前段积碳环抱紧较长的 .357 弹壳。',
+    rootCauseEn:
+      'Horizontal rod strokes spill unburned powder beneath the extractor star, or .38 Special carbon rings seize longer .357 Magnum brass.',
+    safetyNoteZh:
+      '严禁强行把卡有越缘弹壳的摇臂硬拍回机匣框，否则会永久压弯精密摇臂（Crane Sprung）破坏同轴度！',
+    safetyNoteEn:
+      'Never slam a bound crane shut—forcing an unseated extractor star bends the precision crane yoke out of alignment.',
+    steps: [
+      {
+        id: 'rev_star_vertical',
+        orderLabel: '01',
+        titleZh: '枪口竖直朝上稳持摆出的弹巢摇臂（Muzzle Up）',
+        titleEn: 'Point Muzzle Vertically Upward & Stabilize Crane',
+        detailZh:
+          '将枪口指向正上方利用重力协助火药碎屑滑落，松开退壳顶杆让复位簧推回星形退壳器夹住滑脱底缘。',
+        detailEn:
+          'Orient muzzle straight up and release the ejector rod so the return spring snaps the star back beneath the slipped rim.',
+      },
+      {
+        id: 'rev_star_pluck',
+        orderLabel: '02',
+        titleZh: '扣出越缘空弹壳并吹扫星形盘背面残渣（Clear Under-Star）',
+        titleEn: 'Pluck Trapped Brass & Brush Under Extractor Star',
+        detailZh:
+          '剥离滑入星形盘下方的膨胀空壳，彻底清理星形棘轮背面的未燃发射药颗粒与黄铜屑。',
+        detailEn:
+          'Extract the trapped case and brush unburned propellant granules from the extractor star seat and alignment pins.',
+      },
+      {
+        id: 'rev_star_close',
+        orderLabel: '03',
+        titleZh: '推压星形盘平齐落座、装入新弹并合拢弹巢（Reload & Lock）',
+        titleEn: 'Confirm Flush Star Seat, Speedload & Close Cylinder',
+        detailZh:
+          '确认星形退壳器与弹巢后端面 100% 平齐贴合后，用快装器压入新弹并轻推弹巢入框闭锁。',
+        detailEn:
+          'Verify the extractor star sits flush against the cylinder face, speedload fresh .357 rounds, and press the cylinder into lockup.',
+      },
+    ],
+  },
+
+  double_feed: {
+    kind: 'double_feed',
+    code: 'REVOLVER · BIND',
+    shortZh: '转轮抱死',
+    shortEn: 'Cylinder Bind',
+    titleZh: '高底火擦框 / 拔弹跳头锁死转轮（High-Primer & Crimp-Jump Bind）',
+    titleEn: 'High-Primer Recoil-Shield Drag & Bullet Crimp-Jump Bind',
+    badgeZh: '重度抱死 · 分度停摆',
+    badgeEn: 'Severe Bind · Rotation Seized',
+    symptomZh:
+      '双动扣压扳机时转轮完全咬死转不动：后端一枚未压平凸起底火死死顶在机匣击针衬套平面上，同时相邻膛内马格南弹头受后坐惯性拔出壳口（Crimp Jump）探出弹巢前端面撞住枪管坡口！',
+    symptomEn:
+      'Cylinder seizes solid mid-stroke: a proud unseated primer drags hard against the frame recoil shield while a recoil-pulled bullet nose protrudes past the cylinder face into the forcing cone.',
+    rootCauseZh:
+      '复装弹底火未压入低于壳底 0.08mm，或大威力 .357 轻壳口滚花卷边（Roll Crimp）不足，连续猛烈后坐宛如“惯性拔弹锤”将待发弹头向前震出弹巢。',
+    rootCauseEn:
+      'Proudly seated primer above the case head combined with insufficient roll-crimp allowing heavy .357 recoil to pull an unfired bullet forward out of its case.',
+    safetyNoteZh:
+      '切勿用蛮力猛扣双动扳机强转抱死弹巢——强行刮擦凸起底火存在框外挤压殉爆风险，且会刮伤拨爪（Hand）尖齿！',
+    safetyNoteEn:
+      'Never muscle the DA trigger against a bound cylinder—shearing a proud primer risks out-of-alignment detonation and bends the hand pawl.',
+    steps: [
+      {
+        id: 'rev_bind_release',
+        orderLabel: '01',
+        titleZh: '立即松开扳机使回弹杠杆归位锁定击锤（Release Trigger）',
+        titleEn: 'Release Trigger Shoe to Reset Rebound Safety',
+        detailZh:
+          '停止扣扳机让回弹安全杠杆退回保险位，解除手拨棘爪对星形棘齿的强推剪切力。',
+        detailEn:
+          'Release trigger tension immediately so the rebound lever retracts the hammer and relieves hand pawl load.',
+      },
+      {
+        id: 'rev_bind_swing',
+        orderLabel: '02',
+        titleZh: '后拉水滴锁栓小心推开卡滞弹巢摇臂（Unlatch & Swing）',
+        titleEn: 'Pull Cylinder Latch & Carefully Ease Cylinder Out',
+        detailZh:
+          '向后拉满左侧解脱栓，稳托弹巢绕开枪管坡口凸出的跳头弹尖，向外摆出摇臂。',
+        detailEn:
+          'Retract the teardrop thumbpiece fully and ease the bound cylinder clear of the barrel forcing cone.',
+      },
+      {
+        id: 'rev_bind_dump',
+        orderLabel: '03',
+        titleZh: '垂直拍杆清空全部6发故障弹并检视弹巢间隙（Dump All 6）',
+        titleEn: 'Eject All 6 Suspect Rounds & Inspect B/C Gap',
+        detailZh:
+          '将凸底火弹与拔出弹头的故障弹整组退出隔离，检查弹巢前端面与枪管坡口无铅屑堆积。',
+        detailEn:
+          'Dump the entire 6-round charge, quarantine high-primer/crimp-jumped cartridges, and inspect forcing-cone clearance.',
+      },
+      {
+        id: 'rev_bind_reload',
+        orderLabel: '04',
+        titleZh: '装填标准重卷边原厂 .357 弹并复核自由旋转（Reload Factory）',
+        titleEn: 'Load Heavy Roll-Crimped Duty .357 & Verify Free Spin',
+        detailZh:
+          '压入底火微凹、重滚花锁口的标准勤务弹，合拢弹巢确认 6 膛分度顺滑无阻。',
+        detailEn:
+          'Load factory roll-crimped .357 Magnum with recessed primers, close the crane, and verify silky indexing.',
+      },
+    ],
+  },
+
+  light_strike: {
+    kind: 'light_strike',
+    code: 'REVOLVER · V-SPRING',
+    shortZh: 'V簧轻敲',
+    shortEn: 'Light Strike',
+    titleZh: '折叠V型主簧张力螺钉松退拒发（Mainspring Strain Light Strike）',
+    titleEn: 'V-Mainspring Tension Loss & Shallow Primer Strike',
+    badgeZh: '双动拒发 · 浅坑哑弹',
+    badgeEn: 'DA Misfire · Shallow Dimple',
+    symptomZh:
+      '双动击发只闻清脆空击声，该膛底火仅留下极浅凹痕未引燃；柯尔特 Python 若在拒发瞬间没有盲目摆巢，直接再次扣动双动扳机即可瞬间转入下一膛实弹补射！',
+    symptomEn:
+      'Hammer fall yields a click and shallow primer dimple without ignition; revolver kinematics allow an immediate second DA pull to index a fresh chamber.',
+    rootCauseZh:
+      '射手为追求极致轻扳机力私自旋松握把前缘主簧张力螺钉（或垫薄 V 型板簧），或框内浮动惯性击针孔积油凝结消耗了击锤动能。',
+    rootCauseEn:
+      'Backed-out V-mainspring tension or congealed oil inside the frame-mounted inertial firing-pin channel sapping double-action hammer energy.',
+    safetyNoteZh:
+      '实战补射与靶场排障分流：实战可立即二次双动扣扳机转入下一发；靶场遇疑似迟发弹须稳指靶心静候 30 秒再摆巢退弹。',
+    safetyNoteEn:
+      'Duty vs. range SOP: in combat, pull DA again to index a live chamber; on the range, hold downrange 30 seconds for hang-fire safety before opening.',
+    steps: [
+      {
+        id: 'rev_ls_hold',
+        orderLabel: '01',
+        titleZh: '保持枪口稳指安全区防范迟发或二次双动转膛（Hold / Index）',
+        titleEn: 'Maintain Muzzle Control & Index Past Misfired Chamber',
+        detailZh:
+          '严格保持枪口指向安全方向，确认无迟发迹象后拉栓摆出弹巢定位浅坑拒发弹。',
+        detailEn:
+          'Hold downrange through the hang-fire window, then pull the latch and swing out the cylinder to isolate the shallow-struck round.',
+      },
+      {
+        id: 'rev_ls_eject',
+        orderLabel: '02',
+        titleZh: '退出浅坑拒发弹并点检框内浮动击针突出量（Check Pin）',
+        titleEn: 'Extract Misfired Cartridge & Verify Inertial Firing Pin',
+        detailZh:
+          '取出底火轻敲弹，检查框内浮动击针尖端无断损且复位簧往复干脆无油泥粘滞。',
+        detailEn:
+          'Remove the light-struck round and verify clean protrusion and spring return of the frame-mounted firing pin.',
+      },
+      {
+        id: 'rev_ls_restore',
+        orderLabel: '03',
+        titleZh: '恢复原厂折叠V簧全张力并装入新弹归位（Full V-Spring）',
+        titleEn: 'Restore Factory V-Mainspring Tension & Reload',
+        detailZh:
+          '确保原厂调校 V 型主发条簧处于满额击发势能，补满 6 发弹巢合拢待击。',
+        detailEn:
+          'Confirm full factory V-mainspring preload, reload a fresh .357 cartridge, and lock the cylinder into battery.',
+      },
+    ],
+  },
+
+  out_of_battery: {
+    kind: 'out_of_battery',
+    code: 'SAFETY · REBOUND',
+    shortZh: '分度闭锁阻断',
+    shortEn: 'Index / Rebound Lock',
+    titleZh: '未分度到位止转笋与回弹杠杆双重互锁（Out-of-Index & Rebound Safety）',
+    titleEn: 'Out-of-Index Cylinder Bolt & Rebound Lever Safety Interception',
+    badgeZh: '金库闭锁 · 偏膛防炸',
+    badgeEn: 'Bank-Vault Timing · Off-Axis Block',
+    symptomZh:
+      '弹巢因棘齿污损差约 3° 未完全转正对齐枪管中心线（止转笋尚未弹入弹巢外周止转槽），与此同时回弹安全杠杆刚性托住击锤，阻止击针在偏膛状态敲击底火削飞铅片！',
+    symptomEn:
+      'Fouled ratchet teeth leave the cylinder ~3° short of index before the cylinder bolt drops into its notch; the rebound lever blocks hammer-to-pin contact to prevent off-axis shaving.',
+    rootCauseZh:
+      '星形棘轮齿根积存铅碳泥阻滞双阶拨爪（Hand）二级精推行程，导致扣扳机末段弹巢未能实现柯尔特标志性的“落锤前零旷量满锁（Full Lockup Before Hammer Fall）”。',
+    rootCauseEn:
+      'Lead/carbon buildup in the star ratchet teeth impedes the secondary step of the hand pawl, preventing full cylinder-bolt drop prior to sear release.',
+    safetyNoteZh:
+      '偏膛击发（Out-of-Time Firing）会使高速弹头撞削枪管坡口侧壁向两侧喷射致命铅铜碎片！发现未锁正严禁继续扣击。',
+    safetyNoteEn:
+      'Firing out-of-time shaves jacket and lead fragments violently sideways from the forcing cone—never fire a revolver with incomplete bolt lockup.',
+    steps: [
+      {
+        id: 'rev_oob_stop',
+        orderLabel: '01',
+        titleZh: '松开扳机激活回弹安全杠杆隔离浮动击针（Engage Rebound）',
+        titleEn: 'Release Trigger to Seat Rebound Lever Safety Block',
+        detailZh:
+          '松手让回弹杠杆前臂插入击锤下方安全台肩，物理锁死击锤使其绝对无法触碰击针尾端。',
+        detailEn:
+          'Allow the rebound lever cam to wedge beneath the hammer safety stud, positively isolating the firing pin.',
+      },
+      {
+        id: 'rev_oob_clean',
+        orderLabel: '02',
+        titleZh: '摆出弹巢清理六角星形棘齿与止转导槽污垢（Clean Ratchet）',
+        titleEn: 'Swing Cylinder & Clean Star Ratchet Teeth & Bolt Notches',
+        detailZh:
+          '打开弹巢刷净后端六齿分度棘轮槽与弹巢外圆 6 处引导止转凹槽，检查双阶拨爪无崩角。',
+        detailEn:
+          'Brush clean all six star ratchet teeth and cylinder locking notches so the two-step hand and bolt engage crisply.',
+      },
+      {
+        id: 'rev_oob_vault',
+        orderLabel: '03',
+        titleZh: '合拢弹巢验证“银行金库级”零旷量同轴满锁（Vault Lockup）',
+        titleEn: 'Close Cylinder & Confirm Zero-Play Bank-Vault Lockup',
+        detailZh:
+          '确认止转笋清脆咔哒落入锁槽、弹膛与枪管坡口 100% 同轴零晃动，恢复柯尔特精密闭锁。',
+        detailEn:
+          'Confirm audible cylinder-bolt lockup with zero rotational play—chamber aligned dead-coaxial with the 6" bore.',
+      },
+    ],
+  },
+};
+
 export function getMalfunctionScenario(
   kind: MalfunctionKind,
   weaponId?: WeaponId | string
 ): MalfunctionScenarioSpec {
   if (isArcheryMalfunctionWeapon(weaponId)) {
     return ARCHERY_MALFUNCTION_SCENARIOS[kind];
+  }
+  if (weaponId === 'python') {
+    return REVOLVER_MALFUNCTION_SCENARIOS[kind];
   }
   return MALFUNCTION_SCENARIOS[kind];
 }
@@ -880,5 +1117,75 @@ export const WEAPON_MALFUNCTION_PROFILES: Readonly<
     rackFullOpenF: 0.24,
     lightStrikeF: 0.31,
     outOfBatteryF: 0.18,
+  },
+  python: {
+    weaponId: 'python',
+    actionPartIds: ['python_hammer', 'python_cylinder', 'python_hand'],
+    lockingPartIds: ['python_cylinder_bolt', 'python_crane', 'python_barrel'],
+    extractorPartId: 'python_extractor_star',
+    fireControlPartIds: [
+      'python_trigger',
+      'python_hammer',
+      'python_rebound_lever',
+      'python_mainspring',
+      'python_firing_pin',
+    ],
+    magazinePartIds: ['python_speedloader', 'python_extractor_rod'],
+    magStripOffsetCm: [0, -4.2, -4.8],
+    ejectionUpSign: 1,
+    stovepipeF: 0.14,
+    doubleFeedF: 0.09,
+    rackFullOpenF: 0.16,
+    lightStrikeF: 0.19,
+    outOfBatteryF: 0.11,
+  },
+  benellim4: {
+    weaponId: 'benellim4',
+    actionPartIds: ['benellim4_bolt_carrier', 'benellim4_charging_handle'],
+    lockingPartIds: ['benellim4_bolt_head', 'benellim4_cam_pin', 'benellim4_barrel'],
+    extractorPartId: 'benellim4_bolt_head',
+    fireControlPartIds: [
+      'benellim4_trigger',
+      'benellim4_hammer',
+      'benellim4_firing_pin',
+      'benellim4_safety_button',
+    ],
+    magazinePartIds: [
+      'benellim4_shell_elevator',
+      'benellim4_mag_follower',
+      'benellim4_mag_spring',
+    ],
+    magStripOffsetCm: [0, -2.8, 0],
+    ejectionUpSign: 1,
+    stovepipeF: 0.72,
+    doubleFeedF: 0.68,
+    rackFullOpenF: 0.48,
+    lightStrikeF: 0.095,
+    outOfBatteryF: 0.865,
+  },
+  garand: {
+    weaponId: 'garand',
+    actionPartIds: ['garand_op_rod', 'garand_bolt'],
+    lockingPartIds: ['garand_bolt', 'garand_barrel'],
+    extractorPartId: 'garand_bolt',
+    fireControlPartIds: [
+      'garand_trigger',
+      'garand_hammer',
+      'garand_firing_pin',
+      'garand_trigger_guard',
+    ],
+    magazinePartIds: [
+      'garand_follower',
+      'garand_follower_arm',
+      'garand_enbloc_clip',
+      'garand_clip_latch',
+    ],
+    magStripOffsetCm: [0, -3.2, 0],
+    ejectionUpSign: 1,
+    stovepipeF: 0.71,
+    doubleFeedF: 0.66,
+    rackFullOpenF: 0.48,
+    lightStrikeF: 0.092,
+    outOfBatteryF: 0.84,
   },
 };

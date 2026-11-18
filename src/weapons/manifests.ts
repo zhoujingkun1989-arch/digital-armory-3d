@@ -883,6 +883,213 @@ export const WEAPON_MANIFESTS: readonly WeaponManifest[] = [
       firingMilestoneLabel: '击发释放',
     },
   },
+  {
+    id: 'python',
+    orderIndex: 14,
+    shortLabel: 'Colt Python',
+    caliberProfile: '357_magnum',
+    atlasHeadingCn:
+      '柯尔特蟒蛇 6英寸皇家烤蓝转轮手枪贴图库 (Albedo / Normal / Packed ORM)',
+    catalog: {
+      id: 'python',
+      bayCode: 'BAY-14',
+      modelCode: 'COLT PYTHON 6" · .357 MAGNUM ROYAL BLUE',
+      nameCn: '柯尔特 Python 蟒蛇转轮手枪',
+      subtitleEn: '6" Ventilated-Rib .357 Magnum DA/SA Target Revolver',
+      originCountryCn: '美国',
+      weaponTypeCn: '双动/单动转轮手枪',
+      category: 'pistol',
+      categoryCn: '转轮手枪',
+      caliber: '.357 Magnum',
+      actionMechanism:
+        '双动/单动棘轮拨齿分度 · V型板簧回弹杠杆闭锁机构',
+      specs1To1: {
+        overallLengthMm: '292 mm (6" 枪管全长)',
+        barrelSpec: '152.4 mm (6") · 6左旋 1:356mm 锥度膛',
+        emptyWeightKg: '1.23 kg (43.5 oz 空重)',
+        muzzleVelocityMs: '385 m/s (158 gr JSP)',
+        effectiveRangeM: '75 m',
+        rateOfFire: '6发转轮 · 双动/单动',
+      },
+      assembliesCount: 4,
+      partsCount: 25,
+      firingStagesCount: 7,
+      available: true,
+      statusLabel: '已入库 · 可拆解',
+      description:
+        '美国柯尔特（Colt）于 1955 年倾力手工调校的殿堂级 .357 马格南转轮手枪巅峰之作（6 英寸皇家烤蓝靶用型）：集标志性三孔通风散热肋条与全长退壳杆护罩一体锻造枪管、镜面抛光 Royal Blue 深邃烤蓝锻造 I 型转轮框、双阶手拨棘爪（Hand）精密分度与止转笋（Cylinder Bolt）零旷量银行金库级锁定、折叠 V 型主发条板簧及回弹安全杠杆（Rebound Lever）于一身。',
+      highlights: [
+        '6" 三孔散热肋条 + 全长退壳杆护罩皇家烤蓝枪管',
+        '双阶棘轮拨齿分度 + 止转笋零旷量闭锁“金库”机械',
+        '折叠 V 型主发条板簧 + 回弹杠杆防跌落浮动击针互锁',
+        '侧摆式 6 发 .357 马格南弹巢 + 星形退壳器与快装器',
+      ],
+    },
+    cameraPresets: {
+      armory_showcase: { pos: [11.5, 1.4, 38.5], target: [2.8, -4.6, 0] },
+      iso: { pos: [14.2, 7.6, 43.0], target: [2.8, -1.2, 0] },
+      right: { pos: [2.8, -1.2, 42.5], target: [2.8, -1.2, 0] },
+      left: { pos: [2.8, -1.2, -42.5], target: [2.8, -1.2, 0] },
+      top: { pos: [2.8, 45.0, 4.2], target: [2.8, 0, 0] },
+      cutaway_focus: { pos: [1.5, 2.2, 16.5], target: [-0.8, 0.4, 0.2] },
+      firing_view: { pos: [9.5, 3.8, 38.0], target: [4.2, 0.2, 0] },
+    },
+    workbenchMeta: {
+      badge: 'COLT 1955 · .357 ROYAL BLUE',
+      title: 'Colt Python 6" 转轮手枪 3D 拆解与双动分度击发演示',
+      subtitle:
+        '4 大总成 · 25 核心节点 · 60° 棘轮拨齿分度锁定、V型主簧回弹互锁 & 弹巢间隙燃气泄出模拟',
+      cutawayLabel: '弹巢棘轮与侧盖发条特写',
+      cutawayTitle:
+        '切换至合拢透视状态并聚焦 6 发转轮星形棘齿、双阶拨爪、止转笋与 V 型主发条板簧啮合特写',
+      cutawayFocusPartId: 'python_cylinder',
+      searchPlaceholder:
+        '搜索零件名 / 编号 (如 弹巢, 棘爪, 止转笋, 板簧, CY-02)...',
+      muzzlePos: [17.42, 2.35, 0],
+      chamberGlowPos: [0.85, 2.35, 0],
+      scaleProfile: 'pistol',
+      gridY: -20.5,
+      firingMilestoneLabel: '分度/出膛',
+    },
+  },
+  {
+    id: 'benellim4',
+    orderIndex: 15,
+    shortLabel: 'Benelli M4',
+    caliberProfile: '12_gauge',
+    atlasHeadingCn:
+      '伯奈利 M4 (M1014) 双活塞战术霰弹枪贴图库 (Albedo / Normal / Packed ORM)',
+    catalog: {
+      id: 'benellim4',
+      bayCode: 'BAY-15',
+      modelCode: 'BENELLI M4 SUPER 90 · USMC M1014',
+      nameCn: '伯奈利 M4 (M1014) 战术霰弹枪',
+      subtitleEn: '12-Gauge ARGO Dual-Piston Semi-Automatic Combat Shotgun',
+      originCountryCn: '意大利',
+      weaponTypeCn: '半自动战斗霰弹枪',
+      category: 'shotgun',
+      categoryCn: '战术霰弹枪',
+      caliber: '12 Gauge (18.5×70mm)',
+      actionMechanism:
+        'ARGO 自调双短行程不锈钢活塞 · 双突笋回转枪机 + 升降托弹板供弹',
+      specs1To1: {
+        overallLengthMm: '886–1,010 mm (伸缩托)',
+        barrelSpec: '470 mm (18.5") · 镀铬滑膛 改良圆筒喉缩',
+        emptyWeightKg: '3.82 kg (空重)',
+        muzzleVelocityMs: '404 m/s (9粒 00号鹿弹)',
+        effectiveRangeM: '50 m (鹿弹) / 125 m (独头弹)',
+        rateOfFire: '半自动 · 7+1发管仓',
+      },
+      assembliesCount: 4,
+      partsCount: 26,
+      firingStagesCount: 7,
+      available: true,
+      statusLabel: '已入库 · 可拆解',
+      description:
+        '意大利伯奈利（Benelli Armi）专为美国海军陆战队联合战斗霰弹枪招标（JSCS，制式代号 M1014）研制的半自动战术霰弹枪巅峰标杆：独创紧贴弹膛前方的 ARGO（Auto-Regulating Gas-Operated）双路高温自清洁不锈钢短行程导气活塞，彻底免除传统惯性后坐系统对挂载战术灯/夜视仪重量的敏感限制，配合硬铬双突笋回转枪机头、7 发全长下挂管式弹仓与不锈钢升降托弹板（支持著名的“7+1+1 幽灵装填”）。',
+      highlights: [
+        'ARGO 膛前双短行程不锈钢自调导气活塞组',
+        '硬铬双突笋回转闭锁枪机 + 斜置机匣尾管复进簧',
+        '7发全长下挂管式弹仓 + 叉口不锈钢升降托弹板',
+        'USMC M1014 旋转锁紧贴腮伸缩托 + 鬼环战术瞄具',
+      ],
+    },
+    cameraPresets: {
+      armory_showcase: { pos: [22.0, 3.2, 86.0], target: [9.2, -3.2, 0] },
+      iso: { pos: [26.0, 14.5, 82.0], target: [9.2, -0.8, 0] },
+      right: { pos: [9.2, -0.5, 84.0], target: [9.2, -0.8, 0] },
+      left: { pos: [9.2, -0.5, -84.0], target: [9.2, -0.8, 0] },
+      top: { pos: [9.2, 88.0, 6.5], target: [9.2, 0, 0] },
+      cutaway_focus: { pos: [14.5, 3.2, 24.5], target: [10.5, 0.2, 0.2] },
+      firing_view: { pos: [20.5, 6.5, 80.0], target: [10.5, 0.2, 0] },
+    },
+    workbenchMeta: {
+      badge: 'BENELLI ARGO · M1014 12GA',
+      title: 'Benelli M4 (M1014) 战术霰弹枪 3D 拆解与双活塞供弹演示',
+      subtitle:
+        '4 大总成 · 26 核心节点 · ARGO 双短行程活塞驱动、回转双突笋开锁 & 管式弹仓托弹板升降供弹',
+      cutawayLabel: 'ARGO 双活塞与托弹板特写',
+      cutawayTitle:
+        '切换至合拢透视状态并聚焦膛前 ARGO 双路不锈钢短行程活塞、回转枪机头与升降托弹板特写',
+      cutawayFocusPartId: 'benellim4_argo_pistons',
+      searchPlaceholder:
+        '搜索零件名 / 编号 (如 双活塞, 托弹板, 弹仓, 枪机头, U-04)...',
+      muzzlePos: [53.5, 1.35, 0],
+      chamberGlowPos: [9.2, 1.35, 0],
+      scaleProfile: 'rifle',
+      gridY: -24.5,
+      firingMilestoneLabel: '出膛/开锁',
+    },
+  },
+  {
+    id: 'garand',
+    orderIndex: 16,
+    shortLabel: 'M1 Garand',
+    caliberProfile: '30_06',
+    atlasHeadingCn:
+      '美国春田 M1 加兰德步枪磷酸锰/胡桃木贴图库 (Albedo / Normal / Packed ORM)',
+    catalog: {
+      id: 'garand',
+      bayCode: 'BAY-16',
+      modelCode: 'U.S. RIFLE CAL. .30 M1 GARAND · SPRINGFIELD',
+      nameCn: '美国 M1 加兰德半自动步枪',
+      subtitleEn: '.30-06 Springfield En-Bloc Clip Long-Stroke Service Rifle',
+      originCountryCn: '美国',
+      weaponTypeCn: '半自动制式步枪',
+      category: 'rifle',
+      categoryCn: '半自动步枪',
+      caliber: '.30-06 Springfield (7.62×63mm)',
+      actionMechanism:
+        '枪口导气长行程曲柄拉机柄 · 双突笋回转闭锁 + 8发整装漏夹自动弹射',
+      specs1To1: {
+        overallLengthMm: '1,105 mm (43.5" 全长)',
+        barrelSpec: '610 mm (24") · 4右旋 1:254mm',
+        emptyWeightKg: '4.31 kg (9.5 lb 空重)',
+        muzzleVelocityMs: '853 m/s (150 gr M2普通弹)',
+        effectiveRangeM: '457 m (500 yd)',
+        rateOfFire: '40–50 发/分 · 8发漏夹',
+      },
+      assembliesCount: 4,
+      partsCount: 26,
+      firingStagesCount: 7,
+      available: true,
+      statusLabel: '已入库 · 可拆解',
+      description:
+        '由约翰·坎蒂乌斯·加兰德在春田兵工厂历时十七年攻关定型、被巴顿将军盛赞为“有史以来最伟大的战斗利器”的人类首款大规模列装半自动制式步枪：采用紧贴 24 英寸枪口下方的长行程不锈钢导气筒驱动 S 形避让弯曲拉机柄（Op-Rod），通过螺旋凸轮槽带动高硬度双突笋回转枪机解锁，并在打光机匣内交错双排 8 发 .30-06 春田步枪弹瞬间向上凌空弹出弹簧钢整装漏夹（En-Bloc Clip），迸发载入二战史册的清脆金属“PING!”鸣响。',
+      highlights: [
+        '24" 枪口下方导气筒 + S形弯曲长行程拉机柄凸轮槽',
+        '8发双排弹簧钢整装漏夹 + 末发凌空弹射清脆“PING!”声',
+        '高精密开顶锻造磷化机匣 + T105 齿轮咔哒觇孔表尺',
+        '油浸美洲黑胡桃木一体全枪托 + 扳机护圈快拆火控组',
+      ],
+    },
+    cameraPresets: {
+      armory_showcase: { pos: [24.0, 3.6, 102.0], target: [7.7, -3.5, 0] },
+      iso: { pos: [29.0, 16.5, 96.0], target: [7.7, -0.6, 0] },
+      right: { pos: [7.7, -0.4, 98.0], target: [7.7, -0.6, 0] },
+      left: { pos: [7.7, -0.4, -98.0], target: [7.7, -0.6, 0] },
+      top: { pos: [7.7, 102.0, 7.0], target: [7.7, 0, 0] },
+      cutaway_focus: { pos: [4.2, 3.2, 24.0], target: [0.5, 0.4, 0.2] },
+      firing_view: { pos: [22.0, 7.2, 92.0], target: [8.5, 0.4, 0] },
+    },
+    workbenchMeta: {
+      badge: 'U.S. SPRINGFIELD · .30-06 M1',
+      title: 'M1 Garand 加兰德步枪 3D 拆解与漏夹弹射演示',
+      subtitle:
+        '4 大总成 · 26 核心节点 · 枪口长行程拉机柄凸轮解锁、双突笋回转枪机 & 8发弹簧钢漏夹供弹模拟',
+      cutawayLabel: '拉机柄凸轮与8发漏夹特写',
+      cutawayTitle:
+        '切换至合拢透视状态并聚焦长行程拉机柄螺旋凸轮槽、回转双突笋枪机与 8 发弹簧钢漏夹供弹特写',
+      cutawayFocusPartId: 'garand_op_rod',
+      searchPlaceholder:
+        '搜索零件名 / 编号 (如 漏夹, 拉机柄, 导气筒, 托弹板, M-01)...',
+      muzzlePos: [63.0, 1.15, 0],
+      chamberGlowPos: [5.15, 1.15, 0],
+      scaleProfile: 'heavy_sniper',
+      gridY: -25.5,
+      firingMilestoneLabel: '出膛/开锁',
+    },
+  },
 ];
 
 const MANIFEST_MAP: Record<WeaponId, WeaponManifest> = Object.fromEntries(
@@ -927,13 +1134,18 @@ export function matchesArmoryCategory(
     item.category === 'archery' ||
     typeTag.includes('弓') ||
     typeTag.includes('弩');
+  const isShotgun =
+    item.id === 'benellim4' ||
+    item.category === 'shotgun' ||
+    typeTag.includes('霰弹');
 
   if (filter === 'pistol') return isPistol;
   if (filter === 'smg') return isSmg;
   if (filter === 'sniper') return isSniper;
+  if (filter === 'shotgun') return isShotgun;
   if (filter === 'archery') return isArchery;
   if (filter === 'assault') {
-    return !isPistol && !isSmg && !isSniper && !isArchery;
+    return !isPistol && !isSmg && !isSniper && !isShotgun && !isArchery;
   }
   return true;
 }

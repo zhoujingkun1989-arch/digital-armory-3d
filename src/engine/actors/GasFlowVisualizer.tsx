@@ -82,12 +82,21 @@ export const GasFlowVisualizer: React.FC = () => {
 
   const riserMeshRef = useRef<THREE.Mesh>(null);
   const riserMatRef = useRef<THREE.MeshBasicMaterial>(null);
+  const riserLeftRef = useRef<THREE.Mesh>(null);
+  const riserLeftMatRef = useRef<THREE.MeshBasicMaterial>(null);
 
   const manifoldTubeRef = useRef<THREE.Mesh>(null);
   const manifoldMatRef = useRef<THREE.MeshBasicMaterial>(null);
+  const manifoldLeftRef = useRef<THREE.Mesh>(null);
+  const manifoldLeftMatRef = useRef<THREE.MeshBasicMaterial>(null);
 
   const impulseHeadRef = useRef<THREE.Mesh>(null);
   const impulseHeadMatRef = useRef<THREE.MeshBasicMaterial>(null);
+  const impulseLeftRef = useRef<THREE.Mesh>(null);
+  const impulseLeftMatRef = useRef<THREE.MeshBasicMaterial>(null);
+
+  const cylinderGapRingRef = useRef<THREE.Mesh>(null);
+  const cylinderGapMatRef = useRef<THREE.MeshBasicMaterial>(null);
 
   const ventPlumeRef = useRef<THREE.Mesh>(null);
   const ventPlumeMatRef = useRef<THREE.MeshBasicMaterial>(null);
@@ -268,6 +277,10 @@ export const GasFlowVisualizer: React.FC = () => {
       if (ventPlumeRef.current) {
         ventPlumeRef.current.visible = false;
       }
+      if (riserLeftRef.current) riserLeftRef.current.visible = false;
+      if (manifoldLeftRef.current) manifoldLeftRef.current.visible = false;
+      if (impulseLeftRef.current) impulseLeftRef.current.visible = false;
+      if (cylinderGapRingRef.current) cylinderGapRingRef.current.visible = false;
 
       // Animated elastic strain chevrons: cams -> nock -> +X arrow launch trajectory
       const inst = chevronsRef.current;
@@ -353,11 +366,17 @@ export const GasFlowVisualizer: React.FC = () => {
     root.visible = true;
 
     const boreRadius =
-      caliber === '50_bmg' || caliber === '50_ae'
-        ? 0.34
-        : caliber === '338_lapua' || caliber === '762_m43' || caliber === '9mm_para'
-          ? 0.25
-          : 0.2;
+      caliber === '12_gauge'
+        ? 0.42
+        : caliber === '50_bmg' || caliber === '50_ae'
+          ? 0.34
+          : caliber === '338_lapua' ||
+              caliber === '30_06' ||
+              caliber === '762_m43' ||
+              caliber === '357_magnum' ||
+              caliber === '9mm_para'
+            ? 0.25
+            : 0.2;
 
     // 1. Bore propellant column (chamberX -> live projectile base)
     const boreSpan = Math.max(1.0, manifold.muzzleX - manifold.chamberX);
@@ -419,6 +438,9 @@ export const GasFlowVisualizer: React.FC = () => {
       gasAlpha = clamp01((0.35 + 0.65 * Math.sqrt(pNorm)) * decay);
     }
 
+    const isTwinArgo = manifold.family === 'dual_short_stroke_argo';
+    const isRevolverGap = manifold.family === 'revolver_ratchet_index';
+
     if (riserMeshRef.current && riserMatRef.current) {
       if (hasActiveTap && manifold.gasPortX !== null && gasAlpha > 0.02) {
         const dy = manifold.gasChannelY - manifold.boreY;
@@ -438,8 +460,28 @@ export const GasFlowVisualizer: React.FC = () => {
           .copy(COL_GAS_TAP_CYAN)
           .lerp(COL_HIGH_PRESSURE, clamp01(pNorm * 1.1));
         riserMatRef.current.opacity = gasAlpha * 0.76;
+
+        if (riserLeftRef.current && riserLeftMatRef.current) {
+          if (isTwinArgo) {
+            _dirVec.set(0, dy, -dz).normalize();
+            _quat.setFromUnitVectors(_upAxis, _dirVec);
+            riserLeftRef.current.visible = true;
+            riserLeftRef.current.position.set(
+              manifold.gasPortX,
+              manifold.boreY + dy * 0.5,
+              -dz * 0.5
+            );
+            riserLeftRef.current.quaternion.copy(_quat);
+            riserLeftRef.current.scale.set(0.14, riserLen, 0.14);
+            riserLeftMatRef.current.color.copy(riserMatRef.current.color);
+            riserLeftMatRef.current.opacity = riserMatRef.current.opacity;
+          } else {
+            riserLeftRef.current.visible = false;
+          }
+        }
       } else {
         riserMeshRef.current.visible = false;
+        if (riserLeftRef.current) riserLeftRef.current.visible = false;
       }
     }
 
@@ -452,7 +494,11 @@ export const GasFlowVisualizer: React.FC = () => {
         const segLen = Math.max(0.2, Math.abs(liveFrontX - portX));
         const midX = (portX + liveFrontX) * 0.5;
         const tubeRadius =
-          manifold.family === 'direct_impingement' ? 0.11 : 0.17;
+          manifold.family === 'direct_impingement'
+            ? 0.11
+            : manifold.family === 'muzzle_long_stroke_piston'
+              ? 0.22
+              : 0.17;
 
         manifoldTubeRef.current.visible = true;
         manifoldTubeRef.current.position.set(
@@ -465,8 +511,25 @@ export const GasFlowVisualizer: React.FC = () => {
           .copy(COL_GAS_TAP_CYAN)
           .lerp(COL_PEAK_PLASMA, clamp01(pNorm * 0.85));
         manifoldMatRef.current.opacity = gasAlpha * 0.68;
+
+        if (manifoldLeftRef.current && manifoldLeftMatRef.current) {
+          if (isTwinArgo) {
+            manifoldLeftRef.current.visible = true;
+            manifoldLeftRef.current.position.set(
+              midX,
+              manifold.gasChannelY,
+              -manifold.gasChannelZ
+            );
+            manifoldLeftRef.current.scale.set(tubeRadius, segLen, tubeRadius);
+            manifoldLeftMatRef.current.color.copy(manifoldMatRef.current.color);
+            manifoldLeftMatRef.current.opacity = manifoldMatRef.current.opacity;
+          } else {
+            manifoldLeftRef.current.visible = false;
+          }
+        }
       } else {
         manifoldTubeRef.current.visible = false;
+        if (manifoldLeftRef.current) manifoldLeftRef.current.visible = false;
       }
     }
 
@@ -487,8 +550,44 @@ export const GasFlowVisualizer: React.FC = () => {
           .copy(COL_GAS_TAP_CYAN)
           .lerp(COL_HIGH_PRESSURE, clamp01(pNorm));
         impulseHeadMatRef.current.opacity = gasAlpha * 0.72;
+
+        if (impulseLeftRef.current && impulseLeftMatRef.current) {
+          if (isTwinArgo) {
+            impulseLeftRef.current.visible = true;
+            impulseLeftRef.current.quaternion.copy(_ringAxisX);
+            impulseLeftRef.current.position.set(
+              liveFrontX,
+              manifold.gasChannelY,
+              -manifold.gasChannelZ
+            );
+            impulseLeftRef.current.scale.set(pulseR, pulseR, pulseR * 1.35);
+            impulseLeftMatRef.current.color.copy(impulseHeadMatRef.current.color);
+            impulseLeftMatRef.current.opacity = impulseHeadMatRef.current.opacity;
+          } else {
+            impulseLeftRef.current.visible = false;
+          }
+        }
       } else {
         impulseHeadRef.current.visible = false;
+        if (impulseLeftRef.current) impulseLeftRef.current.visible = false;
+      }
+    }
+
+    // Revolver forcing-cone 360° cylinder-gap radial flash ring (Colt Python X = 2.20)
+    if (cylinderGapRingRef.current && cylinderGapMatRef.current) {
+      if (isRevolverGap && liveTravel >= 0.1 && boreAlpha > 0.03) {
+        const gapPulse = Math.sin(clamp01((liveTravel - 0.1) / 0.88) * Math.PI);
+        const gapScale = 0.52 + 0.78 * gapPulse;
+        cylinderGapRingRef.current.visible = gapPulse > 0.02;
+        cylinderGapRingRef.current.position.set(2.2, manifold.boreY, 0);
+        cylinderGapRingRef.current.quaternion.copy(_ringAxisX);
+        cylinderGapRingRef.current.scale.set(gapScale, gapScale, gapScale * 0.55);
+        cylinderGapMatRef.current.color
+          .copy(COL_HIGH_PRESSURE)
+          .lerp(COL_PEAK_PLASMA, clamp01(pNorm));
+        cylinderGapMatRef.current.opacity = clamp01(boreAlpha * (0.45 + 0.55 * gapPulse));
+      } else {
+        cylinderGapRingRef.current.visible = false;
       }
     }
 
@@ -559,33 +658,74 @@ export const GasFlowVisualizer: React.FC = () => {
       cursor++;
     }
 
-    // 4b. Gas manifold OR breech recoil/blowback streamlines
+    // 4b. Gas manifold OR breech recoil/blowback/cylinder-gap streamlines
     if (hasActiveTap && manifold.gasPortX !== null && gasAlpha > 0.03) {
       const portX = manifold.gasPortX;
       const span = liveFrontX - portX;
       const dirSign = span >= 0 ? 1 : -1;
       _dirVec.set(dirSign, 0, 0);
       _quat.setFromUnitVectors(_upAxis, _dirVec);
-      const gasArrows = 8;
       _colorWork
         .copy(COL_GAS_TAP_CYAN)
         .lerp(COL_PEAK_PLASMA, clamp01(pNorm * 0.7));
-      for (let i = 0; i < gasArrows && cursor < STREAM_CHEVRON_COUNT; i++) {
-        const u = ((i + phaseScroll) / gasArrows) % 1;
-        if (Math.abs(span) > 0.45) {
-          _posVec.set(
-            portX + span * u,
-            manifold.gasChannelY,
-            manifold.gasChannelZ
-          );
-          const s = 0.78 + 0.25 * Math.sin(u * Math.PI);
-          _scaleVec.set(s, s, s);
-          _mat4.compose(_posVec, _quat, _scaleVec);
-          inst.setMatrixAt(cursor, _mat4);
-          inst.setColorAt(cursor, _colorWork);
-        } else {
-          inst.setMatrixAt(cursor, _hiddenMat4);
+      if (isTwinArgo) {
+        // 4 chevrons along +Z ARGO piston cylinder + 4 along -Z ARGO piston cylinder
+        for (let sideIdx = 0; sideIdx < 2; sideIdx++) {
+          const zVal =
+            sideIdx === 0 ? manifold.gasChannelZ : -manifold.gasChannelZ;
+          for (let i = 0; i < 4 && cursor < STREAM_CHEVRON_COUNT; i++) {
+            const u = ((i + phaseScroll) / 4) % 1;
+            if (Math.abs(span) > 0.45) {
+              _posVec.set(portX + span * u, manifold.gasChannelY, zVal);
+              const s = 0.78 + 0.25 * Math.sin(u * Math.PI);
+              _scaleVec.set(s, s, s);
+              _mat4.compose(_posVec, _quat, _scaleVec);
+              inst.setMatrixAt(cursor, _mat4);
+              inst.setColorAt(cursor, _colorWork);
+            } else {
+              inst.setMatrixAt(cursor, _hiddenMat4);
+            }
+            cursor++;
+          }
         }
+      } else {
+        const gasArrows = 8;
+        for (let i = 0; i < gasArrows && cursor < STREAM_CHEVRON_COUNT; i++) {
+          const u = ((i + phaseScroll) / gasArrows) % 1;
+          if (Math.abs(span) > 0.45) {
+            _posVec.set(
+              portX + span * u,
+              manifold.gasChannelY,
+              manifold.gasChannelZ
+            );
+            const s = 0.78 + 0.25 * Math.sin(u * Math.PI);
+            _scaleVec.set(s, s, s);
+            _mat4.compose(_posVec, _quat, _scaleVec);
+            inst.setMatrixAt(cursor, _mat4);
+            inst.setColorAt(cursor, _colorWork);
+          } else {
+            inst.setMatrixAt(cursor, _hiddenMat4);
+          }
+          cursor++;
+        }
+      }
+    } else if (isRevolverGap && liveTravel >= 0.1 && boreAlpha > 0.04) {
+      // Radial forcing-cone cylinder-gap jets at X = 2.20 (4 directions around boreY)
+      _colorWork
+        .copy(COL_HIGH_PRESSURE)
+        .lerp(COL_PEAK_PLASMA, clamp01(pNorm * 0.8));
+      for (let k = 0; k < 4 && cursor < STREAM_CHEVRON_COUNT; k++) {
+        const a = (k * Math.PI) / 2 + Math.PI * 0.25;
+        const cy = Math.cos(a);
+        const sz = Math.sin(a);
+        _dirVec.set(0.15, cy, sz).normalize();
+        _quat.setFromUnitVectors(_upAxis, _dirVec);
+        const rOut = 0.35 + 0.85 * ((phaseScroll + k * 0.25) % 1);
+        _posVec.set(2.2 + 0.12 * rOut, manifold.boreY + cy * rOut, sz * rOut);
+        _scaleVec.set(0.76, 0.76, 0.76);
+        _mat4.compose(_posVec, _quat, _scaleVec);
+        inst.setMatrixAt(cursor, _mat4);
+        inst.setColorAt(cursor, _colorWork);
         cursor++;
       }
     } else if (!manifold.hasGasTap && manifold.family !== 'manual_bolt_action') {
@@ -722,6 +862,81 @@ export const GasFlowVisualizer: React.FC = () => {
         <meshBasicMaterial
           ref={impulseHeadMatRef}
           color="#22d3ee"
+          transparent
+          opacity={0}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </mesh>
+
+      {/* Left-flank (-Z) mirrored ARGO riser, gas cylinder & piston face (Benelli M4) */}
+      <mesh
+        ref={riserLeftRef}
+        visible={false}
+        frustumCulled={false}
+        raycast={noRaycast}
+        renderOrder={15}
+      >
+        <cylinderGeometry args={[1, 1, 1, 12, 1, false]} />
+        <meshBasicMaterial
+          ref={riserLeftMatRef}
+          color="#22d3ee"
+          transparent
+          opacity={0}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </mesh>
+      <mesh
+        ref={manifoldLeftRef}
+        visible={false}
+        rotation={[0, 0, -Math.PI / 2]}
+        frustumCulled={false}
+        raycast={noRaycast}
+        renderOrder={15}
+      >
+        <cylinderGeometry args={[1, 1, 1, 14, 1, false]} />
+        <meshBasicMaterial
+          ref={manifoldLeftMatRef}
+          color="#22d3ee"
+          transparent
+          opacity={0}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </mesh>
+      <mesh
+        ref={impulseLeftRef}
+        visible={false}
+        rotation={[0, Math.PI / 2, 0]}
+        frustumCulled={false}
+        raycast={noRaycast}
+        renderOrder={16}
+      >
+        <torusGeometry args={[1, 0.32, 12, 24]} />
+        <meshBasicMaterial
+          ref={impulseLeftMatRef}
+          color="#22d3ee"
+          transparent
+          opacity={0}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </mesh>
+
+      {/* Revolver 360° forcing-cone cylinder-gap radial flash torus (Colt Python) */}
+      <mesh
+        ref={cylinderGapRingRef}
+        visible={false}
+        rotation={[0, Math.PI / 2, 0]}
+        frustumCulled={false}
+        raycast={noRaycast}
+        renderOrder={16}
+      >
+        <torusGeometry args={[1, 0.28, 12, 28]} />
+        <meshBasicMaterial
+          ref={cylinderGapMatRef}
+          color="#f59e0b"
           transparent
           opacity={0}
           depthWrite={false}

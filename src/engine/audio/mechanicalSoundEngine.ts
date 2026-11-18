@@ -36,6 +36,9 @@ export type MechanismAcousticStyle =
   | 'short_recoil_heavy'
   | 'bolt_action'
   | 'gas_magnum_pistol'
+  | 'revolver_magnum'
+  | 'argo_shotgun'
+  | 'garand_enbloc'
   | 'compound_bow'
   | 'compound_crossbow';
 
@@ -181,7 +184,54 @@ export const CALIBER_ACOUSTIC_PROFILES: Record<
     casingRingHz: 1140,
     mechanismStyle: 'compound_crossbow',
   },
+  '357_magnum': {
+    caliber: '357_magnum',
+    labelEn: '.357 Magnum 158gr JSP',
+    labelZh: '.357 马格南凸缘转轮手枪弹',
+    subFreqHz: 74,
+    punchDecaySec: 0.24,
+    blastTailSec: 0.42,
+    crackCutoffHz: 3420,
+    peakGain: 0.82,
+    brakeRoarGain: 0.24,
+    casingRingHz: 2980,
+    mechanismStyle: 'revolver_magnum',
+  },
+  '12_gauge': {
+    caliber: '12_gauge',
+    labelEn: '12 Gauge 2.75" 00 Buckshot',
+    labelZh: '12号 70mm 00号军用鹿弹',
+    subFreqHz: 52,
+    punchDecaySec: 0.34,
+    blastTailSec: 0.58,
+    crackCutoffHz: 2180,
+    peakGain: 0.89,
+    brakeRoarGain: 0.32,
+    casingRingHz: 1920,
+    mechanismStyle: 'argo_shotgun',
+  },
+  '30_06': {
+    caliber: '30_06',
+    labelEn: '.30-06 Springfield M2 Ball',
+    labelZh: '.30-06 春田全威力步枪弹',
+    subFreqHz: 56,
+    punchDecaySec: 0.33,
+    blastTailSec: 0.6,
+    crackCutoffHz: 2680,
+    peakGain: 0.9,
+    brakeRoarGain: 0.3,
+    casingRingHz: 2380,
+    mechanismStyle: 'garand_enbloc',
+  },
 };
+
+/**
+ * High-Q inharmonic Euler-Bernoulli 1095 spring-steel U-clip eigenfrequencies (Hz)
+ * for the iconic WWII U.S. Rifle M1 Garand 8-round en-bloc clip ejection "PING!".
+ */
+export const GARAND_ENBLOC_PING_PARTIALS_HZ = [
+  1740, 3510, 5260, 6890,
+] as const;
 
 /** Stretched partials for high-tension braided BCY-X bowstrings. */
 const BOWSTRING_TWANG_PARTIALS = [1.0, 2.04, 3.11, 4.24] as const;
@@ -756,16 +806,47 @@ class ProceduralGunsmithSoundEngine {
 
     switch (kind) {
       case 'sear_release': {
-        // Hardened S7/4140 steel sear escapement snap + hammer/striker spring release
-        this.emitSteelWaveguideStrike({
-          startTime: now,
-          fundamentalHz: 1920,
-          baseDecaySec: 0.036,
-          gainPeak: 0.27,
-          hardness01: 0.86,
-          massBodyHz: 310,
-          bus: 'mechanical',
-        });
+        if (profile.mechanismStyle === 'revolver_magnum') {
+          // Colt Python 2-step Hand ratchet pawl 60° index click + zero-play Cylinder Bolt vault lock + V-spring break
+          const indexGap = isSlowMo ? 0.028 : 0.013;
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 2780,
+            baseDecaySec: 0.024,
+            gainPeak: 0.2,
+            hardness01: 0.88,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + indexGap,
+            fundamentalHz: 3180,
+            baseDecaySec: 0.028,
+            gainPeak: 0.24,
+            hardness01: 0.92,
+            massBodyHz: 360,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + indexGap * 1.85,
+            fundamentalHz: 1980,
+            baseDecaySec: 0.034,
+            gainPeak: 0.25,
+            hardness01: 0.86,
+            massBodyHz: 310,
+            bus: 'mechanical',
+          });
+        } else {
+          // Hardened S7/4140 steel sear escapement snap + hammer/striker spring release
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 1920,
+            baseDecaySec: 0.036,
+            gainPeak: 0.27,
+            hardness01: 0.86,
+            massBodyHz: 310,
+            bus: 'mechanical',
+          });
+        }
         break;
       }
 
@@ -859,6 +940,47 @@ class ProceduralGunsmithSoundEngine {
             massBodyHz: 215,
             bus: 'mechanical',
           });
+        } else if (profile.mechanismStyle === 'revolver_magnum') {
+          // Colt Python radial forcing-cone cylinder-gap high-pressure gas flash hiss
+          this.emitNoiseBurst({
+            startTime: now,
+            duration: 0.042,
+            filterType: 'bandpass',
+            freqStart: 3650,
+            freqEnd: 1620,
+            q: 1.9,
+            gainPeak: 0.22,
+            bus: 'ballistic',
+          });
+        } else if (profile.mechanismStyle === 'argo_shotgun') {
+          // Benelli M4 twin stainless short-stroke ARGO tappet rods striking bolt carrier face
+          this.emitNoiseBurst({
+            startTime: now,
+            duration: 0.045,
+            filterType: 'bandpass',
+            freqStart: 2650,
+            freqEnd: 1240,
+            q: 2.0,
+            gainPeak: 0.22,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + 0.002,
+            fundamentalHz: 2860,
+            baseDecaySec: 0.034,
+            gainPeak: 0.22,
+            hardness01: 0.9,
+            massBodyHz: 320,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + (isSlowMo ? 0.01 : 0.005),
+            fundamentalHz: 3140,
+            baseDecaySec: 0.03,
+            gainPeak: 0.18,
+            hardness01: 0.92,
+            bus: 'mechanical',
+          });
         } else {
           // High-pressure gas port bleed tapping chromed steel piston cup / Stoner gas key
           this.emitNoiseBurst({
@@ -884,6 +1006,19 @@ class ProceduralGunsmithSoundEngine {
       }
 
       case 'cam_unlock': {
+        if (profile.mechanismStyle === 'revolver_magnum') {
+          // Revolver cylinder stays locked; subtle frame recoil settle only
+          this.emitModalPing({
+            startTime: now,
+            duration: 0.045,
+            freqStart: 220,
+            freqEnd: 145,
+            type: 'sine',
+            gainPeak: 0.1,
+            bus: 'mechanical',
+          });
+          break;
+        }
         // Steel cam-pin / rotary bolt lugs / dual rollers / accelerator unlock clack
         const basePitch =
           profile.mechanismStyle === 'compact_9mm'
@@ -904,6 +1039,19 @@ class ProceduralGunsmithSoundEngine {
       }
 
       case 'extract_eject': {
+        if (profile.mechanismStyle === 'revolver_magnum') {
+          // Revolver retains brass inside the 6-shot cylinder; subtle V-mainspring & cylinder settle
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 2180,
+            baseDecaySec: 0.022,
+            gainPeak: 0.11,
+            hardness01: 0.78,
+            bus: 'mechanical',
+          });
+          break;
+        }
+
         // 1. Extractor claw pull + steel ejector spur kick
         this.emitSteelWaveguideStrike({
           startTime: now,
@@ -930,7 +1078,7 @@ class ProceduralGunsmithSoundEngine {
           });
         }
 
-        // 3. Rear trunnion / buffer impact (including Colt M4A1 coaxial buffer spring ring)
+        // 3. Rear trunnion / buffer impact (including Colt M4A1 buffer ring & WWII M1 Garand "PING!")
         const tBuffer = now + (isSlowMo ? 0.04 : 0.016);
         this.emitSteelWaveguideStrike({
           startTime: tBuffer,
@@ -951,11 +1099,54 @@ class ProceduralGunsmithSoundEngine {
             gainPeak: 0.075,
             bus: 'mechanical',
           });
+        } else if (
+          weaponId === 'garand' ||
+          profile.mechanismStyle === 'garand_enbloc'
+        ) {
+          // Legendary WWII U.S. M1 Garand 1095 Spring-Steel En-Bloc Clip Ejection "PING!"
+          const tPing = now + (isSlowMo ? 0.026 : 0.01);
+          // Clip-latch release + ejector V-spring snap against stamped clip floor
+          this.emitSteelWaveguideStrike({
+            startTime: tPing,
+            fundamentalHz: 2420,
+            baseDecaySec: 0.036,
+            gainPeak: 0.24,
+            hardness01: 0.94,
+            massBodyHz: 420,
+            bus: 'ballistic',
+          });
+          // High-Q inharmonic Euler-Bernoulli spring-steel modal partials (~0.65s–0.92s decay)
+          const pingDecays = [0.9, 0.78, 0.66, 0.54] as const;
+          const pingWeights = [0.28, 0.22, 0.14, 0.085] as const;
+          for (let i = 0; i < GARAND_ENBLOC_PING_PARTIALS_HZ.length; i++) {
+            const fModal = GARAND_ENBLOC_PING_PARTIALS_HZ[i];
+            this.emitModalPing({
+              startTime: tPing + 0.0015,
+              duration: pingDecays[i] * (isSlowMo ? 1.12 : 1.0),
+              freqStart: fModal * 1.0035,
+              freqEnd: fModal * 0.9975,
+              type: 'sine',
+              gainPeak: pingWeights[i],
+              bus: 'ballistic',
+            });
+          }
         }
         break;
       }
 
       case 'spring_feed': {
+        if (profile.mechanismStyle === 'revolver_magnum') {
+          // Colt Rebound Lever sliding back beneath hammer safety stud
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 2520,
+            baseDecaySec: 0.024,
+            gainPeak: 0.15,
+            hardness01: 0.85,
+            bus: 'mechanical',
+          });
+          break;
+        }
         // Multi-strand braided recoil spring metallic coil rasp + brass cartridge feed-lip strip
         const dur = isSlowMo ? 0.12 : 0.065;
         this.emitNoiseBurst({
@@ -971,16 +1162,40 @@ class ProceduralGunsmithSoundEngine {
         });
         this.emitSteelWaveguideStrike({
           startTime: now + dur * 0.35,
-          fundamentalHz: 2120,
-          baseDecaySec: 0.03,
-          gainPeak: 0.14,
-          hardness01: 0.7,
+          fundamentalHz:
+            profile.mechanismStyle === 'argo_shotgun' ? 1780 : 2120,
+          baseDecaySec: 0.032,
+          gainPeak: profile.mechanismStyle === 'argo_shotgun' ? 0.2 : 0.14,
+          hardness01: 0.78,
           bus: 'mechanical',
         });
+        if (profile.mechanismStyle === 'argo_shotgun') {
+          // Benelli M4 stamped stainless shell-elevator upward carrier snap
+          this.emitSteelWaveguideStrike({
+            startTime: now + dur * 0.62,
+            fundamentalHz: 2640,
+            baseDecaySec: 0.026,
+            gainPeak: 0.17,
+            hardness01: 0.88,
+            bus: 'mechanical',
+          });
+        }
         break;
       }
 
       case 'battery_lockup': {
+        if (profile.mechanismStyle === 'revolver_magnum') {
+          // Trigger forward return + hand pawl reset click
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 2340,
+            baseDecaySec: 0.022,
+            gainPeak: 0.14,
+            hardness01: 0.84,
+            bus: 'mechanical',
+          });
+          break;
+        }
         // Authoritative twin-stage cold-forged bolt-into-battery lug lockup ("ka-chunk")
         const lockBase =
           profile.mechanismStyle === 'short_recoil_heavy'

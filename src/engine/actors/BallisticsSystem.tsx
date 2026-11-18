@@ -509,6 +509,220 @@ function build57x28Geometries(): CaliberGeometryBundle {
   };
 }
 
+/**
+ * 8. .357 S&W Magnum (SAAMI: 32.77mm straight-wall rimmed case, 40.39mm OAL, 11.18mm solid rim)
+ * Case X in [-1.02, +1.02] (2.04u), 158gr JSP flat-nose soft-point in bulletGeo [-0.24, +0.78].
+ */
+function build357MagnumGeometries(): CaliberGeometryBundle {
+  const pocket: PrimerPocketSpec = {
+    xHead: -1.02,
+    rPocket: 0.175,
+    pocketDepth: 0.088,
+  };
+  const brassWallPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -0.932),
+    new THREE.Vector2(0.175, -0.932),
+    new THREE.Vector2(0.175, -1.008),
+    new THREE.Vector2(0.19, -1.02),
+    // Solid protruding revolver rim (R = 0.415 > body R = 0.362)
+    new THREE.Vector2(0.398, -1.02),
+    new THREE.Vector2(0.415, -1.004),
+    new THREE.Vector2(0.415, -0.942),
+    new THREE.Vector2(0.364, -0.932),
+    // Straight-walled .357 Magnum cylinder body up to case cannelure
+    new THREE.Vector2(0.362, 0.16),
+    new THREE.Vector2(0.346, 0.185),
+    new THREE.Vector2(0.346, 0.225),
+    new THREE.Vector2(0.36, 0.25),
+    new THREE.Vector2(0.358, 1.02),
+    new THREE.Vector2(0.326, 1.02),
+    new THREE.Vector2(0.326, 0.45),
+    new THREE.Vector2(0, 0.45),
+  ];
+  const nickelBandPts: THREE.Vector2[] = [
+    new THREE.Vector2(0.347, 0.182),
+    new THREE.Vector2(0.363, 0.182),
+    new THREE.Vector2(0.363, 0.228),
+    new THREE.Vector2(0.347, 0.228),
+  ];
+  const caseParts = [
+    paintSubGeo(finalizeLathe(brassWallPts, 28), '#e6b938'),
+    paintSubGeo(finalizeLathe(nickelBandPts, 28), '#e2e8f0'),
+  ];
+  const caseGeo = mergeGeometries(caseParts, false);
+  for (const p of caseParts) p.dispose();
+  caseGeo.computeBoundingBox();
+  caseGeo.computeBoundingSphere();
+
+  // 158gr Jacketed Soft-Point (JSP): gilding-copper semi-jacket + exposed soft-lead flat meplat
+  const jacketPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -0.24),
+    new THREE.Vector2(0.322, -0.24),
+    new THREE.Vector2(0.332, -0.18),
+    new THREE.Vector2(0.332, 0.24),
+    new THREE.Vector2(0.305, 0.46),
+    new THREE.Vector2(0.245, 0.56),
+    new THREE.Vector2(0, 0.56),
+  ];
+  const softLeadTipPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, 0.54),
+    new THREE.Vector2(0.242, 0.56),
+    new THREE.Vector2(0.195, 0.72),
+    new THREE.Vector2(0.145, 0.78),
+    new THREE.Vector2(0, 0.78),
+  ];
+  const bulletParts = [
+    paintSubGeo(finalizeLathe(jacketPts, 24), '#c2511a'),
+    paintSubGeo(finalizeLathe(softLeadTipPts, 24), '#94a3b8'),
+  ];
+  const bulletGeo = mergeGeometries(bulletParts, false);
+  for (const p of bulletParts) p.dispose();
+  bulletGeo.computeBoundingBox();
+  bulletGeo.computeBoundingSphere();
+
+  return {
+    caseGeo,
+    bulletGeo,
+    ...buildBoxerPrimerGeometries(pocket),
+    xHead: pocket.xHead,
+  };
+}
+
+/**
+ * 9. 12 Gauge 2.75" (70mm) 00 Buckshot Combat Shotshell (SAAMI: 22.48mm rim, 20.2mm hull):
+ * C26000 high-brass headstamp cup + crimson ribbed polymer hull in `caseGeo` [-0.82, +0.82],
+ * slotted white shot-cup wad + 9-pellet 00 lead buckshot cluster in `bulletGeo` [-0.42, +0.52].
+ */
+function build12GaugeGeometries(): CaliberGeometryBundle {
+  const pocket: PrimerPocketSpec = {
+    xHead: -0.82,
+    rPocket: 0.165,
+    pocketDepth: 0.085,
+  };
+  // High-brass 16mm metallic headstamp base with extruded shotgun extractor rim
+  const highBrassPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -0.735),
+    new THREE.Vector2(0.165, -0.735),
+    new THREE.Vector2(0.165, -0.808),
+    new THREE.Vector2(0.18, -0.82),
+    new THREE.Vector2(0.442, -0.82),
+    new THREE.Vector2(0.46, -0.802),
+    new THREE.Vector2(0.46, -0.745),
+    new THREE.Vector2(0.418, -0.732),
+    new THREE.Vector2(0.418, -0.34),
+    new THREE.Vector2(0.382, -0.34),
+    new THREE.Vector2(0, -0.34),
+  ];
+  // Crimson ribbed polymer hull with subtle crimp shoulder bevel
+  const crimsonHullPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -0.35),
+    new THREE.Vector2(0.412, -0.35),
+    new THREE.Vector2(0.412, 0.74),
+    new THREE.Vector2(0.392, 0.82),
+    new THREE.Vector2(0.335, 0.82),
+    new THREE.Vector2(0.335, 0.32),
+    new THREE.Vector2(0, 0.32),
+  ];
+  const caseParts = [
+    paintSubGeo(finalizeLathe(highBrassPts, 28), '#e6b83a'),
+    paintSubGeo(finalizeLathe(crimsonHullPts, 28), '#b91c1c'),
+  ];
+  const caseGeo = mergeGeometries(caseParts, false);
+  for (const p of caseParts) p.dispose();
+  caseGeo.computeBoundingBox();
+  caseGeo.computeBoundingSphere();
+
+  // Slotted polyethylene shot-cup wad + 9-pellet 00 buckshot cluster (3 layers × 3 pellets)
+  const wadPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -0.42),
+    new THREE.Vector2(0.325, -0.42),
+    new THREE.Vector2(0.332, -0.18),
+    new THREE.Vector2(0.285, -0.14),
+    new THREE.Vector2(0.328, -0.08),
+    new THREE.Vector2(0.328, 0.08),
+    new THREE.Vector2(0.275, 0.08),
+    new THREE.Vector2(0.275, -0.05),
+    new THREE.Vector2(0, -0.05),
+  ];
+  const bulletParts: THREE.BufferGeometry[] = [
+    paintSubGeo(finalizeLathe(wadPts, 22), '#e2e8f0'),
+  ];
+  const layerXs = [0.06, 0.23, 0.4];
+  for (let li = 0; li < 3; li++) {
+    const twist = li * (Math.PI / 3);
+    const rRing = 0.145;
+    for (let k = 0; k < 3; k++) {
+      const a = twist + (k * Math.PI * 2) / 3;
+      const pellet = new THREE.SphereGeometry(0.115, 10, 8);
+      pellet.translate(layerXs[li], Math.cos(a) * rRing, Math.sin(a) * rRing);
+      bulletParts.push(paintSubGeo(pellet, '#94a3b8'));
+    }
+  }
+  const bulletGeo = mergeGeometries(bulletParts, false);
+  for (const p of bulletParts) p.dispose();
+  bulletGeo.computeBoundingBox();
+  bulletGeo.computeBoundingSphere();
+
+  return {
+    caseGeo,
+    bulletGeo,
+    ...buildBoxerPrimerGeometries(pocket),
+    xHead: pocket.xHead,
+  };
+}
+
+/**
+ * 10. .30-06 Springfield M2 Ball (SAAMI: 63.35mm bottleneck case, 84.84mm OAL, 17°30' shoulder)
+ * Case X in [-1.45, +1.45] (2.90u), 150gr M2 gilding-metal spitzer in bulletGeo [-0.42, +0.96].
+ */
+function build3006Geometries(): CaliberGeometryBundle {
+  const pocket: PrimerPocketSpec = {
+    xHead: -1.45,
+    rPocket: 0.132,
+    pocketDepth: 0.085,
+  };
+  const casePts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -1.365),
+    new THREE.Vector2(0.132, -1.365),
+    new THREE.Vector2(0.132, -1.438),
+    new THREE.Vector2(0.145, -1.45),
+    new THREE.Vector2(0.268, -1.45),
+    new THREE.Vector2(0.275, -1.435),
+    new THREE.Vector2(0.275, -1.375),
+    // Deep rimless extractor groove
+    new THREE.Vector2(0.228, -1.355),
+    new THREE.Vector2(0.228, -1.29),
+    new THREE.Vector2(0.274, -1.255),
+    // Long gently tapered .30-06 brass body
+    new THREE.Vector2(0.26, 0.86),
+    // Classic 17°30' Springfield shoulder
+    new THREE.Vector2(0.172, 1.08),
+    // Long .308" neck
+    new THREE.Vector2(0.17, 1.45),
+    new THREE.Vector2(0.152, 1.45),
+    new THREE.Vector2(0.152, 1.05),
+    new THREE.Vector2(0, 1.05),
+  ];
+  const bulletPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -0.42),
+    new THREE.Vector2(0.146, -0.42),
+    new THREE.Vector2(0.154, -0.34),
+    new THREE.Vector2(0.154, 0.14),
+    new THREE.Vector2(0.132, 0.42),
+    new THREE.Vector2(0.088, 0.68),
+    new THREE.Vector2(0.036, 0.88),
+    new THREE.Vector2(0.012, 0.945),
+    new THREE.Vector2(0, 0.96),
+  ];
+
+  return {
+    caseGeo: finalizeLathe(casePts, 26),
+    bulletGeo: finalizeLathe(bulletPts, 24),
+    ...buildBoxerPrimerGeometries(pocket),
+    xHead: pocket.xHead,
+  };
+}
+
 const _archeryColor = new THREE.Color();
 
 function paintSubGeo(
@@ -824,6 +1038,36 @@ export const CALIBER_VISUAL_SPECS: Record<CaliberProfile, CaliberVisualSpec> = {
     flashScaleMult: 0,
     streakThickness: 0.1,
   },
+  '357_magnum': {
+    caseColor: '#e6b938',
+    reserveCaseColor: '#c79a22',
+    bulletColor: '#c2511a',
+    primerColor: '#f1f5f9',
+    bulletLocalOffset: 1.18,
+    reserveTiltZ: 0,
+    flashScaleMult: 1.28,
+    streakThickness: 0.21,
+  },
+  '12_gauge': {
+    caseColor: '#b91c1c',
+    reserveCaseColor: '#991b1b',
+    bulletColor: '#cbd5e1',
+    primerColor: '#e6b83a',
+    bulletLocalOffset: 0.52,
+    reserveTiltZ: 0,
+    flashScaleMult: 1.52,
+    streakThickness: 0.36,
+  },
+  '30_06': {
+    caseColor: '#dca92c',
+    reserveCaseColor: '#b7891e',
+    bulletColor: '#bd4c19',
+    primerColor: '#e2e8f0',
+    bulletLocalOffset: 1.52,
+    reserveTiltZ: 0.06,
+    flashScaleMult: 1.38,
+    streakThickness: 0.22,
+  },
 };
 
 export interface WeaponRoundFitSpec {
@@ -850,6 +1094,9 @@ export const WEAPON_ROUND_FIT: Record<WeaponId, WeaponRoundFitSpec> = {
   p90: { roundScale: 0.68, magLocalShiftX: -0.385, ignitionF: 0.18 },
   lift33: { roundScale: 0.68, magLocalShiftX: 0, ignitionF: 0.32 },
   r500: { roundScale: 1.0, magLocalShiftX: 0, ignitionF: 0.32 },
+  python: { roundScale: 0.88, magLocalShiftX: -0.47, ignitionF: 0.2 },
+  benellim4: { roundScale: 0.44, magLocalShiftX: -0.11, ignitionF: 0.12 },
+  garand: { roundScale: 0.8, magLocalShiftX: -0.515, ignitionF: 0.1 },
 };
 
 const caliberGeoCache = new Map<CaliberProfile, CaliberGeometryBundle>();
@@ -879,6 +1126,15 @@ export function getCaliberGeometries(
       break;
     case '50_ae':
       built = build50AeGeometries();
+      break;
+    case '357_magnum':
+      built = build357MagnumGeometries();
+      break;
+    case '12_gauge':
+      built = build12GaugeGeometries();
+      break;
+    case '30_06':
+      built = build3006Geometries();
       break;
     case 'arrow_400gr':
       built = buildArcheryBundle({
@@ -959,6 +1215,9 @@ const CALIBER_CASE_COLORS: Record<CaliberProfile, THREE.Color> = {
   '50_ae': new THREE.Color(CALIBER_VISUAL_SPECS['50_ae'].caseColor),
   arrow_400gr: new THREE.Color(CALIBER_VISUAL_SPECS.arrow_400gr.caseColor),
   bolt_400gr: new THREE.Color(CALIBER_VISUAL_SPECS.bolt_400gr.caseColor),
+  '357_magnum': new THREE.Color(CALIBER_VISUAL_SPECS['357_magnum'].caseColor),
+  '12_gauge': new THREE.Color(CALIBER_VISUAL_SPECS['12_gauge'].caseColor),
+  '30_06': new THREE.Color(CALIBER_VISUAL_SPECS['30_06'].caseColor),
 };
 
 interface EjectionSpawnSpec {
@@ -1178,6 +1437,28 @@ const MUZZLE_DEVICE_SPECS: Record<WeaponId, MuzzleDeviceSpec> = {
   mp5: { kind: 'bare', forwardDamp: 1, jets: [] },
   lift33: { kind: 'bare', forwardDamp: 1, jets: [] },
   r500: { kind: 'bare', forwardDamp: 1, jets: [] },
+  // Colt Python 6": bare target crown + radial forcing-cone cylinder-gap flash jets at X = 2.20
+  python: {
+    kind: 'bare',
+    forwardDamp: 0.95,
+    jets: [0, 90, 180, -90].map((deg) => {
+      const a = (deg * Math.PI) / 180;
+      return {
+        offsetX: -15.22,
+        offsetY: Math.cos(a) * 0.24,
+        offsetZ: Math.sin(a) * 0.24,
+        dir: [0.08, Math.cos(a), Math.sin(a)] as [number, number, number],
+        length: 1.05,
+        radius: 0.28,
+        layer: 1 as const,
+        intensity: 0.72,
+      };
+    }),
+  },
+  // Benelli M4 18.5" smoothbore w/ Modified cylinder choke
+  benellim4: { kind: 'bare', forwardDamp: 1, jets: [] },
+  // M1 Garand 24" Springfield bare crown
+  garand: { kind: 'bare', forwardDamp: 1, jets: [] },
 };
 
 const _jetUp = new THREE.Vector3(0, 1, 0);
@@ -1490,6 +1771,10 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
   const is50Ae = caliberProfile === '50_ae';
   const isM82Brake = activeWeaponId === 'm82a1';
   const isArcheryActive = isArcheryWeapon(activeWeaponId);
+  const useMultiToneCartridge =
+    isArcheryActive ||
+    caliberProfile === '12_gauge' ||
+    caliberProfile === '357_magnum';
   const diamondCount = Math.min(MAX_SHOCK_DIAMONDS, ballisticSpec.shockDiamonds);
 
   const spentCaseRef = useRef<THREE.Group>(null);
@@ -1918,12 +2203,13 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
 
       {/* 1. Chambered / Extracted Brass Case + Live/Struck Boxer Primer */}
       <group ref={spentCaseRef} position={meta.chamberGlowPos} scale={roundFit.roundScale}>
-        <mesh geometry={caseGeo} renderOrder={2}>
+        <mesh key={`spent-case-${caliberProfile}`} geometry={caseGeo} renderOrder={2}>
           <meshStandardMaterial
             ref={spentCaseMatRef}
-            color={calSpec.caseColor}
-            metalness={0.86}
-            roughness={0.21}
+            color={useMultiToneCartridge ? '#ffffff' : calSpec.caseColor}
+            vertexColors={useMultiToneCartridge}
+            metalness={caliberProfile === '12_gauge' ? 0.35 : 0.86}
+            roughness={caliberProfile === '12_gauge' ? 0.42 : 0.21}
             emissive={BRASS_GLOW}
             emissiveIntensity={0}
           />
@@ -1979,10 +2265,10 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
       <group ref={bulletGroupRef} position={meta.chamberGlowPos} scale={roundFit.roundScale}>
         <mesh key={`bullet-${caliberProfile}`} geometry={bulletGeo} renderOrder={2}>
           <meshStandardMaterial
-            color={isArcheryActive ? '#ffffff' : calSpec.bulletColor}
-            vertexColors={isArcheryActive}
-            metalness={0.82}
-            roughness={0.22}
+            color={useMultiToneCartridge ? '#ffffff' : calSpec.bulletColor}
+            vertexColors={useMultiToneCartridge}
+            metalness={caliberProfile === '12_gauge' ? 0.48 : 0.82}
+            roughness={caliberProfile === '12_gauge' ? 0.34 : 0.22}
           />
           {showEdges && <Edges threshold={36} color="#7c2d12" />}
         </mesh>
@@ -2231,10 +2517,10 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
         <group ref={nextRoundInnerRef} position={[roundFit.magLocalShiftX, 0, 0]}>
           <mesh key={`next-case-${caliberProfile}`} geometry={caseGeo} renderOrder={2}>
             <meshStandardMaterial
-              color={isArcheryActive ? '#ffffff' : calSpec.caseColor}
-              vertexColors={isArcheryActive}
-              metalness={isArcheryActive ? 0.24 : 0.86}
-              roughness={isArcheryActive ? 0.44 : 0.21}
+              color={useMultiToneCartridge ? '#ffffff' : calSpec.caseColor}
+              vertexColors={useMultiToneCartridge}
+              metalness={isArcheryActive ? 0.24 : caliberProfile === '12_gauge' ? 0.35 : 0.86}
+              roughness={isArcheryActive ? 0.44 : caliberProfile === '12_gauge' ? 0.42 : 0.21}
             />
             {showEdges && <Edges threshold={36} color="#854d0e" />}
           </mesh>
@@ -2252,10 +2538,10 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
             renderOrder={2}
           >
             <meshStandardMaterial
-              color={isArcheryActive ? '#ffffff' : calSpec.bulletColor}
-              vertexColors={isArcheryActive}
-              metalness={0.82}
-              roughness={0.22}
+              color={useMultiToneCartridge ? '#ffffff' : calSpec.bulletColor}
+              vertexColors={useMultiToneCartridge}
+              metalness={caliberProfile === '12_gauge' ? 0.48 : 0.82}
+              roughness={caliberProfile === '12_gauge' ? 0.34 : 0.22}
             />
             {showEdges && <Edges threshold={36} color="#7c2d12" />}
           </mesh>
@@ -2266,5 +2552,5 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
 };
 
 function isHighMagnumCaliber(p: CaliberProfile): boolean {
-  return p === '50_bmg' || p === '338_lapua';
+  return p === '50_bmg' || p === '338_lapua' || p === '30_06';
 }
