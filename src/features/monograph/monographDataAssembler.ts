@@ -271,31 +271,6 @@ const GROUP_TO_PLATE: Record<
   magazine: 'group_mag',
 };
 
-const ARCHERY_EN_SPEC_OVERRIDES: Partial<
-  Record<
-    WeaponId,
-    {
-      caliberLabel: string;
-      weight: string;
-      muzzleVelocity: string;
-      effectiveRange: string;
-    }
-  >
-> = {
-  lift33: {
-    caliberLabel: '400 gr Carbon Hunting Arrow (70 lb · 348 FPS)',
-    weight: '1.79 kg (3.94 lb Bare Bow)',
-    muzzleVelocity: '106 m/s (348 FPS IBO)',
-    effectiveRange: '70 m (Effective Hunting)',
-  },
-  r500: {
-    caliberLabel: '400 gr Carbon Bolt (300 lb · 500 FPS)',
-    weight: '3.81 kg (8.40 lb Bare Crossbow)',
-    muzzleVelocity: '152.4 m/s (500 FPS)',
-    effectiveRange: '100+ m (100 yd BDC Scope)',
-  },
-};
-
 function parseFirstFloat(str: string, fallback: number): number {
   const m = str.match(/(\d+(?:\.\d+)?)/);
   return m ? Number(m[1]) : fallback;
@@ -654,7 +629,7 @@ export function assembleMonographDossier(
 
   const kidsFunStats = buildKidsFunStats(
     displayMeta.overallLengthMm,
-    catalog.specs1To1.emptyWeightKg,
+    displayMeta.weightKg,
     plugin.parts.length,
     cartridgeSpec.muzzleVelocityMps,
     lang,
@@ -831,10 +806,6 @@ export function assembleMonographDossier(
   const qrMatrix = encodeQrMatrix(deepLinkUrl);
   const qrSvg = buildQrSvgPath(qrMatrix, 2);
 
-  const enSpecOverride = !isZh
-    ? ARCHERY_EN_SPEC_OVERRIDES[weaponId]
-    : undefined;
-
   return {
     weaponId,
     isArchery,
@@ -847,7 +818,7 @@ export function assembleMonographDossier(
     name: displayMeta.name,
     subtitle: catalog.subtitleEn,
     originTag: displayMeta.originTag,
-    caliberLabel: enSpecOverride?.caliberLabel ?? catalog.caliber,
+    caliberLabel: displayMeta.caliber,
     caliberProfile,
     actionMechanism: displayMeta.actionMechanism,
     description: displayMeta.description,
@@ -856,11 +827,9 @@ export function assembleMonographDossier(
     metrics: {
       oal: displayMeta.overallLengthMm,
       barrel: displayMeta.barrelSpec,
-      weight: enSpecOverride?.weight ?? catalog.specs1To1.emptyWeightKg,
-      muzzleVelocity:
-        enSpecOverride?.muzzleVelocity ?? catalog.specs1To1.muzzleVelocityMs,
-      effectiveRange:
-        enSpecOverride?.effectiveRange ?? catalog.specs1To1.effectiveRangeM,
+      weight: displayMeta.weightKg,
+      muzzleVelocity: displayMeta.muzzleVelocityMs,
+      effectiveRange: displayMeta.effectiveRangeM,
       rateOfFire: displayMeta.rateOfFire,
       muzzleEnergyJ: `${cartridgeSpec.muzzleEnergyJ.toLocaleString('en-US')} J`,
     },

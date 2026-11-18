@@ -34,6 +34,11 @@ import {
 import { SHOWCASE_STRINGS } from '../src/i18n/showcaseStrings';
 import { UI_STRINGS } from '../src/i18n/uiStrings';
 import {
+  getLocalizedCatalogSpecs,
+  resolveWeaponDisplayMeta,
+} from '../src/i18n/weaponFallbacks';
+import type { WeaponNarrationBundle } from '../src/narration/types';
+import {
   resolveAcousticEnvironmentForState,
   useAppStore,
 } from '../src/store/useAppStore';
@@ -398,6 +403,69 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
     expect(storyCss).toContain('var(--hud-top-offset');
     expect(storyCss).not.toMatch(/top:\s*7[0-9]px/);
     expect(responsiveCss).not.toMatch(/\btop:\s*108px/);
+
+    // Canonical light-theme `.schematic-watermark` lives solely in `workbench.css` (not duplicated in `armory.css`)
+    expect(workbenchCss).toContain(
+      ":is([data-theme='light'], .theme-light) .schematic-watermark"
+    );
+    expect(armoryCss).not.toContain('.schematic-watermark');
+  });
+
+  it('resolves getLocalizedCatalogSpecs & resolveWeaponDisplayMeta in English with zero CJK characters across all 13 WEAPON_IDS', () => {
+    const cjkRe = /[\u4e00-\u9fff]/;
+    const narrationsDir = path.resolve(__dirname, '../public/narrations');
+
+    expect(WEAPON_IDS.length).toBe(13);
+
+    for (const id of WEAPON_IDS) {
+      const specs = getLocalizedCatalogSpecs(id, 'en');
+      for (const [key, val] of Object.entries(specs)) {
+        expect(val.trim().length, `${id} specs.${key} empty`).toBeGreaterThan(0);
+        expect(val, `${id} specs.${key} CJK leak`).not.toMatch(cjkRe);
+      }
+
+      const bundle = JSON.parse(
+        fs.readFileSync(path.join(narrationsDir, `${id}.json`), 'utf8')
+      ) as WeaponNarrationBundle;
+
+      for (const [label, meta] of [
+        ['null-bundle', resolveWeaponDisplayMeta(id, 'en', null)],
+        ['narration-bundle', resolveWeaponDisplayMeta(id, 'en', bundle)],
+      ] as const) {
+        expect(meta.caliber).toBe(specs.caliber);
+        expect(meta.compactCaliber).toBe(specs.compactCaliber);
+        expect(meta.weightKg).toBe(specs.weightKg);
+        expect(meta.muzzleVelocityMs).toBe(specs.muzzleVelocityMs);
+        expect(meta.effectiveRangeM).toBe(specs.effectiveRangeM);
+
+        for (const [key, val] of Object.entries(meta)) {
+          if (Array.isArray(val)) {
+            expect(
+              val.length,
+              `${id} (${label}) meta.${key} empty array`
+            ).toBeGreaterThan(0);
+            for (const item of val) {
+              expect(
+                item.trim().length,
+                `${id} (${label}) meta.${key} item empty`
+              ).toBeGreaterThan(0);
+              expect(
+                item,
+                `${id} (${label}) meta.${key} item CJK leak`
+              ).not.toMatch(cjkRe);
+            }
+          } else {
+            expect(
+              val.trim().length,
+              `${id} (${label}) meta.${key} empty`
+            ).toBeGreaterThan(0);
+            expect(val, `${id} (${label}) meta.${key} CJK leak`).not.toMatch(
+              cjkRe
+            );
+          }
+        }
+      }
+    }
   });
 
   it('covers 100% of WEAPON_IDS headings and pbrSuites in atlasStrings.ts with zero CJK leaks in English', async () => {

@@ -16,6 +16,7 @@ import {
   getMonographLocalizedStrings,
 } from '../src/features/monograph/monographStrings';
 import { UI_STRINGS } from '../src/i18n/uiStrings';
+import { resolveWeaponDisplayMeta } from '../src/i18n/weaponFallbacks';
 import {
   projectExplodedPartAnchors,
   solveExplodedPinLayout,
@@ -716,6 +717,81 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
         expect(dossier.comicFrames.map((f) => f.title).join(' ')).not.toMatch(
           /抛壳|Eject/
         );
+      }
+    }
+  });
+
+  it('locks single-source-of-truth English monograph specs and BOM material labels with zero CJK characters across lift33, r500, g17, and p90', async () => {
+    const cjkRe = /[\u4e00-\u9fff]/;
+    const narrationsDir = path.resolve(__dirname, '../public/narrations');
+    const assemblerSrc = fs.readFileSync(
+      path.resolve(
+        __dirname,
+        '../src/features/monograph/monographDataAssembler.ts'
+      ),
+      'utf8'
+    );
+    expect(assemblerSrc).not.toContain('ARCHERY_EN_SPEC_OVERRIDES');
+
+    for (const id of ['lift33', 'r500', 'g17', 'p90'] as const) {
+      const plugin = await loadWeaponPlugin(id);
+      const narrationBundle = JSON.parse(
+        fs.readFileSync(path.join(narrationsDir, `${id}.json`), 'utf8')
+      ) as WeaponNarrationBundle;
+
+      for (const [modeLabel, bundle] of [
+        ['null-bundle', null],
+        ['narration-bundle', narrationBundle],
+      ] as const) {
+        const displayMeta = resolveWeaponDisplayMeta(id, 'en', bundle);
+        const dossier = assembleMonographDossier(
+          id,
+          plugin,
+          'en',
+          bundle,
+          'https://armory.example.org/'
+        );
+
+        // Single source of truth parity with resolveWeaponDisplayMeta
+        expect(dossier.caliberLabel).toBe(displayMeta.caliber);
+        expect(dossier.metrics.weight).toBe(displayMeta.weightKg);
+        expect(dossier.metrics.muzzleVelocity).toBe(
+          displayMeta.muzzleVelocityMs
+        );
+        expect(dossier.metrics.effectiveRange).toBe(
+          displayMeta.effectiveRangeM
+        );
+
+        for (const [fieldName, fieldVal] of [
+          ['caliberLabel', dossier.caliberLabel],
+          ['weight', dossier.metrics.weight],
+          ['muzzleVelocity', dossier.metrics.muzzleVelocity],
+          ['effectiveRange', dossier.metrics.effectiveRange],
+          ['oal', dossier.metrics.oal],
+          ['barrel', dossier.metrics.barrel],
+          ['rateOfFire', dossier.metrics.rateOfFire],
+        ] as const) {
+          expect(
+            fieldVal.trim().length,
+            `${id} (${modeLabel}) ${fieldName} empty`
+          ).toBeGreaterThan(0);
+          expect(
+            fieldVal,
+            `${id} (${modeLabel}) ${fieldName} CJK leak`
+          ).not.toMatch(cjkRe);
+        }
+
+        expect(dossier.bomRows.length).toBe(plugin.parts.length);
+        for (const row of dossier.bomRows) {
+          expect(
+            row.materialLabel.trim().length,
+            `${id} (${modeLabel}) ${row.partId} materialLabel empty`
+          ).toBeGreaterThan(0);
+          expect(
+            row.materialLabel,
+            `${id} (${modeLabel}) ${row.partId} materialLabel CJK leak`
+          ).not.toMatch(cjkRe);
+        }
       }
     }
   });
