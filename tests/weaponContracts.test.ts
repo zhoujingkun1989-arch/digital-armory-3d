@@ -1127,7 +1127,7 @@ describe('19-Exhibit Digital Armory V2.0 1:1 plugin, geometry, kinematics & PBR 
     expect(builtPartsCount).toBe(480);
   }, 120000);
 
-  it('verifies all 112 WebP PBR textures exist on disk (0 PNGs) and all 38 *_roughness.webp ORM maps have valid RGB WebP headers', async () => {
+  it('verifies all 127 WebP PBR textures exist on disk (0 PNGs) and all 43 *_roughness.webp ORM maps have valid RGB WebP headers', async () => {
     expect(fs.existsSync(TEXTURES_DIR)).toBe(true);
     const diskFiles = fs.readdirSync(TEXTURES_DIR);
     const webpFiles = diskFiles.filter((f) => f.endsWith('.webp')).sort();
@@ -1138,11 +1138,11 @@ describe('19-Exhibit Digital Armory V2.0 1:1 plugin, geometry, kinematics & PBR 
     );
     const normalFiles = webpFiles.filter((f) => f.endsWith('_normal.webp'));
 
-    expect(webpFiles).toHaveLength(112);
+    expect(webpFiles).toHaveLength(127);
     expect(pngFiles).toHaveLength(0);
-    expect(albedoFiles).toHaveLength(36);
-    expect(roughnessFiles).toHaveLength(38);
-    expect(normalFiles).toHaveLength(38);
+    expect(albedoFiles).toHaveLength(41);
+    expect(roughnessFiles).toHaveLength(43);
+    expect(normalFiles).toHaveLength(43);
 
     // Binary RIFF/WEBP header validation across all 58 textures
     for (const fileName of webpFiles) {

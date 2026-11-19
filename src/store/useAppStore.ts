@@ -4,6 +4,11 @@ import {
   setAcousticEnvironment,
 } from '../engine/audio/mechanicalSoundEngine';
 import type { ArmoryEnvironmentPreset } from '../engine/canvas/GunsmithStageMat';
+import {
+  detectDefaultGraphicsQuality,
+  GRAPHICS_QUALITY_TIERS,
+  type GraphicsQualityTier,
+} from '../engine/canvas/graphicsQuality';
 import { playbackClock } from '../engine/clock/playbackClock';
 import { caliperStore } from '../engine/caliper/caliperStore';
 import { isCaliberProfile } from '../engine/cartridges/cartridgeSpecs';
@@ -11,7 +16,13 @@ import { fieldStripStore } from '../engine/fieldstrip/fieldStripStore';
 import { interactiveActionStore } from '../engine/interaction/InteractiveActionController';
 import { malfunctionStore } from '../engine/malfunctions/malfunctionStore';
 import type { MalfunctionKind } from '../engine/malfunctions/malfunctionSpecs';
-import { setArmoryThermalVisualState } from '../engine/materials/armoryShader';
+import {
+  ARMORY_WEAR_PRESET_LEVELS,
+  type ArmoryWearPreset,
+  DEFAULT_ARMORY_WEAR_LEVEL,
+  setArmoryThermalVisualState,
+  setArmoryWearLevel,
+} from '../engine/materials/armoryShader';
 import type { EngineeringRole } from '../engine/materials/engineeringRoles';
 import { resetArmoryPhysics } from '../engine/physics/armoryPhysics';
 import {
@@ -184,10 +195,14 @@ export interface AppState {
   fireLoop: boolean;
   fireSpeedMultiplier: 0.25 | 0.5 | 1.0;
 
-  /** Studio lighting/stage environment, post-processing & telemetry HUD */
+  /** Studio lighting/stage environment, post-processing, wear patina & adaptive GPU quality */
   environmentPreset: ArmoryEnvironmentPreset;
   postFxEnabled: boolean;
   telemetryHudOpen: boolean;
+  weaponWearLevel: number;
+  graphicsQuality: GraphicsQualityTier;
+  qualityLockedByUser: boolean;
+  macroDofEnabled: boolean;
 
   /** Visual toggles */
   pbrTexturesEnabled: boolean;
@@ -284,13 +299,21 @@ export interface AppState {
   toggleFireLoop: () => void;
   setFireSpeedMultiplier: (mult: 0.25 | 0.5 | 1.0) => void;
 
-  // Studio Environment, PostFX & Telemetry HUD Actions
+  // Studio Environment, PostFX, Service Wear & Adaptive Quality Actions
   setEnvironmentPreset: (preset: ArmoryEnvironmentPreset) => void;
   cycleEnvironmentPreset: () => void;
   setPostFxEnabled: (enabled: boolean) => void;
   togglePostFx: () => void;
   setTelemetryHudOpen: (open: boolean) => void;
   toggleTelemetryHud: () => void;
+  setWeaponWearLevel: (level: number) => void;
+  setWeaponWearPreset: (preset: ArmoryWearPreset) => void;
+  setGraphicsQuality: (
+    tier: GraphicsQualityTier,
+    lockedByUser?: boolean
+  ) => void;
+  cycleGraphicsQuality: () => void;
+  toggleMacroDof: () => void;
 
   // Shared Visual & Selection Actions
   togglePbrTextures: () => void;
@@ -358,6 +381,10 @@ export const useAppStore = create<AppState>((set, get) => ({
   environmentPreset: 'tactical_vault',
   postFxEnabled: true,
   telemetryHudOpen: true,
+  weaponWearLevel: DEFAULT_ARMORY_WEAR_LEVEL,
+  graphicsQuality: detectDefaultGraphicsQuality(),
+  qualityLockedByUser: false,
+  macroDofEnabled: true,
 
   pbrTexturesEnabled: true,
   textureModalOpen: false,
@@ -1038,6 +1065,39 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   toggleTelemetryHud: () =>
     set((s) => ({ telemetryHudOpen: !s.telemetryHudOpen })),
+
+  setWeaponWearLevel: (level) => {
+    const clamped = setArmoryWearLevel(level);
+    set({ weaponWearLevel: clamped });
+  },
+
+  setWeaponWearPreset: (preset) => {
+    const next = setArmoryWearLevel(
+      ARMORY_WEAR_PRESET_LEVELS[preset] ?? DEFAULT_ARMORY_WEAR_LEVEL
+    );
+    set({ weaponWearLevel: next });
+  },
+
+  setGraphicsQuality: (graphicsQuality, lockedByUser = true) => {
+    if (!GRAPHICS_QUALITY_TIERS.includes(graphicsQuality)) return;
+    set((s) => ({
+      graphicsQuality,
+      qualityLockedByUser: lockedByUser ? true : s.qualityLockedByUser,
+    }));
+  },
+
+  cycleGraphicsQuality: () =>
+    set((s) => {
+      const idx = GRAPHICS_QUALITY_TIERS.indexOf(s.graphicsQuality);
+      const next =
+        GRAPHICS_QUALITY_TIERS[(idx + 1) % GRAPHICS_QUALITY_TIERS.length];
+      return {
+        graphicsQuality: next,
+        qualityLockedByUser: true,
+      };
+    }),
+
+  toggleMacroDof: () => set((s) => ({ macroDofEnabled: !s.macroDofEnabled })),
 
   togglePbrTextures: () =>
     set((s) => ({ pbrTexturesEnabled: !s.pbrTexturesEnabled })),

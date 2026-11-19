@@ -116,6 +116,19 @@
   - **目标模块**：`vite.config.ts`、`src/engine/utils/assetUrl.ts`、`src/features/share/{posterComposer,PosterShareModal,posterShareStrings}.ts*`、`src/styles/{poster-share,responsive}.css`、`tests/bundleAndSubpath.test.ts`
   - **交付与验收**：完成无环代码分包（全部生产 chunk `<800 kB` 零告警）与 `VITE_BASE_PATH` 幂等子路径解析；上线即时高清 3D 剖视社交分享海报工坊（快捷键 `U`，支持 `1920×1080` `16:9` 与 `1080×1350` `4:5`、3 套博物馆主题、`S/A/B/C` 认证印章与 `?cut=1` 二维码直达链接），并补齐 iPad/移动端 `@media (pointer: coarse)` 大触控热区与响应式交互体验。
 
+### 阶段七：V3.0 照片级真铁画质升级（Photorealism-First：`PR-01` ~ `PR-04`）
+- [x] **PR-01｜全局照片级影棚光影、真铁材质与光学镜头引擎**
+  - **目标模块**：`scripts/blender/render_studio_hdri.py`、`public/hdri/`、`src/engine/canvas/{studioHdriManager,GunsmithStageMat,ArmoryPostProcessing,ArmoryViewport}.tsx`、`src/engine/materials/armoryShader.ts`、`src/app/ViewportErrorBoundary.tsx`
+  - **交付与验收**：以 Blender 5.2 Cycles 渲染 3 套真实物理摄影棚 32-bit `.hdr` 反射环境贴图（含渐进柔光箱与黑旗吸光反差）；升级 `armoryShader.ts` 加入 GGX 高光抗锯齿（Specular AA）、宏观/微观枪油粗糙度起伏与实时服役磨损系统（`0% 全新 / 35% 轻油实操 / 100% 战损沧桑`）；接入近景微距景深（Macro Bokeh DOF）、电影暗角与三档自适应画质看门狗（`Ultra / Balanced / Eco`）及双语 `webglcontextlost` 热恢复；交付真机 5 镜改造前后高清对比实拍验收。
+- [x] **PR-02｜双轨 Draco/Meshopt `.glb` 装载框架 + 样板一「鲁格 P08（25 零件全重制）」**
+  - **目标模块**：`src/engine/geometry/{glbAssetService,geometryService}.ts`、`src/engine/materials/pbrManager.ts`、`scripts/blender/build_p08_photoreal.py`、`public/models/p08.glb`、`public/textures/p08_v3_*.webp`
+  - **交付与验收**：建立与既有 `partId`、运动学、`StencilSectionCap` 纵剖、游标卡尺与盲拆 100% 契约兼容的 Draco `.glb` 双轨按需加载架构，并修复 `@react-three/fiber` v8 将全馆法线/ORM 线性贴图覆写为 `SRGB8_ALPHA8` 的底层缺陷；用 Blender 5.2 全零件高模倒角与 Cycles 烘焙重制鲁格 P08 全部 22 个实心零件 + 保留 3 个 `aSpringParam` 螺旋弹簧（总资产 `2.70 MB <= 10 MB`），通过全量契约与真机 6 镜超近景肉眼验收。
+- [x] **PR-03｜样板二「AK-15M1（26 零件全重制）」——现代战术步枪照片级标杆**
+  - **目标模块**：`scripts/blender/build_ak15_photoreal.py`、`public/models/ak15.glb`、`public/textures/ak15_v3_*.webp`
+  - **交付与验收**：复用 Blender 5.2 高模倒角与 Cycles 高烘低管线重制 AK-15M1 全部 24 个实心零件 + 保留 2 个 `aSpringParam` 螺旋弹簧（总资产 `1.85 MB <= 12 MB`），通过全量契约与真机 6 镜超近景肉眼验收。
+- [ ] **PR-04｜全馆 19 款照片级批量推广 & 汇入 V3.0 GitHub 高星门面与 UX 减负**
+  - **目标模块**：其余 17 款展品 Blender 模块化精模迁移、顶栏极简重构、`Cmd+K` 全局瞬搜、动态活体剖切面、Playwright 自动截屏与开源社区治理包。
+
 ---
 
 ## 4. 智能体工程红线与架构约束（Architecture Invariants & Agent Rules）
@@ -123,7 +136,7 @@
 所有在本仓库协作的智能体与开发者必须严格遵守以下不可妥协的工程红线：
 
 1. **CAD 尺度与右手坐标系**：严格遵循 `1 world unit = 1 cm`（UI 展示毫米需 `× 10`）；`+X` 朝枪口前方、`+Y` 朝上、`+Z` 朝枪身右侧。纵向剖视平面沿中轴剖开右侧机匣/套筒壳体。
-2. **零外部静态网格 & Web Worker 异步建模**：严禁引入 `.glb` / `.gltf` 外部重型模型文件；所有几何体必须在 `src/weapons/<id>/meshes/` 内以参数化/CSG 生成，经 `src/engine/geometry/geometry.worker.ts` 后台计算并通过 `Transferable Float32Array` 零拷贝流式回传主线程。
+2. **双轨开源可复现 3D 资产管线（Blender 5.2 `.glb` + Web Worker CSG 兜底）**：严禁引入来历不明或闭源版权第三方 3D 模型；所有高精度 `.glb` 资产必须由仓库内可复现 MIT 开源脚本（`scripts/blender/*.py`）通过 Blender 5.2 LTS 程序化高模雕塑与 Cycles 烘焙生成（经 Draco/Meshopt 压缩、单把展品总资产 `≤ 12 MB`、按 `partId` 拆分且保持水密流形与 `1u = 1cm` 坐标），未迁移展品或离线回退继续由 `src/engine/geometry/geometry.worker.ts` 后台 CSG 零拷贝流式生成。
 3. **60Hz 瞬态时钟 & 零 React 重渲染**：高频拆解插值与击发进度必须通过 `src/engine/clock/playbackClock.ts` 订阅并在 R3F `useFrame` 内以 Zero-GC 原地更新矩阵与几何属性，禁止将 60fps 连续进度写入 Zustand 或 React state 引发组件树重渲染。
 4. **首屏秒开分包纪律**：`src/weapons/manifests.ts` 仅保留轻量静态目录与相机预设；重型武器插件、CSG 几何与双语故事 JSON 必须保持动态按需懒加载。
 5. **中英双语 100% 对等**：任何新增功能、UI 词条（`src/i18n/uiStrings.ts`）、武器/弹药说明及故事旁白（`public/narrations/*.json`）必须同步提供专业准确的中文（`zh`）与英文（`en`）版本。

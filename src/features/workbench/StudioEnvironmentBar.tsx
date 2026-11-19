@@ -1,7 +1,9 @@
 import React from 'react';
 import {
   Aperture,
+  Droplets,
   EyeOff,
+  Gauge,
   Lightbulb,
   Maximize2,
   Minimize2,
@@ -14,6 +16,10 @@ import {
   ARMORY_ENVIRONMENT_PRESETS,
   type ArmoryEnvironmentPreset,
 } from '../../engine/canvas/GunsmithStageMat';
+import {
+  ARMORY_WEAR_PRESETS,
+  resolveWearPresetFromLevel,
+} from '../../engine/materials/armoryShader';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import { useAppStore } from '../../store/useAppStore';
 
@@ -35,7 +41,18 @@ export const StudioEnvironmentBar: React.FC<StudioEnvironmentBarProps> = ({
   const setEnvironmentPreset = useAppStore((s) => s.setEnvironmentPreset);
   const postFxEnabled = useAppStore((s) => s.postFxEnabled);
   const togglePostFx = useAppStore((s) => s.togglePostFx);
+  const weaponWearLevel = useAppStore((s) => s.weaponWearLevel);
+  const setWeaponWearPreset = useAppStore((s) => s.setWeaponWearPreset);
+  const graphicsQuality = useAppStore((s) => s.graphicsQuality);
+  const cycleGraphicsQuality = useAppStore((s) => s.cycleGraphicsQuality);
   const setHudHidden = useAppStore((s) => s.setHudHidden);
+
+  const activeWearPreset = resolveWearPresetFromLevel(weaponWearLevel);
+  const nextWearPreset =
+    ARMORY_WEAR_PRESETS[
+      (ARMORY_WEAR_PRESETS.indexOf(activeWearPreset) + 1) %
+        ARMORY_WEAR_PRESETS.length
+    ];
 
   const { isFullscreen, isSupported, toggleFullscreen } =
     useBrowserFullscreen();
@@ -85,6 +102,33 @@ export const StudioEnvironmentBar: React.FC<StudioEnvironmentBarProps> = ({
           );
         })}
       </div>
+
+      <button
+        type="button"
+        className={`toggle-chip ${activeWearPreset === 'battle_worn' ? 'active-amber' : activeWearPreset === 'field_oiled' ? 'active-cyan' : ''}`}
+        title={studioUi.wearPresets[activeWearPreset].title}
+        aria-label={studioUi.wearGroupAria}
+        onClick={() => {
+          playWorkbenchFoley('toggle_switch');
+          setWeaponWearPreset(nextWearPreset);
+        }}
+      >
+        <Droplets size={13} aria-hidden="true" />
+        <span>{studioUi.wearPresets[activeWearPreset].label}</span>
+      </button>
+
+      <button
+        type="button"
+        className={`toggle-chip ${graphicsQuality === 'ultra' ? 'active-cyan' : graphicsQuality === 'balanced' ? 'active-amber' : ''}`}
+        title={studioUi.qualityTitle(graphicsQuality)}
+        onClick={() => {
+          playWorkbenchFoley('toggle_switch');
+          cycleGraphicsQuality();
+        }}
+      >
+        <Gauge size={13} aria-hidden="true" />
+        <span>{studioUi.qualityLabels[graphicsQuality]}</span>
+      </button>
 
       <button
         type="button"

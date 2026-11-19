@@ -1,5 +1,7 @@
 import type { ArmoryEnvironmentPreset } from '../engine/canvas/GunsmithStageMat';
+import type { GraphicsQualityTier } from '../engine/canvas/graphicsQuality';
 import type { FireSelectorMode } from '../engine/interaction/InteractiveActionController';
+import type { ArmoryWearPreset } from '../engine/materials/armoryShader';
 import type { LanguageCode } from '../narration/types';
 import {
   WEAPON_IDS,
@@ -11,7 +13,7 @@ import {
 const VAULT_EXHIBIT_COUNT = WEAPON_IDS.length; // 19
 const VAULT_EXHIBIT_ZH = '十九';
 const VAULT_PARTS_TOTAL = 480;
-const VAULT_TEXTURES_TOTAL = 112;
+const VAULT_TEXTURES_TOTAL = 127;
 const VAULT_AUDIO_TOTAL = 1112;
 const LAB_CALIBER_TOTAL = 11;
 const LAB_CALIBER_ZH = '十一';
@@ -31,6 +33,16 @@ export interface UiDictionary {
     >;
     postFxChip: string;
     postFxTitle: (enabled: boolean) => string;
+    wearGroupAria: string;
+    wearPresets: Record<
+      ArmoryWearPreset,
+      {
+        label: string;
+        title: string;
+      }
+    >;
+    qualityTitle: (tier: GraphicsQualityTier) => string;
+    qualityLabels: Record<GraphicsQualityTier, string>;
     hideUiChip: string;
     hideUiTitle: string;
     showUiChip: string;
@@ -688,8 +700,34 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       postFxChip: 'GTAO',
       postFxTitle: (enabled) =>
         enabled
-          ? '已启用 GTAO 毫米级接触环境光遮蔽 + HDR 选择性辉光 + AgX 电影级色调映射 + SMAA 抗锯齿'
-          : '点击开启 GTAO 环境光遮蔽 + HDR 辉光与 AgX 后处理管线',
+          ? '已启用 GTAO 毫米级接触环境光遮蔽 + HDR 选择性辉光 + 近景微距景深 + AgX 电影级色调映射 + SMAA 抗锯齿'
+          : '点击开启 GTAO 环境光遮蔽 + 电影镜头光学后处理管线',
+      wearGroupAria: '枪械服役磨损与枪油包浆状态',
+      wearPresets: {
+        factory_new: {
+          label: '出厂',
+          title: '全新典藏状态 (0% 磨损)：出厂完好磷化/烤蓝与洁净枪油光泽',
+        },
+        field_oiled: {
+          label: '微油',
+          title: '轻度实操微油 (35% 磨损·默认)：自然棱边轻磨亮、CLP 枪油微反光与接缝暗角',
+        },
+        battle_worn: {
+          label: '沧桑',
+          title: '实战沧桑状态 (95% 磨损)：明显导轨与棱边露白、擦痕与火药积碳包浆',
+        },
+      },
+      qualityTitle: (tier) =>
+        tier === 'ultra'
+          ? '当前画质：极致 (Ultra · 2K 阴影 + GTAO + 微距景深 + SMAA)，点击切换画质档位'
+          : tier === 'balanced'
+            ? '当前画质：均衡 (Balanced · 半分辨率 GTAO + 1.5x DPR)，点击切换画质档位'
+            : '当前画质：流畅省电 (Eco · 关闭后处理，适配核显与移动设备)，点击切换画质档位',
+      qualityLabels: {
+        ultra: '极致',
+        balanced: '均衡',
+        eco: '流畅',
+      },
       hideUiChip: '隐藏按钮',
       hideUiTitle:
         '隐藏全部界面按钮与控制面板，进入 100% 纯净全屏 3D 展示视图 (快捷键: H，按 H 或 Esc 恢复)',
@@ -1473,8 +1511,34 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       postFxChip: 'GTAO',
       postFxTitle: (enabled) =>
         enabled
-          ? 'GTAO Sub-mm Contact Ambient Occlusion + Selective HDR Bloom + AgX Tone Mapping + SMAA active'
-          : 'Enable GTAO Contact Ambient Occlusion + HDR Bloom & AgX PostFX pipeline',
+          ? 'GTAO Sub-mm Contact AO + Selective HDR Bloom + Close-Up Macro DOF + AgX Tone Mapping + SMAA active'
+          : 'Enable GTAO Contact Ambient Occlusion + Filmic Macro PostFX pipeline',
+      wearGroupAria: 'Firearm service condition & oil patina',
+      wearPresets: {
+        factory_new: {
+          label: 'Mint',
+          title: 'Factory Mint (0% wear): pristine parkerized/blued finish with clean factory oil sheen',
+        },
+        field_oiled: {
+          label: 'Oiled',
+          title: 'Field Oiled (35% wear · Default): subtle CNC edge burnish, CLP oil patina & crevice AO',
+        },
+        battle_worn: {
+          label: 'Worn',
+          title: 'Battle-Worn (95% wear): exposed steel edges, holster micro-scratches & carbon patina',
+        },
+      },
+      qualityTitle: (tier) =>
+        tier === 'ultra'
+          ? 'Graphics Quality: Ultra (2K shadows, GTAO, Macro DOF & SMAA) — click to cycle'
+          : tier === 'balanced'
+            ? 'Graphics Quality: Balanced (Half-res GTAO, 1.5x DPR) — click to cycle'
+            : 'Graphics Quality: Eco (Lightweight renderer for mobile / integrated GPUs) — click to cycle',
+      qualityLabels: {
+        ultra: 'Ultra',
+        balanced: 'Bal',
+        eco: 'Eco',
+      },
       hideUiChip: 'Hide UI',
       hideUiTitle:
         'Hide all UI buttons and HUD panels for unobstructed 3D showcase (Shortcut: H, press H or Esc to restore)',

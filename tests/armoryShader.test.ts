@@ -14,6 +14,8 @@ import {
   type SectionCapRect,
 } from '../src/engine/actors/StencilSectionCap';
 import {
+  ARMORY_WEAR_PRESET_LEVELS,
+  DEFAULT_ARMORY_WEAR_LEVEL,
   applyArmoryShader,
   applySpringCompressionInto,
   computeBlackbodyColorInto,
@@ -25,13 +27,17 @@ import {
   createArmorySpringDepthMaterial,
   getArmoryProgramCacheKey,
   getArmoryThermalVisualState,
+  getArmoryWearLevel,
   isCarbonFoulingPart,
   isThermalBearingPart,
   resetArmoryThermalVisualState,
+  resetArmoryWearLevel,
   resolveArmoryShaderFeatures,
   resolveThermalForWeapon,
+  resolveWearPresetFromLevel,
   setArmoryThermalState,
   setArmoryThermalVisualState,
+  setArmoryWearLevel,
   SPRING_AXIS_FLEX,
   SPRING_AXIS_NONE,
   SPRING_AXIS_X,
@@ -538,5 +544,38 @@ describe('AAA Armory Surface Shader, GPU Spring Compression & Stencil Cutaway Ca
     expect(configurePbrTextureAnisotropy(8)).toBe(8);
     expect(configurePbrTextureAnisotropy(PBR_DEFAULT_ANISOTROPY)).toBe(12);
     tex.dispose();
+  });
+
+  it('maintains zero-GC service-wear patina state, specular AA & crease-gated edge wear GLSL (PR-01)', () => {
+    resetArmoryWearLevel();
+    expect(getArmoryWearLevel()).toBeCloseTo(DEFAULT_ARMORY_WEAR_LEVEL, 6);
+    expect(resolveWearPresetFromLevel(getArmoryWearLevel())).toBe('field_oiled');
+
+    expect(setArmoryWearLevel(ARMORY_WEAR_PRESET_LEVELS.factory_new)).toBe(0);
+    expect(resolveWearPresetFromLevel(getArmoryWearLevel())).toBe('factory_new');
+
+    expect(setArmoryWearLevel(2.5)).toBe(1);
+    expect(resolveWearPresetFromLevel(getArmoryWearLevel())).toBe('battle_worn');
+    expect(setArmoryWearLevel(-1)).toBe(0);
+    expect(setArmoryWearLevel(Number.NaN)).toBe(0);
+    resetArmoryWearLevel();
+
+    const uniforms = createArmoryShaderUniforms('nitride_steel');
+    expect(uniforms.uWearLevel.value).toBeCloseTo(DEFAULT_ARMORY_WEAR_LEVEL, 6);
+
+    const mockShader = {
+      vertexShader: THREE.ShaderLib.physical.vertexShader,
+      fragmentShader: THREE.ShaderLib.physical.fragmentShader,
+      uniforms: THREE.UniformsUtils.clone(THREE.ShaderLib.physical.uniforms),
+    };
+    createArmoryMaterialHooks(
+      { spring: false, curvature: true, thermal: false, fouling: true },
+      uniforms
+    ).onBeforeCompile(mockShader);
+
+    expect(mockShader.uniforms.uWearLevel).toBe(uniforms.uWearLevel);
+    expect(mockShader.fragmentShader).toContain('uniform float uWearLevel;');
+    expect(mockShader.fragmentShader).toContain('armoryLocalizedConvex');
+    expect(mockShader.fragmentShader).toContain('armorySpecAA');
   });
 });

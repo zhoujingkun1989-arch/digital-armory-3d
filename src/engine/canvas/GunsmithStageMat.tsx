@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import {
   ContactShadows,
   Environment,
@@ -9,6 +9,10 @@ import {
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
 import { playbackClock } from '../clock/playbackClock';
+import {
+  getStudioHdriEnvIntensity,
+  loadStudioHdriTexture,
+} from './studioHdriManager';
 import { evaluateWeaponTurntableEnvelopeInto } from './turntableStageMetrics';
 
 // =====================================================================================
@@ -114,19 +118,19 @@ export const ARMORY_ENVIRONMENTS: Readonly<
       'Deep gunmetal obsidian void with a crisp cool-steel key and warm tungsten grazing rims that make nitrided steel, hard-anodized aluminium and brass gleam.',
     tone: 'dark',
     background: '#0b1017',
-    fog: { color: '#0b1017', near: 420, far: 555 },
-    ambient: { color: '#9fb4cc', intensity: 0.14 },
+    fog: { color: '#0e1014', near: 420, far: 555 },
+    ambient: { color: '#d4d8de', intensity: 0.14 },
     hemisphere: {
-      skyColor: '#94a9c6',
-      groundColor: '#06090d',
+      skyColor: '#d8dce2',
+      groundColor: '#121418',
       intensity: 0.42,
     },
-    keyLight: { color: '#e4eefa', intensity: 2.55, position: [28, 42, 38] },
-    rimLight: { color: '#ffb36b', intensity: 2.2, position: [-30, 18, -34] },
-    fillLight: { color: '#7f96b4', intensity: 0.62, position: [-22, 8, 30] },
-    topLight: { color: '#f4f8ff', intensity: 0.7, position: [-4, 34, 4] },
-    underLight: { color: '#3a4a5e', intensity: 0.34, position: [10, -16, 24] },
-    environmentBackground: '#05080c',
+    keyLight: { color: '#fff9f2', intensity: 2.55, position: [14, 46, 28] },
+    rimLight: { color: '#ffe4c4', intensity: 1.55, position: [-22, 26, -30] },
+    fillLight: { color: '#dce4f0', intensity: 0.78, position: [-24, 12, 28] },
+    topLight: { color: '#ffffff', intensity: 0.88, position: [0, 42, 4] },
+    underLight: { color: '#6b7280', intensity: 0.36, position: [12, -16, -20] },
+    environmentBackground: '#07080a',
     lightformers: [
       {
         color: '#e8f1ff',
@@ -179,19 +183,19 @@ export const ARMORY_ENVIRONMENTS: Readonly<
         scale: [52, 28],
       },
     ],
-    toneMappingExposure: 1.2,
-    postfx: { bloomStrength: 0.32, gtaoIntensity: 0.95 },
-    grid: { cellColor: '#18212c', sectionColor: '#2a3748', fadeDistance: 150 },
-    contactShadowOpacity: 0.62,
+    toneMappingExposure: 1.28,
+    postfx: { bloomStrength: 0.26, gtaoIntensity: 1.05 },
+    grid: { cellColor: '#161f2a', sectionColor: '#253142', fadeDistance: 135 },
+    contactShadowOpacity: 0.44,
     mat: {
-      rubber: '#151b23',
+      rubber: '#12171f',
       speckleAmplitude: 9,
-      ink: '#8193a8',
-      inkMajor: '#c6d3e1',
+      ink: '#7a8ca1',
+      inkMajor: '#becbd9',
       accent: '#f59e0b',
       crosshair: '#22d3ee',
-      trayFloor: '#262d36',
-      sheenColor: '#3b4757',
+      trayFloor: '#222831',
+      sheenColor: '#2d3745',
     },
     turntable: {
       platter: '#1a2029',
@@ -215,13 +219,13 @@ export const ARMORY_ENVIRONMENTS: Readonly<
     tone: 'dark',
     background: '#14181f',
     fog: { color: '#14181f', near: 420, far: 555 },
-    ambient: { color: '#c8b9a4', intensity: 0.16 },
-    hemisphere: { skyColor: '#ffe2bf', groundColor: '#0d1015', intensity: 0.5 },
-    keyLight: { color: '#ffd6aa', intensity: 2.45, position: [10, 46, 30] },
-    rimLight: { color: '#8fb4e6', intensity: 1.7, position: [-30, 14, -30] },
-    fillLight: { color: '#7ea6d8', intensity: 0.85, position: [-28, 10, 26] },
-    topLight: { color: '#ffe0b8', intensity: 1.0, position: [0, 38, 0] },
-    underLight: { color: '#3d3a36', intensity: 0.3, position: [8, -16, 22] },
+    ambient: { color: '#c8b9a4', intensity: 0.1 },
+    hemisphere: { skyColor: '#ffe2bf', groundColor: '#0d1015', intensity: 0.34 },
+    keyLight: { color: '#ffddb8', intensity: 2.1, position: [12, 44, 30] },
+    rimLight: { color: '#90b6e8', intensity: 1.05, position: [-30, 18, -30] },
+    fillLight: { color: '#82a9d8', intensity: 0.52, position: [-26, 10, 26] },
+    topLight: { color: '#ffe4c2', intensity: 0.68, position: [0, 38, 0] },
+    underLight: { color: '#3d3a36', intensity: 0.2, position: [8, -16, 22] },
     environmentBackground: '#0b0d11',
     lightformers: [
       {
@@ -1325,7 +1329,7 @@ const ROUGHNESS_INK: MatInkColors = {
   crosshair: 'rgb(140,140,140)',
 };
 
-/** Roughness (G channel): matte rubber ≈ 0.84, printed ink ≈ 0.57, CLP oil wipes ≈ 0.45. */
+/** Roughness (G channel): vulcanized matte rubber ≈ 0.92, printed ink ≈ 0.72, CLP oil wipes ≈ 0.66. */
 export function paintGunsmithMatRoughness(
   ctx: CanvasRenderingContext2D,
   w: number,
@@ -1333,13 +1337,13 @@ export function paintGunsmithMatRoughness(
   seed = 0xc1f0
 ): void {
   const rand = createSeededRandom(seed);
-  ctx.fillStyle = 'rgb(214,214,214)';
+  ctx.fillStyle = 'rgb(236,236,236)';
   ctx.fillRect(0, 0, w, h);
-  applyGrain(ctx, w, h, rand, 16);
+  applyGrain(ctx, w, h, rand, 12);
 
   const sx = w / TAKEDOWN_MAT_SPEC.widthCm;
   const sz = h / TAKEDOWN_MAT_SPEC.depthCm;
-  // CLP gun-oil wipe blotches & smears
+  // Subtle CLP gun-oil wipe blotches & smears (restrained so matte rubber never glares like plastic)
   for (let i = 0; i < 18; i++) {
     const cx = rand() * w;
     const cy = rand() * h;
@@ -1350,9 +1354,9 @@ export function paintGunsmithMatRoughness(
     ctx.rotate(rand() * Math.PI);
     ctx.scale(1, ry / rx);
     const g = ctx.createRadialGradient(0, 0, 0, 0, 0, rx);
-    const strength = 0.35 + rand() * 0.35;
-    g.addColorStop(0, `rgba(112,112,112,${strength.toFixed(3)})`);
-    g.addColorStop(1, 'rgba(112,112,112,0)');
+    const strength = 0.22 + rand() * 0.24;
+    g.addColorStop(0, `rgba(170,170,170,${strength.toFixed(3)})`);
+    g.addColorStop(1, 'rgba(170,170,170,0)');
     ctx.fillStyle = g;
     ctx.beginPath();
     ctx.arc(0, 0, rx, 0, Math.PI * 2);
@@ -1472,20 +1476,134 @@ const noopRaycast: THREE.Object3D['raycast'] = () => {};
 export interface ArmoryStudioEnvironmentProps {
   preset?: ArmoryEnvironmentPreset;
   shadowMapSize?: number;
+  contextEpoch?: number;
 }
 
+const STUDIO_BACKDROP_VERTEX = /* glsl */ `
+  varying vec3 vDir;
+  void main() {
+    vDir = normalize(position);
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+const STUDIO_BACKDROP_FRAGMENT = /* glsl */ `
+  uniform vec3 uZenithColor;
+  uniform vec3 uHorizonColor;
+  uniform vec3 uNadirColor;
+  varying vec3 vDir;
+  void main() {
+    float y = clamp(vDir.y, -1.0, 1.0);
+    // Soft commercial tabletop studio cyclorama glow around eye-level horizon, gently vignetting overhead & floor
+    float horizonBand = exp(-pow((y - 0.04) / 0.34, 2.0));
+    vec3 baseCol = mix(uNadirColor, uZenithColor, smoothstep(-0.35, 0.55, y));
+    vec3 col = mix(baseCol, uHorizonColor, horizonBand * 0.88);
+    // Subtle studio backlight bloom behind center so dark steel silhouettes cleanly separate from backdrop
+    float radialSpot = exp(-pow(abs(vDir.x) * 1.15, 2.0)) * horizonBand;
+    col += (uHorizonColor - baseCol) * radialSpot * 0.22;
+    gl_FragColor = vec4(col, 1.0);
+    #include <tonemapping_fragment>
+    #include <colorspace_fragment>
+  }
+`;
+
 /**
- * Drop-in background + fog + lights + reflection dome for a preset. The key light's shadow
- * frustum covers the whole 110 × 52 cm takedown mat so weapons and brass cast crisp shadows on it.
+ * Drop-in background + fog + lights + photographic Cycles HDRI reflection dome for a preset.
+ * Falls back cleanly to procedural Lightformers while `.hdr` streams in or in headless tests.
  */
 export const ArmoryStudioEnvironment: React.FC<ArmoryStudioEnvironmentProps> =
   React.memo(
-    ({ preset = DEFAULT_ARMORY_ENVIRONMENT, shadowMapSize = 2048 }) => {
+    ({
+      preset = DEFAULT_ARMORY_ENVIRONMENT,
+      shadowMapSize = 2048,
+      contextEpoch = 0,
+    }) => {
       const env = getArmoryEnvironment(preset);
+      const { gl, scene } = useThree();
+      const [hdriReadyPreset, setHdriReadyPreset] =
+        useState<ArmoryEnvironmentPreset | null>(null);
+
+      const backdropGeo = useMemo(
+        () => new THREE.SphereGeometry(380, 32, 20),
+        []
+      );
+      const backdropMat = useMemo(
+        () =>
+          new THREE.ShaderMaterial({
+            vertexShader: STUDIO_BACKDROP_VERTEX,
+            fragmentShader: STUDIO_BACKDROP_FRAGMENT,
+            side: THREE.BackSide,
+            depthWrite: false,
+            fog: false,
+            uniforms: {
+              uZenithColor: { value: new THREE.Color('#090b0f') },
+              uHorizonColor: { value: new THREE.Color('#1c2026') },
+              uNadirColor: { value: new THREE.Color('#080a0d') },
+            },
+          }),
+        []
+      );
+
+      useEffect(() => {
+        if (preset === 'tactical_vault') {
+          backdropMat.uniforms.uZenithColor.value.set('#090b0e');
+          backdropMat.uniforms.uHorizonColor.value.set('#1e2228');
+          backdropMat.uniforms.uNadirColor.value.set('#08090c');
+        } else if (preset === 'gunsmith_bench') {
+          backdropMat.uniforms.uZenithColor.value.set('#0d0e11');
+          backdropMat.uniforms.uHorizonColor.value.set('#25221e');
+          backdropMat.uniforms.uNadirColor.value.set('#0a0a0c');
+        } else {
+          backdropMat.uniforms.uZenithColor.value.set('#d4dde9');
+          backdropMat.uniforms.uHorizonColor.value.set('#edf2f8');
+          backdropMat.uniforms.uNadirColor.value.set('#ced8e5');
+        }
+      }, [preset, backdropMat]);
+
+      useEffect(
+        () => () => {
+          backdropGeo.dispose();
+          backdropMat.dispose();
+        },
+        [backdropGeo, backdropMat]
+      );
+
+      useEffect(() => {
+        let cancelled = false;
+        void loadStudioHdriTexture(gl, preset).then((tex) => {
+          if (cancelled) return;
+          if (tex) {
+            scene.environment = tex;
+            if ('environmentIntensity' in scene) {
+              (
+                scene as THREE.Scene & { environmentIntensity: number }
+              ).environmentIntensity = getStudioHdriEnvIntensity(preset);
+            }
+            setHdriReadyPreset(preset);
+          } else {
+            setHdriReadyPreset(null);
+          }
+        });
+        return () => {
+          cancelled = true;
+        };
+      }, [gl, scene, preset, contextEpoch]);
+
+      const useFallbackLightformers = hdriReadyPreset !== preset;
+
       return (
         <>
           <color attach="background" args={[env.background]} />
           <fog attach="fog" args={[env.fog.color, env.fog.near, env.fog.far]} />
+          <mesh
+            geometry={backdropGeo}
+            material={backdropMat}
+            renderOrder={-100}
+            frustumCulled={false}
+            raycast={noopRaycast}
+            userData={{ excludeFromGtao: true }}
+            name="studio-cyclorama-backdrop"
+          />
           <ambientLight
             intensity={env.ambient.intensity}
             color={env.ambient.color}
@@ -1504,14 +1622,15 @@ export const ArmoryStudioEnvironment: React.FC<ArmoryStudioEnvironmentProps> =
             color={env.keyLight.color}
             castShadow
             shadow-mapSize={[shadowMapSize, shadowMapSize]}
-            shadow-bias={-0.00025}
-            shadow-normalBias={0.02}
-            shadow-camera-left={-70}
-            shadow-camera-right={70}
-            shadow-camera-top={50}
-            shadow-camera-bottom={-50}
+            shadow-radius={3.5}
+            shadow-bias={-0.00022}
+            shadow-normalBias={0.018}
+            shadow-camera-left={-60}
+            shadow-camera-right={60}
+            shadow-camera-top={44}
+            shadow-camera-bottom={-44}
             shadow-camera-near={1}
-            shadow-camera-far={200}
+            shadow-camera-far={180}
           />
           <directionalLight
             position={env.rimLight.position as [number, number, number]}
@@ -1533,23 +1652,25 @@ export const ArmoryStudioEnvironment: React.FC<ArmoryStudioEnvironmentProps> =
             intensity={env.underLight.intensity}
             color={env.underLight.color}
           />
-          {/* key={preset} remounts the dome so the 1-frame cubemap re-bakes on preset change */}
-          <Environment key={preset} resolution={512}>
-            <color attach="background" args={[env.environmentBackground]} />
-            {env.lightformers.map((lf, i) => (
-              <Lightformer
-                key={i}
-                form={lf.form ?? 'rect'}
-                intensity={lf.intensity}
-                color={lf.color}
-                position={lf.position as [number, number, number]}
-                scale={[lf.scale[0], lf.scale[1], 1]}
-                {...(lf.rotation
-                  ? { rotation: lf.rotation as [number, number, number] }
-                  : { target: [0, 0, 0] as [number, number, number] })}
-              />
-            ))}
-          </Environment>
+          {/* Immediate procedural fallback while 32-bit Cycles .hdr streams in; unmounted once HDRI binds */}
+          {useFallbackLightformers && (
+            <Environment key={preset} resolution={512}>
+              <color attach="background" args={[env.environmentBackground]} />
+              {env.lightformers.map((lf, i) => (
+                <Lightformer
+                  key={i}
+                  form={lf.form ?? 'rect'}
+                  intensity={lf.intensity}
+                  color={lf.color}
+                  position={lf.position as [number, number, number]}
+                  scale={[lf.scale[0], lf.scale[1], 1]}
+                  {...(lf.rotation
+                    ? { rotation: lf.rotation as [number, number, number] }
+                    : { target: [0, 0, 0] as [number, number, number] })}
+                />
+              ))}
+            </Environment>
+          )}
         </>
       );
     }
@@ -1626,6 +1747,8 @@ export interface GunsmithStageMatProps {
   centerX?: number;
   /** Soft real-time contact shadow pooled on the mat surface beneath the firearm */
   contactShadows?: boolean;
+  /** Shadow texture resolution for ContactShadows (512 on Ultra, 256 on Balanced) */
+  contactShadowResolution?: number;
   /** Radial cyclorama studio floor grid surrounding the mat */
   showGrid?: boolean;
 }
@@ -1640,6 +1763,7 @@ export const GunsmithStageMat: React.FC<GunsmithStageMatProps> = React.memo(
     preset = DEFAULT_ARMORY_ENVIRONMENT,
     centerX = 0,
     contactShadows = true,
+    contactShadowResolution = 512,
     showGrid = true,
   }) => {
     const groupRef = useRef<THREE.Group>(null);
@@ -1682,10 +1806,15 @@ export const GunsmithStageMat: React.FC<GunsmithStageMatProps> = React.memo(
         isLight ? '#e4ebf4' : env.background
       );
       floorMat.uniforms.uFadeDistance.value = env.grid.fadeDistance;
-      floorMat.uniforms.uLineOpacity.value = isLight ? 0.3 : 0.72;
-      floorMat.uniforms.uCycloramaSheen.value = isLight ? 0.24 : 0;
+      // Restrained dark studio cyclorama lines keep focus on the real steel silhouette
+      floorMat.uniforms.uLineOpacity.value = isLight
+        ? 0.24
+        : preset === 'tactical_vault'
+          ? 0.18
+          : 0.28;
+      floorMat.uniforms.uCycloramaSheen.value = isLight ? 0.24 : 0.16;
       floorMat.uniforms.uCenterXZ.value.set(centerX, 0);
-    }, [env, centerX, floorMat]);
+    }, [env, preset, centerX, floorMat]);
 
     useEffect(
       () => () => {
@@ -1757,12 +1886,12 @@ export const GunsmithStageMat: React.FC<GunsmithStageMatProps> = React.memo(
                 color={textures ? '#ffffff' : env.mat.rubber}
                 map={textures?.albedo ?? null}
                 roughnessMap={textures?.roughness ?? null}
-                roughness={textures ? 1 : 0.84}
+                roughness={textures ? 1 : 0.95}
                 metalness={0}
-                sheen={0.35}
-                sheenRoughness={0.85}
+                sheen={0.03}
+                sheenRoughness={0.96}
                 sheenColor={env.mat.sheenColor}
-                envMapIntensity={0.42}
+                envMapIntensity={0.08}
               />
             </mesh>
             <mesh
@@ -1776,12 +1905,12 @@ export const GunsmithStageMat: React.FC<GunsmithStageMatProps> = React.memo(
                 color={textures ? '#ffffff' : env.mat.rubber}
                 map={textures?.albedo ?? null}
                 roughnessMap={textures?.roughness ?? null}
-                roughness={textures ? 0.95 : 0.8}
+                roughness={textures ? 0.98 : 0.88}
                 metalness={0}
-                sheen={0.45}
-                sheenRoughness={0.75}
+                sheen={0.1}
+                sheenRoughness={0.9}
                 sheenColor={env.mat.sheenColor}
-                envMapIntensity={0.5}
+                envMapIntensity={0.18}
               />
             </mesh>
             {/* Recessed magnetic parts tray floor (ferritic steel plate) */}
@@ -1795,16 +1924,16 @@ export const GunsmithStageMat: React.FC<GunsmithStageMatProps> = React.memo(
                 color={env.mat.trayFloor}
                 metalness={0.72}
                 roughness={0.46}
-                envMapIntensity={0.8}
+                envMapIntensity={0.55}
               />
             </mesh>
             {contactShadows && (
               <ContactShadows
                 position={[0, spec.thicknessCm + 0.015, 0]}
                 scale={[spec.widthCm - 2, spec.depthCm - 2]}
-                resolution={512}
+                resolution={contactShadowResolution}
                 far={36}
-                blur={2.6}
+                blur={2.8}
                 opacity={env.contactShadowOpacity}
                 color="#000000"
                 frames={Infinity}

@@ -1,10 +1,12 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame, useThree } from '@react-three/fiber';
+import { BokehPass } from 'three/examples/jsm/postprocessing/BokehPass.js';
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
 import { GTAOPass } from 'three/examples/jsm/postprocessing/GTAOPass.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { useAppStore } from '../../store/useAppStore';
@@ -13,6 +15,11 @@ import {
   getArmoryEnvironment,
   type ArmoryEnvironmentPreset,
 } from './GunsmithStageMat';
+import {
+  createFpsWatchdogState,
+  stepDownGraphicsQuality,
+  updateFpsWatchdog,
+} from './graphicsQuality';
 
 // =====================================================================================
 // 1. Post-Processing Configuration & Pure Testable Helpers (1 world unit = 1 cm)
@@ -430,6 +437,133 @@ export function hardenOutputPassAgainstNaN(outputPass: OutputPass): void {
 }
 
 // =====================================================================================
+// 1b. Macro Depth-of-Field (Bokeh) & Photographic Filmic Lens Finish
+// =====================================================================================
+
+export interface MacroBokehParams {
+  enabled: boolean;
+  focus: number;
+  aperture: number;
+  maxblur: number;
+}
+
+/**
+ * Computes physically restrained 85mm macro lens Bokeh parameters from the camera's
+ * distance to the active OrbitControls focus target (`1 unit = 1 cm`).
+ *
+ * - Full-weapon framing (`>= 44 cm`): automatically disabled (`aperture = 0`) for 100% tack-sharp detail.
+ * - Close-up macro inspection (`< 44 cm`): smoothly increases subtle circular bokeh so the foreground/
+ *   background mat and far extremities fall gently out of focus like an 85mm f/2.8 studio macro lens.
+ * - Always suppressed during Section Cut (`[C]`), X-Ray (`[X]`), or Vernier Caliper (`[K]`).
+ */
+export function computeMacroBokehParams(
+  cameraDistanceCm: number,
+  macroDofEnabled: boolean,
+  suppressed: boolean
+): MacroBokehParams {
+  if (!macroDofEnabled || suppressed || !Number.isFinite(cameraDistanceCm)) {
+    return { enabled: false, focus: 30, aperture: 0, maxblur: 0.005 };
+  }
+  const dist = Math.max(3, cameraDistanceCm);
+  // Smooth ramp from 0 at >= 44 cm up to full macro depth-of-field around <= 18 cm
+  const rawT = (44 - dist) / (44 - 18);
+  const t = Math.max(0, Math.min(1, rawT));
+  const smooth = t * t * (3 - 2 * t);
+  if (smooth <= 0.005) {
+    return { enabled: false, focus: dist, aperture: 0, maxblur: 0.005 };
+  }
+  return {
+    enabled: true,
+    focus: dist,
+    aperture: 0.00014 * smooth,
+    maxblur: 0.0052 * smooth,
+  };
+}
+
+export interface FilmicLensPresetParams {
+  vignetteStrength: number;
+  grainStrength: number;
+  contrast: number;
+}
+
+export function getFilmicLensPresetParams(
+  preset: ArmoryEnvironmentPreset
+): FilmicLensPresetParams {
+  if (preset === 'blueprint_daylight') {
+    return { vignetteStrength: 0.0, grainStrength: 0.0, contrast: 1.0 };
+  }
+  if (preset === 'gunsmith_bench') {
+    return { vignetteStrength: 0.16, grainStrength: 0.0075, contrast: 1.025 };
+  }
+  return { vignetteStrength: 0.2, grainStrength: 0.0085, contrast: 1.03 };
+}
+
+const FILMIC_LENS_SHADER = {
+  uniforms: {
+    tDiffuse: { value: null as THREE.Texture | null },
+    uVignetteStrength: { value: 0.2 },
+    uGrainStrength: { value: 0.0085 },
+    uContrast: { value: 1.03 },
+  },
+  vertexShader: /* glsl */ `
+    varying vec2 vUv;
+    void main() {
+      vUv = uv;
+      gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+    }
+  `,
+  fragmentShader: /* glsl */ `
+    uniform sampler2D tDiffuse;
+    uniform float uVignetteStrength;
+    uniform float uGrainStrength;
+    uniform float uContrast;
+    varying vec2 vUv;
+
+    float filmicHash( vec2 p ) {
+      vec3 p3 = fract( vec3( p.xyx ) * 0.1031 );
+      p3 += dot( p3, p3.yzx + 33.33 );
+      return fract( ( p3.x + p3.y ) * p3.z );
+    }
+
+    void main() {
+      vec4 tex = texture2D( tDiffuse, vUv );
+      vec3 col = clamp( tex.rgb, 0.0, 1.0 );
+
+      // Gentle optical micro-contrast curve preserving deep shadows & bright metallic highlights
+      col = clamp( ( col - 0.5 ) * uContrast + 0.5, 0.0, 1.0 );
+
+      // Restrained 85mm studio lens elliptical vignette (0 in daylight blueprint mode)
+      if ( uVignetteStrength > 0.0001 ) {
+        vec2 centered = ( vUv - 0.5 ) * vec2( 1.08, 1.0 );
+        float distSq = dot( centered, centered );
+        float vig = 1.0 - smoothstep( 0.18, 0.72, distSq ) * uVignetteStrength;
+        col *= vig;
+      }
+
+      // Perceptual sensor micro-dither (eliminates 8-bit dark studio backdrop banding)
+      if ( uGrainStrength > 0.0001 ) {
+        float n = filmicHash( gl_FragCoord.xy ) - 0.5;
+        float shadowWeight = mix( 1.0, 0.35, clamp( dot( col, vec3( 0.299, 0.587, 0.114 ) ) * 2.0, 0.0, 1.0 ) );
+        col = clamp( col + vec3( n * uGrainStrength * shadowWeight ), 0.0, 1.0 );
+      }
+
+      gl_FragColor = vec4( col, tex.a );
+    }
+  `,
+};
+
+export function createFilmicLensPass(
+  preset: ArmoryEnvironmentPreset = DEFAULT_ARMORY_ENVIRONMENT
+): ShaderPass {
+  const pass = new ShaderPass(FILMIC_LENS_SHADER);
+  const cfg = getFilmicLensPresetParams(preset);
+  pass.uniforms.uVignetteStrength.value = cfg.vignetteStrength;
+  pass.uniforms.uGrainStrength.value = cfg.grainStrength;
+  pass.uniforms.uContrast.value = cfg.contrast;
+  return pass;
+}
+
+// =====================================================================================
 // 2. Active EffectComposer Pipeline (mounted only when `enabled === true`)
 // =====================================================================================
 
@@ -439,6 +573,9 @@ interface ActiveComposerProps {
   enableGtao: boolean;
   enableBloom: boolean;
   enableSmaa: boolean;
+  enableMacroDof: boolean;
+  enableFilmicLens: boolean;
+  contextEpoch: number;
 }
 
 interface ComposerRig {
@@ -446,9 +583,13 @@ interface ComposerRig {
   renderPass: RenderPass;
   gtaoPass: GTAOPass;
   bloomPass: UnrealBloomPass;
+  bokehPass: BokehPass;
   outputPass: OutputPass;
+  filmicLensPass: ShaderPass;
   smaaPass: SMAAPass | null;
 }
+
+const _bokehOrigin = new THREE.Vector3();
 
 const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
   environmentPreset,
@@ -456,6 +597,9 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
   enableGtao,
   enableBloom,
   enableSmaa,
+  enableMacroDof,
+  enableFilmicLens,
+  contextEpoch,
 }) => {
   const { gl, scene, camera, size } = useThree();
   const dpr = gl.getPixelRatio();
@@ -473,8 +617,11 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
   );
   const enableGtaoRef = useRef<boolean>(enableGtao);
   const enableBloomRef = useRef<boolean>(enableBloom);
+  const enableMacroDofRef = useRef<boolean>(enableMacroDof);
+  const enableFilmicLensRef = useRef<boolean>(enableFilmicLens);
+  const watchdogRef = useRef(createFpsWatchdogState());
 
-  // Build EffectComposer + passes once per (gl, scene, camera) lifecycle
+  // Build EffectComposer + passes once per (gl, scene, camera, contextEpoch) lifecycle
   useEffect(() => {
     const cssW = Math.max(1, size.width);
     const cssH = Math.max(1, size.height);
@@ -564,12 +711,46 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
     hardenBloomPassAgainstNaN(bloomPass);
     composer.addPass(bloomPass);
 
-    // 4. Single AgX Tone-Mapping + Linear->sRGB OutputPass (reads gl.toneMapping & gl.toneMappingExposure)
+    // 4. Adaptive Close-Up Macro Bokeh Depth-of-Field (runs in HDR prior to OutputPass NaN firewall;
+    //    auto-disabled at full-weapon distance and during Section Cut / X-Ray / Caliper)
+    const bokehPass = new BokehPass(scene, camera, {
+      focus: 28,
+      aperture: 0.0001,
+      maxblur: 0.005,
+    });
+    bokehPass.enabled = false;
+    const rawBokehRender = bokehPass.render.bind(bokehPass);
+    const bokehHidden: THREE.Object3D[] = [];
+    bokehPass.render = (renderer, writeBuffer, readBuffer, dt, maskActive) => {
+      bokehHidden.length = 0;
+      scene.traverse((obj) => {
+        if (obj.visible && shouldExcludeFromGtaoPass(obj)) {
+          obj.visible = false;
+          bokehHidden.push(obj);
+        }
+      });
+      try {
+        rawBokehRender(renderer, writeBuffer, readBuffer, dt, maskActive);
+      } finally {
+        for (let i = 0; i < bokehHidden.length; i++) {
+          bokehHidden[i].visible = true;
+        }
+        bokehHidden.length = 0;
+      }
+    };
+    composer.addPass(bokehPass);
+
+    // 5. Single AgX Tone-Mapping + Linear->sRGB OutputPass (reads gl.toneMapping & gl.toneMappingExposure)
     const outputPass = new OutputPass();
     hardenOutputPassAgainstNaN(outputPass);
     composer.addPass(outputPass);
 
-    // 5. Perceptual LDR Subpixel Morphological Anti-Aliasing (SMAAPass)
+    // 6. Photographic Filmic Lens Finish (subtle studio vignette + anti-banding sensor micro-dither)
+    const filmicLensPass = createFilmicLensPass(environmentPreset);
+    filmicLensPass.enabled = enableFilmicLensRef.current;
+    composer.addPass(filmicLensPass);
+
+    // 7. Perceptual LDR Subpixel Morphological Anti-Aliasing (SMAAPass)
     let smaaPass: SMAAPass | null = null;
     if (typeof Image !== 'undefined') {
       smaaPass = new SMAAPass(effW, effH);
@@ -584,7 +765,9 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
       renderPass,
       gtaoPass,
       bloomPass,
+      bokehPass,
       outputPass,
+      filmicLensPass,
       smaaPass,
     };
 
@@ -593,13 +776,15 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
       renderPass.dispose();
       gtaoPass.dispose();
       bloomPass.dispose();
+      bokehPass.dispose();
       outputPass.dispose();
+      filmicLensPass.dispose();
       smaaPass?.dispose();
       composer.dispose();
     };
     // Viewport size & preset updates are handled without reallocating passes in the effects below
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gl, scene, camera]);
+  }, [gl, scene, camera, contextEpoch]);
 
   // Handle window / canvas / DPR resize cleanly
   useEffect(() => {
@@ -617,6 +802,8 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
   useEffect(() => {
     enableGtaoRef.current = enableGtao;
     enableBloomRef.current = enableBloom;
+    enableMacroDofRef.current = enableMacroDof;
+    enableFilmicLensRef.current = enableFilmicLens;
     const rig = rigRef.current;
     if (!rig) return;
     const params = getPostProcessingPresetParams(environmentPreset);
@@ -632,17 +819,41 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
     rig.bloomPass.strength = params.bloom.strength;
     rig.bloomPass.radius = params.bloom.radius;
 
+    const lensCfg = getFilmicLensPresetParams(environmentPreset);
+    rig.filmicLensPass.uniforms.uVignetteStrength.value =
+      lensCfg.vignetteStrength;
+    rig.filmicLensPass.uniforms.uGrainStrength.value = lensCfg.grainStrength;
+    rig.filmicLensPass.uniforms.uContrast.value = lensCfg.contrast;
+    rig.filmicLensPass.enabled =
+      enableFilmicLens &&
+      (lensCfg.vignetteStrength > 0.0001 || lensCfg.grainStrength > 0.0001);
+
     if (rig.smaaPass) {
       rig.smaaPass.enabled = enableSmaa;
     }
-  }, [environmentPreset, enableGtao, enableBloom, enableSmaa]);
+  }, [
+    environmentPreset,
+    enableGtao,
+    enableBloom,
+    enableSmaa,
+    enableMacroDof,
+    enableFilmicLens,
+  ]);
 
   // Priority 1 takes over R3F's default render; Zero-GC per-frame execution
-  useFrame((_, delta) => {
+  useFrame((r3fState, delta) => {
     const rig = rigRef.current;
     if (!rig) return;
 
     const st = useAppStore.getState();
+
+    // Adaptive FPS watchdog: smoothly steps down quality tier on sustained GPU strain (<22 FPS)
+    if (!st.qualityLockedByUser && updateFpsWatchdog(watchdogRef.current, delta)) {
+      const nextTier = stepDownGraphicsQuality(st.graphicsQuality);
+      if (nextTier) {
+        st.setGraphicsQuality(nextTier, false);
+      }
+    }
 
     if (enableGtaoRef.current) {
       const targetBlend = resolveGtaoBlendIntensity(
@@ -676,6 +887,30 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
       rig.bloomPass.enabled = false;
     }
 
+    // Macro Bokeh Depth-of-Field: auto-focus on OrbitControls target, active only during close-ups
+    const ctrl = r3fState.controls as
+      | (THREE.EventDispatcher & { target?: THREE.Vector3 })
+      | null;
+    const focusPoint = ctrl?.target ?? _bokehOrigin.set(0, 0, 0);
+    const camDist = camera.position.distanceTo(focusPoint);
+    const suppressed =
+      st.screen !== 'workbench' ||
+      st.sectionCut ||
+      st.xrayShells ||
+      st.caliperActive;
+    const bokeh = computeMacroBokehParams(
+      camDist,
+      enableMacroDofRef.current && st.macroDofEnabled,
+      suppressed
+    );
+    rig.bokehPass.enabled = bokeh.enabled;
+    if (bokeh.enabled) {
+      const u = rig.bokehPass.uniforms as Record<string, THREE.IUniform>;
+      u.focus.value = bokeh.focus;
+      u.aperture.value = bokeh.aperture;
+      u.maxblur.value = bokeh.maxblur;
+    }
+
     rig.composer.render(Math.min(delta, 0.1));
   }, 1);
 
@@ -693,12 +928,16 @@ export interface ArmoryPostProcessingProps {
   enableGtao?: boolean;
   enableBloom?: boolean;
   enableSmaa?: boolean;
+  enableMacroDof?: boolean;
+  enableFilmicLens?: boolean;
+  contextEpoch?: number;
 }
 
 /**
  * Native Three.js r169 Post-Processing Pipeline:
  * `RenderPass` (HalfFloat + 8-bit Stencil) → `GTAOPass` (1.8 cm world radius) →
- * selective HDR `UnrealBloomPass` (`threshold >= 1.18`) → `OutputPass` (`AgXToneMapping`) → `SMAAPass`.
+ * selective HDR `UnrealBloomPass` → adaptive close-up `BokehPass` →
+ * `OutputPass` (`AgXToneMapping`) → `FilmicLensPass` → `SMAAPass`.
  */
 export const ArmoryPostProcessing: React.FC<ArmoryPostProcessingProps> =
   React.memo(
@@ -709,6 +948,9 @@ export const ArmoryPostProcessing: React.FC<ArmoryPostProcessingProps> =
       enableGtao = true,
       enableBloom = true,
       enableSmaa = true,
+      enableMacroDof = true,
+      enableFilmicLens = true,
+      contextEpoch = 0,
     }) => {
       const { gl } = useThree();
       const presetParams = useMemo(
@@ -756,6 +998,9 @@ export const ArmoryPostProcessing: React.FC<ArmoryPostProcessingProps> =
           enableGtao={enableGtao}
           enableBloom={enableBloom}
           enableSmaa={enableSmaa}
+          enableMacroDof={enableMacroDof}
+          enableFilmicLens={enableFilmicLens}
+          contextEpoch={contextEpoch}
         />
       );
     }

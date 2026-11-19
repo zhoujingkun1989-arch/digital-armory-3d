@@ -80,6 +80,36 @@ export function resolveTextureUrl(
   return resolveAssetUrl(`textures/${cleanName}`, baseOverride);
 }
 
+/**
+ * Resolves a Radiance `.hdr` studio environment filename inside `public/hdri/`.
+ */
+export function resolveHdriUrl(
+  fileOrPath: string,
+  baseOverride?: string
+): string {
+  const trimmed = fileOrPath.trim();
+  const idx = trimmed.lastIndexOf('hdri/');
+  const cleanName =
+    idx >= 0 ? trimmed.slice(idx + 'hdri/'.length) : trimmed.replace(/^\/+/, '');
+  return resolveAssetUrl(`hdri/${cleanName}`, baseOverride);
+}
+
+/**
+ * Resolves a Blender-baked Draco/Meshopt `.glb` firearm model filename inside `public/models/`.
+ */
+export function resolveModelUrl(
+  fileOrPath: string,
+  baseOverride?: string
+): string {
+  const trimmed = fileOrPath.trim();
+  const idx = trimmed.lastIndexOf('models/');
+  const cleanName =
+    idx >= 0
+      ? trimmed.slice(idx + 'models/'.length)
+      : trimmed.replace(/^\/+/, '');
+  return resolveAssetUrl(`models/${cleanName}`, baseOverride);
+}
+
 export interface DeepLinkResolveOptions {
   origin?: string;
   pathname?: string;

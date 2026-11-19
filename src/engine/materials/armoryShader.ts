@@ -63,6 +63,51 @@ export function resetArmoryThermalVisualState(): void {
   thermalState.carbonFouling01 = 0;
 }
 
+// ------------------------------------------------------------------
+// 1b. Zero-GC shared service-wear / handling-patina visual state
+// ------------------------------------------------------------------
+
+export type ArmoryWearPreset = 'factory_new' | 'field_oiled' | 'battle_worn';
+
+export const ARMORY_WEAR_PRESETS: readonly ArmoryWearPreset[] = [
+  'factory_new',
+  'field_oiled',
+  'battle_worn',
+];
+
+export const ARMORY_WEAR_PRESET_LEVELS: Readonly<
+  Record<ArmoryWearPreset, number>
+> = {
+  factory_new: 0.0,
+  field_oiled: 0.35,
+  battle_worn: 0.95,
+};
+
+export const DEFAULT_ARMORY_WEAR_LEVEL = ARMORY_WEAR_PRESET_LEVELS.field_oiled;
+
+let globalWearLevel = DEFAULT_ARMORY_WEAR_LEVEL;
+
+/** Zero-allocation in-place wear level setter (`0` factory mint -> `0.35` field oiled -> `1` battle worn). */
+export function setArmoryWearLevel(level: number): number {
+  globalWearLevel = clamp01(level);
+  return globalWearLevel;
+}
+
+export function getArmoryWearLevel(): number {
+  return globalWearLevel;
+}
+
+export function resetArmoryWearLevel(): void {
+  globalWearLevel = DEFAULT_ARMORY_WEAR_LEVEL;
+}
+
+export function resolveWearPresetFromLevel(level: number): ArmoryWearPreset {
+  const c = clamp01(level);
+  if (c < 0.16) return 'factory_new';
+  if (c > 0.68) return 'battle_worn';
+  return 'field_oiled';
+}
+
 const _resolved = { heat: 0, fouling: 0 };
 
 /**
@@ -240,6 +285,7 @@ export interface ArmoryShaderUniforms {
   uSpringScale: { value: number };
   uThermalHeat: { value: number };
   uCarbonFouling: { value: number };
+  uWearLevel: { value: number };
   uThermalSpan: { value: THREE.Vector2 };
   uThermalProfileMix: { value: number };
   uEdgeWear: { value: number };
@@ -272,44 +318,44 @@ export interface ArmorySurfaceProfile {
 export const ARMORY_SURFACE_PROFILES: Record<MaterialKind, ArmorySurfaceProfile> = {
   // QPQ / Tenifer / Parkerized gunmetal wears along sharp CNC edges to bright bare steel
   nitride_steel: {
-    edgeWearColor: '#aeb6bf',
-    edgeWear: 0.9,
+    edgeWearColor: '#c2c8d0',
+    edgeWear: 0.92,
     edgeMetal: 1,
     triplanarScale: 0.14,
-    triplanarDetail: 0.045,
+    triplanarDetail: 0.068,
     detailGrainMode: 1,
   },
   // Cold-hammer-forged ordnance steel: phosphate satin wears to bright steel
   barrel_steel: {
-    edgeWearColor: '#b6bec7',
-    edgeWear: 0.78,
+    edgeWearColor: '#c6ccd4',
+    edgeWear: 0.84,
     edgeMetal: 1,
     triplanarScale: 0.16,
-    triplanarDetail: 0.05,
+    triplanarDetail: 0.074,
     detailGrainMode: 1,
   },
   // Brushed 416 / 17-4 PH stainless
   stainless: {
-    edgeWearColor: '#e2e8f0',
-    edgeWear: 0.36,
+    edgeWearColor: '#e5e9f0',
+    edgeWear: 0.38,
     edgeMetal: 1,
     triplanarScale: 0.18,
-    triplanarDetail: 0.032,
+    triplanarDetail: 0.044,
     detailGrainMode: 1,
   },
-  // Glass-filled nylon 6: scuffed edges lighten slightly without turning metallic
+  // Glass-filled nylon 6: deep matte charcoal polyamide with crisp tactile EDM mould micro-stipple
   polymer_frame: {
-    edgeWearColor: '#64748b',
-    edgeWear: 0.42,
+    edgeWearColor: '#3f444d',
+    edgeWear: 0.28,
     edgeMetal: 0,
     triplanarScale: 0.24,
-    triplanarDetail: 0.065,
+    triplanarDetail: 0.125,
     detailGrainMode: -1,
   },
   // Tempered oil-quenched music wire
   spring_steel: {
     edgeWearColor: '#cbd5e1',
-    edgeWear: 0.38,
+    edgeWear: 0.36,
     edgeMetal: 1,
     triplanarScale: 0.2,
     triplanarDetail: 0.02,
@@ -318,7 +364,7 @@ export const ARMORY_SURFACE_PROFILES: Record<MaterialKind, ArmorySurfaceProfile>
   // Injection-moulded high-visibility follower polymer
   follower_orange: {
     edgeWearColor: '#fdba74',
-    edgeWear: 0.28,
+    edgeWear: 0.26,
     edgeMetal: 0,
     triplanarScale: 0.22,
     triplanarDetail: 0.035,
@@ -327,10 +373,10 @@ export const ARMORY_SURFACE_PROFILES: Record<MaterialKind, ArmorySurfaceProfile>
   // C26000 cartridge brass / copper
   copper_accent: {
     edgeWearColor: '#f3c98b',
-    edgeWear: 0.5,
+    edgeWear: 0.46,
     edgeMetal: 1,
     triplanarScale: 0.16,
-    triplanarDetail: 0.03,
+    triplanarDetail: 0.026,
     detailGrainMode: 1,
   },
 };
@@ -357,6 +403,7 @@ export function createArmoryShaderUniforms(
     uSpringScale: { value: 1 },
     uThermalHeat: { value: 0 },
     uCarbonFouling: { value: 0 },
+    uWearLevel: { value: globalWearLevel },
     uThermalSpan: { value: new THREE.Vector2(-1, 1) },
     uThermalProfileMix: { value: 0 },
     uEdgeWear: { value: prof.edgeWear },
@@ -383,7 +430,7 @@ export interface ArmoryShaderFeatures {
   triplanarMap?: boolean;
 }
 
-export const ARMORY_SHADER_VERSION = 5;
+export const ARMORY_SHADER_VERSION = 6;
 
 export function getArmoryProgramCacheKey(f: ArmoryShaderFeatures): string {
   return `armory-v${ARMORY_SHADER_VERSION}|s${f.spring ? 1 : 0}|c${f.curvature ? 1 : 0}|t${f.thermal ? 1 : 0}|f${f.fouling ? 1 : 0}|tm${f.triplanarMap ? 1 : 0}`;
@@ -471,6 +518,7 @@ const FRAGMENT_PARS = /* glsl */ `
 #endif
 uniform float uThermalHeat;
 uniform float uCarbonFouling;
+uniform float uWearLevel;
 uniform vec2 uThermalSpan;
 uniform float uThermalProfileMix;
 uniform float uEdgeWear;
@@ -530,18 +578,22 @@ float armoryValueNoise( vec3 p ) {
   );
 }
 
-// 2D tangent-plane micro-slope for CNC brushed toolmarks (+1) vs EDM polymer stipple (-1)
+// 2D tangent-plane micro-slope for CNC brushed/phosphated steel (+1) vs glass-filled nylon EDM pebble (-1)
 vec2 armoryMicroSlope2D( vec2 uv, float mode ) {
   if ( mode > 0.0 ) {
-    // Fine anisotropic CNC lathe / surface-grinder toolmarks
-    float g1 = armoryValueNoise2( vec2( uv.x * 9.0, uv.y * 52.0 ) ) - 0.5;
-    float g2 = armoryValueNoise2( vec2( uv.x * 26.0, uv.y * 110.0 ) ) - 0.5;
-    return vec2( g1 * 0.25, g1 * 0.85 + g2 * 0.45 );
+    // 3-octave anisotropic brushed CNC toolmarks + fine manganese-phosphate crystalline micro-grain
+    float g1 = armoryValueNoise2( vec2( uv.x * 11.0, uv.y * 64.0 ) ) - 0.5;
+    float g2 = armoryValueNoise2( vec2( uv.x * 32.0, uv.y * 140.0 ) ) - 0.5;
+    float pX = armoryValueNoise2( uv * 95.0 ) - 0.5;
+    float pY = armoryValueNoise2( uv * 95.0 + vec2( 1.73, 2.41 ) ) - 0.5;
+    return vec2( g1 * 0.24 + pX * 0.58, g1 * 0.80 + g2 * 0.45 + pY * 0.58 );
   }
-  // Isotropic glass-filled nylon EDM mould stipple
-  float s1 = armoryValueNoise2( uv * 42.0 ) - 0.5;
-  float s2 = armoryValueNoise2( uv * 42.0 + vec2( 0.37, 0.71 ) ) - 0.5;
-  return vec2( s1, s2 );
+  // 3-octave glass-filled polyamide injection-mould EDM pebble grain (tactile matte polymer)
+  float s1x = armoryValueNoise2( uv * 48.0 ) - 0.5;
+  float s1y = armoryValueNoise2( uv * 48.0 + vec2( 0.37, 0.71 ) ) - 0.5;
+  float s2x = armoryValueNoise2( uv * 118.0 + vec2( 2.13, 0.89 ) ) - 0.5;
+  float s2y = armoryValueNoise2( uv * 118.0 + vec2( 3.47, 1.93 ) ) - 0.5;
+  return vec2( s1x * 0.72 + s2x * 0.48, s1y * 0.72 + s2y * 0.48 );
 }
 
 // Normalised position along the part's longitudinal (+X muzzle) span
@@ -586,22 +638,56 @@ const FRAGMENT_SURFACE = /* glsl */ `
     diffuseColor.rgb = mix( diffuseColor.rgb, uFunctionalTint, clamp( uFunctionalTintMix, 0.0, 1.0 ) );
   }
 
-  // --- CNC curvature edge silvering & cavity CLP gun-oil / grime ---
-  float armoryEdge = smoothstep( 0.25, 0.85, vArmoryCurvature );
-  float armoryCavity = smoothstep( 0.25, 0.85, -vArmoryCurvature );
-  #ifndef FLAT_SHADED
-    // Screen-space normal derivative micro-edge detector (hard CNC breaks between facets)
-    float armoryDeriv = clamp( length( fwidth( vNormal ) ) * 2.2 - 0.18, 0.0, 1.0 );
-    armoryEdge = max( armoryEdge, armoryDeriv * 0.55 );
-  #endif
-  armoryEdge *= uEdgeWear;
-  diffuseColor.rgb = mix( diffuseColor.rgb, uEdgeWearColor, armoryEdge * 0.62 );
-  roughnessFactor *= mix( 1.0, 0.68, armoryEdge );
-  metalnessFactor = mix( metalnessFactor, max( metalnessFactor, 0.92 ), armoryEdge * uEdgeMetal );
+  float armoryWear = clamp( uWearLevel, 0.0, 1.0 );
 
-  // Concave recesses: darkened crevices with subtle CLP gun-oil sheen in clean state
-  diffuseColor.rgb *= mix( 1.0, 0.76, armoryCavity );
-  roughnessFactor *= mix( 1.0, 0.84, armoryCavity );
+  // --- Organic macro/micro CLP gun-oil & handling patina roughness breakup (all 480 parts) ---
+  float armoryOilMacro = armoryValueNoise( vArmoryObjPos * 0.62 + vec3( 1.7, 3.1, 0.9 ) );
+  float armoryOilMicro = armoryValueNoise( vArmoryObjPos * 2.85 + vec3( 4.3, 0.7, 2.5 ) );
+  float armoryPatina = ( armoryOilMacro * 0.65 + armoryOilMicro * 0.35 ) - 0.5;
+
+  // --- Crease-gated CNC edge burnishing & service wear (eliminates flat-triangle curvature smearing) ---
+  float armoryCurvConvex = smoothstep( 0.64, 0.96, vArmoryCurvature );
+  float armoryCurvConcave = smoothstep( 0.52, 0.95, -vArmoryCurvature );
+  float armoryDeriv = 0.0;
+  float armoryCurvGrad = clamp( fwidth( vArmoryCurvature ) * 9.0, 0.0, 1.0 );
+  #ifndef FLAT_SHADED
+    // Screen-space normal derivative micro-edge detector (true geometric bevels & crisp creases only)
+    armoryDeriv = clamp( length( fwidth( vNormal ) ) * 2.35 - 0.16, 0.0, 1.0 );
+  #endif
+
+  // Gate vertex curvature so large flat box/extrude faces NEVER smear grey diagonal triangles
+  float armoryLocalizedConvex = armoryCurvConvex * clamp( armoryDeriv * 2.4 + armoryCurvGrad * 0.85, 0.0, 1.0 );
+  float armoryWearBreakup = smoothstep( 0.24, 0.82, armoryValueNoise( vArmoryObjPos * 3.6 ) * 0.65 + armoryValueNoise( vArmoryObjPos * 11.5 ) * 0.35 );
+  float armoryEdge = max( armoryLocalizedConvex, armoryDeriv * 0.42 ) * mix( 0.55, 1.15, armoryWearBreakup );
+
+  // Service wear scales edge exposure cleanly: Factory New (0.0) -> Field Oiled (0.35) -> Battle Worn (1.0)
+  float armoryWearGain = 0.08 + armoryWear * 0.92;
+  float armoryEdgeStrength = clamp( armoryEdge * uEdgeWear * armoryWearGain, 0.0, 1.0 );
+
+  // Fine directional holster / field handling micro-scratches (only noticeable on oiled/battle-worn metal)
+  float armoryScratch = 0.0;
+  if ( armoryWear > 0.12 && uEdgeMetal > 0.5 ) {
+    float sBandA = armoryValueNoise( vec3( vArmoryObjPos.x * 0.95, vArmoryObjPos.y * 19.0, vArmoryObjPos.z * 19.0 ) );
+    float sBandB = armoryValueNoise( vec3( vArmoryObjPos.x * 2.2 + vArmoryObjPos.y * 5.5, vArmoryObjPos.y * 14.0, vArmoryObjPos.z * 11.0 ) );
+    float sMask = smoothstep( 0.78, 0.93, sBandA ) * smoothstep( 0.62, 0.86, sBandB );
+    armoryScratch = sMask * smoothstep( 0.12, 1.0, armoryWear ) * 0.38;
+  }
+
+  float armoryMetalExpose = clamp( armoryEdgeStrength * 0.52 + armoryScratch, 0.0, 0.75 );
+  diffuseColor.rgb = mix( diffuseColor.rgb, uEdgeWearColor, armoryMetalExpose );
+  roughnessFactor *= mix( 1.0, 0.64, clamp( armoryEdgeStrength + armoryScratch * 1.2, 0.0, 1.0 ) );
+  metalnessFactor = mix( metalnessFactor, max( metalnessFactor, 0.94 ), clamp( armoryMetalExpose * 1.15, 0.0, 1.0 ) * uEdgeMetal );
+
+  // Apply organic CLP gun-oil micro-roughness variation & subtle handling burnishing
+  float armoryOilShift = armoryPatina * ( uEdgeMetal > 0.5 ? 0.14 : 0.10 );
+  float armoryHandPolish = ( uEdgeMetal < 0.5 ) ? ( -armoryWear * 0.09 * smoothstep( -0.1, 0.4, armoryPatina ) ) : 0.0;
+  roughnessFactor += armoryOilShift + armoryHandPolish;
+
+  // Concave recesses: localized darkened crevices with CLP gun-oil & ambient service grime
+  float armoryCavity = armoryCurvConcave * clamp( armoryDeriv * 1.8 + armoryCurvGrad * 0.9 + 0.25, 0.0, 1.0 );
+  float armoryGrimeDark = mix( 0.84, 0.62, armoryWear );
+  diffuseColor.rgb *= mix( 1.0, armoryGrimeDark, armoryCavity );
+  roughnessFactor *= mix( 1.0, mix( 0.86, 1.08, armoryWear ), armoryCavity );
 
   #ifdef ARMORY_FOULING
     // --- Gunpowder carbon fouling (soot): blotchy, concentrated toward muzzle / gas exits ---
@@ -609,7 +695,8 @@ const FRAGMENT_SURFACE = /* glsl */ `
     float armoryThroatD = ( armoryT - 0.14 ) / 0.12;
     float armorySootBias = mix( 1.0, 0.35 + 0.65 * smoothstep( 0.55, 1.0, armoryT ) + 0.4 * exp( -armoryThroatD * armoryThroatD ), uThermalProfileMix );
     float armorySootNoise = armoryValueNoise( vArmoryObjPos * 1.7 ) * 0.65 + armoryValueNoise( vArmoryObjPos * 6.3 ) * 0.35;
-    float armorySoot = clamp( uCarbonFouling * armorySootBias * smoothstep( 0.22, 0.78, armorySootNoise + 0.18 * armoryCavity ), 0.0, 1.0 );
+    float armoryEffectiveFouling = clamp( uCarbonFouling + smoothstep( 0.45, 1.0, armoryWear ) * 0.28, 0.0, 1.0 );
+    float armorySoot = clamp( armoryEffectiveFouling * armorySootBias * smoothstep( 0.22, 0.78, armorySootNoise + 0.18 * armoryCavity ), 0.0, 1.0 );
     diffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.032, 0.029, 0.026 ), armorySoot * 0.78 );
     roughnessFactor = mix( roughnessFactor, 0.93, armorySoot * 0.85 );
     metalnessFactor *= 1.0 - armorySoot * 0.6;
@@ -637,7 +724,7 @@ const FRAGMENT_NORMAL_TRIPLANAR = /* glsl */ `
 
   // Fade high-frequency grain with pixel footprint AND suppress mould stipple on optically smooth glass/chrome
   float armoryPixSpan = max( length( fwidth( vArmoryObjPos ) ), 1e-4 );
-  float armoryGrainFade = ( 1.0 - smoothstep( 0.06, 0.28, armoryPixSpan ) ) * smoothstep( 0.12, 0.30, roughnessFactor );
+  float armoryGrainFade = ( 1.0 - smoothstep( 0.12, 0.52, armoryPixSpan ) ) * smoothstep( 0.10, 0.26, roughnessFactor );
 
   vec2 sX = armoryMicroSlope2D( vArmoryObjPos.zy, uDetailGrainMode );
   vec2 sY = armoryMicroSlope2D( vArmoryObjPos.xz, uDetailGrainMode );
@@ -665,6 +752,13 @@ const FRAGMENT_NORMAL_TRIPLANAR = /* glsl */ `
   vec3 armoryViewPerturb = normalMatrix * armoryObjPerturb;
   armoryViewPerturb -= normal * dot( armoryViewPerturb, normal );
   normal = armorySafeNormalize( normal + armoryViewPerturb * faceDirection, nonPerturbedNormal );
+
+  // --- Toksvig / Kaplanyan geometric specular anti-aliasing (eliminates metallic edge shimmer) ---
+  vec3 armoryDnDx = dFdx( normal );
+  vec3 armoryDnDy = dFdy( normal );
+  float armoryGeomVar = clamp( dot( armoryDnDx, armoryDnDx ) + dot( armoryDnDy, armoryDnDy ), 0.0, 1.0 );
+  float armorySpecAA = clamp( sqrt( armoryGeomVar ) * 0.34, 0.0, 0.22 );
+  roughnessFactor = clamp( sqrt( roughnessFactor * roughnessFactor + armorySpecAA * armorySpecAA ), 0.04, 1.0 );
 }
 #endif
 `;

@@ -53,6 +53,8 @@ import {
   GunsmithStageMat,
   getArmoryEnvironment,
 } from './GunsmithStageMat';
+import { getGraphicsQualityProfile } from './graphicsQuality';
+import { invalidateStudioHdriCache } from './studioHdriManager';
 import {
   computeTurntableFraming,
   isShowcaseUserDragging,
@@ -788,8 +790,16 @@ export const ArmoryViewport: React.FC = () => {
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const environmentPreset = useAppStore((s) => s.environmentPreset);
   const postFxEnabled = useAppStore((s) => s.postFxEnabled);
+  const graphicsQuality = useAppStore((s) => s.graphicsQuality);
+  const macroDofEnabled = useAppStore((s) => s.macroDofEnabled);
+  const lang = useAppStore((s) => s.lang);
+
+  const [contextLost, setContextLost] = useState(false);
+  const [contextEpoch, setContextEpoch] = useState(0);
+  const canvasCleanupRef = useRef<(() => void) | null>(null);
 
   const envCfg = getArmoryEnvironment(environmentPreset);
+  const qualityProfile = getGraphicsQualityProfile(graphicsQuality);
   const workbenchMeta = getWeaponManifest(activeWeaponId).workbenchMeta;
 
   useEffect(() => {
@@ -800,46 +810,102 @@ export const ArmoryViewport: React.FC = () => {
     });
     return () => {
       setBrassFloorImpactListener(null);
+      canvasCleanupRef.current?.();
+      canvasCleanupRef.current = null;
     };
   }, []);
 
   return (
-    <Canvas
-      shadows
-      dpr={[1, 2]}
-      gl={{
-        localClippingEnabled: true,
-        stencil: true,
-        antialias: true,
-        powerPreference: 'high-performance',
-        toneMapping: THREE.AgXToneMapping,
-        toneMappingExposure: envCfg.toneMappingExposure,
-      }}
-      camera={{ position: [14.5, 2.2, 54.0], fov: 41, near: 0.1, far: 560 }}
-      onPointerMissed={() => {
-        if (useAppStore.getState().screen === 'workbench') {
-          selectPart(null);
-        }
-      }}
-      style={{ width: '100%', height: '100%' }}
-    >
-      <ArmoryStudioEnvironment preset={environmentPreset} />
+    <>
+      <Canvas
+        shadows="soft"
+        dpr={[1, qualityProfile.maxDpr]}
+        gl={{
+          localClippingEnabled: true,
+          stencil: true,
+          antialias: true,
+          powerPreference: 'high-performance',
+          toneMapping: THREE.AgXToneMapping,
+          toneMappingExposure: envCfg.toneMappingExposure,
+        }}
+        camera={{ position: [14.5, 2.2, 54.0], fov: 41, near: 0.1, far: 560 }}
+        onCreated={({ gl }) => {
+          gl.shadowMap.type = THREE.PCFSoftShadowMap;
+          canvasCleanupRef.current?.();
+          const dom = gl.domElement;
+          const onLost = (ev: Event) => {
+            ev.preventDefault();
+            invalidateStudioHdriCache(gl);
+            setContextLost(true);
+          };
+          const onRestored = () => {
+            invalidateStudioHdriCache(gl);
+            setContextLost(false);
+            setContextEpoch((e) => e + 1);
+          };
+          dom.addEventListener('webglcontextlost', onLost, false);
+          dom.addEventListener('webglcontextrestored', onRestored, false);
+          canvasCleanupRef.current = () => {
+            dom.removeEventListener('webglcontextlost', onLost, false);
+            dom.removeEventListener('webglcontextrestored', onRestored, false);
+          };
+        }}
+        onPointerMissed={() => {
+          if (useAppStore.getState().screen === 'workbench') {
+            selectPart(null);
+          }
+        }}
+        style={{ width: '100%', height: '100%' }}
+      >
+        <ArmoryStudioEnvironment
+          preset={environmentPreset}
+          shadowMapSize={qualityProfile.shadowMapSize}
+          contextEpoch={contextEpoch}
+        />
 
-      <GunsmithStageMat
-        preset={environmentPreset}
-        centerX={workbenchMeta.chamberGlowPos[0]}
-      />
+        <GunsmithStageMat
+          preset={environmentPreset}
+          centerX={workbenchMeta.chamberGlowPos[0]}
+          contactShadows={qualityProfile.contactShadowsEnabled}
+          contactShadowResolution={qualityProfile.contactShadowResolution}
+        />
 
-      <DisassemblyRig />
+        <DisassemblyRig />
 
-      <InteractiveActionController />
+        <InteractiveActionController />
 
-      <ArmoryPostProcessing
-        enabled={postFxEnabled}
-        environmentPreset={environmentPreset}
-      />
+        <ArmoryPostProcessing
+          enabled={postFxEnabled && !contextLost}
+          environmentPreset={environmentPreset}
+          gtaoQuality={qualityProfile.gtaoQuality}
+          enableGtao={qualityProfile.gtaoEnabled}
+          enableBloom={qualityProfile.bloomEnabled}
+          enableSmaa={qualityProfile.smaaEnabled}
+          enableMacroDof={qualityProfile.macroDofCapable && macroDofEnabled}
+          enableFilmicLens={qualityProfile.filmicLensEnabled}
+          contextEpoch={contextEpoch}
+        />
 
-      <MonographCaptureRig />
-    </Canvas>
+        <MonographCaptureRig />
+      </Canvas>
+
+      {contextLost && (
+        <div className="viewport-error-fallback" role="alert">
+          <div className="viewport-error-card">
+            <span className="viewport-error-badge">WEBGL CONTEXT RECOVERY</span>
+            <h2 className="viewport-error-title">
+              {lang === 'en'
+                ? 'Restoring 3D GPU Viewport…'
+                : '正在自动恢复 3D 显卡渲染上下文…'}
+            </h2>
+            <p className="viewport-error-desc">
+              {lang === 'en'
+                ? 'Your browser temporarily paused the WebGL GPU context (sleep or driver reset). Your active firearm and disassembly progress are preserved and will resume automatically.'
+                : '浏览器或系统休眠暂时回收了 WebGL 显卡上下文。当前枪型与拆解状态已完整保留，上下文恢复后将自动重建影棚光影与贴图。'}
+            </p>
+          </div>
+        </div>
+      )}
+    </>
   );
 };

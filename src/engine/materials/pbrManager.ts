@@ -141,6 +141,26 @@ function touchTextureWeaponLru(
   }
 }
 
+/**
+ * Locks a linear data texture (`normalMap`, Packed ORM `roughnessMap`/`aoMap`/`metalnessMap`)
+ * to `THREE.NoColorSpace` with a strict-mode-safe no-op setter.
+ *
+ * `@react-three/fiber` v8 `applyProps` unconditionally overwrites `texture.colorSpace =
+ * rootState.gl.outputColorSpace` (`SRGBColorSpace`) on every RGBA8 `THREE.Texture` JSX prop,
+ * which otherwise causes WebGL2 to upload normal/ORM maps as `SRGB8_ALPHA8` (bending flat
+ * normals by ~30° and squaring roughness/AO/metalness in hardware).
+ */
+export function lockLinearTextureColorSpace(tex: THREE.Texture): THREE.Texture {
+  tex.colorSpace = THREE.NoColorSpace;
+  Object.defineProperty(tex, 'colorSpace', {
+    get: () => THREE.NoColorSpace,
+    set: () => {},
+    enumerable: true,
+    configurable: true,
+  });
+  return tex;
+}
+
 function loadCachedTexture(
   fileName: string,
   opts: {
@@ -171,7 +191,11 @@ function loadCachedTexture(
     tex.needsUpdate = true;
     notifyKeyReady(key);
   });
-  tex.colorSpace = opts.srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;
+  if (opts.srgb) {
+    tex.colorSpace = THREE.SRGBColorSpace;
+  } else {
+    lockLinearTextureColorSpace(tex);
+  }
   applyPbrTextureFiltering(tex);
 
   if (opts.repeat && opts.repeat > 1) {

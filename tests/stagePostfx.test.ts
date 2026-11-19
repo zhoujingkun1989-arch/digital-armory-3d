@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import * as THREE from 'three';
 import { GTAOPass } from 'three/examples/jsm/postprocessing/GTAOPass.js';
 import { OutputPass } from 'three/examples/jsm/postprocessing/OutputPass.js';
@@ -14,7 +16,10 @@ import {
 import {
   ARMORY_POSTFX_DEFAULTS,
   computeGtaoInternalSize,
+  computeMacroBokehParams,
   createArmoryComposerRenderTarget,
+  createFilmicLensPass,
+  getFilmicLensPresetParams,
   getPostProcessingPresetParams,
   hardenBloomPassAgainstNaN,
   hardenGtaoPassAgainstNaN,
@@ -24,6 +29,19 @@ import {
   resolveGtaoBlendIntensity,
   shouldExcludeFromGtaoPass,
 } from '../src/engine/canvas/ArmoryPostProcessing';
+import {
+  GRAPHICS_QUALITY_TIERS,
+  createFpsWatchdogState,
+  getGraphicsQualityProfile,
+  stepDownGraphicsQuality,
+  updateFpsWatchdog,
+} from '../src/engine/canvas/graphicsQuality';
+import {
+  STUDIO_HDRI_FILES,
+  getStudioHdriEnvIntensity,
+  getStudioHdriFileName,
+} from '../src/engine/canvas/studioHdriManager';
+import { resolveHdriUrl, resolveModelUrl } from '../src/engine/utils/assetUrl';
 import {
   ARMORY_ENVIRONMENTS,
   ARMORY_ENVIRONMENT_PRESETS,
@@ -528,5 +546,66 @@ describe('native Three.js r169 post-processing pipeline & stencil buffer invaria
       bloomPass.dispose();
       outputPass.dispose();
     }
+  });
+
+  it('ships valid 32-bit Radiance studio HDRIs, macro Bokeh DOF, filmic lens finish & 3-tier adaptive FPS watchdog (PR-01)', () => {
+    const hdriDir = path.resolve(process.cwd(), 'public/hdri');
+    for (const preset of ARMORY_ENVIRONMENT_PRESETS) {
+      const fileName = getStudioHdriFileName(preset);
+      expect(fileName).toBe(STUDIO_HDRI_FILES[preset]);
+      expect(getStudioHdriEnvIntensity(preset)).toBeGreaterThanOrEqual(0.8);
+      expect(getStudioHdriEnvIntensity(preset)).toBeLessThanOrEqual(1.3);
+
+      const fullPath = path.join(hdriDir, fileName);
+      expect(fs.existsSync(fullPath), `missing ${fileName}`).toBe(true);
+      const header = fs.readFileSync(fullPath).subarray(0, 32).toString('ascii');
+      expect(header).toContain('#?RADIANCE');
+
+      expect(resolveHdriUrl(fileName, '/digital-armory-3d/')).toBe(
+        `/digital-armory-3d/hdri/${fileName}`
+      );
+    }
+    expect(resolveModelUrl('p08.glb', '/digital-armory-3d/')).toBe(
+      '/digital-armory-3d/models/p08.glb'
+    );
+
+    // Macro Bokeh DOF: off at full-gun distance or during cutaway/caliper; activates smoothly on close-ups
+    expect(computeMacroBokehParams(54, true, false).enabled).toBe(false);
+    expect(computeMacroBokehParams(20, true, true).enabled).toBe(false);
+    expect(computeMacroBokehParams(20, false, false).enabled).toBe(false);
+    const closeUp = computeMacroBokehParams(22, true, false);
+    expect(closeUp.enabled).toBe(true);
+    expect(closeUp.focus).toBeCloseTo(22, 4);
+    expect(closeUp.aperture).toBeGreaterThan(0);
+    expect(closeUp.aperture).toBeLessThanOrEqual(0.0002);
+
+    // Filmic lens finish: vignette & micro-grain active on dark presets, off in blueprint daylight
+    expect(getFilmicLensPresetParams('tactical_vault').vignetteStrength).toBeGreaterThan(0.1);
+    expect(getFilmicLensPresetParams('blueprint_daylight').vignetteStrength).toBe(0);
+    const lensPass = createFilmicLensPass('tactical_vault');
+    expect(lensPass.uniforms.uVignetteStrength.value).toBeCloseTo(0.2, 4);
+    lensPass.dispose();
+
+    // 3-tier adaptive quality profiles & FPS watchdog
+    expect(GRAPHICS_QUALITY_TIERS).toEqual(['ultra', 'balanced', 'eco']);
+    expect(getGraphicsQualityProfile('ultra').macroDofCapable).toBe(true);
+    expect(getGraphicsQualityProfile('balanced').gtaoQuality).toBe('half');
+    expect(getGraphicsQualityProfile('eco').gtaoEnabled).toBe(false);
+    expect(stepDownGraphicsQuality('ultra')).toBe('balanced');
+    expect(stepDownGraphicsQuality('balanced')).toBe('eco');
+    expect(stepDownGraphicsQuality('eco')).toBeNull();
+
+    const wd = createFpsWatchdogState();
+    // Background tab pause spike (> 0.25s) must never falsely trigger downgrade
+    expect(updateFpsWatchdog(wd, 1.5)).toBe(false);
+    // Sustained 15 FPS (~0.0667s/frame) over 3 consecutive 1.2s windows triggers step-down
+    let triggered = false;
+    for (let f = 0; f < 65; f++) {
+      if (updateFpsWatchdog(wd, 1 / 15)) {
+        triggered = true;
+        break;
+      }
+    }
+    expect(triggered).toBe(true);
   });
 });

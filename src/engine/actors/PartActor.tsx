@@ -13,6 +13,11 @@ import type {
 import { playbackClock } from '../clock/playbackClock';
 import { caliperStore } from '../caliper/caliperStore';
 import { fieldStripStore } from '../fieldstrip/fieldStripStore';
+import {
+  getGlbPartPbrOverride,
+  hasGlbWeaponAsset,
+  isGlbDynamicSpringPart,
+} from '../geometry/glbAssetService';
 import { createMutablePose, evaluatePartPoseInto } from '../kinematics/math';
 import { malfunctionStore } from '../malfunctions/malfunctionStore';
 import {
@@ -21,6 +26,7 @@ import {
   createArmoryShaderUniforms,
   createArmorySpringDepthMaterial,
   getArmoryProgramCacheKey,
+  getArmoryWearLevel,
   resolveArmoryShaderFeatures,
   resolveThermalForWeapon,
   syncArmoryUniformProfile,
@@ -66,13 +72,13 @@ const NO_THICKNESS_RANGE: [number, number] = [100, 400];
  * Directional brushed CNC lathe grain is provided tangent-free in `armoryShader.ts`.
  */
 const MATERIAL_CONFIGS: Record<MaterialKind, ArmoryMaterialConfig> = {
-  // Deep QPQ / Tenifer / Parkerized gunmetal: dark, satin, oil-wetted
+  // Deep QPQ / Tenifer / Parkerized gunmetal: dark, satin, oil-wetted under real studio HDRI
   nitride_steel: {
-    metalness: 0.76,
-    roughness: 0.4,
-    clearcoat: 0.2,
-    clearcoatRoughness: 0.3,
-    envMapIntensity: 1.5,
+    metalness: 0.84,
+    roughness: 0.34,
+    clearcoat: 0.28,
+    clearcoatRoughness: 0.20,
+    envMapIntensity: 1.54,
     edgeColor: '#475569',
     iridescence: 0.16,
     sheen: 0,
@@ -81,11 +87,11 @@ const MATERIAL_CONFIGS: Record<MaterialKind, ArmoryMaterialConfig> = {
   },
   // Cold-hammer-forged ordnance steel: spiral hammer-forge grain, phosphate satin
   barrel_steel: {
-    metalness: 0.84,
-    roughness: 0.32,
-    clearcoat: 0.22,
-    clearcoatRoughness: 0.22,
-    envMapIntensity: 1.58,
+    metalness: 0.88,
+    roughness: 0.28,
+    clearcoat: 0.26,
+    clearcoatRoughness: 0.18,
+    envMapIntensity: 1.62,
     edgeColor: '#475569',
     iridescence: 0.16,
     sheen: 0,
@@ -94,39 +100,39 @@ const MATERIAL_CONFIGS: Record<MaterialKind, ArmoryMaterialConfig> = {
   },
   // Bead-blasted / brushed stainless (416 / 17-4 PH)
   stainless: {
-    metalness: 0.95,
-    roughness: 0.2,
+    metalness: 0.96,
+    roughness: 0.20,
     clearcoat: 0.12,
     clearcoatRoughness: 0.14,
-    envMapIntensity: 1.6,
+    envMapIntensity: 1.58,
     edgeColor: '#475569',
-    iridescence: 0.16,
+    iridescence: 0.10,
     sheen: 0,
     sheenRoughness: 0.5,
     sheenColor: '#000000',
   },
-  // Matte glass-filled nylon 6 with micro-stipple texture
+  // Matte glass-filled nylon 6 / checkered walnut: deep non-metallic scatter without plastic glare
   polymer_frame: {
     metalness: 0.0,
-    roughness: 0.64,
-    clearcoat: 0.06,
-    clearcoatRoughness: 0.6,
-    envMapIntensity: 1.15,
+    roughness: 0.76,
+    clearcoat: 0.02,
+    clearcoatRoughness: 0.72,
+    envMapIntensity: 0.90,
     edgeColor: '#334155',
     iridescence: 0,
-    sheen: 0.14,
-    sheenRoughness: 0.82,
-    sheenColor: '#64748b',
+    sheen: 0.08,
+    sheenRoughness: 0.88,
+    sheenColor: '#475569',
   },
   // Tempered, oil-quenched music wire
   spring_steel: {
-    metalness: 0.9,
-    roughness: 0.26,
-    clearcoat: 0.2,
+    metalness: 0.92,
+    roughness: 0.24,
+    clearcoat: 0.18,
     clearcoatRoughness: 0.18,
-    envMapIntensity: 1.5,
+    envMapIntensity: 1.42,
     edgeColor: '#475569',
-    iridescence: 0.16,
+    iridescence: 0.12,
     sheen: 0,
     sheenRoughness: 0.5,
     sheenColor: '#000000',
@@ -134,10 +140,10 @@ const MATERIAL_CONFIGS: Record<MaterialKind, ArmoryMaterialConfig> = {
   // Injection-moulded acetal follower
   follower_orange: {
     metalness: 0.0,
-    roughness: 0.46,
-    clearcoat: 0.1,
-    clearcoatRoughness: 0.4,
-    envMapIntensity: 1.1,
+    roughness: 0.48,
+    clearcoat: 0.08,
+    clearcoatRoughness: 0.42,
+    envMapIntensity: 0.95,
     edgeColor: '#9a3412',
     iridescence: 0,
     sheen: 0,
@@ -147,10 +153,10 @@ const MATERIAL_CONFIGS: Record<MaterialKind, ArmoryMaterialConfig> = {
   // C26000 cartridge brass / copper jackets
   copper_accent: {
     metalness: 1.0,
-    roughness: 0.24,
+    roughness: 0.22,
     clearcoat: 0.1,
-    clearcoatRoughness: 0.2,
-    envMapIntensity: 1.55,
+    clearcoatRoughness: 0.18,
+    envMapIntensity: 1.48,
     edgeColor: '#78350f',
     iridescence: 0,
     sheen: 0,
@@ -232,10 +238,27 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       [weaponId, part]
     );
 
+    const isGlbAsset = geometry?.userData?.isGlbAsset === true;
+    // Prefetch v3 Cycles-baked atlases in parallel while the Draco GLB streams,
+    // automatically falling back to `customPbrBinding` if a part lands on CSG fallback.
+    const preferGlbPbr =
+      isGlbAsset ||
+      (geometry === null &&
+        typeof window !== 'undefined' &&
+        hasGlbWeaponAsset(weaponId) &&
+        !isGlbDynamicSpringPart(weaponId, part.id));
+    const effectivePbrBinding = useMemo(
+      () =>
+        preferGlbPbr
+          ? (getGlbPartPbrOverride(weaponId, part.id) ?? customPbrBinding)
+          : customPbrBinding,
+      [preferGlbPbr, weaponId, part.id, customPbrBinding]
+    );
+
     const matCfg = MATERIAL_CONFIGS[part.material];
     const pbr = useMemo(
-      () => getPartPbrBundle(weaponId, part.material, customPbrBinding),
-      [weaponId, part.material, customPbrBinding]
+      () => getPartPbrBundle(weaponId, part.material, effectivePbrBinding),
+      [weaponId, part.material, effectivePbrBinding]
     );
 
     const [, setTexTick] = useState(0);
@@ -366,6 +389,8 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       } else {
         grp.scale.set(p.sx, 1, 1);
       }
+
+      u.uWearLevel.value = getArmoryWearLevel();
 
       if (armoryFeatures.thermal || armoryFeatures.fouling) {
         const th = resolveThermalForWeapon(weaponId);
@@ -581,7 +606,7 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
     const showSectionCap =
       isSectionCutShell && !isXrayHousing && !isGhostByIsolate;
 
-    const matShaderKey = `${isXrayHousing ? 'x' : 's'}-${isSectionCutShell ? 'c1' : 'c0'}-${activeMap ? 'm1' : 'm0'}-${activeNormalMap ? 'n1' : 'n0'}-${activeOrmMap ? 'o1' : 'o0'}-${activeMetalnessMap ? 'mt1' : 'mt0'}-${armoryActive ? getArmoryProgramCacheKey(armoryFeatures) : 'plain'}`;
+    const matShaderKey = `${isXrayHousing ? 'x' : 's'}-${isSectionCutShell ? 'c1' : 'c0'}-${isGlbAsset ? 'g1' : 'g0'}-${activeMap ? 'm1' : 'm0'}-${activeNormalMap ? 'n1' : 'n0'}-${activeOrmMap ? 'o1' : 'o0'}-${activeMetalnessMap ? 'mt1' : 'mt0'}-${armoryActive ? getArmoryProgramCacheKey(armoryFeatures) : 'plain'}`;
 
     const armoryMaterialProps = armoryActive
       ? {
@@ -599,6 +624,7 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       <>
         <group ref={groupRef}>
           <mesh
+            name={part.id}
             geometry={geometry}
             raycast={sectionAwareMeshRaycast}
             renderOrder={meshRenderOrder}
@@ -620,14 +646,18 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
               normalMap={activeNormalMap}
               normalScale={normalScaleVec}
               aoMap={activeOrmMap}
-              aoMapIntensity={pbr.hasCustomAtlas ? 0.65 : 0.48}
+              aoMapIntensity={
+                isGlbAsset ? 0.95 : pbr.hasCustomAtlas ? 0.65 : 0.48
+              }
               roughnessMap={activeOrmMap}
               metalnessMap={activeMetalnessMap}
               metalness={
                 isXrayHousing
                   ? 0.06
                   : activeMetalnessMap
-                    ? 0.86
+                    ? isGlbAsset
+                      ? 1.0
+                      : 0.86
                     : matCfg.metalness
               }
               roughness={

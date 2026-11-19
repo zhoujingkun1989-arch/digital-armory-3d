@@ -13,6 +13,11 @@ import {
   CURVATURE_ATTRIBUTE,
   SPRING_PARAM_ATTRIBUTE,
 } from './curvatureBuilder';
+import {
+  hasGlbWeaponAsset,
+  isGlbDynamicSpringPart,
+  loadWeaponGlbGeometries,
+} from './glbAssetService';
 import type {
   GeometryWorkerRequest,
   GeometryWorkerResponse,
@@ -164,12 +169,13 @@ function getOrCreateWorker(): Worker | null {
           recordBuiltGeometry(entry, item.partId, geo);
         }
         entry.ready = entry.parts.size;
-        entry.total = msg.total;
+        entry.total = Math.max(entry.total, msg.total, entry.parts.size);
         notifyGeometryStatus(msg.weaponId);
       } else if (msg.type === 'weapon-complete') {
         if (entry) {
           entry.isBuilding = false;
           entry.ready = entry.parts.size;
+          entry.total = Math.max(entry.total, entry.parts.size);
           touchLru(msg.weaponId);
           notifyGeometryStatus(msg.weaponId);
         }
@@ -194,6 +200,9 @@ function getOrCreateWorker(): Worker | null {
     w.onerror = () => {
       workerUnavailable = true;
       workerInstance = null;
+      const err = new Error('Geometry Web Worker failed');
+      pendingWorkerResolvers.forEach((p) => p.reject(err));
+      pendingWorkerResolvers.clear();
     };
 
     workerInstance = w;
@@ -243,9 +252,71 @@ async function buildOnMainThreadSliced(
   notifyGeometryStatus(weaponId);
 }
 
+async function buildDualTrackWeaponGeometries(
+  weaponId: WeaponId,
+  missingIds: string[],
+  entry: WeaponGeometryPoolEntry
+): Promise<void> {
+  // Track A: Browser-side Draco GLB solid meshes for migrated exhibits (`p08`, `ak15`),
+  // skipping dynamic helical springs so CSG Worker supplies exact `aSpringParam` coils.
+  if (typeof window !== 'undefined' && hasGlbWeaponAsset(weaponId)) {
+    const glbCandidateIds = missingIds.filter(
+      (id) => !isGlbDynamicSpringPart(weaponId, id)
+    );
+    if (glbCandidateIds.length > 0) {
+      const glbGeos = await loadWeaponGlbGeometries(weaponId, glbCandidateIds);
+      if (glbGeos.size > 0) {
+        glbGeos.forEach((geo, partId) => {
+          recordBuiltGeometry(entry, partId, geo);
+        });
+        entry.ready = entry.parts.size;
+        entry.total = Math.max(entry.total, entry.parts.size);
+        notifyGeometryStatus(weaponId);
+      }
+    }
+  }
+
+  // Track B: Procedural CSG Web Worker (or sliced main-thread fallback) for dynamic springs,
+  // unmigrated weapons, headless Node/Vitest, or any parts absent/failed in Track A.
+  const remainingIds = missingIds.filter((id) => !entry.parts.has(id));
+  if (remainingIds.length === 0) {
+    entry.isBuilding = false;
+    entry.ready = entry.parts.size;
+    entry.total = Math.max(entry.total, entry.parts.size);
+    touchLru(weaponId);
+    notifyGeometryStatus(weaponId);
+    return;
+  }
+
+  const worker = getOrCreateWorker();
+  if (worker) {
+    const requestId = nextRequestId++;
+    try {
+      await new Promise<void>((resolve, reject) => {
+        pendingWorkerResolvers.set(requestId, { resolve, reject });
+        const req: GeometryWorkerRequest = {
+          type: 'build-weapon',
+          requestId,
+          weaponId,
+          partIds: remainingIds,
+        };
+        worker.postMessage(req);
+      });
+      return;
+    } catch {
+      await buildOnMainThreadSliced(weaponId, remainingIds, entry);
+      return;
+    }
+  }
+
+  await buildOnMainThreadSliced(weaponId, remainingIds, entry);
+}
+
 /**
- * Ensures all CSG geometries for `weaponId` are built in the background Web Worker
- * (with automatic sliced main-thread fallback) and cached in the bounded GPU LRU pool.
+ * Ensures all geometries for `weaponId` are loaded via the Dual-Track Engine
+ * (Draco GLB solid meshes first in browser, automatic CSG Web Worker / sliced
+ * main-thread fallback for dynamic springs, missing parts, unmigrated weapons,
+ * or headless Node) and cached in the bounded GPU LRU pool.
  */
 export function ensureWeaponGeometries(
   weaponIdRaw: string,
@@ -256,7 +327,7 @@ export function ensureWeaponGeometries(
   if (
     existingEntry &&
     !existingEntry.isBuilding &&
-    existingEntry.parts.size >= partIds.length
+    partIds.every((id) => existingEntry.parts.has(id))
   ) {
     touchLru(weaponId);
     return Promise.resolve();
@@ -272,7 +343,7 @@ export function ensureWeaponGeometries(
     total: partIds.length,
     isBuilding: true,
   };
-  entry.total = partIds.length;
+  entry.total = Math.max(entry.total, partIds.length);
   entry.isBuilding = true;
   weaponPools.set(weaponId, entry);
   touchLru(weaponId);
@@ -286,30 +357,45 @@ export function ensureWeaponGeometries(
     return Promise.resolve();
   }
 
-  const worker = getOrCreateWorker();
-  let buildPromise: Promise<void>;
-
-  if (worker) {
-    const requestId = nextRequestId++;
-    buildPromise = new Promise<void>((resolve, reject) => {
-      pendingWorkerResolvers.set(requestId, { resolve, reject });
-      const req: GeometryWorkerRequest = {
-        type: 'build-weapon',
-        requestId,
-        weaponId,
-        partIds: missingIds,
-      };
-      worker.postMessage(req);
-    }).catch(() => buildOnMainThreadSliced(weaponId, missingIds, entry));
-  } else {
-    buildPromise = buildOnMainThreadSliced(weaponId, missingIds, entry);
-  }
+  const buildPromise = buildDualTrackWeaponGeometries(
+    weaponId,
+    missingIds,
+    entry
+  );
 
   const tracked = buildPromise.finally(() => {
     inflightPromises.delete(weaponId);
   });
   inflightPromises.set(weaponId, tracked);
   return tracked;
+}
+
+/**
+ * Disposes and evicts cached geometries for a specific weapon (or the entire pool).
+ */
+export function clearWeaponGeometryCache(weaponIdRaw?: string): void {
+  if (weaponIdRaw !== undefined) {
+    if (!isWeaponId(weaponIdRaw)) return;
+    const entry = weaponPools.get(weaponIdRaw);
+    if (entry) {
+      entry.parts.forEach((geo) => geo.dispose());
+      entry.parts.clear();
+      entry.centers.clear();
+      weaponPools.delete(weaponIdRaw);
+    }
+    const idx = lruOrder.indexOf(weaponIdRaw);
+    if (idx !== -1) lruOrder.splice(idx, 1);
+    notifyGeometryStatus(weaponIdRaw);
+    return;
+  }
+
+  weaponPools.forEach((entry) => {
+    entry.parts.forEach((geo) => geo.dispose());
+    entry.parts.clear();
+    entry.centers.clear();
+  });
+  weaponPools.clear();
+  lruOrder.length = 0;
 }
 
 export function getCachedPartGeometry(

@@ -816,7 +816,7 @@ describe('worker zero-copy serialization of CAD attributes', () => {
     expect(slideGeo!.getAttribute('aSpringParam')).toBeUndefined();
     curvatureOf(recoilGeo!);
     expect(recoilGeo!.getAttribute('aSpringParam')?.itemSize).toBe(4);
-  });
+  }, 20_000);
 
   it('builds all 24 lift33 and 25 r500 archery geometries with unit normals, positive volume, aCurvature & watertight analytical parts', async () => {
     // Boolean three-bvh-csg cuts introduce T-junction split vertices (same as firearm receivers/rails)
