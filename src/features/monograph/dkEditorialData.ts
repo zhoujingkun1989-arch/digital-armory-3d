@@ -361,6 +361,10 @@ function parseSpokenEnNumber(phrase: string): string | null {
 const SPOKEN_NUM_WORD =
   '(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|point)';
 const SPOKEN_NUM_SEQ = `${SPOKEN_NUM_WORD}(?:[\\s-]+(?:and\\s+)?${SPOKEN_NUM_WORD})*`;
+const SPOKEN_COMPOUND_NUM_RE = new RegExp(
+  `\\b(${SPOKEN_NUM_WORD}(?:[\\s-]+(?:and\\s+)?${SPOKEN_NUM_WORD})+)\\b`,
+  'gi'
+);
 const SPOKEN_METRIC_RE = new RegExp(
   `\\b(${SPOKEN_NUM_SEQ})\\s+(millimeters?|centimeters?|meters?\\s+per\\s+second|meters?|feet\\s+per\\s+second|degrees?|percent|megapascals?|milliseconds?|pounds?|grains?|grams?|inches?|lugs?|grooves?|rounds?|firing\\s+phases?|phases?)\\b`,
   'gi'
@@ -407,6 +411,12 @@ function normalizeSpokenEnglishMetrics(text: string): string {
     return parsed !== null ? `${pWord} ${parsed}` : full;
   });
 
+  // Convert remaining multi-word / hyphenated spoken numbers even if trailing unit was clipped
+  out = out.replace(SPOKEN_COMPOUND_NUM_RE, (full, numRaw: string) => {
+    const parsed = parseSpokenEnNumber(numRaw);
+    return parsed !== null ? parsed : full;
+  });
+
   // Compact remaining verbose unit words attached to digits
   out = out
     .replace(/(\d)\s+millimeters?\b/gi, '$1 mm')
@@ -421,6 +431,117 @@ function normalizeSpokenEnglishMetrics(text: string): string {
     .replace(/(\d)-millimeter\b/gi, '$1 mm');
 
   return out;
+}
+
+const ZH_DIGIT_MAP: Readonly<Record<string, number>> = {
+  零: 0,
+  〇: 0,
+  一: 1,
+  二: 2,
+  两: 2,
+  三: 3,
+  四: 4,
+  五: 5,
+  六: 6,
+  七: 7,
+  八: 8,
+  九: 9,
+};
+
+function parseSpokenZhNumber(raw: string): string | null {
+  const s = raw.trim();
+  if (!s) return null;
+  if (/^\d+(?:\.\d+)?$/.test(s)) return s;
+
+  const dotIdx = s.indexOf('点');
+  if (dotIdx !== -1) {
+    const intPart = s.slice(0, dotIdx);
+    const fracPart = s.slice(dotIdx + 1);
+    if (!fracPart) return null;
+    let fracDigits = '';
+    for (const ch of fracPart) {
+      if (ch in ZH_DIGIT_MAP) {
+        fracDigits += String(ZH_DIGIT_MAP[ch]);
+      } else {
+        return null;
+      }
+    }
+    if (!intPart) return `.${fracDigits}`;
+    const intStr = parseSpokenZhNumber(intPart);
+    return intStr !== null ? `${intStr}.${fracDigits}` : null;
+  }
+
+  let total = 0;
+  let section = 0;
+  let current = 0;
+  let hasDigit = false;
+  for (const ch of s) {
+    if (ch in ZH_DIGIT_MAP) {
+      current = ZH_DIGIT_MAP[ch];
+      hasDigit = true;
+    } else if (ch === '十') {
+      section += (current === 0 && !hasDigit ? 1 : current) * 10;
+      current = 0;
+      hasDigit = true;
+    } else if (ch === '百') {
+      section += (current === 0 ? 1 : current) * 100;
+      current = 0;
+      hasDigit = true;
+    } else if (ch === '千') {
+      section += (current === 0 ? 1 : current) * 1000;
+      current = 0;
+      hasDigit = true;
+    } else if (ch === '万') {
+      total += (section + current || 1) * 10000;
+      section = 0;
+      current = 0;
+      hasDigit = true;
+    } else {
+      return null;
+    }
+  }
+  if (!hasDigit) return null;
+  return String(total + section + current);
+}
+
+const ZH_NUM_SEQ = '[零〇一二两三四五六七八九十百千万点]+';
+const ZH_PERCENT_RE = new RegExp(`百分之(${ZH_NUM_SEQ})`, 'g');
+const ZH_UNIT_RE = new RegExp(
+  `(${ZH_NUM_SEQ}|\\d+(?:\\.\\d+)?)\\s*(兆帕|毫米|厘米|米每秒|摄氏度|焦耳|毫秒|格令|磅|度)`,
+  'g'
+);
+
+function normalizeSpokenChineseMetrics(text: string): string {
+  let out = text;
+
+  // Convert "百分之三十八" -> "38%"
+  out = out.replace(ZH_PERCENT_RE, (full, numRaw: string) => {
+    const parsed = parseSpokenZhNumber(numRaw);
+    return parsed !== null ? `${parsed}%` : full;
+  });
+
+  // Convert Chinese spoken/numeric engineering measurements -> crisp DK symbols
+  out = out.replace(ZH_UNIT_RE, (full, numRaw: string, unit: string) => {
+    // Avoid converting idiomatic "一度" ("once")
+    if (unit === '度' && (numRaw === '一' || numRaw === '二' || numRaw === '两')) {
+      return full;
+    }
+    const parsed = parseSpokenZhNumber(numRaw);
+    if (parsed === null) return full;
+    if (unit === '兆帕') return `${parsed} MPa`;
+    if (unit === '毫米') return `${parsed} mm`;
+    if (unit === '厘米') return `${parsed} cm`;
+    if (unit === '米每秒') return `${parsed} m/s`;
+    if (unit === '摄氏度') return `${parsed}°C`;
+    if (unit === '度') return `${parsed}°`;
+    if (unit === '焦耳') return `${parsed} J`;
+    if (unit === '毫秒') return `${parsed} ms`;
+    if (unit === '格令') return `${parsed} gr`;
+    if (unit === '磅') return `${parsed} lb`;
+    return `${parsed}${unit}`;
+  });
+
+  return out.replace(/\s{2,}/g, ' ');
 }
 
 const ZH_DANGLING_CHARS = new Set([
@@ -500,7 +621,7 @@ const EN_TITLE_FILLER_MODIFIERS = [
 function cleanCalloutTitle(rawTitle: string, lang: LanguageCode): string {
   const collapsed = rawTitle.replace(/\s+/g, ' ').trim();
   if (!collapsed) return rawTitle;
-  const maxLen = lang === 'zh' ? 16 : 32;
+  const maxLen = lang === 'zh' ? 13 : 26;
   if (collapsed.length <= maxLen) return collapsed;
 
   // Step 1: Strip parenthetical remarks first
@@ -727,14 +848,16 @@ function trimZhPhraseToRange(raw: string, minLen: number, maxLen: number): strin
 }
 
 function distillZhMicroCopy(row: MonographBomRow): string {
-  const MIN = 16;
-  const MAX = 32;
+  const MIN = 12;
+  const MAX = 24;
 
-  let text = stripIncompleteZhTail(row.principleText || '');
+  let text = normalizeSpokenChineseMetrics(
+    stripIncompleteZhTail(row.principleText || '')
+  );
   // Strip disassembly timeline progress chatter that clutters DK cutaway callouts
   text = text
-    .replace(/[；;，,]?\s*(?:在)?(?:野战|不完全|完全|深度|子组件|细致)?分解(?:进度|初期|阶段|时)?[^。；;]*$/g, '')
-    .replace(/[（(][^）)]*(?:进度|%|分解)[^）)]*[）)]/g, '')
+    .replace(/[；;，,]?\s*(?:在)?(?:野战|不完全|完全|深度|子组件|细致|枪械全面)?(?:分解|拆解)(?:进度|初期|阶段|时)?[^。；;]*$/g, '')
+    .replace(/[（(][^）)]*(?:进度|%|分解|拆解)[^）)]*[）)]/g, '')
     .replace(/\s+/g, ' ')
     .trim();
 
@@ -750,9 +873,10 @@ function distillZhMicroCopy(row: MonographBomRow): string {
   if (core.length > MAX - 1) {
     const trimmedOpener = core
       .replace(
-        /^(?:在)?(?:整个)?(?:射击|击发|自动)(?:循环|全过程|全程|全阶段|周期|阶段\d*|第[一二三四五六七\d]阶段)(?:中|内|期间|时)?[，,]?\s*/g,
+        /^(?:在)?(?:整枪|整个|全)?(?:发射|射击|击发|自动)(?:循环|全过程|全程|全阶段|全周期|过程中|过程|周期|阶段\d*|第[一二三四五六七\d]阶段)(?:中|内|期间|时)?[，,]?\s*(?:作为)?/g,
         ''
       )
+      .replace(/^(?:静止|保持静止|保持刚性静止)[，,]\s*/g, '')
       .replace(/^(?:这是|本件为|该零件为?|此构件为?)\s*/g, '')
       .trim();
     if (trimmedOpener.length >= MIN - 1) {
@@ -760,7 +884,7 @@ function distillZhMicroCopy(row: MonographBomRow): string {
     }
   }
 
-  // If core has comma clauses, combine leading clauses that fit cleanly within [MIN..MAX]
+  // If core has comma clauses, combine leading clauses (or pick richest clause) within [MIN..MAX]
   if (core.length > MAX - 1 && core.includes('，')) {
     const clauses = core
       .split('，')
@@ -777,8 +901,15 @@ function distillZhMicroCopy(row: MonographBomRow): string {
     }
     if (acc.length >= MIN - 1) {
       core = acc;
-    } else if (clauses[0] && clauses[0].length >= MIN - 1) {
-      core = clauses[0];
+    } else {
+      const bestClause = clauses.find(
+        (c) => c.length >= MIN - 1 && c.length <= MAX - 1
+      );
+      if (bestClause) {
+        core = bestClause;
+      } else if (clauses[0] && clauses[0].length >= MIN - 1) {
+        core = clauses[0];
+      }
     }
   }
 
@@ -787,23 +918,23 @@ function distillZhMicroCopy(row: MonographBomRow): string {
 
   // Enrich if too short (e.g. brief description or fallback)
   if (core.length < MIN - 1) {
-    const grp = shortenGroup(row.groupTitle, 'zh');
-    const mat = shortenMaterial(row.materialLabel, 'zh');
-    const nameShort = cleanCalloutTitle(row.primaryName, 'zh').slice(0, 10);
+    const grp = shortenGroup(row.groupTitle, 'zh').slice(0, 6);
+    const mat = shortenMaterial(row.materialLabel, 'zh').slice(0, 6);
+    const nameShort = cleanCalloutTitle(row.primaryName, 'zh').slice(0, 8);
     if (!core) {
-      core = `${mat}精密${nameShort}，承担${grp}机械联动`;
-    } else if (core.length + grp.length + 7 <= MAX - 1) {
-      core = `${core}，承担${grp}核心协同`;
-    } else if (core.length + mat.length + 5 <= MAX - 1) {
+      core = `${mat}制${nameShort}，承担${grp}联动`;
+    } else if (core.length + grp.length + 5 <= MAX - 1) {
+      core = `${core}，承担${grp}协同`;
+    } else if (core.length + mat.length + 3 <= MAX - 1) {
       core = `${mat}制，${core}`;
     } else {
-      core = `${core}，保障机构精密运转`;
+      core = `${core}，保障机构运转`;
     }
   }
 
-  // If still slightly under MIN after enrichment, pad cleanly with factual group context
+  // If still slightly under MIN after enrichment, pad cleanly with factual context
   if (core.length < MIN - 1) {
-    core = `${core}，保障总成精准稳定运行`;
+    core = `${core}，保障稳定运行`;
   }
 
   return trimZhPhraseToRange(core, MIN, MAX);
@@ -811,8 +942,22 @@ function distillZhMicroCopy(row: MonographBomRow): string {
 
 function stripIncompleteEnTail(text: string): { text: string; wasTruncated: boolean } {
   const wasTruncated = /(?:…|\.\.\.)\s*$/.test(text);
-  let out = text.replace(/(?:…|\.\.\.)+\s*$/g, '').trim();
+  // Normalize spoken numbers BEFORE stripping the last word so "seven hundred fifteen meters…" converts cleanly
+  let out = normalizeSpokenEnglishMetrics(
+    text.replace(/(?:…|\.\.\.)+\s*$/g, '').trim()
+  );
   if (wasTruncated) {
+    // Rescue velocity phrases cut right before "per second" (e.g. "Accelerates 7.62 mm bullet to roughly 715 meters")
+    if (
+      /\b(?:accelerates?|propels?|launches?|drives?)\b.*?\b\d+(?:\.\d+)?\s+meters?$/i.test(
+        out
+      )
+    ) {
+      out = out
+        .replace(/\b(?:roughly|approximately|about)\s+(\d)/gi, '$1')
+        .replace(/\s+meters?$/i, ' m/s');
+      return { text: out, wasTruncated: false };
+    }
     // Drop any cut trailing word fragment immediately
     const lastSpace = out.lastIndexOf(' ');
     if (lastSpace > 12) {
@@ -986,16 +1131,15 @@ function fitEnToRange(raw: string, minLen: number, maxLen: number): string {
 }
 
 function distillEnMicroCopy(row: MonographBomRow): string {
-  const MIN = 32;
-  const MAX = 62;
+  const MIN = 26;
+  const MAX = 48;
 
   const { text: stripped, wasTruncated } = stripIncompleteEnTail(
     row.principleText || ''
   );
-  // Normalize TTS spoken numbers ("seven point six two millimeter" -> "7.62 mm")
-  let text = normalizeSpokenEnglishMetrics(stripped);
-  // Strip disassembly timeline / field-strip meta-text
-  text = text
+  // Spoken metrics already normalized inside stripIncompleteEnTail; strip verbose filler & strip meta-text
+  let text = stripped
+    .replace(/\b(?:roughly|approximately)\s+/gi, '')
     .replace(
       /[;,]?\s*(?:it\s+)?(?:separates|detaches|lifts|slides|explodes|is removed|unthreads|withdraws|extracted)\b.*$/i,
       ''
@@ -1027,29 +1171,28 @@ function distillEnMicroCopy(row: MonographBomRow): string {
     const grp = shortenGroup(row.groupTitle, 'en').toLowerCase();
     const cleanName = cleanCalloutTitle(row.primaryName, 'en').toLowerCase();
     if (looksLikeFallbackPair || !core) {
-      core = `Precision ${mat} ${cleanName} in the ${grp}`;
+      core = `Precision ${mat} ${cleanName} in ${grp}`;
     } else {
-      core = `${core} within the ${grp}`;
+      core = `${core} in the ${grp}`;
     }
   }
 
   let result = fitEnToRange(core, MIN, MAX);
 
-  // Final safety floor: if still under MIN (32 chars), expand cleanly with assembly role
+  // Final safety floor: if still under MIN (26 chars), expand cleanly with assembly role
   if (result.length < MIN) {
     const grp = shortenGroup(row.groupTitle, 'en').toLowerCase();
     const mat = shortenMaterial(row.materialLabel, 'en').toLowerCase();
     const base = result.replace(/\.+$/g, '').trim();
     const expanded = base.toLowerCase().includes(grp)
-      ? `${base} in ${mat} construction`
-      : `${base} within the ${grp}`;
+      ? `${base} in ${mat} build`
+      : `${base} in ${grp}`;
     result = fitEnToRange(expanded, MIN, MAX);
   }
 
-  // Ultra-safe guarantee if group + base still short (e.g., short single-word group)
   if (result.length < MIN) {
     const base = result.replace(/\.+$/g, '').trim();
-    result = fitEnToRange(`${base} for precision cycle control`, MIN, MAX);
+    result = fitEnToRange(`${base} for cycle control`, MIN, MAX);
   }
 
   return result;
@@ -1058,8 +1201,8 @@ function distillEnMicroCopy(row: MonographBomRow): string {
 /**
  * Produces a crisp DK Eyewitness callout pair (`{ title, microCopy }`) from a
  * dossier + partId OR directly from a `MonographBomRow`.
- * Guarantees concise titles (`zh <= 16`, `en <= 32`) and clean complete phrasing
- * (`zh: 16–32 chars`, `en: 32–62 chars`) with zero mid-word cuts or trailing ellipses.
+ * Guarantees concise titles (`zh <= 13`, `en <= 26`) and clean complete phrasing
+ * (`zh: 12–24 chars`, `en: 26–48 chars`) with zero mid-word cuts or trailing ellipses.
  */
 export function buildDkPartMicroCopy(
   dossier: MonographDossierData,

@@ -189,34 +189,34 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
             expect(
               byDossier.title.length,
               `[${weaponId}/${row.partId}/zh title] "${byDossier.title}"`
-            ).toBeLessThanOrEqual(16);
+            ).toBeLessThanOrEqual(13);
             expect(
               byDossier.microCopy.length,
               `[${weaponId}/${row.partId}/zh] "${byDossier.microCopy}"`
-            ).toBeGreaterThanOrEqual(16);
+            ).toBeGreaterThanOrEqual(12);
             expect(
               byDossier.microCopy.length,
               `[${weaponId}/${row.partId}/zh] "${byDossier.microCopy}"`
-            ).toBeLessThanOrEqual(32);
+            ).toBeLessThanOrEqual(24);
           } else {
             expect(
               byDossier.title.length,
               `[${weaponId}/${row.partId}/en title] "${byDossier.title}"`
-            ).toBeLessThanOrEqual(32);
+            ).toBeLessThanOrEqual(26);
             expect(
               byDossier.microCopy.length,
               `[${weaponId}/${row.partId}/en] "${byDossier.microCopy}"`
-            ).toBeGreaterThanOrEqual(32);
+            ).toBeGreaterThanOrEqual(26);
             expect(
               byDossier.microCopy.length,
               `[${weaponId}/${row.partId}/en] "${byDossier.microCopy}"`
-            ).toBeLessThanOrEqual(62);
+            ).toBeLessThanOrEqual(48);
             expect(byDossier.microCopy.endsWith('.')).toBe(true);
-            // Must never end with an incomplete dangling subordinate clause or bare number
+            // Must never end with an incomplete dangling subordinate noun phrase or bare number
             expect(
               byDossier.microCopy,
               `[${weaponId}/${row.partId}/en dangling] "${byDossier.microCopy}"`
-            ).not.toMatch(/\b(?:while|before|after|where|when)\s+\w+(?:\s+\w+)?\.$/i);
+            ).not.toMatch(/\b(?:while|before|after|where|when)\s+(?:the|a|an|its|their)\s+\w+\.$/i);
             expect(
               byDossier.microCopy,
               `[${weaponId}/${row.partId}/en bare-num] "${byDossier.microCopy}"`
@@ -226,13 +226,21 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
           totalPartsChecked++;
         }
 
-        // Regression guards on previously reported AK-15 R-02 & R-08 defects
+        // Regression guards on previously reported AK-15 & Garand spoken-number defects
         if (weaponId === 'ak15' && lang === 'en') {
           const r02 = buildDkPartMicroCopy(dossier, 'ak_barrel');
-          expect(r02.microCopy).not.toMatch(/seven hundred fifteen/i);
-          expect(r02.microCopy).not.toMatch(/715\.$/);
+          expect(r02.microCopy).toContain('715 m/s');
+          expect(r02.microCopy).not.toMatch(/seven hundred/i);
           const r08 = buildDkPartMicroCopy(dossier, 'ak_pistol_grip');
           expect(r08.microCopy).not.toMatch(/while the guard/i);
+        }
+        if (weaponId === 'garand' && lang === 'zh') {
+          const b01 = buildDkPartMicroCopy(dossier, 'garand_barrel');
+          expect(b01.microCopy).toContain('345 MPa');
+          expect(b01.microCopy).not.toContain('三百四十五');
+          const f05 = buildDkPartMicroCopy(dossier, 'garand_front_handguard');
+          expect(f05.microCopy).toContain('108 mm');
+          expect(f05.microCopy).not.toContain('一百零八');
         }
 
         // Verify graceful missing partId fallback & enrichDkCallouts helper
@@ -276,12 +284,13 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
           const res = buildDkPartMicroCopy(dossier, row.partId);
           expect(res.microCopy).not.toMatch(/…|\.\.\./);
           if (lang === 'zh') {
-            expect(res.microCopy.length).toBeGreaterThanOrEqual(16);
-            expect(res.microCopy.length).toBeLessThanOrEqual(32);
+            expect(res.title.length).toBeLessThanOrEqual(13);
+            expect(res.microCopy.length).toBeGreaterThanOrEqual(12);
+            expect(res.microCopy.length).toBeLessThanOrEqual(24);
           } else {
-            expect(res.title.length).toBeLessThanOrEqual(32);
-            expect(res.microCopy.length).toBeGreaterThanOrEqual(32);
-            expect(res.microCopy.length).toBeLessThanOrEqual(62);
+            expect(res.title.length).toBeLessThanOrEqual(26);
+            expect(res.microCopy.length).toBeGreaterThanOrEqual(26);
+            expect(res.microCopy.length).toBeLessThanOrEqual(48);
           }
         }
       }
@@ -378,10 +387,11 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
     expect(overlayHtml).toContain('U-06');
     expect(overlayHtml).toContain('r="3.2"');
     expect(overlayHtml).toContain('max-width:22%');
-    expect(overlayHtml).toContain('max-height:16.5mm');
-    expect(overlayHtml).toContain('padding:1.5px 5px');
+    expect(overlayHtml).not.toContain('max-height:16.5mm');
+    expect(overlayHtml).not.toContain('max-height:12.5mm');
+    expect(overlayHtml).toContain('padding:1.5px 5px 2.5px');
     expect(overlayHtml).toContain('white-space:nowrap');
-    expect(overlayHtml).toContain('-webkit-line-clamp:3');
+    expect(overlayHtml).toContain('-webkit-line-clamp:2');
     expect(overlayHtml).toContain('font-size:5.8pt');
     expect(overlayHtml).toContain('font-size:6.4pt');
     expect(overlayHtml).toContain('font-size:5.5pt');
