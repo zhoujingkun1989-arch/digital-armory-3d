@@ -284,8 +284,20 @@ export function formatMonographDriveSpec(
   return `${driveText} (${spec.propellantMassG.toFixed(2)} g)`;
 }
 
+export interface DkActionPhaseCopy {
+  plateKey:
+    | 'comic_1_ready'
+    | 'comic_2_ignition'
+    | 'comic_3_eject'
+    | 'comic_4_reload';
+  title: string;
+  caption: string;
+}
+
 export interface DkEncyclopediaStrings {
   seriesWordmark: string;
+  seriesWordmarkCompact: string;
+  a4EditionTag: string;
   seriesSubtitle: string;
   factFileHeading: string;
   scaleRulerKicker: string;
@@ -298,6 +310,7 @@ export interface DkEncyclopediaStrings {
   spread3Title: string;
   spread4LeftKicker: string;
   spread4RightKicker: string;
+  a4RightManualKicker: string;
   chronicleHeading: string;
   breakthroughsQuoteKicker: string;
   elevationsHeading: string;
@@ -314,6 +327,12 @@ export interface DkEncyclopediaStrings {
   bomDirectoryHeading: string;
   bomDirectoryMeta: (partsCount: number, trisFormatted: string) => string;
   cycleSequenceHeading: string;
+  actionPhases: [
+    DkActionPhaseCopy,
+    DkActionPhaseCopy,
+    DkActionPhaseCopy,
+    DkActionPhaseCopy,
+  ];
   cycle7Heading: string;
   fieldStripHeading: string;
   malfunctionsHeading: string;
@@ -340,8 +359,64 @@ export function getDkEncyclopediaStrings(
   isArchery: boolean
 ): DkEncyclopediaStrings {
   if (lang === 'zh') {
+    const actionPhases: DkEncyclopediaStrings['actionPhases'] = isArchery
+      ? [
+          {
+            plateKey: 'comic_1_ready',
+            title: '满拉蓄能',
+            caption:
+              '碳纤维弓片屈曲储存弹性势能，偏心凸轮越峰进入省力谷并稳定锁定。',
+          },
+          {
+            plateKey: 'comic_2_ignition',
+            title: '撒放释放',
+            caption:
+              '撒放机构零扭矩解脱弓弦，同步凸轮高速回转释放弦推力加速碳箭。',
+          },
+          {
+            plateKey: 'comic_3_eject',
+            title: '清离出箭',
+            caption:
+              '碳纤维箭矢沿推力轴线离弦飞出，落箭台或悬浮箭道零刮擦避让尾羽。',
+          },
+          {
+            plateKey: 'comic_4_reload',
+            title: '阻尼归位',
+            caption:
+              '止弦器与谐波阻尼器吸收余振冲击，弓片与缆组平稳复位至初始弓档。',
+          },
+        ]
+      : [
+          {
+            plateKey: 'comic_1_ready',
+            title: '闭锁待击',
+            caption:
+              '实弹入膛后闭锁机构与枪管刚性咬合，火控阻铁稳固锁持击针或击锤能量。',
+          },
+          {
+            plateKey: 'comic_2_ignition',
+            title: '击发建压',
+            caption:
+              '击针撞击底火引燃发射药，瞬时峰值膛压推动弹头沿膛线高速旋转出膛。',
+          },
+          {
+            plateKey: 'comic_3_eject',
+            title: '开锁抽抛',
+            caption:
+              '膛压泄至安全阈值后自动机解锁后坐，抽壳钩拉出空壳并经抛壳挺抛出。',
+          },
+          {
+            plateKey: 'comic_4_reload',
+            title: '复进推弹',
+            caption:
+              '复进簧释放储能推自动机前移，剥取下一发弹药顺坡入膛并重新闭锁。',
+          },
+        ];
+
     return {
       seriesWordmark: 'DIGITAL ARMORY · VISUAL ENCYCLOPEDIA',
+      seriesWordmarkCompact: 'DIGITAL ARMORY · DK',
+      a4EditionTag: 'DK 典藏图鉴',
       seriesSubtitle: isArchery
         ? '复合弓弩机械百科典藏卷'
         : '世界轻武器机械视觉百科全书',
@@ -372,6 +447,9 @@ export function getDkEncyclopediaStrings(
       spread4RightKicker: isArchery
         ? '弓弩勤务拆装、排障与馆藏印鉴 · ARCHIVE MANUAL'
         : '野战拆装教范、排障诊断与馆藏印鉴 · ARMORER MANUAL',
+      a4RightManualKicker: isArchery
+        ? '勤务拆装与印鉴 · ARCHIVE'
+        : '拆装教范与印鉴 · MANUAL',
       chronicleHeading: '四幕研制演进纪实',
       breakthroughsQuoteKicker: '三大核心工程突破 · KEY BREAKTHROUGHS',
       elevationsHeading: '正交工程视图 · ELEVATION PROFILES',
@@ -402,6 +480,7 @@ export function getDkEncyclopediaStrings(
       cycleSequenceHeading: isArchery
         ? '四阶段发射慢动作实景序列'
         : '四阶段击发与自动循环实景序列',
+      actionPhases,
       cycle7Heading: isArchery
         ? '七阶弹性蓄能与做功时序链'
         : '七阶击发闭锁与复进运动学时序',
@@ -438,8 +517,64 @@ export function getDkEncyclopediaStrings(
     };
   }
 
+  const actionPhasesEn: DkEncyclopediaStrings['actionPhases'] = isArchery
+    ? [
+        {
+          plateKey: 'comic_1_ready',
+          title: 'Full-Draw Storage',
+          caption:
+            'Flexed split limbs store elastic energy as cams settle cleanly against the draw stop.',
+        },
+        {
+          plateKey: 'comic_2_ignition',
+          title: 'Torque-Free Release',
+          caption:
+            'Latch releases cleanly while synchronized cams uncoil full tension into the shaft.',
+        },
+        {
+          plateKey: 'comic_3_eject',
+          title: 'Power Stroke & Clearance',
+          caption:
+            'Carbon projectile accelerates straight while drop-away forks or track clear vanes.',
+        },
+        {
+          plateKey: 'comic_4_reload',
+          title: 'Damped Brace Return',
+          caption:
+            'String stops and harmonic dampers dissipate shock as limbs settle back to brace.',
+        },
+      ]
+    : [
+        {
+          plateKey: 'comic_1_ready',
+          title: 'Locked & Ready',
+          caption:
+            'Round chambered in battery with breech locked and fire-control sear holding energy.',
+        },
+        {
+          plateKey: 'comic_2_ignition',
+          title: 'Ignition & Acceleration',
+          caption:
+            'Firing pin strikes primer; peak chamber pressure drives the bullet down the bore.',
+        },
+        {
+          plateKey: 'comic_3_eject',
+          title: 'Unlock & Ejection',
+          caption:
+            'After safe blowdown, the action unlocks rearward to extract and eject spent brass.',
+        },
+        {
+          plateKey: 'comic_4_reload',
+          title: 'Feed & Return to Battery',
+          caption:
+            'Recoil spring drives the bolt forward, chambering the next round into positive lockup.',
+        },
+      ];
+
   return {
     seriesWordmark: 'DIGITAL ARMORY · VISUAL ENCYCLOPEDIA',
+    seriesWordmarkCompact: 'DIGITAL ARMORY · DK',
+    a4EditionTag: 'DK ENCYCLOPEDIA',
     seriesSubtitle: isArchery
       ? 'COMPOUND ARCHERY MECHANICAL ARCHIVE'
       : 'DEFINITIVE VISUAL HISTORY OF FIREARMS MECHANICS',
@@ -466,6 +601,9 @@ export function getDkEncyclopediaStrings(
     spread4RightKicker: isArchery
       ? 'ARCHERY SERVICE MANUAL & MUSEUM ARCHIVE SEAL'
       : 'FIELD-STRIP MANUAL, STOPPAGES & ARCHIVE SEAL',
+    a4RightManualKicker: isArchery
+      ? 'SERVICE MANUAL & ARCHIVE'
+      : 'FIELD-STRIP & ARCHIVE',
     chronicleHeading: 'Four-Act Engineering Genesis',
     breakthroughsQuoteKicker: 'DEFINING ENGINEERING BREAKTHROUGHS',
     elevationsHeading: 'ORTHOGRAPHIC ELEVATION PROFILES',
@@ -496,6 +634,7 @@ export function getDkEncyclopediaStrings(
     cycleSequenceHeading: isArchery
       ? 'Four-Phase Slow-Motion Launch Sequence'
       : 'Four-Phase Action Sequence Cutaway Strip',
+    actionPhases: actionPhasesEn,
     cycle7Heading: isArchery
       ? '7-Stage Elastic Storage & Power-Stroke Breakdown'
       : '7-Stage Firing, Locking & Recoil Breakdown',

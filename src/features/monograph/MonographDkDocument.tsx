@@ -209,6 +209,91 @@ function shortenDkMaterial(raw: string, isZh: boolean): string {
   return words.slice(0, 3).join(' ');
 }
 
+/**
+ * Distills a breakthrough summary cleanly at a natural sentence or clause boundary
+ * so print cards never wrap into mid-word `...` line-clamp truncations.
+ */
+export function distillBreakthroughSummary(
+  raw: string,
+  lang: 'zh' | 'en'
+): string {
+  const cleaned = raw
+    .replace(/(?:…|\.\.\.)+\s*$/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (!cleaned) return '';
+
+  if (lang === 'zh') {
+    const MAX_ZH = 50;
+    const sentences = cleaned
+      .split(/[。；;]+/)
+      .map((s) => s.trim())
+      .filter(Boolean);
+    const first = sentences[0] ?? cleaned;
+    if (first.length <= MAX_ZH) {
+      return `${first.replace(/[，,、：:\s]+$/g, '')}。`;
+    }
+    const clauses = first
+      .split('，')
+      .map((c) => c.trim())
+      .filter(Boolean);
+    let built = '';
+    for (const clause of clauses) {
+      const next = built ? `${built}，${clause}` : clause;
+      if (next.length <= MAX_ZH) {
+        built = next;
+      } else {
+        break;
+      }
+    }
+    const out = (built || clauses[0] || first.slice(0, MAX_ZH))
+      .replace(/[，,；;：:、的与及和并使令将把在\s]+$/g, '')
+      .trim();
+    return `${out}。`;
+  }
+
+  const MAX_EN = 112;
+  const sentences = cleaned
+    .split(/(?<=[.!?])\s+|;\s+/)
+    .map((s) => s.replace(/\.+$/g, '').trim())
+    .filter(Boolean);
+  const first = sentences[0] ?? cleaned.replace(/\.+$/g, '').trim();
+  if (first.length <= MAX_EN) {
+    return `${first}.`;
+  }
+
+  const clauseDelims = [' — ', ', while ', ', ensuring ', ', allowing ', ', '];
+  for (const delim of clauseDelims) {
+    let idx = first.lastIndexOf(delim, MAX_EN - 1);
+    while (idx >= 48) {
+      const cand = first.slice(0, idx).replace(/[,;:\-–—\s]+$/g, '').trim();
+      if (cand.length >= 48 && cand.length <= MAX_EN - 1) {
+        return `${cand}.`;
+      }
+      idx = first.lastIndexOf(delim, idx - 1);
+    }
+  }
+
+  const words = first.split(/\s+/);
+  let built = '';
+  for (const w of words) {
+    const next = built ? `${built} ${w}` : w;
+    if (next.length <= MAX_EN - 1) {
+      built = next;
+    } else {
+      break;
+    }
+  }
+  const trimmed = built
+    .replace(
+      /\b(?:a|an|the|of|in|on|at|to|for|with|by|from|into|and|or|but|as|that|which|while|during)$/i,
+      ''
+    )
+    .replace(/[,;:\-–—\s]+$/g, '')
+    .trim();
+  return `${trimmed || built.trim()}.`;
+}
+
 export const MonographDkDocument: React.FC<MonographDkDocumentProps> = ({
   dossier,
   captureBundle,
@@ -504,8 +589,7 @@ export const MonographDkDocument: React.FC<MonographDkDocumentProps> = ({
                   <DkCircularLoupeStrip
                     loupes={editorial.loupeSpecs}
                     plates={plates}
-                    loupeAnchors={loupeAnchors}
-                    heroRelation="above"
+                    heroRelation="none"
                     diameterPx={72}
                     lang={lang}
                   />
@@ -618,7 +702,7 @@ export const MonographDkDocument: React.FC<MonographDkDocumentProps> = ({
                             <span className="dk-bt-tag">{bt.tag}</span>
                             <strong>{bt.title}</strong>
                           </div>
-                          <p>{bt.summary}</p>
+                          <p>{distillBreakthroughSummary(bt.summary, lang)}</p>
                         </div>
                       ))}
                     </div>
@@ -650,7 +734,11 @@ export const MonographDkDocument: React.FC<MonographDkDocumentProps> = ({
                 </div>
 
                 {/* Right Recto Page: Giant Longitudinal Cutaway + 1:1 Actual-Size Cartridge & Ballistics */}
-                <div className="dk-recto-page dk-s2-right">
+                <div
+                  className={`dk-recto-page dk-s2-right ${
+                    useHorizontalCartridge ? 'has-stacked-ballistics' : ''
+                  }`}
+                >
                   <div className="dk-chapter-banner is-compact">
                     <span className="dk-chapter-kicker">
                       {dk.cutawayHeading}
@@ -850,7 +938,7 @@ export const MonographDkDocument: React.FC<MonographDkDocumentProps> = ({
                   </div>
 
                   <div className="dk-phase-seq-grid">
-                    {dossier.comicFrames.map((frame, idx) => (
+                    {dk.actionPhases.map((frame, idx) => (
                       <figure key={frame.plateKey} className="dk-phase-card">
                         <div className="dk-phase-img-wrap">
                           <DkFramelessPlate
@@ -997,9 +1085,9 @@ export const MonographDkDocument: React.FC<MonographDkDocumentProps> = ({
         <div className="dk-sheet-trim-area">
           <DkSheetRunningHeader
             leftPrimary={`VOL.${String(dossier.volumeIndex).padStart(2, '0')} · ${dossier.bayCode}`}
-            leftSecondary={dk.seriesWordmark}
-            rightPrimary={dossier.modelCode}
-            rightSecondary={editionStamp}
+            leftSecondary={dk.seriesWordmarkCompact}
+            rightPrimary={dossier.shortTag}
+            rightSecondary={dk.a4EditionTag}
           />
 
           <div className="dk-a4-body dk-a4-p1-body">
@@ -1074,7 +1162,7 @@ export const MonographDkDocument: React.FC<MonographDkDocumentProps> = ({
             <div className="dk-sheet-trim-area">
               <DkSheetRunningHeader
                 leftPrimary={dk.loupesHeading}
-                leftSecondary={dossier.name}
+                leftSecondary={dossier.shortTag}
                 rightPrimary={dossier.bayCode}
                 rightSecondary={dk.rightProfileLabel}
               />
@@ -1103,8 +1191,7 @@ export const MonographDkDocument: React.FC<MonographDkDocumentProps> = ({
                 <DkCircularLoupeStrip
                   loupes={editorial.loupeSpecs}
                   plates={plates}
-                  loupeAnchors={loupeAnchors}
-                  heroRelation="above"
+                  heroRelation="none"
                   diameterPx={78}
                   lang={lang}
                 />
@@ -1140,9 +1227,9 @@ export const MonographDkDocument: React.FC<MonographDkDocumentProps> = ({
             <div className="dk-sheet-trim-area">
               <DkSheetRunningHeader
                 leftPrimary={dk.spread2LeftKicker}
-                leftSecondary={dossier.name}
-                rightPrimary={dossier.originTag}
-                rightSecondary={dossier.modelCode}
+                leftSecondary={dossier.shortTag}
+                rightPrimary={dossier.bayCode}
+                rightSecondary={dossier.caliberLabel}
               />
 
               <div className="dk-a4-body dk-s2-left">
@@ -1187,7 +1274,7 @@ export const MonographDkDocument: React.FC<MonographDkDocumentProps> = ({
                           <span className="dk-bt-tag">{bt.tag}</span>
                           <strong>{bt.title}</strong>
                         </div>
-                        <p>{bt.summary}</p>
+                        <p>{distillBreakthroughSummary(bt.summary, lang)}</p>
                       </div>
                     ))}
                   </div>
@@ -1243,12 +1330,16 @@ export const MonographDkDocument: React.FC<MonographDkDocumentProps> = ({
         <div className="dk-sheet-trim-area">
           <DkSheetRunningHeader
             leftPrimary={dk.spread2RightKicker}
-            leftSecondary={dossier.name}
+            leftSecondary={dossier.shortTag}
             rightPrimary={dossier.caliberLabel}
             rightSecondary={dossier.ballisticsSpec.standard}
           />
 
-          <div className="dk-a4-body dk-s2-right">
+          <div
+            className={`dk-a4-body dk-s2-right ${
+              useHorizontalCartridge ? 'has-stacked-ballistics' : ''
+            }`}
+          >
             <div className="dk-chapter-banner is-compact">
               <span className="dk-chapter-kicker">{dk.cutawayHeading}</span>
               <p className="dk-chapter-deck">{dk.cutawaySub}</p>
@@ -1295,8 +1386,8 @@ export const MonographDkDocument: React.FC<MonographDkDocumentProps> = ({
         <div className="dk-sheet-trim-area">
           <DkSheetRunningHeader
             leftPrimary={dk.spread3Kicker}
-            leftSecondary={dossier.name}
-            rightPrimary={dossier.shortTag}
+            leftSecondary={dossier.shortTag}
+            rightPrimary={dossier.bayCode}
             rightSecondary={`${dossier.bomRows.length} PCS`}
           />
 
@@ -1382,8 +1473,8 @@ export const MonographDkDocument: React.FC<MonographDkDocumentProps> = ({
             <div className="dk-sheet-trim-area">
               <DkSheetRunningHeader
                 leftPrimary={dk.bomDirectoryHeading}
-                leftSecondary={dossier.name}
-                rightPrimary={dossier.modelCode}
+                leftSecondary={dossier.shortTag}
+                rightPrimary={dossier.bayCode}
                 rightSecondary={`${dossier.bomRows.length} PCS`}
               />
 
@@ -1402,7 +1493,11 @@ export const MonographDkDocument: React.FC<MonographDkDocumentProps> = ({
 
                 <table
                   className={`dk-bom-table ${
-                    dossier.bomRows.length >= 26 ? 'is-dense' : ''
+                    dossier.bomRows.length >= 24
+                      ? 'is-ultra-dense'
+                      : dossier.bomRows.length >= 18
+                        ? 'is-compact'
+                        : ''
                   }`}
                 >
                   <thead>
@@ -1427,6 +1522,7 @@ export const MonographDkDocument: React.FC<MonographDkDocumentProps> = ({
                   <tbody>
                     {dossier.bomRows.map((row) => {
                       const micro = editorial.partMicroCopyById[row.partId];
+                      const showSecondaryName = dossier.bomRows.length < 20;
                       return (
                         <tr key={row.partId}>
                           <td className="td-code">
@@ -1436,14 +1532,18 @@ export const MonographDkDocument: React.FC<MonographDkDocumentProps> = ({
                           </td>
                           <td className="td-name">
                             <strong>{row.primaryName}</strong>
-                            <span>{row.secondaryName}</span>
+                            {showSecondaryName && (
+                              <span>{row.secondaryName}</span>
+                            )}
                           </td>
                           <td className="td-mat">
                             {shortenDkMaterial(row.materialLabel, isZh)}
                           </td>
                           <td className="td-env">{row.envelopeMm}</td>
                           <td className="td-copy">
-                            {micro?.microCopy ?? row.principleText}
+                            <span className="dk-bom-copy-text">
+                              {micro?.microCopy ?? row.principleText}
+                            </span>
                           </td>
                         </tr>
                       );
@@ -1499,8 +1599,8 @@ export const MonographDkDocument: React.FC<MonographDkDocumentProps> = ({
             <div className="dk-sheet-trim-area">
               <DkSheetRunningHeader
                 leftPrimary={dk.spread4LeftKicker}
-                leftSecondary={dossier.name}
-                rightPrimary={dossier.modelCode}
+                leftSecondary={dossier.shortTag}
+                rightPrimary={dossier.bayCode}
                 rightSecondary="01 → 07"
               />
 
@@ -1511,7 +1611,7 @@ export const MonographDkDocument: React.FC<MonographDkDocumentProps> = ({
                 </div>
 
                 <div className="dk-phase-seq-grid">
-                  {dossier.comicFrames.map((frame, idx) => (
+                  {dk.actionPhases.map((frame, idx) => (
                     <figure key={frame.plateKey} className="dk-phase-card">
                       <div className="dk-phase-img-wrap">
                         <DkFramelessPlate
@@ -1575,10 +1675,10 @@ export const MonographDkDocument: React.FC<MonographDkDocumentProps> = ({
         )}
         <div className="dk-sheet-trim-area">
           <DkSheetRunningHeader
-            leftPrimary={dk.spread4RightKicker}
-            leftSecondary={dossier.name}
-            rightPrimary={dossier.serialCode}
-            rightSecondary={editionStamp}
+            leftPrimary={dk.a4RightManualKicker}
+            leftSecondary={dossier.shortTag}
+            rightPrimary={dossier.bayCode}
+            rightSecondary={dk.a4EditionTag}
           />
 
           <div className="dk-a4-body dk-s4-right">

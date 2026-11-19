@@ -146,6 +146,34 @@ const MAX_MODAL_EDITION_CACHE = 6;
 const modalEditionBundleCache = new Map<string, MonographCaptureBundle>();
 const DYNAMIC_PAGE_STYLE_ID = 'monograph-dynamic-page-style';
 const CSS_PX_PER_MM = 96 / 25.4;
+const CANONICAL_PUBLIC_ORIGIN =
+  'https://zhoujingkun1989-arch.github.io/digital-armory-3d/';
+
+/**
+ * Sanitizes local preview loopback hosts (`127.0.0.1`, `localhost`, `::1`) so printed
+ * PDF QR codes and Ex Libris URLs always point to the public live Digital Armory museum.
+ */
+export function resolvePublicMonographOrigin(
+  loc?: { hostname?: string } | null
+): string | undefined {
+  const target =
+    loc !== undefined
+      ? loc
+      : typeof window !== 'undefined'
+        ? window.location
+        : null;
+  if (!target?.hostname) return undefined;
+  const host = target.hostname.trim().toLowerCase();
+  if (
+    host === 'localhost' ||
+    host === '127.0.0.1' ||
+    host === '::1' ||
+    host === '[::1]'
+  ) {
+    return CANONICAL_PUBLIC_ORIGIN;
+  }
+  return undefined;
+}
 
 function buildModalCacheKey(
   weaponId: string,
@@ -413,7 +441,13 @@ export const MonographPrintModal: React.FC = () => {
 
   const dossier = useMemo(() => {
     if (!plugin) return null;
-    return assembleMonographDossier(weaponId, plugin, lang, narrationBundle);
+    return assembleMonographDossier(
+      weaponId,
+      plugin,
+      lang,
+      narrationBundle,
+      resolvePublicMonographOrigin()
+    );
     // Re-evaluate as CSG parts stream in so live millimeter envelopes populate accurately
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [weaponId, plugin, lang, narrationBundle, geoStatus.version]);

@@ -24,8 +24,14 @@ import {
   type MonographPlateSource,
 } from '../src/features/monograph/monographCaptureStore';
 import { assembleMonographDossier } from '../src/features/monograph/monographDataAssembler';
-import { MonographDkDocument } from '../src/features/monograph/MonographDkDocument';
-import { computeMonographPrintGeometry } from '../src/features/monograph/MonographPrintModal';
+import {
+  distillBreakthroughSummary,
+  MonographDkDocument,
+} from '../src/features/monograph/MonographDkDocument';
+import {
+  computeMonographPrintGeometry,
+  resolvePublicMonographOrigin,
+} from '../src/features/monograph/MonographPrintModal';
 import { getDkEncyclopediaStrings } from '../src/features/monograph/monographStrings';
 import { UI_STRINGS } from '../src/i18n/uiStrings';
 import type { LanguageCode, WeaponNarrationBundle } from '../src/narration/types';
@@ -442,5 +448,109 @@ describe('DK Visual Encyclopedia Layout, Spread Geometry, Bilingual Strings & De
       'utf8'
     );
     expect(monographCss).toContain('var(--monograph-print-width, 210mm)');
+  });
+
+  it('enforces Art-Director QA polish: authoritative 4-phase copy, complete breakthrough sentences, dense A4 BOM, no duplicate loupe bridge & loopback QR sanitization', async () => {
+    const p08Plugin = await loadWeaponPlugin('p08');
+    const p08Narration = loadNarrationBundle('p08');
+    const p08Capture = await buildMockDkCaptureBundle('p08', true);
+    const p08DossierZh = assembleMonographDossier(
+      'p08',
+      p08Plugin,
+      'zh',
+      p08Narration,
+      'https://zhoujingkun1989-arch.github.io/digital-armory-3d/'
+    );
+
+    const htmlA4Zh = renderToStaticMarkup(
+      React.createElement(MonographDkDocument, {
+        dossier: p08DossierZh,
+        captureBundle: p08Capture,
+        layoutMode: 'portrait_a4',
+        pageMode: 'full_8p',
+        collectorCallsign: 'CURATOR',
+        prepress: true,
+      })
+    );
+
+    // 1. A4 Page 6 BOM uses ultra-dense class for 25-part P08 so all rows + QA bar fit cleanly
+    expect(htmlA4Zh).toContain('dk-bom-table is-ultra-dense');
+    // 2. Authoritative DK 4-phase action captions replace kids baby-talk
+    expect(htmlA4Zh).toContain('闭锁待击');
+    expect(htmlA4Zh).toContain('击发建压');
+    expect(htmlA4Zh).not.toContain('小弹头安静停在起点');
+    expect(htmlA4Zh).not.toContain('高高抛出去');
+    // 3. No duplicate detached red-dot loupe connector bridge; A4 P2 keeps real weapon connector overlay
+    expect(htmlA4Zh).not.toContain('dk-loupe-connector-bridge');
+    expect(htmlA4Zh).toContain('dk-loupe-hero-connector-svg');
+
+    // 4. Stacked ballistics class applies on Garand (.30-06 horizontal) and NOT on P08 (9mm vertical)
+    expect(htmlA4Zh).not.toContain('has-stacked-ballistics');
+    const garandPlugin = await loadWeaponPlugin('garand');
+    const garandCapture = await buildMockDkCaptureBundle('garand', false);
+    const garandDossierEn = assembleMonographDossier(
+      'garand',
+      garandPlugin,
+      'en',
+      loadNarrationBundle('garand'),
+      'https://zhoujingkun1989-arch.github.io/digital-armory-3d/'
+    );
+    const garandSpreadEn = renderToStaticMarkup(
+      React.createElement(MonographDkDocument, {
+        dossier: garandDossierEn,
+        captureBundle: garandCapture,
+        layoutMode: 'spread_a3',
+        pageMode: 'full_8p',
+        collectorCallsign: 'CURATOR',
+        prepress: true,
+      })
+    );
+    expect(garandSpreadEn).toContain('has-stacked-ballistics');
+    expect(garandSpreadEn).not.toContain('dk-loupe-connector-bridge');
+    expect(garandSpreadEn).toContain('Locked &amp; Ready');
+    expect(garandSpreadEn).not.toMatch(CJK_RE);
+
+    // 5. Breakthrough summary distillation produces complete sentences without trailing ellipses
+    const longEn =
+      'Precision dual-link toggle-lock stays below dead center by 1.5 degrees with an automatic geometric lock; only after recoil hits the curved ramps does it fold cleanly.';
+    const distilledEn = distillBreakthroughSummary(longEn, 'en');
+    expect(distilledEn.endsWith('.')).toBe(true);
+    expect(distilledEn).not.toContain('...');
+    expect(distilledEn).not.toContain('…');
+    expect(distilledEn.length).toBeLessThanOrEqual(112);
+
+    const longZh =
+      '双连杆肘节闭锁在闭锁位置停靠于死点线下方 1.5° 形成过死点刚性自锁；直至枪管短后坐撞击机匣尾部双弧形导坡才凌空上折完成安全开锁与抛壳。';
+    const distilledZh = distillBreakthroughSummary(longZh, 'zh');
+    expect(distilledZh.endsWith('。')).toBe(true);
+    expect(distilledZh).not.toContain('...');
+    expect(distilledZh).not.toContain('…');
+    expect(distilledZh.length).toBeLessThanOrEqual(51);
+
+    // 6. Loopback origin sanitizer replaces 127.0.0.1 / localhost / ::1 with public GitHub Pages museum URL
+    expect(resolvePublicMonographOrigin({ hostname: '127.0.0.1' })).toBe(
+      'https://zhoujingkun1989-arch.github.io/digital-armory-3d/'
+    );
+    expect(resolvePublicMonographOrigin({ hostname: 'localhost' })).toBe(
+      'https://zhoujingkun1989-arch.github.io/digital-armory-3d/'
+    );
+    expect(resolvePublicMonographOrigin({ hostname: '::1' })).toBe(
+      'https://zhoujingkun1989-arch.github.io/digital-armory-3d/'
+    );
+    expect(
+      resolvePublicMonographOrigin({
+        hostname: 'zhoujingkun1989-arch.github.io',
+      })
+    ).toBeUndefined();
+
+    // 7. Callout breathing margin reservations & dense BOM CSS rules present
+    const dkCss = fs.readFileSync(
+      path.resolve(__dirname, '../src/styles/dk-monograph.css'),
+      'utf8'
+    );
+    expect(dkCss).toContain('padding: 12mm 4mm 13mm');
+    expect(dkCss).toContain('padding: 13mm 1mm 13mm');
+    expect(dkCss).toContain('max-height: 76mm');
+    expect(dkCss).toContain('.dk-bom-table.is-ultra-dense');
   });
 });
