@@ -10,6 +10,7 @@ import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js';
 import { CopyShader } from 'three/examples/jsm/shaders/CopyShader.js';
 import {
   applyRendererToneMapping,
+  computeGtaoInternalSize,
   createArmoryComposerRenderTarget,
   getPostProcessingPresetParams,
   hardenGtaoPassAgainstNaN,
@@ -44,24 +45,68 @@ import type {
   WeaponRuntimePlugin,
 } from '../../weapons/types';
 import {
+  type DkMasterPlateEntry,
+  getWeaponMasterPlates,
+  loadDkMasterPlateManifest,
+  resolveMasterPlateUrl,
+} from './dkMasterPlates';
+import {
+  type DkCalloutItem,
   type ExplodedPinItem,
   projectExplodedPartAnchors,
+  projectLoupeAnchors,
+  solveDkAnnotatedCallouts,
   solveExplodedPinLayout,
 } from './explodedPinLayout';
 import {
   buildMonographCacheKey,
   completeMonographCapture,
+  type MonographCaptureQuality,
   type MonographEdition,
+  type MonographLoupeAnchor,
+  type MonographLoupeKey,
   type MonographPlateKey,
+  type MonographPlateSource,
   updateMonographCaptureProgress,
   useMonographCaptureState,
 } from './monographCaptureStore';
 
-const CAPTURE_W = 1440;
-const CAPTURE_H = 900;
-const CAPTURE_ASPECT = CAPTURE_W / CAPTURE_H;
+const STANDARD_CAPTURE_W = 1440;
+const STANDARD_CAPTURE_H = 900;
+const PRINT_CAPTURE_W = 2880;
+const PRINT_CAPTURE_H = 1800;
 const CAPTURE_FOV_DEG = 36;
 const SETTLE_FRAMES_PER_SHOT = 2;
+
+/**
+ * Resolves offscreen capture dimensions for `standard_1440` (`1440×900`) or
+ * `print_2880` (`2880×1800`, 300 DPI print target), safely clamping to the GPU's
+ * `maxTextureSize` while preserving the exact 16:10 plate aspect ratio.
+ */
+export function resolveCaptureDimensions(
+  quality: MonographCaptureQuality,
+  maxTextureSize?: number
+): { width: number; height: number } {
+  const targetW =
+    quality === 'print_2880' ? PRINT_CAPTURE_W : STANDARD_CAPTURE_W;
+  const targetH =
+    quality === 'print_2880' ? PRINT_CAPTURE_H : STANDARD_CAPTURE_H;
+  const safeMax =
+    typeof maxTextureSize === 'number' &&
+    Number.isFinite(maxTextureSize) &&
+    maxTextureSize > 0
+      ? Math.floor(maxTextureSize)
+      : 4096;
+
+  if (targetW <= safeMax && targetH <= safeMax) {
+    return { width: targetW, height: targetH };
+  }
+
+  const scale = Math.min(safeMax / targetW, safeMax / targetH);
+  const width = Math.max(16, Math.floor((targetW * scale) / 2) * 2);
+  const height = Math.max(16, Math.floor((targetH * scale) / 2) * 2);
+  return { width, height };
+}
 
 /**
  * Pre-inverted HDR linear-sRGB studio backdrop for `blueprint_daylight` (`toneMappingExposure = 1.16`):
@@ -73,9 +118,7 @@ const SETTLE_FRAMES_PER_SHOT = 2;
  * because WebGL 2 `gl.clearColor` clamps clear arguments to `[0.0, 1.0]` even on `RGBA16F` framebuffers.
  */
 export const BRIGHT_PLATE_HDR_LINEAR_RGB = [
-  3.05078125,
-  4.3359375,
-  6.671875,
+  3.05078125, 4.3359375, 6.671875,
 ] as const;
 
 function createBrightPlateBackdropTexture(): THREE.DataTexture {
@@ -100,6 +143,425 @@ function createBrightPlateBackdropTexture(): THREE.DataTexture {
   return tex;
 }
 
+// =====================================================================================
+// DK Transparent Alpha Cutout Shader Upgrades & Pure CPU Matting / Soft Shadow Helpers
+// =====================================================================================
+
+const DK_TRANSPARENT_OUTPUT_VERTEX = /* glsl */ `
+precision highp float;
+
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+
+in vec3 position;
+in vec2 uv;
+
+out vec2 vUv;
+
+void main() {
+  vUv = uv;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}
+`;
+
+const DK_TRANSPARENT_OUTPUT_FRAGMENT = /* glsl */ `
+precision highp float;
+
+uniform sampler2D tDiffuse;
+
+#include <tonemapping_pars_fragment>
+#include <colorspace_pars_fragment>
+
+in vec2 vUv;
+layout(location = 0) out highp vec4 pc_fragColor;
+
+vec3 armorySanitizeHdrRgb( vec3 c ) {
+  uvec3 bits = floatBitsToUint( c );
+  bvec3 bad = greaterThanEqual( bits & uvec3( 0x7f800000u ), uvec3( 0x7f800000u ) );
+  vec3 safe = vec3(
+    bad.r ? 0.0 : c.r,
+    bad.g ? 0.0 : c.g,
+    bad.b ? 0.0 : c.b
+  );
+  return clamp( safe, vec3( 0.0 ), vec3( 64.0 ) );
+}
+
+void main() {
+  vec4 texel = texture( tDiffuse, vUv );
+  vec3 safeRgb = armorySanitizeHdrRgb( texel.rgb );
+  float safeA = ( ( floatBitsToUint( texel.a ) & 0x7f800000u ) == 0x7f800000u )
+    ? 1.0
+    : clamp( texel.a, 0.0, 1.0 );
+  float peakRgb = max( safeRgb.r, max( safeRgb.g, safeRgb.b ) );
+  float effectiveA = max( safeA, clamp( peakRgb * 0.85, 0.0, 1.0 ) );
+
+  if ( effectiveA <= 0.0015 ) {
+    pc_fragColor = vec4( 0.0, 0.0, 0.0, 0.0 );
+    return;
+  }
+
+  // Unpremultiply translucent X-Ray / additive HDR fragments prior to AgX so edges never darken on white paper
+  vec3 straightHdr = effectiveA < 0.999
+    ? clamp( safeRgb / max( effectiveA, 0.02 ), vec3( 0.0 ), vec3( 64.0 ) )
+    : safeRgb;
+  vec4 outColor = vec4( straightHdr, effectiveA );
+
+  #ifdef LINEAR_TONE_MAPPING
+    outColor.rgb = LinearToneMapping( outColor.rgb );
+  #elif defined( REINHARD_TONE_MAPPING )
+    outColor.rgb = ReinhardToneMapping( outColor.rgb );
+  #elif defined( CINEON_TONE_MAPPING )
+    outColor.rgb = CineonToneMapping( outColor.rgb );
+  #elif defined( ACES_FILMIC_TONE_MAPPING )
+    outColor.rgb = ACESFilmicToneMapping( outColor.rgb );
+  #elif defined( AGX_TONE_MAPPING )
+    outColor.rgb = AgXToneMapping( outColor.rgb );
+  #elif defined( NEUTRAL_TONE_MAPPING )
+    outColor.rgb = NeutralToneMapping( outColor.rgb );
+  #endif
+
+  #ifdef SRGB_TRANSFER
+    outColor = sRGBTransferOETF( outColor );
+  #endif
+
+  pc_fragColor = vec4( outColor.rgb, effectiveA );
+}
+`;
+
+const DK_SMAA_RGBA_EDGES_FRAGMENT = /* glsl */ `
+uniform sampler2D tDiffuse;
+
+varying vec2 vUv;
+varying vec4 vOffset[ 3 ];
+
+vec4 SMAARgbaEdgeDetectionPS( vec2 texcoord, vec4 offset[3], sampler2D colorTex ) {
+  vec2 threshold = vec2( SMAA_THRESHOLD, SMAA_THRESHOLD );
+
+  vec4 delta;
+  vec4 C = texture2D( colorTex, texcoord );
+
+  vec4 Cleft = texture2D( colorTex, offset[0].xy );
+  vec4 t = abs( C - Cleft );
+  delta.x = max( max( t.r, t.g ), max( t.b, t.a ) );
+
+  vec4 Ctop = texture2D( colorTex, offset[0].zw );
+  t = abs( C - Ctop );
+  delta.y = max( max( t.r, t.g ), max( t.b, t.a ) );
+
+  vec2 edges = step( threshold, delta.xy );
+  if ( dot( edges, vec2( 1.0, 1.0 ) ) == 0.0 )
+    discard;
+
+  vec4 Cright = texture2D( colorTex, offset[1].xy );
+  t = abs( C - Cright );
+  delta.z = max( max( t.r, t.g ), max( t.b, t.a ) );
+
+  vec4 Cbottom = texture2D( colorTex, offset[1].zw );
+  t = abs( C - Cbottom );
+  delta.w = max( max( t.r, t.g ), max( t.b, t.a ) );
+
+  float maxDelta = max( max( max( delta.x, delta.y ), delta.z ), delta.w );
+
+  vec4 Cleftleft = texture2D( colorTex, offset[2].xy );
+  t = abs( C - Cleftleft );
+  delta.z = max( max( t.r, t.g ), max( t.b, t.a ) );
+
+  vec4 Ctoptop = texture2D( colorTex, offset[2].zw );
+  t = abs( C - Ctoptop );
+  delta.w = max( max( t.r, t.g ), max( t.b, t.a ) );
+
+  maxDelta = max( max( maxDelta, delta.z ), delta.w );
+  edges.xy *= step( 0.5 * maxDelta, delta.xy );
+
+  return vec4( edges, 0.0, 0.0 );
+}
+
+void main() {
+  gl_FragColor = SMAARgbaEdgeDetectionPS( vUv, vOffset, tDiffuse );
+}
+`;
+
+const DK_SMAA_STRAIGHT_ALPHA_BLEND_FRAGMENT = /* glsl */ `
+uniform sampler2D tDiffuse;
+uniform sampler2D tColor;
+uniform vec2 resolution;
+
+varying vec2 vUv;
+varying vec4 vOffset[ 2 ];
+
+vec4 SMAAStraightAlphaBlendingPS( vec2 texcoord, vec4 offset[ 2 ], sampler2D colorTex, sampler2D blendTex ) {
+  vec4 a;
+  a.xz = texture2D( blendTex, texcoord ).xz;
+  a.y = texture2D( blendTex, offset[ 1 ].zw ).g;
+  a.w = texture2D( blendTex, offset[ 1 ].xy ).a;
+
+  if ( dot( a, vec4( 1.0, 1.0, 1.0, 1.0 ) ) < 1e-5 ) {
+    return texture2D( colorTex, texcoord, 0.0 );
+  } else {
+    vec2 dirOffset;
+    dirOffset.x = a.a > a.b ? a.a : -a.b;
+    dirOffset.y = a.g > a.r ? -a.g : a.r;
+
+    if ( abs( dirOffset.x ) > abs( dirOffset.y ) ) {
+      dirOffset.y = 0.0;
+    } else {
+      dirOffset.x = 0.0;
+    }
+
+    vec4 C = texture2D( colorTex, texcoord, 0.0 );
+    texcoord += sign( dirOffset ) * resolution;
+    vec4 Cop = texture2D( colorTex, texcoord, 0.0 );
+    float s = abs( dirOffset.x ) > abs( dirOffset.y ) ? abs( dirOffset.x ) : abs( dirOffset.y );
+
+    float outA = mix( C.a, Cop.a, s );
+    if ( outA <= 1e-4 ) {
+      return vec4( 0.0 );
+    }
+
+    vec3 cLin = pow( clamp( C.rgb, 0.0, 1.0 ), vec3( 2.2 ) ) * C.a;
+    vec3 copLin = pow( clamp( Cop.rgb, 0.0, 1.0 ), vec3( 2.2 ) ) * Cop.a;
+    vec3 mixedLin = clamp( mix( cLin, copLin, s ) / outA, 0.0, 1.0 );
+
+    return vec4( pow( mixedLin, vec3( 1.0 / 2.2 ) ), outA );
+  }
+}
+
+void main() {
+  gl_FragColor = SMAAStraightAlphaBlendingPS( vUv, vOffset, tColor, tDiffuse );
+}
+`;
+
+function hardenOutputPassForTransparentCutout(outputPass: OutputPass): void {
+  outputPass.material.glslVersion = THREE.GLSL3;
+  outputPass.material.vertexShader = DK_TRANSPARENT_OUTPUT_VERTEX;
+  outputPass.material.fragmentShader = DK_TRANSPARENT_OUTPUT_FRAGMENT;
+  outputPass.material.blending = THREE.NoBlending;
+  outputPass.material.needsUpdate = true;
+}
+
+function hardenSmaaPassForTransparentCutout(smaaPass: SMAAPass): void {
+  smaaPass.materialEdges.fragmentShader = DK_SMAA_RGBA_EDGES_FRAGMENT;
+  smaaPass.materialBlend.fragmentShader = DK_SMAA_STRAIGHT_ALPHA_BLEND_FRAGMENT;
+  smaaPass.materialEdges.blending = THREE.NoBlending;
+  smaaPass.materialWeights.blending = THREE.NoBlending;
+  smaaPass.materialBlend.blending = THREE.NoBlending;
+  smaaPass.materialEdges.toneMapped = false;
+  smaaPass.materialWeights.toneMapped = false;
+  smaaPass.materialBlend.toneMapped = false;
+  smaaPass.materialEdges.needsUpdate = true;
+  smaaPass.materialBlend.needsUpdate = true;
+}
+
+export interface AlphaSilhouetteBounds {
+  minX: number;
+  maxX: number;
+  minY: number;
+  maxY: number;
+  opaqueCount: number;
+}
+
+export interface DkContactShadowOptions {
+  /** Peak alpha of the grounded studio shadow directly beneath the weapon (`[0..1]`). */
+  peakOpacity?: number;
+  /** Neutral cool museum slate RGB color (`[0..255]`) for soft paper-friendly shadows. */
+  shadowRgb?: readonly [number, number, number];
+}
+
+const DK_SHADOW_SHOT_KEYS = new Set<MonographPlateKey>([
+  'cover_hero',
+  'ortho_right',
+  'ortho_left',
+  'group_slide',
+  'group_frame',
+  'group_fcg',
+  'group_mag',
+]);
+
+/**
+ * Determines which DK encyclopedia plates receive a subtle grounded tabletop contact
+ * shadow beneath the transparent cutout (floating cutaways, X-Ray, exploded BOM, and
+ * firing comics stay pure floating cutouts).
+ */
+export function shouldApplyDkContactShadow(
+  shotKey: MonographPlateKey
+): boolean {
+  return DK_SHADOW_SHOT_KEYS.has(shotKey);
+}
+
+/**
+ * Vertically flips bottom-up WebGL `readRenderTargetPixels` RGBA data into top-down
+ * Canvas 2D `ImageData` rows.
+ */
+export function flipRgbaRowsVertical(
+  srcBottomUp: Uint8Array,
+  dstTopDown: Uint8ClampedArray,
+  width: number,
+  height: number
+): void {
+  const rowBytes = width * 4;
+  for (let y = 0; y < height; y++) {
+    const srcOffset = (height - 1 - y) * rowBytes;
+    const dstOffset = y * rowBytes;
+    dstTopDown.set(
+      srcBottomUp.subarray(srcOffset, srcOffset + rowBytes),
+      dstOffset
+    );
+  }
+}
+
+/**
+ * Zeroes negligible sub-threshold alpha noise (`alpha <= alphaCutoff`) so transparent
+ * margins outside the firearm silhouette export as exact `rgba(0, 0, 0, 0)`.
+ */
+export function cleanTransparentAlphaEdge(
+  rgbaTopDown: Uint8ClampedArray,
+  alphaCutoff = 2
+): void {
+  for (let i = 0; i < rgbaTopDown.length; i += 4) {
+    if (rgbaTopDown[i + 3] <= alphaCutoff) {
+      rgbaTopDown[i] = 0;
+      rgbaTopDown[i + 1] = 0;
+      rgbaTopDown[i + 2] = 0;
+      rgbaTopDown[i + 3] = 0;
+    }
+  }
+}
+
+/**
+ * Scans a top-down RGBA pixel buffer to locate the tight screen-space bounding box of
+ * non-transparent weapon pixels (`alpha >= alphaThreshold`).
+ */
+export function computeAlphaSilhouetteBounds(
+  rgbaTopDown: Uint8ClampedArray,
+  width: number,
+  height: number,
+  alphaThreshold = 12
+): AlphaSilhouetteBounds | null {
+  let minX = width;
+  let maxX = -1;
+  let minY = height;
+  let maxY = -1;
+  let opaqueCount = 0;
+
+  for (let y = 0; y < height; y++) {
+    const rowBase = y * width * 4;
+    for (let x = 0; x < width; x++) {
+      const a = rgbaTopDown[rowBase + x * 4 + 3];
+      if (a >= alphaThreshold) {
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+        opaqueCount += 1;
+      }
+    }
+  }
+
+  if (opaqueCount === 0 || maxX < minX || maxY < minY) {
+    return null;
+  }
+
+  return { minX, maxX, minY, maxY, opaqueCount };
+}
+
+/**
+ * Composites a physically subtle, soft elliptical DK studio tabletop contact shadow
+ * strictly UNDERNEATH the firearm silhouette using exact straight-alpha Porter-Duff
+ * `foreground OVER shadow` compositing. Leaves solid weapon pixels 100% untouched and
+ * keeps outer paper margins genuinely transparent (`rgba(0, 0, 0, 0)`).
+ */
+export function compositeDkSoftContactShadow(
+  rgbaTopDown: Uint8ClampedArray,
+  width: number,
+  height: number,
+  options?: DkContactShadowOptions
+): AlphaSilhouetteBounds | null {
+  cleanTransparentAlphaEdge(rgbaTopDown, 2);
+  const bounds = computeAlphaSilhouetteBounds(rgbaTopDown, width, height, 12);
+  if (!bounds) return null;
+
+  const peakOpacity = THREE.MathUtils.clamp(
+    options?.peakOpacity ?? 0.21,
+    0,
+    0.6
+  );
+  if (peakOpacity <= 0.001) return bounds;
+
+  const [shR, shG, shB] = options?.shadowRgb ?? [15, 23, 42];
+  const spanX = Math.max(1, bounds.maxX - bounds.minX + 1);
+  const spanY = Math.max(1, bounds.maxY - bounds.minY + 1);
+
+  const cx = (bounds.minX + bounds.maxX) * 0.5;
+  const rx = Math.max(6, Math.min(width * 0.46, spanX * 0.52));
+  const ry = Math.max(3, Math.min(height * 0.055, spanY * 0.085));
+  const cy = Math.min(
+    height - 1 - ry * 0.25,
+    bounds.maxY + Math.max(1.5, spanY * 0.018)
+  );
+
+  const x0 = Math.max(0, Math.floor(cx - rx));
+  const x1 = Math.min(width - 1, Math.ceil(cx + rx));
+  const y0 = Math.max(0, Math.floor(cy - ry));
+  const y1 = Math.min(height - 1, Math.ceil(cy + ry));
+
+  const invRx = 1 / rx;
+  const invRy = 1 / ry;
+
+  for (let y = y0; y <= y1; y++) {
+    const ny = (y - cy) * invRy;
+    const ny2 = ny * ny;
+    if (ny2 >= 1) continue;
+
+    const rowBase = y * width * 4;
+    for (let x = x0; x <= x1; x++) {
+      const nx = (x - cx) * invRx;
+      const d2 = nx * nx + ny2;
+      if (d2 >= 1) continue;
+
+      const oneMinusD2 = 1 - d2;
+      const outer = Math.pow(oneMinusD2, 2.2);
+      const core = Math.exp(-d2 * 4.5) * oneMinusD2;
+      const shA = peakOpacity * (0.68 * outer + 0.32 * core);
+      if (shA <= 0.002) continue;
+
+      const idx = rowBase + x * 4;
+      const fgAInt = rgbaTopDown[idx + 3];
+      if (fgAInt >= 254) {
+        // Solid opaque firearm pixel completely occludes contact shadow beneath it
+        continue;
+      }
+
+      if (fgAInt <= 1) {
+        rgbaTopDown[idx] = shR;
+        rgbaTopDown[idx + 1] = shG;
+        rgbaTopDown[idx + 2] = shB;
+        rgbaTopDown[idx + 3] = Math.round(shA * 255);
+      } else {
+        const fgA = fgAInt / 255;
+        const underFactor = shA * (1 - fgA);
+        const outA = fgA + underFactor;
+        const invOutA = 1 / outA;
+        rgbaTopDown[idx] = Math.round(
+          (rgbaTopDown[idx] * fgA + shR * underFactor) * invOutA
+        );
+        rgbaTopDown[idx + 1] = Math.round(
+          (rgbaTopDown[idx + 1] * fgA + shG * underFactor) * invOutA
+        );
+        rgbaTopDown[idx + 2] = Math.round(
+          (rgbaTopDown[idx + 2] * fgA + shB * underFactor) * invOutA
+        );
+        rgbaTopDown[idx + 3] = Math.min(255, Math.round(outA * 255));
+      }
+    }
+  }
+
+  return bounds;
+}
+
+// =====================================================================================
+// Shot Plan & Camera Framing (Pixel-Aligned with Offline Blender Cycles Master Plates)
+// =====================================================================================
+
 interface ShotSpec {
   key: MonographPlateKey;
   explodeT: number;
@@ -116,8 +578,16 @@ interface ShotSpec {
   useManifestCloseFocus?: boolean;
 }
 
+interface ShotCameraOverride {
+  azimuthDeg?: number;
+  elevationDeg?: number;
+  fovDeg?: number;
+  aspect?: number;
+  skipTurntableBounds?: boolean;
+}
+
 const SHOT_PLAN: readonly ShotSpec[] = [
-  // 1. Hero Cover 3/4 Turntable Photo
+  // 1. Hero Cover 3/4 Turntable Photo (floating DK cutout without pedestal in `dk_encyclopedia`)
   {
     key: 'cover_hero',
     explodeT: 0,
@@ -324,7 +794,7 @@ const SHOT_PLAN: readonly ShotSpec[] = [
     fillX: 0.87,
     fillY: 0.82,
   },
-  // 17. Macro Breech Focus (for Pro Dossier toggle)
+  // 17. Macro Breech Focus (for Pro Dossier & DK Magnification Loupe)
   {
     key: 'breech_closeup',
     explodeT: 0,
@@ -341,49 +811,58 @@ const SHOT_PLAN: readonly ShotSpec[] = [
 ];
 
 /**
- * Tailors base studio shot specs to each exhibit's actual firing kinematics
- * and frame architecture (archery cam/arrow milestones vs. per-firearm timings).
+ * Tailors base studio shot specs to each exhibit's actual firing kinematics,
+ * frame architecture (archery cam/arrow milestones vs. per-firearm timings),
+ * and edition presentation (`dk_encyclopedia` skips the dark turntable pedestal).
  */
 export function resolveShotForWeapon(
   shot: ShotSpec,
-  weaponId: WeaponId
+  weaponId: WeaponId,
+  edition?: MonographEdition
 ): ShotSpec {
+  const baseShot: ShotSpec =
+    edition === 'dk_encyclopedia' && shot.showTurntable
+      ? { ...shot, showTurntable: false }
+      : shot;
+
   if (isArcheryWeapon(weaponId)) {
-    switch (shot.key) {
+    switch (baseShot.key) {
       case 'comic_1_ready':
-        return { ...shot, firingF: 0.27, sectionCut: false };
+        return { ...baseShot, firingF: 0.27, sectionCut: false };
       case 'comic_2_ignition':
-        return { ...shot, firingF: 0.36, sectionCut: false };
+        return { ...baseShot, firingF: 0.36, sectionCut: false };
       case 'comic_3_eject':
-        return { ...shot, firingF: 0.5, sectionCut: false };
+        return { ...baseShot, firingF: 0.5, sectionCut: false };
       case 'comic_4_reload':
         return {
-          ...shot,
+          ...baseShot,
           firingF: 0.78,
           sectionCut: false,
-          xrayShells: weaponId === 'lift33' ? false : shot.xrayShells,
+          xrayShells: weaponId === 'lift33' ? false : baseShot.xrayShells,
         };
       case 'breech_closeup':
-        return weaponId === 'lift33' ? { ...shot, xrayShells: false } : shot;
+        return weaponId === 'lift33'
+          ? { ...baseShot, xrayShells: false }
+          : baseShot;
       default:
-        return shot;
+        return baseShot;
     }
   }
 
   const timing = getWeaponFiringTiming(weaponId);
-  switch (shot.key) {
+  switch (baseShot.key) {
     case 'comic_2_ignition':
       return {
-        ...shot,
+        ...baseShot,
         firingF: (timing.ignitionF + timing.muzzleExitF) * 0.52,
       };
     case 'comic_3_eject':
       return {
-        ...shot,
+        ...baseShot,
         firingF: Math.min(0.74, timing.ejectF + 0.02),
       };
     default:
-      return shot;
+      return baseShot;
   }
 }
 
@@ -423,7 +902,8 @@ const _pose = createMutablePose();
 function computeWeaponWorldBounds(
   weaponId: WeaponId,
   plugin: WeaponRuntimePlugin,
-  shot: ShotSpec
+  shot: ShotSpec,
+  includeTurntable: boolean
 ): THREE.Box3 {
   const box = new THREE.Box3();
   let hasAny = false;
@@ -471,7 +951,7 @@ function computeWeaponWorldBounds(
     box.max.set(25, 6, 3);
   }
 
-  if (shot.showTurntable) {
+  if (includeTurntable) {
     const env = evaluateWeaponTurntableEnvelopeInto(weaponId, shot.explodeT);
     const rim = env.radius * 1.06;
     box.expandByPoint(_corner.set(env.cx - rim, env.platterTopY - 0.65, -rim));
@@ -485,10 +965,35 @@ function positionStudioShotCamera(
   cam: THREE.PerspectiveCamera,
   weaponId: WeaponId,
   plugin: WeaponRuntimePlugin,
-  shot: ShotSpec
+  shot: ShotSpec,
+  captureAspect: number,
+  override?: ShotCameraOverride
 ): void {
-  cam.fov = CAPTURE_FOV_DEG;
-  cam.aspect = CAPTURE_ASPECT;
+  const fovDeg =
+    override?.fovDeg !== undefined &&
+    Number.isFinite(override.fovDeg) &&
+    override.fovDeg > 0
+      ? override.fovDeg
+      : CAPTURE_FOV_DEG;
+  const aspect =
+    override?.aspect !== undefined &&
+    Number.isFinite(override.aspect) &&
+    override.aspect > 0
+      ? override.aspect
+      : captureAspect;
+  const azimuthDeg =
+    override?.azimuthDeg !== undefined && Number.isFinite(override.azimuthDeg)
+      ? override.azimuthDeg
+      : shot.azimuthDeg;
+  const elevationDeg =
+    override?.elevationDeg !== undefined &&
+    Number.isFinite(override.elevationDeg)
+      ? override.elevationDeg
+      : shot.elevationDeg;
+  const includeTurntable = shot.showTurntable && !override?.skipTurntableBounds;
+
+  cam.fov = fovDeg;
+  cam.aspect = aspect;
   cam.near = 0.1;
   cam.far = 680;
   cam.clearViewOffset();
@@ -496,24 +1001,25 @@ function positionStudioShotCamera(
   const manifest = getWeaponManifest(weaponId);
   if (shot.useManifestCloseFocus) {
     const closeCfg = manifest.cameraPresets.cutaway_focus;
-    cam.position.set(
-      closeCfg.pos[0],
-      closeCfg.pos[1],
-      closeCfg.pos[2] * 0.92
-    );
+    cam.position.set(closeCfg.pos[0], closeCfg.pos[1], closeCfg.pos[2] * 0.92);
     cam.lookAt(closeCfg.target[0], closeCfg.target[1], closeCfg.target[2]);
     cam.updateProjectionMatrix();
     cam.updateMatrixWorld(true);
     return;
   }
 
-  const bounds = computeWeaponWorldBounds(weaponId, plugin, shot);
+  const bounds = computeWeaponWorldBounds(
+    weaponId,
+    plugin,
+    shot,
+    includeTurntable
+  );
   const cx = (bounds.min.x + bounds.max.x) * 0.5;
   let cy = (bounds.min.y + bounds.max.y) * 0.5;
   const cz = (bounds.min.z + bounds.max.z) * 0.5;
 
-  const az = THREE.MathUtils.degToRad(shot.azimuthDeg);
-  const el = THREE.MathUtils.degToRad(shot.elevationDeg);
+  const az = THREE.MathUtils.degToRad(azimuthDeg);
+  const el = THREE.MathUtils.degToRad(elevationDeg);
   const viewDir = new THREE.Vector3(
     Math.sin(az) * Math.cos(el),
     Math.sin(el),
@@ -541,17 +1047,18 @@ function positionStudioShotCamera(
     if (pz > maxDepthTowardCam) maxDepthTowardCam = pz;
   }
 
-  const tanHalfV = Math.tan(THREE.MathUtils.degToRad(CAPTURE_FOV_DEG * 0.5));
-  const tanHalfH = tanHalfV * CAPTURE_ASPECT;
+  const tanHalfV = Math.tan(THREE.MathUtils.degToRad(fovDeg * 0.5));
+  const tanHalfH = tanHalfV * aspect;
 
   const distY = maxProjY / (tanHalfV * shot.fillY) + maxDepthTowardCam;
   const distX = maxProjX / (tanHalfH * shot.fillX) + maxDepthTowardCam;
   const minSafeDist = shot.isolatedGroup ? 8.5 : 14;
   const baseDist = Math.max(minSafeDist, distX, distY);
 
-  // Nudge compact pistols & revolvers upward and slightly closer on cover_hero so they sit centered above the turntable rim
+  // Nudge compact pistols & revolvers only when framed over the circular turntable rim
   const wid = weaponId as string;
-  const isPistolCover =
+  const isPistolTurntableCover =
+    includeTurntable &&
     shot.key === 'cover_hero' &&
     (manifest.workbenchMeta.scaleProfile === 'pistol' ||
       wid === 'g17' ||
@@ -559,10 +1066,10 @@ function positionStudioShotCamera(
       wid === 'deagle' ||
       wid === 'python' ||
       wid === 'p08');
-  if (isPistolCover) {
+  if (isPistolTurntableCover) {
     cy -= 1.05;
   }
-  const dist = isPistolCover
+  const dist = isPistolTurntableCover
     ? Math.max(minSafeDist, baseDist * 0.89)
     : baseDist;
 
@@ -601,17 +1108,53 @@ async function waitForWeaponTexturesWarm(
   }
 }
 
+function verifyImageLoads(url: string, timeoutMs = 4500): Promise<boolean> {
+  if (typeof Image === 'undefined') {
+    return Promise.resolve(false);
+  }
+  return new Promise<boolean>((resolve) => {
+    let settled = false;
+    const finish = (ok: boolean) => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timer);
+      resolve(ok);
+    };
+    const timer = window.setTimeout(() => finish(false), timeoutMs);
+    const img = new Image();
+    img.decoding = 'async';
+    img.onload = () => finish(img.naturalWidth > 0 && img.naturalHeight > 0);
+    img.onerror = () => finish(false);
+    img.src = url;
+  });
+}
+
+interface VerifiedCyclesPlate {
+  url: string;
+  entry: DkMasterPlateEntry;
+}
+
 interface ActiveCaptureSession {
   requestId: number;
   weaponId: WeaponId;
   edition: MonographEdition;
+  quality: MonographCaptureQuality;
+  captureWidth: number;
+  captureHeight: number;
   plugin: WeaponRuntimePlugin;
   shots: readonly ShotSpec[];
   saved: SavedViewportSnapshot;
   shotIndex: number;
   settleCounter: number;
+  hasSettledFirstWebglShot: boolean;
+  verifiedCyclesPlates: Partial<Record<MonographPlateKey, VerifiedCyclesPlate>>;
   plates: Partial<Record<MonographPlateKey, string>>;
+  plateSources: Partial<Record<MonographPlateKey, MonographPlateSource>>;
   explodedPins: ExplodedPinItem[];
+  dkHeroCallouts: DkCalloutItem[];
+  dkCutawayCallouts: DkCalloutItem[];
+  dkExplodedCallouts: DkCalloutItem[];
+  loupeAnchors: Partial<Record<MonographLoupeKey, MonographLoupeAnchor>>;
   composer: EffectComposer;
   renderPass: RenderPass;
   gtaoPass: GTAOPass;
@@ -626,6 +1169,12 @@ interface ActiveCaptureSession {
   canvas2d: HTMLCanvasElement;
   ctx2d: CanvasRenderingContext2D;
   imageData: ImageData;
+}
+
+function resolveEnvironmentPresetForEdition(
+  edition: MonographEdition
+): ArmoryEnvironmentPreset {
+  return edition === 'obsidian_folio' ? 'tactical_vault' : 'blueprint_daylight';
 }
 
 function buildHiddenGroupsForShot(
@@ -652,8 +1201,7 @@ function applyShotStateToStore(
   edition: MonographEdition,
   shot: ShotSpec
 ): void {
-  const envPreset: ArmoryEnvironmentPreset =
-    edition === 'blueprint_manual' ? 'blueprint_daylight' : 'tactical_vault';
+  const envPreset = resolveEnvironmentPresetForEdition(edition);
   const isFiring = shot.firingF !== undefined;
   const fireF = shot.firingF ?? 0;
 
@@ -717,14 +1265,65 @@ function restoreSavedSnapshot(saved: SavedViewportSnapshot): void {
 }
 
 function disposeSessionGpuResources(session: ActiveCaptureSession): void {
+  session.renderPass.dispose();
   session.gtaoPass.dispose();
   session.outputPass.dispose();
   session.smaaPass.dispose();
   session.copyPass.dispose();
   session.composer.renderTarget1.dispose();
   session.composer.renderTarget2.dispose();
+  session.composer.dispose();
   session.ldrTarget.dispose();
   session.brightBgTexture?.dispose();
+}
+
+const DK_STAGE_OBJECT_NAMES: readonly string[] = [
+  'studio-cyclorama-backdrop',
+  'studio-cyclorama-floor',
+  'gunsmith-mat-slab',
+  'gunsmith-mat-lip',
+  'gunsmith-mat-tray',
+];
+
+function withTransparentStudioIsolation(
+  targetScene: THREE.Scene,
+  renderFn: () => void
+): void {
+  const prevSceneBg = targetScene.background;
+  const prevSceneFog = targetScene.fog;
+  const hiddenObjects: THREE.Object3D[] = [];
+
+  const hideIfVisible = (obj: THREE.Object3D | null | undefined) => {
+    if (!obj || !obj.visible) return;
+    obj.visible = false;
+    hiddenObjects.push(obj);
+  };
+
+  // Hide the full GunsmithStageMat root group (floor grid, takedown mat, tray & ContactShadows)
+  const floorMesh = targetScene.getObjectByName('studio-cyclorama-floor');
+  if (floorMesh?.parent && floorMesh.parent !== targetScene) {
+    hideIfVisible(floorMesh.parent);
+  }
+  const matSlab = targetScene.getObjectByName('gunsmith-mat-slab');
+  if (matSlab?.parent && matSlab.parent !== targetScene) {
+    hideIfVisible(matSlab.parent);
+  }
+  for (let i = 0; i < DK_STAGE_OBJECT_NAMES.length; i++) {
+    hideIfVisible(targetScene.getObjectByName(DK_STAGE_OBJECT_NAMES[i]));
+  }
+
+  targetScene.background = null;
+  targetScene.fog = null;
+
+  try {
+    renderFn();
+  } finally {
+    targetScene.background = prevSceneBg;
+    targetScene.fog = prevSceneFog;
+    for (let i = 0; i < hiddenObjects.length; i++) {
+      hiddenObjects[i].visible = true;
+    }
+  }
 }
 
 function withStudioCaptureBackdrop(
@@ -744,12 +1343,11 @@ function withStudioCaptureBackdrop(
   const prevFogB = fogColor ? fogColor.b : 0;
 
   const cycFloor = targetScene.getObjectByName('studio-cyclorama-floor') as
-    | THREE.Mesh
-    | undefined;
+    THREE.Mesh | undefined;
   const cycUniform =
     cycFloor && (cycFloor.material as THREE.ShaderMaterial).isShaderMaterial
-      ? (((cycFloor.material as THREE.ShaderMaterial).uniforms
-          .uCycloramaColor?.value as THREE.Color | undefined) ?? null)
+      ? (((cycFloor.material as THREE.ShaderMaterial).uniforms.uCycloramaColor
+          ?.value as THREE.Color | undefined) ?? null)
       : null;
   const prevCycR = cycUniform ? cycUniform.r : 0;
   const prevCycG = cycUniform ? cycUniform.g : 0;
@@ -795,7 +1393,8 @@ const ActiveMonographCaptureWorker: React.FC<{
   requestId: number;
   weaponId: WeaponId;
   edition: MonographEdition;
-}> = ({ requestId, weaponId, edition }) => {
+  quality: MonographCaptureQuality;
+}> = ({ requestId, weaponId, edition, quality }) => {
   const { gl, scene } = useThree();
   const sessionRef = useRef<ActiveCaptureSession | null>(null);
 
@@ -840,26 +1439,74 @@ const ActiveMonographCaptureWorker: React.FC<{
       await waitForWeaponTexturesWarm(weaponId, plugin);
       if (cancelled) return;
 
-      const envPreset: ArmoryEnvironmentPreset =
-        edition === 'blueprint_manual'
-          ? 'blueprint_daylight'
-          : 'tactical_vault';
+      // Load offline Blender Cycles 4K master plates manifest if applicable
+      const verifiedCyclesPlates: Partial<
+        Record<MonographPlateKey, VerifiedCyclesPlate>
+      > = {};
+      if (edition === 'dk_encyclopedia' || edition === 'blueprint_manual') {
+        await loadDkMasterPlateManifest();
+        if (cancelled) return;
+        const weaponMaster = getWeaponMasterPlates(weaponId);
+        if (weaponMaster) {
+          const entries = Object.entries(weaponMaster.plates) as Array<
+            [MonographPlateKey, DkMasterPlateEntry]
+          >;
+          await Promise.all(
+            entries.map(async ([plateKey, entry]) => {
+              const url = resolveMasterPlateUrl(entry);
+              const loaded = await verifyImageLoads(url);
+              if (loaded) {
+                verifiedCyclesPlates[plateKey] = { url, entry };
+              }
+            })
+          );
+          if (cancelled) return;
+        }
+      }
+
+      const { width: captureWidth, height: captureHeight } =
+        resolveCaptureDimensions(quality, gl.capabilities?.maxTextureSize);
+      const captureAspect = captureWidth / captureHeight;
+
+      const envPreset = resolveEnvironmentPresetForEdition(edition);
       const postParams = getPostProcessingPresetParams(envPreset);
+      const isDkTransparent = edition === 'dk_encyclopedia';
 
       const captureCam = new THREE.PerspectiveCamera(
         CAPTURE_FOV_DEG,
-        CAPTURE_ASPECT,
+        captureAspect,
         0.1,
         680
       );
-      const hdrTarget = createArmoryComposerRenderTarget(CAPTURE_W, CAPTURE_H);
+      const hdrTarget = createArmoryComposerRenderTarget(
+        captureWidth,
+        captureHeight
+      );
       const composer = new EffectComposer(gl, hdrTarget);
       composer.setPixelRatio(1);
-      composer.setSize(CAPTURE_W, CAPTURE_H);
+      composer.setSize(captureWidth, captureHeight);
       composer.renderToScreen = false;
 
-      const renderPass = new RenderPass(scene, captureCam);
-      const gtaoPass = new GTAOPass(scene, captureCam, CAPTURE_W, CAPTURE_H);
+      const renderPass = new RenderPass(
+        scene,
+        captureCam,
+        null,
+        isDkTransparent ? new THREE.Color(0x000000) : null,
+        isDkTransparent ? 0 : null
+      );
+
+      const gtaoSize = computeGtaoInternalSize(
+        captureWidth,
+        captureHeight,
+        'full',
+        1
+      );
+      const gtaoPass = new GTAOPass(
+        scene,
+        captureCam,
+        gtaoSize.width,
+        gtaoSize.height
+      );
       hardenGtaoPassAgainstNaN(gtaoPass);
       gtaoPass.output = GTAOPass.OUTPUT.Default;
       gtaoPass.blendIntensity = postParams.gtao.blendIntensity;
@@ -918,8 +1565,22 @@ const ActiveMonographCaptureWorker: React.FC<{
       };
 
       const outputPass = new OutputPass();
-      hardenOutputPassAgainstNaN(outputPass);
-      const smaaPass = new SMAAPass(CAPTURE_W, CAPTURE_H);
+      if (isDkTransparent) {
+        hardenOutputPassForTransparentCutout(outputPass);
+      } else {
+        hardenOutputPassAgainstNaN(outputPass);
+        outputPass.material.blending = THREE.NoBlending;
+      }
+
+      const smaaPass = new SMAAPass(captureWidth, captureHeight);
+      smaaPass.clear = true;
+      if (isDkTransparent) {
+        hardenSmaaPassForTransparentCutout(smaaPass);
+      } else {
+        smaaPass.materialEdges.toneMapped = false;
+        smaaPass.materialWeights.toneMapped = false;
+        smaaPass.materialBlend.toneMapped = false;
+      }
 
       composer.addPass(renderPass);
       composer.addPass(gtaoPass);
@@ -928,13 +1589,19 @@ const ActiveMonographCaptureWorker: React.FC<{
 
       const copyPass = new ShaderPass(CopyShader);
       copyPass.renderToScreen = false;
+      copyPass.material.blending = THREE.NoBlending;
+      copyPass.material.transparent = false;
 
-      const ldrTarget = new THREE.WebGLRenderTarget(CAPTURE_W, CAPTURE_H, {
-        type: THREE.UnsignedByteType,
-        format: THREE.RGBAFormat,
-        depthBuffer: false,
-        stencilBuffer: false,
-      });
+      const ldrTarget = new THREE.WebGLRenderTarget(
+        captureWidth,
+        captureHeight,
+        {
+          type: THREE.UnsignedByteType,
+          format: THREE.RGBAFormat,
+          depthBuffer: false,
+          stencilBuffer: false,
+        }
+      );
 
       const brightBgTexture =
         edition === 'blueprint_manual'
@@ -942,14 +1609,14 @@ const ActiveMonographCaptureWorker: React.FC<{
           : null;
 
       const canvas2d = document.createElement('canvas');
-      canvas2d.width = CAPTURE_W;
-      canvas2d.height = CAPTURE_H;
+      canvas2d.width = captureWidth;
+      canvas2d.height = captureHeight;
       const ctx2d = canvas2d.getContext('2d')!;
-      const imageData = ctx2d.createImageData(CAPTURE_W, CAPTURE_H);
-      const rawRgba = new Uint8Array(CAPTURE_W * CAPTURE_H * 4);
+      const imageData = ctx2d.createImageData(captureWidth, captureHeight);
+      const rawRgba = new Uint8Array(captureWidth * captureHeight * 4);
 
       const shots = SHOT_PLAN.map((shot) =>
-        resolveShotForWeapon(shot, weaponId)
+        resolveShotForWeapon(shot, weaponId, edition)
       );
       applyShotStateToStore(weaponId, edition, shots[0]);
       updateMonographCaptureProgress(requestId, 0, shots[0].key);
@@ -958,13 +1625,23 @@ const ActiveMonographCaptureWorker: React.FC<{
         requestId,
         weaponId,
         edition,
+        quality,
+        captureWidth,
+        captureHeight,
         plugin,
         shots,
         saved,
         shotIndex: 0,
         settleCounter: 0,
+        hasSettledFirstWebglShot: false,
+        verifiedCyclesPlates,
         plates: {},
+        plateSources: {},
         explodedPins: [],
+        dkHeroCallouts: [],
+        dkCutawayCallouts: [],
+        dkExplodedCallouts: [],
+        loupeAnchors: {},
         composer,
         renderPass,
         gtaoPass,
@@ -991,7 +1668,7 @@ const ActiveMonographCaptureWorker: React.FC<{
         restoreSavedSnapshot(s.saved);
       }
     };
-  }, [requestId, weaponId, edition, gl, scene]);
+  }, [requestId, weaponId, edition, quality, gl, scene]);
 
   useFrame(({ gl: frameGl, scene: frameScene }) => {
     const s = sessionRef.current;
@@ -1000,85 +1677,170 @@ const ActiveMonographCaptureWorker: React.FC<{
     const shot = s.shots[s.shotIndex];
     if (!shot) return;
 
+    const verifiedCycles = s.verifiedCyclesPlates[shot.key];
     const fireF = shot.firingF ?? 0;
     playbackClock.setFireProgress(fireF, true);
     playbackClock.setAnimatedFireProgress(fireF);
     playbackClock.setTargetProgress(shot.explodeT, true);
     playbackClock.setAnimatedProgress(shot.explodeT);
 
-    // Extra settle guard when transitioning out of CartridgeCutawayStage so DisassemblyRig / PartActor finish mounting
-    const requiredSettleFrames =
-      s.shotIndex === 0 && s.saved.screen === 'cartridges'
+    // Cycles master plates don't need GPU settle frames; WebGL captures settle PartActor matrices/materials
+    if (!verifiedCycles) {
+      const needsExtraInitialSettle =
+        !s.hasSettledFirstWebglShot &&
+        (s.saved.screen === 'cartridges' ||
+          s.saved.environmentPreset !==
+            resolveEnvironmentPresetForEdition(s.edition));
+      const requiredSettleFrames = needsExtraInitialSettle
         ? SETTLE_FRAMES_PER_SHOT + 2
         : SETTLE_FRAMES_PER_SHOT;
-    s.settleCounter += 1;
-    if (s.settleCounter < requiredSettleFrames) {
-      return;
+      s.settleCounter += 1;
+      if (s.settleCounter < requiredSettleFrames) {
+        return;
+      }
+      s.hasSettledFirstWebglShot = true;
     }
 
     frameScene.updateMatrixWorld(true);
-    positionStudioShotCamera(s.captureCam, s.weaponId, s.plugin, shot);
 
-    s.gtaoPass.enabled = !shot.xrayShells;
+    const captureAspect = s.captureWidth / s.captureHeight;
+    const camOverride: ShotCameraOverride | undefined = verifiedCycles
+      ? {
+          azimuthDeg: verifiedCycles.entry.azimuthDeg,
+          elevationDeg: verifiedCycles.entry.elevationDeg,
+          fovDeg: verifiedCycles.entry.fovDeg,
+          aspect:
+            verifiedCycles.entry.width > 0 && verifiedCycles.entry.height > 0
+              ? verifiedCycles.entry.width / verifiedCycles.entry.height
+              : captureAspect,
+          skipTurntableBounds: true,
+        }
+      : undefined;
 
-    const envPreset: ArmoryEnvironmentPreset =
-      s.edition === 'blueprint_manual'
-        ? 'blueprint_daylight'
-        : 'tactical_vault';
-    const postParams = getPostProcessingPresetParams(envPreset);
-    const prevExposure = frameGl.toneMappingExposure;
-    const prevToneMapping = frameGl.toneMapping;
-
-    applyRendererToneMapping(
-      frameGl,
-      postParams.toneMapping,
-      postParams.toneMappingExposure,
-      THREE.SRGBColorSpace
+    positionStudioShotCamera(
+      s.captureCam,
+      s.weaponId,
+      s.plugin,
+      shot,
+      captureAspect,
+      camOverride
     );
 
-    const prevRenderTarget = frameGl.getRenderTarget();
-    try {
-      withStudioCaptureBackdrop(frameScene, s.brightBgTexture, () => {
-        s.composer.render(0.016);
-      });
-      s.copyPass.render(
+    if (verifiedCycles) {
+      s.plates[shot.key] = verifiedCycles.url;
+      s.plateSources[shot.key] = 'cycles_4k';
+    } else {
+      s.gtaoPass.enabled = !shot.xrayShells;
+
+      const envPreset = resolveEnvironmentPresetForEdition(s.edition);
+      const postParams = getPostProcessingPresetParams(envPreset);
+      const prevExposure = frameGl.toneMappingExposure;
+      const prevToneMapping = frameGl.toneMapping;
+      const prevClearAlpha = frameGl.getClearAlpha();
+
+      applyRendererToneMapping(
         frameGl,
-        s.ldrTarget,
-        s.composer.readBuffer,
-        0,
-        false
+        postParams.toneMapping,
+        postParams.toneMappingExposure,
+        THREE.SRGBColorSpace
       );
-      frameGl.readRenderTargetPixels(
-        s.ldrTarget,
-        0,
-        0,
-        CAPTURE_W,
-        CAPTURE_H,
-        s.rawRgba
+
+      const prevRenderTarget = frameGl.getRenderTarget();
+      try {
+        if (s.edition === 'dk_encyclopedia') {
+          withTransparentStudioIsolation(frameScene, () => {
+            s.composer.render(0.016);
+          });
+        } else {
+          withStudioCaptureBackdrop(frameScene, s.brightBgTexture, () => {
+            s.composer.render(0.016);
+          });
+        }
+
+        s.copyPass.render(
+          frameGl,
+          s.ldrTarget,
+          s.composer.readBuffer,
+          0,
+          false
+        );
+        frameGl.readRenderTargetPixels(
+          s.ldrTarget,
+          0,
+          0,
+          s.captureWidth,
+          s.captureHeight,
+          s.rawRgba
+        );
+      } finally {
+        frameGl.setRenderTarget(prevRenderTarget);
+        frameGl.setClearAlpha(prevClearAlpha);
+        applyRendererToneMapping(frameGl, prevToneMapping, prevExposure);
+      }
+
+      flipRgbaRowsVertical(
+        s.rawRgba,
+        s.imageData.data,
+        s.captureWidth,
+        s.captureHeight
       );
-    } finally {
-      frameGl.setRenderTarget(prevRenderTarget);
-      applyRendererToneMapping(frameGl, prevToneMapping, prevExposure);
+
+      if (s.edition === 'dk_encyclopedia') {
+        if (shouldApplyDkContactShadow(shot.key)) {
+          compositeDkSoftContactShadow(
+            s.imageData.data,
+            s.captureWidth,
+            s.captureHeight,
+            {
+              peakOpacity: shot.isolatedGroup ? 0.14 : 0.21,
+            }
+          );
+        } else {
+          cleanTransparentAlphaEdge(s.imageData.data, 2);
+        }
+      }
+
+      s.ctx2d.clearRect(0, 0, s.captureWidth, s.captureHeight);
+      s.ctx2d.putImageData(s.imageData, 0, 0);
+      s.plates[shot.key] = s.canvas2d.toDataURL('image/png');
+      s.plateSources[shot.key] =
+        s.quality === 'print_2880' ? 'webgl_2880' : 'webgl_1440';
     }
 
-    const rowBytes = CAPTURE_W * 4;
-    const dst = s.imageData.data;
-    for (let y = 0; y < CAPTURE_H; y++) {
-      const srcOffset = (CAPTURE_H - 1 - y) * rowBytes;
-      const dstOffset = y * rowBytes;
-      dst.set(s.rawRgba.subarray(srcOffset, srcOffset + rowBytes), dstOffset);
-    }
-    s.ctx2d.putImageData(s.imageData, 0, 0);
-    s.plates[shot.key] = s.canvas2d.toDataURL('image/png');
-
-    if (shot.key === 'exploded_bom') {
-      const anchors = projectExplodedPartAnchors(
+    // Project DK callouts & circular magnification loupe anchors for both Cycles and WebGL plates
+    if (shot.key === 'cover_hero') {
+      const heroAnchors = projectExplodedPartAnchors(
         s.weaponId,
         s.plugin.parts,
         s.captureCam,
         shot.explodeT
       );
-      s.explodedPins = solveExplodedPinLayout(anchors);
+      s.dkHeroCallouts = solveDkAnnotatedCallouts(heroAnchors, 10);
+      s.loupeAnchors = projectLoupeAnchors(
+        s.weaponId,
+        s.plugin.parts,
+        s.captureCam
+      );
+    } else if (shot.key === 'stencil_cutaway') {
+      const internalParts = s.plugin.parts.filter((p) => !p.isShell);
+      const cutawayPool =
+        internalParts.length >= 6 ? internalParts : s.plugin.parts;
+      const cutawayAnchors = projectExplodedPartAnchors(
+        s.weaponId,
+        cutawayPool,
+        s.captureCam,
+        shot.explodeT
+      );
+      s.dkCutawayCallouts = solveDkAnnotatedCallouts(cutawayAnchors, 9);
+    } else if (shot.key === 'exploded_bom') {
+      const explodedAnchors = projectExplodedPartAnchors(
+        s.weaponId,
+        s.plugin.parts,
+        s.captureCam,
+        shot.explodeT
+      );
+      s.explodedPins = solveExplodedPinLayout(explodedAnchors);
+      s.dkExplodedCallouts = solveDkAnnotatedCallouts(explodedAnchors, 12);
     }
 
     const completedCount = s.shotIndex + 1;
@@ -1096,12 +1858,18 @@ const ActiveMonographCaptureWorker: React.FC<{
     restoreSavedSnapshot(s.saved);
 
     completeMonographCapture(s.requestId, {
-      cacheKey: buildMonographCacheKey(s.weaponId, s.edition),
+      cacheKey: buildMonographCacheKey(s.weaponId, s.edition, s.quality),
       weaponId: s.weaponId,
       edition: s.edition,
+      quality: s.quality,
       capturedAtIso: new Date().toISOString(),
       plates: s.plates as Record<MonographPlateKey, string>,
+      plateSources: s.plateSources,
       explodedPins: s.explodedPins,
+      dkHeroCallouts: s.dkHeroCallouts,
+      dkCutawayCallouts: s.dkCutawayCallouts,
+      dkExplodedCallouts: s.dkExplodedCallouts,
+      loupeAnchors: s.loupeAnchors,
     });
   }, 2);
 
@@ -1113,10 +1881,11 @@ export const MonographCaptureRig: React.FC = () => {
   if (!activeRequest) return null;
   return (
     <ActiveMonographCaptureWorker
-      key={`${activeRequest.requestId}:${activeRequest.weaponId}:${activeRequest.edition}`}
+      key={`${activeRequest.requestId}:${activeRequest.weaponId}:${activeRequest.edition}:${activeRequest.quality}`}
       requestId={activeRequest.requestId}
       weaponId={activeRequest.weaponId}
       edition={activeRequest.edition}
+      quality={activeRequest.quality}
     />
   );
 };
