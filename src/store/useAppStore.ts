@@ -30,6 +30,13 @@ import {
   type ExternalProjectileInput,
   normalizeExternalProjectileId,
 } from '../engine/physics/externalBallistics';
+import type {
+  MonographCaptureQuality,
+  MonographEdition,
+  MonographLayoutMode,
+  MonographPageMode,
+  MonographStyleMode,
+} from '../features/monograph/monographCaptureStore';
 import {
   getNarrationAudioSnapshot,
   stopNarrationAudio,
@@ -57,6 +64,16 @@ export type PosterArmorerRankOption = 'S' | 'A' | 'B' | 'C';
 export interface PosterModalLaunchOptions {
   weaponId?: WeaponId;
   armorerRank?: PosterArmorerRankOption | null;
+}
+
+export interface MonographModalLaunchOptions {
+  styleMode?: MonographStyleMode;
+  edition?: MonographEdition;
+  layoutMode?: MonographLayoutMode;
+  pageMode?: MonographPageMode;
+  quality?: MonographCaptureQuality;
+  prepress?: boolean;
+  collectorCallsign?: string;
 }
 
 const ENVIRONMENT_PRESET_CYCLE: readonly ArmoryEnvironmentPreset[] = [
@@ -209,6 +226,7 @@ export interface AppState {
   textureModalOpen: boolean;
   monographModalOpen: boolean;
   monographWeaponId: WeaponId;
+  monographLaunchOptions: MonographModalLaunchOptions | null;
   posterShareModalOpen: boolean;
   posterShareOptions: PosterModalLaunchOptions | null;
   xrayShells: boolean;
@@ -318,7 +336,10 @@ export interface AppState {
   // Shared Visual & Selection Actions
   togglePbrTextures: () => void;
   setTextureModalOpen: (open: boolean) => void;
-  openMonographModal: (weaponId?: WeaponId) => void;
+  openMonographModal: (
+    weaponId?: WeaponId,
+    options?: MonographModalLaunchOptions | null
+  ) => void;
   closeMonographModal: () => void;
   setMonographWeaponId: (weaponId: WeaponId) => void;
   openPosterModal: (options?: PosterModalLaunchOptions) => void;
@@ -390,6 +411,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   textureModalOpen: false,
   monographModalOpen: false,
   monographWeaponId: 'ak15',
+  monographLaunchOptions: null,
   posterShareModalOpen: false,
   posterShareOptions: null,
   xrayShells: false,
@@ -1108,16 +1130,18 @@ export const useAppStore = create<AppState>((set, get) => ({
       posterShareModalOpen: textureModalOpen ? false : s.posterShareModalOpen,
       hudHidden: textureModalOpen ? false : s.hudHidden,
     })),
-  openMonographModal: (weaponId) =>
+  openMonographModal: (weaponId, options = null) =>
     set((s) => ({
       monographModalOpen: true,
       monographWeaponId:
         weaponId && isWeaponId(weaponId) ? weaponId : s.activeWeaponId,
+      monographLaunchOptions: options,
       textureModalOpen: false,
       posterShareModalOpen: false,
       hudHidden: false,
     })),
-  closeMonographModal: () => set({ monographModalOpen: false }),
+  closeMonographModal: () =>
+    set({ monographModalOpen: false, monographLaunchOptions: null }),
   setMonographWeaponId: (weaponId) => {
     if (isWeaponId(weaponId)) {
       set({ monographWeaponId: weaponId });

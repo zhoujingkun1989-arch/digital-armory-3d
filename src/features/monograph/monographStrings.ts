@@ -283,3 +283,251 @@ export function formatMonographDriveSpec(
   }
   return `${driveText} (${spec.propellantMassG.toFixed(2)} g)`;
 }
+
+export interface DkEncyclopediaStrings {
+  seriesWordmark: string;
+  seriesSubtitle: string;
+  factFileHeading: string;
+  scaleRulerKicker: string;
+  loupesHeading: string;
+  loupesSub: string;
+  spread1Section: string;
+  spread2LeftKicker: string;
+  spread2RightKicker: string;
+  spread3Kicker: string;
+  spread3Title: string;
+  spread4LeftKicker: string;
+  spread4RightKicker: string;
+  chronicleHeading: string;
+  breakthroughsQuoteKicker: string;
+  elevationsHeading: string;
+  leftProfileLabel: string;
+  topProfileLabel: string;
+  rightProfileLabel: string;
+  cutawayHeading: string;
+  cutawaySub: string;
+  cartridgeHeading: string;
+  ballisticsHeading: string;
+  explodedHeading: string;
+  explodedSub: string;
+  functionalRolesHeading: string;
+  bomDirectoryHeading: string;
+  bomDirectoryMeta: (partsCount: number, trisFormatted: string) => string;
+  cycleSequenceHeading: string;
+  cycle7Heading: string;
+  fieldStripHeading: string;
+  malfunctionsHeading: string;
+  energyLadderHeading: string;
+  exLibrisHeading: string;
+  qrCompanionHeading: string;
+  qrCompanionSub: string;
+  colophonCyclesLabel: (cyclesCount: number, total: number) => string;
+  colophonWebglLabel: (is300Dpi: boolean) => string;
+  colophonPrepressTag: string;
+  colophonTrimTag: string;
+  spreadFolioLabel: (leftPage: number, rightPage: number, totalPages: number) => string;
+  singlePageFolioLabel: (pageNum: number, totalPages: number) => string;
+  capturingPlate: (label: string) => string;
+  qaDatumLabel: string;
+  qaMeshLabel: string;
+  qaSignoffLabel: string;
+  qaSignoffValue: string;
+  qaSpecLine: string;
+}
+
+export function getDkEncyclopediaStrings(
+  lang: LanguageCode,
+  isArchery: boolean
+): DkEncyclopediaStrings {
+  if (lang === 'zh') {
+    return {
+      seriesWordmark: 'DIGITAL ARMORY · VISUAL ENCYCLOPEDIA',
+      seriesSubtitle: isArchery
+        ? '复合弓弩机械百科典藏卷'
+        : '世界轻武器机械视觉百科全书',
+      factFileHeading: isArchery
+        ? '核心技术档案 · FACT FILE'
+        : '原厂测绘档案 · FACT FILE',
+      scaleRulerKicker: isArchery
+        ? '真实比例尺与射手身高对照 · TRUE TO SCALE'
+        : '1:1 尺寸比例标尺与人体对照 · TRUE TO SCALE',
+      loupesHeading: isArchery
+        ? '核心机构光学放大特写 · ANATOMY LOUPES'
+        : '关键闭锁与火控放大镜特写 · ANATOMY LOUPES',
+      loupesSub: isArchery
+        ? '2.0×–3.0× 微距检视凸轮轮组、弓片力缆、撒放机构与箭道接口'
+        : '2.0×–3.0× 光学微距检视弹膛闭锁、自动机驱动、火控阻铁与供弹坡道',
+      spread1Section: '门扉总览 · GATEFOLD ANATOMY',
+      spread2LeftKicker: '研发编年史 · HISTORICAL CHRONICLE',
+      spread2RightKicker: isArchery
+        ? '纵剖解剖与矢箭动力学 · INSIDE THE MECHANISM'
+        : '实心纵剖与 1:1 实弹解剖 · INSIDE THE MECHANISM',
+      spread3Kicker: '全机构爆炸蓝图 · EXPLODED BLUEPRINT',
+      spread3Title: isArchery
+        ? '100% 阶梯分解全景与六大职能图谱'
+        : '全枪 100% 阶梯爆炸分解与六大机械职能图谱',
+      spread4LeftKicker: isArchery
+        ? '拉弓蓄能与发射时序 · LAUNCH CYCLE'
+        : '自动机循环时序 · CYCLE OF OPERATION',
+      spread4RightKicker: isArchery
+        ? '弓弩勤务拆装、排障与馆藏印鉴 · ARCHIVE MANUAL'
+        : '野战拆装教范、排障诊断与馆藏印鉴 · ARMORER MANUAL',
+      chronicleHeading: '四幕研制演进纪实',
+      breakthroughsQuoteKicker: '三大核心工程突破 · KEY BREAKTHROUGHS',
+      elevationsHeading: '正交工程视图 · ELEVATION PROFILES',
+      leftProfileLabel: '左侧正交视图 · LEFT ELEVATION',
+      topProfileLabel: '顶部俯视视图 · PLAN VIEW',
+      rightProfileLabel: '右侧正交主视图 · RIGHT ELEVATION',
+      cutawayHeading: isArchery
+        ? '正中纵剖内部结构透视'
+        : '45° 实心金属纵剖面解剖',
+      cutawaySub: isArchery
+        ? '双通道模板剖切揭示铝合金桁架弓把、凸轮轴承槽与悬浮导轨内部结构'
+        : '双通道 Stencil 实体纵剖揭示弹膛闭锁面、导气孔道、膛线壁厚与火控啮合',
+      cartridgeHeading: isArchery
+        ? '配用碳纤维矢箭精密纵剖'
+        : '1:1 原大制式弹药剖视',
+      ballisticsHeading: isArchery
+        ? '凸轮拉力与离弦箭速曲线'
+        : 'SAAMI/CIP 膛压与初速曲线',
+      explodedHeading: isArchery
+        ? '全弓弩 100% 零穿模阶梯爆炸图'
+        : '全枪 100% 零穿模阶梯爆炸总图',
+      explodedSub:
+        '0.35pt 工程引导线直指核心机械节点，呈现真实装配空间坐标与零件职能精讲',
+      functionalRolesHeading: '六大工程子系统语义分色图谱',
+      bomDirectoryHeading: '全零件冶金与 1:1 包络总表 (BOM)',
+      bomDirectoryMeta: (partsCount, trisFormatted) =>
+        `共 ${partsCount} 个精密 CSG 零件 · ${trisFormatted} 三角流形网格`,
+      cycleSequenceHeading: isArchery
+        ? '四阶段发射慢动作实景序列'
+        : '四阶段击发与自动循环实景序列',
+      cycle7Heading: isArchery
+        ? '七阶弹性蓄能与做功时序链'
+        : '七阶击发闭锁与复进运动学时序',
+      fieldStripHeading: isArchery
+        ? '弓弩技师标准拆装次序 (DAG)'
+        : '原厂野战勤务快拆规程 (Field-Strip DAG)',
+      malfunctionsHeading: isArchery
+        ? '典型弓弩故障与防空放诊断卡'
+        : '四大经典枪械故障排障诊断卡',
+      energyLadderHeading: '馆藏全口径动能横向标尺 (J)',
+      exLibrisHeading: 'EX LIBRIS · 馆藏典藏印鉴',
+      qrCompanionHeading: '扫码进入实时 3D 交互剖视工作台',
+      qrCompanionSub:
+        '无需安装客户端，手机扫码即可旋转剖视、亲手野战拆装并聆听双语语音纪录片。',
+      colophonCyclesLabel: (cyclesCount, total) =>
+        `Blender Cycles 4K 离线光追母版 (${cyclesCount}/${total}) · 300 DPI 铜版印刷标准`,
+      colophonWebglLabel: (is300Dpi) =>
+        is300Dpi
+          ? '300 DPI 超清 WebGL 2.0 PBR 透明抠图母版 (2880×1800)'
+          : 'WebGL 2.0 PBR 透明抠图实时印前预览 (1440×900)',
+      colophonPrepressTag: 'ISO 12647 · +3mm 出血与裁切角线',
+      colophonTrimTag: 'ISO 216 · 成品净尺寸裁切版',
+      spreadFolioLabel: (l, r, total) =>
+        `PP. ${String(l).padStart(2, '0')}–${String(r).padStart(2, '0')} / ${String(total).padStart(2, '0')}`,
+      singlePageFolioLabel: (p, total) =>
+        `PAGE ${String(p).padStart(2, '0')} / ${String(total).padStart(2, '0')}`,
+      capturingPlate: (label) => `正在渲染图版：${label}`,
+      qaDatumLabel: '1:1 坐标基准',
+      qaMeshLabel: '流形 CSG 规模',
+      qaSignoffLabel: '馆藏核准',
+      qaSignoffValue: 'VERIFIED · REV.26',
+      qaSpecLine:
+        '1:1 空间比例 = 10 mm/单位 · 水密流形 CSG 几何 · 零干涉运动学契约核验通过',
+    };
+  }
+
+  return {
+    seriesWordmark: 'DIGITAL ARMORY · VISUAL ENCYCLOPEDIA',
+    seriesSubtitle: isArchery
+      ? 'COMPOUND ARCHERY MECHANICAL ARCHIVE'
+      : 'DEFINITIVE VISUAL HISTORY OF FIREARMS MECHANICS',
+    factFileHeading: 'SPECIFICATION LEDGER · FACT FILE',
+    scaleRulerKicker: 'TRUE-TO-SCALE DIMENSIONS & SILHOUETTE COMPARISON',
+    loupesHeading: isArchery
+      ? 'OPTICAL MECHANISM LOUPES · 2.0×–3.0×'
+      : 'LOCKING & FIRE-CONTROL LOUPES · 2.0×–3.0×',
+    loupesSub: isArchery
+      ? 'Magnified inspection of cams, flex limbs, release latches, and arrow track'
+      : 'Magnified studio inspection of breech lockup, operating drive, fire control, and feed path',
+    spread1Section: 'GATEFOLD ANATOMY & KEY FEATURES',
+    spread2LeftKicker: 'HISTORICAL R&D CHRONICLE',
+    spread2RightKicker: isArchery
+      ? 'INSIDE THE MECHANISM & PROJECTILE DYNAMICS'
+      : 'INSIDE THE MECHANISM & 1:1 AMMUNITION',
+    spread3Kicker: 'EXPLODED MECHANICAL BLUEPRINT',
+    spread3Title: isArchery
+      ? '100% Exploded Architecture & Six-Role Subsystem Map'
+      : '100% Exploded Mechanical Blueprint & Six-Role Engineering Map',
+    spread4LeftKicker: isArchery
+      ? 'DRAW & LAUNCH KINEMATIC CYCLE'
+      : 'CYCLE OF OPERATION & KINEMATICS',
+    spread4RightKicker: isArchery
+      ? 'ARCHERY SERVICE MANUAL & MUSEUM ARCHIVE SEAL'
+      : 'FIELD-STRIP MANUAL, STOPPAGES & ARCHIVE SEAL',
+    chronicleHeading: 'Four-Act Engineering Genesis',
+    breakthroughsQuoteKicker: 'DEFINING ENGINEERING BREAKTHROUGHS',
+    elevationsHeading: 'ORTHOGRAPHIC ELEVATION PROFILES',
+    leftProfileLabel: 'LEFT ELEVATION PROFILE',
+    topProfileLabel: 'PLAN / TOP-DOWN PROFILE',
+    rightProfileLabel: 'RIGHT ELEVATION PROFILE',
+    cutawayHeading: isArchery
+      ? 'Longitudinal Structural Cross-Section'
+      : '45° Solid Metal Longitudinal Cutaway',
+    cutawaySub: isArchery
+      ? 'Two-pass stencil cutaway exposing 7075-T6 truss walls, cam channels, and flight track'
+      : 'Two-pass stencil section exposing bore wall thickness, locking recesses, gas path, and sear engagement',
+    cartridgeHeading: isArchery
+      ? 'Carbon Projectile Precision Cutaway'
+      : '1:1 Actual-Size Service Cartridge',
+    ballisticsHeading: isArchery
+      ? 'Draw-Force F(x) & Launch Velocity V(t)'
+      : 'SAAMI/CIP Pressure P(t) & Velocity V(t)',
+    explodedHeading: isArchery
+      ? '100% Collision-Free Exploded Archery Blueprint'
+      : '100% Collision-Free Exploded Mechanical Blueprint',
+    explodedSub:
+      '0.35pt architectural leader lines map key moving assemblies directly to concise DK mechanical micro-copy',
+    functionalRolesHeading: 'Six-Role Functional Subsystem Color Map',
+    bomDirectoryHeading: 'Archival Bill of Materials (BOM) Directory',
+    bomDirectoryMeta: (partsCount, trisFormatted) =>
+      `${partsCount} Parametric CSG Components · ${trisFormatted} Manifold Triangles`,
+    cycleSequenceHeading: isArchery
+      ? 'Four-Phase Slow-Motion Launch Sequence'
+      : 'Four-Phase Action Sequence Cutaway Strip',
+    cycle7Heading: isArchery
+      ? '7-Stage Elastic Storage & Power-Stroke Breakdown'
+      : '7-Stage Firing, Locking & Recoil Breakdown',
+    fieldStripHeading: isArchery
+      ? 'Authorized Archery Strip Sequence (DAG)'
+      : 'Guided Military Field-Strip Order (DAG)',
+    malfunctionsHeading: isArchery
+      ? 'Archery Timing & Anti-Dry-Fire Diagnostics'
+      : 'Malfunction & Safety Stoppage Reference',
+    energyLadderHeading: 'Vault Muzzle Kinetic Energy Scale (J)',
+    exLibrisHeading: 'EX LIBRIS · MUSEUM ARCHIVE SEAL',
+    qrCompanionHeading: 'Scan for Live Interactive 3D Cutaway Workbench',
+    qrCompanionSub:
+      'Open directly in any mobile browser to rotate, section-cut, field-strip, and hear the bilingual documentary.',
+    colophonCyclesLabel: (cyclesCount, total) =>
+      `Blender Cycles 4K Path-Traced Masters (${cyclesCount}/${total}) · 300 DPI Coated Press Standard`,
+    colophonWebglLabel: (is300Dpi) =>
+      is300Dpi
+        ? '300 DPI Print-Grade WebGL 2.0 PBR Transparent Masters (2880×1800)'
+        : 'WebGL 2.0 PBR Transparent Cutout Preview Masters (1440×900)',
+    colophonPrepressTag: 'ISO 12647 · +3mm Bleed & Crop Marks',
+    colophonTrimTag: 'ISO 216 · Exact Trim-Size Press Folio',
+    spreadFolioLabel: (l, r, total) =>
+      `PP. ${String(l).padStart(2, '0')}–${String(r).padStart(2, '0')} / ${String(total).padStart(2, '0')}`,
+    singlePageFolioLabel: (p, total) =>
+      `PAGE ${String(p).padStart(2, '0')} / ${String(total).padStart(2, '0')}`,
+    capturingPlate: (label) => `Rendering Plate: ${label}`,
+    qaDatumLabel: '1:1 CAD DATUM',
+    qaMeshLabel: 'CSG MANIFOLD',
+    qaSignoffLabel: 'ARCHIVE QA',
+    qaSignoffValue: 'VERIFIED · REV.26',
+    qaSpecLine:
+      '1:1 Scale = 10 mm/unit · Watertight Manifold CSG · Zero-Interference Kinematics Contract Verified',
+  };
+}

@@ -1,0 +1,1754 @@
+/* ==========================================================================
+   DK Visual Encyclopedia — Book-Grade Editorial Print Stylesheet (`dk-monograph.css`)
+   Pure White Copperplate Paper (#FFFFFF) · Deep Archival Ink (#111827) ·
+   Disciplined DK Crimson (#B91C1C) · Museum Brass (#9A6B2F) · 0.5pt Hairlines
+   Dual Real Print Geometry: A3 Landscape Spread (420×297mm) & A4 Portrait (210×297mm)
+   ISO 12647 Optional +3mm Pre-Press Bleed & Registration Crop Marks
+   ========================================================================== */
+
+@page dk-spread-a3 {
+  size: 420mm 297mm;
+  margin: 0;
+}
+
+@page dk-spread-a3-bleed {
+  size: 426mm 303mm;
+  margin: 0;
+}
+
+@page dk-portrait-a4 {
+  size: 210mm 297mm;
+  margin: 0;
+}
+
+@page dk-portrait-a4-bleed {
+  size: 216mm 303mm;
+  margin: 0;
+}
+
+/* ==========================================================================
+   DK Design Tokens & Document Root
+   ========================================================================== */
+.dk-monograph {
+  --dk-paper: #ffffff;
+  --dk-paper-tint: #f8fafc;
+  --dk-ink: #111827;
+  --dk-ink-sec: #334155;
+  --dk-muted: #64748b;
+  --dk-crimson: #b91c1c;
+  --dk-crimson-soft: rgba(185, 28, 28, 0.06);
+  --dk-brass: #9a6b2f;
+  --dk-brass-soft: rgba(154, 107, 47, 0.08);
+  --dk-rule: #cbd5e1;
+  --dk-rule-strong: #111827;
+  --dk-rule-light: #e2e8f0;
+  --dk-font-serif:
+    'Playfair Display', 'Georgia', 'Songti SC', 'Noto Serif SC', 'STSong', serif;
+  --dk-font-sans:
+    'Helvetica Neue', 'Inter', 'PingFang SC', 'Noto Sans SC', -apple-system,
+    BlinkMacSystemFont, sans-serif;
+  --dk-font-mono:
+    'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    monospace;
+
+  /* Bridge legacy vector widgets (CaliberEnergyLadder) cleanly onto DK paper */
+  --m-bg: #ffffff;
+  --m-surface: #ffffff;
+  --m-surface-alt: #f1f5f9;
+  --m-plate-bg: transparent;
+  --m-text: #111827;
+  --m-text-sec: #334155;
+  --m-text-muted: #64748b;
+  --m-accent: #b91c1c;
+  --m-accent-strong: #991b1b;
+  --m-accent-soft: rgba(185, 28, 28, 0.07);
+  --m-cyan: #9a6b2f;
+  --m-border: #cbd5e1;
+  --m-border-subtle: #e2e8f0;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 26px;
+  font-family: var(--dk-font-sans);
+  color: var(--dk-ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+
+.monograph-preview-sheets .dk-monograph {
+  zoom: var(--dk-preview-scale, 1);
+}
+
+/* ==========================================================================
+   Physical Sheet Geometry: A3 Spread (420×297mm) & A4 Portrait (210×297mm)
+   ========================================================================== */
+.dk-spread-sheet,
+.dk-page-sheet {
+  position: relative;
+  background: var(--dk-paper);
+  color: var(--dk-ink);
+  box-sizing: border-box;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.52);
+  border: 0.5pt solid rgba(15, 23, 42, 0.14);
+}
+
+.dk-spread-sheet {
+  width: 420mm;
+  height: 297mm;
+  page: dk-spread-a3;
+}
+
+.dk-spread-sheet.has-bleed {
+  width: 426mm;
+  height: 303mm;
+  padding: 3mm;
+  page: dk-spread-a3-bleed;
+}
+
+.dk-page-sheet {
+  width: 210mm;
+  height: 297mm;
+  page: dk-portrait-a4;
+}
+
+.dk-page-sheet.has-bleed {
+  width: 216mm;
+  height: 303mm;
+  padding: 3mm;
+  page: dk-portrait-a4-bleed;
+}
+
+/* Exact Trim Box inside Optional 3mm Pre-Press Bleed */
+.dk-sheet-trim-area {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--dk-paper);
+  overflow: hidden;
+}
+
+.dk-spread-sheet .dk-sheet-trim-area {
+  padding: 8.5mm 11mm 8mm 11mm;
+}
+
+.dk-page-sheet .dk-sheet-trim-area {
+  padding: 8.5mm 10.5mm 8mm 10.5mm;
+}
+
+/* Subtle on-screen trim boundary guide when bleed is active (hidden in print) */
+.dk-spread-sheet.has-bleed .dk-sheet-trim-area,
+.dk-page-sheet.has-bleed .dk-sheet-trim-area {
+  outline: 0.4pt dashed rgba(14, 165, 233, 0.35);
+}
+
+/* Pre-Press ISO 12647 Crop & Fold Registration Marks SVG Overlay */
+.dk-prepress-crop-marks {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 30;
+  display: block;
+}
+
+.dk-prepress-crop-marks line {
+  stroke: #000000;
+  stroke-width: 0.18;
+  vector-effect: non-scaling-stroke;
+}
+
+.dk-prepress-crop-marks line.is-fold {
+  stroke: #b91c1c;
+  stroke-width: 0.2;
+  stroke-dasharray: 0.8 0.5;
+}
+
+/* Subtle Center-Fold Book Gutter Shadow for Screen Preview Only (hidden in print) */
+.dk-spread-gutter {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 14mm;
+  transform: translateX(-50%);
+  pointer-events: none;
+  z-index: 15;
+  background: linear-gradient(
+    90deg,
+    rgba(15, 23, 42, 0) 0%,
+    rgba(15, 23, 42, 0.032) 38%,
+    rgba(15, 23, 42, 0.09) 50%,
+    rgba(15, 23, 42, 0.032) 62%,
+    rgba(15, 23, 42, 0) 100%
+  );
+}
+
+.dk-spread-gutter::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 0.5pt;
+  background: rgba(15, 23, 42, 0.14);
+}
+
+/* ==========================================================================
+   Running Header & Book Folio Running Footer
+   ========================================================================== */
+.dk-running-header {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8mm;
+  padding-bottom: 1.8mm;
+  border-bottom: 0.5pt solid var(--dk-rule-strong);
+  flex-shrink: 0;
+}
+
+.dk-rh-group {
+  display: flex;
+  align-items: baseline;
+  gap: 2.2mm;
+  min-width: 0;
+}
+
+.dk-rh-group.is-right {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.dk-rh-kicker {
+  font-family: var(--dk-font-mono);
+  font-size: 6.5pt;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--dk-crimson);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.dk-rh-sep {
+  color: var(--dk-rule);
+  font-size: 6.5pt;
+}
+
+.dk-rh-sub,
+.dk-rh-model {
+  font-family: var(--dk-font-mono);
+  font-size: 6.4pt;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--dk-ink-sec);
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dk-rh-stamp {
+  font-family: var(--dk-font-mono);
+  font-size: 6.2pt;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  color: var(--dk-muted);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.dk-running-footer {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 4mm;
+  padding-top: 1.8mm;
+  border-top: 0.5pt solid var(--dk-rule);
+  font-family: var(--dk-font-mono);
+  font-size: 6.3pt;
+  color: var(--dk-muted);
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.dk-rf-left,
+.dk-rf-center,
+.dk-rf-right {
+  display: flex;
+  align-items: center;
+  gap: 2.5mm;
+}
+
+.dk-rf-center {
+  justify-content: center;
+  color: var(--dk-ink-sec);
+  font-weight: 600;
+}
+
+.dk-rf-right {
+  justify-content: flex-end;
+}
+
+.dk-rf-page-num {
+  font-size: 7.5pt;
+  font-weight: 900;
+  color: var(--dk-ink);
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+.dk-rf-meta {
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   Shared Editorial Typography & Hairline Subheads
+   ========================================================================== */
+.dk-spread-body,
+.dk-a4-body {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 0;
+  min-height: 0;
+  padding: 2.8mm 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.dk-crimson-rule {
+  width: 24mm;
+  height: 1.8pt;
+  background: var(--dk-crimson);
+  margin-bottom: 1.8mm;
+}
+
+.dk-masthead-block {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.dk-masthead-meta {
+  display: flex;
+  align-items: center;
+  gap: 2mm;
+  font-family: var(--dk-font-mono);
+  font-size: 6.8pt;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--dk-brass);
+}
+
+.dk-origin-stamp {
+  color: var(--dk-crimson);
+  font-weight: 800;
+}
+
+.dk-era-dot {
+  color: var(--dk-rule);
+}
+
+.dk-display-title {
+  margin: 1mm 0 1.4mm;
+  font-family: var(--dk-font-serif);
+  font-size: 24pt;
+  font-weight: 900;
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  color: var(--dk-ink);
+}
+
+.dk-display-title.is-a4 {
+  font-size: 20.5pt;
+}
+
+.dk-intro-deck {
+  margin: 0;
+  font-size: 7.4pt;
+  line-height: 1.42;
+  color: var(--dk-ink-sec);
+  max-width: 184mm;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dk-kicker-label {
+  font-family: var(--dk-font-mono);
+  font-size: 6.5pt;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--dk-crimson);
+}
+
+.dk-mono-tag {
+  font-family: var(--dk-font-mono);
+  font-size: 6.2pt;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--dk-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.dk-subhead-rule {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 3mm;
+  padding-bottom: 1.1mm;
+  margin-bottom: 1.8mm;
+  border-bottom: 0.6pt solid var(--dk-rule-strong);
+  font-family: var(--dk-font-mono);
+  font-size: 6.6pt;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--dk-ink);
+  flex-shrink: 0;
+}
+
+.dk-chapter-banner {
+  margin-bottom: 2.5mm;
+  padding-bottom: 1.8mm;
+  border-bottom: 0.5pt solid var(--dk-rule);
+  flex-shrink: 0;
+}
+
+.dk-chapter-banner.is-compact {
+  margin-bottom: 1.6mm;
+  padding-bottom: 1.2mm;
+}
+
+.dk-chapter-kicker {
+  display: block;
+  font-family: var(--dk-font-mono);
+  font-size: 6.6pt;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--dk-crimson);
+}
+
+.dk-chapter-serif-title {
+  margin: 0.8mm 0 0.8mm;
+  font-family: var(--dk-font-serif);
+  font-size: 14.5pt;
+  font-weight: 800;
+  line-height: 1.18;
+  color: var(--dk-ink);
+}
+
+.dk-chapter-deck {
+  margin: 0.5mm 0 0;
+  font-size: 7.4pt;
+  line-height: 1.38;
+  color: var(--dk-ink-sec);
+}
+
+/* ==========================================================================
+   Frameless Transparent Cutout Plates (Zero Boxed UI Frames)
+   ========================================================================== */
+.dk-plate-16x10 {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.dk-plate-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+}
+
+.dk-plate-16x10 > .dk-plate-img {
+  object-fit: fill;
+}
+
+.dk-plate-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2mm;
+  border: 0.5pt dashed var(--dk-rule);
+  background: var(--dk-paper-tint);
+  color: var(--dk-muted);
+  font-family: var(--dk-font-mono);
+  font-size: 6.8pt;
+  letter-spacing: 0.05em;
+}
+
+.dk-plate-placeholder-dot {
+  width: 3mm;
+  height: 3mm;
+  border-radius: 50%;
+  border: 0.8pt solid var(--dk-crimson);
+  border-top-color: transparent;
+}
+
+/* ==========================================================================
+   DK Fact File Specification Ledger (Borderless Hairline Grid, Zero Pills)
+   ========================================================================== */
+.dk-fact-file {
+  display: flex;
+  flex-direction: column;
+  border-top: 1.4pt solid var(--dk-ink);
+  border-bottom: 0.6pt solid var(--dk-ink);
+  padding: 1.8mm 0;
+  flex-shrink: 0;
+}
+
+.dk-fact-file-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 3mm;
+  padding-bottom: 1.2mm;
+  border-bottom: 0.5pt solid var(--dk-rule);
+}
+
+.dk-fact-caliber {
+  font-family: var(--dk-font-mono);
+  font-size: 7.4pt;
+  font-weight: 800;
+  color: var(--dk-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.dk-fact-grid {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-bottom: 0.5pt solid var(--dk-rule);
+}
+
+.dk-fact-cell {
+  padding: 1.3mm 2mm 1.3mm 0;
+  border-bottom: 0.4pt solid var(--dk-rule-light);
+}
+
+.dk-fact-cell:nth-child(n + 4) {
+  border-bottom: none;
+}
+
+.dk-fact-cell dt {
+  font-family: var(--dk-font-mono);
+  font-size: 5.7pt;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--dk-muted);
+  line-height: 1.2;
+}
+
+.dk-fact-cell dd {
+  margin: 0.4mm 0 0;
+  font-family: var(--dk-font-mono);
+  font-size: 7.5pt;
+  font-weight: 800;
+  color: var(--dk-ink);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dk-fact-cell.is-accent dd {
+  color: var(--dk-crimson);
+}
+
+.dk-fact-file.is-compact .dk-fact-cell {
+  padding: 1mm 1.8mm 1mm 0;
+}
+
+.dk-fact-mech-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 3mm;
+  padding-top: 1.2mm;
+  font-size: 7pt;
+}
+
+.dk-fact-mech-k {
+  font-family: var(--dk-font-mono);
+  font-size: 5.9pt;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dk-brass);
+  flex-shrink: 0;
+}
+
+.dk-fact-mech-v {
+  font-weight: 700;
+  color: var(--dk-ink);
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ==========================================================================
+   SPREAD 1 (A3): Hero Gatefold, Optical Loupes, Scale Ruler & Timeline
+   ========================================================================== */
+.dk-s1-body {
+  justify-content: space-between;
+  gap: 2.2mm;
+}
+
+.dk-s1-top-band {
+  display: grid;
+  grid-template-columns: 7.2fr 4.8fr;
+  gap: 14mm;
+  align-items: start;
+  flex-shrink: 0;
+}
+
+.dk-hero-gatefold {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7.5mm 4mm 8mm;
+}
+
+.dk-hero-stage {
+  height: 100%;
+  max-height: 122mm;
+  width: auto;
+  max-width: 224mm;
+}
+
+.dk-s1-lower-band {
+  display: grid;
+  grid-template-columns: 1.52fr 1fr;
+  gap: 11mm;
+  align-items: end;
+  flex-shrink: 0;
+}
+
+.dk-s1-loupes-col,
+.dk-s1-ruler-col {
+  min-width: 0;
+}
+
+.dk-s1-timeline-band {
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   TWO-PAGE SPREAD SPLIT (Spreads 2, 3-bottom, 4)
+   ========================================================================== */
+.dk-two-page-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 16mm;
+  min-height: 0;
+}
+
+.dk-verso-page,
+.dk-recto-page {
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* ==========================================================================
+   SPREAD 2 LEFT / A4 PAGE 3: R&D Chronicle, Breakthroughs & Elevations
+   ========================================================================== */
+.dk-s2-left {
+  gap: 2.5mm;
+}
+
+.dk-magazine-columns {
+  column-count: 2;
+  column-gap: 5.5mm;
+  column-rule: 0.4pt solid var(--dk-rule-light);
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.dk-chronicle-act {
+  break-inside: avoid;
+  margin-bottom: 2.6mm;
+}
+
+.dk-act-head {
+  display: flex;
+  align-items: baseline;
+  gap: 2mm;
+  margin-bottom: 0.6mm;
+}
+
+.dk-act-badge {
+  font-family: var(--dk-font-mono);
+  font-size: 6pt;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: var(--dk-crimson);
+  text-transform: uppercase;
+}
+
+.dk-act-era {
+  font-family: var(--dk-font-mono);
+  font-size: 5.8pt;
+  font-weight: 700;
+  color: var(--dk-muted);
+}
+
+.dk-act-title {
+  margin: 0 0 1mm;
+  font-family: var(--dk-font-serif);
+  font-size: 8.8pt;
+  font-weight: 800;
+  line-height: 1.22;
+  color: var(--dk-ink);
+}
+
+.dk-chronicle-act p {
+  margin: 0 0 1.4mm;
+  font-size: 6.9pt;
+  line-height: 1.45;
+  color: var(--dk-ink-sec);
+  text-align: justify;
+  hyphens: auto;
+}
+
+.dk-dropcap::first-letter {
+  float: left;
+  font-family: var(--dk-font-serif);
+  font-size: 21pt;
+  font-weight: 900;
+  line-height: 0.86;
+  padding: 0.6mm 1.6mm 0 0;
+  color: var(--dk-crimson);
+}
+
+.dk-breakthrough-pullquote {
+  flex-shrink: 0;
+  border-left: 2pt solid var(--dk-crimson);
+  padding: 1.6mm 0 1.6mm 3.2mm;
+  background: var(--dk-paper-tint);
+}
+
+.dk-bt-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3mm;
+}
+
+.dk-bt-item {
+  min-width: 0;
+}
+
+.dk-bt-top {
+  display: flex;
+  align-items: baseline;
+  gap: 1.4mm;
+  margin-bottom: 0.6mm;
+}
+
+.dk-bt-tag {
+  font-family: var(--dk-font-mono);
+  font-size: 5.8pt;
+  font-weight: 800;
+  color: var(--dk-crimson);
+  flex-shrink: 0;
+}
+
+.dk-bt-top strong {
+  font-size: 6.8pt;
+  font-weight: 800;
+  color: var(--dk-ink);
+  line-height: 1.2;
+}
+
+.dk-bt-item p {
+  margin: 0;
+  font-size: 6.1pt;
+  line-height: 1.34;
+  color: var(--dk-ink-sec);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dk-elevations-pair {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4mm;
+  padding-top: 1.8mm;
+  border-top: 0.5pt solid var(--dk-rule);
+}
+
+.dk-elevation-fig {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1mm;
+}
+
+.dk-elevation-stage {
+  height: 44mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dk-elevation-fig figcaption {
+  font-family: var(--dk-font-mono);
+  font-size: 5.9pt;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--dk-muted);
+  text-align: center;
+  border-top: 0.4pt solid var(--dk-rule-light);
+  padding-top: 0.8mm;
+}
+
+/* ==========================================================================
+   SPREAD 2 RIGHT / A4 PAGE 4: Cutaway + 1:1 Actual-Size Cartridge & Ballistics
+   ========================================================================== */
+.dk-s2-right {
+  gap: 2.2mm;
+}
+
+.dk-cutaway-hero-wrap {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7.5mm 1mm 8mm;
+}
+
+.dk-cutaway-stage {
+  width: 100%;
+  max-width: 182mm;
+  max-height: 114mm;
+}
+
+.dk-ballistics-zone {
+  flex-shrink: 0;
+  padding-top: 1.8mm;
+  border-top: 0.6pt solid var(--dk-rule-strong);
+}
+
+.dk-ballistics-zone.is-side-by-side {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4.5mm;
+  align-items: start;
+}
+
+.dk-ballistics-zone.is-stacked {
+  display: flex;
+  flex-direction: column;
+  gap: 2.4mm;
+}
+
+.dk-cartridge-col,
+.dk-curve-col {
+  min-width: 0;
+}
+
+.dk-cartridge-plate-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.dk-ballistics-chart-wrap {
+  width: 100%;
+}
+
+.dk-ballistics-chart-wrap .monograph-vector-svg {
+  width: 100%;
+  height: auto;
+  max-height: 54mm;
+  display: block;
+}
+
+.dk-ballistics-zone.is-stacked .dk-ballistics-chart-wrap .monograph-vector-svg {
+  max-height: 46mm;
+}
+
+.dk-ammo-micro-ledger {
+  margin: 1.8mm 0 0;
+  padding-top: 1.4mm;
+  border-top: 0.4pt solid var(--dk-rule);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2.5mm;
+}
+
+.dk-ammo-micro-ledger dt {
+  font-family: var(--dk-font-mono);
+  font-size: 5.5pt;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--dk-muted);
+}
+
+.dk-ammo-micro-ledger dd {
+  margin: 0.4mm 0 0;
+  font-size: 6.2pt;
+  font-weight: 700;
+  color: var(--dk-ink);
+  line-height: 1.25;
+}
+
+/* ==========================================================================
+   SPREAD 3 (A3): Exploded Blueprint, 6-Role Functional Map & Multi-Col BOM
+   ========================================================================== */
+.dk-s3-body {
+  justify-content: space-between;
+  gap: 2.5mm;
+}
+
+.dk-s3-exploded-zone {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 7.5mm;
+}
+
+.dk-exploded-caption-bar {
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6mm;
+  margin-bottom: 6.5mm;
+}
+
+.dk-inline-sub {
+  font-size: 6.8pt;
+  color: var(--dk-ink-sec);
+}
+
+.dk-exploded-stage {
+  height: 100%;
+  max-height: 118mm;
+  width: auto;
+  max-width: 224mm;
+}
+
+.dk-s3-lower-split {
+  flex-shrink: 0;
+  height: 112mm;
+  padding-top: 2.2mm;
+  border-top: 0.6pt solid var(--dk-rule-strong);
+}
+
+.dk-s3-roles-col,
+.dk-s3-bom-col {
+  justify-content: flex-start;
+  gap: 1.6mm;
+}
+
+.dk-roles-showcase {
+  flex: 1 1 0;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  gap: 4mm;
+  align-items: center;
+}
+
+.dk-roles-plate-wrap {
+  height: 100%;
+  max-height: 92mm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dk-roles-legend-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5mm;
+}
+
+.dk-role-legend-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 2mm;
+  padding-bottom: 1.2mm;
+  border-bottom: 0.4pt solid var(--dk-rule-light);
+}
+
+.dk-role-legend-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.dk-role-dot {
+  width: 2.6mm;
+  height: 2.6mm;
+  border-radius: 50%;
+  margin-top: 0.8mm;
+  flex-shrink: 0;
+}
+
+.dk-role-copy {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.dk-role-title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2mm;
+}
+
+.dk-role-title-row strong {
+  font-size: 6.8pt;
+  font-weight: 800;
+  color: var(--dk-ink);
+}
+
+.dk-role-qty {
+  font-family: var(--dk-font-mono);
+  font-size: 6.2pt;
+  font-weight: 800;
+  color: var(--dk-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.dk-role-copy p {
+  margin: 0.3mm 0 0;
+  font-size: 5.8pt;
+  line-height: 1.28;
+  color: var(--dk-ink-sec);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Structured 2-Column Archival BOM Directory (Spread 3 Right Bottom) */
+.dk-bom-multi-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8mm 3.5mm;
+  align-content: start;
+}
+
+.dk-bom-entry {
+  display: grid;
+  grid-template-columns: 9.5mm 1fr auto;
+  column-gap: 1.4mm;
+  align-items: baseline;
+  padding: 0.7mm 0;
+  border-bottom: 0.4pt solid var(--dk-rule-light);
+  font-size: 6.1pt;
+  line-height: 1.2;
+}
+
+.dk-bom-multi-grid.is-dense .dk-bom-entry {
+  padding: 0.45mm 0;
+  font-size: 5.7pt;
+}
+
+.dk-bom-code {
+  font-family: var(--dk-font-mono);
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.dk-bom-name {
+  font-weight: 700;
+  color: var(--dk-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dk-bom-mat {
+  display: none;
+}
+
+.dk-bom-env {
+  font-family: var(--dk-font-mono);
+  font-size: 5.4pt;
+  color: var(--dk-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   SPREAD 4 / A4 PAGES 7–8: Action Cycle, Field-Strip, Stoppages & Archive Seal
+   ========================================================================== */
+.dk-s4-left,
+.dk-s4-right {
+  gap: 2.2mm;
+}
+
+.dk-phase-seq-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 3mm 4mm;
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+.dk-phase-card {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  border-bottom: 0.5pt solid var(--dk-rule);
+  padding-bottom: 1.4mm;
+}
+
+.dk-phase-img-wrap {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dk-phase-caption {
+  flex-shrink: 0;
+  padding-top: 1.2mm;
+}
+
+.dk-phase-head {
+  display: flex;
+  align-items: center;
+  gap: 1.8mm;
+  margin-bottom: 0.5mm;
+}
+
+.dk-phase-num-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4.8mm;
+  height: 4.2mm;
+  background: var(--dk-crimson);
+  color: #ffffff;
+  font-family: var(--dk-font-mono);
+  font-size: 6pt;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.dk-phase-head strong {
+  font-size: 7.4pt;
+  font-weight: 800;
+  color: var(--dk-ink);
+}
+
+.dk-phase-caption p {
+  margin: 0;
+  font-size: 6.2pt;
+  line-height: 1.34;
+  color: var(--dk-ink-sec);
+}
+
+.dk-cycle7-panel {
+  flex-shrink: 0;
+}
+
+.dk-cycle7-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.dk-cycle7-row {
+  display: grid;
+  grid-template-columns: 7mm 28mm 1fr;
+  gap: 2mm;
+  align-items: baseline;
+  padding: 1.1mm 0;
+  border-bottom: 0.4pt solid var(--dk-rule-light);
+  font-size: 6.3pt;
+  line-height: 1.32;
+}
+
+.dk-cycle7-row:last-child {
+  border-bottom: none;
+}
+
+.dk-c7-num {
+  font-family: var(--dk-font-mono);
+  font-weight: 900;
+  color: var(--dk-crimson);
+  font-variant-numeric: tabular-nums;
+}
+
+.dk-c7-label {
+  font-weight: 800;
+  color: var(--dk-ink);
+}
+
+.dk-c7-desc {
+  color: var(--dk-ink-sec);
+}
+
+/* Field-Strip DAG List */
+.dk-fieldstrip-panel,
+.dk-stoppages-panel,
+.dk-ladder-panel {
+  flex-shrink: 0;
+}
+
+.dk-fs-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.4mm 4mm;
+}
+
+.dk-fs-item {
+  padding-bottom: 1.2mm;
+  border-bottom: 0.4pt solid var(--dk-rule-light);
+}
+
+.dk-fs-top {
+  display: flex;
+  align-items: baseline;
+  gap: 1.8mm;
+}
+
+.dk-fs-ord {
+  font-family: var(--dk-font-mono);
+  font-size: 6.3pt;
+  font-weight: 900;
+  color: var(--dk-crimson);
+  font-variant-numeric: tabular-nums;
+}
+
+.dk-fs-top strong {
+  font-size: 7pt;
+  font-weight: 800;
+  color: var(--dk-ink);
+}
+
+.dk-fs-hint {
+  margin: 0.4mm 0 0;
+  font-size: 6pt;
+  line-height: 1.32;
+  color: var(--dk-ink-sec);
+}
+
+/* Malfunction / Stoppage Diagnostics Reference */
+.dk-malf-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2mm 4mm;
+}
+
+.dk-malf-item {
+  padding: 1.4mm 0 1.4mm 2.2mm;
+  border-left: 1.4pt solid var(--dk-brass);
+  border-bottom: 0.4pt solid var(--dk-rule-light);
+}
+
+.dk-malf-head {
+  display: flex;
+  align-items: baseline;
+  gap: 1.6mm;
+  margin-bottom: 0.4mm;
+}
+
+.dk-malf-code {
+  font-family: var(--dk-font-mono);
+  font-size: 5.7pt;
+  font-weight: 800;
+  color: var(--dk-crimson);
+  white-space: nowrap;
+}
+
+.dk-malf-head strong {
+  font-size: 6.9pt;
+  font-weight: 800;
+  color: var(--dk-ink);
+}
+
+.dk-malf-cause {
+  margin: 0;
+  font-size: 5.9pt;
+  line-height: 1.3;
+  color: var(--dk-ink-sec);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.dk-malf-drill {
+  margin-top: 0.7mm;
+  font-family: var(--dk-font-mono);
+  font-size: 5.5pt;
+  font-weight: 700;
+  color: var(--dk-brass);
+  line-height: 1.25;
+}
+
+/* Compact Energy Ladder inside DK Document */
+.dk-ladder-panel .monograph-energy-ladder {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9mm;
+}
+
+.dk-ladder-panel .m-energy-row {
+  display: grid;
+  grid-template-columns: 22mm 1fr 30mm;
+  align-items: center;
+  gap: 2mm;
+  font-family: var(--dk-font-mono);
+  font-size: 5.8pt;
+  color: var(--dk-ink-sec);
+  font-variant-numeric: tabular-nums;
+}
+
+.dk-ladder-panel .m-energy-row.is-current {
+  color: var(--dk-crimson);
+  font-weight: 900;
+}
+
+.dk-ladder-panel .m-energy-bar-track {
+  height: 1.6mm;
+  background: var(--dk-rule-light);
+  overflow: hidden;
+}
+
+.dk-ladder-panel .m-energy-bar-fill {
+  height: 100%;
+  background: var(--dk-muted);
+}
+
+.dk-ladder-panel .m-energy-row.is-current .m-energy-bar-fill {
+  background: var(--dk-crimson);
+}
+
+/* Museum Archive Seal, Ex-Libris & Vector QR Companion */
+.dk-archive-seal {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: 24mm 1fr;
+  gap: 3.5mm;
+  align-items: center;
+  padding: 2.5mm 3mm;
+  border-top: 1.4pt solid var(--dk-ink);
+  border-bottom: 0.6pt solid var(--dk-ink);
+  background: var(--dk-paper-tint);
+}
+
+.dk-archive-seal.is-compact {
+  grid-template-columns: 18mm 1fr;
+  gap: 2.5mm;
+  padding: 1.8mm 2.2mm;
+  margin-top: auto;
+}
+
+.dk-seal-qr-box {
+  width: 24mm;
+  height: 24mm;
+  padding: 1mm;
+  background: #ffffff;
+  border: 0.6pt solid var(--dk-rule-strong);
+  box-sizing: border-box;
+}
+
+.dk-archive-seal.is-compact .dk-seal-qr-box {
+  width: 18mm;
+  height: 18mm;
+}
+
+.dk-seal-qr-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.dk-seal-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7mm;
+}
+
+.dk-seal-kicker-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2mm;
+}
+
+.dk-seal-exlibris {
+  font-family: var(--dk-font-mono);
+  font-size: 6pt;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  color: var(--dk-crimson);
+  text-transform: uppercase;
+}
+
+.dk-seal-serial {
+  font-family: var(--dk-font-mono);
+  font-size: 6.2pt;
+  font-weight: 800;
+  color: var(--dk-brass);
+  font-variant-numeric: tabular-nums;
+}
+
+.dk-seal-holder-row {
+  display: flex;
+  align-items: baseline;
+  gap: 1.8mm;
+  font-size: 6.8pt;
+}
+
+.dk-seal-holder-label {
+  font-family: var(--dk-font-mono);
+  font-size: 5.8pt;
+  font-weight: 700;
+  color: var(--dk-muted);
+  text-transform: uppercase;
+}
+
+.dk-seal-holder-name {
+  font-family: var(--dk-font-serif);
+  font-size: 8.5pt;
+  font-weight: 800;
+  color: var(--dk-ink);
+}
+
+.dk-seal-qr-title {
+  font-size: 7.4pt;
+  font-weight: 800;
+  color: var(--dk-ink);
+}
+
+.dk-seal-qr-sub {
+  margin: 0;
+  font-size: 6pt;
+  line-height: 1.32;
+  color: var(--dk-ink-sec);
+}
+
+.dk-seal-url {
+  font-family: var(--dk-font-mono);
+  font-size: 5.5pt;
+  color: var(--dk-crimson);
+  word-break: break-all;
+}
+
+.dk-seal-colophon-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4mm;
+  padding-top: 0.8mm;
+  border-top: 0.4pt solid var(--dk-rule);
+  font-family: var(--dk-font-mono);
+  font-size: 5.4pt;
+  font-weight: 700;
+  color: var(--dk-muted);
+}
+
+/* ==========================================================================
+   A4 PORTRAIT SPECIFIC LAYOUT ADJUSTMENTS (Pages 1–8)
+   ========================================================================== */
+.dk-a4-p1-body {
+  justify-content: space-between;
+  gap: 2.5mm;
+}
+
+.dk-a4-hero-wrap {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8mm 1mm 8.5mm;
+}
+
+.dk-a4-hero-stage {
+  width: 100%;
+  max-width: 184mm;
+  max-height: 115mm;
+}
+
+.dk-a4-ruler-wrap {
+  flex-shrink: 0;
+}
+
+.dk-a4-p2-body {
+  justify-content: space-between;
+  gap: 3mm;
+}
+
+.dk-a4-profile-loupe-stage {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dk-a4-profile-box {
+  width: 100%;
+  max-width: 182mm;
+  max-height: 114mm;
+}
+
+.dk-a4-timeline-footer,
+.dk-compact-timeline-wrap {
+  flex-shrink: 0;
+}
+
+.dk-a4-p5-body {
+  justify-content: space-between;
+  gap: 2.5mm;
+}
+
+.dk-a4-exploded-wrap {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8mm 1mm 8.5mm;
+}
+
+.dk-a4-exploded-stage {
+  width: 100%;
+  max-width: 184mm;
+  max-height: 115mm;
+}
+
+.dk-a4-roles-section {
+  flex-shrink: 0;
+  height: 106mm;
+  display: flex;
+  flex-direction: column;
+  padding-top: 2mm;
+  border-top: 0.6pt solid var(--dk-rule-strong);
+}
+
+/* A4 Page 6: Full Tabular Archival BOM Table */
+.dk-a4-bom-body {
+  justify-content: flex-start;
+  gap: 2.4mm;
+}
+
+.dk-bom-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 6.3pt;
+  line-height: 1.28;
+  font-variant-numeric: tabular-nums;
+}
+
+.dk-bom-table.is-dense {
+  font-size: 5.8pt;
+  line-height: 1.2;
+}
+
+.dk-bom-table thead th {
+  text-align: left;
+  padding: 1.3mm 1.5mm;
+  border-top: 1pt solid var(--dk-ink);
+  border-bottom: 0.7pt solid var(--dk-ink);
+  font-family: var(--dk-font-mono);
+  font-size: 5.8pt;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--dk-ink);
+}
+
+.dk-bom-table tbody td {
+  padding: 1.1mm 1.5mm;
+  border-bottom: 0.35pt solid var(--dk-rule-light);
+  vertical-align: top;
+}
+
+.dk-bom-table.is-dense tbody td {
+  padding: 0.75mm 1.2mm;
+}
+
+.dk-bom-table .td-code {
+  width: 11mm;
+  font-family: var(--dk-font-mono);
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.dk-bom-table .td-name {
+  width: 34mm;
+}
+
+.dk-bom-table .td-name strong {
+  display: block;
+  font-weight: 800;
+  color: var(--dk-ink);
+}
+
+.dk-bom-table .td-name span {
+  display: block;
+  font-size: 5.4pt;
+  color: var(--dk-muted);
+}
+
+.dk-bom-table .td-mat {
+  width: 28mm;
+  color: var(--dk-ink-sec);
+}
+
+.dk-bom-table .td-env {
+  width: 24mm;
+  font-family: var(--dk-font-mono);
+  font-size: 5.6pt;
+  color: var(--dk-ink-sec);
+  white-space: nowrap;
+}
+
+.dk-bom-table .td-copy {
+  color: var(--dk-ink-sec);
+}
+
+.dk-qa-signoff-bar {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4mm;
+  padding: 2mm 2.5mm;
+  border-top: 1pt solid var(--dk-ink);
+  border-bottom: 0.5pt solid var(--dk-rule-strong);
+  background: var(--dk-paper-tint);
+}
+
+.dk-qa-left p {
+  margin: 0.5mm 0 0;
+  font-size: 6pt;
+  color: var(--dk-ink-sec);
+}
+
+.dk-qa-cells {
+  display: flex;
+  align-items: center;
+  gap: 4mm;
+  flex-shrink: 0;
+}
+
+.dk-qa-cells > div {
+  padding-left: 3mm;
+  border-left: 0.4pt solid var(--dk-rule);
+}
+
+.dk-qa-cells span {
+  display: block;
+  font-family: var(--dk-font-mono);
+  font-size: 5.3pt;
+  font-weight: 700;
+  color: var(--dk-muted);
+  text-transform: uppercase;
+}
+
+.dk-qa-cells strong {
+  display: block;
+  font-family: var(--dk-font-mono);
+  font-size: 6.4pt;
+  font-weight: 800;
+  color: var(--dk-ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.dk-qa-cells .is-verified strong {
+  color: var(--dk-crimson);
+}
+
+/* ==========================================================================
+   PRINT MEDIA OVERRIDES — Exact Physical Millimeter Zero-Overflow Press Rules
+   ========================================================================== */
+@media print {
+  .dk-monograph {
+    display: block !important;
+    gap: 0 !important;
+    zoom: 1 !important;
+    transform: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .dk-spread-sheet,
+  .dk-page-sheet {
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    break-after: page;
+    page-break-after: always;
+    break-inside: avoid;
+    page-break-inside: avoid;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .dk-spread-sheet:last-child,
+  .dk-page-sheet:last-child {
+    break-after: auto;
+    page-break-after: auto;
+  }
+
+  .dk-spread-gutter {
+    display: none !important;
+  }
+
+  .dk-spread-sheet.has-bleed .dk-sheet-trim-area,
+  .dk-page-sheet.has-bleed .dk-sheet-trim-area {
+    outline: none !important;
+  }
+}

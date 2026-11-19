@@ -30,6 +30,7 @@
     "lint": "eslint src tests",
     "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"tests/**/*.ts\"",
     "test": "vitest run",
+    "monograph:pdf": "node scripts/export_dk_pdf.mjs",
     "textures:build": "python3 scripts/build_textures.py --regenerate",
     "narrations:build": "python3 scripts/build_narrations.py"
   },
