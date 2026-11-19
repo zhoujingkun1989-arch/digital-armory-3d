@@ -378,6 +378,10 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
     expect(overlayHtml).toContain('U-06');
     expect(overlayHtml).toContain('r="3.2"');
     expect(overlayHtml).toContain('max-width:22%');
+    expect(overlayHtml).toContain('max-height:16.5mm');
+    expect(overlayHtml).toContain('padding:1.5px 5px');
+    expect(overlayHtml).toContain('white-space:nowrap');
+    expect(overlayHtml).toContain('-webkit-line-clamp:3');
     expect(overlayHtml).toContain('font-size:5.8pt');
     expect(overlayHtml).toContain('font-size:6.4pt');
     expect(overlayHtml).toContain('font-size:5.5pt');
