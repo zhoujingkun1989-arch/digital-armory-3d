@@ -178,98 +178,121 @@ export const DkAnnotatedPlateOverlay: React.FC<DkAnnotatedPlateOverlayProps> = (
         })}
       </svg>
 
-      {/* Non-overlapping DK Editorial Margin Labels */}
-      {callouts.map((c) => {
-        const leftPct = clamp01(c.labelU, 0.015, 0.985) * 100;
-        const topPct = clamp01(c.labelV, 0.015, 0.985) * 100;
+      {/* Non-overlapping DK Editorial Margin Labels (<= 12.5mm compact print footprint) */}
+      {(() => {
+        const sideCounts = {
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+        };
+        for (const item of callouts) {
+          sideCounts[item.side]++;
+        }
 
-        const tx =
-          c.align === 'left' ? '0%' : c.align === 'right' ? '-100%' : '-50%';
-        const ty =
-          c.side === 'top'
-            ? 'calc(-100% - 4px)'
-            : c.side === 'bottom'
-              ? '4px'
-              : '-50%';
-        const sideOffsetX =
-          c.side === 'left' ? '-6px' : c.side === 'right' ? '6px' : '0px';
+        return callouts.map((c) => {
+          const leftPct = clamp01(c.labelU, 0.015, 0.985) * 100;
+          const topPct = clamp01(c.labelV, 0.015, 0.985) * 100;
 
-        return (
-          <div
-            key={`label-${c.partId}`}
-            className={`dk-callout-label is-side-${c.side} is-align-${c.align}`}
-            style={{
-              position: 'absolute',
-              left: `${leftPct.toFixed(2)}%`,
-              top: `${topPct.toFixed(2)}%`,
-              transform: `translate(calc(${tx} + ${sideOffsetX}), ${ty})`,
-              textAlign: c.align,
-              maxWidth:
-                c.side === 'left' || c.side === 'right' ? '18.5%' : '16.5%',
-              minWidth: '84px',
-              padding: compact ? '2px 4px' : '2.5px 5px',
-              backgroundColor: 'rgba(255, 255, 255, 0.92)',
-              boxSizing: 'border-box',
-              lineHeight: 1.22,
-            }}
-          >
+          const tx =
+            c.align === 'left' ? '0%' : c.align === 'right' ? '-100%' : '-50%';
+          const ty =
+            c.side === 'top'
+              ? 'calc(-100% - 2.5px)'
+              : c.side === 'bottom'
+                ? '2.5px'
+                : '-50%';
+          const sideOffsetX =
+            c.side === 'left' ? '-5px' : c.side === 'right' ? '5px' : '0px';
+
+          const countOnSide = sideCounts[c.side];
+          const maxWidth =
+            c.side === 'left' || c.side === 'right'
+              ? '21%'
+              : countOnSide <= 4
+                ? '22%'
+                : countOnSide === 5
+                  ? '18.5%'
+                  : '15.8%';
+
+          return (
             <div
-              className="dk-callout-head"
+              key={`label-${c.partId}`}
+              className={`dk-callout-label is-side-${c.side} is-align-${c.align}`}
               style={{
-                display: 'inline-flex',
-                alignItems: 'baseline',
-                gap: '4px',
-                justifyContent:
-                  c.align === 'right'
-                    ? 'flex-end'
-                    : c.align === 'center'
-                      ? 'center'
-                      : 'flex-start',
-                flexWrap: 'wrap',
+                position: 'absolute',
+                left: `${leftPct.toFixed(2)}%`,
+                top: `${topPct.toFixed(2)}%`,
+                transform: `translate(calc(${tx} + ${sideOffsetX}), ${ty})`,
+                textAlign: c.align,
+                maxWidth,
+                minWidth: '72px',
+                maxHeight: '12.5mm',
+                padding: compact ? '1px 3px' : '1.5px 4px',
+                backgroundColor: 'rgba(255, 255, 255, 0.92)',
+                boxSizing: 'border-box',
+                lineHeight: 1.14,
+                overflow: 'hidden',
               }}
             >
-              <span
-                className="dk-callout-bom"
+              <div
+                className="dk-callout-head"
                 style={{
-                  fontFamily: MONO_FONT,
-                  fontSize: compact ? '6.2pt' : '6.6pt',
-                  fontWeight: 800,
-                  letterSpacing: '0.04em',
-                  color: accentColor,
-                  fontVariantNumeric: 'tabular-nums',
+                  display: '-webkit-box',
+                  WebkitLineClamp: 2,
+                  WebkitBoxOrient: 'vertical',
+                  overflow: 'hidden',
+                  lineHeight: 1.14,
                 }}
               >
-                {c.bomCode}
-              </span>
-              <strong
-                className="dk-callout-title"
-                style={{
-                  fontSize: compact ? '6.8pt' : '7.4pt',
-                  fontWeight: 800,
-                  color: DK_PALETTE.ink,
-                  letterSpacing: '-0.01em',
-                }}
-              >
-                {c.title}
-              </strong>
+                <span
+                  className="dk-callout-bom"
+                  style={{
+                    fontFamily: MONO_FONT,
+                    fontSize: compact ? '5.4pt' : '5.8pt',
+                    fontWeight: 800,
+                    letterSpacing: '0.03em',
+                    color: accentColor,
+                    fontVariantNumeric: 'tabular-nums',
+                    marginRight: '3.5px',
+                  }}
+                >
+                  {c.bomCode}
+                </span>
+                <strong
+                  className="dk-callout-title"
+                  style={{
+                    fontSize: compact ? '6pt' : '6.4pt',
+                    fontWeight: 800,
+                    color: DK_PALETTE.ink,
+                    letterSpacing: '-0.01em',
+                  }}
+                >
+                  {c.title}
+                </strong>
+              </div>
+              {!compact && c.microCopy && (
+                <p
+                  className="dk-callout-microcopy"
+                  style={{
+                    margin: '1px 0 0 0',
+                    fontSize: '5.5pt',
+                    fontWeight: 400,
+                    color: DK_PALETTE.inkSecondary,
+                    lineHeight: 1.18,
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                  }}
+                >
+                  {c.microCopy}
+                </p>
+              )}
             </div>
-            {!compact && c.microCopy && (
-              <p
-                className="dk-callout-microcopy"
-                style={{
-                  margin: '1.5px 0 0 0',
-                  fontSize: '6.2pt',
-                  fontWeight: 400,
-                  color: DK_PALETTE.inkSecondary,
-                  lineHeight: 1.24,
-                }}
-              >
-                {c.microCopy}
-              </p>
-            )}
-          </div>
-        );
-      })}
+          );
+        });
+      })()}
     </div>
   );
 };
@@ -575,6 +598,8 @@ export const DkCircularLoupeStrip: React.FC<DkCircularLoupeStripProps> = ({
                         height: '100%',
                         objectFit: 'cover',
                         display: 'block',
+                        transform: `scale(${loupe.plateKey === 'breech_closeup' ? 1.06 : 1.24})`,
+                        transformOrigin: 'center center',
                       }}
                     />
                   ) : (

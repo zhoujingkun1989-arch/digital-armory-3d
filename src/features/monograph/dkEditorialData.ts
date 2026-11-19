@@ -146,7 +146,7 @@ interface BilingualText {
 }
 
 // ----------------------------------------------------------------------------
-// 1. DK Part Micro-Copy Distillation (zh: 16–32 chars | en: 45–88 chars)
+// 1. DK Part Micro-Copy Distillation (zh: 16–32 chars | en: 32–62 chars)
 // ----------------------------------------------------------------------------
 
 const EN_DANGLING_END_WORDS = new Set([
@@ -160,6 +160,7 @@ const EN_DANGLING_END_WORDS = new Set([
   'to',
   'for',
   'with',
+  'without',
   'by',
   'from',
   'into',
@@ -170,29 +171,257 @@ const EN_DANGLING_END_WORDS = new Set([
   'while',
   'before',
   'after',
+  'until',
+  'unless',
   'under',
   'over',
   'between',
   'within',
   'against',
   'via',
+  'upon',
   'and',
   'or',
   'but',
   'as',
   'its',
   'their',
+  'this',
   'that',
+  'these',
+  'those',
+  'both',
+  'all',
+  'each',
+  'every',
   'which',
   'where',
   'when',
   'is',
   'are',
+  'was',
+  'were',
   'be',
+  'being',
+  'been',
+  'has',
+  'have',
+  'can',
+  'may',
+  'will',
+  'per',
+  'roughly',
+  'approximately',
+  'about',
+  'nearly',
+  'very',
+  'highly',
+  'fully',
+  'rigidly',
+  'directly',
+  'smoothly',
+  'cleanly',
+  'sharply',
+  'firmly',
+  'securely',
+  'precisely',
+  'physically',
+  'mechanically',
+  'automatically',
+  'simultaneously',
+  'continuously',
+  'laterally',
+  'axially',
+  'radially',
   'using',
   'allowing',
   'ensuring',
+  'preventing',
+  'enabling',
+  'providing',
+  'maintaining',
+  'supporting',
+  'containing',
+  'handling',
+  'keeping',
+  'holding',
+  'driving',
+  'guiding',
+  'channeling',
+  'venting',
+  'absorbing',
+  'transferring',
+  'causing',
+  'forcing',
+  'creating',
+  'protecting',
+  'shielding',
 ]);
+
+const EN_SUBORDINATE_HEADS =
+  /\s+(?:while|where|when|which|that|before|after|until|unless|because|since|although|though|as)\s+([^,;]+)$/i;
+
+const EN_TRAILING_PREPOSITION_PHRASE =
+  /\s+(?:to|at|by|for|from|into|onto|with|without|through|across|during|under|over|between|within|against|via|upon|of|in|on)\s+(?:the|a|an|its|their|this|that|both|all|roughly|approximately|about|nearly)?\s*[A-Za-z0-9.-]*$/i;
+
+const EN_INCOMPLETE_NUMERIC_TAIL =
+  /\s+(?:to|at|by|of|around|about|roughly|approximately|nearly)\s+(?:roughly|about|approximately|nearly\s+)?\d+(?:\.\d+)?(?:\s+(?:meters?|feet|per))?$/i;
+
+const EN_NUMBER_ONES: Readonly<Record<string, number>> = {
+  zero: 0,
+  one: 1,
+  two: 2,
+  three: 3,
+  four: 4,
+  five: 5,
+  six: 6,
+  seven: 7,
+  eight: 8,
+  nine: 9,
+  ten: 10,
+  eleven: 11,
+  twelve: 12,
+  thirteen: 13,
+  fourteen: 14,
+  fifteen: 15,
+  sixteen: 16,
+  seventeen: 17,
+  eighteen: 18,
+  nineteen: 19,
+};
+
+const EN_NUMBER_TENS: Readonly<Record<string, number>> = {
+  twenty: 20,
+  thirty: 30,
+  forty: 40,
+  fifty: 50,
+  sixty: 60,
+  seventy: 70,
+  eighty: 80,
+  ninety: 90,
+};
+
+const EN_DIGIT_WORDS: Readonly<Record<string, string>> = {
+  zero: '0',
+  oh: '0',
+  one: '1',
+  two: '2',
+  three: '3',
+  four: '4',
+  five: '5',
+  six: '6',
+  seven: '7',
+  eight: '8',
+  nine: '9',
+};
+
+function parseSpokenEnNumber(phrase: string): string | null {
+  const tokens = phrase
+    .toLowerCase()
+    .replace(/-/g, ' ')
+    .trim()
+    .split(/\s+/)
+    .filter((t) => t && t !== 'and');
+  if (tokens.length === 0) return null;
+
+  const pointIdx = tokens.indexOf('point');
+  if (pointIdx !== -1) {
+    const intPart = tokens.slice(0, pointIdx);
+    const fracPart = tokens.slice(pointIdx + 1);
+    if (fracPart.length === 0) return null;
+    const fracDigits = fracPart.map((w) => EN_DIGIT_WORDS[w]);
+    if (fracDigits.some((d) => !d)) return null;
+    if (intPart.length === 0) {
+      return `.${fracDigits.join('')}`;
+    }
+    const intStr = parseSpokenEnNumber(intPart.join(' '));
+    if (intStr === null) return null;
+    return `${intStr}.${fracDigits.join('')}`;
+  }
+
+  let total = 0;
+  let current = 0;
+  for (const tok of tokens) {
+    if (tok in EN_NUMBER_ONES) {
+      current += EN_NUMBER_ONES[tok];
+    } else if (tok in EN_NUMBER_TENS) {
+      current += EN_NUMBER_TENS[tok];
+    } else if (tok === 'hundred') {
+      current = (current === 0 ? 1 : current) * 100;
+    } else if (tok === 'thousand') {
+      total += (current === 0 ? 1 : current) * 1000;
+      current = 0;
+    } else {
+      return null;
+    }
+  }
+  return String(total + current);
+}
+
+const SPOKEN_NUM_WORD =
+  '(?:zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|thousand|point)';
+const SPOKEN_NUM_SEQ = `${SPOKEN_NUM_WORD}(?:[\\s-]+(?:and\\s+)?${SPOKEN_NUM_WORD})*`;
+const SPOKEN_METRIC_RE = new RegExp(
+  `\\b(${SPOKEN_NUM_SEQ})\\s+(millimeters?|centimeters?|meters?\\s+per\\s+second|meters?|feet\\s+per\\s+second|degrees?|percent|megapascals?|milliseconds?|pounds?|grains?|grams?|inches?|lugs?|grooves?|rounds?|firing\\s+phases?|phases?)\\b`,
+  'gi'
+);
+const SPOKEN_PHASE_RE = new RegExp(`\\b(phase)\\s+(${SPOKEN_NUM_SEQ})\\b`, 'gi');
+
+function normalizeSpokenEnglishMetrics(text: string): string {
+  let out = text;
+
+  // Convert common spoken caliber pairs first (e.g. "nine by nineteen millimeter")
+  out = out
+    .replace(/\bseven\s+point\s+six\s+two\s+by\s+thirty[- ]nine(?:\s+millimeters?)?\b/gi, '7.62×39mm')
+    .replace(/\bfive\s+point\s+five\s+six\s+by\s+forty[- ]five(?:\s+millimeters?)?\b/gi, '5.56×45mm')
+    .replace(/\bfive\s+point\s+seven\s+by\s+twenty[- ]eight(?:\s+millimeters?)?\b/gi, '5.7×28mm')
+    .replace(/\bnine\s+by\s+nineteen(?:\s+millimeters?)?\b/gi, '9×19mm')
+    .replace(/\btwelve\s+point\s+seven\s+by\s+ninety[- ]nine(?:\s+millimeters?)?\b/gi, '12.7×99mm')
+    .replace(/\bpoint\s+three\s+three\s+eight\b/gi, '.338')
+    .replace(/\bpoint\s+three\s+five\s+seven\b/gi, '.357')
+    .replace(/\bpoint\s+four\s+five\b/gi, '.45')
+    .replace(/\bpoint\s+five\s+zero\b/gi, '.50');
+
+  // Convert "<spoken number> <unit>" pairs
+  out = out.replace(SPOKEN_METRIC_RE, (full, numRaw: string, unitRaw: string) => {
+    const parsed = parseSpokenEnNumber(numRaw);
+    if (parsed === null) return full;
+    const uLow = unitRaw.toLowerCase();
+    if (uLow.startsWith('millimeter')) return `${parsed} mm`;
+    if (uLow.startsWith('centimeter')) return `${parsed} cm`;
+    if (uLow.includes('per second') && uLow.startsWith('meter')) return `${parsed} m/s`;
+    if (uLow.includes('per second') && uLow.startsWith('feet')) return `${parsed} FPS`;
+    if (uLow.startsWith('degree')) return `${parsed}°`;
+    if (uLow === 'percent') return `${parsed}%`;
+    if (uLow.startsWith('megapascal')) return `${parsed} MPa`;
+    if (uLow.startsWith('millisecond')) return `${parsed} ms`;
+    if (uLow.startsWith('pound')) return `${parsed} lb`;
+    if (uLow.startsWith('grain')) return `${parsed} gr`;
+    if (uLow.startsWith('inch')) return `${parsed}"`;
+    return `${parsed} ${unitRaw}`;
+  });
+
+  // Convert "phase four" -> "Phase 4"
+  out = out.replace(SPOKEN_PHASE_RE, (full, pWord: string, numRaw: string) => {
+    const parsed = parseSpokenEnNumber(numRaw);
+    return parsed !== null ? `${pWord} ${parsed}` : full;
+  });
+
+  // Compact remaining verbose unit words attached to digits
+  out = out
+    .replace(/(\d)\s+millimeters?\b/gi, '$1 mm')
+    .replace(/(\d)\s+centimeters?\b/gi, '$1 cm')
+    .replace(/(\d)\s+meters?\s+per\s+second\b/gi, '$1 m/s')
+    .replace(/(\d)\s+feet\s+per\s+second\b/gi, '$1 FPS')
+    .replace(/(\d)\s+degrees?\b/gi, '$1°')
+    .replace(/(\d)\s+percent\b/gi, '$1%')
+    .replace(/(\d)\s+megapascals?\b/gi, '$1 MPa')
+    .replace(/(\d)\s+milliseconds?\b/gi, '$1 ms')
+    .replace(/(\d)-degree\b/gi, '$1°')
+    .replace(/(\d)-millimeter\b/gi, '$1 mm');
+
+  return out;
+}
 
 const ZH_DANGLING_CHARS = new Set([
   '的',
@@ -227,20 +456,161 @@ function hasCjk(text: string): boolean {
   return /[\u4e00-\u9fff]/.test(text);
 }
 
+const EN_TITLE_FILLER_MODIFIERS = [
+  /\bCold-Hammer-Forged\s+/gi,
+  /\bQuick-Change\s+CHF\s+/gi,
+  /\bChrome-Lined\s+/gi,
+  /\bFree-Floated\s+/gi,
+  /\bInterchangeable\s+/gi,
+  /\bNon-Reciprocating\s+/gi,
+  /\bSelf-Regulating\s+/gi,
+  /\bStamped\s+Steel\s+/gi,
+  /\bSheet-Steel\s+/gi,
+  /\bFull-Length\s+/gi,
+  /\bHeavy-Duty\s+/gi,
+  /\bOversized\s+/gi,
+  /\bIntegrated\s+/gi,
+  /\bAmbidextrous\s+/gi,
+  /\bSkeletonized\s+/gi,
+  /\bTelescoping\s+/gi,
+  /\bArticulated\s+/gi,
+  /\bTop-Pivoting\s+/gi,
+  /\bTranslucent\s+/gi,
+  /\bCheckered\s+/gi,
+  /\bVentilated\s+/gi,
+  /\bRemovable\s+/gi,
+  /\bMonolithic\s+/gi,
+  /\bPrecision\s+/gi,
+  /\bStainless\s+/gi,
+  /\bHardened\s+/gi,
+  /\bAnodized\s+/gi,
+  /\bNitrided\s+/gi,
+  /\bTapered\s+/gi,
+  /\bStepped\s+/gi,
+  /\bForged\s+/gi,
+  /\bMilled\s+/gi,
+  /\bMachined\s+/gi,
+  /\bRifled\s+/gi,
+  /\bFluted\s+/gi,
+  /\bRailed\s+/gi,
+  /\bPolymer\s+/gi,
+  /\bCurved\s+/gi,
+];
+
 function cleanCalloutTitle(rawTitle: string, lang: LanguageCode): string {
   const collapsed = rawTitle.replace(/\s+/g, ' ').trim();
   if (!collapsed) return rawTitle;
-  const maxLen = lang === 'zh' ? 18 : 34;
+  const maxLen = lang === 'zh' ? 16 : 32;
   if (collapsed.length <= maxLen) return collapsed;
 
-  const withoutParen = collapsed
+  // Step 1: Strip parenthetical remarks first
+  let s = collapsed
     .replace(/\s*[（(][^）)]*[）)]\s*/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
-  if (withoutParen.length >= 2 && withoutParen.length <= maxLen) {
-    return withoutParen;
+  if (s.length >= 2 && s.length <= maxLen) return s;
+
+  if (lang === 'zh') {
+    // Strip leading year / dimension / caliber prefixes
+    s = s
+      .replace(
+        /^(?:20\d{2}\s*|18\.3"|14\.5吋?|24英寸|4英寸|6英寸|5\.5"|20"|27"|29"|1\.5mm\s*|7\.62×39mm\s*|5\.56(?:×45)?mm\s*|9×19mm\s*|\.30-06\s*|\.50\s*(?:BMG|AE)\s*|\.338\s*|\.357\s*|\.45\s*ACP\s*)/i,
+        ''
+      )
+      .trim();
+    if (s.length >= 2 && s.length <= maxLen) return s;
+
+    // Prefer primary part name before conjunctions ("与" / "及" / "、")
+    const primary = s.split(/[与及、]/)[0]?.trim() || s;
+    if (primary.length >= 4 && primary.length <= maxLen) return primary;
+    if (primary.length > maxLen) s = primary;
+
+    let cut = maxLen;
+    while (
+      cut > 4 &&
+      /[A-Za-z0-9.%°×/-]/.test(s[cut - 1]) &&
+      cut < s.length &&
+      /[A-Za-z0-9.%°×/-]/.test(s[cut])
+    ) {
+      cut--;
+    }
+    let out = s.slice(0, cut).trim();
+    while (out.length > 4 && ZH_DANGLING_CHARS.has(out[out.length - 1])) {
+      out = out.slice(0, -1).trim();
+    }
+    return out || collapsed.slice(0, maxLen);
   }
-  return withoutParen.length >= 2 ? withoutParen : collapsed;
+
+  // English title condensation (strict <= 32 chars, crisp DK specimen label)
+  // Step 2: Condense "X w/ Y" or "X with Y"
+  const withMatch = s.match(/^(.+?)\s+(?:w\/|with)\s+(.+)$/i);
+  if (withMatch) {
+    const head = withMatch[1].trim();
+    const tail = withMatch[2].trim();
+    if (head.length >= 12 && head.length <= maxLen) {
+      return head;
+    }
+    if (head.length < 14) {
+      const tailShort = tail.split(/\s+/).slice(-2).join(' ');
+      const merged = `${head} & ${tailShort}`;
+      if (merged.length <= maxLen) return merged;
+    }
+    if (head.length >= 10) {
+      s = head;
+    }
+  }
+  if (s.length <= maxLen) return s;
+
+  // Step 3: Strip redundant model-year / dimension / caliber prefixes
+  s = s
+    .replace(/^(?:Model\s+20\d{2}|Obr\.\s*20\d{2}|USGI|M1014|M17|Gen\s*[2345]|Mk\s*\d+)\s+/i, '')
+    .replace(/^(?:\d+(?:\.\d+)?(?:"|in|mm|cm|-Rd|-Round|-Groove|-Lug|-Pos|-Blade|-Pin)\s+)+/i, '')
+    .replace(
+      /^(?:\.30-06\s+Springfield|\.338\s+Lapua\s+Magnum|\.50\s+Action\s+Express|\.50\s+BMG|\.45\s+ACP|\.357\s+Magnum|7\.62×39mm|5\.56×45mm|5\.7×28mm|9×19mm|12-Gauge)\s+/i,
+      ''
+    )
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (s.length >= 4 && s.length <= maxLen) return s;
+
+  // Step 4: Prefer primary noun before "&" or "/" when compound title overflows
+  const ampIdx = s.search(/\s+[&/]\s+/);
+  if (ampIdx >= 10) {
+    const primary = s.slice(0, ampIdx).trim();
+    if (primary.length <= maxLen) return primary;
+    s = primary;
+  }
+
+  // Step 5: Strip verbose metallurgical/process adjectives until <= 32 chars
+  for (const modRe of EN_TITLE_FILLER_MODIFIERS) {
+    if (s.length <= maxLen) break;
+    const next = s.replace(modRe, '').replace(/\s+/g, ' ').trim();
+    if (next.length >= 8) {
+      s = next;
+    }
+  }
+  if (s.length <= maxLen) return s;
+
+  // Step 6: Whole-word boundary trim <= maxLen without dangling conjunctions
+  const words = s.split(/\s+/);
+  let built = '';
+  for (const w of words) {
+    const cand = built ? `${built} ${w}` : w;
+    if (cand.length <= maxLen) {
+      built = cand;
+    } else {
+      break;
+    }
+  }
+  const trimmedWords = (built || words[0] || collapsed).split(/\s+/);
+  while (
+    trimmedWords.length > 2 &&
+    (EN_DANGLING_END_WORDS.has(trimmedWords[trimmedWords.length - 1].toLowerCase()) ||
+      /^[&/—–-]+$/.test(trimmedWords[trimmedWords.length - 1]))
+  ) {
+    trimmedWords.pop();
+  }
+  return trimmedWords.join(' ').replace(/[,;:\-–—&/]+$/g, '').trim();
 }
 
 function shortenMaterial(materialLabel: string, lang: LanguageCode): string {
@@ -253,7 +623,7 @@ function shortenMaterial(materialLabel: string, lang: LanguageCode): string {
     return first.slice(0, 8);
   }
   const words = cleaned.split(/\s+/).filter(Boolean);
-  return words.slice(0, 3).join(' ');
+  return words.slice(0, 2).join(' ');
 }
 
 function shortenGroup(groupTitle: string, lang: LanguageCode): string {
@@ -264,7 +634,7 @@ function shortenGroup(groupTitle: string, lang: LanguageCode): string {
   if (lang === 'zh') {
     return cleaned.split(/[·/&＆]/)[0]?.trim().slice(0, 8) || cleaned.slice(0, 8);
   }
-  const first = cleaned.split(/[·/]/)[0]?.trim() || cleaned;
+  const first = cleaned.split(/[·/,&]/)[0]?.trim() || cleaned;
   const words = first.split(/\s+/);
   return words.slice(0, 3).join(' ');
 }
@@ -439,79 +809,156 @@ function distillZhMicroCopy(row: MonographBomRow): string {
   return trimZhPhraseToRange(core, MIN, MAX);
 }
 
-function stripIncompleteEnTail(text: string): string {
-  const hadEllipsis = /(?:…|\.\.\.)\s*$/.test(text);
+function stripIncompleteEnTail(text: string): { text: string; wasTruncated: boolean } {
+  const wasTruncated = /(?:…|\.\.\.)\s*$/.test(text);
   let out = text.replace(/(?:…|\.\.\.)+\s*$/g, '').trim();
-  if (hadEllipsis) {
+  if (wasTruncated) {
     // Drop any cut trailing word fragment immediately
     const lastSpace = out.lastIndexOf(' ');
     if (lastSpace > 12) {
       out = out.slice(0, lastSpace).trim();
     }
-    // Trim dangling punctuation/stop-words at the end
     out = out.replace(/[,;:\-–—]+$/g, '').trim();
   }
-  return out;
+  return { text: out, wasTruncated };
 }
 
-function cleanEnWordsEnding(phrase: string): string {
-  let words = phrase
+function stripDanglingEnClauses(phrase: string, aggressive = false): string {
+  let out = phrase
     .replace(/[,;:\-–—]+$/g, '')
     .replace(/\.+$/g, '')
-    .trim()
-    .split(/\s+/)
-    .filter(Boolean);
+    .trim();
 
-  // Strip unmatched trailing open parenthesis or quote
-  while (words.length > 3) {
-    const last = words[words.length - 1];
-    const bare = last.replace(/[^A-Za-z]/g, '').toLowerCase();
-    if (
-      EN_DANGLING_END_WORDS.has(bare) ||
-      /^[([{"']/.test(last) ||
-      /[,;:\-–—]$/.test(last)
-    ) {
-      words = words.slice(0, -1);
-      continue;
+  // Repeatedly peel dangling subordinate clauses, incomplete numeric tails, and trailing stop-words
+  for (let pass = 0; pass < 4; pass++) {
+    const before = out;
+
+    // 1. Strip incomplete numeric/velocity tail (e.g. "to roughly 715 meters", "to 715", "at 360")
+    if (EN_INCOMPLETE_NUMERIC_TAIL.test(out)) {
+      const stripped = out.replace(EN_INCOMPLETE_NUMERIC_TAIL, '').trim();
+      if (stripped.length >= 20) out = stripped;
     }
-    break;
+
+    // 2. Strip bare trailing number without unit (e.g. "...to 715", "...by 35")
+    if (/\s+\d+(?:\.\d+)?$/.test(out)) {
+      const stripped = out.replace(/\s+(?:roughly|about|approx\.?|nearly)?\s*\d+(?:\.\d+)?$/i, '').trim();
+      if (stripped.length >= 20) out = stripped;
+    }
+
+    // 3. Strip incomplete subordinate clause (e.g. "...while the guard", "...before the bolt")
+    const subMatch = out.match(EN_SUBORDINATE_HEADS);
+    if (subMatch) {
+      const tailWords = subMatch[1].trim().split(/\s+/).filter(Boolean);
+      const hasFiniteVerb = tailWords.some((w) =>
+        /(?:s|ed|ing)$/i.test(w) && !/^(?:gas|brass|mass|glass|axis|chassis|recess|barrel|steel|spring|slide|guard|frame|bolt|trigger|hammer|piston|carrier|casing|housing)$/i.test(w)
+      );
+      if (tailWords.length <= 3 || (aggressive && tailWords.length <= 5 && !hasFiniteVerb)) {
+        const stripped = out.slice(0, subMatch.index).trim();
+        if (stripped.length >= 22) out = stripped;
+      }
+    }
+
+    // 4. Strip dangling trailing preposition + orphan determiner/noun fragment when aggressively truncated
+    if (aggressive && EN_TRAILING_PREPOSITION_PHRASE.test(out)) {
+      const match = out.match(EN_TRAILING_PREPOSITION_PHRASE);
+      if (match && match[0].trim().split(/\s+/).length <= 2) {
+        const stripped = out.slice(0, match.index).trim();
+        if (stripped.length >= 24) out = stripped;
+      }
+    }
+
+    // 5. Strip trailing stop-words / articles / prepositions / dangling participles
+    let words = out
+      .replace(/[,;:\-–—]+$/g, '')
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
+    while (words.length > 3) {
+      const last = words[words.length - 1];
+      const bare = last.replace(/[^A-Za-z]/g, '').toLowerCase();
+      if (
+        EN_DANGLING_END_WORDS.has(bare) ||
+        /^[([{"']/.test(last) ||
+        /[,;:\-–—]$/.test(last)
+      ) {
+        words = words.slice(0, -1);
+        continue;
+      }
+      break;
+    }
+    out = words.join(' ').replace(/[,;:\-–—]+$/g, '').trim();
+
+    // Close/remove unbalanced parentheses
+    const opens = (out.match(/\(/g) ?? []).length;
+    const closes = (out.match(/\)/g) ?? []).length;
+    if (opens > closes) {
+      const idx = out.lastIndexOf('(');
+      if (idx > 18) {
+        out = out.slice(0, idx).replace(/[,;:\-–—]+$/g, '').trim();
+      }
+    }
+
+    if (out === before) break;
   }
 
-  // Close or remove unbalanced parentheses
-  const joined = words.join(' ').replace(/[,;:\-–—]+$/g, '').trim();
-  const opens = (joined.match(/\(/g) ?? []).length;
-  const closes = (joined.match(/\)/g) ?? []).length;
-  if (opens > closes) {
-    const idx = joined.lastIndexOf('(');
-    if (idx > 20) {
-      return cleanEnWordsEnding(joined.slice(0, idx));
-    }
-  }
-  return joined;
+  return out;
 }
 
 function fitEnToRange(raw: string, minLen: number, maxLen: number): string {
   let s = raw.replace(/\s+/g, ' ').trim();
   if (!s) return '';
 
-  // Capitalize first letter
+  // Trim verbose phase-timing openers when over budget so the core mechanical verb shines
+  if (s.length > maxLen - 1) {
+    const compactOpener = s
+      .replace(/^(?:During|In|Across|Throughout)\s+(?:all\s+\d+\s+|the\s+)?(?:firing\s+phases?|firing\s+cycle|phase\s+\d+|recoil\s+and\s+manual\s+cycling),?\s+/i, '')
+      .replace(/^Provides\s+the\s+/i, 'Forms ')
+      .replace(/^Acts\s+as\s+(?:an?\s+)?/i, 'Serves as ')
+      .trim();
+    if (compactOpener.length >= minLen - 1) {
+      s = compactOpener;
+    }
+  }
+
   s = s.charAt(0).toUpperCase() + s.slice(1);
   s = s.replace(/\.+$/g, '').trim();
 
   if (s.length <= maxLen - 1) {
-    const clean = cleanEnWordsEnding(s);
+    const clean = stripDanglingEnClauses(s, false);
     if (clean.length >= minLen - 1) {
       return `${clean}.`;
     }
-    return `${s.replace(/[,;:\-–—]+$/g, '').trim()}.`;
+    return `${stripDanglingEnClauses(s, false) || s}.`;
   }
 
-  // Try natural clause delimiters inside [minLen-1 .. maxLen-1]
-  const clauseDelimiters = ['; ', ' — ', ', while ', ', before ', ', allowing ', ', ensuring ', ', ', ' while ', ' before ', ' during ', ' to '];
+  // Prefer natural complete clause boundaries inside [minLen-1 .. maxLen-1]
+  const clauseDelimiters = [
+    '; ',
+    ' — ',
+    ', while ',
+    ' while ',
+    ', before ',
+    ' before ',
+    ', after ',
+    ', allowing ',
+    ', ensuring ',
+    ', preventing ',
+    ', keeping ',
+    ', holding ',
+    ', driving ',
+    ', venting ',
+    ', where ',
+    ', which ',
+    ', and ',
+    ', ',
+    ' during ',
+    ' without ',
+    ' and ',
+  ];
   for (const delim of clauseDelimiters) {
     let idx = s.lastIndexOf(delim, maxLen - 1);
     while (idx >= minLen - 1) {
-      const cand = cleanEnWordsEnding(s.slice(0, idx));
+      const cand = stripDanglingEnClauses(s.slice(0, idx), true);
       if (cand.length >= minLen - 1 && cand.length <= maxLen - 1) {
         return `${cand}.`;
       }
@@ -519,7 +966,7 @@ function fitEnToRange(raw: string, minLen: number, maxLen: number): string {
     }
   }
 
-  // Walk back by whole words (never cutting mid-word!)
+  // Walk back by whole words (never mid-word!) and strip any dangling fragments
   const words = s.split(/\s+/);
   let built = '';
   for (const w of words) {
@@ -530,70 +977,79 @@ function fitEnToRange(raw: string, minLen: number, maxLen: number): string {
       break;
     }
   }
-  const cleaned = cleanEnWordsEnding(built);
+  const cleaned = stripDanglingEnClauses(built, true);
   if (cleaned.length >= minLen - 1) {
     return `${cleaned}.`;
   }
-  return `${built.replace(/[,;:\-–—]+$/g, '').trim()}.`;
+  const softCleaned = stripDanglingEnClauses(built, false);
+  return `${softCleaned || built.replace(/[,;:\-–—]+$/g, '').trim()}.`;
 }
 
 function distillEnMicroCopy(row: MonographBomRow): string {
-  const MIN = 45;
-  const MAX = 88;
+  const MIN = 32;
+  const MAX = 62;
 
-  let text = stripIncompleteEnTail(row.principleText || '');
-  // Strip disassembly percentage/step meta-text
+  const { text: stripped, wasTruncated } = stripIncompleteEnTail(
+    row.principleText || ''
+  );
+  // Normalize TTS spoken numbers ("seven point six two millimeter" -> "7.62 mm")
+  let text = normalizeSpokenEnglishMetrics(stripped);
+  // Strip disassembly timeline / field-strip meta-text
   text = text
     .replace(
-      /[;,]?\s*(?:it\s+)?(?:separates|detaches|lifts|slides|explodes|is removed|unthreads|withdraws)\b.*$/i,
+      /[;,]?\s*(?:it\s+)?(?:separates|detaches|lifts|slides|explodes|is removed|unthreads|withdraws|extracted)\b.*$/i,
       ''
     )
-    .replace(/\bDuring\s+(?:field\s+|primary\s+|detailed\s+)?(?:strip|disassembly)[^.]*$/i, '')
+    .replace(
+      /\bDuring\s+(?:field\s+|primary\s+|detailed\s+|depot-level\s+)?(?:strip|stripping|disassembly|overhaul)[^.]*$/i,
+      ''
+    )
     .replace(/\s+/g, ' ')
     .trim();
+
+  if (wasTruncated) {
+    text = stripDanglingEnClauses(text, true);
+  }
 
   // Split into sentences
   const sentences = text
     .split(/(?<=[.!?])\s+|;\s+/)
     .map((s) => s.trim())
-    .filter((s) => s.length >= 12);
+    .filter((s) => s.length >= 10);
 
   let core = sentences[0] ?? text;
   core = core.replace(/\.+$/g, '').trim();
 
-  // If sentence 1 is brief and sentence 2 fits, join them cleanly
-  if (core.length < MIN - 1 && sentences.length > 1) {
-    const combined = `${core}; ${sentences[1].replace(/\.+$/g, '').trim()}`;
-    if (combined.length <= MAX + 20) {
-      core = combined;
-    }
-  }
-
-  // Detect fallback pattern `"Part Name · Group Title"` or short copy < 45 chars
+  // Detect fallback pattern `"Part Name · Group Title"` or short core < MIN
   const looksLikeFallbackPair = core.includes(' · ') && core.length < 64;
   if (looksLikeFallbackPair || core.length < MIN - 1) {
-    const mat = shortenMaterial(row.materialLabel, 'en');
-    const grp = shortenGroup(row.groupTitle, 'en');
-    const cleanName = cleanCalloutTitle(row.primaryName, 'en');
+    const mat = shortenMaterial(row.materialLabel, 'en').toLowerCase();
+    const grp = shortenGroup(row.groupTitle, 'en').toLowerCase();
+    const cleanName = cleanCalloutTitle(row.primaryName, 'en').toLowerCase();
     if (looksLikeFallbackPair || !core) {
-      core = `Precision ${mat.toLowerCase()} ${cleanName.toLowerCase()} driving the ${grp.toLowerCase()}`;
+      core = `Precision ${mat} ${cleanName} in the ${grp}`;
     } else {
-      const candidate = `${core} within the ${grp.toLowerCase()} (${mat.toLowerCase()})`;
-      core = candidate;
+      core = `${core} within the ${grp}`;
     }
   }
 
   let result = fitEnToRange(core, MIN, MAX);
 
-  // Final safety floor: if still under MIN (45 chars), expand cleanly with assembly role
+  // Final safety floor: if still under MIN (32 chars), expand cleanly with assembly role
   if (result.length < MIN) {
     const grp = shortenGroup(row.groupTitle, 'en').toLowerCase();
     const mat = shortenMaterial(row.materialLabel, 'en').toLowerCase();
     const base = result.replace(/\.+$/g, '').trim();
     const expanded = base.toLowerCase().includes(grp)
-      ? `${base}, machined from ${mat} for cycle reliability`
-      : `${base} within the precision ${grp} assembly`;
+      ? `${base} in ${mat} construction`
+      : `${base} within the ${grp}`;
     result = fitEnToRange(expanded, MIN, MAX);
+  }
+
+  // Ultra-safe guarantee if group + base still short (e.g., short single-word group)
+  if (result.length < MIN) {
+    const base = result.replace(/\.+$/g, '').trim();
+    result = fitEnToRange(`${base} for precision cycle control`, MIN, MAX);
   }
 
   return result;
@@ -602,8 +1058,8 @@ function distillEnMicroCopy(row: MonographBomRow): string {
 /**
  * Produces a crisp DK Eyewitness callout pair (`{ title, microCopy }`) from a
  * dossier + partId OR directly from a `MonographBomRow`.
- * Guarantees clean complete phrasing (zh: 16–32 chars; en: 45–88 chars) with
- * zero mid-word cuts and no trailing ellipses.
+ * Guarantees concise titles (`zh <= 16`, `en <= 32`) and clean complete phrasing
+ * (`zh: 16–32 chars`, `en: 32–62 chars`) with zero mid-word cuts or trailing ellipses.
  */
 export function buildDkPartMicroCopy(
   dossier: MonographDossierData,
@@ -630,7 +1086,7 @@ export function buildDkPartMicroCopy(
         microCopy:
           lang === 'zh'
             ? `${dossierOrRow.shortTag} 核心机械协同构件，承载精密运动配合。`
-            : `Precision mechanical sub-component engineered within the ${dossierOrRow.shortTag} assembly.`,
+            : `Precision sub-component within the ${dossierOrRow.shortTag} assembly.`,
       };
     }
   } else {

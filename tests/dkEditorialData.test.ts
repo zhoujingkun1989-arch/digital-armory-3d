@@ -187,6 +187,10 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
 
           if (lang === 'zh') {
             expect(
+              byDossier.title.length,
+              `[${weaponId}/${row.partId}/zh title] "${byDossier.title}"`
+            ).toBeLessThanOrEqual(16);
+            expect(
               byDossier.microCopy.length,
               `[${weaponId}/${row.partId}/zh] "${byDossier.microCopy}"`
             ).toBeGreaterThanOrEqual(16);
@@ -196,17 +200,39 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
             ).toBeLessThanOrEqual(32);
           } else {
             expect(
-              byDossier.microCopy.length,
-              `[${weaponId}/${row.partId}/en] "${byDossier.microCopy}"`
-            ).toBeGreaterThanOrEqual(45);
+              byDossier.title.length,
+              `[${weaponId}/${row.partId}/en title] "${byDossier.title}"`
+            ).toBeLessThanOrEqual(32);
             expect(
               byDossier.microCopy.length,
               `[${weaponId}/${row.partId}/en] "${byDossier.microCopy}"`
-            ).toBeLessThanOrEqual(88);
+            ).toBeGreaterThanOrEqual(32);
+            expect(
+              byDossier.microCopy.length,
+              `[${weaponId}/${row.partId}/en] "${byDossier.microCopy}"`
+            ).toBeLessThanOrEqual(62);
             expect(byDossier.microCopy.endsWith('.')).toBe(true);
+            // Must never end with an incomplete dangling subordinate clause or bare number
+            expect(
+              byDossier.microCopy,
+              `[${weaponId}/${row.partId}/en dangling] "${byDossier.microCopy}"`
+            ).not.toMatch(/\b(?:while|before|after|where|when)\s+\w+(?:\s+\w+)?\.$/i);
+            expect(
+              byDossier.microCopy,
+              `[${weaponId}/${row.partId}/en bare-num] "${byDossier.microCopy}"`
+            ).not.toMatch(/\b(?:to|at|by)\s+(?:roughly|about|approx\.?)?\s*\d+(?:\.\d+)?(?:\s+meters?)?\.$/i);
           }
 
           totalPartsChecked++;
+        }
+
+        // Regression guards on previously reported AK-15 R-02 & R-08 defects
+        if (weaponId === 'ak15' && lang === 'en') {
+          const r02 = buildDkPartMicroCopy(dossier, 'ak_barrel');
+          expect(r02.microCopy).not.toMatch(/seven hundred fifteen/i);
+          expect(r02.microCopy).not.toMatch(/715\.$/);
+          const r08 = buildDkPartMicroCopy(dossier, 'ak_pistol_grip');
+          expect(r08.microCopy).not.toMatch(/while the guard/i);
         }
 
         // Verify graceful missing partId fallback & enrichDkCallouts helper
@@ -253,8 +279,9 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
             expect(res.microCopy.length).toBeGreaterThanOrEqual(16);
             expect(res.microCopy.length).toBeLessThanOrEqual(32);
           } else {
-            expect(res.microCopy.length).toBeGreaterThanOrEqual(45);
-            expect(res.microCopy.length).toBeLessThanOrEqual(88);
+            expect(res.title.length).toBeLessThanOrEqual(32);
+            expect(res.microCopy.length).toBeGreaterThanOrEqual(32);
+            expect(res.microCopy.length).toBeLessThanOrEqual(62);
           }
         }
       }
@@ -350,7 +377,43 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
     expect(overlayHtml).toContain('dk-annotated-plate-overlay');
     expect(overlayHtml).toContain('U-06');
     expect(overlayHtml).toContain('r="3.2"');
+    expect(overlayHtml).toContain('max-width:22%');
+    expect(overlayHtml).toContain('font-size:5.8pt');
+    expect(overlayHtml).toContain('font-size:6.4pt');
+    expect(overlayHtml).toContain('font-size:5.5pt');
     expect(overlayHtml).not.toContain('NaN');
+
+    // Verify dynamic maxWidth scaling for 5-top, 6-bottom, and left/right callout densities
+    const makeDenseCallout = (
+      idx: number,
+      side: 'top' | 'bottom' | 'left' | 'right'
+    ) => ({
+      partId: `${side}_${idx}`,
+      bomCode: `P-${idx}`,
+      side,
+      anchorU: 0.2 + (idx % 5) * 0.15,
+      anchorV: 0.5,
+      kneeU: 0.2 + (idx % 5) * 0.15,
+      kneeV: side === 'top' ? 0.18 : 0.82,
+      labelU: 0.2 + (idx % 5) * 0.15,
+      labelV: side === 'top' ? 0.08 : 0.92,
+      align: 'center' as const,
+      title: `Part ${idx}`,
+      microCopy: 'Precision locking interface for cycle timing.',
+    });
+    const denseOverlayHtml = renderToStaticMarkup(
+      React.createElement(DkAnnotatedPlateOverlay, {
+        callouts: [
+          ...[0, 1, 2, 3, 4].map((i) => makeDenseCallout(i, 'top')),
+          ...[0, 1, 2, 3, 4, 5].map((i) => makeDenseCallout(i, 'bottom')),
+          makeDenseCallout(0, 'left'),
+          makeDenseCallout(1, 'right'),
+        ],
+      })
+    );
+    expect(denseOverlayHtml).toContain('max-width:18.5%');
+    expect(denseOverlayHtml).toContain('max-width:15.8%');
+    expect(denseOverlayHtml).toContain('max-width:21%');
 
     // 2. DkCircularLoupeStrip + DkLoupeHeroConnectorOverlay
     const p08Loupes = buildDkLoupeSpecs('p08', 'zh');
@@ -377,6 +440,8 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
     expect(loupeHtml).toContain('3.0×');
     expect(loupeHtml).toContain('2.5×');
     expect(loupeHtml).toContain('dk-loupe-connector-bridge');
+    expect(loupeHtml).toContain('scale(1.06)');
+    expect(loupeHtml).toContain('scale(1.24)');
     expect(loupeHtml).not.toContain('NaN');
 
     const heroConnHtml = renderToStaticMarkup(
