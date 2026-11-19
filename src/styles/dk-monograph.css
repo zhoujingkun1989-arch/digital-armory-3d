@@ -266,6 +266,23 @@
   white-space: nowrap;
 }
 
+/* Concise A4 Portrait running headers — zero ellipsis clipping */
+.dk-page-sheet .dk-running-header {
+  gap: 3mm;
+}
+
+.dk-page-sheet .dk-rh-group {
+  gap: 1.4mm;
+}
+
+.dk-page-sheet .dk-rh-kicker,
+.dk-page-sheet .dk-rh-sub,
+.dk-page-sheet .dk-rh-model,
+.dk-page-sheet .dk-rh-stamp {
+  font-size: 5.5pt;
+  letter-spacing: 0.04em;
+}
+
 .dk-running-footer {
   position: relative;
   z-index: 4;
@@ -637,14 +654,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 7.5mm 4mm 8mm;
+  padding: 12mm 4mm 13mm;
 }
 
 .dk-hero-stage {
   height: 100%;
-  max-height: 122mm;
+  max-height: 110mm;
   width: auto;
-  max-width: 224mm;
+  max-width: 248mm;
 }
 
 .dk-s1-lower-band {
@@ -796,13 +813,9 @@
 
 .dk-bt-item p {
   margin: 0;
-  font-size: 6.1pt;
-  line-height: 1.34;
+  font-size: 6pt;
+  line-height: 1.32;
   color: var(--dk-ink-sec);
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 .dk-elevations-pair {
@@ -853,13 +866,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 7.5mm 1mm 8mm;
+  padding: 13mm 1mm 13mm;
 }
 
 .dk-cutaway-stage {
-  width: 100%;
+  height: 100%;
+  width: auto;
+  max-width: 184mm;
+  max-height: 108mm;
+}
+
+.dk-s2-right.has-stacked-ballistics .dk-cutaway-stage {
+  max-height: 76mm;
   max-width: 182mm;
-  max-height: 114mm;
 }
 
 .dk-ballistics-zone {
@@ -878,7 +897,7 @@
 .dk-ballistics-zone.is-stacked {
   display: flex;
   flex-direction: column;
-  gap: 2.4mm;
+  gap: 1.6mm;
 }
 
 .dk-cartridge-col,
@@ -899,12 +918,17 @@
 .dk-ballistics-chart-wrap .monograph-vector-svg {
   width: 100%;
   height: auto;
-  max-height: 54mm;
+  max-height: 52mm;
   display: block;
 }
 
 .dk-ballistics-zone.is-stacked .dk-ballistics-chart-wrap .monograph-vector-svg {
-  max-height: 46mm;
+  max-height: 41mm;
+}
+
+.dk-s2-right.has-stacked-ballistics .dk-ammo-micro-ledger {
+  margin-top: 1.2mm;
+  padding-top: 1mm;
 }
 
 .dk-ammo-micro-ledger {
@@ -947,7 +971,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-bottom: 7.5mm;
+  padding-bottom: 13mm;
 }
 
 .dk-exploded-caption-bar {
@@ -956,7 +980,7 @@
   align-items: baseline;
   justify-content: space-between;
   gap: 6mm;
-  margin-bottom: 6.5mm;
+  margin-bottom: 12mm;
 }
 
 .dk-inline-sub {
@@ -966,9 +990,9 @@
 
 .dk-exploded-stage {
   height: 100%;
-  max-height: 118mm;
+  max-height: 100mm;
   width: auto;
-  max-width: 224mm;
+  max-width: 248mm;
 }
 
 .dk-s3-lower-split {
@@ -1511,13 +1535,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8mm 1mm 8.5mm;
+  padding: 11.5mm 1mm 12mm;
 }
 
 .dk-a4-hero-stage {
-  width: 100%;
+  height: 100%;
+  width: auto;
   max-width: 184mm;
-  max-height: 115mm;
+  max-height: 102mm;
 }
 
 .dk-a4-ruler-wrap {
@@ -1559,13 +1584,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8mm 1mm 8.5mm;
+  padding: 11.5mm 1mm 12mm;
 }
 
 .dk-a4-exploded-stage {
-  width: 100%;
+  height: 100%;
+  width: auto;
   max-width: 184mm;
-  max-height: 115mm;
+  max-height: 100mm;
 }
 
 .dk-a4-roles-section {
@@ -1577,86 +1603,125 @@
   border-top: 0.6pt solid var(--dk-rule-strong);
 }
 
-/* A4 Page 6: Full Tabular Archival BOM Table */
+/* A4 Page 6: Full Tabular Archival BOM Table — 3 Density Tiers (Zero Footer Clipping up to 34 Parts) */
 .dk-a4-bom-body {
   justify-content: flex-start;
-  gap: 2.4mm;
+  gap: 1.8mm;
 }
 
 .dk-bom-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 6.3pt;
-  line-height: 1.28;
+  table-layout: fixed;
+  font-size: 6.1pt;
+  line-height: 1.24;
   font-variant-numeric: tabular-nums;
 }
 
-.dk-bom-table.is-dense {
-  font-size: 5.8pt;
-  line-height: 1.2;
+.dk-bom-table.is-compact {
+  font-size: 5.7pt;
+  line-height: 1.18;
+}
+
+.dk-bom-table.is-ultra-dense {
+  font-size: 5.45pt;
+  line-height: 1.14;
 }
 
 .dk-bom-table thead th {
   text-align: left;
-  padding: 1.3mm 1.5mm;
+  padding: 1.1mm 1.2mm;
   border-top: 1pt solid var(--dk-ink);
   border-bottom: 0.7pt solid var(--dk-ink);
   font-family: var(--dk-font-mono);
-  font-size: 5.8pt;
+  font-size: 5.6pt;
   font-weight: 800;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--dk-ink);
 }
 
-.dk-bom-table tbody td {
-  padding: 1.1mm 1.5mm;
-  border-bottom: 0.35pt solid var(--dk-rule-light);
-  vertical-align: top;
+.dk-bom-table .col-code {
+  width: 10.5mm;
 }
 
-.dk-bom-table.is-dense tbody td {
-  padding: 0.75mm 1.2mm;
+.dk-bom-table .col-name {
+  width: 34mm;
+}
+
+.dk-bom-table .col-mat {
+  width: 26mm;
+}
+
+.dk-bom-table .col-env {
+  width: 24.5mm;
+}
+
+.dk-bom-table tbody td {
+  padding: 0.9mm 1.2mm;
+  border-bottom: 0.35pt solid var(--dk-rule-light);
+  vertical-align: middle;
+}
+
+.dk-bom-table.is-compact tbody td {
+  padding: 0.65mm 1.15mm;
+}
+
+.dk-bom-table.is-ultra-dense tbody td {
+  padding: 0.48mm 1.1mm;
 }
 
 .dk-bom-table .td-code {
-  width: 11mm;
   font-family: var(--dk-font-mono);
   font-weight: 900;
   white-space: nowrap;
-}
-
-.dk-bom-table .td-name {
-  width: 34mm;
 }
 
 .dk-bom-table .td-name strong {
   display: block;
   font-weight: 800;
   color: var(--dk-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .dk-bom-table .td-name span {
   display: block;
-  font-size: 5.4pt;
+  font-size: 5.2pt;
   color: var(--dk-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .dk-bom-table .td-mat {
-  width: 28mm;
   color: var(--dk-ink-sec);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .dk-bom-table .td-env {
-  width: 24mm;
   font-family: var(--dk-font-mono);
-  font-size: 5.6pt;
+  font-size: 5.3pt;
   color: var(--dk-ink-sec);
   white-space: nowrap;
 }
 
 .dk-bom-table .td-copy {
   color: var(--dk-ink-sec);
+}
+
+.dk-bom-copy-text {
+  display: block;
+}
+
+.dk-bom-table.is-compact .dk-bom-copy-text,
+.dk-bom-table.is-ultra-dense .dk-bom-copy-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .dk-qa-signoff-bar {
