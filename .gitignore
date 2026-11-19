@@ -7,6 +7,9 @@ dist/
 dist-ssr/
 *.tsbuildinfo
 
+# Local pre-press PDF & monograph exports
+exports/
+
 # Python cache (PBR texture & narration generators)
 __pycache__/
 *.py[cod]
