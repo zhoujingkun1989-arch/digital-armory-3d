@@ -227,8 +227,8 @@ export const DkAnnotatedPlateOverlay: React.FC<DkAnnotatedPlateOverlayProps> = (
                 textAlign: c.align,
                 maxWidth,
                 minWidth: '72px',
-                maxHeight: '12.5mm',
-                padding: compact ? '1px 3px' : '1.5px 4px',
+                maxHeight: '16.5mm',
+                padding: compact ? '1px 4px' : '1.5px 5px',
                 backgroundColor: 'rgba(255, 255, 255, 0.92)',
                 boxSizing: 'border-box',
                 lineHeight: 1.14,
@@ -255,6 +255,7 @@ export const DkAnnotatedPlateOverlay: React.FC<DkAnnotatedPlateOverlayProps> = (
                     color: accentColor,
                     fontVariantNumeric: 'tabular-nums',
                     marginRight: '3.5px',
+                    whiteSpace: 'nowrap',
                   }}
                 >
                   {c.bomCode}
@@ -281,7 +282,7 @@ export const DkAnnotatedPlateOverlay: React.FC<DkAnnotatedPlateOverlayProps> = (
                     color: DK_PALETTE.inkSecondary,
                     lineHeight: 1.18,
                     display: '-webkit-box',
-                    WebkitLineClamp: 2,
+                    WebkitLineClamp: 3,
                     WebkitBoxOrient: 'vertical',
                     overflow: 'hidden',
                   }}
