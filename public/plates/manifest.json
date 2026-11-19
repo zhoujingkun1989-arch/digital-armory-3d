@@ -1,0 +1,186 @@
+{
+  "version": 1,
+  "generatedAt": "2026-11-19T11:40:53Z",
+  "weapons": {
+    "p08": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/p08/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/p08/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/p08/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/p08/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/p08/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/p08/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/p08/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/p08/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/p08/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/p08/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 12.02,
+          "elevationDeg": 7.42,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "ak15": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/ak15/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/ak15/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/ak15/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/ak15/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/ak15/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/ak15/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/ak15/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/ak15/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/ak15/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/ak15/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 8.12,
+          "elevationDeg": 7.38,
+          "fovDeg": 36.0
+        }
+      }
+    }
+  }
+}
