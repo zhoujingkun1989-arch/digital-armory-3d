@@ -227,12 +227,10 @@ export const DkAnnotatedPlateOverlay: React.FC<DkAnnotatedPlateOverlayProps> = (
                 textAlign: c.align,
                 maxWidth,
                 minWidth: '72px',
-                maxHeight: '16.5mm',
-                padding: compact ? '1px 4px' : '1.5px 5px',
+                padding: compact ? '1px 4px 2px' : '1.5px 5px 2.5px',
                 backgroundColor: 'rgba(255, 255, 255, 0.92)',
                 boxSizing: 'border-box',
-                lineHeight: 1.14,
-                overflow: 'hidden',
+                lineHeight: 1.18,
               }}
             >
               <div
@@ -242,7 +240,7 @@ export const DkAnnotatedPlateOverlay: React.FC<DkAnnotatedPlateOverlayProps> = (
                   WebkitLineClamp: 2,
                   WebkitBoxOrient: 'vertical',
                   overflow: 'hidden',
-                  lineHeight: 1.14,
+                  lineHeight: 1.18,
                 }}
               >
                 <span
@@ -280,9 +278,9 @@ export const DkAnnotatedPlateOverlay: React.FC<DkAnnotatedPlateOverlayProps> = (
                     fontSize: '5.5pt',
                     fontWeight: 400,
                     color: DK_PALETTE.inkSecondary,
-                    lineHeight: 1.18,
+                    lineHeight: 1.22,
                     display: '-webkit-box',
-                    WebkitLineClamp: 3,
+                    WebkitLineClamp: 2,
                     WebkitBoxOrient: 'vertical',
                     overflow: 'hidden',
                   }}
