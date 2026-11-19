@@ -8,11 +8,19 @@ import {
   type ExternalProjectileId,
   normalizeExternalProjectileId,
 } from '../engine/physics/externalBallistics';
+import type {
+  MonographCaptureQuality,
+  MonographEdition,
+  MonographLayoutMode,
+  MonographPageMode,
+  MonographStyleMode,
+} from '../features/monograph/monographCaptureStore';
 import type { LanguageCode } from '../narration/types';
 import {
   type AppScreen,
   type AppViewMode,
   detectBrowserDefaultLanguage,
+  type MonographModalLaunchOptions,
   useAppStore,
 } from '../store/useAppStore';
 import { getShortWeaponLabel } from '../weapons/manifests';
@@ -32,6 +40,113 @@ export function getDefaultEntryScreen(): 'showcase' | 'armory' {
   return 'showcase';
 }
 
+export interface MonographDeepLinkParams extends MonographModalLaunchOptions {
+  open: boolean;
+  weaponId?: WeaponId;
+  lang?: LanguageCode;
+}
+
+const VALID_MONOGRAPH_STYLES = new Set<MonographStyleMode>([
+  'dk_encyclopedia',
+  'pro_dossier',
+  'kids_pictorial',
+]);
+const VALID_MONOGRAPH_EDITIONS = new Set<MonographEdition>([
+  'dk_encyclopedia',
+  'blueprint_manual',
+  'obsidian_folio',
+]);
+const VALID_MONOGRAPH_LAYOUTS = new Set<MonographLayoutMode>([
+  'spread_a3',
+  'portrait_a4',
+]);
+const VALID_MONOGRAPH_PAGES = new Set<MonographPageMode>([
+  'full_8p',
+  'compact_4p',
+]);
+const VALID_MONOGRAPH_QUALITIES = new Set<MonographCaptureQuality>([
+  'standard_1440',
+  'print_2880',
+]);
+
+/**
+ * Parses Monograph Studio / Automated Pre-Press PDF deep-link query parameters:
+ * `?monograph=1&weapon=<id>&style=<style>&edition=<edition>&layout=<layout>&pages=<pages>&quality=<quality>&lang=<lang>&prepress=<0|1>&callsign=<str>`
+ */
+export function parseMonographDeepLinkParams(
+  searchOverride?: string
+): MonographDeepLinkParams {
+  const rawSearch =
+    searchOverride !== undefined
+      ? searchOverride
+      : typeof window !== 'undefined'
+        ? window.location.search
+        : '';
+  const params = new URLSearchParams(rawSearch);
+  const rawMonograph = params.get('monograph')?.trim().toLowerCase();
+  const open = rawMonograph === '1' || rawMonograph === 'true';
+
+  const result: MonographDeepLinkParams = { open };
+
+  const rawWeapon = params.get('weapon')?.trim().toLowerCase();
+  if (isWeaponId(rawWeapon)) {
+    result.weaponId = rawWeapon;
+  }
+
+  const rawStyle = params.get('style')?.trim() as MonographStyleMode | undefined;
+  if (rawStyle && VALID_MONOGRAPH_STYLES.has(rawStyle)) {
+    result.styleMode = rawStyle;
+  }
+
+  const rawEdition = params.get('edition')?.trim() as
+    | MonographEdition
+    | undefined;
+  if (rawEdition && VALID_MONOGRAPH_EDITIONS.has(rawEdition)) {
+    result.edition = rawEdition;
+  }
+
+  const rawLayout = params.get('layout')?.trim() as
+    | MonographLayoutMode
+    | undefined;
+  if (rawLayout && VALID_MONOGRAPH_LAYOUTS.has(rawLayout)) {
+    result.layoutMode = rawLayout;
+  }
+
+  const rawPages = params.get('pages')?.trim() as MonographPageMode | undefined;
+  if (rawPages && VALID_MONOGRAPH_PAGES.has(rawPages)) {
+    result.pageMode = rawPages;
+  }
+
+  const rawQuality = params.get('quality')?.trim() as
+    | MonographCaptureQuality
+    | undefined;
+  if (rawQuality && VALID_MONOGRAPH_QUALITIES.has(rawQuality)) {
+    result.quality = rawQuality;
+  }
+
+  const rawLang = params.get('lang')?.trim().toLowerCase();
+  if (rawLang === 'zh' || rawLang === 'en') {
+    result.lang = rawLang;
+  }
+
+  const rawPrepress = params.get('prepress')?.trim().toLowerCase();
+  if (rawPrepress === '1' || rawPrepress === 'true') {
+    result.prepress = true;
+  } else if (rawPrepress === '0' || rawPrepress === 'false') {
+    result.prepress = false;
+  }
+
+  const rawCallsign = params.get('callsign');
+  if (rawCallsign !== null) {
+    const trimmed = rawCallsign.trim().slice(0, 32);
+    if (trimmed.length > 0) {
+      result.collectorCallsign = trimmed;
+    }
+  }
+
+  return result;
+}
+
 export function applyLocationToStore(searchOverride?: string): void {
   if (searchOverride === undefined && typeof window === 'undefined') return;
   const rawSearch = searchOverride ?? window.location.search;
@@ -42,6 +157,7 @@ export function applyLocationToStore(searchOverride?: string): void {
   const rawLang = params.get('lang');
   const rawCaliber = params.get('caliber');
   const rawCut = params.get('cut');
+  const monographDeepLink = parseMonographDeepLinkParams(rawSearch);
 
   const current = useAppStore.getState();
   if (rawLang === 'en' || rawLang === 'zh') {
@@ -98,6 +214,34 @@ export function applyLocationToStore(searchOverride?: string): void {
     current.selectArmoryWeapon(rawWeapon);
   } else if (current.screen !== 'armory') {
     current.returnToArmory();
+  }
+
+  if (monographDeepLink.open) {
+    const launchOptions: MonographModalLaunchOptions = {};
+    if (monographDeepLink.styleMode) {
+      launchOptions.styleMode = monographDeepLink.styleMode;
+    }
+    if (monographDeepLink.edition) {
+      launchOptions.edition = monographDeepLink.edition;
+    }
+    if (monographDeepLink.layoutMode) {
+      launchOptions.layoutMode = monographDeepLink.layoutMode;
+    }
+    if (monographDeepLink.pageMode) {
+      launchOptions.pageMode = monographDeepLink.pageMode;
+    }
+    if (monographDeepLink.quality) {
+      launchOptions.quality = monographDeepLink.quality;
+    }
+    if (monographDeepLink.prepress !== undefined) {
+      launchOptions.prepress = monographDeepLink.prepress;
+    }
+    if (monographDeepLink.collectorCallsign !== undefined) {
+      launchOptions.collectorCallsign = monographDeepLink.collectorCallsign;
+    }
+    useAppStore
+      .getState()
+      .openMonographModal(monographDeepLink.weaponId ?? weaponId, launchOptions);
   }
 }
 
@@ -265,6 +409,11 @@ export function useUrlStateSync(): void {
     // already updated the store ahead of this render's closure values; bail out so we
     // never clobber `window.location.search` with stale initial defaults.
     const live = useAppStore.getState();
+    // Never overwrite `?monograph=1&...` URL state while MonographPrintModal or its
+    // offscreen capture rig temporarily switches screen/mode/sectionCut.
+    if (live.monographModalOpen) {
+      return;
+    }
     if (
       live.activeWeaponId !== activeWeaponId ||
       live.screen !== screen ||

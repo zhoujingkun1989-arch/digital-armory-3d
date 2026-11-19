@@ -82,6 +82,22 @@
   color: #38bdf8;
 }
 
+.ms-cycles-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 5px;
+  background: rgba(185, 28, 28, 0.16);
+  border: 1px solid rgba(248, 113, 113, 0.5);
+  color: #fecaca;
+  font-family: var(--font-mono);
+  font-size: 9.8px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
 .ms-studio-title {
   font-size: 15.5px;
   font-weight: 800;
@@ -288,6 +304,52 @@
   font-weight: 800;
 }
 
+.ms-seg-btn.active-dk {
+  background: linear-gradient(135deg, #991b1b, #b91c1c);
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.ms-seg-btn.active-dk-white {
+  background: #ffffff;
+  color: #111827;
+  font-weight: 800;
+  box-shadow: inset 0 0 0 1px rgba(185, 28, 28, 0.45);
+}
+
+.ms-seg-btn.active-print-dpi {
+  background: linear-gradient(135deg, #0f766e, #0d9488);
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.ms-prepress-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-block-size: 32px;
+  padding: 4px 10px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  transition: background-color 0.14s ease, border-color 0.14s ease, color 0.14s ease;
+}
+
+.ms-prepress-toggle:hover {
+  color: #f1f5f9;
+  border-color: rgba(148, 163, 184, 0.45);
+}
+
+.ms-prepress-toggle.active {
+  background: rgba(185, 28, 28, 0.2);
+  border-color: #ef4444;
+  color: #fecaca;
+}
+
 .ms-callsign-field {
   display: inline-flex;
   align-items: center;
@@ -477,6 +539,25 @@
   --m-cyan: #b45309;
   --m-border: rgba(3, 105, 161, 0.38);
   --m-border-subtle: rgba(15, 23, 42, 0.15);
+  --m-warn-bg: #fef2f2;
+  --m-warn-text: #b91c1c;
+}
+
+/* Edition 3: DK Pure White Coated Art Paper (fallback bridge when paired with Pro / Kids styles) */
+.monograph-document.edition-dk_encyclopedia {
+  --m-bg: #ffffff;
+  --m-surface: #ffffff;
+  --m-surface-alt: #f8fafc;
+  --m-plate-bg: #ffffff;
+  --m-text: #111827;
+  --m-text-sec: #334155;
+  --m-text-muted: #64748b;
+  --m-accent: #b91c1c;
+  --m-accent-strong: #991b1b;
+  --m-accent-soft: rgba(185, 28, 28, 0.08);
+  --m-cyan: #9a6b2f;
+  --m-border: rgba(17, 24, 39, 0.24);
+  --m-border-subtle: rgba(15, 23, 42, 0.12);
   --m-warn-bg: #fef2f2;
   --m-warn-text: #b91c1c;
 }
@@ -1865,7 +1946,8 @@
    Kids' Multi-Picture 3D Science Album (`.kids-monograph`)
    ========================================================================== */
 
-.kids-monograph.edition-blueprint_manual {
+.kids-monograph.edition-blueprint_manual,
+.kids-monograph.edition-dk_encyclopedia {
   --km-pill-sky-bg: #e0f2fe;
   --km-pill-sky-fg: #0369a1;
   --km-pill-sky-bd: #7dd3fc;
@@ -2928,7 +3010,8 @@
 }
 
 /* ==========================================================================
-   Zero-Margin A4 Vector Print Stylesheet (`@media print`)
+   Zero-Margin Dynamic Vector Print Stylesheet (`@media print`)
+   Supports A4 Portrait (210×297mm / 216×303mm) & DK A3 Spread (420×297mm / 426×303mm)
    ========================================================================== */
 @page {
   size: A4 portrait;
@@ -2940,9 +3023,11 @@
   body,
   #root,
   .app-shell {
-    width: 210mm !important;
+    width: var(--monograph-print-width, 210mm) !important;
     height: auto !important;
     min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
     overflow: visible !important;
     background: transparent !important;
     -webkit-print-color-adjust: exact !important;
@@ -2954,6 +3039,7 @@
   .immersive-floating-bar,
   .hud-chrome-layer,
   .monograph-dialog,
+  .poster-share-dialog,
   .tex-modal-backdrop {
     display: none !important;
   }
@@ -2961,7 +3047,9 @@
   .monograph-print-portal {
     display: block !important;
     position: static !important;
-    width: 210mm !important;
+    width: var(--monograph-print-width, 210mm) !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   .monograph-document {

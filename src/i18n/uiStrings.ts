@@ -488,16 +488,33 @@ export interface UiDictionary {
     studioTitle: string;
     studioSub: string;
     weaponSelectAria: string;
+    styleDk: string;
+    styleDkTip: string;
     styleKids: string;
     styleKidsTip: string;
     stylePro: string;
     styleProTip: string;
+    editionDk: string;
+    editionDkTip: string;
     editionObsidian: string;
     editionObsidianTip: string;
     editionBlueprint: string;
     editionBlueprintTip: string;
+    layoutSpreadA3: string;
+    layoutSpreadA3Tip: string;
+    layoutPortraitA4: string;
+    layoutPortraitA4Tip: string;
     mode8p: string;
     mode4p: string;
+    mode4Spreads: string;
+    mode2Spreads: string;
+    qualityStandard: string;
+    qualityStandardTip: string;
+    qualityPrint: string;
+    qualityPrintTip: string;
+    prepressToggle: string;
+    prepressToggleTip: string;
+    cyclesBadge: (cyclesCount: number, total: number) => string;
     callsignLabel: string;
     callsignPlaceholder: string;
     reshootBtn: string;
@@ -505,10 +522,12 @@ export interface UiDictionary {
     printCta: string;
     printCapturingCta: (done: number, total: number) => string;
     printHint: string;
+    printHintDkSpread: string;
     closeTitle: string;
     capturingTitle: (shortTag: string, done: number, total: number) => string;
     capturingSub: string;
     seriesHeader: string;
+    editionStampDk: string;
     editionStampObsidian: string;
     editionStampBlueprint: string;
     coverMonographTag: string;
@@ -1263,20 +1282,45 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       studioSub:
         '实时离屏冲印 17 幅高清 3D 透视/分解/四格连环画大图 · 支持「少儿多图绘本」与「专业军工档案」一键切换',
       weaponSelectAria: '选择要印制图册的馆藏装备',
+      styleDk: 'DK 图鉴典藏版',
+      styleDkTip:
+        '国际博物视觉百科出版标准：纯白铜版纸无边框透明抠图、0.35pt 精讲引导线、圆形光学放大镜特写、1:1 原大弹药纵剖与跨页对开版式',
       styleKids: '少儿多图绘本',
       styleKidsTip:
         '专为儿童与青少年设计：17 幅无裁切高清 3D 大图铺满全页，配大字短句贴纸、乐高分装包特写与四格慢动作连环画',
       stylePro: '专业军工档案',
       styleProTip:
         '硬核军迷收藏版：包含四幕研发史深度长文、全零件冶金包络总表、SAAMI 内弹道示波曲线与排障教范',
+      editionDk: 'DK 纯白铜版纸',
+      editionDkTip:
+        '纯白铜版纸底配透明 Alpha 抠图与柔和台面投影，还原国际博物馆精装百科出版质感',
       editionObsidian: '炫酷暗黑画册版',
       editionObsidianTip:
         '深邃影棚暗调画册风格，最适合平板阅读、导出高清 PDF 收藏或铜版相纸满版彩印',
       editionBlueprint: '明亮绘本省墨版',
       editionBlueprintTip:
         '清爽白底彩色绘本与工程图风格，节省约 90% 黑色墨水，最适合家用彩色喷墨/激光打印机装订成册',
+      layoutSpreadA3: 'A3 跨页对开',
+      layoutSpreadA3Tip:
+        'DK 经典双页跨幅画册排版（420×297mm 横向对开），枪械主体气势磅礴横跨中缝',
+      layoutPortraitA4: 'A4 竖版单页',
+      layoutPortraitA4Tip:
+        '标准 A4 竖版单页排版（210×297mm），兼容家用打印机与桌面装订收藏',
       mode8p: '8 页全彩完整本',
       mode4p: '4 页精选速印版',
+      mode4Spreads: '4 跨页 (8P 典藏)',
+      mode2Spreads: '2 跨页 (4P 精选)',
+      qualityStandard: '快速 1440px',
+      qualityStandardTip:
+        '1440×900 实时离屏渲染，秒级流畅预览全部图版与排版',
+      qualityPrint: '300 DPI 超清',
+      qualityPrintTip:
+        '2880×1800 印刷级超清渲染（约 300 DPI），推荐在导出精装 PDF 或大幅面彩印前启用',
+      prepressToggle: '3mm 出血+裁切线',
+      prepressToggleTip:
+        '开启 ISO 12647 印前 3mm 四边出血与四角裁切定位线（A3 扩展至 426×303mm / A4 扩展至 216×303mm）',
+      cyclesBadge: (cyclesCount, total) =>
+        `Cycles 4K 母版 (${cyclesCount}/${total})`,
       callsignLabel: '专属署名',
       callsignPlaceholder: '输入小朋友姓名或收藏呼号（印入封面证书）',
       reshootBtn: '重拍大图',
@@ -1286,12 +1330,15 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         `正在拍摄 3D 大图 (${done}/${total})…`,
       printHint:
         '打印小贴士：在系统打印窗口选择「A4 纵向 · 边距：无」，并勾选「背景图形（Background graphics）」即可输出满版彩色绘本。',
+      printHintDkSpread:
+        'DK A3 跨页提示：打印窗口选择「A3 横向 (420×297mm) · 边距：无」并勾选「背景图形」，或使用 npm run monograph:pdf 一键直出 300 DPI 印前 PDF。',
       closeTitle: '关闭图册印前工坊 (Esc)',
       capturingTitle: (tag, done, total) =>
         `正在拍摄 ${tag} 高清 3D 绘本大图 (${done} / ${total})`,
       capturingSub:
         '正在渲染三视图、X 光透视、激光切半、彩虹分工、乐高分装包与四格慢动作连环画…',
       seriesHeader: 'DIGITAL ARMORY 3D · 典藏级轻武器防务技术专刊',
+      editionStampDk: 'DK VISUAL ENCYCLOPEDIA · 博物典藏铜版纸',
       editionStampObsidian: 'COLLECTOR DARK FOLIO · 典藏黑金装帧',
       editionStampBlueprint: 'ISO 128 ORDNANCE MANUAL · 军工蓝图教范',
       coverMonographTag: '1:1 精密机械与内弹道工程档案',
@@ -2114,20 +2161,45 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       studioSub:
         'Renders 17 offscreen HD 3D studio plates (360° views, X-Ray, Cutaway, LEGO Sub-Assemblies & 4-Panel Action Comic) · Switch between Kids Picture Book & Pro Dossier',
       weaponSelectAria: 'Select exhibit for picture book printing',
+      styleDk: 'DK Encyclopedia',
+      styleDkTip:
+        'DK Publishing museum standard: frameless transparent cutouts on pure white paper, 0.35pt hairline callouts, optical loupes, 1:1 actual-size ammunition & gatefold spreads',
       styleKids: 'Kids Picture Book',
       styleKidsTip:
         'Designed for young explorers: 17 giant uncropped 3D pictures, short playful stickers, LEGO-style sub-assembly bags & 4-panel slow-motion comic',
       stylePro: 'Pro Technical Dossier',
       styleProTip:
         'Collector defense edition: 4-act R&D history essays, full BOM metallurgy ledger, SAAMI pressure/velocity curves & clearing drills',
+      editionDk: 'DK Pure White',
+      editionDkTip:
+        'Pure white coated art paper with transparent alpha cutouts and grounded studio contact shadows',
       editionObsidian: 'Dark Studio Album',
       editionObsidianTip:
         'Rich dark studio aesthetic — great for tablet reading, PDF archiving, or full-bleed glossy photo paper',
       editionBlueprint: 'Bright Picture-Book (Ink-Saver)',
       editionBlueprintTip:
         'Crisp bright white & sky-blue picture-book paper — saves ~90% black ink on home color printers',
+      layoutSpreadA3: 'A3 Spread',
+      layoutSpreadA3Tip:
+        'Classic DK double-page gatefold layout (420×297mm landscape) sweeping heroically across the center fold',
+      layoutPortraitA4: 'A4 Portrait',
+      layoutPortraitA4Tip:
+        'Standard A4 single-page portrait layout (210×297mm) for home color printers and archival binders',
       mode8p: '8-Page Full Color Book',
       mode4p: '4-Page Quick Print',
+      mode4Spreads: '4 Spreads (8P Full)',
+      mode2Spreads: '2 Spreads (4P Compact)',
+      qualityStandard: 'Fast 1440px',
+      qualityStandardTip:
+        '1440×900 offscreen WebGL plates for rapid interactive preview',
+      qualityPrint: '300 DPI 2880px',
+      qualityPrintTip:
+        '2880×1800 print-grade master capture (~300 DPI) for press-ready PDF & museum framing',
+      prepressToggle: '3mm Bleed + Crops',
+      prepressToggleTip:
+        'Enable ISO 12647 3mm pre-press bleed and corner registration crop marks (426×303mm A3 / 216×303mm A4)',
+      cyclesBadge: (cyclesCount, total) =>
+        `Cycles 4K Masters (${cyclesCount}/${total})`,
       callsignLabel: 'Name Stamp',
       callsignPlaceholder: 'Child Name / Collector Callsign (on cover)',
       reshootBtn: 'Re-Shoot 3D',
@@ -2137,12 +2209,15 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         `Shooting 3D Plates (${done}/${total})…`,
       printHint:
         'Print Tip: Choose "A4 Portrait · Margins: None" and check "Background graphics" in your print dialog for edge-to-edge color pages.',
+      printHintDkSpread:
+        'DK A3 Spread Tip: Choose "A3 Landscape (420×297mm) · Margins: None" with "Background graphics", or run npm run monograph:pdf for automated 300 DPI pre-press PDF.',
       closeTitle: 'Close Print Studio (Esc)',
       capturingTitle: (tag, done, total) =>
         `Shooting ${tag} HD 3D Picture Plates (${done} / ${total})`,
       capturingSub:
         'Rendering 360° turnaround, X-Ray vision, laser half-cutaway, rainbow teams, LEGO bags & 4-panel slow-mo comic…',
       seriesHeader: 'DIGITAL ARMORY 3D · ORDNANCE ENGINEERING MONOGRAPH SERIES',
+      editionStampDk: 'DK VISUAL ENCYCLOPEDIA · COATED ART PAPER',
       editionStampObsidian: 'COLLECTOR DARK FOLIO · LIMITED ARCHIVE EDITION',
       editionStampBlueprint: 'ISO 128 ORDNANCE TECHNICAL MANUAL · INK-SAVER',
       coverMonographTag: '1:1 MECHANICAL & INTERNAL BALLISTICS DOSSIER',
