@@ -12,9 +12,11 @@ import { WeaponStoryDrawer } from './features/story/WeaponStoryDrawer';
 import { BallisticsTelemetryHud } from './features/workbench/BallisticsTelemetryHud';
 import { BomTreeSidebar } from './features/workbench/BomTreeSidebar';
 import { CaliperHud } from './features/workbench/CaliperHud';
+import { CommandPaletteModal } from './features/workbench/CommandPaletteModal';
 import { EngineeringTintLegend } from './features/workbench/EngineeringTintLegend';
 import { GeometryBuildBanner } from './features/workbench/GeometryBuildBanner';
 import { ImmersiveFloatingBar } from './features/workbench/ImmersiveFloatingBar';
+import { LiveSectionPlaneBar } from './features/workbench/LiveSectionPlaneBar';
 import { PartInspectorCard } from './features/workbench/PartInspectorCard';
 import { TimelineDock } from './features/workbench/TimelineDock';
 import { WorkbenchHeader } from './features/workbench/WorkbenchHeader';
@@ -56,6 +58,7 @@ export const App: React.FC = () => {
   const closePosterModal = useAppStore((s) => s.closePosterModal);
   const environmentPreset = useAppStore((s) => s.environmentPreset);
   const telemetryHudOpen = useAppStore((s) => s.telemetryHudOpen);
+  const sectionCut = useAppStore((s) => s.sectionCut);
   const engineeringTint = useAppStore((s) => s.engineeringTint);
   const fieldStripActive = useAppStore((s) => s.fieldStripActive);
   const malfunctionActive = useAppStore((s) => s.malfunctionActive);
@@ -79,6 +82,7 @@ export const App: React.FC = () => {
     screen,
     mode,
     lang,
+    sectionCut,
     engineeringTint,
     fieldStripActive,
     malfunctionActive,
@@ -147,6 +151,7 @@ export const App: React.FC = () => {
               </div>
             )}
             <PartInspectorCard />
+            {sectionCut && <LiveSectionPlaneBar />}
             <TimelineDock />
           </>
         )}
@@ -162,6 +167,9 @@ export const App: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Global Cmd+K / Ctrl+K Instant Command Palette (accessible from every screen) */}
+      <CommandPaletteModal />
 
       {/* Lazy-loaded PBR Texture Atlas Inspector Modal */}
       {textureModalOpen && (

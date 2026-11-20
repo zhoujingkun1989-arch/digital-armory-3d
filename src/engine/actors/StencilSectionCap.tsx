@@ -12,7 +12,7 @@ import {
  * For every section-cut part (interleaved per part via unique renderOrder slots):
  *   Pass A  back faces  (clipped) -> stencil IncrementWrap
  *   Pass B  front faces (clipped) -> stencil DecrementWrap
- *   Pass C  cap plane at z = 0.06 -> drawn where stencil != 0, then stencil -> 0
+ *   Pass C  cap plane at live `sectionPlaneZ(clippingPlanes[0])` -> drawn where stencil != 0, then stencil -> 0
  *
  * Pass C clears the stencil back to 0 on fail / zfail / zpass, preventing any
  * cross-part bleed across multiple sliced shells. Every helper & cap mesh uses
@@ -20,6 +20,68 @@ import {
  */
 
 export const SECTION_CAP_RENDER_ORDER_BASE = 1000;
+
+/** Live CT-Scan section cutaway plane range in world units (1 unit = 1 cm = 10 mm). */
+export const SECTION_CUT_OFFSET_MIN = -2.5;
+export const SECTION_CUT_OFFSET_MAX = 2.5;
+export const SECTION_CUT_OFFSET_STEP = 0.05;
+export const SECTION_CUT_OFFSET_DEFAULT = 0;
+
+/**
+ * Module-pooled live longitudinal section-cut plane (zero per-frame allocations).
+ * Mutating `SECTION_CUT_PLANES[0]` updates Three.js material clipping uniforms,
+ * shadow clipping, `StencilSectionCap` Pass A/B/C, and `sectionAwareMeshRaycast`
+ * simultaneously at 60 FPS with zero shader recompilation or React remounts.
+ */
+export const SECTION_CUT_PLANES: THREE.Plane[] = [
+  new THREE.Plane(new THREE.Vector3(0, 0, -1), SECTION_CUT_OFFSET_DEFAULT),
+];
+
+/** Clamps a section-cut Z offset cleanly into `[-2.5, +2.5]` cm with finite/zero normalization. */
+export function clampSectionCutOffset(offset: number): number {
+  if (!Number.isFinite(offset)) return SECTION_CUT_OFFSET_DEFAULT;
+  const clamped = Math.max(
+    SECTION_CUT_OFFSET_MIN,
+    Math.min(SECTION_CUT_OFFSET_MAX, offset)
+  );
+  const rounded = Math.round(clamped * 1000) / 1000;
+  return Object.is(rounded, -0) ? 0 : rounded;
+}
+
+/**
+ * Synchronizes the shared live clipping plane in place.
+ * - Default (`flip = false`): normal `(0, 0, -1)`, `constant = offset` -> keeps `z <= offset` (+Z right flank open).
+ * - Flipped (`flip = true`):  normal `(0, 0, +1)`, `constant = -offset` -> keeps `z >= offset` (-Z left flank open).
+ * In both orientations, `sectionPlaneZ(SECTION_CUT_PLANES[0]) === offset`.
+ */
+export function syncLiveSectionCutPlane(
+  offset: number,
+  flip = false
+): THREE.Plane {
+  const clamped = clampSectionCutOffset(offset);
+  const plane = SECTION_CUT_PLANES[0];
+  if (flip) {
+    plane.normal.set(0, 0, 1);
+    plane.constant = clamped === 0 ? 0 : -clamped;
+  } else {
+    plane.normal.set(0, 0, -1);
+    plane.constant = clamped;
+  }
+  return plane;
+}
+
+/** Returns the live world-space Z coordinate (cm) of `SECTION_CUT_PLANES[0]`. */
+export function getLiveSectionCutZ(): number {
+  return sectionPlaneZ(SECTION_CUT_PLANES[0]);
+}
+
+/** Formats a world-unit cm section offset into signed millimeter telemetry (e.g. `+0.0 mm`, `-12.5 mm`). */
+export function formatSectionOffsetMm(offsetCm: number): string {
+  const mm = clampSectionCutOffset(offsetCm) * 10;
+  const normalized = Math.abs(mm) < 0.05 ? 0 : mm;
+  const sign = normalized < 0 ? '-' : '+';
+  return `${sign}${Math.abs(normalized).toFixed(1)} mm`;
+}
 
 /** No-op raycast helper exported for unit verification. */
 export const noRaycast = (): null => null;
@@ -409,7 +471,7 @@ const _capWorld = new THREE.Matrix4();
 /**
  * Mounted INSIDE the part's `<group ref={groupRef}>` so Pass A/B meshes automatically
  * inherit the exact local + parent recoil world transform, while Pass C locks onto
- * the world section plane `z = 0.06` right before WebGL draw.
+ * the live world section plane `z = sectionPlaneZ(clippingPlanes[0])` right before WebGL draw.
  */
 export const StencilSectionCap: React.FC<StencilSectionCapProps> = ({
   geometry,
@@ -439,7 +501,7 @@ export const StencilSectionCap: React.FC<StencilSectionCapProps> = ({
     };
     if (!geometry.boundingBox) geometry.computeBoundingBox();
     const localBox = geometry.boundingBox ?? new THREE.Box3();
-    const planeZ = sectionPlaneZ(clippingPlanes[0]);
+    const activePlane = clippingPlanes[0];
 
     const back = backRef.current;
     const front = frontRef.current;
@@ -451,6 +513,7 @@ export const StencilSectionCap: React.FC<StencilSectionCapProps> = ({
       cap.onBeforeRender = ((renderer: THREE.WebGLRenderer) => {
         const mat = cap.material as THREE.ShaderMaterial;
         const refObj = back ?? cap;
+        const planeZ = activePlane ? sectionPlaneZ(activePlane) : 0;
         computeSectionCapRectInto(
           localBox,
           refObj.matrixWorld,
@@ -471,6 +534,7 @@ export const StencilSectionCap: React.FC<StencilSectionCapProps> = ({
 
     syncRef.current = (partGroup) => {
       if (!back || !front || !cap) return;
+      const planeZ = activePlane ? sectionPlaneZ(activePlane) : 0;
       computeSectionCapRectInto(
         localBox,
         partGroup.matrixWorld,

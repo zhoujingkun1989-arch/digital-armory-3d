@@ -42,7 +42,13 @@ import {
   isTextureLoaded,
   subscribeTextureKeys,
 } from '../materials/pbrManager';
-import { type SectionCapSyncFn, StencilSectionCap } from './StencilSectionCap';
+import {
+  SECTION_CUT_PLANES,
+  type SectionCapSyncFn,
+  StencilSectionCap,
+} from './StencilSectionCap';
+
+export { SECTION_CUT_PLANES };
 
 interface ArmoryMaterialConfig {
   metalness: number;
@@ -165,13 +171,9 @@ const MATERIAL_CONFIGS: Record<MaterialKind, ArmoryMaterialConfig> = {
   },
 };
 
-// Module-pooled longitudinal section-cut plane (+Z right flank sliced open at z > +0.06; zero per-frame allocations)
-const SECTION_CUT_PLANES: THREE.Plane[] = [
-  new THREE.Plane(new THREE.Vector3(0, 0, -1), 0.06),
-];
 const _caliperWorldNormal = new THREE.Vector3(0, 1, 0);
 
-function sectionAwareMeshRaycast(
+export function sectionAwareMeshRaycast(
   this: THREE.Mesh,
   raycaster: THREE.Raycaster,
   intersects: THREE.Intersection[]

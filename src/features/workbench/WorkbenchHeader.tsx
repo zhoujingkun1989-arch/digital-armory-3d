@@ -1,14 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ArrowLeft,
   BookOpen,
   Box,
   Camera,
+  ChevronDown,
   Compass,
   Crosshair,
   Eye,
   Flame,
+  GitCompareArrows,
   Image as ImageIcon,
+  Layers,
   Palette,
   Printer,
   RotateCcw,
@@ -22,7 +25,9 @@ import {
   VolumeX,
   Wrench,
 } from 'lucide-react';
+import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import { scheduleHudBoundsRefresh } from '../../engine/callout/hudBoundsCache';
+import { COMMAND_PALETTE_STRINGS } from '../../i18n/commandPaletteStrings';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import { resolveWeaponDisplayMeta } from '../../i18n/weaponFallbacks';
 import { useWeaponNarration } from '../../narration/narrationService';
@@ -30,6 +35,7 @@ import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
 import type { CameraPresetType } from '../../weapons/types';
 import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
+import { launchMechanismShowdownFromPalette } from './commandPaletteEngine';
 import { StudioEnvironmentBar } from './StudioEnvironmentBar';
 
 const VIEW_ANGLE_KEYS: Extract<
@@ -55,6 +61,7 @@ export const WorkbenchHeader: React.FC = () => {
   const showEdges = useAppStore((s) => s.showEdges);
   const showLabels = useAppStore((s) => s.showLabels);
   const sfxMuted = useAppStore((s) => s.sfxMuted);
+  const hudHidden = useAppStore((s) => s.hudHidden);
   const cameraPreset = useAppStore((s) => s.cameraCommand.preset);
 
   const togglePbrTextures = useAppStore((s) => s.togglePbrTextures);
@@ -75,17 +82,54 @@ export const WorkbenchHeader: React.FC = () => {
   const triggerCameraPreset = useAppStore((s) => s.triggerCameraPreset);
   const resetAll = useAppStore((s) => s.resetAll);
 
+  const [toolsMenuOpen, setToolsMenuOpen] = useState(false);
+  const toolsPopoverRef = useRef<HTMLDivElement>(null);
+  const isToolsMenuOpen = toolsMenuOpen && !hudHidden;
+
   const { bundle } = useWeaponNarration(activeWeaponId);
   const manifest = getWeaponManifest(activeWeaponId);
   const meta = manifest.workbenchMeta;
   const partsCount = manifest.catalog.partsCount;
   const ui = UI_STRINGS[lang].workbench;
   const monoUi = UI_STRINGS[lang].monograph;
+  const menuUi = COMMAND_PALETTE_STRINGS[lang].workbenchMenus;
   const displayMeta = resolveWeaponDisplayMeta(activeWeaponId, lang, bundle);
+
+  const hasSecondaryActive =
+    (fieldStripActive && mode === 'explode') ||
+    (mode === 'firing' && !malfunctionActive) ||
+    malfunctionActive ||
+    showEdges ||
+    !pbrTexturesEnabled;
 
   useEffect(() => {
     scheduleHudBoundsRefresh();
-  }, [activeWeaponId, lang, mode, showLabels]);
+  }, [activeWeaponId, lang, mode, showLabels, sectionCut]);
+
+  useEffect(() => {
+    if (!isToolsMenuOpen) return;
+    const onPointerDown = (e: PointerEvent) => {
+      if (
+        toolsPopoverRef.current &&
+        e.target instanceof Node &&
+        !toolsPopoverRef.current.contains(e.target)
+      ) {
+        setToolsMenuOpen(false);
+      }
+    };
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        setToolsMenuOpen(false);
+      }
+    };
+    window.addEventListener('pointerdown', onPointerDown);
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      window.removeEventListener('pointerdown', onPointerDown);
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [isToolsMenuOpen]);
 
   return (
     <header className="top-bar">
@@ -123,6 +167,290 @@ export const WorkbenchHeader: React.FC = () => {
           <BookOpen size={13} />
           <span>{ui.storyChip}</span>
         </button>
+      </div>
+
+      <div className="toolbar-cluster toolbar-cluster-tools">
+        <div className="camera-pills">
+          <Camera size={13} className="cam-icon" />
+          {VIEW_ANGLE_KEYS.map((key) => (
+            <button
+              key={key}
+              type="button"
+              className={`cam-btn ${cameraPreset === key ? 'active' : ''}`}
+              onClick={() => triggerCameraPreset(key)}
+            >
+              {ui.viewAngles[key]}
+            </button>
+          ))}
+        </div>
+
+        <div className="toolbar-divider" />
+
+        {/* Hero 3D Cutaway & Engineering Inspection Controls */}
+        <button
+          type="button"
+          className={`toggle-chip ${sectionCut ? 'active-teal' : ''}`}
+          aria-pressed={sectionCut}
+          onClick={toggleSectionCut}
+          title={ui.sectionChipTitle}
+        >
+          <Scissors size={13} aria-hidden="true" />
+          <span>{ui.sectionChip}</span>
+        </button>
+
+        <button
+          type="button"
+          className={`toggle-chip ${xrayShells ? 'active-cyan' : ''}`}
+          aria-pressed={xrayShells}
+          onClick={toggleXrayShells}
+          title={ui.xrayChipTitle}
+        >
+          <Eye size={13} aria-hidden="true" />
+          <span>{ui.xrayChip}</span>
+        </button>
+
+        <button
+          type="button"
+          className={`toggle-chip ${engineeringTint ? 'active-amber' : ''}`}
+          aria-pressed={engineeringTint}
+          onClick={toggleEngineeringTint}
+          title={ui.tintChipTitle}
+        >
+          <Palette size={13} aria-hidden="true" />
+          <span>{ui.tintChip}</span>
+        </button>
+
+        <button
+          type="button"
+          className={`toggle-chip ${caliperActive ? 'active-cyan' : ''}`}
+          aria-pressed={caliperActive}
+          onClick={toggleCaliperMode}
+          title={ui.caliperChipTitle}
+        >
+          <Ruler size={13} aria-hidden="true" />
+          <span>{ui.caliperChip}</span>
+        </button>
+
+        {/* Consolidated Labs, Interactive Modes & CAD Overlays Menu */}
+        <div ref={toolsPopoverRef} className="studio-popover-wrap">
+          <button
+            type="button"
+            className={`toggle-chip workbench-tools-trigger ${
+              isToolsMenuOpen ? 'active-cyan' : ''
+            }`}
+            aria-expanded={isToolsMenuOpen}
+            aria-haspopup="menu"
+            title={menuUi.toolsBtnTitle}
+            onClick={() => {
+              playWorkbenchFoley('toggle_switch');
+              setToolsMenuOpen((prev) => !prev);
+            }}
+          >
+            <Layers size={13} aria-hidden="true" />
+            <span>{menuUi.toolsBtnLabel}</span>
+            {hasSecondaryActive && !isToolsMenuOpen && (
+              <span className="popover-active-dot" aria-hidden="true" />
+            )}
+            <ChevronDown
+              size={11}
+              className={`popover-caret ${isToolsMenuOpen ? 'is-open' : ''}`}
+              aria-hidden="true"
+            />
+          </button>
+
+          {isToolsMenuOpen && (
+            <div
+              className="workbench-popover-menu workbench-tools-popover"
+              role="menu"
+              aria-label={menuUi.toolsPopoverAria}
+            >
+              <div className="popover-section">
+                <div className="popover-section-head">
+                  <span>{menuUi.toolsModesHeading}</span>
+                </div>
+                <div className="popover-chip-grid">
+                  <button
+                    type="button"
+                    role="menuitemcheckbox"
+                    aria-checked={fieldStripActive && mode === 'explode'}
+                    className={`toggle-chip ${
+                      fieldStripActive && mode === 'explode'
+                        ? 'active-emerald'
+                        : ''
+                    }`}
+                    onClick={() => {
+                      toggleFieldStripMode();
+                      setToolsMenuOpen(false);
+                    }}
+                    title={ui.fieldStripChipTitle}
+                  >
+                    <Wrench size={13} aria-hidden="true" />
+                    <span>{ui.fieldStripChip}</span>
+                    <kbd className="popover-kbd">G</kbd>
+                  </button>
+
+                  <button
+                    type="button"
+                    role="menuitemcheckbox"
+                    aria-checked={mode === 'firing' && !malfunctionActive}
+                    className={`toggle-chip ${
+                      mode === 'firing' && !malfunctionActive
+                        ? 'active-orange'
+                        : ''
+                    }`}
+                    onClick={() => {
+                      setMode(
+                        mode === 'firing' && !malfunctionActive
+                          ? 'explode'
+                          : 'firing'
+                      );
+                      setToolsMenuOpen(false);
+                    }}
+                    title={ui.firingChipTitle}
+                  >
+                    <Flame size={13} aria-hidden="true" />
+                    <span>{ui.firingChip}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    role="menuitemcheckbox"
+                    aria-checked={malfunctionActive}
+                    className={`toggle-chip ${
+                      malfunctionActive ? 'active-amber' : ''
+                    }`}
+                    onClick={() => {
+                      toggleMalfunctionMode();
+                      setToolsMenuOpen(false);
+                    }}
+                    title={ui.malfunctionChipTitle}
+                  >
+                    <ShieldAlert size={13} aria-hidden="true" />
+                    <span>{ui.malfunctionChip}</span>
+                    <kbd className="popover-kbd">J</kbd>
+                  </button>
+                </div>
+              </div>
+
+              <div className="popover-section">
+                <div className="popover-section-head">
+                  <span>{menuUi.toolsLabsHeading}</span>
+                </div>
+                <div className="popover-chip-grid">
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="toggle-chip"
+                    onClick={() => {
+                      setToolsMenuOpen(false);
+                      openCartridgeLab();
+                    }}
+                    title={ui.cartridgeChipTitle}
+                  >
+                    <Crosshair size={13} aria-hidden="true" />
+                    <span>{ui.cartridgeChip}</span>
+                    <kbd className="popover-kbd">B</kbd>
+                  </button>
+
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="toggle-chip"
+                    onClick={() => {
+                      setToolsMenuOpen(false);
+                      openExternalBallistics(manifest.caliberProfile);
+                    }}
+                    title={ui.ballisticsChipTitle}
+                  >
+                    <Compass size={13} aria-hidden="true" />
+                    <span>{ui.ballisticsChip}</span>
+                    <kbd className="popover-kbd">R</kbd>
+                  </button>
+
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="toggle-chip"
+                    onClick={() => {
+                      setToolsMenuOpen(false);
+                      launchMechanismShowdownFromPalette();
+                    }}
+                    title={menuUi.showdownTitle}
+                  >
+                    <GitCompareArrows size={13} aria-hidden="true" />
+                    <span>{menuUi.showdownLabel}</span>
+                    <kbd className="popover-kbd">S</kbd>
+                  </button>
+                </div>
+              </div>
+
+              <div className="popover-section">
+                <div className="popover-section-head">
+                  <span>{menuUi.toolsVisualsHeading}</span>
+                </div>
+                <div className="popover-chip-grid">
+                  <button
+                    type="button"
+                    role="menuitemcheckbox"
+                    aria-checked={pbrTexturesEnabled}
+                    className={`toggle-chip ${
+                      pbrTexturesEnabled ? 'active-cyan' : ''
+                    }`}
+                    onClick={togglePbrTextures}
+                    title={ui.pbrChipTitle}
+                  >
+                    <Sparkles size={13} aria-hidden="true" />
+                    <span>{ui.pbrChip}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="toggle-chip"
+                    onClick={() => {
+                      setToolsMenuOpen(false);
+                      setTextureModalOpen(true);
+                    }}
+                    title={ui.atlasChipTitle}
+                  >
+                    <ImageIcon size={13} aria-hidden="true" />
+                    <span>{ui.atlasChip}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    role="menuitemcheckbox"
+                    aria-checked={showEdges}
+                    className={`toggle-chip ${showEdges ? 'active' : ''}`}
+                    onClick={toggleShowEdges}
+                    title={ui.edgesChipTitle}
+                  >
+                    <Box size={13} aria-hidden="true" />
+                    <span>{ui.edgesChip}</span>
+                    <kbd className="popover-kbd">E</kbd>
+                  </button>
+
+                  {mode === 'explode' && (
+                    <button
+                      type="button"
+                      role="menuitemcheckbox"
+                      aria-checked={showLabels}
+                      className={`toggle-chip ${showLabels ? 'active' : ''}`}
+                      onClick={toggleShowLabels}
+                      title={ui.labelsChipTitle(partsCount)}
+                    >
+                      <Tag size={13} aria-hidden="true" />
+                      <span>{ui.labelsChip}</span>
+                      <kbd className="popover-kbd">L</kbd>
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className="toolbar-divider" />
 
         <button
           type="button"
@@ -143,174 +471,6 @@ export const WorkbenchHeader: React.FC = () => {
           <Printer size={13} aria-hidden="true" />
           <span>{monoUi.entryChip}</span>
         </button>
-      </div>
-
-      <div className="toolbar-cluster toolbar-cluster-tools">
-        <div className="camera-pills">
-          <Camera size={13} className="cam-icon" />
-          {VIEW_ANGLE_KEYS.map((key) => (
-            <button
-              key={key}
-              type="button"
-              className={`cam-btn ${cameraPreset === key ? 'active' : ''}`}
-              onClick={() => triggerCameraPreset(key)}
-            >
-              {ui.viewAngles[key]}
-            </button>
-          ))}
-        </div>
-
-        <div className="toolbar-divider" />
-
-        <button
-          type="button"
-          className={`toggle-chip ${
-            fieldStripActive && mode === 'explode' ? 'active-emerald' : ''
-          }`}
-          aria-pressed={fieldStripActive && mode === 'explode'}
-          onClick={toggleFieldStripMode}
-          title={ui.fieldStripChipTitle}
-        >
-          <Wrench size={13} aria-hidden="true" />
-          <span>{ui.fieldStripChip}</span>
-        </button>
-
-        <button
-          type="button"
-          className={`toggle-chip ${
-            mode === 'firing' && !malfunctionActive ? 'active-orange' : ''
-          }`}
-          aria-pressed={mode === 'firing' && !malfunctionActive}
-          onClick={() =>
-            setMode(
-              mode === 'firing' && !malfunctionActive ? 'explode' : 'firing'
-            )
-          }
-          title={ui.firingChipTitle}
-        >
-          <Flame size={13} aria-hidden="true" />
-          <span>{ui.firingChip}</span>
-        </button>
-
-        <button
-          type="button"
-          className={`toggle-chip ${malfunctionActive ? 'active-amber' : ''}`}
-          aria-pressed={malfunctionActive}
-          onClick={toggleMalfunctionMode}
-          title={ui.malfunctionChipTitle}
-        >
-          <ShieldAlert size={13} aria-hidden="true" />
-          <span>{ui.malfunctionChip}</span>
-        </button>
-
-        <button
-          type="button"
-          className={`toggle-chip ${caliperActive ? 'active-cyan' : ''}`}
-          aria-pressed={caliperActive}
-          onClick={toggleCaliperMode}
-          title={ui.caliperChipTitle}
-        >
-          <Ruler size={13} aria-hidden="true" />
-          <span>{ui.caliperChip}</span>
-        </button>
-
-        <button
-          type="button"
-          className="toggle-chip"
-          onClick={() => openCartridgeLab()}
-          title={ui.cartridgeChipTitle}
-        >
-          <Crosshair size={13} aria-hidden="true" />
-          <span>{ui.cartridgeChip}</span>
-        </button>
-
-        <button
-          type="button"
-          className="toggle-chip"
-          onClick={() => openExternalBallistics(manifest.caliberProfile)}
-          title={ui.ballisticsChipTitle}
-        >
-          <Compass size={13} aria-hidden="true" />
-          <span>{ui.ballisticsChip}</span>
-        </button>
-
-        <button
-          type="button"
-          className={`toggle-chip ${pbrTexturesEnabled ? 'active-cyan' : ''}`}
-          aria-pressed={pbrTexturesEnabled}
-          onClick={togglePbrTextures}
-          title={ui.pbrChipTitle}
-        >
-          <Sparkles size={13} aria-hidden="true" />
-          <span>{ui.pbrChip}</span>
-        </button>
-
-        <button
-          type="button"
-          className="toggle-chip"
-          onClick={() => setTextureModalOpen(true)}
-          title={ui.atlasChipTitle}
-        >
-          <ImageIcon size={13} aria-hidden="true" />
-          <span>{ui.atlasChip}</span>
-        </button>
-
-        <button
-          type="button"
-          className={`toggle-chip ${xrayShells ? 'active-cyan' : ''}`}
-          aria-pressed={xrayShells}
-          onClick={toggleXrayShells}
-          title={ui.xrayChipTitle}
-        >
-          <Eye size={13} aria-hidden="true" />
-          <span>{ui.xrayChip}</span>
-        </button>
-
-        <button
-          type="button"
-          className={`toggle-chip ${sectionCut ? 'active-teal' : ''}`}
-          aria-pressed={sectionCut}
-          onClick={toggleSectionCut}
-          title={ui.sectionChipTitle}
-        >
-          <Scissors size={13} aria-hidden="true" />
-          <span>{ui.sectionChip}</span>
-        </button>
-
-        <button
-          type="button"
-          className={`toggle-chip ${engineeringTint ? 'active-amber' : ''}`}
-          aria-pressed={engineeringTint}
-          onClick={toggleEngineeringTint}
-          title={ui.tintChipTitle}
-        >
-          <Palette size={13} aria-hidden="true" />
-          <span>{ui.tintChip}</span>
-        </button>
-
-        <button
-          type="button"
-          className={`toggle-chip ${showEdges ? 'active' : ''}`}
-          aria-pressed={showEdges}
-          onClick={toggleShowEdges}
-          title={ui.edgesChipTitle}
-        >
-          <Box size={13} aria-hidden="true" />
-          <span>{ui.edgesChip}</span>
-        </button>
-
-        {mode === 'explode' && (
-          <button
-            type="button"
-            className={`toggle-chip ${showLabels ? 'active' : ''}`}
-            aria-pressed={showLabels}
-            onClick={toggleShowLabels}
-            title={ui.labelsChipTitle(partsCount)}
-          >
-            <Tag size={13} aria-hidden="true" />
-            <span>{ui.labelsChip}</span>
-          </button>
-        )}
 
         <button
           type="button"

@@ -77,6 +77,62 @@ const AK15_V3_METAL_PBR: PbrBindingSpec = {
   normalScale: 0.85,
 };
 
+const PYTHON_V3_WALNUT_PBR: PbrBindingSpec = {
+  albedoFile: 'python_v3_walnut_albedo.webp',
+  normalFile: 'python_v3_walnut_normal.webp',
+  roughnessFile: 'python_v3_walnut_roughness.webp',
+  normalScale: 0.88,
+};
+
+const PYTHON_V3_METAL_PBR: PbrBindingSpec = {
+  albedoFile: 'python_v3_metal_albedo.webp',
+  normalFile: 'python_v3_metal_normal.webp',
+  roughnessFile: 'python_v3_metal_roughness.webp',
+  normalScale: 0.8,
+};
+
+const DEAGLE_V3_HERO_PBR: PbrBindingSpec = {
+  albedoFile: 'deagle_v3_hero_albedo.webp',
+  normalFile: 'deagle_v3_hero_normal.webp',
+  roughnessFile: 'deagle_v3_hero_roughness.webp',
+  normalScale: 0.85,
+};
+
+const DEAGLE_V3_STEEL_PBR: PbrBindingSpec = {
+  albedoFile: 'deagle_v3_steel_albedo.webp',
+  normalFile: 'deagle_v3_steel_normal.webp',
+  roughnessFile: 'deagle_v3_steel_roughness.webp',
+  normalScale: 0.82,
+};
+
+const DEAGLE_V3_GRIP_PBR: PbrBindingSpec = {
+  albedoFile: 'deagle_v3_grip_albedo.webp',
+  normalFile: 'deagle_v3_grip_normal.webp',
+  roughnessFile: 'deagle_v3_grip_roughness.webp',
+  normalScale: 0.92,
+};
+
+const M4A1_V3_RECEIVER_PBR: PbrBindingSpec = {
+  albedoFile: 'm4a1_v3_receiver_albedo.webp',
+  normalFile: 'm4a1_v3_receiver_normal.webp',
+  roughnessFile: 'm4a1_v3_receiver_roughness.webp',
+  normalScale: 0.88,
+};
+
+const M4A1_V3_METAL_PBR: PbrBindingSpec = {
+  albedoFile: 'm4a1_v3_metal_albedo.webp',
+  normalFile: 'm4a1_v3_metal_normal.webp',
+  roughnessFile: 'm4a1_v3_metal_roughness.webp',
+  normalScale: 0.85,
+};
+
+const M4A1_V3_FURNITURE_PBR: PbrBindingSpec = {
+  albedoFile: 'm4a1_v3_furniture_albedo.webp',
+  normalFile: 'm4a1_v3_furniture_normal.webp',
+  roughnessFile: 'm4a1_v3_furniture_roughness.webp',
+  normalScale: 0.9,
+};
+
 export const GLB_WEAPON_CONFIGS: Readonly<
   Partial<Record<WeaponId, GlbWeaponAssetConfig>>
 > = {
@@ -145,6 +201,103 @@ export const GLB_WEAPON_CONFIGS: Readonly<
       ak_hammer: AK15_V3_METAL_PBR,
       ak_trigger: AK15_V3_METAL_PBR,
       ak_disconnector: AK15_V3_METAL_PBR,
+    },
+  },
+  python: {
+    modelFile: 'python.glb',
+    dynamicSpringParts: ['python_mainspring', 'python_extractor_spring'],
+    pbrOverrides: {
+      // Checkered American walnut target grips w/ 24K gold Rampant Colt medallions (2 parts)
+      python_grip_left: PYTHON_V3_WALNUT_PBR,
+      python_grip_right: PYTHON_V3_WALNUT_PBR,
+      // Mirror-gloss Royal Blue steel, jewel-polished stainless internals & speedloader (21 parts)
+      python_barrel: PYTHON_V3_METAL_PBR,
+      python_front_sight: PYTHON_V3_METAL_PBR,
+      python_rear_sight: PYTHON_V3_METAL_PBR,
+      python_barrel_pin: PYTHON_V3_METAL_PBR,
+      python_detent_plunger: PYTHON_V3_METAL_PBR,
+      python_frame: PYTHON_V3_METAL_PBR,
+      python_sideplate: PYTHON_V3_METAL_PBR,
+      python_sideplate_screws: PYTHON_V3_METAL_PBR,
+      python_cylinder_latch: PYTHON_V3_METAL_PBR,
+      python_hammer: PYTHON_V3_METAL_PBR,
+      python_hammer_stirrup: PYTHON_V3_METAL_PBR,
+      python_trigger: PYTHON_V3_METAL_PBR,
+      python_rebound_lever: PYTHON_V3_METAL_PBR,
+      python_cylinder_bolt: PYTHON_V3_METAL_PBR,
+      python_hand: PYTHON_V3_METAL_PBR,
+      python_firing_pin: PYTHON_V3_METAL_PBR,
+      python_crane: PYTHON_V3_METAL_PBR,
+      python_cylinder: PYTHON_V3_METAL_PBR,
+      python_extractor_star: PYTHON_V3_METAL_PBR,
+      python_extractor_rod: PYTHON_V3_METAL_PBR,
+      python_speedloader: PYTHON_V3_METAL_PBR,
+    },
+  },
+  deagle: {
+    modelFile: 'deagle.glb',
+    dynamicSpringParts: ['deagle_recoil_springs'],
+    pbrOverrides: {
+      // Dedicated 2K Brushed Satin 416 Stainless / Hard Chrome hero suite (3 parts)
+      deagle_barrel: DEAGLE_V3_HERO_PBR,
+      deagle_slide: DEAGLE_V3_HERO_PBR,
+      deagle_frame: DEAGLE_V3_HERO_PBR,
+      // Nitrided steel controls, blued steel magazine, 4-lug rotating bolt & dual recoil rods (17 parts)
+      deagle_bolt: DEAGLE_V3_STEEL_PBR,
+      deagle_cam_pin: DEAGLE_V3_STEEL_PBR,
+      deagle_firing_pin: DEAGLE_V3_STEEL_PBR,
+      deagle_extractor: DEAGLE_V3_STEEL_PBR,
+      deagle_safety: DEAGLE_V3_STEEL_PBR,
+      deagle_front_sight: DEAGLE_V3_STEEL_PBR,
+      deagle_rear_sight: DEAGLE_V3_STEEL_PBR,
+      deagle_recoil_rods: DEAGLE_V3_STEEL_PBR,
+      deagle_takedown_lever: DEAGLE_V3_STEEL_PBR,
+      deagle_slide_stop: DEAGLE_V3_STEEL_PBR,
+      deagle_mag_catch: DEAGLE_V3_STEEL_PBR,
+      deagle_hammer: DEAGLE_V3_STEEL_PBR,
+      deagle_hammer_strut: DEAGLE_V3_STEEL_PBR,
+      deagle_trigger: DEAGLE_V3_STEEL_PBR,
+      deagle_sear: DEAGLE_V3_STEEL_PBR,
+      deagle_mag_body: DEAGLE_V3_STEEL_PBR,
+      deagle_mag_spring: DEAGLE_V3_STEEL_PBR,
+      // Stippled wraparound rubber grip, firewalled orange follower & floorplate (3 parts)
+      deagle_grip: DEAGLE_V3_GRIP_PBR,
+      deagle_mag_follower: DEAGLE_V3_GRIP_PBR,
+      deagle_mag_baseplate: DEAGLE_V3_GRIP_PBR,
+    },
+  },
+  m4a1: {
+    modelFile: 'm4a1.glb',
+    dynamicSpringParts: ['m4a1_buffer_spring'],
+    pbrOverrides: {
+      // Forged 7075-T6 flat-top upper/lower, A2 carry handle, T-handle, selector & dust cover (6 parts)
+      m4a1_upper_receiver: M4A1_V3_RECEIVER_PBR,
+      m4a1_lower_receiver: M4A1_V3_RECEIVER_PBR,
+      m4a1_carry_handle: M4A1_V3_RECEIVER_PBR,
+      m4a1_charging_handle: M4A1_V3_RECEIVER_PBR,
+      m4a1_selector: M4A1_V3_RECEIVER_PBR,
+      m4a1_dust_cover: M4A1_V3_RECEIVER_PBR,
+      // 14.5" M203 barrel, A2 birdcage, FSB, oiled BCG, 7-lug bolt, DI tube, H2 buffer & FCG (12 parts)
+      m4a1_barrel: M4A1_V3_METAL_PBR,
+      m4a1_flash_hider: M4A1_V3_METAL_PBR,
+      m4a1_front_sight_base: M4A1_V3_METAL_PBR,
+      m4a1_bolt_carrier: M4A1_V3_METAL_PBR,
+      m4a1_bolt: M4A1_V3_METAL_PBR,
+      m4a1_firing_pin: M4A1_V3_METAL_PBR,
+      m4a1_gas_tube: M4A1_V3_METAL_PBR,
+      m4a1_buffer_tube: M4A1_V3_METAL_PBR,
+      m4a1_buffer: M4A1_V3_METAL_PBR,
+      m4a1_hammer: M4A1_V3_METAL_PBR,
+      m4a1_trigger: M4A1_V3_METAL_PBR,
+      m4a1_mag_spring: M4A1_V3_METAL_PBR,
+      // KAC M4 RAS quad-rails, Waffle stock, A2 pistol grip & dry-film grey STANAG mag (7 parts)
+      m4a1_ras_upper: M4A1_V3_FURNITURE_PBR,
+      m4a1_ras_lower: M4A1_V3_FURNITURE_PBR,
+      m4a1_buttstock: M4A1_V3_FURNITURE_PBR,
+      m4a1_pistol_grip: M4A1_V3_FURNITURE_PBR,
+      m4a1_mag_body: M4A1_V3_FURNITURE_PBR,
+      m4a1_mag_follower: M4A1_V3_FURNITURE_PBR,
+      m4a1_mag_floorplate: M4A1_V3_FURNITURE_PBR,
     },
   },
 };
@@ -649,7 +802,7 @@ export async function parseGlbArrayBuffer(
 }
 
 /**
- * Browser-only Draco GLB loader for migrated weapons (`p08`, `ak15`).
+ * Browser-only Draco GLB loader for migrated flagship exhibits (`p08`, `ak15`, `deagle`, `m4a1`, `python`).
  * Automatically skips dynamic springs, returns an empty `Map` in headless Node or for
  * unmigrated weapons, and swallows network/decode failures so `geometryService.ts`
  * cleanly falls back to the CSG Web Worker with zero interruption.

@@ -1,8 +1,24 @@
 import { create } from 'zustand';
 import {
+  clampSectionCutOffset,
+  SECTION_CUT_OFFSET_DEFAULT,
+  SECTION_CUT_OFFSET_MAX,
+  SECTION_CUT_OFFSET_MIN,
+  SECTION_CUT_OFFSET_STEP,
+  syncLiveSectionCutPlane,
+} from '../engine/actors/StencilSectionCap';
+import {
   type AcousticEnvironmentPreset,
   setAcousticEnvironment,
 } from '../engine/audio/mechanicalSoundEngine';
+
+export {
+  clampSectionCutOffset,
+  SECTION_CUT_OFFSET_DEFAULT,
+  SECTION_CUT_OFFSET_MAX,
+  SECTION_CUT_OFFSET_MIN,
+  SECTION_CUT_OFFSET_STEP,
+};
 import type { ArmoryEnvironmentPreset } from '../engine/canvas/GunsmithStageMat';
 import {
   detectDefaultGraphicsQuality,
@@ -229,8 +245,11 @@ export interface AppState {
   monographLaunchOptions: MonographModalLaunchOptions | null;
   posterShareModalOpen: boolean;
   posterShareOptions: PosterModalLaunchOptions | null;
+  commandPaletteOpen: boolean;
   xrayShells: boolean;
   sectionCut: boolean;
+  sectionCutOffset: number;
+  sectionCutFlip: boolean;
   showEdges: boolean;
   showLabels: boolean;
   isolateSelected: boolean;
@@ -345,10 +364,18 @@ export interface AppState {
   openPosterModal: (options?: PosterModalLaunchOptions) => void;
   closePosterModal: () => void;
   togglePosterModal: (options?: PosterModalLaunchOptions) => void;
+  setCommandPaletteOpen: (open: boolean) => void;
+  openCommandPalette: () => void;
+  closeCommandPalette: () => void;
+  toggleCommandPalette: () => void;
+  focusWorkbenchPart: (partId: string) => void;
   toggleXrayShells: () => void;
   setXrayShells: (val: boolean) => void;
   toggleSectionCut: () => void;
   setSectionCut: (val: boolean) => void;
+  setSectionCutOffset: (offset: number) => void;
+  resetSectionCutOffset: () => void;
+  toggleSectionCutFlip: () => void;
   toggleShowEdges: () => void;
   toggleShowLabels: () => void;
   toggleIsolateSelected: () => void;
@@ -414,8 +441,11 @@ export const useAppStore = create<AppState>((set, get) => ({
   monographLaunchOptions: null,
   posterShareModalOpen: false,
   posterShareOptions: null,
+  commandPaletteOpen: false,
   xrayShells: false,
   sectionCut: false,
+  sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
+  sectionCutFlip: false,
   showEdges: false,
   showLabels: true,
   isolateSelected: false,
@@ -515,6 +545,8 @@ export const useAppStore = create<AppState>((set, get) => ({
         fireSpeedMultiplier: stage.fireSpeedMultiplier ?? 0.25,
         textureModalOpen: false,
         sectionCut: stage.sectionCut,
+        sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
+        sectionCutFlip: false,
         xrayShells: stage.sectionCut ? false : stage.xrayShells,
         showLabels: true,
         isolateSelected: false,
@@ -547,6 +579,8 @@ export const useAppStore = create<AppState>((set, get) => ({
         isFiringPlaying: false,
         textureModalOpen: false,
         sectionCut: stage.sectionCut,
+        sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
+        sectionCutFlip: false,
         xrayShells: stage.sectionCut ? false : stage.xrayShells,
         showLabels: true,
         isolateSelected: false,
@@ -612,8 +646,11 @@ export const useAppStore = create<AppState>((set, get) => ({
         isPlaying: false,
         isFiringPlaying: false,
         textureModalOpen: false,
+        commandPaletteOpen: false,
         xrayShells: true,
         sectionCut: false,
+        sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
+        sectionCutFlip: false,
         showLabels: true,
         isolateSelected: false,
         selectedPartId: partId,
@@ -664,6 +701,9 @@ export const useAppStore = create<AppState>((set, get) => ({
       posterShareOptions: null,
       xrayShells: false,
       sectionCut: false,
+      sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
+      sectionCutFlip: false,
+      commandPaletteOpen: false,
       isolateSelected: false,
       selectedPartId: null,
       hoveredPartId: null,
@@ -713,6 +753,9 @@ export const useAppStore = create<AppState>((set, get) => ({
       textureModalOpen: false,
       posterShareModalOpen: false,
       posterShareOptions: null,
+      commandPaletteOpen: false,
+      sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
+      sectionCutFlip: false,
       isolateSelected: false,
       selectedPartId: null,
       hoveredPartId: null,
@@ -777,6 +820,9 @@ export const useAppStore = create<AppState>((set, get) => ({
       monographModalOpen: false,
       posterShareModalOpen: false,
       posterShareOptions: null,
+      commandPaletteOpen: false,
+      sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
+      sectionCutFlip: false,
       hudHidden: false,
       isolateSelected: false,
       selectedPartId: null,
@@ -806,6 +852,8 @@ export const useAppStore = create<AppState>((set, get) => ({
     playbackClock.setFireProgress(0, true);
     set((s) => ({
       activeWeaponId: weaponId,
+      sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
+      sectionCutFlip: false,
       fieldStripActive: false,
       malfunctionActive: false,
       caliperActive: false,
@@ -858,8 +906,11 @@ export const useAppStore = create<AppState>((set, get) => ({
         isPlaying: false,
         isFiringPlaying: true,
         textureModalOpen: false,
+        commandPaletteOpen: false,
         xrayShells: true,
         sectionCut: false,
+        sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
+        sectionCutFlip: false,
         showLabels: true,
         isolateSelected: false,
         selectedPartId: null,
@@ -887,8 +938,11 @@ export const useAppStore = create<AppState>((set, get) => ({
         isPlaying: false,
         isFiringPlaying: false,
         textureModalOpen: false,
+        commandPaletteOpen: false,
         xrayShells: false,
         sectionCut: false,
+        sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
+        sectionCutFlip: false,
         showLabels: true,
         isolateSelected: false,
         selectedPartId: null,
@@ -928,6 +982,9 @@ export const useAppStore = create<AppState>((set, get) => ({
       posterShareOptions: null,
       xrayShells: false,
       sectionCut: false,
+      sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
+      sectionCutFlip: false,
+      commandPaletteOpen: false,
       isolateSelected: false,
       selectedPartId: null,
       hoveredPartId: null,
@@ -1128,6 +1185,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       textureModalOpen,
       monographModalOpen: textureModalOpen ? false : s.monographModalOpen,
       posterShareModalOpen: textureModalOpen ? false : s.posterShareModalOpen,
+      commandPaletteOpen: textureModalOpen ? false : s.commandPaletteOpen,
       hudHidden: textureModalOpen ? false : s.hudHidden,
     })),
   openMonographModal: (weaponId, options = null) =>
@@ -1138,6 +1196,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       monographLaunchOptions: options,
       textureModalOpen: false,
       posterShareModalOpen: false,
+      commandPaletteOpen: false,
       hudHidden: false,
     })),
   closeMonographModal: () =>
@@ -1161,6 +1220,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       isFiringPlaying: false,
       textureModalOpen: false,
       monographModalOpen: false,
+      commandPaletteOpen: false,
       hudHidden: false,
     })),
   closePosterModal: () =>
@@ -1174,6 +1234,56 @@ export const useAppStore = create<AppState>((set, get) => ({
       cur.closePosterModal();
     } else {
       cur.openPosterModal(options);
+    }
+  },
+  setCommandPaletteOpen: (commandPaletteOpen) => set({ commandPaletteOpen }),
+  openCommandPalette: () => set({ commandPaletteOpen: true }),
+  closeCommandPalette: () => set({ commandPaletteOpen: false }),
+  toggleCommandPalette: () =>
+    set((s) => ({ commandPaletteOpen: !s.commandPaletteOpen })),
+  focusWorkbenchPart: (partId) => {
+    const s = get();
+    const weaponId = s.activeWeaponId;
+    fieldStripStore.reset(weaponId, true);
+    caliperStore.clearTransientHover();
+    playbackClock.setFireProgress(0, true);
+
+    const applyPartFocus = () => {
+      const cur = get();
+      set({
+        screen: 'workbench',
+        mode: 'explode',
+        fieldStripActive: false,
+        malfunctionActive: false,
+        caliperActive: false,
+        envelopeRulerVisible: false,
+        isPlaying: false,
+        isFiringPlaying: false,
+        textureModalOpen: false,
+        commandPaletteOpen: false,
+        hudHidden: false,
+        inspectorMinimized: false,
+        isolateSelected: false,
+        selectedPartId: partId,
+        hoveredPartId: null,
+        hiddenGroups: { ...DEFAULT_HIDDEN_GROUPS },
+        cameraCommand:
+          cur.screen === 'workbench'
+            ? cur.cameraCommand
+            : { preset: 'iso', seq: cur.cameraCommand.seq + 1 },
+      });
+    };
+
+    if (getLoadedWeaponPlugin(weaponId)) {
+      applyPartFocus();
+    } else {
+      applyPartFocus();
+      void loadWeaponPlugin(weaponId).then(() => {
+        if (get().activeWeaponId === weaponId) {
+          set({ selectedPartId: null });
+          set({ selectedPartId: partId });
+        }
+      });
     }
   },
   toggleXrayShells: () =>
@@ -1202,6 +1312,19 @@ export const useAppStore = create<AppState>((set, get) => ({
       sectionCut,
       xrayShells: sectionCut ? false : s.xrayShells,
     })),
+  setSectionCutOffset: (offset) => {
+    const next = clampSectionCutOffset(offset);
+    if (get().sectionCutOffset !== next) {
+      set({ sectionCutOffset: next });
+    }
+  },
+  resetSectionCutOffset: () =>
+    set({
+      sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
+      sectionCutFlip: false,
+    }),
+  toggleSectionCutFlip: () =>
+    set((s) => ({ sectionCutFlip: !s.sectionCutFlip })),
   toggleShowEdges: () => set((s) => ({ showEdges: !s.showEdges })),
   toggleShowLabels: () => set((s) => ({ showLabels: !s.showLabels })),
   toggleIsolateSelected: () =>
@@ -1213,6 +1336,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       textureModalOpen: hudHidden ? false : s.textureModalOpen,
       monographModalOpen: hudHidden ? false : s.monographModalOpen,
       posterShareModalOpen: hudHidden ? false : s.posterShareModalOpen,
+      commandPaletteOpen: hudHidden ? false : s.commandPaletteOpen,
     })),
   toggleHudHidden: () =>
     set((s) => {
@@ -1222,6 +1346,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         textureModalOpen: next ? false : s.textureModalOpen,
         monographModalOpen: next ? false : s.monographModalOpen,
         posterShareModalOpen: next ? false : s.posterShareModalOpen,
+        commandPaletteOpen: next ? false : s.commandPaletteOpen,
       };
     }),
 
@@ -1427,23 +1552,33 @@ export const useAppStore = create<AppState>((set, get) => ({
       pbrTexturesEnabled: true,
       xrayShells: false,
       sectionCut: false,
+      sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
+      sectionCutFlip: false,
       showEdges: false,
       showLabels: true,
       isolateSelected: false,
       hudHidden: false,
       posterShareModalOpen: false,
       posterShareOptions: null,
+      commandPaletteOpen: false,
       selectedPartId: null,
       hiddenGroups: { ...DEFAULT_HIDDEN_GROUPS },
       cameraCommand: { preset: 'iso', seq: s.cameraCommand.seq + 1 },
     }));
+    syncLiveSectionCutPlane(SECTION_CUT_OFFSET_DEFAULT, false);
     setAcousticEnvironment(
       resolveAcousticEnvironmentForState(get().environmentPreset, 'explode')
     );
   },
 }));
 
-// Keep convolution IR room preset synchronized with visual studio environment & mode
+// Ensure live clipping plane starts synchronized with default store values
+syncLiveSectionCutPlane(
+  useAppStore.getState().sectionCutOffset,
+  useAppStore.getState().sectionCutFlip
+);
+
+// Keep convolution IR room preset & live CT-Scan section plane synchronized with store state
 useAppStore.subscribe((state, prevState) => {
   if (
     state.environmentPreset !== prevState.environmentPreset ||
@@ -1452,5 +1587,11 @@ useAppStore.subscribe((state, prevState) => {
     setAcousticEnvironment(
       resolveAcousticEnvironmentForState(state.environmentPreset, state.mode)
     );
+  }
+  if (
+    state.sectionCutOffset !== prevState.sectionCutOffset ||
+    state.sectionCutFlip !== prevState.sectionCutFlip
+  ) {
+    syncLiveSectionCutPlane(state.sectionCutOffset, state.sectionCutFlip);
   }
 });
