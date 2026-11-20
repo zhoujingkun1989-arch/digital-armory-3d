@@ -39,11 +39,11 @@
 
 > Built with **React 18 + TypeScript 5.6 + Three.js (`@react-three/fiber` / Dual-Track Blender 5.2 Draco `.glb` + Web Worker `three-bvh-csg` / Web Audio API)** — zero installs, instant browser launch, and a **`<800 kB` zero-warning split bundle**.
 >
-> Explore **480 moving CAD components across 19 legendary firearms & compound archery systems**, powered by **9 museum-grade Blender 5.2 Cycles-baked photorealistic flagship exhibits (`AK-15M1`, `Luger P08`, `Desert Eagle .50 AE`, `Colt M4A1 SOPMOD`, `Colt Python 6" .357`, `U.S. Rifle M1 Garand`, `H&K MP5A3`, `AI AWM .338 LM`, `Barrett M82A1 .50 BMG`)**, **187 2K 5-channel Packed ORM WebP textures**, **3 Cycles 32-bit studio `.hdr` lightboxes**, **Global `Cmd+K` Bilingual Command Palette**, **Live Draggable CT-Scan Cutaway Plane (`[C]`)**, **1,000m RK4 G1/G7 External Ballistics & FFP Reticle DOPE Lab (`[R]`)**, **Armorer Blind Qualification Exam (`[G] / [J]`)**, **11-Caliber SAAMI/CIP 1:1 Cutaway Lab (`[B]`)**, **3-Axis Mechanism Showdown (`[S]`)**, **HD 3D Share Poster Studio (`[U]`)**, **17-Plate Monograph Print Studio (`[Ctrl/Cmd+P]`)**, and **1,112 Bilingual `Charon` (`gemini-3.8-flash-tts`) Voiceovers** with automated **3D Documentary Camera Choreography**.
+> Explore **480 moving CAD components across 19 legendary firearms & compound archery systems**, powered by **14/19 museum-grade Blender 5.2 Cycles-baked photorealistic flagship exhibits (`AK-15M1`, `Luger P08`, `Desert Eagle .50 AE`, `Colt M4A1 SOPMOD`, `Colt Python 6" .357`, `U.S. Rifle M1 Garand`, `H&K MP5A3`, `AI AWM .338 LM`, `Barrett M82A1 .50 BMG`, `Glock 17 Gen 5`, `FN SCAR-L Mk 16`, `Steyr AUG A1`, `SIG Sauer P320 M17`, `FN P90 PDW` — `331` watertight solid GLB parts + `23` dynamic CSG `aSpringParam` springs)**, **232 2K 5-channel Packed ORM WebP textures (`0` PNGs)**, **3 Cycles 32-bit studio `.hdr` lightboxes**, **Global `Cmd+K` Bilingual Command Palette**, **Live Draggable CT-Scan Cutaway Plane (`[C]`)**, **1,000m RK4 G1/G7 External Ballistics & FFP Reticle DOPE Lab (`[R]`)**, **Armorer Blind Qualification Exam (`[G] / [J]`)**, **11-Caliber SAAMI/CIP 1:1 Cutaway Lab (`[B]`)**, **3-Axis Mechanism Showdown (`[S]`)**, **HD 3D Share Poster Studio (`[U]`)**, **17-Plate Monograph Print Studio (`[Ctrl/Cmd+P]`)**, and **1,112 Bilingual `Charon` (`gemini-3.8-flash-tts`) Voiceovers** with automated **3D Documentary Camera Choreography**.
 
 ---
 
-## v3.0 Photorealistic Flagship Gallery (9 Blender 5.2 Exhibits · 100% Live WebGL 2.0)
+## v3.0 Photorealistic Flagship Gallery (14/19 Blender 5.2 Exhibits · 100% Live WebGL 2.0)
 
 *Every image below is an unretouched real-time 1920×1080 Chromium WebGL 2.0 capture powered by our reproducible open-source **Blender 5.2 LTS headless Draco `.glb` + Cycles 2K Packed ORM** pipeline and **32-bit studio `.hdr`** lighting.*
 
@@ -63,9 +63,21 @@
 | :---: | :---: |
 | ![H&K MP5A3 Baked Enamel Receiver & Navy Pictograms Macro](docs/screenshots/mp5-v3-macro.jpg) | ![Accuracy International AWM OD-Green Chassis & S&B PM II Optic Macro](docs/screenshots/awm-v3-macro.jpg) |
 
-| **Barrett M82A1 / M107 (`.50 BMG`)** · *Manganese-Parkerized Ribbed Receivers, Leupold Mark 4 Gold Ring & 10-Rd Mag (`3.49 MB`)* | **Luger P08 Two-Pass Stencil Solid Cutaway (`[C]`)** · *ISO 128 45° Hatching, 8× 9mm Stack & Helical Springs* |
+| **Barrett M82A1 / M107 (`.50 BMG`)** · *Manganese-Parkerized Ribbed Receivers, Leupold Mark 4 Gold Ring & 10-Rd Mag (`3.49 MB`)* | **Glock 17 Gen 5 (`9×19mm`)** · *Satin nDLC Bullnose Slide, Ferlach Proofs, Sculpted RTF4 Frame & GMB Hood (`2.28 MB`)* |
 | :---: | :---: |
-| ![Barrett M82A1 .50 BMG Receiver & Leupold Mark 4 Scope Macro](docs/screenshots/m82a1-v3-macro.jpg) | ![Luger P08 Longitudinal Solid Cutaway](docs/screenshots/p08-v3-cutaway.jpg) |
+| ![Barrett M82A1 .50 BMG Receiver & Leupold Mark 4 Scope Macro](docs/screenshots/m82a1-v3-macro.jpg) | ![Glock 17 Gen 5 nDLC Slide & RTF4 Frame Macro](docs/screenshots/g17-v3-macro.jpg) |
+
+| **FN SCAR-L Mk 16 Mod 0 (`5.56 NATO`)** · *Fifty Shades of FDE Monolithic Upper, SOCOM UID Matrix, Torx Crossbolts & Folding Stock (`3.41 MB`)* | **Steyr AUG A1 / StG 77 (`5.56 NATO`)** · *Alpine OD-Green PA66 Stock, Integral 1.5× Swarovski Optic & Smoked-Amber Waffle Mag (`3.62 MB`)* |
+| :---: | :---: |
+| ![FN SCAR-L Mk 16 FDE Monolithic Upper & Lower Macro](docs/screenshots/scar-v3-macro.jpg) | ![Steyr AUG A1 OD-Green Stock, Swarovski Optic & Waffle Mag Macro](docs/screenshots/aug-v3-macro.jpg) |
+
+| **SIG Sauer P320 / U.S. Army M17 (`9×19mm`)** · *Two-Tone Coyote PVD Slide, MIL-STD-130 UID & Serialized Stainless FCU (`2.53 MB`)* | **FN Herstal P90 PDW (`5.7×28mm`)** · *Smoked-Amber 50-Rd Horizontal Mag, 90° Helical Ramp & MC-10-80 Ring Sight (`2.17 MB`)* |
+| :---: | :---: |
+| ![SIG Sauer P320 M17 Two-Tone Coyote Slide & FCU Macro](docs/screenshots/p320-v3-macro.jpg) | ![FN Herstal P90 50-Rd Horizontal Mag & MC-10-80 Ring Sight Macro](docs/screenshots/p90-v3-macro.jpg) |
+
+| **Luger P08 Two-Pass Stencil Solid Cutaway (`[C]`)** · *ISO 128 45° Metal Hatching, 8× 9mm Stack & Helical Springs* |
+| :---: |
+| ![Luger P08 Longitudinal Solid Cutaway](docs/screenshots/p08-v3-cutaway.jpg) |
 
 ---
 
@@ -76,8 +88,8 @@
 | ![Cmd+K Global Command Palette](docs/screenshots/ux-cmdk-palette.jpg) | ![Digital Armory 3D 19-Bay Vault](docs/screenshots/armory-showcase.jpg) |
 
 - **✦ Dual-Track Blender 5.2 Draco `.glb` + Web Worker CSG Engine (`PR-02` ~ `PR-04`)**:
-  - **9 Photorealistic Flagship Exhibits** (`ak15`, `p08`, `deagle`, `m4a1`, `python`, `garand`, `mp5`, `awm`, `m82a1`) are procedurally sculpted and Cycles-baked via MIT-licensed headless Python scripts (`scripts/blender/build_*_photoreal.py`) into compact Draco `.glb` bundles (`211` watertight solid CAD meshes, `2.13–7.05 MB` total each, `100%` manifold, exact `1u = 1cm` coordinates).
-  - **Zero-Compromise Dynamic Springs**: Helical recoil, buffer, striker, magazine, barrel-return, and V-leaf springs stay on the procedural CSG track so per-vertex `aSpringParam` GPU compression remains physically exact at 60 FPS, while all remaining 10 exhibits stream zero-copy from the background CSG Web Worker.
+  - **14/19 Photorealistic Flagship Exhibits** (`ak15`, `p08`, `deagle`, `m4a1`, `python`, `garand`, `mp5`, `awm`, `m82a1`, `g17`, `scar`, `aug`, `p320`, `p90`) are procedurally sculpted and Cycles-baked via MIT-licensed headless Python scripts (`scripts/blender/build_*_photoreal.py`) into compact Draco `.glb` bundles (`331` watertight solid CAD meshes, `2.13–7.05 MB` total each, `100%` manifold, exact `1u = 1cm` coordinates) backed by `232` 2K 5-channel Packed ORM WebP maps (`0` PNGs).
+  - **Zero-Compromise Dynamic Springs**: `23` helical recoil, buffer, striker, magazine, barrel-return, and V-leaf springs across the 14 flagships stay on the procedural CSG track so per-vertex `aSpringParam` GPU compression remains physically exact at 60 FPS, while the remaining 5 exhibits (`benellim4`, `m249`, `vector`, `lift33`, `r500` — scheduled for Wave 4) stream zero-copy from the background CSG Web Worker.
   - **Real-Time Studio Optics (`PR-01`)**: 3 Cycles-rendered 32-bit studio `.hdr` domes (`Tactical Vault`, `Gunsmith Bench`, `Blueprint Daylight`), Specular AA, real-time Service Wear Patina (`Factory New / Field-Oiled / Battle-Worn`), Macro Bokeh DOF, GTAO + AgX post-processing, and 3-tier GPU quality (`Ultra / Balanced / Eco`).
 - **✦ Live Draggable CT-Scan Section Plane (`[C]`, `PR-04`)**: Sweep a real-time `±25 mm` longitudinal section plane across any weapon with `+Z / -Z` flip and 60 FPS continuous CT auto-sweep—zero shader recompilation, synchronized Two-Pass WebGL Stencil 45° ISO 128 cross-hatching, and through-cutaway raycast picking (`sectionAwareMeshRaycast`).
 - **✦ Global `Cmd+K` / `Ctrl+K` Command Palette & Decluttered Museum HUD (`PR-04`)**: Instant multi-token EN/ZH fuzzy search from any screen across all **19 exhibits**, **480 CAD parts**, **simulation labs**, and **studio controls**, paired with streamlined `Display` and `Labs & Tools` glassmorphic popovers.
@@ -100,21 +112,21 @@
 
 ---
 
-## 19-Exhibit Collection Matrix (480 Moving CAD Parts · 9 Blender 5.2 Flagships)
+## 19-Exhibit Collection Matrix (480 Moving CAD Parts · 14/19 Blender 5.2 Flagships)
 
 | Bay | Exhibit | Pipeline | Caliber / Projectile | Operating & Locking Mechanism | Parts | Live Bench |
 | :--- | :--- | :---: | :--- | :--- | :---: | :---: |
 | `BAY-01` | **Kalashnikov AK-15M1 (6P71M)** | `GLB v3` | `7.62×39mm (M43)` | Long-stroke gas piston · 2-lug 35° rotating bolt | 26 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=ak15&screen=workbench&lang=en) |
 | `BAY-02` | **Colt M4A1 SOPMOD Carbine** | `GLB v3` | `5.56×45mm NATO` | Stoner direct impingement (internal BCG piston) · 7-lug bolt | 26 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=m4a1&screen=workbench&lang=en) |
 | `BAY-03` | **Heckler & Koch MP5A3** | `GLB v3` | `9×19mm Parabellum` | Dual Ø8mm roller-delayed blowback (4:1 ratio) · Fluted chamber | 26 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=mp5&screen=workbench&lang=en) |
-| `BAY-04` | **Glock 17 Gen3** | `CSG` | `9×19mm Parabellum` | Browning short-recoil tilting barrel · Safe Action triple safety | 28 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=g17&screen=workbench&lang=en) |
+| `BAY-04` | **Glock 17 Gen 5** | `GLB v3` | `9×19mm Parabellum` | Browning short-recoil tilting barrel · Safe Action triple safety | 28 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=g17&screen=workbench&lang=en) |
 | `BAY-05` | **Barrett M82A1** | `GLB v3` | `.50 BMG (12.7×99mm)` | Short-recoil 29" fluted barrel · Accelerator lever & 3-lug bolt | 24 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=m82a1&screen=workbench&lang=en) |
 | `BAY-06` | **Accuracy International AWM** | `GLB v3` | `.338 Lapua Magnum` | Manual 60° 6-lug anti-icing bolt action · Bonded alloy chassis | 24 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=awm&screen=workbench&lang=en) |
-| `BAY-07` | **FN SCAR-L Mk 16 Mod 0** | `CSG` | `5.56×45mm NATO` | Short-stroke gas tappet · 7-lug rotating bolt & monolithic upper | 26 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=scar&screen=workbench&lang=en) |
+| `BAY-07` | **FN SCAR-L Mk 16 Mod 0** | `GLB v3` | `5.56×45mm NATO` | Short-stroke gas tappet · 7-lug rotating bolt & monolithic upper | 26 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=scar&screen=workbench&lang=en) |
 | `BAY-08` | **Desert Eagle Mark XIX** | `GLB v3` | `.50 Action Express` | Forward under-barrel gas piston · 4-lug rotating bolt & dual rods | 24 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=deagle&screen=workbench&lang=en) |
-| `BAY-09` | **Steyr AUG A1 (StG 77)** | `CSG` | `5.56×45mm NATO` | Offset short-stroke piston · Twin guide rods & polymer hammer pack | 25 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=aug&screen=workbench&lang=en) |
-| `BAY-10` | **SIG Sauer P320 M17** | `CSG` | `9×19mm Parabellum` | Serialized removable stainless FCU chassis · Tilting-barrel striker | 24 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=p320&screen=workbench&lang=en) |
-| `BAY-11` | **FN P90 PDW** | `CSG` | `5.7×28mm FN SS190` | Top horizontal 50-rd magazine · 90° helical feed ramp & bottom eject | 25 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=p90&screen=workbench&lang=en) |
+| `BAY-09` | **Steyr AUG A1 (StG 77)** | `GLB v3` | `5.56×45mm NATO` | Offset short-stroke piston · Twin guide rods & polymer hammer pack | 25 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=aug&screen=workbench&lang=en) |
+| `BAY-10` | **SIG Sauer P320 M17** | `GLB v3` | `9×19mm Parabellum` | Serialized removable stainless FCU chassis · Tilting-barrel striker | 24 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=p320&screen=workbench&lang=en) |
+| `BAY-11` | **FN P90 PDW** | `GLB v3` | `5.7×28mm FN SS190` | Top horizontal 50-rd magazine · 90° helical feed ramp & bottom eject | 25 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=p90&screen=workbench&lang=en) |
 | `BAY-12` | **Mathews LIFT 33** | `CSG` | `400 gr Carbon Arrow (348 FPS)` | SwitchWeight-X binary cams · 85% let-off & QAD drop-away rest | 24 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=lift33&screen=workbench&lang=en) |
 | `BAY-13` | **Ravin R500** | `CSG` | `400 gr Carbon Bolt (500 FPS)` | HexCoil 360° helical cams · VersaDrive screw crank & Trac-Trigger sled | 25 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=r500&screen=workbench&lang=en) |
 | `BAY-14` | **Colt Python 6" (.357 Mag)** | `GLB v3` | `.357 Magnum (9×33mmR)` | DA/SA hand-tuned V-mainspring clockwork · 60° ratchet & stop-bolt | 25 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=python&screen=workbench&lang=en) |
@@ -181,7 +193,7 @@ npm run build
 ### Optional: Rebuild Photorealistic Blender 5.2 `.glb` or Legacy PBR Maps
 
 ```bash
-# Re-generate any flagship Blender 5.2 Draco GLB + Cycles 2K Packed ORM suite headlessly:
+# Re-generate any flagship Blender 5.2 Draco GLB + Cycles 2K Packed ORM suite headlessly (14 exhibits):
 blender --factory-startup --background --python scripts/blender/build_p08_photoreal.py
 blender --factory-startup --background --python scripts/blender/build_ak15_photoreal.py
 blender --factory-startup --background --python scripts/blender/build_deagle_photoreal.py
@@ -191,6 +203,11 @@ blender --factory-startup --background --python scripts/blender/build_garand_pho
 blender --factory-startup --background --python scripts/blender/build_mp5_photoreal.py
 blender --factory-startup --background --python scripts/blender/build_awm_photoreal.py
 blender --factory-startup --background --python scripts/blender/build_m82a1_photoreal.py
+blender --factory-startup --background --python scripts/blender/build_g17_photoreal.py
+blender --factory-startup --background --python scripts/blender/build_scar_photoreal.py
+blender --factory-startup --background --python scripts/blender/build_aug_photoreal.py
+blender --factory-startup --background --python scripts/blender/build_p320_photoreal.py
+blender --factory-startup --background --python scripts/blender/build_p90_photoreal.py
 
 # Or rebuild procedural legacy 2K Packed ORM WebP maps:
 python3 -B -m scripts.pbr_core.selftest
@@ -209,10 +226,10 @@ digital-armory-3d/
 │   ├── audio/                     # 1,112 bilingual 4-act R&D & part voiceovers (Charon Gemini TTS MP3)
 │   ├── draco/                     # Self-hosted Three.js WebAssembly Draco mesh decoders
 │   ├── hdri/                      # 3 Cycles-rendered 32-bit studio .hdr domes (Vault / Bench / Daylight)
-│   ├── models/                    # 9 Blender 5.2 Draco-compressed flagship .glb exhibits (ak15/p08/deagle/m4a1/python/garand/mp5/awm/m82a1)
+│   ├── models/                    # 14 Blender 5.2 Draco-compressed flagship .glb exhibits (p08/ak15/deagle/m4a1/python/garand/mp5/awm/m82a1/g17/scar/aug/p320/p90)
 │   ├── narrations/                # 19 structured zh/en R&D documentaries & part engineering JSONs
 │   ├── showcase/                  # Live WebGL 2.0 showcase gallery captures (WebP)
-│   └── textures/                  # 187 pre-baked 2K 5-Channel Packed ORM WebP textures (0 PNGs)
+│   └── textures/                  # 232 pre-baked 2K 5-Channel Packed ORM WebP textures (76 albedo / 78 normal / 78 ORM, 0 PNGs)
 ├── scripts/
 │   ├── blender/                   # Reproducible MIT headless Blender 5.2 sculpt, Cycles bake & HDRI scripts
 │   ├── narrations/.cache/         # 19 SHA-256 content-addressed Charon TTS verification manifests

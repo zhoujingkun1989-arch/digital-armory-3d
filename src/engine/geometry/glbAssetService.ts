@@ -217,6 +217,111 @@ const MP5_V3_FURNITURE_PBR: PbrBindingSpec = {
   normalScale: 0.9,
 };
 
+const G17_V3_SLIDE_PBR: PbrBindingSpec = {
+  albedoFile: 'g17_v3_slide_albedo.webp',
+  normalFile: 'g17_v3_slide_normal.webp',
+  roughnessFile: 'g17_v3_slide_roughness.webp',
+  normalScale: 0.86,
+};
+
+const G17_V3_POLYMER_PBR: PbrBindingSpec = {
+  albedoFile: 'g17_v3_polymer_albedo.webp',
+  normalFile: 'g17_v3_polymer_normal.webp',
+  roughnessFile: 'g17_v3_polymer_roughness.webp',
+  normalScale: 0.92,
+};
+
+const G17_V3_METAL_PBR: PbrBindingSpec = {
+  albedoFile: 'g17_v3_metal_albedo.webp',
+  normalFile: 'g17_v3_metal_normal.webp',
+  roughnessFile: 'g17_v3_metal_roughness.webp',
+  normalScale: 0.85,
+};
+
+const SCAR_V3_UPPER_PBR: PbrBindingSpec = {
+  albedoFile: 'scar_v3_upper_albedo.webp',
+  normalFile: 'scar_v3_upper_normal.webp',
+  roughnessFile: 'scar_v3_upper_roughness.webp',
+  normalScale: 0.88,
+};
+
+const SCAR_V3_FDE_POLYMER_PBR: PbrBindingSpec = {
+  albedoFile: 'scar_v3_fde_polymer_albedo.webp',
+  normalFile: 'scar_v3_fde_polymer_normal.webp',
+  roughnessFile: 'scar_v3_fde_polymer_roughness.webp',
+  normalScale: 0.9,
+};
+
+const SCAR_V3_METAL_PBR: PbrBindingSpec = {
+  albedoFile: 'scar_v3_metal_albedo.webp',
+  normalFile: 'scar_v3_metal_normal.webp',
+  roughnessFile: 'scar_v3_metal_roughness.webp',
+  normalScale: 0.85,
+};
+
+const AUG_V3_STOCK_PBR: PbrBindingSpec = {
+  albedoFile: 'aug_v3_stock_albedo.webp',
+  normalFile: 'aug_v3_stock_normal.webp',
+  roughnessFile: 'aug_v3_stock_roughness.webp',
+  normalScale: 0.9,
+};
+
+const AUG_V3_RECEIVER_PBR: PbrBindingSpec = {
+  albedoFile: 'aug_v3_receiver_albedo.webp',
+  normalFile: 'aug_v3_receiver_normal.webp',
+  roughnessFile: 'aug_v3_receiver_roughness.webp',
+  normalScale: 0.88,
+};
+
+const AUG_V3_METAL_PBR: PbrBindingSpec = {
+  albedoFile: 'aug_v3_metal_albedo.webp',
+  normalFile: 'aug_v3_metal_normal.webp',
+  roughnessFile: 'aug_v3_metal_roughness.webp',
+  normalScale: 0.85,
+};
+
+const P320_V3_SLIDE_PBR: PbrBindingSpec = {
+  albedoFile: 'p320_v3_slide_albedo.webp',
+  normalFile: 'p320_v3_slide_normal.webp',
+  roughnessFile: 'p320_v3_slide_roughness.webp',
+  normalScale: 0.86,
+};
+
+const P320_V3_GRIP_PBR: PbrBindingSpec = {
+  albedoFile: 'p320_v3_grip_albedo.webp',
+  normalFile: 'p320_v3_grip_normal.webp',
+  roughnessFile: 'p320_v3_grip_roughness.webp',
+  normalScale: 0.92,
+};
+
+const P320_V3_FCU_METAL_PBR: PbrBindingSpec = {
+  albedoFile: 'p320_v3_fcu_metal_albedo.webp',
+  normalFile: 'p320_v3_fcu_metal_normal.webp',
+  roughnessFile: 'p320_v3_fcu_metal_roughness.webp',
+  normalScale: 0.85,
+};
+
+const P90_V3_STOCK_PBR: PbrBindingSpec = {
+  albedoFile: 'p90_v3_stock_albedo.webp',
+  normalFile: 'p90_v3_stock_normal.webp',
+  roughnessFile: 'p90_v3_stock_roughness.webp',
+  normalScale: 0.9,
+};
+
+const P90_V3_MAG_OPTIC_PBR: PbrBindingSpec = {
+  albedoFile: 'p90_v3_mag_optic_albedo.webp',
+  normalFile: 'p90_v3_mag_optic_normal.webp',
+  roughnessFile: 'p90_v3_mag_optic_roughness.webp',
+  normalScale: 0.85,
+};
+
+const P90_V3_METAL_PBR: PbrBindingSpec = {
+  albedoFile: 'p90_v3_metal_albedo.webp',
+  normalFile: 'p90_v3_metal_normal.webp',
+  roughnessFile: 'p90_v3_metal_roughness.webp',
+  normalScale: 0.86,
+};
+
 export const GLB_WEAPON_CONFIGS: Readonly<
   Partial<Record<WeaponId, GlbWeaponAssetConfig>>
 > = {
@@ -512,6 +617,171 @@ export const GLB_WEAPON_CONFIGS: Readonly<
       mp5_forearm: MP5_V3_FURNITURE_PBR,
       mp5_selector: MP5_V3_FURNITURE_PBR,
       mp5_mag_follower: MP5_V3_FURNITURE_PBR,
+    },
+  },
+  g17: {
+    modelFile: 'g17.glb',
+    dynamicSpringParts: ['recoil_spring', 'striker_spring'],
+    pbrOverrides: {
+      // Gen 5 nDLC steel slide, bullnose serrations, white-dot/U-outline sights, cover plate & LCI extractor (5 parts)
+      slide: G17_V3_SLIDE_PBR,
+      front_sight: G17_V3_SLIDE_PBR,
+      rear_sight: G17_V3_SLIDE_PBR,
+      slide_cover_plate: G17_V3_SLIDE_PBR,
+      extractor: G17_V3_SLIDE_PBR,
+      // Organic RTF4 polyamide frame, polymer guide rod, controls, trigger housing & 17-rd mag w/ orange follower (8 parts)
+      frame: G17_V3_POLYMER_PBR,
+      recoil_guide_rod: G17_V3_POLYMER_PBR,
+      magazine_catch: G17_V3_POLYMER_PBR,
+      trigger_housing_pin: G17_V3_POLYMER_PBR,
+      trigger_housing: G17_V3_POLYMER_PBR,
+      mag_body: G17_V3_POLYMER_PBR,
+      mag_follower: G17_V3_POLYMER_PBR,
+      mag_base_plate: G17_V3_POLYMER_PBR,
+      // GMB polygonal barrel, Safe Action striker/trigger-bar internals, stainless locking block & springs (13 parts)
+      barrel: G17_V3_METAL_PBR,
+      striker: G17_V3_METAL_PBR,
+      firing_pin_safety: G17_V3_METAL_PBR,
+      extractor_plunger: G17_V3_METAL_PBR,
+      locking_block: G17_V3_METAL_PBR,
+      slide_lock: G17_V3_METAL_PBR,
+      slide_stop_lever: G17_V3_METAL_PBR,
+      trigger_pin: G17_V3_METAL_PBR,
+      locking_block_pin: G17_V3_METAL_PBR,
+      trigger_with_bar: G17_V3_METAL_PBR,
+      connector: G17_V3_METAL_PBR,
+      trigger_spring: G17_V3_METAL_PBR,
+      mag_spring: G17_V3_METAL_PBR,
+    },
+  },
+  scar: {
+    modelFile: 'scar.glb',
+    dynamicSpringParts: ['scar_recoil_spring'],
+    pbrOverrides: {
+      // Gold-bronze Type III anodized monolithic extruded upper, folding diopter rear sight & Torx crossbolts (3 parts)
+      scar_upper_receiver: SCAR_V3_UPPER_PBR,
+      scar_rear_sight: SCAR_V3_UPPER_PBR,
+      scar_barrel_crossbolts: SCAR_V3_UPPER_PBR,
+      // Fifty Shades of FDE coyote polymer lower, 20-LPI grip, folding stock, riser, buttpad, selector & follower (8 parts)
+      scar_lower_receiver: SCAR_V3_FDE_POLYMER_PBR,
+      scar_pistol_grip: SCAR_V3_FDE_POLYMER_PBR,
+      scar_buttstock: SCAR_V3_FDE_POLYMER_PBR,
+      scar_cheek_riser: SCAR_V3_FDE_POLYMER_PBR,
+      scar_buttpad: SCAR_V3_FDE_POLYMER_PBR,
+      scar_selector: SCAR_V3_FDE_POLYMER_PBR,
+      scar_mag_follower: SCAR_V3_FDE_POLYMER_PBR,
+      scar_mag_floorplate: SCAR_V3_FDE_POLYMER_PBR,
+      // 14" CHF barrel, 3-prong flash suppressor, short-stroke piston, monolithic BCG, 7-lug bolt, FCG & STANAG mag (14 parts)
+      scar_barrel: SCAR_V3_METAL_PBR,
+      scar_flash_suppressor: SCAR_V3_METAL_PBR,
+      scar_gas_block: SCAR_V3_METAL_PBR,
+      scar_gas_piston: SCAR_V3_METAL_PBR,
+      scar_bolt_carrier: SCAR_V3_METAL_PBR,
+      scar_charging_handle: SCAR_V3_METAL_PBR,
+      scar_bolt: SCAR_V3_METAL_PBR,
+      scar_firing_pin: SCAR_V3_METAL_PBR,
+      scar_recoil_rod: SCAR_V3_METAL_PBR,
+      scar_hammer: SCAR_V3_METAL_PBR,
+      scar_trigger: SCAR_V3_METAL_PBR,
+      scar_disconnector: SCAR_V3_METAL_PBR,
+      scar_mag_body: SCAR_V3_METAL_PBR,
+      scar_mag_spring: SCAR_V3_METAL_PBR,
+    },
+  },
+  aug: {
+    modelFile: 'aug.glb',
+    dynamicSpringParts: ['aug_recoil_springs'],
+    pbrOverrides: {
+      // Austrian Alpine OD-green PA66 monocoque stock, folding foregrip, smoked amber waffle mag & polymer hammer pack (10 parts)
+      aug_stock: AUG_V3_STOCK_PBR,
+      aug_buttpad: AUG_V3_STOCK_PBR,
+      aug_foregrip: AUG_V3_STOCK_PBR,
+      aug_trigger: AUG_V3_STOCK_PBR,
+      aug_safety: AUG_V3_STOCK_PBR,
+      aug_mag_body: AUG_V3_STOCK_PBR,
+      aug_mag_follower: AUG_V3_STOCK_PBR,
+      aug_mag_floorplate: AUG_V3_STOCK_PBR,
+      aug_hammer_pack: AUG_V3_STOCK_PBR,
+      aug_hammer: AUG_V3_STOCK_PBR,
+      // Die-cast baked-enamel receiver w/ integral 1.5x Swarovski optic, charging handle, barrel lock & takedown pin (4 parts)
+      aug_receiver_optic: AUG_V3_RECEIVER_PBR,
+      aug_charging_handle: AUG_V3_RECEIVER_PBR,
+      aug_barrel_lock: AUG_V3_RECEIVER_PBR,
+      aug_takedown_pin: AUG_V3_RECEIVER_PBR,
+      // 20" quick-change CHF barrel, tulip flash hider, 3-pos gas regulator, twin-rod chrome BCG, 7-lug bolt & bars (10 parts)
+      aug_barrel: AUG_V3_METAL_PBR,
+      aug_flash_hider: AUG_V3_METAL_PBR,
+      aug_gas_block: AUG_V3_METAL_PBR,
+      aug_gas_regulator: AUG_V3_METAL_PBR,
+      aug_gas_piston: AUG_V3_METAL_PBR,
+      aug_bolt_carrier: AUG_V3_METAL_PBR,
+      aug_bolt: AUG_V3_METAL_PBR,
+      aug_firing_pin: AUG_V3_METAL_PBR,
+      aug_transfer_bars: AUG_V3_METAL_PBR,
+      aug_mag_spring: AUG_V3_METAL_PBR,
+    },
+  },
+  p320: {
+    modelFile: 'p320.glb',
+    dynamicSpringParts: ['p320_recoil_spring', 'p320_striker_spring'],
+    pbrOverrides: {
+      // Satin Coyote PVD slide w/ MIL-STD-130 UID, DPP optic cover plate, SIGLITE tritium sights & extractor (5 parts)
+      p320_slide: P320_V3_SLIDE_PBR,
+      p320_optic_plate_sight: P320_V3_SLIDE_PBR,
+      p320_front_sight: P320_V3_SLIDE_PBR,
+      p320_striker_housing: P320_V3_SLIDE_PBR,
+      p320_extractor: P320_V3_SLIDE_PBR,
+      // Matte Coyote polyamide grip module w/ 360° micro-pebble stippling, orange follower & baseplate (3 parts)
+      p320_grip_module: P320_V3_GRIP_PBR,
+      p320_mag_follower: P320_V3_GRIP_PBR,
+      p320_mag_baseplate: P320_V3_GRIP_PBR,
+      // Serialized 17-4PH stainless FCU chassis, 4.7" Nitron barrel, black Nitron controls & 17-rd steel magazine (14 parts)
+      p320_barrel: P320_V3_FCU_METAL_PBR,
+      p320_recoil_guide_rod: P320_V3_FCU_METAL_PBR,
+      p320_striker: P320_V3_FCU_METAL_PBR,
+      p320_safety_lock: P320_V3_FCU_METAL_PBR,
+      p320_takedown_lever: P320_V3_FCU_METAL_PBR,
+      p320_slide_catch: P320_V3_FCU_METAL_PBR,
+      p320_mag_catch: P320_V3_FCU_METAL_PBR,
+      p320_fcu_chassis: P320_V3_FCU_METAL_PBR,
+      p320_trigger_shoe: P320_V3_FCU_METAL_PBR,
+      p320_trigger_bar: P320_V3_FCU_METAL_PBR,
+      p320_sear_group: P320_V3_FCU_METAL_PBR,
+      p320_manual_safety: P320_V3_FCU_METAL_PBR,
+      p320_mag_body: P320_V3_FCU_METAL_PBR,
+      p320_mag_spring: P320_V3_FCU_METAL_PBR,
+    },
+  },
+  p90: {
+    modelFile: 'p90.glb',
+    dynamicSpringParts: ['p90_recoil_springs', 'p90_mag_spring'],
+    pbrOverrides: {
+      // Charcoal-black glass-filled polyamide monocoque stock, buttplate, rotary selector & nylon hammer pack (8 parts)
+      p90_stock: P90_V3_STOCK_PBR,
+      p90_buttplate: P90_V3_STOCK_PBR,
+      p90_mag_catches: P90_V3_STOCK_PBR,
+      p90_ejection_cover: P90_V3_STOCK_PBR,
+      p90_trigger: P90_V3_STOCK_PBR,
+      p90_selector: P90_V3_STOCK_PBR,
+      p90_hammer_pack: P90_V3_STOCK_PBR,
+      p90_mag_floorplate: P90_V3_STOCK_PBR,
+      // Smoked-amber 50-rd horizontal mag, 90° helical feed ramp, orange follower/hammer & MC-10-80 Ring Sight (5 parts)
+      p90_mag_body: P90_V3_MAG_OPTIC_PBR,
+      p90_helical_ramp: P90_V3_MAG_OPTIC_PBR,
+      p90_mag_follower: P90_V3_MAG_OPTIC_PBR,
+      p90_hammer: P90_V3_MAG_OPTIC_PBR,
+      p90_ring_sight: P90_V3_MAG_OPTIC_PBR,
+      // Die-cast aluminum upper bridge, 10.4" CHF barrel, 4-port slant comp, heavy blowback bolt & twin guide rods (10 parts)
+      p90_upper_receiver: P90_V3_METAL_PBR,
+      p90_barrel: P90_V3_METAL_PBR,
+      p90_flash_hider: P90_V3_METAL_PBR,
+      p90_charging_handles: P90_V3_METAL_PBR,
+      p90_bolt: P90_V3_METAL_PBR,
+      p90_firing_pin: P90_V3_METAL_PBR,
+      p90_guide_rods: P90_V3_METAL_PBR,
+      p90_takedown_lock: P90_V3_METAL_PBR,
+      p90_sling_mount: P90_V3_METAL_PBR,
+      p90_transfer_bars: P90_V3_METAL_PBR,
     },
   },
 };

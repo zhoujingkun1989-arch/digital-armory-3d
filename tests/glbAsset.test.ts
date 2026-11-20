@@ -30,14 +30,19 @@ import {
   lockLinearTextureColorSpace,
 } from '../src/engine/materials/pbrManager';
 import { AK15_PARTS } from '../src/weapons/ak15/plugin';
+import { AUG_PARTS } from '../src/weapons/aug/plugin';
 import { AWM_PARTS } from '../src/weapons/awm/plugin';
 import { DEAGLE_PARTS } from '../src/weapons/deagle/plugin';
+import { G17_PARTS } from '../src/weapons/g17/plugin';
 import { GARAND_PARTS } from '../src/weapons/garand/plugin';
 import { M4A1_PARTS } from '../src/weapons/m4a1/plugin';
 import { M82A1_PARTS } from '../src/weapons/m82a1/plugin';
 import { MP5_PARTS } from '../src/weapons/mp5/plugin';
 import { P08_PARTS } from '../src/weapons/p08/plugin';
+import { P320_PARTS } from '../src/weapons/p320/plugin';
+import { P90_PARTS } from '../src/weapons/p90/plugin';
 import { PYTHON_PARTS } from '../src/weapons/python/plugin';
+import { SCAR_PARTS } from '../src/weapons/scar/plugin';
 import type { WeaponId } from '../src/weapons/types';
 
 /**
@@ -241,7 +246,12 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     expect(resolveWeaponGlbUrl('mp5', '/')).toBe('/models/mp5.glb');
     expect(resolveWeaponGlbUrl('awm', '/')).toBe('/models/awm.glb');
     expect(resolveWeaponGlbUrl('m82a1', '/')).toBe('/models/m82a1.glb');
-    expect(resolveWeaponGlbUrl('g17', '/')).toBeNull();
+    expect(resolveWeaponGlbUrl('g17', '/')).toBe('/models/g17.glb');
+    expect(resolveWeaponGlbUrl('scar', '/')).toBe('/models/scar.glb');
+    expect(resolveWeaponGlbUrl('aug', '/')).toBe('/models/aug.glb');
+    expect(resolveWeaponGlbUrl('p320', '/')).toBe('/models/p320.glb');
+    expect(resolveWeaponGlbUrl('p90', '/')).toBe('/models/p90.glb');
+    expect(resolveWeaponGlbUrl('vector', '/')).toBeNull();
 
     // Non-root GitHub Pages subpath deployment ('/digital-armory-3d/')
     expect(resolveDracoDecoderPath('/digital-armory-3d/')).toBe(
@@ -277,6 +287,21 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     expect(resolveWeaponGlbUrl('m82a1', 'digital-armory-3d')).toBe(
       '/digital-armory-3d/models/m82a1.glb'
     );
+    expect(resolveWeaponGlbUrl('g17', '/digital-armory-3d/')).toBe(
+      '/digital-armory-3d/models/g17.glb'
+    );
+    expect(resolveWeaponGlbUrl('scar', 'digital-armory-3d')).toBe(
+      '/digital-armory-3d/models/scar.glb'
+    );
+    expect(resolveWeaponGlbUrl('aug', '/digital-armory-3d/')).toBe(
+      '/digital-armory-3d/models/aug.glb'
+    );
+    expect(resolveWeaponGlbUrl('p320', 'digital-armory-3d')).toBe(
+      '/digital-armory-3d/models/p320.glb'
+    );
+    expect(resolveWeaponGlbUrl('p90', '/digital-armory-3d/')).toBe(
+      '/digital-armory-3d/models/p90.glb'
+    );
 
     // Verify Vite chunk splitting places GLTFLoader, DRACOLoader & BufferGeometryUtils in vendor-three-postfx
     const output = viteConfig.build?.rollupOptions?.output;
@@ -303,7 +328,7 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     }
   });
 
-  it('locks exact 100% disjoint part-to-atlas & dynamic-spring contracts and on-disk budgets for ALL 9 flagship GLB exhibits (p08, ak15, deagle, m4a1, python, garand, mp5, awm, m82a1)', () => {
+  it('locks exact 100% disjoint part-to-atlas & dynamic-spring contracts and on-disk budgets for ALL 14 flagship GLB exhibits (Wave 1–3)', () => {
     const migrated: WeaponId[] = [
       'p08',
       'ak15',
@@ -314,6 +339,11 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
       'mp5',
       'awm',
       'm82a1',
+      'g17',
+      'scar',
+      'aug',
+      'p320',
+      'p90',
     ];
     for (const wid of migrated) {
       expect(hasGlbWeaponAsset(wid)).toBe(true);
@@ -321,7 +351,13 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     }
     expect(Object.keys(GLB_WEAPON_CONFIGS).sort()).toEqual([...migrated].sort());
 
-    for (const unmigrated of ['g17', 'scar', 'aug', 'p320', 'vector'] as WeaponId[]) {
+    for (const unmigrated of [
+      'benellim4',
+      'm249',
+      'vector',
+      'lift33',
+      'r500',
+    ] as WeaponId[]) {
       expect(hasGlbWeaponAsset(unmigrated)).toBe(false);
       expect(getGlbWeaponConfig(unmigrated)).toBeNull();
       expect(isGlbDynamicSpringPart(unmigrated, 'recoil_spring')).toBe(false);
@@ -755,7 +791,275 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
       }
     }
 
-    // --- Verify on-disk binary GLB headers, referenced v3 WebP maps & per-exhibit MB size budgets ---
+    // --- 10. Glock 17 Gen 5 (28 parts = 2 dynamic springs + 5 slide + 8 polymer + 13 metal) ---
+    const g17Cfg = GLB_WEAPON_CONFIGS.g17!;
+    expect(g17Cfg.modelFile).toBe('g17.glb');
+    expect(g17Cfg.dynamicSpringParts).toEqual([
+      'recoil_spring',
+      'striker_spring',
+    ]);
+    const g17Ids = G17_PARTS.map((p) => p.id);
+    const g17Springs = new Set(g17Cfg.dynamicSpringParts);
+    const g17Slide = new Set([
+      'slide',
+      'front_sight',
+      'rear_sight',
+      'slide_cover_plate',
+      'extractor',
+    ]);
+    const g17Polymer = new Set([
+      'frame',
+      'recoil_guide_rod',
+      'magazine_catch',
+      'trigger_housing_pin',
+      'trigger_housing',
+      'mag_body',
+      'mag_follower',
+      'mag_base_plate',
+    ]);
+    expect(g17Ids).toHaveLength(28);
+    expect(Object.keys(g17Cfg.pbrOverrides)).toHaveLength(26);
+
+    for (const id of g17Ids) {
+      if (g17Springs.has(id)) {
+        expect(isGlbDynamicSpringPart('g17', id)).toBe(true);
+        expect(getGlbPartPbrOverride('g17', id)).toBeUndefined();
+      } else {
+        expect(isGlbDynamicSpringPart('g17', id)).toBe(false);
+        const ov = getGlbPartPbrOverride('g17', id);
+        expect(ov, `Missing g17 PBR override for ${id}`).toBeDefined();
+        if (g17Slide.has(id)) {
+          expect(ov!.albedoFile).toBe('g17_v3_slide_albedo.webp');
+          expect(ov!.normalFile).toBe('g17_v3_slide_normal.webp');
+          expect(ov!.roughnessFile).toBe('g17_v3_slide_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.86, 5);
+        } else if (g17Polymer.has(id)) {
+          expect(ov!.albedoFile).toBe('g17_v3_polymer_albedo.webp');
+          expect(ov!.normalFile).toBe('g17_v3_polymer_normal.webp');
+          expect(ov!.roughnessFile).toBe('g17_v3_polymer_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.92, 5);
+        } else {
+          expect(ov!.albedoFile).toBe('g17_v3_metal_albedo.webp');
+          expect(ov!.normalFile).toBe('g17_v3_metal_normal.webp');
+          expect(ov!.roughnessFile).toBe('g17_v3_metal_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.85, 5);
+        }
+      }
+    }
+
+    // --- 11. FN SCAR-L Mk 16 Mod 0 (26 parts = 1 dynamic spring + 3 upper + 8 fde_polymer + 14 metal) ---
+    const scarCfg = GLB_WEAPON_CONFIGS.scar!;
+    expect(scarCfg.modelFile).toBe('scar.glb');
+    expect(scarCfg.dynamicSpringParts).toEqual(['scar_recoil_spring']);
+    const scarIds = SCAR_PARTS.map((p) => p.id);
+    const scarSprings = new Set(scarCfg.dynamicSpringParts);
+    const scarUpper = new Set([
+      'scar_upper_receiver',
+      'scar_rear_sight',
+      'scar_barrel_crossbolts',
+    ]);
+    const scarFdePolymer = new Set([
+      'scar_lower_receiver',
+      'scar_pistol_grip',
+      'scar_buttstock',
+      'scar_cheek_riser',
+      'scar_buttpad',
+      'scar_selector',
+      'scar_mag_follower',
+      'scar_mag_floorplate',
+    ]);
+    expect(scarIds).toHaveLength(26);
+    expect(Object.keys(scarCfg.pbrOverrides)).toHaveLength(25);
+
+    for (const id of scarIds) {
+      if (scarSprings.has(id)) {
+        expect(isGlbDynamicSpringPart('scar', id)).toBe(true);
+        expect(getGlbPartPbrOverride('scar', id)).toBeUndefined();
+      } else {
+        expect(isGlbDynamicSpringPart('scar', id)).toBe(false);
+        const ov = getGlbPartPbrOverride('scar', id);
+        expect(ov, `Missing scar PBR override for ${id}`).toBeDefined();
+        if (scarUpper.has(id)) {
+          expect(ov!.albedoFile).toBe('scar_v3_upper_albedo.webp');
+          expect(ov!.normalFile).toBe('scar_v3_upper_normal.webp');
+          expect(ov!.roughnessFile).toBe('scar_v3_upper_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.88, 5);
+        } else if (scarFdePolymer.has(id)) {
+          expect(ov!.albedoFile).toBe('scar_v3_fde_polymer_albedo.webp');
+          expect(ov!.normalFile).toBe('scar_v3_fde_polymer_normal.webp');
+          expect(ov!.roughnessFile).toBe('scar_v3_fde_polymer_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.9, 5);
+        } else {
+          expect(ov!.albedoFile).toBe('scar_v3_metal_albedo.webp');
+          expect(ov!.normalFile).toBe('scar_v3_metal_normal.webp');
+          expect(ov!.roughnessFile).toBe('scar_v3_metal_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.85, 5);
+        }
+      }
+    }
+
+    // --- 12. Steyr AUG A1 / StG 77 (25 parts = 1 dynamic spring + 10 stock + 4 receiver + 10 metal) ---
+    const augCfg = GLB_WEAPON_CONFIGS.aug!;
+    expect(augCfg.modelFile).toBe('aug.glb');
+    expect(augCfg.dynamicSpringParts).toEqual(['aug_recoil_springs']);
+    const augIds = AUG_PARTS.map((p) => p.id);
+    const augSprings = new Set(augCfg.dynamicSpringParts);
+    const augStock = new Set([
+      'aug_stock',
+      'aug_buttpad',
+      'aug_foregrip',
+      'aug_trigger',
+      'aug_safety',
+      'aug_mag_body',
+      'aug_mag_follower',
+      'aug_mag_floorplate',
+      'aug_hammer_pack',
+      'aug_hammer',
+    ]);
+    const augReceiver = new Set([
+      'aug_receiver_optic',
+      'aug_charging_handle',
+      'aug_barrel_lock',
+      'aug_takedown_pin',
+    ]);
+    expect(augIds).toHaveLength(25);
+    expect(Object.keys(augCfg.pbrOverrides)).toHaveLength(24);
+
+    for (const id of augIds) {
+      if (augSprings.has(id)) {
+        expect(isGlbDynamicSpringPart('aug', id)).toBe(true);
+        expect(getGlbPartPbrOverride('aug', id)).toBeUndefined();
+      } else {
+        expect(isGlbDynamicSpringPart('aug', id)).toBe(false);
+        const ov = getGlbPartPbrOverride('aug', id);
+        expect(ov, `Missing aug PBR override for ${id}`).toBeDefined();
+        if (augStock.has(id)) {
+          expect(ov!.albedoFile).toBe('aug_v3_stock_albedo.webp');
+          expect(ov!.normalFile).toBe('aug_v3_stock_normal.webp');
+          expect(ov!.roughnessFile).toBe('aug_v3_stock_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.9, 5);
+        } else if (augReceiver.has(id)) {
+          expect(ov!.albedoFile).toBe('aug_v3_receiver_albedo.webp');
+          expect(ov!.normalFile).toBe('aug_v3_receiver_normal.webp');
+          expect(ov!.roughnessFile).toBe('aug_v3_receiver_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.88, 5);
+        } else {
+          expect(ov!.albedoFile).toBe('aug_v3_metal_albedo.webp');
+          expect(ov!.normalFile).toBe('aug_v3_metal_normal.webp');
+          expect(ov!.roughnessFile).toBe('aug_v3_metal_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.85, 5);
+        }
+      }
+    }
+
+    // --- 13. SIG Sauer P320 / U.S. Army M17 (24 parts = 2 dynamic springs + 5 slide + 3 grip + 14 fcu_metal) ---
+    const p320Cfg = GLB_WEAPON_CONFIGS.p320!;
+    expect(p320Cfg.modelFile).toBe('p320.glb');
+    expect(p320Cfg.dynamicSpringParts).toEqual([
+      'p320_recoil_spring',
+      'p320_striker_spring',
+    ]);
+    const p320Ids = P320_PARTS.map((p) => p.id);
+    const p320Springs = new Set(p320Cfg.dynamicSpringParts);
+    const p320Slide = new Set([
+      'p320_slide',
+      'p320_optic_plate_sight',
+      'p320_front_sight',
+      'p320_striker_housing',
+      'p320_extractor',
+    ]);
+    const p320Grip = new Set([
+      'p320_grip_module',
+      'p320_mag_follower',
+      'p320_mag_baseplate',
+    ]);
+    expect(p320Ids).toHaveLength(24);
+    expect(Object.keys(p320Cfg.pbrOverrides)).toHaveLength(22);
+
+    for (const id of p320Ids) {
+      if (p320Springs.has(id)) {
+        expect(isGlbDynamicSpringPart('p320', id)).toBe(true);
+        expect(getGlbPartPbrOverride('p320', id)).toBeUndefined();
+      } else {
+        expect(isGlbDynamicSpringPart('p320', id)).toBe(false);
+        const ov = getGlbPartPbrOverride('p320', id);
+        expect(ov, `Missing p320 PBR override for ${id}`).toBeDefined();
+        if (p320Slide.has(id)) {
+          expect(ov!.albedoFile).toBe('p320_v3_slide_albedo.webp');
+          expect(ov!.normalFile).toBe('p320_v3_slide_normal.webp');
+          expect(ov!.roughnessFile).toBe('p320_v3_slide_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.86, 5);
+        } else if (p320Grip.has(id)) {
+          expect(ov!.albedoFile).toBe('p320_v3_grip_albedo.webp');
+          expect(ov!.normalFile).toBe('p320_v3_grip_normal.webp');
+          expect(ov!.roughnessFile).toBe('p320_v3_grip_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.92, 5);
+        } else {
+          expect(ov!.albedoFile).toBe('p320_v3_fcu_metal_albedo.webp');
+          expect(ov!.normalFile).toBe('p320_v3_fcu_metal_normal.webp');
+          expect(ov!.roughnessFile).toBe('p320_v3_fcu_metal_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.85, 5);
+        }
+      }
+    }
+
+    // --- 14. FN Herstal P90 PDW (25 parts = 2 dynamic springs + 8 stock + 5 mag_optic + 10 metal) ---
+    const p90Cfg = GLB_WEAPON_CONFIGS.p90!;
+    expect(p90Cfg.modelFile).toBe('p90.glb');
+    expect(p90Cfg.dynamicSpringParts).toEqual([
+      'p90_recoil_springs',
+      'p90_mag_spring',
+    ]);
+    const p90Ids = P90_PARTS.map((p) => p.id);
+    const p90Springs = new Set(p90Cfg.dynamicSpringParts);
+    const p90Stock = new Set([
+      'p90_stock',
+      'p90_buttplate',
+      'p90_mag_catches',
+      'p90_ejection_cover',
+      'p90_trigger',
+      'p90_selector',
+      'p90_hammer_pack',
+      'p90_mag_floorplate',
+    ]);
+    const p90MagOptic = new Set([
+      'p90_mag_body',
+      'p90_helical_ramp',
+      'p90_mag_follower',
+      'p90_hammer',
+      'p90_ring_sight',
+    ]);
+    expect(p90Ids).toHaveLength(25);
+    expect(Object.keys(p90Cfg.pbrOverrides)).toHaveLength(23);
+
+    for (const id of p90Ids) {
+      if (p90Springs.has(id)) {
+        expect(isGlbDynamicSpringPart('p90', id)).toBe(true);
+        expect(getGlbPartPbrOverride('p90', id)).toBeUndefined();
+      } else {
+        expect(isGlbDynamicSpringPart('p90', id)).toBe(false);
+        const ov = getGlbPartPbrOverride('p90', id);
+        expect(ov, `Missing p90 PBR override for ${id}`).toBeDefined();
+        if (p90Stock.has(id)) {
+          expect(ov!.albedoFile).toBe('p90_v3_stock_albedo.webp');
+          expect(ov!.normalFile).toBe('p90_v3_stock_normal.webp');
+          expect(ov!.roughnessFile).toBe('p90_v3_stock_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.9, 5);
+        } else if (p90MagOptic.has(id)) {
+          expect(ov!.albedoFile).toBe('p90_v3_mag_optic_albedo.webp');
+          expect(ov!.normalFile).toBe('p90_v3_mag_optic_normal.webp');
+          expect(ov!.roughnessFile).toBe('p90_v3_mag_optic_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.85, 5);
+        } else {
+          expect(ov!.albedoFile).toBe('p90_v3_metal_albedo.webp');
+          expect(ov!.normalFile).toBe('p90_v3_metal_normal.webp');
+          expect(ov!.roughnessFile).toBe('p90_v3_metal_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.86, 5);
+        }
+      }
+    }
+
+    // --- Verify on-disk binary GLB headers, exact node/mesh alignment, referenced v3 WebP maps & per-exhibit MB size budgets ---
     const modelsDir = path.resolve(__dirname, '../public/models');
     const texturesDir = path.resolve(__dirname, '../public/textures');
     const maxBudgetBytes: Record<string, number> = {
@@ -768,6 +1072,11 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
       mp5: 12 * 1024 * 1024,
       awm: 12 * 1024 * 1024,
       m82a1: 12 * 1024 * 1024,
+      g17: 12 * 1024 * 1024,
+      scar: 12 * 1024 * 1024,
+      aug: 12 * 1024 * 1024,
+      p320: 12 * 1024 * 1024,
+      p90: 12 * 1024 * 1024,
     };
 
     for (const wid of migrated) {
@@ -779,6 +1088,37 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
         0x46546c67
       );
       expect(glbBuf.readUInt32LE(4), `${cfg.modelFile} must be glTF v2`).toBe(2);
+
+      // Verify embedded glTF JSON chunk nodes match pbrOverrides 1:1 with 0 dynamic springs & 0 non-identity transforms
+      const jsonLen = glbBuf.readUInt32LE(12);
+      const gltfJson = JSON.parse(
+        glbBuf.subarray(20, 20 + jsonLen).toString('utf8')
+      ) as {
+        nodes?: Array<{
+          name?: string;
+          translation?: number[];
+          rotation?: number[];
+          scale?: number[];
+          matrix?: number[];
+        }>;
+        meshes?: unknown[];
+      };
+      const nodeNames = (gltfJson.nodes ?? []).map((n) => n.name ?? '');
+      const expectedSolidParts = Object.keys(cfg.pbrOverrides).sort();
+      expect([...nodeNames].sort(), `${wid} GLB node set mismatch`).toEqual(
+        expectedSolidParts
+      );
+      expect(gltfJson.meshes?.length, `${wid} meshes !== nodes`).toBe(
+        nodeNames.length
+      );
+      for (const node of gltfJson.nodes ?? []) {
+        expect(
+          Boolean(
+            node.translation || node.rotation || node.scale || node.matrix
+          ),
+          `${wid} non-identity node transform on ${node.name}`
+        ).toBe(false);
+      }
 
       const uniqueWebps = new Set<string>();
       for (const spec of Object.values(cfg.pbrOverrides)) {
