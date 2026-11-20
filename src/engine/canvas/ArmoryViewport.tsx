@@ -828,7 +828,7 @@ export const ArmoryViewport: React.FC = () => {
           toneMapping: THREE.AgXToneMapping,
           toneMappingExposure: envCfg.toneMappingExposure,
         }}
-        camera={{ position: [14.5, 2.2, 54.0], fov: 41, near: 0.1, far: 560 }}
+        camera={{ position: [14.5, 2.2, 54.0], fov: 41, near: 0.1, far: 1200 }}
         onCreated={({ gl }) => {
           gl.shadowMap.type = THREE.PCFSoftShadowMap;
           canvasCleanupRef.current?.();

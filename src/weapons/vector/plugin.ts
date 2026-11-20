@@ -564,7 +564,7 @@ export const VECTOR_PARTS: WeaponPartSpec[] = [
     nameEn: 'High-Visibility Orange Anti-Tilt .45 ACP Polymer Follower',
     group: 'magazine',
     material: 'follower_orange',
-    assembledPos: [7.65, -3.78, 0],
+    assembledPos: [2.501, -15.35, 0],
     assembledRot: [0, 0, VECTOR_MAG_ANGLE],
     explodeSteps: [
       { range: [0.02, 0.24], offset: [-4.2, -9.4, 0] },
@@ -768,8 +768,9 @@ export function computeVectorFiringKinematics(
 
   // Horizontal-travel pivoting trigger (`triggerY = +0.58`, above `boreY = -0.95`!)
   const trigPull = seg(f, 0.0, 0.085) - seg(f, 0.9, 0.965);
-  // 25-rd MagEx2 .45 ACP upward feed pulse along +66°
-  const magPulse = seg(f, 0.53, 0.65) - seg(f, 0.8, 0.93);
+  // 25-rd MagEx2 .45 ACP upward feed pulse along +66° synced to feedWindow [0.72, 0.86]
+  // and cleanly retracted before replenishWindow [0.88, 0.98]
+  const magPulse = seg(f, 0.72, 0.81) - seg(f, 0.81, 0.875);
 
   switch (partId) {
     case 'vector_bolt': {
@@ -828,15 +829,15 @@ export function computeVectorFiringKinematics(
     }
 
     case 'vector_mag_follower': {
-      // Advances one .45 ACP pitch (+0.62 cm) up along +66° magazine channel
-      dx = 0.62 * COS_MAG * magPulse;
-      dy = 0.62 * SIN_MAG * magPulse;
+      // Advances cleanly (+0.40 cm) up along +66° magazine channel directly beneath rising .45 ACP column
+      dx = 0.4 * COS_MAG * magPulse;
+      dy = 0.4 * SIN_MAG * magPulse;
       break;
     }
 
     case 'vector_mag_spring': {
-      // Angled 66° helical spring (`w = 1`, pinned at baseplate `start = 0`): expands `1.0 -> 1.095`
-      scaleX = 1 + 0.095 * magPulse;
+      // Angled 66° compressed helical spring (`w = 1`, pinned at baseplate `start = 0.10`): expands `1.0 -> 1.215`
+      scaleX = 1 + 0.215 * magPulse;
       break;
     }
 

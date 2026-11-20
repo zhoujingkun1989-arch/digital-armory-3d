@@ -420,8 +420,8 @@ function buildVectorMagEx2Slots(): ReadonlyMagazineRoundSlot[] {
     makeSlot(7.95, -2.15, 0, 0, 0, 0.18),
   ];
 
-  const lxTop = 6.55;
-  const lxBottom = -5.85;
+  const lxTop = 7.25;
+  const lxBottom = -4.25;
   for (let i = 1; i < count; i++) {
     const u = (i - 1) / (count - 2);
     const lx = lxTop + (lxBottom - lxTop) * u;
@@ -851,14 +851,14 @@ export const MAGAZINE_STACK_SPECS: Readonly<
   vector: {
     weaponId: 'vector',
     magBodyPartId: 'vector_mag_body',
-    followerPartId: 'vector_mag_baseplate',
+    followerPartId: 'vector_mag_follower',
     roundCount: 16,
     firingHandoffSlotIndex: 0,
     feedWindow: [0.72, 0.86],
     replenishWindow: [0.88, 0.98],
     magSubStripStartT: 0.36,
     followerDeckPlane: {
-      point: [1.55, -16.65, 0],
+      point: [2.937, -14.372, 0],
       normal: [Math.cos(VECTOR_MAG_RAD), Math.sin(VECTOR_MAG_RAD), 0],
     },
     slots: buildVectorMagEx2Slots(),

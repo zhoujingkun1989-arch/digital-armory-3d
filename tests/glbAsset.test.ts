@@ -32,9 +32,12 @@ import {
 import { AK15_PARTS } from '../src/weapons/ak15/plugin';
 import { AUG_PARTS } from '../src/weapons/aug/plugin';
 import { AWM_PARTS } from '../src/weapons/awm/plugin';
+import { BENELLIM4_PARTS } from '../src/weapons/benellim4/plugin';
 import { DEAGLE_PARTS } from '../src/weapons/deagle/plugin';
 import { G17_PARTS } from '../src/weapons/g17/plugin';
 import { GARAND_PARTS } from '../src/weapons/garand/plugin';
+import { LIFT33_PARTS } from '../src/weapons/lift33/plugin';
+import { M249_PARTS } from '../src/weapons/m249/plugin';
 import { M4A1_PARTS } from '../src/weapons/m4a1/plugin';
 import { M82A1_PARTS } from '../src/weapons/m82a1/plugin';
 import { MP5_PARTS } from '../src/weapons/mp5/plugin';
@@ -42,8 +45,10 @@ import { P08_PARTS } from '../src/weapons/p08/plugin';
 import { P320_PARTS } from '../src/weapons/p320/plugin';
 import { P90_PARTS } from '../src/weapons/p90/plugin';
 import { PYTHON_PARTS } from '../src/weapons/python/plugin';
+import { R500_PARTS } from '../src/weapons/r500/plugin';
 import { SCAR_PARTS } from '../src/weapons/scar/plugin';
-import type { WeaponId } from '../src/weapons/types';
+import { VECTOR_PARTS } from '../src/weapons/vector/plugin';
+import { WEAPON_IDS, type WeaponId } from '../src/weapons/types';
 
 /**
  * Builds a minimal spec-compliant uncompressed binary glTF 2.0 (`.glb`) ArrayBuffer
@@ -234,74 +239,30 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     expect(wasmBytes[3]).toBe(0x6d);
   });
 
-  it('resolves subpath-safe Draco decoder & GLB model URLs and routes loaders to vendor-three-postfx', () => {
-    // Root deployment ('/')
+  it('resolves subpath-safe Draco decoder & GLB model URLs for ALL 19/19 exhibits and routes loaders to vendor-three-postfx', () => {
+    // Root deployment ('/') across all 19 exhibits
     expect(resolveDracoDecoderPath('/')).toBe('/draco/');
-    expect(resolveWeaponGlbUrl('p08', '/')).toBe('/models/p08.glb');
-    expect(resolveWeaponGlbUrl('ak15', '/')).toBe('/models/ak15.glb');
-    expect(resolveWeaponGlbUrl('deagle', '/')).toBe('/models/deagle.glb');
-    expect(resolveWeaponGlbUrl('m4a1', '/')).toBe('/models/m4a1.glb');
-    expect(resolveWeaponGlbUrl('python', '/')).toBe('/models/python.glb');
-    expect(resolveWeaponGlbUrl('garand', '/')).toBe('/models/garand.glb');
-    expect(resolveWeaponGlbUrl('mp5', '/')).toBe('/models/mp5.glb');
-    expect(resolveWeaponGlbUrl('awm', '/')).toBe('/models/awm.glb');
-    expect(resolveWeaponGlbUrl('m82a1', '/')).toBe('/models/m82a1.glb');
-    expect(resolveWeaponGlbUrl('g17', '/')).toBe('/models/g17.glb');
-    expect(resolveWeaponGlbUrl('scar', '/')).toBe('/models/scar.glb');
-    expect(resolveWeaponGlbUrl('aug', '/')).toBe('/models/aug.glb');
-    expect(resolveWeaponGlbUrl('p320', '/')).toBe('/models/p320.glb');
-    expect(resolveWeaponGlbUrl('p90', '/')).toBe('/models/p90.glb');
-    expect(resolveWeaponGlbUrl('vector', '/')).toBeNull();
+    expect(WEAPON_IDS).toHaveLength(19);
+    for (const wid of WEAPON_IDS) {
+      expect(resolveWeaponGlbUrl(wid, '/')).toBe(`/models/${wid}.glb`);
+    }
+    expect(resolveWeaponGlbUrl('unknown_exhibit' as WeaponId, '/')).toBeNull();
 
-    // Non-root GitHub Pages subpath deployment ('/digital-armory-3d/')
+    // Non-root GitHub Pages subpath deployment ('/digital-armory-3d/' and 'digital-armory-3d')
     expect(resolveDracoDecoderPath('/digital-armory-3d/')).toBe(
       '/digital-armory-3d/draco/'
     );
     expect(resolveDracoDecoderPath('digital-armory-3d')).toBe(
       '/digital-armory-3d/draco/'
     );
-    expect(resolveWeaponGlbUrl('p08', '/digital-armory-3d/')).toBe(
-      '/digital-armory-3d/models/p08.glb'
-    );
-    expect(resolveWeaponGlbUrl('ak15', 'digital-armory-3d')).toBe(
-      '/digital-armory-3d/models/ak15.glb'
-    );
-    expect(resolveWeaponGlbUrl('deagle', '/digital-armory-3d/')).toBe(
-      '/digital-armory-3d/models/deagle.glb'
-    );
-    expect(resolveWeaponGlbUrl('m4a1', '/digital-armory-3d/')).toBe(
-      '/digital-armory-3d/models/m4a1.glb'
-    );
-    expect(resolveWeaponGlbUrl('python', 'digital-armory-3d')).toBe(
-      '/digital-armory-3d/models/python.glb'
-    );
-    expect(resolveWeaponGlbUrl('garand', '/digital-armory-3d/')).toBe(
-      '/digital-armory-3d/models/garand.glb'
-    );
-    expect(resolveWeaponGlbUrl('mp5', 'digital-armory-3d')).toBe(
-      '/digital-armory-3d/models/mp5.glb'
-    );
-    expect(resolveWeaponGlbUrl('awm', '/digital-armory-3d/')).toBe(
-      '/digital-armory-3d/models/awm.glb'
-    );
-    expect(resolveWeaponGlbUrl('m82a1', 'digital-armory-3d')).toBe(
-      '/digital-armory-3d/models/m82a1.glb'
-    );
-    expect(resolveWeaponGlbUrl('g17', '/digital-armory-3d/')).toBe(
-      '/digital-armory-3d/models/g17.glb'
-    );
-    expect(resolveWeaponGlbUrl('scar', 'digital-armory-3d')).toBe(
-      '/digital-armory-3d/models/scar.glb'
-    );
-    expect(resolveWeaponGlbUrl('aug', '/digital-armory-3d/')).toBe(
-      '/digital-armory-3d/models/aug.glb'
-    );
-    expect(resolveWeaponGlbUrl('p320', 'digital-armory-3d')).toBe(
-      '/digital-armory-3d/models/p320.glb'
-    );
-    expect(resolveWeaponGlbUrl('p90', '/digital-armory-3d/')).toBe(
-      '/digital-armory-3d/models/p90.glb'
-    );
+    for (const wid of WEAPON_IDS) {
+      expect(resolveWeaponGlbUrl(wid, '/digital-armory-3d/')).toBe(
+        `/digital-armory-3d/models/${wid}.glb`
+      );
+      expect(resolveWeaponGlbUrl(wid, 'digital-armory-3d')).toBe(
+        `/digital-armory-3d/models/${wid}.glb`
+      );
+    }
 
     // Verify Vite chunk splitting places GLTFLoader, DRACOLoader & BufferGeometryUtils in vendor-three-postfx
     const output = viteConfig.build?.rollupOptions?.output;
@@ -328,7 +289,7 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     }
   });
 
-  it('locks exact 100% disjoint part-to-atlas & dynamic-spring contracts and on-disk budgets for ALL 14 flagship GLB exhibits (Wave 1–3)', () => {
+  it('locks exact 100% disjoint part-to-atlas & dynamic-spring contracts and on-disk budgets for ALL 19/19 flagship GLB exhibits (Wave 1–4 Grand Slam)', () => {
     const migrated: WeaponId[] = [
       'p08',
       'ak15',
@@ -344,24 +305,31 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
       'aug',
       'p320',
       'p90',
-    ];
-    for (const wid of migrated) {
-      expect(hasGlbWeaponAsset(wid)).toBe(true);
-      expect(getGlbWeaponConfig(wid)).not.toBeNull();
-    }
-    expect(Object.keys(GLB_WEAPON_CONFIGS).sort()).toEqual([...migrated].sort());
-
-    for (const unmigrated of [
       'benellim4',
       'm249',
       'vector',
       'lift33',
       'r500',
-    ] as WeaponId[]) {
-      expect(hasGlbWeaponAsset(unmigrated)).toBe(false);
-      expect(getGlbWeaponConfig(unmigrated)).toBeNull();
-      expect(isGlbDynamicSpringPart(unmigrated, 'recoil_spring')).toBe(false);
-      expect(getGlbPartPbrOverride(unmigrated, 'barrel')).toBeUndefined();
+    ];
+    expect(migrated).toHaveLength(19);
+    expect([...migrated].sort()).toEqual([...WEAPON_IDS].sort());
+    for (const wid of migrated) {
+      expect(hasGlbWeaponAsset(wid)).toBe(true);
+      expect(getGlbWeaponConfig(wid)).not.toBeNull();
+    }
+    expect(Object.keys(GLB_WEAPON_CONFIGS).sort()).toEqual([...WEAPON_IDS].sort());
+
+    // Unknown or non-own-property IDs degrade gracefully with safe null/false fallbacks
+    for (const unknownId of [
+      'unknown_exhibit',
+      'toString',
+      '__proto__',
+    ] as unknown as WeaponId[]) {
+      expect(hasGlbWeaponAsset(unknownId)).toBe(false);
+      expect(getGlbWeaponConfig(unknownId)).toBeNull();
+      expect(isGlbDynamicSpringPart(unknownId, 'recoil_spring')).toBe(false);
+      expect(getGlbPartPbrOverride(unknownId, 'barrel')).toBeUndefined();
+      expect(resolveWeaponGlbUrl(unknownId, '/')).toBeNull();
     }
 
     // --- 1. Luger P08 (25 parts = 3 dynamic springs + 2 walnut + 20 metal) ---
@@ -1059,10 +1027,304 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
       }
     }
 
+    // --- 15. Benelli M4 Super 90 / USMC M1014 (26 parts = 3 dynamic springs + 7 receiver + 12 metal + 4 furniture) ---
+    const benelliCfg = GLB_WEAPON_CONFIGS.benellim4;
+    expect(benelliCfg.modelFile).toBe('benellim4.glb');
+    expect(benelliCfg.dynamicSpringParts).toEqual([
+      'benellim4_recoil_spring',
+      'benellim4_hammer_spring',
+      'benellim4_mag_spring',
+    ]);
+    const benelliIds = BENELLIM4_PARTS.map((p) => p.id);
+    const benelliSprings = new Set(benelliCfg.dynamicSpringParts);
+    const benelliReceiver = new Set([
+      'benellim4_receiver',
+      'benellim4_picatinny_rail',
+      'benellim4_front_sight',
+      'benellim4_rear_sight',
+      'benellim4_trigger_housing',
+      'benellim4_trigger',
+      'benellim4_safety_button',
+    ]);
+    const benelliFurniture = new Set([
+      'benellim4_forend',
+      'benellim4_recoil_tube',
+      'benellim4_telestock',
+      'benellim4_mag_follower',
+    ]);
+    expect(benelliIds).toHaveLength(26);
+    expect(Object.keys(benelliCfg.pbrOverrides)).toHaveLength(23);
+
+    for (const id of benelliIds) {
+      if (benelliSprings.has(id)) {
+        expect(isGlbDynamicSpringPart('benellim4', id)).toBe(true);
+        expect(getGlbPartPbrOverride('benellim4', id)).toBeUndefined();
+      } else {
+        expect(isGlbDynamicSpringPart('benellim4', id)).toBe(false);
+        const ov = getGlbPartPbrOverride('benellim4', id);
+        expect(ov, `Missing benellim4 PBR override for ${id}`).toBeDefined();
+        if (benelliReceiver.has(id)) {
+          expect(ov!.albedoFile).toBe('benellim4_v3_receiver_albedo.webp');
+          expect(ov!.normalFile).toBe('benellim4_v3_receiver_normal.webp');
+          expect(ov!.roughnessFile).toBe('benellim4_v3_receiver_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.88, 5);
+        } else if (benelliFurniture.has(id)) {
+          expect(ov!.albedoFile).toBe('benellim4_v3_furniture_albedo.webp');
+          expect(ov!.normalFile).toBe('benellim4_v3_furniture_normal.webp');
+          expect(ov!.roughnessFile).toBe(
+            'benellim4_v3_furniture_roughness.webp'
+          );
+          expect(ov!.normalScale).toBeCloseTo(0.9, 5);
+        } else {
+          expect(ov!.albedoFile).toBe('benellim4_v3_metal_albedo.webp');
+          expect(ov!.normalFile).toBe('benellim4_v3_metal_normal.webp');
+          expect(ov!.roughnessFile).toBe('benellim4_v3_metal_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.85, 5);
+        }
+      }
+    }
+
+    // --- 16. FN M249 SAW (26 parts = 2 dynamic springs + 6 receiver + 13 metal + 5 furniture) ---
+    const m249Cfg = GLB_WEAPON_CONFIGS.m249;
+    expect(m249Cfg.modelFile).toBe('m249.glb');
+    expect(m249Cfg.dynamicSpringParts).toEqual([
+      'm249_recoil_spring',
+      'm249_sear_spring',
+    ]);
+    const m249Ids = M249_PARTS.map((p) => p.id);
+    const m249Springs = new Set(m249Cfg.dynamicSpringParts);
+    const m249Receiver = new Set([
+      'm249_receiver',
+      'm249_top_cover',
+      'm249_rear_sight',
+      'm249_front_sight',
+      'm249_feed_tray',
+      'm249_charging_handle',
+    ]);
+    const m249Furniture = new Set([
+      'm249_barrel_handle',
+      'm249_handguard',
+      'm249_buttstock',
+      'm249_trigger_frame',
+      'm249_ammo_box',
+    ]);
+    expect(m249Ids).toHaveLength(26);
+    expect(Object.keys(m249Cfg.pbrOverrides)).toHaveLength(24);
+
+    for (const id of m249Ids) {
+      if (m249Springs.has(id)) {
+        expect(isGlbDynamicSpringPart('m249', id)).toBe(true);
+        expect(getGlbPartPbrOverride('m249', id)).toBeUndefined();
+      } else {
+        expect(isGlbDynamicSpringPart('m249', id)).toBe(false);
+        const ov = getGlbPartPbrOverride('m249', id);
+        expect(ov, `Missing m249 PBR override for ${id}`).toBeDefined();
+        if (m249Receiver.has(id)) {
+          expect(ov!.albedoFile).toBe('m249_v3_receiver_albedo.webp');
+          expect(ov!.normalFile).toBe('m249_v3_receiver_normal.webp');
+          expect(ov!.roughnessFile).toBe('m249_v3_receiver_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.88, 5);
+        } else if (m249Furniture.has(id)) {
+          expect(ov!.albedoFile).toBe('m249_v3_furniture_albedo.webp');
+          expect(ov!.normalFile).toBe('m249_v3_furniture_normal.webp');
+          expect(ov!.roughnessFile).toBe('m249_v3_furniture_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.9, 5);
+        } else {
+          expect(ov!.albedoFile).toBe('m249_v3_metal_albedo.webp');
+          expect(ov!.normalFile).toBe('m249_v3_metal_normal.webp');
+          expect(ov!.roughnessFile).toBe('m249_v3_metal_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.85, 5);
+        }
+      }
+    }
+
+    // --- 17. KRISS Vector SMG Gen II (25 parts = 3 dynamic springs + 7 housing + 12 metal + 3 mag) ---
+    const vectorCfg = GLB_WEAPON_CONFIGS.vector;
+    expect(vectorCfg.modelFile).toBe('vector.glb');
+    expect(vectorCfg.dynamicSpringParts).toEqual([
+      'vector_recoil_spring',
+      'vector_hammer_spring',
+      'vector_mag_spring',
+    ]);
+    const vectorIds = VECTOR_PARTS.map((p) => p.id);
+    const vectorSprings = new Set(vectorCfg.dynamicSpringParts);
+    const vectorHousing = new Set([
+      'vector_upper_housing',
+      'vector_lower_chassis',
+      'vector_folding_stock',
+      'vector_front_sight',
+      'vector_rear_sight',
+      'vector_fire_selector',
+      'vector_thumb_safety',
+    ]);
+    const vectorMag = new Set([
+      'vector_mag_body',
+      'vector_mag_follower',
+      'vector_mag_baseplate',
+    ]);
+    expect(vectorIds).toHaveLength(25);
+    expect(Object.keys(vectorCfg.pbrOverrides)).toHaveLength(22);
+
+    for (const id of vectorIds) {
+      if (vectorSprings.has(id)) {
+        expect(isGlbDynamicSpringPart('vector', id)).toBe(true);
+        expect(getGlbPartPbrOverride('vector', id)).toBeUndefined();
+      } else {
+        expect(isGlbDynamicSpringPart('vector', id)).toBe(false);
+        const ov = getGlbPartPbrOverride('vector', id);
+        expect(ov, `Missing vector PBR override for ${id}`).toBeDefined();
+        if (vectorHousing.has(id)) {
+          expect(ov!.albedoFile).toBe('vector_v3_housing_albedo.webp');
+          expect(ov!.normalFile).toBe('vector_v3_housing_normal.webp');
+          expect(ov!.roughnessFile).toBe('vector_v3_housing_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.88, 5);
+        } else if (vectorMag.has(id)) {
+          expect(ov!.albedoFile).toBe('vector_v3_mag_albedo.webp');
+          expect(ov!.normalFile).toBe('vector_v3_mag_normal.webp');
+          expect(ov!.roughnessFile).toBe('vector_v3_mag_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.86, 5);
+        } else {
+          expect(ov!.albedoFile).toBe('vector_v3_metal_albedo.webp');
+          expect(ov!.normalFile).toBe('vector_v3_metal_normal.webp');
+          expect(ov!.roughnessFile).toBe('vector_v3_metal_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.82, 5);
+        }
+      }
+    }
+
+    // --- 18. Mathews LIFT 33 Compound Bow (24 parts = 5 dynamic CSG limbs/axles/strings + 6 riser + 8 cams_acc + 5 quiver_arrow) ---
+    const liftCfg = GLB_WEAPON_CONFIGS.lift33;
+    expect(liftCfg.modelFile).toBe('lift33.glb');
+    expect(liftCfg.dynamicSpringParts).toEqual([
+      'lift33_upper_limbs',
+      'lift33_lower_limbs',
+      'lift33_cam_axles',
+      'lift33_bowstring',
+      'lift33_yoke_cables',
+    ]);
+    const liftIds = LIFT33_PARTS.map((p) => p.id);
+    const liftSprings = new Set(liftCfg.dynamicSpringParts);
+    const liftRiser = new Set([
+      'lift33_riser',
+      'lift33_grip',
+      'lift33_upper_pocket',
+      'lift33_lower_pocket',
+      'lift33_cable_guard',
+      'lift33_stabilizer',
+    ]);
+    const liftQuiverArrow = new Set([
+      'lift33_quiver_frame',
+      'lift33_quiver_hood',
+      'lift33_quiver_latch',
+      'lift33_arrow_shaft',
+      'lift33_broadhead',
+    ]);
+    expect(liftIds).toHaveLength(24);
+    expect(Object.keys(liftCfg.pbrOverrides)).toHaveLength(19);
+
+    for (const id of liftIds) {
+      if (liftSprings.has(id)) {
+        expect(isGlbDynamicSpringPart('lift33', id)).toBe(true);
+        expect(getGlbPartPbrOverride('lift33', id)).toBeUndefined();
+      } else {
+        expect(isGlbDynamicSpringPart('lift33', id)).toBe(false);
+        const ov = getGlbPartPbrOverride('lift33', id);
+        expect(ov, `Missing lift33 PBR override for ${id}`).toBeDefined();
+        if (liftRiser.has(id)) {
+          expect(ov!.albedoFile).toBe('lift33_v3_riser_albedo.webp');
+          expect(ov!.normalFile).toBe('lift33_v3_riser_normal.webp');
+          expect(ov!.roughnessFile).toBe('lift33_v3_riser_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.88, 5);
+        } else if (liftQuiverArrow.has(id)) {
+          expect(ov!.albedoFile).toBe('lift33_v3_quiver_arrow_albedo.webp');
+          expect(ov!.normalFile).toBe('lift33_v3_quiver_arrow_normal.webp');
+          expect(ov!.roughnessFile).toBe(
+            'lift33_v3_quiver_arrow_roughness.webp'
+          );
+          expect(ov!.normalScale).toBeCloseTo(0.88, 5);
+        } else {
+          expect(ov!.albedoFile).toBe('lift33_v3_cams_acc_albedo.webp');
+          expect(ov!.normalFile).toBe('lift33_v3_cams_acc_normal.webp');
+          expect(ov!.roughnessFile).toBe('lift33_v3_cams_acc_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.85, 5);
+        }
+      }
+    }
+
+    // --- 19. Ravin R500 Crossbow (25 parts = 6 dynamic CSG limbs/axles/strings/spring + 6 chassis + 9 cams_mech + 4 optic_bolt) ---
+    const r500Cfg = GLB_WEAPON_CONFIGS.r500;
+    expect(r500Cfg.modelFile).toBe('r500.glb');
+    expect(r500Cfg.dynamicSpringParts).toEqual([
+      'r500_left_limbs',
+      'r500_right_limbs',
+      'r500_cam_axles',
+      'r500_bowstring',
+      'r500_power_cables',
+      'r500_trigger_spring',
+    ]);
+    const r500Ids = R500_PARTS.map((p) => p.id);
+    const r500Springs = new Set(r500Cfg.dynamicSpringParts);
+    const r500Chassis = new Set([
+      'r500_chassis',
+      'r500_forend_grip',
+      'r500_pistol_grip',
+      'r500_buttstock',
+      'r500_flight_rail',
+      'r500_riser_head',
+    ]);
+    const r500OpticBolt = new Set([
+      'r500_scope',
+      'r500_quiver_frame',
+      'r500_retention_arm',
+      'r500_carbon_bolt',
+    ]);
+    expect(r500Ids).toHaveLength(25);
+    expect(Object.keys(r500Cfg.pbrOverrides)).toHaveLength(19);
+
+    for (const id of r500Ids) {
+      if (r500Springs.has(id)) {
+        expect(isGlbDynamicSpringPart('r500', id)).toBe(true);
+        expect(getGlbPartPbrOverride('r500', id)).toBeUndefined();
+      } else {
+        expect(isGlbDynamicSpringPart('r500', id)).toBe(false);
+        const ov = getGlbPartPbrOverride('r500', id);
+        expect(ov, `Missing r500 PBR override for ${id}`).toBeDefined();
+        if (r500Chassis.has(id)) {
+          expect(ov!.albedoFile).toBe('r500_v3_chassis_albedo.webp');
+          expect(ov!.normalFile).toBe('r500_v3_chassis_normal.webp');
+          expect(ov!.roughnessFile).toBe('r500_v3_chassis_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.88, 5);
+        } else if (r500OpticBolt.has(id)) {
+          expect(ov!.albedoFile).toBe('r500_v3_optic_bolt_albedo.webp');
+          expect(ov!.normalFile).toBe('r500_v3_optic_bolt_normal.webp');
+          expect(ov!.roughnessFile).toBe('r500_v3_optic_bolt_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.85, 5);
+        } else {
+          expect(ov!.albedoFile).toBe('r500_v3_cams_mech_albedo.webp');
+          expect(ov!.normalFile).toBe('r500_v3_cams_mech_normal.webp');
+          expect(ov!.roughnessFile).toBe('r500_v3_cams_mech_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.86, 5);
+        }
+      }
+    }
+
+    // --- Grand Slam 19/19 part accounting invariant: 438 solid GLB + 42 dynamic CSG = 480 total parts ---
+    const totalSolidGlbParts = migrated.reduce(
+      (sum, wid) => sum + Object.keys(GLB_WEAPON_CONFIGS[wid].pbrOverrides).length,
+      0
+    );
+    const totalDynamicCsgParts = migrated.reduce(
+      (sum, wid) => sum + GLB_WEAPON_CONFIGS[wid].dynamicSpringParts.length,
+      0
+    );
+    expect(totalSolidGlbParts).toBe(438);
+    expect(totalDynamicCsgParts).toBe(42);
+    expect(totalSolidGlbParts + totalDynamicCsgParts).toBe(480);
+
     // --- Verify on-disk binary GLB headers, exact node/mesh alignment, referenced v3 WebP maps & per-exhibit MB size budgets ---
     const modelsDir = path.resolve(__dirname, '../public/models');
     const texturesDir = path.resolve(__dirname, '../public/textures');
-    const maxBudgetBytes: Record<string, number> = {
+    const maxBudgetBytes: Record<WeaponId, number> = {
       p08: 10 * 1024 * 1024,
       python: 10 * 1024 * 1024,
       ak15: 12 * 1024 * 1024,
@@ -1077,6 +1339,11 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
       aug: 12 * 1024 * 1024,
       p320: 12 * 1024 * 1024,
       p90: 12 * 1024 * 1024,
+      benellim4: 12 * 1024 * 1024,
+      m249: 12 * 1024 * 1024,
+      vector: 12 * 1024 * 1024,
+      lift33: 12 * 1024 * 1024,
+      r500: 12 * 1024 * 1024,
     };
 
     for (const wid of migrated) {
@@ -1265,7 +1532,7 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     expect(akSpring).not.toBeNull();
     expect(akSpring!.getAttribute(SPRING_PARAM_ATTRIBUTE)?.itemSize).toBe(4);
 
-    // 3. Simulated browser where GLB network fetch fails: swallows error and falls back seamlessly to CSG
+    // 3. Simulated browser where GLB network fetch fails or weapon ID is unknown: swallows error and falls back seamlessly to CSG
     clearWeaponGeometryCache('p08');
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     const prevWindow = globalThis.window;
@@ -1275,6 +1542,18 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
       value: { location: { origin: 'http://localhost', pathname: '/' } },
     });
     try {
+      const unknownMap = await loadWeaponGlbGeometries(
+        'unknown_exhibit' as WeaponId,
+        ['x_part']
+      );
+      expect(unknownMap.size).toBe(0);
+
+      await expect(
+        parseGlbArrayBuffer(new ArrayBuffer(16), 'p08', ['p08_barrel'], {
+          useDraco: false,
+        })
+      ).rejects.toThrow();
+
       await ensureWeaponGeometries('p08', ['p08_trigger', 'p08_mag_spring']);
       const fallbackTrigger = getCachedPartGeometry('p08', 'p08_trigger');
       const fallbackMagSpring = getCachedPartGeometry('p08', 'p08_mag_spring');

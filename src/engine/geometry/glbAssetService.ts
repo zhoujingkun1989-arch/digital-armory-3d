@@ -322,8 +322,113 @@ const P90_V3_METAL_PBR: PbrBindingSpec = {
   normalScale: 0.86,
 };
 
+const BENELLIM4_V3_RECEIVER_PBR: PbrBindingSpec = {
+  albedoFile: 'benellim4_v3_receiver_albedo.webp',
+  normalFile: 'benellim4_v3_receiver_normal.webp',
+  roughnessFile: 'benellim4_v3_receiver_roughness.webp',
+  normalScale: 0.88,
+};
+
+const BENELLIM4_V3_METAL_PBR: PbrBindingSpec = {
+  albedoFile: 'benellim4_v3_metal_albedo.webp',
+  normalFile: 'benellim4_v3_metal_normal.webp',
+  roughnessFile: 'benellim4_v3_metal_roughness.webp',
+  normalScale: 0.85,
+};
+
+const BENELLIM4_V3_FURNITURE_PBR: PbrBindingSpec = {
+  albedoFile: 'benellim4_v3_furniture_albedo.webp',
+  normalFile: 'benellim4_v3_furniture_normal.webp',
+  roughnessFile: 'benellim4_v3_furniture_roughness.webp',
+  normalScale: 0.9,
+};
+
+const M249_V3_RECEIVER_PBR: PbrBindingSpec = {
+  albedoFile: 'm249_v3_receiver_albedo.webp',
+  normalFile: 'm249_v3_receiver_normal.webp',
+  roughnessFile: 'm249_v3_receiver_roughness.webp',
+  normalScale: 0.88,
+};
+
+const M249_V3_METAL_PBR: PbrBindingSpec = {
+  albedoFile: 'm249_v3_metal_albedo.webp',
+  normalFile: 'm249_v3_metal_normal.webp',
+  roughnessFile: 'm249_v3_metal_roughness.webp',
+  normalScale: 0.85,
+};
+
+const M249_V3_FURNITURE_PBR: PbrBindingSpec = {
+  albedoFile: 'm249_v3_furniture_albedo.webp',
+  normalFile: 'm249_v3_furniture_normal.webp',
+  roughnessFile: 'm249_v3_furniture_roughness.webp',
+  normalScale: 0.9,
+};
+
+const VECTOR_V3_HOUSING_PBR: PbrBindingSpec = {
+  albedoFile: 'vector_v3_housing_albedo.webp',
+  normalFile: 'vector_v3_housing_normal.webp',
+  roughnessFile: 'vector_v3_housing_roughness.webp',
+  normalScale: 0.88,
+};
+
+const VECTOR_V3_METAL_PBR: PbrBindingSpec = {
+  albedoFile: 'vector_v3_metal_albedo.webp',
+  normalFile: 'vector_v3_metal_normal.webp',
+  roughnessFile: 'vector_v3_metal_roughness.webp',
+  normalScale: 0.82,
+};
+
+const VECTOR_V3_MAG_PBR: PbrBindingSpec = {
+  albedoFile: 'vector_v3_mag_albedo.webp',
+  normalFile: 'vector_v3_mag_normal.webp',
+  roughnessFile: 'vector_v3_mag_roughness.webp',
+  normalScale: 0.86,
+};
+
+const LIFT33_V3_RISER_PBR: PbrBindingSpec = {
+  albedoFile: 'lift33_v3_riser_albedo.webp',
+  normalFile: 'lift33_v3_riser_normal.webp',
+  roughnessFile: 'lift33_v3_riser_roughness.webp',
+  normalScale: 0.88,
+};
+
+const LIFT33_V3_CAMS_ACC_PBR: PbrBindingSpec = {
+  albedoFile: 'lift33_v3_cams_acc_albedo.webp',
+  normalFile: 'lift33_v3_cams_acc_normal.webp',
+  roughnessFile: 'lift33_v3_cams_acc_roughness.webp',
+  normalScale: 0.85,
+};
+
+const LIFT33_V3_QUIVER_ARROW_PBR: PbrBindingSpec = {
+  albedoFile: 'lift33_v3_quiver_arrow_albedo.webp',
+  normalFile: 'lift33_v3_quiver_arrow_normal.webp',
+  roughnessFile: 'lift33_v3_quiver_arrow_roughness.webp',
+  normalScale: 0.88,
+};
+
+const R500_V3_CHASSIS_PBR: PbrBindingSpec = {
+  albedoFile: 'r500_v3_chassis_albedo.webp',
+  normalFile: 'r500_v3_chassis_normal.webp',
+  roughnessFile: 'r500_v3_chassis_roughness.webp',
+  normalScale: 0.88,
+};
+
+const R500_V3_CAMS_MECH_PBR: PbrBindingSpec = {
+  albedoFile: 'r500_v3_cams_mech_albedo.webp',
+  normalFile: 'r500_v3_cams_mech_normal.webp',
+  roughnessFile: 'r500_v3_cams_mech_roughness.webp',
+  normalScale: 0.86,
+};
+
+const R500_V3_OPTIC_BOLT_PBR: PbrBindingSpec = {
+  albedoFile: 'r500_v3_optic_bolt_albedo.webp',
+  normalFile: 'r500_v3_optic_bolt_normal.webp',
+  roughnessFile: 'r500_v3_optic_bolt_roughness.webp',
+  normalScale: 0.85,
+};
+
 export const GLB_WEAPON_CONFIGS: Readonly<
-  Partial<Record<WeaponId, GlbWeaponAssetConfig>>
+  Record<WeaponId, GlbWeaponAssetConfig>
 > = {
   p08: {
     modelFile: 'p08.glb',
@@ -784,6 +889,179 @@ export const GLB_WEAPON_CONFIGS: Readonly<
       p90_transfer_bars: P90_V3_METAL_PBR,
     },
   },
+  benellim4: {
+    modelFile: 'benellim4.glb',
+    dynamicSpringParts: [
+      'benellim4_recoil_spring',
+      'benellim4_hammer_spring',
+      'benellim4_mag_spring',
+    ],
+    pbrOverrides: {
+      // Type-III anodized 7075-T6 receiver, M1913 top rail, LPA ghost-ring sights & FCG housing (7 parts)
+      benellim4_receiver: BENELLIM4_V3_RECEIVER_PBR,
+      benellim4_picatinny_rail: BENELLIM4_V3_RECEIVER_PBR,
+      benellim4_front_sight: BENELLIM4_V3_RECEIVER_PBR,
+      benellim4_rear_sight: BENELLIM4_V3_RECEIVER_PBR,
+      benellim4_trigger_housing: BENELLIM4_V3_RECEIVER_PBR,
+      benellim4_trigger: BENELLIM4_V3_RECEIVER_PBR,
+      benellim4_safety_button: BENELLIM4_V3_RECEIVER_PBR,
+      // 18.5" chrome-lined barrel, twin ARGO short-stroke pistons, rotating bolt, mag tube & elevator (12 parts)
+      benellim4_barrel: BENELLIM4_V3_METAL_PBR,
+      benellim4_argo_pistons: BENELLIM4_V3_METAL_PBR,
+      benellim4_argo_plugs: BENELLIM4_V3_METAL_PBR,
+      benellim4_bolt_carrier: BENELLIM4_V3_METAL_PBR,
+      benellim4_bolt_head: BENELLIM4_V3_METAL_PBR,
+      benellim4_cam_pin: BENELLIM4_V3_METAL_PBR,
+      benellim4_firing_pin: BENELLIM4_V3_METAL_PBR,
+      benellim4_charging_handle: BENELLIM4_V3_METAL_PBR,
+      benellim4_hammer: BENELLIM4_V3_METAL_PBR,
+      benellim4_mag_tube: BENELLIM4_V3_METAL_PBR,
+      benellim4_mag_cap: BENELLIM4_V3_METAL_PBR,
+      benellim4_shell_elevator: BENELLIM4_V3_METAL_PBR,
+      // Two-piece ribbed nylon forend, notched recoil tube, M1014 skeleton telestock & follower (4 parts)
+      benellim4_forend: BENELLIM4_V3_FURNITURE_PBR,
+      benellim4_recoil_tube: BENELLIM4_V3_FURNITURE_PBR,
+      benellim4_telestock: BENELLIM4_V3_FURNITURE_PBR,
+      benellim4_mag_follower: BENELLIM4_V3_FURNITURE_PBR,
+    },
+  },
+  m249: {
+    modelFile: 'm249.glb',
+    dynamicSpringParts: ['m249_recoil_spring', 'm249_sear_spring'],
+    pbrOverrides: {
+      // Stamped & welded steel receiver, hinged feed top cover, sights, feed tray & charging handle (6 parts)
+      m249_receiver: M249_V3_RECEIVER_PBR,
+      m249_top_cover: M249_V3_RECEIVER_PBR,
+      m249_rear_sight: M249_V3_RECEIVER_PBR,
+      m249_front_sight: M249_V3_RECEIVER_PBR,
+      m249_feed_tray: M249_V3_RECEIVER_PBR,
+      m249_charging_handle: M249_V3_RECEIVER_PBR,
+      // Quick-change 18.3" barrel, gas regulator, piston carrier, 2-lug bolt, hydraulic buffer, bipod & M27 belt (13 parts)
+      m249_barrel: M249_V3_METAL_PBR,
+      m249_gas_regulator: M249_V3_METAL_PBR,
+      m249_piston_carrier: M249_V3_METAL_PBR,
+      m249_bolt: M249_V3_METAL_PBR,
+      m249_firing_pin: M249_V3_METAL_PBR,
+      m249_hydraulic_buffer: M249_V3_METAL_PBR,
+      m249_gas_tube: M249_V3_METAL_PBR,
+      m249_bipod: M249_V3_METAL_PBR,
+      m249_trigger: M249_V3_METAL_PBR,
+      m249_open_bolt_sear: M249_V3_METAL_PBR,
+      m249_feed_lever: M249_V3_METAL_PBR,
+      m249_feed_pawls: M249_V3_METAL_PBR,
+      m249_m27_belt: M249_V3_METAL_PBR,
+      // Carry handle, ventilated heat-shield handguard, Para/SAW buttstock, grip frame & 200-rd drum (5 parts)
+      m249_barrel_handle: M249_V3_FURNITURE_PBR,
+      m249_handguard: M249_V3_FURNITURE_PBR,
+      m249_buttstock: M249_V3_FURNITURE_PBR,
+      m249_trigger_frame: M249_V3_FURNITURE_PBR,
+      m249_ammo_box: M249_V3_FURNITURE_PBR,
+    },
+  },
+  vector: {
+    modelFile: 'vector.glb',
+    dynamicSpringParts: [
+      'vector_recoil_spring',
+      'vector_hammer_spring',
+      'vector_mag_spring',
+    ],
+    pbrOverrides: {
+      // Two-tone Combat FDE / Charcoal Super V upper/lower chassis, folding stock, sights & controls (7 parts)
+      vector_upper_housing: VECTOR_V3_HOUSING_PBR,
+      vector_lower_chassis: VECTOR_V3_HOUSING_PBR,
+      vector_folding_stock: VECTOR_V3_HOUSING_PBR,
+      vector_front_sight: VECTOR_V3_HOUSING_PBR,
+      vector_rear_sight: VECTOR_V3_HOUSING_PBR,
+      vector_fire_selector: VECTOR_V3_HOUSING_PBR,
+      vector_thumb_safety: VECTOR_V3_HOUSING_PBR,
+      // Low-bore 5.5" barrel, Super V off-axis cam slider, .45 ACP bolt, brass-knuckle handle & inverted FCG (12 parts)
+      vector_barrel: VECTOR_V3_METAL_PBR,
+      vector_muzzle_device: VECTOR_V3_METAL_PBR,
+      vector_bolt: VECTOR_V3_METAL_PBR,
+      vector_firing_pin: VECTOR_V3_METAL_PBR,
+      vector_slider: VECTOR_V3_METAL_PBR,
+      vector_guide_rod: VECTOR_V3_METAL_PBR,
+      vector_charging_handle: VECTOR_V3_METAL_PBR,
+      vector_takedown_pins: VECTOR_V3_METAL_PBR,
+      vector_stock_hinge: VECTOR_V3_METAL_PBR,
+      vector_fcu_chassis: VECTOR_V3_METAL_PBR,
+      vector_trigger: VECTOR_V3_METAL_PBR,
+      vector_hammer: VECTOR_V3_METAL_PBR,
+      // 66° canted MagEx2 25-round .45 ACP extended magazine, high-vis orange follower & baseplate (3 parts)
+      vector_mag_body: VECTOR_V3_MAG_PBR,
+      vector_mag_follower: VECTOR_V3_MAG_PBR,
+      vector_mag_baseplate: VECTOR_V3_MAG_PBR,
+    },
+  },
+  lift33: {
+    modelFile: 'lift33.glb',
+    dynamicSpringParts: [
+      'lift33_upper_limbs',
+      'lift33_lower_limbs',
+      'lift33_cam_axles',
+      'lift33_bowstring',
+      'lift33_yoke_cables',
+    ],
+    pbrOverrides: {
+      // Skeletonized bridged 6061-T6 aluminum truss riser, Engage grip, limb pockets, roller guard & 10" stabilizer (6 parts)
+      lift33_riser: LIFT33_V3_RISER_PBR,
+      lift33_grip: LIFT33_V3_RISER_PBR,
+      lift33_upper_pocket: LIFT33_V3_RISER_PBR,
+      lift33_lower_pocket: LIFT33_V3_RISER_PBR,
+      lift33_cable_guard: LIFT33_V3_RISER_PBR,
+      lift33_stabilizer: LIFT33_V3_RISER_PBR,
+      // SwitchWeight-X binary cams, harmonic dampeners, QAD drop-away rest, Bridge-Lock fiber-optic sight & D-loop (8 parts)
+      lift33_upper_cam: LIFT33_V3_CAMS_ACC_PBR,
+      lift33_lower_cam: LIFT33_V3_CAMS_ACC_PBR,
+      lift33_limb_dampeners: LIFT33_V3_CAMS_ACC_PBR,
+      lift33_drop_away_rest: LIFT33_V3_CAMS_ACC_PBR,
+      lift33_launcher_fork: LIFT33_V3_CAMS_ACC_PBR,
+      lift33_sight_housing: LIFT33_V3_CAMS_ACC_PBR,
+      lift33_sight_pins: LIFT33_V3_CAMS_ACC_PBR,
+      lift33_d_loop: LIFT33_V3_CAMS_ACC_PBR,
+      // LowPro 3K carbon 5-arrow quiver, hood, latch, 29" 300-spine carbon hunting arrow & 3-blade broadhead (5 parts)
+      lift33_quiver_frame: LIFT33_V3_QUIVER_ARROW_PBR,
+      lift33_quiver_hood: LIFT33_V3_QUIVER_ARROW_PBR,
+      lift33_quiver_latch: LIFT33_V3_QUIVER_ARROW_PBR,
+      lift33_arrow_shaft: LIFT33_V3_QUIVER_ARROW_PBR,
+      lift33_broadhead: LIFT33_V3_QUIVER_ARROW_PBR,
+    },
+  },
+  r500: {
+    modelFile: 'r500.glb',
+    dynamicSpringParts: [
+      'r500_left_limbs',
+      'r500_right_limbs',
+      'r500_cam_axles',
+      'r500_bowstring',
+      'r500_power_cables',
+      'r500_trigger_spring',
+    ],
+    pbrOverrides: {
+      // Slate-grey CNC bullpup chassis, forend, pistol grip, buttstock, floating flight rail & riser head (6 parts)
+      r500_chassis: R500_V3_CHASSIS_PBR,
+      r500_forend_grip: R500_V3_CHASSIS_PBR,
+      r500_pistol_grip: R500_V3_CHASSIS_PBR,
+      r500_buttstock: R500_V3_CHASSIS_PBR,
+      r500_flight_rail: R500_V3_CHASSIS_PBR,
+      r500_riser_head: R500_V3_CHASSIS_PBR,
+      // Dual 360° HexCoil helical cams, VersaDrive internal lead-screw, sliding Trac-Trigger sled & ADF sear (9 parts)
+      r500_left_cam: R500_V3_CAMS_MECH_PBR,
+      r500_right_cam: R500_V3_CAMS_MECH_PBR,
+      r500_foot_stirrup: R500_V3_CAMS_MECH_PBR,
+      r500_versadrive_screw: R500_V3_CAMS_MECH_PBR,
+      r500_trigger_sled: R500_V3_CAMS_MECH_PBR,
+      r500_string_latch: R500_V3_CAMS_MECH_PBR,
+      r500_anti_dry_fire: R500_V3_CAMS_MECH_PBR,
+      r500_trigger_sear: R500_V3_CAMS_MECH_PBR,
+      r500_safety_selector: R500_V3_CAMS_MECH_PBR,
+      // Illuminated 100-yard speed-ring crossbow scope, side quiver, spring retention arm & 400gr carbon bolt (4 parts)
+      r500_scope: R500_V3_OPTIC_BOLT_PBR,
+      r500_quiver_frame: R500_V3_OPTIC_BOLT_PBR,
+      r500_retention_arm: R500_V3_OPTIC_BOLT_PBR,
+      r500_carbon_bolt: R500_V3_OPTIC_BOLT_PBR,
+    },
+  },
 };
 
 /** Neutral gunmetal linear vertex color fallback while 2K v3 albedo streams or when PBR is toggled off. */
@@ -802,18 +1080,20 @@ let cachedDracoDecoderPath = '';
 export function getGlbWeaponConfig(
   weaponId: WeaponId
 ): GlbWeaponAssetConfig | null {
-  return GLB_WEAPON_CONFIGS[weaponId] ?? null;
+  return Object.prototype.hasOwnProperty.call(GLB_WEAPON_CONFIGS, weaponId)
+    ? GLB_WEAPON_CONFIGS[weaponId]
+    : null;
 }
 
 export function hasGlbWeaponAsset(weaponId: WeaponId): boolean {
-  return GLB_WEAPON_CONFIGS[weaponId] !== undefined;
+  return Object.prototype.hasOwnProperty.call(GLB_WEAPON_CONFIGS, weaponId);
 }
 
 export function isGlbDynamicSpringPart(
   weaponId: WeaponId,
   partId: string
 ): boolean {
-  const cfg = GLB_WEAPON_CONFIGS[weaponId];
+  const cfg = getGlbWeaponConfig(weaponId);
   if (!cfg) return false;
   return cfg.dynamicSpringParts.includes(partId);
 }
@@ -822,7 +1102,7 @@ export function getGlbPartPbrOverride(
   weaponId: WeaponId,
   partId: string
 ): PbrBindingSpec | undefined {
-  return GLB_WEAPON_CONFIGS[weaponId]?.pbrOverrides[partId];
+  return getGlbWeaponConfig(weaponId)?.pbrOverrides[partId];
 }
 
 /**
@@ -835,13 +1115,13 @@ export function resolveDracoDecoderPath(baseOverride?: string): string {
 }
 
 /**
- * Resolves the subpath-safe `.glb` model URL for a migrated weapon, or `null` if unmigrated.
+ * Resolves the subpath-safe `.glb` model URL for a migrated weapon, or `null` if unknown.
  */
 export function resolveWeaponGlbUrl(
   weaponId: WeaponId,
   baseOverride?: string
 ): string | null {
-  const cfg = GLB_WEAPON_CONFIGS[weaponId];
+  const cfg = getGlbWeaponConfig(weaponId);
   if (!cfg) return null;
   return resolveModelUrl(cfg.modelFile, baseOverride);
 }
@@ -1286,9 +1566,9 @@ export async function parseGlbArrayBuffer(
 }
 
 /**
- * Browser-only Draco GLB loader for migrated flagship exhibits (`p08`, `ak15`, `deagle`, `m4a1`, `python`).
- * Automatically skips dynamic springs, returns an empty `Map` in headless Node or for
- * unmigrated weapons, and swallows network/decode failures so `geometryService.ts`
+ * Browser-only Draco GLB loader covering all 19/19 migrated museum exhibits.
+ * Automatically skips dynamic springs/limbs/strings, returns an empty `Map` in headless
+ * Node or for unknown IDs, and swallows network/decode failures so `geometryService.ts`
  * cleanly falls back to the CSG Web Worker with zero interruption.
  */
 export async function loadWeaponGlbGeometries(

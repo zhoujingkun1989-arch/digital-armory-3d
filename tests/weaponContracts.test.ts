@@ -1127,7 +1127,7 @@ describe('19-Exhibit Digital Armory V2.0 1:1 plugin, geometry, kinematics & PBR 
     expect(builtPartsCount).toBe(480);
   }, 120000);
 
-  it('verifies all 232 WebP PBR textures exist on disk (0 PNGs) and all 78 *_roughness.webp ORM maps have valid RGB WebP headers', async () => {
+  it('verifies all 277 WebP PBR textures exist on disk (0 PNGs) and all 93 *_roughness.webp ORM maps have valid RGB WebP headers', async () => {
     expect(fs.existsSync(TEXTURES_DIR)).toBe(true);
     const diskFiles = fs.readdirSync(TEXTURES_DIR);
     const webpFiles = diskFiles.filter((f) => f.endsWith('.webp')).sort();
@@ -1138,13 +1138,13 @@ describe('19-Exhibit Digital Armory V2.0 1:1 plugin, geometry, kinematics & PBR 
     );
     const normalFiles = webpFiles.filter((f) => f.endsWith('_normal.webp'));
 
-    expect(webpFiles).toHaveLength(232);
+    expect(webpFiles).toHaveLength(277);
     expect(pngFiles).toHaveLength(0);
-    expect(albedoFiles).toHaveLength(76);
-    expect(roughnessFiles).toHaveLength(78);
-    expect(normalFiles).toHaveLength(78);
+    expect(albedoFiles).toHaveLength(91);
+    expect(roughnessFiles).toHaveLength(93);
+    expect(normalFiles).toHaveLength(93);
 
-    // Binary RIFF/WEBP header validation across all 58 textures
+    // Binary RIFF/WEBP header validation across all 277 textures
     for (const fileName of webpFiles) {
       const fullPath = path.join(TEXTURES_DIR, fileName);
       const buf = fs.readFileSync(fullPath);
@@ -1158,7 +1158,7 @@ describe('19-Exhibit Digital Armory V2.0 1:1 plugin, geometry, kinematics & PBR 
       ).toBeGreaterThanOrEqual(512);
     }
 
-    // All 20 *_roughness.webp Packed ORM maps & 20 *_normal.webp maps must have 3-channel RGB WebP headers (no alpha)
+    // All 93 *_roughness.webp Packed ORM maps & 93 *_normal.webp maps must have 3-channel RGB WebP headers (no alpha)
     for (const linearRgbFile of [...roughnessFiles, ...normalFiles]) {
       const fullPath = path.join(TEXTURES_DIR, linearRgbFile);
       const buf = fs.readFileSync(fullPath);

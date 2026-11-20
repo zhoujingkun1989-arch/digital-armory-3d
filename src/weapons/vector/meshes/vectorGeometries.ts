@@ -1280,7 +1280,7 @@ export function buildVectorMagBodyGeometry(): THREE.BufferGeometry {
 
 /**
  * M-02 (`vector_mag_follower`): High-Visibility Orange Stepped .45 ACP Anti-Tilt Polymer Follower
- * (`assembledPos: [7.65, -3.78, 0]`, `assembledRot: [0, 0, VECTOR_MAG_ANGLE]`).
+ * (`assembledPos: [2.501, -15.35, 0]`, `assembledRot: [0, 0, VECTOR_MAG_ANGLE]`).
  */
 export function buildVectorMagFollowerGeometry(): THREE.BufferGeometry {
   const baseBlock = createChamferedBox(
@@ -1312,22 +1312,22 @@ export function buildVectorMagFollowerGeometry(): THREE.BufferGeometry {
 }
 
 /**
- * M-03 (`vector_mag_spring`): Angled `66°` Helical Magazine Drive Spring
+ * M-03 (`vector_mag_spring`): Angled `66°` Compressed Helical Magazine Drive Spring
  * (`assembledPos: [1.45, -17.70, 0]`, `assembledRot: [0, 0, VECTOR_MAG_ANGLE]`).
- * Pure X-axis `createWatertightHelicalSpring` (`start: 0.0` at baseplate -> `end: 14.80` at follower)
- * carrying valid `aSpringParam` `w = 1`!
+ * Pure X-axis `createWatertightHelicalSpring` (`start: 0.10` at baseplate lockplate -> `end: 1.95`
+ * seated cleanly under the lowered loaded-stack `vector_mag_follower`) carrying valid `aSpringParam` `w = 1`!
  */
 export function buildVectorMagSpringGeometry(): THREE.BufferGeometry {
   const spring = createWatertightHelicalSpring(
     {
       axis: 'x',
-      start: 0.0,
-      end: 14.8,
+      start: 0.1,
+      end: 1.95,
       centerY: 0,
       centerZ: 0,
-      coilRadius: 0.68,
-      wireRadius: 0.058,
-      coils: 16,
+      coilRadius: 0.62,
+      wireRadius: 0.056,
+      coils: 9,
       radialSegments: 8,
       tubularSegmentsPerCoil: 16,
     },
