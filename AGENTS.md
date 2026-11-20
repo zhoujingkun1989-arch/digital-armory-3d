@@ -27,9 +27,9 @@
 
 ## 2. 当前基线概览（Current Baseline）
 
-本仓库已建成的核心工程与内容底座如下（V2.0 旗舰版 `WP-01` ~ `WP-16` 全部 16 个工程包、`PR-01` ~ `PR-03` 及 `PR-04` 第一批照片级扩馆与 V3.0 旗舰交互已 100% 闭环交付）：
-- **19 款馆藏名枪与复合弓弩 / 480 个独立运动零件（双轨 Draco `.glb` + Web Worker CSG）**：覆盖 **17 款传奇名枪**（`ak15`、`m4a1`、`mp5`、`g17`、`m82a1`、`awm`、`scar`、`deagle`、`aug`、`p320`、`p90`、`python` 柯尔特蟒蛇 `.357`、`benellim4` 伯奈利 M4 `M1014`、`garand` 美国 M1 加兰德 `.30-06`、`m249` 比利时/美国 FN M249 SAW 班用轻机枪、`p08` 德国 DWM 鲁格 P08 肘节手枪、`vector` 美国/瑞士 KRISS Vector `.45 ACP` 冲锋枪）与 **2 款复合弓弩**（`lift33` Mathews LIFT 33 复合弓、`r500` Ravin R500 螺旋凸轮复合弩），横跨全部 8 大枪族分类（含 `lmg` 机枪）。其中 **5 款旗舰馆藏（`ak15`、`p08` v2、`deagle`、`m4a1`、`python` v4）已完成 Blender 5.2 LTS 高模雕塑 + Cycles GPU 烘焙 Draco `.glb` 全量升级**（总计 `117` 个水密精模零件，均保留 `aSpringParam` GPU 实时压缩弹簧于 CSG 轨道，单枪总资产 `2.13–7.05 MB`），其余 14 款及离线回退由 Web Worker CSG 零拷贝生成，全量通过法线、体积、UV、`t=1.0` 爆炸零穿模、GLB 契约与运动学测试。
-- **151 张 2K 5 通道 Packed ORM WebP 贴图 + 3 套 Cycles 32-bit 影棚 `.hdr` + 多层定制 GLSL PBR 着色器**：由 `scripts/blender/`（Cycles GPU 烘焙 5 款旗舰 v3 贴图套件）与 `scripts/pbr_core/` 离线烘焙并在 `public/textures/` 提供（49 张 Albedo + 51 张 Normal + 51 张 Packed ORM，0 PNG），叠加 GGX Specular AA、实时服役磨损包浆（`出厂 / 微油 / 沧桑`）、CNC 刀痕各向异性微法线、皇家烤蓝、帝国锈蚀烤蓝与 240°C 麦秆黄回火、亚麻籽油黑胡桃实木、枪管连续射击黑体热辐射红热与膛口积碳（`armoryShader.ts`），配套浏览器内 PBR 贴图图集检视器（`TextureAtlasModal`）。
+本仓库已建成的核心工程与内容底座如下（V2.0 旗舰版 `WP-01` ~ `WP-16` 全部 16 个工程包、`PR-01` ~ `PR-03` 及 `PR-04` Wave 1–2 九大照片级旗舰馆藏与 V3.0 旗舰交互已 100% 闭环交付）：
+- **19 款馆藏名枪与复合弓弩 / 480 个独立运动零件（双轨 Draco `.glb` + Web Worker CSG）**：覆盖 **17 款传奇名枪**（`ak15`、`m4a1`、`mp5`、`g17`、`m82a1`、`awm`、`scar`、`deagle`、`aug`、`p320`、`p90`、`python` 柯尔特蟒蛇 `.357`、`benellim4` 伯奈利 M4 `M1014`、`garand` 美国 M1 加兰德 `.30-06`、`m249` 比利时/美国 FN M249 SAW 班用轻机枪、`p08` 德国 DWM 鲁格 P08 肘节手枪、`vector` 美国/瑞士 KRISS Vector `.45 ACP` 冲锋枪）与 **2 款复合弓弩**（`lift33` Mathews LIFT 33 复合弓、`r500` Ravin R500 螺旋凸轮复合弩），横跨全部 8 大枪族分类（含 `lmg` 机枪）。其中 **9 款旗舰馆藏（`ak15`、`p08` v2、`deagle`、`m4a1`、`python` v4、`garand`、`mp5`、`awm`、`m82a1`）已完成 Blender 5.2 LTS 高模雕塑 + Cycles GPU 烘焙 Draco `.glb` 全量升级**（总计 `211` 个水密精模零件，均保留 `aSpringParam` GPU 实时压缩弹簧于 CSG 轨道，单枪总资产 `2.13–7.05 MB`），其余 10 款及离线回退由 Web Worker CSG 零拷贝生成，全量通过法线、体积、UV、`t=1.0` 爆炸零穿模、GLB 契约与运动学测试。
+- **187 张 2K 5 通道 Packed ORM WebP 贴图 + 3 套 Cycles 32-bit 影棚 `.hdr` + 多层定制 GLSL PBR 着色器**：由 `scripts/blender/`（Cycles GPU 烘焙 9 款旗舰 v3 贴图套件）与 `scripts/pbr_core/` 离线烘焙并在 `public/textures/` 提供（61 张 Albedo + 63 张 Normal + 63 张 Packed ORM，0 PNG），叠加 GGX Specular AA、实时服役磨损包浆（`出厂 / 微油 / 沧桑`）、CNC 刀痕各向异性微法线、皇家烤蓝、帝国锈蚀烤蓝与 240°C 麦秆黄回火、亚麻籽油黑胡桃实木、枪管连续射击黑体热辐射红热与膛口积碳（`armoryShader.ts`），配套浏览器内 PBR 贴图图集检视器（`TextureAtlasModal`）。
 - **实时可拖拽 CT 扫描纵剖面（`C` / `?cut=1`）+ 全局 `Cmd+K` 双语瞬搜指令面板 + 博物馆级精简工作台**：升级 Two-Pass WebGL Stencil 纵剖面支持 `±25 mm` 实时滑动切片（`sectionCutOffset`）、`+Z / -Z` 翻转（`sectionCutFlip`）与 60fps 自动扫描（零着色器重编译，同步 45° ISO 128 剖面斜线与 `sectionAwareMeshRaycast` 穿透拾取）；新增跨全站 5 大页面的 `Cmd+K` / `Ctrl+K` 中英双语瞬搜指令面板（19 展品 / 480 零件 / 全部实验室与视觉开关）及收纳式 `Display` / `Labs & Tools` 玻璃态工作台顶栏；配套 `CONTRIBUTING.md` 与 `.github/` 开源社区治理包。
 - **三档影棚环境（暗室展厅 / 军械匠人台 / 工程白昼）+ GTAO/HDR/AgX 后处理 + `<800 kB` 零告警分包 & 子路径硬化（`Pillar 0`）**：内置程序化氯丁橡胶拆枪垫与磁吸零件盘（`GunsmithStageMat.tsx`）、自适应暗色军械师 / 亮色工程蓝图双主题 UI、半分辨率 GTAO + HDR 辉光 + AgX 色调映射管线（`ArmoryPostProcessing.tsx`），以及 `vite.config.ts` 无环分包（主包 `<500 kB`、全部 chunk `<800 kB` 零告警）与 `src/engine/utils/assetUrl.ts` 对 `/` 及 `/digital-armory-3d/` 子路径的幂等安全解析。
 - **7 阶段耦合运动学 + 11 口径 SAAMI/CIP 实弹与霰弹及复合弓弩内弹道、刚体抛壳与实时遥测示波器（`WP-04`）**：位于 `src/engine/actors/BallisticsSystem.tsx`、`src/engine/physics/armoryPhysics.ts` 与 `src/features/workbench/BallisticsTelemetryHud.tsx`，覆盖 `9×19mm`、`.45 ACP`、`5.7×28mm`、`.357 Magnum`、`5.56 NATO`、`7.62×39mm`、`.50 AE`、`12 Gauge`、`.30-06 Springfield`、`.338 Lapua`、`.50 BMG` 及 `400 gr` 碳纤维猎箭/弩箭曲线，含 60fps 零重绘膛压 $P(t)$（`MPa`）/ 膛内初速 $V(t)$（`m/s`）示波器与反向拖拽控制、二阶弹簧阻尼枪身后坐上跳与枪管谐振鞭动、桌面碰撞弹跳刚体抛壳及枪管温升积碳演化。
@@ -128,11 +128,12 @@
   - **交付与验收**：复用 Blender 5.2 高模倒角与 Cycles 高烘低管线重制 AK-15M1 全部 24 个实心零件 + 保留 2 个 `aSpringParam` 螺旋弹簧（总资产 `1.85 MB <= 12 MB`），通过全量契约与真机 6 镜超近景肉眼验收。
 - [ ] **PR-04｜全馆 19 款照片级批量推广 & 汇入 V3.0 GitHub 高星门面与 UX 减负**
   - **目标模块**：其余展品 Blender 5.2 模块化精模迁移、顶栏极简重构、`Cmd+K` 全局瞬搜、动态活体 CT 剖切面、GitHub V3.0 门面与开源社区治理包。
-  - **已完成进度（Wave 1 已验收闭环）**：
-    - [x] **5 大照片级旗舰馆藏闭环**（`ak15` `3.90 MB`、`p08` v2 `3.39 MB`、`deagle` `7.05 MB`、`m4a1` `3.53 MB`、`python` v4 `2.13 MB`，均已注册 `glbAssetService.ts` 并通过 1920×1080 真机 Chromium 视觉验收；全库 2K WebP 达 `151` 张）；
+  - **已完成进度（Wave 1 & Wave 2 均已验收闭环）**：
+    - [x] **Wave 1 五大照片级旗舰馆藏闭环**（`ak15` `3.90 MB`、`p08` v2 `3.39 MB`、`deagle` `7.05 MB`、`m4a1` `3.53 MB`、`python` v4 `2.13 MB`，共 `117` 个水密精模零件，均已注册 `glbAssetService.ts` 并通过 1920×1080 真机 Chromium 视觉验收）；
+    - [x] **Wave 2 四大传奇长枪/冲锋枪旗舰闭环（累计 9 大 Blender 5.2 照片级旗舰 / `211` 个水密精模零件 / `187` 张 2K WebP）**：`garand`（`2.72 MB`，`24` 精模 + `2` 弹簧）、`mp5`（`3.18 MB`，`25` 精模 + `1` 弹簧）、`awm`（`3.68 MB`，`23` 精模 + `1` 弹簧）、`m82a1`（`3.49 MB`，`22` 精模 + `2` 弹簧），均已注册 `glbAssetService.ts` 与 `tests/glbAsset.test.ts` 全量契约并通过 29 镜 1920×1080 真机 Chromium 视觉验收；
     - [x] **V3.0 旗舰交互升级**：全局中英双语 `Cmd+K` / `Ctrl+K` 指令面板（`CommandPaletteModal.tsx`）、实时可拖拽 `±25 mm` 活体 CT 扫描剖切面（`LiveSectionPlaneBar.tsx` + `StencilSectionCap.tsx` 动态联动）及工作台玻璃态极简减负；
-    - [x] **GitHub 高星门面与社区治理包**：`README.md` 升级为 5 旗舰真机渲染画廊 + V3.0 架构门面（`docs/screenshots/*-v3-*.jpg`），新建中英双语 `CONTRIBUTING.md` 及 `.github/{ISSUE_TEMPLATE,PULL_REQUEST_TEMPLATE}`；
-    - [ ] **Wave 2 待迁移（14 款剩余展品）**：`mp5`, `g17`, `m82a1`, `awm`, `scar`, `aug`, `p320`, `p90`, `lift33`, `r500`, `benellim4`, `garand`, `m249`, `vector` 按同标准 Blender 5.2 脚本陆续分批迁移。
+    - [x] **GitHub 高星门面与社区治理包**：`README.md` 升级为 9 旗舰真机渲染画廊 + V3.0 架构门面（`docs/screenshots/*-v3-*.jpg`），新建中英双语 `CONTRIBUTING.md` 及 `.github/{ISSUE_TEMPLATE,PULL_REQUEST_TEMPLATE}`；
+    - [ ] **Wave 3 待迁移（10 款剩余展品）**：`g17`, `scar`, `aug`, `p320`, `p90`, `lift33`, `r500`, `benellim4`, `m249`, `vector` 按同标准 Blender 5.2 脚本陆续分批迁移。
 
 ---
 

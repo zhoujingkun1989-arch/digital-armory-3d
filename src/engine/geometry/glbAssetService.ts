@@ -133,6 +133,90 @@ const M4A1_V3_FURNITURE_PBR: PbrBindingSpec = {
   normalScale: 0.9,
 };
 
+const M82A1_V3_RECEIVER_PBR: PbrBindingSpec = {
+  albedoFile: 'm82a1_v3_receiver_albedo.webp',
+  normalFile: 'm82a1_v3_receiver_normal.webp',
+  roughnessFile: 'm82a1_v3_receiver_roughness.webp',
+  normalScale: 0.88,
+};
+
+const M82A1_V3_ORDNANCE_PBR: PbrBindingSpec = {
+  albedoFile: 'm82a1_v3_ordnance_albedo.webp',
+  normalFile: 'm82a1_v3_ordnance_normal.webp',
+  roughnessFile: 'm82a1_v3_ordnance_roughness.webp',
+  normalScale: 0.85,
+};
+
+const M82A1_V3_OPTICS_MAG_PBR: PbrBindingSpec = {
+  albedoFile: 'm82a1_v3_optics_mag_albedo.webp',
+  normalFile: 'm82a1_v3_optics_mag_normal.webp',
+  roughnessFile: 'm82a1_v3_optics_mag_roughness.webp',
+  normalScale: 0.88,
+};
+
+const GARAND_V3_WALNUT_PBR: PbrBindingSpec = {
+  albedoFile: 'garand_v3_walnut_albedo.webp',
+  normalFile: 'garand_v3_walnut_normal.webp',
+  roughnessFile: 'garand_v3_walnut_roughness.webp',
+  normalScale: 0.9,
+};
+
+const GARAND_V3_RECEIVER_PBR: PbrBindingSpec = {
+  albedoFile: 'garand_v3_receiver_albedo.webp',
+  normalFile: 'garand_v3_receiver_normal.webp',
+  roughnessFile: 'garand_v3_receiver_roughness.webp',
+  normalScale: 0.88,
+};
+
+const GARAND_V3_METAL_PBR: PbrBindingSpec = {
+  albedoFile: 'garand_v3_metal_albedo.webp',
+  normalFile: 'garand_v3_metal_normal.webp',
+  roughnessFile: 'garand_v3_metal_roughness.webp',
+  normalScale: 0.85,
+};
+
+const AWM_V3_CHASSIS_PBR: PbrBindingSpec = {
+  albedoFile: 'awm_v3_chassis_albedo.webp',
+  normalFile: 'awm_v3_chassis_normal.webp',
+  roughnessFile: 'awm_v3_chassis_roughness.webp',
+  normalScale: 0.9,
+};
+
+const AWM_V3_METAL_PBR: PbrBindingSpec = {
+  albedoFile: 'awm_v3_metal_albedo.webp',
+  normalFile: 'awm_v3_metal_normal.webp',
+  roughnessFile: 'awm_v3_metal_roughness.webp',
+  normalScale: 0.86,
+};
+
+const AWM_V3_OPTIC_PBR: PbrBindingSpec = {
+  albedoFile: 'awm_v3_optic_albedo.webp',
+  normalFile: 'awm_v3_optic_normal.webp',
+  roughnessFile: 'awm_v3_optic_roughness.webp',
+  normalScale: 0.85,
+};
+
+const MP5_V3_RECEIVER_PBR: PbrBindingSpec = {
+  albedoFile: 'mp5_v3_receiver_albedo.webp',
+  normalFile: 'mp5_v3_receiver_normal.webp',
+  roughnessFile: 'mp5_v3_receiver_roughness.webp',
+  normalScale: 0.88,
+};
+
+const MP5_V3_METAL_PBR: PbrBindingSpec = {
+  albedoFile: 'mp5_v3_metal_albedo.webp',
+  normalFile: 'mp5_v3_metal_normal.webp',
+  roughnessFile: 'mp5_v3_metal_roughness.webp',
+  normalScale: 0.85,
+};
+
+const MP5_V3_FURNITURE_PBR: PbrBindingSpec = {
+  albedoFile: 'mp5_v3_furniture_albedo.webp',
+  normalFile: 'mp5_v3_furniture_normal.webp',
+  roughnessFile: 'mp5_v3_furniture_roughness.webp',
+  normalScale: 0.9,
+};
+
 export const GLB_WEAPON_CONFIGS: Readonly<
   Partial<Record<WeaponId, GlbWeaponAssetConfig>>
 > = {
@@ -298,6 +382,136 @@ export const GLB_WEAPON_CONFIGS: Readonly<
       m4a1_mag_body: M4A1_V3_FURNITURE_PBR,
       m4a1_mag_follower: M4A1_V3_FURNITURE_PBR,
       m4a1_mag_floorplate: M4A1_V3_FURNITURE_PBR,
+    },
+  },
+  m82a1: {
+    modelFile: 'm82a1.glb',
+    dynamicSpringParts: ['m82a1_recoil_spring', 'm82a1_barrel_springs'],
+    pbrOverrides: {
+      // Stamped & welded armor-steel ribbed upper/lower receivers, carry handle & selector (4 parts)
+      m82a1_upper_receiver: M82A1_V3_RECEIVER_PBR,
+      m82a1_lower_receiver: M82A1_V3_RECEIVER_PBR,
+      m82a1_carry_handle: M82A1_V3_RECEIVER_PBR,
+      m82a1_selector: M82A1_V3_RECEIVER_PBR,
+      // Twin-baffle arrowhead brake, 29" fluted barrel, extension, BCG, 3-lug bolt, accelerator, bipod & FCG (11 parts)
+      m82a1_muzzle_brake: M82A1_V3_ORDNANCE_PBR,
+      m82a1_barrel: M82A1_V3_ORDNANCE_PBR,
+      m82a1_barrel_extension: M82A1_V3_ORDNANCE_PBR,
+      m82a1_bolt_carrier: M82A1_V3_ORDNANCE_PBR,
+      m82a1_bolt: M82A1_V3_ORDNANCE_PBR,
+      m82a1_accelerator: M82A1_V3_ORDNANCE_PBR,
+      m82a1_firing_pin: M82A1_V3_ORDNANCE_PBR,
+      m82a1_bipod: M82A1_V3_ORDNANCE_PBR,
+      m82a1_striker: M82A1_V3_ORDNANCE_PBR,
+      m82a1_sear: M82A1_V3_ORDNANCE_PBR,
+      m82a1_trigger: M82A1_V3_ORDNANCE_PBR,
+      // Leupold Mark 4 optic, ultra-high rings, 20-LPI A2 grip & 10-round .50 BMG steel box mag (7 parts)
+      m82a1_scope: M82A1_V3_OPTICS_MAG_PBR,
+      m82a1_scope_rings: M82A1_V3_OPTICS_MAG_PBR,
+      m82a1_pistol_grip: M82A1_V3_OPTICS_MAG_PBR,
+      m82a1_mag_body: M82A1_V3_OPTICS_MAG_PBR,
+      m82a1_mag_follower: M82A1_V3_OPTICS_MAG_PBR,
+      m82a1_mag_spring: M82A1_V3_OPTICS_MAG_PBR,
+      m82a1_mag_floorplate: M82A1_V3_OPTICS_MAG_PBR,
+    },
+  },
+  garand: {
+    modelFile: 'garand.glb',
+    dynamicSpringParts: ['garand_op_rod_spring', 'garand_hammer_spring'],
+    pbrOverrides: {
+      // Hand-rubbed linseed-oil American black walnut full stock & front/rear handguards (3 parts)
+      garand_walnut_stock: GARAND_V3_WALNUT_PBR,
+      garand_rear_handguard: GARAND_V3_WALNUT_PBR,
+      garand_front_handguard: GARAND_V3_WALNUT_PBR,
+      // Forged Springfield receiver, T105 sight drums, clip latch, milled trigger housing/guard & en-bloc clip (6 parts)
+      garand_receiver: GARAND_V3_RECEIVER_PBR,
+      garand_rear_sight: GARAND_V3_RECEIVER_PBR,
+      garand_clip_latch: GARAND_V3_RECEIVER_PBR,
+      garand_trigger_housing: GARAND_V3_RECEIVER_PBR,
+      garand_trigger_guard: GARAND_V3_RECEIVER_PBR,
+      garand_enbloc_clip: GARAND_V3_RECEIVER_PBR,
+      // 24" barrel, 410 stainless gas cylinder & lock screw, S-bent op-rod, 2-lug bolt, buttplate & internals (15 parts)
+      garand_barrel: GARAND_V3_METAL_PBR,
+      garand_gas_cylinder: GARAND_V3_METAL_PBR,
+      garand_gas_lock_screw: GARAND_V3_METAL_PBR,
+      garand_front_sight: GARAND_V3_METAL_PBR,
+      garand_op_rod: GARAND_V3_METAL_PBR,
+      garand_bolt: GARAND_V3_METAL_PBR,
+      garand_firing_pin: GARAND_V3_METAL_PBR,
+      garand_lower_band: GARAND_V3_METAL_PBR,
+      garand_buttplate: GARAND_V3_METAL_PBR,
+      garand_op_rod_catch: GARAND_V3_METAL_PBR,
+      garand_trigger: GARAND_V3_METAL_PBR,
+      garand_hammer: GARAND_V3_METAL_PBR,
+      garand_follower: GARAND_V3_METAL_PBR,
+      garand_follower_arm: GARAND_V3_METAL_PBR,
+      garand_bullet_guide: GARAND_V3_METAL_PBR,
+    },
+  },
+  awm: {
+    modelFile: 'awm.glb',
+    dynamicSpringParts: ['awm_firing_pin_spring'],
+    pbrOverrides: {
+      // British Military OD-Green thumbhole polyamide chassis skins, folding stock, cheekpiece, spacers & follower (5 parts)
+      awm_chassis_skins: AWM_V3_CHASSIS_PBR,
+      awm_folding_stock: AWM_V3_CHASSIS_PBR,
+      awm_cheekpiece: AWM_V3_CHASSIS_PBR,
+      awm_buttpad_spacers: AWM_V3_CHASSIS_PBR,
+      awm_mag_follower: AWM_V3_CHASSIS_PBR,
+      // Portsmouth steel action, 27" fluted barrel, dual-baffle brake, 60° 6-lug chrome bolt, CNC spine & match FCG (12 parts)
+      awm_action_receiver: AWM_V3_METAL_PBR,
+      awm_barrel: AWM_V3_METAL_PBR,
+      awm_muzzle_brake: AWM_V3_METAL_PBR,
+      awm_bolt_body: AWM_V3_METAL_PBR,
+      awm_bolt_shroud: AWM_V3_METAL_PBR,
+      awm_striker: AWM_V3_METAL_PBR,
+      awm_extractor: AWM_V3_METAL_PBR,
+      awm_chassis_beam: AWM_V3_METAL_PBR,
+      awm_trigger_box: AWM_V3_METAL_PBR,
+      awm_sear: AWM_V3_METAL_PBR,
+      awm_trigger_shoe: AWM_V3_METAL_PBR,
+      awm_mag_catch: AWM_V3_METAL_PBR,
+      // Schmidt & Bender PM II 5-25x56 optic, 34mm mount, Parker-Hale bipod & 5-round .338 LM steel box mag (6 parts)
+      awm_scope: AWM_V3_OPTIC_PBR,
+      awm_scope_mount: AWM_V3_OPTIC_PBR,
+      awm_bipod: AWM_V3_OPTIC_PBR,
+      awm_mag_body: AWM_V3_OPTIC_PBR,
+      awm_mag_spring: AWM_V3_OPTIC_PBR,
+      awm_mag_floorplate: AWM_V3_OPTIC_PBR,
+    },
+  },
+  mp5: {
+    modelFile: 'mp5.glb',
+    dynamicSpringParts: ['mp5_recoil_spring'],
+    pbrOverrides: {
+      // Stamped H&K baked black-enamel upper receiver, J-slot cocking tube, diopter drum/hooded sights & stock endcap (5 parts)
+      mp5_upper_receiver: MP5_V3_RECEIVER_PBR,
+      mp5_cocking_tube: MP5_V3_RECEIVER_PBR,
+      mp5_front_sight: MP5_V3_RECEIVER_PBR,
+      mp5_rear_sight: MP5_V3_RECEIVER_PBR,
+      mp5_stock_endcap: MP5_V3_RECEIVER_PBR,
+      // 3-lug CHF barrel, A3 steel-rail stock, HK-Slap handle, chrome dual rollers, 45° locking piece, BCG, trigger box & 30-rd curved mag (16 parts)
+      mp5_barrel: MP5_V3_METAL_PBR,
+      mp5_buttstock: MP5_V3_METAL_PBR,
+      mp5_charging_handle: MP5_V3_METAL_PBR,
+      mp5_bolt_carrier: MP5_V3_METAL_PBR,
+      mp5_bolt_head: MP5_V3_METAL_PBR,
+      mp5_locking_rollers: MP5_V3_METAL_PBR,
+      mp5_locking_roller_left: MP5_V3_METAL_PBR,
+      mp5_locking_piece: MP5_V3_METAL_PBR,
+      mp5_firing_pin: MP5_V3_METAL_PBR,
+      mp5_recoil_rod: MP5_V3_METAL_PBR,
+      mp5_trigger_pack: MP5_V3_METAL_PBR,
+      mp5_hammer: MP5_V3_METAL_PBR,
+      mp5_trigger: MP5_V3_METAL_PBR,
+      mp5_mag_body: MP5_V3_METAL_PBR,
+      mp5_mag_spring: MP5_V3_METAL_PBR,
+      mp5_mag_floorplate: MP5_V3_METAL_PBR,
+      // Navy pictogram polymer grip housing, wide tropical forearm, ambi selector & anti-tilt orange follower (4 parts)
+      mp5_grip_housing: MP5_V3_FURNITURE_PBR,
+      mp5_forearm: MP5_V3_FURNITURE_PBR,
+      mp5_selector: MP5_V3_FURNITURE_PBR,
+      mp5_mag_follower: MP5_V3_FURNITURE_PBR,
     },
   },
 };

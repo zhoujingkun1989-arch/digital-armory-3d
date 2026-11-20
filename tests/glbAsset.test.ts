@@ -30,8 +30,12 @@ import {
   lockLinearTextureColorSpace,
 } from '../src/engine/materials/pbrManager';
 import { AK15_PARTS } from '../src/weapons/ak15/plugin';
+import { AWM_PARTS } from '../src/weapons/awm/plugin';
 import { DEAGLE_PARTS } from '../src/weapons/deagle/plugin';
+import { GARAND_PARTS } from '../src/weapons/garand/plugin';
 import { M4A1_PARTS } from '../src/weapons/m4a1/plugin';
+import { M82A1_PARTS } from '../src/weapons/m82a1/plugin';
+import { MP5_PARTS } from '../src/weapons/mp5/plugin';
 import { P08_PARTS } from '../src/weapons/p08/plugin';
 import { PYTHON_PARTS } from '../src/weapons/python/plugin';
 import type { WeaponId } from '../src/weapons/types';
@@ -233,6 +237,10 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     expect(resolveWeaponGlbUrl('deagle', '/')).toBe('/models/deagle.glb');
     expect(resolveWeaponGlbUrl('m4a1', '/')).toBe('/models/m4a1.glb');
     expect(resolveWeaponGlbUrl('python', '/')).toBe('/models/python.glb');
+    expect(resolveWeaponGlbUrl('garand', '/')).toBe('/models/garand.glb');
+    expect(resolveWeaponGlbUrl('mp5', '/')).toBe('/models/mp5.glb');
+    expect(resolveWeaponGlbUrl('awm', '/')).toBe('/models/awm.glb');
+    expect(resolveWeaponGlbUrl('m82a1', '/')).toBe('/models/m82a1.glb');
     expect(resolveWeaponGlbUrl('g17', '/')).toBeNull();
 
     // Non-root GitHub Pages subpath deployment ('/digital-armory-3d/')
@@ -256,6 +264,18 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     );
     expect(resolveWeaponGlbUrl('python', 'digital-armory-3d')).toBe(
       '/digital-armory-3d/models/python.glb'
+    );
+    expect(resolveWeaponGlbUrl('garand', '/digital-armory-3d/')).toBe(
+      '/digital-armory-3d/models/garand.glb'
+    );
+    expect(resolveWeaponGlbUrl('mp5', 'digital-armory-3d')).toBe(
+      '/digital-armory-3d/models/mp5.glb'
+    );
+    expect(resolveWeaponGlbUrl('awm', '/digital-armory-3d/')).toBe(
+      '/digital-armory-3d/models/awm.glb'
+    );
+    expect(resolveWeaponGlbUrl('m82a1', 'digital-armory-3d')).toBe(
+      '/digital-armory-3d/models/m82a1.glb'
     );
 
     // Verify Vite chunk splitting places GLTFLoader, DRACOLoader & BufferGeometryUtils in vendor-three-postfx
@@ -283,15 +303,25 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     }
   });
 
-  it('locks exact 100% disjoint part-to-atlas & dynamic-spring contracts and on-disk budgets for ALL 5 flagship GLB exhibits (p08, ak15, deagle, m4a1, python)', () => {
-    const migrated: WeaponId[] = ['p08', 'ak15', 'deagle', 'm4a1', 'python'];
+  it('locks exact 100% disjoint part-to-atlas & dynamic-spring contracts and on-disk budgets for ALL 9 flagship GLB exhibits (p08, ak15, deagle, m4a1, python, garand, mp5, awm, m82a1)', () => {
+    const migrated: WeaponId[] = [
+      'p08',
+      'ak15',
+      'deagle',
+      'm4a1',
+      'python',
+      'garand',
+      'mp5',
+      'awm',
+      'm82a1',
+    ];
     for (const wid of migrated) {
       expect(hasGlbWeaponAsset(wid)).toBe(true);
       expect(getGlbWeaponConfig(wid)).not.toBeNull();
     }
     expect(Object.keys(GLB_WEAPON_CONFIGS).sort()).toEqual([...migrated].sort());
 
-    for (const unmigrated of ['g17', 'mp5', 'garand', 'vector', 'scar'] as WeaponId[]) {
+    for (const unmigrated of ['g17', 'scar', 'aug', 'p320', 'vector'] as WeaponId[]) {
       expect(hasGlbWeaponAsset(unmigrated)).toBe(false);
       expect(getGlbWeaponConfig(unmigrated)).toBeNull();
       expect(isGlbDynamicSpringPart(unmigrated, 'recoil_spring')).toBe(false);
@@ -519,6 +549,212 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
       }
     }
 
+    // --- 6. U.S. Rifle M1 Garand (26 parts = 2 dynamic springs + 3 walnut + 6 receiver + 15 metal) ---
+    const garandCfg = GLB_WEAPON_CONFIGS.garand!;
+    expect(garandCfg.modelFile).toBe('garand.glb');
+    expect(garandCfg.dynamicSpringParts).toEqual([
+      'garand_op_rod_spring',
+      'garand_hammer_spring',
+    ]);
+    const garandIds = GARAND_PARTS.map((p) => p.id);
+    const garandSprings = new Set(garandCfg.dynamicSpringParts);
+    const garandWalnut = new Set([
+      'garand_walnut_stock',
+      'garand_rear_handguard',
+      'garand_front_handguard',
+    ]);
+    const garandReceiver = new Set([
+      'garand_receiver',
+      'garand_rear_sight',
+      'garand_clip_latch',
+      'garand_trigger_housing',
+      'garand_trigger_guard',
+      'garand_enbloc_clip',
+    ]);
+    expect(garandIds).toHaveLength(26);
+    expect(Object.keys(garandCfg.pbrOverrides)).toHaveLength(24);
+
+    for (const id of garandIds) {
+      if (garandSprings.has(id)) {
+        expect(isGlbDynamicSpringPart('garand', id)).toBe(true);
+        expect(getGlbPartPbrOverride('garand', id)).toBeUndefined();
+      } else {
+        expect(isGlbDynamicSpringPart('garand', id)).toBe(false);
+        const ov = getGlbPartPbrOverride('garand', id);
+        expect(ov, `Missing garand PBR override for ${id}`).toBeDefined();
+        if (garandWalnut.has(id)) {
+          expect(ov!.albedoFile).toBe('garand_v3_walnut_albedo.webp');
+          expect(ov!.normalFile).toBe('garand_v3_walnut_normal.webp');
+          expect(ov!.roughnessFile).toBe('garand_v3_walnut_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.9, 5);
+        } else if (garandReceiver.has(id)) {
+          expect(ov!.albedoFile).toBe('garand_v3_receiver_albedo.webp');
+          expect(ov!.normalFile).toBe('garand_v3_receiver_normal.webp');
+          expect(ov!.roughnessFile).toBe('garand_v3_receiver_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.88, 5);
+        } else {
+          expect(ov!.albedoFile).toBe('garand_v3_metal_albedo.webp');
+          expect(ov!.normalFile).toBe('garand_v3_metal_normal.webp');
+          expect(ov!.roughnessFile).toBe('garand_v3_metal_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.85, 5);
+        }
+      }
+    }
+
+    // --- 7. H&K MP5A3 (26 parts = 1 dynamic spring + 5 receiver + 16 metal + 4 furniture) ---
+    const mp5Cfg = GLB_WEAPON_CONFIGS.mp5!;
+    expect(mp5Cfg.modelFile).toBe('mp5.glb');
+    expect(mp5Cfg.dynamicSpringParts).toEqual(['mp5_recoil_spring']);
+    const mp5Ids = MP5_PARTS.map((p) => p.id);
+    const mp5Springs = new Set(mp5Cfg.dynamicSpringParts);
+    const mp5Receiver = new Set([
+      'mp5_upper_receiver',
+      'mp5_cocking_tube',
+      'mp5_front_sight',
+      'mp5_rear_sight',
+      'mp5_stock_endcap',
+    ]);
+    const mp5Furniture = new Set([
+      'mp5_grip_housing',
+      'mp5_forearm',
+      'mp5_selector',
+      'mp5_mag_follower',
+    ]);
+    expect(mp5Ids).toHaveLength(26);
+    expect(Object.keys(mp5Cfg.pbrOverrides)).toHaveLength(25);
+
+    for (const id of mp5Ids) {
+      if (mp5Springs.has(id)) {
+        expect(isGlbDynamicSpringPart('mp5', id)).toBe(true);
+        expect(getGlbPartPbrOverride('mp5', id)).toBeUndefined();
+      } else {
+        expect(isGlbDynamicSpringPart('mp5', id)).toBe(false);
+        const ov = getGlbPartPbrOverride('mp5', id);
+        expect(ov, `Missing mp5 PBR override for ${id}`).toBeDefined();
+        if (mp5Receiver.has(id)) {
+          expect(ov!.albedoFile).toBe('mp5_v3_receiver_albedo.webp');
+          expect(ov!.normalFile).toBe('mp5_v3_receiver_normal.webp');
+          expect(ov!.roughnessFile).toBe('mp5_v3_receiver_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.88, 5);
+        } else if (mp5Furniture.has(id)) {
+          expect(ov!.albedoFile).toBe('mp5_v3_furniture_albedo.webp');
+          expect(ov!.normalFile).toBe('mp5_v3_furniture_normal.webp');
+          expect(ov!.roughnessFile).toBe('mp5_v3_furniture_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.9, 5);
+        } else {
+          expect(ov!.albedoFile).toBe('mp5_v3_metal_albedo.webp');
+          expect(ov!.normalFile).toBe('mp5_v3_metal_normal.webp');
+          expect(ov!.roughnessFile).toBe('mp5_v3_metal_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.85, 5);
+        }
+      }
+    }
+
+    // --- 8. Accuracy International AWM (24 parts = 1 dynamic spring + 5 chassis + 12 metal + 6 optic) ---
+    const awmCfg = GLB_WEAPON_CONFIGS.awm!;
+    expect(awmCfg.modelFile).toBe('awm.glb');
+    expect(awmCfg.dynamicSpringParts).toEqual(['awm_firing_pin_spring']);
+    const awmIds = AWM_PARTS.map((p) => p.id);
+    const awmSprings = new Set(awmCfg.dynamicSpringParts);
+    const awmChassis = new Set([
+      'awm_chassis_skins',
+      'awm_folding_stock',
+      'awm_cheekpiece',
+      'awm_buttpad_spacers',
+      'awm_mag_follower',
+    ]);
+    const awmOptic = new Set([
+      'awm_scope',
+      'awm_scope_mount',
+      'awm_bipod',
+      'awm_mag_body',
+      'awm_mag_spring',
+      'awm_mag_floorplate',
+    ]);
+    expect(awmIds).toHaveLength(24);
+    expect(Object.keys(awmCfg.pbrOverrides)).toHaveLength(23);
+
+    for (const id of awmIds) {
+      if (awmSprings.has(id)) {
+        expect(isGlbDynamicSpringPart('awm', id)).toBe(true);
+        expect(getGlbPartPbrOverride('awm', id)).toBeUndefined();
+      } else {
+        expect(isGlbDynamicSpringPart('awm', id)).toBe(false);
+        const ov = getGlbPartPbrOverride('awm', id);
+        expect(ov, `Missing awm PBR override for ${id}`).toBeDefined();
+        if (awmChassis.has(id)) {
+          expect(ov!.albedoFile).toBe('awm_v3_chassis_albedo.webp');
+          expect(ov!.normalFile).toBe('awm_v3_chassis_normal.webp');
+          expect(ov!.roughnessFile).toBe('awm_v3_chassis_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.9, 5);
+        } else if (awmOptic.has(id)) {
+          expect(ov!.albedoFile).toBe('awm_v3_optic_albedo.webp');
+          expect(ov!.normalFile).toBe('awm_v3_optic_normal.webp');
+          expect(ov!.roughnessFile).toBe('awm_v3_optic_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.85, 5);
+        } else {
+          expect(ov!.albedoFile).toBe('awm_v3_metal_albedo.webp');
+          expect(ov!.normalFile).toBe('awm_v3_metal_normal.webp');
+          expect(ov!.roughnessFile).toBe('awm_v3_metal_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.86, 5);
+        }
+      }
+    }
+
+    // --- 9. Barrett M82A1 (24 parts = 2 dynamic springs + 4 receiver + 11 ordnance + 7 optics_mag) ---
+    const m82Cfg = GLB_WEAPON_CONFIGS.m82a1!;
+    expect(m82Cfg.modelFile).toBe('m82a1.glb');
+    expect(m82Cfg.dynamicSpringParts).toEqual([
+      'm82a1_recoil_spring',
+      'm82a1_barrel_springs',
+    ]);
+    const m82Ids = M82A1_PARTS.map((p) => p.id);
+    const m82Springs = new Set(m82Cfg.dynamicSpringParts);
+    const m82Receiver = new Set([
+      'm82a1_upper_receiver',
+      'm82a1_lower_receiver',
+      'm82a1_carry_handle',
+      'm82a1_selector',
+    ]);
+    const m82OpticsMag = new Set([
+      'm82a1_scope',
+      'm82a1_scope_rings',
+      'm82a1_pistol_grip',
+      'm82a1_mag_body',
+      'm82a1_mag_follower',
+      'm82a1_mag_spring',
+      'm82a1_mag_floorplate',
+    ]);
+    expect(m82Ids).toHaveLength(24);
+    expect(Object.keys(m82Cfg.pbrOverrides)).toHaveLength(22);
+
+    for (const id of m82Ids) {
+      if (m82Springs.has(id)) {
+        expect(isGlbDynamicSpringPart('m82a1', id)).toBe(true);
+        expect(getGlbPartPbrOverride('m82a1', id)).toBeUndefined();
+      } else {
+        expect(isGlbDynamicSpringPart('m82a1', id)).toBe(false);
+        const ov = getGlbPartPbrOverride('m82a1', id);
+        expect(ov, `Missing m82a1 PBR override for ${id}`).toBeDefined();
+        if (m82Receiver.has(id)) {
+          expect(ov!.albedoFile).toBe('m82a1_v3_receiver_albedo.webp');
+          expect(ov!.normalFile).toBe('m82a1_v3_receiver_normal.webp');
+          expect(ov!.roughnessFile).toBe('m82a1_v3_receiver_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.88, 5);
+        } else if (m82OpticsMag.has(id)) {
+          expect(ov!.albedoFile).toBe('m82a1_v3_optics_mag_albedo.webp');
+          expect(ov!.normalFile).toBe('m82a1_v3_optics_mag_normal.webp');
+          expect(ov!.roughnessFile).toBe('m82a1_v3_optics_mag_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.88, 5);
+        } else {
+          expect(ov!.albedoFile).toBe('m82a1_v3_ordnance_albedo.webp');
+          expect(ov!.normalFile).toBe('m82a1_v3_ordnance_normal.webp');
+          expect(ov!.roughnessFile).toBe('m82a1_v3_ordnance_roughness.webp');
+          expect(ov!.normalScale).toBeCloseTo(0.85, 5);
+        }
+      }
+    }
+
     // --- Verify on-disk binary GLB headers, referenced v3 WebP maps & per-exhibit MB size budgets ---
     const modelsDir = path.resolve(__dirname, '../public/models');
     const texturesDir = path.resolve(__dirname, '../public/textures');
@@ -528,6 +764,10 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
       ak15: 12 * 1024 * 1024,
       deagle: 12 * 1024 * 1024,
       m4a1: 12 * 1024 * 1024,
+      garand: 12 * 1024 * 1024,
+      mp5: 12 * 1024 * 1024,
+      awm: 12 * 1024 * 1024,
+      m82a1: 12 * 1024 * 1024,
     };
 
     for (const wid of migrated) {
