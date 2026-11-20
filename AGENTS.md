@@ -136,35 +136,58 @@
     - [x] **V3.0 旗舰交互升级**：全局中英双语 `Cmd+K` / `Ctrl+K` 指令面板（`CommandPaletteModal.tsx`）、实时可拖拽 `±25 mm` 活体 CT 扫描剖切面（`LiveSectionPlaneBar.tsx` + `StencilSectionCap.tsx` 动态联动）及工作台玻璃态极简减负；
     - [x] **GitHub 高星门面与社区治理包**：`README.md` 升级为 **19/19 全馆旗舰真机渲染画廊**（`23/23` 幅 1920×1080 实拍 `docs/screenshots/*`）+ V3.0 架构门面，新建中英双语 `CONTRIBUTING.md` 及 `.github/{ISSUE_TEMPLATE,PULL_REQUEST_TEMPLATE}`。
 
+### 阶段八：V3.1「人类机械奇观」殿堂扩馆（`WP-17` · `BAY-20 ~ BAY-23`）
+- [ ] **WP-17｜扩充 `BAY-20 ~ BAY-23` 四款世界级机械奇观与新口径弹药（19 → 23 款全照片级馆藏）**
+  - **目标模块**：`src/weapons/{g11,vss,m134,an94}/`、`scripts/blender/build_{g11,vss,m134,an94}_photoreal.py`、`public/models/`、`public/textures/`、`src/engine/{geometry,ballistics,physics,fieldstrip,malfunctions,caliper,audio,cartridges}/`、`src/features/armory/mechanismShowdownSpecs.ts`、`public/narrations/`、`tests/`
+  - **交付与验收**：每款均严格遵循下方第 4、5 节 V3.0 照片级双轨宪法，一步到位交付 Blender 5.2 高模 Draco `.glb` + 3×2K Packed ORM WebP + 完整 CSG 兜底与 `aSpringParam` 动态弹簧 + 7 阶段专属机械运动学 + 全套实验室/拆装/排障/卡尺/流派对照/双语纪录片接入 + 1920×1080 真机 Chromium 像素级 QA 签收：
+    1. [ ] `BAY-20` **H&K G11 K2 (`4.73×33mm DM11` 无壳弹)**：90° 旋转圆柱弹膛（Rotary Breech Cylinder）+ 钟表级齿轮棘爪连杆 + 2,100 RPM 浮置三连发机匣总成；
+    2. [ ] `BAY-21` **VSS Vintorez (`9×39mm SP-5/SP-6` 亚音速微声弹)**：整体式多孔泄气枪管 + 6 级斜挡板膨胀消音室 + 6 闭锁突笋旋转枪机 + 俄制 PSO-1 瞄准镜与镂空桦木层压托；
+    3. [ ] `BAY-22` **GE M134D Minigun (`7.62×51mm NATO`)**：电机驱动六管旋转枪管簇 + 360° 机匣正弦螺旋凸轮轨道同步驱动 6 套枪机波浪循环 + 无链螺旋供弹器（Delinker）；
+    4. [ ] `BAY-23` **Nikonov AN-94 "Abakan" (`5.45×39mm 7N6`)**：浮置枪管/机匣整体长后坐 + 内部钢索滑轮（Pulley & Cable）1,800 RPM 双发延迟后坐 + 15° 右倾弹匣与二级预供弹斜坡。
+
 ---
 
 ## 4. 智能体工程红线与架构约束（Architecture Invariants & Agent Rules）
 
-所有在本仓库协作的智能体与开发者必须严格遵守以下不可妥协的工程红线：
+所有在本仓库协作的智能体与开发者必须严格遵守以下不可妥协的工程红线（项目宪法）：
 
 1. **CAD 尺度与右手坐标系**：严格遵循 `1 world unit = 1 cm`（UI 展示毫米需 `× 10`）；`+X` 朝枪口前方、`+Y` 朝上、`+Z` 朝枪身右侧。纵向剖视平面沿中轴剖开右侧机匣/套筒壳体。
-2. **双轨开源可复现 3D 资产管线（Blender 5.2 `.glb` + Web Worker CSG 兜底）**：严禁引入来历不明或闭源版权第三方 3D 模型；所有高精度 `.glb` 资产必须由仓库内可复现 MIT 开源脚本（`scripts/blender/*.py`）通过 Blender 5.2 LTS 程序化高模雕塑与 Cycles 烘焙生成（经 Draco/Meshopt 压缩、单把展品总资产 `≤ 12 MB`、按 `partId` 拆分且保持水密流形与 `1u = 1cm` 坐标），未迁移展品或离线回退继续由 `src/engine/geometry/geometry.worker.ts` 后台 CSG 零拷贝流式生成。
-3. **60Hz 瞬态时钟 & 零 React 重渲染**：高频拆解插值与击发进度必须通过 `src/engine/clock/playbackClock.ts` 订阅并在 R3F `useFrame` 内以 Zero-GC 原地更新矩阵与几何属性，禁止将 60fps 连续进度写入 Zustand 或 React state 引发组件树重渲染。
-4. **首屏秒开分包纪律**：`src/weapons/manifests.ts` 仅保留轻量静态目录与相机预设；重型武器插件、CSG 几何与双语故事 JSON 必须保持动态按需懒加载。
-5. **中英双语 100% 对等**：任何新增功能、UI 词条（`src/i18n/uiStrings.ts`）、武器/弹药说明及故事旁白（`public/narrations/*.json`）必须同步提供专业准确的中文（`zh`）与英文（`en`）版本。
-6. **全馆藏统一配音与 TTS 合成宪法（不可篡改）**：所有武器的四幕研发纪录片（`story_act[1-4]_{zh,en}.mp3`）与全部零件语音讲解（`parts/<partId>_{zh,en}.mp3`）必须且仅能通过 `scripts/build_narrations.py` 调用 Google GenAI SDK 合成，全馆 100% 锁定统一声学基准（以 Glock 17 为标杆）：
+2. **Blender 5.2 LTS 单文件双轨雕塑与 Cycles Metal GPU 烘焙宪法**：
+   - 严禁引入来历不明或闭源版权第三方 3D 模型；所有高精度 `.glb` 资产必须由仓库内可复现 MIT 开源单文件脚本（`scripts/blender/build_<id>_photoreal.py`，内建 `--postprocess` 后处理子进程）通过 Blender 5.2 LTS 程序化高模雕塑与 Cycles Metal GPU 烘焙生成，单款展品总资产（Draco `.glb` + 全部 2K WebP）严格控制在 **`≤ 12 MB`**（目标 `2.1–4.5 MB`）。
+   - **坐标系与 Option A 烘焙铁律**：Blender Z-up 严格采用右手正旋转 `(bx, by, bz) = (tx, -tz, ty)`（`det = +1`）；先在 `assembledPos/assembledRot` 装配位烘焙真实接触阴影 AO，导出 Draco glTF 2.0 前全部重置为单位矩阵 `(0, 0, 0)` 局部坐标（严格保证 **`0` 非单位变换、`0` 非流形边、`nodes === meshes === pbrOverrides`**）。
+   - **双轨动静分离铁律**：凡在 `computeFiringKinematics` 中由 `scaleX` 驱动 GPU 实时形变的部件（螺旋弹簧压缩、V 形主簧、复合弓弩四片式弓片/凸轮轴/弓弦缆绳），**必须**列入 `glbAssetService.ts` 的 `dynamicSpringParts` 留在 Web Worker CSG 轨道保留 `aSpringParam` 属性；其余实体件全量走 Blender 5.2 水密高模 `.glb`，同时保留 CSG 离线零拷贝兜底。
+3. **3×2K 5-Ch Packed ORM WebP 与 UV 防火墙铁律**：
+   - 每款展品独立配置 3 套 `2048×2048` 贴图套件（`public/textures/<id>_v3_<suite>_{albedo,normal,roughness}.webp`），其中 `*_roughness.webp` 打包 5 通道 ORM（`R = AO, G = Roughness, B = Metalness`），全库严格保持 **`0` 张 PNG**；`pbrManager.ts` 必须通过 `lockLinearTextureColorSpace` 锁死法线/ORM 线性色彩空间，严禁 `@react-three/fiber` v8 将其覆写为 `SRGB8_ALPHA8`。
+   - **UV 排布与零渗色红线**：统一使用 `CONCAVE` UV 排布（`margin >= 0.0045`）；所有枪身铭文、兵工厂戳记、试枪章与 MIL-STD-130 UID 二维码必须映射至无畸变平面 Hero UV 带，确保 1:1 正向无镜像、无裁剪；所有高饱和强调色部件（安全橙托弹板、绯红快慢机/保险点、绿宝石/蓝宝石光学镀膜镜片、黄铜/绿尖弹链、荧光光纤瞄针）必须设置 **`>= 50 px` UV 隔离防火墙**，零色渗。
+4. **AgX 真铁材质校准与几何防穿帮红线**：
+   - 在 Three.js AgX 色调映射与双柔光条灯（`tactical_vault.hdr`）影棚下，暗色发黑/烤蓝/磷化钢平面 **严禁压黑**，基础反照率基线须维持 `sRGB 0.18–0.28`、缎面粗糙度 `R = 0.25–0.38`（哑光工程聚合物 `sRGB 0.16–0.22, M = 0.0, R = 0.56–0.70`），确保高光呈现丝绸级真铁光泽而非死黑塑料块。
+   - **装配与剖面零穿帮红线**：扳机护圈必须前后实心焊接闭环零悬空；套筒/枪管鼻锥严禁内膛破壁；CT 纵剖面（`?cut=1`）下的弹匣托弹板与压缩弹簧必须精确位于实弹柱最底发正下方零穿模；超长/超高展品适配 `ArmoryViewport.tsx` 相机 `far >= 1200` 严禁截断影棚天幕。
+5. **60Hz 瞬态时钟 & 零 React 重渲染**：高频拆解插值与击发进度必须通过 `src/engine/clock/playbackClock.ts` 订阅并在 R3F `useFrame` 内以 Zero-GC 原地更新矩阵与几何属性，禁止将 60fps 连续进度写入 Zustand 或 React state 引发组件树重渲染。
+6. **首屏秒开与 `<800 kB` 零告警分包纪律**：`src/weapons/manifests.ts` 仅保留轻量静态目录与相机预设；重型武器插件、CSG 几何与双语故事 JSON 必须保持动态按需懒加载，全部生产 Vite chunk 严格 `< 800 kB` 零体积告警，且全部静态资源路径经 `src/engine/utils/assetUrl.ts` 兼容 `/` 与 `/digital-armory-3d/` 子路径。
+7. **中英双语 100% 对等**：任何新增功能、UI 词条（`src/i18n/uiStrings.ts`）、武器/弹药说明及故事旁白（`public/narrations/*.json`）必须同步提供专业准确的中文（`zh`）与英文（`en`）版本。
+8. **全馆藏统一配音与 TTS 合成宪法（不可篡改）**：所有武器的四幕研发纪录片（`story_act[1-4]_{zh,en}.mp3`）与全部零件语音讲解（`parts/<partId>_{zh,en}.mp3`）必须且仅能通过 `scripts/build_narrations.py` 调用 Google GenAI SDK 合成，全馆 100% 锁定统一声学基准（以 Glock 17 为标杆）：
    - **唯一模型与音色**：`model = "gemini-3.8-flash-tts"`，**`voice = "Charon"`**（严禁降级为 `flash-lite-tts` 或切换其他音色）。
    - **唯一旁白风格指令（`speech_metadata.style`）**：
      - 中文（`zh`）：`"沉稳磁性、富有历史厚重感与精密机械工程严谨度的纪录片旁白，语速适中自然，重点转折处略作停顿，吐字清晰饱满"`
      - 英文（`en`）：`"Authoritative, warm, articulate museum firearm historian and mechanical engineering documentary narrator, measured pace with natural cadence"`
    - **统一编码与哈希留痕**：统一经 `ffmpeg -ar 24000 -ac 1 -codec:a libmp3lame -b:a 64k` 转码输出 `24 kHz` 单声道 `64 kbps` MP3，并在 `scripts/narrations/.cache/<weaponId>_tts_hashes.json` 记录 `sha256("gemini-3.8-flash-tts|Charon|<style>|<audioScript>")`。
    - **严禁私自替换 TTS 引擎铁律**：**绝对禁止**使用 `edge-tts`（如 `YunxiNeural` / `ChristopherNeural`）、系统 `say` 或任何第三方 TTS 引擎生成音频写入 `public/audio/`！当环境变量 / `.env.local` 缺少 `GEMINI_API_KEY` 或遭遇 `402/429` 配额熔断时，智能体必须**立即中止配音生成并向用户如实报告阻塞**，提示配置 `GEMINI_API_KEY` 后运行 `uv run --with google-genai --with pydantic python3 scripts/build_narrations.py --weapon <id> --batch-tts --force-audio`，严禁擅自用替代音色绕过。
-7. **路线图状态同步**：每完成并通过验收一个工程包（`WP-01` ~ `WP-16`），必须同步更新本 `AGENTS.md` 中对应条目的复选框状态（`[x]`）。
+9. **科普安全边界、Git 纪律与路线图同步**：严禁导出任何可用于真实制造或 3D 打印的 STL / 公差蓝图；未经用户明确要求严禁私自 `git push` 至远端仓库；每完成并通过验收一个工程包（`WP-01` ~ `WP-17` / `PR-01` ~ `PR-04`），必须同步更新本 `AGENTS.md` 对应基线与复选框状态（`[x]`）。
 
 ---
 
-## 5. 质量门禁命令（Verification & Quality Gates）
+## 5. 五道质量门禁标准（Verification & Quality Gates）
 
-完成任意工程包或提交代码前，必须完整运行并全部通过以下四项门禁检查：
+完成任意工程包、新武器实装或提交代码前，必须完整运行并全部通过以下 **四道工程代码门禁 + 一道 1080p 真机视觉 QA 门禁**：
 
 ```bash
-npm run typecheck   # TypeScript 严格模式零错误
-npm run lint        # ESLint 零警告 / 零错误
-npm test            # Vitest 全量几何、运动学、PBR 亮度与双语契约测试全部通过
-npm run build       # 生产环境多入口 (index.html + showcase.html) 分包构建成功
+npm run typecheck   # 1. TypeScript 严格模式零错误
+npm run lint        # 2. ESLint 零警告 / 零错误
+npm test            # 3. Vitest 全量几何、运动学、GLB/PBR、物理与双语契约测试全部通过
+npm run build       # 4. 生产环境多入口 (index.html + showcase.html) 分包构建零告警 (全部 chunk < 800 kB)
 ```
+
+5. **1920×1080 实机无头 Chromium 逐像素视觉与运行时 QA（新增/重构 3D 资产强制门禁）**：
+   - 在真实浏览器（`http://127.0.0.1:5173/?screen=workbench&weapon=<id>`）逐一抓取 **影棚 3/4 全景、核心铭文微距、特色机构特写、实时 CT 纵剖面（`?cut=1`）与 `t = 1.0` 爆炸图** 并通过 `read_file` 逐像素人工/智能体目检；
+   - 运行时断言强制全绿：`consoleErrors === 0`、`pageErrors === 0`、实体件 `100%` `userData.isGlbAsset === true`、动态件 `100%` 保留 `aSpringParam`、`0` 线性/sRGB `colorSpace` 违规；
+   - 发现任何悬空零件、穿模、破壁、铭文镜像/遮挡、色渗或压黑，**必须直接打回对应画师/工程师返工复验至 10/10**，并将最终签收的 1920×1080 实拍图归档至 `docs/screenshots/<id>-v3-macro.jpg` 并同步校验 `README.md` 零断链。
