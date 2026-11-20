@@ -222,8 +222,39 @@ function getWeaponCategoryTokens(
   const tokens = [category, categoryCn];
   if (weaponTypeCn) tokens.push(weaponTypeCn);
   if (weaponTypeEn) tokens.push(weaponTypeEn);
+  if (category === 'lmg' || id === 'm249' || id === 'm134') {
+    tokens.push('lmg', 'machine gun', '轻机枪', '机枪');
+  }
   if (id === 'm249') {
-    tokens.push('lmg', 'saw', 'machine gun', '轻机枪', '机枪');
+    tokens.push('saw', 'minimi');
+  }
+  if (id === 'g11') {
+    tokens.push('caseless', 'clockwork', 'hk', '无壳弹', '发条', '转膛');
+  }
+  if (id === 'vss') {
+    tokens.push(
+      'vintorez',
+      'subsonic',
+      'suppressor',
+      'pso-1',
+      '微声',
+      '消音',
+      '亚音速'
+    );
+  }
+  if (id === 'm134') {
+    tokens.push(
+      'minigun',
+      'gatling',
+      'rotary',
+      'electric',
+      '加特林',
+      '转管',
+      '米尼冈'
+    );
+  }
+  if (id === 'an94') {
+    tokens.push('abakan', 'pulley', 'hyperburst', '阿巴坎', '滑轮', '双发点射');
   }
   if (category === 'rifle') {
     tokens.push('assault', 'carbine', '步枪');
@@ -247,7 +278,7 @@ export function buildCommandPaletteItems(
   const studioUi = UI_STRINGS[lang].studio;
   const items: CommandPaletteItem[] = [];
 
-  // 1. All 19 Museum Exhibits
+  // 1. All 23 Museum Exhibits
   for (const manifest of WEAPON_MANIFESTS) {
     const id = manifest.id;
     const cat = manifest.catalog;
@@ -1108,7 +1139,7 @@ export interface FilterCommandPaletteOptions {
 }
 
 const DEFAULT_EMPTY_CAPS: Record<CommandPaletteGroupId, number> = {
-  weapons: 19,
+  weapons: WEAPON_MANIFESTS.length,
   parts: 8,
   labs: 9,
   actions: 12,

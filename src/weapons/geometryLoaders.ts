@@ -28,6 +28,10 @@ export const GEOMETRY_MODULE_LOADERS: Record<
   m249: () => import('./m249/geometries').then((m) => m.GEOMETRY_BUILDERS),
   p08: () => import('./p08/geometries').then((m) => m.GEOMETRY_BUILDERS),
   vector: () => import('./vector/geometries').then((m) => m.GEOMETRY_BUILDERS),
+  g11: () => import('./g11/geometries').then((m) => m.GEOMETRY_BUILDERS),
+  vss: () => import('./vss/geometries').then((m) => m.GEOMETRY_BUILDERS),
+  m134: () => import('./m134/geometries').then((m) => m.GEOMETRY_BUILDERS),
+  an94: () => import('./an94/geometries').then((m) => m.GEOMETRY_BUILDERS),
 };
 
 export function loadWeaponGeometryBuilders(

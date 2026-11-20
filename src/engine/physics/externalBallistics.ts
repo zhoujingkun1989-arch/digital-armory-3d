@@ -5,9 +5,9 @@ import type { CaliberProfile } from '../../weapons/types';
 //
 // Pure, DOM-free, Three.js-free deterministic 3-DOF Point-Mass Exterior Ballistics
 // module (Zero-GC hot loop, unit-testable in Node) providing:
-//   1. All 13 canonical projectile profiles (11 SAAMI/CIP/NATO metallic & shotshell
-//      calibers incl. `.45 ACP 230gr FMJ` + 2 ATA/IBO 400gr compound bow &
-//      crossbow carbon projectiles).
+//   1. All 17 canonical projectile profiles (15 SAAMI/CIP/NATO metallic, caseless &
+//      shotshell calibers incl. 4.73×33mm DM11, 9×39mm SP-6, 5.45×39mm 7N6,
+//      7.62×51mm NATO M80 + 2 ATA/IBO 400gr compound bow & crossbow carbon shafts).
 //   2. Standard ICAO / ISA atmosphere air density ρ(h, T) & speed of sound a(T).
 //   3. Monotone-cubic Hermite BRL/McCoy G1 & G7 standard drag curves C_d(M) plus
 //      low-Mach finned shaft/vane arrow drag curve.
@@ -69,16 +69,20 @@ export const DEFAULT_DOPE_RANGES_M = [
   50, 100, 200, 300, 500, 800, 1000,
 ] as const;
 
-/** Canonical ordered list of all 13 external-ballistics projectile profiles. */
+/** Canonical ordered list of all 17 external-ballistics projectile profiles. */
 export const EXTERNAL_PROJECTILE_ORDER: readonly ExternalProjectileId[] = [
   '9mm_para',
   '45_acp',
+  '473_caseless',
   '57_28',
   '357_magnum',
   '50_ae',
+  '9x39_subsonic',
   '12_gauge',
   '762_m43',
+  '545_m74',
   '556_nato',
+  '762_nato',
   '30_06',
   '338_lapua',
   '50_bmg',
@@ -420,6 +424,106 @@ export const EXTERNAL_PROJECTILE_SPECS: Readonly<
       '42.8 g anti-materiel projectile launches with 16,940 J and still delivers over 4,200 J of armor-defeating energy at 1,000 m.',
   }),
 
+  '473_caseless': defineProjectile({
+    id: '473_caseless',
+    code: '4.73×33mm',
+    nameZh: '4.73×33mm DM11 无壳弹',
+    nameEn: '4.73×33mm DM11 Caseless',
+    loadLabelZh: '50 gr DM11 铜被甲高长径比船尾弹',
+    loadLabelEn: '50 gr DM11 High-Aspect Boat-Tail',
+    category: 'rifle',
+    dragModel: 'G7',
+    bc: 0.158,
+    muzzleVelocityMps: 930,
+    massGrains: 50.2,
+    massGrams: 3.25,
+    caliberMm: 4.73,
+    pelletCount: 1,
+    defaultSightHeightCm: 7.2,
+    recommendedZeroM: 100,
+    representativeWeaponIds: ['g11'],
+    primaryWeaponId: 'g11',
+    noteZh:
+      '嵌埋于高温耐燃硝胺药块内的 4.73mm 细长船尾弹头以 930 m/s 高速出膛，0–400 m 弹道比 5.56 NATO 更平直，2,100 RPM 三连发在枪口上跳前齐射命中。',
+    noteEn:
+      'Telescoped inside a combustible HITP propellant block, this slender 4.73mm boat-tail launches at 930 m/s for a laser-flat 0–400 m trajectory paired with G11 2,100 RPM bursts.',
+  }),
+
+  '9x39_subsonic': defineProjectile({
+    id: '9x39_subsonic',
+    code: '9×39mm',
+    nameZh: '9×39mm SP-6 亚音速穿甲弹',
+    nameEn: '9×39mm SP-6 Subsonic AP',
+    loadLabelZh: '250 gr SP-6 硬化钢芯重型亚音速弹',
+    loadLabelEn: '250 gr SP-6 Hardened-Core Subsonic AP',
+    category: 'sniper',
+    dragModel: 'G1',
+    bc: 0.295,
+    muzzleVelocityMps: 290,
+    massGrains: 250,
+    massGrams: 16.2,
+    caliberMm: 9.25,
+    pelletCount: 1,
+    defaultSightHeightCm: 6.2,
+    recommendedZeroM: 100,
+    representativeWeaponIds: ['vss'],
+    primaryWeaponId: 'vss',
+    noteZh:
+      '天生 290 m/s（Mach 0.85）全航程亚音速零激波音爆，凭借 16.2 g 超重弹体与高截面密度在 300 m 内仍具强劲防弹衣侵彻力，但高抛弧线要求精准测距。',
+    noteEn:
+      'Inherently subsonic at 290 m/s (Mach 0.85) with zero ballistic crack; its heavy 16.2 g hardened-core projectile punches armor inside 300 m at the cost of rainbow drop.',
+  }),
+
+  '545_m74': defineProjectile({
+    id: '545_m74',
+    code: '5.45×39mm',
+    nameZh: '5.45×39mm 7N6',
+    nameEn: '5.45×39mm 7N6 Soviet Intermediate',
+    loadLabelZh: '53 gr 7N6 尖头空腔钢芯船尾弹',
+    loadLabelEn: '53 gr 7N6 Air-Cavity Steel-Core Boat-Tail',
+    category: 'rifle',
+    dragModel: 'G7',
+    bc: 0.168,
+    muzzleVelocityMps: 900,
+    massGrains: 53,
+    massGrams: 3.43,
+    caliberMm: 5.6,
+    pelletCount: 1,
+    defaultSightHeightCm: 4.8,
+    recommendedZeroM: 100,
+    representativeWeaponIds: ['an94'],
+    primaryWeaponId: 'an94',
+    noteZh:
+      '低后坐力高长径比船尾外形（G7 0.168）配合 900 m/s 初速，较 7.62×39mm 显著压缩直射弹道弧高，并赋予 AN-94 1,800 RPM 双发同孔精度。',
+    noteEn:
+      'High-BC slender boat-tail (G7 0.168) at 900 m/s dramatically flattens trajectory over 7.62×39mm while enabling AN-94 1,800 RPM hyperburst convergence.',
+  }),
+
+  '762_nato': defineProjectile({
+    id: '762_nato',
+    code: '7.62 NATO',
+    nameZh: '7.62×51mm NATO M80',
+    nameEn: '7.62×51mm NATO M80 Ball',
+    loadLabelZh: '147 gr M80 铜被甲铅芯船尾弹',
+    loadLabelEn: '147 gr M80 FMJ Boat-Tail',
+    category: 'rifle',
+    dragModel: 'G7',
+    bc: 0.2,
+    muzzleVelocityMps: 853,
+    massGrains: 147,
+    massGrams: 9.5,
+    caliberMm: 7.82,
+    pelletCount: 1,
+    defaultSightHeightCm: 5.5,
+    recommendedZeroM: 100,
+    representativeWeaponIds: ['m134'],
+    primaryWeaponId: 'm134',
+    noteZh:
+      '北约通用全威力步机弹标杆（853 m/s · 3,456 J），经 M134D 六管加特林以 3,000 RPM 倾泻可在 850 m 内维持持续超音速饱和压制。',
+    noteEn:
+      'NATO full-power standard (853 m/s, 3,456 J) maintaining supersonic flight past 850 m — unleashed at 3,000 RPM by the six-barrel M134D Minigun.',
+  }),
+
   arrow_400gr: defineProjectile({
     id: 'arrow_400gr',
     code: '400gr Arrow',
@@ -478,6 +582,12 @@ export function normalizeExternalProjectileId(
   if (input === '9x19') return '9mm_para';
   if (input === '57x28') return '57_28';
   if (input === '.45_acp' || input === '45acp') return '45_acp';
+  if (input === '4.73x33' || input === 'dm11') return '473_caseless';
+  if (input === '9x39' || input === 'sp6') return '9x39_subsonic';
+  if (input === '5.45x39' || input === '545x39') return '545_m74';
+  if (input === '7.62x51' || input === '308_win' || input === '762x51') {
+    return '762_nato';
+  }
   return input in EXTERNAL_PROJECTILE_SPECS
     ? (input as ExternalProjectileId)
     : '556_nato';
@@ -1668,5 +1778,19 @@ export const BALLISTICS_RANGE_PRESETS: readonly BallisticsPresetSpec[] = [
     zeroRangeM: 50,
     sightHeightCm: 4.8,
     crosswindMps: 4.0,
+  },
+  {
+    id: 'cold_war_marvels',
+    labelZh: '冷战黑科技四雄: 4.73无壳 vs 5.45×39 vs 9×39微声 vs 7.62 NATO',
+    labelEn: 'Cold War Marvels: 4.73 Caseless vs 5.45×39 vs 9×39 vs 7.62 NATO',
+    subtitleZh:
+      '600m 工程对决：比较 DM11 超高速无壳弹、7N6 小口径船尾弹、SP-6 亚音速穿甲重弹与 M134D 全威力 7.62 NATO',
+    subtitleEn:
+      '600m engineering comparison across 4.73mm DM11 caseless, 5.45mm 7N6, subsonic 9×39mm SP-6 AP, and full-power 7.62 NATO',
+    projectiles: ['473_caseless', '545_m74', '9x39_subsonic', '762_nato'],
+    maxRangeM: 600,
+    zeroRangeM: 100,
+    sightHeightCm: 5.5,
+    crosswindMps: 4.5,
   },
 ];

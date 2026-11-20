@@ -372,13 +372,18 @@ export const GasFlowVisualizer: React.FC = () => {
           ? 0.34
           : caliber === '45_acp'
             ? 0.31
-            : caliber === '338_lapua' ||
-                caliber === '30_06' ||
-                caliber === '762_m43' ||
-                caliber === '357_magnum' ||
-                caliber === '9mm_para'
-              ? 0.25
-              : 0.2;
+            : caliber === '9x39_subsonic'
+              ? 0.27
+              : caliber === '338_lapua' ||
+                  caliber === '30_06' ||
+                  caliber === '762_nato' ||
+                  caliber === '762_m43' ||
+                  caliber === '357_magnum' ||
+                  caliber === '9mm_para'
+                ? 0.25
+                : caliber === '473_caseless'
+                  ? 0.17
+                  : 0.2;
 
     // 1. Bore propellant column (chamberX -> live projectile base)
     const boreSpan = Math.max(1.0, manifold.muzzleX - manifold.chamberX);
@@ -575,7 +580,8 @@ export const GasFlowVisualizer: React.FC = () => {
       }
     }
 
-    // Revolver forcing-cone 360° cylinder-gap radial flash ring (Colt Python X = 2.20)
+    // Revolver forcing-cone 360° cylinder-gap flash ring (Python X=2.20) OR VSS integral baffle radial bleed expansion (X=31.0)
+    const isVssBaffleBleed = manifold.family === 'integral_suppressed_piston';
     if (cylinderGapRingRef.current && cylinderGapMatRef.current) {
       if (isRevolverGap && liveTravel >= 0.1 && boreAlpha > 0.03) {
         const gapPulse = Math.sin(clamp01((liveTravel - 0.1) / 0.88) * Math.PI);
@@ -588,6 +594,17 @@ export const GasFlowVisualizer: React.FC = () => {
           .copy(COL_HIGH_PRESSURE)
           .lerp(COL_PEAK_PLASMA, clamp01(pNorm));
         cylinderGapMatRef.current.opacity = clamp01(boreAlpha * (0.45 + 0.55 * gapPulse));
+      } else if (isVssBaffleBleed && liveTravel >= 0.35 && boreAlpha > 0.02) {
+        const bleedPulse = Math.sin(clamp01((liveTravel - 0.35) / 0.65) * Math.PI);
+        const bleedScale = 0.75 + 1.05 * bleedPulse;
+        cylinderGapRingRef.current.visible = bleedPulse > 0.02;
+        cylinderGapRingRef.current.position.set(31.0, manifold.boreY, 0);
+        cylinderGapRingRef.current.quaternion.copy(_ringAxisX);
+        cylinderGapRingRef.current.scale.set(bleedScale, bleedScale, bleedScale * 2.2);
+        cylinderGapMatRef.current.color
+          .copy(COL_GAS_TAP_CYAN)
+          .lerp(COL_SAFE_BLOWDOWN, 0.4);
+        cylinderGapMatRef.current.opacity = clamp01(boreAlpha * 0.55 * bleedPulse);
       } else {
         cylinderGapRingRef.current.visible = false;
       }

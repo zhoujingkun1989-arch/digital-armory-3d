@@ -42,6 +42,10 @@ export type MechanismAcousticStyle =
   | 'revolver_magnum'
   | 'argo_shotgun'
   | 'garand_enbloc'
+  | 'caseless_clockwork'
+  | 'integral_suppressed'
+  | 'electric_gatling'
+  | 'pulley_hyperburst'
   | 'compound_bow'
   | 'compound_crossbow';
 
@@ -238,6 +242,58 @@ export const CALIBER_ACOUSTIC_PROFILES: Record<
     brakeRoarGain: 0.3,
     casingRingHz: 2380,
     mechanismStyle: 'garand_enbloc',
+  },
+  '473_caseless': {
+    caliber: '473_caseless',
+    labelEn: '4.73×33mm DM11 Caseless',
+    labelZh: '4.73×33mm DM11 高温无壳步枪弹',
+    subFreqHz: 92,
+    punchDecaySec: 0.18,
+    blastTailSec: 0.32,
+    crackCutoffHz: 4100,
+    peakGain: 0.72,
+    brakeRoarGain: 0.18,
+    casingRingHz: 0,
+    mechanismStyle: 'caseless_clockwork',
+  },
+  '9x39_subsonic': {
+    caliber: '9x39_subsonic',
+    labelEn: '9×39mm SP-6 Subsonic AP',
+    labelZh: '9×39mm SP-6 微声亚音速穿甲弹',
+    subFreqHz: 86,
+    punchDecaySec: 0.14,
+    blastTailSec: 0.18,
+    crackCutoffHz: 1120,
+    peakGain: 0.34,
+    brakeRoarGain: 0.08,
+    casingRingHz: 2680,
+    mechanismStyle: 'integral_suppressed',
+  },
+  '762_nato': {
+    caliber: '762_nato',
+    labelEn: '7.62×51mm NATO M80 Ball',
+    labelZh: '7.62×51mm NATO 全威力机枪弹',
+    subFreqHz: 54,
+    punchDecaySec: 0.32,
+    blastTailSec: 0.56,
+    crackCutoffHz: 2740,
+    peakGain: 0.92,
+    brakeRoarGain: 0.38,
+    casingRingHz: 2320,
+    mechanismStyle: 'electric_gatling',
+  },
+  '545_m74': {
+    caliber: '545_m74',
+    labelEn: '5.45×39mm 7N6 Soviet',
+    labelZh: '5.45×39mm 7N6 小口径高速弹',
+    subFreqHz: 78,
+    punchDecaySec: 0.21,
+    blastTailSec: 0.38,
+    crackCutoffHz: 3560,
+    peakGain: 0.76,
+    brakeRoarGain: 0.34,
+    casingRingHz: 3020,
+    mechanismStyle: 'pulley_hyperburst',
   },
 };
 
@@ -873,6 +929,38 @@ class ProceduralGunsmithSoundEngine {
             attack: 0.004,
             bus: 'mechanical',
           });
+        } else if (weaponId === 'm134') {
+          // GE M134D 28V DC electric drive motor spin-up whine + 50 Hz rotary stator hum
+          this.emitModalPing({
+            startTime: now,
+            duration: isSlowMo ? 0.16 : 0.095,
+            freqStart: 320,
+            freqEnd: 640,
+            type: 'triangle',
+            gainPeak: 0.24,
+            bus: 'mechanical',
+          });
+          this.emitNoiseBurst({
+            startTime: now + 0.005,
+            duration: isSlowMo ? 0.14 : 0.085,
+            filterType: 'bandpass',
+            freqStart: 880,
+            freqEnd: 1840,
+            q: 5.5,
+            gainPeak: 0.16,
+            attack: 0.008,
+            bus: 'mechanical',
+          });
+        } else if (weaponId === 'vss') {
+          // VSS Vintorez hammerless silent linear striker glide (muted low-noise click!)
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 2480,
+            baseDecaySec: 0.018,
+            gainPeak: 0.11,
+            hardness01: 0.72,
+            bus: 'mechanical',
+          });
         } else {
           // Hardened S7/4140 steel sear escapement snap + hammer/striker spring release
           this.emitSteelWaveguideStrike({
@@ -941,6 +1029,53 @@ class ProceduralGunsmithSoundEngine {
           saturate: profile.brakeRoarGain > 0.3,
           bus: 'ballistic',
         });
+
+        // Platform-signature ballistic harmonics (AN-94 1,800 RPM double-tap + brake whistle; M134 50Hz BRRRT buzz)
+        if (weaponId === 'an94') {
+          const dtHyper = isSlowMo ? 0.072 : 0.033;
+          this.emitModalPing({
+            startTime: tBlast + dtHyper,
+            duration: 0.16,
+            freqStart: profile.subFreqHz * 2.8,
+            freqEnd: profile.subFreqHz,
+            type: 'sine',
+            gainPeak: profile.peakGain * 0.68,
+            bus: 'ballistic',
+          });
+          this.emitNoiseBurst({
+            startTime: tBlast + dtHyper,
+            duration: 0.06,
+            filterType: 'bandpass',
+            freqStart: 3600,
+            freqEnd: 1950,
+            q: 1.2,
+            gainPeak: profile.peakGain * 0.72,
+            attack: 0.0008,
+            saturate: true,
+            bus: 'ballistic',
+          });
+          // Iconic figure-8 whistling dual-chamber brake air jet
+          this.emitModalPing({
+            startTime: tBlast + 0.008,
+            duration: 0.095,
+            freqStart: 2980,
+            freqEnd: 2420,
+            type: 'sine',
+            gainPeak: 0.11,
+            bus: 'ballistic',
+          });
+        } else if (weaponId === 'm134') {
+          // Iconic 3,000 RPM (50 Hz) rotary Gatling "BRRRT!" cyclic pulse harmonic
+          this.emitModalPing({
+            startTime: tBlast + 0.006,
+            duration: isSlowMo ? 0.14 : 0.08,
+            freqStart: 52,
+            freqEnd: 48,
+            type: 'sawtooth',
+            gainPeak: 0.28,
+            bus: 'ballistic',
+          });
+        }
         break;
       }
 
@@ -1053,6 +1188,56 @@ class ProceduralGunsmithSoundEngine {
             massBodyHz: 265,
             bus: 'mechanical',
           });
+        } else if (weaponId === 'g11') {
+          // H&K G11 K2 2,100 RPM Swiss clockwork gear train rapid double-tick + floating recoil glide
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 3240,
+            baseDecaySec: 0.022,
+            gainPeak: 0.2,
+            hardness01: 0.92,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + (isSlowMo ? 0.016 : 0.007),
+            fundamentalHz: 3780,
+            baseDecaySec: 0.018,
+            gainPeak: 0.16,
+            hardness01: 0.94,
+            bus: 'mechanical',
+          });
+        } else if (weaponId === 'vss') {
+          // VSS Vintorez integral 6-stage slant baffle subsonic gas expansion whisper
+          this.emitNoiseBurst({
+            startTime: now,
+            duration: 0.068,
+            filterType: 'bandpass',
+            freqStart: 1380,
+            freqEnd: 460,
+            q: 1.6,
+            gainPeak: 0.16,
+            bus: 'ballistic',
+          });
+        } else if (weaponId === 'an94') {
+          // Nikonov AN-94 CNC grooved pulley & braided steel cable rapid pre-feed whirr
+          this.emitNoiseBurst({
+            startTime: now,
+            duration: isSlowMo ? 0.065 : 0.036,
+            filterType: 'bandpass',
+            freqStart: 1920,
+            freqEnd: 3420,
+            q: 4.8,
+            gainPeak: 0.2,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + 0.004,
+            fundamentalHz: 2260,
+            baseDecaySec: 0.026,
+            gainPeak: 0.19,
+            hardness01: 0.88,
+            bus: 'mechanical',
+          });
         } else {
           // High-pressure gas port bleed tapping chromed steel piston cup / Stoner gas key
           this.emitNoiseBurst({
@@ -1140,6 +1325,30 @@ class ProceduralGunsmithSoundEngine {
             baseDecaySec: 0.022,
             gainPeak: 0.11,
             hardness01: 0.78,
+            bus: 'mechanical',
+          });
+          break;
+        }
+        if (
+          weaponId === 'g11' ||
+          profile.mechanismStyle === 'caseless_clockwork'
+        ) {
+          // H&K G11 100% Caseless: ZERO brass extraction/ejection ring! Vertical rammer click + rubber buffer only.
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 2920,
+            baseDecaySec: 0.024,
+            gainPeak: 0.18,
+            hardness01: 0.88,
+            bus: 'mechanical',
+          });
+          this.emitModalPing({
+            startTime: now + 0.012,
+            duration: 0.052,
+            freqStart: 138,
+            freqEnd: 74,
+            type: 'sine',
+            gainPeak: 0.16,
             bus: 'mechanical',
           });
           break;

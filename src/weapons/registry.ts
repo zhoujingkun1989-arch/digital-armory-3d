@@ -22,6 +22,10 @@ const PLUGIN_LOADERS: Record<WeaponId, () => Promise<WeaponRuntimePlugin>> = {
   m249: () => import('./m249/plugin').then((m) => m.M249_PLUGIN),
   p08: () => import('./p08/plugin').then((m) => m.P08_PLUGIN),
   vector: () => import('./vector/plugin').then((m) => m.VECTOR_PLUGIN),
+  g11: () => import('./g11/plugin').then((m) => m.G11_PLUGIN),
+  vss: () => import('./vss/plugin').then((m) => m.VSS_PLUGIN),
+  m134: () => import('./m134/plugin').then((m) => m.M134_PLUGIN),
+  an94: () => import('./an94/plugin').then((m) => m.AN94_PLUGIN),
 };
 
 const pluginCache = new Map<WeaponId, WeaponRuntimePlugin>();

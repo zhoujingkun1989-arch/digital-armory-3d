@@ -427,6 +427,90 @@ const R500_V3_OPTIC_BOLT_PBR: PbrBindingSpec = {
   normalScale: 0.85,
 };
 
+const G11_V3_HOUSING_PBR: PbrBindingSpec = {
+  albedoFile: 'g11_v3_housing_albedo.webp',
+  normalFile: 'g11_v3_housing_normal.webp',
+  roughnessFile: 'g11_v3_housing_roughness.webp',
+  normalScale: 0.88,
+};
+
+const G11_V3_CLOCKWORK_PBR: PbrBindingSpec = {
+  albedoFile: 'g11_v3_clockwork_albedo.webp',
+  normalFile: 'g11_v3_clockwork_normal.webp',
+  roughnessFile: 'g11_v3_clockwork_roughness.webp',
+  normalScale: 0.85,
+};
+
+const G11_V3_BARREL_MAG_PBR: PbrBindingSpec = {
+  albedoFile: 'g11_v3_barrel_mag_albedo.webp',
+  normalFile: 'g11_v3_barrel_mag_normal.webp',
+  roughnessFile: 'g11_v3_barrel_mag_roughness.webp',
+  normalScale: 0.86,
+};
+
+const VSS_V3_RECEIVER_SUPP_PBR: PbrBindingSpec = {
+  albedoFile: 'vss_v3_receiver_supp_albedo.webp',
+  normalFile: 'vss_v3_receiver_supp_normal.webp',
+  roughnessFile: 'vss_v3_receiver_supp_roughness.webp',
+  normalScale: 0.88,
+};
+
+const VSS_V3_WOOD_OPTIC_PBR: PbrBindingSpec = {
+  albedoFile: 'vss_v3_wood_optic_albedo.webp',
+  normalFile: 'vss_v3_wood_optic_normal.webp',
+  roughnessFile: 'vss_v3_wood_optic_roughness.webp',
+  normalScale: 0.9,
+};
+
+const VSS_V3_METAL_PBR: PbrBindingSpec = {
+  albedoFile: 'vss_v3_metal_albedo.webp',
+  normalFile: 'vss_v3_metal_normal.webp',
+  roughnessFile: 'vss_v3_metal_roughness.webp',
+  normalScale: 0.84,
+};
+
+const M134_V3_HOUSING_MOTOR_PBR: PbrBindingSpec = {
+  albedoFile: 'm134_v3_housing_motor_albedo.webp',
+  normalFile: 'm134_v3_housing_motor_normal.webp',
+  roughnessFile: 'm134_v3_housing_motor_roughness.webp',
+  normalScale: 0.88,
+};
+
+const M134_V3_BARRELS_ROTOR_PBR: PbrBindingSpec = {
+  albedoFile: 'm134_v3_barrels_rotor_albedo.webp',
+  normalFile: 'm134_v3_barrels_rotor_normal.webp',
+  roughnessFile: 'm134_v3_barrels_rotor_roughness.webp',
+  normalScale: 0.85,
+};
+
+const M134_V3_DELINKER_BOLTS_PBR: PbrBindingSpec = {
+  albedoFile: 'm134_v3_delinker_bolts_albedo.webp',
+  normalFile: 'm134_v3_delinker_bolts_normal.webp',
+  roughnessFile: 'm134_v3_delinker_bolts_roughness.webp',
+  normalScale: 0.86,
+};
+
+const AN94_V3_RECEIVER_STOCK_PBR: PbrBindingSpec = {
+  albedoFile: 'an94_v3_receiver_stock_albedo.webp',
+  normalFile: 'an94_v3_receiver_stock_normal.webp',
+  roughnessFile: 'an94_v3_receiver_stock_roughness.webp',
+  normalScale: 0.9,
+};
+
+const AN94_V3_PULLEY_METAL_PBR: PbrBindingSpec = {
+  albedoFile: 'an94_v3_pulley_metal_albedo.webp',
+  normalFile: 'an94_v3_pulley_metal_normal.webp',
+  roughnessFile: 'an94_v3_pulley_metal_roughness.webp',
+  normalScale: 0.85,
+};
+
+const AN94_V3_BARREL_MAG_PBR: PbrBindingSpec = {
+  albedoFile: 'an94_v3_barrel_mag_albedo.webp',
+  normalFile: 'an94_v3_barrel_mag_normal.webp',
+  roughnessFile: 'an94_v3_barrel_mag_roughness.webp',
+  normalScale: 0.88,
+};
+
 export const GLB_WEAPON_CONFIGS: Readonly<
   Record<WeaponId, GlbWeaponAssetConfig>
 > = {
@@ -1060,6 +1144,133 @@ export const GLB_WEAPON_CONFIGS: Readonly<
       r500_quiver_frame: R500_V3_OPTIC_BOLT_PBR,
       r500_retention_arm: R500_V3_OPTIC_BOLT_PBR,
       r500_carbon_bolt: R500_V3_OPTIC_BOLT_PBR,
+    },
+  },
+  g11: {
+    modelFile: 'g11.glb',
+    dynamicSpringParts: ['g11_recoil_spring', 'g11_mag_spring'],
+    pbrOverrides: {
+      // Bundeswehr olive-charcoal monocoque polymer casing, Hensoldt 1x/3.5x optic, grip, buttplate, winding knob, selector & spare clips (7 parts)
+      g11_outer_housing: G11_V3_HOUSING_PBR,
+      g11_optic_handle: G11_V3_HOUSING_PBR,
+      g11_pistol_grip: G11_V3_HOUSING_PBR,
+      g11_buttplate: G11_V3_HOUSING_PBR,
+      g11_winding_knob: G11_V3_HOUSING_PBR,
+      g11_selector: G11_V3_HOUSING_PBR,
+      g11_spare_clips: G11_V3_HOUSING_PBR,
+      // Floating CNC inner receiver, 90° chrome rotary breech, Swiss-watch spur gears, rack, gas piston, rammer, firing pin, buffer & FCU (9 parts)
+      g11_inner_receiver: G11_V3_CLOCKWORK_PBR,
+      g11_rotary_breech: G11_V3_CLOCKWORK_PBR,
+      g11_clockwork_gears: G11_V3_CLOCKWORK_PBR,
+      g11_driving_rod: G11_V3_CLOCKWORK_PBR,
+      g11_gas_piston: G11_V3_CLOCKWORK_PBR,
+      g11_loading_rammer: G11_V3_CLOCKWORK_PBR,
+      g11_firing_pin: G11_V3_CLOCKWORK_PBR,
+      g11_buffer_assembly: G11_V3_CLOCKWORK_PBR,
+      g11_trigger_pack: G11_V3_CLOCKWORK_PBR,
+      // 540mm floating barrel, 6-slot flash hider, curved steel trigger, overhead 45-rd DM11 mag tube, orange follower & twist-lock endcap (6 parts)
+      g11_barrel: G11_V3_BARREL_MAG_PBR,
+      g11_flash_hider: G11_V3_BARREL_MAG_PBR,
+      g11_trigger: G11_V3_BARREL_MAG_PBR,
+      g11_mag_tube: G11_V3_BARREL_MAG_PBR,
+      g11_mag_follower: G11_V3_BARREL_MAG_PBR,
+      g11_mag_endcap: G11_V3_BARREL_MAG_PBR,
+    },
+  },
+  vss: {
+    modelFile: 'vss.glb',
+    dynamicSpringParts: ['vss_recoil_spring', 'vss_striker_spring'],
+    pbrOverrides: {
+      // TOZ CNC-milled blued steel receiver, 3-rib dust cover, 414mm integral suppressor tube, 400m sight, plum forend, safety & cross-bolt selector (7 parts)
+      vss_receiver: VSS_V3_RECEIVER_SUPP_PBR,
+      vss_dust_cover: VSS_V3_RECEIVER_SUPP_PBR,
+      vss_suppressor_tube: VSS_V3_RECEIVER_SUPP_PBR,
+      vss_rear_sight: VSS_V3_RECEIVER_SUPP_PBR,
+      vss_forend: VSS_V3_RECEIVER_SUPP_PBR,
+      vss_safety_lever: VSS_V3_RECEIVER_SUPP_PBR,
+      vss_selector_switch: VSS_V3_RECEIVER_SUPP_PBR,
+      // Russian laminated birchwood skeleton stock, PSO-1M2-1 4x24 scope (firewalled lenses), 10-rd plum waffle mag & safety-orange follower (4 parts)
+      vss_wood_stock: VSS_V3_WOOD_OPTIC_PBR,
+      vss_pso1_scope: VSS_V3_WOOD_OPTIC_PBR,
+      vss_mag_body: VSS_V3_WOOD_OPTIC_PBR,
+      vss_mag_follower: VSS_V3_WOOD_OPTIC_PBR,
+      // 200mm radial-ported barrel, 6-stage slanted CNC baffle stack, long-stroke BCG, 6-lug bolt, linear striker, internals & static mag spring/floorplate (11 parts)
+      vss_barrel: VSS_V3_METAL_PBR,
+      vss_baffle_stack: VSS_V3_METAL_PBR,
+      vss_bolt_carrier: VSS_V3_METAL_PBR,
+      vss_bolt: VSS_V3_METAL_PBR,
+      vss_firing_pin: VSS_V3_METAL_PBR,
+      vss_recoil_guide: VSS_V3_METAL_PBR,
+      vss_striker: VSS_V3_METAL_PBR,
+      vss_trigger: VSS_V3_METAL_PBR,
+      vss_sear: VSS_V3_METAL_PBR,
+      vss_mag_spring: VSS_V3_METAL_PBR,
+      vss_mag_floorplate: VSS_V3_METAL_PBR,
+    },
+  },
+  m134: {
+    modelFile: 'm134.glb',
+    dynamicSpringParts: ['m134_clutch_spring', 'm134_feeder_spring'],
+    pbrOverrides: {
+      // Heavy ribbed cylindrical housing w/ stencil & UID, 360° sinusoidal cam sleeve, 28V DC copper-wound motor, gearbox, spade grip, handle & pintle (7 parts)
+      m134_main_housing: M134_V3_HOUSING_MOTOR_PBR,
+      m134_cam_track_ring: M134_V3_HOUSING_MOTOR_PBR,
+      m134_drive_motor: M134_V3_HOUSING_MOTOR_PBR,
+      m134_gear_housing: M134_V3_HOUSING_MOTOR_PBR,
+      m134_spade_grip: M134_V3_HOUSING_MOTOR_PBR,
+      m134_carry_handle: M134_V3_HOUSING_MOTOR_PBR,
+      m134_mount_pintle: M134_V3_HOUSING_MOTOR_PBR,
+      // 6-barrel 22" cluster, dual barrel clamp, heat-tempered 6-tube flash suppressor, CNC star-rotor, 28-tooth drive gear & SAFE/ARMED safing sector (6 parts)
+      m134_barrel_cluster: M134_V3_BARRELS_ROTOR_PBR,
+      m134_barrel_clamp: M134_V3_BARRELS_ROTOR_PBR,
+      m134_flash_suppressor: M134_V3_BARRELS_ROTOR_PBR,
+      m134_rotor_assembly: M134_V3_BARRELS_ROTOR_PBR,
+      m134_drive_gear: M134_V3_BARRELS_ROTOR_PBR,
+      m134_safing_sector: M134_V3_BARRELS_ROTOR_PBR,
+      // 6 hard-chrome roller bolts, Dillon Aero delinker feeder & 6-pocket star-wheel, flexible stainless 7.62 NATO ammo chute & lower-right ejection chute (10 parts)
+      m134_bolt_1: M134_V3_DELINKER_BOLTS_PBR,
+      m134_bolt_2: M134_V3_DELINKER_BOLTS_PBR,
+      m134_bolt_3: M134_V3_DELINKER_BOLTS_PBR,
+      m134_bolt_4: M134_V3_DELINKER_BOLTS_PBR,
+      m134_bolt_5: M134_V3_DELINKER_BOLTS_PBR,
+      m134_bolt_6: M134_V3_DELINKER_BOLTS_PBR,
+      m134_delinker_housing: M134_V3_DELINKER_BOLTS_PBR,
+      m134_delinker_sprocket: M134_V3_DELINKER_BOLTS_PBR,
+      m134_ammo_chute: M134_V3_DELINKER_BOLTS_PBR,
+      m134_ejection_chute: M134_V3_DELINKER_BOLTS_PBR,
+    },
+  },
+  an94: {
+    modelFile: 'an94.glb',
+    dynamicSpringParts: ['an94_recoil_spring', 'an94_receiver_buffer_spring'],
+    pbrOverrides: {
+      // Izhmash monocoque polyamide housing, ribbed dust cover, right-folding buttstock, checkered grip, 5-pos star-wheel sight, thumb safety & 3-mode selector (7 parts)
+      an94_outer_housing: AN94_V3_RECEIVER_STOCK_PBR,
+      an94_dust_cover: AN94_V3_RECEIVER_STOCK_PBR,
+      an94_buttstock: AN94_V3_RECEIVER_STOCK_PBR,
+      an94_pistol_grip: AN94_V3_RECEIVER_STOCK_PBR,
+      an94_rear_sight: AN94_V3_RECEIVER_STOCK_PBR,
+      an94_safety_switch: AN94_V3_RECEIVER_STOCK_PBR,
+      an94_fire_selector: AN94_V3_RECEIVER_STOCK_PBR,
+      // Floating steel sub-receiver, BCG, 2-lug bolt, firing pin, CNC V-groove pulley, braided steel cable, bronze 2-stage rammer, guide, hammer & trigger (10 parts)
+      an94_inner_receiver: AN94_V3_PULLEY_METAL_PBR,
+      an94_bolt_carrier: AN94_V3_PULLEY_METAL_PBR,
+      an94_bolt: AN94_V3_PULLEY_METAL_PBR,
+      an94_firing_pin: AN94_V3_PULLEY_METAL_PBR,
+      an94_pulley_wheel: AN94_V3_PULLEY_METAL_PBR,
+      an94_steel_cable: AN94_V3_PULLEY_METAL_PBR,
+      an94_feed_rammer: AN94_V3_PULLEY_METAL_PBR,
+      an94_recoil_guide: AN94_V3_PULLEY_METAL_PBR,
+      an94_hammer: AN94_V3_PULLEY_METAL_PBR,
+      an94_trigger: AN94_V3_PULLEY_METAL_PBR,
+      // 405mm floating barrel, upper gas tube/FSB, figure-8 whistling muzzle brake, 15°-canted plum-black 5.45mm mag, orange follower, static coil & floorplate (7 parts)
+      an94_barrel: AN94_V3_BARREL_MAG_PBR,
+      an94_gas_tube: AN94_V3_BARREL_MAG_PBR,
+      an94_muzzle_brake: AN94_V3_BARREL_MAG_PBR,
+      an94_mag_body: AN94_V3_BARREL_MAG_PBR,
+      an94_mag_follower: AN94_V3_BARREL_MAG_PBR,
+      an94_mag_spring: AN94_V3_BARREL_MAG_PBR,
+      an94_mag_floorplate: AN94_V3_BARREL_MAG_PBR,
     },
   },
 };

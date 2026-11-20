@@ -27,19 +27,23 @@ import { useAppStore } from '../src/store/useAppStore';
 const CJK_RE = /[\u3400-\u9fff\uf900-\ufaff]/;
 
 describe('WP-14 · 1,000m RK4 External Ballistics, Wind Drift & Reticle DOPE Lab', () => {
-  it('registers all 13 canonical projectile profiles including Wave-2 45_acp, 12_gauge 9-pellet buckshot, and 400gr bow/crossbow', () => {
-    expect(EXTERNAL_PROJECTILE_ORDER).toHaveLength(13);
-    expect(new Set(EXTERNAL_PROJECTILE_ORDER).size).toBe(13);
+  it('registers all 17 canonical projectile profiles including WP-17 473_caseless, 9x39_subsonic, 762_nato, 545_m74, Wave-2 45_acp, 12_gauge & 400gr bow/crossbow', () => {
+    expect(EXTERNAL_PROJECTILE_ORDER).toHaveLength(17);
+    expect(new Set(EXTERNAL_PROJECTILE_ORDER).size).toBe(17);
 
     const expectedIds = [
       '9mm_para',
       '45_acp',
+      '473_caseless',
       '57_28',
       '357_magnum',
       '50_ae',
+      '9x39_subsonic',
       '12_gauge',
       '762_m43',
+      '545_m74',
       '556_nato',
+      '762_nato',
       '30_06',
       '338_lapua',
       '50_bmg',
@@ -157,7 +161,7 @@ describe('WP-14 · 1,000m RK4 External Ballistics, Wind Drift & Reticle DOPE Lab
     );
   });
 
-  it('converges Sight-In Zero Solver to < 0.02 cm solver error and |dropCm(zeroRangeM)| < 0.1 across all 13 profiles', () => {
+  it('converges Sight-In Zero Solver to < 0.02 cm solver error and |dropCm(zeroRangeM)| < 0.1 across all 17 profiles', () => {
     for (const id of EXTERNAL_PROJECTILE_ORDER) {
       const isArchery = id === 'arrow_400gr' || id === 'bolt_400gr';
       const testZeros = isArchery ? [25, 50, 100] : ALLOWED_ZERO_RANGES_M;
@@ -192,11 +196,15 @@ describe('WP-14 · 1,000m RK4 External Ballistics, Wind Drift & Reticle DOPE Lab
     const firearmIds = [
       '9mm_para',
       '45_acp',
+      '473_caseless',
       '57_28',
       '357_magnum',
       '50_ae',
+      '9x39_subsonic',
       '762_m43',
+      '545_m74',
       '556_nato',
+      '762_nato',
       '30_06',
       '338_lapua',
       '50_bmg',
@@ -224,6 +232,10 @@ describe('WP-14 · 1,000m RK4 External Ballistics, Wind Drift & Reticle DOPE Lab
 
     // Subsonic right from the muzzle -> null transonic crossing
     expect(transonicMap.get('45_acp')).toBeNull();
+    expect(transonicMap.get('9x39_subsonic')).toBeNull();
+    expect(transonicMap.get('473_caseless')).toBeGreaterThan(450);
+    expect(transonicMap.get('545_m74')).toBeGreaterThan(550);
+    expect(transonicMap.get('762_nato')).toBeGreaterThan(750);
     expect(
       computeBallisticSolution('arrow_400gr', { maxRangeM: 100 })
         .transonicRangeM

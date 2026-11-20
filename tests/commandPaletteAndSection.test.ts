@@ -180,13 +180,13 @@ describe('V3.0 Global Cmd+K Command Palette & Live CT-Scan Section Plane', () =>
     }
   });
 
-  it('matches all 19 exhibits bilingually by name, shortLabel, bayCode, caliber, actionSystem & category', () => {
+  it('matches all 23 exhibits bilingually by name, shortLabel, bayCode, caliber, actionSystem & category', () => {
     const items = buildCommandPaletteItems({
       state: useAppStore.getState(),
       activeWeaponParts: [],
     });
 
-    expect(items.filter((i) => i.group === 'weapons')).toHaveLength(19);
+    expect(items.filter((i) => i.group === 'weapons')).toHaveLength(23);
 
     const searchCases: Array<{ query: string; expectedWeaponId: string }> = [
       { query: 'AK-15M1', expectedWeaponId: 'ak15' },
@@ -206,6 +206,11 @@ describe('V3.0 Global Cmd+K Command Palette & Live CT-Scan Section Plane', () =>
       { query: 'Mathews Compound Bow', expectedWeaponId: 'lift33' },
       { query: 'Ravin 复合弩', expectedWeaponId: 'r500' },
       { query: 'roller delayed mp5', expectedWeaponId: 'mp5' },
+      { query: 'G11 caseless', expectedWeaponId: 'g11' },
+      { query: 'BAY-20', expectedWeaponId: 'g11' },
+      { query: 'VSS Vintorez 9×39', expectedWeaponId: 'vss' },
+      { query: 'M134D Minigun', expectedWeaponId: 'm134' },
+      { query: 'AN-94 Abakan', expectedWeaponId: 'an94' },
     ];
 
     for (const tc of searchCases) {

@@ -33,11 +33,13 @@ export type DriveFamilyId =
   | 'direct_impingement'
   | 'short_recoil_barrel'
   | 'delayed_or_straight_blowback'
+  | 'external_electric_rotary'
   | 'manual_bolt_or_revolver_linkage'
   | 'compound_cam_elastic';
 
 export type LockingFamilyId =
   | 'rotating_lug_bolt'
+  | 'rotary_cylindrical_breech'
   | 'tilting_barrel_cam'
   | 'toggle_knee_joint'
   | 'super_v_off_axis_cam'
@@ -48,6 +50,7 @@ export type LockingFamilyId =
 export type FeedFamilyId =
   | 'staggered_box_magazine'
   | 'disintegrating_belt_shuttle'
+  | 'overhead_caseless_rammer'
   | 'top_helical_90deg'
   | 'swing_out_cylinder'
   | 'underbarrel_tubular_elevator'
@@ -253,8 +256,8 @@ export const MECHANISM_TAXONOMY_AXES: readonly TaxonomyAxisMeta[] = [
       en: 'Energy Source & Operating Drive',
     },
     subtitle: {
-      zh: '火药燃气导引、枪管短后坐动量守恒、惯性后坐与复合凸轮弹性势能的机械分流',
-      en: 'How propellant gas, barrel recoil momentum, bolt inertia, or cam-limb strain drives the cycle',
+      zh: '火药燃气导引、枪管短后坐动量守恒、外能源电驱转管、惯性后坐与复合凸轮弹性势能的机械分流',
+      en: 'How propellant gas, barrel recoil, external electric motors, bolt inertia, or cam-limb strain drives the cycle',
     },
   },
   {
@@ -265,8 +268,8 @@ export const MECHANISM_TAXONOMY_AXES: readonly TaxonomyAxisMeta[] = [
       en: 'Breech Locking & Release Mechanism',
     },
     subtitle: {
-      zh: '在数千大气压膛压峰值下锁死弹底，待残压降至安全窗口后精确解锁的几何约束',
-      en: 'Geometric constraints sealing high-pressure ignition before timing safe residual unlock',
+      zh: '在数千大气压膛压峰值下锁死弹底或 90° 无壳旋转弹膛，待残压降至安全窗口后精确解锁的几何约束',
+      en: 'Geometric constraints sealing high-pressure ignition or 90-deg caseless chambers before safe residual unlock',
     },
   },
   {
@@ -277,8 +280,8 @@ export const MECHANISM_TAXONOMY_AXES: readonly TaxonomyAxisMeta[] = [
       en: 'Ammunition Feed & Spatial Packaging',
     },
     subtitle: {
-      zh: '盒式双排、顶置 90° 螺旋旋转、侧摆转轮、管仓升降托弹板、顶装漏夹与落箭轨道',
-      en: 'Box magazines, 90° helical ramps, revolving cylinders, tubular elevators, en-bloc clips & arrow rests',
+      zh: '盒式双排、可散弹链脱链、顶置无壳压弹、90° 螺旋旋转、侧摆转轮、管仓升降托弹板、顶装漏夹与落箭轨道',
+      en: 'Box mags, disintegrating belts, caseless rammers, 90-deg helical ramps, cylinders, tube elevators, clips & arrow rests',
     },
   },
 ];
@@ -410,6 +413,31 @@ export const DRIVE_FAMILIES: readonly MechanismFamilySeed<DriveFamilyId>[] = [
     },
   },
   {
+    id: 'external_electric_rotary',
+    axis: 'drive',
+    accentHex: '#fb923c',
+    badge: {
+      zh: '外能源电驱转管 · ELECTRIC GATLING',
+      en: 'EXTERNAL ELECTRIC ROTARY',
+    },
+    title: {
+      zh: '28V 外能源电驱多管正弦凸轮旋转',
+      en: '28V External Electric Multi-Barrel Rotary',
+    },
+    principle: {
+      zh: '完全脱离火药燃气与后坐自驱限制，由 28V 直流航空电机驱动中心星形转子与六管簇匀速公转，沿 360° 静止正弦凸轮槽并行驱动六套枪机。',
+      en: 'A 28V DC aerospace motor spins a central star-rotor and six barrels past a stationary 360-deg sinusoidal cam track, cycling six bolts in parallel.',
+    },
+    pros: {
+      zh: '六管轮转风冷突破 3,000 RPM 持续火力极限，遇失效哑弹强制抽出抛出绝不卡停',
+      en: 'Shares 3,000 RPM heat across six air-cooled barrels and ejects dud rounds with zero stoppage',
+    },
+    cons: {
+      zh: '依赖载具/航空 28V 大电流电源与供弹脱链器，整机及电池全重远超步兵单兵携行极限',
+      en: 'Requires heavy 28V vehicle/aircraft power buses and mounts, exceeding dismounted infantry weight',
+    },
+  },
+  {
     id: 'manual_bolt_or_revolver_linkage',
     axis: 'drive',
     accentHex: '#34d399',
@@ -486,6 +514,31 @@ export const LOCKING_FAMILIES: readonly MechanismFamilySeed<LockingFamilyId>[] =
       cons: {
         zh: '枪机头与节套需精密多轴铣削及配合间隙热处理控制',
         en: 'Demands precision multi-axis CNC machining of bolt lugs, cam pin, and barrel extension',
+      },
+    },
+    {
+      id: 'rotary_cylindrical_breech',
+      axis: 'locking',
+      accentHex: '#14b8a6',
+      badge: {
+        zh: '90°旋膛无壳闭锁 · ROTARY BREECH',
+        en: '90-DEG ROTARY BREECH',
+      },
+      title: {
+        zh: '90° 旋转镀铬圆柱无壳弹膛闭锁',
+        en: '90-Deg Rotating Cylindrical Caseless Breech',
+      },
+      principle: {
+        zh: '摒弃前后往复枪机与抽壳钩，由双齿条与瑞士钟表齿轮系驱动横向穿孔圆柱弹膛原地翻转 90° 垂直纳弹，再归平气密抵紧枪管击发。',
+        en: 'Eliminates reciprocating bolts completely: gas racks and watchmaker spur gears rotate a transverse chrome cylinder 90 deg to load caseless blocks and align horizontally to fire.',
+      },
+      pros: {
+        zh: '彻底消除黄铜抽抛壳往复行程，以 28 毫秒超短旋转循环解锁 2,100 RPM 三连发',
+        en: 'Eliminates brass extraction and ejection travel, enabling 28 ms cycling at 2,100 RPM',
+      },
+      cons: {
+        zh: '无弹壳带走废热对 HITP 高自燃药块与气密环耐磨提出极严苛要求，钟表齿轮系极其精密',
+        en: 'Requires heat-resistant HITP caseless propellant, tight gas-seal rings, and intricate gear trains',
       },
     },
     {
@@ -671,24 +724,49 @@ export const FEED_FAMILIES: readonly MechanismFamilySeed<FeedFamilyId>[] = [
     axis: 'feed',
     accentHex: '#84cc16',
     badge: {
-      zh: '双拨爪弹链 · M27 BELT FEED',
-      en: 'M27 BELT SHUTTLE + STANAG',
+      zh: '可散弹链供弹 · BELT / DELINKER',
+      en: 'BELT SHUTTLE / DELINKER',
     },
     title: {
-      zh: '受机盖 S 槽驱动双拨爪可散弹链 + 应急弹匣双供',
-      en: 'Top-Cover S-Cam Dual-Pawl Belt Shuttle & Dual Feed',
+      zh: '可散金属弹链拨爪梭动 / 星轮强制脱链供弹',
+      en: 'Disintegrating Belt Shuttle & Star-Wheel Delinker',
     },
     principle: {
-      zh: '枪机框顶部立柱滚轮嵌入受机盖 S 形曲线导槽，将前后往复转化为供弹杠杆横向摆动，驱动内外双弹簧拨齿接力横移 M27 可散钢链节，并保留侧向 STANAG 步枪弹匣应急井。',
-      en: 'A carrier top roller tracks an S-cam channel inside the top cover to swing dual spring-loaded feed pawls across M27 disintegrating links, backed by a side STANAG magwell.',
+      zh: '经受机盖 S 槽双拨爪横移 M27 钢链（辅以 STANAG 应急井）或由同步六瓣星轮脱链器以每秒 50 发极速剥离 M13 弹链送入转子。',
+      en: 'Advances M27 links via top-cover S-cam dual pawls (plus emergency STANAG magwell) or strips M13 links at 50 rounds/sec through a gear-synced star-wheel delinker.',
     },
     pros: {
-      zh: '200 发连续弹链火力无需频繁换匣，紧急断链时可直接插用同班步兵 30 发弹匣',
-      en: 'Delivers 200-round sustained suppressive fire with emergency rifle-magazine cross-compatibility',
+      zh: '支持 200 至数千发持续压制弹链供弹，彻底摆脱频繁换匣中断火力的限制',
+      en: 'Sustains 200- to 4,000-round continuous belt fire without frequent magazine reload pauses',
     },
     cons: {
-      zh: '拉动弹链耗散部分自动机复进能量；使用高弹力步枪弹匣供弹时偶发供弹速率失配',
-      en: 'Pulling heavy belts consumes carrier energy, and high-spring-tension STANAG mags require lip clearance',
+      zh: '重型弹链拖拽与高速脱链对拨齿、柔性输弹槽及驱动扭矩裕度提出极高机械要求',
+      en: 'Heavy belt drag and extreme delinking speeds demand robust pawls, chutes, and drive torque',
+    },
+  },
+  {
+    id: 'overhead_caseless_rammer',
+    axis: 'feed',
+    accentHex: '#f97316',
+    badge: {
+      zh: '置顶无壳压弹 · CASELESS RAMMER',
+      en: 'OVERHEAD CASELESS RAMMER',
+    },
+    title: {
+      zh: '置顶 45 发水平无壳弹匣 + 垂直压弹冲头',
+      en: 'Overhead 45-Rd Caseless Mag & Vertical Rammer',
+    },
+    principle: {
+      zh: '45 发 8×8mm 方形无壳药块垂直朝下紧贴排布于枪管正上方水平弹匣，凸轮冲头在旋转弹膛转至 90° 时垂直下刺 26.5 mm 压弹入膛。',
+      en: 'Forty-five rectangular 8x8mm caseless blocks stack nose-down parallel above the barrel; a vertical cam rammer plunges 26.5 mm to seat each round into the 90-deg rotary breech.',
+    },
+    pros: {
+      zh: '方形药块 100% 密排零空隙，单匣 45 发零下凸且护木双备弹夹实现 135 发随枪携弹',
+      en: 'Zero-void prismatic stacking packs 45 flush rounds above the bore (135 rounds with K2 clips)',
+    },
+    cons: {
+      zh: '专用无壳方形药块完全无法兼容现役北约黄铜弹药后勤体系，哑弹需摇柄向下排出',
+      en: 'Proprietary square caseless blocks are incompatible with NATO brass logistics; duds clear downward',
     },
   },
   {
@@ -1627,6 +1705,127 @@ export const SHOWDOWN_EXHIBIT_SPECS: Readonly<
       timing: makeWave2Timing(0.11, 0.24, 0.52, 0.89, null),
     },
   },
+  // WP-17 Clockwork, Subsonic & Rotary Wonders (BAY-20 .. BAY-23):
+  g11: {
+    id: 'g11',
+    driveFamily: 'short_stroke_piston',
+    lockingFamily: 'rotary_cylindrical_breech',
+    feedFamily: 'overhead_caseless_rammer',
+    driveDetail: {
+      zh: '540 mm 浮置枪管中段下方短行程镀铬活塞仅猛冲 13.5 mm 推动双联齿条与瑞士钟表齿轮系；整套枪管、旋转弹膛与弹匣在单体聚合物外壳内自由浮置后坐 42 mm。',
+      en: 'An under-barrel short-stroke chrome piston punches 13.5 mm to drive twin toothed racks and watchmaker spur gears while the entire 540 mm barreled action and overhead magazine float rearward 42 mm.',
+    },
+    lockingDetail: {
+      zh: '零往复枪机、零抽抛壳：不锈钢/黄铜行星齿轮驱使硬铬圆柱弹膛绕 Z 轴原地翻转 90° 接弹后归平气密抵紧枪管，28 毫秒完成单次闭锁循环。',
+      en: 'Zero reciprocating bolt or brass extraction: stainless-brass spur gears turn a hard-chromed cylindrical breech 90 deg upward to load and back to 0 deg for hermetic ignition in under 28 ms.',
+    },
+    feedDetail: {
+      zh: '45 发 4.73×33mm DM11 方形 HITP 无壳药块垂直紧排于枪管正上方烟熏水平弹匣，凸轮冲头垂直下刺 26.5 mm 压弹入膛，K2 护木双备弹夹实现 135 发随枪携弹。',
+      en: '45 rectangular 4.73x33mm DM11 HITP caseless blocks stack nose-down in a smoked overhead tube; a vertical cam rammer plunges 26.5 mm to chamber each round, with twin K2 spare clips totaling 135 ready rounds.',
+    },
+    fireControlDetail: {
+      zh: '全封闭冬用护弓内曲柄扳机联动三发点射擒纵棘轮与同轴平移击针，左侧弹出式 360° 上膛摇柄兼作哑弹下排机构，支持单发 / 2,100 RPM 三连发 / 460 RPM 全自动。',
+      en: 'Bullpup trigger drives a 3-round burst escapement and coaxial striker alongside a pop-out 360-deg winding crank, selecting Semi, 2,100 RPM 3-round hyperburst, or 460 RPM full-auto.',
+    },
+    signatureAdvantage: {
+      zh: '无壳零抛壳结合 42 mm 浮置延迟后坐，在后坐抵肩前以 2,100 RPM（85 毫秒）叠射三发 930 m/s 弹头大幅倍增首发命中率',
+      en: 'Zero brass extraction and 42 mm floating delayed impulse launch three 930 m/s bullets in 85 ms at 2,100 RPM before recoil reaches the shoulder',
+    },
+    engineeringTradeoff: {
+      zh: '堪比高级机械腕表的复杂齿轮系与专用 4.73mm 无壳药块造价高昂且无法兼容北约 5.56 黄铜弹药体系',
+      en: 'Watchmaker-grade internal gear complexity and proprietary 4.73 mm caseless ammunition lack NATO 5.56 mm brass logistical compatibility',
+    },
+  },
+  vss: {
+    id: 'vss',
+    driveFamily: 'long_stroke_piston',
+    lockingFamily: 'rotating_lug_bolt',
+    feedFamily: 'staggered_box_magazine',
+    driveDetail: {
+      zh: '200 mm 冷锻枪管前段三排径向泄气孔将高压燃气提前泄入 414 mm 整体消音膨胀舱并经 6 级 ±28° 斜挡板涡旋降噪，舱内隐蔽长行程镀铬活塞驱动枪机框后坐 74 mm。',
+      en: 'Three rows of radial barrel ports bleed subsonic gas into a 414 mm integral suppressor with six +/-28-deg slanted baffles while an enclosed long-stroke piston strokes the carrier 74 mm.',
+    },
+    lockingDetail: {
+      zh: '摒弃 AK 双突笋改用 60° 均布 6 枚对称闭锁突笋圆柱旋转枪机，仅旋转 32° 即与整坯 CNC 铣削烤蓝钢机匣达成栓动级同轴刚性闭锁。',
+      en: 'Replaces twin AK lugs with six symmetrical radial locking lugs spaced at 60-deg intervals, rotating just 32 deg inside a billet-milled steel receiver for bolt-action concentricity.',
+    },
+    feedDetail: {
+      zh: '10 发深李子褐华夫纹聚合物双排盒式弹匣（与 AS Val 20 发匣通用），紧凑低矮轮廓极利卧姿隐蔽狙击与 30 秒公文箱拆装携行。',
+      en: 'Compact 10-round plum waffle polymer double-stack box magazine (interchangeable with 20-round AS Val mags) preserves a low prone profile for clandestine briefcase deployment.',
+    },
+    fireControlDetail: {
+      zh: '彻底取消响亮回转击锤，独创同轴平移超静音直线击铁；右侧防尘拨片独立管控保险，扳机后方隐藏横推钮可在单发狙击与 900 RPM 应急全自动间无声切换。',
+      en: 'Eliminates rotary hammer clatter via a coaxial hammerless linear sliding striker; right dust-shield handles safety while a silent behind-trigger cross-bolt toggles semi and 900 RPM emergency auto.',
+    },
+    signatureAdvantage: {
+      zh: '290 m/s 零音爆 250 格令 9×39mm 钨/钢芯重弹配合整体 6 级斜挡板消音与直线击铁，400 米悄无声息击穿防弹衣',
+      en: '290 m/s 250-gr 9x39mm armor-piercing rounds paired with 6 slanted baffles and a linear striker defeat body armor silently out to 400 m',
+    },
+    engineeringTradeoff: {
+      zh: '290 m/s 亚音速重弹呈高抛物线大下坠弹道，超越 400 米后测距误差对落点高度极为敏感且整体消音芯需频繁清碳',
+      en: 'Steep rainbow subsonic trajectory magnifies range-estimation errors beyond 400 m and integral baffle stacks accumulate heavy carbon',
+    },
+  },
+  m134: {
+    id: 'm134',
+    driveFamily: 'external_electric_rotary',
+    lockingFamily: 'rotating_lug_bolt',
+    feedFamily: 'disintegrating_belt_shuttle',
+    driveDetail: {
+      zh: '零火药导气孔：顶置 28V 直流 3.2 马力航空电机经 28 齿主驱动齿轮带动六槽 CNC 星形转子与六根 22 英寸枪管以 500 RPM 恒速公转，机匣内壁 360° 静止正弦凸轮槽驱动六枪机同步起伏。',
+      en: 'Zero gas ports: a top-mounted 3.2-HP 28V DC aerospace motor drives a 28-tooth spur gear and six-flute star-rotor at 500 rpm past a stationary 360-deg sinusoidal cam track.',
+    },
+    lockingDetail: {
+      zh: '六套独立镀硬铬双突笋旋转枪机各自嵌滑于转子 T 型导轨，随滚轮沿正弦槽以 60° 相位波浪接力在 12 点位旋转闭锁击发（415 MPa）、4 点位抽抛壳与 10 点位推弹入膛。',
+      en: "Six independent chrome dual-lug rotary bolts orbit 60 deg out of phase inside rotor tracks, riding the sinusoidal groove to lock and fire at 12 o'clock, eject at 4, and chamber at 10.",
+    },
+    feedDetail: {
+      zh: '与主转子 1:1 反向同步啮合的迪伦航空六瓣不锈钢星轮脱链供弹器，配合柔性不锈钢输弹槽以每秒 50 发极速将 7.62×51mm NATO 实弹剥离 M13 钢链送入 8 点位转子沟槽。',
+      en: 'A gear-synchronized Dillon Aero six-pocket stainless star-wheel delinker strips 7.62x51mm NATO cartridges out of M13 steel links via a ribbed flexible chute at 50 rounds per second.',
+    },
+    fireControlDetail: {
+      zh: '尾部双铲航空握把集成双拇指蝴蝶电门与绯红主武装拨动开关，顶部黄红 SAFE/ARMED 机械安全门可数秒内断开 12 点位击发凸轮；外能源强驱令哑弹直接抛出零卡停。',
+      en: 'Rear twin spade grips house dual butterfly thumb triggers and a crimson master-arm toggle backed by a quick-release safing sector; external electric torque ejects duds with zero stoppage.',
+    },
+    signatureAdvantage: {
+      zh: '六管轮转 300° 强迫风冷与外能源电驱实现 3,000 RPM 全威力 7.62 NATO 持续火力与逾 100,000 发平均故障间隔',
+      en: 'Six air-cooled barrels with 300-deg cooling arcs and external electric power sustain 3,000 RPM 7.62 NATO fire past 100,000 MRBF',
+    },
+    engineeringTradeoff: {
+      zh: '18.8 kg 本体加电机、电池与千发弹箱必须依托直升机、快艇或载具枢轴支架，且每秒耗弹 50 发后勤负荷惊人',
+      en: '18.8 kg bare gun plus 28V aircraft power, delinker, and bulk ammunition limits deployment to vehicles, helicopters, and naval mounts',
+    },
+  },
+  an94: {
+    id: 'an94',
+    driveFamily: 'long_stroke_piston',
+    lockingFamily: 'rotating_lug_bolt',
+    feedFamily: 'staggered_box_magazine',
+    driveDetail: {
+      zh: '405 mm 冷锻枪管、8 字制退器与数控钢制内机匣刚性绑为一体，在静止炭黑聚酰胺外机匣内整体自由浮置后滑 42 mm 实现后坐冲量延迟；内部长行程活塞枪机框再相对后坐 50 mm 完成循环。',
+      en: 'A 405 mm barrel, figure-8 brake, and steel sub-receiver float 42 mm rearward inside a stationary polyamide shell for blowback-shifted impulse while an internal long-stroke piston carrier cycles.',
+    },
+    lockingDetail: {
+      zh: '轻量化精磨不锈钢双突笋回转枪机在安全自由行程泄压后旋转 35.5° 解锁抽壳，并在 33 毫秒极速窗口内从青铜预供弹盘剥取第 2 发弹逆旋闭锁击发。',
+      en: 'A compact brushed-stainless two-lug bolt rotates 35.5 deg to unlock after dwell, then rockets forward within 33 ms to chamber and lock the pre-staged second burst round.',
+    },
+    feedDetail: {
+      zh: '标志性 15° 右倾标准 30 发 AK-74 李子黑盒式弹匣为内部滑轮轨让位：枪机框后坐猛拉 180° 编织不锈钢钢索驱转 CNC 定滑轮，反向倍速推动青铜二级预供弹滑块提前送弹上盘。',
+      en: 'Canting standard 30-round AK-74 plum magazines 15 deg right clears a CNC steel V-groove pulley and braided cable that whips a bronze two-stage pre-feed rammer ahead at 1,800 RPM.',
+    },
+    fireControlDetail: {
+      zh: '浮置联动阻铁与青铜两发点射棘轮，配独立虎口拇指保险（ПР/ОГ）与三档射控（单发 / 1,800 RPM 两发点射 / 首两发 1,800 后转 600 RPM 全自动），百米常现双发同孔。',
+      en: 'Floating disconnector and bronze 2-round burst ratchet pair with a separate thumb safety and Semi / 1,800 RPM 2-rd hyperburst / 1,800-to-600 RPM Auto modes capable of twin-bullet same-hole hits.',
+    },
+    signatureAdvantage: {
+      zh: '百分百兼容现役 5.45×39mm 制式弹匣的同时以钢索滑轮二级预供弹与浮置枪管达成 1,800 RPM 双发同孔聚能穿甲',
+      en: 'Uses standard 5.45x39mm AK-74 magazines while floating-action pulley-cable pre-feeding puts two bullets through the same 100 m hole at 1,800 RPM',
+    },
+    engineeringTradeoff: {
+      zh: '浮置内机匣、编织钢索、定滑轮与两发棘轮令制造成本达 AK-74M 五至六倍，且野战深度拆装对军械维护要求极高',
+      en: 'Floating carriage, braided wire cable, pulley wheel, and burst escapement multiply manufacturing cost 5x-6x and complicate conscript field maintenance',
+    },
+  },
 };
 
 const DEFAULT_CLASSIFICATION: ShowdownExhibitClassification =
@@ -1864,6 +2063,58 @@ export const CLASSIC_RIVALRY_SEEDS: readonly ClassicRivalrySeed[] = [
     verdict: {
       zh: '同射 62 格令 M855 步枪弹，M4A1 以 2.92 kg 轻巧闭膛气吹保障精准快速单点；M249 则以 7.5 kg 开膛散热架构、双拨爪 M27 弹链与 3 秒快拆重管提供不惧自燃的 200 发持续火力，并可在弹尽时直接借用 M4 弹匣。',
       en: 'Firing the exact same 5.56mm M855 round, M4A1 optimizes 2.92 kg closed-bolt point accuracy, while M249 trades 7.5 kg mass for open-bolt cooling, 200-round M27 belt suppression, a quick-change barrel, and emergency M4 mag sharing.',
+    },
+  },
+  // WP-17 Clockwork, Subsonic & Rotary Showdowns:
+  {
+    id: 'g11_vs_an94',
+    weaponA: 'g11',
+    weaponB: 'an94',
+    pillLabel: {
+      zh: 'G11 2,100 RPM 无壳钟表 vs AN-94 1,800 RPM 滑轮双发',
+      en: 'G11 2,100 RPM Caseless vs AN-94 1,800 RPM Pulley',
+    },
+    headline: {
+      zh: '冷战东西方浮置延迟后坐终极决战：西德 90° 旋转无壳弹膛三连发 vs 苏联钢索定滑轮两级预供弹双发同孔',
+      en: 'Cold War Hyperburst Summit: West German 90-Deg Caseless Clockwork 3-Rd Burst vs Soviet Pulley-Cable 2-Rd Hyperburst',
+    },
+    verdict: {
+      zh: '两款冷战机械珠峰皆采用 42 mm 浮置枪管内机匣在后坐抵肩前倾泻超高速点射：G11 彻底废除黄铜弹壳，靠钟表齿轮 90° 旋膛飙出 2,100 RPM 三连发；AN-94 坚守 5.45mm 通用弹匣后勤，以 15° 右倾匣与编织钢索定滑轮二级预供弹硬生生拉出 1,800 RPM 双发同孔奇迹。',
+      en: 'Both Cold War clockwork icons float their barreled action 42 mm to fire salvos before shoulder recoil: G11 abolishes brass completely for a 2,100 RPM 3-round rotary-breech burst, whereas AN-94 keeps standard 5.45 mm magazines via a 15-deg cant and pulley-cable pre-feed at 1,800 RPM.',
+    },
+  },
+  {
+    id: 'm134_vs_m249',
+    weaponA: 'm134',
+    weaponB: 'm249',
+    pillLabel: {
+      zh: 'M134D 3,000 RPM 电驱六管 vs M249 导气弹链轻机枪',
+      en: 'M134D 3,000 RPM Electric Rotary vs M249 Gas SAW',
+    },
+    headline: {
+      zh: '持续压制火力的两条物理边界：28V 外能源六管 360° 正弦凸轮风暴 vs 单管长活塞快拆枪管步兵班用弹链',
+      en: 'Two Physics Frontiers of Sustained Fire: 28V External Electric 6-Barrel Rotary vs Single-Barrel Gas-Driven SAW',
+    },
+    verdict: {
+      zh: 'M249 以 7.5 kg 单兵可携重量借开膛散热与 3 秒快拆重管维持 800 RPM 5.56 班组火力；M134D 则彻底脱离火药自驱与单管过热红线，用 28V 电机驱动六管 300° 迎风散热与迪伦星轮脱链器，以 3,000 RPM 倾泻双倍动能的 7.62 NATO 弹幕且遇哑弹零停射。',
+      en: 'M249 stays infantry-portable at 7.5 kg using open-bolt cooling and a 3-second quick-change barrel for 800 RPM 5.56 mm support; M134D breaks single-barrel thermal limits with 28V electric rotation, 300-deg six-barrel cooling, and a Dillon delinker pouring 3,000 RPM 7.62 NATO with zero dud stoppages.',
+    },
+  },
+  {
+    id: 'vss_vs_awm',
+    weaponA: 'vss',
+    weaponB: 'awm',
+    pillLabel: {
+      zh: 'VSS 290 m/s 微声斜挡板 vs AWM 936 m/s 超远程 .338',
+      en: 'VSS 290 m/s Subsonic Baffle vs AWM 936 m/s .338',
+    },
+    headline: {
+      zh: '狙击物理学的冰火两极：400 米零音爆 9×39mm 整体 6 级斜挡板穿甲 vs 1,500 米 3 倍音速 .338 马格南栓动',
+      en: 'Opposite Poles of Sniper Physics: 400 m Silent 9x39mm 6-Baffle Subsonic vs 1,500 m Mach-2.7 .338 Lapua Bolt Action',
+    },
+    verdict: {
+      zh: '二者均采用对称六突笋精密旋转闭锁却走向截然相反的弹道哲学：VSS 将 16.2 克重弹压制在 290 m/s 消除音爆，以多孔枪管、6 级斜挡板与无击锤直线击铁换取绝对隐蔽与公文箱携行；AWM 用 686 mm 浮置重管将同等 250 格令弹头推至 936 m/s，以近 10 倍枪口动能统治 1,500 米外极远距战场。',
+      en: 'Both lock symmetrically on six radial bolt lugs yet pursue polar-opposite ballistics: VSS holds a 250-gr bullet at 290 m/s behind radial ports, 6 slanted baffles, and a hammerless linear striker for silent 400 m armor defeat, while AWM launches the same 250-gr mass to 936 m/s with nearly 10x the energy past 1,500 m.',
     },
   },
 ];

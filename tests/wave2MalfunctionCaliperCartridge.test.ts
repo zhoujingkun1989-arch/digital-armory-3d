@@ -77,7 +77,7 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
     caliperStore.clearPoints();
   });
 
-  it('WP-09: validates malfunction profiles & valid part IDs across all 19 exhibits and firearm / revolver / archery bilingual scenario specs', async () => {
+  it('WP-09: validates malfunction profiles & valid part IDs across all 23 exhibits and firearm / revolver / archery bilingual scenario specs', async () => {
     for (const kind of MALFUNCTION_ORDER) {
       for (const spec of [
         MALFUNCTION_SCENARIOS[kind],
@@ -128,9 +128,12 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
       expect(prof.fireControlPartIds.length).toBeGreaterThan(0);
       expect(prof.magazinePartIds.length).toBeGreaterThan(0);
 
-      if (weaponId === 'p90') {
+      if (weaponId === 'p90' || weaponId === 'g11') {
         expect(prof.ejectionUpSign).toBe(-1);
         expect(prof.magStripOffsetCm[1]).toBeGreaterThan(0);
+      } else if (weaponId === 'm134') {
+        expect(prof.ejectionUpSign).toBe(-1);
+        expect(prof.magStripOffsetCm[1]).toBeLessThan(0);
       } else if (isArcheryMalfunctionWeapon(weaponId)) {
         expect(prof.ejectionUpSign).toBe(1);
         expect(prof.magStripOffsetCm[2]).toBeGreaterThan(0);
@@ -188,6 +191,10 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
       'm249',
       'p08',
       'vector',
+      'g11',
+      'vss',
+      'm134',
+      'an94',
     ] as const) {
       const prof = WEAPON_MALFUNCTION_PROFILES[weaponId];
 
@@ -361,6 +368,10 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
       'm249',
       'p08',
       'vector',
+      'g11',
+      'vss',
+      'm134',
+      'an94',
     ] as const) {
       const plugin = await loadWeaponPlugin(wid);
       await ensureWeaponGeometries(
@@ -410,10 +421,14 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
     }
   }, 45000);
 
-  it('WP-06: builds all 11 SAAMI/CIP cartridges & shotshells incl. .45 ACP at exact 1:1 CAD height (9x19mm = 29.69 mm vs .50 BMG = 138.43 mm)', () => {
-    expect(CARTRIDGE_LAB_ORDER).toHaveLength(11);
+  it('WP-06: builds all 15 SAAMI/CIP cartridges & shotshells incl. WP-17 calibers at exact 1:1 CAD height (9x19mm = 29.69 mm vs .50 BMG = 138.43 mm)', () => {
+    expect(CARTRIDGE_LAB_ORDER).toHaveLength(15);
     expect(isCaliberProfile('50_bmg')).toBe(true);
     expect(isCaliberProfile('45_acp')).toBe(true);
+    expect(isCaliberProfile('473_caseless')).toBe(true);
+    expect(isCaliberProfile('9x39_subsonic')).toBe(true);
+    expect(isCaliberProfile('762_nato')).toBe(true);
+    expect(isCaliberProfile('545_m74')).toBe(true);
     expect(isCaliberProfile('357_magnum')).toBe(true);
     expect(isCaliberProfile('12_gauge')).toBe(true);
     expect(isCaliberProfile('30_06')).toBe(true);

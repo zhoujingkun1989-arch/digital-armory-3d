@@ -10,13 +10,13 @@ import {
   type MaterialKind,
 } from '../weapons/types';
 
-const VAULT_EXHIBIT_COUNT = WEAPON_IDS.length; // 19
-const VAULT_EXHIBIT_ZH = '十九';
-const VAULT_PARTS_TOTAL = 480;
-const VAULT_TEXTURES_TOTAL = 277;
-const VAULT_AUDIO_TOTAL = 1112;
-const LAB_CALIBER_TOTAL = 11;
-const LAB_CALIBER_ZH = '十一';
+const VAULT_EXHIBIT_COUNT = WEAPON_IDS.length; // 23
+const VAULT_EXHIBIT_ZH = '二十三';
+const VAULT_PARTS_TOTAL = 579;
+const VAULT_TEXTURES_TOTAL = 313;
+const VAULT_AUDIO_TOTAL = 1342;
+const LAB_CALIBER_TOTAL = 15;
+const LAB_CALIBER_ZH = '十五';
 
 export interface UiDictionary {
   watermark: string;
@@ -767,7 +767,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       categories: {
         all: '全部馆藏',
         assault: '突击/步枪/无托',
-        lmg: '机枪/弹链',
+        lmg: '机枪/转管',
         smg: '冲锋枪 / PDW',
         sniper: '狙击/反器材',
         shotgun: '战术霰弹',
@@ -777,7 +777,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       showcaseBtn: '产品宣传页',
       showcaseTitle: '打开项目官方宣传与架构展示主页',
       cartridgeLabBtn: '1:1 实弹剖视馆',
-      cartridgeLabTitle: `打开 ${LAB_CALIBER_TOTAL} 口径 SAAMI/CIP 1:1 实弹纵剖对比实验室：并排纵剖陈列 9×19mm 至 .50 BMG 弹道解剖与定量对比矩阵 (B)`,
+      cartridgeLabTitle: `打开 ${LAB_CALIBER_TOTAL} 口径 SAAMI/CIP 1:1 实弹纵剖对比实验室：并排纵剖陈列 4.73mm 无壳弹、9×19mm 至 .50 BMG 弹道解剖与定量对比矩阵 (B)`,
       ballisticsLabBtn: '1000m 外弹道 [R]',
       ballisticsLabTitle:
         '打开 1,000m RK4 外弹道、横风偏流、第一像面圣诞树分划板与狙击 DOPE 射表实验室 (快捷键: R)',
@@ -1227,7 +1227,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       badge: 'WP-06 · SAAMI / CIP 1:1 实弹纵剖馆',
       title: `${LAB_CALIBER_ZH}大口径实弹 1:1 纵剖对比实验室`,
       subtitle:
-        '严格遵循 1 单位 = 10mm 绝对比例并排纵剖陈列 · 直视发射药柱、底火砧座、12号鹿弹碗塞与双芯穿甲锥结构',
+        '严格遵循 1 单位 = 10mm 绝对比例并排纵剖陈列 · 直视发射药柱、4.73 无壳药块、底火砧座、12号鹿弹碗塞与双芯穿甲锥结构',
       backVaultBtn: '返回数字枪库',
       backVaultTitle: '返回 3D 数字枪库武器展厅 (Esc / B)',
       lineupBtn: `1:1 ${LAB_CALIBER_ZH}弹同框全景`,
@@ -1606,7 +1606,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       categories: {
         all: 'All Vault',
         assault: 'Rifle / Carbine',
-        lmg: 'Belt-Fed LMG',
+        lmg: 'LMG / Rotary',
         smg: 'SMG / PDW',
         sniper: 'Sniper / Anti-Materiel',
         shotgun: 'Shotguns',
@@ -1616,7 +1616,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       showcaseBtn: 'Showcase',
       showcaseTitle: 'Open official product & engineering showcase page',
       cartridgeLabBtn: '1:1 Cartridge Lab',
-      cartridgeLabTitle: `Open ${LAB_CALIBER_TOTAL}-Caliber SAAMI/CIP 1:1 Cartridge Cutaway Lab: side-by-side cutaway anatomy & quantitative ballistics from 9×19mm to .50 BMG (B)`,
+      cartridgeLabTitle: `Open ${LAB_CALIBER_TOTAL}-Caliber SAAMI/CIP 1:1 Cartridge Cutaway Lab: side-by-side cutaway anatomy & quantitative ballistics from 4.73mm Caseless & 9×19mm to .50 BMG (B)`,
       ballisticsLabBtn: '1,000m Range [R]',
       ballisticsLabTitle:
         'Open 1,000m RK4 External Ballistics, Crosswind Drift, FFP Reticle & Sniper DOPE Lab (Shortcut: R)',
@@ -2102,7 +2102,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       badge: 'WP-06 · SAAMI / CIP 1:1 CARTRIDGE CUTAWAY LAB',
       title: `${LAB_CALIBER_TOTAL}-Caliber 1:1 SAAMI Cartridge Cutaway Lab`,
       subtitle:
-        'True 1:1 side-by-side longitudinal cutaways (1 unit = 10 mm) · Compare propellant columns, Boxer anvils, 12ga buckshot wads, dual-core penetrators & muzzle energy',
+        'True 1:1 side-by-side longitudinal cutaways (1 unit = 10 mm) · Compare propellant columns, 4.73mm caseless blocks, Boxer anvils, 12ga buckshot wads, dual-core penetrators & muzzle energy',
       backVaultBtn: 'Return to Vault',
       backVaultTitle: 'Return to 3D Digital Armory Vault (Esc / B)',
       lineupBtn: `1:1 Full ${LAB_CALIBER_TOTAL}-Caliber Lineup`,

@@ -30,6 +30,10 @@ export const ALL_WEAPON_IDS = Object.freeze([
   'm249',
   'p08',
   'vector',
+  'g11',
+  'vss',
+  'm134',
+  'an94',
 ]);
 
 export const VALID_STYLES = Object.freeze([

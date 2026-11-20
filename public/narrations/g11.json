@@ -1,0 +1,888 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "g11",
+  "generatedAt": "2026-11-20T13:00:00.000000+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "H&K G11 K2",
+    "subtitle": "4.73x33mm DM11 Caseless Rotary-Breech Assault Rifle",
+    "originCountry": "West Germany",
+    "weaponType": "Assault Rifle",
+    "categoryLabel": "Assault Rifle",
+    "actionMechanism": "Gas-Operated Clockwork 90-Deg Rotating Cylindrical Breech · Floating-Action 2,100 RPM 3-Rd Hyperburst",
+    "statusLabel": "In Vault · Strippable",
+    "description": "Engineered in Oberndorf by Heckler & Koch alongside Dynamit Nobel for the Bundeswehr and the U.S. Army Advanced Combat Rifle trials, the H&K G11 K2 remains the most audacious mechanical leap in small-arms history. Abandoning brass cartridge cases altogether for rectangular 4.73x33mm DM11 HITP caseless propellant blocks fed vertically from an overhead 45-round horizontal magazine, its Swiss-watch gear train rotates a chrome cylindrical breech ninety degrees to scoop and fire without extraction or ejection. Inside the sealed olive-charcoal polymer monolith, the entire barreled action floats rearward 42 mm during a blistering 2,100 round-per-minute three-round hyperburst so all three bullets leave the muzzle before recoil reaches the shooter's shoulder.",
+    "highlights": [
+      "90-Degree Chrome Rotating Cylindrical Breech · Zero Brass Extraction or Ejection",
+      "Swiss-Watch Stainless & Brass Gear Train ('Kraut Space Magic') + Pop-Out Winding Crank",
+      "Floating Barreled Action (-42 mm) · 2,100 RPM 3-Rd Hyperburst & 460 RPM Full-Auto",
+      "Overhead 45-Round 4.73x33mm DM11 Caseless Magazine + Integral Hensoldt 1x/3.5x Optic"
+    ],
+    "workbenchTitle": "H&K G11 K2 3D Teardown & 90-Deg Rotary-Breech Clockwork",
+    "workbenchSubtitle": "4 Modular Groups · 24 Core Nodes · Floating Barreled Action, 90-Deg Rotary Cylinder, Spur Gear Train & Caseless Feed Simulation",
+    "cutawayLabel": "90-Deg Rotary Breech Focus",
+    "cutawayTitle": "Switch to assembled cutaway view and focus on the floating inner receiver, 90-deg rotary breech cylinder, clockwork gear train, and vertical DM11 rammer",
+    "searchPlaceholder": "Search component name / code (e.g. rotary breech, clockwork, DM11, S-04)...",
+    "firingMilestoneLabel": "90-Deg Breech Cycle",
+    "rateOfFire": "2,100 rpm (3-rd) / 460 rpm (Auto)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Ready to Fire",
+        "subLabel": "0% Assembled",
+        "desc": "Heckler & Koch G11 K2 (4.73x33mm DM11 caseless) in sealed battery: 750 mm futuristic olive-charcoal monocoque polymer shell, 540 mm floating CHF barrel nested beneath the overhead 45-round horizontal magazine, and the 90-degree rotary breech indexed horizontally for ignition."
+      },
+      "field_strip": {
+        "label": "Monocoque Shell Strip",
+        "subLabel": "30% Field Strip",
+        "desc": "Bundeswehr field maintenance sequence: withdraw the overhead 45-round caseless magazine forward from the nose, remove the rear rubber buttplate and integral Hensoldt 1x/3.5x optic carry-handle, and slide the complete floating steel inner barreled action free of the sealed polymer outer casing."
+      },
+      "sub_assembly": {
+        "label": "Clockwork Heart Strip",
+        "subLabel": "65% Clockwork Strip",
+        "desc": "Open the iconic 'Kraut Space Magic' mechanical core: separate the brushed-chrome 90-degree rotating breech cylinder, meshing stainless and C36000 brass spur gear train, twin gas-actuated toothed driving rack, vertical caseless loading rammer, coaxial striker rod, and 3-round burst trigger pack."
+      },
+      "full_exploded": {
+        "label": "Full 24-Node BOM",
+        "subLabel": "100% Full Exploded",
+        "desc": "Complete zero-overlap exploded display of all 24 precision ordnance nodes: from the 540 mm floating barrel, slotted flash hider, 90-degree cylindrical breech, Swiss-watch gear train, and vertical rammer to the overhead 45-round DM11 caseless magazine and twin K2 spare magazine clips."
+      }
+    },
+    "firingPhases": {
+      "g11_phase_1_trigger_strike": {
+        "shortLabel": "Trigger & Axial Strike",
+        "title": "Phase 1 · Bullpup Trigger Pull & Coaxial Striker Pierces Sealed Breech",
+        "description": "Squeezing the curved steel trigger inside the closed winter guard trips the 3-round burst escapement sear. Mechanical interlocks confirm the 90-degree rotary cylinder is locked horizontally before the rear coaxial striker darts forward 4.5 mm into the DM11 caseless primer."
+      },
+      "g11_phase_2_caseless_ignition": {
+        "shortLabel": "Caseless 380 MPa Fire",
+        "title": "Phase 2 · 4.73x33mm DM11 Propellant Combusts Completely at 380 MPa",
+        "description": "The solid HITP caseless propellant block burns cleanly at 380 MPa with zero brass case left behind, accelerating the 3.4-gram 4.73 mm spitzer projectile down the 540 mm floating barrel at 930 m/s while high-pressure gas taps the short-stroke under-barrel piston."
+      },
+      "g11_phase_3_floating_recoil_clockwork": {
+        "shortLabel": "Float Recoil & 90-Deg Turn",
+        "title": "Phase 3 · Floating Chassis Strokes -42 mm as Clockwork Rotates Breech 90 Deg",
+        "description": "The entire inner steel receiver, 540 mm barrel, rotary breech, and overhead magazine glide rearward 42 mm inside the stationary polymer casing, compressing the long-stroke recoil spring. Simultaneously the twin gas rack spins the stainless-brass gear train, rotating the chrome breech cylinder a full 90 degrees upward."
+      },
+      "g11_phase_4_rammer_plunge": {
+        "shortLabel": "Vertical DM11 Rammer",
+        "title": "Phase 4 · Overhead Rammer Plunges 26.5 mm to Seat Fresh Caseless Block",
+        "description": "With the rotary breech held vertically open at 90 degrees while the floating chassis cushions near rear travel, the vertical cam rammer plunges 26.5 mm straight downward to press a fresh rectangular 4.73x33mm DM11 caseless round into the breech as the orange follower advances the 45-round column."
+      },
+      "g11_phase_5_rammer_retract_rotate_back": {
+        "shortLabel": "Retract & Index 0-Deg",
+        "title": "Phase 5 · Rammer Withdraws & Clockwork Gears Rotate Loaded Breech Horizontal",
+        "description": "The vertical loading rammer retracts cleanly out of the rotation arc; the toothed driving rack rebounds forward, reverse-spinning the meshing Swiss-watch spur gears to rotate the loaded cylindrical breech smoothly back from 90 degrees to 0 degrees coaxially behind the barrel bore."
+      },
+      "g11_phase_6_floating_runout": {
+        "shortLabel": "Floating Run-Out",
+        "title": "Phase 6 · Compressed Recoil Spring Drives Floating Barreled Action Forward",
+        "description": "Following the hyperburst impulse, the 19-coil helical recoil spring expands smoothly from 70.4% back to full rest length, returning the floating steel inner chassis, 540 mm barrel, clockwork assembly, and overhead magazine forward 42 mm into front battery datum."
+      },
+      "g11_phase_7_sealed_battery_reset": {
+        "shortLabel": "Gas Seal & Burst Reset",
+        "title": "Phase 7 · Breech Gas Collar Seals & 3-Round Hyperburst Counter Resets",
+        "description": "The rotary breech cylinder locks flush against the floating barrel's obturation collar for a hermetic high-pressure seal. Releasing the trigger resets the 3-round burst ratchet counter and recocks the coaxial striker for a zero-jump closed loop."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "德式太空黑科技：H&K G11 K2 无壳弹与钟表步枪的冷战绝唱",
+      "deck": "从 1968 年联邦国防军对下一代步兵火力的终极幻想，到彻底抛弃黄铜弹壳的 90° 旋转弹膛与 2,100 发/分浮置三连发，黑克勒-科赫 G11 K2 在冷战尾声攀上了人类纯机械轻武器工程的最高峰。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1968–1977",
+          "title": "告别百年黄铜壳：联邦国防军的未来步枪梦与无壳革命",
+          "paragraphs": [
+            "二十世纪六十年代末，面对中欧平原潜在的大规模装甲步兵对决，西德联邦国防军（Bundeswehr）进行了一项颠覆性的实战命中率统计：在充满烟尘与心理高压的现代战场上，普通步兵单发射击往往因测距误差偏离目标，而传统全自动连发又在第二发起就因剧烈后坐上跳飞向天空。德军武器局得出了一个大胆的数学结论——唯有在射手身体尚未感受到第一发后坐力的几十毫秒内，将三发高初速弹头以超过两千发每分的惊人射速叠射而出，才能把单兵中距离首发命中概率成倍拉升。",
+            "然而，传统带黄铜弹壳的枪械从物理上卡死了这一梦想：每一发都必须经历抽壳、抛壳与推新弹的漫长往复行程，极高的循环速度极易扯断黄铜底缘并引发卡壳。黑克勒-科赫（Heckler & Koch）携手著名炸药巨头诺贝尔炸药公司（Dynamit Nobel），提出了一个近乎科幻的终极方案——彻底消灭金属弹壳！用一块直接由固体发射药模压成型的方形无壳药块包裹四点七三毫米小口径尖头弹，取消抽壳钩、取消抛壳窗，让全枪进入全封闭、零抛壳的崭新纪元。"
+          ],
+          "audioScript": "上世纪六十年代末，西德联邦国防军发现，只有在后坐力传到肩膀前的几十毫秒内连续打出三发子弹，才能倍增战场命中率。但传统黄铜弹壳的抽壳抛壳行程彻底限制了射速。黑克勒科赫联合诺贝尔炸药公司，提出了一个惊世骇俗的方案：彻底抛弃金属弹壳，打造全封闭的方形无壳弹步枪。G11 的传奇就此拉开序幕。",
+          "audioUrl": "audio/g11/story_act1_zh.mp3",
+          "focusPartId": "g11_outer_housing",
+          "focusPartLabel": "橄榄炭黑单体玻纤聚合物外壳"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1978–1986",
+          "title": "攻克自燃梦魇：HITP 高能无壳药块与 45 发置顶弹匣",
+          "paragraphs": [
+            "早期采用传统硝化纤维素压制的无壳弹药块在连发实测中遭遇了致命拦路虎——“过热自燃（Cook-off）”。由于缺少黄铜弹壳在抛壳时带走大量药室废热，连续射击后炽热的弹膛只需一百八十摄氏度就能把新装入的无壳药块提前引爆。整整十年间，诺贝尔炸药化学家历经数千次配方失败，终于研发出革命性的高温钝感发射药（HITP，以奥克托今为基体），将无壳药块的自燃温度猛然推高一百多度，彻底扫清了实用化障碍。",
+            "定型的 4.73×33mm DM11 无壳弹如同一枚精致的赭黄色高能方糖，四点七三毫米铜被甲弹头完全埋藏于方形药块内部，既防磕碰又将空间利用率压榨到极致。为了匹配这枚方形奇迹，H&K 工程师将长条形四十五发弹匣革命性地水平卧置于五百四十毫米枪管正上方，弹头统统垂直朝下紧贴排布；在最终军用定型版 G11 K2 上，护木两侧更挂载了双备弹匣卡具，让单兵轻装便能随枪坐拥一百三十五发惊人火力！"
+          ],
+          "audioScript": "没有黄铜壳带走废热，早期无壳弹极易在滚烫枪膛里过热自燃。诺贝尔炸药公司历经十年攻坚，终于研制出耐高温的 HITP 方形无壳药块 DM11，将自燃点大幅抬高。为了容纳这些方糖般的弹药，工程师把四十五发弹匣水平卧置在枪管正上方，并在 K2 定型版两侧加挂双备弹夹，赋予步枪前所未有的携弹优势。",
+          "audioUrl": "audio/g11/story_act2_zh.mp3",
+          "focusPartId": "g11_mag_tube",
+          "focusPartLabel": "45 发置顶无壳弹匣管"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1986–1989",
+          "title": "德式太空黑科技：90° 旋转圆柱弹膛与瑞士钟表齿轮系",
+          "paragraphs": [
+            "如果说无壳弹是 G11 的血液，那么藏身于橄榄炭黑方盒外壳深处的机械心脏，便是被美国陆军测试官戏称为“德式太空黑科技（Kraut Space Magic）”的惊世杰作。G11 完全抛弃了往复滑动的枪机，取而代之的是一块硬铬精磨的 90° 旋转圆柱弹膛：击发时它水平对正枪管气密闭锁；弹头飞越短行程导气孔瞬间，高压燃气猛推下方双联不锈钢齿条，驱转一套堪比瑞士高级腕表的不锈钢与黄铜行星齿轮系，将圆柱弹膛原地精准翻转整整九十度！",
+            "弹膛朝正上方张开的一刹那，顶部垂直压弹冲头如闪电般下刺二十六点五毫米，把上方置顶弹匣内的新 DM11 无壳药块直接压入弹膛，随即齿轮反旋将弹膛归平击发——整套进弹闭锁耗时不足二十八毫秒！更不可思议的是，包含五百四十毫米枪管、旋转弹膛、齿轮箱与弹匣在内的整套浮置钢制内机匣，悬浮在外壳导轨上可向后自由滑行四十二毫米。在两千一百发每分的三连发爆射中，第三发子弹早已飞出枪口，浮置机匣才温柔撞上尾部液压缓冲器，将三次剧烈后坐融成单次柔和轻推！"
+          ],
+          "audioScript": "剥开方盒外壳，内部正是震惊世界的德式太空黑科技。G11 没有前后往复的传统枪机，而是依靠双齿条驱动瑞士钟表般精密的不锈钢与黄铜齿轮，将镀铬圆柱弹膛原地旋转九十度，由上方冲头垂直压入无壳弹，再转平击发。整个枪管与机匣更在壳体内自由浮置后坐四十二毫米，三发弹头悉数出膛后，后坐力才传递到射手肩头。",
+          "audioUrl": "audio/g11/story_act3_zh.mp3",
+          "focusPartId": "g11_rotary_breech",
+          "focusPartLabel": "90° 旋转镀铬圆柱弹膛"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1990–至今",
+          "title": "柏林墙倒塌与未竟传奇：人类纯机械轻武器的永恒珠峰",
+          "paragraphs": [
+            "1989 至 1990 年间，完成全部野战寒热泥沙考评的 H&K G11 K2 不仅正式通过西德联邦国防军技术定型准备换装全军，更受邀跨越大西洋参加美国陆军声势浩大的“先进战斗步枪（ACR）”竞标。在美军阿伯丁靶场上，G11 K2 凭借两千一百发每分超高速延迟后坐三连发、集成 Hensoldt 光学瞄具以及不可思议的弹药减重，在所有四款参选方案中交出了最耀眼的命中率跃升答卷。",
+            "然而历史的转折总是比子弹更快。1989 年末柏林墙轰然倒塌，两德统一令庞大的防务预算瞬间转向东部重建，冷战全面终结使造价高昂且无法兼容北约标准 5.56 毫米弹药的 G11 换装计划在距离量产仅一步之遥时戛然而止。尽管最终仅有约一千支工程样枪留存于世，但 H&K G11 K2 用齿轮、无壳药块与 90° 旋转弹膛铸就了人类纯机械枪械设计的珠穆朗玛峰，至今仍在每一代军械工程师心中闪耀着超越时代的光芒。"
+          ],
+          "audioScript": "一九九零年，H&K G11 K2 不仅通过了德军定型验收，更在美国陆军先进战斗步枪竞标中大放异彩。但随着柏林墙倒塌与冷战落幕，两德统一后的财政紧缩以及北约口径通用需求，让这支距离全军列装仅一步之遥的科幻名枪遗憾止步。它如同轻武器史上的机械珠峰，至今令全世界的工程迷叹为观止。",
+          "audioUrl": "audio/g11/story_act4_zh.mp3",
+          "focusPartId": "g11_clockwork_gears",
+          "focusPartLabel": "瑞士钟表级不锈钢与黄铜齿轮系"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "90° 旋转镀铬圆柱弹膛与零抛壳钟表循环",
+          "tag": "无壳闭锁机械巅峰",
+          "summary": "彻底摒弃往复枪机与抽壳抛壳动作，通过双联齿条与不锈钢/黄铜行星齿轮系驱使镀铬圆柱弹膛绕 Z 轴精准往复旋转 90°，垂直承接上方冲头压入的 DM11 无壳弹后归平气密闭锁击发。",
+          "focusPartId": "g11_rotary_breech",
+          "focusPartLabel": "90° 旋转圆柱弹膛"
+        },
+        {
+          "id": "bt2",
+          "title": "浮置枪管内机匣延迟后坐与 2,100 RPM 三连发",
+          "tag": "延迟后坐超高速点射",
+          "summary": "整套 540 mm 枪管、钟表机匣与置顶弹匣悬浮于聚合物外壳内，在 3 发 2,100 发/分（总耗时仅 85 毫秒）连发中整体平滑后退 42 mm，确保全部三发弹头出膛后总后坐才传至肩部。",
+          "focusPartId": "g11_inner_receiver",
+          "focusPartLabel": "浮置钢制内机匣"
+        },
+        {
+          "id": "bt3",
+          "title": "4.73×33mm DM11 HITP 无壳弹与 45 发置顶弹匣",
+          "tag": "高能方形无壳供弹体系",
+          "summary": "以高温钝感固体发射药块完全取代黄铜弹壳，使 45 发轻量化方形无壳弹垂直紧排于枪管正上方水平弹匣内，结合 K2 护木双备弹夹实现单枪随行 135 发极高携弹密度。",
+          "focusPartId": "g11_mag_tube",
+          "focusPartLabel": "45 发置顶无壳弹匣管"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1968–1971",
+          "title": "联邦国防军未来步枪立项与无壳弹构想确立",
+          "detail": "西德国防部正式启动替代 G3 步枪的前瞻研究，联合 H&K、诺贝尔炸药与 Hensoldt 光学三巨头攻关无壳弹与高命中三连发架构。"
+        },
+        {
+          "year": "1974–1977",
+          "title": "首代 G11 旋转弹膛样枪试射成功",
+          "detail": "H&K 验证了 90° 旋转圆柱弹膛与浮置内机匣原理，首次在靶场录得超过 2,000 发/分的惊人三发点射循环节奏。"
+        },
+        {
+          "year": "1983–1986",
+          "title": "HITP 耐高温无壳发射药攻克自燃难题",
+          "detail": "诺贝尔炸药成功定型 4.73×33mm DM11 方形高能钝感无壳药块，将自燃点提升逾 100°C，实现军用级连发安全性。"
+        },
+        {
+          "year": "1989–1990",
+          "title": "美国陆军 ACR 先进战斗步枪实战竞标",
+          "detail": "H&K G11 K2 携 45 发置顶弹匣与双侧备弹卡具赴美参评，在三连发散布精度与减重指标中震撼美军评估专家。"
+        },
+        {
+          "year": "1990",
+          "title": "通过联邦国防军技术定型验收",
+          "detail": "G11 K2 圆满完成高寒、沙漠与泥水全套军标测试并获批德国国防军技术认证，距全面换装列装仅一步之遥。"
+        },
+        {
+          "year": "1991–至今",
+          "title": "两德统一预算转向与历史传奇定格",
+          "detail": "受冷战结束、两德统一财政压力及北约 5.56 毫米弹药标准化制约，量产计划宣告终止；G11 K2 成为全球公认的机械轻武器永恒图腾。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Kraut Space Magic: The H&K G11 K2 and the Zenith of Caseless Clockwork",
+      "deck": "From the Bundeswehr's 1968 quest for guaranteed infantry hit probability to a 90-degree rotating chrome breech and a 2,100 RPM floating hyperburst, the Heckler & Koch G11 K2 stands as the boldest mechanical pinnacle in small-arms history.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1968–1977",
+          "title": "Beyond the Brass Case: West Germany's Radical Hit-Probability Mandate",
+          "paragraphs": [
+            "In the late 1960s, West German defense analysts studying infantry combat across the Central European plain uncovered a stark statistical truth: under battlefield stress, single rifle shots frequently missed due to aiming error, while conventional automatic fire climbed skyward by the second round. The Bundeswehr concluded that hit probability could only multiply if a rifle launched a tight three-round salvo above two thousand rounds per minute, exiting the muzzle before the shooter's shoulder ever registered recoil.",
+            "Traditional brass-cased cartridges hit a hard mechanical wall against that requirement. Every shot demanded heavy rearward extraction, ejection, and chambering strokes that ripped brass rims at extreme cyclic tempos. Heckler & Koch of Oberndorf partnered with propellant pioneer Dynamit Nobel on an audacious solution: abolish the metal cartridge case completely, compressing propellant into a solid rectangular block around a 4.73 mm bullet inside a hermetically sealed rifle with no side ejection port."
+          ],
+          "audioScript": "In the late nineteen sixties, West German military analysts proved that battlefield hit probability skyrocketed only if three bullets left the muzzle before recoil ever reached the shooter's shoulder. Traditional brass cartridges simply could not cycle fast enough. Heckler and Koch joined forces with Dynamit Nobel to eliminate the brass case entirely, birthing the sealed caseless monolith known as the G11.",
+          "audioUrl": "audio/g11/story_act1_en.mp3",
+          "focusPartId": "g11_outer_housing",
+          "focusPartLabel": "Olive-Charcoal Monocoque Polymer Casing"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1978–1986",
+          "title": "Conquering Cook-Off: The 4.73x33mm DM11 Block and Overhead 45-Round Magazine",
+          "paragraphs": [
+            "Without brass casings carrying waste heat out of the action, early nitrocellulose caseless prototypes suffered catastrophic cook-offs—fresh rounds spontaneously igniting inside hot chambers around 180 degrees Celsius. Over a decade of relentless chemical engineering, Dynamit Nobel formulated High Ignition Temperature Propellant (HITP), built around octogen-based binders that raised ignition resistance by over one hundred degrees and finally made military caseless ammunition combat-safe.",
+            "The final 4.73x33mm DM11 cartridge resembled a dense tan-ochre rectangular sugar cube with a copper-jacketed 4.73 mm spitzer projectile telescoped flush inside its block. Exploiting that space-saving prism geometry, H&K engineers laid a slim 45-round horizontal magazine directly parallel above the 540 mm barrel, nose-down in a single crisp column. On the final G11 K2 military configuration, twin side-mounted forend brackets carried two spare 45-round magazines, giving an infantryman 135 ready rounds right on the rifle."
+          ],
+          "audioScript": "Without hot brass ejecting from the chamber, early caseless ammunition suffered dangerous cook-offs. After ten years of chemistry breakthroughs, Dynamit Nobel perfected High Ignition Temperature Propellant, forming the rugged rectangular four point seven three millimeter DM11 block. Engineers stacked forty-five of these space-saving blocks horizontally right above the barrel, with two spare magazines clipped onto the K2 forend.",
+          "audioUrl": "audio/g11/story_act2_en.mp3",
+          "focusPartId": "g11_mag_tube",
+          "focusPartLabel": "Overhead 45-Round Caseless Magazine Tube"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1986–1989",
+          "title": "Kraut Space Magic: The 90-Degree Rotary Breech and Swiss-Watch Clockwork",
+          "paragraphs": [
+            "Inside its stark olive-charcoal polymer shell lay an intricate mechanical universe that U.S. Army evaluators famously nicknamed 'Kraut Space Magic.' Rather than a reciprocating bolt, the G11 employed a hard-chromed cylindrical breech block rotating ninety degrees around a transverse axis. Upon ignition, gas tapped from the barrel drove a twin toothed rack bar that spun a Swiss-watch train of stainless steel and C36000 brass spur gears, rotating the empty breech straight upward beneath the overhead magazine.",
+            "At ninety degrees vertical dwell, an overhead spring-cam rammer plunged 26.5 mm downward to press a fresh rectangular DM11 block into the cylinder before the gears reversed it horizontally into gas-sealed alignment—completing an entire cycle in under twenty-eight milliseconds with zero extraction or ejection. Even more astonishingly, the entire 540 mm barrel, rotary breech, gear train, and magazine floated together on steel rails inside the outer casing, gliding rearward 42 mm during a 2,100 RPM three-round burst so all three bullets cleared the barrel before the rear buffer transmitted a single smooth recoil push."
+          ],
+          "audioScript": "Open the polymer casing and you discover what American test engineers famously called Kraut Space Magic. Instead of a sliding bolt, a twin gas rack drives stainless and brass watchmaker gears to rotate a chrome cylindrical breech ninety degrees upward. A vertical rammer seats a fresh caseless block before the cylinder turns horizontal again, all while the entire barreled action floats rearward forty-two millimeters at twenty-one hundred rounds per minute.",
+          "audioUrl": "audio/g11/story_act3_en.mp3",
+          "focusPartId": "g11_rotary_breech",
+          "focusPartLabel": "90-Degree Chrome Rotating Cylindrical Breech"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "1990–Present",
+          "title": "The Fall of the Berlin Wall: An Unrivaled Monument of Pure Mechanical Genius",
+          "paragraphs": [
+            "By 1990, the finalized H&K G11 K2 had conquered Arctic cold, desert dust, and mud endurance trials to win formal Bundeswehr technical certification while dazzling evaluators in the United States Army Advanced Combat Rifle program at Aberdeen Proving Ground. Paired with its integral Hensoldt 1x/3.5x optical carry-handle, its delayed-impulse three-round burst delivered tight shot groups previously thought impossible from a standing soldier.",
+            "Yet geopolitical history moved faster than any hyperburst. The collapse of the Berlin Wall and German reunification diverted billions from defense procurement into national reconstruction, while NATO logistics demanded interoperability with standard 5.56 mm brass ammunition. Canceled inches from mass production with roughly one thousand prototypes ever built, the H&K G11 K2 endures as the Mount Everest of pure mechanical firearms engineering—proof of how far gears, physics, and imagination can go."
+          ],
+          "audioScript": "By nineteen ninety, the G11 K2 passed final German military trials and amazed the U.S. Army Advanced Combat Rifle competition. Yet the fall of the Berlin Wall, reunification budgets, and NATO five point five six standardization halted mass production just short of service. With barely a thousand prototypes ever built, the G11 endures as the unrivaled mechanical Mount Everest of twentieth-century small arms.",
+          "audioUrl": "audio/g11/story_act4_en.mp3",
+          "focusPartId": "g11_clockwork_gears",
+          "focusPartLabel": "Swiss-Watch Stainless & Brass Gear Train"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "90-Degree Rotating Chrome Cylindrical Breech & Zero-Ejection Cycle",
+          "tag": "Caseless Rotary Lockup",
+          "summary": "Eliminates linear bolt reciprocation, extraction, and brass ejection completely: twin gas racks and stainless-brass spur gears turn a hard-chromed breech cylinder 90 degrees upward to accept vertical DM11 caseless blocks before indexing horizontally for sealed ignition.",
+          "focusPartId": "g11_rotary_breech",
+          "focusPartLabel": "90-Degree Rotating Cylindrical Breech"
+        },
+        {
+          "id": "bt2",
+          "title": "Floating Barreled-Action Delayed Impulse & 2,100 RPM 3-Round Hyperburst",
+          "tag": "Delayed Recoil Architecture",
+          "summary": "The 540 mm barrel, clockwork inner steel chassis, and overhead magazine float rearward 42 mm inside the stationary polymer casing during an 85-millisecond 3-round burst so all three bullets exit before recoil reaches the shoulder.",
+          "focusPartId": "g11_inner_receiver",
+          "focusPartLabel": "Floating Steel Inner Receiver"
+        },
+        {
+          "id": "bt3",
+          "title": "4.73x33mm DM11 HITP Caseless Block & Overhead 45-Round Magazine",
+          "tag": "High-Density Caseless Feed",
+          "summary": "Solid high-ignition-temperature rectangular propellant blocks eliminate metallic cases, letting 45 rounds stack horizontally above the barrel while twin K2 spare clips bring on-weapon ready capacity to 135 rounds.",
+          "focusPartId": "g11_mag_tube",
+          "focusPartLabel": "Overhead 45-Round Caseless Magazine"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1968–1971",
+          "title": "Bundeswehr Future Rifle Mandate & Caseless Program Launch",
+          "detail": "West Germany commissions Heckler & Koch, Dynamit Nobel, and Hensoldt to replace the G3 with a caseless hyperburst assault rifle."
+        },
+        {
+          "year": "1974–1977",
+          "title": "First Rotary-Breech G11 Prototypes Fire Above 2,000 RPM",
+          "detail": "Early Oberndorf test rigs validate the 90-degree cylindrical breech and floating-action delayed recoil concept on live ranges."
+        },
+        {
+          "year": "1983–1986",
+          "title": "HITP Propellant Solves Caseless Cook-Off",
+          "detail": "Dynamit Nobel finalizes the rectangular 4.73x33mm DM11 HITP propellant block, raising self-ignition threshold by over 100 degrees Celsius."
+        },
+        {
+          "year": "1989–1990",
+          "title": "U.S. Army Advanced Combat Rifle (ACR) Trials",
+          "detail": "The finalized G11 K2 with 45-round overhead magazines and twin spare clips impresses Aberdeen evaluators with unprecedented 3-round burst dispersion."
+        },
+        {
+          "year": "1990",
+          "title": "Bundeswehr Technical Certification Completed",
+          "detail": "H&K G11 K2 passes full German military environmental, mud, and arctic qualification tests ready for serial adoption."
+        },
+        {
+          "year": "1991–Present",
+          "title": "Post-Cold-War Cancellation & Mechanical Immortality",
+          "detail": "German reunification budget priorities and NATO 5.56 mm standardization cancel procurement, cementing the G11 K2 as the ultimate small-arms clockwork legend."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "g11_barrel": {
+      "partId": "g11_barrel",
+      "bomCode": "S-01",
+      "calloutLabelEn": "540mm Floating 4.73 Barrel",
+      "zh": {
+        "roleTag": "540mm 浮置长管 · 随内机匣三连发整体后坐 -42mm",
+        "overview": "全长 540 毫米的冷锻镀铬枪管藏身于无托方盒机身内，后端与 90° 旋转圆柱弹膛严密气密对接，赋予 4.73 毫米小口径弹头高达 930 米/秒的惊人初速。",
+        "craftAndMaterial": "采用高强度铬钼钒钢冷精锻加工并施以硬铬内膛抗烧蚀镀层，外轮廓呈三段阶梯减重收束，中段配精密取气孔与节套刚性压配。",
+        "kinematicRole": "击发阶段 2 承受 380 兆帕无壳弹膛压，阶段 3 至 6 随浮置钢制内机匣整体后坐 -42 毫米并平稳复进；机拆 34% 后向前抽出。",
+        "designHighlight": "得益于无托布局，在 750 毫米紧凑全长内塞入了堪比全尺寸步枪的 540 毫米长管，同时整管参与浮置延迟后坐。",
+        "audioScript": "这根长达五百四十毫米的冷锻镀铬枪管，被巧妙收纳在紧凑的七百五十毫米无托机身中。更绝妙的是它并非固定不动，而是在两千一百发每分的三连发期间，随内机匣整体向后自由浮置滑行四十二毫米。",
+        "audioUrl": "audio/g11/parts/g11_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "540mm CHF Free-Floating Barrel Recoiling -42 mm in Hyperburst",
+        "overview": "Spanning a full 540 millimeters inside the compact 750 mm bullpup envelope, this chrome-lined barrel mates flush against the 90-degree rotary breech to propel 4.73 mm projectiles to 930 m/s.",
+        "craftAndMaterial": "Cold hammer-forged from chrome-moly-vanadium ordnance steel with an erosion-resistant hard-chrome bore, stepped exterior contour, and precision mid-barrel gas tap port.",
+        "kinematicRole": "Contains 380 MPa caseless combustion in phase 2 and floats rigidly rearward 42 mm with the inner chassis across phases 3 through 6; withdraws forward past 34% disassembly.",
+        "designHighlight": "Combines full rifle ballistic velocity with bullpup compactness while actively reciprocating as part of the delayed-impulse hyperburst mass.",
+        "audioScript": "Hidden inside this compact bullpup shell is a full five hundred forty millimeter cold hammer forged barrel. Rather than staying fixed, it floats rearward forty-two millimeters together with the inner steel receiver during each twenty-one hundred round per minute three-round burst.",
+        "audioUrl": "audio/g11/parts/g11_barrel_en.mp3"
+      }
+    },
+    "g11_flash_hider": {
+      "partId": "g11_flash_hider",
+      "bomCode": "S-02",
+      "calloutLabelEn": "6-Slot Flash Hider & Lug",
+      "zh": {
+        "roleTag": "六开槽鸟笼消焰 · 兼容枪榴弹卡环与下置刺刀座",
+        "overview": "旋固于 540 毫米浮置枪管最前端的六开槽鸟笼式消焰器，外圈自带北约枪榴弹定位簧环与下挂刺刀锁座。",
+        "craftAndMaterial": "合金工具钢数控铣削六条对称泄焰槽，经黑氮化表面硬化，高速连发后膛口区呈现独特的淡蓝青铜热回火与微量积碳色泽。",
+        "kinematicRole": "与浮置枪管保持刚性同步，在三连发冲程中随枪管后缩 42 毫米而不触碰聚合物前护罩；全拆阶段向前旋离枪口。",
+        "designHighlight": "在极短的 45 毫米长度内同时整合了高速无壳燃气消焰、枪榴弹发射导径与刺刀卡笋三项野战功能。",
+        "audioScript": "装在浮置枪管最前端的六槽消焰器，随枪管一同前后自由滑行。它不仅能有效打散九百三十米每秒高初速无壳弹的膛口火光，下方还一体集成了刺刀卡座与北约枪榴弹固定环。",
+        "audioUrl": "audio/g11/parts/g11_flash_hider_zh.mp3"
+      },
+      "en": {
+        "roleTag": "6-Slot Birdcage Flash Hider with Grenade Ring & Bayonet Lug",
+        "overview": "Threaded onto the muzzle of the 540 mm floating barrel, this six-port flash hider disperses supersonic propellant blast while providing an under-slung bayonet lug and rifle grenade spring ring.",
+        "craftAndMaterial": "CNC machined from black-nitrided ordnance steel with six symmetrical expansion ports, showing subtle bronze-blue thermal temper and muzzle soot after rapid 2,100 RPM bursts.",
+        "kinematicRole": "Moves rigidly rearward 42 mm in lockstep with the floating barrel during firing without fouling the outer shroud; separates forward during disassembly past 34%.",
+        "designHighlight": "Packs flash mitigation, 22 mm NATO grenade launch geometry, and bayonet attachment into a sleek 45 mm muzzle profile.",
+        "audioScript": "Mounted on the tip of the floating barrel, this six-slot flash hider glides smoothly rearward alongside the barrel during bursts. It disperses bright high-velocity caseless muzzle flash while integrating a bayonet lug and rifle grenade collar.",
+        "audioUrl": "audio/g11/parts/g11_flash_hider_en.mp3"
+      }
+    },
+    "g11_inner_receiver": {
+      "partId": "g11_inner_receiver",
+      "bomCode": "S-03",
+      "calloutLabelEn": "Floating Steel Inner Chassis",
+      "zh": {
+        "roleTag": "全枪浮置后坐核心 · 承载枪管、旋转弹膛与钟表齿轮系",
+        "overview": "悬架于外部聚合物方盒导轨内的数控钢制主承力骨架，将枪管节套、90° 旋转弹膛、钟表齿轮系与置顶弹匣轨整合为一个自由浮置单元。",
+        "craftAndMaterial": "高强锰磷化与氮化硬化钢板数控精铣成型，双侧开设大幅减重与装配视窗，底缘带精密磨削纵向滑轨与不锈钢复进簧顶推肩。",
+        "kinematicRole": "击发阶段 3 至 6 作为浮置质量主体向后平移 -42 毫米压缩主复进簧，彻底吸收三连发后坐冲量；机拆 16% 后向右侧移出外壳。",
+        "designHighlight": "打破传统机匣固定于枪托的铁律，让整套核心自动机像火炮反后坐装置般在护壳内自由滑行。",
+        "audioScript": "这套镂空数控钢制内机匣，是 G11 实现延迟后坐奇迹的钢铁骨干。它把枪管、旋转弹膛、齿轮箱和弹匣绑成一体，像微型火炮一样在聚合物外壳内自由后退四十二毫米，吸收全部三连发冲击。",
+        "audioUrl": "audio/g11/parts/g11_inner_receiver_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Floating CNC Steel Barreled-Action Chassis (-42 mm Recoil Stroke)",
+        "overview": "Suspended on precision rails inside the polymer monolith, this machined steel chassis unifies the barrel trunnion, 90-degree rotary breech, clockwork gear train, and overhead magazine rail into a single floating mass.",
+        "craftAndMaterial": "CNC milled from manganese-nitrided alloy steel with generous skeletonized inspection windows exposing the breech and gears, fitted with hardened longitudinal guide gibs.",
+        "kinematicRole": "Glides rearward 42 mm inside the stationary polymer casing across firing phases 3 through 6 to buffer 2,100 RPM hyperburst recoil; shifts clear during field stripping past 16%.",
+        "designHighlight": "Applies artillery-style soft-recoil mechanics to an infantry rifle, delaying shoulder impact until all three burst projectiles have already exited the bore.",
+        "audioScript": "This skeletonized machined steel inner receiver is the structural backbone of the G11 delayed-impulse system. Binding the barrel, rotary breech, gears, and magazine together, it slides freely forty-two millimeters rearward inside the outer shell like a miniature artillery carriage.",
+        "audioUrl": "audio/g11/parts/g11_inner_receiver_en.mp3"
+      }
+    },
+    "g11_rotary_breech": {
+      "partId": "g11_rotary_breech",
+      "bomCode": "S-04",
+      "calloutLabelEn": "90-Deg Chrome Rotary Breech",
+      "zh": {
+        "roleTag": "无壳弹颠覆性闭锁 · 旋转90°垂直吞弹再转平击发",
+        "overview": "G11 步枪最负盛名的机械瑰宝——一块中心横向贯穿 4.73×33mm 方形无壳弹膛的高光硬铬圆柱体，绕 Z 轴往复旋转 90° 完成装弹与闭锁。",
+        "craftAndMaterial": "特种耐热合金钢精磨并厚镀硬铬抗烧蚀，两端周缘精铣 24 齿直齿轮直接啮合钟表传动系，中置自润滑黄铜承轴与气密端面环。",
+        "kinematicRole": "阶段 3 绕 Z 轴旋转整整 +90°（+1.57 弧度）朝上接弹，阶段 4 静止承接冲头压弹，阶段 5 回转归零与枪管气密对齐击发。",
+        "designHighlight": "用简单的原地 90° 旋转完全取代了长达十厘米的枪机往复抽抛壳行程，是实现 2,100 发/分极限射速的几何关键。",
+        "audioScript": "请凝视这块闪耀硬铬光泽的九十度旋转圆柱弹膛，它是人类轻武器史上最天马行空的发明。发射后它无需后退抽壳，只需原地翻转九十度朝上吞入一发方形无壳弹，再迅速转平气密闭锁，短短二十八毫秒就能完成一次循环。",
+        "audioUrl": "audio/g11/parts/g11_rotary_breech_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Hard-Chromed 90-Deg Rotating Cylinder with Transverse DM11 Chamber",
+        "overview": "The crown jewel of the G11 K2: a precision hard-chromed cylindrical breech pierced by a rectangular 4.73x33mm caseless chamber that rotates ninety degrees around the transverse axis to load and fire.",
+        "craftAndMaterial": "Precision ground heat-resistant alloy steel clad in dense hard chrome to resist caseless gas erosion, flanked by 24-tooth spur gear rims and brass journal hubs.",
+        "kinematicRole": "Rotates a full +90 degrees (+1.57 rad) upward in phase 3 to face the magazine throat, dwells vertically during phase 4 ramming, and rotates cleanly back to 0 degrees in phase 5 for sealed firing.",
+        "designHighlight": "Replaces long linear bolt extraction and ejection strokes with a compact rotary indexing motion, unlocking 2,100 RPM hyperburst cycling.",
+        "audioScript": "Behold the gleaming chrome ninety-degree rotating cylindrical breech, the most audacious mechanism in modern firearms history. With no brass to extract, it simply turns ninety degrees upward to accept a fresh rectangular caseless round and rotates horizontal again in under twenty-eight milliseconds.",
+        "audioUrl": "audio/g11/parts/g11_rotary_breech_en.mp3"
+      }
+    },
+    "g11_gas_piston": {
+      "partId": "g11_gas_piston",
+      "bomCode": "S-05",
+      "calloutLabelEn": "Short-Stroke Gas Piston",
+      "zh": {
+        "roleTag": "高能燃气取气口 · 短行程猛击钟表齿条启动循环",
+        "overview": "套装于 540 毫米枪管中段下方的短行程导气箍与双密封环镀铬活塞，负责将膛内高压无壳发射药燃气转化为精确的机械驱动脉冲。",
+        "craftAndMaterial": "导气箍采用黑氮化锻钢包覆枪管，内部短行程活塞以不锈钢精车并镀硬铬，前端刻有双道自清洁燃气迷宫密封槽。",
+        "kinematicRole": "击发阶段 2 末段受高压燃气推动向后短行程疾冲 13.5 毫米撞击双联齿条杆，阶段 3 迅速回位；全拆阶段向下前分离。",
+        "designHighlight": "极短的 13.5 毫米活塞行程极大降低了运动惯量，确保三连发期间各发循环时间高度一致。",
+        "audioScript": "枪管正下方紧贴着这组短行程导气箍与镀铬活塞。当四点七三毫米弹头飞过取气孔，高压燃气只需推动活塞向后猛冲十三点五毫米，就足以赋予后方钟表齿轮箱全周期所需的澎湃动能。",
+        "audioUrl": "audio/g11/parts/g11_gas_piston_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Under-Barrel Short-Stroke Gas Tap Block & Chrome Annular Piston",
+        "overview": "Clamped beneath the midpoint of the 540 mm barrel, this compact gas block taps high-pressure caseless propellant gas to drive a short-stroke chrome piston into the clockwork rack.",
+        "craftAndMaterial": "Black-nitrided forged steel collar mated to a precision-turned hard-chromed stainless piston featuring twin self-cleaning labyrinth gas sealing rings.",
+        "kinematicRole": "Receives high-pressure gas impulse late in phase 2, stroking 13.5 mm rearward relative to the floating chassis to kick the toothed driving rod before rebounding cleanly.",
+        "designHighlight": "Ultra-short reciprocating stroke minimizes parasitic gas-system mass while delivering crisp impulse repeatability at 2,100 rounds per minute.",
+        "audioScript": "Clamped directly beneath the barrel sits the short-stroke gas tap block and hard-chromed piston. As the bullet passes the gas port, a crisp thirteen point five millimeter punch transfers all the energy needed to drive the entire clockwork gear train.",
+        "audioUrl": "audio/g11/parts/g11_gas_piston_en.mp3"
+      }
+    },
+    "g11_driving_rod": {
+      "partId": "g11_driving_rod",
+      "bomCode": "S-06",
+      "calloutLabelEn": "Toothed Gas Driving Rack",
+      "zh": {
+        "roleTag": "直线脉冲转旋转力矩 · 14齿精密齿条啮合钟表主轮",
+        "overview": "横贯浮置内机匣底部的双列平行不锈钢齿条连杆（德语 Zahnstange），充当导气活塞与钟表主齿轮之间的精密直线-旋转能量转换桥。",
+        "craftAndMaterial": "双侧平行导杆由高刚度 17-4PH 不锈钢数控铣削，前端横轭承接活塞推力，后段集成左右双排共 28 枚耐磨青铜合金精密齿条。",
+        "kinematicRole": "击发阶段 3 向后平移 24.5 毫米驱转钟表主轮令圆柱弹膛翻转 90°，阶段 5 向前复进带动齿轮反旋归平；全拆向下方滑脱。",
+        "designHighlight": "对称双列齿条从枪管两侧绕过，彻底消除单侧偏心扭矩，在高转速下实现零打滑刚性正时同步。",
+        "audioScript": "这根双列不锈钢齿条拉杆，巧妙从枪管左右两侧平行绕过。前端承接导气活塞的直线冲击，后段左右双排精密齿条直接咬合主齿轮底部，把直线推力无打滑地转化为九十度弹膛的往复旋转。",
+        "audioUrl": "audio/g11/parts/g11_driving_rod_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Twin Stainless Gas-Actuated Toothed Rack Rail (Zahnstange)",
+        "overview": "Spanning the underside of the floating steel chassis, this symmetrical twin-rail toothed rack converts the gas piston's linear punch into positive rotary torque for the clockwork gears.",
+        "craftAndMaterial": "CNC machined from high-rigidity 17-4PH stainless steel with a front cross-yoke and twin 14-tooth bronze-alloy linear rack tracks aligned directly under the main spur gears.",
+        "kinematicRole": "Strokes 24.5 mm rearward relative to the floating receiver in phase 3 to spin the gear train and rotate the breech 90 degrees, then surges forward in phase 5 to lock horizontal battery.",
+        "designHighlight": "Balanced twin-flank rack geometry straddles the barrel centerline to eliminate twisting torque and maintain watchmaker timing at extreme speeds.",
+        "audioScript": "Running parallel along both sides of the floating chassis, this twin stainless driving rack bridges the gas piston and clockwork gears. Fourteen precision teeth on each rail convert linear gas impulse into slip-free rotary motion.",
+        "audioUrl": "audio/g11/parts/g11_driving_rod_en.mp3"
+      }
+    },
+    "g11_recoil_spring": {
+      "partId": "g11_recoil_spring",
+      "bomCode": "S-07",
+      "calloutLabelEn": "Floating Recoil Coil Spring",
+      "zh": {
+        "roleTag": "锚定尾缓冲座 · 吸收42mm浮置冲程并平稳推回待击位",
+        "overview": "纵置在浮置钢制内机匣后下方的长行程高疲劳螺旋复进主簧，后端抵死静止尾缓冲座，前端托举整套浮置枪管与钟表内机匣。",
+        "craftAndMaterial": "高碳硅铬合金琴钢丝冷卷并经喷丸强化与应力消除热处理，19 圈等距螺距在数万次三连发大冲程压缩下保持恒定弹性系数。",
+        "kinematicRole": "后端固定于机匣尾座，击发阶段 3 至 5 随内机匣后退实时等径压缩至 70.4%（-42 毫米），阶段 6 平缓舒张推回浮置总成。",
+        "designHighlight": "恰到好处的低初始刚度允许浮置总成在三发爆射期间近乎零阻力后滑，真正做到“三弹齐飞、单次轻推”。",
+        "audioScript": "这条十九圈长行程螺旋复进主簧，后端死死锚定在尾部缓冲座上，前端托住整个浮置内机匣。连发瞬间它压缩百分之三十柔和吞下四十二毫米冲程，随即平稳把整套枪管和钟表机构推回原位。",
+        "audioUrl": "audio/g11/parts/g11_recoil_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Long-Stroke 19-Coil Helical Floating-Action Recoil Spring",
+        "overview": "Anchored longitudinally between the stationary rear buffer and the floating steel inner chassis, this 19-coil helical spring absorbs the 42 mm delayed-recoil hyperburst stroke and drives forward run-out.",
+        "craftAndMaterial": "Cold-wound chrome-silicon piano wire, shot-peened and stress-relieved for uniform spring rate over tens of thousands of high-tempo burst cycles.",
+        "kinematicRole": "Rear-pinned at the buffer abutment while dynamically compressing to 70.4% length across phases 3 through 5, then smoothly expanding in phase 6 to return the floating chassis into battery.",
+        "designHighlight": "Tuned low initial preload lets the floating barreled action glide nearly unhindered during the 85-millisecond three-round burst before gently decelerating.",
+        "audioScript": "Pinned against the stationary rear buffer, this nineteen-coil helical recoil spring cushions the entire floating barreled action. Compressing smoothly by thirty percent across the forty-two millimeter burst stroke, it returns the steel chassis gently back into battery.",
+        "audioUrl": "audio/g11/parts/g11_recoil_spring_en.mp3"
+      }
+    },
+    "g11_outer_housing": {
+      "partId": "g11_outer_housing",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Monocoque Polymer Casing",
+      "zh": {
+        "roleTag": "全封闭防泥沙方盒机身 · 无侧面抛壳窗 · 左侧铭文与旋柄槽",
+        "overview": "造就 H&K G11 K2 极具未来主义方盒轮廓的整块式橄榄炭黑聚合物外壳，将整套浮置枪管、钟表齿轮箱与 45 发无壳弹匣严密包裹其中。",
+        "craftAndMaterial": "35% 玻纤增强德军橄榄炭黑工程聚酰胺精密注塑，前护木集成六排散热百叶窗，左侧凹刻红框 [HK] G11 K2 奥伯恩多夫铭文与乌尔姆试枪章。",
+        "kinematicRole": "全击发周期保持静止供射手贴腮握持，内部纵轨平滑承托浮置钢机匣后滑 -42 毫米；机拆 8% 至 30% 向左上方脱离内部机械。",
+        "designHighlight": "得益于无壳弹零抛壳优势，彻底取消机身侧面抛壳窗（仅底面设哑弹清理盖），防泥沙防尘密封能力远超传统步枪。",
+        "audioScript": "这具极具科幻感的橄榄炭黑方盒外壳，不仅是 G11 最标志性的外观符号，更是一座严密的防尘堡垒。因为无壳弹无需抛壳，机身两侧完全没有抛壳窗，牢牢保护着内部精密的钟表机芯免受泥沙侵袭。",
+        "audioUrl": "audio/g11/parts/g11_outer_housing_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Sealed Olive-Charcoal Glass-Filled Polymer Monocoque Casing",
+        "overview": "Defining the futuristic rectangular silhouette of the H&K G11 K2, this sealed polymer monocoque shell encloses the floating steel inner chassis, clockwork gears, and overhead 45-round caseless magazine.",
+        "craftAndMaterial": "Injection-molded 35% glass-filled Bundeswehr olive-charcoal polyamide with forward louver vents, circular left-flank winding bay, Oberndorf HK G11 K2 rollmarks, Ulm stag proofs, and red/white S/1/3/A markings.",
+        "kinematicRole": "Remains stationary against the shooter's shoulder throughout all firing phases while guiding the floating inner chassis rearward 42 mm; lifts free during field stripping past 8%.",
+        "designHighlight": "Eliminates conventional side ejection ports altogether—retaining only a sealed bottom misfire hatch—to shield the intricate clockwork from mud and sand.",
+        "audioScript": "This sleek olive-charcoal monocoque polymer casing gives the G11 its unmistakable sci-fi silhouette while acting as an environmental fortress. With no brass to eject, its flanks have no ejection port at all, sealing the delicate clockwork away from battlefield mud and grit.",
+        "audioUrl": "audio/g11/parts/g11_outer_housing_en.mp3"
+      }
+    },
+    "g11_optic_handle": {
+      "partId": "g11_optic_handle",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Hensoldt 1x/3.5x Optic Handle",
+      "zh": {
+        "roleTag": "祖母绿-蓝宝石多层镀膜物镜 · 兼备应急机械瞄具与提把",
+        "overview": "整合于方盒机匣正顶部的德国 Hensoldt 1×/3.5× 反射式光学瞄准镜兼提把，顶部附带应急机械瞄具与 STANAG 导轨肋。",
+        "craftAndMaterial": "与外壳同色玻纤增强聚合物包覆铝合金精密光管，前后嵌装多层祖母绿-蓝宝石防眩增透镀膜镜片，侧置防滑风偏与倍率旋钮。",
+        "kinematicRole": "击发全程随静止外壳稳固锁定零点，不受内部浮置机匣剧烈运动影响；机拆 6% 至 28% 直接向上拆离机匣顶面。",
+        "designHighlight": "将 1 倍快速近战红点般视野与 3.5 倍中距精确放大融于一体，彻底告别传统步枪昂贵的后期镜座改装。",
+        "audioScript": "架在机匣顶部的并非普通提把，而是德国亨索尔特打造的一倍与三点五倍双倍率光学瞄准镜。前后镜片覆盖祖母绿与蓝宝石防眩镀膜，既能室内快速瞄准，又能轻松捕捉六百米外的精确目标。",
+        "audioUrl": "audio/g11/parts/g11_optic_handle_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Integral Carry-Handle Hensoldt 1x/3.5x Dual-Power Optical Sight",
+        "overview": "Mounted atop the monocoque casing, this Hensoldt carry-handle optic integrates switchable 1x close-quarters and 3.5x medium-range magnification alongside backup emergency iron sights.",
+        "craftAndMaterial": "Olive-charcoal glass-filled polymer shroud enclosing an anodized aluminum optical tube, twin emerald-sapphire multi-coated objective and ocular lenses, and steel elevation/windage turrets.",
+        "kinematicRole": "Stays rigidly zeroed on the stationary outer casing completely isolated from the recoiling floating barrel chassis; detaches straight upward past 6% disassembly.",
+        "designHighlight": "Standardizes dual-magnification battlefield optics inside an ergonomic carry handle with an unobstructed daylight grip tunnel.",
+        "audioScript": "Crowning the G11 is an integral carry-handle optic crafted by Hensoldt of Wetzlar. Featuring emerald-sapphire multi-coated lenses, it switches instantly between one-power reflex speed and three point five power magnification while staying isolated from the recoiling barrel inside.",
+        "audioUrl": "audio/g11/parts/g11_optic_handle_en.mp3"
+      }
+    },
+    "g11_pistol_grip": {
+      "partId": "g11_pistol_grip",
+      "bomCode": "F-03",
+      "calloutLabelEn": "H&K Grip & Winter Guard",
+      "zh": {
+        "roleTag": "前后实心焊接闭环护圈 · 适配寒带厚手套操作",
+        "overview": "前置无托式人体工学 H&K 倾斜手枪握把，前端无缝延伸为宽敞封闭式冬季防寒扳机护圈并刚性汇入前护木底缘。",
+        "craftAndMaterial": "高韧性炭黑玻纤聚酰胺一体注塑成型，握把掌腹表面刻画高摩擦微点蚀防滑皮纹，护圈框壁加厚抗跌落磕碰。",
+        "kinematicRole": "作为射手主手支撑基准在击发循环中保持静止，承受抵肩握持力；全枪深度分解阶段向下脱离下机匣。",
+        "designHighlight": "前后实心闭环连接设计既消除了护圈悬空断裂隐患，又为北约中欧严冬作战的厚重防寒手套预留了充裕扣机空间。",
+        "audioScript": "前移的无托握把延续了黑克勒科赫绝佳的手掌贴合弧度。它向前一体延伸出宽大封闭的冬季扳机护圈并牢牢焊入护木下缘，即使在严寒战场戴着厚手套也能干脆利落地扣动扳机。",
+        "audioUrl": "audio/g11/parts/g11_pistol_grip_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Contoured H&K Polymer Grip with Solidly Welded Closed Winter Guard",
+        "overview": "Forward bullpup ergonomic H&K pistol grip molding seamlessly into an oversized closed winter trigger guard welded cleanly into the lower forend chassis.",
+        "craftAndMaterial": "Tough dark charcoal glass-filled polyamide featuring fine high-friction palm stippling, natural finger curvature, and reinforced closed-loop guard walls.",
+        "kinematicRole": "Provides a static ergonomic firing hand anchor throughout all firing phases; separates straight downward past 34% full teardown.",
+        "designHighlight": "Zero-gap welded guard geometry maximizes drop durability while giving generous clearance for thick cold-weather arctic combat gloves.",
+        "audioScript": "The forward bullpup grip carries classic Heckler and Koch palm ergonomics and flows directly into a welded closed-loop winter trigger guard. Solidly anchored front and rear, it offers generous finger room even when wearing heavy cold-weather gloves.",
+        "audioUrl": "audio/g11/parts/g11_pistol_grip_en.mp3"
+      }
+    },
+    "g11_buttplate": {
+      "partId": "g11_buttplate",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Ribbed Rubber Buttplate",
+      "zh": {
+        "roleTag": "双尾销快速解锁 · 高摩擦横向防滑抵肩缓冲",
+        "overview": "封锁方盒外壳最尾端的炭黑硫化橡胶肩垫与快拆尾盖，是开启 G11 野战分解维护的第一道门户。",
+        "craftAndMaterial": "高阻尼炭黑硫化橡胶包覆聚合物内衬骨架，后肩面模压八道横向防滑沟槽，两侧配双枚自锁钢制快拆横销座。",
+        "kinematicRole": "击发全程静止抵贴射手肩窝吸收尾部缓冲器传递的平缓冲量；野战快拆 6% 起向后抽离外壳尾端。",
+        "designHighlight": "兼具减震肩垫与主维护仓盖双重职能，拔出两销即可从后方直接抽出内部缓冲器与浮置机匣。",
+        "audioScript": "机身最尾端这块带有八道防滑横肋的硫化橡胶托底板，不只是稳固贴合肩膀的缓冲垫，同时也是整枪的勤务维护尾盖。拔出两枚自锁尾销，就能从后方顺畅抽出内部的缓冲器和钢制内机匣。",
+        "audioUrl": "audio/g11/parts/g11_buttplate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Ribbed Charcoal Rubber Shoulder Pad & Quick-Release Rear Cap",
+        "overview": "Sealing the rear face of the polymer monocoque casing, this ribbed charcoal rubber buttplate doubles as the primary field-strip access cover for the internal chassis.",
+        "craftAndMaterial": "High-damping vulcanized charcoal rubber molded over a reinforced polymer endcap with eight horizontal shoulder grip ribs and dual captive steel pin bosses.",
+        "kinematicRole": "Remains static against the shooter's shoulder to absorb softened delayed-impulse recoil; withdraws rearward from 6% disassembly.",
+        "designHighlight": "Merges shoulder recoil damping and dust-tight rear access into a single two-pin quick-release cap.",
+        "audioScript": "Sealing the rear of the monocoque shell, this horizontally ribbed charcoal rubber buttplate serves both as a non-slip shoulder pad and the main takedown cover. Popping its twin captive pins grants instant rear access to the buffer and floating steel chassis.",
+        "audioUrl": "audio/g11/parts/g11_buttplate_en.mp3"
+      }
+    },
+    "g11_winding_knob": {
+      "partId": "g11_winding_knob",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Pop-Out Winding Crank",
+      "zh": {
+        "roleTag": "顺时针手摇360°上膛 · 无常规拉机柄的钟表仪式感",
+        "overview": "镶嵌于方盒机匣左侧凹坑内的标志性圆形弹出式上膛摇柄（Spannkurbel），堪称世界枪械史绝无仅有的“发条上膛”人机交互。",
+        "craftAndMaterial": "黑氮化钢圆盘内嵌聚合物折叠摇臂与滚花握柱，中心由不锈钢主轴直连内部钟表齿轮系，平时折叠平贴侧壁防勾挂。",
+        "kinematicRole": "正常连发射击期间脱钩静止不打手；手动首发上膛或排除哑弹时弹出顺时针摇转 360° 驱转旋转弹膛；机拆 10% 后向左侧拔出。",
+        "designHighlight": "将传统前后长行程拉机柄浓缩为一个紧凑圆形旋柄，只需一转便能顺滑装入无壳弹并挂起击针。",
+        "audioScript": "看看机身左侧这枚酷似怀表发条的圆形弹出摇柄。G11 完全没有传统的前后拉机柄，装填首发无壳弹只需弹出摇臂顺时针旋拧一圈，即可手动驱转内部齿轮箱完成上膛，甚至能手摇清退哑弹。",
+        "audioUrl": "audio/g11/parts/g11_winding_knob_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Iconic Circular Side-Mounted Pop-Out Clockwork Cocking Crank",
+        "overview": "Recessed flush into the left flank of the outer casing, this folding circular winding crank replaces traditional sliding charging handles with a 360-degree watch-winding loading action.",
+        "craftAndMaterial": "Black-nitrided steel disc housing a spring-folded dark polymer crank lever, knurled thumb tip, and central stainless drive shaft engaging the internal clockwork.",
+        "kinematicRole": "Disengages and stays completely non-reciprocating during live fire; pops out for manual clockwise loading or misfire clearing; extracts left during field stripping past 10%.",
+        "designHighlight": "Distills manual chambering, cocking, and dead-round clearing into one compact flush-folding rotary dial with zero snag hazard.",
+        "audioScript": "Notice this circular pop-out crank recessed into the left flank. The G11 abandons traditional charging handles completely: flipping out this lever and turning it three hundred sixty degrees winds the internal clockwork gears to load the first caseless round or clear a dud.",
+        "audioUrl": "audio/g11/parts/g11_winding_knob_en.mp3"
+      }
+    },
+    "g11_spare_clips": {
+      "partId": "g11_spare_clips",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Twin K2 Spare Mag Clips",
+      "zh": {
+        "roleTag": "单枪随身135发火力 · G11 K2定型版标志性外观",
+        "overview": "跨接于前护木上肩的 G11 K2 专属左右双侧备用 45 发无壳弹匣快挂卡具，可随枪并联携带两支满载备用弹匣。",
+        "craftAndMaterial": "橄榄炭黑强化聚酰胺马鞍横桥配双侧弹性 U 形夹臂、纵向加固拉条与氮化钢锁扣卡笋，耐低温脆裂冲击。",
+        "kinematicRole": "击发期间稳固夹持于静止前护木外侧，赋予枪身前部配重抑跳效果；机拆 12% 至 34% 向上整体松脱提离。",
+        "designHighlight": "使单兵无需伸手摸索胸挂弹袋即可随枪携带惊人的 135 发（3×45）无壳弹药，换弹极速且大幅强化持续火力。",
+        "audioScript": "这组马鞍式跨接在前护木两侧的备用弹匣卡具，是 G11 K2 最终军用版最具辨识度的设计。它允许士兵在主弹匣左右两侧再挂两支满载四十五发弹匣，随枪直接携带高达一百三十五发惊人火力。",
+        "audioUrl": "audio/g11/parts/g11_spare_clips_zh.mp3"
+      },
+      "en": {
+        "roleTag": "K2 Forend Twin Side-Mounted Spare 45-Round Magazine Brackets",
+        "overview": "Saddling the upper forend of the finalized G11 K2, these dual side-mounted spring-latch brackets hold two spare 45-round caseless magazines parallel to the active overhead tube.",
+        "craftAndMaterial": "Olive-charcoal glass-filled polyamide saddle straps paired with reinforced polymer retention cradles, longitudinal tie bars, and nitrided steel latch levers.",
+        "kinematicRole": "Remains fixed to the stationary forend during firing, subtly stabilizing muzzle balance while holding 90 reserve rounds; lifts upward past 12% teardown.",
+        "designHighlight": "Raises ready on-rifle ammunition capacity to an extraordinary 135 rounds—more than quadruple a standard 30-round NATO rifle—while enabling rapid nose-fed reloads.",
+        "audioScript": "Saddling the forward handguard, these twin spare magazine brackets define the final G11 K2 military configuration. By clipping two extra forty-five round tubes beside the active magazine, a soldier carries an astonishing one hundred thirty-five rounds directly on the rifle.",
+        "audioUrl": "audio/g11/parts/g11_spare_clips_en.mp3"
+      }
+    },
+    "g11_buffer_assembly": {
+      "partId": "g11_buffer_assembly",
+      "bomCode": "F-07",
+      "calloutLabelEn": "Rear Floating-Action Buffer",
+      "zh": {
+        "roleTag": "承接三连发末发总冲量 · 兼具复进主簧静止尾座",
+        "overview": "安置于外壳最尾腔内的液压-弹性体缓冲止动座，既是长行程复进主簧的静止后端支座，也是截停浮置钢机匣 42 毫米冲程的温柔港湾。",
+        "craftAndMaterial": "黑氮化钢主体框架嵌装高阻尼聚氨酯吸能前缓冲垫，下缘集成不锈钢弹簧导向承杯，抗高寒老化。",
+        "kinematicRole": "全周期静止锚固在尾托底板之前，在阶段 4 柔和承接后退至 -42 毫米极限位的浮置内机匣；全拆向后脱出外壳。",
+        "designHighlight": "将 2,100 RPM 三连发累计的动量脉冲平缓耗散，杜绝硬撞击回弹破坏连发射手据枪姿态。",
+        "audioScript": "隐藏在托底板前方的尾部缓冲器总成，负责迎接浮置机匣四十二毫米后坐冲程的终点。当三连发第三颗子弹已经出膛，它以高阻尼聚氨酯缓冲垫温柔截停内机匣，把剧烈冲击化解成平稳轻推。",
+        "audioUrl": "audio/g11/parts/g11_buffer_assembly_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Rear Hydraulic-Elastomer Floating-Action Buffer & Spring Seat",
+        "overview": "Seated deep inside the rear stock cavity directly behind the floating steel chassis, this buffer assembly anchors the recoil spring and softly arrests the 42 mm burst recoil stroke.",
+        "craftAndMaterial": "Black-nitrided steel housing fitted with a high-damping polyurethane front impact bumper and a machined stainless helical spring seat.",
+        "kinematicRole": "Remains anchored at the rear of the stationary shell, absorbing full floating chassis momentum at phase 4 dwell before spring run-out; extracts rearward past 34% teardown.",
+        "designHighlight": "Dissipates accumulated three-round burst energy without harsh mechanical bounce, preserving sight picture recovery.",
+        "audioScript": "Tucked immediately ahead of the buttplate, this hydraulic-elastomer buffer catches the floating steel chassis at the end of its forty-two millimeter burst stroke. Its dense polyurethane pad softly dissipates all three shots' momentum into one gentle push.",
+        "audioUrl": "audio/g11/parts/g11_buffer_assembly_en.mp3"
+      }
+    },
+    "g11_clockwork_gears": {
+      "partId": "g11_clockwork_gears",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Swiss-Watch Gear Train",
+      "zh": {
+        "roleTag": "“德式太空黑科技”灵魂 · 1:1节圆啮合驱动旋转弹膛",
+        "overview": "由双列 26 齿数控不锈钢主齿轮、内嵌 C36000 自润滑黄金黄铜行星凸轮棘轮及下置偏心连轴组成的瑞士钟表级传动核心。",
+        "craftAndMaterial": "17-4PH 沉淀硬化不锈钢线切割高精度直齿轮配 C36000 耐磨黄铜凸轮盘，全件微抛光润滑，呈现无与伦比的精密机械质感。",
+        "kinematicRole": "随浮置内机匣同步后坐，击发阶段 3 受齿条驱动反旋 -1.80 弧度精准带转 90° 圆柱弹膛并触发压弹凸轮，阶段 5 同步回转归位。",
+        "designHighlight": "以精确 1:1 节圆外啮合同时编排旋转弹膛、垂直压弹冲头与击针三路时序，将整支突击步枪升华为一台高速军用机械腕表。",
+        "audioScript": "这就是让全世界枪械师目瞪口呆的瑞士钟表级齿轮系。双列二十六齿不锈钢主轮搭配黄金黄铜行星凸轮盘，以一比一节圆精确咬合后方的圆柱弹膛，用纯机械齿轮同步指挥旋转、压弹与击发全套芭蕾。",
+        "audioUrl": "audio/g11/parts/g11_clockwork_gears_zh.mp3"
+      },
+      "en": {
+        "roleTag": "CNC Stainless & C36000 Brass Spur Gear Train & Planetary Cam Disk",
+        "overview": "The iconic heart of 'Kraut Space Magic': twin 26-tooth stainless spur gears paired with inboard golden C36000 brass planetary ratchet and cam disks synchronizing the entire rotary firing sequence.",
+        "craftAndMaterial": "Precision wire-cut 17-4PH stainless steel gear teeth mated to self-lubricating C36000 brass cam wheels and a hard-chromed eccentric lower tie shaft straddling the barrel clearance.",
+        "kinematicRole": "Rides with the floating inner chassis while counter-rotating -1.80 rad in phase 3 under toothed-rack drive to turn the rotary breech 90 degrees, reversing cleanly in phase 5.",
+        "designHighlight": "Synchronizes breech indexing, overhead vertical ramming, and striker recocking with pure mechanical watchmaker precision at 2,100 rounds per minute.",
+        "audioScript": "Here is the mechanical heart that earned the G11 the nickname Kraut Space Magic. Twin twenty-six tooth stainless spur gears and golden brass cam disks mesh directly with the rotary breech, orchestrating rotation, vertical feeding, and cocking like a high-speed Swiss watch.",
+        "audioUrl": "audio/g11/parts/g11_clockwork_gears_en.mp3"
+      }
+    },
+    "g11_loading_rammer": {
+      "partId": "g11_loading_rammer",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Vertical Caseless Rammer",
+      "zh": {
+        "roleTag": "弹膛转至90°瞬间垂直下压 26.5mm · 精准推入DM11药块",
+        "overview": "悬置于置顶弹匣后端供弹喉正上方的垂直弹簧凸轮推弹冲头（Zuführstößel），专职将方形无壳弹垂直送入旋转弹膛。",
+        "craftAndMaterial": "上方不锈钢凸轮导向轭架联接下方自润滑 C36000 黄铜矩形平头推杆，低摩擦端面防止划伤脆弱的裸露无壳发射药块。",
+        "kinematicRole": "随浮置机匣同步移动，击发阶段 4 待弹膛转正至 90° 垂直瞬间向下急刺 -26.5 毫米压入新 DM11 药块，阶段 5 迅捷抽回让道。",
+        "designHighlight": "独创垂直下压供弹路径，完全规避了传统步枪斜坡撞击推弹导致的药块崩边碎裂风险。",
+        "audioScript": "安在置顶弹匣后端正上方的黄铜头垂直压弹冲头，与九十度旋转弹膛默契共舞。每当弹膛向上张开，冲头便闪电般向下急刺二十六点五毫米，把一发娇贵的方形无壳药块稳稳压入膛底。",
+        "audioUrl": "audio/g11/parts/g11_loading_rammer_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Vertical Spring-Cam Overhead DM11 Caseless Loading Rammer",
+        "overview": "Positioned directly above the rear magazine feed throat and rotary breech, this vertical cam-driven rammer presses rectangular DM11 caseless blocks straight down into the chamber.",
+        "craftAndMaterial": "CNC stainless steel guide yoke driving a smooth low-friction C36000 brass rectangular plunger shoe engineered to push exposed propellant blocks without chipping.",
+        "kinematicRole": "Tracks floating chassis recoil and plunges 26.5 mm straight downward during phase 4 while the breech dwells vertically at 90 degrees, then retracts cleanly in phase 5.",
+        "designHighlight": "Replaces violent angled feed-ramp impacts with gentle straight-line vertical seating tailored specifically to brittle caseless ammunition.",
+        "audioScript": "Positioned directly over the rotary breech, this brass-tipped vertical rammer completes the caseless loading dance. The instant the breech cylinder turns ninety degrees upward, the rammer plunges twenty-six point five millimeters straight down to seat a fresh DM11 block without cracking its propellant.",
+        "audioUrl": "audio/g11/parts/g11_loading_rammer_en.mp3"
+      }
+    },
+    "g11_firing_pin": {
+      "partId": "g11_firing_pin",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Coaxial Striker Rod",
+      "zh": {
+        "roleTag": "仅在0°水平完全对正时穿刺DM11底火 · 机械互锁防走火",
+        "overview": "同轴安置于 90° 旋转圆柱弹膛正后方的硬化不锈钢击针杆，内置严苛的机械闭锁互锁耳以确保绝对安全的同轴点火。",
+        "craftAndMaterial": "17-4PH 硬化不锈钢无心磨削阶梯针体配黑氮化待击挂耳，针尖呈精密圆钝弧面专攻 DM11 无壳底火中心。",
+        "kinematicRole": "随浮置机匣运动，击发阶段 1 确认弹膛 0° 水平锁死后前冲 +4.5 毫米穿刺底火，阶段 2 末段自动缩回清出弹膛旋转间隙。",
+        "designHighlight": "物理互锁结构保证旋转弹膛哪怕偏离水平轴线一度，击针也绝对无法前刺，彻底杜绝膛外早发隐患。",
+        "audioScript": "正对着圆柱弹膛尾心的这根同轴不锈钢击针，承担着点燃无壳底火的重任。它带有严密的机械互锁，唯有确认旋转弹膛百分百归零水平闭锁，才会前刺四点五毫米击发，旋转前又自动回缩避让。",
+        "audioUrl": "audio/g11/parts/g11_firing_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Coaxial Hardened Stainless Striker Rod with Out-of-Battery Interlock",
+        "overview": "Aligned coaxially directly behind the 90-degree rotary breech cylinder, this stepped striker rod pierces the rear obturation aperture to ignite the DM11 caseless primer.",
+        "craftAndMaterial": "Centerless-ground 17-4PH hardened stainless steel striker paired with a black-nitrided sear cocking lug and radiused primer impact tip.",
+        "kinematicRole": "Rides with the floating inner chassis, darting +4.5 mm forward at phase 1 ignition and retracting cleanly before phase 3 breech rotation commences.",
+        "designHighlight": "Hard mechanical interlocks physically block forward striker travel unless the rotary breech sits locked at exact 0-degree horizontal battery.",
+        "audioScript": "Aligned coaxially right behind the rotary breech cylinder, this hardened stainless striker ignites the DM11 caseless primer. Mechanically interlocked so it can only strike at exact zero-degree horizontal lockup, it retracts completely clear before the breech begins to spin.",
+        "audioUrl": "audio/g11/parts/g11_firing_pin_en.mp3"
+      }
+    },
+    "g11_trigger_pack": {
+      "partId": "g11_trigger_pack",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "3-Rd Burst Trigger Pack",
+      "zh": {
+        "roleTag": "2,100 RPM三发棘轮计数 · 460 RPM可控全自动降速器",
+        "overview": "隐藏在浮置内机匣下方的前置模块化钟表火控总成，内藏三发超高速点射棘轮计数器与浮置后坐脱钩连杆机构。",
+        "craftAndMaterial": "氮化合金钢冲压精铣盒体封装 12 齿 C36000 黄铜三发棘轮计数轮与不锈钢定位横销，耐磨且易于模块化快换。",
+        "kinematicRole": "固定在静止外壳下舱内，根据快慢机档位切换 2,100 发/分无延迟三发爆射计数截停，或 460 发/分等待机匣复进后再击发的降速连发。",
+        "designHighlight": "独步天下的双射速物理魔法——三连发快如闪电（2,100 RPM），全自动却优雅可控（460 RPM），一枪兼得极速爆发与从容压制。",
+        "audioScript": "藏在浮置机匣下方的模块化火控盒，内藏一枚精巧的黄铜三发点射棘轮。在三连发档位它全速释放每分钟两千一百发闪电齐射；切至全自动则耐心等待机匣复进归位，把射速优雅压低至四百六十发每分。",
+        "audioUrl": "audio/g11/parts/g11_trigger_pack_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Internal Clockwork 3-Round 2,100 RPM Counter & 460 RPM Auto Pack",
+        "overview": "Housed in the lower monocoque bay beneath the floating chassis, this modular sear pack contains the brass 3-round hyperburst ratchet counter and floating-action rate reducer.",
+        "craftAndMaterial": "Black-nitrided stamped and milled alloy steel frame enclosing a 12-tooth C36000 brass burst counting ratchet and stainless cross-pins.",
+        "kinematicRole": "Remains anchored in the outer casing, metering three rapid floating shots at 2,100 RPM before catching the sear, or waiting for full floating run-out to hold steady 460 RPM automatic fire.",
+        "designHighlight": "Solves the dual-tempo paradox purely mechanically—delivering blistering hyperburst density alongside gentle, ultra-controllable full-auto fire.",
+        "audioScript": "Housed beneath the floating chassis, this modular fire-control pack contains a brass three-round burst ratchet wheel. In burst mode it unleashes three shots at twenty-one hundred rounds per minute, while full-auto waits for floating run-out to hold a silky four hundred sixty rounds per minute.",
+        "audioUrl": "audio/g11/parts/g11_trigger_pack_en.mp3"
+      }
+    },
+    "g11_trigger": {
+      "partId": "g11_trigger",
+      "bomCode": "FC-05",
+      "calloutLabelEn": "Trigger & Transfer Link",
+      "zh": {
+        "roleTag": "无托前置干脆击发感 · 刚性拉杆直联三发计数阻铁",
+        "overview": "悬置于全封闭冬季护圈中央的经典 H&K 弧面钢制扳机，经由双侧平行不锈钢刚性拉杆将扣压动作精准传入后方火控盒。",
+        "craftAndMaterial": "黑氮化精密铸锻弧面扳机指板配无间隙不锈钢双拉杆，表面抛光降低滑槽摩擦阻力。",
+        "kinematicRole": "击发阶段 1 绕枢轴平顺后摆（+0.24 弧度）并向后拉动传递杆释放阻铁，阶段 7 无跳变回位复位断连器。",
+        "designHighlight": "刚性对称双拉杆彻底克服了无托步枪常见的软绵拉丝手感，带来清晰干脆的二道火击发反馈。",
+        "audioScript": "居中悬在冬季护圈内的弧面钢制扳机，通过后方的刚性不锈钢传递杆直连火控阻铁。对称无晃动的传导设计攻克了无托步枪扳机绵软的通病，令每一次扣压都清脆利落。",
+        "audioUrl": "audio/g11/parts/g11_trigger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Curved H&K Steel Trigger Shoe & Rigid Stainless Transfer Bar",
+        "overview": "Centered cleanly inside the closed winter guard, this curved steel trigger shoe links directly rearward into the burst trigger pack via a rigid stainless transfer bar.",
+        "craftAndMaterial": "Black-nitrided investment-cast steel trigger shoe pinned to a polished low-friction stainless steel transfer bar.",
+        "kinematicRole": "Pivots smoothly rearward (+0.24 rad, -3.2 mm) in phase 1 to trip the burst escapement sear, resetting cleanly to rest during phase 7.",
+        "designHighlight": "Zero-flex transfer linkage eliminates the spongy bullpup trigger pull common to contemporary designs.",
+        "audioScript": "Centered inside the closed winter guard, this curved steel trigger connects straight back to the fire-control pack through a rigid stainless transfer bar. Its stiff linkage overcomes typical bullpup mushiness for a crisp, predictable break.",
+        "audioUrl": "audio/g11/parts/g11_trigger_en.mp3"
+      }
+    },
+    "g11_selector": {
+      "partId": "g11_selector",
+      "bomCode": "FC-06",
+      "calloutLabelEn": "4-Mode Selector (S/1/3/A)",
+      "zh": {
+        "roleTag": "安全 / 单发 / 2100RPM三连发 / 460RPM全自动四态速切",
+        "overview": "贯穿外壳握把上方黄金位置的双侧对称四档快慢机拨杆，左右手拇指均可无脱握疾速切换 S、1、3、A 四大射控档位。",
+        "craftAndMaterial": "黑氮化合金钢贯穿主轴配左右双侧宽翼防滑拨片，指尖嵌饰高对比绯红色指示条，精准指向外壳红白射控图标。",
+        "kinematicRole": "通过轴向凸轮切面物理锁死扳机（S）或切换单发（1）、2,100 RPM 三连发（3）及 460 RPM 全自动（A）模式；全拆向右抽出。",
+        "designHighlight": "完全对称的双侧人机布局早在八十年代末便确立了现代战术步枪四态射控的最高人机标准。",
+        "audioScript": "握把上方左右对称的四档快慢机，顶端饰有醒目的绯红指示条。无论左撇子还是右撇子射手，拇指轻拨即可在安全、单发、两千一百发三连发与四百六十发全自动之间无缝切换。",
+        "audioUrl": "audio/g11/parts/g11_selector_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Ambidextrous 4-Position Selector Lever (S / 1 / 3 / A)",
+        "overview": "Spanning both flanks directly above the pistol grip thumb rest, this ambidextrous cross-shaft selector switches cleanly across Safe, Single, 2,100 RPM 3-Round Burst, and 460 RPM Full-Auto.",
+        "craftAndMaterial": "Black-nitrided alloy steel cross-shaft with sculpted dual thumb paddles tipped in high-contrast crimson enamel pointing directly at the receiver icons.",
+        "kinematicRole": "Locks the trigger linkage in Safe or indexes the internal burst counter across Semi, 3-round hyperburst, and reduced-rate Auto; withdraws right past 36% teardown.",
+        "designHighlight": "True ambidextrous ergonomics placed all four fire states within effortless thumb sweep decades ahead of competing service rifles.",
+        "audioScript": "Positioned right above the pistol grip on both flanks, this ambidextrous selector lever carries a vivid red index tip. With a natural sweep of either thumb, the shooter selects Safe, Semi, twenty-one hundred RPM three-round hyperburst, or four hundred sixty RPM full-auto.",
+        "audioUrl": "audio/g11/parts/g11_selector_en.mp3"
+      }
+    },
+    "g11_mag_tube": {
+      "partId": "g11_mag_tube",
+      "bomCode": "M-01",
+      "calloutLabelEn": "45-Rd DM11 Caseless Mag",
+      "zh": {
+        "roleTag": "枪管正上方前插式装填 · 纵排45枚方形DM11棕黄无壳药块",
+        "overview": "长达 522 毫米、由枪口正上方前插滑入浮置机匣轨的革命性 45 发水平无壳弹匣，半透明烟熏侧壁清晰透视紧密排布的方形 DM11 无壳药块。",
+        "craftAndMaterial": "防潮烟熏强化聚合物与轻铝加强导轨复合匣体，侧壁精印 15 / 30 / 45 余弹标尺，内藏 45 枚赭黄色方形 HITP 药块与平齐铜弹尖。",
+        "kinematicRole": "随浮置钢制内机匣同步后坐 -42 毫米以保持供弹口严密对正 90° 圆柱弹膛；野战快拆 4% 起率先向前拔出机身。",
+        "designHighlight": "无需任何下垂弹匣破坏卧姿轮廓，全枪平贴地面低矮隐蔽，且 45 发满载重量远轻于传统 30 发黄铜步枪弹匣。",
+        "audioScript": "这根长达半米的置顶水平弹匣，从枪口正上方滑入机匣。透过半透明烟熏侧壁，你可以清楚看见四十五枚赭黄色的方形 DM11 无壳药块肩并肩直立排列，铜被甲弹头朝下整齐等待压弹冲头推入弹膛。",
+        "audioUrl": "audio/g11/parts/g11_mag_tube_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Overhead 45-Round Horizontal Smoked 4.73x33mm DM11 Magazine",
+        "overview": "Sliding forward-to-rear directly parallel above the 540 mm barrel, this 522 mm smoked magazine houses 45 rectangular 4.73x33mm DM11 caseless propellant blocks standing nose-down in a crisp linear column.",
+        "craftAndMaterial": "Moisture-resistant smoked reinforced polymer and aluminum rail tube marked with crisp white 15 / 30 / 45 witness graduations revealing stacked ochre HITP propellant blocks and flush copper bullet tips.",
+        "kinematicRole": "Rides directly on the floating steel inner receiver rails (-42 mm recoil) so its rear feed mouth stays locked over the 90-degree rotary breech; withdraws forward first at 4% field strip.",
+        "designHighlight": "Eliminates protruding bottom magazines for an ultra-low prone silhouette while carrying 50% more rounds at a fraction of conventional brass magazine weight.",
+        "audioScript": "Sliding straight into the nose above the barrel, this half-meter overhead magazine carries forty-five caseless rounds in a sleek horizontal column. Through its smoked flank you can see every tan-ochre rectangular DM11 block standing nose-down behind crisp fifteen, thirty, and forty-five count marks.",
+        "audioUrl": "audio/g11/parts/g11_mag_tube_en.mp3"
+      }
+    },
+    "g11_mag_follower": {
+      "partId": "g11_mag_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Safety-Orange Pusher Block",
+      "zh": {
+        "roleTag": "鲜明安全橙空仓辨识 · 平推45枚方形DM11药块防碎裂",
+        "overview": "紧贴第 45 发方形 DM11 无壳弹最前端的高可视安全橙色水平防倾推弹块，沿弹匣导槽平稳向后推动整列无壳弹药。",
+        "craftAndMaterial": "自润滑高可视安全橙色聚甲醛（POM）精密注塑，上下双侧带防偏摆导向滑肋，接触面平整以均匀分散推弹压力。",
+        "kinematicRole": "随置顶弹匣同步浮置后坐，并在击发阶段 4 压弹瞬间受水平供弹簧驱动向后跃进一格补弹；全拆阶段向前脱出弹匣管。",
+        "designHighlight": "鲜艳的荧光安全橙色让射手一眼透过烟熏弹匣侧壁即可瞬间判读余弹存量与打空状态。",
+        "audioScript": "紧挨着最后一发无壳药块前端的，是这块醒目的安全橙色水平推弹块。它上下带有防倾滑肋，能把水平弹簧的推力均匀施加到方形药块上防止碎裂，并在打空时发出清晰醒目的空仓信号。",
+        "audioUrl": "audio/g11/parts/g11_mag_follower_zh.mp3"
+      },
+      "en": {
+        "roleTag": "High-Visibility Safety-Orange Anti-Tilt Horizontal Caseless Follower",
+        "overview": "Positioned immediately ahead of the 45th rectangular DM11 block inside the overhead tube, this vivid safety-orange follower pushes the caseless column rearward toward the rotary breech.",
+        "craftAndMaterial": "Low-friction high-visibility safety-orange acetal polymer molded with upper and lower anti-tilt guide rails to apply uniform square pressure without chipping propellant edges.",
+        "kinematicRole": "Tracks the floating overhead magazine and surges rearward one cartridge pitch during phase 4 ramming to replenish the feed throat; slides forward out during teardown.",
+        "designHighlight": "Instant high-contrast visual indicator visible right through the smoked magazine housing as the 45-round column depletes.",
+        "audioScript": "Seated directly ahead of the caseless column is this vivid safety-orange horizontal pusher follower. Its anti-tilt rails keep pressure squarely centered across the rectangular DM11 blocks to prevent chipping while giving an unmistakable empty-magazine visual cue.",
+        "audioUrl": "audio/g11/parts/g11_mag_follower_en.mp3"
+      }
+    },
+    "g11_mag_spring": {
+      "partId": "g11_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Horizontal Mag Feed Spring",
+      "zh": {
+        "roleTag": "前端锚固向后恒力推送 · 支撑2,100 RPM三连发供弹节拍",
+        "overview": "锚固于置顶弹匣最前端防潮旋盖内、沿枪管上方水平纵轴向后推送安全橙推弹块的 16 圈高疲劳螺旋供弹簧。",
+        "craftAndMaterial": "高弹性镀防锈层琴钢丝精密绕制，在 522 毫米超长水平弹匣内提供平缓均匀的向后供弹恒力。",
+        "kinematicRole": "前端锁靠防潮前盖并随浮置弹匣整体后坐，击发阶段 3 受后坐惯性微缩至 93%，阶段 4 舒张至 112% 疾推新无壳弹补位。",
+        "designHighlight": "由于 45 发无壳弹总重极轻，轻盈紧凑的螺旋簧便能从容追上 2,100 发/分的惊人三连发吞吐速度。",
+        "audioScript": "前端顶在弹匣防潮盖内的这条十六圈水平螺旋弹簧，负责把整列四十五发无壳弹源源不断向后推向旋转弹膛。因为省去了沉重的黄铜弹壳，它能轻而易举跟上两千一百发每分的疯狂供弹节奏。",
+        "audioUrl": "audio/g11/parts/g11_mag_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Front-Pinned 16-Coil Horizontal Caseless Magazine Drive Spring",
+        "overview": "Anchored inside the front bayonet endcap of the overhead magazine, this 16-coil helical steel spring drives the safety-orange follower rearward toward the rotary breech feed mouth.",
+        "craftAndMaterial": "Corrosion-resistant high-tensile piano wire wound to deliver smooth, low-shock feeding force across the 522 mm horizontal column.",
+        "kinematicRole": "Rides with the floating magazine, subtly compressing to 93% under phase 3 recoil inertia before expanding to 112% during phase 4 feeding to advance the column.",
+        "designHighlight": "Because 45 caseless rounds weigh far less than brass-cased cartridges, this compact coil spring effortlessly keeps pace with 2,100 RPM hyperburst feeding.",
+        "audioScript": "Anchored against the front bayonet cap, this sixteen-coil horizontal feed spring drives the entire forty-five round caseless column rearward toward the breech. Freed from heavy brass cases, it effortlessly keeps pace with twenty-one hundred rounds per minute.",
+        "audioUrl": "audio/g11/parts/g11_mag_spring_en.mp3"
+      }
+    },
+    "g11_mag_endcap": {
+      "partId": "g11_mag_endcap",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Bayonet Magazine Endcap",
+      "zh": {
+        "roleTag": "旋锁密封防潮护药 · 兼作前插换弹抓握提耳",
+        "overview": "封锁于置顶 45 发无壳弹匣最前鼻端的旋锁刺刀式防潮封盖，既是水平供弹簧的前支座，也是野战极速前拔换弹的抓握手柄。",
+        "craftAndMaterial": "橄榄炭黑耐磨聚酰胺外盖嵌装黑氮化钢卡口榫头与防潮密封唇边，有效隔绝雨水湿气侵入保护无壳药块。",
+        "kinematicRole": "击发期间随置顶弹匣整体浮置后坐 -42 毫米，稳固锚固水平供弹簧前端；全拆阶段最先向前旋离弹匣管口。",
+        "designHighlight": "卡口旋锁配合防潮密封唇将无壳弹匣打造成出厂即封存的野战防潮弹药盒，装弹如同上膛炮弹般利落。",
+        "audioScript": "封住置顶弹匣最前端的旋锁刺刀式防潮盖，既牢牢锚固着内部的水平供弹簧，又用防潮密封边隔绝雨水保护裸露的无壳药块。换弹时只需捏住前盖轻旋向前一拔，即可秒换四十五发满载新弹匣。",
+        "audioUrl": "audio/g11/parts/g11_mag_endcap_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Front Twist-Lock Bayonet Moisture-Seal Caseless Magazine Cap",
+        "overview": "Sealing the nose of the overhead 45-round magazine, this twist-lock bayonet endcap anchors the horizontal drive spring and acts as the pull-tab grip for rapid forward reloads.",
+        "craftAndMaterial": "Olive-charcoal glass-filled polymer outer cap bonded to a black-nitrided steel bayonet locking spigot and moisture-excluding perimeter seal.",
+        "kinematicRole": "Tracks the floating overhead magazine (-42 mm recoil) while fixing the front anchor of the magazine spring; twists free at the nose during full teardown.",
+        "designHighlight": "Turns every 45-round magazine into a weatherproof, ready-to-insert field ammunition cartridge protecting exposed HITP propellant from rain and humidity.",
+        "audioScript": "Capping the front nose of the overhead magazine, this bayonet endcap anchors the feed spring and seals out rain to protect the exposed caseless propellant. Reloading takes only a quick twist and forward pull right above the muzzle.",
+        "audioUrl": "audio/g11/parts/g11_mag_endcap_en.mp3"
+      }
+    }
+  }
+}

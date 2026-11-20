@@ -2236,6 +2236,781 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
           </svg>
         );
       }
+
+      case 'g11': {
+        const oliveMonolith = available ? '#3d453d' : '#64748b';
+        const darkPoly = available ? '#282f2b' : '#475569';
+        const magSmoked = available ? '#7a6248' : '#94a3b8';
+        const dm11Ochre = available ? '#d4a238' : '#cbd5e1';
+        const hensoldtTint = available ? '#0ea5c6' : '#94a3b8';
+        return (
+          <svg
+            viewBox="0 0 210 88"
+            className="weapon-silhouette-svg"
+            aria-hidden="true"
+          >
+            {/* Integral Hensoldt 1x/3.5x Optical Carry-Handle Housing */}
+            <path
+              d="M66 26 L73 10.5 L125 10.5 L130 26 Z"
+              fill={darkPoly}
+              stroke={stroke}
+              strokeWidth="1.25"
+              strokeLinejoin="round"
+            />
+            <polygon
+              points="76,24.5 79,17.5 119,17.5 122,24.5"
+              fill={cutout}
+              stroke={stroke}
+              strokeWidth="0.85"
+            />
+            <rect
+              x="123"
+              y="12.2"
+              width="3.2"
+              height="4.4"
+              rx="0.6"
+              fill={hensoldtTint}
+            />
+            <rect
+              x="95"
+              y="8.5"
+              width="6"
+              height="2.2"
+              rx="0.5"
+              fill={stroke}
+            />
+
+            {/* Overhead 45-Round Horizontal DM11 Caseless Magazine Tube */}
+            <rect
+              x="56"
+              y="22.5"
+              width="118"
+              height="6.4"
+              rx="1.4"
+              fill={magSmoked}
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+            {[68, 76, 84, 92, 100, 108, 116, 124, 132, 140, 148, 156, 164].map(
+              (mx) => (
+                <line
+                  key={mx}
+                  x1={mx}
+                  y1="23.8"
+                  x2={mx}
+                  y2="27.6"
+                  stroke={dm11Ochre}
+                  strokeWidth="1.25"
+                  opacity="0.78"
+                />
+              )
+            )}
+
+            {/* Iconic Boxy Olive-Charcoal Monocoque Bullpup Polymer Shell */}
+            <path
+              d="M16 26.5 L173 26.5 L175 29.5 L174 44.5 L118 45.5 L114 48 L64 48 L56 57.5 L16 57.5 Z"
+              fill={oliveMonolith}
+              stroke={stroke}
+              strokeWidth="1.35"
+              strokeLinejoin="round"
+            />
+            {/* Rubber Buttpad */}
+            <rect
+              x="12.5"
+              y="26.2"
+              width="4.2"
+              height="31.8"
+              rx="1.2"
+              fill={darkPoly}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+
+            {/* K2 Side Spare Caseless Magazine Clip Rail Accent */}
+            <rect
+              x="124"
+              y="31"
+              width="44"
+              height="7.5"
+              rx="1.2"
+              fill={darkPoly}
+              stroke={stroke}
+              strokeWidth="0.9"
+            />
+            <line
+              x1="128"
+              y1="34.8"
+              x2="164"
+              y2="34.8"
+              stroke={dm11Ochre}
+              strokeWidth="1.1"
+              strokeDasharray="3 2"
+              opacity="0.8"
+            />
+
+            {/* Clockwork 360-Deg Pop-Out Winding Crank Dial & Rotary Breech Track */}
+            <circle
+              cx="45"
+              cy="39.5"
+              r="5.6"
+              fill={darkPoly}
+              stroke={stroke}
+              strokeWidth="1.2"
+            />
+            <circle
+              cx="45"
+              cy="39.5"
+              r="2.4"
+              fill={dm11Ochre}
+              stroke={stroke}
+              strokeWidth="0.75"
+            />
+            <line
+              x1="45"
+              y1="39.5"
+              x2="50.5"
+              y2="36.5"
+              stroke={stroke}
+              strokeWidth="1.4"
+              strokeLinecap="round"
+            />
+            <line
+              x1="56"
+              y1="36.5"
+              x2="112"
+              y2="36.5"
+              stroke={accent}
+              strokeWidth="1.25"
+              strokeDasharray="3 2"
+              opacity="0.8"
+            />
+
+            {/* Bullpup Pistol Grip + Full-Hand Winter Trigger Guard Bow */}
+            <path
+              d="M78 47.5 L90 47.5 L83 74.5 L71 72.5 Z"
+              fill={darkPoly}
+              stroke={stroke}
+              strokeWidth="1.25"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M89 47.5 L112 46.5 L108 66 L86 67"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="1.65"
+              strokeLinejoin="round"
+            />
+            <polygon
+              points="90,49.5 107,49 104,63 87.5,63.5"
+              fill={cutout}
+              opacity="0.75"
+            />
+            <path
+              d="M96 50 Q97.5 55.5 94 58.5"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="2.1"
+              strokeLinecap="round"
+            />
+
+            {/* Recessed Floating 540mm Barrel Tip + 6-Slot Birdcage Flash Hider & Bayonet Lug */}
+            <rect
+              x="174"
+              y="33.8"
+              width="7.5"
+              height="3.4"
+              fill={fill}
+              stroke={stroke}
+              strokeWidth="0.95"
+            />
+            <rect
+              x="181.5"
+              y="32.4"
+              width="12.5"
+              height="6.2"
+              rx="1.1"
+              fill={darkPoly}
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+            <line
+              x1="184.5"
+              y1="35.5"
+              x2="191.5"
+              y2="35.5"
+              stroke={accent}
+              strokeWidth="1.1"
+            />
+            <rect
+              x="178"
+              y="38.2"
+              width="5.5"
+              height="2.6"
+              rx="0.5"
+              fill={stroke}
+            />
+          </svg>
+        );
+      }
+
+      case 'vss': {
+        const birchWood = available ? '#9c5d2e' : '#94a3b8';
+        const birchGrain = available ? '#7a451e' : '#64748b';
+        const plumPoly = available ? '#4d2f3a' : '#64748b';
+        const tulaBlued = available ? '#29323f' : fill;
+        const psoGrey = available ? '#64748b' : subFill;
+        const opticBlue = available ? '#38bdf8' : '#94a3b8';
+        return (
+          <svg
+            viewBox="0 0 210 88"
+            className="weapon-silhouette-svg"
+            aria-hidden="true"
+          >
+            {/* PSO-1M2-1 4x24 Hammer-Tone Grey Sniper Scope, Rubber Eyecup & Side Dovetail */}
+            <path
+              d="M36 16 L47 17.5 L47 24 L36 25.2 Z"
+              fill={tulaBlued}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            <path
+              d="M47 16.5 L57 18 L92 18 L106 15.8 L106 25.4 L92 23.4 L57 23.4 L47 24.4 Z"
+              fill={psoGrey}
+              stroke={stroke}
+              strokeWidth="1.2"
+              strokeLinejoin="round"
+            />
+            <rect
+              x="71"
+              y="14"
+              width="6"
+              height="4"
+              rx="0.7"
+              fill={accent}
+            />
+            <line
+              x1="106"
+              y1="17"
+              x2="106"
+              y2="24.2"
+              stroke={opticBlue}
+              strokeWidth="1.5"
+            />
+            <path
+              d="M68 23.4 L87 23.4 L84 32.5 L71 32.5 Z"
+              fill={psoGrey}
+              stroke={stroke}
+              strokeWidth="1.05"
+            />
+
+            {/* Quick-Detach Skeletonized Russian Laminated Birchwood Thumbhole Stock */}
+            <path
+              d="M12 36 L63 35 L65 44 L59 64 L48 63 L50 51 L15 62 L11 59 Z"
+              fill={birchWood}
+              stroke={stroke}
+              strokeWidth="1.3"
+              strokeLinejoin="round"
+            />
+            <polygon
+              points="19,41.5 52,40.5 47,49 19,55.5"
+              fill={cutout}
+              stroke={birchGrain}
+              strokeWidth="1.1"
+            />
+            <rect
+              x="9.5"
+              y="35.8"
+              width="3.4"
+              height="24.8"
+              rx="1"
+              fill={tulaBlued}
+              stroke={stroke}
+              strokeWidth="0.95"
+            />
+
+            {/* CNC Milled Tula Steel Receiver + 3-Rib Stamped Dust Cover */}
+            <path
+              d="M62 32.5 L108 32.5 L108 44.5 L62 44.5 Z"
+              fill={tulaBlued}
+              stroke={stroke}
+              strokeWidth="1.3"
+            />
+            <path
+              d="M63 32.5 L66 29.5 L105 29.5 L108 32.5 Z"
+              fill={subFill}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            <line
+              x1="78"
+              y1="38.2"
+              x2="101"
+              y2="37.2"
+              stroke={stroke}
+              strokeWidth="1.6"
+              strokeLinecap="round"
+            />
+            {/* Trigger Guard + Silent Cross-Bolt Selector Dot */}
+            <path
+              d="M64 44.5 L78 44.5 L76 52.5 L63 52.5"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="1.25"
+            />
+            <path
+              d="M70 45 Q71 49 68.5 51"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="1.7"
+              strokeLinecap="round"
+            />
+            <circle cx="66.5" cy="46.8" r="1.35" fill={accent} />
+
+            {/* 10-Round Straight Plum Waffle 9x39mm Magazine */}
+            <path
+              d="M86 44.5 L100 44.5 L102 65.5 L88 66.5 Z"
+              fill={plumPoly}
+              stroke={stroke}
+              strokeWidth="1.2"
+            />
+            {[49, 54, 59].map((my) => (
+              <line
+                key={my}
+                x1="88"
+                y1={my}
+                x2="100"
+                y2={my + 1.2}
+                stroke={stroke}
+                strokeWidth="0.75"
+                opacity="0.65"
+              />
+            ))}
+
+            {/* Dark Plum Bakelite Forend Handguard */}
+            <path
+              d="M108 34.2 L134 34.8 L132 43.8 L108 44.5 Z"
+              fill={plumPoly}
+              stroke={stroke}
+              strokeWidth="1.2"
+            />
+
+            {/* Monolithic 414mm Stepped Integral Cylindrical Suppressor Shroud + Baffle Ticks */}
+            <rect
+              x="108"
+              y="29.8"
+              width="89"
+              height="9.4"
+              rx="1.6"
+              fill={tulaBlued}
+              stroke={stroke}
+              strokeWidth="1.3"
+            />
+            <line
+              x1="138"
+              y1="29.8"
+              x2="138"
+              y2="39.2"
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+            {/* Radial Bleed Ports & 6-Stage Slanted Baffle Cutaway Hints */}
+            {[146, 154, 162, 170, 178, 186].map((bx, idx) => (
+              <line
+                key={bx}
+                x1={bx}
+                y1={idx % 2 === 0 ? '31.5' : '37.5'}
+                x2={bx + 3.5}
+                y2={idx % 2 === 0 ? '37.5' : '31.5'}
+                stroke={accent}
+                strokeWidth="1.05"
+                opacity="0.8"
+              />
+            ))}
+            {/* Tangent Iron Rear Sight & Hooded Front Sight on Suppressor Tube */}
+            <rect
+              x="126"
+              y="27"
+              width="12"
+              height="2.8"
+              rx="0.6"
+              fill={stroke}
+            />
+            <polygon
+              points="186,29.8 192.5,29.8 191,23.5 187.5,24"
+              fill={tulaBlued}
+              stroke={stroke}
+              strokeWidth="1.05"
+            />
+          </svg>
+        );
+      }
+
+      case 'm134': {
+        const housingMetal = available ? '#2b3442' : fill;
+        const barrelPhos = available ? '#475569' : subFill;
+        const motorCopper = available ? '#c97a36' : '#cbd5e1';
+        const brassChute = available ? '#d4a238' : '#cbd5e1';
+        const armCrimson = available ? '#ef4444' : '#94a3b8';
+        return (
+          <svg
+            viewBox="0 0 210 88"
+            className="weapon-silhouette-svg"
+            aria-hidden="true"
+          >
+            {/* Top-Mounted 28V DC Aerospace Electric Drive Motor + Rear Reduction Gearbox */}
+            <path
+              d="M27 21 L37 21 L37 33 L27 33 Z"
+              fill={barrelPhos}
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+            <rect
+              x="36"
+              y="14.5"
+              width="40"
+              height="13.5"
+              rx="3"
+              fill={housingMetal}
+              stroke={stroke}
+              strokeWidth="1.25"
+            />
+            {[42, 48, 54, 60, 66, 71].map((fx) => (
+              <line
+                key={fx}
+                x1={fx}
+                y1="16.2"
+                x2={fx}
+                y2="26.2"
+                stroke={motorCopper}
+                strokeWidth="1.4"
+                opacity="0.85"
+              />
+            ))}
+            {/* Chainsaw Top Carry Handle Bar */}
+            <path
+              d="M72 28 L79 13.5 L107 13.5 L112 29"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="2.1"
+              strokeLinejoin="round"
+            />
+
+            {/* Rear Twin-Handle Aviation Spade Grips + Butterfly Triggers & Crimson Master Arm */}
+            <path
+              d="M11 29 L28 31 L28 54 L11 56 L11 51 L21 49.5 L21 35.5 L11 34 Z"
+              fill={barrelPhos}
+              stroke={stroke}
+              strokeWidth="1.2"
+              strokeLinejoin="round"
+            />
+            <rect
+              x="12"
+              y="33.5"
+              width="5"
+              height="18"
+              rx="1.5"
+              fill={housingMetal}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            <circle cx="22.5" cy="34.5" r="2.1" fill={armCrimson} />
+
+            {/* Ribbed Cylindrical Mainframe Rotor Housing + Top Safing Sector */}
+            <rect
+              x="28"
+              y="28"
+              width="65"
+              height="27.5"
+              rx="2.6"
+              fill={housingMetal}
+              stroke={stroke}
+              strokeWidth="1.35"
+            />
+            <rect
+              x="47"
+              y="25.5"
+              width="22"
+              height="3.2"
+              rx="0.8"
+              fill={armCrimson}
+              stroke={stroke}
+              strokeWidth="0.85"
+            />
+            {[38, 52, 66, 80].map((rx) => (
+              <line
+                key={rx}
+                x1={rx}
+                y1="28.5"
+                x2={rx}
+                y2="55"
+                stroke={stroke}
+                strokeWidth="0.95"
+                opacity="0.6"
+              />
+            ))}
+            {/* 360-Deg Sinusoidal Cam Track Wave Hint Inside Mainframe */}
+            <path
+              d="M34 42 Q47 32 60 42 T87 42"
+              fill="none"
+              stroke={accent}
+              strokeWidth="1.5"
+              strokeDasharray="3 1.8"
+            />
+
+            {/* Dillon Aero Star-Wheel Delinker Feeder + Ribbed Flexible M13 Ammo Chute */}
+            <rect
+              x="58"
+              y="55.5"
+              width="28"
+              height="12.5"
+              rx="2"
+              fill={barrelPhos}
+              stroke={stroke}
+              strokeWidth="1.2"
+            />
+            <circle
+              cx="72"
+              cy="61.8"
+              r="3.8"
+              fill={housingMetal}
+              stroke={brassChute}
+              strokeWidth="1.15"
+            />
+            <path
+              d="M62 68 L76 68 Q71 77 62 82.5 L48 80 Q57 75 62 68 Z"
+              fill={housingMetal}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            {[69.5, 73, 76.5, 79.5].map((cy, idx) => (
+              <line
+                key={cy}
+                x1={60 - idx * 2.4}
+                y1={cy}
+                x2={72 - idx * 2.4}
+                y2={cy + 0.8}
+                stroke={brassChute}
+                strokeWidth="1.45"
+              />
+            ))}
+
+            {/* 6-Barrel 22-Inch Rotary Cluster (Stacked Profile) */}
+            {[32, 36.2, 40.4, 44.6, 48.8].map((by, idx) => (
+              <rect
+                key={by}
+                x="93"
+                y={by}
+                width="90"
+                height="2.7"
+                fill={idx % 2 === 0 ? barrelPhos : housingMetal}
+                stroke={stroke}
+                strokeWidth="0.85"
+              />
+            ))}
+            {/* Twin Ventilated Rotary Barrel Clamps (Mid & Forward) */}
+            <rect
+              x="128"
+              y="30.2"
+              width="7.5"
+              height="23.2"
+              rx="1.2"
+              fill={housingMetal}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            <rect
+              x="162"
+              y="30.2"
+              width="7"
+              height="23.2"
+              rx="1.2"
+              fill={housingMetal}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            {/* Dillon Aero 6-Tube Rotary Flash Suppressor Cage with Heat-Temper Ring */}
+            <rect
+              x="183"
+              y="29.8"
+              width="14.5"
+              height="24"
+              rx="1.6"
+              fill={housingMetal}
+              stroke={stroke}
+              strokeWidth="1.25"
+            />
+            <line
+              x1="186"
+              y1="30.5"
+              x2="186"
+              y2="53.2"
+              stroke={motorCopper}
+              strokeWidth="1.7"
+            />
+            {[34, 39, 44, 49].map((fy) => (
+              <line
+                key={fy}
+                x1="188.5"
+                y1={fy}
+                x2="195.5"
+                y2={fy}
+                stroke={stroke}
+                strokeWidth="1.1"
+              />
+            ))}
+          </svg>
+        );
+      }
+
+      case 'an94': {
+        const polyShell = available ? '#262d38' : fill;
+        const plumMag = available ? '#4a2f3a' : subFill;
+        const floatSteel = available ? '#475569' : subFill;
+        const bronzePulley = available ? '#d49a42' : '#cbd5e1';
+        return (
+          <svg
+            viewBox="0 0 210 88"
+            className="weapon-silhouette-svg"
+            aria-hidden="true"
+          >
+            {/* Right-Folding Sleek Russian Solid Polymer Buttstock */}
+            <path
+              d="M11 31.5 L55 30.5 L55 43.5 L34 45.5 L12 53.5 L9 51 Z"
+              fill={polyShell}
+              stroke={stroke}
+              strokeWidth="1.25"
+              strokeLinejoin="round"
+            />
+            <rect
+              x="8.2"
+              y="31.2"
+              width="3.2"
+              height="22.4"
+              rx="0.9"
+              fill={stroke}
+            />
+
+            {/* Monocoque Charcoal Polyamide Outer Housing & Unified Forend */}
+            <path
+              d="M55 28 L108 28 L112 29.5 L146 29.5 L145 43.5 L55 44.5 Z"
+              fill={polyShell}
+              stroke={stroke}
+              strokeWidth="1.35"
+              strokeLinejoin="round"
+            />
+            {/* 5-Position Rotary Star-Wheel Diopter Rear Sight */}
+            <circle
+              cx="63"
+              cy="24.2"
+              r="3.8"
+              fill={floatSteel}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            <circle cx="63" cy="24.2" r="1.4" fill={cutout} />
+
+            {/* Internal CNC Steel Pulley Wheel & Braided Cable Hint */}
+            <circle
+              cx="84"
+              cy="36.5"
+              r="3.4"
+              fill="none"
+              stroke={bronzePulley}
+              strokeWidth="1.25"
+            />
+            <line
+              x1="87.5"
+              y1="35"
+              x2="112"
+              y2="35"
+              stroke={accent}
+              strokeWidth="1.25"
+              strokeDasharray="2.5 1.8"
+            />
+
+            {/* Pistol Grip & Trigger Guard */}
+            <path
+              d="M61 44.5 L72.5 44.5 L66 67 L55.5 65 Z"
+              fill={polyShell}
+              stroke={stroke}
+              strokeWidth="1.2"
+            />
+            <path
+              d="M72.5 44.5 L87 44.5 L85 52.5 L71 52.5"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="1.25"
+            />
+            <path
+              d="M78.5 44.8 Q79.5 49 77 51"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="1.75"
+              strokeLinecap="round"
+            />
+
+            {/* Signature 15-Degree Right-Canted 30-Rd 5.45x39mm Plum Magazine (Foreshortened Side Flank) */}
+            <path
+              d="M94 44 L109 43.8 Q113 60 122 75 L108 78.5 Q99 63 94 44 Z"
+              fill={plumMag}
+              stroke={stroke}
+              strokeWidth="1.25"
+              strokeLinejoin="round"
+            />
+            {/* Canted Magazine Front-Edge Rib Accent showing 15-Deg Twist */}
+            <path
+              d="M104 44.2 Q108 59.5 116.5 74.5"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="1.1"
+              opacity="0.72"
+            />
+            <path
+              d="M100 50 Q104 60 110 71"
+              fill="none"
+              stroke={bronzePulley}
+              strokeWidth="1.15"
+              opacity="0.65"
+            />
+
+            {/* Floating Upper Gas Tube, Lower 405mm Barrel & Dual-Tier Front Sight / Gas Block */}
+            <rect
+              x="146"
+              y="30.2"
+              width="21"
+              height="3.2"
+              fill={floatSteel}
+              stroke={stroke}
+              strokeWidth="0.95"
+            />
+            <rect
+              x="145"
+              y="35.2"
+              width="39"
+              height="3.3"
+              fill={floatSteel}
+              stroke={stroke}
+              strokeWidth="0.95"
+            />
+            <path
+              d="M161 35.2 L169 35.2 L170 21 L164.5 21 L162.5 29.8 L161 29.8 Z"
+              fill={polyShell}
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+
+            {/* Iconic Asymmetrical Figure-8 Dual-Chamber Self-Cleaning Whistling Muzzle Brake */}
+            <path
+              d="M184 31.2 L197.5 31.2 Q200 31.2 200 33.8 L200 39.2 Q200 41.8 197.5 41.8 L184 41.8 Z"
+              fill={floatSteel}
+              stroke={stroke}
+              strokeWidth="1.2"
+            />
+            <circle cx="192" cy="34.2" r="2.1" fill={cutout} stroke={stroke} strokeWidth="0.8" />
+            <circle cx="192" cy="38.9" r="2.1" fill={cutout} stroke={stroke} strokeWidth="0.8" />
+          </svg>
+        );
+      }
     }
   });
 

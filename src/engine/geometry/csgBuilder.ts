@@ -497,6 +497,8 @@ export interface HelicalSpringOptions {
   coils: number;
   radialSegments?: number;
   tubularSegmentsPerCoil?: number;
+  /** Alias for `tubularSegmentsPerCoil` accepted by procedural weapon spring builders */
+  stepsPerCoil?: number;
   flatWireRatio?: number;
 }
 
@@ -561,12 +563,14 @@ export function createHelicalSpring(
     wireRadius,
     coils,
     radialSegments = 10,
-    tubularSegmentsPerCoil = 20,
+    tubularSegmentsPerCoil,
+    stepsPerCoil,
     flatWireRatio = 1,
   } = opts;
 
   const points: THREE.Vector3[] = [];
-  const totalSteps = Math.max(28, Math.round(coils * tubularSegmentsPerCoil));
+  const segsPerCoil = tubularSegmentsPerCoil ?? stepsPerCoil ?? 20;
+  const totalSteps = Math.max(28, Math.round(coils * segsPerCoil));
 
   for (let i = 0; i <= totalSteps; i++) {
     const u = i / totalSteps;

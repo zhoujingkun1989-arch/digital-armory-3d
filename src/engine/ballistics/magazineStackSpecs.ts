@@ -438,6 +438,83 @@ function normalFromTiltZ(rz: number): readonly [number, number, number] {
   return [-Math.sin(rz), Math.cos(rz), 0];
 }
 
+const AN94_CANT_RAD = -((15 * Math.PI) / 180);
+
+function buildG11CaselessStackSlots(): readonly ReadonlyMagazineRoundSlot[] {
+  // 41 vertical 4.73×33mm DM11 caseless blocks laid horizontally along overhead tube Y = +3.95
+  // from breech drop mouth X = -21.20 rearward to X = +17.75, sitting 3.7 mm flush against g11_mag_follower (minX = 18.42)
+  // while riding rigidly with g11_mag_tube's -4.20 cm floating recoil (`0.0000 cm` live penetration across f ∈ [0, 1]).
+  const count = 41;
+  const slots: ReadonlyMagazineRoundSlot[] = [];
+  const xStart = -21.2;
+  const xEnd = 17.75;
+  for (let i = 0; i < count; i++) {
+    const u = i / (count - 1);
+    const px = xStart + (xEnd - xStart) * u;
+    const pz = i === 0 ? 0 : staggeredZ(i, 0.06, 1);
+    slots.push(makeSlot(px, 3.95, pz, 0, 0, -Math.PI * 0.5));
+  }
+  slots.push(slots[count - 1]);
+  return slots;
+}
+
+function buildVss10RdStackSlots(): readonly ReadonlyMagazineRoundSlot[] {
+  // 10 double-stack staggered 9×39mm SP-6 rounds inside straight-slightly-canted plum waffle magazine
+  // Slot 0 anchors at `b0.nextRoundPos = [1.95, -0.75, 0]`, Slot 9 sits at Y = -7.30 (> -8.03 live follower peak).
+  const count = 10;
+  const slots: ReadonlyMagazineRoundSlot[] = [];
+  slots.push(makeSlot(1.95, -0.75, 0, 0, 0, 0.12));
+  for (let i = 1; i < count; i++) {
+    const u = (i - 1) / (count - 2);
+    const px = 1.9 - 0.28 * u;
+    const py = -1.52 - 5.78 * u;
+    const pz = staggeredZ(i, 0.22, 1);
+    const rz = 0.11 - 0.04 * u;
+    slots.push(makeSlot(px, py, pz, 0, 0, rz));
+  }
+  slots.push(slots[count - 1]);
+  return slots;
+}
+
+function buildM134BeltChuteSlots(): readonly ReadonlyMagazineRoundSlot[] {
+  // 8 linked 7.62×51mm NATO M80 rounds climbing the left stainless chute [-9.2, -12.6, -13.2] -> Delinker [-9.2, -1.6, -7.6]
+  const count = 8;
+  const slots: ReadonlyMagazineRoundSlot[] = [];
+  slots.push(makeSlot(-9.2, -1.6, -7.6, 0, 0, 0));
+  for (let i = 1; i < count; i++) {
+    const u = (i - 1) / (count - 2);
+    const py = -3.35 - 9.25 * u;
+    const pz = -8.5 - 4.7 * u;
+    slots.push(makeSlot(-9.2, py, pz, 0, 0, 0));
+  }
+  slots.push(slots[count - 1]);
+  return slots;
+}
+
+function buildAn94CantedBananaSlots(): readonly ReadonlyMagazineRoundSlot[] {
+  // 26 double-stack 5.45×39mm 7N6 rounds following the 15° right-canted banana arc (`CX = 20.5, R = 20.5`)
+  // pivoted at `an94_mag_body` origin `[7.6, -0.35, 0]`, `rotX = -15°`, seated flush against the orange follower.
+  const count = 26;
+  const slots: ReadonlyMagazineRoundSlot[] = [];
+  slots.push(makeSlot(7.6, -0.05, 0.12, AN94_CANT_RAD, 0, 0.15));
+  const cosC = Math.cos(AN94_CANT_RAD);
+  const sinC = Math.sin(AN94_CANT_RAD);
+  for (let i = 1; i < count; i++) {
+    const u = (i - 1) / (count - 2);
+    const theta = 0.055 + u * 0.685; // ends at theta = 0.74, 3.8 mm flush above orange follower at 0.795
+    const lx = 20.5 * (1 - Math.cos(theta));
+    const ly = -20.5 * Math.sin(theta);
+    const lz = staggeredZ(i, 0.18, 1);
+    const px = 7.6 + lx;
+    const py = -0.35 + ly * cosC - lz * sinC;
+    const pz = ly * sinC + lz * cosC;
+    const rz = 0.14 + theta * 0.78;
+    slots.push(makeSlot(px, py, pz, AN94_CANT_RAD, 0, rz));
+  }
+  slots.push(slots[count - 1]);
+  return slots;
+}
+
 export const MAGAZINE_STACK_SPECS: Readonly<
   Record<WeaponId, WeaponMagazineStackSpec>
 > = {
@@ -863,10 +940,75 @@ export const MAGAZINE_STACK_SPECS: Readonly<
     },
     slots: buildVectorMagEx2Slots(),
   },
+
+  g11: {
+    weaponId: 'g11',
+    magBodyPartId: 'g11_mag_tube',
+    followerPartId: 'g11_mag_follower',
+    roundCount: 41,
+    firingHandoffSlotIndex: 0,
+    feedWindow: [0.49, 0.62],
+    replenishWindow: [0.88, 0.98],
+    magSubStripStartT: 0.34,
+    followerDeckPlane: {
+      point: [18.42, 3.95, 0],
+      normal: [-1, 0, 0],
+    },
+    slots: buildG11CaselessStackSlots(),
+  },
+
+  vss: {
+    weaponId: 'vss',
+    magBodyPartId: 'vss_mag_body',
+    followerPartId: 'vss_mag_follower',
+    roundCount: 10,
+    firingHandoffSlotIndex: 0,
+    feedWindow: [0.64, 0.8],
+    replenishWindow: [0.88, 0.98],
+    magSubStripStartT: 0.34,
+    followerDeckPlane: {
+      point: [1.55, -8.45, 0],
+      normal: [0.05, 0.9987, 0],
+    },
+    slots: buildVss10RdStackSlots(),
+  },
+
+  m134: {
+    weaponId: 'm134',
+    magBodyPartId: 'm134_ammo_chute',
+    followerPartId: 'm134_feeder_spring',
+    throatPartId: 'm134_delinker_housing',
+    roundCount: 8,
+    firingHandoffSlotIndex: 0,
+    feedWindow: [0.6, 0.78],
+    replenishWindow: [0.88, 0.98],
+    magSubStripStartT: 0.04,
+    followerDeckPlane: {
+      point: [-9.2, 0.25, -7.8],
+      normal: [0, -1, 0],
+    },
+    slots: buildM134BeltChuteSlots(),
+  },
+
+  an94: {
+    weaponId: 'an94',
+    magBodyPartId: 'an94_mag_body',
+    followerPartId: 'an94_mag_follower',
+    roundCount: 26,
+    firingHandoffSlotIndex: 0,
+    feedWindow: [0.5, 0.66],
+    replenishWindow: [0.84, 0.96],
+    magSubStripStartT: 0.34,
+    followerDeckPlane: {
+      point: [11.6, -15.835, 3.776],
+      normal: [-0.7142, 0.6762, -0.181],
+    },
+    slots: buildAn94CantedBananaSlots(),
+  },
 };
 
-/** Maximum instanced capacity needed across all 19 exhibits (`roundCount + 1` replacement) */
-export const MAX_MAGAZINE_STACK_INSTANCES = 36;
+/** Maximum instanced capacity needed across all 23 exhibits (`roundCount + 1` replacement) */
+export const MAX_MAGAZINE_STACK_INSTANCES = 48;
 
 /**
  * Computes normalized `[0, 1]` upward magazine stack shift at firing progress `f ∈ [0, 1]`.

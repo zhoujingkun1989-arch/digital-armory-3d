@@ -399,11 +399,15 @@ export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
   },
 };
 
-/** Wave-2 future weapon display labels so links work seamlessly before & after Wave-2 merge */
+/** Wave-2 / WP-17 weapon display labels so links work seamlessly across all exhibits */
 export const WAVE2_WEAPON_LABELS: Readonly<
   Record<string, { zh: string; en: string }>
 > = {
   m249: { zh: 'M249 班用机枪', en: 'M249 SAW' },
   p08: { zh: '卢格 P08', en: 'Luger P08' },
   vector: { zh: 'KRISS Vector 短剑', en: 'KRISS Vector' },
+  g11: { zh: 'H&K G11 K2 无壳步枪', en: 'H&K G11 K2' },
+  vss: { zh: 'VSS 螺纹切割机', en: 'VSS Vintorez' },
+  m134: { zh: 'M134D 加特林', en: 'M134D Minigun' },
+  an94: { zh: 'AN-94 阿巴坎', en: 'AN-94 Abakan' },
 };

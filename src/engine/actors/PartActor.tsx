@@ -46,6 +46,8 @@ import {
   SECTION_CUT_PLANES,
   type SectionCapSyncFn,
   StencilSectionCap,
+  disposeSectionStencilPassMaterials,
+  syncCantedLocalZSectionPlane,
 } from './StencilSectionCap';
 
 export { SECTION_CUT_PLANES };
@@ -349,6 +351,20 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
     }, [armoryUniforms, engineeringTint, focusedEngineeringRole, partRole]);
 
     const capSyncRef = useRef<SectionCapSyncFn | null>(null);
+    // Canted shell parts (e.g. AN-94 15°-canted plum magazine) slice along their own tilted local Z=0 symmetry plane
+    const isCantedShell =
+      !!part.isShell && Math.abs(part.assembledRot?.[0] ?? 0) > 1e-4;
+    const activeClipPlanes = useMemo(
+      () =>
+        isCantedShell
+          ? [new THREE.Plane(new THREE.Vector3(0, 0, -1), 0)]
+          : SECTION_CUT_PLANES,
+      [isCantedShell]
+    );
+    useEffect(() => {
+      if (!isCantedShell) return;
+      return () => disposeSectionStencilPassMaterials(activeClipPlanes);
+    }, [isCantedShell, activeClipPlanes]);
 
     useFrame(() => {
       const grp = groupRef.current;
@@ -450,9 +466,18 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       }
 
       const syncCap = capSyncRef.current;
-      if (syncCap) {
+      if (isCantedShell || syncCap) {
         grp.updateWorldMatrix(true, false);
-        syncCap(grp);
+        if (isCantedShell) {
+          syncCantedLocalZSectionPlane(
+            grp.matrixWorld,
+            SECTION_CUT_PLANES[0],
+            activeClipPlanes[0]
+          );
+        }
+        if (syncCap) {
+          syncCap(grp);
+        }
       }
     });
 
@@ -695,7 +720,7 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
               polygonOffsetUnits={isTransparent ? 1 : 0}
               emissive={emissive}
               emissiveIntensity={emissiveIntensity}
-              clippingPlanes={isSectionCutShell ? SECTION_CUT_PLANES : null}
+              clippingPlanes={isSectionCutShell ? activeClipPlanes : null}
               clipShadows={isSectionCutShell}
               side={isSectionCutShell ? THREE.DoubleSide : THREE.FrontSide}
             />
@@ -727,7 +752,7 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
               geometry={geometry}
               material={part.material}
               group={part.group}
-              clippingPlanes={SECTION_CUT_PLANES}
+              clippingPlanes={activeClipPlanes}
               engineeringRole={engineeringTint ? partRole : null}
               syncRef={capSyncRef}
             />

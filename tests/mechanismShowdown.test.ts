@@ -29,9 +29,9 @@ import { WEAPON_IDS } from '../src/weapons/types';
 const CJK_RE = /[\u4e00-\u9fff]/;
 
 describe('WP-11 · Mechanism Showdown Lineage Matrix & Dual-Exhibit Lab', () => {
-  it('partitions all 19 active WEAPON_IDS cleanly across all 3 canonical taxonomy axes with zero empty families', () => {
+  it('partitions all 23 active WEAPON_IDS cleanly across all 3 canonical taxonomy axes with zero empty families', () => {
     const activeIds = getActiveShowdownWeaponIds();
-    expect(activeIds).toHaveLength(19);
+    expect(activeIds).toHaveLength(23);
     expect(activeIds).toEqual(ARMORY_WEAPONS.map((w) => w.id));
     expect(new Set(activeIds)).toEqual(new Set(WEAPON_IDS));
 
@@ -51,8 +51,8 @@ describe('WP-11 · Mechanism Showdown Lineage Matrix & Dual-Exhibit Lab', () => 
     }
   });
 
-  it('populates all 7 Drive, 7 Locking, and 7 Feed families across all 19 exhibits including m249, p08, and vector', () => {
-    expect(WEAPON_IDS.length).toBe(19);
+  it('populates all Drive, Locking, and Feed families across all 23 exhibits including WP-17 g11, vss, m134, and an94', () => {
+    expect(WEAPON_IDS.length).toBe(23);
 
     // Specific canonical taxonomy assignments for Wave-2 & V2.0 exhibits
     expect(SHOWDOWN_EXHIBIT_SPECS.python.driveFamily).toBe(
@@ -103,27 +103,51 @@ describe('WP-11 · Mechanism Showdown Lineage Matrix & Dual-Exhibit Lab', () => 
       'staggered_box_magazine'
     );
 
-    // With all 19 exhibits active, every single Drive (7), Locking (7), and Feed (7) family is populated
-    const drive19 = getTaxonomyFamiliesForAxis('drive', 'en', WEAPON_IDS);
-    const locking19 = getTaxonomyFamiliesForAxis('locking', 'en', WEAPON_IDS);
-    const feed19 = getTaxonomyFamiliesForAxis('feed', 'en', WEAPON_IDS);
+    // WP-17 Mechanical Marvels (BAY-20..23) extending taxonomy to 8×8×8
+    expect(SHOWDOWN_EXHIBIT_SPECS.g11.lockingFamily).toBe(
+      'rotary_cylindrical_breech'
+    );
+    expect(SHOWDOWN_EXHIBIT_SPECS.g11.feedFamily).toBe(
+      'overhead_caseless_rammer'
+    );
+    expect(SHOWDOWN_EXHIBIT_SPECS.vss.driveFamily).toBe('long_stroke_piston');
+    expect(SHOWDOWN_EXHIBIT_SPECS.vss.lockingFamily).toBe('rotating_lug_bolt');
+    expect(SHOWDOWN_EXHIBIT_SPECS.m134.driveFamily).toBe(
+      'external_electric_rotary'
+    );
+    expect(SHOWDOWN_EXHIBIT_SPECS.m134.feedFamily).toBe(
+      'disintegrating_belt_shuttle'
+    );
+    expect(SHOWDOWN_EXHIBIT_SPECS.an94.driveFamily).toBe('long_stroke_piston');
+    expect(SHOWDOWN_EXHIBIT_SPECS.an94.lockingFamily).toBe('rotating_lug_bolt');
 
-    expect(drive19.length).toBe(DRIVE_FAMILIES.length);
-    expect(locking19.length).toBe(LOCKING_FAMILIES.length);
-    expect(feed19.length).toBe(FEED_FAMILIES.length);
+    // With all 23 exhibits active, every single Drive (8), Locking (8), and Feed (8) family is populated
+    expect(DRIVE_FAMILIES).toHaveLength(8);
+    expect(LOCKING_FAMILIES).toHaveLength(8);
+    expect(FEED_FAMILIES).toHaveLength(8);
+    const drive23 = getTaxonomyFamiliesForAxis('drive', 'en', WEAPON_IDS);
+    const locking23 = getTaxonomyFamiliesForAxis('locking', 'en', WEAPON_IDS);
+    const feed23 = getTaxonomyFamiliesForAxis('feed', 'en', WEAPON_IDS);
 
-    // Classic rivalries across all 19 exhibits activate automatically
-    const presets19 = getClassicRivalryPresets('en', WEAPON_IDS);
-    const presetIds = presets19.map((p) => p.id);
+    expect(drive23.length).toBe(DRIVE_FAMILIES.length);
+    expect(locking23.length).toBe(LOCKING_FAMILIES.length);
+    expect(feed23.length).toBe(FEED_FAMILIES.length);
+
+    // Classic rivalries across all 23 exhibits activate automatically
+    const presets23 = getClassicRivalryPresets('en', WEAPON_IDS);
+    const presetIds = presets23.map((p) => p.id);
     expect(presetIds).toContain('ak15_vs_garand');
     expect(presetIds).toContain('python_vs_deagle');
     expect(presetIds).toContain('benellim4_vs_scar');
     expect(presetIds).toContain('p08_vs_g17');
     expect(presetIds).toContain('vector_vs_mp5');
     expect(presetIds).toContain('m249_vs_m4a1');
+    expect(presetIds).toContain('g11_vs_an94');
+    expect(presetIds).toContain('m134_vs_m249');
+    expect(presetIds).toContain('vss_vs_awm');
   });
 
-  it('enforces 100% bilingual zh/en completeness with zero CJK leaks in English across all 19 exhibit specs & UI copy', () => {
+  it('enforces 100% bilingual zh/en completeness with zero CJK leaks in English across all 23 exhibit specs & UI copy', () => {
     const allKnownIds = Array.from(
       new Set([...WEAPON_IDS, ...Object.keys(SHOWDOWN_EXHIBIT_SPECS)])
     );
@@ -416,10 +440,10 @@ describe('WP-11 · Mechanism Showdown Lineage Matrix & Dual-Exhibit Lab', () => 
     expect(crossDomainGeo.effectiveScaleMode).toBe('normalized');
   });
 
-  it('provides all 13 symmetric rivalry presets, distinct suggested rivals, Showcase handoff queue, and clean Armory/CSS wiring', () => {
+  it('provides all 16 symmetric rivalry presets, distinct suggested rivals, Showcase handoff queue, and clean Armory/CSS wiring', () => {
     const activePresets = getClassicRivalryPresets('zh');
     expect(activePresets).toHaveLength(CLASSIC_RIVALRY_SEEDS.length);
-    expect(activePresets).toHaveLength(13);
+    expect(activePresets).toHaveLength(16);
 
     queueMechanismShowdownLaunch('matrix', 'garand');
     const queued = consumePendingShowdownLaunch();
@@ -472,7 +496,7 @@ describe('WP-11 · Mechanism Showdown Lineage Matrix & Dual-Exhibit Lab', () => 
     expect(armoryViewSrc).toContain('LazyMechanismShowdownModal');
   });
 
-  it('separates overlaid SVG peak callout pills cleanly with zero 2D collision across all 240 weapon pairs (including AK-15 vs M1 Garand)', () => {
+  it('separates overlaid SVG peak callout pills cleanly with zero 2D collision across all 506 weapon pairs (including AK-15 vs M1 Garand)', () => {
     // Explicit check for AK-15 (24%) vs M1 Garand (15%): B is left ('end'), A is right ('start')
     const akVsGarand = buildShowdownDualSvgGeometry('ak15', 'garand', 'normalized');
     const akGarandLayout = computeShowdownPeakLabelLayout(akVsGarand);

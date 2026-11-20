@@ -37,10 +37,14 @@ import { WEAPON_IDS } from '../src/weapons/types';
 const EXPECTED_PMAX: Record<CaliberProfile, number> = {
   '9mm_para': 241,
   '45_acp': 145,
+  '473_caseless': 360,
   '57_28': 345,
   '357_magnum': 241,
+  '9x39_subsonic': 280,
+  '545_m74': 294,
   '556_nato': 430,
   '762_m43': 355,
+  '762_nato': 415,
   '50_ae': 248,
   '12_gauge': 79,
   '30_06': 345,
@@ -80,14 +84,18 @@ function playCycle(input: ArmoryPhysicsInput, rate = 0.42): void {
 }
 
 describe('SAAMI / CIP internal ballistics model', () => {
-  it('covers all 11 firearm/shotgun calibers with authentic peak chamber pressures', () => {
-    expect(BALLISTIC_CALIBERS).toHaveLength(11);
+  it('covers all 15 firearm/shotgun calibers with authentic peak chamber pressures', () => {
+    expect(BALLISTIC_CALIBERS).toHaveLength(15);
     for (const cal of BALLISTIC_CALIBERS) {
       expect(CALIBER_BALLISTICS[cal].peakPressureMPa).toBe(EXPECTED_PMAX[cal]);
     }
     expect(evaluateInternalBallistics('9x19', computePeakPressureF('9x19')).pressureMPa).toBeCloseTo(241, 4);
     expect(evaluateInternalBallistics('45_acp', computePeakPressureF('45_acp')).pressureMPa).toBeCloseTo(145, 4);
     expect(evaluateInternalBallistics('57x28', computePeakPressureF('57x28')).pressureMPa).toBeCloseTo(345, 4);
+    expect(evaluateInternalBallistics('473_caseless', computePeakPressureF('473_caseless')).pressureMPa).toBeCloseTo(360, 4);
+    expect(evaluateInternalBallistics('9x39_subsonic', computePeakPressureF('9x39_subsonic')).pressureMPa).toBeCloseTo(280, 4);
+    expect(evaluateInternalBallistics('762_nato', computePeakPressureF('762_nato')).pressureMPa).toBeCloseTo(415, 4);
+    expect(evaluateInternalBallistics('545_m74', computePeakPressureF('545_m74')).pressureMPa).toBeCloseTo(294, 4);
   });
 
   it('reproduces the SAAMI/CIP peak pressure exactly at the peak sample', () => {
@@ -204,10 +212,15 @@ describe('SAAMI / CIP internal ballistics model', () => {
     ).toBeGreaterThan(20);
     expect(computeGasPortUncoverF('9mm_para', WEAPON_FIRING_TIMING.p08)).toBeNull();
     expect(computeGasPortUncoverF('45_acp', WEAPON_FIRING_TIMING.vector)).toBeNull();
+    // WP-17 BAY-20..23: G11, VSS & AN-94 tap bore gas while electric 28V DC M134D Minigun has no gas port
+    expect(computeGasPortUncoverF('473_caseless', WEAPON_FIRING_TIMING.g11)).not.toBeNull();
+    expect(computeGasPortUncoverF('9x39_subsonic', WEAPON_FIRING_TIMING.vss)).not.toBeNull();
+    expect(computeGasPortUncoverF('545_m74', WEAPON_FIRING_TIMING.an94)).not.toBeNull();
+    expect(computeGasPortUncoverF('762_nato', WEAPON_FIRING_TIMING.m134)).toBeNull();
   });
 
-  it('defines ordered firing timing for all 19 exhibits and retains revolver brass inside cylinder', () => {
-    expect(WEAPON_IDS).toHaveLength(19);
+  it('defines ordered firing timing for all 23 exhibits and retains revolver / caseless G11 zero-brass physics', () => {
+    expect(WEAPON_IDS).toHaveLength(23);
     for (const id of WEAPON_IDS) {
       const t = WEAPON_FIRING_TIMING[id];
       expect(t.ignitionF).toBeLessThan(t.muzzleExitF);
@@ -224,6 +237,16 @@ describe('SAAMI / CIP internal ballistics model', () => {
     for (let i = 0; i < 3; i++) playCycle(pyInput, 4);
     expect(getArmoryPhysicsState().shotCount).toBe(3);
     expect(getArmoryPhysicsState().barrelTempC).toBeGreaterThan(AMBIENT_TEMP_C + 20);
+    expect(countActiveSpentCasings()).toBe(0);
+
+    // H&K G11 K2 4.73x33mm DM11 caseless propellant burns completely -> 0 spent casings ejected
+    resetArmoryPhysics();
+    const g11Input = makeInput('g11');
+    g11Input.caliber = '473_caseless';
+    g11Input.hasGasVent = true;
+    for (let i = 0; i < 3; i++) playCycle(g11Input, 4);
+    expect(getArmoryPhysicsState().shotCount).toBe(3);
+    expect(getArmoryPhysicsState().barrelTempC).toBeGreaterThan(AMBIENT_TEMP_C + 10);
     expect(countActiveSpentCasings()).toBe(0);
   });
 

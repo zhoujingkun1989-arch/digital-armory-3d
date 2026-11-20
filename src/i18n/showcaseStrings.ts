@@ -5,13 +5,13 @@ import {
   type WeaponId,
 } from '../weapons/types';
 
-const VAULT_EXHIBIT_COUNT = WEAPON_IDS.length; // 19
-const VAULT_FIREARM_COUNT = VAULT_EXHIBIT_COUNT - 2; // 17
-const VAULT_EXHIBIT_ZH = '十九';
-const VAULT_PARTS_TOTAL = 480;
-const VAULT_TEXTURES_TOTAL = 277;
-const VAULT_AUDIO_TOTAL = 1112;
-const LAB_CALIBER_TOTAL = 11;
+const VAULT_EXHIBIT_COUNT = WEAPON_IDS.length; // 23
+const VAULT_FIREARM_COUNT = VAULT_EXHIBIT_COUNT - 2; // 21
+const VAULT_EXHIBIT_ZH = '二十三';
+const VAULT_PARTS_TOTAL = 579;
+const VAULT_TEXTURES_TOTAL = 313;
+const VAULT_AUDIO_TOTAL = 1342;
+const LAB_CALIBER_TOTAL = 15;
 
 export type ShowcaseGalleryAction =
   'armory' | 'explode' | 'firing' | 'section' | 'atlas';
@@ -227,7 +227,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       subMapsStrong: `${VAULT_TEXTURES_TOTAL} 张 2K 5 通道 ORM 物理贴图`,
       subMid2: ' 与 ',
       subAudioStrong: `${VAULT_AUDIO_TOTAL} 段双语语音 + Web Audio 分口径声场`,
-      subTail: `。零客户端下载，一键开启 3D 导演运镜、1,000m RK4 外弹道与光学分划板靶场（R）、原理流派对照矩阵（S）、${LAB_CALIBER_TOTAL} 口径实弹纵剖馆（B）、高清 3D 剖视海报分享（U）与 17 图版绘本打印工坊（Ctrl/Cmd+P），60 FPS 丝滑透视每一根膛线、肘节闭锁、弹链拨齿与下沉滑块。`,
+      subTail: `。零客户端下载，一键开启 3D 导演运镜、1,000m RK4 外弹道与光学分划板靶场（R）、原理流派对照矩阵（S）、${LAB_CALIBER_TOTAL} 口径实弹纵剖馆（B）、高清 3D 剖视海报分享（U）与 17 图版绘本打印工坊（Ctrl/Cmd+P），60 FPS 丝滑透视每一根膛线、90° 无壳转膛、整体斜挡板消音、六管加特林正弦凸轮与滑轮钢索双发机构。`,
       ctaArmory: '立即进入 3D 数字枪库',
       ctaDirector: (tag) => `3D 导演连播 ${tag} 纪录片`,
       ctaExplode: (tag) => `直达 ${tag} 爆炸拆解台`,
@@ -281,7 +281,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
     capabilities: {
       kicker: 'FOUR CORE CAPABILITIES',
       title: '四大军械级三维检视与仿真模式',
-      desc: `从磷化钢滚印、麦秆回火与胡桃木防滑纹到腔内闭锁突笋、肘节连杆、M27 可散弹链与 Super V 下沉滑块，全部 ${VAULT_EXHIBIT_COUNT} 款展品 ${VAULT_PARTS_TOTAL} 个零件均打通「多级爆炸拆解、7 阶段内弹道、纵向中轴剖视、5 通道 ORM 贴图」，并配套 1,000m 外弹道靶场（R）、原理对照矩阵（S）、${LAB_CALIBER_TOTAL} 口径弹药馆（B）与高清分享海报（U）。`,
+      desc: `从磷化钢滚印、麦秆回火与层压桦木到 90° 无壳转膛、整体 6 级斜挡板消音、六管正弦凸轮与滑轮钢索预供弹，全部 ${VAULT_EXHIBIT_COUNT} 款展品 ${VAULT_PARTS_TOTAL} 个零件均打通「多级爆炸拆解、7 阶段内弹道、纵向中轴剖视、5 通道 ORM 贴图」，并配套 1,000m 外弹道靶场（R）、原理对照矩阵（S）、${LAB_CALIBER_TOTAL} 口径弹药馆（B）与高清分享海报（U）。`,
       cards: {
         explode: {
           alt: 'AK-15M1 零回流引线与多级爆炸拆解工作台',
@@ -296,7 +296,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           alt: 'Barrett M82A1 .50 BMG 整管短后坐与箭头制退侧喷',
           tag: 'MODE 02 · 7-STAGE KINEMATICS & BALLISTICS',
           title: `7 阶段真实运动学循环 + ${LAB_CALIBER_TOTAL} 口径 SAAMI/CIP 实弹与复合弓弩内弹道`,
-          desc: '严格遵循各枪与弓弩机械定律：长/短行程活塞、M249 双拨爪弹链供弹、鲁格 P08 肘节闭锁、KRISS Vector 110° 下沉滑块、双 ARGO 活塞、M1 加兰德 8 发漏夹自动弹射、柯尔特蟒蛇双动转轮棘轮分度、P90 90° 螺旋供弹及双凸轮弓弩；同步触发分口径声浪。',
+          desc: '严格遵循各枪与弓弩机械定律：长/短行程活塞、G11 90° 无壳旋转弹膛、VSS 多孔泄气 6 级消音与直线击铁、M134D 28V 六管加特林正弦凸轮、AN-94 滑轮钢索 1,800 RPM 预供弹、M249 双拨爪弹链、鲁格 P08 肘节、Vector Super V 滑块、双 ARGO、M1 漏夹、蟒蛇转轮及双凸轮弓弩；同步触发分口径声浪。',
           cta: '体验巴雷特 .50 BMG 慢放击发',
         },
         section: {
@@ -364,7 +364,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       soundBadge: 'PROCEDURAL WEB AUDIO · 零外部音频膨胀',
       soundTitle: `${LAB_CALIBER_TOTAL} 口径实弹 + 复合弓弩差异化声浪 & 7 阶段咬合引擎`,
       soundDesc:
-        '基于 Web Audio API 实时物理建模（零额外 WAV/MP3 体积）：1.0x 标准射速清晰区分 .50 BMG 重炮轰鸣、M249 开膛弹链拨爪连射、鲁格 P08 肘节折起清响、Vector .45 ACP 1,200 RPM 亚音速风暴、M1 加兰德末发漏夹高亢「PING!」金属长鸣与复合弓弩凸轮阻尼闷响；0.25x 超慢放精准剥离每一次金属撞击，并在播报语音时自动执行 Audio Ducking 闪避。',
+        '基于 Web Audio API 实时物理建模（零额外 WAV/MP3 体积）：1.0x 标准射速清晰区分 .50 BMG 重炮轰鸣、M134D 六管 3,000 RPM 电锯怒吼、G11 2,100 RPM 无壳三连发、AN-94 1,800 RPM 双发口哨声、VSS 130 dB 亚音速微声消音、M1 加兰德末发漏夹「PING!」金属长鸣与复合弓弩阻尼闷响；0.25x 超慢放精准剥离每一次金属撞击，并在播报语音时自动执行 Audio Ducking 闪避。',
       caliberRows: [
         {
           caliber: '12.7×99mm (.50 BMG)',
@@ -398,6 +398,20 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           freqTag: '62 Hz 轰鸣 + 1.74 kHz 漏夹长鸣',
           signature:
             '伽兰德 8 发弹簧钢漏夹末发「PING!」音叉高亢共鸣 / 双 ARGO 撞击与托弹舌咔哒 / 转轮 60° 棘爪分度',
+        },
+        {
+          caliber: '7.62×51mm NATO / 5.45×39mm',
+          weaponTag: 'M134D Minigun / AN-94 Abakan',
+          freqTag: '48–82 Hz 电驱火风暴与双发哨鸣',
+          signature:
+            'M134D 六管 28V 电驱 3,000 RPM 低沉电锯怒吼 / AN-94 滑轮钢索 1,800 RPM 双发重叠与 8 字制退器哨声',
+        },
+        {
+          caliber: '4.73×33mm DM11 / 9×39mm SP-5',
+          weaponTag: 'H&K G11 K2 / VSS Vintorez',
+          freqTag: '110 Hz 无壳钟表与 130 dB 暗夜微声',
+          signature:
+            'G11 90° 旋转弹膛无壳 2,100 RPM 三连发零抛壳声 / VSS 多孔泄气枪管与 6 级斜挡板极静亚音速消音',
         },
         {
           caliber: '400 gr Carbon Arrow / Bolt · 348–500 FPS',
@@ -492,12 +506,12 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
     arsenal: {
       kicker: `${VAULT_EXHIBIT_COUNT}-BAY MASTER ROSTER · FACTORY 1:1`,
       title: `${VAULT_EXHIBIT_ZH}大世界经典名枪与复合弓弩 1:1 测绘馆藏矩阵`,
-      desc: '全面覆盖人类轻武器三大正交机械谱系（自动驱动、弹膛闭锁、空间供弹，含弹链双供、肘节屈伸与 Super V 偏轴延迟）及精密复合弓/弩体系，每款均配备双语四幕研发纪录片、全零件配音、军械师认证考核与同屏定量对照能力（S）。',
+      desc: '全面覆盖人类轻武器三大正交机械谱系（自动驱动、弹膛闭锁、空间供弹，含无壳 90° 转膛、整体斜挡板消音、电驱六管加特林、滑轮钢索双发、弹链双供、肘节屈伸与 Super V 偏轴延迟）及精密复合弓/弩体系，每款均配备双语四幕研发纪录片、全零件配音、军械师认证考核与同屏定量对照能力（S）。',
       filterAria: '馆藏分类筛选',
       categories: {
         all: '全部馆藏',
         assault: '突击 / 步枪 / 无托',
-        lmg: '机枪 / 弹链',
+        lmg: '机枪 / 转管',
         smg: '冲锋枪 / PDW',
         sniper: '狙击 / 反器材',
         shotgun: '战术霰弹',
@@ -649,7 +663,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       subMapsStrong: `${VAULT_TEXTURES_TOTAL} custom 2K 5-channel ORM textures`,
       subMid2: ', and ',
       subAudioStrong: `${VAULT_AUDIO_TOTAL} bilingual voice clips + Web Audio ballistic acoustics`,
-      subTail: `. Zero installs—launch 3D Director Mode, test 1,000m RK4 External Ballistics & FFP Reticles (R), compare mechanisms in Showdown Lab (S), explore the ${LAB_CALIBER_TOTAL}-Caliber Cutaway Lab (B), export HD 3D Share Posters (U), or print 17-Plate Monographs (Ctrl/Cmd+P) at 60 FPS.`,
+      subTail: `. Zero installs—launch 3D Director Mode, test 1,000m RK4 External Ballistics & FFP Reticles (R), compare mechanisms in Showdown Lab (S), explore the ${LAB_CALIBER_TOTAL}-Caliber Cutaway Lab (B), export HD 3D Share Posters (U), or print 17-Plate Monographs (Ctrl/Cmd+P) at 60 FPS—inspecting caseless rotary breeches, integral baffle suppressors, 6-barrel Gatling cams, and pulley-cable hyperbursts.`,
       ctaArmory: 'Enter 3D Digital Armory',
       ctaDirector: (tag) => `Play ${tag} 3D Documentary`,
       ctaExplode: (tag) => `Open ${tag} Disassembly`,
@@ -697,7 +711,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
     capabilities: {
       kicker: 'FOUR CORE CAPABILITIES',
       title: 'Four Armorer-Grade 3D Inspection & Simulation Modes',
-      desc: `From phosphated steel roll-marks, straw-tempered controls, and oiled walnut to locking lugs, knee-joint toggles, M27 belt shuttles, and 110° Super V sliders, all ${VAULT_EXHIBIT_COUNT} exhibits (${VAULT_PARTS_TOTAL} parts) integrate multi-stage disassembly, 7-stage ballistics, GPU cutaway, 5-channel PBR, 1,000m Range Lab (R), Mechanism Showdown (S), ${LAB_CALIBER_TOTAL}-Caliber Lab (B), and HD Share Posters (U).`,
+      desc: `From phosphated roll-marks, straw-tempered steel, and laminated birch to 90° caseless rotary breeches, 6-stage integral baffles, 6-barrel Gatling cams, and pulley-cable hyperbursts, all ${VAULT_EXHIBIT_COUNT} exhibits (${VAULT_PARTS_TOTAL} parts) integrate multi-stage disassembly, 7-stage ballistics, GPU cutaway, 5-channel PBR, 1,000m Range Lab (R), Mechanism Showdown (S), ${LAB_CALIBER_TOTAL}-Caliber Lab (B), and HD Share Posters (U).`,
       cards: {
         explode: {
           alt: 'AK-15M1 zero-reflow callout leaders and multi-stage exploded workbench',
@@ -712,7 +726,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           alt: 'Barrett M82A1 .50 BMG barrel short-recoil and 60-degree arrowhead muzzle blast',
           tag: 'MODE 02 · 7-STAGE KINEMATICS & BALLISTICS',
           title: `7-Stage Coupled Kinematics + ${LAB_CALIBER_TOTAL}-Caliber & Compound Archery Ballistics`,
-          desc: 'Faithfully models long/short-stroke pistons, M249 dual-pawl M27 belt shuttle, Luger P08 over-center knee-joint toggle, KRISS Vector 110° off-axis Super V slider, twin ARGO pistons, M1 Garand 8-round en-bloc auto-eject, Colt Python 60° DA/SA revolver ratchet, P90 90° helical feed, and compound archery.',
+          desc: 'Faithfully models long/short-stroke pistons, H&K G11 90° caseless rotary breech, VSS integral 6-baffle suppressor & linear striker, M134D 28V 6-barrel Gatling cam wave, AN-94 pulley-cable 1,800 RPM hyperburst, M249 belt shuttle, Luger P08 toggle, KRISS Super V slider, twin ARGO, M1 en-bloc, Colt Python ratchet, and compound archery.',
           cta: 'Launch Barrett .50 BMG Slow-Mo Cycle',
         },
         section: {
@@ -780,7 +794,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       soundBadge: 'PROCEDURAL WEB AUDIO · ZERO ASSET BLOAT',
       soundTitle: `${LAB_CALIBER_TOTAL}-Caliber & Compound Archery Acoustics & 7-Stage Foley Synth`,
       soundDesc:
-        'Real-time procedural Web Audio synthesis (0 KB external audio bloat): distinguishes .50 BMG shockwaves, M249 open-bolt belt shuttle clatter, Luger P08 toggle snap, KRISS Vector 1,200 RPM .45 ACP subsonic bursts, M1 Garand en-bloc clip "PING!" ringing, and compound bow/crossbow cam thumps at 1.0x, separates every metallic click at 0.25x, and ducks automatically under TTS voice.',
+        'Real-time procedural Web Audio synthesis (0 KB external audio bloat): distinguishes .50 BMG shockwaves, M134D 3,000 RPM six-barrel buzzsaw roars, H&K G11 2,100 RPM caseless bursts, AN-94 1,800 RPM whistling hyperbursts, VSS 130 dB subsonic whispers, M1 Garand en-bloc "PING!" ringing, and compound bow/crossbow thumps at 1.0x, separates every metallic click at 0.25x, and ducks automatically under TTS voice.',
       caliberRows: [
         {
           caliber: '12.7×99mm (.50 BMG)',
@@ -816,6 +830,20 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           freqTag: '62 Hz Boom + 1.74 kHz Clip Ping',
           signature:
             'WWII M1 Garand spring-steel en-bloc clip "PING!" ring / Twin ARGO tappet clink & 12ga elevator / 60° revolver ratchet click',
+        },
+        {
+          caliber: '7.62×51mm NATO / 5.45×39mm',
+          weaponTag: 'M134D Minigun / AN-94 Abakan',
+          freqTag: '48–82 Hz Rotary Roar & Hyperburst',
+          signature:
+            'M134D 28V electric 3,000 RPM six-barrel buzzsaw / AN-94 pulley-cable 1,800 RPM twin-shot & figure-8 whistle',
+        },
+        {
+          caliber: '4.73×33mm DM11 / 9×39mm SP-5',
+          weaponTag: 'H&K G11 K2 / VSS Vintorez',
+          freqTag: '110 Hz Caseless & 130 dB Subsonic',
+          signature:
+            'G11 90-deg rotary caseless 2,100 RPM 3-rd burst (zero brass) / VSS ported barrel & 6-baffle whispered subsonic thump',
         },
         {
           caliber: '400 gr Carbon Arrow / Bolt · 348–500 FPS',
@@ -911,12 +939,12 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
     arsenal: {
       kicker: `${VAULT_EXHIBIT_COUNT}-BAY MASTER ROSTER · FACTORY 1:1`,
       title: `${VAULT_EXHIBIT_COUNT} Iconic Firearms & Archery Systems · 1:1 Metrology Matrix`,
-      desc: 'Spanning all 3 orthogonal mechanical axes (including disintegrating belt shuttle, over-center toggle lock, and Super V off-axis delayed blowback) plus compound archery—each with a 4-act bilingual documentary, Armorer Qualification exams, and Dual-Exhibit Mechanism Showdown (S).',
+      desc: 'Spanning all 3 orthogonal mechanical axes (including 90° caseless rotary breech, integral baffle suppression, 28V electric Gatling, pulley-cable hyperburst, belt shuttle, toggle lock, and Super V off-axis delay) plus compound archery—each with a 4-act bilingual documentary, Armorer Qualification exams, and Dual-Exhibit Mechanism Showdown (S).',
       filterAria: 'Filter vault collection by category',
       categories: {
         all: 'All Vault',
         assault: 'Rifle / Carbine / Bullpup',
-        lmg: 'Belt-Fed LMG',
+        lmg: 'LMG / Rotary',
         smg: 'SMG / PDW',
         sniper: 'Sniper / Anti-Materiel',
         shotgun: 'Shotguns',

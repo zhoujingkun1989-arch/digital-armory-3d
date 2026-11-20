@@ -52,7 +52,7 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
     setAcousticEnvironment('indoor_range');
   });
 
-  it('maps authentic SAFE / SEMI / AUTO fire-control capabilities & bilingual tooltips across all 19 exhibits', () => {
+  it('maps authentic SAFE / SEMI / AUTO fire-control capabilities & bilingual tooltips across all 23 exhibits', () => {
     const selectFireWeapons: WeaponId[] = [
       'ak15',
       'm4a1',
@@ -61,8 +61,11 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
       'aug',
       'p90',
       'vector',
+      'g11',
+      'vss',
+      'an94',
     ];
-    const openBoltAutoWeapons: WeaponId[] = ['m249'];
+    const openBoltAutoWeapons: WeaponId[] = ['m249', 'm134'];
     const semiOnlyWeapons: WeaponId[] = [
       'g17',
       'p320',
@@ -132,7 +135,7 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
     expect(setFireSelectorMode('semi')).toBe('auto');
   });
 
-  it('identifies authentic reciprocating slide/bolt/charging-handle & archery draw parts on all 19 exhibits without matching pins/locks', async () => {
+  it('identifies authentic reciprocating slide/bolt/charging-handle & archery draw parts on all 23 exhibits without matching pins/locks', async () => {
     for (const weaponId of WEAPON_IDS) {
       const plugin = await loadWeaponPlugin(weaponId);
       const partIdSet = new Set(plugin.parts.map((p) => p.id));

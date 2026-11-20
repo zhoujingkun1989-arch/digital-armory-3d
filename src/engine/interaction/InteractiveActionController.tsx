@@ -56,8 +56,12 @@ const WEAPON_SELECTOR_CAPABILITIES: Record<
   aug: SELECT_FIRE_MODES,
   p90: SELECT_FIRE_MODES,
   vector: SELECT_FIRE_MODES,
-  // Pure open-bolt squad automatic machine gun (SAFE / AUTO)
+  g11: SELECT_FIRE_MODES,
+  vss: SELECT_FIRE_MODES,
+  an94: SELECT_FIRE_MODES,
+  // Pure full-auto machine guns (open-bolt SAW & electric rotary Gatling: SAFE / AUTO)
   m249: OPEN_BOLT_AUTO_MODES,
+  m134: OPEN_BOLT_AUTO_MODES,
   // Semi-automatic / bolt-action / compound archery systems
   g17: SEMI_ONLY_MODES,
   p320: SEMI_ONLY_MODES,
@@ -696,6 +700,156 @@ export const WEAPON_FIRE_CONTROL_PROFILES: Record<
       },
     },
   },
+  g11: {
+    weaponId: 'g11',
+    supportedModes: SELECT_FIRE_MODES,
+    mechanismSummaryZh:
+      '三档双侧拇指快慢机 (S / 1 / 3·A) + 精密钟表三发计数凸轮与同轴击针互锁',
+    mechanismSummaryEn:
+      'Ambi 3-Mode Selector (S / 1 / 3-Burst & Auto) + Clockwork 3-Rd Counter Cam',
+    modes: {
+      safe: {
+        mode: 'safe',
+        code: 'S',
+        labelZh: '保险锁止 (S)',
+        labelEn: 'SAFE (S)',
+        tooltipZh:
+          '快慢机拨至 S 位，机械锁死扳机传力连杆并锁定 90° 旋转弹膛同轴击针防止意外撞击无壳底火。',
+        tooltipEn:
+          'Selector in S mechanically blocks the trigger pack linkage and locks the coaxial firing pin off the DM11 caseless primer.',
+      },
+      semi: {
+        mode: 'semi',
+        code: '1',
+        labelZh: '单发精确 (1)',
+        labelEn: 'SEMI (1)',
+        tooltipZh:
+          '扣动扳机引燃单枚 4.73mm DM11 无壳弹：浮置内机匣受控后坐复位，单发阻铁截停钟表齿轮直至松指复位。',
+        tooltipEn:
+          'Fires one 4.73mm DM11 caseless block; the floating receiver recoils cleanly while the disconnector halts the clockwork until reset.',
+      },
+      auto: {
+        mode: 'auto',
+        code: '3/A',
+        labelZh: '2,100 RPM 三发高速 / 连发',
+        labelEn: '2,100 RPM BURST/AUTO',
+        tooltipZh:
+          '三发高速档在浮置机匣后坐撞抵橡胶尾垫前的 85ms 内连续高速打出三发 DM11 无壳弹（2,100 RPM），实现三弹同孔齐射！',
+        tooltipEn:
+          '2,100 RPM hyperburst fires 3 caseless rounds within 85 ms before the 42mm floating action hits the buttplate buffer!',
+      },
+    },
+  },
+  vss: {
+    weaponId: 'vss',
+    supportedModes: SELECT_FIRE_MODES,
+    mechanismSummaryZh:
+      '机匣右侧经典杠杆保险 + 扳机护圈后置滑推式单/连发快慢机 + 无击锤线性微声击针',
+    mechanismSummaryEn:
+      'Right-Side Lever Safety + Behind-Trigger Cross-Bolt Selector & Silent Linear Striker',
+    modes: {
+      safe: {
+        mode: 'safe',
+        code: 'ПР',
+        labelZh: '杠杆保险 (ПР)',
+        labelEn: 'SAFE (ПР)',
+        tooltipZh:
+          '上推右侧长杠杆保险封闭抛壳槽并机械锁止扳机与无击锤线性平滑击针阻铁。',
+        tooltipEn:
+          'Raising the right-side safety lever shields the charging slot and blocks both trigger bar and silent linear striker sear.',
+      },
+      semi: {
+        mode: 'semi',
+        code: 'ОД',
+        labelZh: '单发微声狙击 (ОД)',
+        labelEn: 'SEMI SNIPER (ОД)',
+        tooltipZh:
+          '按下保险并拨动扳机后方横推块至单发位：线性平滑击针无摆锤噪声干脆击发 290 m/s 9×39mm SP-6 亚音速穿甲弹。',
+        tooltipEn:
+          'Linear striker releases silently without hammer slap to launch 290 m/s 9x39mm SP-6 armor-piercing rounds with surgical precision.',
+      },
+      auto: {
+        mode: 'auto',
+        code: 'АВ',
+        labelZh: '850 RPM 应急连发 (АВ)',
+        labelEn: '850 RPM AUTO (АВ)',
+        tooltipZh:
+          '扳机护圈后方横推快慢机切至连发位：遭遇近距突袭时六突笋枪机持续以 850 RPM 倾泻微声穿甲火力。',
+        tooltipEn:
+          'Cross-bolt selector shifted to full-auto enables 850 RPM suppressed 9x39mm cyclic fire for close-quarters defense.',
+      },
+    },
+  },
+  m134: {
+    weaponId: 'm134',
+    supportedModes: OPEN_BOLT_AUTO_MODES,
+    mechanismSummaryZh:
+      '28V 直流铲形握把双电门火控开关 + 12 点钟可翻式机械保险扇形块（纯电动高速连发）',
+    mechanismSummaryEn:
+      '28V DC Spade-Grip Dual Firing Switches + 12-O’Clock Hinged Safing Sector (Electric Auto)',
+    modes: {
+      safe: {
+        mode: 'safe',
+        code: 'SAFE',
+        labelZh: '28V 断电 / 保险扇区 (SAFE)',
+        labelEn: 'ELECTRIC SAFE',
+        tooltipZh:
+          '切断 28V 直流主接触器并抬起 12 点钟保险扇形块，六枚滚轮枪机击针被机械托起绝对无法触发底火。',
+        tooltipEn:
+          'Cuts 28V DC contactor power and disengages the 12-o’clock safing sector, mechanically blocking all six bolt firing pins.',
+      },
+      auto: {
+        mode: 'auto',
+        code: '3000',
+        labelZh: '3,000 RPM 六管电动齐射 (FIRE)',
+        labelEn: '3,000 RPM GATLING',
+        tooltipZh:
+          '同时按压铲形握把双拇指电门：28V 直流马达高速旋动六联枪管簇与狄龙脱链机，每秒喷吐 50 发 7.62 NATO 炽热弹流！',
+        tooltipEn:
+          'Depressing both spade-grip triggers energizes the 28V DC motor, driving all six barrels and the Dillon delinker at 50 rounds per second!',
+      },
+    },
+  },
+  an94: {
+    weaponId: 'an94',
+    supportedModes: SELECT_FIRE_MODES,
+    mechanismSummaryZh:
+      '拇指双态快慢机 (ОД / 2 / АВ) + 浮置内机匣二级预供滑轮钢索双发高速同步器',
+    mechanismSummaryEn:
+      'Thumb Fire Selector (1 / 2-Hyperburst / Auto) + Floating-Action Pulley Synchronizer',
+    modes: {
+      safe: {
+        mode: 'safe',
+        code: 'ПР',
+        labelZh: '保险锁止 (ПР)',
+        labelEn: 'SAFE (ПР)',
+        tooltipZh:
+          '旋转左侧独立保险钮锁定扳机连杆，禁止在浮置内机匣待击态下释放击锤。',
+        tooltipEn:
+          'Independent left safety switch blocks the trigger transfer bar and locks the hammer inside the floating inner receiver.',
+      },
+      semi: {
+        mode: 'semi',
+        code: 'ОД',
+        labelZh: '单发精准 (ОД)',
+        labelEn: 'SEMI (ОД)',
+        tooltipZh:
+          '单发模式：每扣一次扳机击发单枚 5.45×39mm 7N6 弹，浮置枪管内机匣后滑吸收后坐峰值后平滑复位。',
+        tooltipEn:
+          'Semi-automatic single shot: floating barreled action glides rearward to soften felt impulse before returning to battery.',
+      },
+      auto: {
+        mode: 'auto',
+        code: '2/АВ',
+        labelZh: '1,800 RPM 双发同孔 / 600 连发',
+        labelEn: '1,800 RPM HYPERBURST',
+        tooltipZh:
+          '标志性双发超高速模式：首发击发瞬间浮置内机匣后退，滑轮钢索前推青铜预供滑块在 33ms 内将第二发弹送膛连发，随后切入 600 RPM 持续连射！',
+        tooltipEn:
+          'Signature 1,800 RPM 2-round hyperburst: braided cable & pulley stage Round 2 in 33 ms during the 42mm floating stroke before transitioning to 600 RPM!',
+      },
+    },
+  },
 };
 
 function isArcheryInteractiveWeapon(
@@ -755,6 +909,20 @@ const EXPLICIT_WEAPON_ACTION_PARTS: Record<WeaponId, readonly string[]> = {
   m249: ['m249_charging_handle', 'm249_piston_carrier', 'm249_bolt'],
   p08: ['p08_rear_toggle', 'p08_front_toggle', 'p08_breechblock'],
   vector: ['vector_charging_handle', 'vector_bolt', 'vector_slider'],
+  g11: [
+    'g11_winding_knob',
+    'g11_rotary_breech',
+    'g11_clockwork_gears',
+    'g11_driving_rod',
+  ],
+  vss: ['vss_bolt_carrier', 'vss_bolt'],
+  m134: ['m134_rotor_assembly', 'm134_barrel_cluster', 'm134_bolt_1', 'm134_bolt_2'],
+  an94: [
+    'an94_bolt_carrier',
+    'an94_bolt',
+    'an94_pulley_wheel',
+    'an94_feed_rammer',
+  ],
 };
 
 const GENERIC_ACTION_PART_INCLUDE_RE =
@@ -812,6 +980,15 @@ export function mapManualRackToFireProgress(
   }
   if (weaponId === 'vector') {
     return 0.2 + r * 0.3;
+  }
+  if (weaponId === 'g11') {
+    return 0.22 + r * 0.24;
+  }
+  if (weaponId === 'vss') {
+    return 0.22 + r * 0.26;
+  }
+  if (weaponId === 'm134' || weaponId === 'an94') {
+    return 0.2 + r * 0.28;
   }
   return 0.32 + r * 0.3;
 }
@@ -877,6 +1054,18 @@ export function computeRecoilSpringForceN(
   } else if (weaponId === 'vector') {
     preloadN = 64;
     rateN = 56;
+  } else if (weaponId === 'g11') {
+    preloadN = 62;
+    rateN = 54;
+  } else if (weaponId === 'vss') {
+    preloadN = 46;
+    rateN = 40;
+  } else if (weaponId === 'm134') {
+    preloadN = 128;
+    rateN = 110;
+  } else if (weaponId === 'an94') {
+    preloadN = 66;
+    rateN = 58;
   }
 
   const bufferRamp = r > 0.8 ? Math.pow((r - 0.8) / 0.2, 2) * 28 : 0;

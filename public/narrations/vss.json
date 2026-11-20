@@ -1,0 +1,896 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "vss",
+  "generatedAt": "2026-11-20T13:05:00.000000+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "VSS Vintorez (6P29)",
+    "subtitle": "9×39mm SP-5/SP-6 Integral Suppressed Special Sniper Rifle",
+    "originCountry": "Soviet Union / Russia",
+    "weaponType": "Integral Suppressed Sniper Rifle",
+    "categoryLabel": "Sniper Rifle",
+    "actionMechanism": "Long-Stroke Gas Piston · 6-Lug Rotating Bolt · Hammerless Linear Striker & Integral 6-Stage Slanted Baffle Suppressor",
+    "statusLabel": "In Vault · Strippable",
+    "description": "Engineered in 1987 by Pyotr Serdyukov at TsNIITochMash and manufactured at the historic Tula Arms Plant (TOZ), the VSS Vintorez ('Thread Cutter', GRAU 6P29) solved an impossible Cold War ballistic paradox: defeating modern body armor out to 400 meters in virtual silence. Chambered in the purpose-built heavy 9×39mm subsonic cartridge (SP-5 match and SP-6 tungsten-core armor-piercing), it vents propellant gases through three rows of radial barrel ports into a 414 mm full-length expansion suppressor containing six slanted asymmetric baffles, while a six-lug rotating bolt and ultra-quiet hammerless linear striker preserve match precision without acoustic clatter.",
+    "highlights": [
+      "200mm Radial-Ported Rifled Barrel + 6-Stage Asymmetric Slanted CNC Baffle Core",
+      "Purpose-Built 9×39mm SP-5/SP-6 Heavy 250gr Subsonic Armor-Piercing Ballistics",
+      "6-Lug Symmetric Rotating Bolt + Ultra-Quiet Hammerless Linear Striker Action",
+      "Quick-Detach Laminated Birchwood Thumbhole Stock & PSO-1M2-1 4×24 Scope"
+    ],
+    "workbenchTitle": "VSS Vintorez 3D Teardown & Integral Acoustic Kinematics",
+    "workbenchSubtitle": "4 Modular Groups · 24 Core Nodes · Radial-Ported Barrel, 6-Stage Slanted Baffles, 6-Lug Rotating Bolt & Hammerless Linear Striker",
+    "cutawayLabel": "6-Stage Baffle Cutaway",
+    "cutawayTitle": "Switch to assembled cutaway view and inspect the 200mm radial-ported barrel, 6-stage slanted acoustic baffles, 6-lug bolt, and hammerless linear striker",
+    "searchPlaceholder": "Search component name / code (e.g. baffle, striker, PSO-1, 6-lug, S-02)...",
+    "firingMilestoneLabel": "Baffle Gas Bleed",
+    "rateOfFire": "800–900 rpm",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Ready to Fire",
+        "subLabel": "0% Assembled",
+        "desc": "Soviet Tula Arsenal VSS Vintorez (6P29 · 9×39mm SP-5/SP-6 subsonic) in closed-bolt battery: 894 mm overall length, full-length cylindrical expansion suppressor housing enveloping the 200 mm ported barrel and 6-stage slanted baffle stack, with PSO-1M2-1 4×24 optic clamped onto the left Warsaw Pact dovetail rail."
+      },
+      "field_strip": {
+        "label": "Briefcase Field Strip",
+        "subLabel": "30% Field Strip",
+        "desc": "Clandestine Spetsnaz transit and service breakdown: detach the 10-round plum waffle magazine, unclamp the PSO-1M2-1 scope leftward, slide off the quick-detach laminated birchwood thumbhole stock, and rotate the 414 mm integral suppressor outer tube forward to expose the radial-ported barrel and baffle core."
+      },
+      "sub_assembly": {
+        "label": "Baffle & Striker Strip",
+        "subLabel": "65% Sub-Assembly",
+        "desc": "Slide the gleaming 6-stage slanted acoustic diffuser core off the perforated muzzle, lift the stamped 3-rib dust cover, and withdraw the long-stroke piston bolt carrier, 6-lug brushed-stainless rotating bolt, recoil guide/spring, and VSS's signature hammerless linear striker assembly."
+      },
+      "full_exploded": {
+        "label": "Full 24-Node BOM",
+        "subLabel": "100% Full Exploded",
+        "desc": "Complete 24-part exploded engineering layout revealing every subsystem of the Thread Cutter: 3-row ported barrel, 6-stage asymmetric CNC baffles, 6-lug symmetric bolt, hammerless linear striker and cross-bolt selector, laminated Russian birchwood stock, PSO-1M2-1 optic, and 10-round plum polymer magazine."
+      }
+    },
+    "firingPhases": {
+      "vss_phase_1_linear_striker": {
+        "shortLabel": "Linear Striker Slam",
+        "title": "Phase 1 · Trigger Trips Sear, Hammerless Linear Striker Slams Forward",
+        "description": "Squeezing the curved steel trigger lowers the primary catch sear, releasing VSS's signature hammerless linear striker. Driven straight forward along the bore axis by its coaxial mainspring, the striker impacts the floating firing pin with minimal lock time and zero rotary hammer clatter."
+      },
+      "vss_phase_2_subsonic_bleed": {
+        "shortLabel": "Port Bleed & 6-Baffle",
+        "title": "Phase 2 · 9×39mm Subsonic Bleeds via Barrel Ports into 6-Stage Baffle Stack",
+        "description": "Primer ignition at 275 MPa accelerates the heavy 250-grain subsonic bullet down the 200 mm barrel to 290 m/s. Passing three rows of radial rifling ports bleeds pressurized gas rearward into the expansion sleeve before six alternating 28-degree slanted baffles strip residual energy silently."
+      },
+      "vss_phase_3_gas_unlock": {
+        "shortLabel": "Gas Tap & 6-Lug Unlock",
+        "title": "Phase 3 · Under-Suppressor Gas Tap Drives Piston & Rotates 6-Lug Bolt 32°",
+        "description": "Tapped gas inside the suppressor housing pushes the long-stroke stainless piston rearward through a 4.5 mm free-travel safety dwell. The carrier's milled helical cam slot then rotates the 6-lug cylindrical bolt 32 degrees counterclockwise, unlocking symmetrically from the milled receiver."
+      },
+      "vss_phase_4_recoil_recock_eject": {
+        "shortLabel": "74mm Stroke & Eject",
+        "title": "Phase 4 · 74 mm Recoil Compresses Mainsprings, Re-Cocks Striker & Ejects Case",
+        "description": "The bolt carrier and 6-lug bolt travel 74 mm rearward, compressing the upper recoil spring while pushing the linear striker backward to re-engage the catch sear. At 45% cycle progress, the fixed left receiver ejector kicks the spent 9×39mm steel casing briskly out to the right."
+      },
+      "vss_phase_5_rear_dwell_lift": {
+        "shortLabel": "Rear Buffer & Mag Lift",
+        "title": "Phase 5 · Carrier Cushions at Receiver Rear while Plum Mag Elevates Fresh Round",
+        "description": "The operating group reverses smoothly at the rear milled receiver bulkhead to minimize metallic impact noise. Simultaneously, the safety-orange anti-tilt follower inside the 10-round plum waffle magazine lifts the next heavy 9×39mm cartridge against the steel-lined feed lips."
+      },
+      "vss_phase_6_return_feed": {
+        "shortLabel": "Forward Feed Cycle",
+        "title": "Phase 6 · Recoil Spring Drives Bolt Group Forward, Stripping Fresh 9×39mm Round",
+        "description": "The compressed helical recoil spring expands smoothly along its telescoping guide rod, thrusting the bolt carrier and 6-lug bolt forward to strip a fresh 250-grain SP-5 round from the staggered double-column magazine cleanly up the feed ramp into the chrome-lined chamber."
+      },
+      "vss_phase_7_6lug_lock_reset": {
+        "shortLabel": "6-Lug Lock & Reset",
+        "title": "Phase 7 · Cam Rotates 6 Lugs into Battery & Disconnector Resets Linear Sear",
+        "description": "As the bolt face seats firmly against the barrel breech, the bolt carrier completes its forward over-travel, rotating all six radial locking lugs clockwise into concentric milled recesses. Releasing the trigger hands the linear striker smoothly back to the primary sear for the next silent shot."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "暗夜里的“螺纹切割机”：VSS Vintorez 微声狙击步枪的冷战声学传奇",
+      "deck": "从克格勃与格鲁乌的一纸绝密指标，到谢尔久科夫在中央精密机械研究所（TsNIITochMash）缔造的 9×39mm 亚音速重弹与 6 级斜挡板整体消音系统，VSS 打破了“微声必低威”的百年定律。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1981–1984",
+          "title": "冷战暗影中的绝密难题：既要悄无声息，又要穿透防弹衣",
+          "paragraphs": [
+            "二十世纪八十年代初，阿富汗山谷与欧洲前沿的秘密侦察行动，让苏联克格勃（KGB）“阿尔法”特种部队与军方格鲁乌（GRU）特种侦察分队陷入了前所未有的装备困境。彼时配发的 AKMS 步枪加装 PBS-1 橡胶碗消音器配用 US 减装药弹时，不仅 200 米外精度急剧恶化，橡胶堵片射击数十发便会烧蚀失效；更致命的是，面对北约部队日益普及的凯夫拉防弹头盔与防弹插板，传统亚音速减装药步枪弹早已丧失可靠的百米击穿能力。",
+            "1983 年，苏联国防部与克格勃联合向位于莫斯科近郊克利莫夫斯克的中央精密机械研究所（TsNIITochMash）下达了一项近乎违背物理常理的绝密研制任务：打造一款代号为“Vintorez”（Винторез，意为「螺纹切割机」）的全新特种微声狙击步枪。指标严苛到令人窒息——枪口声响必须低于普通小口径运动步枪、实现夜间零膛口焰、能够在 400 米距离一枪击穿军用防弹钢盔与防弹衣，并且全枪必须能迅速拆解装入一只 450×370 毫米的普通外交公文箱秘密携行！",
+            "弹药总师尼古拉·扎别林（Nikolai Zabelin）与列夫·德沃里亚尼诺夫团队意识到，仅靠削减 7.62×39mm 旧弹药装药量绝无出路。要使弹头在低于音速（约 290 米/秒）不产生音爆的前提下仍拥有惊人的存能与穿甲力，唯一的数学解法是大幅增加弹头截面积与质量。于是，将 7.62×39mm 弹壳颈部扩口至 9 毫米、装填长达 36 毫米、重达 16.2 克（250 格令）超长重型弹头的 9×39mm SP-5 狙击弹与 SP-6 碳化钨钢芯穿甲弹横空出世，为“螺纹切割机”注入了致命的物理灵魂。"
+          ],
+          "audioScript": "二十世纪八十年代初，苏联特种部队面临一项近乎不可能的战术需求：在四百米距离上悄无声息地穿透防弹衣，并且全枪能拆进一只公文箱。传统消音步枪减装药后威力骤降，彻底无法胜任。中央精密机械研究所的弹药专家逆向破局，将七点六二毫米弹壳扩口，塞入重达十六点二克的超长九毫米亚音速穿甲重弹。九乘三十九毫米特种弹药的诞生，拉开了暗夜传奇螺纹切割机的序幕。",
+          "audioUrl": "audio/vss/story_act1_zh.mp3",
+          "focusPartId": "vss_suppressor_tube",
+          "focusPartLabel": "414mm 全长整体式消音外筒"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1984–1987",
+          "title": "谢尔久科夫的声学杰作：多孔泄气枪管与 6 级不对称斜挡板",
+          "paragraphs": [
+            "手持全新 9×39mm 重弹，轻武器大师彼得·谢尔久科夫（Pyotr Serdyukov）与弗拉基米尔·克拉斯尼科夫迅速攻克了武器本体的极限挑战。与在普通步枪枪口拧上一截外挂消音器的常规思路截然不同，谢尔久科夫将消音器与枪管融为一体：枪管全长仅 200 毫米，并在前段膛线阴线槽底精密钻出三排径向高压泄气孔；一根长达 414 毫米的全通圆柱形烤蓝钢膨胀外筒将整根枪管连同前方空间完整包裹。",
+            "当 250 格令重弹头沿 210 毫米急缠距膛线旋转加速时，尚未出膛的高压火药燃气便通过三排径向泄气孔提前分流涌入枪管周围的后部膨胀舱，既平抑了峰压，又严格控制弹头初速锁定在 290 米/秒亚音速禁区之内。紧随枪口之后，谢尔久科夫在消音外筒前半段塞入了一组巧夺天工的 CNC 整体式 6 级不对称斜挡板声学芯——相邻挡板以正负二十八度交错倾斜并开设偏心气道，强迫高温高速燃气在狭窄腔室内疯狂折返撞击、剧烈涡旋降温。",
+            "实测结果令苏联军方验收委员会瞠目结舌：VSS 在击发大威力 9×39mm SP-6 穿甲弹时，枪口彻底消除火光，声压骤降至约 130 分贝，在 50 米开外几乎只剩微弱的空气呼啸声与清脆的金属自动机往复声，宛如工业车床切开钢材螺纹的轻响。1987 年，该枪正式获颁苏联国防部火箭炮兵装备总局代号 GRAU 6P29，交由拥有近三百年历史的图拉兵工厂（ТОЗ）投入绝密批量生产。"
+          ],
+          "audioScript": "总设计师彼得谢尔久科夫放弃了笨重的外挂消音器，创造性地将消音结构与两百毫米精密枪管合二为一。枪管前段钻有三排径向泄气孔，在弹头出膛前便将高压燃气提前泄入后方膨胀舱；紧接枪口的是六级交替倾斜的不对称斜挡板消音芯，迫使高温燃气反复撞击涡旋降温。一九八七年，这支消除枪口焰与音爆的暗夜杰作正式定型，由图拉兵工厂秘密投产。",
+          "audioUrl": "audio/vss/story_act2_zh.mp3",
+          "focusPartId": "vss_baffle_stack",
+          "focusPartLabel": "6 级不对称斜挡板声学消音芯"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1987–1991",
+          "title": "静谧背后的精密革命：6 突笋旋转枪机与无击锤直线平移击铁",
+          "paragraphs": [
+            "消除枪口音爆只是微声狙击工程的一半；当发射声浪被压到极致后，传统步枪机匣内部沉重回转击锤敲击击针与冲压钢壁共振发出的清脆“咔哒”声，便成了夜间潜行中暴露狙击手位置的致命破绽。为此，谢尔久科夫在 VSS 内部展开了一场彻底摒弃 AK 旧架构的静谧力学革命。",
+            "首先，VSS 放弃薄壁冲压机匣，采用整块合金钢锻坯 CNC 精密铣削出极高刚性的烤蓝钢机匣，以厚重刚体吸收机械振动；自动机采用藏身于消音筒内部的长行程导气活塞，但闭锁机构升级为与高精度栓动步枪媲美的 6 闭锁突笋对称圆柱旋转枪机——6 枚均匀分布于 60 度圆周的闭锁突笋旋转 32 度即可实现极高同轴度刚性闭锁，消除偏载变形，使短小枪管依然拥有 400 米点杀的惊人精度。",
+            "最具神来之笔的是它的击发火控布局：VSS 彻底取消了 AK 标志性的旋转摆动击锤，改用一枚沿枪管中轴线前后平移滑动的超静音直线击铁（Linear Striker），由后置同轴螺旋主簧直接前推撞击浮动击针。同时将保险与快慢机彻底解耦——右侧 AK 式防尘拨片仅负责静音开关保险，而扳机后方的隐藏横推按钮则让射手仅凭食指轻推，即可无声在单发精确狙击与每分钟 900 发近战应急全自动之间瞬时切换！"
+          ],
+          "audioScript": "为了压制连回转击锤撞击都可能暴露位置的机械杂音，谢尔久科夫彻底重构了步枪内部核心。他采用整块锻钢数控铣削出高刚性机匣，配备六枚对称闭锁突笋的精密旋转枪机，赋予亚音速重弹极高的同轴精度。更精妙的是，他果断抛弃了响亮的摆动击锤，改用同轴滑动的无击锤直线平移击铁，并将单连发快慢机改为扳机后方的静音横推按钮，成就了登峰造极的微声机械艺术。",
+          "audioUrl": "audio/vss/story_act3_zh.mp3",
+          "focusPartId": "vss_striker",
+          "focusPartLabel": "无击锤直线平移式超静音击铁"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1988–至今",
+          "title": "桦木镂空托与 PSO-1 传奇：从特种公文箱到全球战术图腾",
+          "paragraphs": [
+            "为了将绝密潜入携行能力推向巅峰，VSS 的人机与光学系统同样充满鲜明的苏联特种美学。其标志性的俄罗斯琥珀蜜色桦木层压镂空拇指孔枪托，通过机匣尾端的垂直燕尾快拆卡笋锁固——特种兵只需按压弹簧卡钮向下滑动，3 秒内即可将枪托完整卸下；再旋下整体消音外筒、向左滑拆锤纹灰烤漆的 PSO-1M2-1 4×24 发光分划狙击瞄准镜（其顶部高低手轮专门针对 9×39mm 大下坠弹道刻画 100 至 400 米弹道补偿刻度），整支狙击步枪不到半分钟便可化整为零隐入普通手提箱。",
+            "伴随 VSS 同步诞生的还有换装折叠钢托、配用 20 发深李子褐华夫纹弹匣的兄弟型号 AS Val（6P30）特种微声突击步枪，两者零件通用率高达七成。自二十世纪九十年代起，VSS 随“阿尔法”、“信号旗”及俄军特种侦察旅辗转高加索山地与无数反恐解救人质战场，以“看不见的火光、听不清的枪声、挡不住的穿甲重弹”铸就令敌胆寒的暗夜威名。",
+            "步入二十一世纪，俄罗斯推出加装全通皮卡汀尼导轨的 VSS-M 现代化改型，而原版手擦桦木层压镂空托、深李子褐聚合物护木、414 毫米一体圆柱消音筒与锤纹灰 PSO-1 瞄准镜所交织出的冷峻轮廓，早已跨越时代成为人类轻武器工程史上不可替代的声学与机械双料巅峰。"
+          ],
+          "audioScript": "手擦琥珀色桦木层压镂空枪托支持三秒快拆，搭配专为九乘三十九弹道标定的锤纹灰侧装光学瞄准镜与十发李子褐华夫弹匣，让整支微声狙击步枪能在半分钟内化整为零收入密箱。从冷战尾声到现代特种作战，螺纹切割机以无焰无声却能击穿防弹衣的震撼战绩，化作人类特种兵器工程史上最迷人的暗夜图腾。",
+          "audioUrl": "audio/vss/story_act4_zh.mp3",
+          "focusPartId": "vss_wood_stock",
+          "focusPartLabel": "桦木层压镂空快拆枪托"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "200mm 多孔径向泄气枪管 + 6 级不对称斜挡板整体消音",
+          "tag": "整体式微声声学架构",
+          "summary": "摒弃传统枪口外挂消音筒，将 3 排径向泄气孔直接钻入 200 mm 膛线阴线槽提前向后泄压，并在前方紧接 6 级 ±28° 交替倾斜不对称 CNC 挡板，彻底消融 9×39mm 亚音速重弹的膛口火光与爆炸冲击波。",
+          "focusPartId": "vss_baffle_stack",
+          "focusPartLabel": "6 级斜挡板声学消音芯"
+        },
+        {
+          "id": "bt2",
+          "title": "6 闭锁突笋对称旋转枪机 + 整坯 CNC 铣削烤蓝钢机匣",
+          "tag": "栓动级同轴闭锁刚性",
+          "summary": "以 60° 均布的 6 枚对称闭锁突笋取代 AK 传统双突笋，配合高刚度 CNC 铣削锻钢机匣，仅旋转 32° 即达成均匀受力刚性闭锁，让 200 mm 短枪管发射 250 格令亚音速重弹依然具备 400 米精确点杀能力。",
+          "focusPartId": "vss_bolt",
+          "focusPartLabel": "6 突笋精密旋转枪机"
+        },
+        {
+          "id": "bt3",
+          "title": "无击锤直线平移击铁 + 静音解耦横推快慢机",
+          "tag": "超静音线性火控机制",
+          "summary": "彻底取消响亮的回转击锤，采用同轴平移滑动的轻量化直线击铁显著降低击发机械杂音与锁时；同时将保险拨片与扳机后方横推单/连发按钮分离，实现单发精准狙击与 900 发/分应急全自动的无声切换。",
+          "focusPartId": "vss_striker",
+          "focusPartLabel": "无击锤直线平移击铁"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1983",
+          "title": "克格勃与格鲁乌下达“Vintorez”绝密指标",
+          "detail": "苏联情报与特战部门向中央精密机械研究所（TsNIITochMash）提出 400 米微声穿透防弹衣且可拆入公文箱的苛刻战术指标。"
+        },
+        {
+          "year": "1984–1985",
+          "title": "9×39mm SP-5 / SP-6 亚音速穿甲重弹定型",
+          "detail": "扎别林与德沃里亚尼诺夫团队将 7.62×39mm 弹壳扩口至 9 毫米，打造 16.2 克超长重型亚音速穿甲弹解决微声低威死局。"
+        },
+        {
+          "year": "1985–1986",
+          "title": "谢尔久科夫 RG036 样枪完成 6 级斜挡板与直线击铁验证",
+          "detail": "彼得·谢尔久科夫团队确立多孔枪管、6 级不对称斜挡板、6 突笋旋转枪机及无击锤直线击铁构型，通过严苛国家靶场试验。"
+        },
+        {
+          "year": "1987",
+          "title": "正式列装定型 GRAU 6P29 并由图拉兵工厂量产",
+          "detail": "VSS Vintorez 正式装备苏联特种部队，由历史悠久的图拉兵工厂（ТОЗ）以高精度 CNC 铣削机匣与桦木层压托投入批量制造。"
+        },
+        {
+          "year": "1988–1999",
+          "title": "PSO-1M2-1 专用瞄具配套与特种反恐实战封神",
+          "detail": "配套 9×39mm 专用弹道补偿镜 PSO-1M2-1 及兄弟型 AS Val 突击步枪，在高加索山地与特种反恐解救行动中奠定暗夜传奇。"
+        },
+        {
+          "year": "2018–至今",
+          "title": "VSS-M 现代化升级与世界微声狙击美学标杆",
+          "detail": "衍生出导轨化 VSS-M 改进型继续服役一线，而经典桦木镂空托与全长一体消音筒的初代 VSS 成为全球轻武器博物馆殿堂级藏品。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "The Silent Thread Cutter: Cold War Acoustic Engineering of the VSS Vintorez",
+      "deck": "Born from a classified KGB and GRU mandate, Pyotr Serdyukov's TsNIITochMash masterpiece married a heavy 9×39mm subsonic armor-piercing cartridge to a radial-ported barrel, six slanted baffles, and a hammerless linear striker.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1981–1984",
+          "title": "The Impossible Mandate: Whisper-Quiet Armor Penetration at 400 Meters",
+          "paragraphs": [
+            "During covert operations in the early 1980s, Soviet KGB Alpha teams and GRU Spetsnaz reconnaissance detachments faced an acute ballistic crisis. Legacy suppressed rifles such as the AKMS fitted with the rubber-wipe PBS-1 silencer suffered rapid wipe erosion, dismal accuracy beyond 200 meters, and pitiful penetration once NATO troops adopted Kevlar helmets and ceramic body armor. Slowing down a light 7.62mm bullet below the speed of sound stripped away the kinetic energy needed to defeat modern protection.",
+            "In 1983, Soviet intelligence and military leadership issued an unprecedented classified specification to TsNIITochMash in Klimovsk outside Moscow, codenamed Vintorez ('Thread Cutter'). The new special sniper rifle had to fire virtually silently without muzzle flash, defeat military helmets and armored vests out to 400 meters, and strip down in seconds to conceal inside a 450 by 370 millimeter diplomatic briefcase.",
+            "Cartridge designers Nikolai Zabelin and Lev Dvoryaninov realized that only mass could replace supersonic velocity. Necking up the 7.62×39mm case to accept a massive, elongated 16.2-gram (250-grain) 9mm projectile traveling at 290 meters per second, they created the SP-5 match load and the hardened-core SP-6 armor-piercing cartridge—unlocking lethal subsonic reach with zero supersonic ballistic crack."
+          ],
+          "audioScript": "In the early nineteen eighties, Soviet special forces faced an impossible mandate: defeat modern body armor at four hundred meters in virtual silence, from a rifle small enough to pack inside a briefcase. Slowing legacy bullets robbed them of penetration. Ammunition pioneers at Klimovsk solved the physics by necking the standard case to nine millimeters and loading a massive two hundred fifty grain subsonic armor piercing projectile, birthing the legendary Thread Cutter.",
+          "audioUrl": "audio/vss/story_act1_en.mp3",
+          "focusPartId": "vss_suppressor_tube",
+          "focusPartLabel": "414mm Full-Length Integral Suppressor Tube"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1984–1987",
+          "title": "Serdyukov's Acoustic Core: Radial Barrel Ports and Six Slanted Baffles",
+          "paragraphs": [
+            "Lead ordnance engineer Pyotr Serdyukov and colleague Vladimir Krasnikov rejected the crude screw-on muzzle suppressor altogether. Instead, they built the VSS around an integral acoustic architecture: a compact 200 mm chrome-lined barrel drilled along its forward rifling grooves with three rows of radial gas-bleed ports, completely enclosed inside a 414 mm matte-blued seamless steel expansion cylinder.",
+            "As the heavy 9×39mm projectile accelerates down the steep 1-in-210 mm rifling twist, high-pressure combustion gases vent early through the radial barrel ports backward into the rear expansion jacket, lowering peak muzzle pressure and holding velocity reliably below Mach 1. Directly ahead of the barrel crown sits Serdyukov's crown jewel: a removable CNC-machined 6-stage baffle stack whose asymmetric plates pitch alternately at plus and minus twenty-eight degrees.",
+            "Turbulent gas jets slam repeatedly across opposing oblique chambers, dissipating heat and acoustic shock before reaching the muzzle aperture. During state proving trials, the VSS delivered roughly 130 decibels with zero night flash—sounding beyond fifty meters like a quiet mechanical hiss. Officially adopted in 1987 under GRAU index 6P29, classified serial production commenced at the historic Tula Arms Plant (TOZ)."
+          ],
+          "audioScript": "Chief designer Pyotr Serdyukov abandoned bolt-on silencers to unify barrel and suppressor into a single acoustic machine. Three rows of radial holes drilled directly into the two hundred millimeter barrel bleed propellant gases rearward into a full-length expansion sleeve. Ahead of the muzzle, six alternating twenty-eight degree slanted baffles violently swirl and cool the exhaust. Adopted in nineteen eighty-seven at Tula Arsenal, it erased both flash and sonic boom.",
+          "audioUrl": "audio/vss/story_act2_en.mp3",
+          "focusPartId": "vss_baffle_stack",
+          "focusPartLabel": "6-Stage Asymmetric Slanted Baffle Stack"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1987–1991",
+          "title": "Silence Inside the Receiver: Six Locking Lugs and a Hammerless Linear Striker",
+          "paragraphs": [
+            "Eliminating muzzle blast solved only half the acoustic battle. Once propellant noise drops to a whisper, the loud metallic snap of a swinging AK rotary hammer and the resonance of a thin stamped receiver become glaring giveaways in nocturnal urban ambushes. Serdyukov therefore rebuilt the action from first principles for rigid quietness.",
+            "Instead of stamped sheet steel, Tula machined the VSS receiver from a solid forged alloy steel billet to damp vibration and support extreme precision. Powered by a long-stroke gas piston concealed inside the suppressor housing, the brushed-stainless cylindrical bolt engages six symmetrical radial locking lugs spaced at 60-degree intervals. Rotating just 32 degrees into battery, this six-lug lockup yields concentric rigidity rivaling bolt-action match rifles.",
+            "Most ingeniously, Serdyukov deleted the swinging hammer completely. In its place slides an ultra-quiet hammerless linear striker riding directly behind the bolt on a coaxial mainspring, cutting lock time and acoustic clatter. Fire controls were cleanly decoupled: the familiar right-hand dust-shield lever handles silent safe-to-fire operation alone, while a discreet cross-bolt button directly behind the trigger lets the sniper toggle silently between surgical semi-auto shots and emergency 900-rpm full-automatic bursts."
+          ],
+          "audioScript": "Once muzzle blast vanished, even the sharp metallic clack of a swinging hammer could betray a sniper at night. Serdyukov milled the receiver from solid forged steel and introduced a symmetrical six-lug rotating bolt delivering match-grade concentric lockup. Most brilliantly, he eliminated the rotary hammer altogether in favor of a quiet linear sliding striker, paired with a silent cross-bolt selector nestled directly behind the trigger for instant semi or emergency full auto fire.",
+          "audioUrl": "audio/vss/story_act3_en.mp3",
+          "focusPartId": "vss_striker",
+          "focusPartLabel": "Hammerless Linear Spring-Driven Striker"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "1988–Present",
+          "title": "Laminated Birch and Hammer-Tone Optics: From Secret Briefcase to Tactical Icon",
+          "paragraphs": [
+            "Every ergonomic detail of the VSS reflected clandestine craft. Its unmistakable warm amber Russian laminated birchwood skeleton thumbhole stock locks onto a vertical rear receiver dovetail; pressing a spring button releases the entire buttstock in three seconds. Unclamping the grey hammer-tone PSO-1M2-1 4×24 illuminated side-mount scope—calibrated specifically for the rainbow arc of 9×39mm subsonic bullets from 100 to 400 meters—and rotating off the suppressor tube lets an operator pack the entire rifle into a compact discreet case in under thirty seconds.",
+            "Sharing seventy percent parts commonality with its folding-stock assault sibling, the AS Val (6P30) fed by 20-round plum waffle magazines, the VSS earned fearsome operational renown across counter-terror and mountain reconnaissance campaigns from the 1990s onward. Operatives prized its eerie combination of low-profile 10-round prone handling, zero signature, and devastating armor-piercing authority.",
+            "Even as modernized railed VSS-M variants serve twenty-first-century special operations units, the classic Tula silhouette—warm laminated birchwood thumbhole stock, dark plum Bakelite forend, monolithic suppressor tube, and hammer-tone PSO-1 optic—remains an immortal monument to Soviet acoustic and mechanical ingenuity."
+          ],
+          "audioScript": "Fitted with a three-second quick-detach Russian laminated birchwood thumbhole stock and a hammer-tone grey PSO-one scope calibrated for steep nine by thirty-nine ballistic drops, the entire sniper system breaks down into a covert case in under half a minute. Serving elite counter-terror units for decades alongside its AS Val sibling, the VSS Vintorez endures as the undisputed icon of integral suppressed rifle engineering.",
+          "audioUrl": "audio/vss/story_act4_en.mp3",
+          "focusPartId": "vss_wood_stock",
+          "focusPartLabel": "Laminated Birchwood Skeleton Thumbhole Stock"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "200mm Radial-Ported Barrel + 6-Stage Slanted Asymmetric Baffle Core",
+          "tag": "Integral Acoustic Architecture",
+          "summary": "Drilling three rows of gas-bleed ports directly into the rifling grooves vents subsonic pressure into a full-length expansion jacket ahead of six alternating 28-degree slanted CNC baffles, extinguishing both flash and muzzle blast.",
+          "focusPartId": "vss_baffle_stack",
+          "focusPartLabel": "6-Stage Asymmetric Slanted Baffle Stack"
+        },
+        {
+          "id": "bt2",
+          "title": "6-Lug Symmetric Rotating Bolt & Billet CNC-Milled Steel Receiver",
+          "tag": "Concentric Match Lockup",
+          "summary": "Replacing AK-style twin lugs with six symmetrical radial lugs spaced every 60 degrees inside a rigid CNC-milled Tula steel receiver eliminates asymmetric bolt thrust and enables 400-meter precision from a 200mm barrel.",
+          "focusPartId": "vss_bolt",
+          "focusPartLabel": "6-Lug Precision Rotating Bolt"
+        },
+        {
+          "id": "bt3",
+          "title": "Hammerless Linear Sliding Striker & Decoupled Cross-Bolt Selector",
+          "tag": "Low-Signature Linear FCG",
+          "summary": "Eliminating the loud swinging hammer in favor of a coaxial linear spring-driven striker reduces lock time and internal mechanical noise, while separating the right dust-shield safety from a silent behind-trigger semi/auto cross-bolt.",
+          "focusPartId": "vss_striker",
+          "focusPartLabel": "Hammerless Linear Striker"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1983",
+          "title": "Classified KGB & GRU 'Vintorez' Specification Issued",
+          "detail": "Soviet special services task TsNIITochMash with developing a briefcase-stowable silent sniper rifle capable of defeating military armor at 400 meters."
+        },
+        {
+          "year": "1984–1985",
+          "title": "9×39mm SP-5 & SP-6 Subsonic Armor-Piercing Cartridges Finalized",
+          "detail": "Zabelin and Dvoryaninov neck up the 7.62×39mm case to house a 16.2-gram (250-grain) subsonic bullet preserving lethal armor-defeating energy below Mach 1."
+        },
+        {
+          "year": "1985–1986",
+          "title": "Serdyukov RG036 Validates 6-Stage Baffles & Linear Striker",
+          "detail": "Pyotr Serdyukov's prototype pairs a radial-ported barrel, six slanted asymmetric baffles, a six-lug rotating bolt, and a hammerless linear striker through state trials."
+        },
+        {
+          "year": "1987",
+          "title": "Official GRAU 6P29 Adoption & Tula Arsenal (TOZ) Production",
+          "detail": "The VSS Vintorez enters secret service with Soviet KGB Alpha and GRU Spetsnaz units, machined from forged steel billets at the historic Tula Arms Plant."
+        },
+        {
+          "year": "1988–1999",
+          "title": "PSO-1M2-1 Dedicated Optic & Combat Baptism",
+          "detail": "Paired with the subsonic BDC-calibrated PSO-1M2-1 4×24 scope and sibling AS Val rifle, the VSS proves its quiet armor-defeating potency in mountain and urban operations."
+        },
+        {
+          "year": "2018–Present",
+          "title": "VSS-M Modernization & Global Museum Icon",
+          "detail": "Railed VSS-M upgrades extend front-line service while the original birch-stocked Tula VSS stands as a timeless landmark of integral suppressed firearms design."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "vss_barrel": {
+      "partId": "vss_barrel",
+      "bomCode": "S-01",
+      "calloutLabelEn": "200mm Ported 9×39 Barrel",
+      "zh": {
+        "roleTag": "3 排径向泄气孔 · 210mm 急缠距稳定 16.2g 亚音速重弹",
+        "overview": "全长200毫米的精密冷锻镀铬枪管，深藏于整体消音外筒后半段之内，前段沿膛线钻有三排径向泄气孔，上方一体集成紧凑导气箍。",
+        "craftAndMaterial": "采用苏联高强度铬钼钒枪管钢冷精锻加工，内膛全镀硬铬并以210毫米急缠距四条右旋膛线稳定超长重弹，外圆车削精密阶梯与导气孔。",
+        "kinematicRole": "全周期保持静态刚性基准不动；击发阶段2引导9×39mm重弹加速并经径向孔分流燃气降压，同时由上方导气箍引气推动长行程活塞；爆炸图沿+X前移14厘米。",
+        "designHighlight": "将泄气孔精准钻在膛线阴线槽底部，既提前泄压消除音爆，又完全避免挂削被甲损伤250格令重弹头的远距飞行精度。",
+        "audioScript": "这根两百毫米冷锻镀铬枪管是微声系统的第一道关卡。前段膛线精准钻有三排径向泄气孔，弹头尚未出膛便提前将部分火药燃气分流到后方膨胀舱，既锁定亚音速初速又驱动上方紧凑导气箍。",
+        "audioUrl": "audio/vss/parts/vss_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "200mm Radial-Ported Rifled Barrel & Integral Gas Tap",
+        "overview": "Housed inside the rear half of the integral suppressor sleeve, this 200 mm precision barrel features three rows of machined radial gas-bleed ports and an integrated upper gas block collar.",
+        "craftAndMaterial": "Cold hammer-forged from Soviet chrome-moly steel with a hard-chrome bore and rapid 1-in-210 mm four-groove rifling engineered to stabilize elongated 250-grain subsonic projectiles.",
+        "kinematicRole": "Remains strictly stationary throughout all seven firing phases while guiding the 9×39mm projectile, bleeding expansion gas, and tapping piston drive impulse; translates forward 14 cm at full explosion.",
+        "designHighlight": "Drilling the radial bleed ports strictly along the recessed rifling grooves vents high-pressure gas cleanly without shearing bullet jackets or degrading 400-meter sniper accuracy.",
+        "audioScript": "Look at this two hundred millimeter cold hammer forged barrel. Three rows of machined radial gas ports bleed combustion gases backward into the expansion chamber before bullet exit, stabilizing heavy subsonic projectiles while tapping energy for the gas piston above.",
+        "audioUrl": "audio/vss/parts/vss_barrel_en.mp3"
+      }
+    },
+    "vss_baffle_stack": {
+      "partId": "vss_baffle_stack",
+      "bomCode": "S-02",
+      "calloutLabelEn": "6-Stage Slanted Baffle Core",
+      "zh": {
+        "roleTag": "纵剖视觉核心 · 交替 ±28° 湍流反射彻底消除枪口音爆",
+        "overview": "直接套装于多孔枪管口部前方的6级不对称斜挡板声学消音芯，是开启CT实时纵剖视图时最具震撼力的工程视觉主角。",
+        "craftAndMaterial": "由耐高温烧蚀合金不锈钢数控整体铣削与精密焊接成型，上下脊梁贯通连接6块交替±28°倾斜的偏心导流挡板，表面兼具CNC拉丝光泽与真实燃气热渍。",
+        "kinematicRole": "击发期间固锁于消音外筒前端静止不动，利用交替斜板迫使高温火药燃气多次碰撞涡旋降压降温；拆解时沿枪口+X向前抽出36厘米清晰展示。",
+        "designHighlight": "不对称交替28度斜挡板配合偏心导气缺口，能在极紧凑的202毫米长度内制造强烈交叉湍流，彻底消灭枪口火光并将声压压低至130分贝级。",
+        "audioScript": "现在展示的正是螺纹切割机最震撼的声学心脏：六级不对称斜挡板消音芯。六片以正负二十八度交错倾斜的精加工钢板迫使火药燃气剧烈撞击涡旋降温，在短短二十厘米内彻底抹去枪口火光与轰鸣。",
+        "audioUrl": "audio/vss/parts/vss_baffle_stack_zh.mp3"
+      },
+      "en": {
+        "roleTag": "6-Stage Asymmetric ±28° CNC Acoustic Diffuser Core",
+        "overview": "Slid directly ahead of the perforated barrel muzzle inside the expansion tube, this 6-stage slanted baffle stack is the gleaming acoustic centerpiece revealed in longitudinal cutaway view.",
+        "craftAndMaterial": "CNC-machined from heat-resistant stainless steel alloy with top and bottom tie-spines uniting six alternating 28-degree oblique plates and a concentric 10.5 mm projectile tunnel.",
+        "kinematicRole": "Stays rigidly anchored inside the suppressor tube during firing, deflecting propellant blast back and forth to cool and slow exiting gases; slides forward 36 cm during full disassembly.",
+        "designHighlight": "Alternating oblique plates with offset gas-bypass notches induce intense cross-flow turbulence, extinguishing night muzzle flash and dropping acoustic report to roughly 130 decibels.",
+        "audioScript": "Here is the acoustic star of the cutaway view: the six-stage slanted diffuser baffle stack. Alternating twenty-eight degree stainless plates slam hot exhaust gases sideways across opposing chambers, stripping away both flash and acoustic shock.",
+        "audioUrl": "audio/vss/parts/vss_baffle_stack_en.mp3"
+      }
+    },
+    "vss_bolt_carrier": {
+      "partId": "vss_bolt_carrier",
+      "bomCode": "S-03",
+      "calloutLabelEn": "Long-Stroke Bolt Carrier",
+      "zh": {
+        "roleTag": "螺旋开锁凸轮槽 · 74mm 长行程平稳压缩复进簧并压回击铁",
+        "overview": "全枪自动循环的动力主动件，前端一体连接伸入消音筒导气箍内的细长导气活塞杆，右侧弯折伸出防滑拉机柄。",
+        "craftAndMaterial": "主体采用高韧性合金钢数控铣削烤蓝并内铣精密螺旋开闭锁凸轮槽，前段长行程活塞杆与三道迷宫闭气活塞头全表面镀硬铬防碳垢卡滞。",
+        "kinematicRole": "击发阶段3经4.5毫米自由行程泄压后旋开6突笋枪机，阶段4满行程后坐74毫米压缩复进簧并向后顶推直线击铁重新待击，阶段6-7复进推弹旋闭。",
+        "designHighlight": "将长行程活塞完整隐藏在整体消音筒内部气室中运行，不仅防泥沙防冰冻，更大幅阻隔了导气泄压时的外泄金属高频噪声。",
+        "audioScript": "这是长行程导气活塞枪机框。它前端的镀铬活塞深藏在消音筒内部的导气箍中。击发后它先后退四点五毫米泄压，再通过螺旋凸轮槽旋开六突笋枪机，并顺势向后压回直线平移击铁完成待击。",
+        "audioUrl": "audio/vss/parts/vss_bolt_carrier_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Long-Stroke Piston Carrier with Helical Cam Track",
+        "overview": "The primary reciprocating engine of the action, uniting a billet steel carrier body, right-side charging handle, and a slender chrome-plated long-stroke gas piston reaching inside the suppressor.",
+        "craftAndMaterial": "CNC-milled from hardened blued alloy steel with an internal helical bolt-cam channel, coupled to a hard-chrome labyrinth-grooved stainless piston head resisting carbon fouling.",
+        "kinematicRole": "Travels 4.5 mm rearward in free dwell during phase 3 before camming the 6-lug bolt open, strokes 74 mm back in phase 4 to compress the recoil spring and re-cock the linear striker, then drives lockup in phase 7.",
+        "designHighlight": "Enclosing the gas piston inside the integral suppressor housing shields cycling mechanics from mud and frost while containing mechanical gas-tap noise.",
+        "audioScript": "This bolt carrier drives the entire automatic cycle. Its slender chrome piston reaches inside the suppressor gas tap, executing a four-point-five millimeter safety dwell before rotating the six-lug bolt and stroking seventy-four millimeters rearward.",
+        "audioUrl": "audio/vss/parts/vss_bolt_carrier_en.mp3"
+      }
+    },
+    "vss_bolt": {
+      "partId": "vss_bolt",
+      "bomCode": "S-04",
+      "calloutLabelEn": "6-Lug Rotating Bolt",
+      "zh": {
+        "roleTag": "60° 等分 6 突笋对称闭锁 · 媲美栓动狙击步枪同轴刚性",
+        "overview": "VSS 区别于传统双突笋 AK 自动步枪的精密闭锁核心，前端圆周每60度均匀排布6枚粗壮闭锁突笋，居中容纳浮动击针与抽壳钩。",
+        "craftAndMaterial": "采用高强度镍铬钼特种钢精密车铣并保留精磨拉丝金属本色，6枚闭锁支承面经严苛配研以实现全圆周均匀承压。",
+        "kinematicRole": "击发阶段3受枪机框凸轮驱动绕枪管轴线逆时针旋转32度（0.56弧度）完成对称开锁并随框后坐抽抛壳；阶段7正旋回位与铣削机匣刚性闭锁。",
+        "designHighlight": "六突笋全对称闭锁布局彻底消弭双突笋闭锁时产生的侧向偏摆应力，赋予200毫米短枪管媲美旋转后拉栓动步枪的远距一致散布。",
+        "audioScript": "请仔细看这枚闪亮的圆柱形旋转枪机。前端以六十度等分排列着六枚对称闭锁突笋，旋转三十二度即可与铣削机匣达成极高同轴度的刚性闭锁，让这支短小微声步枪拥有四百米狙击精度。",
+        "audioUrl": "audio/vss/parts/vss_bolt_zh.mp3"
+      },
+      "en": {
+        "roleTag": "6-Lug Symmetric 60° Precision Rotating Breech Bolt",
+        "overview": "Breaking sharply from twin-lug Kalashnikov practice, this brushed-stainless cylindrical bolt locks via six symmetrical radial lugs spaced every 60 degrees around the breech face.",
+        "craftAndMaterial": "Precision-machined from carburized nickel-chrome alloy steel left in bright brushed finish, incorporating a recessed 9×39mm bolt face, claw extractor, and top helical cam stud.",
+        "kinematicRole": "Rotates 32 degrees (0.56 radians) counterclockwise during phase 3 unlock, reciprocates rearward through phases 4 and 5, strips a fresh cartridge in phase 6, and rotates back into concentric lockup in phase 7.",
+        "designHighlight": "Evenly distributing 275 MPa breech thrust across six radial lugs eliminates asymmetric receiver flex and delivers bolt-action-caliber accuracy out to 400 meters.",
+        "audioScript": "Examine this gleaming brushed-stainless bolt. Six symmetrical locking lugs spaced every sixty degrees rotate thirty-two degrees into the milled receiver, balancing chamber pressure evenly for true sniper-grade consistency.",
+        "audioUrl": "audio/vss/parts/vss_bolt_en.mp3"
+      }
+    },
+    "vss_firing_pin": {
+      "partId": "vss_firing_pin",
+      "bomCode": "S-05",
+      "calloutLabelEn": "Coaxial Firing Pin",
+      "zh": {
+        "roleTag": "承接后方直线平移击铁轴向撞击 · 精准击发 9×39 底火",
+        "overview": "同轴贯穿于6突笋旋转枪机中心通孔的阶梯形长击针，负责将后方直线平移击铁的轴向动能瞬间传递至9×39mm军用底火。",
+        "craftAndMaterial": "采用高耐磨工具钢精磨淬火抛光，针尖经球面过渡打磨以防击穿军用厚铜底火导致高压燃气倒灌机匣。",
+        "kinematicRole": "击发阶段1受直线平移击铁撞击瞬间前探3.4毫米引燃底火；全周期随6突笋旋转枪机同步前后往复。",
+        "designHighlight": "尾部平头打击法兰与直线平移击铁严格同轴对正，无任何偏心侧向分力，不仅击发干脆而且长寿命抗折断。",
+        "audioScript": "这根同轴淬火长击针隐藏在六突笋旋转枪机中心。它的尾部法兰正面迎接收自后方直线平移击铁的轴向撞击，零偏心损耗地干脆击穿九乘三十九毫米军用底火。",
+        "audioUrl": "audio/vss/parts/vss_firing_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Coaxial Hardened-Steel Floating Firing Pin",
+        "overview": "Running straight through the center axis of the 6-lug rotating bolt, this precision floating firing pin transfers linear striker momentum directly to the 9×39mm military primer.",
+        "craftAndMaterial": "Turned and centerless-ground from hardened tool steel with a hemispherical radiused nose engineered to ignite heavy Russian primers without piercing.",
+        "kinematicRole": "Lunges forward 3.4 mm in phase 1 when struck squarely by the linear striker, then rides smoothly inside the rotating bolt through extraction and feeding.",
+        "designHighlight": "Pure axial alignment with the hammerless linear striker eliminates off-axis bending fatigue and guarantees crisp, repeatable primer ignition in Arctic cold.",
+        "audioScript": "Nested coaxially inside the six-lug bolt, this hardened floating firing pin receives a dead-straight axial impact from the linear striker behind it, igniting military primers with minimal mechanical delay.",
+        "audioUrl": "audio/vss/parts/vss_firing_pin_en.mp3"
+      }
+    },
+    "vss_recoil_guide": {
+      "partId": "vss_recoil_guide",
+      "bomCode": "S-06",
+      "calloutLabelEn": "Telescoping Recoil Guide",
+      "zh": {
+        "roleTag": "独立于下方直线击铁轴线 · 兼作冲压机匣盖尾锁按钮",
+        "overview": "高位架设于直线平移击铁正上方的钢制伸缩复进簧导杆，后端一体成型方头锁块穿过防尘盖尾窗锁紧机匣盖。",
+        "craftAndMaterial": "高强度合金钢导杆配烤蓝锁块与前端挡圈，导向杆经精密磨削减少弹簧压缩摩擦噪声。",
+        "kinematicRole": "击发全程静止锚定于机匣后桥，为高压缩比螺旋复进簧提供绝对直线导向防止弯曲失稳；野战快拆按压尾钮即可掀盖抽出。",
+        "designHighlight": "将复进簧轴线巧妙上移避让给下方的同轴直线击铁，在极为紧凑的机匣截面内实现双弹簧互不干扰的上下并联布局。",
+        "audioScript": "这根钢制伸缩复进导杆高置于机匣上层，巧妙为下方的直线平移击铁让出空间。它不仅全程约束螺旋复进簧平稳伸缩，尾端凸块还兼作冲压机匣盖的快拆锁定按钮。",
+        "audioUrl": "audio/vss/parts/vss_recoil_guide_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Upper Telescoping Recoil Guide Rod & Cover Latch",
+        "overview": "Mounted high above the linear striker centerline, this steel guide rod aligns the recoil spring against buckling while its rear lug latches the stamped dust cover.",
+        "craftAndMaterial": "Precision-ground stainless shaft anchored into a blued alloy rear latch block with a turned front spring retention collar.",
+        "kinematicRole": "Remains statically anchored in the rear receiver slot throughout firing while guiding the 74 mm stroke of the recoil spring; removes tool-free once the dust cover is lifted.",
+        "designHighlight": "Stacking the recoil guide directly above the coaxial striker axis lets both mainsprings operate cleanly inside an exceptionally slim milled receiver profile.",
+        "audioScript": "Positioned high above the linear striker, this precision-ground steel guide rod keeps the recoil spring aligned without buckling while its rear lug serves as the tool-free dust cover latch.",
+        "audioUrl": "audio/vss/parts/vss_recoil_guide_en.mp3"
+      }
+    },
+    "vss_recoil_spring": {
+      "partId": "vss_recoil_spring",
+      "bomCode": "S-07",
+      "calloutLabelEn": "Helical Recoil Spring",
+      "zh": {
+        "roleTag": "吸收 74mm 活塞后坐冲量 · 柔和复位减少微声射击撞击噪声",
+        "overview": "套装于上层复进导杆的动态压缩螺旋复进簧，负责平稳吸收74毫米长行程枪机框后坐能量并驱动自动机可靠复进闭锁。",
+        "craftAndMaterial": "高疲劳硅锰琴钢丝精密绕制并经去应力回火与磷化防锈处理，在极寒零下50度环境中依然保持恒定弹力系数。",
+        "kinematicRole": "后端锚定于导杆尾座不动，前端随枪机框在阶段3-4由112毫米实时压缩至38毫米（压缩比66%）蓄能，阶段6-7平稳释放推弹闭膛。",
+        "designHighlight": "精准调校的劲度曲线与9×39mm温和后坐冲量高度匹配，避免枪机框剧烈撞击机匣尾壁产生破坏微声隐蔽性的金属钝响。",
+        "audioScript": "套装在导杆上的这根螺旋复进簧实时吸收七十四毫米长行程后坐动能。击发时它平稳压缩蓄能，在柔和缓冲尾端撞击声的同时，于回程可靠驱动六突笋枪机剥弹闭锁。",
+        "audioUrl": "audio/vss/parts/vss_recoil_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dynamic Helical Recoil Return Spring (74mm Stroke)",
+        "overview": "Coiled around the upper guide rod, this helical return spring dynamically absorbs the bolt carrier's 74 mm recoil impulse and drives reliable counter-recoil lockup.",
+        "craftAndMaterial": "Wound from high-fatigue silicon-manganese spring wire, stress-relieved and phosphate-coated to retain consistent force down to minus 50 degrees Celsius.",
+        "kinematicRole": "Anchored at its rear end against the guide block while compressing dynamically from 112 mm down to 38 mm during phases 3 and 4, then expanding smoothly across phases 6 and 7.",
+        "designHighlight": "Calibrated specifically for mild 9×39mm subsonic recoil impulse, it arrests rearward carrier speed gently to avoid loud metallic receiver bottoming.",
+        "audioScript": "Wound around the upper guide rod, this helical recoil spring compresses dynamically by sixty-six percent during the seventy-four millimeter recoil stroke, cushioning rear impact before driving the six-lug bolt back into battery.",
+        "audioUrl": "audio/vss/parts/vss_recoil_spring_en.mp3"
+      }
+    },
+    "vss_receiver": {
+      "partId": "vss_receiver",
+      "bomCode": "F-01",
+      "calloutLabelEn": "CNC Milled Steel Receiver",
+      "zh": {
+        "roleTag": "整体锻坯数控铣削 · 左侧华约瞄具燕尾轨与 TOZ 厂徽铭文",
+        "overview": "全枪最高强度的承力骨架：图拉兵工厂采用整块合金钢锻坯CNC精密铣削而成的缎面烤蓝钢机匣，左侧铆接华约燕尾镜轨，底部无缝焊接实心闭环扳机护圈。",
+        "craftAndMaterial": "整坯铬镍合金钢多轴数控铣削，表面经传统苏联热浸烤蓝处理呈温润缎面冷铁光泽，双侧清晰镌刻TOZ三角星徽与「ВСС «ВИНТОРЕЗ» · 9×39 · № 87412」西里尔钢印。",
+        "kinematicRole": "作为整枪绝对静态坐标基准锚点，内部导轨精准约束长行程枪机框与直线击铁，前端承接6突笋对称闭锁载荷与414毫米消音外筒锁紧力矩。",
+        "designHighlight": "放弃低成本冲压钢板回归整坯铣削工艺，以卓越的结构刚度大幅抑制连续击发时的箱体声学共振，同时保障左侧燕尾镜轨拆装零归零漂移。",
+        "audioScript": "这具机身主干并非薄壁冲压件，而是图拉兵工厂用整块合金钢数控铣削而成的缎面烤蓝机匣。左侧铆接标准华约燕尾瞄具导轨，侧壁深镌三角星徽与西里尔铭文，厚重刚性极大抑制了射击杂音与精度飘移。",
+        "audioUrl": "audio/vss/parts/vss_receiver_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Tula Billet CNC-Milled Blued Receiver & Dovetail Rail",
+        "overview": "Machined from a solid forged steel billet at the Tula Arms Plant, this satin-blued receiver integrates the left Warsaw Pact optic rail, welded closed-loop trigger guard, and rear quick-detach stock dovetail.",
+        "craftAndMaterial": "Multi-axis CNC-milled alloy steel finished in satin Soviet hot-bluing, rollmarked with the Tula Arsenal star-in-triangle proof crest and Cyrillic 'VSS VINTOREZ 9×39' serial markings.",
+        "kinematicRole": "Acts as the stationary structural datum anchoring the 6-lug locking abutments, internal carrier rails, linear striker channel, magazine well, and integral suppressor locking collar.",
+        "designHighlight": "Choosing solid billet milling over stamped AK sheet metal dramatically damps acoustic resonance and eliminates receiver flex around the side-mounted sniper optic.",
+        "audioScript": "Unlike stamped AK rifles, the VSS receiver is CNC-milled from a solid forged steel billet at Tula Arsenal. Stamped with the star-in-triangle crest and Cyrillic serial markings, its massive rigidity damps mechanical noise and anchors the six-lug lockup.",
+        "audioUrl": "audio/vss/parts/vss_receiver_en.mp3"
+      }
+    },
+    "vss_dust_cover": {
+      "partId": "vss_dust_cover",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Ribbed Stamped Dust Cover",
+      "zh": {
+        "roleTag": "标志性弧顶三加强肋 · 严密隔绝泥沙并降低自动机外泄机械声",
+        "overview": "扣合于铣削机匣顶部的冷冲压烤蓝钢弧顶防尘盖，后部压制三道醒目横向加强筋，右侧开设抛壳与拉机柄通行窗。",
+        "craftAndMaterial": "1.2毫米优质弹簧碳钢冷冲压拉伸成型并经光泽缎面热烤蓝防腐，边缘卷边防割手并兼顾密封防尘性能。",
+        "kinematicRole": "击发期间静止密闭机匣上腔并屏蔽自动机运动噪声；野战保养10%至28%阶段按下尾部导杆锁钮即可向上整片掀离。",
+        "designHighlight": "紧凑严密的弧顶造型与右侧抛壳口卷边既阻挡战壕泥浆落雪，又作为第一层声学隔罩削弱枪机高速往复向射手耳畔泄漏的机械咔哒声。",
+        "audioScript": "扣合在机匣顶部的是冲压三加强肋烤蓝钢防尘盖。除了阻挡泥沙冰雪，它严密的弧形钢壳还充当隔音罩，有效抑制内部自动机高速运动时向射手耳边泄漏的金属机械声。",
+        "audioUrl": "audio/vss/parts/vss_dust_cover_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Stamped 3-Rib Arched Blued-Steel Receiver Cover",
+        "overview": "Enclosing the upper receiver cavity, this arched blued-steel dust cover carries three embossed stiffening ribs along its rear dome and a rolled right-side ejection port.",
+        "craftAndMaterial": "Deep-drawn from carbon sheet steel and finished in satin hot-bluing with rolled port edges and a rear slot engaging the recoil guide latch block.",
+        "kinematicRole": "Remains locked statically over the action during firing, shielding the bolt group from debris and muffling internal cycling noise; lifts cleanly upward during initial field stripping.",
+        "designHighlight": "Its tight-fitting domed geometry acts as a secondary acoustic hood over the carrier and striker, reducing mechanical clatter right beside the sniper's ear.",
+        "audioScript": "Capping the milled receiver is this stamped blued-steel dust cover with three classic stiffening ribs. Beyond sealing out mud and snow, its snug steel dome muffles internal bolt noise right beside the shooter's cheek.",
+        "audioUrl": "audio/vss/parts/vss_dust_cover_en.mp3"
+      }
+    },
+    "vss_suppressor_tube": {
+      "partId": "vss_suppressor_tube",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Integral Suppressor Tube",
+      "zh": {
+        "roleTag": "后部膨胀降压舱 + 前部 6 级挡板壳 · 旋转 90° 免工具快拆清碳",
+        "overview": "造就 VSS 一眼万年经典剪影的414毫米全长圆柱整体式消音外筒，完整包覆200毫米多孔枪管与6级斜挡板，顶部一体焊装后表尺座与筒口护翼准星。",
+        "craftAndMaterial": "厚壁无缝合金钢管车削并喷砂哑光热烤蓝消除夜间反光，尾端集成滚花快拆锁环卡口，前端焊装带偏心10.5毫米弹道口的高强度端盖。",
+        "kinematicRole": "击发期间承受来自枪管三排泄气孔的高压燃气膨胀并严密包裹6级消音芯；按压下护木前锁钮旋转90度即可沿+X向前整体抽离清碳。",
+        "designHighlight": "将后膨胀舱、前消音室、后表尺基座与前准星全部整合进一根流线无缝钢管，不仅消除外挂消音器常见的重心偏沉与同轴度偏移，更实现30秒密箱分解。",
+        "audioScript": "这根长达四百一十四毫米的哑光烤蓝无缝钢管，造就了螺纹切割机最经典的标志轮廓。它后半段容纳多孔枪管泄压膨胀，前半段锁紧六级斜挡板，旋转九十度即可免工具整体向前抽出清理积碳。",
+        "audioUrl": "audio/vss/parts/vss_suppressor_tube_zh.mp3"
+      },
+      "en": {
+        "roleTag": "414mm Full-Length Expansion Suppressor Housing",
+        "overview": "Defining the unmistakable silhouette of the Thread Cutter, this 414 mm matte-blued seamless steel cylinder houses both the rear barrel expansion chamber and the forward 6-stage baffle stack, carrying welded iron-sight mounts on top.",
+        "craftAndMaterial": "Machined from heavy-wall seamless alloy steel tubing with anti-glare matte bluing, a knurled rear bayonet locking collar, welded hooded front sight tower, and eccentric muzzle exit cap.",
+        "kinematicRole": "Contains radial barrel-port expansion pressure and encloses the 6-stage baffle core statically during firing; unlocks with a 90-degree twist for tool-free forward sliding removal during cleaning.",
+        "designHighlight": "Unifying expansion chamber, baffle housing, and iron sight mounts into one rigid monolithic tube eliminates point-of-impact shift and allows rapid briefcase stowage.",
+        "audioScript": "This four hundred fourteen millimeter matte-blued cylinder defines the unmistakable silhouette of the VSS Vintorez. Enclosing both the ported barrel expansion jacket and six-stage baffle stack, it twists ninety degrees to slide off for tool-free carbon cleaning.",
+        "audioUrl": "audio/vss/parts/vss_suppressor_tube_en.mp3"
+      }
+    },
+    "vss_rear_sight": {
+      "partId": "vss_rear_sight",
+      "bomCode": "F-04",
+      "calloutLabelEn": "400m Tangent Rear Sight",
+      "zh": {
+        "roleTag": "直接焊装于消音筒顶 · 「1–4」适配 9×39mm 大弧度亚音速弹道",
+        "overview": "独树一帜直接安装在整体消音筒上方的紧凑弧形切线后照门，表尺分划精刻1至4（对应100至400米）并配有双侧滚花游标解锁钮。",
+        "craftAndMaterial": "优质工具钢精密铣削烤蓝，顶部平面白漆填充清晰西里尔射表分划刻度，双侧按压游标钮采用防滑滚花不锈钢加工。",
+        "kinematicRole": "击发期间随整体消音外筒保持绝对刚性静止，当PSO-1光学瞄具拆下或受损时提供高可靠应急机械瞄准。",
+        "designHighlight": "由于290米/秒的9×39mm重弹在400米处弹道下坠逾2.8米，表尺弧面经过陡峭仰角几何标定，并巧妙置顶于消音筒以绕开左侧侧装光学镜视野。",
+        "audioScript": "极具巧思的是，这组四百米弧形标尺后照门直接架设在整体消音外筒上方。标尺清晰刻画一至四百米亚音速大弧度弹道分划，在侧装光学瞄准镜卸除时依然能够精准锁定目标。",
+        "audioUrl": "audio/vss/parts/vss_rear_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "100–400m Subsonic Tangent Leaf Rear Sight",
+        "overview": "Uniquely mounted directly atop the integral suppressor housing, this compact tangent leaf iron sight is calibrated from 100 to 400 meters with white-filled '1 2 3 4' range graduations.",
+        "craftAndMaterial": "CNC-milled blued steel sight base and graduated leaf paired with a spring-loaded sliding cursor and knurled twin stainless release buttons.",
+        "kinematicRole": "Rides statically atop the suppressor pedestal during firing, providing rugged backup aiming whenever the side-mounted PSO-1M2-1 scope is detached.",
+        "designHighlight": "Its steep elevation ramp matches the pronounced rainbow trajectory of heavy 290 m/s subsonic bullets out to 400 meters while sitting cleanly clear of the dust cover.",
+        "audioScript": "Notice how the tangent rear sight sits right on top of the integral suppressor tube. Calibrated from one to four hundred meters for the steep arc of subsonic bullets, it provides a tough backup whenever the scope is removed.",
+        "audioUrl": "audio/vss/parts/vss_rear_sight_en.mp3"
+      }
+    },
+    "vss_forend": {
+      "partId": "vss_forend",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Plum Polymer Forend",
+      "zh": {
+        "roleTag": "AG-4S 玻纤酚醛聚合物 · 隔绝整体消音筒连续射击烫手热传导",
+        "overview": "包覆在整体消音外筒后半段下方的纤薄托槽式下护木，呈现苏联八十年代特种装备经典的深李子褐色（Plum）与七道竖向防滑散热肋。",
+        "craftAndMaterial": "采用苏联军规AG-4S玻璃纤维增强聚酰胺耐高温热固塑料注塑成型，表面带有细密防滑微皮纹与前端钢制卡箍定位帽。",
+        "kinematicRole": "击发期间稳固贴合于机匣前缘与消音筒下壁之间不动，爆炸图向下前方滑移脱离消音筒露出内部多孔枪管区域。",
+        "designHighlight": "连续全自动射击时整体消音外筒温度会迅速攀升逾200摄氏度，这套耐热玻纤护木与内鞍空气间隙有效隔绝灼烫并保持极轻巧的弱手抓握体验。",
+        "audioScript": "托护在消音筒下方的这件纤薄护木，采用苏联八十年代标志性的深李子褐耐热玻纤聚合物模压而成。七道竖向防滑肋不仅抓握稳固，更能可靠隔绝连发时消音外筒急剧攀升的高温。",
+        "audioUrl": "audio/vss/parts/vss_forend_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Soviet Dark-Plum Fiberglass-Polymer Lower Forend",
+        "overview": "Cradling the underside of the rear suppressor tube, this slim saddle-shaped lower handguard showcases signature late-Soviet dark plum fiberglass polymer molded with seven vertical grip ribs.",
+        "craftAndMaterial": "Compression-molded AG-4S heat-resistant glass-filled polyamide in deep plum-brown finish with micro-stippled flanks and a steel front retaining ferrule.",
+        "kinematicRole": "Locks statically between the receiver trunnion and suppressor underside during firing; drops downward and forward in exploded view to clear the ported barrel.",
+        "designHighlight": "Rapid sustained fire heats the integral suppressor tube rapidly; this thermally insulating polymer cradle protects the support hand without adding bulky weight.",
+        "audioScript": "Cradling the underside of the suppressor is this slim forend molded from iconic late-Soviet dark plum fiberglass polymer. Its seven vertical ribs ensure a secure grip while insulating the shooter's hand from suppressor heat.",
+        "audioUrl": "audio/vss/parts/vss_forend_en.mp3"
+      }
+    },
+    "vss_wood_stock": {
+      "partId": "vss_wood_stock",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Laminated Birch Stock",
+      "zh": {
+        "roleTag": "温润琥珀层压桦木纹 · 3 秒快拆折叠装入特种隐蔽公文箱",
+        "overview": "VSS 最迷人的苏联工业美学签名：手擦琥珀蜜色俄罗斯层压胶合桦木镂空拇指孔狙击枪托，前接钢制垂直燕尾快拆卡座，尾嵌横槽黑橡胶缓冲垫。",
+        "craftAndMaterial": "精选数十层高密度北俄桦木单板经酚醛树脂热压胶合并手工涂刷琥珀色虫胶与亚麻油，轮廓倒角处自然浮现交替深浅层压木纹，底部配带背带环的硫化橡胶防滑肩垫。",
+        "kinematicRole": "击发时刚性抵肩承接温和亚音速后坐力；按压前端钢座快拆弹簧按钮向下滑动即可在3秒内整托卸下，满足公文箱绝密携行需求。",
+        "designHighlight": "一体化拇指孔镂空骨架既较实木大幅减重且在严寒冻雨下永不开裂变形，又能将握把虎口与贴腮线自然导引至侧装PSO-1光学镜黄金出瞳高度。",
+        "audioScript": "这支琥珀蜜色俄罗斯桦木层压镂空枪托是螺纹切割机的灵魂标识。交替显现的层压木纹既轻盈又在极寒下永不变形；按压前端钢制快拆钮向下滑动，三秒内即可整托脱卸装入隐蔽公文箱。",
+        "audioUrl": "audio/vss/parts/vss_wood_stock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Russian Laminated Birchwood Skeleton Thumbhole QD Stock",
+        "overview": "The unmistakable ergonomic hallmark of the VSS Vintorez: a warm amber-honey Russian laminated birchwood skeleton thumbhole stock equipped with a quick-detach steel receiver lug and ribbed black rubber recoil pad.",
+        "craftAndMaterial": "Cross-laminated northern birch veneers bonded under heat with phenolic resin and hand-rubbed in amber shellac oil, revealing alternating diagonal grain layers along every beveled contour.",
+        "kinematicRole": "Remains solidly locked onto the rear receiver vertical dovetail during firing; pressing its steel spring latch slides the entire buttstock off in three seconds for covert briefcase transit.",
+        "designHighlight": "Its skeletonized thumbhole geometry shaves weight while preventing warping in Arctic moisture and aligning the shooter's cheek naturally with the offset PSO-1 optic.",
+        "audioScript": "Nothing says VSS Vintorez like this hand-rubbed Russian laminated birchwood thumbhole stock. Alternating diagonal wood layers resist extreme cold, while the rear steel quick-detach latch lets the entire buttstock slide off in three seconds for covert briefcase stowage.",
+        "audioUrl": "audio/vss/parts/vss_wood_stock_en.mp3"
+      }
+    },
+    "vss_pso1_scope": {
+      "partId": "vss_pso1_scope",
+      "bomCode": "F-07",
+      "calloutLabelEn": "PSO-1M2-1 4×24 Scope",
+      "zh": {
+        "roleTag": "锤纹灰烤漆镁铝合金 · 9×39 专用 BDC 弹道鼓轮与手风琴橡胶眼罩",
+        "overview": "由新西伯利亚仪器厂（НПЗ）专为9×39mm亚音速弹道量身定制的PSO-1M2-1 4×24发光分划侧装光学狙击瞄准镜，配一体左侧燕尾快拆支架与手风琴遮光橡胶眼罩。",
+        "craftAndMaterial": "轻量化镁铝合金整体压铸镜身喷涂经典冷战锤纹灰工业烤漆，清晰白漆镌刻「ПСО-1М2-1 · 9×39」及1至4百米弹道鼓轮，物镜与目镜采用绿宝石-蓝宝石多层增透镀膜。",
+        "kinematicRole": "通过底部烤蓝钢偏心凸轮锁杆刚性锁固于机匣左侧燕尾轨，击发全程静止保持严苛归零；野战拆装04%至22%阶段向左上方平稳滑离。",
+        "designHighlight": "独有的9×39专用400米快速测距与发光箭形分化板，搭配可伸缩遮光罩与全包裹手风琴橡胶眼罩，确保在微弱月光下既不漏出眼睛反光又能快速修正亚音速大下坠。",
+        "audioScript": "架设在机匣左侧燕尾轨上的是经典锤纹灰烤漆PSO-1M2-1四倍狙击瞄准镜。顶部弹道补偿手轮专为九乘三十九毫米亚音速大下坠刻画一至四百米分划，后端手风琴橡胶眼罩则彻底遮蔽夜间杂散反光。",
+        "audioUrl": "audio/vss/parts/vss_pso1_scope_zh.mp3"
+      },
+      "en": {
+        "roleTag": "NPZ PSO-1M2-1 4×24 Illuminated Side-Mount Sniper Scope",
+        "overview": "Manufactured by NPZ Novosibirsk specifically for 9×39mm subsonic ballistics, this hammer-tone grey 4×24 illuminated optic integrates a quick-throw left dovetail clamp, sliding sunshade, and ribbed accordion rubber eyecup.",
+        "craftAndMaterial": "Cast magnesium-aluminum alloy housing coated in signature Soviet hammer-tone grey enamel with crisp Cyrillic 'PSO-1M2-1 9×39' markings, 1–4 BDC turret scale, and emerald-sapphire multi-coated glass lenses.",
+        "kinematicRole": "Clamps rigidly onto the receiver's left dovetail rail with repeatable zero throughout firing; unlocks and slides smoothly leftward during initial briefcase breakdown.",
+        "designHighlight": "Its dedicated 100-to-400-meter BDC elevation cam and illuminated stadiametric rangefinder compensate effortlessly for the steep subsonic drop of 250-grain SP-5 rounds.",
+        "audioScript": "Clamped to the left Warsaw Pact dovetail rail is the unmistakable hammer-tone grey PSO-one-M-two-one scope. Featuring multi-coated emerald lenses, an accordion rubber eyecup, and a one-to-four hundred meter subsonic elevation drum, it turns steep subsonic drop into effortless hits.",
+        "audioUrl": "audio/vss/parts/vss_pso1_scope_en.mp3"
+      }
+    },
+    "vss_striker": {
+      "partId": "vss_striker",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Hammerless Linear Striker",
+      "zh": {
+        "roleTag": "摒弃传统回转击锤 · 极低声学特征与极速线性击发锁时",
+        "overview": "VSS 全枪最具独创性的内部火控构件：彻底放弃传统AK摆动击锤，改为沿膛轴前后直线平移滑动的轻量化圆柱式击铁总成。",
+        "craftAndMaterial": "高强度合金不锈钢精车铣削加工，后端钻设同轴主簧套筒孔，底缘精磨硬化阻铁挂台与两侧防偏摆导翼。",
+        "kinematicRole": "击发阶段1在主簧推动下沿+X直线猛冲8.5毫米干脆敲击击针尾端；阶段4被后坐枪机框向后顶推14.5毫米压缩主簧并重新挂入阻铁复位。",
+        "designHighlight": "消除大质量旋转击锤摆动引起的机身震动与清脆撞击噪声，同时把击发锁时大幅缩短，使远距微声狙击的击发瞬间更加沉稳隐蔽。",
+        "audioScript": "这就是螺纹切割机藏在机匣深处的独门绝技：无击锤直线平移击铁。它彻底取代了响亮的回转击锤，沿枪管轴线直线前冲八点五毫米干脆击发，极大消除了微声暗杀中最忌讳的内部金属撞击杂音。",
+        "audioUrl": "audio/vss/parts/vss_striker_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Ultra-Quiet Hammerless Linear Sliding Striker",
+        "overview": "VSS's most distinctive internal innovation: abandoning the traditional swinging AK hammer completely in favor of a lightweight cylindrical striker sliding coaxially directly behind the bolt.",
+        "craftAndMaterial": "Precision-turned hardened stainless alloy sleeve bored at the rear to house the coaxial mainspring, featuring a ground lower sear catch shoulder and lateral anti-rotation guide wings.",
+        "kinematicRole": "Slams straight forward 8.5 mm along +X in phase 1 to impact the coaxial firing pin, then gets driven 14.5 mm rearward by the recoiling bolt carrier in phase 4 to re-engage the primary sear.",
+        "designHighlight": "Deleting rotary hammer swing slashes lock time, eliminates vertical firing vibration, and dramatically reduces internal metallic click noise during silent night shots.",
+        "audioScript": "Hidden inside the milled receiver is the VSS's signature secret: a hammerless linear striker. By sliding dead straight forward eight-point-five millimeters instead of swinging a noisy rotary hammer, it cuts lock time and silences internal mechanical clatter.",
+        "audioUrl": "audio/vss/parts/vss_striker_en.mp3"
+      }
+    },
+    "vss_striker_spring": {
+      "partId": "vss_striker_spring",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Linear Striker Mainspring",
+      "zh": {
+        "roleTag": "锚定机匣后壁 · 轴向蓄能释放推动直线击铁击穿军用底火",
+        "overview": "套装于直线平移击铁后腔与铣削机匣后隔板之间的高刚度动态伸缩螺旋主簧，为无击锤线性击发提供充沛轴向打击能量。",
+        "craftAndMaterial": "高弹性冷拉琴钢丝绕制并经强化喷丸与磷化防腐处理，确保长期处于压缩待击状态后依然具备瞬间爆发力。",
+        "kinematicRole": "后端抵紧机匣后壁锚定不动；阶段1伸展18%推动击铁前冲打击底火，阶段4随枪机框压回击铁被强力压缩至70%重新蓄能待击。",
+        "designHighlight": "同轴直线储能与释放杜绝了扭簧力矩衰减问题，在严寒零下40度结霜工况下仍能可靠引燃厚壳军用9×39mm底火。",
+        "audioScript": "紧抵在机匣后壁与直线击铁之间的这根同轴螺旋主簧，在阻铁释放瞬间沿轴向猛烈伸展推送击铁，随后在自动机后坐时重新压缩蓄能，在严寒战场下依然保证干脆可靠的线性击发。",
+        "audioUrl": "audio/vss/parts/vss_striker_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dynamic Coaxial Helical Striker Mainspring",
+        "overview": "Seated between the rear receiver bulkhead and the hollow cavity of the linear striker, this coaxial coil spring dynamically stores and releases all ignition energy.",
+        "craftAndMaterial": "Shot-peened high-tensile music wire finished in corrosion-resistant phosphate, engineered to resist set even when carried cocked for extended operations.",
+        "kinematicRole": "Anchored against the rear bulkhead while dynamically expanding 18% during phase 1 striker slam, then compressing down to 70% length as the carrier re-cocks the striker in phase 4.",
+        "designHighlight": "Pure axial compression delivers uniform ignition velocity in freezing weather without the friction or acoustic twang of traditional braided hammer torsion springs.",
+        "audioScript": "Anchored against the rear receiver bulkhead, this coaxial mainspring dynamically expands to drive the linear striker forward at ignition, then compresses sharply during recoil to store energy for the next silent shot.",
+        "audioUrl": "audio/vss/parts/vss_striker_spring_en.mp3"
+      }
+    },
+    "vss_trigger": {
+      "partId": "vss_trigger",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Curved Steel Trigger",
+      "zh": {
+        "roleTag": "干脆狙击手感 · 与后方横推单连发快慢机精准限位互锁",
+        "overview": "枢接于铣削机匣底部护圈内的弧形碳钢扳机与水平联动叉架，将射手食指的细腻扣压力平稳传递至直线击铁主阻铁。",
+        "craftAndMaterial": "中碳合金钢整体精锻热处理并表面烤蓝，弧形扳机面经柔和抛光圆角打磨，兼顾戴冬用战术手套时的精准触感。",
+        "kinematicRole": "击发阶段1绕枢轴向后平稳旋转约12.6度压低主阻铁脱钩，阶段7松手后干脆前摆复位完成单发交接。",
+        "designHighlight": "行程直接与正后方横推式单/连发快慢机柱塞联动限位，单发状态下扳机手感短促清晰，满足400米精密狙击控制要求。",
+        "audioScript": "这枚位于实心焊接护圈内的弧形钢制扳机，手感短促清脆。它直接驱动上方直线击铁阻铁，并与正后方的横推式快慢机柱塞精准限位，兼顾远程狙击精度与近战应急连发。",
+        "audioUrl": "audio/vss/parts/vss_trigger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Curved Heat-Treated Steel Precision Trigger",
+        "overview": "Pivoting cleanly inside the solid welded trigger guard, this curved carbon-steel trigger shoe and upper yoke transmit finger pull crisply to the linear striker sear.",
+        "craftAndMaterial": "Drop-forged heat-treated alloy steel in satin blued finish with a gently radiused face accommodating winter tactical gloves without snagging.",
+        "kinematicRole": "Pivots smoothly rearward 12.6 degrees during phase 1 to depress the primary sear, then resets crisply in phase 7 as the disconnector hands off the re-cocked striker.",
+        "designHighlight": "Interfaces directly with the cross-bolt selector directly behind the shoe to provide a clean, predictable break for 400-meter precision shooting.",
+        "audioScript": "Nested inside the welded steel guard, this curved trigger delivers a crisp sniper-grade break. It links straight into the linear sear while interfacing with the cross-bolt fire selector sitting just behind it.",
+        "audioUrl": "audio/vss/parts/vss_trigger_en.mp3"
+      }
+    },
+    "vss_sear": {
+      "partId": "vss_sear",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "Linear Striker Catch Sear",
+      "zh": {
+        "roleTag": "咬合直线击铁下凸耳 · 保障 6 突笋完全闭锁后方可解脱击发",
+        "overview": "位于直线击铁正下方的精密不锈钢主阻铁、单发断连器与全自动不到位保险联动总成，统领单发截获与900发/分安全连发时序。",
+        "craftAndMaterial": "耐磨渗碳不锈钢数控精加工，阻铁咬合勾面经镜面研磨热处理，确保极低扣力波动与长寿命不滑脱。",
+        "kinematicRole": "击发阶段1受扳机拉动下沉2.8毫米释放直线击铁；阶段4-5重新抬起捕获压回的击铁下挂耳，阶段7随扳机松开精准复位。",
+        "designHighlight": "集成全自动不到位保险触发臂，即使在900发/分紧急全自动扫射下，也必须等待枪机框完全闭锁到位才能触发解脱，杜绝未闭锁炸膛。",
+        "audioScript": "这套精密不锈钢阻铁总成紧贴在直线击铁正下方。它负责在待击时稳稳扣住击铁挂耳，单发时干脆截获防连发，而在每分钟九百发全自动模式下更充当不到位保险，确保六突笋彻底闭锁才准击发。",
+        "audioUrl": "audio/vss/parts/vss_sear_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Linear Striker Primary Sear, Disconnector & Auto Safety",
+        "overview": "Positioned directly underneath the linear striker, this precision stainless linkage integrates the primary catch sear, semi-auto disconnector, and out-of-battery full-auto trip lever.",
+        "craftAndMaterial": "CNC-machined case-hardened stainless steel with mirror-lapped engagement faces preventing creep or accidental sear release across thousands of cycles.",
+        "kinematicRole": "Drops 2.8 mm in phase 1 to release the linear striker, rises through phases 4 and 5 to intercept the re-cocked striker lug, and hands off cleanly during phase 7 trigger reset.",
+        "designHighlight": "During emergency 900-rpm full-automatic fire, its built-in out-of-battery safety trip refuses to release the striker until the 6-lug bolt rotates completely into battery.",
+        "audioScript": "Sitting directly beneath the linear striker, this stainless sear assembly governs both semi-auto disconnect and full-auto timing. In emergency nine hundred round per minute bursts, its built-in safety trip blocks ignition until all six lugs lock fully home.",
+        "audioUrl": "audio/vss/parts/vss_sear_en.mp3"
+      }
+    },
+    "vss_safety_lever": {
+      "partId": "vss_safety_lever",
+      "bomCode": "FC-05",
+      "calloutLabelEn": "AK-Style Safety Lever",
+      "zh": {
+        "roleTag": "纯保险解耦 · 向上关闭防尘窗锁死拉机柄与扳机连杆",
+        "overview": "布置于机匣右侧的冲压烤蓝钢防尘式手动保险拨片，沿袭苏联士兵肌肉记忆但彻底剥离快慢机职能，仅专职保险与开火切换。",
+        "craftAndMaterial": "冲压成型弹性钢板配铆接转轴盘与外翻防滑指托，经黑烤蓝防腐处理并在机匣对应位置清晰标示「ПР（保险）/ ОГ（开火）」。",
+        "kinematicRole": "击发期间位于下方开火档静止让开抛壳与拉机柄轨道；向上扳起即可封死防尘槽并刚性锁止扳机与拉机柄运动。",
+        "designHighlight": "摒弃传统AK三档保险杆容易一拨到底误切单发或发出清脆金属拨响的痛点，实现单动作静音解保险并严密防尘。",
+        "audioScript": "右侧这片熟悉的AK式冲压防尘大拨片，在螺纹切割机上被巧妙解耦为纯手动保险。向上扳起封死防尘槽锁死枪机，向下轻拨即刻静默待发，绝不会像传统步枪那样误拨错档位。",
+        "audioUrl": "audio/vss/parts/vss_safety_lever_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Right-Side Stamped AK-Pattern Dust-Shield Safety",
+        "overview": "Retaining Soviet muscle memory along the right receiver flank, this stamped steel lever is dedicated solely to Safe and Fire selection while sealing the charging-handle slot against debris.",
+        "craftAndMaterial": "Stamped spring-steel bar riveted to a rear circular pivot boss with a turned-out knurled thumb shelf finished in satin hot bluing.",
+        "kinematicRole": "Rests downward in the Fire position throughout cycling to leave the charging handle slot clear; sweeps upward to block trigger motion and seal the ejection opening.",
+        "designHighlight": "Decoupling safety from fire-mode selection eliminates the classic AK hazard of over-traveling past automatic into semi-auto under stress.",
+        "audioScript": "This familiar stamped right-side lever preserves Soviet muscle memory while focusing purely on safety. Swept up, it seals the charging slot against mud and locks the trigger; lowered smoothly, the rifle is ready to shoot.",
+        "audioUrl": "audio/vss/parts/vss_safety_lever_en.mp3"
+      }
+    },
+    "vss_selector_switch": {
+      "partId": "vss_selector_switch",
+      "bomCode": "FC-06",
+      "calloutLabelEn": "Cross-Bolt Fire Selector",
+      "zh": {
+        "roleTag": "VSS 独门横推键 · 左推单发精确狙击 / 右推 900 RPM 应急连发",
+        "overview": "巧妙藏身于扳机护圈内侧、紧贴扳机正后方的 VSS 独门横推柱塞式单/连发快慢机按钮，两端压制精密防滑滚花。",
+        "craftAndMaterial": "淬火合金钢横销配双侧亮银滚花不锈钢按帽，机匣侧壁清晰镌刻西里尔「ОД（单发）/ АВ（连发）」模式标识。",
+        "kinematicRole": "击发过程中按选定档位静止限位单发断连器行程，横推切换完全静音且无需松开握把或移开瞄准视线。",
+        "designHighlight": "当微声狙击手近距离突遇敌方巡逻队时，食指在护圈内侧轻轻一推即可无声从单发切入每分钟900发穿甲压制火力，堪称冷战特种人机工效神来之笔。",
+        "audioScript": "藏在扳机正后方的这枚滚花横推柱塞，是螺纹切割机独一无二的单连发快慢机。潜伏时射手无需移动握枪手，只需食指轻轻横推，就能悄无声息地在精准单发与每分钟九百发应急连发间瞬间切换。",
+        "audioUrl": "audio/vss/parts/vss_selector_switch_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Behind-Trigger Cross-Bolt Semi/Full-Auto Selector",
+        "overview": "Tucked discreetly inside the trigger guard directly behind the trigger shoe, this knurled stainless cross-bolt button toggles between single sniper shots and emergency full-automatic bursts.",
+        "craftAndMaterial": "Hardened steel cross-shaft capped on both ends with knurled bright stainless push buttons paired with engraved Cyrillic semi and full-auto receiver markings.",
+        "kinematicRole": "Limits disconnector travel statically according to chosen mode while allowing silent index-finger actuation without breaking grip or sight picture.",
+        "designHighlight": "Separating mode selection from the outer safety lets a covert sniper shift instantly and silently into 900-rpm close-quarters armor-piercing defense if compromised.",
+        "audioScript": "Tucked right behind the trigger blade is this knurled cross-bolt fire selector. Without shifting a grip or making a sound, the sniper can nudge it laterally with the trigger finger to switch between surgical single shots and nine hundred round per minute emergency bursts.",
+        "audioUrl": "audio/vss/parts/vss_selector_switch_en.mp3"
+      }
+    },
+    "vss_mag_body": {
+      "partId": "vss_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "10-Rd Plum Waffle Mag",
+      "zh": {
+        "roleTag": "低轮廓卧姿隐蔽狙击 · 双排双进华夫网格加强筋",
+        "overview": "专为卧姿低轮廓隐蔽微声狙击打造的10发9×39mm微弧形弹匣体，通体采用苏联深李子褐工程聚合物注塑并布满立体华夫网格加强肋。",
+        "craftAndMaterial": "高耐冲击深李子褐（Plum）玻纤增强聚酰胺模压成型，前后端预埋淬火钢锁笋，上部抱弹口嵌装耐磨冷轧钢衬片，抗跌落抗严寒性能出众。",
+        "kinematicRole": "击发期间稳固锁入机匣弹匣井引导10发9×39mm重弹平稳上升，开启CT纵剖视图时右侧透明剖开直接展示内部弹柱、安全橙托弹板与矩形钢簧。",
+        "designHighlight": "短小紧凑的10发低姿设计极大压低卧姿射手的暴露高度，并可与兄弟型号AS Val的20发加长弹匣100%无缝互换通用。",
+        "audioScript": "这只十发九乘三十九毫米微弧弹匣，采用标志性的苏联深李子褐高强聚合物注塑，外壁布满立体华夫网格加强筋。极低的轮廓方便狙击手隐蔽卧姿贴地射击，且完全兼容二十发加长弹匣。",
+        "audioUrl": "audio/vss/parts/vss_mag_body_zh.mp3"
+      },
+      "en": {
+        "roleTag": "10-Round 9×39mm Soviet Plum Waffle Polymer Magazine",
+        "overview": "Engineered for low-profile prone sniper concealment, this gently curved 10-round double-column magazine is molded in dark Soviet plum polymer reinforced with crisp 3D waffle ribs.",
+        "craftAndMaterial": "Impact-resistant glass-filled dark plum polyamide incorporating molded-in steel front and rear locking lugs and hardened steel feed-lip reinforcements.",
+        "kinematicRole": "Locks securely inside the milled receiver magwell to present heavy 9×39mm rounds cleanly to the 6-lug bolt; slices cleanly open under CT cutaway to reveal the full cartridge stack.",
+        "designHighlight": "Its compact 10-round height keeps a prone sniper hugged tight to terrain while remaining 100% interchangeable with the AS Val's 20-round extended magazine.",
+        "audioScript": "Molded in dark Soviet plum polymer with crisp 3D waffle reinforcing ribs, this ten-round magazine keeps the sniper low to the ground in prone hide sites while remaining fully interchangeable with twenty-round AS Val magazines.",
+        "audioUrl": "audio/vss/parts/vss_mag_body_en.mp3"
+      }
+    },
+    "vss_mag_follower": {
+      "partId": "vss_mag_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Safety-Orange Follower",
+      "zh": {
+        "roleTag": "阶梯双排托举 16.2g 重弹柱 · 纵剖下精准承托最底发实弹",
+        "overview": "安置于10发9×39mm实弹柱正下方的高可视安全橙色双排交错防倾托弹板，在CT纵剖视图中一眼清晰辨识供弹界面。",
+        "craftAndMaterial": "采用高自润滑耐磨聚甲醛工程塑料模压成型，醒目安全橙色在暗光验枪时提供即时空仓视觉反馈，加长防倾导向裙边杜绝重弹俯仰卡壳。",
+        "kinematicRole": "击发阶段5-6随次发弹上移产生精确托举脉动，确保粗壮沉重的250格令9×39mm穿甲弹在900发/分高速循环中顺滑对准进弹坡。",
+        "designHighlight": "阶梯双排顶面精确贴合11.35毫米粗底缘的9×39mm钢壳，并留有充裕导向防倾角，显著降低全自动应急供弹阻力。",
+        "audioScript": "紧贴在十发实弹柱最下方的是这枚醒目的安全橙色防倾托弹板。阶梯状双排顶面和加长裙边能稳稳托举沉重的二百五十格令重弹，即使在全自动高速射击下也绝不俯仰卡滞。",
+        "audioUrl": "audio/vss/parts/vss_mag_follower_zh.mp3"
+      },
+      "en": {
+        "roleTag": "High-Visibility Safety-Orange Anti-Tilt 9×39mm Follower",
+        "overview": "Riding directly beneath the bottom 9×39mm cartridge inside the plum waffle magazine, this vivid safety-orange stepped follower keeps the heavy double-column stack aligned without tilt.",
+        "craftAndMaterial": "Injection-molded low-friction acetal polymer in high-visibility safety orange for immediate empty-chamber confirmation during low-light tactical reloads.",
+        "kinematicRole": "Pulses cleanly upward during phases 5 and 6 to present each fresh 250-grain cartridge at the optimal feed angle into the steel magazine lips.",
+        "designHighlight": "Extended anti-tilt guide skirts counteract nose-dive torque from heavy elongated subsonic projectiles even at 900-rpm cyclic feeding tempos.",
+        "audioScript": "Seated directly beneath the stacked nine by thirty-nine rounds is this vivid safety-orange anti-tilt follower. Its stepped deck and deep guide skirts keep heavy two hundred fifty grain bullets feeding smoothly even at nine hundred rounds per minute.",
+        "audioUrl": "audio/vss/parts/vss_mag_follower_en.mp3"
+      }
+    },
+    "vss_mag_spring": {
+      "partId": "vss_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Zig-Zag Magazine Spring",
+      "zh": {
+        "roleTag": "稳定托举 10 发重型亚音速穿甲弹 · 耐长期满弹压仓蠕变",
+        "overview": "夹装于安全橙色托弹板与冲压钢底盖之间的矩形折弯高弹性钢制托弹簧，为沉重的10发9×39mm弹柱提供持续恒定的向上推力。",
+        "craftAndMaterial": "优质高碳弹簧钢丝冷弯成型并经整体淬火回火与防锈磷化涂层处理，耐潮湿盐雾与长期满载压仓疲劳蠕变。",
+        "kinematicRole": "位于弹匣底部空腔内将弹力平稳传递至托弹板，保障第1发至第10发均具备一致的抱弹口托弹力；爆炸图向右下方滑出展示完整折弯轮廓。",
+        "designHighlight": "紧凑6圈矩形截面的弹性布局在短短27毫米压实高度内储存充沛势能，兼顾高可靠供弹与低轮廓短匣体空间限制。",
+        "audioScript": "压缩在托弹板与钢底盖之间的这根矩形折弯钢簧，必须在极其紧凑的短匣空间内持续托举十发沉重的亚音速穿甲弹，即便长期满弹战备值班依然保持充沛回弹张力。",
+        "audioUrl": "audio/vss/parts/vss_mag_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Rectangular Zig-Zag Steel Magazine Drive Spring",
+        "overview": "Compressed cleanly between the steel floorplate and safety-orange follower, this rectangular zig-zag wire spring maintains steady upward lift beneath ten heavy 9×39mm cartridges.",
+        "craftAndMaterial": "Cold-formed high-carbon spring steel wire heat-treated and phosphate-coated to resist corrosion and creep when stored fully loaded.",
+        "kinematicRole": "Supplies continuous upward thrust beneath the follower throughout all ten shots; withdraws cleanly below the follower during full magazine disassembly.",
+        "designHighlight": "Its six-turn rectangular footprint packs robust feed pressure inside a compact 27 mm compressed pocket without sacrificing low-profile prone magazine length.",
+        "audioScript": "Nested between the floorplate and follower, this rectangular zig-zag steel spring packs strong lift into a tiny compressed space, maintaining reliable feed pressure beneath ten heavy armor-piercing rounds even after months loaded.",
+        "audioUrl": "audio/vss/parts/vss_mag_spring_en.mp3"
+      }
+    },
+    "vss_mag_floorplate": {
+      "partId": "vss_mag_floorplate",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Stamped Steel Floorplate",
+      "zh": {
+        "roleTag": "中心圆孔防脱锁柱 · 弹尖轻压即可滑盖清沙保养",
+        "overview": "滑装锁固于10发李子褐聚合物弹匣底轨的冷冲压烤蓝钢制底盖，中心嵌有不锈钢弹簧定位锁柱圆孔。",
+        "craftAndMaterial": "高强度合金碳钢板冷冲压翻边成形并经热烤蓝防锈处理，厚实底缘能有效保护聚合物匣体免受卧姿磕碰与跌落开裂。",
+        "kinematicRole": "击发期间稳固承托底部矩形托弹簧全部反作用力；野战维护时用一发9×39mm弹尖压入中心锁柱即可免工具前滑拆开清理泥沙。",
+        "designHighlight": "全钢冲压底盖在严寒低温下绝不脆裂，为特种分队在冻土、砾石与废墟环境下的粗暴换弹提供了坚实耐用保障。",
+        "audioScript": "卡锁在弹匣最底部的是这片冲压烤蓝钢制滑拆底盖。它既保护聚合物匣体耐受严寒跌落冲击，野战时只需用一发子弹尖顶压中心锁柱，就能瞬间免工具滑开清沙保养。",
+        "audioUrl": "audio/vss/parts/vss_mag_floorplate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Stamped Blued-Steel Quick-Slide Magazine Floorplate",
+        "overview": "Sliding onto the base rails of the plum polymer body, this stamped blued-steel floorplate retains the magazine spring and locks securely via a central stainless detent button.",
+        "craftAndMaterial": "Cold-stamped carbon steel sheet with rolled retention flanges finished in hot bluing, paired with a bright stainless center locking stud.",
+        "kinematicRole": "Anchors the bottom of the rectangular magazine spring statically during firing; unlocks tool-free by depressing the center stud with a cartridge tip to strip the magazine.",
+        "designHighlight": "Reinforcing the magazine base in solid steel prevents brittle polymer cracking when dropped onto frozen concrete or rocky mountain terrain.",
+        "audioScript": "Locking onto the bottom rails is this stamped blued-steel floorplate. It shields the polymer body from cold-weather drop impacts, while a central stainless detent lets operators strip the magazine using just a bullet tip.",
+        "audioUrl": "audio/vss/parts/vss_mag_floorplate_en.mp3"
+      }
+    }
+  }
+}

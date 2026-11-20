@@ -20,12 +20,16 @@ import type { CaliberProfile, WeaponId } from '../../weapons/types';
 export type MetallicCaliberProfile =
   | '9mm_para'
   | '45_acp'
-  | '57_28'
+  | '473_caseless'
   | '357_magnum'
+  | '57_28'
   | '50_ae'
-  | '12_gauge'
+  | '9x39_subsonic'
   | '762_m43'
+  | '545_m74'
   | '556_nato'
+  | '12_gauge'
+  | '762_nato'
   | '30_06'
   | '338_lapua'
   | '50_bmg';
@@ -35,12 +39,16 @@ export type ArcheryCaliberProfile = 'arrow_400gr' | 'bolt_400gr';
 export const CARTRIDGE_LAB_ORDER: readonly MetallicCaliberProfile[] = [
   '9mm_para',
   '45_acp',
-  '57_28',
+  '473_caseless',
   '357_magnum',
+  '57_28',
   '50_ae',
-  '12_gauge',
+  '9x39_subsonic',
   '762_m43',
+  '545_m74',
   '556_nato',
+  '12_gauge',
+  '762_nato',
   '30_06',
   '338_lapua',
   '50_bmg',
@@ -63,9 +71,11 @@ export function isArcheryCaliberProfile(
 
 export type ProjectileCoreKind =
   | 'fmj_lead'
+  | 'caseless_telescoped'
   | 'ap_steel_alu'
   | 'jsp_soft_point'
   | 'jhp_cavity'
+  | 'subsonic_tungsten_ap'
   | 'buckshot_wad_column'
   | 'steel_core_lead_shirt'
   | 'dual_core_penetrator'
@@ -138,7 +148,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '124 gr Full Metal Jacket Round-Nose',
     representativeWeapons: ['g17', 'mp5', 'p320', 'p08'],
     primaryWeaponId: 'g17',
-    lineupXCm: -16.5,
+    lineupXCm: -20.3,
     caseLengthMm: 19.15,
     oalMm: 29.69,
     bulletDiameterMm: 9.01,
@@ -183,7 +193,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '230 gr Full Metal Jacket Round-Nose (FMJ-RN)',
     representativeWeapons: ['vector'],
     primaryWeaponId: 'vector',
-    lineupXCm: -13.2,
+    lineupXCm: -17.4,
     caseLengthMm: 22.81,
     oalMm: 32.39,
     bulletDiameterMm: 11.48,
@@ -229,7 +239,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '31 gr Hardened Steel Penetrator + Aluminum Core',
     representativeWeapons: ['p90'],
     primaryWeaponId: 'p90',
-    lineupXCm: -9.9,
+    lineupXCm: -8.7,
     caseLengthMm: 28.9,
     oalMm: 40.5,
     bulletDiameterMm: 5.7,
@@ -274,7 +284,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '300 gr Skived Jacketed Hollow Point (JHP)',
     representativeWeapons: ['deagle'],
     primaryWeaponId: 'deagle',
-    lineupXCm: -3.3,
+    lineupXCm: -5.8,
     caseLengthMm: 32.64,
     oalMm: 40.89,
     bulletDiameterMm: 12.7,
@@ -319,7 +329,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '123 gr Bimetal Jacket Mild-Steel Core Boat-Tail',
     representativeWeapons: ['ak15'],
     primaryWeaponId: 'ak15',
-    lineupXCm: 3.3,
+    lineupXCm: 0.0,
     caseLengthMm: 38.7,
     oalMm: 56.0,
     bulletDiameterMm: 7.92,
@@ -364,7 +374,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '62 gr M855 / SS109 Dual-Core Penetrator',
     representativeWeapons: ['m4a1', 'scar', 'aug', 'm249'],
     primaryWeaponId: 'm4a1',
-    lineupXCm: 6.6,
+    lineupXCm: 5.8,
     caseLengthMm: 44.7,
     oalMm: 57.4,
     bulletDiameterMm: 5.7,
@@ -409,7 +419,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '250 gr Lapua Scenar Open-Tip Match VLD Boat-Tail',
     representativeWeapons: ['awm'],
     primaryWeaponId: 'awm',
-    lineupXCm: 13.2,
+    lineupXCm: 17.4,
     caseLengthMm: 69.2,
     oalMm: 93.5,
     bulletDiameterMm: 8.59,
@@ -454,7 +464,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '660 gr M33 Hardened Mild-Steel Core Boat-Tail',
     representativeWeapons: ['m82a1'],
     primaryWeaponId: 'm82a1',
-    lineupXCm: 16.5,
+    lineupXCm: 20.3,
     caseLengthMm: 99.31,
     oalMm: 138.43,
     bulletDiameterMm: 12.98,
@@ -499,7 +509,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '158 gr Cannelured Jacketed Soft-Point (JSP)',
     representativeWeapons: ['python'],
     primaryWeaponId: 'python',
-    lineupXCm: -6.6,
+    lineupXCm: -11.6,
     caseLengthMm: 32.77,
     oalMm: 40.39,
     bulletDiameterMm: 9.07,
@@ -544,7 +554,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '9-Pellet .33" Antimonial Lead 00 Buckshot + Shot-Cup Wad',
     representativeWeapons: ['benellim4'],
     primaryWeaponId: 'benellim4',
-    lineupXCm: 0.0,
+    lineupXCm: 8.7,
     caseLengthMm: 58.5,
     oalMm: 69.8,
     bulletDiameterMm: 18.53,
@@ -589,7 +599,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '150 gr M2 Ball Flat-Base Gilding-Metal Spitzer',
     representativeWeapons: ['garand'],
     primaryWeaponId: 'garand',
-    lineupXCm: 9.9,
+    lineupXCm: 14.5,
     caseLengthMm: 63.35,
     oalMm: 84.84,
     bulletDiameterMm: 7.82,
@@ -619,6 +629,186 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
       'Adopted in 1906, its 63.35mm case loaded with IMR 4895 matches the M1 Garand’s port-pressure envelope while delivering 3,540 J at 853 m/s.',
     caseColor: '#dca92c',
     jacketColor: '#bd4c19',
+    penetratorColor: '#cbd5e1',
+    coreSlugColor: '#475569',
+    propellantColor: '#1e293b',
+  },
+
+  '473_caseless': {
+    caliber: '473_caseless',
+    code: '4.73×33mm',
+    standard: 'CIP',
+    nameZh: '4.73×33mm DM11 高温耐燃无壳步枪弹',
+    nameEn: '4.73×33mm DM11 Caseless Telescoped (HITP)',
+    loadSubtitleZh: '50 格令铜被甲细长船尾弹 + 8×8mm 方形可燃硝胺药块',
+    loadSubtitleEn: '50 gr Telescoped Copper Spitzer + 8×8mm Molded HITP Block',
+    representativeWeapons: ['g11'],
+    primaryWeaponId: 'g11',
+    lineupXCm: -14.5,
+    caseLengthMm: 31.8,
+    oalMm: 33.0,
+    bulletDiameterMm: 4.73,
+    neckDiameterMm: 8.0,
+    shoulderDiameterMm: null,
+    baseDiameterMm: 8.0,
+    rimDiameterMm: 8.0,
+    rimThicknessMm: 1.0,
+    caseCapacityMl: 1.62,
+    propellantMassG: 1.65,
+    propellantFillRatio: 0.96,
+    propellantTypeZh: 'Dynamit Nobel HITP 高自燃点模压奥克托今硝胺固体药块',
+    propellantTypeEn: 'Dynamit Nobel HITP Molded Nitramine Combustible Propellant Block',
+    primerTypeZh: '全可燃硝化纤维击发底火片 + 中央导火药柱（零残壳）',
+    primerTypeEn: 'Combustible Nitrocellulose Primer Wafer + Central Booster Pellet',
+    projectileMassG: 3.25,
+    projectileGrain: 50,
+    coreKind: 'caseless_telescoped',
+    coreAnatomyZh: '零黄铜弹壳：8×8mm 倒角方形模压发射药块完整埋装 26.5mm 细长 4.73mm 铜被甲弹头与可燃聚合物端帽',
+    coreAnatomyEn: 'Zero Brass Case: 8×8mm Chamfered HITP Block Telescoping a 26.5mm 4.73mm Copper Spitzer & Combustible Cap',
+    peakPressureMPa: 360,
+    muzzleVelocityMps: 930,
+    muzzleEnergyJ: 1405,
+    highlightZh:
+      '人类轻武器史上唯一量产定型的军用无壳弹：将 50 格令超细长 4.73mm 弹头完全埋入 8×8mm 方形固体发射药块，击发瞬间药块 100% 气化燃尽，彻底消除抽壳与抛壳机械周期！',
+    highlightEn:
+      'History’s pinnacle caseless rifle cartridge: a 50 gr 4.73mm spitzer telescoped completely inside a square 8×8mm solid HITP propellant block that burns cleanly with zero brass extraction.',
+    caseColor: '#a68252',
+    jacketColor: '#c95c22',
+    penetratorColor: '#cbd5e1',
+    coreSlugColor: '#475569',
+    propellantColor: '#8c6a3e',
+  },
+
+  '9x39_subsonic': {
+    caliber: '9x39_subsonic',
+    code: '9×39mm',
+    standard: 'CIP',
+    nameZh: '9×39mm SP-6 俄制亚音速穿甲狙击弹',
+    nameEn: '9×39mm SP-6 Subsonic Armor-Piercing',
+    loadSubtitleZh: '250 格令硬化钢/钨合金穿甲芯亚音速重弹（290 m/s）',
+    loadSubtitleEn: '250 gr Hardened Steel/Tungsten-Core Subsonic AP (290 m/s)',
+    representativeWeapons: ['vss'],
+    primaryWeaponId: 'vss',
+    lineupXCm: -2.9,
+    caseLengthMm: 39.0,
+    oalMm: 56.0,
+    bulletDiameterMm: 9.25,
+    neckDiameterMm: 9.95,
+    shoulderDiameterMm: 10.6,
+    baseDiameterMm: 11.35,
+    rimDiameterMm: 11.35,
+    rimThicknessMm: 1.5,
+    caseCapacityMl: 2.38,
+    propellantMassG: 0.72,
+    propellantFillRatio: 0.56,
+    propellantTypeZh: '速燃微声双基单孔步枪药（亚音速低燃压配方）',
+    propellantTypeEn: 'Fast-Burning Subsonic Double-Base Tubular Propellant',
+    primerTypeZh: '俄制伯丹（Berdan）重型漆封军用步枪底火',
+    primerTypeEn: 'Soviet Lacquer-Sealed Heavy Military Rifle Primer',
+    projectileMassG: 16.2,
+    projectileGrain: 250,
+    coreKind: 'subsonic_tungsten_ap',
+    coreAnatomyZh: '黑尖裸露硬化穿甲钢芯 + 双金属覆铜被甲 + 软铅缓冲衬套（总重 16.2 克）',
+    coreAnatomyEn: 'Exposed Black-Tip Hardened AP Core + Bimetal Jacket + Lead Cushion Sleeve (16.2 g)',
+    peakPressureMPa: 280,
+    muzzleVelocityMps: 290,
+    muzzleEnergyJ: 681,
+    highlightZh:
+      '基于 7.62×39mm 弹壳扩口改制的特种微声穿甲弹：将初速严控在 290 m/s 消除音爆，借 16.2 克超大截面密度硬钢芯在 200 米击穿 8mm 均质钢板与 III 级防弹衣！',
+    highlightEn:
+      'Necked-up 7.62×39mm case launching a massive 250 gr (16.2 g) hardened-core projectile at 290 m/s — completely eliminating ballistic crack while penetrating 8mm steel plate at 200m.',
+    caseColor: '#5c6654',
+    jacketColor: '#b94e1b',
+    penetratorColor: '#1e293b',
+    coreSlugColor: '#64748b',
+    propellantColor: '#1f2937',
+  },
+
+  '545_m74': {
+    caliber: '545_m74',
+    code: '5.45×39mm',
+    standard: 'CIP',
+    nameZh: '5.45×39mm 7N6 苏联小口径步枪弹',
+    nameEn: '5.45×39mm 7N6 (M74 Soviet Service)',
+    loadSubtitleZh: '53 格令尖头空腔低碳钢芯长船尾弹（7N6）',
+    loadSubtitleEn: '53 gr Hollow-Nose Air-Cavity Steel-Core Boat-Tail (7N6)',
+    representativeWeapons: ['an94'],
+    primaryWeaponId: 'an94',
+    lineupXCm: 2.9,
+    caseLengthMm: 39.82,
+    oalMm: 57.0,
+    bulletDiameterMm: 5.62,
+    neckDiameterMm: 6.29,
+    shoulderDiameterMm: 9.25,
+    baseDiameterMm: 10.0,
+    rimDiameterMm: 10.0,
+    rimThicknessMm: 1.45,
+    caseCapacityMl: 1.75,
+    propellantMassG: 1.45,
+    propellantFillRatio: 0.85,
+    propellantTypeZh: 'SSNF 钝化球状小口径步枪无烟药',
+    propellantTypeEn: 'SSNF Deterrent-Coated Spherical Rifle Propellant',
+    primerTypeZh: '俄制漆封防水步枪底火 + 壳颈红漆防潮密封',
+    primerTypeEn: 'Soviet Lacquer-Sealed Military Rifle Primer',
+    projectileMassG: 3.43,
+    projectileGrain: 53,
+    coreKind: 'steel_core_lead_shirt',
+    coreAnatomyZh: '覆铜钢长船尾被甲 + 弹尖空腔失稳室 + 圆柱钢芯与铅衬套',
+    coreAnatomyEn: 'Bimetal Boat-Tail Jacket + Nose Air Cavity + Cylindrical Steel Core & Lead Plug',
+    peakPressureMPa: 294,
+    muzzleVelocityMps: 900,
+    muzzleEnergyJ: 1389,
+    highlightZh:
+      '以极低后坐冲量与 5.62mm 高长径比长船尾弹头闻名：弹尖内置空腔使重心后移，命中软目标迅速失稳翻滚，并令 AN-94 得以实现 1,800 RPM 双发超高速同孔连射。',
+    highlightEn:
+      'Low-impulse high-aspect boat-tail cartridge featuring a hollow nose air-cavity for rapid terminal yaw and minimal recoil — the ballistic heart of the AN-94 1,800 RPM hyperburst.',
+    caseColor: '#69725e',
+    jacketColor: '#bc4d19',
+    penetratorColor: '#cbd5e1',
+    coreSlugColor: '#52525b',
+    propellantColor: '#1e293b',
+  },
+
+  '762_nato': {
+    caliber: '762_nato',
+    code: '7.62 NATO',
+    standard: 'NATO STANAG',
+    nameZh: '7.62×51mm NATO 北约全威力通用机枪弹（M80）',
+    nameEn: '7.62×51mm NATO (STANAG 2310 M80 Ball)',
+    loadSubtitleZh: '147 格令 M80 铜被甲铅芯船尾弹（M13 弹链供弹）',
+    loadSubtitleEn: '147 gr M80 Gilding-Metal FMJ Boat-Tail (M13 Linked)',
+    representativeWeapons: ['m134'],
+    primaryWeaponId: 'm134',
+    lineupXCm: 11.6,
+    caseLengthMm: 51.18,
+    oalMm: 71.12,
+    bulletDiameterMm: 7.82,
+    neckDiameterMm: 8.71,
+    shoulderDiameterMm: 11.53,
+    baseDiameterMm: 11.94,
+    rimDiameterMm: 12.01,
+    rimThicknessMm: 1.37,
+    caseCapacityMl: 3.5,
+    propellantMassG: 2.92,
+    propellantFillRatio: 0.88,
+    propellantTypeZh: 'WC846 双基钝化球状机枪发射药（45 格令）',
+    propellantTypeEn: 'WC846 Double-Base Deterrent Ball Propellant (45 gr)',
+    primerTypeZh: '北约 #34 厚杯军用耐压底火（防高速机匣惯性击发）',
+    primerTypeEn: 'NATO #34 Thick-Cup Mil-Spec Large Rifle Primer',
+    projectileMassG: 9.5,
+    projectileGrain: 147,
+    coreKind: 'fmj_spitzer',
+    coreAnatomyZh: '90/10 铜锌合金船尾被甲 + 冷镦铅锑合金实心重弹芯',
+    coreAnatomyEn: '90/10 Gilding-Metal Boat-Tail Jacket + Swaged Antimonial Lead Core',
+    peakPressureMPa: 415,
+    muzzleVelocityMps: 853,
+    muzzleEnergyJ: 3456,
+    highlightZh:
+      '将 .30-06 春田 3,500 J 级威力浓缩至缩短 12.2mm 的紧凑瓶形弹壳（415 MPa 膛压），在 M134D 六管加特林上以 50 发/秒（3,000 RPM）经 M13 可散弹链源源不断倾泻！',
+    highlightEn:
+      'Packs .30-06 class 3,456 J ballistics into a 12.2mm shorter 415 MPa NATO case — fed via M13 disintegrating links into the M134D Minigun at 50 rounds per second.',
+    caseColor: '#dfae2b',
+    jacketColor: '#c04f19',
     penetratorColor: '#cbd5e1',
     coreSlugColor: '#475569',
     propellantColor: '#1e293b',
@@ -953,9 +1143,37 @@ function buildRevolvedCutaway(
 
 const cutawayCache = new Map<string, CartridgeCutawayMeshBundle>();
 
+function applyChamferedSquareOuterWall(
+  geo: THREE.BufferGeometry,
+  rInnerCutoff: number
+): THREE.BufferGeometry {
+  const pos = geo.getAttribute('position');
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i);
+    const z = pos.getZ(i);
+    const r = Math.hypot(x, z);
+    if (r > rInnerCutoff && Math.abs(z) > 1e-4) {
+      const ax = Math.abs(x) / r;
+      const az = Math.abs(z) / r;
+      const scale = Math.min(
+        1 / Math.max(1e-4, ax),
+        1 / Math.max(1e-4, az),
+        1.72 / Math.max(1e-4, ax + az)
+      );
+      pos.setX(i, x * scale);
+      pos.setZ(i, z * scale);
+    }
+  }
+  pos.needsUpdate = true;
+  geo.computeVertexNormals();
+  geo.computeBoundingBox();
+  geo.computeBoundingSphere();
+  return geo;
+}
+
 /**
  * Generates exact 1:1 SAAMI/CIP standing geometries (`1 unit = 1 cm = 10 mm`)
- * for any of the 7 calibers in either longitudinal cutaway (`true`) or full (`false`) mode.
+ * for any of the 15 calibers in either longitudinal cutaway (`true`) or full (`false`) mode.
  */
 export function getCartridgeLabMeshBundle(
   caliber: CaliberProfile,
@@ -977,14 +1195,28 @@ export function getCartridgeLabMeshBundle(
   const rBullet = s.bulletDiameterMm / 20;
   const rimT = s.rimThicknessMm / 10;
 
-  const pocketR = Math.min(rRim * 0.44, caliber === '50_bmg' ? 0.41 : 0.265);
-  const pocketH = Math.min(caseH * 0.14, caliber === '50_bmg' ? 0.34 : 0.21);
+  const isCaseless = s.coreKind === 'caseless_telescoped';
+  const isShotshell = s.coreKind === 'buckshot_wad_column';
+  const isJsp = s.coreKind === 'jsp_soft_point';
+
+  const pocketR = isCaseless
+    ? 0.21
+    : Math.min(rRim * 0.44, caliber === '50_bmg' ? 0.41 : 0.265);
+  const pocketH = isCaseless
+    ? 0.22
+    : Math.min(caseH * 0.14, caliber === '50_bmg' ? 0.34 : 0.21);
   const flashHoleR = Math.max(0.042, pocketR * 0.28);
   const webFloorY = pocketH + Math.max(0.11, caseH * 0.065);
-  const wallBaseT = Math.max(0.045, (rBase - rBullet) * 0.42);
-  const wallMouthT = Math.max(0.026, (rNeck - rBullet) * 0.92);
+  const wallBaseT = isCaseless
+    ? 0.085
+    : Math.max(0.045, (rBase - rBullet) * 0.42);
+  const wallMouthT = isCaseless
+    ? 0.085
+    : Math.max(0.026, (rNeck - rBullet) * 0.92);
   const rInnerBase = Math.max(flashHoleR + 0.05, rBase - wallBaseT);
-  const rInnerMouth = Math.max(flashHoleR + 0.04, rNeck - wallMouthT);
+  const rInnerMouth = isCaseless
+    ? Math.max(rBullet + 0.015, rBase - wallMouthT)
+    : Math.max(flashHoleR + 0.04, rNeck - wallMouthT);
 
   const grooveR = Math.min(rRim, rBase) * 0.855;
   const grooveTopY = rimT + Math.max(0.11, rimT * 0.95);
@@ -996,43 +1228,56 @@ export function getCartridgeLabMeshBundle(
   const shoulderStartY = isBottleneck ? caseH * 0.74 : caseH * 0.82;
   const neckStartY = isBottleneck ? caseH * 0.86 : caseH * 0.9;
 
-  // 1. Drawn Brass / Hull Case Wall (closed meridian loop excluding central flash hole `r = flashHoleR`)
-  const casePts: THREE.Vector2[] = isRimmed
+  // 1. Drawn Brass / Hull / Molded HITP Caseless Block Wall
+  const casePts: THREE.Vector2[] = isCaseless
     ? [
         new THREE.Vector2(pocketR, 0),
-        new THREE.Vector2(rRim - 0.02, 0),
-        new THREE.Vector2(rRim, 0.02),
-        new THREE.Vector2(rRim, rimT),
-        new THREE.Vector2(rBase, rimT + 0.025),
+        new THREE.Vector2(rBase - 0.025, 0),
+        new THREE.Vector2(rBase, 0.03),
+        new THREE.Vector2(rBase, caseH - 0.03),
+        new THREE.Vector2(rBase - 0.025, caseH),
+        new THREE.Vector2(rBullet + 0.012, caseH),
+        new THREE.Vector2(rBullet + 0.012, caseH - 0.24),
+        new THREE.Vector2(rInnerBase, caseH - 0.34),
       ]
-    : [
-        new THREE.Vector2(pocketR, 0),
-        new THREE.Vector2(rRim - 0.02, 0),
-        new THREE.Vector2(rRim, 0.02),
-        new THREE.Vector2(rRim, rimT),
-        new THREE.Vector2(grooveR, rimT + 0.03),
-        new THREE.Vector2(grooveR, grooveTopY),
-        new THREE.Vector2(rBase, webRampTopY),
-      ];
+    : isRimmed
+      ? [
+          new THREE.Vector2(pocketR, 0),
+          new THREE.Vector2(rRim - 0.02, 0),
+          new THREE.Vector2(rRim, 0.02),
+          new THREE.Vector2(rRim, rimT),
+          new THREE.Vector2(rBase, rimT + 0.025),
+        ]
+      : [
+          new THREE.Vector2(pocketR, 0),
+          new THREE.Vector2(rRim - 0.02, 0),
+          new THREE.Vector2(rRim, 0.02),
+          new THREE.Vector2(rRim, rimT),
+          new THREE.Vector2(grooveR, rimT + 0.03),
+          new THREE.Vector2(grooveR, grooveTopY),
+          new THREE.Vector2(rBase, webRampTopY),
+        ];
 
-  if (isBottleneck) {
-    casePts.push(
-      new THREE.Vector2(rShoulder, shoulderStartY),
-      new THREE.Vector2(rNeck, neckStartY),
-      new THREE.Vector2(rNeck, caseH),
-      new THREE.Vector2(rInnerMouth, caseH),
-      new THREE.Vector2(rInnerMouth, neckStartY - 0.03),
-      new THREE.Vector2(
-        Math.max(rInnerMouth + 0.02, rShoulder - wallBaseT * 0.72),
-        shoulderStartY - 0.04
-      )
-    );
-  } else {
-    casePts.push(
-      new THREE.Vector2(rNeck, caseH),
-      new THREE.Vector2(rInnerMouth, caseH),
-      new THREE.Vector2(rInnerMouth, caseH * 0.68)
-    );
+  if (!isCaseless) {
+    if (isBottleneck) {
+      casePts.push(
+        new THREE.Vector2(rShoulder, shoulderStartY),
+        new THREE.Vector2(rNeck, neckStartY),
+        new THREE.Vector2(rNeck, caseH),
+        new THREE.Vector2(rInnerMouth, caseH),
+        new THREE.Vector2(rInnerMouth, neckStartY - 0.03),
+        new THREE.Vector2(
+          Math.max(rInnerMouth + 0.02, rShoulder - wallBaseT * 0.72),
+          shoulderStartY - 0.04
+        )
+      );
+    } else {
+      casePts.push(
+        new THREE.Vector2(rNeck, caseH),
+        new THREE.Vector2(rInnerMouth, caseH),
+        new THREE.Vector2(rInnerMouth, caseH * 0.68)
+      );
+    }
   }
 
   casePts.push(
@@ -1042,9 +1287,12 @@ export function getCartridgeLabMeshBundle(
     new THREE.Vector2(pocketR, pocketH)
   );
 
-  const caseGeo = buildRevolvedCutaway(casePts, 40, cutaway);
+  const rawCaseGeo = buildRevolvedCutaway(casePts, 40, cutaway);
+  const caseGeo = isCaseless
+    ? applyChamferedSquareOuterWall(rawCaseGeo, rInnerBase + 0.02)
+    : rawCaseGeo;
 
-  // 2. Nickel-Plated Boxer Primer Cup
+  // 2. Nickel-Plated Boxer Primer Cup (or Combustible Nitrocellulose Wafer for 4.73mm DM11)
   const rCup = pocketR * 0.95;
   const cupWall = Math.max(0.022, rCup * 0.14);
   const primerPts: THREE.Vector2[] = [
@@ -1071,46 +1319,58 @@ export function getCartridgeLabMeshBundle(
   ];
   const anvilGeo = buildRevolvedCutaway(anvilPts, 28, cutaway);
 
-  const isShotshell = s.coreKind === 'buckshot_wad_column';
-  const isJsp = s.coreKind === 'jsp_soft_point';
-
-  // 4. Granular Smokeless Propellant Charge Column
-  const bulletSeatDepth = isShotshell
-    ? caseH * 0.56
-    : Math.min(
-        (oalH - caseH) * 0.52,
-        isBottleneck ? (caseH - neckStartY) * 1.18 : caseH * 0.28
-      );
+  // 4. Granular Smokeless Propellant Charge Column (or Telescoped Booster Charge for DM11)
+  const bulletSeatDepth = isCaseless
+    ? caseH * 0.78
+    : isShotshell
+      ? caseH * 0.56
+      : Math.min(
+          (oalH - caseH) * 0.52,
+          isBottleneck ? (caseH - neckStartY) * 1.18 : caseH * 0.28
+        );
   const bulletBaseY = caseH - bulletSeatDepth;
-  const powderMaxTopY = isShotshell
-    ? webFloorY + (caseH - webFloorY) * 0.42
-    : Math.max(webFloorY + 0.18, bulletBaseY - 0.03);
+  const powderMaxTopY = isCaseless
+    ? caseH - 0.36
+    : isShotshell
+      ? webFloorY + (caseH - webFloorY) * 0.42
+      : Math.max(webFloorY + 0.18, bulletBaseY - 0.03);
   const powderTopY = isShotshell
     ? webFloorY + (caseH - webFloorY) * s.propellantFillRatio
     : webFloorY + (powderMaxTopY - webFloorY) * s.propellantFillRatio;
 
-  const propPts: THREE.Vector2[] = [
-    new THREE.Vector2(0, webFloorY + 0.006),
-    new THREE.Vector2(flashHoleR, webFloorY + 0.006),
-    new THREE.Vector2(rInnerBase - 0.008, webFloorY + 0.085),
-  ];
-  if (isBottleneck && powderTopY > shoulderStartY - 0.04) {
-    propPts.push(
-      new THREE.Vector2(
-        Math.max(rInnerMouth, rShoulder - wallBaseT * 0.72) - 0.008,
-        shoulderStartY - 0.04
-      ),
-      new THREE.Vector2(rInnerMouth - 0.01, Math.min(powderTopY, neckStartY))
-    );
-  } else {
-    const rAtTop = THREE.MathUtils.lerp(
-      rInnerBase - 0.008,
-      rInnerMouth - 0.008,
-      Math.min(1, (powderTopY - webFloorY) / Math.max(0.2, caseH - webFloorY))
-    );
-    propPts.push(new THREE.Vector2(rAtTop, powderTopY));
+  const propPts: THREE.Vector2[] = isCaseless
+    ? [
+        new THREE.Vector2(0, webFloorY + 0.01),
+        new THREE.Vector2(rInnerBase - 0.012, webFloorY + 0.08),
+        new THREE.Vector2(rInnerBase - 0.012, powderTopY),
+        new THREE.Vector2(rBullet + 0.016, powderTopY),
+        new THREE.Vector2(rBullet + 0.016, bulletBaseY - 0.02),
+        new THREE.Vector2(0, bulletBaseY - 0.02),
+      ]
+    : [
+        new THREE.Vector2(0, webFloorY + 0.006),
+        new THREE.Vector2(flashHoleR, webFloorY + 0.006),
+        new THREE.Vector2(rInnerBase - 0.008, webFloorY + 0.085),
+      ];
+  if (!isCaseless) {
+    if (isBottleneck && powderTopY > shoulderStartY - 0.04) {
+      propPts.push(
+        new THREE.Vector2(
+          Math.max(rInnerMouth, rShoulder - wallBaseT * 0.72) - 0.008,
+          shoulderStartY - 0.04
+        ),
+        new THREE.Vector2(rInnerMouth - 0.01, Math.min(powderTopY, neckStartY))
+      );
+    } else {
+      const rAtTop = THREE.MathUtils.lerp(
+        rInnerBase - 0.008,
+        rInnerMouth - 0.008,
+        Math.min(1, (powderTopY - webFloorY) / Math.max(0.2, caseH - webFloorY))
+      );
+      propPts.push(new THREE.Vector2(rAtTop, powderTopY));
+    }
+    propPts.push(new THREE.Vector2(0, powderTopY));
   }
-  propPts.push(new THREE.Vector2(0, powderTopY));
   const propellantGeo = buildRevolvedCutaway(propPts, 32, cutaway);
 
   // 5 & 6. Projectile Copper Jacket + Dual-Core Penetrator / Lead Core Slug
@@ -1123,11 +1383,14 @@ export function getCartridgeLabMeshBundle(
     s.coreKind === 'ap_steel_alu' ||
     s.coreKind === 'dual_core_penetrator' ||
     s.coreKind === 'steel_core_lead_shirt' ||
+    s.coreKind === 'subsonic_tungsten_ap' ||
     s.coreKind === 'm33_heavy_steel';
 
   const boatTailH =
     s.coreKind === 'fmj_lead' || isJhp ? projLen * 0.06 : projLen * 0.16;
-  const bearingTopY = caseH + projLen * 0.12;
+  const bearingTopY = isCaseless
+    ? bulletBaseY + projLen * 0.56
+    : caseH + projLen * 0.12;
 
   // Outer ogive helper
   const ogiveRadiusAt = (u01: number): number => {
@@ -1256,7 +1519,8 @@ export function getCartridgeLabMeshBundle(
   } else if (hasSteelPenetrator) {
     const splitY =
       s.coreKind === 'm33_heavy_steel' ||
-      s.coreKind === 'steel_core_lead_shirt'
+      s.coreKind === 'steel_core_lead_shirt' ||
+      s.coreKind === 'subsonic_tungsten_ap'
         ? bulletBaseY + projLen * 0.24
         : bulletBaseY + projLen * 0.52;
     const penTipY = oalH - jacketT * 1.85;

@@ -96,6 +96,86 @@ export const CALIPER_V2_BENCHMARK_NOTES: Readonly<
       nominalMm: 115,
     },
   ],
+  g11: [
+    {
+      kind: 'overall_envelope',
+      labelZh: 'G11 K2 无托全枪总长 (托底至消焰器)',
+      labelEn: 'H&K G11 K2 Bullpup Overall Envelope Length',
+      nominalMm: 750,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '540mm 浮置冷锻 4.73mm 枪管跨度',
+      labelEn: '540mm Floating Cold-Forged 4.73mm Barrel Span',
+      nominalMm: 540,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '90° 旋转圆柱弹膛与钟表同步齿轮链跨度',
+      labelEn: '90-Degree Rotary Breech & Clockwork Gear Train Span',
+      nominalMm: 92,
+    },
+  ],
+  vss: [
+    {
+      kind: 'overall_envelope',
+      labelZh: 'VSS 温托雷兹整体微声步枪全长',
+      labelEn: 'VSS Vintorez Integral Suppressed Overall Length',
+      nominalMm: 894,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '200mm 泄压孔线膛枪管跨度',
+      labelEn: '200mm Ported Subsonic 9x39mm Barrel Span',
+      nominalMm: 200,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '六对称闭锁突笋微声回转枪机轴向跨度',
+      labelEn: '6-Lug Symmetric Rotating Bolt Axial Span',
+      nominalMm: 76,
+    },
+  ],
+  m134: [
+    {
+      kind: 'overall_envelope',
+      labelZh: 'M134D 六管加特林机枪包络总长',
+      labelEn: 'GE M134D Minigun 6-Barrel Overall Envelope Length',
+      nominalMm: 804,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '22" (558mm) 六联旋转冷锻枪管簇跨度',
+      labelEn: '22" (558mm) 6-Barrel Rotary Cluster Span',
+      nominalMm: 558,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '六槽中央旋转转子闭锁驱动跨度',
+      labelEn: '6-Flute Central Rotor & Cam Lockup Span',
+      nominalMm: 211,
+    },
+  ],
+  an94: [
+    {
+      kind: 'overall_envelope',
+      labelZh: 'AN-94 阿巴坎展开枪托全枪总长',
+      labelEn: 'Nikonov AN-94 Abakan Stock-Extended Overall Length',
+      nominalMm: 943,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '405mm 浮置 5.45×39mm 镀铬枪管跨度',
+      labelEn: '405mm Floating Chrome-Lined 5.45x39mm Barrel Span',
+      nominalMm: 405,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '双突笋回转枪机与滑轮钢索机框闭锁跨度',
+      labelEn: '2-Lug Rotating Bolt & Pulley-Carrier Assembly Span',
+      nominalMm: 162,
+    },
+  ],
 };
 
 export interface CaliperSurfacePoint {
@@ -296,15 +376,21 @@ function findBenchmarkTargetPart(
 ): WeaponPartSpec | null {
   if (kind === 'barrel_length') {
     return (
+      parts.find((p) => p.id === 'm134_barrel_cluster') ??
       parts.find((p) => /(?:^|_)barrel$/.test(p.id)) ??
-      parts.find((p) => /barrel/.test(p.id) && !/spring|lock|cross/.test(p.id)) ??
+      parts.find((p) => /barrel/.test(p.id) && !/spring|lock|cross|clamp/.test(p.id)) ??
       parts.find((p) => p.id === 'lift33_arrow_shaft' || p.id === 'r500_flight_rail') ??
       null
     );
   }
-  // bolt_lug_span: prefer rotating/locking bolt head (or revolver 6-shot cylinder / P08 toggle / Super V slider), else slide, else bow riser/latch
+  // bolt_lug_span: prefer rotating/locking bolt head (or revolver 6-shot cylinder / P08 toggle / Super V slider / M134 rotor), else slide
   return (
-    parts.find((p) => p.id === 'python_cylinder' || p.id === 'vector_slider') ??
+    parts.find(
+      (p) =>
+        p.id === 'python_cylinder' ||
+        p.id === 'vector_slider' ||
+        p.id === 'm134_rotor_assembly'
+    ) ??
     parts.find(
       (p) =>
         /(?:^|_)(?:bolt|bolt_head|bolt_body|breechblock)$/.test(p.id) &&
@@ -623,6 +709,62 @@ class CaliperRuntimeController {
           return true;
         }
       }
+    } else if (weaponId === 'g11' && kind === 'bolt_lug_span') {
+      const clockworkParts = parts.filter(
+        (p) => p.id === 'g11_rotary_breech' || p.id === 'g11_clockwork_gears'
+      );
+      if (clockworkParts.length >= 2) {
+        const cEnv = computeWeaponEnvelopeMetrics(
+          clockworkParts,
+          getGeometry,
+          evaluatePose,
+          scratchPose
+        );
+        if (cEnv) {
+          this.pointA = {
+            partId: 'g11_rotary_breech',
+            pos: [cEnv.min[0], cEnv.center[1], 0],
+            normal: [-1, 0, 0],
+          };
+          this.pointB = {
+            partId: 'g11_clockwork_gears',
+            pos: [cEnv.max[0], cEnv.center[1], 0],
+            normal: [1, 0, 0],
+          };
+          this.activeBenchmark = kind;
+          playWorkbenchFoley('preset_detent');
+          this.emit();
+          return true;
+        }
+      }
+    } else if (weaponId === 'an94' && kind === 'bolt_lug_span') {
+      const anBoltParts = parts.filter(
+        (p) => p.id === 'an94_bolt_carrier' || p.id === 'an94_bolt'
+      );
+      if (anBoltParts.length >= 2) {
+        const aEnv = computeWeaponEnvelopeMetrics(
+          anBoltParts,
+          getGeometry,
+          evaluatePose,
+          scratchPose
+        );
+        if (aEnv) {
+          this.pointA = {
+            partId: 'an94_bolt_carrier',
+            pos: [aEnv.min[0], aEnv.center[1], 0],
+            normal: [-1, 0, 0],
+          };
+          this.pointB = {
+            partId: 'an94_bolt',
+            pos: [aEnv.max[0], aEnv.center[1], 0],
+            normal: [1, 0, 0],
+          };
+          this.activeBenchmark = kind;
+          playWorkbenchFoley('preset_detent');
+          this.emit();
+          return true;
+        }
+      }
     }
 
     if (kind === 'overall_envelope') {
@@ -639,12 +781,20 @@ class CaliperRuntimeController {
             p.id === 'm249_buttstock' ||
             p.id === 'p08_frame' ||
             p.id === 'vector_folding_stock' ||
-            /(?:buttstock|buttplate|walnut_stock|stock)$/.test(p.id)
+            p.id === 'm134_spade_grip' ||
+            /(?:buttstock|buttplate|walnut_stock|wood_stock|stock)$/.test(p.id)
         )?.id ??
         parts[parts.length - 1]?.id ??
         'receiver';
       const frontPart =
-        parts.find((p) => p.id === 'vector_muzzle_device')?.id ??
+        parts.find(
+          (p) =>
+            p.id === 'vector_muzzle_device' ||
+            p.id === 'g11_flash_hider' ||
+            p.id === 'vss_suppressor_tube' ||
+            p.id === 'm134_flash_suppressor' ||
+            p.id === 'an94_muzzle_brake'
+        )?.id ??
         findBenchmarkTargetPart(parts, 'barrel_length')?.id ??
         parts[0]?.id ??
         'muzzle';

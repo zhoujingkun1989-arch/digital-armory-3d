@@ -1457,6 +1457,387 @@ export const CartridgeCutawayDiagram: React.FC<{
     );
   }
 
+  // Dedicated 4.73×33mm DM11 Caseless Telescoped Cutaway Branch (8×8mm Molded HITP Block + Flush Copper Spitzer)
+  if (caliberKey === '473_caseless') {
+    const availH = botY - topPad;
+    const pxPerMm = Math.min(6.4, availH / Math.max(30, spec.oalMm));
+    const oalPx = spec.oalMm * pxPerMm;
+    const blockPx = Math.min(oalPx - 3, spec.caseLengthMm * pxPerMm);
+    const yTop = botY - oalPx;
+    const yBlockTop = botY - blockPx;
+
+    const halfBlockW = Math.max(16, (spec.baseDiameterMm * 0.5) * pxPerMm);
+    const chamfer = Math.min(4.2, halfBlockW * 0.17);
+    const rBullet = Math.max(8, (spec.bulletDiameterMm * 0.5) * pxPerMm);
+    const rCore = Math.max(4.5, rBullet - 2.3);
+    const rTail = Math.max(4.5, rBullet * 0.72);
+
+    const primerH = Math.max(8, 2.0 * pxPerMm);
+    const primerW = Math.min(halfBlockW * 0.56, rBullet * 0.92);
+    const boosterH = Math.max(14, 4.3 * pxPerMm);
+    const yPrimerTop = botY - primerH;
+    const yBulletBase = Math.min(yBlockTop + blockPx * 0.8, yPrimerTop - boosterH);
+    const yBoatTailTop = yBulletBase - Math.max(8, 2.8 * pxPerMm);
+    const yOgiveStart = yTop + (yBulletBase - yTop) * 0.44;
+    const capH = Math.max(7, 1.8 * pxPerMm);
+    const yCapBot = yBlockTop + capH;
+
+    const hitpExterior = spec.caseColor || '#a68252';
+    const hitpStroke = isBlueprint ? '#713f12' : '#fcd34d';
+    const capFill = isBlueprint ? '#334155' : '#475569';
+    const dimOalX = cx + halfBlockW + 40;
+    const dimBlockX = cx - halfBlockW - 30;
+
+    const leftBlockPath = [
+      `M ${cx} ${botY}`,
+      `L ${cx - halfBlockW + chamfer} ${botY}`,
+      `L ${cx - halfBlockW} ${botY - chamfer}`,
+      `L ${cx - halfBlockW} ${yBlockTop + chamfer}`,
+      `L ${cx - halfBlockW + chamfer} ${yBlockTop}`,
+      `L ${cx} ${yBlockTop}`,
+      `Z`,
+    ].join(' ');
+
+    const rightBlockSectionPath = [
+      `M ${cx + primerW} ${botY}`,
+      `L ${cx + halfBlockW - chamfer} ${botY}`,
+      `L ${cx + halfBlockW} ${botY - chamfer}`,
+      `L ${cx + halfBlockW} ${yBlockTop + chamfer}`,
+      `L ${cx + halfBlockW - chamfer} ${yBlockTop}`,
+      `L ${cx + rBullet + 0.8} ${yBlockTop}`,
+      `L ${cx + rBullet + 0.8} ${yBoatTailTop}`,
+      `L ${cx + rTail + 0.6} ${yBulletBase}`,
+      `L ${cx + primerW} ${yBulletBase}`,
+      `Z`,
+    ].join(' ');
+
+    const leftFlushTipPath = [
+      `M ${cx} ${yBlockTop}`,
+      `L ${cx - rBullet * 0.42} ${yBlockTop}`,
+      `Q ${cx - rBullet * 0.24} ${yTop + (yBlockTop - yTop) * 0.42} ${cx} ${yTop}`,
+      `Z`,
+    ].join(' ');
+
+    const rightBulletJacketPath = [
+      `M ${cx} ${yBulletBase}`,
+      `L ${cx + rTail} ${yBulletBase}`,
+      `L ${cx + rBullet} ${yBoatTailTop}`,
+      `L ${cx + rBullet} ${yOgiveStart}`,
+      `Q ${cx + rBullet} ${yTop + (yOgiveStart - yTop) * 0.44} ${cx} ${yTop}`,
+      `Z`,
+    ].join(' ');
+
+    const yCoreTip = yTop + Math.max(8, (yOgiveStart - yTop) * 0.24);
+    const rightBulletCorePath = [
+      `M ${cx} ${yBulletBase - 1.6}`,
+      `L ${cx + Math.max(3, rTail - 1.8)} ${yBulletBase - 1.6}`,
+      `L ${cx + rCore} ${yBoatTailTop}`,
+      `L ${cx + rCore} ${yOgiveStart}`,
+      `Q ${cx + rCore} ${yCoreTip + (yOgiveStart - yCoreTip) * 0.44} ${cx} ${yCoreTip}`,
+      `Z`,
+    ].join(' ');
+
+    return (
+      <svg
+        className="monograph-vector-svg"
+        viewBox={`0 0 ${W} ${H}`}
+        role="img"
+        aria-label={
+          isZh ? `${spec.nameZh} 纵剖工程图` : `${spec.nameEn} Cutaway Schematic`
+        }
+      >
+        <defs>
+          <pattern
+            id={hatchId}
+            width={6}
+            height={6}
+            patternTransform="rotate(45)"
+            patternUnits="userSpaceOnUse"
+          >
+            <rect width={6} height={6} fill={hitpExterior} fillOpacity={0.42} />
+            <line
+              x1={0}
+              y1={0}
+              x2={0}
+              y2={6}
+              stroke={isBlueprint ? '#78350f' : '#d97706'}
+              strokeWidth={1.2}
+            />
+            <circle cx={3} cy={3} r={0.75} fill={isBlueprint ? '#451a03' : '#fef3c7'} opacity={0.5} />
+          </pattern>
+          <pattern
+            id={powderId}
+            width={5}
+            height={5}
+            patternUnits="userSpaceOnUse"
+          >
+            <rect width={5} height={5} fill="#78350f" fillOpacity={0.35} />
+            <circle cx={1.6} cy={1.8} r={0.85} fill="#f59e0b" />
+            <circle cx={3.7} cy={3.5} r={0.8} fill="#d97706" />
+          </pattern>
+        </defs>
+
+        {/* Center Datum Axis */}
+        <line
+          x1={cx}
+          y1={14}
+          x2={cx}
+          y2={H - 12}
+          stroke={mutedFill}
+          strokeWidth={1}
+          strokeDasharray="6 3 1.5 3"
+        />
+
+        {/* Left Exterior: Rectangular 8x8mm Molded HITP Propellant Block */}
+        <path
+          d={leftBlockPath}
+          fill={hitpExterior}
+          fillOpacity={0.92}
+          stroke={hitpStroke}
+          strokeWidth={1.15}
+        />
+        {/* Molded Block Corner Bevel Highlight */}
+        <line
+          x1={cx - halfBlockW + chamfer + 2}
+          y1={yBlockTop + 3}
+          x2={cx - halfBlockW + chamfer + 2}
+          y2={botY - 3}
+          stroke={isBlueprint ? '#78350f' : '#fef3c7'}
+          strokeWidth={0.85}
+          opacity={0.45}
+        />
+        {/* Left Combustible Polymer End-Cap & Flush Copper Bullet Tip */}
+        <rect
+          x={cx - halfBlockW + chamfer}
+          y={yBlockTop}
+          width={Math.max(4, halfBlockW - chamfer)}
+          height={capH}
+          fill={capFill}
+          fillOpacity={0.92}
+          stroke={isBlueprint ? '#0f172a' : '#cbd5e1'}
+          strokeWidth={0.9}
+        />
+        <path
+          d={leftFlushTipPath}
+          fill={spec.jacketColor}
+          stroke={isBlueprint ? '#7c2d12' : '#fed7aa'}
+          strokeWidth={1.05}
+        />
+        {/* Left Flush Combustible Base Primer Wafer Hint */}
+        <rect
+          x={cx - primerW}
+          y={botY - 3.2}
+          width={primerW}
+          height={3.2}
+          fill="#d97706"
+          opacity={0.85}
+        />
+
+        {/* Right 45-Deg Section Cutaway: Solid HITP Propellant Matrix */}
+        <path
+          d={rightBlockSectionPath}
+          fill={`url(#${hatchId})`}
+          stroke={isBlueprint ? '#78350f' : '#f59e0b'}
+          strokeWidth={1.15}
+        />
+        {/* Central Combustible Booster Pellet + Nitrocellulose Primer Wafer (Zero Brass!) */}
+        <rect
+          x={cx}
+          y={yBulletBase}
+          width={primerW}
+          height={Math.max(4, yPrimerTop - yBulletBase)}
+          fill={`url(#${powderId})`}
+          stroke={isBlueprint ? '#78350f' : '#fbbf24'}
+          strokeWidth={0.85}
+        />
+        <rect
+          x={cx}
+          y={yPrimerTop}
+          width={primerW}
+          height={primerH}
+          fill="#ea580c"
+          fillOpacity={0.85}
+          stroke={isBlueprint ? '#7c2d12' : '#fdba74'}
+          strokeWidth={0.9}
+        />
+        {/* Right Sectioned Combustible End-Cap Ring */}
+        <rect
+          x={cx + rBullet + 0.8}
+          y={yBlockTop}
+          width={Math.max(3, halfBlockW - chamfer - rBullet - 0.8)}
+          height={Math.max(4, yCapBot - yBlockTop)}
+          fill={capFill}
+          stroke={isBlueprint ? '#0f172a' : '#cbd5e1'}
+          strokeWidth={0.85}
+        />
+
+        {/* Full Telescoped 26.5mm 4.73mm Copper-Jacketed Boat-Tail Spitzer Inside Block */}
+        <path
+          d={rightBulletJacketPath}
+          fill={spec.jacketColor}
+          stroke={isBlueprint ? '#7c2d12' : '#fb923c'}
+          strokeWidth={1.1}
+        />
+        <path
+          d={rightBulletCorePath}
+          fill={spec.penetratorColor}
+          stroke={isBlueprint ? '#1e293b' : '#cbd5e1'}
+          strokeWidth={0.85}
+        />
+
+        {/* CAD Dimension Callout: OAL (Right) */}
+        <line
+          x1={cx + 3}
+          y1={yTop}
+          x2={dimOalX + 5}
+          y2={yTop}
+          stroke={dimStroke}
+          strokeWidth={0.85}
+          strokeOpacity={0.65}
+        />
+        <line
+          x1={cx + halfBlockW + 3}
+          y1={botY}
+          x2={dimOalX + 5}
+          y2={botY}
+          stroke={dimStroke}
+          strokeWidth={0.85}
+          strokeOpacity={0.65}
+        />
+        <line
+          x1={dimOalX}
+          y1={yTop}
+          x2={dimOalX}
+          y2={botY}
+          stroke={dimStroke}
+          strokeWidth={1.2}
+        />
+        <text
+          x={dimOalX + 7}
+          y={(yTop + botY) * 0.5 - 5}
+          fontSize={9.5}
+          fontWeight={800}
+          fill={dimStroke}
+          fontFamily="ui-monospace, SFMono-Regular, monospace"
+        >
+          OAL
+        </text>
+        <text
+          x={dimOalX + 7}
+          y={(yTop + botY) * 0.5 + 8}
+          fontSize={10}
+          fontWeight={800}
+          fill={labelFill}
+          fontFamily="ui-monospace, SFMono-Regular, monospace"
+        >
+          {spec.oalMm.toFixed(1)} mm
+        </text>
+
+        {/* Left Dimension Callout: Rectangular 8x8mm HITP Block */}
+        <line
+          x1={dimBlockX - 5}
+          y1={yBlockTop}
+          x2={cx - halfBlockW - 3}
+          y2={yBlockTop}
+          stroke={mutedFill}
+          strokeWidth={0.85}
+        />
+        <line
+          x1={dimBlockX - 5}
+          y1={botY}
+          x2={cx - halfBlockW - 3}
+          y2={botY}
+          stroke={mutedFill}
+          strokeWidth={0.85}
+        />
+        <line
+          x1={dimBlockX}
+          y1={yBlockTop}
+          x2={dimBlockX}
+          y2={botY}
+          stroke={mutedFill}
+          strokeWidth={1.1}
+        />
+        <text
+          x={dimBlockX - 6}
+          y={(yBlockTop + botY) * 0.5 - 4}
+          textAnchor="end"
+          fontSize={8.8}
+          fontWeight={700}
+          fill={mutedFill}
+          fontFamily="ui-monospace, SFMono-Regular, monospace"
+        >
+          {isZh ? '无壳药块' : 'HITP BLOCK'}
+        </text>
+        <text
+          x={dimBlockX - 6}
+          y={(yBlockTop + botY) * 0.5 + 8}
+          textAnchor="end"
+          fontSize={9.2}
+          fontWeight={800}
+          fill={labelFill}
+          fontFamily="ui-monospace, SFMono-Regular, monospace"
+        >
+          {spec.caseLengthMm.toFixed(1)} mm
+        </text>
+        <text
+          x={dimBlockX - 6}
+          y={(yBlockTop + botY) * 0.5 + 20}
+          textAnchor="end"
+          fontSize={8.5}
+          fontWeight={700}
+          fill={mutedFill}
+          fontFamily="ui-monospace, SFMono-Regular, monospace"
+        >
+          8.0×8.0 mm
+        </text>
+
+        {/* Right Anatomy Notes */}
+        <text
+          x={dimOalX + 7}
+          y={yTop + 18}
+          fontSize={8.8}
+          fontWeight={700}
+          fill={mutedFill}
+        >
+          {isZh ? '4.73mm 埋头尖头弹' : '4.73mm Telescoped'}
+        </text>
+        <text
+          x={dimOalX + 7}
+          y={yOgiveStart + 18}
+          fontSize={8.8}
+          fontWeight={700}
+          fill={mutedFill}
+        >
+          {isZh ? 'HITP 固体发射药块' : 'HITP Solid Block'}
+        </text>
+        <text
+          x={dimOalX + 7}
+          y={botY - 6}
+          fontSize={8.8}
+          fontWeight={700}
+          fill={mutedFill}
+        >
+          {isZh ? '可燃底火片 (零残壳)' : 'Combustible Primer'}
+        </text>
+
+        {/* Bottom Caption */}
+        <text
+          x={W * 0.5}
+          y={H - 12}
+          textAnchor="middle"
+          fontSize={9.5}
+          fontWeight={700}
+          fill={labelFill}
+          fontFamily="ui-monospace, SFMono-Regular, monospace"
+        >
+          {spec.code} · {spec.standard} · {spec.projectileGrain}gr ·{' '}
+          {spec.propellantMassG.toFixed(2)}g HITP
+        </text>
+      </svg>
+    );
+  }
+
   // Auto-scale metallic cartridge height so .357 Mag (40.4mm), .30-06 (84.8mm) & .50 BMG (138.4mm) render crisply
   const availH = botY - topPad;
   const pxPerMm = Math.min(5.2, availH / spec.oalMm);
@@ -1478,19 +1859,25 @@ export const CartridgeCutawayDiagram: React.FC<{
     caliberKey === '357_magnum' || spec.rimDiameterMm > spec.baseDiameterMm * 1.08;
   const is45Acp = caliberKey === '45_acp';
   const is3006 = caliberKey === '30_06';
+  const is762Nato = caliberKey === '762_nato';
+  const is9x39 = caliberKey === '9x39_subsonic';
+  const is545 = caliberKey === '545_m74';
+  const isSteelLacquered = is9x39 || is545;
   const isBottleneck =
     spec.shoulderDiameterMm !== null &&
     spec.shoulderDiameterMm > spec.neckDiameterMm * 1.06;
-  const shoulderStartPx = is3006
-    ? casePx * 0.782
-    : isBottleneck
-      ? casePx * 0.72
-      : casePx * 0.94;
-  const neckStartPx = is3006
-    ? casePx * 0.852
-    : isBottleneck
-      ? casePx * 0.85
-      : casePx;
+  const shoulderStartPx =
+    is3006 || is762Nato
+      ? casePx * 0.782
+      : isBottleneck
+        ? casePx * 0.72
+        : casePx * 0.94;
+  const neckStartPx =
+    is3006 || is762Nato
+      ? casePx * 0.852
+      : isBottleneck
+        ? casePx * 0.85
+        : casePx;
 
   const yTop = botY - oalPx;
   const yCaseMouth = botY - casePx;
@@ -1578,7 +1965,14 @@ export const CartridgeCutawayDiagram: React.FC<{
           `L ${cx} ${yTop}`,
           `Z`,
         ].join(' ')
-      : null;
+      : is9x39
+        ? [
+            `M ${cx} ${yTop + (yCaseMouth - yTop) * 0.34}`,
+            `L ${cx - rBullet * 0.56} ${yTop + (yCaseMouth - yTop) * 0.34}`,
+            `Q ${cx - rBullet * 0.38} ${yTop + (yCaseMouth - yTop) * 0.14} ${cx} ${yTop}`,
+            `Z`,
+          ].join(' ')
+        : null;
 
   // Right half cutaway case wall
   const rightCaseWallPath = isRimmedRevolver
@@ -1747,10 +2141,10 @@ export const CartridgeCutawayDiagram: React.FC<{
         fill={spec.caseColor}
         fillOpacity={0.88}
         stroke={
-          caliberKey === '357_magnum'
+          caliberKey === '357_magnum' || isSteelLacquered
             ? isBlueprint
               ? '#475569'
-              : '#f1f5f9'
+              : '#cbd5e1'
             : isBlueprint
               ? '#78350f'
               : '#fde68a'
@@ -1768,7 +2162,7 @@ export const CartridgeCutawayDiagram: React.FC<{
           strokeDasharray="1.8 1.2"
         />
       )}
-      {is3006 && (
+      {(is3006 || is762Nato) && (
         <polygon
           points={`${cx},${yCaseMouth} ${cx - rNeck},${yCaseMouth} ${cx - rNeck},${yNeckStart} ${cx - rShoulder},${yShoulderStart} ${cx},${yShoulderStart}`}
           fill="#b45309"
@@ -1790,7 +2184,7 @@ export const CartridgeCutawayDiagram: React.FC<{
           strokeWidth={1.0}
         />
       )}
-      {is3006 && (
+      {(is3006 || is545) && (
         <line
           x1={cx - rBullet}
           y1={yCaseMouth}

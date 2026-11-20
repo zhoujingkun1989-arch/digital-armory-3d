@@ -38,12 +38,16 @@ export const BOLT_BOUNCE_HZ = 38;
 export const BALLISTIC_CALIBERS: readonly CaliberProfile[] = [
   '9mm_para',
   '45_acp',
+  '473_caseless',
   '57_28',
   '357_magnum',
   '50_ae',
+  '9x39_subsonic',
   '12_gauge',
   '762_m43',
+  '545_m74',
   '556_nato',
+  '762_nato',
   '30_06',
   '338_lapua',
   '50_bmg',
@@ -443,6 +447,106 @@ export const CALIBER_BALLISTICS: Readonly<
     caseMassG: 12.6,
     shockDiamonds: 4,
   }),
+  '473_caseless': defineCaliber({
+    caliber: '473_caseless',
+    labelEn: '4.73×33mm DM11 Caseless 50gr HITP',
+    labelZh: '4.73×33mm DM11 50格令 无壳发射药块弹',
+    standard: 'CIP',
+    peakPressureMPa: 360,
+    muzzleVelocityMps: 930,
+    projectileMassG: 3.25,
+    safeUnlockPressureMPa: 9,
+    boreTimeMs: 0.94,
+    referenceBarrelMm: 540,
+    pressureShapeK: 3.8,
+    peakU: 0.44,
+    heatPerShotC: 16,
+    foulingPerShot: 0.011,
+    recoilKickCm: 0.54,
+    recoilRiseCm: 0.1,
+    muzzleClimbRad: 0.012,
+    barrelWhipCm: 0.022,
+    ejectSpeedCmS: 0, // 100% caseless — propellant block combusts completely with zero brass ejection
+    caseHalfLenCm: 1.59,
+    caseRadiusCm: 0.38,
+    caseMassG: 0,
+    shockDiamonds: 3,
+  }),
+  '9x39_subsonic': defineCaliber({
+    caliber: '9x39_subsonic',
+    labelEn: '9×39mm SP-6 Subsonic AP 250gr',
+    labelZh: '9×39mm SP-6 250格令 亚音速钨芯穿甲弹',
+    standard: 'CIP',
+    peakPressureMPa: 280,
+    muzzleVelocityMps: 290,
+    projectileMassG: 16.2,
+    safeUnlockPressureMPa: 8,
+    boreTimeMs: 1.08,
+    referenceBarrelMm: 200,
+    pressureShapeK: 2.8,
+    peakU: 0.42,
+    heatPerShotC: 11,
+    foulingPerShot: 0.022,
+    recoilKickCm: 0.68,
+    recoilRiseCm: 0.13,
+    muzzleClimbRad: 0.016,
+    barrelWhipCm: 0.018,
+    ejectSpeedCmS: 165,
+    caseHalfLenCm: 1.45,
+    caseRadiusCm: 0.42,
+    caseMassG: 7.4,
+    shockDiamonds: 0,
+  }),
+  '762_nato': defineCaliber({
+    caliber: '762_nato',
+    labelEn: '7.62×51mm NATO M80 147gr FMJ',
+    labelZh: '7.62×51mm 北约 M80 147格令 全被甲普通弹',
+    standard: 'NATO EPVAT',
+    peakPressureMPa: 415,
+    muzzleVelocityMps: 853,
+    projectileMassG: 9.5,
+    safeUnlockPressureMPa: 12,
+    boreTimeMs: 1.18,
+    referenceBarrelMm: 559,
+    pressureShapeK: 4.2,
+    peakU: 0.44,
+    heatPerShotC: 19,
+    foulingPerShot: 0.018,
+    recoilKickCm: 1.32,
+    recoilRiseCm: 0.22,
+    muzzleClimbRad: 0.024,
+    barrelWhipCm: 0.036,
+    ejectSpeedCmS: 225,
+    caseHalfLenCm: 1.8,
+    caseRadiusCm: 0.37,
+    caseMassG: 11.4,
+    shockDiamonds: 4,
+  }),
+  '545_m74': defineCaliber({
+    caliber: '545_m74',
+    labelEn: '5.45×39mm 7N6 53gr Steel-Core',
+    labelZh: '5.45×39mm 7N6 53格令 空腔钢芯小口径弹',
+    standard: 'CIP',
+    peakPressureMPa: 294,
+    muzzleVelocityMps: 900,
+    projectileMassG: 3.43,
+    safeUnlockPressureMPa: 9,
+    boreTimeMs: 0.86,
+    referenceBarrelMm: 405,
+    pressureShapeK: 3.9,
+    peakU: 0.44,
+    heatPerShotC: 13,
+    foulingPerShot: 0.014,
+    recoilKickCm: 0.58,
+    recoilRiseCm: 0.11,
+    muzzleClimbRad: 0.014,
+    barrelWhipCm: 0.024,
+    ejectSpeedCmS: 195,
+    caseHalfLenCm: 1.32,
+    caseRadiusCm: 0.29,
+    caseMassG: 5.4,
+    shockDiamonds: 3,
+  }),
   arrow_400gr: defineCaliber({
     caliber: 'arrow_400gr',
     labelEn: '400gr Carbon Arrow (70 lb · 348 FPS)',
@@ -620,6 +724,14 @@ export const WEAPON_FIRING_TIMING: Readonly<
   p08: timing(0.12, 0.19, 0.4, 0.85, null, -0.22, 0.84, 0.5),
   // KRISS Vector SMG .45 ACP Super V -65° off-axis delayed blowback — right-flank ejection
   vector: timing(0.11, 0.19, 0.44, 0.91, null, 0.16, 0.38, 0.91),
+  // H&K G11 K2 4.73×33mm DM11 caseless rotary-breech clockwork — under-barrel gas tap at ~46% bore, zero brass ejection
+  g11: timing(0.11, 0.2, 0.42, 0.9, 0.46, 0, -1, 0.05),
+  // VSS Vintorez 9×39mm integral-suppressed subsonic — radial-ported barrel gas tap at ~28% total length, right ejection
+  vss: timing(0.105, 0.22, 0.45, 0.91, 0.28, 0.24, 0.48, 0.84),
+  // GE / Dillon Aero M134D Minigun 7.62×51mm NATO — externally 28V DC electric driven (no gas tap), lower-right chute ejection
+  m134: timing(0.09, 0.19, 0.44, 0.88, null, -0.18, -0.58, 0.79),
+  // Nikonov AN-94 "Abakan" 5.45×39mm floating pulley-cable hyperburst — gas tap at ~52% bore, right-upward ejection
+  an94: timing(0.105, 0.195, 0.44, 0.88, 0.52, 0.22, 0.52, 0.82),
 };
 
 export function getWeaponFiringTiming(
@@ -1308,11 +1420,54 @@ export function applyArmoryShot(caliber: CaliberProfile): void {
   // Platform-specific mechanical recoil mitigation:
   // - KRISS Vector Super V -65° off-axis tungsten slider + low bore axis slashes vertical rise & climb
   // - FN M249 SAW 7.5 kg mass + PIP hydraulic stock buffer attenuates linear kick & climb
+  // - GE M134D 18.8 kg pintle-mounted rotary gun disperses recoil into steady axial thrust
+  // - H&K G11 K2 & Nikonov AN-94 42mm floating barreled-action delayed-impulse carriages attenuate felt burst climb
+  // - VSS Vintorez integral 6-stage baffle suppressor moderates subsonic 9×39mm impulse
   const isVector = s.weaponId === 'vector';
   const isM249 = s.weaponId === 'm249';
-  const kickMult = isM249 ? 0.68 : isVector ? 0.82 : 1;
-  const riseMult = isVector ? 0.36 : isM249 ? 0.64 : 1;
-  const climbMult = isVector ? 0.32 : isM249 ? 0.6 : 1;
+  const isM134 = s.weaponId === 'm134';
+  const isG11 = s.weaponId === 'g11';
+  const isAn94 = s.weaponId === 'an94';
+  const isVss = s.weaponId === 'vss';
+  const kickMult = isM134
+    ? 0.45
+    : isG11
+      ? 0.65
+      : isM249
+        ? 0.68
+        : isAn94
+          ? 0.7
+          : isVss
+            ? 0.78
+            : isVector
+              ? 0.82
+              : 1;
+  const riseMult = isM134
+    ? 0.3
+    : isVector
+      ? 0.36
+      : isG11
+        ? 0.45
+        : isAn94
+          ? 0.48
+          : isM249
+            ? 0.64
+            : isVss
+              ? 0.65
+              : 1;
+  const climbMult = isM134
+    ? 0.25
+    : isVector
+      ? 0.32
+      : isG11
+        ? 0.4
+        : isAn94
+          ? 0.42
+          : isM249
+            ? 0.6
+            : isVss
+              ? 0.6
+              : 1;
   s.recoilVelX -= ((spec.recoilKickCm * kickMult) * RECOIL_OMEGA) / RECOIL_PEAK_RATIO;
   s.recoilVelY += ((spec.recoilRiseCm * riseMult) * RECOIL_OMEGA) / RECOIL_PEAK_RATIO;
   s.recoilPitchVel += ((spec.muzzleClimbRad * climbMult) * PITCH_OMEGA) / PITCH_PEAK_RATIO;
@@ -1680,7 +1835,11 @@ export function stepArmoryPhysics(
         spawnVentSmoke(input);
       }
       if (crossedForward(prev, f, t.ejectF)) {
-        if (input.weaponId !== 'python') {
+        if (
+          input.weaponId !== 'python' &&
+          input.weaponId !== 'g11' &&
+          input.caliber !== '473_caseless'
+        ) {
           spawnSpentCasing(input, t);
         }
         spawnChamberSmoke(input);

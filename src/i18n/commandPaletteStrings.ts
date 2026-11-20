@@ -131,17 +131,17 @@ export const COMMAND_PALETTE_STRINGS: Record<
     trigger: {
       label: '快速检索',
       shortLabel: '搜索',
-      title: '打开全局命令面板：秒搜 19 款馆藏、零件、实验室与控制项 (Cmd/Ctrl+K)',
+      title: '打开全局命令面板：秒搜 23 款馆藏、零件、实验室与控制项 (Cmd/Ctrl+K)',
       ariaLabel: '打开全局命令面板 (Cmd+K)',
       kbdMac: '⌘K',
       kbdOther: 'Ctrl K',
     },
     modal: {
       dialogAria: '全局命令面板',
-      searchPlaceholder: '搜索 19 款名枪与弓弩、当前零件、实验室或快捷操作...',
+      searchPlaceholder: '搜索 23 款名枪与弓弩、当前零件、实验室或快捷操作...',
       clearAria: '清空搜索词',
       emptyTitle: '未找到匹配项',
-      emptyHint: '试试输入枪械代号（如 P08 / Vector / AK）、BOM 编号（如 B-03）或“剖视 / 外弹道 / 白昼”',
+      emptyHint: '试试输入枪械代号（如 G11 / VSS / M134D / AN-94 / P08）、BOM 编号（如 B-03）或“剖视 / 外弹道 / 白昼”',
       resultsCount: (count) => `${count} 项结果`,
       activeWeaponContext: (label, partsCount) =>
         `当前展品：${label} · ${partsCount} 个零件`,
@@ -149,7 +149,7 @@ export const COMMAND_PALETTE_STRINGS: Record<
       onBadge: '已开启',
       offBadge: '已关闭',
       groups: {
-        weapons: '馆藏展品（19 款）',
+        weapons: '馆藏展品（23 款）',
         parts: '当前展品零件',
         labs: '展馆与工程实验室',
         actions: '快捷操作与视觉控制',
@@ -163,11 +163,11 @@ export const COMMAND_PALETTE_STRINGS: Record<
     },
     labs: {
       armoryTitle: '数字枪库展厅',
-      armorySub: '返回 19 款馆藏转台大厅与流派筛选架',
+      armorySub: '返回 23 款馆藏转台大厅与流派筛选架',
       showcaseTitle: '博物馆官方首页',
       showcaseSub: '返回旗舰宣传导览页与馆藏总览',
       cartridgesTitle: '1:1 实弹剖视对比实验室',
-      cartridgesSub: '11 大口径 SAAMI/CIP 绝对比例纵剖同台陈列',
+      cartridgesSub: '15 大口径 SAAMI/CIP 绝对比例纵剖同台陈列',
       ballisticsTitle: '1,000m 千米外弹道 DOPE 实验室',
       ballisticsSub: 'RK4 气动弹道解算、横风偏流与第一像面 MIL 分划板',
       showdownTitle: '自动原理流派谱系与同屏对照',
@@ -255,17 +255,17 @@ export const COMMAND_PALETTE_STRINGS: Record<
     trigger: {
       label: 'Quick Search',
       shortLabel: 'Search',
-      title: 'Open Global Command Palette: search 19 exhibits, parts, labs & actions (Cmd/Ctrl+K)',
+      title: 'Open Global Command Palette: search 23 exhibits, parts, labs & actions (Cmd/Ctrl+K)',
       ariaLabel: 'Open Global Command Palette (Cmd+K)',
       kbdMac: '⌘K',
       kbdOther: 'Ctrl K',
     },
     modal: {
       dialogAria: 'Global Command Palette',
-      searchPlaceholder: 'Search 19 exhibits, active parts, labs, or quick controls...',
+      searchPlaceholder: 'Search 23 exhibits, active parts, labs, or quick controls...',
       clearAria: 'Clear search query',
       emptyTitle: 'No matching results',
-      emptyHint: 'Try a model (P08, Vector, AK-15), BOM code (B-03), caliber (.45 ACP), or "cutaway", "ballistics", "blueprint"',
+      emptyHint: 'Try a model (G11, VSS, M134D, AN-94, P08), BOM code (B-03), caliber (4.73mm), or "cutaway", "ballistics", "blueprint"',
       resultsCount: (count) =>
         `${count} ${count === 1 ? 'result' : 'results'}`,
       activeWeaponContext: (label, partsCount) =>
@@ -274,7 +274,7 @@ export const COMMAND_PALETTE_STRINGS: Record<
       onBadge: 'ON',
       offBadge: 'OFF',
       groups: {
-        weapons: 'Museum Exhibits (19)',
+        weapons: 'Museum Exhibits (23)',
         parts: 'Active Exhibit Parts',
         labs: 'Navigation & Engineering Labs',
         actions: 'Quick Actions & Visual Controls',
@@ -288,11 +288,11 @@ export const COMMAND_PALETTE_STRINGS: Record<
     },
     labs: {
       armoryTitle: 'Digital Armory Vault',
-      armorySub: 'Return to the 19-exhibit turntable hall & category rack',
+      armorySub: 'Return to the 23-exhibit turntable hall & category rack',
       showcaseTitle: 'Museum Showcase Home',
       showcaseSub: 'Return to the flagship museum landing overview',
       cartridgesTitle: '1:1 Cartridge Cutaway Lab',
-      cartridgesSub: 'Compare all 11 SAAMI/CIP calibers side-by-side at true 1:1 scale',
+      cartridgesSub: 'Compare all 15 SAAMI/CIP calibers side-by-side at true 1:1 scale',
       ballisticsTitle: '1,000m External Ballistics DOPE Lab',
       ballisticsSub: 'RK4 3-DOF trajectory solver, crosswind drift & FFP MIL reticle',
       showdownTitle: 'Mechanism Showdown Matrix',

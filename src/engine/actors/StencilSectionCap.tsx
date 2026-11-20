@@ -338,6 +338,18 @@ export function getSectionStencilPassMaterials(planes: THREE.Plane[]): {
   return rec;
 }
 
+/** Disposes cached Pass A/B stencil materials for an unmounted per-part tilted clip-plane array. */
+export function disposeSectionStencilPassMaterials(
+  planes: THREE.Plane[]
+): void {
+  if (planes === SECTION_CUT_PLANES) return;
+  const rec = passMaterialCache.get(planes);
+  if (!rec) return;
+  rec.back.dispose();
+  rec.front.dispose();
+  passMaterialCache.delete(planes);
+}
+
 // ------------------------------------------------------------------
 // Per-part render-order slots (Pass A, B, C must stay contiguous per part)
 // ------------------------------------------------------------------
@@ -378,11 +390,134 @@ export interface SectionCapRect {
 }
 
 const _corner = new THREE.Vector3();
+const _cantedNormal = new THREE.Vector3();
+const _cantedOrigin = new THREE.Vector3();
+const _capAxisN = new THREE.Vector3();
+const _capAxisU = new THREE.Vector3();
+const _capAxisV = new THREE.Vector3();
+const _capScaledU = new THREE.Vector3();
+const _capScaledV = new THREE.Vector3();
+const _capCenter = new THREE.Vector3();
+const _capRectScratch: SectionCapRect = {
+  visible: true,
+  cx: 0,
+  cy: 0,
+  width: 1,
+  height: 1,
+  z: 0,
+};
 
 /** World z of a clipping plane whose normal lies on ±Z (n·p + c = 0). */
 export function sectionPlaneZ(plane: THREE.Plane): number {
   const nz = plane.normal.z;
   return Math.abs(nz) > 1e-6 ? -plane.constant / nz : 0;
+}
+
+/**
+ * Synchronizes a per-part local-Z clipping plane for canted shell parts
+ * (e.g. `an94_mag_body` canted 15° around X) so the section slice follows the
+ * part's own curved symmetry centerplane plus live `sectionCutOffset` & `flip`!
+ */
+export function syncCantedLocalZSectionPlane(
+  partMatrixWorld: THREE.Matrix4,
+  referencePlane: THREE.Plane,
+  outPlane: THREE.Plane
+): THREE.Plane {
+  const flip = referencePlane.normal.z > 0;
+  const offset = sectionPlaneZ(referencePlane);
+  _cantedNormal
+    .set(0, 0, flip ? 1 : -1)
+    .transformDirection(partMatrixWorld)
+    .normalize();
+  _cantedOrigin.set(0, 0, offset).applyMatrix4(partMatrixWorld);
+  return outPlane.setFromNormalAndCoplanarPoint(_cantedNormal, _cantedOrigin);
+}
+
+/**
+ * Projects a part's local AABB through `matrixWorld` onto ANY oriented clipping plane
+ * (both global ±Z planes and tilted canted-shell planes) and writes the exact world
+ * transform for Pass C's unit quad into `outMatrix`. Returns `true` if straddling.
+ */
+export function computeSectionCapTransformInto(
+  localBox: THREE.Box3,
+  matrixWorld: THREE.Matrix4,
+  plane: THREE.Plane | undefined,
+  margin: number,
+  outMatrix: THREE.Matrix4
+): boolean {
+  if (
+    !plane ||
+    (Math.abs(plane.normal.x) < 1e-5 && Math.abs(plane.normal.y) < 1e-5)
+  ) {
+    const planeZ = plane ? sectionPlaneZ(plane) : 0;
+    computeSectionCapRectInto(
+      localBox,
+      matrixWorld,
+      planeZ,
+      margin,
+      _capRectScratch
+    );
+    if (!_capRectScratch.visible) return false;
+    outMatrix
+      .makeScale(_capRectScratch.width, _capRectScratch.height, 1)
+      .setPosition(_capRectScratch.cx, _capRectScratch.cy, _capRectScratch.z);
+    return true;
+  }
+
+  if (localBox.isEmpty()) return false;
+
+  const n = _capAxisN.copy(plane.normal).normalize();
+  if (Math.abs(n.x) < 0.9) {
+    _capAxisU.set(1 - n.x * n.x, -n.x * n.y, -n.x * n.z).normalize();
+  } else {
+    _capAxisU.set(0, 1, 0).cross(n).normalize();
+  }
+  _capAxisV.crossVectors(n, _capAxisU).normalize();
+
+  let minD = Infinity;
+  let maxD = -Infinity;
+  let minU = Infinity;
+  let maxU = -Infinity;
+  let minV = Infinity;
+  let maxV = -Infinity;
+
+  for (let i = 0; i < 8; i++) {
+    _corner
+      .set(
+        i & 1 ? localBox.max.x : localBox.min.x,
+        i & 2 ? localBox.max.y : localBox.min.y,
+        i & 4 ? localBox.max.z : localBox.min.z
+      )
+      .applyMatrix4(matrixWorld);
+    const d = plane.distanceToPoint(_corner);
+    const pu = _corner.dot(_capAxisU);
+    const pv = _corner.dot(_capAxisV);
+    if (d < minD) minD = d;
+    if (d > maxD) maxD = d;
+    if (pu < minU) minU = pu;
+    if (pu > maxU) maxU = pu;
+    if (pv < minV) minV = pv;
+    if (pv > maxV) maxV = pv;
+  }
+
+  if (!(minD < 0 && maxD > 0)) return false;
+
+  const width = Math.max(1e-3, maxU - minU + margin * 2);
+  const height = Math.max(1e-3, maxV - minV + margin * 2);
+  const cu = (minU + maxU) * 0.5;
+  const cv = (minV + maxV) * 0.5;
+  const cn = -plane.constant;
+
+  _capCenter
+    .set(0, 0, 0)
+    .addScaledVector(_capAxisU, cu)
+    .addScaledVector(_capAxisV, cv)
+    .addScaledVector(n, cn);
+  _capScaledU.copy(_capAxisU).multiplyScalar(width);
+  _capScaledV.copy(_capAxisV).multiplyScalar(height);
+
+  outMatrix.makeBasis(_capScaledU, _capScaledV, n).setPosition(_capCenter);
+  return true;
 }
 
 /**
@@ -491,14 +626,6 @@ export const StencilSectionCap: React.FC<StencilSectionCapProps> = ({
   useEffect(() => {
     const slot = acquireSectionCapSlot();
     const orders = sectionCapRenderOrders(slot);
-    const rect: SectionCapRect = {
-      visible: true,
-      cx: 0,
-      cy: 0,
-      width: 1,
-      height: 1,
-      z: 0,
-    };
     if (!geometry.boundingBox) geometry.computeBoundingBox();
     const localBox = geometry.boundingBox ?? new THREE.Box3();
     const activePlane = clippingPlanes[0];
@@ -513,42 +640,35 @@ export const StencilSectionCap: React.FC<StencilSectionCapProps> = ({
       cap.onBeforeRender = ((renderer: THREE.WebGLRenderer) => {
         const mat = cap.material as THREE.ShaderMaterial;
         const refObj = back ?? cap;
-        const planeZ = activePlane ? sectionPlaneZ(activePlane) : 0;
-        computeSectionCapRectInto(
+        const visible = computeSectionCapTransformInto(
           localBox,
           refObj.matrixWorld,
-          planeZ,
+          activePlane,
           0.16,
-          rect
+          _capWorld
         );
-        const ok = rect.visible && rendererHasStencil(renderer);
+        const ok = visible && rendererHasStencil(renderer);
         mat.colorWrite = ok;
         mat.depthWrite = ok;
-        if (rect.visible) {
-          cap.matrixWorld
-            .makeScale(rect.width, rect.height, 1)
-            .setPosition(rect.cx, rect.cy, rect.z);
+        if (visible) {
+          cap.matrixWorld.copy(_capWorld);
         }
       }) as THREE.Object3D['onBeforeRender'];
     }
 
     syncRef.current = (partGroup) => {
       if (!back || !front || !cap) return;
-      const planeZ = activePlane ? sectionPlaneZ(activePlane) : 0;
-      computeSectionCapRectInto(
+      const visible = computeSectionCapTransformInto(
         localBox,
         partGroup.matrixWorld,
-        planeZ,
+        activePlane,
         0.16,
-        rect
+        _capWorld
       );
-      back.visible = rect.visible;
-      front.visible = rect.visible;
-      cap.visible = rect.visible;
-      if (!rect.visible) return;
-      _capWorld
-        .makeScale(rect.width, rect.height, 1)
-        .setPosition(rect.cx, rect.cy, rect.z);
+      back.visible = visible;
+      front.visible = visible;
+      cap.visible = visible;
+      if (!visible) return;
       _partInv.copy(partGroup.matrixWorld).invert();
       cap.matrix.multiplyMatrices(_partInv, _capWorld);
       cap.matrixWorldNeedsUpdate = true;

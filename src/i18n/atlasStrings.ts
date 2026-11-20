@@ -66,11 +66,13 @@ const CHANNEL_LABEL_EN_MAP: Readonly<Record<string, string>> = {
   '微细纹理法线 (Seamless)': 'Micro-Grain Surface Relief Normal (Seamless)',
   '复合弹性体皮纹法线 (Seamless)': 'Composite Elastomer Grip Normal (Seamless)',
   '工程弹性体皮纹法线 (Seamless)': 'Engineered Elastomer Grip Normal (Seamless)',
+  '弹簧钢拉丝法线 (Seamless)': 'Spring-Steel Drawn Wire Normal (Seamless)',
+  '弹簧钢润油粗糙度 (Seamless)': 'Spring-Steel Oiled Roughness (Seamless)',
 };
 
 export const CHANNEL_LABEL_EN = CHANNEL_LABEL_EN_MAP;
 
-export type AtlasWeaponId = WeaponId | 'm249' | 'p08' | 'vector';
+export type AtlasWeaponId = WeaponId;
 
 export const ALL_ATLAS_EN_STRINGS: Readonly<
   Record<AtlasWeaponId, AtlasWeaponTranslation>
@@ -1403,6 +1405,325 @@ export const ALL_ATLAS_EN_STRINGS: Readonly<
           },
           {
             note: 'Linear · Seamless glass-filled polymer micro-stipple normal',
+          },
+        ],
+      },
+    },
+  },
+  g11: {
+    heading:
+      'German H&K G11 K2 Caseless Clockwork & Olive-Charcoal Monocoque PBR Atlas (Albedo / Normal / Packed ORM)',
+    suites: {
+      g11_v3_housing: {
+        title:
+          'Bundeswehr Olive-Charcoal Monocoque Shell, Hensoldt 1x/3.5x Optic & 4-Mode Controls Suite',
+        tabTitle: 'Monocoque & Hensoldt Optic',
+        summary:
+          'Blender 5.2 Cycles GPU-baked 2K 5-channel Packed ORM suite for the H&K G11 K2 outer casing: renders Bundeswehr olive-charcoal glass-filled polyamide texture, Oberndorf red-boxed "[HK] G11 K2 · CAL. 4.73x33 DM11 / HECKLER & KOCH GMBH OBERNDORF" markings, Ulm antler federal eagle proof stamps, dual-flank red/white "S / 1 / 3 / A" 4-position selector icons, pop-out winding crank markings, and UV-firewalled emerald-sapphire multi-coated Hensoldt optic lenses.',
+        highlights: [
+          'Bundeswehr olive-charcoal polyamide grain, Oberndorf [HK] red-box plate & Ulm antler proof mark',
+          'High-contrast dual-flank red/white "S / 1 / 3 / A" 4-position selector icons (2,100 RPM 3-rd / 460 RPM Auto)',
+          'UV-firewalled emerald-sapphire Hensoldt 1x/3.5x multi-coated objective and ocular lenses',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Olive-charcoal polymer casing / red-white S-1-3-A markings / Ulm proof / emerald-blue lenses',
+          },
+          {
+            note: 'Linear · Molded stiffening ribs + cooling louvers + recessed Oberndorf rollmarks & grip texture',
+          },
+          {
+            note: 'Linear · R:Cycles contact AO / G:Optic coating(0.08)-Nitride(0.30)-Polymer(0.60)-Buttpad(0.78) / B:Metalness',
+          },
+        ],
+      },
+      g11_v3_clockwork: {
+        title:
+          '90-Deg Chrome Rotary Breech, Swiss-Watch Gear Train & Floating Steel Receiver Suite',
+        tabTitle: 'Rotary Breech & Clockwork',
+        summary:
+          'Dedicated 2K 5-channel Packed ORM suite for the H&K G11 K2 cutaway clockwork heart: showcases the radially brushed hard-chrome 90-degree rotating cylindrical breech (with rectangular caseless chamber bore and proof etchings), high-contrast CNC stainless steel and C36000 self-lubricating brass planetary spur gear train, 14-tooth gas driving rack, vertical loading rammer, coaxial striker rod, and 3-round burst escapement pack with anisotropic toolmarks and oil sheen.',
+        highlights: [
+          'Radially brushed hard-chrome 90-deg rotary breech cylinder with rectangular 4.73x33mm caseless chamber patina',
+          'Swiss-watch metallic contrast between CNC stainless 26-tooth main gears & C36000 brass planetary cams/ratchet',
+          'Floating steel inner chassis rail wear tracks, nitrided receiver flats & polyurethane hydraulic buffer separation',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Hard-chrome rotary breech / stainless & C36000 brass clockwork gears / floating steel chassis',
+          },
+          {
+            note: 'Linear · Radial lathe turning marks + meshing gear flank micro-wear + inner chassis laser serials',
+          },
+          {
+            note: 'Linear · R:Cycles AO / G:Chrome breech(0.16)-Brass gears(0.22)-Nitrided chassis(0.32) / B:Pure metalness',
+          },
+        ],
+      },
+      g11_v3_barrel_mag: {
+        title:
+          '540mm Floating CHF Barrel, Overhead 45-Rd DM11 Caseless Mag & Safety-Orange Follower Suite',
+        tabTitle: '540mm Barrel & DM11 Mag',
+        summary:
+          '2K 5-channel ORM atlas covering the 540 mm chrome-lined floating cold-hammer-forged barrel (with burst-fire heat tempering and six-slot flash-hider carbon fouling) and overhead 45-round caseless magazine: smoked translucent walls reveal 45 tightly stacked ochre-tan 4.73x33mm DM11 rectangular caseless propellant blocks with flush copper-jacketed spitzer tips and crisp white "15 / 30 / 45" markings, while the safety-orange follower stays strictly UV-firewalled (>= 50 px) with zero color bleed.',
+        highlights: [
+          'Overhead smoked magazine walls revealing 45 stacked ochre-tan DM11 caseless blocks, copper tips & 15/30/45 ticks',
+          '540 mm floating CHF barrel "4.73x33 DM11" laser markings & blue-bronze heat-tempered slotted flash hider',
+          'High-visibility safety-orange horizontal anti-tilt follower (M-02) strictly UV-firewalled for zero color bleed',
+        ],
+        channels: [
+          {
+            note: 'sRGB · 45 ochre-tan DM11 caseless blocks / 15-30-45 witness ticks / orange follower / tempered flash hider',
+          },
+          {
+            note: 'Linear · Rotary-forged barrel grain + molded magazine ribs & ticks + flash-hider carbon micro-relief',
+          },
+          {
+            note: 'Linear · R:Cycles AO / G:Smoked window(0.26)-Nitrided barrel(0.28)-DM11 block(0.68) / B:Metalness mask',
+          },
+        ],
+      },
+      g11_seamless_springs: {
+        title:
+          'Floating-Action Recoil Mainspring & Overhead Feed Spring Seamless Detail Maps',
+        tabTitle: 'Helical Springs Detail',
+        summary:
+          'Tileable high-fatigue music-wire drawn steel normals and oiled micro-roughness maps dedicated to the two GPU-compressed aSpringParam helical springs (floating inner receiver long-stroke mainspring and overhead 45-round horizontal feed spring).',
+        highlights: [
+          'Preserves aSpringParam real-time GPU constant-wire-diameter compression across the 42 mm floating stroke',
+          'High-fatigue music-wire drawn-steel micro-normals & gun-oil roughness modulation',
+        ],
+        channels: [
+          {
+            note: 'Linear · Applied to g11_recoil_spring and g11_mag_spring music-wire coil surfaces',
+          },
+          {
+            note: 'Linear · Spring-steel oil sheen & micro-gloss variation across helical coils',
+          },
+        ],
+      },
+    },
+  },
+  vss: {
+    heading:
+      'Soviet Tula VSS Vintorez 6-Stage Baffle Core, Laminated Birch Stock & PSO-1 PBR Atlas (Albedo / Normal / Packed ORM)',
+    suites: {
+      vss_v3_receiver_supp: {
+        title:
+          'Tula Arsenal CNC-Milled Blued Receiver, 414mm Integral Suppressor & Dark-Plum Forend Suite',
+        tabTitle: 'Milled Receiver & Suppressor',
+        summary:
+          'Offline Blender 5.2 Cycles GPU-baked 2K 5-channel Packed ORM suite: renders Tula Arms Plant (TOZ) CNC-milled forged receiver satin bluing with silvered edge wear, crisp Cyrillic stamp "VSS VINTOREZ · 9x39 · No. 87412" and triangular star crest, 414 mm matte-blued integral suppressor outer tube with 100-400m tangent sight markings, stamped 3-rib dust cover, and Soviet dark-plum fiberglass ribbed forend.',
+        highlights: [
+          'Tula Arsenal TOZ triangle-star emblem & Cyrillic VSS Vintorez 9x39 serial #87412 distortion-free Hero UV',
+          'AgX-calibrated satin blued steel (sRGB 0.21-0.27, M=0.86, R=0.30-0.38) separated from dark-plum polymer forend',
+          '400m subsonic tangent leaf numerals "1 · 2 · 3 · 4" & right dust-shield safety / cross-bolt selector marks',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Satin Soviet blued milled receiver / integral suppressor tube / TOZ markings / dark-plum ribbed forend',
+          },
+          {
+            note: 'Linear · Cycles high-poly bevels + CNC toolmarks + recessed Cyrillic rollmarks & 400m sight ticks',
+          },
+          {
+            note: 'Linear · R:Cycles contact AO / G:Blued steel(0.32)-Matte suppressor(0.38)-Polymer(0.62) / B:Metalness',
+          },
+        ],
+      },
+      vss_v3_wood_optic: {
+        title:
+          'Russian Laminated Birchwood Skeleton Stock, PSO-1M2-1 4x24 Optic & Plum Waffle Mag Suite',
+        tabTitle: 'Laminated Birch & PSO-1',
+        summary:
+          'Unites the VSS’s iconic visual landmarks: 3D-procedural multi-ply Russian laminated birchwood thumbhole stock in hand-rubbed honey-amber (alternating light/dark ply laminations, wood pores, and ribbed rubber buttpad); hammer-tone gray enameled PSO-1M2-1 side-mount scope stamped "PSO-1M2-1 · 9x39" with 1-4 subsonic BDC turret; plus >= 50 px UV-firewalled emerald-sapphire coated lenses and safety-orange anti-tilt magazine follower.',
+        highlights: [
+          'Honey-amber Russian laminated birchwood thumbhole stock with alternating diagonal plies, linseed patina & rubber pad',
+          'Hammer-tone gray PSO-1M2-1 cast magnesium body, Cyrillic 9x39 markings & 1-4 subsonic elevation drum',
+          '>= 50 px UV-firewalled zero-bleed emerald-sapphire multi-coated lenses & safety-orange anti-tilt follower',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Honey-amber laminated birch stock / hammer-gray PSO-1 optic / emerald lenses / plum waffle mag & orange follower',
+          },
+          {
+            note: 'Linear · Birchwood ply pores + hammer-tone enamel grain + waffle magazine ribs & accordion eyecup folds',
+          },
+          {
+            note: 'Linear · R:Cycles AO / G:Coated glass(0.05)-Oiled birch(0.42)-Rubber(0.84) / B:Per-texel metalness',
+          },
+        ],
+      },
+      vss_v3_metal: {
+        title:
+          '6-Stage Slanted Acoustic Baffle Core, 200mm Ported Barrel, 6-Lug Bolt & Linear Striker Suite',
+        tabTitle: 'Baffles, 6-Lug Bolt & Striker',
+        summary:
+          'Engineered for live CT-Scan cutaway ([C]) and exploded teardown inspection: showcases the gleaming CNC brushed-stainless 6-stage asymmetric slanted acoustic baffle stack (layered with subsonic propellant heat tint and carbon soot gradient), 3-row radial-ported chrome-lined barrel, bright 6-lug precision rotating bolt, long-stroke chromed piston, hammerless linear striker, sear pack, and steel magazine spring/floorplate.',
+        highlights: [
+          'CNC brushed-stainless 6-stage asymmetric slanted baffle stack with realistic subsonic carbon-soot gradient',
+          '200mm 3-row radial-ported chrome-lined barrel turning marks & bright brushed 6-lug precision rotating bolt',
+          'Specular contrast across hammerless linear striker, coaxial firing pin, sear linkage & steel mag floorplate',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Brushed stainless 6-stage baffle core / soot gradient / bright 6-lug bolt / blued carrier & ported barrel',
+          },
+          {
+            note: 'Linear · Lathe turning rings + CNC milling marks + 6-stage slanted baffle high-poly chamfers',
+          },
+          {
+            note: 'Linear · R:Cycles AO / G:Precision 6-lug bolt(0.18)-Baffle core(0.24)-Carbon soot(0.76) / B:High metalness',
+          },
+        ],
+      },
+    },
+  },
+  m134: {
+    heading:
+      'U.S. GE / Dillon Aero M134D 6-Barrel Gatling Sinusoidal Cam & 28V Electric Drive PBR Atlas (Albedo / Normal / Packed ORM)',
+    suites: {
+      m134_v3_housing_motor: {
+        title:
+          'M134D Ribbed Mainframe Stencils, 360-Deg Cam Sleeve, 28V Copper-Wound Motor & Spade Grip Suite',
+        tabTitle: 'Housing, Cam & 28V Motor',
+        summary:
+          'Blender 5.2 Cycles GPU-baked 2K 5-channel Packed ORM suite for the M134D mainframe and electric drive: renders crisp white military stenciling "GUN, AUTOMATIC, 7.62MM, M134D · DILLON AERO · GENERAL ELECTRIC · CAGE 1U2T4 · 3,000 RPM" and 16x16 ECC200 MIL-STD-130 UID DataMatrix on both housing flanks, burnished steel tracks inside the 360-degree sinusoidal cam sleeve, top 28V DC 3.2-HP motor brushed aluminum nameplate and warm enameled copper armature coils, plus UV-firewalled crimson master arm switch on the spade grip.',
+        highlights: [
+          'Dual-flank HD 1:1 white military stencils & 16x16 MIL-STD-130 UID DataMatrix on ribbed mainframe',
+          '28V DC 3.2-HP aerospace motor cooling fins, brushed nameplate & cutaway enameled copper armature coils',
+          'Burnished 360-deg hardened sinusoidal cam path & crimson master arm toggle (>= 50 px UV firewall)',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Manganese-phosphate housing white stencils & UID / warm copper windings / crimson master arm',
+          },
+          {
+            note: 'Linear · Cast sand-grain micro-relief + motor fin bevels + cam track wear + spade grip knurling',
+          },
+          {
+            note: 'Linear · R:Cycles contact AO / G:Burnished cam(0.18)-Phosphate steel(0.35)-Rubber grip(0.76) / B:Metalness',
+          },
+        ],
+      },
+      m134_v3_barrels_rotor: {
+        title:
+          'Six 22" Fluted Barrels, Heat-Tempered Rotary Flash Cage, Star-Rotor & Safing Sector Suite',
+        tabTitle: '6 Barrels & Star-Rotor',
+        summary:
+          '2K 5-channel Packed ORM suite dedicated to the M134D rotating heart and six-barrel cluster: renders lathe-turned toolmarks and caliber rollmarks across all six 22-inch fluted barrels, gold-bronze to blue-violet thermal tempering and velvet soot on the 3,000 RPM six-tube rotary flash cage, anisotropic 5-axis CNC sheen on the six-flute central star-rotor and 28-tooth main spur gear, plus a strictly UV-firewalled high-contrast yellow/crimson "SAFE / ARMED" safing sector plate.',
+        highlights: [
+          'Sustained-fire gold-bronze to blue-violet heat-temper bands & matte carbon soot on 6-tube flash cage',
+          'Anisotropic CNC milled highlights across the 6-flute central star-rotor & 28-tooth involute spur gear',
+          'Zero-bleed high-contrast military yellow/crimson "SAFE / ARMED" laser warning plate on safing sector',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Fluted barrel steel / blue-violet-gold tempered flash cage / CNC rotor / yellow-red safing plate',
+          },
+          {
+            note: 'Linear · Barrel turning rings + star-rotor CNC toolpaths + 28-tooth spur gear chamfers & stamps',
+          },
+          {
+            note: 'Linear · R:Cycles contact AO / G:Star-rotor(0.20)-Barrels(0.32)-Carbon soot(0.84) / B:Metalness',
+          },
+        ],
+      },
+      m134_v3_delinker_bolts: {
+        title:
+          'Six Hard-Chrome Rotary Bolts, Dillon Delinker, Stainless Feed Chute & 7.62 NATO Belt Suite',
+        tabTitle: '6 Bolts & Dillon Delinker',
+        summary:
+          '2K 5-channel Packed ORM suite highlighting the M134D 6-bolt sinusoidal wave and Dillon Aero feed system: mirror-brushed hard-chrome across all six roller bolts and the six-pocket star-wheel sprocket, white laser-etched Dillon Aero delinker markings, quadruple UV-firewalled 7.62x51mm NATO M80 rounds inside the flexible ribbed stainless feed chute (annealed C26000 brass, copper FMJ tips, silver Boxer primers, and dark manganese-phosphate M13 links), plus brass-kiss ejection scuffs inside the lower-right chute.',
+        highlights: [
+          'Precision bearing-grade brushed hard-chrome finish across all 6 rotary bolts & 6-pocket star-wheel',
+          'Quadruple UV-firewalled 7.62x51mm annealed brass, copper FMJ tips, silver primers & black M13 steel links',
+          'White laser-etched Dillon Aero delinker nameplate & authentic brass-kiss impact scuffs in ejection chute',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Hard-chrome 6-bolt set / Dillon stencil / annealed brass 7.62 belt & copper FMJ tips',
+          },
+          {
+            note: 'Linear · CNC bolt grinding marks + ribbed stainless feed chute segments + M13 links & laser text',
+          },
+          {
+            note: 'Linear · R:Cycles contact AO / G:Chrome bolts & brass(0.18)-Phosphated M13 links(0.40) / B:Full metal',
+          },
+        ],
+      },
+    },
+  },
+  an94: {
+    heading:
+      'Russian Nikonov AN-94 "Abakan" Pulley-Cable Pre-Feed, Figure-8 Brake & 15-Deg Mag PBR Atlas (Albedo / Normal / Packed ORM)',
+    suites: {
+      an94_v3_receiver_stock: {
+        title:
+          'Izhmash Charcoal Polyamide Outer Housing, Star-Wheel Diopter & Right-Folding Stock Suite (V3)',
+        tabTitle: 'Polyamide Shell & Stock',
+        summary:
+          'Blender 5.2 Cycles GPU-baked 2K 5-channel Packed ORM suite for the AN-94 outer chassis: faithfully reproduces Izhmash 35% glass-filled charcoal polyamide matte grain (sRGB 0.17-0.22, M=0.0, R=0.60), distortion-free left-flank Hero UV carrying the Izhmash arrow-in-triangle crest, Cyrillic rollmark "AN-94 ABAKAN · 5.45x39 · IZHMASH · No. 940218", GIS proof stamp, crisp red/white fire-control dots, right-flank "6P33 · 1997 · MADE IN RUSSIA" markings, and ejection-port brass kisses.',
+        highlights: [
+          'Left Hero flank Izhmash arrow-triangle factory crest & Cyrillic AN-94 Abakan 5.45x39 serial #940218',
+          'High-contrast red/white independent safety & 3-mode selector enamel fills plus checkered grip stippling',
+          '5-position star-wheel diopter edge wear, right-folding ribbed stock & vulcanized rubber buttpad separation',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Charcoal glass-filled polyamide housing / white Izhmash Cyrillic rollmarks / red-white fire dots',
+          },
+          {
+            note: 'Linear · Cycles high-poly bevels + RNM recessed markings + diamond grip checkering & forend ribs',
+          },
+          {
+            note: 'Linear · R:Cycles contact AO / G:Enamel dust cover(0.28)-Polyamide shell(0.62)-Rubber pad(0.84) / B:Metal',
+          },
+        ],
+      },
+      an94_v3_pulley_metal: {
+        title:
+          'Floating Steel Sub-Receiver, CNC Cable Pulley & 2-Stage Bronze Pre-Feed Rammer Suite (V3)',
+        tabTitle: 'Pulley-Cable Heart',
+        summary:
+          '2K 5-channel ORM suite tailored to the "Clockwork Kalashnikov" blowback-shifted core: highlights bright burnished slide rails along the floating phosphated steel sub-receiver, mirror-brushed CNC V-groove transmission pulley with bronze bushing, multi-strand reflective braided stainless drive cable with crimped brass ferrules, bronze/chromed two-stage pre-feed rammer shuttle, 2-lug stainless rotating bolt, and 2-round hyperburst hammer ratchet.',
+        highlights: [
+          'Specular material contrast across CNC V-groove pulley, bronze bushing & multi-strand braided steel cable',
+          'Anisotropic CNC milling micro-normals on bronze 2-stage pre-feed rammer & 2-lug stainless rotating bolt',
+          'Bright 42 mm reciprocating rail wear bands on floating inner receiver & 2-round burst hammer ratchet',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Phosphated steel sub-receiver / bright pulley & braided cable / bronze pre-feed rammer & bolt',
+          },
+          {
+            note: 'Linear · Lathe turning rings + helical braided-cable strand normals + longitudinal slide rail streaks',
+          },
+          {
+            note: 'Linear · R:Internal cavity AO / G:Bright cable(0.16)-Bronze rammer(0.24)-Phosphated sub-chassis(0.32) / B:Metal',
+          },
+        ],
+      },
+      an94_v3_barrel_mag: {
+        title:
+          '405mm Floating Barrel, Figure-8 Whistling Brake & 15-Deg Plum-Black Magazine Suite (V3)',
+        tabTitle: 'Figure-8 Brake & 15-Deg Mag',
+        summary:
+          '2K 5-channel ORM suite capturing the AN-94’s twin silhouette signatures: forward half renders the 405 mm floating CHF chrome-lined barrel, upper gas cylinder, and iconic asymmetrical figure-8 dual-chamber self-cleaning whistling muzzle brake (layered with straw-gold/steel-blue thermal temper and bore carbon fouling); aft half maps both flanks of the 15-degree right-canted 30-round Izhmash plum-black 5.45x39mm magazine ("5.45x39 · IZHMASH") with a >= 50 px UV-firewalled safety-orange anti-tilt follower.',
+        highlights: [
+          'Asymmetrical figure-8 dual-chamber whistling brake with gold-brown/steel-blue temper & chamber soot',
+          '15-degree right-canted Izhmash plum-black 5.45x39mm polymer magazine with molded arrow crest',
+          'Strictly >= 50 px UV-firewalled high-visibility safety-orange anti-tilt follower (zero color bleed)',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Heat-tempered fouled figure-8 brake / 405mm barrel / plum-black 5.45 mag & orange follower',
+          },
+          {
+            note: 'Linear · Barrel lathe rings + figure-8 vortex chamber bevels + molded mag logos & steel floorplate',
+          },
+          {
+            note: 'Linear · R:Contact AO / G:Blued barrel(0.28)-Fouled muzzle(0.84)-Plum mag(0.56) / B:Metalness mask',
           },
         ],
       },

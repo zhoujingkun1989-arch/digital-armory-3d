@@ -1,0 +1,942 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "an94",
+  "generatedAt": "2026-11-20T13:05:00.000000+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "Nikonov AN-94 \"Abakan\" (6P33)",
+    "subtitle": "5.45x39mm 1,800 RPM Pulley-Cable Blowback-Shifted Hyperburst Rifle",
+    "originCountry": "Russia",
+    "weaponType": "Assault Rifle",
+    "categoryLabel": "Assault Rifle",
+    "actionMechanism": "Blowback-Shifted Floating Barreled Action · Steel Pulley-Cable 2-Stage Pre-Feed & 2-Lug Rotating Bolt",
+    "statusLabel": "In Vault · Strippable",
+    "description": "Designed by Izhmash master engineer Gennady Nikonov to triumph in the grueling Soviet Project Abakan trials, the AN-94 (GRAU index 6P33) stands as the most intricate service rifle ever adopted by a modern military. Nicknamed the Clockwork Kalashnikov, its entire 405 mm cold-hammer-forged barrel and CNC steel sub-receiver float on rails inside a stationary charcoal polyamide outer shell, recoiling 42 mm rearward as a unit. A grooved steel transmission pulley and braided stainless cable link the bolt carrier to a bronze two-stage pre-feed rammer, staging the second 5.45x39mm cartridge at 1,800 rounds per minute so both bullets clear the whistling figure-8 muzzle brake before recoil reaches the shooter's shoulder.",
+    "highlights": [
+      "Floating 405mm Barrel & Steel Sub-Receiver Recoiling 42mm Inside Polyamide Shell",
+      "CNC Grooved Pulley, Braided Steel Cable & Bronze 2-Stage 1,800 RPM Pre-Feed Rammer",
+      "15-Degree Right-Canted 30-Rd 5.45x39mm Magazine & 5-Position Star-Wheel Diopter",
+      "Asymmetrical Figure-8 Self-Cleaning Whistling Muzzle Compensator"
+    ],
+    "workbenchTitle": "Nikonov AN-94 3D Teardown & 1,800 RPM Pulley-Cable Hyperburst",
+    "workbenchSubtitle": "4 Modular Groups · 26 Core Nodes · Floating Barreled Action, Steel Pulley-Cable 2-Stage Pre-Feed & 15-Degree Canted Magazine Simulation",
+    "cutawayLabel": "Pulley-Cable & Rammer Focus",
+    "cutawayTitle": "Switch to assembled cutaway view and focus on the CNC transmission pulley wheel, braided steel cable, bronze pre-feed rammer, and floating inner receiver",
+    "searchPlaceholder": "Search component name / code (e.g. pulley, cable, rammer, figure-8, S-05)...",
+    "firingMilestoneLabel": "1,800 RPM Pulley Pre-Feed",
+    "rateOfFire": "1,800 RPM (2-Rd Burst) / 600 RPM (Auto)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Ready to Fire",
+        "subLabel": "0% Assembled",
+        "desc": "Nikonov AN-94 Abakan (6P33) in closed-bolt battery: overall length 943 mm with right-folding stock deployed, floating 405 mm barrel capped by its signature figure-8 whistling muzzle brake, and the 15-degree right-canted 5.45x39mm plum magazine clearing the internal pulley-cable track."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30% Field Strip",
+        "desc": "Standard Russian service field disassembly: rock out the 15-degree canted 5.45mm magazine, lift the ribbed steel dust cover, withdraw the telescoping recoil guide and long-stroke piston bolt carrier, and expose the floating steel sub-receiver carriage resting inside the charcoal polyamide chassis."
+      },
+      "pulley_strip": {
+        "label": "Pulley & Floating Action",
+        "subLabel": "65% Pulley & Floating Action",
+        "desc": "Reveal the legendary Clockwork Kalashnikov heart: detach the grooved CNC steel transmission pulley wheel, 180-degree braided stainless drive cable, bronze two-stage pre-feed rammer shuttle, rotating two-lug stainless bolt, and lower heavy receiver return buffer spring."
+      },
+      "full_exploded": {
+        "label": "Full 26-Node BOM",
+        "subLabel": "100% Full Exploded",
+        "desc": "Complete zero-overlap 3D exploded showcase of all 26 AN-94 components: from the asymmetrical figure-8 dual-chamber muzzle compensator and floating 405 mm barrel through the pulley-cable pre-feed train, five-position star-wheel diopter sight, and 15-degree canted plum magazine internals."
+      }
+    },
+    "firingPhases": {
+      "an94_phase_1_trigger_hammer": {
+        "shortLabel": "Trigger & Hammer Drop",
+        "title": "Phase 1 · Floating-Action Trigger Pull & Hammer Strike on Round One",
+        "description": "With the rear-left selector set to 2-round hyperburst, squeezing the curved trigger trips the floating disconnector linkage, releasing the pivoting steel hammer to drive the coaxial stainless firing pin into the primer of the first chambered 5.45x39mm 7N6 cartridge."
+      },
+      "an94_phase_2_ignition_float": {
+        "shortLabel": "Floating Action Glide",
+        "title": "Phase 2 · 300 MPa Ignition Initiates 42 mm Floating Barreled-Action Recoil",
+        "description": "Peak chamber pressure of 300 MPa accelerates the 5.45mm spitzer projectile down the 405 mm chrome-lined barrel at 900 m/s through the whistling figure-8 brake. Simultaneously, the entire barrel, gas cylinder, muzzle brake, and steel sub-receiver glide effortlessly rearward on rails inside the stationary polyamide outer housing."
+      },
+      "an94_phase_3_pulley_unlock": {
+        "shortLabel": "Gas Unlock & Pulley Spin",
+        "title": "Phase 3 · Long-Stroke Piston Rotates Bolt 35.5 Degrees & Spins Steel Pulley",
+        "description": "High-pressure propellant gas enters the upper cylinder and drives the bolt carrier rapidly rearward inside the already-gliding sub-receiver. After safety dwell, the cam slot rotates the two-lug stainless bolt 35.5 degrees to unlock while the carrier's rear clevis yanks the braided steel cable, spinning the grooved transmission pulley rapidly."
+      },
+      "an94_phase_4_hyperburst_rammer": {
+        "shortLabel": "2x Pre-Feed & Ejection",
+        "title": "Phase 4 · Pulley-Cable Lunges Bronze Pre-Feed Rammer Forward at 1,800 RPM",
+        "description": "At peak -42 mm floating-action travel (compressing the lower buffer spring to 70 percent), the bolt carrier hits -92 mm total stroke and ejects the spent 5.45mm steel case rightward. Simultaneously, the spinning pulley whips the braided steel cable's lower leg forward, lunging the bronze pre-feed shuttle +26 mm ahead to stage the second round directly under the bolt path."
+      },
+      "an94_phase_5_second_feed": {
+        "shortLabel": "1,800 RPM Second Feed",
+        "title": "Phase 5 · Carrier Strips Pre-Staged Round & Locks Before Rear Buffer Impact",
+        "description": "Within the critical 33-millisecond window before the floating sub-receiver bottoms out against the shooter's shoulder, the high-rate upper return spring drives the bolt forward to strip the pre-staged second cartridge off the bronze tray, rotate-lock the breech, and trigger the second shot of the hyperburst."
+      },
+      "an94_phase_6_action_return": {
+        "shortLabel": "Barreled Action Return",
+        "title": "Phase 6 · Lower Heavy Buffer Spring Returns 405 mm Barreled Action 42 mm Forward",
+        "description": "With both hyperburst projectiles clear of the figure-8 compensator and the combined recoil impulse delivered as a single delayed push, the heavy lower helical buffer spring expands to return the entire 405 mm barrel, gas tube, brake, and locked steel sub-receiver 42 mm forward into battery while the pre-feed rammer retracts."
+      },
+      "an94_phase_7_lockup_reset": {
+        "shortLabel": "Ratchet Lock & Reset",
+        "title": "Phase 7 · Two-Round Hyperburst Ratchet Halts Cycle & Resets Primary Sear",
+        "description": "The bronze two-round burst escapement pawl captures the hammer to prevent a third shot in burst mode. Releasing the curved trigger resets the floating disconnector linkage onto the primary sear with zero kinematic discontinuity, ready for the next twin-bullet pinpoint burst."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "发条卡拉什尼科夫的物理狂想：尼科诺夫 AN-94「阿巴坎」的 1,800 RPM 延迟后坐传奇",
+      "deck": "从 1978 年苏联绝密「阿巴坎」招标到伊热夫斯克车间里的钢索定滑轮奇观，根纳季·尼科诺夫以整套浮置枪管后滑与二级预供弹机构，造出了人类制式步枪史上最复杂也最惊艳的机械钟表。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1978–1984",
+          "title": "阿巴坎招标的终极命题：让无依托连发命中率飙升两倍",
+          "paragraphs": [
+            "二十世纪七十年代末，苏联国防部在总结阿富汗山地战与欧洲步兵演习数据时，发现了一个令人焦虑的战术现实：尽管刚列装不久的 5.45×39mm AK-74 步枪已大幅降低了后坐力，但士兵在匆忙立姿、行进间跪姿等无依托状态下实施连发射击时，第一发枪口上跳仍会将后续弹丸无情甩离人体靶轮廓，远距离首发与连发命中概率远远落后于现代防弹衣普及后的战力需求。",
+            "1978 年，苏联火箭炮兵总局（GRAU）正式下达代号「阿巴坎」（Проект «Абакан»）的下一代制式突击步枪绝密研标。军方提出了近乎苛刻的硬指标：新步枪必须沿用现役 5.45×39mm 制式弹药与标准弹匣，但无依托短点射的实战命中效率必须在 AK-74 基础上提升一点五至两倍！全苏各大传奇武器设计局群雄并起：科夫罗夫拿出平衡自动反冲 AEK-971，图拉的斯捷奇金献上双膛高速方案，而伊热夫斯克军械厂（ИЖМАШ）的一位沉默工程师根纳季·尼科诺夫（Геннадий Никонов），却把目光投向了一个此前只存在于炮兵与航空机炮领域的狂野概念——「后坐冲量延迟转移」（Смещение импульса отдачи）。",
+            "尼科诺夫在草稿纸上写下了一道颠覆轻武器百年的物理学推论：与其费尽心机去抵消射手肩膀感受到的连发后坐，不如让整根枪管连同机匣一起在聚酰胺外壳里向后自由滑动；在滑块撞上外壳尾端将后坐传给射手肩膀之前，抢先用每分钟一千八百发的超高射速把第二发子弹也打出枪口！只要两发弹头都在三十三毫秒内同时离膛，射手体感只承受一次后坐，而两枚 5.45 毫米钢芯弹将在百米靶纸上精准钻入同一个弹孔！"
+          ],
+          "audioScript": "一九七八年，苏联军方启动了绝密的阿巴坎步枪招标，要求在沿用现役五点四五毫米弹药的前提下，将无依托连发命中率在AK七十四的基础上翻倍。面对这道近乎违背物理定律的难题，伊热夫斯克工程师根纳季尼科诺夫提出了一个疯狂构想：让整根枪管连同钢制内机匣悬浮在聚酰胺外壳内自由后滑，在后坐力撞击射手肩膀之前，以每分钟一千八百发的闪电射速把第二发子弹提前送出枪口。",
+          "audioUrl": "audio/an94/story_act1_zh.mp3",
+          "focusPartId": "an94_outer_housing",
+          "focusPartLabel": "伊热夫斯克炭黑聚酰胺外机匣壳体"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1985–1991",
+          "title": "绝世奇观的诞生：钢索、定滑轮与 15° 右倾弹匣",
+          "paragraphs": [
+            "将理论化为能熬过北极严寒与泥浆沙尘的实战步枪，是一场堪比航天器设计的机械苦旅。尼科诺夫很快撞上了第一道物理高墙：当射速拉升至每分钟一千八百发时，两发循环间隔缩短到短短三十三毫秒——传统三十发 AK-74 弹匣内细长的托弹簧，根本来不及在这电光石火的瞬间把下一发子弹向上顶升到位并由枪机直接剥离上膛。",
+            "尼科诺夫给出了令全球军械史学家拍案叫绝的解决方案——两级预供弹与定滑轮钢索机构。他在浮置钢制内机匣后侧加装了一枚数控精密 V 槽钢制传动滑轮，并以一根多股编织不锈钢航空钢索绕行一百八十度：钢索上端紧扣长行程活塞枪机框，下端直连位于弹匣口下方的青铜二级预供弹拨弹滑块。第一发点火瞬间，枪机框借高压燃气高速后坐，经定滑轮反向倍速牵引青铜滑块猛冲向前，在枪机尚未到达后止点之前就已提前把第二发 5.45×39mm 实弹平稳推送到枪机轴线正下方的待发托盘上！",
+            "然而，套在弹匣井下方的滑轮钢索与二级预供弹滑槽占据了机匣正中底部的宝贵空间。为了让新步枪依然百分百兼容苏军库存数以千万计的现役 AK-74 标准弹匣，尼科诺夫索性将整个弹匣井连同弹匣向右偏转十五度！这一极具科幻美感的不对称倾斜，不仅为内部钢索滑轮与预供弹盘让出了完美通道，更连同枪口那枚非对称 8 字形双室口哨制退器一起，铸就了 AN-94 举世无双的机械侧影。"
+          ],
+          "audioScript": "每分钟一千八百发的极限射速，瞬间击穿了传统弹匣的供弹物理天花板。为了在三十三毫秒内稳定送出第二发枪弹，尼科诺夫在浮置内机匣里塞进了一套精密数控钢制定滑轮和编织不锈钢传动钢索。枪机框高速后坐的同时，经滑轮反向猛拉青铜二级预供弹滑块前冲，提前把第二发子弹推上托盘。为了给滑轮轨道让出空间，他更是大胆将标准弹匣向右倾斜了整整十五度。",
+          "audioUrl": "audio/an94/story_act2_zh.mp3",
+          "focusPartId": "an94_pulley_wheel",
+          "focusPartLabel": "CNC 精密 V 槽钢制传动滑轮"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1992–1997",
+          "title": "阿巴坎决战登顶：双发同孔神迹与 6П33 正式列装",
+          "paragraphs": [
+            "历经十年严苛靶场淘汰，进入最终决战的仅剩尼科诺夫的 ASM 样枪与图拉设计局的 TKB-0146。在苏联中央精密机械工程研究院（ЦНИИТОЧМАШ）的魔鬼测试中，工程师将两支样枪浸入冰水、掩埋细沙并在无润滑条件下连续射击数千发。尽管外界普遍担忧那根隐藏在枪身内的编织不锈钢钢索与定滑轮难以承受战地泥尘，尼科诺夫全封闭的聚酰胺外机匣壳体却交出了令人瞠目结舌的可靠性答卷。",
+            "在最关键的百米立姿无依托双发点射考核中，AN-94 展现了近乎魔法般的弹道凝聚力：射手扣动一次扳机，两枚 5.45×39mm 7N6 钢芯弹头以一千八百发每分的惊人节拍紧贴彼此尾流先后冲出 8 字自清洁口哨制退器，击中百米靶面时两弹中心间距常常小于两厘米——有时甚至直接前后贯通同一个弹孔，瞬间击穿敌方重型陶瓷插板防弹衣的同一薄弱点！即便在全自动「АВ」模式下，前两发同样自动以一千八百发极速泼出，第三发起棘轮机构自动切入沉稳的六百发每分压制射速。",
+            "1994 年，俄罗斯联邦政府正式批准将该枪定型为 AN-94（Автомат Никонова обр. 1994 г.，GRAU 编号 6П33），并于 1997 年正式授命列装俄罗斯联邦武装力量。为了向这场历时十六载的伟大军工竞标致敬，部队与军迷至今仍亲切地称它为「阿巴坎」。"
+          ],
+          "audioScript": "在最终的严苛军标实测中，尼科诺夫样枪凭借全封闭聚酰胺外壳顺利通过了冰水泥沙拷打，并在百米无依托连发考核中震惊四座。两发五点四五毫米步枪弹以一千八百发每分的节奏紧咬尾流离膛，往往在百米靶纸上前后贯穿同一个弹孔，具备撕裂现代防弹插板的恐怖聚能威力。一九九四年，这支划时代的突击步枪正式定型为AN九四，成为俄军精锐的传奇制式装备。",
+          "audioUrl": "audio/an94/story_act3_zh.mp3",
+          "focusPartId": "an94_muzzle_brake",
+          "focusPartLabel": "非对称 8 字双室自清洁口哨制退器"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1998–至今",
+          "title": "机械工程的孤勇绝唱：特种精英手中的传奇图腾",
+          "paragraphs": [
+            "然而，登顶技术珠峰的代价同样高昂。尽管 AN-94 在单兵无依托点射精度上全面碾压了传统卡拉什尼科夫步枪，但其内部包含浮置内机匣、定滑轮、编织钢索、青铜预供弹滑块、双复进簧及两发点射棘轮在内的高度精密结构，使得整枪制造成本达到 AK-74M 的五至六倍；野战全拆清洗更是需要受过专门培训的军械士官，而非普通义务兵三分钟即可闭眼拆装的粗犷农具哲学。",
+            "在二十世纪九十年代末俄罗斯财政紧缩的现实背景下，全面替换数百万支 AK-74M 成为不可能完成的经济任务。于是 AN-94 从普遍列装转向精英化配发，成为俄军精锐近卫塔曼师、海军陆战队侦察分队、联邦安全局（FSB）特种反恐小组及内务部精锐突击队员手中的王牌利刃。它还率先普及了向右折叠避开侧镜轨的聚酰胺枪托、五芒星轮旋转觇孔照门以及无声解耦的独立拇指保险与快慢机，深刻启发了此后二十年俄系现代步枪的人机进化。",
+            "时至今日，当全球自动步枪普遍回归简洁模块化气吹或短行程活塞路线时，尼科诺夫 AN-94 宛如冷战末期留给世界兵器博物馆的一件稀世机械钟表。在数字军械库的实时三维纵剖视窗里，看着那枚闪亮的钢制滑轮拉动编织钢索、整根四百零五毫米枪管在炭黑外壳里优雅后滑四十二毫米——你会深深感叹：这是人类将纯机械物理定律压榨到极致的巅峰史诗。"
+          ],
+          "audioScript": "由于滑轮钢索与浮置机匣造价高昂且拆装复杂，AN九四最终未能像AK七十四那样大规模普及全军，而是作为精英王牌配发给了俄军精锐侦察部队与特战反恐力量。它首创的右折枪托、星轮觇孔照门与独立保险深深影响了后世俄系枪械。在机械工程长河中，尼科诺夫AN九四宛如一座冷战末期的精密钟表丰碑，将纯机械延迟后坐的想象力推向了后无来者的巅峰。",
+          "audioUrl": "audio/an94/story_act4_zh.mp3",
+          "focusPartId": "an94_feed_rammer",
+          "focusPartLabel": "青铜二级预供弹拨弹滑块与斜置托弹盘"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "42 mm 浮置枪管/内机匣整体延迟后坐",
+          "tag": "后坐冲量延迟转移",
+          "summary": "405 mm 冷锻枪管、导气管、8 字制退器与钢制内机匣刚性绑定为一体，在静止炭黑聚酰胺外机匣内沿滑轨自由后滑 42 mm，令 1,800 RPM 双发弹头均已离膛后才将合并后坐传抵射手肩部。",
+          "focusPartId": "an94_inner_receiver",
+          "focusPartLabel": "浮置数控钢制内机匣滑轨车架"
+        },
+        {
+          "id": "bt2",
+          "title": "CNC 钢制滑轮、编织钢索与青铜二级预供弹",
+          "tag": "1,800 RPM 供弹密钥",
+          "summary": "利用定滑轮与 180° 绕包编织不锈钢传动钢索，在枪机框后坐的同时反向倍速拉动青铜二级预供弹滑块前冲 +26 mm，突破弹匣弹簧惯性极限，并在 33 毫秒窗口内完成第 2 发弹药精准预位。",
+          "focusPartId": "an94_pulley_wheel",
+          "focusPartLabel": "CNC 精密 V 槽钢制传动滑轮"
+        },
+        {
+          "id": "bt3",
+          "title": "15° 右倾标准弹匣与 8 字自清洁口哨制退器",
+          "tag": "异构人机与气动美学",
+          "summary": "将通用 30 发 AK-74 5.45mm 李子黑弹匣向右倾斜 15° 为内部滑轮钢索腾出空间；膛口独创上下偏心 8 字双室涡流制退器，兼具高效抑跳、超音速燃气自清洁除碳与独特声纹。",
+          "focusPartId": "an94_muzzle_brake",
+          "focusPartLabel": "尼科诺夫非对称 8 字双室制退器"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1978–1981",
+          "title": "苏联「阿巴坎」下一代突击步枪招标启动",
+          "detail": "苏联火箭炮兵总局下达严苛技战术指标，要求 5.45×39mm 新枪无依托连发命中概率较 AK-74 提升 1.5 至 2 倍。"
+        },
+        {
+          "year": "1981–1986",
+          "title": "尼科诺夫 NA-2 至 AS 原型与滑轮供弹定型",
+          "detail": "根纳季·尼科诺夫在伊热夫斯克军械厂突破 1,800 RPM 供弹瓶颈，发明定滑轮钢索二级预供弹与 15° 右倾弹匣井布局。"
+        },
+        {
+          "year": "1987–1991",
+          "title": "ASM 决选样枪通过国家魔鬼可靠性考核",
+          "detail": "改进型 ASM 在 ЦНИИТОЧМАШ 靶场击败 AEK-971 与 TKB-0146，以百米双发近乎同孔散布夺得「阿巴坎」竞标冠军。"
+        },
+        {
+          "year": "1994",
+          "title": "正式获批定型 AN-94 (GRAU 6П33)",
+          "detail": "俄罗斯联邦正式赋予制式编号 6П33，并在伊热夫斯克军械厂启动首批小批量精密军用生产线建设。"
+        },
+        {
+          "year": "1997–2005",
+          "title": "列装俄军精锐近卫师与特战反恐部队",
+          "detail": "AN-94 装备塔曼近卫师、海军陆战队侦察连及 FSB 特战分队，并历经高加索山地复杂实战检验。"
+        },
+        {
+          "year": "2008–至今",
+          "title": "冷战机械巅峰图腾与现代俄系枪械启迪",
+          "detail": "虽因高造价停产于小批量精锐列装，但其浮置延迟后坐理念、右折托与独立保险设计永载世界轻武器工程殿堂。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "The Clockwork Kalashnikov: Gennady Nikonov's 1,800 RPM AN-94 Abakan",
+      "deck": "Born from the secret 1978 Soviet Project Abakan trials, Gennady Nikonov defied ballistic physics with a floating 405 mm barreled action, a steel cable-and-pulley two-stage pre-feed, and a 15-degree canted magazine capable of firing two bullets before recoil reaches the shoulder.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1978–1984",
+          "title": "The Project Abakan Mandate: Doubling Unstable-Stance Hit Probability",
+          "paragraphs": [
+            "In the late 1970s, Soviet military analysts examining combat data from Afghanistan and mechanized infantry exercises confronted an unsettling reality. Although the newly adopted 5.45x39mm AK-74 had dramatically tamed recoil compared to older 7.62mm rifles, soldiers firing quick bursts from offhand standing or hurried kneeling positions still suffered severe muzzle climb after the very first shot, sending follow-up bullets harmlessly wide of an armored target silhouette.",
+            "In 1978, the Main Missile and Artillery Directorate launched Project Abakan, a fiercely competitive next-generation service rifle program with a breathtaking requirement: chambered for standard 5.45x39mm ammunition and magazines, the winning rifle had to boost short-burst hit probability from unstable stances by one hundred fifty to two hundred percent over the AK-74. Major Soviet bureaus answered with counter-balanced pistons and twin-barrel concepts, yet quiet Izhmash engineer Gennady Nikonov turned instead to an audacious artillery principle known as Blowback-Shifted Pulse.",
+            "Nikonov reasoned that instead of fighting felt recoil at the buttstock, the entire barrel and steel action could float freely on internal rails inside a stationary polymer shell. If two rounds could fire and exit the muzzle at an astonishing eighteen hundred rounds per minute before the recoiling barreled action struck the rear buffer stop, the shooter would perceive only a single delayed impulse—and both supersonic 5.45mm bullets would strike virtually the exact same point of impact at one hundred meters."
+          ],
+          "audioScript": "In nineteen seventy eight, Soviet defense planners launched the top secret Project Abakan trials, demanding a five point four five millimeter assault rifle that could double offhand burst hit probability over the AK seventy four. While rivals built counter-balanced pistons, Izhmash engineer Gennady Nikonov proposed something far wilder: let the entire barrel and steel action slide freely backward inside a stationary polymer shell, firing two rounds at eighteen hundred rounds per minute before recoil ever hits the shooter's shoulder.",
+          "audioUrl": "audio/an94/story_act1_en.mp3",
+          "focusPartId": "an94_outer_housing",
+          "focusPartLabel": "Izhmash Monocoque Polyamide Outer Housing"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1985–1991",
+          "title": "Mechanical Alchemy: The Steel Pulley, Braided Cable, and 15-Degree Magazine",
+          "paragraphs": [
+            "Translating a 1,800 round-per-minute hyperburst into an Arctic-proof infantry rifle quickly collided with a brutal physical barrier. At thirty-three milliseconds between shots, the long spring inside a conventional thirty-round AK-74 box magazine simply cannot accelerate the ammunition column upward fast enough for a reciprocating bolt to strip the second cartridge directly from the feed lips.",
+            "Nikonov shattered that barrier with the most famous clockwork mechanism in small-arms history: a grooved CNC steel transmission pulley and a 180-degree braided stainless-steel wire cable pinned inside the floating sub-receiver. Tied at its upper end to the long-stroke bolt carrier and at its lower end to a bronze two-stage pre-feed rammer, the cable reverses the carrier's violent rearward stroke into a high-speed forward shuttle lunge. Even as the bolt is still flying back to eject casing number one, the bronze rammer has already pulled round number two onto a staging tray squarely beneath the bore centerline!",
+            "Fitting this cable pulley train alongside the magazine throat required precious underside clearance while preserving one hundred percent compatibility with millions of stockpiled AK-74 magazines. Nikonov's pragmatic stroke of genius was to cant the entire magazine well fifteen degrees to the shooter's right. Paired with his asymmetrical figure-eight self-cleaning muzzle brake, that unmistakable canted profile instantly announced the AN-94 as a machine unlike anything else on earth."
+          ],
+          "audioScript": "At eighteen hundred rounds per minute, thirty three milliseconds between shots outruns any ordinary magazine spring. Nikonov solved this with an astonishing piece of clockwork: a grooved steel pulley wheel and braided stainless cable tucked inside the floating receiver. As the bolt carrier rockets backward, the cable whips a bronze pre-feed shuttle forward, staging the second round beneath the bolt in advance. To clear this pulley track while keeping standard AK seventy four magazines, Nikonov boldly tilted the entire magazine fifteen degrees to the right.",
+          "audioUrl": "audio/an94/story_act2_en.mp3",
+          "focusPartId": "an94_pulley_wheel",
+          "focusPartLabel": "CNC Steel V-Groove Transmission Pulley Wheel"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1992–1997",
+          "title": "Triumph of the Abakan: Twin-Bullet Armor Defeat and 6P33 Adoption",
+          "paragraphs": [
+            "After a decade of brutal elimination rounds against rivals such as the balanced-recoil AEK-971 and the bullpup TKB-0146, Nikonov's refined ASM prototype entered final state trials at TsNIITochMash. Skeptics predicted that a braided wire cable and pulley wheel would choke in frozen mud and fine dust, yet the tightly sealed charcoal polyamide monocoque chassis guided the rifle through extreme immersion, dry sand, and multi-thousand-round endurance tests with shocking dependability.",
+            "On the proving-ground firing line, the AN-94 delivered jaw-dropping ballistic proof of concept. In its signature 2-round hyperburst setting, two 5.45x39mm 7N6 steel-core bullets blasted out of the whistling figure-eight compensator in thirty-three milliseconds, routinely landing within two centimeters of one another at one hundred meters—frequently punching through the exact same hole to defeat modern ceramic armor plates through concentrated twin-impact energy. Even in full automatic mode, the first two rounds fire at 1,800 RPM before the ratchet automatically steps down to a controllable 600 RPM.",
+            "In 1994, the Russian Federation officially adopted the rifle as the Avtomat Nikonova model 1994 (AN-94, GRAU designation 6P33), followed by formal troop acceptance in 1997. Honoring the legendary sixteen-year quest that birthed it, soldiers and historians worldwide still revere it simply as the Abakan."
+          ],
+          "audioScript": "Against fierce rivals in state trials, Nikonov's sealed polyamide housing defied every skeptic, surviving arctic ice, mud, and dust without faltering. On the firing range, its performance bordered on ballistic magic: in two round hyperburst mode, both five point four five millimeter bullets cleared the whistling figure eight brake in thirty three milliseconds, regularly punching the same hole at one hundred meters to defeat heavy body armor. Officially adopted in nineteen ninety four as the AN ninety four, it claimed victory in Project Abakan.",
+          "audioUrl": "audio/an94/story_act3_en.mp3",
+          "focusPartId": "an94_muzzle_brake",
+          "focusPartLabel": "Asymmetrical Figure-8 Whistling Muzzle Brake"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "1998–Present",
+          "title": "An Unrepeatable Mechanical Monument: Elite Adoption and Lasting Legacy",
+          "paragraphs": [
+            "Achieving mechanical perfection carried an unforgiving industrial price. With its precision-machined floating steel sub-receiver, grooved pulley wheel, braided cable, bronze two-stage rammer, dual helical recoil springs, and burst ratchet, the AN-94 cost five to six times more to manufacture than an AK-74M and demanded specialist armorers for detailed stripping—a stark departure from Kalashnikov's simple conscript-proof simplicity.",
+            "Amidst post-Soviet budgetary realities, fleet-wide replacement of millions of AK-74M rifles proved economically impossible. Instead, the AN-94 entered elite service with Russia's Taman Guards Division, Naval Infantry reconnaissance units, and FSB counter-terrorism detachments. Along the way, its pioneering ergonomic choices—including a right-folding stock that clears the left dovetail optics rail, a five-position rotary star-wheel diopter sight, and a silent thumb safety decoupled from the fire selector—left a lasting imprint on modern Russian rifle design.",
+            "Today, as global military rifles converge on straightforward direct-impingement and short-stroke piston layouts, the Nikonov AN-94 endures as an unrepeatable triumph of pure mechanical ingenuity. Watching its gleaming pulley spin, its braided steel cable whip the bronze rammer forward, and its entire 405 mm barrel glide gracefully 42 mm inside its shell reminds us that the AN-94 is nothing less than haute horlogerie rendered in Russian ordnance steel."
+          ],
+          "audioScript": "Precision clockwork came at a steep industrial cost. Five to six times more expensive to build and far more intricate to clean than an AK seventy four M, the AN ninety four never replaced standard infantry rifles across the board. Instead, it equipped elite guards, naval reconnaissance teams, and special forces units. Today, its right folding stock, star wheel diopter, and breathtaking pulley cable floating barrel stand as an unrepeatable monument to the absolute summit of mechanical firearms engineering.",
+          "audioUrl": "audio/an94/story_act4_en.mp3",
+          "focusPartId": "an94_feed_rammer",
+          "focusPartLabel": "2-Stage Bronze Pre-Feed Rammer Shuttle"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "42 mm Floating Barreled-Action Blowback-Shifted Recoil",
+          "tag": "Delayed Impulse Transfer",
+          "summary": "The 405 mm CHF barrel, gas cylinder, figure-8 brake, and CNC steel sub-receiver slide freely 42 mm rearward as a single unit inside the stationary polyamide outer housing, firing both 1,800 RPM burst rounds before recoil reaches the shoulder.",
+          "focusPartId": "an94_inner_receiver",
+          "focusPartLabel": "Floating Steel Sub-Receiver Carriage"
+        },
+        {
+          "id": "bt2",
+          "title": "Steel V-Groove Pulley, Braided Cable & 2-Stage Bronze Pre-Feed",
+          "tag": "1,800 RPM Feed Breakthrough",
+          "summary": "A 180-degree braided stainless wire cable wrapping a CNC pulley converts rearward bolt-carrier travel into a +26 mm forward shuttle lunge, pre-staging the second 5.45x39mm cartridge beneath the bolt within 33 milliseconds.",
+          "focusPartId": "an94_pulley_wheel",
+          "focusPartLabel": "CNC Grooved Transmission Pulley"
+        },
+        {
+          "id": "bt3",
+          "title": "15-Degree Canted Magazine & Self-Cleaning Figure-8 Brake",
+          "tag": "Asymmetrical Kinematics & Aero",
+          "summary": "Canting standard 30-round AK-74 magazines 15 degrees right clears the internal pulley-cable track, while the twin-chamber figure-8 muzzle compensator harnesses supersonic gas vortices for recoil control and self-cleaning carbon purge.",
+          "focusPartId": "an94_muzzle_brake",
+          "focusPartLabel": "Figure-8 Whistling Muzzle Brake"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1978–1981",
+          "title": "Project Abakan Secret Rifle Trials Launched",
+          "detail": "Soviet GRAU issues an unprecedented mandate requiring a 5.45x39mm service rifle to deliver 1.5x to 2x the offhand burst hit probability of the AK-74."
+        },
+        {
+          "year": "1981–1986",
+          "title": "Nikonov NA-2 to AS Prototypes & Pulley Pre-Feed",
+          "detail": "Gennady Nikonov develops the blowback-shifted floating action, steel pulley-cable two-stage pre-feed rammer, and 15-degree canted magazine architecture at Izhmash."
+        },
+        {
+          "year": "1987–1991",
+          "title": "ASM Finalist Triumphs at TsNIITochMash Proving Grounds",
+          "detail": "Outperforming the balanced-recoil AEK-971 and bullpup TKB-0146, the refined ASM clears mud, sand, and arctic trials while printing tight two-round groups at 100 meters."
+        },
+        {
+          "year": "1994",
+          "title": "Official Adoption as AN-94 (GRAU 6P33)",
+          "detail": "Designated Avtomat Nikonova model 1994, Izhmash establishes specialized precision manufacturing lines for Russian military production."
+        },
+        {
+          "year": "1997–2005",
+          "title": "Elite Field Deployment & Combat Validation",
+          "detail": "Issued selectively to Russia's Taman Guards Division, Naval Infantry scouts, and FSB special operations units across demanding alpine theaters."
+        },
+        {
+          "year": "2008–Present",
+          "title": "Enduring Pinnacle of Mechanical Ordnance Engineering",
+          "detail": "Though limited production ended due to cost, the AN-94 remains revered worldwide as the boldest pure-mechanical recoil-mitigation rifle ever fielded."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "an94_inner_receiver": {
+      "partId": "an94_inner_receiver",
+      "bomCode": "S-01",
+      "calloutLabelEn": "Floating Sub-Receiver",
+      "zh": {
+        "roleTag": "整体延迟后坐滑架 · 携枪管在聚酰胺外壳内自由后滑 42 mm",
+        "overview": "这套数控精铣钢制内机匣车架是 AN-94 浮置延迟后坐架构的机械骨干，刚性锁固 405 mm 枪管、导气管、旋转枪机与滑轮钢索系统。",
+        "craftAndMaterial": "选用高强合金钢 CNC 整体铣削成型并经磷酸锰硬化处理，两侧设有低摩擦硬化导轨面，前端重型双销节套牢牢压装浮置冷锻枪管。",
+        "kinematicRole": "击发阶段 2 至 5 携枪管、导气管与 8 字制退器作为一个刚体在静止聚酰胺外壳内向后滑动 42 mm，压缩下置缓冲主簧并在阶段 6 整体复进归位。",
+        "designHighlight": "将整套承压自动机与外部人机外壳彻底机械解耦，使 1,800 RPM 两发极速点射期间的后坐力完全悬空延迟，赋予惊人的双发同孔精度。",
+        "audioScript": "这就是浮置钢制内机匣滑轨车架。它把枪管、枪机和滑轮钢索牢牢整合为一个整体，开火瞬间在炭黑聚酰胺外壳里自由向后滑动整整四十二毫米，让射手在第二发子弹离膛前几乎感受不到后坐冲击。",
+        "audioUrl": "audio/an94/parts/an94_inner_receiver_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Floating CNC Steel Carriage Recoiling 42mm Inside Outer Shell",
+        "overview": "This CNC-milled steel sub-receiver carriage serves as the dynamic backbone of the AN-94, rigidly uniting the 405 mm barrel, gas cylinder, bolt group, and pulley-cable train.",
+        "craftAndMaterial": "Precision-machined from hardened alloy steel with a manganese-phosphate finish, featuring low-friction lateral guide rails and a pinned front barrel trunnion.",
+        "kinematicRole": "Glides smoothly 42 mm rearward as one rigid assembly during firing phases 2 through 5 while compressing the lower buffer spring, returning forward in phase 6.",
+        "designHighlight": "Mechanically decouples the entire barreled action from the shooter's grip so both 1,800 RPM hyperburst bullets clear the muzzle before recoil impact.",
+        "audioScript": "This CNC machined steel sub-receiver is the moving skeleton of the AN ninety four. It rigidly carries the barrel, bolt, and pulley train, gliding forty two millimeters rearward inside the stationary polymer shell so two bullets exit before recoil hits your shoulder.",
+        "audioUrl": "audio/an94/parts/an94_inner_receiver_en.mp3"
+      }
+    },
+    "an94_bolt_carrier": {
+      "partId": "an94_bolt_carrier",
+      "bomCode": "S-02",
+      "calloutLabelEn": "Piston Bolt Carrier",
+      "zh": {
+        "roleTag": "双级动力主动件 · 后坐牵引钢索驱动滑轮与旋转开锁",
+        "overview": "长行程镀铬导气活塞与铣削钢制枪机框一体件，兼具旋转枪机开闭锁驱动与向后牵引编织钢索驱动定滑轮的双重使命。",
+        "craftAndMaterial": "后部机框经发黑磷化精铣螺旋凸轮槽与右侧上翘拉机柄，前端延伸带三道闭气环槽的硬铬不锈钢长行程导气活塞杆，尾右设有黄铜钢索挂耳。",
+        "kinematicRole": "击发阶段 3 至 4 在已后滑 42 mm 的内机匣内再相对后坐 50 mm（总行程达 -92 mm），强制旋转枪机开锁并猛拽钢索上股令滑轮狂转 275°。",
+        "designHighlight": "单一长行程活塞不仅完成卡拉什尼科夫式强力抽抛壳，还无缝客串 1,800 RPM 二级预供弹滑轮传动系统的原动机。",
+        "audioScript": "这组长行程活塞枪机框继承了卡拉什尼科夫的强悍血统，但尾部多了一枚至关重要的黄铜挂耳。高压燃气推它狂退九十二毫米的同时，既旋转开锁抛壳，又狠狠拉动钢索驱动滑轮飞速旋转。",
+        "audioUrl": "audio/an94/parts/an94_bolt_carrier_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Long-Stroke Piston Carrier Driving Cam Unlock & Steel Cable",
+        "overview": "Uniting a long-stroke chrome gas piston with a cammed steel carrier block, this actuator both unlocks the rotating bolt and pulls the braided pulley cable.",
+        "craftAndMaterial": "Machined phosphate steel body with an upturned right charging handle, helical cam track, brass rear cable clevis, and chrome-plated three-ring piston head.",
+        "kinematicRole": "Strokes 50 mm rearward relative to the sliding inner receiver (-92 mm world total) in phases 3 and 4, unlocking the bolt and whipping the steel pulley through 275 degrees.",
+        "designHighlight": "Cleverly harnesses standard Kalashnikov piston energy to power both breech extraction and the secondary 1,800 RPM cable-driven pre-feed cycle.",
+        "audioScript": "This long stroke gas piston bolt carrier blends rugged Kalashnikov DNA with a unique brass cable lug at the rear. As propellant gas drives it ninety two millimeters back, it rotates the bolt open while yanking the steel cable to spin the transmission pulley.",
+        "audioUrl": "audio/an94/parts/an94_bolt_carrier_en.mp3"
+      }
+    },
+    "an94_bolt": {
+      "partId": "an94_bolt",
+      "bomCode": "S-03",
+      "calloutLabelEn": "2-Lug Rotating Bolt",
+      "zh": {
+        "roleTag": "35.5° 同轴回转闭锁 · 承受 5.45×39mm 300 MPa 膛压",
+        "overview": "精磨不锈钢双突笋回转枪机头，负责承受 5.45×39mm 步枪弹 300 MPa 峰值膛压，并在 1,800 RPM 极速复进时从青铜托弹盘剥弹上膛。",
+        "craftAndMaterial": "高强马氏体不锈钢经无心磨削与缎面拉丝处理，前端铣出对称重型双闭锁突笋、沉底弹壳镜面与发黑硬化钢爪式抽壳钩。",
+        "kinematicRole": "阶段 3 走完自由行程后绕枪管轴线旋转 35.5°（0.62 rad）开锁并随框后坐抽壳，阶段 5 在内机匣尚未触底之际闪电复进推入第 2 发弹逆旋锁死。",
+        "designHighlight": "超轻量化双突笋构型将往复惯量降至最低，是支撑每分钟 1,800 发超高速两发闭锁循环的关键保障。",
+        "audioScript": "这枚精磨不锈钢双突笋旋转枪机头极为紧凑轻巧。击发泄压后，它在枪机框螺旋槽驱动下迅速旋转三十五点五度开锁抽壳，随即在三十三毫秒内冲回前方，把预供弹盘上的第二发子弹稳稳推进弹膛锁死。",
+        "audioUrl": "audio/an94/parts/an94_bolt_zh.mp3"
+      },
+      "en": {
+        "roleTag": "35.5-Degree Rotating 2-Lug Breech Lock for 300 MPa 5.45mm",
+        "overview": "This compact brushed-stainless two-lug rotating bolt contains 300 MPa chamber pressure and strips pre-staged 5.45x39mm rounds at 1,800 RPM.",
+        "craftAndMaterial": "Precision-ground martensitic stainless steel with symmetrical forward locking lugs, recessed breech face, helical cam stud, and hardened steel claw extractor.",
+        "kinematicRole": "Rotates 35.5 degrees (0.62 rad) to unlock in phase 3 after carrier free dwell, strokes rearward to extract, and locks the second hyperburst round home in phase 5.",
+        "designHighlight": "Minimized reciprocating mass allows reliable 33-millisecond hyperburst cycling without sacrificing Kalashnikov-grade extraction torque.",
+        "audioScript": "This compact brushed stainless rotating bolt features twin heavy locking lugs and a hardened claw extractor. After brief free dwell, it rotates thirty five point five degrees to unlock and then rockets forward in thirty three milliseconds to chamber the second burst round.",
+        "audioUrl": "audio/an94/parts/an94_bolt_en.mp3"
+      }
+    },
+    "an94_firing_pin": {
+      "partId": "an94_firing_pin",
+      "bomCode": "S-04",
+      "calloutLabelEn": "Coaxial Firing Pin",
+      "zh": {
+        "roleTag": "低惯性中心刺穿底火 · 物理闭锁不到位防走火",
+        "overview": "贯穿旋转枪机中心轴孔的阶梯形不锈钢浮动撞击击针，将回转击锤的瞬时动能精确传递至 5.45×39mm 步枪弹底火。",
+        "craftAndMaterial": "采用高韧性耐蚀工具不锈钢精密车削热处理，针尖圆弧抛光防穿孔漏气，尾端凸台严格与枪机闭锁角度配合。",
+        "kinematicRole": "阶段 1 受击锤敲击前冲 3.6 mm 引燃第一发底火，阶段 5 双发点射第 2 发闭锁瞬间再次敏捷前冲完成千八射速连击。",
+        "designHighlight": "极低质量与无簧浮动构造避免高速惯性早发火，唯枪机彻底旋锁到位后击锤方可触及击针尾座。",
+        "audioScript": "贯穿在旋转枪机轴心的不锈钢阶梯击针经过极致减重。它只有当双突笋彻底旋转闭锁后才对准击锤打击面，在每分钟一千八百发的闪电点射中依然能干脆利落地刺破底火。",
+        "audioUrl": "audio/an94/parts/an94_firing_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Low-Inertia Floating Pin Ensuring Locked-Breech Ignition",
+        "overview": "Running coaxially through the rotating bolt body, this stepped stainless firing pin delivers crisp primer ignition across 1,800 RPM hyperburst cycles.",
+        "craftAndMaterial": "Turned and hardened corrosion-resistant stainless steel featuring a radiused anti-piercing tip and widened anvil collar.",
+        "kinematicRole": "Protrudes 3.6 mm forward in phase 1 for round one and executes a rapid second strike during phase 5 hyperburst lockup.",
+        "designHighlight": "Minimal reciprocating mass guards against slam-fire inertia while mechanical alignment prevents ignition until full lug engagement.",
+        "audioScript": "Housed along the bolt centerline, this lightweight stepped stainless firing pin transfers hammer energy straight to the primer. Its low mass prevents inertial slam-fires while delivering crisp double-tap ignition at eighteen hundred rounds per minute.",
+        "audioUrl": "audio/an94/parts/an94_firing_pin_en.mp3"
+      }
+    },
+    "an94_pulley_wheel": {
+      "partId": "an94_pulley_wheel",
+      "bomCode": "S-05",
+      "calloutLabelEn": "CNC Transmission Pulley",
+      "zh": {
+        "roleTag": "“发条 AK”灵魂奇观 · 定滑轮变向增速传动核心",
+        "overview": "销装于浮置钢制内机匣后右侧的 CNC 精密 V 槽钢制传动滑轮，是全球唯一列装在制式突击步枪内部的滑轮反向供弹核心。",
+        "craftAndMaterial": "高碳淬火不锈钢精密车削出双侧护缘与深 V 形钢索槽，钻有四枚减重圆孔与凸起加强筋，中心镶嵌自润滑磷青铜轴承套。",
+        "kinematicRole": "射击时随浮置内机匣整体后滑 42 mm，同时在枪机框钢索拉动下绕横轴高速狂转 275°（+4.80 rad），将后坐力反向驱动二级预供弹滑块前冲。",
+        "designHighlight": "用最纯粹的经典力学定滑轮突破了 1,800 RPM 供弹时间瓶颈，成就了“发条卡拉什尼科夫”享誉世界的机械奇观。",
+        "audioScript": "请将目光聚焦在这枚闪亮的数控钢制定滑轮上，它正是AN九四被称为发条卡拉什尼科夫的灵魂所在。枪机框高速后坐拉动钢索时，这枚镶嵌青铜轴套的V槽滑轮瞬间狂转两百七十五度，把向后的冲击力巧妙反转成向前的预供弹动力。",
+        "audioUrl": "audio/an94/parts/an94_pulley_wheel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Grooved CNC Steel Pulley Reversing Recoil Into Pre-Feed Thrust",
+        "overview": "Pinned to the rear right wall of the floating inner receiver, this CNC-machined V-groove steel pulley wheel is the unmistakable star of the AN-94.",
+        "craftAndMaterial": "Lathe-turned hardened stainless steel with deep cable groove, four drilled lightening holes, visual spoke ribs, and a self-lubricating phosphor-bronze center bushing.",
+        "kinematicRole": "Rides 42 mm rearward with the floating sub-receiver while spinning rapidly through 275 degrees (+4.80 rad) as the bolt carrier pulls the braided drive cable.",
+        "designHighlight": "Applies timeless classical pulley mechanics inside a combat rifle to reverse rearward carrier momentum into high-speed forward cartridge staging.",
+        "audioScript": "Focus closely on this gleaming CNC steel pulley wheel, the legendary centerpiece of the Clockwork Kalashnikov. Riding a phosphor bronze bushing, it spins two hundred seventy five degrees during recoil, reversing bolt carrier travel into forward pre-feed motion.",
+        "audioUrl": "audio/an94/parts/an94_pulley_wheel_en.mp3"
+      }
+    },
+    "an94_steel_cable": {
+      "partId": "an94_steel_cable",
+      "bomCode": "S-06",
+      "calloutLabelEn": "Braided Steel Drive Cable",
+      "zh": {
+        "roleTag": "多股高疲劳航空钢缆 · 串联枪机框与二级预供弹滑块",
+        "overview": "180° 贴合绕包于传动滑轮深槽内的多股编织不锈钢传动钢索，如同精密钟表的发条缆绳将自动机与二级预供弹系统紧锁同步。",
+        "craftAndMaterial": "高抗拉多股绞合航空级不锈钢丝绳，具备极佳的弯曲疲劳寿命与抗泥沙腐蚀能力，两端冷镦压接强化黄铜连接套筒。",
+        "kinematicRole": "随浮置内机匣同步往复滑动，上股锚定枪机框尾耳、下股直连青铜二级预供弹滑块，以零间隙刚性张力传递高速双向行程。",
+        "designHighlight": "彻底打破人们对钢缆不耐枪械恶劣环境的刻板偏见，在俄军严苛数万发寿命与泥水考核中展现惊人耐用度。",
+        "audioScript": "这根绕在滑轮槽里的多股编织不锈钢航空钢索，两端压接着结实的黄铜套筒。它像机械钟表的发条一样把枪机框与下方的青铜预供弹滑块紧紧串联，在数万发高温连射中毫发无损地传递澎湃拉力。",
+        "audioUrl": "audio/an94/parts/an94_steel_cable_zh.mp3"
+      },
+      "en": {
+        "roleTag": "180-Degree Aviation-Grade Braided Stainless Cable Loop",
+        "overview": "Wrapping 180 degrees around the grooved pulley wheel, this braided stainless steel wire cable synchronizes the bolt carrier directly with the pre-feed rammer.",
+        "craftAndMaterial": "High-tensile multi-strand aviation stainless wire rope resistant to bending fatigue and propellant fouling, terminated with swaged brass ferrules.",
+        "kinematicRole": "Travels with the floating inner receiver while transmitting high-speed carrier recoil from its upper leg around the pulley to thrust the lower rammer forward.",
+        "designHighlight": "Defied widespread skepticism during Soviet endurance trials by surviving tens of thousands of rounds in dust, mud, and sub-zero temperatures.",
+        "audioScript": "Wrapping one hundred eighty degrees around the pulley groove, this aviation grade braided stainless cable ends in swaged brass ferrules. Linking the bolt carrier to the feed shuttle, it endures tens of thousands of violent bursts without stretching or snapping.",
+        "audioUrl": "audio/an94/parts/an94_steel_cable_en.mp3"
+      }
+    },
+    "an94_feed_rammer": {
+      "partId": "an94_feed_rammer",
+      "bomCode": "S-07",
+      "calloutLabelEn": "2-Stage Bronze Pre-Feed",
+      "zh": {
+        "roleTag": "1,800 RPM 供弹密钥 · 枪机后坐同时提前将第2发弹推上待发位",
+        "overview": "由滑轮钢索下股直接驱动的青铜/亮铬二级预供弹拨弹滑块与斜置托弹托盘，是 AN-94 实现每分钟 1,800 发超高速供弹的终极秘密武器。",
+        "craftAndMaterial": "主体采用高耐磨自润滑磷青铜精铣导轨滑座与拨弹爪，上方集成镜面抛光不锈钢 5.45mm 斜置预供弹托盘，摩擦阻力极低。",
+        "kinematicRole": "击发阶段 3 至 4 在钢索牵引下逆向猛冲向前（净世界位移达 +26 mm），趁枪机框后退之际提前将第 2 发弹从 15° 弹匣拨上中轴托盘，阶段 6 平顺复位。",
+        "designHighlight": "首创“一级弹匣托举 + 二级钢索预拨”双接力供弹架构，彻底解决了普通弹匣弹簧在 33 毫秒极限周期内供弹滞后的物理顽疾。",
+        "audioScript": "这组闪烁青铜与镀铬光泽的二级预供弹滑块，藏着一千八百发每分供弹不卡壳的终极密码。当枪机还在向后退壳时，钢索已经把它狠狠拉向前方二十六毫米，提前把第二发五点四五枪弹稳稳端到了枪机正下方。",
+        "audioUrl": "audio/an94/parts/an94_feed_rammer_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Bronze & Chrome 2-Stage Pre-Feed Shuttle for 1,800 RPM",
+        "overview": "Pulled forward by the braided cable's lower leg, this bronze rammer and polished loading tray stage the second 5.45x39mm cartridge before the bolt reverses.",
+        "craftAndMaterial": "Low-friction phosphor-bronze guide bar and pusher dog paired with a mirror-polished stainless cartridge cradle and brass cable hook.",
+        "kinematicRole": "Lunges forward +26 mm in world space during phases 3 and 4 even while the barrel recoils -42 mm, staging round two directly beneath the bolt path before retracting in phase 6.",
+        "designHighlight": "Splits feeding into two mechanical stages, conquering magazine spring inertia to guarantee flawless 33-millisecond hyperburst ammunition delivery.",
+        "audioScript": "Gleaming in phosphor bronze and polished stainless, this two stage pre-feed rammer is the secret to eighteen hundred round per minute feeding. Pulled forward twenty six millimeters by the cable during bolt recoil, it stages the second cartridge squarely beneath the bolt.",
+        "audioUrl": "audio/an94/parts/an94_feed_rammer_en.mp3"
+      }
+    },
+    "an94_recoil_guide": {
+      "partId": "an94_recoil_guide",
+      "bomCode": "S-08",
+      "calloutLabelEn": "Telescoping Recoil Guide",
+      "zh": {
+        "roleTag": "防高速屈曲双节导杆 · 锚定于浮置内机匣尾壁",
+        "overview": "安装在浮置钢制内机匣尾部的双套管伸缩式不锈钢复进导杆与聚氨酯缓冲座，引导主复进簧在超高射速下笔直压缩。",
+        "craftAndMaterial": "两级无心磨削不锈钢同轴套管配合磷化钢锚固尾座，前端加装耐油抗冲击高密度聚氨酯终端缓冲垫。",
+        "kinematicRole": "射击期间随浮置钢制内机匣同步后滑 42 mm，防止高劲度枪机主复进簧在 1,800 RPM 极速压缩时发生侧向弯折。",
+        "designHighlight": "与浮置机匣同步运动的独立导杆架构，让主复进系统始终保持恒定的相对几何行程。",
+        "audioScript": "这根双套管伸缩复进导杆锚定在浮置内机匣尾部，并带有聚氨酯减震垫。开火时它随内机匣整体后移，确保高速压缩的枪机复进簧绝不弯曲失稳。",
+        "audioUrl": "audio/an94/parts/an94_recoil_guide_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Telescoping Dual Guide Rods Anchored to Floating Sub-Receiver",
+        "overview": "Mounted to the rear bulkhead of the floating steel sub-receiver, this dual-tube guide rod and buffer pad keep the bolt return spring aligned at 1,800 RPM.",
+        "craftAndMaterial": "Centerless-ground telescoping stainless steel rods anchored in a phosphate steel rear block capped with an oil-resistant polyurethane shock buffer.",
+        "kinematicRole": "Slides 42 mm rearward together with the floating sub-receiver while preventing spring buckling during rapid 50 mm carrier compression.",
+        "designHighlight": "Moving rigidly inside the floating chassis preserves identical spring alignment throughout both delayed burst recoil and normal automatic cycling.",
+        "audioScript": "Anchored to the rear wall of the floating sub-receiver, this telescoping dual steel guide rod with its polymer buffer pad keeps the high-rate recoil spring arrow straight during eighteen hundred round per minute cycling.",
+        "audioUrl": "audio/an94/parts/an94_recoil_guide_en.mp3"
+      }
+    },
+    "an94_recoil_spring": {
+      "partId": "an94_recoil_spring",
+      "bomCode": "S-09",
+      "calloutLabelEn": "Bolt Return Spring",
+      "zh": {
+        "roleTag": "驱动 1,800 RPM 极速复进 · 后端随浮置内机匣同步滑移",
+        "overview": "套装在伸缩导杆外圈的高疲劳琴钢丝螺旋主复进簧，负责储存枪机框后坐能量并以闪电般的速度推回枪机完成第 2 发闭锁。",
+        "craftAndMaterial": "特制高碳硅锰弹簧钢丝绕制并经抛丸强化与磷化防锈处理，保留实时 GPU 恒线径压缩形变属性。",
+        "kinematicRole": "后端紧贴浮置内机匣同步后滑 42 mm，同时前端随枪机框相对压缩 50 mm（压缩率达 59%），随即于阶段 5 猛力反弹驱枪机高速推弹闭锁。",
+        "designHighlight": "高刚度短行程设计与浮置内机匣协同工作，将双发循环周期压缩到令人惊叹的 33 毫秒。",
+        "audioScript": "套装在导杆上的高劲度螺旋枪机主复进簧，是推动每分钟一千八百发闪电复进的弹性引擎。它一边随内机匣整体后移，一边被枪机框急速压短至百分之五十九，随即爆发出猛烈回弹力。",
+        "audioUrl": "audio/an94/parts/an94_recoil_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "High-Rate Helical Return Spring Driving 1,800 RPM Feed",
+        "overview": "Wrapped around the telescoping guide rod, this high-rate helical music-wire spring stores carrier energy and slams the bolt forward for the second hyperburst round.",
+        "craftAndMaterial": "Shot-peened silicon-manganese spring steel with protective phosphate coating, dynamically compressing at constant wire diameter during live firing simulation.",
+        "kinematicRole": "Tracks the -42 mm floating receiver slide at its rear anchor while compressing axially to 59 percent length against the bolt carrier, expanding explosively in phase 5.",
+        "designHighlight": "High spring rate and compact stroke compress the complete extraction-and-chambering cycle into an astonishing thirty-three milliseconds.",
+        "audioScript": "Coiled around the telescoping guide rod, this high-rate helical spring powers the AN ninety four's thirty three millisecond cycle. Tracking the floating receiver at its rear, it compresses to fifty nine percent length before flinging the bolt forward for round two.",
+        "audioUrl": "audio/an94/parts/an94_recoil_spring_en.mp3"
+      }
+    },
+    "an94_outer_housing": {
+      "partId": "an94_outer_housing",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Polyamide Outer Housing",
+      "zh": {
+        "roleTag": "全枪静止承力外壳 · 集成燕尾镜轨、实心护圈与 15° 弹匣井",
+        "overview": "采用高强度玻纤聚酰胺整体模压成型的炭黑外机匣壳体，为内部高速滑动 42 mm 的浮置钢制内机匣提供全天候防尘导轨与人机握持平台。",
+        "craftAndMaterial": "伊热夫斯克军用级 35% 玻纤增强聚酰胺（ПА66-ГФ）注塑包覆硬化钢导轨；左侧铆接俄制燕尾镜轨并精刻伊热夫斯克箭羽厂徽及西里尔铭文，前下方一体实心焊接加宽扳机护圈与 15° 右倾弹匣井。",
+        "kinematicRole": "全七个击发阶段在射手双手中始终保持纹丝不动，内部空腔严密引导浮置枪管、内机匣与下置缓冲主簧高速往复。",
+        "designHighlight": "将传统冲压钢机匣升级为低导热、耐腐蚀且全封闭的一体化复合材料外壳，完美保护脆弱精密的滑轮钢索远离战地泥沙。",
+        "audioScript": "这套极具未来感的炭黑玻纤聚酰胺一体外机匣，在射击过程中于射手双手中纹丝不动。它不但严密保护着内部的滑轮钢索远离泥沙，还整合了左侧燕尾瞄具导轨、实心焊接扳机护圈以及向右倾斜十五度的弹匣井。",
+        "audioUrl": "audio/an94/parts/an94_outer_housing_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Stationary Monocoque Polyamide Chassis with 15-Deg Magwell",
+        "overview": "Molded from tough charcoal glass-filled polyamide, this sleek monocoque outer housing stays motionless in the shooter's hands while shielding the sliding action inside.",
+        "craftAndMaterial": "Izhmash 35-percent glass-filled polyamide over internal steel guide rails, integrating a left dovetail optics rail, Izhmash Cyrillic rollmarks, a solidly welded trigger guard loop, and a 15-degree canted magwell.",
+        "kinematicRole": "Remains completely stationary across all seven firing phases while guiding the 42 mm sliding sub-receiver and anchoring the heavy lower buffer spring.",
+        "designHighlight": "Provides an insulated, mud-sealed enclosure that allowed the intricate pulley-cable mechanism to survive brutal Soviet environmental trials.",
+        "audioScript": "This sleek charcoal glass-filled polyamide outer housing stays completely still in your hands during firing. Sealing the internal pulley mechanism from mud and snow, it integrates the Russian dovetail optics rail, solid trigger guard, and iconic fifteen degree canted magwell.",
+        "audioUrl": "audio/an94/parts/an94_outer_housing_en.mp3"
+      }
+    },
+    "an94_dust_cover": {
+      "partId": "an94_dust_cover",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Stamped Dust Cover",
+      "zh": {
+        "roleTag": "封闭浮置导轨顶腔 · 右侧长抛壳与拉机柄让位窗",
+        "overview": "带五道横向加强冲压筋的黑烤漆钢制机匣顶盖，紧扣于炭黑聚酰胺外机匣顶部，防尘密封浮置内机匣与双突笋旋转枪机舱。",
+        "craftAndMaterial": "1.2 mm 合金钢板冲压折弯并经磷化底漆黑色烤漆处理，右侧铣开加长抛壳及拉机柄让位窗，尾端预留星轮照门拱口。",
+        "kinematicRole": "击发期间保持静止，野战快拆 6% 至 24% 阶段垂直上掀脱离外机匣，瞬间显露内部浮置导轨与枪机框。",
+        "designHighlight": "极简快拆卡扣设计令士兵无需任何工具即可在数秒内掀盖检查滑轮与枪机状态。",
+        "audioScript": "这件带有五道加强肋的冲压黑烤漆钢制防尘顶盖，严密扣合在聚酰胺外机匣上方。它既阻挡雨雪泥尘落入滑轮机构，又在右侧留出加长抛壳窗口，尾部巧妙让出标志性的星轮后照门。",
+        "audioUrl": "audio/an94/parts/an94_dust_cover_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Ribbed Stamped Black-Enamel Top Cover with Ejection Relief",
+        "overview": "Capping the polyamide chassis, this stamped steel dust cover seals the floating action from debris while framing the right ejection port and rear star-wheel sight.",
+        "craftAndMaterial": "Formed 1.2 mm alloy sheet steel with five transverse stiffening ribs and Russian black baked enamel over manganese phosphate.",
+        "kinematicRole": "Remains static during firing and lifts vertically upward during early field stripping (6 to 24 percent) to expose the floating sub-receiver.",
+        "designHighlight": "Tool-free latch release allows rapid inspection of the bolt carrier and pulley mechanism in harsh field conditions.",
+        "audioScript": "Stamped from alloy steel with five stiffening ribs and finished in Russian black enamel, this top dust cover shields the floating action from grit while framing the right-hand ejection slot and rear star-wheel diopter.",
+        "audioUrl": "audio/an94/parts/an94_dust_cover_en.mp3"
+      }
+    },
+    "an94_barrel": {
+      "partId": "an94_barrel",
+      "bomCode": "F-03",
+      "calloutLabelEn": "405mm Floating Barrel",
+      "zh": {
+        "roleTag": "整管随内机匣后坐 42 mm · 1:195mm 四右旋镀铬膛线",
+        "overview": "全长 405 mm 的冷锻镀铬 5.45×39mm 浮置枪管，与传统固定枪管突击步枪截然不同——它随内机匣整组在护木内自由向后长行程滑移！",
+        "craftAndMaterial": "优质俄制枪管钢经精密旋转冷精锻成型，弹膛与四条右旋膛线全镀耐磨硬铬，中段压装垂直导气箍并在前下方整合刺刀卡笋。",
+        "kinematicRole": "击发阶段 2 引导 7N6 轻尖弹加速至 900 m/s，并自点火起携导气管与 8 字制退器同步向后滑动整整 42 mm，阶段 6 随下缓冲簧平稳归位。",
+        "designHighlight": "整管悬空穿过炭黑前护木隧道，实现极佳的自由浮置热对称性与延迟后坐同轴精度。",
+        "audioScript": "与普通突击步枪截然不同，这根四百零五毫米冷锻镀铬枪管并不是固定不动的。它自由浮置穿出炭黑护木隧道，每次开火都连同钢制内机匣一起向后优雅滑移四十二毫米，赋予五点四五步枪弹九百米每秒的精准初速。",
+        "audioUrl": "audio/an94/parts/an94_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "405mm CHF Chrome-Lined Barrel Recoiling 42mm with Sub-Receiver",
+        "overview": "Unlike fixed-barrel Kalashnikovs, this 405 mm cold-hammer-forged 5.45x39mm barrel floats freely through the polymer forend and recoils 42 mm with the inner receiver.",
+        "craftAndMaterial": "Rotary cold-hammer-forged Russian ordnance steel with hard-chrome chamber and four-groove right-hand rifling, pinned vertical gas block, and bayonet lug.",
+        "kinematicRole": "Accelerates the 7N6 spitzer bullet to 900 m/s in phase 2 while gliding smoothly -42 mm rearward with the inner receiver, returning forward in phase 6.",
+        "designHighlight": "True free-floating clearance through the stationary handguard tunnel eliminates sling and grip pressure shifts on point of impact.",
+        "audioScript": "Unlike conventional rifles, this four hundred five millimeter cold hammer forged chrome-lined barrel is not fixed to the outer chassis. It glides forty two millimeters rearward as one unit with the steel sub-receiver, propelling five point four five bullets at nine hundred meters per second.",
+        "audioUrl": "audio/an94/parts/an94_barrel_en.mp3"
+      }
+    },
+    "an94_gas_tube": {
+      "partId": "an94_gas_tube",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Gas Tube & Front Sight",
+      "zh": {
+        "roleTag": "随枪管整体往复后坐 · 高置环翼护罩夜间准星",
+        "overview": "固连于 405 mm 浮置枪管中前段导气箍上方的厚壁高压导气筒与标志性高护圈前准星座，随枪管同步整体后坐 42 mm。",
+        "craftAndMaterial": "氮化发黑厚壁无缝钢管与精密铸造圆形全包准星护罩，内置高对比度白色夜间氚光准星柱及前端旋拧清碳堵头。",
+        "kinematicRole": "引导高压火药燃气冲击长行程镀铬活塞杆，且全程与浮置枪管、8 字制退器严格同步向后滑移 42 mm。",
+        "designHighlight": "高耸全包护圈准星与后置五档星轮觇孔构成超长高精度机械瞄准基线，即使在严酷磕碰中仍牢牢守护准星归零。",
+        "audioScript": "紧贴在枪管上方的厚壁高压导气筒与高护圈前准星，同样刚性固定在浮置枪管组件上。射击时它们随枪管一起往复滑动四十二毫米，高大的圆环护罩牢牢保护着内部的白色夜光准星柱。",
+        "audioUrl": "audio/an94/parts/an94_gas_tube_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Reciprocating High-Pressure Gas Cylinder & Hooded Front Sight",
+        "overview": "Rigidly joined to the floating barrel's mid-point gas block, this upper steel gas cylinder and tall circular hooded front sight recoil 42 mm in unison with the barrel.",
+        "craftAndMaterial": "Thick-walled blued seamless steel gas tube with cleanout cap and protective circular sight hood framing a high-contrast tritium aiming post.",
+        "kinematicRole": "Channels tapped propellant gas onto the long-stroke chrome piston rod while translating -42 mm rearward rigidly with the floating barreled action.",
+        "designHighlight": "Pairs with the rear star-wheel diopter to provide a generous, battle-rugged iron sight radius far longer than standard AK tangent sights.",
+        "audioScript": "Mounted above the floating barrel, this high-pressure steel gas cylinder and tall circular hooded front sight recoil forty two millimeters in lockstep with the barrel, guiding the chrome piston while shielding the bright aiming post.",
+        "audioUrl": "audio/an94/parts/an94_gas_tube_en.mp3"
+      }
+    },
+    "an94_muzzle_brake": {
+      "partId": "an94_muzzle_brake",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Figure-8 Muzzle Brake",
+      "zh": {
+        "roleTag": "全球独一无二 8 字轮廓 · 超音速涡流自清洁除碳与高频哨声",
+        "overview": "尼科诺夫专利设计的非对称上下偏心双圆柱（正面呈阿拉伯数字“8”造型）自清洁制退补偿器，是 AN-94 全世界独一份的外观视觉图腾。",
+        "craftAndMaterial": "耐高温合金钢整体机加工并经磷化发黑，长期 1,800 RPM 极速连发后呈现真实的金褐至钢蓝高温回火渐变与涡流室积碳层。",
+        "kinematicRole": "刚性卡锁在 405 mm 浮置枪口前端随整管后滑 42 mm，利用上下双膨胀室对冲超音速燃气抑制后坐上跳并吹扫残碳。",
+        "designHighlight": "免拆洗自清洁涡流气动构型彻底根除传统制退器积碳结块顽疾，连发瞬间还会发出标志性的清脆高频哨音。",
+        "audioScript": "这就是AN九四全球独一份的视觉图腾：尼科诺夫非对称八字形双室口哨制退器。上下偏心双腔利用超音速燃气涡流既强力压制枪口跳动，又能自动吹净腔内积碳，连发时还会发出极具辨识度的金属呼啸声。",
+        "audioUrl": "audio/an94/parts/an94_muzzle_brake_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Asymmetrical Twin-Chamber Self-Cleaning Whistling Compensator",
+        "overview": "An unmistakable silhouette icon, Nikonov's patented asymmetrical figure-eight twin-chamber compensator defines the muzzle of the AN-94.",
+        "craftAndMaterial": "CNC-machined high-temperature ordnance steel displaying bronze-to-steel-blue 1,800 RPM firing temper bands and matte powder carbon inside the chambers.",
+        "kinematicRole": "Locks onto the floating 405 mm barrel muzzle and slides -42 mm rearward while harnessing opposing gas vortices to curb recoil and scrub away carbon.",
+        "designHighlight": "Self-cleaning supersonic vortex geometry prevents carbon buildup without brush scraping and produces the rifle's signature high-pitched acoustic whistle.",
+        "audioScript": "Nothing else on earth looks like Nikonov's patented figure-eight dual-chamber muzzle compensator. Its offset twin cylinders use opposing supersonic gas vortices to tame muzzle rise, blast themselves clean of carbon, and emit the AN ninety four's famous metallic whistle.",
+        "audioUrl": "audio/an94/parts/an94_muzzle_brake_en.mp3"
+      }
+    },
+    "an94_buttstock": {
+      "partId": "an94_buttstock",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Right-Folding Buttstock",
+      "zh": {
+        "roleTag": "避让左侧燕尾瞄轨向右折叠 · 折叠全长缩至 728 mm",
+        "overview": "伊热夫斯克专为 AN-94 研发的右侧 180° 折叠加强肋炭黑聚酰胺枪托，展开全长 943 mm、折叠缩至 728 mm，兼顾装甲车携行与精准贴腮。",
+        "craftAndMaterial": "35% 玻纤增强聚酰胺模压成型，双侧设三条纵向刚度加强肋与矩形背带窗，前端配钢制右折铰链节，尾端包覆深槽防滑硫化橡胶底板。",
+        "kinematicRole": "射击期间保持静止刚性抵肩，精准承接两发极速点射结束后浮置内机匣一次性传来的合并后坐推力。",
+        "designHighlight": "打破 AK-74M 左折传统改为向右折叠，使士兵在左侧燕尾导轨挂载俄制光学瞄准镜或夜视仪时依然可以完整折托携行。",
+        "audioScript": "这副炭黑玻纤聚酰胺加强肋枪托有一个极为聪明的细节：它不像AK七十四那样向左折叠，而是改向右侧折叠，从而完美避开左侧的光学瞄准镜燕尾导轨，装上瞄准镜后依然可以顺畅折托携行。",
+        "audioUrl": "audio/an94/parts/an94_buttstock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Right-Folding Polyamide Buttstock Clearing Left Optics Rail",
+        "overview": "Unlike left-folding AK-74M stocks, this Izhmash glass-filled polyamide buttstock folds 180 degrees to the right, shrinking overall length from 943 mm to 728 mm.",
+        "craftAndMaterial": "Charcoal fiberglass-reinforced polyamide molded with horizontal stiffening ribs, sling cutout, steel right-hinge knuckle, and deeply grooved vulcanized rubber pad.",
+        "kinematicRole": "Remains rigid throughout firing to absorb the combined delayed recoil pulse delivered at the end of the floating action's 42 mm stroke.",
+        "designHighlight": "Right-side folding clears mounted Russian dovetail optics and night-vision scopes so paratroopers and vehicle crews never lose optical zero.",
+        "audioScript": "Unlike traditional Kalashnikovs that fold to the left, this ribbed charcoal polyamide buttstock folds one hundred eighty degrees to the right. That clever switch lets soldiers keep heavy side-rail optics mounted even with the stock folded compactly for transport.",
+        "audioUrl": "audio/an94/parts/an94_buttstock_en.mp3"
+      }
+    },
+    "an94_pistol_grip": {
+      "partId": "an94_pistol_grip",
+      "bomCode": "F-07",
+      "calloutLabelEn": "Checkered Pistol Grip",
+      "zh": {
+        "roleTag": "饱满掌心指槽支撑 · 防滑菱格模压皮纹",
+        "overview": "伊热夫斯克人体工学倾角炭黑聚酰胺手枪握把，紧贴实心扳机护圈根部无缝装配，为无依托高精度点射提供稳固控枪支点。",
+        "craftAndMaterial": "耐冲击玻纤聚酰胺一体注塑成型，双侧嵌压细腻防滑菱格防滑贴面，底部以钢制固定螺栓与底盖紧固。",
+        "kinematicRole": "射击过程中随外机匣保持完全静止，消除浮置枪管高速后坐时的手腕偏移扰动。",
+        "designHighlight": "加宽饱满掌腹轮廓显著改善早期 AK 纤细握把的抓握疲劳感，严寒戴厚手套亦能稳健操作独立拇指保险。",
+        "audioScript": "这只炭黑聚酰胺手枪握把比早期AK握把更加饱满贴合手掌，两侧模压细腻防滑菱格纹，顶部无缝贴合外机匣底面，让射手在严寒手套工况下依然能够沉稳驾驭一千八百发高速点射。",
+        "audioUrl": "audio/an94/parts/an94_pistol_grip_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Contoured Izhmash Diamond-Checkered Polymer Grip",
+        "overview": "Contoured for offhand burst stability, this charcoal polyamide pistol grip mates seamlessly beneath the outer housing right behind the welded trigger guard.",
+        "craftAndMaterial": "Molded glass-filled polyamide with raised diamond-checkered flank traction panels, ergonomic palm swell, and steel bottom grip-screw cap.",
+        "kinematicRole": "Holds completely steady with the outer housing during firing, isolating the firing hand from the sliding internal action.",
+        "designHighlight": "Full-bodied ergonomic palm swell improves control over narrow legacy AK grips while keeping the thumb safety comfortably within reach.",
+        "audioScript": "Molded from tough charcoal polyamide with raised diamond checkering on both flanks, this contoured pistol grip fills the palm far better than legacy AK grips, giving shooters rock-steady leverage during high-speed bursts.",
+        "audioUrl": "audio/an94/parts/an94_pistol_grip_en.mp3"
+      }
+    },
+    "an94_rear_sight": {
+      "partId": "an94_rear_sight",
+      "bomCode": "F-08",
+      "calloutLabelEn": "Star-Wheel Diopter Sight",
+      "zh": {
+        "roleTag": "200–700m 五芒星轮快切 · 超长瞄准基线与护耳",
+        "overview": "尼科诺夫独创的五档旋转“星轮”式觇孔后照门，高置在机匣最尾端，一改传统俄式步枪缺口表尺，带来媲美精密步枪的超长瞄准基线。",
+        "craftAndMaterial": "发黑合金钢精铣底座与双侧斜护耳，中心以不锈钢横轴穿接五枚带精密觇孔与夜间缺口的星形旋转拨齿。",
+        "kinematicRole": "固定于外机匣尾端保持归零基准，野战快拆时随顶盖路径向上分离展示完整星轮棘珠结构。",
+        "designHighlight": "五枚放射状星齿分别标定 200 至 700 米射程，士兵无需低头看刻度，单凭拇指盲拨星齿咔哒数格即可完成中远距快调。",
+        "audioScript": "这具位于机匣尾端的五档旋转星轮觇孔后照门，是尼科诺夫极具个性的欧洲化革新。五枚带圆孔的星形拨齿覆盖两百至七百米射程，大幅延长了瞄准基线，用大拇指一拨即可精准换档。",
+        "audioUrl": "audio/an94/parts/an94_rear_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "5-Position Rotary Star-Wheel Diopter Sight (200 to 700m)",
+        "overview": "Mounted far back atop the receiver rear, Nikonov's signature five-point star-wheel diopter replaces traditional AK tangent notches with a long-radius aperture sight.",
+        "craftAndMaterial": "Milled blued alloy steel base and protective flanking ears cradling a five-petal rotary aperture drum on a bright stainless cross-axle.",
+        "kinematicRole": "Maintains a stationary optical zero atop the outer housing and lifts cleanly upward during upper receiver disassembly.",
+        "designHighlight": "Five distinct radial star petals let soldiers dial between 200 and 700 meters strictly by tactile thumb clicks without taking eyes off target.",
+        "audioScript": "Perched at the rear of the receiver, Nikonov's iconic five-point star-wheel diopter replaces classic Soviet notch sights with a crisp European aperture wheel. Soldiers simply click the five radial petals by feel to dial from two hundred to seven hundred meters.",
+        "audioUrl": "audio/an94/parts/an94_rear_sight_en.mp3"
+      }
+    },
+    "an94_receiver_buffer_spring": {
+      "partId": "an94_receiver_buffer_spring",
+      "bomCode": "F-09",
+      "calloutLabelEn": "Lower Buffer Spring",
+      "zh": {
+        "roleTag": "承接整组 405mm 枪管/内机匣 42 mm 后坐并柔顺复位",
+        "overview": "深藏于炭黑聚酰胺外机匣底槽内的重型大丝径螺旋复进缓冲主簧，专门负责承接并推回重逾两公斤的整套浮置枪管与钢制内机匣。",
+        "craftAndMaterial": "粗线径高弹性弹簧钢丝冷卷热定型，保留实时 GPU 恒线径动态压缩属性，确保数万次大冲量后坐不衰减。",
+        "kinematicRole": "后端死锚在静止外机匣尾壁，前端顶住浮置内机匣底部凸耳；两发点射期间平滑压缩至 70%，阶段 6 释放储能推回整组枪管 42 mm 复进归位。",
+        "designHighlight": "与上部枪机复进簧构成独特的双级隔振弹簧系统，让 42 mm 浮置延迟后坐柔和顺滑、绝不产生生硬金属砸击。",
+        "audioScript": "隐藏在炭黑外机匣底部的这根粗壮重型螺旋缓冲簧，专门托举着整套浮置枪管和钢制内机匣。发射两发极速点射时它平滑压缩至百分之七十柔和吸能，随即平稳把整根枪管推回四十二毫米原位。",
+        "audioUrl": "audio/an94/parts/an94_receiver_buffer_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Heavy Lower Helical Spring Returning Floating Barreled Action",
+        "overview": "Seated along the lower tunnel of the polyamide outer housing, this heavy-gauge helical buffer spring cushions and returns the entire floating 405 mm barreled action.",
+        "craftAndMaterial": "Heavy-wire silicon-manganese spring steel with constant-wire-diameter GPU compression attributes built for tens of thousands of full-mass recoil cycles.",
+        "kinematicRole": "Pinned stationary at its rear seat while compressing to 70 percent length under the -42 mm inner receiver recoil, then driving the entire barreled action forward in phase 6.",
+        "designHighlight": "Works in dual-stage harmony with the upper bolt spring to transform sharp twin-shot energy into one smooth, controllable rearward push.",
+        "audioScript": "Tucked inside the lower polymer tunnel, this heavy-gauge helical buffer spring absorbs the entire forty two millimeter slide of the floating barrel and steel inner receiver, compressing to seventy percent before smoothly returning the action to battery.",
+        "audioUrl": "audio/an94/parts/an94_receiver_buffer_spring_en.mp3"
+      }
+    },
+    "an94_hammer": {
+      "partId": "an94_hammer",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Hyperburst Hammer & Ratchet",
+      "zh": {
+        "roleTag": "机械双发计数器 · 自动在 1,800 RPM 后无缝降频至 600 RPM",
+        "overview": "包含回转硬化钢击锤与青铜两发极速点射棘轮擒纵爪的精密火控心脏，精准掌控 AN-94 举世闻名的变射速逻辑。",
+        "craftAndMaterial": "CNC 磨削不锈钢击锤体配淬火横轴，左侧联动高耐磨磷青铜两发点射棘轮杠杆，确保高频率啮合零崩齿。",
+        "kinematicRole": "阶段 1 前旋敲击第一发击针，被后坐枪机压倒后在阶段 5 的 1,800 RPM 窗口完成闪电二连击，随即由两发点射棘轮精准拦截待复位。",
+        "designHighlight": "全自动模式下依然自动先以 1,800 RPM 轰出首两发聚能弹，第三发起由棘轮延时自动切换至 600 RPM 沉稳连射。",
+        "audioScript": "这枚回转钢制击锤与侧旁的青铜棘轮，就是控制变射速神迹的机械大脑。无论是双发点射还是全自动扫射，前两发它都以每分钟一千八百发闪电连击，第三发起再自动切入沉稳的六百发压制节拍。",
+        "audioUrl": "audio/an94/parts/an94_hammer_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Pivoting Steel Hammer & 2-Round Hyperburst Ratchet Pawl",
+        "overview": "Combining a machined steel hammer with a phosphor-bronze two-round escapement ratchet, this assembly governs the AN-94's signature dual-cadence fire control.",
+        "craftAndMaterial": "CNC-ground hardened stainless hammer on a steel pivot pin paired with a wear-resistant phosphor-bronze burst counting pawl.",
+        "kinematicRole": "Swings forward to fire round one in phase 1, recocks under the carrier, executes the rapid second hyperburst strike in phase 5, and locks cleanly on the ratchet in phase 7.",
+        "designHighlight": "Delivers an automatic 1,800 RPM two-round opening burst even in full-auto before seamlessly stepping down to a controllable 600 RPM.",
+        "audioScript": "This steel hammer and phosphor bronze escapement ratchet act as the AN ninety four's mechanical clock brain. Even in full automatic mode, they unleash the first two rounds at eighteen hundred rounds per minute before smoothly stepping down to six hundred.",
+        "audioUrl": "audio/an94/parts/an94_hammer_en.mp3"
+      }
+    },
+    "an94_trigger": {
+      "partId": "an94_trigger",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Floating-Action Trigger",
+      "zh": {
+        "roleTag": "跨静止外壳-浮置内机匣联动 · 消除浮置滑移扳机打手",
+        "overview": "居中悬置于外机匣实心护圈内的弧形钢制扳机与长行程随动传递拉杆，巧妙跨越静止外壳与滑动 42 mm 内机匣之间的运动界限。",
+        "craftAndMaterial": "锻造黑氮化合金钢弧形扳机舌与精密冲压不锈钢随动断连拉杆，枢轴经抛光处理保证扳机行程顺滑干脆。",
+        "kinematicRole": "阶段 1 扣压旋转 -0.24 rad 解脱击锤，击发后滑移脱耦槽避免随浮置内机匣后冲打手，阶段 7 松指平滑复位交接。",
+        "designHighlight": "精妙的运动脱耦传递连杆让射手手指完全隔绝于内部 42 mm 剧烈后滑机构，获得接近精确步枪的纯净扳机手感。",
+        "audioScript": "居中悬在实心护圈里的弧形扳机，通过一条精巧的随动连杆跨越了静止外壳与滑动内机匣的边界。哪怕内部枪管正在以极速向后狂滑四十二毫米，你的食指也不会感到丝毫扳机震动打手。",
+        "audioUrl": "audio/an94/parts/an94_trigger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Curved Steel Trigger & Decoupled Floating-Action Transfer Bar",
+        "overview": "Centered inside the welded trigger guard, this curved trigger and articulated transfer bar bridge the mechanical gap between the static outer shell and sliding inner receiver.",
+        "craftAndMaterial": "Forged black-nitrided steel trigger shoe on a polished stainless pivot pin linked to a precision-milled floating disconnector bar.",
+        "kinematicRole": "Rotates -0.24 rad on squeeze in phase 1 while its sliding coupling isolates the finger from the 42 mm rearward travel of the floating action, resetting in phase 7.",
+        "designHighlight": "Complete kinetic decoupling eliminates trigger slap during 1,800 RPM hyperbursts, preserving crisp match-like control.",
+        "audioScript": "Centered within the solid polymer guard, this curved steel trigger uses an articulated transfer bar to bridge the stationary shell and sliding sub-receiver, eliminating trigger slap even while the entire barrel assembly slides forty two millimeters rearward.",
+        "audioUrl": "audio/an94/parts/an94_trigger_en.mp3"
+      }
+    },
+    "an94_safety_switch": {
+      "partId": "an94_safety_switch",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Rear Thumb Safety",
+      "zh": {
+        "roleTag": "彻底解耦保险与射控 · 虎口上方无声横推锁止",
+        "overview": "独立布置于握把虎口正前方与扳机护圈根部交界处的双侧拇指手动保险开关，彻底告别传统 AK 嘈杂沉重的右侧大铁片。",
+        "craftAndMaterial": "发黑硬化钢贯通横轴与防滑双侧拨钮，左侧镶嵌醒目绯红「ОГ」射击状态点标，与外机匣白字「ПР」清晰区分。",
+        "kinematicRole": "射击状态位于解脱位保持静止；锁止时刚性顶阻扳机传递连杆，防止意外走火。",
+        "designHighlight": "将安全锁止与射速档位彻底拆分为两套独立控件，夜间渗透接敌前用拇指即可实现绝对静音的无声解保。",
+        "audioScript": "这枚位于扳机护圈上方的独立拇指保险钮，彻底告别了传统AK拨动大铁片时的金属脆响。尼科诺夫将保险与快慢机解耦，让特战队员在接敌前仅凭拇指轻推就能绝对静音地解除保险。",
+        "audioUrl": "audio/an94/parts/an94_safety_switch_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Silent Cross-Receiver Thumb Safety Decoupled from Selector",
+        "overview": "Positioned directly above the trigger guard web, this dedicated ambidextrous thumb safety completely replaces the loud stamped lever of legacy Kalashnikov rifles.",
+        "craftAndMaterial": "Hardened blued steel cross-shaft with textured bilateral paddles and a firewalled crimson firing-status indicator dot.",
+        "kinematicRole": "Remains static in the fire position during cycling and mechanically blocks the trigger transfer bar when engaged in safe.",
+        "designHighlight": "Decoupling safety from fire-mode selection enables silent, thumb-operated engagement without breaking firing grip.",
+        "audioScript": "Positioned right above the trigger guard, this dedicated thumb safety replaces the noisy stamped dust-cover lever of older Kalashnikovs, letting operators switch silently from safe to fire without shifting their shooting grip.",
+        "audioUrl": "audio/an94/parts/an94_safety_switch_en.mp3"
+      }
+    },
+    "an94_fire_selector": {
+      "partId": "an94_fire_selector",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "3-Mode Fire Selector",
+      "zh": {
+        "roleTag": "单发 ОД · 1,800 RPM 双发 2 · 变射速全自动 АВ",
+        "overview": "布置在机匣左后方的独立三档旋转射控快慢机拨杆，精准切换半自动单发「ОД」、千八极速双发「2」及变射速全自动「АВ」。",
+        "craftAndMaterial": "精铣发黑合金钢旋转凸轮轴配聚酰胺防滑拨柄与绯红指针条，直指左侧外机匣红白「ОД / 2 / АВ」刻字。",
+        "kinematicRole": "预置火控盒内部棘轮与单发断连器档位，射击期间紧锁于「2」档双发极速点射位置。",
+        "designHighlight": "与保险独立运作的三档选择器，使射手在巡逻前即可预先锁定 1,800 RPM 双发必杀档，遇敌解保瞬间即发双弹同孔。",
+        "audioScript": "机匣左后方的三档射控快慢机拨杆专职切换单发、两发极速点射与全自动。红色指针牢牢对准数字二档位，让射手无需触碰保险就能提前锁定每分钟一千八百发的双发同孔绝技。",
+        "audioUrl": "audio/an94/parts/an94_fire_selector_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Rear-Left 3-Mode Selector (Semi / 2-Hyperburst / Auto)",
+        "overview": "Mounted on the left rear flank, this independent three-position rotary selector switches between Semi, 1,800 RPM Two-Round Hyperburst, and dual-rate Full Auto.",
+        "craftAndMaterial": "Milled steel cam shaft with a textured polymer thumb paddle and vivid crimson pointer inlay aligning with the left-flank Cyrillic markings.",
+        "kinematicRole": "Indexes the internal burst ratchet and disconnector cams prior to firing, remaining locked on the crimson 2-round hyperburst detent during demonstration.",
+        "designHighlight": "Independent mode pre-selection lets soldiers stage the signature two-round hyperburst well before contact, relying solely on the front thumb safety.",
+        "audioScript": "Located on the rear left flank, this independent three-mode selector switches between semi-auto, the signature two-round eighteen hundred RPM hyperburst, and full automatic fire, letting soldiers pre-select burst mode independently of the manual safety.",
+        "audioUrl": "audio/an94/parts/an94_fire_selector_en.mp3"
+      }
+    },
+    "an94_mag_body": {
+      "partId": "an94_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "15° Canted 5.45mm Mag",
+      "zh": {
+        "roleTag": "向右倾斜 15° 避让滑轮钢索 · 100% 通用 AK-74 标准弹匣",
+        "overview": "整具标志性向右倾斜 15° 插入弹匣井的 30 发伊热夫斯克李子黑（Plum-Black）5.45×39mm 弧形聚合物弹匣，一眼即辨的 AN-94 专属基因。",
+        "craftAndMaterial": "俄罗斯经典深李子黑（Слива）玻纤增强聚酰胺注塑匣身，双侧压印防滑筋、5,45×39 及伊热夫斯克箭羽厂徽，前后镶埋淬火钢制挂齿与加强抱弹口。",
+        "kinematicRole": "实弹射击期间以 -15° 倾角稳固锁于外机匣右侧下方，向青铜二级预供弹滑块连续供弹；野战快拆第 1 步即沿 15° 倾角向下右方顺畅卸下。",
+        "designHighlight": "巧妙以 15° 右倾角在机匣正中腾出滑轮钢索轨道空间，同时保持与苏俄数千万支现役 AK-74 弹匣的百分百通用互换性。",
+        "audioScript": "这只向右倾斜整整十五度的李子黑聚酰胺弹匣，是AN九四最令人过目难忘的特征之一。巧妙的右倾设计不仅为机匣中轴下方的滑轮钢索与预供弹托盘腾出宝贵空间，还让它百分百兼容苏军库存的AK七十四标准弹匣。",
+        "audioUrl": "audio/an94/parts/an94_mag_body_zh.mp3"
+      },
+      "en": {
+        "roleTag": "15-Deg Right-Canted 30-Rd Izhmash Plum-Black 5.45mm Magazine",
+        "overview": "Canted fifteen degrees to the right, this 30-round Izhmash plum-black curved polymer magazine gives the AN-94 its unmistakable asymmetrical stance.",
+        "craftAndMaterial": "Authentic Russian dark plum glass-filled polyamide molded with vertical grip ribs, Cyrillic 5.45x39 Izhmash stamps, and steel-reinforced locking lugs.",
+        "kinematicRole": "Locks rigidly into the 15-degree canted magwell to feed the bronze pre-feed shuttle, detaching downward and rightward along its cant angle during field strip.",
+        "designHighlight": "Canting standard AK-74 magazines 15 degrees right cleared vital center-channel room for the pulley-cable track while retaining 100 percent logistics compatibility.",
+        "audioScript": "Tilted fifteen degrees to the right, this classic Russian plum-black polymer magazine gives the AN ninety four its unmistakable profile. That bold cant opens room down the center axis for the steel pulley and pre-feed track while preserving full AK seventy four magazine compatibility.",
+        "audioUrl": "audio/an94/parts/an94_mag_body_en.mp3"
+      }
+    },
+    "an94_mag_follower": {
+      "partId": "an94_mag_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Orange 5.45mm Follower",
+      "zh": {
+        "roleTag": "贴合 5.45×39mm 缓弧双排交错 · 高可视空仓识别",
+        "overview": "严格 UV 防火墙隔离的高辨识安全橙防倾侧双排托弹板，沿 15° 右倾弧形弹匣腔平稳托举 30 发 5.45×39mm 细长尖头步枪弹。",
+        "craftAndMaterial": "高自润滑聚甲醛（POM）注塑成型，顶面设双排交错阶梯导台，前后加长稳定裙边杜绝倾斜工况下卡滞翻转。",
+        "kinematicRole": "击发阶段 4 至 6 沿 15° 右倾弯弧切线向上脉冲托升，将备弹顺畅送达抱弹口供青铜二级预供弹滑块拨取。",
+        "designHighlight": "鲜明安全橙色使射手只需一瞥抛壳口即可瞬间确认空仓状态，防倾裙边确保斜插弹匣零卡滞。",
+        "audioScript": "隐藏在李子黑弹匣底部的这片安全橙防倾托弹板，采用高润滑聚甲醛模压成型。加长防倾裙边彻底杜绝十五度倾斜状态下的弹柱卡滞，鲜明橙色更能让射手一眼确认空仓。",
+        "audioUrl": "audio/an94/parts/an94_mag_follower_zh.mp3"
+      },
+      "en": {
+        "roleTag": "High-Visibility Safety-Orange Anti-Tilt 5.45mm Follower",
+        "overview": "Seated inside the curved 15-degree magazine body, this vivid safety-orange anti-tilt follower guides thirty staggered 5.45x39mm rounds smoothly upward.",
+        "craftAndMaterial": "Low-friction acetal polymer molded with a staggered double-column cartridge step and extended front-and-rear anti-tilt guide skirts.",
+        "kinematicRole": "Pulses upward along the 15-degree canted arc tangent during phases 4 through 6 to present fresh cartridges beneath the bronze pre-feed shuttle.",
+        "designHighlight": "Bright safety-orange color offers instant visual empty-magazine verification through the ejection port while long skirts eliminate cant-induced binding.",
+        "audioScript": "Molded in high-visibility safety orange polymer, this anti-tilt follower uses extended front and rear guide skirts to keep the thirty-round column gliding smoothly upward inside the fifteen degree canted magazine body.",
+        "audioUrl": "audio/an94/parts/an94_mag_follower_en.mp3"
+      }
+    },
+    "an94_mag_spring": {
+      "partId": "an94_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Curved 5.45mm Mag Spring",
+      "zh": {
+        "roleTag": "沿 15° 斜弧恒压托举 30 发 5.45×39mm 实弹柱",
+        "overview": "依照 5.45×39mm 弹匣优雅弧率预成型的矩形截面弹簧钢丝托弹簧，严丝合缝坐落于安全橙托弹板与钢制底盖之间。",
+        "craftAndMaterial": "俄制高碳弹簧钢丝绕制为矩形多圈螺旋并经磷酸锰防蚀处理，抗长期满载压实疲劳性能优异。",
+        "kinematicRole": "在 15° 右倾弹匣腔底持续施加恒定托弹力，确保二级预供弹滑块在每轮双发点射间隙都拥有充沛稳定的候补弹源。",
+        "designHighlight": "得益于尼科诺夫二级预供弹分担峰值速度，这根标准 AK-74 规格托弹簧无需极限增硬即可从容服务 1,800 RPM 步枪。",
+        "audioScript": "盘踞在弹匣底部的弧形矩形截面托弹簧，完美贴合五点四五毫米弹匣的优雅曲线。正因为二级预供弹滑块分担了极速供弹压力，这根标准劲度托弹簧便能持久可靠地服务一千八百发神枪。",
+        "audioUrl": "audio/an94/parts/an94_mag_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Curved Rectangular 5.45x39mm Magazine Drive Spring",
+        "overview": "Pre-formed along the gentle banana arc of the 5.45x39mm magazine, this rectangular-section spring sits cleanly beneath the orange follower to maintain constant upward lift.",
+        "craftAndMaterial": "Phosphate-coated high-carbon Russian spring steel wound into tight rectangular coils engineered against long-term loaded storage set.",
+        "kinematicRole": "Applies steady column pressure along the 15-degree canted track so the feed lips remain continuously replenished for the bronze pre-feed shuttle.",
+        "designHighlight": "Because Nikonov's pulley-driven pre-feed absorbs peak 1,800 RPM acceleration, a standard-tension AK-74 spring delivers rock-solid reliability.",
+        "audioScript": "Pre-curved to follow the graceful arc of the five point four five millimeter magazine, this rectangular steel drive spring sits beneath the orange follower. Because the pulley pre-feed handles peak burst acceleration, standard AK seventy four spring tension works effortlessly.",
+        "audioUrl": "audio/an94/parts/an94_mag_spring_en.mp3"
+      }
+    },
+    "an94_mag_floorplate": {
+      "partId": "an94_mag_floorplate",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Steel Mag Floorplate",
+      "zh": {
+        "roleTag": "封闭 30 发弹匣底口 · 按压中心钢扣免工具滑拆清沙",
+        "overview": "冲压黑烤漆钢制滑入式弹匣底板与中心锁钮，牢牢封闭 15° 右倾李子黑聚合物匣体底部并承受战地跌落冲击。",
+        "craftAndMaterial": "高强冷轧钢板冲压折边并施以耐磨黑色烤漆，中央贯穿圆柱形弹簧锁定压钮，方便徒手按压滑拆。",
+        "kinematicRole": "作为弹匣托弹簧的刚性底支座，野战细拆 36% 至 68% 阶段沿弹匣底轨向下滑脱释放托弹簧与托弹板。",
+        "designHighlight": "纯钢加厚折边保护聚合物弹匣最易摔裂的底角，战场卧姿依托与快换抛匣均坚不可摧。",
+        "audioScript": "这片冲压黑烤漆钢制弹匣底盖牢牢托住矩形托弹簧底座，保护着聚酰胺弹匣底部免受水泥地摔裂。按压中心的小圆钢扣即可徒手滑开底盖，在几秒内倒出战地泥沙完成保养。",
+        "audioUrl": "audio/an94/parts/an94_mag_floorplate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Stamped Black-Enamel Steel Floorplate with Locking Button",
+        "overview": "Capping the lower base of the 15-degree canted magazine, this stamped steel floorplate anchors the drive spring and shields the polymer lips from drop impacts.",
+        "craftAndMaterial": "Heavy-gauge stamped steel with rolled retention flanges, black enamel coating, and a central spring-loaded disassembly button.",
+        "kinematicRole": "Provides a rigid base abutment for the magazine spring and slides cleanly off the bottom rails during magazine sub-assembly teardown.",
+        "designHighlight": "Tool-free push-button release lets troops strip and dump snow, mud, or sand out of the magazine body in seconds.",
+        "audioScript": "Capping the base of the fifteen degree canted magazine, this rugged stamped steel floorplate absorbs drop impacts and anchors the drive spring. Pressing the central retention button lets soldiers slide it off tool-free for instant field cleaning.",
+        "audioUrl": "audio/an94/parts/an94_mag_floorplate_en.mp3"
+      }
+    }
+  }
+}

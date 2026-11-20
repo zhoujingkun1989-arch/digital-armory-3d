@@ -20,6 +20,10 @@ export const WEAPON_IDS = [
   'm249',
   'p08',
   'vector',
+  'g11',
+  'vss',
+  'm134',
+  'an94',
 ] as const;
 
 export type WeaponId = (typeof WEAPON_IDS)[number];
@@ -58,7 +62,11 @@ export type CaliberProfile =
   | 'bolt_400gr'
   | '357_magnum'
   | '12_gauge'
-  | '30_06';
+  | '30_06'
+  | '473_caseless'
+  | '9x39_subsonic'
+  | '762_nato'
+  | '545_m74';
 
 export type WeaponScaleProfile =
   | 'pistol'

@@ -1484,6 +1484,930 @@ export const VECTOR_MALFUNCTION_SCENARIOS: Readonly<
   },
 };
 
+const G11_MALFUNCTION_SCENARIOS: Readonly<
+  Record<MalfunctionKind, MalfunctionScenarioSpec>
+> = {
+  stovepipe: {
+    kind: 'stovepipe',
+    code: 'MALF-G11-01',
+    shortZh: '药块残渣卡阻',
+    shortEn: 'HITP Jam',
+    titleZh: '无壳药块不完全燃尽残渣卡滞 90° 旋转弹膛（Caseless Residue Hang-Up）',
+    titleEn: 'Incomplete HITP Block Combustion Fouling 90-Degree Rotary Breech',
+    badgeZh: '无壳弹独有故障 · 零铜壳',
+    badgeEn: 'Caseless Exclusive · Zero Brass',
+    symptomZh:
+      '潮湿变质的 4.73×33mm DM11 模压药块未能 100% 汽化，残余焦化硬块卡在 90° 旋转弹膛端面与浮置内机匣密封环之间，导致旋转弹膛滞停在半转位。',
+    symptomEn:
+      'A degraded 4.73x33mm DM11 propellant block leaves charred nitramine debris wedged between the 90-degree rotary cylinder and floating receiver seal, halting rotation mid-cycle.',
+    rootCauseZh:
+      '无壳弹无黄铜弹壳带走 35% 射击废热与碳渣；若药块受潮碎裂或连射积碳过厚，旋转弹膛端面气密槽阻力剧增，短行程导气活塞无法将其转回 0° 水平位。',
+    rootCauseEn:
+      'Without an ejected brass case to carry away heat and fouling, chipped propellant granules jam the rotary cylinder seal gap, stalling the clockwork gear return.',
+    safetyNoteZh:
+      'G11 彻底取消侧面抛壳窗：切勿敲击方盒外壳，必须使用左侧折叠上弦旋柄逆转旋膛，通过机身底面紧急清理口排出哑弹与碎块！',
+    safetyNoteEn:
+      'G11 has no side ejection port—never strike the polymer casing; crank the left winding knob to rotate and expel the dud downward through the bottom emergency port!',
+    steps: [
+      {
+        id: 'g11_sp_crank',
+        orderLabel: '01',
+        titleZh: '顺时针旋动左侧折叠上弦旋柄手动驱动钟表齿轮旋转 90°（Crank）',
+        titleEn: 'Crank Left Folding Winding Knob to Index Clockwork Gears 90 Degrees',
+        detailZh:
+          '展开左侧圆形折叠旋柄并旋转一周，借齿轮增力矩强行剪断卡滞碳渣，将旋转弹膛转至垂直清理位。',
+        detailEn:
+          'Unfold and crank the left winding knob to shear carbon residue via gear torque and align the rotary chamber vertically.',
+      },
+      {
+        id: 'g11_sp_purge',
+        orderLabel: '02',
+        titleZh: '顶推竖直推弹杆从底面紧急清膛口顶落残留 DM11 药块（Purge）',
+        titleEn: 'Drive Vertical Rammer to Expel Fouled DM11 Block Out Bottom Chute',
+        detailZh:
+          '竖直进弹杆向下贯穿旋转圆柱弹膛，将未燃尽的方形无壳哑弹直接从机身底面防尘盖顶出枪外。',
+        detailEn:
+          'The vertical loading rammer punches straight through the vertical breech bore, dropping the dud caseless block out the bottom floor port.',
+      },
+      {
+        id: 'g11_sp_return',
+        orderLabel: '03',
+        titleZh: '旋柄归零将新无壳弹转回水平闭锁位恢复 2,100 RPM 待发（Ready）',
+        titleEn: 'Return Rotary Breech to 0-Degree Horizontal Lockup for Ready State',
+        detailZh:
+          '确认 90° 旋转弹膛顺滑归回 0° 水平轴线且前后密封环零阻滞，随即恢复三连发高速待击状态。',
+        detailEn:
+          'Confirm the rotary breech rotates cleanly back to 0-degree bore alignment with fresh DM11 chambered for 2,100 RPM fire.',
+      },
+    ],
+  },
+  double_feed: {
+    kind: 'double_feed',
+    code: 'MALF-G11-02',
+    shortZh: '顶置双弹挤压',
+    shortEn: 'Top-Feed Jam',
+    titleZh: '置顶 45 发条形无壳弹匣推弹错位双块挤压（Overhead Rammer Double-Feed）',
+    titleEn: 'Overhead 45-Rd Stick Magazine Misaligned Caseless Block Jam',
+    badgeZh: '垂直推弹错位 · 需卸顶匣',
+    badgeEn: 'Vertical Feed Jam · Pull Top Mag',
+    symptomZh:
+      '旋转弹膛内仍残留未完全顶落的上一发 DM11 药块，同时置顶长条弹匣弹簧已将下一发方形无壳弹推至竖直推弹口正上方，造成两块药柱垂直顶撞卡死。',
+    symptomEn:
+      'An unexpelled DM11 block remains inside the vertical breech while the overhead magazine spring pushes the next square caseless round under the rammer, locking both vertically.',
+    rootCauseZh:
+      '在 2,100 RPM 极速三连发期间，置顶弹匣内 45 发长柱弹簧受浮置机匣剧烈后坐惯性共振影响，局部供弹节拍超前导致竖直推弹杆压偏药块棱角。',
+    rootCauseEn:
+      'During 2,100 RPM burst recoil, spring surge in the 45-round overhead tube advances a round slightly off-pitch, causing the vertical rammer to bind on the square block edge.',
+    safetyNoteZh:
+      '切忌强压推弹杆压碎硝胺药块：必须先沿枪管正上方前抽卸出 45 发条形弹匣，彻底切断向下供弹压力！',
+    safetyNoteEn:
+      'Never force the rammer onto a jammed nitramine block—slide the 45-round overhead stick magazine forward first to relieve feed tension!',
+    steps: [
+      {
+        id: 'g11_df_lock',
+        orderLabel: '01',
+        titleZh: '转动左侧上弦旋柄将旋转弹膛停在 90° 垂直检修位（Index）',
+        titleEn: 'Hold Rotary Breech at 90-Degree Vertical Service Index',
+        detailZh:
+          '点击旋转弹膛或上弦旋柄稳住钟表传动系，避免卸匣瞬间齿轮回弹剪碎无壳药块。',
+        detailEn:
+          'Steady the rotary breech and winding knob at 90 degrees so gear spring-back does not crush the caseless propellant block.',
+      },
+      {
+        id: 'g11_df_strip',
+        orderLabel: '02',
+        titleZh: '沿枪管正上方前向抽出 45 发透明条形无壳弹匣（Pull Top Mag）',
+        titleEn: 'Slide Overhead 45-Rd Caseless Magazine Forward & Clear',
+        detailZh:
+          '向前滑脱置顶弹匣总成，解除长条复进托弹簧对旋转弹膛顶口的持续后推压迫。',
+        detailEn:
+          'Pull the overhead stick magazine forward off the barrel rail to remove horizontal follower pressure on the breech throat.',
+      },
+      {
+        id: 'g11_df_clear',
+        orderLabel: '03',
+        titleZh: '连摇左侧旋柄两周，经底面排弹盖清空残余无壳弹块（Purge）',
+        titleEn: 'Cycle Winding Knob Twice to Drop Both Jammed Blocks Out Bottom',
+        detailZh:
+          '连续旋动钟表机构推动竖直推弹杆，确认卡阻的两枚无壳弹全部从底部紧急清理口掉出。',
+        detailEn:
+          'Crank the clockwork twice so the vertical rammer pushes both jammed caseless blocks cleanly out the lower dump hatch.',
+      },
+      {
+        id: 'g11_df_reload',
+        orderLabel: '04',
+        titleZh: '重插 45 发 DM11 无壳弹匣并旋柄上膛首弹（Reload & Wind）',
+        titleEn: 'Reseat 45-Rd DM11 Stick Magazine & Wind First Round into Breech',
+        detailZh:
+          '后推锁紧置顶无壳弹匣，旋转上弦旋柄一周将首枚 DM11 垂直推入并转平 90° 完成闭锁。',
+        detailEn:
+          'Seat the overhead caseless magazine until latched and turn the winding knob one full revolution to chamber horizontally.',
+      },
+    ],
+  },
+  light_strike: {
+    kind: 'light_strike',
+    code: 'MALF-G11-03',
+    shortZh: '可燃底火拒发',
+    shortEn: 'Primer Dud',
+    titleZh: '同轴击针浅击 DM11 可燃底火片拒发（Caseless Primer Light Strike）',
+    titleEn: 'Coaxial Firing-Pin Light Strike on Combustible DM11 Primer Wafer',
+    badgeZh: '防迟发自燃 · 机械底排',
+    badgeEn: 'Cook-Off Guard · Bottom Dump',
+    symptomZh:
+      '扣动扳机后听见清脆击锤释放声，同轴击针撞击 DM11 尾部可燃底火片却未引燃硝胺药块；无壳弹完全密封于旋转弹膛内无法从外部目视。',
+    symptomEn:
+      'The trigger releases crisply and the coaxial firing pin indents the combustible DM11 primer wafer without ignition, leaving a live caseless block sealed inside the rotary cylinder.',
+    rootCauseZh:
+      '旋转弹膛尾端击针孔积聚硝胺凝结碳垢阻滞击针行程，或可燃底火片受潮导致撞击点火阈值升高。',
+    rootCauseEn:
+      'Nitramine fouling inside the rear rotary-breech firing-pin channel damps strike energy, or moisture raises primer ignition threshold.',
+    safetyNoteZh:
+      '保持枪口指向安全区静候 10 秒防迟发（Hangfire）与高温弹膛自燃，随后转动左侧旋柄将哑弹推落底部排出！',
+    safetyNoteEn:
+      'Maintain safe muzzle discipline for 10 seconds against hangfire/cook-off, then crank the left winding knob to eject the dud downward!',
+    steps: [
+      {
+        id: 'g11_ls_wait',
+        orderLabel: '01',
+        titleZh: '保持安全指向静候防迟发，确认保险与弹匣就位（Safe Wait）',
+        titleEn: 'Hold Safe Muzzle Against Hangfire & Verify Overhead Mag Latch',
+        detailZh:
+          '等待延迟点火窗口过去并轻按置顶 45 发无壳弹匣，确认下一发待供药块紧贴进弹口。',
+        detailEn:
+          'Wait out the hangfire window and confirm the overhead 45-round magazine is seated flush over the breech.',
+      },
+      {
+        id: 'g11_ls_crank',
+        orderLabel: '02',
+        titleZh: '完整旋动左侧折叠上弦旋柄一周：以新弹顶落底部哑弹（Wind & Dump）',
+        titleEn: 'Crank Left Winding Knob Full Turn to Push Dud Out Bottom Port',
+        detailZh:
+          'G11 独创“新弹顶哑弹”排障逻辑：旋膛转垂 90° 后，竖直推弹杆压入新弹的同时把哑弹直接从底孔顶出！',
+        detailEn:
+          'Unique G11 clearing cycle: rotating vertical allows the incoming DM11 round to push the dud directly out the bottom port!',
+      },
+      {
+        id: 'g11_ls_ready',
+        orderLabel: '03',
+        titleZh: '旋回水平 0° 轴线完成击发准备，战后拆洗旋转弹膛击针孔（Assess）',
+        titleEn: 'Lock New Round Horizontally & Flag Breech Firing-Pin Channel Clean',
+        detailZh:
+          '旋转弹膛归位 0° 后恢复待发；勤务后抽出圆柱弹膛清洗同轴击针通道积碳。',
+        detailEn:
+          'Return the rotary cylinder to 0 degrees for immediate fire and schedule breech pin-channel cleaning afterward.',
+      },
+    ],
+  },
+  out_of_battery: {
+    kind: 'out_of_battery',
+    code: 'SAFETY · G11-ROT',
+    shortZh: '旋膛未平阻断',
+    shortEn: 'Rotary OOB',
+    titleZh: '90° 旋转弹膛未完全回正 0° 轴线击针机械闭锁保护（Rotary Alignment Interlock）',
+    titleEn: 'Rotary Cylinder Off-Axis Mechanical Firing-Pin Safety Interlock',
+    badgeZh: '旋转弹膛防泄压保护',
+    badgeEn: 'Rotary Seal Interlock',
+    symptomZh:
+      '旋转圆柱弹膛滞留在约 14° 偏角，尚未与 540mm 浮置枪管完全同轴密封；此时内机匣安全凸轮强制顶死同轴击针，防止 360 MPa 高压火药燃气从斜缝喷毁钟表齿轮箱！',
+    symptomEn:
+      'The cylindrical breech pauses ~14 degrees shy of horizontal bore alignment; an internal cam interlock mechanically blocks the coaxial firing pin so 360 MPa gas cannot vent into the clockwork!',
+    rootCauseZh:
+      '手动上弦旋柄未转到完整止点或浮置导轨干涩，导致齿条拉杆差最后 3mm 未把旋转弹膛推抵 0° 机械硬止位。',
+    rootCauseEn:
+      'Short-stroking the manual winding knob or dry floating rails prevents the toothed driving rack from seating the rotary cylinder flush against its 0-degree stop.',
+    safetyNoteZh:
+      '无壳弹没有黄铜壳充当二次闭气垫圈，全靠旋转弹膛端面 ±0.02mm 精密贴合密封；未完全归零时绝不可强扣扳机！',
+    safetyNoteEn:
+      'Without a brass case to obturate the breech, G11 relies strictly on precision 0-degree cylinder sealing—never force the trigger off-axis!',
+    steps: [
+      {
+        id: 'g11_oob_stop',
+        orderLabel: '01',
+        titleZh: '松开扳机并停止按压，点击旋转弹膛检查偏角间隙（Inspect）',
+        titleEn: 'Release Trigger & Inspect Rotary Breech Angular Misalignment',
+        detailZh:
+          '移开食指解除扳机压力，通过纵剖视观察圆柱弹膛轴线与枪管尾端之间的错位夹角。',
+        detailEn:
+          'Remove trigger pressure and inspect the angular misalignment between the rotary breech chamber and barrel throat.',
+      },
+      {
+        id: 'g11_oob_cycle',
+        orderLabel: '02',
+        titleZh: '将左侧上弦旋柄转满完整行程复位齿条与钟表齿轮相位（Full Wind）',
+        titleEn: 'Complete Full Winding-Knob Stroke to Re-Index Rack & Gears',
+        detailZh:
+          '将左侧折叠旋柄干脆转到底并松回，令浮置主复进簧与齿条齿轮组完整同步归零。',
+        detailEn:
+          'Turn the left winding knob to its full positive stop so the toothed driving rack and clockwork gears re-synchronize.',
+      },
+      {
+        id: 'g11_oob_lock',
+        orderLabel: '03',
+        titleZh: '确认旋转弹膛严密归零 0.0° 同轴贴合，解除击针安全互锁（Full Lock）',
+        titleEn: 'Verify 0.0-Degree Coaxial Cylinder Lockup & Clear Safety Interlock',
+        detailZh:
+          '当旋转弹膛与枪管 100% 同轴密合时，机械互锁自动撤除，恢复精准单发与 2,100 RPM 三连发能力。',
+        detailEn:
+          'Once the rotary cylinder locks dead-level at 0.0 degrees, the firing-pin interlock retracts cleanly for safe ignition.',
+      },
+    ],
+  },
+};
+
+const VSS_MALFUNCTION_SCENARIOS: Readonly<
+  Record<MalfunctionKind, MalfunctionScenarioSpec>
+> = {
+  stovepipe: {
+    kind: 'stovepipe',
+    code: 'MALF-VSS-01',
+    shortZh: '微声低压卡壳',
+    shortEn: 'Subsonic Stovepipe',
+    titleZh: '9×39mm 亚音速低燃压空壳夹滞抛壳窗（Subsonic Low-Impulse Stovepipe）',
+    titleEn: '9x39mm Subsonic Low-Velocity Spent Case Stovepipe Jam',
+    badgeZh: '微声步枪常见故障',
+    badgeEn: 'Suppressed Cycle Jam',
+    symptomZh:
+      '发射 290 m/s 9×39mm SP-6 亚音速穿甲弹后，涂漆钢壳未能被彻底抛离机匣，被复进的六突笋枪机框斜夹在右侧抛壳窗边缘形成烟囱卡壳。',
+    symptomEn:
+      'After firing a 290 m/s subsonic 9x39mm SP-6 round, the lacquered steel case fails to clear the ejection port and is pinched upright by the returning bolt carrier.',
+    rootCauseZh:
+      '整体消音器六级隔板腔内高压燃气回流积碳污染导气活塞与铣削机匣导轨，导致低膛压亚音速弹后坐能量裕度不足、枪机短行程复进。',
+    rootCauseEn:
+      'Suppressor back-pressure carbon fouling slows the long-stroke piston inside the milled receiver, reducing carrier rearward velocity below reliable ejection energy.',
+    safetyNoteZh:
+      '整体消音外筒连续射击后蓄热极高，手掌扫壳拉栓时切勿触碰前端消音器筒壁以免灼伤！',
+    safetyNoteEn:
+      'The integral suppressor sleeve retains extreme heat—keep hands strictly on the rear bolt handle while sweeping the stovepiped case!',
+    steps: [
+      {
+        id: 'vss_sp_sweep',
+        orderLabel: '01',
+        titleZh: '向左倾斜枪身并向后拉动右侧拉机柄释放被夹 9×39mm 钢壳（Rack）',
+        titleEn: 'Cant Rifle & Pull Right Bolt Handle Rearward to Free Pinched Case',
+        detailZh:
+          '向后拉动长行程活塞枪机框消除夹紧力，顺势将烟囱状卡壳的绿漆钢壳抖落机匣外。',
+        detailEn:
+          'Retract the long-stroke bolt carrier to release tension on the pinched 9x39mm steel case and sweep it clear.',
+      },
+      {
+        id: 'vss_sp_check',
+        orderLabel: '02',
+        titleZh: '检查六闭锁突笋枪机面与弹膛积碳无阻滞（Inspect Chamber）',
+        titleEn: 'Inspect 6-Lug Rotating Bolt Face & Chamber Throat for Carbon',
+        detailZh:
+          '确认抛壳窗与铣削弹膛内无残留异物，微声泄压枪管导气室保持通畅。',
+        detailEn:
+          'Confirm the 6-lug bolt face, extractor claw, and chamber mouth are clear of heavy subsonic carbon buildup.',
+      },
+      {
+        id: 'vss_sp_release',
+        orderLabel: '03',
+        titleZh: '干脆松手释放枪机框，令六闭锁突笋旋转满闭锁推入新 SP-6 弹（Feed）',
+        titleEn: 'Release Bolt Carrier Crisply to Lock 6 Lugs on Fresh SP-6 Round',
+        detailZh:
+          '切勿随手护送拉机柄，让复进簧满能量驱动六突笋枪机旋转锁紧并同步压挂线性击针。',
+        detailEn:
+          'Release the handle sharply so the recoil spring rotates all 6 locking lugs home and cocks the silent linear striker.',
+      },
+    ],
+  },
+  double_feed: {
+    kind: 'double_feed',
+    code: 'MALF-VSS-02',
+    shortZh: '9×39 双进弹',
+    shortEn: '9x39 Double-Feed',
+    titleZh: '10 发梅子红华夫弹匣 9×39mm 粗径重弹双进弹卡死（Subsonic Double-Feed）',
+    titleEn: '9x39mm Heavy Subsonic Round Double-Feed Chamber Jam',
+    badgeZh: '重度卡阻 · 需摇卸弹匣',
+    badgeEn: 'Severe Jam · Rock Out Mag',
+    symptomZh:
+      '粗大的 9.25mm 250 格令 SP-6 重弹头顶在未抽出的前一枚钢壳底缘上，枪机框被两枚 9×39mm 枪弹死死楔紧在半开位置。',
+    symptomEn:
+      'A heavy 250 gr 9x39mm SP-6 round drives into the base of an unextracted spent case in the chamber, locking the bolt carrier half-open.',
+    rootCauseZh:
+      '亚音速枪弹积碳增厚使拉壳钩爪滑脱钢壳底缘，或梅子红聚合物弹匣唇口磨损变形导致双排供弹提前弹出。',
+    rootCauseEn:
+      'Carbon-fouled chamber walls cause the extractor to slip off the steel rim, or worn plum polymer feed lips release a round prematurely.',
+    safetyNoteZh:
+      '切勿用蛮力前砸拉机柄：粗重 SP-6 穿甲弹尖撞击底火可能引发未闭锁击发，必须先压笋前摇卸除弹匣！',
+    safetyNoteEn:
+      'Never hammer the charging handle forward onto a jammed 9x39mm AP tip—rock out the 10-round plum magazine first!',
+    steps: [
+      {
+        id: 'vss_df_retract',
+        orderLabel: '01',
+        titleZh: '向后拉满右侧拉机柄解除六突笋枪机对双弹的轴向挤压（Retract）',
+        titleEn: 'Pull Bolt Carrier Fully Rearward to Relieve Jam Tension',
+        detailZh:
+          '向后稳拉枪机框让开弹匣唇口空间，消除对 10 发梅子红弹匣卡笋的摩擦卡死。',
+        detailEn:
+          'Hold the bolt carrier rearward so the bolt face no longer binds the top cartridge against the magazine feed lips.',
+      },
+      {
+        id: 'vss_df_strip',
+        orderLabel: '02',
+        titleZh: '按压弹匣卡笋向前摇卸 10 发梅子红华夫 9×39mm 弹匣（Strip Mag）',
+        titleEn: 'Depress Paddle Catch & Rock Out 10-Rd Plum Waffle Magazine',
+        detailZh:
+          '前摇抽出 10 发聚合物弹匣，彻底解除向上供弹推力，让第二枚实弹自由脱落弹匣井。',
+        detailEn:
+          'Rock the 10-round plum magazine forward and down to clear the feeding cartridge out of the receiver well.',
+      },
+      {
+        id: 'vss_df_rack',
+        orderLabel: '03',
+        titleZh: '干脆来回猛拉枪机框三次，彻底抽出滞膛空壳并检视空膛（Rack x3）',
+        titleEn: 'Cycle Bolt Carrier Three Times to Extract Stuck Case & Verify Clear',
+        detailZh:
+          '连续三次全行程拉放枪机，确保抓壳钩咬合排出卡滞的 9×39mm 钢壳并目视膛内清净。',
+        detailEn:
+          'Work the charging handle briskly three times to eject the stuck steel case and visually verify an empty chamber.',
+      },
+      {
+        id: 'vss_df_reload',
+        orderLabel: '04',
+        titleZh: '重新挂钩扣实 10 发梅子红弹匣并松手推入新 SP-6 穿甲弹（Reload）',
+        titleEn: 'Rock In Seated 10-Rd Plum Magazine & Chamber Fresh SP-6 Round',
+        detailZh:
+          '前唇挂入铣削机匣后向后扣响锁定弹匣，拉满枪机干脆松手闭锁恢复微声射击。',
+        detailEn:
+          'Hook the front lug, rock the magazine locked, and slingshot the bolt carrier into full 6-lug battery.',
+      },
+    ],
+  },
+  light_strike: {
+    kind: 'light_strike',
+    code: 'MALF-VSS-03',
+    shortZh: '线性击针浅击',
+    shortEn: 'Striker Dud',
+    titleZh: '无击锤式线性平滑击针撞击俄制硬底火拒发（Linear Striker Light Strike）',
+    titleEn: 'Silent Linear Striker Light Strike on Hard Lacquered Military Primer',
+    badgeZh: '线性击针故障 · 静默排障',
+    badgeEn: 'Linear Striker · Silent Clear',
+    symptomZh:
+      'VSS 摒弃传统回转击锤以降低击发机械噪音；扣动扳机后仅听见轻微滑动撞击声，线性平滑击针未能引燃 9×39mm 漆封军用底火。',
+    symptomEn:
+      'To minimize mechanical signature, VSS fires via a linear striker instead of a swinging hammer; pulling the trigger produces a muted click with no ignition.',
+    rootCauseZh:
+      '消音器倒灌火药残渣凝结于线性击针滑道或严寒低温使润滑脂黏滞，削弱了击针簧冲量未能击穿厚杯军用伯丹底火。',
+    rootCauseEn:
+      'Suppressor carbon sludge or sub-zero grease viscosity slows the linear striker rod below the impact energy required for hard military Berdan primers.',
+    safetyNoteZh:
+      '保持隐蔽瞄准安全指向等待数秒排查迟发弹，随后轻声拉栓退除哑弹并推入新弹！',
+    safetyNoteEn:
+      'Hold muzzle safely downrange for hangfire clearance before cycling the bolt handle to eject the dud 9x39mm cartridge!',
+    steps: [
+      {
+        id: 'vss_ls_tap',
+        orderLabel: '01',
+        titleZh: '拍实 10 发梅子红弹匣底盖确认锁止无松脱（Tap）',
+        titleEn: 'Seat 10-Rd Plum Waffle Magazine Firmly Against Latch (Tap)',
+        detailZh:
+          '向上轻拍弹匣底盖确认后锁齿咬合牢固，防止供弹位偏移干扰复进闭锁。',
+        detailEn:
+          'Tap the magazine baseplate upward to ensure the rear locking lug is positively engaged.',
+      },
+      {
+        id: 'vss_ls_rack',
+        orderLabel: '02',
+        titleZh: '全行程后拉长行程活塞枪机框排出哑弹并重挂线性击针（Rack）',
+        titleEn: 'Rack Bolt Carrier Full Stroke to Eject Dud & Recock Linear Striker',
+        detailZh:
+          '向后拉到底抛出未发火的 9×39mm SP-6 实弹，同步将无击锤线性平滑击针压缩挂回阻铁。',
+        detailEn:
+          'Pull the charging handle fully rearward to eject the dud SP-6 round and re-compress the linear striker onto the sear.',
+      },
+      {
+        id: 'vss_ls_assess',
+        orderLabel: '03',
+        titleZh: '干脆松手推新弹入膛闭锁，战后拆洗线性击针滑槽与消音芯（Assess）',
+        titleEn: 'Release into Battery & Flag Linear Striker Track for Carbon Cleaning',
+        detailZh:
+          '释放枪机推新弹锁紧六突笋，任务后拆下机匣盖与整体消音筒彻底清除积碳油泥。',
+        detailEn:
+          'Slingshot a fresh round into battery and schedule post-mission cleaning of the linear striker track and 6-stage baffles.',
+      },
+    ],
+  },
+  out_of_battery: {
+    kind: 'out_of_battery',
+    code: 'SAFETY · VSS-6LUG',
+    shortZh: '六突笋未闭锁',
+    shortEn: '6-Lug OOB',
+    titleZh: '六闭锁突笋微声枪机未完全旋转闭锁安全阻断（6-Lug Out-of-Battery Guard）',
+    titleEn: '6-Lug Rotating Bolt Incomplete Lockup Auto-Sear Safety Interlock',
+    badgeZh: '精密微声闭锁保护',
+    badgeEn: '6-Lug Lockup Shield',
+    symptomZh:
+      '静默手动缓慢送栓时，六闭锁突笋枪机在距完全闭锁尚差约 12° 旋角处停滞，枪机框尾端凸轮尚未压下不到位保险阻铁，线性击针被强制机械锁定！',
+    symptomEn:
+      'Quietly easing the bolt handle forward leaves the 6-lug bolt ~12 degrees shy of full rotation; the carrier fails to trip the out-of-battery sear, blocking the linear striker!',
+    rootCauseZh:
+      '特种狙击手为隐蔽行踪刻意“手护拉机柄轻声慢推闭锁”（Silent Ride），导致复进簧在最后一段凸轮旋锁阻力前动能耗尽。',
+    rootCauseEn:
+      'Slowly riding the bolt handle forward for noise discipline robs the carrier of the momentum required to rotate all six locking lugs over carbon buildup.',
+    safetyNoteZh:
+      '即便 9×39mm 属亚音速弹，其峰值膛压仍高达 280 MPa：绝不可在六突笋未旋转落锁前击发，必须补推拉机柄至死点或重拉干脆释放！',
+    safetyNoteEn:
+      'Despite subsonic velocity, 9x39mm reaches 280 MPa peak chamber pressure—never fire until all 6 lugs lock fully at 0.0mm gap!',
+    steps: [
+      {
+        id: 'vss_oob_stop',
+        orderLabel: '01',
+        titleZh: '松开扳机并拉动枪机框退出半入膛的 9×39mm 穿甲实弹（Retract）',
+        titleEn: 'Release Trigger & Retract Bolt Carrier to Clear Unseated Round',
+        detailZh:
+          '停止扣动扳机并将枪机框拉至后方，抽出受阻未闭锁的 SP-6 枪弹避免卡膛。',
+        detailEn:
+          'Remove finger from trigger and pull the bolt handle back to extract the unseated 9x39mm cartridge.',
+      },
+      {
+        id: 'vss_oob_inspect',
+        orderLabel: '02',
+        titleZh: '检视铣削机匣六槽闭锁凹肩与枪机螺旋开锁导槽清洁度（Inspect）',
+        titleEn: 'Inspect Milled Receiver 6-Lug Recesses & Carrier Cam Track',
+        detailZh:
+          '确认六枚对称闭锁突笋凹槽内无消音器回流结焦碳块阻挡最终旋转落位。',
+        detailEn:
+          'Verify that the six milled locking recesses and bolt cam pin are clear of hardened carbon crust.',
+      },
+      {
+        id: 'vss_oob_lock',
+        orderLabel: '03',
+        titleZh: '拉满拉机柄后松手干脆复进，确认六闭锁突笋 100% 旋转锁固（Full Lock）',
+        titleEn: 'Slingshot Bolt Carrier Home for 100% 6-Lug Rotary Lockup',
+        detailZh:
+          '以满额复进簧张力将六突笋枪机旋转到位并解脱不到位保险，恢复静默精准待击。',
+        detailEn:
+          'Allow full recoil-spring energy to snap all six locking lugs home and trip the OOB safety ready to fire.',
+      },
+    ],
+  },
+};
+
+const M134_MALFUNCTION_SCENARIOS: Readonly<
+  Record<MalfunctionKind, MalfunctionScenarioSpec>
+> = {
+  stovepipe: {
+    kind: 'stovepipe',
+    code: 'MALF-M134-01',
+    shortZh: '底排壳口壅塞',
+    shortEn: 'Chute Back-Up',
+    titleZh: '3,000 RPM 底部抛壳导管铜壳壅塞卡滞转子枪机（Ejection Chute Back-Up）',
+    titleEn: '3,000 RPM Lower Brass Ejection Chute Back-Up Stalling Bolt',
+    badgeZh: '加特林高速排壳故障',
+    badgeEn: 'Rotary Brass Chute Jam',
+    symptomZh:
+      '每秒 50 发 7.62×51mm NATO 炽热铜壳在底部排壳导管弯折处发生堆积回堵，一枚空壳卡死在 5 点钟抛壳位枪机槽口，触发驱动马达过载保护停转！',
+    symptomEn:
+      'At 50 rounds per second, spent 7.62 NATO brass backs up in a kinked lower ejection chute and wedges inside the 5-o’clock rotor bolt track, tripping the motor clutch!',
+    rootCauseZh:
+      '车载/机载抛壳软管弯曲半径过小或排壳口被杂物遮挡，导致高速喷涌的空弹壳与 M13 离散弹链片倒灌回转子槽。',
+    rootCauseEn:
+      'A sharp bend or obstruction in the flexible brass disposal chute causes hot 7.62 cases to pile back up into the spinning 6-flute rotor.',
+    safetyNoteZh:
+      '排除电动加特林卡阻前，必须先松开双手铲形握把火控开关并确认 28V 直流主电源断电隔离！',
+    safetyNoteEn:
+      'Before touching any rotary bolt track, release the spade-grip firing triggers and isolate 28V DC motor power!',
+    steps: [
+      {
+        id: 'm134_sp_power',
+        orderLabel: '01',
+        titleZh: '松开铲形握把双电门并逆向微盘转子卸除过载离合器扭矩（De-Power）',
+        titleEn: 'Release Spade-Grip Switches & Relieve Rotor Clutch Torque',
+        detailZh:
+          '切断 28V 直流驱动电流，点击中央六槽转子微调卸荷，解除对卡滞铜壳的挤压剪切力。',
+        detailEn:
+          'Cut 28V DC power and jog the central 6-flute rotor slightly to take clutch torque off the wedged brass casing.',
+      },
+      {
+        id: 'm134_sp_clear',
+        orderLabel: '02',
+        titleZh: '理顺底部抛壳导管并清出 5 点钟枪机槽内回堵的 7.62 空壳（Clear Chute）',
+        titleEn: 'Straighten Lower Ejection Chute & Clear Wedged 7.62 Brass',
+        detailZh:
+          '检查底部排壳导管通畅无弯折，从转子排壳窗口清除变形空铜壳与残留链节。',
+        detailEn:
+          'Remove the kink in the brass disposal chute and clear deformed 7.62mm casings from the lower rotor exit.',
+      },
+      {
+        id: 'm134_sp_spin',
+        orderLabel: '03',
+        titleZh: '手动旋检转子顺滑无阻，重接 28V 电源恢复 3,000 RPM 齐射（Spin Ready）',
+        titleEn: 'Verify Free Rotor Rotation & Re-Arm 28V DC Drive for 3,000 RPM',
+        detailZh:
+          '确认全部六枚滚轮枪机在正弦凸轮槽内往复顺滑，重新待命执行六管饱和火力压制。',
+        detailEn:
+          'Confirm all six cam-roller bolts cycle freely inside the sinusoidal track and re-energize the 28V drive.',
+      },
+    ],
+  },
+  double_feed: {
+    kind: 'double_feed',
+    code: 'MALF-M134-02',
+    shortZh: '脱链供弹卡滞',
+    shortEn: 'Delinker Jam',
+    titleZh: '狄龙 M134D 星形脱链机 M13 弹链跨齿双弹卡阻（Delinker Sprocket Jam）',
+    titleEn: 'Dillon M134D Star-Wheel Delinker M13 Link Cross-Feed Jam',
+    badgeZh: '脱链供弹卡死 · 需清链',
+    badgeEn: 'Delinker Bind · Pull Chute',
+    symptomZh:
+      '扭曲的 M13 可散弹链片未能在星形拨轮剥离口顺利脱落，带偏下一发 7.62 NATO 实弹与前一枚脱链弹在 8 点钟转子入口交叉卡死。',
+    symptomEn:
+      'A bent M13 disintegrating link fails to strip cleanly inside the Dillon star-wheel delinker, wedging two 7.62 NATO rounds across the 8-o’clock rotor feed throat.',
+    rootCauseZh:
+      '左侧柔性不锈钢供弹槽内弹链进给受阻拉力过大，导致压弹离合簧超限打滑、星形脱链拨轮与中央转子相位错齿。',
+    rootCauseEn:
+      'Excessive ammo-chute pull load causes the feeder clutch to slip, throwing the star-wheel delinker out of phase with the 6-flute rotor.',
+    safetyNoteZh:
+      '电动外能源武器不会因卡弹自动停手：必须先断电卸开柔性供弹滑槽与脱链机，严禁通电硬冲强转！',
+    safetyNoteEn:
+      'Never power-jog a bound delinker with 28V DC—isolate power and unlatch the M13 feed chute first to prevent crushed live rounds!',
+    steps: [
+      {
+        id: 'm134_df_stop',
+        orderLabel: '01',
+        titleZh: '断电停转中央转子，开启保险扇形块并释放离合器卡滞压力（Cut Power）',
+        titleEn: 'Cut 28V Motor Power & Relieve Rotor-to-Delinker Gear Bind',
+        detailZh:
+          '点击中央转子或驱动马达彻底断电停转，防止高扭矩直流马达压变形 7.62 实弹壳颈。',
+        detailEn:
+          'Ensure the 28V DC motor is de-energized and relieve mechanical bind across the rotor-to-delinker spur gears.',
+      },
+      {
+        id: 'm134_df_strip',
+        orderLabel: '02',
+        titleZh: '脱开左侧不锈钢 M13 柔性供弹槽切断 7.62 弹链张力（Detach Chute）',
+        titleEn: 'Unlatch Left Stainless M13 Ammo Chute to Clear Belt Tension',
+        detailZh:
+          '拔出快拆销分离柔性供弹滑槽，彻底卸除整条 M13 金属弹链对脱链星轮的拉力。',
+        detailEn:
+          'Disconnect the flexible stainless M13 feed chute so belt drag no longer binds the star-wheel sprocket.',
+      },
+      {
+        id: 'm134_df_clear',
+        orderLabel: '03',
+        titleZh: '手动清除狄龙脱链机内变形 M13 链节与双卡实弹并校对正时（Clear & Time）',
+        titleEn: 'Extract Bent M13 Links, Clear Both 7.62 Rounds & Re-Time Sprocket',
+        detailZh:
+          '取出卡死的两发 7.62 NATO 枪弹与损坏链片，对准脱链拨轮与转子正时标记。',
+        detailEn:
+          'Remove the bent M13 link and jammed rounds, then verify star-wheel sprocket timing marks align with Rotor Track #1.',
+      },
+      {
+        id: 'm134_df_reload',
+        orderLabel: '04',
+        titleZh: '重新挂接 M13 弹链滑槽，手盘转子确认首弹入位恢复待射（Reload）',
+        titleEn: 'Re-Latch M13 Ammo Chute & Hand-Index First Round to Ready',
+        detailZh:
+          '扣紧不锈钢供弹槽并顺滑盘转一圈，确认六管循环供弹与脱链节拍 100% 恢复同步。',
+        detailEn:
+          'Re-latch the ammo chute and confirm smooth delinking into the 8-o’clock rotor pocket ready for electric fire.',
+      },
+    ],
+  },
+  light_strike: {
+    kind: 'light_strike',
+    code: 'MALF-M134-03',
+    shortZh: '外能源抛哑弹',
+    shortEn: 'Auto-Clear Dud',
+    titleZh: '单发哑弹拒发与加特林外能源自动抛除演练（External-Drive Dud Pass-Through）',
+    titleEn: 'Single-Round Primer Failure & External Electric Auto-Clear Cycle',
+    badgeZh: '加特林核心优势 · 不停射',
+    badgeEn: 'Gatling Advantage · No Stop',
+    symptomZh:
+      '某发 7.62×51mm NATO 枪弹在 12 点钟击发点遭击针撞击后底火失效拒发；但因 M134D 由 28V 电动马达而非火药燃气驱动，其余五根枪管照常高速循环！',
+    symptomEn:
+      'A defective 7.62 NATO primer fails to ignite at 12 o’clock; because external 28V DC power drives the rotor instead of propellant gas, the weapon never stops cycling!',
+    rootCauseZh:
+      '弹药受潮底火失效或某枚枪机击针尖端磨损；在传统导气机枪上会立刻停射，但在加特林机枪上仅表现为单管瞬时漏响。',
+    rootCauseEn:
+      'A dead #34 military primer or worn bolt firing pin causes a single misfire without interrupting the externally powered 6-barrel rotation.',
+    safetyNoteZh:
+      '注意地面落壳区可能混入未击发的 7.62 NATO 完整哑弹！勤务检查必须排查涉事编号枪机的击针伸出量。',
+    safetyNoteEn:
+      'Watch for live ejected duds in the spent-brass chute! After firing, inspect the affected bolt number for firing-pin protrusion wear.',
+    steps: [
+      {
+        id: 'm134_ls_verify',
+        orderLabel: '01',
+        titleZh: '确认 28V 电动马达持续驱动转子携哑弹越过 12 点钟位置（Drive Past）',
+        titleEn: 'Confirm 28V DC Rotor Carries Dud Round Past 12-O’Clock Firing Point',
+        detailZh:
+          '电动外能源无视单发无膛压状态，强行带动涉事枪机沿正弦凸轮槽后退完成机械抽壳。',
+        detailEn:
+          'External motor torque rotates the misfired barrel past 12 o’clock and cams its bolt rearward along the sinusoidal track.',
+      },
+      {
+        id: 'm134_ls_eject',
+        orderLabel: '02',
+        titleZh: '在 5 点钟抛壳位自动抽出并沿底槽排出完整哑弹（Auto-Eject）',
+        titleEn: 'Auto-Extract & Expel Live Dud Round Down 5-O’Clock Chute',
+        detailZh:
+          '涉事枪机在 5 点钟开锁位将完整哑弹平稳拔出弹膛并投入排壳导管，零人工干预排障！',
+        detailEn:
+          'At 5 o’clock the bolt extracts and dumps the unfired dud cartridge through the disposal chute with zero stoppage.',
+      },
+      {
+        id: 'm134_ls_inspect',
+        orderLabel: '03',
+        titleZh: '连续推入后续 7.62 实弹维持 3,000 RPM 火力，并记录枪机号检修击针（Assess）',
+        titleEn: 'Maintain 3,000 RPM Fire & Log Bolt Head for Firing-Pin Check',
+        detailZh:
+          '下一根枪管瞬间在 12 点钟无缝接续击发，停射后对涉事枪机执行击针突伸量规检测。',
+        detailEn:
+          'Subsequent barrels fire seamlessly at 3,000 RPM; log the misfiring bolt slot for post-flight firing-pin gauging.',
+      },
+    ],
+  },
+  out_of_battery: {
+    kind: 'out_of_battery',
+    code: 'SAFETY · M134-SAFE',
+    shortZh: '保险扇区锁止',
+    shortEn: 'Safing Sector',
+    titleZh: '12 点钟保险闭锁扇形块未入位击发阻断（Safing Sector Firing Interlock）',
+    titleEn: '12-O’Clock Safing Sector Cam Track Firing-Pin Interlock',
+    badgeZh: '加特林防早发核心保险',
+    badgeEn: 'Rotary OOB Interlock',
+    symptomZh:
+      '枪机滚轮尚在 10 点钟上坡进弹段推进，枪机头尚未完全旋转 22° 闭锁进转子卡槽；同时若 12 点钟保险扇形块翻起解脱，击针翘板将被强制托离底火轴线！',
+    symptomEn:
+      'The cam-roller bolt is still ascending the 10-o’clock ramming ramp short of its 22-degree locked rotation; the top safing sector mechanically holds the firing pin cocked off the primer!',
+    rootCauseZh:
+      '主机匣顶部可翻盖式保险扇形块（Safing Sector）未压紧锁死，或在装弹清枪后未重新合拢该防早发机械安全门。',
+    rootCauseEn:
+      'The hinged 12-o’clock safing sector was left disengaged after clearing, intentionally decoupling the firing-pin sear cam from all six passing bolts.',
+    safetyNoteZh:
+      '保险扇形块是 M134D 的“机械安全门”：开启时允许空转电机排空膛内实弹而绝对不会触发底火，实弹射击前必须确认锁舌完全落槽！',
+    safetyNoteEn:
+      'The safing sector lets crews spin-clear live rounds safely with zero primer strikes—lock it closed only when ready for live fire!',
+    steps: [
+      {
+        id: 'm134_oob_stop',
+        orderLabel: '01',
+        titleZh: '松开铲形握把火控电门，检查 12 点钟顶部保险扇形块锁止状态（Inspect）',
+        titleEn: 'Release Firing Switches & Inspect 12-O’Clock Safing Sector Position',
+        detailZh:
+          '观察机匣 12 点钟位置可动扇形块与凸轮环平齐度，确认击针是否正处于安全托起状态。',
+        detailEn:
+          'Inspect the top 12-o’clock hinged safing sector to verify whether the firing-pin trip ramp is intentionally retracted.',
+      },
+      {
+        id: 'm134_oob_align',
+        orderLabel: '02',
+        titleZh: '确认所有六枚枪机滚轮准确嵌合正弦凸轮轨道无脱轨（Verify Track）',
+        titleEn: 'Verify All Six Bolt Cam Rollers Track Cleanly Inside Stator Groove',
+        detailZh:
+          '透过剖视检视六枚枪机滚轮顺畅贴合螺旋导槽，确认 12 点钟位置枪机头旋转闭锁零间隙。',
+        detailEn:
+          'Confirm every bolt roller rides squarely in the elliptical stator track and achieves full 22-degree lockup at 12 o’clock.',
+      },
+      {
+        id: 'm134_oob_engage',
+        orderLabel: '03',
+        titleZh: '压实锁紧 12 点钟保险扇形块恢复 100% 闭锁击发联动（Engage）',
+        titleEn: 'Latch 12-O’Clock Safing Sector Flush for Full Locked Fire',
+        detailZh:
+          '将保险扇形块稳固扣平锁死，使仅当枪机在 12 点钟 100% 闭锁瞬间才精确释放击针。',
+        detailEn:
+          'Snap the safing sector flush into its firing detent so firing pins release strictly at full 12-o’clock battery.',
+      },
+    ],
+  },
+};
+
+const AN94_MALFUNCTION_SCENARIOS: Readonly<
+  Record<MalfunctionKind, MalfunctionScenarioSpec>
+> = {
+  stovepipe: {
+    kind: 'stovepipe',
+    code: 'MALF-AN94-01',
+    shortZh: '双发高速卡壳',
+    shortEn: 'Hyperburst Jam',
+    titleZh: '1,800 RPM 极速双连发首弹空壳滞窗卡阻（Hyperburst First-Round Stovepipe）',
+    titleEn: '1,800 RPM Hyperburst First-Round Steel Case Stovepipe Jam',
+    badgeZh: '双发超高速特有故障',
+    badgeEn: '1,800 RPM Timing Jam',
+    symptomZh:
+      '浮置枪管内机匣后滑 42mm 期间，首发 5.45×39mm 绿漆钢壳在 33 毫秒极速循环内未能及时抛离，被前冲推取第二发弹的枪机框夹立于右侧抛壳长槽！',
+    symptomEn:
+      'During the 33-millisecond 1,800 RPM cycle while the barreled receiver floats rearward 42mm, the spent 5.45mm steel case fails to clear and gets pinched by the returning bolt!',
+    rootCauseZh:
+      '浮置内机匣滑动导轨积尘干涩，略微改变了内机匣与枪机框之间的相对后坐速度差，削弱了首弹抛壳挺撞击冲量。',
+    rootCauseEn:
+      'Fouled outer-housing glide rails alter the relative recoil timing between the floating inner receiver and bolt carrier, robbing ejector impulse.',
+    safetyNoteZh:
+      'AN-94 处于双发高速态时第二发实弹可能已由滑轮预供弹滑块托举在半途！排障拉栓务必一拉到底彻底清空两级通道！',
+    safetyNoteEn:
+      'In AN-94 hyperburst, a second live 5.45mm round may already sit staged on the bronze pre-feed rammer—always rack full stroke!',
+    steps: [
+      {
+        id: 'an94_sp_rack',
+        orderLabel: '01',
+        titleZh: '向后全行程拉动枪机框，同步卸荷抛落夹滞的 5.45 钢壳（Rack）',
+        titleEn: 'Pull Bolt Carrier Full Stroke to Free Pinched 5.45mm Steel Case',
+        detailZh:
+          '向右倾枪后拉枪机框释放卡滞空壳，同时确认青铜二级预供弹滑块平滑回位。',
+        detailEn:
+          'Tilt ejection port downward and retract the bolt carrier to clear the pinched steel case while resetting the pre-feed rammer.',
+      },
+      {
+        id: 'an94_sp_check',
+        orderLabel: '02',
+        titleZh: '目视检查二级预供弹托盘与浮置枪管弹膛无残留双弹（Check Tray）',
+        titleEn: 'Inspect Bronze Pre-Feed Shuttle & Floating Chamber for Loose Round',
+        detailZh:
+          '核查滑轮钢索驱动的二级预供弹盘上没有残留未定位实弹，避免复进引发二次双进弹。',
+        detailEn:
+          'Confirm no loose 5.45mm cartridge remains trapped on the cable-driven pre-feed tray ahead of the chamber.',
+      },
+      {
+        id: 'an94_sp_release',
+        orderLabel: '03',
+        titleZh: '松手干脆释放枪机框归零浮置机匣，恢复 1,800 RPM 双发待击（Ready）',
+        titleEn: 'Release Bolt Carrier Crisply to Restore Floating-Action Battery',
+        detailZh:
+          '让高劲度枪机复进簧与外机匣缓冲主簧同步回弹到位，恢复精准双发同孔连射状态。',
+        detailEn:
+          'Release cleanly so both the bolt return spring and floating receiver buffer spring seat solidly in battery.',
+      },
+    ],
+  },
+  double_feed: {
+    kind: 'double_feed',
+    code: 'MALF-AN94-02',
+    shortZh: '二级预供卡阻',
+    shortEn: 'Pre-Feed Jam',
+    titleZh: '滑轮钢索二级预供弹滑块与 15° 右倾弹匣双弹干涉（2-Stage Pre-Feed Double-Feed）',
+    titleEn: 'Cable-Pulley 2-Stage Pre-Feed Shuttle & Canted Magazine Double-Feed',
+    badgeZh: '阿巴坎标志排障 · 清双通道',
+    badgeEn: 'Abakan 2-Stage Jam · Clear Tray',
+    symptomZh:
+      '浮置枪膛内残留前发弹壳，而 CNC 槽轮滑轮与编织钢索已将青铜二级预供弹滑块向前拽出并从 15° 右倾弹匣带出第二发 5.45×39mm 实弹，两弹在预供弹斜坡剧烈顶撞！',
+    symptomEn:
+      'A spent case remains in the floating chamber while the grooved pulley and braided steel cable haul a live 5.45mm round onto the bronze pre-feed tray, locking both stages!',
+    rootCauseZh:
+      '在半行程拉栓检查后未清膛直接松手，致使滑轮钢索预供弹机构提前向托弹盘输送了一发 5.45mm 实弹，与膛内原有弹药发生双层叠加干涉。',
+    rootCauseEn:
+      'Short-stroking the charging handle actuates the pulley-cable pre-feed rammer early, staging an extra 5.45mm cartridge behind a round already in the chamber.',
+    safetyNoteZh:
+      '必须先卸载 15° 右倾弧形弹匣，再多次全行程拉栓以同时清空“枪膛”与“二级预供弹托盘”两处藏弹位！',
+    safetyNoteEn:
+      'Always remove the 15-degree canted magazine first, then cycle fully to clear BOTH the chamber AND the 2-stage pre-feed tray!',
+    steps: [
+      {
+        id: 'an94_df_retract',
+        orderLabel: '01',
+        titleZh: '后拉枪机框松弛传动钢索并卸除对预供弹托盘的挤压（Retract）',
+        titleEn: 'Pull Bolt Carrier Rearward to Relieve Tension on Pre-Feed Shuttle',
+        detailZh:
+          '稳拉枪机框让开 15° 弹匣口上方空间，防止弹匣唇口被预供弹滑块咬死难以拔出。',
+        detailEn:
+          'Retract the bolt carrier to take forward spring load off the jammed cartridges above the 15-degree canted magazine.',
+      },
+      {
+        id: 'an94_df_strip',
+        orderLabel: '02',
+        titleZh: '顺着 15° 右倾角按下卡笋摇卸 30 发 5.45×39mm 弧形弹匣（Strip Mag）',
+        titleEn: 'Rock Out 15-Degree Right-Canted 30-Rd 5.45x39mm Banana Magazine',
+        detailZh:
+          '沿 15° 右偏轴线果断卸除弹匣，切断向二级青铜预供弹滑块的后续供弹源。',
+        detailEn:
+          'Depress the paddle catch and pull the canted 30-round magazine clear along its 15-degree right axis.',
+      },
+      {
+        id: 'an94_df_clear',
+        orderLabel: '03',
+        titleZh: '连续三次满行程拉放枪机框，同步排空枪膛与二级预供弹托盘（Rack x3）',
+        titleEn: 'Cycle Bolt Carrier Three Times to Empty Chamber & Pre-Feed Tray',
+        detailZh:
+          '反复带动槽轮滑轮与钢索全行程往复，确认弹膛和青铜预供托盘内全部卡滞弹清空。',
+        detailEn:
+          'Work the charging handle briskly three times so both the floating barrel chamber and pre-feed shuttle dump clear.',
+      },
+      {
+        id: 'an94_df_reload',
+        orderLabel: '04',
+        titleZh: '顺 15° 角重新插实 5.45 弧形弹匣并一拉到底松手上膛（Reload）',
+        titleEn: 'Reseat 15-Degree Canted Magazine & Slingshot Fresh 5.45mm Round',
+        detailZh:
+          '扣响锁定右倾弹匣，满行程拉放枪机一次将首弹经二级预供顺滑送入浮置枪膛。',
+        detailEn:
+          'Lock the canted magazine firmly and execute one crisp full-stroke slingshot into battery.',
+      },
+    ],
+  },
+  light_strike: {
+    kind: 'light_strike',
+    code: 'MALF-AN94-03',
+    shortZh: '高速击发拒发',
+    shortEn: 'Hyperburst Dud',
+    titleZh: '1,800 RPM 延迟后坐击锤轻敲 5.45 漆封底火拒发（Hyperburst Light Strike）',
+    titleEn: '1,800 RPM Floating-Action Hammer Light Strike on 5.45mm Primer',
+    badgeZh: '双发断续 · 即时复拉',
+    badgeEn: 'Burst Interruption · Tap-Rack',
+    symptomZh:
+      '在两发高速连射中，击锤二次释放撞击惯性击针却未引燃 5.45×39mm 7N6 底火，浮置内机匣失去燃气后推直接提前复进停顿。',
+    symptomEn:
+      'During the 2-round hyperburst, the hammer strikes the firing pin without igniting the 5.45mm 7N6 primer, halting the gas-driven floating recoil cycle immediately.',
+    rootCauseZh:
+      '军用漆封 7N6 底火装药失效，或枪机框在 1,800 RPM 极高速复进中轻微反弹造成击锤能量损耗。',
+    rootCauseEn:
+      'A defective lacquer-sealed 7N6 primer or slight carrier bounce during the ultra-rapid 1,800 RPM return damps hammer energy.',
+    safetyNoteZh:
+      '保持枪口指向靶区并完整拉满一次拉机柄（切勿半拉！），防止二级预供机构额外带出双弹！',
+    safetyNoteEn:
+      'Keep muzzle downrange and execute ONE complete full-stroke rack (never short-stroke!) so the pulley pre-feed stays synchronized!',
+    steps: [
+      {
+        id: 'an94_ls_tap',
+        orderLabel: '01',
+        titleZh: '沿 15° 斜角向上拍紧 30 发 5.45×39mm 弧形弹匣底盖（Tap）',
+        titleEn: 'Tap 15-Degree Canted 5.45mm Magazine Firmly into Magwell (Tap)',
+        detailZh:
+          '确认右倾弹匣完全锁紧，确保弹匣口与青铜二级预供弹滑块高度精准齐平。',
+        detailEn:
+          'Verify the canted 30-round magazine is seated solidly flush with the bronze pre-feed rammer throat.',
+      },
+      {
+        id: 'an94_ls_rack',
+        orderLabel: '02',
+        titleZh: '一拉到底排出未击发 5.45 哑弹并同步滑轮预供新弹（Full Rack）',
+        titleEn: 'Rack Full Stroke to Eject 5.45mm Dud & Sync Pulley Pre-Feed',
+        detailZh:
+          '拉满枪机框弹出哑弹，同时让 CNC 滑轮钢索将下一发 5.45 实弹干净拨上托弹盘。',
+        detailEn:
+          'Pull the bolt handle cleanly to its rear stop to eject the dud and cycle the pulley-cable pre-feed smoothly.',
+      },
+      {
+        id: 'an94_ls_assess',
+        orderLabel: '03',
+        titleZh: '干脆松手闭锁恢复双发高速射击，战后检查编织钢索张力（Assess）',
+        titleEn: 'Release into Battery & Schedule Pulley-Cable Tension Inspection',
+        detailZh:
+          '确认浮置内机匣与双突笋枪机双双归零闭锁，勤务后检查编织传动钢索无毛刺疲劳。',
+        detailEn:
+          'Confirm both the 2-lug bolt and floating receiver return to full battery; inspect the braided steel cable post-mission.',
+      },
+    ],
+  },
+  out_of_battery: {
+    kind: 'out_of_battery',
+    code: 'SAFETY · AN94-FLT',
+    shortZh: '浮置未闭锁保护',
+    shortEn: 'Floating OOB',
+    titleZh: '双突笋枪机未锁紧浮置内机匣自动阻铁安全阻断（Floating-Action OOB Safety）',
+    titleEn: '2-Lug Bolt & Floating Inner Receiver Out-of-Battery Auto-Sear Block',
+    badgeZh: '浮置双重闭锁保护',
+    badgeEn: 'Floating Lockup Shield',
+    symptomZh:
+      '浮置枪管内机匣虽已滑回前止点，但双闭锁突笋枪机在进弹末段受阻尚差 4mm 未完成 35.5° 旋转闭锁；内机匣自动阻铁锁死击锤防止 294 MPa 膛压炸匣！',
+    symptomEn:
+      'The floating inner receiver returns forward, yet the 2-lug bolt stops ~4mm short of completing its 35.5-degree lockup rotation; the auto-sear traps the hammer to prevent a 294 MPa rupture!',
+    rootCauseZh:
+      '拉动拉机柄后缓慢护送前推，导致高劲度复进簧动能不足以克服编织钢索滑轮阻尼与双突笋最终旋锁摩擦。',
+    rootCauseEn:
+      'Riding the charging handle forward steals the spring energy needed to overcome pulley-cable friction and rotate the 2-lug bolt fully into battery.',
+    safetyNoteZh:
+      '切勿前砸拉机柄强迫编织钢索与青铜预供滑块硬顶入位，必须拉满重放或退出受阻枪弹排查滑轮导槽！',
+    safetyNoteEn:
+      'Never beat the charging handle forward against pulley-cable resistance—retract cleanly, clear the round, and slingshot into lockup!',
+    steps: [
+      {
+        id: 'an94_oob_stop',
+        orderLabel: '01',
+        titleZh: '松开扳机并拉动枪机框退出半入膛的 5.45×39mm 枪弹（Retract）',
+        titleEn: 'Release Trigger & Retract Bolt Carrier to Clear Unseated 5.45mm Round',
+        detailZh:
+          '停止扣压扳机并将枪机框拉至后位，抽出受阻未闭锁的 7N6 实弹检查壳体无凹陷。',
+        detailEn:
+          'Remove trigger pressure and pull the bolt handle rearward to clear the unseated 5.45mm cartridge.',
+      },
+      {
+        id: 'an94_oob_inspect',
+        orderLabel: '02',
+        titleZh: '检查浮置钢制内机匣滑轨、CNC 滑轮与编织钢索无异物缠绕（Inspect）',
+        titleEn: 'Inspect Floating Receiver Rails, Grooved Pulley & Steel Cable',
+        detailZh:
+          '确认外机匣内壁浮置导轨顺滑、槽轮钢索位于轮槽正中无跳槽卡滞。',
+        detailEn:
+          'Verify the braided steel cable tracks centered in the CNC pulley groove and the floating rails glide freely.',
+      },
+      {
+        id: 'an94_oob_slingshot',
+        orderLabel: '03',
+        titleZh: '满行程拉放枪机零迟疑松手，确认双突笋 35.5° 旋转满闭锁（Full Lock）',
+        titleEn: 'Slingshot Bolt Carrier from Full Rear into 35.5-Degree Full Lockup',
+        detailZh:
+          '令枪机复进簧满能量推动枪机旋转 35.5° 锁入浮置节套，解脱不到位保险恢复待射。',
+        detailEn:
+          'Release crisply from full retraction so the 2-lug bolt rotates 35.5 degrees into locked battery and clears the auto-sear.',
+      },
+    ],
+  },
+};
+
 export function getMalfunctionScenario(
   kind: MalfunctionKind,
   weaponId?: WeaponId | string
@@ -1502,6 +2426,18 @@ export function getMalfunctionScenario(
   }
   if (weaponId === 'vector') {
     return VECTOR_MALFUNCTION_SCENARIOS[kind];
+  }
+  if (weaponId === 'g11') {
+    return G11_MALFUNCTION_SCENARIOS[kind];
+  }
+  if (weaponId === 'vss') {
+    return VSS_MALFUNCTION_SCENARIOS[kind];
+  }
+  if (weaponId === 'm134') {
+    return M134_MALFUNCTION_SCENARIOS[kind];
+  }
+  if (weaponId === 'an94') {
+    return AN94_MALFUNCTION_SCENARIOS[kind];
   }
   return MALFUNCTION_SCENARIOS[kind];
 }
@@ -1990,5 +2926,127 @@ export const WEAPON_MALFUNCTION_PROFILES: Readonly<
     rackFullOpenF: 0.5,
     lightStrikeF: 0.1,
     outOfBatteryF: 0.84,
+  },
+  g11: {
+    weaponId: 'g11',
+    actionPartIds: [
+      'g11_rotary_breech',
+      'g11_winding_knob',
+      'g11_clockwork_gears',
+      'g11_driving_rod',
+    ],
+    lockingPartIds: ['g11_rotary_breech', 'g11_inner_receiver', 'g11_barrel'],
+    extractorPartId: 'g11_loading_rammer',
+    fireControlPartIds: [
+      'g11_firing_pin',
+      'g11_trigger_pack',
+      'g11_trigger',
+      'g11_selector',
+    ],
+    magazinePartIds: [
+      'g11_mag_tube',
+      'g11_mag_follower',
+      'g11_mag_spring',
+      'g11_mag_endcap',
+    ],
+    magStripOffsetCm: [6.0, 4.2, 0],
+    ejectionUpSign: -1,
+    stovepipeF: 0.48,
+    doubleFeedF: 0.44,
+    rackFullOpenF: 0.46,
+    lightStrikeF: 0.1,
+    outOfBatteryF: 0.68,
+  },
+  vss: {
+    weaponId: 'vss',
+    actionPartIds: ['vss_bolt_carrier', 'vss_bolt'],
+    lockingPartIds: ['vss_bolt', 'vss_receiver', 'vss_barrel'],
+    extractorPartId: 'vss_bolt',
+    fireControlPartIds: [
+      'vss_striker',
+      'vss_striker_spring',
+      'vss_sear',
+      'vss_trigger',
+      'vss_firing_pin',
+    ],
+    magazinePartIds: [
+      'vss_mag_body',
+      'vss_mag_follower',
+      'vss_mag_spring',
+      'vss_mag_floorplate',
+    ],
+    magStripOffsetCm: [0.4, -4.4, 0],
+    ejectionUpSign: 1,
+    stovepipeF: 0.72,
+    doubleFeedF: 0.64,
+    rackFullOpenF: 0.48,
+    lightStrikeF: 0.1,
+    outOfBatteryF: 0.82,
+  },
+  m134: {
+    weaponId: 'm134',
+    actionPartIds: [
+      'm134_rotor_assembly',
+      'm134_drive_motor',
+      'm134_bolt_1',
+      'm134_bolt_2',
+    ],
+    lockingPartIds: [
+      'm134_bolt_1',
+      'm134_cam_track_ring',
+      'm134_safing_sector',
+      'm134_barrel_cluster',
+    ],
+    extractorPartId: 'm134_bolt_1',
+    fireControlPartIds: [
+      'm134_drive_motor',
+      'm134_drive_gear',
+      'm134_clutch_spring',
+      'm134_safing_sector',
+      'm134_spade_grip',
+    ],
+    magazinePartIds: [
+      'm134_ammo_chute',
+      'm134_delinker_housing',
+      'm134_delinker_sprocket',
+      'm134_feeder_spring',
+    ],
+    magStripOffsetCm: [0, -4.6, -4.2],
+    ejectionUpSign: -1,
+    stovepipeF: 0.46,
+    doubleFeedF: 0.56,
+    rackFullOpenF: 0.45,
+    lightStrikeF: 0.085,
+    outOfBatteryF: 0.78,
+  },
+  an94: {
+    weaponId: 'an94',
+    actionPartIds: [
+      'an94_bolt_carrier',
+      'an94_bolt',
+      'an94_pulley_wheel',
+      'an94_feed_rammer',
+    ],
+    lockingPartIds: ['an94_bolt', 'an94_inner_receiver', 'an94_barrel'],
+    extractorPartId: 'an94_bolt',
+    fireControlPartIds: [
+      'an94_firing_pin',
+      'an94_hammer',
+      'an94_trigger',
+      'an94_fire_selector',
+    ],
+    magazinePartIds: [
+      'an94_mag_body',
+      'an94_mag_follower',
+      'an94_mag_spring',
+      'an94_mag_floorplate',
+    ],
+    magStripOffsetCm: [1.4, -4.6, 1.3],
+    ejectionUpSign: 1,
+    stovepipeF: 0.54,
+    doubleFeedF: 0.46,
+    rackFullOpenF: 0.48,
+    lightStrikeF: 0.1,
+    outOfBatteryF: 0.65,
   },
 };

@@ -42,8 +42,8 @@ function loadNarrationBundle(weaponId: WeaponId): WeaponNarrationBundle {
 }
 
 describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () => {
-  it('produces valid bilingual DkScaleReference for all 19 exhibits with accurate silhouettes', () => {
-    expect(WEAPON_IDS.length).toBe(19);
+  it('produces valid bilingual DkScaleReference for all 23 exhibits with accurate silhouettes', () => {
+    expect(WEAPON_IDS.length).toBe(23);
 
     for (const weaponId of WEAPON_IDS) {
       const manifest = getWeaponManifest(weaponId);
@@ -88,7 +88,7 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
     expect(buildDkScaleReference('vector', 'en').oalMm).toBe(617);
   });
 
-  it('produces strictly chronological 5-node DkEvolutionTimeline with exactly one current node across all 19 exhibits', () => {
+  it('produces strictly chronological 5-node DkEvolutionTimeline with exactly one current node across all 23 exhibits', () => {
     const expectedRelations: DkEraRelation[] = [
       'ancestor',
       'predecessor',
@@ -124,7 +124,7 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
     }
   });
 
-  it('produces curated bilingual DkLoupeSpecs for all 19 exhibits with domain-specific archery copy', () => {
+  it('produces curated bilingual DkLoupeSpecs for all 23 exhibits with domain-specific archery copy', () => {
     for (const weaponId of WEAPON_IDS) {
       const isArchery = getWeaponManifest(weaponId).catalog.category === 'archery';
 
@@ -151,7 +151,7 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
     }
   });
 
-  it('distills crisp bilingual buildDkPartMicroCopy across all 480 parts of all 19 exhibits without ellipses or mid-word cuts', async () => {
+  it('distills crisp bilingual buildDkPartMicroCopy across all 579 parts of all 23 exhibits without ellipses or mid-word cuts', async () => {
     let totalPartsChecked = 0;
 
     for (const weaponId of WEAPON_IDS) {
@@ -271,8 +271,8 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
       }
     }
 
-    // 19 exhibits × ~25 parts × 2 languages = 960 part micro-copies checked
-    expect(totalPartsChecked).toBeGreaterThanOrEqual(900);
+    // 23 exhibits × ~25 parts × 2 languages = 1,158 part micro-copies checked
+    expect(totalPartsChecked).toBe(1158);
   });
 
   it('handles null narration fallback cleanly in buildDkPartMicroCopy for both zh and en', async () => {
@@ -297,8 +297,8 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
     }
   });
 
-  it('computes exact 1:1 physical mm cartridge layouts for all 11 calibers and safe 1:4/1:5 scale for archery without NaN or A4 overflow', () => {
-    expect(CARTRIDGE_LAB_ORDER.length).toBe(11);
+  it('computes exact 1:1 physical mm cartridge layouts for all 15 calibers and safe 1:4/1:5 scale for archery without NaN or A4 overflow', () => {
+    expect(CARTRIDGE_LAB_ORDER.length).toBe(15);
 
     for (const caliber of CARTRIDGE_LAB_ORDER) {
       const spec = CARTRIDGE_LAB_SPECS[caliber];
@@ -538,7 +538,7 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
     expect(timelineHtml).not.toContain('NaN');
   });
 
-  it('guarantees zero CJK leakage in English mode across all 19 editorial packs and all 5 rendered DK vector components', async () => {
+  it('guarantees zero CJK leakage in English mode across all 23 editorial packs and all 5 rendered DK vector components', async () => {
     const cjkRe = /[\u4e00-\u9fff]/;
 
     for (const weaponId of WEAPON_IDS) {

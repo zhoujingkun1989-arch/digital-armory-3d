@@ -38,7 +38,7 @@ export interface WeaponEnglishFallback {
   firingMilestoneLabel: string;
 }
 
-export type FallbackWeaponId = WeaponId | 'm249' | 'p08' | 'vector';
+export type FallbackWeaponId = WeaponId;
 
 export const WEAPON_EN_FALLBACKS: Record<
   FallbackWeaponId,
@@ -622,6 +622,142 @@ export const WEAPON_EN_FALLBACKS: Record<
       'Search part name / BOM code (e.g. Super V, slider, B-02)...',
     firingMilestoneLabel: '110° Vector Dive',
   },
+  g11: {
+    shortLabel: 'H&K G11 K2',
+    name: 'H&K G11 K2 Caseless Assault Rifle',
+    originCountry: 'West Germany',
+    weaponType: 'Caseless Assault Rifle',
+    statusLabel: 'New in Vault · Ready',
+    caliber: '4.73×33mm DM11 Caseless',
+    compactCaliber: '4.73×33 Caseless',
+    actionMechanism:
+      'Gas-Operated Clockwork 90° Rotary Breech · 42 mm Floating-Action 2,100 RPM Hyperburst',
+    overallLengthMm: '750 mm',
+    barrelSpec: '540 mm · 6-Groove Floating CHF Chrome-Lined',
+    weightKg: '3.60 kg (Empty) / 4.30 kg (3 Loaded Mags)',
+    muzzleVelocityMs: '930 m/s',
+    effectiveRangeM: '400 m (Point) / 600 m (Area)',
+    rateOfFire: '2,100 rpm (3-Rd) / 460 rpm (Auto)',
+    description:
+      'Engineered by Heckler & Koch with Dynamit Nobel for the Bundeswehr and U.S. ACR trials, the H&K G11 K2 eliminates brass cartridge cases in favor of rectangular 4.73×33mm DM11 HITP caseless propellant blocks fed vertically from an overhead 45-round horizontal magazine. Its Swiss-watch gear train rotates a chrome cylindrical breech 90° to scoop and fire with zero extraction or ejection, while the entire barreled action floats rearward 42 mm during a 2,100 rpm three-round hyperburst.',
+    highlights: [
+      '90° Chrome Rotating Cylindrical Breech · Zero Brass Ejection',
+      'Swiss-Watch Stainless & Brass Gear Train + Pop-Out Winding Crank',
+      'Floating Barreled Action (-42 mm) · 2,100 RPM 3-Rd Hyperburst',
+      'Overhead 45-Rd DM11 Caseless Mag + Integral Hensoldt 1×/3.5× Optic',
+    ],
+    workbenchTitle: 'H&K G11 K2 3D Teardown & 90° Rotary-Breech Clockwork',
+    workbenchSubtitle:
+      '4 Assemblies · 24 CAD Parts · Floating Barreled Action, 90° Rotary Cylinder & Caseless Feed',
+    cutawayLabel: '90° Rotary Breech & Clockwork Focus',
+    cutawayTitle:
+      'Switch to cutaway view and frame the 90° chrome rotary breech cylinder, clockwork gear train & vertical DM11 rammer',
+    searchPlaceholder:
+      'Search part name / BOM code (e.g. rotary breech, clockwork, DM11, S-04)...',
+    firingMilestoneLabel: '90° Breech Cycle',
+  },
+  vss: {
+    shortLabel: 'VSS Vintorez',
+    name: 'VSS Vintorez (6P29) Integral Suppressed Sniper',
+    originCountry: 'Soviet Union / Russia',
+    weaponType: 'Integral Suppressed Sniper',
+    statusLabel: 'New in Vault · Ready',
+    caliber: '9×39mm SP-5 / SP-6 Subsonic AP',
+    compactCaliber: '9×39mm Subsonic',
+    actionMechanism:
+      'Radial-Ported Integral 6-Baffle Suppressor · Long-Stroke 6-Lug Bolt & Linear Striker',
+    overallLengthMm: '894 mm',
+    barrelSpec: '200 mm · 4-RH 1:210mm 3-Row Radial-Ported',
+    weightKg: '2.60 kg (Empty) / 3.41 kg (w/ PSO-1 & Mag)',
+    muzzleVelocityMs: '290 m/s (250 gr Subsonic)',
+    effectiveRangeM: '400 m',
+    rateOfFire: '800–900 rpm',
+    description:
+      'Designed by Pyotr Serdyukov at TsNIITochMash and manufactured at Tula Arms Plant (TOZ), the VSS Vintorez ("Thread Cutter", GRAU 6P29) defeats body armor to 400 meters in virtual silence. Firing heavy 250-grain 9×39mm SP-5/SP-6 subsonic armor-piercing rounds, it bleeds gas through three rows of radial barrel ports into a 414 mm integral suppressor with six slanted CNC baffles, paired with a 6-lug rotating bolt, ultra-quiet hammerless linear striker, quick-detach laminated birch stock, and PSO-1M2-1 optic.',
+    highlights: [
+      '200mm Radial-Ported Barrel + 6-Stage Slanted CNC Acoustic Baffles',
+      '6-Lug Symmetric Rotating Bolt + Ultra-Quiet Hammerless Linear Striker',
+      'Quick-Detach Laminated Russian Birch Stock & PSO-1M2-1 4×24 Scope',
+      'Milled Tula Receiver + Cross-Bolt Selector & 10-Rd Plum Waffle Mag',
+    ],
+    workbenchTitle: 'VSS Vintorez 3D Teardown & Integral Acoustic Kinematics',
+    workbenchSubtitle:
+      '4 Assemblies · 24 CAD Parts · Radial-Ported Barrel, 6-Stage Slanted Baffles & Linear Striker',
+    cutawayLabel: '6-Stage Baffle & Linear Striker Focus',
+    cutawayTitle:
+      'Switch to cutaway view and frame the 200mm ported barrel, 6-stage slanted baffles, 6-lug bolt & linear striker',
+    searchPlaceholder:
+      'Search part name / BOM code (e.g. baffle, striker, PSO-1, S-02)...',
+    firingMilestoneLabel: 'Baffle Gas Bleed',
+  },
+  m134: {
+    shortLabel: 'M134D Minigun',
+    name: 'GE / Dillon Aero M134D Rotary Minigun',
+    originCountry: 'United States',
+    weaponType: '6-Barrel Rotary Machine Gun',
+    statusLabel: 'New in Vault · Ready',
+    caliber: '7.62×51mm NATO (M80 / M13 Belt)',
+    compactCaliber: '7.62 NATO · M13 Belt',
+    actionMechanism:
+      '28V DC Externally Driven 6-Barrel Rotary Gatling · 360° Sinusoidal Cam & Dillon Delinker',
+    overallLengthMm: '802 mm',
+    barrelSpec: '559 mm (22") × 6 Barrels · 4-RH 1:305mm',
+    weightKg: '18.80 kg (Gun) / 30.80 kg (w/ Motor & Feeder)',
+    muzzleVelocityMs: '853 m/s',
+    effectiveRangeM: '1,000 m',
+    rateOfFire: '3,000 rpm (50 rds/sec)',
+    description:
+      'Scaled down by General Electric from the 20mm M61 Vulcan cannon and perfected by Dillon Aero into the modernized M134D, the Minigun is the apex of externally powered rotary ordnance. A 28V DC 3.2-HP aerospace motor spins a central six-flute star-rotor and six 22-inch barrels through a stationary 360° elliptical sinusoidal cam track, cycling six chrome rotary bolts in a continuous 60° wave fed by a gear-driven Dillon delinker at 3,000 rounds per minute.',
+    highlights: [
+      '28V DC 3.2-HP Electric Motor Drive · Zero Misfire Stoppage',
+      '360° Elliptical Sinusoidal Cam Track Driving 6 Coaxial Rotary Bolts',
+      'Six 22" Fluted Rotating Barrels Sharing 3,000 RPM Thermal Load',
+      'Dillon Aero Star-Wheel Delinker & Ribbed Stainless M13 Feed Chute',
+    ],
+    workbenchTitle: 'M134D Minigun 3D Teardown & 3,000 RPM Rotary Kinematics',
+    workbenchSubtitle:
+      '4 Assemblies · 25 CAD Parts · 6-Barrel Coaxial Rotation, 360° Sinusoidal Cam & Dillon Delinker',
+    cutawayLabel: '360° Sinusoidal Cam & 6-Bolt Focus',
+    cutawayTitle:
+      'Switch to cutaway view and frame the 360° sinusoidal cam sleeve, 6-flute star-rotor & six orbiting bolts',
+    searchPlaceholder:
+      'Search part name / BOM code (e.g. rotor, cam track, delinker, F-02)...',
+    firingMilestoneLabel: 'Cam Extraction',
+  },
+  an94: {
+    shortLabel: 'AN-94 Abakan',
+    name: 'Nikonov AN-94 "Abakan" (6P33) Assault Rifle',
+    originCountry: 'Russia',
+    weaponType: 'Blowback-Shifted Assault Rifle',
+    statusLabel: 'New in Vault · Ready',
+    caliber: '5.45×39mm (7N6 / 7N10)',
+    compactCaliber: '5.45×39mm 7N6',
+    actionMechanism:
+      '42 mm Floating Barreled Action · Steel Pulley-Cable 2-Stage Pre-Feed & 1,800 RPM 2-Rd Burst',
+    overallLengthMm: '943 mm (728 mm folded)',
+    barrelSpec: '405 mm · 4-RH 1:195mm Floating CHF Chrome-Lined',
+    weightKg: '3.85 kg (Empty)',
+    muzzleVelocityMs: '900 m/s (5.45×39mm 7N6)',
+    effectiveRangeM: '700 m',
+    rateOfFire: '1,800 rpm (2-Rd) / 600 rpm (Auto)',
+    description:
+      'Designed by Gennady Nikonov to win the Soviet Project Abakan trials, the AN-94 (GRAU 6P33) is the most intricate service rifle ever fielded. Nicknamed the "Clockwork Kalashnikov", its 405 mm cold-hammer-forged barrel and steel sub-receiver float 42 mm rearward inside a stationary polyamide outer shell while a CNC grooved pulley and braided stainless cable whip a bronze two-stage pre-feed rammer forward from a 15° right-canted magazine—firing two 5.45×39mm rounds at 1,800 rpm before recoil hits the shoulder.',
+    highlights: [
+      '405mm Floating Barrel & Steel Sub-Receiver Recoiling 42mm in Shell',
+      'CNC Grooved Pulley, Braided Steel Cable & Bronze 1,800 RPM Rammer',
+      '15° Right-Canted 30-Rd 5.45×39mm Mag & 5-Pos Star-Wheel Diopter',
+      'Asymmetrical Figure-8 Dual-Chamber Self-Cleaning Whistling Brake',
+    ],
+    workbenchTitle: 'Nikonov AN-94 3D Teardown & 1,800 RPM Pulley-Cable Hyperburst',
+    workbenchSubtitle:
+      '4 Assemblies · 26 CAD Parts · 42 mm Floating Action, Steel Pulley-Cable Pre-Feed & 15° Canted Mag',
+    cutawayLabel: 'Pulley-Cable & Pre-Feed Focus',
+    cutawayTitle:
+      'Switch to cutaway view and frame the CNC transmission pulley, braided steel cable & bronze pre-feed rammer',
+    searchPlaceholder:
+      'Search part name / BOM code (e.g. pulley, cable, rammer, S-05)...',
+    firingMilestoneLabel: 'Pulley Pre-Feed',
+  },
 };
 
 export function getLocalizedShortWeaponLabel(
@@ -645,6 +781,10 @@ const COMPACT_ZH_CALIBER: Partial<Record<FallbackWeaponId, string>> = {
   m249: '5.56 NATO · M27弹链',
   p08: '9×19mm 帕拉贝鲁姆',
   vector: '.45 ACP · 230 gr',
+  g11: '4.73×33 无壳弹',
+  vss: '9×39 亚音速',
+  m134: '7.62 NATO · 弹链',
+  an94: '5.45×39 7N6',
 };
 
 export function getLocalizedCatalogSpecs(
@@ -812,6 +952,56 @@ export function resolvePartMaterialLabel(
     return lang === 'zh'
       ? '锰磷化弹簧钢 M27 可散链节与黄铜实弹'
       : 'Manganese-Phosphate M27 Steel Links & Brass Cartridges';
+  }
+  if (wid === 'g11' && part.id === 'g11_optic_handle') {
+    return lang === 'zh'
+      ? '玻纤聚酰胺提把与 Hensoldt 1×/3.5× 多层镀膜光学镜组'
+      : 'Glass-Filled Polyamide Housing & Hensoldt 1x/3.5x Coated Optics';
+  }
+  if (wid === 'g11' && part.id === 'g11_clockwork_gears') {
+    return lang === 'zh'
+      ? '瑞士钟表级 CNC 不锈钢与 C36000 自润滑黄铜行星齿轮'
+      : 'Swiss-Watch CNC Stainless & C36000 Self-Lubricating Brass Gears';
+  }
+  if (wid === 'g11' && part.id === 'g11_mag_tube') {
+    return lang === 'zh'
+      ? '烟熏半透明强化聚碳酸酯匣体与 HITP 方形无壳药块'
+      : 'Smoked Reinforced Polycarbonate Tube & HITP Caseless Propellant Blocks';
+  }
+  if (wid === 'vss' && part.id === 'vss_wood_stock') {
+    return lang === 'zh'
+      ? '手擦琥珀俄制桦木层压实木与硫化橡胶托垫'
+      : 'Hand-Rubbed Russian Laminated Birchwood & Rubber Buttpad';
+  }
+  if (wid === 'vss' && part.id === 'vss_pso1_scope') {
+    return lang === 'zh'
+      ? '锤纹灰烤漆铸造镁铝合金镜体与多层镀膜光学镜片'
+      : 'Hammer-Tone Gray Cast Magnesium Alloy & Multi-Coated Optics';
+  }
+  if (wid === 'm134' && part.id === 'm134_drive_motor') {
+    return lang === 'zh'
+      ? '航空级阳极氧化散热机壳与 28V 漆包铜电枢绕组'
+      : 'Aerospace Anodized Motor Stator & 28V Enameled Copper Windings';
+  }
+  if (wid === 'm134' && part.id === 'm134_ammo_chute') {
+    return lang === 'zh'
+      ? '铰接不锈钢波纹输弹槽、M13 磷化钢链与 7.62 NATO 黄铜实弹'
+      : 'Articulated Stainless Feed Chute, M13 Steel Links & 7.62 NATO Brass';
+  }
+  if (wid === 'an94' && part.id === 'an94_steel_cable') {
+    return lang === 'zh'
+      ? '多股高疲劳编织不锈钢传动钢索与黄铜压接套'
+      : 'Multi-Strand Braided Aerospace Stainless Drive Cable & Brass Ferrules';
+  }
+  if (wid === 'an94' && part.id === 'an94_feed_rammer') {
+    return lang === 'zh'
+      ? '自润滑青铜与硬铬钢二级预供弹拨弹滑块'
+      : 'Self-Lubricating Bronze & Hard-Chrome 2-Stage Pre-Feed Rammer';
+  }
+  if (wid === 'an94' && part.id === 'an94_mag_body') {
+    return lang === 'zh'
+      ? '伊热夫斯克李子黑玻纤增强聚酰胺 (ПА66-ГФ)'
+      : 'Izhmash Plum-Black Glass-Filled Polyamide (PA66-GF)';
   }
   const insp = UI_STRINGS[lang].inspector;
   if (isArcheryWeapon(weaponId)) {

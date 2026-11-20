@@ -390,8 +390,24 @@ export const MagazineAmmoStack: React.FC = () => {
         <meshStandardMaterial
           color={isArchery ? '#ffffff' : calSpec.caseColor}
           vertexColors={isArchery}
-          metalness={isArchery ? 0.24 : 0.86}
-          roughness={isArchery ? 0.44 : 0.22}
+          metalness={
+            isArchery
+              ? 0.24
+              : caliberProfile === '473_caseless'
+                ? 0.08
+                : caliberProfile === '12_gauge'
+                  ? 0.35
+                  : 0.86
+          }
+          roughness={
+            isArchery
+              ? 0.44
+              : caliberProfile === '473_caseless'
+                ? 0.72
+                : caliberProfile === '12_gauge'
+                  ? 0.42
+                  : 0.22
+          }
         />
       </instancedMesh>
 

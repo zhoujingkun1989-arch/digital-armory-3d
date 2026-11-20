@@ -8,7 +8,7 @@
   <a href="CONTRIBUTING.md">Contributing Guide</a>
 </p>
 
-# Digital Armory 3D · v3.0 Photorealism Edition
+# Digital Armory 3D · v3.1 Mechanical Marvels Edition
 
 **The World's First Browser-Native Open-Source 3D Firearms Mechanical Museum & Interactive Engineering Encyclopedia**
 
@@ -22,28 +22,28 @@
 <h3>
   <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/showcase.html?lang=en">✦ Interactive Live Showcase</a>
   &nbsp;·&nbsp;
-  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=armory&lang=en">🚀 Enter 19-Bay 3D Vault</a>
+  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=armory&lang=en">🚀 Enter 23-Bay 3D Vault</a>
   &nbsp;·&nbsp;
   <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=ak15&screen=workbench&cut=1&lang=en">🔪 Live CT-Scan Cutaway</a>
   &nbsp;·&nbsp;
   <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=ballistics&lang=en">🎯 1,000m External Ballistics Lab</a>
   &nbsp;·&nbsp;
-  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=cartridges&lang=en">🧪 11-Caliber 1:1 Cutaway Lab</a>
+  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=cartridges&lang=en">🧪 15-Caliber 1:1 Cutaway Lab</a>
 </h3>
 
 </div>
 
 ---
 
-![Digital Armory 3D v3.0 — AK-15M1 Live CT-Scan Cutaway & Decluttered Museum Workbench](docs/screenshots/hero-ct-cutaway.jpg)
+![Digital Armory 3D v3.1 — AK-15M1 Live CT-Scan Cutaway & Decluttered Museum Workbench](docs/screenshots/hero-ct-cutaway.jpg)
 
 > Built with **React 18 + TypeScript 5.6 + Three.js (`@react-three/fiber` / Dual-Track Blender 5.2 Draco `.glb` + Web Worker `three-bvh-csg` / Web Audio API)** — zero installs, instant browser launch, and a **`<800 kB` zero-warning split bundle**.
 >
-> Explore **480 moving CAD components across 19 legendary firearms & compound archery systems**, powered by our **19/19 (100%) Blender 5.2 Cycles-baked photorealistic Grand Slam** (all 17 legendary firearms + 2 compound archery systems — **`438` watertight solid Draco `.glb` parts + `42` dynamic CSG `aSpringParam` GPU-deforming springs, flexible quad-limbs & bowstrings = `480/480` total parts**, `2.13–7.05 MB` per exhibit), **277 2K 5-channel Packed ORM WebP textures (`0` PNGs)**, **3 Cycles 32-bit studio `.hdr` lightboxes**, **Global `Cmd+K` Bilingual Command Palette**, **Live Draggable CT-Scan Cutaway Plane (`[C]`)**, **1,000m RK4 G1/G7 External Ballistics & FFP Reticle DOPE Lab (`[R]`)**, **Armorer Blind Qualification Exam (`[G] / [J]`)**, **11-Caliber SAAMI/CIP 1:1 Cutaway Lab (`[B]`)**, **3-Axis Mechanism Showdown (`[S]`)**, **HD 3D Share Poster Studio (`[U]`)**, **17-Plate Monograph Print Studio (`[Ctrl/Cmd+P]`)**, and **1,112 Bilingual `Charon` (`gemini-3.8-flash-tts`) Voiceovers** with automated **3D Documentary Camera Choreography**.
+> Explore **579 moving CAD components across 23 legendary firearms & compound archery systems**, powered by our **23/23 (100%) Blender 5.2 Cycles-baked photorealistic Grand Slam** (all 21 legendary firearms—including WP-17 Mechanical Marvels **H&K G11 K2**, **VSS Vintorez**, **GE M134D Minigun**, and **Nikonov AN-94 "Abakan"**—plus 2 compound archery systems: **`529` watertight solid Draco `.glb` parts + `50` dynamic CSG `aSpringParam` GPU-deforming springs, flexible quad-limbs & bowstrings = `579/579` total parts**, `2.06–7.05 MB` per exhibit), **313 2K 5-channel Packed ORM WebP textures (`0` PNGs)**, **3 Cycles 32-bit studio `.hdr` lightboxes**, **Global `Cmd+K` Bilingual Command Palette**, **Live Draggable CT-Scan Cutaway Plane (`[C]`)**, **1,000m RK4 G1/G7 External Ballistics & FFP Reticle DOPE Lab (`[R]`) across 17 ballistic profiles**, **Armorer Blind Qualification Exam (`[G] / [J]`)**, **15-Caliber SAAMI/CIP 1:1 Cutaway Lab (`[B]`)**, **8×8×8 3-Axis Mechanism Showdown (`[S]`, 16 rivalries)**, **HD 3D Share Poster Studio (`[U]`)**, **17-Plate Monograph Print Studio (`[Ctrl/Cmd+P]`)**, and **1,342 Bilingual `Charon` (`gemini-3.8-flash-tts`) Voiceovers** with automated **3D Documentary Camera Choreography**.
 
 ---
 
-## v3.0 Photorealistic Flagship Gallery (19/19 Blender 5.2 Grand Slam · 100% Live WebGL 2.0)
+## v3.1 Photorealistic Flagship Gallery (23/23 Blender 5.2 Grand Slam · 100% Live WebGL 2.0)
 
 *Every image below is an unretouched real-time 1920×1080 Chromium WebGL 2.0 capture powered by our reproducible open-source **Blender 5.2 LTS headless Draco `.glb` + Cycles 2K Packed ORM** pipeline and **32-bit studio `.hdr`** lighting.*
 
@@ -87,25 +87,37 @@
 | :---: | :---: |
 | ![Ravin R500 HexCoil Cams, VersaDrive & Scope Macro](docs/screenshots/r500-v3-macro.jpg) | ![Luger P08 Longitudinal Solid Cutaway](docs/screenshots/p08-v3-cutaway.jpg) |
 
+| **H&K G11 K2 (`4.73×33mm DM11` Caseless)** · *90° Chrome Rotary Breech, Swiss-Watch Clockwork Gears, 2,100 RPM Floating Action & Hensoldt Optic (`2.06 MB`)* | **VSS Vintorez (`9×39mm` Subsonic)** · *414mm Integral 6-Stage Baffle Suppressor, TOZ Cyrillic Receiver, PSO-1M2-1 Optic & Birchwood Stock (`2.23 MB`)* |
+| :---: | :---: |
+| ![H&K G11 K2 Caseless Rotary Breech & Hensoldt Optic Macro](docs/screenshots/g11-v3-macro.jpg) | ![VSS Vintorez Integral Suppressor, PSO-1M2-1 & Birchwood Stock Macro](docs/screenshots/vss-v3-macro.jpg) |
+
+| **GE / Dillon Aero M134D Minigun (`7.62×51mm NATO`)** · *6-Barrel 3,000 RPM Rotary Cluster, 28V DC Motor, 360° Helical Cam Track & Delinker (`3.31 MB`)* | **Nikonov AN-94 "Abakan" (`5.45×39mm 7N6`)** · *Pulley-Cable 1,800 RPM Delayed-Recoil Hyperburst, 15°-Canted Plum Mag & Figure-8 Brake (`2.92 MB`)* |
+| :---: | :---: |
+| ![GE / Dillon Aero M134D Minigun 6-Barrel Rotary & 28V Motor Macro](docs/screenshots/m134-v3-macro.jpg) | ![Nikonov AN-94 Abakan Izhmash Housing, Pulley & 15° Mag Macro](docs/screenshots/an94-v3-macro.jpg) |
+
+### 15-Caliber 1:1 SAAMI/CIP Cutaway Lab Panorama (`[B]`) · *`9×19mm` (`29.69 mm`) through Square `4.73×33mm DM11 Caseless` to `.50 BMG` (`138.43 mm`)*
+
+![15-Caliber 1:1 SAAMI/CIP Cutaway Lab Panorama](docs/screenshots/cartridges-15-lab.jpg)
+
 ---
 
-## v3.0 Flagship Architecture & UX Highlights
+## v3.1 Flagship Architecture & UX Highlights
 
-| **Global `Cmd+K` / `Ctrl+K` Bilingual Instant Command Palette** | **19-Bay Interactive 3D Digital Vault & Museum Showcase** |
+| **Global `Cmd+K` / `Ctrl+K` Bilingual Instant Command Palette** | **23-Bay Interactive 3D Digital Vault & Museum Showcase** |
 | :---: | :---: |
-| ![Cmd+K Global Command Palette](docs/screenshots/ux-cmdk-palette.jpg) | ![Digital Armory 3D 19-Bay Vault](docs/screenshots/armory-showcase.jpg) |
+| ![Cmd+K Global Command Palette](docs/screenshots/ux-cmdk-palette.jpg) | ![Digital Armory 3D 23-Bay Vault](docs/screenshots/armory-showcase.jpg) |
 
-- **✦ Dual-Track Blender 5.2 Draco `.glb` + Web Worker CSG Engine (`PR-02` ~ `PR-04`)**:
-  - **19/19 (100%) Photorealistic Grand Slam**: Every single exhibit in the museum (`ak15`, `p08`, `deagle`, `m4a1`, `python`, `garand`, `mp5`, `awm`, `m82a1`, `g17`, `scar`, `aug`, `p320`, `p90`, `benellim4`, `m249`, `vector`, `lift33`, `r500`) is procedurally sculpted and Cycles-baked via MIT-licensed headless Python scripts (`scripts/blender/build_*_photoreal.py`) into compact Draco `.glb` bundles (`438` watertight solid CAD meshes, `2.13–7.05 MB` total each, `100%` manifold, exact `1u = 1cm` coordinates) backed by `277` 2K 5-channel Packed ORM WebP maps (`91` albedo / `93` normal / `93` ORM, `0` PNGs).
-  - **Zero-Compromise Dynamic Springs, Limbs & Bowstrings**: `42` helical recoil, buffer, striker, magazine, barrel-return, sear, and V-leaf springs plus flexing compound quad-limbs, cam axles, bowstrings, and power cables across all 19 exhibits stay on the procedural CSG Web Worker track so per-vertex `aSpringParam` GPU compression and elastic flex remain physically exact at 60 FPS (with seamless CSG offline/headless fallback).
+- **✦ Dual-Track Blender 5.2 Draco `.glb` + Web Worker CSG Engine (`PR-02` ~ `PR-04`, `WP-17`)**:
+  - **23/23 (100%) Photorealistic Grand Slam**: Every single exhibit in the museum (`ak15`, `p08`, `deagle`, `m4a1`, `python`, `garand`, `mp5`, `awm`, `m82a1`, `g17`, `scar`, `aug`, `p320`, `p90`, `benellim4`, `m249`, `vector`, `lift33`, `r500`, `g11`, `vss`, `m134`, `an94`) is procedurally sculpted and Cycles-baked via MIT-licensed headless Python scripts (`scripts/blender/build_*_photoreal.py`) into compact Draco `.glb` bundles (`529` watertight solid CAD meshes, `2.06–7.05 MB` total each, `100%` manifold, exact `1u = 1cm` coordinates) backed by `313` 2K 5-channel Packed ORM WebP maps (`103` albedo / `105` normal / `105` ORM, `0` PNGs).
+  - **Zero-Compromise Dynamic Springs, Limbs & Bowstrings**: `50` helical recoil, buffer, striker, magazine, barrel-return, sear, clutch, feeder, and V-leaf springs plus flexing compound quad-limbs, cam axles, bowstrings, and power cables across all 23 exhibits stay on the procedural CSG Web Worker track so per-vertex `aSpringParam` GPU compression and elastic flex remain physically exact at 60 FPS (with seamless CSG offline/headless fallback).
   - **Real-Time Studio Optics (`PR-01`)**: 3 Cycles-rendered 32-bit studio `.hdr` domes (`Tactical Vault`, `Gunsmith Bench`, `Blueprint Daylight`), Specular AA, real-time Service Wear Patina (`Factory New / Field-Oiled / Battle-Worn`), Macro Bokeh DOF, GTAO + AgX post-processing, and 3-tier GPU quality (`Ultra / Balanced / Eco`).
-- **✦ Live Draggable CT-Scan Section Plane (`[C]`, `PR-04`)**: Sweep a real-time `±25 mm` longitudinal section plane across any weapon with `+Z / -Z` flip and 60 FPS continuous CT auto-sweep—zero shader recompilation, synchronized Two-Pass WebGL Stencil 45° ISO 128 cross-hatching, and through-cutaway raycast picking (`sectionAwareMeshRaycast`).
-- **✦ Global `Cmd+K` / `Ctrl+K` Command Palette & Decluttered Museum HUD (`PR-04`)**: Instant multi-token EN/ZH fuzzy search from any screen across all **19 exhibits**, **480 CAD parts**, **simulation labs**, and **studio controls**, paired with streamlined `Display` and `Labs & Tools` glassmorphic popovers.
-- **✦ 1,000m RK4 G1/G7 External Ballistics, Crosswind & FFP Reticle DOPE Lab (`[R]`)**: Zero-GC 4th-order Runge-Kutta 3-DOF solver across all **13 projectile profiles** (11 metallic/shotshell + 2 archery), ICAO altitude/temperature air density $\rho(h, T)$, BRL G1/G7 transonic drag $C_d(M)$, exact Sight-In Zero solver (`< 0.02 cm`), Mach 1.0 crossing detection, First-Focal-Plane MIL Christmas-tree scope reticle, and 7-row `MIL / MOA` DOPE drop cards.
+- **✦ Live Draggable CT-Scan Section Plane (`[C]`, `PR-04`)**: Sweep a real-time `±25 mm` longitudinal section plane across any weapon with `+Z / -Z` flip, tilted local-Z plane support for canted magazines (such as AN-94's 15°-canted plum mag), and 60 FPS continuous CT auto-sweep—zero shader recompilation, synchronized Two-Pass WebGL Stencil 45° ISO 128 cross-hatching, and through-cutaway raycast picking (`sectionAwareMeshRaycast`).
+- **✦ Global `Cmd+K` / `Ctrl+K` Command Palette & Decluttered Museum HUD (`PR-04`)**: Instant multi-token EN/ZH fuzzy search from any screen across all **23 exhibits**, **579 CAD parts**, **simulation labs**, and **studio controls**, paired with streamlined `Display` and `Labs & Tools` glassmorphic popovers.
+- **✦ 1,000m RK4 G1/G7 External Ballistics, Crosswind & FFP Reticle DOPE Lab (`[R]`)**: Zero-GC 4th-order Runge-Kutta 3-DOF solver across all **17 projectile profiles** (15 metallic/caseless/shotshell + 2 archery), ICAO altitude/temperature air density $\rho(h, T)$, BRL G1/G7 transonic drag $C_d(M)$, exact Sight-In Zero solver (`< 0.02 cm`), Mach 1.0 crossing detection (including naturally subsonic `.45 ACP` & `9×39mm SP-6`), First-Focal-Plane MIL Christmas-tree scope reticle, and 7-row `MIL / MOA` DOPE drop cards.
 - **✦ Armorer Blind Qualification Exam (`[G]`) & Mystery Stoppage Triage (`[J]`)**: Hands-on guided military field-strip DAGs plus timed blind `0 → N → 0` teardown/reassembly exams and unannounced malfunction diagnostics (`Stovepipe`, `Double Feed`, `Light Strike`, `Out-of-Battery`) awarding persistent `S / A / B / C` Armorer Qualification ranks.
 - **✦ 6-Role Functional Color-Coding (`[T]`), Propellant Gas-Flow Streamlines & SAAMI/CIP Telemetry**: Real-time $P(t)$ (`MPa`) and $V(t)$ (`m/s`) oscilloscope curves coupled 1:1 to 7-stage firing kinematics, interactive `SAFE / SEMI / AUTO` selector (`[V]`), Press-Check (`[P]`), and trigger break/reset (`[F]`).
-- **✦ 11-Caliber 1:1 Cartridge Cutaway Lab (`[B]`), 3-Axis Mechanism Showdown (`[S]`) & 3D Vernier Caliper (`[K]`)**: Side-by-side `1:1` scale SAAMI/CIP cross-sections (`9×19mm` to `.50 BMG`), 13 classic mechanical rivalries with overlaid $P(f)/V(f)$ traces, and millimeter-accurate 3D point-to-point surface metrology.
-- **✦ 4-Act Bilingual AI Documentaries, 1,112 `Charon` Voiceovers, HD Share Posters (`[U]`) & 17-Plate Monographs (`[Ctrl/Cmd+P]`)**: Automated 3D Story Director camera choreography, stereo convolution IR + Euler-Bernoulli steel waveguide Web Audio acoustics (including M1 Garand `"PING!"`), `16:9 / 4:5` QR-linked share cards, and A4/Letter vector picture book & monograph print studio.
+- **✦ 15-Caliber 1:1 Cartridge Cutaway Lab (`[B]`), 8×8×8 3-Axis Mechanism Showdown (`[S]`) & 3D Vernier Caliper (`[K]`)**: Side-by-side `1:1` scale SAAMI/CIP cross-sections (`9×19mm` through square-chamfered `4.73×33mm DM11 Caseless` to `.50 BMG`), **16 classic mechanical rivalries** across 8 Drive × 8 Locking × 8 Feed lineages with overlaid $P(f)/V(f)$ traces, and millimeter-accurate 3D point-to-point surface metrology.
+- **✦ 4-Act Bilingual AI Documentaries, 1,342 `Charon` Voiceovers, HD Share Posters (`[U]`) & 17-Plate Monographs (`[Ctrl/Cmd+P]`)**: Automated 3D Story Director camera choreography, stereo convolution IR + Euler-Bernoulli steel waveguide Web Audio acoustics (including M1 Garand `"PING!"`, M134D 3,000 RPM rotary buzz, and VSS subsonic baffled hush), `16:9 / 4:5` QR-linked share cards, and A4/Letter vector picture book & monograph print studio.
 
 ---
 
@@ -120,7 +132,7 @@
 
 ---
 
-## 19-Exhibit Collection Matrix (480 Moving CAD Parts · 19/19 Blender 5.2 Grand Slam)
+## 23-Exhibit Collection Matrix (579 Moving CAD Parts · 23/23 Blender 5.2 Grand Slam)
 
 | Bay | Exhibit | Pipeline | Caliber / Projectile | Operating & Locking Mechanism | Parts | Live Bench |
 | :--- | :--- | :---: | :--- | :--- | :---: | :---: |
@@ -143,6 +155,10 @@
 | `BAY-17` | **FN M249 SAW (Minimi PIP)** | `GLB v3` | `5.56×45mm NATO (M27 / STANAG)` | Open-bolt long-stroke gas piston · 2-lug bolt & dual-pawl M27 shuttle | 26 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=m249&screen=workbench&lang=en) |
 | `BAY-18` | **DWM Luger P08 (1917)** | `GLB v3` | `9×19mm Parabellum` | 6.5mm short-recoil forked receiver · Over-center 2-bar knee-joint toggle | 25 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=p08&screen=workbench&lang=en) |
 | `BAY-19` | **KRISS Vector SMG Gen II** | `GLB v3` | `.45 ACP (11.43×23mm)` | Patented Super V `-65°` off-axis tungsten slider delayed blowback | 25 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=vector&screen=workbench&lang=en) |
+| `BAY-20` | **H&K G11 K2** | `GLB v3` | `4.73×33mm DM11 Caseless` | 90° rotary breech cylinder · Swiss clockwork gears & 2,100 RPM floating action | 24 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=g11&screen=workbench&lang=en) |
+| `BAY-21` | **VSS Vintorez (6P29)** | `GLB v3` | `9×39mm SP-5/SP-6 Subsonic` | Radial-ported barrel + 6-stage slanted baffle suppressor · 6-lug bolt & linear striker | 24 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=vss&screen=workbench&lang=en) |
+| `BAY-22` | **GE / Dillon Aero M134D Minigun** | `GLB v3` | `7.62×51mm NATO (M13 Belt)` | 28V DC electric 6-barrel rotary cluster · 360° sinusoidal cam track & delinker (3,000 RPM) | 25 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=m134&screen=workbench&lang=en) |
+| `BAY-23` | **Nikonov AN-94 "Abakan" (6P33)** | `GLB v3` | `5.45×39mm 7N6` | Floating barreled action + internal steel pulley-cable · 1,800 RPM 2-rd hyperburst & 15° mag | 26 | [Inspect](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=an94&screen=workbench&lang=en) |
 
 ---
 
@@ -150,25 +166,25 @@
 
 ### URL Deep-Link Parameters
 - Interactive Product Showcase: `/showcase.html?lang=en` or `/?screen=showcase&lang=en`
-- 19-Bay Armory Turntable: `/?screen=armory&weapon=p08&lang=en`
-- Live Cutaway Workbench: `/?weapon=ak15&screen=workbench&cut=1&lang=en`
-- 1,000m RK4 External Ballistics & Reticle DOPE Lab: `/?screen=ballistics&caliber=338_lapua&lang=en`
-- 11-Caliber 1:1 Cartridge & Shotshell Cutaway Lab: `/?screen=cartridges&caliber=45_acp&lang=en`
+- 23-Bay Armory Turntable: `/?screen=armory&weapon=g11&lang=en`
+- Live Cutaway Workbench: `/?weapon=m134&screen=workbench&cut=1&lang=en`
+- 1,000m RK4 External Ballistics & Reticle DOPE Lab: `/?screen=ballistics&caliber=9x39_subsonic&lang=en`
+- 15-Caliber 1:1 Cartridge & Shotshell Cutaway Lab: `/?screen=cartridges&caliber=473_caseless&lang=en`
 
 ### Global & Workbench Hotkeys
 | Key | Action |
 | :---: | :--- |
-| `Cmd / Ctrl + K` | Open **Global Bilingual Instant Command Palette** (19 exhibits, 480 parts, labs & studio controls) |
+| `Cmd / Ctrl + K` | Open **Global Bilingual Instant Command Palette** (23 exhibits, 579 parts, labs & studio controls) |
 | `Space` | Play / pause staged explosion or 7-phase live firing cycle |
 | `C` | Toggle **Live Draggable CT-Scan Solid Cross-Section Cutaway** (`±25 mm` sweep, `+Z/-Z` flip, ISO 128 cap) |
 | `T` | Toggle **6-Role Engineering Functional Color-Coding** & cutaway cap tint |
 | `G` | Toggle **Hands-On Guided Field-Strip & Blind Timed Qualification Exam (DAG)** |
 | `J` | Toggle **Malfunction Cutaway & Mystery Stoppage Triage Exam** (`Stovepipe / Double-Feed / Light-Strike / OOB`) |
 | `K` | Toggle **1:1 3D Armorer Vernier Caliper** (`mm`) & 3D envelope scale ruler |
-| `R` | Open / return from **1,000m RK4 External Ballistics, Wind Drift & FFP Reticle DOPE Lab** |
+| `R` | Open / return from **1,000m RK4 External Ballistics, Wind Drift & FFP Reticle DOPE Lab** (17 profiles) |
 | `U` | Open / close **Instant HD 3D Cutaway Social Poster Studio** (`16:9 / 4:5` + QR + Rank Seal) |
-| `B` | Open / exit standalone **11-Caliber SAAMI/CIP 1:1 Cartridge & Shotshell Cutaway Lab** |
-| `S` | Open / close **3-Axis Mechanism Showdown & Dual-Exhibit Comparison Lab** |
+| `B` | Open / exit standalone **15-Caliber SAAMI/CIP 1:1 Cartridge & Shotshell Cutaway Lab** |
+| `S` | Open / close **8×8×8 3-Axis Mechanism Showdown & Dual-Exhibit Comparison Lab** (16 rivalries) |
 | `X` | Toggle optical X-Ray translucent receiver / slide / magazine housings |
 | `P / V / F` | Armorer **Press-Check** (`P`) · Cycle `SAFE / SEMI / AUTO` selector (`V`) · Hold trigger (`F`) |
 | `E / L / M / H` | CAD Hard-Edges (`E`) · 3D Callouts (`L`) · Web Audio Mute (`M`) · **Clean Fullscreen** (`H`) |
@@ -201,7 +217,7 @@ npm run build
 ### Optional: Rebuild Photorealistic Blender 5.2 `.glb` or Legacy PBR Maps
 
 ```bash
-# Re-generate any Blender 5.2 Draco GLB + Cycles 2K Packed ORM suite headlessly (all 19 exhibits):
+# Re-generate any Blender 5.2 Draco GLB + Cycles 2K Packed ORM suite headlessly (all 23 exhibits):
 blender --factory-startup --background --python scripts/blender/build_p08_photoreal.py
 blender --factory-startup --background --python scripts/blender/build_ak15_photoreal.py
 blender --factory-startup --background --python scripts/blender/build_deagle_photoreal.py
@@ -221,6 +237,10 @@ blender --factory-startup --background --python scripts/blender/build_m249_photo
 blender --factory-startup --background --python scripts/blender/build_vector_photoreal.py
 blender --factory-startup --background --python scripts/blender/build_lift33_photoreal.py
 blender --factory-startup --background --python scripts/blender/build_r500_photoreal.py
+blender --factory-startup --background --python scripts/blender/build_g11_photoreal.py
+blender --factory-startup --background --python scripts/blender/build_vss_photoreal.py
+blender --factory-startup --background --python scripts/blender/build_m134_photoreal.py
+blender --factory-startup --background --python scripts/blender/build_an94_photoreal.py
 
 # Or rebuild procedural legacy 2K Packed ORM WebP maps:
 python3 -B -m scripts.pbr_core.selftest
@@ -236,16 +256,16 @@ digital-armory-3d/
 ├── index.html                     # Primary 3D Vault & Disassembly Workbench entry
 ├── showcase.html                  # Standalone interactive bilingual Showcase entry
 ├── public/
-│   ├── audio/                     # 1,112 bilingual 4-act R&D & part voiceovers (Charon Gemini TTS MP3)
+│   ├── audio/                     # 1,342 bilingual 4-act R&D & part voiceovers (Charon Gemini TTS MP3)
 │   ├── draco/                     # Self-hosted Three.js WebAssembly Draco mesh decoders
 │   ├── hdri/                      # 3 Cycles-rendered 32-bit studio .hdr domes (Vault / Bench / Daylight)
-│   ├── models/                    # All 19 Blender 5.2 Draco-compressed .glb exhibits (100% vault coverage: p08/ak15/deagle/m4a1/python/garand/mp5/awm/m82a1/g17/scar/aug/p320/p90/benellim4/m249/vector/lift33/r500)
-│   ├── narrations/                # 19 structured zh/en R&D documentaries & part engineering JSONs
+│   ├── models/                    # All 23 Blender 5.2 Draco-compressed .glb exhibits (100% vault coverage: p08/ak15/deagle/m4a1/python/garand/mp5/awm/m82a1/g17/scar/aug/p320/p90/benellim4/m249/vector/lift33/r500/g11/vss/m134/an94)
+│   ├── narrations/                # 23 structured zh/en R&D documentaries & part engineering JSONs
 │   ├── showcase/                  # Live WebGL 2.0 showcase gallery captures (WebP)
-│   └── textures/                  # 277 pre-baked 2K 5-Channel Packed ORM WebP textures (91 albedo / 93 normal / 93 ORM, 0 PNGs)
+│   └── textures/                  # 313 pre-baked 2K 5-Channel Packed ORM WebP textures (103 albedo / 105 normal / 105 ORM, 0 PNGs)
 ├── scripts/
-│   ├── blender/                   # 19 MIT headless Blender 5.2 sculpt/Cycles bake scripts (build_*_photoreal.py) + studio HDRI & DK plate renderers
-│   ├── narrations/.cache/         # 19 SHA-256 content-addressed Charon TTS verification manifests
+│   ├── blender/                   # 23 MIT headless Blender 5.2 sculpt/Cycles bake scripts (build_*_photoreal.py) + studio HDRI & DK plate renderers
+│   ├── narrations/.cache/         # 23 SHA-256 content-addressed Charon TTS verification manifests
 │   ├── pbr_core/ & pbr/           # Procedural Worley, knurling, normal-integrated AO & legacy PBR bakers
 │   └── build_textures.py          # Batch texture baker & WebP encoder CLI
 ├── src/
@@ -256,23 +276,23 @@ digital-armory-3d/
 │   │   ├── callout/               # ResizeObserver HUD obstacle cache & 60fps hairline callouts
 │   │   ├── canvas/                # ArmoryViewport, studioHdriManager, GunsmithStageMat & GTAO/DOF/AgX PostFX
 │   │   ├── caliper/               # 1:1 3D Vernier caliper (`1u = 10mm`) & envelope metrology
-│   │   ├── cartridges/            # 11-caliber exact 1:1 SAAMI/CIP standing cutaway lathe specs
+│   │   ├── cartridges/            # 15-caliber exact 1:1 SAAMI/CIP standing cutaway lathe specs (incl. square 4.73mm DM11 caseless)
 │   │   ├── clock/                 # Transient 60Hz playbackClock (zero React re-renders)
 │   │   ├── exam/                  # Armorer Blind Field-Strip & Unknown Stoppage Triage grading store
-│   │   ├── fieldstrip/            # 19-exhibit military field-strip DAG specs & Zero-GC runtime
+│   │   ├── fieldstrip/            # 23-exhibit military field-strip DAG specs & Zero-GC runtime
 │   │   ├── geometry/              # Dual-Track Draco GLB loader (glbAssetService) + Web Worker CSG & raycast
 │   │   ├── interaction/           # Direct 3D slide drag, Press-Check & SAFE/SEMI/AUTO FCG
 │   │   ├── kinematics/            # Zero-GC keyframe & multi-stage pose evaluators
 │   │   ├── malfunctions/          # 4-stoppage diagnostic profiles & clearing drill state machine
 │   │   ├── materials/             # Custom GLSL armoryShader (Specular AA / Wear Patina), 6-role tint & PBR LRU
-│   │   ├── physics/               # SAAMI/CIP internal ballistics + 1,000m RK4 G1/G7 external ballistics
+│   │   ├── physics/               # SAAMI/CIP internal ballistics (15 calibers + 2 archery) + 1,000m RK4 G1/G7 external ballistics (17 profiles)
 │   │   └── utils/                 # Subpath-safe VITE_BASE_PATH asset & deep-link URL resolvers
 │   ├── features/                  # Modular UI views (showcase / armory / workbench / Cmd+K / ballistics / share / monograph / cartridges / story / atlas)
 │   ├── i18n/                      # Strictly parity-checked zh/en dictionaries (0 CJK leaks in EN)
 │   ├── narration/                 # Audio queue, speechSynthesis fallback & 3D Story Director
 │   ├── store/                     # Strongly typed Zustand store (useAppStore)
-│   └── weapons/                   # 19 lazy-loaded self-contained weapon & archery plugins (CSG + kinematics)
-└── tests/                         # 25 Vitest geometry, GLB, Cmd+K, CT-section, UV, kinematics, ballistics, Exam & i18n suites
+│   └── weapons/                   # 23 lazy-loaded self-contained weapon & archery plugins (CSG + kinematics)
+└── tests/                         # 25 Vitest geometry, GLB, Cmd+K, CT-section, UV, kinematics, ballistics, Exam & i18n suites (201 tests)
 ```
 
 ---

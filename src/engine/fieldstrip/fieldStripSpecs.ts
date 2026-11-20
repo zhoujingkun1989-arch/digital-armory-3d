@@ -2998,6 +2998,625 @@ export const FIELD_STRIP_PLANS: Readonly<
       },
     ],
   },
+
+  // =========================================================================
+  // 20. H&K G11 K2 (4.73×33mm DM11 Caseless) — Floating Clockwork Rotary Breech
+  // =========================================================================
+  g11: {
+    weaponId: 'g11',
+    manualCodeZh: 'TDv 1005/070-12 · 德国联邦国防军 G11 K2 无壳弹钟表浮置机匣拆解规程',
+    manualCodeEn: 'Bundeswehr TDv 1005/070 · H&K G11 K2 Caseless Clockwork Field-Strip',
+    steps: [
+      {
+        id: 'g11_strip_mag',
+        orderLabel: '01',
+        titleZh: '前拉卸下枪管正上方 45 发 4.73×33mm DM11 无壳弹匣与双联备用夹',
+        titleEn: 'Slide Forward & Remove Overhead 45-Rd DM11 Caseless Magazine & Clips',
+        actionHintZh:
+          '点击置顶透明 45 发条形无壳弹匣、前端压帽或侧挂双联备用弹匣夹，沿枪管轴线向前抽出。',
+        actionHintEn:
+          'Click the overhead 45-round caseless stick magazine, front endcap, or spare clips to pull them forward clear of the breech.',
+        requires: [],
+        stripBlockedNoteZh: '',
+        stripBlockedNoteEn: '',
+        reassembleBlockedNoteZh:
+          '装回 45 发无壳弹匣前，必须先复装旋转弹膛、齿轮组、复进簧、聚合物外壳与光学提把！',
+        reassembleBlockedNoteEn:
+          'Reinstall the rotary breech, clockwork gears, recoil spring, outer housing, and optic handle before seating the caseless magazine!',
+        triggerPartIds: ['g11_mag_tube', 'g11_mag_endcap', 'g11_spare_clips'],
+        bindings: [
+          bind('g11_mag_tube', 0),
+          bind('g11_mag_follower', 0),
+          bind('g11_mag_spring', 0),
+          bind('g11_mag_endcap', 0),
+          bind('g11_spare_clips', 0),
+        ],
+      },
+      {
+        id: 'g11_strip_optic',
+        orderLabel: '02',
+        titleZh: '松开燕尾快拆锁卸下 Hensoldt 1×/3.5× 集成光学瞄准提把',
+        titleEn: 'Unlock & Lift Integral Hensoldt 1x/3.5x Optical Carry Handle',
+        actionHintZh:
+          '点击顶部一体化 Hensoldt 光学提把组件，向上垂直卸离外壳顶梁以暴露弹匣槽盖。',
+        actionHintEn:
+          'Click the integral Hensoldt optical carry handle to lift it cleanly off the top rail.',
+        requires: ['g11_strip_mag'],
+        stripBlockedNoteZh:
+          'H&K 安全规程：拆卸集成光学提把前，必须先卸除 45 发 DM11 无壳弹匣（步骤 01）并旋转确认旋转弹膛空膛！',
+        stripBlockedNoteEn:
+          'H&K safety rule: remove the 45-round DM11 caseless magazine (Step 01) and verify the rotary chamber is clear first!',
+        reassembleBlockedNoteZh:
+          '锁回 Hensoldt 光学提把前，必须先将橄榄炭黑单体聚合物外壳套回浮置机匣并扣紧尾盖（步骤 03）！',
+        reassembleBlockedNoteEn:
+          'Slide the olive-charcoal monocoque outer housing and buttplate back onto the chassis (Step 03) before mounting the optic handle!',
+        triggerPartIds: ['g11_optic_handle'],
+        bindings: [bind('g11_optic_handle', 0)],
+      },
+      {
+        id: 'g11_strip_housing',
+        orderLabel: '03',
+        titleZh: '拔出双尾销取下硫化橡胶托底板并整体分离单体聚合物方盒外壳',
+        titleEn: 'Unpin Rubber Buttplate & Separate Monocoque Polymer Outer Housing',
+        actionHintZh:
+          '点击尾部橡胶缓冲托底板或整块式玻纤聚合物方盒外壳，彻底暴露全套浮置机匣与钟表传动腔。',
+        actionHintEn:
+          'Click the ribbed rubber buttplate or monocoque polymer outer casing to expose the floating inner receiver and clockwork cavity.',
+        requires: ['g11_strip_optic'],
+        stripBlockedNoteZh:
+          '顶部集成 Hensoldt 光学提把正卡扣于单体聚合物外壳顶肋，请先卸除光学提把（步骤 02）！',
+        stripBlockedNoteEn:
+          'The integral Hensoldt carry handle locks onto the outer casing spine—remove the optic handle (Step 02) first!',
+        reassembleBlockedNoteZh:
+          '套回全封闭聚合物方盒外壳前，必须先将旋转弹膛、齿轮传动组及浮置主复进簧复原归位（步骤 04）！',
+        reassembleBlockedNoteEn:
+          'Reassemble the rotary breech, clockwork gear train, and floating recoil spring (Step 04) before closing the outer polymer housing!',
+        triggerPartIds: ['g11_buttplate', 'g11_outer_housing', 'g11_winding_knob'],
+        bindings: [
+          bind('g11_buttplate', 0),
+          bind('g11_outer_housing', 0),
+          bind('g11_winding_knob', 0),
+        ],
+      },
+      {
+        id: 'g11_strip_recoil_spring',
+        orderLabel: '04',
+        titleZh: '卸除浮置主复进簧与下置短行程导气活塞组件',
+        titleEn: 'Release Floating-Action Main Recoil Spring & Under-Barrel Gas Piston',
+        actionHintZh:
+          '点击同轴高能浮置主复进簧或枪管下方短行程导气活塞，解除浮置自动机弹性预紧力。',
+        actionHintEn:
+          'Click the main floating-action helical recoil spring or under-barrel short-stroke gas piston to relieve spring tension.',
+        requires: ['g11_strip_housing'],
+        stripBlockedNoteZh:
+          '浮置主复进簧与导气活塞被密封在单体聚合物方盒外壳内部，必须先卸除托底板与方盒外壳（步骤 03）！',
+        stripBlockedNoteEn:
+          'The floating recoil spring and gas piston are enclosed inside the outer casing—remove the outer housing (Step 03) first!',
+        reassembleBlockedNoteZh:
+          '装回浮置复进簧与导气活塞前，必须先将齿条拉杆、钟表齿轮组与竖直推弹杆啮合回位（步骤 05）！',
+        reassembleBlockedNoteEn:
+          'Reinstall the toothed driving rack, clockwork gears, and vertical rammer (Step 05) before seating the recoil spring and piston!',
+        triggerPartIds: ['g11_recoil_spring', 'g11_gas_piston'],
+        bindings: [
+          bind('g11_recoil_spring', 0),
+          bind('g11_gas_piston', 0),
+        ],
+      },
+      {
+        id: 'g11_strip_clockwork',
+        orderLabel: '05',
+        titleZh: '拆解齿条传动杆、瑞士钟表级同步齿轮组与竖直进弹推杆',
+        titleEn: 'Disengage Toothed Driving Rack, Clockwork Gears & Vertical Rammer',
+        actionHintZh:
+          '点击精密同步齿轮组、齿条传动拉杆或竖直进弹推弹杆，解除与 90° 旋转弹膛的齿面咬合。',
+        actionHintEn:
+          'Click the precision clockwork gear train, toothed driving rack, or vertical loading rammer to decouple the breech drive.',
+        requires: ['g11_strip_recoil_spring'],
+        stripBlockedNoteZh:
+          '齿条传动拉杆正受短行程导气活塞与主复进簧预紧顶推，请先卸除复进簧与导气活塞（步骤 04）！',
+        stripBlockedNoteEn:
+          'Spring and gas-piston tension loads the driving rack—remove the recoil spring and gas piston (Step 04) first!',
+        reassembleBlockedNoteZh:
+          '装回钟表齿轮组啮合前，必须先将 90° 旋转圆柱弹膛与同轴击针装入浮置内机匣轴承座（步骤 06）！',
+        reassembleBlockedNoteEn:
+          'Seat the 90-degree rotary breech cylinder and firing pin into the inner receiver (Step 06) before meshing the clockwork gears!',
+        triggerPartIds: ['g11_clockwork_gears', 'g11_driving_rod', 'g11_loading_rammer'],
+        bindings: [
+          bind('g11_clockwork_gears', 0),
+          bind('g11_driving_rod', 0),
+          bind('g11_loading_rammer', 0),
+        ],
+      },
+      {
+        id: 'g11_strip_rotary_breech',
+        orderLabel: '06',
+        titleZh: '侧向抽出 90° 旋转圆柱无壳弹膛与同轴线性击针完成清碳保养',
+        titleEn: 'Extract 90-Degree Rotating Cylindrical Breech & Coaxial Firing Pin',
+        actionHintZh:
+          '点击核心 90° 旋转圆柱弹膛或同轴平移击针，将其自浮置内机匣轴孔抽出检查密封环。',
+        actionHintEn:
+          'Click the 90-degree rotary breech cylinder or coaxial firing pin to slide them out of the floating inner receiver.',
+        requires: ['g11_strip_clockwork'],
+        stripBlockedNoteZh:
+          '90° 旋转弹膛端面正被同步齿轮组与竖直推弹杆锁止啮合，请先拆下钟表齿轮组（步骤 05）！',
+        stripBlockedNoteEn:
+          'The clockwork gear train and vertical rammer lock the rotary breech axially—remove the clockwork drive (Step 05) first!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: ['g11_rotary_breech', 'g11_firing_pin'],
+        bindings: [
+          bind('g11_rotary_breech', 0),
+          bind('g11_firing_pin', 0),
+        ],
+      },
+    ],
+  },
+
+  // =========================================================================
+  // 21. VSS Vintorez (9×39mm SP-6) — Integral Suppressed Sniper Rifle
+  // =========================================================================
+  vss: {
+    weaponId: 'vss',
+    manualCodeZh: 'GRAU 6P29 RE · 俄制 VSS 温托雷兹特种微声狙击步枪三段快拆规程',
+    manualCodeEn: 'GRAU 6P29 Manual · VSS Vintorez 3-Module Covert Field-Strip',
+    steps: [
+      {
+        id: 'vss_strip_mag',
+        orderLabel: '01',
+        titleZh: '压下弹匣卡笋前摇卸出 10 发梅子红华夫纹 9×39mm 弹匣',
+        titleEn: 'Rock Out & Remove 10-Rd Plum Waffle 9x39mm Magazine',
+        actionHintZh:
+          '点击梅子红色聚合物华夫弹匣体或底盖，解除卡笋锁止并安全清空 9×39mm 亚音速穿甲弹。',
+        actionHintEn:
+          'Click the plum waffle 9x39mm magazine body or floorplate to rock the magazine clear of the milled receiver.',
+        requires: [],
+        stripBlockedNoteZh: '',
+        stripBlockedNoteEn: '',
+        reassembleBlockedNoteZh:
+          '重新扣入 10 发 9×39mm 弹匣前，必须先复装整体消音套筒、机框、机匣盖、桦木托与瞄准镜！',
+        reassembleBlockedNoteEn:
+          'Reassemble the integral suppressor, bolt carrier, dust cover, stock, and optic before locking in the 9x39mm magazine!',
+        triggerPartIds: ['vss_mag_body', 'vss_mag_floorplate'],
+        bindings: [
+          bind('vss_mag_body', 0),
+          bind('vss_mag_follower', 0),
+          bind('vss_mag_spring', 0),
+          bind('vss_mag_floorplate', 0),
+        ],
+      },
+      {
+        id: 'vss_strip_optic_stock',
+        orderLabel: '02',
+        titleZh: '扳开偏心锁卸下 PSO-1 瞄准镜并按下快拆钮脱卸镂空桦木枪托',
+        titleEn: 'Slide Off PSO-1 Side-Rail Scope & Detach Skeletonized Birch Stock',
+        actionHintZh:
+          '点击左侧燕尾导轨上的 PSO-1 四倍瞄准镜或尾部快拆镂空桦木层压枪托，将其向后滑脱。',
+        actionHintEn:
+          'Click the PSO-1 side-rail scope or quick-detach birch skeleton stock to slide both rearward off the receiver.',
+        requires: ['vss_strip_mag'],
+        stripBlockedNoteZh:
+          '俄军安全教范：脱卸瞄准镜与快拆枪托前，必须先卸除 10 发 9×39mm 弹匣（步骤 01）并验膛！',
+        stripBlockedNoteEn:
+          'Russian armorer rule: remove the 10-round 9x39mm magazine (Step 01) and clear the chamber before stripping optic and stock!',
+        reassembleBlockedNoteZh:
+          '滑装 PSO-1 瞄准镜与桦木枪托前，必须先扣紧顶部冲压钢机匣防尘盖（步骤 04）！',
+        reassembleBlockedNoteEn:
+          'Latch the stamped steel top dust cover (Step 04) before sliding the PSO-1 optic and birch stock back on!',
+        triggerPartIds: ['vss_pso1_scope', 'vss_wood_stock'],
+        bindings: [
+          bind('vss_pso1_scope', 0),
+          bind('vss_wood_stock', 0),
+        ],
+      },
+      {
+        id: 'vss_strip_suppressor',
+        orderLabel: '03',
+        titleZh: '按下锁销旋脱整体消音器外筒并抽出六级斜角隔板芯',
+        titleEn: 'Unlock Integral Suppressor Outer Sleeve & Pull 6-Stage Baffle Stack',
+        actionHintZh:
+          '点击前端整体消音外筒或内部斜切隔板消音芯，沿枪管向前旋出完成微声室清碳保养。',
+        actionHintEn:
+          'Click the integral suppressor outer tube or 6-stage slant baffle stack to twist and slide them forward off the ported barrel.',
+        requires: ['vss_strip_mag'],
+        stripBlockedNoteZh:
+          '拆卸消音外筒暴露微声泄压孔枪管前，必须先卸除 10 发 9×39mm 弹匣（步骤 01）确认空膛！',
+        stripBlockedNoteEn:
+          'Remove the 10-round 9x39mm magazine (Step 01) and verify an empty chamber before detaching the integral suppressor!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: ['vss_suppressor_tube', 'vss_baffle_stack'],
+        bindings: [
+          bind('vss_suppressor_tube', 0),
+          bind('vss_baffle_stack', 0),
+        ],
+      },
+      {
+        id: 'vss_strip_dust_cover',
+        orderLabel: '04',
+        titleZh: '向前压入尾锁按钮向上掀起冲压钢顶置机匣防尘盖',
+        titleEn: 'Depress Rear Retainer & Lift Stamped Steel Top Dust Cover',
+        actionHintZh:
+          '点击铣削机匣顶部的冲压烤蓝防尘盖，解除后部复进簧尾座卡扣并将其向上取下。',
+        actionHintEn:
+          'Click the stamped steel top dust cover to release the rear spring retainer and lift the cover clear.',
+        requires: ['vss_strip_optic_stock'],
+        stripBlockedNoteZh:
+          'PSO-1 侧装镜架横跨机匣盖正上方，必须先向后滑卸瞄准镜与枪托（步骤 02）！',
+        stripBlockedNoteEn:
+          'The PSO-1 side mount bridges over the dust cover—slide off the scope and stock (Step 02) first!',
+        reassembleBlockedNoteZh:
+          '扣合顶部机匣防尘盖前，必须先将复进簧组件与线性微声击针总成压回机匣导槽（步骤 05）！',
+        reassembleBlockedNoteEn:
+          'Reinstall the recoil assembly and silent linear striker (Step 05) before snapping the dust cover shut!',
+        triggerPartIds: ['vss_dust_cover'],
+        bindings: [bind('vss_dust_cover', 0)],
+      },
+      {
+        id: 'vss_strip_recoil_striker',
+        orderLabel: '05',
+        titleZh: '前推脱槽取出复进簧导杆组与无击锤式线性平滑击针总成',
+        titleEn: 'Withdraw Recoil Guide/Spring & Silent Linear Striker Assembly',
+        actionHintZh:
+          '点击上层复进簧、复进导杆或下层线性平滑击针及其弹簧，向后上方整体抽出。',
+        actionHintEn:
+          'Click the helical recoil spring, guide rod, or silent linear striker to withdraw both spring-driven rods from the receiver.',
+        requires: ['vss_strip_dust_cover'],
+        stripBlockedNoteZh:
+          '复进簧与线性击针总成完全封盖在顶部机匣防尘盖下方，请先掀开机匣盖（步骤 04）！',
+        stripBlockedNoteEn:
+          'The recoil assembly and linear striker sit beneath the top dust cover—remove the dust cover (Step 04) first!',
+        reassembleBlockedNoteZh:
+          '压装复进簧与线性击针前，必须先将长行程活塞枪机框与六闭锁突笋枪机滑回铣削机匣（步骤 06）！',
+        reassembleBlockedNoteEn:
+          'Seat the piston bolt carrier and 6-lug rotating bolt back into the milled receiver (Step 06) before reinstalling the springs!',
+        triggerPartIds: ['vss_recoil_spring', 'vss_recoil_guide', 'vss_striker'],
+        bindings: [
+          bind('vss_recoil_spring', 0),
+          bind('vss_recoil_guide', 0),
+          bind('vss_striker', 0),
+          bind('vss_striker_spring', 0),
+        ],
+      },
+      {
+        id: 'vss_strip_bolt_group',
+        orderLabel: '06',
+        titleZh: '后拉至缺口提起长行程活塞机框并旋出六闭锁突笋微声枪机',
+        titleEn: 'Extract Long-Stroke Piston Carrier & 6-Lug Rotating Bolt',
+        actionHintZh:
+          '点击长行程活塞枪机框、六突笋对称闭锁枪机或浮动击针，完成核心自动机全套野战拆解。',
+        actionHintEn:
+          'Click the long-stroke piston bolt carrier, 6-lug rotating bolt, or firing pin to lift the action free of the receiver.',
+        requires: ['vss_strip_recoil_striker'],
+        stripBlockedNoteZh:
+          '复进导杆与线性平滑击针正插入枪机框尾孔中限位，必须先抽出复进簧与击针组（步骤 05）！',
+        stripBlockedNoteEn:
+          'The recoil rod and linear striker occupy the carrier bore—withdraw them (Step 05) before lifting out the bolt carrier!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: ['vss_bolt_carrier', 'vss_bolt', 'vss_firing_pin'],
+        bindings: [
+          bind('vss_bolt_carrier', 0),
+          bind('vss_bolt', 0),
+          bind('vss_firing_pin', 0),
+        ],
+      },
+    ],
+  },
+
+  // =========================================================================
+  // 22. GE M134D Minigun (7.62×51mm NATO) — 6-Barrel Electric Rotary Gatling
+  // =========================================================================
+  m134: {
+    weaponId: 'm134',
+    manualCodeZh: 'TM 9-1005-298-10 · 美军 M134D 六管电动加特林机枪野战勤务拆解规程',
+    manualCodeEn: 'US Army TM 9-1005-298-10 · GE M134D Minigun Organizational Field-Strip',
+    steps: [
+      {
+        id: 'm134_strip_chute',
+        orderLabel: '01',
+        titleZh: '解脱左侧不锈钢 M13 柔性供弹滑槽与底部抛壳导管完成安全断弹',
+        titleEn: 'Disconnect Flexible Stainless M13 Ammo Feed Chute & Brass Ejection Chute',
+        actionHintZh:
+          '点击左侧柔性不锈钢弹链供弹槽或底部空弹壳排出导管，彻底切断 7.62 NATO 弹链供给。',
+        actionHintEn:
+          'Click the left flexible stainless ammo feed chute or lower brass ejection chute to isolate the weapon from ammunition.',
+        requires: [],
+        stripBlockedNoteZh: '',
+        stripBlockedNoteEn: '',
+        reassembleBlockedNoteZh:
+          '挂回柔性供弹槽与抛壳导管前，必须先装回转子枪机、凸轮环、六联枪管、马达与脱链供弹机！',
+        reassembleBlockedNoteEn:
+          'Reinstall the rotor/bolts, cam housing, barrel cluster, drive motor, and delinker before reattaching the feed chutes!',
+        triggerPartIds: ['m134_ammo_chute', 'm134_ejection_chute'],
+        bindings: [
+          bind('m134_ammo_chute', 0),
+          bind('m134_ejection_chute', 0),
+        ],
+      },
+      {
+        id: 'm134_strip_delinker',
+        orderLabel: '02',
+        titleZh: '拔出双快拆销卸下狄龙 M134D 星形旋转脱链供弹机总成',
+        titleEn: 'Unpin & Lift Dillon M134D Rotary Delinker Feeder Assembly',
+        actionHintZh:
+          '点击左侧脱链供弹机外壳、星形脱链拨轮或压弹离合簧，将其自机匣侧面整体卸下。',
+        actionHintEn:
+          'Click the Dillon delinker housing, star-wheel sprocket, or feeder tension spring to pull the delinker clear.',
+        requires: ['m134_strip_chute'],
+        stripBlockedNoteZh:
+          '美军航空军械规程：拆卸脱链供弹机前必须先断开 M13 柔性供弹槽与排壳管（步骤 01）！',
+        stripBlockedNoteEn:
+          'Aviation armorer rule: disconnect the M13 feed chute and ejection chute (Step 01) before removing the delinker!',
+        reassembleBlockedNoteZh:
+          '装回狄龙脱链机并与转子齿轮啮合前，必须先将凸轮槽环（步骤 05）与六联枪管簇（步骤 04）安装就位！',
+        reassembleBlockedNoteEn:
+          'Seat the cam-track ring (Step 05) and 6-barrel cluster (Step 04) before pinning the delinker feeder back onto the housing!',
+        triggerPartIds: ['m134_delinker_housing', 'm134_delinker_sprocket', 'm134_feeder_spring'],
+        bindings: [
+          bind('m134_delinker_housing', 0),
+          bind('m134_delinker_sprocket', 0),
+          bind('m134_feeder_spring', 0),
+        ],
+      },
+      {
+        id: 'm134_strip_motor',
+        orderLabel: '03',
+        titleZh: '断电卸除顶部 28V 直流驱动马达、过载离合簧与减速齿轮箱',
+        titleEn: 'Detach 28V DC Electric Drive Motor, Clutch Spring & Gear Housing',
+        actionHintZh:
+          '点击顶部圆柱 28V 直流驱动马达、斜齿减速箱或主驱动齿轮，向上分离外能源动力单元。',
+        actionHintEn:
+          'Click the 28V DC electric drive motor, reduction gear housing, or main drive gear to decouple external electrical power.',
+        requires: ['m134_strip_chute'],
+        stripBlockedNoteZh:
+          '拆解 28V 高扭矩电动驱动总成前，必须先断开柔性供弹槽完成彻底断弹隔离（步骤 01）！',
+        stripBlockedNoteEn:
+          'Disconnect the ammunition feed chute (Step 01) before uncoupling the 28V DC electric drive motor assembly!',
+        reassembleBlockedNoteZh:
+          '重新啮合 28V 驱动马达与斜齿减速箱前，必须先将中央转子与凸轮槽环装回主机匣（步骤 05）！',
+        reassembleBlockedNoteEn:
+          'Install the central rotor and cam-track ring (Step 05) before remounting the 28V DC motor and gear housing!',
+        triggerPartIds: ['m134_drive_motor', 'm134_gear_housing', 'm134_drive_gear'],
+        bindings: [
+          bind('m134_drive_motor', 0),
+          bind('m134_gear_housing', 0),
+          bind('m134_drive_gear', 0),
+          bind('m134_clutch_spring', 0),
+        ],
+      },
+      {
+        id: 'm134_strip_barrels',
+        orderLabel: '04',
+        titleZh: '旋松膛口消焰器与箍紧卡箍并将六根 558mm 枪管簇向前拔离转子',
+        titleEn: 'Unclamp Flash Suppressor & Withdraw 6-Barrel 558mm Cluster Forward',
+        actionHintZh:
+          '点击六管前部消焰器、防振枪管夹箍或六联枪管簇，解除断续螺纹锁止并向前整体抽出。',
+        actionHintEn:
+          'Click the 6-tube flash suppressor, mid-barrel clamp, or 6-barrel cluster to twist and slide the barrels forward out of the rotor.',
+        requires: ['m134_strip_delinker'],
+        stripBlockedNoteZh:
+          '前向拆解枪管簇前请先卸除脱链供弹机（步骤 02），避免误转转子导致弹链卡阻！',
+        stripBlockedNoteEn:
+          'Remove the delinker feeder (Step 02) before unclamping and withdrawing the 6-barrel cluster!',
+        reassembleBlockedNoteZh:
+          '将六联枪管簇插回转子断续螺纹座前，必须先将中央六槽转子与六枚滚轮枪机装入主机匣（步骤 06）！',
+        reassembleBlockedNoteEn:
+          'Seat the 6-flute rotor and all six cam-roller bolts inside the housing (Step 06) before mounting the 6-barrel cluster!',
+        triggerPartIds: ['m134_barrel_clamp', 'm134_flash_suppressor', 'm134_barrel_cluster'],
+        bindings: [
+          bind('m134_flash_suppressor', 0),
+          bind('m134_barrel_clamp', 0),
+          bind('m134_barrel_cluster', 0),
+        ],
+      },
+      {
+        id: 'm134_strip_cam_ring',
+        orderLabel: '05',
+        titleZh: '脱开主机匣凸轮槽定子环与 12 点钟保险闭锁扇形块',
+        titleEn: 'Separate Elliptical Cam-Track Stator Ring & 12-O’Clock Safing Sector',
+        actionHintZh:
+          '点击包裹在主机匣内圈的正弦螺旋凸轮槽环或顶部保险扇形块，敞开全部六枚枪机滑道。',
+        actionHintEn:
+          'Click the sinusoidal cam-track stator ring or top safing sector to unlock all six bolt roller tracks.',
+        requires: ['m134_strip_delinker', 'm134_strip_motor'],
+        stripBlockedNoteZh:
+          '凸轮定子环受顶部驱动齿轮箱与左侧脱链供弹机双重锁固，请先卸除脱链机（步骤 02）与 28V 马达（步骤 03）！',
+        stripBlockedNoteEn:
+          'Both the delinker (Step 02) and 28V drive motor/gearbox (Step 03) retain the cam housing—remove both first!',
+        reassembleBlockedNoteZh:
+          '合拢凸轮槽定子环与保险扇形块前，必须先将中央转子与全部六枚滚轮枪机精准入轨（步骤 06）！',
+        reassembleBlockedNoteEn:
+          'Install the central rotor and align all six bolt rollers (Step 06) before closing the cam-track stator ring!',
+        triggerPartIds: ['m134_cam_track_ring', 'm134_safing_sector'],
+        bindings: [
+          bind('m134_cam_track_ring', 0),
+          bind('m134_safing_sector', 0),
+        ],
+      },
+      {
+        id: 'm134_strip_bolts',
+        orderLabel: '06',
+        titleZh: '从主机匣抽出六槽中央转子与六枚独立滚轮往复枪机组件',
+        titleEn: 'Withdraw 6-Flute Central Rotor & Six Independent Cam-Roller Bolts',
+        actionHintZh:
+          '点击六槽实心转子总成或任意一枚滚轮闭锁枪机，将全部六个并行击发单元抽出机匣保养。',
+        actionHintEn:
+          'Click the central 6-flute rotor assembly or any cam-roller bolt to slide the complete rotary action clear of the housing.',
+        requires: ['m134_strip_barrels', 'm134_strip_cam_ring'],
+        stripBlockedNoteZh:
+          '六槽转子前端锁接六联枪管簇、外周嵌入凸轮槽环，必须先拆下枪管簇（步骤 04）与凸轮环（步骤 05）！',
+        stripBlockedNoteEn:
+          'The 6-barrel cluster (Step 04) and cam-track ring (Step 05) retain the rotor and bolts—remove both first!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: ['m134_rotor_assembly', 'm134_bolt_1', 'm134_bolt_2'],
+        bindings: [
+          bind('m134_rotor_assembly', 0),
+          bind('m134_bolt_1', 0),
+          bind('m134_bolt_2', 0),
+          bind('m134_bolt_3', 0),
+          bind('m134_bolt_4', 0),
+          bind('m134_bolt_5', 0),
+          bind('m134_bolt_6', 0),
+        ],
+      },
+    ],
+  },
+
+  // =========================================================================
+  // 23. Nikonov AN-94 "Abakan" (5.45×39mm) — Pulley-Cable Floating Hyperburst
+  // =========================================================================
+  an94: {
+    weaponId: 'an94',
+    manualCodeZh: 'GRAU 6P33 RE · 伊热夫斯克 AN-94 阿巴坎滑轮钢索双发高速步枪拆解规程',
+    manualCodeEn: 'GRAU 6P33 Manual · Izhmash AN-94 Abakan Pulley-Cable Field-Strip',
+    steps: [
+      {
+        id: 'an94_strip_mag',
+        orderLabel: '01',
+        titleZh: '按下卡笋退出 15° 右倾 30 发 5.45×39mm 弧形弹匣',
+        titleEn: 'Release & Rock Out 15-Degree Right-Canted 30-Rd 5.45x39mm Magazine',
+        actionHintZh:
+          '点击向右偏斜 15° 安装的 30 发 5.45×39mm 弧形弹匣体或底盖，为二级预供弹通道清空弹源。',
+        actionHintEn:
+          'Click the 15-degree canted 30-round 5.45x39mm banana magazine body or floorplate to clear the magazine well.',
+        requires: [],
+        stripBlockedNoteZh: '',
+        stripBlockedNoteEn: '',
+        reassembleBlockedNoteZh:
+          '插入 15° 右倾 5.45×39mm 弹匣前，必须先装回浮置内机匣、滑轮钢索、枪机框、复进簧与防尘顶盖！',
+        reassembleBlockedNoteEn:
+          'Reinstall the floating receiver, pulley-cable shuttle, bolt carrier, recoil spring, and dust cover before inserting the magazine!',
+        triggerPartIds: ['an94_mag_body', 'an94_mag_floorplate'],
+        bindings: [
+          bind('an94_mag_body', 0),
+          bind('an94_mag_follower', 0),
+          bind('an94_mag_spring', 0),
+          bind('an94_mag_floorplate', 0),
+        ],
+      },
+      {
+        id: 'an94_strip_dust_cover',
+        orderLabel: '02',
+        titleZh: '解锁尾部卡扣向上掀起加强肋冲压钢防尘顶盖',
+        titleEn: 'Release Rear Latch & Lift Ribbed Stamped Steel Top Dust Cover',
+        actionHintZh:
+          '点击聚酰胺外机匣顶部的黑色加强肋冲压防尘盖，敞开浮置内机匣与滑轮传动室。',
+        actionHintEn:
+          'Click the ribbed stamped steel top dust cover to expose the floating inner receiver and cable-pulley chamber.',
+        requires: ['an94_strip_mag'],
+        stripBlockedNoteZh:
+          '俄军勤务规范：掀开机匣顶盖检查滑轮与枪机前，必须先卸除 15° 右倾 5.45×39mm 弹匣（步骤 01）！',
+        stripBlockedNoteEn:
+          'Armorer safety rule: remove the 15-degree canted 5.45x39mm magazine (Step 01) before lifting the top dust cover!',
+        reassembleBlockedNoteZh:
+          '扣回冲压钢防尘顶盖前，必须先将双套管伸缩复进导杆与主复进簧压装回位（步骤 03）！',
+        reassembleBlockedNoteEn:
+          'Seat the telescoping recoil guide rod and main return spring (Step 03) before latching the stamped dust cover!',
+        triggerPartIds: ['an94_dust_cover'],
+        bindings: [bind('an94_dust_cover', 0)],
+      },
+      {
+        id: 'an94_strip_recoil_spring',
+        orderLabel: '03',
+        titleZh: '前压脱槽抽出双套管伸缩枪机复进导杆与高速螺旋复进簧',
+        titleEn: 'Withdraw Telescoping Dual Recoil Guide Rod & High-Rate Return Spring',
+        actionHintZh:
+          '点击插装于浮置内机匣尾壁的螺旋枪机主复进簧或伸缩导杆，释放 1,800 RPM 高劲度簧力。',
+        actionHintEn:
+          'Click the high-rate helical bolt-carrier return spring or telescoping guide rod to withdraw them from the inner receiver.',
+        requires: ['an94_strip_dust_cover'],
+        stripBlockedNoteZh:
+          '伸缩复进导杆与高速复进簧封锁在加强肋冲压防尘顶盖下方，请先掀开防尘顶盖（步骤 02）！',
+        stripBlockedNoteEn:
+          'The telescoping recoil rod and spring sit under the stamped dust cover—remove the dust cover (Step 02) first!',
+        reassembleBlockedNoteZh:
+          '压装枪机复进簧与伸缩导杆前，必须先将双突笋枪机与枪机框滑入浮置内机匣导轨（步骤 04）！',
+        reassembleBlockedNoteEn:
+          'Slide the bolt carrier and 2-lug rotating bolt back into the floating inner receiver (Step 04) before seating the return spring!',
+        triggerPartIds: ['an94_recoil_spring', 'an94_recoil_guide'],
+        bindings: [
+          bind('an94_recoil_spring', 0),
+          bind('an94_recoil_guide', 0),
+        ],
+      },
+      {
+        id: 'an94_strip_bolt_group',
+        orderLabel: '04',
+        titleZh: '向后滑出枪机框、双突笋回转枪机与惯性击针',
+        titleEn: 'Extract Bolt Carrier, 2-Lug Rotating Bolt & Inertial Firing Pin',
+        actionHintZh:
+          '点击枪机框总成、双对称闭锁突笋枪机或击针，从浮置钢制内机匣导轨向后上方取出。',
+        actionHintEn:
+          'Click the bolt carrier, 2-lug rotating bolt, or firing pin to lift the operating group out of the floating inner receiver.',
+        requires: ['an94_strip_recoil_spring'],
+        stripBlockedNoteZh:
+          '伸缩复进导杆与主复进簧正贯穿插装在枪机框尾腔内，必须先抽出复进簧总成（步骤 03）！',
+        stripBlockedNoteEn:
+          'The telescoping recoil spring occupies the rear carrier bore—remove the recoil assembly (Step 03) first!',
+        reassembleBlockedNoteZh:
+          '滑回枪机框与回转枪机前，必须先将槽轮滑轮、编织钢索与二级青铜预供弹滑块挂接回位（步骤 05）！',
+        reassembleBlockedNoteEn:
+          'Reinstall the grooved pulley, braided steel cable, and 2-stage pre-feed rammer (Step 05) before inserting the bolt carrier!',
+        triggerPartIds: ['an94_bolt_carrier', 'an94_bolt', 'an94_firing_pin'],
+        bindings: [
+          bind('an94_bolt_carrier', 0),
+          bind('an94_bolt', 0),
+          bind('an94_firing_pin', 0),
+        ],
+      },
+      {
+        id: 'an94_strip_pulley_rammer',
+        orderLabel: '05',
+        titleZh: '脱挂编织传动钢索、精密 CNC 槽轮滑轮与二级青铜预供弹滑块',
+        titleEn: 'Unhook Braided Steel Cable, CNC Grooved Pulley & Pre-Feed Rammer',
+        actionHintZh:
+          '点击 AN-94 标志性的精密槽轮滑轮、高强度编织钢索或二级预供弹滑块，将其自浮置机匣卸出。',
+        actionHintEn:
+          'Click the iconic CNC grooved pulley wheel, braided steel cable, or bronze pre-feed rammer to lift the hyperburst linkage clear.',
+        requires: ['an94_strip_bolt_group'],
+        stripBlockedNoteZh:
+          '传动钢索后端钩挂在枪机框下方滑块上，必须先向后抽出枪机框与枪机总成（步骤 04）！',
+        stripBlockedNoteEn:
+          'The bolt carrier traps the steel transmission cable and pulley shuttle—remove the bolt group (Step 04) first!',
+        reassembleBlockedNoteZh:
+          '挂接滑轮钢索与二级预供弹滑块前，必须先将浮置钢制内机匣与枪管滑回聚酰胺外机匣（步骤 06）！',
+        reassembleBlockedNoteEn:
+          'Slide the floating barreled inner receiver and buffer spring back into the outer housing (Step 06) before rigging the pulley!',
+        triggerPartIds: ['an94_pulley_wheel', 'an94_steel_cable', 'an94_feed_rammer'],
+        bindings: [
+          bind('an94_pulley_wheel', 0),
+          bind('an94_steel_cable', 0),
+          bind('an94_feed_rammer', 0),
+        ],
+      },
+      {
+        id: 'an94_strip_floating_action',
+        orderLabel: '06',
+        titleZh: '旋下 8 字哨音双室制退器并整体抽出浮置枪管内机匣与缓冲主簧',
+        titleEn: 'Remove Figure-8 Muzzle Brake & Slide Floating Barreled Action Clear',
+        actionHintZh:
+          '点击 8 字形双室膛口制退器、浮置内机匣或外机匣缓冲主簧，完成延迟后坐滑动总成全拆。',
+        actionHintEn:
+          'Click the figure-8 whistling muzzle brake, floating inner receiver, or receiver buffer spring to pull the floating unit clear.',
+        requires: ['an94_strip_pulley_rammer'],
+        stripBlockedNoteZh:
+          '请先拆下槽轮滑轮、传动钢索与二级预供弹滑块（步骤 05），再整体滑出浮置枪管内机匣总成！',
+        stripBlockedNoteEn:
+          'Remove the pulley, steel cable, and pre-feed rammer (Step 05) before sliding the floating barreled receiver clear!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: ['an94_inner_receiver', 'an94_muzzle_brake', 'an94_receiver_buffer_spring'],
+        bindings: [
+          bind('an94_muzzle_brake', 0),
+          bind('an94_inner_receiver', 0),
+          bind('an94_barrel', 0),
+          bind('an94_gas_tube', 0),
+          bind('an94_receiver_buffer_spring', 0),
+        ],
+      },
+    ],
+  },
 };
 
 export function getFieldStripPlan(weaponId: WeaponId): FieldStripWeaponPlan {

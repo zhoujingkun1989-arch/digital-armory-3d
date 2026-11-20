@@ -76,6 +76,7 @@ export function computeCartridgeStageOffsetInto(
     const hasPenetrator =
       spec.coreKind === 'm33_heavy_steel' ||
       spec.coreKind === 'steel_core_lead_shirt' ||
+      spec.coreKind === 'subsonic_tungsten_ap' ||
       spec.coreKind === 'dual_core_penetrator' ||
       spec.coreKind === 'ap_steel_alu';
     const topExtra = scaleSpan * (hasPenetrator ? 2.28 : 1.72);
@@ -104,13 +105,13 @@ export function computeCartridgeStageOffsetInto(
   const openCenterPx = (leftOccludedPx + (viewportW - rightMarginPx)) * 0.5;
   const ndcCenterX = (openCenterPx / viewportW) * 2 - 1;
 
-  const stageSpanX = 39.8;
+  const stageSpanX = 47.4;
   const stageSpanY = 17.6 + 13.8 * explodeT;
 
   const dHoriz =
     (stageSpanX * 0.5) / (TAN_HALF_FOV_41 * aspect * availFracX);
   const dVert = (stageSpanY * 0.5) / (TAN_HALF_FOV_41 * 0.68);
-  const desiredDist = Math.max(34.5, dHoriz, dVert);
+  const desiredDist = Math.max(38.0, dHoriz, dVert);
 
   const worldOpenCenterX =
     camX + ndcCenterX * desiredDist * TAN_HALF_FOV_41 * aspect;
@@ -121,17 +122,17 @@ export function computeCartridgeStageOffsetInto(
   return out;
 }
 
-const PLINTH_GEO = new THREE.BoxGeometry(38.0, 0.85, 11.5);
-const PEDESTAL_DISC_GEO = new THREE.CylinderGeometry(1.42, 1.56, 0.16, 36);
+const PLINTH_GEO = new THREE.BoxGeometry(45.6, 0.85, 11.5);
+const PEDESTAL_DISC_GEO = new THREE.CylinderGeometry(1.22, 1.34, 0.16, 36);
 const ACTIVE_HALO_GEO = (() => {
-  const g = new THREE.RingGeometry(1.52, 1.78, 40);
+  const g = new THREE.RingGeometry(1.3, 1.46, 40);
   g.rotateX(-Math.PI / 2);
   return g;
 })();
 
 /**
  * Builds the 1:1 CNC elevation backdrop ruler (`0 mm` to `150 mm` = `0` to `15.0` world units)
- * behind the 7-caliber lineup (`z = -2.4 cm`), with `10 mm` (`1 cm`) horizontal hairlines
+ * behind the 15-caliber lineup (`z = -2.4 cm`), with `10 mm` (`1 cm`) horizontal hairlines
  * and `50 mm` (`5 cm`) major datum rules.
  */
 function buildElevationScaleBackdrop(): {
@@ -140,8 +141,8 @@ function buildElevationScaleBackdrop(): {
 } {
   const minorVerts: number[] = [];
   const majorVerts: number[] = [];
-  const xLeft = -17.6;
-  const xRight = 17.8;
+  const xLeft = -21.8;
+  const xRight = 22.0;
   const zPlane = -2.35;
 
   // Vertical left & right stiles
@@ -307,13 +308,25 @@ const SingleCartridgeSpecimen: React.FC<SingleCartridgeSpecimenProps> =
           </mesh>
         )}
 
-        {/* 1. Drawn C26000 Brass Cartridge Case + Flash Hole */}
+        {/* 1. Drawn Brass / Polymer Hull / Combustible HITP Block */}
         <mesh geometry={bundle.caseGeo} castShadow receiveShadow>
           <meshPhysicalMaterial
             color={spec.caseColor}
-            metalness={0.9}
-            roughness={0.22}
-            clearcoat={0.18}
+            metalness={
+              spec.coreKind === 'caseless_telescoped'
+                ? 0.08
+                : spec.coreKind === 'buckshot_wad_column'
+                  ? 0.16
+                  : 0.9
+            }
+            roughness={
+              spec.coreKind === 'caseless_telescoped'
+                ? 0.72
+                : spec.coreKind === 'buckshot_wad_column'
+                  ? 0.42
+                  : 0.22
+            }
+            clearcoat={spec.coreKind === 'caseless_telescoped' ? 0.04 : 0.18}
             clearcoatRoughness={0.2}
             emissive={isActive ? '#0ea5e9' : '#000000'}
             emissiveIntensity={isActive ? 0.06 : 0}

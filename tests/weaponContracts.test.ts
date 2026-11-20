@@ -97,6 +97,10 @@ const DYNAMIC_SPRING_PARTS: Readonly<Record<WeaponId, readonly string[]>> = {
   m249: ['m249_recoil_spring', 'm249_sear_spring'],
   p08: ['p08_recoil_spring', 'p08_striker_spring', 'p08_mag_spring'],
   vector: ['vector_recoil_spring', 'vector_hammer_spring', 'vector_mag_spring'],
+  g11: ['g11_recoil_spring', 'g11_mag_spring'],
+  vss: ['vss_recoil_spring', 'vss_striker_spring'],
+  m134: ['m134_clutch_spring', 'm134_feeder_spring'],
+  an94: ['an94_recoil_spring', 'an94_receiver_buffer_spring'],
 };
 
 const ROTATING_BOLT_PARTS: ReadonlyArray<{
@@ -114,6 +118,8 @@ const ROTATING_BOLT_PARTS: ReadonlyArray<{
   { weaponId: 'benellim4', partId: 'benellim4_bolt_head', minAbsRollRad: 0.55 },
   { weaponId: 'garand', partId: 'garand_bolt', minAbsRollRad: 0.45 },
   { weaponId: 'm249', partId: 'm249_bolt', minAbsRollRad: 0.45 },
+  { weaponId: 'vss', partId: 'vss_bolt', minAbsRollRad: 0.5 },
+  { weaponId: 'an94', partId: 'an94_bolt', minAbsRollRad: 0.5 },
 ];
 
 const FIXED_BARREL_PARTS: ReadonlyArray<{
@@ -133,6 +139,7 @@ const FIXED_BARREL_PARTS: ReadonlyArray<{
   { weaponId: 'garand', partId: 'garand_barrel' },
   { weaponId: 'm249', partId: 'm249_barrel' },
   { weaponId: 'vector', partId: 'vector_barrel' },
+  { weaponId: 'vss', partId: 'vss_barrel' },
 ];
 
 interface ParsedWebpHeader {
@@ -205,32 +212,32 @@ function findFirstNonFiniteIndex(arr: ArrayLike<number>): number {
   return -1;
 }
 
-describe('19-Exhibit Digital Armory V2.0 1:1 plugin, geometry, kinematics & PBR contracts', () => {
-  it('registers all 19 iconic exhibits totaling 480 parts across all 8 categories with accurate camera presets', () => {
-    expect(WEAPON_MANIFESTS).toHaveLength(19);
-    expect(ARMORY_WEAPONS).toHaveLength(19);
+describe('23-Exhibit Digital Armory WP-17 1:1 plugin, geometry, kinematics & PBR contracts', () => {
+  it('registers all 23 iconic exhibits totaling 579 parts across all 8 categories with accurate camera presets', () => {
+    expect(WEAPON_MANIFESTS).toHaveLength(23);
+    expect(ARMORY_WEAPONS).toHaveLength(23);
 
     const totalCatalogParts = WEAPON_MANIFESTS.reduce(
       (sum, m) => sum + m.catalog.partsCount,
       0
     );
-    expect(totalCatalogParts).toBe(480);
+    expect(totalCatalogParts).toBe(579);
 
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'all'))
-    ).toHaveLength(19);
+    ).toHaveLength(23);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'assault'))
-    ).toHaveLength(5);
+    ).toHaveLength(7);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'lmg'))
-    ).toHaveLength(1);
+    ).toHaveLength(2);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'smg'))
     ).toHaveLength(3);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'sniper'))
-    ).toHaveLength(2);
+    ).toHaveLength(3);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'shotgun'))
     ).toHaveLength(1);
@@ -276,7 +283,7 @@ describe('19-Exhibit Digital Armory V2.0 1:1 plugin, geometry, kinematics & PBR 
     }
   });
 
-  it('enforces 1:1 BOM metadata, disassembly keyframes, dense [0..1] kinematic sweeps, and mechanism-specific motion laws across all 19 plugins', async () => {
+  it('enforces 1:1 BOM metadata, disassembly keyframes, dense [0..1] kinematic sweeps, and mechanism-specific motion laws across all 23 plugins', async () => {
     const globalPartIds = new Set<string>();
     let totalRuntimeParts = 0;
     const poseScratch = createMutablePose();
@@ -457,8 +464,8 @@ describe('19-Exhibit Digital Armory V2.0 1:1 plugin, geometry, kinematics & PBR 
       }
     }
 
-    expect(totalRuntimeParts).toBe(480);
-    expect(globalPartIds.size).toBe(480);
+    expect(totalRuntimeParts).toBe(579);
+    expect(globalPartIds.size).toBe(579);
 
     // 1. M82A1 short-recoil barrel + accelerator motion law
     const m82Plugin = loadedPlugins.get('m82a1')!;
@@ -824,6 +831,109 @@ describe('19-Exhibit Digital Armory V2.0 1:1 plugin, geometry, kinematics & PBR 
     expect(minVectorBoltDy).toBeLessThan(-1.0);
     expect(maxVectorHammerRz).toBeGreaterThan(0.75);
 
+    // 3d. WP-17 Mechanical Marvels (BAY-20..23):
+    //  - H&K G11 K2: 90° rotary breech, counter-rotating Swiss clockwork gears, floating action (-4.20 cm),
+    //    vertical DM11 loading rammer plunge, and 100% caseless zero-brass ballistics
+    const g11Plugin = loadedPlugins.get('g11')!;
+    let maxG11BreechAbsRz = 0;
+    let maxG11GearAbsRz = 0;
+    let minG11InnerDx = 0;
+    let minG11BarrelDx = 0;
+    let minG11RammerDy = 0;
+    for (const f of DENSE_FIRING_SWEEP) {
+      const br = g11Plugin.computeFiringKinematics('g11_rotary_breech', f);
+      const gr = g11Plugin.computeFiringKinematics('g11_clockwork_gears', f);
+      const ir = g11Plugin.computeFiringKinematics('g11_inner_receiver', f);
+      const bl = g11Plugin.computeFiringKinematics('g11_barrel', f);
+      const rm = g11Plugin.computeFiringKinematics('g11_loading_rammer', f);
+      maxG11BreechAbsRz = Math.max(maxG11BreechAbsRz, Math.abs(br.rot[2]));
+      maxG11GearAbsRz = Math.max(maxG11GearAbsRz, Math.abs(gr.rot[2]));
+      minG11InnerDx = Math.min(minG11InnerDx, ir.pos[0]);
+      minG11BarrelDx = Math.min(minG11BarrelDx, bl.pos[0]);
+      minG11RammerDy = Math.min(minG11RammerDy, rm.pos[1]);
+      expect(
+        g11Plugin.computeBallisticsState(f).spentCaseVisible,
+        `g11 caseless DM11 must never show spent brass at f=${f}`
+      ).toBe(false);
+    }
+    expect(maxG11BreechAbsRz).toBeCloseTo(Math.PI * 0.5, 2);
+    expect(maxG11GearAbsRz).toBeGreaterThan(1.5);
+    expect(minG11InnerDx).toBeLessThan(-3.5);
+    expect(minG11BarrelDx).toBeCloseTo(minG11InnerDx, 2);
+    expect(minG11RammerDy).toBeLessThan(-2.0);
+
+    //  - VSS Vintorez: hammerless linear striker slam, long-stroke carrier dwell & stationary integral baffle stack
+    const vssPlugin = loadedPlugins.get('vss')!;
+    let minVssStrikerDx = Infinity;
+    let maxVssStrikerDx = -Infinity;
+    let minVssCarrierDx = 0;
+    for (const f of DENSE_FIRING_SWEEP) {
+      const st = vssPlugin.computeFiringKinematics('vss_striker', f);
+      const bc = vssPlugin.computeFiringKinematics('vss_bolt_carrier', f);
+      const bf = vssPlugin.computeFiringKinematics('vss_baffle_stack', f);
+      minVssStrikerDx = Math.min(minVssStrikerDx, st.pos[0]);
+      maxVssStrikerDx = Math.max(maxVssStrikerDx, st.pos[0]);
+      minVssCarrierDx = Math.min(minVssCarrierDx, bc.pos[0]);
+      expect(
+        Math.abs(bf.pos[0]) + Math.abs(bf.pos[1]) + Math.abs(bf.rot[0])
+      ).toBeLessThan(1e-5);
+    }
+    expect(maxVssStrikerDx - minVssStrikerDx).toBeGreaterThan(1.8);
+    expect(minVssCarrierDx).toBeLessThan(-6.5);
+
+    //  - M134D Minigun: continuous 360° coaxial barrel/rotor spin, counter-rotating delinker sprocket,
+    //    and 6 orbiting bolts reciprocating sinusoidally (>= 4.0 cm) inside the 360° cam track
+    const m134Plugin = loadedPlugins.get('m134')!;
+    let maxM134ClusterRx = 0;
+    let minM134SprocketRx = 0;
+    for (const f of DENSE_FIRING_SWEEP) {
+      const cl = m134Plugin.computeFiringKinematics('m134_barrel_cluster', f);
+      const rt = m134Plugin.computeFiringKinematics('m134_rotor_assembly', f);
+      const sp = m134Plugin.computeFiringKinematics('m134_delinker_sprocket', f);
+      maxM134ClusterRx = Math.max(maxM134ClusterRx, cl.rot[0]);
+      expect(rt.rot[0]).toBeCloseTo(cl.rot[0], 3);
+      minM134SprocketRx = Math.min(minM134SprocketRx, sp.rot[0]);
+    }
+    expect(maxM134ClusterRx).toBeGreaterThan(6.0);
+    expect(minM134SprocketRx).toBeLessThan(-6.0);
+    for (let bi = 1; bi <= 6; bi++) {
+      let minBx = Infinity;
+      let maxBx = -Infinity;
+      for (const f of DENSE_FIRING_SWEEP) {
+        const bd = m134Plugin.computeFiringKinematics(`m134_bolt_${bi}`, f);
+        minBx = Math.min(minBx, bd.pos[0]);
+        maxBx = Math.max(maxBx, bd.pos[0]);
+      }
+      expect(
+        maxBx - minBx,
+        `m134_bolt_${bi} cam-track stroke must span >= 4.0 cm`
+      ).toBeGreaterThan(4.0);
+    }
+
+    //  - AN-94 Abakan: floating barreled action (-4.20 cm) inside stationary outer housing,
+    //    V-groove pulley wheel rotation (>= 4.0 rad), and forward-lunging 2-stage feed rammer (>= 2.0 cm)
+    const an94Plugin = loadedPlugins.get('an94')!;
+    let minAn94BarrelDx = 0;
+    let minAn94InnerDx = 0;
+    let maxAn94PulleyAbsRz = 0;
+    let maxAn94RammerDx = 0;
+    for (const f of DENSE_FIRING_SWEEP) {
+      const bl = an94Plugin.computeFiringKinematics('an94_barrel', f);
+      const ir = an94Plugin.computeFiringKinematics('an94_inner_receiver', f);
+      const oh = an94Plugin.computeFiringKinematics('an94_outer_housing', f);
+      const pw = an94Plugin.computeFiringKinematics('an94_pulley_wheel', f);
+      const fr = an94Plugin.computeFiringKinematics('an94_feed_rammer', f);
+      minAn94BarrelDx = Math.min(minAn94BarrelDx, bl.pos[0]);
+      minAn94InnerDx = Math.min(minAn94InnerDx, ir.pos[0]);
+      maxAn94PulleyAbsRz = Math.max(maxAn94PulleyAbsRz, Math.abs(pw.rot[2]));
+      maxAn94RammerDx = Math.max(maxAn94RammerDx, fr.pos[0]);
+      expect(Math.abs(oh.pos[0]) + Math.abs(oh.pos[1])).toBeLessThan(1e-5);
+    }
+    expect(minAn94BarrelDx).toBeLessThan(-3.5);
+    expect(minAn94InnerDx).toBeCloseTo(minAn94BarrelDx, 2);
+    expect(maxAn94PulleyAbsRz).toBeGreaterThan(4.0);
+    expect(maxAn94RammerDx).toBeGreaterThan(2.0);
+
     // 4. Endpoint continuity across f = 0.995 -> 1.0 (catches modulo wrap-around snaps on single-shot completion)
     for (const [wid, plugin] of loadedPlugins.entries()) {
       for (const part of plugin.parts) {
@@ -866,7 +976,7 @@ describe('19-Exhibit Digital Armory V2.0 1:1 plugin, geometry, kinematics & PBR 
     }
   });
 
-  it('builds all 480 CSG/parametric BufferGeometries with finite attributes, unit normals, positive 3D volume, and [0, 1] custom-atlas UVs', async () => {
+  it('builds all 579 CSG/parametric BufferGeometries with finite attributes, unit normals, positive 3D volume, and [0, 1] custom-atlas UVs', async () => {
     let builtPartsCount = 0;
 
     for (const manifest of WEAPON_MANIFESTS) {
@@ -1090,11 +1200,15 @@ describe('19-Exhibit Digital Armory V2.0 1:1 plugin, geometry, kinematics & PBR 
         }
       }
 
-      // Verify zero 3D AABB overlaps at t = 1.0 across V2 exhibits (m249, p08, vector) & check separation across vault
+      // Verify zero 3D AABB overlaps at t = 1.0 across V2 & WP-17 exhibits (m249, p08, vector, g11, vss, m134, an94)
       if (
         manifest.id === 'm249' ||
         manifest.id === 'p08' ||
-        manifest.id === 'vector'
+        manifest.id === 'vector' ||
+        manifest.id === 'g11' ||
+        manifest.id === 'vss' ||
+        manifest.id === 'm134' ||
+        manifest.id === 'an94'
       ) {
         const overlaps: string[] = [];
         for (let i = 0; i < explodedWorldBoxes.length; i++) {
@@ -1124,10 +1238,10 @@ describe('19-Exhibit Digital Armory V2.0 1:1 plugin, geometry, kinematics & PBR 
       }
     }
 
-    expect(builtPartsCount).toBe(480);
+    expect(builtPartsCount).toBe(579);
   }, 120000);
 
-  it('verifies all 277 WebP PBR textures exist on disk (0 PNGs) and all 93 *_roughness.webp ORM maps have valid RGB WebP headers', async () => {
+  it('verifies all 313 WebP PBR textures exist on disk (0 PNGs) and all 105 *_roughness.webp ORM maps have valid RGB WebP headers', async () => {
     expect(fs.existsSync(TEXTURES_DIR)).toBe(true);
     const diskFiles = fs.readdirSync(TEXTURES_DIR);
     const webpFiles = diskFiles.filter((f) => f.endsWith('.webp')).sort();
@@ -1138,11 +1252,11 @@ describe('19-Exhibit Digital Armory V2.0 1:1 plugin, geometry, kinematics & PBR 
     );
     const normalFiles = webpFiles.filter((f) => f.endsWith('_normal.webp'));
 
-    expect(webpFiles).toHaveLength(277);
+    expect(webpFiles).toHaveLength(313);
     expect(pngFiles).toHaveLength(0);
-    expect(albedoFiles).toHaveLength(91);
-    expect(roughnessFiles).toHaveLength(93);
-    expect(normalFiles).toHaveLength(93);
+    expect(albedoFiles).toHaveLength(103);
+    expect(roughnessFiles).toHaveLength(105);
+    expect(normalFiles).toHaveLength(105);
 
     // Binary RIFF/WEBP header validation across all 277 textures
     for (const fileName of webpFiles) {
@@ -1277,7 +1391,7 @@ describe('19-Exhibit Digital Armory V2.0 1:1 plugin, geometry, kinematics & PBR 
     expect(playbackClock.getState().targetProgress).toBe(0);
   });
 
-  it('verifies Google Gemini bilingual R&D stories, all 480 part narrations, all 1,112 MP3 voiceover clips & 19 Charon TTS SHA-256 hash manifests with 0 CJK leaks in English', async () => {
+  it('verifies Google Gemini bilingual R&D stories, all 579 part narrations, all 1,342 MP3 voiceover clips & 23 Charon TTS SHA-256 hash manifests with 0 CJK leaks in English', async () => {
     let totalNarratedParts = 0;
     const allReferencedAudioPaths: string[] = [];
 
@@ -1306,7 +1420,7 @@ describe('19-Exhibit Digital Armory V2.0 1:1 plugin, geometry, kinematics & PBR 
       .readdirSync(TTS_CACHE_DIR)
       .filter((f) => f.endsWith('_tts_hashes.json'))
       .sort();
-    expect(hashFilesOnDisk).toHaveLength(19);
+    expect(hashFilesOnDisk).toHaveLength(23);
     let totalVerifiedHashes = 0;
 
     for (const manifest of WEAPON_MANIFESTS) {
@@ -1473,10 +1587,10 @@ describe('19-Exhibit Digital Armory V2.0 1:1 plugin, geometry, kinematics & PBR 
       assertZeroCjkInEnglish(metaEn, `${wid}.metaEn`);
     }
 
-    // 480 total parts across 19 exhibits -> 152 story MP3s + 960 part MP3s = 1,112 MP3 files
-    expect(totalNarratedParts).toBe(480);
-    expect(allReferencedAudioPaths).toHaveLength(1112);
-    expect(totalVerifiedHashes).toBe(1112);
+    // 579 total parts across 23 exhibits -> 184 story MP3s + 1,158 part MP3s = 1,342 MP3 files
+    expect(totalNarratedParts).toBe(579);
+    expect(allReferencedAudioPaths).toHaveLength(1342);
+    expect(totalVerifiedHashes).toBe(1342);
 
     const countDiskMp3s = (dir: string): number => {
       let n = 0;
@@ -1487,7 +1601,7 @@ describe('19-Exhibit Digital Armory V2.0 1:1 plugin, geometry, kinematics & PBR 
       }
       return n;
     };
-    expect(countDiskMp3s(AUDIO_DIR)).toBe(1112);
+    expect(countDiskMp3s(AUDIO_DIR)).toBe(1342);
 
     for (const relAudio of allReferencedAudioPaths) {
       const fullMp3Path = path.join(ROOT_DIR, 'public', relAudio);

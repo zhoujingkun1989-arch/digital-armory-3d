@@ -304,9 +304,9 @@ describe('studio environment profiles & 3D gunsmith takedown mat', () => {
 });
 
 describe('CNC billet exhibition turntable & 360° azimuth vernier ring', () => {
-  it('preserves dynamic envelope sizing across all 19 exhibits and spans platterTopY -> gridFloorY', () => {
+  it('preserves dynamic envelope sizing across all 23 exhibits and spans platterTopY -> gridFloorY', () => {
     expect(AZIMUTH_DIAL_TEXTURE_SIZE).toBe(2048);
-    expect(WEAPON_IDS).toHaveLength(19);
+    expect(WEAPON_IDS).toHaveLength(23);
 
     for (const weaponId of WEAPON_IDS) {
       const r = getTurntableRadius(weaponId);

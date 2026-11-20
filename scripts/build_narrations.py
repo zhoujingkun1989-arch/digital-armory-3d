@@ -76,6 +76,10 @@ ALL_WEAPON_IDS = [
     "m249",
     "p08",
     "vector",
+    "g11",
+    "vss",
+    "m134",
+    "an94",
 ]
 
 WEAPON_CONTEXT_HINTS: dict[str, dict[str, str]] = {
@@ -425,6 +429,187 @@ WEAPON_CONTEXT_HINTS: dict[str, dict[str, str]] = {
             "Act 3 -> 'vector_slider' (Patented KRISS Super V Off-Axis Tungsten Counterweight Slider); "
             "Act 4 -> 'vector_mag_body' (25-Round Glock-21 Kriss MagEx2 Magazine) or 'vector_bolt' (Cam-Trunnion Bolt); "
             "Breakthroughs -> 'vector_slider', 'vector_barrel' (5.5-inch Sub-Trigger Low-Bore Barrel), and 'vector_hammer' (or 'vector_fcu_chassis')."
+        ),
+    },
+    "g11": {
+        "historicalContext": (
+            "Initiated in 1968 under a radical West German Bundeswehr mandate to triple infantry hit probability "
+            "beyond the 7.62×51mm G3, the Heckler & Koch G11 was developed over two decades in Oberndorf am Neckar "
+            "by H&K alongside propellant partner Dynamit Nobel and optics specialist Hensoldt. After early "
+            "nitrocellulose caseless rounds suffered thermal cook-off in hot chambers, Dynamit Nobel engineered "
+            "the breakthrough octogen-based HITP (High Ignition Temperature Propellant) 4.73×33mm DM11 rectangular "
+            "caseless block with a recessed copper-jacketed projectile. Reaching final maturity as the G11 K2 "
+            "(with twin spare overhead magazine clips and integral 1x/3.5x optic carry-handle), the rifle stunned "
+            "evaluators during the 1989–1990 U.S. Army Advanced Combat Rifle (ACR) trials and achieved Bundeswehr "
+            "technical certification in 1990—before German reunification budget cuts halted mass production, "
+            "cementing its legend as 'Kraut Space Magic.'"
+        ),
+        "mechanicalCore": (
+            "Chambered in 4.73×33mm DM11 HITP caseless ammunition (380 MPa peak pressure, 3.4 g projectile @ 930 m/s "
+            "from a 540 mm cold-hammer-forged chrome-lined floating barrel), the G11 K2 eliminates extraction and brass "
+            "ejection completely. High-pressure gas tapped into a short-stroke underbarrel piston drives a toothed "
+            "rack and meshing Swiss-watch stainless/C36000 brass spur gear train ('g11_clockwork_gears'), rotating "
+            "a hard-chromed cylindrical breech ('g11_rotary_breech') 90 degrees upward until its chamber aligns "
+            "vertically beneath the overhead 45-round horizontal magazine ('g11_mag_tube'). A vertical cam rammer "
+            "('g11_loading_rammer') plunges 26.5 mm downward to press a fresh rectangular DM11 block straight into "
+            "the cylinder, retracts clear, and the gear train rotates the breech smoothly back to 0 degrees coaxial "
+            "with the bore for hermetic gas sealing and coaxial striker ignition. Crucially, during a 2,100 RPM "
+            "3-round hyperburst (~85 ms), the entire floating steel inner receiver ('g11_inner_receiver'), 540 mm "
+            "barrel, clockwork core, and overhead magazine glide rearward 42 mm as a unified assembly inside the "
+            "sealed olive-charcoal monocoque polymer outer housing—allowing all three bullets to clear the muzzle "
+            "before cumulative recoil strikes the shooter's shoulder, while full-auto drops to a controllable 460 RPM."
+        ),
+        "milestoneAnchors": (
+            "1968–1971 (Bundeswehr future infantry rifle mandate launches H&K + Dynamit Nobel caseless program) -> "
+            "1974–1977 (First rotary-breech G11 prototypes exceed 2,000 RPM burst cadence) -> "
+            "1983–1986 (Dynamit Nobel HITP octogen propellant solves thermal cook-off in 4.73×33mm DM11) -> "
+            "1989–1990 (G11 K2 enters U.S. Army Advanced Combat Rifle trials at Aberdeen & Fort Benning) -> "
+            "1990 (Bundeswehr technical certification completed for G11 K2 adoption) -> "
+            "1991–Present (Post-Cold-War cancellation turns G11 K2 into the summit of pure mechanical ordnance)"
+        ),
+        "focusPartGuidance": (
+            "Recommended exact focusPartId anchors from BOM: "
+            "Act 1 -> 'g11_outer_housing' (Monocoque Polymer Outer Casing); "
+            "Act 2 -> 'g11_mag_tube' (Overhead 45-Round 4.73x33mm DM11 Caseless Magazine); "
+            "Act 3 -> 'g11_rotary_breech' (90-Degree Chrome Rotating Cylindrical Breech); "
+            "Act 4 -> 'g11_clockwork_gears' (Swiss-Watch Stainless & Brass Spur Gear Train); "
+            "Breakthroughs -> 'g11_rotary_breech', 'g11_inner_receiver', and 'g11_mag_tube'."
+        ),
+    },
+    "vss": {
+        "historicalContext": (
+            "Commissioned under a classified 1983 KGB and GRU operational requirement for a takedown clandestine "
+            "sniper rifle capable of defeating modern steel helmets and Kevlar/titanium body armor at 400 meters "
+            "with whisper-quiet acoustic signature, the VSS Vintorez ('Vintovka Snayperskaya Spetsialnaya' / "
+            "'Thread Cutter', GRAU index 6P29) was engineered at TsNIITochMash in Klimovsk by lead designer Pyotr "
+            "Serdyukov and cartridge specialists Nikolai Zabelin and Lidia Dvoryaninova. Manufactured at the "
+            "historic Tula Arms Plant (TOZ) starting in 1987, the VSS packs into a compact briefcase via tool-less "
+            "removal of its laminated birch skeleton stock, integral cylindrical suppressor tube, and hammer-tone "
+            "PSO-1M2-1 4×24 rangefinding optic calibrated specifically for heavy subsonic trajectories—serving "
+            "Soviet and Russian Alpha, Vympel, and GRU Spetsnaz units across four decades."
+        ),
+        "mechanicalCore": (
+            "Built around the purpose-engineered 9×39mm subsonic cartridge (16.2 g SP-5 match and SP-6 hardened "
+            "tungsten-carbide armor-piercing core @ 290 m/s, 280 MPa peak pressure, staying safely below the "
+            "340 m/s sonic crack barrier), the VSS vents propellant gas progressively through three radial rows "
+            "of bleed ports drilled directly into the rifling grooves of its 200 mm barrel ('vss_barrel') into a "
+            "414 mm full-length cylindrical expansion jacket ('vss_suppressor_tube'). Forward of the muzzle, six "
+            "alternating 28-degree slanted asymmetric CNC baffles ('vss_baffle_stack') strip, cool, and decelerate "
+            "residual exhaust gases cleanly down to ~130 dB. Inside the rigid billet CNC-milled Tula steel receiver, "
+            "a long-stroke gas piston drives a six-lug symmetrical rotating bolt ('vss_bolt', 60-degree radial "
+            "symmetry) for uniform breech lockup and zero asymmetric lug thrust, while a hammerless linear coaxial "
+            "sliding striker ('vss_striker') eliminates swinging-hammer mechanical clatter and shortens lock time, "
+            "paired with an AK-style right dust-shield safety decoupled from a behind-trigger cross-bolt semi/auto "
+            "selector and 10-round ribbed polymer magazine."
+        ),
+        "milestoneAnchors": (
+            "1983 (Classified KGB & GRU 'Vintorez' specification demands silent 400m armor defeat) -> "
+            "1984–1985 (TsNIITochMash finalizes heavy 9×39mm SP-5 & tungsten-core SP-6 subsonic rounds) -> "
+            "1985–1986 (Pyotr Serdyukov's RG036 validates 6-stage slanted baffles & hammerless linear striker) -> "
+            "1987 (Official GRAU 6P29 adoption & Tula Arms Plant TOZ serial production begins) -> "
+            "1988–1999 (Dedicated PSO-1M2-1 subsonic optic & Spetsnaz combat baptism) -> "
+            "2018–Present (Modernized VSS-M rails & enduring benchmark of integral suppressed sniper design)"
+        ),
+        "focusPartGuidance": (
+            "Recommended exact focusPartId anchors from BOM: "
+            "Act 1 -> 'vss_suppressor_tube' (414 mm Full-Length Integral Expansion Suppressor Tube); "
+            "Act 2 -> 'vss_baffle_stack' (6-Stage Alternating 28-Degree Slanted Asymmetric Baffle Stack); "
+            "Act 3 -> 'vss_striker' (Hammerless Linear Coaxial Sliding Striker); "
+            "Act 4 -> 'vss_wood_stock' (Quick-Detach Laminated Birch Skeleton Stock); "
+            "Breakthroughs -> 'vss_baffle_stack', 'vss_bolt', and 'vss_striker'."
+        ),
+    },
+    "m134": {
+        "historicalContext": (
+            "Tracing its rotary multi-barrel lineage back to Dr. Richard Jordan Gatling's 1862 patent, the M134 "
+            "Minigun was born in 1960–1962 when General Electric Armament Systems (Burlington, Vermont) scaled "
+            "down its 20mm M61 Vulcan fighter-jet cannon to chamber standard 7.62×51mm NATO rifle ammunition for "
+            "Vietnam-era helicopters and fixed-wing gunships. Unleashed as the GAU-2/A and M134 aboard AC-47 "
+            "'Spooky' ('Puff the Magic Dragon') gunships and UH-1 Hueys, early systems delivered terrifying "
+            "suppressive volume yet suffered frequent delinker jams and short 10,000-round rotor wear lives. "
+            "In the 1990s, Scottsdale-based Dillon Aero completely re-engineered the feeder/delinker, hardened "
+            "six-flute rotor, bolts, and clutch drive—tripling mean rounds between stoppages past 30,000 rounds "
+            "and pushing component life beyond 100,000 rounds, earning official 2003 U.S. military type "
+            "classification as the modernized M134D across aviation, naval, and vehicle mounts worldwide."
+        ),
+        "mechanicalCore": (
+            "Unlike gas- or recoil-operated machine guns that stall on a single misfire, the M134D is externally "
+            "powered by a 3.2-HP 28-volt DC aerospace electric drive motor ('m134_drive_motor') geared to spin "
+            "its central six-flute hardened star rotor ('m134_rotor_assembly') and six 22-inch (559 mm) 7.62×51mm "
+            "NATO barrels ('m134_barrel_cluster', 415 MPa peak pressure, 147 gr M80 @ 853 m/s) at 500 RPM—yielding "
+            "a sustained 3,000 RPM cyclic firestorm while capping each individual barrel's thermal load to 500 RPM "
+            "with 300 degrees of air-cooling rotation between shots. Inside the stationary cylindrical main housing "
+            "('m134_main_housing'), a precision-milled 360-degree elliptical sinusoidal cam track ('m134_cam_track_ring') "
+            "guides all six orbiting chrome-plated rotary bolts ('m134_bolt_1'..'m134_bolt_6', spaced 60 degrees "
+            "apart) through a smooth 46 mm axial wave: feeding, 2-lug locking, firing-pin release at top dead center, "
+            "primary extraction, and forceful downward ejection through the right chute—effortlessly ejecting any "
+            "dud round without interruption. Counter-rotating in strict 1:1 gear lockstep, the Dillon Aero "
+            "six-pocket stainless star-wheel delinker ('m134_delinker_sprocket') strips linked 7.62mm rounds from "
+            "M13 disintegrating steel links at 50 rounds per second, protected by a spring-loaded clutch and "
+            "fail-safe safing sector."
+        ),
+        "milestoneAnchors": (
+            "1862 (Dr. Richard J. Gatling patents the hand-cranked multi-barrel rotary gun) -> "
+            "1960–1962 (General Electric scales the 20mm M61 Vulcan down to the 7.62×51mm XM134 Minigun) -> "
+            "1964–1969 (Vietnam combat debut aboard AC-47 Spooky & UH-1 Huey gunships) -> "
+            "1990–1995 (Dillon Aero completely re-engineers the six-pocket delinker, bolts & rotor core) -> "
+            "2003 (U.S. Military type-classifies the 100,000-round modernized M134D) -> "
+            "2004–Present (Global 3,000 RPM standard across MH-60, MH-47, patrol craft & special operations)"
+        ),
+        "focusPartGuidance": (
+            "Recommended exact focusPartId anchors from BOM: "
+            "Act 1 -> 'm134_drive_motor' (28V DC 3.2-HP Aerospace Electric Drive Motor); "
+            "Act 2 -> 'm134_barrel_cluster' (Six-Barrel 22-Inch 7.62x51mm Rotary Cluster); "
+            "Act 3 -> 'm134_cam_track_ring' (360-Degree Elliptical Sinusoidal Cam Track Ring); "
+            "Act 4 -> 'm134_delinker_housing' (Dillon Aero Delinker Housing) or 'm134_delinker_sprocket'; "
+            "Breakthroughs -> 'm134_cam_track_ring', 'm134_drive_motor', and 'm134_delinker_sprocket'."
+        ),
+    },
+    "an94": {
+        "historicalContext": (
+            "Born out of the top-secret 1978 Soviet 'Project Abakan' competition aimed at boosting burst hit "
+            "probability from unstable standing and moving firing positions by 1.5 to 2 times over the AK-74, "
+            "the AN-94 (Avtomat Nikonova model 1994, GRAU index 6P33) was conceived at Izhmash by mechanical "
+            "visionary Gennady Nikolayevich Nikonov. Outlasting formidable balanced-recoil rivals such as the "
+            "AEK-971 through grueling TsNIITochMash mud, arctic freeze, and desert endurance trials across NA-2, "
+            "AS, and ASM prototypes from 1981 to 1991, Nikonov's blowback-shifted impulse design achieved official "
+            "Russian military adoption in 1994. Earning the nickname 'the Clockwork Kalashnikov' for its internal "
+            "pulley-and-cable transmission, the AN-94 saw elite deployment with Russian Airborne (VDV), Naval "
+            "Infantry, and MVD special forces—revered as the most mechanically intricate assault rifle ever "
+            "standardized for military service."
+        ),
+        "mechanicalCore": (
+            "Chambered in 5.45×39mm 7N6 (294 MPa peak pressure, 3.43 g spitzer @ 900 m/s from a 405 mm CHF barrel), "
+            "the AN-94 solves burst dispersion via Blowback-Shifted Pulse (Smeshcheniye Impulsa Otdachi). The entire "
+            "barreled action—405 mm barrel, gas tube, self-cleaning figure-8 acoustic muzzle brake, and CNC steel "
+            "inner sub-receiver ('an94_inner_receiver')—floats on precision rails inside a stationary fiberglass-"
+            "reinforced charcoal polyamide outer housing ('an94_outer_housing'), gliding freely 42 mm rearward as a "
+            "single unit during a 1,800 RPM 2-round hyperburst (~33 ms between shots) so BOTH projectiles exit the "
+            "muzzle nearly through the same hole before cumulative recoil hits the shooter's shoulder (switching "
+            "seamlessly to 600 RPM full-auto from round three onward). To feed a second cartridge at 30 rounds per "
+            "second without outrunning a standard AK-74 magazine spring, a CNC V-groove steel pulley wheel "
+            "('an94_pulley_wheel') wrapped with a 180-degree braided stainless wire cable ('an94_steel_cable') "
+            "couples the rearward-flying bolt carrier directly to a bronze two-stage pre-feed shuttle rammer "
+            "('an94_feed_rammer') that lunges +26 mm forward to pre-stage the next cartridge onto an intermediate "
+            "loading tray—requiring the 30-round magazine well to cant 15 degrees right to clear the internal "
+            "cable track, while a whistling twin-chamber figure-8 muzzle compensator harnesses supersonic exhaust "
+            "vortices to tame muzzle climb."
+        ),
+        "milestoneAnchors": (
+            "1978–1981 (Secret Soviet 'Project Abakan' trials demand 1.5–2x AK-74 burst hit probability) -> "
+            "1981–1986 (Gennady Nikonov develops NA-2 to AS prototypes with pulley-cable two-stage pre-feed) -> "
+            "1987–1991 (Finalist ASM defeats balanced-recoil rivals at TsNIITochMash proving grounds) -> "
+            "1994 (Official adoption as AN-94 / GRAU 6P33 by Russian Armed Forces) -> "
+            "1997–2005 (Limited Izhmash serial production & elite VDV / Spetsnaz combat validation) -> "
+            "2008–Present (Enduring monument of pure mechanical delayed-impulse ordnance engineering)"
+        ),
+        "focusPartGuidance": (
+            "Recommended exact focusPartId anchors from BOM: "
+            "Act 1 -> 'an94_outer_housing' (Stationary Polyamide Outer Shell & Rail Frame); "
+            "Act 2 -> 'an94_pulley_wheel' (CNC Steel V-Groove Pulley & Braided Stainless Cable); "
+            "Act 3 -> 'an94_muzzle_brake' (Twin-Chamber Self-Cleaning Figure-8 Muzzle Brake); "
+            "Act 4 -> 'an94_feed_rammer' (Two-Stage Bronze Pre-Feed Shuttle Rammer); "
+            "Breakthroughs -> 'an94_inner_receiver', 'an94_pulley_wheel', and 'an94_muzzle_brake'."
         ),
     },
 }
@@ -1276,63 +1461,133 @@ def build_weapon(
     force_text: bool = False,
     force_audio: bool = False,
     skip_audio: bool = False,
+    audio_only: bool = False,
     story_audio_only: bool = False,
     workers: int = 3,
     collect_jobs_out: Optional[list[dict[str, Any]]] = None,
 ) -> None:
-    print(f"\n==================== [{weapon_id.upper()}] Extracting 1:1 weapon spec ====================")
-    spec = dump_weapon_spec(weapon_id)
-    parts_list: list[dict[str, Any]] = spec["parts"]
-    part_ids_set = {p["id"] for p in parts_list}
-    print(
-        f"  Loaded {spec['catalog']['nameCn']} · {len(parts_list)} parts · "
-        f"{len(spec['firingPhases'])} firing phases"
-    )
-
     json_path = NARRATIONS_OUT_DIR / f"{weapon_id}.json"
     hashes_path = TTS_CACHE_DIR / f"{weapon_id}_tts_hashes.json"
 
-    if dry_run:
-        batch_count = (len(parts_list) + 12) // 13
-        story_clips = 8
-        part_clips = 0 if story_audio_only else len(parts_list) * 2
-        print(
-            f"  [DRY-RUN] Would run {1 + batch_count} `{TEXT_MODEL}` structured JSON calls, "
-            f"{story_clips} `{STORY_TTS_MODEL}` story clips, and "
-            f"{part_clips} `{PART_TTS_MODEL}` part clips -> {json_path.relative_to(ROOT_DIR)}"
-        )
-        return
-
     bundle: Optional[dict[str, Any]] = None
-    if json_path.is_file() and not force_text:
-        try:
-            existing = json.loads(json_path.read_text(encoding="utf-8"))
-            if (
-                existing.get("weaponId") == weapon_id
-                and set(existing.get("parts", {}).keys()) == part_ids_set
-                and len(existing.get("story", {}).get("zh", {}).get("acts", [])) == 4
-                and len(existing.get("story", {}).get("en", {}).get("acts", [])) == 4
-            ):
-                bundle = existing
-                gen_models = bundle.setdefault("generatorModels", {})
+    spec: Optional[dict[str, Any]] = None
+    parts_list: list[dict[str, Any]] = []
+    part_ids_set: set[str] = set()
+
+    if audio_only:
+        print(f"\n==================== [{weapon_id.upper()}] Loading verified narration bundle (--audio-only) ====================")
+        if not json_path.is_file():
+            raise RuntimeError(
+                f"--audio-only requires an existing verified narration file: {json_path.relative_to(ROOT_DIR)}"
+            )
+        existing = json.loads(json_path.read_text(encoding="utf-8"))
+        if (
+            existing.get("weaponId") != weapon_id
+            or not existing.get("parts")
+            or len(existing.get("story", {}).get("zh", {}).get("acts", [])) != 4
+            or len(existing.get("story", {}).get("en", {}).get("acts", [])) != 4
+        ):
+            raise RuntimeError(
+                f"Existing narration bundle {json_path.relative_to(ROOT_DIR)} failed structural validation."
+            )
+        bundle = existing
+        part_ids_set = set(bundle["parts"].keys())
+        print(
+            f"  [AUDIO-ONLY] Read-only lock on {json_path.relative_to(ROOT_DIR)} "
+            f"({len(part_ids_set)} parts · 4 bilingual acts -> {8 + 2 * len(part_ids_set)} total clips)"
+        )
+        if dry_run:
+            tts_hashes_preview: dict[str, str] = {}
+            if hashes_path.is_file():
+                try:
+                    tts_hashes_preview = json.loads(hashes_path.read_text(encoding="utf-8"))
+                except Exception:
+                    tts_hashes_preview = {}
+            pending_story = 0
+            pending_part = 0
+            for lang, style in (("zh", STYLE_STORY_ZH), ("en", STYLE_STORY_EN)):
+                for act in bundle["story"][lang]["acts"]:
+                    rel_url = act["audioUrl"]
+                    out_file = ROOT_DIR / "public" / rel_url
+                    sig = sha256_hex(f"{STORY_TTS_MODEL}|{DEFAULT_VOICE}|{style}|{act['audioScript']}")
+                    if (
+                        force_audio
+                        or not out_file.is_file()
+                        or out_file.stat().st_size <= 1024
+                        or tts_hashes_preview.get(rel_url) != sig
+                    ):
+                        pending_story += 1
+            if not story_audio_only:
+                for p_entry in bundle["parts"].values():
+                    for lang, style in (("zh", STYLE_PART_ZH), ("en", STYLE_PART_EN)):
+                        loc_p = p_entry[lang]
+                        rel_url = loc_p["audioUrl"]
+                        out_file = ROOT_DIR / "public" / rel_url
+                        sig = sha256_hex(f"{PART_TTS_MODEL}|{DEFAULT_VOICE}|{style}|{loc_p['audioScript']}")
+                        if (
+                            force_audio
+                            or not out_file.is_file()
+                            or out_file.stat().st_size <= 1024
+                            or tts_hashes_preview.get(rel_url) != sig
+                        ):
+                            pending_part += 1
+            print(
+                f"  [DRY-RUN] Would synthesize {pending_story} story + {pending_part} part = "
+                f"{pending_story + pending_part} `{PART_TTS_MODEL}` (`{DEFAULT_VOICE}`) MP3 clips "
+                f"(0 text API calls; {json_path.relative_to(ROOT_DIR)} untouched)."
+            )
+            return
+    else:
+        print(f"\n==================== [{weapon_id.upper()}] Extracting 1:1 weapon spec ====================")
+        spec = dump_weapon_spec(weapon_id)
+        parts_list = spec["parts"]
+        part_ids_set = {p["id"] for p in parts_list}
+        print(
+            f"  Loaded {spec['catalog']['nameCn']} · {len(parts_list)} parts · "
+            f"{len(spec['firingPhases'])} firing phases"
+        )
+
+        if dry_run:
+            batch_count = (len(parts_list) + 12) // 13
+            story_clips = 8
+            part_clips = 0 if story_audio_only else len(parts_list) * 2
+            print(
+                f"  [DRY-RUN] Would run {1 + batch_count} `{TEXT_MODEL}` structured JSON calls, "
+                f"{story_clips} `{STORY_TTS_MODEL}` story clips, and "
+                f"{part_clips} `{PART_TTS_MODEL}` part clips -> {json_path.relative_to(ROOT_DIR)}"
+            )
+            return
+
+        if json_path.is_file() and not force_text:
+            try:
+                existing = json.loads(json_path.read_text(encoding="utf-8"))
                 if (
-                    gen_models.get("storyTts") != STORY_TTS_MODEL
-                    or gen_models.get("partTts") != PART_TTS_MODEL
+                    existing.get("weaponId") == weapon_id
+                    and set(existing.get("parts", {}).keys()) == part_ids_set
+                    and len(existing.get("story", {}).get("zh", {}).get("acts", [])) == 4
+                    and len(existing.get("story", {}).get("en", {}).get("acts", [])) == 4
                 ):
-                    gen_models["storyTts"] = STORY_TTS_MODEL
-                    gen_models["partTts"] = PART_TTS_MODEL
-                    json_path.write_text(
-                        json.dumps(bundle, ensure_ascii=False, indent=2) + "\n",
-                        encoding="utf-8",
-                    )
-                    print(
-                        f"  [SYNC META] Updated generatorModels in {json_path.relative_to(ROOT_DIR)} -> `{PART_TTS_MODEL}`"
-                    )
-                print(f"  [CACHE HIT] Reusing existing text bundle: {json_path.relative_to(ROOT_DIR)}")
-        except Exception:
-            bundle = None
+                    bundle = existing
+                    gen_models = bundle.setdefault("generatorModels", {})
+                    if (
+                        gen_models.get("storyTts") != STORY_TTS_MODEL
+                        or gen_models.get("partTts") != PART_TTS_MODEL
+                    ):
+                        gen_models["storyTts"] = STORY_TTS_MODEL
+                        gen_models["partTts"] = PART_TTS_MODEL
+                        json_path.write_text(
+                            json.dumps(bundle, ensure_ascii=False, indent=2) + "\n",
+                            encoding="utf-8",
+                        )
+                        print(
+                            f"  [SYNC META] Updated generatorModels in {json_path.relative_to(ROOT_DIR)} -> `{PART_TTS_MODEL}`"
+                        )
+                    print(f"  [CACHE HIT] Reusing existing text bundle: {json_path.relative_to(ROOT_DIR)}")
+            except Exception:
+                bundle = None
 
     if bundle is None:
+        assert spec is not None
         client = make_client(timeout_sec=360)
         t0 = time.time()
         batch_size = 13
@@ -1709,9 +1964,10 @@ def main() -> None:
     )
     parser.add_argument(
         "--weapon",
+        nargs="+",
         choices=ALL_WEAPON_IDS,
-        default="ak15",
-        help="Single weapon ID to generate (default: ak15).",
+        default=["ak15"],
+        help="One or more weapon IDs to generate (default: ak15).",
     )
     parser.add_argument(
         "--all",
@@ -1737,6 +1993,11 @@ def main() -> None:
         "--skip-audio",
         action="store_true",
         help="Generate structured JSON text only and skip TTS synthesis.",
+    )
+    parser.add_argument(
+        "--audio-only",
+        action="store_true",
+        help="Read existing verified public/narrations/<id>.json read-only and synthesize ONLY TTS MP3 clips + SHA-256 hashes.",
     )
     parser.add_argument(
         "--story-audio-only",
@@ -1770,7 +2031,7 @@ def main() -> None:
 
     # Prioritize g17 first when building --all so flagship reference voice is always updated first
     all_ordered = ["g17"] + [w for w in ALL_WEAPON_IDS if w != "g17"]
-    targets = all_ordered if args.all else [args.weapon]
+    targets = all_ordered if args.all else list(dict.fromkeys(args.weapon))
     batch_pool: Optional[list[dict[str, Any]]] = [] if (args.batch_tts and not args.dry_run) else None
 
     for wid in targets:
@@ -1781,6 +2042,7 @@ def main() -> None:
                 force_text=args.force_text,
                 force_audio=args.force_audio,
                 skip_audio=args.skip_audio,
+                audio_only=args.audio_only,
                 story_audio_only=args.story_audio_only,
                 workers=args.workers,
                 collect_jobs_out=batch_pool,

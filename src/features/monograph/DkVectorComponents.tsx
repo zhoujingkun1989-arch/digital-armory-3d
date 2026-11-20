@@ -1260,6 +1260,7 @@ export const DkActualSizeCartridgePlate: React.FC<
 > = ({ cartridgeSpec, lang, orientation = 'vertical', className = '' }) => {
   const uid = useId();
   const brassHatchId = `${uid}-brass-hatch`;
+  const hitpHatchId = `${uid}-hitp-hatch`;
   const hullHatchId = `${uid}-hull-hatch`;
   const carbonHatchId = `${uid}-carbon-hatch`;
   const powderId = `${uid}-powder`;
@@ -1497,10 +1498,13 @@ export const DkActualSizeCartridgePlate: React.FC<
     const rimThk = Math.max(0.9, cartridgeSpec.rimThicknessMm || 1.25);
 
     const is12Ga = caliberKey === '12_gauge';
+    const isCaseless =
+      caliberKey === '473_caseless' ||
+      cartridgeSpec.coreKind === 'caseless_telescoped';
     const isRimmed =
-      caliberKey === '357_magnum' ||
-      rRim > rBase * 1.08;
+      !isCaseless && (caliberKey === '357_magnum' || rRim > rBase * 1.08);
     const isBottleneck =
+      !isCaseless &&
       cartridgeSpec.shoulderDiameterMm !== null &&
       cartridgeSpec.shoulderDiameterMm > cartridgeSpec.neckDiameterMm * 1.06;
 
@@ -1618,6 +1622,116 @@ export const DkActualSizeCartridgePlate: React.FC<
         );
       }
 
+      if (isCaseless) {
+        // Exact 1:1 mm rectangular 8x8mm HITP solid propellant block + telescoped 26.5mm 4.73mm spitzer
+        const halfBlockW = Math.max(3.2, rBase);
+        const chamfer = 0.55;
+        const blockTopY = -caseLen;
+        const tipY = -oal;
+        const capH = 1.65;
+        const waferH = 2.0;
+        const waferW = Math.min(halfBlockW * 0.58, rBullet * 0.92);
+        const bulletBaseCaselessY = Math.max(blockTopY + 6, -6.4);
+        const boatTailTopY = bulletBaseCaselessY - 2.6;
+        const ogiveStartY = tipY + (Math.abs(tipY) - Math.abs(bulletBaseCaselessY)) * 0.46;
+        const rTail = Math.max(1.2, rBullet * 0.72);
+        const rCoreCaseless = Math.max(1.0, rBullet - 0.58);
+        const coreTipCaselessY = tipY + 2.4;
+
+        const leftBlockD = `M 0 0 L ${-halfBlockW + chamfer} 0 L ${-halfBlockW} ${-chamfer} L ${-halfBlockW} ${blockTopY + chamfer} L ${-halfBlockW + chamfer} ${blockTopY} L 0 ${blockTopY} Z`;
+        const rightBlockSectionD = `M ${waferW} 0 L ${halfBlockW - chamfer} 0 L ${halfBlockW} ${-chamfer} L ${halfBlockW} ${blockTopY + chamfer} L ${halfBlockW - chamfer} ${blockTopY} L ${rBullet + 0.15} ${blockTopY} L ${rBullet + 0.15} ${boatTailTopY} L ${rTail + 0.12} ${bulletBaseCaselessY} L ${waferW} ${bulletBaseCaselessY} Z`;
+        const leftFlushTipD = `M 0 ${blockTopY} L ${-rBullet * 0.46} ${blockTopY} Q ${-rBullet * 0.25} ${(blockTopY + tipY) * 0.5} 0 ${tipY} Z`;
+        const rightJacketD = `M 0 ${bulletBaseCaselessY} L ${rTail} ${bulletBaseCaselessY} L ${rBullet} ${boatTailTopY} L ${rBullet} ${ogiveStartY} Q ${rBullet} ${tipY + (ogiveStartY - tipY) * 0.42} 0 ${tipY} Z`;
+        const rightCoreCaselessD = `M 0 ${bulletBaseCaselessY - 0.35} L ${Math.max(0.7, rTail - 0.42)} ${bulletBaseCaselessY - 0.35} L ${rCoreCaseless} ${boatTailTopY} L ${rCoreCaseless} ${ogiveStartY} Q ${rCoreCaseless} ${coreTipCaselessY + (ogiveStartY - coreTipCaselessY) * 0.42} 0 ${coreTipCaselessY} Z`;
+
+        return (
+          <g>
+            {/* Left Solid Molded HITP Propellant Block Exterior */}
+            <path
+              d={leftBlockD}
+              fill={cartridgeSpec.caseColor || '#A68252'}
+              stroke="#713F12"
+              strokeWidth={0.26}
+            />
+            {/* Left Combustible Polymer End-Cap & Flush Copper Spitzer Tip */}
+            <rect
+              x={-halfBlockW + chamfer}
+              y={blockTopY}
+              width={Math.max(1, halfBlockW - chamfer)}
+              height={capH}
+              fill="#334155"
+              stroke={DK_PALETTE.ink}
+              strokeWidth={0.22}
+            />
+            <path
+              d={leftFlushTipD}
+              fill={cartridgeSpec.jacketColor || '#C95C22'}
+              stroke="#7C2D12"
+              strokeWidth={0.24}
+            />
+            {/* Left Flush Combustible Primer Wafer Edge */}
+            <rect
+              x={-waferW}
+              y={-0.9}
+              width={waferW}
+              height={0.9}
+              fill="#D97706"
+            />
+
+            {/* Right 45-Deg Hatched Solid HITP Block Matrix */}
+            <path
+              d={rightBlockSectionD}
+              fill={`url(#${hitpHatchId})`}
+              stroke="#92400E"
+              strokeWidth={0.26}
+            />
+            {/* Combustible Central Booster Pellet & Nitrocellulose Primer Wafer */}
+            <rect
+              x={0}
+              y={bulletBaseCaselessY}
+              width={waferW}
+              height={Math.max(1, -waferH - bulletBaseCaselessY)}
+              fill={`url(#${powderId})`}
+              stroke="#78350F"
+              strokeWidth={0.2}
+            />
+            <rect
+              x={0}
+              y={-waferH}
+              width={waferW}
+              height={waferH}
+              fill="#EA580C"
+              stroke="#7C2D12"
+              strokeWidth={0.22}
+            />
+            {/* Right Sectioned Combustible End-Cap Lip */}
+            <rect
+              x={rBullet + 0.15}
+              y={blockTopY}
+              width={Math.max(0.6, halfBlockW - chamfer - rBullet - 0.15)}
+              height={capH}
+              fill="#334155"
+              stroke={DK_PALETTE.ink}
+              strokeWidth={0.2}
+            />
+
+            {/* Telescoped Full-Length 4.73mm Copper-Jacketed Bullet & Lead Core */}
+            <path
+              d={rightJacketD}
+              fill={cartridgeSpec.jacketColor || '#C95C22'}
+              stroke="#7C2D12"
+              strokeWidth={0.24}
+            />
+            <path
+              d={rightCoreCaselessD}
+              fill="#475569"
+              stroke={DK_PALETTE.ink}
+              strokeWidth={0.18}
+            />
+          </g>
+        );
+      }
+
       const leftCaseD = isRimmed
         ? `M 0 0 L ${-rRim} 0 L ${-rRim} ${-rimThk} L ${-rBase} ${-rimThk} L ${-rNeck} ${-caseLen} L 0 ${-caseLen} Z`
         : `M 0 0 L ${-rRim} 0 L ${-rRim} ${-rimThk} L ${-rGroove} ${-rimThk - 0.45} L ${-rGroove} ${-grooveTop} L ${-rBase} ${-grooveTop - 0.6} L ${-rShoulder} ${shoulderY} L ${-rNeck} ${neckStartY} L ${-rNeck} ${-caseLen} L 0 ${-caseLen} Z`;
@@ -1629,10 +1743,12 @@ export const DkActualSizeCartridgePlate: React.FC<
       const isRoundNose = caliberKey === '9mm_para' || caliberKey === '45_acp';
       const isJhp = cartridgeSpec.coreKind === 'jhp_cavity';
       const isJsp = cartridgeSpec.coreKind === 'jsp_soft_point';
+      const isSubsonicAp = cartridgeSpec.coreKind === 'subsonic_tungsten_ap';
       const hasDualCore =
         cartridgeSpec.coreKind === 'dual_core_penetrator' ||
         cartridgeSpec.coreKind === 'ap_steel_alu' ||
         cartridgeSpec.coreKind === 'steel_core_lead_shirt' ||
+        cartridgeSpec.coreKind === 'subsonic_tungsten_ap' ||
         cartridgeSpec.coreKind === 'm33_heavy_steel';
 
       const noseLen = Math.max(3, oal - caseLen);
@@ -1689,6 +1805,14 @@ export const DkActualSizeCartridgePlate: React.FC<
             stroke="#7C2D12"
             strokeWidth={0.26}
           />
+          {isSubsonicAp && (
+            <path
+              d={`M 0 ${-oal + noseLen * 0.34} L ${-rBullet * 0.54} ${-oal + noseLen * 0.34} Q ${-rBullet * 0.36} ${-oal + noseLen * 0.14} 0 ${-oal} Z`}
+              fill={cartridgeSpec.penetratorColor || '#1E293B'}
+              stroke={DK_PALETTE.ink}
+              strokeWidth={0.2}
+            />
+          )}
 
           {/* Right Cutaway 45° Hatched Brass Case Wall */}
           <path
@@ -1730,7 +1854,7 @@ export const DkActualSizeCartridgePlate: React.FC<
           {hasDualCore && (
             <path
               d={`M 0 ${splitY} L ${rCore * 0.86} ${splitY} Q ${rCore * 0.72} ${coreTipY + noseLen * 0.25} 0 ${coreTipY} Z`}
-              fill="#CBD5E1"
+              fill={isSubsonicAp ? '#1E293B' : '#CBD5E1'}
               stroke={DK_PALETTE.ink}
               strokeWidth={0.2}
             />
@@ -1780,6 +1904,17 @@ export const DkActualSizeCartridgePlate: React.FC<
           >
             <rect width={1.6} height={1.6} fill={cartridgeSpec.caseColor || '#D4A438'} fillOpacity={0.34} />
             <line x1={0} y1={0} x2={0} y2={1.6} stroke="#92400E" strokeWidth={0.35} />
+          </pattern>
+          <pattern
+            id={hitpHatchId}
+            width={1.6}
+            height={1.6}
+            patternTransform="rotate(45)"
+            patternUnits="userSpaceOnUse"
+          >
+            <rect width={1.6} height={1.6} fill={cartridgeSpec.caseColor || '#A68252'} fillOpacity={0.44} />
+            <line x1={0} y1={0} x2={0} y2={1.6} stroke="#78350F" strokeWidth={0.34} />
+            <circle cx={0.8} cy={0.8} r={0.22} fill="#451A03" fillOpacity={0.45} />
           </pattern>
           <pattern
             id={hullHatchId}
@@ -1853,7 +1988,13 @@ export const DkActualSizeCartridgePlate: React.FC<
                   <line x1={xDim - 1.5} y1={yBot} x2={originX - rRim - 1} y2={yBot} stroke={DK_PALETTE.muted} strokeWidth={0.22} />
                   <line x1={xDim} y1={yCase} x2={xDim} y2={yBot} stroke={DK_PALETTE.muted} strokeWidth={0.26} />
                   <text x={xDim - 1.8} y={(yCase + yBot) * 0.5 - 1.1} textAnchor="end" fontSize={microFontSize} fontWeight={700} fill={DK_PALETTE.muted}>
-                    {isZh ? '壳长' : 'CASE'}
+                    {isCaseless
+                      ? isZh
+                        ? '药块'
+                        : 'BLOCK'
+                      : isZh
+                        ? '壳长'
+                        : 'CASE'}
                   </text>
                   <text x={xDim - 1.8} y={(yCase + yBot) * 0.5 + 1.8} textAnchor="end" fontSize={dimFontSize * 0.92} fontWeight={800} fill={DK_PALETTE.ink}>
                     {caseLen.toFixed(1)}
@@ -1889,7 +2030,15 @@ export const DkActualSizeCartridgePlate: React.FC<
                   <polygon points={`${xLeft},${yDim} ${xLeft + 1.8},${yDim - 0.7} ${xLeft + 1.8},${yDim + 0.7}`} fill={DK_PALETTE.crimson} />
                   <polygon points={`${xRight},${yDim} ${xRight - 1.8},${yDim - 0.7} ${xRight - 1.8},${yDim + 0.7}`} fill={DK_PALETTE.crimson} />
                   <text x={(xLeft + xRight) * 0.5} y={yDim + 3.6} textAnchor="middle" fontSize={dimFontSize} fontWeight={800} fill={DK_PALETTE.ink}>
-                    OAL {oal.toFixed(1)} mm · {isZh ? '壳' : 'CASE'} {caseLen.toFixed(1)} mm
+                    OAL {oal.toFixed(1)} mm ·{' '}
+                    {isCaseless
+                      ? isZh
+                        ? '药块'
+                        : 'BLOCK'
+                      : isZh
+                        ? '壳'
+                        : 'CASE'}{' '}
+                    {caseLen.toFixed(1)} mm
                   </text>
                 </>
               );

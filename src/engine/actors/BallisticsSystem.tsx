@@ -176,6 +176,7 @@ function build9mmGeometries(): CaliberGeometryBundle {
   };
 }
 
+
 /**
  * 2. 7.62×39mm M43 (CIP: 38.70mm steep-taper case, 56.00mm OAL, 16°36' shoulder)
  * Case X in [-1.10, +1.10] (2.20u), Cartridge OAL [-1.10, +2.08] (3.18u, OAL/case = 1.445).
@@ -231,6 +232,7 @@ function build762Geometries(): CaliberGeometryBundle {
     xHead: pocket.xHead,
   };
 }
+
 
 /**
  * 3. 5.56×45mm NATO M855 (STANAG 4172: 44.70mm case, 57.40mm OAL, 23° shoulder)
@@ -776,6 +778,234 @@ function build45AcpGeometries(): CaliberGeometryBundle {
   };
 }
 
+/**
+ * 10. 4.73×33mm DM11 Caseless Telescoped (H&K G11 K2):
+ * Chamfered 8×8mm square molded HITP combustible propellant block `X ∈ [-1.58, +1.58]`
+ * with telescoped slender 4.73mm copper spitzer tip emerging to `+1.72` (OAL 3.30u = 33.0 mm).
+ */
+function build473CaselessGeometries(): CaliberGeometryBundle {
+  const pocket: PrimerPocketSpec = {
+    xHead: -1.58,
+    rPocket: 0.19,
+    pocketDepth: 0.085,
+  };
+  const casePts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -1.495),
+    new THREE.Vector2(0.19, -1.495),
+    new THREE.Vector2(0.19, -1.568),
+    new THREE.Vector2(0.205, -1.58),
+    new THREE.Vector2(0.36, -1.58),
+    new THREE.Vector2(0.39, -1.54),
+    new THREE.Vector2(0.39, 1.54),
+    new THREE.Vector2(0.36, 1.58),
+    new THREE.Vector2(0.245, 1.58),
+    new THREE.Vector2(0.245, 1.25),
+    new THREE.Vector2(0, 1.25),
+  ];
+  const caseGeo = finalizeLathe(casePts, 32);
+  // Morph cylindrical outer propellant body into H&K DM11 chamfered square block in YZ
+  const pos = caseGeo.getAttribute('position');
+  for (let i = 0; i < pos.count; i++) {
+    const y = pos.getY(i);
+    const z = pos.getZ(i);
+    const r = Math.hypot(y, z);
+    if (r > 0.27) {
+      const ay = Math.abs(y) / r;
+      const az = Math.abs(z) / r;
+      const scale = Math.min(
+        1 / Math.max(1e-4, ay),
+        1 / Math.max(1e-4, az),
+        1.72 / Math.max(1e-4, ay + az)
+      );
+      pos.setY(i, y * scale);
+      pos.setZ(i, z * scale);
+    }
+  }
+  pos.needsUpdate = true;
+  caseGeo.computeVertexNormals();
+  caseGeo.computeBoundingBox();
+  caseGeo.computeBoundingSphere();
+
+  // Telescoped 50gr 4.73mm Copper Boat-Tail Spitzer (bulletLocalOffset = 1.48 -> tip at +1.72)
+  const bulletPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -2.18),
+    new THREE.Vector2(0.175, -2.18),
+    new THREE.Vector2(0.236, -1.96),
+    new THREE.Vector2(0.236, -0.58),
+    new THREE.Vector2(0.21, -0.34),
+    new THREE.Vector2(0.152, -0.08),
+    new THREE.Vector2(0.082, 0.12),
+    new THREE.Vector2(0.025, 0.21),
+    new THREE.Vector2(0, 0.24),
+  ];
+
+  return {
+    caseGeo,
+    bulletGeo: finalizeLathe(bulletPts, 24),
+    ...buildBoxerPrimerGeometries(pocket),
+    xHead: pocket.xHead,
+  };
+}
+
+/**
+ * 11. 9×39mm SP-6 Subsonic AP (CIP: 39.0mm tapered steel case, 56.0mm OAL, heavy Ø9.25mm AP bullet)
+ */
+function build9x39Geometries(): CaliberGeometryBundle {
+  const pocket: PrimerPocketSpec = {
+    xHead: -1.12,
+    rPocket: 0.152,
+    pocketDepth: 0.095,
+  };
+  const casePts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -1.025),
+    new THREE.Vector2(0.152, -1.025),
+    new THREE.Vector2(0.152, -1.108),
+    new THREE.Vector2(0.166, -1.12),
+    new THREE.Vector2(0.305, -1.12),
+    new THREE.Vector2(0.325, -1.098),
+    new THREE.Vector2(0.325, -1.025),
+    new THREE.Vector2(0.274, -0.998),
+    new THREE.Vector2(0.274, -0.915),
+    new THREE.Vector2(0.325, -0.86),
+    new THREE.Vector2(0.312, -0.05),
+    new THREE.Vector2(0.304, 0.68),
+    new THREE.Vector2(0.285, 0.8),
+    new THREE.Vector2(0.285, 1.112),
+    new THREE.Vector2(0.282, 1.12),
+    new THREE.Vector2(0.268, 1.12),
+    new THREE.Vector2(0.268, 0.72),
+    new THREE.Vector2(0.282, 0.56),
+    new THREE.Vector2(0, 0.56),
+  ];
+
+  // Heavy 250gr SP-6 Subsonic Hardened-Core Spitzer (bulletLocalOffset = 1.88 -> tip at +2.10)
+  const bulletPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -1.24),
+    new THREE.Vector2(0.228, -1.24),
+    new THREE.Vector2(0.268, -1.08),
+    new THREE.Vector2(0.268, -0.76),
+    new THREE.Vector2(0.258, -0.52),
+    new THREE.Vector2(0.226, -0.26),
+    new THREE.Vector2(0.168, -0.04),
+    new THREE.Vector2(0.095, 0.12),
+    new THREE.Vector2(0.032, 0.195),
+    new THREE.Vector2(0, 0.22),
+  ];
+
+  return {
+    caseGeo: finalizeLathe(casePts, 28),
+    bulletGeo: finalizeLathe(bulletPts, 28),
+    ...buildBoxerPrimerGeometries(pocket),
+    xHead: pocket.xHead,
+  };
+}
+
+/**
+ * 12. 5.45×39mm 7N6 Soviet Intermediate (CIP: 39.82mm tapered steel case, 57.00mm OAL)
+ */
+function build545M74Geometries(): CaliberGeometryBundle {
+  const pocket: PrimerPocketSpec = {
+    xHead: -1.14,
+    rPocket: 0.132,
+    pocketDepth: 0.092,
+  };
+  const casePts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -1.048),
+    new THREE.Vector2(0.132, -1.048),
+    new THREE.Vector2(0.132, -1.128),
+    new THREE.Vector2(0.145, -1.14),
+    new THREE.Vector2(0.268, -1.14),
+    new THREE.Vector2(0.285, -1.12),
+    new THREE.Vector2(0.285, -1.05),
+    new THREE.Vector2(0.242, -1.022),
+    new THREE.Vector2(0.242, -0.942),
+    new THREE.Vector2(0.285, -0.89),
+    new THREE.Vector2(0.274, -0.08),
+    new THREE.Vector2(0.264, 0.64),
+    new THREE.Vector2(0.18, 0.82),
+    new THREE.Vector2(0.179, 1.132),
+    new THREE.Vector2(0.176, 1.14),
+    new THREE.Vector2(0.161, 1.14),
+    new THREE.Vector2(0.161, 0.8),
+    new THREE.Vector2(0.222, 0.62),
+    new THREE.Vector2(0, 0.62),
+  ];
+
+  // Slender 53gr 7N6 Boat-Tail Spitzer (bulletLocalOffset = 1.90 -> tip at +2.12)
+  const bulletPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -1.18),
+    new THREE.Vector2(0.128, -1.18),
+    new THREE.Vector2(0.161, -1.02),
+    new THREE.Vector2(0.161, -0.76),
+    new THREE.Vector2(0.155, -0.54),
+    new THREE.Vector2(0.132, -0.28),
+    new THREE.Vector2(0.092, -0.04),
+    new THREE.Vector2(0.045, 0.13),
+    new THREE.Vector2(0.015, 0.2),
+    new THREE.Vector2(0, 0.22),
+  ];
+
+  return {
+    caseGeo: finalizeLathe(casePts, 28),
+    bulletGeo: finalizeLathe(bulletPts, 26),
+    ...buildBoxerPrimerGeometries(pocket),
+    xHead: pocket.xHead,
+  };
+}
+
+/**
+ * 13. 7.62×51mm NATO M80 Ball (STANAG 2310: 51.18mm case, 71.12mm OAL, 20° shoulder)
+ */
+function build762NatoGeometries(): CaliberGeometryBundle {
+  const pocket: PrimerPocketSpec = {
+    xHead: -1.45,
+    rPocket: 0.152,
+    pocketDepth: 0.1,
+  };
+  const casePts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -1.35),
+    new THREE.Vector2(0.152, -1.35),
+    new THREE.Vector2(0.152, -1.436),
+    new THREE.Vector2(0.168, -1.45),
+    new THREE.Vector2(0.322, -1.45),
+    new THREE.Vector2(0.342, -1.428),
+    new THREE.Vector2(0.342, -1.348),
+    new THREE.Vector2(0.288, -1.314),
+    new THREE.Vector2(0.288, -1.215),
+    new THREE.Vector2(0.34, -1.158),
+    new THREE.Vector2(0.334, -0.1),
+    new THREE.Vector2(0.326, 0.88),
+    new THREE.Vector2(0.248, 1.12),
+    new THREE.Vector2(0.247, 1.442),
+    new THREE.Vector2(0.244, 1.45),
+    new THREE.Vector2(0.224, 1.45),
+    new THREE.Vector2(0.224, 1.08),
+    new THREE.Vector2(0.282, 0.84),
+    new THREE.Vector2(0, 0.84),
+  ];
+
+  // 147gr M80 NATO Boat-Tail Spitzer (bulletLocalOffset = 2.28 -> tip at +2.60)
+  const bulletPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -1.28),
+    new THREE.Vector2(0.184, -1.28),
+    new THREE.Vector2(0.224, -1.1),
+    new THREE.Vector2(0.224, -0.83),
+    new THREE.Vector2(0.214, -0.62),
+    new THREE.Vector2(0.188, -0.34),
+    new THREE.Vector2(0.142, -0.06),
+    new THREE.Vector2(0.082, 0.16),
+    new THREE.Vector2(0.028, 0.28),
+    new THREE.Vector2(0, 0.32),
+  ];
+
+  return {
+    caseGeo: finalizeLathe(casePts, 28),
+    bulletGeo: finalizeLathe(bulletPts, 28),
+    ...buildBoxerPrimerGeometries(pocket),
+    xHead: pocket.xHead,
+  };
+}
+
 const _archeryColor = new THREE.Color();
 
 function paintSubGeo(
@@ -1131,6 +1361,46 @@ export const CALIBER_VISUAL_SPECS: Record<CaliberProfile, CaliberVisualSpec> = {
     flashScaleMult: 1.38,
     streakThickness: 0.22,
   },
+  '473_caseless': {
+    caseColor: '#a68252',
+    reserveCaseColor: '#8d6c40',
+    bulletColor: '#c95c22',
+    primerColor: '#d97706',
+    bulletLocalOffset: 1.48,
+    reserveTiltZ: 0,
+    flashScaleMult: 1.05,
+    streakThickness: 0.15,
+  },
+  '9x39_subsonic': {
+    caseColor: '#5c6654',
+    reserveCaseColor: '#4a5343',
+    bulletColor: '#b94e1b',
+    primerColor: '#cbd5e1',
+    bulletLocalOffset: 1.88,
+    reserveTiltZ: 0.12,
+    flashScaleMult: 0.42,
+    streakThickness: 0.22,
+  },
+  '545_m74': {
+    caseColor: '#69725e',
+    reserveCaseColor: '#555d4c',
+    bulletColor: '#bc4d19',
+    primerColor: '#cbd5e1',
+    bulletLocalOffset: 1.9,
+    reserveTiltZ: 0.15,
+    flashScaleMult: 1.08,
+    streakThickness: 0.16,
+  },
+  '762_nato': {
+    caseColor: '#dfae2b',
+    reserveCaseColor: '#bb8e1e',
+    bulletColor: '#c04f19',
+    primerColor: '#e2e8f0',
+    bulletLocalOffset: 2.28,
+    reserveTiltZ: 0,
+    flashScaleMult: 1.42,
+    streakThickness: 0.23,
+  },
 };
 
 export interface WeaponRoundFitSpec {
@@ -1163,6 +1433,10 @@ export const WEAPON_ROUND_FIT: Record<WeaponId, WeaponRoundFitSpec> = {
   m249: { roundScale: 0.96, magLocalShiftX: -0.35, ignitionF: 0.22 },
   p08: { roundScale: 0.76, magLocalShiftX: -0.34, ignitionF: 0.12 },
   vector: { roundScale: 0.86, magLocalShiftX: -0.39, ignitionF: 0.11 },
+  g11: { roundScale: 0.78, magLocalShiftX: -0.06, ignitionF: 0.11 },
+  vss: { roundScale: 1.0, magLocalShiftX: -0.22, ignitionF: 0.105 },
+  m134: { roundScale: 1.0, magLocalShiftX: -0.45, ignitionF: 0.09 },
+  an94: { roundScale: 0.92, magLocalShiftX: -0.35, ignitionF: 0.105 },
 };
 
 const caliberGeoCache = new Map<CaliberProfile, CaliberGeometryBundle>();
@@ -1204,6 +1478,18 @@ export function getCaliberGeometries(
       break;
     case '45_acp':
       built = build45AcpGeometries();
+      break;
+    case '473_caseless':
+      built = build473CaselessGeometries();
+      break;
+    case '9x39_subsonic':
+      built = build9x39Geometries();
+      break;
+    case '545_m74':
+      built = build545M74Geometries();
+      break;
+    case '762_nato':
+      built = build762NatoGeometries();
       break;
     case 'arrow_400gr':
       built = buildArcheryBundle({
@@ -1250,6 +1536,20 @@ export function getCaliberGeometries(
  * with zero heap allocations inside `useFrame`.
  */
 function computeMuzzleRecoilShiftX(weaponId: WeaponId, f: number): number {
+  if (weaponId === 'g11') {
+    const segUp =
+      f <= 0.2 ? 0 : f >= 0.38 ? 1 : ((f - 0.2) / 0.18) ** 2 * (3 - 2 * ((f - 0.2) / 0.18));
+    const segDn =
+      f <= 0.74 ? 0 : f >= 0.9 ? 1 : ((f - 0.74) / 0.16) ** 2 * (3 - 2 * ((f - 0.74) / 0.16));
+    return -4.2 * Math.max(0, segUp - segDn);
+  }
+  if (weaponId === 'an94') {
+    const segUp =
+      f <= 0.11 ? 0 : f >= 0.42 ? 1 : ((f - 0.11) / 0.31) ** 2 * (3 - 2 * ((f - 0.11) / 0.31));
+    const segDn =
+      f <= 0.68 ? 0 : f >= 0.88 ? 1 : ((f - 0.68) / 0.2) ** 2 * (3 - 2 * ((f - 0.68) / 0.2));
+    return -4.2 * Math.max(0, segUp - segDn);
+  }
   if (weaponId === 'p08') {
     if (f < 0.125 || f >= 0.88) return 0;
     if (f < 0.205) {
@@ -1298,6 +1598,10 @@ const CALIBER_CASE_COLORS: Record<CaliberProfile, THREE.Color> = {
   '357_magnum': new THREE.Color(CALIBER_VISUAL_SPECS['357_magnum'].caseColor),
   '12_gauge': new THREE.Color(CALIBER_VISUAL_SPECS['12_gauge'].caseColor),
   '30_06': new THREE.Color(CALIBER_VISUAL_SPECS['30_06'].caseColor),
+  '473_caseless': new THREE.Color(CALIBER_VISUAL_SPECS['473_caseless'].caseColor),
+  '9x39_subsonic': new THREE.Color(CALIBER_VISUAL_SPECS['9x39_subsonic'].caseColor),
+  '545_m74': new THREE.Color(CALIBER_VISUAL_SPECS['545_m74'].caseColor),
+  '762_nato': new THREE.Color(CALIBER_VISUAL_SPECS['762_nato'].caseColor),
 };
 
 interface EjectionSpawnSpec {
@@ -1552,6 +1856,52 @@ const MUZZLE_DEVICE_SPECS: Record<WeaponId, MuzzleDeviceSpec> = {
     kind: 'flash_hider',
     forwardDamp: 0.92,
     jets: radialProngJets([0, 90, 180, -90], 1.15, 0.28),
+  },
+  // H&K G11 K2 540mm floating barrel w/ 6-slot radial flash suppressor
+  g11: {
+    kind: 'flash_hider',
+    forwardDamp: 0.88,
+    jets: radialProngJets([0, 60, 120, 180, -120, -60], 1.15, 0.24),
+  },
+  // VSS Vintorez integral 5-baffle subsonic suppressor (heavily damped muzzle signature!)
+  vss: {
+    kind: 'bare',
+    forwardDamp: 0.28,
+    jets: [],
+  },
+  // GE M134D Minigun 6-barrel rotary cluster w/ 6-tube flash suppressor
+  m134: {
+    kind: 'flash_hider',
+    forwardDamp: 0.94,
+    jets: radialProngJets([0, 60, 120, 180, -120, -60], 1.75, 0.36),
+  },
+  // Nikonov AN-94 iconic figure-8 whistling dual-chamber muzzle brake
+  an94: {
+    kind: 'brake',
+    forwardDamp: 0.78,
+    jets: [
+      ...lateralBrakeJets([-0.42], 2.1, 0.48, 0.24),
+      {
+        offsetX: -0.25,
+        offsetY: 0.22,
+        offsetZ: 0,
+        dir: [0.15, 0.95, 0],
+        length: 1.45,
+        radius: 0.32,
+        layer: 1,
+        intensity: 0.58,
+      },
+      {
+        offsetX: -0.25,
+        offsetY: -0.22,
+        offsetZ: 0,
+        dir: [0.15, -0.95, 0],
+        length: 1.45,
+        radius: 0.32,
+        layer: 1,
+        intensity: 0.58,
+      },
+    ],
   },
 };
 
@@ -2272,10 +2622,10 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
       }
     }
 
-    // 4c. Expanding spherical blast-wave front (Mach disk → acoustic shock)
+    // 4c. Expanding spherical blast-wave front (Mach disk → acoustic shock; muted on subsonic VSS)
     if (blastRingRef.current && blastRingMatRef.current) {
       const u = (f - timing.muzzleExitF) / 0.1;
-      const on = !isArchery && u > 0 && u < 1;
+      const on = !isArchery && curProfile !== '9x39_subsonic' && u > 0 && u < 1;
       blastRingRef.current.visible = on;
       if (on) {
         const energyScale = Math.cbrt(curBallistic.muzzleEnergyJ / 1500);
@@ -2661,8 +3011,24 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
             <meshStandardMaterial
               color={useMultiToneCartridge ? '#ffffff' : calSpec.caseColor}
               vertexColors={useMultiToneCartridge}
-              metalness={isArcheryActive ? 0.24 : caliberProfile === '12_gauge' ? 0.35 : 0.86}
-              roughness={isArcheryActive ? 0.44 : caliberProfile === '12_gauge' ? 0.42 : 0.21}
+              metalness={
+                isArcheryActive
+                  ? 0.24
+                  : caliberProfile === '473_caseless'
+                    ? 0.08
+                    : caliberProfile === '12_gauge'
+                      ? 0.35
+                      : 0.86
+              }
+              roughness={
+                isArcheryActive
+                  ? 0.44
+                  : caliberProfile === '473_caseless'
+                    ? 0.72
+                    : caliberProfile === '12_gauge'
+                      ? 0.42
+                      : 0.21
+              }
             />
             {showEdges && <Edges threshold={36} color="#854d0e" />}
           </mesh>

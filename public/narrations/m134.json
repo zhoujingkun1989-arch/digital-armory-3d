@@ -1,0 +1,919 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "m134",
+  "generatedAt": "2026-11-20T12:55:00.000000+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "GE / Dillon Aero M134D Minigun",
+    "subtitle": "7.62×51mm NATO 3,000 RPM Electrically Driven Six-Barrel Rotary Gatling",
+    "originCountry": "United States",
+    "weaponType": "Rotary Machine Gun",
+    "categoryLabel": "Machine Gun",
+    "actionMechanism": "28V DC Externally Driven 6-Barrel Rotary Gatling · 360° Sinusoidal Cam Track & Dillon Delinker",
+    "statusLabel": "In Vault · Strippable",
+    "description": "Scaled down by General Electric from the 20mm M61 Vulcan aircraft cannon and perfected by Dillon Aero into the modernized M134D, the Minigun is the undisputed apex of externally powered rotary ordnance. A 28-volt aerospace DC motor spins a central six-flute star-rotor and six 22-inch barrels through a stationary 360-degree elliptical sinusoidal cam track, driving six individual chrome-plated rotary bolts in a continuous 60-degree phased wave. Fed by a gear-synchronized Dillon delinker stripping 7.62x51mm NATO cartridges from M13 links, it sustains a 3,000-round-per-minute torrent of rifle firepower while distributing thermal load evenly across six air-cooled barrels.",
+    "highlights": [
+      "28V DC 3.2-HP Electric Motor Drive · Zero Misfire Stoppage",
+      "360° Elliptical Sinusoidal Cam Track Driving 6 Coaxial Rotary Bolts",
+      "Six 22-Inch Rotating Barrels Sharing 3,000 RPM Thermal Load",
+      "Dillon Aero Gear-Driven Star-Wheel Delinker & Ribbed Stainless Feed Chute"
+    ],
+    "workbenchTitle": "GE / Dillon Aero M134D Minigun 3D Teardown & 3,000 RPM Rotary Kinematics",
+    "workbenchSubtitle": "4 Modular Groups · 25 Core Nodes · 6-Barrel Coaxial Rotation, 360° Sinusoidal Cam Wave & Dillon Delinker Simulation",
+    "cutawayLabel": "360° Cam Track & 6-Bolt Wave",
+    "cutawayTitle": "Switch to assembled cutaway view and focus on the 360-degree sinusoidal cam track sleeve, 6-flute star-rotor, and six orbiting chrome bolts",
+    "searchPlaceholder": "Search component name / code (e.g. rotor, cam track, bolt, delinker, B-04)...",
+    "firingMilestoneLabel": "Cam Extraction",
+    "rateOfFire": "3,000 rpm",
+    "timelinePresets": {
+      "assembled": {
+        "label": "3,000 RPM Combat Ready",
+        "subLabel": "0% Combat Ready",
+        "desc": "General Electric / Dillon Aero M134D 7.62x51mm NATO six-barrel rotary Gatling gun (overall length 802 mm) in complete operational trim: 28V DC electric drive motor, ribbed cylindrical mainframe housing with internal 360-degree sinusoidal cam track, six 22-inch barrels, and flexible stainless M13 ammo chute locked and ready for 50-round-per-second suppression."
+      },
+      "field_strip": {
+        "label": "Crew Field Strip",
+        "subLabel": "30% Crew Field Strip",
+        "desc": "Standard aviation door-gunner field maintenance sequence: disconnect the flexible stainless M13 feed chute and lower-right ejection chute, unlatch the top yellow-red safing sector door, slide off the six-tube rotary flash suppressor and dual ventilated barrel clamps, and detach the rear twin-handle spade grip assembly."
+      },
+      "sub_assembly": {
+        "label": "Rotor & Electric Drive",
+        "subLabel": "65% Rotor & Electric Drive",
+        "desc": "Lift off the 28V DC electric drive motor (exposing its internal enameled copper armature coils) and chainsaw carry handle, drop the under-receiver helicopter pintle mount, withdraw the rear reduction gearbox and 28-tooth main spur gear, and slide the 360-degree sinusoidal cam track sleeve and six-flute star-rotor forward as all six chrome rotary bolts fan radially outward."
+      },
+      "full_exploded": {
+        "label": "Full 25-Node BOM",
+        "subLabel": "100% Full Exploded",
+        "desc": "Complete zero-overlap exploded array of all 25 precision aviation ordnance components: from the six 22-inch fluted barrels, CNC star-rotor, and six 60-degree phased chrome bolts to the 360-degree elliptical cam sleeve, copper-wound 28V motor, Dillon star-wheel delinker, and 7.62x51mm NATO M13 linked brass belt."
+      }
+    },
+    "firingPhases": {
+      "m134_phase_1_motor_arm": {
+        "shortLabel": "28V Drive & 12:00 Lock",
+        "title": "Phase 1 · Spade Butterfly Triggers Engage 28V DC Motor & Lock Bolt #1 at 12 O'Clock",
+        "description": "With the crimson master arm toggle raised, thumb pressure on the twin spade-grip butterfly paddles energizes the 28V DC aerospace motor. Torque flows through the helical clutch buffer spring and 28-tooth spur gear into the central star-rotor, bringing Bolt #1 to top dead center locked against the 12 o'clock barrel."
+      },
+      "m134_phase_2_ignition_bore": {
+        "shortLabel": "12:00 Ignition & Muzzle",
+        "title": "Phase 2 · 12 O'Clock Firing Cam Ignites 7.62x51mm NATO at 415 MPa",
+        "description": "At f = 0.09, the top stationary firing cam releases Bolt #1's coaxial striker. Peak 415 MPa chamber pressure accelerates the 147-grain M80 FMJ projectile down the 22-inch barrel, exiting the heat-tempered six-tube rotary flash suppressor at 853 m/s while the cluster spins continuously at 500 rpm."
+      },
+      "m134_phase_3_cam_unlock": {
+        "shortLabel": "Sinusoidal Cam Unlock",
+        "title": "Phase 3 · Bolt Roller Descends 360° Elliptical Cam Slope for Unlock & Extraction",
+        "description": "Passing the 2 o'clock arc (60 to 120 degrees), Bolt #1's radial follower roller rides down the descending wall of the stationary 360-degree sinusoidal cam sleeve, rotating the locking bolt head free and initiating heavy primary extraction of the expanded 7.62mm brass casing."
+      },
+      "m134_phase_4_extract_eject": {
+        "shortLabel": "4:00 Full Extract & Eject",
+        "title": "Phase 4 · Full 46 mm Cam Retraction & Lower-Right Brass Ejection",
+        "description": "Sweeping through 4 o'clock (120 to 180 degrees), the cam track pulls Bolt #1 rearward past 38 mm, drawing the fired brass completely clear of the barrel breech before hurling the hot casing downward and outward through the lower-right ejection chute at f = 0.44."
+      },
+      "m134_phase_5_delinker_strip": {
+        "shortLabel": "6:00 Dwell & Delinker",
+        "title": "Phase 5 · 6 O'Clock Rear Dead Center & Dillon Star-Wheel M13 Belt Stripping",
+        "description": "At 6 o'clock bottom dead center (46 mm aft stroke), Bolt #1 opens a full 71.1 mm loading window inside its rotor flute. Simultaneously, the counter-rotating six-pocket Dillon delinker sprocket pulses its buffer spring to strip a fresh 7.62x51mm cartridge out of its dark M13 steel link into the 8 o'clock rotor track."
+      },
+      "m134_phase_6_cam_chamber": {
+        "shortLabel": "8-10:00 Cam Chambering",
+        "title": "Phase 6 · Bolt Climbs Ascending Cam Ramp to Ram Fresh 7.62mm Round Home",
+        "description": "Sweeping upward through 8 to 10 o'clock (240 to 310 degrees), Bolt #1's roller climbs the forward ramp of the sinusoidal cam sleeve, driving the newly stripped 7.62x51mm NATO cartridge smoothly forward into the chamber of Barrel #1."
+      },
+      "m134_phase_7_lock_cycle": {
+        "shortLabel": "12:00 Lock & 3,000 RPM",
+        "title": "Phase 7 · Rotational Lockup & 60° Phased Six-Bolt Wave Sustains 50 Rounds/Sec",
+        "description": "Approaching 12 o'clock, Bolt #1 rotates into rigid breech lockup ready for the next ignition stroke. Behind it at exact 60-degree intervals, the five trailing bolts execute every stage simultaneously in a seamless sinusoidal wave delivering fifty full-power rifle rounds every second."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "电驱钢铁风暴：M134D 加特林机枪的六管正弦旋转交响史",
+      "deck": "从 1862 年理查德·加特林的手摇多管构想，到 1960 年代通用电气微缩“火神”炮照亮越战夜空，再到迪伦航空以无链脱链器与精密转子缔造十万发无故障神话，M134D 彻底重新定义了持续火力的物理边界。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1862–1962",
+          "title": "跨越百年的外能源复兴：从“火神”航炮到微缩“迷你炮”",
+          "paragraphs": [
+            "早在 1862 年美国南北战争时期，发明家理查德·加特林便领悟了突破单管过热极限的终极哲学：将装填、闭锁、击发、抽壳与抛壳五道工序均摊给绕轴公转的多根枪管，让每根枪管在绝大部分圆周内自然风冷。尽管二十世纪前半叶单管导气与管退机枪凭借轻便结构统治了步兵战壕，但当喷气式战机与武装直升机时代在 1960 年代来临，传统单管机枪每分钟六百至一千发的射速在高速掠地瞬间显得捉襟见肘，单管连续射击数秒便红热烧蚀膛线的热力学死结再度浮现。",
+            "1960 年，曾研制出 20 毫米 M61“火神”六管航炮的美国通用电气（General Electric）军械部接到一项颠覆性任务：将重达百余公斤的战机航炮按比例微缩至发射北约制式 7.62×51 毫米步枪弹的紧凑尺寸，使轻型直升机也能在低空悬停瞬间倾泻摧枯拉朽的压制弹幕。研发团队放弃了依赖火药燃气或后坐能量的传统自驱动循环，直接借用直升机充沛的 28 伏直流机载电网驱动六管转子——这便是代号 XM134、日后威震全球的“Minigun（迷你火神炮）”。",
+            "与传统机枪一旦遭遇一枚哑弹便全枪卡死截然不同，外能源电驱赋予了 M134 近乎冷酷的机械确定性：28 伏直流马达根本不在乎弹膛内是否成功点火，哪怕弹链中混入失效哑弹，旋转中的星形转子也会将其按既定节拍直接抽出抛出，整枪连一毫秒都不会停顿。"
+          ],
+          "audioScript": "一八六二年，加特林用多管旋转打破了单管过热的枷锁。一个世纪后，面对高速直升机战场对瞬间火力密度的严苛需求，通用电气将二十毫米火神航炮微缩为发射北约七点六二步枪弹的轻量化六管机枪，并以二十八伏直流电机彻底接管自动循环。外能源驱动让这挺迷你炮无惧哑弹停射，拉开了现代航空旋转武器的狂暴序幕。",
+          "audioUrl": "audio/m134/story_act1_zh.mp3",
+          "focusPartId": "m134_drive_motor",
+          "focusPartLabel": "顶置 28V 直流航空电驱马达"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1964–1975",
+          "title": "夜空中的“魔龙咆哮”：炮艇机传奇与早期供弹顽疾",
+          "paragraphs": [
+            "1964 年末的东南亚丛林夜空见证了 M134 的一战封神。美军将三挺 M134 并排架设在改装后的 C-47 运输机左侧舱门，代号 AC-47“幽灵（Spooky）”武装炮艇机。当夜幕下地面哨所遭到围攻，AC-47 盘旋高空同时扣下火控电门，每分钟高达九千至一万八千发 7.62 毫米弹雨夹杂着每五发一枚的猩红曳光弹倾泻而下，在漆黑天幕间划出一道炽热凝实的火龙光柱——士兵们敬畏地称其为“魔龙帕夫（Puff the Magic Dragon）”，甚至听不见单发枪声，唯有撕裂空气的沉闷电锯长鸣。",
+            "然而，光环背后隐藏着早期通用电气原版 M134 棘手的工程隐患。为了将标准 M13 可散金属弹链以每秒五十至一百发的恐怖速度剥离送入高速旋转的枪机转子，早期供弹脱链器在直升机剧烈侧倾与颠簸中极易发生弹链抖动错位、双进弹乃至“卡死绞弹”。前线门炮手不得不频繁在狭窄颠簸的机舱内拆卸重型机匣排查故障，且传统转子主轴在超高负荷下寿命有限。",
+            "正是在越南战场与此后数十年特种作战的铁血考验中，航空军械界深刻认识到：要想让这台钢铁猛兽真正达到全天候零容忍的可靠水准，必须对它的脱链供弹心脏、中心转子冶金工艺与枪管热控体系进行彻底脱胎换骨的重构。"
+          ],
+          "audioScript": "一九六四年的越战夜空，装备三挺迷你炮的炮艇机以凝如光柱的猩红曳光弹幕震撼了现代战争，被官兵敬畏地称作魔龙帕夫。然而在每秒超过五十发的极端供弹压力下，早期脱链供弹系统在直升机颠簸中频频卡弹。这场来自实战的残酷拷问，最终催生了日后彻底重塑加特林机枪寿命极限的迪伦航空革命。",
+          "audioUrl": "audio/m134/story_act2_zh.mp3",
+          "focusPartId": "m134_barrel_cluster",
+          "focusPartLabel": "六管 22 英寸旋转枪管簇"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1990–2002",
+          "title": "机械交响的终极解构：360° 正弦凸轮槽与六枪机波浪循环",
+          "paragraphs": [
+            "切开 M134D 标志性的加强筋圆柱主机匣，呈现在工程师眼前的是一场精密到令人窒息的几何力学交响。静止不动的主机匣内壁嵌装有一枚深层渗碳淬火的 360 度椭圆形正弦螺旋凸轮套筒，而中央是由 28 伏电机经 28 齿大齿轮驱动的六槽五轴数控星形转子。六套独立的镀硬铬旋转枪机各自嵌滑于转子的六条轴向 T 型导轨中，每套枪机背部凸出的淬火滚轮导柱则死死咬合进机匣内壁那道首尾相接的正弦波浪槽。",
+            "当转子以每分钟 500 转高速公转时，六套枪机被正弦槽同步编织成一道永不停歇的 60 度相位机械波：行至 12 点钟正上方最前死点，1 号枪机双突笋旋转闭锁并由顶置凸轮释放击针引燃 415 兆帕 7.62×51 毫米实弹；转过 2 至 4 点钟右下方位，滚轮顺着下降凸轮斜坡回撤 46 毫米，旋松弹壳并经右下排壳滑槽高速甩出炙热黄铜空壳；抵达 6 点钟正下方波谷时，转子沟槽完全敞开；行至 8 点钟左侧供弹窗，反向啮合的六瓣星轮将新鲜实弹剥离 M13 钢链导入沟槽；最终沿 10 点钟上升斜坡推弹入膛、旋转闭锁，无缝衔接到下一次 12 点钟击发。",
+            "每一圈完整 360 度旋转，六根枪管轮流击发六发全威力步枪弹，每根枪管在发射后整整享有 300 度旋转弧段的强迫风冷散热。而当射速锁定在 3,000 发每分时，每隔仅仅 20 毫秒便有一发重弹呼啸出膛，六套枪机错落起伏如精密钟表般丝滑无振。"
+          ],
+          "audioScript": "切开圆柱主机匣，加特林的机械灵魂豁然呈现。静止的内壁嵌装一道首尾闭合的三百六十度正弦波浪凸轮槽，中央星形转子则携带六套镀铬枪机以每分钟五百转公转。六枚枪机滚轮沿正弦槽同步起伏，十二点闭锁击发、四点右下抛壳、六点后止腾空、八点左侧接弹、十点推弹入膛。六管轮战分摊热负荷，织就每分钟三千发的无懈波浪。",
+          "audioUrl": "audio/m134/story_act3_zh.mp3",
+          "focusPartId": "m134_cam_track_ring",
+          "focusPartLabel": "360° 硬化钢正弦螺旋凸轮套筒"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "2003–至今",
+          "title": "迪伦航空 M134D 的重生：十万发可靠神话与多域铁翼图腾",
+          "paragraphs": [
+            "进入新世纪，总部位于美国亚利桑那州斯科茨代尔的迪伦航空（Dillon Aero）对老迈的 M134 实施了载入史册的全面现代化再造，推出彻底改写行业标准的 M134D。迪伦团队彻底推倒重塑了故障率最高的左侧脱链供弹器：全新的不锈钢六瓣星轮供弹机构配合强制脱链导轨与高疲劳缓冲弹簧，即使在剧烈机动中也能如手术刀般精准剥离 M13 钢链；同时升级重型淬火枪机滚轮、高寿命冷锻六管枪管簇、六筒热回火旋转消焰笼以及带绯红主武装开关的双铲式航空握把。",
+            "这场脱胎换骨的工程升级带来了堪称奇迹的可靠性跃升：M134D 的平均故障间隔（MRBF）由早期型的约三万发一路飙升至逾十万发，全枪核心机匣寿命突破百万发大关！原本容易致盲直升机飞行员夜视仪的炽烈火球被六筒旋转消焰笼大幅驯服，快拆安全门（Safing Sector）更让门炮手在数秒内即可完成绝对安全的机械断火验枪。",
+            "如今，从特种作战第 160 航空团的黑鹰与支奴干突击直升机，到高速特种突击艇与轮式装甲哨塔，M134D 的六管旋转轮廓已成为现代精确火力支援不可替代的工业图腾。在数字军械库的三维剖视台前，它那 360 度正弦波浪槽中永不疲倦的六枪机律动，正是人类将电能、几何学与冶金工艺融于一体的极致机械史诗。"
+          ],
+          "audioScript": "新世纪初，迪伦航空以革命性的星轮无链脱链器、高寿命转子与六筒消焰笼缔造了现代化的 M134D，将平均故障间隔飙升至惊人的十万发以上。从特种作战黑鹰直升机到高速突击艇，这挺每分钟倾泻三千发全威力步枪弹的六管钢铁风暴，永远铭刻在世界航空军械与精密旋转机械的最高殿堂之中。",
+          "audioUrl": "audio/m134/story_act4_zh.mp3",
+          "focusPartId": "m134_delinker_housing",
+          "focusPartLabel": "迪伦航空无链脱链供弹箱"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "360° 机匣正弦螺旋凸轮槽与六枪机 60° 相位波浪同步",
+          "tag": "旋转几何凸轮循环",
+          "summary": "主机匣内壁静止的 360° 椭圆形正弦轨道驱动公转中的六套镀铬滚轮枪机产生 46 mm 轴向往复行程，在单圈旋转内并行完成供弹、闭锁、12 点位击发、开锁、抽壳与 4 点位抛壳全闭环。",
+          "focusPartId": "m134_cam_track_ring",
+          "focusPartLabel": "360° 正弦螺旋凸轮套筒"
+        },
+        {
+          "id": "bt2",
+          "title": "28V 直流外能源电驱与六管 300° 强迫风冷热分摊",
+          "tag": "外能源零哑弹停射",
+          "summary": "以 3.2 马力 28V 直流航空电机经 28 齿大齿轮驱动六管 500 RPM 旋回，单管仅承担 500 发/分热负荷并享有 300° 冷却弧段；外能源强制循环令哑弹被直接抛出绝不卡停。",
+          "focusPartId": "m134_drive_motor",
+          "focusPartLabel": "顶置 28V 直流电驱马达"
+        },
+        {
+          "id": "bt3",
+          "title": "迪伦航空六瓣星轮强制脱链供弹器与柔性不锈钢输弹槽",
+          "tag": "十万发无故障供弹革新",
+          "summary": "与主转子 1:1 反向同步啮合的六瓣星轮以每秒 50 发极速将 7.62×51mm NATO 实弹剥离 M13 可散钢链并无缝递送至 8 点位转子沟槽，彻底根治早期加特林高速卡弹顽疾。",
+          "focusPartId": "m134_delinker_sprocket",
+          "focusPartLabel": "六瓣不锈钢脱链星轮轴"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1862",
+          "title": "理查德·加特林奠定多管旋转自动机原理",
+          "detail": "加特林发明手摇多管旋转机枪，首创以静止圆柱凸轮槽驱动绕轴公转的多套枪机并行作业，彻底解耦热负荷与射速上限。"
+        },
+        {
+          "year": "1960–1962",
+          "title": "通用电气将 20mm M61 火神炮微缩为 XM134 Minigun",
+          "detail": "GE 军械部成功将喷气机航炮按比例微缩至 7.62×51mm NATO 口径并采用 28V 直流外能源电机驱动，定型为 M134。"
+        },
+        {
+          "year": "1964–1969",
+          "title": "AC-47 魔龙炮艇机与休伊武装直升机实战封神",
+          "detail": "M134 列装 AC-47 炮艇机与 UH-1 武装直升机，以凝如火柱的超高射速压制火力成为航空近距火力支援传奇。"
+        },
+        {
+          "year": "1990–1995",
+          "title": "迪伦航空启动供弹脱链器与转子冶金大革新",
+          "detail": "面对老旧机枪卡弹与转子疲劳问题，迈克·迪伦团队重新设计强制脱链星轮供弹器、淬火枪机与高强度星形转子。"
+        },
+        {
+          "year": "2003",
+          "title": "美军正式定型列装 M134D 现代化改进型",
+          "detail": "迪伦航空 M134D 凭借超过 100,000 发平均故障间隔与六筒消焰笼、安全门升级赢得美军特种作战司令部批量换装。"
+        },
+        {
+          "year": "2004–至今",
+          "title": "跨越海陆空三域的 3,000 RPM 现代火力图腾",
+          "detail": "广泛服役于 MH-60 黑鹰、MH-47 支奴干、装甲炮塔与高速特种突击艇，至今稳居人类轻武器旋转工程巅峰。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "The Electric Steel Tempest: Engineering the Six-Barrel M134D Minigun",
+      "deck": "From Richard Gatling's 1862 multi-barrel theorem to General Electric's scaled-down Vulcan cannon and Dillon Aero's 100,000-round delinker overhaul, the M134D rewrote the physics of sustained automatic firepower.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1862–1962",
+          "title": "External Power Reborn: Scaling the Vulcan Cannon into the Minigun",
+          "paragraphs": [
+            "Back in 1862 during the American Civil War, inventor Richard Jordan Gatling discovered the mathematical answer to single-barrel overheating: divide feeding, locking, firing, extraction, and ejection across multiple barrels revolving around a common axis, letting each tube cool in open air through most of its orbit. While gas-operated and recoil-operated single-barrel machine guns dominated infantry trenches throughout the early twentieth century, the rise of turbine helicopters in the 1960s resurrected the thermal bottleneck. Against fleeting jungle ambushes during high-speed flybys, a 650-round-per-minute machine gun simply could not saturate a landing zone before cooking its lone barrel.",
+            "In 1960, General Electric's Armament Division—fresh from perfecting the 20mm M61 Vulcan fighter cannon—took on an audacious engineering challenge: miniaturize the six-barrel Vulcan architecture down to the standard 7.62x51mm NATO rifle cartridge. Rather than scavenging unpredictable propellant gas from fired cartridges, GE harnessed the helicopter's 28-volt DC electrical bus to spin the entire gun externally. The resulting XM134 became universally known as the Minigun.",
+            "External electric drive granted a ruthless reliability advantage no self-powered firearm could match: if a defective dud primer enters a conventional machine gun, the action halts dead until manually cleared. Driven by a 3.2-horsepower electric motor, the Minigun never hesitates—its rotating cam track simply extracts the unfired cartridge, ejects it overboard, and fires the next barrel twenty milliseconds later."
+          ],
+          "audioScript": "In eighteen sixty-two, Richard Gatling unlocked the secret of sustained fire by rotating multiple barrels around one shaft. A century later, General Electric scaled down its twenty millimeter Vulcan jet cannon into a compact seven point six two NATO powerhouse driven by a twenty-eight volt electric motor. Because external power never depends on cartridge recoil, even a dud round is simply ejected without breaking stride.",
+          "audioUrl": "audio/m134/story_act1_en.mp3",
+          "focusPartId": "m134_drive_motor",
+          "focusPartLabel": "Top-Mounted 28V DC Aerospace Drive Motor"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1964–1975",
+          "title": "Puff the Magic Dragon: Gunship Legend and Early Feeding Limits",
+          "paragraphs": [
+            "The late-1964 night skies of Southeast Asia forged the Minigun into an instant battlefield legend. Mounting three electrically linked M134s firing laterally out the port fuselage of modified C-47 transports created the AC-47 Spooky gunship. Orbiting besieged outposts after dark, the aircraft unleashed a combined torrent of up to 18,000 rounds per minute. With every fifth cartridge carrying a crimson tracer, the firestream fused into a solid glowing pillar descending from the clouds—an unforgettable spectacle troops dubbed Puff the Magic Dragon, accompanied not by staccato rifle cracks but an eerie, continuous chainsaw roar.",
+            "Yet beneath that terrifying aura lay stubborn mechanical vulnerabilities in the original 1960s General Electric feeder design. Stripping 7.62x51mm cartridges out of linked M13 steel belts at fifty to one hundred rounds per second inside a banking, vibrating helicopter subjected early delinkers to violent belt whip, double feeds, and catastrophic clutch jams. Door gunners frequently fought mid-flight stoppages in cramped cabins while heavy steel rotors suffered premature fatigue.",
+            "Decades of combat experience taught aviation armorers a decisive lesson: unlocking the Minigun's true mechanical potential demanded a ground-up redesign of its delinker feeder geometry, bolt metallurgy, and thermal-management hardware."
+          ],
+          "audioScript": "Over the night jungles of nineteen sixty-four, AC-47 gunships armed with triple Miniguns poured glowing pillars of tracer fire from the clouds, earning the mythic nickname Puff the Magic Dragon. Yet under the brutal vibration of helicopter combat, early belt feeders struggled with violent link jams. Those hard lessons laid the groundwork for one of the greatest reliability overhauls in ordnance history.",
+          "audioUrl": "audio/m134/story_act2_en.mp3",
+          "focusPartId": "m134_barrel_cluster",
+          "focusPartLabel": "Six-Barrel 22-Inch Rotary Barrel Cluster"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1990–2002",
+          "title": "Anatomy of the 360° Sinusoidal Wave: Six Bolts in Mechanical Harmony",
+          "paragraphs": [
+            "Slice open the M134D's heavy ribbed cylindrical mainframe housing and a breathtaking work of rotary kinematics emerges. Nested tightly inside the stationary housing sits a case-hardened steel sleeve machined with a continuous 360-degree elliptical sinusoidal cam track spanning 46 millimeters of axial amplitude. Down the center spins a five-axis CNC six-flute star-rotor driven by the 28V motor through a 28-tooth main spur gear. Six individual chrome-plated rotary bolts ride inside the star-rotor's longitudinal tracks, each carrying a hardened radial roller stud captured securely inside that stationary sinusoidal groove.",
+            "As the rotor turns at 500 revolutions per minute, the six bolts ripple smoothly forward and backward in a hypnotic 60-degree phased traveling wave. Cresting top dead center at 12 o'clock, Bolt #1 locks its dual lugs into Barrel #1 and drops its striker under the firing cam to ignite a 415 MPa 7.62x51mm NATO round. Descending through 2 to 4 o'clock, the cam slope cams the bolt unlocked, pulls the hot brass casing rearward 46 mm, and flings it out the lower-right ejection chute. Reaching bottom dead center at 6 o'clock opens a full loading bay, where the left-mounted six-pocket star-wheel delinker slips a freshly stripped cartridge into the 8 o'clock flute before the ascending 10 o'clock cam ramp rams it smoothly into battery.",
+            "Every single 360-degree revolution fires all six barrels once, granting each tube a full 300-degree cooling sweep between shots. At 3,000 rounds per minute, every twenty milliseconds delivers a full-power rifle projectile without a shred of reciprocating vibration."
+          ],
+          "audioScript": "Cut open the ribbed mainframe housing and the Gatling symphony stands revealed. A stationary three hundred sixty degree sinusoidal cam groove wraps around a spinning six-flute star-rotor carrying six chrome bolts. As the cluster turns five hundred times a minute, every bolt rides the wave sixty degrees apart—firing at twelve o'clock, ejecting at four, loading from the delinker at eight, and chambering at ten to sustain fifty rounds every second.",
+          "audioUrl": "audio/m134/story_act3_en.mp3",
+          "focusPartId": "m134_cam_track_ring",
+          "focusPartLabel": "360-Degree Sinusoidal Hardened Cam Track Sleeve"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "2003–Present",
+          "title": "Dillon Aero's M134D Renaissance: The 100,000-Round Reliability Benchmark",
+          "paragraphs": [
+            "At the turn of the twenty-first century, Scottsdale-based Dillon Aero engineered a comprehensive modernization designated the M134D that resurrected the platform into a pinnacle of aviation ordnance. Dillon's engineers scrapped the temperamental legacy feeder and sculpted an ultra-robust gear-synchronized stainless steel star-wheel delinker capable of cleanly stripping M13 metallic links at 3,000 rpm under extreme helicopter G-loads. Precision-improved rotary bolts, heavy-duty cold-forged barrels, a signature six-tube heat-tempered rotary flash suppressor, and an ergonomic twin-handle spade grip with a guarded crimson master arm switch completed the transformation.",
+            "The reliability numbers stunned military evaluators: mean rounds between failure leaped from roughly 30,000 rounds to well over 100,000 rounds, while core receiver service life crossed the one-million-round threshold. A quick-release top safing sector with high-visibility yellow and red armed markings enabled door gunners to mechanically isolate the 12 o'clock firing cam in seconds, ensuring absolute cabin safety during transit and barrel inspection.",
+            "Today, guarding the doors of special-operations MH-60 Black Hawks and MH-47 Chinooks, patrolling littoral waterways on high-speed craft, and crowning armored turret rings, the M134D stands as the ultimate synthesis of electrical torque, precision cam geometry, and metallurgy—a timeless monument to human rotary engineering."
+          ],
+          "audioScript": "At the dawn of the twenty-first century, Dillon Aero rebuilt the Minigun from the feeder up, creating the modernized M134D. Its rugged stainless star-wheel delinker, upgraded bolts, and six-tube flash suppressor drove reliability past one hundred thousand rounds between failures. Mounted on Black Hawks, Chinooks, and fast patrol craft worldwide, it endures as the ultimate triumph of rotary mechanical engineering.",
+          "audioUrl": "audio/m134/story_act4_en.mp3",
+          "focusPartId": "m134_delinker_housing",
+          "focusPartLabel": "Dillon Aero Delinker Feeder Housing"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "360° Elliptical Sinusoidal Cam Track & 60°-Phased Six-Bolt Wave",
+          "tag": "Rotary Cam Kinematics",
+          "summary": "A stationary 360-degree sinusoidal track milled inside the main housing converts coaxial rotor spin into a synchronized 46 mm axial stroke across all six orbiting bolts, executing loading, locking, firing, extraction, and ejection simultaneously.",
+          "focusPartId": "m134_cam_track_ring",
+          "focusPartLabel": "360-Degree Sinusoidal Cam Track Sleeve"
+        },
+        {
+          "id": "bt2",
+          "title": "28V DC External Electric Drive & 300° Six-Barrel Air Cooling",
+          "tag": "Zero-Stoppage External Power",
+          "summary": "A 3.2-HP 28V DC aerospace motor turns the 28-tooth main gear and six-barrel cluster at 500 rpm, capping per-barrel heat load at 500 rpm while effortlessly ejecting dud rounds without interrupting continuous 3,000 rpm fire.",
+          "focusPartId": "m134_drive_motor",
+          "focusPartLabel": "28V DC Aerospace Electric Drive Motor"
+        },
+        {
+          "id": "bt3",
+          "title": "Dillon Aero Six-Pocket Star-Wheel Delinker & Ribbed Feed Chute",
+          "tag": "100,000-Round Feed Reliability",
+          "summary": "Counter-rotating in strict 1:1 gear lockstep with the main rotor, the hardened stainless six-pocket star-wheel strips 7.62x51mm NATO cartridges out of M13 steel links at fifty rounds per second with unprecedented reliability.",
+          "focusPartId": "m134_delinker_sprocket",
+          "focusPartLabel": "Six-Pocket Stainless Delinker Sprocket"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1862",
+          "title": "Richard Gatling Patents the Multi-Barrel Rotary Gun",
+          "detail": "Richard Gatling proves that dividing firing tasks across revolving barrels driven by a stationary cam track breaks the single-barrel thermal ceiling."
+        },
+        {
+          "year": "1960–1962",
+          "title": "General Electric Scales the 20mm Vulcan into the XM134",
+          "detail": "GE Armament Division miniaturizes the M61 rotary cannon to 7.62x51mm NATO with a 28V DC electric drive motor for helicopter gunships."
+        },
+        {
+          "year": "1964–1969",
+          "title": "AC-47 Spooky & Huey Gunship Combat Debut",
+          "detail": "Triple-mounted M134 Miniguns earn the iconic Puff the Magic Dragon reputation providing devastating nocturnal close-air support."
+        },
+        {
+          "year": "1990–1995",
+          "title": "Dillon Aero Re-Engineers the Delinker & Rotor Core",
+          "detail": "Mike Dillon's engineering team redesigns the star-wheel delinker feeder, bolt rollers, and rotor metallurgy to eliminate chronic legacy stoppages."
+        },
+        {
+          "year": "2003",
+          "title": "U.S. Military Type-Classifies the Modernized M134D",
+          "detail": "Delivering over 100,000 mean rounds between failure alongside a six-tube flash suppressor and safing sector, the M134D enters SOCOM fleet service."
+        },
+        {
+          "year": "2004–Present",
+          "title": "Multi-Domain 3,000 RPM Aviation & Naval Standard",
+          "detail": "Deployed across MH-60 Black Hawks, MH-47 Chinooks, armored vehicles, and special warfare patrol boats as the pinnacle of rotary ordnance."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "m134_barrel_cluster": {
+      "partId": "m134_barrel_cluster",
+      "bomCode": "B-01",
+      "calloutLabelEn": "6-Barrel 22\" Cluster",
+      "zh": {
+        "roleTag": "559mm 6×60°同轴阵列 · 分担热负荷实现 3,000 RPM 持续火力",
+        "overview": "由六根全长 559 毫米（22 英寸）7.62×51mm NATO 重型枪管按精确 60 度间隔环绕中央转子轴线构成的旋转枪管束，是加特林机枪最具震撼力的视觉标志。",
+        "craftAndMaterial": "采用铬钼钒高强航空炮钢冷精锻加工并经深灰锰系磷化防腐，内膛精加工四条右旋膛线，后端设加厚弹膛段与旋转锁定凸缘。",
+        "kinematicRole": "击发全程随中心转子以 500 转/分连续绕 X 轴旋转 360 度，每根枪管仅在经过 12 点位时击发一次；分解时沿前轴线整体滑离转子前端卡槽。",
+        "designHighlight": "六管轮流承受 415 兆帕膛压并在 300 度非击发弧段高速迎风冷却，将单管实际热负荷控制在 500 发/分，彻底跨越单管过热熔毁的物理红线。",
+        "audioScript": "请看这束标志性的六管二十二英寸旋转枪管簇。六根重型七点六二枪管以六十度精准环列，电机带动整束枪管每分钟高速自转五百圈。每根枪管发射一发后都享有三百度强迫风冷弧段，完美破解了超高射速下的枪管过热难题。",
+        "audioUrl": "audio/m134/parts/m134_barrel_cluster_zh.mp3"
+      },
+      "en": {
+        "roleTag": "559mm 6x60-Deg Coaxial Array Sharing 3,000 RPM Thermal Load",
+        "overview": "Six 22-inch heavy 7.62x51mm NATO ordnance barrels arrayed at exact 60-degree intervals around the central rotor centerline, defining the Minigun's unmistakable industrial silhouette.",
+        "craftAndMaterial": "Cold hammer-forged from chrome-moly-vanadium steel with a satin manganese-phosphate finish, featuring reinforced chamber swells and rear twist-lock mounting lugs.",
+        "kinematicRole": "Spins continuously 360 degrees around the X-axis at 500 rpm in lockstep with the central rotor, firing exclusively at 12 o'clock; slides axially forward out of the rotor head during teardown.",
+        "designHighlight": "Splitting 3,000 rounds per minute across six air-cooled tubes caps individual barrel duty to 500 rpm with a 300-degree cooling sweep between shots, preventing cook-offs and bore erosion.",
+        "audioScript": "Here is the iconic six-barrel twenty-two inch rotary cluster. Six heavy seven point six two barrels sit at exact sixty-degree spacing, spinning five hundred revolutions per minute. Each tube fires only at twelve o'clock and air-cools across three hundred degrees, conquering sustained-fire heat.",
+        "audioUrl": "audio/m134/parts/m134_barrel_cluster_en.mp3"
+      }
+    },
+    "m134_barrel_clamp": {
+      "partId": "m134_barrel_clamp",
+      "bomCode": "B-02",
+      "calloutLabelEn": "Ventilated Barrel Clamp",
+      "zh": {
+        "roleTag": "中前双盘抑制高速离心甩动 · 锁紧六管保持精准散布锥",
+        "overview": "横跨六管枪管束中段与前段的双级多孔轻量化航空稳定卡箍总成，确保六根细长枪管在高速离心旋转下保持绝对同心平行。",
+        "craftAndMaterial": "航空合金钢五轴数控铣削成型，钻设六组外缘轻量化散热通孔并以六枚不锈钢内六角高强螺栓夹紧，中部由空心轻质联轴脊管刚性相连。",
+        "kinematicRole": "射击全程与六管枪管簇同步绕 X 轴高速旋转 360 度；一级勤务快拆阶段松开螺栓后率先沿枪管向前抽离。",
+        "designHighlight": "不仅有效抑制 500 转/分高速公转引发的离心外张与枪管谐振鞭动，还能通过更换不同孔距卡箍精准微调航空扫射时的弹幕散布直径。",
+        "audioScript": "这套双级通风枪管稳定卡箍像两道钢铁脊骨一样牢牢锁紧六根旋转枪管。在每分钟五百转的强烈离心力下，它彻底消除了枪管甩动与振动变形，并可按战术需求精确控制密集火力散布锥。",
+        "audioUrl": "audio/m134/parts/m134_barrel_clamp_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dual-Disc Centrifuge Stabilizer Maintaining Tight Cone of Fire",
+        "overview": "A twin-station perforated steel clamp assembly spanning the mid and forward barrel sections, locking all six long barrels rigidly parallel under centrifugal load.",
+        "craftAndMaterial": "Five-axis CNC milled from high-tensile alloy steel with six circumferential lightening vents, secured by stainless hex-socket fasteners and tied together by a hollow central spider spine.",
+        "kinematicRole": "Rotates continuously 360 degrees with the barrel cluster throughout firing; unbolts and slides axially off the muzzles during initial crew field stripping.",
+        "designHighlight": "Neutralizes centrifugal whip and barrel harmonics at 500 rpm while allowing armorers to tune aerial dispersion patterns simply by swapping clamp hole tolerances.",
+        "audioScript": "This dual-station ventilated barrel clamp locks all six spinning tubes into rigid concentric alignment. At five hundred revolutions per minute, it suppresses centrifugal whip and harmonic flex while keeping the cone of fire razor tight.",
+        "audioUrl": "audio/m134/parts/m134_barrel_clamp_en.mp3"
+      }
+    },
+    "m134_flash_suppressor": {
+      "partId": "m134_flash_suppressor",
+      "bomCode": "B-03",
+      "calloutLabelEn": "Rotary Flash Suppressor",
+      "zh": {
+        "roleTag": "迪伦改进型六筒防炫笼 · 持续扫射蓝紫金铜热回火与积碳",
+        "overview": "套装在六管枪口最前端的迪伦航空标志性六筒多孔旋转消焰笼，大幅压制夜间直升机扫射时的刺目膛口火焰。",
+        "craftAndMaterial": "耐高温镍铬合金钢精密机加工，前部环圈焊连六根扩压消焰筒与加强筋，持续高温火药燃气在金属表面淬出金铜至蓝紫热回火过渡带与口部亚光积碳。",
+        "kinematicRole": "射击期间随六根枪管同轴 360 度旋转，疏导 12 点位出膛高温燃气羽流；分解阶段作为整枪最前端构件最先沿 +X 轴前移卸除。",
+        "designHighlight": "保护佩戴夜视仪（NVG）的直升机飞行员与门炮手免遭每秒 50 发炽热火球致盲，同时兼任六管最前端的刚性锁紧支点。",
+        "audioScript": "枪口前端这座极具辨识度的六筒笼式旋转消焰器，是迪伦航空 M134D 的招牌升级。它能强力打散夜间连发时足以致盲夜视仪的炙热火球，数百度燃气更在其表面留下了迷人的金铜与蓝紫热回火印记。",
+        "audioUrl": "audio/m134/parts/m134_flash_suppressor_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dillon Six-Tube Flash Cage with Sustained-Fire Heat Temper",
+        "overview": "Mounted over the six barrel crowns, this signature Dillon Aero six-tube rotary flash suppressor cage breaks up blinding muzzle fireball blooms during night aviation operations.",
+        "craftAndMaterial": "Machined from high-temperature chromium-nickel steel with six flared suppressor cones and a stabilizing muzzle ring, displaying authentic golden-bronze to violet heat temper and velvety carbon soot.",
+        "kinematicRole": "Spins 360 degrees in lockstep with the barrel cluster while venting 12 o'clock muzzle blast; translates forward first during field disassembly.",
+        "designHighlight": "Prevents fifty-round-per-second muzzle flash from washing out pilot night-vision goggles while simultaneously acting as the forward structural tie ring for all six barrels.",
+        "audioScript": "Crowning the muzzles is Dillon Aero's unmistakable six-tube rotary flash suppressor cage. Built to stop fifty-round-per-second muzzle flash from blinding night-vision goggles, its high-heat alloy displays authentic bronze and violet thermal temper bands.",
+        "audioUrl": "audio/m134/parts/m134_flash_suppressor_en.mp3"
+      }
+    },
+    "m134_rotor_assembly": {
+      "partId": "m134_rotor_assembly",
+      "bomCode": "B-04",
+      "calloutLabelEn": "6-Flute CNC Star-Rotor",
+      "zh": {
+        "roleTag": "M134D动力与导向心脏 · 六条轴向T型导轨引导六套枪机同步旋转",
+        "overview": "贯通主机匣核心的六槽星形中心转子总成，是连接尾部电驱齿轮、中部六套枪机与前端六管枪管簇的唯一动力中枢。",
+        "craftAndMaterial": "整块高强航空锻钢经五轴数控深度铣削并渗氮抛光，尾端带 8 键传动花键轴，中段精铣六条 60 度星形 T 轨，前端一体成型六孔重型枪管锁紧圆盘。",
+        "kinematicRole": "承受 28 齿主驱动齿轮传来的全部电机扭矩，绕 (Y=0, Z=0) 主轴线作 360 度连续恒速公转；二级拆解时与六套枪机一同沿 +X 抽出机匣。",
+        "designHighlight": "将极其繁复的动力传递、六枪机直线滑道导向以及六根枪管的精密分度锁定融为单一高刚性整体构件，令百万发服役寿命成为可能。",
+        "audioScript": "这是整挺 M134D 内部最令人叹为观止的机械核心——五轴精铣六槽星形中心转子。它尾部花键承接电机扭矩，中段六条 T 型滑槽同步带动六套枪机公转，前端重型圆盘则刚性锁死六根枪管，一轴统领全枪。",
+        "audioUrl": "audio/m134/parts/m134_rotor_assembly_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Central Torque Core Guiding Six Bolts & Locking Six Barrels",
+        "overview": "Running down the heart of the mainframe housing, this central six-flute star-rotor unites rear electric motor torque, all six reciprocating bolts, and the six-barrel cluster.",
+        "craftAndMaterial": "Five-axis CNC milled from a single aerospace alloy steel forging with an eight-spline rear drive shaft, six precision-ground longitudinal T-rail tracks, and a massive front six-socket barrel head.",
+        "kinematicRole": "Rotates continuously 360 degrees around the primary bore centerline at 500 rpm, carrying all six bolts around the stationary cam track; draws forward out of the housing during sub-assembly stripping.",
+        "designHighlight": "Consolidates torque transmission, six linear bolt guideways, and exact 60-degree barrel indexing into one rigid billet capable of exceeding one million rounds of service life.",
+        "audioScript": "At the very heart of the Minigun sits this five-axis CNC six-flute star-rotor. Its rear splines accept motor torque, its six longitudinal T-tracks carry every bolt around the cam groove, and its massive front head locks all six barrels together.",
+        "audioUrl": "audio/m134/parts/m134_rotor_assembly_en.mp3"
+      }
+    },
+    "m134_bolt_1": {
+      "partId": "m134_bolt_1",
+      "bomCode": "B-05",
+      "calloutLabelEn": "Rotary Bolt #1 (12:00)",
+      "zh": {
+        "roleTag": "0° 12点最高前止点 · 双突笋旋锁击发 7.62×51mm NATO 实弹",
+        "overview": "六套镀铬旋转滚轮枪机中的 1 号基准枪机，初始装配态驻留于 12 点钟正上方最前端闭锁击发相位，直面 1 号枪管弹膛。",
+        "craftAndMaterial": "渗碳硬化特种工具钢外镀镜面硬铬降低高速摩擦，前端配双闭锁突笋旋转机头与弹簧抽壳钩，背部竖立带滚针轴承的淬火凸轮滚轮导柱。",
+        "kinematicRole": "射击循环中既随转子公转 360 度，又受正弦凸轮槽约束同步沿 X 轴往复 46 毫米；全枪爆炸展开时沿 12 点钟径向向外辐射分离。",
+        "designHighlight": "与其余五套枪机完全通用互换，其背部滚轮导柱以极低滚动摩擦承受每秒数十次的剧烈轴向换向载荷。",
+        "audioScript": "请观察 12 点钟位置的 1 号镀铬旋转枪机。它此刻正处于正弦凸轮槽的最前止点，前端双突笋刚性闭锁弹膛准备击发，背部凸出的淬火滚轮则稳稳咬合在机匣内壁的波浪轨道之中。",
+        "audioUrl": "audio/m134/parts/m134_bolt_1_zh.mp3"
+      },
+      "en": {
+        "roleTag": "0-Deg Top Dead Center Locked Firing Phase Bolt",
+        "overview": "The lead reference bolt of the six-bolt rotary group, stationed at 12 o'clock top dead center fully forward and locked against Barrel #1's breech face.",
+        "craftAndMaterial": "Case-hardened tool steel plated in low-friction hard chrome, equipped with a rotating twin-lug bolt head, spring extractor claw, coaxial striker, and radial cam follower roller stud.",
+        "kinematicRole": "Orbits 360 degrees around the rotor while reciprocating 46 mm sinusoidally along the X-axis via its cam roller; fans radially upward at 12 o'clock in exploded view.",
+        "designHighlight": "Completely interchangeable with all five sister bolts, utilizing a hardened roller bearing stud to convert rotary motion into smooth axial reciprocation with minimal wear.",
+        "audioScript": "Meet rotary bolt number one at the twelve o'clock firing station. Fully forward at the crest of the sinusoidal cam wave, its twin lugs lock tightly into the barrel breech while its chrome roller stud tracks the housing cam groove.",
+        "audioUrl": "audio/m134/parts/m134_bolt_1_en.mp3"
+      }
+    },
+    "m134_bolt_2": {
+      "partId": "m134_bolt_2",
+      "bomCode": "B-06",
+      "calloutLabelEn": "Rotary Bolt #2 (2:00)",
+      "zh": {
+        "roleTag": "60° 2点位下降凸轮段 · 旋松闭锁突笋并启动重负荷初次抽壳",
+        "overview": "滞后 1 号枪机 60 度相位位于 2 点钟右上方位的 2 号旋转枪机，正处于击发泄压后旋松突笋与重负荷初次抽壳的关键节点。",
+        "craftAndMaterial": "全镀硬铬硬化合金钢机框搭配深磷化高韧性抽壳钩，内藏螺旋旋转凸轮槽在轴向后移初段驱动机头回转解锁。",
+        "kinematicRole": "在 60 度至 120 度弧段沿正弦凸轮下降坡后退 11.5 至 34.5 毫米，同步公转自转；爆炸视图下沿 2 点钟方向径向扇形展开。",
+        "designHighlight": "依靠 28V 电驱大扭矩通过正弦斜坡产生的巨大机械增力，轻松拔出高压射击后紧胀于 7.62mm 弹膛内的热铜壳。",
+        "audioScript": "顺时针转过六十度来到 2 点钟位置，2 号枪机刚刚完成射击泄压，它的滚轮正沿着正弦凸轮槽向后滑降，强力旋松闭锁突笋并启动重负荷初次抽壳。",
+        "audioUrl": "audio/m134/parts/m134_bolt_2_zh.mp3"
+      },
+      "en": {
+        "roleTag": "60-Deg 2-O'Clock Cam-Unlock & Primary Extraction Phase",
+        "overview": "Trailing Bolt #1 by sixty degrees at the 2 o'clock upper-right station, Bolt #2 executes post-firing rotational unlocking and high-leverage primary case extraction.",
+        "craftAndMaterial": "Hard-chrome plated alloy bolt body paired with a tough phosphated claw extractor and internal cam track that twists the locking head free before linear pull begins.",
+        "kinematicRole": "Retracts smoothly rearward down the descending sinusoidal cam wall while orbiting coaxial with the rotor; spreads radially along the 60-degree vector during explosion.",
+        "designHighlight": "External electric torque amplified by the gentle initial cam slope effortlessly breaks free high-pressure 7.62x51mm brass cases that would stick conventional gas guns.",
+        "audioScript": "Sixty degrees clockwise at two o'clock, rotary bolt number two rides down the descending cam wall, twisting its locking lugs free and pulling the expanded brass casing out of the chamber.",
+        "audioUrl": "audio/m134/parts/m134_bolt_2_en.mp3"
+      }
+    },
+    "m134_bolt_3": {
+      "partId": "m134_bolt_3",
+      "bomCode": "B-07",
+      "calloutLabelEn": "Rotary Bolt #3 (4:00)",
+      "zh": {
+        "roleTag": "120° 4点位右下抛壳窗 · 高速甩出灼热 7.62mm 空黄铜壳",
+        "overview": "位于 120 度（4 点钟右下方位）的 3 号镀铬旋转枪机，已将发射后的空黄铜弹壳完全抽离枪管并正对右下排壳滑槽执行干脆抛壳。",
+        "craftAndMaterial": "镜面抛光硬铬钢躯干有效排斥火药烟垢粘附，机头端面铣有精确弹底沉槽与抛壳挺让位缺口。",
+        "kinematicRole": "在 120 度至 180 度弧段接近 46 毫米最大后退行程，配合固定抛壳凸轮将空壳甩向右下；爆炸时沿 4 点钟径向向外展开。",
+        "designHighlight": "强制机械抛壳路径确保在每秒 50 发的狂暴节拍下绝无空壳滞留或回弹卡壳之虞。",
+        "audioScript": "来到 4 点钟右下方的 3 号枪机已经退过四分之三行程，将炙热的七点六二毫米空弹壳彻底抽离弹膛，并精准对准右下侧抛壳滑槽将其高速甩出机外。",
+        "audioUrl": "audio/m134/parts/m134_bolt_3_zh.mp3"
+      },
+      "en": {
+        "roleTag": "120-Deg 4-O'Clock Full Extraction & Right-Lower Ejection",
+        "overview": "Positioned at 120 degrees in the lower-right 4 o'clock arc, Bolt #3 completes full extraction and releases the spent 7.62mm brass casing straight into the lower-right ejection chute.",
+        "craftAndMaterial": "Mirror-smooth hard-chrome steel body resists carbon fouling buildup, featuring a precision recessed bolt face and rigid ejector clearance slot.",
+        "kinematicRole": "Sweeps past three-quarters of its 46 mm rearward cam stroke while orbiting clockwise; fans out along the 120-degree lower-right spoke during full disassembly.",
+        "designHighlight": "Positive mechanical ejection guarantees zero casing bounce-back even while hurling fifty scorching brass shells per second out of the housing.",
+        "audioScript": "At the four o'clock position, rotary bolt number three has withdrawn past three quarters of its stroke, clearing the barrel breech and flinging the empty brass casing straight down the lower-right ejection chute.",
+        "audioUrl": "audio/m134/parts/m134_bolt_3_en.mp3"
+      }
+    },
+    "m134_bolt_4": {
+      "partId": "m134_bolt_4",
+      "bomCode": "B-08",
+      "calloutLabelEn": "Rotary Bolt #4 (6:00)",
+      "zh": {
+        "roleTag": "180° 6点正下方最尾端 · 满行程 46mm 后退为新弹腾出供弹窗",
+        "overview": "驻留于 180 度（6 点钟正下方）的 4 号旋转枪机，正处于 360 度正弦凸轮槽最尾端的后止点波谷位置，距 1 号枪机整整拉开 46 毫米纵深差。",
+        "craftAndMaterial": "与其余五套枪机严格保持克级配重一致，防止 500 RPM 高速旋转产生动不平衡抖动。",
+        "kinematicRole": "在正弦波谷平稳完成速度过零换向并开始蓄势前移；爆炸拆解时沿 6 点钟正下方辐射展开。",
+        "designHighlight": "平滑的正弦曲线波谷让高速运动的枪机零冲击换向，彻底避免了传统直线机枪撞击机匣尾板的剧烈后坐冲击。",
+        "audioScript": "位于正下方 6 点钟的 4 号枪机正处于正弦凸轮槽的最尾端波谷，整整后退四十六毫米，平顺无撞击地完成换向，同时为即将到来的下一发新弹完全敞开装填窗口。",
+        "audioUrl": "audio/m134/parts/m134_bolt_4_zh.mp3"
+      },
+      "en": {
+        "roleTag": "180-Deg 6-O'Clock Rear Dead Center Sinusoidal Reversal",
+        "overview": "Resting at 180 degrees at the bottom 6 o'clock trough of the sinusoidal cam wave, Bolt #4 sits a full 46 mm aft of Bolt #1 to open the rotor's cartridge loading window.",
+        "craftAndMaterial": "Weight-matched to gram-level tolerances across all six bolts to maintain perfect dynamic rotational balance at 500 rpm.",
+        "kinematicRole": "Reverses axial velocity smoothly with zero impact across bottom dead center before accelerating forward; spreads downward along the 6 o'clock axis during exploded view.",
+        "designHighlight": "Because the sinusoidal track decelerates and reverses each bolt smoothly, the M134D eliminates the violent receiver-backplate battering suffered by conventional machine guns.",
+        "audioScript": "At six o'clock bottom dead center, bolt number four reaches the rear trough of the sinusoidal wave forty-six millimeters aft, reversing direction with zero mechanical impact as the loading bay opens wide.",
+        "audioUrl": "audio/m134/parts/m134_bolt_4_en.mp3"
+      }
+    },
+    "m134_bolt_5": {
+      "partId": "m134_bolt_5",
+      "bomCode": "B-09",
+      "calloutLabelEn": "Rotary Bolt #5 (8:00)",
+      "zh": {
+        "roleTag": "240° 8点位左侧供弹口 · 承接星轮脱链实弹启动正弦前推",
+        "overview": "位于 240 度（8 点钟左下方位）的 5 号镀铬旋转枪机，正对左侧迪伦无链脱链供弹器出口，负责平稳接管刚剥离 M13 钢链的 7.62×51mm 实弹。",
+        "craftAndMaterial": "硬化镀铬推弹镜面经倒角抛光处理，确保在极高速交接瞬间绝不刮伤退火黄铜弹壳底缘。",
+        "kinematicRole": "在 240 度至 300 度弧段驶上正弦凸轮上升斜坡加速前冲推弹；全枪爆炸时沿 8 点钟左下方径向分离。",
+        "designHighlight": "无需传统弹匣托弹簧的被动弹力，直接由转子与星轮的刚性齿轮同步完成零误差强制交接。",
+        "audioScript": "转到 8 点钟左侧供弹口的 5 号枪机，刚刚接过迪伦脱链星轮送来的新鲜七点六二毫米实弹，它的滚轮已经踏上正弦凸轮上升坡道，启动丝滑前推。",
+        "audioUrl": "audio/m134/parts/m134_bolt_5_zh.mp3"
+      },
+      "en": {
+        "roleTag": "240-Deg 8-O'Clock Left Delinker Pickup & Forward Ram",
+        "overview": "Sweeping past 240 degrees at the lower-left 8 o'clock station directly opposite the Dillon delinker outlet, Bolt #5 picks up a freshly stripped 7.62x51mm NATO round and starts ramming it forward.",
+        "craftAndMaterial": "Precision-beveled hard-chrome bolt face glides cleanly onto the brass case head without gouging rims during fifty-round-per-second transfers.",
+        "kinematicRole": "Climbs the ascending forward slope of the 360-degree sinusoidal cam track while orbiting upward; deploys along the 240-degree lower-left radial line in exploded view.",
+        "designHighlight": "Replaces spring-dependent magazine lift with positive gear-timed mechanical handoff straight from the counter-rotating delinker star-wheel.",
+        "audioScript": "Passing eight o'clock on the left flank, bolt number five catches a freshly delinked seven point six two cartridge from the Dillon feeder and begins climbing the forward sinusoidal ramp.",
+        "audioUrl": "audio/m134/parts/m134_bolt_5_en.mp3"
+      }
+    },
+    "m134_bolt_6": {
+      "partId": "m134_bolt_6",
+      "bomCode": "B-10",
+      "calloutLabelEn": "Rotary Bolt #6 (10:00)",
+      "zh": {
+        "roleTag": "300° 10点位上升末段 · 推弹完全入膛并旋入闭锁节套待发",
+        "overview": "位于 300 度（10 点钟左上方位）的 6 号旋转枪机，正在完成进膛最后冲刺与双突笋旋转闭锁，仅需 20 毫秒便将接替 1 号枪机抵达 12 点位击发。",
+        "craftAndMaterial": "淬火耐磨双闭锁突笋与硬化滚轮承压面经精密磨削，确保每分钟五百次闭锁冲击后依然保持微米级闭锁间隙。",
+        "kinematicRole": "在 300 度至 360 度弧段将 7.62mm 实弹推抵弹膛肩部并旋转锁死；爆炸视图下沿 10 点钟左上方径向扇形展开。",
+        "designHighlight": "六套枪机无缝首尾相衔的 60 度相位阵列，赋予 M134D 宛若流水般连绵不绝的超高火力密度。",
+        "audioScript": "最后看 10 点钟左上方的 6 号枪机，它正将下一发步枪弹完全推入枪管并旋转闭锁。只需区区二十毫秒，它就会接棒抵达十二点钟位完成下一次击发，六套枪机永不停歇地接力奔涌。",
+        "audioUrl": "audio/m134/parts/m134_bolt_6_zh.mp3"
+      },
+      "en": {
+        "roleTag": "300-Deg 10-O'Clock Final Chambering & Rotational Lockup",
+        "overview": "Climbing through 300 degrees at the upper-left 10 o'clock arc, Bolt #6 seats its fresh 7.62mm cartridge fully into the barrel chamber and twists into locked battery just twenty milliseconds behind Bolt #1.",
+        "craftAndMaterial": "Precision-ground dual locking lugs and hardened cam follower bearings preserve tight headspace tolerances across hundreds of thousands of locking cycles.",
+        "kinematicRole": "Completes final forward cam seating and breech lockup approaching top dead center; spreads radially along the 300-degree upper-left vector during explosion.",
+        "designHighlight": "Completes the unbroken six-bolt 60-degree mechanical wave that turns rotary motion into an effortless fifty-round-per-second stream.",
+        "audioScript": "Finally, at ten o'clock, rotary bolt number six seats its cartridge home and twists into rigid lockup. Just twenty milliseconds behind bolt number one, it completes the seamless six-bolt mechanical wave.",
+        "audioUrl": "audio/m134/parts/m134_bolt_6_en.mp3"
+      }
+    },
+    "m134_main_housing": {
+      "partId": "m134_main_housing",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Ribbed Main Housing",
+      "zh": {
+        "roleTag": "全枪承力圆筒骨架 · 内嵌360°正弦凸轮套筒与军标白色喷涂铭文",
+        "overview": "包裹星形转子、六套枪机与 360 度正弦凸轮套筒的重型圆柱承力主机匣，是整挺 M134D 的结构脊柱与工业美学核心。",
+        "craftAndMaterial": "航空高强合金精铸加数控精镗内腔，外壁设八道抗扭纵向加强筋与前后八螺栓法兰盘，侧面平面铭牌清晰喷涂白色军标铭文及 16×16 MIL-STD-130 二维码。",
+        "kinematicRole": "全枪射击与拆解全过程的绝对空间基准锚点；支持开启实时 CT 纵剖面（[C]）沿中轴切开右侧外壳洞悉内部六枪机正弦律动。",
+        "designHighlight": "将电机挂载鞍座、安全门窗口、左侧脱链接口、右下抛壳窗与下部枢轴耳座高度集成于极度紧凑的圆筒刚性结构之中。",
+        "audioScript": "这座布满八道加强筋的重型圆柱主机匣是整挺 M134D 的承力脊柱，侧面醒目喷印着迪伦航空与通用电气军标铭文及资产二维码。点击开启纵向剖视，您就能直接穿透外壁，欣赏内部旋转风暴。",
+        "audioUrl": "audio/m134/parts/m134_main_housing_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Primary Ribbed Cylindrical Chassis with Military Stencil & UID",
+        "overview": "The heavy-walled cylindrical mainframe housing enclosing the star-rotor, six bolts, and 360-degree cam track sleeve—serving as the structural backbone of the entire Minigun.",
+        "craftAndMaterial": "Precision-bored aerospace alloy casting fortified with eight longitudinal anti-torque ribs, twin eight-bolt mounting flanges, and crisp white military stencils paired with a MIL-STD-130 ECC200 UID matrix.",
+        "kinematicRole": "Remains the stationary structural anchor throughout both firing and full disassembly; cleanly slices away in real-time CT cutaway mode to reveal the rotary wave inside.",
+        "designHighlight": "Integrates top motor cradles, safing gate port, left delinker pad, lower-right ejection port, and underbelly pintle lugs into one compact cylindrical monocoque.",
+        "audioScript": "This heavily ribbed cylindrical mainframe housing forms the structural spine of the M134D, bearing crisp Dillon Aero and General Electric military stencils plus a UID data matrix. Toggle CT cutaway to slice straight through its armor wall.",
+        "audioUrl": "audio/m134/parts/m134_main_housing_en.mp3"
+      }
+    },
+    "m134_cam_track_ring": {
+      "partId": "m134_cam_track_ring",
+      "bomCode": "F-02",
+      "calloutLabelEn": "360° Sinusoidal Cam Track",
+      "zh": {
+        "roleTag": "加特林原理灵魂 · 静止内壁正弦波浪槽同步驱动六套枪机往复",
+        "overview": "精密镶嵌于圆柱主机匣内腔的 360 度硬化钢正弦螺旋凸轮导轨套筒，是人类机械史最精妙的“旋转转往复”空间凸轮装置。",
+        "craftAndMaterial": "深层渗碳淬火优质轴承工具钢，外圈配防转定位键，内壁五轴精铣并镜面抛光出一道闭合正弦波浪槽（轴向振幅 ±23 毫米，总行程 46 毫米）。",
+        "kinematicRole": "射击全程保持绝对静止，迫使公转经过的六枚枪机滚轮沿槽壁起伏滑动；二级拆解时沿 +X 轴整体向前滑出主机匣内膛。",
+        "designHighlight": "用一道静止且无任何往复活动件的金属正弦沟槽，同时精确编排六套独立枪机的全部动作时序，堪称机械控制论的完美典范。",
+        "audioScript": "请把目光锁定在这枚嵌在主机匣内部的 360 度正弦螺旋凸轮套筒。它自身纹丝不动，却凭内壁那道亮银色磨光波浪槽，同时指挥六套高速公转的枪机做出分毫不差的进弹、闭锁与抽壳律动。",
+        "audioUrl": "audio/m134/parts/m134_cam_track_ring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Stationary 360-Deg Sinusoidal Groove Driving All Six Bolts",
+        "overview": "Nested coaxially inside the main housing, this case-hardened steel sleeve carries the machined 360-degree elliptical sinusoidal track that orchestrates every bolt's motion.",
+        "craftAndMaterial": "Deep-carburized tool steel keyed against rotation, featuring a five-axis milled and mirror-burnished 46 mm stroke sinusoidal inner channel contrasting sharply against its dark phosphated body.",
+        "kinematicRole": "Remains completely stationary during 3,000 rpm fire, guiding all six orbiting bolt rollers through their axial wave; slides forward out of the housing during sub-assembly teardown.",
+        "designHighlight": "Replaces complex reciprocating linkages with one zero-moving-parts geometric wave that mechanically programs the timing of six bolts simultaneously.",
+        "audioScript": "Focus closely on this internal three hundred sixty degree sinusoidal cam track sleeve. Though completely stationary, its mirror-burnished wave groove compels all six orbiting chrome bolts to reciprocate forty-six millimeters in exact mechanical choreography.",
+        "audioUrl": "audio/m134/parts/m134_cam_track_ring_en.mp3"
+      }
+    },
+    "m134_gear_housing": {
+      "partId": "m134_gear_housing",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Rear Reduction Gearbox",
+      "zh": {
+        "roleTag": "耦合28V顶部小齿轮与转子大齿 · 封闭飞溅油浴高速传动",
+        "overview": "螺栓锁连于主机匣尾部的梨形封闭式减速齿轮箱壳体，垂直连接顶部 28V 直流电机小齿轮与下方主转子 28 齿大齿轮。",
+        "craftAndMaterial": "航空级压铸铝合金与硬化钢法兰复合制造，边缘均布八枚不锈钢内六角紧固螺栓与耐油密封槽，内置高温合成齿轮油浴。",
+        "kinematicRole": "作为静态刚性传动外壳吸收齿轮啮合反作用力矩；拆解阶段向后滑出露出内部 28 齿大齿轮与离合缓冲螺旋簧。",
+        "designHighlight": "紧凑的梨形包络外形将极高转速的电机小齿轮降速增扭转化为充沛稳定的 500 RPM 转子驱动力，兼作尾部双铲握把承力座。",
+        "audioScript": "机匣尾端这座梨形减速齿轮箱壳体，精准桥接了上方的二十八伏电机输出小齿轮与下方的转子主驱动大齿轮。在封闭的飞溅油浴中，它将高速电驱动力平稳降速增扭传递至六管转子。",
+        "audioUrl": "audio/m134/parts/m134_gear_housing_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Pear-Shaped Sealed Gear Case Coupling Motor Pinion to Rotor",
+        "overview": "Bolted to the aft flange of the main housing, this pear-shaped reduction gearbox casing couples the upper 28V motor pinion cleanly down to the 28-tooth main rotor spur gear.",
+        "craftAndMaterial": "Precision-cast aerospace alloy housing reinforced with steel mounting flanges and eight perimeter stainless socket bolts sealing an internal splash-lubricated gear bay.",
+        "kinematicRole": "Stays rigid during firing to react gear-mesh torque and support the rear spade grip; withdraws rearward during disassembly to reveal the spur gear and clutch spring.",
+        "designHighlight": "Packages high-torque gear reduction inside a compact armored shell that accelerates the entire barrel cluster to 3,000 rpm in fractions of a second.",
+        "audioScript": "Bolted behind the main housing, this pear-shaped reduction gearbox encloses the high-speed gear train linking the top motor pinion to the lower twenty-eight tooth rotor gear in a sealed oil bath.",
+        "audioUrl": "audio/m134/parts/m134_gear_housing_en.mp3"
+      }
+    },
+    "m134_carry_handle": {
+      "partId": "m134_carry_handle",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Chainsaw Carry Handle",
+      "zh": {
+        "roleTag": "前法兰双梁龙门架 · 方便勤务吊装拆换与近距腰射平衡",
+        "overview": "安装于主机匣前法兰上方、形似重型油锯握把的标志性钢制龙门携行与稳定提把，为全枪前上方勾勒出极具力量感的机械轮廓。",
+        "craftAndMaterial": "高强冷轧合金钢斜撑双侧梁与前加强横架，顶部包覆大直径防滑滚花耐热橡胶握持筒，无惧寒冷高空与油污手套抓握。",
+        "kinematicRole": "全周期保持静态结构刚性；在二级拆解阶段沿上方及前上方整体吊离主机匣前法兰。",
+        "designHighlight": "平衡重达近十九公斤的枪身重心，令地勤军械员无需吊机即可徒手快速完成直升机舱门挂架装卸作业。",
+        "audioScript": "这座酷似重型油锯提把的前置龙门握把，直接锁固在主机匣前重型法兰上。它不仅赋予了 M134D 极具张力的视觉轮廓，更让地勤军械员能稳稳提起近十九公斤的机枪本体快速检修换装。",
+        "audioUrl": "audio/m134/parts/m134_carry_handle_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Forward Gantry Stabilizer & Crew Handling Grip",
+        "overview": "Bolted atop the forward housing flange, this heavy chainsaw-style steel gantry handle provides a rugged lifting and stabilizing grip above the barrel breech.",
+        "craftAndMaterial": "Welded heavy-gauge alloy steel angled side struts and forward cross-brace crowned with a thick diamond-knurled rubberized grip sleeve.",
+        "kinematicRole": "Remains structurally static during firing; lifts cleanly upward and forward off the front housing flange during sub-assembly teardown.",
+        "designHighlight": "Balances the 18.8 kg gun body around its forward center of gravity so two armorers can rapidly mount or dismount the weapon from helicopter pintles without hoists.",
+        "audioScript": "Bolted to the forward flange, this unmistakable chainsaw-style steel carry handle balances the Minigun's forward mass so aviation armorers can quickly lift and service the eighteen-kilogram gun body by hand.",
+        "audioUrl": "audio/m134/parts/m134_carry_handle_en.mp3"
+      }
+    },
+    "m134_mount_pintle": {
+      "partId": "m134_mount_pintle",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Military Pintle Mount",
+      "zh": {
+        "roleTag": "高强双颊鞍座与青铜衬套立柱 · 吸收 650N 持续稳态后坐推力",
+        "overview": "锁固于圆柱主机匣正下方的军用直升机与车载迪伦枢轴缓冲安装支架，将全枪稳固锚定于载具万向枪架之上。",
+        "craftAndMaterial": "厚壁锻钢双颊鞍座与加强缓冲横轭，下垂重型圆柱枢轴立柱镶嵌耐磨自润滑磷青铜轴套，并配不锈钢快拆 T 型锁定销。",
+        "kinematicRole": "射击全程承受每分钟 3,000 发产生的逾 650 牛顿稳态后坐力并传导至机身；拆解时沿 -Y 轴垂直卸离机匣腹底。",
+        "designHighlight": "让门炮手在仅需轻微臂力的情况下即可 360 度灵活俯仰横扫，将庞大的连发后坐推力优雅消解于直升机结构框架内。",
+        "audioScript": "主机匣正下方这座重型军用枢轴缓冲支架，配有自润滑青铜轴套与快拆锁定销。它能稳稳插进黑鹰直升机舱门支臂，将每分钟三千发连发产生的六百五十牛顿持续后坐力安全导离至机身骨架。",
+        "audioUrl": "audio/m134/parts/m134_mount_pintle_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Heavy Yoke & Bronze-Bushed Helicopter Pintle Post",
+        "overview": "Bolted beneath the cylindrical housing, this heavy-duty military pintle mount anchors the M134D into helicopter door swings, vehicle turrets, and naval gun mounts.",
+        "craftAndMaterial": "Forged steel twin saddle cheeks and recoil yoke supporting a heavy cylindrical pintle shaft fitted with a self-lubricating bronze bearing collar and stainless quick-release T-pin.",
+        "kinematicRole": "Channels over 650 Newtons of steady-state 3,000 rpm recoil thrust safely into the aircraft airframe; drops vertically downward during teardown.",
+        "designHighlight": "Allows effortless wide-arc panning and elevation tracking while absorbing sustained recoil loads no human shoulder could control unaided.",
+        "audioScript": "Beneath the housing sits this heavy military pintle mount complete with a warm bronze bearing collar and quick-release pin. Dropping into a helicopter door arm, it absorbs over six hundred fifty Newtons of steady-state recoil thrust.",
+        "audioUrl": "audio/m134/parts/m134_mount_pintle_en.mp3"
+      }
+    },
+    "m134_drive_motor": {
+      "partId": "m134_drive_motor",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "28V DC Electric Motor",
+      "zh": {
+        "roleTag": "外能源驱动核心 · 零哑弹停射风险 · 剖视清晰呈现暖铜电枢线圈",
+        "overview": "高悬于主机匣顶部的 28 伏直流 3.2 马力航空电驱马达，是驱动整挺六管加特林机枪狂暴旋转的澎湃心脏。",
+        "craftAndMaterial": "深蓝灰航空散热翅片圆柱定子壳体（双侧铆固拉丝铝铭牌「28V DC · 3.2 HP · 3000 RPM」与军规航空插头），内藏十二组密绕暖红漆包铜电枢绕组与黄铜换向器。",
+        "kinematicRole": "通过尾端延伸出的 14 齿淬火小齿轮直接啮合驱动后减速箱大齿轮；开启 CT 纵剖面（[C]）即可透视内部暖铜线圈全貌，拆解时沿 +Y 向上吊离。",
+        "designHighlight": "彻底摆脱火药燃气驱动局限，毫秒级响应双铲握把电控指令，即便弹链出现哑弹也能无停顿强制抛除继续全速射击。",
+        "audioScript": "高踞机匣顶部的这台二十八伏直流三点二马力航空电驱马达，是 M134D 永不卡停的动力心脏。透过外壳散热槽或开启纵剖面，您可以清晰看见内部密绕的暖红漆包铜电枢线圈与黄铜换向器。",
+        "audioUrl": "audio/m134/parts/m134_drive_motor_zh.mp3"
+      },
+      "en": {
+        "roleTag": "3.2-HP 28V DC Aerospace Drive Motor with Copper Armature",
+        "overview": "Mounted atop the main housing, this finned 28-volt DC 3.2-horsepower aerospace electric motor supplies the relentless external torque that drives the entire six-barrel Gatling system.",
+        "craftAndMaterial": "Finned aerospace gunmetal stator shell bearing dual brushed-aluminum rating nameplates and a rear Mil-Spec power plug, housing twelve warm enameled copper armature winding bundles and a slotted brass commutator.",
+        "kinematicRole": "Drives its rear 14-tooth pinion shaft directly into the main gearbox spur gear; opens dramatically in CT cutaway to expose the copper coils and lifts vertically upward during teardown.",
+        "designHighlight": "Decouples cyclic operation completely from ammunition combustion, spinning up to 3,000 rpm in milliseconds and ejecting misfires without hesitation.",
+        "audioScript": "Perched atop the housing is the twenty-eight volt, three point two horsepower aerospace electric drive motor. Peering through its cooling louvers or opening CT cutaway reveals the warm enameled copper armature windings and brass commutator driving the gun.",
+        "audioUrl": "audio/m134/parts/m134_drive_motor_en.mp3"
+      }
+    },
+    "m134_drive_gear": {
+      "partId": "m134_drive_gear",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "28-Tooth Rotor Spur Gear",
+      "zh": {
+        "roleTag": "花键刚性锁连转子尾轴 · 与顶部电机小齿轮啮合输出 500 RPM",
+        "overview": "嵌套在后置减速箱下腔内的大直径 28 齿渗碳硬化主驱动直齿轮，负责将上方电机小齿轮的高速输出平稳降速增扭传递给星形中心转子。",
+        "craftAndMaterial": "高镍铬渗碳合金钢经精密滚齿磨齿加工，设六幅轻量化加强辐条与高耐磨中心花键毂，表面呈现冷冽拉丝金属光泽。",
+        "kinematicRole": "击发全程与中心星形转子及六管枪管簇 1:1 严格同轴连续旋转 360 度；拆解阶段向后脱出星形转子尾端花键轴。",
+        "designHighlight": "大节圆直径与高重合度渐开线齿形承受瞬时启停峰值冲击载荷，在 0.35 秒内即可驱动沉重六管簇跃升至满速 3,000 RPM。",
+        "audioScript": "藏在后置减速箱里的这枚二十八齿渗碳硬化大齿轮，直接咬合上方电机小齿轮并由花键锁连星形转子尾轴。它以强劲降速比输出充沛扭矩，不到零点三五秒就能把六根重枪管拉升至三千发满速。",
+        "audioUrl": "audio/m134/parts/m134_drive_gear_zh.mp3"
+      },
+      "en": {
+        "roleTag": "28-Tooth Hobbed Spur Gear Driving Main Rotor at 500 RPM",
+        "overview": "Housed inside the lower chamber of the rear gearbox, this large 28-tooth precision-hobbed alloy steel spur gear multiplies motor pinion torque directly into the splined star-rotor tail shaft.",
+        "craftAndMaterial": "Case-hardened nickel-chrome gear steel featuring six structural lightening spokes, precision involute tooth flanks, and a broached central spline hub.",
+        "kinematicRole": "Spins continuously 360 degrees in exact lockstep with the star-rotor and barrel cluster during firing; slides rearward off the rotor splines during disassembly.",
+        "designHighlight": "Generous pitch diameter and hardened involute geometry withstand explosive electric spin-up torque, bringing the heavy six-barrel cluster to 3,000 rpm in under 0.35 seconds.",
+        "audioScript": "Inside the rear gearbox sits this twenty-eight tooth precision-hobbed main spur gear. Splined straight onto the star-rotor shaft, it converts high-speed motor torque into five hundred rpm rotor rotation in barely a third of a second.",
+        "audioUrl": "audio/m134/parts/m134_drive_gear_en.mp3"
+      }
+    },
+    "m134_clutch_spring": {
+      "partId": "m134_clutch_spring",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Drive Clutch Spring",
+      "zh": {
+        "roleTag": "高刚度琴钢丝轴向压簧 · 平抑电机瞬时启动冲击保护齿面",
+        "overview": "位于后减速箱上部啮合腰部的重型轴向螺旋离合缓冲簧，专门负责吸收 28V 直流电机瞬间百安培启动时的剧烈扭矩冲击。",
+        "craftAndMaterial": "高疲劳油淬火铬硅弹簧钢丝密绕成型，具备恒定线径与极高抗松弛弹性极限，实时支持 GPU 恒线径动态压缩形变渲染。",
+        "kinematicRole": "击发启动与六管循环期间随电机脉动负载动态轴向压缩与回弹；二级拆解时自减速箱上腔向后上方抽出。",
+        "designHighlight": "有效缓冲启动与停射瞬间的齿轮背隙撞击，保护 28 齿大齿轮与星轮供弹传动系免遭断齿过载损伤。",
+        "audioScript": "这根隐藏在减速箱内的重型离合缓冲螺旋簧，承担着保护传动齿轮的重任。每当电机瞬间释放百安培启动电流，它便动态压缩吸收扭矩峰值，防止剧烈冲击打崩高速啮合的精密齿面。",
+        "audioUrl": "audio/m134/parts/m134_clutch_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "High-Tension Helical Torque-Limiting Gearbox Buffer Spring",
+        "overview": "Mounted inside the upper waist of the rear reduction gearbox, this heavy axial helical clutch spring cushions violent torque spikes during rapid 28V motor spin-up and braking.",
+        "craftAndMaterial": "Oil-tempered chrome-silicon music wire wound with uniform coil pitch for extreme fatigue endurance, preserving true circular wire cross-section under dynamic GPU compression.",
+        "kinematicRole": "Modulates dynamically along the X-axis in response to spin-up torque and six-per-revolution firing impulses; extracts aft and upward during gearbox teardown.",
+        "designHighlight": "Damps gear-train backlash shock during start-stop bursts, safeguarding the 28-tooth main gear and synchronized delinker drive from overload tooth shear.",
+        "audioScript": "Nestled inside the gearbox is this heavy helical clutch buffer spring. Whenever the twenty-eight volt motor unleashes instant hundred-amp spin-up torque, it compresses dynamically to shield the precision gear teeth from shock.",
+        "audioUrl": "audio/m134/parts/m134_clutch_spring_en.mp3"
+      }
+    },
+    "m134_safing_sector": {
+      "partId": "m134_safing_sector",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "Safing Sector Gate",
+      "zh": {
+        "roleTag": "物理阻断12点凸轮击发轨迹 · 鲜明黄红警示牌确保机舱验枪安全",
+        "overview": "安装在 28V 电机正前方主机匣顶窗上的快拆式安全门（Safing Sector），是航空门炮手确保机舱绝对安全的物理断火开关。",
+        "craftAndMaterial": "硬化磷化合金钢门体镶嵌高对比军黄「SAFE」与绯红「ARMED」警示标牌，顶置不锈钢快拆拉环与绯红定位拉销。",
+        "kinematicRole": "合拢锁定状态维持 12 点位击发凸轮连续工作；一级快拆阶段优先向上方拔出，物理断开击发机构以便空转安全清膛。",
+        "designHighlight": "即使在昏暗嘈杂的直升机夜航机舱内，鲜明的黄红双色标牌也能让机组人员一眼确认武器处于安全隔离态还是临战武装态。",
+        "audioScript": "电机正前方这块醒目的黄红双色顶盖就是 M134D 的快拆安全门。只需拉起快拆销取出或切换至安全位，就能从机械物理层面彻底隔离十二点钟击发凸轮，让机舱清膛维护绝对安全无忧。",
+        "audioUrl": "audio/m134/parts/m134_safing_sector_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Quick-Release Top Cam Gate with High-Visibility SAFE/ARMED Plate",
+        "overview": "Seated directly ahead of the 28V drive motor atop the main housing, this quick-release safing sector door mechanically governs the 12 o'clock firing cam for absolute cabin safety.",
+        "craftAndMaterial": "Hardened phosphated steel gate topped with a high-contrast aviation-yellow SAFE and crimson ARMED warning plate, stainless release bail, and red detent plunger.",
+        "kinematicRole": "Remains locked closed during live firing to complete the firing-cam profile; unlatches and lifts upward early in crew field stripping to permit safe spin-clearing.",
+        "designHighlight": "Provides an unmistakable physical and visual safety interlock inside dark, noisy helicopter cabins—guaranteeing zero accidental discharge during rotor clearing.",
+        "audioScript": "Directly ahead of the drive motor sits the quick-release safing sector with its bold yellow and crimson SAFE and ARMED hazard plate. Unlatching this gate physically isolates the twelve o'clock firing cam for safe clearing.",
+        "audioUrl": "audio/m134/parts/m134_safing_sector_en.mp3"
+      }
+    },
+    "m134_spade_grip": {
+      "partId": "m134_spade_grip",
+      "bomCode": "FC-05",
+      "calloutLabelEn": "Twin-Handle Spade Grip",
+      "zh": {
+        "roleTag": "双手掌稳控 650N 推力 · 顶置绯红主保险开关与双侧拇指电控扳机",
+        "overview": "锁固于减速箱最尾端的经典航空双铲式（Spade Grip）操控握把，集合双手稳控框架、双侧铝合金蝴蝶拇指电门与绯红主武装开关。",
+        "craftAndMaterial": "重型锻钢双横轭支架配高摩擦菱形滚花硫化橡胶双立握把，中央电控盒镶嵌防误触护圈、双侧拉丝铝拇指拨片与鲜明绯红翻转主保险盖。",
+        "kinematicRole": "作为射手与 28V 电驱火控电路的直接人机交互端口；一级勤务快拆阶段整体沿 -X 轴向后卸离减速箱尾座。",
+        "designHighlight": "双掌对称直列发力结构令射手戴厚重防火飞行手套亦能精准驾驭 3,000 RPM 狂暴火力，绯红主开关与护圈提供双重防误触保障。",
+        "audioScript": "尾部这套极具科幻霸气的航空双铲式握把，是射手驾驭钢铁风暴的指挥台。双手紧握防滑橡胶立把，拨开中央醒目的绯红色主武装开关，双拇指压下蝴蝶电门，三千发每分的弹幕瞬间倾泻而出。",
+        "audioUrl": "audio/m134/parts/m134_spade_grip_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dual-Handle Flight-Glove Grips, Butterfly Triggers & Master Arm",
+        "overview": "Mounted to the rear gearbox bulkhead, this iconic twin-handle aviation spade grip unites dual vertical handgrips, twin butterfly thumb fire paddles, and a guarded crimson master arm switch.",
+        "craftAndMaterial": "Heavy-duty forged steel yokes framing diamond-knurled rubber handgrips, brushed aluminum thumb paddles, protective safety hoop, and a high-visibility crimson master arm toggle.",
+        "kinematicRole": "Houses the electrical trigger switches that energize the 28V drive circuit; detaches rearward off the gearbox bulkhead during crew field stripping.",
+        "designHighlight": "Ergonomically engineered for heavy Nomex flight gloves, giving door gunners positive two-handed leverage over sustained recoil with dual-stage electrical safety.",
+        "audioScript": "At the rear sits the iconic helicopter spade grip assembly. Gripping the twin knurled handles with flight gloves, the gunner flips the crimson master arm toggle and presses the dual butterfly thumb paddles to unleash the storm.",
+        "audioUrl": "audio/m134/parts/m134_spade_grip_en.mp3"
+      }
+    },
+    "m134_delinker_housing": {
+      "partId": "m134_delinker_housing",
+      "bomCode": "M-01",
+      "calloutLabelEn": "Dillon Delinker Housing",
+      "zh": {
+        "roleTag": "解决早期卡弹顽疾的迪伦传奇革新 · 强力将 M13 钢链剥离为无链实弹",
+        "overview": "螺栓锁固于主机匣左侧（-Z）的迪伦航空改进型无链脱链供弹器箱体，是把 M134D 平均故障间隔推升至逾十万发的头号功臣。",
+        "craftAndMaterial": "深灰硬质阳极氧化航空合金与不锈钢双复合壳体，左侧平面激光精刻「DILLON AERO, INC. · M134D DELINKER FEEDER · 7.62×51MM NATO」铭牌，配双快拆偏心锁扣。",
+        "kinematicRole": "静态封闭保护内部星轮与供弹簧，承接下方柔性输弹槽并引导脱链实弹汇入 8 点位主转子槽；一级快拆阶段向左侧（-Z）整体抽离。",
+        "designHighlight": "采用双级强制剥链几何导轨取代易卡滞的老式弹簧拨片，彻底消除直升机大坡度机动中的高速供弹错齿与绞弹风险。",
+        "audioScript": "挂装在主机匣左侧的这只紧凑金属箱体，正是令 M134D 脱胎换骨的迪伦航空无链脱链供弹器。它以每秒五十发的惊人速度将七点六二毫米实弹强力剥离金属弹链，把整枪可靠性一举推升至十万发大关。",
+        "audioUrl": "audio/m134/parts/m134_delinker_housing_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dillon Aero Side-Mounted M13 Belt-Stripping Feeder Gearbox",
+        "overview": "Bolted flush to the left flank of the mainframe housing, this modernized Dillon Aero delinker feeder gearbox is the engineering breakthrough that propelled M134D reliability past 100,000 rounds.",
+        "craftAndMaterial": "Hard-anodized alloy and stainless steel housing featuring quick-release cam latches and a crisp laser-etched Dillon Aero Scottsdale nomenclature faceplate.",
+        "kinematicRole": "Encloses the counter-rotating star-wheel sprocket and feeder buffer spring, guiding delinked 7.62x51mm NATO rounds cleanly into the 8 o'clock rotor flute; slides off to the left during field strip.",
+        "designHighlight": "Replaces legacy friction-prone strip rails with positive rigid stripping geometry that feeds faultlessly even under violent helicopter bank maneuvers.",
+        "audioScript": "Mounted on the left flank is the famous Dillon Aero delinker feeder housing. Engineered to strip seven point six two cartridges from M13 steel links at fifty rounds a second, this single upgrade lifted reliability past one hundred thousand rounds.",
+        "audioUrl": "audio/m134/parts/m134_delinker_housing_en.mp3"
+      }
+    },
+    "m134_delinker_sprocket": {
+      "partId": "m134_delinker_sprocket",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Star-Wheel Sprocket",
+      "zh": {
+        "roleTag": "与主转子 1:1 反向同步齿轮啮合 · 毫秒级剥链无卡顿",
+        "overview": "隐藏于迪伦脱链供弹箱核心的六瓣不锈钢星轮脱链拨弹转轴，以毫秒级刚性节拍执行每秒 50 发的剥链与交弹作业。",
+        "craftAndMaterial": "高硬度 17-4PH 沉淀硬化不锈钢五轴精磨成型，六道圆弧槽精准贴合 7.62×51mm 黄铜弹壳外径，尾端集成同步传动直齿轮。",
+        "kinematicRole": "击发期间与中心主转子保持精确 1:1 反向同步旋转（rx = -2πf），无缝将剥离链环的实弹推进主转子 8 点位沟槽；二级拆解时向左侧移出。",
+        "designHighlight": "齿轮硬同步确保星轮瓣槽与主转子六套枪机永远零相位漂移，彻底杜绝供弹时机错位。",
+        "audioScript": "迪伦脱链器内部最精妙的运动件就是这根六瓣不锈钢星轮拨弹轴。它与主转子保持精确一比一反向齿轮同步，六个弧形弹槽牢牢扣住实弹躯干，如钟表齿轮般精准剥离弹链送入主转子。",
+        "audioUrl": "audio/m134/parts/m134_delinker_sprocket_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Counter-Rotating 1:1 Gear-Timed Six-Pocket Belt Stripper",
+        "overview": "Turning inside the Dillon delinker housing, this gleaming six-pocket stainless steel star-wheel sprocket strips 7.62x51mm cartridges from M13 links and hands them straight into the main rotor.",
+        "craftAndMaterial": "Precision-ground 17-4PH precipitation-hardened stainless steel with six scalloped cartridge pockets matching NATO brass case contours and a rear synchronization drive gear.",
+        "kinematicRole": "Counter-rotates continuously at exact 1:1 speed with the main star-rotor throughout firing; withdraws outward to the left during sub-assembly teardown.",
+        "designHighlight": "Hard mechanical gear timing ensures permanent zero-drift phase lock between every stripped cartridge and the arriving 8 o'clock rotary bolt.",
+        "audioScript": "Spinning inside the delinker is this gleaming six-pocket stainless star-wheel sprocket. Geared in strict one-to-one counter-rotation with the main rotor, its scalloped pockets strip each round from its steel link with zero timing drift.",
+        "audioUrl": "audio/m134/parts/m134_delinker_sprocket_en.mp3"
+      }
+    },
+    "m134_feeder_spring": {
+      "partId": "m134_feeder_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Feeder Buffer Spring",
+      "zh": {
+        "roleTag": "高弹性耐疲劳压簧 · 实时稳压 50 发/秒高速跳动弹链张力",
+        "overview": "嵌装在迪伦脱链器上导槽内的螺旋供弹张紧与止退缓冲弹簧，实时稳定高速拉升的重型 7.62mm 金属弹链张力。",
+        "craftAndMaterial": "航空级耐蚀琴钢丝精密卷绕并经喷丸强化，保留完整 GPU 动态恒线径形变参数，在高频率脉动下保持恒定刚度。",
+        "kinematicRole": "射击循环中随六瓣星轮每剥离一发实弹产生每秒 50 次高频轴向微幅压缩脉动；拆解时自脱链箱上槽向左上方分离。",
+        "designHighlight": "防止沉重的四千发弹链在停射瞬间因重力回坠脱齿，确保随时再次扣动电门即可瞬间满速供弹。",
+        "audioScript": "这根紧凑的脱链输弹缓冲螺旋簧，静静守卫在脱链星轮上方。面对重达数十公斤的高速跳动弹链，它以每秒五十次的高频弹性脉动稳稳压住止退棘爪，杜绝弹链坠滑错齿。",
+        "audioUrl": "audio/m134/parts/m134_feeder_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "High-Cycle Helical Belt-Tension & Anti-Fallback Buffer Spring",
+        "overview": "Seated in the upper guide channel of the Dillon delinker, this helical buffer spring tensions the feed pawl and damps violent tension surges from the racing 7.62mm ammunition belt.",
+        "craftAndMaterial": "Shot-peened corrosion-resistant aerospace music wire wound for high-frequency cyclic duty and rendered with true constant-wire-diameter GPU compression.",
+        "kinematicRole": "Pulses axially six times per rotor revolution in exact sync with every stripped cartridge; separates left and upward during delinker sub-assembly stripping.",
+        "designHighlight": "Prevents heavy multi-thousand-round ammo belts from dropping back down the chute between bursts, guaranteeing instantaneous first-round feeding on every trigger press.",
+        "audioScript": "Positioned above the star-wheel, this helical feeder buffer spring pulses fifty times every second to tension the belt-stripping pawls and stop the heavy linked ammunition column from slipping back between bursts.",
+        "audioUrl": "audio/m134/parts/m134_feeder_spring_en.mp3"
+      }
+    },
+    "m134_ammo_chute": {
+      "partId": "m134_ammo_chute",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Flexible 7.62mm Ammo Chute",
+      "zh": {
+        "roleTag": "铰接不锈钢蛇形导槽 · 满载退火C26000黄铜壳、红铜弹头与M13黑钢链",
+        "overview": "自左下方向迪伦脱链器源源不断输送全威力步枪弹的标志性不锈钢柔性波纹输弹槽，敞开视窗清晰展露 8 发 1:1 比例 7.62×51mm NATO M13 实弹链。",
+        "craftAndMaterial": "多节铰接拉丝不锈钢蛇形铠甲护槽，内置经湖城兵工厂军标瓶颈退火的 C26000 金黄铜壳、红铜被甲尖头弹头、银色底火与深灰锰磷化 M13 弹簧钢可散链节。",
+        "kinematicRole": "随直升机枪架全向俯仰弯曲仍保证内部弹链低阻顺滑爬升；一级勤务快拆最先向左下方整体解脱分离。",
+        "designHighlight": "将机身底部 4,000 发巨型弹药箱与剧烈转向的机枪本体无缝相连，让门炮手拥有媲美小型军火库的持续火力续航。",
+        "audioScript": "这条如银色鳞甲般蜿蜒而上的不锈钢柔性波纹输弹槽，将直升机舱内四千发巨型弹箱与旋转机枪相连。透过敞开视窗，退火黄铜弹壳、红铜尖头弹与深黑 M13 弹簧钢链节清晰可辨。",
+        "audioUrl": "audio/m134/parts/m134_ammo_chute_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Articulated Stainless Feed Chute Carrying Linked 7.62mm M13 Belt",
+        "overview": "Curving gracefully up into the Dillon delinker from below, this articulated stainless steel flexible feed chute showcases eight 1:1 scale 7.62x51mm NATO cartridges linked in dark M13 steel clips.",
+        "craftAndMaterial": "Interlocking brushed stainless steel ribbed chute segments framing Lake City heat-annealed C26000 brass cases, gleaming copper FMJ spitzer bullets, silver Boxer primers, and phosphated M13 links.",
+        "kinematicRole": "Flexes smoothly through wide gun-mount elevation and azimuth swings without binding the racing ammo column; detaches down and left first during field stripping.",
+        "designHighlight": "Links a 4,000-round aircraft cabin ammo drum directly to a freely pivoting door gun, sustaining uninterrupted multi-burst firepower.",
+        "audioScript": "Snaking upward like stainless armor, this flexible ribbed feed chute carries full-power seven point six two NATO ammunition from a four-thousand-round cabin drum, revealing annealed brass cases, copper FMJ bullets, and dark M13 steel links.",
+        "audioUrl": "audio/m134/parts/m134_ammo_chute_en.mp3"
+      }
+    },
+    "m134_ejection_chute": {
+      "partId": "m134_ejection_chute",
+      "bomCode": "M-05",
+      "calloutLabelEn": "Lower-Right Ejection Chute",
+      "zh": {
+        "roleTag": "4点位高速定向排壳口 · 防止炽热铜雨飞溅入直升机涡轴进气道",
+        "overview": "铆装于主机匣右下方 4 点钟抛壳窗外的加厚防磨损导流排壳滑槽，负责定向疏导瀑布般倾泻而出的灼热 7.62mm 黄铜空壳与散落 M13 链节。",
+        "craftAndMaterial": "耐磨渗碳冲压合金钢经锰磷化处理并由六枚不锈钢铆钉锁固法兰，下缘外扩导流唇板留有真实黄铜高速擦碰金属亮痕。",
+        "kinematicRole": "承接 4 点位 3 号枪机甩出的全部空弹壳并沿右下方安全抛出机外；一级勤务快拆阶段向右下方整体卸离主机匣。",
+        "designHighlight": "航空安全不可或缺的隐形卫士——精准控制每秒 50 发灼热铜壳轨迹，严防弹壳回弹伤及机组或被吸入直升机旋翼与发动机进气道。",
+        "audioScript": "机匣右下方这座厚重的钢制排壳滑槽，是航空作战不可或缺的安全卫士。它紧贴四点钟抛壳窗，将每秒五十发滚烫如雨的空黄铜壳与金属链节精准导离机外，严防异物吸入直升机发动机。",
+        "audioUrl": "audio/m134/parts/m134_ejection_chute_zh.mp3"
+      },
+      "en": {
+        "roleTag": "4-O'Clock Directional Brass & M13 Link Deflector Port",
+        "overview": "Riveted over the lower-right 4 o'clock ejection window of the main housing, this heavy-gauge steel deflector chute channels the waterfall of spent 7.62mm brass and stripped M13 links safely overboard.",
+        "craftAndMaterial": "Wear-resistant phosphated ordnance steel secured by six stainless flange rivets with a flared lower deflector apron showing authentic brass-kiss impact wear.",
+        "kinematicRole": "Directs fifty scorching empty cases per second cleanly downward and away from the fuselage; unbolts downward and right during crew field stripping.",
+        "designHighlight": "Essential aviation safety hardware that keeps hot brass cascades clear of aircrew cabins, helicopter tail rotors, and turbine engine intakes.",
+        "audioScript": "Bolted to the lower-right four o'clock window, this rugged steel ejection chute acts as vital aviation safety armor—steering fifty scorching brass casings per second safely clear of flight crews and helicopter turbine intakes.",
+        "audioUrl": "audio/m134/parts/m134_ejection_chute_en.mp3"
+      }
+    }
+  }
+}

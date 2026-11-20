@@ -652,7 +652,7 @@ describe('worker zero-copy serialization of CAD attributes', () => {
     expect(boxGeo.getAttribute('aSpringParam')).toBeUndefined();
   });
 
-  it('preserves aSpringParam & aCurvature across all 32 helical weapon springs, w=3 V-mainspring & archery flex parts, and main-thread geometryService fallback', async () => {
+  it('preserves aSpringParam & aCurvature across all 40 helical weapon springs, w=3 V-mainspring & archery flex parts, and main-thread geometryService fallback', async () => {
     const dynamicSprings: Readonly<Record<WeaponId, readonly string[]>> = {
       ak15: ['ak_recoil_spring'],
       m4a1: ['m4a1_buffer_spring'],
@@ -689,6 +689,10 @@ describe('worker zero-copy serialization of CAD attributes', () => {
         'vector_hammer_spring',
         'vector_mag_spring',
       ],
+      g11: ['g11_recoil_spring', 'g11_mag_spring'],
+      vss: ['vss_recoil_spring', 'vss_striker_spring'],
+      m134: ['m134_clutch_spring', 'm134_feeder_spring'],
+      an94: ['an94_recoil_spring', 'an94_receiver_buffer_spring'],
     };
 
     for (const [wid, partIds] of Object.entries(dynamicSprings) as Array<

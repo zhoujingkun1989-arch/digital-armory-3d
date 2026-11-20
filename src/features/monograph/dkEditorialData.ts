@@ -20,7 +20,7 @@ import type {
 
 // ============================================================================
 // DK Visual Encyclopedia — Editorial Data Layer & Curation Engine
-// Zero external runtime dependencies · 100% Bilingual (zh / en) · All 19 Exhibits
+// Zero external runtime dependencies · 100% Bilingual (zh / en) · All 23 Exhibits
 // ============================================================================
 
 export const DK_PALETTE = {
@@ -376,6 +376,10 @@ function normalizeSpokenEnglishMetrics(text: string): string {
 
   // Convert common spoken caliber pairs first (e.g. "nine by nineteen millimeter")
   out = out
+    .replace(/\bfour\s+point\s+seven\s+three\s+by\s+thirty[- ]three(?:\s+millimeters?)?\b/gi, '4.73×33mm')
+    .replace(/\bnine\s+by\s+thirty[- ]nine(?:\s+millimeters?)?\b/gi, '9×39mm')
+    .replace(/\bseven\s+point\s+six\s+two\s+by\s+fifty[- ]one(?:\s+millimeters?)?\b/gi, '7.62×51mm')
+    .replace(/\bfive\s+point\s+four\s+five\s+by\s+thirty[- ]nine(?:\s+millimeters?)?\b/gi, '5.45×39mm')
     .replace(/\bseven\s+point\s+six\s+two\s+by\s+thirty[- ]nine(?:\s+millimeters?)?\b/gi, '7.62×39mm')
     .replace(/\bfive\s+point\s+five\s+six\s+by\s+forty[- ]five(?:\s+millimeters?)?\b/gi, '5.56×45mm')
     .replace(/\bfive\s+point\s+seven\s+by\s+twenty[- ]eight(?:\s+millimeters?)?\b/gi, '5.7×28mm')
@@ -635,7 +639,7 @@ function cleanCalloutTitle(rawTitle: string, lang: LanguageCode): string {
     // Strip leading year / dimension / caliber prefixes
     s = s
       .replace(
-        /^(?:20\d{2}\s*|18\.3"|14\.5吋?|24英寸|4英寸|6英寸|5\.5"|20"|27"|29"|1\.5mm\s*|7\.62×39mm\s*|5\.56(?:×45)?mm\s*|9×19mm\s*|\.30-06\s*|\.50\s*(?:BMG|AE)\s*|\.338\s*|\.357\s*|\.45\s*ACP\s*)/i,
+        /^(?:20\d{2}\s*|18\.3"|14\.5吋?|24英寸|22英寸|4英寸|6英寸|5\.5"|20"|27"|29"|540mm\s*|414mm\s*|405mm\s*|200mm\s*|1\.5mm\s*|4\.73×33mm\s*|9×39mm\s*|7\.62×51mm\s*|5\.45×39mm\s*|7\.62×39mm\s*|5\.56(?:×45)?mm\s*|9×19mm\s*|\.30-06\s*|\.50\s*(?:BMG|AE)\s*|\.338\s*|\.357\s*|\.45\s*ACP\s*)/i,
         ''
       )
       .trim();
@@ -687,7 +691,7 @@ function cleanCalloutTitle(rawTitle: string, lang: LanguageCode): string {
     .replace(/^(?:Model\s+20\d{2}|Obr\.\s*20\d{2}|USGI|M1014|M17|Gen\s*[2345]|Mk\s*\d+)\s+/i, '')
     .replace(/^(?:\d+(?:\.\d+)?(?:"|in|mm|cm|-Rd|-Round|-Groove|-Lug|-Pos|-Blade|-Pin)\s+)+/i, '')
     .replace(
-      /^(?:\.30-06\s+Springfield|\.338\s+Lapua\s+Magnum|\.50\s+Action\s+Express|\.50\s+BMG|\.45\s+ACP|\.357\s+Magnum|7\.62×39mm|5\.56×45mm|5\.7×28mm|9×19mm|12-Gauge)\s+/i,
+      /^(?:\.30-06\s+Springfield|\.338\s+Lapua\s+Magnum|\.50\s+Action\s+Express|\.50\s+BMG|\.45\s+ACP|\.357\s+Magnum|4\.73[×x]33mm|9[×x]39mm|7\.62[×x]51mm|5\.45[×x]39mm|7\.62×39mm|5\.56×45mm|5\.7×28mm|9×19mm|12-Gauge)\s+/i,
       ''
     )
     .replace(/\s+/g, ' ')
@@ -2006,6 +2010,134 @@ const EVOLUTION_TIMELINE_SEEDS: Readonly<
       eraRelation: 'successor',
     },
   ],
+  g11: [
+    {
+      year: '1959',
+      name: { zh: 'H&K G3 步枪', en: 'H&K G3 Rifle' },
+      subtitle: { zh: '西德联邦国防军制式步枪换代起点', en: 'Bundeswehr Service Rifle Replaced by G11' },
+      eraRelation: 'ancestor',
+    },
+    {
+      year: '1974',
+      name: { zh: 'H&K G11 原型机', en: 'H&K G11 Proto' },
+      subtitle: { zh: '首代 90° 旋转无壳弹膛验证样枪', en: 'First 90-Deg Rotary Caseless Test Rig' },
+      eraRelation: 'predecessor',
+    },
+    {
+      year: '1990',
+      name: { zh: 'H&K G11 K2', en: 'H&K G11 K2' },
+      subtitle: { zh: '4.73mm DM11 无壳弹 · 2,100 RPM', en: '4.73mm DM11 Caseless · 2,100 RPM' },
+      eraRelation: 'current',
+    },
+    {
+      year: '1990',
+      name: { zh: 'Steyr ACR / AN-94', en: 'Steyr ACR / AN-94' },
+      subtitle: { zh: '美军 ACR 箭弹与苏军延迟后坐劲敌', en: 'US ACR Flechette & Soviet Burst Rivals' },
+      eraRelation: 'rival',
+    },
+    {
+      year: '2004',
+      name: { zh: 'LSAT / 埋头弹研究', en: 'LSAT / CT Programs' },
+      subtitle: { zh: '无壳与聚合物埋头轻量化弹药延续', en: 'Caseless & Polymer Cased-Telescoped Legacy' },
+      eraRelation: 'successor',
+    },
+  ],
+  vss: [
+    {
+      year: '1962',
+      name: { zh: 'AKM + PBS-1 消音', en: 'AKM + PBS-1' },
+      subtitle: { zh: '苏联早期橡胶碗外挂消音与减装弹', en: 'Early Soviet Wipe Suppressor & Subsonic' },
+      eraRelation: 'ancestor',
+    },
+    {
+      year: '1985',
+      name: { zh: 'RG036 试验样枪', en: 'TsNIITochMash RG036' },
+      subtitle: { zh: '谢尔久科夫 9×39mm 多孔消音原型', en: 'Serdyukov 9x39mm Ported Prototype' },
+      eraRelation: 'predecessor',
+    },
+    {
+      year: '1987',
+      name: { zh: 'VSS Vintorez 6П29', en: 'VSS Vintorez 6P29' },
+      subtitle: { zh: '6 级斜挡板 · 6 突笋无击锤微声狙', en: '6-Baffle Integral · 6-Lug Linear Striker' },
+      eraRelation: 'current',
+    },
+    {
+      year: '1987',
+      name: { zh: 'AS Val / MP5SD', en: 'AS Val / MP5SD' },
+      subtitle: { zh: '同源特战步枪与西方多孔微声劲敌', en: 'Sibling AS Val & Western Ported SMG Rival' },
+      eraRelation: 'rival',
+    },
+    {
+      year: '2018',
+      name: { zh: 'VSS-M (6П29М)', en: 'VSS-M (6P29M)' },
+      subtitle: { zh: '全通皮卡汀尼导轨与铝制快调托演进', en: 'Railed Dust Cover & Adjustable Stock Evo' },
+      eraRelation: 'successor',
+    },
+  ],
+  m134: [
+    {
+      year: '1862',
+      name: { zh: '加特林 M1862 转管枪', en: 'Gatling Model 1862' },
+      subtitle: { zh: '手摇多管旋转与静止凸轮槽原理鼻祖', en: 'Hand-Cranked Multi-Barrel Cam Origin' },
+      eraRelation: 'ancestor',
+    },
+    {
+      year: '1962',
+      name: { zh: 'GE M134 迷你火神炮', en: 'GE M134 Minigun' },
+      subtitle: { zh: '微缩 M61 火神炮 · 越战炮艇机初代', en: 'Scaled 7.62 Vulcan · Original Gunship MG' },
+      eraRelation: 'predecessor',
+    },
+    {
+      year: '2003',
+      name: { zh: 'Dillon Aero M134D', en: 'Dillon Aero M134D' },
+      subtitle: { zh: '28V 电驱星轮脱链 · 十万发可靠标杆', en: '28V Electric Star-Delinker · 3,000 RPM' },
+      eraRelation: 'current',
+    },
+    {
+      year: '2005',
+      name: { zh: 'FN M3M / GAU-19/B', en: 'FN M3M / GAU-19/B' },
+      subtitle: { zh: '航空舱门重机枪与三管加特林对手', en: 'Aviation Door-Gun & 3-Barrel Rotary Rival' },
+      eraRelation: 'rival',
+    },
+    {
+      year: '2012',
+      name: { zh: 'M134D-H 钛合金版', en: 'M134D-H Hybrid Ti' },
+      subtitle: { zh: '钛合金主机匣减重与现代无人哨塔', en: 'Titanium Housing & Remote Turret Evo' },
+      eraRelation: 'successor',
+    },
+  ],
+  an94: [
+    {
+      year: '1974',
+      name: { zh: '卡拉什尼科夫 AK-74', en: 'Kalashnikov AK-74' },
+      subtitle: { zh: '5.45×39mm 小口径制式与阿巴坎基准', en: '5.45x39mm Baseline for Project Abakan' },
+      eraRelation: 'ancestor',
+    },
+    {
+      year: '1987',
+      name: { zh: '尼科诺夫 ASM 样枪', en: 'Nikonov ASM Proto' },
+      subtitle: { zh: '滑轮钢索二级预供弹与 15° 弹匣定型', en: 'Pulley-Cable Pre-Feed & 15-Deg Mag Finalist' },
+      eraRelation: 'predecessor',
+    },
+    {
+      year: '1994',
+      name: { zh: 'AN-94「阿巴坎」6П33', en: 'AN-94 Abakan 6P33' },
+      subtitle: { zh: '42mm 浮置延迟后坐 · 1,800 RPM 双发', en: '42mm Floating Action · 1,800 RPM Burst' },
+      eraRelation: 'current',
+    },
+    {
+      year: '1994',
+      name: { zh: '科夫罗夫 AEK-971', en: 'Kovrov AEK-971' },
+      subtitle: { zh: '齿轮反向配重平衡自动反冲劲敌', en: 'Balanced Counter-Recoil Gear-Rack Rival' },
+      eraRelation: 'rival',
+    },
+    {
+      year: '2018',
+      name: { zh: 'AK-12 / A-545 (6П67)', en: 'AK-12 / A-545 (6P67)' },
+      subtitle: { zh: '俄军新一代轻量化双连发与平衡步枪', en: 'Next-Gen 2-Rd Burst & Balanced Rifles' },
+      eraRelation: 'successor',
+    },
+  ],
 };
 
 export function buildDkEvolutionTimeline(
@@ -2050,6 +2182,13 @@ const LOCKING_LOUPE_COPY: Readonly<
     caption: {
       zh: '径向闭锁突笋旋入节套刚性承压，待安全泄压后沿螺旋凸轮槽解锁抽壳。',
       en: 'Radial bolt lugs lock axially into the barrel extension before camming open after blowdown.',
+    },
+  },
+  rotary_cylindrical_breech: {
+    title: { zh: '90° 旋转无壳圆柱弹膛', en: '90-Deg Rotary Breech Core' },
+    caption: {
+      zh: '双齿条与瑞士钟表齿轮系驱动镀铬圆柱弹膛原地翻转 90° 垂直纳弹，全程零黄铜抛壳。',
+      en: 'Watchmaker spur gears rotate a chrome breech cylinder 90 deg to load caseless blocks with zero ejection.',
     },
   },
   tilting_barrel_cam: {
@@ -2134,6 +2273,13 @@ const DRIVE_LOUPE_COPY: Readonly<
       en: 'Direct case-head thrust drives a linear breech cycle with zero gas plumbing for compact bursts.',
     },
   },
+  external_electric_rotary: {
+    title: { zh: '28V 电驱星形转子集群', en: '28V Electric Star-Rotor' },
+    caption: {
+      zh: '航空直流电机带动六槽转子与六管 500 RPM 公转，360° 静止正弦槽并行驱动六套枪机。',
+      en: 'A 28V DC motor spins the six-flute rotor at 500 rpm past a 360-deg cam track cycling six bolts.',
+    },
+  },
   manual_bolt_or_revolver_linkage: {
     title: { zh: '精密手动主运动组', en: 'Manual Precision Action' },
     caption: {
@@ -2165,6 +2311,13 @@ const FEED_LOUPE_COPY: Readonly<
     caption: {
       zh: '顶盖 S 槽驱动内外双拨爪接力横移可散钢链，左侧同步保留步枪弹匣应急井。',
       en: 'Top-cover S-cam drives dual pawls across M27 steel links alongside an emergency STANAG well.',
+    },
+  },
+  overhead_caseless_rammer: {
+    title: { zh: '45 发置顶无壳匣与冲头', en: '45-Rd Caseless Mag & Ram' },
+    caption: {
+      zh: '方形 DM11 无壳药块垂直平铺于枪管上方，垂直冲头下刺 26.5 mm 压弹入旋膛。',
+      en: 'Square DM11 caseless blocks ride parallel above the barrel as a vertical rammer seats each round.',
     },
   },
   top_helical_90deg: {
@@ -2263,6 +2416,79 @@ const FCG_LOUPE_OVERRIDES: Partial<
       en: 'Floating sled latches the string center with a copper Anti-Dry-Fire interlock preventing mishaps.',
     },
   },
+  g11: {
+    title: { zh: '2,100 RPM 钟表三连发火控', en: '2,100 RPM Clockwork FCG' },
+    caption: {
+      zh: '三发擒纵棘轮协同同轴击针与弹出式上膛摇柄，在浮置后坐触底前倾泻三发无壳弹。',
+      en: '3-round burst escapement, coaxial striker, and pop-out winding crank fire three rounds before recoil hits.',
+    },
+  },
+  vss: {
+    title: { zh: '无击锤直线击铁与横推键', en: 'Hammerless Linear Striker' },
+    caption: {
+      zh: '摒弃响亮摆锤改用同轴平移静音直线击铁，扳机后方隐藏横推钮无声切换单连发。',
+      en: 'Coaxial linear sliding striker replaces loud hammers alongside a silent behind-trigger selector.',
+    },
+  },
+  m134: {
+    title: { zh: '双铲蝴蝶电门与安全门', en: 'Spade Triggers & Safe Gate' },
+    caption: {
+      zh: '航空双铲握把双拇指电门配绯红主武装开关与顶置安全门，外电强驱遇哑弹零停射。',
+      en: 'Twin spade-grip butterfly paddles, crimson master arm, and quick-release safing gate control 3,000 RPM fire.',
+    },
+  },
+  an94: {
+    title: { zh: '1,800 RPM 浮置双发棘轮', en: '1,800 RPM Hyperburst FCG' },
+    caption: {
+      zh: '浮置联动阻铁与青铜双发棘轮配合独立拇指保险，实现百米双发同孔与 600 RPM 切换。',
+      en: 'Floating disconnector and bronze 2-round ratchet pair with an independent thumb safety for twin-hit bursts.',
+    },
+  },
+};
+
+const BREECH_LOUPE_OVERRIDES: Partial<
+  Record<WeaponId, { title: BilingualText; caption: BilingualText }>
+> = {
+  vss: {
+    title: { zh: '6 级斜挡板与 6 突笋闭锁', en: '6-Stage Baffles & 6-Lug Lock' },
+    caption: {
+      zh: '径向泄气枪管接续 ±28° 交替斜挡板消音芯，配合 60° 对称 6 突笋旋转枪机静音穿甲。',
+      en: 'Radial barrel ports feed +/-28-deg slanted baffles ahead of a symmetrical 6-lug rotating bolt.',
+    },
+  },
+  m134: {
+    title: { zh: '360° 正弦凸轮与六枪机波', en: '360-Deg Cam & 6-Bolt Wave' },
+    caption: {
+      zh: '静止 360° 正弦波浪槽驱动六套镀铬枪机以 60° 错相波浪同步闭锁击发、抽壳与抛壳。',
+      en: 'Stationary 360-deg sinusoidal cam groove cycles six chrome bolts 60 deg out of phase in a smooth wave.',
+    },
+  },
+  an94: {
+    title: { zh: '定滑轮钢索与浮置内机匣', en: 'Pulley-Cable & Floating Core' },
+    caption: {
+      zh: '405 mm 枪管与内机匣整体后滑 42 mm，同时钢索绕定滑轮反向急推青铜预供弹滑块。',
+      en: '405 mm barreled carriage glides 42 mm rearward while a steel pulley cable whips the bronze pre-feed forward.',
+    },
+  },
+};
+
+const MAG_LOUPE_OVERRIDES: Partial<
+  Record<WeaponId, { title: BilingualText; caption: BilingualText }>
+> = {
+  m134: {
+    title: { zh: '迪伦六瓣星轮脱链供弹器', en: 'Dillon Star-Wheel Delinker' },
+    caption: {
+      zh: '与主转子 1:1 反向同步的六瓣不锈钢星轮以每秒 50 发极速剥离 M13 钢链送入转子。',
+      en: 'Gear-synced six-pocket stainless star-wheel strips M13 7.62 NATO links cleanly at 50 rounds per second.',
+    },
+  },
+  an94: {
+    title: { zh: '15° 右倾匣与二级预供弹', en: '15-Deg Mag & Pre-Feed Tray' },
+    caption: {
+      zh: '通用 30 发 5.45mm 李子黑弹匣右倾 15° 避让滑轮，青铜托弹滑块 33 ms 预位第二发。',
+      en: 'Standard 30-rd 5.45mm mag cants 15 deg right to clear the bronze shuttle pre-staging round two in 33 ms.',
+    },
+  },
 };
 
 export function buildDkLoupeSpecs(
@@ -2294,6 +2520,8 @@ export function buildDkLoupeSpecs(
   const driveCopy = DRIVE_LOUPE_COPY[cls.driveFamily];
   const feedCopy = FEED_LOUPE_COPY[cls.feedFamily];
   const fcgOverride = FCG_LOUPE_OVERRIDES[weaponId];
+  const breechOverride = BREECH_LOUPE_OVERRIDES[weaponId];
+  const magOverride = MAG_LOUPE_OVERRIDES[weaponId];
 
   const defaultFcgTitle = isArchery
     ? lang === 'zh'
@@ -2335,8 +2563,10 @@ export function buildDkLoupeSpecs(
         : {
             plateKey: 'breech_closeup',
             magnification: '3.0×',
-            title: lockCopy.title[lang],
-            caption: lockCopy.caption[lang],
+            title: breechOverride ? breechOverride.title[lang] : lockCopy.title[lang],
+            caption: breechOverride
+              ? breechOverride.caption[lang]
+              : lockCopy.caption[lang],
           };
 
   return [
@@ -2356,8 +2586,8 @@ export function buildDkLoupeSpecs(
     {
       plateKey: 'group_mag',
       magnification: '2.0×',
-      title: feedCopy.title[lang],
-      caption: feedCopy.caption[lang],
+      title: magOverride ? magOverride.title[lang] : feedCopy.title[lang],
+      caption: magOverride ? magOverride.caption[lang] : feedCopy.caption[lang],
     },
   ];
 }
