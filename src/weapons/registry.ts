@@ -26,6 +26,11 @@ const PLUGIN_LOADERS: Record<WeaponId, () => Promise<WeaponRuntimePlugin>> = {
   vss: () => import('./vss/plugin').then((m) => m.VSS_PLUGIN),
   m134: () => import('./m134/plugin').then((m) => m.M134_PLUGIN),
   an94: () => import('./an94/plugin').then((m) => m.AN94_PLUGIN),
+  ztz99a: () => import('./ztz99a/plugin').then((m) => m.ZTZ99A_PLUGIN),
+  m1a2: () => import('./m1a2/plugin').then((m) => m.M1A2_PLUGIN),
+  leopard2a7: () =>
+    import('./leopard2a7/plugin').then((m) => m.LEOPARD2A7_PLUGIN),
+  tiger1: () => import('./tiger1/plugin').then((m) => m.TIGER1_PLUGIN),
 };
 
 const pluginCache = new Map<WeaponId, WeaponRuntimePlugin>();

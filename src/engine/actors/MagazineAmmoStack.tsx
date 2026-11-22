@@ -131,6 +131,13 @@ function syncMagazineStackFrame(
   }
 
   const spec = MAGAZINE_STACK_SPECS[weaponId];
+  if (!spec || spec.roundCount <= 0 || spec.slots.length === 0) {
+    group.visible = false;
+    caseMesh.count = 0;
+    primerMesh.count = 0;
+    bulletMesh.count = 0;
+    return;
+  }
   if (
     appState.screen === 'workbench' &&
     appState.isolateSelected &&
@@ -375,7 +382,8 @@ export const MagazineAmmoStack: React.FC = () => {
     );
   });
 
-  if (isMagHidden) return null;
+  const activeSpec = MAGAZINE_STACK_SPECS[activeWeaponId];
+  if (isMagHidden || !activeSpec || activeSpec.roundCount <= 0) return null;
 
   return (
     <group ref={groupRef}>

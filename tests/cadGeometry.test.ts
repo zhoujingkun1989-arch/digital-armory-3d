@@ -29,6 +29,7 @@ import {
   reconstructBufferGeometry,
 } from '../src/engine/geometry/geometryService';
 import { loadWeaponGeometryBuilders } from '../src/weapons/geometryLoaders';
+import { getWeaponManifest } from '../src/weapons/manifests';
 import type { WeaponId } from '../src/weapons/types';
 
 const DEG = Math.PI / 180;
@@ -693,12 +694,20 @@ describe('worker zero-copy serialization of CAD attributes', () => {
       vss: ['vss_recoil_spring', 'vss_striker_spring'],
       m134: ['m134_clutch_spring', 'm134_feeder_spring'],
       an94: ['an94_recoil_spring', 'an94_receiver_buffer_spring'],
+      ztz99a: ['ztz99a_recoil_springs', 'ztz99a_rammer_spring'],
+      m1a2: ['m1a2_recoil_springs', 'm1a2_door_spring'],
+      leopard2a7: ['leo_recoil_springs', 'leo_breech_spring'],
+      tiger1: ['tiger_recoil_springs', 'tiger_breech_spring'],
     };
 
     for (const [wid, partIds] of Object.entries(dynamicSprings) as Array<
       [WeaponId, readonly string[]]
     >) {
       const builders = await loadWeaponGeometryBuilders(wid);
+      const isTank =
+        getWeaponManifest(wid).workbenchMeta.scaleProfile ===
+        'main_battle_tank';
+      const maxWireDx = isTank ? 2.2 : 0.2;
       for (const partId of partIds) {
         let built: THREE.BufferGeometry | null = null;
         beginPartSpringCapture();
@@ -728,7 +737,7 @@ describe('worker zero-copy serialization of CAD attributes', () => {
             expect(
               Math.abs(wireDx),
               `${wid}/${partId}: wire offset ${wireDx} exceeds wire bound`
-            ).toBeLessThan(0.2);
+            ).toBeLessThan(maxWireDx);
           }
         }
         expect(

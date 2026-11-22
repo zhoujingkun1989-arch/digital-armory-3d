@@ -34,6 +34,11 @@ export type MetallicCaliberProfile =
   | '338_lapua'
   | '50_bmg';
 
+export type TankOrdnanceCaliberProfile =
+  | '88mm_pzgr39'
+  | '120mm_apfsds'
+  | '125mm_apfsds';
+
 export type ArcheryCaliberProfile = 'arrow_400gr' | 'bolt_400gr';
 
 export const CARTRIDGE_LAB_ORDER: readonly MetallicCaliberProfile[] = [
@@ -53,6 +58,23 @@ export const CARTRIDGE_LAB_ORDER: readonly MetallicCaliberProfile[] = [
   '338_lapua',
   '50_bmg',
 ];
+
+/** Separate 1:1 Heavy Armor tank-cannon ordnance rack order (keeps 15-caliber small-arms rack crisp). */
+export const TANK_ORDNANCE_ORDER: readonly TankOrdnanceCaliberProfile[] = [
+  '88mm_pzgr39',
+  '120mm_apfsds',
+  '125mm_apfsds',
+];
+
+export function isTankOrdnanceProfile(
+  val: string | null | undefined
+): val is TankOrdnanceCaliberProfile {
+  return (
+    val === '88mm_pzgr39' ||
+    val === '120mm_apfsds' ||
+    val === '125mm_apfsds'
+  );
+}
 
 export function isCaliberProfile(
   val: string | null | undefined
@@ -81,12 +103,14 @@ export type ProjectileCoreKind =
   | 'dual_core_penetrator'
   | 'fmj_spitzer'
   | 'otm_scenar'
-  | 'm33_heavy_steel';
+  | 'm33_heavy_steel'
+  | 'apfsds_sabot_dart'
+  | 'apcbc_he_shell';
 
 export interface CartridgeLabSpec {
   caliber: CaliberProfile;
   code: string;
-  standard: 'SAAMI' | 'CIP' | 'NATO STANAG';
+  standard: 'SAAMI' | 'CIP' | 'NATO STANAG' | 'PLA GJB';
   nameZh: string;
   nameEn: string;
   loadSubtitleZh: string;
@@ -815,11 +839,149 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
   },
 };
 
+export const TANK_ORDNANCE_LAB_SPECS: Readonly<
+  Record<TankOrdnanceCaliberProfile, CartridgeLabSpec>
+> = {
+  '88mm_pzgr39': {
+    caliber: '88mm_pzgr39',
+    code: '88×571mmR',
+    standard: 'CIP',
+    nameZh: '88×571mmR 虎式主炮被帽穿甲弹 (PzGr. 39)',
+    nameEn: '88×571mmR KwK 36 PzGr. 39 APCBC-HE',
+    loadSubtitleZh: '10.2 kg 硬化钢被帽风帽穿甲弹 + 2.41 kg 管状发射药 + 黄铜凸缘药筒',
+    loadSubtitleEn: '10.2 kg Hardened APCBC-HE Shell + 2.41 kg Diglycol Charge + Rimmed Brass Case',
+    representativeWeapons: ['tiger1'],
+    primaryWeaponId: 'tiger1',
+    lineupXCm: -24.0,
+    caseLengthMm: 571.0,
+    oalMm: 822.0,
+    bulletDiameterMm: 88.0,
+    neckDiameterMm: 93.2,
+    shoulderDiameterMm: 108.0,
+    baseDiameterMm: 112.0,
+    rimDiameterMm: 125.0,
+    rimThicknessMm: 7.2,
+    caseCapacityMl: 4350,
+    propellantMassG: 2410,
+    propellantFillRatio: 0.78,
+    propellantTypeZh: 'Gudol-Röhrenpulver 管状二甘醇双基发射药 (2.41 kg)',
+    propellantTypeEn: 'Gudol-Röhrenpulver Tubular Diglycol Propellant (2.41 kg)',
+    primerTypeZh: 'C/22 德军电击发底火螺塞',
+    primerTypeEn: 'Wehrmacht C/22 Electric Percussion Primer Screw',
+    projectileMassG: 10200,
+    projectileGrain: 157410,
+    coreKind: 'apcbc_he_shell',
+    coreAnatomyZh: '空气动力风帽 + 钝头软钢被帽 + 淬火合金钢穿甲体 + 59g 底部延时高爆装药',
+    coreAnatomyEn: 'Ballistic Windscreen + Soft Piercing Cap + Hardened Alloy Steel Body + 59g Base-Fuzed HE Filler',
+    peakPressureMPa: 320,
+    muzzleVelocityMps: 773,
+    muzzleEnergyJ: 3047397,
+    highlightZh:
+      '全长 822 mm、单发重达 16 kg 的二战反装甲霸主：88×571mmR 巨型瓶形黄铜凸缘药筒配电发火底火，赋予 10.2 kg 穿甲弹 3.05 MJ 动能，2,000 m 外仍可贯穿百毫米匀质钢板！',
+    highlightEn:
+      'Towering 822 mm tall and 16 kg complete: the rimmed 88×571mmR brass case propels a 10.2 kg APCBC-HE shell to 3.05 MJ, defeating heavy armor past 2,000 meters.',
+    caseColor: '#d9ac43',
+    jacketColor: '#3c4047',
+    penetratorColor: '#94a3b8',
+    coreSlugColor: '#c9743f',
+    propellantColor: '#262930',
+  },
+  '120mm_apfsds': {
+    caliber: '120mm_apfsds',
+    code: '120×570mm',
+    standard: 'NATO STANAG',
+    nameZh: '120×570mm 北约尾翼稳定脱壳穿甲弹 (M829A4 / DM63A1)',
+    nameEn: '120×570mm NATO APFSDS-T (M829A4 / DM63A1)',
+    loadSubtitleZh: '4.6 kg 贫铀/钨合金长杆穿甲芯 + 轻合金三瓣弹托 + 半可燃药筒',
+    loadSubtitleEn: '4.6 kg DU/Tungsten Long-Rod Dart + 3-Petal Sabot + Combustible Case',
+    representativeWeapons: ['m1a2', 'leopard2a7'],
+    primaryWeaponId: 'leopard2a7',
+    lineupXCm: 0.0,
+    caseLengthMm: 570.0,
+    oalMm: 984.0,
+    bulletDiameterMm: 120.0,
+    neckDiameterMm: 126.0,
+    shoulderDiameterMm: 146.0,
+    baseDiameterMm: 152.0,
+    rimDiameterMm: 158.0,
+    rimThicknessMm: 9.0,
+    caseCapacityMl: 9400,
+    propellantMassG: 8100,
+    propellantFillRatio: 0.88,
+    propellantTypeZh: 'SCDB 温度无关表面涂层双基发射药 (8.1 kg · 燃尽式硝化纤维药筒)',
+    propellantTypeEn: 'SCDB Temperature-Independent Double-Base Charge (8.1 kg · Combustible Case)',
+    primerTypeZh: 'DM12A1 / M129 高能长管电发火底火 (钢制弹底护板)',
+    primerTypeEn: 'DM12A1 / M129 Long-Tube Electric Primer in Obturating Steel Stub Base',
+    projectileMassG: 4600,
+    projectileGrain: 70989,
+    coreKind: 'apfsds_sabot_dart',
+    coreAnatomyZh: 'Ø25mm 超大长径比贫铀/钨合金穿甲长杆 + 六片十字稳定尾翼 + 碳纤/铝合金鞍形弹托',
+    coreAnatomyEn: 'Ø25mm High-L/D DU/Tungsten Monoblock Dart + 6-Fin Tail Stabilizer + Lightweight 3-Petal Sabot',
+    peakPressureMPa: 670,
+    muzzleVelocityMps: 1710,
+    muzzleEnergyJ: 6725430,
+    highlightZh:
+      '西方三代半主战坦克核心矛头：670 MPa 恐怖膛压将 4.6 kg 次口径长杆弹芯以 5.0 马赫（1,710 m/s · 6.73 MJ）射出，击发后硝化纤维药筒几乎完全燃尽，仅退一枚短金属弹底！',
+    highlightEn:
+      'NATO’s premier 670 MPa tank spearhead: drives a 4.6 kg sub-caliber dart to Mach 5.0 (1,710 m/s · 6.73 MJ) while burning away its combustible case down to a short steel stub base.',
+    caseColor: '#b9935a',
+    jacketColor: '#3f4752',
+    penetratorColor: '#cbd5e1',
+    coreSlugColor: '#64748b',
+    propellantColor: '#1e293b',
+  },
+  '125mm_apfsds': {
+    caliber: '125mm_apfsds',
+    code: '125mm DTC10',
+    standard: 'PLA GJB',
+    nameZh: '125mm DTC10-125 分装式钨合金穿甲弹 (ZTZ-99A)',
+    nameEn: '125mm DTC10-125 Two-Piece Tungsten APFSDS (ZTZ-99A)',
+    loadSubtitleZh: '4.8 kg 大长径比特种钨合金长杆芯 + 分装半可燃主药筒 (1,780 m/s)',
+    loadSubtitleEn: '4.8 kg High-L/D Tungsten Penetrator + Separate Combustible Charge (1,780 m/s)',
+    representativeWeapons: ['ztz99a'],
+    primaryWeaponId: 'ztz99a',
+    lineupXCm: 24.0,
+    caseLengthMm: 408.0,
+    oalMm: 1150.0,
+    bulletDiameterMm: 125.0,
+    neckDiameterMm: 132.0,
+    shoulderDiameterMm: 146.0,
+    baseDiameterMm: 149.0,
+    rimDiameterMm: 159.0,
+    rimThicknessMm: 8.8,
+    caseCapacityMl: 10200,
+    propellantMassG: 8800,
+    propellantFillRatio: 0.91,
+    propellantTypeZh: '高能低烧蚀渐增燃速复合装药 (8.8 kg · 主药筒 + 弹体附加药包)',
+    propellantTypeEn: 'High-Energy Progressive-Burning Charge (8.8 kg · Main Combustible Case + Increment)',
+    primerTypeZh: 'GUV-7 级高能电击发底火管 + 金属紧塞弹底',
+    primerTypeEn: 'High-Energy Axial Electric Primer Tube + Metallic Obturating Stub Base',
+    projectileMassG: 4800,
+    projectileGrain: 74075,
+    coreKind: 'apfsds_sabot_dart',
+    coreAnatomyZh: 'Ø26mm 700mm+ 超长特种钨合金自锐穿甲长杆 + 铝合金轻量化鞍形弹托 + 尾翼曳光管',
+    coreAnatomyEn: 'Ø26mm 700mm+ Self-Sharpening Tungsten Long-Rod Dart + Alloy Saddle Sabot + Tracer Fin Assembly',
+    peakPressureMPa: 650,
+    muzzleVelocityMps: 1780,
+    muzzleEnergyJ: 7604160,
+    highlightZh:
+      '适配 ZTZ-99A 22 发底置转盘自动装弹机的分装穿甲杀手锏：总长 1,150 mm、650 MPa 膛压轰出 1,780 m/s（5.2 马赫）与 7.60 MJ 惊世动能，是人类现役陆战直射火力之巅！',
+    highlightEn:
+      'Engineered for ZTZ-99A’s 22-round carousel autoloader: 1,150 mm combined length generating 650 MPa, Mach 5.2 (1,780 m/s), and 7.60 MJ of kinetic armor-defeating fury.',
+    caseColor: '#b8823c',
+    jacketColor: '#4c535f',
+    penetratorColor: '#e2e8f0',
+    coreSlugColor: '#94a3b8',
+    propellantColor: '#1e293b',
+  },
+};
+
 export const CARTRIDGE_LAB_SPECS: Readonly<
   Record<CaliberProfile, CartridgeLabSpec>
-> = METALLIC_CARTRIDGE_LAB_SPECS as unknown as Readonly<
-  Record<CaliberProfile, CartridgeLabSpec>
->;
+> = {
+  ...METALLIC_CARTRIDGE_LAB_SPECS,
+  ...TANK_ORDNANCE_LAB_SPECS,
+} as unknown as Readonly<Record<CaliberProfile, CartridgeLabSpec>>;
 
 export interface ArcheryProjectileSpec {
   caliber: ArcheryCaliberProfile;
@@ -1179,9 +1341,10 @@ export function getCartridgeLabMeshBundle(
   caliber: CaliberProfile,
   cutaway: boolean
 ): CartridgeCutawayMeshBundle {
-  const safeCaliber: MetallicCaliberProfile = isCaliberProfile(caliber)
-    ? caliber
-    : '556_nato';
+  const safeCaliber: MetallicCaliberProfile | TankOrdnanceCaliberProfile =
+    isCaliberProfile(caliber) || isTankOrdnanceProfile(caliber)
+      ? caliber
+      : '556_nato';
   const key = `${safeCaliber}|${cutaway ? 'cut' : 'full'}`;
   const cached = cutawayCache.get(key);
   if (cached) return cached;
@@ -1198,13 +1361,18 @@ export function getCartridgeLabMeshBundle(
   const isCaseless = s.coreKind === 'caseless_telescoped';
   const isShotshell = s.coreKind === 'buckshot_wad_column';
   const isJsp = s.coreKind === 'jsp_soft_point';
+  const isTankRound = isTankOrdnanceProfile(safeCaliber);
 
   const pocketR = isCaseless
     ? 0.21
-    : Math.min(rRim * 0.44, caliber === '50_bmg' ? 0.41 : 0.265);
+    : isTankRound
+      ? Math.min(rRim * 0.24, 1.45)
+      : Math.min(rRim * 0.44, caliber === '50_bmg' ? 0.41 : 0.265);
   const pocketH = isCaseless
     ? 0.22
-    : Math.min(caseH * 0.14, caliber === '50_bmg' ? 0.34 : 0.21);
+    : isTankRound
+      ? Math.min(caseH * 0.08, 2.2)
+      : Math.min(caseH * 0.14, caliber === '50_bmg' ? 0.34 : 0.21);
   const flashHoleR = Math.max(0.042, pocketR * 0.28);
   const webFloorY = pocketH + Math.max(0.11, caseH * 0.065);
   const wallBaseT = isCaseless
@@ -1384,7 +1552,9 @@ export function getCartridgeLabMeshBundle(
     s.coreKind === 'dual_core_penetrator' ||
     s.coreKind === 'steel_core_lead_shirt' ||
     s.coreKind === 'subsonic_tungsten_ap' ||
-    s.coreKind === 'm33_heavy_steel';
+    s.coreKind === 'm33_heavy_steel' ||
+    s.coreKind === 'apfsds_sabot_dart' ||
+    s.coreKind === 'apcbc_he_shell';
 
   const boatTailH =
     s.coreKind === 'fmj_lead' || isJhp ? projLen * 0.06 : projLen * 0.16;

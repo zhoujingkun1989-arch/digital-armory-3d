@@ -1069,3 +1069,69 @@
   outline: 2px solid var(--color-accent-cyan);
   outline-offset: 2px;
 }
+
+/* WP-18 Heavy Armor Category Filter & Tank Ordnance Badges */
+.eb-category-filter-bar {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+}
+
+.eb-cat-pill {
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(15, 23, 42, 0.45);
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.eb-cat-pill:hover,
+.eb-cat-pill.is-active {
+  border-color: var(--color-accent-cyan);
+  color: var(--color-accent-cyan-text);
+  background: rgba(56, 189, 248, 0.16);
+}
+
+.eb-cat-pill.is-armor-cat.is-active,
+.eb-preset-pill.is-armor-preset {
+  border-color: rgba(245, 158, 11, 0.55);
+}
+
+.eb-preset-pill.is-armor-preset {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.eb-chip-code-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.eb-chip-armor-tag {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(245, 158, 11, 0.22);
+  color: #fde68a;
+  border: 1px solid rgba(245, 158, 11, 0.45);
+}
+
+:is([data-theme='light'], .theme-light) .eb-cat-pill {
+  background: rgba(241, 245, 249, 0.85);
+  color: #334155;
+}
+
+:is([data-theme='light'], .theme-light) .eb-chip-armor-tag {
+  background: rgba(245, 158, 11, 0.18);
+  color: #92400e;
+  border-color: rgba(180, 83, 9, 0.4);
+}

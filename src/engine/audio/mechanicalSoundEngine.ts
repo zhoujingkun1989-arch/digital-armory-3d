@@ -12,7 +12,12 @@ import type {
   WeaponId,
 } from '../../weapons/types';
 import { playbackClock } from '../clock/playbackClock';
-import { isArcheryCaliber, isArcheryWeapon } from '../physics/armoryPhysics';
+import {
+  isArcheryCaliber,
+  isArcheryWeapon,
+  isTankCaliber,
+  isTankWeapon,
+} from '../physics/armoryPhysics';
 import {
   ACOUSTIC_ENVIRONMENT_CONFIGS,
   ACOUSTIC_ENVIRONMENT_PRESETS,
@@ -47,7 +52,10 @@ export type MechanismAcousticStyle =
   | 'electric_gatling'
   | 'pulley_hyperburst'
   | 'compound_bow'
-  | 'compound_crossbow';
+  | 'compound_crossbow'
+  | 'tank_autoloader_cannon'
+  | 'tank_bustle_cannon'
+  | 'tank_ww2_cannon';
 
 export interface CaliberAcousticProfile {
   caliber: CaliberProfile;
@@ -294,6 +302,45 @@ export const CALIBER_ACOUSTIC_PROFILES: Record<
     brakeRoarGain: 0.34,
     casingRingHz: 3020,
     mechanismStyle: 'pulley_hyperburst',
+  },
+  '125mm_apfsds': {
+    caliber: '125mm_apfsds',
+    labelEn: '125mm DTC10-125 APFSDS-T',
+    labelZh: '125mm 三期钨合金尾翼稳定脱壳穿甲弹',
+    subFreqHz: 24,
+    punchDecaySec: 0.85,
+    blastTailSec: 1.45,
+    crackCutoffHz: 920,
+    peakGain: 1.0,
+    brakeRoarGain: 0.74,
+    casingRingHz: 620,
+    mechanismStyle: 'tank_autoloader_cannon',
+  },
+  '120mm_apfsds': {
+    caliber: '120mm_apfsds',
+    labelEn: '120×570mm NATO APFSDS-T',
+    labelZh: '120×570mm NATO 尾翼稳定脱壳穿甲弹',
+    subFreqHz: 26,
+    punchDecaySec: 0.82,
+    blastTailSec: 1.4,
+    crackCutoffHz: 980,
+    peakGain: 1.0,
+    brakeRoarGain: 0.7,
+    casingRingHz: 660,
+    mechanismStyle: 'tank_bustle_cannon',
+  },
+  '88mm_pzgr39': {
+    caliber: '88mm_pzgr39',
+    labelEn: '88×571mmR PzGr. 39 APCBC-HE',
+    labelZh: '88×571mmR PzGr. 39 被帽风帽穿甲榴弹',
+    subFreqHz: 31,
+    punchDecaySec: 0.72,
+    blastTailSec: 1.25,
+    crackCutoffHz: 1180,
+    peakGain: 0.96,
+    brakeRoarGain: 0.85,
+    casingRingHz: 840,
+    mechanismStyle: 'tank_ww2_cannon',
   },
 };
 
@@ -873,6 +920,14 @@ class ProceduralGunsmithSoundEngine {
       profile.mechanismStyle === 'compound_crossbow'
     ) {
       this.playArcheryFiringEvent(kind, profile, now, isSlowMo);
+      return;
+    }
+
+    if (
+      isTankWeapon(weaponId) ||
+      isTankCaliber(manifest.caliberProfile)
+    ) {
+      this.playTankCannonFiringEvent(kind, weaponId, profile, now, isSlowMo);
       return;
     }
 
@@ -1849,6 +1904,370 @@ class ProceduralGunsmithSoundEngine {
   }
 
   /**
+   * Procedural Web Audio synthesis for 1:1 Main Battle Tank main cannons
+   * (125mm ZPT-98 carousel autoloader, 120mm M256/Rh-120 bustle manual,
+   * and WWII 88mm KwK 36 twin-baffle brake): sub-bass chest-slam shockwaves
+   * (24–31 Hz), hydro-pneumatic recoil-buffer cylinder hiss, heavy forged
+   * sliding-wedge breech block clang, carousel motor / pneumatic blast-door
+   * cycle, and hollow steel stub-base / 88mm brass shell resonance.
+   */
+  private playTankCannonFiringEvent(
+    kind: FiringSoundEventKind,
+    weaponId: WeaponId,
+    profile: CaliberAcousticProfile,
+    now: number,
+    isSlowMo: boolean
+  ): void {
+    const isTiger = weaponId === 'tiger1';
+    const isAutoloader = weaponId === 'ztz99a';
+
+    switch (kind) {
+      case 'sear_release': {
+        if (isTiger) {
+          // Tiger I floor firing pedal mechanical solenoid / lever drop
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 980,
+            baseDecaySec: 0.048,
+            gainPeak: 0.28,
+            hardness01: 0.8,
+            massBodyHz: 145,
+            bus: 'mechanical',
+          });
+        } else {
+          // Modern MBT gunner Cadillac-grip electric solenoid fire-relay snap
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 2450,
+            baseDecaySec: 0.022,
+            gainPeak: 0.22,
+            hardness01: 0.9,
+            bus: 'mechanical',
+          });
+          this.emitModalPing({
+            startTime: now + 0.004,
+            duration: 0.05,
+            freqStart: 420,
+            freqEnd: 310,
+            type: 'triangle',
+            gainPeak: 0.12,
+            bus: 'mechanical',
+          });
+        }
+        break;
+      }
+
+      case 'primer_ignition': {
+        // 1. Electric / mechanical breech primer pulse
+        this.emitSteelWaveguideStrike({
+          startTime: now,
+          fundamentalHz: 1820,
+          baseDecaySec: 0.028,
+          gainPeak: 0.24,
+          hardness01: 0.88,
+          bus: 'mechanical',
+        });
+
+        const tBlast = now + (isSlowMo ? 0.032 : 0.008);
+
+        // 2. Earth-shaking 24–31 Hz tank main-cannon sub-bass chest shockwave
+        this.emitModalPing({
+          startTime: tBlast,
+          duration: profile.punchDecaySec,
+          freqStart: profile.subFreqHz * 3.1,
+          freqEnd: profile.subFreqHz,
+          type: 'sine',
+          gainPeak: profile.peakGain * 0.96,
+          bus: 'ballistic',
+        });
+
+        // 3. Saturated high-overpressure cannon muzzle crack
+        this.emitNoiseBurst({
+          startTime: tBlast,
+          duration: isSlowMo ? 0.16 : 0.11,
+          filterType: 'bandpass',
+          freqStart: profile.crackCutoffHz,
+          freqEnd: profile.crackCutoffHz * 0.42,
+          q: 0.85,
+          gainPeak: profile.peakGain * 0.95,
+          attack: 0.001,
+          saturate: true,
+          bus: 'ballistic',
+        });
+
+        // 4. Rolling 1.25–1.45s canyon artillery blast tail
+        this.emitNoiseBurst({
+          startTime: tBlast + 0.006,
+          duration: profile.blastTailSec,
+          filterType: 'lowpass',
+          freqStart: profile.crackCutoffHz * 0.78,
+          freqEnd: Math.max(58, profile.subFreqHz * 2.0),
+          q: 0.72,
+          gainPeak: 0.46 + profile.brakeRoarGain * 0.48,
+          attack: 0.005,
+          saturate: true,
+          bus: 'ballistic',
+        });
+
+        // 5. Heavy forged-steel gun cradle / breech ring shock vibration
+        this.emitSteelWaveguideStrike({
+          startTime: tBlast + 0.002,
+          fundamentalHz: isTiger ? 420 : 340,
+          baseDecaySec: 0.14,
+          gainPeak: 0.36,
+          hardness01: 0.68,
+          massBodyHz: 78,
+          bus: 'ballistic',
+        });
+
+        // 6. Tiger I twin-baffle 88mm KwK 36 lateral muzzle-brake overpressure slap
+        if (isTiger) {
+          this.emitNoiseBurst({
+            startTime: tBlast + 0.003,
+            duration: 0.13,
+            filterType: 'bandpass',
+            freqStart: 1520,
+            freqEnd: 460,
+            q: 1.4,
+            gainPeak: 0.62,
+            attack: 0.001,
+            saturate: true,
+            bus: 'ballistic',
+          });
+        }
+        break;
+      }
+
+      case 'gas_or_recoil': {
+        // High-pressure hydro-pneumatic recoil cylinder hiss + 2-ton cradle recoil thud + bore evacuator purge
+        const dur = isSlowMo ? 0.32 : 0.22;
+        this.emitNoiseBurst({
+          startTime: now,
+          duration: dur,
+          filterType: 'bandpass',
+          freqStart: 880,
+          freqEnd: 260,
+          q: 1.85,
+          gainPeak: 0.28,
+          attack: 0.008,
+          bus: 'mechanical',
+        });
+        this.emitSteelWaveguideStrike({
+          startTime: now + 0.004,
+          fundamentalHz: 240,
+          baseDecaySec: 0.13,
+          gainPeak: 0.34,
+          hardness01: 0.54,
+          massBodyHz: 68,
+          bus: 'mechanical',
+        });
+        break;
+      }
+
+      case 'cam_unlock': {
+        // Heavy vertical/horizontal sliding-wedge breech block dropping open
+        this.emitSteelWaveguideStrike({
+          startTime: now,
+          fundamentalHz: isTiger ? 540 : 440,
+          baseDecaySec: 0.095,
+          gainPeak: 0.36,
+          hardness01: 0.74,
+          massBodyHz: 92,
+          bus: 'mechanical',
+        });
+        this.emitSteelWaveguideStrike({
+          startTime: now + (isSlowMo ? 0.028 : 0.015),
+          fundamentalHz: isTiger ? 720 : 610,
+          baseDecaySec: 0.068,
+          gainPeak: 0.26,
+          hardness01: 0.82,
+          bus: 'mechanical',
+        });
+        break;
+      }
+
+      case 'extract_eject': {
+        // Metallic stub-base / full 88mm brass shell extraction & hollow bell clatter
+        this.emitSteelWaveguideStrike({
+          startTime: now,
+          fundamentalHz: isAutoloader ? 780 : isTiger ? 920 : 680,
+          baseDecaySec: 0.075,
+          gainPeak: 0.3,
+          hardness01: 0.78,
+          massBodyHz: 112,
+          bus: 'mechanical',
+        });
+        const f0 = profile.casingRingHz;
+        const ringStart = now + (isSlowMo ? 0.032 : 0.014);
+        const ringDur = isTiger ? 0.28 : 0.18;
+        for (let i = 0; i < BRASS_CASING_SHELL_PARTIALS.length; i++) {
+          const ratio = BRASS_CASING_SHELL_PARTIALS[i];
+          this.emitModalPing({
+            startTime: ringStart,
+            duration: ringDur / (1 + i * 0.42),
+            freqStart: f0 * ratio,
+            freqEnd: f0 * ratio * 0.99,
+            type: 'sine',
+            gainPeak: (isTiger ? 0.17 : 0.13) / (1 + i * 0.65),
+            bus: 'ballistic',
+          });
+        }
+        if (isAutoloader) {
+          // ZTZ-99A rear turret stub-ejector roof hatch snap-open clank
+          this.emitSteelWaveguideStrike({
+            startTime: now + (isSlowMo ? 0.045 : 0.022),
+            fundamentalHz: 1120,
+            baseDecaySec: 0.055,
+            gainPeak: 0.24,
+            hardness01: 0.82,
+            massBodyHz: 168,
+            bus: 'mechanical',
+          });
+        }
+        break;
+      }
+
+      case 'spring_feed': {
+        const dur = isSlowMo ? 0.24 : 0.14;
+        if (isAutoloader) {
+          // ZTZ-99A 22-round AZ carousel electric stepper motor whirr + two-stage chain rammer clatter
+          this.emitModalPing({
+            startTime: now,
+            duration: dur,
+            freqStart: 210,
+            freqEnd: 330,
+            type: 'triangle',
+            gainPeak: 0.22,
+            bus: 'mechanical',
+          });
+          this.emitNoiseBurst({
+            startTime: now + 0.008,
+            duration: dur * 0.9,
+            filterType: 'bandpass',
+            freqStart: 780,
+            freqEnd: 1420,
+            q: 4.2,
+            gainPeak: 0.2,
+            attack: 0.01,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + dur * 0.65,
+            fundamentalHz: 680,
+            baseDecaySec: 0.064,
+            gainPeak: 0.28,
+            hardness01: 0.76,
+            massBodyHz: 118,
+            bus: 'mechanical',
+          });
+        } else if (!isTiger) {
+          // M1A2 / Leopard 2A7 pneumatic armored bustle blast-door hiss + heavy 120mm round slide
+          this.emitNoiseBurst({
+            startTime: now,
+            duration: dur,
+            filterType: 'bandpass',
+            freqStart: 1380,
+            freqEnd: 560,
+            q: 2.6,
+            gainPeak: 0.22,
+            attack: 0.008,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + dur * 0.25,
+            fundamentalHz: 460,
+            baseDecaySec: 0.072,
+            gainPeak: 0.28,
+            hardness01: 0.72,
+            massBodyHz: 98,
+            bus: 'mechanical',
+          });
+        } else {
+          // Tiger I manual loader shoving 16 kg brass 88mm cartridge into Krupp breech tray
+          this.emitNoiseBurst({
+            startTime: now,
+            duration: dur,
+            filterType: 'bandpass',
+            freqStart: 1120,
+            freqEnd: 680,
+            q: 3.0,
+            gainPeak: 0.18,
+            attack: 0.01,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + dur * 0.55,
+            fundamentalHz: 840,
+            baseDecaySec: 0.058,
+            gainPeak: 0.25,
+            hardness01: 0.78,
+            massBodyHz: 132,
+            bus: 'mechanical',
+          });
+        }
+        break;
+      }
+
+      case 'battery_lockup': {
+        // Thunderous forged-steel sliding-wedge breech block slamming shut into battery
+        this.emitSteelWaveguideStrike({
+          startTime: now,
+          fundamentalHz: isTiger ? 460 : 380,
+          baseDecaySec: 0.095,
+          gainPeak: 0.36,
+          hardness01: 0.78,
+          massBodyHz: 86,
+          bus: 'ballistic',
+        });
+        this.emitSteelWaveguideStrike({
+          startTime: now + (isSlowMo ? 0.026 : 0.014),
+          fundamentalHz: isTiger ? 620 : 520,
+          baseDecaySec: 0.11,
+          gainPeak: 0.42,
+          hardness01: 0.88,
+          massBodyHz: 108,
+          bus: 'ballistic',
+        });
+        break;
+      }
+
+      case 'sear_reset': {
+        if (isTiger) {
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 1320,
+            baseDecaySec: 0.036,
+            gainPeak: 0.22,
+            hardness01: 0.84,
+            massBodyHz: 190,
+            bus: 'mechanical',
+          });
+        } else {
+          // Modern fire-control computer gun-ready electronic confirmation tone + breech micro-switch
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 1860,
+            baseDecaySec: 0.026,
+            gainPeak: 0.18,
+            hardness01: 0.86,
+            bus: 'mechanical',
+          });
+          this.emitModalPing({
+            startTime: now + 0.008,
+            duration: 0.055,
+            freqStart: 1680,
+            freqEnd: 1680,
+            type: 'sine',
+            gainPeak: 0.075,
+            bus: 'dry_only',
+          });
+        }
+        break;
+      }
+    }
+  }
+
+  /**
    * Synthesizes spent brass cartridge casing hitting the gunsmith bench / range floor
    * with velocity-scaled cylindrical C26000 brass shell modes + rim tip-over micro-clink.
    */
@@ -2017,6 +2436,30 @@ class ProceduralGunsmithSoundEngine {
 
     const now = ctx.currentTime + 0.001;
     const isPull = direction === 'pull' || direction === 'back';
+    if (isTankWeapon(useAppStore.getState().activeWeaponId)) {
+      // Heavy forged-steel tank breech inspection clank & hydraulic return
+      this.emitSteelWaveguideStrike({
+        startTime: now,
+        fundamentalHz: isPull ? 460 : 540,
+        baseDecaySec: isPull ? 0.075 : 0.095,
+        gainPeak: isPull ? 0.28 : 0.36,
+        hardness01: isPull ? 0.74 : 0.86,
+        massBodyHz: isPull ? 92 : 106,
+        bus: isPull ? 'mechanical' : 'ballistic',
+      });
+      this.emitNoiseBurst({
+        startTime: now + 0.004,
+        duration: 0.09,
+        filterType: 'bandpass',
+        freqStart: isPull ? 760 : 1120,
+        freqEnd: isPull ? 340 : 480,
+        q: 2.2,
+        gainPeak: 0.18,
+        attack: 0.006,
+        bus: 'mechanical',
+      });
+      return;
+    }
     if (isArcheryWeapon(useAppStore.getState().activeWeaponId)) {
       this.emitNoiseBurst({
         startTime: now,

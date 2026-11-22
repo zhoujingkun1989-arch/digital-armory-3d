@@ -1,0 +1,942 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "m1a2",
+  "generatedAt": "2026-11-20T16:25:00.000000+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "M1A2 SEP v3 Abrams Main Battle Tank",
+    "subtitle": "120mm L/44 M256 Smoothbore · Blast-Door Bustle & AGT1500 Gas Turbine",
+    "originCountry": "United States",
+    "weaponType": "Main Battle Tank",
+    "categoryLabel": "Main Battle Tank",
+    "actionMechanism": "120mm L/44 Semi-Automatic Vertical Falling-Wedge Breech · Sliding Blast-Door Bustle & 1,500 SHP Gas Turbine",
+    "statusLabel": "In Vault · Strippable",
+    "description": "The flagship armored spearhead of the United States Army, the M1A2 SEP v3 Abrams unites aviation-derived gas-turbine propulsion with unmatched crew survivability and lethal hunter-killer firepower. Inside its low-slung welded Desert CARC Tan hull and angular faceted turret sit layered Chobham and third-generation depleted-uranium NERA cheek armor, a 5.28-meter 120mm L/44 M256 smoothbore cannon firing 1,670 m/s M829A4 sabot darts, motorized sliding armored blast doors isolating 36 bustle rounds beneath roof blow-off vent panels, and the gleaming rear Honeywell AGT1500 1,500-shaft-horsepower multi-fuel gas turbine.",
+    "highlights": [
+      "120mm L/44 M256 Smoothbore Cannon w/ -300 mm Hydraulic Recoil & Falling-Wedge Breech",
+      "Knee-Actuated Armored Sliding Blast Doors, Blow-Off Roof Panels & 36-Rd M829A4 Bustle",
+      "7-Layer Chobham & Depleted-Uranium (DU) NERA Composite Turret Cheek Armor",
+      "Honeywell AGT1500 1,500 SHP Multi-Fuel Gas Turbine w/ Titanium Compressor & Copper Recuperator"
+    ],
+    "workbenchTitle": "M1A2 SEP v3 Abrams 1:1 3D Teardown & 120mm Blast-Door Reload Cycle",
+    "workbenchSubtitle": "4 Modular Groups · 26 Core 1:1 Nodes · 120mm M256 Recoil, Sliding Blast Doors, Chobham/DU Cheeks & AGT1500 Gas Turbine Simulation",
+    "cutawayLabel": "AGT1500 & Blast-Door Cutaway",
+    "cutawayTitle": "Switch to assembled 1:1 cutaway view to reveal the AGT1500 gas turbine, Chobham/DU composite cheeks, sliding armored blast doors, and 120mm M829A4 bustle rack",
+    "searchPlaceholder": "Search tank module / code (e.g. AGT1500, blast door, Chobham, M256, FC-03)...",
+    "firingMilestoneLabel": "Blast-Door M829A4 Reload",
+    "rateOfFire": "8-10 RPM (Manual Bustle Loader)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Combat Ready",
+        "subLabel": "0% Combat Ready",
+        "desc": "U.S. Army M1A2 SEP v3 Abrams main battle tank at true 1:1 scale (9,770 mm overall with 120mm L/44 M256 gun, 3,660 mm wide, 2,440 mm tall): Desert CARC Tan angular turret, ultra-sloped chisel glacis, CROWS-LP remote .50 cal station, and T158 Bigfoot tracks resting cleanly on deck."
+      },
+      "field_strip": {
+        "label": "Armor & Service Strip",
+        "subLabel": "30% Service Access",
+        "desc": "Armored brigade field-service access: lift the roof ammunition blow-off panels and slatted rear turbine engine deck, lower the modular heavy ballistic side skirts, and withdraw the 1,500 SHP Honeywell AGT1500 gas turbine and Allison X1100-3B cross-drive powerpack."
+      },
+      "powerpack_bustle": {
+        "label": "Turret, DU & Bustle",
+        "subLabel": "65% Turret & Bustle",
+        "desc": "Elevate the 24-ton angular turret off the 2.16-meter geared turret race ring to inspect the 7-layer Chobham and depleted-uranium NERA cheek armor, 120mm M256 gun recoil assembly, sliding armored blast doors, and the 36-round M829A4 honeycombed bustle rack."
+      },
+      "full_exploded": {
+        "label": "Full 26-Node 1:1 BOM",
+        "subLabel": "100% Full Exploded",
+        "desc": "Zero-overlap 1:1 exploded engineering showcase of all 26 M1A2 SEP v3 heavy armor assemblies: from the 5.28-meter 120mm smoothbore gun, CROWS-LP optics, Chobham/DU cheeks, blast doors, and titanium/copper AGT1500 turbine down to the 14 transverse torsion bars and 7 pairs of dual road wheels."
+      }
+    },
+    "firingPhases": {
+      "m1a2_phase_1_fire_ignition": {
+        "shortLabel": "Fire Command & Primer",
+        "title": "Phase 1 · Gunner Palm-Switch Command Fires 120mm Electric Primer",
+        "description": "After the digital fire-control computer solves laser range, crosswind, cant, and Muzzle Reference Sensor droop, squeezing the gunner's dual palm handles sends an electric pulse through the vertical breechblock to ignite the M829A4 combustible cartridge primer."
+      },
+      "m1a2_phase_2_sabot_launch": {
+        "shortLabel": "1,670 m/s Sabot Launch",
+        "title": "Phase 2 · 650 MPa Chamber Pressure Launches 120mm M829A4 DU Dart at 1,670 m/s",
+        "description": "Peak 650 MPa propellant pressure drives the depleted-uranium fin-stabilized sabot dart down the 5.28-meter chrome-lined M256 smoothbore tube, exiting the muzzle at 1,670 m/s (nearly Mach 5) while the concentric bore evacuator vents residual propellant fumes forward."
+      },
+      "m1a2_phase_3_gun_recoil": {
+        "shortLabel": "-300 mm Gun Recoil",
+        "title": "Phase 3 · 120mm Barrel, Breech & Guard Recoil -300 mm Compressing Dual Recuperators",
+        "description": "Over 12 megajoules of muzzle energy drive the M256 barrel, machined breech ring, and steel stub deflector rearward by -300 mm inside the armored mantlet cradle while twin hydraulic brakes and heavy forged helical recuperator springs compress to 59.5 percent."
+      },
+      "m1a2_phase_4_return_breech_drop": {
+        "shortLabel": "Return & Breech Drop",
+        "title": "Phase 4 · Recuperators Return Gun; Vertical Falling Wedge Drops -150 mm & Ejects Stub",
+        "description": "The compressed recuperator springs smoothly push the three-ton gun assembly back into battery. On counter-recoil, a semi-automatic cam drops the vertical wedge breechblock -150 mm and kicks the smoking metallic aft stub base into the rear steel deflector basket."
+      },
+      "m1a2_phase_5_blast_doors_open": {
+        "shortLabel": "Blast Doors Slide Open",
+        "title": "Phase 5 · Loader Knee-Switch Slides Armored Blast Doors Open 340 mm",
+        "description": "Confirming a clear chamber, the loader presses the knee switch to slide the heavy armored bustle blast doors 340 mm to the left while compressing the top fail-safe return spring, momentarily exposing the 36-round honeycombed 120mm M829A4 rack."
+      },
+      "m1a2_phase_6_round_ramming": {
+        "shortLabel": "M829A4 Breech Ram",
+        "title": "Phase 6 · Loader Extracts 984 mm M829A4 Round & Rams +196 cm Into Breech",
+        "description": "Showcasing the blistering four-second manual Abrams reload drill, the loader extracts a 20.9-kilogram M829A4 unitary cartridge from the bustle, aligns it on bore centerline, and rams it +196 cm cleanly through the open blast doors into the M256 chamber."
+      },
+      "m1a2_phase_7_lock_doors_shut": {
+        "shortLabel": "Breech Lock & Door Seal",
+        "title": "Phase 7 · Vertical Breech Snaps Closed & Return Spring Slams Blast Doors Shut",
+        "description": "As the cartridge rim trips the extractors, the vertical wedge breechblock snaps upward +150 mm to seal the breech. Releasing the knee switch allows the overhead return spring to slam the armored blast doors shut, restoring full compartmentalized protection."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "荒漠风暴与喷气铁骑：M1A2 SEP v3「艾布拉姆斯」的隔舱化革命与燃气轮机史诗",
+      "deck": "从 1973 年赎罪日战争后克莱斯勒豪赌 AGT1500 航空燃气轮机，到 120mm 滑膛炮、贫铀乔巴姆装甲与拯救无数车组的滑移隔爆门，艾布拉姆斯以革命性生存理念重新定义了现代陆战之王。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1972–1980",
+          "title": "废墟上的豪赌：XM1 竞标与 1,500 马力喷气燃气轮机的诞生",
+          "paragraphs": [
+            "二十世纪七十年代初，美德联合研制的 MBT-70 超级坦克因造价失控与液气悬挂故障惨遭下马，而 1973 年第四次中东战争中数以千计被反坦克导弹瞬间摧毁的坦克残骸，更是给五角大楼敲响了生死警钟。美国陆军迫切需要一款彻底推翻传统设计哲学的新一代主战坦克——它必须拥有抵御穿破甲弹正面直击的革命性复合装甲、超越敌方步兵战车的疾驰机动，以及在被击穿后仍能保住四名车组性命的极限生存架构。",
+            "在通用汽车与克莱斯勒防务分部展开的 XM1 决战中，几乎所有资深装甲专家都押注通用汽车成熟稳健的 1,500 马力柴油机方案。然而克莱斯勒首席工程师们却做出了一场惊世豪赌：他们向莱康明（今霍尼韦尔）定制了源自航空涡轴发动机的 AGT1500 燃气轮机。虽然燃气轮机在怠速时油耗偏高，但其体积仅相当于同功率 V12 柴油机的一半，重量骤减近吨，能吞咽喷气燃油、柴油甚至汽油，在零下四十度的欧洲严寒中无需预热一键启动，更能爆发出无与伦比的低速澎湃扭矩。",
+            "正是节省下来的巨量车体空间与重量配额，让工程师得以勾勒出艾布拉姆斯那具低矮凌厉的 82° 尖鼻焊接车体，并在炮塔前颊塞入源自英国神秘「伯灵顿」（乔巴姆）技术的厚重多层复合装甲。1980 年，首辆量产型 M1 正式以传奇装甲名将克莱顿·艾布拉姆斯将军之名列装美军，人类第一款大规模服役的燃气轮机主战坦克就此驰骋沙场。"
+          ],
+          "audioScript": "二十世纪七十年代，美军痛定思痛启动XM一主战坦克竞标。当对手押注传统柴油机时，克莱斯勒却豪赌霍尼韦尔一千五百马力AGT一五零零燃气轮机。这台航空衍生动力体积小巧、扭矩惊人，不仅赋予艾布拉姆斯喷气战机般的低沉啸叫与荒漠极速，更腾出宝贵重量塞入划时代的乔巴姆复合装甲。",
+          "audioUrl": "audio/m1a2/story_act1_zh.mp3",
+          "focusPartId": "m1a2_agt1500_turbine",
+          "focusPartLabel": "霍尼韦尔 AGT1500 1,500马力燃气轮机"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1981–1988",
+          "title": "隔舱化生存哲学：滑移隔爆门、泄压顶板与 120mm 滑膛炮跃升",
+          "paragraphs": [
+            "冷战坦克战场上最令车组闻风丧胆的噩梦，莫过于弹药架遭金属射流引燃引发的炮塔飞天惨剧。艾布拉姆斯的总设计师们以近乎偏执的工程严谨彻底重构了车内安全架构：他们将几乎全部主炮待发弹药移出乘员战斗室，集中封存于炮塔后延的大型装甲尾舱内，并在战斗室与弹药尾舱之间筑起一道厚重钢质防爆隔墙与电动滑移重装甲隔爆门。",
+            "这套隔舱化奇迹的精妙之处在于「疏堵结合」：平时装甲隔爆门被顶置螺旋回位簧严密压紧锁闭；装填时，装填手仅需用膝盖轻触电动开关，隔爆门瞬间向左侧滑开三百四十毫米，单发重弹抽出后松膝即轰然闭锁。与此同时，弹药尾舱正上方铺设三片由剪切螺栓固定的装甲泄压顶板——一旦尾舱被击穿发生殉爆，恐怖的火球与超压会在毫秒内冲飞顶部泄压板直冲云霄，而密闭的隔爆门则稳稳护住前方四名乘员全身而退。",
+            "1985 年，M1A1 迎来决定性的火力飞跃：原有 105mm 线膛炮被正式换装为引进德国莱茵金属工艺并强化的 120mm 44 倍径 M256 滑膛炮，搭配内嵌高密度贫铀网板的第二代重型乔巴姆装甲。半可燃药筒 120mm 贫铀脱壳穿甲弹与每分钟八至十发的精锐人工装填节拍相结合，铸就了令对手窒息的冷战铁拳。"
+          ],
+          "audioScript": "为了彻底终结坦克殉爆飞塔的噩梦，艾布拉姆斯开创了划时代的弹药隔舱化架构。全部待发一百二十毫米炮弹封存于尾舱之中，前方由膝控滑移装甲隔爆门严密隔绝，顶部则安装遇爆即飞的泄压顶板。一九八五年换装一百二十毫米M二五六滑膛炮与贫铀复合装甲后，M一A一正式化身冷战最致命的钢铁堡垒。",
+          "audioUrl": "audio/m1a2/story_act2_zh.mp3",
+          "focusPartId": "m1a2_blast_doors",
+          "focusPartLabel": "弹药尾舱电动滑移重装甲隔爆门"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1991–2003",
+          "title": "东经七十三度之战：沙漠风暴中的热像降维打击",
+          "paragraphs": [
+            "1991 年 2 月 26 日，伊拉克南部漫天黄沙的「沙漠风暴」行动中，一场被载入全球装甲史教科书的巅峰遭遇战在东经七十三度线爆发。在沙尘暴与焚烧油井浓烟将肉眼能见度压低至不足百米的绝境下，美军涂装沙漠 CARC 沙色与黑色倒 V 识别标的艾布拉姆斯连队凭借双向稳定 GPS 炮长热成像瞄准镜，如同幽灵般在逾两千五百米外清晰锁定了隐蔽在沙堤后的对手装甲师。",
+            "在令人窒息的二十三分钟高速行进间交火中，配备 M829A1「银弹」贫铀穿甲弹的 120mm M256 主炮展现出近乎违背常识的毁伤效能：1,670 米每秒的贫铀长杆弹芯以动能直接贯透两米厚的沙袋掩体与敌方主战坦克正面装甲。而在极少数遭近距反坦克火力直接命中炮塔前颊的战例中，高密度贫铀复合装甲将射流生生挡在乘员舱之外，创造了零敌火正面击穿导致车组阵亡的战争奇迹。",
+            "沙漠实战也暴露了单瞄准镜的局限——当炮长专注瞄准某一目标时，车长难以同步搜索下一个威胁。于是 1992 年诞生的 M1A2 在炮塔左顶加装了可 360° 独立旋转的 CITV 车长热成像周视仪，正式开启了车长寻敌、一键调炮交由炮长摧毁的「猎-歼」（Hunter-Killer）数字化火控新时代。"
+          ],
+          "audioScript": "一九九一年沙漠风暴东经七十三度之战，艾布拉姆斯在伸手不见五指的沙尘暴中凭借热成像仪展开降维打击。一百二十毫米贫铀穿甲弹以接近五倍音速在两公里外精准击穿沙堤与装甲，而厚重的贫铀乔巴姆前颊则硬生生抗住近距直击。战后诞生的M一A二加装车长独立热像周视仪，正式迈入猎歼协同火控时代。",
+          "audioUrl": "audio/m1a2/story_act3_zh.mp3",
+          "focusPartId": "m1a2_composite_armor",
+          "focusPartLabel": "第三代乔巴姆/贫铀(DU)多层 NERA 夹层复合前颊装甲"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "2015–至今",
+          "title": "钢铁数字战舰：M1A2 SEP v3 的信息化巅峰与工程绝响",
+          "paragraphs": [
+            "迈入二十一世纪二十年代，面对无人机侦察、攻顶反坦克导弹与数字化联合作战的全新战场，通用动力陆地系统为这头服役逾四十载的钢铁巨兽注入了最深度的进化——M1A2 SEP v3（正式军方代号 M1A2C）。全车换装更大功率发电机与辅助动力单元，座舱内全面铺设高清晰双青绿战术地图显控终端（FBCB2/JCR），并在炮尾引入弹药数据链，使 120mm 主炮可直接装定新一代多用途可编程榴弹的空爆引信。",
+            "在观瞄与近战自卫层面，SEP v3 在车长舱口集成低轮廓稳定式 CROWS-LP 遥控 M2HB 重机枪站，令车长无需探出装甲舱盖即可在舱内以热像精准压制城市巷战目标；车体前后则披挂经过全面升级的第三代下一代装甲模组，配合经过强化的 14 根扭杆悬挂与 T158 挂胶履带，稳稳托起高达 66.8 吨的现代陆战巨舰。",
+            "在数字军械库 1:1 真实尺度的三维实时纵剖视窗下，沿着中轴劈开九点七七米长的沙漠沙色装甲外壳——从前端七层斜置贫铀乔巴姆三明治、后坐三百毫米的 120mm 滑膛炮、滑移开启的黄黑警戒隔爆门，一直看到尾舱内闪耀着钛合金叶片与暖铜回热器光芒的 AGT1500 燃气轮机——每一寸机械构造都在诉说着人类重装甲工程的极致美学。"
+          ],
+          "audioScript": "步入二十一世纪，M一A二SEP第三阶段进化为真正的数字化陆地战舰。全车整合双青绿战术显控终端、炮弹空爆数据链、第三代复合装甲以及低轮廓CROWS遥控重机枪站，将六十六点八吨的钢铁巨兽武装到牙齿。在实时三维纵剖视窗里，隔爆门、贫铀夹层与燃气轮机共同铸就了现代重装甲工程的巅峰丰碑。",
+          "audioUrl": "audio/m1a2/story_act4_zh.mp3",
+          "focusPartId": "m1a2_crows_optics",
+          "focusPartLabel": "CROWS-LP 遥控重机枪站与猎歼双观瞄"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "隔舱化弹药尾舱、滑移隔爆门与顶置泄压板",
+          "tag": "车组生存性革命",
+          "summary": "将 36 发 120mm 整装弹彻底隔离于炮塔尾舱，平时由膝控电动滑移隔爆门与失效安全回位簧严密封锁；一旦尾舱遇袭爆燃，顶置剪切泄压板瞬间掀飞向上卸压，保护四名乘员毫发无损。",
+          "focusPartId": "m1a2_blast_doors",
+          "focusPartLabel": "弹药尾舱电动滑移重装甲隔爆门"
+        },
+        {
+          "id": "bt2",
+          "title": "霍尼韦尔 AGT1500 1,500 马力多燃料燃气轮机",
+          "tag": "航空级回热涡轴动力",
+          "summary": "采用 5 级钛合金轴流压气机与标志性铜-青铜环形褶皱废气回热器，以传统柴油机一半的体积爆发 1,500 轴马力与 3,754 N·m 澎湃扭矩，并兼容 JP-8、柴油与汽油多种燃料。",
+          "focusPartId": "m1a2_agt1500_turbine",
+          "focusPartLabel": "霍尼韦尔 AGT1500 燃气轮机"
+        },
+        {
+          "id": "bt3",
+          "title": "120mm L/44 M256 滑膛炮与第三代贫铀乔巴姆前颊",
+          "tag": "矛与盾的极致统一",
+          "summary": "5.28 米内镀硬铬滑膛身管以 650 MPa 膛压发射 1,670 m/s M829A4 贫铀穿甲弹；炮塔前颊空腔内斜置 7 层钢、陶瓷、贫铀合金网与弹性体 NERA 三明治阵列，构建顶级正面防护。",
+          "focusPartId": "m1a2_composite_armor",
+          "focusPartLabel": "乔巴姆/贫铀多层复合前颊装甲"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1973–1976",
+          "title": "XM1 决战落幕，克莱斯勒燃气轮机方案胜出",
+          "detail": "汲取中东战争血泪教训，美国陆军选定克莱斯勒搭载 AGT1500 燃气轮机与伯灵顿（乔巴姆）复合装甲的 XM1 方案。"
+        },
+        {
+          "year": "1980",
+          "title": "初代 M1 艾布拉姆斯正式列装美国陆军",
+          "detail": "俄亥俄州利马坦克厂交付首批搭载 105mm 炮、弹药隔舱化尾舱与 1,500 马力燃气轮机的量产型 M1。"
+        },
+        {
+          "year": "1985–1988",
+          "title": "M1A1 换装 120mm M256 滑膛炮与贫铀复合装甲",
+          "detail": "火力全面跃升至 120mm L/44 滑膛炮体系，M1A1HA 率先在前颊引入高密度贫铀网板强化抗穿破甲防护。"
+        },
+        {
+          "year": "1991",
+          "title": "沙漠风暴「东经七十三度之战」一战封神",
+          "detail": "逾 1,800 辆艾布拉姆斯在沙尘暴夜战中凭热成像与 M829A1 银弹大获全胜，创下无一被敌火正面击穿阵亡的神话。"
+        },
+        {
+          "year": "1992–2008",
+          "title": "M1A2 CITV 猎-歼火控与 SEP v1/v2 数字化迭代",
+          "detail": "新增车长 360° 独立热像仪、全数字化战场网络与第二代热像仪，在实战中不断强化防路边炸弹与城市战能力。"
+        },
+        {
+          "year": "2017–至今",
+          "title": "M1A2 SEP v3 (M1A2C) 现代重装巅峰服役",
+          "detail": "全面集成低轮廓 CROWS-LP 遥控武器站、弹药数据链、第三代复合装甲与大功率数字化座舱，稳坐当代陆战旗舰。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Desert Storm & The Jet-Powered Landship: Engineering the M1A2 SEP v3 Abrams",
+      "deck": "From Chrysler's audacious 1970s gamble on an aviation-derived 1,500 SHP gas turbine to compartmentalized sliding blast doors, Chobham depleted-uranium armor, and the 120mm M256 smoothbore gun, the Abrams redefined armored warfare.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1972-1980",
+          "title": "The Turbine Gamble: Project XM1 and the Birth of the AGT1500",
+          "paragraphs": [
+            "After the joint U.S.-German MBT-70 collapsed under runaway complexity and the 1973 Yom Kippur War demonstrated the devastating lethality of modern anti-tank missiles, the United States Army demanded a clean-sheet main battle tank. Survival—not merely thicker cast steel—became the supreme engineering imperative, alongside cross-country agility fast enough to outpace mechanized infantry fighting vehicles.",
+            "In the fiercely contested XM1 competition between General Motors and Chrysler Defense, conventional armored wisdom heavily favored GM's proven diesel engine. Chrysler's engineers stunned the Pentagon by betting the entire program on Honeywell's AGT1500—a 1,500-shaft-horsepower multi-fuel gas turbine featuring a five-stage titanium compressor and a compact copper-bronze recuperator. Half the physical volume of a comparable V12 diesel and nearly a ton lighter, the turbine started instantly in sub-zero European winters without preheating and unleashed massive low-end torque with a whisper-quiet jet whine.",
+            "Those saved tons and cubic meters directly enabled the Abrams' iconic razor-sharp 82-degree chisel glacis and deep hollow turret cheeks packed with British-pioneered Burlington—better known as Chobham—composite armor. Entering service in 1980 and named for General Creighton Abrams, the world's first mass-produced gas-turbine main battle tank rolled off the Lima, Ohio assembly line."
+          ],
+          "audioScript": "After the nineteen seventy three Yom Kippur War exposed the lethality of guided anti-tank missiles, the United States Army launched the XM one competition. While rivals backed conventional diesels, Chrysler gambled on Honeywell's fifteen hundred horsepower AGT fifteen hundred gas turbine. Compact, multi-fuel, and extraordinarily torquey, it freed crucial weight and volume for revolutionary Chobham composite armor.",
+          "audioUrl": "audio/m1a2/story_act1_en.mp3",
+          "focusPartId": "m1a2_agt1500_turbine",
+          "focusPartLabel": "Honeywell AGT1500 1,500 SHP Gas Turbine"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1981-1988",
+          "title": "The Survivability Revolution: Sliding Blast Doors, Blow-Off Panels & 120mm Firepower",
+          "paragraphs": [
+            "For decades, the deadliest threat inside any tank was catastrophic sympathetic detonation of its own onboard ammunition. The Abrams' designers broke that cycle forever through total ammunition compartmentalization. Nearly every ready main-gun cartridge was removed from the fighting floor and sealed inside an extended armored rear turret bustle separated from the four-man crew by thick armored steel and motorized sliding blast doors.",
+            "The system operates on fail-safe physics. Normally clamped tightly shut by an overhead return spring, the heavy armored doors slide 340 millimeters open only while the loader presses a dedicated knee switch, slamming shut again the split second a cartridge clears the rack. Directly overhead sit three shear-bolted armored blow-off roof panels: if an enemy warhead penetrates the bustle and ignites the propellant, the panels blow straight skyward in milliseconds, venting the entire fireball safely away from the protected crew.",
+            "In 1985, the M1A1 elevated offensive lethality to match its armor by up-gunning from the 105mm rifled cannon to the formidable 5.28-meter 120mm L/44 M256 smoothbore gun—developed from Rheinmetall's Rh-120 and strengthened at Watervliet Arsenal—paired with depleted-uranium mesh composite cheek inserts capable of defeating rival armor at extreme combat ranges."
+          ],
+          "audioScript": "To end catastrophic ammunition cook-offs forever, the Abrams sealed its ready 120 millimeter cartridges inside a rear turret bustle behind thick sliding armored blast doors. A loader taps a knee switch to open the doors for seconds at a time, while roof blow-off panels vent any blast harmlessly skyward. Paired with the 120 millimeter M two fifty six smoothbore gun in nineteen eighty five, the M one A one became an apex predator.",
+          "audioUrl": "audio/m1a2/story_act2_en.mp3",
+          "focusPartId": "m1a2_blast_doors",
+          "focusPartLabel": "Armored Sliding Blast Doors"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1991-2003",
+          "title": "The Battle of 73 Easting: Thermal Supremacy in Desert Storm",
+          "paragraphs": [
+            "On February 26, 1991, amid blinding sandstorms and burning oil smoke during Operation Desert Storm, armored cavalry troops flying U.S. Army Desert CARC Tan paint and bold black tactical chevrons collided with entrenched Iraqi Republican Guard brigades at the legendary Battle of 73 Easting. Visibility dropped below one hundred meters to the naked eye—yet through their stabilized Hughes Gunner's Primary Sight thermal imagers, Abrams gunners spotted glowing enemy hulls cleanly past 2,500 meters.",
+            "Over twenty-three furious minutes of fire-on-the-move combat, the 120mm M256 cannon firing M829A1 Silver Bullet depleted-uranium sabot darts at 1,670 meters per second tore straight through towering sand berms and enemy frontal armor alike. In the rare engagements where hostile rounds struck an Abrams head-on, the angled Chobham and depleted-uranium NERA cheek sandwich absorbed the kinetic blow without a single crew fatality from frontal penetration.",
+            "Desert combat also revealed one decisive way to move even faster: decoupling target search from target engagement. Unveiled in 1992, the M1A2 mounted an independent 360-degree Commander's Independent Thermal Viewer on the left turret roof, ushering in true digital Hunter-Killer combat where the commander acquires target number two while the gunner destroys target number one."
+          ],
+          "audioScript": "In February nineteen ninety one at the Battle of Seventy Three Easting, blinding desert sandstorms reduced visual sightlines to mere yards. Yet Abrams crews peering through stabilized thermal sights engaged targets beyond two thousand five hundred meters on the move, punching through berms with Mach five depleted-uranium darts. Soon after, the M one A two added a rotating commander thermal viewer to pioneer true hunter-killer fire control.",
+          "audioUrl": "audio/m1a2/story_act3_en.mp3",
+          "focusPartId": "m1a2_composite_armor",
+          "focusPartLabel": "Chobham & DU Composite Cheek Armor"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "2015-Present",
+          "title": "The Digital Landship: M1A2 SEP v3 in the Twenty-First Century",
+          "paragraphs": [
+            "Entering service across modern armored brigade combat teams, the M1A2 SEP v3—formally designated M1A2C—transforms the proven Abrams hull into a fully networked 66.8-ton digital landship. Upgraded power generation and an under-armor auxiliary power unit feed dual emerald-cyan tactical battle-management LCD consoles for commander and gunner, while an integrated Ammunition Data Link in the breech programs next-generation multi-purpose airburst rounds at the instant of loading.",
+            "Atop the commander's cupola sits the stabilized Low-Profile CROWS-LP remote weapon station armed with an M2HB .50 caliber heavy machine gun, letting the crew engage close-in urban threats under complete armor protection. Beneath the exterior, third-generation composite armor modules, upgraded heavy torsion bars, and T158 Bigfoot rubber-padded tracks sustain formidable speed across broken terrain.",
+            "Slicing our true 1:1 scale M1A2 SEP v3 open along its centerline cutaway exposes nearly ten meters of harmonious armored engineering: from the seven-layer Chobham and depleted-uranium cheek sandwich and recoiling 120mm smoothbore breech, past the sliding yellow-striped blast doors and 36-round M829A4 bustle, all the way aft to the gleaming titanium blades and copper recuperator of the AGT1500 gas turbine."
+          ],
+          "audioScript": "Today's M one A two SEP version three elevates the Abrams into a fully networked sixty six point eight ton digital landship. Upgrading electrical power, breech ammunition data links, next-generation composite armor, dual tactical displays, and a low-profile CROWS remote fifty caliber station keeps the platform dominant worldwide. Sliced open in real-time cutaway, its Chobham cheeks, blast doors, and copper-recuperator turbine showcase heavy armor engineering at its zenith.",
+          "audioUrl": "audio/m1a2/story_act4_en.mp3",
+          "focusPartId": "m1a2_crows_optics",
+          "focusPartLabel": "CROWS-LP & Hunter-Killer Optics"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Compartmentalized Ammo Bustle, Sliding Blast Doors & Blow-Off Roof Panels",
+          "tag": "Crew Survivability Breakthrough",
+          "summary": "Isolates 36 unitary 120mm rounds behind motorized sliding armored blast doors held closed by a fail-safe return spring; roof shear panels blow skyward to vent sympathetic detonation safely away from the crew.",
+          "focusPartId": "m1a2_blast_doors",
+          "focusPartLabel": "Armored Sliding Blast Doors"
+        },
+        {
+          "id": "bt2",
+          "title": "Honeywell AGT1500 1,500 SHP Multi-Fuel Recuperated Gas Turbine",
+          "tag": "Aviation-Derived Propulsion",
+          "summary": "Combines a five-stage titanium axial compressor with a signature copper-bronze annular recuperator heat exchanger, packing 1,500 SHP and 3,754 N-m torque into half a diesel's volume on JP-8, diesel, or gasoline.",
+          "focusPartId": "m1a2_agt1500_turbine",
+          "focusPartLabel": "Honeywell AGT1500 Gas Turbine"
+        },
+        {
+          "id": "bt3",
+          "title": "120mm L/44 M256 Smoothbore & Third-Gen Chobham / DU Cheek Armor",
+          "tag": "Apex Lethality & Protection",
+          "summary": "A 5.28-meter chrome-lined tube fires 1,670 m/s M829A4 DU penetrators at 650 MPa while seven angled steel, ceramic, depleted-uranium, and elastomer NERA cheek layers defeat modern kinetic and shaped-charge threats.",
+          "focusPartId": "m1a2_composite_armor",
+          "focusPartLabel": "Chobham & DU NERA Cheek Armor"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1973-1976",
+          "title": "XM1 Trials Won by Chrysler Gas-Turbine Concept",
+          "detail": "Following Yom Kippur War lessons, the U.S. Army selects Chrysler's AGT1500 turbine and Burlington (Chobham) composite armor prototype over rival diesel entries."
+        },
+        {
+          "year": "1980",
+          "title": "Original M1 Abrams Enters U.S. Army Service",
+          "detail": "Lima Army Tank Plant delivers initial 105mm-armed M1 production tanks featuring compartmentalized bustle stowage, sliding blast doors, and blow-off vent panels."
+        },
+        {
+          "year": "1985-1988",
+          "title": "M1A1 Up-Gunned to 120mm M256 & Depleted-Uranium Armor",
+          "detail": "Adopts the 120mm L/44 M256 smoothbore cannon alongside M1A1HA high-density depleted-uranium mesh composite turret cheek modules."
+        },
+        {
+          "year": "1991",
+          "title": "Operation Desert Storm & Battle of 73 Easting",
+          "detail": "Over 1,800 Abrams dominate blinding sandstorm night battles via stabilized thermal sights and 1,670 m/s M829A1 Silver Bullet DU penetrators."
+        },
+        {
+          "year": "1992-2008",
+          "title": "M1A2 Hunter-Killer CITV & SEP v1/v2 Digitization",
+          "detail": "Adds the 360-degree Commander's Independent Thermal Viewer, second-generation FLIR optics, and battlefield digital command networking."
+        },
+        {
+          "year": "2017-Present",
+          "title": "M1A2 SEP v3 (M1A2C) Flagship Modernization",
+          "detail": "Integrates CROWS-LP remote .50 cal station, breech Ammunition Data Link, third-generation armor modules, and upgraded power generation."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "m1a2_main_gun": {
+      "partId": "m1a2_main_gun",
+      "bomCode": "S-01",
+      "calloutLabelEn": "120mm M256 Smoothbore Gun",
+      "zh": {
+        "roleTag": "5,280mm 镀铬滑膛主炮 · 650 MPa 发射 1,670 m/s 贫铀穿甲弹",
+        "overview": "美军在德国莱茵金属 120mm 44 倍径滑膛炮基础上深度强化的 M256 主炮，全长 5.28 米，外包沙漠沙色/炭黑隔热护套并配同心抽烟装置与膛口基准校炮仪。",
+        "craftAndMaterial": "采用电渣重熔高强炮钢液压自紧与内膛硬铬电镀工艺，外部紧箍铝玻纤复合隔热套防止日照单侧热弯，膛口顶置激光光学基准仪（MRS）。",
+        "kinematicRole": "击发阶段 2 承受 650 MPa 膛压将 M829A4 加速至 1,670 m/s，阶段 3 随炮闩整体在防盾摇架内平稳后坐 -300 mm，阶段 4 在复进簧推动下精准归位。",
+        "designHighlight": "隔热护套配合膛口基准校炮仪可实时补偿热弯曲，使艾布拉姆斯在 2,500 米外高速行进间依旧保持惊人的首发命中率。",
+        "audioScript": "这门全长五点二八米的一百二十毫米M二五六滑膛主炮，是艾布拉姆斯的进攻铁拳。它身披隔热护套与同心抽烟装置，能以六百五十兆帕膛压将贫铀穿甲弹加速到每秒一千六百七十米，击发时连同炮尾整体向后平滑后坐三百毫米。",
+        "audioUrl": "audio/m1a2/parts/m1a2_main_gun_zh.mp3"
+      },
+      "en": {
+        "roleTag": "5.28m Chrome-Lined Smoothbore Launching 1,670 m/s DU Darts",
+        "overview": "Watervliet Arsenal's strengthened 120mm L/44 smoothbore main cannon clad in a Desert Tan thermal shroud with concentric bore evacuator and Muzzle Reference Sensor.",
+        "craftAndMaterial": "Autofrettaged electro-slag remelted ordnance steel with hard-chrome bore lining, aluminum-fiberglass thermal sleeve panels, steel clamp bands, and collimator mast.",
+        "kinematicRole": "Accelerates the M829A4 sabot dart to 1,670 m/s at 650 MPa in phase 2, recoils -300 mm rearward inside the mantlet in phase 3, and returns cleanly in phase 4.",
+        "designHighlight": "Thermal shrouding plus the muzzle-tip collimator sensor continuously corrects barrel droop so fire-on-the-move hits stay pinpoint past 2,500 meters.",
+        "audioScript": "This five point two eight meter 120 millimeter M two fifty six smoothbore cannon is the Abrams' lethal spearhead. Clad in thermal shrouds with a concentric bore evacuator and muzzle sensor, it launches depleted-uranium darts at sixteen seventy meters per second while recoiling three hundred millimeters aft.",
+        "audioUrl": "audio/m1a2/parts/m1a2_main_gun_en.mp3"
+      }
+    },
+    "m1a2_gun_mantlet": {
+      "partId": "m1a2_gun_mantlet",
+      "bomCode": "S-02",
+      "calloutLabelEn": "Armored Gun Mantlet",
+      "zh": {
+        "roleTag": "高厚复合装甲防盾 · 集成耳轴摇架、双驻退筒与并列机枪口",
+        "overview": "封闭炮塔正面炮口的重型装甲防盾与内部耳轴摇架总成，承托 120mm 主炮实现 -10° 至 +20° 高低双向稳定俯仰，并内置双同心液压驻退筒。",
+        "craftAndMaterial": "外部采用高硬度焊接复合装甲护盾与沙漠 CARC 防滑涂层，内部精加工双高强钢耳轴颊板、镀铬液压驻退活塞杆以及右侧 7.62mm M240 并列机枪射孔。",
+        "kinematicRole": "射击全程保持稳固耳轴支撑基准，以双液压节流驻退筒将逾 60 吨峰值后坐冲击柔顺限制在 300 mm 行程之内，确保炮塔稳定不剧烈仰跳。",
+        "designHighlight": "巧妙的同心式双驻退筒布置将炮尾占用空间压缩至最小，为右侧炮长与左侧装填手腾出宽裕作业通道。",
+        "audioScript": "这组厚重的主炮装甲防盾牢牢守护着炮塔正面开口，内部耳轴摇架托举着整门一百二十毫米主炮完成高精度双向稳定。内置双液压驻退筒将数十吨后坐冲击柔顺限制在三百毫米内，右侧还开有七点六二毫米并列机枪射孔。",
+        "audioUrl": "audio/m1a2/parts/m1a2_gun_mantlet_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Armored Rotor Shield w/ Trunnion, Dual Brakes & Coax Port",
+        "overview": "Heavy external armored gun shield and internal trunnion cradle supporting the 120mm cannon through -10 to +20 degrees stabilized elevation alongside twin recoil brakes.",
+        "craftAndMaterial": "High-hardness welded composite armor mask finished in Desert CARC Tan, hardened steel trunnion cheeks, chrome hydraulic brake rods, and right-side M240 coaxial port.",
+        "kinematicRole": "Remains anchored as the stabilized elevation pivot while its concentric hydraulic brake cylinders tame over 60 tons of peak firing recoil within a 300 mm stroke.",
+        "designHighlight": "Concentric brake packaging minimizes turret intrusion, maximizing safe operating elbow room for both gunner and manual loader.",
+        "audioScript": "This heavy armored gun mantlet shields the turret's central aperture while its internal trunnion cradle stabilizes the 120 millimeter cannon across rough ground. Twin concentric hydraulic recoil brakes absorb over sixty tons of firing force, with a coaxial 7.62 millimeter machine gun port beside the bore.",
+        "audioUrl": "audio/m1a2/parts/m1a2_gun_mantlet_en.mp3"
+      }
+    },
+    "m1a2_recoil_springs": {
+      "partId": "m1a2_recoil_springs",
+      "bomCode": "S-03",
+      "calloutLabelEn": "Dual Recuperator Springs",
+      "zh": {
+        "roleTag": "粗丝锻钢双螺旋复进簧 · 吸收 300mm 后坐并推炮归位",
+        "overview": "对称套装于 120mm M256 主炮摇架左右两侧的一对巨型高刚度合金弹簧钢螺旋复进簧，负责储存后坐动能并驱动重逾三吨的炮身复进复位。",
+        "craftAndMaterial": "采用大直径 28 mm 淬火油回火高疲劳合金弹簧钢丝热卷成型，后端稳固顶抵静止座圈支点，前端与炮身复进箍精准联动。",
+        "kinematicRole": "阶段 3 随 M256 主炮 -300 mm 后坐由自由长急剧压缩至 59.5%，阶段 4 平顺释能推动炮管与炮尾精准复进归零，零弹跳完成复位。",
+        "designHighlight": "双联对称布局彻底消除偏心弯矩，即使在高仰角对山脊目标射击时也能保证炮身丝滑快速复进。",
+        "audioScript": "位于主炮摇架两侧的这两根巨型锻钢螺旋复进簧，是主炮平稳复位的力量源泉。开火瞬间，它们随一百二十毫米炮身向后急剧压缩三百毫米蓄能，随即平稳释放弹力，将重逾三吨的炮管与炮尾稳稳推回待击位置。",
+        "audioUrl": "audio/m1a2/parts/m1a2_recoil_springs_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Twin Heavy Forged Helical Coils Driving 300 mm Counter-Recoil",
+        "overview": "A matched pair of heavy forged helical recuperator springs flanking the M256 gun cradle, storing recoil energy to push the three-ton cannon assembly smoothly back into battery.",
+        "craftAndMaterial": "Hot-wound 28 mm diameter quenched-and-tempered alloy spring steel coils anchored symmetrically at Z = +/-260 mm to prevent lateral binding.",
+        "kinematicRole": "Compresses smoothly from 100 percent to 59.5 percent length during the -300 mm gun recoil in phase 3, then expands in phase 4 to restore the cannon to battery.",
+        "designHighlight": "Symmetrical dual-coil geometry eliminates off-axis cradle torque so counter-recoil stays crisp even at maximum gun elevation.",
+        "audioScript": "Flanking the gun cradle are twin heavy forged helical recuperator springs built from thick alloy wire. During phase three they compress cleanly by three hundred millimeters as the cannon recoils, then expand smoothly to drive the three-ton barrel and breech back into battery.",
+        "audioUrl": "audio/m1a2/parts/m1a2_recoil_springs_en.mp3"
+      }
+    },
+    "m1a2_stub_deflector": {
+      "partId": "m1a2_stub_deflector",
+      "bomCode": "S-04",
+      "calloutLabelEn": "Breech Guard & Stub Chute",
+      "zh": {
+        "roleTag": "炮尾后坐防撞护栏 · 定向接住炽热 120mm 金属底火盘",
+        "overview": "安装于 M256 炮尾后方的重型钢制双侧防撞护架与底部弧形金属弹底收集滑槽，是战斗室内不可或缺的乘员安全防线。",
+        "craftAndMaterial": "高强冷轧钢板冲压焊接侧护围搭配抛光不锈钢弧面偏转滑槽与镂空底篮，表面具备高耐热与防刮擦磨损性能。",
+        "kinematicRole": "阶段 3 随 120mm 主炮同步后坐 -300 mm 并复进；阶段 4 立楔炮闩下落抛壳时，精准截住炽热的 M829A4 金属底火盘将其安全导入炮塔底筐。",
+        "designHighlight": "兼顾高强物理防撞隔断与高温弹底导流双重使命，让装填手在狭窄摇晃的战斗室内以 4 秒一发极速作业无后顾之忧。",
+        "audioScript": "紧贴炮尾后方的这组钢制护架与不锈钢收集槽，堪称装填手的贴身保镖。它不仅在主炮猛烈后坐三百毫米时隔离炮尾防止撞伤乘员，更在落闩瞬间稳稳兜住炽热的金属底火盘，将其安全导向炮塔底部。",
+        "audioUrl": "audio/m1a2/parts/m1a2_stub_deflector_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Crew Recoil Protection Cage & Spent Stub-Case Catcher Chute",
+        "overview": "Heavy tubular and plate steel breech recoil guard paired with a curved stainless deflector chute directly behind the M256 breech ring.",
+        "craftAndMaterial": "Welded high-strength steel side guard rails coupled to a brushed stainless deflector tray and slatted lower stub-case catch basket.",
+        "kinematicRole": "Recoils -300 mm in unison with the barrel and breech in phase 3, then catches and channels the hot ejected 120mm metallic stub base safely downward in phase 4.",
+        "designHighlight": "Protects commander and loader limbs during violent recoil while keeping scorching spent stub bases clear of the turret floor.",
+        "audioScript": "Mounted right behind the breech ring is the steel recoil guard and stainless stub-case deflector chute. It shields the commander and loader from three hundred millimeters of sudden breech travel while catching every scorching 120 millimeter metallic stub base ejected after firing.",
+        "audioUrl": "audio/m1a2/parts/m1a2_stub_deflector_en.mp3"
+      }
+    },
+    "m1a2_hull_shell": {
+      "partId": "m1a2_hull_shell",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Welded Armored Hull",
+      "zh": {
+        "roleTag": "7,930mm 尖鼻焊接车体 · 82° 超大倾角首上与中空纵剖装甲壁",
+        "overview": "全长 7.93 米的 M1A2 SEP v3 焊接复合装甲主车体壳体，以标志性低矮尖楔车首、82° 超大倾角首上装甲与沙漠 CARC 沙色「3-69 AR / B-21」军标喷涂闻名于世。",
+        "craftAndMaterial": "高硬度轧制均质装甲钢（RHA）与前部复合装甲夹层精焊成型，外覆防化学毒剂哑光沙漠 CARC 沙色涂层，前部配备防撞大灯架与重型牵引环。",
+        "kinematicRole": "作为整车刚性承力与爆炸图原点基准，内部中空划分前驾驶舱、中战斗室与后置燃气轮机动力舱；开启 [C] 纵剖面清晰展现 160–200 mm 装甲壁厚。",
+        "designHighlight": "82° 极限大倾角首上板使正面高速穿甲弹极易产生跳弹，大幅降低车体高度同时兼顾半仰卧驾驶舱空间。",
+        "audioScript": "这具全长七点九三米的焊接装甲车体，构成了艾布拉姆斯的钢铁脊梁。它拥有极其锋利的八十二度大倾角尖鼻首上，身披正宗美军沙漠沙色防化涂装与三杠六十九装甲团编号；开启纵剖面即可穿透厚实的装甲壁，一览全车纵深布局。",
+        "audioUrl": "audio/m1a2/parts/m1a2_hull_shell_zh.mp3"
+      },
+      "en": {
+        "roleTag": "7.93m Hollow Welded Hull w/ 82-Deg Chisel Glacis & CARC Tan",
+        "overview": "The 7,930 mm hollow welded armored chassis of the M1A2 SEP v3 Abrams, featuring an iconic 82-degree sloped chisel nose, brush-guarded headlights, tow shackles, and 3-69 AR / B-21 stencils.",
+        "craftAndMaterial": "Welded rolled homogeneous armor steel enclosing forward composite armor pockets, finished in matte Desert CARC Tan chemical-resistant coating with anti-slip deck texture.",
+        "kinematicRole": "Serves as the stationary structural anchor uniting the forward driver station, central turret well, and rear turbine bay; slices open cleanly in cutaway mode to show true wall thickness.",
+        "designHighlight": "Extreme 82-degree upper glacis sloping maximizes ricochet potential while keeping overall hull roof height remarkably low at 1.32 meters.",
+        "audioScript": "This seven point nine three meter hollow welded hull forms the armored spine of the Abrams. Finished in authentic U.S. Army Desert CARC Tan with 3-69 Armored Regiment markings, its razor-sharp eighty two degree chisel glacis deflects incoming fire while slicing open cleanly in cutaway view.",
+        "audioUrl": "audio/m1a2/parts/m1a2_hull_shell_en.mp3"
+      }
+    },
+    "m1a2_side_skirts": {
+      "partId": "m1a2_side_skirts",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Ballistic Side Skirts",
+      "zh": {
+        "roleTag": "7 段铰接式重型防弹裙板 · 抗破甲 NERA 与黑色倒 V 战术标",
+        "overview": "覆于左右两侧行走悬挂上缘的七段模块化铰接防弹侧裙板，将整车防护宽度延展至 3.66 米，表面喷涂醒目的美军沙漠作战黑色战术「^」识别标与「3-69 AR / B-21」。",
+        "craftAndMaterial": "前两块正对驾驶员与战斗室的裙板采用加厚非爆炸反应（NERA）复合装甲板，后五块采用高强防弹钢与重型顶置翻折铰链，表面带有荒漠沙尘包浆。",
+        "kinematicRole": "标记为纵剖外壳件，开启 [C] 纵剖面时右侧裙板同步剖隐；野战勤务检修时可逐块向上翻起，迅速暴露负重轮与托带轮。",
+        "designHighlight": "以模块化快换结构在前部关键舱段提供强悍的抗 RPG 与破甲弹侧向间隙防护，兼顾战地快速换件维护。",
+        "audioScript": "悬挂在车体两侧的七段式重型防弹侧裙板，宛如披挂在战马肋部的铁甲。前两块加厚复合装甲板专门拦截侧向破甲射流，中段喷印着海湾战争以来标志性的美军黑色倒V战术识别标，战地向上翻折即可轻松检修履带。",
+        "audioUrl": "audio/m1a2/parts/m1a2_side_skirts_zh.mp3"
+      },
+      "en": {
+        "roleTag": "7-Panel Modular Ballistic Skirts w/ Black Tactical Chevron",
+        "overview": "Seven hinged modular armored skirt panels per flank shielding the suspension and lower hull sides, stenciled with U.S. Army black coalition chevrons and 3-69 AR / B-21 unit markings.",
+        "craftAndMaterial": "Extra-thick forward NERA composite panels over the crew bay transitioning to high-hardness ballistic steel aft, coated in weathered Desert CARC Tan.",
+        "kinematicRole": "Marked as an exterior cutaway shell so section view cleanly removes the right skirts; lowers smoothly in disassembly to expose the suspension bay.",
+        "designHighlight": "Detonates shaped-charge RPGs and anti-tank rockets well outside the main hull wall while flipping open individually for rapid track servicing.",
+        "audioScript": "Protecting both flanks are seven hinged modular ballistic side skirts carrying the unmistakable U.S. Army black tactical chevron. Extra-thick composite forward panels guard the crew compartment against shaped-charge warheads, while individual hinges swing upward for field track maintenance.",
+        "audioUrl": "audio/m1a2/parts/m1a2_side_skirts_en.mp3"
+      }
+    },
+    "m1a2_road_wheels": {
+      "partId": "m1a2_road_wheels",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Road Wheels & Sprockets",
+      "zh": {
+        "roleTag": "7 对双盘锻铝挂胶负重轮 · 后置 11 齿主动轮与前置诱导轮",
+        "overview": "每侧七组双盘挂胶重型负重轮、后置 11 齿淬火钢主动链轮、前置液压张紧诱导轮及三组上托带轮，构成支撑 66.8 吨全重的强悍履带行走底盘。",
+        "craftAndMaterial": "负重轮主体采用轻量化高强锻造铝合金轮盘配重型螺栓轴盖与厚层硫化耐磨橡胶轮缘，后主动轮采用高耐磨渗碳合金钢齿圈。",
+        "kinematicRole": "精准贴合嵌套于 T158 履带环内腔，将 X1100-3B 传动箱输出的巨额扭矩转化为 67 km/h 公路与 48 km/h 越野机动能力。",
+        "designHighlight": "七对大直径双轮设计极大优化了 66.8 吨重型车体的接地压力分布，确保松软沙地与泥泞坡道依然步履稳健。",
+        "audioScript": "每侧七对双盘重型负重轮、后置十一齿主动链轮与前置诱导轮，稳稳托起了六十六点八吨的钢铁巨兽。高强锻铝轮盘包覆厚实硫化橡胶轮缘，将燃气轮机与传动箱的澎湃扭矩转化为每小时六十七公里的荒漠狂飙速度。",
+        "audioUrl": "audio/m1a2/parts/m1a2_road_wheels_zh.mp3"
+      },
+      "en": {
+        "roleTag": "7 Pairs Dual Forged Road Wheels, 11-Tooth Sprockets & Idlers",
+        "overview": "Fourteen dual-disc rubber-rimmed forged road wheels paired with rear 11-tooth drive sprockets, front tensioning idlers, and upper return rollers supporting 66.8 tons.",
+        "craftAndMaterial": "High-strength forged aluminum hubs painted in Desert CARC Tan with vulcanized rubber tires, bolted steel hubcaps, torsion swingarms, and hardened steel sprocket rings.",
+        "kinematicRole": "Rides cleanly inside the T158 track loops, transmitting Allison X1100 final-drive torque to propel the Abrams up to 67 km/h on roads.",
+        "designHighlight": "Seven closely spaced dual-wheel stations spread massive combat weight evenly across soft desert sand and broken cross-country terrain.",
+        "audioScript": "Seven pairs of dual-disc forged aluminum road wheels, rear eleven-tooth steel drive sprockets, and front tensioning idlers carry the Abrams' sixty six point eight ton combat weight. Thick rubber tires smooth high-speed desert runs while keeping ground pressure remarkably balanced.",
+        "audioUrl": "audio/m1a2/parts/m1a2_road_wheels_en.mp3"
+      }
+    },
+    "m1a2_tracks_left": {
+      "partId": "m1a2_tracks_left",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Left T158 Bigfoot Track",
+      "zh": {
+        "roleTag": "635mm 宽幅 T158 双销挂胶履带 · 精确贴合展厅基准地面",
+        "overview": "装备于车体左侧（Z = -146 cm）的 635 mm 宽幅美军制式 T158 “大脚怪”双销式挂胶履带，底缘精确平贴于 Y = -120.0 cm 展厅地面。",
+        "craftAndMaterial": "高韧锻钢履带骨架嵌装双块可快速拆换的八角形高耐磨硫化橡胶履带垫块，配高强度双销橡胶衬套、中心诱导齿与端联器。",
+        "kinematicRole": "在纵剖视图下保持完整展示左侧行走姿态；100% 爆炸拆解时向左侧下方顺滑分离，清晰露出全部七对负重轮轮廓。",
+        "designHighlight": "单销螺栓快换胶块设计将野战履带翻新工时缩短一半以上，同时显著降低公路高速行驶振动并保护铺装路面。",
+        "audioScript": "这是位于左侧的T一五八大脚怪双销挂胶履带，宽达六百三十五毫米。每节锻钢履带板都嵌装了可快速更换的高耐磨硫化橡胶块，既能在松软沙漠中抓地疾驰，又大幅降低了重型坦克高速行军时的车体震动。",
+        "audioUrl": "audio/m1a2/parts/m1a2_tracks_left_zh.mp3"
+      },
+      "en": {
+        "roleTag": "635 mm Wide T158 Double-Pin Track w/ Replaceable Rubber Pads",
+        "overview": "Left-flank 635 mm wide U.S. Army T158 Bigfoot double-pin rubber-padded track belt resting cleanly on the Y = -120.0 cm museum ground plane.",
+        "craftAndMaterial": "Forged alloy steel track shoes fitted with bolted octagonal vulcanized rubber road pads, rubber-bushed twin pins, steel end-connectors, and center guide horns.",
+        "kinematicRole": "Remains visible during right-side cutaway to preserve ground-contact reference, separating laterally and downward in full exploded mode.",
+        "designHighlight": "Individually replaceable rubber pads slash field overhaul time while dampening vibration and protecting paved highways during rapid road marches.",
+        "audioScript": "Spanning six hundred thirty five millimeters wide, the left T one fifty eight Bigfoot track uses forged double-pin steel links fitted with bolted rubber road pads. It lowers ground pressure over loose desert sand while cutting road vibration at highway speeds.",
+        "audioUrl": "audio/m1a2/parts/m1a2_tracks_left_en.mp3"
+      }
+    },
+    "m1a2_tracks_right": {
+      "partId": "m1a2_tracks_right",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Right T158 Bigfoot Track",
+      "zh": {
+        "roleTag": "右侧 635mm T158 挂胶履带 · 纵剖模式下透明隐藏展露悬挂",
+        "overview": "对称安装于车体右侧（Z = +146 cm）的 T158 “大脚怪”双销挂胶履带，精确承托右侧七对负重轮并与左侧履带共同构成 3.66 米稳固接地跨距。",
+        "craftAndMaterial": "与左侧履带采用同等军规锻钢骨架、耐磨挂胶块与端联结构，外缘呈现逼真的荒漠沙尘与钢齿磨亮微痕。",
+        "kinematicRole": "专门标记为纵剖外壳（isShell），按下 [C] 进入纵剖面时随右侧裙板同步隐去，让观者毫无遮挡地欣赏车底 14 根扭杆与动力包布局。",
+        "designHighlight": "高强度中心诱导齿在陡坡急转弯时牢牢咬合双盘负重轮中缝，极大降低重装高速机动的脱链风险。",
+        "audioScript": "右侧对称布置的T一五八挂胶履带与左侧共同撑起稳固的接地跨距。为了让你在实时纵剖模式下毫无遮挡地观察车底扭杆与负重轮细节，这条右侧履带会在开启剖视时随侧裙一并平滑隐藏。",
+        "audioUrl": "audio/m1a2/parts/m1a2_tracks_right_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Right 635 mm T158 Track Belt · Auto-Slices Open in Cutaway",
+        "overview": "Symmetrical right-flank T158 Bigfoot rubber-padded double-pin track belt mating flush with the ground deck and framing the seven right-side dual road wheels.",
+        "craftAndMaterial": "Identical forged steel link geometry, bolted octagonal rubber road pads, end connectors, and sand-dusted desert weathering.",
+        "kinematicRole": "Flagged as a cutaway shell so pressing C cleanly hides the right track belt, revealing the suspension, lower hull floor, and torsion bar array unobstructed.",
+        "designHighlight": "Deep center guide horns track cleanly between the dual road-wheel discs to prevent thrown tracks during high-speed pivot turns.",
+        "audioScript": "Mirroring the left run, the right T one fifty eight Bigfoot track anchors the tank cleanly on the deck. Marked as an exterior cutaway shell, it slices cleanly away in section view so you can inspect the torsion bars and suspension bay completely unobstructed.",
+        "audioUrl": "audio/m1a2/parts/m1a2_tracks_right_en.mp3"
+      }
+    },
+    "m1a2_engine_deck": {
+      "partId": "m1a2_engine_deck",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Turbine Engine Deck",
+      "zh": {
+        "roleTag": "防破片进气百叶装甲顶盖 · 尾部红黄 DANGER JET BLAST 警示",
+        "overview": "封闭车体后部 AGT1500 燃气轮机与 X1100 传动舱的重型可吊装百叶装甲顶盖及尾部防弹排风格栅，尾部醒目喷印红黄「DANGER — JET BLAST / EXHAUST」。",
+        "craftAndMaterial": "重型防弹钢框架内嵌数十道防破片倾角进气与散热百叶格栅，外覆沙漠 CARC 沙色与高耐热暗灰排风百叶，顶部警示标牌实行 UV 防火墙清晰喷涂。",
+        "kinematicRole": "标记为纵剖外壳件，开启 [C] 纵剖面立即揭开动力舱右半顶盖直视 AGT1500 涡轮；一级勤务拆解时向上后方整体吊离，支持 30 分钟野战换发。",
+        "designHighlight": "特殊倾角迷宫式百叶既保障燃气轮机巨量进气与逾 500°C 高温尾流高效排出，又可阻挡炮弹破片与轻武器直击涡轮核心。",
+        "audioScript": "覆盖车体后部的这组装甲动力舱盖板布满倾角防破片进气百叶，尾部更喷涂着醒目的红黄喷气尾流警告标牌。因为燃气轮机排出的尾流超过五百摄氏度，步兵绝不可紧贴车尾；整体吊离盖板后，野战三十分钟即可更换整套动力包。",
+        "audioUrl": "audio/m1a2/parts/m1a2_engine_deck_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Ballistic Intake Louver Deck w/ Crimson-Yellow JET BLAST Stencil",
+        "overview": "Removable rear armored engine deck housing ballistic intake louvers, cooling grilles, and the iconic rear turbine exhaust header marked DANGER JET BLAST / EXHAUST.",
+        "craftAndMaterial": "Ballistic steel deck rails framing angled splinter-proof cooling louvers, dark heat-resistant exhaust slats, and a high-contrast UV-firewalled warning plate.",
+        "kinematicRole": "Marked as an exterior shell to slice open cleanly in cutaway; lifts aft and upward in stage-one field maintenance for rapid 30-minute powerpack swaps.",
+        "designHighlight": "Baffled louver angles admit massive clean airflow for the 1,500 SHP gas turbine while deflecting artillery splinters and warning infantry clear of 500-degree exhaust.",
+        "audioScript": "Capping the rear hull is the removable armored engine deck lined with angled ballistic intake louvers and a bold crimson and yellow Danger Jet Blast warning plate. Lifting this deck lets maintenance crews swap the entire gas turbine powerpack in thirty minutes.",
+        "audioUrl": "audio/m1a2/parts/m1a2_engine_deck_en.mp3"
+      }
+    },
+    "m1a2_torsion_bars": {
+      "partId": "m1a2_torsion_bars",
+      "bomCode": "F-07",
+      "calloutLabelEn": "14 Transverse Torsion Bars",
+      "zh": {
+        "roleTag": "14 根高强预扭弹簧钢轴 · 赋予 381 mm 越野负重轮动行程",
+        "overview": "横贯车体底部装甲夹层的 14 根高强度合金弹簧钢扭杆（左右七对交错布置），搭配第 1、2、7 轮位旋转叶片式液压减振器，构成全车弹性悬挂核心。",
+        "craftAndMaterial": "采用超高强度真空熔炼弹簧钢精密磨削并经表面喷丸强化与预扭处理，两端铣出高载荷渐开线花键插入车壁锚座与摆臂。",
+        "kinematicRole": "将越野颠簸冲击转化为全宽钢轴的弹性扭转变形，配合旋转减振器迅速抑制车体俯仰晃动，让 120mm 主炮双向稳定器发挥极致精度。",
+        "designHighlight": "381 mm 超大负重轮动行程结合高刚度升级扭杆，使 66.8 吨的 SEP v3 依然拥有媲美轻型越野战车的平顺高速贴地性能。",
+        "audioScript": "隐藏在车底装甲夹层里的这十四根高强度钢质横向扭杆，是艾布拉姆斯高速越野平顺如毯的秘密。每根扭杆横贯车底，配合关键轮位的旋转液压减振器，提供高达三百八十一毫米的负重轮行程，让火控在戈壁狂飙时稳如磐石。",
+        "audioUrl": "audio/m1a2/parts/m1a2_torsion_bars_zh.mp3"
+      },
+      "en": {
+        "roleTag": "14 High-Strength Steel Torsion Shafts & Rotary Shock Dampers",
+        "overview": "Fourteen staggered full-width high-strength alloy steel torsion bars anchored across the lower hull floor, paired with rotary hydraulic dampers at stations one, two, and seven.",
+        "craftAndMaterial": "Shot-peened vacuum-melted spring steel shafts with splined anchor sockets and heavy cast rotary hydraulic damper housings.",
+        "kinematicRole": "Twists elastically under road-wheel articulation to absorb violent terrain shock across 381 mm of wheel travel while dampers suppress hull pitch.",
+        "designHighlight": "Upgraded high-stiffness SEP v3 torsion bars smoothly support 66.8 tons of armor and electronics at fierce off-road assault speeds.",
+        "audioScript": "Spanning the entire lower hull floor are fourteen high-strength steel transverse torsion bars teamed with heavy rotary shock dampers. Providing three hundred eighty one millimeters of wheel travel, they soak up brutal desert terrain so the stabilized main gun stays locked on target.",
+        "audioUrl": "audio/m1a2/parts/m1a2_torsion_bars_en.mp3"
+      }
+    },
+    "m1a2_turret_ring": {
+      "partId": "m1a2_turret_ring",
+      "bomCode": "F-08",
+      "calloutLabelEn": "Geared Turret Race Ring",
+      "zh": {
+        "roleTag": "2.16m 精密内齿大座圈 · 9 秒完成 24 吨炮塔 360° 液压回转",
+        "overview": "坐落于车体中前部顶甲板的大型 2,160 mm 精密钢球滚道炮塔座圈与内啮合大齿圈，左侧集成高扭矩液压回转马达与驱动小齿轮。",
+        "craftAndMaterial": "感应淬火高强合金钢精密滚铣内齿与双列承重滚道，配防弹密封防尘圈与硬化铜钢液压驱动马达总成。",
+        "kinematicRole": "在炮塔发射 120mm 主炮产生巨大倾覆力矩时牢牢锚定 24 吨级炮塔，并由液压驱动齿轮以最高 40°/秒实现 9 秒极速 360° 全向接敌。",
+        "designHighlight": "宽达 2.16 米的座圈开口不仅提供充裕的三人炮塔吊篮活动空间，更为未来持续加装重型装甲预留了充足承载裕度。",
+        "audioScript": "这枚直径高达二点一六米的精密内齿钢制炮塔座圈，承托着整座二十四吨重的复合装甲炮塔。在左侧高扭矩液压马达与驱动小齿轮的咬合下，艾布拉姆斯只需短短九秒就能让巨型炮塔旋转整整三百六十度瞄准新威胁。",
+        "audioUrl": "audio/m1a2/parts/m1a2_turret_ring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "2.16m Ball-Bearing Race & Hydraulic Azimuth Traverse Drive",
+        "overview": "A 2,160 mm diameter precision-hobbed internal geared steel turret race ring and hydraulic azimuth traverse drive motor anchoring the 24-ton turret to the hull deck.",
+        "craftAndMaterial": "Induction-hardened alloy steel bearing races, 36-segment internal ring gear teeth, armored dust seal, and hydraulic traverse pinion drive.",
+        "kinematicRole": "Resists colossal 120mm firing overturning moments while slewing the fully armored turret through a full 360-degree turn in just nine seconds.",
+        "designHighlight": "Generous 2.16-meter ring diameter yields an ergonomic three-man turret basket and high structural margin for decades of armor upgrades.",
+        "audioScript": "This two point one six meter precision geared steel turret race ring anchors the twenty four ton turret onto the hull roof. Driven by a high-torque hydraulic azimuth motor and pinion, it whips the entire armored turret through a full three hundred sixty degree turn in nine seconds.",
+        "audioUrl": "audio/m1a2/parts/m1a2_turret_ring_en.mp3"
+      }
+    },
+    "m1a2_turret_shell": {
+      "partId": "m1a2_turret_shell",
+      "bomCode": "F-09",
+      "calloutLabelEn": "Angular Turret Shell",
+      "zh": {
+        "roleTag": "扁平楔形中空复合炮塔 · 集成 CIP 识别板、尾篮与「B-21」涂装",
+        "overview": "现代主战坦克辨识度最高的外观图腾——扁平多面体楔形焊接装甲炮塔壳体，前部内藏双侧复合颊腔，后部延伸隔离弹药尾舱并挂装 CIP 热像敌我识别板与杂物篮。",
+        "craftAndMaterial": "厚壁高硬装甲钢平板精准焊接成型（壁厚 150–180 mm），左右两侧平面 Hero 展板喷印黑色「B-21」「^」与「3-69 AR」标识，配沙漠 CARC 哑光防滑涂装。",
+        "kinematicRole": "作为核心纵剖外壳（isShell），按下 [C] 劈开右侧壁瞬间零遮挡呈现前颊贫铀三明治、M256 炮闩、滑移隔爆门与 36 发蜂窝弹药尾舱！",
+        "designHighlight": "极具工业雕塑感的平板多面体构型专为内嵌大尺寸平面乔巴姆/贫铀复合模块而生，同时在后方以物理防爆隔墙彻底分离乘员与弹药。",
+        "audioScript": "这座扁平棱角的楔形装甲炮塔，是全世界一眼就能认出的艾布拉姆斯图腾。侧壁喷涂着醒目的B二十一车号、黑色倒V标与热像敌我识别板；一旦开启实时纵剖面，它的中空装甲壳壁会干净劈开，为你揭晓前颊贫铀夹层与尾舱隔爆门奇观。",
+        "audioUrl": "audio/m1a2/parts/m1a2_turret_shell_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Hollow Faceted Abrams Turret w/ CIP Louvers & B-21 Markings",
+        "overview": "The unmistakable low-slung faceted welded turret housing twin front composite cheek pockets, an internal blast bulkhead, Combat Identification Panels, bustle stowage rack, and B-21 stencils.",
+        "craftAndMaterial": "Thick welded rolled armor plates (150-180 mm hollow cutaway walls) coated in matte Desert CARC Tan with louvered thermal CIP panels and tubular rear bustle basket.",
+        "kinematicRole": "Marked as an exterior shell so cutaway mode cleanly slices the right flank open to showcase the Chobham/DU cheeks, sliding blast doors, and M829A4 ammo bustle.",
+        "designHighlight": "Flat faceted geometry maximizes internal volume for planar Chobham and depleted-uranium sandwich arrays while isolating bustle ammunition aft.",
+        "audioScript": "This low-slung angular turret is the most recognizable armored silhouette in modern warfare. Marked with bold B twenty one stencils, tactical chevrons, and thermal identification louvers, its hollow armored walls slice cleanly open in cutaway view to expose the composite cheeks and rear bustle.",
+        "audioUrl": "audio/m1a2/parts/m1a2_turret_shell_en.mp3"
+      }
+    },
+    "m1a2_blowoff_panels": {
+      "partId": "m1a2_blowoff_panels",
+      "bomCode": "F-10",
+      "calloutLabelEn": "Bustle Blow-Off Panels",
+      "zh": {
+        "roleTag": "尾舱顶置剪切泄压甲板 · 弹药殉爆瞬间掀飞保车组性命",
+        "overview": "精准覆盖在炮塔后部 36 发弹药尾舱顶部的三块装甲泄压顶板（Blow-Off Panels），采用预设薄弱剪切螺栓固定，是艾布拉姆斯隔舱化安全系统的最后保险。",
+        "craftAndMaterial": "高强防弹钢板外涂沙漠 CARC 沙色，表面布置防滑肋条、纵向防水密封压条与经精确力学标定的周边剪切定位螺栓。",
+        "kinematicRole": "平常抵御炮弹破片与野战雨雪；一旦尾舱遭击穿发生弹药爆燃，顶板在毫秒内被超压冲离抛向高空，引导炽烈火柱向上安全释放。",
+        "designHighlight": "配合前方闭合的装甲隔爆门构成著名的「烟囱效应」，在多次实战尾舱被导弹洞穿后仍奇迹般保全了全部四名车组性命！",
+        "audioScript": "镶嵌在炮塔尾舱顶部的这三片剪切螺栓装甲板，就是拯救过无数车组生命的泄压顶板。平时它们防风防破片，一旦尾舱弹药遭击穿爆燃，顶板会在毫秒内被冲击波掀飞天空，把毁灭性火焰全部引向高空，护住前方乘员全身而退。",
+        "audioUrl": "audio/m1a2/parts/m1a2_blowoff_panels_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Shear-Bolted Roof Vent Panels Channeling Blast Skyward",
+        "overview": "Three heavy roof-mounted armored vent panels sealing the top of the 36-round turret bustle with calibrated shear bolts engineered to blow upward during a cook-off.",
+        "craftAndMaterial": "Ballistic steel roof plates in Desert CARC Tan with raised stiffener pads, dark armored weather-seal straps, and perimeter shear retention bolts.",
+        "kinematicRole": "Slices open with exterior shells in cutaway and lifts off first in field service; engineered to detach instantly upward under internal ammunition overpressure.",
+        "designHighlight": "Working in tandem with the closed blast doors, these panels have repeatedly saved entire Abrams crews after direct anti-tank hits to the ammo bustle.",
+        "audioScript": "Capping the rear ammunition bustle are three calibrated shear-bolted blow-off roof panels. While sealing out rain and artillery splinters in combat, they detach instantaneously upward if the bustle ammunition ignites, venting the entire blast skyward to save the crew inside.",
+        "audioUrl": "audio/m1a2/parts/m1a2_blowoff_panels_en.mp3"
+      }
+    },
+    "m1a2_composite_armor": {
+      "partId": "m1a2_composite_armor",
+      "bomCode": "F-11",
+      "calloutLabelEn": "Chobham / DU Cheek Armor",
+      "zh": {
+        "roleTag": "纵剖防护核心 · 7 层钢/陶瓷/贫铀网/铜基 NERA 三明治阵列",
+        "overview": "深藏于炮塔左右斜置前颊空腔内的 M1A2 SEP v3 第三代重型乔巴姆与贫铀（DU）非爆炸反应（NERA）多层夹层复合装甲模块。",
+        "craftAndMaterial": "以 28° 倾斜角层叠 7 层异质防护材料：外层高硬轧制钢板、烧结氧化铝/碳化硅陶瓷砖、高密度贫铀合金网板、暖铜/弹性体波阻抗衰减夹层与内侧防崩落钢背板。",
+        "kinematicRole": "作为非外壳内构核心，开启 [C] 纵剖面瞬间右侧炮塔外颊褪去，这组绚丽分层的七重三明治复合装甲便在炮塔前部赫然展露！",
+        "designHighlight": "利用不同声阻抗材料与弹性体夹层的受激鼓包剪切效应，同时瓦解 1,700 m/s 动能穿甲杆与 8,000 m/s 聚能破甲金属射流。",
+        "audioScript": "开启纵剖面后，炮塔前颊里最震撼的机密终于现身——第三代乔巴姆与贫铀复合夹层装甲。七层斜置的高硬钢板、米白陶瓷瓦、暗灰高密度贫铀网板与铜质吸能隔层紧密咬合，通过激波剪切瓦解任何来袭的穿甲长杆与破甲射流。",
+        "audioUrl": "audio/m1a2/parts/m1a2_composite_armor_zh.mp3"
+      },
+      "en": {
+        "roleTag": "7-Layer Angled Steel, Ceramic, DU & Elastomer NERA Sandwich",
+        "overview": "The protection showpiece seated inside both hollow turret front cheeks: seven angled layers of third-generation Chobham and depleted-uranium NERA composite armor.",
+        "craftAndMaterial": "Alternating high-hardness RHA steel faceplates, sintered alumina ceramic tiles, ultra-dense dark depleted-uranium mesh plates, copper-elastomer shock liners, and titanium rails.",
+        "kinematicRole": "Remains fully solid in cutaway mode so slicing the right turret cheek away unveils all seven contrasting composite strata in dramatic 3D relief.",
+        "designHighlight": "Acoustic impedance mismatch and bulging NERA flyer plates shatter both hypervelocity kinetic penetrators and shaped-charge copper jets simultaneously.",
+        "audioScript": "Hidden inside the angled front turret cheeks is the Abrams' legendary protection showpiece: seven alternating layers of Chobham and depleted-uranium composite armor. High-hardness steel, sintered ceramic tiles, ultra-dense uranium plates, and copper-elastomer shock liners work together to shatter both kinetic darts and shaped-charge jets.",
+        "audioUrl": "audio/m1a2/parts/m1a2_composite_armor_en.mp3"
+      }
+    },
+    "m1a2_breech_block": {
+      "partId": "m1a2_breech_block",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "M256 Falling-Wedge Breech",
+      "zh": {
+        "roleTag": "650 MPa 精铣炮尾环 · 复进自动下落 -150 mm 抛底与自动闭锁",
+        "overview": "紧接 120mm M256 炮管尾端的巨型锻钢精铣炮尾环与半自动立楔式垂直滑动炮闩，集成顶部电磁击发机构与右侧半自动开闩凸轮曲柄。",
+        "craftAndMaterial": "整体高强炮钢数控精铣方柱炮尾环，内嵌镜面磨削硬铬合金钢立楔炮闩块、右侧钢制操作曲柄与顶置电击发器/安全联锁块。",
+        "kinematicRole": "阶段 3 随炮管后坐 -300 mm；阶段 4 复进归位瞬间立楔垂直下落 -150 mm 自动抛出金属底火盘；阶段 7 迎击新弹入膛后闪电上弹 +150 mm 刚性闭锁。",
+        "designHighlight": "半自动落闩与推弹触发瞬时自动闭锁大幅简化装填动作，使美军训练有素的装填手可在实战中维持每 4–5 秒一发的恐怖射速。",
+        "audioScript": "这组精铣合金钢炮尾环与立楔式下落炮闩，稳稳锁住了六百五十兆帕的恐怖膛压。主炮复进归位瞬间，半自动立楔炮闩垂直下落一百五十毫米抛出金属底火盘；待装填手将新弹推入膛底，炮闩立刻闪电上弹自动锁死待发。",
+        "audioUrl": "audio/m1a2/parts/m1a2_breech_block_zh.mp3"
+      },
+      "en": {
+        "roleTag": "650 MPa Milled Breech Ring w/ -150 mm Semi-Auto Falling Wedge",
+        "overview": "Heavy CNC-machined steel breech ring and vertical falling-wedge breechblock locking the 120mm M256 chamber, equipped with an electric firing solenoid and semi-auto cam crank.",
+        "craftAndMaterial": "Forged ordnance steel breech ring paired with a ground bright-steel vertical sliding wedge block, side operating crank, and upper firing interlock.",
+        "kinematicRole": "Recoils -300 mm with the barrel in phase 3, drops vertically -150 mm on counter-recoil in phase 4 to eject the stub base, and snaps +150 mm shut behind the loaded round in phase 7.",
+        "designHighlight": "Automatic opening on counter-recoil and rim-tripped closing slash manual reload motions down to a blistering four-second cadence.",
+        "audioScript": "Sealing six hundred fifty megapascals of firing pressure is the massive machined steel M two fifty six breech ring and vertical falling-wedge breechblock. On counter-recoil it drops one hundred fifty millimeters automatically to eject the stub base, then snaps shut the instant the loader rams home a fresh cartridge.",
+        "audioUrl": "audio/m1a2/parts/m1a2_breech_block_en.mp3"
+      }
+    },
+    "m1a2_crows_optics": {
+      "partId": "m1a2_crows_optics",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "CROWS-LP & Thermal Optics",
+      "zh": {
+        "roleTag": "全车 2,440mm 制高点 · 遥控 .50 重机枪、CITV 周视与 GPS 主镜",
+        "overview": "汇聚于炮塔顶部的 M1A2 SEP v3 现代火控观瞄群：车长舱低轮廓 CROWS-LP 遥控 M2HB .50 重机枪站、左侧 360° CITV 车长独立热像周视仪与右侧装甲狗屋 GPS 炮长主瞄镜。",
+        "craftAndMaterial": "沙漠 CARC 沙色装甲护罩与稳定云台托架、暗灰枪钢 M2HB 重机枪管及供弹箱，所有观瞄物镜与车长潜望镜均采用严格 UV 防火墙隔离的绿宝石-蓝宝石多层镀膜镜片。",
+        "kinematicRole": "构成全车 2.44 米标志性顶部轮廓，赋予车组昼夜全天候烟尘穿透观瞄、激光测距与舱内全装甲防护下的近距火力自卫能力。",
+        "designHighlight": "CITV 与 GPS 组成的独立双热像「猎-歼」体系，让车长在炮长开火摧毁目标 A 的同一秒便已完成目标 B 的锁定与一键调炮移交！",
+        "audioScript": "耸立在炮塔顶部的这套火控观瞄群，是M一A二SEP第三阶段的千里眼。右侧装甲狗屋藏着炮长主热像仪，左侧是可三百六十度旋转的车长独立周视仪，后方则是低轮廓CROWS遥控点五零重机枪站，让车组在装甲内全天候猎歼强敌。",
+        "audioUrl": "audio/m1a2/parts/m1a2_crows_optics_zh.mp3"
+      },
+      "en": {
+        "roleTag": "CROWS-LP M2HB .50 Cal RWS, 360-Deg CITV & Doghouse GPS Sight",
+        "overview": "Roof-mounted hunter-killer fire-control suite uniting the low-profile CROWS-LP remote .50 cal M2HB station, rotating left-side Commander's CITV thermal viewer, and armored right-side GPS doghouse.",
+        "craftAndMaterial": "Desert CARC Tan armored housings, stabilized gimbal yoke, dark ordnance-steel M2HB heavy barrel, and UV-firewalled emerald-sapphire multi-coated optical lenses.",
+        "kinematicRole": "Establishes the authentic 2,440 mm overall roof silhouette while enabling all-weather thermal target acquisition and under-armor close defense.",
+        "designHighlight": "Independent stabilized CITV and GPS thermal channels let the commander hunt the next target while the gunner engages the current threat.",
+        "audioScript": "Crowning the turret roof at two point four four meters is the SEP version three optics and self-defense suite. Emerald-coated lenses inside the armored gunner's primary sight and rotating commander's thermal viewer power hunter-killer combat, backed by a stabilized CROWS low-profile remote fifty caliber machine gun.",
+        "audioUrl": "audio/m1a2/parts/m1a2_crows_optics_en.mp3"
+      }
+    },
+    "m1a2_smoke_launchers": {
+      "partId": "m1a2_smoke_launchers",
+      "bomCode": "F-12",
+      "calloutLabelEn": "M250 Smoke & Whip Antennas",
+      "zh": {
+        "roleTag": "双侧四联 66mm 红外烟幕发射器 · 尾部双 SINCGARS 战网天线",
+        "overview": "焊接于炮塔左右前肩部的两具四联装美军 M250 66mm 烟幕弹发射器（共 8 管），搭配炮塔后顶两根高弹性 SINCGARS 数字化战网通信鞭状天线。",
+        "craftAndMaterial": "斜置沙漠沙色钢质安装底板、八根呈扇形外张的发黑硬化钢 66mm 发射筒，以及尾部橡胶减振基座与细长弹性合金天线鞭。",
+        "kinematicRole": "遇激光照射告警时两秒内齐射多频谱红外阻断烟墙掩护规避撤离，双鞭天线实时保障旅营级数字化战场态势互联。",
+        "designHighlight": "精确交错的仰角与扇形偏角设计使单次半齐射即可在车前 30 米处瞬间展开宽逾 40 米的稠密热成像遮蔽幕墙。",
+        "audioScript": "焊接在炮塔两肩的这两组四联装M二五零烟幕弹发射器，共计八管呈扇形外张。一旦激光告警响起，它们两秒内就能在车前拉起遮蔽热成像与红外制导的厚重烟墙，后方双鞭状天线则维系着数字化战场实时通联。",
+        "audioUrl": "audio/m1a2/parts/m1a2_smoke_launchers_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Twin 4-Barrel 66mm M250 Dischargers & SINCGARS Whip Antennas",
+        "overview": "Paired four-barrel splayed M250 66mm multi-spectral smoke grenade dischargers welded to the turret shoulders alongside twin rear SINCGARS communications whip antennas.",
+        "craftAndMaterial": "Desert CARC Tan mounting plates, eight splayed dark ordnance-steel launch tubes, spring-isolated antenna mounts, and flexible alloy whip masts.",
+        "kinematicRole": "Fires an instant thermal-obscuring smoke screen ahead of the tank upon laser threat warning while twin whips maintain encrypted digital battle-net links.",
+        "designHighlight": "Staggered azimuth and elevation angles deploy a dense infrared-blocking curtain across a forty-meter front within two seconds.",
+        "audioScript": "Bolted to both turret shoulders are twin four-barrel M two fifty 66 millimeter smoke grenade launchers splayed at staggered angles. Within two seconds they throw a thick infrared-blocking smoke curtain ahead of the tank, while twin rear whip antennas sustain digital battlefield communications.",
+        "audioUrl": "audio/m1a2/parts/m1a2_smoke_launchers_en.mp3"
+      }
+    },
+    "m1a2_blast_doors": {
+      "partId": "m1a2_blast_doors",
+      "bomCode": "M-01",
+      "calloutLabelEn": "Armored Blast Doors",
+      "zh": {
+        "roleTag": "艾布拉姆斯生存传奇 · 膝触侧滑 340 mm · 黄黑警戒隔爆双门",
+        "overview": "耸立于炮塔战斗室与后置 36 发弹药尾舱之间的重型电动滑移装甲隔爆双门，门面醒目涂装黄黑警示斜纹与「BLAST DOOR — KEEP CLOSED」军标安全标语。",
+        "craftAndMaterial": "高强防弹钢厚板精铣成型，配备上下重型钢制滑轨滚轮靴、凹入式应急手动拉手及中缝严密咬合的耐高温防火止口。",
+        "kinematicRole": "击发阶段 5 响应装填手膝控开关向左高速平移开启 340 mm 暴露尾舱实弹；阶段 6 放行 M829A4 穿甲弹前推；阶段 7 在回位簧驱动下轰然闭锁封舱！",
+        "designHighlight": "与顶置泄压板共同造就了现代装甲史上最成功的隔舱化防殉爆奇迹，让人工高速装填与极限乘员安全完美共存。",
+        "audioScript": "这道印有醒目黄黑警示带的重型装甲滑移隔爆门，正是艾布拉姆斯传奇生存性的心脏。平时它把三十六发炮弹牢牢锁在尾舱之后；装填手轻压膝控开关，隔爆门瞬间侧滑开启三百四十毫米，抽弹完毕立刻轰然闭锁封舱。",
+        "audioUrl": "audio/m1a2/parts/m1a2_blast_doors_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Motorized Sliding Armored Doors Isolating 36-Rd Ammo Bustle",
+        "overview": "The centerpiece of Abrams survivability: heavy twin sliding armored steel blast doors separating the crew fighting bay from the rear ammunition bustle, marked with yellow-black caution chevrons.",
+        "craftAndMaterial": "Thick machined ballistic steel leaves riding on upper and lower roller carriages with recessed manual grab handles and flame-tight interlocking center seams.",
+        "kinematicRole": "Slides 340 mm open to the left in phase 5 via the loader's knee switch, clears the corridor for the M829A4 ready round in phase 6, and slams tightly shut in phase 7.",
+        "designHighlight": "Seals catastrophic ammunition fires out of the fighting compartment while keeping four-second manual loading effortless.",
+        "audioScript": "Stenciled with bold yellow and black hazard stripes, these sliding armored blast doors are the crown jewel of Abrams crew survivability. Operated by the loader's knee switch, they slide three hundred forty millimeters open for just seconds to pass a fresh round before slamming shut to seal the bustle.",
+        "audioUrl": "audio/m1a2/parts/m1a2_blast_doors_en.mp3"
+      }
+    },
+    "m1a2_door_spring": {
+      "partId": "m1a2_door_spring",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Blast-Door Return Spring",
+      "zh": {
+        "roleTag": "顶置失效安全螺旋回位簧 · 松膝或断电即强制拉闭隔爆门",
+        "overview": "水平布置于装甲隔爆门上方滑轨腔内的粗丝高刚度螺旋回位弹簧，为重型滑移隔爆门提供绝对可靠的机械自动闭合力量。",
+        "craftAndMaterial": "大线径 19 mm 高疲劳淬火合金琴钢丝精绕成型，后端刚性锚定于防爆隔墙支架，前端联动滑移隔爆门顶部驱动连杆。",
+        "kinematicRole": "阶段 5 随隔爆门侧滑开启 340 mm 剧烈压缩至 62% 自由长蓄能，阶段 7 松开膝控开关后瞬间释能拉回厚重钢门完成严密封舱。",
+        "designHighlight": "纯粹的机械失效安全（Fail-Safe）设计确保即便坦克遭遇战损断电或装填手失能，隔爆门也会自动强制锁闭绝不敞口。",
+        "audioScript": "隐藏在隔爆门顶部滑轨里的这根粗壮螺旋回位弹簧，贯彻了最严苛的失效安全哲学。当膝控开启隔爆门时它急剧压缩蓄能；一旦松开膝开关甚至整车战损断电，弹簧立刻强行拉闭厚重的隔爆门，杜绝一丝风险。",
+        "audioUrl": "audio/m1a2/parts/m1a2_door_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Fail-Safe Overhead Helical Coil Forcing Automatic Door Closure",
+        "overview": "Horizontal heavy-gauge helical return spring riding along the upper blast-door actuator track to guarantee automatic fail-safe closure of the armored doors.",
+        "craftAndMaterial": "19 mm wire diameter quenched alloy spring steel coil anchored rigidly to the blast bulkhead frame and linked to the upper door carriage.",
+        "kinematicRole": "Compresses dynamically to 62 percent free length while the blast doors open in phases 5-6, then expands in phase 7 to drive the heavy doors firmly closed.",
+        "designHighlight": "Pure mechanical fail-safe closure ensures the ammunition compartment seals automatically even under total electrical failure or battle damage.",
+        "audioScript": "Tucked along the upper blast-door track is this heavy helical fail-safe return spring. Compressing tightly whenever the loader opens the blast doors, it guarantees the armored barrier snaps automatically shut the instant the knee switch is released—even if the tank loses all power.",
+        "audioUrl": "audio/m1a2/parts/m1a2_door_spring_en.mp3"
+      }
+    },
+    "m1a2_ammo_bustle": {
+      "partId": "m1a2_ammo_bustle",
+      "bomCode": "M-03",
+      "calloutLabelEn": "120mm M829A4 Ammo Bustle",
+      "zh": {
+        "roleTag": "隔离尾舱 36 发蜂窝弹架 · 满载 120mm M829A4 贫铀穿甲弹",
+        "overview": "坐落于炮塔防爆隔墙之后、泄压顶板正下方的全封闭 36 发蜂窝防爆弹药架，整齐排列双层闪耀的 120×570mm NATO M829A4 整装贫铀尾翼稳定脱壳穿甲弹。",
+        "craftAndMaterial": "暗灰防火铝合金蜂窝弹筒框架内整齐嵌套黄铜/钢制底火盘、橄榄沙色半可燃药筒、亮银铝合金弹托与暗灰贫铀穿甲弹头四重高对比材质实弹。",
+        "kinematicRole": "作为炮塔尾部重量配平与火力库，中部偏左预留标准待发抽出位供单发待装填弹（M-04）在击发循环中穿越隔爆门前推装填。",
+        "designHighlight": "高密度蜂窝独立套筒既在越野剧烈颠簸中牢牢护住脆弱的可燃药筒，又巧妙充当 5.28 米长主炮的天然配重平衡炮塔重心。",
+        "audioScript": "越过隔爆门向炮塔后方望去，便是这座令人震撼的三十六发蜂窝防爆弹药尾舱。一排排整装一百二十毫米M八二九A四贫铀穿甲弹整齐码放，黄铜底盘、橄榄沙可燃药筒与亮银弹托层次分明，既平衡了前炮重量，又随时提供毁灭火力。",
+        "audioUrl": "audio/m1a2/parts/m1a2_ammo_bustle_zh.mp3"
+      },
+      "en": {
+        "roleTag": "36-Round Honeycombed Bustle Rack Loaded w/ M829A4 DU Rounds",
+        "overview": "Armored honeycombed rear bustle rack beneath the blow-off panels storing 36 unitary 120x570mm NATO M829A4 APFSDS cartridges with an open ready extraction slot.",
+        "craftAndMaterial": "Dark fire-resistant structural honeycomb frame cradling gleaming brass-steel stub bases, olive-tan combustible cases, bright aluminum sabots, and dark DU dart tips.",
+        "kinematicRole": "Counterbalances the 5.28-meter main gun forward while presenting ready unitary rounds directly behind the sliding blast doors for rapid extraction.",
+        "designHighlight": "Individual honeycomb tubes protect delicate combustible propellant casings during violent cross-country jolts while keeping rounds indexed for blind loading.",
+        "audioScript": "Seated directly behind the blast doors and beneath the blow-off panels is the honeycombed thirty six round rear bustle rack. Stacked with gleaming 120 millimeter M eight twenty nine A four cartridges—brass stub bases, combustible olive casings, and aluminum sabots—it counterbalances the long cannon while isolating ammunition safely aft.",
+        "audioUrl": "audio/m1a2/parts/m1a2_ammo_bustle_en.mp3"
+      }
+    },
+    "m1a2_ready_round": {
+      "partId": "m1a2_ready_round",
+      "bomCode": "M-04",
+      "calloutLabelEn": "120mm M829A4 Ready Round",
+      "zh": {
+        "roleTag": "984mm 第四代贫铀「银弹」 · 穿越隔爆门前推 +196 cm 入膛",
+        "overview": "美军现役第四代 120×570mm NATO M829A4 贫铀尾翼稳定脱壳穿甲曳光弹（重 20.9 kg、全长 984 mm），专为击穿配备重型爆炸反应装甲的新一代主战坦克而生。",
+        "craftAndMaterial": "尾部为带镀镍闭气底缘的黄铜金属底火盘，中段为击发即完全燃尽的橄榄沙色硝化纤维半可燃药筒，前段嵌装三瓣亮银铝合金弹托与四尾翼暗灰高密度贫铀长杆弹芯。",
+        "kinematicRole": "击发仿真阶段 6 中从敞开的隔爆门后方蜂窝位抽出、居中对准炮膛轴线并向前猛推 +196 cm，穿过防爆隔墙稳稳装入敞开的 M256 炮膛！",
+        "designHighlight": "贫铀合金独有的绝热剪切自锐特性使穿甲杆在钻透敌方厚装甲时越磨越尖，配合半可燃药筒令炮塔内几乎无需清理庞大空铜壳。",
+        "audioScript": "这发全长九百八十四毫米、重逾二十公斤的M八二九A四，就是令全球装甲部队忌惮的第四代贫铀银弹。在击发仿真第六阶段，你可以亲眼看到它被抽出尾舱，穿越敞开的装甲隔爆门笔直前推近两米，精准装入主炮炮膛。",
+        "audioUrl": "audio/m1a2/parts/m1a2_ready_round_zh.mp3"
+      },
+      "en": {
+        "roleTag": "984 mm M829A4 DU Silver Bullet Rammed +196 cm Into Breech",
+        "overview": "An animated individual 120x570mm NATO M829A4 fourth-generation depleted-uranium APFSDS-T unitary cartridge (984 mm long, 20.9 kg) designed to defeat heavy ERA-equipped armor.",
+        "craftAndMaterial": "Rimmed brass-and-steel metallic stub base, combustible olive-tan nitrocellulose case, machined aluminum three-petal sabot, and four-fin dark depleted-uranium long-rod dart.",
+        "kinematicRole": "In phase 6, pulls clear of the bustle honeycomb, centers onto bore axis, and rams +196 cm straight through the open blast doors into the M256 chamber.",
+        "designHighlight": "Self-sharpening depleted-uranium rod physics paired with a near-totally combustible propellant casing eliminate bulky spent brass casings inside the turret.",
+        "audioScript": "Measuring nine hundred eighty four millimeters long and weighing twenty one kilograms, this M eight twenty nine A four is the U.S. Army's fourth-generation depleted-uranium Silver Bullet. Watch phase six as it extracts from the bustle and rams nearly two meters straight through the open blast doors into the breech.",
+        "audioUrl": "audio/m1a2/parts/m1a2_ready_round_en.mp3"
+      }
+    },
+    "m1a2_agt1500_turbine": {
+      "partId": "m1a2_agt1500_turbine",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "AGT1500 Gas Turbine",
+      "zh": {
+        "roleTag": "纵剖动力奇观 · 1,500 马力 5 级钛合金压气机 + 暖铜环形回热器",
+        "overview": "赋予艾布拉姆斯喷气战机般啸叫的灵魂心脏——霍尼韦尔（原莱康明）AGT1500 1,500 轴马力多燃料航空衍生燃气轮机，以双轴压气机与独特的尾置环形废气回热器著称。",
+        "craftAndMaterial": "前段 5 级精密扭转闪亮钛合金轴流压气机叶片与高光主轴，中段不锈钢切向燃烧室，尾端为极具视觉冲击力的暖铜-青铜褶皱圆柱式环形回热热交换器核心。",
+        "kinematicRole": "坐镇车体后部动力舱核心，以高达 3,754 N·m 的低速峰值扭矩直连 X1100 传动箱，推动 66.8 吨战车在 7 秒内由静止冲刺至 32 km/h。",
+        "designHighlight": "独步陆战动力的铜质环形回热器将高温废气热量回收预热压缩空气，将燃气轮机实战巡航油耗压低至可与重型柴油机媲美的实用区间！",
+        "audioScript": "来到纵剖视窗最具震撼力的动力奇观——霍尼韦尔AGT一五零零一千五百马力燃气轮机。前段五级闪亮的钛合金轴流压气机叶片清晰可见，尾端那具硕大温暖的铜质环形回热器将废气余热高效回收，赋予艾布拉姆斯无与伦比的加速爆发力与多燃料适应性。",
+        "audioUrl": "audio/m1a2/parts/m1a2_agt1500_turbine_zh.mp3"
+      },
+      "en": {
+        "roleTag": "1,500 SHP Multi-Fuel Turbine w/ Titanium Blades & Copper Recuperator",
+        "overview": "The cutaway centerpiece of the engine bay: Honeywell's 1,500-shaft-horsepower AGT1500 multi-fuel gas turbine with sculpted five-stage titanium axial compressor and copper-bronze recuperator.",
+        "craftAndMaterial": "Precision-machined bright titanium compressor rotor discs and pitched blades, stainless tangential combustor housing, dark oil coolers, and a pleated warm copper-bronze annular recuperator.",
+        "kinematicRole": "Delivers a staggering 3,754 N-m of low-end torque straight into the rear X1100 transmission, launching the 66.8-ton tank from 0 to 32 km/h in seven seconds.",
+        "designHighlight": "Its signature cylindrical copper-bronze recuperator recycles exhaust heat to preheat compressed intake air, dramatically curbing fuel burn across JP-8, diesel, or gasoline.",
+        "audioScript": "Here is the crown jewel of the rear cutaway: Honeywell's fifteen hundred shaft horsepower AGT fifteen hundred gas turbine. Five gleaming stages of titanium axial compressor blades feed a single combustor, while the unmistakable warm copper-bronze cylindrical recuperator recycles exhaust heat for massive multi-fuel efficiency.",
+        "audioUrl": "audio/m1a2/parts/m1a2_agt1500_turbine_en.mp3"
+      }
+    },
+    "m1a2_x1100_transmission": {
+      "partId": "m1a2_x1100_transmission",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "X1100-3B Transmission",
+      "zh": {
+        "roleTag": "4 前 2 倒液力综合传动 · 无级再生双流转向实现原地 360° 掉头",
+        "overview": "法兰刚性直连于 AGT1500 燃气轮机尾端的艾利逊 X1100-3B 液力机械综合变速与转向传动箱，通过两侧最终传动驱动后置 11 齿主动链轮。",
+        "craftAndMaterial": "重型加强筋铸造航空铝/合金钢壳体、顶置大型翅片式传动油散热器、两侧圆柱形湿式多片主制动鼓与淬火花键输出法兰。",
+        "kinematicRole": "将燃气轮机自由动力涡轮输出平稳转化为 4 个前进挡与 2 个倒挡自动变速，并通过静液压无级转向系统实现极小半径与原地 360° 中心回转。",
+        "designHighlight": "与 AGT1500 整合为模块化快速插拔动力包，仅需断开少量快拆油电接头即可在半小时内完成整套动力系统吊换。",
+        "audioScript": "紧扣在燃气轮机尾端的这套厚重铸件，是艾利逊X一一零零三B液力机械综合传动箱。它集成了四前二倒自动行星变速、静液压无级双流转向与双侧湿式主制动器，让六十六点八吨巨兽丝滑完成原地三百六十度中心掉头。",
+        "audioUrl": "audio/m1a2/parts/m1a2_x1100_transmission_zh.mp3"
+      },
+      "en": {
+        "roleTag": "4-Fwd/2-Rev Hydro-Kinetic Gearbox & Infinite Pivot Steering",
+        "overview": "Allison X1100-3B hydro-kinetic cross-drive automatic transmission bolted directly to the rear of the AGT1500 turbine to drive both rear 11-tooth sprockets.",
+        "craftAndMaterial": "Heavy ribbed cast alloy gearbox housing, finned top oil cooler assembly, twin cylindrical wet multi-disc steering brake drums, and splined final-drive flanges.",
+        "kinematicRole": "Converts free-power-turbine output into four forward and two reverse automatic gears plus infinitely variable hydrostatic regenerative steering for 360-degree neutral pivots.",
+        "designHighlight": "Quick-disconnect couplings allow the entire turbine and X1100 transmission powerpack to be pulled and replaced in the field within thirty minutes.",
+        "audioScript": "Bolted straight to the rear of the gas turbine is the Allison X eleven hundred three B hydro-kinetic cross-drive transmission. Combining four forward and two reverse automatic gears with infinitely variable hydrostatic steering, it lets a sixty six ton tank pivot three hundred sixty degrees in its own length.",
+        "audioUrl": "audio/m1a2/parts/m1a2_x1100_transmission_en.mp3"
+      }
+    },
+    "m1a2_fuel_cells": {
+      "partId": "m1a2_fuel_cells",
+      "bomCode": "F-13",
+      "calloutLabelEn": "Armored JP-8 Fuel Cells",
+      "zh": {
+        "roleTag": "1,909 升防自爆多燃料箱 · 夹护驾驶员兼作侧向抗破甲吸能层",
+        "overview": "对称密闭安置于车体前部半仰卧驾驶舱左右两侧的装甲防自爆 JP-8 航空煤油主燃料箱，通过车底暖铜平衡输油管相连通。",
+        "craftAndMaterial": "高韧耐冲击特种复合聚合物油箱内嵌于防弹钢隔舱中，顶部设不锈钢快开加油口与泄压呼吸阀，配耐高压铜合金跨舱连通输油管。",
+        "kinematicRole": "为高功耗 AGT1500 燃气轮机提供高达 1,909 升（含后部油箱）多燃料储备，支撑逾 426 公里公路续航里程。",
+        "designHighlight": "以装甲隔舱将燃油与驾驶员物理分隔，并巧妙利用高闪点 JP-8 航空煤油液体质量充当车首两侧的附加防破甲射流吸能屏障。",
+        "audioScript": "对称夹护在车首驾驶员两侧的这两具装甲隔舱油箱，储存着专供燃气轮机吞咽的JP八航空煤油。巧妙的隔舱布置不仅以高闪点燃油保障了安全，更利用液体的吸能特性为前部车体增添了一道隐蔽的抗破甲辅助屏障。",
+        "audioUrl": "audio/m1a2/parts/m1a2_fuel_cells_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Armored Forward JP-8 Multi-Fuel Cells Flanking Driver Bay",
+        "overview": "Twin forward armored crash-resistant JP-8 aviation kerosene fuel cells positioned symmetrically left and right of the reclined driver's compartment with an under-floor crossover manifold.",
+        "craftAndMaterial": "Impact-resistant dark olive-tan armored fuel bladders housed behind steel bulkheads with stainless filler necks, pressure vents, and a copper crossover line.",
+        "kinematicRole": "Feeds the multi-fuel AGT1500 gas turbine from a 1,909-liter total vehicle reserve, supporting a 426-kilometer road operational range.",
+        "designHighlight": "High-flashpoint JP-8 kerosene stored inside armored forward cells doubles as supplementary liquid energy-absorption protection flanking the driver.",
+        "audioScript": "Flanking the reclined driver on both sides are armored forward fuel cells loaded with high-flashpoint JP eight jet fuel. Sealed inside armored bulkheads and linked by a copper crossover pipe, the liquid mass even adds bonus energy-absorbing protection behind the front glacis.",
+        "audioUrl": "audio/m1a2/parts/m1a2_fuel_cells_en.mp3"
+      }
+    },
+    "m1a2_crew_stations": {
+      "partId": "m1a2_crew_stations",
+      "bomCode": "FC-05",
+      "calloutLabelEn": "SEP v3 Crew & LCD Consoles",
+      "zh": {
+        "roleTag": "半仰卧摩托把驾驶舱 · 双青绿 FBCB2 战术地图 LCD 与装填膝控台",
+        "overview": "完整还原 M1A2 SEP v3 四乘员数字化座舱生态：车首独创半仰卧式驾驶员躺椅与摩托车 T 形转向把、圆形炮塔旋转吊篮、车长/炮长双青绿战术地图 LCD 终端，以及左侧装填手黄色隔爆门膝控开关。",
+        "craftAndMaterial": "人体工学防火防震衬垫座椅、刚性钢管吊篮框架、高对比青绿发光战术态势 LCD 显控屏（strict >=50px UV 防火墙）与醒目安全黄装填膝控操作台。",
+        "kinematicRole": "将车长、炮长、装填手与驾驶员紧密编织进同一套数字化火控与安全联锁网络，实现 4 秒人工装填与全向猎-歼协同。",
+        "designHighlight": "极具巧思的半仰卧驾驶姿势是艾布拉姆斯车体如此低矮的关键秘诀，让驾驶员可舒适地如同驾驶重型巡航摩托般操控 66.8 吨战车。",
+        "audioScript": "走进艾布拉姆斯的数字化战斗核心：车首是贴合低矮首上而独创的半仰卧驾驶躺椅与T形转向把；炮塔吊篮右侧分层坐着炮长与车长，面前两块青绿发光战术地图屏幕实时显示敌我态势，左侧则是装填手的黄色隔爆门膝控台。",
+        "audioUrl": "audio/m1a2/parts/m1a2_crew_stations_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Reclined Driver Couch, Turret Basket & Dual BFT Tactical LCDs",
+        "overview": "Complete four-crew SEP v3 interior ergonomics: forward reclined driver's couch with motorcycle T-bar yoke, circular turret floor basket, dual emerald-cyan BFT tactical LCD consoles, and loader's yellow knee-switch station.",
+        "craftAndMaterial": "Fire-retardant contoured crew cushions, tubular steel basket stanchions, UV-firewalled emerald-cyan tactical map LCD screens, and safety-yellow knee-switch housing.",
+        "kinematicRole": "Unites driver, gunner, commander, and loader inside a networked digital fire-control cockpit enabling four-second reloads and hunter-killer coordination.",
+        "designHighlight": "The reclined driver's posture unlocks the Abrams' ultra-low hull roofline while the twist-grip T-bar yoke makes steering 66.8 tons remarkably intuitive.",
+        "audioScript": "Inside the SEP version three crew stations, clever ergonomics meet digital command. Up front, the driver reclines behind a motorcycle-style T-bar steering yoke; inside the turret basket sit the gunner and commander before glowing emerald tactical map displays, opposite the loader's yellow blast-door knee switch.",
+        "audioUrl": "audio/m1a2/parts/m1a2_crew_stations_en.mp3"
+      }
+    }
+  }
+}

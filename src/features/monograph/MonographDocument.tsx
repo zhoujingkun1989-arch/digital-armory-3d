@@ -83,7 +83,11 @@ export const MonographDocument: React.FC<MonographDocumentProps> = ({
   const isZh = lang === 'zh';
   const ui = UI_STRINGS[lang].monograph;
   const armoryUi = UI_STRINGS[lang].armory;
-  const domain = getMonographDomainLabels(lang, dossier.isArchery);
+  const domain = getMonographDomainLabels(
+    lang,
+    dossier.isArchery,
+    dossier.isTank
+  );
   const mStrings = getMonographLocalizedStrings(lang);
 
   const editionStamp =

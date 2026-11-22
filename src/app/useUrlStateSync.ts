@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import {
   CARTRIDGE_LAB_SPECS,
   isCaliberProfile,
+  isTankOrdnanceProfile,
 } from '../engine/cartridges/cartridgeSpecs';
 import {
   EXTERNAL_PROJECTILE_SPECS,
@@ -193,7 +194,9 @@ export function applyLocationToStore(searchOverride?: string): void {
       current.selectArmoryWeapon(rawWeapon);
     }
     current.openCartridgeLab(
-      isCaliberProfile(rawCaliber) ? rawCaliber : undefined
+      isCaliberProfile(rawCaliber) || isTankOrdnanceProfile(rawCaliber)
+        ? rawCaliber
+        : undefined
     );
   } else if (targetScreen === 'ballistics') {
     if (rawWeapon && isWeaponId(rawWeapon)) {

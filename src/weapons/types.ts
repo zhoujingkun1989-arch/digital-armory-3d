@@ -24,6 +24,10 @@ export const WEAPON_IDS = [
   'vss',
   'm134',
   'an94',
+  'ztz99a',
+  'm1a2',
+  'leopard2a7',
+  'tiger1',
 ] as const;
 
 export type WeaponId = (typeof WEAPON_IDS)[number];
@@ -36,7 +40,8 @@ export type ArmoryCategory =
   | 'sniper'
   | 'shotgun'
   | 'pistol'
-  | 'archery';
+  | 'archery'
+  | 'armor';
 
 export type AssemblyGroupKey = 'slide' | 'frame' | 'fire_control' | 'magazine';
 
@@ -66,13 +71,17 @@ export type CaliberProfile =
   | '473_caseless'
   | '9x39_subsonic'
   | '762_nato'
-  | '545_m74';
+  | '545_m74'
+  | '125mm_apfsds'
+  | '120mm_apfsds'
+  | '88mm_pzgr39';
 
 export type WeaponScaleProfile =
   | 'pistol'
   | 'rifle'
   | 'heavy_sniper'
-  | 'compound_bow';
+  | 'compound_bow'
+  | 'main_battle_tank';
 
 export type CameraPresetType =
   | 'armory_showcase'
@@ -255,7 +264,15 @@ export interface ArmoryWeaponItem {
   subtitleEn: string;
   originCountryCn?: string;
   weaponTypeCn?: string;
-  category: 'pistol' | 'rifle' | 'lmg' | 'smg' | 'sniper' | 'shotgun' | 'archery';
+  category:
+    | 'pistol'
+    | 'rifle'
+    | 'lmg'
+    | 'smg'
+    | 'sniper'
+    | 'shotgun'
+    | 'archery'
+    | 'armor';
   categoryCn: string;
   caliber: string;
   actionMechanism: string;

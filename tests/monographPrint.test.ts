@@ -88,7 +88,7 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
     expect(svg.pathD.length).toBeGreaterThan(200);
   });
 
-  it('assembles complete bilingual 8-page monograph dossiers across all 23 exhibits using real narration bundles', async () => {
+  it('assembles complete bilingual 8-page monograph dossiers across all 27 exhibits using real narration bundles', async () => {
     const narrationsDir = path.resolve(__dirname, '../public/narrations');
 
     for (const weaponId of WEAPON_IDS) {
@@ -806,7 +806,7 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
     }
   });
 
-  it('locks single-source-of-truth English monograph dossiers and rendered MonographDocument/MonographKidsDocument with 0 CJK across all 23 WEAPON_IDS', async () => {
+  it('locks single-source-of-truth English monograph dossiers and rendered MonographDocument/MonographKidsDocument with 0 CJK across all 27 WEAPON_IDS', async () => {
     const cjkRe = /[\u4e00-\u9fff]/;
     const narrationsDir = path.resolve(__dirname, '../public/narrations');
     const assemblerSrc = fs.readFileSync(
@@ -847,7 +847,7 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
       return [];
     };
 
-    expect(WEAPON_IDS.length).toBe(23);
+    expect(WEAPON_IDS.length).toBe(27);
 
     for (const id of WEAPON_IDS) {
       const plugin = await loadWeaponPlugin(id);

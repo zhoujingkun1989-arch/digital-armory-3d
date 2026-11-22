@@ -53,6 +53,13 @@ export const BALLISTIC_CALIBERS: readonly CaliberProfile[] = [
   '50_bmg',
 ];
 
+/** Ordered tank main-gun ordnance profiles (1:1 Heavy Armor Hall). */
+export const TANK_CANNON_CALIBERS: readonly CaliberProfile[] = [
+  '88mm_pzgr39',
+  '120mm_apfsds',
+  '125mm_apfsds',
+];
+
 /** Ordered archery projectile profiles (compound bow & helical-cam crossbow). */
 export const ARCHERY_PROFILES: readonly CaliberProfile[] = [
   'arrow_400gr',
@@ -71,6 +78,29 @@ export function isArcheryWeapon(
   weaponId: WeaponId | string | null | undefined
 ): boolean {
   return weaponId === 'lift33' || weaponId === 'r500';
+}
+
+/** True for 1:1 Main Battle Tank main-cannon ordnance calibers. */
+export function isTankCaliber(
+  caliber: CaliberInput | string | null | undefined
+): boolean {
+  return (
+    caliber === '125mm_apfsds' ||
+    caliber === '120mm_apfsds' ||
+    caliber === '88mm_pzgr39'
+  );
+}
+
+/** True for 1:1 Heavy Armor Main Battle Tank exhibits (`BAY-24 ~ BAY-27`). */
+export function isTankWeapon(
+  weaponId: WeaponId | string | null | undefined
+): boolean {
+  return (
+    weaponId === 'ztz99a' ||
+    weaponId === 'm1a2' ||
+    weaponId === 'leopard2a7' ||
+    weaponId === 'tiger1'
+  );
 }
 
 /** Accepts canonical `CaliberProfile` keys as well as shorthand `'9x19'` / `'57x28'` aliases. */
@@ -114,7 +144,7 @@ export interface CaliberBallisticsSpec {
   labelEn: string;
   labelZh: string;
   /** Pressure / thrust standard the peak load is quoted against */
-  standard: 'SAAMI' | 'CIP' | 'NATO EPVAT' | 'ATA / IBO';
+  standard: 'SAAMI' | 'CIP' | 'NATO EPVAT' | 'ATA / IBO' | 'PLA GJB';
   /** Maximum average (peak) chamber pressure (MPa) — or peak thrust force (N) for archery */
   peakPressureMPa: number;
   /** Service-load muzzle velocity (m/s) */
@@ -621,6 +651,81 @@ export const CALIBER_BALLISTICS: Readonly<
       velocityFps: 500,
     },
   }),
+  '125mm_apfsds': defineCaliber({
+    caliber: '125mm_apfsds',
+    labelEn: '125mm ZPT-98 DTC10-125 Tungsten APFSDS',
+    labelZh: '125mm DTC10-125 钨合金尾翼稳定脱壳穿甲弹',
+    standard: 'PLA GJB',
+    peakPressureMPa: 650,
+    muzzleVelocityMps: 1780,
+    projectileMassG: 4800,
+    safeUnlockPressureMPa: 18,
+    boreTimeMs: 5.8,
+    referenceBarrelMm: 6250,
+    pressureShapeK: 4.8,
+    peakU: 0.36,
+    heatPerShotC: 32,
+    foulingPerShot: 0.032,
+    recoilKickCm: 5.2,
+    recoilRiseCm: 1.4,
+    muzzleClimbRad: 0.012,
+    barrelWhipCm: 0.42,
+    ejectSpeedCmS: 260,
+    caseHalfLenCm: 20.4,
+    caseRadiusCm: 7.45,
+    caseMassG: 3400,
+    shockDiamonds: 7,
+  }),
+  '120mm_apfsds': defineCaliber({
+    caliber: '120mm_apfsds',
+    labelEn: '120×570mm NATO M829A4 / DM63A1 APFSDS-T',
+    labelZh: '120×570mm 北约 M829A4 / DM63A1 尾翼脱壳穿甲弹',
+    standard: 'NATO EPVAT',
+    peakPressureMPa: 670,
+    muzzleVelocityMps: 1710,
+    projectileMassG: 4600,
+    safeUnlockPressureMPa: 18,
+    boreTimeMs: 5.6,
+    referenceBarrelMm: 6600,
+    pressureShapeK: 4.9,
+    peakU: 0.35,
+    heatPerShotC: 34,
+    foulingPerShot: 0.03,
+    recoilKickCm: 4.8,
+    recoilRiseCm: 1.25,
+    muzzleClimbRad: 0.011,
+    barrelWhipCm: 0.38,
+    ejectSpeedCmS: 240,
+    caseHalfLenCm: 28.5,
+    caseRadiusCm: 7.6,
+    caseMassG: 3100,
+    shockDiamonds: 7,
+  }),
+  '88mm_pzgr39': defineCaliber({
+    caliber: '88mm_pzgr39',
+    labelEn: '88×571mmR KwK 36 PzGr. 39 APCBC-HE',
+    labelZh: '88×571mmR KwK 36 39式被帽穿甲弹 (PzGr. 39)',
+    standard: 'CIP',
+    peakPressureMPa: 320,
+    muzzleVelocityMps: 773,
+    projectileMassG: 10200,
+    safeUnlockPressureMPa: 14,
+    boreTimeMs: 9.2,
+    referenceBarrelMm: 4930,
+    pressureShapeK: 3.9,
+    peakU: 0.4,
+    heatPerShotC: 26,
+    foulingPerShot: 0.036,
+    recoilKickCm: 4.5,
+    recoilRiseCm: 1.5,
+    muzzleClimbRad: 0.014,
+    barrelWhipCm: 0.35,
+    ejectSpeedCmS: 210,
+    caseHalfLenCm: 28.55,
+    caseRadiusCm: 5.6,
+    caseMassG: 4200,
+    shockDiamonds: 5,
+  }),
 };
 
 export function getCaliberBallisticsSpec(
@@ -732,6 +837,14 @@ export const WEAPON_FIRING_TIMING: Readonly<
   m134: timing(0.09, 0.19, 0.44, 0.88, null, -0.18, -0.58, 0.79),
   // Nikonov AN-94 "Abakan" 5.45×39mm floating pulley-cable hyperburst — gas tap at ~52% bore, right-upward ejection
   an94: timing(0.105, 0.195, 0.44, 0.88, 0.52, 0.22, 0.52, 0.82),
+  // PLA ZTZ-99A 125mm ZPT-98 L/50 smoothbore + 22-rd carousel autoloader — rear turret stub-ejector window
+  ztz99a: timing(0.11, 0.2, 0.44, 0.94, null, -0.82, 0.46, 0.34),
+  // M1A2 SEP v3 Abrams 120mm L/44 M256 smoothbore — vertical sliding wedge drops steel stub base aft
+  m1a2: timing(0.08, 0.19, 0.42, 0.91, null, -0.68, -0.58, 0.44),
+  // KMW Leopard 2A7V 120mm Rh-120 L/55A1 smoothbore — vertical sliding wedge drops steel stub base aft
+  leopard2a7: timing(0.08, 0.165, 0.42, 0.89, null, -0.72, -0.56, 0.4),
+  // Pz.Kpfw. VI Tiger 131 88mm KwK 36 L/56 rifled — Krupp horizontal wedge extracts full brass case into canvas guard
+  tiger1: timing(0.11, 0.23, 0.5, 0.94, null, -0.65, -0.62, 0.44),
 };
 
 export function getWeaponFiringTiming(
@@ -851,7 +964,11 @@ function buildCurveTable(spec: CaliberBallisticsSpec): CaliberCurveTable {
 }
 
 const CURVE_TABLES = {} as Record<CaliberProfile, CaliberCurveTable>;
-for (const cal of [...BALLISTIC_CALIBERS, ...ARCHERY_PROFILES]) {
+for (const cal of [
+  ...BALLISTIC_CALIBERS,
+  ...TANK_CANNON_CALIBERS,
+  ...ARCHERY_PROFILES,
+]) {
   CURVE_TABLES[cal] = buildCurveTable(CALIBER_BALLISTICS[cal]);
 }
 
@@ -1576,18 +1693,23 @@ function spawnWisp(
 
 function spawnMuzzleSmoke(input: Readonly<ArmoryPhysicsInput>): void {
   const spec = getCaliberBallisticsSpec(input.caliber);
-  const bulk = Math.sqrt(spec.muzzleEnergyJ / 1500);
-  const count = spec.caliber === '50_bmg' || spec.caliber === '338_lapua' ? 6 : 4;
+  const isTank = isTankCaliber(spec.caliber) || isTankWeapon(input.weaponId);
+  const bulk = isTank ? 9.5 : Math.sqrt(spec.muzzleEnergyJ / 1500);
+  const count = isTank
+    ? 8
+    : spec.caliber === '50_bmg' || spec.caliber === '338_lapua'
+      ? 6
+      : 4;
   for (let i = 0; i < count; i++) {
     spawnWisp(
       0,
       input.muzzleX + randRange(0.2, 2.5) * bulk,
-      input.muzzleY + randRange(-0.3, 0.3),
-      input.muzzleZ + randRange(-0.4, 0.4),
+      input.muzzleY + randRange(-0.3, 0.3) * (isTank ? 5.5 : 1),
+      input.muzzleZ + randRange(-0.4, 0.4) * (isTank ? 5.5 : 1),
       randRange(18, 55) * bulk,
-      randRange(4, 14),
-      randRange(-10, 10),
-      randRange(1.8, 3.2),
+      randRange(4, 14) * (isTank ? 3.5 : 1),
+      randRange(-10, 10) * (isTank ? 4.5 : 1),
+      randRange(isTank ? 2.4 : 1.8, isTank ? 4.2 : 3.2),
       randRange(0.45, 0.8) * bulk,
       randRange(1.4, 2.6) * bulk,
       randRange(0.22, 0.34)
@@ -1596,18 +1718,20 @@ function spawnMuzzleSmoke(input: Readonly<ArmoryPhysicsInput>): void {
 }
 
 function spawnChamberSmoke(input: Readonly<ArmoryPhysicsInput>): void {
+  const isTank = isTankCaliber(input.caliber) || isTankWeapon(input.weaponId);
+  const s = isTank ? 7.5 : 1;
   for (let i = 0; i < 3; i++) {
     spawnWisp(
       1,
-      input.ejectPortX + randRange(-0.6, 0.6),
-      input.ejectPortY + randRange(0, 0.5),
-      input.ejectPortZ + randRange(0, 0.6),
-      randRange(-4, 4),
-      randRange(8, 18),
-      randRange(2, 9),
+      input.ejectPortX + randRange(-0.6, 0.6) * s,
+      input.ejectPortY + randRange(0, 0.5) * s,
+      input.ejectPortZ + randRange(0, 0.6) * s,
+      randRange(-4, 4) * s,
+      randRange(8, 18) * (isTank ? 3.5 : 1),
+      randRange(2, 9) * (isTank ? 3.0 : 1),
       randRange(1.6, 2.6),
-      randRange(0.3, 0.5),
-      randRange(0.9, 1.5),
+      randRange(0.3, 0.5) * s,
+      randRange(0.9, 1.5) * s,
       randRange(0.16, 0.26)
     );
   }
@@ -1838,7 +1962,9 @@ export function stepArmoryPhysics(
         if (
           input.weaponId !== 'python' &&
           input.weaponId !== 'g11' &&
-          input.caliber !== '473_caseless'
+          input.caliber !== '473_caseless' &&
+          !isTankWeapon(input.weaponId) &&
+          !isTankCaliber(input.caliber)
         ) {
           spawnSpentCasing(input, t);
         }
@@ -1908,20 +2034,22 @@ export function stepArmoryPhysics(
 
   // ---- 5. Heat-haze / cook-off smoke trickle from a hot muzzle --------------
   if (s.barrelHeat01 > 0.12) {
+    const isTank = isTankWeapon(input.weaponId) || isTankCaliber(input.caliber);
+    const hazeScale = isTank ? 7.0 : 1;
     s.smokeTrickleAcc += dt * s.barrelHeat01 * 2.4;
     if (s.smokeTrickleAcc >= 1) {
       s.smokeTrickleAcc -= 1;
       spawnWisp(
         3,
-        input.muzzleX + randRange(-0.3, 0.2),
-        input.muzzleY + 0.3,
-        input.muzzleZ + randRange(-0.2, 0.2),
-        randRange(-1.5, 1.5),
-        randRange(6, 12),
-        randRange(-1.5, 1.5),
+        input.muzzleX + randRange(-0.3, 0.2) * hazeScale,
+        input.muzzleY + 0.3 * hazeScale,
+        input.muzzleZ + randRange(-0.2, 0.2) * hazeScale,
+        randRange(-1.5, 1.5) * hazeScale,
+        randRange(6, 12) * (isTank ? 3.0 : 1),
+        randRange(-1.5, 1.5) * hazeScale,
         randRange(2.0, 3.0),
-        0.25,
-        0.7,
+        0.25 * hazeScale,
+        0.7 * hazeScale,
         0.1 + 0.12 * s.barrelHeat01
       );
     }

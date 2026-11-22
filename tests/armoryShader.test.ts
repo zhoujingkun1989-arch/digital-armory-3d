@@ -1,5 +1,7 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import * as THREE from 'three';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   acquireSectionCapSlot,
   computeSectionCapRectInto,
@@ -50,8 +52,11 @@ import {
   type ArmoryShaderFeatures,
 } from '../src/engine/materials/armoryShader';
 import {
+  ARMOR_DETAIL_NORMAL_FILE,
+  ARMOR_DETAIL_ROUGHNESS_FILE,
   applyPbrTextureFiltering,
   configurePbrTextureAnisotropy,
+  getArmorDetailTextures,
   getPbrTextureAnisotropy,
   PBR_DEFAULT_ANISOTROPY,
   PBR_MAX_ANISOTROPY,
@@ -574,8 +579,199 @@ describe('AAA Armory Surface Shader, GPU Spring Compression & Stencil Cutaway Ca
     ).onBeforeCompile(mockShader);
 
     expect(mockShader.uniforms.uWearLevel).toBe(uniforms.uWearLevel);
+    expect(mockShader.uniforms.uSurfaceScale).toBe(uniforms.uSurfaceScale);
+    expect(uniforms.uSurfaceScale.value).toBe(1);
     expect(mockShader.fragmentShader).toContain('uniform float uWearLevel;');
+    expect(mockShader.fragmentShader).toContain('uniform float uSurfaceScale;');
+    expect(mockShader.fragmentShader).toContain('armoryArmorMicroSlope2D');
     expect(mockShader.fragmentShader).toContain('armoryLocalizedConvex');
     expect(mockShader.fragmentShader).toContain('armorySpecAA');
+
+    // Heavy armor exhibits scale procedural RHA grit, streaks & corner chipping without altering firearm default
+    const tankUniforms = createArmoryShaderUniforms('nitride_steel', 10);
+    expect(tankUniforms.uSurfaceScale.value).toBe(10);
+    syncArmoryUniformProfile(tankUniforms, 'barrel_steel', 1);
+    expect(tankUniforms.uSurfaceScale.value).toBe(1);
+    syncArmoryUniformProfile(tankUniforms, 'nitride_steel', 10);
+    expect(tankUniforms.uSurfaceScale.value).toBe(10);
+  });
+
+  it('injects Direct Light Micro-Shadowing, Lagarde Specular Occlusion, RNM Triplanar Detail & Optical AR Fresnel GLSL (Plan A)', () => {
+    const uniforms = createArmoryShaderUniforms('nitride_steel', 10);
+    expect(uniforms.uArmorDetailNormal.value).toBeNull();
+    expect(uniforms.uArmorDetailRoughness.value).toBeNull();
+    expect(uniforms.uHasArmorDetail.value).toBe(0);
+
+    const mockShader = {
+      vertexShader: THREE.ShaderLib.physical.vertexShader,
+      fragmentShader: THREE.ShaderLib.physical.fragmentShader,
+      uniforms: THREE.UniformsUtils.clone(THREE.ShaderLib.physical.uniforms),
+    };
+    createArmoryMaterialHooks(
+      {
+        spring: false,
+        curvature: true,
+        thermal: false,
+        fouling: false,
+        triplanarMap: false,
+      },
+      uniforms
+    ).onBeforeCompile(mockShader);
+
+    // Uniform reference identity preserved for zero-GC uniform updates
+    expect(mockShader.uniforms.uArmorDetailNormal).toBe(
+      uniforms.uArmorDetailNormal
+    );
+    expect(mockShader.uniforms.uArmorDetailRoughness).toBe(
+      uniforms.uArmorDetailRoughness
+    );
+    expect(mockShader.uniforms.uHasArmorDetail).toBe(uniforms.uHasArmorDetail);
+
+    const vs = mockShader.vertexShader;
+    const fsSrc = mockShader.fragmentShader;
+
+    // Zero backticks inside GLSL template outputs
+    expect(vs).not.toContain('`');
+    expect(fsSrc).not.toContain('`');
+
+    // 1. Direct Light Micro-Shadowing & Lagarde Specular Occlusion (with clamped AO preventing negative-pow NaN)
+    expect(fsSrc).toContain(
+      'float armoryAo = clamp( ( armoryAoRaw - 1.0 ) * aoMapIntensity + 1.0, 0.04, 1.0 );'
+    );
+    expect(fsSrc).toContain(
+      'computeSpecularOcclusion( armoryDotNV, armorySpecAoInput, material.roughness )'
+    );
+    expect(fsSrc).toContain('armoryMultiBounceAO');
+    expect(fsSrc).toContain('iblIrradiance *=');
+    expect(fsSrc).toContain('radiance *= armorySpecOcc;');
+    expect(fsSrc).toContain('clearcoatRadiance *= computeSpecularOcclusion(');
+    expect(fsSrc).toContain('reflectedLight.directDiffuse *= armoryMicroDiff;');
+    expect(fsSrc).toContain('reflectedLight.directSpecular *= armoryMicroSpec;');
+    // Default Three.js #include <aomap_fragment> replaced cleanly so AO/specOcc never double-darken
+    expect(fsSrc).not.toContain('#include <aomap_fragment>');
+
+    // 2. Seamless 512x512 Triplanar Detail Normal (RNM) + Detail Roughness with 28 cm tank tile & Nyquist fade
+    expect(fsSrc).toContain('uniform sampler2D uArmorDetailNormal;');
+    expect(fsSrc).toContain('uniform sampler2D uArmorDetailRoughness;');
+    expect(fsSrc).toContain('uniform float uHasArmorDetail;');
+    expect(fsSrc).toContain('vArmoryObjPos / 28.0');
+    expect(fsSrc).toContain('armoryBlendRNM');
+    expect(fsSrc).toContain('armoryReorientNormal3D');
+    expect(fsSrc).toContain('fwidth( armoryDetailPos )');
+    expect(fsSrc).toContain('texture2D( uArmorDetailNormal,');
+    expect(fsSrc).toContain('texture2D( uArmorDetailRoughness,');
+
+    // 3. Optical AR Multi-Coating Thin-Film Fresnel Iridescence (low roughness < 0.14 + emerald/sapphire/ruby chroma)
+    expect(fsSrc).toContain('armoryOpticMask');
+    expect(fsSrc).toContain('smoothstep( 0.085, 0.14, roughnessFactor )');
+    expect(fsSrc).toContain('armoryOpticalArTint');
+    expect(fsSrc).toContain('armoryObsidianAtten');
+    expect(fsSrc).toContain('armoryArSheen');
+
+    // Verify PartActor wires getArmorDetailTextures & the three armor detail uniforms cleanly
+    const partActorSrc = fs.readFileSync(
+      path.resolve(__dirname, '../src/engine/actors/PartActor.tsx'),
+      'utf8'
+    );
+    expect(partActorSrc).toContain('getArmorDetailTextures');
+    expect(partActorSrc).toContain('uArmorDetailNormal.value');
+    expect(partActorSrc).toContain('uArmorDetailRoughness.value');
+    expect(partActorSrc).toContain('uHasArmorDetail.value');
+  });
+
+  it('ships <= 120 KB 512x512 seamless armor detail WebPs (zero PNGs) and exposes cached RepeatWrapping linear-locked getArmorDetailTextures()', () => {
+    const scriptPath = path.resolve(
+      __dirname,
+      '../scripts/pbr_core/generate_armor_detail_maps.py'
+    );
+    expect(fs.existsSync(scriptPath)).toBe(true);
+
+    const texturesDir = path.resolve(__dirname, '../public/textures');
+    const normalPath = path.join(texturesDir, ARMOR_DETAIL_NORMAL_FILE);
+    const roughPath = path.join(texturesDir, ARMOR_DETAIL_ROUGHNESS_FILE);
+    expect(fs.existsSync(normalPath)).toBe(true);
+    expect(fs.existsSync(roughPath)).toBe(true);
+    // Strict zero-PNG hygiene
+    expect(
+      fs.existsSync(path.join(texturesDir, 'armor_detail_normal.png'))
+    ).toBe(false);
+    expect(
+      fs.existsSync(path.join(texturesDir, 'armor_detail_roughness.png'))
+    ).toBe(false);
+
+    const normalBuf = fs.readFileSync(normalPath);
+    const roughBuf = fs.readFileSync(roughPath);
+    // Verify valid RIFF....WEBP binary signatures
+    expect(normalBuf.subarray(0, 4).toString('ascii')).toBe('RIFF');
+    expect(normalBuf.subarray(8, 12).toString('ascii')).toBe('WEBP');
+    expect(roughBuf.subarray(0, 4).toString('ascii')).toBe('RIFF');
+    expect(roughBuf.subarray(8, 12).toString('ascii')).toBe('WEBP');
+    expect(normalBuf.byteLength + roughBuf.byteLength).toBeLessThanOrEqual(
+      120 * 1024
+    );
+
+    // 1. Headless Node fallback (`typeof window === 'undefined'`) returns nulls gracefully
+    expect(typeof window).toBe('undefined');
+    const headless = getArmorDetailTextures();
+    expect(headless.normalMap).toBeNull();
+    expect(headless.roughnessMap).toBeNull();
+    expect(headless.textureKeys).toEqual([]);
+
+    // 2. Simulated browser (root `/` and GitHub Pages subpath `/digital-armory-3d/`)
+    const prevWindow = globalThis.window;
+    const loadedUrls: string[] = [];
+    const loadSpy = vi
+      .spyOn(THREE.TextureLoader.prototype, 'load')
+      .mockImplementation((url: string) => {
+        loadedUrls.push(url);
+        return new THREE.Texture();
+      });
+
+    try {
+      Object.defineProperty(globalThis, 'window', {
+        configurable: true,
+        writable: true,
+        value: { location: { origin: 'http://localhost', pathname: '/' } },
+      });
+      const rootBundle1 = getArmorDetailTextures();
+      const rootBundle2 = getArmorDetailTextures();
+      expect(rootBundle2).toBe(rootBundle1);
+      expect(rootBundle1.normalMap).not.toBeNull();
+      expect(rootBundle1.roughnessMap).not.toBeNull();
+      expect(loadedUrls).toContain('/textures/armor_detail_normal.webp');
+      expect(loadedUrls).toContain('/textures/armor_detail_roughness.webp');
+
+      for (const tex of [rootBundle1.normalMap!, rootBundle1.roughnessMap!]) {
+        expect(tex.wrapS).toBe(THREE.RepeatWrapping);
+        expect(tex.wrapT).toBe(THREE.RepeatWrapping);
+        expect(tex.colorSpace).toBe(THREE.NoColorSpace);
+        // Must survive R3F v8 `applyProps` sRGB clobbering
+        tex.colorSpace = THREE.SRGBColorSpace;
+        expect(tex.colorSpace).toBe(THREE.NoColorSpace);
+      }
+
+      // Subpath-safe resolution under `/digital-armory-3d/`
+      const subBundle = getArmorDetailTextures('/digital-armory-3d/');
+      expect(subBundle.normalMap).not.toBeNull();
+      expect(subBundle.roughnessMap).not.toBeNull();
+      expect(loadedUrls).toContain(
+        '/digital-armory-3d/textures/armor_detail_normal.webp'
+      );
+      expect(loadedUrls).toContain(
+        '/digital-armory-3d/textures/armor_detail_roughness.webp'
+      );
+      expect(subBundle.normalMap!.wrapS).toBe(THREE.RepeatWrapping);
+      expect(subBundle.normalMap!.colorSpace).toBe(THREE.NoColorSpace);
+      expect(subBundle.roughnessMap!.wrapT).toBe(THREE.RepeatWrapping);
+      expect(subBundle.roughnessMap!.colorSpace).toBe(THREE.NoColorSpace);
+      expect(loadSpy).toHaveBeenCalled();
+    } finally {
+      loadSpy.mockRestore();
+      Object.defineProperty(globalThis, 'window', {
+        configurable: true,
+        writable: true,
+        value: prevWindow,
+      });
+    }
   });
 });

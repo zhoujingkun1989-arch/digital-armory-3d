@@ -71,6 +71,10 @@ export default defineConfig({
             return 'armory-i18n';
           }
 
+          if (normId.includes('/src/features/armory/WeaponSilhouetteSvg.tsx')) {
+            return 'armory-silhouettes';
+          }
+
           return undefined;
         },
       },

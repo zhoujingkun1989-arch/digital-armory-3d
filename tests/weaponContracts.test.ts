@@ -101,6 +101,10 @@ const DYNAMIC_SPRING_PARTS: Readonly<Record<WeaponId, readonly string[]>> = {
   vss: ['vss_recoil_spring', 'vss_striker_spring'],
   m134: ['m134_clutch_spring', 'm134_feeder_spring'],
   an94: ['an94_recoil_spring', 'an94_receiver_buffer_spring'],
+  ztz99a: ['ztz99a_recoil_springs', 'ztz99a_rammer_spring'],
+  m1a2: ['m1a2_recoil_springs', 'm1a2_door_spring'],
+  leopard2a7: ['leo_recoil_springs', 'leo_breech_spring'],
+  tiger1: ['tiger_recoil_springs', 'tiger_breech_spring'],
 };
 
 const ROTATING_BOLT_PARTS: ReadonlyArray<{
@@ -212,20 +216,20 @@ function findFirstNonFiniteIndex(arr: ArrayLike<number>): number {
   return -1;
 }
 
-describe('23-Exhibit Digital Armory WP-17 1:1 plugin, geometry, kinematics & PBR contracts', () => {
-  it('registers all 23 iconic exhibits totaling 579 parts across all 8 categories with accurate camera presets', () => {
-    expect(WEAPON_MANIFESTS).toHaveLength(23);
-    expect(ARMORY_WEAPONS).toHaveLength(23);
+describe('27-Exhibit Digital Armory WP-18 1:1 plugin, geometry, kinematics & PBR contracts', () => {
+  it('registers all 27 iconic exhibits totaling 683 parts across all 9 categories with accurate camera presets', () => {
+    expect(WEAPON_MANIFESTS).toHaveLength(27);
+    expect(ARMORY_WEAPONS).toHaveLength(27);
 
     const totalCatalogParts = WEAPON_MANIFESTS.reduce(
       (sum, m) => sum + m.catalog.partsCount,
       0
     );
-    expect(totalCatalogParts).toBe(579);
+    expect(totalCatalogParts).toBe(683);
 
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'all'))
-    ).toHaveLength(23);
+    ).toHaveLength(27);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'assault'))
     ).toHaveLength(7);
@@ -247,6 +251,9 @@ describe('23-Exhibit Digital Armory WP-17 1:1 plugin, geometry, kinematics & PBR
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'archery'))
     ).toHaveLength(2);
+    expect(
+      ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'armor'))
+    ).toHaveLength(4);
 
     for (const manifest of WEAPON_MANIFESTS) {
       expect(manifest.atlasHeadingCn).toContain('Packed ORM');
@@ -283,7 +290,7 @@ describe('23-Exhibit Digital Armory WP-17 1:1 plugin, geometry, kinematics & PBR
     }
   });
 
-  it('enforces 1:1 BOM metadata, disassembly keyframes, dense [0..1] kinematic sweeps, and mechanism-specific motion laws across all 23 plugins', async () => {
+  it('enforces 1:1 BOM metadata, disassembly keyframes, dense [0..1] kinematic sweeps, and mechanism-specific motion laws across all 27 plugins', async () => {
     const globalPartIds = new Set<string>();
     let totalRuntimeParts = 0;
     const poseScratch = createMutablePose();
@@ -464,8 +471,8 @@ describe('23-Exhibit Digital Armory WP-17 1:1 plugin, geometry, kinematics & PBR
       }
     }
 
-    expect(totalRuntimeParts).toBe(579);
-    expect(globalPartIds.size).toBe(579);
+    expect(totalRuntimeParts).toBe(683);
+    expect(globalPartIds.size).toBe(683);
 
     // 1. M82A1 short-recoil barrel + accelerator motion law
     const m82Plugin = loadedPlugins.get('m82a1')!;
@@ -976,7 +983,7 @@ describe('23-Exhibit Digital Armory WP-17 1:1 plugin, geometry, kinematics & PBR
     }
   });
 
-  it('builds all 579 CSG/parametric BufferGeometries with finite attributes, unit normals, positive 3D volume, and [0, 1] custom-atlas UVs', async () => {
+  it('builds all 683 CSG/parametric BufferGeometries with finite attributes, unit normals, positive 3D volume, and [0, 1] custom-atlas UVs', async () => {
     let builtPartsCount = 0;
 
     for (const manifest of WEAPON_MANIFESTS) {
@@ -1200,7 +1207,7 @@ describe('23-Exhibit Digital Armory WP-17 1:1 plugin, geometry, kinematics & PBR
         }
       }
 
-      // Verify zero 3D AABB overlaps at t = 1.0 across V2 & WP-17 exhibits (m249, p08, vector, g11, vss, m134, an94)
+      // Verify zero 3D AABB overlaps at t = 1.0 across V2, WP-17 & WP-18 exhibits
       if (
         manifest.id === 'm249' ||
         manifest.id === 'p08' ||
@@ -1208,7 +1215,11 @@ describe('23-Exhibit Digital Armory WP-17 1:1 plugin, geometry, kinematics & PBR
         manifest.id === 'g11' ||
         manifest.id === 'vss' ||
         manifest.id === 'm134' ||
-        manifest.id === 'an94'
+        manifest.id === 'an94' ||
+        manifest.id === 'ztz99a' ||
+        manifest.id === 'm1a2' ||
+        manifest.id === 'leopard2a7' ||
+        manifest.id === 'tiger1'
       ) {
         const overlaps: string[] = [];
         for (let i = 0; i < explodedWorldBoxes.length; i++) {
@@ -1238,10 +1249,10 @@ describe('23-Exhibit Digital Armory WP-17 1:1 plugin, geometry, kinematics & PBR
       }
     }
 
-    expect(builtPartsCount).toBe(579);
+    expect(builtPartsCount).toBe(683);
   }, 120000);
 
-  it('verifies all 313 WebP PBR textures exist on disk (0 PNGs) and all 105 *_roughness.webp ORM maps have valid RGB WebP headers', async () => {
+  it('verifies all 351 WebP PBR textures exist on disk (0 PNGs) and all 118 *_roughness.webp ORM maps have valid RGB WebP headers', async () => {
     expect(fs.existsSync(TEXTURES_DIR)).toBe(true);
     const diskFiles = fs.readdirSync(TEXTURES_DIR);
     const webpFiles = diskFiles.filter((f) => f.endsWith('.webp')).sort();
@@ -1252,13 +1263,13 @@ describe('23-Exhibit Digital Armory WP-17 1:1 plugin, geometry, kinematics & PBR
     );
     const normalFiles = webpFiles.filter((f) => f.endsWith('_normal.webp'));
 
-    expect(webpFiles).toHaveLength(313);
+    expect(webpFiles).toHaveLength(351);
     expect(pngFiles).toHaveLength(0);
-    expect(albedoFiles).toHaveLength(103);
-    expect(roughnessFiles).toHaveLength(105);
-    expect(normalFiles).toHaveLength(105);
+    expect(albedoFiles).toHaveLength(115);
+    expect(roughnessFiles).toHaveLength(118);
+    expect(normalFiles).toHaveLength(118);
 
-    // Binary RIFF/WEBP header validation across all 277 textures
+    // Binary RIFF/WEBP header validation across all 351 textures
     for (const fileName of webpFiles) {
       const fullPath = path.join(TEXTURES_DIR, fileName);
       const buf = fs.readFileSync(fullPath);
@@ -1272,7 +1283,7 @@ describe('23-Exhibit Digital Armory WP-17 1:1 plugin, geometry, kinematics & PBR
       ).toBeGreaterThanOrEqual(512);
     }
 
-    // All 93 *_roughness.webp Packed ORM maps & 93 *_normal.webp maps must have 3-channel RGB WebP headers (no alpha)
+    // All 118 *_roughness.webp Packed ORM/detail maps & 118 *_normal.webp maps must have 3-channel RGB WebP headers (no alpha)
     for (const linearRgbFile of [...roughnessFiles, ...normalFiles]) {
       const fullPath = path.join(TEXTURES_DIR, linearRgbFile);
       const buf = fs.readFileSync(fullPath);
@@ -1285,6 +1296,8 @@ describe('23-Exhibit Digital Armory WP-17 1:1 plugin, geometry, kinematics & PBR
 
     const diskSet = new Set(webpFiles);
     for (const shared of [
+      'armor_detail_normal.webp',
+      'armor_detail_roughness.webp',
       'metal_detail_normal.webp',
       'metal_detail_roughness.webp',
       'polymer_detail_normal.webp',
@@ -1391,7 +1404,7 @@ describe('23-Exhibit Digital Armory WP-17 1:1 plugin, geometry, kinematics & PBR
     expect(playbackClock.getState().targetProgress).toBe(0);
   });
 
-  it('verifies Google Gemini bilingual R&D stories, all 579 part narrations, all 1,342 MP3 voiceover clips & 23 Charon TTS SHA-256 hash manifests with 0 CJK leaks in English', async () => {
+  it('verifies Google Gemini bilingual R&D stories, all 683 part narrations, all 1,582 MP3 voiceover clips & 27 Charon TTS SHA-256 hash manifests with 0 CJK leaks in English', async () => {
     let totalNarratedParts = 0;
     const allReferencedAudioPaths: string[] = [];
 
@@ -1420,7 +1433,7 @@ describe('23-Exhibit Digital Armory WP-17 1:1 plugin, geometry, kinematics & PBR
       .readdirSync(TTS_CACHE_DIR)
       .filter((f) => f.endsWith('_tts_hashes.json'))
       .sort();
-    expect(hashFilesOnDisk).toHaveLength(23);
+    expect(hashFilesOnDisk).toHaveLength(27);
     let totalVerifiedHashes = 0;
 
     for (const manifest of WEAPON_MANIFESTS) {
@@ -1587,10 +1600,10 @@ describe('23-Exhibit Digital Armory WP-17 1:1 plugin, geometry, kinematics & PBR
       assertZeroCjkInEnglish(metaEn, `${wid}.metaEn`);
     }
 
-    // 579 total parts across 23 exhibits -> 184 story MP3s + 1,158 part MP3s = 1,342 MP3 files
-    expect(totalNarratedParts).toBe(579);
-    expect(allReferencedAudioPaths).toHaveLength(1342);
-    expect(totalVerifiedHashes).toBe(1342);
+    // 683 total parts across 27 exhibits -> 216 story MP3s + 1,366 part MP3s = 1,582 MP3 files
+    expect(totalNarratedParts).toBe(683);
+    expect(allReferencedAudioPaths).toHaveLength(1582);
+    expect(totalVerifiedHashes).toBe(1582);
 
     const countDiskMp3s = (dir: string): number => {
       let n = 0;
@@ -1601,7 +1614,7 @@ describe('23-Exhibit Digital Armory WP-17 1:1 plugin, geometry, kinematics & PBR
       }
       return n;
     };
-    expect(countDiskMp3s(AUDIO_DIR)).toBe(1342);
+    expect(countDiskMp3s(AUDIO_DIR)).toBe(1582);
 
     for (const relAudio of allReferencedAudioPaths) {
       const fullMp3Path = path.join(ROOT_DIR, 'public', relAudio);

@@ -90,6 +90,7 @@ const CATEGORY_KEYS: readonly ShowcaseFilterKey[] = [
   'shotgun',
   'pistol',
   'archery',
+  'armor',
 ];
 
 function matchesShowcaseCategory(
@@ -1087,11 +1088,18 @@ export const ShowcaseView: React.FC = () => {
                   <button
                     key={catKey}
                     type="button"
-                    className={`arsenal-tab ${isSelected ? 'active' : ''}`}
+                    className={`arsenal-tab ${
+                      catKey === 'armor' ? 'is-armor-tab' : ''
+                    } ${isSelected ? 'active' : ''}`}
                     aria-pressed={isSelected}
                     onClick={() => setCategory(catKey)}
                   >
-                    {s.arsenal.categories[catKey]} ({count})
+                    {catKey === 'armor' && (
+                      <Shield size={12} aria-hidden="true" />
+                    )}
+                    <span>
+                      {s.arsenal.categories[catKey]} ({count})
+                    </span>
                   </button>
                 );
               })}

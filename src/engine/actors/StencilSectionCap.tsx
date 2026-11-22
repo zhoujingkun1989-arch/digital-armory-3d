@@ -1,6 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import type { AssemblyGroupKey, MaterialKind } from '../../weapons/types';
+import type {
+  AssemblyGroupKey,
+  MaterialKind,
+  WeaponScaleProfile,
+} from '../../weapons/types';
 import {
   ENGINEERING_ROLE_META,
   type EngineeringRole,
@@ -27,6 +31,48 @@ export const SECTION_CUT_OFFSET_MAX = 2.5;
 export const SECTION_CUT_OFFSET_STEP = 0.05;
 export const SECTION_CUT_OFFSET_DEFAULT = 0;
 
+/** Heavy Armor 1:1 Main Battle Tank CT-Scan section plane range (`±180 cm` = `±1,800 mm`). */
+export const TANK_SECTION_CUT_OFFSET_MIN = -180;
+export const TANK_SECTION_CUT_OFFSET_MAX = 180;
+export const TANK_SECTION_CUT_OFFSET_STEP = 2.0;
+export const TANK_SECTION_HATCH_SCALE = 8;
+
+export interface SectionCutRangeSpec {
+  min: number;
+  max: number;
+  step: number;
+  sweepAmplitude: number;
+  hatchScale: number;
+  capMargin: number;
+}
+
+const SMALL_ARMS_SECTION_RANGE: SectionCutRangeSpec = {
+  min: SECTION_CUT_OFFSET_MIN,
+  max: SECTION_CUT_OFFSET_MAX,
+  step: SECTION_CUT_OFFSET_STEP,
+  sweepAmplitude: 2.15,
+  hatchScale: 1,
+  capMargin: 0.16,
+};
+
+const TANK_SECTION_RANGE: SectionCutRangeSpec = {
+  min: TANK_SECTION_CUT_OFFSET_MIN,
+  max: TANK_SECTION_CUT_OFFSET_MAX,
+  step: TANK_SECTION_CUT_OFFSET_STEP,
+  sweepAmplitude: 155,
+  hatchScale: TANK_SECTION_HATCH_SCALE,
+  capMargin: 1.28,
+};
+
+/** Returns adaptive CT-Scan section range & ISO 128 hatch scaling for small arms vs 1:1 tanks. */
+export function getSectionCutRange(
+  scaleProfile?: WeaponScaleProfile | null
+): SectionCutRangeSpec {
+  return scaleProfile === 'main_battle_tank'
+    ? TANK_SECTION_RANGE
+    : SMALL_ARMS_SECTION_RANGE;
+}
+
 /**
  * Module-pooled live longitudinal section-cut plane (zero per-frame allocations).
  * Mutating `SECTION_CUT_PLANES[0]` updates Three.js material clipping uniforms,
@@ -37,13 +83,14 @@ export const SECTION_CUT_PLANES: THREE.Plane[] = [
   new THREE.Plane(new THREE.Vector3(0, 0, -1), SECTION_CUT_OFFSET_DEFAULT),
 ];
 
-/** Clamps a section-cut Z offset cleanly into `[-2.5, +2.5]` cm with finite/zero normalization. */
-export function clampSectionCutOffset(offset: number): number {
+/** Clamps a section-cut Z offset cleanly into `[-2.5, +2.5]` cm (or `[-180, +180]` cm for 1:1 MBTs). */
+export function clampSectionCutOffset(
+  offset: number,
+  scaleProfile?: WeaponScaleProfile | null
+): number {
   if (!Number.isFinite(offset)) return SECTION_CUT_OFFSET_DEFAULT;
-  const clamped = Math.max(
-    SECTION_CUT_OFFSET_MIN,
-    Math.min(SECTION_CUT_OFFSET_MAX, offset)
-  );
+  const range = getSectionCutRange(scaleProfile);
+  const clamped = Math.max(range.min, Math.min(range.max, offset));
   const rounded = Math.round(clamped * 1000) / 1000;
   return Object.is(rounded, -0) ? 0 : rounded;
 }
@@ -56,9 +103,10 @@ export function clampSectionCutOffset(offset: number): number {
  */
 export function syncLiveSectionCutPlane(
   offset: number,
-  flip = false
+  flip = false,
+  scaleProfile?: WeaponScaleProfile | null
 ): THREE.Plane {
-  const clamped = clampSectionCutOffset(offset);
+  const clamped = clampSectionCutOffset(offset, scaleProfile);
   const plane = SECTION_CUT_PLANES[0];
   if (flip) {
     plane.normal.set(0, 0, 1);
@@ -75,9 +123,17 @@ export function getLiveSectionCutZ(): number {
   return sectionPlaneZ(SECTION_CUT_PLANES[0]);
 }
 
-/** Formats a world-unit cm section offset into signed millimeter telemetry (e.g. `+0.0 mm`, `-12.5 mm`). */
-export function formatSectionOffsetMm(offsetCm: number): string {
-  const mm = clampSectionCutOffset(offsetCm) * 10;
+/** Formats a world-unit cm section offset into signed millimeter telemetry (e.g. `+0.0 mm`, `-12.5 mm`, `+1,240 mm`). */
+export function formatSectionOffsetMm(
+  offsetCm: number,
+  scaleProfile?: WeaponScaleProfile | null
+): string {
+  const mm = clampSectionCutOffset(offsetCm, scaleProfile) * 10;
+  if (scaleProfile === 'main_battle_tank') {
+    const normalized = Math.abs(mm) < 0.5 ? 0 : Math.round(mm);
+    const sign = normalized < 0 ? '-' : '+';
+    return `${sign}${Math.abs(normalized).toLocaleString('en-US')} mm`;
+  }
   const normalized = Math.abs(mm) < 0.05 ? 0 : mm;
   const sign = normalized < 0 ? '-' : '+';
   return `${sign}${Math.abs(normalized).toFixed(1)} mm`;
@@ -116,9 +172,11 @@ const GROUP_HATCH: Record<AssemblyGroupKey, { dir: 1 | -1; spacing: number }> = 
 export function getSectionCapStyle(
   kind: MaterialKind,
   group: AssemblyGroupKey,
-  engineeringRole?: EngineeringRole | null
+  engineeringRole?: EngineeringRole | null,
+  hatchScale = 1
 ): SectionCapStyle {
   const h = GROUP_HATCH[group] ?? GROUP_HATCH.frame;
+  const scaledSpacing = h.spacing * (hatchScale > 0 ? hatchScale : 1);
   let style: SectionCapStyle;
   switch (kind) {
     case 'polymer_frame':
@@ -127,7 +185,7 @@ export function getSectionCapStyle(
         base: '#334155',
         hatch: '#64748b',
         hatchDir: h.dir,
-        hatchSpacing: h.spacing,
+        hatchSpacing: scaledSpacing,
         spec: 0.08,
         brushed: 0,
       };
@@ -137,7 +195,7 @@ export function getSectionCapStyle(
         base: '#f97316',
         hatch: '#9a3412',
         hatchDir: h.dir,
-        hatchSpacing: h.spacing,
+        hatchSpacing: scaledSpacing,
         spec: 0.12,
         brushed: 0,
       };
@@ -148,7 +206,7 @@ export function getSectionCapStyle(
         base: '#c2853f',
         hatch: '#7c2d12',
         hatchDir: h.dir,
-        hatchSpacing: h.spacing,
+        hatchSpacing: scaledSpacing,
         spec: 0.42,
         brushed: 1,
       };
@@ -163,7 +221,7 @@ export function getSectionCapStyle(
         base: '#94a3b8',
         hatch: '#475569',
         hatchDir: h.dir,
-        hatchSpacing: h.spacing,
+        hatchSpacing: scaledSpacing,
         spec: 0.36,
         brushed: 1,
       };
@@ -196,6 +254,7 @@ uniform float uHatchDir;
 uniform float uHatchSpacing;
 uniform float uSpec;
 uniform float uBrushed;
+uniform float uGrainScale;
 varying vec3 vCapWorldPos;
 
 float capHash11( float p ) {
@@ -218,8 +277,9 @@ void main() {
   line *= 1.0 - smoothstep( 0.25, 0.5, fw );
 
   // Machined surface grain: brushed steel streaks along +X, or polymer stipple
-  float grainBrushed = 0.88 + 0.12 * capHash11( floor( vCapWorldPos.y * 140.0 ) );
-  float grainStipple = 0.94 + 0.06 * capHash11( floor( vCapWorldPos.x * 60.0 ) * 7.13 + floor( vCapWorldPos.y * 60.0 ) );
+  float gScale = max( uGrainScale, 0.05 );
+  float grainBrushed = 0.88 + 0.12 * capHash11( floor( vCapWorldPos.y * 140.0 * gScale ) );
+  float grainStipple = 0.94 + 0.06 * capHash11( floor( vCapWorldPos.x * 60.0 * gScale ) * 7.13 + floor( vCapWorldPos.y * 60.0 * gScale ) );
   vec3 base = uBaseColor * mix( grainStipple, grainBrushed, uBrushed );
 
   vec3 N = vec3( 0.0, 0.0, 1.0 );
@@ -249,16 +309,21 @@ void main() {
 
 const capMaterialCache = new Map<string, THREE.ShaderMaterial>();
 
-/** Builds the CNC cross-section cap material (cached per material kind × assembly group × role). */
+/** Builds the CNC cross-section cap material (cached per material kind × assembly group × role × scale). */
 export function getSectionCapMaterial(
   kind: MaterialKind,
   group: AssemblyGroupKey,
-  engineeringRole?: EngineeringRole | null
+  engineeringRole?: EngineeringRole | null,
+  hatchScale = 1
 ): THREE.ShaderMaterial {
-  const key = `${kind}|${group}|${engineeringRole ?? 'none'}`;
+  const safeScale = hatchScale > 0 ? hatchScale : 1;
+  const key =
+    safeScale === 1
+      ? `${kind}|${group}|${engineeringRole ?? 'none'}`
+      : `${kind}|${group}|${engineeringRole ?? 'none'}|x${safeScale}`;
   const cached = capMaterialCache.get(key);
   if (cached) return cached;
-  const style = getSectionCapStyle(kind, group, engineeringRole);
+  const style = getSectionCapStyle(kind, group, engineeringRole, safeScale);
   const mat = new THREE.ShaderMaterial({
     name: `SectionCap:${key}`,
     uniforms: {
@@ -268,6 +333,7 @@ export function getSectionCapMaterial(
       uHatchSpacing: { value: style.hatchSpacing },
       uSpec: { value: style.spec },
       uBrushed: { value: style.brushed },
+      uGrainScale: { value: 1 / safeScale },
     },
     vertexShader: CAP_VERTEX,
     fragmentShader: CAP_FRAGMENT,
@@ -594,6 +660,7 @@ export interface StencilSectionCapProps {
   group: AssemblyGroupKey;
   clippingPlanes: THREE.Plane[];
   engineeringRole?: EngineeringRole | null;
+  scaleProfile?: WeaponScaleProfile;
   /**
    * Optional zero-GC visibility/bounds sync hook called by PartActor in `useFrame`.
    */
@@ -614,14 +681,21 @@ export const StencilSectionCap: React.FC<StencilSectionCapProps> = ({
   group,
   clippingPlanes,
   engineeringRole = null,
+  scaleProfile,
   syncRef,
 }) => {
   const backRef = useRef<THREE.Mesh>(null);
   const frontRef = useRef<THREE.Mesh>(null);
   const capRef = useRef<THREE.Mesh>(null);
 
+  const range = getSectionCutRange(scaleProfile);
   const passMats = getSectionStencilPassMaterials(clippingPlanes);
-  const capMat = getSectionCapMaterial(material, group, engineeringRole);
+  const capMat = getSectionCapMaterial(
+    material,
+    group,
+    engineeringRole,
+    range.hatchScale
+  );
 
   useEffect(() => {
     const slot = acquireSectionCapSlot();
@@ -629,6 +703,7 @@ export const StencilSectionCap: React.FC<StencilSectionCapProps> = ({
     if (!geometry.boundingBox) geometry.computeBoundingBox();
     const localBox = geometry.boundingBox ?? new THREE.Box3();
     const activePlane = clippingPlanes[0];
+    const capMargin = range.capMargin;
 
     const back = backRef.current;
     const front = frontRef.current;
@@ -644,7 +719,7 @@ export const StencilSectionCap: React.FC<StencilSectionCapProps> = ({
           localBox,
           refObj.matrixWorld,
           activePlane,
-          0.16,
+          capMargin,
           _capWorld
         );
         const ok = visible && rendererHasStencil(renderer);
@@ -662,7 +737,7 @@ export const StencilSectionCap: React.FC<StencilSectionCapProps> = ({
         localBox,
         partGroup.matrixWorld,
         activePlane,
-        0.16,
+        capMargin,
         _capWorld
       );
       back.visible = visible;
@@ -678,7 +753,7 @@ export const StencilSectionCap: React.FC<StencilSectionCapProps> = ({
       syncRef.current = null;
       releaseSectionCapSlot(slot);
     };
-  }, [geometry, clippingPlanes, syncRef]);
+  }, [geometry, clippingPlanes, syncRef, range.capMargin]);
 
   return (
     <>

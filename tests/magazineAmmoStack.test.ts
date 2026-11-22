@@ -50,6 +50,10 @@ const MIN_ROUND_COUNTS: Readonly<Record<WeaponId, number>> = {
   vss: 10,
   m134: 8,
   an94: 20,
+  ztz99a: 0,
+  m1a2: 0,
+  leopard2a7: 0,
+  tiger1: 0,
 };
 
 function computePartWorldBox(
@@ -96,6 +100,29 @@ describe('23-Exhibit Full-Capacity 3D Magazine, Belt, Cylinder, Tubular, En-Bloc
         spec.roundCount,
         `${weaponId}: insufficient stack roundCount`
       ).toBeGreaterThanOrEqual(MIN_ROUND_COUNTS[weaponId]);
+
+      const plugin = await loadWeaponPlugin(weaponId);
+      const magBodyPart = plugin.parts.find(
+        (p) => p.id === spec.magBodyPartId
+      );
+      const followerPart = plugin.parts.find(
+        (p) => p.id === spec.followerPartId
+      );
+      expect(
+        magBodyPart,
+        `${weaponId}: missing ${spec.magBodyPartId}`
+      ).toBeDefined();
+      expect(
+        followerPart,
+        `${weaponId}: missing ${spec.followerPartId}`
+      ).toBeDefined();
+
+      // Main Battle Tanks house sculptural GLB ammo racks & animated ready-round parts (roundCount: 0, slots: [])
+      if (spec.roundCount === 0) {
+        expect(spec.slots).toHaveLength(0);
+        continue;
+      }
+
       expect(spec.slots.length).toBe(spec.roundCount + 1);
       expect(spec.slots.length).toBeLessThanOrEqual(
         MAX_MAGAZINE_STACK_INSTANCES
@@ -121,23 +148,7 @@ describe('23-Exhibit Full-Capacity 3D Magazine, Belt, Cylinder, Tubular, En-Bloc
         roundFit.roundScale;
       const localMidX = 0.5 * (localHeadX + localTipX);
 
-      const plugin = await loadWeaponPlugin(weaponId);
       const builders = await loadWeaponGeometryBuilders(weaponId);
-
-      const magBodyPart = plugin.parts.find(
-        (p) => p.id === spec.magBodyPartId
-      );
-      const followerPart = plugin.parts.find(
-        (p) => p.id === spec.followerPartId
-      );
-      expect(
-        magBodyPart,
-        `${weaponId}: missing ${spec.magBodyPartId}`
-      ).toBeDefined();
-      expect(
-        followerPart,
-        `${weaponId}: missing ${spec.followerPartId}`
-      ).toBeDefined();
 
       const magBodyGeo = builders[spec.magBodyPartId]();
       const followerGeo = builders[spec.followerPartId]();
@@ -490,6 +501,7 @@ describe('23-Exhibit Full-Capacity 3D Magazine, Belt, Cylinder, Tubular, En-Bloc
 
     for (const weaponId of WEAPON_IDS) {
       const spec = MAGAZINE_STACK_SPECS[weaponId];
+      if (spec.roundCount === 0) continue;
       expect(computeMagazineFeedShift(weaponId, 0)).toBe(0);
       expect(computeMagazineFeedShift(weaponId, 1)).toBe(1);
       const midF = 0.5 * (spec.feedWindow[0] + spec.feedWindow[1]);
@@ -623,6 +635,7 @@ describe('23-Exhibit Full-Capacity 3D Magazine, Belt, Cylinder, Tubular, En-Bloc
 
     for (const weaponId of WEAPON_IDS) {
       const spec = MAGAZINE_STACK_SPECS[weaponId];
+      if (spec.roundCount === 0) continue;
       const manifest = getWeaponManifest(weaponId);
       const calProfile = manifest.caliberProfile;
       const calSpec = CALIBER_VISUAL_SPECS[calProfile];

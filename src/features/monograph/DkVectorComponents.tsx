@@ -746,6 +746,7 @@ export interface DkTrueScaleRulerProps {
   lang: LanguageCode;
   exhibitLabel?: string;
   isArchery?: boolean;
+  isTank?: boolean;
   className?: string;
 }
 
@@ -762,8 +763,12 @@ function chooseMetricRulerSpanCm(oalMm: number): {
   if (oalCm <= 100) return { maxCm: 100, majorStepCm: 20, minorStepCm: 5 };
   if (oalCm <= 120) return { maxCm: 120, majorStepCm: 20, minorStepCm: 5 };
   if (oalCm <= 150) return { maxCm: 150, majorStepCm: 30, minorStepCm: 5 };
-  const ceil50 = Math.ceil(oalCm / 50) * 50;
-  return { maxCm: ceil50, majorStepCm: 50, minorStepCm: 10 };
+  if (oalCm <= 250) {
+    const ceil50 = Math.ceil(oalCm / 50) * 50;
+    return { maxCm: ceil50, majorStepCm: 50, minorStepCm: 10 };
+  }
+  const ceil200 = Math.ceil(oalCm / 200) * 200;
+  return { maxCm: ceil200, majorStepCm: 200, minorStepCm: 50 };
 }
 
 export const DkTrueScaleRuler: React.FC<DkTrueScaleRulerProps> = ({
@@ -771,9 +776,11 @@ export const DkTrueScaleRuler: React.FC<DkTrueScaleRulerProps> = ({
   lang,
   exhibitLabel,
   isArchery = false,
+  isTank = false,
   className = '',
 }) => {
   const isZh = lang === 'zh';
+  const effectiveIsTank = isTank || scaleRef.oalMm >= 3000;
   const W = 660;
   const H = 132;
 
@@ -782,8 +789,10 @@ export const DkTrueScaleRuler: React.FC<DkTrueScaleRulerProps> = ({
   );
   const maxMm = maxCm * 10;
   const maxInches = maxMm / 25.4;
-  const inchMajorStep = maxInches <= 14 ? 2 : maxInches <= 36 ? 5 : 10;
-  const inchMinorStep = inchMajorStep <= 2 ? 0.5 : inchMajorStep <= 5 ? 1 : 2;
+  const inchMajorStep =
+    maxInches <= 14 ? 2 : maxInches <= 36 ? 5 : maxInches <= 120 ? 10 : 100;
+  const inchMinorStep =
+    inchMajorStep <= 2 ? 0.5 : inchMajorStep <= 5 ? 1 : inchMajorStep <= 10 ? 2 : 25;
 
   const rulerX0 = 20;
   const rulerW = 430;
@@ -839,14 +848,24 @@ export const DkTrueScaleRuler: React.FC<DkTrueScaleRulerProps> = ({
   const oalIn = (scaleRef.oalMm / 25.4).toFixed(1);
   const barrelIn = (scaleRef.barrelMm / 25.4).toFixed(1);
   const weightLb = (scaleRef.weightKg * 2.20462).toFixed(1);
+  const weightDisplay =
+    scaleRef.weightKg >= 1000
+      ? `${(scaleRef.weightKg / 1000).toFixed(1)} t (${Math.round(scaleRef.weightKg).toLocaleString('en-US')} kg)`
+      : `${scaleRef.weightKg.toFixed(2)} kg (${weightLb} lb)`;
+  const oalMmFormatted = Math.round(scaleRef.oalMm).toLocaleString('en-US');
+  const barrelMmFormatted = Math.round(scaleRef.barrelMm).toLocaleString('en-US');
 
   const barrelLabel = isArchery
     ? isZh
       ? '做功行程'
       : 'POWER STROKE'
-    : isZh
-      ? '枪管长'
-      : 'BARREL';
+    : effectiveIsTank
+      ? isZh
+        ? '主炮长'
+        : 'MAIN GUN'
+      : isZh
+        ? '枪管长'
+        : 'BARREL';
 
   const silHeader = isHand
     ? isZh
@@ -894,7 +913,7 @@ export const DkTrueScaleRuler: React.FC<DkTrueScaleRulerProps> = ({
         letterSpacing="0.06em"
       >
         {isZh
-          ? `1:1 公英制实尺标尺${exhibitLabel ? ` · ${exhibitLabel}` : ''}`
+          ? `${effectiveIsTank ? '公英制实尺标尺' : '1:1 公英制实尺标尺'}${exhibitLabel ? ` · ${exhibitLabel}` : ''}`
           : `METRIC / IMPERIAL SCALE BAR${exhibitLabel ? ` · ${exhibitLabel}` : ''}`}
       </text>
       <text
@@ -906,7 +925,7 @@ export const DkTrueScaleRuler: React.FC<DkTrueScaleRulerProps> = ({
         fontFamily={MONO_FONT}
         fill={DK_PALETTE.muted}
       >
-        {scaleRef.weightKg.toFixed(2)} kg ({weightLb} lb)
+        {weightDisplay}
       </text>
 
       {/* Metric Ruler Axis (cm) */}
@@ -1009,7 +1028,7 @@ export const DkTrueScaleRuler: React.FC<DkTrueScaleRulerProps> = ({
         fontFamily={MONO_FONT}
         fill={DK_PALETTE.paper}
       >
-        OAL {Math.round(scaleRef.oalMm)} mm ({oalIn}&quot;)
+        OAL {oalMmFormatted} mm ({oalIn}&quot;)
       </text>
       {barrelBarW >= 88 && (
         <text
@@ -1021,7 +1040,7 @@ export const DkTrueScaleRuler: React.FC<DkTrueScaleRulerProps> = ({
           fontFamily={MONO_FONT}
           fill={DK_PALETTE.paper}
         >
-          {barrelLabel} {Math.round(scaleRef.barrelMm)} mm ({barrelIn}&quot;)
+          {barrelLabel} {barrelMmFormatted} mm ({barrelIn}&quot;)
         </text>
       )}
 
@@ -1091,7 +1110,7 @@ export const DkTrueScaleRuler: React.FC<DkTrueScaleRulerProps> = ({
           fontFamily={MONO_FONT}
           fill={DK_PALETTE.brass}
         >
-          {barrelLabel}: {Math.round(scaleRef.barrelMm)} mm ({barrelIn}&quot;)
+          {barrelLabel}: {barrelMmFormatted} mm ({barrelIn}&quot;)
         </text>
       )}
 
@@ -1224,7 +1243,7 @@ export const DkTrueScaleRuler: React.FC<DkTrueScaleRulerProps> = ({
           fontFamily={MONO_FONT}
           fill={DK_PALETTE.inkSecondary}
         >
-          {Math.round(scaleRef.oalMm)} mm
+          {oalMmFormatted} mm
         </text>
       </g>
 
@@ -1476,6 +1495,516 @@ export const DkActualSizeCartridgePlate: React.FC<
               </g>
             );
           })()
+        )}
+      </svg>
+    );
+  };
+
+  const renderTankOrdnanceSvg = () => {
+    const isHorizontal = orientation === 'horizontal';
+    const W = layout.svgWidthMm;
+    const H = layout.svgHeightMm;
+    const s = 1 / layout.scaleDenom;
+
+    // Canonical vertical frame at exact 1:10 physical millimeter scale (1 SVG unit === 1 printed mm)
+    const oal = layout.oalMm * s;
+    const caseLen = Math.min(oal * 0.92, layout.caseLengthMm * s);
+    const rRim = (cartridgeSpec.rimDiameterMm || layout.maxDiameterMm) * 0.5 * s;
+    const rBase = (cartridgeSpec.baseDiameterMm || layout.maxDiameterMm) * 0.5 * s;
+    const rNeck = (cartridgeSpec.neckDiameterMm || layout.bulletDiameterMm) * 0.5 * s;
+    const rShoulder =
+      ((cartridgeSpec.shoulderDiameterMm ?? cartridgeSpec.neckDiameterMm) ||
+        cartridgeSpec.bulletDiameterMm) *
+      0.5 *
+      s;
+    const rShell = layout.bulletDiameterMm * 0.5 * s;
+    const rimThk = Math.max(0.85, (cartridgeSpec.rimThicknessMm || 8.5) * s);
+
+    const originX = isHorizontal ? 10 : W * 0.44;
+    const originY = isHorizontal ? H * 0.5 : H - 8.5;
+    const groupTransform = isHorizontal
+      ? `translate(${originX.toFixed(2)}, ${originY.toFixed(2)}) rotate(90)`
+      : `translate(${originX.toFixed(2)}, ${originY.toFixed(2)})`;
+
+    const projKg = (cartridgeSpec.projectileMassG / 1000).toFixed(1);
+    const is125 = caliberKey === '125mm_apfsds';
+    const is120 = caliberKey === '120mm_apfsds';
+
+    const buildTankBody = () => {
+      if (is125) {
+        // 125mm DTC10-125 Two-Piece Separated Tungsten APFSDS
+        const splitGap = 3.2;
+        const lowerTop = -caseLen;
+        const upperBot = lowerTop - splitGap;
+        const stubH = 9.2;
+        const wallW = 1.25;
+        const primerR = 1.2;
+        const rDart = 1.65;
+        const rFin = rShell * 0.84;
+        const sabotTop = -oal + 22;
+        const sabotBot = -oal + 48;
+        const incTop = sabotBot + 1.0;
+        const finTop = upperBot - 11;
+        const dartBase = upperBot - 1.8;
+
+        return (
+          <g>
+            {/* Separation Coupler Divider */}
+            <line
+              x1={-rRim - 1.6}
+              y1={(lowerTop + upperBot) * 0.5}
+              x2={rRim + 1.6}
+              y2={(lowerTop + upperBot) * 0.5}
+              stroke={DK_PALETTE.crimson}
+              strokeWidth={0.25}
+              strokeDasharray="1.2 0.8"
+            />
+            {/* Lower 408mm Main Combustible Charge + Steel Stub Base */}
+            <rect
+              x={primerR}
+              y={lowerTop + 1}
+              width={Math.max(1.2, rBase - wallW - primerR)}
+              height={Math.max(2, Math.abs(lowerTop) - stubH - 1)}
+              fill={`url(#${powderId})`}
+            />
+            <path
+              d={`M 0 ${-stubH} L ${-rBase} ${-stubH} L ${-rBase + 0.4} ${lowerTop} L 0 ${lowerTop} Z`}
+              fill={cartridgeSpec.caseColor || '#B8823C'}
+              stroke="#78350F"
+              strokeWidth={0.24}
+            />
+            <path
+              d={`M 0 0 L ${-rRim} 0 L ${-rRim} ${-rimThk} L ${-rBase - 0.25} ${-rimThk - 0.3} L ${-rBase - 0.25} ${-stubH} L 0 ${-stubH} Z`}
+              fill="#94A3B8"
+              stroke={DK_PALETTE.ink}
+              strokeWidth={0.24}
+            />
+            <path
+              d={`M ${rBase} ${-stubH} L ${rBase - 0.4} ${lowerTop} L ${rBase - 0.4 - wallW} ${lowerTop} L ${rBase - wallW} ${-stubH} Z`}
+              fill={`url(#${hitpHatchId})`}
+              stroke="#92400E"
+              strokeWidth={0.22}
+            />
+            <path
+              d={`M ${primerR} 0 L ${rRim} 0 L ${rRim} ${-rimThk} L ${rBase + 0.25} ${-rimThk - 0.3} L ${rBase + 0.25} ${-stubH} L ${rBase - wallW} ${-stubH} L ${rBase - wallW} ${-3.2} L ${primerR} ${-3.2} Z`}
+              fill={`url(#${carbonHatchId})`}
+              stroke={DK_PALETTE.ink}
+              strokeWidth={0.24}
+            />
+            <rect
+              x={0}
+              y={lowerTop + 5.5}
+              width={primerR}
+              height={Math.abs(lowerTop + 5.5)}
+              fill={DK_PALETTE.brass}
+              stroke={DK_PALETTE.ink}
+              strokeWidth={0.18}
+            />
+
+            {/* Upper Piece: Increment Sleeve + 6-Fin Tail + 3-Petal Saddle Sabot + Ø26mm Tungsten Dart */}
+            <rect
+              x={rDart}
+              y={incTop + 0.8}
+              width={Math.max(1.2, rShell - wallW - rDart)}
+              height={Math.max(2, upperBot - incTop - 1.6)}
+              fill={`url(#${powderId})`}
+            />
+            <rect
+              x={-rShell}
+              y={incTop}
+              width={rShell}
+              height={upperBot - incTop}
+              fill={cartridgeSpec.caseColor || '#B8823C'}
+              stroke="#78350F"
+              strokeWidth={0.22}
+            />
+            <rect
+              x={rShell - wallW}
+              y={incTop}
+              width={wallW}
+              height={upperBot - incTop}
+              fill={`url(#${hitpHatchId})`}
+              stroke="#92400E"
+              strokeWidth={0.2}
+            />
+            <polygon
+              points={`${rDart},${finTop} ${rFin},${finTop + 2.4} ${rFin},${dartBase} ${rDart},${dartBase}`}
+              fill="#475569"
+              stroke={DK_PALETTE.ink}
+              strokeWidth={0.2}
+            />
+            <rect
+              x={-1.1}
+              y={dartBase - 0.4}
+              width={2.2}
+              height={1.8}
+              fill={DK_PALETTE.crimson}
+            />
+            {/* 3-Petal Light-Alloy Saddle Sabot */}
+            <path
+              d={`M 0 ${sabotBot} L ${-rShell} ${sabotBot} L ${-rShell} ${sabotBot - 5} L ${-rShell * 0.7} ${sabotBot - 9} L ${-rShell * 0.7} ${sabotTop + 6} L ${-rShell} ${sabotTop + 3.5} L ${-rShell} ${sabotTop} L ${-rDart - 0.4} ${sabotTop + 5.5} L 0 ${sabotTop + 5.5} Z`}
+              fill="#64748B"
+              stroke={DK_PALETTE.ink}
+              strokeWidth={0.24}
+            />
+            <path
+              d={`M ${rDart} ${sabotBot} L ${rShell} ${sabotBot} L ${rShell} ${sabotBot - 5} L ${rShell * 0.7} ${sabotBot - 9} L ${rShell * 0.7} ${sabotTop + 6} L ${rShell} ${sabotTop + 3.5} L ${rShell} ${sabotTop} L ${rDart + 0.4} ${sabotTop + 5.5} L ${rDart} ${sabotTop + 5.5} Z`}
+              fill={`url(#${carbonHatchId})`}
+              stroke={DK_PALETTE.ink}
+              strokeWidth={0.24}
+            />
+            <rect
+              x={-rShell - 0.25}
+              y={sabotBot - 3.6}
+              width={(rShell + 0.25) * 2}
+              height={1.8}
+              fill={DK_PALETTE.brass}
+              stroke={DK_PALETTE.ink}
+              strokeWidth={0.18}
+            />
+            {/* Ø26mm High-L/D Tungsten Penetrator Dart */}
+            <path
+              d={`M 0 ${-oal} L ${-rDart} ${-oal + 8.5} L ${-rDart} ${dartBase} L ${rDart} ${dartBase} L ${rDart} ${-oal + 8.5} Z`}
+              fill="#E2E8F0"
+              stroke={DK_PALETTE.ink}
+              strokeWidth={0.24}
+            />
+            <polygon
+              points={`0,${-oal} ${-rDart},${-oal + 8.5} ${rDart},${-oal + 8.5}`}
+              fill="#334155"
+              stroke={DK_PALETTE.ink}
+              strokeWidth={0.2}
+            />
+          </g>
+        );
+      }
+
+      if (is120) {
+        // 120×570mm NATO Unitary APFSDS-T (M829A4 / DM63A1)
+        const stubH = 10.5;
+        const wallW = 1.25;
+        const primerR = 1.2;
+        const rDart = 1.6;
+        const rFin = rShell * 0.85;
+        const sabotTop = -oal + 18;
+        const sabotBot = -caseLen + 1.5;
+        const dartBase = -18.5;
+        const finTop = dartBase - 10;
+
+        return (
+          <g>
+            {/* Right Cutaway SCDB Propellant Bed surrounding submerged dart */}
+            <path
+              d={`M ${primerR} ${-stubH} L ${rBase - wallW} ${-stubH} L ${rShell - wallW} ${-caseLen} L ${rDart} ${-caseLen} L ${rDart} ${dartBase} L ${primerR} ${dartBase} Z`}
+              fill={`url(#${powderId})`}
+            />
+            {/* Left Exterior Combustible Case + Steel Stub Base */}
+            <path
+              d={`M 0 ${-stubH} L ${-rBase} ${-stubH} L ${-rShell} ${-caseLen} L 0 ${-caseLen} Z`}
+              fill={cartridgeSpec.caseColor || '#B9935A'}
+              stroke="#78350F"
+              strokeWidth={0.24}
+            />
+            <path
+              d={`M 0 0 L ${-rRim} 0 L ${-rRim} ${-rimThk} L ${-rBase - 0.25} ${-rimThk - 0.3} L ${-rBase - 0.25} ${-stubH} L 0 ${-stubH} Z`}
+              fill="#94A3B8"
+              stroke={DK_PALETTE.ink}
+              strokeWidth={0.24}
+            />
+            {/* Right Cutaway Combustible Wall + Steel Stub Wall + DM12A1 Primer */}
+            <path
+              d={`M ${rBase} ${-stubH} L ${rShell} ${-caseLen} L ${rShell - wallW} ${-caseLen} L ${rBase - wallW} ${-stubH} Z`}
+              fill={`url(#${hitpHatchId})`}
+              stroke="#92400E"
+              strokeWidth={0.22}
+            />
+            <path
+              d={`M ${primerR} 0 L ${rRim} 0 L ${rRim} ${-rimThk} L ${rBase + 0.25} ${-rimThk - 0.3} L ${rBase + 0.25} ${-stubH} L ${rBase - wallW} ${-stubH} L ${rBase - wallW} ${-3.4} L ${primerR} ${-3.4} Z`}
+              fill={`url(#${carbonHatchId})`}
+              stroke={DK_PALETTE.ink}
+              strokeWidth={0.24}
+            />
+            <rect
+              x={0}
+              y={-22}
+              width={primerR}
+              height={22}
+              fill={DK_PALETTE.brass}
+              stroke={DK_PALETTE.ink}
+              strokeWidth={0.18}
+            />
+            {/* Submerged 6-Fin Tail */}
+            <polygon
+              points={`${rDart},${finTop} ${rFin},${finTop + 2.2} ${rFin},${dartBase} ${rDart},${dartBase}`}
+              fill="#475569"
+              stroke={DK_PALETTE.ink}
+              strokeWidth={0.2}
+            />
+            {/* 3-Petal Sabot */}
+            <path
+              d={`M 0 ${sabotBot} L ${-rShell} ${sabotBot} L ${-rShell} ${sabotBot - 5} L ${-rShell * 0.7} ${sabotBot - 9} L ${-rShell * 0.7} ${sabotTop + 6} L ${-rShell} ${sabotTop + 3.5} L ${-rShell} ${sabotTop} L ${-rDart - 0.4} ${sabotTop + 5.5} L 0 ${sabotTop + 5.5} Z`}
+              fill="#64748B"
+              stroke={DK_PALETTE.ink}
+              strokeWidth={0.24}
+            />
+            <path
+              d={`M ${rDart} ${sabotBot} L ${rShell} ${sabotBot} L ${rShell} ${sabotBot - 5} L ${rShell * 0.7} ${sabotBot - 9} L ${rShell * 0.7} ${sabotTop + 6} L ${rShell} ${sabotTop + 3.5} L ${rShell} ${sabotTop} L ${rDart + 0.4} ${sabotTop + 5.5} L ${rDart} ${sabotTop + 5.5} Z`}
+              fill={`url(#${carbonHatchId})`}
+              stroke={DK_PALETTE.ink}
+              strokeWidth={0.24}
+            />
+            <rect
+              x={-rShell - 0.25}
+              y={-caseLen - 1.2}
+              width={(rShell + 0.25) * 2}
+              height={1.8}
+              fill={DK_PALETTE.brass}
+              stroke={DK_PALETTE.ink}
+              strokeWidth={0.18}
+            />
+            {/* DU/Tungsten Monoblock Dart */}
+            <path
+              d={`M 0 ${-oal} L ${-rDart} ${-oal + 8} L ${-rDart} ${-caseLen} L 0 ${-caseLen} Z`}
+              fill="#E2E8F0"
+              stroke={DK_PALETTE.ink}
+              strokeWidth={0.22}
+            />
+            <path
+              d={`M 0 ${-oal} L ${rDart} ${-oal + 8} L ${rDart} ${dartBase} L 0 ${dartBase} Z`}
+              fill="#E2E8F0"
+              stroke={DK_PALETTE.ink}
+              strokeWidth={0.24}
+            />
+            <polygon
+              points={`0,${-oal} ${-rDart},${-oal + 8} ${rDart},${-oal + 8}`}
+              fill="#334155"
+              stroke={DK_PALETTE.ink}
+              strokeWidth={0.2}
+            />
+          </g>
+        );
+      }
+
+      // 88×571mmR KwK 36 PzGr. 39 APCBC-HE
+      const shoulderY = -caseLen * 0.78;
+      const neckStartY = -caseLen * 0.9;
+      const wallW = 1.0;
+      const webH = 4.2;
+      const primerR = 1.65;
+      const shellBaseY = -caseLen + 5.5;
+      const capSplitY = -oal + 9.2;
+      const bodyTopY = -oal + 14.5;
+      const heTopY = bodyTopY + 8.5;
+      const fuzeTopY = shellBaseY - 3.0;
+
+      return (
+        <g>
+          {/* Right Cutaway Tubular Diglycol Charge */}
+          <rect
+            x={0}
+            y={shellBaseY + 1.2}
+            width={Math.max(1.2, rShoulder - wallW - 0.4)}
+            height={Math.max(2, Math.abs(shellBaseY + 1.2) - webH)}
+            fill={`url(#${powderId})`}
+          />
+          {/* Left Exterior Rimmed Brass Case */}
+          <path
+            d={`M 0 0 L ${-rRim} 0 L ${-rRim} ${-rimThk} L ${-rBase} ${-rimThk - 0.3} L ${-rShoulder} ${shoulderY} L ${-rNeck} ${neckStartY} L ${-rNeck} ${-caseLen} L 0 ${-caseLen} Z`}
+            fill={cartridgeSpec.caseColor || '#D9AC43'}
+            stroke="#78350F"
+            strokeWidth={0.24}
+          />
+          {/* Right Cutaway Brass Wall + C/22 Primer */}
+          <path
+            d={`M ${primerR} 0 L ${rRim} 0 L ${rRim} ${-rimThk} L ${rBase} ${-rimThk - 0.3} L ${rShoulder} ${shoulderY} L ${rNeck} ${neckStartY} L ${rNeck} ${-caseLen} L ${rNeck - wallW} ${-caseLen} L ${rNeck - wallW} ${neckStartY} L ${rShoulder - wallW} ${shoulderY} L ${rBase - wallW * 1.2} ${-webH} L ${primerR} ${-webH} Z`}
+            fill={`url(#${brassHatchId})`}
+            stroke="#92400E"
+            strokeWidth={0.24}
+          />
+          <rect x={0} y={-webH - 0.8} width={primerR} height={webH + 0.8} fill="#CBD5E1" stroke={DK_PALETTE.ink} strokeWidth={0.2} />
+
+          {/* Left Exterior 88mm APCBC-HE Shell + Twin Copper Driving Bands */}
+          <path
+            d={`M 0 ${-caseLen} L ${-rShell} ${-caseLen} L ${-rShell} ${bodyTopY} Q ${-rShell * 0.82} ${capSplitY - 2} 0 ${-oal} Z`}
+            fill={cartridgeSpec.jacketColor || '#3C4047'}
+            stroke={DK_PALETTE.ink}
+            strokeWidth={0.24}
+          />
+          <rect x={-rShell - 0.2} y={-caseLen - 3.8} width={rShell + 0.2} height={1.15} fill={DK_PALETTE.brass} />
+          <rect x={-rShell - 0.2} y={-caseLen - 1.9} width={rShell + 0.2} height={1.15} fill={DK_PALETTE.brass} />
+
+          {/* Right Cutaway: Ballistic Windscreen + Soft AP Cap + Steel Body + 59g HE Cavity + BdZ 5103 Fuze */}
+          <path
+            d={`M 0 ${-oal} Q ${rShell * 0.72} ${capSplitY - 2} ${rShell} ${bodyTopY} L ${rShell - 0.75} ${bodyTopY} Q ${rShell * 0.6} ${capSplitY - 0.8} 0 ${-oal + 1.5} Z`}
+            fill="#475569"
+            stroke={DK_PALETTE.ink}
+            strokeWidth={0.2}
+          />
+          <path
+            d={`M 0 ${capSplitY} L ${rShell * 0.78} ${capSplitY + 1.1} L ${rShell} ${bodyTopY} L 0 ${bodyTopY} Z`}
+            fill="#CBD5E1"
+            stroke={DK_PALETTE.ink}
+            strokeWidth={0.2}
+          />
+          <path
+            d={`M 0 ${bodyTopY} L ${rShell} ${bodyTopY} L ${rShell} ${shellBaseY} L 0 ${shellBaseY} Z`}
+            fill={`url(#${carbonHatchId})`}
+            stroke={DK_PALETTE.ink}
+            strokeWidth={0.24}
+          />
+          <path
+            d={`M 0 ${heTopY} Q ${rShell * 0.56} ${heTopY + 0.8} ${rShell * 0.56} ${fuzeTopY} L 0 ${fuzeTopY} Z`}
+            fill={DK_PALETTE.crimson}
+            fillOpacity={0.85}
+            stroke="#991B1B"
+            strokeWidth={0.2}
+          />
+          <rect x={0} y={fuzeTopY} width={rShell * 0.52} height={shellBaseY - fuzeTopY} fill={DK_PALETTE.brass} stroke={DK_PALETTE.ink} strokeWidth={0.18} />
+        </g>
+      );
+    };
+
+    const maxR = Math.max(rRim, rBase);
+    const dimFontSize = 2.85;
+    const microFontSize = 2.35;
+
+    return (
+      <svg
+        className="dk-actual-size-cartridge-svg"
+        viewBox={`0 0 ${W} ${H}`}
+        style={{
+          width: `${W}mm`,
+          height: `${H}mm`,
+          display: 'block',
+          overflow: 'visible',
+          fontFamily: MONO_FONT,
+        }}
+        role="img"
+        aria-label={
+          isZh
+            ? `${cartridgeSpec.nameZh} ${layout.scaleStamp}`
+            : `${cartridgeSpec.nameEn} ${layout.scaleStamp}`
+        }
+      >
+        <defs>
+          <pattern id={brassHatchId} width={1.6} height={1.6} patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+            <rect width={1.6} height={1.6} fill={cartridgeSpec.caseColor || '#D9AC43'} fillOpacity={0.34} />
+            <line x1={0} y1={0} x2={0} y2={1.6} stroke="#92400E" strokeWidth={0.35} />
+          </pattern>
+          <pattern id={hitpHatchId} width={1.6} height={1.6} patternTransform="rotate(-45)" patternUnits="userSpaceOnUse">
+            <rect width={1.6} height={1.6} fill={cartridgeSpec.caseColor || '#B8823C'} fillOpacity={0.42} />
+            <line x1={0} y1={0} x2={0} y2={1.6} stroke="#78350F" strokeWidth={0.34} />
+          </pattern>
+          <pattern id={carbonHatchId} width={1.6} height={1.6} patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+            <rect width={1.6} height={1.6} fill="#475569" fillOpacity={0.3} />
+            <line x1={0} y1={0} x2={0} y2={1.6} stroke={DK_PALETTE.ink} strokeWidth={0.35} />
+          </pattern>
+          <pattern id={powderId} width={1.5} height={1.5} patternUnits="userSpaceOnUse">
+            <rect width={1.5} height={1.5} fill="#1E293B" />
+            <circle cx={0.45} cy={0.45} r={0.28} fill="#64748B" />
+            <circle cx={1.15} cy={1.05} r={0.24} fill="#94A3B8" />
+          </pattern>
+        </defs>
+
+        <g transform={groupTransform}>
+          <line
+            x1={0}
+            y1={-oal - 2.5}
+            x2={0}
+            y2={2.5}
+            stroke={DK_PALETTE.muted}
+            strokeWidth={0.2}
+            strokeDasharray="1.8 0.9 0.5 0.9"
+          />
+          {buildTankBody()}
+        </g>
+
+        {/* Upright 1:10 Engineering Dimensions displaying real 1:1 physical millimeters */}
+        {!isHorizontal ? (
+          <g>
+            {(() => {
+              const xDim = originX + maxR + 4.8;
+              const yTop = originY - oal;
+              const yBot = originY;
+              return (
+                <>
+                  <line x1={originX + 1.2} y1={yTop} x2={xDim + 1.5} y2={yTop} stroke={DK_PALETTE.crimson} strokeWidth={0.22} />
+                  <line x1={originX + rRim + 1} y1={yBot} x2={xDim + 1.5} y2={yBot} stroke={DK_PALETTE.crimson} strokeWidth={0.22} />
+                  <line x1={xDim} y1={yTop} x2={xDim} y2={yBot} stroke={DK_PALETTE.crimson} strokeWidth={0.3} />
+                  <polygon points={`${xDim},${yTop} ${xDim - 0.7},${yTop + 1.8} ${xDim + 0.7},${yTop + 1.8}`} fill={DK_PALETTE.crimson} />
+                  <polygon points={`${xDim},${yBot} ${xDim - 0.7},${yBot - 1.8} ${xDim + 0.7},${yBot - 1.8}`} fill={DK_PALETTE.crimson} />
+                  <text x={xDim + 1.8} y={(yTop + yBot) * 0.5 - 1.2} fontSize={microFontSize} fontWeight={800} fill={DK_PALETTE.crimson}>
+                    OAL
+                  </text>
+                  <text x={xDim + 1.8} y={(yTop + yBot) * 0.5 + 1.9} fontSize={dimFontSize} fontWeight={800} fill={DK_PALETTE.ink}>
+                    {Math.round(layout.oalMm).toLocaleString('en-US')}
+                  </text>
+                  <text x={xDim + 1.8} y={(yTop + yBot) * 0.5 + 4.6} fontSize={microFontSize * 0.9} fontWeight={700} fill={DK_PALETTE.muted}>
+                    mm
+                  </text>
+                </>
+              );
+            })()}
+            {(() => {
+              const xDim = originX - maxR - 4.4;
+              const yCase = originY - caseLen;
+              const yBot = originY;
+              return (
+                <>
+                  <line x1={xDim - 1.5} y1={yCase} x2={originX - rShell - 1} y2={yCase} stroke={DK_PALETTE.muted} strokeWidth={0.22} />
+                  <line x1={xDim - 1.5} y1={yBot} x2={originX - rRim - 1} y2={yBot} stroke={DK_PALETTE.muted} strokeWidth={0.22} />
+                  <line x1={xDim} y1={yCase} x2={xDim} y2={yBot} stroke={DK_PALETTE.muted} strokeWidth={0.26} />
+                  <text x={xDim - 1.6} y={(yCase + yBot) * 0.5 - 1.1} textAnchor="end" fontSize={microFontSize} fontWeight={700} fill={DK_PALETTE.muted}>
+                    {is125 ? (isZh ? '主药筒' : 'MAIN') : isZh ? '药筒' : 'CASE'}
+                  </text>
+                  <text x={xDim - 1.6} y={(yCase + yBot) * 0.5 + 1.8} textAnchor="end" fontSize={dimFontSize * 0.9} fontWeight={800} fill={DK_PALETTE.ink}>
+                    {Math.round(layout.caseLengthMm)}
+                  </text>
+                </>
+              );
+            })()}
+            <text
+              x={originX}
+              y={Math.max(3.2, originY - oal - 3.2)}
+              textAnchor="middle"
+              fontSize={microFontSize}
+              fontWeight={800}
+              fill={DK_PALETTE.brass}
+            >
+              Ø{Math.round(layout.bulletDiameterMm)} mm · {projKg} kg
+            </text>
+          </g>
+        ) : (
+          <g>
+            {(() => {
+              const xLeft = originX;
+              const xRight = originX + oal;
+              const yDim = originY + maxR + 4.8;
+              return (
+                <>
+                  <line x1={xLeft} y1={originY + rRim + 0.8} x2={xLeft} y2={yDim + 1.5} stroke={DK_PALETTE.crimson} strokeWidth={0.22} />
+                  <line x1={xRight} y1={originY + 0.8} x2={xRight} y2={yDim + 1.5} stroke={DK_PALETTE.crimson} strokeWidth={0.22} />
+                  <line x1={xLeft} y1={yDim} x2={xRight} y2={yDim} stroke={DK_PALETTE.crimson} strokeWidth={0.3} />
+                  <polygon points={`${xLeft},${yDim} ${xLeft + 1.8},${yDim - 0.7} ${xLeft + 1.8},${yDim + 0.7}`} fill={DK_PALETTE.crimson} />
+                  <polygon points={`${xRight},${yDim} ${xRight - 1.8},${yDim - 0.7} ${xRight - 1.8},${yDim + 0.7}`} fill={DK_PALETTE.crimson} />
+                  <text x={(xLeft + xRight) * 0.5} y={yDim + 3.6} textAnchor="middle" fontSize={dimFontSize} fontWeight={800} fill={DK_PALETTE.ink}>
+                    OAL {Math.round(layout.oalMm).toLocaleString('en-US')} mm ·{' '}
+                    {isZh ? '药筒' : 'CASE'} {Math.round(layout.caseLengthMm)} mm ({layout.scaleStamp})
+                  </text>
+                </>
+              );
+            })()}
+            <text
+              x={originX + oal * 0.5}
+              y={Math.max(4, originY - maxR - 3.2)}
+              textAnchor="middle"
+              fontSize={microFontSize}
+              fontWeight={800}
+              fill={DK_PALETTE.brass}
+            >
+              Ø{Math.round(layout.bulletDiameterMm)} mm · {projKg} kg
+            </text>
+          </g>
         )}
       </svg>
     );
@@ -2121,7 +2650,11 @@ export const DkActualSizeCartridgePlate: React.FC<
       </div>
 
       {/* Exact CSS Millimeter SVG Cutaway */}
-      {layout.isArchery ? renderArcherySvg() : renderMetallicCartridgeSvg()}
+      {layout.isArchery
+        ? renderArcherySvg()
+        : layout.isTankOrdnance
+          ? renderTankOrdnanceSvg()
+          : renderMetallicCartridgeSvg()}
 
       {/* Quantitative Ballistics Micro-Ledger */}
       <figcaption
@@ -2142,12 +2675,20 @@ export const DkActualSizeCartridgePlate: React.FC<
           fontVariantNumeric: 'tabular-nums',
         }}
       >
-        <span>{cartridgeSpec.projectileGrain} gr ({cartridgeSpec.projectileMassG} g)</span>
+        {layout.isTankOrdnance ? (
+          <span>{(cartridgeSpec.projectileMassG / 1000).toFixed(1)} kg</span>
+        ) : (
+          <span>
+            {cartridgeSpec.projectileGrain} gr ({cartridgeSpec.projectileMassG} g)
+          </span>
+        )}
         <span>·</span>
-        <span>{cartridgeSpec.muzzleVelocityMps} m/s</span>
+        <span>{cartridgeSpec.muzzleVelocityMps.toLocaleString('en-US')} m/s</span>
         <span>·</span>
         <span style={{ color: DK_PALETTE.crimson }}>
-          {cartridgeSpec.muzzleEnergyJ.toLocaleString('en-US')} J
+          {cartridgeSpec.muzzleEnergyJ >= 1_000_000
+            ? `${(cartridgeSpec.muzzleEnergyJ / 1_000_000).toFixed(2)} MJ`
+            : `${cartridgeSpec.muzzleEnergyJ.toLocaleString('en-US')} J`}
         </span>
         {!layout.isArchery && (
           <>

@@ -20,6 +20,7 @@ import {
   createArmoryComposerRenderTarget,
   createFilmicLensPass,
   getFilmicLensPresetParams,
+  getGtaoScaleParams,
   getPostProcessingPresetParams,
   hardenBloomPassAgainstNaN,
   hardenGtaoPassAgainstNaN,
@@ -37,30 +38,45 @@ import {
   updateFpsWatchdog,
 } from '../src/engine/canvas/graphicsQuality';
 import {
+  HEAVY_ARMOR_HDRI_FILE,
   STUDIO_HDRI_FILES,
   getStudioHdriEnvIntensity,
+  getStudioHdriEnvIntensityForScale,
   getStudioHdriFileName,
+  getStudioHdriFileNameForScale,
+  isHeavyArmorHdriActive,
 } from '../src/engine/canvas/studioHdriManager';
 import { resolveHdriUrl, resolveModelUrl } from '../src/engine/utils/assetUrl';
 import {
   ARMORY_ENVIRONMENTS,
   ARMORY_ENVIRONMENT_PRESETS,
   DEFAULT_ARMORY_ENVIRONMENT,
+  HEAVY_ARMOR_HANGAR_SPEC,
+  HEAVY_ARMOR_HANGAR_TEXTURE_SIZE,
+  HEAVY_ARMOR_OIL_PATCHES,
   PROTRACTOR_LABELED_ANGLES,
   SAAMI_REFERENCE_CARTRIDGES,
   TAKEDOWN_MAT_SPEC,
   buildAzimuthDialMarks,
   buildCartridgeProfileMm,
+  buildHeavyArmorHangarGeometries,
   buildProtractorGraduations,
   buildRulerTicks,
   buildTakedownMatGeometries,
   canCreateCanvasTextures,
   createSeededRandom,
+  evaluateHangarOilPatchMask,
   getArmoryEnvironment,
   getGunsmithMatTextures,
+  getHeavyArmorHangarTextures,
   getMatTrayBounds,
   paintGunsmithMatAlbedo,
   paintGunsmithMatRoughness,
+  paintHeavyArmorHangarAlbedo,
+  paintHeavyArmorHangarAlpha,
+  paintHeavyArmorHangarNormal,
+  paintHeavyArmorHangarRoughness,
+  resolveKeyLightShadowConfig,
 } from '../src/engine/canvas/GunsmithStageMat';
 import {
   evaluateWeaponTurntableEnvelopeInto,
@@ -104,16 +120,20 @@ function createMockCanvas2dContext(
     strokeRect: () => {},
     beginPath: () => {},
     closePath: () => {},
+    rect: () => {},
+    clip: () => {},
     moveTo: () => {},
     lineTo: () => {},
     quadraticCurveTo: () => {},
     arc: () => {},
+    ellipse: () => {},
     fill: () => {},
     stroke: () => {},
     setLineDash: () => {},
     fillText: (text: string) => {
       drawnTexts.push(text);
     },
+    createLinearGradient: () => gradientStub,
     createRadialGradient: () => gradientStub,
     getImageData: (_x: number, _y: number, w: number, h: number) => ({
       width: w,
@@ -304,18 +324,17 @@ describe('studio environment profiles & 3D gunsmith takedown mat', () => {
 });
 
 describe('CNC billet exhibition turntable & 360° azimuth vernier ring', () => {
-  it('preserves dynamic envelope sizing across all 23 exhibits and spans platterTopY -> gridFloorY', () => {
+  it('preserves dynamic envelope sizing across all 27 exhibits and spans platterTopY -> gridFloorY', () => {
     expect(AZIMUTH_DIAL_TEXTURE_SIZE).toBe(2048);
-    expect(WEAPON_IDS).toHaveLength(23);
+    expect(WEAPON_IDS).toHaveLength(27);
 
     for (const weaponId of WEAPON_IDS) {
       const r = getTurntableRadius(weaponId);
+      const expectedTotalH =
+        TURNTABLE_PEDESTAL_PROFILE.totalHeight * (r > 100 ? 15 : 1);
       const env = evaluateWeaponTurntableEnvelopeInto(weaponId, 0);
       expect(env.radius).toBeCloseTo(r, 5);
-      expect(env.platterTopY - env.gridFloorY).toBeCloseTo(
-        TURNTABLE_PEDESTAL_PROFILE.totalHeight,
-        5
-      );
+      expect(env.platterTopY - env.gridFloorY).toBeCloseTo(expectedTotalH, 5);
 
       const geos = buildTurntablePedestalGeometries(r);
       try {
@@ -327,7 +346,7 @@ describe('CNC billet exhibition turntable & 360° azimuth vernier ring', () => {
         geos.chassis.computeBoundingBox();
         expect(geos.platter.boundingBox!.max.y).toBeCloseTo(0, 3);
         expect(geos.chassis.boundingBox!.min.y).toBeCloseTo(
-          -TURNTABLE_PEDESTAL_PROFILE.totalHeight,
+          -expectedTotalH,
           3
         );
       } finally {
@@ -607,5 +626,349 @@ describe('native Three.js r169 post-processing pipeline & stencil buffer invaria
       }
     }
     expect(triggered).toBe(true);
+  });
+
+  it('scales world-space GTAO radius/thickness for 1:1 main_battle_tank while preserving firearm GTAO defaults', () => {
+    const firearmVault = getPostProcessingPresetParams('tactical_vault');
+    const firearmDefault = getPostProcessingPresetParams(
+      'tactical_vault',
+      'rifle'
+    );
+    expect(firearmDefault.gtao).toEqual(firearmVault.gtao);
+    expect(firearmVault.gtao.radius).toBeCloseTo(1.8, 3);
+    expect(firearmVault.gtao.thickness).toBeCloseTo(1.35, 3);
+
+    for (const preset of ARMORY_ENVIRONMENT_PRESETS) {
+      const base = getPostProcessingPresetParams(preset);
+      const tank = getPostProcessingPresetParams(preset, 'main_battle_tank');
+      const scaled = getGtaoScaleParams(base.gtao, 'main_battle_tank');
+
+      expect(tank.gtao).toEqual(scaled);
+      expect(tank.gtao.radius).toBeCloseTo(28.0, 2);
+      expect(tank.gtao.thickness).toBeCloseTo(24.0, 2);
+      expect(tank.gtao.pdRadius).toBeGreaterThanOrEqual(7);
+      expect(tank.gtao.blendIntensity).toBeGreaterThan(base.gtao.blendIntensity);
+      expect(tank.gtao.blendIntensity).toBeLessThanOrEqual(1.38);
+    }
+  });
+
+  it('ships valid 32-bit heavy_armor_hangar.hdr (<= 1.8 MB) and resolves scale-aware HDRI without altering firearms or daylight', () => {
+    expect(HEAVY_ARMOR_HDRI_FILE).toBe('heavy_armor_hangar.hdr');
+    const hdriPath = path.resolve(
+      process.cwd(),
+      'public/hdri',
+      HEAVY_ARMOR_HDRI_FILE
+    );
+    expect(fs.existsSync(hdriPath), 'missing heavy_armor_hangar.hdr').toBe(
+      true
+    );
+    const stat = fs.statSync(hdriPath);
+    expect(stat.size).toBeGreaterThan(100 * 1024);
+    expect(stat.size).toBeLessThanOrEqual(Math.floor(1.8 * 1024 * 1024));
+
+    const header = fs
+      .readFileSync(hdriPath)
+      .subarray(0, 96)
+      .toString('ascii');
+    expect(header).toContain('#?RADIANCE');
+    expect(header).toContain('FORMAT=32-bit_rle_rgbe');
+    expect(resolveHdriUrl(HEAVY_ARMOR_HDRI_FILE, '/digital-armory-3d/')).toBe(
+      '/digital-armory-3d/hdri/heavy_armor_hangar.hdr'
+    );
+
+    // Main Battle Tanks bind heavy_armor_hangar.hdr on dark presets, preserve blueprint_daylight
+    expect(isHeavyArmorHdriActive('tactical_vault', 'main_battle_tank')).toBe(
+      true
+    );
+    expect(isHeavyArmorHdriActive('gunsmith_bench', 'main_battle_tank')).toBe(
+      true
+    );
+    expect(
+      isHeavyArmorHdriActive('blueprint_daylight', 'main_battle_tank')
+    ).toBe(false);
+
+    expect(
+      getStudioHdriFileNameForScale('tactical_vault', 'main_battle_tank')
+    ).toBe(HEAVY_ARMOR_HDRI_FILE);
+    expect(
+      getStudioHdriFileNameForScale('gunsmith_bench', 'main_battle_tank')
+    ).toBe(HEAVY_ARMOR_HDRI_FILE);
+    expect(
+      getStudioHdriFileNameForScale('blueprint_daylight', 'main_battle_tank')
+    ).toBe(STUDIO_HDRI_FILES.blueprint_daylight);
+
+    expect(
+      getStudioHdriEnvIntensityForScale('tactical_vault', 'main_battle_tank')
+    ).toBeGreaterThanOrEqual(1.1);
+    expect(
+      getStudioHdriEnvIntensityForScale('tactical_vault', 'main_battle_tank')
+    ).toBeLessThanOrEqual(1.35);
+
+    // All non-tank firearm & archery scale profiles stay 100% unchanged
+    for (const scale of [
+      undefined,
+      'pistol',
+      'rifle',
+      'heavy_sniper',
+      'compound_bow',
+    ] as const) {
+      for (const preset of ARMORY_ENVIRONMENT_PRESETS) {
+        expect(isHeavyArmorHdriActive(preset, scale)).toBe(false);
+        expect(getStudioHdriFileNameForScale(preset, scale)).toBe(
+          getStudioHdriFileName(preset)
+        );
+        expect(getStudioHdriEnvIntensityForScale(preset, scale)).toBe(
+          getStudioHdriEnvIntensity(preset)
+        );
+      }
+    }
+  });
+
+  it('builds weathered & edge-feathered Heavy Armor concrete deck geometry, Albedo/Normal/Roughness/Alpha maps & linear colorSpace locks', () => {
+    const geos = buildHeavyArmorHangarGeometries();
+    try {
+      assertFiniteGeometry(geos.slab, 'hangar.slab');
+      assertFiniteGeometry(geos.pitRing, 'hangar.pitRing');
+
+      geos.slab.computeBoundingBox();
+      geos.pitRing.computeBoundingBox();
+      const sb = geos.slab.boundingBox!;
+      const pb = geos.pitRing.boundingBox!;
+
+      expect(sb.max.x - sb.min.x).toBeCloseTo(
+        HEAVY_ARMOR_HANGAR_SPEC.totalWidthCm,
+        1
+      );
+      expect(sb.max.z - sb.min.z).toBeCloseTo(
+        HEAVY_ARMOR_HANGAR_SPEC.totalDepthCm,
+        1
+      );
+      expect(sb.max.y).toBeCloseTo(HEAVY_ARMOR_HANGAR_SPEC.topOffsetYCm, 3);
+      expect(pb.max.y).toBeCloseTo(
+        HEAVY_ARMOR_HANGAR_SPEC.topOffsetYCm + 0.08,
+        3
+      );
+
+      const uv = geos.slab.getAttribute('uv');
+      expect(uv).toBeDefined();
+      for (let i = 0; i < uv.array.length; i++) {
+        expect(uv.array[i]).toBeGreaterThanOrEqual(0);
+        expect(uv.array[i]).toBeLessThanOrEqual(1);
+      }
+    } finally {
+      geos.slab.dispose();
+      geos.pitRing.dispose();
+    }
+
+    // Headless Node guard
+    if (typeof document === 'undefined') {
+      expect(getHeavyArmorHangarTextures('tactical_vault')).toBeNull();
+    }
+
+    // Albedo stencils & oil patches range
+    expect(HEAVY_ARMOR_OIL_PATCHES.length).toBeGreaterThanOrEqual(4);
+    for (const patch of HEAVY_ARMOR_OIL_PATCHES) {
+      expect(patch.coreRoughness).toBeGreaterThanOrEqual(0.16);
+      expect(patch.coreRoughness).toBeLessThanOrEqual(0.24);
+    }
+
+    for (const preset of ARMORY_ENVIRONMENT_PRESETS) {
+      const albedoMock = createMockCanvas2dContext(256, 192);
+      paintHeavyArmorHangarAlbedo(albedoMock.ctx, 256, 192, preset);
+      expect(
+        albedoMock.drawnTexts.some((t) => t.includes('HEAVY ARMOR DEPOT'))
+      ).toBe(true);
+      expect(
+        albedoMock.drawnTexts.some((t) => t.includes('18,000 × 12,000 mm'))
+      ).toBe(true);
+      expect(
+        albedoMock.drawnTexts.some((t) => t.includes('TURNTABLE PIT'))
+      ).toBe(true);
+    }
+
+    // Tangent-space normal relief: positive +Z dominance + non-zero gradient variance at joints/pit seams
+    const nw = 128;
+    const nh = 96;
+    const normalMock = createMockCanvas2dContext(nw, nh);
+    paintHeavyArmorHangarNormal(normalMock.ctx, nw, nh);
+    let rMin = 255;
+    let rMax = 0;
+    let gMin = 255;
+    let gMax = 0;
+    let bMin = 255;
+    for (let i = 0; i < normalMock.imageDataBuffer.length; i += 4) {
+      const r = normalMock.imageDataBuffer[i];
+      const g = normalMock.imageDataBuffer[i + 1];
+      const b = normalMock.imageDataBuffer[i + 2];
+      if (r < rMin) rMin = r;
+      if (r > rMax) rMax = r;
+      if (g < gMin) gMin = g;
+      if (g > gMax) gMax = g;
+      if (b < bMin) bMin = b;
+      expect(normalMock.imageDataBuffer[i + 3]).toBe(255);
+    }
+    expect(bMin).toBeGreaterThan(128);
+    expect(rMax - rMin).toBeGreaterThan(40);
+    expect(gMax - gMin).toBeGreaterThan(40);
+
+    // Oil slick lobes physically level concrete micro-pores -> flat tangent normal at puddle core (zero milky glare)
+    const samplePatch = HEAVY_ARMOR_OIL_PATCHES[0];
+    expect(evaluateHangarOilPatchMask(samplePatch.cxCm, samplePatch.czCm)).toBeGreaterThan(0.99);
+    expect(evaluateHangarOilPatchMask(0, 0)).toBe(0);
+    const oilPx = Math.floor(
+      ((samplePatch.cxCm + HEAVY_ARMOR_HANGAR_SPEC.totalWidthCm * 0.5) /
+        HEAVY_ARMOR_HANGAR_SPEC.totalWidthCm) *
+        nw
+    );
+    const oilPy = Math.floor(
+      ((samplePatch.czCm + HEAVY_ARMOR_HANGAR_SPEC.totalDepthCm * 0.5) /
+        HEAVY_ARMOR_HANGAR_SPEC.totalDepthCm) *
+        nh
+    );
+    const oilIdx = (oilPy * nw + oilPx) * 4;
+    expect(Math.abs(normalMock.imageDataBuffer[oilIdx] - 128)).toBeLessThanOrEqual(6);
+    expect(Math.abs(normalMock.imageDataBuffer[oilIdx + 1] - 128)).toBeLessThanOrEqual(6);
+    expect(normalMock.imageDataBuffer[oilIdx + 2]).toBeGreaterThanOrEqual(253);
+
+    // Roughness map runs cleanly without throwing
+    const roughMock = createMockCanvas2dContext(128, 96);
+    expect(() =>
+      paintHeavyArmorHangarRoughness(roughMock.ctx, 128, 96)
+    ).not.toThrow();
+
+    // Rounded-rect alpha feather map: opaque (255) at center, smooth ramp in margin, 0 on outer perimeter
+    const aw = 128;
+    const ah = 96;
+    const alphaMock = createMockCanvas2dContext(aw, ah);
+    paintHeavyArmorHangarAlpha(alphaMock.ctx, aw, ah);
+    const alphaAt = (x: number, y: number) =>
+      alphaMock.imageDataBuffer[(y * aw + x) * 4];
+
+    expect(alphaAt(aw >> 1, ah >> 1)).toBe(255);
+    expect(alphaAt(0, 0)).toBe(0);
+    expect(alphaAt(aw - 1, 0)).toBe(0);
+    expect(alphaAt(0, ah - 1)).toBe(0);
+    expect(alphaAt(aw >> 1, 0)).toBe(0);
+    expect(alphaAt(0, ah >> 1)).toBe(0);
+
+    let midToneCount = 0;
+    for (let y = 0; y < ah; y++) {
+      for (let x = 0; x < aw; x++) {
+        const a = alphaAt(x, y);
+        if (a > 12 && a < 243) midToneCount++;
+      }
+    }
+    expect(midToneCount).toBeGreaterThan(100);
+
+    // Verify linear colorSpace lock on normal/roughness/alpha via mocked browser document
+    const prevDoc = globalThis.document;
+    try {
+      Object.defineProperty(globalThis, 'document', {
+        configurable: true,
+        writable: true,
+        value: {
+          createElement: () => {
+            const canvasStub = {
+              width: 0,
+              height: 0,
+              getContext: () =>
+                createMockCanvas2dContext(
+                  Math.min(canvasStub.width || 64, 64),
+                  Math.min(canvasStub.height || 64, 64)
+                ).ctx,
+            };
+            // Cap mock canvas buffer dimensions so getHeavyArmorHangarTextures executes instantly in Node
+            return new Proxy(canvasStub, {
+              set(target, prop, value) {
+                if (prop === 'width' || prop === 'height') {
+                  target[prop] = Math.min(Number(value), 64);
+                  return true;
+                }
+                return Reflect.set(target, prop, value);
+              },
+            });
+          },
+        },
+      });
+      const texSuite = getHeavyArmorHangarTextures('tactical_vault');
+      expect(texSuite).not.toBeNull();
+      expect(texSuite!.albedo.colorSpace).toBe(THREE.SRGBColorSpace);
+      expect(texSuite!.normal.colorSpace).toBe(THREE.NoColorSpace);
+      expect(texSuite!.roughness.colorSpace).toBe(THREE.NoColorSpace);
+      expect(texSuite!.alpha.colorSpace).toBe(THREE.NoColorSpace);
+
+      // R3F applyProps linear-lock invariance check
+      texSuite!.normal.colorSpace = THREE.SRGBColorSpace;
+      texSuite!.roughness.colorSpace = THREE.SRGBColorSpace;
+      texSuite!.alpha.colorSpace = THREE.SRGBColorSpace;
+      expect(texSuite!.normal.colorSpace).toBe(THREE.NoColorSpace);
+      expect(texSuite!.roughness.colorSpace).toBe(THREE.NoColorSpace);
+      expect(texSuite!.alpha.colorSpace).toBe(THREE.NoColorSpace);
+      expect(HEAVY_ARMOR_HANGAR_TEXTURE_SIZE.albedoWidth).toBe(2048);
+      expect(HEAVY_ARMOR_HANGAR_TEXTURE_SIZE.normalWidth).toBe(1024);
+    } finally {
+      Object.defineProperty(globalThis, 'document', {
+        configurable: true,
+        writable: true,
+        value: prevDoc,
+      });
+    }
+  });
+
+  it('configures 4096 Ultra / 2048 Balanced+Eco tight-frustum tank shadows and cinematic tank filmic PostFX', () => {
+    const tankUltra = resolveKeyLightShadowConfig('main_battle_tank', 'ultra');
+    expect(tankUltra.mapSize).toBe(4096);
+    expect(tankUltra.left).toBe(-560);
+    expect(tankUltra.right).toBe(560);
+    expect(tankUltra.top).toBe(400);
+    expect(tankUltra.bottom).toBe(-400);
+    expect(tankUltra.bias).toBeLessThan(0);
+    expect(tankUltra.normalBias).toBeGreaterThan(0.05);
+    expect(tankUltra.normalBias).toBeLessThanOrEqual(0.22);
+
+    expect(
+      resolveKeyLightShadowConfig('main_battle_tank', 'balanced').mapSize
+    ).toBe(2048);
+    expect(
+      resolveKeyLightShadowConfig('main_battle_tank', 'eco').mapSize
+    ).toBe(2048);
+
+    // Small arms preserve 2048 Ultra / 1024 Balanced+Eco & ±60/±44 frustum
+    const rifleUltra = resolveKeyLightShadowConfig('rifle', 'ultra');
+    expect(rifleUltra.mapSize).toBe(2048);
+    expect(rifleUltra.left).toBe(-60);
+    expect(rifleUltra.right).toBe(60);
+    expect(rifleUltra.top).toBe(44);
+    expect(rifleUltra.bottom).toBe(-44);
+    expect(resolveKeyLightShadowConfig('rifle', 'balanced').mapSize).toBe(1024);
+
+    // Cinematic tank filmic vignette & elevated bloom threshold (zero vignette in blueprint_daylight)
+    const tankVaultPost = getPostProcessingPresetParams(
+      'tactical_vault',
+      'main_battle_tank'
+    );
+    expect(tankVaultPost.bloom.threshold).toBeGreaterThanOrEqual(3.4);
+    expect(tankVaultPost.bloom.strength).toBeGreaterThan(0);
+
+    const tankVaultLens = getFilmicLensPresetParams(
+      'tactical_vault',
+      'main_battle_tank'
+    );
+    const firearmVaultLens = getFilmicLensPresetParams(
+      'tactical_vault',
+      'rifle'
+    );
+    expect(tankVaultLens.vignetteStrength).toBeGreaterThan(
+      firearmVaultLens.vignetteStrength
+    );
+    expect(tankVaultLens.vignetteStrength).toBeLessThanOrEqual(0.3);
+
+    const tankDaylightLens = getFilmicLensPresetParams(
+      'blueprint_daylight',
+      'main_battle_tank'
+    );
+    expect(tankDaylightLens.vignetteStrength).toBe(0);
+    expect(tankDaylightLens.grainStrength).toBe(0);
+    expect(tankDaylightLens.contrast).toBe(1);
   });
 });

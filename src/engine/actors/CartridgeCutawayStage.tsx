@@ -8,6 +8,8 @@ import {
   CARTRIDGE_LAB_ORDER,
   CARTRIDGE_LAB_SPECS,
   getCartridgeLabMeshBundle,
+  isTankOrdnanceProfile,
+  TANK_ORDNANCE_ORDER,
 } from '../cartridges/cartridgeSpecs';
 
 /** Vertical datum floor of the 1:1 Cartridge Cutaway Lab (`y = -3.8 cm` in world space) */
@@ -65,6 +67,7 @@ export function computeCartridgeStageOffsetInto(
   }
 
   const aspect = Math.max(0.45, viewportW / Math.max(1, viewportH));
+  const isTankGallery = isTankOrdnanceProfile(activeCaliber);
 
   if (!lineupOverview) {
     // Macro (Focus) mode: proportional Z pullback & upward target lift (-Y stage shift)
@@ -72,25 +75,28 @@ export function computeCartridgeStageOffsetInto(
     const spec = CARTRIDGE_LAB_SPECS[activeCaliber];
     const oalCm = spec.oalMm / 10;
     const caseH = spec.caseLengthMm / 10;
-    const scaleSpan = Math.max(0.75, caseH * 0.32);
+    const scaleSpan = isTankGallery
+      ? caseH * 0.22
+      : Math.max(0.75, caseH * 0.32);
     const hasPenetrator =
       spec.coreKind === 'm33_heavy_steel' ||
       spec.coreKind === 'steel_core_lead_shirt' ||
       spec.coreKind === 'subsonic_tungsten_ap' ||
       spec.coreKind === 'dual_core_penetrator' ||
-      spec.coreKind === 'ap_steel_alu';
+      spec.coreKind === 'ap_steel_alu' ||
+      spec.coreKind === 'apfsds_sabot_dart' ||
+      spec.coreKind === 'apcbc_he_shell';
     const topExtra = scaleSpan * (hasPenetrator ? 2.28 : 1.72);
-    const botExtra = 0.95 + scaleSpan * 0.35;
-    const closeZ = Math.max(8.2, oalCm * 1.72) * Math.max(1, 0.92 / aspect);
+    const botExtra = (isTankGallery ? 3.2 : 0.95) + scaleSpan * 0.35;
+    const closeZ =
+      Math.max(isTankGallery ? 95 : 8.2, oalCm * (isTankGallery ? 1.65 : 1.72)) *
+      Math.max(1, 0.92 / aspect);
 
     out.x = 0;
     out.y = -explodeT * ((topExtra - botExtra) * 0.52 + oalCm * 0.08);
-    out.z = -explodeT * (closeZ * 0.76 + scaleSpan * 1.45);
+    out.z = -explodeT * (closeZ * 0.72 + scaleSpan * 1.35);
     return out;
   }
-
-  const camX = 1.6;
-  const camZ = Math.max(29.5, 36.0 / aspect);
 
   const leftOccludedPx =
     hudHidden || dossierCollapsed || viewportW < 860
@@ -104,6 +110,29 @@ export function computeCartridgeStageOffsetInto(
   );
   const openCenterPx = (leftOccludedPx + (viewportW - rightMarginPx)) * 0.5;
   const ndcCenterX = (openCenterPx / viewportW) * 2 - 1;
+
+  if (isTankGallery) {
+    const camX = 0;
+    const camZ = Math.max(198, 228 / aspect);
+    const stageSpanX = 82;
+    const stageSpanY = 126 + 56 * explodeT;
+
+    const dHoriz =
+      (stageSpanX * 0.5) / (TAN_HALF_FOV_41 * aspect * availFracX);
+    const dVert = (stageSpanY * 0.5) / (TAN_HALF_FOV_41 * 0.64);
+    const desiredDist = Math.max(198, dHoriz, dVert);
+
+    const worldOpenCenterX =
+      camX + ndcCenterX * desiredDist * TAN_HALF_FOV_41 * aspect;
+
+    out.x = worldOpenCenterX;
+    out.y = -2.0 - 22.0 * explodeT;
+    out.z = camZ - desiredDist;
+    return out;
+  }
+
+  const camX = 1.6;
+  const camZ = Math.max(29.5, 36.0 / aspect);
 
   const stageSpanX = 47.4;
   const stageSpanY = 17.6 + 13.8 * explodeT;
@@ -126,6 +155,14 @@ const PLINTH_GEO = new THREE.BoxGeometry(45.6, 0.85, 11.5);
 const PEDESTAL_DISC_GEO = new THREE.CylinderGeometry(1.22, 1.34, 0.16, 36);
 const ACTIVE_HALO_GEO = (() => {
   const g = new THREE.RingGeometry(1.3, 1.46, 40);
+  g.rotateX(-Math.PI / 2);
+  return g;
+})();
+
+const TANK_PLINTH_GEO = new THREE.BoxGeometry(76.0, 2.8, 26.0);
+const TANK_PEDESTAL_DISC_GEO = new THREE.CylinderGeometry(7.6, 8.3, 0.8, 40);
+const TANK_ACTIVE_HALO_GEO = (() => {
+  const g = new THREE.RingGeometry(8.4, 9.4, 48);
   g.rotateX(-Math.PI / 2);
   return g;
 })();
@@ -177,7 +214,54 @@ function buildElevationScaleBackdrop(): {
   return { minorGeo, majorGeo };
 }
 
+/**
+ * Builds the 1:1 Heavy Tank Ordnance elevation backdrop ruler (`0 mm` to `1,200 mm` = `0..120 cm`)
+ * behind the 3 tank cannon rounds (`z = -12.0 cm`), spanning above the `1,150 mm` 125mm DTC10-125 nose,
+ * with `100 mm` minor hairlines, `200 mm` major rules, and `50 mm` stile half-ticks.
+ */
+function buildTankElevationScaleBackdrop(): {
+  minorGeo: THREE.BufferGeometry;
+  majorGeo: THREE.BufferGeometry;
+} {
+  const minorVerts: number[] = [];
+  const majorVerts: number[] = [];
+  const xLeft = -37.0;
+  const xRight = 37.0;
+  const zPlane = -12.0;
+
+  majorVerts.push(xLeft, 0, zPlane, xLeft, 122.0, zPlane);
+  majorVerts.push(xRight, 0, zPlane, xRight, 122.0, zPlane);
+
+  for (let dm = 0; dm <= 12; dm++) {
+    const yCm = dm * 10;
+    const isMajor = dm % 2 === 0;
+    const target = isMajor ? majorVerts : minorVerts;
+    target.push(xLeft, yCm, zPlane, xRight, yCm, zPlane);
+
+    if (dm < 12) {
+      const halfY = yCm + 5;
+      minorVerts.push(xLeft, halfY, zPlane, xLeft + 2.4, halfY, zPlane);
+      minorVerts.push(xRight - 2.4, halfY, zPlane, xRight, halfY, zPlane);
+    }
+  }
+
+  const minorGeo = new THREE.BufferGeometry();
+  minorGeo.setAttribute(
+    'position',
+    new THREE.Float32BufferAttribute(minorVerts, 3)
+  );
+
+  const majorGeo = new THREE.BufferGeometry();
+  majorGeo.setAttribute(
+    'position',
+    new THREE.Float32BufferAttribute(majorVerts, 3)
+  );
+
+  return { minorGeo, majorGeo };
+}
+
 const BACKDROP_SCALE_GEOS = buildElevationScaleBackdrop();
+const TANK_BACKDROP_SCALE_GEOS = buildTankElevationScaleBackdrop();
 
 interface SingleCartridgeSpecimenProps {
   caliber: CaliberProfile;
@@ -219,13 +303,18 @@ const SingleCartridgeSpecimen: React.FC<SingleCartridgeSpecimenProps> =
       animExplodeRef.current = t;
 
       const caseH = spec.caseLengthMm / 10;
-      const scaleSpan = Math.max(0.75, caseH * 0.32);
+      const isTankRound = isTankOrdnanceProfile(caliber);
+      const scaleSpan = isTankRound
+        ? caseH * 0.22
+        : Math.max(0.75, caseH * 0.32);
 
       if (primerRef.current) {
-        primerRef.current.position.y = -t * (0.95 + scaleSpan * 0.35);
+        primerRef.current.position.y =
+          -t * ((isTankRound ? 3.2 : 0.95) + scaleSpan * 0.35);
       }
       if (anvilRef.current) {
-        anvilRef.current.position.y = -t * (0.48 + scaleSpan * 0.18);
+        anvilRef.current.position.y =
+          -t * ((isTankRound ? 1.6 : 0.48) + scaleSpan * 0.18);
       }
       if (propellantRef.current) {
         propellantRef.current.position.y = t * scaleSpan * 0.42;
@@ -262,6 +351,8 @@ const SingleCartridgeSpecimen: React.FC<SingleCartridgeSpecimenProps> =
       document.body.style.cursor = 'auto';
     };
 
+    const isTankRound = isTankOrdnanceProfile(caliber);
+
     return (
       <group
         position={[spec.lineupXCm, 0, 0]}
@@ -271,8 +362,8 @@ const SingleCartridgeSpecimen: React.FC<SingleCartridgeSpecimenProps> =
       >
         {/* Datum Pedestal Disc */}
         <mesh
-          geometry={PEDESTAL_DISC_GEO}
-          position={[0, -0.08, 0]}
+          geometry={isTankRound ? TANK_PEDESTAL_DISC_GEO : PEDESTAL_DISC_GEO}
+          position={[0, isTankRound ? -0.4 : -0.08, 0]}
           receiveShadow
         >
           <meshStandardMaterial
@@ -295,8 +386,8 @@ const SingleCartridgeSpecimen: React.FC<SingleCartridgeSpecimenProps> =
         {isActive && (
           <mesh
             ref={haloRef}
-            geometry={ACTIVE_HALO_GEO}
-            position={[0, 0.015, 0]}
+            geometry={isTankRound ? TANK_ACTIVE_HALO_GEO : ACTIVE_HALO_GEO}
+            position={[0, isTankRound ? 0.08 : 0.015, 0]}
             renderOrder={12}
           >
             <meshBasicMaterial
@@ -308,7 +399,7 @@ const SingleCartridgeSpecimen: React.FC<SingleCartridgeSpecimenProps> =
           </mesh>
         )}
 
-        {/* 1. Drawn Brass / Polymer Hull / Combustible HITP Block */}
+        {/* 1. Drawn Brass / Polymer Hull / Combustible HITP Block / Tank Semi-Combustible Case */}
         <mesh geometry={bundle.caseGeo} castShadow receiveShadow>
           <meshPhysicalMaterial
             color={spec.caseColor}
@@ -317,14 +408,18 @@ const SingleCartridgeSpecimen: React.FC<SingleCartridgeSpecimenProps> =
                 ? 0.08
                 : spec.coreKind === 'buckshot_wad_column'
                   ? 0.16
-                  : 0.9
+                  : spec.coreKind === 'apfsds_sabot_dart'
+                    ? 0.24
+                    : 0.9
             }
             roughness={
               spec.coreKind === 'caseless_telescoped'
                 ? 0.72
                 : spec.coreKind === 'buckshot_wad_column'
                   ? 0.42
-                  : 0.22
+                  : spec.coreKind === 'apfsds_sabot_dart'
+                    ? 0.56
+                    : 0.22
             }
             clearcoat={spec.coreKind === 'caseless_telescoped' ? 0.04 : 0.18}
             clearcoatRoughness={0.2}
@@ -483,6 +578,11 @@ export const CartridgeCutawayStage: React.FC = () => {
   if (screen !== 'cartridges') return null;
 
   const isDaylight = environmentPreset === 'blueprint_daylight';
+  const isTankGallery = isTankOrdnanceProfile(activeCaliber);
+  const activeOrder = isTankGallery ? TANK_ORDNANCE_ORDER : CARTRIDGE_LAB_ORDER;
+  const backdropGeos = isTankGallery
+    ? TANK_BACKDROP_SCALE_GEOS
+    : BACKDROP_SCALE_GEOS;
   const initGoal = computeCartridgeStageOffsetInto(
     size.width,
     size.height,
@@ -504,8 +604,8 @@ export const CartridgeCutawayStage: React.FC = () => {
     >
       {/* Machined CNC Datum Exhibition Plinth */}
       <mesh
-        geometry={PLINTH_GEO}
-        position={[0.1, -0.52, -0.2]}
+        geometry={isTankGallery ? TANK_PLINTH_GEO : PLINTH_GEO}
+        position={isTankGallery ? [0, -1.8, -1.5] : [0.1, -0.52, -0.2]}
         receiveShadow
       >
         <meshStandardMaterial
@@ -515,15 +615,15 @@ export const CartridgeCutawayStage: React.FC = () => {
         />
       </mesh>
 
-      {/* 0–150 mm (0–15 cm) 1:1 Elevation Scale Grid Backdrop */}
-      <lineSegments geometry={BACKDROP_SCALE_GEOS.minorGeo}>
+      {/* 1:1 Elevation Scale Grid Backdrop (0–150 mm Small Arms / 0–1,200 mm Heavy Tank Ordnance) */}
+      <lineSegments geometry={backdropGeos.minorGeo}>
         <lineBasicMaterial
           color={isDaylight ? '#64748b' : '#334155'}
           transparent
           opacity={0.42}
         />
       </lineSegments>
-      <lineSegments geometry={BACKDROP_SCALE_GEOS.majorGeo}>
+      <lineSegments geometry={backdropGeos.majorGeo}>
         <lineBasicMaterial
           color={isDaylight ? '#0284c7' : '#38bdf8'}
           transparent
@@ -531,8 +631,8 @@ export const CartridgeCutawayStage: React.FC = () => {
         />
       </lineSegments>
 
-      {/* 7 Side-by-Side 1:1 SAAMI/CIP Cartridges */}
-      {CARTRIDGE_LAB_ORDER.map((caliber) => (
+      {/* Side-by-Side 1:1 Cutaway Specimens */}
+      {activeOrder.map((caliber) => (
         <SingleCartridgeSpecimen
           key={caliber}
           caliber={caliber}

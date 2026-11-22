@@ -4,7 +4,7 @@ import type {
   WeaponId,
   WeaponPartSpec,
 } from '../../weapons/types';
-import { isArcheryWeapon } from '../physics/armoryPhysics';
+import { isArcheryWeapon, isTankWeapon } from '../physics/armoryPhysics';
 
 /**
  * WP-05 — Engineering Functional Role Classification & Operating Energy-Flow Profiles
@@ -228,12 +228,84 @@ export const ARCHERY_ROLE_META: Readonly<
 };
 
 /**
- * Resolves subsystem role metadata tailored to the active platform (firearm vs archery).
+ * Heavy Armor 1:1 Main Battle Tank subsystem labels & descriptions preserving
+ * canonical 6 role IDs, shader tint hexes, and ISO 128 stencil cap palettes.
+ */
+export const ARMOR_ROLE_META: Readonly<
+  Record<EngineeringRole, EngineeringRoleMeta>
+> = {
+  locking: defineArcheryRole('locking', {
+    labelZh: '主炮炮管与炮闩承压',
+    labelEn: 'Main Gun & Breech',
+    shortZh: '主炮闭锁',
+    shortEn: 'Main Gun',
+    descZh:
+      '承受 320–670 MPa 坦克主炮极限膛压的镀铬滑膛/线膛炮管、立/卧式楔形炮闩、炮盾摇架与炮塔座圈。',
+    descEn:
+      'High-pressure main armament: 88–125mm gun tube, vertical/horizontal sliding-wedge breech block, mantlet, and turret ring.',
+  }),
+  gas_drive: defineArcheryRole('gas_drive', {
+    labelZh: '动力包与液力传动',
+    labelEn: 'Powerpack & Drive',
+    shortZh: '动力传动',
+    shortEn: 'Powerpack',
+    descZh:
+      '为 55–67 吨重装底盘输出澎湃动力的 V12 双涡轮柴油机、AGT1500 燃气轮机、液力综合变速箱、冷却风扇与主油箱。',
+    descEn:
+      'Heavy armor propulsion pack: 700–1,500 hp V12 diesel or AGT1500 gas turbine, hydromechanical transmission, cooling fans, and fuel cells.',
+  }),
+  bolt_carrier: defineArcheryRole('bolt_carrier', {
+    labelZh: '自动装弹与驻退循环',
+    labelEn: 'Loader & Recoil',
+    shortZh: '装弹驻退',
+    shortEn: 'Loader/Recoil',
+    descZh:
+      '完成 290–340 mm 炮身驻退缓冲、转盘举弹推弹、液压防爆门启闭、待发弹装填与退壳导流的核心循环机构。',
+    descEn:
+      'Ordnance cycling mass: hydro-pneumatic recoil cradle, 22-rd carousel autoloader, rammer chain, hydraulic blast doors, and stub deflector.',
+  }),
+  fire_control: defineArcheryRole('fire_control', {
+    labelZh: '猎歼观瞄与乘员战位',
+    labelEn: 'Optics, FCS & Crew',
+    shortZh: '火控观瞄',
+    shortEn: 'Optics/FCS',
+    descZh:
+      '整合车长独立周视热像仪（CITV / PERI / TZF 9b）、顶置遥控武器站、烟幕弹发射器与车内乘员火控终端战位。',
+    descEn:
+      'Hunter-killer fire control: commander CITV/PERI/TZF optics, CROWS roof weapons, smoke dischargers, and crew tactical stations.',
+  }),
+  energy_spring: defineArcheryRole('energy_spring', {
+    labelZh: '复进主簧与扭杆悬挂',
+    labelEn: 'Recoil & Torsion',
+    shortZh: '复进扭杆',
+    shortEn: 'Springs/Bars',
+    descZh:
+      '吸收数十吨主炮后坐冲量的高刚度螺旋复进簧、炮闩/防爆门复位簧与贯穿车体底盘的 12–16 根高强度扭杆弹簧。',
+    descEn:
+      'Heavy mechanical energy storage: main-gun recuperator springs, breech/blast-door return springs, and hull torsion suspension bars.',
+  }),
+  housing_feed: defineArcheryRole('housing_feed', {
+    labelZh: '复合主装甲与行走弹舱',
+    labelEn: 'Armor, Tracks & Racks',
+    shortZh: '装甲弹舱',
+    shortEn: 'Armor/Hull',
+    descZh:
+      '提供多维度防护与机动支撑的焊接主车体、炮塔复合装甲、ERA/楔形附加模块、负重轮履带及隔爆/侧舷弹药舱。',
+    descEn:
+      'Armored hull, turret shell, ERA/arrowhead/composite arrays, road wheels, steel-rubber tracks, and compartmentalized ammo racks.',
+  }),
+};
+
+/**
+ * Resolves subsystem role metadata tailored to the active platform (firearm vs archery vs heavy armor).
  */
 export function getEngineeringRoleMeta(
   role: EngineeringRole,
   weaponId?: WeaponId | string | null
 ): EngineeringRoleMeta {
+  if (isTankWeapon(weaponId)) {
+    return ARMOR_ROLE_META[role];
+  }
   return isArcheryWeapon(weaponId)
     ? ARCHERY_ROLE_META[role]
     : ENGINEERING_ROLE_META[role];
@@ -259,7 +331,10 @@ export type GasOperatingFamily =
   | 'electric_rotary_gatling'
   | 'pulley_floating_hyperburst'
   | 'compound_bow_binary_cam'
-  | 'compound_crossbow_helical_cam';
+  | 'compound_crossbow_helical_cam'
+  | 'tank_smoothbore_autoloader'
+  | 'tank_smoothbore_bustle'
+  | 'tank_rifled_horizontal_wedge';
 
 export interface WeaponGasManifoldProfile {
   weaponId: WeaponId;
@@ -727,6 +802,82 @@ export const WEAPON_GAS_MANIFOLD_PROFILES: Readonly<
     gasTargetX: 11.5,
     ventPos: [30.7, 3.35, 0.3],
   },
+  ztz99a: {
+    weaponId: 'ztz99a',
+    family: 'tank_smoothbore_autoloader',
+    hasGasTap: false,
+    familyTitleZh: '125mm 高压滑膛炮 + 液气双筒驻退 · 22发底置转盘自动装弹机',
+    familyTitleEn: '125mm Smoothbore Hydro-Pneumatic Recoil · 22-Rd Carousel Autoloader',
+    flowNoteZh:
+      '全闭锁高压主炮（无侧向导气孔）：650 MPa 膛压将 4.8 kg DTC10-125 钨合金长杆穿甲弹以 1,780 m/s 推射出膛；中段抽烟装置负压抽除炮膛废气，液气驻退机吸收 320mm 后坐并触发自动装弹机循环！',
+    flowNoteEn:
+      '100% sealed breech (zero gas tap): 650 MPa propellant accelerates a 4.8 kg tungsten dart to 1,780 m/s while the bore evacuator scavenges fumes and hydro-pneumatic cylinders arrest 320mm of recoil.',
+    chamberX: 85,
+    muzzleX: 710,
+    boreY: 38,
+    gasPortX: null,
+    gasChannelY: 38,
+    gasChannelZ: 0,
+    gasTargetX: 25,
+    ventPos: [405, 38, 0],
+  },
+  m1a2: {
+    weaponId: 'm1a2',
+    family: 'tank_smoothbore_bustle',
+    hasGasTap: false,
+    familyTitleZh: '120mm L/44 M256 滑膛炮 + 立式楔闩 · 隔爆尾舱防爆门人工装填',
+    familyTitleEn: '120mm L/44 M256 Smoothbore · Vertical Wedge & Blast-Door Bustle',
+    flowNoteZh:
+      '全闭锁高压炮膛（无导气孔）：670 MPa 膛压将 M829A4 贫铀穿甲弹推射至 1,670 m/s，硝化纤维半可燃药筒在膛内几乎燃尽，立楔炮闩下沉退下钢制弹底护板并借抽烟筒清除炮膛残气。',
+    flowNoteEn:
+      'Sealed 670 MPa smoothbore breech drives the M829A4 dart to 1,670 m/s while incinerating its combustible cartridge case; the vertical wedge drops the steel stub base as the bore evacuator clears fumes.',
+    chamberX: 54,
+    muzzleX: 581,
+    boreY: 44,
+    gasPortX: null,
+    gasChannelY: 44,
+    gasChannelZ: 0,
+    gasTargetX: 10,
+    ventPos: [315, 44, 0],
+  },
+  leopard2a7: {
+    weaponId: 'leopard2a7',
+    family: 'tank_smoothbore_bustle',
+    hasGasTap: false,
+    familyTitleZh: '120mm Rh-120 L/55A1 超长高压滑膛炮 · 同轴液气驻退 + 隔爆尾舱',
+    familyTitleEn: '120mm Rh-120 L/55A1 High-Pressure Smoothbore · Concentric Recoil',
+    flowNoteZh:
+      '加长 1.3 米的 6.6m L/55A1 高压滑膛身管令 670 MPa 发射药充分膨胀做功，赋予 DM63A1 穿甲弹 1,750 m/s 惊人初速；偏心抽烟筒利用膛压压差定向清膛，同轴双筒驻退复进机平稳吸收 340mm 后坐！',
+    flowNoteEn:
+      'The 6.6m L/55A1 barrel extends high-pressure expansion to accelerate DM63A1 to 1,750 m/s, with an eccentric bore evacuator scavenging fumes during the 340mm concentric hydro-pneumatic recoil stroke.',
+    chamberX: 40,
+    muzzleX: 712,
+    boreY: 74,
+    gasPortX: null,
+    gasChannelY: 74,
+    gasChannelZ: 0,
+    gasTargetX: -10,
+    ventPos: [365, 74, 0],
+  },
+  tiger1: {
+    weaponId: 'tiger1',
+    family: 'tank_rifled_horizontal_wedge',
+    hasGasTap: false,
+    familyTitleZh: '88mm KwK 36 L/56 线膛炮 + 双室膛口制退器 · 克虏伯半自动水平楔闩',
+    familyTitleEn: '88mm KwK 36 L/56 Rifled Cannon · Twin-Baffle Brake & Krupp Wedge',
+    flowNoteZh:
+      '32 条右旋膛线令 10.2 kg PzGr. 39 被帽穿甲弹在 320 MPa 膛压下自旋稳定至 773 m/s；膛口标志性双室制退器向两侧分流逾 35% 高压火药燃气大幅削减 290mm 后坐冲量，复进末端自动横向拉开水平滑楔退出整枚 88mm 黄铜药筒！',
+    flowNoteEn:
+      '32-groove rifling spin-stabilizes the 10.2 kg PzGr. 39 shell to 773 m/s while the twin-baffle muzzle brake vents blast laterally to tame 290mm recoil and power the semi-automatic Krupp horizontal wedge.',
+    chamberX: 60,
+    muzzleX: 529,
+    boreY: 102,
+    gasPortX: null,
+    gasChannelY: 102,
+    gasChannelZ: 0,
+    gasTargetX: 12,
+    ventPos: [518, 102, 0],
+  },
 };
 
 /**
@@ -1175,6 +1326,118 @@ const EXPLICIT_PART_ROLE_OVERRIDES: Readonly<Record<string, EngineeringRole>> =
     an94_mag_body: 'housing_feed',
     an94_mag_follower: 'housing_feed',
     an94_mag_floorplate: 'housing_feed',
+
+    // PLA ZTZ-99A Main Battle Tank (26 parts — powerpack/drivetrain mapped to gas_drive via ARMOR_ROLE_META)
+    ztz99a_main_gun: 'locking',
+    ztz99a_breech_block: 'locking',
+    ztz99a_gun_cradle: 'locking',
+    ztz99a_turret_ring: 'locking',
+    ztz99a_v12_engine: 'gas_drive',
+    ztz99a_transmission: 'gas_drive',
+    ztz99a_recoil_cylinders: 'bolt_carrier',
+    ztz99a_autoloader_carousel: 'bolt_carrier',
+    ztz99a_loading_tray: 'bolt_carrier',
+    ztz99a_rammer_chain: 'bolt_carrier',
+    ztz99a_stub_ejector: 'bolt_carrier',
+    ztz99a_optics_citv: 'fire_control',
+    ztz99a_roof_armaments: 'fire_control',
+    ztz99a_crew_stations: 'fire_control',
+    ztz99a_recoil_springs: 'energy_spring',
+    ztz99a_rammer_spring: 'energy_spring',
+    ztz99a_torsion_bars: 'energy_spring',
+    ztz99a_hull_armor: 'housing_feed',
+    ztz99a_glacis_era: 'housing_feed',
+    ztz99a_side_skirts: 'housing_feed',
+    ztz99a_road_wheels: 'housing_feed',
+    ztz99a_tracks_left: 'housing_feed',
+    ztz99a_tracks_right: 'housing_feed',
+    ztz99a_rear_deck: 'housing_feed',
+    ztz99a_turret_shell: 'housing_feed',
+    ztz99a_era_wedges: 'housing_feed',
+
+    // M1A2 SEP v3 Abrams Main Battle Tank (26 parts)
+    m1a2_main_gun: 'locking',
+    m1a2_breech_block: 'locking',
+    m1a2_gun_mantlet: 'locking',
+    m1a2_turret_ring: 'locking',
+    m1a2_agt1500_turbine: 'gas_drive',
+    m1a2_x1100_transmission: 'gas_drive',
+    m1a2_fuel_cells: 'gas_drive',
+    m1a2_blast_doors: 'bolt_carrier',
+    m1a2_ready_round: 'bolt_carrier',
+    m1a2_stub_deflector: 'bolt_carrier',
+    m1a2_crows_optics: 'fire_control',
+    m1a2_smoke_launchers: 'fire_control',
+    m1a2_crew_stations: 'fire_control',
+    m1a2_recoil_springs: 'energy_spring',
+    m1a2_door_spring: 'energy_spring',
+    m1a2_torsion_bars: 'energy_spring',
+    m1a2_hull_shell: 'housing_feed',
+    m1a2_side_skirts: 'housing_feed',
+    m1a2_road_wheels: 'housing_feed',
+    m1a2_tracks_left: 'housing_feed',
+    m1a2_tracks_right: 'housing_feed',
+    m1a2_engine_deck: 'housing_feed',
+    m1a2_turret_shell: 'housing_feed',
+    m1a2_blowoff_panels: 'housing_feed',
+    m1a2_composite_armor: 'housing_feed',
+    m1a2_ammo_bustle: 'housing_feed',
+
+    // KMW Leopard 2A7V Main Battle Tank (26 parts)
+    leo_main_gun: 'locking',
+    leo_breech_block: 'locking',
+    leo_gun_mantlet: 'locking',
+    leo_turret_ring: 'locking',
+    leo_mtu_v12: 'gas_drive',
+    leo_renk_transmission: 'gas_drive',
+    leo_cooling_fans: 'gas_drive',
+    leo_recoil_system: 'bolt_carrier',
+    leo_blast_door: 'bolt_carrier',
+    leo_ready_round: 'bolt_carrier',
+    leo_optics_peri: 'fire_control',
+    leo_smoke_dischargers: 'fire_control',
+    leo_crew_stations: 'fire_control',
+    leo_recoil_springs: 'energy_spring',
+    leo_breech_spring: 'energy_spring',
+    leo_torsion_bars: 'energy_spring',
+    leo_hull_shell: 'housing_feed',
+    leo_side_skirts: 'housing_feed',
+    leo_road_wheels: 'housing_feed',
+    leo_tracks_left: 'housing_feed',
+    leo_tracks_right: 'housing_feed',
+    leo_engine_deck: 'housing_feed',
+    leo_turret_shell: 'housing_feed',
+    leo_arrowhead_wedges: 'housing_feed',
+    leo_ammo_bustle: 'housing_feed',
+    leo_hull_ammo_rack: 'housing_feed',
+
+    // Pz.Kpfw. VI Ausf. E "Tiger 131" Heavy Tank (26 parts)
+    tiger_main_gun: 'locking',
+    tiger_breech_block: 'locking',
+    tiger_gun_mantlet: 'locking',
+    tiger_turret_ring: 'locking',
+    tiger_maybach_v12: 'gas_drive',
+    tiger_transmission: 'gas_drive',
+    tiger_driveshaft: 'gas_drive',
+    tiger_fuel_tanks: 'gas_drive',
+    tiger_recoil_cradle: 'bolt_carrier',
+    tiger_shell_guard: 'bolt_carrier',
+    tiger_ready_round: 'bolt_carrier',
+    tiger_turret_basket: 'bolt_carrier',
+    tiger_optics_tzf9b: 'fire_control',
+    tiger_cupola_hatches: 'fire_control',
+    tiger_crew_stations: 'fire_control',
+    tiger_recoil_springs: 'energy_spring',
+    tiger_breech_spring: 'energy_spring',
+    tiger_torsion_bars: 'energy_spring',
+    tiger_hull_box: 'housing_feed',
+    tiger_side_fenders: 'housing_feed',
+    tiger_interleaved_wheels: 'housing_feed',
+    tiger_tracks_left: 'housing_feed',
+    tiger_tracks_right: 'housing_feed',
+    tiger_engine_deck: 'housing_feed',
+    tiger_turret_shell: 'housing_feed',
+    tiger_ammo_racks: 'housing_feed',
   };
 
 export interface EngineeringPartClassifierInput {

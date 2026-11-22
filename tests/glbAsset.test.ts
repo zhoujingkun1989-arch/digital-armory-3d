@@ -38,8 +38,10 @@ import { DEAGLE_PARTS } from '../src/weapons/deagle/plugin';
 import { G11_PARTS } from '../src/weapons/g11/plugin';
 import { G17_PARTS } from '../src/weapons/g17/plugin';
 import { GARAND_PARTS } from '../src/weapons/garand/plugin';
+import { LEOPARD2A7_PARTS } from '../src/weapons/leopard2a7/plugin';
 import { LIFT33_PARTS } from '../src/weapons/lift33/plugin';
 import { M134_PARTS } from '../src/weapons/m134/plugin';
+import { M1A2_PARTS } from '../src/weapons/m1a2/plugin';
 import { M249_PARTS } from '../src/weapons/m249/plugin';
 import { M4A1_PARTS } from '../src/weapons/m4a1/plugin';
 import { M82A1_PARTS } from '../src/weapons/m82a1/plugin';
@@ -50,8 +52,10 @@ import { P90_PARTS } from '../src/weapons/p90/plugin';
 import { PYTHON_PARTS } from '../src/weapons/python/plugin';
 import { R500_PARTS } from '../src/weapons/r500/plugin';
 import { SCAR_PARTS } from '../src/weapons/scar/plugin';
+import { TIGER1_PARTS } from '../src/weapons/tiger1/plugin';
 import { VECTOR_PARTS } from '../src/weapons/vector/plugin';
 import { VSS_PARTS } from '../src/weapons/vss/plugin';
+import { ZTZ99A_PARTS } from '../src/weapons/ztz99a/plugin';
 import { WEAPON_IDS, type WeaponId } from '../src/weapons/types';
 
 /**
@@ -243,10 +247,10 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     expect(wasmBytes[3]).toBe(0x6d);
   });
 
-  it('resolves subpath-safe Draco decoder & GLB model URLs for ALL 23/23 exhibits and routes loaders to vendor-three-postfx', () => {
-    // Root deployment ('/') across all 23 exhibits
+  it('resolves subpath-safe Draco decoder & GLB model URLs for ALL 27/27 exhibits and routes loaders to vendor-three-postfx', () => {
+    // Root deployment ('/') across all 27 exhibits
     expect(resolveDracoDecoderPath('/')).toBe('/draco/');
-    expect(WEAPON_IDS).toHaveLength(23);
+    expect(WEAPON_IDS).toHaveLength(27);
     for (const wid of WEAPON_IDS) {
       expect(resolveWeaponGlbUrl(wid, '/')).toBe(`/models/${wid}.glb`);
     }
@@ -293,7 +297,7 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     }
   });
 
-  it('locks exact 100% disjoint part-to-atlas & dynamic-spring contracts and on-disk budgets for ALL 23/23 flagship GLB exhibits (Wave 1–4 + WP-17 Grand Slam)', () => {
+  it('locks exact 100% disjoint part-to-atlas & dynamic-spring contracts and on-disk budgets for ALL 27/27 flagship GLB exhibits (Wave 1–4 + WP-17 + WP-18 Heavy Armor Grand Slam)', () => {
     const migrated: WeaponId[] = [
       'p08',
       'ak15',
@@ -318,8 +322,12 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
       'vss',
       'm134',
       'an94',
+      'ztz99a',
+      'm1a2',
+      'leopard2a7',
+      'tiger1',
     ];
-    expect(migrated).toHaveLength(23);
+    expect(migrated).toHaveLength(27);
     expect([...migrated].sort()).toEqual([...WEAPON_IDS].sort());
     for (const wid of migrated) {
       expect(hasGlbWeaponAsset(wid)).toBe(true);
@@ -1543,7 +1551,92 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
       }
     }
 
-    // --- Grand Slam 23/23 part accounting invariant: 529 solid GLB + 50 dynamic CSG = 579 total parts ---
+    // --- 24–27. WP-18 Heavy Armor Hall 1:1 Main Battle Tanks (4 × 26 parts = 96 solid GLB + 8 dynamic CSG springs) ---
+    const tankContracts: ReadonlyArray<{
+      id: WeaponId;
+      modelFile: string;
+      parts: readonly { id: string }[];
+      springs: readonly string[];
+      suitePrefixes: readonly string[];
+    }> = [
+      {
+        id: 'ztz99a',
+        modelFile: 'ztz99a.glb',
+        parts: ZTZ99A_PARTS,
+        springs: ['ztz99a_recoil_springs', 'ztz99a_rammer_spring'],
+        suitePrefixes: [
+          'ztz99a_v3_armor_hull',
+          'ztz99a_v3_turret_gun',
+          'ztz99a_v3_interior_power',
+        ],
+      },
+      {
+        id: 'm1a2',
+        modelFile: 'm1a2.glb',
+        parts: M1A2_PARTS,
+        springs: ['m1a2_recoil_springs', 'm1a2_door_spring'],
+        suitePrefixes: [
+          'm1a2_v3_hull_armor',
+          'm1a2_v3_turret_gun',
+          'm1a2_v3_turbine_bustle',
+        ],
+      },
+      {
+        id: 'leopard2a7',
+        modelFile: 'leopard2a7.glb',
+        parts: LEOPARD2A7_PARTS,
+        springs: ['leo_recoil_springs', 'leo_breech_spring'],
+        suitePrefixes: [
+          'leopard2a7_v3_hull_camo',
+          'leopard2a7_v3_turret_gun',
+          'leopard2a7_v3_powerpack_int',
+        ],
+      },
+      {
+        id: 'tiger1',
+        modelFile: 'tiger1.glb',
+        parts: TIGER1_PARTS,
+        springs: ['tiger_recoil_springs', 'tiger_breech_spring'],
+        suitePrefixes: [
+          'tiger1_v3_hull_zimmerit',
+          'tiger1_v3_turret_88mm',
+          'tiger1_v3_drivetrain_int',
+        ],
+      },
+    ];
+
+    for (const tc of tankContracts) {
+      const cfg = GLB_WEAPON_CONFIGS[tc.id];
+      expect(cfg.modelFile).toBe(tc.modelFile);
+      expect(cfg.dynamicSpringParts).toEqual(tc.springs);
+      expect(tc.parts).toHaveLength(26);
+      expect(Object.keys(cfg.pbrOverrides)).toHaveLength(24);
+      const springSet = new Set(tc.springs);
+      const seenSuites = new Set<string>();
+      for (const p of tc.parts) {
+        if (springSet.has(p.id)) {
+          expect(isGlbDynamicSpringPart(tc.id, p.id)).toBe(true);
+          expect(getGlbPartPbrOverride(tc.id, p.id)).toBeUndefined();
+        } else {
+          expect(isGlbDynamicSpringPart(tc.id, p.id)).toBe(false);
+          const ov = getGlbPartPbrOverride(tc.id, p.id);
+          expect(ov, `Missing ${tc.id} PBR override for ${p.id}`).toBeDefined();
+          const matchedPrefix = tc.suitePrefixes.find(
+            (pref) => ov!.albedoFile === `${pref}_albedo.webp`
+          );
+          expect(
+            matchedPrefix,
+            `Unexpected texture suite on ${tc.id}.${p.id}: ${ov!.albedoFile}`
+          ).toBeDefined();
+          expect(ov!.normalFile).toBe(`${matchedPrefix}_normal.webp`);
+          expect(ov!.roughnessFile).toBe(`${matchedPrefix}_roughness.webp`);
+          seenSuites.add(matchedPrefix!);
+        }
+      }
+      expect(seenSuites.size).toBe(3);
+    }
+
+    // --- Grand Slam 27/27 part accounting invariant: 625 solid GLB + 58 dynamic CSG = 683 total parts ---
     const totalSolidGlbParts = migrated.reduce(
       (sum, wid) => sum + Object.keys(GLB_WEAPON_CONFIGS[wid].pbrOverrides).length,
       0
@@ -1552,9 +1645,9 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
       (sum, wid) => sum + GLB_WEAPON_CONFIGS[wid].dynamicSpringParts.length,
       0
     );
-    expect(totalSolidGlbParts).toBe(529);
-    expect(totalDynamicCsgParts).toBe(50);
-    expect(totalSolidGlbParts + totalDynamicCsgParts).toBe(579);
+    expect(totalSolidGlbParts).toBe(625);
+    expect(totalDynamicCsgParts).toBe(58);
+    expect(totalSolidGlbParts + totalDynamicCsgParts).toBe(683);
 
     // --- Verify on-disk binary GLB headers, exact node/mesh alignment, referenced v3 WebP maps & per-exhibit MB size budgets ---
     const modelsDir = path.resolve(__dirname, '../public/models');
@@ -1583,6 +1676,10 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
       vss: 12 * 1024 * 1024,
       m134: 12 * 1024 * 1024,
       an94: 12 * 1024 * 1024,
+      ztz99a: 12 * 1024 * 1024,
+      m1a2: 12 * 1024 * 1024,
+      leopard2a7: 12 * 1024 * 1024,
+      tiger1: 12 * 1024 * 1024,
     };
 
     for (const wid of migrated) {
@@ -1810,7 +1907,7 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     }
   }, 20_000);
 
-  it('wires GLB v3 PBR overrides, Cycles contact aoMapIntensity (0.95) & unclamped metalness (1.0) in PartActor.tsx', () => {
+  it('wires GLB v3 PBR overrides, Cycles contact aoMapIntensity (0.95 firearms / 1.26 tanks) & unclamped metalness (1.0) in PartActor.tsx', () => {
     const partActorSrc = fs.readFileSync(
       path.resolve(__dirname, '../src/engine/actors/PartActor.tsx'),
       'utf8'
@@ -1818,7 +1915,8 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     expect(partActorSrc).toContain('getGlbPartPbrOverride');
     expect(partActorSrc).toContain('geometry?.userData?.isGlbAsset === true');
     expect(partActorSrc).toContain('aoMap={activeOrmMap}');
-    expect(partActorSrc).toContain('isGlbAsset ? 0.95');
+    expect(partActorSrc).toContain('aoMapIntensity={resolvedAoMapIntensity}');
+    expect(partActorSrc).toContain('isTank\n        ? 1.26\n        : 0.95');
     expect(partActorSrc).toContain('isGlbAsset\n                      ? 1.0');
   });
 

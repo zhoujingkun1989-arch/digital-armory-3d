@@ -74,6 +74,11 @@ const WEAPON_SELECTOR_CAPABILITIES: Record<
   benellim4: SEMI_ONLY_MODES,
   garand: SEMI_ONLY_MODES,
   p08: SEMI_ONLY_MODES,
+  // 1:1 Heavy Armor Main Battle Tank main cannons (SAFE / FIRE single-shot cycle)
+  ztz99a: SEMI_ONLY_MODES,
+  m1a2: SEMI_ONLY_MODES,
+  leopard2a7: SEMI_ONLY_MODES,
+  tiger1: SEMI_ONLY_MODES,
 };
 
 /**
@@ -850,6 +855,126 @@ export const WEAPON_FIRE_CONTROL_PROFILES: Record<
       },
     },
   },
+  ztz99a: {
+    weaponId: 'ztz99a',
+    supportedModes: SEMI_ONLY_MODES,
+    mechanismSummaryZh:
+      '125mm ZPT-98 双稳猎歼数字火控 + 电发火联锁保险与 22 发转盘自动装弹机',
+    mechanismSummaryEn:
+      '125mm ZPT-98 Hunter-Killer Digital FCS + Breech Interlock & 22-Rd Autoloader',
+    modes: {
+      safe: {
+        mode: 'safe',
+        code: 'SAFE',
+        labelZh: '主炮电发火断电 (SAFE)',
+        labelEn: 'FCS SAFE',
+        tooltipZh:
+          '炮手火控台断开 27V 主炮电击发回路并锁止自动装弹机举弹闭锁联锁。',
+        tooltipEn:
+          'Disconnects 27V main-gun firing circuit and engages breech/autoloader safety interlock.',
+      },
+      semi: {
+        mode: 'semi',
+        code: 'FIRE',
+        labelZh: '125mm 主炮单发实射 (FIRE)',
+        labelEn: '125MM FIRE',
+        tooltipZh:
+          '接通电击发电路发射 DTC10-125 穿甲弹：炮身后坐 320mm，立楔下沉抛退弹底并触发底置转盘自动装填！',
+        tooltipEn:
+          'Fires 125mm DTC10 APFSDS through 320mm hydro-pneumatic recoil, stub ejection, and automated carousel reload!',
+      },
+    },
+  },
+  m1a2: {
+    weaponId: 'm1a2',
+    supportedModes: SEMI_ONLY_MODES,
+    mechanismSummaryZh:
+      'M1A2 SEP v3 主炮手电击发握把 + 装填手 ARM/SAFE 拨杆与液压防爆门联锁',
+    mechanismSummaryEn:
+      'M1A2 SEP v3 Gunner Palm-Switch FCS + Loader ARM/SAFE Lever & Blast-Door Interlock',
+    modes: {
+      safe: {
+        mode: 'safe',
+        code: 'SAFE',
+        labelZh: '装填手安全锁 (SAFE)',
+        labelEn: 'LOADER SAFE',
+        tooltipZh:
+          '装填手将炮尾右侧保险杆扳至 SAFE 切断电发火电路，确保防爆门开启装弹期间绝对安全。',
+        tooltipEn:
+          'Loader sets breech-side lever to SAFE, isolating the electric firing circuit while the blast doors cycle.',
+      },
+      semi: {
+        mode: 'semi',
+        code: 'ARM',
+        labelZh: '120mm 主炮待发击发 (ARM)',
+        labelEn: '120MM ARM / FIRE',
+        tooltipZh:
+          '“UP!” 装填就绪拨至 ARM：按压双联掌心开关发射 M829A4 穿甲弹，主炮后坐 300mm 并滑开防爆门换弹！',
+        tooltipEn:
+          'Loader calls "UP!" and flips to ARM: fires M829A4 APFSDS with 300mm recoil and hydraulic bustle-door reload!',
+      },
+    },
+  },
+  leopard2a7: {
+    weaponId: 'leopard2a7',
+    supportedModes: SEMI_ONLY_MODES,
+    mechanismSummaryZh:
+      'EMES-15 / PERI R17A3 双通道猎歼火控 + 莱茵金属炮闩机电击发联锁',
+    mechanismSummaryEn:
+      'EMES-15 / PERI R17A3 Hunter-Killer FCS + Rheinmetall Breech Interlock',
+    modes: {
+      safe: {
+        mode: 'safe',
+        code: 'GESICHERT',
+        labelZh: '主炮机电保险 (SAFE)',
+        labelEn: 'BREECH SAFE',
+        tooltipZh:
+          '切断 Rh-120 L/55A1 高压滑膛炮电发火主开关并锁止立式楔形炮闩击发机构。',
+        tooltipEn:
+          'Isolates the Rh-120 L/55A1 electric firing circuit and mechanically blocks the vertical wedge firing pin.',
+      },
+      semi: {
+        mode: 'semi',
+        code: 'FEUER',
+        labelZh: '120mm L/55A1 实弹击发 (FIRE)',
+        labelEn: 'L/55A1 FIRE',
+        tooltipZh:
+          '解脱机电保险轰击 DM63A1 穿甲弹（1,750 m/s）：同轴液气驻退 340mm，尾舱防爆门瞬时滑开爆发装填！',
+        tooltipEn:
+          'Fires 1,750 m/s DM63A1 APFSDS through 340mm concentric recoil followed by rapid bustle-door reload!',
+      },
+    },
+  },
+  tiger1: {
+    weaponId: 'tiger1',
+    supportedModes: SEMI_ONLY_MODES,
+    mechanismSummaryZh:
+      '虎式 131 脚踏电发火踏板 + 克虏伯半自动水平楔闩安全闭锁联锁',
+    mechanismSummaryEn:
+      'Tiger 131 Foot-Pedal Electric Firing Circuit + Krupp Horizontal Wedge Interlock',
+    modes: {
+      safe: {
+        mode: 'safe',
+        code: 'SICHER',
+        labelZh: '炮闩机械保险 (SAFE)',
+        labelEn: 'KWK SAFE',
+        tooltipZh:
+          '断开 12V 电击发开关并锁死克虏伯水平滑楔炮闩联锁，防止未完全闭锁时触发底火。',
+        tooltipEn:
+          'Disconnects the 12V electric primer circuit and locks the Krupp horizontal sliding-wedge safety.',
+      },
+      semi: {
+        mode: 'semi',
+        code: 'FEUER',
+        labelZh: '88mm KwK 36 实弹击发 (FIRE)',
+        labelEn: '88MM FIRE',
+        tooltipZh:
+          '踩下炮手电发火踏板轰击 88mm PzGr. 39 穿甲弹：炮身后坐 290mm，复进末端水平楔闩自动滑开抛出整枚黄铜药筒！',
+        tooltipEn:
+          'Depressing the firing pedal launches an 88mm PzGr. 39 shell through 290mm recoil and semi-auto brass extraction!',
+      },
+    },
+  },
 };
 
 function isArcheryInteractiveWeapon(
@@ -923,6 +1048,30 @@ const EXPLICIT_WEAPON_ACTION_PARTS: Record<WeaponId, readonly string[]> = {
     'an94_pulley_wheel',
     'an94_feed_rammer',
   ],
+  ztz99a: [
+    'ztz99a_main_gun',
+    'ztz99a_breech_block',
+    'ztz99a_loading_tray',
+    'ztz99a_rammer_chain',
+  ],
+  m1a2: [
+    'm1a2_main_gun',
+    'm1a2_breech_block',
+    'm1a2_blast_doors',
+    'm1a2_ready_round',
+  ],
+  leopard2a7: [
+    'leo_main_gun',
+    'leo_breech_block',
+    'leo_blast_door',
+    'leo_ready_round',
+  ],
+  tiger1: [
+    'tiger_main_gun',
+    'tiger_breech_block',
+    'tiger_recoil_cradle',
+    'tiger_ready_round',
+  ],
 };
 
 const GENERIC_ACTION_PART_INCLUDE_RE =
@@ -989,6 +1138,14 @@ export function mapManualRackToFireProgress(
   }
   if (weaponId === 'm134' || weaponId === 'an94') {
     return 0.2 + r * 0.28;
+  }
+  if (
+    weaponId === 'ztz99a' ||
+    weaponId === 'm1a2' ||
+    weaponId === 'leopard2a7' ||
+    weaponId === 'tiger1'
+  ) {
+    return 0.2 + r * 0.34;
   }
   return 0.32 + r * 0.3;
 }
@@ -1066,6 +1223,15 @@ export function computeRecoilSpringForceN(
   } else if (weaponId === 'an94') {
     preloadN = 66;
     rateN = 58;
+  } else if (
+    weaponId === 'ztz99a' ||
+    weaponId === 'm1a2' ||
+    weaponId === 'leopard2a7' ||
+    weaponId === 'tiger1'
+  ) {
+    // Hydro-pneumatic tank main-gun recuperator & breech closing spring resistance (Newtons)
+    preloadN = 3200;
+    rateN = 4800;
   }
 
   const bufferRamp = r > 0.8 ? Math.pow((r - 0.8) / 0.2, 2) * 28 : 0;

@@ -1573,6 +1573,274 @@ export const WEAPON_MANIFESTS: readonly WeaponManifest[] = [
       firingMilestoneLabel: '滑轮预供弹',
     },
   },
+  {
+    id: 'ztz99a',
+    orderIndex: 24,
+    shortLabel: 'ZTZ-99A',
+    caliberProfile: '125mm_apfsds',
+    atlasHeadingCn: 'ZTZ-99A 主战坦克 2K 5-Ch Packed ORM 贴图图集',
+    catalog: {
+      id: 'ztz99a',
+      bayCode: 'BAY-24',
+      modelCode: 'ZTZ-99A (TYPE 99A)',
+      nameCn: '中国 ZTZ-99A 主战坦克',
+      subtitleEn: 'PLA ZTZ-99A Main Battle Tank (125mm L/50 Smoothbore)',
+      originCountryCn: '中国',
+      weaponTypeCn: '主战坦克',
+      category: 'armor',
+      categoryCn: '重装战车',
+      caliber: '125mm ZPT-98 (DTC10-125 APFSDS)',
+      actionMechanism: '125mm L/50 滑膛炮 · 立式楔形炮闩 · 22发底置转盘自动装弹机',
+      specs1To1: {
+        overallLengthMm: '10,900 mm (含125mm炮管) / 7,600 mm (车体)',
+        barrelSpec: '6,250 mm (125mm ZPT-98 L/50 · 电渣重熔镀铬滑膛)',
+        emptyWeightKg: '55,000 kg (战斗全重)',
+        muzzleVelocityMs: '1,780 m/s (DTC10-125 钨合金APFSDS)',
+        effectiveRangeM: '3,000 m (直瞄) / 5,000 m (炮射导弹)',
+        rateOfFire: '8 发/分 (22发底置转盘自动装弹机)',
+      },
+      assembliesCount: 4,
+      partsCount: 26,
+      firingStagesCount: 7,
+      available: true,
+      statusLabel: '重装展厅 · 1:1 可拆解',
+      description:
+        '中国陆军现役三代半信息化重型主战坦克标杆：1:1 真实尺度（全长 10.90 m、战斗全重 55 吨）还原标志性箭簇形 FY-4 双防反应装甲楔形炮塔、125 mm L/50 ZPT-98 电渣重熔高压滑膛炮、液气双筒驻退复进机、22 发底置转盘双推链自动装弹机与 1,500 马力 150HB-2 横置 V12 双涡轮增压柴油动力包。开启 3D 剖视可穿透复合主装甲直击 125mm 分装尾翼稳定脱壳穿甲弹从底盘转盘举升、链式推弹入膛、立楔闭锁与 320 mm 炮身后坐全过程！',
+      highlights: [
+        '125mm ZPT-98 L/50 高压镀铬滑膛炮 + 650 MPa 膛压 · 1,780 m/s DTC10 穿甲弹',
+        '22 发底置转盘自动装弹机：弹盘步进寻位 + 垂直升降托架 + 链式推弹器 + 弹底抛壳窗',
+        '箭簇形 FY-4 重型爆炸反应装甲楔形炮塔 + 激光压制观瞄 / CITV 猎歼双通道火控',
+        '1,500 hp 150HB-2 V12 双涡轮柴油机 + CH-1000 液力综合传动 + 六对独立扭杆悬挂',
+      ],
+    },
+    cameraPresets: {
+      armory_showcase: { pos: [820, 290, 1020], target: [85, -10, 0] },
+      iso: { pos: [740, 340, 1080], target: [95, -8, 0] },
+      right: { pos: [110, 20, 1420], target: [110, -6, 0] },
+      left: { pos: [110, 20, -1420], target: [110, -6, 0] },
+      top: { pos: [110, 1460, 160], target: [110, 0, 0] },
+      cutaway_focus: { pos: [70, 95, 620], target: [-25, -12, 0] },
+      firing_view: { pos: [160, 130, 740], target: [50, 12, 0] },
+    },
+    workbenchMeta: {
+      badge: 'PLA TYPE 99A · 125MM L/50 AUTOLOADER',
+      title: '中国 ZTZ-99A 主战坦克 1:1 3D 剖视拆解与自动装弹机循环演示',
+      subtitle:
+        '4 大总成 · 26 核心节点 · 125mm ZPT-98 滑膛炮 320mm 后坐、22 发转盘装弹机与 1,500 hp V12 动力包',
+      cutawayLabel: '转盘装弹机与炮尾特写',
+      cutawayTitle:
+        '切换至合拢透视状态并聚焦 22 发底置转盘自动装弹机、垂直举升托盘、链式推弹杆与 125mm 立楔炮尾特写',
+      cutawayFocusPartId: 'ztz99a_autoloader_carousel',
+      searchPlaceholder:
+        '搜索零件名 / 编号 (如 自动装弹机, 125mm, 反应装甲, V12, S-05)...',
+      muzzlePos: [710, 38, 0],
+      chamberGlowPos: [85, 38, 0],
+      scaleProfile: 'main_battle_tank',
+      gridY: -121.0,
+      firingMilestoneLabel: '转盘举弹入膛',
+    },
+  },
+  {
+    id: 'm1a2',
+    orderIndex: 25,
+    shortLabel: 'M1A2 SEP v3',
+    caliberProfile: '120mm_apfsds',
+    atlasHeadingCn: 'M1A2 SEP v3 艾布拉姆斯 2K 5-Ch Packed ORM 贴图图集',
+    catalog: {
+      id: 'm1a2',
+      bayCode: 'BAY-25',
+      modelCode: 'M1A2 SEP V3 ABRAMS',
+      nameCn: '美国 M1A2 SEP v3 艾布拉姆斯主战坦克',
+      subtitleEn: 'M1A2 SEP v3 Abrams Main Battle Tank (120mm L/44 M256)',
+      originCountryCn: '美国',
+      weaponTypeCn: '主战坦克',
+      category: 'armor',
+      categoryCn: '重装战车',
+      caliber: '120×570mm NATO (M829A4 APFSDS-T)',
+      actionMechanism: '120mm L/44 M256 滑膛炮 · 立楔炮闩 · 隔爆尾舱泄压板人工装填',
+      specs1To1: {
+        overallLengthMm: '9,770 mm (含炮管) / 7,930 mm (车体)',
+        barrelSpec: '5,280 mm (120mm L/44 M256 镀铬滑膛)',
+        emptyWeightKg: '66,800 kg (战斗全重)',
+        muzzleVelocityMs: '1,670 m/s (M829A4 APFSDS-T)',
+        effectiveRangeM: '4,000 m',
+        rateOfFire: '8–10 发/分 (人工隔爆尾舱装填)',
+      },
+      assembliesCount: 4,
+      partsCount: 26,
+      firingStagesCount: 7,
+      available: true,
+      statusLabel: '重装展厅 · 1:1 可拆解',
+      description:
+        '美军现役主力重甲巨兽 M1A2 SEP v3 艾布拉姆斯：1:1 真实工程比例（全长 9.77 m、重 66.8 吨）深度还原霍尼韦尔 AGT1500 1,500 马力多燃料燃气轮机与 X1100-3B 液力综合传动动力包、带顶置泄压防爆板的 36 发隔爆弹药尾舱、脚踏液压防爆隔离门、NGAP 贫铀复合主装甲夹层及 120 mm L/44 M256 镀铬滑膛炮。剖视击发可完整观测 300 mm 主炮后坐、防爆门瞬间滑开、整装半可燃药筒入膛闭锁与金属弹底护板退壳！',
+      highlights: [
+        '120mm L/44 M256 镀铬高压滑膛炮 + 670 MPa 膛压 · M829A4 贫铀尾翼穿甲弹',
+        '36 发全隔爆弹药尾舱 + 顶置泄压防爆板（Blow-Off Panels）+ 液压滑移防爆门',
+        '霍尼韦尔 AGT1500 1,500 hp 燃气轮机（轴流压气/回热器）+ X1100-3B 十字传动箱',
+        'NGAP 贫铀/陶瓷复合装甲夹层 + CROWS-LP 遥控武器站 + 7 对重型扭杆悬挂',
+      ],
+    },
+    cameraPresets: {
+      armory_showcase: { pos: [760, 290, 980], target: [45, -14, 0] },
+      iso: { pos: [680, 340, 1040], target: [55, -10, 0] },
+      right: { pos: [60, 24, 1340], target: [60, -8, 0] },
+      left: { pos: [60, 24, -1340], target: [60, -8, 0] },
+      top: { pos: [60, 1380, 160], target: [60, 0, 0] },
+      cutaway_focus: { pos: [-110, 68, 720], target: [-95, 4, 0] },
+      firing_view: { pos: [140, 120, 780], target: [40, 38, 0] },
+    },
+    workbenchMeta: {
+      badge: 'US ARMY M1A2 SEP V3 · AGT1500 TURBINE',
+      title: '美国 M1A2 SEP v3 艾布拉姆斯 1:1 3D 剖视与燃气轮机/隔爆尾舱演示',
+      subtitle:
+        '4 大总成 · 26 核心节点 · 120mm M256 滑膛炮、液压隔爆门尾舱弹架与 AGT1500 燃气轮机',
+      cutawayLabel: '燃气轮机与隔爆尾舱特写',
+      cutawayTitle:
+        '切换至合拢透视状态并聚焦 AGT1500 燃气轮机、液压防爆隔离门、36 发隔爆弹药尾舱与 M256 炮尾特写',
+      cutawayFocusPartId: 'm1a2_agt1500_turbine',
+      searchPlaceholder:
+        '搜索零件名 / 编号 (如 燃气轮机, 防爆门, 尾舱, 120mm, 复合装甲)...',
+      muzzlePos: [581, 44, 0],
+      chamberGlowPos: [54, 44, 0],
+      scaleProfile: 'main_battle_tank',
+      gridY: -121.0,
+      firingMilestoneLabel: '防爆门滑开装填',
+    },
+  },
+  {
+    id: 'leopard2a7',
+    orderIndex: 26,
+    shortLabel: 'Leopard 2A7V',
+    caliberProfile: '120mm_apfsds',
+    atlasHeadingCn: 'KMW 豹 2A7V 主战坦克 2K 5-Ch Packed ORM 贴图图集',
+    catalog: {
+      id: 'leopard2a7',
+      bayCode: 'BAY-26',
+      modelCode: 'KMW LEOPARD 2A7V',
+      nameCn: '德国 KMW 豹 2A7V 主战坦克',
+      subtitleEn: 'KMW Leopard 2A7V Main Battle Tank (120mm Rh-120 L/55A1)',
+      originCountryCn: '德国',
+      weaponTypeCn: '主战坦克',
+      category: 'armor',
+      categoryCn: '重装战车',
+      caliber: '120×570mm NATO (DM63A1 APFSDS)',
+      actionMechanism: '120mm Rh-120 L/55A1 高压滑膛炮 · 立楔炮闩 · 隔爆尾舱装填',
+      specs1To1: {
+        overallLengthMm: '10,970 mm (含6.6m炮管) / 7,700 mm (车体)',
+        barrelSpec: '6,600 mm (120mm Rh-120 L/55A1 镀铬高压滑膛)',
+        emptyWeightKg: '66,500 kg (战斗全重)',
+        muzzleVelocityMs: '1,750 m/s (DM63A1 钨芯 APFSDS)',
+        effectiveRangeM: '4,000 m',
+        rateOfFire: '12–15 发/分 (人工尾舱防爆门爆发装填)',
+      },
+      assembliesCount: 4,
+      partsCount: 26,
+      firingStagesCount: 7,
+      available: true,
+      statusLabel: '重装展厅 · 1:1 可拆解',
+      description:
+        '德国克劳斯-玛菲·韦格曼（KMW）与莱茵金属联袂锻造的西方陆战之王：1:1 真实工程尺度（全长 10.97 m，搭载长达 6.60 m 的 Rh-120 L/55A1 超高压滑膛炮）完美还原标志性楔形箭簇附加装甲模块、PERI R17A3 车长独立周视热像仪、MTU MB 873 Ka-501 47.6 升双涡轮 V12 柴油机与 RENK HSWL 354 15 分钟野战快换整体动力包。开启剖视直观对比 15 发隔爆尾舱与 27 发车体前备弹架及 340 mm 精密同轴驻退复进循环！',
+      highlights: [
+        '6,600 mm 莱茵金属 Rh-120 L/55A1 镀铬高压滑膛炮（670 MPa · 1,750 m/s DM63A1）',
+        'MTU MB 873 Ka-501 1,500 hp V12 双涡轮柴油机 + RENK HSWL 354 15 分钟快换动力包',
+        '标志性空心楔形箭簇炮塔附加装甲（Arrowhead Wedges）与全车北约三色迷彩涂装',
+        '15 发隔爆尾舱防爆滑门 + 27 发前车体备弹架 + PERI R17A3 / EMES-15 猎歼观瞄',
+      ],
+    },
+    cameraPresets: {
+      armory_showcase: { pos: [840, 310, 1080], target: [95, -6, 0] },
+      iso: { pos: [760, 360, 1140], target: [100, -4, 0] },
+      right: { pos: [110, 32, 1480], target: [110, -4, 0] },
+      left: { pos: [110, 32, -1480], target: [110, -4, 0] },
+      top: { pos: [110, 1520, 170], target: [110, 0, 0] },
+      cutaway_focus: { pos: [-165, 84, 640], target: [-190, 8, 0] },
+      firing_view: { pos: [165, 138, 760], target: [45, 72, 0] },
+    },
+    workbenchMeta: {
+      badge: 'KMW LEOPARD 2A7V · RH-120 L/55A1',
+      title: '德国 KMW 豹 2A7V 主战坦克 1:1 3D 剖视与 MTU 动力包/L55 滑膛炮演示',
+      subtitle:
+        '4 大总成 · 26 核心节点 · 6.6m L/55A1 高压滑膛炮、楔形箭簇装甲与 MTU V12 快换动力包',
+      cutawayLabel: 'MTU V12 动力包与尾舱特写',
+      cutawayTitle:
+        '切换至合拢透视状态并聚焦 MTU MB 873 V12 双涡轮柴油机、RENK HSWL 354 传动箱、隔爆尾舱与 L/55A1 炮尾特写',
+      cutawayFocusPartId: 'leo_mtu_v12',
+      searchPlaceholder:
+        '搜索零件名 / 编号 (如 MTU, L55, 箭簇装甲, 防爆门, RENK)...',
+      muzzlePos: [712, 74, 0],
+      chamberGlowPos: [40, 74, 0],
+      scaleProfile: 'main_battle_tank',
+      gridY: -121.0,
+      firingMilestoneLabel: '尾舱整装推弹',
+    },
+  },
+  {
+    id: 'tiger1',
+    orderIndex: 27,
+    shortLabel: 'Tiger I (131)',
+    caliberProfile: '88mm_pzgr39',
+    atlasHeadingCn: '虎式 131 重型坦克 2K 5-Ch Packed ORM 贴图图集',
+    catalog: {
+      id: 'tiger1',
+      bayCode: 'BAY-27',
+      modelCode: 'PZ.KPFW. VI TIGER I (131)',
+      nameCn: '德国 虎式 I Ausf. E（131 号）重型坦克',
+      subtitleEn: 'Pz.Kpfw. VI Ausf. E "Tiger 131" Heavy Tank (88mm KwK 36 L/56)',
+      originCountryCn: '德国',
+      weaponTypeCn: '重型坦克',
+      category: 'armor',
+      categoryCn: '重装战车',
+      caliber: '88×571mmR (PzGr. 39 APCBC)',
+      actionMechanism: '88mm KwK 36 L/56 线膛炮 · 克虏伯半自动水平楔式炮闩',
+      specs1To1: {
+        overallLengthMm: '8,450 mm (含88mm炮管) / 6,316 mm (车体)',
+        barrelSpec: '4,930 mm (88mm KwK 36 L/56 · 32右旋膛线)',
+        emptyWeightKg: '57,000 kg (战斗全重)',
+        muzzleVelocityMs: '773 m/s (PzGr. 39 APCBC)',
+        effectiveRangeM: '2,000 m (反装甲直瞄)',
+        rateOfFire: '6–8 发/分 (半自动水平楔式炮闩)',
+      },
+      assembliesCount: 4,
+      partsCount: 26,
+      firingStagesCount: 7,
+      available: true,
+      statusLabel: '重装展厅 · 1:1 可拆解',
+      description:
+        '二战装甲史最具传奇色彩的钢铁巨兽——博温顿博物馆全球唯一可运转原装虎式「131 号」重型坦克：1:1 工程精度（全长 8.45 m、重 57 吨）完整复刻 100 mm 垂直轧制均质钢箱形车体、马蹄形厚壁炮塔、标志性 48 轮交错重叠负重轮（Schachtellaufwerk）、迈巴赫 HL230 P45 23 升 V12 汽油机经贯穿战斗室底板主传动轴驱动前置奥尔瓦（Olvar）8 速半自动变速箱，以及带双室膛口制退器的 88 mm KwK 36 L/56 传奇克虏伯水平楔式炮闩主炮！',
+      highlights: [
+        '88mm KwK 36 L/56 线膛炮 + 双室膛口制退器 + 克虏伯半自动水平滑楔炮闩与 290mm 后坐',
+        '标志性 48 轮交错负重轮（Schachtellaufwerk）+ 725 mm 宽 Kgs 63 战斗履带 + 16 根扭杆',
+        '迈巴赫 HL230 P45 700 hp V12 汽油机 → 贯穿炮塔吊篮主传动轴 → 前置 Olvar 8 速变速箱',
+        '1943 暗黄迷彩（RAL 7028 Dunkelgelb）+ 象牙白战斗室涂装（Elfenbein）+ TZF 9b 光学瞄准镜',
+      ],
+    },
+    cameraPresets: {
+      armory_showcase: { pos: [700, 290, 900], target: [60, 14, 0] },
+      iso: { pos: [640, 340, 960], target: [65, 18, 0] },
+      right: { pos: [65, 36, 1220], target: [65, 18, 0] },
+      left: { pos: [65, 36, -1220], target: [65, 18, 0] },
+      top: { pos: [65, 1340, 150], target: [65, 0, 0] },
+      cutaway_focus: { pos: [-110, 96, 620], target: [-110, 16, 0] },
+      firing_view: { pos: [145, 160, 680], target: [45, 98, 0] },
+    },
+    workbenchMeta: {
+      badge: 'PZ.KPFW. VI TIGER 131 · 88MM KWK 36 L/56',
+      title: '德国 虎式 131 重型坦克 1:1 3D 剖视与 88mm 水平楔闩/交错轮演示',
+      subtitle:
+        '4 大总成 · 26 核心节点 · 88mm KwK 36 线膛炮、48 交错负重轮、迈巴赫 HL230 V12 与前置变速箱',
+      cutawayLabel: '迈巴赫 V12 与 88mm 炮尾特写',
+      cutawayTitle:
+        '切换至合拢透视状态并聚焦迈巴赫 HL230 V12 汽油机、贯穿主传动轴、88mm 克虏伯水平滑楔炮闩与侧舷弹药架特写',
+      cutawayFocusPartId: 'tiger_maybach_v12',
+      searchPlaceholder:
+        '搜索零件名 / 编号 (如 88mm, 迈巴赫, 交错轮, 炮闩, 炮塔吊篮)...',
+      muzzlePos: [529, 102, 0],
+      chamberGlowPos: [60, 102, 0],
+      scaleProfile: 'main_battle_tank',
+      gridY: -121.0,
+      firingMilestoneLabel: '水平楔闩退壳',
+    },
+  },
 ];
 
 const MANIFEST_MAP: Record<WeaponId, WeaponManifest> = Object.fromEntries(
@@ -1623,6 +1891,14 @@ export function matchesArmoryCategory(
     item.id === 'benellim4' ||
     item.category === 'shotgun' ||
     typeTag.includes('霰弹');
+  const isArmor =
+    item.category === 'armor' ||
+    item.id === 'ztz99a' ||
+    item.id === 'm1a2' ||
+    item.id === 'leopard2a7' ||
+    item.id === 'tiger1' ||
+    typeTag.includes('坦克') ||
+    typeTag.includes('重装');
 
   if (filter === 'pistol') return isPistol;
   if (filter === 'lmg') return isLmg;
@@ -1630,9 +1906,16 @@ export function matchesArmoryCategory(
   if (filter === 'sniper') return isSniper;
   if (filter === 'shotgun') return isShotgun;
   if (filter === 'archery') return isArchery;
+  if (filter === 'armor') return isArmor;
   if (filter === 'assault') {
     return (
-      !isPistol && !isLmg && !isSmg && !isSniper && !isShotgun && !isArchery
+      !isPistol &&
+      !isLmg &&
+      !isSmg &&
+      !isSniper &&
+      !isShotgun &&
+      !isArchery &&
+      !isArmor
     );
   }
   return true;

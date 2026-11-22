@@ -32,7 +32,13 @@ export type ExternalProjectileInput =
 export type DragModelId = 'G1' | 'G7' | 'ARROW';
 
 export type ProjectileCategory =
-  'pistol' | 'pdw' | 'shotgun' | 'rifle' | 'sniper' | 'archery';
+  | 'pistol'
+  | 'pdw'
+  | 'shotgun'
+  | 'rifle'
+  | 'sniper'
+  | 'archery'
+  | 'armor';
 
 export type FlightRegime = 'supersonic' | 'transonic' | 'subsonic';
 
@@ -69,7 +75,7 @@ export const DEFAULT_DOPE_RANGES_M = [
   50, 100, 200, 300, 500, 800, 1000,
 ] as const;
 
-/** Canonical ordered list of all 17 external-ballistics projectile profiles. */
+/** Canonical ordered list of all 20 external-ballistics projectile profiles (15 small arms + 3 MBT main cannons + 2 archery). */
 export const EXTERNAL_PROJECTILE_ORDER: readonly ExternalProjectileId[] = [
   '9mm_para',
   '45_acp',
@@ -86,6 +92,9 @@ export const EXTERNAL_PROJECTILE_ORDER: readonly ExternalProjectileId[] = [
   '30_06',
   '338_lapua',
   '50_bmg',
+  '88mm_pzgr39',
+  '120mm_apfsds',
+  '125mm_apfsds',
   'arrow_400gr',
   'bolt_400gr',
 ];
@@ -573,6 +582,81 @@ export const EXTERNAL_PROJECTILE_SPECS: Readonly<
     noteEn:
       '300 lb HexCoil cams propel a 400 gr bolt to 500 FPS (152.4 m/s · 301 J), cutting 100 m gravitational drop to less than half of a compound bow.',
   }),
+
+  '88mm_pzgr39': defineProjectile({
+    id: '88mm_pzgr39',
+    code: '88mm PzGr.39',
+    nameZh: '88×571mmR 虎式主炮穿甲弹',
+    nameEn: '88×571mmR KwK 36 PzGr. 39',
+    loadLabelZh: '10.2 kg 被帽风帽穿甲高爆弹 (APCBC-HE)',
+    loadLabelEn: '10.2 kg Armor-Piercing Capped Ballistic-Cap (APCBC-HE)',
+    category: 'armor',
+    dragModel: 'G1',
+    bc: 1.78,
+    muzzleVelocityMps: 773,
+    massGrains: 157410,
+    massGrams: 10200,
+    caliberMm: 88.0,
+    pelletCount: 1,
+    defaultSightHeightCm: 14.0,
+    recommendedZeroM: 300,
+    representativeWeaponIds: ['tiger1'],
+    primaryWeaponId: 'tiger1',
+    noteZh:
+      '虎式 131 传奇 88mm KwK 36 L/56 线膛炮 10.2 kg 重型穿甲弹，3.05 MJ 膛口动能与 1.78 高断面密度在 2,000 m 仍保持极强存速与装甲贯穿力。',
+    noteEn:
+      'Tiger 131’s legendary 88mm KwK 36 L/56 10.2 kg APCBC shell delivers 3.05 MJ muzzle energy and high sectional density for formidable 2,000 m armor penetration.',
+  }),
+
+  '120mm_apfsds': defineProjectile({
+    id: '120mm_apfsds',
+    code: '120mm APFSDS',
+    nameZh: '120×570mm 北约尾翼脱壳穿甲弹',
+    nameEn: '120×570mm NATO APFSDS-T',
+    category: 'armor',
+    loadLabelZh: '4.6 kg M829A4 / DM63A1 次口径长杆穿甲弹芯',
+    loadLabelEn: '4.6 kg M829A4 / DM63A1 Sub-Caliber Long-Rod Penetrator',
+    dragModel: 'G7',
+    bc: 5.8,
+    muzzleVelocityMps: 1710,
+    massGrains: 70989,
+    massGrams: 4600,
+    caliberMm: 25.0,
+    pelletCount: 1,
+    defaultSightHeightCm: 16.0,
+    recommendedZeroM: 300,
+    representativeWeaponIds: ['m1a2', 'leopard2a7'],
+    primaryWeaponId: 'leopard2a7',
+    noteZh:
+      'M1A2 与豹 2A7V 共用的 120mm 滑膛炮 5 马赫长杆穿甲弹（6.73 MJ），极高 G7 弹道系数带来近乎激光般的平直直射弹道，1,000 m 仅掉速约 65 m/s！',
+    noteEn:
+      'Mach 5.0 120mm smoothbore long-rod dart (6.73 MJ) shared by M1A2 & Leopard 2A7V — extreme sectional density yields a laser-flat trajectory losing only ~65 m/s per km.',
+  }),
+
+  '125mm_apfsds': defineProjectile({
+    id: '125mm_apfsds',
+    code: '125mm APFSDS',
+    nameZh: '125mm DTC10-125 钨合金穿甲弹',
+    nameEn: '125mm DTC10-125 Tungsten APFSDS',
+    category: 'armor',
+    loadLabelZh: '4.8 kg 大长径比钨合金尾翼稳定长杆弹芯',
+    loadLabelEn: '4.8 kg High-L/D Tungsten Fin-Stabilized Long-Rod Dart',
+    dragModel: 'G7',
+    bc: 6.2,
+    muzzleVelocityMps: 1780,
+    massGrains: 74075,
+    massGrams: 4800,
+    caliberMm: 26.0,
+    pelletCount: 1,
+    defaultSightHeightCm: 16.0,
+    recommendedZeroM: 300,
+    representativeWeaponIds: ['ztz99a'],
+    primaryWeaponId: 'ztz99a',
+    noteZh:
+      'ZTZ-99A 125mm ZPT-98 L/50 滑膛炮 5.2 马赫超高速长杆钨芯弹（7.60 MJ），1,000 m 飞行仅需 0.57 秒、横风偏流近乎可忽略不计！',
+    noteEn:
+      'ZTZ-99A’s 125mm ZPT-98 L/50 Mach 5.2 tungsten long-rod dart (7.60 MJ) covers 1,000 m in just 0.57 s with near-zero crosswind drift.',
+  }),
 };
 
 export function normalizeExternalProjectileId(
@@ -587,6 +671,15 @@ export function normalizeExternalProjectileId(
   if (input === '5.45x39' || input === '545x39') return '545_m74';
   if (input === '7.62x51' || input === '308_win' || input === '762x51') {
     return '762_nato';
+  }
+  if (input === '88mm' || input === 'pzgr39' || input === '88x571') {
+    return '88mm_pzgr39';
+  }
+  if (input === '120mm' || input === 'm829a4' || input === 'dm63a1') {
+    return '120mm_apfsds';
+  }
+  if (input === '125mm' || input === 'dtc10' || input === 'dtc10_125') {
+    return '125mm_apfsds';
   }
   return input in EXTERNAL_PROJECTILE_SPECS
     ? (input as ExternalProjectileId)
@@ -656,8 +749,8 @@ export function computeAtmosphere(
 //    Pre-baked into 1,025-entry C¹ monotone-cubic Hermite LUTs for O(1) Zero-GC RK4
 // ============================================================================
 
-const LUT_MAX_MACH = 4.0;
-const LUT_STEPS = 1024;
+const LUT_MAX_MACH = 6.0;
+const LUT_STEPS = 1536;
 const LUT_INV_DM = LUT_STEPS / LUT_MAX_MACH;
 
 /** BRL / McCoy Standard G1 Projectile (2-caliber blunt ogive, flat base) */
@@ -695,6 +788,8 @@ const G1_KNOTS: readonly [mach: number, cd: number][] = [
   [3.0, 0.4616],
   [3.5, 0.4282],
   [4.0, 0.4025],
+  [5.0, 0.368],
+  [6.0, 0.346],
 ];
 
 /** BRL / McCoy / Litz Standard G7 Projectile (10-caliber secant/tangent ogive, 7.5° boat-tail) */
@@ -730,6 +825,8 @@ const G7_KNOTS: readonly [mach: number, cd: number][] = [
   [3.0, 0.233],
   [3.5, 0.212],
   [4.0, 0.1965],
+  [5.0, 0.1755],
+  [6.0, 0.162],
 ];
 
 /** Fin-stabilized carbon shaft + 3 helical vanes low-Mach boundary-layer drag curve */
@@ -745,6 +842,7 @@ const ARROW_KNOTS: readonly [mach: number, cd: number][] = [
   [1.1, 0.46],
   [1.5, 0.42],
   [4.0, 0.32],
+  [6.0, 0.28],
 ];
 
 /**
@@ -1792,5 +1890,19 @@ export const BALLISTICS_RANGE_PRESETS: readonly BallisticsPresetSpec[] = [
     zeroRangeM: 100,
     sightHeightCm: 5.5,
     crosswindMps: 4.5,
+  },
+  {
+    id: 'heavy_armor_cannons',
+    labelZh: '重装坦克主炮: 125mm APFSDS vs 120mm vs 88mm 虎式 vs .50 BMG',
+    labelEn: 'Heavy Armor Cannons: 125mm APFSDS vs 120mm vs 88mm Tiger vs .50 BMG',
+    subtitleZh:
+      '1,000m 跨时代主炮对决：对比 5 马赫长杆脱壳穿甲弹激光弹道、二战 88mm 被帽穿甲弹与反器材重狙',
+    subtitleEn:
+      '1,000m cross-era ordnance duel contrasting Mach 5 APFSDS long-rod darts against WWII 88mm APCBC and .50 BMG',
+    projectiles: ['125mm_apfsds', '120mm_apfsds', '88mm_pzgr39', '50_bmg'],
+    maxRangeM: 1000,
+    zeroRangeM: 300,
+    sightHeightCm: 14.0,
+    crosswindMps: 5.0,
   },
 ];

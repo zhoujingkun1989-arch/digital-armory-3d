@@ -27,7 +27,10 @@ import {
 } from '../engine/canvas/graphicsQuality';
 import { playbackClock } from '../engine/clock/playbackClock';
 import { caliperStore } from '../engine/caliper/caliperStore';
-import { isCaliberProfile } from '../engine/cartridges/cartridgeSpecs';
+import {
+  isCaliberProfile,
+  isTankOrdnanceProfile,
+} from '../engine/cartridges/cartridgeSpecs';
 import { fieldStripStore } from '../engine/fieldstrip/fieldStripStore';
 import { interactiveActionStore } from '../engine/interaction/InteractiveActionController';
 import { malfunctionStore } from '../engine/malfunctions/malfunctionStore';
@@ -729,9 +732,10 @@ export const useAppStore = create<AppState>((set, get) => ({
     playbackClock.setFireProgress(0, true);
     const rawCaliber =
       caliber ?? getWeaponManifest(s.activeWeaponId).caliberProfile;
-    const nextCaliber: CaliberProfile = isCaliberProfile(rawCaliber)
-      ? rawCaliber
-      : '556_nato';
+    const nextCaliber: CaliberProfile =
+      isCaliberProfile(rawCaliber) || isTankOrdnanceProfile(rawCaliber)
+        ? rawCaliber
+        : '556_nato';
     set({
       screen: 'cartridges',
       mode: 'explode',
@@ -765,9 +769,10 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   selectLabCartridge: (caliber, focusCamera = true) =>
     set((s) => ({
-      activeCartridgeCaliber: isCaliberProfile(caliber)
-        ? caliber
-        : '556_nato',
+      activeCartridgeCaliber:
+        isCaliberProfile(caliber) || isTankOrdnanceProfile(caliber)
+          ? caliber
+          : '556_nato',
       cartridgeLineupOverview: focusCamera ? false : s.cartridgeLineupOverview,
       cartridgeCameraSeq: s.cartridgeCameraSeq + 1,
     })),
@@ -1313,7 +1318,9 @@ export const useAppStore = create<AppState>((set, get) => ({
       xrayShells: sectionCut ? false : s.xrayShells,
     })),
   setSectionCutOffset: (offset) => {
-    const next = clampSectionCutOffset(offset);
+    const scaleProfile = getWeaponManifest(get().activeWeaponId).workbenchMeta
+      .scaleProfile;
+    const next = clampSectionCutOffset(offset, scaleProfile);
     if (get().sectionCutOffset !== next) {
       set({ sectionCutOffset: next });
     }
@@ -1590,8 +1597,15 @@ useAppStore.subscribe((state, prevState) => {
   }
   if (
     state.sectionCutOffset !== prevState.sectionCutOffset ||
-    state.sectionCutFlip !== prevState.sectionCutFlip
+    state.sectionCutFlip !== prevState.sectionCutFlip ||
+    state.activeWeaponId !== prevState.activeWeaponId
   ) {
-    syncLiveSectionCutPlane(state.sectionCutOffset, state.sectionCutFlip);
+    const scaleProfile = getWeaponManifest(state.activeWeaponId).workbenchMeta
+      .scaleProfile;
+    syncLiveSectionCutPlane(
+      state.sectionCutOffset,
+      state.sectionCutFlip,
+      scaleProfile
+    );
   }
 });

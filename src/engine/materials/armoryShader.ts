@@ -6,9 +6,11 @@ import type { MaterialKind } from '../../weapons/types';
  * ------------------------------------------------------------------
  * `onBeforeCompile` extension for `MeshPhysicalMaterial` adding:
  *  1. GPU constant-wire-diameter spring compression (`aSpringParam` + `uSpringScale`)
- *  2. Object-space triplanar detail normal blending (eliminates stretched planar UVs on CSG cuts)
+ *  2. Object-space triplanar detail normal & roughness blending via RNM (seamless 512x512 RHA/CARC maps)
  *  3. CNC curvature edge silvering & cavity CLP gun-oil / carbon grime (`aCurvature` + `fwidth`)
  *  4. 60Hz Zero-GC barrel thermal blackbody glow (`uThermalHeat`, 300K -> 920K) & carbon fouling (`uCarbonFouling`)
+ *  5. Baked-AO Direct Light Micro-Shadowing, Multi-Bounce Diffuse AO & Lagarde Specular Occlusion
+ *  6. Broadband Optical AR Multi-Coating Thin-Film Fresnel Iridescence on armored sights & rifle scopes
  *
  * Every optional feature is gated by a `#define` that is also folded into a deterministic
  * `customProgramCacheKey`, so geometries lacking `aSpringParam` / `aCurvature` never read
@@ -130,14 +132,14 @@ export function resolveThermalForWeapon(weaponId: string): {
 // ------------------------------------------------------------------
 
 export const THERMAL_PART_ID_PATTERN =
-  /barrel|gas_block|gas_tube|gas_cylinder|gas_regulator|argo_plug|piston|suppressor|baffle|muzzle|flash_hider|compensator/;
+  /barrel|main_gun|gas_block|gas_tube|gas_cylinder|gas_regulator|argo_plug|piston|suppressor|baffle|muzzle|flash_hider|compensator/;
 export const FOULING_PART_ID_PATTERN =
   /bolt|carrier|breech|chamber|python_cylinder|op_rod|extractor|firing_pin|striker|slider|toggle/;
 const SPRING_ID_EXCLUSION_PATTERN = /spring|hammer|striker|trigger/;
 const ARCHERY_ID_EXCLUSION_PATTERN =
   /^(?:lift33|r500)_|limb|bowstring|yoke_cable|power_cable|broadhead|quiver/;
 /** Parts whose heat follows the chamber -> throat -> muzzle longitudinal profile. */
-const BARREL_PROFILE_PATTERN = /barrel/;
+const BARREL_PROFILE_PATTERN = /barrel|main_gun/;
 
 export interface ArmoryPartLike {
   id: string;
@@ -286,6 +288,7 @@ export interface ArmoryShaderUniforms {
   uThermalHeat: { value: number };
   uCarbonFouling: { value: number };
   uWearLevel: { value: number };
+  uSurfaceScale: { value: number };
   uThermalSpan: { value: THREE.Vector2 };
   uThermalProfileMix: { value: number };
   uEdgeWear: { value: number };
@@ -296,6 +299,9 @@ export interface ArmoryShaderUniforms {
   uDetailGrainMode: { value: number };
   uFunctionalTint: { value: THREE.Color };
   uFunctionalTintMix: { value: number };
+  uArmorDetailNormal: { value: THREE.Texture | null };
+  uArmorDetailRoughness: { value: THREE.Texture | null };
+  uHasArmorDetail: { value: number };
 }
 
 /** Module-shared constant uniforms (identical across every armory material). */
@@ -383,7 +389,8 @@ export const ARMORY_SURFACE_PROFILES: Record<MaterialKind, ArmorySurfaceProfile>
 
 export function syncArmoryUniformProfile(
   uniforms: ArmoryShaderUniforms,
-  kind: MaterialKind
+  kind: MaterialKind,
+  surfaceScale?: number
 ): ArmoryShaderUniforms {
   const prof = ARMORY_SURFACE_PROFILES[kind];
   uniforms.uEdgeWear.value = prof.edgeWear;
@@ -392,11 +399,15 @@ export function syncArmoryUniformProfile(
   uniforms.uTriplanarScale.value = prof.triplanarScale;
   uniforms.uTriplanarDetail.value = prof.triplanarDetail;
   uniforms.uDetailGrainMode.value = prof.detailGrainMode;
+  if (surfaceScale !== undefined) {
+    uniforms.uSurfaceScale.value = Math.max(1, surfaceScale);
+  }
   return uniforms;
 }
 
 export function createArmoryShaderUniforms(
-  kind: MaterialKind = 'nitride_steel'
+  kind: MaterialKind = 'nitride_steel',
+  surfaceScale = 1
 ): ArmoryShaderUniforms {
   const prof = ARMORY_SURFACE_PROFILES[kind];
   return {
@@ -404,6 +415,7 @@ export function createArmoryShaderUniforms(
     uThermalHeat: { value: 0 },
     uCarbonFouling: { value: 0 },
     uWearLevel: { value: globalWearLevel },
+    uSurfaceScale: { value: Math.max(1, surfaceScale) },
     uThermalSpan: { value: new THREE.Vector2(-1, 1) },
     uThermalProfileMix: { value: 0 },
     uEdgeWear: { value: prof.edgeWear },
@@ -414,6 +426,9 @@ export function createArmoryShaderUniforms(
     uDetailGrainMode: { value: prof.detailGrainMode },
     uFunctionalTint: { value: new THREE.Color('#ffffff') },
     uFunctionalTintMix: { value: 0 },
+    uArmorDetailNormal: { value: null },
+    uArmorDetailRoughness: { value: null },
+    uHasArmorDetail: { value: 0 },
   };
 }
 
@@ -430,7 +445,7 @@ export interface ArmoryShaderFeatures {
   triplanarMap?: boolean;
 }
 
-export const ARMORY_SHADER_VERSION = 6;
+export const ARMORY_SHADER_VERSION = 8;
 
 export function getArmoryProgramCacheKey(f: ArmoryShaderFeatures): string {
   return `armory-v${ARMORY_SHADER_VERSION}|s${f.spring ? 1 : 0}|c${f.curvature ? 1 : 0}|t${f.thermal ? 1 : 0}|f${f.fouling ? 1 : 0}|tm${f.triplanarMap ? 1 : 0}`;
@@ -519,6 +534,7 @@ const FRAGMENT_PARS = /* glsl */ `
 uniform float uThermalHeat;
 uniform float uCarbonFouling;
 uniform float uWearLevel;
+uniform float uSurfaceScale;
 uniform vec2 uThermalSpan;
 uniform float uThermalProfileMix;
 uniform float uEdgeWear;
@@ -532,6 +548,9 @@ uniform float uFunctionalTintMix;
 uniform vec3 uHeatCherry;
 uniform vec3 uHeatOrange;
 uniform vec3 uHeatAmber;
+uniform sampler2D uArmorDetailNormal;
+uniform sampler2D uArmorDetailRoughness;
+uniform float uHasArmorDetail;
 varying float vArmoryCurvature;
 varying vec3 vArmoryObjPos;
 varying vec3 vArmoryObjNormal;
@@ -596,6 +615,21 @@ vec2 armoryMicroSlope2D( vec2 uv, float mode ) {
   return vec2( s1x * 0.72 + s2x * 0.48, s1y * 0.72 + s2y * 0.48 );
 }
 
+// Heavy-armor rolled homogeneous steel (RHA) mill-scale pitting + coarse matte CARC silica grit
+// Evaluated in decimeter space (vArmoryObjPos / uSurfaceScale, 1 unit = 10 cm on 1:1 MBTs)
+vec2 armoryArmorMicroSlope2D( vec2 p ) {
+  float m1x = armoryValueNoise2( p * 0.72 ) - 0.5;
+  float m1y = armoryValueNoise2( p * 0.72 + vec2( 4.13, 1.87 ) ) - 0.5;
+  float m2x = armoryValueNoise2( p * 2.65 + vec2( 1.91, 3.27 ) ) - 0.5;
+  float m2y = armoryValueNoise2( p * 2.65 + vec2( 5.37, 2.61 ) ) - 0.5;
+  float m3x = armoryValueNoise2( p * 8.80 + vec2( 2.71, 6.13 ) ) - 0.5;
+  float m3y = armoryValueNoise2( p * 8.80 + vec2( 7.43, 3.89 ) ) - 0.5;
+  return vec2(
+    m1x * 0.36 + m2x * 0.48 + m3x * 0.54,
+    m1y * 0.36 + m2y * 0.48 + m3y * 0.54
+  );
+}
+
 // Normalised position along the part's longitudinal (+X muzzle) span
 float armoryAxialT() {
   return clamp( ( vArmoryObjPos.x - uThermalSpan.x ) / max( uThermalSpan.y - uThermalSpan.x, 1e-3 ), 0.0, 1.0 );
@@ -628,24 +662,91 @@ vec3 armorySanitizeHdrRgb( vec3 c ) {
   );
   return clamp( safe, vec3( 0.0 ), vec3( 64.0 ) );
 }
+
+// Barre-Brisebois & Hill (2012) tangent-space Reoriented Normal Mapping (RNM)
+vec3 armoryBlendRNM( vec3 n1, vec3 n2 ) {
+  vec3 t = n1 + vec3( 0.0, 0.0, 1.0 );
+  vec3 u = n2 * vec3( -1.0, -1.0, 1.0 );
+  float denom = max( t.z, 1e-4 );
+  return armorySafeNormalize( t * ( dot( t, u ) / denom ) - u, vec3( 0.0, 0.0, 1.0 ) );
+}
+
+// Exact 3D SO(3) Reoriented Normal Mapping carrying unit a -> unit b applied to unit v
+vec3 armoryReorientNormal3D( vec3 a, vec3 b, vec3 v ) {
+  vec3 t = a + b;
+  float denom = dot( t, t );
+  if ( denom < 1e-5 ) return b;
+  vec3 vRefl = v - 2.0 * dot( a, v ) * a;
+  return armorySafeNormalize( vRefl - ( 2.0 * dot( t, vRefl ) / denom ) * t, b );
+}
+
+// Jimenez et al. (2016) colored multi-bounce diffuse AO preserves warm saturation in tight crevices
+vec3 armoryMultiBounceAO( float visibility, vec3 albedo ) {
+  vec3 a = 2.0404 * albedo - 0.3324;
+  vec3 b = -4.7951 * albedo + 0.6417;
+  vec3 c = 2.7552 * albedo + 0.6903;
+  vec3 mb = ( ( visibility * a + b ) * visibility + c ) * visibility;
+  return clamp( max( vec3( visibility ), mb ), vec3( 0.0 ), vec3( 1.0 ) );
+}
+
+// Broadband multi-coated optical anti-reflection (AR) thin-film interference spectrum:
+// obsidian normal incidence -> emerald / sapphire / blue-violet / ruby-magenta grazing reflection
+vec3 armoryOpticalArTint( vec3 baseRgb, float fresnel1 ) {
+  float maxC = max( baseRgb.r, max( baseRgb.g, baseRgb.b ) );
+  float invMax = 1.0 / max( maxC, 1e-4 );
+  float isRuby = smoothstep( 0.05, 0.45, ( baseRgb.r - max( baseRgb.g, baseRgb.b ) ) * invMax );
+  float isSapphire = ( 1.0 - isRuby ) * smoothstep( 0.05, 0.40, ( baseRgb.b - baseRgb.g ) * invMax );
+
+  // Emerald broadband AR (CITV / EMES / GPS / AWM / VSS / AUG / G11): emerald -> cobalt-sapphire -> violet-magenta
+  vec3 emMid = mix( vec3( 0.03, 0.30, 0.24 ), vec3( 0.08, 0.24, 0.48 ), smoothstep( 0.22, 0.64, fresnel1 ) );
+  vec3 emTint = mix( emMid, vec3( 0.34, 0.11, 0.46 ), smoothstep( 0.62, 0.96, fresnel1 ) );
+
+  // Sapphire AR (Tiger 131 TZF 9b / M82A1): deep sapphire -> cyan-blue -> indigo-violet
+  vec3 sapMid = mix( vec3( 0.04, 0.18, 0.40 ), vec3( 0.07, 0.34, 0.50 ), smoothstep( 0.24, 0.64, fresnel1 ) );
+  vec3 sapTint = mix( sapMid, vec3( 0.28, 0.13, 0.52 ), smoothstep( 0.64, 0.96, fresnel1 ) );
+
+  // Ruby / IR laser window AR (ZTZ-99A JD-3 dazzler & LWR): deep ruby -> crimson-magenta -> rose-violet
+  vec3 rubMid = mix( vec3( 0.36, 0.03, 0.08 ), vec3( 0.52, 0.07, 0.28 ), smoothstep( 0.24, 0.66, fresnel1 ) );
+  vec3 rubTint = mix( rubMid, vec3( 0.46, 0.16, 0.42 ), smoothstep( 0.66, 0.96, fresnel1 ) );
+
+  return mix( mix( emTint, sapTint, isSapphire ), rubTint, isRuby );
+}
 `;
 
 const FRAGMENT_SURFACE = /* glsl */ `
 #ifdef ARMORY_SHADER
+float armoryOpticMask = 0.0;
+vec3 armoryOpticBaseRgb = vec3( 0.0 );
 {
+  // --- Optical AR multi-coated lens detector (tanks: CITV/EMES/GPS/JD-3/TZF 9b; rifles: AWM/VSS/M82A1/AUG/G11) ---
+  // Evaluated on pristine material channels before procedural patina/wear, matching low roughness (< 0.14),
+  // non-chrome metalness (< 0.72), dark-to-mid luminance & vivid emerald/sapphire/ruby chroma.
+  {
+    float optMax = max( diffuseColor.r, max( diffuseColor.g, diffuseColor.b ) );
+    float optMin = min( diffuseColor.r, min( diffuseColor.g, diffuseColor.b ) );
+    float optSat = ( optMax - optMin ) / max( optMax, 1e-4 );
+    float optSmooth = 1.0 - smoothstep( 0.085, 0.14, roughnessFactor );
+    float optNonChrome = 1.0 - smoothstep( 0.62, 0.74, metalnessFactor );
+    float optChroma =
+      smoothstep( 0.32, 0.62, optSat ) *
+      smoothstep( 0.0025, 0.009, optMax ) *
+      ( 1.0 - smoothstep( 0.28, 0.45, optMax ) );
+    float optNoTint = 1.0 - smoothstep( 0.02, 0.15, uFunctionalTintMix );
+    armoryOpticMask = clamp( optSmooth * optNonChrome * optChroma * optNoTint, 0.0, 1.0 );
+    armoryOpticBaseRgb = diffuseColor.rgb;
+  }
+
   // --- WP-05: Engineering functional role tint (zero shader recompilation) ---
   if ( uFunctionalTintMix > 0.0001 ) {
     diffuseColor.rgb = mix( diffuseColor.rgb, uFunctionalTint, clamp( uFunctionalTintMix, 0.0, 1.0 ) );
   }
 
   float armoryWear = clamp( uWearLevel, 0.0, 1.0 );
+  float armoryScale = max( uSurfaceScale, 1.0 );
+  bool armoryIsHeavyArmor = armoryScale > 2.0;
+  vec3 armoryScaledPos = vArmoryObjPos / armoryScale;
 
-  // --- Organic macro/micro CLP gun-oil & handling patina roughness breakup (all 480 parts) ---
-  float armoryOilMacro = armoryValueNoise( vArmoryObjPos * 0.62 + vec3( 1.7, 3.1, 0.9 ) );
-  float armoryOilMicro = armoryValueNoise( vArmoryObjPos * 2.85 + vec3( 4.3, 0.7, 2.5 ) );
-  float armoryPatina = ( armoryOilMacro * 0.65 + armoryOilMicro * 0.35 ) - 0.5;
-
-  // --- Crease-gated CNC edge burnishing & service wear (eliminates flat-triangle curvature smearing) ---
+  // --- Crease-gated CNC / armor bevel curvature detector ---
   float armoryCurvConvex = smoothstep( 0.64, 0.96, vArmoryCurvature );
   float armoryCurvConcave = smoothstep( 0.52, 0.95, -vArmoryCurvature );
   float armoryDeriv = 0.0;
@@ -657,51 +758,116 @@ const FRAGMENT_SURFACE = /* glsl */ `
 
   // Gate vertex curvature so large flat box/extrude faces NEVER smear grey diagonal triangles
   float armoryLocalizedConvex = armoryCurvConvex * clamp( armoryDeriv * 2.4 + armoryCurvGrad * 0.85, 0.0, 1.0 );
-  float armoryWearBreakup = smoothstep( 0.24, 0.82, armoryValueNoise( vArmoryObjPos * 3.6 ) * 0.65 + armoryValueNoise( vArmoryObjPos * 11.5 ) * 0.35 );
-  float armoryEdge = max( armoryLocalizedConvex, armoryDeriv * 0.42 ) * mix( 0.55, 1.15, armoryWearBreakup );
-
-  // Service wear scales edge exposure cleanly: Factory New (0.0) -> Field Oiled (0.35) -> Battle Worn (1.0)
-  float armoryWearGain = 0.08 + armoryWear * 0.92;
-  float armoryEdgeStrength = clamp( armoryEdge * uEdgeWear * armoryWearGain, 0.0, 1.0 );
-
-  // Fine directional holster / field handling micro-scratches (only noticeable on oiled/battle-worn metal)
-  float armoryScratch = 0.0;
-  if ( armoryWear > 0.12 && uEdgeMetal > 0.5 ) {
-    float sBandA = armoryValueNoise( vec3( vArmoryObjPos.x * 0.95, vArmoryObjPos.y * 19.0, vArmoryObjPos.z * 19.0 ) );
-    float sBandB = armoryValueNoise( vec3( vArmoryObjPos.x * 2.2 + vArmoryObjPos.y * 5.5, vArmoryObjPos.y * 14.0, vArmoryObjPos.z * 11.0 ) );
-    float sMask = smoothstep( 0.78, 0.93, sBandA ) * smoothstep( 0.62, 0.86, sBandB );
-    armoryScratch = sMask * smoothstep( 0.12, 1.0, armoryWear ) * 0.38;
-  }
-
-  float armoryMetalExpose = clamp( armoryEdgeStrength * 0.52 + armoryScratch, 0.0, 0.75 );
-  diffuseColor.rgb = mix( diffuseColor.rgb, uEdgeWearColor, armoryMetalExpose );
-  roughnessFactor *= mix( 1.0, 0.64, clamp( armoryEdgeStrength + armoryScratch * 1.2, 0.0, 1.0 ) );
-  metalnessFactor = mix( metalnessFactor, max( metalnessFactor, 0.94 ), clamp( armoryMetalExpose * 1.15, 0.0, 1.0 ) * uEdgeMetal );
-
-  // Apply organic CLP gun-oil micro-roughness variation & subtle handling burnishing
-  float armoryOilShift = armoryPatina * ( uEdgeMetal > 0.5 ? 0.14 : 0.10 );
-  float armoryHandPolish = ( uEdgeMetal < 0.5 ) ? ( -armoryWear * 0.09 * smoothstep( -0.1, 0.4, armoryPatina ) ) : 0.0;
-  roughnessFactor += armoryOilShift + armoryHandPolish;
-
-  // Concave recesses: localized darkened crevices with CLP gun-oil & ambient service grime
   float armoryCavity = armoryCurvConcave * clamp( armoryDeriv * 1.8 + armoryCurvGrad * 0.9 + 0.25, 0.0, 1.0 );
-  float armoryGrimeDark = mix( 0.84, 0.62, armoryWear );
-  diffuseColor.rgb *= mix( 1.0, armoryGrimeDark, armoryCavity );
-  roughnessFactor *= mix( 1.0, mix( 0.86, 1.08, armoryWear ), armoryCavity );
+
+  if ( armoryIsHeavyArmor ) {
+    // --- 1:1 Main Battle Tank heavy armor weathering: RHA patina, vertical rain streaks, dust & steel chipping ---
+    vec3 armorySurfN = armorySafeNormalize( vArmoryObjNormal, vec3( 0.0, 1.0, 0.0 ) );
+    float armoryMacro = armoryValueNoise( armoryScaledPos * 0.19 + vec3( 1.7, 3.1, 0.9 ) );
+    float armoryMid = armoryValueNoise( armoryScaledPos * 0.78 + vec3( 4.3, 0.7, 2.5 ) );
+    float armoryFine = armoryValueNoise( armoryScaledPos * 2.95 + vec3( 0.8, 5.2, 3.4 ) );
+    float armoryPatina = ( armoryMacro * 0.55 + armoryMid * 0.30 + armoryFine * 0.15 ) - 0.5;
+
+    // Distinguish matte painted CARC/Dunkelgelb armor (low metalness) from bare machined steel/chrome/brass
+    float armoryIsPainted = 1.0 - smoothstep( 0.20, 0.52, metalnessFactor );
+    // Preserve mirror-smooth optical lenses (low roughness + low metalness) from dust/grime frosting
+    float armoryIsOpticGlass = max(
+      ( 1.0 - smoothstep( 0.12, 0.24, roughnessFactor ) ) * ( 1.0 - smoothstep( 0.55, 0.82, metalnessFactor ) ),
+      armoryOpticMask
+    );
+    float armoryPaintMask = armoryIsPainted * ( 1.0 - armoryIsOpticGlass );
+
+    // Meter-scale tonal paint fade & grime modulation so giant armor plates never read as uniform cardboard
+    float armoryToneMod = armoryPatina * mix( 0.14, 0.26, armoryWear ) * armoryPaintMask;
+    diffuseColor.rgb *= 1.0 + armoryToneMod;
+
+    // Vertical gravity rain & diesel-oil streaks down sloped/vertical armor cheeks & side skirts
+    float armoryWallW = 1.0 - smoothstep( 0.50, 0.86, abs( armorySurfN.y ) );
+    float armoryStreakN = armoryValueNoise( vec3( armoryScaledPos.x * 1.35, armoryScaledPos.y * 0.16, armoryScaledPos.z * 1.35 ) + vec3( 2.3, 0.4, 5.1 ) );
+    float armoryStreak = smoothstep( 0.56, 0.88, armoryStreakN ) * armoryWallW * mix( 0.07, 0.20, armoryWear ) * armoryPaintMask;
+    diffuseColor.rgb *= 1.0 - armoryStreak;
+
+    // Subtle upward-facing mineral dust on horizontal decks & darker underside road grime
+    float armoryTopDust = smoothstep( 0.56, 0.96, armorySurfN.y ) * smoothstep( 0.32, 0.78, armoryMacro * 0.7 + armoryMid * 0.3 ) * mix( 0.04, 0.14, armoryWear ) * armoryPaintMask;
+    diffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.32, 0.29, 0.23 ), armoryTopDust );
+    float armoryUnderDark = smoothstep( 0.32, 0.88, -armorySurfN.y ) * mix( 0.14, 0.28, armoryWear ) * ( 1.0 - armoryIsOpticGlass );
+    diffuseColor.rgb *= 1.0 - armoryUnderDark;
+
+    // Chipped welded armor plate edges exposing dark rubbed gunmetal RHA steel underneath military paint
+    float armoryChipBreak = smoothstep( 0.28, 0.76, armoryValueNoise( armoryScaledPos * 1.85 ) * 0.58 + armoryValueNoise( armoryScaledPos * 5.4 ) * 0.42 );
+    float armoryArmorEdge = max( armoryLocalizedConvex, armoryDeriv * 0.46 ) * mix( 0.45, 1.25, armoryChipBreak );
+    float armoryChipStrength = clamp( armoryArmorEdge * uEdgeWear * ( 0.16 + armoryWear * 0.94 ), 0.0, 1.0 ) * ( 1.0 - armoryIsOpticGlass );
+    float armoryChipExpose = clamp( armoryChipStrength * 0.64, 0.0, 0.78 );
+    vec3 armorySteelChipCol = mix( vec3( 0.14, 0.15, 0.17 ), uEdgeWearColor, 0.38 );
+    diffuseColor.rgb = mix( diffuseColor.rgb, armorySteelChipCol, armoryChipExpose );
+    roughnessFactor = mix( roughnessFactor, 0.32, armoryChipExpose * 0.82 );
+    metalnessFactor = mix( metalnessFactor, max( metalnessFactor, 0.86 ), armoryChipExpose * uEdgeMetal );
+
+    // Authentic matte CARC roughness modulation (zero plastic specular sheen on painted armor; crisp metal on steel)
+    roughnessFactor += armoryPatina * mix( 0.11, 0.18, armoryWear ) * ( 1.0 - armoryIsOpticGlass );
+    roughnessFactor -= armoryStreak * 0.16;
+    roughnessFactor += armoryTopDust * 0.22;
+    // Enforce military flat-matte floor on painted non-metallic armor so broad hull decks never gleam like wet vinyl
+    float armoryMatteFloor = mix( 0.58, 0.72, armoryPaintMask * ( 1.0 - armoryChipExpose ) );
+    roughnessFactor = mix( roughnessFactor, max( roughnessFactor, armoryMatteFloor ), armoryPaintMask * ( 1.0 - armoryChipExpose ) );
+
+    // Deepened concave weld-seam, louver & bolt-recess grease/dirt
+    diffuseColor.rgb *= mix( 1.0, mix( 0.70, 0.44, armoryWear ), armoryCavity * ( 1.0 - armoryIsOpticGlass ) );
+    roughnessFactor = mix( roughnessFactor, min( 0.96, roughnessFactor + 0.14 ), armoryCavity * ( 1.0 - armoryIsOpticGlass ) );
+  } else {
+    // --- Organic macro/micro CLP gun-oil & handling patina roughness breakup (all small arms & archery) ---
+    float armoryNotOptic = 1.0 - armoryOpticMask;
+    float armoryOilMacro = armoryValueNoise( vArmoryObjPos * 0.62 + vec3( 1.7, 3.1, 0.9 ) );
+    float armoryOilMicro = armoryValueNoise( vArmoryObjPos * 2.85 + vec3( 4.3, 0.7, 2.5 ) );
+    float armoryPatina = ( armoryOilMacro * 0.65 + armoryOilMicro * 0.35 ) - 0.5;
+
+    float armoryWearBreakup = smoothstep( 0.24, 0.82, armoryValueNoise( vArmoryObjPos * 3.6 ) * 0.65 + armoryValueNoise( vArmoryObjPos * 11.5 ) * 0.35 );
+    float armoryEdge = max( armoryLocalizedConvex, armoryDeriv * 0.42 ) * mix( 0.55, 1.15, armoryWearBreakup );
+
+    // Service wear scales edge exposure cleanly: Factory New (0.0) -> Field Oiled (0.35) -> Battle Worn (1.0)
+    float armoryWearGain = 0.08 + armoryWear * 0.92;
+    float armoryEdgeStrength = clamp( armoryEdge * uEdgeWear * armoryWearGain, 0.0, 1.0 ) * armoryNotOptic;
+
+    // Fine directional holster / field handling micro-scratches (only noticeable on oiled/battle-worn metal)
+    float armoryScratch = 0.0;
+    if ( armoryWear > 0.12 && uEdgeMetal > 0.5 ) {
+      float sBandA = armoryValueNoise( vec3( vArmoryObjPos.x * 0.95, vArmoryObjPos.y * 19.0, vArmoryObjPos.z * 19.0 ) );
+      float sBandB = armoryValueNoise( vec3( vArmoryObjPos.x * 2.2 + vArmoryObjPos.y * 5.5, vArmoryObjPos.y * 14.0, vArmoryObjPos.z * 11.0 ) );
+      float sMask = smoothstep( 0.78, 0.93, sBandA ) * smoothstep( 0.62, 0.86, sBandB );
+      armoryScratch = sMask * smoothstep( 0.12, 1.0, armoryWear ) * 0.38 * armoryNotOptic;
+    }
+
+    float armoryMetalExpose = clamp( armoryEdgeStrength * 0.52 + armoryScratch, 0.0, 0.75 );
+    diffuseColor.rgb = mix( diffuseColor.rgb, uEdgeWearColor, armoryMetalExpose );
+    roughnessFactor *= mix( 1.0, 0.64, clamp( armoryEdgeStrength + armoryScratch * 1.2, 0.0, 1.0 ) );
+    metalnessFactor = mix( metalnessFactor, max( metalnessFactor, 0.94 ), clamp( armoryMetalExpose * 1.15, 0.0, 1.0 ) * uEdgeMetal );
+
+    // Apply organic CLP gun-oil micro-roughness variation & subtle handling burnishing
+    float armoryOilShift = armoryPatina * ( uEdgeMetal > 0.5 ? 0.14 : 0.10 );
+    float armoryHandPolish = ( uEdgeMetal < 0.5 ) ? ( -armoryWear * 0.09 * smoothstep( -0.1, 0.4, armoryPatina ) ) : 0.0;
+    roughnessFactor += ( armoryOilShift + armoryHandPolish ) * armoryNotOptic;
+
+    // Concave recesses: localized darkened crevices with CLP gun-oil & ambient service grime
+    float armoryGrimeDark = mix( 0.84, 0.62, armoryWear );
+    diffuseColor.rgb *= mix( 1.0, armoryGrimeDark, armoryCavity * armoryNotOptic );
+    roughnessFactor *= mix( 1.0, mix( 0.86, 1.08, armoryWear ), armoryCavity * armoryNotOptic );
+  }
 
   #ifdef ARMORY_FOULING
     // --- Gunpowder carbon fouling (soot): blotchy, concentrated toward muzzle / gas exits ---
     float armoryT = armoryAxialT();
     float armoryThroatD = ( armoryT - 0.14 ) / 0.12;
     float armorySootBias = mix( 1.0, 0.35 + 0.65 * smoothstep( 0.55, 1.0, armoryT ) + 0.4 * exp( -armoryThroatD * armoryThroatD ), uThermalProfileMix );
-    float armorySootNoise = armoryValueNoise( vArmoryObjPos * 1.7 ) * 0.65 + armoryValueNoise( vArmoryObjPos * 6.3 ) * 0.35;
+    float armorySootNoise = armoryValueNoise( armoryScaledPos * 1.7 ) * 0.65 + armoryValueNoise( armoryScaledPos * 6.3 ) * 0.35;
     float armoryEffectiveFouling = clamp( uCarbonFouling + smoothstep( 0.45, 1.0, armoryWear ) * 0.28, 0.0, 1.0 );
-    float armorySoot = clamp( armoryEffectiveFouling * armorySootBias * smoothstep( 0.22, 0.78, armorySootNoise + 0.18 * armoryCavity ), 0.0, 1.0 );
+    float armorySoot = clamp( armoryEffectiveFouling * armorySootBias * smoothstep( 0.22, 0.78, armorySootNoise + 0.18 * armoryCavity ), 0.0, 1.0 ) * ( 1.0 - armoryOpticMask );
     diffuseColor.rgb = mix( diffuseColor.rgb, vec3( 0.032, 0.029, 0.026 ), armorySoot * 0.78 );
     roughnessFactor = mix( roughnessFactor, 0.93, armorySoot * 0.85 );
     metalnessFactor *= 1.0 - armorySoot * 0.6;
   #endif
 
+  // Preserve mirror-smooth precision-ground optical glass roughness on AR-coated lenses
+  roughnessFactor = mix( roughnessFactor, min( roughnessFactor, 0.055 ), armoryOpticMask );
   roughnessFactor = clamp( roughnessFactor, 0.04, 1.0 );
   metalnessFactor = clamp( metalnessFactor, 0.0, 1.0 );
 }
@@ -712,7 +878,7 @@ const FRAGMENT_NORMAL_TRIPLANAR = /* glsl */ `
 #ifdef ARMORY_SHADER
 {
   // --- Sanitize interpolated normals & object-space triplanar detail normal blending ---
-  // Guards against zero-length interpolated vNormal across sharp 180° CSG creases and
+  // Guards against zero-length interpolated vNormal across sharp 180 deg CSG creases and
   // eliminates planar-UV sidewall stretching on CSG boolean cuts, flutes, and stippled grips.
   nonPerturbedNormal = armorySafeNormalize( nonPerturbedNormal, vec3( 0.0, 0.0, 1.0 ) );
   normal = armorySafeNormalize( normal, nonPerturbedNormal );
@@ -722,18 +888,41 @@ const FRAGMENT_NORMAL_TRIPLANAR = /* glsl */ `
   vec3 armoryTriW = armoryN2 * armoryN2;
   armoryTriW /= max( armoryTriW.x + armoryTriW.y + armoryTriW.z, 1e-5 );
 
-  // Fade high-frequency grain with pixel footprint AND suppress mould stipple on optically smooth glass/chrome
-  float armoryPixSpan = max( length( fwidth( vArmoryObjPos ) ), 1e-4 );
-  float armoryGrainFade = ( 1.0 - smoothstep( 0.12, 0.52, armoryPixSpan ) ) * smoothstep( 0.10, 0.26, roughnessFactor );
+  // Fade high-frequency grain with scale-aware pixel footprint AND suppress stipple on optically smooth glass/chrome
+  float armoryNormScale = max( uSurfaceScale, 1.0 );
+  bool armoryNormIsTank = armoryNormScale > 2.0;
+  vec3 armoryNormPos = vArmoryObjPos / armoryNormScale;
+  float armoryPixSpan = max( length( fwidth( vArmoryObjPos ) ), 1e-4 ) / armoryNormScale;
 
-  vec2 sX = armoryMicroSlope2D( vArmoryObjPos.zy, uDetailGrainMode );
-  vec2 sY = armoryMicroSlope2D( vArmoryObjPos.xz, uDetailGrainMode );
-  vec2 sZ = armoryMicroSlope2D( vArmoryObjPos.xy, uDetailGrainMode );
-  vec3 armoryObjPerturb = (
-    vec3( 0.0, sX.y, sX.x ) * armoryTriW.x +
-    vec3( sY.x, 0.0, sY.y ) * armoryTriW.y +
-    vec3( sZ.x, sZ.y, 0.0 ) * armoryTriW.z
-  ) * ( uTriplanarDetail * armoryGrainFade );
+  vec3 armoryObjPerturb;
+  if ( armoryNormIsTank ) {
+    float armoryArmorGrainFade =
+      ( 1.0 - smoothstep( 0.22, 1.15, armoryPixSpan ) ) *
+      smoothstep( 0.18, 0.38, roughnessFactor ) *
+      ( 1.0 - armoryOpticMask );
+    float armoryProcWeight = mix( 0.185, 0.065, step( 0.5, uHasArmorDetail ) );
+    vec2 aX = armoryArmorMicroSlope2D( armoryNormPos.zy );
+    vec2 aY = armoryArmorMicroSlope2D( armoryNormPos.xz );
+    vec2 aZ = armoryArmorMicroSlope2D( armoryNormPos.xy );
+    armoryObjPerturb = (
+      vec3( 0.0, aX.y, aX.x ) * armoryTriW.x +
+      vec3( aY.x, 0.0, aY.y ) * armoryTriW.y +
+      vec3( aZ.x, aZ.y, 0.0 ) * armoryTriW.z
+    ) * ( armoryProcWeight * armoryArmorGrainFade );
+  } else {
+    float armoryGrainFade =
+      ( 1.0 - smoothstep( 0.12, 0.52, armoryPixSpan ) ) *
+      smoothstep( 0.10, 0.26, roughnessFactor ) *
+      ( 1.0 - armoryOpticMask );
+    vec2 sX = armoryMicroSlope2D( vArmoryObjPos.zy, uDetailGrainMode );
+    vec2 sY = armoryMicroSlope2D( vArmoryObjPos.xz, uDetailGrainMode );
+    vec2 sZ = armoryMicroSlope2D( vArmoryObjPos.xy, uDetailGrainMode );
+    armoryObjPerturb = (
+      vec3( 0.0, sX.y, sX.x ) * armoryTriW.x +
+      vec3( sY.x, 0.0, sY.y ) * armoryTriW.y +
+      vec3( sZ.x, sZ.y, 0.0 ) * armoryTriW.z
+    ) * ( uTriplanarDetail * armoryGrainFade );
+  }
 
   #if defined( USE_NORMALMAP_TANGENTSPACE ) && defined( ARMORY_TRIPLANAR_MAP )
     vec2 mX = ( texture2D( normalMap, vArmoryObjPos.zy * uTriplanarScale ).xy * 2.0 - 1.0 ) * normalScale;
@@ -752,6 +941,68 @@ const FRAGMENT_NORMAL_TRIPLANAR = /* glsl */ `
   vec3 armoryViewPerturb = normalMatrix * armoryObjPerturb;
   armoryViewPerturb -= normal * dot( armoryViewPerturb, normal );
   normal = armorySafeNormalize( normal + armoryViewPerturb * faceDirection, nonPerturbedNormal );
+
+  // --- Seamless 512x512 Triplanar Detail Normal (RNM) + Micro-Roughness (RHA pitting + CARC mineral grit) ---
+  if ( uHasArmorDetail > 0.5 ) {
+    // 28 cm physical tile repeat on 1:1 heavy armor; 5.5 cm ultra-fine machined grain on small arms
+    vec3 armoryDetailPos = armoryNormIsTank ? ( vArmoryObjPos / 28.0 ) : ( vArmoryObjPos / 5.5 );
+    float armoryDetailSpan = max( length( fwidth( armoryDetailPos ) ), 1e-5 );
+    // Distance / Nyquist anti-shimmer fade: razor-sharp up close, smooth fade at far pullback
+    float armoryNyquistFade = armoryNormIsTank
+      ? ( 1.0 - smoothstep( 0.038, 0.145, armoryDetailSpan ) )
+      : ( 1.0 - smoothstep( 0.032, 0.120, armoryDetailSpan ) );
+    float armoryDetailSurfaceGate = armoryNormIsTank
+      ? smoothstep( 0.14, 0.34, roughnessFactor )
+      : smoothstep( 0.18, 0.42, roughnessFactor );
+    float armoryDetailFade = armoryNyquistFade * armoryDetailSurfaceGate * ( 1.0 - armoryOpticMask );
+
+    if ( armoryDetailFade > 0.002 ) {
+      vec2 dUvX = armoryDetailPos.zy;
+      vec2 dUvY = armoryDetailPos.xz + vec2( 0.37, 0.61 );
+      vec2 dUvZ = armoryDetailPos.xy + vec2( 0.73, 0.19 );
+
+      float armoryPaintWeight = 1.0 - smoothstep( 0.25, 0.65, metalnessFactor );
+      float armoryDetailNormGain = armoryNormIsTank
+        ? mix( 0.34, 0.58, armoryPaintWeight ) * armoryDetailFade
+        : 0.14 * armoryDetailFade;
+
+      vec3 tX = texture2D( uArmorDetailNormal, dUvX ).xyz * 2.0 - 1.0;
+      vec3 tY = texture2D( uArmorDetailNormal, dUvY ).xyz * 2.0 - 1.0;
+      vec3 tZ = texture2D( uArmorDetailNormal, dUvZ ).xyz * 2.0 - 1.0;
+      tX = armorySafeNormalize( vec3( tX.xy * armoryDetailNormGain, max( tX.z, 0.1 ) ), vec3( 0.0, 0.0, 1.0 ) );
+      tY = armorySafeNormalize( vec3( tY.xy * armoryDetailNormGain, max( tY.z, 0.1 ) ), vec3( 0.0, 0.0, 1.0 ) );
+      tZ = armorySafeNormalize( vec3( tZ.xy * armoryDetailNormGain, max( tZ.z, 0.1 ) ), vec3( 0.0, 0.0, 1.0 ) );
+
+      // Triplanar Reoriented Normal Mapping (RNM) in object space, then exact SO(3) reorientation onto baked normal
+      float signX = armoryObjN.x < 0.0 ? -1.0 : 1.0;
+      float signY = armoryObjN.y < 0.0 ? -1.0 : 1.0;
+      float signZ = armoryObjN.z < 0.0 ? -1.0 : 1.0;
+      vec3 nX = armoryBlendRNM( vec3( armoryObjN.zy, abs( armoryObjN.x ) ), tX );
+      vec3 nY = armoryBlendRNM( vec3( armoryObjN.xz, abs( armoryObjN.y ) ), tY );
+      vec3 nZ = armoryBlendRNM( vec3( armoryObjN.xy, abs( armoryObjN.z ) ), tZ );
+
+      vec3 armoryTriObjN = armorySafeNormalize(
+        vec3( nX.z * signX, nX.y, nX.x ) * armoryTriW.x +
+        vec3( nY.x, nY.z * signY, nY.y ) * armoryTriW.y +
+        vec3( nZ.x, nZ.y, nZ.z * signZ ) * armoryTriW.z,
+        armoryObjN
+      );
+
+      vec3 armoryBaseViewN = armorySafeNormalize( ( normalMatrix * armoryObjN ) * faceDirection, nonPerturbedNormal );
+      vec3 armoryDetailViewN = armorySafeNormalize( ( normalMatrix * armoryTriObjN ) * faceDirection, armoryBaseViewN );
+      normal = armoryReorientNormal3D( armoryBaseViewN, normal, armoryDetailViewN );
+
+      // Triplanar micro-roughness modulation centered at 0.5
+      float rX = texture2D( uArmorDetailRoughness, dUvX ).r;
+      float rY = texture2D( uArmorDetailRoughness, dUvY ).r;
+      float rZ = texture2D( uArmorDetailRoughness, dUvZ ).r;
+      float armoryDetailRghDelta = ( rX * armoryTriW.x + rY * armoryTriW.y + rZ * armoryTriW.z ) - 0.5;
+      float armoryDetailRghGain = armoryNormIsTank
+        ? mix( 0.11, 0.17, armoryPaintWeight ) * armoryDetailFade
+        : 0.055 * armoryDetailFade;
+      roughnessFactor = clamp( roughnessFactor + armoryDetailRghDelta * armoryDetailRghGain, 0.04, 1.0 );
+    }
+  }
 
   // --- Toksvig / Kaplanyan geometric specular anti-aliasing (eliminates metallic edge shimmer) ---
   vec3 armoryDnDx = dFdx( normal );
@@ -782,6 +1033,106 @@ const FRAGMENT_THERMAL = /* glsl */ `
 #endif
 `;
 
+const FRAGMENT_LIGHTING_MICRO_AO = /* glsl */ `
+#ifdef ARMORY_SHADER
+{
+  #ifdef USE_AOMAP
+    float armoryAoRaw = clamp( texture2D( aoMap, vAoMapUv ).r, 0.0, 1.0 );
+    float armoryAoScale = max( uSurfaceScale, 1.0 );
+    bool armoryAoIsTank = armoryAoScale > 2.0;
+
+    // Strictly clamped baked AO prevents negative values & pow(neg, frac) NaNs when aoMapIntensity > 1.0 on heavy armor
+    float armoryAo = clamp( ( armoryAoRaw - 1.0 ) * aoMapIntensity + 1.0, 0.04, 1.0 );
+    float armoryDotNV = saturate( dot( geometryNormal, geometryViewDir ) );
+
+    // Lagarde & de Rousiers (2014) Specular Occlusion applied directly to IBL radiance & clearcoatRadiance:
+    // Subtle protective floor on small arms/archery (preserves royal bluing, walnut & stainless);
+    // authoritative physical depth on heavy armor (ERA tile gaps, road wheels & turret rings).
+    float armorySpecAoInput = armoryAoIsTank
+      ? clamp( mix( armoryAoRaw, armoryAo, 0.85 ), 0.06, 1.0 )
+      : clamp( mix( 1.0, armoryAo, 0.78 ), 0.22, 1.0 );
+    float armorySpecOcc = computeSpecularOcclusion( armoryDotNV, armorySpecAoInput, material.roughness );
+
+    #if defined( RE_IndirectDiffuse )
+      vec3 armoryMultiAo = armoryMultiBounceAO( armoryAo, material.diffuseColor );
+      vec3 armoryDiffAo = armoryAoIsTank ? mix( vec3( armoryAo ), armoryMultiAo, 0.45 ) : armoryMultiAo;
+      irradiance *= armoryDiffAo;
+      iblIrradiance *= mix( armoryDiffAo, vec3( armorySpecOcc ), metalnessFactor * 0.65 );
+    #endif
+
+    #if defined( USE_ENVMAP ) && defined( RE_IndirectSpecular )
+      radiance *= armorySpecOcc;
+      #ifdef USE_CLEARCOAT
+        float armoryDotNVcc = saturate( dot( geometryClearcoatNormal, geometryViewDir ) );
+        clearcoatRadiance *= computeSpecularOcclusion( armoryDotNVcc, armorySpecAoInput, material.clearcoatRoughness );
+      #endif
+    #endif
+
+    // Direct Light Micro-Shadowing: open faces stay at 100% key-light punch while tight baked crevices
+    // attenuate direct diffuse & direct specular so seams never glow flatly under directional key light.
+    float armoryMicroDiff = armoryAoIsTank
+      ? mix( 0.28, 1.0, smoothstep( 0.08, 0.78, armoryAoRaw ) )
+      : mix( 0.66, 1.0, smoothstep( 0.05, 0.64, armoryAoRaw ) );
+    float armorySpecCrevice = armoryAoIsTank
+      ? smoothstep( 0.14, 0.84, armoryAoRaw )
+      : smoothstep( 0.10, 0.72, armoryAoRaw );
+    float armoryMicroSpec = armoryAoIsTank
+      ? mix( 0.12, 1.0, armorySpecCrevice * armorySpecCrevice )
+      : mix( 0.42, 1.0, armorySpecCrevice * armorySpecCrevice );
+
+    reflectedLight.directDiffuse *= armoryMicroDiff;
+    reflectedLight.directSpecular *= armoryMicroSpec;
+    #ifdef USE_CLEARCOAT
+      clearcoatSpecularDirect *= armoryMicroSpec;
+    #endif
+    #ifdef USE_SHEEN
+      sheenSpecularDirect *= armoryMicroDiff;
+    #endif
+  #endif
+}
+#endif
+`;
+
+const FRAGMENT_AOMAP_AND_OPTICAL_AR = /* glsl */ `
+#ifdef ARMORY_SHADER
+{
+  // Baked AO, Lagarde Specular Occlusion & Direct Light Micro-Shadowing were already applied cleanly
+  // prior to lights_fragment_end (eliminating double-occlusion & unclamped negative-AO NaN hazard).
+
+  // --- Optical AR Multi-Coating Thin-Film Fresnel Iridescence ---
+  // Deep obsidian anti-reflective cavity at normal incidence -> emerald / sapphire / blue-violet / ruby-magenta grazing sheen
+  if ( armoryOpticMask > 0.001 ) {
+    float armoryOptDotNV = saturate( dot( geometryNormal, geometryViewDir ) );
+    float armoryOptF1 = clamp( 1.0 - armoryOptDotNV, 0.0, 1.0 );
+    float armoryOptF2 = armoryOptF1 * armoryOptF1;
+    float armoryOptF5 = armoryOptF2 * armoryOptF2 * armoryOptF1;
+    float armoryOptGrazing = smoothstep( 0.08, 0.88, armoryOptF1 );
+
+    vec3 armoryArTint = armoryOpticalArTint( armoryOpticBaseRgb, armoryOptF1 );
+    vec3 armoryArEnv = vec3( 0.28 );
+    #if defined( USE_ENVMAP ) && defined( RE_IndirectSpecular )
+      armoryArEnv = clamp( radiance, vec3( 0.14 ), vec3( 3.2 ) );
+    #endif
+
+    // Suppress flat diffuse bounce at normal incidence so lenses read as deep obsidian optical glass
+    float armoryObsidianAtten = mix( 1.0, mix( 0.28, 0.72, armoryOptF2 ), armoryOpticMask );
+    reflectedLight.directDiffuse *= armoryObsidianAtten;
+    reflectedLight.indirectDiffuse *= armoryObsidianAtten;
+
+    // Multi-coated thin-film reflection sheen coupled to studio HDRI radiance & grazing Fresnel angle
+    vec3 armoryArSheen = armoryArTint * armoryArEnv * ( 0.10 + 0.85 * armoryOptF2 + 0.55 * armoryOptF5 );
+    reflectedLight.indirectSpecular = mix(
+      reflectedLight.indirectSpecular,
+      reflectedLight.indirectSpecular * mix( vec3( 0.68 ), armoryArTint * 2.1, armoryOptGrazing ) + armoryArSheen,
+      armoryOpticMask
+    );
+    reflectedLight.directSpecular +=
+      reflectedLight.directSpecular * armoryArTint * ( 0.45 * armoryOptGrazing ) * armoryOpticMask;
+  }
+}
+#endif
+`;
+
 const FRAGMENT_OUTPUT_SANITIZE = /* glsl */ `
 #ifdef ARMORY_SHADER
   gl_FragColor.rgb = armorySanitizeHdrRgb( gl_FragColor.rgb );
@@ -793,6 +1144,8 @@ export const ARMORY_COMMON_ANCHOR = '#include <common>';
 export const ARMORY_SURFACE_ANCHOR = '#include <metalnessmap_fragment>';
 export const ARMORY_NORMAL_ANCHOR = '#include <normal_fragment_maps>';
 export const ARMORY_EMISSIVE_ANCHOR = '#include <emissivemap_fragment>';
+export const ARMORY_LIGHTS_MAPS_ANCHOR = '#include <lights_fragment_maps>';
+export const ARMORY_AOMAP_ANCHOR = '#include <aomap_fragment>';
 export const ARMORY_OPAQUE_ANCHOR = '#include <opaque_fragment>';
 
 function injectAfter(src: string, anchor: string, chunk: string): string {
@@ -823,6 +1176,14 @@ export function injectArmoryFragmentShader(
   f = injectAfter(f, ARMORY_SURFACE_ANCHOR, FRAGMENT_SURFACE);
   f = injectAfter(f, ARMORY_NORMAL_ANCHOR, FRAGMENT_NORMAL_TRIPLANAR);
   f = injectAfter(f, ARMORY_EMISSIVE_ANCHOR, FRAGMENT_THERMAL);
+  if (f.includes(ARMORY_LIGHTS_MAPS_ANCHOR)) {
+    f = injectAfter(f, ARMORY_LIGHTS_MAPS_ANCHOR, FRAGMENT_LIGHTING_MICRO_AO);
+    if (f.includes(ARMORY_AOMAP_ANCHOR)) {
+      f = f.replace(ARMORY_AOMAP_ANCHOR, FRAGMENT_AOMAP_AND_OPTICAL_AR);
+    }
+  } else {
+    f = injectAfter(f, ARMORY_AOMAP_ANCHOR, FRAGMENT_AOMAP_AND_OPTICAL_AR);
+  }
   f = injectAfter(f, ARMORY_OPAQUE_ANCHOR, FRAGMENT_OUTPUT_SANITIZE);
   return buildDefines(features) + f;
 }

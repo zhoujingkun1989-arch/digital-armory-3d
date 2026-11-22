@@ -29,7 +29,10 @@ import {
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import { scheduleHudBoundsRefresh } from '../../engine/callout/hudBoundsCache';
 import { useWeaponExamSummary } from '../../engine/exam/armorerExamStore';
-import { isArcheryWeapon } from '../../engine/physics/armoryPhysics';
+import {
+  isArcheryWeapon,
+  isTankWeapon,
+} from '../../engine/physics/armoryPhysics';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import {
   getLocalizedShortWeaponLabel,
@@ -75,6 +78,7 @@ const CATEGORY_KEYS: readonly ArmoryFilterKey[] = [
   'shotgun',
   'pistol',
   'archery',
+  'armor',
 ];
 
 function matchesCategoryWithLmg(
@@ -122,7 +126,9 @@ const ArmoryRackBayCard: React.FC<ArmoryRackBayCardProps> = ({
       tabIndex={0}
       className={`armory-weapon-card bay-card ${
         item.available ? 'is-ready' : 'is-planned'
-      } ${isOnTurntable ? 'is-on-turntable' : ''}`}
+      } ${item.category === 'armor' ? 'is-armor-card' : ''} ${
+        isOnTurntable ? 'is-on-turntable' : ''
+      }`}
       onMouseEnter={() => {
         if (item.available) {
           preloadWeaponPlugin(item.id);
@@ -392,11 +398,16 @@ export const ArmoryView: React.FC = () => {
                   key={key}
                   type="button"
                   className={`armory-filter-btn ${
-                    category === key ? 'active' : ''
-                  }`}
+                    key === 'armor' ? 'is-armor-pill' : ''
+                  } ${category === key ? 'active' : ''}`}
                   onClick={() => setCategory(key)}
                 >
-                  {ui.categories[key]} ({count})
+                  {key === 'armor' && (
+                    <Shield size={12} className="filter-pill-icon" aria-hidden="true" />
+                  )}
+                  <span>
+                    {ui.categories[key]} ({count})
+                  </span>
                 </button>
               );
             })}
@@ -418,7 +429,9 @@ export const ArmoryView: React.FC = () => {
             <span>
               {isArcheryWeapon(featuredWeapon.id) && lang === 'zh'
                 ? '弓弩研发故事'
-                : ui.storyBtn}
+                : isTankWeapon(featuredWeapon.id) && lang === 'zh'
+                  ? '坦克研发故事'
+                  : ui.storyBtn}
             </span>
           </button>
 

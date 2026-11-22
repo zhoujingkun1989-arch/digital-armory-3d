@@ -365,25 +365,32 @@ export const GasFlowVisualizer: React.FC = () => {
     }
     root.visible = true;
 
+    const isTank = manifest.workbenchMeta.scaleProfile === 'main_battle_tank';
     const boreRadius =
-      caliber === '12_gauge'
-        ? 0.42
-        : caliber === '50_bmg' || caliber === '50_ae'
-          ? 0.34
-          : caliber === '45_acp'
-            ? 0.31
-            : caliber === '9x39_subsonic'
-              ? 0.27
-              : caliber === '338_lapua' ||
-                  caliber === '30_06' ||
-                  caliber === '762_nato' ||
-                  caliber === '762_m43' ||
-                  caliber === '357_magnum' ||
-                  caliber === '9mm_para'
-                ? 0.25
-                : caliber === '473_caseless'
-                  ? 0.17
-                  : 0.2;
+      caliber === '125mm_apfsds'
+        ? 5.6
+        : caliber === '120mm_apfsds'
+          ? 5.4
+          : caliber === '88mm_pzgr39'
+            ? 4.0
+            : caliber === '12_gauge'
+              ? 0.42
+              : caliber === '50_bmg' || caliber === '50_ae'
+                ? 0.34
+                : caliber === '45_acp'
+                  ? 0.31
+                  : caliber === '9x39_subsonic'
+                    ? 0.27
+                    : caliber === '338_lapua' ||
+                        caliber === '30_06' ||
+                        caliber === '762_nato' ||
+                        caliber === '762_m43' ||
+                        caliber === '357_magnum' ||
+                        caliber === '9mm_para'
+                      ? 0.25
+                      : caliber === '473_caseless'
+                        ? 0.17
+                        : 0.2;
 
     // 1. Bore propellant column (chamberX -> live projectile base)
     const boreSpan = Math.max(1.0, manifold.muzzleX - manifold.chamberX);
@@ -622,14 +629,19 @@ export const GasFlowVisualizer: React.FC = () => {
         const zSign = vp[2] >= 0 ? 1 : -1;
         _dirVec.set(0.22, 0.36, vp[2] === 0 ? 0.15 : 0.88 * zSign).normalize();
         _quat.setFromUnitVectors(_upAxis, _dirVec);
-        const jetLen = 0.75 + 0.85 * ventStrength;
+        const ventScale = isTank ? 8.0 : 1.0;
+        const jetLen = (0.75 + 0.85 * ventStrength) * ventScale;
         ventPlumeRef.current.position.set(
           vp[0] + _dirVec.x * jetLen * 0.5,
           vp[1] + _dirVec.y * jetLen * 0.5,
           vp[2] + _dirVec.z * jetLen * 0.5
         );
         ventPlumeRef.current.quaternion.copy(_quat);
-        ventPlumeRef.current.scale.set(0.24, jetLen, 0.24);
+        ventPlumeRef.current.scale.set(
+          0.24 * ventScale,
+          jetLen,
+          0.24 * ventScale
+        );
         ventPlumeMatRef.current.color.copy(COL_GAS_TAP_CYAN);
         ventPlumeMatRef.current.opacity = ventStrength * 0.52;
       } else {
@@ -665,7 +677,8 @@ export const GasFlowVisualizer: React.FC = () => {
       const u = ((i + phaseScroll) / boreArrows) % 1;
       const x = manifold.chamberX + liveLen * u;
       if (boreAlpha > 0.03 && liveLen > 0.9) {
-        const s = (0.72 + 0.35 * Math.sin(u * Math.PI)) * (boreRadius / 0.24);
+        const chevScale = isTank ? 8.0 : boreRadius / 0.24;
+        const s = (0.72 + 0.35 * Math.sin(u * Math.PI)) * chevScale;
         _posVec.set(x, manifold.boreY, 0);
         _scaleVec.set(s, s, s);
         _mat4.compose(_posVec, _quat, _scaleVec);
@@ -777,7 +790,8 @@ export const GasFlowVisualizer: React.FC = () => {
               manifold.gasChannelZ
             );
           }
-          _scaleVec.set(0.75, 0.75, 0.75);
+          const thrustScale = isTank ? 7.5 : 0.75;
+          _scaleVec.set(thrustScale, thrustScale, thrustScale);
           _mat4.compose(_posVec, _quat, _scaleVec);
           inst.setMatrixAt(cursor, _mat4);
           inst.setColorAt(cursor, _colorWork);

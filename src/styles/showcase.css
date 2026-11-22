@@ -1869,6 +1869,18 @@
   }
 }
 
+.arsenal-tab.is-armor-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border-color: rgba(245, 158, 11, 0.42);
+}
+
+.arsenal-tab.is-armor-tab.active,
+.arsenal-tab.is-armor-tab:hover {
+  border-color: rgba(245, 158, 11, 0.82);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .live-pulse-dot {
     animation: none;

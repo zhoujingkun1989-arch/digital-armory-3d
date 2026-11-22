@@ -3,6 +3,7 @@ import * as THREE from 'three';
 import { type ThreeEvent, useFrame, useThree } from '@react-three/fiber';
 import { Edges } from '@react-three/drei';
 import { useAppStore } from '../../store/useAppStore';
+import { getWeaponManifest } from '../../weapons/manifests';
 import type {
   MaterialKind,
   PartKinematicDelta,
@@ -38,6 +39,7 @@ import {
 } from '../materials/engineeringRoles';
 import {
   configurePbrTextureAnisotropy,
+  getArmorDetailTextures,
   getPartPbrBundle,
   isTextureLoaded,
   subscribeTextureKeys,
@@ -237,6 +239,11 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
     const selectPart = useAppStore((s) => s.selectPart);
     const hoverPart = useAppStore((s) => s.hoverPart);
 
+    const isTank =
+      getWeaponManifest(weaponId).workbenchMeta.scaleProfile ===
+      'main_battle_tank';
+    const surfaceScale = isTank ? 10 : 1;
+
     const partRole = useMemo(
       () => resolvePartEngineeringRole(weaponId, part),
       [weaponId, part]
@@ -264,13 +271,21 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       () => getPartPbrBundle(weaponId, part.material, effectivePbrBinding),
       [weaponId, part.material, effectivePbrBinding]
     );
+    const armorDetail = useMemo(() => getArmorDetailTextures(), []);
+    const allTextureKeys = useMemo(
+      () =>
+        armorDetail.textureKeys.length > 0
+          ? [...pbr.textureKeys, ...armorDetail.textureKeys]
+          : pbr.textureKeys,
+      [pbr.textureKeys, armorDetail.textureKeys]
+    );
 
-    const [, setTexTick] = useState(0);
+    const [texTick, setTexTick] = useState(0);
     useEffect(() => {
-      return subscribeTextureKeys(pbr.textureKeys, () => {
+      return subscribeTextureKeys(allTextureKeys, () => {
         setTexTick((n) => n + 1);
       });
-    }, [pbr.textureKeys]);
+    }, [allTextureKeys]);
 
     const normalScaleVec = useMemo(
       () => new THREE.Vector2(pbr.normalScale, pbr.normalScale),
@@ -285,7 +300,7 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
 
     // --- AAA Armory surface shader: per-part uniform refs (mutated in useFrame, zero GC) ---
     const [armoryUniforms] = useState(() =>
-      createArmoryShaderUniforms(part.material)
+      createArmoryShaderUniforms(part.material, surfaceScale)
     );
     const armoryFeatures = useMemo(
       () =>
@@ -316,9 +331,9 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
     }, [springDepthMaterial]);
 
     useEffect(() => {
-      syncArmoryUniformProfile(armoryUniforms, part.material);
+      syncArmoryUniformProfile(armoryUniforms, part.material, surfaceScale);
       armoryUniforms.uSpringScale.value = 1;
-    }, [armoryUniforms, part.material]);
+    }, [armoryUniforms, part.material, surfaceScale]);
 
     useEffect(() => {
       if (!geometry) return;
@@ -349,6 +364,30 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
         armoryUniforms.uFunctionalTintMix.value = 0.86;
       }
     }, [armoryUniforms, engineeringTint, focusedEngineeringRole, partRole]);
+
+    const isXrayHousing = xrayShells && !!part.isShell && !isSelected;
+    const usePbrNow = pbrTexturesEnabled && !isXrayHousing;
+    const armorDetailReady =
+      usePbrNow &&
+      isTextureLoaded(armorDetail.normalMap) &&
+      isTextureLoaded(armorDetail.roughnessMap);
+
+    // Sync seamless 512x512 RHA/CARC triplanar detail normal & roughness uniforms in-place (zero shader recompile)
+    useEffect(() => {
+      armoryUniforms.uArmorDetailNormal.value = armorDetailReady
+        ? armorDetail.normalMap
+        : null;
+      armoryUniforms.uArmorDetailRoughness.value = armorDetailReady
+        ? armorDetail.roughnessMap
+        : null;
+      armoryUniforms.uHasArmorDetail.value = armorDetailReady ? 1 : 0;
+    }, [
+      armoryUniforms,
+      armorDetailReady,
+      armorDetail.normalMap,
+      armorDetail.roughnessMap,
+      texTick,
+    ]);
 
     const capSyncRef = useRef<SectionCapSyncFn | null>(null);
     // Canted shell parts (e.g. AN-94 15°-canted plum magazine) slice along their own tilted local Z=0 symmetry plane
@@ -483,11 +522,9 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
 
     if (!geometry || isGroupHidden) return null;
 
-    const isXrayHousing = xrayShells && !!part.isShell && !isSelected;
     const isSectionCutShell = sectionCut && !!part.isShell && !isSelected;
     const isTransparent = isGhostByIsolate || isXrayHousing;
 
-    const usePbrNow = pbrTexturesEnabled && !isXrayHousing;
     const albedoReady =
       usePbrNow && pbr.hasCustomAtlas && isTextureLoaded(pbr.map);
     const normalReady = usePbrNow && isTextureLoaded(pbr.normalMap);
@@ -633,7 +670,70 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
     const showSectionCap =
       isSectionCutShell && !isXrayHousing && !isGhostByIsolate;
 
-    const matShaderKey = `${isXrayHousing ? 'x' : 's'}-${isSectionCutShell ? 'c1' : 'c0'}-${isGlbAsset ? 'g1' : 'g0'}-${activeMap ? 'm1' : 'm0'}-${activeNormalMap ? 'n1' : 'n0'}-${activeOrmMap ? 'o1' : 'o0'}-${activeMetalnessMap ? 'mt1' : 'mt0'}-${armoryActive ? getArmoryProgramCacheKey(armoryFeatures) : 'plain'}`;
+    // 1:1 Heavy Armor physical surface calibration:
+    // Firearms use gun-oil clearcoat & CLP iridescence (`nitride_steel` clearcoat=0.28),
+    // which would wrap matte CARC-painted tank armor in wet plastic glare! On Main Battle Tanks,
+    // matte painted armor obeys the Cycles-baked ORM roughness/metalness directly with subtle
+    // dry mineral dust grazing sheen, while machined bare steel/chrome/brass stays crisp.
+    const isTankBareMetal =
+      isTank &&
+      (part.material === 'stainless' ||
+        part.material === 'copper_accent' ||
+        part.material === 'spring_steel');
+    const isTankOrdnanceBarrel = isTank && part.material === 'barrel_steel';
+    const resolvedClearcoat = isXrayHousing
+      ? 0.36
+      : isTank
+        ? isTankBareMetal
+          ? 0.06
+          : isTankOrdnanceBarrel
+            ? 0.04
+            : 0.0
+        : matCfg.clearcoat;
+    const resolvedClearcoatRoughness = isXrayHousing
+      ? 0.14
+      : isTank
+        ? 0.38
+        : matCfg.clearcoatRoughness;
+    const resolvedIridescence =
+      isXrayHousing || isTank ? 0 : matCfg.iridescence;
+    const resolvedSheen = isXrayHousing
+      ? 0.32
+      : isTank
+        ? isTankBareMetal
+          ? 0
+          : 0.08
+        : matCfg.sheen;
+    const resolvedSheenRoughness = isXrayHousing
+      ? 0.26
+      : isTank
+        ? 0.92
+        : matCfg.sheenRoughness;
+    const resolvedSheenColor = isXrayHousing
+      ? '#38bdf8'
+      : isTank
+        ? '#7a7262'
+        : matCfg.sheenColor;
+    const resolvedEnvMapIntensity = isXrayHousing
+      ? 0.54
+      : isTank
+        ? isTankBareMetal
+          ? 1.32
+          : isTankOrdnanceBarrel
+            ? 1.08
+            : part.material === 'polymer_frame'
+              ? 0.78
+              : 0.86
+        : matCfg.envMapIntensity;
+    const resolvedAoMapIntensity = isGlbAsset
+      ? isTank
+        ? 1.26
+        : 0.95
+      : pbr.hasCustomAtlas
+        ? 0.65
+        : 0.48;
+
+    const matShaderKey = `${isXrayHousing ? 'x' : 's'}-${isTank ? 't1' : 't0'}-${isSectionCutShell ? 'c1' : 'c0'}-${isGlbAsset ? 'g1' : 'g0'}-${activeMap ? 'm1' : 'm0'}-${activeNormalMap ? 'n1' : 'n0'}-${activeOrmMap ? 'o1' : 'o0'}-${activeMetalnessMap ? 'mt1' : 'mt0'}-${armoryActive ? getArmoryProgramCacheKey(armoryFeatures) : 'plain'}`;
 
     const armoryMaterialProps = armoryActive
       ? {
@@ -673,9 +773,7 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
               normalMap={activeNormalMap}
               normalScale={normalScaleVec}
               aoMap={activeOrmMap}
-              aoMapIntensity={
-                isGlbAsset ? 0.95 : pbr.hasCustomAtlas ? 0.65 : 0.48
-              }
+              aoMapIntensity={resolvedAoMapIntensity}
               roughnessMap={activeOrmMap}
               metalnessMap={activeMetalnessMap}
               metalness={
@@ -697,21 +795,19 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
                     : matCfg.roughness
               }
               ior={isXrayHousing ? 1.48 : 1.5}
-              clearcoat={isXrayHousing ? 0.36 : matCfg.clearcoat}
-              clearcoatRoughness={
-                isXrayHousing ? 0.14 : matCfg.clearcoatRoughness
-              }
-              iridescence={isXrayHousing ? 0 : matCfg.iridescence}
+              clearcoat={resolvedClearcoat}
+              clearcoatRoughness={resolvedClearcoatRoughness}
+              iridescence={resolvedIridescence}
               iridescenceIOR={GUN_OIL_IRIDESCENCE_IOR}
               iridescenceThicknessRange={
-                matCfg.iridescence > 0
+                resolvedIridescence > 0
                   ? GUN_OIL_THICKNESS_RANGE
                   : NO_THICKNESS_RANGE
               }
-              sheen={isXrayHousing ? 0.32 : matCfg.sheen}
-              sheenRoughness={isXrayHousing ? 0.26 : matCfg.sheenRoughness}
-              sheenColor={isXrayHousing ? '#38bdf8' : matCfg.sheenColor}
-              envMapIntensity={isXrayHousing ? 0.54 : matCfg.envMapIntensity}
+              sheen={resolvedSheen}
+              sheenRoughness={resolvedSheenRoughness}
+              sheenColor={resolvedSheenColor}
+              envMapIntensity={resolvedEnvMapIntensity}
               transparent={isTransparent}
               opacity={opacity}
               depthWrite={!isTransparent}
@@ -754,6 +850,9 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
               group={part.group}
               clippingPlanes={activeClipPlanes}
               engineeringRole={engineeringTint ? partRole : null}
+              scaleProfile={
+                getWeaponManifest(weaponId).workbenchMeta.scaleProfile
+              }
               syncRef={capSyncRef}
             />
           )}

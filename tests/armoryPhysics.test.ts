@@ -9,6 +9,7 @@ import {
   DEFAULT_FIRING_TIMING,
   MAX_BARREL_TEMP_C,
   SPENT_CASING_POOL_SIZE,
+  TANK_CANNON_CALIBERS,
   WEAPON_FIRING_TIMING,
   computeCasingContactHeight,
   computeGasPortUncoverF,
@@ -52,6 +53,9 @@ const EXPECTED_PMAX: Record<CaliberProfile, number> = {
   '50_bmg': 379,
   arrow_400gr: 311,
   bolt_400gr: 1334,
+  '125mm_apfsds': 650,
+  '120mm_apfsds': 670,
+  '88mm_pzgr39': 320,
 };
 
 const DT = 1 / 60;
@@ -96,6 +100,17 @@ describe('SAAMI / CIP internal ballistics model', () => {
     expect(evaluateInternalBallistics('9x39_subsonic', computePeakPressureF('9x39_subsonic')).pressureMPa).toBeCloseTo(280, 4);
     expect(evaluateInternalBallistics('762_nato', computePeakPressureF('762_nato')).pressureMPa).toBeCloseTo(415, 4);
     expect(evaluateInternalBallistics('545_m74', computePeakPressureF('545_m74')).pressureMPa).toBeCloseTo(294, 4);
+    // WP-18 Heavy Armor Tank Cannon Calibers (88mm / 120mm / 125mm)
+    expect(TANK_CANNON_CALIBERS).toHaveLength(3);
+    for (const tankCal of TANK_CANNON_CALIBERS) {
+      expect(CALIBER_BALLISTICS[tankCal].peakPressureMPa).toBe(
+        EXPECTED_PMAX[tankCal]
+      );
+      expect(
+        evaluateInternalBallistics(tankCal, computePeakPressureF(tankCal))
+          .pressureMPa
+      ).toBeCloseTo(EXPECTED_PMAX[tankCal], 4);
+    }
   });
 
   it('reproduces the SAAMI/CIP peak pressure exactly at the peak sample', () => {
@@ -219,8 +234,8 @@ describe('SAAMI / CIP internal ballistics model', () => {
     expect(computeGasPortUncoverF('762_nato', WEAPON_FIRING_TIMING.m134)).toBeNull();
   });
 
-  it('defines ordered firing timing for all 23 exhibits and retains revolver / caseless G11 zero-brass physics', () => {
-    expect(WEAPON_IDS).toHaveLength(23);
+  it('defines ordered firing timing for all 27 exhibits and retains revolver / caseless G11 zero-brass physics', () => {
+    expect(WEAPON_IDS).toHaveLength(27);
     for (const id of WEAPON_IDS) {
       const t = WEAPON_FIRING_TIMING[id];
       expect(t.ignitionF).toBeLessThan(t.muzzleExitF);

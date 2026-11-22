@@ -9,16 +9,14 @@ import {
 } from 'lucide-react';
 import {
   formatSectionOffsetMm,
+  getSectionCutRange,
   SECTION_CUT_OFFSET_DEFAULT,
-  SECTION_CUT_OFFSET_MAX,
-  SECTION_CUT_OFFSET_MIN,
-  SECTION_CUT_OFFSET_STEP,
 } from '../../engine/actors/StencilSectionCap';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import { COMMAND_PALETTE_STRINGS } from '../../i18n/commandPaletteStrings';
 import { useAppStore } from '../../store/useAppStore';
+import { getWeaponManifest } from '../../weapons/manifests';
 
-const SWEEP_AMPLITUDE_CM = 2.15;
 const SWEEP_ANGULAR_RAD_PER_SEC = 1.15;
 
 export interface LiveSectionPlaneBarProps {
@@ -32,6 +30,7 @@ export const LiveSectionPlaneBar: React.FC<LiveSectionPlaneBarProps> = ({
   offsetOverride,
 }) => {
   const lang = useAppStore((s) => s.lang);
+  const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const storeSectionCut = useAppStore((s) => s.sectionCut);
   const storeOffset = useAppStore((s) => s.sectionCutOffset);
   const sectionCut = forceVisible ?? storeSectionCut;
@@ -44,6 +43,10 @@ export const LiveSectionPlaneBar: React.FC<LiveSectionPlaneBarProps> = ({
   const storyOpen = useAppStore((s) => s.storyOpen);
   const storyMinimized = useAppStore((s) => s.storyMinimized);
 
+  const scaleProfile = getWeaponManifest(activeWeaponId).workbenchMeta.scaleProfile;
+  const sectionRange = getSectionCutRange(scaleProfile);
+  const sweepAmplitudeCm = sectionRange.sweepAmplitude;
+
   const [isSweeping, setIsSweeping] = useState(false);
   const phaseRef = useRef(0);
   const activeSweeping = isSweeping && sectionCut;
@@ -55,7 +58,7 @@ export const LiveSectionPlaneBar: React.FC<LiveSectionPlaneBarProps> = ({
     const currentOffset = useAppStore.getState().sectionCutOffset;
     const clampedRatio = Math.max(
       -1,
-      Math.min(1, currentOffset / SWEEP_AMPLITUDE_CM)
+      Math.min(1, currentOffset / sweepAmplitudeCm)
     );
     phaseRef.current = Math.asin(clampedRatio);
 
@@ -66,7 +69,7 @@ export const LiveSectionPlaneBar: React.FC<LiveSectionPlaneBarProps> = ({
       const dt = Math.min((now - lastTs) / 1000, 0.05);
       lastTs = now;
       phaseRef.current += dt * SWEEP_ANGULAR_RAD_PER_SEC;
-      const nextVal = Math.sin(phaseRef.current) * SWEEP_AMPLITUDE_CM;
+      const nextVal = Math.sin(phaseRef.current) * sweepAmplitudeCm;
       useAppStore.getState().setSectionCutOffset(nextVal);
       rafId = window.requestAnimationFrame(tick);
     };
@@ -75,19 +78,19 @@ export const LiveSectionPlaneBar: React.FC<LiveSectionPlaneBarProps> = ({
     return () => {
       window.cancelAnimationFrame(rafId);
     };
-  }, [activeSweeping]);
+  }, [activeSweeping, sweepAmplitudeCm]);
 
   if (!sectionCut) return null;
 
   const ui = COMMAND_PALETTE_STRINGS[lang].sectionPlane;
   const isStoryDrawerExpanded = storyOpen && !storyMinimized;
   const isCentered =
-    Math.abs(sectionCutOffset - SECTION_CUT_OFFSET_DEFAULT) < 0.005 &&
-    !sectionCutFlip;
-  const depthText = formatSectionOffsetMm(sectionCutOffset);
+    Math.abs(sectionCutOffset - SECTION_CUT_OFFSET_DEFAULT) <
+      sectionRange.step * 0.1 && !sectionCutFlip;
+  const depthText = formatSectionOffsetMm(sectionCutOffset, scaleProfile);
   const pct =
-    ((sectionCutOffset - SECTION_CUT_OFFSET_MIN) /
-      (SECTION_CUT_OFFSET_MAX - SECTION_CUT_OFFSET_MIN)) *
+    ((sectionCutOffset - sectionRange.min) /
+      (sectionRange.max - sectionRange.min)) *
     100;
 
   return (
@@ -113,9 +116,9 @@ export const LiveSectionPlaneBar: React.FC<LiveSectionPlaneBarProps> = ({
           type="range"
           className="live-section-slider"
           aria-label={ui.sliderAria}
-          min={SECTION_CUT_OFFSET_MIN}
-          max={SECTION_CUT_OFFSET_MAX}
-          step={SECTION_CUT_OFFSET_STEP}
+          min={sectionRange.min}
+          max={sectionRange.max}
+          step={sectionRange.step}
           value={sectionCutOffset}
           style={
             {

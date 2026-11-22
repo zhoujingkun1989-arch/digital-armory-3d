@@ -134,6 +134,8 @@ export const MalfunctionActor: React.FC = () => {
     const cx = meta.chamberGlowPos[0];
     const cy = meta.chamberGlowPos[1];
     const cz = meta.chamberGlowPos[2];
+    const isTank = meta.scaleProfile === 'main_battle_tank';
+    const dScale = isTank ? 9.0 : 1.0;
     const isDownwardEject = prof.ejectionUpSign < 0;
     const ejectZ = 1;
 
@@ -282,15 +284,21 @@ export const MalfunctionActor: React.FC = () => {
             );
           } else {
             // Empty spent brass pinched upright ~82° in the ejection port
-            const basePx = ejectSample ? ejectSample.spentCasePos[0] : cx - 0.95;
-            const basePy = isDownwardEject ? cy - 1.15 : cy + 0.88;
-            const basePz = isDownwardEject ? cz : cz + ejectZ * 0.56;
+            const basePx = ejectSample
+              ? ejectSample.spentCasePos[0]
+              : cx - 0.95 * dScale;
+            const basePy = isDownwardEject
+              ? cy - 1.15 * dScale
+              : cy + 0.88 * dScale;
+            const basePz = isDownwardEject ? cz : cz + ejectZ * 0.56 * dScale;
 
-            const clearDx = -1.6 * clr;
+            const clearDx = -1.6 * dScale * clr;
             const clearDy = isDownwardEject
-              ? -5.4 * clr * clr
-              : 2.2 * clr - 3.6 * clr * clr;
-            const clearDz = isDownwardEject ? 0.6 * clr : ejectZ * 4.8 * clr;
+              ? -5.4 * dScale * clr * clr
+              : (2.2 * clr - 3.6 * clr * clr) * dScale;
+            const clearDz = isDownwardEject
+              ? 0.6 * dScale * clr
+              : ejectZ * 4.8 * dScale * clr;
 
             pGrp.position.set(basePx + clearDx, basePy + clearDy, basePz + clearDz);
             pGrp.rotation.set(
@@ -310,10 +318,14 @@ export const MalfunctionActor: React.FC = () => {
         } else if (vis.kind === 'double_feed') {
           // Primary spent/stuck casing still wedged in the chamber throat
           const clearDy = isDownwardEject
-            ? -5.5 * clr * clr
-            : 1.8 * clr - 3.8 * clr * clr;
-          const clearDz = isDownwardEject ? 0 : ejectZ * 4.6 * clr;
-          pGrp.position.set(cx - 0.24 - 2.4 * clr, cy + clearDy, cz + clearDz);
+            ? -5.5 * dScale * clr * clr
+            : (1.8 * clr - 3.8 * clr * clr) * dScale;
+          const clearDz = isDownwardEject ? 0 : ejectZ * 4.6 * dScale * clr;
+          pGrp.position.set(
+            cx - (0.24 + 2.4 * clr) * dScale,
+            cy + clearDy,
+            cz + clearDz
+          );
           pGrp.rotation.set(clr * 1.6, clr * ejectZ * 1.4, clr * 2.2);
 
           if (primaryBulletRef.current) primaryBulletRef.current.visible = false;
@@ -326,10 +338,10 @@ export const MalfunctionActor: React.FC = () => {
         } else if (vis.kind === 'light_strike') {
           // Intact unfired live round in chamber with shallow primer dimple
           const clearDy = isDownwardEject
-            ? -5.2 * clr * clr
-            : 2.1 * clr - 3.4 * clr * clr;
-          const clearDz = isDownwardEject ? 0 : ejectZ * 4.9 * clr;
-          pGrp.position.set(cx - 2.1 * clr, cy + clearDy, cz + clearDz);
+            ? -5.2 * dScale * clr * clr
+            : (2.1 * clr - 3.4 * clr * clr) * dScale;
+          const clearDz = isDownwardEject ? 0 : ejectZ * 4.9 * dScale * clr;
+          pGrp.position.set(cx - 2.1 * dScale * clr, cy + clearDy, cz + clearDz);
           pGrp.rotation.set(clr * 1.3, clr * ejectZ * 1.8, clr * 2.5);
 
           if (primaryBulletRef.current) primaryBulletRef.current.visible = true;
@@ -339,8 +351,10 @@ export const MalfunctionActor: React.FC = () => {
             primaryStruckGroupRef.current.visible = true;
           if (primaryDiagRingRef.current) {
             primaryDiagRingRef.current.visible = clr < 0.15;
-            primaryDiagRingRef.current.position.set(xHead - 0.025, 0, 0);
-            primaryDiagRingRef.current.scale.setScalar(0.92 + 0.18 * pulse);
+            primaryDiagRingRef.current.position.set(xHead - 0.025 * dScale, 0, 0);
+            primaryDiagRingRef.current.scale.setScalar(
+              (0.92 + 0.18 * pulse) * (isTank ? 12 : 1)
+            );
           }
           if (primaryDiagRingMatRef.current) {
             primaryDiagRingMatRef.current.color.setHex(0xf59e0b);
@@ -349,10 +363,14 @@ export const MalfunctionActor: React.FC = () => {
         } else {
           // out_of_battery: bulged live round protruding ~4.2mm rearward of chamber shoulder
           const clearDy = isDownwardEject
-            ? -5.0 * clr * clr
-            : 1.9 * clr - 3.5 * clr * clr;
-          const clearDz = isDownwardEject ? 0 : ejectZ * 4.5 * clr;
-          pGrp.position.set(cx - 0.48 - 2.2 * clr, cy + clearDy, cz + clearDz);
+            ? -5.0 * dScale * clr * clr
+            : (1.9 * clr - 3.5 * clr * clr) * dScale;
+          const clearDz = isDownwardEject ? 0 : ejectZ * 4.5 * dScale * clr;
+          pGrp.position.set(
+            cx - (0.48 + 2.2 * clr) * dScale,
+            cy + clearDy,
+            cz + clearDz
+          );
           pGrp.rotation.set(clr * 1.4, clr * ejectZ * 1.5, 0.03 + clr * 2.0);
 
           if (primaryBulletRef.current) primaryBulletRef.current.visible = true;
@@ -389,15 +407,17 @@ export const MalfunctionActor: React.FC = () => {
             weaponId === 'm249'
               ? cy + 0.36
               : isTopFeed
-                ? cy + 0.72
-                : cy - 0.68;
-          const dropDy = isTopFeed ? 4.2 * drop * drop : -5.8 * drop * drop;
+                ? cy + 0.72 * dScale
+                : cy - 0.68 * dScale;
+          const dropDy = isTopFeed
+            ? 4.2 * dScale * drop * drop
+            : -5.8 * dScale * drop * drop;
           const dropDz = weaponId === 'm249' ? -3.4 * drop : 0;
           const pitchZ = isTopFeed ? -0.38 : 0.42;
           secGrp.position.set(
-            cx - 1.95 - 0.45 * drop,
+            cx - (1.95 + 0.45 * drop) * dScale,
             wedgeY + dropDy,
-            cz + 0.06 + dropDz
+            cz + 0.06 * dScale + dropDz
           );
           secGrp.rotation.set(drop * 0.7, 0.05, pitchZ * (1 - 0.5 * drop));
           secGrp.scale.setScalar(Math.max(0.01, fit.roundScale * (1 - 0.12 * drop)));
@@ -413,14 +433,15 @@ export const MalfunctionActor: React.FC = () => {
         vis.kind === 'out_of_battery' && vis.caseClearAlpha < 0.35;
       const showClearedRing = vis.cleared && vis.freshChamberAlpha > 0.5;
       collar.visible = showOobGap || showClearedRing;
+      const collarScale = isTank ? 16 : fit.roundScale;
       if (showOobGap) {
-        collar.position.set(cx - 0.95, cy, cz);
-        collar.scale.setScalar(fit.roundScale * (0.95 + 0.12 * pulse));
+        collar.position.set(cx - 0.95 * dScale, cy, cz);
+        collar.scale.setScalar(collarScale * (0.95 + 0.12 * pulse));
         collarMat.color.setHex(0xef4444);
         collarMat.opacity = 0.48 + 0.42 * pulse;
       } else if (showClearedRing) {
-        collar.position.set(cx - 0.62, cy, cz);
-        collar.scale.setScalar(fit.roundScale * 0.88);
+        collar.position.set(cx - 0.62 * dScale, cy, cz);
+        collar.scale.setScalar(collarScale * 0.88);
         collarMat.color.setHex(0x10b981);
         collarMat.opacity = 0.42;
       }
@@ -432,7 +453,7 @@ export const MalfunctionActor: React.FC = () => {
       const fa = vis.freshChamberAlpha;
       freshGrp.visible = fa > 0.02;
       if (fa > 0.02) {
-        freshGrp.position.set(cx - (1 - fa) * 1.4, cy, cz);
+        freshGrp.position.set(cx - (1 - fa) * 1.4 * dScale, cy, cz);
         freshGrp.rotation.set(0, 0, 0);
         freshGrp.scale.setScalar(fit.roundScale);
       }

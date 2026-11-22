@@ -21,7 +21,10 @@ import {
   detectPreferredLanguage,
   useAppStore,
 } from '../src/store/useAppStore';
-import { isArcheryWeapon } from '../src/engine/physics/armoryPhysics';
+import {
+  isArcheryWeapon,
+  isTankWeapon,
+} from '../src/engine/physics/armoryPhysics';
 import { getWeaponManifest } from '../src/weapons/manifests';
 import { loadWeaponPlugin } from '../src/weapons/registry';
 import { WEAPON_IDS, type WeaponId } from '../src/weapons/types';
@@ -72,7 +75,7 @@ describe('WP-05 Engineering Functional Role Tint & Gas-Flow Contracts', () => {
     }
   });
 
-  it('classifies all 579 procedural/CSG parts across 23 exhibits with exact gas & elastic-drive fidelity', async () => {
+  it('classifies all 683 procedural/CSG parts across 27 exhibits with exact gas, elastic-drive & armor powerpack fidelity', async () => {
     const validRoles = new Set<EngineeringRole>(ENGINEERING_ROLE_ORDER);
     let totalParts = 0;
 
@@ -94,16 +97,20 @@ describe('WP-05 Engineering Functional Role Tint & Gas-Flow Contracts', () => {
       expect(roleCounts.get('energy_spring') ?? 0).toBeGreaterThan(0);
       expect(roleCounts.get('housing_feed') ?? 0).toBeGreaterThan(0);
 
-      // Gas-operated firearms & elastic-limb archery platforms classify energy-drive parts as 'gas_drive';
-      // recoil/blowback/manual firearms must not.
-      if (GAS_OPERATED_WEAPONS.has(weaponId) || ELASTIC_DRIVE_WEAPONS.has(weaponId)) {
+      // Gas-operated firearms, elastic-limb archery platforms, and heavy armor powerpacks classify
+      // drive/powertrain parts as 'gas_drive'; recoil/blowback/manual firearms must not.
+      if (
+        GAS_OPERATED_WEAPONS.has(weaponId) ||
+        ELASTIC_DRIVE_WEAPONS.has(weaponId) ||
+        isTankWeapon(weaponId)
+      ) {
         expect(roleCounts.get('gas_drive') ?? 0).toBeGreaterThan(0);
       } else {
         expect(roleCounts.get('gas_drive') ?? 0).toBe(0);
       }
     }
 
-    expect(totalParts).toBe(579);
+    expect(totalParts).toBe(683);
   });
 
   it('keeps WebGL shader program cache keys 100% invariant when functional tint uniforms toggle', () => {

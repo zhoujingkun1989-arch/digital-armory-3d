@@ -5,13 +5,20 @@ import {
   type WeaponId,
 } from '../weapons/types';
 
-const VAULT_EXHIBIT_COUNT = WEAPON_IDS.length; // 23
-const VAULT_FIREARM_COUNT = VAULT_EXHIBIT_COUNT - 2; // 21
-const VAULT_EXHIBIT_ZH = '二十三';
-const VAULT_PARTS_TOTAL = 579;
-const VAULT_TEXTURES_TOTAL = 313;
-const VAULT_AUDIO_TOTAL = 1342;
+const VAULT_EXHIBIT_COUNT = WEAPON_IDS.length; // 27
+const VAULT_ARCHERY_COUNT = 2;
+const VAULT_ARMOR_COUNT = 4;
+const VAULT_FIREARM_COUNT =
+  VAULT_EXHIBIT_COUNT - VAULT_ARCHERY_COUNT - VAULT_ARMOR_COUNT; // 21
+const VAULT_EXHIBIT_ZH = '二十七';
+const VAULT_PARTS_TOTAL = 683;
+const VAULT_TEXTURES_TOTAL = 351;
+const VAULT_SUITES_TOTAL = 80;
+const VAULT_AUDIO_TOTAL = 1582;
 const LAB_CALIBER_TOTAL = 15;
+const TANK_ORDNANCE_TOTAL = 3;
+const ORDNANCE_TOTAL = LAB_CALIBER_TOTAL + TANK_ORDNANCE_TOTAL; // 18
+const BALLISTICS_PROFILES_TOTAL = 20;
 
 export type ShowcaseGalleryAction =
   'armory' | 'explode' | 'firing' | 'section' | 'atlas';
@@ -207,7 +214,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
   zh: {
     nav: {
       ariaLabel: '产品宣传页主导航',
-      versionBadge: `v2.0 · ${VAULT_EXHIBIT_COUNT} 馆藏旗舰版`,
+      versionBadge: `v3.2 · ${VAULT_EXHIBIT_COUNT} 馆藏重装旗舰版`,
       capabilities: '四大核心模式',
       documentary: 'AI 导演纪录片',
       gallery: '实机渲染画廊',
@@ -218,16 +225,16 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
     },
     hero: {
       eyebrow: `OPEN-SOURCE WEBGL 2.0 MUSEUM · ${VAULT_EXHIBIT_COUNT} EXHIBITS · ${VAULT_AUDIO_TOTAL} AI VOICE CLIPS · 1,000M BALLISTICS LAB`,
-      titlePrefix: `把${VAULT_EXHIBIT_ZH}款世界传奇名枪与复合弓弩的 `,
+      titlePrefix: `把${VAULT_EXHIBIT_ZH}款传奇名枪、复合弓弩与 1:1 主战坦克的 `,
       titleHighlight: '1:1 机械内构与声画纪录片',
       titleSuffix: '，装进你的浏览器',
-      subLead: '纯代码实时 CSG 布尔建模 ',
+      subLead: 'Blender 5.2 高模 Draco + 实时 CSG 双轨建模 ',
       subPartsStrong: `${VAULT_PARTS_TOTAL} 个独立运动零件`,
       subMid1: '、',
-      subMapsStrong: `${VAULT_TEXTURES_TOTAL} 张 2K 5 通道 ORM 物理贴图`,
+      subMapsStrong: `${VAULT_TEXTURES_TOTAL} 张 2K 5 通道 ORM 物理贴图（${VAULT_SUITES_TOTAL} 套图集）`,
       subMid2: ' 与 ',
-      subAudioStrong: `${VAULT_AUDIO_TOTAL} 段双语语音 + Web Audio 分口径声场`,
-      subTail: `。零客户端下载，一键开启 3D 导演运镜、1,000m RK4 外弹道与光学分划板靶场（R）、原理流派对照矩阵（S）、${LAB_CALIBER_TOTAL} 口径实弹纵剖馆（B）、高清 3D 剖视海报分享（U）与 17 图版绘本打印工坊（Ctrl/Cmd+P），60 FPS 丝滑透视每一根膛线、90° 无壳转膛、整体斜挡板消音、六管加特林正弦凸轮与滑轮钢索双发机构。`,
+      subAudioStrong: `${VAULT_AUDIO_TOTAL} 段双语语音 + Web Audio 分口径/主炮声场`,
+      subTail: `。零客户端下载，一键开启 3D 导演运镜、1,000m RK4 外弹道与光学分划板靶场（R · ${BALLISTICS_PROFILES_TOTAL} 套弹道档案）、原理流派对照矩阵（S）、${ORDNANCE_TOTAL} 口径轻武器实弹与坦克主炮弹纵剖馆（B）、高清 3D 剖视海报分享（U）与 17 图版绘本打印工坊（Ctrl/Cmd+P），60 FPS 丝滑透视 ZTZ-99A 22 发转盘装弹机、M1A2 SEP v3 燃气轮机、豹 2A7V 箭簇装甲与虎式 131 88mm 水平楔闩等机械奇观。`,
       ctaArmory: '立即进入 3D 数字枪库',
       ctaDirector: (tag) => `3D 导演连播 ${tag} 纪录片`,
       ctaExplode: (tag) => `直达 ${tag} 爆炸拆解台`,
@@ -235,11 +242,10 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       ctaShowdown: '原理流派对照矩阵 (S)',
       ctaShowdownTitle:
         '打开三轴机械谱系矩阵与双展品同屏定量对照实验室 (快捷键: S)',
-      ctaCartridges: `${LAB_CALIBER_TOTAL} 口径实弹纵剖馆 (B)`,
-      ctaCartridgesTitle: `进入 ${LAB_CALIBER_TOTAL} 大口径 SAAMI/CIP 实弹与霰弹 1:1 纵剖对比实验室 (快捷键: B)`,
+      ctaCartridges: `${ORDNANCE_TOTAL} 口径弹药与炮弹馆 (B)`,
+      ctaCartridgesTitle: `进入 ${LAB_CALIBER_TOTAL} 口径轻武器实弹 + ${TANK_ORDNANCE_TOTAL} 口径主战坦克炮弹 1:1 纵剖对比实验室 (快捷键: B)`,
       ctaBallistics: '1,000m 外弹道靶场 (R)',
-      ctaBallisticsTitle:
-        '打开 1,000m RK4 外弹道、横风偏流、第一像面圣诞树分划板与 DOPE 射表实验室 (快捷键: R)',
+      ctaBallisticsTitle: `打开 1,000m RK4 外弹道（${BALLISTICS_PROFILES_TOTAL} 套弹道档案）、横风偏流、第一像面圣诞树分划板与 DOPE 射表实验室 (快捷键: R)`,
       ctaPoster: '3D 剖视分享海报 (U)',
       ctaPosterTitle:
         '生成带二维码与军械师考核认证章的高清 16:9 / 4:5 社交分享海报 (快捷键: U)',
@@ -262,26 +268,26 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
     metrics: [
       {
         val: `${VAULT_EXHIBIT_COUNT} 款`,
-        lbl: `${VAULT_FIREARM_COUNT} 款传奇名枪 + 2 款复合弓弩 · 三轴流派全覆盖`,
+        lbl: `${VAULT_FIREARM_COUNT} 名枪 + ${VAULT_ARCHERY_COUNT} 弓弩 + ${VAULT_ARMOR_COUNT} 款 1:1 主战坦克 · 全流派覆盖`,
       },
-      { val: `${VAULT_PARTS_TOTAL} 件`, lbl: '实时 CSG 布尔零件 · 零穿模' },
+      { val: `${VAULT_PARTS_TOTAL} 件`, lbl: 'Draco 高模 + 实时 CSG 零件 · 零穿模' },
       {
         val: `${VAULT_TEXTURES_TOTAL} 张`,
-        lbl: '2K 5 通道 ORM 物理材质贴图',
+        lbl: `2K 5 通道 ORM 物理贴图 · ${VAULT_SUITES_TOTAL} 套材质图集`,
       },
       {
         val: `${VAULT_AUDIO_TOTAL} 段`,
         lbl: '中英双语 AI 研发故事与零件配音',
       },
       {
-        val: `${LAB_CALIBER_TOTAL} 口径 · 1000m`,
-        lbl: '实弹纵剖对比 · 外弹道分划板 · 海报与绘本',
+        val: `${ORDNANCE_TOTAL} 口径 · ${BALLISTICS_PROFILES_TOTAL} 弹道`,
+        lbl: '15 实弹 + 3 坦克炮弹纵剖 · 1,000m RK4 靶场',
       },
     ],
     capabilities: {
       kicker: 'FOUR CORE CAPABILITIES',
       title: '四大军械级三维检视与仿真模式',
-      desc: `从磷化钢滚印、麦秆回火与层压桦木到 90° 无壳转膛、整体 6 级斜挡板消音、六管正弦凸轮与滑轮钢索预供弹，全部 ${VAULT_EXHIBIT_COUNT} 款展品 ${VAULT_PARTS_TOTAL} 个零件均打通「多级爆炸拆解、7 阶段内弹道、纵向中轴剖视、5 通道 ORM 贴图」，并配套 1,000m 外弹道靶场（R）、原理对照矩阵（S）、${LAB_CALIBER_TOTAL} 口径弹药馆（B）与高清分享海报（U）。`,
+      desc: `从磷化钢滚印、90° 无壳转膛、六管加特林与滑轮钢索双发，到重装甲大厅 ZTZ-99A 转盘装弹机、M1A2 SEP v3 燃气轮机隔爆尾舱、豹 2A7V 箭簇装甲与虎式 131 88mm 水平楔闩，全部 ${VAULT_EXHIBIT_COUNT} 款展品 ${VAULT_PARTS_TOTAL} 个零件均打通「多级爆炸拆解、7 阶段内弹道、纵向中轴剖视、5 通道 ORM 贴图」，并配套 1,000m 外弹道（R · ${BALLISTICS_PROFILES_TOTAL} 档案）、原理对照矩阵（S）、${ORDNANCE_TOTAL} 口径弹药馆（B）与分享海报（U）。`,
       cards: {
         explode: {
           alt: 'AK-15M1 零回流引线与多级爆炸拆解工作台',
@@ -295,8 +301,8 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         firing: {
           alt: 'Barrett M82A1 .50 BMG 整管短后坐与箭头制退侧喷',
           tag: 'MODE 02 · 7-STAGE KINEMATICS & BALLISTICS',
-          title: `7 阶段真实运动学循环 + ${LAB_CALIBER_TOTAL} 口径 SAAMI/CIP 实弹与复合弓弩内弹道`,
-          desc: '严格遵循各枪与弓弩机械定律：长/短行程活塞、G11 90° 无壳旋转弹膛、VSS 多孔泄气 6 级消音与直线击铁、M134D 28V 六管加特林正弦凸轮、AN-94 滑轮钢索 1,800 RPM 预供弹、M249 双拨爪弹链、鲁格 P08 肘节、Vector Super V 滑块、双 ARGO、M1 漏夹、蟒蛇转轮及双凸轮弓弩；同步触发分口径声浪。',
+          title: `7 阶段真实运动学循环 + ${ORDNANCE_TOTAL} 口径实弹/坦克炮弹与复合弓弩内弹道`,
+          desc: '严格遵循各枪、弓弩与 1:1 主战坦克机械定律：长/短行程活塞、G11 90° 无壳旋转弹膛、VSS 6 级斜挡板消音、M134D 六管加特林、AN-94 滑轮钢索预供弹、ZTZ-99A 22 发底置转盘自动装弹机、M1A2 与豹 2A7V 隔爆门 120mm 装填、虎式 131 88mm 水平滑楔炮闩及双凸轮弓弩；同步触发分口径声浪。',
           cta: '体验巴雷特 .50 BMG 慢放击发',
         },
         section: {
@@ -318,9 +324,9 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       },
     },
     documentary: {
-      kicker: 'MULTIMODAL AUDIO-VISUAL ENGINE · V2.0',
+      kicker: 'MULTIMODAL AUDIO-VISUAL ENGINE · V3.2',
       title: 'AI 四幕双语研发纪录片 · 3D 导演运镜 & 军械声场',
-      desc: `告别无声手动拖拽模型的传统看图模式：全馆藏 ${VAULT_EXHIBIT_COUNT} 款名枪与弓弩内置中英双语四幕研发史、${VAULT_PARTS_TOTAL} 枚零件独立配音、自动镜头编排器与程序化 Web Audio 机械合成声效。`,
+      desc: `告别无声手动拖拽模型的传统看图模式：全馆藏 ${VAULT_EXHIBIT_COUNT} 款名枪、复合弓弩与 1:1 主战坦克内置中英双语四幕研发史、${VAULT_PARTS_TOTAL} 枚零件独立配音、自动镜头编排器与程序化 Web Audio 机械合成声效。`,
       directorBadge: '3D STORY DIRECTOR · 自动运镜编排',
       directorTitle: '四幕研发纪录片「3D 导演自动运镜模式」',
       directorDesc:
@@ -355,17 +361,24 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
             '启动 0.25x 超慢速连续击发并切换纵向剖视，伴随自动闪避（-12 dB）的机械咬合声观察底火点燃与抛壳。',
         },
       ],
-      pickWeaponLabel: '选择馆藏名枪或弓弩立即体验 3D 导演纪录片：',
+      pickWeaponLabel: '选择馆藏名枪、弓弩或主战坦克立即体验 3D 导演纪录片：',
       launchTourCta: (tag) => `全屏导演播放 ${tag} 四幕纪录片`,
       openDrawerCta: '打开图文+字幕抽屉',
       monographCta: (tag) => `打印 ${tag} 17 图版绘本 / 图鉴`,
       monographCtaTitle:
         '一键离线抓拍 17 图版并排版打印双语绘本与收藏图鉴 (Ctrl/Cmd+P)',
       soundBadge: 'PROCEDURAL WEB AUDIO · 零外部音频膨胀',
-      soundTitle: `${LAB_CALIBER_TOTAL} 口径实弹 + 复合弓弩差异化声浪 & 7 阶段咬合引擎`,
+      soundTitle: `${ORDNANCE_TOTAL} 口径实弹/主炮 + 复合弓弩差异化声浪 & 7 阶段咬合引擎`,
       soundDesc:
-        '基于 Web Audio API 实时物理建模（零额外 WAV/MP3 体积）：1.0x 标准射速清晰区分 .50 BMG 重炮轰鸣、M134D 六管 3,000 RPM 电锯怒吼、G11 2,100 RPM 无壳三连发、AN-94 1,800 RPM 双发口哨声、VSS 130 dB 亚音速微声消音、M1 加兰德末发漏夹「PING!」金属长鸣与复合弓弩阻尼闷响；0.25x 超慢放精准剥离每一次金属撞击，并在播报语音时自动执行 Audio Ducking 闪避。',
+        '基于 Web Audio API 实时物理建模（零额外 WAV/MP3 体积）：1.0x 标准射速清晰区分 125/120/88mm 坦克主炮雷霆震波、.50 BMG 重炮轰鸣、M134D 六管 3,000 RPM 电锯怒吼、G11 2,100 RPM 无壳三连发、AN-94 1,800 RPM 双发口哨声、VSS 130 dB 亚音速微声消音、M1 加兰德末发漏夹「PING!」金属长鸣与复合弓弩阻尼闷响；0.25x 超慢放精准剥离每一次金属撞击，并在播报语音时自动执行 Audio Ducking 闪避。',
       caliberRows: [
+        {
+          caliber: '125mm / 120×570mm / 88×571mmR',
+          weaponTag: 'ZTZ-99A / M1A2 SEP v3 / Leopard 2A7V / Tiger 131',
+          freqTag: '24–34 Hz 坦克主炮震波与装弹机构',
+          signature:
+            '125mm 650 MPa 滑膛炮与转盘举升链推 / M1A2 隔爆门与 AGT1500 涡轮啸叫 / 豹 2A7V L/55A1 / 虎式 88mm 水平楔闩',
+        },
         {
           caliber: '12.7×99mm (.50 BMG)',
           weaponTag: 'M82A1',
@@ -505,8 +518,8 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
     },
     arsenal: {
       kicker: `${VAULT_EXHIBIT_COUNT}-BAY MASTER ROSTER · FACTORY 1:1`,
-      title: `${VAULT_EXHIBIT_ZH}大世界经典名枪与复合弓弩 1:1 测绘馆藏矩阵`,
-      desc: '全面覆盖人类轻武器三大正交机械谱系（自动驱动、弹膛闭锁、空间供弹，含无壳 90° 转膛、整体斜挡板消音、电驱六管加特林、滑轮钢索双发、弹链双供、肘节屈伸与 Super V 偏轴延迟）及精密复合弓/弩体系，每款均配备双语四幕研发纪录片、全零件配音、军械师认证考核与同屏定量对照能力（S）。',
+      title: `${VAULT_EXHIBIT_ZH}大传奇名枪、复合弓弩与 1:1 主战坦克测绘馆藏矩阵`,
+      desc: '全面覆盖人类轻武器三大正交机械谱系、精密复合弓/弩体系与全新 1:1 重装甲大厅（中国 ZTZ-99A、美国 M1A2 SEP v3 艾布拉姆斯、德国 KMW 豹 2A7V、二战虎式 131），每款均配备 Blender 5.2 高模 Draco + CSG 双轨内构、四幕双语纪录片、全零件配音与同屏定量对照能力（S）。',
       filterAria: '馆藏分类筛选',
       categories: {
         all: '全部馆藏',
@@ -517,6 +530,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         shotgun: '战术霰弹',
         pistol: '手枪 / 转轮',
         archery: '复合弓 / 弩',
+        armor: '重装甲大厅',
       },
       partsPill: (n) => `${n} 零件`,
       specCaliber: '口径',
@@ -559,15 +573,15 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           code: 'ARCH-03',
           iconKey: 'gauge',
           title: '60Hz 内外弹道解算与卷积混响声场',
-          desc: `非受控瞬态时钟零 GC 驱动 60fps ${LAB_CALIBER_TOTAL} 口径 SAAMI/CIP 膛压示波、1,000m RK4 外弹道分划板（R）、流派对照曲线（S）与立体声卷积 IR 波导军械声效。`,
+          desc: `非受控瞬态时钟零 GC 驱动 60fps ${ORDNANCE_TOTAL} 口径 SAAMI/CIP 与坦克主炮膛压示波、1,000m RK4 外弹道（${BALLISTICS_PROFILES_TOTAL} 套档案，R）、流派对照曲线（S）与立体声卷积 IR 波导声效。`,
           metric: '60 FPS 零重渲染',
         },
         {
           code: 'ARCH-04',
           iconKey: 'sparkles',
           title: 'GTAO + AgX 管线、分享海报与绘本打印',
-          desc: `离线 5 通道 ORM 贴图配合亚毫米 GTAO 环境光遮蔽、HDR 辉光与 AgX 色调映射；3D 导演同步 ${VAULT_AUDIO_TOTAL} 段 Gemini TTS 语音，内置高清 3D 剖视海报分享（U）与 17 图版绘本打印工坊（Ctrl/Cmd+P）。`,
-          metric: `${VAULT_AUDIO_TOTAL} 语音 · 17 图版`,
+          desc: `全馆 ${VAULT_SUITES_TOTAL} 套图集 ${VAULT_TEXTURES_TOTAL} 张 5 通道 ORM 贴图配合亚毫米 GTAO 环境光遮蔽、HDR 辉光与 AgX 色调映射；3D 导演同步 ${VAULT_AUDIO_TOTAL} 段 Gemini TTS 语音，内置分享海报（U）与 17 图版绘本打印（Ctrl/Cmd+P）。`,
+          metric: `${VAULT_AUDIO_TOTAL} 语音 · ${VAULT_SUITES_TOTAL} 图集`,
         },
         {
           code: 'ARCH-05',
@@ -614,7 +628,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         },
         {
           key: 'B',
-          label: '进入 / 退出 SAAMI/CIP 实弹 1:1 纵剖对比实验室',
+          label: `进入 / 退出 ${ORDNANCE_TOTAL} 口径轻武器实弹与坦克主炮弹 1:1 纵剖对比实验室`,
         },
         {
           key: 'S',
@@ -643,7 +657,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
   en: {
     nav: {
       ariaLabel: 'Product showcase primary navigation',
-      versionBadge: `v2.0 · ${VAULT_EXHIBIT_COUNT}-EXHIBIT FLAGSHIP`,
+      versionBadge: `v3.2 · ${VAULT_EXHIBIT_COUNT}-EXHIBIT FLAGSHIP`,
       capabilities: '4 Core Modes',
       documentary: 'AI 3D Director',
       gallery: 'Live Captures',
@@ -656,14 +670,14 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       eyebrow: `OPEN-SOURCE WEBGL 2.0 MUSEUM · ${VAULT_EXHIBIT_COUNT} EXHIBITS · ${VAULT_AUDIO_TOTAL} AI VOICE CLIPS · 1,000M BALLISTICS LAB`,
       titlePrefix: 'Explore ',
       titleHighlight: '1:1 Mechanical Cutaways & 3D AI Documentaries',
-      titleSuffix: ` of ${VAULT_EXHIBIT_COUNT} Iconic Firearms & Archery Systems in Your Browser`,
-      subLead: 'Procedural real-time CSG modeling of ',
+      titleSuffix: ` of ${VAULT_EXHIBIT_COUNT} Iconic Firearms, Archery & 1:1 Main Battle Tanks in Your Browser`,
+      subLead: 'Dual-track Blender 5.2 Draco & procedural CSG modeling of ',
       subPartsStrong: `${VAULT_PARTS_TOTAL} moving CAD components`,
       subMid1: ', ',
-      subMapsStrong: `${VAULT_TEXTURES_TOTAL} custom 2K 5-channel ORM textures`,
+      subMapsStrong: `${VAULT_TEXTURES_TOTAL} custom 2K 5-channel ORM textures (${VAULT_SUITES_TOTAL} suites)`,
       subMid2: ', and ',
-      subAudioStrong: `${VAULT_AUDIO_TOTAL} bilingual voice clips + Web Audio ballistic acoustics`,
-      subTail: `. Zero installs—launch 3D Director Mode, test 1,000m RK4 External Ballistics & FFP Reticles (R), compare mechanisms in Showdown Lab (S), explore the ${LAB_CALIBER_TOTAL}-Caliber Cutaway Lab (B), export HD 3D Share Posters (U), or print 17-Plate Monographs (Ctrl/Cmd+P) at 60 FPS—inspecting caseless rotary breeches, integral baffle suppressors, 6-barrel Gatling cams, and pulley-cable hyperbursts.`,
+      subAudioStrong: `${VAULT_AUDIO_TOTAL} bilingual voice clips + Web Audio ballistic & cannon acoustics`,
+      subTail: `. Zero installs—launch 3D Director Mode, test 1,000m RK4 External Ballistics & FFP Reticles (R · ${BALLISTICS_PROFILES_TOTAL} profiles), compare mechanisms in Showdown Lab (S), explore the ${ORDNANCE_TOTAL}-Caliber Small-Arms & Tank Ordnance Lab (B), export HD 3D Share Posters (U), or print 17-Plate Monographs (Ctrl/Cmd+P) at 60 FPS—inspecting ZTZ-99A carousel autoloaders, M1A2 SEP v3 gas turbines, Leopard 2A7V Arrowhead armor, and Tiger 131 88mm breeches.`,
       ctaArmory: 'Enter 3D Digital Armory',
       ctaDirector: (tag) => `Play ${tag} 3D Documentary`,
       ctaExplode: (tag) => `Open ${tag} Disassembly`,
@@ -671,11 +685,10 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       ctaShowdown: 'Mechanism Showdown (S)',
       ctaShowdownTitle:
         'Open 3-Axis Mechanical Lineage Matrix & Dual-Exhibit Showdown Lab (Shortcut: S)',
-      ctaCartridges: `${LAB_CALIBER_TOTAL}-Caliber Cutaway Lab (B)`,
-      ctaCartridgesTitle: `Open ${LAB_CALIBER_TOTAL}-Caliber SAAMI/CIP Cartridge & Shotshell 1:1 Cutaway Lab (Shortcut: B)`,
+      ctaCartridges: `${ORDNANCE_TOTAL}-Caliber Ordnance Lab (B)`,
+      ctaCartridgesTitle: `Open ${ORDNANCE_TOTAL}-Caliber (${LAB_CALIBER_TOTAL} Small-Arms + ${TANK_ORDNANCE_TOTAL} Tank Ordnance) 1:1 Cutaway Lab (Shortcut: B)`,
       ctaBallistics: '1,000m Trajectory Lab (R)',
-      ctaBallisticsTitle:
-        'Open 1,000m RK4 External Ballistics, Crosswind Drift, FFP Reticle & Sniper DOPE Lab (Shortcut: R)',
+      ctaBallisticsTitle: `Open 1,000m RK4 External Ballistics (${BALLISTICS_PROFILES_TOTAL} profiles), Crosswind Drift, FFP Reticle & Sniper DOPE Lab (Shortcut: R)`,
       ctaPoster: 'HD 3D Share Poster (U)',
       ctaPosterTitle:
         'Open Instant HD 3D Cutaway Social Poster Studio with QR Deep-Link & Armorer Rank Seal (Shortcut: U)',
@@ -698,20 +711,29 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
     metrics: [
       {
         val: `${VAULT_EXHIBIT_COUNT} Icons`,
-        lbl: `${VAULT_FIREARM_COUNT} Firearms & 2 Archery Systems · Full 3-Axis Lineage`,
+        lbl: `${VAULT_FIREARM_COUNT} Firearms, ${VAULT_ARCHERY_COUNT} Archery & ${VAULT_ARMOR_COUNT} 1:1 MBTs · Full Lineage`,
       },
-      { val: `${VAULT_PARTS_TOTAL} Parts`, lbl: 'Manifold CSG Nodes · Zero Clipping' },
-      { val: `${VAULT_TEXTURES_TOTAL} Maps`, lbl: '2K 5-Channel Packed ORM Textures' },
-      { val: `${VAULT_AUDIO_TOTAL} Clips`, lbl: 'Bilingual Gemini TTS R&D & Part Audio' },
       {
-        val: `${LAB_CALIBER_TOTAL}-Caliber · 1,000m`,
-        lbl: 'Cutaway Lab · RK4 Ballistics · Share Poster & Print',
+        val: `${VAULT_PARTS_TOTAL} Parts`,
+        lbl: 'Draco + Manifold CSG Nodes · Zero Clipping',
+      },
+      {
+        val: `${VAULT_TEXTURES_TOTAL} Maps`,
+        lbl: `2K 5-Channel Packed ORM · ${VAULT_SUITES_TOTAL} Texture Suites`,
+      },
+      {
+        val: `${VAULT_AUDIO_TOTAL} Clips`,
+        lbl: 'Bilingual Gemini TTS R&D & Part Audio',
+      },
+      {
+        val: `${ORDNANCE_TOTAL} Ordnance · ${BALLISTICS_PROFILES_TOTAL} RK4`,
+        lbl: '15 Small-Arms + 3 Tank Rounds · 1,000m Ballistics',
       },
     ],
     capabilities: {
       kicker: 'FOUR CORE CAPABILITIES',
       title: 'Four Armorer-Grade 3D Inspection & Simulation Modes',
-      desc: `From phosphated roll-marks, straw-tempered steel, and laminated birch to 90° caseless rotary breeches, 6-stage integral baffles, 6-barrel Gatling cams, and pulley-cable hyperbursts, all ${VAULT_EXHIBIT_COUNT} exhibits (${VAULT_PARTS_TOTAL} parts) integrate multi-stage disassembly, 7-stage ballistics, GPU cutaway, 5-channel PBR, 1,000m Range Lab (R), Mechanism Showdown (S), ${LAB_CALIBER_TOTAL}-Caliber Lab (B), and HD Share Posters (U).`,
+      desc: `From phosphated roll-marks, 90° caseless rotary breeches, and 6-barrel Gatling cams to the Heavy Armor Hall (ZTZ-99A carousel autoloader, M1A2 SEP v3 gas turbine & blast doors, Leopard 2A7V Arrowhead wedges, and Tiger 131 88mm horizontal wedge), all ${VAULT_EXHIBIT_COUNT} exhibits (${VAULT_PARTS_TOTAL} parts) unify disassembly, 7-stage ballistics, GPU cutaway, 5-channel PBR, 1,000m Range Lab (R · ${BALLISTICS_PROFILES_TOTAL} profiles), Showdown (S), ${ORDNANCE_TOTAL}-Caliber Lab (B), and Share Posters (U).`,
       cards: {
         explode: {
           alt: 'AK-15M1 zero-reflow callout leaders and multi-stage exploded workbench',
@@ -725,8 +747,8 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         firing: {
           alt: 'Barrett M82A1 .50 BMG barrel short-recoil and 60-degree arrowhead muzzle blast',
           tag: 'MODE 02 · 7-STAGE KINEMATICS & BALLISTICS',
-          title: `7-Stage Coupled Kinematics + ${LAB_CALIBER_TOTAL}-Caliber & Compound Archery Ballistics`,
-          desc: 'Faithfully models long/short-stroke pistons, H&K G11 90° caseless rotary breech, VSS integral 6-baffle suppressor & linear striker, M134D 28V 6-barrel Gatling cam wave, AN-94 pulley-cable 1,800 RPM hyperburst, M249 belt shuttle, Luger P08 toggle, KRISS Super V slider, twin ARGO, M1 en-bloc, Colt Python ratchet, and compound archery.',
+          title: `7-Stage Coupled Kinematics + ${ORDNANCE_TOTAL}-Caliber Small-Arms/Tank & Archery Ballistics`,
+          desc: 'Faithfully models long/short-stroke pistons, H&K G11 90° caseless rotary breech, VSS 6-baffle suppressor, M134D 6-barrel Gatling, AN-94 pulley-cable hyperburst, ZTZ-99A 22-round floor carousel autoloader, M1A2 & Leopard 2A7V blast-door 120mm reloading, Tiger 131 88mm horizontal sliding-wedge breech, and compound archery.',
           cta: 'Launch Barrett .50 BMG Slow-Mo Cycle',
         },
         section: {
@@ -748,9 +770,9 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       },
     },
     documentary: {
-      kicker: 'MULTIMODAL AUDIO-VISUAL ENGINE · V2.0',
+      kicker: 'MULTIMODAL AUDIO-VISUAL ENGINE · V3.2',
       title: 'Bilingual 4-Act AI Documentary · 3D Director & Acoustic Engine',
-      desc: `Beyond silent manual model viewers: all ${VAULT_EXHIBIT_COUNT} firearms & archery systems ship with bilingual 4-act R&D documentaries, ${VAULT_PARTS_TOTAL} spoken component breakdowns, automated 3D camera choreography, and procedural Web Audio gunsmith acoustics.`,
+      desc: `Beyond silent manual model viewers: all ${VAULT_EXHIBIT_COUNT} firearms, compound archery & 1:1 main battle tank exhibits ship with bilingual 4-act R&D documentaries, ${VAULT_PARTS_TOTAL} spoken component breakdowns, automated 3D camera choreography, and procedural Web Audio acoustics.`,
       directorBadge: '3D STORY DIRECTOR · AUTO-CHOREOGRAPHY',
       directorTitle: '4-Act Documentary "3D Director Auto-Tour Mode"',
       directorDesc:
@@ -792,10 +814,17 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       monographCtaTitle:
         'Capture 17 offscreen 3D plates and print bilingual Kids Picture Book or Collector Monograph (Ctrl/Cmd+P)',
       soundBadge: 'PROCEDURAL WEB AUDIO · ZERO ASSET BLOAT',
-      soundTitle: `${LAB_CALIBER_TOTAL}-Caliber & Compound Archery Acoustics & 7-Stage Foley Synth`,
+      soundTitle: `${ORDNANCE_TOTAL}-Caliber Small-Arms/Tank & Archery Acoustics & 7-Stage Foley Synth`,
       soundDesc:
-        'Real-time procedural Web Audio synthesis (0 KB external audio bloat): distinguishes .50 BMG shockwaves, M134D 3,000 RPM six-barrel buzzsaw roars, H&K G11 2,100 RPM caseless bursts, AN-94 1,800 RPM whistling hyperbursts, VSS 130 dB subsonic whispers, M1 Garand en-bloc "PING!" ringing, and compound bow/crossbow thumps at 1.0x, separates every metallic click at 0.25x, and ducks automatically under TTS voice.',
+        'Real-time procedural Web Audio synthesis (0 KB external audio bloat): distinguishes 125/120/88mm main battle tank cannon blasts, .50 BMG shockwaves, M134D 3,000 RPM six-barrel buzzsaw roars, H&K G11 2,100 RPM caseless bursts, AN-94 1,800 RPM whistling hyperbursts, VSS 130 dB subsonic whispers, M1 Garand en-bloc "PING!" ringing, and compound bow/crossbow thumps at 1.0x, separates every metallic click at 0.25x, and ducks automatically under TTS voice.',
       caliberRows: [
+        {
+          caliber: '125mm / 120×570mm / 88×571mmR',
+          weaponTag: 'ZTZ-99A / M1A2 SEP v3 / Leopard 2A7V / Tiger 131',
+          freqTag: '24–34 Hz Tank Cannon Shockwave & Breech',
+          signature:
+            '125mm 650 MPa smoothbore & carousel hoist / M1A2 blast-door slam & AGT1500 turbine / Leopard 2A7V L/55A1 / Tiger 131 88mm wedge',
+        },
         {
           caliber: '12.7×99mm (.50 BMG)',
           weaponTag: 'M82A1',
@@ -938,8 +967,8 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
     },
     arsenal: {
       kicker: `${VAULT_EXHIBIT_COUNT}-BAY MASTER ROSTER · FACTORY 1:1`,
-      title: `${VAULT_EXHIBIT_COUNT} Iconic Firearms & Archery Systems · 1:1 Metrology Matrix`,
-      desc: 'Spanning all 3 orthogonal mechanical axes (including 90° caseless rotary breech, integral baffle suppression, 28V electric Gatling, pulley-cable hyperburst, belt shuttle, toggle lock, and Super V off-axis delay) plus compound archery—each with a 4-act bilingual documentary, Armorer Qualification exams, and Dual-Exhibit Mechanism Showdown (S).',
+      title: `${VAULT_EXHIBIT_COUNT} Iconic Firearms, Archery & 1:1 Main Battle Tanks · Metrology Matrix`,
+      desc: 'Spanning all 3 orthogonal firearm axes, compound archery, and the new 1:1 Heavy Armor Hall (ZTZ-99A, M1A2 SEP v3 Abrams, KMW Leopard 2A7V, WWII Tiger 131)—each equipped with Blender 5.2 Draco + CSG internals, a 4-act bilingual documentary, Armorer Qualification exams, and Dual-Exhibit Mechanism Showdown (S).',
       filterAria: 'Filter vault collection by category',
       categories: {
         all: 'All Vault',
@@ -950,6 +979,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         shotgun: 'Shotguns',
         pistol: 'Pistol / Revolver',
         archery: 'Bow / Crossbow',
+        armor: 'Heavy Armor',
       },
       partsPill: (n) => `${n} Parts`,
       specCaliber: 'Caliber',
@@ -992,15 +1022,15 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
           code: 'ARCH-03',
           iconKey: 'gauge',
           title: '60Hz Internal/External Ballistics & IR Audio',
-          desc: `Zero-GC transient clock drives 60fps ${LAB_CALIBER_TOTAL}-caliber SAAMI/CIP chamber curves, 1,000m RK4 FFP scope ballistics (R), Showdown traces (S), and stereo convolution waveguide SFX.`,
+          desc: `Zero-GC transient clock drives 60fps ${ORDNANCE_TOTAL}-caliber small-arms & tank cannon chamber curves, 1,000m RK4 FFP ballistics (${BALLISTICS_PROFILES_TOTAL} profiles, R), Showdown traces (S), and stereo convolution waveguide SFX.`,
           metric: '60 FPS Zero Re-render',
         },
         {
           code: 'ARCH-04',
           iconKey: 'sparkles',
           title: 'GTAO + AgX Cinema, Share Poster & Print Studio',
-          desc: `5-channel ORM maps combine with sub-mm GTAO contact occlusion, HDR bloom, and AgX tone mapping; 3D Director syncs to ${VAULT_AUDIO_TOTAL} TTS clips alongside HD 3D Share Posters (U) and 17-Plate Monograph printing (Ctrl/Cmd+P).`,
-          metric: `${VAULT_AUDIO_TOTAL} Clips · 17 Plates`,
+          desc: `${VAULT_SUITES_TOTAL} suites (${VAULT_TEXTURES_TOTAL} 5-channel ORM maps) pair with sub-mm GTAO, HDR bloom, and AgX tone mapping; 3D Director syncs to ${VAULT_AUDIO_TOTAL} TTS clips alongside Share Posters (U) and 17-Plate Monographs (Ctrl/Cmd+P).`,
+          metric: `${VAULT_AUDIO_TOTAL} Clips · ${VAULT_SUITES_TOTAL} Suites`,
         },
         {
           code: 'ARCH-05',
@@ -1059,7 +1089,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         },
         {
           key: 'B',
-          label: 'Open / Exit SAAMI/CIP 1:1 Cartridge Cutaway Lab',
+          label: `Open / Exit ${ORDNANCE_TOTAL}-Caliber Small-Arms & Tank Ordnance 1:1 Cutaway Lab`,
         },
         {
           key: 'S',

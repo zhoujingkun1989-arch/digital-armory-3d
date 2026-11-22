@@ -4,6 +4,7 @@ import { useFrame } from '@react-three/fiber';
 import { useAppStore } from '../../store/useAppStore';
 import type { WeaponId } from '../../weapons/types';
 import { playbackClock } from '../clock/playbackClock';
+import { lockLinearTextureColorSpace } from '../materials/pbrManager';
 import {
   DEFAULT_ARMORY_ENVIRONMENT,
   buildAzimuthDialMarks,
@@ -51,7 +52,11 @@ export function buildTurntablePedestalGeometries(
 ): TurntablePedestalGeometries {
   const P = TURNTABLE_PEDESTAL_PROFILE;
   const R = radius;
-  const c = P.platterChamfer;
+  const hScale = R > 100 ? 15 : 1;
+  const c = P.platterChamfer * hScale;
+  const platterH = P.platterHeight * hScale;
+  const grooveH = P.grooveHeight * hScale;
+  const totalH = P.totalHeight * hScale;
 
   const platter = new THREE.LatheGeometry(
     [
@@ -59,22 +64,22 @@ export function buildTurntablePedestalGeometries(
       new THREE.Vector2(R - c, 0),
       new THREE.Vector2(R - c * 0.3, -c * 0.12),
       new THREE.Vector2(R, -c),
-      new THREE.Vector2(R, -P.platterHeight + 0.03),
-      new THREE.Vector2(R - 0.03, -P.platterHeight),
-      new THREE.Vector2(R * 0.97, -P.platterHeight),
+      new THREE.Vector2(R, -platterH + 0.03 * hScale),
+      new THREE.Vector2(R - 0.03 * hScale, -platterH),
+      new THREE.Vector2(R * 0.97, -platterH),
     ],
     160
   );
 
-  const top = -P.platterHeight - P.grooveHeight;
+  const top = -platterH - grooveH;
   const chassis = new THREE.LatheGeometry(
     [
       new THREE.Vector2(R * 0.97, top),
       new THREE.Vector2(R * 1.012, top),
-      new THREE.Vector2(R * P.chassisFlare, top - 0.06),
-      new THREE.Vector2(R * P.chassisFlare, -P.totalHeight + 0.05),
-      new THREE.Vector2(R * P.chassisFlare - 0.05, -P.totalHeight),
-      new THREE.Vector2(R * 0.5, -P.totalHeight),
+      new THREE.Vector2(R * P.chassisFlare, top - 0.06 * hScale),
+      new THREE.Vector2(R * P.chassisFlare, -totalH + 0.05 * hScale),
+      new THREE.Vector2(R * P.chassisFlare - 0.05 * hScale, -totalH),
+      new THREE.Vector2(R * 0.5, -totalH),
     ],
     160
   );
@@ -82,20 +87,20 @@ export function buildTurntablePedestalGeometries(
   const accentGroove = new THREE.CylinderGeometry(
     R * 0.994,
     R * 0.994,
-    P.grooveHeight + 0.006,
+    grooveH + 0.006 * hScale,
     160,
     1,
     true
   );
-  accentGroove.translate(0, -P.platterHeight - P.grooveHeight / 2, 0);
+  accentGroove.translate(0, -platterH - grooveH / 2, 0);
 
   const dial = new THREE.RingGeometry(R * P.dialInner, R * P.dialOuter, 192, 1);
   dial.rotateX(-Math.PI / 2);
-  dial.translate(0, 0.006, 0);
+  dial.translate(0, 0.006 * hScale, 0);
 
   const insert = new THREE.CircleGeometry(R * P.insertRadius, 128);
   insert.rotateX(-Math.PI / 2);
-  insert.translate(0, 0.004, 0);
+  insert.translate(0, 0.004 * hScale, 0);
 
   const statusRing = new THREE.RingGeometry(
     R * (P.insertRadius + 0.012),
@@ -104,11 +109,15 @@ export function buildTurntablePedestalGeometries(
     1
   );
   statusRing.rotateX(-Math.PI / 2);
-  statusRing.translate(0, 0.008, 0);
+  statusRing.translate(0, 0.008 * hScale, 0);
 
   // Amber 0° index notch on the platter rim, pointing at +X (muzzle datum)
-  const indexNotch = new THREE.BoxGeometry(R * 0.05, 0.012, R * 0.014);
-  indexNotch.translate(R * (P.dialOuter + 0.012), 0.008, 0);
+  const indexNotch = new THREE.BoxGeometry(
+    R * 0.05,
+    0.012 * hScale,
+    R * 0.014
+  );
+  indexNotch.translate(R * (P.dialOuter + 0.012), 0.008 * hScale, 0);
 
   return {
     platter,
@@ -301,7 +310,7 @@ function getSpunFinishTexture(): THREE.CanvasTexture | null {
   if (!c) return null;
   paintSpunFinish(c.ctx, 1024);
   spunTexture = new THREE.CanvasTexture(c.canvas);
-  spunTexture.colorSpace = THREE.NoColorSpace;
+  lockLinearTextureColorSpace(spunTexture);
   spunTexture.anisotropy = 8;
   spunTexture.name = 'Turntable.spunFinish';
   spunTexture.needsUpdate = true;

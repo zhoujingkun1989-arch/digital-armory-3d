@@ -256,6 +256,103 @@ function getWeaponCategoryTokens(
   if (id === 'an94') {
     tokens.push('abakan', 'pulley', 'hyperburst', '阿巴坎', '滑轮', '双发点射');
   }
+  if (category === 'armor') {
+    tokens.push(
+      'armor',
+      'heavy armor',
+      'heavy armor hall',
+      'tank',
+      'mbt',
+      'main battle tank',
+      '重装甲',
+      '重装甲大厅',
+      '重装战车',
+      '坦克',
+      '主战坦克'
+    );
+  }
+  if (id === 'ztz99a') {
+    tokens.push(
+      '99a',
+      'ztz-99a',
+      'type 99a',
+      'zpt-98',
+      '125mm',
+      'apfsds',
+      'dtc10',
+      'fy-4',
+      'era',
+      'autoloader',
+      'carousel',
+      '99a主战坦克',
+      '自动装弹机',
+      '爆反',
+      '穿甲弹'
+    );
+  }
+  if (id === 'm1a2') {
+    tokens.push(
+      'abrams',
+      'sep v3',
+      'sepv3',
+      'm256',
+      '120mm',
+      'apfsds',
+      'm829a4',
+      'agt1500',
+      'turbine',
+      'gas turbine',
+      'chobham',
+      'blast door',
+      '艾布拉姆斯',
+      '燃气轮机',
+      '防爆门',
+      '贫铀装甲'
+    );
+  }
+  if (id === 'leopard2a7') {
+    tokens.push(
+      'leopard',
+      'leopard 2',
+      '2a7v',
+      'kmw',
+      'rh-120',
+      'l55',
+      'l/55a1',
+      '120mm',
+      'apfsds',
+      'dm63a1',
+      'mtu',
+      'mb873',
+      'arrowhead',
+      '豹2',
+      '豹2a7v',
+      '箭簇装甲',
+      '动力包'
+    );
+  }
+  if (id === 'tiger1') {
+    tokens.push(
+      'tiger',
+      'tiger 131',
+      'tiger i',
+      'pzkpfw vi',
+      'kwk 36',
+      '88mm',
+      'pzgr39',
+      'maybach',
+      'hl230',
+      'schachtellaufwerk',
+      'wwii',
+      'heavy tank',
+      '虎式',
+      '虎式131',
+      '88炮',
+      '迈巴赫',
+      '交错负重轮',
+      '重型坦克'
+    );
+  }
   if (category === 'rifle') {
     tokens.push('assault', 'carbine', '步枪');
   }
@@ -278,7 +375,7 @@ export function buildCommandPaletteItems(
   const studioUi = UI_STRINGS[lang].studio;
   const items: CommandPaletteItem[] = [];
 
-  // 1. All 23 Museum Exhibits
+  // 1. All 27 Museum Exhibits (21 Firearms + 2 Archery + 4 1:1 Main Battle Tanks)
   for (const manifest of WEAPON_MANIFESTS) {
     const id = manifest.id;
     const cat = manifest.catalog;
@@ -410,7 +507,19 @@ export function buildCommandPaletteItems(
         '数字枪库',
         '枪库展厅',
       ],
-      secondaryFields: ['armory', 'vault', 'hall', 'gallery', '展馆', '转台'],
+      secondaryFields: [
+        'armory',
+        'vault',
+        'hall',
+        'heavy armor',
+        'armor',
+        'tank',
+        'gallery',
+        '展馆',
+        '重装甲大厅',
+        '坦克',
+        '转台',
+      ],
       execute: () => {
         playWorkbenchFoley('preset_detent');
         useAppStore.getState().returnToArmory();
@@ -437,16 +546,68 @@ export function buildCommandPaletteItems(
         'cartridge',
         'ammo',
         'ammunition',
+        'ordnance',
         'caliber',
         'saami',
         'bullet',
+        '88mm',
+        '120mm',
+        '125mm',
+        'apfsds',
+        'pzgr39',
         '弹药',
         '子弹',
+        '炮弹',
+        '穿甲弹',
         '口径',
       ],
       execute: () => {
         playWorkbenchFoley('preset_detent');
         useAppStore.getState().openCartridgeLab();
+      },
+    },
+    {
+      id: 'lab:tank_ordnance',
+      group: 'labs',
+      icon: 'cartridge',
+      title:
+        lang === 'en'
+          ? '1:1 Tank Cannon Ordnance Cutaway Lab'
+          : '1:1 主战坦克炮弹纵剖对比馆',
+      subtitle:
+        lang === 'en'
+          ? '88mm PzGr.39 · 120mm NATO APFSDS · 125mm DTC10-125 at 1:1 physical scale'
+          : '88mm PzGr.39 · 120mm NATO APFSDS · 125mm DTC10-125 绝对比例纵剖同台陈列',
+      codeBadge: '88/120/125mm',
+      primaryFields: [
+        '1:1 Tank Cannon Ordnance Cutaway Lab',
+        '主战坦克炮弹纵剖对比馆',
+        'Tank Ordnance',
+        '坦克炮弹',
+        '125mm APFSDS',
+        '120mm APFSDS',
+        '88mm PzGr.39',
+      ],
+      secondaryFields: [
+        'apfsds',
+        'sabot',
+        'pzgr39',
+        'dtc10',
+        'm829a4',
+        'dm63a1',
+        'armor',
+        'tank',
+        'heavy armor',
+        '穿甲弹',
+        '脱壳穿甲弹',
+        '主炮弹',
+        '重装甲',
+      ],
+      execute: () => {
+        playWorkbenchFoley('preset_detent');
+        const st = useAppStore.getState();
+        st.openCartridgeLab('125mm_apfsds');
+        st.setCartridgeLineupOverview(true);
       },
     },
     {
@@ -476,10 +637,15 @@ export function buildCommandPaletteItems(
         'mil',
         'moa',
         'wind',
+        '125mm',
+        '120mm',
+        '88mm',
+        'apfsds',
         '外弹道',
         '分划板',
         '风偏',
         '射表',
+        '坦克炮弹道',
       ],
       execute: () => {
         playWorkbenchFoley('preset_detent');

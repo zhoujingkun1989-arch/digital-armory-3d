@@ -3617,6 +3617,627 @@ export const FIELD_STRIP_PLANS: Readonly<
       },
     ],
   },
+
+  // =========================================================================
+  // 24. PLA ZTZ-99A Main Battle Tank (125mm ZPT-98 L/50) — 6-Step Depot Strip
+  // =========================================================================
+  ztz99a: {
+    weaponId: 'ztz99a',
+    manualCodeZh: 'GJB 重装保障教范 · ZTZ-99A 六步大修级拆解规程',
+    manualCodeEn: 'PLA Heavy Depot Manual · ZTZ-99A 6-Step Overhaul Strip',
+    steps: [
+      {
+        id: 'ztz99a_strip_era_skirts',
+        orderLabel: '01',
+        titleZh: '卸除箭簇形 FY-4 双防反应装甲模块与车体侧裙板',
+        titleEn: 'Unbolt FY-4 Arrowhead ERA Wedges, Glacis Blocks & Side Skirts',
+        actionHintZh:
+          '点击炮塔楔形 FY-4 反应装甲块、首上反应装甲或橡胶-钢复合侧裙板，外推分离附加防护模块。',
+        actionHintEn:
+          'Click the turret FY-4 ERA wedges, glacis ERA blocks, or side skirts to unbolt external armor modules.',
+        requires: [],
+        stripBlockedNoteZh: '',
+        stripBlockedNoteEn: '',
+        reassembleBlockedNoteZh:
+          '重新挂载 FY-4 反应装甲与侧裙板前，必须先将炮塔装甲壳体（步骤 04）与后动力舱盖板（步骤 02）复位锁紧！',
+        reassembleBlockedNoteEn:
+          'Reinstall the turret shell (Step 04) and rear engine deck (Step 02) before bolting the ERA modules and side skirts back on!',
+        triggerPartIds: ['ztz99a_era_wedges', 'ztz99a_glacis_era', 'ztz99a_side_skirts'],
+        bindings: [
+          bind('ztz99a_era_wedges', 0),
+          bind('ztz99a_glacis_era', 0),
+          bind('ztz99a_side_skirts', 0),
+        ],
+      },
+      {
+        id: 'ztz99a_strip_rear_deck',
+        orderLabel: '02',
+        titleZh: '开启车尾装甲百叶动力舱顶盖板',
+        titleEn: 'Unlatch & Lift Armored Rear Engine Deck Louvers',
+        actionHintZh:
+          '点击车体后部百叶窗装甲动力舱顶盖，向上掀起以敞开 150HB-2 V12 动力包舱室。',
+        actionHintEn:
+          'Click the armored rear engine deck to open the 150HB-2 powerpack compartment.',
+        requires: ['ztz99a_strip_era_skirts'],
+        stripBlockedNoteZh:
+          '重装保障规程：掀开动力舱顶盖前必须先卸除车体侧裙板与外挂反应装甲（步骤 01）以腾出吊装作业面！',
+        stripBlockedNoteEn:
+          'Depot safety rule: remove the side skirts and ERA modules (Step 01) before lifting the rear engine deck!',
+        reassembleBlockedNoteZh:
+          '合拢车尾装甲动力舱顶盖前，必须先将 1,500 马力 V12 柴油机与 CH-1000 传动箱吊装入舱（步骤 03）！',
+        reassembleBlockedNoteEn:
+          'Drop the 150HB-2 V12 engine and CH-1000 transmission back into the hull (Step 03) before latching the rear deck!',
+        triggerPartIds: ['ztz99a_rear_deck'],
+        bindings: [bind('ztz99a_rear_deck', 0)],
+      },
+      {
+        id: 'ztz99a_strip_powerpack',
+        orderLabel: '03',
+        titleZh: '整体吊出 1,500 马力 150HB-2 V12 发动机与 CH-1000 液力综合传动',
+        titleEn: 'Hoist 1,500 hp 150HB-2 V12 Diesel & CH-1000 Transmission Powerpack',
+        actionHintZh:
+          '点击横置 150HB-2 双涡轮 V12 柴油机或 CH-1000 综合传动箱，解脱快接管路并垂直吊出检修。',
+        actionHintEn:
+          'Click the 150HB-2 V12 diesel engine or CH-1000 transmission to hoist the integrated powerpack clear.',
+        requires: ['ztz99a_strip_rear_deck'],
+        stripBlockedNoteZh:
+          '动力包被厚重的车尾装甲动力舱盖板压锁，请先开启动力舱顶盖（步骤 02）！',
+        stripBlockedNoteEn:
+          'The armored rear engine deck seals the powerpack bay—lift the rear deck (Step 02) first!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: ['ztz99a_v12_engine', 'ztz99a_transmission'],
+        bindings: [
+          bind('ztz99a_v12_engine', 0),
+          bind('ztz99a_transmission', 0),
+        ],
+      },
+      {
+        id: 'ztz99a_strip_turret_shell',
+        orderLabel: '04',
+        titleZh: '卸除顶部武器站、CITV 猎歼观瞄并吊离焊接主炮塔壳体',
+        titleEn: 'Detach Roof Armaments, CITV Hunter-Killer Optics & Welded Turret Shell',
+        actionHintZh:
+          '点击焊接炮塔装甲壳体、车长独立热像仪（CITV）或车顶高射机枪，整体向上吊开暴露主炮尾与转盘舱。',
+        actionHintEn:
+          'Click the welded turret shell, CITV optics, or roof armaments to crane the armored shell off the gun cradle.',
+        requires: ['ztz99a_strip_era_skirts'],
+        stripBlockedNoteZh:
+          '炮塔正前与两翼螺栓固定有箭簇形 FY-4 反应装甲模块，请先拆下外挂 ERA（步骤 01）！',
+        stripBlockedNoteEn:
+          'FY-4 ERA wedges bolt across the turret cheeks—remove the ERA and side skirts (Step 01) first!',
+        reassembleBlockedNoteZh:
+          '回装焊接主炮塔壳体前，必须先将 125mm ZPT-98 主炮、驻退机与炮尾闭锁总成装配归位（步骤 05）！',
+        reassembleBlockedNoteEn:
+          'Seat the 125mm ZPT-98 main gun, recoil cylinders, and breech block (Step 05) before lowering the turret shell!',
+        triggerPartIds: ['ztz99a_turret_shell', 'ztz99a_optics_citv', 'ztz99a_roof_armaments'],
+        bindings: [
+          bind('ztz99a_turret_shell', 0),
+          bind('ztz99a_optics_citv', 0),
+          bind('ztz99a_roof_armaments', 0),
+        ],
+      },
+      {
+        id: 'ztz99a_strip_main_gun',
+        orderLabel: '05',
+        titleZh: '前抽 125mm ZPT-98 L/50 滑膛炮、液气驻退复进机与立式楔形炮闩',
+        titleEn: 'Withdraw 125mm ZPT-98 L/50 Smoothbore, Recoil Cylinders & Breech Block',
+        actionHintZh:
+          '点击 125mm 滑膛炮管、炮尾立楔炮闩、液气驻退筒或高刚度螺旋复进簧，分解主武器闭锁总成。',
+        actionHintEn:
+          'Click the 125mm main gun, vertical wedge breech block, recoil cylinders, or recoil springs to strip the main ordnance.',
+        requires: ['ztz99a_strip_turret_shell'],
+        stripBlockedNoteZh:
+          '125mm 主炮耳轴与驻退复进机封装在焊接炮塔壳体内，请先吊离炮塔壳体（步骤 04）！',
+        stripBlockedNoteEn:
+          'The welded turret shell encloses the gun trunnions and recoil cradle—remove the turret shell (Step 04) first!',
+        reassembleBlockedNoteZh:
+          '装回 125mm 主炮与立式楔形炮闩前，必须先将 22 发底置转盘自动装弹机与推弹机构安装就位（步骤 06）！',
+        reassembleBlockedNoteEn:
+          'Reinstall the 22-round carousel autoloader and rammer chain (Step 06) before mounting the 125mm main gun!',
+        triggerPartIds: ['ztz99a_main_gun', 'ztz99a_breech_block', 'ztz99a_recoil_cylinders'],
+        bindings: [
+          bind('ztz99a_main_gun', 0),
+          bind('ztz99a_gun_cradle', 0),
+          bind('ztz99a_recoil_cylinders', 0),
+          bind('ztz99a_recoil_springs', 0),
+          bind('ztz99a_breech_block', 0),
+        ],
+      },
+      {
+        id: 'ztz99a_strip_autoloader',
+        orderLabel: '06',
+        titleZh: '吊出 22 发底置转盘自动装弹机、垂直举升托架与链式推弹器',
+        titleEn: 'Extract 22-Round Carousel Autoloader, Lift Tray & Rammer Chain',
+        actionHintZh:
+          '点击战斗室底部的 22 发转盘自动装弹机、升降托弹架、推弹链条或弹底抛壳机构，完成核心装填系统全拆。',
+        actionHintEn:
+          'Click the 22-round carousel autoloader, loading tray, rammer chain, or stub ejector to extract the loading assembly.',
+        requires: ['ztz99a_strip_main_gun'],
+        stripBlockedNoteZh:
+          '125mm 炮尾与炮架横跨在转盘自动装弹机正上方，必须先拆下主炮与立楔炮尾（步骤 05）！',
+        stripBlockedNoteEn:
+          'The 125mm breech sits directly above the carousel hoist—withdraw the main gun assembly (Step 05) first!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: ['ztz99a_autoloader_carousel', 'ztz99a_loading_tray', 'ztz99a_rammer_chain'],
+        bindings: [
+          bind('ztz99a_autoloader_carousel', 0),
+          bind('ztz99a_loading_tray', 0),
+          bind('ztz99a_rammer_chain', 0),
+          bind('ztz99a_rammer_spring', 0),
+          bind('ztz99a_stub_ejector', 0),
+        ],
+      },
+    ],
+  },
+
+  // =========================================================================
+  // 25. M1A2 SEP v3 Abrams (120mm M256 L/44) — 6-Step US Army Depot Strip
+  // =========================================================================
+  m1a2: {
+    weaponId: 'm1a2',
+    manualCodeZh: 'US Army TM 9-2350-388 · M1A2 SEP v3 六步军械大修拆解',
+    manualCodeEn: 'US Army TM 9-2350-388 · M1A2 SEP v3 6-Step Depot Strip',
+    steps: [
+      {
+        id: 'm1a2_strip_skirts_panels',
+        orderLabel: '01',
+        titleZh: '卸除重型复合侧裙板与尾舱顶置泄压防爆板',
+        titleEn: 'Unbolt Ballistic Side Skirts & Turret Bustle Blow-Off Panels',
+        actionHintZh:
+          '点击车体两侧重型复合防弹裙板或炮塔尾部顶置泄压防爆板，开启弹药舱与行走系统检修口。',
+        actionHintEn:
+          'Click the heavy ballistic side skirts or bustle blow-off panels to clear upper bustle and suspension access.',
+        requires: [],
+        stripBlockedNoteZh: '',
+        stripBlockedNoteEn: '',
+        reassembleBlockedNoteZh:
+          '锁回泄压防爆板与侧裙板前，必须先合拢动力舱顶盖（步骤 02）并装回隔爆尾舱弹架（步骤 04）！',
+        reassembleBlockedNoteEn:
+          'Close the engine deck (Step 02) and reinstall the bustle rack & blast doors (Step 04) before securing blow-off panels!',
+        triggerPartIds: ['m1a2_side_skirts', 'm1a2_blowoff_panels'],
+        bindings: [
+          bind('m1a2_side_skirts', 0),
+          bind('m1a2_blowoff_panels', 0),
+        ],
+      },
+      {
+        id: 'm1a2_strip_engine_deck',
+        orderLabel: '02',
+        titleZh: '掀开车尾散热格栅与燃气轮机动力舱装甲顶盖',
+        titleEn: 'Lift Armored Rear Turbine Engine Deck & Exhaust Grilles',
+        actionHintZh:
+          '点击车体后部装甲动力舱盖板，向上开启以暴露霍尼韦尔 AGT1500 燃气轮机舱。',
+        actionHintEn:
+          'Click the armored rear engine deck to expose the Honeywell AGT1500 gas turbine bay.',
+        requires: ['m1a2_strip_skirts_panels'],
+        stripBlockedNoteZh:
+          '开启后部动力舱盖板前，请先卸除两侧防弹裙板与泄压板（步骤 01）完成整车安全卸压！',
+        stripBlockedNoteEn:
+          'Remove the side skirts and blow-off panels (Step 01) before lifting the rear engine deck!',
+        reassembleBlockedNoteZh:
+          '合拢动力舱顶盖前，必须先将 AGT1500 燃气轮机、X1100 传动箱与主油箱吊回底盘（步骤 03）！',
+        reassembleBlockedNoteEn:
+          'Reinstall the AGT1500 turbine, X1100 transmission, and fuel cells (Step 03) before closing the engine deck!',
+        triggerPartIds: ['m1a2_engine_deck'],
+        bindings: [bind('m1a2_engine_deck', 0)],
+      },
+      {
+        id: 'm1a2_strip_turbine_pack',
+        orderLabel: '03',
+        titleZh: '吊出 AGT1500 1,500 hp 燃气轮机、X1100-3B 传动箱与主油箱',
+        titleEn: 'Hoist AGT1500 1,500 hp Gas Turbine, X1100-3B Transmission & Fuel Cells',
+        actionHintZh:
+          '点击霍尼韦尔 AGT1500 多燃料燃气轮机、X1100-3B 十字传动箱或装甲燃料箱，整体向后上方吊离。',
+        actionHintEn:
+          'Click the AGT1500 gas turbine, X1100-3B transmission, or fuel cells to pull the complete powerpack clear.',
+        requires: ['m1a2_strip_engine_deck'],
+        stripBlockedNoteZh:
+          'AGT1500 燃气轮机动力包位于车尾装甲顶盖下方，必须先掀开动力舱顶盖（步骤 02）！',
+        stripBlockedNoteEn:
+          'The armored engine deck covers the turbine compartment—open the engine deck (Step 02) first!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: ['m1a2_agt1500_turbine', 'm1a2_x1100_transmission', 'm1a2_fuel_cells'],
+        bindings: [
+          bind('m1a2_agt1500_turbine', 0),
+          bind('m1a2_x1100_transmission', 0),
+          bind('m1a2_fuel_cells', 0),
+        ],
+      },
+      {
+        id: 'm1a2_strip_bustle_ammo',
+        orderLabel: '04',
+        titleZh: '开启液压防爆隔离门、退出待发 M829A4 穿甲弹并撤出 36 发隔爆尾舱',
+        titleEn: 'Open Hydraulic Blast Doors, Unload Ready M829A4 & Pull 36-Rd Bustle',
+        actionHintZh:
+          '点击液压防爆隔离门、待发 120mm 穿甲弹或 36 发尾舱隔爆弹架，完成战斗室彻底清弹隔离。',
+        actionHintEn:
+          'Click the armored blast doors, ready M829A4 round, or 36-round ammo bustle to clear turret ordnance.',
+        requires: ['m1a2_strip_skirts_panels'],
+        stripBlockedNoteZh:
+          '清拆隔爆尾舱弹架前，请先卸除顶置泄压防爆板与侧裙板（步骤 01）！',
+        stripBlockedNoteEn:
+          'Unbolt the bustle blow-off panels and side skirts (Step 01) before extracting the bustle rack!',
+        reassembleBlockedNoteZh:
+          '装回隔爆尾舱弹架与防爆隔离门前，必须先将炮塔壳体与 NGAP 贫铀复合装甲复位（步骤 05）！',
+        reassembleBlockedNoteEn:
+          'Reinstall the turret shell and NGAP composite armor (Step 05) before seating the ammo bustle and blast doors!',
+        triggerPartIds: ['m1a2_blast_doors', 'm1a2_ammo_bustle', 'm1a2_ready_round'],
+        bindings: [
+          bind('m1a2_blast_doors', 0),
+          bind('m1a2_door_spring', 0),
+          bind('m1a2_ready_round', 0),
+          bind('m1a2_ammo_bustle', 0),
+        ],
+      },
+      {
+        id: 'm1a2_strip_turret_armor',
+        orderLabel: '05',
+        titleZh: '卸除 CROWS-LP 观瞄、烟幕弹具、NGAP 复合装甲夹层与主炮塔壳体',
+        titleEn: 'Strip CROWS-LP Optics, NGAP DU Composite Armor & Turret Shell',
+        actionHintZh:
+          '点击炮塔主装甲壳体、NGAP 贫铀/陶瓷复合装甲夹层或 CROWS-LP 观瞄站，向上吊开暴露 M256 主炮尾。',
+        actionHintEn:
+          'Click the turret shell, NGAP composite armor array, or CROWS-LP optics to expose the M256 gun cradle.',
+        requires: ['m1a2_strip_bustle_ammo'],
+        stripBlockedNoteZh:
+          '吊离炮塔装甲壳体前必须先清空 36 发尾舱弹药架与防爆隔离门（步骤 04）！',
+        stripBlockedNoteEn:
+          'Unload the 36-round ammo bustle and blast doors (Step 04) before craning off the turret shell!',
+        reassembleBlockedNoteZh:
+          '回装炮塔壳体与 NGAP 复合装甲前，必须先将 120mm M256 滑膛炮、立楔炮闩与复进簧安装回位（步骤 06）！',
+        reassembleBlockedNoteEn:
+          'Install the 120mm M256 main gun, breech block, and recoil springs (Step 06) before lowering the turret shell!',
+        triggerPartIds: ['m1a2_turret_shell', 'm1a2_composite_armor', 'm1a2_crows_optics'],
+        bindings: [
+          bind('m1a2_turret_shell', 0),
+          bind('m1a2_composite_armor', 0),
+          bind('m1a2_crows_optics', 0),
+          bind('m1a2_smoke_launchers', 0),
+        ],
+      },
+      {
+        id: 'm1a2_strip_main_gun',
+        orderLabel: '06',
+        titleZh: '前抽 120mm L/44 M256 滑膛炮、炮盾、螺旋复进簧与立楔炮尾',
+        titleEn: 'Withdraw 120mm L/44 M256 Smoothbore, Mantlet, Recoil Springs & Breech',
+        actionHintZh:
+          '点击 120mm M256 镀铬滑膛炮管、防盾、螺旋复进簧、立楔炮闩或弹底导流罩，完成主炮大修拆解。',
+        actionHintEn:
+          'Click the 120mm M256 barrel, mantlet, recoil springs, breech block, or stub deflector to withdraw the main gun.',
+        requires: ['m1a2_strip_turret_armor'],
+        stripBlockedNoteZh:
+          '120mm M256 主炮闭锁于厚重的炮塔壳体与复合装甲内，请先吊离炮塔装甲与 NGAP 夹层（步骤 05）！',
+        stripBlockedNoteEn:
+          'Remove the turret shell and NGAP composite armor (Step 05) before withdrawing the 120mm M256 main gun!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: ['m1a2_main_gun', 'm1a2_breech_block', 'm1a2_recoil_springs'],
+        bindings: [
+          bind('m1a2_main_gun', 0),
+          bind('m1a2_gun_mantlet', 0),
+          bind('m1a2_recoil_springs', 0),
+          bind('m1a2_breech_block', 0),
+          bind('m1a2_stub_deflector', 0),
+        ],
+      },
+    ],
+  },
+
+  // =========================================================================
+  // 26. KMW Leopard 2A7V (120mm Rh-120 L/55A1) — 6-Step Bundeswehr Depot Strip
+  // =========================================================================
+  leopard2a7: {
+    weaponId: 'leopard2a7',
+    manualCodeZh: '德国联邦国防军 TDv 2350/041 · 豹 2A7V 六步快换大修拆解',
+    manualCodeEn: 'Bundeswehr TDv 2350/041 · Leopard 2A7V 6-Step Powerpack Strip',
+    steps: [
+      {
+        id: 'leo_strip_wedges_skirts',
+        orderLabel: '01',
+        titleZh: '卸除标志性空心楔形箭簇炮塔装甲与北约迷彩重型侧裙板',
+        titleEn: 'Unbolt Spaced Arrowhead Turret Wedges & Heavy Ballistic Side Skirts',
+        actionHintZh:
+          '点击炮塔前部空心箭簇形附加装甲楔块或车体两侧重型复合裙板，外摆卸下模块防护组件。',
+        actionHintEn:
+          'Click the iconic hollow arrowhead turret wedges or heavy ballistic side skirts to unbolt modular add-on armor.',
+        requires: [],
+        stripBlockedNoteZh: '',
+        stripBlockedNoteEn: '',
+        reassembleBlockedNoteZh:
+          '挂回楔形箭簇装甲与重型侧裙板前，必须先复位动力舱盖板（步骤 02）与炮塔主壳体（步骤 05）！',
+        reassembleBlockedNoteEn:
+          'Reinstall the engine deck (Step 02) and turret shell (Step 05) before bolting back the arrowhead wedges and side skirts!',
+        triggerPartIds: ['leo_arrowhead_wedges', 'leo_side_skirts'],
+        bindings: [
+          bind('leo_arrowhead_wedges', 0),
+          bind('leo_side_skirts', 0),
+        ],
+      },
+      {
+        id: 'leo_strip_engine_deck',
+        orderLabel: '02',
+        titleZh: '开启车尾动力舱盖板并吊离双轴流高速散热风扇组',
+        titleEn: 'Lift Rear Armored Engine Deck & Dual Axial Cooling Fan Assembly',
+        actionHintZh:
+          '点击车尾装甲动力舱顶盖或双环形冷却散热风扇，向上开启敞开 MTU 动力包吊装井。',
+        actionHintEn:
+          'Click the rear engine deck or dual cooling fans to open the 15-minute quick-change powerpack bay.',
+        requires: ['leo_strip_wedges_skirts'],
+        stripBlockedNoteZh:
+          '拆解车尾散热风扇与动力舱盖前，请先卸除侧裙板与箭簇附加装甲（步骤 01）！',
+        stripBlockedNoteEn:
+          'Remove the side skirts and arrowhead wedges (Step 01) before lifting the engine deck and cooling fans!',
+        reassembleBlockedNoteZh:
+          '合拢动力舱顶盖与散热风扇前，必须先将 MTU MB 873 V12 与 RENK 传动箱吊入舱室（步骤 03）！',
+        reassembleBlockedNoteEn:
+          'Drop the MTU V12 engine and RENK transmission back into the hull (Step 03) before closing the deck!',
+        triggerPartIds: ['leo_engine_deck', 'leo_cooling_fans'],
+        bindings: [
+          bind('leo_engine_deck', 0),
+          bind('leo_cooling_fans', 0),
+        ],
+      },
+      {
+        id: 'leo_strip_mtu_pack',
+        orderLabel: '03',
+        titleZh: '执行 15 分钟野战快换：整体吊出 MTU MB 873 V12 柴油机与 RENK 传动箱',
+        titleEn: '15-Minute Field Swap: Hoist MTU MB 873 V12 Diesel & RENK HSWL 354',
+        actionHintZh:
+          '点击 47.6 升 MTU MB 873 双涡轮 V12 柴油机或 RENK HSWL 354 液力变速箱，一键垂直吊离动力包。',
+        actionHintEn:
+          'Click the MTU MB 873 V12 twin-turbo diesel or RENK HSWL 354 gearbox to hoist the modular Euro-powerpack.',
+        requires: ['leo_strip_engine_deck'],
+        stripBlockedNoteZh:
+          'MTU V12 动力包被动力舱盖板与顶置冷却风扇组封闭，请先拆开引擎盖与风扇（步骤 02）！',
+        stripBlockedNoteEn:
+          'Lift the armored engine deck and cooling fans (Step 02) before hoisting the MTU powerpack!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: ['leo_mtu_v12', 'leo_renk_transmission'],
+        bindings: [
+          bind('leo_mtu_v12', 0),
+          bind('leo_renk_transmission', 0),
+        ],
+      },
+      {
+        id: 'leo_strip_bustle_ammo',
+        orderLabel: '04',
+        titleZh: '滑开尾舱防爆门、退出 DM63A1 待发弹并清拆尾舱与前车体双弹架',
+        titleEn: 'Slide Blast Door, Clear Ready DM63A1 & Pull Bustle + Hull Ammo Racks',
+        actionHintZh:
+          '点击电动防爆门、待发 DM63A1 穿甲弹、15 发隔爆尾舱或 27 发车体前备弹架，完成全车彻底清弹。',
+        actionHintEn:
+          'Click the blast door, ready DM63A1 round, 15-rd bustle, or 27-rd hull rack to clear all 120mm ordnance.',
+        requires: ['leo_strip_wedges_skirts'],
+        stripBlockedNoteZh:
+          '清拆全车弹药架前，请先卸除箭簇附加装甲与侧裙板（步骤 01）！',
+        stripBlockedNoteEn:
+          'Remove the arrowhead wedges and side skirts (Step 01) before clearing the ammo racks!',
+        reassembleBlockedNoteZh:
+          '重装尾舱与前车体弹药架前，必须先将炮塔装甲壳体与 PERI R17A3 观瞄仪归位（步骤 05）！',
+        reassembleBlockedNoteEn:
+          'Seat the turret shell and PERI R17A3 optics (Step 05) before reloading the ammo racks and blast door!',
+        triggerPartIds: ['leo_blast_door', 'leo_ammo_bustle', 'leo_hull_ammo_rack', 'leo_ready_round'],
+        bindings: [
+          bind('leo_blast_door', 0),
+          bind('leo_ready_round', 0),
+          bind('leo_ammo_bustle', 0),
+          bind('leo_hull_ammo_rack', 0),
+        ],
+      },
+      {
+        id: 'leo_strip_turret_shell',
+        orderLabel: '05',
+        titleZh: '卸除 PERI R17A3 周视热像仪、烟幕发射器并吊离焊接炮塔壳体',
+        titleEn: 'Detach PERI R17A3 Panoramic Sight, Smoke Dischargers & Turret Shell',
+        actionHintZh:
+          '点击炮塔主装甲壳体、车长独立周视仪 PERI R17A3 或 16 联烟幕弹发射器，向上吊开暴露 L/55A1 炮架。',
+        actionHintEn:
+          'Click the turret shell, PERI R17A3 panoramic optic, or smoke dischargers to expose the Rh-120 breech.',
+        requires: ['leo_strip_bustle_ammo'],
+        stripBlockedNoteZh:
+          '吊离炮塔壳体前必须先清空 15 发隔爆尾舱与 27 发前车体弹药架（步骤 04）！',
+        stripBlockedNoteEn:
+          'Clear the bustle and hull ammunition racks (Step 04) before lifting the turret shell!',
+        reassembleBlockedNoteZh:
+          '回装炮塔装甲壳体前，必须先将 6.6m Rh-120 L/55A1 主炮与同轴驻退复进系统装配回位（步骤 06）！',
+        reassembleBlockedNoteEn:
+          'Reinstall the 6.6m Rh-120 L/55A1 gun and concentric recoil system (Step 06) before lowering the turret shell!',
+        triggerPartIds: ['leo_turret_shell', 'leo_optics_peri', 'leo_smoke_dischargers'],
+        bindings: [
+          bind('leo_turret_shell', 0),
+          bind('leo_optics_peri', 0),
+          bind('leo_smoke_dischargers', 0),
+        ],
+      },
+      {
+        id: 'leo_strip_rh120_gun',
+        orderLabel: '06',
+        titleZh: '前抽 6.6m Rh-120 L/55A1 超长滑膛炮、同轴驻退机与立楔炮尾',
+        titleEn: 'Withdraw 6.6m Rh-120 L/55A1 Smoothbore, Concentric Recoil & Breech',
+        actionHintZh:
+          '点击 6.6 米 Rh-120 L/55A1 滑膛炮管、防盾、同轴驻退系统、复进簧或立式楔形炮闩，完成主炮大修。',
+        actionHintEn:
+          'Click the 6.6m Rh-120 L/55A1 gun, mantlet, concentric recoil system, springs, or breech block to strip main ordnance.',
+        requires: ['leo_strip_turret_shell'],
+        stripBlockedNoteZh:
+          'Rh-120 L/55A1 主炮耳轴锁固于焊接炮塔内壁，必须先吊离炮塔壳体（步骤 05）！',
+        stripBlockedNoteEn:
+          'Remove the turret shell (Step 05) before withdrawing the 6.6m Rh-120 L/55A1 main gun!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: ['leo_main_gun', 'leo_breech_block', 'leo_recoil_system'],
+        bindings: [
+          bind('leo_main_gun', 0),
+          bind('leo_gun_mantlet', 0),
+          bind('leo_recoil_system', 0),
+          bind('leo_recoil_springs', 0),
+          bind('leo_breech_block', 0),
+          bind('leo_breech_spring', 0),
+        ],
+      },
+    ],
+  },
+
+  // =========================================================================
+  // 27. Pz.Kpfw. VI Ausf. E "Tiger 131" (88mm KwK 36 L/56) — 6-Step Overhaul
+  // =========================================================================
+  tiger1: {
+    weaponId: 'tiger1',
+    manualCodeZh: '德军 D 656/27 虎式战车教范 (Tigerfibel) · 六步重装大修拆解',
+    manualCodeEn: 'Wehrmacht D 656/27 Tigerfibel · Tiger 131 6-Step Depot Overhaul',
+    steps: [
+      {
+        id: 'tiger_strip_fenders_ammo',
+        orderLabel: '01',
+        titleZh: '卸除侧翼履带挡泥板并清空侧舷 88mm PzGr. 39 弹药架',
+        titleEn: 'Unbolt Side Mudguard Fenders & Unload 88mm Sponson Ammo Racks',
+        actionHintZh:
+          '点击车体两侧钢制挡泥板、待发 88mm 穿甲弹或侧舷弹药架，完成 92 发战斗室彻底退弹隔离。',
+        actionHintEn:
+          'Click the side fenders, ready 88mm PzGr. 39 round, or sponson ammo racks to clear live shells safely.',
+        requires: [],
+        stripBlockedNoteZh: '',
+        stripBlockedNoteEn: '',
+        reassembleBlockedNoteZh:
+          '装回 88mm 侧舷弹药架与挡泥板前，必须先复位动力舱顶盖（步骤 02）与马蹄形炮塔（步骤 04）！',
+        reassembleBlockedNoteEn:
+          'Reinstall the engine deck (Step 02) and horseshoe turret (Step 04) before reloading sponson racks and fenders!',
+        triggerPartIds: ['tiger_side_fenders', 'tiger_ammo_racks', 'tiger_ready_round'],
+        bindings: [
+          bind('tiger_side_fenders', 0),
+          bind('tiger_ready_round', 0),
+          bind('tiger_ammo_racks', 0),
+        ],
+      },
+      {
+        id: 'tiger_strip_engine_deck',
+        orderLabel: '02',
+        titleZh: '开启车尾装甲引擎舱盖板并分离双侧主油箱与散热舱',
+        titleEn: 'Lift Rear Armored Engine Deck & Uncouple Twin Hull Fuel Tanks',
+        actionHintZh:
+          '点击车尾散热百叶装甲顶盖或两侧主油箱总成，向上开启暴露迈巴赫 HL230 V12 引擎舱。',
+        actionHintEn:
+          'Click the armored rear engine deck or twin fuel tanks to expose the Maybach HL230 engine bay.',
+        requires: ['tiger_strip_fenders_ammo'],
+        stripBlockedNoteZh:
+          '大修动力舱前请先清空侧舷 88mm 弹药架并卸除侧挡泥板（步骤 01）防止油火隐患！',
+        stripBlockedNoteEn:
+          'Clear the 88mm ammo racks and side fenders (Step 01) before opening the rear engine deck!',
+        reassembleBlockedNoteZh:
+          '合拢车尾装甲引擎舱盖前，必须先将迈巴赫 HL230 V12、中央传动轴与前置变速箱装回底盘（步骤 03）！',
+        reassembleBlockedNoteEn:
+          'Reinstall the Maybach V12, driveshaft, and Olvar transmission (Step 03) before closing the engine deck!',
+        triggerPartIds: ['tiger_engine_deck', 'tiger_fuel_tanks'],
+        bindings: [
+          bind('tiger_engine_deck', 0),
+          bind('tiger_fuel_tanks', 0),
+        ],
+      },
+      {
+        id: 'tiger_strip_maybach_drivetrain',
+        orderLabel: '03',
+        titleZh: '吊出迈巴赫 HL230 V12 汽油机、贯穿主传动轴与前置 Olvar 8 速变速箱',
+        titleEn: 'Hoist Maybach HL230 V12, Central Driveshaft & Front Olvar Gearbox',
+        actionHintZh:
+          '点击 700 马力迈巴赫 HL230 P45 V12 引擎、贯穿底盘主传动轴或前置奥尔瓦 8 速变速箱，整体抽出动力链。',
+        actionHintEn:
+          'Click the Maybach HL230 V12 engine, central driveshaft, or front Olvar 8-speed transmission to extract the drivetrain.',
+        requires: ['tiger_strip_engine_deck'],
+        stripBlockedNoteZh:
+          '迈巴赫 V12 与油箱管道受车尾装甲引擎舱盖封闭，请先开启引擎舱盖与油箱（步骤 02）！',
+        stripBlockedNoteEn:
+          'Open the rear engine deck and uncouple fuel tanks (Step 02) before hoisting the Maybach drivetrain!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: ['tiger_maybach_v12', 'tiger_transmission', 'tiger_driveshaft'],
+        bindings: [
+          bind('tiger_maybach_v12', 0),
+          bind('tiger_driveshaft', 0),
+          bind('tiger_transmission', 0),
+        ],
+      },
+      {
+        id: 'tiger_strip_turret_shell',
+        orderLabel: '04',
+        titleZh: '卸除车长指挥塔舱盖、TZF 9b 瞄准镜并吊离马蹄形厚壁炮塔壳体',
+        titleEn: 'Detach Commander Cupola, TZF 9b Sight & Horseshoe Turret Shell',
+        actionHintZh:
+          '点击标志性马蹄形 80mm 厚壁炮塔、高顶车长指挥塔或 TZF 9b 双目瞄准镜，吊离暴露 88mm 主炮总成。',
+        actionHintEn:
+          'Click the horseshoe turret shell, commander cupola, or TZF 9b sight to lift the armored turret off the KwK 36 cradle.',
+        requires: ['tiger_strip_fenders_ammo'],
+        stripBlockedNoteZh:
+          '吊离重型马蹄炮塔前，请先退出待发弹并清空侧舷 88mm 弹药架（步骤 01）！',
+        stripBlockedNoteEn:
+          'Unload the ready 88mm round and sponson racks (Step 01) before lifting the horseshoe turret shell!',
+        reassembleBlockedNoteZh:
+          '落位马蹄形炮塔壳体前，必须先将 88mm KwK 36 L/56 主炮与克虏伯水平楔闩装回摇架（步骤 05）！',
+        reassembleBlockedNoteEn:
+          'Reinstall the 88mm KwK 36 gun and Krupp horizontal breech (Step 05) before lowering the turret shell!',
+        triggerPartIds: ['tiger_turret_shell', 'tiger_cupola_hatches', 'tiger_optics_tzf9b'],
+        bindings: [
+          bind('tiger_turret_shell', 0),
+          bind('tiger_cupola_hatches', 0),
+          bind('tiger_optics_tzf9b', 0),
+        ],
+      },
+      {
+        id: 'tiger_strip_kwk36_gun',
+        orderLabel: '05',
+        titleZh: '前抽 88mm KwK 36 L/56 线膛炮、阶梯防盾、驻退摇架与克虏伯水平楔闩',
+        titleEn: 'Withdraw 88mm KwK 36 L/56 Cannon, Mantlet, Cradle & Krupp Breech',
+        actionHintZh:
+          '点击 88mm 线膛炮管（带双室制退器）、阶梯型炮盾、克虏伯水平滑楔炮闩或帆布退壳护篮，完成传奇主炮全拆。',
+        actionHintEn:
+          'Click the 88mm KwK 36 barrel, stepped mantlet, Krupp horizontal wedge breech, or recoil cradle to strip the main gun.',
+        requires: ['tiger_strip_turret_shell'],
+        stripBlockedNoteZh:
+          '88mm 主炮与厚重炮盾密封在马蹄形炮塔前端，必须先吊离炮塔壳体（步骤 04）！',
+        stripBlockedNoteEn:
+          'Lift the horseshoe turret shell (Step 04) before withdrawing the 88mm KwK 36 main gun assembly!',
+        reassembleBlockedNoteZh:
+          '回装 88mm 主炮与克虏伯炮尾前，必须先复位象牙白炮塔吊篮与 48 交错负重轮组（步骤 06）！',
+        reassembleBlockedNoteEn:
+          'Reinstall the turret basket and interleaved road wheels (Step 06) before mounting the 88mm KwK 36 cannon!',
+        triggerPartIds: ['tiger_main_gun', 'tiger_breech_block', 'tiger_recoil_cradle'],
+        bindings: [
+          bind('tiger_main_gun', 0),
+          bind('tiger_gun_mantlet', 0),
+          bind('tiger_recoil_cradle', 0),
+          bind('tiger_recoil_springs', 0),
+          bind('tiger_breech_block', 0),
+          bind('tiger_breech_spring', 0),
+          bind('tiger_shell_guard', 0),
+        ],
+      },
+      {
+        id: 'tiger_strip_basket_wheels',
+        orderLabel: '06',
+        titleZh: '吊出象牙白炮塔吊篮并检修标志性 48 轮交错负重轮组',
+        titleEn: 'Extract Elfenbein Turret Basket & Service 48 Interleaved Road Wheels',
+        actionHintZh:
+          '点击象牙白涂装（Elfenbein）炮塔战斗室吊篮或 48 枚交错重叠负重轮（Schachtellaufwerk）展开底盘大修。',
+        actionHintEn:
+          'Click the Elfenbein turret basket or 48 interleaved Schachtellaufwerk road wheels to complete the heavy overhaul.',
+        requires: ['tiger_strip_kwk36_gun'],
+        stripBlockedNoteZh:
+          '炮塔吊篮与底盘检修需先拆离上方的 88mm KwK 36 主炮与炮尾摇架（步骤 05）！',
+        stripBlockedNoteEn:
+          'Remove the 88mm KwK 36 gun and cradle (Step 05) before lifting the turret basket and servicing the road wheels!',
+        reassembleBlockedNoteZh: '',
+        reassembleBlockedNoteEn: '',
+        triggerPartIds: ['tiger_turret_basket', 'tiger_interleaved_wheels'],
+        bindings: [
+          bind('tiger_turret_basket', 0),
+          bind('tiger_interleaved_wheels', 0),
+        ],
+      },
+    ],
+  },
 };
 
 export function getFieldStripPlan(weaponId: WeaponId): FieldStripWeaponPlan {

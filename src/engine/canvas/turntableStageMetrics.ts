@@ -183,10 +183,42 @@ export const WEAPON_TURNTABLE_BOUNDS: Readonly<
     spanX: 94.3,
     explode58: { cx: 13.71, minY: -36.39, maxY: 23.92, spanX: 124.95 },
   },
+  ztz99a: {
+    cx: 110.0,
+    minY: -120.0,
+    maxY: 117.0,
+    spanX: 1090.0,
+    explode58: { cx: 135.0, minY: -190.0, maxY: 255.0, spanX: 1410.0 },
+  },
+  m1a2: {
+    cx: 60.0,
+    minY: -120.0,
+    maxY: 124.0,
+    spanX: 977.0,
+    explode58: { cx: 80.0, minY: -190.0, maxY: 268.0, spanX: 1290.0 },
+  },
+  leopard2a7: {
+    cx: 110.0,
+    minY: -120.0,
+    maxY: 144.0,
+    spanX: 1097.0,
+    explode58: { cx: 135.0, minY: -190.0, maxY: 285.0, spanX: 1430.0 },
+  },
+  tiger1: {
+    cx: 65.0,
+    minY: -120.0,
+    maxY: 180.0,
+    spanX: 845.0,
+    explode58: { cx: 85.0, minY: -190.0, maxY: 310.0, spanX: 1140.0 },
+  },
 };
 
 export function getTurntableRadius(weaponId: WeaponId): number {
   const b = WEAPON_TURNTABLE_BOUNDS[weaponId];
+  if (b.spanX > 300) {
+    // 1:1 Heavy Armor steel turntable pit ring (Ø 9.6 m -> radius 480 cm)
+    return 480;
+  }
   return THREE.MathUtils.clamp(b.spanX * 0.3, 8.8, 16.2);
 }
 
@@ -216,14 +248,15 @@ export function evaluateWeaponTurntableEnvelopeInto(
   out: EvaluatedTurntableEnvelope = _envScratch
 ): EvaluatedTurntableEnvelope {
   const b = WEAPON_TURNTABLE_BOUNDS[weaponId];
+  const isTank = b.spanX > 300;
   const u = THREE.MathUtils.clamp(explodeT / 0.58, 0, 1);
   const cx = THREE.MathUtils.lerp(b.cx, b.explode58.cx, u);
   const minY = THREE.MathUtils.lerp(b.minY, b.explode58.minY, u);
   const maxY = THREE.MathUtils.lerp(b.maxY, b.explode58.maxY, u);
   const spanX = THREE.MathUtils.lerp(b.spanX, b.explode58.spanX, u);
   const radius = getTurntableRadius(weaponId);
-  const platterTopY = minY - 0.85;
-  const gridFloorY = platterTopY - 0.6;
+  const platterTopY = isTank ? minY - 1.0 : minY - 0.85;
+  const gridFloorY = isTank ? platterTopY - 9.0 : platterTopY - 0.6;
 
   out.cx = cx;
   out.minY = minY;
@@ -382,8 +415,10 @@ export function computeTurntableFraming(
     availH = Math.max(160, bottomPx - topPx);
   }
 
+  const isTank = scaleProfile === 'main_battle_tank';
   const rimR = env.radius * 1.05;
-  const bottomVisualY = env.platterTopY - 0.55 - rimR * SIN_ELEV;
+  const bottomVisualY =
+    env.platterTopY - (isTank ? 9.0 : 0.55) - rimR * SIN_ELEV;
   const topVisualY = env.maxY + rimR * SIN_ELEV * 0.5;
   const targetY = (topVisualY + bottomVisualY) * 0.5;
   const spanY = Math.max(8, topVisualY - bottomVisualY);
@@ -393,13 +428,15 @@ export function computeTurntableFraming(
   const fillX = hudHidden ? 0.84 : screen === 'showcase' ? 0.76 : 0.82;
 
   const baseDist =
-    scaleProfile === 'heavy_sniper'
-      ? 66
-      : scaleProfile === 'compound_bow'
-        ? 72
-        : scaleProfile === 'rifle'
-          ? 54
-          : 35;
+    scaleProfile === 'main_battle_tank'
+      ? 1180
+      : scaleProfile === 'heavy_sniper'
+        ? 66
+        : scaleProfile === 'compound_bow'
+          ? 72
+          : scaleProfile === 'rifle'
+            ? 54
+            : 35;
 
   const aspect = Math.max(0.35, viewportW / Math.max(1, viewportH));
   const dVert =
@@ -412,7 +449,7 @@ export function computeTurntableFraming(
     (TAN_HALF_FOV_41 *
       aspect *
       Math.max(0.18, (availW * fillX) / Math.max(1, viewportW)));
-  const dMuzzleClearance = env.spanX * 0.5 + 22;
+  const dMuzzleClearance = env.spanX * 0.5 + (isTank ? 260 : 22);
 
   const dist = Math.max(baseDist, dVert, dHoriz, dMuzzleClearance);
 

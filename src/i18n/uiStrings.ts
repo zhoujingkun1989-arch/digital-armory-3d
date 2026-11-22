@@ -10,13 +10,17 @@ import {
   type MaterialKind,
 } from '../weapons/types';
 
-const VAULT_EXHIBIT_COUNT = WEAPON_IDS.length; // 23
-const VAULT_EXHIBIT_ZH = '二十三';
-const VAULT_PARTS_TOTAL = 579;
-const VAULT_TEXTURES_TOTAL = 313;
-const VAULT_AUDIO_TOTAL = 1342;
+const VAULT_EXHIBIT_COUNT = WEAPON_IDS.length; // 27
+const VAULT_EXHIBIT_ZH = '二十七';
+const VAULT_PARTS_TOTAL = 683;
+const VAULT_TEXTURES_TOTAL = 351;
+const VAULT_SUITES_TOTAL = 80;
+const VAULT_AUDIO_TOTAL = 1582;
 const LAB_CALIBER_TOTAL = 15;
 const LAB_CALIBER_ZH = '十五';
+const TANK_ORDNANCE_TOTAL = 3;
+const ORDNANCE_TOTAL = LAB_CALIBER_TOTAL + TANK_ORDNANCE_TOTAL; // 18
+const BALLISTICS_PROFILES_TOTAL = 20;
 
 export interface UiDictionary {
   watermark: string;
@@ -438,10 +442,20 @@ export interface UiDictionary {
     badge: string;
     title: string;
     subtitle: string;
+    gallerySwitchAria: string;
+    gallerySmallArmsBtn: string;
+    gallerySmallArmsTitle: string;
+    galleryTankOrdnanceBtn: string;
+    galleryTankOrdnanceTitle: string;
+    tankOrdnanceBadge: string;
+    tankOrdnanceTitle: string;
+    tankOrdnanceSubtitle: string;
     backVaultBtn: string;
     backVaultTitle: string;
     lineupBtn: string;
     lineupTitle: string;
+    tankLineupBtn: string;
+    tankLineupTitle: string;
     focusSpecimenBtn: string;
     focusSpecimenTitle: string;
     cutawayOn: string;
@@ -452,6 +466,7 @@ export interface UiDictionary {
     matrixToggleOpen: string;
     matrixToggleClose: string;
     matrixToggleTitle: string;
+    tankMatrixToggleTitle: string;
     explodeLabel: string;
     explodeReset: string;
     caliberSelectorAria: string;
@@ -469,6 +484,7 @@ export interface UiDictionary {
     ballisticsRangeBtn: string;
     ballisticsRangeTitle: string;
     tableCaption: string;
+    tankTableCaption: string;
     colCaliber: string;
     colStandard: string;
     colCaseOal: string;
@@ -761,8 +777,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       immersiveBarAria: '纯净展示浮动控制栏',
     },
     armory: {
-      title: '枪械与弓弩内部结构 3D 数字兵器库',
-      subtitle: `${VAULT_EXHIBIT_ZH}款世界名枪与特种复合弓弩交互式陈列馆 · Google Gemini 中英研发史纪录片与全零件语音拆解导览`,
+      title: '枪械、弓弩与主战坦克 1:1 3D 数字兵器库',
+      subtitle: `${VAULT_EXHIBIT_ZH}款传奇名枪、特种复合弓弩与 1:1 主战坦克交互式陈列馆 · Google Gemini 中英研发史纪录片与全零件语音拆解导览`,
       filterAria: '装备类别筛选',
       categories: {
         all: '全部馆藏',
@@ -773,14 +789,14 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         shotgun: '战术霰弹',
         pistol: '手枪 / 转轮',
         archery: '复合弓 / 弩',
+        armor: '重装甲大厅',
       },
       showcaseBtn: '产品宣传页',
       showcaseTitle: '打开项目官方宣传与架构展示主页',
       cartridgeLabBtn: '1:1 实弹剖视馆',
-      cartridgeLabTitle: `打开 ${LAB_CALIBER_TOTAL} 口径 SAAMI/CIP 1:1 实弹纵剖对比实验室：并排纵剖陈列 4.73mm 无壳弹、9×19mm 至 .50 BMG 弹道解剖与定量对比矩阵 (B)`,
+      cartridgeLabTitle: `打开 ${ORDNANCE_TOTAL} 口径（${LAB_CALIBER_TOTAL} 轻武器实弹 + ${TANK_ORDNANCE_TOTAL} 坦克主炮弹）1:1 纵剖对比实验室：并排纵剖陈列 4.73mm 无壳弹、9×19mm 至 .50 BMG 与 88/120/125mm 穿甲弹定量对比矩阵 (B)`,
       ballisticsLabBtn: '1000m 外弹道 [R]',
-      ballisticsLabTitle:
-        '打开 1,000m RK4 外弹道、横风偏流、第一像面圣诞树分划板与狙击 DOPE 射表实验室 (快捷键: R)',
+      ballisticsLabTitle: `打开 1,000m RK4 外弹道（${BALLISTICS_PROFILES_TOTAL} 套弹道档案）、横风偏流、第一像面圣诞树分划板与狙击 DOPE 射表实验室 (快捷键: R)`,
       posterBtn: '剖视海报 [U]',
       posterTitle:
         '打开即时高清 3D 剖视社交分享海报工坊：合成 16:9 / 4:5 图鉴卡与军械师认证章 (快捷键: U)',
@@ -852,7 +868,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       dialogAria: 'PBR 真实贴图图集检视器',
       kicker: `${VAULT_EXHIBIT_COUNT}-EXHIBIT 2K PBR ATLAS`,
       weaponSwitcherAria: `${VAULT_EXHIBIT_ZH}款馆藏兵器 PBR 贴图库切换`,
-      subtitle: `全馆${VAULT_EXHIBIT_ZH}款名枪与弓弩共 ${VAULT_TEXTURES_TOTAL} 张定制高清 WebP 物理材质贴图（public/textures/*.webp）· 已按三角面 UV 实时绑定至全部 ${VAULT_PARTS_TOTAL} 个精密零件`,
+      subtitle: `全馆${VAULT_EXHIBIT_ZH}款名枪、复合弓弩与主战坦克共 ${VAULT_TEXTURES_TOTAL} 张定制高清 WebP 物理材质贴图（${VAULT_SUITES_TOTAL} 套图集 · public/textures/*.webp）· 已按三角面 UV 实时绑定至全部 ${VAULT_PARTS_TOTAL} 个精密零件`,
       liveOn: '3D 实时贴图：已开启',
       liveOff: '3D 实时贴图：已关闭',
       closeAria: '关闭贴图检视窗口',
@@ -898,10 +914,9 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       caliperChipTitle:
         '开启 1:1 3D 军械游标卡尺与空间包络标尺：在 3D 表面点选任意两点测量毫米级间距与轴向分量 (K)',
       cartridgeChip: '实弹馆',
-      cartridgeChipTitle: `打开 ${LAB_CALIBER_TOTAL} 口径 SAAMI/CIP 1:1 实弹纵剖对比实验室 (B)`,
+      cartridgeChipTitle: `打开 ${ORDNANCE_TOTAL} 口径（${LAB_CALIBER_TOTAL} 轻武器实弹 + ${TANK_ORDNANCE_TOTAL} 坦克主炮弹）1:1 纵剖对比实验室 (B)`,
       ballisticsChip: '外弹道',
-      ballisticsChipTitle:
-        '打开当前口径 1,000m RK4 外弹道、横风偏流与光学分划板实验室 (R)',
+      ballisticsChipTitle: `打开当前口径 1,000m RK4 外弹道（${BALLISTICS_PROFILES_TOTAL} 套弹道档案）、横风偏流与光学分划板实验室 (R)`,
       posterChip: '分享海报',
       posterChipTitle:
         '截取当前 3D 剖视视口生成高清 16:9 / 4:5 社交分享海报与二维码 (U)',
@@ -913,7 +928,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       sfxChipTitle: (muted) =>
         muted
           ? '军械机械咬合与实弹声场已静音，点击开启 (M)'
-          : `开启/静音 Web Audio 军械机械咬合声与 ${LAB_CALIBER_TOTAL} 口径实弹声场 (M)`,
+          : `开启/静音 Web Audio 军械机械咬合声与 ${ORDNANCE_TOTAL} 口径实弹/主炮声场 (M)`,
       resetChip: '复位',
       resetChipTitle: '重置回默认合拢态与标准视角 (Shift+R)',
     },
@@ -1006,7 +1021,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       gasFlowTitle:
         '显示/隐藏 60fps 高压火药燃气膛内膨胀、导气孔分流与活塞/气匙冲击流线',
       sfxPill: '实弹声场',
-      sfxTitle: `开启/静音立体声卷积混响与 ${LAB_CALIBER_TOTAL} 口径实弹合成声效 (M)`,
+      sfxTitle: `开启/静音立体声卷积混响与 ${ORDNANCE_TOTAL} 口径实弹/主炮合成声效 (M)`,
       selectorGroupAria: '快慢机火控档位切换 (V)',
       selectorShort: {
         safe: '保险 SAFE',
@@ -1104,7 +1119,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       loadingTitle: '正在加载研发历史与双语讲解资源...',
       loadingDesc: '正在读取 Google Gemini 生成的双语工程档案。',
       pendingTitle: '双语研发档案未能加载',
-      pendingDesc: `请检查本地静态资源服务是否正常运行（全部 ${VAULT_EXHIBIT_COUNT} 款馆藏名枪与弓弩的四幕研发故事、${VAULT_PARTS_TOTAL} 枚零件双语讲解与 ${VAULT_AUDIO_TOTAL} 段 Google Gemini TTS 语音均已内置于 public/ 目录）。`,
+      pendingDesc: `请检查本地静态资源服务是否正常运行（全部 ${VAULT_EXHIBIT_COUNT} 款馆藏名枪、弓弩与主战坦克的四幕研发故事、${VAULT_PARTS_TOTAL} 枚零件双语讲解与 ${VAULT_AUDIO_TOTAL} 段 Google Gemini TTS 语音均已内置于 public/ 目录）。`,
       switchToAk15Btn: '切换至 AK-15M1 研发故事档案',
       aiAttribution:
         '文本与语音由 Google Gemini 3.8 Flash & Gemini TTS 基于 1:1 军械测绘参数生成',
@@ -1228,10 +1243,24 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       title: `${LAB_CALIBER_ZH}大口径实弹 1:1 纵剖对比实验室`,
       subtitle:
         '严格遵循 1 单位 = 10mm 绝对比例并排纵剖陈列 · 直视发射药柱、4.73 无壳药块、底火砧座、12号鹿弹碗塞与双芯穿甲锥结构',
+      gallerySwitchAria: '弹药展馆尺度切换',
+      gallerySmallArmsBtn: '轻武器实弹 (15)',
+      gallerySmallArmsTitle:
+        '切换至 15 大口径轻武器 1:1 实弹剖视陈列（29.69–138.43 mm）',
+      galleryTankOrdnanceBtn: '坦克主炮弹 (3)',
+      galleryTankOrdnanceTitle:
+        '切换至 3 大口径主战坦克 1:1 主炮炮弹纵剖馆（88mm / 120mm / 125mm）',
+      tankOrdnanceBadge: 'HEAVY ORDNANCE · 1:1 坦克炮弹剖视馆',
+      tankOrdnanceTitle: '1:1 主战坦克炮弹纵剖对比实验室',
+      tankOrdnanceSubtitle:
+        '88×571mmR PzGr.39 · 120×570mm NATO APFSDS · 125mm DTC10-125 绝对物理比例纵剖',
       backVaultBtn: '返回数字枪库',
       backVaultTitle: '返回 3D 数字枪库武器展厅 (Esc / B)',
       lineupBtn: `1:1 ${LAB_CALIBER_ZH}弹同框全景`,
       lineupTitle: `拉远镜头以 1:1 绝对比例同屏并排对比全部 ${LAB_CALIBER_TOTAL} 款口径实弹`,
+      tankLineupBtn: '1:1 三款炮弹同框全景',
+      tankLineupTitle:
+        '拉远镜头以 1:1 绝对比例同屏并排对比全部 3 款主战坦克主炮炮弹（88mm / 120mm / 125mm）',
       focusSpecimenBtn: '微距聚焦当前弹种',
       focusSpecimenTitle: '推近镜头微距检视当前选中实弹的底火砧座与弹芯纵剖面',
       cutawayOn: '180° 纵剖已开启 [C]',
@@ -1242,6 +1271,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       matrixToggleOpen: '定量对比总表',
       matrixToggleClose: '收起对比总表',
       matrixToggleTitle: `展开或收起 ${LAB_CALIBER_TOTAL} 大口径装药量、膛压、初速与枪口动能定量对比矩阵表`,
+      tankMatrixToggleTitle:
+        '展开或收起 3 款主战坦克主炮炮弹装药量、膛压、初速与兆焦级枪口动能定量对比矩阵表',
       explodeLabel: '弹体结构轴向分解',
       explodeReset: '复位合拢',
       caliberSelectorAria: `馆藏${LAB_CALIBER_ZH}大口径实弹切换栏`,
@@ -1260,6 +1291,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       ballisticsRangeTitle:
         '在 1,000m RK4 外弹道实验室检视当前口径下坠、横风偏流、跨音速区与圣诞树分划板 (R)',
       tableCaption: `SAAMI / CIP / NATO ${LAB_CALIBER_ZH}大馆藏口径实弹 1:1 几何尺寸与内弹道定量对比矩阵`,
+      tankTableCaption:
+        'NATO STANAG / PLA GJB / WWII 三款主战坦克炮弹 1:1 几何尺寸与内弹道定量对比矩阵',
       colCaliber: '口径代号',
       colStandard: '标准规范',
       colCaseOal: '壳长 / 全长 (mm)',
@@ -1601,7 +1634,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
     },
     armory: {
       title: '3D Digital Armory & Mechanical Cutaway Vault',
-      subtitle: `${VAULT_EXHIBIT_COUNT} Iconic World Firearms & Compound Archery Systems · Google Gemini R&D Documentary & Component Voice Disassembly`,
+      subtitle: `${VAULT_EXHIBIT_COUNT} Iconic World Firearms, Compound Archery & 1:1 Main Battle Tanks · Google Gemini R&D Documentary & Component Voice Disassembly`,
       filterAria: 'Filter collection by category',
       categories: {
         all: 'All Vault',
@@ -1612,14 +1645,14 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         shotgun: 'Shotguns',
         pistol: 'Pistol / Revolver',
         archery: 'Bow / Crossbow',
+        armor: 'Heavy Armor',
       },
       showcaseBtn: 'Showcase',
       showcaseTitle: 'Open official product & engineering showcase page',
       cartridgeLabBtn: '1:1 Cartridge Lab',
-      cartridgeLabTitle: `Open ${LAB_CALIBER_TOTAL}-Caliber SAAMI/CIP 1:1 Cartridge Cutaway Lab: side-by-side cutaway anatomy & quantitative ballistics from 4.73mm Caseless & 9×19mm to .50 BMG (B)`,
+      cartridgeLabTitle: `Open ${ORDNANCE_TOTAL}-Caliber (${LAB_CALIBER_TOTAL} Small-Arms + ${TANK_ORDNANCE_TOTAL} Tank Ordnance) 1:1 Cutaway Lab: side-by-side anatomy & quantitative ballistics from 4.73mm Caseless & 9×19mm to .50 BMG and 88/120/125mm tank cannon rounds (B)`,
       ballisticsLabBtn: '1,000m Range [R]',
-      ballisticsLabTitle:
-        'Open 1,000m RK4 External Ballistics, Crosswind Drift, FFP Reticle & Sniper DOPE Lab (Shortcut: R)',
+      ballisticsLabTitle: `Open 1,000m RK4 External Ballistics (${BALLISTICS_PROFILES_TOTAL} profiles), Crosswind Drift, FFP Reticle & Sniper DOPE Lab (Shortcut: R)`,
       posterBtn: '3D Poster [U]',
       posterTitle:
         'Open Instant HD 3D Cutaway Social Poster Studio: export 16:9 / 4:5 cards with QR & Armorer Rank seal (Shortcut: U)',
@@ -1640,7 +1673,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       muzzleVelLabel: 'Muzzle Velocity',
       rangeLabel: 'Effective Range',
       rofLabel: 'Rate of Fire',
-      plaqueStoryCta: 'Listen to Full R&D Story (EN / 中文)',
+      plaqueStoryCta: 'Listen to Full R&D Story (EN / ZH)',
       plaqueStorySub: '4-Act Documentary · Key Breakthroughs · 3D Part Focus',
       plaquePrimaryCta: (tag) => `Enter ${tag} 3D Disassembly & Firing`,
       pbrOn: '2K PBR Textures: ON',
@@ -1692,7 +1725,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       dialogAria: 'PBR Texture Atlas Inspector',
       kicker: `${VAULT_EXHIBIT_COUNT}-EXHIBIT 2K PBR ATLAS`,
       weaponSwitcherAria: `Switch ${VAULT_EXHIBIT_COUNT}-exhibit PBR texture library`,
-      subtitle: `${VAULT_TEXTURES_TOTAL} custom 2K WebP PBR textures (public/textures/*.webp) across all ${VAULT_EXHIBIT_COUNT} vault firearms & archery exhibits · UV-bound live to all ${VAULT_PARTS_TOTAL} precision CAD parts`,
+      subtitle: `${VAULT_TEXTURES_TOTAL} custom 2K WebP PBR textures (${VAULT_SUITES_TOTAL} suites · public/textures/*.webp) across all ${VAULT_EXHIBIT_COUNT} vault firearms, archery & heavy armor exhibits · UV-bound live to all ${VAULT_PARTS_TOTAL} precision CAD parts`,
       liveOn: 'Live 3D Textures: ON',
       liveOff: 'Live 3D Textures: OFF',
       closeAria: 'Close PBR texture atlas inspector',
@@ -1740,10 +1773,9 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       caliperChipTitle:
         'Toggle 1:1 3D armorer vernier caliper & CAD envelope scale ruler: click any 2 surface points for millimeter measurement (K)',
       cartridgeChip: 'Ammo Lab',
-      cartridgeChipTitle: `Open ${LAB_CALIBER_TOTAL}-Caliber SAAMI/CIP 1:1 Cartridge Cutaway Lab (B)`,
+      cartridgeChipTitle: `Open ${ORDNANCE_TOTAL}-Caliber (${LAB_CALIBER_TOTAL} Small-Arms + ${TANK_ORDNANCE_TOTAL} Tank Ordnance) 1:1 Cutaway Lab (B)`,
       ballisticsChip: '1km Range',
-      ballisticsChipTitle:
-        'Open 1,000m RK4 External Ballistics, Crosswind & FFP Scope Lab for current caliber (R)',
+      ballisticsChipTitle: `Open 1,000m RK4 External Ballistics (${BALLISTICS_PROFILES_TOTAL} profiles), Crosswind & FFP Scope Lab for current caliber (R)`,
       posterChip: 'Poster',
       posterChipTitle:
         'Capture live 3D cutaway viewport into an HD 16:9 / 4:5 social share poster with QR deep-link (U)',
@@ -1756,7 +1788,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       sfxChipTitle: (muted) =>
         muted
           ? 'Gunsmith mechanical & ballistic SFX muted — click to unmute (M)'
-          : `Toggle Web Audio gunsmith mechanical clicks & ${LAB_CALIBER_TOTAL}-caliber ballistic SFX (M)`,
+          : `Toggle Web Audio gunsmith mechanical clicks & ${ORDNANCE_TOTAL}-caliber ballistic & cannon SFX (M)`,
       resetChip: 'Reset',
       resetChipTitle:
         'Reset to 0% assembled state & default isometric camera (Shift+R)',
@@ -1852,7 +1884,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       gasFlowTitle:
         'Toggle 60fps propellant bore expansion, gas-port tap & piston/BCG flow streamlines',
       sfxPill: 'Acoustic SFX',
-      sfxTitle: `Toggle stereo convolution IR & ${LAB_CALIBER_TOTAL}-caliber waveguide ballistic Web Audio SFX (M)`,
+      sfxTitle: `Toggle stereo convolution IR & ${ORDNANCE_TOTAL}-caliber waveguide ballistic & cannon Web Audio SFX (M)`,
       selectorGroupAria: 'Fire-control selector mode (V)',
       selectorShort: {
         safe: 'SAFE',
@@ -1965,7 +1997,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       loadingTitle: 'Loading R&D Documentary & Bilingual Archive...',
       loadingDesc: 'Fetching structured history & voiceover metadata.',
       pendingTitle: 'Unable to Load Bilingual R&D Archive',
-      pendingDesc: `Please verify your static asset server is reachable. Full 4-act R&D documentaries, ${VAULT_PARTS_TOTAL} component breakdowns, and ${VAULT_AUDIO_TOTAL} Google Gemini TTS voiceovers across all ${VAULT_EXHIBIT_COUNT} vault exhibits are bundled under public/.`,
+      pendingDesc: `Please verify your static asset server is reachable. Full 4-act R&D documentaries, ${VAULT_PARTS_TOTAL} component breakdowns, and ${VAULT_AUDIO_TOTAL} Google Gemini TTS voiceovers across all ${VAULT_EXHIBIT_COUNT} vault exhibits (firearms, archery & heavy armor) are bundled under public/.`,
       switchToAk15Btn: 'Switch to AK-15M1 R&D Archive',
       aiAttribution:
         'Authored & voiced with Google Gemini 3.8 Flash & Gemini TTS grounded in 1:1 CAD specs',
@@ -2103,10 +2135,24 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       title: `${LAB_CALIBER_TOTAL}-Caliber 1:1 SAAMI Cartridge Cutaway Lab`,
       subtitle:
         'True 1:1 side-by-side longitudinal cutaways (1 unit = 10 mm) · Compare propellant columns, 4.73mm caseless blocks, Boxer anvils, 12ga buckshot wads, dual-core penetrators & muzzle energy',
+      gallerySwitchAria: 'Ordnance Gallery Scale Switcher',
+      gallerySmallArmsBtn: 'Small Arms (15)',
+      gallerySmallArmsTitle:
+        'Switch to 15-caliber 1:1 Small-Arms Cutaway Gallery (29.69–138.43 mm)',
+      galleryTankOrdnanceBtn: 'Tank Ordnance (3)',
+      galleryTankOrdnanceTitle:
+        'Switch to 3-caliber 1:1 Main Battle Tank Cannon Ordnance Gallery (88mm / 120mm / 125mm)',
+      tankOrdnanceBadge: 'HEAVY ORDNANCE · 1:1 TANK ORDNANCE LAB',
+      tankOrdnanceTitle: '1:1 Main Battle Tank Ordnance Cutaway Lab',
+      tankOrdnanceSubtitle:
+        'Absolute 1:1 cutaway comparison: 88mm PzGr.39, 120mm NATO APFSDS & 125mm DTC10-125',
       backVaultBtn: 'Return to Vault',
       backVaultTitle: 'Return to 3D Digital Armory Vault (Esc / B)',
       lineupBtn: `1:1 Full ${LAB_CALIBER_TOTAL}-Caliber Lineup`,
       lineupTitle: `Frame all ${LAB_CALIBER_TOTAL} cartridges side-by-side at exact 1:1 physical scale`,
+      tankLineupBtn: '1:1 Full 3-Ordnance Lineup',
+      tankLineupTitle:
+        'Frame all 3 main battle tank cannon rounds side-by-side at exact 1:1 physical scale',
       focusSpecimenBtn: 'Macro Specimen Focus',
       focusSpecimenTitle:
         'Zoom into the active cartridge cutaway to inspect primer anvil & bullet core',
@@ -2119,6 +2165,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       matrixToggleOpen: 'Quantitative Matrix',
       matrixToggleClose: 'Hide Matrix',
       matrixToggleTitle: `Toggle ${LAB_CALIBER_TOTAL}-caliber quantitative comparison table (dimensions, charge, pressure & energy)`,
+      tankMatrixToggleTitle:
+        'Toggle 3-ordnance tank cannon quantitative comparison table (dimensions, charge, pressure & energy)',
       explodeLabel: 'Axial Anatomy Explode',
       explodeReset: 'Collapse',
       caliberSelectorAria: 'Select caliber specimen in 1:1 cutaway lineup',
@@ -2137,6 +2185,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       ballisticsRangeTitle:
         'Inspect drop, crosswind drift, transonic Mach 1.0 zone & FFP reticle for this caliber in the 1,000m Range Lab (R)',
       tableCaption: `SAAMI / CIP / NATO ${LAB_CALIBER_TOTAL}-Caliber 1:1 Dimensional & Internal Ballistics Comparison Matrix`,
+      tankTableCaption:
+        'NATO STANAG / PLA GJB / WWII 3-Ordnance Tank Cannon 1:1 Dimensional & Internal Ballistics Matrix',
       colCaliber: 'Caliber',
       colStandard: 'Standard',
       colCaseOal: 'Case / OAL (mm)',

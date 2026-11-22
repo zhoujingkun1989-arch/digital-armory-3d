@@ -8,9 +8,13 @@ import {
 } from '@react-three/drei';
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
+import type { WeaponScaleProfile } from '../../weapons/types';
 import { playbackClock } from '../clock/playbackClock';
+import { lockLinearTextureColorSpace } from '../materials/pbrManager';
+import type { GraphicsQualityTier } from './graphicsQuality';
 import {
-  getStudioHdriEnvIntensity,
+  getStudioHdriEnvIntensityForScale,
+  getStudioHdriFileNameForScale,
   loadStudioHdriTexture,
 } from './studioHdriManager';
 import { evaluateWeaponTurntableEnvelopeInto } from './turntableStageMetrics';
@@ -1428,7 +1432,12 @@ function finishTexture(
   colorSpace: THREE.ColorSpace
 ): THREE.CanvasTexture {
   const tex = new THREE.CanvasTexture(canvas);
-  tex.colorSpace = colorSpace;
+  if (colorSpace === THREE.NoColorSpace) {
+    // Lock linear roughness maps against R3F v8 `applyProps` unconditionally resetting `.colorSpace = SRGBColorSpace`
+    lockLinearTextureColorSpace(tex);
+  } else {
+    tex.colorSpace = colorSpace;
+  }
   tex.anisotropy = 8;
   tex.minFilter = THREE.LinearMipmapLinearFilter;
   tex.magFilter = THREE.LinearFilter;
@@ -1468,13 +1477,1153 @@ export function getGunsmithMatTextures(
 }
 
 // =====================================================================================
+// 5b. Heavy Armor 1:1 Concrete Hangar Floor (18 m × 12 m marked bay + 2.6 m feathered apron)
+// =====================================================================================
+
+export const HEAVY_ARMOR_HANGAR_SPEC = {
+  widthCm: 1800,
+  depthCm: 1200,
+  /** Outer concrete dissolve margin beyond the 18 m × 12 m bay so the floor feathers into hangar fog */
+  featherMarginCm: 260,
+  totalWidthCm: 2320,
+  totalDepthCm: 1720,
+  thicknessCm: 4.0,
+  /** Top deck sits at +1.0 cm above `gridY = -121.0 cm` -> world `Y = -120.0 cm` (exact track contact!) */
+  topOffsetYCm: 1.0,
+  turntablePitRadiusCm: 480, // Ø 9.6 m circular steel turntable pit ring
+  expansionJointCm: 300, // 3 m × 3 m poured concrete bay grid
+  trackLaneZCm: 140, // Twin rubber/steel tank-track scuff lanes along Z = ±140 cm
+} as const;
+
+export const HEAVY_ARMOR_HANGAR_TEXTURE_SIZE = {
+  albedoWidth: 2048,
+  albedoHeight: 1536,
+  normalWidth: 1024,
+  normalHeight: 768,
+  roughnessWidth: 1024,
+  roughnessHeight: 768,
+  alphaWidth: 512,
+  alphaHeight: 384,
+} as const;
+
+export interface HeavyArmorHangarTextures {
+  albedo: THREE.CanvasTexture;
+  normal: THREE.CanvasTexture;
+  roughness: THREE.CanvasTexture;
+  alpha: THREE.CanvasTexture;
+}
+
+export interface HeavyArmorHangarGeometries {
+  slab: THREE.BufferGeometry;
+  pitRing: THREE.BufferGeometry;
+}
+
+export function buildHeavyArmorHangarGeometries(): HeavyArmorHangarGeometries {
+  const S = HEAVY_ARMOR_HANGAR_SPEC;
+  // Single upward-facing concrete apron plane at Y = topOffsetYCm (eliminates side-wall alpha double-blending)
+  const slab = new THREE.PlaneGeometry(S.totalWidthCm, S.totalDepthCm, 1, 1);
+  slab.rotateX(-Math.PI / 2);
+  slab.translate(0, S.topOffsetYCm, 0);
+
+  // Exact top-down planar UV matching canvas coordinates (+X right, +Z bottom)
+  const pos = slab.getAttribute('position') as THREE.BufferAttribute;
+  const uv = new Float32Array(pos.count * 2);
+  for (let i = 0; i < pos.count; i++) {
+    uv[i * 2] = THREE.MathUtils.clamp(
+      (pos.getX(i) + S.totalWidthCm * 0.5) / S.totalWidthCm,
+      0,
+      1
+    );
+    uv[i * 2 + 1] = THREE.MathUtils.clamp(
+      (S.totalDepthCm * 0.5 - pos.getZ(i)) / S.totalDepthCm,
+      0,
+      1
+    );
+  }
+  slab.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+
+  const pitRing = new THREE.RingGeometry(
+    S.turntablePitRadiusCm - 14,
+    S.turntablePitRadiusCm + 14,
+    160,
+    1
+  );
+  pitRing.rotateX(-Math.PI / 2);
+  pitRing.translate(0, S.topOffsetYCm + 0.08, 0);
+
+  return { slab, pitRing };
+}
+
+interface HangarOilPatch {
+  cxCm: number;
+  czCm: number;
+  rxCm: number;
+  rzCm: number;
+  rotRad: number;
+  /** Target linear roughness inside the wet oil / condensation core (0.16..0.24) */
+  coreRoughness: number;
+  albedoDarkOpacity: number;
+  lobes: readonly (readonly [dxFrac: number, dzFrac: number, scale: number])[];
+}
+
+/** Shared depot hydraulic-oil & condensation slick coordinates aligned identically across albedo, normal & roughness. */
+export const HEAVY_ARMOR_OIL_PATCHES: readonly HangarOilPatch[] = [
+  {
+    cxCm: -352,
+    czCm: 52,
+    rxCm: 84,
+    rzCm: 50,
+    rotRad: 0.18,
+    coreRoughness: 0.185,
+    albedoDarkOpacity: 0.66,
+    lobes: [
+      [0.0, 0.0, 1.0],
+      [-0.44, 0.22, 0.58],
+      [0.4, -0.26, 0.5],
+    ],
+  },
+  {
+    cxCm: -268,
+    czCm: -162,
+    rxCm: 62,
+    rzCm: 38,
+    rotRad: -0.22,
+    coreRoughness: 0.195,
+    albedoDarkOpacity: 0.6,
+    lobes: [
+      [0.0, 0.0, 1.0],
+      [0.46, 0.16, 0.54],
+    ],
+  },
+  {
+    cxCm: 248,
+    czCm: 254,
+    rxCm: 54,
+    rzCm: 32,
+    rotRad: 0.14,
+    coreRoughness: 0.21,
+    albedoDarkOpacity: 0.56,
+    lobes: [
+      [0.0, 0.0, 1.0],
+      [-0.4, -0.2, 0.56],
+    ],
+  },
+  {
+    cxCm: -116,
+    czCm: -194,
+    rxCm: 56,
+    rzCm: 34,
+    rotRad: 0.3,
+    coreRoughness: 0.2,
+    albedoDarkOpacity: 0.58,
+    lobes: [
+      [0.0, 0.0, 1.0],
+      [0.34, -0.28, 0.5],
+    ],
+  },
+  {
+    cxCm: 318,
+    czCm: -178,
+    rxCm: 52,
+    rzCm: 32,
+    rotRad: -0.15,
+    coreRoughness: 0.23,
+    albedoDarkOpacity: 0.54,
+    lobes: [
+      [0.0, 0.0, 1.0],
+      [-0.36, 0.22, 0.52],
+    ],
+  },
+];
+
+/**
+ * Evaluates smooth `[0, 1]` coverage across all multi-lobe hydraulic oil / condensation slicks
+ * at deck coordinate `(cmX, cmZ)` so normal micro-pore leveling aligns 1:1 with albedo & roughness.
+ */
+export function evaluateHangarOilPatchMask(cmX: number, cmZ: number): number {
+  let maxMask = 0;
+  for (let i = 0; i < HEAVY_ARMOR_OIL_PATCHES.length; i++) {
+    const patch = HEAVY_ARMOR_OIL_PATCHES[i];
+    const padX = patch.rxCm * 1.65;
+    const padZ = patch.rzCm * 1.65;
+    if (
+      Math.abs(cmX - patch.cxCm) > padX ||
+      Math.abs(cmZ - patch.czCm) > padZ
+    ) {
+      continue;
+    }
+    const cosR = Math.cos(-patch.rotRad);
+    const sinR = Math.sin(-patch.rotRad);
+    for (let j = 0; j < patch.lobes.length; j++) {
+      const [dxFrac, dzFrac, lobeScale] = patch.lobes[j];
+      const lx = patch.cxCm + dxFrac * patch.rxCm;
+      const lz = patch.czCm + dzFrac * patch.rzCm;
+      const dx = cmX - lx;
+      const dz = cmZ - lz;
+      const rx = patch.rxCm * lobeScale;
+      const rz = patch.rzCm * lobeScale;
+      const ux = (dx * cosR - dz * sinR) / rx;
+      const uz = (dx * sinR + dz * cosR) / rz;
+      const dSq = ux * ux + uz * uz;
+      if (dSq < 1) {
+        const d = Math.sqrt(dSq);
+        const s = 1 - d * d * (3 - 2 * d);
+        if (s > maxMask) maxMask = s;
+      }
+    }
+  }
+  return maxMask;
+}
+
+function hash2dDet(ix: number, iy: number, seed: number): number {
+  let n = Math.imul(ix, 374761393) + Math.imul(iy, 668265263) + Math.imul(seed, 1442695041);
+  n = (n ^ (n >>> 13)) >>> 0;
+  n = Math.imul(n, 1274126177) >>> 0;
+  return ((n ^ (n >>> 16)) >>> 0) / 4294967296;
+}
+
+function valueNoise2d(x: number, y: number, seed: number): number {
+  const ix = Math.floor(x);
+  const iy = Math.floor(y);
+  const fx = x - ix;
+  const fy = y - iy;
+  const ux = fx * fx * (3 - 2 * fx);
+  const uy = fy * fy * (3 - 2 * fy);
+  const a = hash2dDet(ix, iy, seed);
+  const b = hash2dDet(ix + 1, iy, seed);
+  const c = hash2dDet(ix, iy + 1, seed);
+  const d = hash2dDet(ix + 1, iy + 1, seed);
+  return (a + (b - a) * ux) * (1 - uy) + (c + (d - c) * ux) * uy;
+}
+
+/**
+ * Paints the 2048×1536 1:1 Heavy Armor Concrete Hangar Floor albedo:
+ * multi-pour brushed concrete slabs with 3 m expansion joints & corner micro-cracks,
+ * weathered/chipped yellow-black hazard bay striping, Ø 9.6 m circular steel turntable pit ring,
+ * twin rubber/steel tank track scuff & dust lanes along Z = ±140 cm, organic hydraulic oil stains,
+ * and stenciled `HEAVY ARMOR DEPOT · 1:1 METRIC SCALE (0 – 10,000 mm)` ruler.
+ */
+export function paintHeavyArmorHangarAlbedo(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number,
+  preset: ArmoryEnvironmentPreset
+): void {
+  const S = HEAVY_ARMOR_HANGAR_SPEC;
+  const pxPerCmX = w / S.totalWidthCm;
+  const pxPerCmZ = h / S.totalDepthCm;
+  const toX = (cmX: number) => (cmX + S.totalWidthCm * 0.5) * pxPerCmX;
+  const toY = (cmZ: number) => (cmZ + S.totalDepthCm * 0.5) * pxPerCmZ;
+
+  const isLight = preset === 'blueprint_daylight';
+  const isBench = preset === 'gunsmith_bench';
+
+  // 1. Brushed concrete base fill
+  const baseHex = isLight ? '#c8d1dc' : isBench ? '#2c2b28' : '#232831';
+  const jointHex = isLight ? '#8794a5' : isBench ? '#141311' : '#0f1319';
+  const inkHex = isLight ? '#1e293b' : '#cbd5e1';
+  const mutedInk = isLight ? '#475569' : '#7b8a9e';
+  const hazardYellow = isLight ? '#d97706' : '#eab308';
+  const hazardBlack = isLight ? '#1e293b' : '#14171c';
+
+  ctx.fillStyle = baseHex;
+  ctx.fillRect(0, 0, w, h);
+
+  // Subtle concrete pour-to-pour batch tonal variation across each 3 m × 3 m bay
+  const rand = createSeededRandom(0x99a1a2);
+  for (let xCm = -1200; xCm < 1200; xCm += S.expansionJointCm) {
+    for (let zCm = -900; zCm < 900; zCm += S.expansionJointCm) {
+      const shift = (rand() - 0.5) * 2;
+      const bright = shift > 0 ? 255 : 0;
+      const alpha = Math.abs(shift) * (isLight ? 0.036 : 0.045);
+      ctx.fillStyle = `rgba(${bright},${bright},${bright},${alpha.toFixed(4)})`;
+      ctx.fillRect(
+        toX(xCm),
+        toY(zCm),
+        S.expansionJointCm * pxPerCmX,
+        S.expansionJointCm * pxPerCmZ
+      );
+    }
+  }
+
+  // Deterministic concrete aggregate, trowel streaks & mineral weathering grain
+  const grainCount = 5400;
+  for (let i = 0; i < grainCount; i++) {
+    const gx = rand() * w;
+    const gy = rand() * h;
+    const gw = 3 + rand() * 32;
+    const gh = 1.4 + rand() * 5.2;
+    const delta = rand() > 0.48 ? 255 : 0;
+    ctx.fillStyle = `rgba(${delta},${delta},${delta},${isLight ? 0.034 : 0.032})`;
+    ctx.fillRect(gx, gy, gw, gh);
+  }
+
+  // Subtle poured-concrete radial overhead illumination & outer apron darkening
+  const floorGrad = ctx.createRadialGradient(
+    w * 0.5,
+    h * 0.5,
+    w * 0.07,
+    w * 0.5,
+    h * 0.5,
+    w * 0.54
+  );
+  floorGrad.addColorStop(
+    0,
+    isLight ? 'rgba(255,255,255,0.16)' : 'rgba(186,204,224,0.075)'
+  );
+  floorGrad.addColorStop(
+    0.7,
+    isLight ? 'rgba(180,192,206,0.02)' : 'rgba(14,18,24,0.14)'
+  );
+  floorGrad.addColorStop(
+    1,
+    isLight ? 'rgba(30,41,59,0.12)' : 'rgba(4,6,10,0.44)'
+  );
+  ctx.fillStyle = floorGrad;
+  ctx.fillRect(0, 0, w, h);
+
+  // 2. Concrete expansion joints every 300 cm (3 m × 3 m slabs) + subtle corner stress cracks
+  ctx.save();
+  ctx.strokeStyle = jointHex;
+  ctx.lineWidth = Math.max(1.5, w * 0.0014);
+  for (let xCm = -900; xCm <= 900; xCm += S.expansionJointCm) {
+    const px = toX(xCm);
+    ctx.beginPath();
+    ctx.moveTo(px, 0);
+    ctx.lineTo(px, h);
+    ctx.stroke();
+  }
+  for (let zCm = -600; zCm <= 600; zCm += S.expansionJointCm) {
+    const py = toY(zCm);
+    ctx.beginPath();
+    ctx.moveTo(0, py);
+    ctx.lineTo(w, py);
+    ctx.stroke();
+  }
+  // Faint bevel highlight beside each expansion seam
+  ctx.strokeStyle = isLight
+    ? 'rgba(255,255,255,0.34)'
+    : 'rgba(255,255,255,0.055)';
+  ctx.lineWidth = 1;
+  for (let xCm = -900; xCm <= 900; xCm += S.expansionJointCm) {
+    const px = toX(xCm) + 2;
+    ctx.beginPath();
+    ctx.moveTo(px, 0);
+    ctx.lineTo(px, h);
+    ctx.stroke();
+  }
+  for (let zCm = -600; zCm <= 600; zCm += S.expansionJointCm) {
+    const py = toY(zCm) + 2;
+    ctx.beginPath();
+    ctx.moveTo(0, py);
+    ctx.lineTo(w, py);
+    ctx.stroke();
+  }
+
+  // Deterministic hairline concrete stress cracks near heavy-load joint intersections
+  const crackSeeds: readonly (readonly [number, number, number, number])[] = [
+    [-600, -300, 0.42, 135],
+    [300, -300, 2.52, 118],
+    [-300, 300, -0.68, 148],
+    [600, 300, -2.35, 110],
+    [-600, 300, 0.85, 96],
+  ];
+  ctx.strokeStyle = isLight ? 'rgba(51,65,85,0.34)' : 'rgba(8,10,14,0.52)';
+  ctx.lineWidth = Math.max(1, w * 0.00065);
+  for (const [sxCm, szCm, angle, lenCm] of crackSeeds) {
+    let cxCm = sxCm;
+    let czCm = szCm;
+    let ang = angle;
+    ctx.beginPath();
+    ctx.moveTo(toX(cxCm), toY(czCm));
+    const steps = 10;
+    for (let k = 0; k < steps; k++) {
+      ang += (rand() - 0.5) * 0.48;
+      cxCm += Math.cos(ang) * (lenCm / steps);
+      czCm += Math.sin(ang) * (lenCm / steps);
+      ctx.lineTo(toX(cxCm), toY(czCm));
+    }
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  // 3. Twin dark rubber/steel tank-track scuff & mineral dust lanes along Z = ±140 cm
+  ctx.save();
+  for (const zSign of [-1, 1]) {
+    const laneZ = zSign * S.trackLaneZCm;
+    const laneY = toY(laneZ);
+    const laneH = 66 * pxPerCmZ;
+
+    // Pale dry mineral dust & field grit shed along outer edges of the tank tracks
+    const dustH = 98 * pxPerCmZ;
+    const dustGrad = ctx.createLinearGradient(toX(-880), 0, toX(580), 0);
+    dustGrad.addColorStop(0, 'rgba(155,142,122,0)');
+    dustGrad.addColorStop(
+      0.18,
+      isLight ? 'rgba(116,104,88,0.12)' : 'rgba(162,148,126,0.09)'
+    );
+    dustGrad.addColorStop(
+      0.78,
+      isLight ? 'rgba(116,104,88,0.10)' : 'rgba(162,148,126,0.075)'
+    );
+    dustGrad.addColorStop(1, 'rgba(155,142,122,0)');
+    ctx.fillStyle = dustGrad;
+    ctx.fillRect(toX(-880), laneY - dustH * 0.5, 1460 * pxPerCmX, dustH);
+
+    // Core dark rubber-pad & blackened track-scuff lane
+    const scuffGrad = ctx.createLinearGradient(toX(-860), 0, toX(550), 0);
+    scuffGrad.addColorStop(0, 'rgba(8,10,13,0.0)');
+    scuffGrad.addColorStop(
+      0.16,
+      isLight ? 'rgba(22,28,36,0.20)' : 'rgba(5,7,10,0.44)'
+    );
+    scuffGrad.addColorStop(
+      0.76,
+      isLight ? 'rgba(22,28,36,0.16)' : 'rgba(5,7,10,0.38)'
+    );
+    scuffGrad.addColorStop(1, 'rgba(8,10,13,0.0)');
+    ctx.fillStyle = scuffGrad;
+    ctx.fillRect(toX(-860), laneY - laneH * 0.5, 1410 * pxPerCmX, laneH);
+
+    // Articulated double-block rubber tread impressions & subtle steel grouser scrape marks
+    ctx.fillStyle = isLight ? 'rgba(15,23,42,0.11)' : 'rgba(0,0,0,0.26)';
+    for (let xCm = -790; xCm <= 390; xCm += 20) {
+      const tx = toX(xCm);
+      ctx.fillRect(tx, laneY - laneH * 0.4, 7.5 * pxPerCmX, laneH * 0.31);
+      ctx.fillRect(
+        tx + 3.5 * pxPerCmX,
+        laneY + laneH * 0.09,
+        7.5 * pxPerCmX,
+        laneH * 0.31
+      );
+    }
+
+    // Fine pale steel grouser abrasion scratches along track centerline & edges
+    ctx.strokeStyle = isLight
+      ? 'rgba(255,255,255,0.18)'
+      : 'rgba(210,220,232,0.075)';
+    ctx.lineWidth = Math.max(1, w * 0.0005);
+    for (let sIdx = 0; sIdx < 16; sIdx++) {
+      const sx0 = -760 + rand() * 1020;
+      const slen = 36 + rand() * 125;
+      const sy = laneY + (rand() - 0.5) * laneH * 0.85;
+      ctx.beginPath();
+      ctx.moveTo(toX(sx0), sy);
+      ctx.lineTo(toX(sx0 + slen), sy + (rand() - 0.5) * 3);
+      ctx.stroke();
+    }
+  }
+
+  // Organic cool oily charcoal/slate hydraulic stains (exact elliptical taper aligned with normal & roughness)
+  for (const patch of HEAVY_ARMOR_OIL_PATCHES) {
+    for (const [dxFrac, dzFrac, lobeScale] of patch.lobes) {
+      const lx = toX(patch.cxCm + dxFrac * patch.rxCm);
+      const ly = toY(patch.czCm + dzFrac * patch.rzCm);
+      const lrx = Math.max(1, patch.rxCm * lobeScale * pxPerCmX);
+      const lry = Math.max(1, patch.rzCm * lobeScale * pxPerCmZ);
+      ctx.save();
+      ctx.translate(lx, ly);
+      ctx.rotate(patch.rotRad);
+      ctx.scale(1, lry / lrx);
+      const oilGrad = ctx.createRadialGradient(0, 0, 1, 0, 0, lrx);
+      const coreA = patch.albedoDarkOpacity * (isLight ? 0.52 : 1.0);
+      oilGrad.addColorStop(
+        0,
+        isLight
+          ? `rgba(24,30,38,${coreA.toFixed(3)})`
+          : `rgba(5,7,11,${coreA.toFixed(3)})`
+      );
+      oilGrad.addColorStop(
+        0.52,
+        isLight
+          ? `rgba(34,41,50,${(coreA * 0.56).toFixed(3)})`
+          : `rgba(11,15,21,${(coreA * 0.62).toFixed(3)})`
+      );
+      oilGrad.addColorStop(1, 'rgba(11,15,21,0)');
+      ctx.fillStyle = oilGrad;
+      ctx.beginPath();
+      ctx.arc(0, 0, lrx, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+  ctx.restore();
+
+  // 4. Circular steel turntable pit ring (`Ø 9.6 m`, radius 480 cm)
+  const cx = toX(0);
+  const cy = toY(0);
+  const rxPit = S.turntablePitRadiusCm * pxPerCmX;
+  const ryPit = S.turntablePitRadiusCm * pxPerCmZ;
+
+  ctx.save();
+  // Dark recessed pit seam & brushed steel rim band
+  ctx.strokeStyle = isLight ? '#64748b' : '#475569';
+  ctx.lineWidth = Math.max(10, 26 * pxPerCmX);
+  ctx.beginPath();
+  ctx.ellipse(cx, cy, rxPit, ryPit, 0, 0, Math.PI * 2);
+  ctx.stroke();
+
+  ctx.strokeStyle = isLight ? '#334155' : '#090c11';
+  ctx.lineWidth = Math.max(2, 4.5 * pxPerCmX);
+  ctx.beginPath();
+  ctx.ellipse(
+    cx,
+    cy,
+    rxPit - 13 * pxPerCmX,
+    ryPit - 13 * pxPerCmZ,
+    0,
+    0,
+    Math.PI * 2
+  );
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.ellipse(
+    cx,
+    cy,
+    rxPit + 13 * pxPerCmX,
+    ryPit + 13 * pxPerCmZ,
+    0,
+    0,
+    Math.PI * 2
+  );
+  ctx.stroke();
+
+  // Turntable azimuth ticks & radial plate joints every 15°
+  for (let deg = 0; deg < 360; deg += 15) {
+    const a = THREE.MathUtils.degToRad(deg);
+    const ca = Math.cos(a);
+    const sa = -Math.sin(a);
+    const isCardinal = deg % 90 === 0;
+    const r0 = isCardinal ? 0.91 : 0.96;
+    const r1 = 1.03;
+    ctx.strokeStyle = isCardinal ? hazardYellow : mutedInk;
+    ctx.lineWidth = isCardinal ? 3.5 : 1.5;
+    ctx.beginPath();
+    ctx.moveTo(cx + ca * rxPit * r0, cy + sa * ryPit * r0);
+    ctx.lineTo(cx + ca * rxPit * r1, cy + sa * ryPit * r1);
+    ctx.stroke();
+  }
+
+  // Center bore / turret datum crosshair
+  ctx.strokeStyle = isLight ? 'rgba(30,41,59,0.28)' : 'rgba(148,163,184,0.22)';
+  ctx.lineWidth = 1.5;
+  ctx.setLineDash([12, 8]);
+  ctx.beginPath();
+  ctx.moveTo(toX(-760), cy);
+  ctx.lineTo(toX(760), cy);
+  ctx.moveTo(cx, toY(-480));
+  ctx.lineTo(cx, toY(480));
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
+
+  // 5. Realistic Weathered & Chipped Yellow/Black 45° Safety Bay Perimeter Striping (`17.4 m × 11.68 m`)
+  ctx.save();
+  const bx0 = toX(-870);
+  const bx1 = toX(870);
+  const by0 = toY(-584);
+  const by1 = toY(584);
+  const bandW = Math.max(9, 17 * pxPerCmX);
+
+  ctx.beginPath();
+  ctx.rect(bx0, by0, bx1 - bx0, by1 - by0);
+  ctx.rect(
+    bx0 + bandW,
+    by0 + bandW,
+    bx1 - bx0 - bandW * 2,
+    by1 - by0 - bandW * 2
+  );
+  ctx.clip('evenodd');
+
+  ctx.fillStyle = hazardBlack;
+  ctx.fillRect(bx0, by0, bx1 - bx0, by1 - by0);
+
+  ctx.strokeStyle = hazardYellow;
+  ctx.lineWidth = bandW * 0.72;
+  const stripeStep = bandW * 1.9;
+  for (let d = -h; d < w + h; d += stripeStep) {
+    ctx.beginPath();
+    ctx.moveTo(d, 0);
+    ctx.lineTo(d + h, h);
+    ctx.stroke();
+  }
+
+  // Paint chipping & concrete wear gouges across the hazard border
+  ctx.fillStyle = baseHex;
+  for (let i = 0; i < 420; i++) {
+    const edge = i % 4;
+    let cxChip: number;
+    let cyChip: number;
+    if (edge === 0) {
+      cxChip = bx0 + rand() * (bx1 - bx0);
+      cyChip = by0 + rand() * bandW;
+    } else if (edge === 1) {
+      cxChip = bx0 + rand() * (bx1 - bx0);
+      cyChip = by1 - rand() * bandW;
+    } else if (edge === 2) {
+      cxChip = bx0 + rand() * bandW;
+      cyChip = by0 + rand() * (by1 - by0);
+    } else {
+      cxChip = bx1 - rand() * bandW;
+      cyChip = by0 + rand() * (by1 - by0);
+    }
+    ctx.globalAlpha = 0.38 + rand() * 0.48;
+    ctx.fillRect(
+      cxChip,
+      cyChip,
+      (2.5 + rand() * 14) * pxPerCmX,
+      (1.8 + rand() * 8) * pxPerCmZ
+    );
+  }
+  // Heavy tank-track crossing wear across the left/right hazard bands at Z = ±140 cm
+  ctx.globalAlpha = 0.72;
+  for (const zSign of [-1, 1]) {
+    const ty = toY(zSign * S.trackLaneZCm);
+    const th = 72 * pxPerCmZ;
+    ctx.fillRect(bx0 - 2, ty - th * 0.5, bandW + 4, th);
+    ctx.fillRect(bx1 - bandW - 2, ty - th * 0.5, bandW + 4, th);
+  }
+  ctx.restore();
+
+  // 6. Crisp Stenciled 1:1 Metric Scale Ruler (`0 – 10,000 mm`) cleanly outside the Ø 9.6 m steel pit ring
+  ctx.save();
+  const rulerStartX = toX(-500);
+  const rulerEndX = toX(500);
+  const rulerY = toY(538);
+  ctx.strokeStyle = inkHex;
+  ctx.fillStyle = inkHex;
+  ctx.lineWidth = 2.2;
+  ctx.beginPath();
+  ctx.moveTo(rulerStartX, rulerY);
+  ctx.lineTo(rulerEndX, rulerY);
+  ctx.stroke();
+
+  const fontMono = (px: number, weight = 700) =>
+    `${weight} ${Math.round(px)}px "JetBrains Mono", "SFMono-Regular", Menlo, monospace`;
+  ctx.font = fontMono(11.5, 700);
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+
+  for (let mm = 0; mm <= 10000; mm += 200) {
+    const xCm = -500 + mm / 10;
+    const px = toX(xCm);
+    const isMajor = mm % 1000 === 0;
+    const tickH = isMajor ? 10 : 5;
+    ctx.strokeStyle = isMajor ? hazardYellow : mutedInk;
+    ctx.lineWidth = isMajor ? 2.2 : 1.2;
+    ctx.beginPath();
+    ctx.moveTo(px, rulerY - tickH);
+    ctx.lineTo(px, rulerY + (isMajor ? 4 : 2));
+    ctx.stroke();
+
+    if (isMajor) {
+      ctx.fillStyle = inkHex;
+      ctx.fillText(
+        mm === 0 ? '0' : `${mm.toLocaleString('en-US')}`,
+        px,
+        rulerY + 5
+      );
+    }
+  }
+
+  // Primary Depot Stencil Title — cleanly centered between outer pit rim (`Z = +494`) and scale ticks (`Z = +526`)
+  ctx.font = fontMono(15, 700);
+  ctx.fillStyle = hazardYellow;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'bottom';
+  ctx.fillText(
+    'HEAVY ARMOR DEPOT · 1:1 METRIC SCALE (0 – 10,000 mm)',
+    cx,
+    toY(521)
+  );
+
+  // Rear / Corner Depot Telemetry Stencils (cleanly inside rear safety stripe & outside rear pit rim)
+  ctx.font = fontMono(13, 700);
+  ctx.fillStyle = mutedInk;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'top';
+  ctx.fillText(
+    'BAY 1:1 · CONCRETE HANGAR FLOOR · 18,000 × 12,000 mm',
+    toX(-820),
+    toY(-546)
+  );
+  ctx.textAlign = 'right';
+  ctx.fillText(
+    'TURNTABLE PIT Ø 9,600 mm · MAX AXLE LOAD 75,000 KG',
+    toX(820),
+    toY(-546)
+  );
+
+  // Subtle concrete wear flecks over depot stencil paint so lettering integrates organically
+  ctx.fillStyle = baseHex;
+  for (let i = 0; i < 64; i++) {
+    ctx.globalAlpha = 0.22 + rand() * 0.25;
+    const sx = toX(-520 + rand() * 1040);
+    const sy = toY(508 + rand() * 44);
+    ctx.fillRect(sx, sy, 2 + rand() * 6, 1.5 + rand() * 3.5);
+  }
+  ctx.restore();
+}
+
+/**
+ * Synthesizes a linear tangent-space normal map (`NoColorSpace`, neutral `(128, 128, 255)`)
+ * from a physical 1:1 concrete deck heightfield: troweled aggregate grain, 3 m recessed expansion
+ * joint V-grooves with raised lips, Ø 9.6 m recessed turntable pit seams & radial curb plate joints,
+ * tank track micro-abrasion lanes (`Z = ±140 cm`), and subtle stress cracks.
+ */
+export function paintHeavyArmorHangarNormal(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number
+): void {
+  const S = HEAVY_ARMOR_HANGAR_SPEC;
+  const img = ctx.getImageData(0, 0, w, h);
+  const data = img.data;
+  const heightField = new Float32Array(w * h);
+
+  const invW = 1 / Math.max(1, w);
+  const invH = 1 / Math.max(1, h);
+  const halfW = S.totalWidthCm * 0.5;
+  const halfD = S.totalDepthCm * 0.5;
+  const jointStep = S.expansionJointCm;
+  const pitR = S.turntablePitRadiusCm;
+
+  for (let py = 0; py < h; py++) {
+    const cmZ = (py + 0.5) * invH * S.totalDepthCm - halfD;
+    const rowOff = py * w;
+
+    // Distance to nearest Z expansion seam (every 300 cm)
+    const modZ = ((cmZ % jointStep) + jointStep) % jointStep;
+    const distZ = Math.min(modZ, jointStep - modZ);
+
+    // Track lane proximity (Z = ±140 cm, width ±33 cm)
+    const trackDist = Math.abs(Math.abs(cmZ) - S.trackLaneZCm);
+    const inTrackBandZ = trackDist < 34;
+
+    for (let px = 0; px < w; px++) {
+      const cmX = (px + 0.5) * invW * S.totalWidthCm - halfW;
+
+      // 1. Multi-octave troweled concrete micro-relief (smoothly self-leveled inside oil slick lobes)
+      const oilMask = evaluateHangarOilPatchMask(cmX, cmZ);
+      const poreAtten = 1 - oilMask * 0.98;
+      const nCoarse = valueNoise2d(cmX * 0.014, cmZ * 0.014, 17);
+      const nMid = valueNoise2d(cmX * 0.075, cmZ * 0.075, 53);
+      const nFine = hash2dDet(px, py, 109);
+      let elev =
+        ((nCoarse - 0.5) * 0.24 +
+          (nMid - 0.5) * 0.13 +
+          (nFine - 0.5) * 0.045) *
+        poreAtten;
+
+      // 2. Concrete 3 m × 3 m expansion joint V-grooves with slight troweled edge lip
+      const modX = ((cmX % jointStep) + jointStep) % jointStep;
+      const distX = Math.min(modX, jointStep - modX);
+      const seamDist = Math.min(distX, distZ);
+      if (seamDist < 7.5) {
+        if (seamDist < 2.6) {
+          const t = seamDist / 2.6;
+          elev -= (1 - t * t) * 1.15;
+        } else {
+          const lipT = (seamDist - 2.6) / 4.9;
+          elev += Math.sin(lipT * Math.PI) * 0.16;
+        }
+      }
+
+      // 3. Recessed Ø 9.6 m steel turntable pit ring seams, proud curb & 24 radial plate joints
+      const r = Math.hypot(cmX, cmZ);
+      const dInnerSeam = Math.abs(r - (pitR - 13.5));
+      const dOuterSeam = Math.abs(r - (pitR + 13.5));
+      if (dInnerSeam < 3.6) {
+        elev -= (1 - dInnerSeam / 3.6) * 1.45;
+      } else if (dOuterSeam < 3.6) {
+        elev -= (1 - dOuterSeam / 3.6) * 1.45;
+      } else if (r > pitR - 12 && r < pitR + 12) {
+        elev += 0.34;
+        // 24 radial steel curb plate joints every 15°
+        const ang = Math.atan2(cmZ, cmX);
+        const sectorRad = Math.PI / 12;
+        const modAng = ((ang % sectorRad) + sectorRad) % sectorRad;
+        const distAng = Math.min(modAng, sectorRad - modAng) * r;
+        if (distAng < 2.2) {
+          elev -= (1 - distAng / 2.2) * 0.55;
+        }
+      }
+
+      // 4. Subtle steel-grouser & rubber tread pitting along twin tank track lanes
+      if (inTrackBandZ && cmX > -840 && cmX < 520) {
+        const treadWave = Math.sin(cmX * (Math.PI / 10));
+        const laneFade = 1 - trackDist / 34;
+        elev -= Math.max(0, treadWave) * 0.08 * laneFade * poreAtten;
+      }
+
+      heightField[rowOff + px] = elev;
+    }
+  }
+
+  // Sobel / central-difference gradient -> tangent-space normal (+X right, +V = -Z up)
+  const strength = 2.15;
+  for (let py = 0; py < h; py++) {
+    const yPrev = Math.max(0, py - 1) * w;
+    const yCur = py * w;
+    const yNext = Math.min(h - 1, py + 1) * w;
+
+    for (let px = 0; px < w; px++) {
+      const xPrev = Math.max(0, px - 1);
+      const xNext = Math.min(w - 1, px + 1);
+
+      const dhDx = (heightField[yCur + xNext] - heightField[yCur + xPrev]) * 0.5;
+      const dhDy = (heightField[yNext + px] - heightField[yPrev + px]) * 0.5;
+
+      const nx = -dhDx * strength;
+      const ny = dhDy * strength;
+      const nz = 1.0;
+      const invLen = 1 / Math.hypot(nx, ny, nz);
+
+      const idx = (yCur + px) * 4;
+      data[idx] = Math.max(
+        0,
+        Math.min(255, Math.round((nx * invLen * 0.5 + 0.5) * 255))
+      );
+      data[idx + 1] = Math.max(
+        0,
+        Math.min(255, Math.round((ny * invLen * 0.5 + 0.5) * 255))
+      );
+      data[idx + 2] = Math.max(
+        0,
+        Math.min(255, Math.round((nz * invLen * 0.5 + 0.5) * 255))
+      );
+      data[idx + 3] = 255;
+    }
+  }
+
+  ctx.putImageData(img, 0, 0);
+}
+
+/**
+ * Paints the 1024×768 linear roughness map (`NoColorSpace`) for the Heavy Armor concrete deck:
+ * rough troweled concrete (`R ~ 0.86..0.94`), burnished rubber/dust tank tracks (`R ~ 0.74..0.82`),
+ * weathered hazard epoxy paint (`R ~ 0.60..0.68`), brushed steel pit ring (`R ~ 0.38..0.44`),
+ * and glossy low-roughness hydraulic oil & condensation slicks (`R ~ 0.16..0.24`).
+ */
+export function paintHeavyArmorHangarRoughness(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number
+): void {
+  const S = HEAVY_ARMOR_HANGAR_SPEC;
+  const pxPerCmX = w / S.totalWidthCm;
+  const pxPerCmZ = h / S.totalDepthCm;
+  const toX = (cmX: number) => (cmX + S.totalWidthCm * 0.5) * pxPerCmX;
+  const toY = (cmZ: number) => (cmZ + S.totalDepthCm * 0.5) * pxPerCmZ;
+
+  // Rough troweled concrete base (~0.90 = 230/255, spanning 0.86..0.94)
+  ctx.fillStyle = 'rgb(230,230,230)';
+  ctx.fillRect(0, 0, w, h);
+
+  const rand = createSeededRandom(0x7051);
+  for (let i = 0; i < 2200; i++) {
+    const v = Math.round(219 + rand() * 22); // 0.86 .. 0.945
+    ctx.fillStyle = `rgb(${v},${v},${v})`;
+    ctx.fillRect(rand() * w, rand() * h, 4 + rand() * 20, 2 + rand() * 6);
+  }
+
+  // Rough recessed concrete expansion joints (~0.96)
+  ctx.strokeStyle = 'rgb(245,245,245)';
+  ctx.lineWidth = Math.max(1.5, w * 0.002);
+  for (let xCm = -900; xCm <= 900; xCm += S.expansionJointCm) {
+    ctx.beginPath();
+    ctx.moveTo(toX(xCm), 0);
+    ctx.lineTo(toX(xCm), h);
+    ctx.stroke();
+  }
+  for (let zCm = -600; zCm <= 600; zCm += S.expansionJointCm) {
+    ctx.beginPath();
+    ctx.moveTo(0, toY(zCm));
+    ctx.lineTo(w, toY(zCm));
+    ctx.stroke();
+  }
+
+  // Twin tank track scuff lanes along Z = ±140 cm (slightly burnished rubber track ~0.76)
+  for (const zSign of [-1, 1]) {
+    const laneY = toY(zSign * S.trackLaneZCm);
+    const laneH = 64 * pxPerCmZ;
+    const trkGrad = ctx.createLinearGradient(toX(-860), 0, toX(550), 0);
+    trkGrad.addColorStop(0, 'rgba(192,192,192,0)');
+    trkGrad.addColorStop(0.2, 'rgba(192,192,192,0.52)');
+    trkGrad.addColorStop(0.75, 'rgba(198,198,198,0.46)');
+    trkGrad.addColorStop(1, 'rgba(192,192,192,0)');
+    ctx.fillStyle = trkGrad;
+    ctx.fillRect(toX(-860), laneY - laneH * 0.5, 1410 * pxPerCmX, laneH);
+  }
+
+  // Semi-matte industrial epoxy safety border (~0.64)
+  const bx0 = toX(-870);
+  const bx1 = toX(870);
+  const by0 = toY(-584);
+  const by1 = toY(584);
+  const bandW = Math.max(6, 17 * pxPerCmX);
+  ctx.strokeStyle = 'rgb(164,164,164)';
+  ctx.lineWidth = bandW;
+  ctx.strokeRect(
+    bx0 + bandW * 0.5,
+    by0 + bandW * 0.5,
+    bx1 - bx0 - bandW,
+    by1 - by0 - bandW
+  );
+
+  // Smoother brushed steel turntable pit ring (~0.40)
+  ctx.strokeStyle = 'rgb(102,102,102)';
+  ctx.lineWidth = Math.max(6, 26 * pxPerCmX);
+  ctx.beginPath();
+  ctx.ellipse(
+    toX(0),
+    toY(0),
+    S.turntablePitRadiusCm * pxPerCmX,
+    S.turntablePitRadiusCm * pxPerCmZ,
+    0,
+    0,
+    Math.PI * 2
+  );
+  ctx.stroke();
+
+  // Low-roughness hydraulic oil & condensation slick patches (`R ~ 0.18..0.24`, tight glossy puddle core)
+  for (const patch of HEAVY_ARMOR_OIL_PATCHES) {
+    const coreByte = Math.max(
+      44,
+      Math.min(72, Math.round(patch.coreRoughness * 255))
+    );
+    const midByte = Math.min(182, coreByte + 76);
+    const rimByte = 204;
+    for (const [dxFrac, dzFrac, lobeScale] of patch.lobes) {
+      const lx = toX(patch.cxCm + dxFrac * patch.rxCm);
+      const ly = toY(patch.czCm + dzFrac * patch.rzCm);
+      const lrx = Math.max(1, patch.rxCm * lobeScale * pxPerCmX);
+      const lry = Math.max(1, patch.rzCm * lobeScale * pxPerCmZ);
+      ctx.save();
+      ctx.translate(lx, ly);
+      ctx.rotate(patch.rotRad);
+      ctx.scale(1, lry / lrx);
+      const oilGrad = ctx.createRadialGradient(0, 0, 1, 0, 0, lrx);
+      oilGrad.addColorStop(0, `rgb(${coreByte},${coreByte},${coreByte})`);
+      oilGrad.addColorStop(0.36, `rgb(${midByte},${midByte},${midByte})`);
+      oilGrad.addColorStop(0.72, `rgb(${rimByte},${rimByte},${rimByte})`);
+      oilGrad.addColorStop(1, 'rgba(230,230,230,0)');
+      ctx.fillStyle = oilGrad;
+      ctx.beginPath();
+      ctx.arc(0, 0, lrx, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+}
+
+/**
+ * Paints the smooth rounded-rectangle alpha feather mask (`NoColorSpace` linear) so the
+ * 18 m × 12 m active Heavy Armor bay stays 100% opaque (`255`) while the outer 2.6 m concrete
+ * apron dissolves organically (`255 -> 0`) into the dark hangar background & fog with zero
+ * visible rectangular floating slab edge.
+ */
+export function paintHeavyArmorHangarAlpha(
+  ctx: CanvasRenderingContext2D,
+  w: number,
+  h: number
+): void {
+  const S = HEAVY_ARMOR_HANGAR_SPEC;
+  const img = ctx.getImageData(0, 0, w, h);
+  const data = img.data;
+
+  // Inner full-opacity rounded rect encloses the entire 18 m × 12 m marked bay & hazard stripes
+  const innerHalfX = S.widthCm * 0.5 + 15; // 915 cm
+  const innerHalfZ = S.depthCm * 0.5 + 8; // 608 cm
+  const cornerR = 175;
+  const featherWidth = Math.max(120, S.featherMarginCm - 32); // ~228 cm smooth C2 dissolve
+
+  const invW = 1 / Math.max(1, w);
+  const invH = 1 / Math.max(1, h);
+  const halfTotalW = S.totalWidthCm * 0.5;
+  const halfTotalD = S.totalDepthCm * 0.5;
+
+  for (let py = 0; py < h; py++) {
+    const cmZ = (py + 0.5) * invH * S.totalDepthCm - halfTotalD;
+    const edgeGuardY =
+      py === 0 || py === h - 1 ? 0 : 1;
+    const rowOff = py * w;
+
+    for (let px = 0; px < w; px++) {
+      const idx = (rowOff + px) * 4;
+      if (edgeGuardY === 0 || px === 0 || px === w - 1) {
+        data[idx] = 0;
+        data[idx + 1] = 0;
+        data[idx + 2] = 0;
+        data[idx + 3] = 255;
+        continue;
+      }
+
+      const cmX = (px + 0.5) * invW * S.totalWidthCm - halfTotalW;
+
+      // Exact 2D rounded-box SDF (<= 0 inside full-opacity bay, > 0 inside feather skirt)
+      const qx = Math.abs(cmX) - (innerHalfX - cornerR);
+      const qz = Math.abs(cmZ) - (innerHalfZ - cornerR);
+      const outDist = Math.hypot(Math.max(qx, 0), Math.max(qz, 0));
+      const inDist = Math.min(Math.max(qx, qz), 0);
+      const sdf = outDist + inDist - cornerR;
+
+      // Subtle low-frequency organic concrete shadow modulation along the fade skirt
+      const wobble = (valueNoise2d(cmX * 0.0085, cmZ * 0.0085, 311) - 0.5) * 34;
+      const t = THREE.MathUtils.clamp((sdf + wobble) / featherWidth, 0, 1);
+      // C2 quintic Hermite falloff: zero derivative at both 0 and 1 for invisible seam transition
+      const quintic = t * t * t * (t * (t * 6 - 15) + 10);
+      let alpha = 1 - quintic;
+
+      // Guarantee absolute zero taper at the very outer 28 cm geometric perimeter
+      const marginX = halfTotalW - Math.abs(cmX);
+      const marginZ = halfTotalD - Math.abs(cmZ);
+      const edgeT = THREE.MathUtils.clamp(Math.min(marginX, marginZ) / 28, 0, 1);
+      alpha *= edgeT * edgeT * (3 - 2 * edgeT);
+
+      const byte = Math.max(0, Math.min(255, Math.round(alpha * 255)));
+      data[idx] = byte;
+      data[idx + 1] = byte;
+      data[idx + 2] = byte;
+      data[idx + 3] = 255;
+    }
+  }
+
+  ctx.putImageData(img, 0, 0);
+}
+
+const hangarAlbedoCache = new Map<ArmoryEnvironmentPreset, THREE.CanvasTexture>();
+let hangarNormalTexture: THREE.CanvasTexture | null = null;
+let hangarRoughnessTexture: THREE.CanvasTexture | null = null;
+let hangarAlphaTexture: THREE.CanvasTexture | null = null;
+
+/**
+ * Lazily paints & caches the Heavy Armor Hangar Floor PBR + Alpha suite:
+ * 2048×1536 sRGB Albedo (per preset) + shared 1024×768 linear Normal,
+ * 1024×768 linear Roughness, and 512×384 linear feathered Alpha map.
+ */
+export function getHeavyArmorHangarTextures(
+  preset: ArmoryEnvironmentPreset
+): HeavyArmorHangarTextures | null {
+  if (!canCreateCanvasTextures()) return null;
+  let albedo = hangarAlbedoCache.get(preset);
+  if (!albedo) {
+    const c = createCanvas2d(
+      HEAVY_ARMOR_HANGAR_TEXTURE_SIZE.albedoWidth,
+      HEAVY_ARMOR_HANGAR_TEXTURE_SIZE.albedoHeight
+    );
+    if (!c) return null;
+    paintHeavyArmorHangarAlbedo(c.ctx, c.canvas.width, c.canvas.height, preset);
+    albedo = finishTexture(c.canvas, THREE.SRGBColorSpace);
+    albedo.name = `HeavyArmorHangar.albedo.${preset}`;
+    hangarAlbedoCache.set(preset, albedo);
+  }
+  if (!hangarNormalTexture) {
+    const c = createCanvas2d(
+      HEAVY_ARMOR_HANGAR_TEXTURE_SIZE.normalWidth,
+      HEAVY_ARMOR_HANGAR_TEXTURE_SIZE.normalHeight
+    );
+    if (!c) return null;
+    paintHeavyArmorHangarNormal(c.ctx, c.canvas.width, c.canvas.height);
+    hangarNormalTexture = finishTexture(c.canvas, THREE.NoColorSpace);
+    hangarNormalTexture.name = 'HeavyArmorHangar.normal';
+  }
+  if (!hangarRoughnessTexture) {
+    const c = createCanvas2d(
+      HEAVY_ARMOR_HANGAR_TEXTURE_SIZE.roughnessWidth,
+      HEAVY_ARMOR_HANGAR_TEXTURE_SIZE.roughnessHeight
+    );
+    if (!c) return null;
+    paintHeavyArmorHangarRoughness(c.ctx, c.canvas.width, c.canvas.height);
+    hangarRoughnessTexture = finishTexture(c.canvas, THREE.NoColorSpace);
+    hangarRoughnessTexture.name = 'HeavyArmorHangar.roughness';
+  }
+  if (!hangarAlphaTexture) {
+    const c = createCanvas2d(
+      HEAVY_ARMOR_HANGAR_TEXTURE_SIZE.alphaWidth,
+      HEAVY_ARMOR_HANGAR_TEXTURE_SIZE.alphaHeight
+    );
+    if (!c) return null;
+    paintHeavyArmorHangarAlpha(c.ctx, c.canvas.width, c.canvas.height);
+    hangarAlphaTexture = finishTexture(c.canvas, THREE.NoColorSpace);
+    hangarAlphaTexture.name = 'HeavyArmorHangar.alpha';
+  }
+  return {
+    albedo,
+    normal: hangarNormalTexture,
+    roughness: hangarRoughnessTexture,
+    alpha: hangarAlphaTexture,
+  };
+}
+
+// =====================================================================================
 // 6. R3F components
 // =====================================================================================
 
 const noopRaycast: THREE.Object3D['raycast'] = () => {};
 
+export interface KeyLightShadowConfig {
+  mapSize: number;
+  position: Vec3;
+  radius: number;
+  bias: number;
+  normalBias: number;
+  left: number;
+  right: number;
+  top: number;
+  bottom: number;
+  near: number;
+  far: number;
+}
+
+/**
+ * Resolves physically tuned key-light directional shadow parameters per weapon scale & graphics tier:
+ * - Main Battle Tanks (`1:1` 10-meter hull + 125mm/120mm gun): `4096×4096` Ultra (`2048×2048` Balanced/Eco),
+ *   tight frustum `±560 × ±400 cm` (`2.7 mm` texel pitch at Ultra!) with dialed bias/normalBias so barrels,
+ *   antennas, ERA brackets, and smoke dischargers cast razor-sharp self-shadows with zero acne.
+ * - Firearms & Archery: preserves existing `2048/1024` tabletop frustum (`±60 × ±44 cm`).
+ */
+export function resolveKeyLightShadowConfig(
+  scaleProfile: WeaponScaleProfile,
+  graphicsQuality: GraphicsQualityTier = 'ultra',
+  baseKeyPosition: Vec3 = [14, 46, 28],
+  fallbackMapSize?: number
+): KeyLightShadowConfig {
+  if (scaleProfile === 'main_battle_tank') {
+    const isUltra = graphicsQuality === 'ultra';
+    return {
+      mapSize: isUltra ? 4096 : 2048,
+      position: [520, 770, 620],
+      radius: isUltra ? 2.0 : 2.4,
+      bias: isUltra ? -0.00018 : -0.00024,
+      normalBias: isUltra ? 0.16 : 0.26,
+      left: -560,
+      right: 560,
+      top: 400,
+      bottom: -400,
+      near: 250,
+      far: 2100,
+    };
+  }
+  return {
+    mapSize: fallbackMapSize ?? (graphicsQuality === 'ultra' ? 2048 : 1024),
+    position: baseKeyPosition,
+    radius: 3.5,
+    bias: -0.00022,
+    normalBias: 0.018,
+    left: -60,
+    right: 60,
+    top: 44,
+    bottom: -44,
+    near: 1,
+    far: 180,
+  };
+}
+
 export interface ArmoryStudioEnvironmentProps {
   preset?: ArmoryEnvironmentPreset;
+  scaleProfile?: WeaponScaleProfile;
+  graphicsQuality?: GraphicsQualityTier;
   shadowMapSize?: number;
   contextEpoch?: number;
 }
@@ -1509,19 +2658,66 @@ const STUDIO_BACKDROP_FRAGMENT = /* glsl */ `
 
 /**
  * Drop-in background + fog + lights + photographic Cycles HDRI reflection dome for a preset.
- * Falls back cleanly to procedural Lightformers while `.hdr` streams in or in headless tests.
+ * Automatically binds the 1:1 Heavy Armor Assembly Hangar HDRI for Main Battle Tanks on dark presets
+ * and falls back cleanly to procedural Lightformers while `.hdr` streams in or in headless tests.
  */
 export const ArmoryStudioEnvironment: React.FC<ArmoryStudioEnvironmentProps> =
   React.memo(
     ({
       preset = DEFAULT_ARMORY_ENVIRONMENT,
+      scaleProfile = 'rifle',
+      graphicsQuality,
       shadowMapSize = 2048,
       contextEpoch = 0,
     }) => {
       const env = getArmoryEnvironment(preset);
+      const isTank = scaleProfile === 'main_battle_tank';
+      const lightScale = isTank ? 10 : 1;
+      const resolvedQuality: GraphicsQualityTier =
+        graphicsQuality ?? (shadowMapSize >= 2048 ? 'ultra' : 'balanced');
+      const shadowCfg = useMemo(
+        () =>
+          resolveKeyLightShadowConfig(
+            scaleProfile,
+            resolvedQuality,
+            env.keyLight.position,
+            shadowMapSize
+          ),
+        [scaleProfile, resolvedQuality, env.keyLight.position, shadowMapSize]
+      );
+      const targetHdriKey = getStudioHdriFileNameForScale(preset, scaleProfile);
+      const keyLightRef = useRef<THREE.DirectionalLight>(null);
       const { gl, scene } = useThree();
-      const [hdriReadyPreset, setHdriReadyPreset] =
-        useState<ArmoryEnvironmentPreset | null>(null);
+      const [hdriReadyKey, setHdriReadyKey] = useState<string | null>(null);
+
+      // Update shadow camera frustum, bias & GPU shadow-map allocation whenever scale or quality changes
+      useEffect(() => {
+        const key = keyLightRef.current;
+        if (!key) return;
+        const cam = key.shadow.camera;
+        cam.left = shadowCfg.left;
+        cam.right = shadowCfg.right;
+        cam.top = shadowCfg.top;
+        cam.bottom = shadowCfg.bottom;
+        cam.near = shadowCfg.near;
+        cam.far = shadowCfg.far;
+        cam.updateProjectionMatrix();
+
+        key.shadow.bias = shadowCfg.bias;
+        key.shadow.normalBias = shadowCfg.normalBias;
+        key.shadow.radius = shadowCfg.radius;
+        if (
+          key.shadow.mapSize.x !== shadowCfg.mapSize ||
+          key.shadow.mapSize.y !== shadowCfg.mapSize
+        ) {
+          key.shadow.mapSize.set(shadowCfg.mapSize, shadowCfg.mapSize);
+          if (key.shadow.map) {
+            key.shadow.map.dispose();
+            key.shadow.map = null;
+          }
+        }
+        key.shadow.needsUpdate = true;
+      }, [shadowCfg]);
 
       const backdropGeo = useMemo(
         () => new THREE.SphereGeometry(380, 32, 20),
@@ -1546,19 +2742,27 @@ export const ArmoryStudioEnvironment: React.FC<ArmoryStudioEnvironmentProps> =
 
       useEffect(() => {
         if (preset === 'tactical_vault') {
-          backdropMat.uniforms.uZenithColor.value.set('#090b0e');
-          backdropMat.uniforms.uHorizonColor.value.set('#1e2228');
-          backdropMat.uniforms.uNadirColor.value.set('#08090c');
+          backdropMat.uniforms.uZenithColor.value.set(
+            isTank ? '#080b10' : '#090b0e'
+          );
+          backdropMat.uniforms.uHorizonColor.value.set(
+            isTank ? '#181e27' : '#1e2228'
+          );
+          backdropMat.uniforms.uNadirColor.value.set(
+            isTank ? '#090c11' : '#08090c'
+          );
         } else if (preset === 'gunsmith_bench') {
           backdropMat.uniforms.uZenithColor.value.set('#0d0e11');
-          backdropMat.uniforms.uHorizonColor.value.set('#25221e');
-          backdropMat.uniforms.uNadirColor.value.set('#0a0a0c');
+          backdropMat.uniforms.uHorizonColor.value.set(
+            isTank ? '#211f1b' : '#25221e'
+          );
+          backdropMat.uniforms.uNadirColor.value.set('#0b0c0e');
         } else {
           backdropMat.uniforms.uZenithColor.value.set('#d4dde9');
           backdropMat.uniforms.uHorizonColor.value.set('#edf2f8');
           backdropMat.uniforms.uNadirColor.value.set('#ced8e5');
         }
-      }, [preset, backdropMat]);
+      }, [preset, isTank, backdropMat]);
 
       useEffect(
         () => () => {
@@ -1570,34 +2774,50 @@ export const ArmoryStudioEnvironment: React.FC<ArmoryStudioEnvironmentProps> =
 
       useEffect(() => {
         let cancelled = false;
-        void loadStudioHdriTexture(gl, preset).then((tex) => {
+        void loadStudioHdriTexture(gl, preset, scaleProfile).then((tex) => {
           if (cancelled) return;
           if (tex) {
             scene.environment = tex;
             if ('environmentIntensity' in scene) {
               (
                 scene as THREE.Scene & { environmentIntensity: number }
-              ).environmentIntensity = getStudioHdriEnvIntensity(preset);
+              ).environmentIntensity = getStudioHdriEnvIntensityForScale(
+                preset,
+                scaleProfile
+              );
             }
-            setHdriReadyPreset(preset);
+            setHdriReadyKey(targetHdriKey);
           } else {
-            setHdriReadyPreset(null);
+            setHdriReadyKey(null);
           }
         });
         return () => {
           cancelled = true;
         };
-      }, [gl, scene, preset, contextEpoch]);
+      }, [gl, scene, preset, scaleProfile, targetHdriKey, contextEpoch]);
 
-      const useFallbackLightformers = hdriReadyPreset !== preset;
+      const useFallbackLightformers = hdriReadyKey !== targetHdriKey;
+      const scaleLightPos = (p: Vec3): [number, number, number] => [
+        p[0] * lightScale,
+        p[1] * lightScale,
+        p[2] * lightScale,
+      ];
 
       return (
         <>
           <color attach="background" args={[env.background]} />
-          <fog attach="fog" args={[env.fog.color, env.fog.near, env.fog.far]} />
+          <fog
+            attach="fog"
+            args={[
+              env.fog.color,
+              isTank ? 3600 : env.fog.near,
+              isTank ? 5400 : env.fog.far,
+            ]}
+          />
           <mesh
             geometry={backdropGeo}
             material={backdropMat}
+            scale={isTank ? 4200 / 380 : 1}
             renderOrder={-100}
             frustumCulled={false}
             raycast={noopRaycast}
@@ -1605,51 +2825,54 @@ export const ArmoryStudioEnvironment: React.FC<ArmoryStudioEnvironmentProps> =
             name="studio-cyclorama-backdrop"
           />
           <ambientLight
-            intensity={env.ambient.intensity}
+            intensity={env.ambient.intensity * (isTank ? 0.62 : 1)}
             color={env.ambient.color}
           />
           <hemisphereLight
             args={[
               env.hemisphere.skyColor,
               env.hemisphere.groundColor,
-              env.hemisphere.intensity,
+              env.hemisphere.intensity * (isTank ? 0.74 : 1),
             ]}
-            position={[0, 30, 0]}
+            position={[0, 30 * lightScale, 0]}
           />
           <directionalLight
-            position={env.keyLight.position as [number, number, number]}
-            intensity={env.keyLight.intensity}
+            ref={keyLightRef}
+            position={
+              shadowCfg.position as [number, number, number]
+            }
+            intensity={env.keyLight.intensity * (isTank ? 1.24 : 1)}
             color={env.keyLight.color}
             castShadow
-            shadow-mapSize={[shadowMapSize, shadowMapSize]}
-            shadow-radius={3.5}
-            shadow-bias={-0.00022}
-            shadow-normalBias={0.018}
-            shadow-camera-left={-60}
-            shadow-camera-right={60}
-            shadow-camera-top={44}
-            shadow-camera-bottom={-44}
-            shadow-camera-near={1}
-            shadow-camera-far={180}
+            shadow-mapSize={[shadowCfg.mapSize, shadowCfg.mapSize]}
+            shadow-radius={shadowCfg.radius}
+            shadow-bias={shadowCfg.bias}
+            shadow-normalBias={shadowCfg.normalBias}
+            shadow-camera-left={shadowCfg.left}
+            shadow-camera-right={shadowCfg.right}
+            shadow-camera-top={shadowCfg.top}
+            shadow-camera-bottom={shadowCfg.bottom}
+            shadow-camera-near={shadowCfg.near}
+            shadow-camera-far={shadowCfg.far}
           />
           <directionalLight
-            position={env.rimLight.position as [number, number, number]}
-            intensity={env.rimLight.intensity}
+            position={scaleLightPos(env.rimLight.position)}
+            intensity={env.rimLight.intensity * (isTank ? 1.16 : 1)}
             color={env.rimLight.color}
           />
           <directionalLight
-            position={env.fillLight.position as [number, number, number]}
-            intensity={env.fillLight.intensity}
+            position={scaleLightPos(env.fillLight.position)}
+            intensity={env.fillLight.intensity * (isTank ? 0.64 : 1)}
             color={env.fillLight.color}
           />
           <directionalLight
-            position={env.topLight.position as [number, number, number]}
-            intensity={env.topLight.intensity}
+            position={scaleLightPos(env.topLight.position)}
+            intensity={env.topLight.intensity * (isTank ? 0.62 : 1)}
             color={env.topLight.color}
           />
           <directionalLight
-            position={env.underLight.position as [number, number, number]}
-            intensity={env.underLight.intensity}
+            position={scaleLightPos(env.underLight.position)}
+            intensity={env.underLight.intensity * (isTank ? 0.48 : 1)}
             color={env.underLight.color}
           />
           {/* Immediate procedural fallback while 32-bit Cycles .hdr streams in; unmounted once HDRI binds */}
@@ -1695,6 +2918,7 @@ const STUDIO_FLOOR_GRID_FRAGMENT = /* glsl */ `
   uniform float uFadeDistance;
   uniform float uLineOpacity;
   uniform float uCycloramaSheen;
+  uniform float uGridScale;
 
   varying vec3 vWorldPos;
 
@@ -1721,8 +2945,9 @@ const STUDIO_FLOOR_GRID_FRAGMENT = /* glsl */ `
     float sinElev = abs(viewVec.y) / max(length(viewVec), 1e-3);
     float horizonFade = smoothstep(0.10, 0.34, sinElev);
 
-    float gMinor = sampleCrispAxisGrid(relXZ, 2.0, 0.55) * 0.65;
-    float gMajor = sampleCrispAxisGrid(relXZ, 10.0, 0.95);
+    float gs = max(uGridScale, 0.5);
+    float gMinor = sampleCrispAxisGrid(relXZ, 2.0 * gs, 0.55) * 0.65;
+    float gMajor = sampleCrispAxisGrid(relXZ, 10.0 * gs, 0.95);
     float gridMask = clamp(max(gMinor, gMajor), 0.0, 1.0);
 
     vec3 gridRgb = mix(uCellColor, uSectionColor, clamp(gMajor, 0.0, 1.0));
@@ -1743,6 +2968,7 @@ const STUDIO_FLOOR_GRID_FRAGMENT = /* glsl */ `
 
 export interface GunsmithStageMatProps {
   preset?: ArmoryEnvironmentPreset;
+  scaleProfile?: WeaponScaleProfile;
   /** World-space X of the mat centre (the printed bore datum crosshair sits here). */
   centerX?: number;
   /** Soft real-time contact shadow pooled on the mat surface beneath the firearm */
@@ -1754,13 +2980,14 @@ export interface GunsmithStageMatProps {
 }
 
 /**
- * Workbench: 1:1 neoprene armorer's takedown mat whose top surface sits exactly at
- * `workbenchMeta.gridY` (the brass-casing floor). Showcase/Armory: seamless radial cyclorama
- * studio floor grid tracking the turntable's `gridFloorY` envelope with zero horizon seam.
+ * Workbench: 1:1 neoprene armorer's takedown mat (small arms) OR 1:1 18m × 12m Heavy Armor
+ * concrete hangar deck (Main Battle Tanks). Showcase/Armory: seamless radial cyclorama studio
+ * floor grid tracking the turntable's `gridFloorY` envelope with zero horizon seam.
  */
 export const GunsmithStageMat: React.FC<GunsmithStageMatProps> = React.memo(
   ({
     preset = DEFAULT_ARMORY_ENVIRONMENT,
+    scaleProfile,
     centerX = 0,
     contactShadows = true,
     contactShadowResolution = 512,
@@ -1770,8 +2997,13 @@ export const GunsmithStageMat: React.FC<GunsmithStageMatProps> = React.memo(
     const screen = useAppStore((s) => s.screen);
     const activeWeaponId = useAppStore((s) => s.activeWeaponId);
     const env = getArmoryEnvironment(preset);
+    const resolvedScaleProfile =
+      scaleProfile ?? getWeaponManifest(activeWeaponId).workbenchMeta.scaleProfile;
+    const isTank =
+      resolvedScaleProfile === 'main_battle_tank' && screen !== 'cartridges';
 
     const geos = useMemo(() => buildTakedownMatGeometries(), []);
+    const hangarGeos = useMemo(() => buildHeavyArmorHangarGeometries(), []);
     const floorGeo = useMemo(() => {
       const plane = new THREE.PlaneGeometry(340, 340, 1, 1);
       plane.rotateX(-Math.PI / 2);
@@ -1793,6 +3025,7 @@ export const GunsmithStageMat: React.FC<GunsmithStageMatProps> = React.memo(
             uFadeDistance: { value: 135 },
             uLineOpacity: { value: 0.72 },
             uCycloramaSheen: { value: 0 },
+            uGridScale: { value: 1.0 },
           },
         }),
       []
@@ -1805,7 +3038,10 @@ export const GunsmithStageMat: React.FC<GunsmithStageMatProps> = React.memo(
       floorMat.uniforms.uCycloramaColor.value.set(
         isLight ? '#e4ebf4' : env.background
       );
-      floorMat.uniforms.uFadeDistance.value = env.grid.fadeDistance;
+      floorMat.uniforms.uFadeDistance.value = isTank
+        ? 2400
+        : env.grid.fadeDistance;
+      floorMat.uniforms.uGridScale.value = isTank ? 25.0 : 1.0;
       // Restrained dark studio cyclorama lines keep focus on the real steel silhouette
       floorMat.uniforms.uLineOpacity.value = isLight
         ? 0.24
@@ -1814,21 +3050,28 @@ export const GunsmithStageMat: React.FC<GunsmithStageMatProps> = React.memo(
           : 0.28;
       floorMat.uniforms.uCycloramaSheen.value = isLight ? 0.24 : 0.16;
       floorMat.uniforms.uCenterXZ.value.set(centerX, 0);
-    }, [env, preset, centerX, floorMat]);
+    }, [env, preset, centerX, isTank, floorMat]);
 
     useEffect(
       () => () => {
         geos.slab.dispose();
         geos.lip.dispose();
         geos.trayFloor.dispose();
+        hangarGeos.slab.dispose();
+        hangarGeos.pitRing.dispose();
         floorGeo.dispose();
         floorMat.dispose();
       },
-      [geos, floorGeo, floorMat]
+      [geos, hangarGeos, floorGeo, floorMat]
     );
 
     // Module-cached textures (shared across mounts; never disposed per unmount)
     const textures = useMemo(() => getGunsmithMatTextures(preset), [preset]);
+    const hangarTextures = useMemo(
+      () => (isTank ? getHeavyArmorHangarTextures(preset) : null),
+      [isTank, preset]
+    );
+    const hangarNormalScale = useMemo(() => new THREE.Vector2(0.75, 0.75), []);
 
     useFrame(() => {
       const g = groupRef.current;
@@ -1859,6 +3102,7 @@ export const GunsmithStageMat: React.FC<GunsmithStageMatProps> = React.memo(
         : evaluateWeaponTurntableEnvelopeInto(activeWeaponId, 0).gridFloorY;
 
     const spec = TAKEDOWN_MAT_SPEC;
+    const isLight = env.tone === 'light';
 
     return (
       <group ref={groupRef} position={[0, initialY, 0]}>
@@ -1866,7 +3110,9 @@ export const GunsmithStageMat: React.FC<GunsmithStageMatProps> = React.memo(
           <mesh
             geometry={floorGeo}
             material={floorMat}
-            position={[0, isWorkbench ? -0.015 : 0, 0]}
+            scale={isTank ? 12 : 1}
+            position={[0, isWorkbench ? (isTank ? -1.5 : -0.015) : 0, 0]}
+            renderOrder={-10}
             frustumCulled={false}
             raycast={noopRaycast}
             userData={{ excludeFromGtao: true }}
@@ -1874,7 +3120,72 @@ export const GunsmithStageMat: React.FC<GunsmithStageMatProps> = React.memo(
           />
         )}
 
-        {isWorkbench && (
+        {isWorkbench && isTank && (
+          <group position={[centerX, 0, 0]} name="heavy-armor-hangar-stage">
+            {/* 18 m × 12 m weathered brushed concrete hangar floor with 2.6 m alpha-feathered dissolve (Y = -120 cm) */}
+            <mesh
+              geometry={hangarGeos.slab}
+              receiveShadow
+              renderOrder={-5}
+              raycast={noopRaycast}
+              userData={{ excludeFromGtao: true }}
+              name="heavy-armor-hangar-floor"
+            >
+              <meshPhysicalMaterial
+                color={
+                  hangarTextures ? '#ffffff' : isLight ? '#c8d1dc' : '#232830'
+                }
+                map={hangarTextures?.albedo ?? null}
+                normalMap={hangarTextures?.normal ?? null}
+                normalScale={hangarNormalScale}
+                roughnessMap={hangarTextures?.roughness ?? null}
+                alphaMap={hangarTextures?.alpha ?? null}
+                transparent={Boolean(hangarTextures?.alpha)}
+                depthWrite={false}
+                polygonOffset
+                polygonOffsetFactor={1}
+                polygonOffsetUnits={1}
+                roughness={hangarTextures ? 1 : 0.9}
+                metalness={0.04}
+                specularIntensity={isLight ? 0.28 : 0.32}
+                envMapIntensity={isLight ? 0.26 : 0.26}
+              />
+            </mesh>
+            {/* Ø 9.6 m circular recessed steel turntable pit curb ring */}
+            <mesh
+              geometry={hangarGeos.pitRing}
+              receiveShadow
+              raycast={noopRaycast}
+              name="heavy-armor-turntable-pit-ring"
+            >
+              <meshStandardMaterial
+                color={isLight ? '#64748b' : '#475569'}
+                metalness={0.78}
+                roughness={0.38}
+                envMapIntensity={0.72}
+                polygonOffset
+                polygonOffsetFactor={-1}
+                polygonOffsetUnits={-1}
+              />
+            </mesh>
+            {contactShadows && (
+              <ContactShadows
+                position={[0, HEAVY_ARMOR_HANGAR_SPEC.topOffsetYCm + 0.22, 0]}
+                renderOrder={-2}
+                depthWrite={false}
+                scale={[1320, 660]}
+                resolution={contactShadowResolution}
+                far={260}
+                blur={1.9}
+                opacity={isLight ? 0.48 : 0.72}
+                color="#000000"
+                frames={Infinity}
+              />
+            )}
+          </group>
+        )}
+
+        {isWorkbench && !isTank && (
           <group position={[centerX, 0, 0]}>
             <mesh
               geometry={geos.slab}

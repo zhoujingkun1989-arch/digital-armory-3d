@@ -78,6 +78,10 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
       'benellim4',
       'garand',
       'p08',
+      'ztz99a',
+      'm1a2',
+      'leopard2a7',
+      'tiger1',
     ];
 
     expect(

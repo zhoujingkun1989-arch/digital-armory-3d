@@ -1729,6 +1729,306 @@ export const ALL_ATLAS_EN_STRINGS: Readonly<
       },
     },
   },
+  ztz99a: {
+    heading:
+      'PLA ZTZ-99A Main Battle Tank (125mm ZPT-98) 2K PBR Atlas (Albedo / Normal / Packed ORM)',
+    suites: {
+      ztz99a_v3_armor_hull: {
+        title:
+          'Hollow Composite Hull, Upper Glacis FY-4 ERA, Tracks & Rear Powerpack Deck Suite (V3)',
+        tabTitle: 'Hull, FY-4 ERA & Tracks',
+        summary:
+          'Blender 5.2 Cycles GPU-baked 2K 5-channel Packed ORM suite for the ZTZ-99A armored hull and running gear: reproduces modern PLA three-tone pixelated digital camouflage (olive green / desert sand / deep pine-charcoal) in matte anti-glare finish, distortion-free dual-flank Hero UV carrying the white PLA August-1st star emblem and tactical hull number "99A-108", plus crisp physical roughness separation across burnished double-pin steel track tips, vulcanized road-wheel rubber rims, twin 200L rear fuel drums, and precision-ground turret race ring teeth.',
+        highlights: [
+          'Modern PLA 3-tone pixelated digital camouflage with crisp white "99A-108" hull serial & August-1st star',
+          'Upper glacis FY-4 dual-purpose ERA weld beads, bolt relief normals & ballistic rubber-steel skirt layering',
+          'Burnished double-pin track cleats, 670mm road-wheel vulcanized rims & machined turret race steel sheen',
+        ],
+        channels: [
+          {
+            note: 'sRGB · PLA 3-tone digital camo / white "99A-108" markings / rubber-padded tracks & ground turret ring',
+          },
+          {
+            note: 'Linear · Rolled armor grain & weld beads + glacis FY-4 ERA bolts + engine louvers & track tread relief',
+          },
+          {
+            note: 'Linear · R:Cycles contact AO / G:Turret ring(0.22)-Matte camo(0.58)-Wheel rubber(0.82) / B:Metalness',
+          },
+        ],
+      },
+      ztz99a_v3_turret_gun: {
+        title:
+          'Hollow Welded Turret, Arrowhead FY-4 ERA, 125mm ZPT-98 Cannon & JD-3 Optics Suite (V3)',
+        tabTitle: 'Turret, 125mm Gun & JD-3',
+        summary:
+          'Dedicated 2K 5-channel Packed ORM suite for the ZTZ-99A signature arrowhead turret and 125mm firepower: renders non-mirrored dual-flank Hero UV red-bordered August-1st star emblems and crisp white "ZTZ-99A / 108" turret numbers, the 6.25-meter ZPT-98 L/50 smoothbore barrel with camouflaged thermal shroud, stainless bands, and subtle muzzle soot, internal mirror-chrome twin hydraulic recoil rods and CNC vertical sliding-wedge breechblock, plus strictly >= 50 px UV-firewalled emerald-sapphire optical coatings on the gunner thermal sight, CITV, and JD-3 active laser dazzler.',
+        highlights: [
+          'Dual-flank non-mirrored Hero UV red-bordered star emblems & crisp "ZTZ-99A / 108" tactical stencils',
+          'Strict >= 50 px UV-firewalled emerald-sapphire multi-coated lenses on CITV, gunner sight & JD-3 dazzler',
+          'Mirror-chrome twin hydraulic recoil rods, CNC vertical sliding breech & subtle 125mm muzzle soot patina',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Digital camo arrowhead turret & "ZTZ-99A / 108" / mirror-chrome recoil rods / emerald optics',
+          },
+          {
+            note: 'Linear · Arrowhead FY-4 ERA chamfers & welds + barrel thermal-shroud clamps + breech CNC toolmarks',
+          },
+          {
+            note: 'Linear · R:Cycles contact AO / G:Optics & chrome(0.12)-Breech(0.24)-Matte armor(0.58) / B:Metalness',
+          },
+        ],
+      },
+      ztz99a_v3_interior_power: {
+        title:
+          '22-Rd Floor Carousel Autoloader, 150HB V12 Twin-Turbo Diesel & Digital Crew Suite (V3)',
+        tabTitle: 'Carousel Autoloader & V12',
+        summary:
+          'Museum-grade cutaway 2K 5-channel Packed ORM suite crafted for live CT-Scan ([C]) inspection: separates four strictly UV-firewalled materials across the 22-round floor carousel (dark tungsten DTC10-125 APFSDS penetrators, amber semi-combustible propellant charges, and gleaming C26000 brass stub bases); aft hull showcases the 1,500-HP 150HB V12 twin-turbo diesel cast-aluminum block, bright silver turbocharger scrolls, bronze exhaust manifolds, copper CH-1000 radiator cores, safety-yellow service caps, and glowing cyan-green digital tactical MFD consoles.',
+        highlights: [
+          'Strict UV-firewalled 22-round carousel separating tungsten APFSDS darts, amber charges & C26000 brass stubs',
+          '1,500-HP 150HB V12 twin silver turbochargers, bronze exhaust manifolds, copper radiators & safety-yellow caps',
+          'Glowing cyan-green digital fire-control MFDs across 3 crew stations & 12 transverse steel torsion bars',
+        ],
+        channels: [
+          {
+            note: 'sRGB · 22-rd brass stubs & APFSDS darts / silver-turbo V12 & safety-yellow caps / cyan-green digital MFDs',
+          },
+          {
+            note: 'Linear · Cast engine block & cooling fins + carousel rivets & gears + rigid rammer-chain micro-normals',
+          },
+          {
+            note: 'Linear · R:Interior lifted AO / G:Polished brass & turbos(0.18)-Block(0.36)-Seat fabric(0.84) / B:Metalness',
+          },
+        ],
+      },
+    },
+  },
+  m1a2: {
+    heading:
+      'M1A2 SEP v3 Abrams Main Battle Tank (120mm M256) 2K PBR Atlas (Albedo / Normal / Packed ORM)',
+    suites: {
+      m1a2_v3_hull_armor: {
+        title:
+          'Desert CARC Tan Hull, Modular Ballistic Side Skirts, Jet-Blast Deck & T158 Tracks Suite (V3)',
+        tabTitle: 'CARC Hull & T158 Tracks',
+        summary:
+          'Blender 5.2 Cycles GPU-baked 2K 5-channel Packed ORM suite for the M1A2 SEP v3 hull and running gear: faithfully renders authentic U.S. Army Desert CARC Tan anti-chemical coating (sRGB 0.62, 0.54, 0.40) with matte anti-slip grit, sharp black bumper codes "3-69 AR / B-21", signature black tactical side-skirt chevron "^" over desert weathering, high-contrast red/yellow rear "DANGER - JET BLAST / EXHAUST" warning stencils, plus calibrated roughness separation across T158 rubber-padded tracks and hardened turret race teeth.',
+        highlights: [
+          'Desert CARC Tan coating with planar 1:1 Hero UV "3-69 AR / B-21" bumper code & black tactical "^" chevron',
+          'High-contrast red/yellow "DANGER JET BLAST / EXHAUST" rear turbine louvers (>= 50 px UV firewall)',
+          'Roughness separation across T158 rubber pads, 7-pair dual road wheels, 14 torsion bars & 2.16m race ring',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Desert CARC Tan hull / 3-69 AR B-21 & "^" tactical chevron / red-yellow JET BLAST stencils',
+          },
+          {
+            note: 'Linear · Cycles armor welds & anti-slip grit + skirt seams & deck louvers + T158 track pad relief',
+          },
+          {
+            note: 'Linear · R:Cycles contact AO / G:Race gear(0.22)-CARC anti-slip(0.68)-Track rubber(0.82) / B:Metalness',
+          },
+        ],
+      },
+      m1a2_v3_turret_gun: {
+        title:
+          'Faceted Turret, Chobham/DU NERA Cheek Armor, 120mm M256 Gun & CROWS-LP Optics Suite (V3)',
+        tabTitle: 'Turret, Chobham & M256',
+        summary:
+          '2K 5-channel Packed ORM suite capturing the M1A2 SEP v3 offensive and defensive core: high-resolution dual-flank Hero UV turret panels carry crisp black "B-21" and "^" tactical markings alongside louvered CIP identification panels; inside the front cheeks, 7-layer Chobham/Depleted-Uranium (DU) NERA composite armor reveals alternating steel, ceramic, DU mesh, and copper energy-absorbing strata; paired with the 120mm M256 barrel thermal shroud, muzzle carbon patina, and >= 50 px UV-firewalled emerald-sapphire coated lenses on CROWS-LP, CITV, and GPS sights.',
+        highlights: [
+          'Distortion-free dual-flank black "B-21" / "^" turret markings, louvered CIP panels & roof blow-off vents',
+          'Cutaway 7-layer Chobham/Depleted-Uranium (DU) NERA cheek sandwich separating ceramic, DU & copper strata',
+          'Strict >= 50 px UV-firewalled emerald-sapphire multi-coated lenses across CROWS-LP, CITV & GPS optics',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Desert CARC turret B-21 / Chobham-DU cheek layers / 120mm M256 gun / emerald optical coatings',
+          },
+          {
+            note: 'Linear · Armor plate welds + thermal-shroud clamps + M256 vertical breech CNC toolmarks & CIP louvers',
+          },
+          {
+            note: 'Linear · R:Cycles contact AO / G:Coated optics(0.08)-Breech steel(0.24)-CARC armor(0.66) / B:Metalness',
+          },
+        ],
+      },
+      m1a2_v3_turbine_bustle: {
+        title:
+          'Honeywell AGT1500 Gas Turbine, Blast Doors, 36-Rd M829A4 Bustle & SEP v3 Crew Suite (V3)',
+        tabTitle: 'AGT1500 & Ammo Bustle',
+        summary:
+          'Cutaway-showpiece 2K 5-channel Packed ORM interior suite for the M1A2 SEP v3: spotlights the Honeywell AGT1500 gas turbine 5-stage gleaming titanium axial compressor blades and corrugated warm copper-bronze annular exhaust recuperator, heavy sliding armored blast doors stenciled with yellow-black "BLAST DOOR - KEEP CLOSED" stripes, 36-round honeycombed bustle packed with 120mm M829A4 DU APFSDS rounds (four-material split across brass stub bases, olive-tan combustible cases, bright aluminum sabots, and dark DU penetrators), plus cyan-green SEP v3 tactical LCDs.',
+        highlights: [
+          'Honeywell AGT1500 gleaming titanium multi-stage compressor blades & warm copper-bronze annular recuperator',
+          'Yellow-black "BLAST DOOR - KEEP CLOSED" sliding armor bulkhead & 36-round M829A4 honeycombed bustle',
+          'Strict >= 50 px UV-firewalled cyan-green SEP v3 tactical LCD displays & corrugated copper heat exchanger',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Titanium compressor / warm copper recuperator / yellow-black blast doors / M829A4 / cyan LCDs',
+          },
+          {
+            note: 'Linear · Compressor blade chamfers + pleated recuperator fins + gearbox ribs & honeycomb tube turning',
+          },
+          {
+            note: 'Linear · R:Interior AO / G:Titanium & copper(0.18)-Brass stubs(0.20)-Combustible case(0.62) / B:Metalness',
+          },
+        ],
+      },
+    },
+  },
+  leopard2a7: {
+    heading:
+      'KMW Leopard 2A7V Main Battle Tank (120mm L/55A1) 2K PBR Atlas (Albedo / Normal / Packed ORM)',
+    suites: {
+      leopard2a7_v3_hull_camo: {
+        title:
+          'NATO 3-Tone Camo 2A7V Hull, Heavy Skirts, 7-Pair Road Wheels & Diehl 570FT Tracks Suite (V3)',
+        tabTitle: 'NATO Camo Hull & Tracks',
+        summary:
+          'Blender 5.2 Cycles GPU-baked 2K 5-channel Packed ORM suite for the Leopard 2A7V hull and mobility group: faithfully reproduces Bundeswehr matte CARC NATO 3-tone camouflage (Bronze Green RAL 6031, Leather Brown RAL 8027, and calibrated Tar Black RAL 9021), sharp 1:1 planar Hero UV black-and-white Iron Cross (Balkenkreuz) insignia, Bundeswehr license plate "Y-482 917", and high-visibility yellow "MLC 70" bridge-classification disc, paired with distinct surface physics for 7-pair dished road wheels, worn Diehl 570FT double-pin tracks, and the machined turret race ring.',
+        highlights: [
+          'Bundeswehr NATO 3-tone CARC camouflage (RAL 6031/8027/9021) with anti-slip grit coating micro-normals',
+          'Crisp 1:1 planar Bundeswehr Iron Cross, license plate "Y-482 917" & high-vis yellow "MLC 70" bridge disc',
+          'Material separation across 7-pair rubber wheel rims, worn Diehl 570FT track teeth & 14 forged torsion bars',
+        ],
+        channels: [
+          {
+            note: 'sRGB · NATO 3-tone camo hull / Iron Cross & "Y-482 917" / yellow "MLC 70" / road wheels & Diehl tracks',
+          },
+          {
+            note: 'Linear · Hull weld beads & chamfers + anti-slip grit + twin round fan grilles & track pad relief',
+          },
+          {
+            note: 'Linear · R:Cycles contact AO / G:Race ring(0.22)-Matte CARC camo(0.66)-Track pads(0.80) / B:Metalness',
+          },
+        ],
+      },
+      leopard2a7_v3_turret_gun: {
+        title:
+          'Hollow Arrowhead Turret, 6.6m Rh-120 L/55A1 Smoothbore & PERI/EMES Optics Suite (V3)',
+        tabTitle: 'Arrowhead & L/55A1 Gun',
+        summary:
+          '2K 5-channel Packed ORM suite built for the Leopard 2A7V turret and high-pressure firepower: non-mirrored dual-flank Hero UV cheeks display NATO 3-tone camouflage, crisp Bundeswehr Iron Crosses, and "2A7V / 312" tactical stencils; details the spaced NERA internal plates inside the hinged hollow Arrowhead wedges, 6.6-meter Rh-120 L/55A1 fiberglass thermal shroud and stainless clamps, mirror hard-chrome hydraulic recoil cylinders, CNC 700 MPa vertical falling-wedge breechblock, and >= 50 px UV-firewalled green-blue multi-coated lenses on PERI R17A3 and EMES-15 optics.',
+        highlights: [
+          'Dual-flank non-mirrored Bundeswehr Iron Cross & "2A7V · 312" tactical stencils over NATO 3-tone camo',
+          'PERI R17A3 panoramic thermal sight & EMES-15 main optic green-blue AR coatings (>= 50 px UV firewall)',
+          '6.6m Rh-120 L/55A1 fiberglass thermal shroud, hard-chrome recoil brakes & CNC 700 MPa vertical breech',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Arrowhead 3-tone turret & Iron Cross 2A7V / 6.6m L/55A1 / chrome brakes / green-blue optics',
+          },
+          {
+            note: 'Linear · Arrowhead bolted seams + thermal shroud bands + milled breech toolmarks & smoke launchers',
+          },
+          {
+            note: 'Linear · R:Cycles contact AO / G:Optic glass(0.08)-Hard chrome(0.16)-Camo turret(0.65) / B:Metalness',
+          },
+        ],
+      },
+      leopard2a7_v3_powerpack_int: {
+        title:
+          'MTU MB 873 V12 EuroPowerpack, RENK Gearbox, Blast Door & 120mm DM63A1 Ammo Suite (V3)',
+        tabTitle: 'MTU V12 & DM63A1 Bustle',
+        summary:
+          'Cutaway mechanical centerpiece 2K 5-channel Packed ORM suite for the Leopard 2A7V: captures silver-gray cast-aluminum MTU MB 873 Ka-501 47.6L V12 cylinder heads and twin turbocharger scrolls, warm copper intercooler piping and copper-fin radiator cores, gunmetal-gray RENK HSWL 354 cross-drive transmission, 14-blade aluminum radial cooling impeller, strictly UV-firewalled German yellow-black "ACHTUNG · MUNITION" bustle blast-door stripes, glowing cyan IFIS battle-management displays, and four-material 120mm DM63A1 tungsten APFSDS rounds.',
+        highlights: [
+          'Silver-gray cast-aluminum MTU MB 873 V12 diesel, warm copper intercooler pipes & RENK HSWL 354 gearbox',
+          'Strict >= 50 px UV-firewalled German yellow-black blast-door warning stripes & glowing cyan IFIS terminals',
+          'Four-material 120mm DM63A1 APFSDS separation across brass stubs, combustible cases, aluminum sabots & tungsten darts',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Silver-gray MTU V12 / warm copper pipes & radiators / yellow-black blast door / DM63A1 & IFIS',
+          },
+          {
+            note: 'Linear · V12 cooling ribs & head bolts + fine copper radiator louver ripples + transmission casing ribs',
+          },
+          {
+            note: 'Linear · R:Interior self-shadow AO / G:Fan & copper(0.20)-V12 alloy(0.32)-Crew seats(0.76) / B:Metalness',
+          },
+        ],
+      },
+    },
+  },
+  tiger1: {
+    heading:
+      'WWII German Tiger I Ausf. E "Tiger 131" (88mm KwK 36) 2K PBR Atlas (Albedo / Normal / Packed ORM)',
+    suites: {
+      tiger1_v3_hull_zimmerit: {
+        title:
+          '1943 Dunkelgelb Hull, Zimmerit Paste Relief, Balkenkreuz, Interleaved Wheels & 725mm Tracks Suite',
+        tabTitle: 'Dunkelgelb, Zimmerit & Wheels',
+        summary:
+          'Blender 5.2 Cycles GPU-baked 2K 5-channel Packed ORM suite for the Tiger 131 hull and Schachtellaufwerk running gear: reproduces 1943 Dunkelgelb (RAL 7028) base lacquer with olive-green and red-brown ambush stripes, horizontal combed Zimmerit anti-magnetic paste tangent-space normal relief, crisp non-mirrored white-bordered Wehrmacht Balkenkreuz crosses on both flanks, authentic Elfenbein ivory-white interior walls, heat-rusted cast-iron twin exhaust stacks, rubber-rimmed interleaved road wheels, and burnished 725mm manganese-steel combat tracks.',
+        highlights: [
+          '1943 Dunkelgelb RAL 7028 camo, horizontal combed Zimmerit paste normal relief & interlocking dovetail welds',
+          'Non-mirrored dual-flank white-bordered Wehrmacht Balkenkreuz emblems & Elfenbein ivory fighting compartment',
+          'Material split across 3-row rubber-rimmed Schachtellaufwerk wheels, rusted exhausts & 725mm steel tracks',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Dunkelgelb camo & Balkenkreuz / Elfenbein ivory interior / rusted exhausts / interleaved wheels & tracks',
+          },
+          {
+            note: 'Linear · Horizontal combed Zimmerit grooves + interlocking armor welds + rolled steel grain & track cleats',
+          },
+          {
+            note: 'Linear · R:Cycles contact AO / G:Burnished teeth(0.24)-Dunkelgelb paint(0.62)-Wheel rubber(0.76) / B:Metalness',
+          },
+        ],
+      },
+      tiger1_v3_turret_88mm: {
+        title:
+          'Horseshoe "#131" Turret, 88mm KwK 36 Twin-Baffle Brake, Krupp Breech & TZF 9b Optics Suite',
+        tabTitle: 'Turret #131 & 88mm KwK 36',
+        summary:
+          '2K 5-channel Packed ORM suite centered on the horseshoe-curved Tiger 131 turret and Krupp 88mm KwK 36 L/56 main gun: renders Bovington Museum’s iconic white-outlined black tactical number "131" and combed Zimmerit relief across distortion-free Hero UV turret flanks, thermal oxidation and muzzle soot across the twin-baffle conical 88mm muzzle brake, CNC-milled Krupp horizontal sliding-wedge breechblock, chrome hydraulic recoil cylinders, slatted brass shell catcher basket, and >= 55 px UV-firewalled sapphire-cyan Leitz TZF 9b binocular lenses.',
+        highlights: [
+          'Non-mirrored Bovington "131" white-outlined tactical numbers on horseshoe turret flanks & ivory interior',
+          '88mm KwK 36 L/56 conical twin-baffle muzzle brake heat tint & soot gradient + chrome recoil cylinders',
+          'Leitz TZF 9b binocular gun-sight sapphire-cyan multi-coated objectives (>= 55 px zero-bleed UV firewall)',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Horseshoe "#131" turret / carbon-fouled 88mm muzzle brake / milled Krupp breech / sapphire TZF 9b',
+          },
+          {
+            note: 'Linear · Turret Zimmerit grooves + 120mm cast mantlet grain + milled breech toolmarks & cupola welds',
+          },
+          {
+            note: 'Linear · R:Cycles contact AO / G:Sapphire glass(0.08)-Chrome recoil(0.18)-Muzzle soot(0.84) / B:Metalness',
+          },
+        ],
+      },
+      tiger1_v3_drivetrain_int: {
+        title:
+          'Maybach HL230 V12 Engine, Front Olvar 8-Speed Gearbox & 88x571mmR PzGr. 39 Brass Ammo Suite',
+        tabTitle: 'Maybach V12 & 88mm Ammo',
+        summary:
+          'Cutaway-showcase 2K 5-channel Packed ORM interior suite for Tiger 131: highlights the 23.1-liter Maybach HL230 P45 cast-iron gray V12 engine block, factory metal builder nameplate, four brushed-aluminum Solex downdraft carburetors, heat-baked rust-orange 6-into-1 exhaust manifolds, aluminum side radiator cores, front Olvar 8-speed pre-selector gearbox, and central floor driveshaft—paired with strict triple UV-firewalled 88x571mmR PzGr. 39 cartridges separating gleaming brass casings, copper driving bands, and matte-black APCBC warheads.',
+        highlights: [
+          'Maybach HL230 P45 cast-iron V12 block, builder nameplate, rust-orange exhaust manifolds & aluminum radiators',
+          'Strict triple UV-firewalled 88x571mmR PzGr. 39 gleaming brass cases, copper driving bands & black APCBC shells',
+          'Front Olvar 8-speed gearbox, Elfenbein non-slip circular turret basket floor & vintage leather crew seats',
+        ],
+        channels: [
+          {
+            note: 'sRGB · Maybach V12 cast-iron & rust manifolds / 88mm brass rounds & black tips / red-oxide tanks & leather',
+          },
+          {
+            note: 'Linear · V12 cylinder-head ribs + dense radiator louvers + basket diamond-plate & cast gearbox grain',
+          },
+          {
+            note: 'Linear · R:Cycles contact AO / G:88mm brass(0.18)-Aluminum radiator(0.26)-Leather(0.62) / B:Metalness',
+          },
+        ],
+      },
+    },
+  },
 };
 
 export const ATLAS_EN_STRINGS: Readonly<

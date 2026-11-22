@@ -35,7 +35,8 @@ export type DriveFamilyId =
   | 'delayed_or_straight_blowback'
   | 'external_electric_rotary'
   | 'manual_bolt_or_revolver_linkage'
-  | 'compound_cam_elastic';
+  | 'compound_cam_elastic'
+  | 'hydro_pneumatic_cannon_recoil';
 
 export type LockingFamilyId =
   | 'rotating_lug_bolt'
@@ -45,7 +46,8 @@ export type LockingFamilyId =
   | 'super_v_off_axis_cam'
   | 'roller_or_mass_blowback'
   | 'cylinder_notch_ratchet'
-  | 'cam_letoff_or_adf_sled';
+  | 'cam_letoff_or_adf_sled'
+  | 'sliding_wedge_breech';
 
 export type FeedFamilyId =
   | 'staggered_box_magazine'
@@ -55,7 +57,8 @@ export type FeedFamilyId =
   | 'swing_out_cylinder'
   | 'underbarrel_tubular_elevator'
   | 'top_enbloc_clip'
-  | 'drop_away_or_flight_track';
+  | 'drop_away_or_flight_track'
+  | 'autoloader_carousel_or_blast_bustle';
 
 export type AnyMechanismFamilyId =
   DriveFamilyId | LockingFamilyId | FeedFamilyId;
@@ -487,6 +490,31 @@ export const DRIVE_FAMILIES: readonly MechanismFamilySeed<DriveFamilyId>[] = [
       en: 'Velocity bounded by string material wave speed; dry-firing risks catastrophic limb damage',
     },
   },
+  {
+    id: 'hydro_pneumatic_cannon_recoil',
+    axis: 'drive',
+    accentHex: '#d97706',
+    badge: {
+      zh: '主炮液压驻退 · CANNON RECOIL',
+      en: 'HYDRO-PNEUMATIC CANNON',
+    },
+    title: {
+      zh: '主战坦克主炮液压驻退复进 + 自动/人工装填',
+      en: 'MBT Hydro-Pneumatic Cannon Recoil & Powerpack',
+    },
+    principle: {
+      zh: '88–125mm 大口径坦克主炮经同轴液压驻退机与氮气复进机将 290–340 mm 巨型后坐能量耗散至 55–67 吨装甲车体，复进末端凸轮自动拉落炮闩抛壳。',
+      en: '88-125mm tank cannons absorb 290-340 mm of megajoule recoil via concentric hydraulic brakes and pneumatic recuperators, camming the breech open on counter-recoil.',
+    },
+    pros: {
+      zh: '驾驭 320–670 MPa 与 3–7.6 MJ 穿甲动能，兼顾 1,500 hp 动力包机动与全向稳定行进间射击',
+      en: 'Harnesses 320-670 MPa and 3.0-7.6 MJ armor-piercing energy with stabilized fire-on-the-move capability',
+    },
+    cons: {
+      zh: '55–67 吨战斗全重对桥梁通过性、战略空运及燃油/动力包后勤提出极限挑战',
+      en: '55-67 tonne combat mass imposes immense bridge-loading, logistics, and powerpack demands',
+    },
+  },
 ];
 
 export const LOCKING_FAMILIES: readonly MechanismFamilySeed<LockingFamilyId>[] =
@@ -691,6 +719,31 @@ export const LOCKING_FAMILIES: readonly MechanismFamilySeed<LockingFamilyId>[] =
         en: 'Requires synchronized cam timing and cable-stretch maintenance for straight nock travel',
       },
     },
+    {
+      id: 'sliding_wedge_breech',
+      axis: 'locking',
+      accentHex: '#f97316',
+      badge: {
+        zh: '楔形滑闩闭锁 · SLIDING WEDGE',
+        en: 'SLIDING-WEDGE BREECH',
+      },
+      title: {
+        zh: '大口径锻钢立式 / 水平半自动楔形炮闩',
+        en: 'Heavy Vertical / Horizontal Sliding-Wedge Breech',
+      },
+      principle: {
+        zh: '厚重合金锻钢楔块沿炮尾垂直或水平滑槽紧锁弹膛后端，刚性承受 320–670 MPa 坦克主炮峰值膛压；复进到位自动滑开弹出金属底托或黄铜药筒，新弹入膛即瞬间自动闭合。',
+        en: 'A massive forged alloy-steel wedge glides vertically or horizontally inside the breech ring to seal 320-670 MPa ignition, opening automatically on run-out to eject spent stubs.',
+      },
+      pros: {
+        zh: '闭锁面积巨大且开启行程极短，天然适配半可燃药筒底托与高射速自动/人工推弹',
+        en: 'Huge bearing surface with compact stroke, enabling fast semi-automatic stub ejection and rapid reloading',
+      },
+      cons: {
+        zh: '锻钢炮尾环与楔闩质量达数百公斤，需高强液压驻退与大空间炮塔扫掠包络',
+        en: 'Multi-hundred-kilogram breech ring demands generous turret sweep clearance and precision cradle alignment',
+      },
+    },
   ];
 
 export const FEED_FAMILIES: readonly MechanismFamilySeed<FeedFamilyId>[] = [
@@ -892,6 +945,31 @@ export const FEED_FAMILIES: readonly MechanismFamilySeed<FeedFamilyId>[] = [
     cons: {
       zh: '单发前装搭箭，箭尾扣合未到底将触发防空放锁死或跳弦风险',
       en: 'Single-projectile manual nocking; incomplete nock seating engages Anti-Dry-Fire lockout',
+    },
+  },
+  {
+    id: 'autoloader_carousel_or_blast_bustle',
+    axis: 'feed',
+    accentHex: '#f59e0b',
+    badge: {
+      zh: '转盘自装/隔爆尾舱 · CAROUSEL / BUSTLE',
+      en: 'CAROUSEL / BLAST BUSTLE',
+    },
+    title: {
+      zh: '底置转盘自动装弹机 / 隔爆防爆门尾舱弹架',
+      en: 'Hull Carousel Autoloader / Blast-Door Turret Bustle',
+    },
+    principle: {
+      zh: '重型主炮弹药分为三大装甲供输流派：车体底部 22 发分装旋转弹盘与提升链式推弹机（ZTZ-99A）、装甲防爆滑门加泄压顶板隔离的整装尾舱（M1A2 / 豹 2A7V），以及二战侧舷全周弹药架（虎式）。',
+      en: 'Heavy tank rounds stow in 22-round hull-floor carousel autoloaders (ZTZ-99A), armored blast-door turret bustles with roof blow-off panels (M1A2 / Leopard 2A7V), or WWII sponson panniers (Tiger I).',
+    },
+    pros: {
+      zh: '转盘自装缩减车体高度与乘员至 3 人且行进间射速恒定；隔爆尾舱将殉爆火焰安全导向车外保乘员生还',
+      en: 'Carousel autoloaders cut crew to 3 and silhouette height; blast-door bustles vent ammo cook-offs safely upward away from crew',
+    },
+    cons: {
+      zh: '底置转盘限制穿甲弹杆长；隔爆尾舱需第 4 名装填手且拉长炮塔外形',
+      en: 'Carousel geometry constrains dart length; manual bustle racks require a fourth crewman and lengthen the turret',
     },
   },
 ];
@@ -1826,6 +1904,126 @@ export const SHOWDOWN_EXHIBIT_SPECS: Readonly<
       en: 'Floating carriage, braided wire cable, pulley wheel, and burst escapement multiply manufacturing cost 5x-6x and complicate conscript field maintenance',
     },
   },
+  ztz99a: {
+    id: 'ztz99a',
+    driveFamily: 'hydro_pneumatic_cannon_recoil',
+    lockingFamily: 'sliding_wedge_breech',
+    feedFamily: 'autoloader_carousel_or_blast_bustle',
+    driveDetail: {
+      zh: '125mm ZPT-98 L/50 高压滑膛炮经双液压驻退筒与同轴复进簧吸收 320 mm 后坐行程，配 1,500 hp 150HB-2 双涡轮 V12 柴油机与 CH-1000 液力综合传动。',
+      en: '125mm ZPT-98 L/50 smoothbore absorbs 320 mm recoil via twin hydraulic cylinders and return coils, mobilized by a 1,500 hp 150HB-2 twin-turbo V12 and CH-1000 hydromechanical transmission.',
+    },
+    lockingDetail: {
+      zh: '电渣重熔镀铬炮管衔接锻钢立式楔形炮闩（650 MPa 承压），复进到位炮闩垂直下落 160 mm 并由弹底抛壳机经炮塔顶舱盖向上抛射黄铜底托。',
+      en: 'ESR chrome-lined barrel mates with a 650 MPa vertical sliding-wedge breech that drops 160 mm on run-out while the roof stub ejector clears the spent brass base.',
+    },
+    feedDetail: {
+      zh: '车体底部 22 发双层旋转转盘自动装弹机将分装式 DTC10-125 穿甲弹芯与半可燃药筒经提升托弹盘升至炮尾，由电动链式推弹机分两步推入弹膛。',
+      en: '22-round hull-floor carousel autoloader indexes separated DTC10-125 APFSDS darts and semi-combustible charges up an elevator tray for electric chain ramming.',
+    },
+    fireControlDetail: {
+      zh: '双轴全电火炮稳定器 + 车长独立周视热像仪（CITV）猎歼火控 + JD-3 激光告警主动致盲对抗系统，3 人车组 8 发/分恒定射速。',
+      en: 'Dual-axis digital gun stabilizer, hunter-killer CITV thermal sight, and JD-3 laser active countermeasure suite serving a 3-crew cockpit at 8 rounds/min.',
+    },
+    signatureAdvantage: {
+      zh: '仅 55 吨紧凑低矮车体集成 1,780 m/s 7.60 MJ 125mm 超高速火力、FY-4 重型双防爆反与 27.3 hp/t 顶级功重比',
+      en: 'Compact 55-tonne low-profile hull unites 1,780 m/s 7.60 MJ 125mm firepower, FY-4 heavy ERA wedges, and 27.3 hp/t power-to-weight agility',
+    },
+    engineeringTradeoff: {
+      zh: '底置转盘几何尺寸限制一体化穿甲弹杆长，且战斗室下部弹药集中需严密防护底盘侧甲',
+      en: 'Hull-floor carousel geometry caps one-piece penetrator rod length and places stowed propellant beneath the turret ring',
+    },
+  },
+  m1a2: {
+    id: 'm1a2',
+    driveFamily: 'hydro_pneumatic_cannon_recoil',
+    lockingFamily: 'sliding_wedge_breech',
+    feedFamily: 'autoloader_carousel_or_blast_bustle',
+    driveDetail: {
+      zh: '120mm M256 L/44 镀铬滑膛炮采用同轴双套筒液压驻退机与双复进簧吸收 300 mm 后坐；车尾搭载 1,500 hp 霍尼韦尔 AGT1500 多燃料燃气轮机与 X1100-3B 传动。',
+      en: '120mm M256 L/44 smoothbore uses concentric hydraulic recoil cylinders (300 mm stroke); propulsion comes from a 1,500 hp Honeywell AGT1500 multifuel gas turbine and X1100-3B transmission.',
+    },
+    lockingDetail: {
+      zh: '高强度锻钢立式楔形炮闩刚性封锁 670 MPa M829A4 贫铀弹峰值膛压，复进后炮闩下沉 150 mm 将残余金属底托弹入下置防烫收壳槽。',
+      en: 'Forged vertical sliding-wedge breech seals 670 MPa M829A4 DU ignition before dropping 150 mm to kick the metallic stub base into the breech deflector.',
+    },
+    feedDetail: {
+      zh: '气动装甲防爆滑门将 42 发 120mm 整装弹彻底隔离于带顶部泄压板的尾舱弹药室，装填手膝触开关瞬开滑门 340 mm 取弹直推入膛。',
+      en: 'Pneumatic armored blast doors isolate 42 rounds inside a rear turret bustle topped with blow-off panels; knee-switch actuation slides the door 340 mm for manual ramming.',
+    },
+    fireControlDetail: {
+      zh: '第 3 代 FLIR 炮长/车长独立热像猎歼火控 + AMK 弹药数据链 + CROWS-LP 低轮廓遥控武器站，4 人车组爆发射速达 10 发/分。',
+      en: '3rd-gen FLIR hunter-killer FCS, ammunition data link, and CROWS-LP remote weapon station supporting a 4-person crew up to 10 rounds/min burst.',
+    },
+    signatureAdvantage: {
+      zh: '全隔爆装甲尾舱 + 顶置泄压板树立乘员生存性标杆，燃气轮机低噪冷启动与贫铀网状复合装甲防护极其雄厚',
+      en: 'Isolated blast-door bustle with roof blow-off panels sets the survivability benchmark alongside silent turbine acceleration and DU composite armor',
+    },
+    engineeringTradeoff: {
+      zh: '战斗全重飙升至 66.8 吨且燃气轮机怠速油耗与高温尾气特征显著高于同级 V12 柴油机',
+      en: '66.8-tonne combat weight and high turbine idle fuel consumption / thermal exhaust plume demand massive fuel logistics',
+    },
+  },
+  leopard2a7: {
+    id: 'leopard2a7',
+    driveFamily: 'hydro_pneumatic_cannon_recoil',
+    lockingFamily: 'sliding_wedge_breech',
+    feedFamily: 'autoloader_carousel_or_blast_bustle',
+    driveDetail: {
+      zh: '6.60 米超长莱茵金属 Rh-120 L/55A1 高压滑膛炮以 340 mm 精密液压驻退控制 670 MPa 激波；后置 MTU MB 873 V12 双涡轮柴油机与 RENK 变速箱实现 15 分钟野战快换。',
+      en: '6.60 m Rheinmetall Rh-120 L/55A1 smoothbore manages 670 MPa impulse over a 340 mm recoil stroke; its MTU MB 873 V12 twin-turbo diesel and RENK gearbox swap in 15 minutes.',
+    },
+    lockingDetail: {
+      zh: '强化 L/55A1 立式楔形炮闩与电发火击针配合超长 55 倍径镀铬炮管，将 DM63A1 钨芯长杆穿甲弹初速推高至 1,750 m/s。',
+      en: 'Reinforced L/55A1 vertical sliding-wedge breech and 55-caliber chrome bore accelerate DM63A1 tungsten APFSDS darts to 1,750 m/s.',
+    },
+    feedDetail: {
+      zh: '15 发隔爆防爆滑门尾舱待发弹架（带顶部泄压板）配车体左前部 27 发主备弹架，手动装填爆发射速可达 12–15 发/分。',
+      en: '15-round isolated blast-door ready bustle (with blow-off panels) paired with a 27-round forward hull rack enables 12-15 rounds/min burst loading.',
+    },
+    fireControlDetail: {
+      zh: 'EMES-15 稳像主瞄具 + PERI R17A3 车长独立 360° 稳定周视热像仪 + 全电炮塔驱动与程控可编程多用途弹（DM11）引信接口。',
+      en: 'EMES-15 stabilized sight, PERI R17A3 360-deg panoramic thermal periscope, all-electric turret drive, and programmable DM11 HE-T data link.',
+    },
+    signatureAdvantage: {
+      zh: 'L/55A1 6.6 米超高压长管与空心楔形箭簇复合装甲实现穿透与抗穿双优，15 分钟快换柴油动力包续航维护比极佳',
+      en: '6.6 m L/55A1 tube and hollow arrowhead composite wedges maximize armor-vs-armor duel performance with 15-minute EuroPowerpack logistics',
+    },
+    engineeringTradeoff: {
+      zh: '含炮管全长逼近 11 米在城市巷战转向受限，且 27 发车体前备弹架缺乏独立炮塔泄压通道',
+      en: 'Nearly 11 m gun-forward length complicates dense urban maneuvering, and the 27-round hull rack lacks overhead blow-off venting',
+    },
+  },
+  tiger1: {
+    id: 'tiger1',
+    driveFamily: 'hydro_pneumatic_cannon_recoil',
+    lockingFamily: 'sliding_wedge_breech',
+    feedFamily: 'autoloader_carousel_or_blast_bustle',
+    driveDetail: {
+      zh: '4.93 米 88mm KwK 36 L/56 线膛炮配双室膛口制退器将 10.2 kg 穿甲弹后坐控于 290 mm；700 hp 迈巴赫 HL230 V12 汽油机经贯穿战斗室传动轴驱动前置奥尔瓦 8 速变速箱。',
+      en: '4.93 m 88mm KwK 36 L/56 rifled gun with twin-baffle muzzle brake limits recoil to 290 mm; a 700 hp Maybach HL230 V12 drives a front Olvar 8-speed gearbox through the fighting floor.',
+    },
+    lockingDetail: {
+      zh: '克虏伯半自动水平滑楔炮闩（横移 150 mm）承受 320 MPa 膛压，复进到位自动弹开并将滚烫 88×571mmR 黄铜药筒抛入防烫帆布袋。',
+      en: 'Krupp semi-automatic horizontal sliding-wedge breech (150 mm lateral stroke) seals 320 MPa ignition and auto-ejects spent 88x571mmR brass cases into a turret catcher basket.',
+    },
+    feedDetail: {
+      zh: '5 人车组由装填手自车体两侧 100 mm 装甲侧舷弹药架（总备弹 92 发定装黄铜炮弹）人工抽弹推入水平楔闩炮膛，稳态射速 6–8 发/分。',
+      en: '5-crew fighting compartment draws 92 fixed brass-cased 88mm rounds from armored sponson side panniers for manual loading into the horizontal wedge breech at 6-8 rounds/min.',
+    },
+    fireControlDetail: {
+      zh: '蔡司 TZF 9b 双目光学测距瞄准镜 + 发动机动力液压炮塔回转齿轮箱 + 电击发 88mm 脚踏/手控击发电路，首创先敌 2,000 m 远距直瞄猎杀战术。',
+      en: 'Zeiss TZF 9b binocular optical sight, engine-driven hydraulic turret traverse, and electric primer firing circuit pioneering 2,000 m standoff gunnery.',
+    },
+    signatureAdvantage: {
+      zh: '1942–1943 年以 100 mm 轧制均质钢、48 轮交错负重轮平稳射台与传奇 88mm L/56 线膛炮建立跨时代远距装甲压制力',
+      en: 'Combined 100 mm rolled homogeneous steel, smooth 48-wheel Schachtellaufwerk ride, and the feared 88mm L/56 gun for unprecedented WWII standoff dominance',
+    },
+    engineeringTradeoff: {
+      zh: '垂直装甲未利用大倾角等效厚度、48 轮交错负重轮泥雪结冰极难野战抢修，且 57 吨车重令迈巴赫 V12 与前置传动负荷沉重',
+      en: 'Un-sloped vertical armor plates, mud-and-ice-prone interleaved road wheels, and 57-tonne drivetrain strain caused severe field maintenance burdens',
+    },
+  },
 };
 
 const DEFAULT_CLASSIFICATION: ShowdownExhibitClassification =
@@ -2115,6 +2313,58 @@ export const CLASSIC_RIVALRY_SEEDS: readonly ClassicRivalrySeed[] = [
     verdict: {
       zh: '二者均采用对称六突笋精密旋转闭锁却走向截然相反的弹道哲学：VSS 将 16.2 克重弹压制在 290 m/s 消除音爆，以多孔枪管、6 级斜挡板与无击锤直线击铁换取绝对隐蔽与公文箱携行；AWM 用 686 mm 浮置重管将同等 250 格令弹头推至 936 m/s，以近 10 倍枪口动能统治 1,500 米外极远距战场。',
       en: 'Both lock symmetrically on six radial bolt lugs yet pursue polar-opposite ballistics: VSS holds a 250-gr bullet at 290 m/s behind radial ports, 6 slanted baffles, and a hammerless linear striker for silent 400 m armor defeat, while AWM launches the same 250-gr mass to 936 m/s with nearly 10x the energy past 1,500 m.',
+    },
+  },
+  // WP-18 Heavy Armor Hall Showdowns (1:1 Main Battle Tanks):
+  {
+    id: 'ztz99a_vs_m1a2',
+    weaponA: 'ztz99a',
+    weaponB: 'm1a2',
+    pillLabel: {
+      zh: 'ZTZ-99A 125mm转盘自装 vs M1A2 隔爆尾舱燃气轮机',
+      en: 'ZTZ-99A 125mm Autoloader vs M1A2 Blast-Door Turbine',
+    },
+    headline: {
+      zh: '东西方现役旗舰主战坦克架构巅峰对决：55 吨底置 22 发转盘自装 + 150HB V12 柴油 vs 66.8 吨防爆门人工尾舱 + AGT1500 燃气轮机',
+      en: 'East vs West Flagship MBT Doctrine: 55t 125mm Carousel Autoloader V12 Diesel vs 66.8t 120mm Blast-Door Bustle Gas Turbine',
+    },
+    verdict: {
+      zh: 'ZTZ-99A 以 22 发底置转盘自动装弹机省去第 4 名乘员，将战斗全重压低 11.8 吨并借 125mm ZPT-98 L/50 迸发 1,780 m/s（7.60 MJ）超高初速与 27.3 hp/t 机动优势；M1A2 SEP v3 则以气动装甲防爆滑门与顶置泄压板隔离全车弹药，搭配贫铀复合装甲与 AGT1500 燃气轮机瞬态加速构建顶级生存壁垒。',
+      en: 'ZTZ-99A saves 11.8 tonnes and one crewman via its 22-round hull carousel autoloader, unleashing 1,780 m/s (7.60 MJ) from a 125mm ZPT-98 at 27.3 hp/t; M1A2 SEP v3 counters with pneumatic blast-door bustle isolation, blow-off roof panels, DU armor, and an AGT1500 gas turbine.',
+    },
+  },
+  {
+    id: 'leopard2a7_vs_ztz99a',
+    weaponA: 'leopard2a7',
+    weaponB: 'ztz99a',
+    pillLabel: {
+      zh: '豹 2A7V L/55A1空心箭簇 vs ZTZ-99A FY-4爆反125mm',
+      en: 'Leopard 2A7V L/55A1 Wedge vs ZTZ-99A FY-4 ERA',
+    },
+    headline: {
+      zh: '当代顶级双涡轮 V12 主战坦克穿甲与装甲路线之争：6.6 米 L/55A1 滑膛炮 + 空心楔形箭簇 vs 125mm ZPT-98 + FY-4 双防重型爆反',
+      en: 'Modern V12 Diesel Armor Clash: 6.6 m Rh-120 L/55A1 Hollow Spaced Wedges vs 125mm ZPT-98 & FY-4 Heavy Dual-ERA',
+    },
+    verdict: {
+      zh: '豹 2A7V 将 120mm 炮管拉长至 55 倍径（6.60 m）把北约 DM63A1 推至 1,750 m/s，炮塔前部以中空楔形复合装甲剪切折断来袭长杆弹芯，并靠 15 分钟快换 MTU 动力包称雄后勤；ZTZ-99A 则在更紧凑车体上以 125mm 超高速钨芯弹配合 FY-4 重型爆炸反应装甲主动剪切对抗动能与破甲双威胁。',
+      en: 'Leopard 2A7V stretches its 120mm bore to 6.60 m (L/55A1) for 1,750 m/s DM63A1 fire, using hollow arrowhead wedges to snap incoming darts and a 15-minute EuroPowerpack; ZTZ-99A pairs 125mm 1,780 m/s firepower with FY-4 heavy ERA bricks in an 11.5-tonne lighter frame.',
+    },
+  },
+  {
+    id: 'm1a2_vs_tiger1',
+    weaponA: 'm1a2',
+    weaponB: 'tiger1',
+    pillLabel: {
+      zh: 'M1A2 贫铀复合/燃气轮机 vs 虎式 131 百毫米均质钢/88炮',
+      en: 'M1A2 DU/Turbine vs Tiger 131 100mm RHA / 88mm',
+    },
+    headline: {
+      zh: '跨越八十年的陆战之王代际鸿沟：670 MPa 贫铀滑膛 + 隔爆尾舱 + 1,500 hp 燃机 vs 320 MPa 88mm 线膛 + 100mm 均质钢 + 交错负重轮',
+      en: '80 Years of Heavy Armor Evolution: 670 MPa Chobham/DU & 1,500 hp Turbine vs 320 MPa 88mm KwK 36 & 100mm Rolled Steel',
+    },
+    verdict: {
+      zh: '1943 年虎式 131 以 57 吨车重承载 100 mm 垂直均质钢与 773 m/s 88mm KwK 36 线膛炮（3.05 MJ）震慑战场；八十年后 M1A2 SEP v3 仅增重 17%，却借滑膛脱壳穿甲弹将膛压翻倍至 670 MPa、初速拉升至 1,670 m/s（6.73 MJ）、动力暴涨至 1,500 hp 并以隔爆尾舱与复合装甲将防护等效放大近十倍！',
+      en: 'In 1943 Tiger 131 ruled battlefields with 100 mm vertical steel and a 773 m/s 88mm KwK 36 (3.05 MJ) at 57 tonnes; 80 years later M1A2 adds just 17% mass while doubling pressure to 670 MPa, surging to 1,670 m/s (6.73 MJ) and 1,500 hp with multi-layer composite armor and blast-door survival.',
     },
   },
 ];

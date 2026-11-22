@@ -771,3 +771,38 @@
     max-height: 38vh;
   }
 }
+
+/* WP-18 Small Arms (15) vs Heavy Tank Ordnance (3) Gallery Switcher */
+.cartridge-gallery-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(15, 23, 42, 0.56);
+}
+
+:is([data-theme='light'], .theme-light) .cartridge-gallery-switcher {
+  background: rgba(226, 232, 240, 0.78);
+}
+
+.cartridge-lab-badge.is-armor-badge {
+  border-color: rgba(245, 158, 11, 0.45);
+  color: #fde68a;
+  background: rgba(245, 158, 11, 0.14);
+}
+
+:is([data-theme='light'], .theme-light) .cartridge-lab-badge.is-armor-badge {
+  color: #92400e;
+  background: rgba(245, 158, 11, 0.16);
+}
+
+.cartridge-dock.is-tank-dock .cartridge-dock-strip {
+  justify-content: center;
+  gap: 12px;
+}
+
+.cartridge-dock.is-tank-dock .cartridge-dock-card {
+  min-width: 196px;
+}

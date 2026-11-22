@@ -1,0 +1,942 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "tiger1",
+  "generatedAt": "2026-11-21T00:25:00.000000+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "Panzerkampfwagen VI Tiger I Ausf. E \"Tiger 131\"",
+    "subtitle": "WWII 88mm KwK 36 L/56 Heavy Tank · Schachtellaufwerk & Maybach HL230 V12",
+    "originCountry": "Germany",
+    "weaponType": "Heavy Tank",
+    "categoryLabel": "Heavy Armor",
+    "actionMechanism": "88mm KwK 36 L/56 Semi-Auto Horizontal Sliding-Wedge Breech · Maybach HL230 V12 & Olvar 8-Speed Regenerative Drive",
+    "statusLabel": "In Vault · Strippable",
+    "description": "Completed at Henschel's Kassel plant in February 1943 and captured intact at Point 174 in Tunisia on April 21, 1943, Tiger 131 of Schwere Panzer-Abteilung 504 is the world's only running Tiger I heavy tank. Built around Krupp's legendary 4.93-meter 88mm KwK 36 L/56 rifled cannon with a semi-automatic horizontal sliding-wedge breech, 100 mm interlocking vertical RHA armor, Heinrich Kniepkamp's overlapping Schachtellaufwerk interleaved road wheels on 725 mm tracks, a rear 23.1-liter 700 HP Maybach HL230 V12 gasoline engine, and a front Olvar 8-speed pre-selector transmission with dual-radius regenerative steering.",
+    "highlights": [
+      "Krupp 88mm KwK 36 L/56 (4.93m) Rifled Cannon, Twin-Baffle Brake & Semi-Auto Horizontal Sliding-Wedge Breech",
+      "Overlapping 3-Row Interleaved Road Wheels (Schachtellaufwerk) on 16 Torsion Bars & 725mm Combat Tracks",
+      "Maybach HL230 P45 23.1L 700 HP V12 Gasoline Engine, Floor Driveshaft & Front Olvar 8-Speed Pre-Selector Gearbox",
+      "Hollow 100mm Vertical Dunkelgelb & Zimmerit Armor Shell with Bovington #131 Markings & Elfenbein Ivory Interior"
+    ],
+    "workbenchTitle": "WWII Tiger I Ausf. E \"Tiger 131\" 1:1 Cutaway & 88mm KwK 36 Simulation",
+    "workbenchSubtitle": "4 Modular Groups · 26 Core Nodes · Krupp Horizontal Sliding-Wedge 88mm Cannon, Interleaved Wheels & Maybach HL230 V12 Drivetrain",
+    "cutawayLabel": "Maybach V12 & 88mm Cutaway",
+    "cutawayTitle": "Slice open the right hull and horseshoe turret armor to inspect the Maybach HL230 V12, Olvar transmission, driveshaft, sponson 88mm brass ammo racks, and Krupp breech",
+    "searchPlaceholder": "Search component name / code (e.g. 88mm, Maybach, breech, wheels, FC-04)...",
+    "firingMilestoneLabel": "88mm Sliding-Wedge Open",
+    "rateOfFire": "6–8 RPM (Manual Semi-Auto Breech)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Combat Ready",
+        "subLabel": "0% Combat Ready",
+        "desc": "WWII German Panzerkampfwagen VI Tiger I Ausf. E (Tiger 131, s.Pz.Abt. 504) at true 1:1 scale: 6,316 mm hull (8,450 mm overall with 88mm KwK 36 L/56 gun), 3,560 mm width, and 3,000 mm cupola height in 1943 Dunkelgelb camouflage and Zimmerit paste."
+      },
+      "field_strip": {
+        "label": "Armor & Deck Strip",
+        "subLabel": "32% Turret & Armor Strip",
+        "desc": "Follow heavy tank battalion maintenance procedures: lift off the hinged sheet-metal track fenders, louvered rear engine deck with twin Feifel desert air filters and exhaust shrouds, and commander cupola hatches while sliding the 725 mm combat tracks outward."
+      },
+      "powertrain_strip": {
+        "label": "88mm Gun & Powertrain",
+        "subLabel": "66% 88mm Gun & Powertrain",
+        "desc": "Hoist the hollow horseshoe-curved turret shell off the 1,850 mm race ring to expose the 88mm KwK 36 cradle, recoil springs, and horizontal wedge breech; pull the Maybach HL230 V12 and fuel tanks aft, slide the Olvar 8-speed gearbox forward, and drop the torsion bars and interleaved wheels."
+      },
+      "full_exploded": {
+        "label": "Full 26-Node BOM",
+        "subLabel": "100% Full Exploded",
+        "desc": "Complete zero-overlap 1:1 exploded view of all 26 Tiger 131 assemblies: from the 4.93 m Krupp 88mm twin-baffle muzzle brake, TZF 9b binocular sight, and 88x571mmR PzGr. 39 brass ammo racks to the Maybach HL230 V12, central propeller shaft, Olvar gearbox, and Schachtellaufwerk running gear."
+      }
+    },
+    "firingPhases": {
+      "tiger_phase_1_solenoid_ignition": {
+        "shortLabel": "Solenoid Ignition",
+        "title": "Phase 1 · Electric Solenoid Trigger & C/22 Primer Ignition",
+        "description": "Sighting through the articulated Leitz TZF 9b binocular telescope, the gunner triggers the 24-volt electric solenoid firing circuit, igniting the C/22 electric primer at the base of the 88x571mmR brass cartridge and lighting 2.50 kg of tubular propellant."
+      },
+      "tiger_phase_2_pzgr39_acceleration": {
+        "shortLabel": "88mm PzGr. 39 Launch",
+        "title": "Phase 2 · 320 MPa Peak Pressure Launches 10.2 kg PzGr. 39 at 773 m/s",
+        "description": "Peak chamber pressure of 320 MPa engages the copper driving band into 32 right-hand rifling grooves, accelerating the 10.2 kg PzGr. 39 APCBC projectile down the 4.93-meter KwK 36 L/56 barrel to 773 m/s while the twin-baffle conical muzzle brake vents blast laterally."
+      },
+      "tiger_phase_3_kwk36_recoil": {
+        "shortLabel": "-29 cm KwK 36 Recoil",
+        "title": "Phase 3 · 88mm Barrel & Krupp Breech Recoil -29 cm Against Twin Recuperator Springs",
+        "description": "The barrel, milled breech ring, and locked horizontal wedge recoil smoothly 290 mm rearward along the armored cradle rails. The hydraulic Rohrbremse brake throttles recoil energy while the twin forged helical recuperator springs compress to 57.4 percent of free length."
+      },
+      "tiger_phase_4_counter_recoil_wedge": {
+        "shortLabel": "Return & Wedge Open",
+        "title": "Phase 4 · Counter-Recoil Return Triggers Semi-Auto Horizontal Breech Opening",
+        "description": "Driven forward by the hydro-pneumatic recuperator and twin coils, the 1.3-ton gun returns into battery. On the final runout stroke, the opening cam trips the breech crank, sliding Krupp's horizontal steel wedge 160 mm laterally while compressing the breech closing spring to 64 percent."
+      },
+      "tiger_phase_5_brass_ejection": {
+        "shortLabel": "Brass Case Ejection",
+        "title": "Phase 5 · Dual Extractors Eject Hot 571mm Brass Casing into Shell Basket",
+        "description": "At full lateral travel, the sliding wedge snaps twin extractor levers rearward, flinging the scorching 571 mm spent brass casing straight back inside the tubular Abweiser guard to drop cleanly into the slatted brass shell catcher basket below."
+      },
+      "tiger_phase_6_loader_chamber": {
+        "shortLabel": "Loader Chambers 88mm",
+        "title": "Phase 6 · Loader Hoists & Rams Fresh 16 kg 88mm PzGr. 39 Round +124 cm Forward",
+        "description": "Pulling a fresh 920 mm 88x571mmR PzGr. 39 APCBC round from the left-sponson armored bin, the loader aligns the brass cartridge with the open Krupp breech mouth and drives it +124 cm forward until its rim engages the twin extractor claws."
+      },
+      "tiger_phase_7_wedge_snap_lock": {
+        "shortLabel": "Wedge Snap & Battery",
+        "title": "Phase 7 · Closing Spring Snaps Horizontal Wedge Shut for Instant Next Shot",
+        "description": "As the incoming brass cartridge rim trips the extractor holding latches, the compressed breech spring expands instantaneously, slamming the Krupp horizontal wedge closed behind the round and re-arming the electric firing circuit while the Maybach driveshaft spins smoothly below."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "钢铁巨兽的机械交响：虎式 131「88mm KwK 36 · 交错负重轮 · 迈巴赫 V12」百年传奇",
+      "deck": "从 1941 年亨舍尔与波尔舍的巅峰竞标，到突尼斯 174 高地被英军完好缴获的「虎式 131」，这辆全球唯一至今仍能轰鸣行驶的六号重型坦克，将二战德系重装甲的极致工艺与悲剧性复杂封装进五十七吨克虏伯钢铁之中。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1941–1942",
+          "title": "重装甲竞标：亨舍尔 VK 45.01(H) 击败波尔舍电传动，定型六号坦克",
+          "paragraphs": [
+            "1941 年 5 月，德军在面对法军夏尔 B1 重型坦克以及随后东线横空出世的苏联 T-34 与 KV-1 时深刻意识到：常规三号、四号中型坦克在正面火力与重装甲防护上已显颓势。德国陆军兵器局随即向亨舍尔（Henschel）与费迪南德·波尔舍（Ferdinand Porsche）两大豪门下达紧急指标——研制一款能在 1,500 米外击穿百毫米钢甲、且自身正面足以硬抗常规反坦克炮直射的四十五吨级突破重型坦克。",
+            "波尔舍博士端出激进的双发汽油-电力混合驱动方案 VK 45.01(P)，而亨舍尔首席设计师埃尔温·阿德勒（Erwin Aders）则联合克虏伯与迈巴赫拿出更稳健也更经典的机械杰作 VK 45.01(H)：车体采用全焊接垂直均质装甲板以精密燕尾指接焊缝互锁，正面 100 毫米、侧后 82 毫米，内部容积宽敞规整；炮塔则采用克虏伯单块 80 毫米厚钢板整体热弯成型的标志性马蹄形轮廓，正面覆盖厚达 120 毫米的整体铸钢外防盾。",
+            "1942 年 4 月的实战机动评测一锤定音：波尔舍电传动样车因稀缺铜材耗量惊人且电动机屡屡过热起火而惨遭淘汰，亨舍尔方案凭借出色的越野承载与可控转向脱颖而出，正式命名为六号重型坦克「虎 I」（Panzerkampfwagen VI Tiger Ausf. E），并于同年 8 月在卡塞尔工厂正式量产，成为二战陆战史上最具心理威慑力的钢铁图腾。"
+          ],
+          "audioScript": "一九四一年，面对东线横空出世的苏联重型坦克，德国陆军兵器局紧急招标新一代突破重坦。在亨舍尔与波尔舍的巅峰对决中，波尔舍激进的电传动样车因过热失火惨遭淘汰，而亨舍尔凭借一百毫米垂直燕尾焊缝装甲与克虏伯马蹄形炮塔胜出，正式定型为震慑二战战场的六号重型坦克虎一。",
+          "audioUrl": "audio/tiger1/story_act1_zh.mp3",
+          "focusPartId": "tiger_hull_box",
+          "focusPartLabel": "100mm 垂直均质钢装甲车体"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1942–1943",
+          "title": "传奇 88 毫米 KwK 36 L/56：防空巨炮如何化身坦克杀手",
+          "paragraphs": [
+            "赋予虎式令盟军闻风丧胆的远程狙杀能力的，正是源自传奇 8.8 cm FlaK 36 高射炮家族的克虏伯 88mm KwK 36 L/56 线膛主炮。为了让长达四点九三米、重逾一吨的高膛压火炮挤进直径 1,850 毫米的炮塔座圈，克虏伯工程师专门研制了高效双室锥形炮口制退器与紧凑并列式液气复进机，将发射瞬间狂暴的后坐行程死死压缩在短短 290 毫米之内。",
+            "更令人赞叹的是其半自动水平滑动楔式炮闩（Keilverschluss）与 24 伏电击发系统：炮手通过徕兹 TZF 9b 双目望远镜的精密密位分划锁定目标、按下电击发开关后，320 MPa 峰值膛压将重达 10.2 千克的 PzGr. 39 穿甲被帽风帽弹以 773 米/秒初速推出炮膛；炮身复进归位末段，凸轮自动横向滑开水平炮闩并干脆甩出炽热 571 毫米黄铜空药筒落入弹壳篮。",
+            "装填手只需从左侧翼宽大装甲弹药架托起下一发 16 千克定装实弹推入炮膛，药筒底缘触动抽壳钩锁舌的刹那，闭闩蓄能螺旋弹簧瞬间推动楔块铿锵闭锁。这套人机工程与光学火控的黄金组合，令训练有素的虎式车组能在 1,500 至 2,000 米的恐怖距离上以每分钟六至八发的节奏实施精准点射。"
+          ],
+          "audioScript": "赋予虎式远程统治力的，正是源自高射炮血统的四点九三米八十八毫米主炮。克虏伯工程师以双室锥形制退器把剧烈后坐压进二百九十毫米内，配合半自动水平楔式炮闩和徕兹双目望远镜，复进即自动开闩抛壳，新弹入膛瞬间弹簧自动闭锁，缔造了两千米外的精准狙杀神话。",
+          "audioUrl": "audio/tiger1/story_act2_zh.mp3",
+          "focusPartId": "tiger_main_gun",
+          "focusPartLabel": "克虏伯 88mm KwK 36 L/56 主炮"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1942–1944",
+          "title": "交错负重轮与迈巴赫 V12：精密工程的双刃剑",
+          "paragraphs": [
+            "五十七吨的沉重身躯若没有革命性的行走与传动设计，寸步难行。德国总工程师海因里希·克尼普坎普为虎式倾注了其毕生绝学——三排重叠交错负重轮系统（Schachtellaufwerk）。车体底部横向铺设 16 根长达两米的高弹性铬钒钢扭力杆，驱动每侧八轴十六枚直径 800 毫米的挂胶钢轮沿横向错落交叠 220 毫米，再踩在宽达 725 毫米的 Kgs 63 锰钢履带上，硬生生把五十七吨巨兽的接地比压降到了比许多中型坦克还低的 1.04 千克/平方厘米。",
+            "车尾动力舱内则塞进了 23.1 升排量、700 马力的迈巴赫 HL230 P45 V12 汽油机，头顶四具索莱克斯化油器，动力经贯穿炮塔吊篮地板下方的 2.98 米中央锻钢传动轴直奔车首，驱动当时全球最先进的迈巴赫 Olvar 8 速液压预选变速箱与亨舍尔 L600C 双半径再生转向机——驾驶员竟能像开轿车一样手握圆形方向盘，让五十七吨重坦轻松完成 360 度原地中心转向！",
+            "然而极致的精密也带来了沉重的后勤代价：一旦内侧负重轮爆胶损坏，战地维修连不得不先卸下外排多达数枚重型轮盘；东线深冬泥浆一旦在夜间塞满交错轮缝并冻成坚冰，次日清晨整车便动弹不得。这正是虎式作为精密机械艺术品在消耗战中所背负的宿命悖论。"
+          ],
+          "audioScript": "为了让五十七吨巨兽健步如飞，德国工程师装上了标志性的三排交错负重轮与七百二十五毫米超宽履带，并由后置二十三点一升迈巴赫V十二汽油机经底舱传动轴直连前置八速预选变速箱，竟让驾驶员手握方向盘即可原地中心转向。但交错轮系拆修极其繁琐，泥浆结冰更是战地噩梦，精密与脆弱并存。",
+          "audioUrl": "audio/tiger1/story_act3_zh.mp3",
+          "focusPartId": "tiger_interleaved_wheels",
+          "focusPartLabel": "三排交错负重轮 Schachtellaufwerk"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1943–至今",
+          "title": "突尼斯 174 高地与鲍文顿「虎式 131」：全球唯一活着的历史见证",
+          "paragraphs": [
+            "1943 年 2 月，底盘编号 250122 的这辆虎 I E 型驶下卡塞尔生产线，披上突尼斯战区特有的暗黄迷彩并配装双联费菲尔沙漠旋风空气滤清器，随即编入第 504 重装甲营第 1 连第 3 排 1 号车——炮塔两侧赫然喷涂着如今举世闻名的白边黑色战术编号「131」。",
+            "1943 年 4 月 21 日，在北非突尼斯杰贝尔·贾法（Djebel Djaffa）174 高地激战中，英军第 48 皇家坦克团的一辆丘吉尔步兵坦克打出一发 6 磅炮弹，戏剧性地撞击在虎式 131 的 88 毫米炮管下方并跳弹卡入炮塔座圈间隙，瞬间锁死炮塔回转并震伤车长。面对动弹不得的炮塔，德军车组果断弃车撤离，令盟军首次完整无损地缴获了一辆处于战斗状态的虎式坦克！英国国王乔治六世与首相丘吉尔先后亲临视察，随后该车被运回英国拆解测绘，彻底揭开了虎式装甲与动力的技术底牌。",
+            "半个世纪后的 2003 年，英国鲍文顿坦克博物馆的军械匠师们历经数年精工修复，让迈巴赫 HL230 V12 引擎再次发出震耳欲聋的金属咆哮。今天，虎式 131 作为全球现存七辆虎式中唯一能够自主行驶的活化石，在数字军械库 1:1 实时三维纵剖视窗里完整敞开它的克虏伯炮闩、交错轮系与 V12 心脏，向世人诉说着二战机械工程史最恢宏的篇章。"
+          ],
+          "audioScript": "一九四三年四月二十一日，在突尼斯高地的激战中，一发英军六磅炮弹戏剧性地从炮管下方跳弹卡死了炮塔座圈，令第504重装甲营的虎式一三一被盟军完整缴获。历经鲍文顿坦克博物馆多年匠心修复，今天它成为全世界唯一仍能发出V十二引擎咆哮的活化石，向后世讲述着那段恢宏的机械史诗。",
+          "audioUrl": "audio/tiger1/story_act4_zh.mp3",
+          "focusPartId": "tiger_maybach_v12",
+          "focusPartLabel": "迈巴赫 HL230 P45 23.1L V12 汽油机"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "88mm KwK 36 L/56 与半自动水平楔式炮闩",
+          "tag": "远距重甲穿透与高射速",
+          "summary": "将 4.93 米高初速 88mm 防空炮血统融入炮塔，以双室锥形制退器将后坐压至 290 mm，配合复进自动开闩、入膛弹簧自动闭锁的克虏伯水平楔式炮闩与 TZF 9b 双目光学，造就 2,000 米精准重火。",
+          "focusPartId": "tiger_breech_block",
+          "focusPartLabel": "克虏伯水平楔式半自动炮闩"
+        },
+        {
+          "id": "bt2",
+          "title": "三排重叠交错负重轮 (Schachtellaufwerk) 与 725mm 履带",
+          "tag": "57 吨极低接地比压行走奇迹",
+          "summary": "16 根全宽横向扭力杆驱动每侧三排错落交叠的 800 mm 挂胶钢轮，配合 725 mm 超宽 Kgs 63 战斗履带将 57 吨全重均匀分摊至 1.04 kg/cm²，赋予极佳的行进平稳性与越野浮力。",
+          "focusPartId": "tiger_interleaved_wheels",
+          "focusPartLabel": "三排交错负重轮系 Schachtellaufwerk"
+        },
+        {
+          "id": "bt3",
+          "title": "迈巴赫 HL230 V12 + Olvar 8 速预选与双半径转向",
+          "tag": "方向盘操驾与原地中心回转",
+          "summary": "后置 23.1 升 700 马力 V12 引擎经中央地板传动轴驱动前置 8 速液压预选变速箱与亨舍尔 L600C 双半径差速转向机，让 57 吨重坦实现轿车方向盘操控与 360° 原地中心转向。",
+          "focusPartId": "tiger_transmission",
+          "focusPartLabel": "迈巴赫 Olvar 8 速变速与 L600C 转向机"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1941.05",
+          "title": "重型突破坦克指标下达 (VK 45.01 竞标)",
+          "detail": "德国陆军兵器局要求亨舍尔与波尔舍研制配装 88mm 火炮、正面百毫米厚甲的 45 吨级重型坦克。"
+        },
+        {
+          "year": "1942.04",
+          "title": "亨舍尔 VK 45.01(H) 胜出定型虎 I",
+          "detail": "机械传动与交错负重轮的亨舍尔样车击败电传动波尔舍方案，获准量产并定名 Panzerkampfwagen VI Tiger。"
+        },
+        {
+          "year": "1942.08",
+          "title": "卡塞尔工厂批量下线并首战列宁格勒",
+          "detail": "首批虎 I E 型投入东线第 502 重装甲营，随后跨越地中海部署至北非突尼斯战区。"
+        },
+        {
+          "year": "1943.02",
+          "title": "底盘号 250122「虎式 131」下线配发第 504 营",
+          "detail": "披挂突尼斯暗黄涂装、费菲尔沙漠空滤与「131」战术编号，成为日后全球最著名的现存虎式样本。"
+        },
+        {
+          "year": "1943.04",
+          "title": "突尼斯 174 高地戏剧性跳弹卡环遭英军完好缴获",
+          "detail": "英军丘吉尔坦克一发 6 磅炮弹从炮管下跳弹卡死炮塔齿圈，盟军首次完整缴获战斗状态虎式重坦。"
+        },
+        {
+          "year": "2003–至今",
+          "title": "英国鲍文顿博物馆彻底复原 · 全球唯一动态行驶虎式",
+          "detail": "经精密修复并装回迈巴赫 HL230 V12 引擎，虎式 131 每年在坦克节发出震撼世界的历史轰鸣。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Symphony in Krupp Steel: The Mechanical Legend of WWII Tiger 131",
+      "deck": "From the fierce 1941 Henschel versus Porsche heavy-tank trials to its dramatic capture intact on a Tunisian hillside, Bovington's Tiger 131 remains the world's only running Panzerkampfwagen VI—an unforgettable fusion of 88mm firepower, interleaved wheels, and Maybach V12 power.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1941–1942",
+          "title": "The Breakthrough Mandate: Henschel's VK 45.01(H) Defeats Porsche",
+          "paragraphs": [
+            "In May 1941, shocked by heavily armored French Char B1 tanks and soon stunned on the Eastern Front by Soviet T-34 and KV-1 encounters, the German Heereswaffenamt issued an urgent requirement to rivals Henschel and Ferdinand Porsche: build a breakthrough heavy tank carrying an 88mm cannon capable of defeating 100 mm of steel at 1,500 meters while shrugging off standard Allied antitank gunfire.",
+            "While Dr. Porsche gambled on a complex twin-engine petrol-electric drive in his VK 45.01(P), Henschel chief designer Erwin Aders partnered with Krupp and Maybach on a rock-solid mechanical masterpiece, the VK 45.01(H). Its boxy hull welded 100 mm vertical frontal and 82 mm flank plates together using interlocking dovetail finger joints, topped by Krupp's unmistakable horseshoe-curved turret bent from a single 80 mm plate and shielded by a massive 120 mm cast mantlet.",
+            "Competitive field trials in April 1942 settled the contest decisively. Porsche's copper-hungry electric drives overheated and failed in mud, while Henschel's conventional drivetrain and regenerative steering excelled. Approved for Kassel serial production in August 1942 as the Panzerkampfwagen VI Tiger Ausf. E, the fifty-seven-ton titan instantly reshaped armored warfare."
+          ],
+          "audioScript": "In nineteen forty one, German ordnance planners challenged Henschel and Ferdinand Porsche to build a breakthrough heavy tank armed with an eighty eight millimeter gun. While Porsche's radical petrol electric prototype overheated in trials, Henschel triumphed with interlocking one hundred millimeter vertical armor and Krupp's horseshoe turret, giving birth to the legendary Tiger One.",
+          "audioUrl": "audio/tiger1/story_act1_en.mp3",
+          "focusPartId": "tiger_hull_box",
+          "focusPartLabel": "100mm Vertical-Glacis Krupp RHA Hull"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1942–1943",
+          "title": "The 88mm KwK 36 L/56: An Anti-Aircraft Giant Reborn as a Tank Killer",
+          "paragraphs": [
+            "At the center of the Tiger's battlefield aura stood Krupp's 4.93-meter 88mm KwK 36 L/56 rifled cannon, descended directly from Germany's feared 8.8 cm FlaK 36 anti-aircraft gun. To tame its fierce recoil inside a 1,850 mm turret ring, Krupp fitted a signature twin-baffle conical muzzle brake paired with compact hydraulic braking and hydro-pneumatic recuperators that held full recoil to just 290 mm.",
+            "Inside the ivory-painted turret, firing was a marvel of semi-automatic clockwork. Looking through the articulated Leitz TZF 9b binocular telescope, the gunner closed a 24-volt electric firing circuit, igniting the C/22 primer and driving a 10.2-kilogram PzGr. 39 armor-piercing shell out the barrel at 773 meters per second. As the cannon surged back into battery, an opening cam swept the horizontal sliding-wedge breech open laterally and tossed the hot 571 mm brass casing straight into the slatted catcher basket.",
+            "The moment the loader rammed the next 16-kilogram brass round home from the left-sponson racks, its rim tripped the extractor latches and the compressed closing spring slammed Krupp's steel wedge shut automatically. Combining razor-sharp Leitz optics with six to eight rounds per minute of lethal precision, the KwK 36 could engage armored targets cleanly beyond fifteen hundred meters."
+          ],
+          "audioScript": "The Tiger's terrifying reputation began with Krupp's four point nine three meter eighty eight millimeter cannon. A twin baffle conical muzzle brake tamed recoil to just two hundred ninety millimeters, while a semi automatic horizontal sliding wedge breech automatically opened and ejected spent brass on return, letting skilled crews deliver pinpoint fire beyond fifteen hundred meters.",
+          "audioUrl": "audio/tiger1/story_act2_en.mp3",
+          "focusPartId": "tiger_main_gun",
+          "focusPartLabel": "Krupp 88mm KwK 36 L/56 Main Gun"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1942–1944",
+          "title": "Schachtellaufwerk & Maybach V12: The Brilliant Paradox of Precision",
+          "paragraphs": [
+            "Supporting fifty-seven metric tons across soft sand and mud demanded extraordinary running gear. German automotive engineer Heinrich Kniepkamp gave the Tiger his signature Schachtellaufwerk—overlapping interleaved road wheels suspended on sixteen full-width transverse torsion bars. Three staggered rows of 800 mm rubber-rimmed steel wheels overlapped by 220 mm above 725 mm ultra-wide combat tracks, delivering a remarkably gentle ground pressure of 1.04 kilograms per square centimeter and a smooth gunnery ride.",
+            "In the rear engine bay roared the 23.1-liter, 700-horsepower Maybach HL230 P45 V12 gasoline engine crowned by four Solex downdraft carburetors. Power flowed forward beneath the suspended turret basket along a three-meter forged steel driveshaft into the front-mounted Maybach Olvar eight-speed pre-selector gearbox and Henschel L600C dual-radius regenerative steering unit—allowing the driver to pivot a fifty-seven-ton heavy tank cleanly in its own tracks using a steering wheel.",
+            "Yet that very engineering brilliance carried a severe operational toll. Replacing a single damaged inner road wheel forced field mechanics to strip multiple outer wheels first, while Russian autumn mud could pack tight between overlapping rims and freeze solid overnight. The Tiger embodied both the summit of precision mechanical design and its vulnerability in a war of industrial attrition."
+          ],
+          "audioScript": "Carrying fifty seven tons across mud and desert demanded radical engineering. Sixteen torsion bars drove overlapping interleaved road wheels on seven hundred twenty five millimeter tracks, while a rear seven hundred horsepower Maybach V12 powered a front eight speed gearbox with steering wheel pivot turns. Brilliant in motion, yet punishing to maintain when inner wheels failed or froze in mud.",
+          "audioUrl": "audio/tiger1/story_act3_en.mp3",
+          "focusPartId": "tiger_interleaved_wheels",
+          "focusPartLabel": "Overlapping Interleaved Road Wheels"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "1943–Present",
+          "title": "Point 174 in Tunisia & Bovington's Tiger 131: The World's Last Roaring Tiger",
+          "paragraphs": [
+            "Rolled off Henschel's Kassel assembly line in February 1943 as chassis number 250122, this early Tiger I Ausf. E received desert Dunkelgelb paint, rear Feifel cyclone air filters, and assignment to Schwere Panzer-Abteilung 504 in North Africa. Painted boldly in white-outlined black digits across its horseshoe turret flanks was its immortal tactical number: 131.",
+            "On April 21, 1943, during fierce fighting at Point 174 on Djebel Djaffa in Tunisia, a British Churchill tank of the 48th Royal Tank Regiment fired a six-pounder shell that ricocheted cleanly off the underside of Tiger 131's 88mm gun barrel and wedged tight into the turret ring, jamming traverse and wounding the commander. Unable to turn the gun, its crew abandoned the tank intact—giving the Allies their very first complete, operational Tiger I for King George VI, Winston Churchill, and British ordnance engineers to inspect and strip to the last bolt.",
+            "Restored meticulously by craftsmen at The Tank Museum in Bovington and returned to running condition in 2003 with a rebuilt Maybach HL230 V12, Tiger 131 stands today as the sole operational Tiger I left on earth. Here in 1:1 interactive 3D cutaway, every gear, torsion bar, brass 88mm shell, and V12 cylinder opens before your eyes."
+          ],
+          "audioScript": "On April twenty first, nineteen forty three in Tunisia, a lucky British six pounder shot bounced beneath Tiger one thirty one's eighty eight millimeter barrel and jammed its turret ring solid, delivering the Allies their first intact Tiger. Restored by Bovington's Tank Museum, Tiger one thirty one remains the only running Tiger One on earth today.",
+          "audioUrl": "audio/tiger1/story_act4_en.mp3",
+          "focusPartId": "tiger_maybach_v12",
+          "focusPartLabel": "Maybach HL230 P45 23.1L V12 Engine"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "88mm KwK 36 L/56 & Semi-Automatic Horizontal Sliding-Wedge Breech",
+          "tag": "Long-Range Armor Defeat",
+          "summary": "Adapted the 4.93m 88mm anti-aircraft cannon for turret service with a twin-baffle brake limiting recoil to 290 mm, paired with a semi-auto horizontal wedge breech and Leitz TZF 9b binocular sight.",
+          "focusPartId": "tiger_breech_block",
+          "focusPartLabel": "Krupp Horizontal Sliding-Wedge Breech"
+        },
+        {
+          "id": "bt2",
+          "title": "Overlapping Interleaved Road Wheels (Schachtellaufwerk) & 725mm Tracks",
+          "tag": "Low Ground Pressure Suspension",
+          "summary": "Sixteen transverse torsion bars drive three staggered overlapping rows of 800 mm rubber-rimmed road wheels on ultra-wide 725 mm combat tracks, distributing 57 metric tons evenly at 1.04 kg/cm2.",
+          "focusPartId": "tiger_interleaved_wheels",
+          "focusPartLabel": "Interleaved Road Wheels"
+        },
+        {
+          "id": "bt3",
+          "title": "Maybach HL230 V12, Olvar 8-Speed Pre-Selector & L600C Pivot Steering",
+          "tag": "Steering-Wheel Heavy Tank Drive",
+          "summary": "A rear 23.1L 700 HP V12 feeds a central floor shaft to the front 8-speed hydraulic pre-selector gearbox and dual-radius regenerative differential, enabling smooth 360-degree neutral pivot turns.",
+          "focusPartId": "tiger_transmission",
+          "focusPartLabel": "Maybach Olvar 8-Speed Gearbox"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1941.05",
+          "title": "VK 45.01 Heavy Breakthrough Tank Specification Issued",
+          "detail": "German ordnance tasks Henschel and Porsche with designing a 45-ton heavy tank mounting an 88mm gun and 100 mm frontal steel armor."
+        },
+        {
+          "year": "1942.04",
+          "title": "Henschel VK 45.01(H) Wins Trials & Enters Tiger I Production",
+          "detail": "Henschel's mechanical drive and interleaved suspension defeat Porsche's petrol-electric rival, earning standardization as Pz.Kpfw. VI Tiger Ausf. E."
+        },
+        {
+          "year": "1942.08",
+          "title": "Kassel Serial Production & First Combat Near Leningrad",
+          "detail": "Early production Tigers equip Heavy Tank Battalion 502 on the Eastern Front before shipping south to Tunisia."
+        },
+        {
+          "year": "1943.02",
+          "title": "Chassis 250122 Built & Numbered Tiger 131 in s.Pz.Abt. 504",
+          "detail": "Finished in Dunkelgelb with twin Feifel cyclone air filters and bold tactical numeral 131 on both turret cheeks."
+        },
+        {
+          "year": "1943.04",
+          "title": "Captured Intact at Point 174 in Tunisia",
+          "detail": "A 6-pounder ricochet from a British Churchill jams Tiger 131's turret ring, giving Allied intelligence its first undamaged Tiger."
+        },
+        {
+          "year": "2003–Present",
+          "title": "Restored to Running Order at The Tank Museum, Bovington",
+          "detail": "Powered once more by an authentic Maybach HL230 V12, Tiger 131 stands as the only operational Tiger I remaining in the world."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "tiger_main_gun": {
+      "partId": "tiger_main_gun",
+      "bomCode": "G-01",
+      "calloutLabelEn": "88mm KwK 36 L/56 Gun",
+      "zh": {
+        "roleTag": "56 倍径 4,930 mm 传世重炮 · 发射 PzGr. 39 初速 773 m/s",
+        "overview": "全长 4.93 米的克虏伯 88mm KwK 36 L/56 线膛主炮与双室锥形炮口制退器，是虎式 131 远程反装甲统治力的标志性武器核心。",
+        "craftAndMaterial": "采用高强镍铬钼锻钢精密钻膛并刻制 32 条右旋膛线，后端覆以阶梯装甲后坐护套，炮口旋装双挡板锥形制退器并带真实高温氧化与击发积碳。",
+        "kinematicRole": "击发阶段 2 引导 10.2 kg PzGr. 39 弹丸加速至 773 m/s 出膛，阶段 3 沿炮架导轨平直后坐 -29 cm 压缩双联复进簧，阶段 4 平顺复进归位。",
+        "designHighlight": "源自 88mm FlaK 36 高射炮的高膛压弹道基因，借助双室制退器吸收逾 45% 后坐冲量，令千余米外精准穿甲成为常态。",
+        "audioScript": "这就是威震二战的克虏伯八十八毫米五十六倍径主炮。四点九三米长的线膛炮管配标志性双室锥形制退器，发射十点二公斤穿甲弹初速高达七百七十三米每秒，击发瞬间整根炮管连炮尾平稳后坐二百九十毫米。",
+        "audioUrl": "audio/tiger1/parts/tiger_main_gun_zh.mp3"
+      },
+      "en": {
+        "roleTag": "4.93m 56-Caliber Rifled Cannon & Twin-Baffle Brake",
+        "overview": "Krupp's iconic 4.93-meter 88mm KwK 36 L/56 rifled main gun with stepped recoil jacket and twin-baffle conical muzzle brake.",
+        "craftAndMaterial": "Forged chrome-nickel-molybdenum ordnance steel with 32 right-hand rifling grooves, painted Dunkelgelb rearward transitioning into heat-oxidized grey steel and blast-carbonized muzzle baffles.",
+        "kinematicRole": "Accelerates the 10.2 kg PzGr. 39 projectile to 773 m/s in phase 2, recoils -29 cm rearward along the cradle in phase 3, and returns cleanly to battery in phase 4.",
+        "designHighlight": "Descended from the 8.8 cm FlaK 36 anti-aircraft gun, its twin-baffle brake vents over 45 percent of recoil momentum laterally to fit inside the turret ring.",
+        "audioScript": "This is Krupp's legendary four point nine three meter eighty eight millimeter KwK thirty six main gun. Its rifled barrel fires a ten kilogram armor piercing shell at seven hundred seventy three meters per second while the twin baffle muzzle brake tames recoil to twenty nine centimeters.",
+        "audioUrl": "audio/tiger1/parts/tiger_main_gun_en.mp3"
+      }
+    },
+    "tiger_gun_mantlet": {
+      "partId": "tiger_gun_mantlet",
+      "bomCode": "G-02",
+      "calloutLabelEn": "120mm Cast Gun Mantlet",
+      "zh": {
+        "roleTag": "120 mm 整体铸钢外防盾 · 集成同轴 MG 34 与 TZF 9b 瞄孔",
+        "overview": "覆罩在马蹄形炮塔正面主炮开口处的重型 120 mm 整体铸钢外部防盾，兼顾火炮俯仰密封与炮塔正面终极抗弹防护。",
+        "craftAndMaterial": "高韧性克虏伯铸钢整体浇铸成型，中部凸起横向加强厚肋使局部叠合厚度直逼 200 mm，右侧集成同轴 MG 34 装甲枪套，左侧钻设双目瞄准孔。",
+        "kinematicRole": "与炮架耳轴刚性联动实施 -8° 至 +15° 俯仰瞄准，保护内部液压复进机与炮膛免遭敌方正面炮火穿透。",
+        "designHighlight": "堪称二战中期最难以正面击穿的炮塔护盾结构，其厚重轮廓定义了虎式坦克极具压迫感的正面脸谱。",
+        "audioScript": "覆在炮塔最前方的是重达一百二十毫米厚的克虏伯整体铸钢炮盾，横向加强筋叠加区等效防护逼近两百毫米。它的右侧嵌有同轴MG三四机枪枪套，左侧则精钻出双目望远镜瞄准窥孔。",
+        "audioUrl": "audio/tiger1/parts/tiger_gun_mantlet_zh.mp3"
+      },
+      "en": {
+        "roleTag": "120mm Contoured Cast-Steel Shield w/ MG 34 & Sight Ports",
+        "overview": "Massive 120 mm cast-steel external armor shield covering the turret front opening, housing the coaxial MG 34 and twin TZF 9b sight ports.",
+        "craftAndMaterial": "One-piece cast Krupp armor steel with a heavy horizontal stiffening rib approaching 200 mm combined thickness, coaxial gun collar, and twin recessed optic ports.",
+        "kinematicRole": "Pivots smoothly on the gun trunnions with the 88mm cradle while sealing the turret front aperture against direct antitank hits and shell splinters.",
+        "designHighlight": "Nearly impervious to contemporary Allied medium-tank guns at combat ranges, creating the unmistakable heavy-browed face of the Tiger I.",
+        "audioScript": "Shielding the front of the turret is this massive one hundred twenty millimeter cast steel gun mantlet, reinforced with a thick horizontal rib approaching two hundred millimeters over the trunnions. It houses the right hand coaxial MG thirty four port and twin left binocular sight apertures.",
+        "audioUrl": "audio/tiger1/parts/tiger_gun_mantlet_en.mp3"
+      }
+    },
+    "tiger_recoil_cradle": {
+      "partId": "tiger_recoil_cradle",
+      "bomCode": "G-03",
+      "calloutLabelEn": "Hydraulic Recoil Cradle",
+      "zh": {
+        "roleTag": "装甲炮架摇篮 + Rohrbremse 液压制退与 Vorholer 复进筒",
+        "overview": "承载 88mm KwK 36 炮身往复滑移的内部 U 形装甲钢摇篮，侧挂镀铬液压制退筒与液气复进机。",
+        "craftAndMaterial": "高强合金钢精铣导轨槽与耳轴支座，搭配表面镀硬铬的精密无缝液压制退筒（Rohrbremse）和高压氮气液气复进缸（Vorholer）。",
+        "kinematicRole": "在击发阶段 3 通过液压节流孔平稳吸收 88mm 炮弹巨大后坐动能，将后坐精确限制在 -29 cm，随后驱动炮身平稳复位。",
+        "designHighlight": "紧凑贴合炮膛四周的液气并列布局，成功把原本属于野战高射炮的巨型火炮塞进狭小坦克战斗室。",
+        "audioScript": "这套内部装甲炮架摇篮紧抱八十八毫米主炮，侧面并排悬挂着镀铬液压制退筒与液气复进机。开炮瞬间，液压油高速节流吸收狂暴后坐动能，将炮身精准制动在二十九厘米内再平稳送回原位。",
+        "audioUrl": "audio/tiger1/parts/tiger_recoil_cradle_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Armored Gun Cradle w/ Hydraulic Brake & Recuperator",
+        "overview": "Internal U-channel armored steel gun cradle carrying the recoiling 88mm barrel alongside chrome hydraulic brake and recuperator cylinders.",
+        "craftAndMaterial": "Machined alloy steel slide rails and heavy trunnion pins paired with hard-chrome Rohrbremse hydraulic throttling and Vorholer hydro-pneumatic cylinders.",
+        "kinematicRole": "Guides the 1.3-ton gun and breech straight rearward across the 290 mm recoil stroke in phase 3, throttling peak forces before smoothly returning the gun to battery.",
+        "designHighlight": "Tightly packaged recoil cylinders allowed Krupp to adapt a high-velocity anti-aircraft weapon to operate safely inside a compact armored turret.",
+        "audioScript": "This armored internal cradle supports the recoiling eighty eight millimeter barrel alongside gleaming chrome hydraulic brake and hydro pneumatic recuperator cylinders. During firing, throttled hydraulic fluid absorbs the tremendous recoil shock across twenty nine centimeters before pushing the cannon back into battery.",
+        "audioUrl": "audio/tiger1/parts/tiger_recoil_cradle_en.mp3"
+      }
+    },
+    "tiger_recoil_springs": {
+      "partId": "tiger_recoil_springs",
+      "bomCode": "G-04",
+      "calloutLabelEn": "Twin Recuperator Springs",
+      "zh": {
+        "roleTag": "双联热卷锻钢螺旋复进主簧 · 等线径 GPU 压缩形变",
+        "overview": "对称配装于炮架摇篮侧方的双联重型锻钢螺旋复进缓冲弹簧，协同液气复进机储存后坐势能并推炮复位。",
+        "craftAndMaterial": "采用 25 mm 粗径铬硅弹簧钢热卷油淬成型，具备极高抗疲劳弹性模量与防松弛性能。",
+        "kinematicRole": "击发阶段 3 随 88mm 炮管 -29 cm 后坐同步轴向压缩至 57.4% 自由长（保持等线径物理变形），阶段 4 平稳伸展推送炮身回位。",
+        "designHighlight": "冗余双簧并行构型确保即便单侧受力波动或严寒液压油增稠，依然能可靠将 1.3 吨重的炮身推回击发待命位。",
+        "audioScript": "紧贴炮架摇篮上下并行的是两根粗壮的热卷铬硅钢螺旋复进主簧。随着八十八毫米炮管向后狂退二十九厘米，双簧被迅速压短至原长的百分之五十七点四，储存势能并协助将一吨多重的炮身平稳推回前方。",
+        "audioUrl": "audio/tiger1/parts/tiger_recoil_springs_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Twin Heavy Forged Helical Recuperator Coil Springs",
+        "overview": "Paired heavy forged helical steel recuperator springs flanking the gun cradle to store recoil energy and assist counter-recoil return.",
+        "craftAndMaterial": "Hot-wound, oil-quenched 25 mm chrome-silicon spring steel coils engineered for high cyclic endurance under heavy artillery loads.",
+        "kinematicRole": "Compress smoothly along the X-axis to 57.4 percent of free length during the -29 cm recoil stroke in phase 3, then expand in phase 4 to drive the cannon forward.",
+        "designHighlight": "Dual parallel springs provide smooth, reliable counter-recoil return even when freezing Russian winter temperatures thicken hydraulic fluid.",
+        "audioScript": "Flanking the gun cradle are twin heavy forged helical recuperator springs wound from thick spring steel. As the eighty eight millimeter barrel slams twenty nine centimeters rearward, both coils compress to fifty seven percent length, storing mechanical energy to help drive the cannon smoothly back into battery.",
+        "audioUrl": "audio/tiger1/parts/tiger_recoil_springs_en.mp3"
+      }
+    },
+    "tiger_shell_guard": {
+      "partId": "tiger_shell_guard",
+      "bomCode": "G-05",
+      "calloutLabelEn": "Recoil Guard & Shell Basket",
+      "zh": {
+        "roleTag": "Abweiser 管状防撞护架 + Hülsenfangsack 黄铜弹壳篮",
+        "overview": "环绕炮尾后方的双侧钢管后坐护栏及悬挂式条状黄铜空药筒收集篮，守护乘员安全并有序回收 571 mm 滚烫黄铜弹壳。",
+        "craftAndMaterial": "无缝冷拔合金钢管焊接防撞框（Abweiser）与抗热黄铜板条编织弹壳收集篮（Hülsenfangsack）。",
+        "kinematicRole": "击发阶段 3 隔离 -29 cm 后坐的炮尾防止撞伤炮手与装填手，阶段 5 稳稳接住从半自动水平炮闩向后弹出的滚烫 88mm 空黄铜药筒。",
+        "designHighlight": "有效阻止重达数千克的炽热黄铜空壳滚落至炮塔吊篮地板卡死 1,850 mm 炮塔旋转齿圈，大幅提升持续射速。",
+        "audioScript": "紧护在炮尾后方的是管状钢制防撞护栏与下方条状黄铜弹壳收集篮。它既能防止猛烈后坐二十九厘米的炮尾撞伤乘员，又能在半自动炮闩弹开瞬间稳稳接住滚烫的五百七十一毫米黄铜空药筒。",
+        "audioUrl": "audio/tiger1/parts/tiger_shell_guard_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Abweiser Recoil Guard & Brass Shell Catcher Basket",
+        "overview": "Tubular steel breech recoil guard frame protecting the turret crew and a slatted brass deflector basket catching hot 88mm spent casings.",
+        "craftAndMaterial": "Welded seamless steel tubing for the protective Abweiser guard paired with a slatted brass-framed Hülsenfangsack spent-casing catcher basket.",
+        "kinematicRole": "Shields the gunner and loader from the -29 cm recoiling breech in phase 3 and captures the ejected 571 mm hot brass casing safely in phase 5.",
+        "designHighlight": "Prevents heavy spent brass casings from bouncing across the turret basket floor or jamming the traverse gear teeth during rapid engagements.",
+        "audioScript": "Framing the rear of the breech is the tubular steel recoil guard and slatted brass shell catcher basket. It shields the gunner and loader from the violent twenty nine centimeter recoil stroke while catching scorching spent eighty eight millimeter brass casings as they eject.",
+        "audioUrl": "audio/tiger1/parts/tiger_shell_guard_en.mp3"
+      }
+    },
+    "tiger_hull_box": {
+      "partId": "tiger_hull_box",
+      "bomCode": "H-01",
+      "calloutLabelEn": "100mm Vertical RHA Hull",
+      "zh": {
+        "roleTag": "中空 100mm 克虏伯均质钢壳 · 暗黄防磁水泥与国防军铁十字",
+        "overview": "亨舍尔经典方正全焊接垂直装甲车体，正面厚达 100 mm、侧后 82 mm，内腔完整刷涂德军象牙白反光漆与红丹底漆。",
+        "craftAndMaterial": "克虏伯轧制表面硬化均质装甲钢板以燕尾指接焊缝互锁焊接，外涂 1943 暗黄迷彩与横向梳纹防磁水泥，双侧喷印白边直臂铁十字与第 504 重装甲营铭印。",
+        "kinematicRole": "作为全车承力骨架承载 57 吨战备全重、炮塔座圈、交错扭杆与全套动力火控内脏；开启纵剖即露中空厚甲剖面。",
+        "designHighlight": "车体前垂直壁左侧设驾驶员防弹窥窗，右侧设球架 MG 34 航向机枪；尽管垂直构型看似保守，但配合「摆角」战术与极厚钢甲令 1943 年盟军炮火束手无策。",
+        "audioScript": "这套方正厚重的全焊接装甲车体采用一百毫米正面与八十二毫米侧后克虏伯均质钢板，边角以燕尾指接焊缝精密互锁。外表披着暗黄迷彩、横向防磁水泥和醒目的国防军铁十字，切开纵剖面就能看到正宗象牙白涂装的宽敞内舱。",
+        "audioUrl": "audio/tiger1/parts/tiger_hull_box_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Hollow 100mm Vertical RHA Hull w/ Zimmerit & Balkenkreuz",
+        "overview": "Henschel's iconic boxy welded armored hull featuring 100 mm vertical frontal steel, interlocking finger-joint welds, and an Elfenbein ivory interior.",
+        "craftAndMaterial": "Krupp rolled homogeneous armor finished in 1943 Dunkelgelb RAL 7028 camo streaks, horizontal combed Zimmerit paste, crisp Wehrmacht Balkenkreuz crosses, driver visor, and hull MG 34.",
+        "kinematicRole": "Forms the rigid 57-ton structural chassis housing the engine, Olvar transmission, torsion bars, ammo sponsons, and turret ring; slices cleanly open in cutaway.",
+        "designHighlight": "Though unsloped compared to the T-34, its 100 mm front and 82 mm sides—especially when angled at 30 degrees—offered formidable all-around protection in 1943.",
+        "audioScript": "This iconic boxy hull welds one hundred millimeter frontal and eighty two millimeter side plates of Krupp armor steel together with interlocking finger joints. Finished in nineteen forty three Dunkelgelb, combed Zimmerit paste, and crisp Balkenkreuz insignia, its hollow shell slices cleanly open to reveal the ivory painted interior.",
+        "audioUrl": "audio/tiger1/parts/tiger_hull_box_en.mp3"
+      }
+    },
+    "tiger_side_fenders": {
+      "partId": "tiger_side_fenders",
+      "bomCode": "H-02",
+      "calloutLabelEn": "Hinged Track Side Fenders",
+      "zh": {
+        "roleTag": "五段铰接式侧履带挡泥板与前折叠装甲挡泥翼",
+        "overview": "铰接在宽大悬挑车体两侧边缘的五段薄钢板挡泥侧裙与前倾装甲挡泥罩，负责阻挡 725 mm 超宽履带卷起的泥沙石块。",
+        "craftAndMaterial": "冲压低碳钢板经加强压筋处理并配通长铰链销，外喷 1943 暗黄战区迷彩并带实战边缘刮漆包浆。",
+        "kinematicRole": "作为外部轻甲防护壳体在纵剖模式下自动切离视野，野战快拆阶段优先向上吊离以方便检修负重轮与履带。",
+        "designHighlight": "配合铁路窄履带运输规程可快速折叠或拆卸，是解决虎式 3.56 米超宽车体无法直接通过德国标准铁路隧道的关键巧思。",
+        "audioScript": "沿车体两侧边缘铰接的五段式薄钢板挡泥板和前装甲挡泥罩，专门遮挡七百二十五毫米超宽履带飞溅的泥沙。为了塞进德国标准铁路运输限界，这些侧翼挡泥板可以整体拆解折叠。",
+        "audioUrl": "audio/tiger1/parts/tiger_side_fenders_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Hinged 5-Section Track Side Fenders & Front Mudflaps",
+        "overview": "Segmented hinged sheet-metal side mudguards and angled front mudflaps shielding the hull from mud thrown by the 725 mm combat tracks.",
+        "craftAndMaterial": "Stamped sheet steel panels with stiffening ribs, hinge pins, and weathered Dunkelgelb camouflage paint.",
+        "kinematicRole": "Removable outer armor trim that slices away cleanly in cutaway mode and lifts clear during initial field disassembly.",
+        "designHighlight": "Designed to be folded or unbolted alongside the outer road wheel row so the 3.56-meter-wide Tiger could fit onto German railway flatcars.",
+        "audioScript": "Mounted along the sponson edges are the Tiger's hinged five section sheet metal side fenders and angled front mudflaps. Beyond shielding the hull from mud thrown by the wide tracks, these panels unbolted quickly to narrow the tank for European rail transport.",
+        "audioUrl": "audio/tiger1/parts/tiger_side_fenders_en.mp3"
+      }
+    },
+    "tiger_interleaved_wheels": {
+      "partId": "tiger_interleaved_wheels",
+      "bomCode": "H-03",
+      "calloutLabelEn": "Interleaved Road Wheels",
+      "zh": {
+        "roleTag": "Schachtellaufwerk 三排重叠交错负重轮 · 主动轮与诱导轮",
+        "overview": "二战陆战最具辨识度的行走奇观：每侧 8 轴 16 枚直径 800 mm 的挂胶压制钢轮按外、中双、内三排交错重叠 220 mm，配前置 20 齿大主动轮与后置张紧诱导轮。",
+        "craftAndMaterial": "冲压暗黄烤漆深碟钢轮配 8 螺栓重型轮毂与耐磨硫化黑胶外圈，前置铸钢 20 齿渐开线主动轮承接 L600C 最终减速扭矩。",
+        "kinematicRole": "均匀承托 57 吨战备车重并沿 725 mm 履带内侧导向齿脊平稳滚行，赋予虎式出色的行进间射击平稳性。",
+        "designHighlight": "交错重叠布局既带来媲美中型坦克的超低接地压，又因内轮维修繁琐与冬季积泥结冰而成为德军后勤的甜蜜负担。",
+        "audioScript": "眼前就是虎式最具传奇色彩的机械奇观——三排重叠交错负重轮。每侧十六枚直径八百毫米的挂胶钢轮错落交叠二十二厘米，把五十七吨重甲均匀铺在宽履带上，赋予它如履平地的行驶稳定性。",
+        "audioUrl": "audio/tiger1/parts/tiger_interleaved_wheels_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Schachtellaufwerk Overlapping Interleaved Road Wheels",
+        "overview": "Heinrich Kniepkamp's iconic overlapping interleaved road wheels—16 rubber-rimmed 800 mm wheels per side in three staggered rows—with front 20-tooth sprockets and rear idlers.",
+        "craftAndMaterial": "Dished Dunkelgelb pressed-steel wheel discs with bolted hubs and vulcanized charcoal rubber tires paired with heavy cast-steel toothed drive sprockets.",
+        "kinematicRole": "Evenly spreads 57 metric tons across the 725 mm track length while straddling the central guide horns to deliver a remarkably smooth gunnery platform.",
+        "designHighlight": "Achieved lower ground pressure than many medium tanks at the steep price of complex inner-wheel maintenance and vulnerability to frozen mud.",
+        "audioScript": "Here is the Tiger's most celebrated engineering signature: Heinrich Kniepkamp's overlapping interleaved road wheels. Sixteen eight hundred millimeter rubber rimmed wheels per side stagger across three rows, spreading fifty seven tons evenly over the wide tracks for a remarkably smooth ride.",
+        "audioUrl": "audio/tiger1/parts/tiger_interleaved_wheels_en.mp3"
+      }
+    },
+    "tiger_tracks_left": {
+      "partId": "tiger_tracks_left",
+      "bomCode": "H-04",
+      "calloutLabelEn": "Left 725mm Combat Track",
+      "zh": {
+        "roleTag": "左侧 725 mm 超宽 Kgs 63/725/130 锰钢战斗履带",
+        "overview": "单块宽达 725 毫米的左侧重型铸造锰钢战斗履带，底面精准着地于 -120.0 cm 基准线，将 57 吨全重化为强劲越野牵引力。",
+        "craftAndMaterial": "高锰耐磨合金钢整体精密铸造，表面带粗犷 V 形防滑履刺与磨亮金属接触棱，内侧居中直立导向齿脊精准契合交错轮中槽。",
+        "kinematicRole": "与前置 20 齿主动轮啮合将 700 马力动力转化为履带推进力，在纵剖视角下作为完整左侧支撑背景始终保持实体显示。",
+        "designHighlight": "高达 725 mm 的惊人宽度在 1943 年冠绝全球重型坦克，大幅抑制了虎式在松软土质与北非沙地中的沉陷。",
+        "audioScript": "这条左侧战斗履带单块宽达七百二十五毫米，在二战重型坦克中冠绝群雄。高锰铸钢履带板外侧布满粗犷防滑抓地齿，内侧居中矗立高强导向齿脊，把五十七吨全重稳稳托在松软泥沙之上。",
+        "audioUrl": "audio/tiger1/parts/tiger_tracks_left_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Left 725mm Ultra-Wide Kgs 63/725/130 Combat Track",
+        "overview": "Left-side 725 mm ultra-wide Kgs 63/725/130 cast-steel combat track belt featuring aggressive grouser cleats and central wheel guide horns.",
+        "craftAndMaterial": "High-manganese cast track steel with polished metallic cleat edges, dusty recess patina, and tall central guide horns straddled by the middle wheel row.",
+        "kinematicRole": "Engages the front 20-tooth drive sprocket to convert 700 HP into unstoppable traction while lowering ground pressure to 1.04 kg/cm2.",
+        "designHighlight": "At 725 mm wide, the Tiger's combat tracks were so massive that crews had to swap them for narrow 520 mm transport tracks before boarding rail flatcars.",
+        "audioScript": "Measuring an extraordinary seven hundred twenty five millimeters wide, this left cast steel combat track spreads fifty seven tons gently over mud and desert sand. Aggressive outer grousers bite the ground while central steel guide horns keep the interleaved road wheels locked on track.",
+        "audioUrl": "audio/tiger1/parts/tiger_tracks_left_en.mp3"
+      }
+    },
+    "tiger_tracks_right": {
+      "partId": "tiger_tracks_right",
+      "bomCode": "H-05",
+      "calloutLabelEn": "Right 725mm Combat Track",
+      "zh": {
+        "roleTag": "右侧 725 mm 超宽战斗履带 · 纵剖自动切离显露交错轮系",
+        "overview": "与左侧完全对称的右侧 725 mm Kgs 63/725/130 战斗履带总成，专门标记为纵剖壳体构件以便一键揭开右侧行走机构。",
+        "craftAndMaterial": "高锰耐磨铸钢履带板、高强干销铰链及内侧导向齿脊，接触棱经沙石抛光呈现真铁冷辉。",
+        "kinematicRole": "与右侧 20 齿主动轮及三排交错负重轮啮合传动，并在开启 CT 纵剖（[C]）时自动隐去以零遮挡展示交错轮系与扭杆摇臂。",
+        "designHighlight": "配合亨舍尔 L600C 双半径转向机构可与左侧履带等速反向运转，实现令人震撼的 360° 原地中心回转。",
+        "audioScript": "与左侧镜像对称的右侧七百二十五毫米超宽战斗履带同样由高锰钢铸成。按下纵剖键后它会自动切离视野，让你毫无遮挡地细赏内部精密交叠的三排交错负重轮和悬挂摇臂。",
+        "audioUrl": "audio/tiger1/parts/tiger_tracks_right_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Right 725mm Combat Track (Cutaway Shell Element)",
+        "overview": "Right-side mirror-image 725 mm Kgs 63/725/130 cast-steel combat track belt configured as a cutaway shell to expose the interleaved wheels.",
+        "craftAndMaterial": "Cast high-manganese steel links with aggressive outer grouser cleats, dry-pin hinges, and inner central guide horns.",
+        "kinematicRole": "Counter-rotates against the left track via the L600C steering differential for neutral pivot turns, and vanishes cleanly in cutaway mode.",
+        "designHighlight": "Removing the right track and fender in cutaway lays bare the entire three-row staggered Schachtellaufwerk architecture underneath.",
+        "audioScript": "Mirroring the left side, this right seven hundred twenty five millimeter cast steel combat track pairs with the regenerative steering drive for neutral pivot turns. In cutaway view it slices away cleanly to reveal the intricate overlapping road wheels behind it.",
+        "audioUrl": "audio/tiger1/parts/tiger_tracks_right_en.mp3"
+      }
+    },
+    "tiger_engine_deck": {
+      "partId": "tiger_engine_deck",
+      "bomCode": "H-06",
+      "calloutLabelEn": "Engine Deck & Feifel Filters",
+      "zh": {
+        "roleTag": "百叶散热甲板 + 虎式 131 双联费菲尔沙漠空滤与双排气管",
+        "overview": "车尾动力舱顶部装甲检修盖、左右散热百叶格栅、标志性双联费菲尔旋风空滤罐以及双装甲护罩内锈蚀铸铁排气管总成。",
+        "craftAndMaterial": "均质钢百叶散热栅配暗黄迷彩涂装，车尾两具圆柱形费菲尔沙漠空气滤清罐带波纹进气管，双排气管消声器呈现真实高温烧灼橙锈铸铁质感。",
+        "kinematicRole": "密封防护后置迈巴赫 V12 与散热器并引导海量冷却气流，纵剖模式下右侧自动切开直接呈现 V12 引擎本体。",
+        "designHighlight": "车尾外挂的双联费菲尔（Feifel）旋风沙漠空滤与双排气管装甲护罩，是辨识 1943 年突尼斯虎式 131 早期型的决定性时代印记。",
+        "audioScript": "车尾动力舱甲板集合了虎式一三一最具时代辨识度的早期特征：中央引擎大检修门、左右百叶散热格栅、一对标志性的费菲尔沙漠旋风空气滤清罐，以及双装甲护罩内被高温烤成锈橙色的粗壮铸铁排气管。",
+        "audioUrl": "audio/tiger1/parts/tiger_engine_deck_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Louvered Radiator Deck, Twin Feifel Filters & Exhausts",
+        "overview": "Rear armored engine access hatch, louvered cooling grilles, twin cylindrical Feifel desert air-filter canisters, and dual armored exhaust mufflers.",
+        "craftAndMaterial": "Dunkelgelb armored deck louvers and Feifel cyclone dust filters with corrugated intake hoses, contrasted against heat-rusted cast-iron vertical exhaust mufflers.",
+        "kinematicRole": "Protects the Maybach V12 and radiators from splinters while channeling cooling airflow; slices open cleanly on the right in cutaway mode.",
+        "designHighlight": "The twin rear Feifel cyclone dust filters and armored exhaust shrouds are unmistakable diagnostic hallmarks of early 1943 North African Tiger 131.",
+        "audioScript": "Capping the rear hull is the louvered radiator deck paired with Tiger one thirty one's signature North African hardware: twin cylindrical Feifel cyclone desert air filters with corrugated ducts, flanking dual armored shrouds over rust heated cast iron exhaust mufflers.",
+        "audioUrl": "audio/tiger1/parts/tiger_engine_deck_en.mp3"
+      }
+    },
+    "tiger_torsion_bars": {
+      "partId": "tiger_torsion_bars",
+      "bomCode": "H-07",
+      "calloutLabelEn": "16 Transverse Torsion Bars",
+      "zh": {
+        "roleTag": "16 根全宽横向锻钢扭力杆 · 驱动每侧 8 组独立拖臂摇臂",
+        "overview": "平铺于车体底甲板内侧的 16 根全宽横向扭力弹簧杆及外置曲柄摇臂总成，构成虎式高负载独立悬挂核心。",
+        "craftAndMaterial": "高强度铬钒合金弹簧钢经精密热处理与两端渐开线花键滚压成型，外侧联接重型铸钢拖臂摇臂与滚柱轴承座。",
+        "kinematicRole": "当交错负重轮碾过弹坑土坎时，对应扭力杆沿轴向发生高弹性扭转吸收冲击，维持车身与 88mm 炮口水平平稳。",
+        "designHighlight": "长达两米的全宽交错双排布置令每根扭杆拥有充裕扭转变形行程，奠定了现代主战坦克扭杆悬挂的黄金范式。",
+        "audioScript": "紧贴底甲板横向错列排开的十六根全宽铬钒钢扭力杆，构成了虎式的独立悬挂筋骨。每根长达两米的钢杆一端锁死在车壁，另一端驱动对侧外置拖臂摇臂，柔和吞吐五十七吨车体越野时的剧烈颠簸。",
+        "audioUrl": "audio/tiger1/parts/tiger_torsion_bars_zh.mp3"
+      },
+      "en": {
+        "roleTag": "16 Full-Width Transverse Floor Torsion Bars & Swing Arms",
+        "overview": "Sixteen staggered transverse spring-steel torsion bars spanning the lower hull floor and driving external trailing swing-arm hubs for all road wheel axles.",
+        "craftAndMaterial": "Heat-treated chrome-vanadium spring steel bars with splined anchor sockets, bolted hull bearings, and forged trailing swing-arm cranks.",
+        "kinematicRole": "Twist elastically under terrain impacts to provide independent long-travel wheel articulation and steady the 88mm gun platform.",
+        "designHighlight": "Spanning the full hull width maximized torsional spring length, establishing the classic suspension blueprint still echoed by modern main battle tanks.",
+        "audioScript": "Lining the lower hull floor are sixteen full width transverse chrome vanadium steel torsion bars linked to external trailing swing arms. Each two meter bar twists elastically over rough ground, cushioning all fifty seven tons with independent wheel travel.",
+        "audioUrl": "audio/tiger1/parts/tiger_torsion_bars_en.mp3"
+      }
+    },
+    "tiger_turret_ring": {
+      "partId": "tiger_turret_ring",
+      "bomCode": "H-08",
+      "calloutLabelEn": "1,850mm Turret Race Ring",
+      "zh": {
+        "roleTag": "1,850 mm 精密内齿滚珠座圈 · 承托 11 吨炮塔 360° 回转",
+        "overview": "座落于车体顶甲板开孔处的超大口径渗碳钢炮塔滚珠座圈，以内圈全周渐开线齿轮驱动 11 吨装甲炮塔平稳转向。",
+        "craftAndMaterial": "表面渗碳淬火精密磨削高碳铬轴承钢环，内圈精准铣削渐开线大齿圈，内置重负荷钢珠滚道。",
+        "kinematicRole": "承受 88mm KwK 36 发射倾覆力矩并引导炮塔及吊篮以最快 60 秒/周速度完成 360° 液压无级回转。",
+        "designHighlight": "历史戏剧性转折点：1943 年正是英军一发 6 磅炮弹跳弹卡入这枚座圈缝隙，才令虎式 131 无法转塔并被完整缴获！",
+        "audioScript": "这枚内径高达一千八百五十毫米的精密内齿钢制座圈，稳稳托起十一吨重的装甲炮塔实现三百六十度液压转向。极具戏剧性的是，一九四三年正是英军一发跳弹死死卡进了这枚座圈缝隙，才让虎式一三一被完整缴获。",
+        "audioUrl": "audio/tiger1/parts/tiger_turret_ring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "1,850mm Geared Steel Turret Traverse Race Ring",
+        "overview": "Massive 1,850 mm precision ball-bearing race ring with internal traverse gear teeth supporting the 11-ton armored turret on the hull roof.",
+        "craftAndMaterial": "Case-hardened precision-ground bearing steel raceway machined with internal involute gear teeth driven by the hydraulic azimuth pinion.",
+        "kinematicRole": "Absorbs 88mm firing recoil overturning moments while enabling smooth 360-degree hydrostatic turret rotation in 60 seconds.",
+        "designHighlight": "A historic Achilles' heel for Tiger 131: on April 21, 1943, a British 6-pounder ricochet wedged into this very ring gap, jamming traverse and forcing abandonment.",
+        "audioScript": "Seated in the hull roof is the massive one thousand eight hundred fifty millimeter geared steel turret race ring supporting the eleven ton turret. Famously, a lucky British six pounder ricochet jammed directly into this very ring gap in Tunisia, disabling Tiger one thirty one intact.",
+        "audioUrl": "audio/tiger1/parts/tiger_turret_ring_en.mp3"
+      }
+    },
+    "tiger_turret_shell": {
+      "partId": "tiger_turret_shell",
+      "bomCode": "H-09",
+      "calloutLabelEn": "Horseshoe Turret #131",
+      "zh": {
+        "roleTag": "中空马蹄形整弯装甲炮塔 · 醒目「131」编号与隆美尔尾箱",
+        "overview": "克虏伯单块 80 mm 钢板热弯成型的标志性马蹄形中空装甲炮塔，尾部栓挂「隆美尔储物箱」，双侧喷涂白边黑色鲍文顿馆藏编号「131」。",
+        "craftAndMaterial": "正面 100 mm、侧后 80 mm 整弯均质装甲钢板，外涂 1943 暗黄迷彩与横向防磁水泥纹理，内壁全涂正宗象牙白反光漆。",
+        "kinematicRole": "作为中空旋转装甲堡垒保护炮塔内三名乘员、88mm 炮尾与光学火控；纵剖模式下右侧干净切离完整展示战斗室内景。",
+        "designHighlight": "单块整弯马蹄形侧后壁彻底消除了脆弱的后侧拐角焊缝，配合醒目的「131」白边黑字成为世界军事史最负盛名的炮塔剪影。",
+        "audioScript": "这座极具辨识度的马蹄形装甲炮塔，是克虏伯用整块八十毫米厚均质钢板热弯成型，后方栓挂经典的隆美尔储物箱。两侧防磁水泥面上醒目的白边黑字一三一，正是今天英国鲍文顿博物馆镇馆之宝的传奇徽号。",
+        "audioUrl": "audio/tiger1/parts/tiger_turret_shell_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Hollow Horseshoe-Curved Turret w/ #131 & Rommelkiste",
+        "overview": "Hollow Krupp horseshoe-curved bent-plate turret shell featuring the bolted rear Rommelkiste stowage bin, Zimmerit flanks, ivory interior, and iconic Bovington number 131.",
+        "craftAndMaterial": "Single 80 mm rolled steel plate hot-bent around the flanks and rear to a 100 mm front wall, finished in Dunkelgelb camo with crisp white-outlined black 131 numerals.",
+        "kinematicRole": "Encases the 88mm breech, recoil system, optics, and three turret crew; slices open cleanly at Z=0 in cutaway mode to expose the ivory fighting compartment.",
+        "designHighlight": "Bending one continuous horseshoe plate eliminated vulnerable rear corner weld seams while creating the most recognizable turret silhouette of World War II.",
+        "audioScript": "Krupp formed this unmistakable horseshoe turret by hot bending a single eighty millimeter steel plate around the sides and rear, bolted with the classic Rommelkiste stowage bin. Across both Zimmerit coated cheeks stand the iconic white outlined black numerals one three one.",
+        "audioUrl": "audio/tiger1/parts/tiger_turret_shell_en.mp3"
+      }
+    },
+    "tiger_cupola_hatches": {
+      "partId": "tiger_cupola_hatches",
+      "bomCode": "H-10",
+      "calloutLabelEn": "Commander Cupola & Hatches",
+      "zh": {
+        "roleTag": "高耸七视孔圆柱车长指挥塔 · 3,000 mm 全车最高点",
+        "overview": "矗立于炮塔左后顶部的虎式早期/中期标志性圆柱形车长指挥塔（含 7 具防弹潜望观察块与顶铰链舱盖），集成装填手舱门与抽烟通风罩。",
+        "craftAndMaterial": "厚壁铸钢圆柱塔身配 7 处斜角护檐与多层防弹玻璃视窗，顶设配重旋转铰链装甲盖板。",
+        "kinematicRole": "赋予车长全周 360° 零死角态势感知能力，引导炮手快速捕获远距离敌军装甲目标。",
+        "designHighlight": "高度精准抵达 3,000 mm（世界坐标 Y = +180 cm）全车制高点，早期鼓形指挥塔轮廓是虎式 131 的又一经典年代印记。",
+        "audioScript": "耸立在炮塔顶部的圆柱形车长指挥塔，是虎式一三一高达三米的全车最高点。塔壁四周均布七具防弹玻璃观察视孔，赋予车长三百六十度无死角视野，右侧则配有装填手矩形顶舱门与抽烟通风罩。",
+        "audioUrl": "audio/tiger1/parts/tiger_cupola_hatches_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Cylindrical Commander Cupola (7 Periscopes) & Hatches",
+        "overview": "Iconic early-model cylindrical commander's cupola with seven armored vision blocks and hinged lid, paired with the loader's hatch and roof fume ventilator.",
+        "craftAndMaterial": "Heavy cast-steel cupola drum finished in Dunkelgelb with seven sapphire-tinted armored vision slits, hinged top hatch, and central ventilator dome.",
+        "kinematicRole": "Provides the tank commander unobstructed 360-degree battlefield awareness to spot targets and direct turret slew onto threats.",
+        "designHighlight": "Reaching the exact 3,000 mm overall height crest of Tiger 131, the tall cylindrical early drum cupola distinguishes 1943 production Tigers from later low-profile variants.",
+        "audioScript": "Crowning the turret roof at exactly three meters above the ground is the tall cylindrical commander's cupola ringed by seven armored vision blocks. Alongside the loader's hinged hatch and fume extractor, it gave German commanders commanding all around battlefield vision.",
+        "audioUrl": "audio/tiger1/parts/tiger_cupola_hatches_en.mp3"
+      }
+    },
+    "tiger_turret_basket": {
+      "partId": "tiger_turret_basket",
+      "bomCode": "H-11",
+      "calloutLabelEn": "Suspended Turret Basket",
+      "zh": {
+        "roleTag": "悬挂式圆形战斗室吊篮地板 + 博林格-斯图姆液压方向机",
+        "overview": "由四根高强钢管悬吊于炮塔齿圈下方的圆形钢板战斗室地板，内置液力静压炮塔回转方向机与炮手手轮立柱。",
+        "craftAndMaterial": "压花防滑钢板刷涂象牙白内饰漆，配四根无缝钢管悬柱与精密铸钢博林格-斯图姆（Boehringer-Sturm）液压方向机箱。",
+        "kinematicRole": "随炮塔 360° 同步旋转并净空跨越底舱中央传动轴上方，保障三名炮塔乘员在高速转塔时稳固站立与装填作业。",
+        "designHighlight": "液压回转速度直接与迈巴赫引擎转速耦合，踩下油门踏板即可加快炮塔转向速率，是二战少见的高级炮控人机设计。",
+        "audioScript": "这套悬挂式圆形钢制炮塔吊篮由四根钢管吊在座圈下方，底板正好净空跨过中央传动轴上方。地板左侧装有博林格斯图姆液压方向机，让炮塔内三名乘员始终随八十八毫米主炮同步三百六十度旋转。",
+        "audioUrl": "audio/tiger1/parts/tiger_turret_basket_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Suspended Circular Turret Floor & Hydraulic Traverse Drive",
+        "overview": "Circular steel turret floor basket suspended beneath the race ring by four tubular pillars, mounting the Boehringer-Sturm hydrostatic traverse gearbox.",
+        "craftAndMaterial": "Anti-slip steel floor deck finished in interior Elfenbein ivory with machined steel suspension struts and cast traverse gearbox housing.",
+        "kinematicRole": "Rotates 360 degrees with the turret cleanly above the spinning central driveshaft, keeping commander, gunner, and loader aligned with the 88mm breech.",
+        "designHighlight": "Engine-driven hydrostatic traverse let the gunner vary turret rotation speed smoothly with foot pedals—from fine long-range tracking to rapid ambush slews.",
+        "audioScript": "Suspended cleanly above the central driveshaft on four steel pillars, this circular turret floor basket rotates with the gun so the crew never loses alignment with the breech. On the left sits the Boehringer Sturm hydrostatic gearbox powering smooth variable speed traverse.",
+        "audioUrl": "audio/tiger1/parts/tiger_turret_basket_en.mp3"
+      }
+    },
+    "tiger_fuel_tanks": {
+      "partId": "tiger_fuel_tanks",
+      "bomCode": "H-12",
+      "calloutLabelEn": "Twin 540L Steel Fuel Tanks",
+      "zh": {
+        "roleTag": "后动力舱双联焊接钢制 540 升汽油箱与紫铜连通管",
+        "overview": "布置于车体后动力舱侧隔室内的前后串联焊接钢制汽油箱组（总容积 540 升），配备黄铜加油颈与紫铜平衡油管。",
+        "craftAndMaterial": "厚壁冲压薄钢板气密滚焊成型，外涂德军防锈红丹底漆，顶部嵌装精车黄铜加油盖颈及紫铜连通管路。",
+        "kinematicRole": "与炽热的迈巴赫 V12 经防火隔板隔离并持续输送高辛烷值军用汽油，支撑约 140 公里公路机动与 85 公里越野航程。",
+        "designHighlight": "57 吨重甲与 700 马力 V12 汽油机的惊人油耗（百公里逾 400 升），令这组 540 升大油箱成为决定重装甲营战术半径的生命线。",
+        "audioScript": "紧靠动力舱左侧隔室的是前后串联的双联焊接钢制汽油箱，表面涂覆德军防锈红丹漆并配有黄铜加油口与紫铜平衡油管。整车五百四十升燃油储备，专门喂养胃口惊人的七百马力迈巴赫V十二汽油机。",
+        "audioUrl": "audio/tiger1/parts/tiger_fuel_tanks_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Twin Rear Welded Steel 540L Gasoline Fuel Tanks",
+        "overview": "Fore-and-aft welded sheet-steel gasoline fuel tanks in the rear side engine bay, equipped with brass filler necks and a copper cross-feed balance pipe.",
+        "craftAndMaterial": "Seam-welded steel tanks coated in authentic German red-oxide primer (RAL 8012) with machined C26000 brass filler caps and copper fuel tubing.",
+        "kinematicRole": "Stores 540 liters of leaded gasoline isolated behind firewall bulkheads to feed the thirsty 23.1-liter Maybach HL230 V12 engine.",
+        "designHighlight": "With the 57-ton Tiger burning over 400 liters per 100 kilometers cross-country, keeping these dual rear tanks topped off was a constant logistical battle.",
+        "audioScript": "Tucked inside the rear side engine bay are twin welded steel gasoline tanks coated in red oxide primer, linked by a copper balance pipe and capped with brass filler necks. Their five hundred forty liter capacity fed the thirsty seven hundred horsepower Maybach V12.",
+        "audioUrl": "audio/tiger1/parts/tiger_fuel_tanks_en.mp3"
+      }
+    },
+    "tiger_breech_block": {
+      "partId": "tiger_breech_block",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Krupp Horizontal Wedge Breech",
+      "zh": {
+        "roleTag": "克虏伯整铣炮尾环 + 半自动水平滑动楔式炮闩",
+        "overview": "克虏伯重型整体铣削炮尾环与半自动水平滑动楔式炮闩（Keilverschluss），实现开火后自动开闩抽壳与装弹瞬间自动闭锁。",
+        "craftAndMaterial": "高强合金锻钢整体 CNC 精铣成型，内部配抛光淬火水平楔块、24V 电击发击针组件、上置开闩曲柄及双侧抽壳钩。",
+        "kinematicRole": "阶段 3 随炮管后坐 -29 cm，阶段 4 复进末段横向滑开 16 cm 敞开炮膛并甩出空黄铜药筒，阶段 7 借闭闩弹簧弹力疾速滑闭锁膛。",
+        "designHighlight": "全机械半自动闭锁循环省去了装填手手动扳动重型炮闩的步骤，是虎式在重炮级别维持每分钟 6–8 发高射速的秘密武器。",
+        "audioScript": "这就是克虏伯整铣炮尾环与半自动水平滑动楔式炮闩。开炮复进瞬间，水平钢楔自动向左横滑十六厘米敞开炮膛并甩出空黄铜壳；装填手一旦把新弹推到位，炮闩就会借弹簧力自动铿锵锁闭。",
+        "audioUrl": "audio/tiger1/parts/tiger_breech_block_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Krupp Milled Breech Ring & Semi-Auto Horizontal Wedge",
+        "overview": "Massive milled Krupp steel breech ring housing the semi-automatic horizontal sliding-wedge breechblock (Keilverschluss) and 24V electric firing mechanism.",
+        "craftAndMaterial": "Monoblock forged ordnance steel breech ring machined with a transverse dovetail mortise, polished hardened steel wedge, crank lever, and dual extractor claws.",
+        "kinematicRole": "Recoils -29 cm with the barrel in phase 3, slides open 16 cm laterally on counter-recoil in phase 4 to eject brass, and snaps shut automatically in phase 7.",
+        "designHighlight": "Eliminating manual breech operation let Tiger loaders maintain a blistering six to eight aimed 88mm rounds per minute under combat pressure.",
+        "audioScript": "At the rear of the eighty eight millimeter barrel sits Krupp's massive milled breech ring and semi automatic horizontal sliding wedge. On counter recoil the polished steel wedge sweeps sixteen centimeters sideways to eject spent brass, then snaps shut automatically the instant a fresh round is rammed home.",
+        "audioUrl": "audio/tiger1/parts/tiger_breech_block_en.mp3"
+      }
+    },
+    "tiger_breech_spring": {
+      "partId": "tiger_breech_spring",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Semi-Auto Breech Spring",
+      "zh": {
+        "roleTag": "半自动水平炮闩蓄能闭闩螺旋弹簧 · 动态压缩形变",
+        "overview": "安装于克虏伯炮尾左上方的重型螺旋闭闩蓄能弹簧，为半自动水平楔式炮闩提供瞬时自动闭锁动力。",
+        "craftAndMaterial": "17 mm 粗径油淬琴钢丝螺旋卷制，具备高频快响弹性与耐高温抗疲劳特性。",
+        "kinematicRole": "阶段 4 水平楔块横滑开闩时被同步压缩至 64% 自由长蓄能，阶段 7 装填手推入新弹触发释放卡笋瞬间猛力伸展推闭炮闩。",
+        "designHighlight": "凭借纯机械蓄能与底缘触碰触发设计，无需外部液压或电机即可实现极其可靠的半自动瞬间闭闩。",
+        "audioScript": "横卧在克虏伯炮尾左上方的这根粗壮螺旋弹簧，是半自动炮闩的蓄能心脏。每次炮闩横向滑开时它被压缩至百分之六十四长度，新弹底缘一触动抽壳钩卡笋，它便瞬间爆发弹力推闭炮闩。",
+        "audioUrl": "audio/tiger1/parts/tiger_breech_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Semi-Automatic Breech-Closing Helical Spring",
+        "overview": "Heavy X-axis helical closing spring mounted atop the Krupp breech housing to power automatic snap closure of the horizontal sliding wedge.",
+        "craftAndMaterial": "Oil-tempered 17 mm spring-steel helical coil engineered for rapid, repeatable snap energy without thermal fade.",
+        "kinematicRole": "Compresses dynamically to 64 percent free length as the horizontal wedge opens in phase 4, then expands rapidly in phase 7 to lock the breech behind the new round.",
+        "designHighlight": "Pure mechanical spring storage guarantees instant, jam-free breech closure triggered purely by the incoming brass cartridge rim.",
+        "audioScript": "Mounted along the upper breech housing is the heavy helical breech closing spring. Compressed to sixty four percent length whenever the horizontal wedge slides open, it unleashes its stored energy the instant a fresh cartridge rim trips the extractor latches, snapping the breech locked.",
+        "audioUrl": "audio/tiger1/parts/tiger_breech_spring_en.mp3"
+      }
+    },
+    "tiger_optics_tzf9b": {
+      "partId": "tiger_optics_tzf9b",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "TZF 9b Binocular Sight",
+      "zh": {
+        "roleTag": "徕兹 TZF 9b 铰接双目望远炮手瞄准镜 · 蓝宝石镀膜物镜",
+        "overview": "德国徕兹光学厂打造的 Turmzielfernrohr 9b 铰接双目望远镜，配备 2.5× 广角视场、七角密位测距分划与蓝宝石多层镀膜物镜。",
+        "craftAndMaterial": "精密发黑钢制双镜筒、机械俯仰铰接桥、橡胶护额目镜罩，前物镜施以高透蓝宝石青色光学抗反镀膜。",
+        "kinematicRole": "与 88mm 炮架耳轴刚性联动俯仰，令炮手在 2,000 米外一眼完成测距、修正风偏与提前量锁定。",
+        "designHighlight": "清晰的立体双目视野与著名的德国「七角尖塔」密位测距刻线，使虎式在远距离遭遇战中屡屡抢占首发命中先机。",
+        "audioScript": "紧靠八十八毫米炮架左侧的，是德国徕兹光学厂制造的TZF九B铰接双目望远瞄准镜。双物镜镀有高透蓝宝石抗反膜，内置标志性的七角密位测距分划，赋予虎式炮手两千米外一击必杀的鹰眼。",
+        "audioUrl": "audio/tiger1/parts/tiger_optics_tzf9b_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Leitz TZF 9b Articulated Binocular Gun Sight",
+        "overview": "Ernst Leitz Wetzlar Turmzielfernrohr 9b articulated binocular telescopic gun sight featuring twin 2.5x barrels and multi-coated sapphire-cyan objective lenses.",
+        "craftAndMaterial": "Blackened steel twin optical tubes, articulated elevation bridge, range-stadia drum, rubber brow pad, and firewalled sapphire-cyan coated glass lenses.",
+        "kinematicRole": "Links directly to the 88mm gun cradle so its illuminated stadia reticle tracks barrel elevation smoothly across 4,000 meters of ballistic range scales.",
+        "designHighlight": "Renowned for crisp German optical clarity and intuitive triangle-stadia rangefinding, allowing Tiger gunners to score devastating first-round hits beyond 1,500 meters.",
+        "audioScript": "Linked directly beside the eighty eight millimeter cradle is the Leitz Turmzielfernrohr nine B articulated binocular telescope. Fitted with multi coated sapphire cyan lenses and Germany's famed triangle stadia reticle, it gave Tiger gunners extraordinary first round hit precision at extreme range.",
+        "audioUrl": "audio/tiger1/parts/tiger_optics_tzf9b_en.mp3"
+      }
+    },
+    "tiger_maybach_v12": {
+      "partId": "tiger_maybach_v12",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "Maybach HL230 V12 Engine",
+      "zh": {
+        "roleTag": "纵剖动力奇观 · 23.1L 700 HP V12 汽油机、4 化油器与双散热器",
+        "overview": "虎式 131 后动力舱的钢铁心脏：迈巴赫 HL230 P45 60° 夹角 23.1 升水冷 V12 汽油发动机，配备 4 具 Solex 下吸化油器、灼热橙棕排气歧管与铝制侧翼散热器。",
+        "craftAndMaterial": "厚壁铸铁灰 V12 缸体配拉丝铝顶置凸轮轴气门室盖、迈巴赫原厂铭牌、橙棕高温铸铁 6 合 1 排气歧管与密集银色铝合金散热器芯。",
+        "kinematicRole": "在 3,000 转/分爆发 700 马力澎湃动力与 1,850 牛·米扭矩，通过前飞轮经中央传动轴驱策 57 吨重坦以 45 km/h 疾驰。",
+        "designHighlight": "极其紧凑的隧道式曲轴箱设计让 23.1 升巨型 12 缸引擎得以塞进紧凑尾舱，今天在鲍文顿坦克节上依然轰鸣震天。",
+        "audioScript": "此刻呈现在动力舱中央的，就是虎式的传奇心脏——排量二十三点一升、爆发七百马力的迈巴赫HL二三零V十二汽油机。铸铁灰缸体上方耸立着四具索莱克斯化油器，两侧伸出灼热橙棕铸铁排气歧管与巨型铝制散热器。",
+        "audioUrl": "audio/tiger1/parts/tiger_maybach_v12_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Maybach HL230 P45 23.1L 700 HP V12 & Radiators",
+        "overview": "The centerpiece of Tiger 131's rear engine bay: the 23.1-liter, 700-horsepower 60-degree Maybach HL230 P45 V12 gasoline engine with four Solex carburetors and aluminum radiators.",
+        "craftAndMaterial": "Cast-iron gunmetal V12 block with brushed-aluminum cam covers, etched Maybach factory data plate, twin heat-oxidized orange-brown 6-into-1 exhaust manifolds, and finned flank radiators.",
+        "kinematicRole": "Delivers 700 HP at 3,000 RPM forward through the flywheel coupling and floor driveshaft to propel the 57-ton heavy tank up to 45 km/h.",
+        "designHighlight": "Its ultra-compact tunnel crankcase packed twelve massive cylinders into a remarkably short engine bay—and still roars to life at Bovington today.",
+        "audioScript": "Filling the rear compartment is the centerpiece of Tiger one thirty one: the twenty three point one liter, seven hundred horsepower Maybach HL two thirty V12 gasoline engine. Crowned by four Solex downdraft carburetors with twin orange brown exhaust manifolds and aluminum radiators, its roar still echoes at Bovington.",
+        "audioUrl": "audio/tiger1/parts/tiger_maybach_v12_en.mp3"
+      }
+    },
+    "tiger_transmission": {
+      "partId": "tiger_transmission",
+      "bomCode": "FC-05",
+      "calloutLabelEn": "Olvar 8-Speed Gearbox",
+      "zh": {
+        "roleTag": "前置迈巴赫 Olvar 8 速预选变速箱 + 亨舍尔 L600C 双半径转向",
+        "overview": "安置于车首装甲鼻尖后方的迈巴赫 Olvar 40 12 16 8 速半自动液压预选变速箱与亨舍尔 L600C 双半径再生转向差速器。",
+        "craftAndMaterial": "高强铸铝/铸钢加强筋变速箱壳体配液压预选阀块、紫铜高压油管、双侧巨型通风盘式转向制动器及镀铬横向最终传动半轴。",
+        "kinematicRole": "承接中央传动轴扭矩，提供 8 前进挡 / 4 倒挡无级预选换挡，并经双半径再生差速机构实现灵活的轿车方向盘操驾与原地中心转向。",
+        "designHighlight": "领先同代盟军与苏军坦克至少十年的精密传动奇观，以极高制造成本换取了 57 吨重坦令人惊叹的机动灵敏度。",
+        "audioScript": "藏在倾斜车首装甲后方的，是领先时代十年的德国传动杰作——迈巴赫Olvar八速液压预选变速箱与亨舍尔L六零零C双半径再生转向机。它让五十七吨重坦不仅有八个前进挡，更能凭方向盘轻松原地三百六十度中心转向。",
+        "audioUrl": "audio/tiger1/parts/tiger_transmission_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Front Maybach Olvar 8-Speed Gearbox & L600C Steering",
+        "overview": "Front-mounted Maybach Olvar 40 12 16 eight-speed hydraulic pre-selector transmission coupled directly to the Henschel L600C dual-radius regenerative steering differential.",
+        "craftAndMaterial": "Ribbed cast alloy gearbox casing with top hydraulic selector solenoids, copper oil lines, massive disc steering brakes, and polished steel final-drive shafts.",
+        "kinematicRole": "Receives power from the floor driveshaft to provide eight forward and four reverse gears plus effortless steering-wheel pivot turns via the front sprockets.",
+        "designHighlight": "A decade ahead of contemporary tank drivetrains, delivering remarkably light handling for a 57-ton vehicle at immense manufacturing complexity.",
+        "audioScript": "Nested behind the sloped front armor sits a drivetrain a decade ahead of its time: the Maybach Olvar eight speed hydraulic pre selector gearbox bolted to Henschel's L six hundred C regenerative steering differential. It let a fifty seven ton tank pivot effortlessly on the spot using a steering wheel.",
+        "audioUrl": "audio/tiger1/parts/tiger_transmission_en.mp3"
+      }
+    },
+    "tiger_driveshaft": {
+      "partId": "tiger_driveshaft",
+      "bomCode": "FC-06",
+      "calloutLabelEn": "Central Floor Driveshaft",
+      "zh": {
+        "roleTag": "2.98 米中央底舱锻钢传动轴 · 击发循环期间持续 360° 旋转",
+        "overview": "笔直贯穿战斗室底舱、连接后置迈巴赫 V12 引擎与前置 Olvar 变速箱的 2.98 米锻钢主传动轴与四组万向联轴器。",
+        "craftAndMaterial": "高强度铬钼合金锻钢精密动平衡轴管，配备四组重型螺栓十字万向节联轴法兰。",
+        "kinematicRole": "在炮塔吊篮地板正下方、横向扭力杆正上方高速平稳旋转（击发模拟全周期同步旋转 2π），源源不断传递 700 马力驱动扭矩。",
+        "designHighlight": "堪称二战德系重坦「引擎在后、驱动在前」经典总体布局的脊柱大动脉，在纵剖视角下直观串起全车动力链。",
+        "audioScript": "这根长达两米九八的锻钢主传动轴，笔直穿行在炮塔吊篮地板下方和扭力杆上方。它配备四组重型万向联轴器，将后方迈巴赫V十二引擎的七百马力源源不断输送至车首变速箱，是典型德系后置前驱布局的动力大动脉。",
+        "audioUrl": "audio/tiger1/parts/tiger_driveshaft_zh.mp3"
+      },
+      "en": {
+        "roleTag": "2.98m Forged Steel Central Floor Propeller Driveshaft",
+        "overview": "Central floor steel propeller shaft with four heavy cardan universal joints linking the rear Maybach HL230 V12 forward to the front Olvar transmission.",
+        "craftAndMaterial": "Dynamically balanced chrome-molybdenum forged steel shaft tube fitted with bolted cross-yoke universal coupling flanges.",
+        "kinematicRole": "Spins smoothly through 360 degrees during the firing simulation beneath the suspended turret basket and above the transverse torsion bars.",
+        "designHighlight": "The mechanical spine of Germany's classic rear-engine, front-drive heavy tank layout, visually unifying the entire powertrain in cutaway view.",
+        "audioScript": "Running nearly three meters straight down the hull floor beneath the turret basket, this forged steel propeller shaft links the rear Maybach V12 forward to the front Olvar transmission. Four heavy cardan couplings transmit all seven hundred horsepower smoothly through the fighting compartment.",
+        "audioUrl": "audio/tiger1/parts/tiger_driveshaft_en.mp3"
+      }
+    },
+    "tiger_crew_stations": {
+      "partId": "tiger_crew_stations",
+      "bomCode": "FC-07",
+      "calloutLabelEn": "5-Man Crew & Steering Wheel",
+      "zh": {
+        "roleTag": "经典五人车组战位 · 方向盘驾驶席、FuG 5 电台与炮塔三席",
+        "overview": "完整呈现虎式 131 科学严谨的五人车组战位布局：前左汽车方向盘驾驶席与仪表盘、前右机电员 FuG 5 无线电席，以及炮塔车长、炮手与装填手三席。",
+        "craftAndMaterial": "复古深棕真皮衬垫座椅配钢制立柱，驾驶员配三辐黑色胶木汽车方向盘及白字三表仪表台，右侧配德军 FuG 5 超短波电台机箱。",
+        "kinematicRole": "明确解耦驾驶、通信、观察、瞄准与装填五大战斗职能，使车长彻底摆脱繁杂操作专注于全局战术指挥。",
+        "designHighlight": "高度人性化的五人分工与罕见的汽车式方向盘操控，极大降低了乘员长途行军与高强度装甲决战中的疲劳度。",
+        "audioScript": "虎式一三一拥有堪称典范的五人车组布局：前左驾驶员竟然手握罕见的三辐汽车方向盘与三联仪表盘，前右机电员操作FuG五超短波电台和航向机枪，而炮塔内的车长、炮手与装填手各司其职、互不干扰。",
+        "audioUrl": "audio/tiger1/parts/tiger_crew_stations_zh.mp3"
+      },
+      "en": {
+        "roleTag": "5-Man Crew Stations, Steering Wheel & FuG 5 Radio",
+        "overview": "Ergonomic five-man crew layout combining the driver's automotive steering wheel and gauge binnacle, radio operator's FuG 5 station, and commander/gunner/loader turret seats.",
+        "craftAndMaterial": "Tufted brown leather seat cushions on steel pedestals, a three-spoke Bakelite steering wheel, crisp three-dial gauge panel, and FuG 5 radio transceiver.",
+        "kinematicRole": "Cleanly separates driving, communications, spotting, gunnery, and loading so the commander focuses purely on tactical battlefield leadership.",
+        "designHighlight": "Replacing heavy twin steering levers with an effortless automotive steering wheel and roomy three-man turret sharply reduced crew fatigue in long battles.",
+        "audioScript": "Tiger one thirty one showcases Germany's benchmark five man crew layout. Up front, the driver steers with an authentic three spoke automotive wheel and dial cluster beside the radio operator's FuG five transceiver, while commander, gunner, and loader work cleanly separated inside the spacious turret.",
+        "audioUrl": "audio/tiger1/parts/tiger_crew_stations_en.mp3"
+      }
+    },
+    "tiger_ammo_racks": {
+      "partId": "tiger_ammo_racks",
+      "bomCode": "M-01",
+      "calloutLabelEn": "Sponson 88mm Ammo Racks",
+      "zh": {
+        "roleTag": "侧翼装甲弹药架 · 18 发真尺 88×571mmR PzGr. 39 黄铜炮弹",
+        "overview": "沿车体宽大左侧悬挑翼内壁分层固定的红丹底漆装甲弹药箱，密排 18 发全尺寸 920 mm 88×571mmR PzGr. 39 穿甲被帽风帽弹。",
+        "craftAndMaterial": "防锈红丹底漆钢制隔舱与托架，架内炮弹采用闪耀 C26000 金黄铜药筒、紫铜导转带及哑黑淬火钢制 APCBC 穿甲风帽弹头。",
+        "kinematicRole": "借助虎式方正宽大的车体侧翼安全收纳多达 92 发 88mm 巨弹，触手可及地为炮塔装填手持续供应毁灭性弹药。",
+        "designHighlight": "开启纵剖视窗时，整排金光熠熠的 88mm 巨型黄铜炮弹紧贴左侧象牙白舱壁整齐陈列，带来震撼人心的工业美感。",
+        "audioScript": "紧贴左侧悬挑装甲内壁的是虎式的侧翼弹药架。红丹漆钢制隔舱里整齐码放着全长九十二厘米的八十八乘五百七十一毫米穿甲弹，耀眼的金黄铜药筒、紫铜弹带和漆黑穿甲风帽弹头在纵剖视角下震撼夺目。",
+        "audioUrl": "audio/tiger1/parts/tiger_ammo_racks_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Left-Sponson 88x571mmR PzGr. 39 Brass Ammo Bins",
+        "overview": "Multi-tier red-oxide armored left-sponson ammunition bins stacked with 18 full-scale 920 mm 88x571mmR PzGr. 39 brass-cased APCBC cartridges.",
+        "craftAndMaterial": "Red-oxide primer steel stowage bins cradling gleaming C26000 brass cartridge cases, warm copper rifling driving bands, and matte-black steel ballistic-cap projectiles.",
+        "kinematicRole": "Exploits the Tiger's wide overhanging sponsons to store up to 92 massive 88mm rounds within rapid reach of the turret loader.",
+        "designHighlight": "In cutaway view, these stacked rows of gleaming brass 88mm cartridges gleam dramatically along the inner left hull wall.",
+        "audioScript": "Lining the overhanging left hull sponson are armored red oxide ammunition racks stacked with full size ninety two centimeter eighty eight millimeter PzGr thirty nine rounds. Their gleaming brass casings, copper driving bands, and matte black armor piercing noses shine vividly in cutaway.",
+        "audioUrl": "audio/tiger1/parts/tiger_ammo_racks_en.mp3"
+      }
+    },
+    "tiger_ready_round": {
+      "partId": "tiger_ready_round",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Ready 88mm PzGr. 39 Round",
+      "zh": {
+        "roleTag": "动态装填 16 kg 88mm PzGr. 39 实弹 · 前推 +124 cm 入膛闭锁",
+        "overview": "全长 920 mm、重达 16.0 kg 的单发英雄展示级 88×571mmR PzGr. 39 APCBC 定装穿甲弹，在击发循环阶段 6 完整演示人工托举上膛动作。",
+        "craftAndMaterial": "精车凸缘 C26000 退火黄铜长药筒（内置 2.5 kg 管状发射药与 C/22 电底火）、紫铜导转带及内藏 59 g 高爆装药的被帽风帽穿甲钢弹头。",
+        "kinematicRole": "击发阶段 6 自侧翼待发位平滑抬升对齐 88mm 炮膛中轴并笔直前推 +124 cm 送入张开的克虏伯水平炮尾，随即触发阶段 7 炮闩自动闭锁。",
+        "designHighlight": "穿甲与弹后高爆杀伤兼备的 PzGr. 39 穿甲弹，一旦贯穿敌军坦克装甲便在车内延迟引爆，令虎式往往仅需一发即可彻底摧毁目标。",
+        "audioScript": "这发全长九十二厘米、重达十六公斤的八十八毫米PzGr三九穿甲被帽弹，完美诠释了虎式的致命一击。在击发模拟第六阶段，装填手将它凌空托起对齐炮膛，笔直前推一百二十四厘米送入炮尾，瞬间触发炮闩自动闭锁。",
+        "audioUrl": "audio/tiger1/parts/tiger_ready_round_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Animated 16 kg 88mm PzGr. 39 APCBC Ready Cartridge",
+        "overview": "Hero full-scale 920 mm, 16.0 kg 88x571mmR PzGr. 39 armor-piercing capped ballistic-cap brass cartridge animated through manual loading into the Krupp breech.",
+        "craftAndMaterial": "Turned flanged C26000 brass casing holding 2.5 kg of propellant and a C/22 electric primer, paired with a copper driving band and black steel APCBC shell containing a 59 g explosive burster.",
+        "kinematicRole": "Lifts smoothly from the left staging rack into bore alignment and drives +124 cm forward into the open Krupp breech in phase 6, tripping automatic wedge closure in phase 7.",
+        "designHighlight": "Combining a soft armor-piercing cap, aerodynamic nose cone, and base-fuzed high-explosive filler meant a single penetration was almost always fatal.",
+        "audioScript": "Measuring ninety two centimeters long and weighing sixteen kilograms, this gleaming brass eighty eight millimeter PzGr thirty nine cartridge was the Tiger's lethal punch. In firing phase six, watch the loader hoist it into bore alignment and ram it one hundred twenty four centimeters forward into Krupp's open breech.",
+        "audioUrl": "audio/tiger1/parts/tiger_ready_round_en.mp3"
+      }
+    }
+  }
+}

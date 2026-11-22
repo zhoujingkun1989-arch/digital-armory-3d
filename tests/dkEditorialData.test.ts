@@ -8,6 +8,7 @@ import {
   archeryProjectileToLabSpec,
   CARTRIDGE_LAB_ORDER,
   CARTRIDGE_LAB_SPECS,
+  TANK_ORDNANCE_ORDER,
 } from '../src/engine/cartridges/cartridgeSpecs';
 import {
   assembleDkEditorialPack,
@@ -42,11 +43,12 @@ function loadNarrationBundle(weaponId: WeaponId): WeaponNarrationBundle {
 }
 
 describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () => {
-  it('produces valid bilingual DkScaleReference for all 23 exhibits with accurate silhouettes', () => {
-    expect(WEAPON_IDS.length).toBe(23);
+  it('produces valid bilingual DkScaleReference for all 27 exhibits with accurate silhouettes', () => {
+    expect(WEAPON_IDS.length).toBe(27);
 
     for (const weaponId of WEAPON_IDS) {
       const manifest = getWeaponManifest(weaponId);
+      const isTank = manifest.catalog.category === 'armor';
       const expectedSilhouette =
         manifest.catalog.category === 'pistol'
           ? 'hand'
@@ -57,19 +59,31 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
       for (const lang of ['zh', 'en'] as const) {
         const ref = buildDkScaleReference(weaponId, lang);
         expect(Number.isFinite(ref.oalMm)).toBe(true);
-        expect(ref.oalMm).toBeGreaterThanOrEqual(180);
-        expect(ref.oalMm).toBeLessThanOrEqual(1600);
-        expect(Number.isFinite(ref.barrelMm)).toBe(true);
-        expect(ref.barrelMm).toBeGreaterThanOrEqual(90);
-        expect(Number.isFinite(ref.weightKg)).toBe(true);
-        expect(ref.weightKg).toBeGreaterThan(0.4);
-        expect(ref.weightKg).toBeLessThan(20);
+        if (isTank) {
+          expect(ref.oalMm).toBeGreaterThanOrEqual(7000);
+          expect(ref.oalMm).toBeLessThanOrEqual(12000);
+          expect(Number.isFinite(ref.barrelMm)).toBe(true);
+          expect(ref.barrelMm).toBeGreaterThanOrEqual(4000);
+          expect(Number.isFinite(ref.weightKg)).toBe(true);
+          expect(ref.weightKg).toBeGreaterThanOrEqual(40000);
+          expect(ref.weightKg).toBeLessThanOrEqual(80000);
+          expect(ref.ratioPercent).toBeGreaterThanOrEqual(400);
+          expect(ref.ratioPercent).toBeLessThanOrEqual(750);
+        } else {
+          expect(ref.oalMm).toBeGreaterThanOrEqual(180);
+          expect(ref.oalMm).toBeLessThanOrEqual(1600);
+          expect(Number.isFinite(ref.barrelMm)).toBe(true);
+          expect(ref.barrelMm).toBeGreaterThanOrEqual(90);
+          expect(Number.isFinite(ref.weightKg)).toBe(true);
+          expect(ref.weightKg).toBeGreaterThan(0.4);
+          expect(ref.weightKg).toBeLessThan(20);
+          expect(ref.ratioPercent).toBeGreaterThanOrEqual(10);
+          expect(ref.ratioPercent).toBeLessThanOrEqual(200);
+        }
         expect(ref.silhouetteKind).toBe(expectedSilhouette);
         expect(ref.referenceLengthMm).toBe(
           expectedSilhouette === 'hand' ? 190 : 1750
         );
-        expect(ref.ratioPercent).toBeGreaterThanOrEqual(10);
-        expect(ref.ratioPercent).toBeLessThanOrEqual(200);
         expect(ref.caption.length).toBeGreaterThan(12);
         expect(ref.caption).not.toContain('NaN');
         if (lang === 'zh') {
@@ -80,15 +94,18 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
       }
     }
 
-    // Spot-check real-world physical bounds
+    // Spot-check real-world physical bounds (small arms + 1:1 MBTs)
     expect(buildDkScaleReference('g17', 'en').oalMm).toBe(202);
     expect(buildDkScaleReference('p08', 'en').oalMm).toBe(222);
     expect(buildDkScaleReference('m82a1', 'en').oalMm).toBe(1448);
     expect(buildDkScaleReference('vector', 'zh').oalMm).toBe(617);
     expect(buildDkScaleReference('vector', 'en').oalMm).toBe(617);
+    expect(buildDkScaleReference('m1a2', 'en').oalMm).toBe(9770);
+    expect(buildDkScaleReference('leopard2a7', 'en').oalMm).toBe(10970);
+    expect(buildDkScaleReference('tiger1', 'en').oalMm).toBe(8450);
   });
 
-  it('produces strictly chronological 5-node DkEvolutionTimeline with exactly one current node across all 23 exhibits', () => {
+  it('produces strictly chronological 5-node DkEvolutionTimeline with exactly one current node across all 27 exhibits', () => {
     const expectedRelations: DkEraRelation[] = [
       'ancestor',
       'predecessor',
@@ -124,7 +141,7 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
     }
   });
 
-  it('produces curated bilingual DkLoupeSpecs for all 23 exhibits with domain-specific archery copy', () => {
+  it('produces curated bilingual DkLoupeSpecs for all 27 exhibits with domain-specific archery copy', () => {
     for (const weaponId of WEAPON_IDS) {
       const isArchery = getWeaponManifest(weaponId).catalog.category === 'archery';
 
@@ -151,7 +168,7 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
     }
   });
 
-  it('distills crisp bilingual buildDkPartMicroCopy across all 579 parts of all 23 exhibits without ellipses or mid-word cuts', async () => {
+  it('distills crisp bilingual buildDkPartMicroCopy across all 683 parts of all 27 exhibits without ellipses or mid-word cuts', async () => {
     let totalPartsChecked = 0;
 
     for (const weaponId of WEAPON_IDS) {
@@ -271,12 +288,12 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
       }
     }
 
-    // 23 exhibits × ~25 parts × 2 languages = 1,158 part micro-copies checked
-    expect(totalPartsChecked).toBe(1158);
+    // 27 exhibits (683 total parts) × 2 languages = 1,366 part micro-copies checked
+    expect(totalPartsChecked).toBe(1366);
   });
 
   it('handles null narration fallback cleanly in buildDkPartMicroCopy for both zh and en', async () => {
-    for (const weaponId of ['p08', 'ak15', 'lift33'] as const) {
+    for (const weaponId of ['p08', 'ak15', 'lift33', 'ztz99a'] as const) {
       const plugin = await loadWeaponPlugin(weaponId);
       for (const lang of ['zh', 'en'] as const) {
         const dossier = assembleMonographDossier(weaponId, plugin, lang, null);
@@ -297,8 +314,9 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
     }
   });
 
-  it('computes exact 1:1 physical mm cartridge layouts for all 15 calibers and safe 1:4/1:5 scale for archery without NaN or A4 overflow', () => {
+  it('computes exact 1:1 physical mm cartridge layouts for all 15 small-arms calibers, 1:10 for 3 tank cannon rounds, and 1:4/1:5 for archery without NaN or A4 overflow', () => {
     expect(CARTRIDGE_LAB_ORDER.length).toBe(15);
+    expect(TANK_ORDNANCE_ORDER.length).toBe(3);
 
     for (const caliber of CARTRIDGE_LAB_ORDER) {
       const spec = CARTRIDGE_LAB_SPECS[caliber];
@@ -306,6 +324,7 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
         for (const orientation of ['vertical', 'horizontal'] as const) {
           const layout = computeDkCartridgePlateLayout(spec, lang, orientation);
           expect(layout.isArchery).toBe(false);
+          expect(layout.isTankOrdnance).toBe(false);
           expect(layout.scaleDenom).toBe(1);
           expect(layout.drawnLengthMm).toBeCloseTo(spec.oalMm, 1);
           expect(Number.isFinite(layout.svgWidthMm)).toBe(true);
@@ -320,6 +339,24 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
       }
     }
 
+    for (const tankCaliber of TANK_ORDNANCE_ORDER) {
+      const spec = CARTRIDGE_LAB_SPECS[tankCaliber];
+      for (const lang of ['zh', 'en'] as const) {
+        for (const orientation of ['vertical', 'horizontal'] as const) {
+          const layout = computeDkCartridgePlateLayout(spec, lang, orientation);
+          expect(layout.isArchery).toBe(false);
+          expect(layout.isTankOrdnance).toBe(true);
+          expect(layout.scaleDenom).toBe(10);
+          expect(layout.drawnLengthMm).toBeCloseTo(spec.oalMm / 10, 1);
+          expect(Number.isFinite(layout.svgWidthMm)).toBe(true);
+          expect(Number.isFinite(layout.svgHeightMm)).toBe(true);
+          expect(layout.svgWidthMm).toBeLessThanOrEqual(185);
+          expect(layout.svgHeightMm).toBeLessThanOrEqual(185);
+          expect(layout.scaleStamp).toContain('1:10');
+        }
+      }
+    }
+
     for (const archeryCaliber of ['arrow_400gr', 'bolt_400gr'] as const) {
       const spec = archeryProjectileToLabSpec(
         ARCHERY_PROJECTILE_SPECS[archeryCaliber]
@@ -328,6 +365,7 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
         for (const orientation of ['vertical', 'horizontal'] as const) {
           const layout = computeDkCartridgePlateLayout(spec, lang, orientation);
           expect(layout.isArchery).toBe(true);
+          expect(layout.isTankOrdnance).toBe(false);
           expect(layout.scaleDenom).toBe(archeryCaliber === 'arrow_400gr' ? 5 : 4);
           expect(Number.isFinite(layout.svgWidthMm)).toBe(true);
           expect(Number.isFinite(layout.svgHeightMm)).toBe(true);
@@ -338,7 +376,7 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
       }
     }
 
-    // All 19 exhibits resolve a valid cartridge spec
+    // All 27 exhibits resolve a valid cartridge / ordnance spec
     for (const weaponId of WEAPON_IDS) {
       const cSpec = resolveWeaponCartridgeSpec(weaponId);
       const layout = computeDkCartridgePlateLayout(cSpec, 'en', 'vertical');
@@ -467,11 +505,12 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
     expect(heroConnHtml).toContain('dk-loupe-hero-connector-svg');
     expect(heroConnHtml).not.toContain('NaN');
 
-    // 3. DkTrueScaleRuler across hand, human & archer silhouettes
+    // 3. DkTrueScaleRuler across hand, human, archer & MBT silhouettes
     for (const [wid, lang] of [
       ['p08', 'zh'],
       ['ak15', 'en'],
       ['lift33', 'zh'],
+      ['ztz99a', 'en'],
     ] as const) {
       const rulerHtml = renderToStaticMarkup(
         React.createElement(DkTrueScaleRuler, {
@@ -484,7 +523,7 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
       expect(rulerHtml).not.toContain('NaN');
     }
 
-    // 4. DkActualSizeCartridgePlate across all 11 metallic calibers + both archery calibers
+    // 4. DkActualSizeCartridgePlate across all 15 small-arms, 3 tank cannon rounds & 2 archery calibers
     for (const cal of CARTRIDGE_LAB_ORDER) {
       const spec = CARTRIDGE_LAB_SPECS[cal];
       for (const orientation of ['vertical', 'horizontal'] as const) {
@@ -499,6 +538,24 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
         expect(plateHtml).toContain(`width:${layout.svgWidthMm}mm`);
         expect(plateHtml).toContain(`height:${layout.svgHeightMm}mm`);
         expect(plateHtml).toContain('1:1 ACTUAL SIZE');
+        expect(plateHtml).not.toContain('NaN');
+      }
+    }
+
+    for (const tankCal of TANK_ORDNANCE_ORDER) {
+      const spec = CARTRIDGE_LAB_SPECS[tankCal];
+      for (const orientation of ['vertical', 'horizontal'] as const) {
+        const layout = computeDkCartridgePlateLayout(spec, 'en', orientation);
+        const plateHtml = renderToStaticMarkup(
+          React.createElement(DkActualSizeCartridgePlate, {
+            cartridgeSpec: spec,
+            lang: 'en',
+            orientation,
+          })
+        );
+        expect(plateHtml).toContain(`width:${layout.svgWidthMm}mm`);
+        expect(plateHtml).toContain(`height:${layout.svgHeightMm}mm`);
+        expect(plateHtml).toContain('1:10 SCALE CUTAWAY');
         expect(plateHtml).not.toContain('NaN');
       }
     }
@@ -538,7 +595,7 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
     expect(timelineHtml).not.toContain('NaN');
   });
 
-  it('guarantees zero CJK leakage in English mode across all 23 editorial packs and all 5 rendered DK vector components', async () => {
+  it('guarantees zero CJK leakage in English mode across all 27 editorial packs and all 5 rendered DK vector components', async () => {
     const cjkRe = /[\u4e00-\u9fff]/;
 
     for (const weaponId of WEAPON_IDS) {

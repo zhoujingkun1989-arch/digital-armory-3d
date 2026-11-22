@@ -176,6 +176,86 @@ export const CALIPER_V2_BENCHMARK_NOTES: Readonly<
       nominalMm: 162,
     },
   ],
+  ztz99a: [
+    {
+      kind: 'overall_envelope',
+      labelZh: 'ZTZ-99A 全车包络总长 (车尾至 125mm 炮口)',
+      labelEn: 'ZTZ-99A Overall Envelope Length (Rear Hull to 125mm Muzzle)',
+      nominalMm: 10900,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '125mm ZPT-98 L/50 镀铬滑膛主炮管实长',
+      labelEn: '125mm ZPT-98 L/50 Smoothbore Main Gun Tube Span',
+      nominalMm: 6250,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '立式半自动楔形炮尾闭锁机构跨度',
+      labelEn: 'Vertical Sliding-Wedge Main Gun Breech Block Span',
+      nominalMm: 780,
+    },
+  ],
+  m1a2: [
+    {
+      kind: 'overall_envelope',
+      labelZh: 'M1A2 SEP v3 全车包络总长 (车尾至 120mm 炮口)',
+      labelEn: 'M1A2 SEP v3 Overall Envelope Length (Rear Deck to 120mm Muzzle)',
+      nominalMm: 9770,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '120mm L/44 M256 镀铬滑膛主炮管实长',
+      labelEn: '120mm L/44 M256 Smoothbore Main Gun Tube Span',
+      nominalMm: 5280,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: 'M256 立式楔形炮闩与膛尾承压块跨度',
+      labelEn: 'M256 Vertical Sliding-Wedge Breech Block Span',
+      nominalMm: 740,
+    },
+  ],
+  leopard2a7: [
+    {
+      kind: 'overall_envelope',
+      labelZh: '豹 2A7V 全车包络总长 (车尾至 L/55A1 炮口)',
+      labelEn: 'Leopard 2A7V Overall Envelope Length (Rear Hull to L/55A1 Muzzle)',
+      nominalMm: 10970,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '120mm Rh-120 L/55A1 高压加长滑膛炮管实长',
+      labelEn: '120mm Rh-120 L/55A1 Extended Smoothbore Gun Tube Span',
+      nominalMm: 6600,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: 'Rh-120 立楔闭锁炮尾与同轴驻退机构跨度',
+      labelEn: 'Rh-120 Vertical Wedge Breech Block Assembly Span',
+      nominalMm: 760,
+    },
+  ],
+  tiger1: [
+    {
+      kind: 'overall_envelope',
+      labelZh: '虎式 131 全车包络总长 (车尾至 88mm 制退器)',
+      labelEn: 'Tiger 131 Overall Envelope Length (Rear Hull to 88mm Muzzle Brake)',
+      nominalMm: 8450,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '88mm KwK 36 L/56 线膛炮管含双室制退器跨度',
+      labelEn: '88mm KwK 36 L/56 Rifled Main Gun Tube Span',
+      nominalMm: 4930,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '克虏伯半自动水平楔式炮闩与炮尾环跨度',
+      labelEn: 'Krupp Semi-Automatic Horizontal Sliding-Wedge Breech Span',
+      nominalMm: 720,
+    },
+  ],
 };
 
 export interface CaliperSurfacePoint {
@@ -377,13 +457,13 @@ function findBenchmarkTargetPart(
   if (kind === 'barrel_length') {
     return (
       parts.find((p) => p.id === 'm134_barrel_cluster') ??
-      parts.find((p) => /(?:^|_)barrel$/.test(p.id)) ??
+      parts.find((p) => /(?:^|_)(?:barrel|main_gun)$/.test(p.id)) ??
       parts.find((p) => /barrel/.test(p.id) && !/spring|lock|cross|clamp/.test(p.id)) ??
       parts.find((p) => p.id === 'lift33_arrow_shaft' || p.id === 'r500_flight_rail') ??
       null
     );
   }
-  // bolt_lug_span: prefer rotating/locking bolt head (or revolver 6-shot cylinder / P08 toggle / Super V slider / M134 rotor), else slide
+  // bolt_lug_span: prefer rotating/locking bolt head (or tank main gun breech block / revolver cylinder / P08 toggle / Super V slider / M134 rotor), else slide
   return (
     parts.find(
       (p) =>
@@ -393,8 +473,9 @@ function findBenchmarkTargetPart(
     ) ??
     parts.find(
       (p) =>
-        /(?:^|_)(?:bolt|bolt_head|bolt_body|breechblock)$/.test(p.id) &&
-        !/cylinder_bolt/.test(p.id)
+        /(?:^|_)(?:bolt|bolt_head|bolt_body|breechblock|breech_block)$/.test(
+          p.id
+        ) && !/cylinder_bolt/.test(p.id)
     ) ??
     parts.find((p) => /(?:^|_)slide$/.test(p.id)) ??
     parts.find((p) => p.id === 'lift33_riser' || p.id === 'r500_cam_axles') ??

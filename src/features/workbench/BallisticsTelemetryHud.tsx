@@ -860,8 +860,12 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
             pRef.current.textContent = formatFixed(sample.pressureMPa, 1);
           if (vRef.current)
             vRef.current.textContent = formatFixed(sample.velocityMps, 0);
-          if (eRef.current)
-            eRef.current.textContent = formatFixed(sample.energyJ, 0);
+          if (eRef.current) {
+            eRef.current.textContent =
+              getCaliberBallisticsSpec(c.caliber).muzzleEnergyJ >= 1_000_000
+                ? formatFixed(sample.energyJ / 1_000_000, 2)
+                : formatFixed(sample.energyJ, 0);
+          }
           if (tRef.current)
             tRef.current.textContent = formatFixed(phys.barrelTempC, 1);
           if (foulRef.current)
@@ -953,11 +957,15 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
       : lang === 'zh'
         ? spec.labelZh
         : spec.labelEn;
+  const isMegajoule = !isArchery && spec.muzzleEnergyJ >= 1_000_000;
+  const headerEnergyStr = isMegajoule
+    ? `${(spec.muzzleEnergyJ / 1_000_000).toFixed(2)} MJ`
+    : `${Math.round(spec.muzzleEnergyJ).toLocaleString('en-US')} J`;
   const headerTitle = isArchery ? s.archeryTitle : s.title;
   const headerSummary =
     isArchery && archeryMeta
       ? `${caliberLabel} · ATA/IBO · ${s.archeryPeakDraw} ${archeryMeta.peakDrawForceLb} lb (${archeryMeta.peakDrawForceN} N) · ${s.muzzleVelocity} ${archeryMeta.velocityFps} FPS (${archeryMeta.muzzleVelocityMps} m/s) · ${s.archeryKinetic} ${archeryMeta.muzzleEnergyJ.toFixed(1)} J`
-      : `${caliberLabel} · ${spec.standard} · ${s.peak} ${spec.peakPressureMPa} MPa · ${s.muzzleVelocity} ${spec.muzzleVelocityMps} m/s · ${s.muzzleEnergy} ${Math.round(spec.muzzleEnergyJ).toLocaleString('en-US')} J`;
+      : `${caliberLabel} · ${spec.standard} · ${s.peak} ${spec.peakPressureMPa} MPa · ${s.muzzleVelocity} ${spec.muzzleVelocityMps} m/s · ${s.muzzleEnergy} ${headerEnergyStr}`;
 
   return (
     <div
@@ -1017,9 +1025,11 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
           </span>
         </div>
         <div style={CELL_STYLE}>
-          <span style={CELL_LABEL_STYLE}>{s.energy} · J</span>
+          <span style={CELL_LABEL_STYLE}>
+            {s.energy} · {isMegajoule ? 'MJ' : 'J'}
+          </span>
           <span ref={eRef} style={{ ...CELL_VALUE_STYLE, color: '#e2e8f0' }}>
-            {isArchery ? '0.0' : '0'}
+            {isArchery ? '0.0' : isMegajoule ? '0.00' : '0'}
           </span>
         </div>
         <div style={CELL_STYLE}>

@@ -1005,9 +1005,73 @@ export const MAGAZINE_STACK_SPECS: Readonly<
     },
     slots: buildAn94CantedBananaSlots(),
   },
+
+  // 1:1 Main Battle Tanks (`BAY-24 ~ BAY-27`) carry sculptural 125mm/120mm/88mm rounds
+  // directly inside their Blender GLB autoloader carousels / bustle racks + animated ready-round parts,
+  // so small-arms instanced cartridge columns stay cleanly disabled (`roundCount: 0`, zero overlap).
+  ztz99a: {
+    weaponId: 'ztz99a',
+    magBodyPartId: 'ztz99a_autoloader_carousel',
+    followerPartId: 'ztz99a_loading_tray',
+    roundCount: 0,
+    firingHandoffSlotIndex: 0,
+    feedWindow: [0.52, 0.78],
+    replenishWindow: [0.84, 0.96],
+    magSubStripStartT: 0.3,
+    followerDeckPlane: {
+      point: [22, -62, 0],
+      normal: [0, 1, 0],
+    },
+    slots: [],
+  },
+  m1a2: {
+    weaponId: 'm1a2',
+    magBodyPartId: 'm1a2_ammo_bustle',
+    followerPartId: 'm1a2_ready_round',
+    roundCount: 0,
+    firingHandoffSlotIndex: 0,
+    feedWindow: [0.52, 0.76],
+    replenishWindow: [0.84, 0.95],
+    magSubStripStartT: 0.3,
+    followerDeckPlane: {
+      point: [-125, 44, 0],
+      normal: [1, 0, 0],
+    },
+    slots: [],
+  },
+  leopard2a7: {
+    weaponId: 'leopard2a7',
+    magBodyPartId: 'leo_ammo_bustle',
+    followerPartId: 'leo_ready_round',
+    roundCount: 0,
+    firingHandoffSlotIndex: 0,
+    feedWindow: [0.52, 0.76],
+    replenishWindow: [0.84, 0.95],
+    magSubStripStartT: 0.3,
+    followerDeckPlane: {
+      point: [-120, 74, 0],
+      normal: [1, 0, 0],
+    },
+    slots: [],
+  },
+  tiger1: {
+    weaponId: 'tiger1',
+    magBodyPartId: 'tiger_ammo_racks',
+    followerPartId: 'tiger_ready_round',
+    roundCount: 0,
+    firingHandoffSlotIndex: 0,
+    feedWindow: [0.56, 0.8],
+    replenishWindow: [0.86, 0.96],
+    magSubStripStartT: 0.3,
+    followerDeckPlane: {
+      point: [-20, 48, 0],
+      normal: [0, 1, 0],
+    },
+    slots: [],
+  },
 };
 
-/** Maximum instanced capacity needed across all 23 exhibits (`roundCount + 1` replacement) */
+/** Maximum instanced capacity needed across all 27 exhibits (`roundCount + 1` replacement) */
 export const MAX_MAGAZINE_STACK_INSTANCES = 48;
 
 /**
@@ -1048,6 +1112,16 @@ export function evaluateMagazineRoundSlotInto(
 ): MutableMagazineRoundPose {
   const spec = MAGAZINE_STACK_SPECS[weaponId];
   const slots = spec.slots;
+  if (spec.roundCount <= 0 || slots.length === 0) {
+    out.px = 0;
+    out.py = 0;
+    out.pz = 0;
+    out.rx = 0;
+    out.ry = 0;
+    out.rz = 0;
+    out.scaleMult = 0;
+    return out;
+  }
   const maxIdx = slots.length - 1;
   const clampedIdx =
     slotIndex < 0 ? 0 : slotIndex > maxIdx ? maxIdx : slotIndex;

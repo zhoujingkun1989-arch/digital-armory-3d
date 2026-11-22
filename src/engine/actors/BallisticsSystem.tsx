@@ -22,6 +22,8 @@ import {
   getSpentCasingPool,
   getWeaponFiringTiming,
   isArcheryWeapon,
+  isTankCaliber,
+  isTankWeapon,
   stepArmoryPhysics,
 } from '../physics/armoryPhysics';
 
@@ -1219,6 +1221,201 @@ function buildArcheryBundle(opts: {
   };
 }
 
+/**
+ * Builds 1:1 120mm / 125mm APFSDS tank cannon firing kinematics geometry:
+ * - `caseGeo`: Drawn metallic aft stub base (retained after combustible propellant wall burns away)
+ * - `bulletGeo`: Multi-tone DU/tungsten fin-stabilized long-rod penetrator dart + 3-petal sabot ring
+ */
+function buildTankApfsdsGeometries(
+  caliber: '120mm_apfsds' | '125mm_apfsds'
+): CaliberGeometryBundle {
+  const is125 = caliber === '125mm_apfsds';
+  const rRim = is125 ? 8.1 : 7.85;
+  const rBody = is125 ? 7.45 : 7.25;
+  const rLip = is125 ? 7.2 : 6.95;
+  const stubLen = is125 ? 12.6 : 13.8;
+  const xHead = -stubLen * 0.5;
+  const xFront = stubLen * 0.5;
+  const rPocket = 1.25;
+  const pocketDepth = 0.85;
+
+  // Metallic aft stub-base cup (brass/steel rim + chamfered extractor flange + hollow inner skirt)
+  const stubPts: THREE.Vector2[] = [
+    new THREE.Vector2(rPocket, xHead),
+    new THREE.Vector2(rRim - 0.35, xHead),
+    new THREE.Vector2(rRim, xHead + 0.35),
+    new THREE.Vector2(rRim, xHead + 1.55),
+    new THREE.Vector2(rBody, xHead + 2.05),
+    new THREE.Vector2(rLip, xFront - 0.4),
+    new THREE.Vector2(rLip - 0.28, xFront),
+    new THREE.Vector2(rLip - 0.85, xFront),
+    new THREE.Vector2(rLip - 0.95, xHead + 2.2),
+    new THREE.Vector2(rPocket, xHead + 2.0),
+    new THREE.Vector2(rPocket, xHead),
+  ];
+  const stubGeo = paintSubGeo(
+    finalizeLathe(stubPts, 32),
+    is125 ? '#b5914a' : '#8d96a3'
+  );
+  // Subtle forward scorched combustible-case collar ring
+  const charPts: THREE.Vector2[] = [
+    new THREE.Vector2(rLip - 0.32, xFront - 1.1),
+    new THREE.Vector2(rLip + 0.05, xFront - 1.0),
+    new THREE.Vector2(rLip + 0.02, xFront + 0.8),
+    new THREE.Vector2(rLip - 0.38, xFront + 0.8),
+    new THREE.Vector2(rLip - 0.32, xFront - 1.1),
+  ];
+  const charGeo = paintSubGeo(finalizeLathe(charPts, 28), '#44403c');
+  const caseParts = [stubGeo, charGeo];
+  const caseGeo = mergeGeometries(caseParts, false);
+  for (const p of caseParts) p.dispose();
+  caseGeo.computeBoundingBox();
+  caseGeo.computeBoundingSphere();
+
+  // 1:1 Fin-stabilized sub-caliber penetrator dart (L ~ 64 cm, Ø 2.4 cm DU/tungsten rod)
+  const dartLen = is125 ? 64.0 : 62.0;
+  const xTail = -dartLen * 0.48;
+  const xNose = dartLen * 0.52;
+  const rRod = 1.22;
+  const rodPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, xTail),
+    new THREE.Vector2(rRod * 0.82, xTail),
+    new THREE.Vector2(rRod, xTail + 2.2),
+    new THREE.Vector2(rRod, xNose - 12.0),
+    new THREE.Vector2(rRod * 0.74, xNose - 6.0),
+    new THREE.Vector2(rRod * 0.36, xNose - 2.2),
+    new THREE.Vector2(0.14, xNose - 0.4),
+    new THREE.Vector2(0, xNose),
+  ];
+  const rodGeo = paintSubGeo(
+    finalizeLathe(rodPts, 22),
+    is125 ? '#334155' : '#1e293b'
+  );
+
+  // Mid-body machined aluminum discarding-sabot drive collar (saddle + bourrelet)
+  const rSabot = is125 ? 5.6 : 5.4;
+  const sabotPts: THREE.Vector2[] = [
+    new THREE.Vector2(rRod, -8.5),
+    new THREE.Vector2(rSabot * 0.85, -7.2),
+    new THREE.Vector2(rSabot, -5.2),
+    new THREE.Vector2(rSabot, -2.4),
+    new THREE.Vector2(rRod * 1.65, -0.5),
+    new THREE.Vector2(rRod * 1.65, 4.2),
+    new THREE.Vector2(rSabot, 5.8),
+    new THREE.Vector2(rSabot, 8.2),
+    new THREE.Vector2(rRod, 10.0),
+  ];
+  const sabotGeo = paintSubGeo(finalizeLathe(sabotPts, 24), '#cbd5e1');
+
+  // Luminous magnesium-orange tracer base glow plug
+  const tracerPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, xTail - 1.2),
+    new THREE.Vector2(rRod * 0.72, xTail - 1.1),
+    new THREE.Vector2(rRod * 0.82, xTail + 0.1),
+    new THREE.Vector2(0, xTail + 0.1),
+  ];
+  const tracerGeo = paintSubGeo(finalizeLathe(tracerPts, 16), '#f97316');
+
+  // 6 cruciform aerodynamic tail stabilizer fins
+  const fins: THREE.BufferGeometry[] = [];
+  const finSpan = is125 ? 5.2 : 4.9;
+  for (let k = 0; k < 6; k++) {
+    const fin = new THREE.BoxGeometry(10.5, finSpan - rRod, 0.24, 1, 1, 1);
+    fin.translate(xTail + 6.0, rRod + (finSpan - rRod) * 0.48, 0);
+    fin.rotateX((k * Math.PI) / 3);
+    fins.push(paintSubGeo(fin, '#64748b'));
+  }
+
+  const bulletParts = [rodGeo, sabotGeo, tracerGeo, ...fins];
+  const bulletGeo = mergeGeometries(bulletParts, false);
+  for (const p of bulletParts) p.dispose();
+  bulletGeo.computeBoundingBox();
+  bulletGeo.computeBoundingSphere();
+
+  const primers = buildBoxerPrimerGeometries({ xHead, rPocket, pocketDepth });
+  return { caseGeo, bulletGeo, ...primers, xHead };
+}
+
+/**
+ * Builds 1:1 WWII German 88×571mmR PzGr. 39 APCBC-HE artillery cartridge geometry:
+ * - `caseGeo`: Full-length drawn rimmed brass casing (57.1 cm) ejected into canvas shell basket
+ * - `bulletGeo`: Multi-tone 88mm hardened-steel APCBC shell with copper driving bands & white nose cap
+ */
+function build88mmPzgr39Geometries(): CaliberGeometryBundle {
+  const xHead = -36.0;
+  const xMouth = 21.1; // 57.1 cm brass case length
+  const rRim = 5.65;
+  const rBase = 5.05;
+  const rShoulder = 4.78;
+  const rNeck = 4.52;
+  const rPocket = 1.1;
+  const pocketDepth = 0.75;
+
+  const casePts: THREE.Vector2[] = [
+    new THREE.Vector2(rPocket, xHead),
+    new THREE.Vector2(rRim - 0.2, xHead),
+    new THREE.Vector2(rRim, xHead + 0.25),
+    new THREE.Vector2(rRim, xHead + 1.15),
+    new THREE.Vector2(rBase, xHead + 1.55),
+    new THREE.Vector2(rShoulder, xMouth - 9.5),
+    new THREE.Vector2(rNeck, xMouth - 5.5),
+    new THREE.Vector2(rNeck, xMouth),
+    new THREE.Vector2(rNeck - 0.28, xMouth),
+    new THREE.Vector2(rNeck - 0.34, xMouth - 6.0),
+    new THREE.Vector2(rPocket, xHead + 2.4),
+    new THREE.Vector2(rPocket, xHead),
+  ];
+  const caseGeo = paintSubGeo(finalizeLathe(casePts, 32), '#d8a62d');
+
+  // 88mm PzGr. 39 APCBC-HE projectile (L = 33.6 cm, Ø 8.8 cm)
+  const rShell = 4.4;
+  const bodyPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -14.0),
+    new THREE.Vector2(rShell * 0.88, -14.0),
+    new THREE.Vector2(rShell, -12.2),
+    new THREE.Vector2(rShell, 3.8),
+    new THREE.Vector2(rShell * 0.84, 9.8),
+    new THREE.Vector2(rShell * 0.56, 14.2),
+    new THREE.Vector2(0, 14.2),
+  ];
+  const bodyGeo = paintSubGeo(finalizeLathe(bodyPts, 28), '#262b33');
+
+  // Twin copper obturating driving bands
+  const bandPtsA: THREE.Vector2[] = [
+    new THREE.Vector2(rShell - 0.05, -10.8),
+    new THREE.Vector2(rShell + 0.14, -10.6),
+    new THREE.Vector2(rShell + 0.14, -8.8),
+    new THREE.Vector2(rShell - 0.05, -8.6),
+  ];
+  const bandPtsB: THREE.Vector2[] = [
+    new THREE.Vector2(rShell - 0.05, -7.8),
+    new THREE.Vector2(rShell + 0.14, -7.6),
+    new THREE.Vector2(rShell + 0.14, -5.8),
+    new THREE.Vector2(rShell - 0.05, -5.6),
+  ];
+  const bandA = paintSubGeo(finalizeLathe(bandPtsA, 24), '#c8662d');
+  const bandB = paintSubGeo(finalizeLathe(bandPtsB, 24), '#c8662d');
+
+  // Aerodynamic ballistic windshield nose cone (painted white identification band)
+  const capPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, 14.0),
+    new THREE.Vector2(rShell * 0.56, 14.0),
+    new THREE.Vector2(rShell * 0.34, 17.2),
+    new THREE.Vector2(0.32, 19.3),
+    new THREE.Vector2(0, 19.6),
+  ];
+  const capGeo = paintSubGeo(finalizeLathe(capPts, 24), '#e2e8f0');
+
+  const bulletParts = [bodyGeo, bandA, bandB, capGeo];
+  const bulletGeo = mergeGeometries(bulletParts, false);
+  for (const p of bulletParts) p.dispose();
+  bulletGeo.computeBoundingBox();
+  bulletGeo.computeBoundingSphere();
+
+  const primers = buildBoxerPrimerGeometries({ xHead, rPocket, pocketDepth });
+  return { caseGeo, bulletGeo, ...primers, xHead };
+}
+
 export interface CaliberVisualSpec {
   caseColor: string;
   reserveCaseColor: string;
@@ -1401,6 +1598,36 @@ export const CALIBER_VISUAL_SPECS: Record<CaliberProfile, CaliberVisualSpec> = {
     flashScaleMult: 1.42,
     streakThickness: 0.23,
   },
+  '125mm_apfsds': {
+    caseColor: '#b5914a',
+    reserveCaseColor: '#8d6e35',
+    bulletColor: '#334155',
+    primerColor: '#e2e8f0',
+    bulletLocalOffset: 16.0,
+    reserveTiltZ: 0,
+    flashScaleMult: 7.4,
+    streakThickness: 2.8,
+  },
+  '120mm_apfsds': {
+    caseColor: '#8d96a3',
+    reserveCaseColor: '#64748b',
+    bulletColor: '#1e293b',
+    primerColor: '#e2e8f0',
+    bulletLocalOffset: 16.0,
+    reserveTiltZ: 0,
+    flashScaleMult: 8.6,
+    streakThickness: 2.6,
+  },
+  '88mm_pzgr39': {
+    caseColor: '#d8a62d',
+    reserveCaseColor: '#b2851f',
+    bulletColor: '#262b33',
+    primerColor: '#e2e8f0',
+    bulletLocalOffset: 26.0,
+    reserveTiltZ: 0,
+    flashScaleMult: 10.2,
+    streakThickness: 3.4,
+  },
 };
 
 export interface WeaponRoundFitSpec {
@@ -1437,6 +1664,10 @@ export const WEAPON_ROUND_FIT: Record<WeaponId, WeaponRoundFitSpec> = {
   vss: { roundScale: 1.0, magLocalShiftX: -0.22, ignitionF: 0.105 },
   m134: { roundScale: 1.0, magLocalShiftX: -0.45, ignitionF: 0.09 },
   an94: { roundScale: 0.92, magLocalShiftX: -0.35, ignitionF: 0.105 },
+  ztz99a: { roundScale: 1.0, magLocalShiftX: 0, ignitionF: 0.11 },
+  m1a2: { roundScale: 1.0, magLocalShiftX: 0, ignitionF: 0.08 },
+  leopard2a7: { roundScale: 1.0, magLocalShiftX: 0, ignitionF: 0.08 },
+  tiger1: { roundScale: 1.0, magLocalShiftX: 0, ignitionF: 0.11 },
 };
 
 const caliberGeoCache = new Map<CaliberProfile, CaliberGeometryBundle>();
@@ -1491,6 +1722,15 @@ export function getCaliberGeometries(
     case '762_nato':
       built = build762NatoGeometries();
       break;
+    case '125mm_apfsds':
+      built = buildTankApfsdsGeometries('125mm_apfsds');
+      break;
+    case '120mm_apfsds':
+      built = buildTankApfsdsGeometries('120mm_apfsds');
+      break;
+    case '88mm_pzgr39':
+      built = build88mmPzgr39Geometries();
+      break;
     case 'arrow_400gr':
       built = buildArcheryBundle({
         xHead: -34.0,
@@ -1536,6 +1776,34 @@ export function getCaliberGeometries(
  * with zero heap allocations inside `useFrame`.
  */
 function computeMuzzleRecoilShiftX(weaponId: WeaponId, f: number): number {
+  if (weaponId === 'ztz99a') {
+    const up =
+      f <= 0.16 ? 0 : f >= 0.33 ? 1 : ((f - 0.16) / 0.17) ** 2 * (3 - 2 * ((f - 0.16) / 0.17));
+    const dn =
+      f <= 0.34 ? 0 : f >= 0.48 ? 1 : ((f - 0.34) / 0.14) ** 2 * (3 - 2 * ((f - 0.34) / 0.14));
+    return -32.0 * Math.max(0, up - dn);
+  }
+  if (weaponId === 'm1a2') {
+    const up =
+      f <= 0.2 ? 0 : f >= 0.34 ? 1 : ((f - 0.2) / 0.14) ** 2 * (3 - 2 * ((f - 0.2) / 0.14));
+    const dn =
+      f <= 0.36 ? 0 : f >= 0.46 ? 1 : ((f - 0.36) / 0.1) ** 2 * (3 - 2 * ((f - 0.36) / 0.1));
+    return -30.0 * Math.max(0, up - dn);
+  }
+  if (weaponId === 'leopard2a7') {
+    const up =
+      f <= 0.14 ? 0 : f >= 0.32 ? 1 : ((f - 0.14) / 0.18) ** 2 * (3 - 2 * ((f - 0.14) / 0.18));
+    const dn =
+      f <= 0.32 ? 0 : f >= 0.48 ? 1 : ((f - 0.32) / 0.16) ** 2 * (3 - 2 * ((f - 0.32) / 0.16));
+    return -34.0 * Math.max(0, up - dn);
+  }
+  if (weaponId === 'tiger1') {
+    const up =
+      f <= 0.22 ? 0 : f >= 0.4 ? 1 : ((f - 0.22) / 0.18) ** 2 * (3 - 2 * ((f - 0.22) / 0.18));
+    const dn =
+      f <= 0.42 ? 0 : f >= 0.56 ? 1 : ((f - 0.42) / 0.14) ** 2 * (3 - 2 * ((f - 0.42) / 0.14));
+    return -29.0 * Math.max(0, up - dn);
+  }
   if (weaponId === 'g11') {
     const segUp =
       f <= 0.2 ? 0 : f >= 0.38 ? 1 : ((f - 0.2) / 0.18) ** 2 * (3 - 2 * ((f - 0.2) / 0.18));
@@ -1602,6 +1870,9 @@ const CALIBER_CASE_COLORS: Record<CaliberProfile, THREE.Color> = {
   '9x39_subsonic': new THREE.Color(CALIBER_VISUAL_SPECS['9x39_subsonic'].caseColor),
   '545_m74': new THREE.Color(CALIBER_VISUAL_SPECS['545_m74'].caseColor),
   '762_nato': new THREE.Color(CALIBER_VISUAL_SPECS['762_nato'].caseColor),
+  '125mm_apfsds': new THREE.Color(CALIBER_VISUAL_SPECS['125mm_apfsds'].caseColor),
+  '120mm_apfsds': new THREE.Color(CALIBER_VISUAL_SPECS['120mm_apfsds'].caseColor),
+  '88mm_pzgr39': new THREE.Color(CALIBER_VISUAL_SPECS['88mm_pzgr39'].caseColor),
 };
 
 interface EjectionSpawnSpec {
@@ -1903,6 +2174,18 @@ const MUZZLE_DEVICE_SPECS: Record<WeaponId, MuzzleDeviceSpec> = {
       },
     ],
   },
+  // PLA ZTZ-99A 125mm ZPT-98 L/50 smoothbore bare muzzle + thermal reference mirror
+  ztz99a: { kind: 'bare', forwardDamp: 1, jets: [] },
+  // M1A2 SEP v3 Abrams 120mm M256 L/44 smoothbore bare muzzle
+  m1a2: { kind: 'bare', forwardDamp: 1, jets: [] },
+  // KMW Leopard 2A7V 120mm Rh-120 L/55A1 smoothbore bare muzzle
+  leopard2a7: { kind: 'bare', forwardDamp: 1, jets: [] },
+  // WWII Pz.Kpfw. VI Tiger 131 88mm KwK 36 L/56 iconic twin-baffle lateral muzzle brake
+  tiger1: {
+    kind: 'brake',
+    forwardDamp: 0.65,
+    jets: lateralBrakeJets([-0.85, -0.32], 3.4, 0.85, 0.32),
+  },
 };
 
 const _jetUp = new THREE.Vector3(0, 1, 0);
@@ -2017,9 +2300,14 @@ export function useWeaponRecoilTransform(
     const opts = optsRef.current;
     const gain = opts?.gain ?? 1;
     const meta = getWeaponManifest(st.activeWeaponId).workbenchMeta;
+    const isTank = meta.scaleProfile === 'main_battle_tank';
     const isPistol = meta.scaleProfile === 'pistol';
-    const px = opts?.pivot?.[0] ?? meta.chamberGlowPos[0] - (isPistol ? 2.5 : 4.5);
-    const py = opts?.pivot?.[1] ?? meta.chamberGlowPos[1] - (isPistol ? 4.5 : 5.5);
+    const px =
+      opts?.pivot?.[0] ??
+      (isTank ? 0 : meta.chamberGlowPos[0] - (isPistol ? 2.5 : 4.5));
+    const py =
+      opts?.pivot?.[1] ??
+      (isTank ? -90.0 : meta.chamberGlowPos[1] - (isPistol ? 4.5 : 5.5));
     const th = phys.recoilPitchZ * gain;
     const c = Math.cos(th);
     const s = Math.sin(th);
@@ -2261,10 +2549,13 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
 
   const is50Bmg = caliberProfile === '50_bmg';
   const is50Ae = caliberProfile === '50_ae';
+  const isTankActive =
+    meta.scaleProfile === 'main_battle_tank' || isTankWeapon(activeWeaponId);
   const isM82Brake = activeWeaponId === 'm82a1';
   const isArcheryActive = isArcheryWeapon(activeWeaponId);
   const useMultiToneCartridge =
     isArcheryActive ||
+    isTankCaliber(caliberProfile) ||
     caliberProfile === '12_gauge' ||
     caliberProfile === '357_magnum';
   const diamondCount = Math.min(MAX_SHOCK_DIAMONDS, ballisticSpec.shockDiamonds);
@@ -2381,6 +2672,8 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
     const muzzleShiftX = computeMuzzleRecoilShiftX(weaponId, f);
     const phys = getArmoryPhysicsState();
     const isArchery = isArcheryWeapon(weaponId);
+    const isTank =
+      curMeta.scaleProfile === 'main_battle_tank' || isTankWeapon(weaponId);
     const ib = evaluateInternalBallisticsInto(
       curProfile,
       f,
@@ -2389,9 +2682,11 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
     );
 
     // 1. Chambered / extracting case — handed over to the rigid-body pool at ejectF
+    // (MBTs run bespoke 1:1 stub-base / 88mm brass ejection arcs inside plugin.computeBallisticsState)
     if (spentCaseRef.current && spentCaseMatRef.current) {
-      spentCaseRef.current.visible =
-        !isArchery && st.spentCaseVisible && f < timing.ejectF;
+      spentCaseRef.current.visible = isTank
+        ? st.spentCaseVisible
+        : !isArchery && st.spentCaseVisible && f < timing.ejectF;
       spentCaseRef.current.position.set(
         st.spentCasePos[0],
         st.spentCasePos[1],
@@ -2442,7 +2737,7 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
         st.bulletPos[1] + phys.barrelWhipY,
         st.bulletPos[2]
       );
-      bulletGroupRef.current.rotation.set(f * 42, 0, 0);
+      bulletGroupRef.current.rotation.set(f * (isTank ? 16 : 42), 0, 0);
       bulletGroupRef.current.scale.setScalar(curFit.roundScale);
     }
 
@@ -2456,7 +2751,7 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
           curSpec.streakThickness
         );
         streakMeshRef.current.position.set(
-          st.bulletPos[0] - st.streakLength * 0.5 - 0.35,
+          st.bulletPos[0] - st.streakLength * 0.5 - (isTank ? 12.0 : 0.35),
           st.bulletPos[1] + phys.barrelWhipY,
           st.bulletPos[2]
         );
@@ -2475,22 +2770,27 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
         curMeta.chamberGlowPos[1],
         curMeta.chamberGlowPos[2]
       );
-      const baseChamberScale =
-        curProfile === '50_bmg' ? 1.25 : curProfile === '338_lapua' ? 1.05 : 0.72;
-      const s = baseChamberScale + intensity * 0.75;
+      const baseChamberScale = isTank
+        ? 8.5
+        : curProfile === '50_bmg'
+          ? 1.25
+          : curProfile === '338_lapua'
+            ? 1.05
+            : 0.72;
+      const s = baseChamberScale + intensity * (isTank ? 6.5 : 0.75);
       chamberFlashRef.current.scale.set(s * 1.45, s, s);
       (chamberFlashRef.current.material as THREE.MeshBasicMaterial).opacity =
         intensity * 0.86;
     }
 
     if (chamberLightRef.current) {
-      const lightBoost = curProfile === '50_bmg' ? 7.5 : 4.5;
+      const lightBoost = isTank ? 48 : curProfile === '50_bmg' ? 7.5 : 4.5;
       chamberLightRef.current.intensity = isArchery
         ? 0
         : Math.max(st.chamberFlashIntensity, p01) * lightBoost;
     }
 
-    // 3b. Gas-block / piston port tap glow (driven by quantitative port pressure)
+    // 3b. Gas-block / piston port tap glow (driven by quantitative port pressure; also bore evacuator purge on MBTs)
     const gasPort01 = isArchery
       ? 0
       : Math.min(
@@ -2498,7 +2798,11 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
           ib.gasPortPressureMPa / Math.max(1, curBallistic.peakPressureMPa * 0.25)
         );
     if (gasPortFlashRef.current) {
-      const gi = isArchery ? 0 : Math.max(st.gasPortFlashIntensity, gasPort01);
+      const gi = isArchery
+        ? 0
+        : isTank
+          ? st.gasPortFlashIntensity
+          : Math.max(st.gasPortFlashIntensity, gasPort01);
       const activeGas = !isArchery && gi > 0.02;
       gasPortFlashRef.current.visible = activeGas;
       if (activeGas) {
@@ -2507,7 +2811,7 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
           st.gasPortPos[1],
           st.gasPortPos[2]
         );
-        const gs = 0.65 + gi * 0.85;
+        const gs = isTank ? 6.5 + gi * 7.5 : 0.65 + gi * 0.85;
         gasPortFlashRef.current.scale.set(gs * 1.6, gs, gs);
         (gasPortFlashRef.current.material as THREE.MeshBasicMaterial).opacity =
           gi * 0.85;
@@ -2591,11 +2895,11 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
     if (muzzleLightRef.current) {
       muzzleLightRef.current.intensity = isArchery
         ? 0
-        : plumeOpacity * (isHighMagnumCaliber(curProfile) ? 9 : 5);
+        : plumeOpacity * (isTank ? 65 : isHighMagnumCaliber(curProfile) ? 9 : 5);
       muzzleLightRef.current.position.set(
-        curMeta.muzzlePos[0] + muzzleShiftX + 1.2,
+        curMeta.muzzlePos[0] + muzzleShiftX + (isTank ? 24 : 1.2),
         curMeta.muzzlePos[1] + phys.barrelWhipY,
-        curMeta.muzzlePos[2] + 0.6
+        curMeta.muzzlePos[2] + (isTank ? 10 : 0.6)
       );
     }
 
@@ -2604,18 +2908,24 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
       shockRingRef.current.visible = plumeActive;
       if (plumeActive) {
         shockRingRef.current.position.set(
-          curMeta.muzzlePos[0] + 0.25 + muzzleShiftX,
+          curMeta.muzzlePos[0] + (isTank ? 4.5 : 0.25) + muzzleShiftX,
           curMeta.muzzlePos[1] + phys.barrelWhipY,
           curMeta.muzzlePos[2]
         );
         const ringBoost =
-          curProfile === '50_bmg'
-            ? 2.45
-            : curProfile === '50_ae'
-              ? 2.05
-              : curProfile === '338_lapua'
-                ? 1.85
-                : 1.5;
+          curProfile === '125mm_apfsds'
+            ? 6.2
+            : curProfile === '120mm_apfsds'
+              ? 7.2
+              : curProfile === '88mm_pzgr39'
+                ? 9.5
+                : curProfile === '50_bmg'
+                  ? 2.45
+                  : curProfile === '50_ae'
+                    ? 2.05
+                    : curProfile === '338_lapua'
+                      ? 1.85
+                      : 1.5;
         const rs = st.muzzlePlumeScale * ringBoost;
         shockRingRef.current.scale.set(rs, rs, rs);
         shockRingMatRef.current.opacity = plumeOpacity * 0.62;
@@ -2628,7 +2938,9 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
       const on = !isArchery && curProfile !== '9x39_subsonic' && u > 0 && u < 1;
       blastRingRef.current.visible = on;
       if (on) {
-        const energyScale = Math.cbrt(curBallistic.muzzleEnergyJ / 1500);
+        const energyScale = isTank
+          ? 14.0
+          : Math.cbrt(curBallistic.muzzleEnergyJ / 1500);
         const rad = (0.6 + 7.5 * Math.sqrt(u)) * energyScale;
         blastRingRef.current.position.set(
           curMeta.muzzlePos[0] + muzzleShiftX + rad * 0.35,
@@ -2661,9 +2973,10 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
     }
 
     // 5. Magazine / Quiver feed round (Slot 0; reserve stack rendered by MagazineAmmoStack)
-    // Delay hiding archery handoff round until f >= 0.70 so lift33 `rotT` (0.60) & r500 `yLift/xSlide` (0.62/0.68) complete cleanly
+    // MBTs animate their own sculptural 3D ready rounds inside the Blender GLB BOM (`*_ready_round` / `*_loading_tray`),
+    // so hide duplicate `nextRoundRef` on tanks to prevent turret-interior Z-fighting.
     if (nextRoundRef.current) {
-      nextRoundRef.current.visible = !isArchery || f < 0.7;
+      nextRoundRef.current.visible = !isTank && (!isArchery || f < 0.7);
       nextRoundRef.current.position.set(
         st.nextRoundPos[0],
         st.nextRoundPos[1],
@@ -2789,10 +3102,14 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
       </mesh>
       <pointLight
         ref={chamberLightRef}
-        position={[meta.chamberGlowPos[0] + 0.2, meta.chamberGlowPos[1], 0.6]}
+        position={[
+          meta.chamberGlowPos[0] + (isTankActive ? 4.0 : 0.2),
+          meta.chamberGlowPos[1],
+          isTankActive ? 12.0 : 0.6,
+        ]}
         color="#f97316"
         intensity={0}
-        distance={14}
+        distance={isTankActive ? 210 : 14}
       />
 
       {/* 3b. Gas-Block / Piston Port Tap Impulse Glow */}
@@ -2935,7 +3252,7 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
         position={meta.muzzlePos}
         color="#fb923c"
         intensity={0}
-        distance={deviceSpec.kind === 'brake' ? 22 : 16}
+        distance={isTankActive ? 380 : deviceSpec.kind === 'brake' ? 22 : 16}
       />
 
       {/* Primary Concussion Shock Collar */}
@@ -3060,5 +3377,12 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
 };
 
 function isHighMagnumCaliber(p: CaliberProfile): boolean {
-  return p === '50_bmg' || p === '338_lapua' || p === '30_06';
+  return (
+    p === '50_bmg' ||
+    p === '338_lapua' ||
+    p === '30_06' ||
+    p === '125mm_apfsds' ||
+    p === '120mm_apfsds' ||
+    p === '88mm_pzgr39'
+  );
 }

@@ -80,6 +80,10 @@ ALL_WEAPON_IDS = [
     "vss",
     "m134",
     "an94",
+    "ztz99a",
+    "m1a2",
+    "leopard2a7",
+    "tiger1",
 ]
 
 WEAPON_CONTEXT_HINTS: dict[str, dict[str, str]] = {
@@ -610,6 +614,191 @@ WEAPON_CONTEXT_HINTS: dict[str, dict[str, str]] = {
             "Act 3 -> 'an94_muzzle_brake' (Twin-Chamber Self-Cleaning Figure-8 Muzzle Brake); "
             "Act 4 -> 'an94_feed_rammer' (Two-Stage Bronze Pre-Feed Shuttle Rammer); "
             "Breakthroughs -> 'an94_inner_receiver', 'an94_pulley_wheel', and 'an94_muzzle_brake'."
+        ),
+    },
+    "ztz99a": {
+        "historicalContext": (
+            "Evolving from China's landmark 1984 Project 9910 third-generation tank program and the original "
+            "Type 99 unveiled in 1999, the PLA ZTZ-99A represents a clean-sheet third-generation-plus digitalized "
+            "main battle tank engineered by NORINCO and China North Vehicle Research Institute (201 Institute) "
+            "under Chief Designer Mao Ming. Fielded after exhaustive Arctic, high-altitude Qinghai-Tibet plateau, "
+            "and desert trials between 2008 and 2011, the 55-tonne ZTZ-99A debuted operationally at Peace Mission "
+            "2014 before spearheading the arrowhead vanguard of the 2015 70th Anniversary Victory Day Parade in "
+            "Beijing. Pairing arrowhead FY-4 dual-purpose explosive reactive armor, a 6.25-meter 125mm ZPT-98 L/50 "
+            "smoothbore cannon, an indigenous 1,500-horsepower 150HB V12 diesel powerpack, and the unmistakable "
+            "JD-3 active laser dazzler, it serves as the networked heavy-armor backbone of PLA combined-arms brigades."
+        ),
+        "mechanicalCore": (
+            "Packed inside a low 2.37-meter-tall, 7.60-meter-long welded composite hull (10.90 m overall with gun "
+            "forward, 3.50 m wide) shielded by arrowhead turret wedges and glacis FY-4 ERA bricks, the ZTZ-99A "
+            "fires two-piece 125mm DTC10-125 tungsten APFSDS ammunition at 650 MPa peak chamber pressure and "
+            "1,780 m/s muzzle velocity from its autofrettaged chrome-lined ZPT-98 L/50 smoothbore barrel "
+            "('ztz99a_main_gun'). Massive recoil drives the gun and vertical sliding-wedge breechblock "
+            "('ztz99a_breech_block') -320 mm rearward along the trunnion cradle against twin chrome hydraulic "
+            "brakes and helical recuperator springs ('ztz99a_recoil_springs'). On counter-recoil, opening cams "
+            "drop the wedge -160 mm and flip the spent brass stub base skyward through the rear roof ejector hatch "
+            "('ztz99a_stub_ejector'). Beneath the 3-man crew floor, the 1.80-meter electric 22-cassette floor "
+            "carousel autoloader ('ztz99a_autoloader_carousel') rotates to align the selected projectile and "
+            "semi-combustible charge, an articulated elevator hoist ('ztz99a_loading_tray') lifts the cassette "
+            "+680 mm into bore alignment, and a bustle-mounted rigid-chain rammer ('ztz99a_rammer_chain') lunges "
+            "+540 mm forward for a steady 8 RPM rate. Aft sits the modular 1,500-HP 150HB twin-turbo V12 diesel "
+            "('ztz99a_v12_engine') mated to the CH-1000 hydro-mechanical planetary transmission across 12 torsion "
+            "bars, while roof-mounted hunter-killer thermal sights and the JD-3 laser dazzler ('ztz99a_optics_citv') "
+            "deliver integrated hard-kill and soft-kill battlefield dominance."
+        ),
+        "milestoneAnchors": (
+            "1984–1999 (Project 9910 foundation & original Type 99 parade debut) -> "
+            "2000–2007 (ZTZ-99A clean-sheet digital redesign & 150HB / CH-1000 powerpack breakthrough) -> "
+            "2008–2011 (Arctic, Qinghai-Tibet plateau & desert trials plus FY-4 ERA qualification) -> "
+            "2014 (Operational public debut at Peace Mission 2014 combined exercise) -> "
+            "2015 (Arrowhead vanguard debut at the 70th Anniversary Victory Day Parade) -> "
+            "2016–Present (Networked combined-arms armored backbone & continuous digital evolution)"
+        ),
+        "focusPartGuidance": (
+            "Recommended exact focusPartId anchors from BOM: "
+            "Act 1 -> 'ztz99a_hull_armor' (Hollow Welded Composite Hull Tub); "
+            "Act 2 -> 'ztz99a_era_wedges' (Arrowhead FY-4 Dual-Purpose ERA Turret Wedges); "
+            "Act 3 -> 'ztz99a_autoloader_carousel' (22-Cassette Floor Carousel Autoloader); "
+            "Act 4 -> 'ztz99a_v12_engine' (1,500-HP 150HB Twin-Turbo V12 Diesel Engine); "
+            "Breakthroughs -> 'ztz99a_autoloader_carousel', 'ztz99a_optics_citv', and 'ztz99a_v12_engine'."
+        ),
+    },
+    "m1a2": {
+        "historicalContext": (
+            "Born from the U.S. Army's post-1973 Yom Kippur War reassessment of armored survivability after the "
+            "cancellation of the MBT-70, the M1 Abrams originated in Chrysler Defense's audacious XM1 prototype "
+            "(led by Dr. Philip Lett) that gambled on an aviation-derived Honeywell/Lycoming AGT1500 1,500-SHP "
+            "multi-fuel gas turbine over conventional diesel rivals. Entering service in 1980 and up-gunned in "
+            "1985 as the M1A1 with Rheinmetall's licensed 120mm L/44 M256 smoothbore and depleted-uranium-enhanced "
+            "Chobham composite armor, the Abrams demonstrated devastating thermal hunter-killer supremacy during "
+            "Operation Desert Storm's 1991 Battle of 73 Easting. Evolving through the M1A2 Commander's Independent "
+            "Thermal Viewer (CITV) and System Enhancement Packages into today's 66.8-tonne M1A2 SEP v3 (M1A2C), it "
+            "stands as the flagship spearhead of U.S. Army armored brigade combat teams."
+        ),
+        "mechanicalCore": (
+            "Measured at true 1:1 scale (9.77 m overall with its 5.28-meter chrome-lined 120mm L/44 M256 "
+            "smoothbore cannon, 3.66 m wide, 2.44 m tall), the M1A2 SEP v3 places crew survivability at the heart "
+            "of its architecture. Its angular turret cheeks pack 7-layer Chobham and third-generation depleted-"
+            "uranium NERA composite armor ('m1a2_composite_armor'), while 36 unitary 120mm M829A4 DU sabot rounds "
+            "sit isolated inside a rear honeycombed turret bustle beneath sacrificial roof blow-off vent panels "
+            "('m1a2_blowoff_panels') and knee-actuated sliding armored blast doors ('m1a2_blast_doors'). Firing "
+            "M829A4 at 650 MPa peak pressure launches the Mach-5 sabot dart at 1,670 m/s, recoiling the M256 tube "
+            "and vertical falling-wedge breechblock ('m1a2_breech_block') -300 mm against dual hydraulic brakes and "
+            "forged helical recuperator springs ('m1a2_recoil_springs'). On counter-recoil, the wedge drops -150 mm "
+            "to eject the metallic stub base into the steel deflector basket; the loader taps the knee switch to "
+            "slide the blast doors open 340 mm, extracts a 984 mm M829A4 round ('m1a2_ready_round'), and rams it "
+            "+196 cm into battery in a four-second drill before the overhead fail-safe spring slams the doors shut. "
+            "In the rear bay, the whisper-quiet 1,500-SHP AGT1500 recuperated gas turbine ('m1a2_agt1500_turbine') "
+            "and Allison X1100-3B cross-drive transmission power 7 pairs of dual road wheels across 14 torsion bars."
+        ),
+        "milestoneAnchors": (
+            "1973–1976 (Chrysler gas-turbine XM1 defeats diesel rival to win U.S. Army trials) -> "
+            "1980 (Original 105mm M1 Abrams enters U.S. Army frontline service) -> "
+            "1985–1988 (M1A1 up-gunned to 120mm L/44 M256 smoothbore & depleted-uranium Chobham armor) -> "
+            "1991 (Operation Desert Storm & decisive thermal dominance at the Battle of 73 Easting) -> "
+            "1992–2008 (M1A2 hunter-killer CITV & SEP v1/v2 digital network modernization) -> "
+            "2017–Present (M1A2 SEP v3 / M1A2C flagship armor, CROWS-LP & ammunition data-link standard)"
+        ),
+        "focusPartGuidance": (
+            "Recommended exact focusPartId anchors from BOM: "
+            "Act 1 -> 'm1a2_agt1500_turbine' (Honeywell AGT1500 1,500-SHP Multi-Fuel Gas Turbine); "
+            "Act 2 -> 'm1a2_blast_doors' (Knee-Actuated Sliding Armored Bustle Blast Doors); "
+            "Act 3 -> 'm1a2_composite_armor' (7-Layer Chobham & Depleted-Uranium NERA Cheek Armor); "
+            "Act 4 -> 'm1a2_crows_optics' (CROWS-LP Remote .50 Cal Station & Hunter-Killer CITV); "
+            "Breakthroughs -> 'm1a2_blast_doors', 'm1a2_agt1500_turbine', and 'm1a2_composite_armor'."
+        ),
+    },
+    "leopard2a7": {
+        "historicalContext": (
+            "Forged in Munich by Krauss-Maffei (now KNDS / Krauss-Maffei Wegmann) following the 1970 collapse of "
+            "the ambitious joint U.S.-West German MBT-70 program, the Leopard 2 entered Bundeswehr service in 1979 "
+            "and rapidly set the international engineering benchmark for balanced firepower, protection, and modular "
+            "mobility. Under the 1990s KWS II (Leopard 2A5) and 2001 KWS I (Leopard 2A6) upgrades, Germany "
+            "pioneered razor-sharp hollow spaced Arrowhead composite turret wedges and extended Rheinmetall's "
+            "legendary 120mm smoothbore from L/44 to the 6.6-meter L/55 lance. Standardized as the 66.5-tonne "
+            "Leopard 2A7V ('Verbessert') with bolted upper-glacis add-on armor, the strengthened 700 MPa Rh-120 "
+            "L/55A1 barrel, auxiliary power, and digital IFIS command integration, the Leopard 2 lineage serves "
+            "more than twenty nations as Europe's armored backbone."
+        ),
+        "mechanicalCore": (
+            "Spanning 10.97 meters overall (3.75 m wide, 2.64 m tall) in NATO three-tone camouflage, the Leopard "
+            "2A7V unites three landmark German mechanical subsystems. Up front, hinged hollow spaced Arrowhead "
+            "turret wedges ('leo_arrowhead_wedges') house multi-layer NERA plates that induce asymmetric yaw and "
+            "shear incoming long-rod penetrators before they reach the main welded composite turret. Centrally "
+            "mounted, the 6.6-meter chrome-lined Rheinmetall Rh-120 L/55A1 smoothbore ('leo_main_gun') withstands "
+            "700 MPa chamber pressure to launch 120mm DM63A1 tungsten darts at 1,750 m/s (Mach 5.1), recoiling "
+            "-340 mm against twin mirror-chrome hydraulic brakes and helical recuperator coils ('leo_recoil_springs'). "
+            "Upon counter-recoil, a semi-automatic cam drops the vertical falling-wedge breechblock "
+            "('leo_breech_block') -160 mm to eject the metallic stub base; the loader triggers the pneumatic knee "
+            "switch to slide the bustle blast door ('leo_blast_door') 340 mm open, draws a 984 mm DM63A1 unitary "
+            "round ('leo_ready_round') from the 15-round ready rack (backed by a 27-round hull bunker), and rams "
+            "it +1,520 mm forward in a crisp four-second reload. Aft, the 47.6-liter 1,500-HP MTU MB 873 Ka-501 "
+            "twin-turbo V12 diesel ('leo_mtu_v12'), RENK HSWL 354 hydro-mechanical transmission, and radial "
+            "cooling fans bolt together as a modular EuroPowerpack that can be field-swapped in fifteen minutes."
+        ),
+        "milestoneAnchors": (
+            "1963–1970 (Joint U.S.-German MBT-70 cancellation launches national Leopard 2 program) -> "
+            "1972–1979 (Keiler & Leopard 2 prototype trials culminate in first Bundeswehr deliveries) -> "
+            "1991–1995 (KWS II Leopard 2A5 pioneers hollow spaced Arrowhead composite turret wedges) -> "
+            "2001 (KWS I Leopard 2A6 introduces Rheinmetall's 6.6-meter 120mm Rh-120 L/55 smoothbore) -> "
+            "2014–2019 (Leopard 2A7 & enhanced 2A7V adopt glacis add-on armor, L/55A1 & digital IFIS) -> "
+            "2021–Present (Frontline Western MBT benchmark fielded across over 20 allied nations)"
+        ),
+        "focusPartGuidance": (
+            "Recommended exact focusPartId anchors from BOM: "
+            "Act 1 -> 'leo_hull_shell' (Welded Composite Hull Shell & 2A7V Glacis Add-On Armor); "
+            "Act 2 -> 'leo_arrowhead_wedges' (Hinged Hollow Spaced Arrowhead Composite Turret Wedges); "
+            "Act 3 -> 'leo_main_gun' (6.6-Meter Rheinmetall Rh-120 L/55A1 700 MPa Smoothbore); "
+            "Act 4 -> 'leo_mtu_v12' (47.6L 1,500-HP MTU MB 873 V12 Quick-Swap EuroPowerpack); "
+            "Breakthroughs -> 'leo_arrowhead_wedges', 'leo_main_gun', and 'leo_mtu_v12'."
+        ),
+    },
+    "tiger1": {
+        "historicalContext": (
+            "Conceived under the May 1941 German Wa Prüf 6 heavy breakthrough tank mandate (VK 45.01) demanding "
+            "100 mm frontal armor and a tank-mounted adaptation of the dreaded 8.8 cm Flak gun, Henschel's "
+            "Erwin Aders defeated Ferdinand Porsche's petrol-electric rival in April 1942 to win serial production "
+            "at Kassel as the Panzerkampfwagen VI Tiger I Ausf. E. Chassis number 250122—tactical turret number "
+            "'131' of Schwere Panzer-Abteilung 504—rolled off the Kassel line in February 1943 in fresh Dunkelgelb "
+            "paint and deployed to North Africa. On April 21, 1943, at Djebel Djaffa (Point 174) in Tunisia, a "
+            "6-pounder round from a British Churchill tank wedged in Tiger 131's turret ring, causing its crew to "
+            "abandon the 57-tonne giant almost completely intact. Shipped to England for intelligence study and "
+            "painstakingly restored to running mechanical order by The Tank Museum at Bovington, Tiger 131 remains "
+            "the world's only operating Tiger I heavy tank."
+        ),
+        "mechanicalCore": (
+            "Crafted at exact 1:1 scale (8.45 m overall with its 4.93-meter rifled cannon, 6.32 m hull, 3.56 m "
+            "wide, 3.00 m cupola height) with 100 mm interlocking vertical rolled homogeneous armor finished in "
+            "Dunkelgelb, Zimmerit paste, and Elfenbein ivory interiors, Tiger 131 embodies the brilliant paradox "
+            "of wartime German precision engineering. Inside its horseshoe-curved turret sits Krupp's 88mm KwK 36 "
+            "L/56 cannon ('tiger_main_gun') fitted with a twin-baffle conical muzzle brake and semi-automatic "
+            "horizontal sliding-wedge breech ('tiger_breech_block'). Firing a 10.2 kg PzGr. 39 APCBC projectile "
+            "at 320 MPa peak pressure and 773 m/s through 32 rifling grooves recoils the gun -290 mm against its "
+            "hydraulic Rohrbremse and twin helical recuperator coils ('tiger_recoil_springs'); on runout, the "
+            "semi-automatic cam slides the steel wedge 160 mm laterally, flinging the scorching 571 mm brass case "
+            "into the shell catcher basket so the loader can ram a fresh 16 kg round ('tiger_ready_round') +124 cm "
+            "forward and trip the spring-loaded wedge shut. Propulsion runs from the rear 23.1-liter 700-HP Maybach "
+            "HL230 P45 V12 gasoline engine ('tiger_maybach_v12') through a central floor propeller shaft "
+            "('tiger_driveshaft') to the front Maybach Olvar 8-speed hydraulic pre-selector gearbox and Henschel "
+            "L600C dual-radius regenerative steering unit ('tiger_transmission'), carried across rough terrain by "
+            "Heinrich Kniepkamp's 3-row overlapping Schachtellaufwerk interleaved road wheels "
+            "('tiger_interleaved_wheels') on 16 transverse torsion bars and massive 725 mm combat tracks."
+        ),
+        "milestoneAnchors": (
+            "May 1941 (VK 45.01 heavy breakthrough tank specification issued to Henschel & Porsche) -> "
+            "Apr 1942 (Henschel VK 45.01(H) wins trials & enters Tiger I Ausf. E serial production) -> "
+            "Aug 1942 (Kassel factory deliveries & first combat deployment near Leningrad) -> "
+            "Feb 1943 (Chassis 250122 completed & issued as Tiger 131 to Schwere Panzer-Abteilung 504) -> "
+            "Apr 21, 1943 (Captured virtually intact by British forces at Point 174 in Tunisia) -> "
+            "2003–Present (Restored to roaring running condition at The Tank Museum, Bovington)"
+        ),
+        "focusPartGuidance": (
+            "Recommended exact focusPartId anchors from BOM: "
+            "Act 1 -> 'tiger_hull_box' (100mm Interlocking Vertical RHA Hull & Elfenbein Interior); "
+            "Act 2 -> 'tiger_main_gun' (4.93-Meter Krupp 88mm KwK 36 L/56 Rifled Cannon); "
+            "Act 3 -> 'tiger_interleaved_wheels' (3-Row Overlapping Schachtellaufwerk Interleaved Road Wheels); "
+            "Act 4 -> 'tiger_maybach_v12' (23.1L 700-HP Maybach HL230 P45 V12 Gasoline Engine); "
+            "Breakthroughs -> 'tiger_breech_block', 'tiger_interleaved_wheels', and 'tiger_transmission'."
         ),
     },
 }

@@ -471,7 +471,11 @@ export function assemblePosterMetadata(
     {
       label: copy.poster.metricMuzzleVel,
       value: `${muzzleVelMps} m/s`,
-      subValue: `${muzzleEnergyJ.toLocaleString('en-US')} J · Mach ${machNumber}`,
+      subValue: `${
+        muzzleEnergyJ >= 1_000_000
+          ? `${(muzzleEnergyJ / 1_000_000).toFixed(2)} MJ`
+          : `${muzzleEnergyJ.toLocaleString('en-US')} J`
+      } · Mach ${machNumber}`,
     },
     {
       label: copy.poster.metricOal,

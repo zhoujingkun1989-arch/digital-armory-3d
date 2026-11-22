@@ -26,7 +26,10 @@ import { MalfunctionActor } from '../actors/MalfunctionActor';
 import { PartActor } from '../actors/PartActor';
 import { playBrassCasingBounceSound } from '../audio/mechanicalSoundEngine';
 import { updateCalloutOverlay60fps } from '../callout/CalloutOverlay';
-import { CARTRIDGE_LAB_SPECS } from '../cartridges/cartridgeSpecs';
+import {
+  CARTRIDGE_LAB_SPECS,
+  isTankOrdnanceProfile,
+} from '../cartridges/cartridgeSpecs';
 import { playbackClock } from '../clock/playbackClock';
 import { fieldStripStore } from '../fieldstrip/fieldStripStore';
 import {
@@ -97,7 +100,12 @@ function applyWorkbenchFraming(
   let xShift: number;
   let yShift: number;
 
-  if (scaleProfile === 'heavy_sniper') {
+  if (scaleProfile === 'main_battle_tank') {
+    vertScale = 1.06 + tCam * 0.56;
+    horizScale = (0.86 + tCam * 0.52) / aspect;
+    xShift = 18 * tCam;
+    yShift = -12 - (24 + (aspect < 0.85 ? 24 : 0)) * tCam;
+  } else if (scaleProfile === 'heavy_sniper') {
     vertScale = 1.18 + tCam * 0.68;
     horizScale = (0.92 + tCam * 0.64) / aspect;
     xShift = 2.2 * tCam;
@@ -140,7 +148,7 @@ function applyWorkbenchFraming(
 
 const DisassemblyRig: React.FC = () => {
   const controlsRef = useRef<OrbitControlsImpl>(null);
-  const { camera, size } = useThree();
+  const { camera, size, get: getThree } = useThree();
 
   const [showcaseDragging, setShowcaseDragging] = useState<boolean>(
     isShowcaseUserDragging
@@ -192,6 +200,25 @@ const DisassemblyRig: React.FC = () => {
   // Triggers background Web Worker CSG build & re-renders as part batches stream in
   useWeaponGeometries(activeWeaponId, plugin?.parts ?? null);
 
+  const isTankScale =
+    screen !== 'cartridges' &&
+    getWeaponManifest(activeWeaponId).workbenchMeta.scaleProfile ===
+      'main_battle_tank';
+  const isTankOrdnanceGallery =
+    screen === 'cartridges' && isTankOrdnanceProfile(activeCartridgeCaliber);
+
+  // Dynamically adapt perspective clip planes for 1:1 10-meter Main Battle Tanks & 1m tank cannon rounds
+  useEffect(() => {
+    const perspCam = getThree().camera as THREE.PerspectiveCamera;
+    const nextNear = isTankScale ? 2.0 : isTankOrdnanceGallery ? 0.5 : 0.1;
+    const nextFar = isTankScale ? 9000 : isTankOrdnanceGallery ? 3600 : 1200;
+    if (perspCam.near !== nextNear || perspCam.far !== nextFar) {
+      perspCam.near = nextNear;
+      perspCam.far = nextFar;
+      perspCam.updateProjectionMatrix();
+    }
+  }, [getThree, isTankScale, isTankOrdnanceGallery]);
+
   useEffect(() => subscribeShowcaseDragging(setShowcaseDragging), []);
 
   useEffect(
@@ -228,20 +255,30 @@ const DisassemblyRig: React.FC = () => {
     userOrbitedRef.current = false;
 
     const aspect = Math.max(0.45, size.width / Math.max(1, size.height));
+    const tankOrdnance = isTankOrdnanceProfile(activeCartridgeCaliber);
     if (cartridgeLineupOverview) {
-      const distZ = Math.max(29.5, 36.0 / aspect);
-      flyRef.current.goalTarget.set(1.6, CARTRIDGE_STAGE_DATUM_Y + 5.8, 0);
-      flyRef.current.goalPos.set(1.6, CARTRIDGE_STAGE_DATUM_Y + 7.2, distZ);
+      if (tankOrdnance) {
+        const distZ = Math.max(198, 228 / aspect);
+        flyRef.current.goalTarget.set(0, CARTRIDGE_STAGE_DATUM_Y + 56, 0);
+        flyRef.current.goalPos.set(0, CARTRIDGE_STAGE_DATUM_Y + 62, distZ);
+      } else {
+        const distZ = Math.max(29.5, 36.0 / aspect);
+        flyRef.current.goalTarget.set(1.6, CARTRIDGE_STAGE_DATUM_Y + 5.8, 0);
+        flyRef.current.goalPos.set(1.6, CARTRIDGE_STAGE_DATUM_Y + 7.2, distZ);
+      }
     } else {
       const spec = CARTRIDGE_LAB_SPECS[activeCartridgeCaliber];
       const oalCm = spec.oalMm / 10;
-      const midY = CARTRIDGE_STAGE_DATUM_Y + oalCm * 0.52;
+      const midY = CARTRIDGE_STAGE_DATUM_Y + oalCm * (tankOrdnance ? 0.5 : 0.52);
       const closeupZ =
-        Math.max(8.2, oalCm * 1.72) * Math.max(1, 0.92 / aspect);
+        Math.max(
+          tankOrdnance ? 95 : 8.2,
+          oalCm * (tankOrdnance ? 1.65 : 1.72)
+        ) * Math.max(1, 0.92 / aspect);
       flyRef.current.goalTarget.set(spec.lineupXCm, midY, 0);
       flyRef.current.goalPos.set(
-        spec.lineupXCm + 1.05,
-        midY + oalCm * 0.14,
+        spec.lineupXCm + (tankOrdnance ? 6.0 : 1.05),
+        midY + oalCm * (tankOrdnance ? 0.1 : 0.14),
         closeupZ
       );
     }
@@ -474,21 +511,25 @@ const DisassemblyRig: React.FC = () => {
 
     const scaleProfile = meta.scaleProfile;
     const focusDist =
-      scaleProfile === 'heavy_sniper'
+      scaleProfile === 'main_battle_tank'
         ? spec.isShell
-          ? 34
-          : 19.5
-        : scaleProfile === 'compound_bow'
+          ? 460
+          : 235
+        : scaleProfile === 'heavy_sniper'
           ? spec.isShell
-            ? 38
-            : 20
-          : scaleProfile === 'rifle'
+            ? 34
+            : 19.5
+          : scaleProfile === 'compound_bow'
             ? spec.isShell
-              ? 27
-              : 16.5
-            : spec.isShell
-              ? 20
-              : 14.5;
+              ? 38
+              : 20
+            : scaleProfile === 'rifle'
+              ? spec.isShell
+                ? 27
+                : 16.5
+              : spec.isShell
+                ? 20
+                : 14.5;
 
     turntableRigRef.current.active = false;
     flyRef.current.goalTarget.copy(_focusWorldCenter);
@@ -699,10 +740,33 @@ const DisassemblyRig: React.FC = () => {
       controlsRef.current.update();
 
       if (
-        camera.position.distanceTo(flyRef.current.goalPos) < 0.08 &&
-        controlsRef.current.target.distanceTo(flyRef.current.goalTarget) < 0.05
+        camera.position.distanceTo(flyRef.current.goalPos) <
+          (isTankScale ? 0.6 : 0.08) &&
+        controlsRef.current.target.distanceTo(flyRef.current.goalTarget) <
+          (isTankScale ? 0.4 : 0.05)
       ) {
         flyRef.current.active = false;
+      }
+    }
+
+    // 4b. Bound OrbitControls pan target cleanly inside the 1:1 Heavy Armor hangar envelope (`maxPan: 900 cm`)
+    if (isTankScale && controlsRef.current && state.screen === 'workbench') {
+      const tgt = controlsRef.current.target;
+      const panDx = tgt.x - 80;
+      const panDy = tgt.y;
+      const panDz = tgt.z;
+      const panLen = Math.hypot(panDx, panDy, panDz);
+      if (panLen > 900) {
+        const s = 900 / panLen;
+        const clampedX = 80 + panDx * s;
+        const clampedY = panDy * s;
+        const clampedZ = panDz * s;
+        camera.position.set(
+          camera.position.x + (clampedX - tgt.x),
+          camera.position.y + (clampedY - tgt.y),
+          camera.position.z + (clampedZ - tgt.z)
+        );
+        tgt.set(clampedX, clampedY, clampedZ);
       }
     }
 
@@ -740,8 +804,8 @@ const DisassemblyRig: React.FC = () => {
         maxPolarAngle={isTurntableScreen ? Math.PI * 0.58 : Math.PI}
         autoRotate={isTurntableScreen && armoryAutoRotate && !showcaseDragging}
         autoRotateSpeed={1.65}
-        minDistance={3}
-        maxDistance={520}
+        minDistance={isTankScale ? 85 : isTankOrdnanceGallery ? 24 : 3}
+        maxDistance={isTankScale ? 3200 : isTankOrdnanceGallery ? 950 : 520}
         onStart={() => {
           flyRef.current.active = false;
           turntableRigRef.current.active = false;
@@ -786,6 +850,7 @@ const DisassemblyRig: React.FC = () => {
 };
 
 export const ArmoryViewport: React.FC = () => {
+  const screen = useAppStore((s) => s.screen);
   const selectPart = useAppStore((s) => s.selectPart);
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const environmentPreset = useAppStore((s) => s.environmentPreset);
@@ -801,6 +866,8 @@ export const ArmoryViewport: React.FC = () => {
   const envCfg = getArmoryEnvironment(environmentPreset);
   const qualityProfile = getGraphicsQualityProfile(graphicsQuality);
   const workbenchMeta = getWeaponManifest(activeWeaponId).workbenchMeta;
+  const activeScaleProfile: WeaponScaleProfile =
+    screen === 'cartridges' ? 'rifle' : workbenchMeta.scaleProfile;
 
   useEffect(() => {
     setBrassFloorImpactListener((caliber, speed) => {
@@ -859,12 +926,15 @@ export const ArmoryViewport: React.FC = () => {
       >
         <ArmoryStudioEnvironment
           preset={environmentPreset}
+          scaleProfile={activeScaleProfile}
+          graphicsQuality={graphicsQuality}
           shadowMapSize={qualityProfile.shadowMapSize}
           contextEpoch={contextEpoch}
         />
 
         <GunsmithStageMat
           preset={environmentPreset}
+          scaleProfile={activeScaleProfile}
           centerX={workbenchMeta.chamberGlowPos[0]}
           contactShadows={qualityProfile.contactShadowsEnabled}
           contactShadowResolution={qualityProfile.contactShadowResolution}
@@ -877,6 +947,7 @@ export const ArmoryViewport: React.FC = () => {
         <ArmoryPostProcessing
           enabled={postFxEnabled && !contextLost}
           environmentPreset={environmentPreset}
+          scaleProfile={activeScaleProfile}
           gtaoQuality={qualityProfile.gtaoQuality}
           enableGtao={qualityProfile.gtaoEnabled}
           enableBloom={qualityProfile.bloomEnabled}

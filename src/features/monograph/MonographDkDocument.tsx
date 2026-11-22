@@ -306,8 +306,8 @@ export const MonographDkDocument: React.FC<MonographDkDocumentProps> = ({
   const { lang } = dossier;
   const isZh = lang === 'zh';
   const ui = UI_STRINGS[lang].monograph;
-  const domain = getMonographDomainLabels(lang, dossier.isArchery);
-  const dk = getDkEncyclopediaStrings(lang, dossier.isArchery);
+  const domain = getMonographDomainLabels(lang, dossier.isArchery, dossier.isTank);
+  const dk = getDkEncyclopediaStrings(lang, dossier.isArchery, dossier.isTank);
 
   const editorial = useMemo(() => assembleDkEditorialPack(dossier), [dossier]);
 
@@ -607,6 +607,7 @@ export const MonographDkDocument: React.FC<MonographDkDocumentProps> = ({
                     lang={lang}
                     exhibitLabel={dossier.shortTag}
                     isArchery={dossier.isArchery}
+                    isTank={dossier.isTank}
                   />
                 </div>
               </div>
@@ -1132,6 +1133,7 @@ export const MonographDkDocument: React.FC<MonographDkDocumentProps> = ({
                 lang={lang}
                 exhibitLabel={dossier.shortTag}
                 isArchery={dossier.isArchery}
+                isTank={dossier.isTank}
               />
             </div>
           </div>

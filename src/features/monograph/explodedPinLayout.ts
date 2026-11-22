@@ -277,6 +277,80 @@ function compareAnchorIdentity(
   return a.partId.localeCompare(b.partId);
 }
 
+function cross2D(
+  ax: number,
+  ay: number,
+  bx: number,
+  by: number,
+  cx: number,
+  cy: number
+): number {
+  return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
+}
+
+function segmentsProperlyIntersect2D(
+  ax: number,
+  ay: number,
+  bx: number,
+  by: number,
+  cx: number,
+  cy: number,
+  dx: number,
+  dy: number
+): boolean {
+  const eps = 1e-8;
+  const d1 = cross2D(cx, cy, dx, dy, ax, ay);
+  const d2 = cross2D(cx, cy, dx, dy, bx, by);
+  const d3 = cross2D(ax, ay, bx, by, cx, cy);
+  const d4 = cross2D(ax, ay, bx, by, dx, dy);
+  return (
+    ((d1 > eps && d2 < -eps) || (d1 < -eps && d2 > eps)) &&
+    ((d3 > eps && d4 < -eps) || (d3 < -eps && d4 > eps))
+  );
+}
+
+/**
+ * Eliminates any anchor-to-knee leader crossings on a single rail via deterministic
+ * 2-opt swaps while keeping all monotonic knee & label rail coordinates intact.
+ * Guaranteed to terminate because every uncrossing swap strictly reduces total
+ * Euclidean leader length by the triangle inequality.
+ */
+function uncrossRailAssignments(
+  orderedAnchors: ExplodedPinAnchorInput[],
+  kneeUs: readonly number[],
+  kneeVs: readonly number[]
+): void {
+  const n = orderedAnchors.length;
+  if (n <= 1) return;
+  const maxPasses = n * n * 4;
+  for (let pass = 0; pass < maxPasses; pass++) {
+    let swapped = false;
+    for (let i = 0; i < n - 1; i++) {
+      for (let j = i + 1; j < n; j++) {
+        const ai = orderedAnchors[i];
+        const aj = orderedAnchors[j];
+        if (
+          segmentsProperlyIntersect2D(
+            ai.anchorU,
+            ai.anchorV,
+            kneeUs[i],
+            kneeVs[i],
+            aj.anchorU,
+            aj.anchorV,
+            kneeUs[j],
+            kneeVs[j]
+          )
+        ) {
+          orderedAnchors[i] = aj;
+          orderedAnchors[j] = ai;
+          swapped = true;
+        }
+      }
+    }
+    if (!swapped) break;
+  }
+}
+
 function aspectScreenDist(
   au: number,
   av: number,
@@ -507,9 +581,15 @@ export function solveDkAnnotatedCallouts(
         }
       }
       const kneeVs = solveMonotonic1DSlots(rawKneeVs, 0.05, 0.95, 0.004);
+      const assigned = [...bucket];
+      uncrossRailAssignments(
+        assigned,
+        new Array<number>(n).fill(kneeU),
+        kneeVs
+      );
 
       for (let i = 0; i < n; i++) {
-        const item = bucket[i];
+        const item = assigned[i];
         out.push({
           partId: item.partId,
           bomCode: item.bomCode,
@@ -599,9 +679,11 @@ export function solveDkAnnotatedCallouts(
       }
     }
     const kneeUs = solveMonotonic1DSlots(rawKneeUs, 0.04, 0.96, 0.004);
+    const assigned = [...bucket];
+    uncrossRailAssignments(assigned, kneeUs, new Array<number>(n).fill(kneeV));
 
     for (let i = 0; i < n; i++) {
-      const item = bucket[i];
+      const item = assigned[i];
       const labelU = labelUs[i];
       const align: 'left' | 'right' | 'center' =
         labelU < 0.075 ? 'left' : labelU > 0.925 ? 'right' : 'center';

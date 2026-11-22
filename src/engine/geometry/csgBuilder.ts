@@ -91,7 +91,9 @@ export function validateSpringParamAlignment(
     }
   }
 
-  const MAX_WIRE_HALF_SPAN = 0.35;
+  // Accommodates both small-arms coil wire (<= 0.35 cm) and 1:1 Main Battle Tank
+  // forged cannon recuperator / breech springs (wireRadius ~ 0.9–1.8 cm).
+  const MAX_WIRE_HALF_SPAN = 2.5;
   const xValid = n1 > 0 && (maxDx1 - minDx1) * 0.5 <= MAX_WIRE_HALF_SPAN;
   const xShift = xValid ? (maxDx1 + minDx1) * 0.5 : 0;
   const yValid = n2 > 0 && (maxDy2 - minDy2) * 0.5 <= MAX_WIRE_HALF_SPAN;

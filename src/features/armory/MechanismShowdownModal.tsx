@@ -50,10 +50,20 @@ export interface MechanismShowdownModalProps {
 type AxisFilterOption = 'all' | TaxonomyAxisId;
 
 function formatEnergyJ(energyJ: number): string {
+  if (energyJ >= 1_000_000) {
+    return `${(energyJ / 1_000_000).toFixed(2)} MJ`;
+  }
   if (energyJ >= 1000) {
     return `${Math.round(energyJ).toLocaleString('en-US')} J`;
   }
   return `${energyJ.toFixed(energyJ < 200 ? 1 : 0)} J`;
+}
+
+function formatMassKg(weightKg: number): string {
+  if (weightKg >= 1000) {
+    return `${(weightKg / 1000).toFixed(1)} t`;
+  }
+  return `${weightKg} kg`;
 }
 
 function computeVisualBarWidths(
@@ -1363,13 +1373,13 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
                   <div className="sd-metric-item">
                     <div className="sd-metric-head">
                       <span className="sd-metric-val is-a">
-                        {profileA.emptyWeightKg} kg ({profileA.partsCount})
+                        {formatMassKg(profileA.emptyWeightKg)} ({profileA.partsCount})
                       </span>
                       <span className="sd-metric-label">
                         {ui.metricMassParts}
                       </span>
                       <span className="sd-metric-val is-b">
-                        {profileB.emptyWeightKg} kg ({profileB.partsCount})
+                        {formatMassKg(profileB.emptyWeightKg)} ({profileB.partsCount})
                       </span>
                     </div>
                     <div className="sd-dual-bars">

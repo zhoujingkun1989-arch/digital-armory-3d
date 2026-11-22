@@ -15,8 +15,8 @@ describe('turntable stage framing & zero-overlap showcase window contract', () =
     setShowcaseWindowBounds(null);
   });
 
-  it('keeps all 23 exhibits (579 parts) and 3D turntable platters strictly inside the unobstructed Showcase window across 360° rotation', async () => {
-    expect(ARMORY_WEAPONS).toHaveLength(23);
+  it('keeps all 27 exhibits (683 parts) and 3D turntable platters strictly inside the unobstructed Showcase window across 360° rotation', async () => {
+    expect(ARMORY_WEAPONS).toHaveLength(27);
     const viewports = [
       { w: 1440, h: 720, topPx: 252, bottomPx: 622 },
       { w: 1920, h: 1080, topPx: 268, bottomPx: 980 },
@@ -61,7 +61,13 @@ describe('turntable stage framing & zero-overlap showcase window contract', () =
             vp.h
           );
 
-          const cam = new THREE.PerspectiveCamera(41, vp.w / vp.h, 0.1, 400);
+          const isTank = scaleProfile === 'main_battle_tank';
+          const cam = new THREE.PerspectiveCamera(
+            41,
+            vp.w / vp.h,
+            isTank ? 2.0 : 0.1,
+            isTank ? 9000 : 400
+          );
           cam.setViewOffset(
             vp.w,
             vp.h,

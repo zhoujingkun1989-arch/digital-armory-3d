@@ -511,6 +511,90 @@ const AN94_V3_BARREL_MAG_PBR: PbrBindingSpec = {
   normalScale: 0.88,
 };
 
+const ZTZ99A_V3_ARMOR_HULL_PBR: PbrBindingSpec = {
+  albedoFile: 'ztz99a_v3_armor_hull_albedo.webp',
+  normalFile: 'ztz99a_v3_armor_hull_normal.webp',
+  roughnessFile: 'ztz99a_v3_armor_hull_roughness.webp',
+  normalScale: 1.24,
+};
+
+const ZTZ99A_V3_TURRET_GUN_PBR: PbrBindingSpec = {
+  albedoFile: 'ztz99a_v3_turret_gun_albedo.webp',
+  normalFile: 'ztz99a_v3_turret_gun_normal.webp',
+  roughnessFile: 'ztz99a_v3_turret_gun_roughness.webp',
+  normalScale: 1.22,
+};
+
+const ZTZ99A_V3_INTERIOR_POWER_PBR: PbrBindingSpec = {
+  albedoFile: 'ztz99a_v3_interior_power_albedo.webp',
+  normalFile: 'ztz99a_v3_interior_power_normal.webp',
+  roughnessFile: 'ztz99a_v3_interior_power_roughness.webp',
+  normalScale: 1.12,
+};
+
+const M1A2_V3_HULL_ARMOR_PBR: PbrBindingSpec = {
+  albedoFile: 'm1a2_v3_hull_armor_albedo.webp',
+  normalFile: 'm1a2_v3_hull_armor_normal.webp',
+  roughnessFile: 'm1a2_v3_hull_armor_roughness.webp',
+  normalScale: 1.26,
+};
+
+const M1A2_V3_TURRET_GUN_PBR: PbrBindingSpec = {
+  albedoFile: 'm1a2_v3_turret_gun_albedo.webp',
+  normalFile: 'm1a2_v3_turret_gun_normal.webp',
+  roughnessFile: 'm1a2_v3_turret_gun_roughness.webp',
+  normalScale: 1.24,
+};
+
+const M1A2_V3_TURBINE_BUSTLE_PBR: PbrBindingSpec = {
+  albedoFile: 'm1a2_v3_turbine_bustle_albedo.webp',
+  normalFile: 'm1a2_v3_turbine_bustle_normal.webp',
+  roughnessFile: 'm1a2_v3_turbine_bustle_roughness.webp',
+  normalScale: 1.12,
+};
+
+const LEOPARD2A7_V3_HULL_CAMO_PBR: PbrBindingSpec = {
+  albedoFile: 'leopard2a7_v3_hull_camo_albedo.webp',
+  normalFile: 'leopard2a7_v3_hull_camo_normal.webp',
+  roughnessFile: 'leopard2a7_v3_hull_camo_roughness.webp',
+  normalScale: 1.24,
+};
+
+const LEOPARD2A7_V3_TURRET_GUN_PBR: PbrBindingSpec = {
+  albedoFile: 'leopard2a7_v3_turret_gun_albedo.webp',
+  normalFile: 'leopard2a7_v3_turret_gun_normal.webp',
+  roughnessFile: 'leopard2a7_v3_turret_gun_roughness.webp',
+  normalScale: 1.24,
+};
+
+const LEOPARD2A7_V3_POWERPACK_INT_PBR: PbrBindingSpec = {
+  albedoFile: 'leopard2a7_v3_powerpack_int_albedo.webp',
+  normalFile: 'leopard2a7_v3_powerpack_int_normal.webp',
+  roughnessFile: 'leopard2a7_v3_powerpack_int_roughness.webp',
+  normalScale: 1.12,
+};
+
+const TIGER1_V3_HULL_ZIMMERIT_PBR: PbrBindingSpec = {
+  albedoFile: 'tiger1_v3_hull_zimmerit_albedo.webp',
+  normalFile: 'tiger1_v3_hull_zimmerit_normal.webp',
+  roughnessFile: 'tiger1_v3_hull_zimmerit_roughness.webp',
+  normalScale: 1.26,
+};
+
+const TIGER1_V3_TURRET_88MM_PBR: PbrBindingSpec = {
+  albedoFile: 'tiger1_v3_turret_88mm_albedo.webp',
+  normalFile: 'tiger1_v3_turret_88mm_normal.webp',
+  roughnessFile: 'tiger1_v3_turret_88mm_roughness.webp',
+  normalScale: 1.24,
+};
+
+const TIGER1_V3_DRIVETRAIN_INT_PBR: PbrBindingSpec = {
+  albedoFile: 'tiger1_v3_drivetrain_int_albedo.webp',
+  normalFile: 'tiger1_v3_drivetrain_int_normal.webp',
+  roughnessFile: 'tiger1_v3_drivetrain_int_roughness.webp',
+  normalScale: 1.12,
+};
+
 export const GLB_WEAPON_CONFIGS: Readonly<
   Record<WeaponId, GlbWeaponAssetConfig>
 > = {
@@ -1271,6 +1355,138 @@ export const GLB_WEAPON_CONFIGS: Readonly<
       an94_mag_follower: AN94_V3_BARREL_MAG_PBR,
       an94_mag_spring: AN94_V3_BARREL_MAG_PBR,
       an94_mag_floorplate: AN94_V3_BARREL_MAG_PBR,
+    },
+  },
+  ztz99a: {
+    modelFile: 'ztz99a.glb',
+    dynamicSpringParts: ['ztz99a_recoil_springs', 'ztz99a_rammer_spring'],
+    pbrOverrides: {
+      // Welded RHA hull, FY-4 glacis ERA, rubber-steel side skirts, 6x2 road wheels, dual tracks, rear deck & turret ring (8 parts)
+      ztz99a_hull_armor: ZTZ99A_V3_ARMOR_HULL_PBR,
+      ztz99a_glacis_era: ZTZ99A_V3_ARMOR_HULL_PBR,
+      ztz99a_side_skirts: ZTZ99A_V3_ARMOR_HULL_PBR,
+      ztz99a_road_wheels: ZTZ99A_V3_ARMOR_HULL_PBR,
+      ztz99a_tracks_left: ZTZ99A_V3_ARMOR_HULL_PBR,
+      ztz99a_tracks_right: ZTZ99A_V3_ARMOR_HULL_PBR,
+      ztz99a_rear_deck: ZTZ99A_V3_ARMOR_HULL_PBR,
+      ztz99a_turret_ring: ZTZ99A_V3_ARMOR_HULL_PBR,
+      // Arrowhead turret shell, FY-4 ERA wedges, 125mm ZPT-98 L/50 barrel, cradle, hydro-pneumatic cylinders, breech, CITV & roof armaments (8 parts)
+      ztz99a_turret_shell: ZTZ99A_V3_TURRET_GUN_PBR,
+      ztz99a_era_wedges: ZTZ99A_V3_TURRET_GUN_PBR,
+      ztz99a_main_gun: ZTZ99A_V3_TURRET_GUN_PBR,
+      ztz99a_gun_cradle: ZTZ99A_V3_TURRET_GUN_PBR,
+      ztz99a_recoil_cylinders: ZTZ99A_V3_TURRET_GUN_PBR,
+      ztz99a_breech_block: ZTZ99A_V3_TURRET_GUN_PBR,
+      ztz99a_optics_citv: ZTZ99A_V3_TURRET_GUN_PBR,
+      ztz99a_roof_armaments: ZTZ99A_V3_TURRET_GUN_PBR,
+      // 22-rd carousel autoloader, lift tray, rammer chain, stub ejector, 150HB-2 V12 engine, CH-1000 transmission, torsion bars & crew stations (8 parts)
+      ztz99a_autoloader_carousel: ZTZ99A_V3_INTERIOR_POWER_PBR,
+      ztz99a_loading_tray: ZTZ99A_V3_INTERIOR_POWER_PBR,
+      ztz99a_rammer_chain: ZTZ99A_V3_INTERIOR_POWER_PBR,
+      ztz99a_stub_ejector: ZTZ99A_V3_INTERIOR_POWER_PBR,
+      ztz99a_v12_engine: ZTZ99A_V3_INTERIOR_POWER_PBR,
+      ztz99a_transmission: ZTZ99A_V3_INTERIOR_POWER_PBR,
+      ztz99a_torsion_bars: ZTZ99A_V3_INTERIOR_POWER_PBR,
+      ztz99a_crew_stations: ZTZ99A_V3_INTERIOR_POWER_PBR,
+    },
+  },
+  m1a2: {
+    modelFile: 'm1a2.glb',
+    dynamicSpringParts: ['m1a2_recoil_springs', 'm1a2_door_spring'],
+    pbrOverrides: {
+      // CARC desert-tan hull, heavy ballistic side skirts, 7x2 road wheels, T158 tracks, engine deck, torsion bars & turret ring (8 parts)
+      m1a2_hull_shell: M1A2_V3_HULL_ARMOR_PBR,
+      m1a2_side_skirts: M1A2_V3_HULL_ARMOR_PBR,
+      m1a2_road_wheels: M1A2_V3_HULL_ARMOR_PBR,
+      m1a2_tracks_left: M1A2_V3_HULL_ARMOR_PBR,
+      m1a2_tracks_right: M1A2_V3_HULL_ARMOR_PBR,
+      m1a2_engine_deck: M1A2_V3_HULL_ARMOR_PBR,
+      m1a2_torsion_bars: M1A2_V3_HULL_ARMOR_PBR,
+      m1a2_turret_ring: M1A2_V3_HULL_ARMOR_PBR,
+      // Turret shell, top blow-off panels, NGAP DU composite armor, 120mm L/44 M256 gun, mantlet, breech, CROWS-LP optics & smoke launchers (8 parts)
+      m1a2_turret_shell: M1A2_V3_TURRET_GUN_PBR,
+      m1a2_blowoff_panels: M1A2_V3_TURRET_GUN_PBR,
+      m1a2_composite_armor: M1A2_V3_TURRET_GUN_PBR,
+      m1a2_main_gun: M1A2_V3_TURRET_GUN_PBR,
+      m1a2_gun_mantlet: M1A2_V3_TURRET_GUN_PBR,
+      m1a2_breech_block: M1A2_V3_TURRET_GUN_PBR,
+      m1a2_crows_optics: M1A2_V3_TURRET_GUN_PBR,
+      m1a2_smoke_launchers: M1A2_V3_TURRET_GUN_PBR,
+      // Armored blast doors, 36-rd bustle ammo rack, ready M829A4 round, stub deflector, AGT1500 turbine, X1100 transmission, fuel cells & crew (8 parts)
+      m1a2_blast_doors: M1A2_V3_TURBINE_BUSTLE_PBR,
+      m1a2_ammo_bustle: M1A2_V3_TURBINE_BUSTLE_PBR,
+      m1a2_ready_round: M1A2_V3_TURBINE_BUSTLE_PBR,
+      m1a2_stub_deflector: M1A2_V3_TURBINE_BUSTLE_PBR,
+      m1a2_agt1500_turbine: M1A2_V3_TURBINE_BUSTLE_PBR,
+      m1a2_x1100_transmission: M1A2_V3_TURBINE_BUSTLE_PBR,
+      m1a2_fuel_cells: M1A2_V3_TURBINE_BUSTLE_PBR,
+      m1a2_crew_stations: M1A2_V3_TURBINE_BUSTLE_PBR,
+    },
+  },
+  leopard2a7: {
+    modelFile: 'leopard2a7.glb',
+    dynamicSpringParts: ['leo_recoil_springs', 'leo_breech_spring'],
+    pbrOverrides: {
+      // NATO 3-tone Flecktarn hull, heavy side skirts, 7x2 road wheels, Diehl 570FT tracks, engine deck, torsion bars & turret ring (8 parts)
+      leo_hull_shell: LEOPARD2A7_V3_HULL_CAMO_PBR,
+      leo_side_skirts: LEOPARD2A7_V3_HULL_CAMO_PBR,
+      leo_road_wheels: LEOPARD2A7_V3_HULL_CAMO_PBR,
+      leo_tracks_left: LEOPARD2A7_V3_HULL_CAMO_PBR,
+      leo_tracks_right: LEOPARD2A7_V3_HULL_CAMO_PBR,
+      leo_engine_deck: LEOPARD2A7_V3_HULL_CAMO_PBR,
+      leo_torsion_bars: LEOPARD2A7_V3_HULL_CAMO_PBR,
+      leo_turret_ring: LEOPARD2A7_V3_HULL_CAMO_PBR,
+      // Turret shell, spaced arrowhead wedges, 6.6m Rh-120 L/55A1 gun, mantlet, concentric recoil system, breech, PERI R17A3 & smoke dischargers (8 parts)
+      leo_turret_shell: LEOPARD2A7_V3_TURRET_GUN_PBR,
+      leo_arrowhead_wedges: LEOPARD2A7_V3_TURRET_GUN_PBR,
+      leo_main_gun: LEOPARD2A7_V3_TURRET_GUN_PBR,
+      leo_gun_mantlet: LEOPARD2A7_V3_TURRET_GUN_PBR,
+      leo_recoil_system: LEOPARD2A7_V3_TURRET_GUN_PBR,
+      leo_breech_block: LEOPARD2A7_V3_TURRET_GUN_PBR,
+      leo_optics_peri: LEOPARD2A7_V3_TURRET_GUN_PBR,
+      leo_smoke_dischargers: LEOPARD2A7_V3_TURRET_GUN_PBR,
+      // MTU MB 873 V12 twin-turbo diesel, RENK HSWL 354 gearbox, dual cooling fans, blast door, 15-rd bustle, 27-rd hull rack, ready DM63A1 & crew (8 parts)
+      leo_mtu_v12: LEOPARD2A7_V3_POWERPACK_INT_PBR,
+      leo_renk_transmission: LEOPARD2A7_V3_POWERPACK_INT_PBR,
+      leo_cooling_fans: LEOPARD2A7_V3_POWERPACK_INT_PBR,
+      leo_blast_door: LEOPARD2A7_V3_POWERPACK_INT_PBR,
+      leo_ammo_bustle: LEOPARD2A7_V3_POWERPACK_INT_PBR,
+      leo_hull_ammo_rack: LEOPARD2A7_V3_POWERPACK_INT_PBR,
+      leo_ready_round: LEOPARD2A7_V3_POWERPACK_INT_PBR,
+      leo_crew_stations: LEOPARD2A7_V3_POWERPACK_INT_PBR,
+    },
+  },
+  tiger1: {
+    modelFile: 'tiger1.glb',
+    dynamicSpringParts: ['tiger_recoil_springs', 'tiger_breech_spring'],
+    pbrOverrides: {
+      // RAL 7028 Dunkelgelb 100mm RHA hull box, Feifel side fenders, 48 interleaved Schachtellaufwerk wheels, Kgs 63 tracks, engine deck, torsion bars & ring (8 parts)
+      tiger_hull_box: TIGER1_V3_HULL_ZIMMERIT_PBR,
+      tiger_side_fenders: TIGER1_V3_HULL_ZIMMERIT_PBR,
+      tiger_interleaved_wheels: TIGER1_V3_HULL_ZIMMERIT_PBR,
+      tiger_tracks_left: TIGER1_V3_HULL_ZIMMERIT_PBR,
+      tiger_tracks_right: TIGER1_V3_HULL_ZIMMERIT_PBR,
+      tiger_engine_deck: TIGER1_V3_HULL_ZIMMERIT_PBR,
+      tiger_torsion_bars: TIGER1_V3_HULL_ZIMMERIT_PBR,
+      tiger_turret_ring: TIGER1_V3_HULL_ZIMMERIT_PBR,
+      // Horseshoe turret shell, commander cupola, thick stepped mantlet, 88mm KwK 36 L/56 w/ double-baffle brake, recoil cradle, Krupp breech, guard & TZF 9b (8 parts)
+      tiger_turret_shell: TIGER1_V3_TURRET_88MM_PBR,
+      tiger_cupola_hatches: TIGER1_V3_TURRET_88MM_PBR,
+      tiger_gun_mantlet: TIGER1_V3_TURRET_88MM_PBR,
+      tiger_main_gun: TIGER1_V3_TURRET_88MM_PBR,
+      tiger_recoil_cradle: TIGER1_V3_TURRET_88MM_PBR,
+      tiger_breech_block: TIGER1_V3_TURRET_88MM_PBR,
+      tiger_shell_guard: TIGER1_V3_TURRET_88MM_PBR,
+      tiger_optics_tzf9b: TIGER1_V3_TURRET_88MM_PBR,
+      // Maybach HL230 V12, front Olvar 8-speed transmission, central driveshaft, Elfenbein turret basket, sponson 88mm racks, ready PzGr. 39, fuel tanks & crew (8 parts)
+      tiger_maybach_v12: TIGER1_V3_DRIVETRAIN_INT_PBR,
+      tiger_transmission: TIGER1_V3_DRIVETRAIN_INT_PBR,
+      tiger_driveshaft: TIGER1_V3_DRIVETRAIN_INT_PBR,
+      tiger_turret_basket: TIGER1_V3_DRIVETRAIN_INT_PBR,
+      tiger_ammo_racks: TIGER1_V3_DRIVETRAIN_INT_PBR,
+      tiger_ready_round: TIGER1_V3_DRIVETRAIN_INT_PBR,
+      tiger_fuel_tanks: TIGER1_V3_DRIVETRAIN_INT_PBR,
+      tiger_crew_stations: TIGER1_V3_DRIVETRAIN_INT_PBR,
     },
   },
 };

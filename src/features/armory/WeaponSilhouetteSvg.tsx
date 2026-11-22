@@ -3011,6 +3011,584 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
           </svg>
         );
       }
+
+      case 'ztz99a': {
+        const plaOlive = available ? '#4a5a3a' : fill;
+        const plaKhaki = available ? '#7a7852' : subFill;
+        const gunSteel = available ? '#3f4b43' : subFill;
+        const lensCyan = available ? '#38bdf8' : accent;
+        return (
+          <svg
+            viewBox="0 0 210 88"
+            className="weapon-silhouette-svg"
+            aria-hidden="true"
+          >
+            {/* 125mm ZPT-98 L/50 Smoothbore Barrel + Bore Evacuator + Muzzle Reference Sensor */}
+            <rect
+              x="123"
+              y="32.2"
+              width="79"
+              height="3.6"
+              rx="0.6"
+              fill={gunSteel}
+              stroke={stroke}
+              strokeWidth="1.05"
+            />
+            <rect
+              x="151"
+              y="30.6"
+              width="14.5"
+              height="6.8"
+              rx="1.6"
+              fill={plaOlive}
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+            <rect x="197.5" y="29.4" width="3.5" height="2.8" fill={stroke} />
+
+            {/* Roof CITV / JD-3 Laser Optical Mast & Rear Turret Bustle Stowage Basket */}
+            <rect
+              x="68"
+              y="22"
+              width="8.5"
+              height="6"
+              rx="1"
+              fill={plaKhaki}
+              stroke={stroke}
+              strokeWidth="1.05"
+            />
+            <rect x="73.2" y="23.4" width="2.6" height="3" fill={lensCyan} />
+            <rect
+              x="84"
+              y="23.2"
+              width="7.5"
+              height="4.8"
+              rx="0.8"
+              fill={gunSteel}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            <path
+              d="M39 29.5 L53 29.5 L53 38.5 L42 38.5 Z"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="1.15"
+              strokeDasharray="2.5 1.5"
+            />
+
+            {/* Low Welded Arrowhead Turret + Angled FY-4 ERA Cheek Wedges */}
+            <path
+              d="M52 28 L104 28 L127 33.8 L125 41.5 L53 41.5 Z"
+              fill={plaOlive}
+              stroke={stroke}
+              strokeWidth="1.35"
+              strokeLinejoin="round"
+            />
+            <polygon
+              points="102,29 125.5,33.8 119,40.5 98,40.5"
+              fill={plaKhaki}
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+            <line
+              x1="108"
+              y1="30.8"
+              x2="104"
+              y2="40"
+              stroke={stroke}
+              strokeWidth="0.95"
+              opacity="0.75"
+            />
+            <line
+              x1="115"
+              y1="32.2"
+              x2="111.5"
+              y2="40"
+              stroke={stroke}
+              strokeWidth="0.95"
+              opacity="0.75"
+            />
+
+            {/* Low-Profile Hull + Steep Sloped Glacis with FY-4 ERA Blocks & Rear Engine Deck */}
+            <path
+              d="M17 44 L112 43.2 L144 51.5 L140 58.5 L20 58.5 L14 52 Z"
+              fill={plaOlive}
+              stroke={stroke}
+              strokeWidth="1.35"
+              strokeLinejoin="round"
+            />
+            {/* FY-4 Glacis ERA Brick Strip */}
+            <polygon
+              points="114,43.8 140.5,50.5 138,53.8 112.5,47.2"
+              fill={plaKhaki}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            {/* Armored Side Skirts */}
+            <path
+              d="M21 51.5 L137 51.5 L139 59.5 L19 59.5 Z"
+              fill={subFill}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            {/* Track Belt & 6 Twin Road Wheels */}
+            <path
+              d="M22 57.5 L135 57.5 Q141 58.5 140 65 L132 72.5 L28 72.5 L18 65 Q17.5 58.5 22 57.5 Z"
+              fill={cutout}
+              stroke={stroke}
+              strokeWidth="1.4"
+            />
+            <circle cx="24.5" cy="63" r="4.2" fill={gunSteel} stroke={stroke} strokeWidth="1.05" />
+            {[38, 55, 72, 89, 106, 122].map((cx) => (
+              <g key={cx}>
+                <circle
+                  cx={cx}
+                  cy="66.2"
+                  r="5.4"
+                  fill={plaOlive}
+                  stroke={stroke}
+                  strokeWidth="1.15"
+                />
+                <circle cx={cx} cy="66.2" r="2.1" fill={stroke} />
+              </g>
+            ))}
+            <circle cx="134.5" cy="62.5" r="4.1" fill={gunSteel} stroke={stroke} strokeWidth="1.05" />
+          </svg>
+        );
+      }
+
+      case 'm1a2': {
+        const desertTan = available ? '#a8926a' : fill;
+        const tanShade = available ? '#806d4e' : subFill;
+        const gunMetal = available ? '#5c5243' : subFill;
+        return (
+          <svg
+            viewBox="0 0 210 88"
+            className="weapon-silhouette-svg"
+            aria-hidden="true"
+          >
+            {/* 120mm M256 L/44 Smoothbore Barrel + Bore Evacuator + Muzzle Sensor */}
+            <rect
+              x="126"
+              y="32"
+              width="74"
+              height="3.8"
+              rx="0.6"
+              fill={gunMetal}
+              stroke={stroke}
+              strokeWidth="1.05"
+            />
+            <rect
+              x="151"
+              y="30.2"
+              width="14"
+              height="7.4"
+              rx="1.6"
+              fill={desertTan}
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+            <rect x="195.5" y="29.2" width="3.2" height="2.8" fill={stroke} />
+
+            {/* CROWS-LP RWS + CITV Thermal Sight on Turret Roof */}
+            <path
+              d="M78 21.5 L87 21.5 L89 27.5 L77 27.5 Z"
+              fill={tanShade}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            <line x1="87" y1="23.5" x2="98" y2="23.5" stroke={stroke} strokeWidth="1.4" />
+            <rect
+              x="95"
+              y="22.8"
+              width="6.5"
+              height="4.8"
+              rx="0.8"
+              fill={gunMetal}
+              stroke={stroke}
+              strokeWidth="0.95"
+            />
+            <circle cx="99.2" cy="25.2" r="1.3" fill={accent} />
+
+            {/* Iconic Slab-Sided Angular M1A2 Turret + Long Rear Bustle + Blow-Off Panels */}
+            <path
+              d="M32 28.5 L105 27.5 L128 33 L123 43.2 L35 42.5 Z"
+              fill={desertTan}
+              stroke={stroke}
+              strokeWidth="1.35"
+              strokeLinejoin="round"
+            />
+            {/* Blow-off panel seam & bustle ammo compartment */}
+            <line
+              x1="64"
+              y1="28.2"
+              x2="64"
+              y2="42.5"
+              stroke={stroke}
+              strokeWidth="1.05"
+              strokeDasharray="2.2 1.4"
+            />
+            <rect
+              x="36"
+              y="26.3"
+              width="25"
+              height="2.1"
+              rx="0.5"
+              fill={accent}
+              opacity="0.82"
+            />
+            <rect
+              x="25"
+              y="31"
+              width="8.5"
+              height="8.5"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+
+            {/* Low-Slung Abrams Hull with Sharply Sloped Glacis & Raised Rear Turbine Deck */}
+            <path
+              d="M14 43.5 L112 43.5 L149 52.8 L145 59.5 L16 59.5 L12 52 Z"
+              fill={desertTan}
+              stroke={stroke}
+              strokeWidth="1.35"
+              strokeLinejoin="round"
+            />
+            {/* Segmented Heavy Ballistic Side Skirts */}
+            <path
+              d="M18 50.2 L145 50.8 L146 61 L16 61 Z"
+              fill={tanShade}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            {[36, 54, 72, 90, 108, 126].map((sx) => (
+              <line
+                key={sx}
+                x1={sx}
+                y1="50.5"
+                x2={sx}
+                y2="60.8"
+                stroke={stroke}
+                strokeWidth="0.9"
+                opacity="0.7"
+              />
+            ))}
+
+            {/* Track Envelope & 7 Abrams Road Wheels */}
+            <path
+              d="M19 59 L142 59 Q148 60 147 66.5 L138 73.5 L24 73.5 L15 66.5 Q14.5 60 19 59 Z"
+              fill={cutout}
+              stroke={stroke}
+              strokeWidth="1.4"
+            />
+            <circle cx="21" cy="64" r="4" fill={gunMetal} stroke={stroke} strokeWidth="1" />
+            {[33, 49, 65, 81, 97, 113, 129].map((cx) => (
+              <g key={cx}>
+                <circle
+                  cx={cx}
+                  cy="67"
+                  r="4.9"
+                  fill={desertTan}
+                  stroke={stroke}
+                  strokeWidth="1.1"
+                />
+                <circle cx={cx} cy="67" r="1.9" fill={stroke} />
+              </g>
+            ))}
+            <circle cx="141" cy="63.8" r="3.9" fill={gunMetal} stroke={stroke} strokeWidth="1" />
+          </svg>
+        );
+      }
+
+      case 'leopard2a7': {
+        const natoGreen = available ? '#4a5741' : fill;
+        const natoBrown = available ? '#5d4a3a' : subFill;
+        const barrelDark = available ? '#374151' : subFill;
+        return (
+          <svg
+            viewBox="0 0 210 88"
+            className="weapon-silhouette-svg"
+            aria-hidden="true"
+          >
+            {/* Extra-Long 6.6m Rheinmetall Rh-120 L/55A1 High-Pressure Barrel */}
+            <rect
+              x="120"
+              y="30.8"
+              width="86"
+              height="3.6"
+              rx="0.5"
+              fill={barrelDark}
+              stroke={stroke}
+              strokeWidth="1.05"
+            />
+            <rect
+              x="151"
+              y="29.1"
+              width="14"
+              height="7"
+              rx="1.6"
+              fill={natoGreen}
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+            <rect x="201.5" y="28.2" width="3.5" height="2.6" fill={stroke} />
+
+            {/* PERI R17A3 Commander Panoramic Periscope & Smoke Dischargers */}
+            <rect
+              x="76"
+              y="21"
+              width="6.5"
+              height="6.2"
+              rx="1"
+              fill={natoBrown}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            <rect x="79.5" y="22.4" width="2.4" height="2.6" fill={accent} />
+            <line x1="60" y1="31" x2="66" y2="27.5" stroke={stroke} strokeWidth="1.4" />
+            <line x1="63" y1="32" x2="69" y2="28.5" stroke={stroke} strokeWidth="1.4" />
+
+            {/* Leopard 2A7V Turret + Signature Hollow Arrowhead Front Composite Wedges */}
+            <path
+              d="M34 27.2 L99 27.2 L125 33.4 L117 42.8 L34 42.8 Z"
+              fill={natoGreen}
+              stroke={stroke}
+              strokeWidth="1.35"
+              strokeLinejoin="round"
+            />
+            {/* Hollow Arrowhead Cheek Wedge Highlight */}
+            <polygon
+              points="99,27.6 125.5,33.4 116.5,42.5 96,42.5"
+              fill={natoBrown}
+              stroke={stroke}
+              strokeWidth="1.25"
+              strokeLinejoin="round"
+            />
+            <line
+              x1="102"
+              y1="34.5"
+              x2="122"
+              y2="34.5"
+              stroke={accent}
+              strokeWidth="1.1"
+              opacity="0.8"
+            />
+
+            {/* Stepped Rear MTU EuroPowerpack Deck + Hull & Composite Side Skirts */}
+            <path
+              d="M15 41.5 L62 41.5 L68 44.5 L118 44.5 L143 52 L139 59 L17 59 L13 51 Z"
+              fill={natoGreen}
+              stroke={stroke}
+              strokeWidth="1.35"
+              strokeLinejoin="round"
+            />
+            {/* Heavy Forward Composite Skirt + Rear Rubber Skirt */}
+            <path
+              d="M19 50 L139 50.5 L141 60.5 L17 60.5 Z"
+              fill={natoBrown}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            <rect
+              x="92"
+              y="49.5"
+              width="47"
+              height="11.2"
+              fill={natoGreen}
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+
+            {/* Track Belt & 7 Leopard Road Wheels */}
+            <path
+              d="M20 58.8 L137 58.8 Q143 60 142 66.5 L133 73.5 L25 73.5 L16 66.5 Q15.5 60 20 58.8 Z"
+              fill={cutout}
+              stroke={stroke}
+              strokeWidth="1.4"
+            />
+            <circle cx="22" cy="63.8" r="4.1" fill={barrelDark} stroke={stroke} strokeWidth="1" />
+            {[34, 49.5, 65, 80.5, 96, 111.5, 126.5].map((cx) => (
+              <g key={cx}>
+                <circle
+                  cx={cx}
+                  cy="67"
+                  r="4.8"
+                  fill={natoGreen}
+                  stroke={stroke}
+                  strokeWidth="1.1"
+                />
+                <circle cx={cx} cy="67" r="1.9" fill={stroke} />
+              </g>
+            ))}
+            <circle cx="136.5" cy="63.5" r="3.9" fill={barrelDark} stroke={stroke} strokeWidth="1" />
+          </svg>
+        );
+      }
+
+      case 'tiger1': {
+        const dunkelgelb = available ? '#b29b6b' : fill;
+        const dunkelShade = available ? '#8c774f' : subFill;
+        const steelGrey = available ? '#475569' : subFill;
+        return (
+          <svg
+            viewBox="0 0 210 88"
+            className="weapon-silhouette-svg"
+            aria-hidden="true"
+          >
+            {/* 88mm KwK 36 L/56 Rifled Barrel + Stepped Sleeve + Iconic Double-Baffle Muzzle Brake */}
+            <rect
+              x="118"
+              y="28.6"
+              width="28"
+              height="4.8"
+              fill={dunkelShade}
+              stroke={stroke}
+              strokeWidth="1.05"
+            />
+            <rect
+              x="146"
+              y="29.3"
+              width="42"
+              height="3.4"
+              fill={dunkelgelb}
+              stroke={stroke}
+              strokeWidth="1.05"
+            />
+            {/* Signature Cylindrical Twin-Baffle Muzzle Brake */}
+            <rect
+              x="188"
+              y="26.8"
+              width="12.5"
+              height="8.4"
+              rx="1.8"
+              fill={steelGrey}
+              stroke={stroke}
+              strokeWidth="1.2"
+            />
+            <line x1="192" y1="27.5" x2="192" y2="34.5" stroke={cutout} strokeWidth="1.6" />
+            <line x1="196.2" y1="27.5" x2="196.2" y2="34.5" stroke={cutout} strokeWidth="1.6" />
+
+            {/* Drum Commander Cupola + Rear Stowage Bin (Rommelkiste) */}
+            <rect
+              x="71"
+              y="17.8"
+              width="13"
+              height="6.4"
+              rx="1.2"
+              fill={dunkelShade}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            <rect
+              x="51"
+              y="26.5"
+              width="9.5"
+              height="10.5"
+              rx="0.8"
+              fill={dunkelShade}
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+
+            {/* Horseshoe Heavy Turret + Thick Cylindrical Armored Gun Mantlet */}
+            <path
+              d="M60 24 L112 24 L114 40.5 L60 40.5 Z"
+              fill={dunkelgelb}
+              stroke={stroke}
+              strokeWidth="1.35"
+              strokeLinejoin="round"
+            />
+            <rect
+              x="108"
+              y="25.5"
+              width="12"
+              height="11.5"
+              rx="2.6"
+              fill={dunkelShade}
+              stroke={stroke}
+              strokeWidth="1.2"
+            />
+            <circle cx="115.5" cy="31" r="1.4" fill={cutout} />
+
+            {/* Classic WWII Vertical-Plate 100mm Box Hull + Driver Visor + Rear Exhaust Shrouds */}
+            <path
+              d="M27 40.5 L138 40.5 L140 53.5 L144 54.5 L141 60.5 L26 60.5 L24 52 Z"
+              fill={dunkelgelb}
+              stroke={stroke}
+              strokeWidth="1.35"
+              strokeLinejoin="round"
+            />
+            {/* Vertical Upper Hull Superstructure Step & 100mm Flat Driver Plate */}
+            <line
+              x1="126"
+              y1="40.8"
+              x2="126"
+              y2="52"
+              stroke={stroke}
+              strokeWidth="1.25"
+            />
+            <rect x="129.5" y="44.2" width="6.5" height="2.4" fill={cutout} />
+            <rect
+              x="21.5"
+              y="42.5"
+              width="5.5"
+              height="13.5"
+              rx="1.2"
+              fill={steelGrey}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            {/* Fender Mudguard Line */}
+            <line
+              x1="25"
+              y1="52.5"
+              x2="145"
+              y2="52.5"
+              stroke={stroke}
+              strokeWidth="1.5"
+            />
+
+            {/* Wide Kgs 63 Track Loop & Signature Interleaved Overlapping Road Wheels (Schachtellaufwerk) */}
+            <path
+              d="M29 56.5 L139 56.5 Q145 58 144 65 L135 74.5 L34 74.5 L25 65 Q24.5 58 29 56.5 Z"
+              fill={cutout}
+              stroke={stroke}
+              strokeWidth="1.45"
+            />
+            {/* Rear Idler & Large Toothed Front Drive Sprocket */}
+            <circle cx="32.5" cy="63" r="5.2" fill={steelGrey} stroke={stroke} strokeWidth="1.15" />
+            <circle cx="137" cy="62.2" r="5.8" fill={steelGrey} stroke={stroke} strokeWidth="1.2" />
+            {/* Inner Interleaved Wheel Tier (behind outer wheels) */}
+            {[50, 69, 88, 107, 125].map((cx) => (
+              <circle
+                key={`inner-${cx}`}
+                cx={cx}
+                cy="66.5"
+                r="6.8"
+                fill={dunkelShade}
+                stroke={stroke}
+                strokeWidth="1.05"
+                opacity="0.88"
+              />
+            ))}
+            {/* Outer Overlapping Wheel Tier */}
+            {[42, 60, 78, 96, 114].map((cx) => (
+              <g key={`outer-${cx}`}>
+                <circle
+                  cx={cx}
+                  cy="67.5"
+                  r="6.6"
+                  fill={dunkelgelb}
+                  stroke={stroke}
+                  strokeWidth="1.2"
+                />
+                <circle cx={cx} cy="67.5" r="2.2" fill={stroke} />
+              </g>
+            ))}
+          </svg>
+        );
+      }
     }
   });
 

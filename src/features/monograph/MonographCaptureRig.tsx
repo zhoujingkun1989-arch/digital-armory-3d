@@ -35,6 +35,7 @@ import {
 import {
   getWeaponFiringTiming,
   isArcheryWeapon,
+  isTankWeapon,
 } from '../../engine/physics/armoryPhysics';
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
@@ -947,18 +948,52 @@ function computeWeaponWorldBounds(
   }
 
   if (!hasAny) {
-    box.min.set(-20, -10, -3);
-    box.max.set(25, 6, 3);
+    const isTankFallback =
+      getWeaponManifest(weaponId).workbenchMeta.scaleProfile ===
+        'main_battle_tank' || isTankWeapon(weaponId);
+    if (isTankFallback) {
+      box.min.set(-400, -120, -185);
+      box.max.set(720, 180, 185);
+    } else {
+      box.min.set(-20, -10, -3);
+      box.max.set(25, 6, 3);
+    }
   }
 
   if (includeTurntable) {
+    const isTankStage =
+      getWeaponManifest(weaponId).workbenchMeta.scaleProfile ===
+        'main_battle_tank' || isTankWeapon(weaponId);
     const env = evaluateWeaponTurntableEnvelopeInto(weaponId, shot.explodeT);
     const rim = env.radius * 1.06;
-    box.expandByPoint(_corner.set(env.cx - rim, env.platterTopY - 0.65, -rim));
-    box.expandByPoint(_corner.set(env.cx + rim, env.platterTopY + 0.05, rim));
+    const plinthDrop = isTankStage ? 9.75 : 0.65;
+    const plinthHead = isTankStage ? 0.75 : 0.05;
+    box.expandByPoint(
+      _corner.set(env.cx - rim, env.platterTopY - plinthDrop, -rim)
+    );
+    box.expandByPoint(
+      _corner.set(env.cx + rim, env.platterTopY + plinthHead, rim)
+    );
   }
 
   return box;
+}
+
+/**
+ * Resolves offscreen capture camera clipping planes calibrated to exhibit scale:
+ * - Small arms & compound archery: `near = 0.1`, `far = 680` (cm)
+ * - 1:1 Main Battle Tanks (`~845–1,100 cm` long): `near = 2.0`, `far = 9000` (cm)
+ *   so zero depth-buffer fighting or far-plane clipping occurs across all 17 plates.
+ */
+export function resolveCaptureClipPlanes(weaponId: WeaponId): {
+  near: number;
+  far: number;
+} {
+  const manifest = getWeaponManifest(weaponId);
+  const isTank =
+    manifest.workbenchMeta.scaleProfile === 'main_battle_tank' ||
+    isTankWeapon(weaponId);
+  return isTank ? { near: 2.0, far: 9000 } : { near: 0.1, far: 680 };
 }
 
 function positionStudioShotCamera(
@@ -992,13 +1027,18 @@ function positionStudioShotCamera(
       : shot.elevationDeg;
   const includeTurntable = shot.showTurntable && !override?.skipTurntableBounds;
 
+  const manifest = getWeaponManifest(weaponId);
+  const isTank =
+    manifest.workbenchMeta.scaleProfile === 'main_battle_tank' ||
+    isTankWeapon(weaponId);
+  const clipPlanes = resolveCaptureClipPlanes(weaponId);
+
   cam.fov = fovDeg;
   cam.aspect = aspect;
-  cam.near = 0.1;
-  cam.far = 680;
+  cam.near = clipPlanes.near;
+  cam.far = clipPlanes.far;
   cam.clearViewOffset();
 
-  const manifest = getWeaponManifest(weaponId);
   if (shot.useManifestCloseFocus) {
     const closeCfg = manifest.cameraPresets.cutaway_focus;
     cam.position.set(closeCfg.pos[0], closeCfg.pos[1], closeCfg.pos[2] * 0.92);
@@ -1052,7 +1092,13 @@ function positionStudioShotCamera(
 
   const distY = maxProjY / (tanHalfV * shot.fillY) + maxDepthTowardCam;
   const distX = maxProjX / (tanHalfH * shot.fillX) + maxDepthTowardCam;
-  const minSafeDist = shot.isolatedGroup ? 8.5 : 14;
+  const minSafeDist = isTank
+    ? shot.isolatedGroup
+      ? 120
+      : 220
+    : shot.isolatedGroup
+      ? 8.5
+      : 14;
   const baseDist = Math.max(minSafeDist, distX, distY);
 
   // Nudge compact pistols & revolvers only when framed over the circular turntable rim
@@ -1073,6 +1119,7 @@ function positionStudioShotCamera(
     ? Math.max(minSafeDist, baseDist * 0.89)
     : baseDist;
 
+  cam.far = Math.max(clipPlanes.far, dist + maxDepthTowardCam * 3.5);
   cam.position.set(
     cx + viewDir.x * dist,
     cy + viewDir.y * dist,
@@ -1280,6 +1327,9 @@ function disposeSessionGpuResources(session: ActiveCaptureSession): void {
 const DK_STAGE_OBJECT_NAMES: readonly string[] = [
   'studio-cyclorama-backdrop',
   'studio-cyclorama-floor',
+  'heavy-armor-hangar-stage',
+  'heavy-armor-hangar-floor',
+  'heavy-armor-turntable-pit-ring',
   'gunsmith-mat-slab',
   'gunsmith-mat-lip',
   'gunsmith-mat-tray',
@@ -1469,14 +1519,19 @@ const ActiveMonographCaptureWorker: React.FC<{
       const captureAspect = captureWidth / captureHeight;
 
       const envPreset = resolveEnvironmentPresetForEdition(edition);
-      const postParams = getPostProcessingPresetParams(envPreset);
+      const scaleProfile = getWeaponManifest(weaponId).workbenchMeta.scaleProfile;
+      const postParams = getPostProcessingPresetParams(envPreset, scaleProfile);
       const isDkTransparent = edition === 'dk_encyclopedia';
+      const isTankCapture =
+        getWeaponManifest(weaponId).workbenchMeta.scaleProfile ===
+          'main_battle_tank' || isTankWeapon(weaponId);
+      const clipPlanes = resolveCaptureClipPlanes(weaponId);
 
       const captureCam = new THREE.PerspectiveCamera(
         CAPTURE_FOV_DEG,
         captureAspect,
-        0.1,
-        680
+        clipPlanes.near,
+        clipPlanes.far
       );
       const hdrTarget = createArmoryComposerRenderTarget(
         captureWidth,
@@ -1510,10 +1565,11 @@ const ActiveMonographCaptureWorker: React.FC<{
       hardenGtaoPassAgainstNaN(gtaoPass);
       gtaoPass.output = GTAOPass.OUTPUT.Default;
       gtaoPass.blendIntensity = postParams.gtao.blendIntensity;
+      const gtaoScaleMul = isTankCapture ? 12 : 1;
       gtaoPass.updateGtaoMaterial({
-        radius: postParams.gtao.radius,
+        radius: postParams.gtao.radius * gtaoScaleMul,
         distanceExponent: postParams.gtao.distanceExponent,
-        thickness: postParams.gtao.thickness,
+        thickness: postParams.gtao.thickness * gtaoScaleMul,
         distanceFallOff: postParams.gtao.distanceFallOff,
         scale: postParams.gtao.scale,
         samples: postParams.gtao.samples,

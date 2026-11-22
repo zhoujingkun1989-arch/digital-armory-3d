@@ -4,6 +4,9 @@ import {
   CARTRIDGE_LAB_SPECS,
   getArcheryProjectileMeta,
   isArcheryCaliberProfile,
+  isTankOrdnanceProfile,
+  TANK_ORDNANCE_LAB_SPECS,
+  TANK_ORDNANCE_ORDER,
   type ArcheryProjectileSpec,
   type CartridgeLabSpec,
 } from '../../engine/cartridges/cartridgeSpecs';
@@ -15,6 +18,8 @@ import {
   evaluateInternalBallisticsInto,
   getCaliberBallisticsSpec,
   getWeaponFiringTiming,
+  isTankCaliber,
+  isTankWeapon,
 } from '../../engine/physics/armoryPhysics';
 import type { LanguageCode } from '../../narration/types';
 import type {
@@ -30,7 +35,7 @@ export type MonographCaliberProfile = CaliberProfile | '45_acp';
 
 interface CartridgeDiagramFallbackSpec {
   code: string;
-  standard: 'SAAMI' | 'CIP' | 'NATO STANAG';
+  standard: 'SAAMI' | 'CIP' | 'NATO STANAG' | 'PLA GJB';
   nameZh: string;
   nameEn: string;
   caseLengthMm: number;
@@ -396,6 +401,7 @@ export const BallisticsVectorChart: React.FC<{
     isArcheryCaliberProfile(caliber as string) ||
     (weaponId as string) === 'lift33' ||
     (weaponId as string) === 'r500';
+  const isTank = isTankCaliber(caliber) || isTankWeapon(weaponId);
   const archeryMeta = isArchery
     ? getArcheryProjectileMeta(
         isArcheryCaliberProfile(caliber as string)
@@ -427,7 +433,9 @@ export const BallisticsVectorChart: React.FC<{
   // Zoom horizontal domain to [0..maxDomainF] so high-speed bore & blowdown dynamics fill 85% of plot
   const maxDomainF = isArchery
     ? Math.min(1, effectiveExitF + 0.14)
-    : Math.min(1, Math.max(0.58, safeUnlockF + 0.14));
+    : isTank
+      ? Math.min(1, Math.max(0.34, safeUnlockF + 0.12))
+      : Math.min(1, Math.max(0.58, safeUnlockF + 0.14));
 
   const W = 760;
   const H = 300;
@@ -451,10 +459,17 @@ export const BallisticsVectorChart: React.FC<{
         : archeryMeta.muzzleVelocityMps
       : spec.muzzleVelocityMps;
 
-  const pStep = isArchery ? (topForceOrPressure > 500 ? 200 : 50) : 50;
-  const vStep = isArchery ? 25 : 100;
+  const pStep = isArchery
+    ? topForceOrPressure > 500
+      ? 200
+      : 50
+    : topForceOrPressure > 500
+      ? 100
+      : 50;
+  const vStep = isArchery ? 25 : topVelocity > 1200 ? 200 : 100;
   const pCeil = Math.ceil((topForceOrPressure * 1.14) / pStep) * pStep;
-  const vCeil = Math.ceil((topVelocity * 1.14) / vStep) * vStep;
+  const vHeadroom = topVelocity > 1200 ? 1.11 : 1.14;
+  const vCeil = Math.ceil((topVelocity * vHeadroom) / vStep) * vStep;
 
   const xOf = (f: number) =>
     padL + Math.max(0, Math.min(1, f / maxDomainF)) * plotW;
@@ -512,6 +527,12 @@ export const BallisticsVectorChart: React.FC<{
   const safeX = xOf(safeUnlockF);
   const gasX = gasPortF !== null ? xOf(gasPortF) : null;
   const valleyX = xOf(0.24);
+  const safeYOff =
+    gasX === null && Math.abs(safeX - peakX) < 105 ? 30 : 18;
+  const safeAlign: 'start' | 'end' =
+    padL + plotW - safeX < 126 ? 'end' : 'start';
+  const exitAlign: 'start' | 'end' =
+    padL + plotW - exitX < 100 ? 'end' : 'start';
 
   return (
     <svg
@@ -626,9 +647,13 @@ export const BallisticsVectorChart: React.FC<{
           ? isZh
             ? '矢箭初速 V(t) [m/s] ▲'
             : 'Launch Velocity V(t) [m/s] ▲'
-          : isZh
-            ? '弹头初速 V(t) [m/s] ▲'
-            : 'Bore Velocity V(t) [m/s] ▲'}
+          : isTank
+            ? isZh
+              ? '炮弹初速 V(t) [m/s] ▲'
+              : 'Projectile Velocity V(t) [m/s] ▲'
+            : isZh
+              ? '弹头初速 V(t) [m/s] ▲'
+              : 'Bore Velocity V(t) [m/s] ▲'}
       </text>
 
       {/* Event Milestone Hairlines */}
@@ -666,7 +691,13 @@ export const BallisticsVectorChart: React.FC<{
         : [
             {
               x: ignX,
-              label: isZh ? '底火击发' : 'Ignition',
+              label: isTank
+                ? isZh
+                  ? '电发火击发'
+                  : 'Primer Fire'
+                : isZh
+                  ? '底火击发'
+                  : 'Ignition',
               color: axisColor,
               yOff: plotH - 18,
               align: 'end' as const,
@@ -690,10 +721,11 @@ export const BallisticsVectorChart: React.FC<{
             {
               x: exitX,
               label: isZh
-                ? `出膛 ${spec.muzzleVelocityMps} m/s`
-                : `Exit ${spec.muzzleVelocityMps} m/s`,
+                ? `出膛 ${spec.muzzleVelocityMps.toLocaleString('en-US')} m/s`
+                : `Exit ${spec.muzzleVelocityMps.toLocaleString('en-US')} m/s`,
               color: vStroke,
               yOff: 46,
+              align: exitAlign,
             },
             {
               x: safeX,
@@ -701,7 +733,8 @@ export const BallisticsVectorChart: React.FC<{
                 ? `安全开锁 (<${spec.safeUnlockPressureMPa}MPa)`
                 : `Safe Unlock (<${spec.safeUnlockPressureMPa}MPa)`,
               color: '#10b981',
-              yOff: 18,
+              yOff: safeYOff,
+              align: safeAlign,
             },
           ]
       ).map((m, idx) => (
@@ -776,9 +809,13 @@ export const BallisticsVectorChart: React.FC<{
           ? isZh
             ? `弹力蓄能与做功相位 (有效做功行程 ${archeryMeta.powerStrokeMm} mm · 弓档距 ${archeryMeta.braceHeightMm} mm · 动能 ${archeryMeta.muzzleEnergyJ.toFixed(1)} J)`
             : `Elastic Draw & Power-Stroke Cycle (Power Stroke ${archeryMeta.powerStrokeMm} mm · Brace Height ${archeryMeta.braceHeightMm} mm · KE ${archeryMeta.muzzleEnergyJ.toFixed(1)} J)`
-          : isZh
-            ? `内弹道循环相位 (膛内驻留时间 ≈ ${spec.boreTimeMs.toFixed(2)} ms · 基准枪管 ${spec.referenceBarrelMm} mm)`
-            : `Internal Ballistic Cycle Phase (In-Bore Transit ≈ ${spec.boreTimeMs.toFixed(2)} ms · Ref Barrel ${spec.referenceBarrelMm} mm)`}
+          : isTank
+            ? isZh
+              ? `主炮内弹道循环相位 (膛内加速时间 ≈ ${spec.boreTimeMs.toFixed(2)} ms · 基准身管 ${spec.referenceBarrelMm.toLocaleString('en-US')} mm)`
+              : `Main Gun Internal Ballistic Phase (In-Bore Transit ≈ ${spec.boreTimeMs.toFixed(2)} ms · Ref Gun ${spec.referenceBarrelMm.toLocaleString('en-US')} mm)`
+            : isZh
+              ? `内弹道循环相位 (膛内驻留时间 ≈ ${spec.boreTimeMs.toFixed(2)} ms · 基准枪管 ${spec.referenceBarrelMm} mm)`
+              : `Internal Ballistic Cycle Phase (In-Bore Transit ≈ ${spec.boreTimeMs.toFixed(2)} ms · Ref Barrel ${spec.referenceBarrelMm} mm)`}
       </text>
     </svg>
   );
@@ -1031,6 +1068,683 @@ export const CartridgeCutawayDiagram: React.FC<{
   const dimStroke = isBlueprint ? '#0369a1' : '#f59e0b';
   const labelFill = isBlueprint ? '#0f172a' : '#e2e8f0';
   const mutedFill = isBlueprint ? '#475569' : '#94a3b8';
+
+  // Dedicated Heavy Armor Tank Cannon Ordnance Cutaway Branch (125mm Two-Piece APFSDS, 120mm Unitary APFSDS, 88mm Rimmed APCBC-HE)
+  if (isTankOrdnanceProfile(caliberKey)) {
+    const tankSpec = TANK_ORDNANCE_LAB_SPECS[caliberKey];
+    const tCx = 146;
+    const tTop = 26;
+    const tBot = 264;
+    const tAvailH = tBot - tTop;
+    const pxPerMm = tAvailH / tankSpec.oalMm;
+    const strokeMain = isBlueprint ? '#0f172a' : '#e2e8f0';
+    const steelDark = isBlueprint ? '#334155' : '#475569';
+    const dartLight = isBlueprint ? '#94a3b8' : '#e2e8f0';
+    const sabotTone = isBlueprint ? '#475569' : '#64748b';
+    const combCaseTone = tankSpec.caseColor || '#b8823c';
+    const stubSteel = isBlueprint ? '#64748b' : '#94a3b8';
+    const heAmber = '#ea580c';
+    const copperBand = '#d97706';
+    const energyMj = (tankSpec.muzzleEnergyJ / 1_000_000).toFixed(2);
+    const projKg = (tankSpec.projectileMassG / 1000).toFixed(1);
+    const propKg = (tankSpec.propellantMassG / 1000).toFixed(2);
+
+    const rRim = Math.max(16, tankSpec.rimDiameterMm * 0.5 * pxPerMm * 1.15);
+    const rBase = Math.max(14.5, tankSpec.baseDiameterMm * 0.5 * pxPerMm * 1.15);
+    const rShell = Math.max(12.5, tankSpec.bulletDiameterMm * 0.5 * pxPerMm * 1.15);
+    const dimOalX = tCx + rRim + 24;
+    const dimCaseX = tCx - rRim - 22;
+
+    if (caliberKey === '125mm_apfsds') {
+      // Two-Piece Separated 125mm DTC10-125: Lower 408mm main combustible case + gap + Upper increment & Ø26mm tungsten APFSDS
+      const splitGap = 10;
+      const lowerCaseH = Math.round(tankSpec.caseLengthMm * pxPerMm);
+      const yLowerTop = tBot - lowerCaseH;
+      const yUpperBot = yLowerTop - splitGap;
+      const stubH = 19;
+      const yStubTop = tBot - stubH;
+      const rimH = 4.2;
+      const rDart = 4.4;
+      const rFin = 11.5;
+      const ySabotTop = tTop + 44;
+      const ySabotBot = tTop + 98;
+      const yIncTop = ySabotBot + 2;
+      const yFinTop = yUpperBot - 22;
+      const yDartBase = yUpperBot - 4;
+      const primerR = 3.2;
+      const yPrimerTop = yLowerTop + 14;
+      const wallW = 3.2;
+
+      return (
+        <svg
+          className="monograph-vector-svg"
+          viewBox={`0 0 ${W} ${H}`}
+          role="img"
+          aria-label={
+            isZh
+              ? `${tankSpec.nameZh} 纵剖工程图`
+              : `${tankSpec.nameEn} Cutaway Schematic`
+          }
+        >
+          <defs>
+            <pattern
+              id={hatchId}
+              width={5}
+              height={5}
+              patternTransform="rotate(45)"
+              patternUnits="userSpaceOnUse"
+            >
+              <rect width={5} height={5} fill={sabotTone} fillOpacity={0.32} />
+              <line
+                x1={0}
+                y1={0}
+                x2={0}
+                y2={5}
+                stroke={isBlueprint ? '#1e293b' : '#cbd5e1'}
+                strokeWidth={1.1}
+              />
+            </pattern>
+            <pattern
+              id={hullHatchId}
+              width={5}
+              height={5}
+              patternTransform="rotate(-45)"
+              patternUnits="userSpaceOnUse"
+            >
+              <rect width={5} height={5} fill={combCaseTone} fillOpacity={0.38} />
+              <line
+                x1={0}
+                y1={0}
+                x2={0}
+                y2={5}
+                stroke={isBlueprint ? '#78350f' : '#fcd34d'}
+                strokeWidth={1.1}
+              />
+            </pattern>
+            <pattern
+              id={powderId}
+              width={5}
+              height={5}
+              patternUnits="userSpaceOnUse"
+            >
+              <rect width={5} height={5} fill="#1e293b" />
+              <rect x={0.8} y={0.8} width={1.4} height={3.2} fill="#64748b" />
+              <rect x={3.0} y={0.5} width={1.4} height={3.5} fill="#94a3b8" />
+            </pattern>
+          </defs>
+
+          {/* Center Datum Axis */}
+          <line
+            x1={tCx}
+            y1={12}
+            x2={tCx}
+            y2={H - 18}
+            stroke={mutedFill}
+            strokeWidth={1}
+            strokeDasharray="6 3 1.5 3"
+          />
+
+          {/* Two-Piece Carousel Separation Line */}
+          <line
+            x1={tCx - rRim - 12}
+            y1={(yLowerTop + yUpperBot) * 0.5}
+            x2={tCx + rRim + 16}
+            y2={(yLowerTop + yUpperBot) * 0.5}
+            stroke={dimStroke}
+            strokeWidth={0.95}
+            strokeDasharray="3 2"
+          />
+
+          {/* LOWER PIECE: 408mm Main Combustible Charge + Steel Stub Base */}
+          {/* Right cutaway propellant cavity */}
+          <rect
+            x={tCx + primerR}
+            y={yLowerTop + 3}
+            width={Math.max(4, rBase - wallW - primerR)}
+            height={Math.max(6, yStubTop - yLowerTop - 3)}
+            fill={`url(#${powderId})`}
+          />
+          {/* Left exterior combustible cylinder + steel stub base */}
+          <path
+            d={`M ${tCx} ${yStubTop} L ${tCx - rBase} ${yStubTop} L ${tCx - rBase + 1.2} ${yLowerTop} L ${tCx} ${yLowerTop} Z`}
+            fill={combCaseTone}
+            fillOpacity={0.92}
+            stroke={isBlueprint ? '#78350f' : '#fde68a'}
+            strokeWidth={1.05}
+          />
+          <path
+            d={`M ${tCx} ${tBot} L ${tCx - rRim} ${tBot} L ${tCx - rRim} ${tBot - rimH} L ${tCx - rBase - 0.8} ${tBot - rimH - 1} L ${tCx - rBase - 0.8} ${yStubTop} L ${tCx} ${yStubTop} Z`}
+            fill={stubSteel}
+            stroke={strokeMain}
+            strokeWidth={1.05}
+          />
+          {/* Right cutaway combustible case wall + steel stub wall + axial GUV-7 electric primer tube */}
+          <path
+            d={`M ${tCx + rBase} ${yStubTop} L ${tCx + rBase - 1.2} ${yLowerTop} L ${tCx + rBase - 1.2 - wallW} ${yLowerTop} L ${tCx + rBase - wallW} ${yStubTop} Z`}
+            fill={`url(#${hullHatchId})`}
+            stroke={isBlueprint ? '#78350f' : '#fbbf24'}
+            strokeWidth={0.95}
+          />
+          <path
+            d={`M ${tCx + primerR} ${tBot} L ${tCx + rRim} ${tBot} L ${tCx + rRim} ${tBot - rimH} L ${tCx + rBase + 0.8} ${tBot - rimH - 1} L ${tCx + rBase + 0.8} ${yStubTop} L ${tCx + rBase - wallW} ${yStubTop} L ${tCx + rBase - wallW} ${tBot - 8} L ${tCx + primerR} ${tBot - 8} Z`}
+            fill={`url(#${hatchId})`}
+            stroke={strokeMain}
+            strokeWidth={1.05}
+          />
+          <rect
+            x={tCx}
+            y={yPrimerTop}
+            width={primerR}
+            height={tBot - yPrimerTop}
+            fill="#f59e0b"
+            fillOpacity={0.85}
+            stroke={strokeMain}
+            strokeWidth={0.8}
+          />
+
+          {/* UPPER PIECE: Increment Charge Sleeve + 6-Fin Tail + 3-Petal Saddle Sabot + Ø26mm Tungsten Dart */}
+          {/* Right cutaway increment powder surrounding tail fins */}
+          <rect
+            x={tCx + rDart}
+            y={yIncTop + 2}
+            width={Math.max(4, rShell - wallW - rDart)}
+            height={Math.max(6, yUpperBot - yIncTop - 4)}
+            fill={`url(#${powderId})`}
+          />
+          {/* Left exterior increment combustible sleeve */}
+          <rect
+            x={tCx - rShell}
+            y={yIncTop}
+            width={rShell}
+            height={yUpperBot - yIncTop}
+            fill={combCaseTone}
+            fillOpacity={0.86}
+            stroke={isBlueprint ? '#78350f' : '#fde68a'}
+            strokeWidth={1.0}
+          />
+          {/* Right cutaway increment sleeve wall */}
+          <rect
+            x={tCx + rShell - wallW}
+            y={yIncTop}
+            width={wallW}
+            height={yUpperBot - yIncTop}
+            fill={`url(#${hullHatchId})`}
+            stroke={isBlueprint ? '#78350f' : '#fbbf24'}
+            strokeWidth={0.9}
+          />
+
+          {/* 6-Fin Stabilizer Tail & Tracer Cup (Right Cutaway + Subtle Left Edge) */}
+          <polygon
+            points={`${tCx + rDart},${yFinTop} ${tCx + rFin},${yFinTop + 5} ${tCx + rFin},${yDartBase} ${tCx + rDart},${yDartBase}`}
+            fill={steelDark}
+            stroke={strokeMain}
+            strokeWidth={0.9}
+          />
+          <rect
+            x={tCx - 2.6}
+            y={yDartBase - 1}
+            width={5.2}
+            height={4.5}
+            fill={heAmber}
+            stroke={strokeMain}
+            strokeWidth={0.7}
+          />
+
+          {/* 3-Petal Light-Alloy Saddle Sabot (Left Exterior / Right Hatched Cross-Section) */}
+          <path
+            d={`M ${tCx} ${ySabotBot} L ${tCx - rShell} ${ySabotBot} L ${tCx - rShell} ${ySabotBot - 11} L ${tCx - rShell * 0.72} ${ySabotBot - 20} L ${tCx - rShell * 0.72} ${ySabotTop + 14} L ${tCx - rShell} ${ySabotTop + 8} L ${tCx - rShell} ${ySabotTop} L ${tCx - rDart - 1.2} ${ySabotTop + 12} L ${tCx} ${ySabotTop + 12} Z`}
+            fill={sabotTone}
+            stroke={strokeMain}
+            strokeWidth={1.05}
+          />
+          <path
+            d={`M ${tCx + rDart} ${ySabotBot} L ${tCx + rShell} ${ySabotBot} L ${tCx + rShell} ${ySabotBot - 11} L ${tCx + rShell * 0.72} ${ySabotBot - 20} L ${tCx + rShell * 0.72} ${ySabotTop + 14} L ${tCx + rShell} ${ySabotTop + 8} L ${tCx + rShell} ${ySabotTop} L ${tCx + rDart + 1.2} ${ySabotTop + 12} L ${tCx + rDart} ${ySabotTop + 12} Z`}
+            fill={`url(#${hatchId})`}
+            stroke={strokeMain}
+            strokeWidth={1.05}
+          />
+          {/* Copper Obturator Slip Band */}
+          <rect
+            x={tCx - rShell - 0.6}
+            y={ySabotBot - 8}
+            width={(rShell + 0.6) * 2}
+            height={4.2}
+            fill={copperBand}
+            stroke={strokeMain}
+            strokeWidth={0.7}
+          />
+
+          {/* High-L/D Ø26mm Tungsten Long-Rod Penetrator Dart */}
+          <path
+            d={`M ${tCx} ${tTop} L ${tCx - rDart} ${tTop + 18} L ${tCx - rDart} ${yDartBase} L ${tCx + rDart} ${yDartBase} L ${tCx + rDart} ${tTop + 18} Z`}
+            fill={dartLight}
+            stroke={strokeMain}
+            strokeWidth={1.05}
+          />
+          {/* Ballistic Windscreen Cone Tip */}
+          <polygon
+            points={`${tCx},${tTop} ${tCx - rDart},${tTop + 18} ${tCx + rDart},${tTop + 18}`}
+            fill={steelDark}
+            stroke={strokeMain}
+            strokeWidth={0.9}
+          />
+
+          {/* Right OAL Bracket */}
+          <line x1={tCx + 4} y1={tTop} x2={dimOalX + 5} y2={tTop} stroke={dimStroke} strokeWidth={0.85} strokeOpacity={0.7} />
+          <line x1={tCx + rRim + 3} y1={tBot} x2={dimOalX + 5} y2={tBot} stroke={dimStroke} strokeWidth={0.85} strokeOpacity={0.7} />
+          <line x1={dimOalX} y1={tTop} x2={dimOalX} y2={tBot} stroke={dimStroke} strokeWidth={1.2} />
+          <text x={dimOalX + 7} y={136} fontSize={9} fontWeight={800} fill={dimStroke} fontFamily="ui-monospace, SFMono-Regular, monospace">
+            OAL
+          </text>
+          <text x={dimOalX + 7} y={149} fontSize={9.8} fontWeight={800} fill={labelFill} fontFamily="ui-monospace, SFMono-Regular, monospace">
+            1,150 mm
+          </text>
+
+          {/* Left Main Case Bracket */}
+          <line x1={dimCaseX - 5} y1={yLowerTop} x2={tCx - rBase - 3} y2={yLowerTop} stroke={mutedFill} strokeWidth={0.85} />
+          <line x1={dimCaseX - 5} y1={tBot} x2={tCx - rRim - 3} y2={tBot} stroke={mutedFill} strokeWidth={0.85} />
+          <line x1={dimCaseX} y1={yLowerTop} x2={dimCaseX} y2={tBot} stroke={mutedFill} strokeWidth={1.1} />
+          <text x={dimCaseX - 6} y={(yLowerTop + tBot) * 0.5 - 4} textAnchor="end" fontSize={8.6} fontWeight={700} fill={mutedFill} fontFamily="ui-monospace, SFMono-Regular, monospace">
+            {isZh ? '主药筒' : 'MAIN CASE'}
+          </text>
+          <text x={dimCaseX - 6} y={(yLowerTop + tBot) * 0.5 + 8} textAnchor="end" fontSize={9.2} fontWeight={800} fill={labelFill} fontFamily="ui-monospace, SFMono-Regular, monospace">
+            408 mm
+          </text>
+
+          {/* Spaced Anatomy Labels (Right Column, zero overlap with OAL at y=136..149) */}
+          <text x={dimOalX + 7} y={42} fontSize={8.6} fontWeight={700} fill={labelFill}>
+            {isZh ? 'Ø26mm 钨合金长杆芯' : 'Ø26mm Tungsten Dart'}
+          </text>
+          <text x={dimOalX + 7} y={92} fontSize={8.6} fontWeight={700} fill={mutedFill}>
+            {isZh ? '三瓣轻合金鞍形弹托' : '3-Petal Saddle Sabot'}
+          </text>
+          <text x={dimOalX + 7} y={182} fontSize={8.6} fontWeight={700} fill={dimStroke}>
+            {isZh ? '分装对接 (转盘装弹)' : '2-Piece Carousel Split'}
+          </text>
+          <text x={dimOalX + 7} y={248} fontSize={8.6} fontWeight={700} fill={mutedFill}>
+            {isZh ? '钢弹底 + 电发火管' : 'Stub Base + Primer'}
+          </text>
+
+          {/* Bottom Telemetry Caption */}
+          <text x={W * 0.5} y={H - 11} textAnchor="middle" fontSize={9.2} fontWeight={700} fill={labelFill} fontFamily="ui-monospace, SFMono-Regular, monospace">
+            {tankSpec.code} · {projKg} kg · {propKg} kg · 1,780 m/s · {energyMj} MJ
+          </text>
+        </svg>
+      );
+    }
+
+    if (caliberKey === '120mm_apfsds') {
+      // Unitary 120×570mm NATO APFSDS-T (M829A4 / DM63A1): Combustible case + Steel Stub Base + Submerged Fin Dart + 3-Petal Sabot
+      const casePx = Math.round(tankSpec.caseLengthMm * pxPerMm);
+      const yCaseMouth = tBot - casePx;
+      const stubH = 22;
+      const yStubTop = tBot - stubH;
+      const rimH = 4.2;
+      const wallW = 3.2;
+      const rDart = 4.4;
+      const rFin = 11.2;
+      const ySabotTop = tTop + 44;
+      const ySabotBot = yCaseMouth + 4;
+      const yDartBase = tBot - 44;
+      const yFinTop = yDartBase - 22;
+      const primerR = 3.2;
+      const yPrimerTop = tBot - 52;
+
+      return (
+        <svg
+          className="monograph-vector-svg"
+          viewBox={`0 0 ${W} ${H}`}
+          role="img"
+          aria-label={
+            isZh
+              ? `${tankSpec.nameZh} 纵剖工程图`
+              : `${tankSpec.nameEn} Cutaway Schematic`
+          }
+        >
+          <defs>
+            <pattern
+              id={hatchId}
+              width={5}
+              height={5}
+              patternTransform="rotate(45)"
+              patternUnits="userSpaceOnUse"
+            >
+              <rect width={5} height={5} fill={sabotTone} fillOpacity={0.32} />
+              <line x1={0} y1={0} x2={0} y2={5} stroke={isBlueprint ? '#1e293b' : '#cbd5e1'} strokeWidth={1.1} />
+            </pattern>
+            <pattern
+              id={hullHatchId}
+              width={5}
+              height={5}
+              patternTransform="rotate(-45)"
+              patternUnits="userSpaceOnUse"
+            >
+              <rect width={5} height={5} fill={combCaseTone} fillOpacity={0.38} />
+              <line x1={0} y1={0} x2={0} y2={5} stroke={isBlueprint ? '#78350f' : '#fcd34d'} strokeWidth={1.1} />
+            </pattern>
+            <pattern id={powderId} width={5} height={5} patternUnits="userSpaceOnUse">
+              <rect width={5} height={5} fill="#1e293b" />
+              <circle cx={1.4} cy={1.6} r={0.9} fill="#64748b" />
+              <circle cx={3.7} cy={3.5} r={0.85} fill="#94a3b8" />
+            </pattern>
+          </defs>
+
+          {/* Center Datum Axis */}
+          <line x1={tCx} y1={12} x2={tCx} y2={H - 18} stroke={mutedFill} strokeWidth={1} strokeDasharray="6 3 1.5 3" />
+
+          {/* Right Cutaway SCDB Propellant Bed surrounding submerged rear dart */}
+          <path
+            d={`M ${tCx + primerR} ${yStubTop} L ${tCx + rBase - wallW} ${yStubTop} L ${tCx + rShell - wallW} ${yCaseMouth} L ${tCx + rDart} ${yCaseMouth} L ${tCx + rDart} ${yDartBase} L ${tCx + primerR} ${yDartBase} Z`}
+            fill={`url(#${powderId})`}
+          />
+
+          {/* Left Exterior Combustible Nitrocellulose Case + Steel Stub Base */}
+          <path
+            d={`M ${tCx} ${yStubTop} L ${tCx - rBase} ${yStubTop} L ${tCx - rShell} ${yCaseMouth} L ${tCx} ${yCaseMouth} Z`}
+            fill={combCaseTone}
+            fillOpacity={0.92}
+            stroke={isBlueprint ? '#78350f' : '#fde68a'}
+            strokeWidth={1.05}
+          />
+          <path
+            d={`M ${tCx} ${tBot} L ${tCx - rRim} ${tBot} L ${tCx - rRim} ${tBot - rimH} L ${tCx - rBase - 0.8} ${tBot - rimH - 1} L ${tCx - rBase - 0.8} ${yStubTop} L ${tCx} ${yStubTop} Z`}
+            fill={stubSteel}
+            stroke={strokeMain}
+            strokeWidth={1.05}
+          />
+
+          {/* Right Cutaway Combustible Case Wall + Steel Stub Base Wall + Long-Tube DM12A1 Electric Primer */}
+          <path
+            d={`M ${tCx + rBase} ${yStubTop} L ${tCx + rShell} ${yCaseMouth} L ${tCx + rShell - wallW} ${yCaseMouth} L ${tCx + rBase - wallW} ${yStubTop} Z`}
+            fill={`url(#${hullHatchId})`}
+            stroke={isBlueprint ? '#78350f' : '#fbbf24'}
+            strokeWidth={0.95}
+          />
+          <path
+            d={`M ${tCx + primerR} ${tBot} L ${tCx + rRim} ${tBot} L ${tCx + rRim} ${tBot - rimH} L ${tCx + rBase + 0.8} ${tBot - rimH - 1} L ${tCx + rBase + 0.8} ${yStubTop} L ${tCx + rBase - wallW} ${yStubTop} L ${tCx + rBase - wallW} ${tBot - 9} L ${tCx + primerR} ${tBot - 9} Z`}
+            fill={`url(#${hatchId})`}
+            stroke={strokeMain}
+            strokeWidth={1.05}
+          />
+          <rect
+            x={tCx}
+            y={yPrimerTop}
+            width={primerR}
+            height={tBot - yPrimerTop}
+            fill="#f59e0b"
+            fillOpacity={0.85}
+            stroke={strokeMain}
+            strokeWidth={0.8}
+          />
+
+          {/* Submerged 6-Fin Tail Stabilizer inside Cutaway */}
+          <polygon
+            points={`${tCx + rDart},${yFinTop} ${tCx + rFin},${yFinTop + 5} ${tCx + rFin},${yDartBase} ${tCx + rDart},${yDartBase}`}
+            fill={steelDark}
+            stroke={strokeMain}
+            strokeWidth={0.9}
+          />
+
+          {/* 3-Petal Lightweight Composite / Alloy Sabot */}
+          <path
+            d={`M ${tCx} ${ySabotBot} L ${tCx - rShell} ${ySabotBot} L ${tCx - rShell} ${ySabotBot - 12} L ${tCx - rShell * 0.72} ${ySabotBot - 22} L ${tCx - rShell * 0.72} ${ySabotTop + 14} L ${tCx - rShell} ${ySabotTop + 8} L ${tCx - rShell} ${ySabotTop} L ${tCx - rDart - 1.2} ${ySabotTop + 14} L ${tCx} ${ySabotTop + 14} Z`}
+            fill={sabotTone}
+            stroke={strokeMain}
+            strokeWidth={1.05}
+          />
+          <path
+            d={`M ${tCx + rDart} ${ySabotBot} L ${tCx + rShell} ${ySabotBot} L ${tCx + rShell} ${ySabotBot - 12} L ${tCx + rShell * 0.72} ${ySabotBot - 22} L ${tCx + rShell * 0.72} ${ySabotTop + 14} L ${tCx + rShell} ${ySabotTop + 8} L ${tCx + rShell} ${ySabotTop} L ${tCx + rDart + 1.2} ${ySabotTop + 14} L ${tCx + rDart} ${ySabotTop + 14} Z`}
+            fill={`url(#${hatchId})`}
+            stroke={strokeMain}
+            strokeWidth={1.05}
+          />
+          <rect
+            x={tCx - rShell - 0.5}
+            y={yCaseMouth - 3}
+            width={(rShell + 0.5) * 2}
+            height={4.2}
+            fill={copperBand}
+            stroke={strokeMain}
+            strokeWidth={0.7}
+          />
+
+          {/* Exposed + Submerged DU/Tungsten Monoblock Dart (Right half full length, Left half above case mouth) */}
+          <path
+            d={`M ${tCx} ${tTop} L ${tCx - rDart} ${tTop + 18} L ${tCx - rDart} ${yCaseMouth} L ${tCx} ${yCaseMouth} Z`}
+            fill={dartLight}
+            stroke={strokeMain}
+            strokeWidth={1.0}
+          />
+          <path
+            d={`M ${tCx} ${tTop} L ${tCx + rDart} ${tTop + 18} L ${tCx + rDart} ${yDartBase} L ${tCx} ${yDartBase} Z`}
+            fill={dartLight}
+            stroke={strokeMain}
+            strokeWidth={1.05}
+          />
+          <polygon
+            points={`${tCx},${tTop} ${tCx - rDart},${tTop + 18} ${tCx + rDart},${tTop + 18}`}
+            fill={steelDark}
+            stroke={strokeMain}
+            strokeWidth={0.9}
+          />
+
+          {/* Right OAL Bracket */}
+          <line x1={tCx + 4} y1={tTop} x2={dimOalX + 5} y2={tTop} stroke={dimStroke} strokeWidth={0.85} strokeOpacity={0.7} />
+          <line x1={tCx + rRim + 3} y1={tBot} x2={dimOalX + 5} y2={tBot} stroke={dimStroke} strokeWidth={0.85} strokeOpacity={0.7} />
+          <line x1={dimOalX} y1={tTop} x2={dimOalX} y2={tBot} stroke={dimStroke} strokeWidth={1.2} />
+          <text x={dimOalX + 7} y={136} fontSize={9} fontWeight={800} fill={dimStroke} fontFamily="ui-monospace, SFMono-Regular, monospace">
+            OAL
+          </text>
+          <text x={dimOalX + 7} y={149} fontSize={9.8} fontWeight={800} fill={labelFill} fontFamily="ui-monospace, SFMono-Regular, monospace">
+            984 mm
+          </text>
+
+          {/* Left Case Bracket */}
+          <line x1={dimCaseX - 5} y1={yCaseMouth} x2={tCx - rShell - 3} y2={yCaseMouth} stroke={mutedFill} strokeWidth={0.85} />
+          <line x1={dimCaseX - 5} y1={tBot} x2={tCx - rRim - 3} y2={tBot} stroke={mutedFill} strokeWidth={0.85} />
+          <line x1={dimCaseX} y1={yCaseMouth} x2={dimCaseX} y2={tBot} stroke={mutedFill} strokeWidth={1.1} />
+          <text x={dimCaseX - 6} y={(yCaseMouth + tBot) * 0.5 - 4} textAnchor="end" fontSize={8.6} fontWeight={700} fill={mutedFill} fontFamily="ui-monospace, SFMono-Regular, monospace">
+            {isZh ? '可燃药筒' : 'CASE'}
+          </text>
+          <text x={dimCaseX - 6} y={(yCaseMouth + tBot) * 0.5 + 8} textAnchor="end" fontSize={9.2} fontWeight={800} fill={labelFill} fontFamily="ui-monospace, SFMono-Regular, monospace">
+            570 mm
+          </text>
+
+          {/* Spaced Anatomy Labels */}
+          <text x={dimOalX + 7} y={42} fontSize={8.6} fontWeight={700} fill={labelFill}>
+            {isZh ? 'Ø25mm 贫铀/钨长杆' : 'Ø25mm DU/W Dart'}
+          </text>
+          <text x={dimOalX + 7} y={92} fontSize={8.6} fontWeight={700} fill={mutedFill}>
+            {isZh ? '三瓣脱壳弹托' : '3-Petal Sabot'}
+          </text>
+          <text x={dimOalX + 7} y={196} fontSize={8.6} fontWeight={700} fill={mutedFill}>
+            {isZh ? 'SCDB 发射药 + 尾翼' : 'SCDB Charge & Fins'}
+          </text>
+          <text x={dimOalX + 7} y={250} fontSize={8.6} fontWeight={700} fill={mutedFill}>
+            {isZh ? '钢弹底 + 长管电底火' : 'Stub Base + DM12A1'}
+          </text>
+
+          {/* Bottom Telemetry Caption */}
+          <text x={W * 0.5} y={H - 11} textAnchor="middle" fontSize={9.2} fontWeight={700} fill={labelFill} fontFamily="ui-monospace, SFMono-Regular, monospace">
+            {tankSpec.code} · NATO · {projKg} kg · {propKg} kg · 1,710 m/s · {energyMj} MJ
+          </text>
+        </svg>
+      );
+    }
+
+    // 88×571mmR KwK 36 PzGr. 39 APCBC-HE: Rimmed Brass Bottleneck Case + Tubular Sticks + APCBC-HE Burster & Base Fuze
+    const casePx = Math.round(tankSpec.caseLengthMm * pxPerMm);
+    const yCaseMouth = tBot - casePx;
+    const yShoulder = tBot - Math.round(casePx * 0.78);
+    const yNeckStart = tBot - Math.round(casePx * 0.9);
+    const rNeck = Math.max(13, tankSpec.neckDiameterMm * 0.5 * pxPerMm * 1.15);
+    const rShoulder = Math.max(15.5, tankSpec.shoulderDiameterMm ? tankSpec.shoulderDiameterMm * 0.5 * pxPerMm * 1.15 : rBase * 0.95);
+    const rimH = 4.2;
+    const wallW = 2.8;
+    const webH = 11;
+    const primerR = 4.8;
+    const yShellBase = yCaseMouth + 16;
+    const yCapSplit = tTop + 26;
+    const yBodyTop = tTop + 40;
+    const yHeTop = yBodyTop + 24;
+    const yFuzeTop = yShellBase - 8;
+
+    return (
+      <svg
+        className="monograph-vector-svg"
+        viewBox={`0 0 ${W} ${H}`}
+        role="img"
+        aria-label={
+          isZh
+            ? `${tankSpec.nameZh} 纵剖工程图`
+            : `${tankSpec.nameEn} Cutaway Schematic`
+        }
+      >
+        <defs>
+          <pattern id={hatchId} width={5} height={5} patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+            <rect width={5} height={5} fill={tankSpec.caseColor} fillOpacity={0.34} />
+            <line x1={0} y1={0} x2={0} y2={5} stroke={isBlueprint ? '#92400e' : '#fbbf24'} strokeWidth={1.15} />
+          </pattern>
+          <pattern id={hullHatchId} width={5} height={5} patternTransform="rotate(-45)" patternUnits="userSpaceOnUse">
+            <rect width={5} height={5} fill={steelDark} fillOpacity={0.34} />
+            <line x1={0} y1={0} x2={0} y2={5} stroke={strokeMain} strokeWidth={1.1} />
+          </pattern>
+          <pattern id={powderId} width={4.5} height={8} patternUnits="userSpaceOnUse">
+            <rect width={4.5} height={8} fill="#1e293b" />
+            <rect x={0.7} y={0} width={1.2} height={8} fill="#64748b" />
+            <rect x={2.7} y={0} width={1.2} height={8} fill="#94a3b8" />
+          </pattern>
+        </defs>
+
+        {/* Center Datum Axis */}
+        <line x1={tCx} y1={12} x2={tCx} y2={H - 18} stroke={mutedFill} strokeWidth={1} strokeDasharray="6 3 1.5 3" />
+
+        {/* Right Cutaway Tubular Diglycol Propellant Sticks */}
+        <rect
+          x={tCx}
+          y={yShellBase + 4}
+          width={Math.max(4, rShoulder - wallW - 1)}
+          height={Math.max(8, tBot - webH - yShellBase - 4)}
+          fill={`url(#${powderId})`}
+        />
+
+        {/* Left Exterior Rimmed C26000 Brass Case */}
+        <path
+          d={`M ${tCx} ${tBot} L ${tCx - rRim} ${tBot} L ${tCx - rRim} ${tBot - rimH} L ${tCx - rBase} ${tBot - rimH - 1} L ${tCx - rShoulder} ${yShoulder} L ${tCx - rNeck} ${yNeckStart} L ${tCx - rNeck} ${yCaseMouth} L ${tCx} ${yCaseMouth} Z`}
+          fill={tankSpec.caseColor}
+          fillOpacity={0.92}
+          stroke={isBlueprint ? '#78350f' : '#fde68a'}
+          strokeWidth={1.05}
+        />
+
+        {/* Right Cutaway Brass Case Wall + C/22 Electric Primer Screw */}
+        <path
+          d={`M ${tCx + primerR} ${tBot} L ${tCx + rRim} ${tBot} L ${tCx + rRim} ${tBot - rimH} L ${tCx + rBase} ${tBot - rimH - 1} L ${tCx + rShoulder} ${yShoulder} L ${tCx + rNeck} ${yNeckStart} L ${tCx + rNeck} ${yCaseMouth} L ${tCx + rNeck - wallW} ${yCaseMouth} L ${tCx + rNeck - wallW} ${yNeckStart} L ${tCx + rShoulder - wallW} ${yShoulder} L ${tCx + rBase - wallW * 1.2} ${tBot - webH} L ${tCx + primerR} ${tBot - webH} Z`}
+          fill={`url(#${hatchId})`}
+          stroke={isBlueprint ? '#92400e' : '#f59e0b'}
+          strokeWidth={1.05}
+        />
+        <rect
+          x={tCx}
+          y={tBot - webH - 2}
+          width={primerR}
+          height={webH + 2}
+          fill="#cbd5e1"
+          stroke={strokeMain}
+          strokeWidth={0.85}
+        />
+
+        {/* Left Exterior 88mm PzGr. 39 APCBC-HE Projectile + Twin Copper Driving Bands */}
+        <path
+          d={`M ${tCx} ${yCaseMouth} L ${tCx - rShell} ${yCaseMouth} L ${tCx - rShell} ${yBodyTop} Q ${tCx - rShell * 0.82} ${yCapSplit - 6} ${tCx} ${tTop} Z`}
+          fill={tankSpec.jacketColor}
+          stroke={strokeMain}
+          strokeWidth={1.05}
+        />
+        <rect x={tCx - rShell - 0.6} y={yCaseMouth - 10} width={rShell + 0.6} height={3} fill={copperBand} />
+        <rect x={tCx - rShell - 0.6} y={yCaseMouth - 5} width={rShell + 0.6} height={3} fill={copperBand} />
+
+        {/* Right Cutaway APCBC-HE Shell: Hollow Ballistic Windscreen, Soft AP Cap, Thick Steel Wall, 59g HE Cavity & BdZ 5103 Base Fuze */}
+        {/* Hollow ballistic windscreen shell */}
+        <path
+          d={`M ${tCx} ${tTop} Q ${tCx + rShell * 0.72} ${yCapSplit - 6} ${tCx + rShell} ${yBodyTop} L ${tCx + rShell - 2} ${yBodyTop} Q ${tCx + rShell * 0.62} ${yCapSplit - 2} ${tCx} ${tTop + 4} Z`}
+          fill={steelDark}
+          stroke={strokeMain}
+          strokeWidth={0.9}
+        />
+        {/* Soft AP piercing cap */}
+        <path
+          d={`M ${tCx} ${yCapSplit} L ${tCx + rShell * 0.78} ${yCapSplit + 3} L ${tCx + rShell} ${yBodyTop} L ${tCx} ${yBodyTop} Z`}
+          fill={dartLight}
+          stroke={strokeMain}
+          strokeWidth={0.9}
+        />
+        {/* Hardened alloy steel body wall */}
+        <path
+          d={`M ${tCx} ${yBodyTop} L ${tCx + rShell} ${yBodyTop} L ${tCx + rShell} ${yShellBase} L ${tCx} ${yShellBase} Z`}
+          fill={`url(#${hullHatchId})`}
+          stroke={strokeMain}
+          strokeWidth={1.05}
+        />
+        {/* 59g Base HE Burster Cavity */}
+        <path
+          d={`M ${tCx} ${yHeTop} Q ${tCx + rShell * 0.56} ${yHeTop + 2} ${tCx + rShell * 0.56} ${yFuzeTop} L ${tCx} ${yFuzeTop} Z`}
+          fill={heAmber}
+          fillOpacity={0.88}
+          stroke={isBlueprint ? '#9a3412' : '#fdba74'}
+          strokeWidth={0.85}
+        />
+        {/* BdZ 5103 Base Delay Fuze + Twin Copper Driving Bands */}
+        <rect x={tCx} y={yFuzeTop} width={rShell * 0.52} height={yShellBase - yFuzeTop} fill="#d97706" stroke={strokeMain} strokeWidth={0.8} />
+        <rect x={tCx + rShell - 1.2} y={yCaseMouth - 10} width={2.2} height={3} fill={copperBand} />
+        <rect x={tCx + rShell - 1.2} y={yCaseMouth - 5} width={2.2} height={3} fill={copperBand} />
+
+        {/* Right OAL Bracket */}
+        <line x1={tCx + 4} y1={tTop} x2={dimOalX + 5} y2={tTop} stroke={dimStroke} strokeWidth={0.85} strokeOpacity={0.7} />
+        <line x1={tCx + rRim + 3} y1={tBot} x2={dimOalX + 5} y2={tBot} stroke={dimStroke} strokeWidth={0.85} strokeOpacity={0.7} />
+        <line x1={dimOalX} y1={tTop} x2={dimOalX} y2={tBot} stroke={dimStroke} strokeWidth={1.2} />
+        <text x={dimOalX + 7} y={136} fontSize={9} fontWeight={800} fill={dimStroke} fontFamily="ui-monospace, SFMono-Regular, monospace">
+          OAL
+        </text>
+        <text x={dimOalX + 7} y={149} fontSize={9.8} fontWeight={800} fill={labelFill} fontFamily="ui-monospace, SFMono-Regular, monospace">
+          822 mm
+        </text>
+
+        {/* Left Rimmed Brass Case Bracket */}
+        <line x1={dimCaseX - 5} y1={yCaseMouth} x2={tCx - rNeck - 3} y2={yCaseMouth} stroke={mutedFill} strokeWidth={0.85} />
+        <line x1={dimCaseX - 5} y1={tBot} x2={tCx - rRim - 3} y2={tBot} stroke={mutedFill} strokeWidth={0.85} />
+        <line x1={dimCaseX} y1={yCaseMouth} x2={dimCaseX} y2={tBot} stroke={mutedFill} strokeWidth={1.1} />
+        <text x={dimCaseX - 6} y={(yCaseMouth + tBot) * 0.5 - 4} textAnchor="end" fontSize={8.6} fontWeight={700} fill={mutedFill} fontFamily="ui-monospace, SFMono-Regular, monospace">
+          {isZh ? '黄铜药筒' : 'BRASS CASE'}
+        </text>
+        <text x={dimCaseX - 6} y={(yCaseMouth + tBot) * 0.5 + 8} textAnchor="end" fontSize={9.2} fontWeight={800} fill={labelFill} fontFamily="ui-monospace, SFMono-Regular, monospace">
+          571 mm
+        </text>
+        <text x={dimCaseX - 6} y={(yCaseMouth + tBot) * 0.5 + 20} textAnchor="end" fontSize={8.2} fontWeight={700} fill={mutedFill} fontFamily="ui-monospace, SFMono-Regular, monospace">
+          {isZh ? '凸缘 Ø125' : 'Rim Ø125'}
+        </text>
+
+        {/* Spaced Anatomy Labels */}
+        <text x={dimOalX + 7} y={42} fontSize={8.6} fontWeight={700} fill={labelFill}>
+          {isZh ? '风帽 + 软钢被帽' : 'Windscreen + AP Cap'}
+        </text>
+        <text x={dimOalX + 7} y={88} fontSize={8.6} fontWeight={700} fill={heAmber}>
+          {isZh ? '59g 底部高爆装药' : '59g HE Burster'}
+        </text>
+        <text x={dimOalX + 7} y={196} fontSize={8.6} fontWeight={700} fill={mutedFill}>
+          {isZh ? '管状二甘醇发射药' : 'Tubular Charge Sticks'}
+        </text>
+        <text x={dimOalX + 7} y={252} fontSize={8.6} fontWeight={700} fill={mutedFill}>
+          {isZh ? 'C/22 电发火底火' : 'C/22 Electric Primer'}
+        </text>
+
+        {/* Bottom Telemetry Caption */}
+        <text x={W * 0.5} y={H - 11} textAnchor="middle" fontSize={9.2} fontWeight={700} fill={labelFill} fontFamily="ui-monospace, SFMono-Regular, monospace">
+          {tankSpec.code} · KwK 36 · {projKg} kg · {propKg} kg · 773 m/s · {energyMj} MJ
+        </text>
+      </svg>
+    );
+  }
 
   // Dedicated 12-Gauge Combat Shotshell Cutaway Branch (High-Brass Cup + Crimson Hull + Plastic Wad + 9× 00 Buckshot)
   if (caliberKey === '12_gauge') {
@@ -2368,8 +3082,64 @@ export const CaliberEnergyLadder: React.FC<{
   lang: LanguageCode;
 }> = ({ activeCaliber, lang }) => {
   const isZh = lang === 'zh';
-  const maxSqrt = Math.sqrt(18050);
   const activeKey = activeCaliber as string;
+
+  // Heavy Armor Tank Cannon Ordnance Energy Scale (.50 BMG 16.9 kJ benchmark -> 88mm 3.05 MJ -> 120mm 6.73 MJ -> 125mm 7.60 MJ)
+  if (isTankOrdnanceProfile(activeKey)) {
+    const bmgRef = CARTRIDGE_LAB_SPECS['50_bmg'];
+    const tankMaxSqrt = Math.sqrt(TANK_ORDNANCE_LAB_SPECS['125mm_apfsds'].muzzleEnergyJ);
+    const rows = [
+      {
+        key: '50_bmg_ref',
+        code: `${bmgRef.code} (${isZh ? '基准' : 'REF'})`,
+        energyJ: bmgRef.muzzleEnergyJ,
+        energyLabel: `${(bmgRef.muzzleEnergyJ / 1000).toFixed(1)} kJ`,
+        velMps: bmgRef.muzzleVelocityMps,
+        isCurrent: false,
+      },
+      ...TANK_ORDNANCE_ORDER.map((cal) => {
+        const s = TANK_ORDNANCE_LAB_SPECS[cal];
+        return {
+          key: cal,
+          code: s.code,
+          energyJ: s.muzzleEnergyJ,
+          energyLabel: `${(s.muzzleEnergyJ / 1_000_000).toFixed(2)} MJ`,
+          velMps: s.muzzleVelocityMps,
+          isCurrent: cal === activeKey,
+        };
+      }),
+    ];
+
+    return (
+      <div className="monograph-energy-ladder">
+        {rows.map((row) => {
+          const widthPct = Math.max(
+            6,
+            Math.min(100, (Math.sqrt(row.energyJ) / tankMaxSqrt) * 100)
+          );
+          return (
+            <div
+              key={row.key}
+              className={`m-energy-row ${row.isCurrent ? 'is-current' : ''}`}
+            >
+              <span className="m-energy-code">{row.code}</span>
+              <div className="m-energy-bar-track">
+                <div
+                  className="m-energy-bar-fill"
+                  style={{ width: `${widthPct.toFixed(1)}%` }}
+                />
+              </div>
+              <span className="m-energy-val">
+                {row.energyLabel} · {row.velMps.toLocaleString('en-US')} m/s
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+
+  const maxSqrt = Math.sqrt(18050);
   const archeryRow = isArcheryCaliberProfile(activeKey)
     ? getArcheryProjectileMeta(activeKey)
     : null;

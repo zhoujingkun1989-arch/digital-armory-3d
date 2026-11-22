@@ -2,8 +2,10 @@ import {
   CARTRIDGE_LAB_SPECS,
   getArcheryProjectileMeta,
   isArcheryCaliberProfile,
+  isTankOrdnanceProfile,
   type CartridgeLabSpec,
 } from '../../engine/cartridges/cartridgeSpecs';
+import { isTankWeapon } from '../../engine/physics/armoryPhysics';
 import {
   getExhibitClassification,
   type DriveFamilyId,
@@ -20,7 +22,7 @@ import type {
 
 // ============================================================================
 // DK Visual Encyclopedia — Editorial Data Layer & Curation Engine
-// Zero external runtime dependencies · 100% Bilingual (zh / en) · All 23 Exhibits
+// Zero external runtime dependencies · 100% Bilingual (zh / en) · All 27 Exhibits
 // ============================================================================
 
 export const DK_PALETTE = {
@@ -116,8 +118,9 @@ export interface DkEnrichedCalloutSpec {
 
 export interface DkCartridgePlateLayout {
   isArchery: boolean;
+  isTankOrdnance: boolean;
   orientation: 'vertical' | 'horizontal';
-  scaleDenom: 1 | 4 | 5;
+  scaleDenom: 1 | 4 | 5 | 10;
   oalMm: number;
   caseLengthMm: number;
   bulletDiameterMm: number;
@@ -366,7 +369,7 @@ const SPOKEN_COMPOUND_NUM_RE = new RegExp(
   'gi'
 );
 const SPOKEN_METRIC_RE = new RegExp(
-  `\\b(${SPOKEN_NUM_SEQ})\\s+(millimeters?|centimeters?|meters?\\s+per\\s+second|meters?|feet\\s+per\\s+second|degrees?|percent|megapascals?|milliseconds?|pounds?|grains?|grams?|inches?|lugs?|grooves?|rounds?|firing\\s+phases?|phases?)\\b`,
+  `\\b(${SPOKEN_NUM_SEQ})\\s+(millimeters?|centimeters?|meters?\\s+per\\s+second|meters?|feet\\s+per\\s+second|degrees?|percent|megapascals?|megajoules?|milliseconds?|horsepower|pounds?|grains?|grams?|inches?|lugs?|grooves?|rounds?|firing\\s+phases?|phases?)\\b`,
   'gi'
 );
 const SPOKEN_PHASE_RE = new RegExp(`\\b(phase)\\s+(${SPOKEN_NUM_SEQ})\\b`, 'gi');
@@ -402,7 +405,9 @@ function normalizeSpokenEnglishMetrics(text: string): string {
     if (uLow.startsWith('degree')) return `${parsed}°`;
     if (uLow === 'percent') return `${parsed}%`;
     if (uLow.startsWith('megapascal')) return `${parsed} MPa`;
+    if (uLow.startsWith('megajoule')) return `${parsed} MJ`;
     if (uLow.startsWith('millisecond')) return `${parsed} ms`;
+    if (uLow === 'horsepower') return `${parsed} HP`;
     if (uLow.startsWith('pound')) return `${parsed} lb`;
     if (uLow.startsWith('grain')) return `${parsed} gr`;
     if (uLow.startsWith('inch')) return `${parsed}"`;
@@ -639,7 +644,7 @@ function cleanCalloutTitle(rawTitle: string, lang: LanguageCode): string {
     // Strip leading year / dimension / caliber prefixes
     s = s
       .replace(
-        /^(?:20\d{2}\s*|18\.3"|14\.5吋?|24英寸|22英寸|4英寸|6英寸|5\.5"|20"|27"|29"|540mm\s*|414mm\s*|405mm\s*|200mm\s*|1\.5mm\s*|4\.73×33mm\s*|9×39mm\s*|7\.62×51mm\s*|5\.45×39mm\s*|7\.62×39mm\s*|5\.56(?:×45)?mm\s*|9×19mm\s*|\.30-06\s*|\.50\s*(?:BMG|AE)\s*|\.338\s*|\.357\s*|\.45\s*ACP\s*)/i,
+        /^(?:20\d{2}\s*|18\.3"|14\.5吋?|24英寸|22英寸|4英寸|6英寸|5\.5"|20"|27"|29"|540mm\s*|414mm\s*|405mm\s*|200mm\s*|1\.5mm\s*|125mm\s*|120×570mm\s*|120mm\s*|88×571mmR\s*|88mm\s*|100mm\s*|725mm\s*|1,850mm\s*|4\.73×33mm\s*|9×39mm\s*|7\.62×51mm\s*|5\.45×39mm\s*|7\.62×39mm\s*|5\.56(?:×45)?mm\s*|9×19mm\s*|\.30-06\s*|\.50\s*(?:BMG|AE)\s*|\.338\s*|\.357\s*|\.45\s*ACP\s*)/i,
         ''
       )
       .trim();
@@ -688,10 +693,10 @@ function cleanCalloutTitle(rawTitle: string, lang: LanguageCode): string {
 
   // Step 3: Strip redundant model-year / dimension / caliber prefixes
   s = s
-    .replace(/^(?:Model\s+20\d{2}|Obr\.\s*20\d{2}|USGI|M1014|M17|Gen\s*[2345]|Mk\s*\d+)\s+/i, '')
-    .replace(/^(?:\d+(?:\.\d+)?(?:"|in|mm|cm|-Rd|-Round|-Groove|-Lug|-Pos|-Blade|-Pin)\s+)+/i, '')
+    .replace(/^(?:Model\s+20\d{2}|Obr\.\s*20\d{2}|USGI|M1014|M17|Gen\s*[2345]|Mk\s*\d+|Leopard\s+2A7V|M1A2\s+SEP\s+v3|Krupp|Rheinmetall|Honeywell|Allison|Maybach|Diehl\s+570FT)\s+/i, '')
+    .replace(/^(?:\d+(?:,\d{3})*(?:\.\d+)?(?:"|in|mm|cm|m|L|-Rd|-Round|-Groove|-Lug|-Pos|-Blade|-Pin|-Pair|-Cassette|-Barrel|-Man|-Crew)\s+)+/i, '')
     .replace(
-      /^(?:\.30-06\s+Springfield|\.338\s+Lapua\s+Magnum|\.50\s+Action\s+Express|\.50\s+BMG|\.45\s+ACP|\.357\s+Magnum|4\.73[×x]33mm|9[×x]39mm|7\.62[×x]51mm|5\.45[×x]39mm|7\.62×39mm|5\.56×45mm|5\.7×28mm|9×19mm|12-Gauge)\s+/i,
+      /^(?:\.30-06\s+Springfield|\.338\s+Lapua\s+Magnum|\.50\s+Action\s+Express|\.50\s+BMG|\.45\s+ACP|\.357\s+Magnum|125mm|120[×x]570mm(?:\s+NATO)?|120mm(?:\s+L\/(?:44|55A?1?))?|88[×x]571mmR|88mm|4\.73[×x]33mm|9[×x]39mm|7\.62[×x]51mm|5\.45[×x]39mm|7\.62×39mm|5\.56×45mm|5\.7×28mm|9×19mm|12-Gauge)\s+/i,
       ''
     )
     .replace(/\s+/g, ' ')
@@ -1356,12 +1361,16 @@ export function buildDkScaleReference(
   const ratioPercent = Math.max(1, Math.round((oalMm / referenceLengthMm) * 100));
   const oalFmt = Math.round(oalMm).toLocaleString('en-US');
 
+  const isTank = category === 'armor' || isTankWeapon(weaponId);
+
   let caption: string;
   if (lang === 'zh') {
     if (silhouetteKind === 'hand') {
       caption = `全长 ${oalFmt} mm · 约为成人手掌 (190 mm) 的 ${ratioPercent}%`;
     } else if (weaponId === 'lift33') {
       caption = `轮轴距 ${oalFmt} mm · 约为成人身高的 ${ratioPercent}%`;
+    } else if (isTank) {
+      caption = `全长 ${oalFmt} mm（含主炮）· 约为成人身高的 ${ratioPercent}%`;
     } else {
       caption = `全长 ${oalFmt} mm · 约为成人身高的 ${ratioPercent}%`;
     }
@@ -1372,6 +1381,8 @@ export function buildDkScaleReference(
       caption = `${oalFmt} mm ATA · ~${ratioPercent}% of adult archer height`;
     } else if (silhouetteKind === 'archer') {
       caption = `${oalFmt} mm OAL · ~${ratioPercent}% of adult archer height`;
+    } else if (isTank) {
+      caption = `${oalFmt} mm OAL (incl. gun) · ~${ratioPercent}% of adult height`;
     } else {
       caption = `${oalFmt} mm OAL · ~${ratioPercent}% of adult height`;
     }
@@ -2138,6 +2149,134 @@ const EVOLUTION_TIMELINE_SEEDS: Readonly<
       eraRelation: 'successor',
     },
   ],
+  ztz99a: [
+    {
+      year: '1959',
+      name: { zh: '59 式中型坦克', en: 'Type 59 Medium' },
+      subtitle: { zh: '中国初代装甲基石 · 100mm 线膛炮', en: "China's First MBT · 100mm Rifled Gun" },
+      eraRelation: 'ancestor',
+    },
+    {
+      year: '1999',
+      name: { zh: 'ZTZ-99 (9910 工程)', en: 'ZTZ-99 (Project 9910)' },
+      subtitle: { zh: '125mm 滑膛炮 · 底置转盘装弹先驱', en: '125mm Smoothbore · Carousel Predecessor' },
+      eraRelation: 'predecessor',
+    },
+    {
+      year: '2011',
+      name: { zh: 'ZTZ-99A 主战坦克', en: 'ZTZ-99A Main Battle Tank' },
+      subtitle: { zh: '箭簇 FY-4 爆反 · 1,500 hp 综合传动', en: 'Arrowhead FY-4 ERA · 1,500 hp Powerpack' },
+      eraRelation: 'current',
+    },
+    {
+      year: '2014',
+      name: { zh: 'Leopard 2A7 / M1A2', en: 'Leopard 2A7 / M1A2' },
+      subtitle: { zh: '西方 120mm 隔爆尾舱三代半劲敌', en: 'Western 120mm Bustle-Rack MBT Rivals' },
+      eraRelation: 'rival',
+    },
+    {
+      year: '2024',
+      name: { zh: 'ZTZ-99A 主动防护演进', en: 'ZTZ-99A APS Evolution' },
+      subtitle: { zh: '硬杀伤拦截雷达与无人协同战网', en: 'Hard-Kill APS Radar & Networked C4ISR' },
+      eraRelation: 'successor',
+    },
+  ],
+  m1a2: [
+    {
+      year: '1960',
+      name: { zh: 'M60 巴顿主战坦克', en: 'M60 Patton MBT' },
+      subtitle: { zh: '美军冷战柴油动力与 105mm 线膛基石', en: 'US Cold-War 105mm Rifled Diesel Origin' },
+      eraRelation: 'ancestor',
+    },
+    {
+      year: '1980',
+      name: { zh: 'M1 / M1A1 艾布拉姆斯', en: 'M1 / M1A1 Abrams' },
+      subtitle: { zh: '燃气轮机、乔巴姆装甲与隔爆尾舱首创', en: 'Gas Turbine, Chobham & Blow-Off Bustle' },
+      eraRelation: 'predecessor',
+    },
+    {
+      year: '2017',
+      name: { zh: 'M1A2 SEP v3 Abrams', en: 'M1A2 SEP v3 Abrams' },
+      subtitle: { zh: '120mm M256 · NGAP 贫铀复合主甲', en: '120mm M256 · NGAP DU Composite Armor' },
+      eraRelation: 'current',
+    },
+    {
+      year: '2019',
+      name: { zh: 'Leopard 2A7V / ZTZ-99A', en: 'Leopard 2A7V / ZTZ-99A' },
+      subtitle: { zh: '欧亚 1,500 hp 柴油动力重甲同期对手', en: 'Eurasian 1,500 hp Diesel MBT Rivals' },
+      eraRelation: 'rival',
+    },
+    {
+      year: '2025',
+      name: { zh: 'M1E3 混合动力演进', en: 'M1E3 Hybrid Abrams' },
+      subtitle: { zh: '轻量化减重架构与无人炮塔自动装弹', en: 'Lightened Hybrid Pack & Autoloader Evo' },
+      eraRelation: 'successor',
+    },
+  ],
+  leopard2a7: [
+    {
+      year: '1965',
+      name: { zh: '德国豹 1 主战坦克', en: 'Leopard 1 MBT' },
+      subtitle: { zh: '高机动优先哲学的联邦国防军首代战车', en: 'Mobility-First Postwar German MBT Origin' },
+      eraRelation: 'ancestor',
+    },
+    {
+      year: '1979',
+      name: { zh: '豹 2A4 / 豹 2A6', en: 'Leopard 2A4 / 2A6' },
+      subtitle: { zh: 'MTU 快换动力包、箭簇楔甲与 L/55 炮', en: 'MTU Powerpack, Arrowhead & L/55 Debut' },
+      eraRelation: 'predecessor',
+    },
+    {
+      year: '2019',
+      name: { zh: 'KMW Leopard 2A7V', en: 'KMW Leopard 2A7V' },
+      subtitle: { zh: '6.6m L/55A1 高压炮 · 2A7V 重甲强化', en: '6.6m L/55A1 Gun · Heavy Glacis Armor' },
+      eraRelation: 'current',
+    },
+    {
+      year: '2019',
+      name: { zh: 'M1A2 SEP v3 / ZTZ-99A', en: 'M1A2 SEP v3 / ZTZ-99A' },
+      subtitle: { zh: '中美三代半重装主战坦克巅峰劲敌', en: 'US & PLA Heavy 3.5-Gen MBT Rivals' },
+      eraRelation: 'rival',
+    },
+    {
+      year: '2025',
+      name: { zh: '豹 2A8 / KF51 演进', en: 'Leopard 2A8 / KF51' },
+      subtitle: { zh: '原生 Trophy 硬杀伤与 130mm 滑膛探索', en: 'Native Trophy APS & 130mm Smoothbore' },
+      eraRelation: 'successor',
+    },
+  ],
+  tiger1: [
+    {
+      year: '1937',
+      name: { zh: '四号中型坦克 Pz.IV', en: 'Panzer IV Medium' },
+      subtitle: { zh: '德军经典五人车组与炮塔分工体系源头', en: '5-Man German Turret Ergonomics Origin' },
+      eraRelation: 'ancestor',
+    },
+    {
+      year: '1941',
+      name: { zh: 'VK 36.01 / VK 45.01', en: 'VK 36.01 / VK 45.01' },
+      subtitle: { zh: '交错负重轮与 88mm 反装甲重坦样车', en: 'Interleaved Wheels & 88mm Prototypes' },
+      eraRelation: 'predecessor',
+    },
+    {
+      year: '1942',
+      name: { zh: 'Tiger I Ausf. E (131)', en: 'Tiger I Ausf. E (131)' },
+      subtitle: { zh: '88mm KwK 36 · 百毫米直甲与交错轮系', en: '88mm KwK 36 · 100mm RHA & Interleaved' },
+      eraRelation: 'current',
+    },
+    {
+      year: '1943',
+      name: { zh: 'IS-2 / Sherman Firefly', en: 'IS-2 / Sherman Firefly' },
+      subtitle: { zh: '盟军重炮破甲与苏军 122mm 重坦宿敌', en: 'Allied 17-Pdr & Soviet 122mm Heavy Rivals' },
+      eraRelation: 'rival',
+    },
+    {
+      year: '1944',
+      name: { zh: '虎王 Tiger II (Ausf. B)', en: 'Tiger II (King Tiger)' },
+      subtitle: { zh: '大倾角首上装甲与长管 88mm L/71 演进', en: 'Sloped Glacis Armor & 88mm L/71 Gun' },
+      eraRelation: 'successor',
+    },
+  ],
 };
 
 export function buildDkEvolutionTimeline(
@@ -2233,6 +2372,13 @@ const LOCKING_LOUPE_COPY: Readonly<
       en: 'Precision cam tracks modulate leverage to store limb strain cleanly at full draw or cocked lock.',
     },
   },
+  sliding_wedge_breech: {
+    title: { zh: '立楔/横楔式坦克炮闩', en: 'Sliding-Wedge Cannon Breech' },
+    caption: {
+      zh: '锻钢立楔或横楔炮闩以超大承载面积刚性封锁 320–670 MPa 炮膛峰值压力，击发后自动开闩退底。',
+      en: 'Forged steel sliding wedge seals 320-670 MPa main-gun chamber pressure and drops open to eject stubs.',
+    },
+  },
 };
 
 const DRIVE_LOUPE_COPY: Readonly<
@@ -2294,6 +2440,13 @@ const DRIVE_LOUPE_COPY: Readonly<
       en: 'Split quad carbon limbs flex under synchronized cam leverage to store and launch elastic energy.',
     },
   },
+  hydro_pneumatic_cannon_recoil: {
+    title: { zh: '液气驻退复进与稳像炮塔', en: 'Hydro-Pneumatic Cannon Recoil' },
+    caption: {
+      zh: '液压节流驻退筒平稳耗散数兆焦后坐冲量，高压氮气复进机将重型炮管精准推回原位。',
+      en: 'Hydraulic recoil brakes dissipate multi-megajoule impulse while pneumatic recuperators return the tube.',
+    },
+  },
 };
 
 const FEED_LOUPE_COPY: Readonly<
@@ -2353,6 +2506,13 @@ const FEED_LOUPE_COPY: Readonly<
     caption: {
       zh: '高模量微径碳箭搭扣弦环或悬浮箭道，撒放瞬间零刮擦清离尾羽笔直飞出。',
       en: 'High-modulus carbon shaft clears drop-away forks or zero-rail track with zero fletching drag.',
+    },
+  },
+  autoloader_carousel_or_blast_bustle: {
+    title: { zh: '转盘自动装弹机与隔舱弹舱', en: 'Carousel Autoloader & Blast Bustle' },
+    caption: {
+      zh: '底置 22 发转盘自动装弹机或带防爆门与泄压板的炮塔尾舱，在战火中实现高速安全供弹。',
+      en: 'Hull-floor carousel autoloader or blast-door turret bustle delivers rapid, crew-isolated cannon feed.',
     },
   },
 };
@@ -2444,6 +2604,34 @@ const FCG_LOUPE_OVERRIDES: Partial<
       en: 'Floating disconnector and bronze 2-round ratchet pair with an independent thumb safety for twin-hit bursts.',
     },
   },
+  ztz99a: {
+    title: { zh: 'JD-3 激光压制与 150HB V12', en: 'JD-3 Laser & 150HB V12' },
+    caption: {
+      zh: '双通道猎-歼热像配全球独创 JD-3 激光压制转塔，1,500 hp V12 与 CH-1000 驱动 55 吨车体。',
+      en: 'Hunter-killer CITV pairs with the JD-3 laser dazzler and a 1,500 hp V12 / CH-1000 powerpack.',
+    },
+  },
+  m1a2: {
+    title: { zh: 'AGT1500 燃气轮机与 CROWS', en: 'AGT1500 Turbine & CROWS' },
+    caption: {
+      zh: '1,500 hp 航空燃气轮机钛压气机配铜质回热器，联动 CROWS-LP 武器站与猎-歼双观瞄。',
+      en: '1,500 hp titanium-compressor gas turbine with copper recuperator pairs with CROWS-LP & CITV.',
+    },
+  },
+  leopard2a7: {
+    title: { zh: 'PERI R17A3 光电与欧洲动力', en: 'PERI Optics & EuroPowerpack' },
+    caption: {
+      zh: '车长 360° PERI 周视热像协同 EMES-15 稳像主镜，驱动高风量径向风扇为 MTU V12 散热。',
+      en: '360-deg PERI R17A3 & EMES-15 hunter-killer optics join the 1,500 hp twin-turbo V12 pack.',
+    },
+  },
+  tiger1: {
+    title: { zh: 'TZF 9b 双目镜与 Olvar 8 速', en: 'TZF 9b Sight & Olvar Drive' },
+    caption: {
+      zh: '徕兹双目望远镜联动 88mm 摇架精准测距，前置 Olvar 8 速箱与 L600C 支持原地中心转向。',
+      en: 'Leitz TZF 9b binocular sight pairs with a front 8-speed Olvar gearbox for neutral-steer turns.',
+    },
+  },
 };
 
 const BREECH_LOUPE_OVERRIDES: Partial<
@@ -2470,6 +2658,67 @@ const BREECH_LOUPE_OVERRIDES: Partial<
       en: '405 mm barreled carriage glides 42 mm rearward while a steel pulley cable whips the bronze pre-feed forward.',
     },
   },
+  ztz99a: {
+    title: { zh: '立楔炮闩与 22 发转盘核心', en: 'Vertical Wedge & Carousel' },
+    caption: {
+      zh: '650 MPa 锻钢立楔复进下垂 160 mm 抽抛铜底托，衔接 22 发底置转盘自动选弹。',
+      en: '650 MPa vertical wedge drops 160 mm to eject brass stubs above the 22-rd floor carousel.',
+    },
+  },
+  m1a2: {
+    title: { zh: 'M256 立楔与 AGT1500 动力', en: 'M256 Breech & AGT1500' },
+    caption: {
+      zh: '670 MPa 立楔炮闩复进自动下落 150 mm 抛底，后置 AGT1500 涡轮驱动 66.8 吨重甲。',
+      en: '670 MPa falling wedge drops 150 mm for stub ejection paired with an AGT1500 gas turbine.',
+    },
+  },
+  leopard2a7: {
+    title: { zh: 'MTU V12 快换包与立楔炮尾', en: 'MTU V12 Pack & Breech' },
+    caption: {
+      zh: '47.6 升 1,500 hp V12 柴油机与 RENK 变速箱 15 分钟整包吊换，立楔炮尾承压 700 MPa。',
+      en: '15-minute swap 47.6L 1,500 hp MTU V12 & RENK pack pairs with a 700 MPa falling-wedge breech.',
+    },
+  },
+  tiger1: {
+    title: { zh: '克虏伯水平楔闩与迈巴赫 V12', en: 'Krupp Wedge & Maybach V12' },
+    caption: {
+      zh: '半自动水平滑楔复进横移 160 mm 自动退壳，23.1 升 HL230 V12 经中轴驱动前置变速箱。',
+      en: 'Semi-auto horizontal wedge slides 160 mm to eject brass; 23.1L V12 drives the front gearbox.',
+    },
+  },
+};
+
+const SLIDE_LOUPE_OVERRIDES: Partial<
+  Record<WeaponId, { title: BilingualText; caption: BilingualText }>
+> = {
+  ztz99a: {
+    title: { zh: '125mm ZPT-98 滑膛与驻退', en: '125mm ZPT-98 & Recoil' },
+    caption: {
+      zh: '6.25 米电渣重熔镀铬滑膛炮发射 1,780 m/s 穿甲弹，双联驻退筒柔顺吸收 320 mm 后坐。',
+      en: '6.25 m chrome smoothbore launches 1,780 m/s darts with twin hydraulic brakes over 320 mm.',
+    },
+  },
+  m1a2: {
+    title: { zh: '120mm M256 炮盾与复进簧', en: '120mm M256 & Recuperators' },
+    caption: {
+      zh: '5.28 米镀铬 L/44 滑膛炮配重甲防盾与双联粗丝复进簧，将 12 MJ 后坐约束在 300 mm。',
+      en: '5.28 m L/44 chrome smoothbore pairs with twin recuperators arresting recoil in 300 mm.',
+    },
+  },
+  leopard2a7: {
+    title: { zh: '6.6 米 Rh-120 L/55A1 主炮', en: '6.6m Rh-120 L/55A1 Gun' },
+    caption: {
+      zh: '55 倍径超高压镀铬滑膛炮赋予 DM63A1 1,750 m/s 初速，双硬铬驻退筒平抑 340 mm 后坐。',
+      en: '55-caliber smoothbore accelerates DM63A1 to 1,750 m/s with 340 mm hydraulic recoil control.',
+    },
+  },
+  tiger1: {
+    title: { zh: '88mm KwK 36 与双室制退器', en: '88mm KwK 36 & Muzzle Brake' },
+    caption: {
+      zh: '4.93 米 56 倍径线膛重炮配双室锥形制退器削减 45% 后坐，290 mm 驻退护栏承接空筒。',
+      en: '4.93 m L/56 rifled cannon with twin-baffle brake cuts recoil 45% across a 290 mm stroke.',
+    },
+  },
 };
 
 const MAG_LOUPE_OVERRIDES: Partial<
@@ -2487,6 +2736,34 @@ const MAG_LOUPE_OVERRIDES: Partial<
     caption: {
       zh: '通用 30 发 5.45mm 李子黑弹匣右倾 15° 避让滑轮，青铜托弹滑块 33 ms 预位第二发。',
       en: 'Standard 30-rd 5.45mm mag cants 15 deg right to clear the bronze shuttle pre-staging round two in 33 ms.',
+    },
+  },
+  ztz99a: {
+    title: { zh: '22 发转盘与链式推弹机', en: '22-Rd Carousel & Rammer' },
+    caption: {
+      zh: '直径 1.8 米车底装甲转盘分度选弹，提弹臂垂直举升 680 mm 后由刚性链推弹入膛。',
+      en: '1.8 m floor carousel indexes rounds for a 680 mm vertical hoist and rigid-chain rammer.',
+    },
+  },
+  m1a2: {
+    title: { zh: '电动隔爆门与 36 发尾舱', en: 'Blast Doors & 36-Rd Bustle' },
+    caption: {
+      zh: '膝控滑移重装甲隔爆门隔离 36 发 M829A4 蜂窝弹架，顶置泄压板殉爆瞬间向上导流。',
+      en: 'Knee-actuated armored blast doors isolate 36 M829A4 rounds beneath roof blow-off panels.',
+    },
+  },
+  leopard2a7: {
+    title: { zh: '隔爆滑门与 42 发分仓弹库', en: 'Blast Door & 42-Rd Storage' },
+    caption: {
+      zh: '气动防爆门隔离 15 发尾舱待发蜂窝架，前左车体装甲舱另储备 27 发 DM63A1 整装弹。',
+      en: 'Pneumatic blast door seals 15 bustle ready rounds backed by a 27-rd forward hull bunker.',
+    },
+  },
+  tiger1: {
+    title: { zh: '侧翼 88mm 黄铜定装弹架', en: 'Sponson 88mm Brass Racks' },
+    caption: {
+      zh: '宽大悬挑侧翼整齐码放 920 mm 长 PzGr. 39 凸缘黄铜穿甲弹，装填入膛触发炮闩自动闭锁。',
+      en: 'Wide sponson racks stow 920 mm rimmed brass PzGr. 39 shells that snap-close the wedge.',
     },
   },
 };
@@ -2516,11 +2793,16 @@ export function buildDkLoupeSpecs(
       : dossierOrWeaponId.isArchery;
 
   const cls = getExhibitClassification(weaponId);
-  const lockCopy = LOCKING_LOUPE_COPY[cls.lockingFamily];
-  const driveCopy = DRIVE_LOUPE_COPY[cls.driveFamily];
-  const feedCopy = FEED_LOUPE_COPY[cls.feedFamily];
+  const lockCopy =
+    LOCKING_LOUPE_COPY[cls.lockingFamily] ??
+    LOCKING_LOUPE_COPY.rotating_lug_bolt;
+  const driveCopy =
+    DRIVE_LOUPE_COPY[cls.driveFamily] ?? DRIVE_LOUPE_COPY.short_recoil_barrel;
+  const feedCopy =
+    FEED_LOUPE_COPY[cls.feedFamily] ?? FEED_LOUPE_COPY.staggered_box_magazine;
   const fcgOverride = FCG_LOUPE_OVERRIDES[weaponId];
   const breechOverride = BREECH_LOUPE_OVERRIDES[weaponId];
+  const slideOverride = SLIDE_LOUPE_OVERRIDES[weaponId];
   const magOverride = MAG_LOUPE_OVERRIDES[weaponId];
 
   const defaultFcgTitle = isArchery
@@ -2574,8 +2856,10 @@ export function buildDkLoupeSpecs(
     {
       plateKey: 'group_slide',
       magnification: '2.0×',
-      title: driveCopy.title[lang],
-      caption: driveCopy.caption[lang],
+      title: slideOverride ? slideOverride.title[lang] : driveCopy.title[lang],
+      caption: slideOverride
+        ? slideOverride.caption[lang]
+        : driveCopy.caption[lang],
     },
     {
       plateKey: 'group_fcg',
@@ -2599,9 +2883,10 @@ export function buildDkLoupeSpecs(
 /**
  * Computes exact physical millimeter SVG canvas & drawing coordinates for
  * `DkActualSizeCartridgePlate`.
- * - All 11 metallic cartridges render at literal `1:1` scale (`1 SVG unit = 1 mm`).
- * - Archery projectiles (`arrow_400gr` 736.6mm, `bolt_400gr` 508mm) automatically
- *   render at exact `1:5` or `1:4` scale so they fit comfortably on A4/A3 print sheets
+ * - All 15 small-arms metallic cartridges render at literal `1:1` scale (`1 SVG unit = 1 mm`).
+ * - Archery projectiles (`arrow_400gr` 736.6mm, `bolt_400gr` 508mm) render at `1:5` or `1:4` scale.
+ * - Heavy tank cannon ordnance (`88mm_pzgr39` 822mm, `120mm_apfsds` 984mm, `125mm_apfsds` 1150mm)
+ *   render at exact `1:10` metric CAD scale so all three compare cleanly on A4/A3 print sheets
  *   with zero overflow or NaN.
  */
 export function computeDkCartridgePlateLayout(
@@ -2611,6 +2896,7 @@ export function computeDkCartridgePlateLayout(
 ): DkCartridgePlateLayout {
   const caliberStr = String(cartridgeSpec.caliber);
   const isArchery = isArcheryCaliberProfile(caliberStr);
+  const isTankOrdnance = isTankOrdnanceProfile(caliberStr);
   const archeryMeta = isArchery ? getArcheryProjectileMeta(caliberStr) : null;
 
   const safeNum = (v: number | null | undefined, fb: number): number =>
@@ -2635,11 +2921,13 @@ export function computeDkCartridgePlateLayout(
         bulletDiameterMm
       );
 
-  const scaleDenom: 1 | 4 | 5 = isArchery
-    ? oalMm > 600
-      ? 5
-      : 4
-    : 1;
+  const scaleDenom: 1 | 4 | 5 | 10 = isTankOrdnance
+    ? 10
+    : isArchery
+      ? oalMm > 600
+        ? 5
+        : 4
+      : 1;
 
   const drawnLengthMm = Number((oalMm / scaleDenom).toFixed(2));
   const drawnMaxDiameterMm = Number((maxDiameterMm / scaleDenom).toFixed(2));
@@ -2675,6 +2963,7 @@ export function computeDkCartridgePlateLayout(
 
   return {
     isArchery,
+    isTankOrdnance,
     orientation,
     scaleDenom,
     oalMm,

@@ -1012,3 +1012,41 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+/* WP-18 Heavy Armor Hall Accent Pills & Bay Cards */
+.armory-filter-btn.is-armor-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border-color: rgba(245, 158, 11, 0.36);
+}
+
+.armory-filter-btn.is-armor-pill:hover,
+.armory-filter-btn.is-armor-pill.active {
+  border-color: rgba(245, 158, 11, 0.78);
+  color: #fde68a;
+  background: rgba(245, 158, 11, 0.16);
+}
+
+:is([data-theme='light'], .theme-light) .armory-filter-btn.is-armor-pill {
+  border-color: rgba(217, 119, 6, 0.42);
+}
+
+:is([data-theme='light'], .theme-light) .armory-filter-btn.is-armor-pill:hover,
+:is([data-theme='light'], .theme-light) .armory-filter-btn.is-armor-pill.active {
+  color: #92400e;
+  background: rgba(245, 158, 11, 0.18);
+  border-color: rgba(180, 83, 9, 0.72);
+}
+
+.armory-weapon-card.is-armor-card .wcard-bay {
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.38);
+}
+
+:is([data-theme='light'], .theme-light)
+  .armory-weapon-card.is-armor-card
+  .wcard-bay {
+  color: #b45309;
+  border-color: rgba(180, 83, 9, 0.38);
+}

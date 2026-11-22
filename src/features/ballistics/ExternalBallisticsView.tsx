@@ -6,6 +6,7 @@ import {
   Crosshair,
   Gauge,
   RotateCcw,
+  Shield,
   Table2,
   Wind,
   Zap,
@@ -27,6 +28,7 @@ import {
   type ExternalProjectileId,
   type ExternalProjectileInput,
   type MaxRangeOptionM,
+  type ProjectileCategory,
   type TrajectorySample,
   type ZeroRangeOptionM,
 } from '../../engine/physics/externalBallistics';
@@ -93,6 +95,9 @@ function formatDropShort(dropCm: number): string {
 }
 
 function formatEnergyShort(energyJ: number): string {
+  if (energyJ >= 1_000_000) {
+    return `${(energyJ / 1_000_000).toFixed(2)} MJ`;
+  }
   if (energyJ >= 1000) {
     return `${Math.round(energyJ).toLocaleString('en-US')} J`;
   }
@@ -245,9 +250,19 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
       ? match.zeroRangeM
       : EXTERNAL_PROJECTILE_SPECS[norm].recommendedZeroM;
   });
-  const [sightHeightCm, setSightHeightCm] = useState<number>(
-    defaultPreset.sightHeightCm
-  );
+  const [sightHeightCm, setSightHeightCm] = useState<number>(() => {
+    if (!resolvedInitialCaliber) return defaultPreset.sightHeightCm;
+    const norm = normalizeExternalProjectileId(resolvedInitialCaliber);
+    const match = BALLISTICS_RANGE_PRESETS.find((p) =>
+      p.projectiles.includes(norm)
+    );
+    return match
+      ? match.sightHeightCm
+      : EXTERNAL_PROJECTILE_SPECS[norm].defaultSightHeightCm;
+  });
+  const [categoryFilter, setCategoryFilter] = useState<
+    'all' | ProjectileCategory
+  >('all');
   const [windSpeedMps, setWindSpeedMps] = useState<number>(
     defaultPreset.crosswindMps
   );
@@ -1158,15 +1173,21 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
             <span className="eb-section-kicker">{ui.presetsLabel}</span>
             {BALLISTICS_RANGE_PRESETS.map((preset) => {
               const isAct = activePresetId === preset.id;
+              const isArmorPreset = preset.id === 'heavy_armor_cannons';
               return (
                 <button
                   key={preset.id}
                   type="button"
-                  className={`eb-preset-pill ${isAct ? 'is-active' : ''}`}
+                  className={`eb-preset-pill ${
+                    isArmorPreset ? 'is-armor-preset' : ''
+                  } ${isAct ? 'is-active' : ''}`}
                   aria-pressed={isAct}
                   title={isZh ? preset.subtitleZh : preset.subtitleEn}
                   onClick={() => handleApplyPreset(preset.id)}
                 >
+                  {isArmorPreset && (
+                    <Shield size={12} aria-hidden="true" />
+                  )}
                   <span>{isZh ? preset.labelZh : preset.labelEn}</span>
                 </button>
               );
@@ -1205,15 +1226,64 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
               MAX_ACTIVE_PROJECTILES
             )}
           </span>
+          <div
+            className="eb-category-filter-bar"
+            role="group"
+            aria-label={ui.categoryFilterAria}
+          >
+            {(
+              [
+                'all',
+                'armor',
+                'sniper',
+                'rifle',
+                'pdw',
+                'pistol',
+                'shotgun',
+                'archery',
+              ] as const
+            ).map((catKey) => {
+              const catCount =
+                catKey === 'all'
+                  ? EXTERNAL_PROJECTILE_ORDER.length
+                  : EXTERNAL_PROJECTILE_ORDER.filter(
+                      (id) => EXTERNAL_PROJECTILE_SPECS[id].category === catKey
+                    ).length;
+              const isAct = categoryFilter === catKey;
+              return (
+                <button
+                  key={catKey}
+                  type="button"
+                  className={`eb-cat-pill ${
+                    catKey === 'armor' ? 'is-armor-cat' : ''
+                  } ${isAct ? 'is-active' : ''}`}
+                  aria-pressed={isAct}
+                  onClick={() => {
+                    playWorkbenchFoley('toggle_switch');
+                    setCategoryFilter(catKey);
+                  }}
+                >
+                  <span>
+                    {ui.categoryLabels[catKey]} ({catCount})
+                  </span>
+                </button>
+              );
+            })}
+          </div>
           <span className="eb-slot-hint">{ui.slotLimitHint}</span>
         </div>
 
         <div className="eb-caliber-grid">
-          {EXTERNAL_PROJECTILE_ORDER.map((id) => {
+          {EXTERNAL_PROJECTILE_ORDER.filter(
+            (id) =>
+              categoryFilter === 'all' ||
+              EXTERNAL_PROJECTILE_SPECS[id].category === categoryFilter
+          ).map((id) => {
             const spec = EXTERNAL_PROJECTILE_SPECS[id];
             const slotIdx = activeProjectiles.indexOf(id);
             const isSelected = slotIdx !== -1;
             const isFocused = isSelected && focusedProjectile === id;
+            const isArmor = spec.category === 'armor';
             const slotColor = isSelected
               ? palette[slotIdx % palette.length]
               : undefined;
@@ -1222,9 +1292,9 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
               <button
                 key={id}
                 type="button"
-                className={`eb-caliber-chip ${isSelected ? 'is-selected' : ''} ${
-                  isFocused ? 'is-focused' : ''
-                }`}
+                className={`eb-caliber-chip ${isArmor ? 'is-armor-chip' : ''} ${
+                  isSelected ? 'is-selected' : ''
+                } ${isFocused ? 'is-focused' : ''}`}
                 aria-pressed={isSelected}
                 style={
                   slotColor
@@ -1240,10 +1310,15 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
               >
                 <span className="eb-chip-dot" aria-hidden="true" />
                 <div className="eb-chip-body">
-                  <span className="eb-chip-code">{spec.code}</span>
+                  <span className="eb-chip-code-row">
+                    <span className="eb-chip-code">{spec.code}</span>
+                    {isArmor && (
+                      <span className="eb-chip-armor-tag">{ui.armorBadge}</span>
+                    )}
+                  </span>
                   <span className="eb-chip-meta">
                     {Math.round(spec.muzzleVelocityMps)} m/s · {spec.dragModel}{' '}
-                    {spec.bc.toFixed(3)}
+                    {spec.bc.toFixed(spec.bc >= 1 ? 2 : 3)}
                   </span>
                 </div>
               </button>
@@ -1309,6 +1384,7 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
             {[
               { val: 4.8, label: ui.sightStdShort },
               { val: 6.2, label: ui.sightHighShort },
+              { val: 14.0, label: ui.sightTankShort },
             ].map((opt) => (
               <button
                 key={opt.val}

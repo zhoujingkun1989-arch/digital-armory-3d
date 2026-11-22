@@ -1,4 +1,7 @@
-import type { FlightRegime } from '../../engine/physics/externalBallistics';
+import type {
+  FlightRegime,
+  ProjectileCategory,
+} from '../../engine/physics/externalBallistics';
 import type { LanguageCode } from '../../narration/types';
 
 // ============================================================================
@@ -18,6 +21,9 @@ export interface ExternalBallisticsUiCopy {
   presetsLabel: string;
   projectilesLabel: (activeCount: number, maxCount: number) => string;
   slotLimitHint: string;
+  categoryFilterAria: string;
+  categoryLabels: Record<'all' | ProjectileCategory, string>;
+  armorBadge: string;
   isaReadout: (
     rhoKgM3: string,
     pct: string,
@@ -32,6 +38,7 @@ export interface ExternalBallisticsUiCopy {
   sightHeightLabel: string;
   sightStdShort: string;
   sightHighShort: string;
+  sightTankShort: string;
   crosswindLabel: string;
   windLeftToRight: string;
   windRightToLeft: string;
@@ -146,6 +153,18 @@ export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
     projectilesLabel: (active, max) => `同屏对比弹种 (${active}/${max})`,
     slotLimitHint:
       '点击弹种增减曲线（最多 4 条同屏叠加），点击已激活卡片切换主瞄准镜分划焦点',
+    categoryFilterAria: '按弹种类别筛选外弹道档案',
+    categoryLabels: {
+      all: '全部弹种',
+      armor: '坦克主炮',
+      sniper: '狙击重弹',
+      rifle: '步枪弹',
+      pdw: 'PDW 穿甲弹',
+      pistol: '手枪弹',
+      shotgun: '霰弹',
+      archery: '复合弓弩',
+    },
+    armorBadge: '主炮',
     isaReadout: (rho, pct, sound, hPa) =>
       `空气密度 ρ = ${rho} kg/m³ (${pct}%) · 音速 a = ${sound} m/s · 气压 ${hPa} hPa`,
     resetEnvBtn: '标准大气复位',
@@ -156,6 +175,7 @@ export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
     sightHeightLabel: '瞄准基线高',
     sightStdShort: '4.8 cm 标准',
     sightHighShort: '6.2 cm 高桥',
+    sightTankShort: '14.0 cm 坦克',
     crosswindLabel: '90° 侧向横风',
     windLeftToRight: '左→右 (+Z)',
     windRightToLeft: '右→左 (-Z)',
@@ -195,7 +215,7 @@ export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
     transonicZoneLabel: '跨音速激波区 (0.85–1.20 M)',
     energyChartTitle: '终端留存动能衰减曲线 Ek(x)',
     energyChartSubtitle:
-      '对比反器材重弹、全威力/中间步枪弹、9粒鹿弹总动能与弓弩弹性动能衰减规律',
+      '对比坦克主炮兆焦级穿甲弹（MJ）、反器材重弹、全威力/中间步枪弹、9粒鹿弹总动能与弓弩弹性动能衰减规律',
     scaleLinear: '线性焦耳 (J)',
     scaleSqrt: '平方根比尺 (√J)',
 
@@ -277,6 +297,18 @@ export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
       `Overlaid Projectiles (${active}/${max})`,
     slotLimitHint:
       'Toggle up to 4 simultaneous calibers; click an active card below to switch primary reticle & DOPE focus',
+    categoryFilterAria: 'Filter ballistic profiles by ordnance category',
+    categoryLabels: {
+      all: 'All',
+      armor: 'Tank Cannons',
+      sniper: 'Sniper',
+      rifle: 'Rifle',
+      pdw: 'PDW',
+      pistol: 'Pistol',
+      shotgun: 'Shotgun',
+      archery: 'Archery',
+    },
+    armorBadge: 'TANK',
     isaReadout: (rho, pct, sound, hPa) =>
       `Air Density rho = ${rho} kg/m3 (${pct}%) · Sound a = ${sound} m/s · ${hPa} hPa`,
     resetEnvBtn: 'Reset ISA',
@@ -288,6 +320,7 @@ export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
     sightHeightLabel: 'Sight Height',
     sightStdShort: '4.8 cm Std',
     sightHighShort: '6.2 cm High',
+    sightTankShort: '14.0 cm Tank',
     crosswindLabel: '90 deg Crosswind',
     windLeftToRight: 'L -> R (+Z)',
     windRightToLeft: 'R -> L (-Z)',
@@ -328,7 +361,7 @@ export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
     transonicZoneLabel: 'Transonic Wave-Drag Zone (0.85-1.20 M)',
     energyChartTitle: 'Retained Kinetic Energy Decay Ek(x)',
     energyChartSubtitle:
-      'Contrasting anti-materiel, rifle, 9-pellet buckshot payload, and archery kinetic retention',
+      'Contrasting megajoule tank cannon APFSDS/APCBC shells, anti-materiel, rifle, 9-pellet buckshot, and archery retention',
     scaleLinear: 'Linear (J)',
     scaleSqrt: 'Sqrt Scale (sqrt J)',
 
@@ -399,7 +432,7 @@ export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
   },
 };
 
-/** Wave-2 / WP-17 weapon display labels so links work seamlessly across all exhibits */
+/** Wave-2 / WP-17 / WP-18 weapon display labels so links work seamlessly across all exhibits */
 export const WAVE2_WEAPON_LABELS: Readonly<
   Record<string, { zh: string; en: string }>
 > = {
@@ -410,4 +443,8 @@ export const WAVE2_WEAPON_LABELS: Readonly<
   vss: { zh: 'VSS 螺纹切割机', en: 'VSS Vintorez' },
   m134: { zh: 'M134D 加特林', en: 'M134D Minigun' },
   an94: { zh: 'AN-94 阿巴坎', en: 'AN-94 Abakan' },
+  ztz99a: { zh: 'ZTZ-99A 主战坦克', en: 'ZTZ-99A MBT' },
+  m1a2: { zh: 'M1A2 SEP v3 艾布拉姆斯', en: 'M1A2 SEP v3 Abrams' },
+  leopard2a7: { zh: '豹 2A7V 主战坦克', en: 'Leopard 2A7V MBT' },
+  tiger1: { zh: '虎式 131 重型坦克', en: 'Tiger 131 Heavy Tank' },
 };

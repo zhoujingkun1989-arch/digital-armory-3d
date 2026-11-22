@@ -27,9 +27,9 @@ import { useAppStore } from '../src/store/useAppStore';
 const CJK_RE = /[\u3400-\u9fff\uf900-\ufaff]/;
 
 describe('WP-14 · 1,000m RK4 External Ballistics, Wind Drift & Reticle DOPE Lab', () => {
-  it('registers all 17 canonical projectile profiles including WP-17 473_caseless, 9x39_subsonic, 762_nato, 545_m74, Wave-2 45_acp, 12_gauge & 400gr bow/crossbow', () => {
-    expect(EXTERNAL_PROJECTILE_ORDER).toHaveLength(17);
-    expect(new Set(EXTERNAL_PROJECTILE_ORDER).size).toBe(17);
+  it('registers all 20 canonical projectile profiles including WP-18 tank cannons (88mm/120mm/125mm), WP-17, Wave-2 & 400gr bow/crossbow', () => {
+    expect(EXTERNAL_PROJECTILE_ORDER).toHaveLength(20);
+    expect(new Set(EXTERNAL_PROJECTILE_ORDER).size).toBe(20);
 
     const expectedIds = [
       '9mm_para',
@@ -49,6 +49,9 @@ describe('WP-14 · 1,000m RK4 External Ballistics, Wind Drift & Reticle DOPE Lab
       '50_bmg',
       'arrow_400gr',
       'bolt_400gr',
+      '88mm_pzgr39',
+      '120mm_apfsds',
+      '125mm_apfsds',
     ] as const;
 
     for (const id of expectedIds) {
@@ -369,6 +372,15 @@ describe('WP-14 · 1,000m RK4 External Ballistics, Wind Drift & Reticle DOPE Lab
       enCopy.presetsLabel,
       enCopy.projectilesLabel(4, 4),
       enCopy.slotLimitHint,
+      enCopy.categoryFilterAria,
+      enCopy.categoryLabels.all,
+      enCopy.categoryLabels.armor,
+      enCopy.categoryLabels.sniper,
+      enCopy.categoryLabels.rifle,
+      enCopy.categoryLabels.pistol,
+      enCopy.categoryLabels.shotgun,
+      enCopy.categoryLabels.archery,
+      enCopy.armorBadge,
       enCopy.isaReadout('1.225', '100.0', '340.3', '1013.3'),
       enCopy.resetEnvBtn,
       enCopy.resetEnvTitle,
@@ -377,6 +389,7 @@ describe('WP-14 · 1,000m RK4 External Ballistics, Wind Drift & Reticle DOPE Lab
       enCopy.sightHeightLabel,
       enCopy.sightStdShort,
       enCopy.sightHighShort,
+      enCopy.sightTankShort,
       enCopy.crosswindLabel,
       enCopy.windLeftToRight,
       enCopy.windRightToLeft,

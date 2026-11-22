@@ -1,0 +1,942 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "leopard2a7",
+  "generatedAt": "2026-11-21T00:28:00.000000+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "KMW Leopard 2A7V",
+    "subtitle": "120mm Rh-120 L/55A1 Smoothbore · Hollow Arrowhead Composite Armor & 1,500-HP MTU V12 EuroPowerpack",
+    "originCountry": "Germany",
+    "weaponType": "Main Battle Tank",
+    "categoryLabel": "Heavy Armor",
+    "actionMechanism": "700 MPa 120mm L/55A1 High-Pressure Smoothbore · Vertical Falling-Wedge Breech · Pneumatic Blast-Door Bustle & MTU V12 Quick-Swap Powerpack",
+    "statusLabel": "In Vault · Strippable",
+    "description": "Built by Krauss-Maffei Wegmann in Munich as the flagship modernized main battle tank of the German Bundeswehr, the Leopard 2A7V fuses three pillars of land-warfare engineering into a true 66.5-tonne, 10.97-meter steel-and-composite masterpiece. Its signature hollow spaced Arrowhead composite turret wedges deflect and shear incoming kinetic penetrators before they reach the main armor, its 6.6-meter Rheinmetall Rh-120 L/55A1 high-pressure smoothbore fires 120mm DM63A1 tungsten darts at 1,750 m/s, and its quick-swap 47.6-liter MTU MB 873 Ka-501 twin-turbo V12 EuroPowerpack can be lifted out and replaced in just fifteen minutes in the field.",
+    "highlights": [
+      "Hinged Hollow Spaced Arrowhead Composite Turret Wedges w/ Multi-Layer NERA Plates",
+      "6.6-Meter Rheinmetall Rh-120 L/55A1 700 MPa Smoothbore & -340 mm Hydraulic Recoil",
+      "Quick-Swap 47.6L 1,500-HP MTU MB 873 V12 Diesel & RENK HSWL 354 EuroPowerpack",
+      "Pneumatic Bustle Blast Door, 15-Rd Ready Rack, 27-Rd Hull Bunker & Hunter-Killer Optics"
+    ],
+    "workbenchTitle": "KMW Leopard 2A7V 1:1 Cutaway & 120mm L/55A1 Fire-Reload Simulation",
+    "workbenchSubtitle": "4 Modular Groups · 26 Core 1:1 Nodes · Hollow Arrowhead Armor, 6.6m L/55A1 Recoil, Bustle Blast Door & MTU V12 EuroPowerpack",
+    "cutawayLabel": "MTU V12 & Bustle Cutaway",
+    "cutawayTitle": "Switch to 1:1 longitudinal cutaway view and focus on the 47.6L MTU MB 873 V12 EuroPowerpack, hollow Arrowhead armor, and 120mm L/55A1 breech",
+    "searchPlaceholder": "Search component name / code (e.g. MTU V12, Arrowhead, L/55A1, Blast Door, FC-04)...",
+    "firingMilestoneLabel": "Blast Door & DM63A1 Load",
+    "rateOfFire": "12-15 RPM (Manual Burst) / 8-10 RPM (Sustained)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Combat Ready",
+        "subLabel": "0% Combat Ready",
+        "desc": "Krauss-Maffei Wegmann Leopard 2A7V main battle tank at true 1:1 real-world scale (10.97 m overall length with 6.6 m L/55A1 cannon, 3.75 m width, 2.64 m height) in Bundeswehr NATO three-tone camouflage with bolted 2A7V glacis add-on armor, razor-sharp hollow Arrowhead turret wedges, and Diehl 570FT tracks."
+      },
+      "field_strip": {
+        "label": "EuroPowerpack Swap",
+        "subLabel": "30% EuroPowerpack Swap",
+        "desc": "Recreates the Bundeswehr's legendary 15-minute field powerpack change: lift the elevated twin-fan rear engine deck and crane the bolted 1,500-HP MTU MB 873 V12 diesel, RENK HSWL 354 gearbox, and radial cooling fan out as one unit while parting the modular composite skirts and right track belt."
+      },
+      "powerpack_strip": {
+        "label": "Arrowhead & Turret Core",
+        "subLabel": "65% Arrowhead & Turret Core",
+        "desc": "Advance the hinged hollow Arrowhead composite wedges forward to inspect internal spaced NERA plates, raise the welded hollow turret shell and PERI/EMES hunter-killer optics, and expose the 6.6 m L/55A1 cannon, chrome hydraulic recoil brakes, falling-wedge breech, and bustle blast-door ammo chain."
+      },
+      "full_exploded": {
+        "label": "Full 26-Node 1:1 BOM",
+        "subLabel": "100% Full Exploded",
+        "desc": "Complete zero-overlap 1:1 exploded engineering showcase of all 26 Leopard 2A7V assemblies: from the 6.6 m Rh-120 L/55A1 smoothbore gun, hollow Arrowhead wedges, falling-wedge breech, and 42-round DM63A1 ammunition system to the 47.6L twin-turbo MTU V12 EuroPowerpack and 14 transverse torsion bars."
+      }
+    },
+    "firingPhases": {
+      "leo_phase_1_emes_command": {
+        "shortLabel": "EMES Fire Command",
+        "title": "Phase 1 · Stabilized EMES-15 Ballistic Solution & 120mm Electric Primer Ignition",
+        "description": "Commander PERI R17A3 and gunner EMES-15 laser rangefinder compute range, crosswind, tube droop, and propellant temperature. As the all-electric stabilized reticle crosses target center, the breechblock electric contact fires the 120mm DM63A1 primer."
+      },
+      "leo_phase_2_dm63_launch": {
+        "shortLabel": "1,750 m/s Dart Launch",
+        "title": "Phase 2 · 700 MPa Chamber Pressure Accelerates DM63A1 Tungsten Dart to 1,750 m/s",
+        "description": "Temperature-independent TIPS propellant spikes to 700 MPa inside the chrome-lined L/55A1 chamber, accelerating the discarding aluminum sabot and heavy tungsten long-rod penetrator down the 6.6-meter smoothbore barrel to exit the muzzle at 1,750 m/s (Mach 5.1)."
+      },
+      "leo_phase_3_recoil_stroke": {
+        "shortLabel": "-340 mm Recoil Stroke",
+        "title": "Phase 3 · 6.6m L/55A1 Barrel & Breech Recoil -340 mm Compressing Twin Recuperator Coils",
+        "description": "Massive firing impulse drives the entire 6.6-meter L/55A1 tube and breechblock 340 mm rearward along the steel trunnion cradle. Twin mirror-chrome hydraulic recoil brakes throttle high-pressure oil while compressing both helical recuperator springs to 63.8 percent free length."
+      },
+      "leo_phase_4_breech_drop": {
+        "shortLabel": "Breech Drop & Stub Eject",
+        "title": "Phase 4 · Hydro-Pneumatic Counter-Recoil & -160 mm Vertical Falling-Wedge Opening",
+        "description": "Stored recuperator energy smoothly glides the cannon 340 mm forward into battery. At counter-recoil end, a semi-automatic cam trips the breech crank, dropping the massive falling wedge -160 mm while flexing the breech closing spring and ejecting the metallic stub base."
+      },
+      "leo_phase_5_blast_door": {
+        "shortLabel": "Blast Door Slides Open",
+        "title": "Phase 5 · Loader Knee-Switch Slides Armored Bustle Blast Door 340 mm Open",
+        "description": "Once the bore evacuator purges chamber fumes, the loader taps the pneumatic knee switch to slide the heavy armored bustle blast door 340 mm laterally along its steel rails, briefly revealing the 15-round DM63A1 honeycomb ready rack."
+      },
+      "leo_phase_6_round_ram": {
+        "shortLabel": "DM63A1 Forward Ram",
+        "title": "Phase 6 · Loader Extracts & Rams 984 mm DM63A1 Cartridge +1,520 mm Into Chamber",
+        "description": "In one fluid motion, the loader withdraws the 21.4-kg 120mm DM63A1 unitary round from the open bustle slot, aligns it with the bore centerline, and rams it +1,520 mm forward into the L/55A1 chamber while the MTU V12 cooling fan spins steadily aft."
+      },
+      "leo_phase_7_lock_seal": {
+        "shortLabel": "Breech Lock & Door Seal",
+        "title": "Phase 7 · Breech Spring Snaps Vertical Wedge Closed & Blast Door Seals Bustle",
+        "description": "The DM63A1 stub rim trips the extractor forks, releasing the compressed breech closing spring to snap the heavy vertical wedge upward +160 mm into battery. Simultaneously, the armored bustle blast door slides shut and locks, completing a 4-second combat reload cycle."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "莱茵钢铁与箭簇美学：德国克劳斯-玛菲豹 2A7V 的半世纪陆战工程传奇",
+      "deck": "从 1970 年代美德 MBT-70 分道扬镳后诞生的 120mm 滑膛炮与 1,500 马力快换欧洲动力包，到令现代穿甲弹望而生畏的中空箭簇楔形复合装甲与 6.6 米 L/55A1 长矛，豹 2A7V 铸就了当代西方重型主战坦克的黄金工程标尺。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1963–1979",
+          "title": "从 MBT-70 废墟崛起：120mm 滑膛炮与 15 分钟欧洲动力包",
+          "paragraphs": [
+            "二十世纪六十年代末，美德联合研制的未来超级坦克 MBT-70 因造价失控、液气悬挂故障频发与技术路线分歧宣告流产。然而，慕尼黑的克劳斯-玛菲（Krauss-Maffei）工程师团队并未空手而归——他们从失败中提炼出了两项足以主宰未来半个世纪重装甲战场的绝对杀手锏：一是莱茵金属突破传统线膛桎梏打造的 120 毫米高压滑膛炮，二是腓特烈港 MTU 与奥格斯堡伦克（RENK）联合打造的 1,500 马力一体化快换柴油动力包。",
+            "1970 年德国国防部启动本土「野猪/豹 2」计划，坚持火力、防护与机动三大指标绝对均衡的理性哲学。相较当时热衷燃气轮机的美国同行，德国工程师毅然押注 47.6 升 90 度 V12 双涡轮增压柴油机 MTU MB 873 Ka-501，并将其与伦克 HSWL 354 四前二倒液力机械综合变速箱、双侧铜翅散热芯和顶置大风量径向风扇刚性螺栓集成为一个整体模块——这套「欧洲动力包」（EuroPowerpack）在野战条件下仅需吊车与快速断开接头，十五分钟即可完成整机更换！",
+            "1979 年 10 月，首批全长 7.7 米、车体采用大倾角首上与 7 对蝶形负重轮加 14 根扭杆的豹 2 主战坦克正式交付联邦国防军。从诞生第一天起，它就在速度、越野平顺性、120 毫米直射穿透力与战地可维护性上树立了令全球陆军惊叹的精密标杆。"
+          ],
+          "audioScript": "二十世纪七十年代初，美德联合坦克计划流产之后，德国克劳斯玛菲工程师从废墟中提炼出了两项震撼陆战史的绝技：莱茵金属一百二十毫米滑膛炮，以及MTU四十七点六升一千五百马力V12双涡轮柴油欧洲动力包。一九七九年豹二正式列装，仅需十五分钟就能在野战整包吊换发动机与变速箱，一举树立了现代重型坦克的工程黄金标准。",
+          "audioUrl": "audio/leopard2a7/story_act1_zh.mp3",
+          "focusPartId": "leo_hull_shell",
+          "focusPartLabel": "2A7V 中空焊接复合装甲车体"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1980–1995",
+          "title": "箭簇革命：中空楔形复合装甲与全电猎-歼火控",
+          "paragraphs": [
+            "冷战末期，随着大长径比贫铀与重钨合金尾翼稳定脱壳穿甲弹（APFSDS）的穿深飙升，早期豹 2A4 垂直方正的炮塔正面与右颊嵌入式炮长镜凹槽逐渐显露防护短板。九十年代初，德国启动雄心勃勃的「战力提升计划」（Kampfwertsteigerung，简称 KWS），决心在不大幅恶化车体机动性的前提下实现防护代差跃升。",
+            "KMW 装甲大师们给出了世界兵器美学史上最具震撼力的答案——中空箭簇楔形附加复合装甲（Arrowhead Spaced Wedge Armor）。工程师先将炮长 EMES-15 主瞄准镜整体抬升嵌入炮塔前右顶面以彻底消除正面装甲弱区，随即在炮塔左右两颊铰接安装了一对呈 68 度锋锐前探的中空三角形复合装甲楔！剖开它的内部你会发现惊人玄机：箭簇内部并非笨重实心钢块，而是暗藏多层倾斜排布的间隙 NERA 钢胶复合夹层板——当敌方超高速穿甲弹芯以每秒一千六百米刺入斜板时，不对称应力波与中空通道瞬间将细长弹芯掰弯折断，令其尚未触及主装甲便丧失致命穿透力！",
+            "与此同时，豹 2A5 全面淘汰易燃高压液压炮塔伺服，换装静音高速的 ESW-Extel 全电方位与俯仰稳定驱动系统，并赋予车长独立双向稳定的 PERI R17 全景热像周视仪，彻底奠定了现代西方坦克「车长寻敌、炮长歼敌」的猎-歼（Hunter-Killer）作战范式。"
+          ],
+          "audioScript": "面对冷战末期穿深飙升的长杆穿甲弹，德国工程师在九十年代的战力提升计划中缔造了世界装甲美学的图腾：中空箭簇楔形复合装甲。它并非笨重实心钢块，而是内置多层倾斜间隙复合夹层板，能在中空腔内瞬间折断敌方超高速钨芯长杆。配合全电炮塔伺服与PERI车长周视热像仪，豹二由此迈入现代猎歼火控时代。",
+          "audioUrl": "audio/leopard2a7/story_act2_zh.mp3",
+          "focusPartId": "leo_arrowhead_wedges",
+          "focusPartLabel": "中空箭簇楔形复合颊部附加装甲"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1996–2014",
+          "title": "加长 1.3 米的莱茵长矛：6.6 米 L/55A1 高压滑膛炮",
+          "paragraphs": [
+            "坚盾铸成，利矛必随之进化。早期豹 2 装备的 44 倍径 120 毫米滑膛炮（全长 5.28 米）虽已称雄欧美，但在面对新一代双防爆反应装甲与重型复合主装甲时，莱茵金属决意从内弹道物理定律的根源再挖潜能：将炮管长度暴增整整 1.32 米，打造出全长 6.60 米（55 倍口径）的 Rh-120 L/55 乃至强化高压版 L/55A1 滑膛炮！",
+            "更长的 6.6 米镀铬滑膛意味着 700 兆帕级高压火药燃气拥有更长的做功行程。配合莱茵金属专利温度独立推进剂（TIPS）与 DM63A1 钨合金尾翼稳定脱壳穿甲弹，弹丸炮口初速飙升至惊人的每秒一千七百五十米（突破五倍音速），在三千米极远距离仍能保持恐怖的穿甲动能与极低弹道弧线。为了防止这根超长重型炮管在阳光暴晒或寒风吹拂下发生微米级热弯曲，整管包覆多层玻纤隔热护套，并在炮口顶端加装激光炮口基准校准器（MRS），令火控计算机实时修正每一毫米炮管下垂。",
+            "炮塔内部的弹药安全同样堪称教科书：15 发待发 DM63A1 蜂窝弹架被厚重的气动钢制防爆隔离门彻底封隔于尾舱之中，装填手仅在取弹瞬间膝控滑开 340 毫米，4 秒内将重达 21.4 公斤的整装炮弹推入下坠式立楔炮闩并自动闭锁；即便尾舱惨遭击穿，顶部防爆泄压板也会将爆炸烈焰全部导引向天空，全力护卫四名乘员生还。"
+          ],
+          "audioScript": "铸就坚盾之后，莱茵金属又将一百二十毫米滑膛炮管加长了一点三二米，造出全长六点六米的L55A1高压长矛。七百兆帕级工作膛压将DM63A1钨芯穿甲弹以每秒一千七百五十米的恐怖初速推离炮口。炮塔后舱则以气动防爆滑动门与顶置泄压板封存十五发待发弹，让装填手在四秒极速装弹的同时牢牢守住乘员生命线。",
+          "audioUrl": "audio/leopard2a7/story_act3_zh.mp3",
+          "focusPartId": "leo_main_gun",
+          "focusPartLabel": "莱茵金属 Rh-120 L/55A1 6.6米滑膛炮"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "2015–至今",
+          "title": "豹 2A7V 终极进化：重甲、数字化 IFIS 与欧洲陆军脊梁",
+          "paragraphs": [
+            "进入二十一世纪第二个十年，高强度对称装甲对抗重回欧洲防务视野。德国国防军联合 KMW 与莱茵金属推出最新现役旗舰型号——豹 2A7V（其中「V」源自德文 Verbessert，意为全面强化升级版）。最一眼可辨的外观进化，是在车体大倾角首上正面整体加装了一块厚重的模块化复合附加装甲块，配合防雷双层车底与前部加厚复合侧裙，将 66.5 吨车体的正侧底全向防护拉升至前所未有的高度。",
+            "车体与炮塔内部亦迎来全面数字化洗礼：升级后的 L/55A1 高压炮膛全面支持可编程空爆多用途榴弹 DM11 与新一代高膛压穿甲弹；炮长 EMES-15 与车长 PERI R17A3 全面换装第三代 ATTICA 红外热成像仪，配合乘员舱内高亮的 IFIS 数字化战场指挥管理终端与高效辅助动力空调系统，令车组在酷暑寒冬与电磁强干扰下依旧保持敏锐态势感知；传动端重新匹配了减速比与强化扭杆，确保增重至 66.5 吨后依旧拥有凌厉的越野加速与 31 km/h 极速倒车。",
+            "如今，超过二十个国家的陆军选择了豹 2 家族作为装甲主力。在数字军械库的 1:1 实时三维纵剖视窗里，拉开侧裙与复合外壳，目睹 47.6 升 MTU V12 柴油巨兽的十二个银灰气缸、旋转冷却风扇、6.6 米高压滑膛炮的后坐驻退以及防爆门后闪耀的 DM63A1 穿甲弹——你将读懂德国重工业半个世纪对精密机械与均衡美学的极致执念。"
+          ],
+          "audioScript": "步入新时代，全面强化的豹2A7V在首上披挂厚重复合附加装甲块，全面换装七百兆帕L55A1高压炮、第三代热成像光电与数字化IFIS战场终端，全车六十六点五吨依旧在MTU柴油动力包推动下疾驰如风。从中空箭簇到十五分钟快换动力包，豹2A7V将德国半世纪陆战机械工程的理性与精密推上了当世巅峰。",
+          "audioUrl": "audio/leopard2a7/story_act4_zh.mp3",
+          "focusPartId": "leo_mtu_v12",
+          "focusPartLabel": "MTU MB 873 Ka-501 47.6L V12 双涡轮柴油机"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "铰接式中空箭簇楔形复合装甲（Spaced Arrowhead NERA）",
+          "tag": "动能长杆偏转折断",
+          "summary": "68° 锋锐前探的炮塔颊部中空楔形装甲模块内嵌多层倾斜 NERA 钢胶夹层板，利用非对称反弹应力波与中空腔体在主装甲之前偏转折断敌方 1,700 m/s 级穿甲弹长杆。",
+          "focusPartId": "leo_arrowhead_wedges",
+          "focusPartLabel": "中空箭簇楔形复合装甲"
+        },
+        {
+          "id": "bt2",
+          "title": "6.6 米 Rh-120 L/55A1 700 MPa 滑膛炮与 DM63A1",
+          "tag": "55 倍径 1,750 m/s 动能长矛",
+          "summary": "较早期 L/44 加长 1.32 米并提升至 700 MPa 级工作膛压，搭配隔热护套、炮口基准仪与温度独立推进剂 DM63A1 钨芯弹，赋予五倍音速超长距精确穿甲能力。",
+          "focusPartId": "leo_main_gun",
+          "focusPartLabel": "Rh-120 L/55A1 6.6米滑膛炮"
+        },
+        {
+          "id": "bt3",
+          "title": "15 分钟战地快换 MTU MB 873 V12 + RENK 欧洲动力包",
+          "tag": "1,500 马力模块化机动奇迹",
+          "summary": "将 47.6L 双涡轮增压 V12 柴油机、RENK HSWL 354 四前二倒综合变速箱、铜翅散热芯与顶置高风量径向冷却风扇集成为单吊装单元，15 分钟即可在战地完成整包更换。",
+          "focusPartId": "leo_mtu_v12",
+          "focusPartLabel": "MTU MB 873 V12 双涡轮柴油机"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1963–1970",
+          "title": "美德 MBT-70 计划解耦与本土豹 2 启动",
+          "detail": "联邦德国从联合项目中沉淀出 120mm 滑膛炮与 1,500 马力柴油动力技术，由克劳斯-玛菲正式启动豹 2 主战坦克研制。"
+        },
+        {
+          "year": "1972–1979",
+          "title": "17 辆原型车严苛测试与豹 2 正式交付",
+          "detail": "历经北极极寒与中东酷暑验证后，首批配装 Rh-120 L/44 滑膛炮与 MTU MB 873 V12 动力包的量产型豹 2 于 1979 年 10 月交付德军。"
+        },
+        {
+          "year": "1991–1995",
+          "title": "KWS II 豹 2A5 问世：中空箭簇与全电炮塔",
+          "detail": "首创标志性中空箭簇楔形复合颊部装甲、抬升式 EMES-15 瞄准镜、全电 ESW-Extel 伺服驱动与车长 PERI R17A2 周视热像仪。"
+        },
+        {
+          "year": "2001",
+          "title": "KWS I 豹 2A6 换装 6.6 米 Rh-120 L/55 长身管炮",
+          "detail": "炮管由 44 倍径加长 1.32 米至 55 倍径（6.60 米），初速与远距穿深跃居全球现役主战坦克前列。"
+        },
+        {
+          "year": "2014–2019",
+          "title": "豹 2A7 与全面强化型豹 2A7V 定型",
+          "detail": "集成首上重型附加复合装甲块、700 MPa 高压 L/55A1 炮管、第三代 ATTICA 热成像、IFIS 数字化战管系统与强化扭杆传动。"
+        },
+        {
+          "year": "2021–至今",
+          "title": "交付联邦国防军并成为欧洲重甲防务核心标杆",
+          "detail": "首批 104 辆全新与升级版豹 2A7V 列装德国第 104 装甲营等精锐部队，豹 2 家族累计获逾 20 国陆军采用。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Steel, Wedges, and Precision: Half a Century of the Krauss-Maffei Leopard 2A7V",
+      "deck": "Born from the 1970 collapse of the joint US-German MBT-70, the Leopard 2A7V unites Rheinmetall's 6.6-meter 120mm L/55A1 smoothbore, hollow spaced Arrowhead composite wedges, and MTU's 15-minute quick-swap 1,500-HP V12 EuroPowerpack into the benchmark of modern armored engineering.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1963–1979",
+          "title": "From MBT-70 Ashes: The 120mm Smoothbore and 15-Minute EuroPowerpack",
+          "paragraphs": [
+            "When the ambitious American-German MBT-70 supertank collapsed under skyrocketing cost and mechanical complexity in 1970, engineers at Krauss-Maffei in Munich walked away with two transformative crown jewels. The first was Rheinmetall's bold decision to abandon traditional rifling for a high-velocity 120mm smoothbore cannon; the second was a compact 1,500-horsepower multi-fuel diesel propulsion pack engineered jointly by MTU Friedrichshafen and RENK in Augsburg.",
+            "Tasked with fielding a balanced main battle tank that sacrificed neither firepower, protection, nor tactical endurance, German designers rejected fuel-hungry gas turbines in favor of the colossal 47.6-liter 90-degree twin-turbocharged MTU MB 873 Ka-501 V12 diesel. Bolted directly to the RENK HSWL 354 four-forward, two-reverse hydro-mechanical cross-drive transmission, copper-fin cross-flow radiators, and twin radial cooling fans, the complete EuroPowerpack became a single crane-lifted cassette—capable of being disconnected, hoisted clear, and swapped in the field in fifteen minutes flat.",
+            "Delivered to the Bundeswehr in October 1979, the original 7.7-meter welded-hull Leopard 2 riding on seven pairs of dished road wheels and fourteen transverse torsion bars immediately redefined what armies expected from heavy armor: seventy-kilometer-per-hour road sprints, supple cross-country gun stabilization, and unrivaled battlefield maintainability."
+          ],
+          "audioScript": "When the joint US German MBT seventy supertank collapsed in nineteen seventy, Munich engineers at Krauss Maffei salvaged two game changing breakthroughs: Rheinmetall's one hundred twenty millimeter smoothbore cannon and MTU's forty seven point six liter, fifteen hundred horsepower V12 diesel EuroPowerpack. Entering service in nineteen seventy nine, the Leopard two could swap its entire engine and gearbox in fifteen minutes in the field.",
+          "audioUrl": "audio/leopard2a7/story_act1_en.mp3",
+          "focusPartId": "leo_hull_shell",
+          "focusPartLabel": "Leopard 2A7V Hollow Welded Armored Hull"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1980–1995",
+          "title": "The Arrowhead Revolution: Hollow Spaced Composite Wedges and Hunter-Killer Fire Control",
+          "paragraphs": [
+            "As late Cold War kinetic-energy long-rod penetrators grew longer, denser, and deadlier, the flat vertical composite cheeks and recessed gunner-sight notch of early Leopard 2A4 turrets faced an existential threat. Under Germany's Kampfwertsteigerung (KWS) modernization program of the early 1990s, Krauss-Maffei engineers set out to achieve a generational leap in ballistic survivability without crippling the tank's agility.",
+            "Their answer created the most unmistakable silhouette in modern armored warfare: hinged hollow spaced Arrowhead composite cheek wedges jutting sharply forward at an acute 68-degree prow. After relocating the gunner's EMES-15 thermal sight upward into an armored roof recess to seal the front cheek gap, designers filled each hollow triangular wedge not with dead solid steel, but with angled multi-layer NERA steel-and-elastomer laminations. When a hypersonic tungsten dart punches through the outer wedge skin, asymmetric shock waves and the hollow void destabilize, yaw, and fracture the slender rod long before it ever meets the main turret bulkhead.",
+            "Simultaneously, the Leopard 2A5 banished flammable high-pressure hydraulic turret lines in favor of whisper-quiet all-electric ESW-Extel azimuth and elevation drives, pairing them with the commander's roof-mounted PERI R17 stabilized panoramic thermal periscope to perfect true hunter-killer target handoff."
+          ],
+          "audioScript": "To defeat next generation long rod penetrators in the nineteen nineties, German armor specialists created modern warfare's most iconic silhouette: the hinged hollow Arrowhead composite turret wedges. Rather than solid steel, each razor sharp triangular nose conceals spaced angled NERA plates that bend and snap incoming tungsten darts mid flight before they reach the main armor, paired with all electric drives and true hunter killer thermal optics.",
+          "audioUrl": "audio/leopard2a7/story_act2_en.mp3",
+          "focusPartId": "leo_arrowhead_wedges",
+          "focusPartLabel": "Hollow Spaced Arrowhead Composite Wedges"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1996–2014",
+          "title": "Lengthening the Lance: Rheinmetall's 6.6-Meter Rh-120 L/55A1 Smoothbore",
+          "paragraphs": [
+            "With the shield perfected, Rheinmetall turned back to the lance. Although the original 44-caliber 5.28-meter 120mm gun had already become the NATO standard, defeating heavy dual-layer reactive and composite armor at three-kilometer ranges demanded higher projectile kinetic energy. Rheinmetall extended the chrome-lined barrel by an astonishing 1.32 meters to create the 55-caliber, 6.60-meter Rh-120 L/55—and ultimately the reinforced 700-megapascal high-pressure L/55A1.",
+            "Inside this elongated smoothbore tube, temperature-independent TIPS propellant burns longer behind the discarding aluminum sabot of the DM63A1 tungsten penetrator, hurling the dart out of the muzzle at 1,750 meters per second—over Mach 5.1—with razor-flat trajectory from Arctic winters to desert heat. Segmented fiberglass thermal shrouds and a top-mounted laser Muzzle Reference Sensor continuously measure microscopic barrel droop so first-round hits remain routine at extreme range.",
+            "Behind the breech, German engineering prioritizes crew survival above every other metric. Fifteen ready 120mm rounds reside in a honeycomb bustle rack sealed off from the crew by a thick pneumatic sliding steel blast door. Tapping a knee switch glides the door 340 millimeters sideways for a four-second manual load into the semi-automatic falling-wedge breech; if the bustle is ever penetrated, roof blow-off panels vent the entire propellant flash harmlessly skyward."
+          ],
+          "audioScript": "With protection revolutionized, Rheinmetall lengthened the one hundred twenty millimeter gun by one point three two meters into the six point six meter L fifty five A one high pressure smoothbore. Seven hundred megapascal chamber pressure launches tungsten DM sixty three A one darts at seventeen hundred fifty meters per second, fed through a pneumatic sliding bustle blast door designed to vent catastrophic ammunition hits safely skyward.",
+          "audioUrl": "audio/leopard2a7/story_act3_en.mp3",
+          "focusPartId": "leo_main_gun",
+          "focusPartLabel": "Rheinmetall Rh-120 L/55A1 6.6m Smoothbore"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "2015–Present",
+          "title": "Leopard 2A7V: Heavy Glacis Armor, Digital IFIS, and Europe's Armored Backbone",
+          "paragraphs": [
+            "As high-intensity mechanized defense returned to the forefront of European security, the Bundeswehr teamed with Krauss-Maffei Wegmann and Rheinmetall to forge the definitive frontline variant: the Leopard 2A7V—the letter V standing for Verbessert, or thoroughly improved. Its hallmark visual upgrade is a massive bolted composite glacis add-on armor module across the upper hull nose, paired with underbelly mine protection and thickened front ballistic side skirts that bring combat mass to 66.5 tonnes.",
+            "Inside the hull and turret, every electronic nerve was modernized. The reinforced L/55A1 gun fires both next-generation ultra-high-pressure kinetic darts and programmable airburst DM11 multi-purpose shells. Both the gunner's EMES-15 and commander's PERI R17A3 feature third-generation ATTICA thermal imagers networked directly into bright cyan IFIS digital battle-management consoles, while recalibrated final drives and heavy torsion bars preserve brisk acceleration and a thirty-one-kilometer-per-hour reverse sprint.",
+            "Adopted by over twenty nations, the Leopard 2 stands as Europe's armored standard. Slicing open the right composite shell in our 1:1 3D cutaway—watching all twelve silver-grey cylinders of the 47.6-liter MTU V12, the spinning radial cooling fan, the -340 mm hydraulic gun recoil, and the sliding blast door feeding a fresh DM63A1 round—reveals fifty years of relentless German mechanical mastery."
+          ],
+          "audioScript": "Forged for modern high intensity defense, the Leopard two A seven V adds heavy composite glacis armor, the seven hundred megapascal L fifty five A one cannon, third generation thermal optics, and digital IFIS battle management terminals. Adopted by over twenty nations, slicing open its hull to view the hollow Arrowhead wedges and forty seven point six liter MTU V12 EuroPowerpack reveals half a century of unmatched German armored engineering.",
+          "audioUrl": "audio/leopard2a7/story_act4_en.mp3",
+          "focusPartId": "leo_mtu_v12",
+          "focusPartLabel": "MTU MB 873 Ka-501 47.6L V12 Diesel Engine"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Hinged Hollow Spaced Arrowhead Composite Wedges",
+          "tag": "Long-Rod Shear & Yaw",
+          "summary": "Razor-sharp 68-degree hollow turret cheek wedges house angled multi-layer NERA steel-elastomer plates that destabilize and snap incoming hypersonic APFSDS penetrators before they reach the main composite bulkhead.",
+          "focusPartId": "leo_arrowhead_wedges",
+          "focusPartLabel": "Hollow Arrowhead Composite Wedges"
+        },
+        {
+          "id": "bt2",
+          "title": "6.6-Meter Rh-120 L/55A1 700 MPa Smoothbore & DM63A1",
+          "tag": "Mach 5.1 Tungsten Lance",
+          "summary": "Extended 1.32 m over the L/44 and strengthened to 700 MPa chamber pressure, launching temperature-independent DM63A1 tungsten darts at 1,750 m/s with continuous laser muzzle-reference calibration.",
+          "focusPartId": "leo_main_gun",
+          "focusPartLabel": "Rh-120 L/55A1 6.6m Smoothbore"
+        },
+        {
+          "id": "bt3",
+          "title": "15-Minute Field Quick-Swap MTU V12 & RENK EuroPowerpack",
+          "tag": "1,500-HP Modular Mobility",
+          "summary": "Integrates the 47.6L twin-turbo MTU MB 873 V12 diesel, RENK HSWL 354 hydro-mechanical transmission, copper-fin radiators, and overhead radial cooling fans into one cassette swappable in 15 minutes.",
+          "focusPartId": "leo_mtu_v12",
+          "focusPartLabel": "MTU MB 873 V12 EuroPowerpack"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1963–1970",
+          "title": "MBT-70 Cancellation & National Leopard 2 Launch",
+          "detail": "West Germany salvages 120mm smoothbore ordnance and 1,500-HP diesel propulsion from the joint program, tasking Krauss-Maffei to build a balanced national tank."
+        },
+        {
+          "year": "1972–1979",
+          "title": "Prototype Trials & First Bundeswehr Deliveries",
+          "detail": "Following seventeen prototypes tested from Arctic Norway to desert proving grounds, the first production Leopard 2 enters Bundeswehr service in October 1979."
+        },
+        {
+          "year": "1991–1995",
+          "title": "KWS II Leopard 2A5 Introduces Arrowhead Wedges",
+          "detail": "Debuts the iconic hollow spaced Arrowhead composite cheek armor, roof-recessed EMES-15 sight, all-electric ESW-Extel turret drives, and PERI R17A2 thermal hunter-killer sight."
+        },
+        {
+          "year": "2001",
+          "title": "KWS I Leopard 2A6 Adopts 6.6m Rh-120 L/55 Gun",
+          "detail": "Extends barrel length by 1.32 meters from 44 to 55 calibers, dramatically boosting DM53/DM63 tungsten penetrator muzzle velocity to 1,750 m/s."
+        },
+        {
+          "year": "2014–2019",
+          "title": "Leopard 2A7 & Enhanced 2A7V Standardization",
+          "detail": "Adds heavy bolted front glacis composite armor, 700 MPa L/55A1 high-pressure barrel, third-generation ATTICA thermal optics, IFIS consoles, and heavy-duty suspension."
+        },
+        {
+          "year": "2021–Present",
+          "title": "Frontline Service Across Over 20 Nations",
+          "detail": "Delivered to German Panzerbataillon 104 and allied European formations, cementing the Leopard 2 family as Europe's preeminent main battle tank."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "leo_main_gun": {
+      "partId": "leo_main_gun",
+      "bomCode": "S-01",
+      "calloutLabelEn": "Rh-120 L/55A1 6.6m Gun",
+      "zh": {
+        "roleTag": "55倍径6.6米高压镀铬滑膛 · 700 MPa膛压赋予DM63A1 1,750 m/s初速",
+        "overview": "莱茵金属 Rh-120 L/55A1 全长 6,600 mm 高压 120mm 滑膛炮管，是豹 2A7V 最具威慑力的远程精准动能主武器。",
+        "craftAndMaterial": "采用电渣重熔高强特种炮钢冷自紧锻造并内膛全镀硬铬，外部包覆多段北约三色迷彩玻纤隔热护套、7 道不锈钢卡箍、中段同心抽烟装置与炮口顶端 MRS 激光基准校准器。",
+        "kinematicRole": "击发阶段 2 引导 DM63A1 钨芯弹加速至 1,750 m/s 破口而出，阶段 3 随炮闩沿摇架向后平稳坐退 -340 mm，阶段 4 在液气复进机推动下丝滑复进归位。",
+        "designHighlight": "700 MPa 级强化膛压搭配 55 倍超长倍径与激光炮口基准仪，兼具高膛压动能穿甲弹与可编程空爆弹发射能力。",
+        "audioScript": "这根全长六点六米的莱茵金属Rh120 L55A1高压滑膛炮，是豹2A7V的致命长矛。电渣重熔镀铬炮管能承受七百兆帕级膛压，将钨芯穿甲弹以每秒一千七百五十米射出，炮口顶端的激光校准器则时刻修正微米级热弯曲。",
+        "audioUrl": "audio/leopard2a7/parts/leo_main_gun_zh.mp3"
+      },
+      "en": {
+        "roleTag": "6.6m 55-Caliber 700 MPa Chrome-Lined Smoothbore Launching at 1,750 m/s",
+        "overview": "Rheinmetall's 6,600 mm Rh-120 L/55A1 high-pressure 120mm smoothbore cannon delivers extreme muzzle velocity and flat-trajectory lethality for the Leopard 2A7V.",
+        "craftAndMaterial": "Autofrettaged electro-slag remelted ordnance steel with full hard-chrome bore lining, multi-segment fiberglass thermal shrouds, seven stainless clamp bands, bore evacuator, and muzzle reference collimator.",
+        "kinematicRole": "Guides the DM63A1 sabot dart to 1,750 m/s in phase 2, recoils -340 mm rearward in phase 3 against twin hydraulic brakes, and glides cleanly back into battery in phase 4.",
+        "designHighlight": "Reinforced 700 MPa chamber walls and laser muzzle-reference calibration sustain pinpoint long-range hits across extreme climates.",
+        "audioScript": "Stretching six point six meters long, Rheinmetall's Rh one twenty L fifty five A one smoothbore is the Leopard two A seven V's lethal lance. Autofrettaged chrome lined steel handles seven hundred megapascal pressure to launch tungsten darts at seventeen hundred fifty meters per second, while its muzzle collimator tracks thermal droop.",
+        "audioUrl": "audio/leopard2a7/parts/leo_main_gun_en.mp3"
+      }
+    },
+    "leo_gun_mantlet": {
+      "partId": "leo_gun_mantlet",
+      "bomCode": "S-02",
+      "calloutLabelEn": "Armored Gun Mantlet",
+      "zh": {
+        "roleTag": "高强复合防弹炮盾 · 集成 MG3 7.62mm 并列机枪口与双耳轴轴承",
+        "overview": "深嵌于两侧中空箭簇装甲中央的重型防弹炮盾与高强钢耳轴摇架，承托 6.6 米滑膛炮俯仰稳定与射击载荷。",
+        "craftAndMaterial": "前盾采用多层复合钢装甲焊接并涂覆三色迷彩，后部精铣粗壮双侧耳轴轴承座与中空筒形炮管滑套，左侧集成 7.62mm MG3 并列机枪防弹射孔。",
+        "kinematicRole": "作为炮管后坐的静止俯仰基准摇架，将 -340 mm 剧烈后坐冲击力均匀分散至炮塔主承载耳轴与全电稳定俯仰机。",
+        "designHighlight": "极致收窄的内嵌式炮盾宽度将正面投影弱区压缩到最低，大幅提升了炮塔正面的抗穿甲弹防御完整性。",
+        "audioScript": "这套内嵌式重型装甲炮盾和耳轴摇架深藏在两片箭簇楔形装甲之间。它不仅通过粗壮耳轴支撑着六点六米主炮实现双向稳定俯仰，还在左侧巧妙整合了七点六二毫米并列机枪射孔。",
+        "audioUrl": "audio/leopard2a7/parts/leo_gun_mantlet_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Recessed Ballistic Gun Shield w/ Trunnion Cradle & Coaxial MG3 Port",
+        "overview": "Nestled deeply between the hollow Arrowhead turret wedges, this armored mantlet and trunnion cradle anchors the 6.6-meter cannon and coaxial machine gun.",
+        "craftAndMaterial": "Welded composite ballistic front shield paired with a precision-machined steel sleeve, twin heavy trunnion bearing journals, and a left-side armored aperture for the 7.62mm MG3 coaxial gun.",
+        "kinematicRole": "Serves as the stationary trunnion guide cradle supporting the -340 mm linear recoil stroke and transmitting firing forces into the turret structure.",
+        "designHighlight": "Minimized frontal mantlet aperture shrinks the traditional gun-slot weak zone to maximize overall turret ballistic immunity.",
+        "audioScript": "Tucked deeply between the hollow Arrowhead cheek wedges, this recessed armored gun mantlet and heavy steel trunnion cradle supports the six point six meter cannon. Its narrow frontal profile minimizes ballistic vulnerability while housing the coaxial seven point six two millimeter MG three machine gun.",
+        "audioUrl": "audio/leopard2a7/parts/leo_gun_mantlet_en.mp3"
+      }
+    },
+    "leo_recoil_system": {
+      "partId": "leo_recoil_system",
+      "bomCode": "S-03",
+      "calloutLabelEn": "Hydraulic Recoil Brakes",
+      "zh": {
+        "roleTag": "340 mm 高阻尼驻退行程 · 吸收 120mm 高压炮千吨级后坐峰值",
+        "overview": "对称紧抱炮尾摇架的双联镀硬铬液压驻退机与液气复进机油缸，精准吸收并驯服 120mm 高压主炮的狂暴后坐。",
+        "craftAndMaterial": "活塞杆采用镜面无心磨削镀硬铬高强合金钢，外筒为深灰磷化耐压液压缸体，前后由锻钢轭环紧固并配黄铜高压泄压阀。",
+        "kinematicRole": "阶段 3 通过变截面液压节流孔平稳耗散 L/55A1 主炮 -340 mm 后坐峰值能量，阶段 4 协同双联螺旋弹簧温柔推回炮身复位。",
+        "designHighlight": "极高紧凑度的同轴双缸布局为窄小炮塔战斗室腾出了充裕的装填手操作空间，同时将后坐行程严格锁死在 340 mm 内。",
+        "audioScript": "这两具闪亮的镜面镀硬铬液压驻退机和复进油缸紧贴着火炮摇架。当一百二十毫米高压主炮以千吨级冲击向后猛退三百四十毫米时，内部精密节流阀将狂暴后坐驯服得平顺可控，并迅速把炮管推回原位。",
+        "audioUrl": "audio/leopard2a7/parts/leo_recoil_system_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Twin Hard-Chrome Hydraulic Brakes Taming -340 mm 700 MPa Gun Recoil",
+        "overview": "Twin mirror-chrome hydraulic recoil brakes and hydro-pneumatic recuperators mounted symmetrically on the gun cradle absorb the massive firing impulse of the L/55A1.",
+        "craftAndMaterial": "Centerless-ground hard-chrome alloy steel rods, dark phosphated high-pressure hydraulic stator sleeves, forged steel front and rear yokes, and brass pressure-relief valves.",
+        "kinematicRole": "Meters hydraulic oil flow across the -340 mm recoil stroke in phase 3 to flatten peak recoil forces, then assists smooth counter-recoil return in phase 4.",
+        "designHighlight": "Compact concentric cradle packaging keeps recoil stroke strictly within 340 mm so the turret fighting compartment remains ergonomic for rapid manual loading.",
+        "audioScript": "Flanking the gun cradle, these twin mirror chrome hydraulic recoil brakes tame the immense firing impulse of the seven hundred megapascal smoothbore. Precision oil throttling smoothly arrests the three hundred forty millimeter stroke before returning the six point six meter barrel cleanly into battery.",
+        "audioUrl": "audio/leopard2a7/parts/leo_recoil_system_en.mp3"
+      }
+    },
+    "leo_recoil_springs": {
+      "partId": "leo_recoil_springs",
+      "bomCode": "S-04",
+      "calloutLabelEn": "Twin Recoil Springs",
+      "zh": {
+        "roleTag": "双股粗径合金弹簧钢 · 实时随 -340 mm 炮管后坐等径压缩储能",
+        "overview": "套装于下方复进导杆上的双联重型高温合金螺旋复进储能弹簧，实时配合液压驻退机完成主炮复进归位。",
+        "craftAndMaterial": "采用直径 27 mm 级高疲劳铬硅弹簧钢棒热卷回火成型，自由长度 940 mm，表面经喷丸强化与防腐油膜处理。",
+        "kinematicRole": "后端固定于摇架基准座，击发阶段 3 随主炮 -340 mm 后坐实时等线径压缩至 63.8%，阶段 4 释放弹性势能推回沉重炮身。",
+        "designHighlight": "双弹簧冗余对称设计确保即使高压氮气室在严寒中压力下降，火炮仍具备可靠的机械复进与闭膛复位能力。",
+        "audioScript": "并排套装在摇架下方的这两根粗壮螺旋复进储能弹簧，由高强度铬硅合金钢热卷而成。每当主炮开火后坐三百四十毫米，两根弹簧就会同步压缩储能超过三成半，协同复进机将炮身平稳推回待发位。",
+        "audioUrl": "audio/leopard2a7/parts/leo_recoil_springs_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Twin Heavy Helical Coils Compressing Smoothly Across -340 mm Recoil",
+        "overview": "Twin heavy-gauge helical recuperator springs riding over the lower chrome guide rods store kinetic recoil energy to assist reliable counter-recoil.",
+        "craftAndMaterial": "Hot-wound, shot-peened chrome-silicon alloy spring steel bars with 940 mm free length and corrosion-resistant tempered oil finish.",
+        "kinematicRole": "Rear ends anchor against the cradle while front coils compress uniformly to 63.8 percent free length during the -340 mm recoil stroke before expanding in phase 4.",
+        "designHighlight": "Symmetrical dual-coil mechanical backup guarantees positive battery return across extreme Arctic and desert temperature swings.",
+        "audioScript": "Riding along the lower chrome guide rods, these twin heavy gauge chrome silicon helical springs compress smoothly to sixty four percent of their free length during the three hundred forty millimeter recoil stroke, storing mechanical energy to help drive the heavy smoothbore back into battery.",
+        "audioUrl": "audio/leopard2a7/parts/leo_recoil_springs_en.mp3"
+      }
+    },
+    "leo_hull_shell": {
+      "partId": "leo_hull_shell",
+      "bomCode": "F-01",
+      "calloutLabelEn": "2A7V Armored Hull",
+      "zh": {
+        "roleTag": "7.70米北约三色迷彩车体 · 首上2A7V重型复合装甲块与防雷底板",
+        "overview": "全长 7,700 mm 的豹 2A7V 中空焊接复合装甲主车体，以首上厚重螺栓附加装甲块与防雷双层底板为核心升级特征。",
+        "craftAndMaterial": "由多层特种均质钢与陶瓷/复合夹层焊接成壁厚 160–200 mm 中空壳体，通体喷涂联邦国防军三色迷彩并清晰印有黑白铁十字、德军车牌「Y-482 917」及黄色「MLC 70」标牌。",
+        "kinematicRole": "全车结构承载基准：前右布置驾驶员舱、前左密闭 27 发主弹药库、中段支承 2.1 米炮塔座圈，后段以装甲防火墙完全隔离 1,500 马力动力舱。",
+        "designHighlight": "2A7V 标志性的首上重型复合附加装甲模块与强化防雷底板，令车体正面抗动能穿甲弹与反坦克地雷能力跃居全球之冠。",
+        "audioScript": "这座全长七点七米的中空焊接车体，是豹2A7V坚不可摧的钢铁底座。最耀眼的升级就是车头首上那块厚重的模块化复合附加装甲，正面清晰喷涂着联邦国防军铁十字、德军牌照以及黄色MLC70承重圆盘。",
+        "audioUrl": "audio/leopard2a7/parts/leo_hull_shell_zh.mp3"
+      },
+      "en": {
+        "roleTag": "7.7m Hollow Welded Composite Hull w/ Bolted 2A7V Glacis Add-On Armor",
+        "overview": "This 7,700 mm hollow welded composite armored hull forms the structural backbone of the Leopard 2A7V, distinguished by its heavy bolted front glacis armor module.",
+        "craftAndMaterial": "160-200 mm multi-layer welded armor steel and composite arrays finished in Bundeswehr NATO three-tone CARC camouflage with crisp Iron Cross, Y-482 917 plate, and yellow MLC 70 bridge disc.",
+        "kinematicRole": "Stationary chassis housing the front-right driver, front-left 27-round ammo bunker, central turret ring, and a rear engine bay sealed behind an armored firewall.",
+        "designHighlight": "Bolted 2A7V glacis composite block and reinforced mine-protection belly plate elevate hull survivability against both kinetic rods and heavy underbelly blasts.",
+        "audioScript": "Spanning seven point seven meters, this hollow welded composite hull forms the armored foundation of the Leopard two A seven V. Its hallmark upgrade is the massive bolted composite glacis block carrying the Bundeswehr Iron Cross, German license plate Y four eight two nine one seven, and yellow MLC seventy bridge disc.",
+        "audioUrl": "audio/leopard2a7/parts/leo_hull_shell_en.mp3"
+      }
+    },
+    "leo_side_skirts": {
+      "partId": "leo_side_skirts",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Composite Side Skirts",
+      "zh": {
+        "roleTag": "前3块重型复合防破甲裙板 · 全车宽 3,750 mm 关键外轮廓",
+        "overview": "沿车体左右翼子板外侧铰接悬挂的模块化复合侧裙板，前厚后薄的阶梯构型精准界定了豹 2A7V 3.75 米的全车宽度。",
+        "craftAndMaterial": "前部每侧 3 块为厚重多层钢-复合材料防破甲重裙板，带铰链与登车踏孔；后部每侧 6 块为轻量化钢胶复合裙板，底部配硫化橡胶防尘边。",
+        "kinematicRole": "静态防护外壳（纵剖切面下自动切离），平时可向车侧翻起以便快速检修七对负重轮与履带张紧度。",
+        "designHighlight": "将最厚重的复合防御集中覆盖车体前部驾驶员与 27 发主弹药库侧面，在减重与防侧向聚能破甲弹之间达成精妙平衡。",
+        "audioScript": "悬挂在两侧履带外沿的模块化复合侧裙板，构成了豹2A7V精确三点七五米的总宽度。最前方的三块重型加厚复合裙板严密遮护着车体前弹药库和驾驶员舱，后部则衔接轻量化钢胶防尘裙板。",
+        "audioUrl": "audio/leopard2a7/parts/leo_side_skirts_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Heavy-Front Composite Ballistic Skirts Defining 3,750 mm Tank Width",
+        "overview": "Hinged along both upper hull sponsons, these stepped modular side skirts pair thick front composite armor panels with lighter rear steel-rubber skirts.",
+        "craftAndMaterial": "Front three modules per side built from thick multi-layer ballistic composite in three-tone camo with recessed steps; rear six modules combine armored steel plates and vulcanized rubber mud flaps.",
+        "kinematicRole": "Stationary exterior ballistic shield that slices cleanly away in cutaway mode and swings upward in service for rapid road-wheel maintenance.",
+        "designHighlight": "Concentrates maximum side-armor mass directly over the forward hull ammunition bunker and driver compartment without penalizing rear mobility.",
+        "audioScript": "Hung along both upper sponsons, these modular composite side skirts define the Leopard two A seven V's exact three point seven five meter width. Three thick ballistic armor panels guard the forward ammo bunker and driver, transitioning cleanly into lighter steel and rubber rear skirts.",
+        "audioUrl": "audio/leopard2a7/parts/leo_side_skirts_en.mp3"
+      }
+    },
+    "leo_road_wheels": {
+      "partId": "leo_road_wheels",
+      "bomCode": "F-03",
+      "calloutLabelEn": "7-Pair Road Wheels",
+      "zh": {
+        "roleTag": "7对700mm直径橡胶轮缘负重轮 · 12齿后置主动轮承接1,500马力扭矩",
+        "overview": "由 7 对豹 2 标志性冲压蝶形钢制双片负重轮、后置 12 齿主动轮、前置张紧诱导轮与 4 对托带轮构成的完整行动轮系。",
+        "craftAndMaterial": "负重轮盘采用三色迷彩高强冲压钢并配厚实硫化黑橡胶轮缘与 6 枚轮毂螺栓；后置 12 齿主动轮经深层淬火硬化以耐磨损。",
+        "kinematicRole": "通过 14 根铸钢平衡肘与车体扭杆耦合，将 66.5 吨整备重量均匀铺展至 635 mm 宽履带并传导 1,500 马力强劲驱动力。",
+        "designHighlight": "七对大直径双片轮设计既降低接地比压，又配合高行程扭杆赋予 66 吨重甲在崎岖泥泞地形中惊人的越野速度。",
+        "audioScript": "支撑六十六点五吨豹2A7V以七十公里时速狂飙的，正是这套经典行动轮系。每侧七对七百毫米直径的冲压蝶形挂胶负重轮均匀分散车重，尾部粗壮的十二齿淬火钢主动轮则直接承接一千五百马力狂暴扭矩。",
+        "audioUrl": "audio/leopard2a7/parts/leo_road_wheels_zh.mp3"
+      },
+      "en": {
+        "roleTag": "7 Pairs of 700 mm Dished Road Wheels, 12-Tooth Sprockets & Front Idlers",
+        "overview": "Seven pairs of iconic dual-disk dished Leopard 2 road wheels, toothed rear drive sprockets, front idlers, and four pairs of return rollers carry the 66.5-tonne chassis.",
+        "craftAndMaterial": "Stamped steel dished wheel discs in NATO camo bonded to thick vulcanized rubber tires with bolted bearing hubs, paired with case-hardened 12-tooth steel rear drive rings.",
+        "kinematicRole": "Links via fourteen steel swing arms to the hull torsion bars, spreading vehicle mass evenly across the tracks while transmitting 1,500-HP torque from the final drives.",
+        "designHighlight": "Seven-station dual-disk running gear keeps ground pressure low and delivers remarkable ride stability for accurate firing on the move.",
+        "audioScript": "Carrying sixty six point five tonnes at seventy kilometers per hour takes serious running gear. Seven pairs of seven hundred millimeter dished dual disk road wheels with rubber rims glide smoothly over rough terrain, driven by hardened twelve tooth rear sprockets bolted straight to the final drives.",
+        "audioUrl": "audio/leopard2a7/parts/leo_road_wheels_en.mp3"
+      }
+    },
+    "leo_tracks_left": {
+      "partId": "leo_tracks_left",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Diehl 570FT Left Track",
+      "zh": {
+        "roleTag": "635 mm 宽快换橡胶履带块 · Y=-120 cm 精确贴地基准",
+        "overview": "德国迪尔（Diehl）570FT 型 635 mm 宽双销挂胶左侧履带环，为 66.5 吨豹 2A7V 提供公路静谧性与泥雪强悍抓地力。",
+        "craftAndMaterial": "高锰耐磨合金锻钢履带板配双销端部连接器与中央双导向齿，接地侧嵌入可免拆履带快速更换的硫化橡胶公路防滑块。",
+        "kinematicRole": "环绕前诱导轮、7 对负重轮与后置主动轮精确贴合 Y = -120.0 cm 地平面，在剖视模式下保持完整以凸显全车 1:1 比例。",
+        "designHighlight": "模块化快换橡胶块设计使部队在几分钟内即可将公路胶块替换为冰雪金属防滑抓齿，全地形适应性举世闻名。",
+        "audioScript": "这条宽达六百三十五毫米的迪尔570FT双销挂胶左履带，将六十六吨钢铁巨兽牢牢贴合在地面。高锰锻钢履带板内嵌可快速拆换的橡胶公路防滑块，在严冬还能迅速换装金属抓冰齿。",
+        "audioUrl": "audio/leopard2a7/parts/leo_tracks_left_zh.mp3"
+      },
+      "en": {
+        "roleTag": "635 mm Diehl 570FT Double-Pin Track w/ Quick-Swap Rubber Road Pads",
+        "overview": "Diehl Defence's 635 mm wide 570FT double-pin left track belt gives the 66.5-tonne Leopard 2A7V quiet highway traction and tenacious off-road grip.",
+        "craftAndMaterial": "High-manganese forged alloy steel track links joined by rubber-bushed double end connectors, central forged guide horns, and replaceable vulcanized rubber road pads.",
+        "kinematicRole": "Wraps cleanly around the front idler, seven road wheels, and rear drive sprocket resting flush on the Y = -120.0 cm ground plane.",
+        "designHighlight": "Slide-out rubber pads can be swapped rapidly for steel snow-and-ice grousers in the field without breaking the track tension.",
+        "audioScript": "Six hundred thirty five millimeters wide, this Diehl five seventy F T double pin left track belt plants the sixty six tonne tank cleanly on the ground. Forged high manganese steel links feature twin end connectors, central guide horns, and quick swap rubber road pads replaceable with ice grousers.",
+        "audioUrl": "audio/leopard2a7/parts/leo_tracks_left_en.mp3"
+      }
+    },
+    "leo_tracks_right": {
+      "partId": "leo_tracks_right",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Diehl 570FT Right Track",
+      "zh": {
+        "roleTag": "右侧 635 mm 宽双销履带 · 纵剖模式下自动切离露出七对负重轮",
+        "overview": "与左侧完全镜像对称的迪尔 570FT 右侧双销挂胶履带环，在 1:1 实时纵剖模式下自动隐去以展露右侧悬挂机构。",
+        "craftAndMaterial": "采用与左履带一致的高锰耐磨合金锻钢链节、端部双销卡扣、防脱轨导向齿与厚实硫化黑橡胶路面垫块。",
+        "kinematicRole": "承担右侧 635 mm 接地推进与转向差速制动力，并在 [C] 实时纵剖视窗中作为外壳层切离以清晰呈现七对负重轮与车体内部。",
+        "designHighlight": "橡胶衬套双销结构大幅延长履带服役里程至逾万公里，并显著降低高速行军时的车内噪声与乘员疲劳。",
+        "audioScript": "右侧迪尔570FT双销挂胶履带与左侧镜像对称，采用长寿命橡胶衬套双销结构。当你开启三维实时纵剖面时，右侧履带会自动随侧裙一同切离，毫无遮挡地展现出七对蝶形负重轮和车内动力舱。",
+        "audioUrl": "audio/leopard2a7/parts/leo_tracks_right_zh.mp3"
+      },
+      "en": {
+        "roleTag": "635 mm Right Diehl 570FT Track Belt (Slices Away Cleanly in Cutaway)",
+        "overview": "Mirror twin to the left belt, this Diehl 570FT right track ring delivers heavy-duty propulsion and slices away automatically in longitudinal cutaway mode.",
+        "craftAndMaterial": "Forged high-manganese steel double-pin links, steel end connectors, twin central guide horns, and beveled vulcanized rubber road pads.",
+        "kinematicRole": "Transmits right-side drive and pivot-turn braking loads while acting as an exterior cutaway shell so the right road wheels and hull interior shine unobstructed.",
+        "designHighlight": "Rubber-bushed double-pin articulation eliminates metal-on-metal pin wear, extending operational track service life well beyond 10,000 kilometers.",
+        "audioScript": "Mirroring the left side, this Diehl five seventy F T right track belt uses rubber bushed double pins for quiet durability beyond ten thousand kilometers. Marked as a cutaway shell, it vanishes cleanly in section view to expose all seven right road wheels and the open hull interior.",
+        "audioUrl": "audio/leopard2a7/parts/leo_tracks_right_en.mp3"
+      }
+    },
+    "leo_engine_deck": {
+      "partId": "leo_engine_deck",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Twin-Fan Engine Deck",
+      "zh": {
+        "roleTag": "豹2背部最高辨识双圆栅 · 4枚重型吊耳支持战地15分钟整包换发",
+        "overview": "豹 2 家族车尾最具辨识度的阶梯抬升式重型装甲发动机顶盖，内嵌双圆形散热风扇格栅与 4 枚快换吊耳。",
+        "craftAndMaterial": "厚重三色迷彩防弹钢板焊接成型，后部凸起双圆环百叶格栅配十字防弹筋，前段设横向进气百叶，四角焊固精锻钢吊环。",
+        "kinematicRole": "密闭防护后置 MTU V12 与 RENK 变速箱；在野战快拆 30% 阶段整体向上吊离，并在纵剖模式下切开右半边露出高速旋转风扇。",
+        "designHighlight": "顶置双圆栅进风配合车尾侧向排风流道设计，不仅散热效率惊人，更令热尾气与冷空气充分混合大幅降低红外特征。",
+        "audioScript": "车尾这两具巨大的圆形散热风扇栅格，是辨认豹二背影最经典的标志。这块抬升式重型装甲发动机顶盖四角焊有锻钢吊耳，战地维护时只需掀开顶盖，十五分钟就能将整套欧洲动力包完整吊出。",
+        "audioUrl": "audio/leopard2a7/parts/leo_engine_deck_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Signature Elevated Twin-Grille Deck w/ 4 EuroPowerpack Lift Lugs",
+        "overview": "Instantly identifying the Leopard 2 from above, this elevated armored rear engine deck frames twin circular cooling fan grilles and four heavy lifting lugs.",
+        "craftAndMaterial": "Heavy welded ballistic steel deck finished in NATO three-tone camo, twin circular armored fan shrouds with radial bars, forward intake louvers, and forged steel lifting eyes.",
+        "kinematicRole": "Shields the rear powerpack from overhead fragments, lifts clear during 30-percent EuroPowerpack service disassembly, and slices open cleanly in cutaway mode.",
+        "designHighlight": "Down-draft twin circular intake grilles blend cooling airflow with engine exhaust to slash the tank's rear thermal infrared signature.",
+        "audioScript": "Those twin giant circular fan grilles on the raised rear deck are an unmistakable Leopard two signature. Fitted with forward intake louvers and four forged lifting lugs, this armored lid unbolts cleanly to allow a fifteen minute field crane swap of the entire EuroPowerpack.",
+        "audioUrl": "audio/leopard2a7/parts/leo_engine_deck_en.mp3"
+      }
+    },
+    "leo_torsion_bars": {
+      "partId": "leo_torsion_bars",
+      "bomCode": "F-07",
+      "calloutLabelEn": "14 Torsion Bar Suspension",
+      "zh": {
+        "roleTag": "高弹性铬钼钒扭杆轴 · 赋予66吨巨兽卓越越野平顺性与行进间精准射击",
+        "overview": "横贯下车体防雷底板上方的 14 根全宽锻钢扭杆弹簧与液压旋转减振器组，是豹 2 传奇越野机动的幕后功臣。",
+        "craftAndMaterial": "采用超高强度真空脱气铬钼钒弹簧钢精密锻造并车削花键端头，两端锚固于高强铸钢花键座，首尾五组负重轮加装液压旋转摩擦减振器。",
+        "kinematicRole": "将负重轮上下跳动转化为扭杆全长弹性扭转储能，大幅吸收高速越野颠簸并有效抑制 120mm 主炮急停或行进间射击时的车身纵摇。",
+        "designHighlight": "相比复杂脆弱的液气悬挂，精锻扭杆配液压旋转减振器结构紧凑免维护、极寒可靠性无敌且完全隐藏在防雷底板装甲之内。",
+        "audioScript": "平铺在车体底板之上的这十四根全宽锻钢扭杆，搭配首尾液压旋转减振器，是豹2传奇越野平顺性的秘密武器。它们能吞噬六十六吨车体高速冲坡的剧烈冲击，为行进间精准射击提供如履平地的稳固平台。",
+        "audioUrl": "audio/leopard2a7/parts/leo_torsion_bars_zh.mp3"
+      },
+      "en": {
+        "roleTag": "14 Full-Width Forged Torsion Bars & Rotary Hydraulic Dampers",
+        "overview": "Fourteen staggered full-width forged torsion bars and rotary hydraulic friction dampers span the lower hull floor to deliver supple 66.5-tonne cross-country agility.",
+        "craftAndMaterial": "Vacuum-degassed chrome-molybdenum-vanadium alloy spring steel shafts with splined anchor ends, central floor keel brace, and heavy rotary hydraulic dampers at end stations.",
+        "kinematicRole": "Twists elastically under road-wheel articulation to absorb violent terrain shock and suppress hull pitch during high-speed travel and firing on the move.",
+        "designHighlight": "Simpler and far more Arctic-proof than hydropneumatic struts while remaining completely protected inside the mine-hardened lower hull.",
+        "audioScript": "Spanning the armored floor in staggered pairs, these fourteen full width forged alloy torsion bars and rotary hydraulic dampers give the sixty six tonne Leopard two its legendary cross country ride. Tucked safely inside the hull, they absorb violent shock so the stabilized main gun stays locked on target at full speed.",
+        "audioUrl": "audio/leopard2a7/parts/leo_torsion_bars_en.mp3"
+      }
+    },
+    "leo_turret_ring": {
+      "partId": "leo_turret_ring",
+      "bomCode": "F-08",
+      "calloutLabelEn": "Geared Turret Race Ring",
+      "zh": {
+        "roleTag": "2.1米精铣内齿座圈 · 全电 ESW-Extel 伺服 9 秒完成 360° 极速转向",
+        "overview": "直径逾 2.1 米的精密内啮合齿轮炮塔滚珠座圈与全电 ESW-Extel 方位驱动伺服总成，承托 21 吨炮塔高速精准旋回。",
+        "craftAndMaterial": "座圈由感应淬火高铬轴承钢精密滚齿铣削，内部均布高硬齿轮齿面，左后侧耦合高效无刷全电驱动马达与铜绕组功率接口。",
+        "kinematicRole": "承接 21 吨炮塔自重与 700 MPa 侧向射击倾覆力矩，驱动炮塔在 9 秒内完成 360° 快速调转并保持毫弧度级双向稳像精度。",
+        "designHighlight": "自豹 2A5 起以静音无火患的全电驱动彻底替代高压液压油管，不仅大幅提升被击中后的乘员生还率，更显著降低待机噪声。",
+        "audioScript": "这套直径超过两米一的精铣内齿炮塔座圈，承托着整座二十一吨重的复合装甲炮塔。豹二放弃了易燃的高压液压马达，改用静音高效的全电方位伺服驱动，仅需九秒就能令庞大炮塔丝滑旋转三百六十度。",
+        "audioUrl": "audio/leopard2a7/parts/leo_turret_ring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "2.1m Precision Internal Gear Ring & All-Electric ESW-Extel Traverse Drive",
+        "overview": "This 2.1-meter precision-geared ball-race bearing ring and all-electric ESW-Extel traverse motor smoothly rotate the 21-tonne turret through 360 degrees in nine seconds.",
+        "craftAndMaterial": "Induction-hardened bearing-steel race ring with hobbed internal spur gear teeth, retaining steel flange, and a brushless high-torque electric pinion drive motor.",
+        "kinematicRole": "Carries turret weight and 700 MPa off-axis firing overturning moments while enabling whisper-quiet, milliradian-accurate hunter-killer target slewing.",
+        "designHighlight": "Replacing flammable hydraulic traverse lines with all-electric servos dramatically boosted crew survivability and silent-watch endurance.",
+        "audioScript": "Measuring over two point one meters across, this precision geared turret race ring carries the entire twenty one tonne turret. Driven by an all electric E S W Extel servo motor instead of flammable hydraulics, it slews the main gun a full three hundred sixty degrees in just nine seconds.",
+        "audioUrl": "audio/leopard2a7/parts/leo_turret_ring_en.mp3"
+      }
+    },
+    "leo_turret_shell": {
+      "partId": "leo_turret_shell",
+      "bomCode": "F-09",
+      "calloutLabelEn": "2A7V Welded Turret Shell",
+      "zh": {
+        "roleTag": "中空200mm厚复合主炮塔 · 顶置泄压防爆板与三色迷彩2A7V战术编号",
+        "overview": "中空多层焊接复合装甲主炮塔壳体，集成长尾舱防爆泄压板、车长与装填手顶舱盖以及流线侧挂储物箱。",
+        "craftAndMaterial": "壁厚达 180–220 mm 的复合装甲焊接构型，外覆北约三色迷彩，左右尾箱平翼高清喷涂黑白联邦铁十字与「2A7V / 312 / PZBTL 104」标识。",
+        "kinematicRole": "保护三名炮塔乘员与主炮火控核心；后尾舱独立隔离 15 发待发弹并配备双块顶部防爆泄压板，纵剖模式下切开右半壁展露内部全貌。",
+        "designHighlight": "长尾舱配重平衡了 6.6 米 L/55A1 长身管炮的前倾力矩，更构建出世界公认最安全可靠的隔离式弹药舱架构。",
+        "audioScript": "这座线条冷峻的中空焊接复合装甲炮塔，凝聚了德国装甲设计的巅峰智慧。两侧挂满流线储物箱并醒目喷涂着联邦铁十字与2A7V战术编号，长尾舱顶部则设有两块关键的防爆泄压板，专司在弹药受损时向上排爆保命。",
+        "audioUrl": "audio/leopard2a7/parts/leo_turret_shell_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Hollow 200 mm Composite Turret w/ Bustle Blow-Off Panels & 2A7V Markings",
+        "overview": "This hollow welded composite main turret houses the three-man turret crew, balances the 6.6-meter cannon with an extended bustle, and wears crisp Bundeswehr 2A7V markings.",
+        "craftAndMaterial": "180-220 mm welded composite armor plates in three-tone NATO camo, roof blow-off vent panels, commander and loader hatches, angled flank stowage bins, and non-mirrored Iron Cross decals.",
+        "kinematicRole": "Forms the primary armored shell around the gun breech, optics, and crew; slices cleanly open along the centerline in cutaway view.",
+        "designHighlight": "Extended bustle counterbalances the heavy L/55A1 barrel while isolating 15 ready rounds behind overhead blow-off vents.",
+        "audioScript": "Welded from thick multi layer composite armor, this hollow Leopard two A seven V turret balances the six point six meter cannon with its sleek extended bustle. Side stowage bins display the Bundeswehr Iron Cross and two A seven V markings, while twin roof blow off panels vent any bustle detonation safely upward.",
+        "audioUrl": "audio/leopard2a7/parts/leo_turret_shell_en.mp3"
+      }
+    },
+    "leo_arrowhead_wedges": {
+      "partId": "leo_arrowhead_wedges",
+      "bomCode": "F-10",
+      "calloutLabelEn": "Arrowhead Armor Wedges",
+      "zh": {
+        "roleTag": "豹2A5–2A7V 世界级视觉图腾 · 中空间隙 NERA 斜板折断动能钨芯长杆",
+        "overview": "令现代豹 2 一眼封神的标志性铰接式中空箭簇楔形复合颊部附加装甲模块，将防护美学与穿透力学融为一体。",
+        "craftAndMaterial": "锋锐 68° 箭簇外壳由高硬装甲钢焊接并涂覆三色迷彩，经重型垂直铰链挂接炮塔前颊；中空腔体内倾斜布置多层高硬钢与弹性体 NERA 复合夹层板。",
+        "kinematicRole": "作为炮塔最前端的第一道盾牌：诱导高速穿甲弹芯在到达主复合装甲前发生剧烈偏航、弯曲与断裂；维修时可整体铰接外翻。",
+        "designHighlight": "中空间隙设计以远低于实心钢块的重量实现了惊人的抗穿甲弹增益，成为过去三十年全球现代主战坦克争相效仿的经典构型。",
+        "audioScript": "这两片如刀锋般向前锐利探出的中空箭簇楔形附加装甲，就是现代豹二闻名世界的灵魂侧影。它们内部并非实心铁块，而是巧妙布置了多层倾斜的间隙NERA钢胶复合板，能在穿甲弹抵达主装甲之前瞬间将超音速钨芯长杆折断。",
+        "audioUrl": "audio/leopard2a7/parts/leo_arrowhead_wedges_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Iconic Hinged Hollow Spaced Composite Wedges Shearing Kinetic Darts",
+        "overview": "The defining silhouette of modern Leopard 2 tanks: hinged hollow triangular cheek armor modules concealing angled spaced NERA composite laminations.",
+        "craftAndMaterial": "68-degree beveled high-hardness armor steel outer prow skins in three-tone camo, heavy vertical turret hinges, and internal multi-layer steel-and-elastomer NERA plates.",
+        "kinematicRole": "Intercepts incoming APFSDS rods ahead of the main turret cheek, using hollow space and asymmetric bulging plates to yaw and snap the penetrator.",
+        "designHighlight": "Achieves a massive ballistic leap at a fraction of solid-steel weight while swinging open on heavy hinges for rapid front-turret service.",
+        "audioScript": "Nothing defines the modern Leopard two silhouette like these razor sharp hinged hollow Arrowhead composite wedges. Inside their sixty eight degree triangular prows sit angled multi layer NERA plates designed to bend and shatter hypersonic tungsten penetrators before they ever strike the main turret bulkhead.",
+        "audioUrl": "audio/leopard2a7/parts/leo_arrowhead_wedges_en.mp3"
+      }
+    },
+    "leo_smoke_dischargers": {
+      "partId": "leo_smoke_dischargers",
+      "bomCode": "F-11",
+      "calloutLabelEn": "76mm Smoke Dischargers",
+      "zh": {
+        "roleTag": "16 管扇形齐射 · 2 秒内构建遮蔽热像与激光测距的多光谱金属气溶胶幕墙",
+        "overview": "左右对称铆装于炮塔两颊的双侧 8 管（共 16 管）德国韦格曼 76mm 多光谱烟幕榴弹发射阵列。",
+        "craftAndMaterial": "重型发黑钢支架固定 16 根 27.5° 仰角扇形排布的 76mm 精锻铝/钢发射筒，外喷北约三色迷彩并配防水橡胶口盖与电发火接线盒。",
+        "kinematicRole": "静止自卫武器阵列，遇敌激光测距或反坦克导弹威胁时电控齐射，两秒内在车前展开宽广红外阻断烟幕以便高速倒车脱离。",
+        "designHighlight": "双排错位 16 管大扇面布局可连续执行两次全向烟幕掩护，发射的红磷与金属气溶胶能同时致盲热成像与激光制导。",
+        "audioScript": "分列在炮塔左右两颊的十六管韦格曼七十六毫米烟幕发射器呈扇形外倾排布。一旦遭遇敌方激光照射或导弹锁定，车长一键齐射就能在两秒内拉起阻断热成像与激光的浓密多光谱防卫幕墙，掩护坦克极速倒车撤离。",
+        "audioUrl": "audio/leopard2a7/parts/leo_smoke_dischargers_zh.mp3"
+      },
+      "en": {
+        "roleTag": "16-Barrel Wegmann 76mm Banks Deploying Multi-Spectral IR Smoke Screens",
+        "overview": "Twin eight-barrel Wegmann 76mm smoke grenade discharger banks angled off both turret flanks provide instant visual, thermal, and laser obscuration.",
+        "craftAndMaterial": "Sixteen fanned 76mm alloy launch tubes elevated at 27.5 degrees on heavy armored standoff brackets with weather caps and electric firing boxes.",
+        "kinematicRole": "Stationary defensive countermeasure cluster capable of launching two full-arc obscurant salvos while the Leopard 2 sprints backward at 31 km/h.",
+        "designHighlight": "Fires multi-spectral metallic aerosol grenades that simultaneously blind daylight optics, thermal imagers, and laser rangefinders within two seconds.",
+        "audioScript": "Mounted in fanned pairs along both turret cheeks, these sixteen Wegmann seventy six millimeter smoke dischargers form the tank's instant defensive veil. When threatened by anti tank missiles, an electric salvo blooms a dense multi spectral smoke wall within two seconds to blind thermal and laser sights.",
+        "audioUrl": "audio/leopard2a7/parts/leo_smoke_dischargers_en.mp3"
+      }
+    },
+    "leo_breech_block": {
+      "partId": "leo_breech_block",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Falling-Wedge Breech",
+      "zh": {
+        "roleTag": "承压700 MPa电击发炮尾 · 复进自动下坠 -160 mm 抽抛金属弹底",
+        "overview": "德国莱茵金属 120mm 精铣高强炮尾环与半自动立楔下坠式炮闩，以电底火击发并实现全自动开闩抛底与进弹自闭。",
+        "craftAndMaterial": "整块高强镍铬钼特种炮钢五轴精铣，表面保留细腻拉丝金属高光，内置黄铜中心电击发触点、青铜曲柄轴与双叉不锈钢抽壳爪。",
+        "kinematicRole": "阶段 3 随 L/55A1 主炮向后坐退 -340 mm，阶段 4 复进复位后自动垂直下坠 -160 mm 敞开药室并抛底，阶段 7 新弹推入后自动上跳闭锁。",
+        "designHighlight": "无需装填手手动扳动闭闩手柄——推弹到位瞬间立楔毫秒级自动上跳锁死，是豹 2 实现 4 秒极速手动装填的核心诀窍。",
+        "audioScript": "这组精铣特种钢制成的莱茵金属立楔下坠式炮闩，能稳稳封锁七百兆帕级火药膛压。每次主炮复进归位时，重型钢楔会自动向下坠落一百六十毫米并抛出灼热的金属弹底，装填手推入新弹后它又会瞬间自动弹起闭锁。",
+        "audioUrl": "audio/leopard2a7/parts/leo_breech_block_zh.mp3"
+      },
+      "en": {
+        "roleTag": "700 MPa Electric-Fired Breech Dropping -160 mm for Semi-Auto Reload",
+        "overview": "Rheinmetall's massive precision-milled 120mm steel breech ring and vertical falling-wedge breechblock seal 700 MPa chamber pressures while automating opening and lockup.",
+        "craftAndMaterial": "CNC-milled high-strength nickel-chrome-molybdenum ordnance steel with brushed machined ways, brass electric firing contact, bronze crank, and stainless extractor forks.",
+        "kinematicRole": "Recoils -340 mm locked with the L/55A1 barrel in phase 3, drops -160 mm vertically in phase 4 to eject the metallic stub base, and snaps upward into battery in phase 7.",
+        "designHighlight": "Semi-automatic closing lets the loader slam a fresh 120mm round home and instantly lock the breech hands-free for four-second burst fire.",
+        "audioScript": "Machined from solid high strength ordnance steel, Rheinmetall's vertical falling wedge breechblock seals seven hundred megapascal chamber pressure with electric primer ignition. At the end of counter recoil it automatically drops one hundred sixty millimeters to eject the stub base, then snaps shut the instant a fresh round is rammed home.",
+        "audioUrl": "audio/leopard2a7/parts/leo_breech_block_en.mp3"
+      }
+    },
+    "leo_breech_spring": {
+      "partId": "leo_breech_spring",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Breech Closing Spring",
+      "zh": {
+        "roleTag": "驱动重型钢楔毫秒级自动上跳闭锁 · 随开闭闩实时等径伸缩",
+        "overview": "安装于炮尾左侧下方的半自动立楔炮闩闭锁与复位重型螺旋弹簧，为沉重钢楔的闪电自动上锁提供机械储能。",
+        "craftAndMaterial": "采用高劲度热处理弹簧钢丝精密绕制（自由长 380 mm），经油淬回火与高疲劳防断裂表面处理。",
+        "kinematicRole": "随炮尾同步后坐 -340 mm，并在阶段 4 立楔下坠开闩期间实时压缩 32% 储存闭闩弹力，阶段 7 瞬间释放推升炮闩闭膛。",
+        "designHighlight": "纯机械储能闭闩完全不依赖全车电力供应，确保即便在静默断电或应急作战状态下火炮依旧具备全速半自动装填能力。",
+        "audioScript": "卧在炮尾左下侧的这根重型螺旋闭闩弹簧，是半自动立楔炮闩的机械肌肉。每当炮闩向下开启一百六十毫米时，弹簧立刻压缩蓄力；新弹一推到底，它就瞬间释放强大扭矩把沉重的立楔向上弹起锁死。",
+        "audioUrl": "audio/leopard2a7/parts/leo_breech_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Heavy Helical Breech Spring Flexing 32% During Falling-Wedge Cycle",
+        "overview": "Mounted along the lower-left breech operating housing, this heavy helical coil spring stores the mechanical energy needed to snap the vertical wedge shut.",
+        "craftAndMaterial": "Oil-quenched, tempered high-rate spring steel coiled to 380 mm free length for tens of thousands of slam-lock artillery cycles.",
+        "kinematicRole": "Rides rearward with the recoiling breech, compresses 32 percent while the vertical wedge drops -160 mm open in phases 4-6, and expands to slam the breech locked in phase 7.",
+        "designHighlight": "Purely mechanical closing actuation operates reliably even under total turret electrical blackout.",
+        "audioScript": "Mounted along the lower left side of the breech ring, this heavy helical closing spring acts as the mechanical muscle of the falling wedge. As the breechblock drops one hundred sixty millimeters open, the spring compresses by thirty two percent, storing energy to slam the steel wedge upward into battery the moment a fresh round seats.",
+        "audioUrl": "audio/leopard2a7/parts/leo_breech_spring_en.mp3"
+      }
+    },
+    "leo_optics_peri": {
+      "partId": "leo_optics_peri",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "PERI R17A3 & EMES-15",
+      "zh": {
+        "roleTag": "现代“猎-歼”火控标杆 · ATTICA 第三代绿蓝镀膜热成像与激光测距",
+        "overview": "由车长顶置 PERI R17A3 独立全景周视热像仪与炮长前右嵌入式 EMES-15 稳像主瞄准镜组成的德国猎-歼双雄光电总成。",
+        "craftAndMaterial": "重型防弹钢装甲光学罩配三色迷彩涂装与铰链防弹百叶窗，光学窗口镶嵌多层绿宝石-蓝宝石增透镀膜红外/激光晶体镜片。",
+        "kinematicRole": "构成全车 Y = +144 cm 最高点；车长 360° 独立搜索锁定下一目标后一键超越调炮，直接移交炮长 EMES-15 完成精准首发命中。",
+        "designHighlight": "升级第三代 ATTICA 热像仪后昼夜穿透烟尘识别距离倍增，将豹 2A7V 的先敌发现、先敌开火反应时间压缩至短短数秒。",
+        "audioScript": "炮塔顶部这套由蔡司与亨索尔特打造的猎歼双雄光电，就是豹2A7V洞穿黑夜的鹰眼。高耸的车长PERI R17A3周视热像仪负责三百六十度独立搜敌，发现目标后一键移交给前右装甲槽里的炮长EMES15主瞄准镜瞬杀。",
+        "audioUrl": "audio/leopard2a7/parts/leo_optics_peri_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Hunter-Killer PERI R17A3 Panoramic & EMES-15 Thermal/Laser Optics",
+        "overview": "Combining the commander's roof-mounted PERI R17A3 panoramic thermal periscope and the gunner's armored EMES-15 primary sight, this optronics pair powers Leopard 2A7V hunter-killer combat.",
+        "craftAndMaterial": "Heavy armored camo housings with vertical shutter doors protecting multi-coated emerald-sapphire infrared thermal, daylight, and laser rangefinder objective lenses.",
+        "kinematicRole": "Crowning the tank at 264 cm overall height, the independently stabilized PERI allows the commander to scan 360 degrees and slew the gunner directly onto new targets.",
+        "designHighlight": "Third-generation ATTICA thermal imagers pierce battlefield smoke and darkness to deliver rapid first-round hits while moving.",
+        "audioScript": "Crowning the turret at two point six four meters high, this Zeis and Hensoldt optronics suite gives the Leopard two A seven V unmatched hunter killer vision. The commander's elevated PERI R seventeen A three scans three hundred sixty degrees independently before handing targets straight to the gunner's armored EMES fifteen thermal sight.",
+        "audioUrl": "audio/leopard2a7/parts/leo_optics_peri_en.mp3"
+      }
+    },
+    "leo_mtu_v12": {
+      "partId": "leo_mtu_v12",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "MTU MB 873 V12 Diesel",
+      "zh": {
+        "roleTag": "纵剖面机械巨星 · 90° V12 47.6L 巨兽 + 双涡轮增压器 + 铜质中冷管",
+        "overview": "被公认为世界装甲机动之王的德国 MTU MB 873 Ka-501 47.6 升 1,500 马力 90° V12 双涡轮增压多燃料柴油发动机。",
+        "craftAndMaterial": "高强轻质银灰铸铝 90° V 形缸体配 12 具独立风冷鳍片缸盖、中央博世 12 缸高压燃油泵、两具镜面银蜗壳废气涡轮增压器以及贯穿两列缸体的暖铜色中冷进气管路。",
+        "kinematicRole": "在 2,600 rpm 输出 1,500 马力与 4,700 N·m 洪荒扭矩，与后方 RENK 变速箱螺栓一体构成 15 分钟战地快换欧洲动力包。",
+        "designHighlight": "多燃料适应性（柴油、航煤乃至汽油应急）搭配远低于燃气轮机的油耗与热特征，令豹 2 兼具狂暴推重比与卓越战略续航。",
+        "audioScript": "揭开后置顶盖，纵剖面里最令人血脉偾张的机械巨兽瞬间映入眼帘——德国MTU MB 873四十七点六升V12双涡轮增压柴油机。十二个银灰缸盖呈九十度分列，双蜗壳涡轮与暖铜中冷管纵横交错，爆发出一千五百马力澎湃动力。",
+        "audioUrl": "audio/leopard2a7/parts/leo_mtu_v12_zh.mp3"
+      },
+      "en": {
+        "roleTag": "47.6L 1,500-HP 90-Deg Twin-Turbo V12 Diesel w/ Copper Intercoolers",
+        "overview": "The cutaway centerpiece of the Leopard 2A7V: MTU Friedrichshafen's monumental MB 873 Ka-501 47.6-liter 1,500-horsepower twin-turbocharged multi-fuel V12 diesel engine.",
+        "craftAndMaterial": "Cast metallic silver-grey aluminum 90-degree V-crankcase, twelve individual cylinder heads, central Bosch injection pump, twin gleaming snail turbochargers, and warm copper-bronze intercooler manifolds.",
+        "kinematicRole": "Delivers 1,500 HP and 4,700 N-m of torque directly into the bolted RENK transmission as the heart of the 15-minute field quick-swap EuroPowerpack.",
+        "designHighlight": "Burns diesel or jet fuel with far lower fuel consumption and cooler exhaust signatures than gas turbines while pushing 66.5 tonnes to 70 km/h.",
+        "audioScript": "At the heart of our cutaway sits a legend of armored propulsion: the forty seven point six liter MTU M B eight seventy three twin turbo V12 diesel. Twelve silver grey cylinders, twin snail turbochargers, and warm copper intercooler pipes unleash fifteen hundred horsepower to propel sixty six point five tonnes at seventy kilometers per hour.",
+        "audioUrl": "audio/leopard2a7/parts/leo_mtu_v12_en.mp3"
+      }
+    },
+    "leo_renk_transmission": {
+      "partId": "leo_renk_transmission",
+      "bomCode": "FC-05",
+      "calloutLabelEn": "RENK HSWL 354 Gearbox",
+      "zh": {
+        "roleTag": "与 MTU V12 螺栓一体快换 · 支持中心零半径原地转向与 31 km/h 极速倒车",
+        "overview": "紧螺栓对接 MTU V12 尾端的德国伦克 RENK HSWL 354 四前二倒液力机械综合传动装置，集成盘式制动与铜翅片散热芯。",
+        "craftAndMaterial": "精铸枪灰加强筋合金变速箱体配亮银液力变矩器、双侧大型通风制动钢盘、两侧细密波纹铜翅片横流散热核心及左侧冷却风扇。",
+        "kinematicRole": "将 1,500 马力 V12 扭矩无缝切换为 4 个前进挡与 2 个高速倒挡，经双侧输出半轴驱动后置 12 齿主动轮实现零半径中心转向。",
+        "designHighlight": "高达 31 km/h 的极速倒车能力令豹 2 在棱线射击完毕后无需转身暴露薄弱车尾，瞬间倒车隐蔽重装，战术价值极高。",
+        "audioScript": "紧挨着V12柴油机尾部螺栓一体的，是德国伦克HSWL 354液力机械综合变速箱。它集成了四前二倒行星变速、无级转向、大型通风盘式制动与铜翅散热芯，赋予豹二原地三百六十度转向和每小时三十一公里极速倒车的惊人敏捷。",
+        "audioUrl": "audio/leopard2a7/parts/leo_renk_transmission_zh.mp3"
+      },
+      "en": {
+        "roleTag": "4-Forward / 2-Reverse Hydro-Mechanical Cross-Drive & Copper Radiators",
+        "overview": "Bolted directly behind the MTU V12 into the quick-swap EuroPowerpack, RENK's HSWL 354 hydro-mechanical transmission integrates gearing, steering, braking, and copper radiators.",
+        "craftAndMaterial": "Ribbed gunmetal alloy gearbox casing, aluminum torque converter drum, gleaming lateral ventilated steel disc brakes, and twin flanking ribbed copper-fin cross-flow radiator cores.",
+        "kinematicRole": "Channels 1,500 HP into the rear drive sprockets with seamless hydrostatic pivot steering and a formidable 31 km/h combat reverse speed.",
+        "designHighlight": "Blistering reverse agility lets the Leopard 2 back straight down a firing berm immediately after shooting without ever exposing its thinner rear armor.",
+        "audioScript": "Bolted directly to the rear of the V12 as part of the quick swap EuroPowerpack, the RENK H S W L three fifty four hydro mechanical transmission packs four forward gears, two high speed reverse gears, ventilated disc brakes, and copper fin radiators into one compact block capable of neutral pivot turns and thirty one kilometer per hour reverse sprints.",
+        "audioUrl": "audio/leopard2a7/parts/leo_renk_transmission_en.mp3"
+      }
+    },
+    "leo_cooling_fans": {
+      "partId": "leo_cooling_fans",
+      "bomCode": "FC-06",
+      "calloutLabelEn": "Radial Cooling Fan",
+      "zh": {
+        "roleTag": "14片后掠铝叶轮 · 击发循环中 360° 平稳飞转抽取海量冷却气流",
+        "overview": "位于后引擎盖圆形格栅正下方的高风量水平径向冷却风扇叶轮与环形铜翅散热导风罩，为 1,500 马力 V12 狂抽散热冷风。",
+        "craftAndMaterial": "14 片精密铸造铝合金后掠空气动力学涡轮叶片铆固于黄铜色螺栓中心轮毂，外环同轴包覆细密波纹铜翅片热交换导风圈。",
+        "kinematicRole": "在击发与运行仿真全程绕自身垂直轴线平滑旋转 360°，在纵剖视窗下直观展现德国大型坦克动力舱澎湃的强制对流散热。",
+        "designHighlight": "液压无级温控调速叶轮可根据沙漠酷暑或涉水潜渡瞬间切换转速甚至离合断脱，兼顾极端散热冗余与深潜防水密封。",
+        "audioScript": "紧贴在发动机顶盖圆形格栅正下方的，是这具直径八十四厘米的高风量径向冷却风扇叶轮。十四片后掠铝合金叶片在运行中高速旋转，源源不断吸入冷空气吹过铜翅散热核心，确保V12引擎在沙漠酷暑中持续满功率输出。",
+        "audioUrl": "audio/leopard2a7/parts/leo_cooling_fans_zh.mp3"
+      },
+      "en": {
+        "roleTag": "14-Blade Swept Aluminum Impeller Spinning 360 Degrees Under Deck Grille",
+        "overview": "Suspended directly beneath the engine deck's signature circular grille, this 840 mm horizontal radial cooling fan impeller draws massive airflow across the copper-fin radiators.",
+        "craftAndMaterial": "Fourteen aerodynamically swept cast-aluminum turbine blades mounted on a bolted brass central hub and encircled by a coaxial ribbed copper-fin radiator shroud.",
+        "kinematicRole": "Spins continuously 360 degrees around its vertical shaft throughout the firing cycle, showcasing the living mechanical heartbeat of the cutaway engine bay.",
+        "designHighlight": "Thermostatically regulated hydraulic drive adjusts fan speed automatically for 50-degree desert heat or disengages cleanly for deep-water snorkeling.",
+        "audioScript": "Positioned right below the iconic round engine deck grille, this eighty four centimeter radial cooling fan drives fourteen swept aluminum impeller blades inside a copper fin shroud. Spinning smoothly throughout our firing simulation, it draws torrents of cooling air so the fifteen hundred horsepower V12 never overheats in desert combat.",
+        "audioUrl": "audio/leopard2a7/parts/leo_cooling_fans_en.mp3"
+      }
+    },
+    "leo_crew_stations": {
+      "partId": "leo_crew_stations",
+      "bomCode": "FC-07",
+      "calloutLabelEn": "Crew Stations & IFIS",
+      "zh": {
+        "roleTag": "前右驾驶员+错层车长/炮长+左侧装填手 · 集成 IFIS 战术液晶显控",
+        "overview": "凝聚德国严谨人机工程学的四人乘员舱战位总成，集成豹 2 标志性轭式驾驶盘与数字化 IFIS 战场指挥终端。",
+        "craftAndMaterial": "防滑阻燃织物人体工学靠背座椅、镀铬豹 2 专属轭式方向盘、高亮青蓝背光 IFIS 数字化战术液晶屏幕以及安全黄装填手防撞护栏。",
+        "kinematicRole": "车体前右安放倾斜驾驶员席；炮塔右侧上下错层布局炮长与车长双战位以共享稳像观瞄轴线；炮塔左侧腾出宽阔站立区供装填手 4 秒装弹。",
+        "designHighlight": "IFIS 数字化战场管理系统将全连坦克位置、激光测距目标与弹药余量实时共享于高清显控屏，彻底迈入网络化协同陆战。",
+        "audioScript": "这套四人乘员战位完美呈现了德国装甲舱的人机工程智慧：车体右前方是配轭式方向盘的驾驶员席，炮塔右侧呈上下错层布置炮长与车长战位并装有青蓝背光的IFIS数字化战场终端，宽敞的左侧则留给闪电手动装弹的装填手。",
+        "audioUrl": "audio/leopard2a7/parts/leo_crew_stations_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Front-Right Driver, Stepped Gunner/Commander & IFIS Digital Terminals",
+        "overview": "Ergonomic four-crew interior stations combining the front-right driver's yoke cockpit, stepped right-turret gunner and commander seats, loader's perch, and glowing IFIS tactical consoles.",
+        "craftAndMaterial": "Flame-retardant ergonomic contoured seats, chrome Leopard 2 steering yoke, bright cyan-backlit IFIS battlefield management LCD displays, and high-visibility yellow breech guard rail.",
+        "kinematicRole": "Stationary crew layout organizing all four tankers around the 120mm gun breech and optics so hunter-killer target handoff and 4-second loading stay effortless.",
+        "designHighlight": "Integrated IFIS digital command terminals share real-time friendly positions, laser target plots, and ammunition readiness across the entire armored battalion.",
+        "audioScript": "German crew ergonomics shine across these four stations: a reclining front right driver's cockpit with the signature Leopard two steering yoke, stepped right turret seats for gunner and commander with glowing cyan IFIS digital battle management displays, and an unobstructed left station for rapid manual loading.",
+        "audioUrl": "audio/leopard2a7/parts/leo_crew_stations_en.mp3"
+      }
+    },
+    "leo_blast_door": {
+      "partId": "leo_blast_door",
+      "bomCode": "M-01",
+      "calloutLabelEn": "Bustle Blast Door",
+      "zh": {
+        "roleTag": "物理隔绝 15 发尾舱待发弹 · 装填时膝控滑开 340 mm，中弹向上泄压保命",
+        "overview": "屹立在战斗室与炮塔后尾舱 15 发待发弹药库之间的厚重钢制气动滑动防爆隔离门，是豹 2 车组生存架构的铁壁闸门。",
+        "craftAndMaterial": "厚重高强防弹钢门扇镶装于上下镀铬精密滑轨之上，正面醒目涂装德文黄黑斜纹安全警示条「ACHTUNG · MUNITIONSBUNKER 120MM」与不锈钢拉手。",
+        "kinematicRole": "击发阶段 5 响应装填手膝控开关闪电向左侧滑开 340 mm（|ΔZ| = 34.0 cm）放行新弹，阶段 7 新弹入膛后即刻自动滑回锁死。",
+        "designHighlight": "防爆门与炮塔顶置泄压板联手构成物理隔舱防线，即使尾舱弹药被击中爆燃，门扇仍牢牢抵挡烈焰守护战斗室四名乘员。",
+        "audioScript": "这扇醒目喷涂着德文黄黑警示条的厚重气动滑动钢门，是守护豹二乘员生命的防爆隔舱闸门。平时它死死封住后尾舱的十五发待发弹，仅在装填手轻触膝控开关的短短两秒内横向滑开三百四十毫米，取完炮弹瞬间自动弹回锁死。",
+        "audioUrl": "audio/leopard2a7/parts/leo_blast_door_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Pneumatic Armored Door Sliding 340 mm Open to Isolate 15 Bustle Rounds",
+        "overview": "This heavy pneumatic sliding armored blast door physically seals the 15-round turret bustle magazine from the crew fighting compartment.",
+        "craftAndMaterial": "Thick ballistic steel leaf riding on upper and lower chrome guide rails, finished with bold German yellow-and-black hazard stripes reading ACHTUNG MUNITIONSBUNKER 120MM.",
+        "kinematicRole": "Slides 340 mm laterally open in phase 5 upon loader knee-switch command so the ready round slides through, then slams securely shut and locks in phase 7.",
+        "designHighlight": "Paired with roof blow-off panels, this fail-safe door keeps lethal propellant fire entirely outside the crew cabin if the bustle is hit.",
+        "audioScript": "Marked with bold German yellow and black caution stripes, this heavy pneumatic armored blast door is the crew's survival barrier. It seals the fifteen round bustle magazine tight until the loader taps a knee switch, sliding three hundred forty millimeters sideways for just a moment before slamming locked again.",
+        "audioUrl": "audio/leopard2a7/parts/leo_blast_door_en.mp3"
+      }
+    },
+    "leo_ammo_bustle": {
+      "partId": "leo_ammo_bustle",
+      "bomCode": "M-02",
+      "calloutLabelEn": "15-Rd Bustle Ready Rack",
+      "zh": {
+        "roleTag": "15 发即取即用尾舱蜂窝架 · 配备温敏不敏感推进剂 DM63A1 整装弹",
+        "overview": "安置于炮塔尾舱防爆门后方的 3 排 × 5 列 15 发蜂窝待发弹药架，满载闪耀的 120mm DM63A1 尾翼稳定脱壳穿甲弹。",
+        "craftAndMaterial": "高强防弹钢蜂窝框体精准固定 14 发静态整装弹（预留 1 工位供动态装填弹滑出），清晰分层还原黄铜弹底、橄榄棕半可燃药筒、银铝弹托与深灰钨芯弹杆。",
+        "kinematicRole": "紧邻炮尾呈水平直列排布，使装填手无需大幅弯腰转身即可一拉一推在 4 秒内完成全自动高射速爆发装填。",
+        "designHighlight": "全隔离尾舱待发设计结合低易损 TIPS 推进剂，在极致射速与最高级别乘员防殉爆安全之间做到完美兼得。",
+        "audioScript": "隐藏在防爆门背后的炮塔尾舱蜂窝架里，整齐码放着十五发随时待命的一百二十毫米DM63A1穿甲弹。黄铜金属弹底、橄榄棕半可燃药筒与深灰钨芯长杆排列如艺术品，让装填手能以惊人的四秒节拍连续极速装填。",
+        "audioUrl": "audio/leopard2a7/parts/leo_ammo_bustle_zh.mp3"
+      },
+      "en": {
+        "roleTag": "15-Round Honeycomb Ready Rack Stocked w/ 120mm DM63A1 APFSDS",
+        "overview": "Positioned directly behind the armored bustle blast door, this 3-by-5 honeycomb ready rack holds fifteen unitary 120mm DM63A1 APFSDS cartridges ready for instant manual loading.",
+        "craftAndMaterial": "Reinforced armored honeycomb retention frame holding fourteen static 120mm rounds (leaving one open slot for the animated ready round) with brass stubs, combustible cases, aluminum sabots, and tungsten darts.",
+        "kinematicRole": "Aligns horizontally straight behind the breech so the loader can pull, pivot slightly, and ram fresh rounds home at up to 15 rounds per minute in short bursts.",
+        "designHighlight": "Isolated rear-bustle storage combines blazing human reload cadence with blow-off panel crew survivability.",
+        "audioScript": "Behind the armored blast door sits this fifteen round honeycomb bustle ready rack loaded with one hundred twenty millimeter DM sixty three A one APFSDS rounds. Arranged horizontally right behind the breech, its brass stubs, combustible olive cases, and tungsten darts let a skilled loader sustain blistering four second reloads.",
+        "audioUrl": "audio/leopard2a7/parts/leo_ammo_bustle_en.mp3"
+      }
+    },
+    "leo_hull_ammo_rack": {
+      "partId": "leo_hull_ammo_rack",
+      "bomCode": "M-03",
+      "calloutLabelEn": "27-Rd Hull Ammo Bunker",
+      "zh": {
+        "roleTag": "全车 42 发备弹中的 27 发储备库 · 藏身 2A7V 首上与重型前侧裙多重庇护下",
+        "overview": "卧置于车体前左侧、紧邻驾驶员席的 27 发大容量卧式装甲主弹药库，与尾舱 15 发共同组成豹 2A7V 42 发作战弹药基数。",
+        "craftAndMaterial": "厚重防弹钢板围合多层卧式蜂窝弹架与前锁紧挡板，内部码放带黄铜弹底、半可燃药筒与重钨长杆的 120×570mm 整装炮弹。",
+        "kinematicRole": "作为持久机动作战的战略弹药储备仓，在战斗间隙由装填手向炮塔尾舱 15 发待发架快速补充弹药。",
+        "designHighlight": "正前方直接受 2A7V 最厚重的首上复合附加装甲块屏蔽，外侧则紧贴最厚实的前三块重型复合侧裙，实现全车最强装甲区庇护。",
+        "audioScript": "在驾驶员左侧的车体前舱，卧放着这座可容纳二十七发一百二十毫米炮弹的大型装甲弹药库。它深藏在豹2A7V最厚重的首上附加装甲和前部重型复合侧裙背后，与尾舱十五发待发弹共同构成全车四十二发强大火力基数。",
+        "audioUrl": "audio/leopard2a7/parts/leo_hull_ammo_rack_zh.mp3"
+      },
+      "en": {
+        "roleTag": "27-Round Forward-Left Hull Bunker Guarded by 2A7V Glacis & Heavy Skirts",
+        "overview": "Nestled horizontally in the forward-left hull beside the driver, this 27-round armored reserve ammunition bunker complements the 15-round bustle rack for a 42-round combat load.",
+        "craftAndMaterial": "Heavy armored steel enclosure framing horizontal honeycomb tubes stocked with gleaming 120x570mm unitary APFSDS and multi-purpose cartridges.",
+        "kinematicRole": "Supplies sustained-combat reserve ammunition transferred into the turret bustle ready rack during tactical lulls.",
+        "designHighlight": "Tucked directly behind the upgraded 2A7V heavy composite glacis module and the thickest front ballistic side skirts for maximum hull protection.",
+        "audioScript": "Positioned horizontally in the forward left hull right beside the driver, this armored bunker carries twenty seven reserve one hundred twenty millimeter rounds to bring the tank's total combat load to forty two. It rests directly behind the thickest two A seven V composite glacis armor and heavy front side skirts.",
+        "audioUrl": "audio/leopard2a7/parts/leo_hull_ammo_rack_en.mp3"
+      }
+    },
+    "leo_ready_round": {
+      "partId": "leo_ready_round",
+      "bomCode": "M-04",
+      "calloutLabelEn": "120mm DM63A1 APFSDS",
+      "zh": {
+        "roleTag": "全长 984 mm · 1,750 m/s 钨芯长杆穿甲弹动态自尾舱直推入膛",
+        "overview": "德国莱茵金属 120×570mm NATO 制式 DM63A1 尾翼稳定脱壳穿甲弹，在击发仿真中动态演示从尾舱防爆门前推 +1,520 mm 装入炮膛的全流程。",
+        "craftAndMaterial": "精确按 1:1 比例复刻 984 mm 全长构型：底部为 154 mm 直径黄铜钢制短弹底，中段为橄榄棕半可燃硝化纤维药筒，前段为铝质四瓣脱壳弹托、六片十字尾翼与高密度重钨合金穿甲长杆。",
+        "kinematicRole": "阶段 5 防爆门滑开后，阶段 6 沿尾舱工位平稳滑出、横向归中至炮轴并笔直前推 +152 cm 装入敞开的立楔炮膛，阶段 7 随立楔自动闭锁待发。",
+        "designHighlight": "独创温度独立推进剂（TIPS）彻底消除热带与严寒膛压漂移，令重钨合金穿甲长杆在任何战区均保持一致的 1,750 m/s 毁灭穿深。",
+        "audioScript": "这枚全长近一米的整装炮弹，就是令重装甲胆寒的莱茵金属120毫米DM63A1钨合金尾翼稳定脱壳穿甲弹。击发仿真中，你会亲眼见证它在防爆门滑开后平稳滑出尾舱，一口气向前推入一百五十二厘米直抵L55A1炮膛深处。",
+        "audioUrl": "audio/leopard2a7/parts/leo_ready_round_zh.mp3"
+      },
+      "en": {
+        "roleTag": "984 mm 120mm DM63A1 Tungsten APFSDS Ramming +1,520 mm Into Breech",
+        "overview": "Rheinmetall's 984 mm unitary 120x570mm NATO DM63A1 tungsten APFSDS cartridge, animated live from the open turret bustle straight into the falling-wedge breech.",
+        "craftAndMaterial": "1:1 scale 154 mm metallic stub base with electric primer, olive-tan combustible nitrocellulose case, four-petal aluminum discarding sabot, six cruciform tail fins, and dense tungsten-alloy long-rod penetrator.",
+        "kinematicRole": "Remains staged in the bustle until the blast door clears, then translates laterally to bore center and rams +152 cm forward into the open L/55A1 chamber in phase 6.",
+        "designHighlight": "Patented Temperature-Independent Propulsion System maintains identical 1,750 m/s ballistic accuracy from -46 degrees Arctic frost to +71 degrees desert heat.",
+        "audioScript": "Nearly a full meter long, this one hundred twenty millimeter Rheinmetall DM sixty three A one tungsten sabot round delivers terrifying armor penetration. During our firing sequence, watch it glide straight out of the open bustle blast door and ram one hundred fifty two centimeters forward into the waiting L fifty five A one breech.",
+        "audioUrl": "audio/leopard2a7/parts/leo_ready_round_en.mp3"
+      }
+    }
+  }
+}

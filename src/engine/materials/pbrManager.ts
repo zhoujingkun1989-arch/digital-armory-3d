@@ -16,6 +16,15 @@ export interface PartPbrBundle {
   textureKeys: string[];
 }
 
+export const ARMOR_DETAIL_NORMAL_FILE = 'armor_detail_normal.webp';
+export const ARMOR_DETAIL_ROUGHNESS_FILE = 'armor_detail_roughness.webp';
+
+export interface ArmorDetailTextureBundle {
+  normalMap: THREE.Texture | null;
+  roughnessMap: THREE.Texture | null;
+  textureKeys: string[];
+}
+
 interface CachedTextureRecord {
   key: string;
   tex: THREE.Texture;
@@ -166,11 +175,14 @@ function loadCachedTexture(
   opts: {
     srgb: boolean;
     repeat?: number;
+    wrapRepeat?: boolean;
+    baseOverride?: string;
     ownerWeapon: WeaponId | 'shared';
   }
 ): { key: string; tex: THREE.Texture | null } {
-  const url = resolveTextureUrl(fileName);
-  const key = `${url}|${opts.srgb ? 'srgb' : 'lin'}|${opts.repeat ?? 1}`;
+  const url = resolveTextureUrl(fileName, opts.baseOverride);
+  const repeatTag = opts.repeat ?? (opts.wrapRepeat ? 'rep' : 1);
+  const key = `${url}|${opts.srgb ? 'srgb' : 'lin'}|${repeatTag}`;
   if (typeof window === 'undefined') {
     return { key, tex: null };
   }
@@ -202,6 +214,10 @@ function loadCachedTexture(
     tex.wrapS = THREE.RepeatWrapping;
     tex.wrapT = THREE.RepeatWrapping;
     tex.repeat.set(opts.repeat, opts.repeat);
+  } else if (opts.wrapRepeat) {
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.RepeatWrapping;
+    tex.repeat.set(1, 1);
   } else {
     tex.wrapS = THREE.ClampToEdgeWrapping;
     tex.wrapT = THREE.ClampToEdgeWrapping;
@@ -219,6 +235,49 @@ function loadCachedTexture(
   }
 
   return { key, tex };
+}
+
+const armorDetailBundleCache = new Map<string, ArmorDetailTextureBundle>();
+
+/**
+ * Returns the cached, subpath-safe, RepeatWrapping + linear-locked 512x512 seamless
+ * rolled-steel RHA + mineral CARC triplanar detail texture pair (`normalMap`, `roughnessMap`).
+ * Gracefully returns `{ normalMap: null, roughnessMap: null, textureKeys: [] }` in headless Node.
+ */
+export function getArmorDetailTextures(
+  baseOverride?: string
+): ArmorDetailTextureBundle {
+  if (typeof window === 'undefined') {
+    return { normalMap: null, roughnessMap: null, textureKeys: [] };
+  }
+  const nrm = loadCachedTexture(ARMOR_DETAIL_NORMAL_FILE, {
+    srgb: false,
+    wrapRepeat: true,
+    baseOverride,
+    ownerWeapon: 'shared',
+  });
+  const rgh = loadCachedTexture(ARMOR_DETAIL_ROUGHNESS_FILE, {
+    srgb: false,
+    wrapRepeat: true,
+    baseOverride,
+    ownerWeapon: 'shared',
+  });
+  const bundleKey = `${nrm.key}||${rgh.key}`;
+  const cached = armorDetailBundleCache.get(bundleKey);
+  if (
+    cached &&
+    cached.normalMap === nrm.tex &&
+    cached.roughnessMap === rgh.tex
+  ) {
+    return cached;
+  }
+  const bundle: ArmorDetailTextureBundle = {
+    normalMap: nrm.tex,
+    roughnessMap: rgh.tex,
+    textureKeys: [nrm.key, rgh.key],
+  };
+  armorDetailBundleCache.set(bundleKey, bundle);
+  return bundle;
 }
 
 /**

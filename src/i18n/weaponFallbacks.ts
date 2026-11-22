@@ -758,6 +758,142 @@ export const WEAPON_EN_FALLBACKS: Record<
       'Search part name / BOM code (e.g. pulley, cable, rammer, S-05)...',
     firingMilestoneLabel: 'Pulley Pre-Feed',
   },
+  ztz99a: {
+    shortLabel: 'ZTZ-99A',
+    name: 'PLA ZTZ-99A Main Battle Tank',
+    originCountry: 'China',
+    weaponType: 'Main Battle Tank',
+    statusLabel: 'Heavy Armor · 1:1 Ready',
+    caliber: '125mm ZPT-98 (DTC10-125 APFSDS)',
+    compactCaliber: '125mm · DTC10 APFSDS',
+    actionMechanism:
+      '125mm L/50 Smoothbore · Vertical Sliding-Wedge Breech & 22-Rd Floor Carousel Autoloader',
+    overallLengthMm: '10,900 mm (Gun Forward) / 7,600 mm (Hull)',
+    barrelSpec: '6,250 mm (125mm ZPT-98 L/50 · ESR Chrome Smoothbore)',
+    weightKg: '55,000 kg (Combat Weight)',
+    muzzleVelocityMs: '1,780 m/s (DTC10-125 Tungsten APFSDS)',
+    effectiveRangeM: '3,000 m (Direct) / 5,000 m (GL-ATGM)',
+    rateOfFire: '8 rpm (22-Rd Carousel Autoloader)',
+    description:
+      'China’s flagship third-generation-plus digitalized main battle tank at true 1:1 scale (10.90 m overall, 55 tonnes combat mass): fuses arrowhead FY-4 dual-purpose explosive reactive armor, a 6.25-meter high-pressure 125mm ZPT-98 L/50 smoothbore cannon with hydro-pneumatic recoil cylinders, a 22-round floor carousel autoloader with vertical hoist and rigid-chain rammer, a 1,500-HP 150HB-2 twin-turbo V12 diesel powerpack, and the signature JD-3 active laser dazzler.',
+    highlights: [
+      '125mm ZPT-98 L/50 Smoothbore (650 MPa · 1,780 m/s DTC10 APFSDS)',
+      '22-Rd Floor Carousel Autoloader, +68cm Hoist & Rigid-Chain Rammer',
+      'Arrowhead FY-4 Dual-Purpose ERA Turret & JD-3 Active Laser Dazzler',
+      '1,500-HP 150HB-2 V12 Diesel, CH-1000 Drive & 12 Torsion Bars',
+    ],
+    workbenchTitle: 'PLA ZTZ-99A 1:1 3D Teardown & 125mm Carousel Autoloader',
+    workbenchSubtitle:
+      '4 Assemblies · 26 CAD Parts · 125mm ZPT-98 -320mm Recoil, 22-Rd Floor Carousel & 1,500-HP V12',
+    cutawayLabel: 'Carousel & V12 Cutaway',
+    cutawayTitle:
+      'Switch to cutaway view and frame the 22-round floor carousel autoloader, vertical hoist arm, chain rammer & 125mm vertical breech',
+    searchPlaceholder:
+      'Search tank assembly / BOM code (e.g. carousel, ZPT-98, FY-4, V12, A-01)...',
+    firingMilestoneLabel: 'Carousel Hoist & Ram',
+  },
+  m1a2: {
+    shortLabel: 'M1A2 SEP v3',
+    name: 'M1A2 SEP v3 Abrams Main Battle Tank',
+    originCountry: 'United States',
+    weaponType: 'Main Battle Tank',
+    statusLabel: 'Heavy Armor · 1:1 Ready',
+    caliber: '120×570mm NATO (M829A4 APFSDS-T)',
+    compactCaliber: '120×570mm · M829A4',
+    actionMechanism:
+      '120mm L/44 M256 Smoothbore · Vertical Falling-Wedge Breech & Blast-Door Bustle',
+    overallLengthMm: '9,770 mm (Gun Forward) / 7,930 mm (Hull)',
+    barrelSpec: '5,280 mm (120mm L/44 M256 Chrome Smoothbore)',
+    weightKg: '66,800 kg (Combat Weight)',
+    muzzleVelocityMs: '1,670 m/s (M829A4 DU APFSDS-T)',
+    effectiveRangeM: '4,000 m',
+    rateOfFire: '8–10 rpm (Manual Bustle Loader)',
+    description:
+      'The U.S. Army’s flagship heavy main battle tank modeled at true 1:1 scale (9.77 m overall, 66.8 tonnes): combines the aviation-derived 1,500-SHP Honeywell AGT1500 multi-fuel gas turbine and Allison X1100-3B cross-drive transmission with a 36-round compartmentalized rear ammo bustle beneath roof blow-off vent panels, knee-actuated armored sliding blast doors, 7-layer Chobham/Depleted-Uranium (DU) NERA composite cheek armor, and the 120mm L/44 M256 smoothbore cannon.',
+    highlights: [
+      '120mm L/44 M256 Smoothbore (670 MPa · M829A4 DU Sabot Dart)',
+      '36-Rd Isolated Ammo Bustle, Roof Blow-Off Panels & Sliding Blast Doors',
+      'Honeywell AGT1500 1,500-SHP Gas Turbine & Allison X1100-3B Drive',
+      '7-Layer Chobham/DU NERA Cheek Armor, CROWS-LP & 14 Torsion Bars',
+    ],
+    workbenchTitle: 'M1A2 SEP v3 Abrams 1:1 3D Teardown & Blast-Door Reload Cycle',
+    workbenchSubtitle:
+      '4 Assemblies · 26 CAD Parts · 120mm M256 Recoil, Sliding Blast Doors & AGT1500 Gas Turbine',
+    cutawayLabel: 'AGT1500 & Blast-Door Cutaway',
+    cutawayTitle:
+      'Switch to cutaway view and frame the Honeywell AGT1500 gas turbine, armored sliding blast doors, 36-rd bustle & M256 breech',
+    searchPlaceholder:
+      'Search tank module / BOM code (e.g. AGT1500, blast door, Chobham, 120mm, FC-03)...',
+    firingMilestoneLabel: 'Blast-Door Reload',
+  },
+  leopard2a7: {
+    shortLabel: 'Leopard 2A7V',
+    name: 'KMW Leopard 2A7V Main Battle Tank',
+    originCountry: 'Germany',
+    weaponType: 'Main Battle Tank',
+    statusLabel: 'Heavy Armor · 1:1 Ready',
+    caliber: '120×570mm NATO (DM63A1 APFSDS)',
+    compactCaliber: '120×570mm · DM63A1',
+    actionMechanism:
+      '120mm Rh-120 L/55A1 Smoothbore · Vertical Falling-Wedge Breech & Bustle Blast Door',
+    overallLengthMm: '10,970 mm (6.6m Gun) / 7,700 mm (Hull)',
+    barrelSpec: '6,600 mm (120mm Rh-120 L/55A1 High-Pressure Smoothbore)',
+    weightKg: '66,500 kg (Combat Weight)',
+    muzzleVelocityMs: '1,750 m/s (DM63A1 Tungsten APFSDS)',
+    effectiveRangeM: '4,000 m',
+    rateOfFire: '12–15 rpm (Manual Burst Loader)',
+    description:
+      'Krauss-Maffei Wegmann and Rheinmetall’s modernized Bundeswehr flagship modeled at true 1:1 scale (10.97 m overall, 66.5 tonnes): pairs the 6.60-meter 700 MPa Rh-120 L/55A1 smoothbore cannon and signature hinged hollow spaced Arrowhead composite turret wedges with PERI R17A3 / EMES-15 hunter-killer thermal optics, pneumatic bustle blast door (15 ready rounds + 27 forward hull rounds), and the 15-minute quick-swap 47.6L 1,500-HP MTU MB 873 V12 EuroPowerpack.',
+    highlights: [
+      '6,600 mm Rheinmetall Rh-120 L/55A1 Smoothbore (700 MPa · 1,750 m/s)',
+      '1,500-HP MTU MB 873 V12 Diesel & RENK HSWL 354 Quick-Swap Powerpack',
+      'Hinged Hollow Arrowhead Composite Turret Wedges & NATO 3-Tone Camo',
+      '15-Rd Bustle Blast Door, 27-Rd Hull Bunker & PERI R17A3 / EMES-15',
+    ],
+    workbenchTitle: 'KMW Leopard 2A7V 1:1 3D Teardown & MTU V12 / L55A1 Cycle',
+    workbenchSubtitle:
+      '4 Assemblies · 26 CAD Parts · 6.6m L/55A1 Recoil, Hollow Arrowhead Armor & MTU V12 EuroPowerpack',
+    cutawayLabel: 'MTU V12 & Bustle Cutaway',
+    cutawayTitle:
+      'Switch to cutaway view and frame the 47.6L MTU MB 873 V12 diesel, RENK HSWL 354 gearbox, blast door & L/55A1 breech',
+    searchPlaceholder:
+      'Search tank module / BOM code (e.g. MTU V12, L/55A1, Arrowhead, RENK, FC-04)...',
+    firingMilestoneLabel: 'Bustle DM63A1 Ram',
+  },
+  tiger1: {
+    shortLabel: 'Tiger I (131)',
+    name: 'Pz.Kpfw. VI Ausf. E "Tiger 131" Heavy Tank',
+    originCountry: 'Germany',
+    weaponType: 'Heavy Tank',
+    statusLabel: 'Heavy Armor · 1:1 Ready',
+    caliber: '88×571mmR (PzGr. 39 APCBC)',
+    compactCaliber: '88×571mmR · PzGr. 39',
+    actionMechanism:
+      '88mm KwK 36 L/56 Rifled Cannon · Krupp Semi-Auto Horizontal Sliding-Wedge Breech',
+    overallLengthMm: '8,450 mm (Gun Forward) / 6,316 mm (Hull)',
+    barrelSpec: '4,930 mm (88mm KwK 36 L/56 · 32-RH Rifled)',
+    weightKg: '57,000 kg (Combat Weight)',
+    muzzleVelocityMs: '773 m/s (PzGr. 39 APCBC)',
+    effectiveRangeM: '2,000 m (Direct Anti-Armor)',
+    rateOfFire: '6–8 rpm (Semi-Auto Horizontal Wedge)',
+    description:
+      'Bovington Tank Museum’s world-famous "Tiger 131"—the planet’s only running original WWII Tiger I—recreated at true 1:1 scale (8.45 m overall, 57 tonnes): features 100 mm interlocking vertical Krupp RHA armor in 1943 Dunkelgelb and combed Zimmerit, horseshoe-curved turret, 48 overlapping Schachtellaufwerk interleaved road wheels on 725 mm tracks, rear 23.1L 700-HP Maybach HL230 V12 driving the front Olvar 8-speed gearbox through a central floor shaft, and the 88mm KwK 36 L/56 rifled cannon.',
+    highlights: [
+      '88mm KwK 36 L/56 Rifled Cannon, Twin-Baffle Brake & Horizontal Wedge',
+      '48 Interleaved Schachtellaufwerk Wheels, 16 Torsion Bars & 725mm Tracks',
+      '700-HP Maybach HL230 V12, Central Driveshaft & Front Olvar 8-Speed',
+      '1943 Dunkelgelb RAL 7028 Camo, Zimmerit Relief & Elfenbein Interior',
+    ],
+    workbenchTitle: 'WWII Tiger 131 1:1 3D Teardown & 88mm Horizontal Wedge Cycle',
+    workbenchSubtitle:
+      '4 Assemblies · 26 CAD Parts · 88mm KwK 36 L/56, Interleaved Wheels, Maybach V12 & Olvar Drive',
+    cutawayLabel: 'Maybach V12 & 88mm Cutaway',
+    cutawayTitle:
+      'Switch to cutaway view and frame the Maybach HL230 V12 engine, central driveshaft, Krupp horizontal breech & 88mm sponson racks',
+    searchPlaceholder:
+      'Search tank module / BOM code (e.g. 88mm, Maybach, interleaved, breech, FC-04)...',
+    firingMilestoneLabel: 'Horizontal Wedge Open',
+  },
 };
 
 export function getLocalizedShortWeaponLabel(
@@ -785,6 +921,10 @@ const COMPACT_ZH_CALIBER: Partial<Record<FallbackWeaponId, string>> = {
   vss: '9×39 亚音速',
   m134: '7.62 NATO · 弹链',
   an94: '5.45×39 7N6',
+  ztz99a: '125mm 滑膛 · DTC10',
+  m1a2: '120×570mm · M829A4',
+  leopard2a7: '120×570mm · DM63A1',
+  tiger1: '88×571mmR · PzGr. 39',
 };
 
 export function getLocalizedCatalogSpecs(
@@ -1002,6 +1142,52 @@ export function resolvePartMaterialLabel(
     return lang === 'zh'
       ? '伊热夫斯克李子黑玻纤增强聚酰胺 (ПА66-ГФ)'
       : 'Izhmash Plum-Black Glass-Filled Polyamide (PA66-GF)';
+  }
+  if (
+    wid === 'ztz99a' &&
+    (part.id === 'ztz99a_era_wedges' || part.id === 'ztz99a_glacis_era')
+  ) {
+    return lang === 'zh'
+      ? 'FY-4 双防爆炸反应装甲与高硬轧制复合钢板'
+      : 'FY-4 Dual-Purpose ERA & High-Hardness Composite Armor Steel';
+  }
+  if (wid === 'ztz99a' && part.id === 'ztz99a_v12_engine') {
+    return lang === 'zh'
+      ? '150HB 铸造铝合金 V12 缸体、银铝涡轮与青铜排气歧管'
+      : '150HB Cast-Aluminum V12 Block, Alloy Turbos & Bronze Exhaust';
+  }
+  if (wid === 'm1a2' && part.id === 'm1a2_composite_armor') {
+    return lang === 'zh'
+      ? '乔巴姆 / 第三代贫铀 (DU) 陶瓷-高硬钢 NERA 多层复合装甲'
+      : 'Chobham / 3rd-Gen Depleted-Uranium (DU) Ceramic-Steel NERA Armor';
+  }
+  if (wid === 'm1a2' && part.id === 'm1a2_agt1500_turbine') {
+    return lang === 'zh'
+      ? '航空钛合金压气机叶片与暖铜褶皱环形废气回热器'
+      : 'Aerospace Titanium Compressor Blades & Copper Annular Recuperator';
+  }
+  if (wid === 'leopard2a7' && part.id === 'leo_arrowhead_wedges') {
+    return lang === 'zh'
+      ? '中空间隙 NERA 高硬装甲钢与弹性体复合箭簇模块'
+      : 'Spaced Hollow NERA High-Hardness Steel & Elastomer Arrowhead Armor';
+  }
+  if (wid === 'leopard2a7' && part.id === 'leo_mtu_v12') {
+    return lang === 'zh'
+      ? 'MTU MB 873 铸造铝合金 V12 缸体、双蜗壳增压与铜中冷管'
+      : 'MTU MB 873 Cast-Aluminum V12 Block, Twin Turbos & Copper Intercooler';
+  }
+  if (
+    wid === 'tiger1' &&
+    (part.id === 'tiger_hull_box' || part.id === 'tiger_turret_shell')
+  ) {
+    return lang === 'zh'
+      ? '克虏伯 100mm 表面硬化轧制均质钢 (RHA) 与防磁水泥 (Zimmerit)'
+      : 'Krupp 100mm Face-Hardened Rolled Homogeneous Steel & Zimmerit Paste';
+  }
+  if (wid === 'tiger1' && part.id === 'tiger_maybach_v12') {
+    return lang === 'zh'
+      ? '迈巴赫 HL230 铸铁 V12 缸体、铝制化油器与耐热铸铁歧管'
+      : 'Maybach HL230 Cast-Iron V12 Block, Alloy Carburetors & Iron Manifolds';
   }
   const insp = UI_STRINGS[lang].inspector;
   if (isArcheryWeapon(weaponId)) {

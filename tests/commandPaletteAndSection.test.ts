@@ -180,13 +180,13 @@ describe('V3.0 Global Cmd+K Command Palette & Live CT-Scan Section Plane', () =>
     }
   });
 
-  it('matches all 23 exhibits bilingually by name, shortLabel, bayCode, caliber, actionSystem & category', () => {
+  it('matches all 27 exhibits bilingually by name, shortLabel, bayCode, caliber, actionSystem & category', () => {
     const items = buildCommandPaletteItems({
       state: useAppStore.getState(),
       activeWeaponParts: [],
     });
 
-    expect(items.filter((i) => i.group === 'weapons')).toHaveLength(23);
+    expect(items.filter((i) => i.group === 'weapons')).toHaveLength(27);
 
     const searchCases: Array<{ query: string; expectedWeaponId: string }> = [
       { query: 'AK-15M1', expectedWeaponId: 'ak15' },
@@ -211,6 +211,12 @@ describe('V3.0 Global Cmd+K Command Palette & Live CT-Scan Section Plane', () =>
       { query: 'VSS Vintorez 9×39', expectedWeaponId: 'vss' },
       { query: 'M134D Minigun', expectedWeaponId: 'm134' },
       { query: 'AN-94 Abakan', expectedWeaponId: 'an94' },
+      { query: 'ZTZ-99A 125mm', expectedWeaponId: 'ztz99a' },
+      { query: 'M1A2 Abrams Turbine', expectedWeaponId: 'm1a2' },
+      { query: 'Leopard 2A7V L/55A1', expectedWeaponId: 'leopard2a7' },
+      { query: 'Tiger 131 88mm', expectedWeaponId: 'tiger1' },
+      { query: 'BAY-24', expectedWeaponId: 'ztz99a' },
+      { query: 'BAY-27', expectedWeaponId: 'tiger1' },
     ];
 
     for (const tc of searchCases) {

@@ -1,0 +1,942 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "ztz99a",
+  "generatedAt": "2026-11-20T16:30:00.000000+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "PLA ZTZ-99A Main Battle Tank",
+    "subtitle": "125mm ZPT-98 L/50 Smoothbore · Carousel Autoloader · FY-4 ERA · 1,500 HP V12",
+    "originCountry": "China",
+    "weaponType": "Main Battle Tank",
+    "categoryLabel": "Main Battle Tank",
+    "actionMechanism": "22-Rd Floor Carousel Autoloader · Vertical Sliding-Wedge Breech & Hydro-Pneumatic Recoil",
+    "statusLabel": "In Vault · Strippable",
+    "description": "Fielded as China's premier third-generation-plus digitalized main battle tank, the 55-ton ZTZ-99A fuses heavy arrowhead FY-4 dual-purpose explosive reactive armor, a 6.25-meter high-pressure 125mm ZPT-98 L/50 smoothbore cannon, and a compact 22-round floor carousel autoloader into a sleek 2.37-meter-tall profile. Propelled by the indigenous 1,500-horsepower 150HB twin-turbo V12 diesel and CH-1000 hydro-mechanical transmission, it pairs hunter-killer independent thermal optics with the unmistakable JD-3 active laser dazzler to dominate modern networked armored warfare.",
+    "highlights": [
+      "True 1:1 Scale 10.90m Envelope with Hollow Cutaway Hull & Arrowhead FY-4 ERA Turret",
+      "Spinning 22-Cassette Floor Carousel Autoloader, +68cm Hoist Arm & Rigid-Chain Rammer",
+      "125mm ZPT-98 L/50 Smoothbore (-32cm Recoil), Vertical Breech Wedge & Roof Stub Ejector",
+      "1,500-HP 150HB Twin-Turbo V12 Diesel, CH-1000 Transmission & JD-3 Laser Active Defense"
+    ],
+    "workbenchTitle": "PLA ZTZ-99A 1:1 3D Teardown & 125mm Carousel Autoloader",
+    "workbenchSubtitle": "4 Armored Assemblies · 26 True 1:1 Nodes · Spinning 22-Rd Floor Carousel, Hoist & Rammer, 125mm ZPT-98 Recoil & 1,500 HP V12 Cutaway",
+    "cutawayLabel": "Carousel & V12 Cutaway",
+    "cutawayTitle": "Slice open the right composite hull and turret armor to inspect the spinning 22-cassette floor carousel autoloader, 125mm hoist arm, ZPT-98 breech, torsion bars, and 150HB V12 diesel engine",
+    "searchPlaceholder": "Search tank assembly / code (e.g. carousel, ZPT-98, FY-4, JD-3, V12, A-01)...",
+    "firingMilestoneLabel": "Carousel Index & Hoist",
+    "rateOfFire": "8 RPM (Carousel Autoloader)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Combat Ready",
+        "subLabel": "0% Combat Ready",
+        "desc": "PLA ZTZ-99A Main Battle Tank in full 1:1 combat-ready trim (7.60 m hull, 10.90 m with 125mm ZPT-98 L/50 cannon forward, 3.50 m wide, 2.37 m tall): arrowhead FY-4 ERA turret cheeks, JD-3 laser dazzler, three-tone digital camouflage, and rubber-padded tracks planted cleanly at ground level."
+      },
+      "field_strip": {
+        "label": "Armor & Deck Strip",
+        "subLabel": "30% Armor & Deck Strip",
+        "desc": "Brigade-level field maintenance teardown: unbolt the upper glacis FY-4 ERA bricks and arrowhead turret wedges, slide out both 580 mm double-pin track belts laterally, lift off the raised louvered rear powerpack deck and dual 200L fuel drums, and hoist clear the roof QJC-88 AA gun and optics."
+      },
+      "powerpack_autoloader": {
+        "label": "Turret, Carousel & V12",
+        "subLabel": "65% Turret, Autoloader & V12",
+        "desc": "Lift the hollow welded composite turret shell skyward, draw forward the 6.25-meter 125mm smoothbore barrel and twin chrome recoil cylinders, and reveal the 22-round floor carousel autoloader, cassette elevator hoist arm, 1,500-HP 150HB V12 diesel, and CH-1000 planetary transmission."
+      },
+      "full_exploded": {
+        "label": "Full 26-Node BOM",
+        "subLabel": "100% Full Exploded",
+        "desc": "Zero-overlap 1:1 architectural exploded breakdown of all 26 ZTZ-99A main battle tank assemblies: from the hollow composite hull tub and 12 transverse torsion bars through the six road-wheel stations, 22-cassette carousel, vertical breechblock, twin helical recuperator springs, and digital crew consoles."
+      }
+    },
+    "firingPhases": {
+      "ztz99a_phase_1_fcs_ignition": {
+        "shortLabel": "FCS Lock & Ignition",
+        "title": "Phase 1 · Digital Stabilized Fire-Control Solution & 125mm Electric Primer Ignition",
+        "description": "The gunner lases the target through the dual-axis stabilized thermal sight while cross-wind and barrel-wear sensors feed the digital ballistic computer. Trigger closure energizes the central breech solenoid pin, firing the 125mm semi-combustible cartridge electric primer."
+      },
+      "ztz99a_phase_2_apfsds_accel": {
+        "shortLabel": "650 MPa APFSDS Launch",
+        "title": "Phase 2 · 650 MPa Chamber Peak Accelerates DTC10-125 Tungsten APFSDS to 1,780 m/s",
+        "description": "High-energy double-base propellant burns to 650 MPa peak pressure, driving the long-rod DTC10-125 tungsten alloy sabot down the 6.25-meter autofrettaged chrome-lined smoothbore at 1,780 m/s while the mid-barrel bore evacuator scavenges residual toxic gases."
+      },
+      "ztz99a_phase_3_recoil_stroke": {
+        "shortLabel": "-32 cm Cannon Recoil",
+        "title": "Phase 3 · 125mm ZPT-98 Barrel & Breech Recoil -320 mm Compressing Twin Recuperator Coils",
+        "description": "Massive ballistic reaction drives the entire 125mm barrel and forged breech ring smoothly 320 mm rearward along the cast-steel trunnion cradle. Twin chrome hydraulic recoil brakes throttle peak loads while the twin lower helical recuperator springs compress to 61 percent length."
+      },
+      "ztz99a_phase_4_breech_stub_eject": {
+        "shortLabel": "Wedge Drop & Stub Eject",
+        "title": "Phase 4 · Counter-Recoil Return, -160 mm Vertical Wedge Drop & Roof Brass Stub Ejection",
+        "description": "Hydro-pneumatic recuperators return the 125mm cannon to battery. On the final centimeters of counter-recoil, opening cams drop the vertical sliding-wedge breechblock -160 mm, extract the spent brass propellant stub base, and trigger the rear roof hatch to fling the hot stub skyward out of the turret."
+      },
+      "ztz99a_phase_5_carousel_index": {
+        "shortLabel": "22-Rd Carousel Index",
+        "title": "Phase 5 · 1.80-Meter Floor Carousel Autoloader Rotates to Align Next 125mm Cassette",
+        "description": "The autoloader controller powers the floor-mounted electric azimuth drive, smoothly indexing the 1.80-meter armored 22-cassette carousel beneath the fighting compartment floor (+32.7 degrees) to align the selected two-piece APFSDS sabot and charge directly under the rear hoist chute."
+      },
+      "ztz99a_phase_6_hoist_rammer": {
+        "shortLabel": "+68 cm Hoist & Ram",
+        "title": "Phase 6 · Elevator Hoist Lifts Cassette +680 mm & Rigid-Chain Rammer Seats Round +540 mm",
+        "description": "The articulated vertical cassette hoist raises the stacked 125mm tungsten APFSDS projectile and semi-combustible propellant charge +680 mm directly into bore alignment behind the open breech. The bustle-mounted electro-mechanical rigid-chain rammer lunges +540 mm forward (compressing its return spring to 58 percent) to seat both stages cleanly into the chamber."
+      },
+      "ztz99a_phase_7_breech_lock_ready": {
+        "shortLabel": "Breech Lock & Ready",
+        "title": "Phase 7 · Chain Rammer Retracts, Hoist Lowers & Vertical Wedge Snaps Locked for Fire",
+        "description": "The rigid chain retracts into the turret bustle and the empty elevator cradle lowers back to carousel floor level. Spring-loaded closing cams snap the vertical sliding-wedge breechblock +160 mm upward into full battery lockup, illuminating the gunner's ready-to-fire status light."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "陆战之王的数字化跃升：中国 ZTZ-99A 主战坦克的箭镞重甲与 1,500 马力传奇",
+      "deck": "从上世纪八十年代 9910 工程白手起家，到 2015 年抗战胜利 70 周年阅兵震撼全球，ZTZ-99A 以箭镞楔形 FY-4 爆反、6.25 米 125mm 高膛压滑膛炮、22 发底置转盘自动装弹机、JD-3 激光主动压制与 1,500 马力 150HB 综合动力包，实现了中国主战坦克由追赶到并跑领跑的历史跨越。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1984–2005",
+          "title": "从三代破冰到全面重构：跨越代际的重装甲雄心",
+          "paragraphs": [
+            "二十世纪八十年代，面对世界主战坦克全面迈入复合装甲、120/125 毫米大口径滑膛炮与千马力推进的第三代浪潮，中国兵器工业系统顶着工艺底子薄弱的巨大压力，正式启动了代号「9910 工程」的新一代重型主战坦克攻关。在总设计师祝榆生、毛明等几代军工泰斗的接力攻坚下，首批 ZTZ-99 于 1999 年国庆五十周年大阅兵首次惊艳亮相，标志着中国终于跨入世界第三代主战坦克俱乐部。",
+            "然而工程团队清醒地意识到，早期 99 式仍带有过渡色彩：传统机械变速箱需要驾驶员拉动沉重双操纵杆，横置动力舱维修繁琐，且全车尚未打通信息化战场数据链。为了打造一辆真正立足二十一世纪联合作战、火力防护机动信息四大支柱全面登顶的「陆战之王」，中国北方工业（NORINCO）与 201 所决定对底盘、炮塔、动力与火控实施彻底脱胎换骨的深度重构——这就是后来令全球防务界瞩目的 ZTZ-99A。",
+            "相较于早期型号，ZTZ-99A 并非简单小改，而是整车结构从头优化的全新旗舰：车体采用全焊接高强轧制均质钢与新一代多层陶瓷复合装甲，首上保持 68° 惊人避弹倾角；为容纳横置一体化 1,500 马力动力包而整体抬高后置动力甲板；同时将全车高度严控在仅 2.37 米的紧凑轮廓内，以 55 吨级体格迸发出媲美甚至超越西方 65 吨重甲巨兽的综合作战效能。"
+          ],
+          "audioScript": "二十世纪八十年代末，中国兵器工业顶着工艺短板启动了第三代主战坦克攻关。在早期九九式实现破冰之后，设计师团队决心彻底重构底盘、炮塔、动力与数字化架构。经过十余年潜心磨砺，车长七点六米、全高仅二点三七米、披挂现代数码迷彩的ZTZ九九A主战坦克横空出世，铸就了中国陆军新一代重装旗舰。",
+          "audioUrl": "audio/ztz99a/story_act1_zh.mp3",
+          "focusPartId": "ztz99a_hull_armor",
+          "focusPartLabel": "空心焊接复合装甲车体"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "2006–2011",
+          "title": "箭镞重甲与激光之眼：FY-4 双防爆反与 JD-3 主动防御",
+          "paragraphs": [
+            "在世界现役顶级主战坦克的侧影之中，ZTZ-99A 炮塔正面那组锐利前掠的「箭头楔形」附加装甲阵列堪称最具威慑力的视觉图腾。工程师彻底摒弃了苏式传统铸造半球炮塔，改采全焊接大倾角五边形低矮复合装甲炮塔，并在炮塔双颊与车体首上披挂了中国独步全球的第三代 FY-4 双防爆炸反应装甲（ERA）。当敌方高速尾翼稳定脱壳穿甲弹或串联破甲弹袭来时，倾斜楔形空腔与双层高速飞板能瞬间剪断长杆钨芯并大幅削减射流侵彻深度，使正面综合抗穿等效厚度跃升至世界一流的千毫米量级。",
+            "比被动装甲更具前瞻性的，是耸立在炮塔左后方的世界独创硬核装备——JD-3 激光主动压制观瞄干扰系统。整套系统由全向激光告警接收穹顶与高能主动激光发射转塔组成：一旦敌方坦克激光测距仪或反坦克导弹激光制导束照射到 99A 车体，告警器将在毫秒间精准解算来袭方位，自动回转 JD-3 发射头回敬一束高能致盲激光，直接干扰压制敌方炮长观瞄通道与导引头！",
+            "与此同时，炮长前左双稳热成像主瞄准镜与车长右顶 360° 独立全周视热像仪（CITV）构成了全天候「猎-歼」作战闭环：车长可在炮长瞄准当前目标的同时独立搜寻下一个威胁，只需按下超越按钮，全电炮塔便自动高速转向锁定新目标，让对手在昼夜烟尘中无所遁形。"
+          ],
+          "audioScript": "炮塔正面如箭镞般锐利前掠的FY四双防爆炸反应装甲，是九九A最具辨识度的视觉图腾。它不仅能同时硬抗长杆尾翼稳定穿甲弹与聚能破甲弹，更与炮塔顶部全球独创的JD三激光主动压制系统珠联璧合。一旦探测到敌方激光照射，系统瞬间反向发射强激光压制敌光电瞄具，配合车长周视热像仪实现昼夜猎歼闭环。",
+          "audioUrl": "audio/ztz99a/story_act2_zh.mp3",
+          "focusPartId": "ztz99a_era_wedges",
+          "focusPartLabel": "炮塔正面标志性箭头楔形 FY-4 爆反模块"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "2011–2014",
+          "title": "650 MPa 穿甲雷霆：125mm ZPT-98 滑膛炮与 22 发底置转盘",
+          "paragraphs": [
+            "开启三维 CT 纵剖视窗，切开右侧复合装甲壁，ZTZ-99A 最令人血脉偾张的火力机械心脏赫然呈现：一根长达 6.25 米的 125mm ZPT-98 L/50 电渣重熔高膛压滑膛主炮，配套双联镜面镀铬液压驻退复进筒、摇架下双联重型锻钢复进簧与重型立楔炮闩。得益于液压自紧身管工艺与全膛镀铬强化，该炮在发射 DTC10-125 钨合金尾翼稳定脱壳穿甲弹时，膛压峰值高达 650 MPa、炮口初速狂飙至 1,780 米/秒，在 2,000 米交战距离上足以正面洞穿当代任何重甲目标，同时还具备炮射激光驾束反坦克导弹能力。",
+            "藏身于战斗室最底部的 22 发分装式转盘自动装弹机，正是 ZTZ-99A 仅需 3 名乘员、将整车高度压至 2.37 米且在剧烈颠簸越野中仍保持每分钟 8 发恒定高射速的秘密武器。直径 1.80 米的装甲环形转盘平铺于 12 根横置扭杆上方，22 套上下双层弹盒整齐容纳穿甲弹丸与半可燃药筒。",
+            "每一次开火后，ZPT-98 炮身平稳后坐 320 毫米；复进归位时立楔炮闩自动下垂 160 毫米，后顶自动抛底窗弹起将炽热的黄铜药筒底托高抛车外；紧接着底部转盘伺服旋转选弹，垂直提弹臂将两段式炮弹高举 680 毫米对齐炮膛，尾舱电动刚性链式推弹机迅猛前冲 540 毫米一气呵成完成闭膛待击——整套动作如钢铁交响曲般冷酷精准。"
+          ],
+          "audioScript": "切开右侧复合装甲纵剖面，九九A的火力机械心脏瞬间一览无余。六点二五米长的高膛压一百二十五毫米滑膛主炮，能以每秒一千七百八十米极速射出钨芯穿甲弹。开火后炮身平稳后坐三百二十毫米，立楔炮闩下垂并经炮塔顶窗高抛黄铜底托，车底二十二发环形转盘随即旋转选弹，提弹臂高举六百八十毫米并由链式推弹机一气呵成推弹闭膛。",
+          "audioUrl": "audio/ztz99a/story_act3_zh.mp3",
+          "focusPartId": "ztz99a_autoloader_carousel",
+          "focusPartLabel": "22 发底置分装式转盘自动装弹机"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "2015–至今",
+          "title": "1,500 马力中国心与数字化铁甲：阅兵旗舰迈向体系未来",
+          "paragraphs": [
+            "长久以来，大功率重型柴油机与液力综合传动曾是制约中国主战坦克跃升的最后一道「卡脖子」难关。ZTZ-99A 的工程团队历经十余载艰苦攻关，终于在抬高的后置动力舱内成功塞入了完全自主研发的 150HB 型 12 缸双涡轮增压中冷液冷柴油机与 CH-1000 液力机械综合传动一体化动力包！这颗澎湃的「中国心」爆发出惊人的 1,103 千瓦（1,500 马力）强悍功率，让重达 55 吨的铁甲巨兽拥有超过 27 马力/吨的超高功重比与 76 公里/小时公路极速，并实现战地 40 分钟整包快速吊换。",
+            "伴随 CH-1000 手自一体液力传动与方向盘转向系统的成熟，99A 驾驶员彻底告别了老式坦克力拔千钧的双操纵杆时代，如同驾驭重型赛车般以蝶形方向盘与液晶仪表轻松完成高速弯道循迹和原地中心零半径转向。车内三名乘员通过综合信息处理系统与多功能显控屏（MFD）连入陆军战术数据链，将单车火力彻底升级为联合作战网络的锋利节点。",
+            "2015 年 9 月 3 日，ZTZ-99A 组成箭形方队作为首支地面装备方阵隆隆驶过天安门广场，向全世界宣告中国陆军重装力量迈入世界第一梯队。如今在数字军械库 1:1 真实尺度的三维展厅里，从 670 毫米六对负重轮到 12 根全宽扭杆，从旋转的 22 发转盘到双涡轮 V12 心脏，这头东方钢铁雄狮的每一处机械逻辑都向你毫无保留地璀璨绽放。"
+          ],
+          "audioScript": "攻克大功率动力与综合传动，是九九A登顶世界第一梯队的决胜一役。后置抬高动力舱内的一千五百马力一百五十HB双涡轮V十二柴油机，串联CH一千液力机械综合传动，赋予五十五吨铁甲超过二十七马力每吨的惊人功重比，告别传统双拉杆进入方向盘自动挡与数字化网络作战时代。二零一五年，它作为地面头阵隆隆驶过天安门，成为当之无愧的中国陆战旗舰。",
+          "audioUrl": "audio/ztz99a/story_act4_zh.mp3",
+          "focusPartId": "ztz99a_v12_engine",
+          "focusPartLabel": "150HB 型 1,500 马力 V12 双涡轮柴油机"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "22 发底置分装式转盘自动装弹机与顶窗抛底系统",
+          "tag": "紧凑 3 人制 · 8 RPM 恒定射速",
+          "summary": "直径 1.80 米的装甲环形转盘深嵌于战斗室地板下方，伺服分度选弹后由垂直提弹臂举升 +680 mm，并借尾舱刚性链式推弹机前冲 +540 mm 完成 125mm 穿甲弹与可燃药筒自动上膛，将全车高度压缩至 2.37 m。",
+          "focusPartId": "ztz99a_autoloader_carousel",
+          "focusPartLabel": "22 发底置分装式转盘自动装弹机"
+        },
+        {
+          "id": "bt2",
+          "title": "箭镞楔形 FY-4 双防爆反与 JD-3 主动激光压制系统",
+          "tag": "硬防护 + 软杀伤双重护盾",
+          "summary": "炮塔正颊 40° 箭镞楔形复合夹层叠加第三代 FY-4 双防爆反装甲，同时抗击长杆穿甲弹与破甲射流；顶部 JD-3 激光告警与主动致盲压制转塔可在毫秒级反向干扰敌方激光测距与导弹制导。",
+          "focusPartId": "ztz99a_optics_citv",
+          "focusPartLabel": "CITV 周视热像与 JD-3 激光压制系统"
+        },
+        {
+          "id": "bt3",
+          "title": "1,500 马力 150HB V12 双涡轮柴油机与 CH-1000 综合传动",
+          "tag": "27+ HP/t 功重比 · 40 分钟快换",
+          "summary": "完全自主研制的横置一体化 1,103 kW (1,500 HP) 12 缸双涡轮增压柴油机与 CH-1000 手自一体双流液力机械传动，实现方向盘自动换挡、原地中心零半径转向及 76 km/h 高速机动。",
+          "focusPartId": "ztz99a_v12_engine",
+          "focusPartLabel": "150HB 型 1,500 马力 V12 双涡轮柴油机"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1984–1999",
+          "title": "9910 工程立项攻关与初代 ZTZ-99 国庆首秀",
+          "detail": "中国兵器工业突破 125mm 高膛压滑膛炮与复合装甲核心工艺，首批 ZTZ-99 于 1999 年国庆 50 周年阅兵公开亮相。"
+        },
+        {
+          "year": "2000–2007",
+          "title": "ZTZ-99A 深度重构立项与 150HB / CH-1000 动力破局",
+          "detail": "正式确立全面信息化、全新焊接箭镞炮塔、1,500 马力双涡轮 V12 与液力综合传动一体化动力包四大技术跨越。"
+        },
+        {
+          "year": "2008–2011",
+          "title": "全寒区高海拔魔鬼试验与 FY-4 双防爆反定型",
+          "detail": "原型车在漠河极寒、青藏高原缺氧与戈壁酷暑完成数万公里实弹考核，箭镞楔形 FY-4 双防爆反与 JD-3 系统全部定型。"
+        },
+        {
+          "year": "2014",
+          "title": "「和平使命-2014」朱日和实战演习首次公开亮相",
+          "detail": "列装精锐重型合成旅的 ZTZ-99A 首次以数字迷彩真容亮相跨国联演，展现行进间首发命中与数字化协同突击战力。"
+        },
+        {
+          "year": "2015",
+          "title": "抗战胜利 70 周年大阅兵箭形头阵震撼世界",
+          "detail": "22 辆 ZTZ-99A 编成箭形突击阵型领衔地面装备方队驶过天安门，正式确立其中国陆军主力王牌旗舰地位。"
+        },
+        {
+          "year": "2016–至今",
+          "title": "重型合成旅数字化中坚与持续演进标杆",
+          "detail": "全面融入陆军全域数据链、无人机协同侦察与主动防御体系，稳居世界顶尖第三代改进型主战坦克第一梯队。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Digital Apex of Chinese Armor: The ZTZ-99A Main Battle Tank, Arrowhead ERA & 1,500-HP V12",
+      "deck": "From the ambitious 1980s Project 9910 foundation to its commanding arrowhead-formation debut in Beijing in 2015, the ZTZ-99A unites razor-sharp FY-4 reactive armor, a 6.25-meter 125mm ZPT-98 smoothbore gun, a 22-round floor carousel autoloader, the JD-3 laser dazzler, and a 1,500-HP indigenous V12 powerpack.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1984–2005",
+          "title": "From Third-Generation Breakthrough to Clean-Sheet Digital Redesign",
+          "paragraphs": [
+            "During the 1980s, as global armored warfare vaulted into the era of multilayer composite armor, 120mm and 125mm high-velocity smoothbore guns, and 1,200-plus-horsepower propulsion, Chinese ordnance engineers launched Project 9910 under master designers Zhu Yusheng and Mao Ming. When the original Type 99 rolled across Tiananmen Square in 1999, it announced China's arrival among modern third-generation tank builders.",
+            "Yet engineers knew the initial Type 99 remained a transitional step: manual twin steering levers strained drivers, field powerpack swaps took hours, and digital battlefield networking was still nascent. Rather than settle for an incremental upgrade, NORINCO and the 201 Institute embarked on a sweeping structural, electronic, and propulsion redesign that became the ZTZ-99A.",
+            "Every millimeter of the ZTZ-99A reflects clean-sheet integration: a 7.60-meter all-welded high-hardness steel and ceramic composite hull with a steep 68-degree upper glacis, a distinctively raised horizontal rear engine deck tailored to an integrated 1,500-horsepower powerpack, and a sleek 2.37-meter height that packs heavy-tank firepower and protection into a remarkably agile 55-ton combat weight."
+          ],
+          "audioScript": "In the late nineteen eighties, Chinese ordnance engineers launched a bold effort to join the world's third generation tank builders. After the original Type ninety nine broke the ice in nineteen ninety nine, designers undertook a sweeping clean sheet redesign of the hull, turret, powerpack, and digital architecture. Standing just two point three seven meters tall at fifty five metric tons, the ZTZ ninety nine A emerged as China's premier armored flagship.",
+          "audioUrl": "audio/ztz99a/story_act1_en.mp3",
+          "focusPartId": "ztz99a_hull_armor",
+          "focusPartLabel": "Hollow Welded Composite Armored Hull Tub"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "2006–2011",
+          "title": "Arrowhead Armor and Laser Vision: FY-4 ERA & the JD-3 Active Dazzler",
+          "paragraphs": [
+            "One silhouette immediately distinguishes the ZTZ-99A from every other main battle tank on earth: the razor-sharp arrowhead wedge armor modules sweeping forward across both cheeks of its low-profile welded pentagonal turret. Behind those aggressive angular planes sit China's third-generation FY-4 dual-purpose explosive reactive armor blocks, engineered with twin flyer plates to shear long-rod tungsten APFSDS darts as effectively as tandem shaped-charge warheads—pushing frontal armor equivalence beyond the one-meter benchmark.",
+            "Mounted proudly atop the rear-left turret roof sits an even more distinctive technological signature: the JD-3 Laser Active Defense System. Combining an omnidirectional laser warning dome with a high-energy active optical dazzler turret, the JD-3 detects incoming enemy laser rangefinders or anti-tank missile guidance beams in milliseconds, slews automatically onto the threat bearing, and fires a blinding counter-laser to disrupt hostile optics and seekers.",
+            "Completing this electronic shield is a true hunter-killer optronic suite: the gunner's dual-axis stabilized primary thermal sight on the left works seamlessly with the commander's 360-degree independent panoramic thermal viewer on the right, enabling the commander to hunt new targets continuously and hand them straight to the electric turret drive at the push of a button."
+          ],
+          "audioScript": "Instantly recognizable across any battlefield, the ZTZ ninety nine A's sharp arrowhead turret wedges pack third generation FY four dual purpose explosive reactive armor capable of defeating both long rod penetrators and shaped charge jets. Perched on the rear left roof, the unique JD three laser active defense system detects hostile targeting beams in milliseconds and automatically counters with a high energy dazzling laser.",
+          "audioUrl": "audio/ztz99a/story_act2_en.mp3",
+          "focusPartId": "ztz99a_era_wedges",
+          "focusPartLabel": "Iconic Arrowhead FY-4 ERA Turret Cheek Wedges"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "2011–2014",
+          "title": "650 MPa Smoothbore Thunder: The 125mm ZPT-98 & 22-Round Floor Carousel",
+          "paragraphs": [
+            "Toggle the real-time cutaway view to slice away the right composite armor wall and unveil the mechanical symphony inside. Stretching 6.25 meters from breech ring to muzzle reference sensor, the electro-slag-remelted, autofrettaged 125mm ZPT-98 L/50 smoothbore cannon withstands 650 MPa peak chamber pressures to launch DTC10-125 tungsten alloy APFSDS penetrators at a blistering 1,780 meters per second—while remaining capable of firing tube-launched laser-guided missiles.",
+            "Nestled deep on the hull floor directly above the twelve transverse torsion bars sits the star of the fighting compartment: a 1.80-meter armored 22-cassette floor carousel autoloader. By replacing a fourth human loader with radial two-piece cassettes holding lower sabot darts and upper semi-combustible propellant charges, the ZTZ-99A slashes turret volume while sustaining a steady eight rounds per minute even across punishing cross-country terrain.",
+            "Watch the full seven-phase cycle unfold in slow motion: the gun and forged breech recoil smoothly 320 millimeters against twin chrome hydraulic brakes and forged recuperator springs; on return, the vertical sliding-wedge breech drops 160 millimeters while the roof ejector flings the spent brass stub base skyward; the floor carousel indexes rapidly, the vertical elevator hoists a fresh two-piece round 680 millimeters to bore height, and the bustle-mounted rigid-chain rammer drives it 540 millimeters home."
+          ],
+          "audioScript": "Slice open the right armor shell in cutaway mode to watch the ZTZ ninety nine A's mechanical heart come alive. Its six point two five meter one hundred twenty five millimeter smoothbore cannon launches tungsten penetrators at one thousand seven hundred eighty meters per second before recoiling three hundred twenty millimeters. As the vertical wedge breech drops and flings the spent brass stub out the roof hatch, the floor carousel rotates, the elevator hoists a fresh round sixty eight centimeters upward, and the chain rammer locks it home.",
+          "audioUrl": "audio/ztz99a/story_act3_en.mp3",
+          "focusPartId": "ztz99a_autoloader_carousel",
+          "focusPartLabel": "22-Cassette Floor Carousel Autoloader"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "2015–Present",
+          "title": "1,500-HP Indigenous Powerpack & Networked Heavy-Armor Vanguard",
+          "paragraphs": [
+            "For decades, high-output heavy tank diesel engines and hydro-mechanical automatic transmissions stood as the hardest industrial frontier in Chinese land-systems engineering. Beneath the ZTZ-99A's raised louvered rear deck rests the triumphant breakthrough: an integrated quick-swap propulsion pack uniting the indigenous 150HB 12-cylinder twin-turbo liquid-cooled diesel—delivering a ferocious 1,500 horsepower—with the CH-1000 planetary hydro-mechanical transmission and twin copper-core cooling radiators.",
+            "Propelling 55 tons with a power-to-weight ratio exceeding 27 horsepower per ton, the ZTZ-99A sprints to 76 kilometers per hour on paved roads and pivots cleanly on its own center axis. Gone are the exhausting twin mechanical steering tillers of earlier generations; the center-seated driver commands the beast through a compact butterfly steering yoke, automatic gear selection, and crisp multifunction digital displays linked across all three crew stations into brigade-level tactical data networks.",
+            "Leading the ground columns in an arrowhead formation during the September 2015 Victory Day Parade in Beijing, the ZTZ-99A cemented its reputation among the world's elite third-generation-plus main battle tanks. Explored here at true one-to-one real-world scale—from its 670-millimeter road wheels and torsion bars to its spinning floor carousel and twin-turbo V12—every cubic centimeter reveals the relentless discipline of modern heavy armor engineering."
+          ],
+          "audioScript": "Mastering high output heavy propulsion was the final triumph that elevated the ZTZ ninety nine A into the global first tier. Beneath its raised rear deck sits the indigenous one thousand five hundred horsepower twin turbo V twelve diesel coupled to the CH one thousand automatic planetary transmission, delivering over twenty seven horsepower per ton and effortless steering yoke control. Leading the two thousand fifteen Beijing parade in arrowhead formation, it stands as a benchmark of digitalized heavy armor.",
+          "audioUrl": "audio/ztz99a/story_act4_en.mp3",
+          "focusPartId": "ztz99a_v12_engine",
+          "focusPartLabel": "150HB 1,500-HP Twin-Turbo V12 Diesel Engine"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "22-Cassette Floor Carousel Autoloader & Roof Stub Ejector",
+          "tag": "3-Crew Low Profile · 8 RPM Steady Rate",
+          "summary": "A 1.80-meter armored floor ring stores 22 radial two-piece 125mm rounds beneath the turret ring, indexing smoothly to a +680 mm vertical elevator hoist and +540 mm rigid-chain rammer while flinging spent brass stubs cleanly out a dedicated roof hatch.",
+          "focusPartId": "ztz99a_autoloader_carousel",
+          "focusPartLabel": "22-Cassette Floor Carousel Autoloader"
+        },
+        {
+          "id": "bt2",
+          "title": "Arrowhead FY-4 Dual-Purpose ERA & JD-3 Laser Active Defense",
+          "tag": "Hard-Kill Composite + Soft-Kill Laser Shield",
+          "summary": "Forward-swept 40-degree arrowhead turret cheek modules integrate third-generation FY-4 reactive armor against both APFSDS darts and tandem HEAT jets, paired with the unique roof-mounted JD-3 laser warning and active optical dazzler turret.",
+          "focusPartId": "ztz99a_optics_citv",
+          "focusPartLabel": "CITV Thermal Optics & JD-3 Laser Dazzler"
+        },
+        {
+          "id": "bt3",
+          "title": "1,500-HP 150HB V12 Diesel & CH-1000 Automatic Powerpack",
+          "tag": "27+ HP/Ton Agility · 40-Min Field Swap",
+          "summary": "An indigenous integrated powerpack uniting the 1,103 kW twin-turbocharged 12-cylinder diesel with the CH-1000 hydro-mechanical planetary transmission enables steering-yoke driving, neutral pivot turns, and 76 km/h road speed.",
+          "focusPartId": "ztz99a_v12_engine",
+          "focusPartLabel": "150HB 1,500-HP Twin-Turbo V12 Diesel Engine"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1984–1999",
+          "title": "Project 9910 Foundation & Original Type 99 Parade Debut",
+          "detail": "Chinese ordnance institutes mastered 125mm high-pressure smoothbore metallurgy and composite armor, unveiling the initial ZTZ-99 during the 1999 National Day Parade."
+        },
+        {
+          "year": "2000–2007",
+          "title": "ZTZ-99A Clean-Sheet Redesign & 150HB / CH-1000 Breakthrough",
+          "detail": "Engineers launched a comprehensive redesign introducing an all-new arrowhead welded turret, full digital bus networking, and the indigenous 1,500-HP V12 integrated powerpack."
+        },
+        {
+          "year": "2008–2011",
+          "title": "Arctic, Plateau & Desert Trials Plus FY-4 ERA Qualification",
+          "detail": "Prototypes completed tens of thousands of kilometers from sub-zero Mohe to the high-altitude Tibetan Plateau, qualifying third-generation FY-4 ERA and the JD-3 laser dazzler."
+        },
+        {
+          "year": "2014",
+          "title": "Operational Public Debut at Peace Mission 2014 Exercise",
+          "detail": "Frontline combined-arms brigade ZTZ-99A tanks made their operational debut in three-tone digital camouflage at Zhurihe, demonstrating live fire-on-the-move precision."
+        },
+        {
+          "year": "2015",
+          "title": "Arrowhead Vanguard at the 70th Anniversary Victory Day Parade",
+          "detail": "Twenty-two ZTZ-99A tanks spearheaded the mechanized ground parade in Beijing in an iconic arrowhead formation, cementing China's flagship armored status."
+        },
+        {
+          "year": "2016–Present",
+          "title": "Networked Combined-Arms Backbone & Continuous Digital Evolution",
+          "detail": "Serving as the spearhead of PLA heavy combined-arms brigades, the ZTZ-99A integrates tactical data links, drone reconnaissance feeds, and evolving active protection systems."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "ztz99a_hull_armor": {
+      "partId": "ztz99a_hull_armor",
+      "bomCode": "H-01",
+      "calloutLabelEn": "Hollow Composite Hull",
+      "zh": {
+        "roleTag": "68°大倾角首上复合装甲 · 14–16 cm 真实空心壁厚纵剖通透",
+        "overview": "ZTZ-99A 全焊接高强度均质钢与多层非金属陶瓷复合装甲车体（长 7.60 m，宽 3.50 m），以真实空心壁厚封装战斗室、驾驶室与后置抬高动力舱。",
+        "craftAndMaterial": "高强度轧制均质装甲钢板配特种陶瓷/复合夹层首上装甲，表面喷涂现代解放军三色抗红外像素数码迷彩，车头集成驾驶员舱盖、三具潜望镜与高强度牵引钩。",
+        "kinematicRole": "作为全车 55 吨承力基座在击发循环中保持稳固静止；纵剖模式沿中轴切开右侧 14–16 cm 装甲壁，清晰露出内部转盘自动装弹机、横置扭杆与 V12 柴油机。",
+        "designHighlight": "兼具 68° 极大首上避弹倾角与抬高水平后动力舱，将大功率推进系统与极低车体轮廓完美融合。",
+        "audioScript": "这座长达七点六米的空心焊接复合装甲车体，是九九A主战坦克的钢铁脊梁。它采用六十八度大倾角首上复合装甲和抬高式后置动力舱，披挂现代三色数码迷彩。开启纵剖模式时，右侧厚实装甲壁干净切开，直击车底转盘与后舱发动机。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_hull_armor_zh.mp3"
+      },
+      "en": {
+        "roleTag": "68-Degree Composite Glacis & True Hollow 14-16 cm Armor Shell",
+        "overview": "Spanning 7.60 meters in length, this all-welded high-hardness steel and multilayer composite hull forms the armored backbone protecting driver, carousel, and V12 powerpack.",
+        "craftAndMaterial": "Rolled homogeneous steel welded around ceramic composite glacis modules, finished in three-tone PLA matte digital camouflage with driver periscopes, fenders, and forged tow shackles.",
+        "kinematicRole": "Remains anchored as the rigid structural foundation across all seven firing phases while slicing cleanly along the right centerline in cutaway mode to expose the hollow interior.",
+        "designHighlight": "Unites a steep 68-degree frontal ballistic glacis with a raised horizontal rear engine deck for the 1,500-HP powerpack inside a compact 55-ton footprint.",
+        "audioScript": "Measuring seven point six meters long, this hollow welded composite armor hull forms the steel spine of the ZTZ ninety nine A. Its steep sixty eight degree glacis and raised rear engine deck wear three tone digital camouflage, slicing cleanly open in cutaway view to expose every internal mechanism.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_hull_armor_en.mp3"
+      }
+    },
+    "ztz99a_glacis_era": {
+      "partId": "ztz99a_glacis_era",
+      "bomCode": "H-02",
+      "calloutLabelEn": "Glacis FY-4 ERA Array",
+      "zh": {
+        "roleTag": "第三代重型双防爆反 · 兼防尾翼稳定脱壳穿甲弹与聚能破甲弹",
+        "overview": "沿 68° 首上主装甲整齐栓接的 12 块中国第三代 FY-4 双防爆炸反应装甲（ERA）模块阵列，下缘整合 V 形涉水防浪板。",
+        "craftAndMaterial": "高韧性淬火特种合金钢双层飞板内夹钝感高能炸药模块，模块顶部配六角锁紧螺栓，表面匹配车体像素化数码迷彩抗反光涂层。",
+        "kinematicRole": "射击时刚性固连于首上车体；野战勤务快拆阶段率先沿首上法线向前脱出便于单块快速更换，纵剖时随右半车体同步切开。",
+        "designHighlight": "同时具备削减长杆尾翼稳定脱壳穿甲弹与串联聚能破甲弹的双重防御效能，可实现战损模块化单砖快速换装。",
+        "audioScript": "整齐排列在首上六十八度斜面的十二块第三代FY四双防爆炸反应装甲，能在遭遇高速穿甲弹或破甲弹命中瞬间反向引爆双层飞板，剪断长杆钨芯并大幅消耗侵彻能量。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_glacis_era_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Third-Gen Dual-Purpose FY-4 ERA Defeating APFSDS & HEAT",
+        "overview": "Bolted across the steep 68-degree upper glacis, these twelve third-generation FY-4 explosive reactive armor bricks and lower V-shaped splash bar provide frontline kinetic and chemical protection.",
+        "craftAndMaterial": "High-toughness steel flyer plates sandwiching insensitive energetic liners, secured with recessed hex mounting bolts and finished in matching digital camouflage paint.",
+        "kinematicRole": "Rides rigidly on the upper glacis during firing, detaches forward first during early field stripping for rapid battle-damage replacement, and clips cleanly in cutaway view.",
+        "designHighlight": "Dual-purpose flyer geometry disrupts both hypervelocity long-rod tungsten penetrators and tandem shaped-charge warheads without compromising hull integrity.",
+        "audioScript": "Bolted across the sixty eight degree upper glacis, these twelve third generation FY four reactive armor blocks trigger twin hardened flyer plates upon impact, shearing long rod tungsten penetrators and disrupting tandem shaped charge jets.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_glacis_era_en.mp3"
+      }
+    },
+    "ztz99a_side_skirts": {
+      "partId": "ztz99a_side_skirts",
+      "bomCode": "H-03",
+      "calloutLabelEn": "Ballistic Side Skirts",
+      "zh": {
+        "roleTag": "前段加厚复合装甲裙板 · 喷涂白星与车号「99A-108」",
+        "overview": "沿车体左右翼子板外缘分段悬挂的 6 节复合装甲与钢丝硫化橡胶侧裙板，前两节重点防护驾驶与战斗室，首块醒目喷涂白色八一星与「99A-108」车号。",
+        "craftAndMaterial": "前段采用加厚多层特种钢-复合夹层装甲块并喷涂数码迷彩与高清晰战术标识，后段采用高耐磨钢丝帘线橡胶板，顶部配重型铰链钢夹。",
+        "kinematicRole": "保护行走系免受侧向破甲弹威胁并抑制越野扬尘；在 CT 纵剖视窗下右裙板自动隐切，完整展现内部负重轮与车体侧壁。",
+        "designHighlight": "分段式铰接设计确保单块遭地雷或障碍剐蹭受损后可数分钟拆换，且前段醒目车号构成标志性视觉铭牌。",
+        "audioScript": "覆盖在履带上方的六节分段式侧裙板，前两块采用加厚复合装甲并清晰喷涂白色五角星与九九A一零八战术车号，后四块为高韧性钢丝橡胶板，既能提前引爆侧袭火箭弹，又有效抑制高速越野扬尘。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_side_skirts_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Heavy Front Composite Skirts w/ PLA Star & Code 99A-108",
+        "overview": "Six segmented ballistic skirt panels run along each flank—thickened composite armor plates up front stenciled with the white PLA star and tactical code 99A-108, and flexible steel-belted rubber aft.",
+        "craftAndMaterial": "Multi-layer armored composite forward panels in digital camo with crisp military stencils, paired with vulcanized steel-cord rubber skirts and heavy steel top hinge clamps.",
+        "kinematicRole": "Defeats flanking shaped-charge threats and suppresses dust plumes while clipping completely clear on the right side during cutaway inspection.",
+        "designHighlight": "Modular hinged segments allow rapid crew replacement after obstacle strikes while reinforcing the forward crew and autoloader compartment flanks.",
+        "audioScript": "Six segmented ballistic side skirts shield the running gear along both flanks. The thickened forward composite panels carry the white PLA star and tactical code ninety nine A one zero eight, while flexible steel belted rubber panels suppress dust and trigger flanking warheads early.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_side_skirts_en.mp3"
+      }
+    },
+    "ztz99a_road_wheels": {
+      "partId": "ztz99a_road_wheels",
+      "bomCode": "H-04",
+      "calloutLabelEn": "670mm Road Wheels & Drive",
+      "zh": {
+        "roleTag": "55 吨级高速越野底盘支撑 · 挂胶冲压钢轮与 14 齿双主动轮",
+        "overview": "由 6 对 670 mm 双轮缘冲压钢制挂胶负重轮、前张紧诱导轮、每侧 3 枚托带轮与尾置 14 齿双环驱动主动轮组成的重型坦克行走核心。",
+        "craftAndMaterial": "冲压成型高强合金钢双碟轮毂喷涂数码迷彩并硫化耐磨黑色橡胶实心胎缘，中央配六螺栓密封油浴轴承盖，后主动轮采用深渗碳耐磨合金齿圈。",
+        "kinematicRole": "协同车底 12 根横置扭杆均匀分担 55 吨车重并高速传递 1,500 马力驱动扭矩；剖视模式下右侧轮组隐切以便毫无遮挡观赏车底扭杆与转盘。",
+        "designHighlight": "前二后一不等距轮轴排布精细平衡炮塔偏心载荷，赋予 ZTZ-99A 高达 76 km/h 公路极速与出色高速越障平稳性。",
+        "audioScript": "承载五十五吨重甲的六对六百七十毫米双轮缘挂胶负重轮、前诱导轮与后置十四齿双环驱动主动轮，构成九九A强悍的越野双腿。不等距轴距布局优化了全车重心，助其飙出每小时七十六公里的惊人公路极速。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_road_wheels_zh.mp3"
+      },
+      "en": {
+        "roleTag": "6 Pairs of 670mm Stamped Road Wheels & 14-Tooth Sprockets",
+        "overview": "Six pairs of twin-rim 670 mm rubber-tired road wheels, forward tension idlers, three upper return rollers per side, and rear 14-tooth twin drive sprockets support the 55-ton chassis.",
+        "craftAndMaterial": "Stamped alloy-steel dished wheel discs in digital camo bonded to vulcanized rubber rims, six-bolt oil-bath hubs, forged swing arms, and case-hardened rear sprocket rings.",
+        "kinematicRole": "Distributes 55 metric tons evenly across the tracks while transmitting 1,500-HP drive torque; right-side stations clip cleanly in cutaway view to unveil the torsion bars.",
+        "designHighlight": "Asymmetrical wheel spacing optimizes pitch stability under heavy cannon recoil and high-speed cross-country maneuvers up to 76 km/h.",
+        "audioScript": "Supporting fifty five metric tons across punishing terrain, six pairs of six hundred seventy millimeter stamped steel road wheels work with forward idlers and fourteen tooth rear drive sprockets. Uneven axle spacing balances turret weight for steady seventy six kilometer per hour sprints.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_road_wheels_en.mp3"
+      }
+    },
+    "ztz99a_tracks_left": {
+      "partId": "ztz99a_tracks_left",
+      "bomCode": "H-05",
+      "calloutLabelEn": "Left Rubber-Padded Track",
+      "zh": {
+        "roleTag": "580 mm 宽双销挂胶履带 · 底部精准接地 Y = -120 cm",
+        "overview": "宽达 580 mm 的左侧双销挂胶金属履带环，每块履带板配备双块可换耐磨橡胶路垫、中心防脱诱导齿与外侧钢制端部联接器。",
+        "craftAndMaterial": "高锰耐磨铸钢履带板搭配橡胶金属铰链双销轴，接地齿尖展现真实金属磨亮光泽，外侧嵌装硫化黑色工程橡胶垫块。",
+        "kinematicRole": "将 CH-1000 综合传动输出的强大牵引力转化为低接地压强越野推进力，在 CT 纵剖模式下保持完整实体作为坦克外廓参照。",
+        "designHighlight": "双销挂胶结构大幅延长履带使用寿命并显著降低公路震动与声学特征，兼顾战略公路机动与泥泞雪地抓地力。",
+        "audioScript": "这条宽五百八十毫米的左侧双销挂胶金属履带，由高锰铸钢履带板、防脱诱导齿与可换橡胶垫块铰接而成。它大幅降低公路行军噪音与震动，将强劲动力平稳转化为惊人的越野抓地力。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_tracks_left_zh.mp3"
+      },
+      "en": {
+        "roleTag": "580mm Double-Pin Articulated Track Belt w/ Rubber Road Pads",
+        "overview": "This 580 mm-wide left-hand double-pin track belt links high-manganese steel shoes fitted with central guide horns, forged end connectors, and replaceable rubber road pads.",
+        "craftAndMaterial": "Cast high-manganese alloy steel links with rubber-bushed double pins, burnished ground-contact metal edges, and vulcanized heavy-duty rubber road pads.",
+        "kinematicRole": "Converts CH-1000 final-drive torque into low-ground-pressure traction while remaining solid during cutaway mode to anchor the full 1:1 silhouette.",
+        "designHighlight": "Rubber-bushed double-pin articulation extends track service life, cuts acoustic vibration, and protects paved highways during rapid strategic deployments.",
+        "audioScript": "Measuring five hundred eighty millimeters wide, this left double pin steel track belt combines high manganese links, central guide horns, and replaceable rubber road pads, extending service life while delivering tenacious off road traction.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_tracks_left_en.mp3"
+      }
+    },
+    "ztz99a_tracks_right": {
+      "partId": "ztz99a_tracks_right",
+      "bomCode": "H-06",
+      "calloutLabelEn": "Right Rubber-Padded Track",
+      "zh": {
+        "roleTag": "剖视自动隐切展开车底扭杆与战斗室 · 同步承接 CH-1000 扭矩",
+        "overview": "与左侧完全对称的右侧 580 mm 宽双销挂胶履带总成，配合双流静液压传动实现高机动差速转向乃至原地中心零半径旋转。",
+        "craftAndMaterial": "高锰合金铸钢履带板、橡胶衬套双销轴、耐磨硫化橡胶接地垫与高强钢制诱导齿，棱角经高负载地面摩擦露出真铁亮边。",
+        "kinematicRole": "在击发与行驶中提供右翼强劲支撑；开启 CT 纵剖视窗（[C]）时自动隐切，彻底敞开右侧车体底盘扭杆悬挂与转盘视界。",
+        "designHighlight": "支持高速反向差速驱动，使 55 吨主战坦克在狭小城市街巷或山地险道内数秒完成 360° 原地掉头。",
+        "audioScript": "与左侧对称的右侧双销挂胶履带，在CH一千双流液力传动驱动下可实现无级差速转向乃至原地零半径高速旋转。在三维纵剖视窗中它会自动隐切，让车底扭杆与自动装弹机毫无遮挡地呈现。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_tracks_right_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Right 580mm Double-Pin Track Belt (Slices Open in Cutaway)",
+        "overview": "Mirroring the left belt, this 580 mm right-side double-pin rubber-padded track works with the CH-1000 hydrostatic steering drive to execute seamless variable-radius and neutral pivot turns.",
+        "craftAndMaterial": "Cast manganese-steel shoes with central guide horns, rubber-bushed end connectors, and bolt-on road pads wearing authentic ground-scuffed metallic highlights.",
+        "kinematicRole": "Delivers symmetric tractive effort in combat and clips cleanly away in cutaway mode so the viewer sees straight into the floor torsion bars and carousel.",
+        "designHighlight": "Counter-rotating track control lets the 55-ton ZTZ-99A spin 360 degrees within its own length across tight urban or mountain roads.",
+        "audioScript": "Symmetric to the left belt, this five hundred eighty millimeter right track works with the CH one thousand hydrostatic steering system to execute effortless zero radius pivot turns, clipping cleanly away in cutaway mode to expose the lower hull internals.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_tracks_right_en.mp3"
+      }
+    },
+    "ztz99a_rear_deck": {
+      "partId": "ztz99a_rear_deck",
+      "bomCode": "H-07",
+      "calloutLabelEn": "Rear Deck & Fuel Drums",
+      "zh": {
+        "roleTag": "99A 标志性抬高动力舱盖 · 10 组装甲百叶窗与双 200L 副油箱",
+        "overview": "为整体容纳 1,500 马力 150HB V12 与 CH-1000 动力包而显著抬高的后置装甲散热甲板，集成百叶进气格栅、排气罩、双 200 升副油箱与自救原木。",
+        "craftAndMaterial": "防弹装甲钢百叶格栅板喷涂三色数码迷彩，左侧配热氧化青铜色排气管隔热护罩，尾部托架固挂两具带加强肋的 200 升圆柱柴油桶及硬木自救原木。",
+        "kinematicRole": "平时严密防护后置动力舱并导入大流量冷却空气；野战勤务阶段向上后方整盖掀开，纵剖模式切开右侧显露双涡轮 V12 与紫铜散热器。",
+        "designHighlight": "抬高平直的后动力甲板是快速区分 ZTZ-99A 与早期 99 式的经典特征，尾挂双副油箱可将公路最大作战半径推至 600 公里。",
+        "audioScript": "这套显著抬高的水平后置动力甲板，是区分九九A与早期九九式的经典外貌特征。顶部十排防弹百叶窗为下方一千五百马力引擎导入强风冷却，车尾挂载两具二百升圆柱副油箱与越野自救原木，赋予整车六百公里远程奔袭续航。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_rear_deck_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Raised Louvered Powerpack Deck & Twin 200L External Drums",
+        "overview": "Distinctively raised to accommodate the integrated 1,500-HP powerpack, this armored rear deck combines ten ballistic radiator louvers, a left exhaust shroud, twin 200-liter fuel drums, and a wooden unditching log.",
+        "craftAndMaterial": "Ballistic armor steel cover in digital camo with angled steel cooling slats, heat-tinted bronze exhaust deflector, ribbed cylindrical steel fuel drums, and timber recovery beam.",
+        "kinematicRole": "Shields the powerpack while feeding high-volume radiator airflow; lifts cleanly upward during field stripping and opens along the right flank in cutaway view.",
+        "designHighlight": "The elevated flat engine deck instantly identifies the ZTZ-99A over earlier Type 99 models, while jettisonable twin rear fuel drums push road range to 600 km.",
+        "audioScript": "Raised flat above the hull line to house the integrated one thousand five hundred horsepower powerpack, this armored rear deck features ten ballistic cooling louvers, a bronze heat tinted exhaust shroud, twin two hundred liter fuel drums, and a classic timber unditching log.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_rear_deck_en.mp3"
+      }
+    },
+    "ztz99a_turret_ring": {
+      "partId": "ztz99a_turret_ring",
+      "bomCode": "H-08",
+      "calloutLabelEn": "Toothed Turret Ring",
+      "zh": {
+        "roleTag": "外径 2.16 m 高精度硬化钢滚道 · 支撑全电炮塔高速双向稳定",
+        "overview": "嵌装于车体顶部圆形座圈口的大直径淬火钢炮塔回转支承轴承与全圈精铣内齿圈，承托超过 18 吨重的焊接重甲炮塔。",
+        "craftAndMaterial": "整体锻造渗碳硬化轴承钢经精密磨削滚道与 36 组高模数渐开线内齿加工，呈现镜面拉丝真铁高光，外缘均布 24 枚高强锁固螺栓。",
+        "kinematicRole": "与炮塔全电方向驱动小齿轮精密啮合，实现无级高速 360° 全向回转与行进间高精度方位稳定锁定。",
+        "designHighlight": "全电驱动配大模数精密座圈彻底淘汰易燃液压油管，显著提升炮塔转向响应速度与中弹后乘员生存率。",
+        "audioScript": "坐落在车体顶圈的这枚外径二点一六米精磨硬化钢炮塔座圈，内壁密布高模数渐开线内齿。它稳稳托住超过十八吨的重甲炮塔，配合全电驱动电机实现高速三百六十度旋转与行进间精准稳定。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_turret_ring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "2.16m Precision-Toothed Steel Traverse Race Ring & Bearing",
+        "overview": "Seated atop the hollow hull opening, this 2.16-meter case-hardened steel turret race ring and internal gear track support the 18-plus-ton welded turret.",
+        "craftAndMaterial": "Forged bearing-grade alloy steel with ground ball raceways, 36 precision-hobbed internal traverse teeth in brushed metallic finish, and 24 perimeter anchor bolts.",
+        "kinematicRole": "Meshes with the turret's all-electric traverse pinion to provide rapid 360-degree slewing and stabilized fire-on-the-move tracking.",
+        "designHighlight": "All-electric drive eliminates flammable high-pressure hydraulic lines inside the crew compartment while sharpening target-handover speed.",
+        "audioScript": "Seated cleanly on the hull roof, this two point one six meter forged steel turret race ring carries precision hobbed internal gear teeth, supporting the eighteen ton welded turret for rapid all electric rotation and stabilized firing on the move.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_turret_ring_en.mp3"
+      }
+    },
+    "ztz99a_turret_shell": {
+      "partId": "ztz99a_turret_shell",
+      "bomCode": "T-01",
+      "calloutLabelEn": "Hollow Welded Turret",
+      "zh": {
+        "roleTag": "低矮紧凑轮廓减小中弹面积 · 双侧红星与「ZTZ-99A / 108」铭文",
+        "overview": "全自主设计的五边形低矮焊接复合装甲空心炮塔壳体，顶部集成车长/炮长装甲舱门，尾部配钢管储物尾篮，双侧尾舱翼面喷涂红边八一星与「ZTZ-99A / 108」。",
+        "craftAndMaterial": "厚重高强焊接装甲钢板内夹特种复合装甲模块（真实 15 cm 空心壁厚），三色像素数码迷彩表面经哑光抗反光处理并配高对比红金五角星与白字编号。",
+        "kinematicRole": "为内部 125mm 炮尾、液压驻退筒、链式推弹机与车长/炮长提供全向重甲护卫；纵剖模式下右侧炮塔壳干净切开，完全无灰盖遮挡内构。",
+        "designHighlight": "彻底超越苏式圆铸炮塔结构，将极低中弹投影面积、模块化外挂接口与宽敞数字化火控内腔融为一体。",
+        "audioScript": "这座线条冷峻的五边形低矮焊接复合装甲炮塔，彻底告别了传统圆铸炮塔，两侧清晰喷涂红边五角星与ZTZ九九A一零八编号，尾部带有储物栅栏。在纵剖视窗下切开十五厘米厚空心装甲壁，内部炮尾与链式推弹机清晰可见。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_turret_shell_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Low-Profile Hollow Welded Turret w/ Code ZTZ-99A / 108",
+        "overview": "Breaking away from cast hemispherical domes, this angular low-profile hollow welded composite turret features commander and gunner hatches, a tubular rear bustle basket, and crisp flank stencils reading ZTZ-99A / 108.",
+        "craftAndMaterial": "Welded high-hardness armor steel walls (15 cm hollow cross-section) finished in three-tone digital camouflage with crisp red-and-gold PLA stars and white tactical numbers.",
+        "kinematicRole": "Armors the 125mm breech, twin recoil cylinders, chain rammer, and crew consoles while slicing open cleanly at Z=0 in cutaway mode with zero interior obstruction.",
+        "designHighlight": "Keeps overall tank height down to a remarkably low 2.37 meters while accommodating modular front composite inserts and digital battle-management terminals.",
+        "audioScript": "Departing completely from rounded cast domes, this low profile hollow welded composite turret carries crisp red outlined PLA stars and tactical code ZTZ ninety nine A one zero eight along its bustle flanks, slicing open cleanly in cutaway mode to unveil the breech and chain rammer inside.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_turret_shell_en.mp3"
+      }
+    },
+    "ztz99a_era_wedges": {
+      "partId": "ztz99a_era_wedges",
+      "bomCode": "T-02",
+      "calloutLabelEn": "Arrowhead FY-4 ERA Wedges",
+      "zh": {
+        "roleTag": "99A 标志性箭镞前脸 · 楔形中空复合夹层叠加 FY-4 双防爆反",
+        "overview": "bolted 于炮塔正双颊的 8 组标志性前掠箭镞楔形（Arrowhead）FY-4 复合爆反装甲模块与双侧 6 块炮塔侧颊 FY-4 反应砖。",
+        "craftAndMaterial": "上下双斜面锐角重型合金钢楔形盒体内填第三代 FY-4 双防高能反应夹层与非金属吸能垫，六角重型锁紧螺栓外露，配数码迷彩哑光漆与棱边钢质微磨损。",
+        "kinematicRole": "构成炮塔最前线重甲护盾，以大倾角中空楔形空间预先偏折并折断高速来袭长杆穿甲弹；纵剖时右侧箭镞装甲同步切开展现炮盾与主炮。",
+        "designHighlight": "将中空箭镞偏转物理与第三代重型双防爆反完美叠合，铸就世界主战坦克史上最具辨识度的凌厉前脸。",
+        "audioScript": "沿炮塔前脸呈四十度锐角前掠的这组箭头楔形装甲模块，是九九A最震撼的标志性设计。上下双斜面空腔叠加第三代FY四双防爆反，在接触来袭穿甲弹瞬间即可将其偏折剪断，令炮塔正面防护步入世界顶尖行列。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_era_wedges_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Signature 40-Degree Arrowhead FY-4 Turret Cheek Wedges",
+        "overview": "Sweeping sharply forward across both turret cheeks, these iconic arrowhead composite wedge modules and six forward flank FY-4 ERA bricks define the unmistakable silhouette of the ZTZ-99A.",
+        "craftAndMaterial": "Upper and lower sloped alloy-steel wedge housings filled with third-generation dual-purpose FY-4 reactive liners, bolted to turret mounting cleats in matching digital camouflage.",
+        "kinematicRole": "Forms the primary frontal turret shield capable of deflecting and shearing kinetic penetrators, clipping smoothly open on the right flank during cutaway inspection.",
+        "designHighlight": "Combines spaced arrowhead ballistic deflection with heavy dual-purpose reactive armor to push frontal turret protection past 1,000 mm steel equivalence.",
+        "audioScript": "Sweeping aggressively forward across both turret cheeks, these razor sharp arrowhead wedge modules house third generation FY four dual purpose reactive armor. Their dual angled geometry deflects and shears incoming long rod penetrators, creating one of the most iconic profiles in modern armor.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_era_wedges_en.mp3"
+      }
+    },
+    "ztz99a_main_gun": {
+      "partId": "ztz99a_main_gun",
+      "bomCode": "G-01",
+      "calloutLabelEn": "125mm ZPT-98 L/50 Gun",
+      "zh": {
+        "roleTag": "6.25 米电渣重熔自紧镀铬身管 · 发射 DTC10-125 初速 1,780 m/s",
+        "overview": "全长 6.25 米（50 倍径）的中国 ZPT-98 高膛压 125mm 滑膛主炮，配备多节轻合金隔热热护套、不锈钢抱箍、中段圆柱形抽烟装置与炮口动态校炮基准镜（MRS）。",
+        "craftAndMaterial": "高纯度电渣重熔炮钢经液压自紧强化与全膛硬铬电镀，外包数码迷彩热护套与七道镜面不锈钢卡箍，125mm 真中空炮口端面饰以真实射击积碳渐变。",
+        "kinematicRole": "阶段 2 承受 650 MPa 峰压将 DTC10-125 钨合金穿甲弹加速至 1,780 m/s；阶段 3 沿摇架导轨向后平顺后坐整整 -320 mm，阶段 4 复进归位。",
+        "designHighlight": "较原苏式 2A46 滑膛炮大幅提高膛压极限与身管寿命，兼具世界顶尖穿甲威力与 5,000 米炮射反坦克导弹能力。",
+        "audioScript": "这根长达六点二五米的一百二十五毫米ZPT九八滑膛主炮，采用电渣重熔自紧炮钢与全膛镀铬工艺，外包多节隔热热护套、中段高压抽烟装置和炮口校炮基准镜。开火时六百五十兆帕膛压赋予穿甲弹每秒一千七百八十米初速，整管向后平稳后坐三百二十毫米。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_main_gun_zh.mp3"
+      },
+      "en": {
+        "roleTag": "6.25m Autofrettaged 125mm Smoothbore · 1,780 m/s · -32cm Recoil",
+        "overview": "Extending 6.25 meters (50 calibers), the high-pressure 125mm ZPT-98 smoothbore cannon features a segmented thermal shroud, stainless clamp bands, mid-barrel bore evacuator, and muzzle reference sensor.",
+        "craftAndMaterial": "Electro-slag-remelted autofrettaged ordnance steel with a hard-chrome 125mm smooth bore, digital-camo thermal jacket, polished clamp rings, and subtle soot at the hollow muzzle crown.",
+        "kinematicRole": "Accelerates DTC10-125 tungsten APFSDS darts to 1,780 m/s at 650 MPa in phase 2, recoils smoothly -320 mm rearward through phase 3, and returns smoothly to battery in phase 4.",
+        "designHighlight": "Higher metallurgy pressure margins and dynamic muzzle reference calibration deliver exceptional first-round hit accuracy and tube-launched missile compatibility.",
+        "audioScript": "Stretching six point two five meters long, the high pressure one hundred twenty five millimeter ZPT ninety eight smoothbore wears a segmented thermal shroud, mid barrel fume extractor, and muzzle reference mirror. Withstanding six hundred fifty megapascals, it launches tungsten darts at one thousand seven hundred eighty meters per second before recoiling three hundred twenty millimeters.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_main_gun_en.mp3"
+      }
+    },
+    "ztz99a_gun_cradle": {
+      "partId": "ztz99a_gun_cradle",
+      "bomCode": "G-02",
+      "calloutLabelEn": "Gun Mantlet & Cradle",
+      "zh": {
+        "roleTag": "承接 125mm 火炮 320 mm 直线后坐导轨 · 集成并列机枪射孔",
+        "overview": "封闭炮塔正面开槽的厚重铸钢外防盾与内部 U 形高强度铸钢耳轴摇架，支撑主炮、双联液压驻退筒与下置双复进簧同步高低俯仰。",
+        "craftAndMaterial": "整体精密铸造特种防弹钢炮盾喷涂数码迷彩，右侧整合 7.62mm 86 式并列机枪钢套筒，内部精磨合金钢 U 形长滑槽配镜面淬火耳轴销。",
+        "kinematicRole": "击发期间牢牢咬合炮塔耳轴保持俯仰姿态不动，为 125mm 主炮与重型炮尾的 -320 mm 狂暴后坐提供亚毫米级直线导向。",
+        "designHighlight": "紧凑窄幅外炮盾极度缩减了炮塔正面无爆反薄弱区面积，同时保证火炮在剧烈越野颠簸中的稳定俯仰精度。",
+        "audioScript": "嵌入炮塔正面的重型装甲炮盾与内部U形铸钢耳轴摇架，是整门一百二十五毫米主炮的精密滑床。它右侧整合七点六二毫米并列机枪射孔，内部硬化导轨牢牢约束着炮身三百二十毫米的直线后坐复进。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_gun_cradle_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Armored Gun Mantlet, Coaxial MG Port & Trunnion Recoil Cradle",
+        "overview": "Sealing the narrow turret front aperture, this heavy armored external mantlet and internal cast-steel U-cradle support the recoiling 125mm barrel, twin hydraulic cylinders, and coaxial 7.62mm port.",
+        "craftAndMaterial": "Ballistic cast steel mantlet finished in digital camo with an armored coaxial Type 86 MG sleeve, paired with precision-ground internal steel slideways and chrome trunnion pins.",
+        "kinematicRole": "Anchors the cannon to the turret trunnions during firing, guiding the -320 mm linear recoil stroke with sub-millimeter alignment under 650 MPa reaction forces.",
+        "designHighlight": "Minimized mantlet width shrinks the un-ERA-protected frontal gap while delivering rigid structural alignment for stabilized gunnery.",
+        "audioScript": "Sealing the turret front slot, this heavy cast steel gun mantlet and internal trunnion cradle guide the entire one hundred twenty five millimeter cannon. Integrating the right coaxial machine gun port, its ground slideways hold razor straight alignment throughout the three hundred twenty millimeter recoil stroke.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_gun_cradle_en.mp3"
+      }
+    },
+    "ztz99a_recoil_cylinders": {
+      "partId": "ztz99a_recoil_cylinders",
+      "bomCode": "G-03",
+      "calloutLabelEn": "Hydraulic Recoil Cylinders",
+      "zh": {
+        "roleTag": "节流液压吸收数十吨后坐冲击 · 镜面镀铬活塞杆随炮往复",
+        "overview": "并联布置于炮尾上方的双联重型液压节流驻退机与高压氮气-液气复进机筒，是驯服 125mm 主炮雷霆后坐力的液压减震核心。",
+        "craftAndMaterial": "厚壁高压合金钢油缸筒体配氮化防护表面、镜面抛光硬铬液压活塞杆、精铣合金前联结轭以及黄铜高压充氮检测气阀。",
+        "kinematicRole": "阶段 3 随炮尾同步后缩，驱动内部液压油高速冲过变截面节流环槽耗散动能；阶段 4 利用压缩高压氮气平稳推动炮身前移复进。",
+        "designHighlight": "对称双筒布局彻底消除偏心扭转力矩，将数百吨级瞬时炮膛脉冲柔和转化为平滑后坐曲线。",
+        "audioScript": "架设在炮尾上方的这对双联液压驻退机与液气复进筒，拥有闪耀的镜面镀铬活塞杆与黄铜充氮气阀。开火瞬间它们通过变截面液压节流温柔吸收数百吨后坐冲击，随即借高压氮气平稳推回沉重炮管。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_recoil_cylinders_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Twin Mirror-Chrome Hydraulic Recoil Brakes & Recuperators",
+        "overview": "Flanking the upper breech inside the gun cradle, these twin hydraulic recoil brake and hydro-pneumatic recuperator cylinders absorb and dissipate the massive impulse of 125mm tank gunfire.",
+        "craftAndMaterial": "Thick-walled alloy pressure cylinders, mirror-ground hard-chrome piston rods, CNC-milled front cross-yokes, and brass high-pressure nitrogen charging valves.",
+        "kinematicRole": "Telescopes rearward with the recoiling cannon in phase 3 to throttle hydraulic oil across precision orifices, then uses compressed nitrogen to drive counter-recoil return in phase 4.",
+        "designHighlight": "Symmetrical dual-cylinder geometry cancels eccentric bending loads on the trunnions, preserving long-range barrel alignment shot after shot.",
+        "audioScript": "Mounted above the breech with gleaming mirror chrome piston rods and brass nitrogen valves, these twin hydraulic recoil brake and recuperator cylinders throttle hundreds of tons of firing force across thirty two centimeters before pushing the heavy barrel smoothly back into battery.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_recoil_cylinders_en.mp3"
+      }
+    },
+    "ztz99a_recoil_springs": {
+      "partId": "ztz99a_recoil_springs",
+      "bomCode": "G-04",
+      "calloutLabelEn": "Twin Recuperator Springs",
+      "zh": {
+        "roleTag": "1:1 真实 25 mm 粗锻钢螺旋压簧 · 随 320 mm 后坐实时压缩至 61%",
+        "overview": "对称安装于摇架底部的双联重型锻钢螺旋辅助复进缓冲簧（自由长 820 mm、钢丝直径 25 mm），实时呈现震撼的重炮弹簧压缩形变。",
+        "craftAndMaterial": "重型高疲劳硅锰弹簧钢热卷成型并经抛丸强化与发蓝油淬处理，完整保留恒线径 GPU 实时轴向压缩形变属性。",
+        "kinematicRole": "后端锚定于静止摇架尾壁，阶段 3 随主炮 -320 mm 后坐从 100% 线性压缩至 61% 长度储能，阶段 4 顺滑回弹助推炮身精准复进。",
+        "designHighlight": "1:1 真实重炮尺度粗径螺旋压簧，在 CT 纵剖与慢放击发模式中直观呈现机械能量储存与释放的物理节律。",
+        "audioScript": "藏在炮架下方的这对双联重型螺旋复进缓冲簧，采用直径高达二十五毫米的粗锻硅锰弹簧钢热卷而成。每次开火后坐期间，两根巨型螺旋簧实时压缩至百分之六十一长度蓄积磅礴弹力，随即将主炮稳健推回待发位。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_recoil_springs_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Twin 25mm-Wire Forged Helical Recuperator Coils (61% Compression)",
+        "overview": "Suspended beneath the gun cradle, these twin 820 mm heavy helical recuperator coils forged from 25 mm spring wire assist counter-recoil damping and showcase real-time GPU compression.",
+        "craftAndMaterial": "Hot-wound silicon-manganese ordnance spring steel, shot-peened and oil-quenched, engineered with constant-wire-diameter GPU axial deformation.",
+        "kinematicRole": "Pinned at their rear cradle seats, both coils compress linearly from 100 to 61 percent length as the 125mm cannon recoils -320 mm in phase 3, expanding smoothly in phase 4.",
+        "designHighlight": "True 1:1 artillery-gauge coil proportions deliver dramatic visual feedback of mechanical energy storage during slow-motion cutaway firing.",
+        "audioScript": "Suspended below the cradle, these twin forged helical recuperator springs are wound from twenty five millimeter ordnance wire. During every shot they compress cleanly to sixty one percent length in real time, storing tremendous elastic energy to assist smooth counter recoil.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_recoil_springs_en.mp3"
+      }
+    },
+    "ztz99a_breech_block": {
+      "partId": "ztz99a_breech_block",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Vertical Wedge Breech",
+      "zh": {
+        "roleTag": "承受 650 MPa 125mm 极高膛压 · 复进自动下垂 -160 mm 抽壳待装",
+        "overview": "旋接于 ZPT-98 身管尾部的整体锻钢重型炮尾环与半自动立楔式滑动炮闩，内设中心黄铜电发火击针与双爪强力抽底钩。",
+        "craftAndMaterial": "电渣重熔高韧性炮尾合金钢经五轴精密铣削，核心立楔闩体采用镜面磨削硬化铬钢，尾端镶嵌黄铜电击发电磁螺线管压盖。",
+        "kinematicRole": "阶段 3 随主炮共同后坐 -320 mm；阶段 4 复进末段立楔垂直滑降 -160 mm 敞开药室抽底，阶段 7 新弹入膛后自动上弹锁闭。",
+        "designHighlight": "立楔式垂直开关布局无需侧向摆动空间，完美契合紧凑三人制低矮炮塔与底置转盘快速直推装弹。",
+        "audioScript": "连接在炮管最尾端的重型锻钢炮尾环与立楔式炮闩，正中心嵌着黄铜电发火装置，承受高达六百五十兆帕的惊人膛压。主炮复进末段，开闩凸轮驱使炮闩垂直下垂一百六十毫米敞开炮膛，待新弹推入瞬间即干脆弹锁闭膛。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_breech_block_zh.mp3"
+      },
+      "en": {
+        "roleTag": "650 MPa Forged Breech Ring & -160mm Vertical Sliding Wedge",
+        "overview": "Threaded onto the rear of the ZPT-98 tube, this massive forged alloy-steel breech ring and semi-automatic vertical sliding-wedge breechblock house the central brass electric primer solenoid.",
+        "craftAndMaterial": "Five-axis CNC-machined high-toughness breech steel paired with a mirror-ground sliding steel wedge, brass electric firing cap, and left-side cam opening crank.",
+        "kinematicRole": "Recoils -320 mm with the barrel in phase 3, drops vertically -160 mm open in phase 4 to extract the brass stub and admit the fresh round, then snaps locked upward in phase 7.",
+        "designHighlight": "Vertical sliding-wedge geometry needs zero lateral swing clearance, meshing seamlessly with the compact low-profile turret and straight-line chain rammer.",
+        "audioScript": "Threaded onto the rear of the smoothbore tube, this forged alloy steel breech ring and vertical sliding wedge hold back six hundred fifty megapascals of chamber pressure. As counter recoil finishes, opening cams drop the wedge sixteen centimeters open before snapping it locked around the next round.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_breech_block_en.mp3"
+      }
+    },
+    "ztz99a_optics_citv": {
+      "partId": "ztz99a_optics_citv",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "CITV & JD-3 Laser Dazzler",
+      "zh": {
+        "roleTag": "“猎-歼”双独立热像 + 全球独创 JD-3 主动激光致盲压制转塔",
+        "overview": "集成于炮塔顶部的全天候信息化观瞄与主动激光防御三件套：左前炮长双稳热像主瞄、右顶车长 360° 周视热像仪（CITV）及左后 JD-3 激光压制转塔。",
+        "craftAndMaterial": "防弹装甲光学外罩喷涂数码迷彩，全部物镜与激光发射窗口均采用高透射率多层抗反射翡翠蓝宝石光学镀膜（严格 >=50 px UV 隔离零色渗）。",
+        "kinematicRole": "实现车长独立全周搜敌—炮长自动超越锁定的双稳猎-歼射击，并在探测到敌方激光照射瞬间驱动 JD-3 转塔实施强激光反制致盲。",
+        "designHighlight": "将高端红外凝视热成像猎-歼火控与主动激光软杀伤压制集于一车，奠定 ZTZ-99A 的战场单向透明信息优势。",
+        "audioScript": "耸立在炮塔顶端的这三套翡翠蓝宝石镜头光学装置，是九九A洞悉战场的数字化之眼：左前为炮长双稳热像主瞄具，右顶为车长三百六十度独立周视热像仪，左后则是全球独创的JD三激光告警与主动致盲压制转塔。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_optics_citv_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Hunter-Killer Thermal CITV & Active JD-3 Laser Dazzler",
+        "overview": "Crowning the turret roof, this optronic triad pairs the gunner's left primary stabilized thermal sight and the commander's right 360-degree panoramic CITV with the signature rear-left JD-3 laser active defense dazzler.",
+        "craftAndMaterial": "Armored digital-camo sensor housings framing strictly UV-firewalled emerald-sapphire multi-coated optical objective and high-energy laser aperture lenses.",
+        "kinematicRole": "Provides continuous hunter-killer target handoff day or night while slewing the JD-3 projector onto incoming hostile laser beams to dazzle enemy optics and missile seekers.",
+        "designHighlight": "Fuses independent dual-thermal fire control with an operational active laser soft-kill countermeasure unique among frontline main battle tanks.",
+        "audioScript": "Crowning the turret with multi coated emerald sapphire lenses, this optronic triad gives the ZTZ ninety nine A decisive battlefield vision. The gunner's thermal sight and commander's panoramic CITV form a true hunter killer pair, backed by the unmistakable rear left JD three active laser dazzler.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_optics_citv_en.mp3"
+      }
+    },
+    "ztz99a_roof_armaments": {
+      "partId": "ztz99a_roof_armaments",
+      "bomCode": "T-03",
+      "calloutLabelEn": "QJC-88 MG & Smoke Banks",
+      "zh": {
+        "roleTag": "12.7×108mm 防空自卫火力 + 多光谱红外烟幕瞬时遮蔽",
+        "overview": "由炮塔双颊对称六联 81mm 多光谱烟幕弹发射筒、车长右舱口 QJC-88 12.7mm 重型车载高射机枪与尾部横风气象传感器立杆构成的多维自卫外设组。",
+        "craftAndMaterial": "发黑高强枪管钢 QJC-88 机枪配喇叭口消焰器与军绿钢制弹药箱，12 根无缝中空 81mm 烟幕弹筒喷涂数码迷彩，尾杆配亮铬风速探头。",
+        "kinematicRole": "提供防低空无人机/直升机自卫火力与全频谱红外发烟瞬时隐蔽屏障，同时实时向火控计算机回传精确横风弹道修正参数。",
+        "designHighlight": "烟幕掩护、重机枪点杀伤与精密横风传感三位一体，显著拓展主战坦克的复杂电磁与城市反伏击生存力。",
+        "audioScript": "布置在炮塔顶部与双颊的这套外置火力与气象组件，包含十二根八十一毫米多光谱红外烟幕弹发射筒、车长舱口QJC八八式十二点七毫米重型防空机枪，以及炮塔后方的数字横风传感器，为远距精准炮击提供实时气象修正。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_roof_armaments_zh.mp3"
+      },
+      "en": {
+        "roleTag": "QJC-88 12.7mm AA Gun, Twin 81mm Smoke Banks & Wind Mast",
+        "overview": "This roof defensive and meteorological suite combines twin six-barrel 81mm multispectral smoke discharger banks, a pintle-mounted QJC-88 12.7x108mm heavy AA machine gun, and a rear cross-wind sensor mast.",
+        "craftAndMaterial": "Blued ordnance steel QJC-88 receiver, fluted heavy barrel, conical flash hider, and olive ammo box paired with twelve hollow digital-camo smoke tubes and a chrome wind-sensor head.",
+        "kinematicRole": "Engages low-flying aircraft, drones, and soft targets, pops instant infrared-obscuring smoke screens, and feeds live wind data into the ballistic fire-control computer.",
+        "designHighlight": "Integrates close-in heavy machine gun defense, multispectral smoke concealment, and automated environmental ballistic sensing across the turret crown.",
+        "audioScript": "Framing the turret crown are twin six barrel eighty one millimeter multispectral smoke launchers, a commander mounted QJC eighty eight twelve point seven millimeter heavy anti aircraft machine gun, and a rear cross wind sensor mast feeding live weather corrections to the ballistic computer.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_roof_armaments_en.mp3"
+      }
+    },
+    "ztz99a_autoloader_carousel": {
+      "partId": "ztz99a_autoloader_carousel",
+      "bomCode": "A-01",
+      "calloutLabelEn": "22-Rd Carousel Autoloader",
+      "zh": {
+        "roleTag": "纵剖绝对主角 · 直径 1.80 m 装甲转盘水平径向排布 22 套 125mm 分装弹",
+        "overview": "ZTZ-99A 纵剖视窗最震撼的机械主角——深置战斗室最底部的直径 1.80 米装甲环形转盘自动装弹机，径向满载 22 套上下分装 125mm 穿甲弹与药筒。",
+        "craftAndMaterial": "厚重装甲钢环槽与中央精密伺服驱动毂，内部径向排布 22 枚黑钢弹托配亮银钨芯 DTC10-125 穿甲弹及 22 节琥珀半可燃发射药筒与闪亮 C26000 黄铜底托。",
+        "kinematicRole": "阶段 5 由车底伺服电机驱动整体平顺旋转（+32.7° 双工位对称分度），按炮长选定弹种将下一套 125mm 双层弹盒精准送至后部提弹槽。",
+        "designHighlight": "将全部 22 发待发主炮弹深藏于全车防护最严密的底甲板核心区，既省去第四名装填手，又确保崎岖越野中每分钟 8 发稳定射速。",
+        "audioScript": "请聚焦纵剖视窗正中央最震撼的机械明星：二十二发底置分装式转盘自动装弹机！这座直径一点八米的装甲圆盘深藏车体底部，径向排满二十二套下层钨芯穿甲弹与上层带黄铜底托的半可燃药筒，开火后迅速伺服旋转选弹，赋予九九A每分钟八发恒定射速。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_autoloader_carousel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Cutaway Star · 1.80m Spinning 22-Cassette 125mm Floor Carousel",
+        "overview": "The undisputed centerpiece of cutaway mode: this 1.80-meter armored floor carousel stores 22 two-piece 125mm rounds radially—lower DTC10-125 APFSDS darts beneath upper semi-combustible brass-base charges.",
+        "craftAndMaterial": "Armored conveyor ring and central electric azimuth hub packed with dark steel sabots, bright tungsten penetrators, warm amber combustible cases, and gleaming C26000 brass stub bases.",
+        "kinematicRole": "Rotates smoothly around the vertical Y axis (+32.7 degrees, two symmetric stations) during phase 5 to deliver the selected ammunition type beneath the rear elevator hoist.",
+        "designHighlight": "Tucking all 22 ready rounds low on the hull floor shields ammunition behind maximum hull armor, reduces crew to three, and guarantees a tireless 8-RPM rate of fire.",
+        "audioScript": "Focus on the undisputed star of cutaway mode: the one point eight meter twenty two cassette floor carousel autoloader. Packed radially with lower tungsten sabot darts and upper amber propellant charges capped in gleaming brass, it spins smoothly after every shot to index the next selected round under the rear hoist.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_autoloader_carousel_en.mp3"
+      }
+    },
+    "ztz99a_loading_tray": {
+      "partId": "ztz99a_loading_tray",
+      "bomCode": "A-02",
+      "calloutLabelEn": "Cassette Elevator Hoist",
+      "zh": {
+        "roleTag": "垂直大行程举升 +680 mm · 将车底弹盒精准托举对正 125mm 炮膛轴线",
+        "overview": "衔接车底转盘与高置 125mm 炮尾的双轨垂直举升提弹臂总成，内托一套完整的两段式 125mm 钨芯穿甲弹丸与半可燃发射药筒。",
+        "craftAndMaterial": "高强镀铬垂直双举升臂与精铣钢制双层弹托槽，稳固承托下层黑色弹托/钨合金长杆穿甲弹芯及上层琥珀发射药筒与亮黄铜底托。",
+        "kinematicRole": "阶段 6 驱动待发 125mm 双层弹盒自车底垂直高举整整 +680 mm 精准对正敞开的炮尾轴线，待推弹机送入炮膛后于阶段 7 平稳落回转盘。",
+        "designHighlight": "将水平底置存弹与高置炮膛无缝衔接，以简洁双轨直上直下运动消除分装炮弹在颠簸中的卡滞风险。",
+        "audioScript": "矗立在转盘后方的双轨垂直举升提弹臂，是连接车底弹舱与炮尾的钢铁电梯。一旦转盘选弹到位，它便托着整套两段式一百二十五毫米穿甲弹与药筒垂直高举整整六百八十毫米，精准停驻在炮膛正后方准备推弹。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_loading_tray_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Articulated +680mm Vertical Cassette Elevator Hoist Arm",
+        "overview": "Bridging the floor carousel and the breech centerline, this twin-rail vertical elevator hoist carries a staged two-piece 125mm DTC10-125 APFSDS sabot and semi-combustible propellant charge.",
+        "craftAndMaterial": "Chrome-plated twin vertical hoist rails and dual-deck steel cassette cradle holding a dark sabot tungsten dart below and an amber brass-base charge above.",
+        "kinematicRole": "Elevates dramatically +680 mm upward during phase 6 to align the two-piece round directly behind the open vertical-wedge breech, then lowers back to carousel level in phase 7.",
+        "designHighlight": "Straight vertical hoisting prevents jamming during violent off-road pitch and roll while maintaining rapid two-stage chambering timing.",
+        "audioScript": "Positioned directly aft of the carousel, this articulated vertical cassette elevator hoist acts as the autoloader's steel lift. Once the next cassette indexes into place, it raises both the tungsten sabot projectile and amber propellant charge sixty eight centimeters straight into breech alignment.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_loading_tray_en.mp3"
+      }
+    },
+    "ztz99a_rammer_chain": {
+      "partId": "ztz99a_rammer_chain",
+      "bomCode": "A-03",
+      "calloutLabelEn": "Rigid-Chain Rammer",
+      "zh": {
+        "roleTag": "单向刚性铰链伸缩推杆 · 前冲 +540 mm 高速送入穿甲弹与发射药筒",
+        "overview": "深藏炮塔后尾舱上方的电动刚性链式推弹机，利用单向锁死刚性链节在极窄空间内实现超长直线推弹冲程。",
+        "craftAndMaterial": "高强合金钢链盒与电动驱动链轮鼓，驱动多节镜面镀铬单向锁死刚性推链，前端镶嵌防撞防静电黄铜推弹压头。",
+        "kinematicRole": "阶段 6 待提弹臂举升到位后迅猛前伸 +540 mm，将 125mm 穿甲弹头与半可燃药筒分步高速顶入药室，随即于阶段 7 迅速回缩尾舱。",
+        "designHighlight": "单向刚性推链巧妙化解了狭小尾舱空间与长达半米推弹行程之间的几何矛盾，是俄中系自动装弹机的神来之笔。",
+        "audioScript": "隐藏在炮塔尾舱上部的电动刚性链式推弹机，装有特殊的单向锁死合金钢链条与黄铜防撞推头。当提弹臂升至炮尾后方，它像钢铁长矛般迅猛前冲五百四十毫米，干脆利落地将穿甲弹与药筒推入药室。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_rammer_chain_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Turret-Bustle +540mm Electro-Mechanical Rigid-Chain Rammer",
+        "overview": "Tucked high inside the rear turret bustle, this electro-mechanical rigid-chain rammer uses one-way locking chrome links and a non-sparking brass pusher head to chamber 125mm ammunition.",
+        "craftAndMaterial": "Compact alloy steel drive housing, motorized sprocket drum, hardened chrome articulating one-way chain links, and cushioned C26000 brass rammer face.",
+        "kinematicRole": "Thrusts forward +540 mm during phase 6 to seat the APFSDS projectile and semi-combustible charge tightly into the ZPT-98 chamber, retracting cleanly before phase 7 lockup.",
+        "designHighlight": "Coiling flat inside the bustle yet locking dead-rigid when extended solves the geometric paradox of executing a half-meter ram stroke inside a low-profile turret.",
+        "audioScript": "Tucked inside the rear turret bustle, this electro mechanical rigid chain rammer coils compactly when stowed yet locks arrow straight when extended. In phase six its brass faced head lunges fifty four centimeters forward to seat both stages of the one hundred twenty five millimeter round.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_rammer_chain_en.mp3"
+      }
+    },
+    "ztz99a_rammer_spring": {
+      "partId": "ztz99a_rammer_spring",
+      "bomCode": "A-04",
+      "calloutLabelEn": "Rammer Return Spring",
+      "zh": {
+        "roleTag": "实时 GPU 恒线径压缩形变 · 吸收推弹到位冲击并辅助高速复位",
+        "overview": "内置于尾舱链式推弹机导轨顶部的重型水平螺旋缓冲回位簧（钢丝直径 19 mm、自由长 560 mm），在推弹循环中实时动态伸缩。",
+        "craftAndMaterial": "高疲劳硅锰弹簧钢热卷油淬绕制，保留恒线径 GPU 实时轴向压缩形变属性，确保数万次装填循环刚度不衰减。",
+        "kinematicRole": "阶段 6 随刚性链式推弹机前冲同步线性压缩至 58% 长度吸收终点止动冲击，并协助推弹机构在阶段 7 瞬时弹回尾舱让出闭闩空间。",
+        "designHighlight": "实时恒线径弹性缓冲确保重达二十余公斤的 125mm 分装弹高速入膛时柔和定深、不伤半可燃药筒壁。",
+        "audioScript": "与推弹机并肩安置在尾舱顶部的这根粗壮螺旋缓冲回位簧，钢丝直径达十九毫米。当推弹链猛力前冲送弹时，它实时压缩至百分之五十八长度吸收终点冲击，随即迅速回弹助推推弹机退回尾舱。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_rammer_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "19mm-Wire Axial Chain-Rammer Buffer & Return Coil (58% Flex)",
+        "overview": "Mounted along the top rail of the chain-rammer box, this 560 mm helical spring wound from 19 mm wire cushions rammer end-stop impact and drives brisk retraction.",
+        "craftAndMaterial": "Oil-quenched silicon-manganese spring steel built with real-time constant-wire-diameter GPU compression geometry.",
+        "kinematicRole": "Compresses smoothly from 100 to 58 percent length in lockstep with the +540 mm rammer thrust during phase 6, snapping the pusher assembly clear before breech closure.",
+        "designHighlight": "Controlled elastic damping ensures heavy 125mm projectiles seat cleanly without crushing fragile semi-combustible propellant walls.",
+        "audioScript": "Running atop the rammer track, this nineteen millimeter wire helical return spring compresses cleanly to fifty eight percent length during the forward chambering lunge, cushioning end stop shock and snapping the rammer back clear of the closing breech.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_rammer_spring_en.mp3"
+      }
+    },
+    "ztz99a_stub_ejector": {
+      "partId": "ztz99a_stub_ejector",
+      "bomCode": "G-05",
+      "calloutLabelEn": "Roof Brass Stub Ejector",
+      "zh": {
+        "roleTag": "自动捕捉炽热黄铜底托 · 联动顶盖弹开向炮塔上方高抛排出车外",
+        "overview": "位于炮尾后上方炮塔顶部的半可燃药筒金属底托捕捉叉与弹簧装甲抛底窗，开火后自动将空黄铜底托高抛甩出车外。",
+        "craftAndMaterial": "数码迷彩防弹装甲钢顶盖、镀铬铰链转轴、高强合金钢双捕捉臂以及耐高温防刮黄铜承托底叉。",
+        "kinematicRole": "阶段 4 立楔炮闩下垂抽底瞬间，捕捉臂接住空底托并带动顶盖向上弹翻 -50°，将炽热黄铜底托干脆抛向炮塔后上方高空。",
+        "designHighlight": "半可燃药筒仅余短小金属底托并由顶窗自动排出，彻底杜绝炮塔内空弹壳堆积与剧毒发射药废气滞留。",
+        "audioScript": "装在炮塔后顶部的这组药筒底托捕捉臂与装甲抛底窗，是半可燃药筒装弹机的点睛之笔。由于药筒壁在击发时已完全燃尽，开闩抽出的炽热黄铜底托会被捕捉叉精准接住，联动顶盖猛然翻开直接高抛排出车外。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_stub_ejector_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Spent Brass Stub-Case Catcher & Automatic Roof Ejection Hatch",
+        "overview": "Installed in the turret roof directly aft of the breech, this hinged armored hatch and curved brass-tipped catcher fork seize and eject spent 125mm metallic propellant stubs.",
+        "craftAndMaterial": "Digital-camo ballistic steel roof flap on a chrome hinge barrel coupled to dual alloy catcher arms and a heat-resistant brass stub cradle.",
+        "kinematicRole": "Flips upward and open (-50 degrees) in phase 4 the instant the dropping breech extracts the spent brass stub base, flinging the hot base cleanly skyward out of the turret.",
+        "designHighlight": "Automatic exterior stub ejection keeps the compact crew fighting compartment completely free of cluttering hot brass and toxic propellant fumes.",
+        "audioScript": "Set into the turret roof behind the breech, this armored ejection hatch and brass tipped catcher fork complete the semi combustible ammunition cycle. In phase four the hatch flips open fifty degrees, flinging the hot brass stub base skyward clear of the tank.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_stub_ejector_en.mp3"
+      }
+    },
+    "ztz99a_v12_engine": {
+      "partId": "ztz99a_v12_engine",
+      "bomCode": "P-01",
+      "calloutLabelEn": "150HB 1,500-HP V12 Diesel",
+      "zh": {
+        "roleTag": "中国自主研制的陆战心脏 · 1,103 kW (1,500 HP) 双涡轮增压中冷 V12",
+        "overview": "横置安放于抬高后动力舱内的中国自主 150HB 型 12 缸 60° 夹角双涡轮增压中冷液冷柴油机，爆发出 1,500 马力澎湃动力。",
+        "craftAndMaterial": "高强压铸铝合金与合金铸铁 V12 缸体、12 组独立铝制气门室盖、双对称银铝大流量涡轮增压器、顶置带「NORINCO 150HB-2 V12」拉丝铭牌中冷器、青铜耐热排气歧管及严格隔离的安全黄加油盖与绯红机油滤芯。",
+        "kinematicRole": "作为整车动力源以低频强劲扭矩驱动后方 CH-1000 综合传动，击发期间伴随真实重型柴油机低频微幅脉动，并可整包快速吊换。",
+        "designHighlight": "单缸输出高达 125 马力，凭借优异高原增压补偿能力令 55 吨主战坦克在青藏高原雪域依然龙腾虎跃。",
+        "audioScript": "横卧在后置动力舱内的这台中国自主一百五十HB型十二缸双涡轮增压柴油机，爆发出惊人的一千五百马力澎湃动力。十二个独立缸盖、双银色涡轮蜗壳、青铜排气歧管与醒目安全黄机油盖尽显重工业巅峰美感。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_v12_engine_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Indigenous 1,500-HP (1,103 kW) Twin-Turbo 60-Deg V12 Diesel",
+        "overview": "Housed inside the raised rear powerpack bay, China's indigenous 150HB 12-cylinder twin-turbo liquid-cooled diesel delivers 1,500 horsepower for an explosive 27+ HP/ton power-to-weight ratio.",
+        "craftAndMaterial": "Cast-alloy V12 crankcase with twelve individual rocker covers, twin mirror-silver turbochargers, ribbed top intercooler carrying the engraved NORINCO 150HB-2 data plate, bronze exhaust manifolds, and UV-firewalled safety-yellow caps and crimson oil filters.",
+        "kinematicRole": "Drives the aft CH-1000 transmission via its heavy rear flywheel while exhibiting subtle high-torque diesel rumble across the firing cycle, designed for 40-minute field powerpack swaps.",
+        "designHighlight": "High-altitude turbocharging calibration preserves formidable combat mobility across both scorching deserts and oxygen-thin Tibetan mountain passes.",
+        "audioScript": "Resting inside the raised rear engine bay is China's indigenous one fifty HB twelve cylinder twin turbo diesel, unleashing one thousand five hundred horsepower. Its twelve cylinder heads, twin silver turbochargers, bronze exhaust manifolds, and safety yellow service caps showcase heavy propulsion mastery.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_v12_engine_en.mp3"
+      }
+    },
+    "ztz99a_transmission": {
+      "partId": "ztz99a_transmission",
+      "bomCode": "P-02",
+      "calloutLabelEn": "CH-1000 Auto Transmission",
+      "zh": {
+        "roleTag": "自动换挡 + 无级液压双流转向 · 支持 55 吨车体原地中心旋转",
+        "overview": "与 150HB 柴油机模块化直连的中国 CH-1000 液力机械行星综合传动装置，顶部整合双联大面积紫铜散热器芯体与双轴流强冷风扇。",
+        "craftAndMaterial": "整体铸铝高强行星变速箱壳体、左右镀铬锻钢侧传动输出鼓、高导热紫铜鳍片双散热器以及银铝高速导流冷却风扇罩。",
+        "kinematicRole": "将 V12 发动机 1,500 马力扭矩无级分配至左右尾置 14 齿主动轮，实现手自一体自动换挡、高速精确弯道转向与零半径中心原地掉头。",
+        "designHighlight": "彻底取代苏式传统机械离合与双操纵杆，大幅降低长途奔袭驾驶员疲劳度，标志着中国重型坦克传动全面比肩西方一流。",
+        "audioScript": "紧连在V十二发动机后方的CH一千液力机械综合传动装置，顶部架设两座巨型紫铜冷却散热器与双轴流风扇。它实现了手自一体自动换挡与双流无级转向，让五十五吨重甲像轻快战车般灵活完成原地中心旋转。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_transmission_zh.mp3"
+      },
+      "en": {
+        "roleTag": "CH-1000 Planetary Auto Gearbox & Twin Copper Radiators",
+        "overview": "Bolted directly aft of the 150HB diesel, the CH-1000 hydro-mechanical planetary transmission integrates automatic gear shifting, hydrostatic steering, twin copper cooling radiators, and dual axial fans.",
+        "craftAndMaterial": "Cast-alloy transverse planetary gearbox housing, heavy lateral final-drive brake drums, high-conductivity finned copper radiator cores, and silver fan shrouds.",
+        "kinematicRole": "Splits 1,500 horsepower smoothly between both rear 14-tooth drive sprockets, enabling effortless automatic shifting, variable-radius cornering, and neutral pivot turns.",
+        "designHighlight": "Eliminates exhausting legacy twin-lever mechanical controls in favor of modern automatic steering-yoke drivability.",
+        "audioScript": "Coupled directly behind the V twelve diesel, the CH one thousand hydro mechanical planetary transmission pairs automatic shifting and hydrostatic steering with twin copper finned radiators, driving both rear sprockets for smooth cornering and neutral pivot turns.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_transmission_en.mp3"
+      }
+    },
+    "ztz99a_torsion_bars": {
+      "partId": "ztz99a_torsion_bars",
+      "bomCode": "H-09",
+      "calloutLabelEn": "12 Transverse Torsion Bars",
+      "zh": {
+        "roleTag": "全车宽错列扭转储能 · 赋予 55 吨主战坦克行进间平稳越野姿态",
+        "overview": "沿空心车体底甲板整齐错列铺设的 12 根全车宽渗碳高强合金钢横置扭杆弹簧，配两端花键固定座及第 1、2、6 站 6 具重型镀铬液压减振器。",
+        "craftAndMaterial": "高强度电渣重熔弹簧合金钢冷拔扭杆轴、锻造多齿花键锚固箱与镜面镀铬高压筒式液压减振器。",
+        "kinematicRole": "每根扭杆横跨整车宽度吸收对应负重轮的剧烈垂直冲击扭转能量，配合液压减振器迅速抑制车体纵摇，为 125mm 主炮动对动射击稳住基座。",
+        "designHighlight": "纵剖模式下清晰可见十二根横贯车底的扭杆整齐排布在转盘正下方，构成重装甲底盘最纯粹的经典力学美学。",
+        "audioScript": "平铺在车体底甲板上方的这十二根全宽横置高强合金钢扭杆弹簧，每根都横贯整车宽度以获取最大扭转行程。配合前二后一六具重型镀铬液压减振器，它们在乱石沟壑中牢牢稳住五十五吨车身，保障主炮行进间精准开火。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_torsion_bars_zh.mp3"
+      },
+      "en": {
+        "roleTag": "12 Staggered Full-Width Steel Torsion Bars & 6 Shock Absorbers",
+        "overview": "Spanning the entire lower hull floor directly beneath the carousel, twelve staggered high-strength transverse steel torsion bars and six hydraulic shock absorbers anchor all six road-wheel stations.",
+        "craftAndMaterial": "Cold-drawn alloy spring-steel torsion shafts anchored in forged splined sidewall blocks, supplemented by six chrome telescopic hydraulic dampers at stations one, two, and six.",
+        "kinematicRole": "Absorbs violent cross-country wheel travel through full-hull-width torsional windup while hydraulic dampers quell pitch oscillation for accurate firing on the move.",
+        "designHighlight": "Exposed cleanly in cutaway mode beneath the spinning carousel, the staggered twelve-bar floor grid epitomizes rugged heavy-tank suspension engineering.",
+        "audioScript": "Running across the entire hull belly directly beneath the autoloader carousel are twelve staggered high strength transverse steel torsion bars and six chrome hydraulic shock absorbers, smoothing violent off road impacts so the stabilized main gun stays locked on target.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_torsion_bars_en.mp3"
+      }
+    },
+    "ztz99a_crew_stations": {
+      "partId": "ztz99a_crew_stations",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Digital Crew & FCS Consoles",
+      "zh": {
+        "roleTag": "三人数字化网络战车 · 方向盘自动挡驾驶 + 战场态势综合显控屏",
+        "overview": "高度集成的 ZTZ-99A 三人制数字化作战工位：前居中驾驶员蝶形方向盘与液晶仪表台、炮塔左侧炮长弹道显控台与右侧车长猎-歼综合态势终端。",
+        "craftAndMaterial": "人体工学减震帆布护垫座椅、防滑橡胶蝶形方向盘、航空铝合金防震火控机箱以及严格 UV 隔离的高对比荧光青绿弹道雷达多功能显控屏（MFD）。",
+        "kinematicRole": "将全车火控、观瞄、自动装弹状态、150HB 动力监控与合成旅级加密战术数据链融为一体，令三名乘员掌控全局战场透明态势。",
+        "designHighlight": "从手拉操纵杆跃升至方向盘自动挡加全彩数字化战管终端，标志着中国装甲兵迈入信息化联合作战新时代。",
+        "audioScript": "分布于前中驾驶室与炮塔左右两翼的三人数字化战位，彻底革新了坦克人机工程。前方的驾驶员手握蝶形方向盘与自动挡液晶仪表，炮塔内的车长与炮长则借助泛着青绿光芒的多功能弹道显控屏，实时融入联合作战数据链。",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_crew_stations_zh.mp3"
+      },
+      "en": {
+        "roleTag": "3-Crew Networked Cockpit: Driver Yoke & Digital FCS MFDs",
+        "overview": "Uniting all three crew members into a networked fighting unit, this interior assembly spans the center-front driver's steering yoke station, the left gunner's ballistic computer console, and the right commander's tactical display.",
+        "craftAndMaterial": "Ergonomic shock-damped padded crew seats, rubberized butterfly steering yoke, ruggedized fire-control housings, and crisp UV-firewalled cyan-green multifunction tactical MFD screens.",
+        "kinematicRole": "Integrates target tracking, 125mm ammunition selection, 150HB powerpack diagnostics, and brigade-level encrypted battlefield telemetry across all three crew stations.",
+        "designHighlight": "Steering-yoke automatic driving and shared digital battlefield displays transform the ZTZ-99A from an isolated fighting vehicle into a smart networked sensor-shooter node.",
+        "audioScript": "Spanning the front center hull and both turret flanks, these three digital crew stations modernize tank ergonomics. Up front, the driver commands a butterfly steering yoke and digital dashboard, while commander and gunner share glowing cyan multifunction fire control displays tied directly into the tactical network.",
+        "audioUrl": "audio/ztz99a/parts/ztz99a_crew_stations_en.mp3"
+      }
+    }
+  }
+}

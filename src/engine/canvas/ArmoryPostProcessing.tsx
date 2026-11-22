@@ -10,6 +10,7 @@ import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
 import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
 import { useAppStore } from '../../store/useAppStore';
+import type { WeaponScaleProfile } from '../../weapons/types';
 import {
   DEFAULT_ARMORY_ENVIRONMENT,
   getArmoryEnvironment,
@@ -87,22 +88,49 @@ export const ARMORY_POSTFX_DEFAULTS = {
   },
 } as const;
 
+export function getGtaoScaleParams(
+  baseGtao: ArmoryGtaoParams,
+  scaleProfile?: WeaponScaleProfile
+): ArmoryGtaoParams {
+  if (scaleProfile !== 'main_battle_tank') return baseGtao;
+  return {
+    ...baseGtao,
+    // 1:1 10-meter Main Battle Tank world-space AO reach (28 cm around turret overhangs, ERA & roadwheels)
+    radius: 28.0,
+    distanceExponent: 1.42,
+    thickness: 24.0,
+    scale: 1.38,
+    pdRadius: 7,
+    blendIntensity: Math.min(1.38, baseGtao.blendIntensity * 1.22),
+  };
+}
+
 export function getPostProcessingPresetParams(
-  preset: ArmoryEnvironmentPreset = DEFAULT_ARMORY_ENVIRONMENT
+  preset: ArmoryEnvironmentPreset = DEFAULT_ARMORY_ENVIRONMENT,
+  scaleProfile?: WeaponScaleProfile
 ): ArmoryPostProcessingParams {
   const env = getArmoryEnvironment(preset);
-  const bloomThreshold = preset === 'blueprint_daylight' ? 3.5 : 3.2;
+  const isTank = scaleProfile === 'main_battle_tank';
+  // Raise bloom cutoff slightly for 1:1 MBTs so bright hangar clerestory reflections on optics & wet
+  // concrete oil slicks stay razor-crisp while 125mm/120mm/88mm main gun blasts still bloom vividly.
+  const bloomThreshold =
+    preset === 'blueprint_daylight' ? 3.5 : isTank ? 3.4 : 3.2;
+  const bloomStrength =
+    isTank && preset !== 'blueprint_daylight'
+      ? env.postfx.bloomStrength * 0.92
+      : env.postfx.bloomStrength;
+  const baseGtao: ArmoryGtaoParams = {
+    ...ARMORY_POSTFX_DEFAULTS.gtao,
+    blendIntensity: env.postfx.gtaoIntensity,
+  };
   return {
     preset: env.id,
     toneMapping: THREE.AgXToneMapping,
     toneMappingExposure: env.toneMappingExposure,
-    gtao: {
-      ...ARMORY_POSTFX_DEFAULTS.gtao,
-      blendIntensity: env.postfx.gtaoIntensity,
-    },
+    gtao: getGtaoScaleParams(baseGtao, scaleProfile),
     bloom: {
       threshold: bloomThreshold,
-      strength: env.postfx.bloomStrength,
+      strength: bloomStrength,
       radius: ARMORY_POSTFX_DEFAULTS.bloom.radius,
     },
   };
@@ -487,15 +515,21 @@ export interface FilmicLensPresetParams {
 }
 
 export function getFilmicLensPresetParams(
-  preset: ArmoryEnvironmentPreset
+  preset: ArmoryEnvironmentPreset,
+  scaleProfile?: WeaponScaleProfile
 ): FilmicLensPresetParams {
   if (preset === 'blueprint_daylight') {
     return { vignetteStrength: 0.0, grainStrength: 0.0, contrast: 1.0 };
   }
+  const isTank = scaleProfile === 'main_battle_tank';
   if (preset === 'gunsmith_bench') {
-    return { vignetteStrength: 0.16, grainStrength: 0.0075, contrast: 1.025 };
+    return isTank
+      ? { vignetteStrength: 0.21, grainStrength: 0.008, contrast: 1.032 }
+      : { vignetteStrength: 0.16, grainStrength: 0.0075, contrast: 1.025 };
   }
-  return { vignetteStrength: 0.2, grainStrength: 0.0085, contrast: 1.03 };
+  return isTank
+    ? { vignetteStrength: 0.25, grainStrength: 0.009, contrast: 1.038 }
+    : { vignetteStrength: 0.2, grainStrength: 0.0085, contrast: 1.03 };
 }
 
 const FILMIC_LENS_SHADER = {
@@ -553,10 +587,11 @@ const FILMIC_LENS_SHADER = {
 };
 
 export function createFilmicLensPass(
-  preset: ArmoryEnvironmentPreset = DEFAULT_ARMORY_ENVIRONMENT
+  preset: ArmoryEnvironmentPreset = DEFAULT_ARMORY_ENVIRONMENT,
+  scaleProfile?: WeaponScaleProfile
 ): ShaderPass {
   const pass = new ShaderPass(FILMIC_LENS_SHADER);
-  const cfg = getFilmicLensPresetParams(preset);
+  const cfg = getFilmicLensPresetParams(preset, scaleProfile);
   pass.uniforms.uVignetteStrength.value = cfg.vignetteStrength;
   pass.uniforms.uGrainStrength.value = cfg.grainStrength;
   pass.uniforms.uContrast.value = cfg.contrast;
@@ -569,6 +604,7 @@ export function createFilmicLensPass(
 
 interface ActiveComposerProps {
   environmentPreset: ArmoryEnvironmentPreset;
+  scaleProfile?: WeaponScaleProfile;
   gtaoQuality: GtaoQualityMode;
   enableGtao: boolean;
   enableBloom: boolean;
@@ -593,6 +629,7 @@ const _bokehOrigin = new THREE.Vector3();
 
 const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
   environmentPreset,
+  scaleProfile,
   gtaoQuality,
   enableGtao,
   enableBloom,
@@ -607,18 +644,22 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
   const rigRef = useRef<ComposerRig | null>(null);
   const qualityRef = useRef<GtaoQualityMode>(gtaoQuality);
   const baseGtaoIntensityRef = useRef<number>(
-    getPostProcessingPresetParams(environmentPreset).gtao.blendIntensity
+    getPostProcessingPresetParams(environmentPreset, scaleProfile).gtao
+      .blendIntensity
   );
   const baseBloomStrengthRef = useRef<number>(
-    getPostProcessingPresetParams(environmentPreset).bloom.strength
+    getPostProcessingPresetParams(environmentPreset, scaleProfile).bloom
+      .strength
   );
   const baseBloomThresholdRef = useRef<number>(
-    getPostProcessingPresetParams(environmentPreset).bloom.threshold
+    getPostProcessingPresetParams(environmentPreset, scaleProfile).bloom
+      .threshold
   );
   const enableGtaoRef = useRef<boolean>(enableGtao);
   const enableBloomRef = useRef<boolean>(enableBloom);
   const enableMacroDofRef = useRef<boolean>(enableMacroDof);
   const enableFilmicLensRef = useRef<boolean>(enableFilmicLens);
+  const scaleProfileRef = useRef<WeaponScaleProfile | undefined>(scaleProfile);
   const watchdogRef = useRef(createFpsWatchdogState());
 
   // Build EffectComposer + passes once per (gl, scene, camera, contextEpoch) lifecycle
@@ -629,7 +670,10 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
     const effW = Math.max(1, Math.floor(cssW * curDpr));
     const effH = Math.max(1, Math.floor(cssH * curDpr));
 
-    const initialParams = getPostProcessingPresetParams(environmentPreset);
+    const initialParams = getPostProcessingPresetParams(
+      environmentPreset,
+      scaleProfile
+    );
 
     const renderTarget = createArmoryComposerRenderTarget(effW, effH);
     const composer = new EffectComposer(gl, renderTarget);
@@ -745,8 +789,8 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
     hardenOutputPassAgainstNaN(outputPass);
     composer.addPass(outputPass);
 
-    // 6. Photographic Filmic Lens Finish (subtle studio vignette + anti-banding sensor micro-dither)
-    const filmicLensPass = createFilmicLensPass(environmentPreset);
+    // 6. Photographic Filmic Lens Finish (subtle studio/hangar vignette + anti-banding sensor micro-dither)
+    const filmicLensPass = createFilmicLensPass(environmentPreset, scaleProfile);
     filmicLensPass.enabled = enableFilmicLensRef.current;
     composer.addPass(filmicLensPass);
 
@@ -798,19 +842,41 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
     rig.composer.setSize(cssW, cssH);
   }, [gl, size.width, size.height, dpr, gtaoQuality]);
 
-  // Sync preset & pass toggles without tearing down GPU targets
+  // Sync preset, scale-aware GTAO reach & pass toggles without tearing down GPU targets
   useEffect(() => {
     enableGtaoRef.current = enableGtao;
     enableBloomRef.current = enableBloom;
     enableMacroDofRef.current = enableMacroDof;
     enableFilmicLensRef.current = enableFilmicLens;
+    scaleProfileRef.current = scaleProfile;
     const rig = rigRef.current;
     if (!rig) return;
-    const params = getPostProcessingPresetParams(environmentPreset);
+    const params = getPostProcessingPresetParams(
+      environmentPreset,
+      scaleProfile
+    );
     baseGtaoIntensityRef.current = params.gtao.blendIntensity;
     baseBloomStrengthRef.current = params.bloom.strength;
     baseBloomThresholdRef.current = params.bloom.threshold;
 
+    rig.gtaoPass.updateGtaoMaterial({
+      radius: params.gtao.radius,
+      distanceExponent: params.gtao.distanceExponent,
+      thickness: params.gtao.thickness,
+      distanceFallOff: params.gtao.distanceFallOff,
+      scale: params.gtao.scale,
+      samples: params.gtao.samples,
+      screenSpaceRadius: params.gtao.screenSpaceRadius,
+    });
+    rig.gtaoPass.updatePdMaterial({
+      lumaPhi: params.gtao.pdLumaPhi,
+      depthPhi: params.gtao.pdDepthPhi,
+      normalPhi: params.gtao.pdNormalPhi,
+      radius: params.gtao.pdRadius,
+      radiusExponent: params.gtao.pdRadiusExponent,
+      rings: params.gtao.pdRings,
+      samples: params.gtao.pdSamples,
+    });
     rig.gtaoPass.enabled = enableGtao;
     rig.gtaoPass.blendIntensity = params.gtao.blendIntensity;
 
@@ -819,7 +885,7 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
     rig.bloomPass.strength = params.bloom.strength;
     rig.bloomPass.radius = params.bloom.radius;
 
-    const lensCfg = getFilmicLensPresetParams(environmentPreset);
+    const lensCfg = getFilmicLensPresetParams(environmentPreset, scaleProfile);
     rig.filmicLensPass.uniforms.uVignetteStrength.value =
       lensCfg.vignetteStrength;
     rig.filmicLensPass.uniforms.uGrainStrength.value = lensCfg.grainStrength;
@@ -833,6 +899,7 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
     }
   }, [
     environmentPreset,
+    scaleProfile,
     enableGtao,
     enableBloom,
     enableSmaa,
@@ -897,7 +964,8 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
       st.screen !== 'workbench' ||
       st.sectionCut ||
       st.xrayShells ||
-      st.caliperActive;
+      st.caliperActive ||
+      scaleProfileRef.current === 'main_battle_tank';
     const bokeh = computeMacroBokehParams(
       camDist,
       enableMacroDofRef.current && st.macroDofEnabled,
@@ -924,6 +992,7 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
 export interface ArmoryPostProcessingProps {
   enabled?: boolean;
   environmentPreset?: ArmoryEnvironmentPreset;
+  scaleProfile?: WeaponScaleProfile;
   gtaoQuality?: GtaoQualityMode;
   enableGtao?: boolean;
   enableBloom?: boolean;
@@ -935,7 +1004,7 @@ export interface ArmoryPostProcessingProps {
 
 /**
  * Native Three.js r169 Post-Processing Pipeline:
- * `RenderPass` (HalfFloat + 8-bit Stencil) → `GTAOPass` (1.8 cm world radius) →
+ * `RenderPass` (HalfFloat + 8-bit Stencil) → `GTAOPass` (1.8 cm small-arms / 28 cm MBT world radius) →
  * selective HDR `UnrealBloomPass` → adaptive close-up `BokehPass` →
  * `OutputPass` (`AgXToneMapping`) → `FilmicLensPass` → `SMAAPass`.
  */
@@ -944,6 +1013,7 @@ export const ArmoryPostProcessing: React.FC<ArmoryPostProcessingProps> =
     ({
       enabled = true,
       environmentPreset = DEFAULT_ARMORY_ENVIRONMENT,
+      scaleProfile,
       gtaoQuality = 'adaptive',
       enableGtao = true,
       enableBloom = true,
@@ -954,8 +1024,8 @@ export const ArmoryPostProcessing: React.FC<ArmoryPostProcessingProps> =
     }) => {
       const { gl } = useThree();
       const presetParams = useMemo(
-        () => getPostProcessingPresetParams(environmentPreset),
-        [environmentPreset]
+        () => getPostProcessingPresetParams(environmentPreset, scaleProfile),
+        [environmentPreset, scaleProfile]
       );
 
       // Preserve & restore previous renderer tone-mapping state on unmount
@@ -994,6 +1064,7 @@ export const ArmoryPostProcessing: React.FC<ArmoryPostProcessingProps> =
       return (
         <ActiveArmoryComposer
           environmentPreset={environmentPreset}
+          scaleProfile={scaleProfile}
           gtaoQuality={gtaoQuality}
           enableGtao={enableGtao}
           enableBloom={enableBloom}

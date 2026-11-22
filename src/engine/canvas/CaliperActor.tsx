@@ -2,6 +2,7 @@ import React, { useMemo, useRef, useSyncExternalStore } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { useAppStore } from '../../store/useAppStore';
+import { getWeaponManifest } from '../../weapons/manifests';
 import { useWeaponPlugin } from '../../weapons/registry';
 import {
   caliperStore,
@@ -34,7 +35,8 @@ const _scratchPose = createMutablePose();
 
 function buildSpanAndProjectionLines(
   a: readonly [number, number, number],
-  b: readonly [number, number, number]
+  b: readonly [number, number, number],
+  isTank = false
 ): THREE.BufferGeometry {
   const verts: number[] = [];
   const dx = b[0] - a[0];
@@ -49,8 +51,10 @@ function buildSpanAndProjectionLines(
   verts.push(corner1[0], corner1[1], corner1[2], corner2[0], corner2[1], corner2[2]);
   verts.push(corner2[0], corner2[1], corner2[2], b[0], b[1], b[2]);
 
-  // Precision 10 mm (1.0 cm) vernier ticks perpendicular to span vector A -> B
-  if (distCm > 0.2) {
+  // Precision vernier ticks perpendicular to span vector A -> B (10 mm for small arms, 100 mm for 1:1 MBTs)
+  const tickStepCm = isTank ? 10 : 1;
+  const tickScale = isTank ? 8 : 1;
+  if (distCm > 0.2 * tickStepCm) {
     const ux = dx / distCm;
     const uy = dy / distCm;
     const uz = dz / distCm;
@@ -68,13 +72,14 @@ function buildSpanAndProjectionLines(
       py /= plen;
     }
 
-    const maxTicks = Math.min(180, Math.floor(distCm));
-    for (let cm = 1; cm <= maxTicks; cm++) {
-      const isMajor50mm = cm % 5 === 0;
-      const tickHalf = isMajor50mm ? 0.28 : 0.14;
-      const cx = a[0] + ux * cm;
-      const cy = a[1] + uy * cm;
-      const cz = a[2] + uz * cm;
+    const maxTicks = Math.min(220, Math.floor(distCm / tickStepCm));
+    for (let idx = 1; idx <= maxTicks; idx++) {
+      const dist = idx * tickStepCm;
+      const isMajor = idx % 5 === 0;
+      const tickHalf = (isMajor ? 0.28 : 0.14) * tickScale;
+      const cx = a[0] + ux * dist;
+      const cy = a[1] + uy * dist;
+      const cz = a[2] + uz * dist;
       verts.push(
         cx - px * tickHalf,
         cy - py * tickHalf,
@@ -93,10 +98,13 @@ function buildSpanAndProjectionLines(
 
 function buildEnvelopeRulerGeometry(
   min: readonly [number, number, number],
-  max: readonly [number, number, number]
+  max: readonly [number, number, number],
+  isTank = false
 ): THREE.BufferGeometry {
   const verts: number[] = [];
-  const pad = 1.35;
+  const scale = isTank ? 8 : 1;
+  const tickStepCm = isTank ? 10 : 1;
+  const pad = 1.35 * scale;
   const x0 = min[0];
   const x1 = max[0];
   const y0 = min[1];
@@ -107,41 +115,41 @@ function buildEnvelopeRulerGeometry(
   const rulerY = y0 - pad;
   const rulerZ = z1 + pad;
 
-  // 1. Longitudinal X-axis overall length ruler (`1 cm = 10 mm` minor ticks, `5 cm = 50 mm` medium, `10 cm = 100 mm` major)
+  // 1. Longitudinal X-axis overall length ruler (`10/50/100 mm` small arms, `100/500/1,000 mm` tanks)
   verts.push(x0, rulerY, rulerZ, x1, rulerY, rulerZ);
   // Datum extension drop-lines to weapon nose & buttplate
-  verts.push(x0, y0, z1, x0, rulerY - 0.45, rulerZ);
-  verts.push(x1, y0, z1, x1, rulerY - 0.45, rulerZ);
+  verts.push(x0, y0, z1, x0, rulerY - 0.45 * scale, rulerZ);
+  verts.push(x1, y0, z1, x1, rulerY - 0.45 * scale, rulerZ);
 
   const lenCm = Math.max(0, x1 - x0);
-  const xTicks = Math.min(220, Math.floor(lenCm));
-  for (let cm = 0; cm <= xTicks; cm++) {
-    const x = x0 + cm;
-    const h = cm % 10 === 0 ? 0.56 : cm % 5 === 0 ? 0.36 : 0.18;
+  const xTicks = Math.min(220, Math.floor(lenCm / tickStepCm));
+  for (let idx = 0; idx <= xTicks; idx++) {
+    const x = x0 + idx * tickStepCm;
+    const h = (idx % 10 === 0 ? 0.56 : idx % 5 === 0 ? 0.36 : 0.18) * scale;
     verts.push(x, rulerY, rulerZ, x, rulerY - h, rulerZ);
   }
 
   // 2. Vertical Y-axis overall height ruler at rear datum `x0 - pad`
   const vX = x0 - pad;
   verts.push(vX, y0, rulerZ, vX, y1, rulerZ);
-  verts.push(x0, y0, z1, vX - 0.4, y0, rulerZ);
-  verts.push(x0, y1, z1, vX - 0.4, y1, rulerZ);
+  verts.push(x0, y0, z1, vX - 0.4 * scale, y0, rulerZ);
+  verts.push(x0, y1, z1, vX - 0.4 * scale, y1, rulerZ);
 
   const heightCm = Math.max(0, y1 - y0);
-  const yTicks = Math.min(120, Math.floor(heightCm));
-  for (let cm = 0; cm <= yTicks; cm++) {
-    const y = y0 + cm;
-    const w = cm % 10 === 0 ? 0.52 : cm % 5 === 0 ? 0.34 : 0.16;
+  const yTicks = Math.min(120, Math.floor(heightCm / tickStepCm));
+  for (let idx = 0; idx <= yTicks; idx++) {
+    const y = y0 + idx * tickStepCm;
+    const w = (idx % 10 === 0 ? 0.52 : idx % 5 === 0 ? 0.34 : 0.16) * scale;
     verts.push(vX, y, rulerZ, vX - w, y, rulerZ);
   }
 
   // 3. Lateral Z-axis width ruler at rear-bottom corner
   verts.push(vX, rulerY, z0, vX, rulerY, z1);
-  verts.push(vX - 0.28, rulerY, z0, vX + 0.28, rulerY, z0);
-  verts.push(vX - 0.28, rulerY, z1, vX + 0.28, rulerY, z1);
+  verts.push(vX - 0.28 * scale, rulerY, z0, vX + 0.28 * scale, rulerY, z0);
+  verts.push(vX - 0.28 * scale, rulerY, z1, vX + 0.28 * scale, rulerY, z1);
 
   // Subtle top-front CAD bounding corner brackets
-  const brk = 1.4;
+  const brk = 1.4 * scale;
   verts.push(x1, y1, z1, x1 - brk, y1, z1);
   verts.push(x1, y1, z1, x1, y1 - brk, z1);
   verts.push(x1, y1, z1, x1, y1, z1 - brk);
@@ -174,6 +182,10 @@ export const CaliperActor: React.FC = () => {
 
   const plugin = useWeaponPlugin(activeWeaponId);
   const geoStatus = useWeaponGeometries(activeWeaponId, plugin?.parts ?? null);
+  const isTank =
+    getWeaponManifest(activeWeaponId).workbenchMeta.scaleProfile ===
+    'main_battle_tank';
+  const markerScale = isTank ? 8.0 : 1.0;
 
   const hoverGroupRef = useRef<THREE.Group>(null);
   const hoverRingRef = useRef<THREE.Mesh>(null);
@@ -182,8 +194,8 @@ export const CaliperActor: React.FC = () => {
   // Locked A -> B tick & orthogonal projection lines
   const lockedSpanGeo = useMemo(() => {
     if (!snap.pointA || !snap.pointB) return null;
-    return buildSpanAndProjectionLines(snap.pointA.pos, snap.pointB.pos);
-  }, [snap.pointA, snap.pointB]);
+    return buildSpanAndProjectionLines(snap.pointA.pos, snap.pointB.pos, isTank);
+  }, [snap.pointA, snap.pointB, isTank]);
 
   // Locked solid A -> B cylinder transform
   const lockedBeamTransform = useMemo(() => {
@@ -240,7 +252,7 @@ export const CaliperActor: React.FC = () => {
       _scratchPose
     );
     if (!metrics) return null;
-    return buildEnvelopeRulerGeometry(metrics.min, metrics.max);
+    return buildEnvelopeRulerGeometry(metrics.min, metrics.max, isTank);
   }, [
     envelopeRulerVisible,
     plugin,
@@ -249,6 +261,7 @@ export const CaliperActor: React.FC = () => {
     activeWeaponId,
     mode,
     fieldStripActive,
+    isTank,
   ]);
 
   // 60fps Zero-GC hover reticle & rubber-band beam from Point A -> live surface cursor
@@ -256,6 +269,11 @@ export const CaliperActor: React.FC = () => {
     const st = useAppStore.getState();
     const active = st.screen === 'workbench' && st.caliperActive;
     const hover = caliperStore.getTransientHover();
+    const curScale =
+      getWeaponManifest(st.activeWeaponId).workbenchMeta.scaleProfile ===
+      'main_battle_tank'
+        ? 8.0
+        : 1.0;
 
     const hGrp = hoverGroupRef.current;
     if (hGrp) {
@@ -263,6 +281,7 @@ export const CaliperActor: React.FC = () => {
       hGrp.visible = showHover;
       if (showHover) {
         hGrp.position.set(hover.x, hover.y, hover.z);
+        hGrp.scale.setScalar(curScale);
         const hRing = hoverRingRef.current;
         if (hRing) {
           _normVec.set(hover.nx, hover.ny, hover.nz);
@@ -297,7 +316,7 @@ export const CaliperActor: React.FC = () => {
           _dir.divideScalar(len);
           beam.position.copy(_vecA);
           beam.quaternion.setFromUnitVectors(_upAxis, _dir);
-          beam.scale.set(0.8, len, 0.8);
+          beam.scale.set(0.8 * curScale, len, 0.8 * curScale);
         } else {
           beam.visible = false;
         }
@@ -325,7 +344,10 @@ export const CaliperActor: React.FC = () => {
 
       {/* 2. Vernier Probe Jaw A (Cyan) */}
       {caliperActive && snap.pointA && (
-        <group position={[snap.pointA.pos[0], snap.pointA.pos[1], snap.pointA.pos[2]]}>
+        <group
+          position={[snap.pointA.pos[0], snap.pointA.pos[1], snap.pointA.pos[2]]}
+          scale={markerScale}
+        >
           <mesh geometry={PROBE_SPHERE_GEO} renderOrder={16}>
             <meshBasicMaterial color="#06b6d4" depthTest={false} />
           </mesh>
@@ -343,7 +365,10 @@ export const CaliperActor: React.FC = () => {
 
       {/* 3. Vernier Probe Jaw B (Amber) */}
       {caliperActive && snap.pointB && (
-        <group position={[snap.pointB.pos[0], snap.pointB.pos[1], snap.pointB.pos[2]]}>
+        <group
+          position={[snap.pointB.pos[0], snap.pointB.pos[1], snap.pointB.pos[2]]}
+          scale={markerScale}
+        >
           <mesh geometry={PROBE_SPHERE_GEO} renderOrder={16}>
             <meshBasicMaterial color="#f59e0b" depthTest={false} />
           </mesh>
@@ -359,13 +384,13 @@ export const CaliperActor: React.FC = () => {
         </group>
       )}
 
-      {/* 4. Locked Vernier Measurement Rod + 10mm Scale Ticks + Orthogonal ΔX/ΔY/ΔZ Projections */}
+      {/* 4. Locked Vernier Measurement Rod + 10mm/100mm Scale Ticks + Orthogonal ΔX/ΔY/ΔZ Projections */}
       {caliperActive && lockedBeamTransform && (
         <mesh
           geometry={BEAM_CYLINDER_GEO}
           position={lockedBeamTransform.pos}
           rotation={lockedBeamTransform.rot}
-          scale={[1, lockedBeamTransform.len, 1]}
+          scale={[markerScale, lockedBeamTransform.len, markerScale]}
           renderOrder={15}
         >
           <meshBasicMaterial

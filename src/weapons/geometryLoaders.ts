@@ -32,6 +32,11 @@ export const GEOMETRY_MODULE_LOADERS: Record<
   vss: () => import('./vss/geometries').then((m) => m.GEOMETRY_BUILDERS),
   m134: () => import('./m134/geometries').then((m) => m.GEOMETRY_BUILDERS),
   an94: () => import('./an94/geometries').then((m) => m.GEOMETRY_BUILDERS),
+  ztz99a: () => import('./ztz99a/geometries').then((m) => m.GEOMETRY_BUILDERS),
+  m1a2: () => import('./m1a2/geometries').then((m) => m.GEOMETRY_BUILDERS),
+  leopard2a7: () =>
+    import('./leopard2a7/geometries').then((m) => m.GEOMETRY_BUILDERS),
+  tiger1: () => import('./tiger1/geometries').then((m) => m.GEOMETRY_BUILDERS),
 };
 
 export function loadWeaponGeometryBuilders(
