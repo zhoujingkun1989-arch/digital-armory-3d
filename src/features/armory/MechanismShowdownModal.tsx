@@ -20,6 +20,7 @@ import { ARMORY_WEAPONS } from '../../weapons/manifests';
 import { preloadWeaponPlugin } from '../../weapons/registry';
 import { isWeaponId } from '../../weapons/types';
 import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
+import { SPLIT_SHOWDOWN_STRINGS } from '../showdown3d/splitShowdownStrings';
 import {
   buildShowdownDualSvgGeometry,
   computeShowdownPeakLabelLayout,
@@ -101,6 +102,7 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
   const lang = useAppStore((s) => s.lang);
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const enterWorkbench = useAppStore((s) => s.enterWorkbench);
+  const openSplitShowdown = useAppStore((s) => s.openSplitShowdown);
   const setSectionCut = useAppStore((s) => s.setSectionCut);
   const setEngineeringTint = useAppStore((s) => s.setEngineeringTint);
   const triggerCameraPreset = useAppStore((s) => s.triggerCameraPreset);
@@ -534,6 +536,20 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
               </span>
             </button>
           </div>
+
+            <button
+              type="button"
+              className="sd-mode-tab sd-split3d-cta"
+              title={SPLIT_SHOWDOWN_STRINGS[lang].matrixLaunchTitle}
+              onClick={() => {
+                playWorkbenchFoley('preset_detent');
+                onClose();
+                openSplitShowdown(weaponAId, weaponBId);
+              }}
+            >
+              <GitCompareArrows size={13} aria-hidden="true" />
+              <span>{SPLIT_SHOWDOWN_STRINGS[lang].matrixLaunchBtn}</span>
+            </button>
 
           <LanguageSwitchPill compact />
 

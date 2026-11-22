@@ -75,6 +75,17 @@ export default defineConfig({
             return 'armory-silhouettes';
           }
 
+          if (
+            normId.includes('/src/engine/audio/mechanicalSoundEngine.ts') ||
+            normId.includes('/src/engine/audio/acousticImpulse.ts')
+          ) {
+            return 'armory-audio';
+          }
+
+          if (normId.includes('/src/engine/geometry/glbAssetService.ts')) {
+            return 'armory-glb';
+          }
+
           return undefined;
         },
       },

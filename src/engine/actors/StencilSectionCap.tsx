@@ -25,6 +25,15 @@ import {
 
 export const SECTION_CAP_RENDER_ORDER_BASE = 1000;
 
+export type SectionCutAxis = 'z' | 'x' | 'y' | 'box';
+
+export const SECTION_CUT_AXES: readonly SectionCutAxis[] = [
+  'z',
+  'x',
+  'y',
+  'box',
+];
+
 /** Live CT-Scan section cutaway plane range in world units (1 unit = 1 cm = 10 mm). */
 export const SECTION_CUT_OFFSET_MIN = -2.5;
 export const SECTION_CUT_OFFSET_MAX = 2.5;
@@ -46,11 +55,39 @@ export interface SectionCutRangeSpec {
   capMargin: number;
 }
 
+export interface SectionBoxDefaults {
+  center: readonly [number, number, number];
+  halfSize: readonly [number, number, number];
+  minCenter: readonly [number, number, number];
+  maxCenter: readonly [number, number, number];
+  minHalf: readonly [number, number, number];
+  maxHalf: readonly [number, number, number];
+  step: number;
+}
+
 const SMALL_ARMS_SECTION_RANGE: SectionCutRangeSpec = {
   min: SECTION_CUT_OFFSET_MIN,
   max: SECTION_CUT_OFFSET_MAX,
   step: SECTION_CUT_OFFSET_STEP,
   sweepAmplitude: 2.15,
+  hatchScale: 1,
+  capMargin: 0.16,
+};
+
+const SMALL_ARMS_X_RANGE: SectionCutRangeSpec = {
+  min: -38,
+  max: 58,
+  step: 0.5,
+  sweepAmplitude: 32,
+  hatchScale: 1,
+  capMargin: 0.16,
+};
+
+const SMALL_ARMS_Y_RANGE: SectionCutRangeSpec = {
+  min: -18,
+  max: 18,
+  step: 0.25,
+  sweepAmplitude: 14,
   hatchScale: 1,
   capMargin: 0.16,
 };
@@ -64,7 +101,45 @@ const TANK_SECTION_RANGE: SectionCutRangeSpec = {
   capMargin: 1.28,
 };
 
-/** Returns adaptive CT-Scan section range & ISO 128 hatch scaling for small arms vs 1:1 tanks. */
+const TANK_X_RANGE: SectionCutRangeSpec = {
+  min: -420,
+  max: 650,
+  step: 8,
+  sweepAmplitude: 380,
+  hatchScale: TANK_SECTION_HATCH_SCALE,
+  capMargin: 1.28,
+};
+
+const TANK_Y_RANGE: SectionCutRangeSpec = {
+  min: -115,
+  max: 145,
+  step: 4,
+  sweepAmplitude: 95,
+  hatchScale: TANK_SECTION_HATCH_SCALE,
+  capMargin: 1.28,
+};
+
+const SMALL_ARMS_BOX_DEFAULTS: SectionBoxDefaults = {
+  center: [8, 0, 0],
+  halfSize: [20, 12, 4],
+  minCenter: [-35, -16, -8],
+  maxCenter: [55, 16, 8],
+  minHalf: [3, 2, 0.4],
+  maxHalf: [60, 28, 14],
+  step: 0.25,
+};
+
+const TANK_BOX_DEFAULTS: SectionBoxDefaults = {
+  center: [60, 40, 0],
+  halfSize: [260, 140, 110],
+  minCenter: [-420, -110, -180],
+  maxCenter: [620, 190, 180],
+  minHalf: [35, 25, 20],
+  maxHalf: [650, 240, 220],
+  step: 5,
+};
+
+/** Returns adaptive CT-Scan section range & ISO 128 hatch scaling for small arms vs 1:1 tanks (Z axis default). */
 export function getSectionCutRange(
   scaleProfile?: WeaponScaleProfile | null
 ): SectionCutRangeSpec {
@@ -73,8 +148,28 @@ export function getSectionCutRange(
     : SMALL_ARMS_SECTION_RANGE;
 }
 
+/** Returns axis-aware (`z` / `x` / `y` / `box`) CT-Scan section range & hatch scaling. */
+export function getAxisSectionCutRange(
+  axis: SectionCutAxis = 'z',
+  scaleProfile?: WeaponScaleProfile | null
+): SectionCutRangeSpec {
+  const isTank = scaleProfile === 'main_battle_tank';
+  if (axis === 'x') return isTank ? TANK_X_RANGE : SMALL_ARMS_X_RANGE;
+  if (axis === 'y') return isTank ? TANK_Y_RANGE : SMALL_ARMS_Y_RANGE;
+  return isTank ? TANK_SECTION_RANGE : SMALL_ARMS_SECTION_RANGE;
+}
+
+/** Returns default & clamp bounds for 3D Cutaway Slice Box center and half-extents (cm). */
+export function getDefaultSectionBoxParams(
+  scaleProfile?: WeaponScaleProfile | null
+): SectionBoxDefaults {
+  return scaleProfile === 'main_battle_tank'
+    ? TANK_BOX_DEFAULTS
+    : SMALL_ARMS_BOX_DEFAULTS;
+}
+
 /**
- * Module-pooled live longitudinal section-cut plane (zero per-frame allocations).
+ * Module-pooled live single-axis section-cut plane (zero per-frame allocations).
  * Mutating `SECTION_CUT_PLANES[0]` updates Three.js material clipping uniforms,
  * shadow clipping, `StencilSectionCap` Pass A/B/C, and `sectionAwareMeshRaycast`
  * simultaneously at 60 FPS with zero shader recompilation or React remounts.
@@ -83,52 +178,143 @@ export const SECTION_CUT_PLANES: THREE.Plane[] = [
   new THREE.Plane(new THREE.Vector3(0, 0, -1), SECTION_CUT_OFFSET_DEFAULT),
 ];
 
-/** Clamps a section-cut Z offset cleanly into `[-2.5, +2.5]` cm (or `[-180, +180]` cm for 1:1 MBTs). */
+/** Module-pooled 6-plane AABB Slice Box volume (`x∈[cx±hx], y∈[cy±hy], z∈[cz±hz]`). */
+export const SECTION_CUT_BOX_PLANES: THREE.Plane[] = [
+  new THREE.Plane(new THREE.Vector3(1, 0, 0), 12),
+  new THREE.Plane(new THREE.Vector3(-1, 0, 0), 28),
+  new THREE.Plane(new THREE.Vector3(0, 1, 0), 12),
+  new THREE.Plane(new THREE.Vector3(0, -1, 0), 12),
+  new THREE.Plane(new THREE.Vector3(0, 0, 1), 4),
+  new THREE.Plane(new THREE.Vector3(0, 0, -1), 4),
+];
+
+/** Clamps a section-cut offset cleanly into the active axis range (`[-2.5, +2.5]` cm Z default). */
 export function clampSectionCutOffset(
   offset: number,
-  scaleProfile?: WeaponScaleProfile | null
+  scaleProfile?: WeaponScaleProfile | null,
+  axis: SectionCutAxis = 'z'
 ): number {
   if (!Number.isFinite(offset)) return SECTION_CUT_OFFSET_DEFAULT;
-  const range = getSectionCutRange(scaleProfile);
+  const range = getAxisSectionCutRange(axis, scaleProfile);
   const clamped = Math.max(range.min, Math.min(range.max, offset));
   const rounded = Math.round(clamped * 1000) / 1000;
   return Object.is(rounded, -0) ? 0 : rounded;
 }
 
 /**
- * Synchronizes the shared live clipping plane in place.
- * - Default (`flip = false`): normal `(0, 0, -1)`, `constant = offset` -> keeps `z <= offset` (+Z right flank open).
- * - Flipped (`flip = true`):  normal `(0, 0, +1)`, `constant = -offset` -> keeps `z >= offset` (-Z left flank open).
- * In both orientations, `sectionPlaneZ(SECTION_CUT_PLANES[0]) === offset`.
+ * Synchronizes the shared live clipping plane in place along `'z'`, `'x'`, or `'y'`.
+ * - `'z'` (`flip = false`): keeps `z <= offset` (+Z right flank open)
+ * - `'x'` (`flip = false`): keeps `x <= offset` (+X muzzle slice open)
+ * - `'y'` (`flip = false`): keeps `y <= offset` (+Y top-down cutaway open)
  */
 export function syncLiveSectionCutPlane(
   offset: number,
   flip = false,
-  scaleProfile?: WeaponScaleProfile | null
+  scaleProfile?: WeaponScaleProfile | null,
+  axis: SectionCutAxis = 'z'
 ): THREE.Plane {
-  const clamped = clampSectionCutOffset(offset, scaleProfile);
+  const effectiveAxis: 'z' | 'x' | 'y' = axis === 'box' ? 'z' : axis;
+  const clamped = clampSectionCutOffset(offset, scaleProfile, effectiveAxis);
   const plane = SECTION_CUT_PLANES[0];
-  if (flip) {
-    plane.normal.set(0, 0, 1);
-    plane.constant = clamped === 0 ? 0 : -clamped;
+  const dir = flip ? 1 : -1;
+  if (effectiveAxis === 'x') {
+    plane.normal.set(dir, 0, 0);
+  } else if (effectiveAxis === 'y') {
+    plane.normal.set(0, dir, 0);
   } else {
-    plane.normal.set(0, 0, -1);
-    plane.constant = clamped;
+    plane.normal.set(0, 0, dir);
   }
+  plane.constant = flip ? (clamped === 0 ? 0 : -clamped) : clamped;
   return plane;
 }
+
+/** Synchronizes the 6 inward-facing clipping planes of `SECTION_CUT_BOX_PLANES`. */
+export function syncLiveSectionBoxPlanes(
+  center: readonly [number, number, number],
+  halfSize: readonly [number, number, number],
+  scaleProfile?: WeaponScaleProfile | null
+): THREE.Plane[] {
+  const bounds = getDefaultSectionBoxParams(scaleProfile);
+  const cx = Math.max(
+    bounds.minCenter[0],
+    Math.min(bounds.maxCenter[0], Number.isFinite(center[0]) ? center[0] : bounds.center[0])
+  );
+  const cy = Math.max(
+    bounds.minCenter[1],
+    Math.min(bounds.maxCenter[1], Number.isFinite(center[1]) ? center[1] : bounds.center[1])
+  );
+  const cz = Math.max(
+    bounds.minCenter[2],
+    Math.min(bounds.maxCenter[2], Number.isFinite(center[2]) ? center[2] : bounds.center[2])
+  );
+  const hx = Math.max(
+    bounds.minHalf[0],
+    Math.min(bounds.maxHalf[0], Number.isFinite(halfSize[0]) ? halfSize[0] : bounds.halfSize[0])
+  );
+  const hy = Math.max(
+    bounds.minHalf[1],
+    Math.min(bounds.maxHalf[1], Number.isFinite(halfSize[1]) ? halfSize[1] : bounds.halfSize[1])
+  );
+  const hz = Math.max(
+    bounds.minHalf[2],
+    Math.min(bounds.maxHalf[2], Number.isFinite(halfSize[2]) ? halfSize[2] : bounds.halfSize[2])
+  );
+
+  SECTION_CUT_BOX_PLANES[0].setFromNormalAndCoplanarPoint(
+    SECTION_CUT_BOX_PLANES[0].normal.set(1, 0, 0),
+    _boxScratchPt.set(cx - hx, cy, cz)
+  );
+  SECTION_CUT_BOX_PLANES[1].setFromNormalAndCoplanarPoint(
+    SECTION_CUT_BOX_PLANES[1].normal.set(-1, 0, 0),
+    _boxScratchPt.set(cx + hx, cy, cz)
+  );
+  SECTION_CUT_BOX_PLANES[2].setFromNormalAndCoplanarPoint(
+    SECTION_CUT_BOX_PLANES[2].normal.set(0, 1, 0),
+    _boxScratchPt.set(cx, cy - hy, cz)
+  );
+  SECTION_CUT_BOX_PLANES[3].setFromNormalAndCoplanarPoint(
+    SECTION_CUT_BOX_PLANES[3].normal.set(0, -1, 0),
+    _boxScratchPt.set(cx, cy + hy, cz)
+  );
+  SECTION_CUT_BOX_PLANES[4].setFromNormalAndCoplanarPoint(
+    SECTION_CUT_BOX_PLANES[4].normal.set(0, 0, 1),
+    _boxScratchPt.set(cx, cy, cz - hz)
+  );
+  SECTION_CUT_BOX_PLANES[5].setFromNormalAndCoplanarPoint(
+    SECTION_CUT_BOX_PLANES[5].normal.set(0, 0, -1),
+    _boxScratchPt.set(cx, cy, cz + hz)
+  );
+  return SECTION_CUT_BOX_PLANES;
+}
+
+const _boxScratchPt = new THREE.Vector3();
 
 /** Returns the live world-space Z coordinate (cm) of `SECTION_CUT_PLANES[0]`. */
 export function getLiveSectionCutZ(): number {
   return sectionPlaneZ(SECTION_CUT_PLANES[0]);
 }
 
+/** Returns live world-space coordinate (cm) along the active single axis. */
+export function getLiveSectionPlaneCoord(
+  plane: THREE.Plane,
+  axis: 'z' | 'x' | 'y' = 'z'
+): number {
+  const nComp =
+    axis === 'x'
+      ? plane.normal.x
+      : axis === 'y'
+        ? plane.normal.y
+        : plane.normal.z;
+  return Math.abs(nComp) > 1e-6 ? -plane.constant / nComp : 0;
+}
+
 /** Formats a world-unit cm section offset into signed millimeter telemetry (e.g. `+0.0 mm`, `-12.5 mm`, `+1,240 mm`). */
 export function formatSectionOffsetMm(
   offsetCm: number,
-  scaleProfile?: WeaponScaleProfile | null
+  scaleProfile?: WeaponScaleProfile | null,
+  axis: SectionCutAxis = 'z'
 ): string {
-  const mm = clampSectionCutOffset(offsetCm, scaleProfile) * 10;
+  const mm = clampSectionCutOffset(offsetCm, scaleProfile, axis) * 10;
   if (scaleProfile === 'main_battle_tank') {
     const normalized = Math.abs(mm) < 0.5 ? 0 : Math.round(mm);
     const sign = normalized < 0 ? '-' : '+';
@@ -240,9 +426,17 @@ export function getSectionCapStyle(
 
 const CAP_VERTEX = /* glsl */ `
 varying vec3 vCapWorldPos;
+varying vec2 vCapPlaneCoord;
+varying vec3 vCapWorldNormal;
 void main() {
   vec4 wp = modelMatrix * vec4( position, 1.0 );
   vCapWorldPos = wp.xyz;
+  vec3 rawU = vec3( modelMatrix[0][0], modelMatrix[0][1], modelMatrix[0][2] );
+  vec3 rawV = vec3( modelMatrix[1][0], modelMatrix[1][1], modelMatrix[1][2] );
+  vec3 axisU = dot( rawU, rawU ) > 1e-10 ? normalize( rawU ) : vec3( 1.0, 0.0, 0.0 );
+  vec3 axisV = dot( rawV, rawV ) > 1e-10 ? normalize( rawV ) : vec3( 0.0, 1.0, 0.0 );
+  vCapPlaneCoord = vec2( dot( wp.xyz, axisU ), dot( wp.xyz, axisV ) );
+  vCapWorldNormal = normalize( mat3( modelMatrix ) * vec3( 0.0, 0.0, 1.0 ) );
   gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
 }
 `;
@@ -256,6 +450,8 @@ uniform float uSpec;
 uniform float uBrushed;
 uniform float uGrainScale;
 varying vec3 vCapWorldPos;
+varying vec2 vCapPlaneCoord;
+varying vec3 vCapWorldNormal;
 
 float capHash11( float p ) {
   p = fract( p * 0.1031 );
@@ -265,7 +461,7 @@ float capHash11( float p ) {
 }
 
 void main() {
-  vec2 p = vCapWorldPos.xy;
+  vec2 p = vCapPlaneCoord;
 
   // ISO 128 ±45° section hatching, anti-aliased with screen-space derivatives
   float d = ( p.x * uHatchDir + p.y ) * 0.70710678 / uHatchSpacing;
@@ -276,13 +472,13 @@ void main() {
   // Fade hatching smoothly when zoomed out to prevent moire aliasing
   line *= 1.0 - smoothstep( 0.25, 0.5, fw );
 
-  // Machined surface grain: brushed steel streaks along +X, or polymer stipple
+  // Machined surface grain: brushed steel streaks along tangent U, or polymer stipple
   float gScale = max( uGrainScale, 0.05 );
-  float grainBrushed = 0.88 + 0.12 * capHash11( floor( vCapWorldPos.y * 140.0 * gScale ) );
-  float grainStipple = 0.94 + 0.06 * capHash11( floor( vCapWorldPos.x * 60.0 * gScale ) * 7.13 + floor( vCapWorldPos.y * 60.0 * gScale ) );
+  float grainBrushed = 0.88 + 0.12 * capHash11( floor( p.y * 140.0 * gScale ) );
+  float grainStipple = 0.94 + 0.06 * capHash11( floor( p.x * 60.0 * gScale ) * 7.13 + floor( p.y * 60.0 * gScale ) );
   vec3 base = uBaseColor * mix( grainStipple, grainBrushed, uBrushed );
 
-  vec3 N = vec3( 0.0, 0.0, 1.0 );
+  vec3 N = normalize( vCapWorldNormal );
   vec3 rawV = cameraPosition - vCapWorldPos;
   float lenVSq = dot( rawV, rawV );
   vec3 V = lenVSq > 1e-8 ? ( rawV * inversesqrt( lenVSq ) ) : vec3( 0.0, 0.0, 1.0 );
@@ -295,7 +491,7 @@ void main() {
   vec3 col = base * ( 0.6 + 0.4 * ndl );
   col = mix( col, uHatchColor, line * 0.85 );
 
-  // Anisotropic brushed specular streak (stretched along X) + soft isotropic lobe
+  // Anisotropic brushed specular streak + soft isotropic lobe
   float nh = max( dot( N, H ), 1e-5 );
   float aniso = pow( max( 1.0 - abs( H.y ), 1e-5 ), 18.0 ) * uBrushed;
   float spec = ( pow( nh, 48.0 ) + 0.35 * aniso ) * uSpec;

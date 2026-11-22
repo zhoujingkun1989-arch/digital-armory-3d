@@ -1,16 +1,15 @@
 import { create } from 'zustand';
 import {
   clampSectionCutOffset,
+  getDefaultSectionBoxParams,
   SECTION_CUT_OFFSET_DEFAULT,
   SECTION_CUT_OFFSET_MAX,
   SECTION_CUT_OFFSET_MIN,
   SECTION_CUT_OFFSET_STEP,
+  type SectionCutAxis,
+  syncLiveSectionBoxPlanes,
   syncLiveSectionCutPlane,
 } from '../engine/actors/StencilSectionCap';
-import {
-  type AcousticEnvironmentPreset,
-  setAcousticEnvironment,
-} from '../engine/audio/mechanicalSoundEngine';
 
 export {
   clampSectionCutOffset,
@@ -18,7 +17,12 @@ export {
   SECTION_CUT_OFFSET_MAX,
   SECTION_CUT_OFFSET_MIN,
   SECTION_CUT_OFFSET_STEP,
+  type SectionCutAxis,
 };
+import {
+  type AcousticEnvironmentPreset,
+  setAcousticEnvironment,
+} from '../engine/audio/mechanicalSoundEngine';
 import type { ArmoryEnvironmentPreset } from '../engine/canvas/GunsmithStageMat';
 import {
   detectDefaultGraphicsQuality,
@@ -76,7 +80,8 @@ export type AppScreen =
   | 'armory'
   | 'workbench'
   | 'cartridges'
-  | 'ballistics';
+  | 'ballistics'
+  | 'split_showdown';
 export type AppViewMode = 'explode' | 'firing';
 export type PosterArmorerRankOption = 'S' | 'A' | 'B' | 'C';
 
@@ -251,8 +256,11 @@ export interface AppState {
   commandPaletteOpen: boolean;
   xrayShells: boolean;
   sectionCut: boolean;
+  sectionCutAxis: SectionCutAxis;
   sectionCutOffset: number;
   sectionCutFlip: boolean;
+  sectionBoxCenter: [number, number, number];
+  sectionBoxHalfSize: [number, number, number];
   showEdges: boolean;
   showLabels: boolean;
   isolateSelected: boolean;
@@ -283,6 +291,10 @@ export interface AppState {
 
   /** WP-14 1,000m RK4 External Ballistics Range Lab */
   activeBallisticsCaliber: ExternalProjectileId;
+
+  /** WP-19 Live 3D Split-Screen Synchronized Mechanism Showdown */
+  splitShowdownWeaponA: WeaponId;
+  splitShowdownWeaponB: WeaponId;
 
   /** Group visibility filters */
   hiddenGroups: Record<AssemblyGroupKey, boolean>;
@@ -319,6 +331,8 @@ export interface AppState {
   setCartridgeExplodeProgress: (val: number) => void;
   openExternalBallistics: (caliber?: ExternalProjectileInput) => void;
   setActiveBallisticsCaliber: (caliber: ExternalProjectileInput) => void;
+  openSplitShowdown: (weaponA?: string, weaponB?: string) => void;
+  setSplitShowdownWeapons: (weaponA: string, weaponB: string) => void;
   selectArmoryWeapon: (weaponId: string) => void;
   enterWorkbench: (weaponId?: string, initialMode?: AppViewMode) => void;
   returnToArmory: () => void;
@@ -376,9 +390,12 @@ export interface AppState {
   setXrayShells: (val: boolean) => void;
   toggleSectionCut: () => void;
   setSectionCut: (val: boolean) => void;
+  setSectionCutAxis: (axis: SectionCutAxis) => void;
   setSectionCutOffset: (offset: number) => void;
   resetSectionCutOffset: () => void;
   toggleSectionCutFlip: () => void;
+  setSectionBoxCenter: (center: readonly [number, number, number]) => void;
+  setSectionBoxHalfSize: (halfSize: readonly [number, number, number]) => void;
   toggleShowEdges: () => void;
   toggleShowLabels: () => void;
   toggleIsolateSelected: () => void;
@@ -447,8 +464,19 @@ export const useAppStore = create<AppState>((set, get) => ({
   commandPaletteOpen: false,
   xrayShells: false,
   sectionCut: false,
+  sectionCutAxis: 'z',
   sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
   sectionCutFlip: false,
+  sectionBoxCenter: [...getDefaultSectionBoxParams('rifle').center] as [
+    number,
+    number,
+    number,
+  ],
+  sectionBoxHalfSize: [...getDefaultSectionBoxParams('rifle').halfSize] as [
+    number,
+    number,
+    number,
+  ],
   showEdges: false,
   showLabels: true,
   isolateSelected: false,
@@ -469,6 +497,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   cartridgeExplodeProgress: 0,
   cartridgeCameraSeq: 0,
   activeBallisticsCaliber: '338_lapua',
+  splitShowdownWeaponA: 'ak15',
+  splitShowdownWeaponB: 'm4a1',
 
   hiddenGroups: { ...DEFAULT_HIDDEN_GROUPS },
 
@@ -548,6 +578,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         fireSpeedMultiplier: stage.fireSpeedMultiplier ?? 0.25,
         textureModalOpen: false,
         sectionCut: stage.sectionCut,
+        sectionCutAxis: 'z',
         sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
         sectionCutFlip: false,
         xrayShells: stage.sectionCut ? false : stage.xrayShells,
@@ -582,6 +613,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         isFiringPlaying: false,
         textureModalOpen: false,
         sectionCut: stage.sectionCut,
+        sectionCutAxis: 'z',
         sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
         sectionCutFlip: false,
         xrayShells: stage.sectionCut ? false : stage.xrayShells,
@@ -652,6 +684,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         commandPaletteOpen: false,
         xrayShells: true,
         sectionCut: false,
+        sectionCutAxis: 'z',
         sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
         sectionCutFlip: false,
         showLabels: true,
@@ -841,6 +874,69 @@ export const useAppStore = create<AppState>((set, get) => ({
       activeBallisticsCaliber: normalizeExternalProjectileId(caliber),
     }),
 
+  openSplitShowdown: (weaponA, weaponB) => {
+    const s = get();
+    stopNarrationAudio();
+    fieldStripStore.reset(s.activeWeaponId, true);
+    caliperStore.clearTransientHover();
+    playbackClock.setTargetProgress(0, true);
+    playbackClock.setFireProgress(0, true);
+    playbackClock.setAnimatedFireProgress(0);
+    const nextA: WeaponId = isWeaponId(weaponA) ? weaponA : s.activeWeaponId;
+    const rawB: WeaponId = isWeaponId(weaponB)
+      ? weaponB
+      : nextA === 'm4a1'
+        ? 'ak15'
+        : 'm4a1';
+    const nextB: WeaponId =
+      rawB === nextA ? (nextA === 'm4a1' ? 'ak15' : 'm4a1') : rawB;
+    set({
+      screen: 'split_showdown',
+      splitShowdownWeaponA: nextA,
+      splitShowdownWeaponB: nextB,
+      mode: 'explode',
+      fieldStripActive: false,
+      malfunctionActive: false,
+      caliperActive: false,
+      envelopeRulerVisible: false,
+      focusedEngineeringRole: null,
+      engineeringTint: false,
+      storyOpen: false,
+      storyMinimized: false,
+      inspectorMinimized: false,
+      isPlaying: false,
+      isFiringPlaying: false,
+      textureModalOpen: false,
+      monographModalOpen: false,
+      posterShareModalOpen: false,
+      posterShareOptions: null,
+      commandPaletteOpen: false,
+      xrayShells: false,
+      sectionCut: false,
+      sectionCutAxis: 'z',
+      sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
+      sectionCutFlip: false,
+      hudHidden: false,
+      isolateSelected: false,
+      selectedPartId: null,
+      hoveredPartId: null,
+      hiddenGroups: { ...DEFAULT_HIDDEN_GROUPS },
+    });
+  },
+
+  setSplitShowdownWeapons: (weaponA, weaponB) => {
+    const nextA: WeaponId = isWeaponId(weaponA)
+      ? weaponA
+      : get().splitShowdownWeaponA;
+    const nextB: WeaponId = isWeaponId(weaponB)
+      ? weaponB
+      : get().splitShowdownWeaponB;
+    set({
+      splitShowdownWeaponA: nextA,
+      splitShowdownWeaponB: nextB === nextA ? (nextA === 'm4a1' ? 'ak15' : 'm4a1') : nextB,
+    });
+  },
+
   selectArmoryWeapon: (weaponIdRaw) => {
     const weaponId: WeaponId = isWeaponId(weaponIdRaw) ? weaponIdRaw : 'ak15';
     if (get().activeWeaponId !== weaponId) {
@@ -914,6 +1010,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         commandPaletteOpen: false,
         xrayShells: true,
         sectionCut: false,
+        sectionCutAxis: 'z',
         sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
         sectionCutFlip: false,
         showLabels: true,
@@ -946,6 +1043,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         commandPaletteOpen: false,
         xrayShells: false,
         sectionCut: false,
+        sectionCutAxis: 'z',
         sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
         sectionCutFlip: false,
         showLabels: true,
@@ -1317,21 +1415,49 @@ export const useAppStore = create<AppState>((set, get) => ({
       sectionCut,
       xrayShells: sectionCut ? false : s.xrayShells,
     })),
-  setSectionCutOffset: (offset) => {
-    const scaleProfile = getWeaponManifest(get().activeWeaponId).workbenchMeta
+  setSectionCutAxis: (axis) => {
+    const s = get();
+    const scaleProfile = getWeaponManifest(s.activeWeaponId).workbenchMeta
       .scaleProfile;
-    const next = clampSectionCutOffset(offset, scaleProfile);
-    if (get().sectionCutOffset !== next) {
+    const boxDefs = getDefaultSectionBoxParams(scaleProfile);
+    set({
+      sectionCutAxis: axis,
+      sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
+      sectionCutFlip: false,
+      sectionBoxCenter: [...boxDefs.center] as [number, number, number],
+      sectionBoxHalfSize: [...boxDefs.halfSize] as [number, number, number],
+    });
+  },
+  setSectionCutOffset: (offset) => {
+    const s = get();
+    const scaleProfile = getWeaponManifest(s.activeWeaponId).workbenchMeta
+      .scaleProfile;
+    const next = clampSectionCutOffset(offset, scaleProfile, s.sectionCutAxis);
+    if (s.sectionCutOffset !== next) {
       set({ sectionCutOffset: next });
     }
   },
-  resetSectionCutOffset: () =>
+  resetSectionCutOffset: () => {
+    const scaleProfile = getWeaponManifest(get().activeWeaponId).workbenchMeta
+      .scaleProfile;
+    const boxDefs = getDefaultSectionBoxParams(scaleProfile);
     set({
       sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
       sectionCutFlip: false,
-    }),
+      sectionBoxCenter: [...boxDefs.center] as [number, number, number],
+      sectionBoxHalfSize: [...boxDefs.halfSize] as [number, number, number],
+    });
+  },
   toggleSectionCutFlip: () =>
     set((s) => ({ sectionCutFlip: !s.sectionCutFlip })),
+  setSectionBoxCenter: (center) =>
+    set({
+      sectionBoxCenter: [center[0], center[1], center[2]],
+    }),
+  setSectionBoxHalfSize: (halfSize) =>
+    set({
+      sectionBoxHalfSize: [halfSize[0], halfSize[1], halfSize[2]],
+    }),
   toggleShowEdges: () => set((s) => ({ showEdges: !s.showEdges })),
   toggleShowLabels: () => set((s) => ({ showLabels: !s.showLabels })),
   toggleIsolateSelected: () =>
@@ -1433,6 +1559,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         isPlaying: false,
         isFiringPlaying: false,
         sectionCut: true,
+        sectionCutAxis: 'z',
         xrayShells: false,
         isolateSelected: false,
         selectedPartId: null,
@@ -1545,6 +1672,9 @@ export const useAppStore = create<AppState>((set, get) => ({
     playbackClock.setTargetProgress(0, false);
     playbackClock.setFireProgress(0, true);
     playbackClock.setAnimatedFireProgress(0);
+    const boxDefs = getDefaultSectionBoxParams(
+      getWeaponManifest(activeId).workbenchMeta.scaleProfile
+    );
     set((s) => ({
       mode: 'explode',
       fieldStripActive: false,
@@ -1559,8 +1689,11 @@ export const useAppStore = create<AppState>((set, get) => ({
       pbrTexturesEnabled: true,
       xrayShells: false,
       sectionCut: false,
+      sectionCutAxis: 'z',
       sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
       sectionCutFlip: false,
+      sectionBoxCenter: [...boxDefs.center] as [number, number, number],
+      sectionBoxHalfSize: [...boxDefs.halfSize] as [number, number, number],
       showEdges: false,
       showLabels: true,
       isolateSelected: false,
@@ -1582,7 +1715,16 @@ export const useAppStore = create<AppState>((set, get) => ({
 // Ensure live clipping plane starts synchronized with default store values
 syncLiveSectionCutPlane(
   useAppStore.getState().sectionCutOffset,
-  useAppStore.getState().sectionCutFlip
+  useAppStore.getState().sectionCutFlip,
+  getWeaponManifest(useAppStore.getState().activeWeaponId).workbenchMeta
+    .scaleProfile,
+  useAppStore.getState().sectionCutAxis
+);
+syncLiveSectionBoxPlanes(
+  useAppStore.getState().sectionBoxCenter,
+  useAppStore.getState().sectionBoxHalfSize,
+  getWeaponManifest(useAppStore.getState().activeWeaponId).workbenchMeta
+    .scaleProfile
 );
 
 // Keep convolution IR room preset & live CT-Scan section plane synchronized with store state
@@ -1595,16 +1737,41 @@ useAppStore.subscribe((state, prevState) => {
       resolveAcousticEnvironmentForState(state.environmentPreset, state.mode)
     );
   }
+  const scaleProfile = getWeaponManifest(state.activeWeaponId).workbenchMeta
+    .scaleProfile;
+  if (
+    state.activeWeaponId !== prevState.activeWeaponId &&
+    scaleProfile !==
+      getWeaponManifest(prevState.activeWeaponId).workbenchMeta.scaleProfile
+  ) {
+    const boxDefs = getDefaultSectionBoxParams(scaleProfile);
+    useAppStore.setState({
+      sectionCutOffset: SECTION_CUT_OFFSET_DEFAULT,
+      sectionBoxCenter: [...boxDefs.center] as [number, number, number],
+      sectionBoxHalfSize: [...boxDefs.halfSize] as [number, number, number],
+    });
+  }
   if (
     state.sectionCutOffset !== prevState.sectionCutOffset ||
     state.sectionCutFlip !== prevState.sectionCutFlip ||
+    state.sectionCutAxis !== prevState.sectionCutAxis ||
     state.activeWeaponId !== prevState.activeWeaponId
   ) {
-    const scaleProfile = getWeaponManifest(state.activeWeaponId).workbenchMeta
-      .scaleProfile;
     syncLiveSectionCutPlane(
       state.sectionCutOffset,
       state.sectionCutFlip,
+      scaleProfile,
+      state.sectionCutAxis
+    );
+  }
+  if (
+    state.sectionBoxCenter !== prevState.sectionBoxCenter ||
+    state.sectionBoxHalfSize !== prevState.sectionBoxHalfSize ||
+    state.activeWeaponId !== prevState.activeWeaponId
+  ) {
+    syncLiveSectionBoxPlanes(
+      state.sectionBoxCenter,
+      state.sectionBoxHalfSize,
       scaleProfile
     );
   }

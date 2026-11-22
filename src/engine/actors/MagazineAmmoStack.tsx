@@ -167,7 +167,10 @@ function syncMagazineStackFrame(
   const isMalfunction =
     appState.screen === 'workbench' && appState.malfunctionActive;
   const isLiveFiring =
-    appState.screen === 'workbench' && isFiringMode && !isMalfunction;
+    (appState.screen === 'workbench' ||
+      appState.screen === 'split_showdown') &&
+    isFiringMode &&
+    !isMalfunction;
 
   // Smoothly scale out the cartridge column during internal magazine sub-disassembly
   // (`t > magSubStripStartT`) so exploding follower & compressed spring separate with zero clipping.
@@ -337,8 +340,15 @@ function syncMagazineStackFrame(
  * brass cases, nickel Boxer primers, and copper-jacketed projectiles inside every
  * weapon's magazine across Showcase, Armory, and Workbench views (`renderOrder={2}`).
  */
-export const MagazineAmmoStack: React.FC = () => {
-  const activeWeaponId = useAppStore((s) => s.activeWeaponId);
+export interface MagazineAmmoStackProps {
+  weaponIdOverride?: WeaponId;
+}
+
+export const MagazineAmmoStack: React.FC<MagazineAmmoStackProps> = ({
+  weaponIdOverride,
+}) => {
+  const storeWeaponId = useAppStore((s) => s.activeWeaponId);
+  const activeWeaponId = weaponIdOverride ?? storeWeaponId;
   const isMagHidden = useAppStore((s) => s.hiddenGroups.magazine);
   // Subscribe to plugin readiness so initial turntable render populates immediately once plugin loads
   const plugin = useWeaponPlugin(activeWeaponId);
@@ -374,7 +384,7 @@ export const MagazineAmmoStack: React.FC = () => {
     const bm = bulletMeshRef.current;
     if (!grp || !cm || !pm || !bm) return;
     syncMagazineStackFrame(
-      useAppStore.getState().activeWeaponId,
+      weaponIdOverride ?? useAppStore.getState().activeWeaponId,
       grp,
       cm,
       pm,

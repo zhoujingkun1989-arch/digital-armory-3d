@@ -96,6 +96,10 @@ export interface CommandPaletteStringBundle {
     depthTitle: string;
     flipRightLabel: string;
     flipLeftLabel: string;
+    flipXForwardLabel: string;
+    flipXBackwardLabel: string;
+    flipYTopLabel: string;
+    flipYBottomLabel: string;
     flipTitle: string;
     scanStartLabel: string;
     scanStopLabel: string;
@@ -103,6 +107,23 @@ export interface CommandPaletteStringBundle {
     resetLabel: string;
     resetTitle: string;
     closeTitle: string;
+    axisLabels: {
+      z: string;
+      x: string;
+      y: string;
+      box: string;
+    };
+    axisTitles: {
+      z: string;
+      x: string;
+      y: string;
+      box: string;
+    };
+    boxReadout: string;
+    boxAxisX: string;
+    boxAxisY: string;
+    boxAxisZ: string;
+    boxSpanLabel: string;
   };
   workbenchMenus: {
     studioBtnLabel: string;
@@ -222,17 +243,38 @@ export const COMMAND_PALETTE_STRINGS: Record<
     sectionPlane: {
       barAria: '实时 CT 剖切面深度控制条',
       label: 'CT 剖切面',
-      sliderAria: '实时调节纵剖切面 Z 轴深度（毫米）',
-      depthTitle: '当前纵剖切面相对枪身中心线的 Z 轴偏移深度',
+      sliderAria: '实时调节剖切面深度（毫米）',
+      depthTitle: '当前剖切面相对基准轴的偏移深度',
       flipRightLabel: '+Z 右侧剖开',
       flipLeftLabel: '-Z 左侧剖开',
-      flipTitle: '翻转剖切方向（右侧剖开 / 左侧剖开）',
+      flipXForwardLabel: '+X 前向剖开',
+      flipXBackwardLabel: '-X 后向剖开',
+      flipYTopLabel: '+Y 俯视剖开',
+      flipYBottomLabel: '-Y 仰视剖开',
+      flipTitle: '翻转当前剖切方向',
       scanStartLabel: '扫描',
       scanStopLabel: '停止',
-      scanTitle: '自动平滑往返扫描整枪内部横截面 (CT Scan)',
+      scanTitle: '自动平滑往返扫描整机内部横截面 (CT Scan)',
       resetLabel: '居中',
-      resetTitle: '将剖切面重置回枪身中轴线 (+0.0 mm)',
+      resetTitle: '将剖切面重置回基准零位 (+0.0 mm)',
       closeTitle: '关闭实时剖视模式 [C]',
+      axisLabels: {
+        z: 'Z 纵剖',
+        x: 'X 横切',
+        y: 'Y 俯剖',
+        box: '3D 切片框',
+      },
+      axisTitles: {
+        z: 'Z 轴经典纵向对半剖切（机匣中轴 / 弹匣视窗）',
+        x: 'X 轴横截面切片（垂直膛线与闭锁突笋锁合面）',
+        y: 'Y 轴水平俯视剖切（俯瞰转盘装弹机、弹链与滑轮导轨）',
+        box: '六面体 3D 局部切片盒（隔离检视任意三维机械区段）',
+      },
+      boxReadout: '3D 切片框',
+      boxAxisX: 'X 前后',
+      boxAxisY: 'Y 高度',
+      boxAxisZ: 'Z 侧向',
+      boxSpanLabel: '盒宽 ±',
     },
     workbenchMenus: {
       studioBtnLabel: '画面',
@@ -348,17 +390,38 @@ export const COMMAND_PALETTE_STRINGS: Record<
     sectionPlane: {
       barAria: 'Live CT-Scan section plane depth control',
       label: 'CT Section',
-      sliderAria: 'Adjust live longitudinal section plane Z depth in millimeters',
-      depthTitle: 'Current longitudinal section plane Z offset from centerline',
+      sliderAria: 'Adjust live section plane depth in millimeters',
+      depthTitle: 'Current section plane offset along active axis',
       flipRightLabel: '+Z Right Cut',
       flipLeftLabel: '-Z Left Cut',
-      flipTitle: 'Flip cutaway flank (+Z right open / -Z left open)',
+      flipXForwardLabel: '+X Fore Cut',
+      flipXBackwardLabel: '-X Aft Cut',
+      flipYTopLabel: '+Y Top Cut',
+      flipYBottomLabel: '-Y Bottom Cut',
+      flipTitle: 'Flip active cutaway direction',
       scanStartLabel: 'Sweep',
       scanStopLabel: 'Stop',
       scanTitle: 'Smoothly sweep the CT section plane back and forth through the mechanism',
       resetLabel: 'Center',
-      resetTitle: 'Reset section plane to centerline (+0.0 mm)',
+      resetTitle: 'Reset section plane to datum (+0.0 mm)',
       closeTitle: 'Exit live cutaway mode [C]',
+      axisLabels: {
+        z: 'Z Long.',
+        x: 'X Cross',
+        y: 'Y Top',
+        box: '3D Box',
+      },
+      axisTitles: {
+        z: 'Z-axis longitudinal cutaway along bore and receiver centerline',
+        x: 'X-axis transverse cross-section slicing across chamber & locking lugs',
+        y: 'Y-axis horizontal plan cutaway exposing feedways, pulleys & carousels',
+        box: '6-plane 3D Slice Box isolating any sub-volume of the assembly',
+      },
+      boxReadout: '3D Slice Box',
+      boxAxisX: 'X Bore',
+      boxAxisY: 'Y Elev',
+      boxAxisZ: 'Z Side',
+      boxSpanLabel: 'Span ±',
     },
     workbenchMenus: {
       studioBtnLabel: 'Display',

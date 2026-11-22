@@ -45,6 +45,7 @@ import {
   subscribeTextureKeys,
 } from '../materials/pbrManager';
 import {
+  SECTION_CUT_BOX_PLANES,
   SECTION_CUT_PLANES,
   type SectionCapSyncFn,
   StencilSectionCap,
@@ -232,6 +233,7 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
     );
     const xrayShells = useAppStore((s) => s.xrayShells);
     const sectionCut = useAppStore((s) => s.sectionCut);
+    const sectionCutAxis = useAppStore((s) => s.sectionCutAxis);
     const showEdges = useAppStore((s) => s.showEdges);
     const engineeringTint = useAppStore((s) => s.engineeringTint);
     const focusedEngineeringRole = useAppStore((s) => s.focusedEngineeringRole);
@@ -390,16 +392,17 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
     ]);
 
     const capSyncRef = useRef<SectionCapSyncFn | null>(null);
-    // Canted shell parts (e.g. AN-94 15°-canted plum magazine) slice along their own tilted local Z=0 symmetry plane
+    // Canted shell parts (e.g. AN-94 15°-canted plum magazine) slice along their own tilted local Z=0 symmetry plane in Z-axis mode
     const isCantedShell =
-      !!part.isShell && Math.abs(part.assembledRot?.[0] ?? 0) > 1e-4;
-    const activeClipPlanes = useMemo(
-      () =>
-        isCantedShell
-          ? [new THREE.Plane(new THREE.Vector3(0, 0, -1), 0)]
-          : SECTION_CUT_PLANES,
-      [isCantedShell]
-    );
+      sectionCutAxis === 'z' &&
+      !!part.isShell &&
+      Math.abs(part.assembledRot?.[0] ?? 0) > 1e-4;
+    const activeClipPlanes = useMemo(() => {
+      if (sectionCutAxis === 'box') return SECTION_CUT_BOX_PLANES;
+      return isCantedShell
+        ? [new THREE.Plane(new THREE.Vector3(0, 0, -1), 0)]
+        : SECTION_CUT_PLANES;
+    }, [isCantedShell, sectionCutAxis]);
     useEffect(() => {
       if (!isCantedShell) return;
       return () => disposeSectionStencilPassMaterials(activeClipPlanes);
@@ -619,7 +622,7 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       e.stopPropagation();
       const st = useAppStore.getState();
       if (st.screen !== 'workbench') {
-        if (e.delta <= 5) {
+        if (st.screen !== 'split_showdown' && e.delta <= 5) {
           st.enterWorkbench(st.activeWeaponId);
         }
         return;
@@ -668,7 +671,10 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
     // Armory shader stays off on optical X-ray housings (clean glass look), except springs
     const armoryActive = !isXrayHousing || armoryFeatures.spring;
     const showSectionCap =
-      isSectionCutShell && !isXrayHousing && !isGhostByIsolate;
+      isSectionCutShell &&
+      !isXrayHousing &&
+      !isGhostByIsolate &&
+      sectionCutAxis !== 'box';
 
     // 1:1 Heavy Armor physical surface calibration:
     // Firearms use gun-oil clearcoat & CLP iridescence (`nitride_steel` clearcoat=0.28),
@@ -733,7 +739,7 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
         ? 0.65
         : 0.48;
 
-    const matShaderKey = `${isXrayHousing ? 'x' : 's'}-${isTank ? 't1' : 't0'}-${isSectionCutShell ? 'c1' : 'c0'}-${isGlbAsset ? 'g1' : 'g0'}-${activeMap ? 'm1' : 'm0'}-${activeNormalMap ? 'n1' : 'n0'}-${activeOrmMap ? 'o1' : 'o0'}-${activeMetalnessMap ? 'mt1' : 'mt0'}-${armoryActive ? getArmoryProgramCacheKey(armoryFeatures) : 'plain'}`;
+    const matShaderKey = `${isXrayHousing ? 'x' : 's'}-${isTank ? 't1' : 't0'}-${isSectionCutShell ? (sectionCutAxis === 'box' ? 'cb' : 'c1') : 'c0'}-${isGlbAsset ? 'g1' : 'g0'}-${activeMap ? 'm1' : 'm0'}-${activeNormalMap ? 'n1' : 'n0'}-${activeOrmMap ? 'o1' : 'o0'}-${activeMetalnessMap ? 'mt1' : 'mt0'}-${armoryActive ? getArmoryProgramCacheKey(armoryFeatures) : 'plain'}`;
 
     const armoryMaterialProps = armoryActive
       ? {

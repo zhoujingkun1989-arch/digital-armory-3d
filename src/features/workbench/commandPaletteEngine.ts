@@ -680,6 +680,43 @@ export function buildCommandPaletteItems(
       },
     },
     {
+      id: 'lab:split_showdown',
+      group: 'labs',
+      icon: 'showdown',
+      title:
+        lang === 'en'
+          ? 'Live 3D Split-Screen Showdown'
+          : '双展品实时 3D 同屏剖视对比台',
+      subtitle:
+        lang === 'en'
+          ? 'Side-by-side synchronized 3D orbit, explosion, live firing & tri-axial CT cutaway'
+          : '单画布双 3D 视口同步运镜、动作时序、击发曲线与多轴 CT 剖视对照',
+      codeBadge: '3D VS',
+      primaryFields: [
+        'Live 3D Split-Screen Showdown',
+        '双展品实时 3D 同屏剖视对比台',
+        'Split Showdown',
+        '同屏对比',
+        '3D对比',
+      ],
+      secondaryFields: [
+        'split',
+        'side by side',
+        '3d compare',
+        'vs',
+        'showdown',
+        '双屏',
+        '同步运镜',
+        '对照',
+      ],
+      execute: () => {
+        const st = useAppStore.getState();
+        st.closeCommandPalette();
+        playWorkbenchFoley('preset_detent');
+        st.openSplitShowdown(st.activeWeaponId);
+      },
+    },
+    {
       id: 'lab:atlas',
       group: 'labs',
       icon: 'atlas',

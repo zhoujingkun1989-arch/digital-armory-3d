@@ -40,6 +40,9 @@ const LazyMonographPrintModal = lazy(
 const LazyPosterShareModal = lazy(
   () => import('./features/share/PosterShareModal')
 );
+const LazySplitShowdownOverlay = lazy(
+  () => import('./features/showdown3d/SplitShowdownOverlay')
+);
 
 export const App: React.FC = () => {
   useUrlStateSync();
@@ -133,6 +136,10 @@ export const App: React.FC = () => {
               initialCaliber={activeBallisticsCaliber}
             />
           </Suspense>
+        ) : screen === 'split_showdown' ? (
+          <Suspense fallback={null}>
+            <LazySplitShowdownOverlay />
+          </Suspense>
         ) : screen === 'armory' ? (
           <ArmoryView />
         ) : (
@@ -160,7 +167,9 @@ export const App: React.FC = () => {
         <WeaponStoryDrawer />
 
         {/* 1:1 CAD & 5-Channel ORM Telemetry Watermark Footer */}
-        {screen !== 'showcase' && screen !== 'ballistics' && (
+        {screen !== 'showcase' &&
+          screen !== 'ballistics' &&
+          screen !== 'split_showdown' && (
           <div className="schematic-watermark">
             <Sparkles size={11} />
             <span>{UI_STRINGS[lang].watermark}</span>

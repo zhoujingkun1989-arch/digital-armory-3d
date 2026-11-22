@@ -381,6 +381,24 @@ export const WorkbenchHeader: React.FC = () => {
                     <span>{menuUi.showdownLabel}</span>
                     <kbd className="popover-kbd">S</kbd>
                   </button>
+
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="toggle-chip"
+                    onClick={() => {
+                      setToolsMenuOpen(false);
+                      useAppStore.getState().openSplitShowdown(activeWeaponId);
+                    }}
+                    title={
+                      lang === 'en'
+                        ? 'Compare two exhibits live side-by-side in 3D viewports'
+                        : '进入双展品实时 3D 同屏剖视对比台'
+                    }
+                  >
+                    <GitCompareArrows size={13} aria-hidden="true" />
+                    <span>{lang === 'en' ? '3D Split' : '3D 同屏对比'}</span>
+                  </button>
                 </div>
               </div>
 

@@ -177,11 +177,13 @@ export function applyLocationToStore(searchOverride?: string): void {
         ? 'cartridges'
         : rawScreen === 'ballistics'
           ? 'ballistics'
-          : rawScreen === 'showcase'
-            ? 'showcase'
-            : rawScreen === 'armory'
-              ? 'armory'
-              : defaultScreen;
+          : rawScreen === 'split_showdown'
+            ? 'split_showdown'
+            : rawScreen === 'showcase'
+              ? 'showcase'
+              : rawScreen === 'armory'
+                ? 'armory'
+                : defaultScreen;
   const targetMode: AppViewMode = rawMode === 'firing' ? 'firing' : 'explode';
 
   if (targetScreen === 'workbench') {
@@ -189,6 +191,13 @@ export function applyLocationToStore(searchOverride?: string): void {
     if (rawCut === '1' || rawCut === 'true') {
       useAppStore.getState().setSectionCut(true);
     }
+  } else if (targetScreen === 'split_showdown') {
+    const rawWA = params.get('weaponA');
+    const rawWB = params.get('weaponB');
+    current.openSplitShowdown(
+      isWeaponId(rawWA) ? rawWA : weaponId,
+      isWeaponId(rawWB) ? rawWB : undefined
+    );
   } else if (targetScreen === 'cartridges') {
     if (rawWeapon && isWeaponId(rawWeapon)) {
       current.selectArmoryWeapon(rawWeapon);
@@ -257,7 +266,8 @@ export function buildSearchString(
   activeCartridgeCaliber: CaliberProfile,
   cartridgeLineupOverview: boolean,
   activeBallisticsCaliber: ExternalProjectileId,
-  baseSearch?: string
+  baseSearch?: string,
+  splitShowdownPair?: { weaponA: WeaponId; weaponB: WeaponId }
 ): string {
   const rawSearch =
     baseSearch ?? (typeof window !== 'undefined' ? window.location.search : '');
@@ -268,15 +278,28 @@ export function buildSearchString(
     params.set('screen', 'workbench');
     params.set('mode', mode);
     params.delete('caliber');
+    params.delete('weaponA');
+    params.delete('weaponB');
     if (sectionCut) {
       params.set('cut', '1');
     } else {
       params.delete('cut');
     }
+  } else if (screen === 'split_showdown') {
+    params.set('screen', 'split_showdown');
+    params.delete('mode');
+    params.delete('caliber');
+    params.delete('cut');
+    if (splitShowdownPair) {
+      params.set('weaponA', splitShowdownPair.weaponA);
+      params.set('weaponB', splitShowdownPair.weaponB);
+    }
   } else if (screen === 'cartridges') {
     params.set('screen', 'cartridges');
     params.delete('mode');
     params.delete('cut');
+    params.delete('weaponA');
+    params.delete('weaponB');
     if (cartridgeLineupOverview) {
       params.delete('caliber');
     } else {
@@ -286,6 +309,8 @@ export function buildSearchString(
     params.set('screen', 'ballistics');
     params.delete('mode');
     params.delete('cut');
+    params.delete('weaponA');
+    params.delete('weaponB');
     params.set(
       'caliber',
       normalizeExternalProjectileId(activeBallisticsCaliber)
@@ -294,6 +319,8 @@ export function buildSearchString(
     params.delete('mode');
     params.delete('caliber');
     params.delete('cut');
+    params.delete('weaponA');
+    params.delete('weaponB');
     if (screen === defaultScreen) {
       params.delete('screen');
     } else {
@@ -326,6 +353,8 @@ export function useUrlStateSync(): void {
     (s) => s.cartridgeLineupOverview
   );
   const activeBallisticsCaliber = useAppStore((s) => s.activeBallisticsCaliber);
+  const splitShowdownWeaponA = useAppStore((s) => s.splitShowdownWeaponA);
+  const splitShowdownWeaponB = useAppStore((s) => s.splitShowdownWeaponB);
 
   const initializedRef = useRef(false);
   const applyingPopStateRef = useRef(false);
@@ -378,6 +407,11 @@ export function useUrlStateSync(): void {
         lang === 'en'
           ? `${calLabel} · 1,000m External Ballistics & Reticle Lab — Digital Armory 3D`
           : `${calLabel} · 1,000m 外弹道与分划板实验室 — Digital Armory 3D`;
+    } else if (screen === 'split_showdown') {
+      document.title =
+        lang === 'en'
+          ? `${getShortWeaponLabel(splitShowdownWeaponA)} vs ${getShortWeaponLabel(splitShowdownWeaponB)} · 3D Split-Screen Showdown — Digital Armory 3D`
+          : `${getShortWeaponLabel(splitShowdownWeaponA)} vs ${getShortWeaponLabel(splitShowdownWeaponB)} · 3D 同屏剖视对比台 — Digital Armory 3D`;
     } else if (screen === 'workbench') {
       document.title =
         lang === 'en'
@@ -396,6 +430,8 @@ export function useUrlStateSync(): void {
     lang,
     activeCartridgeCaliber,
     activeBallisticsCaliber,
+    splitShowdownWeaponA,
+    splitShowdownWeaponB,
   ]);
 
   // Push/replace URL query parameters when store navigation changes
@@ -425,7 +461,9 @@ export function useUrlStateSync(): void {
       live.lang !== lang ||
       live.activeCartridgeCaliber !== activeCartridgeCaliber ||
       live.cartridgeLineupOverview !== cartridgeLineupOverview ||
-      live.activeBallisticsCaliber !== activeBallisticsCaliber
+      live.activeBallisticsCaliber !== activeBallisticsCaliber ||
+      live.splitShowdownWeaponA !== splitShowdownWeaponA ||
+      live.splitShowdownWeaponB !== splitShowdownWeaponB
     ) {
       return;
     }
@@ -438,7 +476,9 @@ export function useUrlStateSync(): void {
       lang,
       activeCartridgeCaliber,
       cartridgeLineupOverview,
-      activeBallisticsCaliber
+      activeBallisticsCaliber,
+      undefined,
+      { weaponA: splitShowdownWeaponA, weaponB: splitShowdownWeaponB }
     );
     if (window.location.search === nextSearch) {
       prevScreenRef.current = screen;
@@ -461,5 +501,7 @@ export function useUrlStateSync(): void {
     activeCartridgeCaliber,
     cartridgeLineupOverview,
     activeBallisticsCaliber,
+    splitShowdownWeaponA,
+    splitShowdownWeaponB,
   ]);
 }

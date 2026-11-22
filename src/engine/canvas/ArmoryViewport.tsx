@@ -51,6 +51,8 @@ import {
 import { ArmoryPostProcessing } from './ArmoryPostProcessing';
 import { CaliperActor } from './CaliperActor';
 import { MonographCaptureRig } from '../../features/monograph/MonographCaptureRig';
+import { SplitShowdownViewport } from '../../features/showdown3d/SplitShowdownViewport';
+import { SectionBoxGuide } from '../actors/SectionBoxGuide';
 import {
   ArmoryStudioEnvironment,
   GunsmithStageMat,
@@ -840,6 +842,7 @@ const DisassemblyRig: React.FC = () => {
                 <MalfunctionActor />
               </WeaponRecoilGroup>
               <CaliperActor />
+              <SectionBoxGuide />
               <ArmoryWorldFx />
             </>
           )}
@@ -924,40 +927,46 @@ export const ArmoryViewport: React.FC = () => {
         }}
         style={{ width: '100%', height: '100%' }}
       >
-        <ArmoryStudioEnvironment
-          preset={environmentPreset}
-          scaleProfile={activeScaleProfile}
-          graphicsQuality={graphicsQuality}
-          shadowMapSize={qualityProfile.shadowMapSize}
-          contextEpoch={contextEpoch}
-        />
+        {screen === 'split_showdown' ? (
+          <SplitShowdownViewport />
+        ) : (
+          <>
+            <ArmoryStudioEnvironment
+              preset={environmentPreset}
+              scaleProfile={activeScaleProfile}
+              graphicsQuality={graphicsQuality}
+              shadowMapSize={qualityProfile.shadowMapSize}
+              contextEpoch={contextEpoch}
+            />
 
-        <GunsmithStageMat
-          preset={environmentPreset}
-          scaleProfile={activeScaleProfile}
-          centerX={workbenchMeta.chamberGlowPos[0]}
-          contactShadows={qualityProfile.contactShadowsEnabled}
-          contactShadowResolution={qualityProfile.contactShadowResolution}
-        />
+            <GunsmithStageMat
+              preset={environmentPreset}
+              scaleProfile={activeScaleProfile}
+              centerX={workbenchMeta.chamberGlowPos[0]}
+              contactShadows={qualityProfile.contactShadowsEnabled}
+              contactShadowResolution={qualityProfile.contactShadowResolution}
+            />
 
-        <DisassemblyRig />
+            <DisassemblyRig />
 
-        <InteractiveActionController />
+            <InteractiveActionController />
 
-        <ArmoryPostProcessing
-          enabled={postFxEnabled && !contextLost}
-          environmentPreset={environmentPreset}
-          scaleProfile={activeScaleProfile}
-          gtaoQuality={qualityProfile.gtaoQuality}
-          enableGtao={qualityProfile.gtaoEnabled}
-          enableBloom={qualityProfile.bloomEnabled}
-          enableSmaa={qualityProfile.smaaEnabled}
-          enableMacroDof={qualityProfile.macroDofCapable && macroDofEnabled}
-          enableFilmicLens={qualityProfile.filmicLensEnabled}
-          contextEpoch={contextEpoch}
-        />
+            <ArmoryPostProcessing
+              enabled={postFxEnabled && !contextLost}
+              environmentPreset={environmentPreset}
+              scaleProfile={activeScaleProfile}
+              gtaoQuality={qualityProfile.gtaoQuality}
+              enableGtao={qualityProfile.gtaoEnabled}
+              enableBloom={qualityProfile.bloomEnabled}
+              enableSmaa={qualityProfile.smaaEnabled}
+              enableMacroDof={qualityProfile.macroDofCapable && macroDofEnabled}
+              enableFilmicLens={qualityProfile.filmicLensEnabled}
+              contextEpoch={contextEpoch}
+            />
 
-        <MonographCaptureRig />
+            <MonographCaptureRig />
+          </>
+        )}
       </Canvas>
 
       {contextLost && (
