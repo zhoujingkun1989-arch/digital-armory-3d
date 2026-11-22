@@ -474,6 +474,10 @@ export function getNarrationAudioSnapshot(): AudioPlayerSnapshot {
   return currentSnapshot;
 }
 
+export function getNarrationAudioElement(): HTMLAudioElement | null {
+  return audioEl;
+}
+
 export function useNarrationAudioPlayer(): AudioPlayerSnapshot {
   return useSyncExternalStore(
     subscribeAudioPlayer,

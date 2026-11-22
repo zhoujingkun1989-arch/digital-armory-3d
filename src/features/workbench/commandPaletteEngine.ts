@@ -3,6 +3,8 @@ import {
   ARMORY_WEAR_PRESETS,
   resolveWearPresetFromLevel,
 } from '../../engine/materials/armoryShader';
+import { isTankWeapon } from '../../engine/physics/armoryPhysics';
+import { useTankCrewStore } from '../../engine/tank/tankCrewStore';
 import { COMMAND_PALETTE_STRINGS } from '../../i18n/commandPaletteStrings';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import { WEAPON_EN_FALLBACKS } from '../../i18n/weaponFallbacks';
@@ -794,6 +796,88 @@ export function buildCommandPaletteItems(
       execute: () => {
         playWorkbenchFoley('preset_detent');
         useAppStore.getState().openArmorPenetrationModal();
+      },
+    },
+    {
+      id: 'lab:director-reel',
+      group: 'labs',
+      icon: 'monograph',
+      title:
+        state.lang === 'zh'
+          ? '导演级 3D 短片录制与导出'
+          : 'WebGL Director Reel Video Exporter',
+      subtitle:
+        state.lang === 'zh'
+          ? '实时合成 1080p WebM/MP4 机械短片与混音音轨'
+          : 'Capture 1080p 16:9 or 9:16 mechanical showcase reels with SFX',
+      statusBadge: state.directorReelModalOpen ? str.modal.onBadge : undefined,
+      statusTone: state.directorReelModalOpen ? 'amber' : undefined,
+      isActive: state.directorReelModalOpen,
+      primaryFields: [
+        'Director Reel Video Capture',
+        '导演短片录制导出',
+        'WebM MP4 Video',
+      ],
+      secondaryFields: ['video', 'record', 'reel', 'webm', 'mp4', '录制', '视频', '导出'],
+      execute: () => {
+        playWorkbenchFoley('preset_detent');
+        useAppStore.getState().openDirectorReelModal();
+      },
+    },
+    {
+      id: 'lab:passport',
+      group: 'labs',
+      icon: 'fieldstrip',
+      title:
+        state.lang === 'zh'
+          ? '军械师全馆 27 展品资格护照'
+          : '27-Exhibit Armorer Mastery Passport',
+      subtitle:
+        state.lang === 'zh'
+          ? '汇总野战快拆、全拆精修与盲考等级并支持 JSON 导出/恢复'
+          : 'Unified S/A/B/C mastery ledger & JSON import/export across 27 exhibits',
+      statusBadge: state.passportModalOpen ? str.modal.onBadge : undefined,
+      statusTone: state.passportModalOpen ? 'emerald' : undefined,
+      isActive: state.passportModalOpen,
+      primaryFields: [
+        'Armorer Mastery Passport',
+        '军械师资格护照',
+        'Certification Ledger JSON',
+      ],
+      secondaryFields: ['passport', 'certification', 'ledger', 'rank', 'json', '护照', '证书', '档案'],
+      execute: () => {
+        playWorkbenchFoley('preset_detent');
+        useAppStore.getState().openPassportModal();
+      },
+    },
+    {
+      id: 'lab:tank-crew',
+      group: 'labs',
+      icon: 'ballistics',
+      title:
+        state.lang === 'zh'
+          ? '1:1 主战坦克车长 / 炮长火控台'
+          : '1:1 Tank Crew Station & FLIR Gunner FCS',
+      subtitle:
+        state.lang === 'zh'
+          ? '实时回转炮塔、俯仰主炮、热像白热/黑热切换与 LRF 自动装表'
+          : 'Turret traverse, gun elevation, FLIR optics & LRF auto-lay (ZTZ-99A / M1A2 / Leo 2A7 / Tiger I)',
+      primaryFields: [
+        'Tank Crew Station FLIR Turret',
+        '主战坦克车长火控台',
+        'Turret Yaw Gunner Reticle',
+      ],
+      secondaryFields: ['tank', 'crew', 'turret', 'flir', 'gunner', 'fcs', '炮塔', '火控', '热像'],
+      execute: () => {
+        playWorkbenchFoley('preset_detent');
+        const cur = useAppStore.getState();
+        const targetId = isTankWeapon(cur.activeWeaponId)
+          ? cur.activeWeaponId
+          : 'ztz99a';
+        if (cur.screen !== 'workbench' || cur.activeWeaponId !== targetId) {
+          cur.enterWorkbench(targetId, 'explode');
+        }
+        useTankCrewStore.getState().setActive(true);
       },
     },
     {

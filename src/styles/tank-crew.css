@@ -1,0 +1,197 @@
+/* ==========================================================================
+   WP-23b · 1:1 Heavy Armor Tank Crew Station & Gunner FLIR Reticle HUD
+   ========================================================================== */
+
+.canvas-container[data-flir-optic='whot'] canvas {
+  filter: grayscale(100%) contrast(1.42) brightness(1.08);
+}
+
+.canvas-container[data-flir-optic='bhot'] canvas {
+  filter: grayscale(100%) invert(100%) contrast(1.36) brightness(1.04);
+}
+
+.tank-gunner-reticle-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tank-gunner-reticle-overlay.is-daylight {
+  color: rgba(251, 191, 36, 0.85);
+}
+
+.tank-gunner-reticle-overlay.is-flir_whot {
+  color: rgba(110, 231, 183, 0.88);
+}
+
+.tank-gunner-reticle-overlay.is-flir_bhot {
+  color: rgba(248, 113, 113, 0.88);
+}
+
+.tank-reticle-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.tank-crew-hud {
+  background: rgba(9, 13, 22, 0.9);
+  border: 1px solid rgba(132, 204, 22, 0.36);
+  border-radius: 12px;
+  padding: 10px 12px;
+  backdrop-filter: blur(14px);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.45);
+  color: #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+:is([data-theme='light'], .theme-light) .tank-crew-hud {
+  background: rgba(255, 255, 255, 0.94);
+  color: #0f172a;
+}
+
+.tank-crew-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.tank-crew-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #a3e635;
+}
+
+:is([data-theme='light'], .theme-light) .tank-crew-badge {
+  color: #4d7c0f;
+}
+
+.tank-crew-sight {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+.tank-crew-head-btns {
+  display: flex;
+  gap: 4px;
+}
+
+.tank-crew-icon-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  background: rgba(15, 23, 42, 0.65);
+  color: #cbd5e1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.tank-crew-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.tank-crew-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  background: rgba(15, 23, 42, 0.52);
+  color: #cbd5e1;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tank-crew-pill.is-active {
+  border-color: rgba(163, 230, 53, 0.72);
+  background: rgba(132, 204, 22, 0.2);
+  color: #ecfccb;
+}
+
+:is([data-theme='light'], .theme-light) .tank-crew-pill {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.tank-crew-sliders {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 10px;
+}
+
+.tank-crew-slider {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tank-crew-slider div {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+}
+
+.tank-crew-slider input[type='range'] {
+  width: 100%;
+  accent-color: #84cc16;
+}
+
+.tank-crew-fcs-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding-top: 4px;
+  border-top: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.tank-crew-fcs-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: #a3e635;
+}
+
+:is([data-theme='light'], .theme-light) .tank-crew-fcs-stats {
+  color: #3f6212;
+}
+
+.tank-crew-lase-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 9px;
+  border-radius: 7px;
+  border: 1px solid rgba(163, 230, 53, 0.65);
+  background: rgba(132, 204, 22, 0.22);
+  color: #ecfccb;
+  font-size: 10.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+:is([data-theme='light'], .theme-light) .tank-crew-lase-btn {
+  color: #365314;
+}

@@ -7,7 +7,12 @@ import {
   playTriggerDryBlockSound,
   playWorkbenchFoley,
 } from '../audio/mechanicalSoundEngine';
+import { getLoadedWeaponPlugin } from '../../weapons/registry';
 import { smoothstep01 } from '../kinematics/math';
+import {
+  buildDetailStripPlan,
+  type DisassemblyTier,
+} from './detailStripGenerator';
 import {
   FIELD_STRIP_PLANS,
   type FieldStripStepSpec,
@@ -35,6 +40,7 @@ export interface FieldStripInterferenceAlert {
 
 export interface FieldStripSnapshot {
   weaponId: WeaponId;
+  tier: DisassemblyTier;
   phase: FieldStripPhase;
   strippedStepIds: readonly string[];
   strippedCount: number;
@@ -81,6 +87,7 @@ interface CompiledPartStepRef {
 
 interface CompiledWeaponFieldStripCache {
   plan: FieldStripWeaponPlan;
+  partSourceCount: number;
   stepIndexById: ReadonlyMap<string, number>;
   /** Steps where `partId` is explicitly listed in `triggerPartIds` */
   triggerStepsByPartId: ReadonlyMap<string, readonly number[]>;
@@ -102,8 +109,17 @@ function nowTimestampMs(): number {
   return typeof performance !== 'undefined' ? performance.now() : Date.now();
 }
 
-function compileWeaponCache(weaponId: WeaponId): CompiledWeaponFieldStripCache {
-  const plan = FIELD_STRIP_PLANS[weaponId];
+let activeDisassemblyTier: DisassemblyTier = 'field';
+
+function compileWeaponCache(
+  weaponId: WeaponId,
+  tier: DisassemblyTier = activeDisassemblyTier
+): CompiledWeaponFieldStripCache {
+  const loadedParts = getLoadedWeaponPlugin(weaponId)?.parts ?? [];
+  const plan =
+    tier === 'detail'
+      ? buildDetailStripPlan(weaponId, loadedParts)
+      : FIELD_STRIP_PLANS[weaponId];
   const stepCount = plan.steps.length;
   const stepIndexById = new Map<string, number>();
   const triggerMap = new Map<string, number[]>();
@@ -148,6 +164,7 @@ function compileWeaponCache(weaponId: WeaponId): CompiledWeaponFieldStripCache {
 
   return {
     plan,
+    partSourceCount: loadedParts.length,
     stepIndexById,
     triggerStepsByPartId: triggerMap,
     boundStepsByPartId: boundMap,
@@ -157,13 +174,18 @@ function compileWeaponCache(weaponId: WeaponId): CompiledWeaponFieldStripCache {
   };
 }
 
-const caches = new Map<WeaponId, CompiledWeaponFieldStripCache>();
+const caches = new Map<string, CompiledWeaponFieldStripCache>();
 
-function getWeaponCache(weaponId: WeaponId): CompiledWeaponFieldStripCache {
-  let c = caches.get(weaponId);
-  if (!c) {
-    c = compileWeaponCache(weaponId);
-    caches.set(weaponId, c);
+function getWeaponCache(
+  weaponId: WeaponId,
+  tier: DisassemblyTier = activeDisassemblyTier
+): CompiledWeaponFieldStripCache {
+  const key = `${weaponId}:${tier}`;
+  const loadedLen = getLoadedWeaponPlugin(weaponId)?.parts.length ?? 0;
+  let c = caches.get(key);
+  if (!c || (tier === 'detail' && c.partSourceCount !== loadedLen)) {
+    c = compileWeaponCache(weaponId, tier);
+    caches.set(key, c);
   }
   return c;
 }
@@ -271,6 +293,7 @@ class FieldStripRuntimeController {
       : this.computeRecommendedStep(cache, this.phase);
     return {
       weaponId: this.activeWeaponId,
+      tier: activeDisassemblyTier,
       phase: this.phase,
       strippedStepIds,
       strippedCount: strippedStepIds.length,
@@ -281,6 +304,23 @@ class FieldStripRuntimeController {
       hintStepId: isBlind ? null : this.hintStepId,
       hintSeq: this.hintSeq,
     };
+  }
+
+  public getTier(): DisassemblyTier {
+    return activeDisassemblyTier;
+  }
+
+  public getActivePlan(weaponId: WeaponId = this.activeWeaponId): FieldStripWeaponPlan {
+    return getWeaponCache(weaponId).plan;
+  }
+
+  public setTier(nextTier: DisassemblyTier, weaponId?: WeaponId): void {
+    const targetWeapon = weaponId ?? this.activeWeaponId;
+    if (activeDisassemblyTier === nextTier && targetWeapon === this.activeWeaponId) {
+      return;
+    }
+    activeDisassemblyTier = nextTier;
+    this.reset(targetWeapon, true);
   }
 
   public syncWeapon(weaponId: WeaponId, resetProgress = false): void {

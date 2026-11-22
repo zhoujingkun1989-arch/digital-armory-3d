@@ -46,12 +46,14 @@ import {
 } from '../materials/armoryShader';
 import {
   getArmoryPhysicsState,
+  isTankWeapon,
   setBrassFloorImpactListener,
 } from '../physics/armoryPhysics';
 import {
   getCachedCausalityEvaluation,
   useCausalitySandboxStore,
 } from '../physics/causalitySandbox';
+import { getTankCrewSpec, useTankCrewStore } from '../tank/tankCrewStore';
 import { ArmoryPostProcessing } from './ArmoryPostProcessing';
 import { CaliperActor } from './CaliperActor';
 import { MonographCaptureRig } from '../../features/monograph/MonographCaptureRig';
@@ -308,6 +310,10 @@ const DisassemblyRig: React.FC = () => {
     camera,
   ]);
 
+  // Subscribe to Tank Crew Station viewpoint switches for 1:1 MBTs
+  const tankCrewActive = useTankCrewStore((s) => s.active);
+  const tankCrewStation = useTankCrewStore((s) => s.station);
+
   // Respond to explicit camera preset buttons, weapon switches, screen transitions & viewport/window rect changes
   useEffect(() => {
     if (
@@ -407,6 +413,46 @@ const DisassemblyRig: React.FC = () => {
     showcaseWindowVer,
     camera,
   ]);
+
+  useEffect(() => {
+    if (
+      screen !== 'workbench' ||
+      !tankCrewActive ||
+      !isTankWeapon(activeWeaponId)
+    ) {
+      return;
+    }
+    const spec = getTankCrewSpec(activeWeaponId);
+    if (!spec) return;
+    const st = useTankCrewStore.getState();
+    const yawRad = (st.turretYawDeg * Math.PI) / 180;
+    const dirX = Math.cos(-yawRad);
+    const dirZ = Math.sin(-yawRad);
+    const [rx, ry, rz] = spec.turretRingPivot;
+    const [, ty] = spec.trunnionPivot;
+
+    if (tankCrewStation === 'gunner') {
+      flyRef.current.goalPos.set(
+        rx - dirX * 105,
+        ty + 86,
+        rz - dirZ * 105 + 56
+      );
+      flyRef.current.goalTarget.set(
+        rx + dirX * 420,
+        ty + 18,
+        rz + dirZ * 420
+      );
+      flyRef.current.active = true;
+    } else if (tankCrewStation === 'interior') {
+      flyRef.current.goalPos.set(
+        rx - dirX * 140,
+        ry + 135,
+        rz - dirZ * 140 + 68
+      );
+      flyRef.current.goalTarget.set(rx + dirX * 65, ty - 5, rz + dirZ * 65);
+      flyRef.current.active = true;
+    }
+  }, [screen, tankCrewActive, tankCrewStation, activeWeaponId]);
 
   // Smoothly re-center or restore turntable view-offset when Clean View (`hudHidden`) toggles on Showcase / Armory
   useEffect(() => {

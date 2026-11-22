@@ -22,7 +22,6 @@ import {
   useWeaponExamSummary,
 } from '../../engine/exam/armorerExamStore';
 import { EXAM_STRINGS } from '../../engine/exam/examStrings';
-import { FIELD_STRIP_PLANS } from '../../engine/fieldstrip/fieldStripSpecs';
 import { fieldStripStore } from '../../engine/fieldstrip/fieldStripStore';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import { useAppStore } from '../../store/useAppStore';
@@ -113,7 +112,7 @@ export const FieldStripHud: React.FC = () => {
     };
   }, []);
 
-  const plan = FIELD_STRIP_PLANS[activeWeaponId];
+  const plan = fieldStripStore.getActivePlan(activeWeaponId);
   const ui = UI_STRINGS[lang].fieldStrip;
   const exUi = EXAM_STRINGS[lang];
   const strippedSet = new Set(snap.strippedStepIds);
@@ -175,6 +174,29 @@ export const FieldStripHud: React.FC = () => {
         </div>
 
         <div className="field-strip-actions-cluster">
+          <div className="fs-phase-toggle" role="group">
+            <button
+              type="button"
+              disabled={isExamActive}
+              className={`fs-phase-btn ${
+                snap.tier === 'field' ? 'active-strip' : ''
+              }`}
+              onClick={() => fieldStripStore.setTier('field', activeWeaponId)}
+            >
+              {lang === 'zh' ? '野战快拆' : 'Field Strip'}
+            </button>
+            <button
+              type="button"
+              disabled={isExamActive}
+              className={`fs-phase-btn ${
+                snap.tier === 'detail' ? 'active-strip' : ''
+              }`}
+              onClick={() => fieldStripStore.setTier('detail', activeWeaponId)}
+            >
+              {lang === 'zh' ? '军械师全拆' : 'Detail Strip'}
+            </button>
+          </div>
+
           {/* Blind Certification Exam Toggle Pill (with Personal Best Rank Badge) */}
           <button
             type="button"

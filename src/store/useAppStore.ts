@@ -49,6 +49,7 @@ import {
 import type { EngineeringRole } from '../engine/materials/engineeringRoles';
 import { resetArmoryPhysics } from '../engine/physics/armoryPhysics';
 import { useCausalitySandboxStore } from '../engine/physics/causalitySandbox';
+import { useTankCrewStore } from '../engine/tank/tankCrewStore';
 import {
   type ExternalProjectileId,
   type ExternalProjectileInput,
@@ -256,6 +257,8 @@ export interface AppState {
   posterShareOptions: PosterModalLaunchOptions | null;
   causalitySandboxOpen: boolean;
   armorPenetrationModalOpen: boolean;
+  directorReelModalOpen: boolean;
+  passportModalOpen: boolean;
   commandPaletteOpen: boolean;
   xrayShells: boolean;
   sectionCut: boolean;
@@ -389,6 +392,12 @@ export interface AppState {
   setArmorPenetrationModalOpen: (open: boolean) => void;
   openArmorPenetrationModal: () => void;
   closeArmorPenetrationModal: () => void;
+  setDirectorReelModalOpen: (open: boolean) => void;
+  openDirectorReelModal: () => void;
+  closeDirectorReelModal: () => void;
+  setPassportModalOpen: (open: boolean) => void;
+  openPassportModal: () => void;
+  closePassportModal: () => void;
   setCommandPaletteOpen: (open: boolean) => void;
   openCommandPalette: () => void;
   closeCommandPalette: () => void;
@@ -471,6 +480,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   posterShareOptions: null,
   causalitySandboxOpen: false,
   armorPenetrationModalOpen: false,
+  directorReelModalOpen: false,
+  passportModalOpen: false,
   commandPaletteOpen: false,
   xrayShells: false,
   sectionCut: false,
@@ -1383,6 +1394,46 @@ export const useAppStore = create<AppState>((set, get) => ({
     })),
   openArmorPenetrationModal: () => get().setArmorPenetrationModalOpen(true),
   closeArmorPenetrationModal: () => get().setArmorPenetrationModalOpen(false),
+  setDirectorReelModalOpen: (directorReelModalOpen) =>
+    set((s) => ({
+      directorReelModalOpen,
+      textureModalOpen: directorReelModalOpen ? false : s.textureModalOpen,
+      monographModalOpen: directorReelModalOpen
+        ? false
+        : s.monographModalOpen,
+      posterShareModalOpen: directorReelModalOpen
+        ? false
+        : s.posterShareModalOpen,
+      armorPenetrationModalOpen: directorReelModalOpen
+        ? false
+        : s.armorPenetrationModalOpen,
+      passportModalOpen: directorReelModalOpen ? false : s.passportModalOpen,
+      commandPaletteOpen: directorReelModalOpen
+        ? false
+        : s.commandPaletteOpen,
+      hudHidden: directorReelModalOpen ? false : s.hudHidden,
+    })),
+  openDirectorReelModal: () => get().setDirectorReelModalOpen(true),
+  closeDirectorReelModal: () => get().setDirectorReelModalOpen(false),
+  setPassportModalOpen: (passportModalOpen) =>
+    set((s) => ({
+      passportModalOpen,
+      textureModalOpen: passportModalOpen ? false : s.textureModalOpen,
+      monographModalOpen: passportModalOpen ? false : s.monographModalOpen,
+      posterShareModalOpen: passportModalOpen
+        ? false
+        : s.posterShareModalOpen,
+      armorPenetrationModalOpen: passportModalOpen
+        ? false
+        : s.armorPenetrationModalOpen,
+      directorReelModalOpen: passportModalOpen
+        ? false
+        : s.directorReelModalOpen,
+      commandPaletteOpen: passportModalOpen ? false : s.commandPaletteOpen,
+      hudHidden: passportModalOpen ? false : s.hudHidden,
+    })),
+  openPassportModal: () => get().setPassportModalOpen(true),
+  closePassportModal: () => get().setPassportModalOpen(false),
   setCommandPaletteOpen: (commandPaletteOpen) => set({ commandPaletteOpen }),
   openCommandPalette: () => set({ commandPaletteOpen: true }),
   closeCommandPalette: () => set({ commandPaletteOpen: false }),
@@ -1710,6 +1761,8 @@ export const useAppStore = create<AppState>((set, get) => ({
     const activeId = get().activeWeaponId;
     resetWeaponPhysicsAndAction(activeId, true);
     useCausalitySandboxStore.getState().reset();
+    useTankCrewStore.getState().resetForWeapon(activeId);
+    fieldStripStore.setTier('field', activeId);
     fieldStripStore.reset(activeId, true);
     malfunctionStore.syncWeapon(activeId, false);
     caliperStore.clearPoints();
@@ -1747,6 +1800,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       posterShareOptions: null,
       causalitySandboxOpen: false,
       armorPenetrationModalOpen: false,
+      directorReelModalOpen: false,
+      passportModalOpen: false,
       commandPaletteOpen: false,
       selectedPartId: null,
       hiddenGroups: { ...DEFAULT_HIDDEN_GROUPS },

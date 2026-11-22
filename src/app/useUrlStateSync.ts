@@ -9,6 +9,8 @@ import {
   type ExternalProjectileId,
   normalizeExternalProjectileId,
 } from '../engine/physics/externalBallistics';
+import { isTankWeapon } from '../engine/physics/armoryPhysics';
+import { useTankCrewStore } from '../engine/tank/tankCrewStore';
 import type {
   MonographCaptureQuality,
   MonographEdition,
@@ -265,6 +267,24 @@ export function applyLocationToStore(searchOverride?: string): void {
     useAppStore.getState().setCausalitySandboxOpen(true);
   } else if (rawPanel === 'armor') {
     useAppStore.getState().openArmorPenetrationModal();
+  } else if (rawPanel === 'reel') {
+    useAppStore.getState().openDirectorReelModal();
+  } else if (rawPanel === 'passport') {
+    useAppStore.getState().openPassportModal();
+  } else if (rawPanel === 'crew') {
+    const targetId = isTankWeapon(weaponId) ? weaponId : 'ztz99a';
+    const st = useAppStore.getState();
+    if (st.screen !== 'workbench' || st.activeWeaponId !== targetId) {
+      st.enterWorkbench(targetId, 'explode');
+    }
+    const crew = useTankCrewStore.getState();
+    crew.setActive(true);
+    if (params.get('optic') === 'flir') {
+      crew.setStation('gunner');
+      crew.setOpticMode('flir_whot');
+      crew.setTurretYawDeg(18);
+      crew.setGunElevDeg(4.5, targetId);
+    }
   }
 }
 

@@ -45,6 +45,7 @@ export interface WeaponExamRecord {
   fieldStripRank: ExamRank | null;
   bestFieldStripMs: number | null;
   bestFieldStripScore: number | null;
+  detailStripRank?: ExamRank | null;
   triageRank: ExamRank | null;
   bestTriageScore: number | null;
   certifiedAt: string | null;
@@ -347,6 +348,9 @@ export function deserializeExamLedger(
       const fieldStripRank = isExamRank(rec.fieldStripRank)
         ? rec.fieldStripRank
         : null;
+      const detailStripRank = isExamRank(rec.detailStripRank)
+        ? rec.detailStripRank
+        : null;
       const bestFieldStripMs =
         typeof rec.bestFieldStripMs === 'number' &&
         Number.isFinite(rec.bestFieldStripMs) &&
@@ -371,6 +375,7 @@ export function deserializeExamLedger(
 
       if (
         fieldStripRank !== null ||
+        detailStripRank !== null ||
         bestFieldStripMs !== null ||
         bestFieldStripScore !== null ||
         triageRank !== null ||
@@ -380,6 +385,7 @@ export function deserializeExamLedger(
           fieldStripRank,
           bestFieldStripMs,
           bestFieldStripScore,
+          ...(detailStripRank !== null ? { detailStripRank } : {}),
           triageRank,
           bestTriageScore,
           certifiedAt,
@@ -453,7 +459,10 @@ function pickRandomMalfunctionKind(
 function createInitialFieldStripExamState(
   weaponId: WeaponId = 'ak15'
 ): BlindFieldStripExamState {
-  const totalSteps = FIELD_STRIP_PLANS[weaponId]?.steps.length ?? 6;
+  const totalSteps =
+    fieldStripStore.getActivePlan(weaponId)?.steps.length ??
+    FIELD_STRIP_PLANS[weaponId]?.steps.length ??
+    6;
   return {
     active: false,
     weaponId,
@@ -530,6 +539,11 @@ export interface ArmorerExamStoreState {
   exitBlindTriage: () => void;
 
   hydrateLedgerFromStorage: () => Readonly<Record<string, WeaponExamRecord>>;
+  exportPassportJson: () => string;
+  importPassportJson: (rawJson: string) => {
+    ok: boolean;
+    importedCount: number;
+  };
   clearExamLedger: () => void;
 }
 
@@ -543,7 +557,7 @@ export const useArmorerExamStore = create<ArmorerExamStoreState>((set, get) => (
   triageExam: createInitialTriageExamState('ak15'),
 
   startBlindFieldStrip: (weaponId, startNowMs) => {
-    const plan = FIELD_STRIP_PLANS[weaponId];
+    const plan = fieldStripStore.getActivePlan(weaponId);
     const totalSteps = plan ? plan.steps.length : 6;
     const parSeconds = totalSteps * 2 * FIELD_STRIP_PAR_SECONDS_PER_ACTION;
     const startTs = startNowMs ?? nowExamMs();
@@ -838,6 +852,79 @@ export const useArmorerExamStore = create<ArmorerExamStoreState>((set, get) => (
     return loaded;
   },
 
+  exportPassportJson: () => {
+    return JSON.stringify(
+      {
+        schema: 'digital-armory-armorer-passport-v1',
+        exportedAt: new Date().toISOString(),
+        ledger: get().ledger,
+      },
+      null,
+      2
+    );
+  },
+
+  importPassportJson: (rawJson) => {
+    try {
+      const parsed: unknown = JSON.parse(rawJson);
+      if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+        return { ok: false, importedCount: 0 };
+      }
+      const env = parsed as Record<string, unknown>;
+      if (
+        env.schema !== 'digital-armory-armorer-passport-v1' ||
+        !env.ledger ||
+        typeof env.ledger !== 'object'
+      ) {
+        return { ok: false, importedCount: 0 };
+      }
+      const cleaned = deserializeExamLedger(JSON.stringify(env.ledger));
+      const importedCount = Object.keys(cleaned).length;
+      const merged: Record<string, WeaponExamRecord> = { ...get().ledger };
+      for (const [wid, incoming] of Object.entries(cleaned)) {
+        const curRec = merged[wid] ?? createEmptyWeaponRecord();
+        merged[wid] = {
+          fieldStripRank: maxExamRank(
+            curRec.fieldStripRank,
+            incoming.fieldStripRank
+          ),
+          bestFieldStripMs:
+            curRec.bestFieldStripMs === null
+              ? incoming.bestFieldStripMs
+              : incoming.bestFieldStripMs === null
+                ? curRec.bestFieldStripMs
+                : Math.min(curRec.bestFieldStripMs, incoming.bestFieldStripMs),
+          bestFieldStripScore:
+            curRec.bestFieldStripScore === null
+              ? incoming.bestFieldStripScore
+              : incoming.bestFieldStripScore === null
+                ? curRec.bestFieldStripScore
+                : Math.max(
+                    curRec.bestFieldStripScore,
+                    incoming.bestFieldStripScore
+                  ),
+          detailStripRank: maxExamRank(
+            curRec.detailStripRank ?? null,
+            incoming.detailStripRank ?? null
+          ),
+          triageRank: maxExamRank(curRec.triageRank, incoming.triageRank),
+          bestTriageScore:
+            curRec.bestTriageScore === null
+              ? incoming.bestTriageScore
+              : incoming.bestTriageScore === null
+                ? curRec.bestTriageScore
+                : Math.max(curRec.bestTriageScore, incoming.bestTriageScore),
+          certifiedAt: incoming.certifiedAt ?? curRec.certifiedAt,
+        };
+      }
+      persistLedgerToStorage(merged);
+      set({ ledger: merged });
+      return { ok: true, importedCount };
+    } catch {
+      return { ok: false, importedCount: 0 };
+    }
+  },
+
   clearExamLedger: () => {
     const storage = getSafeLocalStorage();
     if (storage && typeof storage.removeItem === 'function') {
@@ -851,13 +938,19 @@ export const useArmorerExamStore = create<ArmorerExamStoreState>((set, get) => (
   },
 }));
 
-function buildSummaryFromRecord(
+export function buildSummaryFromRecord(
   weaponId: string,
   record: WeaponExamRecord | undefined
 ): WeaponExamSummary {
   const rec = record ?? createEmptyWeaponRecord();
-  const overallRank = maxExamRank(rec.fieldStripRank, rec.triageRank);
-  const isCertified = rec.fieldStripRank !== null || rec.triageRank !== null;
+  const overallRank = maxExamRank(
+    maxExamRank(rec.fieldStripRank, rec.triageRank),
+    rec.detailStripRank ?? null
+  );
+  const isCertified =
+    rec.fieldStripRank !== null ||
+    rec.triageRank !== null ||
+    (rec.detailStripRank ?? null) !== null;
   const isDualCertified =
     rec.fieldStripRank !== null && rec.triageRank !== null;
   const stars: 0 | 1 | 2 | 3 | 4 = overallRank ? RANK_WEIGHT[overallRank] : 0;
@@ -989,12 +1082,21 @@ fieldStripStore.registerExamBridge({
           breakdown.totalScore > prevRec.bestFieldStripScore ||
           compareExamRanks(breakdown.rank, prevRec.fieldStripRank) > 0;
 
+        const isDetailTier = fieldStripStore.getTier() === 'detail';
         const updatedRecord: WeaponExamRecord = {
           ...prevRec,
           fieldStripRank: maxExamRank(
             breakdown.rank,
             prevRec.fieldStripRank
           ),
+          ...(isDetailTier
+            ? {
+                detailStripRank: maxExamRank(
+                  breakdown.rank,
+                  prevRec.detailStripRank ?? null
+                ),
+              }
+            : {}),
           bestFieldStripMs:
             prevRec.bestFieldStripMs === null
               ? elapsedMs

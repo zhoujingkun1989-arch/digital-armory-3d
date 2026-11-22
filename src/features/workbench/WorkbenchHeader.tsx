@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   ArrowLeft,
+  Award,
   BookOpen,
   Box,
   Camera,
@@ -23,12 +24,15 @@ import {
   SlidersHorizontal,
   Sparkles,
   Tag,
+  Video,
   Volume2,
   VolumeX,
   Wrench,
 } from 'lucide-react';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import { scheduleHudBoundsRefresh } from '../../engine/callout/hudBoundsCache';
+import { isTankWeapon } from '../../engine/physics/armoryPhysics';
+import { useTankCrewStore } from '../../engine/tank/tankCrewStore';
 import { COMMAND_PALETTE_STRINGS } from '../../i18n/commandPaletteStrings';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import { resolveWeaponDisplayMeta } from '../../i18n/weaponFallbacks';
@@ -86,6 +90,11 @@ export const WorkbenchHeader: React.FC = () => {
   const openArmorPenetrationModal = useAppStore(
     (s) => s.openArmorPenetrationModal
   );
+  const openDirectorReelModal = useAppStore((s) => s.openDirectorReelModal);
+  const openPassportModal = useAppStore((s) => s.openPassportModal);
+  const tankCrewActive = useTankCrewStore((s) => s.active);
+  const toggleTankCrew = useTankCrewStore((s) => s.toggleActive);
+  const isTank = isTankWeapon(activeWeaponId);
   const toggleShowEdges = useAppStore((s) => s.toggleShowEdges);
   const toggleShowLabels = useAppStore((s) => s.toggleShowLabels);
   const toggleSfxMuted = useAppStore((s) => s.toggleSfxMuted);
@@ -111,6 +120,7 @@ export const WorkbenchHeader: React.FC = () => {
     malfunctionActive ||
     causalitySandboxOpen ||
     armorPenetrationModalOpen ||
+    (isTank && tankCrewActive) ||
     showEdges ||
     !pbrTexturesEnabled;
 
@@ -454,6 +464,67 @@ export const WorkbenchHeader: React.FC = () => {
                       {lang === 'en' ? 'Armor Penetration' : '穿甲抗弹实验室'}
                     </span>
                   </button>
+
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="toggle-chip"
+                    onClick={() => {
+                      setToolsMenuOpen(false);
+                      openDirectorReelModal();
+                    }}
+                    title={
+                      lang === 'en'
+                        ? 'Record 3D mechanical showcase reel video'
+                        : '录制导出 60fps 3D 导演机械短片'
+                    }
+                  >
+                    <Video size={13} aria-hidden="true" />
+                    <span>{lang === 'en' ? 'Director Reel' : '导演短片录制'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="toggle-chip"
+                    onClick={() => {
+                      setToolsMenuOpen(false);
+                      openPassportModal();
+                    }}
+                    title={
+                      lang === 'en'
+                        ? 'View 27-exhibit Armorer Certification Passport'
+                        : '查看全馆 27 展品军械师资格护照与档案'
+                    }
+                  >
+                    <Award size={13} aria-hidden="true" />
+                    <span>{lang === 'en' ? 'Passport' : '军械师护照'}</span>
+                  </button>
+
+                  {isTank && (
+                    <button
+                      type="button"
+                      role="menuitemcheckbox"
+                      aria-checked={tankCrewActive}
+                      className={`toggle-chip ${
+                        tankCrewActive ? 'active-emerald' : ''
+                      }`}
+                      onClick={() => {
+                        setToolsMenuOpen(false);
+                        toggleTankCrew();
+                      }}
+                      title={
+                        lang === 'en'
+                          ? 'Open 1:1 Tank Crew Station (Turret Yaw / FLIR FCS)'
+                          : '开启 1:1 主战坦克车长/炮长火控台（炮塔回转与热像瞄准）'
+                      }
+                    >
+                      <Crosshair size={13} aria-hidden="true" />
+                      <span>
+                        {lang === 'en' ? 'Tank Crew FCS' : '坦克车长火控台'}
+                      </span>
+                    </button>
+                  )}
                 </div>
               </div>
 

@@ -5,6 +5,7 @@ import {
   Clapperboard,
   Cpu,
   Crosshair,
+  Film,
   History,
   Loader2,
   Maximize2,
@@ -449,6 +450,20 @@ export const WeaponStoryDrawer: React.FC = () => {
             >
               <Captions size={12} aria-hidden="true" />
               <span>{ui.cinemaModeBtn}</span>
+            </button>
+
+            <button
+              type="button"
+              className="story-cinema-bar-btn"
+              onClick={() => useAppStore.getState().openDirectorReelModal()}
+              title={
+                lang === 'zh'
+                  ? '录制 60fps 3D 机械短片与混音字幕视频'
+                  : 'Record 60fps 3D Director Reel Video'
+              }
+            >
+              <Film size={12} aria-hidden="true" />
+              <span>{lang === 'zh' ? '录制短片' : 'Reel'}</span>
             </button>
           </div>
 

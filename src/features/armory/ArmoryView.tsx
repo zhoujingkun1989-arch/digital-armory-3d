@@ -481,6 +481,23 @@ export const ArmoryView: React.FC = () => {
 
           <button
             type="button"
+            className="armory-showcase-btn armory-passport-btn"
+            onClick={() => {
+              playWorkbenchFoley('preset_detent');
+              useAppStore.getState().openPassportModal();
+            }}
+            title={
+              lang === 'en'
+                ? 'Open 27-Exhibit Armorer Certification Passport'
+                : '打开全馆 27 展品军械师资格护照'
+            }
+          >
+            <Award size={13} aria-hidden="true" />
+            <span>{lang === 'en' ? 'Passport' : '军械护照'}</span>
+          </button>
+
+          <button
+            type="button"
             className="armory-showcase-btn armory-poster-btn"
             onClick={() =>
               openPosterModal({

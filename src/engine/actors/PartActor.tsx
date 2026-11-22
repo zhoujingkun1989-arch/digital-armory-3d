@@ -21,10 +21,15 @@ import {
 } from '../geometry/glbAssetService';
 import { createMutablePose, evaluatePartPoseInto } from '../kinematics/math';
 import { malfunctionStore } from '../malfunctions/malfunctionStore';
+import { isTankWeapon } from '../physics/armoryPhysics';
 import {
   getCachedCausalityEvaluation,
   useCausalitySandboxStore,
 } from '../physics/causalitySandbox';
+import {
+  applyTankCrewTransformInto,
+  useTankCrewStore,
+} from '../tank/tankCrewStore';
 import {
   computeThermalSpanInto,
   createArmoryMaterialHooks,
@@ -438,21 +443,35 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
         );
         if (isMalfunction) {
           malfunctionStore.applyPartPoseDelta(weaponId, part.id, poseRef.current);
-        } else if (isFiring && appState.screen === 'workbench') {
-          const causality = useCausalitySandboxStore.getState();
-          if (
-            causality.enabled &&
-            !part.isShell &&
-            (part.group === 'slide' ||
-              /bolt|carrier|slide|piston|handle|buffer/i.test(part.id))
-          ) {
-            const dx = poseRef.current.px - part.assembledPos[0];
-            if (dx < -0.05) {
-              const strokeRatio = getCachedCausalityEvaluation(
+        } else {
+          if (isFiring && appState.screen === 'workbench') {
+            const causality = useCausalitySandboxStore.getState();
+            if (
+              causality.enabled &&
+              !part.isShell &&
+              (part.group === 'slide' ||
+                /bolt|carrier|slide|piston|handle|buffer/i.test(part.id))
+            ) {
+              const dx = poseRef.current.px - part.assembledPos[0];
+              if (dx < -0.05) {
+                const strokeRatio = getCachedCausalityEvaluation(
+                  weaponId,
+                  causality
+                ).strokeRatio;
+                poseRef.current.px = part.assembledPos[0] + dx * strokeRatio;
+              }
+            }
+          }
+          if (appState.screen === 'workbench') {
+            const tankCrew = useTankCrewStore.getState();
+            if (tankCrew.active && isTankWeapon(weaponId)) {
+              applyTankCrewTransformInto(
                 weaponId,
-                causality
-              ).strokeRatio;
-              poseRef.current.px = part.assembledPos[0] + dx * strokeRatio;
+                part.id,
+                tankCrew.turretYawDeg,
+                tankCrew.gunElevDeg,
+                poseRef.current
+              );
             }
           }
         }

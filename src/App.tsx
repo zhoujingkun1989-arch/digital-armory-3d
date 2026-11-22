@@ -7,6 +7,8 @@ import { useMechanicalSoundEngine } from './engine/audio/mechanicalSoundEngine';
 import { CalloutOverlay } from './engine/callout/CalloutOverlay';
 import { scheduleHudBoundsRefresh } from './engine/callout/hudBoundsCache';
 import { ArmoryViewport } from './engine/canvas/ArmoryViewport';
+import { isTankWeapon } from './engine/physics/armoryPhysics';
+import { useTankCrewStore } from './engine/tank/tankCrewStore';
 import { ArmoryView } from './features/armory/ArmoryView';
 import { WeaponStoryDrawer } from './features/story/WeaponStoryDrawer';
 import { BallisticsTelemetryHud } from './features/workbench/BallisticsTelemetryHud';
@@ -18,6 +20,7 @@ import { GeometryBuildBanner } from './features/workbench/GeometryBuildBanner';
 import { ImmersiveFloatingBar } from './features/workbench/ImmersiveFloatingBar';
 import { LiveSectionPlaneBar } from './features/workbench/LiveSectionPlaneBar';
 import { PartInspectorCard } from './features/workbench/PartInspectorCard';
+import { TankCrewHud } from './features/workbench/TankCrewHud';
 import { TimelineDock } from './features/workbench/TimelineDock';
 import { WorkbenchHeader } from './features/workbench/WorkbenchHeader';
 import { UI_STRINGS } from './i18n/uiStrings';
@@ -49,6 +52,12 @@ const LazyCausalitySandboxModal = lazy(
 const LazyArmorPenetrationModal = lazy(
   () => import('./features/armorlab/ArmorPenetrationModal')
 );
+const LazyDirectorReelModal = lazy(
+  () => import('./features/video/DirectorReelModal')
+);
+const LazyArmorerPassportModal = lazy(
+  () => import('./features/passport/ArmorerPassportModal')
+);
 
 export const App: React.FC = () => {
   useUrlStateSync();
@@ -72,6 +81,14 @@ export const App: React.FC = () => {
   const closeArmorPenetrationModal = useAppStore(
     (s) => s.closeArmorPenetrationModal
   );
+  const directorReelModalOpen = useAppStore((s) => s.directorReelModalOpen);
+  const closeDirectorReelModal = useAppStore(
+    (s) => s.closeDirectorReelModal
+  );
+  const passportModalOpen = useAppStore((s) => s.passportModalOpen);
+  const closePassportModal = useAppStore((s) => s.closePassportModal);
+  const activeWeaponId = useAppStore((s) => s.activeWeaponId);
+  const tankCrewActive = useTankCrewStore((s) => s.active);
   const environmentPreset = useAppStore((s) => s.environmentPreset);
   const telemetryHudOpen = useAppStore((s) => s.telemetryHudOpen);
   const sectionCut = useAppStore((s) => s.sectionCut);
@@ -162,12 +179,14 @@ export const App: React.FC = () => {
             {(showLiveTelemetry ||
               engineeringTint ||
               caliperActive ||
-              causalitySandboxOpen) && (
+              causalitySandboxOpen ||
+              (tankCrewActive && isTankWeapon(activeWeaponId))) && (
               <div
                 className={`ballistics-telemetry-slot ${
                   sidebarCollapsed ? 'sidebar-collapsed' : 'sidebar-open'
                 }`}
               >
+                {tankCrewActive && isTankWeapon(activeWeaponId) && <TankCrewHud />}
                 {causalitySandboxOpen && (
                   <Suspense fallback={null}>
                     <LazyCausalitySandboxModal />
@@ -231,6 +250,20 @@ export const App: React.FC = () => {
       {armorPenetrationModalOpen && (
         <Suspense fallback={null}>
           <LazyArmorPenetrationModal onClose={closeArmorPenetrationModal} />
+        </Suspense>
+      )}
+
+      {/* Lazy-loaded 60fps WebGL Director Reel Video Exporter (`WP-22`) */}
+      {directorReelModalOpen && (
+        <Suspense fallback={null}>
+          <LazyDirectorReelModal onClose={closeDirectorReelModal} />
+        </Suspense>
+      )}
+
+      {/* Lazy-loaded 27-Exhibit Armorer Certification Passport (`WP-23a`) */}
+      {passportModalOpen && (
+        <Suspense fallback={null}>
+          <LazyArmorerPassportModal onClose={closePassportModal} />
         </Suspense>
       )}
     </div>

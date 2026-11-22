@@ -511,6 +511,7 @@ type RoutingBus = 'mechanical' | 'ballistic' | 'dry_only';
 class ProceduralGunsmithSoundEngine {
   private ctx: AudioContext | null = null;
   private masterGain: GainNode | null = null;
+  private mediaDest: MediaStreamAudioDestinationNode | null = null;
   private duckingGain: GainNode | null = null;
   private dryBus: GainNode | null = null;
   private mechanicalWetSend: GainNode | null = null;
@@ -664,6 +665,23 @@ class ProceduralGunsmithSoundEngine {
       now,
       narrationPlaying ? 0.05 : 0.14
     );
+  }
+
+  public getRecordingAudioStream(): MediaStream | null {
+    const ctx = this.unlock();
+    if (!ctx || !this.masterGain) return null;
+    if (typeof ctx.createMediaStreamDestination !== 'function') return null;
+    if (!this.mediaDest) {
+      try {
+        const dest = ctx.createMediaStreamDestination();
+        this.mediaDest = dest;
+        this.masterGain.connect(dest);
+      } catch {
+        this.mediaDest = null;
+        return null;
+      }
+    }
+    return this.mediaDest.stream;
   }
 
   private connectToBus(node: AudioNode, bus: RoutingBus): void {
@@ -2656,6 +2674,14 @@ export function playPressCheckSpringSound(
   direction: PressCheckDirection
 ): void {
   soundEngine.playPressCheckSpring(direction);
+}
+
+/**
+ * Returns a captureable Web Audio MediaStream synchronized with `masterGain`
+ * for `WP-22` Director Reel video exports. Returns null if unavailable.
+ */
+export function getRecordingAudioStream(): MediaStream | null {
+  return soundEngine.getRecordingAudioStream();
 }
 
 /**
