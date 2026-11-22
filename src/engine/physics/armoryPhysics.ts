@@ -47,6 +47,7 @@ export const BALLISTIC_CALIBERS: readonly CaliberProfile[] = [
   '762_m43',
   '545_m74',
   '556_nato',
+  '30_30_win',
   '762_nato',
   '30_06',
   '338_lapua',
@@ -452,6 +453,31 @@ export const CALIBER_BALLISTICS: Readonly<
     caseMassG: 8.4,
     shockDiamonds: 1,
   }),
+  '30_30_win': defineCaliber({
+    caliber: '30_30_win',
+    labelEn: '.30-30 Winchester 170gr Flat-Nose',
+    labelZh: '.30-30 温彻斯特 170格令 平头狩猎弹',
+    standard: 'SAAMI',
+    peakPressureMPa: 290,
+    muzzleVelocityMps: 670,
+    projectileMassG: 11.02,
+    safeUnlockPressureMPa: 9,
+    boreTimeMs: 1.32,
+    referenceBarrelMm: 508,
+    pressureShapeK: 3.4,
+    peakU: 0.42,
+    heatPerShotC: 14,
+    foulingPerShot: 0.015,
+    recoilKickCm: 0.98,
+    recoilRiseCm: 0.18,
+    muzzleClimbRad: 0.022,
+    barrelWhipCm: 0.036,
+    ejectSpeedCmS: 175,
+    caseHalfLenCm: 1.32,
+    caseRadiusCm: 0.34,
+    caseMassG: 10.8,
+    shockDiamonds: 3,
+  }),
   '30_06': defineCaliber({
     caliber: '30_06',
     labelEn: '.30-06 Springfield 150gr M2 Ball',
@@ -845,6 +871,10 @@ export const WEAPON_FIRING_TIMING: Readonly<
   leopard2a7: timing(0.08, 0.165, 0.42, 0.89, null, -0.72, -0.56, 0.4),
   // Pz.Kpfw. VI Tiger 131 88mm KwK 36 L/56 rifled — Krupp horizontal wedge extracts full brass case into canvas guard
   tiger1: timing(0.11, 0.23, 0.5, 0.94, null, -0.65, -0.62, 0.44),
+  // Winchester Model 1894 .30-30 Win lever-action carbine — manual D-loop throw + top-upward ejection
+  winchester1894: timing(0.12, 0.27, 0.5, 0.94, null, -0.18, 0.92, 0.34),
+  // Remington 870 Police Magnum 12ga pump-action — manual corn-cob forend rack + twin action bars + right ejection
+  rem870: timing(0.11, 0.27, 0.45, 0.955, null, 0.16, 0.44, 0.88),
 };
 
 export function getWeaponFiringTiming(

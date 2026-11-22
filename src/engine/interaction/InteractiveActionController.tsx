@@ -79,6 +79,8 @@ const WEAPON_SELECTOR_CAPABILITIES: Record<
   m1a2: SEMI_ONLY_MODES,
   leopard2a7: SEMI_ONLY_MODES,
   tiger1: SEMI_ONLY_MODES,
+  winchester1894: SEMI_ONLY_MODES,
+  rem870: SEMI_ONLY_MODES,
 };
 
 /**
@@ -975,6 +977,66 @@ export const WEAPON_FIRE_CONTROL_PROFILES: Record<
       },
     },
   },
+  winchester1894: {
+    weaponId: 'winchester1894',
+    supportedModes: SEMI_ONLY_MODES,
+    mechanismSummaryZh:
+      '半待击保险齿口 + D型杠杆握紧联锁保险 + 外露单动击锤',
+    mechanismSummaryEn:
+      'Half-Cock Hammer Notch + Lever-Squeeze Tang Trigger-Block Safety',
+    modes: {
+      safe: {
+        mode: 'safe',
+        code: 'SAFE',
+        labelZh: '杠杆微松 / 半待击保险 (SAFE)',
+        labelEn: 'TANG BLOCK SAFE',
+        tooltipZh:
+          '杠杆未压紧下尾舌或击锤处于半待击档位时，阻断块物理挡止扳机移动并断开两段式击针接触。',
+        tooltipEn:
+          'Lever slightly unlatched or hammer at half-cock physically blocks trigger movement and decouples the two-piece firing pin.',
+      },
+      semi: {
+        mode: 'semi',
+        code: 'FIRE',
+        labelZh: '.30-30 杠杆单发击发 (FIRE)',
+        labelEn: 'LEVER SINGLE SHOT',
+        tooltipZh:
+          '紧握杠杆压入下尾舌保险后扣压扳机释放外露击锤：射出 .30-30 平头弹后前推 D 型杠杆下拉 H 型闭锁块完成顶抛循环。',
+        tooltipEn:
+          'Squeezing the D-loop lever releases the tang trigger block so hammer fall fires .30-30 Win and lever throw cycles the H-locking bolt.',
+      },
+    },
+  },
+  rem870: {
+    weaponId: 'rem870',
+    supportedModes: SEMI_ONLY_MODES,
+    mechanismSummaryZh:
+      '护圈后置横栓保险 + 击锤落底自动解锁双平行钢推杆泵动',
+    mechanismSummaryEn:
+      'Rear Trigger-Guard Crossbolt Safety + Action-Bar Slide Lock Interlock',
+    modes: {
+      safe: {
+        mode: 'safe',
+        code: 'SAFE',
+        labelZh: '横栓推右锁死扳机 (SAFE)',
+        labelEn: 'CROSSBOLT SAFE',
+        tooltipZh:
+          '护圈后横推保险栓向右隐去红圈挡死扳机行程；同时未击发前左侧推杆解锁片物理锁定玉米棒护木防意外开膛。',
+        tooltipEn:
+          'Pushing the rear crossbolt right hides the red band and blocks trigger travel while the slide lock keeps the breech sealed.',
+      },
+      semi: {
+        mode: 'semi',
+        code: 'FIRE',
+        labelZh: '12号 警用泵动单发循环 (FIRE)',
+        labelEn: '12GA PUMP FIRE',
+        tooltipZh:
+          '左推横栓露红圈击发：内置击锤敲针瞬间自动弹开左侧推杆锁片，随后后拉再前推玉米棒护木完成开锁退壳与上弹闭锁。',
+        tooltipEn:
+          'Push crossbolt left showing red band: firing releases the action-bar lock so dual steel bars pump out spent crimson brass cleanly.',
+      },
+    },
+  },
 };
 
 function isArcheryInteractiveWeapon(
@@ -1072,6 +1134,8 @@ const EXPLICIT_WEAPON_ACTION_PARTS: Record<WeaponId, readonly string[]> = {
     'tiger_recoil_cradle',
     'tiger_ready_round',
   ],
+  winchester1894: ['win94_lever', 'win94_breech_bolt', 'win94_locking_bolt'],
+  rem870: ['rem870_forend', 'rem870_action_bars', 'rem870_breech_bolt'],
 };
 
 const GENERIC_ACTION_PART_INCLUDE_RE =
@@ -1118,8 +1182,11 @@ export function mapManualRackToFireProgress(
   if (weaponId === 'python') {
     return r * 0.165;
   }
-  if (weaponId === 'benellim4' || weaponId === 'garand') {
+  if (weaponId === 'benellim4' || weaponId === 'garand' || weaponId === 'rem870') {
     return 0.22 + r * 0.28;
+  }
+  if (weaponId === 'winchester1894') {
+    return 0.28 + r * 0.28;
   }
   if (weaponId === 'm249') {
     return 0.3 + r * 0.28;
@@ -1223,6 +1290,12 @@ export function computeRecoilSpringForceN(
   } else if (weaponId === 'an94') {
     preloadN = 66;
     rateN = 58;
+  } else if (weaponId === 'winchester1894') {
+    preloadN = 32;
+    rateN = 28;
+  } else if (weaponId === 'rem870') {
+    preloadN = 24;
+    rateN = 22;
   } else if (
     weaponId === 'ztz99a' ||
     weaponId === 'm1a2' ||

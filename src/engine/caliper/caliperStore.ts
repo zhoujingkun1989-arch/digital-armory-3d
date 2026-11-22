@@ -256,6 +256,46 @@ export const CALIPER_V2_BENCHMARK_NOTES: Readonly<
       nominalMm: 720,
     },
   ],
+  winchester1894: [
+    {
+      kind: 'overall_envelope',
+      labelZh: '温彻斯特 M1894 骑兵卡宾枪全长',
+      labelEn: 'Winchester 1894 Cavalry Carbine Overall Length',
+      nominalMm: 949,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '20 英寸 .30-30 WCF 锥形枪管实长',
+      labelEn: '20" .30-30 WCF Tapered Round Barrel Length',
+      nominalMm: 508,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '勃朗宁 H 型垂直升降闭锁块高度跨度',
+      labelEn: 'Browning Vertical H-Locking Block Travel Height',
+      nominalMm: 34,
+    },
+  ],
+  rem870: [
+    {
+      kind: 'overall_envelope',
+      labelZh: '雷明顿 870 Police Magnum 全枪包络总长',
+      labelEn: 'Remington 870 Police Magnum Overall Length',
+      nominalMm: 978,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '18 英寸锰磷化厚壁滑膛枪管实长',
+      labelEn: '18" Heavy-Wall Parkerized Smoothbore Barrel Length',
+      nominalMm: 457,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: 'Model 870 硬铬枪机与上翘楔形闭锁块跨度',
+      labelEn: 'Model 870 Hard-Chrome Bolt & Locking Wedge Span',
+      nominalMm: 82,
+    },
+  ],
 };
 
 export interface CaliperSurfacePoint {

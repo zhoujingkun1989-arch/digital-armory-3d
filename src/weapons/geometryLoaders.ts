@@ -37,6 +37,10 @@ export const GEOMETRY_MODULE_LOADERS: Record<
   leopard2a7: () =>
     import('./leopard2a7/geometries').then((m) => m.GEOMETRY_BUILDERS),
   tiger1: () => import('./tiger1/geometries').then((m) => m.GEOMETRY_BUILDERS),
+  winchester1894: () =>
+    import('./winchester1894/geometries').then((m) => m.GEOMETRY_BUILDERS),
+  rem870: () =>
+    import('./rem870/geometries').then((m) => m.GEOMETRY_BUILDERS),
 };
 
 export function loadWeaponGeometryBuilders(

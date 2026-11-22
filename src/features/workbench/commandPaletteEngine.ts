@@ -355,6 +355,40 @@ function getWeaponCategoryTokens(
       '重型坦克'
     );
   }
+  if (id === 'winchester1894') {
+    tokens.push(
+      'winchester',
+      '1894',
+      'm1894',
+      '30-30',
+      'lever',
+      'carbine',
+      'browning',
+      'saddle ring',
+      '温彻斯特',
+      '1894',
+      '杠杆步枪',
+      '马鞍环',
+      '.30-30'
+    );
+  }
+  if (id === 'rem870') {
+    tokens.push(
+      'remington',
+      '870',
+      'rem870',
+      'police magnum',
+      'pump',
+      '12ga',
+      '12 gauge',
+      'shotgun',
+      'action bars',
+      '雷明顿',
+      '870',
+      '泵动霰弹枪',
+      '玉米棒'
+    );
+  }
   if (category === 'rifle') {
     tokens.push('assault', 'carbine', '步枪');
   }

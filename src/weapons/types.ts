@@ -28,6 +28,8 @@ export const WEAPON_IDS = [
   'm1a2',
   'leopard2a7',
   'tiger1',
+  'winchester1894',
+  'rem870',
 ] as const;
 
 export type WeaponId = (typeof WEAPON_IDS)[number];
@@ -72,6 +74,7 @@ export type CaliberProfile =
   | '9x39_subsonic'
   | '762_nato'
   | '545_m74'
+  | '30_30_win'
   | '125mm_apfsds'
   | '120mm_apfsds'
   | '88mm_pzgr39';

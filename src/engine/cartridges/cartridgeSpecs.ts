@@ -30,6 +30,7 @@ export type MetallicCaliberProfile =
   | '556_nato'
   | '12_gauge'
   | '762_nato'
+  | '30_30_win'
   | '30_06'
   | '338_lapua'
   | '50_bmg';
@@ -54,6 +55,7 @@ export const CARTRIDGE_LAB_ORDER: readonly MetallicCaliberProfile[] = [
   '556_nato',
   '12_gauge',
   '762_nato',
+  '30_30_win',
   '30_06',
   '338_lapua',
   '50_bmg',
@@ -576,7 +578,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     nameEn: '12 Gauge 2.75" (70mm) M162 00 Buckshot',
     loadSubtitleZh: '9 粒 Ø8.38mm 硬化锑铅鹿弹丸 + 花瓣塑料弹托',
     loadSubtitleEn: '9-Pellet .33" Antimonial Lead 00 Buckshot + Shot-Cup Wad',
-    representativeWeapons: ['benellim4'],
+    representativeWeapons: ['benellim4', 'rem870'],
     primaryWeaponId: 'benellim4',
     lineupXCm: 8.7,
     caseLengthMm: 58.5,
@@ -655,6 +657,51 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     jacketColor: '#bd4c19',
     penetratorColor: '#cbd5e1',
     coreSlugColor: '#475569',
+    propellantColor: '#1e293b',
+  },
+
+  '30_30_win': {
+    caliber: '30_30_win',
+    code: '.30-30 Win',
+    standard: 'SAAMI',
+    nameZh: '.30-30 温彻斯特无烟步枪弹（170 gr 平头）',
+    nameEn: '.30-30 Winchester (.30 WCF 170 gr Flat-Nose)',
+    loadSubtitleZh: '170 格令管仓防误触软尖平头弹（JSP-FN）',
+    loadSubtitleEn: '170 gr Tubular-Safe Jacketed Soft-Point Flat-Nose',
+    representativeWeapons: ['winchester1894'],
+    primaryWeaponId: 'winchester1894',
+    lineupXCm: 23.2,
+    caseLengthMm: 51.79,
+    oalMm: 64.77,
+    bulletDiameterMm: 7.82,
+    neckDiameterMm: 8.46,
+    shoulderDiameterMm: 10.19,
+    baseDiameterMm: 10.72,
+    rimDiameterMm: 12.85,
+    rimThicknessMm: 1.6,
+    caseCapacityMl: 2.86,
+    propellantMassG: 2.1,
+    propellantFillRatio: 0.84,
+    propellantTypeZh: 'IMR 3031 单基管状无烟步枪药（32.4 gr）',
+    propellantTypeEn: 'IMR 3031 Extruded Single-Base Smokeless Propellant (32.4 gr)',
+    primerTypeZh: 'Winchester WLR 大号步枪底火',
+    primerTypeEn: 'Winchester WLR Large Rifle Boxer Primer',
+    projectileMassG: 11.02,
+    projectileGrain: 170,
+    coreKind: 'jsp_soft_point',
+    coreAnatomyZh: '凸缘大底缘拉延黄铜壳 + 半被甲平头外露纯铅膨胀软芯',
+    coreAnatomyEn: 'Rimmed Bottleneck Brass Case + Semi-Jacketed Flat-Nose Lead Soft-Point Core',
+    peakPressureMPa: 290,
+    muzzleVelocityMps: 670,
+    muzzleEnergyJ: 2473,
+    highlightZh:
+      '1895 年问世的全球首款民间无烟火药狩猎步枪弹：显著外凸的 12.85mm 实心底缘专门配合杠杆步枪拔弹，平头软尖专为防止在全长下挂管式弹仓内前后碰撞误击前发底火而演化！',
+    highlightEn:
+      'America’s first civilian smokeless hunting cartridge (1895): a 12.85mm solid rim aids positive lever extraction while the flat soft-point nose prevents magazine-tube primer detonation.',
+    caseColor: '#dfae2b',
+    jacketColor: '#bd4c19',
+    penetratorColor: '#cbd5e1',
+    coreSlugColor: '#52525b',
     propellantColor: '#1e293b',
   },
 

@@ -595,6 +595,48 @@ const TIGER1_V3_DRIVETRAIN_INT_PBR: PbrBindingSpec = {
   normalScale: 1.12,
 };
 
+const WIN94_V3_WALNUT_PBR: PbrBindingSpec = {
+  albedoFile: 'win94_v3_walnut_albedo.webp',
+  normalFile: 'win94_v3_walnut_normal.webp',
+  roughnessFile: 'win94_v3_walnut_roughness.webp',
+  normalScale: 0.9,
+};
+
+const WIN94_V3_RECEIVER_PBR: PbrBindingSpec = {
+  albedoFile: 'win94_v3_receiver_albedo.webp',
+  normalFile: 'win94_v3_receiver_normal.webp',
+  roughnessFile: 'win94_v3_receiver_roughness.webp',
+  normalScale: 0.86,
+};
+
+const WIN94_V3_METAL_PBR: PbrBindingSpec = {
+  albedoFile: 'win94_v3_metal_albedo.webp',
+  normalFile: 'win94_v3_metal_normal.webp',
+  roughnessFile: 'win94_v3_metal_roughness.webp',
+  normalScale: 0.85,
+};
+
+const REM870_V3_WALNUT_PBR: PbrBindingSpec = {
+  albedoFile: 'rem870_v3_walnut_albedo.webp',
+  normalFile: 'rem870_v3_walnut_normal.webp',
+  roughnessFile: 'rem870_v3_walnut_roughness.webp',
+  normalScale: 0.9,
+};
+
+const REM870_V3_RECEIVER_PBR: PbrBindingSpec = {
+  albedoFile: 'rem870_v3_receiver_albedo.webp',
+  normalFile: 'rem870_v3_receiver_normal.webp',
+  roughnessFile: 'rem870_v3_receiver_roughness.webp',
+  normalScale: 0.88,
+};
+
+const REM870_V3_METAL_PBR: PbrBindingSpec = {
+  albedoFile: 'rem870_v3_metal_albedo.webp',
+  normalFile: 'rem870_v3_metal_normal.webp',
+  roughnessFile: 'rem870_v3_metal_roughness.webp',
+  normalScale: 0.86,
+};
+
 export const GLB_WEAPON_CONFIGS: Readonly<
   Record<WeaponId, GlbWeaponAssetConfig>
 > = {
@@ -1487,6 +1529,68 @@ export const GLB_WEAPON_CONFIGS: Readonly<
       tiger_ready_round: TIGER1_V3_DRIVETRAIN_INT_PBR,
       tiger_fuel_tanks: TIGER1_V3_DRIVETRAIN_INT_PBR,
       tiger_crew_stations: TIGER1_V3_DRIVETRAIN_INT_PBR,
+    },
+  },
+  winchester1894: {
+    modelFile: 'winchester1894.glb',
+    dynamicSpringParts: [
+      'win94_mainspring',
+      'win94_sear_spring',
+      'win94_mag_spring',
+    ],
+    pbrOverrides: {
+      win94_forend: WIN94_V3_WALNUT_PBR,
+      win94_walnut_stock: WIN94_V3_WALNUT_PBR,
+      win94_receiver: WIN94_V3_RECEIVER_PBR,
+      win94_loading_gate: WIN94_V3_RECEIVER_PBR,
+      win94_saddle_ring: WIN94_V3_RECEIVER_PBR,
+      win94_lever: WIN94_V3_RECEIVER_PBR,
+      win94_link: WIN94_V3_RECEIVER_PBR,
+      win94_buttplate: WIN94_V3_RECEIVER_PBR,
+      win94_barrel: WIN94_V3_METAL_PBR,
+      win94_front_sight: WIN94_V3_METAL_PBR,
+      win94_rear_sight: WIN94_V3_METAL_PBR,
+      win94_barrel_bands: WIN94_V3_METAL_PBR,
+      win94_breech_bolt: WIN94_V3_METAL_PBR,
+      win94_firing_pin: WIN94_V3_METAL_PBR,
+      win94_locking_bolt: WIN94_V3_METAL_PBR,
+      win94_hammer: WIN94_V3_METAL_PBR,
+      win94_trigger: WIN94_V3_METAL_PBR,
+      win94_tang_safety: WIN94_V3_METAL_PBR,
+      win94_mag_tube: WIN94_V3_METAL_PBR,
+      win94_mag_follower: WIN94_V3_METAL_PBR,
+      win94_carrier: WIN94_V3_METAL_PBR,
+    },
+  },
+  rem870: {
+    modelFile: 'rem870.glb',
+    dynamicSpringParts: [
+      'rem870_hammer_spring',
+      'rem870_firing_pin_spring',
+      'rem870_mag_spring',
+    ],
+    pbrOverrides: {
+      rem870_forend: REM870_V3_WALNUT_PBR,
+      rem870_walnut_stock: REM870_V3_WALNUT_PBR,
+      rem870_buttplate: REM870_V3_WALNUT_PBR,
+      rem870_receiver: REM870_V3_RECEIVER_PBR,
+      rem870_trigger_plate: REM870_V3_RECEIVER_PBR,
+      rem870_trigger: REM870_V3_RECEIVER_PBR,
+      rem870_action_release: REM870_V3_RECEIVER_PBR,
+      rem870_action_bars: REM870_V3_RECEIVER_PBR,
+      rem870_mag_tube: REM870_V3_RECEIVER_PBR,
+      rem870_mag_cap: REM870_V3_RECEIVER_PBR,
+      rem870_barrel: REM870_V3_METAL_PBR,
+      rem870_front_sight: REM870_V3_METAL_PBR,
+      rem870_rear_sight: REM870_V3_METAL_PBR,
+      rem870_slide_block: REM870_V3_METAL_PBR,
+      rem870_breech_bolt: REM870_V3_METAL_PBR,
+      rem870_locking_block: REM870_V3_METAL_PBR,
+      rem870_firing_pin: REM870_V3_METAL_PBR,
+      rem870_hammer: REM870_V3_METAL_PBR,
+      rem870_stock_bolt: REM870_V3_METAL_PBR,
+      rem870_mag_follower: REM870_V3_METAL_PBR,
+      rem870_shell_carrier: REM870_V3_METAL_PBR,
     },
   },
 };

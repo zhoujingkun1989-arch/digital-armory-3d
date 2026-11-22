@@ -728,6 +728,50 @@ function build3006Geometries(): CaliberGeometryBundle {
 }
 
 /**
+ * 10b. .30-30 Winchester 170gr Flat-Nose (SAAMI: 51.79mm rimmed bottleneck case, 64.77mm OAL)
+ */
+function build3030WinGeometries(): CaliberGeometryBundle {
+  const pocket: PrimerPocketSpec = {
+    xHead: -1.18,
+    rPocket: 0.132,
+    pocketDepth: 0.085,
+  };
+  const casePts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -1.095),
+    new THREE.Vector2(0.132, -1.095),
+    new THREE.Vector2(0.132, -1.168),
+    new THREE.Vector2(0.145, -1.18),
+    new THREE.Vector2(0.32, -1.18), // Iconic wide Winchester .30-30 rimmed base!
+    new THREE.Vector2(0.325, -1.12),
+    new THREE.Vector2(0.268, -1.1),
+    new THREE.Vector2(0.264, 0.56),
+    new THREE.Vector2(0.174, 0.86),
+    new THREE.Vector2(0.172, 1.18),
+    new THREE.Vector2(0.154, 1.18),
+    new THREE.Vector2(0.154, 0.84),
+    new THREE.Vector2(0, 0.84),
+  ];
+  // 170gr Flat-Nose Soft-Point for tubular magazine safety
+  const bulletPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -0.34),
+    new THREE.Vector2(0.148, -0.34),
+    new THREE.Vector2(0.155, -0.26),
+    new THREE.Vector2(0.155, 0.24),
+    new THREE.Vector2(0.135, 0.46),
+    new THREE.Vector2(0.088, 0.66),
+    new THREE.Vector2(0.068, 0.72),
+    new THREE.Vector2(0, 0.72),
+  ];
+
+  return {
+    caseGeo: finalizeLathe(casePts, 26),
+    bulletGeo: finalizeLathe(bulletPts, 24),
+    ...buildBoxerPrimerGeometries(pocket),
+    xHead: pocket.xHead,
+  };
+}
+
+/**
  * 11. .45 ACP / 11.43×23mm (SAAMI: 22.81mm straight-wall rimless case, 32.39mm OAL, 230gr FMJ-RN)
  * Case X in [-0.92, +0.92] (1.84u), Cartridge OAL [-0.92, +1.70] (2.62u, OAL/case = 1.424).
  */
@@ -1548,6 +1592,16 @@ export const CALIBER_VISUAL_SPECS: Record<CaliberProfile, CaliberVisualSpec> = {
     flashScaleMult: 1.52,
     streakThickness: 0.36,
   },
+  '30_30_win': {
+    caseColor: '#dfae2b',
+    reserveCaseColor: '#b7891e',
+    bulletColor: '#bd4c19',
+    primerColor: '#e2e8f0',
+    bulletLocalOffset: 1.24,
+    reserveTiltZ: 0,
+    flashScaleMult: 1.3,
+    streakThickness: 0.2,
+  },
   '30_06': {
     caseColor: '#dca92c',
     reserveCaseColor: '#b7891e',
@@ -1668,6 +1722,8 @@ export const WEAPON_ROUND_FIT: Record<WeaponId, WeaponRoundFitSpec> = {
   m1a2: { roundScale: 1.0, magLocalShiftX: 0, ignitionF: 0.08 },
   leopard2a7: { roundScale: 1.0, magLocalShiftX: 0, ignitionF: 0.08 },
   tiger1: { roundScale: 1.0, magLocalShiftX: 0, ignitionF: 0.11 },
+  winchester1894: { roundScale: 0.88, magLocalShiftX: 0, ignitionF: 0.12 },
+  rem870: { roundScale: 0.44, magLocalShiftX: -0.11, ignitionF: 0.11 },
 };
 
 const caliberGeoCache = new Map<CaliberProfile, CaliberGeometryBundle>();
@@ -1703,6 +1759,9 @@ export function getCaliberGeometries(
       break;
     case '12_gauge':
       built = build12GaugeGeometries();
+      break;
+    case '30_30_win':
+      built = build3030WinGeometries();
       break;
     case '30_06':
       built = build3006Geometries();
@@ -2186,6 +2245,10 @@ const MUZZLE_DEVICE_SPECS: Record<WeaponId, MuzzleDeviceSpec> = {
     forwardDamp: 0.65,
     jets: lateralBrakeJets([-0.85, -0.32], 3.4, 0.85, 0.32),
   },
+  // Winchester Model 1894 20" .30-30 WCF bare carbine crown
+  winchester1894: { kind: 'bare', forwardDamp: 1, jets: [] },
+  // Remington 870 Police Magnum 18" heavy smoothbore bare crown
+  rem870: { kind: 'bare', forwardDamp: 1, jets: [] },
 };
 
 const _jetUp = new THREE.Vector3(0, 1, 0);

@@ -3589,6 +3589,246 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
           </svg>
         );
       }
+
+      case 'winchester1894': {
+        const walnut = available ? '#7a4b2a' : subFill;
+        const walnutShade = available ? '#5c361d' : fill;
+        const blued = available ? '#2e3847' : fill;
+        const saddleBrass = available ? '#d4a644' : accent;
+        return (
+          <svg
+            viewBox="0 0 180 86"
+            className="weapon-silhouette-svg"
+            aria-hidden
+          >
+            {/* Straight-Grip Walnut Buttstock + Curved Steel Carbine Buttplate */}
+            <path
+              d="M9 36 L14 35 L58 34 L58 43 L11 63 L8 62 Z"
+              fill={walnut}
+              stroke={stroke}
+              strokeWidth="1.25"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M7.5 36.2 Q10.5 49 7.5 62.5 L11.5 63 Q14 49 11.5 35.8 Z"
+              fill={blued}
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+            {/* Exposed Checkered Hammer Spur */}
+            <path
+              d="M57 34 L54 27 L60 28 L61 34 Z"
+              fill={stroke}
+              stroke={stroke}
+              strokeWidth="0.8"
+            />
+            {/* Top-Eject Forged Blued Receiver + King Side Loading Gate + Saddle Ring */}
+            <rect
+              x="58"
+              y="32"
+              width="29"
+              height="12"
+              rx="1.4"
+              fill={blued}
+              stroke={stroke}
+              strokeWidth="1.35"
+            />
+            <rect
+              x="71"
+              y="35.5"
+              width="9.5"
+              height="4.2"
+              rx="0.8"
+              fill={accent}
+              opacity="0.7"
+            />
+            <circle
+              cx="65"
+              cy="38"
+              r="3.2"
+              fill="none"
+              stroke={saddleBrass}
+              strokeWidth="1.3"
+            />
+            {/* Iconic D-Loop Finger Lever Toggle */}
+            <path
+              d="M66 44 L73 44 L55 59 L46 57 L52 46 Z"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="1.8"
+              strokeLinejoin="round"
+            />
+            {/* 20" Tapered Round Carbine Barrel & Front Brass-Bead Sight */}
+            <rect
+              x="87"
+              y="32.2"
+              width="82"
+              height="3.4"
+              rx="0.8"
+              fill={blued}
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+            <polygon points="164,32.2 167.5,32.2 166.2,28.5" fill={saddleBrass} />
+            {/* Semi-Buckhorn Stepped Rear Sight */}
+            <polygon points="99,32.2 106,32.2 101,29.5" fill={stroke} />
+            {/* Full-Length Tubular Magazine + Black Walnut Carbine Forend + Barrel Band */}
+            <rect
+              x="87"
+              y="37"
+              width="79"
+              height="3"
+              rx="0.7"
+              fill={subFill}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            <path
+              d="M87 34 L132 34.4 L132 42.2 L87 42.5 Z"
+              fill={walnutShade}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            <rect
+              x="128"
+              y="31.8"
+              width="4.2"
+              height="10.8"
+              rx="0.8"
+              fill={stroke}
+            />
+          </svg>
+        );
+      }
+
+      case 'rem870': {
+        const walnut = available ? '#7a492a' : subFill;
+        const walnutFore = available ? '#693d21' : subFill;
+        const parkerized = available ? '#363c44' : fill;
+        const chrome = available ? '#e2e8f0' : accent;
+        return (
+          <svg
+            viewBox="0 0 180 86"
+            className="weapon-silhouette-svg"
+            aria-hidden
+          >
+            {/* Vented Rubber Police Recoil Pad & Semi-Pistol Walnut Stock */}
+            <path
+              d="M8.5 34.5 L13.5 34 L13.5 62 L8.5 60.5 Z"
+              fill={cutout}
+              stroke={stroke}
+              strokeWidth="1.2"
+            />
+            <path
+              d="M13.5 34.5 L53 33 L58 34.5 L55 44 L44 50 L13.5 61 Z"
+              fill={walnut}
+              stroke={stroke}
+              strokeWidth="1.25"
+              strokeLinejoin="round"
+            />
+            {/* Solid Billet Steel Model 870 Receiver + Hard-Chrome Bolt & Ejection Port */}
+            <path
+              d="M55 29.5 L94 29.5 L94 43.5 L55 43.5 Z"
+              fill={parkerized}
+              stroke={stroke}
+              strokeWidth="1.35"
+            />
+            <rect
+              x="71"
+              y="31.5"
+              width="16"
+              height="5"
+              rx="1"
+              fill={chrome}
+            />
+            {/* Aluminum Trigger Guard & Trigger */}
+            <path
+              d="M58 43.5 L72 43.5 L71 51 L57 51 Z"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="1.3"
+            />
+            <line
+              x1="64"
+              y1="43.8"
+              x2="63"
+              y2="49.2"
+              stroke={stroke}
+              strokeWidth="1.7"
+              strokeLinecap="round"
+            />
+            {/* 18" Heavy-Wall Barrel + Rear Sight & Front Tritium Bead */}
+            <rect
+              x="94"
+              y="30"
+              width="75"
+              height="4.6"
+              rx="0.9"
+              fill={parkerized}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            <rect x="61" y="27.2" width="6" height="2.3" fill={stroke} />
+            <polygon points="164,30 168,30 166.5,26.5" fill={chrome} />
+            {/* 4+1 Steel Tubular Magazine + Barrel Guide Ring Collar + Knurled Mag Cap */}
+            <rect
+              x="94"
+              y="36.2"
+              width="65"
+              height="4"
+              rx="0.9"
+              fill={subFill}
+              stroke={stroke}
+              strokeWidth="1.05"
+            />
+            <rect
+              x="151"
+              y="30"
+              width="5"
+              height="10.4"
+              rx="0.8"
+              fill={parkerized}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            <rect
+              x="159"
+              y="35.6"
+              width="5.5"
+              height="5.2"
+              rx="1"
+              fill={stroke}
+            />
+            {/* Deeply Grooved Corn-Cob Walnut Pump Forend + Action Bar Spine */}
+            <line
+              x1="88"
+              y1="38.2"
+              x2="106"
+              y2="38.2"
+              stroke={chrome}
+              strokeWidth="1.5"
+            />
+            <path
+              d="M106 34.8 L142 35.2 L142 44.2 L106 44.6 Z"
+              fill={walnutFore}
+              stroke={stroke}
+              strokeWidth="1.25"
+            />
+            {[110, 115, 120, 125, 130, 135, 139].map((gx) => (
+              <line
+                key={gx}
+                x1={gx}
+                y1="35.6"
+                x2={gx}
+                y2="43.8"
+                stroke={stroke}
+                strokeWidth="1"
+                opacity="0.7"
+              />
+            ))}
+          </svg>
+        );
+      }
     }
   });
 

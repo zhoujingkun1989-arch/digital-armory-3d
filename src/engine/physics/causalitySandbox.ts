@@ -117,6 +117,8 @@ const NOMINAL_CADENCE_RPM: Readonly<Record<WeaponId, number>> = {
   m1a2: 10,
   leopard2a7: 10,
   tiger1: 8,
+  winchester1894: 35,
+  rem870: 30,
 };
 
 function clampRange(val: number, min: number, max: number): number {

@@ -2024,6 +2024,66 @@ export const SHOWDOWN_EXHIBIT_SPECS: Readonly<
       en: 'Un-sloped vertical armor plates, mud-and-ice-prone interleaved road wheels, and 57-tonne drivetrain strain caused severe field maintenance burdens',
     },
   },
+  winchester1894: {
+    id: 'winchester1894',
+    driveFamily: 'manual_bolt_or_revolver_linkage',
+    lockingFamily: 'sliding_wedge_breech',
+    feedFamily: 'underbarrel_tubular_elevator',
+    driveDetail: {
+      zh: '射手手指前推下摆 D 形杠杆 53° 驱动底部连杆桥：先下拉垂直 H 型闭锁块开锁，再抽拉顶抛枪机后坐退壳并顺势压倒外露拇指击锤。',
+      en: 'Throwing the forged D-loop lever forward-down 53° rotates the bottom link bridge, dropping the vertical H-locking bolt before pulling the breech bolt back to recock the hammer.',
+    },
+    lockingDetail: {
+      zh: '勃朗宁 H 型垂直升降锻钢闭锁块在机匣双壁垂直导槽内升降 24 mm，合拢时死死撑在圆柱枪机尾端承压 290 MPa 无烟火药爆发力。',
+      en: 'Browning’s forged vertical rising H-locking bolt translates 24 mm inside milled receiver mortises to buttress the cylindrical breech bolt against 290 MPa .30-30 smokeless pressure.',
+    },
+    feedDetail: {
+      zh: '6 发全长下挂管式弹仓配 Nelson King 右侧弹簧装弹活门：下层实弹后退落入黄铜托弹勺，回拉杠杆瞬间抬升 22° 送入弹膛。',
+      en: 'Full-length 6-rd underbarrel tubular magazine loaded via Nelson King’s side spring gate feeds onto a brass shell carrier that tilts upward 22° on lever closure.',
+    },
+    fireControlDetail: {
+      zh: '外露网格拇指击锤配半待击保险档 + 下尾舌杠杆握紧自动联锁阻断块，单动扳机清脆干脆且防跌落走火。',
+      en: 'Exposed checkered spurred hammer with half-cock notch paired with a tang trigger-block safety requiring full lever squeeze before the single-action trigger can trip.',
+    },
+    signatureAdvantage: {
+      zh: '纤薄扁平开顶锻钢机匣极其轻便平衡，单手拨杆即可在马背或林间随打随从侧门补弹，铸就 750 万支西部传奇',
+      en: 'Ultra-slim forged receiver balances naturally in one hand while side-gate top-off allows continuous shooting across 7.5+ million rifles built',
+    },
+    engineeringTradeoff: {
+      zh: '管式弹仓头尾串联限制只能装填平头/圆头 .30-30 弹，顶抛壳口占用正上方光学瞄具直装空间',
+      en: 'Linear tubular magazine mandates flat- or round-nose bullets to prevent primer strikes, and top ejection complicates coaxial optics mounting',
+    },
+  },
+  rem870: {
+    id: 'rem870',
+    driveFamily: 'manual_bolt_or_revolver_linkage',
+    lockingFamily: 'sliding_wedge_breech',
+    feedFamily: 'underbarrel_tubular_elevator',
+    driveDetail: {
+      zh: '玉米棒深槽核桃木前护木经左右对称双平行合金钢推拉连杆直接推进机匣驱动凸轮滑块，彻底消除了单连杆泵动时的扭转卡阻风险。',
+      en: 'Twelve-groove corn-cob walnut pump forend drives twin parallel alloy-steel action bars directly into the billet receiver, preventing pump binding under torque.',
+    },
+    lockingDetail: {
+      zh: '驱动滑块斜坡在最后 7 mm 前冲阶段将淬火钢楔形闭锁块向上顶起咬合 18" 枪管顶部闭锁肩，构筑钢-钢刚性闭锁面。',
+      en: 'Camming slide ramps tilt the hardened steel locking block upward into the 18" barrel extension mortise across the final 7 mm of forearm closure.',
+    },
+    feedDetail: {
+      zh: '4+1 磷化管式弹仓配高可视鲜橙色聚合物托弹杯、双侧交替阻弹片及硬铬 Flexitab 防夹手升降托弹勺，严寒污泥工况供弹稳健。',
+      en: '4+1 Parkerized steel tube with high-vis orange follower, dual alternating shell latches, and a polished hard-chrome Flexitab lifter pivoting up 20° on forward stroke.',
+    },
+    fireControlDetail: {
+      zh: 'CNC 铝合金双销快拆 Police Magnum 扳机座集成 20% 加强击锤簧、横栓保险与左前推杆互锁拨片：实弹未发时锁定护木防误开膛。',
+      en: 'Dual-pin CNC aluminum Police trigger plate packs an extra-power hammer spring, rear crossbolt safety, and left action-bar slide lock released on hammer fall.',
+    },
+    signatureAdvantage: {
+      zh: '整块锻钢机匣与双推杆防偏磨设计在泥沙、破门震动与不同威力弹种之间实现近乎零故障，全球累计产量突破 1,100 万支',
+      en: 'Solid milled billet receiver and dual action bars cycle light less-lethal or 3" Magnum buckshot seamlessly with over 11 million produced worldwide',
+    },
+    engineeringTradeoff: {
+      zh: '全手工往复泵动在紧张高应激条件下若“短拉护木”易出现未完全抛壳，且全钢机匣较铝合金竞争对手重约 350 克',
+      en: 'Requires deliberate full-stroke manual cycling under stress to avoid short-stroking, and solid steel adds ~350 g over aluminum receivers',
+    },
+  },
 };
 
 const DEFAULT_CLASSIFICATION: ShowdownExhibitClassification =
@@ -2365,6 +2425,40 @@ export const CLASSIC_RIVALRY_SEEDS: readonly ClassicRivalrySeed[] = [
     verdict: {
       zh: '1943 年虎式 131 以 57 吨车重承载 100 mm 垂直均质钢与 773 m/s 88mm KwK 36 线膛炮（3.05 MJ）震慑战场；八十年后 M1A2 SEP v3 仅增重 17%，却借滑膛脱壳穿甲弹将膛压翻倍至 670 MPa、初速拉升至 1,670 m/s（6.73 MJ）、动力暴涨至 1,500 hp 并以隔爆尾舱与复合装甲将防护等效放大近十倍！',
       en: 'In 1943 Tiger 131 ruled battlefields with 100 mm vertical steel and a 773 m/s 88mm KwK 36 (3.05 MJ) at 57 tonnes; 80 years later M1A2 adds just 17% mass while doubling pressure to 670 MPa, surging to 1,670 m/s (6.73 MJ) and 1,500 hp with multi-layer composite armor and blast-door survival.',
+    },
+  },
+  {
+    id: 'win94_vs_garand',
+    weaponA: 'winchester1894',
+    weaponB: 'garand',
+    pillLabel: {
+      zh: '温彻斯特 1894 杠杆管仓 vs M1 加兰德导气漏夹',
+      en: 'Winchester 94 Lever vs M1 Garand Gas',
+    },
+    headline: {
+      zh: '美国百年步枪自动化转型之路：1894 勃朗宁 D 型杠杆垂直闭锁 vs 1936 加兰德长行程导气漏夹',
+      en: 'American Rifle Evolution: 1894 Browning Lever Vertical Wedge vs 1936 Garand Gas Rotating Bolt',
+    },
+    verdict: {
+      zh: '两代黑胡桃木实木钢枪映照四十二年机械跨越：温彻斯特 1894 借纯手工 53° 拨杆与管式弹仓让平头 .30-30 实现随时单发侧门补弹与轻盈平衡；M1 加兰德则通过枪口导气自动旋转双突笋取代人手拨杆，释放全威力 .30-06 尖头弹压制火力！',
+      en: 'Two American walnut-and-steel icons separated by 42 years: the 1894 harnesses finger-lever leverage, top ejection, and continuous side-gate tubular loading, while the 1936 Garand recruits muzzle gas to auto-rotate twin bolt lugs for spitzer .30-06 volume of fire.',
+    },
+  },
+  {
+    id: 'rem870_vs_benellim4',
+    weaponA: 'rem870',
+    weaponB: 'benellim4',
+    pillLabel: {
+      zh: '雷明顿 870 双杆泵动 vs 伯奈利 M4 ARGO 自动',
+      en: 'Remington 870 Pump vs Benelli M4 ARGO',
+    },
+    headline: {
+      zh: '12 号战斗霰弹枪巅峰对决：双平行钢推杆斜楔泵动 vs 双近膛 ARGO 短活塞自调半自动',
+      en: '12-Gauge Combat Shotgun Showdown: Twin-Bar Tilting-Wedge Pump vs Twin-ARGO Semi-Auto',
+    },
+    verdict: {
+      zh: '使用完全同款 12 号 00 号鹿弹：雷明顿 870 靠双平行钢推杆与全钢机匣直接以人手强力泵动通吃低威橡胶弹至 3 英寸马格南，机械零对弹药燃气依赖；伯奈利 M4 则以双对称 ARGO 自调泄压气室全自动完成闭锁与抛壳，将连射速度成倍放大！',
+      en: 'Shooting identical 12-gauge 00 buckshot: the Remington 870 uses human-powered dual steel action bars and a billet steel receiver to digest any load regardless of gas energy, whereas Benelli M4 pairs twin self-regulating ARGO pistons with a 2-lug rotating bolt for semi-automatic rapid fire.',
     },
   },
 ];

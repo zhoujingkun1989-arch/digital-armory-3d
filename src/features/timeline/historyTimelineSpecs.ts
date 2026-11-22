@@ -101,6 +101,18 @@ export const TIMELINE_LINEAGES: readonly HistoryTimelineLineageSpec[] = [
 
 export const HISTORY_TIMELINE_NODES: readonly HistoryTimelineNodeSpec[] = [
   {
+    weaponId: 'winchester1894',
+    year: 1894,
+    lineageId: 'manual_revolver_lever',
+    lane: 3,
+    ancestors: [],
+    designerZh: '约翰·摩西·勃朗宁 (John M. Browning)',
+    designerEn: 'John M. Browning / Winchester',
+    innovationZh: '首款为 .30-30 无烟火药诞生的杠杆卡宾枪：H型垂直闭锁块 + 金氏侧装弹口',
+    innovationEn:
+      'First smokeless .30-30 sporting lever rifle: vertical H-locking bolt, top-eject & King gate',
+  },
+  {
     weaponId: 'p08',
     year: 1900,
     lineageId: 'toggle_short_recoil',
@@ -135,6 +147,18 @@ export const HISTORY_TIMELINE_NODES: readonly HistoryTimelineNodeSpec[] = [
     innovationZh: '88mm KwK 36 L/56 重炮与交错大直径负重轮扭杆悬挂',
     innovationEn:
       '88mm KwK 36 vertical-wedge gun and Schachtellaufwerk interleaved torsion-bar suspension',
+  },
+  {
+    weaponId: 'rem870',
+    year: 1950,
+    lineageId: 'manual_revolver_lever',
+    lane: 3,
+    ancestors: ['winchester1894'],
+    designerZh: '雷·克里滕登团队 (L. Ray Crittendon / Remington)',
+    designerEn: 'L. Ray Crittendon / Remington Arms',
+    innovationZh: '整块锻钢机匣配左右双平行钢推杆泵动与倾斜楔块闭锁',
+    innovationEn:
+      'Solid billet steel receiver with dual zero-bind action bars & tilting wedge bolt lockup',
   },
   {
     weaponId: 'python',

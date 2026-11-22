@@ -894,6 +894,74 @@ export const WEAPON_EN_FALLBACKS: Record<
       'Search tank module / BOM code (e.g. 88mm, Maybach, interleaved, breech, FC-04)...',
     firingMilestoneLabel: 'Horizontal Wedge Open',
   },
+  winchester1894: {
+    shortLabel: 'Winchester 94',
+    name: 'Winchester Model 1894 Lever-Action Carbine',
+    originCountry: 'United States',
+    weaponType: 'Lever Rifle',
+    statusLabel: 'V5.0 Flagship · Ready',
+    caliber: '.30-30 Winchester (.30 WCF)',
+    compactCaliber: '.30-30 Win · 170gr FN',
+    actionMechanism:
+      'D-Loop Finger Lever · Browning Vertical Rising H-Locking Block · Top-Eject',
+    overallLengthMm: '949 mm (20" Cavalry Carbine)',
+    barrelSpec: '508 mm (20" 6-RH 1:12" Round Steel Barrel)',
+    weightKg: '3.10 kg (Empty)',
+    muzzleVelocityMs: '670 m/s (.30-30 WCF 170 gr Flat-Nose)',
+    effectiveRangeM: '250 m',
+    rateOfFire: '25–35 rpm (Manual Lever Cycle)',
+    description:
+      'John Moses Browning’s 1894 masterpiece engineered specifically for America’s first smokeless sporting cartridge, .30-30 Winchester: swinging the D-ring lever down drops the bottom link bridge and vertical rising H-locking bolt clear of the cylindrical top-eject breech block, recocking the exposed spurred hammer while pivoting the brass carrier lifter to chamber the next cartridge from the full-length tubular magazine fed through Nelson King’s side spring gate.',
+    highlights: [
+      'Browning Vertical Rising H-Locking Bolt & Bottom Toggle Link Bridge',
+      'Forged D-Loop Finger Lever w/ Squeeze Tang Safety Block',
+      'Top-Eject Cylindrical Breech Bolt & Nelson King Side Loading Gate',
+      '20" Tapered Carbine Barrel, Left Saddle Ring & Oiled Black Walnut',
+    ],
+    workbenchTitle: 'Winchester Model 1894 Lever-Action 3D Teardown & Cycle',
+    workbenchSubtitle:
+      '4 Assemblies · 24 CAD Parts · Vertical H-Locking Block, Lever Link & Tubular Feed',
+    cutawayLabel: 'Vertical Lock & Carrier Cutaway',
+    cutawayTitle:
+      'Switch to cutaway view and frame the rising H-locking block, finger lever toggle, brass carrier lifter, and external hammer',
+    searchPlaceholder:
+      'Search module / BOM code (e.g. locking, lever, carrier, saddle ring, B-05)...',
+    firingMilestoneLabel: 'Lever Throw Unlock',
+  },
+  rem870: {
+    shortLabel: 'Remington 870',
+    name: 'Remington Model 870 Police Magnum Pump Shotgun',
+    originCountry: 'United States',
+    weaponType: 'Pump Shotgun',
+    statusLabel: 'V5.0 Flagship · Ready',
+    caliber: '12 Gauge (2¾" / 3" Magnum)',
+    compactCaliber: '12ga 00 Buck · Pump',
+    actionMechanism:
+      'Corn-Cob Pump Forend · Twin Parallel Steel Action Bars · Tilting Locking Wedge',
+    overallLengthMm: '978 mm (18" Police Fixed-Stock)',
+    barrelSpec: '457 mm (18" Heavy-Wall Parkerized Improved-Cylinder)',
+    weightKg: '3.40 kg (Empty)',
+    muzzleVelocityMs: '404 m/s (12ga 00 Buckshot)',
+    effectiveRangeM: '50 m (Buckshot) / 100 m (Slug)',
+    rateOfFire: 'Manual Pump Single-Shot Cycle (Flexitab)',
+    description:
+      'America’s most ubiquitous fighting shotgun (over 11 million built since 1950): CNC-milled from a solid block of forged steel, L. Ray Crittendon’s twin parallel action bars completely eliminate forearm bind while the camming slide lowers a hardened tilting locking wedge inside the polished hard-chrome bolt. Paired with an anodized aluminum dual-pin Police trigger plate, action-bar slide lock release, high-vis orange follower, corn-cob walnut forend, and Flexitab shell carrier.',
+    highlights: [
+      'Solid Billet Parkerized Steel Receiver & Twin Zero-Bind Action Bars',
+      'Camming Slide Tilting Locking Wedge & Polished Hard-Chrome Bolt',
+      '12-Groove Corn-Cob Walnut Pump Forend & High-Vis Orange Follower',
+      'Dual-Pin Aluminum Police Trigger Plate & Left Slide-Lock Release',
+    ],
+    workbenchTitle: 'Remington 870 Police Magnum 3D Teardown & Pump Cycle',
+    workbenchSubtitle:
+      '4 Assemblies · 24 CAD Parts · Twin Action Bars, Tilting Wedge Lock & Flexitab Carrier',
+    cutawayLabel: 'Twin Action-Bar & Wedge Cutaway',
+    cutawayTitle:
+      'Switch to cutaway view and frame the twin parallel steel action bars, tilting locking wedge, hard-chrome bolt & Flexitab lifter',
+    searchPlaceholder:
+      'Search module / BOM code (e.g. action bars, locking block, forend, carrier, P-02)...',
+    firingMilestoneLabel: 'Manual Pump Stroke',
+  },
 };
 
 export function getLocalizedShortWeaponLabel(
@@ -925,6 +993,8 @@ const COMPACT_ZH_CALIBER: Partial<Record<FallbackWeaponId, string>> = {
   m1a2: '120×570mm · M829A4',
   leopard2a7: '120×570mm · DM63A1',
   tiger1: '88×571mmR · PzGr. 39',
+  winchester1894: '.30-30 Win · 平头步枪弹',
+  rem870: '12号 00鹿弹 · 泵动',
 };
 
 export function getLocalizedCatalogSpecs(
@@ -1036,6 +1106,10 @@ const WALNUT_HARDWOOD_PART_IDS = new Set<string>([
   'garand_walnut_stock',
   'garand_rear_handguard',
   'garand_front_handguard',
+  'win94_walnut_stock',
+  'win94_forend',
+  'rem870_walnut_stock',
+  'rem870_forend',
 ]);
 
 const P08_EUROPEAN_WALNUT_PART_IDS = new Set<string>([
@@ -1062,7 +1136,10 @@ export function resolvePartMaterialLabel(
 ): string {
   const wid = weaponId as string;
   if (
-    (wid === 'python' || wid === 'garand') &&
+    (wid === 'python' ||
+      wid === 'garand' ||
+      wid === 'winchester1894' ||
+      wid === 'rem870') &&
     part.material === 'polymer_frame' &&
     WALNUT_HARDWOOD_PART_IDS.has(part.id)
   ) {

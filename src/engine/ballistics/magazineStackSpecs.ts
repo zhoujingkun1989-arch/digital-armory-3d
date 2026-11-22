@@ -1069,6 +1069,36 @@ export const MAGAZINE_STACK_SPECS: Readonly<
     },
     slots: [],
   },
+  winchester1894: {
+    weaponId: 'winchester1894',
+    magBodyPartId: 'win94_mag_tube',
+    followerPartId: 'win94_mag_follower',
+    roundCount: 0,
+    firingHandoffSlotIndex: 0,
+    feedWindow: [0.56, 0.68],
+    replenishWindow: [0.82, 0.94],
+    magSubStripStartT: 0.36,
+    followerDeckPlane: {
+      point: [17.8, -0.35, 0],
+      normal: [-1, 0, 0],
+    },
+    slots: [],
+  },
+  rem870: {
+    weaponId: 'rem870',
+    magBodyPartId: 'rem870_mag_tube',
+    followerPartId: 'rem870_mag_follower',
+    roundCount: 0,
+    firingHandoffSlotIndex: 0,
+    feedWindow: [0.52, 0.64],
+    replenishWindow: [0.82, 0.94],
+    magSubStripStartT: 0.32,
+    followerDeckPlane: {
+      point: [14.0, -1.25, 0],
+      normal: [-1, 0, 0],
+    },
+    slots: [],
+  },
 };
 
 /** Maximum instanced capacity needed across all 27 exhibits (`roundCount + 1` replacement) */

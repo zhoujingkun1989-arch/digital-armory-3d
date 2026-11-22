@@ -55,7 +55,9 @@ export type MechanismAcousticStyle =
   | 'compound_crossbow'
   | 'tank_autoloader_cannon'
   | 'tank_bustle_cannon'
-  | 'tank_ww2_cannon';
+  | 'tank_ww2_cannon'
+  | 'lever_action_rifle'
+  | 'pump_action_shotgun';
 
 export interface CaliberAcousticProfile {
   caliber: CaliberProfile;
@@ -237,6 +239,19 @@ export const CALIBER_ACOUSTIC_PROFILES: Record<
     brakeRoarGain: 0.32,
     casingRingHz: 1920,
     mechanismStyle: 'argo_shotgun',
+  },
+  '30_30_win': {
+    caliber: '30_30_win',
+    labelEn: '.30-30 Winchester 170gr Flat-Nose',
+    labelZh: '.30-30 温彻斯特 170格令 平头狩猎弹',
+    subFreqHz: 60,
+    punchDecaySec: 0.3,
+    blastTailSec: 0.52,
+    crackCutoffHz: 2520,
+    peakGain: 0.87,
+    brakeRoarGain: 0.28,
+    casingRingHz: 2440,
+    mechanismStyle: 'lever_action_rifle',
   },
   '30_06': {
     caliber: '30_06',

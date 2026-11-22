@@ -88,6 +88,7 @@ export const EXTERNAL_PROJECTILE_ORDER: readonly ExternalProjectileId[] = [
   '762_m43',
   '545_m74',
   '556_nato',
+  '30_30_win',
   '762_nato',
   '30_06',
   '338_lapua',
@@ -300,7 +301,7 @@ export const EXTERNAL_PROJECTILE_SPECS: Readonly<
     pelletCount: 9,
     defaultSightHeightCm: 4.8,
     recommendedZeroM: 25,
-    representativeWeaponIds: ['benellim4'],
+    representativeWeaponIds: ['benellim4', 'rem870'],
     primaryWeaponId: 'benellim4',
     noteZh:
       '9 粒 Ø8.38mm 圆球齐射总动能达 2,561 J，但圆球极低弹道系数（G1 0.065）伴随距离呈散布锥扩张与急剧能量衰减。',
@@ -656,6 +657,31 @@ export const EXTERNAL_PROJECTILE_SPECS: Readonly<
       'ZTZ-99A 125mm ZPT-98 L/50 滑膛炮 5.2 马赫超高速长杆钨芯弹（7.60 MJ），1,000 m 飞行仅需 0.57 秒、横风偏流近乎可忽略不计！',
     noteEn:
       'ZTZ-99A’s 125mm ZPT-98 L/50 Mach 5.2 tungsten long-rod dart (7.60 MJ) covers 1,000 m in just 0.57 s with near-zero crosswind drift.',
+  }),
+
+  '30_30_win': defineProjectile({
+    id: '30_30_win',
+    code: '.30-30 Win',
+    nameZh: '.30-30 温彻斯特 170gr FN',
+    nameEn: '.30-30 Winchester 170gr Flat-Nose',
+    loadLabelZh: '170 gr 平头管仓防误触软尖狩猎弹',
+    loadLabelEn: '170 gr Flat-Nose Soft-Point Tubular-Safe',
+    category: 'rifle',
+    dragModel: 'G1',
+    bc: 0.254,
+    muzzleVelocityMps: 670,
+    massGrains: 170,
+    massGrams: 11.02,
+    caliberMm: 7.82,
+    pelletCount: 1,
+    defaultSightHeightCm: 2.8,
+    recommendedZeroM: 100,
+    representativeWeaponIds: ['winchester1894'],
+    primaryWeaponId: 'winchester1894',
+    noteZh:
+      '为管式弹仓安全设计的钝平头无烟步枪弹（2,470 J）：250 m 内森林林地猎鹿侵彻力卓越，350 m 后随平头 G1 气动减速弧高迅速抬升。',
+    noteEn:
+      'Tubular-magazine safe flat-nose smokeless round (2,470 J): flat trajectory inside 250 m brush hunting before G1 drag steepens past 350 m.',
   }),
 };
 

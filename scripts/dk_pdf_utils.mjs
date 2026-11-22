@@ -38,6 +38,8 @@ export const ALL_WEAPON_IDS = Object.freeze([
   'm1a2',
   'leopard2a7',
   'tiger1',
+  'winchester1894',
+  'rem870',
 ]);
 
 export const VALID_STYLES = Object.freeze([

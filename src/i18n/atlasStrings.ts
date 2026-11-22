@@ -2029,6 +2029,142 @@ export const ALL_ATLAS_EN_STRINGS: Readonly<
       },
     },
   },
+  winchester1894: {
+    heading:
+      'Winchester Model 1894 Carbine 2K 5-Channel Packed ORM Texture Atlas (Albedo / Normal / Roughness)',
+    suites: {
+      win94_walnut: {
+        title: 'American Black Walnut Straight-Grip Stock & Forend Suite',
+        tabTitle: 'Walnut Furniture',
+        summary:
+          'Cycles-baked 2K 5-channel Packed ORM suite for straight-grip American black walnut furniture soaked in hand-rubbed linseed oil with subtle steel-band patina.',
+        highlights: [
+          'Quarter-sawn straight grain black walnut wood texture across F-04 & F-06',
+          'Hand-rubbed satin linseed oil roughness gradient (0.48–0.64)',
+          'Clean Cycles contact AO where upper/lower tangs inlet into wood wrist',
+        ],
+        channels: [
+          { note: 'sRGB · Linseed-oiled American black walnut grain & tang patina' },
+          { note: 'Linear · Open wood-pore grain normal & edge bevel micro-relief' },
+          { note: 'Linear · R:Cycles AO / G:Walnut sheen(0.54) / B:Dielectric' },
+        ],
+      },
+      win94_receiver: {
+        title: 'Top-Eject Blued Receiver, Saddle Ring & D-Loop Lever Suite',
+        tabTitle: 'Receiver & Lever',
+        summary:
+          'Deep charcoal-blued New Haven forged receiver, left cavalry saddle ring, D-ring lever & King side spring loading gate with operational edge burnish.',
+        highlights: [
+          'Charcoal carbon-steel hot bluing with subtle holster/saddle wear highlights',
+          'Subtle color-case mottling on forged finger lever & link bridge',
+          'Burnished feed bevel along Nelson King 1866 loading gate',
+        ],
+        channels: [
+          { note: 'sRGB · Deep charcoal blue receiver, case-colored lever & saddle ring' },
+          { note: 'Linear · Machined mill tracks & pivot chamfer tangent normals' },
+          { note: 'Linear · R:Recess AO / G:Blued steel(0.28) / B:Metalness' },
+        ],
+      },
+      win94_metal: {
+        title: '20" .30-30 Barrel, H-Locking Block & Brass Carrier Suite',
+        tabTitle: 'Barrel & Internals',
+        summary:
+          'Multisurface 2K metalwork separating the tapered 20" blued round barrel, burnished top-eject bolt, vertical H-locking bolt & machined solid brass shell lifter.',
+        highlights: [
+          'Burnished stainless cylindrical bolt & two-piece firing pin (0.20)',
+          'High-strength blued .30-30 WCF tapered carbine barrel & mag tube',
+          'Turned solid C26000 brass follower & pivoting carrier lifter spoon',
+        ],
+        channels: [
+          { note: 'sRGB · Blued barrel/tube, bright bolt, brass front bead & carrier' },
+          { note: 'Linear · Turned barrel rings & brushed flat breech guide faces' },
+          { note: 'Linear · R:Cycles AO / G:Bolt(0.20)-Brass(0.26)-Blued(0.36) / B:Metalness' },
+        ],
+      },
+      win94_seamless_springs: {
+        title: 'Dynamic Helical Music-Wire Springs Micro-Surface Map',
+        tabTitle: 'Helical Springs',
+        summary:
+          'Shared 512x512 seamless steel wire normal & CLP oil-film roughness maps preserving real-time aSpringParam compression along all three springs.',
+        highlights: [
+          'Full GPU aSpringParam wire-diameter preservation during stroke',
+          'Fine drawn music-wire sheen & protective ordnance grease',
+        ],
+        channels: [
+          { note: 'Linear · Seamless brushed music-wire micro-normal' },
+          { note: 'Linear · Anti-corrosion oil roughness variation' },
+        ],
+      },
+    },
+  },
+  rem870: {
+    heading:
+      'Remington 870 Police Magnum 2K 5-Channel Packed ORM Texture Atlas (Albedo / Normal / Roughness)',
+    suites: {
+      rem870_walnut: {
+        title: 'Corn-Cob Grooved Walnut Forend, Police Stock & Recoil Pad Suite',
+        tabTitle: 'Corn-Cob & Stock',
+        summary:
+          'Cycles-baked 2K 5-channel Packed ORM suite contrasting the 12-ring corn-cob walnut pump forend & straight stock against the matte vented rubber police recoil pad.',
+        highlights: [
+          'Deeply turned 12-groove corn-cob pump forend with worn grip ridges',
+          'Oil-sealed American black walnut semi-pistol police buttstock',
+          'Matte vulcanized vented solid rubber recoil pad (0.82 roughness)',
+        ],
+        channels: [
+          { note: 'sRGB · Oiled American walnut corn-cob forend, stock & rubber pad' },
+          { note: 'Linear · Deep forend rib relief & micro-stippled rubber pad' },
+          { note: 'Linear · R:AO / G:Walnut(0.54) vs Rubber(0.82) / B:Dielectric' },
+        ],
+      },
+      rem870_receiver: {
+        title: 'Solid Billet Parkerized Receiver, Action Bars & Police FCG Suite',
+        tabTitle: 'Billet Receiver',
+        summary:
+          'Military/police dark zinc-manganese Parkerized phosphate crystalline texture across the solid-billet steel receiver, twin action bars & anodized aluminum trigger plate.',
+        highlights: [
+          'Granular phosphate crystal grain holding protective CLP gun oil',
+          'Burnished dual parallel steel action bars where bars cycle frame rails',
+          'Matte anodized aluminum Police Magnum trigger plate contrast',
+        ],
+        channels: [
+          { note: 'sRGB · Matte manganese-parkerized billet steel & aluminum FCG' },
+          { note: 'Linear · Fine crystalline Parkerized grain & knurled mag cap pattern' },
+          { note: 'Linear · R:Cycles AO / G:Parkerized(0.48) / B:Metalness' },
+        ],
+      },
+      rem870_metal: {
+        title: '18" Heavy Barrel, Hard-Chrome Bolt & High-Vis Orange Follower',
+        tabTitle: 'Chrome Bolt & Barrel',
+        summary:
+          'Contrasts the heavy 18" Parkerized smoothbore barrel with mirror-bright hard-chrome bolt & Flexitab carrier plus the safety-orange polymer magazine follower.',
+        highlights: [
+          'Mirror hard-chrome Model 870 breech bolt & Flexitab carrier (0.16)',
+          'Heavy-wall 18" improved-cylinder barrel & tritium white-dot front post',
+          'Non-metallic safety-orange self-lubricating follower cup (0.04 metalness)',
+        ],
+        channels: [
+          { note: 'sRGB · Parkerized 18" barrel, bright chrome bolt & orange follower' },
+          { note: 'Linear · Lathe bore concentric finish & slick chrome bolt tracks' },
+          { note: 'Linear · R:AO / G:Chrome(0.16)-Barrel(0.46)-Polymer(0.38) / B:Metalness' },
+        ],
+      },
+      rem870_seamless_springs: {
+        title: 'Heavy-Duty Police Helical Springs Micro-Surface Map',
+        tabTitle: 'Helical Springs',
+        summary:
+          'Shared 512x512 seamless steel wire detail suite driving the extra-power Police hammer spring, firing pin return spring & 34-coil tubular mag spring.',
+        highlights: [
+          'Preserves real-time aSpringParam deformation across all 3 springs',
+          'High-tensile stainless & music-wire oil sheen',
+        ],
+        channels: [
+          { note: 'Linear · Seamless drawn steel wire micro-normal' },
+          { note: 'Linear · Protective oil roughness film variation' },
+        ],
+      },
+    },
+  },
 };
 
 export const ATLAS_EN_STRINGS: Readonly<

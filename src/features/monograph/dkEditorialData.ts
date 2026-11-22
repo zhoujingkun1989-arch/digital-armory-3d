@@ -2277,6 +2277,70 @@ const EVOLUTION_TIMELINE_SEEDS: Readonly<
       eraRelation: 'successor',
     },
   ],
+  winchester1894: [
+    {
+      year: '1873',
+      name: { zh: '温彻斯特 Model 1873', en: 'Winchester Model 1873' },
+      subtitle: { zh: '黑火药双连杆肘节“赢得西部的枪”', en: 'Black-Powder Toggle-Link Frontier Carbine' },
+      eraRelation: 'ancestor',
+    },
+    {
+      year: '1886',
+      name: { zh: '温彻斯特 Model 1886', en: 'Winchester Model 1886' },
+      subtitle: { zh: '勃朗宁双垂直闭锁栓大威力杠杆原型', en: 'Browning Twin Vertical Locking-Bar Action' },
+      eraRelation: 'predecessor',
+    },
+    {
+      year: '1894',
+      name: { zh: 'Winchester Model 1894', en: 'Winchester Model 1894' },
+      subtitle: { zh: 'H型垂直闭锁 · .30-30 无烟步枪传奇', en: 'Rising H-Block · First .30-30 Smokeless' },
+      eraRelation: 'current',
+    },
+    {
+      year: '1895',
+      name: { zh: '马林 Model 1895 / 336', en: 'Marlin Model 1893 / 336' },
+      subtitle: { zh: '实心封闭顶侧抛壳同代强劲竞品', en: 'Solid-Top Side-Eject Lever Action Rival' },
+      eraRelation: 'rival',
+    },
+    {
+      year: '1982',
+      name: { zh: 'Model 94 Angle Eject', en: 'Model 94 Angle Eject' },
+      subtitle: { zh: '角抛壳口改良支持桥架直装光学瞄具', en: 'Angled Ejection Evolution for Scopes' },
+      eraRelation: 'successor',
+    },
+  ],
+  rem870: [
+    {
+      year: '1897',
+      name: { zh: '温彻斯特 Model 1897', en: 'Winchester Model 1897' },
+      subtitle: { zh: '外露击锤战壕泵动霰弹枪先驱', en: 'Exposed-Hammer Trench Shotgun Ancestor' },
+      eraRelation: 'ancestor',
+    },
+    {
+      year: '1937',
+      name: { zh: '雷明顿 Model 31', en: 'Remington Model 31' },
+      subtitle: { zh: '“滚珠丝滑”战前铣削钢泵动直系前身', en: 'Ball-Bearing Smooth Milled Predecessor' },
+      eraRelation: 'predecessor',
+    },
+    {
+      year: '1950',
+      name: { zh: 'Remington Model 870', en: 'Remington Model 870' },
+      subtitle: { zh: '双平行推杆 · 整钢机匣突破 1100 万支', en: 'Twin Action Bars · Solid Billet Benchmark' },
+      eraRelation: 'current',
+    },
+    {
+      year: '1961',
+      name: { zh: '莫斯伯格 Mossberg 500', en: 'Mossberg Model 500' },
+      subtitle: { zh: '铝合金机匣顶推保险长盛军警对手', en: 'Alloy Receiver & Tang Safety Rival' },
+      eraRelation: 'rival',
+    },
+    {
+      year: '1999',
+      name: { zh: '伯奈利 M4 Super 90', en: 'Benelli M4 Super 90' },
+      subtitle: { zh: 'ARGO 双活塞半自动战巡霰弹演进', en: 'ARGO Twin-Piston Auto Evolution' },
+      eraRelation: 'successor',
+    },
+  ],
 };
 
 export function buildDkEvolutionTimeline(
@@ -2632,6 +2696,20 @@ const FCG_LOUPE_OVERRIDES: Partial<
       en: 'Leitz TZF 9b binocular sight pairs with a front 8-speed Olvar gearbox for neutral-steer turns.',
     },
   },
+  winchester1894: {
+    title: { zh: '左侧马鞍挂环与半鹿角照门', en: 'Saddle Ring & Buckhorn' },
+    caption: {
+      zh: '机匣左腹骑兵马鞍挂环配阶梯半鹿角照门，兼顾骑行快拔与 50–300 码猎鹿快速瞄准。',
+      en: 'Left cavalry saddle ring pairs with stepped buckhorn sights for brush hunting speed.',
+    },
+  },
+  rem870: {
+    title: { zh: '双平行钢推杆与玉米棒护木', en: 'Twin Bars & Corn-Cob Grip' },
+    caption: {
+      zh: '12 环深槽核桃木护木直连左右对称双合金钢推杆，湿滑高压推拉永不偏磨卡滞。',
+      en: '12-groove corn-cob walnut forend drives symmetrical steel action bars with zero binding torque.',
+    },
+  },
 };
 
 const BREECH_LOUPE_OVERRIDES: Partial<
@@ -2684,6 +2762,20 @@ const BREECH_LOUPE_OVERRIDES: Partial<
     caption: {
       zh: '半自动水平滑楔复进横移 160 mm 自动退壳，23.1 升 HL230 V12 经中轴驱动前置变速箱。',
       en: 'Semi-auto horizontal wedge slides 160 mm to eject brass; 23.1L V12 drives the front gearbox.',
+    },
+  },
+  winchester1894: {
+    title: { zh: 'H 型垂直闭锁与外露击锤', en: 'Vertical H-Lock & Hammer' },
+    caption: {
+      zh: 'D 型杠杆驱动连杆桥升降 24 mm 垂直闭锁块撑紧圆柱枪机，配杠杆握紧自动联锁保险。',
+      en: 'D-loop toggle drops a 24 mm rising H-locking bolt behind the cylindrical top-eject breech block.',
+    },
+  },
+  rem870: {
+    title: { zh: '上翘楔形闭锁块与铝合金火控', en: 'Tilting Wedge & Police FCG' },
+    caption: {
+      zh: '凸轮滑块顶升淬火斜楔咬合枪管肩台，下方集成双销铝合金警用火控座与推杆释放片。',
+      en: 'Camming slide tilts a steel locking wedge into the barrel above the dual-pin Police trigger pack.',
     },
   },
 };
@@ -2764,6 +2856,20 @@ const MAG_LOUPE_OVERRIDES: Partial<
     caption: {
       zh: '宽大悬挑侧翼整齐码放 920 mm 长 PzGr. 39 凸缘黄铜穿甲弹，装填入膛触发炮闩自动闭锁。',
       en: 'Wide sponson racks stow 920 mm rimmed brass PzGr. 39 shells that snap-close the wedge.',
+    },
+  },
+  winchester1894: {
+    title: { zh: '金氏侧装弹口与黄铜托弹勺', en: 'King Gate & Brass Carrier' },
+    caption: {
+      zh: '右腹 Nelson King 专利弹簧活门直接压入 6 发 .30-30 平头弹，由黄铜托弹勺上举 22° 喂膛。',
+      en: 'Nelson King side spring gate feeds 6 tubular .30-30 rounds onto a 22° pivoting brass lifter.',
+    },
+  },
+  rem870: {
+    title: { zh: '鲜橙托弹杯与 Flexitab 勺', en: 'Orange Follower & Flexitab' },
+    caption: {
+      zh: '4+1 磷化管仓内置高可视鲜橙色聚合物托弹杯，联动硬铬 Flexitab 托弹勺可靠上举 12 号鹿弹。',
+      en: 'High-vis orange follower drives shells onto the hard-chrome Flexitab carrier from the 4+1 tube.',
     },
   },
 };
