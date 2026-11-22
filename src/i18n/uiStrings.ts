@@ -754,7 +754,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       },
       qualityTitle: (tier) =>
         tier === 'ultra'
-          ? '当前画质：极致 (Ultra · 2K 阴影 + GTAO + 微距景深 + SMAA)，点击切换画质档位'
+          ? '当前画质：极致 (Ultra · 2K/4K 阴影 + GTAO + 微距景深 + SMAA)，点击切换画质档位'
           : tier === 'balanced'
             ? '当前画质：均衡 (Balanced · 半分辨率 GTAO + 1.5x DPR)，点击切换画质档位'
             : '当前画质：流畅省电 (Eco · 关闭后处理，适配核显与移动设备)，点击切换画质档位',
@@ -823,9 +823,9 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       pbrOn: '真实 PBR 贴图已启用',
       pbrOff: 'PBR 贴图已关闭',
       pbrTitle:
-        '开启或关闭真实 2K 5通道 PBR 材质贴图 (Albedo + Normal + Packed ORM)',
+        '开启或关闭真实 2K/4K 5通道 PBR 材质贴图 (Albedo + Normal + Packed ORM)',
       atlasBtn: '查看 PBR 贴图图集',
-      atlasTitle: '检视并下载全部定制 2K WebP 材质贴图原图',
+      atlasTitle: '检视并下载全部定制 2K/4K WebP 材质贴图原图',
       rotateOn: '展台旋转中',
       rotateOff: '自动旋转已停',
       rotateTitle: '开启或暂停 3D 展台自动环绕旋转',
@@ -866,9 +866,9 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
     },
     atlasModal: {
       dialogAria: 'PBR 真实贴图图集检视器',
-      kicker: `${VAULT_EXHIBIT_COUNT}-EXHIBIT 2K PBR ATLAS`,
+      kicker: `${VAULT_EXHIBIT_COUNT}-EXHIBIT 2K/4K PBR ATLAS`,
       weaponSwitcherAria: `${VAULT_EXHIBIT_ZH}款馆藏兵器 PBR 贴图库切换`,
-      subtitle: `全馆${VAULT_EXHIBIT_ZH}款名枪、复合弓弩与主战坦克共 ${VAULT_TEXTURES_TOTAL} 张定制高清 WebP 物理材质贴图（${VAULT_SUITES_TOTAL} 套图集 · public/textures/*.webp）· 已按三角面 UV 实时绑定至全部 ${VAULT_PARTS_TOTAL} 个精密零件`,
+      subtitle: `全馆${VAULT_EXHIBIT_ZH}款名枪、复合弓弩与主战坦克共 ${VAULT_TEXTURES_TOTAL} 张定制 2K/4K WebP 物理材质贴图（${VAULT_SUITES_TOTAL} 套图集 · public/textures/*.webp）· 已按三角面 UV 实时绑定至全部 ${VAULT_PARTS_TOTAL} 个精密零件`,
       liveOn: '3D 实时贴图：已开启',
       liveOff: '3D 实时贴图：已关闭',
       closeAria: '关闭贴图检视窗口',
@@ -893,7 +893,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       firingChipTitle: '切换子弹动态发射与抛壳复进流程演示',
       pbrChip: 'PBR 贴图',
       pbrChipTitle:
-        '开启/关闭真实 2K 5通道 PBR 材质贴图 (Albedo + Normal + Packed ORM)',
+        '开启/关闭真实 2K/4K 5通道 PBR 材质贴图 (Albedo + Normal + Packed ORM)',
       atlasChip: '图集',
       atlasChipTitle: '打开真实 PBR 材质贴图图集检视器',
       xrayChip: 'X-Ray 透视',
@@ -1610,7 +1610,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       },
       qualityTitle: (tier) =>
         tier === 'ultra'
-          ? 'Graphics Quality: Ultra (2K shadows, GTAO, Macro DOF & SMAA) — click to cycle'
+          ? 'Graphics Quality: Ultra (2K/4K shadows, GTAO, Macro DOF & SMAA) — click to cycle'
           : tier === 'balanced'
             ? 'Graphics Quality: Balanced (Half-res GTAO, 1.5x DPR) — click to cycle'
             : 'Graphics Quality: Eco (Lightweight renderer for mobile / integrated GPUs) — click to cycle',
@@ -1676,12 +1676,12 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       plaqueStoryCta: 'Listen to Full R&D Story (EN / ZH)',
       plaqueStorySub: '4-Act Documentary · Key Breakthroughs · 3D Part Focus',
       plaquePrimaryCta: (tag) => `Enter ${tag} 3D Disassembly & Firing`,
-      pbrOn: '2K PBR Textures: ON',
-      pbrOff: '2K PBR Textures: OFF',
+      pbrOn: '2K/4K PBR Textures: ON',
+      pbrOff: '2K/4K PBR Textures: OFF',
       pbrTitle:
-        'Toggle 2K 5-channel PBR textures (Albedo + Normal + Packed ORM)',
+        'Toggle 2K/4K 5-channel PBR textures (Albedo + Normal + Packed ORM)',
       atlasBtn: 'Inspect PBR Atlas',
-      atlasTitle: 'Inspect & download custom 2K WebP PBR texture maps',
+      atlasTitle: 'Inspect & download custom 2K/4K WebP PBR texture maps',
       rotateOn: 'Turntable: Rotating',
       rotateOff: 'Turntable: Paused',
       rotateTitle: 'Toggle 3D showcase turntable auto-rotation',
@@ -1723,9 +1723,9 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
     },
     atlasModal: {
       dialogAria: 'PBR Texture Atlas Inspector',
-      kicker: `${VAULT_EXHIBIT_COUNT}-EXHIBIT 2K PBR ATLAS`,
+      kicker: `${VAULT_EXHIBIT_COUNT}-EXHIBIT 2K/4K PBR ATLAS`,
       weaponSwitcherAria: `Switch ${VAULT_EXHIBIT_COUNT}-exhibit PBR texture library`,
-      subtitle: `${VAULT_TEXTURES_TOTAL} custom 2K WebP PBR textures (${VAULT_SUITES_TOTAL} suites · public/textures/*.webp) across all ${VAULT_EXHIBIT_COUNT} vault firearms, archery & heavy armor exhibits · UV-bound live to all ${VAULT_PARTS_TOTAL} precision CAD parts`,
+      subtitle: `${VAULT_TEXTURES_TOTAL} custom 2K/4K WebP PBR textures (${VAULT_SUITES_TOTAL} suites · public/textures/*.webp) across all ${VAULT_EXHIBIT_COUNT} vault firearms, archery & heavy armor exhibits · UV-bound live to all ${VAULT_PARTS_TOTAL} precision CAD parts`,
       liveOn: 'Live 3D Textures: ON',
       liveOff: 'Live 3D Textures: OFF',
       closeAria: 'Close PBR texture atlas inspector',
@@ -1751,9 +1751,9 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         'Switch to 7-phase dynamic firing, extraction & feeding simulation',
       pbrChip: 'PBR',
       pbrChipTitle:
-        'Toggle 2K 5-channel PBR textures (Albedo + Normal + Packed ORM)',
+        'Toggle 2K/4K 5-channel PBR textures (Albedo + Normal + Packed ORM)',
       atlasChip: 'Atlas',
-      atlasChipTitle: 'Open 2K PBR Texture Atlas Inspector',
+      atlasChipTitle: 'Open 2K/4K PBR Texture Atlas Inspector',
       xrayChip: 'X-Ray',
       xrayChipTitle:
         'Render receiver, handguard & magazine shells translucent (X)',

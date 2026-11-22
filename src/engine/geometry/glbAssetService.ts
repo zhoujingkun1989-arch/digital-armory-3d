@@ -1993,7 +1993,7 @@ export async function parseGlbArrayBuffer(
 }
 
 /**
- * Browser-only Draco GLB loader covering all 19/19 migrated museum exhibits.
+ * Browser-only Draco GLB loader covering all 27/27 migrated museum exhibits.
  * Automatically skips dynamic springs/limbs/strings, returns an empty `Map` in headless
  * Node or for unknown IDs, and swallows network/decode failures so `geometryService.ts`
  * cleanly falls back to the CSG Web Worker with zero interruption.

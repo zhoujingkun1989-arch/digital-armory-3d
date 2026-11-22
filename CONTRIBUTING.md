@@ -4,7 +4,7 @@
 
 **English** · [简体中文](#-简体中文指南)
 
-*Thank you for helping build the world's first browser-native open-source 3D firearms & archery mechanical museum and interactive engineering encyclopedia.*
+*Thank you for helping build the world's first browser-native open-source 3D firearms, compound archery & 1:1 heavy armor mechanical museum and interactive engineering encyclopedia.*
 
 </div>
 
@@ -70,12 +70,12 @@ Flagship exhibits use our **Dual-Track Draco `.glb` + CSG Worker** architecture:
 2. **Per-Part Node Naming & Transforms**: Export every solid part as its exact `partId` from `src/weapons/<id>/plugin.ts`, authored in local part space matching `assembledPos` / `assembledRot` with **identity glTF node transforms**.
 3. **Watertight Manifold Geometry**: Ensure `non_manifold = 0` and positive outward signed volume (`vol > 0`) so Two-Pass Stencil Cutaways (`[C]`) cap cleanly with zero leaks.
 4. **Preserve Dynamic Parametric Springs**: Do **NOT** override dynamic helical/leaf springs carrying `aSpringParam` in `.glb`; register them in `dynamicSpringParts` inside `src/engine/geometry/glbAssetService.ts` so the CSG Worker provides real-time GPU spring compression.
-5. **Cycles-Baked 2K Packed ORM WebP Maps**:
-   - Channel packing: `R = Ambient Occlusion`, `G = Roughness`, `B = Metalness` (`*_roughness.webp`), plus `*_albedo.webp` (sRGB) and OpenGL `+Y` `*_normal.webp` (linear).
+5. **Cycles-Baked 2K/4K Packed ORM WebP Maps**:
+   - Channel packing: `R = Ambient Occlusion`, `G = Roughness`, `B = Metalness` (`*_roughness.webp`), plus `*_albedo.webp` (sRGB) and OpenGL `+Y` `*_normal.webp` (linear). Small-arms & archery use 2K (`2048×2048`), while Heavy Armor Hall (`armor`) Main Battle Tanks use 4K (`4096×4096`) exterior maps paired with shared `512×512` seamless RHA/CARC triplanar detail maps (`armor_detail_{normal,roughness}.webp`).
    - **3-Channel RGB only** (zero alpha channel) on every `*_normal.webp` and `*_roughness.webp` map; `pbrManager.ts` locks linear color space against R3F sRGB clobbering.
    - glTF `UV.y` (`v_gltf = 1 - v_blender`) is automatically flipped once in `glbAssetService.ts` so `TextureLoader(flipY = true)` samples upright WebPs uniformly.
-6. **Asset Size Budget**: Total bundle (`<id>.glb` + all `<id>_v3_*.webp`) must stay **`<= 12 MB`** for rifles/SMGs and **`<= 10 MB`** for pistols/revolvers.
-7. **Registry & Contract Sync**: Register `pbrOverrides` and `dynamicSpringParts` in `src/engine/geometry/glbAssetService.ts`, update exact WebP counts in `src/i18n/{uiStrings,showcaseStrings}.ts` and `tests/{armoryIntegration,weaponContracts,glbAsset}.test.ts`.
+6. **Asset Size Budget**: Total bundle (`<id>.glb` + all `<id>_v3_*.webp`) must stay **`<= 12 MB`** for rifles, SMGs, and 4K Heavy Armor Main Battle Tanks (`ztz99a` / `m1a2` / `leopard2a7` / `tiger1`) and **`<= 10 MB`** for pistols/revolvers.
+7. **Registry & Contract Sync**: Register `pbrOverrides` and `dynamicSpringParts` in `src/engine/geometry/glbAssetService.ts`, update exact WebP counts in `src/i18n/{uiStrings,showcaseStrings}.ts` and `tests/{armoryIntegration,weaponContracts,glbAsset}.test.ts` (current vault: `27` exhibits, `683` parts, `351` WebP maps across `80` PBR suites).
 
 ### Runtime Performance & Bilingual Rules
 - **60Hz Zero-GC Clock**: Continuous animation/kinematics progress must flow through `src/engine/clock/playbackClock.ts` inside R3F `useFrame`—never write 60fps progress into Zustand or React state.
@@ -97,7 +97,7 @@ Flagship exhibits use our **Dual-Track Draco `.glb` + CSG Worker** architecture:
 
 ## 简体中文指南
 
-感谢你参与共建全球首个**浏览器端开源 3D 轻武器与复合弓弩机械博物馆及交互式工程百科全书**！
+感谢你参与共建全球首个**浏览器端开源 3D 轻武器、复合弓弩与 1:1 重装甲机械博物馆及交互式工程百科全书**！
 
 ### 1. 科普安全红线（严禁可 3D 打印图纸）
 - 本项目严格定位为**机械原理科普与交互式工程可视化博物馆**。
@@ -123,6 +123,6 @@ npm run build       # 生产多入口构建（全部 chunk < 800 kB，零体积�
 - **双轨资产契约**：
   - 每个实心零件按 `src/weapons/<id>/plugin.ts` 中的精确 `partId` 导出为独立水密流形网格（`non_manifold = 0`、`vol > 0`），节点变换保持单位矩阵（Identity）。
   - 带有 `aSpringParam` GPU 实时压缩变形的动态弹簧**不要**由 GLB 覆盖，须列入 `src/engine/geometry/glbAssetService.ts` 的 `dynamicSpringParts`，交由 CSG Worker 保留实时形变。
-  - Cycles 烘焙 2K 5 通道 Packed ORM（`R=AO, G=Roughness, B=Metalness`）贴图，法线与 ORM WebP 必须为 **3 通道 RGB（无 Alpha）**；单把展品总资产（`.glb` + 全部 `_v3_*.webp`）手枪/转轮 `<= 10 MB`，步枪/冲锋枪 `<= 12 MB`。
-  - 新增贴图后须同步更新 `glbAssetService.ts`、`src/i18n/{uiStrings,showcaseStrings}.ts` 以及 `tests/{glbAsset,armoryIntegration,weaponContracts}.test.ts`。
+  - Cycles 烘焙 2K/4K 5 通道 Packed ORM（`R=AO, G=Roughness, B=Metalness`）贴图（轻武器/弓弩外观 `2048×2048`，重装甲大厅主战坦克外观 `4096×4096` 配合共享 `512×512` 装甲微细节贴图），法线与 ORM WebP 必须为 **3 通道 RGB（无 Alpha）**；单把展品总资产（`.glb` + 全部 `_v3_*.webp`）手枪/转轮 `<= 10 MB`，步枪/冲锋枪/4K 主战坦克 `<= 12 MB`。
+  - 新增贴图或展品后须同步更新 `glbAssetService.ts`、`src/i18n/{uiStrings,showcaseStrings}.ts` 以及 `tests/{glbAsset,armoryIntegration,weaponContracts}.test.ts`（当前基线：`27` 款展品、`683` 零件、`351` 张 WebP / `80` 套 PBR 图集）。
 - **60Hz 零重渲染 & 中英 100% 对等**：高频动画通过 `playbackClock.ts` 驱动，禁止高频写入 Zustand；所有新增界面文案必须提供完整中英双语，且英文词条严禁残留 CJK 字符。

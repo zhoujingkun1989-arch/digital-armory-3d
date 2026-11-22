@@ -85,7 +85,8 @@ describe('Phase 1 (WP-01 ~ WP-03): Multimodal Audio-Visual Immersion Contracts',
 
     expect(SHOWCASE_STRINGS.zh.documentary.acts).toHaveLength(4);
     expect(SHOWCASE_STRINGS.en.documentary.acts).toHaveLength(4);
-    expect(SHOWCASE_STRINGS.zh.gallery.items).toHaveLength(6);
+    expect(SHOWCASE_STRINGS.zh.gallery.items).toHaveLength(8);
+    expect(SHOWCASE_STRINGS.en.gallery.items).toHaveLength(8);
     expect(SHOWCASE_STRINGS.en.quickstart.shortcuts.some((s) => s.key === 'M')).toBe(
       true
     );

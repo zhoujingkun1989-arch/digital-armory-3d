@@ -214,7 +214,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
   zh: {
     nav: {
       ariaLabel: '产品宣传页主导航',
-      versionBadge: `v3.2 · ${VAULT_EXHIBIT_COUNT} 馆藏重装旗舰版`,
+      versionBadge: `v4.0 · ${VAULT_EXHIBIT_COUNT} 馆藏重装甲旗舰版`,
       capabilities: '四大核心模式',
       documentary: 'AI 导演纪录片',
       gallery: '实机渲染画廊',
@@ -231,7 +231,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       subLead: 'Blender 5.2 高模 Draco + 实时 CSG 双轨建模 ',
       subPartsStrong: `${VAULT_PARTS_TOTAL} 个独立运动零件`,
       subMid1: '、',
-      subMapsStrong: `${VAULT_TEXTURES_TOTAL} 张 2K 5 通道 ORM 物理贴图（${VAULT_SUITES_TOTAL} 套图集）`,
+      subMapsStrong: `${VAULT_TEXTURES_TOTAL} 张 2K/4K 5 通道 ORM 物理贴图（${VAULT_SUITES_TOTAL} 套图集）`,
       subMid2: ' 与 ',
       subAudioStrong: `${VAULT_AUDIO_TOTAL} 段双语语音 + Web Audio 分口径/主炮声场`,
       subTail: `。零客户端下载，一键开启 3D 导演运镜、1,000m RK4 外弹道与光学分划板靶场（R · ${BALLISTICS_PROFILES_TOTAL} 套弹道档案）、原理流派对照矩阵（S）、${ORDNANCE_TOTAL} 口径轻武器实弹与坦克主炮弹纵剖馆（B）、高清 3D 剖视海报分享（U）与 17 图版绘本打印工坊（Ctrl/Cmd+P），60 FPS 丝滑透视 ZTZ-99A 22 发转盘装弹机、M1A2 SEP v3 燃气轮机、豹 2A7V 箭簇装甲与虎式 131 88mm 水平楔闩等机械奇观。`,
@@ -273,7 +273,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       { val: `${VAULT_PARTS_TOTAL} 件`, lbl: 'Draco 高模 + 实时 CSG 零件 · 零穿模' },
       {
         val: `${VAULT_TEXTURES_TOTAL} 张`,
-        lbl: `2K 5 通道 ORM 物理贴图 · ${VAULT_SUITES_TOTAL} 套材质图集`,
+        lbl: `2K/4K 5 通道 ORM 物理贴图 · ${VAULT_SUITES_TOTAL} 套材质图集`,
       },
       {
         val: `${VAULT_AUDIO_TOTAL} 段`,
@@ -317,14 +317,14 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         pbr: {
           alt: '5 通道 Packed ORM 物理贴图图集检视器',
           tag: 'MODE 04 · 5-CHANNEL PACKED ORM PBR',
-          title: 'Khronos 校准五级深色金属/胡桃木/聚合物分离与图集检视',
-          desc: '针对锰系磷化钢、皇家烤蓝、硬质阳极铝、亚麻籽油黑胡桃实木、玻纤尼龙与硫化橡胶建立光学梯度，内置按需加载的 2K WebP 三通道贴图检视与原图下载面板。',
+          title: 'Khronos 校准五级深色金属/胡桃木/聚合物/装甲与图集检视',
+          desc: '针对锰系磷化钢、皇家烤蓝、硬质阳极铝、亚麻籽油黑胡桃实木、玻纤尼龙与 4K 复合/防磁装甲建立光学梯度，内置按需加载的 2K/4K WebP 三通道贴图检视与原图下载面板。',
           cta: `打开 ${VAULT_TEXTURES_TOTAL} 张 PBR 贴图图集检视器`,
         },
       },
     },
     documentary: {
-      kicker: 'MULTIMODAL AUDIO-VISUAL ENGINE · V3.2',
+      kicker: 'MULTIMODAL AUDIO-VISUAL ENGINE · V4.0',
       title: 'AI 四幕双语研发纪录片 · 3D 导演运镜 & 军械声场',
       desc: `告别无声手动拖拽模型的传统看图模式：全馆藏 ${VAULT_EXHIBIT_COUNT} 款名枪、复合弓弩与 1:1 主战坦克内置中英双语四幕研发史、${VAULT_PARTS_TOTAL} 枚零件独立配音、自动镜头编排器与程序化 Web Audio 机械合成声效。`,
       directorBadge: '3D STORY DIRECTOR · 自动运镜编排',
@@ -444,11 +444,33 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
     gallery: {
       kicker: 'LIVE METAL WEBGL 2.0 CAPTURES',
       title: '100% 浏览器实时渲染实机画廊',
-      desc: '以下全部画面均由本项目前端引擎在浏览器内实时生成（零预渲染离线视频、零外部三维模型资产），点击图片可放大检视细节或一键进入同款实时视口。',
+      desc: '以下全部画面均由本仓库开源 Blender 5.2 Draco .glb + 实时动态 CSG 双轨引擎在浏览器内实时渲染生成（零预渲染离线视频、零闭源第三方模型），点击图片可放大检视细节或一键进入同款实时视口。',
       zoomTitle: '点击放大检视高清实机渲染图',
       zoomPill: '点击放大高清检视',
       closeLightboxAria: '关闭大图预览',
       items: [
+        {
+          id: 'ztz99a-cutaway',
+          badge: '1:1 重装甲大厅 · ±1,800MM CT 纵剖',
+          title: 'ZTZ-99A 主战坦克 22 发转盘自动装弹机与 150HB V12',
+          subtitle:
+            '1:1 重装装配机库 4K PBR 与 ±1,800 mm 实时 CT 纵剖面劈开复合炮塔与车体，直视 125mm ZPT-98 滑膛炮闭锁、战斗室转盘与 1,500 马力动力舱。',
+          imageFile: 'showcase/ztz99a-cutaway.webp',
+          weaponId: 'ztz99a',
+          actionType: 'section',
+          ctaLabel: '进入 ZTZ-99A 1:1 剖视台',
+        },
+        {
+          id: 'tiger1-macro',
+          badge: '4K ZIMMERIT · 96 块独立履带板',
+          title: '虎式 I 131 号重型坦克 88mm 主炮与交错负重轮',
+          subtitle:
+            '4096×4096 锯齿防磁装甲贴图配合 512px 三平面 RNM 轧制钢细节与单侧 96 块独立下垂 Kgs 63 履带板，完整再现 48 轮交错底盘与 88mm KwK 36 炮塔。',
+          imageFile: 'showcase/tiger1-macro.webp',
+          weaponId: 'tiger1',
+          actionType: 'explode',
+          ctaLabel: '拆解虎式 131 重型坦克',
+        },
         {
           id: 'ak15-section',
           badge: 'GPU CLIPPING CUTAWAY · 纵向剖视',
@@ -506,9 +528,9 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         },
         {
           id: 'pbr-atlas',
-          badge: '2048×1024 WEBP · 贴图图集检视器',
+          badge: '2K / 4K WEBP · 贴图图集检视器',
           title: '内置三通道 PBR 图集检视器（Albedo / Normal / ORM）',
-          subtitle: `支持在浏览器内实时切换、放大并下载全库 ${VAULT_TEXTURES_TOTAL} 张程序化烘焙贴图，无损级高压缩比极速秒开。`,
+          subtitle: `支持在浏览器内实时切换、放大并下载全库 ${VAULT_TEXTURES_TOTAL} 张 2K/4K Cycles 烘焙贴图，无损级高压缩比极速秒开。`,
           imageFile: 'showcase/pbr-atlas.webp',
           weaponId: 'ak15',
           actionType: 'atlas',
@@ -543,8 +565,8 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
     },
     architecture: {
       kicker: 'ENGINEERING ARCHITECTURE',
-      title: '纯 TypeScript + Python + Web Audio 工业级管线',
-      desc: '拒绝臃肿黑盒静态资产，以严谨的前端图形与声学工程管线解决大规模 CSG 布尔运算、高频动画状态同步、语音导演联动与显存生命周期管理。',
+      title: '纯 TypeScript + Blender 5.2 + Web Audio 工业级管线',
+      desc: '完全开源可复现的 Blender 5.2 Draco `.glb` + Web Worker 动态 CSG 双轨架构（零闭源黑盒模型），以严谨图形与声学管线解决大尺度几何、60Hz 动画时钟与显存生命周期管理。',
       pipelineAria: '渲染与建模流水线',
       pipelineSteps: [
         'Manifest 轻量目录 (<8KB)',
@@ -606,6 +628,10 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       badgeTests: 'Vitest 全量几何与双语声画契约',
       shortcutsTitle: '工作台全局工程快捷键',
       shortcuts: [
+        {
+          key: 'Cmd / Ctrl + K',
+          label: '打开全局双语瞬搜指令面板（27 展品 / 683 零件 / 实验室与开关）',
+        },
         { key: 'Space', label: '播放 / 暂停拆解或实弹击发循环' },
         { key: 'C', label: '开启 / 关闭 Stencil 实心纵向军械剖视' },
         {
@@ -657,7 +683,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
   en: {
     nav: {
       ariaLabel: 'Product showcase primary navigation',
-      versionBadge: `v3.2 · ${VAULT_EXHIBIT_COUNT}-EXHIBIT FLAGSHIP`,
+      versionBadge: `v4.0 · ${VAULT_EXHIBIT_COUNT}-EXHIBIT HEAVY ARMOR`,
       capabilities: '4 Core Modes',
       documentary: 'AI 3D Director',
       gallery: 'Live Captures',
@@ -674,7 +700,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       subLead: 'Dual-track Blender 5.2 Draco & procedural CSG modeling of ',
       subPartsStrong: `${VAULT_PARTS_TOTAL} moving CAD components`,
       subMid1: ', ',
-      subMapsStrong: `${VAULT_TEXTURES_TOTAL} custom 2K 5-channel ORM textures (${VAULT_SUITES_TOTAL} suites)`,
+      subMapsStrong: `${VAULT_TEXTURES_TOTAL} custom 2K/4K 5-channel ORM textures (${VAULT_SUITES_TOTAL} suites)`,
       subMid2: ', and ',
       subAudioStrong: `${VAULT_AUDIO_TOTAL} bilingual voice clips + Web Audio ballistic & cannon acoustics`,
       subTail: `. Zero installs—launch 3D Director Mode, test 1,000m RK4 External Ballistics & FFP Reticles (R · ${BALLISTICS_PROFILES_TOTAL} profiles), compare mechanisms in Showdown Lab (S), explore the ${ORDNANCE_TOTAL}-Caliber Small-Arms & Tank Ordnance Lab (B), export HD 3D Share Posters (U), or print 17-Plate Monographs (Ctrl/Cmd+P) at 60 FPS—inspecting ZTZ-99A carousel autoloaders, M1A2 SEP v3 gas turbines, Leopard 2A7V Arrowhead armor, and Tiger 131 88mm breeches.`,
@@ -719,7 +745,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       },
       {
         val: `${VAULT_TEXTURES_TOTAL} Maps`,
-        lbl: `2K 5-Channel Packed ORM · ${VAULT_SUITES_TOTAL} Texture Suites`,
+        lbl: `2K/4K 5-Channel Packed ORM · ${VAULT_SUITES_TOTAL} Texture Suites`,
       },
       {
         val: `${VAULT_AUDIO_TOTAL} Clips`,
@@ -763,14 +789,14 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         pbr: {
           alt: '5-Channel Packed ORM PBR Texture Atlas Inspector',
           tag: 'MODE 04 · 5-CHANNEL PACKED ORM PBR',
-          title: 'Khronos-Calibrated Metal / Walnut / Polymer PBR & Live Atlas',
-          desc: 'Separates manganese phosphate steel, Colt Royal Blue, hard-coat anodized aluminum, linseed-oiled American walnut, glass-filled nylon, and overmolded rubber with an in-browser 2K WebP channel inspector.',
-          cta: `Inspect All ${VAULT_TEXTURES_TOTAL} 2K PBR Texture Maps`,
+          title: 'Khronos-Calibrated Metal / Walnut / Polymer / Armor PBR & Live Atlas',
+          desc: 'Separates manganese phosphate steel, Colt Royal Blue, hard-coat anodized aluminum, linseed-oiled American walnut, nylon, and 4K composite/Zimmerit armor with an in-browser 2K/4K WebP channel inspector.',
+          cta: `Inspect All ${VAULT_TEXTURES_TOTAL} 2K/4K PBR Texture Maps`,
         },
       },
     },
     documentary: {
-      kicker: 'MULTIMODAL AUDIO-VISUAL ENGINE · V3.2',
+      kicker: 'MULTIMODAL AUDIO-VISUAL ENGINE · V4.0',
       title: 'Bilingual 4-Act AI Documentary · 3D Director & Acoustic Engine',
       desc: `Beyond silent manual model viewers: all ${VAULT_EXHIBIT_COUNT} firearms, compound archery & 1:1 main battle tank exhibits ship with bilingual 4-act R&D documentaries, ${VAULT_PARTS_TOTAL} spoken component breakdowns, automated 3D camera choreography, and procedural Web Audio acoustics.`,
       directorBadge: '3D STORY DIRECTOR · AUTO-CHOREOGRAPHY',
@@ -892,11 +918,33 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
     gallery: {
       kicker: 'LIVE METAL WEBGL 2.0 CAPTURES',
       title: '100% Real-Time Browser WebGL 2.0 Captures',
-      desc: 'Every frame below is rendered live in the browser by our procedural CSG + PBR engine (zero pre-rendered videos, zero external .glb meshes). Click to zoom or jump straight into the live viewport.',
+      desc: 'Every frame below is rendered live in the browser by our open-source dual-track Blender 5.2 Draco .glb + dynamic CSG engine (zero pre-rendered videos, zero closed-source third-party meshes). Click to zoom or jump straight into the live viewport.',
       zoomTitle: 'Click to inspect high-resolution WebGL capture',
       zoomPill: 'Click to Enlarge',
       closeLightboxAria: 'Close high-resolution preview',
       items: [
+        {
+          id: 'ztz99a-cutaway',
+          badge: '1:1 HEAVY ARMOR HALL · ±1,800MM CT CUTAWAY',
+          title: 'ZTZ-99A MBT 22-Round Carousel Autoloader & 150HB V12',
+          subtitle:
+            '1:1 Heavy Armor Assembly Hangar 4K PBR and ±1,800 mm live CT section slice cleanly through composite hull & turret armor, exposing the 125mm ZPT-98 breech, floor carousel, and 1,500 hp V12 engine.',
+          imageFile: 'showcase/ztz99a-cutaway.webp',
+          weaponId: 'ztz99a',
+          actionType: 'section',
+          ctaLabel: 'Open ZTZ-99A 1:1 Cutaway',
+        },
+        {
+          id: 'tiger1-macro',
+          badge: '4K ZIMMERIT · 96-LINK TRACKS PER SIDE',
+          title: 'Tiger I Ausf. E "131" 88mm KwK 36 & Interleaved Roadwheels',
+          subtitle:
+            '4096x4096 serrated Zimmerit paste maps paired with 512px triplanar RNM rolled-steel detail and 96 articulated sagged Kgs 63 track links per side over the iconic 48-wheel Schachtellaufwerk suspension.',
+          imageFile: 'showcase/tiger1-macro.webp',
+          weaponId: 'tiger1',
+          actionType: 'explode',
+          ctaLabel: 'Disassemble Tiger 131 Heavy Tank',
+        },
         {
           id: 'ak15-section',
           badge: 'GPU CLIPPING CUTAWAY · SECTION-CUT',
@@ -954,10 +1002,10 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         },
         {
           id: 'pbr-atlas',
-          badge: '2048×1024 WEBP · TEXTURE INSPECTOR',
+          badge: '2K / 4K WEBP · TEXTURE INSPECTOR',
           title:
             'Built-In 3-Channel PBR Atlas Inspector (Albedo / Normal / ORM)',
-          subtitle: `Toggle, zoom, and download all ${VAULT_TEXTURES_TOTAL} procedurally baked 2K WebP maps directly in the browser with ultra-fast lossless-grade compression.`,
+          subtitle: `Toggle, zoom, and download all ${VAULT_TEXTURES_TOTAL} Cycles-baked 2K/4K WebP maps directly in the browser with ultra-fast lossless-grade compression.`,
           imageFile: 'showcase/pbr-atlas.webp',
           weaponId: 'ak15',
           actionType: 'atlas',
@@ -992,8 +1040,8 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
     },
     architecture: {
       kicker: 'ENGINEERING ARCHITECTURE',
-      title: 'Industrial-Grade TypeScript + Python + Web Audio Pipeline',
-      desc: 'Zero black-box static 3D blobs—combining Worker-isolated manifold CSG, transient 60Hz animation clocks, automated story choreography, and procedural acoustic synthesis.',
+      title: 'Industrial-Grade TypeScript + Blender 5.2 + Web Audio Pipeline',
+      desc: 'Zero closed-source static 3D blobs—combining reproducible MIT Blender 5.2 Draco .glb meshes, Worker-isolated dynamic CSG springs, transient 60Hz animation clocks, automated story choreography, and procedural acoustic synthesis.',
       pipelineAria: 'Rendering, CSG and audio pipeline',
       pipelineSteps: [
         'Lightweight Manifest (<8KB)',
@@ -1055,6 +1103,11 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       badgeTests: 'Vitest Geometry & Audio-Visual Contracts',
       shortcutsTitle: 'Global Engineering Shortcuts',
       shortcuts: [
+        {
+          key: 'Cmd / Ctrl + K',
+          label:
+            'Open Global Bilingual Command Palette (27 exhibits, 683 parts, labs & toggles)',
+        },
         {
           key: 'Space',
           label: 'Play / Pause disassembly or live firing cycle',

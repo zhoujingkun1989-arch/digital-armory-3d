@@ -1283,7 +1283,7 @@ export function enrichDkCallouts(
 }
 
 // ----------------------------------------------------------------------------
-// 2. Scale & Silhouette Reference (19 Exhibits · Hand 190mm / Adult 1,750mm)
+// 2. Scale & Silhouette Reference (27 Exhibits · Hand 190mm / Adult 1,750mm)
 // ----------------------------------------------------------------------------
 
 function parseMaxLeadingMillimeters(raw: string, fallback: number): number {
@@ -1400,7 +1400,7 @@ export function buildDkScaleReference(
 }
 
 // ----------------------------------------------------------------------------
-// 3. Evolutionary Lineage Timeline (5 Curated Chronological Nodes × 19 Exhibits)
+// 3. Evolutionary Lineage Timeline (5 Curated Chronological Nodes × 27 Exhibits)
 // ----------------------------------------------------------------------------
 
 interface TimelineSeedNode {

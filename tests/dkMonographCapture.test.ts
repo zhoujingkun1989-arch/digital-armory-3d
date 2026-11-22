@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import * as THREE from 'three';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
@@ -132,7 +134,7 @@ describe('DK Visual Encyclopedia Capture Engine & Callout Solver', () => {
   });
 
   describe('solveDkAnnotatedCallouts & projectLoupeAnchors', () => {
-    it('solves non-crossing, collision-free, group-diverse DK callouts across all 19 exhibits', async () => {
+    it('solves non-crossing, collision-free, group-diverse DK callouts across all 27 exhibits', async () => {
       const cam = new THREE.PerspectiveCamera(36, 16 / 10, 0.1, 680);
       cam.position.set(16, 10, 86);
       cam.lookAt(2, -1, 0);
@@ -318,7 +320,7 @@ describe('DK Visual Encyclopedia Capture Engine & Callout Solver', () => {
       assertNoCalloutCrossings(tiedSolved);
     });
 
-    it('projects all 5 DK circular loupe anchors accurately across all 19 exhibits', async () => {
+    it('projects all 5 DK circular loupe anchors accurately across all 27 exhibits', async () => {
       const cam = new THREE.PerspectiveCamera(36, 16 / 10, 0.1, 680);
       cam.position.set(14, 8, 72);
       cam.lookAt(2, 0, 0);
@@ -693,6 +695,63 @@ describe('DK Visual Encyclopedia Capture Engine & Callout Solver', () => {
       expect(shouldApplyDkContactShadow('stencil_cutaway')).toBe(false);
       expect(shouldApplyDkContactShadow('exploded_bom')).toBe(false);
       expect(shouldApplyDkContactShadow('xray_magic')).toBe(false);
+    });
+  });
+
+  describe('public/plates Cycles master-plate manifest completeness', () => {
+    it('ships all 27/27 weapons × 10 Cycles 2880×1800 RGBA plates (270 WebPs) on disk', () => {
+      const manifestPath = path.resolve(
+        process.cwd(),
+        'public',
+        'plates',
+        'manifest.json'
+      );
+      expect(fs.existsSync(manifestPath)).toBe(true);
+
+      const rawJson = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+      const manifest = parseDkMasterPlateManifest(rawJson);
+
+      const requiredShotKeys = [
+        'cover_hero',
+        'ortho_right',
+        'ortho_left',
+        'ortho_top',
+        'exploded_bom',
+        'group_slide',
+        'group_frame',
+        'group_fcg',
+        'group_mag',
+        'breech_closeup',
+      ] as const;
+
+      let totalVerifiedPlates = 0;
+      for (const weaponId of WEAPON_IDS) {
+        const entry = manifest.weapons[weaponId];
+        expect(entry, `Missing Cycles manifest entry for ${weaponId}`).toBeDefined();
+        expect(entry!.resolution).toEqual([2880, 1800]);
+        expect(entry!.transparent).toBe(true);
+
+        for (const shotKey of requiredShotKeys) {
+          const shot = entry!.plates[shotKey];
+          expect(
+            shot,
+            `Missing shot '${shotKey}' in manifest for ${weaponId}`
+          ).toBeDefined();
+          expect(shot!.width).toBe(2880);
+          expect(shot!.height).toBe(1800);
+
+          const relativeFile = shot!.file.replace(/^\/+/, '');
+          const absFile = path.resolve(process.cwd(), 'public', relativeFile);
+          expect(
+            fs.existsSync(absFile),
+            `Missing WebP plate on disk: ${absFile}`
+          ).toBe(true);
+          expect(fs.statSync(absFile).size).toBeGreaterThan(4096);
+          totalVerifiedPlates += 1;
+        }
+      }
+
+      expect(totalVerifiedPlates).toBe(27 * 10);
     });
   });
 });

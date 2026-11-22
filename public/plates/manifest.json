@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-11-19T11:40:53Z",
+  "generatedAt": "2026-11-22T02:50:32Z",
   "weapons": {
     "p08": {
       "renderer": "Blender 5.2 Cycles",
@@ -178,6 +178,2256 @@
           "height": 1800,
           "azimuthDeg": 8.12,
           "elevationDeg": 7.38,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "ztz99a": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/ztz99a/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/ztz99a/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/ztz99a/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/ztz99a/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/ztz99a/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/ztz99a/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/ztz99a/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/ztz99a/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/ztz99a/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/ztz99a/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 9.46,
+          "elevationDeg": 10.48,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "lift33": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/lift33/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/lift33/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/lift33/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/lift33/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/lift33/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/lift33/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/lift33/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/lift33/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/lift33/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/lift33/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 3.33,
+          "elevationDeg": 3.55,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "g11": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/g11/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/g11/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/g11/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/g11/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/g11/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/g11/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/g11/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/g11/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/g11/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/g11/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 3.66,
+          "elevationDeg": 7.81,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "m4a1": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/m4a1/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/m4a1/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/m4a1/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/m4a1/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/m4a1/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/m4a1/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/m4a1/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/m4a1/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/m4a1/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/m4a1/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 7.17,
+          "elevationDeg": 6.41,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "mp5": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/mp5/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/mp5/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/mp5/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/mp5/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/mp5/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/mp5/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/mp5/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/mp5/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/mp5/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/mp5/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 6.49,
+          "elevationDeg": 6.45,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "g17": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/g17/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/g17/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/g17/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/g17/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/g17/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/g17/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/g17/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/g17/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/g17/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/g17/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.37,
+          "elevationDeg": 6.49,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "m82a1": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/m82a1/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/m82a1/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/m82a1/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/m82a1/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/m82a1/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/m82a1/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/m82a1/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/m82a1/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/m82a1/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/m82a1/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 7.45,
+          "elevationDeg": 5.92,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "awm": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/awm/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/awm/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/awm/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/awm/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/awm/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/awm/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/awm/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/awm/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/awm/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/awm/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 8.88,
+          "elevationDeg": 5.88,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "scar": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/scar/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/scar/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/scar/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/scar/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/scar/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/scar/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/scar/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/scar/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/scar/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/scar/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 6.97,
+          "elevationDeg": 6.23,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "deagle": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/deagle/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/deagle/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/deagle/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/deagle/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/deagle/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/deagle/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/deagle/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/deagle/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/deagle/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/deagle/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.35,
+          "elevationDeg": 5.13,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "aug": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/aug/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/aug/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/aug/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/aug/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/aug/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/aug/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/aug/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/aug/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/aug/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/aug/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.68,
+          "elevationDeg": 7.39,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "p320": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/p320/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/p320/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/p320/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/p320/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/p320/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/p320/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/p320/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/p320/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/p320/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/p320/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.04,
+          "elevationDeg": 7.94,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "p90": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/p90/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/p90/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/p90/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/p90/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/p90/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/p90/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/p90/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/p90/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/p90/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/p90/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 6.73,
+          "elevationDeg": 6.68,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "r500": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/r500/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/r500/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/r500/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/r500/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/r500/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/r500/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/r500/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/r500/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/r500/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/r500/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 11.23,
+          "elevationDeg": 7.22,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "python": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/python/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/python/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/python/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/python/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/python/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/python/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/python/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/python/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/python/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/python/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 8.73,
+          "elevationDeg": 6.77,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "benellim4": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/benellim4/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/benellim4/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/benellim4/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/benellim4/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/benellim4/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/benellim4/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/benellim4/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/benellim4/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/benellim4/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/benellim4/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.15,
+          "elevationDeg": 7.53,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "garand": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/garand/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/garand/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/garand/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/garand/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/garand/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/garand/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/garand/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/garand/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/garand/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/garand/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 9.6,
+          "elevationDeg": 7.19,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "m249": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/m249/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/m249/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/m249/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/m249/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/m249/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/m249/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/m249/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/m249/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/m249/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/m249/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 11.88,
+          "elevationDeg": 6.99,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "vector": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/vector/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/vector/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/vector/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/vector/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/vector/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/vector/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/vector/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/vector/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/vector/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/vector/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 11.85,
+          "elevationDeg": 4.91,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "vss": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/vss/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/vss/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/vss/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/vss/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/vss/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/vss/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/vss/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/vss/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/vss/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/vss/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 2.75,
+          "elevationDeg": 5.47,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "m134": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/m134/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/m134/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/m134/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/m134/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/m134/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/m134/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/m134/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/m134/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/m134/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/m134/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 14.7,
+          "elevationDeg": 8.86,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "an94": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/an94/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/an94/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/an94/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/an94/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/an94/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/an94/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/an94/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/an94/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/an94/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/an94/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 1.81,
+          "elevationDeg": 6.18,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "m1a2": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/m1a2/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/m1a2/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/m1a2/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/m1a2/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/m1a2/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/m1a2/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/m1a2/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/m1a2/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/m1a2/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/m1a2/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": -1.3,
+          "elevationDeg": 5.52,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "leopard2a7": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/leopard2a7/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/leopard2a7/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/leopard2a7/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/leopard2a7/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/leopard2a7/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/leopard2a7/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/leopard2a7/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/leopard2a7/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/leopard2a7/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/leopard2a7/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 2.43,
+          "elevationDeg": 7.35,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "tiger1": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/tiger1/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/tiger1/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/tiger1/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/tiger1/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/tiger1/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/tiger1/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/tiger1/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/tiger1/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/tiger1/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/tiger1/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 7.98,
           "fovDeg": 36.0
         }
       }

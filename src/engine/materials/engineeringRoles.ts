@@ -9,9 +9,9 @@ import { isArcheryWeapon, isTankWeapon } from '../physics/armoryPhysics';
 /**
  * WP-05 — Engineering Functional Role Classification & Operating Energy-Flow Profiles
  * ----------------------------------------------------------------------------------
- * Maps all 480 procedural/CSG parts across 19 vault exhibits (17 firearms & 2 compound
- * archery systems) into 6 canonical mechanical engineering functional roles, enabling
- * Matt Rittman-style color-coded cutaway pedagogy with zero WebGL shader recompilation.
+ * Maps all 683 parts across 27 vault exhibits (21 firearms, 2 compound archery systems
+ * & 4 1:1 Main Battle Tanks) into 6 canonical mechanical engineering functional roles,
+ * enabling Matt Rittman-style color-coded cutaway pedagogy with zero WebGL shader recompilation.
  */
 
 export type EngineeringRole =

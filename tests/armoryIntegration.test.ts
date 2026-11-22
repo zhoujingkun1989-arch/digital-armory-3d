@@ -777,4 +777,51 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
     expect(useAppStore.getState().screen).toBe('cartridges');
     expect(useAppStore.getState().activeCartridgeCaliber).toBe('45_acp');
   });
+
+  it('ships v4.0 release metadata, showcase gallery WebPs, og-banner, and resolves all Markdown images', () => {
+    const pkgJson = JSON.parse(
+      fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf8')
+    ) as { version: string };
+    expect(pkgJson.version).toBe('4.0.0');
+
+    const publicDir = path.resolve(process.cwd(), 'public');
+    const requiredAssets = new Set<string>([
+      'showcase/hero-armory.webp',
+      'showcase/ak15-callouts.webp',
+      'og-banner.jpg',
+    ]);
+
+    for (const lang of ['zh', 'en'] as const) {
+      const showcase = SHOWCASE_STRINGS[lang];
+      expect(showcase.nav.versionBadge).toContain('v4.0');
+      for (const item of showcase.gallery.items) {
+        requiredAssets.add(item.imageFile.replace(/^\/+/, ''));
+      }
+    }
+
+    for (const relPath of requiredAssets) {
+      const absPath = path.resolve(publicDir, relPath);
+      expect(
+        fs.existsSync(absPath),
+        `Missing showcase/OG asset on disk: ${absPath}`
+      ).toBe(true);
+      expect(fs.statSync(absPath).size).toBeGreaterThan(4096);
+    }
+
+    const markdownImgRe = /!\[[^\]]*\]\(([^)\s]+)\)/g;
+    for (const docName of ['README.md', 'README.zh-CN.md', 'CONTRIBUTING.md']) {
+      const docPath = path.resolve(process.cwd(), docName);
+      const docText = fs.readFileSync(docPath, 'utf8');
+      for (const match of docText.matchAll(markdownImgRe)) {
+        const target = match[1];
+        if (/^https?:\/\//i.test(target)) continue;
+        const resolved = path.resolve(path.dirname(docPath), target);
+        expect(
+          fs.existsSync(resolved),
+          `Broken Markdown image link in ${docName}: ${target}`
+        ).toBe(true);
+        expect(fs.statSync(resolved).size).toBeGreaterThan(4096);
+      }
+    }
+  });
 });

@@ -1,7 +1,7 @@
 {
   "name": "digital-armory-3d",
-  "version": "2.0.0",
-  "description": "Browser-Native Open-Source 3D Firearms & Archery Mechanical Museum & Interactive Engineering Encyclopedia (19 Exhibits: 17 Legendary Firearms incl. M249 SAW, Luger P08, KRISS Vector .45 ACP, Colt Python .357, Benelli M4 M1014 & M1 Garand .30-06 + Mathews LIFT 33 & Ravin R500, 480 Procedural CSG Parts, 112 2K 5-Ch ORM WebP Maps, 1,112 Charon Gemini TTS Voiceovers, 1,000m RK4 External Ballistics & DOPE Lab, Armorer Blind Qualification Exam & Unknown Stoppage Triage, 11 SAAMI/CIP 1:1 Cutaways, Mechanism Showdown, HD 3D Social Poster Studio & 17-Plate Monograph Print Studio)",
+  "version": "4.0.0",
+  "description": "Browser-Native Open-Source 3D Firearms, Archery & Heavy Armor Mechanical Museum & Interactive Engineering Encyclopedia (27 Exhibits: 21 Legendary Firearms + 2 Compound Archery + 4 1:1 Main Battle Tanks ZTZ-99A, M1A2 SEP v3, Leopard 2A7V & Tiger I 131; 683 Blender 5.2 Draco GLB + Dynamic CSG Parts, 351 2K/4K 5-Ch ORM WebP Maps, 1,582 Charon Gemini TTS Voiceovers, 15+3 1:1 Ordnance Cutaways, 1,000m RK4 External Ballistics & DOPE Lab, Armorer Blind Qualification Exam, 9x9x9 Mechanism Showdown, Cmd+K Palette, Live CT Cutaway, HD 3D Share Poster Studio & 27/27 Cycles 17-Plate Monograph Print Studio)",
   "license": "MIT",
   "type": "module",
   "repository": {
