@@ -52,7 +52,7 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
     setAcousticEnvironment('indoor_range');
   });
 
-  it('maps authentic SAFE / SEMI / AUTO fire-control capabilities & bilingual tooltips across all 23 exhibits', () => {
+  it('maps authentic SAFE / SEMI / AUTO fire-control capabilities & bilingual tooltips across all 29 exhibits', () => {
     const selectFireWeapons: WeaponId[] = [
       'ak15',
       'm4a1',
@@ -82,6 +82,8 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
       'm1a2',
       'leopard2a7',
       'tiger1',
+      'winchester1894',
+      'rem870',
     ];
 
     expect(

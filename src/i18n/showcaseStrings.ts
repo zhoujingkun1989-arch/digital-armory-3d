@@ -5,20 +5,20 @@ import {
   type WeaponId,
 } from '../weapons/types';
 
-const VAULT_EXHIBIT_COUNT = WEAPON_IDS.length; // 27
+const VAULT_EXHIBIT_COUNT = WEAPON_IDS.length; // 29
 const VAULT_ARCHERY_COUNT = 2;
 const VAULT_ARMOR_COUNT = 4;
 const VAULT_FIREARM_COUNT =
-  VAULT_EXHIBIT_COUNT - VAULT_ARCHERY_COUNT - VAULT_ARMOR_COUNT; // 21
-const VAULT_EXHIBIT_ZH = '二十七';
-const VAULT_PARTS_TOTAL = 683;
-const VAULT_TEXTURES_TOTAL = 351;
-const VAULT_SUITES_TOTAL = 80;
-const VAULT_AUDIO_TOTAL = 1582;
-const LAB_CALIBER_TOTAL = 15;
+  VAULT_EXHIBIT_COUNT - VAULT_ARCHERY_COUNT - VAULT_ARMOR_COUNT; // 23
+const VAULT_EXHIBIT_ZH = '二十九';
+const VAULT_PARTS_TOTAL = 731;
+const VAULT_TEXTURES_TOTAL = 369;
+const VAULT_SUITES_TOTAL = 86;
+const VAULT_AUDIO_TOTAL = 1694;
+const LAB_CALIBER_TOTAL = 16;
 const TANK_ORDNANCE_TOTAL = 3;
-const ORDNANCE_TOTAL = LAB_CALIBER_TOTAL + TANK_ORDNANCE_TOTAL; // 18
-const BALLISTICS_PROFILES_TOTAL = 20;
+const ORDNANCE_TOTAL = LAB_CALIBER_TOTAL + TANK_ORDNANCE_TOTAL; // 19
+const BALLISTICS_PROFILES_TOTAL = 21;
 
 export type ShowcaseGalleryAction =
   'armory' | 'explode' | 'firing' | 'section' | 'atlas';
@@ -281,7 +281,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       },
       {
         val: `${ORDNANCE_TOTAL} 口径 · ${BALLISTICS_PROFILES_TOTAL} 弹道`,
-        lbl: '15 实弹 + 3 坦克炮弹纵剖 · 1,000m RK4 靶场',
+        lbl: '16 实弹 + 3 坦克炮弹纵剖 · 1,000m RK4 靶场',
       },
     ],
     capabilities: {
@@ -406,11 +406,11 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
             'M249 双拨爪 M27 铁链节剥离 / P08 54° 肘节折起咔哒 / P90 90° 螺旋供弹与 9mm 弹壳清鸣',
         },
         {
-          caliber: '.30-06 / 12 Gauge / .357 Magnum',
-          weaponTag: 'M1 Garand / Benelli M4 / Python',
-          freqTag: '62 Hz 轰鸣 + 1.74 kHz 漏夹长鸣',
+          caliber: '.30-30 Win / .30-06 / 12 Gauge / .357 Mag',
+          weaponTag: 'Winchester 1894 / M1 Garand / Benelli M4 / Rem 870 / Python',
+          freqTag: '62 Hz 轰鸣 + 1.74 kHz 漏夹清鸣',
           signature:
-            '伽兰德 8 发弹簧钢漏夹末发「PING!」音叉高亢共鸣 / 双 ARGO 撞击与托弹舌咔哒 / 转轮 60° 棘爪分度',
+            'Winchester 94 杠杆闭锁滑块叮响 / Remington 870 双拉杆唧筒推拉 / 伽兰德漏夹「PING!」/ ARGO 与转轮分度',
         },
         {
           caliber: '7.62×51mm NATO / 5.45×39mm',
@@ -630,7 +630,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       shortcuts: [
         {
           key: 'Cmd / Ctrl + K',
-          label: '打开全局双语瞬搜指令面板（27 展品 / 683 零件 / 实验室与开关）',
+          label: '打开全局双语瞬搜指令面板（29 展品 / 731 零件 / 实验室与开关）',
         },
         { key: 'Space', label: '播放 / 暂停拆解或实弹击发循环' },
         { key: 'C', label: '开启 / 关闭 Stencil 实心纵向军械剖视' },
@@ -753,7 +753,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       },
       {
         val: `${ORDNANCE_TOTAL} Ordnance · ${BALLISTICS_PROFILES_TOTAL} RK4`,
-        lbl: '15 Small-Arms + 3 Tank Rounds · 1,000m Ballistics',
+        lbl: '16 Small-Arms + 3 Tank Rounds · 1,000m Ballistics',
       },
     ],
     capabilities: {
@@ -880,11 +880,11 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
             'M249 M27 steel link strip / Luger P08 54° knee-joint toggle snap / P90 90° helical feed & 9mm brass ring',
         },
         {
-          caliber: '.30-06 / 12 Gauge / .357 Magnum',
-          weaponTag: 'M1 Garand / Benelli M4 / Python',
+          caliber: '.30-30 Win / .30-06 / 12 Gauge / .357 Mag',
+          weaponTag: 'Winchester 1894 / M1 Garand / Benelli M4 / Rem 870 / Python',
           freqTag: '62 Hz Boom + 1.74 kHz Clip Ping',
           signature:
-            'WWII M1 Garand spring-steel en-bloc clip "PING!" ring / Twin ARGO tappet clink & 12ga elevator / 60° revolver ratchet click',
+            'Winchester 1894 rising H-block lever clack / Remington 870 twin-bar pump rack / Garand en-bloc "PING!" / ARGO & revolver ratchet',
         },
         {
           caliber: '7.62×51mm NATO / 5.45×39mm',
@@ -1106,7 +1106,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         {
           key: 'Cmd / Ctrl + K',
           label:
-            'Open Global Bilingual Command Palette (27 exhibits, 683 parts, labs & toggles)',
+            'Open Global Bilingual Command Palette (29 exhibits, 731 parts, labs & toggles)',
         },
         {
           key: 'Space',

@@ -455,7 +455,7 @@ export const WINCHESTER1894_PARTS: WeaponPartSpec[] = [
     nameEn: 'Machined Brass Tubular Magazine Follower',
     group: 'magazine',
     material: 'copper_accent',
-    assembledPos: [17.8, -0.35, 0],
+    assembledPos: [25.8, -0.35, 0],
     explodeSteps: [{ range: [0.32, 0.68], offset: [28.0, -11.5, 4.8] }],
     calloutDir: 'down',
     calloutStem: 40,
@@ -667,7 +667,7 @@ export function computeWinchester1894FiringKinematics(
       break;
     }
     case 'win94_mag_follower': {
-      dx = -1.65 * magFeedPulse;
+      dx = -3.3 * magFeedPulse;
       break;
     }
     default:
@@ -738,31 +738,37 @@ export function computeWinchester1894BallisticsState(
     muzzlePlumeOpacity = Math.sin(u * Math.PI) * 0.88;
   }
 
-  // 4. Next .30-30 round: Tubular mag `[9.0, -0.35, 0]` -> Brass carrier `[0.5, -0.55, 0]` -> Lifted `[0.8, 1.35, 0]` -> Chamber `[6.2, 1.45, 0]`
+  // 4. Next .30-30 round: Tubular mag `[9.0, -0.35, 0.045]` -> Brass carrier `[0.5, -0.55, 0]` -> Lifted `[0.8, 1.35, 0]` -> Chamber `[6.2, 1.45, 0]`
   let nextX = 9.0;
   let nextY = -0.35;
+  let nextZ = 0.045;
   let nextRZ = 0;
   if (f >= 0.56 && f < 0.65) {
     const u = seg(f, 0.56, 0.65);
     nextX = 9.0 + (0.5 - 9.0) * u;
     nextY = -0.35 + (-0.55 - -0.35) * u;
+    nextZ = 0.045 * (1 - u);
   } else if (f >= 0.65 && f < 0.74) {
     const u = seg(f, 0.65, 0.74);
     nextX = 0.5 + (0.8 - 0.5) * u;
     nextY = -0.55 + (1.35 - -0.55) * u;
+    nextZ = 0;
     nextRZ = 0.18 * u;
   } else if (f >= 0.74 && f < 0.88) {
     const u = seg(f, 0.74, 0.88);
     nextX = 0.8 + (6.2 - 0.8) * u;
     nextY = 1.35 + (1.45 - 1.35) * u;
+    nextZ = 0;
     nextRZ = 0.18 * (1 - u);
   } else if (f >= 0.88) {
     nextX = 6.2;
     nextY = 1.45;
+    nextZ = 0;
   }
 
   const tubeShift = seg(f, 0.56, 0.66);
-  const resX = 11.4 + (9.0 - 11.4) * tubeShift;
+  const resX = 12.3 + (9.0 - 12.3) * tubeShift;
+  const resZ = -0.045 + (0.045 - -0.045) * tubeShift;
 
   return {
     bulletVisible,
@@ -777,9 +783,9 @@ export function computeWinchester1894BallisticsState(
     gasPortPos: [25.0, 1.45, 0],
     muzzlePlumeScale,
     muzzlePlumeOpacity,
-    nextRoundPos: [nextX, nextY, 0],
+    nextRoundPos: [nextX, nextY, nextZ],
     nextRoundRotZ: nextRZ,
-    reserveRoundPos: [resX, -0.35, 0],
+    reserveRoundPos: [resX, -0.35, resZ],
   };
 }
 

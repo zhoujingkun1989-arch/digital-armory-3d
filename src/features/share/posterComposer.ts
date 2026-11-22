@@ -1472,7 +1472,7 @@ export function renderPosterToCanvas(opts: RenderPosterOptions): void {
     titleMaxW,
     600,
     14,
-    11,
+    9,
     SANS_STACK
   );
   ctx.fillStyle = theme.textSecondary;
@@ -1784,18 +1784,18 @@ export function renderPosterToCanvas(opts: RenderPosterOptions): void {
   ctx.fillStyle = theme.textMuted;
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
-  fitFontToWidth(ctx, copy.poster.colophon, fr.w * 0.57, 700, 11, 8, MONO_STACK);
+  fitFontToWidth(ctx, copy.poster.colophon, fr.w * 0.52, 700, 11, 7.5, MONO_STACK);
   ctx.fillText(
-    truncateTextToWidth(ctx, copy.poster.colophon, fr.w * 0.57),
+    truncateTextToWidth(ctx, copy.poster.colophon, fr.w * 0.52),
     fr.x,
     fr.y + fr.h * 0.5
   );
 
   ctx.textAlign = 'right';
   const cleanDisplayUrl = metadata.deepLinkUrl.replace(/^https?:\/\//i, '');
-  fitFontToWidth(ctx, cleanDisplayUrl, fr.w * 0.41, 700, 11, 8, MONO_STACK);
+  fitFontToWidth(ctx, cleanDisplayUrl, fr.w * 0.46, 700, 11, 7.2, MONO_STACK);
   ctx.fillText(
-    truncateTextToWidth(ctx, cleanDisplayUrl, fr.w * 0.41),
+    truncateTextToWidth(ctx, cleanDisplayUrl, fr.w * 0.46),
     fr.x + fr.w,
     fr.y + fr.h * 0.5
   );

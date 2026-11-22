@@ -10,17 +10,17 @@ import {
   type MaterialKind,
 } from '../weapons/types';
 
-const VAULT_EXHIBIT_COUNT = WEAPON_IDS.length; // 27
-const VAULT_EXHIBIT_ZH = '二十七';
-const VAULT_PARTS_TOTAL = 683;
-const VAULT_TEXTURES_TOTAL = 351;
-const VAULT_SUITES_TOTAL = 80;
-const VAULT_AUDIO_TOTAL = 1582;
-const LAB_CALIBER_TOTAL = 15;
-const LAB_CALIBER_ZH = '十五';
+const VAULT_EXHIBIT_COUNT = WEAPON_IDS.length; // 29
+const VAULT_EXHIBIT_ZH = '二十九';
+const VAULT_PARTS_TOTAL = 731;
+const VAULT_TEXTURES_TOTAL = 369;
+const VAULT_SUITES_TOTAL = 86;
+const VAULT_AUDIO_TOTAL = 1694;
+const LAB_CALIBER_TOTAL = 16;
+const LAB_CALIBER_ZH = '十六';
 const TANK_ORDNANCE_TOTAL = 3;
-const ORDNANCE_TOTAL = LAB_CALIBER_TOTAL + TANK_ORDNANCE_TOTAL; // 18
-const BALLISTICS_PROFILES_TOTAL = 20;
+const ORDNANCE_TOTAL = LAB_CALIBER_TOTAL + TANK_ORDNANCE_TOTAL; // 19
+const BALLISTICS_PROFILES_TOTAL = 21;
 
 export interface UiDictionary {
   watermark: string;

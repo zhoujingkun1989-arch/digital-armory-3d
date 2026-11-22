@@ -880,7 +880,7 @@ export const WEAPON_GAS_MANIFOLD_PROFILES: Readonly<
   },
   winchester1894: {
     weaponId: 'winchester1894',
-    family: 'locked_breech_pistol',
+    family: 'manual_bolt_action',
     hasGasTap: false,
     familyTitleZh: 'D型杠杆手动连杆驱动 · 勃朗宁 H 型垂直升降闭锁块 + 开顶抛壳',
     familyTitleEn: 'Manual Lever-Link Drive · Browning Vertical H-Locking Block & Top Eject',
@@ -899,7 +899,7 @@ export const WEAPON_GAS_MANIFOLD_PROFILES: Readonly<
   },
   rem870: {
     weaponId: 'rem870',
-    family: 'locked_breech_pistol',
+    family: 'manual_bolt_action',
     hasGasTap: false,
     familyTitleZh: '手动双平行推拉连杆泵动 · 斜楔上翘闭锁块与硬铬托弹勺',
     familyTitleEn: 'Twin-Action-Bar Pump Drive · Tilting Locking Wedge & Flexitab Lifter',

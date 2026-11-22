@@ -43,8 +43,8 @@ function loadNarrationBundle(weaponId: WeaponId): WeaponNarrationBundle {
 }
 
 describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () => {
-  it('produces valid bilingual DkScaleReference for all 27 exhibits with accurate silhouettes', () => {
-    expect(WEAPON_IDS.length).toBe(27);
+  it('produces valid bilingual DkScaleReference for all 29 exhibits with accurate silhouettes', () => {
+    expect(WEAPON_IDS.length).toBe(29);
 
     for (const weaponId of WEAPON_IDS) {
       const manifest = getWeaponManifest(weaponId);
@@ -288,8 +288,8 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
       }
     }
 
-    // 27 exhibits (683 total parts) × 2 languages = 1,366 part micro-copies checked
-    expect(totalPartsChecked).toBe(1366);
+    // 29 exhibits (731 total parts) × 2 languages = 1,462 part micro-copies checked
+    expect(totalPartsChecked).toBe(1462);
   });
 
   it('handles null narration fallback cleanly in buildDkPartMicroCopy for both zh and en', async () => {
@@ -314,8 +314,8 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
     }
   });
 
-  it('computes exact 1:1 physical mm cartridge layouts for all 15 small-arms calibers, 1:10 for 3 tank cannon rounds, and 1:4/1:5 for archery without NaN or A4 overflow', () => {
-    expect(CARTRIDGE_LAB_ORDER.length).toBe(15);
+  it('computes exact 1:1 physical mm cartridge layouts for all 16 small-arms calibers, 1:10 for 3 tank cannon rounds, and 1:4/1:5 for archery without NaN or A4 overflow', () => {
+    expect(CARTRIDGE_LAB_ORDER.length).toBe(16);
     expect(TANK_ORDNANCE_ORDER.length).toBe(3);
 
     for (const caliber of CARTRIDGE_LAB_ORDER) {

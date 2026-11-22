@@ -51,10 +51,12 @@ import { P320_PARTS } from '../src/weapons/p320/plugin';
 import { P90_PARTS } from '../src/weapons/p90/plugin';
 import { PYTHON_PARTS } from '../src/weapons/python/plugin';
 import { R500_PARTS } from '../src/weapons/r500/plugin';
+import { REM870_PARTS } from '../src/weapons/rem870/plugin';
 import { SCAR_PARTS } from '../src/weapons/scar/plugin';
 import { TIGER1_PARTS } from '../src/weapons/tiger1/plugin';
 import { VECTOR_PARTS } from '../src/weapons/vector/plugin';
 import { VSS_PARTS } from '../src/weapons/vss/plugin';
+import { WINCHESTER1894_PARTS } from '../src/weapons/winchester1894/plugin';
 import { ZTZ99A_PARTS } from '../src/weapons/ztz99a/plugin';
 import { WEAPON_IDS, type WeaponId } from '../src/weapons/types';
 
@@ -247,10 +249,10 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     expect(wasmBytes[3]).toBe(0x6d);
   });
 
-  it('resolves subpath-safe Draco decoder & GLB model URLs for ALL 27/27 exhibits and routes loaders to vendor-three-postfx', () => {
-    // Root deployment ('/') across all 27 exhibits
+  it('resolves subpath-safe Draco decoder & GLB model URLs for ALL 29/29 exhibits and routes loaders to vendor-three-postfx', () => {
+    // Root deployment ('/') across all 29 exhibits
     expect(resolveDracoDecoderPath('/')).toBe('/draco/');
-    expect(WEAPON_IDS).toHaveLength(27);
+    expect(WEAPON_IDS).toHaveLength(29);
     for (const wid of WEAPON_IDS) {
       expect(resolveWeaponGlbUrl(wid, '/')).toBe(`/models/${wid}.glb`);
     }
@@ -297,7 +299,7 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
     }
   });
 
-  it('locks exact 100% disjoint part-to-atlas & dynamic-spring contracts and on-disk budgets for ALL 27/27 flagship GLB exhibits (Wave 1–4 + WP-17 + WP-18 Heavy Armor Grand Slam)', () => {
+  it('locks exact 100% disjoint part-to-atlas & dynamic-spring contracts and on-disk budgets for ALL 29/29 flagship GLB exhibits (Wave 1–4 + WP-17/18 + WP-25b)', () => {
     const migrated: WeaponId[] = [
       'p08',
       'ak15',
@@ -326,8 +328,10 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
       'm1a2',
       'leopard2a7',
       'tiger1',
+      'winchester1894',
+      'rem870',
     ];
-    expect(migrated).toHaveLength(27);
+    expect(migrated).toHaveLength(29);
     expect([...migrated].sort()).toEqual([...WEAPON_IDS].sort());
     for (const wid of migrated) {
       expect(hasGlbWeaponAsset(wid)).toBe(true);
@@ -1636,7 +1640,64 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
       expect(seenSuites.size).toBe(3);
     }
 
-    // --- Grand Slam 27/27 part accounting invariant: 625 solid GLB + 58 dynamic CSG = 683 total parts ---
+    // --- 28–29. WP-25b Lever & Pump Action Classics: Winchester 1894 + Remington 870 (each 24 parts = 21 solid GLB + 3 dynamic CSG springs) ---
+    const wp25Contracts = [
+      {
+        id: 'winchester1894' as WeaponId,
+        modelFile: 'winchester1894.glb',
+        parts: WINCHESTER1894_PARTS,
+        springs: ['win94_mainspring', 'win94_sear_spring', 'win94_mag_spring'],
+        suitePrefixes: ['win94_v3_walnut', 'win94_v3_receiver', 'win94_v3_metal'],
+      },
+      {
+        id: 'rem870' as WeaponId,
+        modelFile: 'rem870.glb',
+        parts: REM870_PARTS,
+        springs: [
+          'rem870_hammer_spring',
+          'rem870_firing_pin_spring',
+          'rem870_mag_spring',
+        ],
+        suitePrefixes: [
+          'rem870_v3_walnut',
+          'rem870_v3_receiver',
+          'rem870_v3_metal',
+        ],
+      },
+    ];
+
+    for (const wc of wp25Contracts) {
+      const cfg = GLB_WEAPON_CONFIGS[wc.id];
+      expect(cfg.modelFile).toBe(wc.modelFile);
+      expect(cfg.dynamicSpringParts).toEqual(wc.springs);
+      expect(wc.parts).toHaveLength(24);
+      expect(Object.keys(cfg.pbrOverrides)).toHaveLength(21);
+      const springSet = new Set(wc.springs);
+      const seenSuites = new Set<string>();
+      for (const p of wc.parts) {
+        if (springSet.has(p.id)) {
+          expect(isGlbDynamicSpringPart(wc.id, p.id)).toBe(true);
+          expect(getGlbPartPbrOverride(wc.id, p.id)).toBeUndefined();
+        } else {
+          expect(isGlbDynamicSpringPart(wc.id, p.id)).toBe(false);
+          const ov = getGlbPartPbrOverride(wc.id, p.id);
+          expect(ov, `Missing ${wc.id} PBR override for ${p.id}`).toBeDefined();
+          const matchedPrefix = wc.suitePrefixes.find(
+            (pref) => ov!.albedoFile === `${pref}_albedo.webp`
+          );
+          expect(
+            matchedPrefix,
+            `Unexpected texture suite on ${wc.id}.${p.id}: ${ov!.albedoFile}`
+          ).toBeDefined();
+          expect(ov!.normalFile).toBe(`${matchedPrefix}_normal.webp`);
+          expect(ov!.roughnessFile).toBe(`${matchedPrefix}_roughness.webp`);
+          seenSuites.add(matchedPrefix!);
+        }
+      }
+      expect(seenSuites.size).toBe(3);
+    }
+
+    // --- V5.0 29/29 part accounting invariant: 667 solid GLB + 64 dynamic CSG = 731 total parts ---
     const totalSolidGlbParts = migrated.reduce(
       (sum, wid) => sum + Object.keys(GLB_WEAPON_CONFIGS[wid].pbrOverrides).length,
       0
@@ -1645,9 +1706,9 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
       (sum, wid) => sum + GLB_WEAPON_CONFIGS[wid].dynamicSpringParts.length,
       0
     );
-    expect(totalSolidGlbParts).toBe(625);
-    expect(totalDynamicCsgParts).toBe(58);
-    expect(totalSolidGlbParts + totalDynamicCsgParts).toBe(683);
+    expect(totalSolidGlbParts).toBe(667);
+    expect(totalDynamicCsgParts).toBe(64);
+    expect(totalSolidGlbParts + totalDynamicCsgParts).toBe(731);
 
     // --- Verify on-disk binary GLB headers, exact node/mesh alignment, referenced v3 WebP maps & per-exhibit MB size budgets ---
     const modelsDir = path.resolve(__dirname, '../public/models');
@@ -1680,6 +1741,8 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
       m1a2: 12 * 1024 * 1024,
       leopard2a7: 12 * 1024 * 1024,
       tiger1: 12 * 1024 * 1024,
+      winchester1894: 12 * 1024 * 1024,
+      rem870: 12 * 1024 * 1024,
     };
 
     for (const wid of migrated) {

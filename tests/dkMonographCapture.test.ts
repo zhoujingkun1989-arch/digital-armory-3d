@@ -751,7 +751,7 @@ describe('DK Visual Encyclopedia Capture Engine & Callout Solver', () => {
         }
       }
 
-      expect(totalVerifiedPlates).toBe(27 * 10);
+      expect(totalVerifiedPlates).toBe(29 * 10);
     });
   });
 });

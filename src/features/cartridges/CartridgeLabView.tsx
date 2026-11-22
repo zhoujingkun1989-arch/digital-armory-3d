@@ -100,17 +100,19 @@ export const CartridgeLabView: React.FC = () => {
   const caliberCount = activeOrder.length;
   const isMultiRowDock = caliberCount > 7;
   const zhCaliberCountWord =
-    caliberCount === 15
-      ? '十五'
-      : caliberCount === 11
-        ? '十一'
-        : caliberCount === 10
-          ? '十'
-          : caliberCount === 7
-            ? '七'
-            : caliberCount === 3
-              ? '三'
-              : String(caliberCount);
+    caliberCount === 16
+      ? '十六'
+      : caliberCount === 15
+        ? '十五'
+        : caliberCount === 11
+          ? '十一'
+          : caliberCount === 10
+            ? '十'
+            : caliberCount === 7
+              ? '七'
+              : caliberCount === 3
+                ? '三'
+                : String(caliberCount);
   const spec = CARTRIDGE_LAB_SPECS[activeCaliber];
   const primaryWeaponLabel = getLocalizedShortWeaponLabel(
     spec.primaryWeaponId,

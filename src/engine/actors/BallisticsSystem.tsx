@@ -1924,6 +1924,7 @@ const CALIBER_CASE_COLORS: Record<CaliberProfile, THREE.Color> = {
   bolt_400gr: new THREE.Color(CALIBER_VISUAL_SPECS.bolt_400gr.caseColor),
   '357_magnum': new THREE.Color(CALIBER_VISUAL_SPECS['357_magnum'].caseColor),
   '12_gauge': new THREE.Color(CALIBER_VISUAL_SPECS['12_gauge'].caseColor),
+  '30_30_win': new THREE.Color(CALIBER_VISUAL_SPECS['30_30_win'].caseColor),
   '30_06': new THREE.Color(CALIBER_VISUAL_SPECS['30_06'].caseColor),
   '473_caseless': new THREE.Color(CALIBER_VISUAL_SPECS['473_caseless'].caseColor),
   '9x39_subsonic': new THREE.Color(CALIBER_VISUAL_SPECS['9x39_subsonic'].caseColor),

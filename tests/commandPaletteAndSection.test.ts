@@ -186,7 +186,7 @@ describe('V3.0 Global Cmd+K Command Palette & Live CT-Scan Section Plane', () =>
       activeWeaponParts: [],
     });
 
-    expect(items.filter((i) => i.group === 'weapons')).toHaveLength(27);
+    expect(items.filter((i) => i.group === 'weapons')).toHaveLength(29);
 
     const searchCases: Array<{ query: string; expectedWeaponId: string }> = [
       { query: 'AK-15M1', expectedWeaponId: 'ak15' },

@@ -48,6 +48,7 @@ const EXPECTED_PMAX: Record<CaliberProfile, number> = {
   '762_nato': 415,
   '50_ae': 248,
   '12_gauge': 79,
+  '30_30_win': 290,
   '30_06': 345,
   '338_lapua': 420,
   '50_bmg': 379,
@@ -88,8 +89,8 @@ function playCycle(input: ArmoryPhysicsInput, rate = 0.42): void {
 }
 
 describe('SAAMI / CIP internal ballistics model', () => {
-  it('covers all 15 firearm/shotgun calibers with authentic peak chamber pressures', () => {
-    expect(BALLISTIC_CALIBERS).toHaveLength(15);
+  it('covers all 16 firearm/shotgun calibers with authentic peak chamber pressures', () => {
+    expect(BALLISTIC_CALIBERS).toHaveLength(16);
     for (const cal of BALLISTIC_CALIBERS) {
       expect(CALIBER_BALLISTICS[cal].peakPressureMPa).toBe(EXPECTED_PMAX[cal]);
     }
@@ -234,8 +235,8 @@ describe('SAAMI / CIP internal ballistics model', () => {
     expect(computeGasPortUncoverF('762_nato', WEAPON_FIRING_TIMING.m134)).toBeNull();
   });
 
-  it('defines ordered firing timing for all 27 exhibits and retains revolver / caseless G11 zero-brass physics', () => {
-    expect(WEAPON_IDS).toHaveLength(27);
+  it('defines ordered firing timing for all 29 exhibits and retains revolver / caseless G11 zero-brass physics', () => {
+    expect(WEAPON_IDS).toHaveLength(29);
     for (const id of WEAPON_IDS) {
       const t = WEAPON_FIRING_TIMING[id];
       expect(t.ignitionF).toBeLessThan(t.muzzleExitF);

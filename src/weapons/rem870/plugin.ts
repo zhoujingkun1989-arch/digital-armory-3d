@@ -479,7 +479,7 @@ export const REM870_PARTS: WeaponPartSpec[] = [
     nameEn: 'High-Visibility Orange Police Magazine Follower',
     group: 'magazine',
     material: 'follower_orange',
-    assembledPos: [14.0, -1.25, 0],
+    assembledPos: [17.8, -1.25, 0],
     explodeSteps: [{ range: [0.28, 0.68], offset: [38.0, -12.8, 5.2] }],
     calloutDir: 'down',
     calloutStem: 40,
@@ -744,30 +744,36 @@ export function computeRem870BallisticsState(
     muzzlePlumeOpacity = Math.sin(u * Math.PI) * 0.92;
   }
 
-  // 4. Next 12ga shell from mag tube `[10.6, -1.25, 0]` -> carrier `[1.8, -1.25, 0]` -> lift `[3.2, 1.08, 0]` -> chamber `[9.0, 1.35, 0]`
+  // 4. Next 12ga shell from mag tube `[10.6, -1.25, 0.045]` -> carrier `[1.8, -1.25, 0]` -> lift `[3.2, 1.08, 0]` -> chamber `[9.0, 1.35, 0]`
   let nextX = 10.6;
   let nextY = -1.25;
+  let nextZ = 0.045;
   let nextRZ = 0;
   if (f >= 0.52 && f < 0.6) {
     const u = seg(f, 0.52, 0.6);
     nextX = 10.6 + (1.8 - 10.6) * u;
+    nextZ = 0.045 * (1 - u);
   } else if (f >= 0.6 && f < 0.7) {
     const u = seg(f, 0.6, 0.7);
     nextX = 1.8 + (3.2 - 1.8) * u;
     nextY = -1.25 + (1.08 - -1.25) * u;
+    nextZ = 0;
     nextRZ = 0.2 * u;
   } else if (f >= 0.7 && f < 0.87) {
     const u = seg(f, 0.7, 0.87);
     nextX = 3.2 + (9.0 - 3.2) * u;
     nextY = 1.08 + (1.35 - 1.08) * u;
+    nextZ = 0;
     nextRZ = 0.2 * (1 - u);
   } else if (f >= 0.87) {
     nextX = 9.0;
     nextY = 1.35;
+    nextZ = 0;
   }
 
   const tubeShift = seg(f, 0.52, 0.63);
-  const resX = 12.2 + (10.6 - 12.2) * tubeShift;
+  const resX = 11.8 + (10.6 - 11.8) * tubeShift;
+  const resZ = -0.045 + (0.045 - -0.045) * tubeShift;
 
   return {
     bulletVisible,
@@ -782,9 +788,9 @@ export function computeRem870BallisticsState(
     gasPortPos: [20.0, 1.35, 0],
     muzzlePlumeScale,
     muzzlePlumeOpacity,
-    nextRoundPos: [nextX, nextY, 0],
+    nextRoundPos: [nextX, nextY, nextZ],
     nextRoundRotZ: nextRZ,
-    reserveRoundPos: [resX, -1.25, 0],
+    reserveRoundPos: [resX, -1.25, resZ],
   };
 }
 

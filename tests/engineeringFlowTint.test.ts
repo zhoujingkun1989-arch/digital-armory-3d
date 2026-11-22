@@ -75,7 +75,7 @@ describe('WP-05 Engineering Functional Role Tint & Gas-Flow Contracts', () => {
     }
   });
 
-  it('classifies all 683 procedural/CSG parts across 27 exhibits with exact gas, elastic-drive & armor powerpack fidelity', async () => {
+  it('classifies all 731 procedural/CSG parts across 29 exhibits with exact gas, elastic-drive & armor powerpack fidelity', async () => {
     const validRoles = new Set<EngineeringRole>(ENGINEERING_ROLE_ORDER);
     let totalParts = 0;
 
@@ -110,7 +110,7 @@ describe('WP-05 Engineering Functional Role Tint & Gas-Flow Contracts', () => {
       }
     }
 
-    expect(totalParts).toBe(683);
+    expect(totalParts).toBe(731);
   });
 
   it('keeps WebGL shader program cache keys 100% invariant when functional tint uniforms toggle', () => {

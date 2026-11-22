@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-11-22T02:50:32Z",
+  "generatedAt": "2026-11-22T05:48:35Z",
   "weapons": {
     "p08": {
       "renderer": "Blender 5.2 Cycles",
@@ -2428,6 +2428,186 @@
           "height": 1800,
           "azimuthDeg": 0.0,
           "elevationDeg": 7.98,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "winchester1894": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/winchester1894/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/winchester1894/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/winchester1894/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/winchester1894/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/winchester1894/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/winchester1894/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/winchester1894/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/winchester1894/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/winchester1894/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/winchester1894/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 1.37,
+          "elevationDeg": 8.14,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "rem870": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/rem870/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/rem870/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/rem870/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/rem870/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/rem870/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/rem870/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/rem870/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/rem870/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/rem870/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/rem870/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": -4.18,
+          "elevationDeg": 6.66,
           "fovDeg": 36.0
         }
       }

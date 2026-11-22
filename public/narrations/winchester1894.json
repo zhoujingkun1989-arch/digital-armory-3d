@@ -1,0 +1,896 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "winchester1894",
+  "generatedAt": "2026-11-22T05:50:53.047393+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "Winchester Model 1894 Lever-Action Carbine",
+    "subtitle": ".30-30 Win Vertical-Locking Lever-Action Cavalry Carbine",
+    "originCountry": "United States",
+    "weaponType": "Lever-Action Carbine",
+    "categoryLabel": "Carbine",
+    "actionMechanism": "D-Loop Finger Lever · Browning Rising Vertical Locking Bolt · Top Ejection & Tubular Magazine",
+    "statusLabel": "In Vault · Field Strippable",
+    "description": "Engineered by John Moses Browning in 1894 for America's inaugural commercial smokeless cartridge (.30-30 Winchester), the Model 1894 represents an apex in lever-action geometry. A single downward stroke of the forged D-ring lever lowers a vertical H-block locking bolt, cycles an 88-millimeter top-eject bolt, cocks an exposed hammer, and raises a brass cartridge lifter. Its compact 20-inch barrel and cavalry saddle ring solidified its legacy across North America with over 7.5 million produced.",
+    "highlights": [
+      "Browning Vertical Rising H-Locking Bolt & Drop Link Bridge",
+      "D-Loop Lever-Squeeze Trigger Block Safety & Spurred Hammer",
+      "Nelson King Patent Spring-Tempered Loading Gate & Tube Mag",
+      "Top-Eject Forged Steel Receiver with Left-Side Saddle Ring"
+    ],
+    "workbenchTitle": "Winchester 1894 Carbine 3D Kinematics & Vertical Lock Workbench",
+    "workbenchSubtitle": "4 Modular Groups · 24 Parts · D-Lever Cam, Rising Locking Wedge, Top Ejection, and Shell Carrier Simulation",
+    "cutawayLabel": "Vertical Lock & Carrier Cutaway",
+    "cutawayTitle": "Switch to cutaway focus on Browning vertical locking block, lever link, brass shell carrier, and hammer group",
+    "searchPlaceholder": "Search BOM parts (e.g., Locking Bolt, Lever, Carrier, Saddle Ring, B-05)...",
+    "firingMilestoneLabel": "Lever Stroke Unlock",
+    "rateOfFire": "25–35 rpm (Manual Lever Cycle)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Ready to Fire",
+        "subLabel": "0% Assembled",
+        "desc": "Fully assembled Winchester Model 1894 Saddle-Ring Carbine: underbarrel tubular magazine charged via King's spring loading gate, with Browning's vertical H-block fully engaged behind the cylindrical bolt."
+      },
+      "field_strip": {
+        "label": "Lever & Bolt Core Strip",
+        "subLabel": "30% Field Strip",
+        "desc": "Removal of the D-loop finger lever, hinged bottom link, and downward withdrawal of the vertical locking block, permitting rearward extraction of the top-eject cylindrical breech bolt and buttstock."
+      },
+      "sub_assembly": {
+        "label": "Magazine & Fire Control Strip",
+        "subLabel": "65% Sub-Assembly",
+        "desc": "Disassembly of the 6-round underbarrel tubular magazine, brass pivoting cartridge lifter, left-side cavalry saddle ring, spring-loaded loading gate, and hammer mainspring group."
+      },
+      "full_exploded": {
+        "label": "Full 24-Part Exploded View",
+        "subLabel": "100% Full Exploded",
+        "desc": "Complete mechanical breakdown of all 24 precision components, exhibiting John Moses Browning's pioneering rising wedge lock designed to harness smokeless chamber pressures."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "Trigger & Hammer Arc",
+        "title": "Phase 1 · Tang Lever Safety Depressed, Trigger Releases Hammer",
+        "description": "As the lever firmly closes against the lower receiver tang, it clears the trigger-block safety. Squeezing the trigger releases the sear, driving the exposed spurred hammer forward into the two-piece firing pin."
+      },
+      "phase_2": {
+        "shortLabel": "Smokeless Ignition 290 MPa",
+        "title": "Phase 2 · .30-30 WCF Primer Ignites, Rising Wedge Resists High Pressure",
+        "description": "Smokeless powder generates approximately two hundred ninety megapascals of peak chamber pressure. The forged steel Browning H-locking bolt holds the cylindrical breech bolt rock-solid against receiver mortises."
+      },
+      "phase_3": {
+        "shortLabel": "Bullet Exit & Lever Stroke",
+        "title": "Phase 3 · 170gr Bullet Exits Muzzle, Downward Lever Stroke Unlocks Action",
+        "description": "The flat-nose round departs the 20-inch muzzle at six hundred seventy meters per second. Pushing the D-loop lever forward lowers the receiver link, drawing the vertical locking bolt downward by 24 millimeters."
+      },
+      "phase_4": {
+        "shortLabel": "Top Eject & Hammer Cock",
+        "title": "Phase 4 · Bolt Retracts 8.8 cm, Top Extractor Ejects Spent Brass Shell",
+        "description": "With locking lugs fully disengaged, the breech bolt translates rearward 88 millimeters, recocking the hammer into full cock while the top extractor flips the spent copper case clear of the receiver."
+      },
+      "phase_5": {
+        "shortLabel": "Tube Feeds Brass Lifter",
+        "title": "Phase 5 · Underbarrel Magazine Pushes Fresh Round onto Carrier Tray",
+        "description": "The 42-coil tempered steel magazine spring drives the brass follower rearward, sliding a fresh .30-30 cartridge onto the lowered brass carrier tray while blocking successive rounds."
+      },
+      "phase_6": {
+        "shortLabel": "Lever Return & Chambering",
+        "title": "Phase 6 · Rearward Lever Stroke Pivots Carrier Upward to Feed Chamber",
+        "description": "Pulling the D-ring lever rearward tilts the brass shell carrier up twenty-two degrees, aligning the fresh cartridge with the chamber as the returning cylindrical bolt drives it home into battery."
+      },
+      "phase_7": {
+        "shortLabel": "Vertical Bolt Lock Up",
+        "title": "Phase 7 · Final Lever Closure Elevates Vertical H-Block into Full Lock",
+        "description": "During the final eight degrees of lever travel, the bottom link wedges the H-shaped locking block upward behind the bolt shoulders, aligning the two-piece firing pin and restoring full mechanical lock."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "平原落日与无烟烈火：温彻斯特 1894 垂直升降闭锁与西部卡宾枪传奇",
+      "deck": "从十九世纪黑火药连珠枪的轻薄铰链，到约翰·摩西·勃朗宁锻造的承压钢铁楔块，温彻斯特 1894 伴随美国首款民间无烟弹药征服了荒原与深林。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1880–1893",
+          "title": "黑火药黄昏与机匣承压危机",
+          "paragraphs": [
+            "在十九世纪末的北美拓荒潮中，以温彻斯特 1866 与 1873 为代表的杠杆枪械牢牢占据了马鞍枪套。然而，那些早期传奇完全依赖两片平面对称的肘节式连杆（Toggle-joint）提供闭锁刚度。面对黑火药时代手枪级弹药的温和膛压，这种源自亨利步枪的结构尚可胜任；但在十九世纪八十年代末，由法国勒贝尔步枪引发的全球无烟火药革命以惊涛骇浪之势席卷轻武器界。",
+            "早期杠杆步枪轻薄平坦的锻钢机匣无法抵御膛压翻倍的无烟药柱冲刷。如果继续沿用侧面展开的铰接肘节，机匣侧壁会发生永久性微量外胀，导致卡壳甚至机匣炸裂。猎手与骑兵迫切需要一种既能保持单手快速推拉上膛节奏、又能从容承受近三万磅每平方英寸剧烈高压的革命性杠杆步枪平台。",
+            "温彻斯特高层意识到，他们必须找到一位能够打破黑火药机械思维的天才枪械大师。位于康涅狄格州纽黑文的工厂将目光再次投向了犹他州奥格登的约翰·摩西·勃朗宁，一场改写北美杠杆步枪命运的图纸重构正式拉开帷幕。"
+          ],
+          "audioScript": "十九世纪末，法国无烟火药的问世让传统的黑火药步枪瞬间过时。旧式温彻斯特杠杆枪上的薄弱肘节连杆，根本无法承受无烟火药翻倍的爆燃高压。北美森林的猎人与边境骑兵，迫切需要一款坚如磐石的新一代连发卡宾枪。",
+          "audioUrl": "audio/winchester1894/story_act1_zh.mp3",
+          "focusPartId": "win94_receiver",
+          "focusPartLabel": "开顶抛壳精密铣削锻钢机匣"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1893–1895",
+          "title": "奥格登工坊的垂直升降构想",
+          "paragraphs": [
+            "1893年，约翰·摩西·勃朗宁与其兄弟马修在奥格登工坊里审视着温彻斯特 1886 型步枪的图纸。1886 型虽然具备优秀的双垂直升降锁块，但全枪质量重达四公斤以上，对于长时间在马鞍上颠簸或穿越密林的猎手而言过于笨重。勃朗宁决意打造一款既轻盈紧凑、又能在核心承力面上形成死锁的全新机构。",
+            "勃朗宁开创性地舍弃了复杂的侧翼双块布局，设计了一体成型的锻钢 H 型垂直升降闭锁块。他将手指操作的 D 型下弯杠杆与机匣底部的铰接活动连杆桥融为一体。下压杠杆时，连杆向下沉降，首先生拉闭锁块完全滑脱出枪机背部的抵消槽；随后杠杆才以平滑的圆弧凸轮推引圆柱形枪机后坐，实现了无卡滞的顺序动作。",
+            "1894年8月21日，美国专利局正式颁发了第524,702号专利。次年，温彻斯特配套推出了全球首款民间商业化无烟火药步枪弹——点三零点三零无烟弹（.30-30 WCF）。纤细的卡宾枪身配合高硬度镍合金钢枪管，一举将弹头初速推升至六百七十米每秒，震惊了整个美洲轻武器市场。"
+          ],
+          "audioScript": "天才枪械大师约翰·摩西·勃朗宁打破了旧有思维，将复杂的双闭锁块简化为一体式垂直升降钢楔。配合下沉式铰接底桥，新步枪在下压杠杆的瞬间便能精准卸载闭锁。伴随着点三零点三零无烟弹的面世，温彻斯特一八九四型卡宾枪横空出世。",
+          "audioUrl": "audio/winchester1894/story_act2_zh.mp3",
+          "focusPartId": "win94_barrel",
+          "focusPartLabel": "20英寸 .30-30 WCF 锥形烤蓝圆枪管"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1895–1920",
+          "title": "闭锁之魂与刚性动力学闭环",
+          "paragraphs": [
+            "温彻斯特 1894 的机械灵魂在于其极其精妙的垂直向力学转换。当推拉杠杆完全合拢时，底桥连杆如千斤顶般将 H 型锻钢闭锁块向上垂直顶升二十四毫米，闭锁块的两侧凸笋严丝合缝地嵌入机匣内壁两道垂直垂直导槽中，其厚实的前迎弹面死死抵在圆柱形枪机的尾部斜肩上。火药燃气产生的后坐冲量瞬间通过闭锁块直接传递给厚实的机匣侧壁，彻底杜绝了机匣外撑变形。",
+            "而在输弹与点火链路中，勃朗宁同样展现了严苛的安全哲学。只有当杠杆严密贴合下尾舌并压入杠杆阻断保险时，扳机阻铁才被允许解脱；两段式浮动击针设计确保了闭锁块未升到位前两段击针错位，杜绝任何早发风险。同时，经典的纳尔逊·金侧面弹簧装弹口允许射手单指推弹入仓，下挂弹仓内的长琴钢丝弹簧持续将平头弹平推至黄铜托弹勺上，杠杆回旋即刻抬勺上弹。",
+            "开顶式机匣造就了其标志性的竖直向上抛壳路径，机加工圆柱枪机全行程运行八十八毫米，宽大的抽壳钩干脆利落地将滚烫弹壳直抛入空。整套系统在极其狭窄扁平的二十五毫米厚度空间内，实现了高压闭锁、保险联锁与全自动托弹循环的完美共存。"
+          ],
+          "audioScript": "在这支步枪内部，重达二十四毫米的垂直闭锁块就像一道钢铁闸门，将两百九十兆帕的燃气冲量完全化解在机匣槽内。两段式击针与握把联锁保险杜绝了早发危险，而平滑抬升的黄铜托弹勺，则在手腕轻挑间将平头弹精准送入弹膛。",
+          "audioUrl": "audio/winchester1894/story_act3_zh.mp3",
+          "focusPartId": "win94_locking_bolt",
+          "focusPartLabel": "勃朗宁 H 型垂直升降钢制闭锁块"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1920–至今",
+          "title": "跨越世纪的七百万传奇",
+          "paragraphs": [
+            "从落基山脉的厚雪深林到格兰德河畔的边境巡警，左侧带有马鞍挂铁环、重仅三点一公斤的温彻斯特 1894 卡宾枪成为了荒野生存的图腾。其发射的点三零点三零平头弹在两百米距离上具备无可挑剔的落点精度与对中大型猎物的致死停止力，几乎独自书写了北美猎鹿文化的半壁江山。",
+            "1927年，温彻斯特公司向柯立芝总统赠送了第一百万支下线的 1894 型黄金纪念枪；它历经墨西哥革命、两次世界大战中的本土防御护卫，并在随后的半个世纪里不断打破全球民用步枪产量纪录。尽管在 1964 年因降低成本引入了冲压件变革，致使早期锻造的六四前版本成为收藏界的无价之宝，但其基础机械架构历经风霜始终不衰。",
+            "如今，温彻斯特 1894 的全球累计产量已经突破七百五十万支。它不仅是约翰·勃朗宁工程美学的绝佳典范，更是人类轻武器从黑火药向现代高压弹药过渡期中，最为持久、实用且优雅的机械丰碑。"
+          ],
+          "audioScript": "从巡警的马鞍挂套到深山猎人的鹿营木屋，温彻斯特一八九四型卡宾枪征服了整整一个世纪。突破七百五十万支的辉煌产量，使它成为北美枪械史上不可逾越的常青树，将勃朗宁的升降闭锁构想化作了永恒的传奇回响。",
+          "audioUrl": "audio/winchester1894/story_act4_zh.mp3",
+          "focusPartId": "win94_saddle_ring",
+          "focusPartLabel": "左侧骑兵卡宾枪马鞍铁环"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "勃朗宁 H 型垂直升降闭锁架构",
+          "tag": "垂直升降闭锁",
+          "summary": "以单块垂直滑动的锻钢 H 型升降闭锁楔替代旧式的薄弱平行肘节，直接在机匣垂直导槽与枪机尾端间构成刚性死锁，使窄体杠杆枪机匣得以抵御高达 290 MPa 的无烟火药爆发膛压。",
+          "focusPartId": "win94_locking_bolt",
+          "focusPartLabel": "勃朗宁 H 型垂直升降钢制闭锁块"
+        },
+        {
+          "id": "bt2",
+          "title": "双行程抬升黄铜托弹勺系统",
+          "tag": "自定心托弹",
+          "summary": "利用杠杆连杆的下部凸轮面驱动黄铜托弹勺在后行程向上翘起 22 度，既将管式弹仓内的首发弹精准对齐弹膛锥口，又凭借底部弧形挡面彻底阻截后方余弹，防止双进弹卡壳故障。",
+          "focusPartId": "win94_carrier",
+          "focusPartLabel": "升降黄铜与合金钢托弹勺"
+        },
+        {
+          "id": "bt3",
+          "title": "两段式错位错开防早发击针",
+          "tag": "机械防早发",
+          "summary": "击针被剖分为前后两段，仅当垂直闭锁块完全升至最上死点时，中间通孔才将两段击针精准对正同轴，若闭锁未闭合即便击锤意外跌落也绝不触及底火，构筑了高压杠杆枪的刚性本质安全。",
+          "focusPartId": "win94_firing_pin",
+          "focusPartLabel": "两段式半闭锁防早发长击针"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1894",
+          "title": "获得勃朗宁升降闭锁发明专利",
+          "detail": "约翰·摩西·勃朗宁被授予美国第 524,702 号专利，温彻斯特正式投产首批开顶式垂直闭锁卡宾枪。"
+        },
+        {
+          "year": "1895",
+          "title": ".30-30 WCF 民用无烟弹药诞生",
+          "detail": "配套推出美国首款商业无烟火药步枪弹与特种镍钢枪管，弹头初速突破 670 m/s 树立猎枪新标准。"
+        },
+        {
+          "year": "1927",
+          "title": "第一百万支纪念枪献礼总统",
+          "detail": "序列号第 1,000,000 支精雕镀金 Model 1894 赠予卡尔文·柯立芝总统，确立国民步枪地位。"
+        },
+        {
+          "year": "1964",
+          "title": "Pre-64 传统锻造分水岭",
+          "detail": "工厂转向冲压与烧结工艺，使此前手工装配、铣削锻造的经典 Pre-64 卡宾枪成为稀世收藏珍品。"
+        },
+        {
+          "year": "1983",
+          "title": "Angle-Eject 斜向抛壳适配光学镜",
+          "detail": "温彻斯特调整机匣开窗角度与退壳轴线，彻底化解开顶抛壳与光学瞄准镜中轴安装的物理干涉。"
+        },
+        {
+          "year": "2006至今",
+          "title": "全球产量跨越 750 万支门槛",
+          "detail": "历经一个多世纪的传承演进，温彻斯特 1894 成为人类轻武器工业史上总产量最高的杠杆步枪。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Frontier Sunset and Smokeless Thunder: The Winchester 1894 Engineering Odyssey",
+      "deck": "Forged by John Moses Browning to master America's first commercial smokeless cartridge, the Model 1894 revolutionized repeating carbines with its indomitable vertical rising lock.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1880–1893",
+          "title": "Black Powder Twilight and the Receiver Dilemma",
+          "paragraphs": [
+            "Throughout the late nineteenth century, the Winchester Model 1866 and Model 1873 dominated horseback scabbards across the American West. Yet their legendary repeating actions relied entirely on delicate, toggle-joint linkages inherited from the Henry rifle. While sufficiently resilient against the mild chamber pressures of black powder handgun calibers, this geometric layout faced an insurmountable crisis when the French Lebel rifle unleashed the smokeless powder revolution in 1886.",
+            "Early thin-walled forged receivers bowed and yielded under the violent pressure curves of modern nitrocellulose propellants. Sustained firing of high-velocity ammunition stretched toggle pins and flared side walls, provoking critical case extraction failures and receiver ruptures. North American frontiersmen and cavalry units demanded a compact repeating carbine capable of withstanding pressures approaching thirty thousand pounds per square inch.",
+            "Recognizing that their legacy toggle actions had reached a structural dead end, Winchester executives in New Haven reached out once more to John Moses Browning in Ogden, Utah. The company required an entirely unprecedented mechanical architecture capable of handling the high-energy smokeless era without sacrificing rapid single-stroke lever actuation."
+          ],
+          "audioScript": "By the late nineteenth century, the invention of smokeless powder rendered traditional black powder toggle-link actions obsolete. Winchester's delicate side-folding joints could not withstand the doubled internal pressures of nitrocellulose propellants. Cavalry patrols and backcountry hunters urgently required an unbreakable lever-action carbine designed from the ground up for modern high-pressure cartridges.",
+          "audioUrl": "audio/winchester1894/story_act1_en.mp3",
+          "focusPartId": "win94_receiver",
+          "focusPartLabel": "Top-Eject Forged Alloy Steel Receiver"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1893–1895",
+          "title": "The Ogden Workshop and the Vertical Rising Wedge",
+          "paragraphs": [
+            "In 1893, John Moses Browning and his brother Matthew examined the heavy Model 1886. While the earlier rifle featured dual vertical locking bolts, its broad receiver and substantial mass—exceeding nine pounds—proved cumbersome for horse-mounted riders and dense timber stalking. Browning envisioned a trim, fast-handling carbine built around a simplified vertical sliding locking architecture.",
+            "Browning replaced the paired locking bolts with a single, monolithic H-shaped vertical steel locking block. He integrated the forged finger lever with a pivoted carrier link that formed an articulated floor beneath the receiver. When the shooter thrust the lever downward, this link dropped downward first, smoothly drawing the locking bolt down out of upper mortises before cams engaged the cylindrical breech bolt to travel straight back.",
+            "On August 21, 1894, the United States Patent Office awarded Browning Patent Number 524,702. The following year, Winchester introduced the world's premier commercial sporting smokeless cartridge: the .30-30 Winchester Center Fire. Propelling a 170-grain flat-nose projectile at six hundred seventy meters per second from a slender twenty-inch barrel, the Model 1894 startled the shooting world with its flat trajectory and devastating kinetic transfer."
+          ],
+          "audioScript": "Master designer John Moses Browning bypassed fragile toggle linkages by developing a monolithic vertical locking wedge. Driven by a hinged bottom link, the wedge dropped downward to unlock the bolt smoothly before rearward travel began. Paired with the newly engineered thirty-thirty Winchester smokeless cartridge, the Model 1894 delivered blazing velocities in a remarkably trim saddle package.",
+          "audioUrl": "audio/winchester1894/story_act2_en.mp3",
+          "focusPartId": "win94_barrel",
+          "focusPartLabel": "20\" .30-30 WCF Tapered Blued Round Barrel"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1895–1920",
+          "title": "Kinematic Purity and Rigid Pressure Containment",
+          "paragraphs": [
+            "The mechanical triumph of the Model 1894 resides in its uncompromising containment of explosive gas dynamics. As the finger lever completes its upward return stroke, the lower link thrusts the twenty-four-millimeter forged locking block vertically into deep raceways inside the receiver wall. Its reinforced frontal abutment faces seat directly against the rear shoulders of the cylindrical bolt, channeling hundreds of megapascals directly into the solid receiver frame.",
+            "Browning engineered comprehensive mechanical safety interlocks throughout the trigger train. Squeezing the trigger releases the sear only when the loop lever is pressed flush against the lower tang, physically depressing an interlock plunger. Simultaneously, an articulated two-piece inertia firing pin remains out of alignment until the locking block fully rises into battery, making out-of-battery ignition physically impossible even under severe handling.",
+            "A full-length underbarrel magazine pushed cartridges via a forty-two-coil spring into a pivoting brass shell carrier. Nelson King's spring loading gate enabled single-finger replenishment without interrupting readiness. Operating inside a slender twenty-five-millimeter envelope, the open-top receiver cleanly threw spent brass upward, cycling fresh ammunition with matchless speed."
+          ],
+          "audioScript": "Deep within the forged receiver, the rising vertical steel locking wedge acts like an immovable bulkhead, redirecting intense combustion thrust straight into solid steel mortises. A two-piece firing pin and an integral lever-squeeze tang block prevent premature discharge, while the smooth-pivoting brass carrier lifts fresh rounds into battery with relentless mechanical certainty.",
+          "audioUrl": "audio/winchester1894/story_act3_en.mp3",
+          "focusPartId": "win94_locking_bolt",
+          "focusPartLabel": "Browning Vertical Rising H-Locking Block"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "1920–Present",
+          "title": "A Century on the Saddle: The Seven-Million Icon",
+          "paragraphs": [
+            "From snowbound timberlines in British Columbia to the arid border country along the Rio Grande, the 3.1-kilogram Saddle-Ring Carbine became an indispensable North American tool. Its manageable recoil, rapid sight picture recovery across stepped buckhorn sights, and lethal performance against medium game cemented the .30-30 caliber as the definitive deer hunting standard of the continent.",
+            "In 1927, Winchester presented the one-millionth serial-numbered Model 1894, engraved and gold-inlaid, to President Calvin Coolidge. The platform served border rangers, lumber guards, and homesteader families through the hardships of the twentieth century. While manufacturing transitions in 1964 from forged steel to sintered metal demarcated the revered 'Pre-64' collection tier, the essential kinematics devised by Browning remained untouched.",
+            "With total global production exceeding 7.5 million rifles across more than a century of continuous fabrication, the Winchester Model 1894 stands as the most popular sporting lever action in history. It remains an enduring testament to John Moses Browning's genius in marrying ergonomic elegance with immense mechanical strength."
+          ],
+          "audioScript": "From cavalry saddle scabbards to wilderness logging cabins, the Winchester Model 1894 defined an entire century of frontier life. Surpassing seven and a half million units produced, it remains the most successful sporting lever-action rifle ever built, a timeless tribute to John Moses Browning's mastery of repeating steel.",
+          "audioUrl": "audio/winchester1894/story_act4_en.mp3",
+          "focusPartId": "win94_saddle_ring",
+          "focusPartLabel": "Left-Flank Cavalry Carbine Saddle Ring"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Browning Vertical Rising H-Block Lock",
+          "tag": "Vertical Locking Wedge",
+          "summary": "Replaced delicate horizontal toggle links with a solid forged steel sliding block that rises vertically into receiver mortises, creating a rigid mechanical bulkhead capable of containing 290 MPa smokeless chamber pressures.",
+          "focusPartId": "win94_locking_bolt",
+          "focusPartLabel": "Browning Vertical Rising H-Locking Block"
+        },
+        {
+          "id": "bt2",
+          "title": "Articulated Cam-Driven Brass Shell Carrier",
+          "tag": "Positive Carrier Feed",
+          "summary": "Employs an under-lever camming surface to elevate the brass carrier tray twenty-two degrees during the bolt cycle, aligning the fresh cartridge precisely with the chamber throat while shielding against double feeds.",
+          "focusPartId": "win94_carrier",
+          "focusPartLabel": "Pivoting Brass Shell Carrier & Lifter Block"
+        },
+        {
+          "id": "bt3",
+          "title": "Two-Piece Inertia Interlocked Firing Pin",
+          "tag": "Out-of-Battery Safety",
+          "summary": "Splits the firing pin into two independent sections that align coaxially only when the vertical locking bolt completes its upward stroke, preventing accidental primer ignition if the action is jarred or out of battery.",
+          "focusPartId": "win94_firing_pin",
+          "focusPartLabel": "Two-Piece Inertia Interlocked Firing Pin"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1894",
+          "title": "Browning Secures Rising Wedge Patent",
+          "detail": "John Moses Browning is granted U.S. Patent 524,702 for the vertical rising block lever-action platform, entering mass production at New Haven."
+        },
+        {
+          "year": "1895",
+          "title": "Inauguration of the .30-30 WCF Smokeless Cartridge",
+          "detail": "Winchester introduces the .30 WCF sporting cartridge alongside nickel-steel barrels, pushing velocities to 670 m/s and establishing a frontier hunting icon."
+        },
+        {
+          "year": "1927",
+          "title": "One-Millionth Carbine Presented to the President",
+          "detail": "Serial number 1,000,000, master-engraved with gold inlay, is presented to U.S. President Calvin Coolidge in formal recognition of the carbine's national status."
+        },
+        {
+          "year": "1964",
+          "title": "Pre-64 Forging Milestone Shift",
+          "detail": "Winchester adopts stamping and sintered component techniques, crystallizing early hand-fitted Pre-64 forged models as revered collector treasures."
+        },
+        {
+          "year": "1983",
+          "title": "Angle-Eject Receiver Modification",
+          "detail": "The extraction port geometry is angled laterally to clear overhead telescopic sights without fouling standard top-mount optics rings."
+        },
+        {
+          "year": "2006–Present",
+          "title": "Surpassing 7.5 Million Carbines Worldwide",
+          "detail": "Celebrated over a century of production, cementing the Model 1894 as the most widely manufactured centerfire sporting rifle in history."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "win94_barrel": {
+      "partId": "win94_barrel",
+      "bomCode": "B-01",
+      "calloutLabelEn": "20-Inch Tapered Barrel",
+      "zh": {
+        "roleTag": "508毫米六条膛线一比十二缠距无烟火药枪管",
+        "overview": "这是一根专为点三零口径无烟火药弹药研制的高强度锥形碳钢圆枪管。枪管尾端以螺纹同轴紧固旋入机匣前端螺纹套孔，构筑起承受超高爆压的刚性基座。",
+        "craftAndMaterial": "采用经深层调质热处理的高抗拉镍铬合金钢整体精密深孔钻削而成，外表面施以温润耐磨的传统烤蓝防腐工艺。锥形外轮廓兼顾前轻后厚的壁厚渐变，极大优化重心平衡并抵御射击热形变。",
+        "kinematicRole": "在击发全程作为静止基准构件密封膛内高温气体并导引弹头加速脱出，不参与往复动作。在枪械分解进度百分之二十二至五十六阶段随枪管组件向斜前方移出。",
+        "designHighlight": "作为历史上首款为商业无烟火药设计的杠杆枪管，它经受住了比传统黑火药高出近两倍的膛压考验，终结了老式枪机因药量过大致炸裂的历史。",
+        "audioScript": "展柜中的这根二十英寸烤蓝圆枪管，是军民枪械跨入无烟火药新纪元的历史见证。点三零点三零无烟弹高达两百九十兆帕的膛压，对十九世纪末的冶金构成了严峻考验。勃朗宁通过优化镍铬钢配方与锥形壁厚分布，在保证轻量便携的同时，赋予卡宾枪极其优异的承压与抗震性能。",
+        "audioUrl": "audio/winchester1894/parts/win94_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "20-Inch 1:12 Twist Smokeless Powder Barrel",
+        "overview": "This is a 20-inch round tapered barrel engineered specifically for the high-pressure point-thirty-thirty smokeless cartridge. It is threaded solidly into the front ring of the forged steel receiver to form an unyielding ballistic datum.",
+        "craftAndMaterial": "Deep-hole drilled from forged nickel-alloy steel with a traditional deep bluing finish across its tapered contour. The continuous taper concentrates wall thickness around the high-pressure chamber while shedding forward weight for superior handling.",
+        "kinematicRole": "Serves as the rigid structural foundation throughout all seven cycling phases, containing peak combustion pressures without shifting. Separates forward with the front assembly during the twenty-two to fifty-six percent disassembly window.",
+        "designHighlight": "Designed specifically for the revolutionary point-thirty-thirty cartridge, this barrel sustained chamber pressures nearly double those of black powder cartridges, marking the beginning of modern sporting ballistics.",
+        "audioScript": "This twenty-inch blued round barrel is the bedrock of the Model 1894. Designed to handle the then-revolutionary smokeless point-thirty-thirty cartridge, it withstands combustion pressures up to two hundred ninety megapascals. Notice the continuous taper from chamber to muzzle, carefully balanced by John Browning to shed excess weight while maintaining the rigid harmonics required for brush-hunting accuracy.",
+        "audioUrl": "audio/winchester1894/parts/win94_barrel_en.mp3"
+      }
+    },
+    "win94_front_sight": {
+      "partId": "win94_front_sight",
+      "bomCode": "B-02",
+      "calloutLabelEn": "Brass Bead Front Sight",
+      "zh": {
+        "roleTag": "燕尾槽风偏微调与高对比圆润黄铜反光准星",
+        "overview": "该准星安装于枪口前端的锻造斜坡基座之上，提供清晰快速的捕标参照。底座采用横向燕尾槽与枪管基座咬合，射手可通过机械敲击实现精准的风偏归零。",
+        "craftAndMaterial": "准星本体为热处理高碳钢精密铣削加工，顶端镶焊有一枚经手工抛光的高纯度亮黄色球形黄铜珠。表面做亚光烤蓝防眩光处理，唯有铜珠光亮凸显。",
+        "kinematicRole": "全程保持在枪管前端固定不动，为卡宾枪在剧烈射击与颠簸中提供恒定的瞄准视线。在全分解百分之五十六至九十二阶段脱离枪口斜坡。",
+        "designHighlight": "镶嵌黄铜圆珠在清晨与黄昏幽暗的密林狩猎环境中能聚集微弱天光产生微光点，即使快速出枪也能瞬间压住猎物轮廓。",
+        "audioScript": "固定在枪口斜坡燕尾槽内的这枚黄铜珠准星，是十九世纪西部骑兵与猎人的经典标配。无论在昏暗的树林还是马背颠簸中，圆润的黄铜圆珠都能反射微光，帮助射手快速套准目标。敲击燕尾榫即可微调风偏，设计极其质朴实用。",
+        "audioUrl": "audio/winchester1894/parts/win94_front_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dovetail-Mounted High-Contrast Sight Bead",
+        "overview": "This component is mounted on the forged muzzle ramp to deliver a crisp and rapid front aiming reference. It seats via a transverse dovetail, allowing armorers to make manual drift adjustments for windage zero.",
+        "craftAndMaterial": "Milled from tough carbon steel with a blued anti-glare finish and topped with an inlaid polished brass bead. The rounded brass sphere resists dulling while remaining visible across varying lighting backdrops.",
+        "kinematicRole": "Remains strictly stationary on the barrel assembly across all firing phases to ensure sight plane stability. Separates from the muzzle ramp during the fifty-six to ninety-two percent teardown stage.",
+        "designHighlight": "The hemispherical brass bead naturally gathers ambient skylight in dense timber, creating an intuitive bright point that allows hunters to acquire fleeing game in fractions of a second.",
+        "audioScript": "Perched atop the muzzle ramp sits the classic brass bead front sight. Milled from solid carbon steel and dovetailed for lateral windage drift, it features an inlaid brass bead that reflects ambient light even in deep forest gloom. This simple optic allows riders to lock onto targets with natural snap-shooting precision.",
+        "audioUrl": "audio/winchester1894/parts/win94_front_sight_en.mp3"
+      }
+    },
+    "win94_breech_bolt": {
+      "partId": "win94_breech_bolt",
+      "bomCode": "B-03",
+      "calloutLabelEn": "Top-Eject Breech Bolt",
+      "zh": {
+        "roleTag": "八十八毫米行程直行后坐与顶部竖直向上抛壳枪机",
+        "overview": "这是一件置于机匣上方内导轨中的圆柱形精密机加工钢制枪机。它负责推弹入膛、密封枪膛尾端、并在后坐过程中抓取并垂直向上抛出打空的弹壳。",
+        "craftAndMaterial": "采用经表面渗碳硬化的高强度合金钢车铣成型，外圆弧面精细研磨以极小间隙配合机匣内腔。顶部开有长条形抽壳钩弹簧槽与外露抛壳退刀槽。",
+        "kinematicRole": "在阶段三至四沿导轨直行后退八十八毫米并压倒外露击锤，在阶段六前推新弹入膛，阶段七由闭锁块托底闭锁。分解进度百分之十至四十二阶段移出。",
+        "designHighlight": "顶部完全敞开式的抛壳设计使整枪机匣得以维持极为狭窄扁平的马鞍形态，且射手可随时从上方直接观察膛内状态并手动排除故障。",
+        "audioScript": "这根圆柱形钢制枪机是整个闭锁机构的核心运动件。当射手下压杠杆，枪机在机匣滑轨内向后滑行八十八毫米，压倒外露击锤的同时，顶部的弹性抽壳钩将滚烫的空弹壳竖直向天空抛出。机匣顶部的全开天窗，赋予了它极高的排障便利性。",
+        "audioUrl": "audio/winchester1894/parts/win94_breech_bolt_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Linear Recoil Bolt with Vertical Top Ejection",
+        "overview": "This machined steel cylindrical bolt slides within the upper guides of the receiver to feed, chamber, seal, and extract cartridges. It houses the internal firing pin and mounts the heavy-duty spring-steel top extractor.",
+        "craftAndMaterial": "Turned and milled from high-tensile alloy steel with a hardened case and micro-polished exterior guide surfaces. The upper spine incorporates a precision channel for the top-mounted extractor claw and gas relief relief steps.",
+        "kinematicRole": "Travels rearward eighty-eight millimeters during phases three and four to cock the hammer and eject the hull, then pushes a fresh round home in phase six before locking in phase seven. Removed between ten and forty-two percent disassembly.",
+        "designHighlight": "Top-eject architecture permitted an ultra-slim receiver profile tailored for cavalry scabbards, while giving shooters an open view of the breech chamber for clearing hang-ups instantly.",
+        "audioScript": "This cylindrical breech bolt drives the gun feeding sequence. Racking back eighty-eight millimeters along internal receiver guides, it forces the exposed hammer into full cock while drawing the spent brass upward through the open roof. Its slim cylindrical profile minimized weight while providing rock-solid chamber lockup.",
+        "audioUrl": "audio/winchester1894/parts/win94_breech_bolt_en.mp3"
+      }
+    },
+    "win94_firing_pin": {
+      "partId": "win94_firing_pin",
+      "bomCode": "B-04",
+      "calloutLabelEn": "Two-Piece Firing Pin",
+      "zh": {
+        "roleTag": "闭锁块未升起到位彻底切断击发冲量的半闭锁防早发装置",
+        "overview": "该击针纵向贯穿枪机中心通孔，负责将外露击锤的敲击动能瞬间传递给底火。其特有的分段错位结构，确保枪机在未完全闭锁到位时绝对无法连通传力。",
+        "craftAndMaterial": "由经高温淬火的优质工具钢车削加工而成，击针尖经镜面打磨消除应力集中。针身设置回位弹簧环槽与闭锁块联动截断平面对切凸耳。",
+        "kinematicRole": "在阶段一受击锤撞击前冲点燃底火，随后在阶段四随枪机后退并由内置弹簧迫退复位。在枪械拆解进度百分之十至四十二以及全分解深层阶段抽出。",
+        "designHighlight": "两段式设计配合垂直闭锁块形成了巧妙的物理阻断：只有闭锁块上升到位并填平错位缺口，两段击针才能对正，彻底杜绝了未闭锁早发炸膛的致命隐患。",
+        "audioScript": "这根看似简单的长击针暗藏勃朗宁的防早发巧思。它采用前后两截的分段设计，只有当垂直闭锁块完全升起到顶，击针内部的断开缺口才会被校正对齐。如果杠杆未合严实，即便击锤误放，冲击力也会被机械结构截断，绝不炸膛。",
+        "audioUrl": "audio/winchester1894/parts/win94_firing_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Two-Piece Inertial Safety Firing Pin",
+        "overview": "This segmented steel pin spans the longitudinal bore of the breech bolt to transmit hammer strikes onto the cartridge primer. It incorporates an internal offset safety that mechanically inhibits inertia transfer unless the action is fully closed.",
+        "craftAndMaterial": "Turned from shock-resistant tool steel, heat-treated for extreme fracture toughness with a hemispherical polished striking tip. Features precision clearance flats that interface directly with the rising locking bolt.",
+        "kinematicRole": "Drives forward to detonate the primer in phase one, returns under internal spring tension, and retracts with the bolt in phase four. Slides out of the bolt body during the ten to forty-two percent sub-assembly phase.",
+        "designHighlight": "The split-segment construction functions as a fail-safe: the striking rear piece cannot align with the forward tip until the vertical locking block rises into complete engagement, preventing catastrophic out-of-battery discharges.",
+        "audioScript": "Safety is engineered directly into the steel of this two-piece firing pin. The front and rear halves remain intentionally disconnected while the action is open. Only when the vertical locking block reaches maximum height do the segments align into a continuous rod, ensuring the hammer can never ignite an unsealed cartridge.",
+        "audioUrl": "audio/winchester1894/parts/win94_firing_pin_en.mp3"
+      }
+    },
+    "win94_locking_bolt": {
+      "partId": "win94_locking_bolt",
+      "bomCode": "B-05",
+      "calloutLabelEn": "H-Pattern Locking Block",
+      "zh": {
+        "roleTag": "双翼垂直升降二十四毫米直插机匣与枪机承压台面的核心闭锁构件",
+        "overview": "这是约翰·勃朗宁在枪机后部设置的垂直升降闭锁构件，也是整枪承受无烟火药高压的支柱。平时隐藏于机匣底部滑槽中，合拢杠杆时直升二十四毫米插入闭锁位。",
+        "craftAndMaterial": "采用经深层氮化与高频淬火的重型锻造合金钢块精细立铣而成，呈现典型的工字或H形双侧翼截面。双侧垂直导向滑面硬度极高，具有出色的耐冲击抗剪切性能。",
+        "kinematicRole": "在阶段七随杠杆合拢被垂直顶升二十四毫米，死死抵住枪机尾部；在阶段三随杠杆下摆直线下滑解脱锁定。拆卸阶段在百分之十八至五十范围内下坠分离。",
+        "designHighlight": "彻底淘汰了早期一八七三型脆弱的水平肘节连杆，改用垂直升降剪切受力结构，使得受力面与弹底推力垂直，承压极限从黑火药时代飙升至现代标准。",
+        "audioScript": "眼前这枚工字型的锻钢闭锁块，是勃朗宁天才设计的灵魂所在。以往杠杆枪采用的肘节连杆极易被无烟火药震垮，而勃朗宁让这个闭锁块在合拢杠杆时笔直升起二十四毫米，像巨型钢栓一样卡死在枪机尾部与机匣梁柱之间，刚性承接高达两吨的爆炸冲击。",
+        "audioUrl": "audio/winchester1894/parts/win94_locking_bolt_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Vertical-Sliding Dual-Lug Locking Bolt",
+        "overview": "This vertical-sliding forged block serves as the main structural lock resisting the high-pressure thrust of the point-thirty-thirty cartridge. Guided within vertical receiver mortises, it elevates twenty-four millimeters to rigidly brace the rear face of the bolt.",
+        "craftAndMaterial": "Milled from forged chrome-moly steel with dual vertical uprights and deep nitriding for maximum shear resistance. The contact abutments are square-ground to ensure zero headspace play against receiver shoulders.",
+        "kinematicRole": "Rises twenty-four millimeters in phase seven to wedge behind the bolt, and cams downward out of receiver abutments in phase three to unlock the bolt. Drops clear through the receiver floor between eighteen and fifty percent disassembly.",
+        "designHighlight": "By replacing fragile toggle links with a vertical wedge under direct pure shear load, Browning created an ultra-compact mechanism capable of sustaining modern smokeless powder cartridges without bulk.",
+        "audioScript": "This H-shaped locking block is the mechanical breakthrough that made the Model 1894 legendary. Unlike the weak toggle links of earlier repeating rifles, this forged steel block moves purely up and down. When you close the lever, it rises nearly an inch to lock behind the breech bolt, absorbing tons of backthrust with zero flexing.",
+        "audioUrl": "audio/winchester1894/parts/win94_locking_bolt_en.mp3"
+      }
+    },
+    "win94_lever": {
+      "partId": "win94_lever",
+      "bomCode": "B-06",
+      "calloutLabelEn": "Forged D-Loop Lever",
+      "zh": {
+        "roleTag": "单手下压五十三度驱动全枪完成开锁抛壳上弹闭锁的主控杠杆",
+        "overview": "这是一件位于机匣腹部下方、兼具扳机护圈功能的锻钢D型指环操作杠杆。射手仅凭单手四指的前推与后拉动作，便能向全枪内部传动机构输出澎湃的循环动力。",
+        "craftAndMaterial": "采用特种碳素钢一体模锻成型，经多道抛光后进行碳氮共渗处理以防锈蚀磨损。内部开设有复杂的连杆铰接孔、闭锁块驱动导槽以及击针行程避位槽。",
+        "kinematicRole": "射手在阶段三向前下推转五十三度，带动连杆下拉闭锁块并拉出枪机；阶段六至七拉回杠杆实现推弹与顶升闭锁。在拆解进度百分之六至三十八阶段率先解脱。",
+        "designHighlight": "指环前段集成了精密的凸轮表面，既能在前摆初期提供强力的一次抽壳机械优势拉断贴膛，又能在收拢末端顺畅压下机匣底部的杠杆保险切块。",
+        "audioScript": "经典的D型指环杠杆是牛仔与骑兵的标志性操纵界面。射手向前推转五十三度，杠杆先通过连杆猛烈下拉闭锁块解除锁定，接着拉动枪机后坐、压倒击锤并上扬托弹板。整个动作一气呵成，单手下压回拉即可实现一秒一发的连续猛烈射击。",
+        "audioUrl": "audio/winchester1894/parts/win94_lever_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Forged Operating D-Loop Finger Lever",
+        "overview": "This forged steel finger lever forms both the lower trigger guard bow and the primary operational handle beneath the receiver belly. Swiveling forward and back, it translates human muscle into mechanical movement across the entire firing cycle.",
+        "craftAndMaterial": "Drop-forged from high-tensile carbon steel, machined with internal toggle cam tracks, and finished in durable case-color or protective nitriding. Features radiused inside finger contours for comfortable gloves-on operation.",
+        "kinematicRole": "Rotates forward fifty-three degrees during phase three to unlock and rack the action, then pulls back during phases six and seven to chamber and lock. Separates early during field strip between six and thirty-eight percent.",
+        "designHighlight": "The upper pivot incorporates progressive cam geometry, providing massive mechanical advantage during initial extraction to break loose sticky fire-formed brass before smooth, rapid travel resumes.",
+        "audioScript": "The iconic D-loop lever puts full control right into your firing hand. Swiveling downward fifty-three degrees, its integral cam lugs first drop the locking block, then draw the heavy bolt rearward to cock the hammer and lift a fresh round. Snapping it shut locks the action instantly for the next shot.",
+        "audioUrl": "audio/winchester1894/parts/win94_lever_en.mp3"
+      }
+    },
+    "win94_link": {
+      "partId": "win94_link",
+      "bomCode": "B-07",
+      "calloutLabelEn": "Lever Link Bridge",
+      "zh": {
+        "roleTag": "底部铰接连杆兼机构底护板与垂直位移转换机构",
+        "overview": "该连杆桥铰接于机匣底板与D型杠杆之间，平时封闭机匣腹部导槽以隔绝泥沙尘土。动作时它跟随杠杆下摆而向下敞开，将杠杆的圆周角位移转化为闭锁块的垂直升降。",
+        "craftAndMaterial": "由高韧性合金钢板模锻冲压并精密刨削成型，表面烤蓝处理。两端铣有精密台阶铰接通孔，可承受长期往复开闭带来的交变冲击载荷。",
+        "kinematicRole": "阶段三随杠杆摆动向下开启，拉动垂直闭锁块下行并放行枪机；阶段七合拢平贴机匣底部。拆解进度百分之十二至四十五阶段取下固定轴后脱卸。",
+        "designHighlight": "兼具结构传动与活动底盖的双重职能，闭合时与机匣严密贴合防止风沙侵入精密的枪机导轨，开启时则提供巨大的活动行程空间。",
+        "audioScript": "铰接在机匣腹部的连杆桥扮演着转换枢纽的角色。当你下推杠杆，这个钢制桥板随之下垂，将杠杆的旋转角度转变为垂直拉力，把闭锁块从机匣凹槽中一把拽出。合拢时它又严丝合缝地盖住枪腹，阻挡荒原上的泥水沙尘进入核心机构。",
+        "audioUrl": "audio/winchester1894/parts/win94_link_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Bottom Hinged Receiver Link Bridge",
+        "overview": "This component bridges the receiver floor and the finger lever, serving as both an articulated linkage and a functional bottom dust plate. It translates the rotational stroke of the finger lever into linear vertical withdrawal of the locking block.",
+        "craftAndMaterial": "Forged from shock-resistant steel with precision pivot journals and finished in protective blue. Its external contour is radius-matched to blend seamlessly with the receiver frame lines when the action is closed.",
+        "kinematicRole": "Swings downward in phase three to withdraw the locking block before letting the bolt slide freely, and snaps flush against the receiver in phase seven. Removed between twelve and forty-five percent disassembly.",
+        "designHighlight": "Functions both as a heavy-duty motion converter and as an automatic trapdoor, sealing internal cam tracks from mud and prairie dust whenever the lever is locked shut.",
+        "audioScript": "Connecting the bottom of the receiver to the finger lever, this lever link bridge acts as a motion converter. As you cycle the lever, it pivots down through the bottom of the frame, pulling the heavy locking block straight downward to free the bolt. Closing the lever seats the link flush, sealing out dirt.",
+        "audioUrl": "audio/winchester1894/parts/win94_link_en.mp3"
+      }
+    },
+    "win94_receiver": {
+      "partId": "win94_receiver",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Forged Steel Receiver",
+      "zh": {
+        "roleTag": "开顶抛壳与右侧金氏装弹口的纤薄一体式锻造机匣主构架",
+        "overview": "这是全枪的承载核心构架，由整块高品质锻钢经数十道工序精密铣削成型。枪管、弹仓、杠杆、闭锁机构与木托均直接锚固于此，保证全枪刚性与轻薄外形。",
+        "craftAndMaterial": "选用优质低碳合金锻钢精密立体铣削而成，内壁开凿有多条高平行度垂直导向槽与纵向枪机导轨，外观施以军规深色烤蓝防锈处理。",
+        "kinematicRole": "在全射击阶段作为核心静止基准承受射击反作用力，引导各构件精准运动。在全拆解阶段百分之三十五至八十作为最终结构骨架存在。",
+        "designHighlight": "独具特色的超窄机身配合顶开天窗，不仅能让卡宾枪轻松滑入马鞍侧皮套随行颠簸，更让整枪在全副武装状态下依然保持绝佳的握持贴合度。",
+        "audioScript": "整支卡宾枪的坚固灵魂，全凝聚在这具一体铣削锻钢机匣中。纤薄的机身厚度让骑兵能够轻松将它塞进马鞍皮套。机匣右侧是著名的金氏专利弹仓填弹口，而顶部完全敞开的天窗则为竖直向上抛壳留出了极其通畅的排障通道。",
+        "audioUrl": "audio/winchester1894/parts/win94_receiver_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Machined Top-Eject Steel Receiver Frame",
+        "overview": "This is the core structural chassis of the rifle, precision-milled from a single block of drop-forged alloy steel. It anchors the barrel, magazine tube, breech block, lever, and buttstock into a unified, rigid assembly.",
+        "craftAndMaterial": "Milled from solid low-carbon forged steel with internal broached guides, vertical mortises, and a deep lustrous chemical blue finish. The side profiles are kept strictly flat to maintain an ultra-slim cross-section.",
+        "kinematicRole": "Acts as the central stationary datum across all seven firing phases, guiding reciprocating parts and containing mechanical loads. Serves as the central origin during the thirty-five to eighty percent explosion.",
+        "designHighlight": "The ultra-slim receiver profile was optimized for horseback scabbards, while King's patent spring loading gate on the right flank allowed fast magazine replenishment with the action closed.",
+        "audioScript": "This forged steel receiver is the backbone of the Model 1894. Milled from a solid alloy steel forging, its exceptionally slim profile was tailored for cavalry scabbards. The right side features King's spring loading gate for feeding shells, while the open top provides an unobstructed path for vertical case ejection.",
+        "audioUrl": "audio/winchester1894/parts/win94_receiver_en.mp3"
+      }
+    },
+    "win94_rear_sight": {
+      "partId": "win94_rear_sight",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Semi-Buckhorn Sight",
+      "zh": {
+        "roleTag": "五档锯齿斜坡楔块快速调校五十至三百码半鹿角照门",
+        "overview": "该照门安装在枪管后段的燕尾槽上，由半鹿角状弹簧钢照门叶片与阶梯式高度调节滑块组合而成。射手可通过推动阶梯滑块，快速补偿远距离弹道下坠。",
+        "craftAndMaterial": "照门叶片采用高弹性淬火弹簧钢冲压折弯成型，阶梯调节块为高碳钢锯齿细加工件。表面做抗反光发黑处理，缺口处刻有白色对齐导线。",
+        "kinematicRole": "射击时与枪管保持刚性同步，不发生相对位移。在枪械拆卸进度百分之二十二至五十六阶段随枪管分离，表尺板在百分之五十八至九十二范围解脱。",
+        "designHighlight": "半鹿角形两侧向上扬起的大弧度弯角不仅能防止丛林树枝刮碰变形，更能作为一个超大号粗瞄取景框，指引射手将飞奔的猎物瞬间引导至中央微小缺口。",
+        "audioScript": "安装在枪管上方的半鹿角照门充满荒野生存智慧。两侧如同鹿角般向上高耸的弧面，能在快速出枪时形成天然的大视野窗口。下方的五档锯齿阶梯滑块，只需用大拇指随手一拨，就能在五十码至三百码之间迅速抬升表尺射程。",
+        "audioUrl": "audio/winchester1894/parts/win94_rear_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Stepped Semi-Buckhorn Target Leaf Sight",
+        "overview": "This rear sight assembly sits in a barrel dovetail forward of the receiver, consisting of a spring-steel leaf and a stepped wedge elevator. It allows quick elevation adjustments in the field to match bullet drop over varied terrain.",
+        "craftAndMaterial": "Stamped and heat-treated from resilient spring steel with an anti-reflective blued coating, mated to a serrated carbon steel elevation step wedge. A micro-notch is cut into the center with a visual reference line.",
+        "kinematicRole": "Remains mechanically static relative to the barrel during firing phases. Separates with the barrel sub-assembly at twenty-two to fifty-six percent, with the leaf and elevator fully demounted by ninety-two percent.",
+        "designHighlight": "The tall semi-buckhorn horns act like an open aperture ghost ring in fast snap shooting, naturally channeling the eye toward the center notch without obstructing target awareness.",
+        "audioScript": "Mounted along the barrel top, this semi-buckhorn rear sight provides rapid ballistic adjustments. The stepped elevator wedge lets shooters select range settings from fifty out to three hundred yards with a flick of the thumb. Those horn-shaped ears shield the notch and help guide the eye straight to target.",
+        "audioUrl": "audio/winchester1894/parts/win94_rear_sight_en.mp3"
+      }
+    },
+    "win94_saddle_ring": {
+      "partId": "win94_saddle_ring",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Carbine Saddle Ring",
+      "zh": {
+        "roleTag": "十九世纪骑兵斜挎枪背带与马鞍快拔专用实心锻钢挂环",
+        "overview": "该马鞍挂环通过螺柱螺栓铆固在机匣左侧外壁上方，是标准骑兵型卡宾枪最耀眼的标志性配置。骑手可通过金属弹簧挂钩将枪械牢固悬吊于斜跨皮带之上。",
+        "craftAndMaterial": "由高韧性低碳圆钢弯折对焊并打磨成型，配合机匣侧面凸出的螺纹固定销。表面做复古氮化染黑处理，兼顾耐磨抗拉与防碰撞敲击响声。",
+        "kinematicRole": "在全枪运动射击过程中处于自由悬挂摆动状态，完全不干涉枪机闭锁循环。在拆解进度百分之十六至五十二阶段自机匣左侧向外移出。",
+        "designHighlight": "在颠簸疾驰的马背上，骑兵无需双手抓枪，只需解开马鞍绑带即可依靠挂环在胸前一秒出枪，射击完毕后直接松手便能立即握紧缰绳。",
+        "audioScript": "机匣左侧这个叮当作响的实心铁环，是十九世纪骑兵卡宾枪最经典的图腾。骑兵将斜背带上的弹簧钩直接扣入这个圆环，既能在狂奔的马背上防脱落，又能在紧急遇敌时一秒拔枪平射。它赋予了整枪浓郁的狂野西部传奇色彩。",
+        "audioUrl": "audio/winchester1894/parts/win94_saddle_ring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Left-Flank Mounted Cavalry Ring",
+        "overview": "This steel ring is secured via an integral threaded stud into the upper left flank of the receiver. It served as a military lanyard attachment for cavalrymen to secure their carbines to saddle scabbards or sling rigs.",
+        "craftAndMaterial": "Formed from solid round carbon steel rod, loop-welded and tumble-polished before receiving a protective phosphate or blued treatment. The mounting staple is threaded deeply into the reinforced receiver wall.",
+        "kinematicRole": "Swings freely in the lateral plane throughout all cycling phases without influencing internal mechanics. Detaches straight out from the receiver flank during the sixteen to fifty-two percent teardown stage.",
+        "designHighlight": "Allowed horse-mounted cavalry to carry the rifle cross-chested on a sling ring, enabling rapid one-handed presentation from the gallop without risking dropping the weapon.",
+        "audioScript": "This steel ring mounted on the receiver left flank identifies this Model 1894 as an authentic saddle-ring carbine. Designed for cavalry troopers, a snap swivel clipped directly into this ring from a cross-chest sling. If a rider needed both hands for the reins, the carbine simply swung safely beside the saddle.",
+        "audioUrl": "audio/winchester1894/parts/win94_saddle_ring_en.mp3"
+      }
+    },
+    "win94_forend": {
+      "partId": "win94_forend",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Walnut Carbine Forend",
+      "zh": {
+        "roleTag": "隔绝枪管连发灼热并全包覆弹仓管的美洲黑胡桃木前护木",
+        "overview": "这是包裹在枪管中前部下方的高级实木护木，不仅为射手副手提供了舒适贴合的抓握基座，更有效隔离了连续射击后枪管传导的剧烈高温。",
+        "craftAndMaterial": "精选美洲黑胡桃木原木经数年阴干切削加工而成，内腔严密铣出枪管弧面与全长管式弹仓的双重圆弧让位槽。表面经多道手工擦拭纯天然亚麻籽油做哑光防水浸润。",
+        "kinematicRole": "全射击循环中作为静止抓握支撑界面，隔绝外界冲击振动。在枪械拆解进度百分之十八至五十二阶段向前下方脱出。",
+        "designHighlight": "护木内部精准的让位槽设计使得上方的浮置枪管与下方的存弹管仓在微米级公差下完全物理隔离，避免弹仓受热膨胀导致枪管受力弯曲而影响连发精度。",
+        "audioScript": "由优质美洲黑胡桃木制成的前护木，既是温润的手部握持支撑，也是抵御枪管连发高温的隔热屏障。护木内部开有双层精密弧形滑槽，分别贴合枪管和管式弹仓。工匠反复手工搓揉亚麻籽油进行深层滋润，使其具备极佳的野外防潮防裂性能。",
+        "audioUrl": "audio/winchester1894/parts/win94_forend_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Oiled American Walnut Handguard",
+        "overview": "This contoured wood forend cradles the underside of the barrel and the forward magazine tube. It provides a secure purchase for the non-dominant hand while shielding the shooter from barrel heat buildup.",
+        "craftAndMaterial": "Carved from cured American black walnut, precision-channeled along its upper interior for barrel and magazine tube clearances. Finished by hand with multiple rubbed coats of natural linseed oil for weather protection.",
+        "kinematicRole": "Serves as a rigid hand support datum through all cycling stages, dampening firing vibration. Slides forward and off during the eighteen to fifty-two percent strip bracket once the band is loosened.",
+        "designHighlight": "Internal clearance grooves keep the barrel and magazine tube mechanically separated, preventing heat expansion from the magazine from exerting upward bending forces on the rifle barrel.",
+        "audioScript": "Hand-shaped from seasoned American black walnut, this carbine forend provides an ergonomic, heat-resistant grip. Dual internal flutes channel the barrel and the full-length magazine tube side-by-side. Repeated applications of boiled linseed oil seal the wood pores, protecting this classic woodwork against harsh field moisture and heavy recoil shock.",
+        "audioUrl": "audio/winchester1894/parts/win94_forend_en.mp3"
+      }
+    },
+    "win94_barrel_bands": {
+      "partId": "win94_barrel_bands",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Barrel Band Clamp",
+      "zh": {
+        "roleTag": "单颗横穿紧固螺钉同步锁死木护木枪管与弹仓管的烤蓝钢箍",
+        "overview": "这件环形锻钢抱箍紧扣于护木前端外围，将枪管、管式弹仓以及前护木三者紧密聚拢为刚性整体。其底部装有一颗贯穿横向紧固螺栓提供强劲夹紧力。",
+        "craftAndMaterial": "采用经韧化热处理的高拉力弹簧碳钢冲压卷制并机加工而成，整体施以高光烤蓝防腐。内部加工有分段微弧内径以分别吻合枪管锥度与弹仓管外径。",
+        "kinematicRole": "在射击全过程中牢固锁紧三大构件，防止弹仓管在连续后坐力下向前窜动移位。在拆解进度百分之十四至四十六阶段松开横螺栓率先抽出。",
+        "designHighlight": "单颗横穿螺钉不仅起到抱箍锁紧作用，其螺身半圆凹槽更直接卡入枪管下方的弧形固定缺口中，杜绝了震动中抱箍向前滑脱的任何可能性。",
+        "audioScript": "这枚紧扣在护木前端的烤蓝钢制鼻箍，是卡宾枪坚固耐用的秘密钥匙。它单凭一枚横穿紧固螺栓，就将枪管、管式弹仓和木护木牢牢箍在一起。螺栓横截面巧妙穿入枪管下方的圆弧凹坑，即便骑马奔波或剧烈撞击，弹仓也绝不会松脱滑出。",
+        "audioUrl": "audio/winchester1894/parts/win94_barrel_bands_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Transverse Barrel and Tube Clamp",
+        "overview": "This stamped-and-machined steel clamp encircles the front of the walnut forend, locking the barrel and tubular magazine into a rigid assembly. A single transverse screw supplies clamping tension across the assembly.",
+        "craftAndMaterial": "Formed from resilient medium-carbon steel with precision-contoured dual lobes and finished in polished carbon bluing. The inner contours are stepped to match the outer diameters of both the tapered barrel and magazine tube.",
+        "kinematicRole": "Locks the barrel, forend, and magazine firmly together against recoil inertia across all firing steps. Removed early during stripdown between fourteen and forty-six percent.",
+        "designHighlight": "The single cross-bolt not only tightens the band collar but rests inside an undercut notch in the barrel underside, preventing the entire forend assembly from drifting forward under recoil.",
+        "audioScript": "This blued steel barrel band acts as the master clamp on the front end. Circling both the barrel and the tubular magazine, it secures the walnut forend firmly in place. Its single transverse screw passes through a locking notch milled beneath the barrel, preventing parts from vibrating loose under heavy brush-gun recoil.",
+        "audioUrl": "audio/winchester1894/parts/win94_barrel_bands_en.mp3"
+      }
+    },
+    "win94_walnut_stock": {
+      "partId": "win94_walnut_stock",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Straight Walnut Buttstock",
+      "zh": {
+        "roleTag": "上下双尾舌高刚性夹紧且无手枪握把的美洲黑胡桃木直握把枪托",
+        "overview": "这是安装在机匣后端的经典直握把美洲黑胡桃木枪托，为射手肩部提供舒适稳定的贴腮瞄准支撑。其前段通过深槽与机匣的上尾舌和下尾舌牢固咬合。",
+        "craftAndMaterial": "严选高密度直纹美国密苏里黑胡桃木整料数控雕铣与手工精修，经细致砂光并浸透多层哑光亚麻籽油。后部装有符合人体工程学弧度的锻钢弯曲底板。",
+        "kinematicRole": "在阶段二至三直接吸收两百九十兆帕峰值膛压转化而来的后坐冲量并传递至射手肩头。拆解进度百分之二十二至六十二阶段拧松尾舌长螺栓后向后拔出。",
+        "designHighlight": "经典的直握把去除了手枪形凸起突笋，使射手在马鞍狭小的皮套中快拔出枪时绝不挂蹭皮具，同时单手操作D型指环杠杆更加无拘无束。",
+        "audioScript": "这支经典的直握把枪托由精选黑胡桃木雕琢而成。它没有突起的手枪形握把，纯粹平滑的线条让骑兵在从马鞍皮套快拔出枪时绝不刮蹭。机匣后方伸出的上下两根钢尾舌如同铁钳般深埋入木托内部，经受住无烟火药数十年如一日的猛烈后坐撞击。",
+        "audioUrl": "audio/winchester1894/parts/win94_walnut_stock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Straight-Grip Walnut Buttstock",
+        "overview": "This straight-grip buttstock mounts to the rear of the receiver to provide primary cheek support and shoulder interface. It is secured rigidly between the upper and lower receiver tangs by an internal longitudinal through-bolt.",
+        "craftAndMaterial": "Milled from seasoned American black walnut heartwood, sanded smooth, and hand-rubbed with natural boiled linseed oil. The wood tang inletting is precisely mortised to ensure full surface bearing against forged steel receiver flats.",
+        "kinematicRole": "Absorbs the direct recoil impulse generated during phases two and three, transmitting forces safely into the shooter shoulder. Slips off rearward between twenty-two and sixty-two percent disassembly once tang bolts loosen.",
+        "designHighlight": "The straight-grip profile without a pistol grip protrusion allowed the carbine to slip in and out of tight leather horse scabbards without snagging, while enabling fluid manipulation of the finger lever.",
+        "audioScript": "Crafted from American black walnut, this straight-grip buttstock embodies the minimalist profile of the frontier carbine. Eliminating the bulky pistol grip makes the gun smooth to draw from a leather scabbard. Clamped securely between upper and lower steel receiver tangs, it channels thirty-thirty recoil directly and comfortably into your shoulder.",
+        "audioUrl": "audio/winchester1894/parts/win94_walnut_stock_en.mp3"
+      }
+    },
+    "win94_buttplate": {
+      "partId": "win94_buttplate",
+      "bomCode": "F-07",
+      "calloutLabelEn": "Curved Steel Buttplate",
+      "zh": {
+        "roleTag": "深弯贴肩锁位弧度 · 经典西部快射定位抵肩",
+        "overview": "这是固定在胡桃木枪托末端的卡宾枪型深弯冲压钢托底板。通过上下两颗沉头木螺钉牢固锚定，有效防止木质纤维在恶劣旷野撞击受损。",
+        "craftAndMaterial": "采用退火高碳钢板冷冲压拉深成形，外表面施以高温硝酸盐发蓝氧化层。四周内卷贴合边框可紧密包裹木托边缘，阻绝泥水与潮气侵蚀木纹。",
+        "kinematicRole": "在击发和杠杆抽压的全循环中作为整枪抵肩基准，承受290兆帕膛压产生的后坐冲量。拆卸进程推进至百分之二十二至六十二区间时向后平移卸除。",
+        "designHighlight": "半月牙形的内凹月牙曲率专门迎合十九世纪骑兵上身衣物与肩窝解剖结构，骑马或快速起枪时能够盲操入扣，防止滑脱。",
+        "audioScript": "这块带有经典月牙凹面的热烤蓝钢托底板，是十九世纪温彻斯特卡宾枪的招牌特征。它不仅保护珍贵胡桃木边缘不被马鞍枪套磨损，更能在射手急速举枪时自动扣紧肩窝肌肉，确保连续杠杆装填时枪身纹丝不滑。",
+        "audioUrl": "audio/winchester1894/parts/win94_buttplate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Crescent Recoil Anchor and Walnut Stock Protector",
+        "overview": "This is the classic stamped crescent steel carbine buttplate mounted flush against the rear walnut buttstock. Anchored by upper and lower wood screws, it shields the end-grain timber from impact and field fracturing.",
+        "craftAndMaterial": "Deep-drawn from high-carbon sheet steel and treated with a hot-dip salt bluing process. The wrap-around contoured perimeter seals against raw timber edges to block moisture infiltration.",
+        "kinematicRole": "Acts as the rigid shoulder contact datum throughout the entire firing and levering cycle to absorb recoil energy. It translates rearward during the twenty-two to sixty-two percent disassembly range.",
+        "designHighlight": "The sharp crescent contour was tailored for horseback cavalrymen, locking naturally into the shoulder pocket through thick denim or heavy wool overcoats without slippage.",
+        "audioScript": "This deep crescent blued steel buttplate defines the iconic profile of the nineteenth century frontier carbine. Formed to cup firmly into the shooter shoulder pocket, it prevents shifting during rapid lever cycling while armoring the dense walnut timber against rough field abuse.",
+        "audioUrl": "audio/winchester1894/parts/win94_buttplate_en.mp3"
+      }
+    },
+    "win94_hammer": {
+      "partId": "win94_hammer",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Checkered Steel Hammer",
+      "zh": {
+        "roleTag": "半待击机械保险卡口 · 外露网格拇指防滑扳手",
+        "overview": "这是暴露在机匣上尾舌正上方的高脊外露锻钢击锤。其底部枢轴穿过机匣侧壁，后方设有大面积菱形滚花板，供拇指在马背上单手安全拉放。",
+        "craftAndMaterial": "选用低合金工具钢精密锻造，表面经化学发蓝防锈，敲击面与阻铁卡口处经整体局部淬火至洛氏硬度五十五以上，抵抗数万次强烈碰撞。",
+        "kinematicRole": "阶段一在主簧推动下撞击两段式击针后段；阶段四枪机后座时将其下压倒下至全待击位。拆卸阶段在百分之二十四至五十八区间脱出尾舌枢轴。",
+        "designHighlight": "内置了至关重要的半待击安全缺口。当锤体处于半挂状态时阻铁完全锁死且击锤远离撞针，即便跌落枪托触地也绝对不会造成走火。",
+        "audioScript": "外露的大型高脊击锤拥有标志性的菱形防滑滚花，便于戴手套时单手拉开。它不仅在枪机后坐时被自动下压重置，更内设半待击安全凹槽，只要拇指松回半截，即便受到外力撞击也不会触碰击针。",
+        "audioUrl": "audio/winchester1894/parts/win94_hammer_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Exposed Spur Hammer with Half-Cock Drop Safety",
+        "overview": "This is the forged high-spur external steel hammer pivoting directly above the upper receiver tang. It features a wide checkered thumb spur allowing positive cocking and decocking in adverse weather.",
+        "craftAndMaterial": "Drop forged from alloy tool steel with hot bluing, boasting selective case hardening exceeding Rockwell C fifty-five across the striking face and primary sear notches.",
+        "kinematicRole": "Driven by the helical mainspring to strike the firing pin in phase one, and thumbed back by the retracting bolt in phase four. Detaches between twenty-four and fifty-eight percent disassembly.",
+        "designHighlight": "Incorporates Browning legendary half-cock safety notch, trapping the sear and isolating the hammer face from the inertia firing pin even if dropped on solid rock.",
+        "audioScript": "This external spurred hammer delivers the kinetic blow that ignites the modern smokeless powder charge. Its deep checkering enables secure thumb control under rain or snow, while the integral half-cock intercept notch prevents accidental discharge if the weapon is dropped.",
+        "audioUrl": "audio/winchester1894/parts/win94_hammer_en.mp3"
+      }
+    },
+    "win94_trigger": {
+      "partId": "win94_trigger",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Single Action Trigger",
+      "zh": {
+        "roleTag": "干脆单动阻铁释放 · 配合杠杆下栓压入方解脱",
+        "overview": "这是悬挂在机匣下尾舌内部的弧形合金钢单动扳机。其前端尖锐的整体式阻铁突耳精准咬合击锤待击凹槽，外露弯钩提供清晰干脆的一道火手感。",
+        "craftAndMaterial": "经模锻与精密线切割修配，工作阻铁接触面做极细镜面研磨并淬硬，扳机指弯做哑光微抛光，具备适中的防滑摩擦触感。",
+        "kinematicRole": "阶段一食指扣压促使前阻铁倾斜脱开击锤全待击槽；阶段七受杠杆闭锁保险柱压下解除锁定位。拆解进程在百分之二十六至六十时侧移取出。",
+        "designHighlight": "扳机上方专门开有与杠杆安全阻断块互锁的台阶。只有当杠杆尾部完全贴合下尾舌并压入下栓柱塞时，扳机才具备向后运动的机械行程。",
+        "audioScript": "这枚经热处理硬化的单动扳机拥有极其干脆的一道火击发阻力。设计巧妙的是，它的后背设置了安全卡槽，只有射手右手掌用力抓紧杠杆、顶开内置安全连杆时，扳机阻铁才允许向后释放击锤。",
+        "audioUrl": "audio/winchester1894/parts/win94_trigger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Crisp Single-Action Blade with Lever Interlock Step",
+        "overview": "This is the curved alloy steel single-action trigger blade housed within the lower receiver tang slot. Its integral forward sear nose mates directly with the full-cock notch of the external hammer.",
+        "craftAndMaterial": "Die forged and precision-milled with hardened, mirror-polished sear engagement surfaces, finished with a smooth satin bluing across the curved finger shoe.",
+        "kinematicRole": "Trips the hammer sear upon finger depression in phase one, held out of mechanical battery until the lever closes fully in phase seven. Disassembles between twenty-six and sixty percent.",
+        "designHighlight": "Features an engineered engagement shoulder that interfaces with the lower tang safety plunger, physically locking trigger travel until the lever loop is fully squeezed against the grip.",
+        "audioScript": "The single-action trigger blade delivers a crisp five-pound break coveted by target marksmen and hunters alike. A mechanical cutout on its rear shoulder ensures it remains physically immobilized until the operating lever is clenched tightly into battery against the stock.",
+        "audioUrl": "audio/winchester1894/parts/win94_trigger_en.mp3"
+      }
+    },
+    "win94_mainspring": {
+      "partId": "win94_mainspring",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Helical Mainspring",
+      "zh": {
+        "roleTag": "高弹性琴钢丝螺旋主簧 · 驱动击锤高速前摆",
+        "overview": "这是藏于黑胡桃木握把上下尾舌夹层中的圆柱形螺旋击锤驱动主簧。它套设于击锤导向推杆外周，将压缩形变势能直接转化为击锤高速前旋力矩。",
+        "craftAndMaterial": "选用高疲劳寿命的硅锰合金弹簧钢丝冷卷绕制成，经严格恒温回火定型，两端平面研磨平整以保证受力轴线完全垂直对称，表面附防锈油膜。",
+        "kinematicRole": "在阶段一瞬间释出弹性势能向前顶推击锤支杆；阶段四枪机后座倒锤时被深度压缩蓄能。在分解总成的百分之三十至六十六区间滑出导向槽。",
+        "designHighlight": "温彻斯特一八九四后期型号用该螺旋主簧全面替换了早期易疲劳断裂的平片板簧，大幅提升了在严寒极端恶劣天候下的击发可靠性。",
+        "audioScript": "隐藏在枪颈内部的高强螺旋主簧，取代了早期杠杆枪容易断裂的扁平钢板簧。它套在导向推杆上，在射手下拉杠杆推倒击锤时深度储能，扣动扳机的瞬间爆发出凌厉的冲力，驱动击锤前摆引爆底火。",
+        "audioUrl": "audio/winchester1894/parts/win94_mainspring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "High-Tension Helical Spring Driving Hammer Strut",
+        "overview": "This is the heavy-duty cylindrical helical hammer mainspring enclosed between the receiver tangs inside the walnut wrist. It rides captive over the hammer strut to deliver violent forward rotational torque.",
+        "craftAndMaterial": "Wound from high-fatigue silicon-manganese spring steel wire and stress-relieved via precision tempering, featuring ground ends for uniform axial force transfer.",
+        "kinematicRole": "Expands rapidly in phase one to drive the hammer strut forward, and compresses under high load as the bolt cams the hammer rearward in phase four. Explodes out at thirty to sixty-six percent.",
+        "designHighlight": "Winchester modernized the design by replacing fragile flat leaf springs with this helical coil, vastly improving endurance and cold-weather resistance against cyclic fatigue.",
+        "audioScript": "Nestled inside the wrist of the buttstock, this helical coil spring powers every shot. By superseding the brittle flat leaf springs of older nineteenth century rifles, this resilient coil delivers relentless striking velocity to the hammer even in sub-zero wilderness freezes.",
+        "audioUrl": "audio/winchester1894/parts/win94_mainspring_en.mp3"
+      }
+    },
+    "win94_tang_safety": {
+      "partId": "win94_tang_safety",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "Lever Tang Safety",
+      "zh": {
+        "roleTag": "杠杆握紧联锁阻断块 · 未完全闭锁防误发核心",
+        "overview": "这是安装在扳机后方下尾舌滑槽内的杠杆闭锁安全阻断块。它在下部伸出一颗球头接触柱，只有在杠杆手柄贴死机匣时才会被强行顶入解锁。",
+        "craftAndMaterial": "采用高抗冲击马氏体不锈钢精密机加工成型，接触面经表面硬化热处理，具备优异的抗侧向剪切与反复摩擦疲劳能力。",
+        "kinematicRole": "阶段一与阶段七处于被杠杆上台阶压入的解锁状态；阶段三至六处于弹起阻断位，阻死扳机防止开锁状态击发。拆卸在百分之三十二至六十八脱落。",
+        "designHighlight": "这是约翰勃朗宁极具前瞻性的被动式安全发明，完全无需射手刻意去拨动手动保险机，只要手掌未握实杠杆便绝对无法扣下扳机走火。",
+        "audioScript": "这个位于下尾舌内部的杠杆联锁安全块，是整枪最精妙的被动保险装置。它探出的小凸起正对杠杆指环；如果杠杆没有彻底合拢上锁，阻断块就会从下方死死别住扳机，彻底杜绝开锁早产走火的可能。",
+        "audioUrl": "audio/winchester1894/parts/win94_tang_safety_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Passive Mechanical Lever-Squeeze Trigger Disconnector",
+        "overview": "This is the spring-loaded safety intercept plunger seated inside the lower tang directly behind the trigger. It projects an actuating tit that rides directly underneath the rear of the finger lever loop.",
+        "craftAndMaterial": "Precision machined from martensitic stainless steel with case-hardened contact surfaces, engineered to resist repetitive impact peening and transverse shear stresses.",
+        "kinematicRole": "Depressed upward by the lever in phase one and seven to unblock trigger travel; springs down to lock the sear during phases three through six. Separates at thirty-two to sixty-eight percent.",
+        "designHighlight": "A stroke of genius by John Browning, this passive interlock ensures the gun cannot fire out of battery or during rough cycling unless the operating loop is clenched tightly home.",
+        "audioScript": "This under-tang safety plunger acts as an automated guardian against out-of-battery firing. Unless the finger lever is squeezed completely flush against the walnut grip, this sprung steel block wedges behind the trigger shoe, rendering the lockwork completely inert.",
+        "audioUrl": "audio/winchester1894/parts/win94_tang_safety_en.mp3"
+      }
+    },
+    "win94_sear_spring": {
+      "partId": "win94_sear_spring",
+      "bomCode": "FC-05",
+      "calloutLabelEn": "Sear Return Spring",
+      "zh": {
+        "roleTag": "阻铁复位螺旋弹簧 · 维持火控阻铁与安全块回弹",
+        "overview": "这是微型高响应度阻铁复位弹簧，垂直插装于下尾舌底座的精密沉孔中。它持续向上支撑扳机前臂阻铁与旁侧的安全阻断联锁块。",
+        "craftAndMaterial": "采用优质耐腐蚀特种琴钢丝经微型弹簧机精密绕制，表面进行轻微钝化处理，确保数万次微小行程挤压下不产生弹性衰退。",
+        "kinematicRole": "全击发周期持续提供回弹预紧力，阶段一被轻度压缩，阶段七促使扳机与保险块快速归位。在拆解进度达百分之三十四至七十二时取出沉孔。",
+        "designHighlight": "弹簧几何尺寸与座孔严格按临界阻尼计算，阻力恰好提供清脆的回手反馈，既不增加扣扳机负荷，又确保阻铁在颠簸中绝不产生虚位晃动。",
+        "audioScript": "这枚微型螺旋压簧虽然体积极小，却维系着整个扳机组件的清脆手感。它时刻向阻铁与杠杆保险销施加恒定的回弹力，确保每次扣动扳机击发后，阻铁都能瞬时回弹复位，咬合再次待命的击锤。",
+        "audioUrl": "audio/winchester1894/parts/win94_sear_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Precision Helical Reset Spring for Trigger and Sear",
+        "overview": "This is a miniature high-response return spring housed within a vertical blind bore in the lower receiver tang. It exerts upward bias against the trigger sear arm and the adjacent safety block.",
+        "craftAndMaterial": "Coiled from high-grade music wire with a passivated protective finish, calibrated to resist cyclic relaxation across tens of thousands of micro-stroke reset actions.",
+        "kinematicRole": "Maintains constant return preload across all cycle phases, compressing slightly in phase one and snapping the sear home in phase seven. Removed between thirty-four and seventy-two percent.",
+        "designHighlight": "Engineered with critical coil damping to provide positive trigger reset tactile feedback without adding excessive pull weight or allowing mechanical chatter on rough horseback terrain.",
+        "audioScript": "Tucked quietly into a blind cavity within the lower tang, this tiny coil spring governs sear reset dynamics. It provides crisp forward return pressure against the trigger blade, guaranteeing instantaneous sear engagement the moment the hammer is levered into battery.",
+        "audioUrl": "audio/winchester1894/parts/win94_sear_spring_en.mp3"
+      }
+    },
+    "win94_mag_tube": {
+      "partId": "win94_mag_tube",
+      "bomCode": "M-01",
+      "calloutLabelEn": "Tubular Magazine",
+      "zh": {
+        "roleTag": "六发全长下挂管式弹仓 · 串联容纳大威力平头枪弹",
+        "overview": "这是平行吊挂在二十英寸枪管下方的冷拔无缝钢制管式弹仓。通过枪口套环与机匣前腹沉孔双向定位，管内首尾相接串联储存六发大口径平头枪弹。",
+        "craftAndMaterial": "选用厚壁无缝高碳铬钼钢管冷拔抛磨，内外壁经超高光洁度内孔研磨以减小推弹阻力，外表面与主枪管同步施以深黑高光发蓝处理。",
+        "kinematicRole": "全击发周期作为供弹承力基座，阶段五管内弹仓簧将新弹推向托弹勺，承受枪管共振。在拆解进度百分之二十八至六十二阶段滑出前箍环。",
+        "designHighlight": "专门适配点三零口径平头弹丸，严禁尖头弹装填以防后弹弹尖在后坐冲击时撞击前弹底火，全长管身与枪口平齐展现出极为匀称的经典轮廓。",
+        "audioScript": "这根一直延伸至枪口的下挂全长管式弹仓，能够串装六发强大的点三零温彻斯特全装药步枪弹。弹仓内壁经过镜面精抛，确保弹壳在弹簧驱动下顺畅滑向机匣托弹板，赋予骑兵无与伦比的持续连发火力。",
+        "audioUrl": "audio/winchester1894/parts/win94_mag_tube_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Full-Length 6-Round Tubular Magazine for Flat-Nose Ammo",
+        "overview": "This is the seamless cold-drawn steel tubular magazine hung parallel directly beneath the twenty-inch barrel. Supported by the forward barrel band, it houses six centerfire rifle cartridges nose-to-primer.",
+        "craftAndMaterial": "Drawn from thick-walled chrome-molybdenum steel with a honed interior surface to eliminate feeding drag, finished externally in deep charcoal high-luster rust bluing.",
+        "kinematicRole": "Serves as the structural ammunition track throughout firing, funneling cartridges back into the carrier scoop in phase five. Separates between twenty-eight and sixty-two percent disassembly.",
+        "designHighlight": "Mandated the exclusive adoption of flat-point or round-nose bullets, eliminating the catastrophic hazard of pointed spitzer bullet tips igniting primers ahead of them under violent recoil shocks.",
+        "audioScript": "Flushing evenly with the muzzle of the twenty-inch barrel, this tubular magazine holds six rounds of devastating thirty-thirty ammunition. Its precision-honed bore guides the queued cartridges securely rearward, creating the slender silhouette that revolutionized nineteenth-century rapid firepower.",
+        "audioUrl": "audio/winchester1894/parts/win94_mag_tube_en.mp3"
+      }
+    },
+    "win94_mag_follower": {
+      "partId": "win94_mag_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Brass Magazine Follower",
+      "zh": {
+        "roleTag": "车削黄铜管仓推弹柱塞 · 顺滑低阻自润滑导引",
+        "overview": "这是安装在管式弹仓内最前端的实心黄铜推弹柱塞。受弹仓长弹簧持续推顶，直接贴合管内最后一发枪弹的弹头弧面将其向机匣稳步顶送。",
+        "craftAndMaterial": "采用高密度无铅黄铜棒料经数控车削精磨，头部呈导向倒角锥形，尾部挖设深槽嵌入弹簧圈，利用铜质低摩擦系数天然防锈自润滑。",
+        "kinematicRole": "阶段五在主弹簧推动下向后逐步平移供弹，直至最后一发空仓时停留在托弹板前端。拆解在百分之三十二至六十八区间从弹仓前端取出。",
+        "designHighlight": "黄铜材质绝不会与外壁钢管产生刮擦毛刺或电化学锈死，即使长年受雨水泥浆侵入，柱塞依然能在管壁内轻快滑行而绝不卡弹。",
+        "audioScript": "这枚由实心黄铜车削而成的管仓推弹柱塞，位于整列子弹的最前端。黄铜自带优异的天然自润滑性，不仅在长年风吹雨淋下绝不生锈，更能杜绝推弹时与钢制管壁产生咬死，将末发弹平稳推入托弹盘。",
+        "audioUrl": "audio/winchester1894/parts/win94_mag_follower_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Machined Brass Follower with Low-Friction Self-Lubrication",
+        "overview": "This is the solid machined brass magazine follower positioned at the forward terminus of the tubular magazine. Biased by the coil spring, it directly cups the nose of the final round in the magazine column.",
+        "craftAndMaterial": "Turned from high-density naval brass bar stock with a radiused conical head and a rear spring-seating counterbore, exploiting natural copper self-lubrication to eliminate internal galling.",
+        "kinematicRole": "Translates rearward in phase five to feed cartridges into the carrier, stopping flush against the carrier stop when dry. Slides free between thirty-two and sixty-eight percent.",
+        "designHighlight": "The brass metallurgy completely resists corrosion and galling against the blued steel tube wall, guaranteeing reliable cartridge movement through desert dust or rainstorms.",
+        "audioScript": "Crafted from solid naval brass, this self-lubricating follower bears against the lead bullet of the final chambered round. Its non-corrosive copper composition glides effortlessly along the steel inner bore, ensuring continuous spring pressure without scratching or binding inside the tube.",
+        "audioUrl": "audio/winchester1894/parts/win94_mag_follower_en.mp3"
+      }
+    },
+    "win94_mag_spring": {
+      "partId": "win94_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Helical Magazine Spring",
+      "zh": {
+        "roleTag": "四十二圈琴钢丝螺旋长簧 · 恒定均匀供弹推进力",
+        "overview": "这是贯穿整个管式弹仓内部的超长等径螺旋供弹弹簧。其前端顶死在弹仓末端带螺纹的封口螺塞内，后端套接黄铜推弹柱塞提供均匀推力。",
+        "craftAndMaterial": "采用特级高弹力冷拔琴钢丝连续卷绕四十二圈而成，经低温去应力回火处理，表面涂布防潮特氟龙干膜，大幅延缓应力衰退与锈蚀锈斑。",
+        "kinematicRole": "阶段五在六发全容量至单发状态下，全行程提供平稳向后位移推力，将弹体送入托弹勺。拆卸在百分之三十六至七十六区间自弹仓前端口抽出。",
+        "designHighlight": "超长线径与大节距设计经过精确非线性动力学调校，满弹压紧时不致因推力过大挤瘪弹壳，空仓最后一发时仍具备充足预压将重弹送正到位。",
+        "audioScript": "这根足足有四十二圈的超长琴钢丝管式弹簧，犹如弹仓的心脏。经过严格去应力回火的弹簧钢丝，即便在满仓压入六发重型弹药数月之久，也能在推到最后一发子弹时，依然保持足够强劲的推力。",
+        "audioUrl": "audio/winchester1894/parts/win94_mag_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "42-Coil Music Wire Tubular Feed Spring with Constant Rate",
+        "overview": "This is the full-length helical feed spring running inside the entire underbarrel tubular magazine column. It bears against the forward threaded magazine cap to push the brass follower rearward.",
+        "craftAndMaterial": "Wound from continuous high-tensile cold-drawn music wire across forty-two active coils, heat-treated through stress-relief tempering and coated in a dry-film rust preventative.",
+        "kinematicRole": "Progressively expands in phase five to shove the cartridge column rearward into the carrier bucket throughout the feed cycle. Extracted between thirty-six and seventy-six percent disassembly.",
+        "designHighlight": "Engineered with a carefully tapered pitch rate, balancing compression force so that six loaded rounds do not over-stress feed rims while ensuring sufficient final bias on the sixth round.",
+        "audioScript": "Spanning the length of the magazine tube, this forty-two coil music wire spring provides the driving momentum behind every reload. Its progressive tension is calibrated to avoid crushing rimmed casings under full capacity, while maintaining adequate thrust to seat the very last round.",
+        "audioUrl": "audio/winchester1894/parts/win94_mag_spring_en.mp3"
+      }
+    },
+    "win94_loading_gate": {
+      "partId": "win94_loading_gate",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Spring Loading Gate",
+      "zh": {
+        "roleTag": "金氏专利侧装弹活门 · 随打随补不间断火力枢纽",
+        "overview": "这是沉嵌在机匣右侧壁椭圆装弹窗口处的金氏专利弹簧弹片装弹活门。内凹弧度迎合点三零弹头轮廓，单向内翻供弹，弹回时遮蔽风沙泥垢。",
+        "craftAndMaterial": "采用韧性极佳的工具弹簧钢整体锻造经热弯成形，后端留有高韧性弹簧扁条一体式固定在机匣壁，工作面经局部抛光发蓝处理。",
+        "kinematicRole": "装弹时被拇指推弹向内旋开让位，受弹壳通过后自动回弹拍合阻挡弹底后退；射击循环中保持静止密封。拆卸在百分之十二至四十六向内取出。",
+        "designHighlight": "基于纳尔逊金一八六六年传奇专利，射手无需像旧式亨利步枪那样拆卸推弹杆即可在战火中单手连续续弹，实现不间断的压制火力输出。",
+        "audioScript": "位于机匣右侧的金氏专利装弹口弹簧活门，彻底改变了十九世纪轻武器格局。射手只需用拇指将整发子弹向内推挤，活门向内下翻让出通道，子弹入仓后瞬间弹回闭合，在飞扬尘土中随时单发补弹。",
+        "audioUrl": "audio/winchester1894/parts/win94_loading_gate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "King Patent Spring-Loaded Side Gate for Continuous Reloading",
+        "overview": "This is the Nelson King patent spring-tempered steel loading gate seated flush into the right receiver port. It flexes inwardly under cartridge pressure to allow rapid magazine replenishment.",
+        "craftAndMaterial": "Drop forged and tempered from spring steel with an integrated flexible leaf tail anchored to the inner receiver, finished in charcoal blue with a beveled guiding lip.",
+        "kinematicRole": "Hinges inward under thumb pressure during manual loading, snapping back flush to seal the port and prevent cartridge regurgitation. Disassembles between twelve and forty-six percent.",
+        "designHighlight": "Invented by Nelson King in 1866, this game-changing flap eliminated the clumsy forward-loading slots of the Henry rifle, allowing the operator to continuously feed fresh rounds mid-combat.",
+        "audioScript": "Nelson King patented loading gate on the right flank transformed frontier combat. Instead of disassembling the magazine tube to reload, the cavalryman simply pressed fresh cartridges straight through this spring-steel flap, topping off the magazine on the fly without breaking target acquisition.",
+        "audioUrl": "audio/winchester1894/parts/win94_loading_gate_en.mp3"
+      }
+    },
+    "win94_carrier": {
+      "partId": "win94_carrier",
+      "bomCode": "M-05",
+      "calloutLabelEn": "Pivoting Brass Carrier",
+      "zh": {
+        "roleTag": "升降托弹勺与挡弹阻断座 · 抬高二十二度送弹对中",
+        "overview": "这是安装在机匣底部杠杆机构上方的大型升降托弹勺。它负责承接从下管仓滑出的新鲜枪弹，并在杠杆回拉行程中向上翘起二十二度对齐枪膛。",
+        "craftAndMaterial": "早期采铸造锰黄铜机械加工成形，兼顾耐磨性与自润滑减磨特性，托弹导轨槽经精密铣切研磨，尾部带有联动杠杆驱动的钢制销柱枢轴。",
+        "kinematicRole": "阶段五接纳管仓推入的首发新弹并以尾翼挡住次发弹；阶段六随杠杆后摆向上翻转二十二度送弹入膛。拆卸进度达百分之三十八至七十四时卸除。",
+        "designHighlight": "托弹勺前端的止推截面具备绝妙的双重几何职责，在向上举升首发弹的同时，下部弧面刚好死死堵住管仓口，防止弹仓内的第二发弹在簧力下涌出。",
+        "audioScript": "这个精密车铣的黄铜托弹勺是整套供弹转换机构的核心。当操纵杠杆回拉时，它在机匣内向上精准翘起二十二度，将弹药平稳提升至上方的弹膛轴线，同时底部边缘稳稳封死弹仓口，严防第二发弹窜出卡滞。",
+        "audioUrl": "audio/winchester1894/parts/win94_carrier_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Pivoting Cartridge Lifter Block with Magazine Cutoff Ramp",
+        "overview": "This is the substantial pivoting brass shell carrier and lifter block occupying the lower cavity of the receiver. It catches queued cartridges from the low magazine tube and hoists them up into the chamber.",
+        "craftAndMaterial": "Cast in manganese architectural brass and precision CNC machined, featuring polished feeding troughs and high-strength steel hinge pins for self-lubricating wear resistance.",
+        "kinematicRole": "Receives a fresh round in phase five, tilting upward twenty-two degrees in phase six as the lever cycles to align bullet and chamber. Drops free between thirty-eight and seventy-four percent.",
+        "designHighlight": "The carrier acts as its own magazine cutoff: as its trough swings upward with the primary round, its solid underbelly automatically seals the magazine mouth to trap following cartridges.",
+        "audioScript": "This solid brass carrier scoop performs an intricate mechanical ballet inside the action. Driven by the operating lever, it swings upward twenty-two degrees to elevate the cartridge straight into the chamber throat, while its sculpted lower wall acts as a barrier to block the next round.",
+        "audioUrl": "audio/winchester1894/parts/win94_carrier_en.mp3"
+      }
+    }
+  }
+}

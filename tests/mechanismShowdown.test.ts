@@ -29,9 +29,9 @@ import { WEAPON_IDS } from '../src/weapons/types';
 const CJK_RE = /[\u4e00-\u9fff]/;
 
 describe('WP-11 · Mechanism Showdown Lineage Matrix & Dual-Exhibit Lab', () => {
-  it('partitions all 27 active WEAPON_IDS cleanly across all 3 canonical taxonomy axes with zero empty families', () => {
+  it('partitions all 29 active WEAPON_IDS cleanly across all 3 canonical taxonomy axes with zero empty families', () => {
     const activeIds = getActiveShowdownWeaponIds();
-    expect(activeIds).toHaveLength(27);
+    expect(activeIds).toHaveLength(29);
     expect(activeIds).toEqual(ARMORY_WEAPONS.map((w) => w.id));
     expect(new Set(activeIds)).toEqual(new Set(WEAPON_IDS));
 
@@ -51,8 +51,8 @@ describe('WP-11 · Mechanism Showdown Lineage Matrix & Dual-Exhibit Lab', () => 
     }
   });
 
-  it('populates all Drive, Locking, and Feed families across all 27 exhibits including WP-18 MBTs and WP-17 marvels', () => {
-    expect(WEAPON_IDS.length).toBe(27);
+  it('populates all Drive, Locking, and Feed families across all 29 exhibits including WP-18 MBTs and WP-17 marvels', () => {
+    expect(WEAPON_IDS.length).toBe(29);
 
     // Specific canonical taxonomy assignments for Wave-2 & V2.0 exhibits
     expect(SHOWDOWN_EXHIBIT_SPECS.python.driveFamily).toBe(
@@ -456,10 +456,10 @@ describe('WP-11 · Mechanism Showdown Lineage Matrix & Dual-Exhibit Lab', () => 
     expect(crossDomainGeo.effectiveScaleMode).toBe('normalized');
   });
 
-  it('provides all 19 symmetric rivalry presets, distinct suggested rivals, Showcase handoff queue, and clean Armory/CSS wiring', () => {
+  it('provides all 21 symmetric rivalry presets, distinct suggested rivals, Showcase handoff queue, and clean Armory/CSS wiring', () => {
     const activePresets = getClassicRivalryPresets('zh');
     expect(activePresets).toHaveLength(CLASSIC_RIVALRY_SEEDS.length);
-    expect(activePresets).toHaveLength(19);
+    expect(activePresets).toHaveLength(21);
 
     queueMechanismShowdownLaunch('matrix', 'garand');
     const queued = consumePendingShowdownLaunch();

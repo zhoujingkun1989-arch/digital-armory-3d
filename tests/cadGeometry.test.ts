@@ -698,6 +698,16 @@ describe('worker zero-copy serialization of CAD attributes', () => {
       m1a2: ['m1a2_recoil_springs', 'm1a2_door_spring'],
       leopard2a7: ['leo_recoil_springs', 'leo_breech_spring'],
       tiger1: ['tiger_recoil_springs', 'tiger_breech_spring'],
+      winchester1894: [
+        'win94_mainspring',
+        'win94_sear_spring',
+        'win94_mag_spring',
+      ],
+      rem870: [
+        'rem870_hammer_spring',
+        'rem870_firing_pin_spring',
+        'rem870_mag_spring',
+      ],
     };
 
     for (const [wid, partIds] of Object.entries(dynamicSprings) as Array<

@@ -212,18 +212,18 @@ export const WEAPON_TURNTABLE_BOUNDS: Readonly<
     explode58: { cx: 85.0, minY: -190.0, maxY: 310.0, spanX: 1140.0 },
   },
   winchester1894: {
-    cx: 9.0,
-    minY: -6.8,
-    maxY: 3.6,
-    spanX: 94.9,
-    explode58: { cx: 8.5, minY: -20.5, maxY: 18.0, spanX: 132.0 },
+    cx: 8.5,
+    minY: -9.5,
+    maxY: 4.5,
+    spanX: 102.0,
+    explode58: { cx: 8.5, minY: -24.5, maxY: 20.5, spanX: 158.0 },
   },
   rem870: {
-    cx: 8.5,
-    minY: -8.2,
-    maxY: 3.4,
-    spanX: 92.5,
-    explode58: { cx: 8.0, minY: -19.5, maxY: 22.0, spanX: 130.0 },
+    cx: 8.0,
+    minY: -9.8,
+    maxY: 4.5,
+    spanX: 100.0,
+    explode58: { cx: 8.0, minY: -25.5, maxY: 24.5, spanX: 158.0 },
   },
 };
 

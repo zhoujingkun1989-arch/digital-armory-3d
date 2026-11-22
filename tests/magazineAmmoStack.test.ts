@@ -54,6 +54,8 @@ const MIN_ROUND_COUNTS: Readonly<Record<WeaponId, number>> = {
   m1a2: 0,
   leopard2a7: 0,
   tiger1: 0,
+  winchester1894: 5,
+  rem870: 4,
 };
 
 function computePartWorldBox(

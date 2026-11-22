@@ -434,8 +434,8 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
     }
   }, 45000);
 
-  it('WP-06: builds all 15 SAAMI/CIP cartridges & shotshells incl. WP-17 calibers at exact 1:1 CAD height (9x19mm = 29.69 mm vs .50 BMG = 138.43 mm)', () => {
-    expect(CARTRIDGE_LAB_ORDER).toHaveLength(15);
+  it('WP-06: builds all 16 SAAMI/CIP cartridges & shotshells incl. WP-17/V5 calibers at exact 1:1 CAD height (9x19mm = 29.69 mm vs .50 BMG = 138.43 mm)', () => {
+    expect(CARTRIDGE_LAB_ORDER).toHaveLength(16);
     expect(isCaliberProfile('50_bmg')).toBe(true);
     expect(isCaliberProfile('45_acp')).toBe(true);
     expect(isCaliberProfile('473_caseless')).toBe(true);

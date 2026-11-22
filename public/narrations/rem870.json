@@ -1,0 +1,888 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "rem870",
+  "generatedAt": "2026-11-22T05:52:33.688278+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "Remington Model 870 Police Magnum Shotgun",
+    "subtitle": "12 Gauge Twin-Action-Bar Tilting-Wedge Pump Shotgun",
+    "originCountry": "United States",
+    "weaponType": "Pump-Action Combat Shotgun",
+    "categoryLabel": "Shotgun",
+    "actionMechanism": "Manual pump-action corn-cob forend · Symmetrical twin parallel steel action bars · Tilting steel wedge lockup",
+    "statusLabel": "In Vault · Fully Interactive",
+    "description": "Standardized in 1950 at Remington's Ilion facility by L. Ray Crittendon and his design team, the Model 870 stands as the world's most prolific pump shotgun, exceeding eleven million units produced. Machined from a monolithic billet of high-carbon ordnance steel, its Parkerized receiver houses revolutionary twin parallel action bars that completely eliminate racking bind. The specialized Police Magnum variant integrates an aircraft-grade aluminum trigger plate, polished hard-chrome breech bolt, twenty percent stiffer hammer spring, deep twelve-groove corn-cob walnut forend, and an anti-jam Flexitab shell carrier.",
+    "highlights": [
+      "Monolithic forged steel receiver + Zero-Bind twin parallel steel action bars",
+      "Angled cam slide drives tilting steel wedge into barrel extension locking notch",
+      "Twelve-ring deep corn-cob walnut forend + High-visibility orange follower",
+      "Dual-pin aluminum Police trigger plate + Left trigger-guard action release"
+    ],
+    "workbenchTitle": "Remington 870 Police Magnum 3D Breakdown & Kinematics",
+    "workbenchSubtitle": "4 Modular Assemblies · 24 Core Nodes · Billet Receiver, Tilting Wedge & Twin Bars",
+    "cutawayLabel": "Tilting Wedge & Chrome Bolt",
+    "cutawayTitle": "Cutaway view into receiver locking extension, wedge block, and hard-chrome bolt carrier",
+    "searchPlaceholder": "Search part name or code (e.g. Twin Action Bars, Locking Wedge, Breech Bolt, P-02)...",
+    "firingMilestoneLabel": "Pump Racking Stroke",
+    "rateOfFire": "Manual pump cycle (Anti-jam Flexitab)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0% In Battery",
+        "desc": "Remington Model 870 Police Magnum in locked battery: solid forged billet steel receiver, twin action bars, and hard-chrome breech bolt ready for firing twelve-gauge buckshot or slugs."
+      },
+      "field_strip": {
+        "label": "Police Field Strip",
+        "subLabel": "30% Strip",
+        "desc": "Unthread knurled magazine cap, draw out 18-inch heavy barrel, release twin action-bar latch to withdraw corn-cob walnut forend with chrome bolt, and push out two pins to drop trigger plate."
+      },
+      "sub_assembly": {
+        "label": "Sub-Assemblies",
+        "subLabel": "65% Detail",
+        "desc": "Disassemble the camming slide block, tilting steel wedge, and inertial firing pin; extract the American walnut buttstock via the receiver through-bolt, and separate the orange follower and magazine spring."
+      },
+      "full_exploded": {
+        "label": "24-Node Exploded View",
+        "subLabel": "100% Exploded",
+        "desc": "Full exploded matrix of all twenty-four 1:1 components: inspect the heavy tubular magazine, dual shell latches, pivoting Flexitab carrier lifter, and parallel steel action sleeve."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "Trigger & Bar Unlock",
+        "title": "Phase 1 · Trigger Squeeze, Hammer Ignition & Action-Bar Unlock",
+        "description": "The police-tuned hammer drops forward under high-power spring tension to impact the spring-retracted firing pin. As the hammer strikes, its base trips the action-bar lock lever, unlocking the slide."
+      },
+      "phase_2": {
+        "shortLabel": "12ga Chamber Blast",
+        "title": "Phase 2 · 12-Gauge Ignition (79 MPa) & Rigid Wedge Lockup",
+        "description": "Chamber ignition generates seventy-nine megapascals of pressure. The upward-tilted steel locking wedge bears flush against the barrel extension, sealing the bore as nine buckshot pellets accelerate."
+      },
+      "phase_3": {
+        "shortLabel": "Rear Pump & Cam Drop",
+        "title": "Phase 3 · Manual Rearward Forend Stroke (7mm Free Travel Unlocks Wedge)",
+        "description": "The operator racks the walnut forend rearward. The twin steel action bars draw the cam slide back, forcing the tilting locking wedge downward by 5.2 millimeters out of the barrel roof recess."
+      },
+      "phase_4": {
+        "shortLabel": "Extraction & Ejection",
+        "title": "Phase 4 · 79mm Full Bolt Travel & Right-Port Shell Ejection",
+        "description": "The hard-chrome bolt travels rearward along internal receiver tracks, pulling the spent red plastic hull until it impacts the left-side ejector spring, hurling it out the right port while cocking the hammer."
+      },
+      "phase_5": {
+        "shortLabel": "Tube Shell Release",
+        "title": "Phase 5 · Staggered Shell Latches Release Next Round Onto Lifter",
+        "description": "As the action bars reach full rear travel, the cam surface deflects the right shell stop, allowing the magazine spring to thrust a fresh shell rearward onto the resting hard-chrome carrier lifter."
+      },
+      "phase_6": {
+        "shortLabel": "Forward Pump & Chamber",
+        "title": "Phase 6 · Forward Forend Stroke, +20° Carrier Lift & Chambering",
+        "description": "Thrusting the corn-cob forend forward swings the carrier lifter upward twenty degrees. The polished bolt face shoves the fresh round straight into the 76-millimeter magnum chamber."
+      },
+      "phase_7": {
+        "shortLabel": "Wedge Lock & Reset",
+        "title": "Phase 7 · Final 7mm Slide Cam Wedges Upward Into Lockup",
+        "description": "During the final seven millimeters of forward stroke, the slide ramps drive the tilting wedge upward into the barrel notch, the action bar lock snaps shut, and the shotgun is locked in battery."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "千锤百炼的泵动皇权：雷明顿 870 警用霰弹枪传奇",
+      "deck": "从 1950 年纽约伊利昂车间里诞生的双推杆专利，到横扫全球军警半个多世纪的执法标配，雷明顿 870 凭借整钢机匣与不卡滞连杆，铸就了逾千万支的钢铁神话。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1940–1950",
+          "title": "突破单杆掣肘：战后破局与整钢机匣的诞生",
+          "paragraphs": [
+            "二战硝烟刚刚散去，美国民用与执法狩猎市场迎来了爆发式增长。然而彼时统治市场的温彻斯特 Model 12 结构复杂且工时漫长，而雷明顿自家的 Model 31 虽有“滚珠轴承般顺滑”的美誉，却受限于单边推拉推杆的设计——在射手侧向偏力或泥沙杂质侵入时，机匣导槽极易发生弹性扭曲甚至咬死卡滞。",
+            "雷明顿军械厂的工程主管们清醒地认识到，未来的泵动武器必须既有绝对的结构刚性，又必须具备低廉的大规模量产适应性。他们摒弃了轻质冲压甚至铝合金铸造的妥协方案，毅然决然选用整块高碳实心合金锻钢，采用多轴铣削掏空出坚固绝伦的机匣外壳，彻底奠定了 Model 870 跨越数十年的重装甲级机匣骨架。"
+          ],
+          "audioScript": "二战结束后，旧式泵动霰弹枪单侧连杆容易扭曲卡滞的弱点暴露无遗。雷明顿工程师们毅然选用整块高碳实心锻钢，掏铣出前所未有的超高刚性机匣。这个决定，让未来的八七零能够从容承受数十万发重装鹿弹的无情震荡。",
+          "audioUrl": "audio/rem870/story_act1_zh.mp3",
+          "focusPartId": "rem870_receiver",
+          "focusPartLabel": "整块锻钢数控掏铣刚性机匣"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1950–1966",
+          "title": "划时代的双推杆专利：伊利昂工程师的技术突围",
+          "paragraphs": [
+            "1950 年，由 L·雷·克里滕登、菲利普·哈斯克尔、埃利斯·海尔斯顿与 G·E·平克尼四位机械天才组成的攻关团队，向美国专利局提交了一项彻底重塑泵动武器工业的核心专利：对称双平行钢推拉连杆（Twin Action Bars）。",
+            "这一设计在下挂弹仓左右两侧对称各设一根刚性钢臂，将前护木施加的手工推拉力完全平衡地传递至枪机滑动座。无论射手以何等暴力的单手偏角或泥泞状态下拉护木，导轨都不会产生力矩偏转，泵动卡滞率降到了绝对零度。雷明顿以此命名为“温室主人（Wingmaster）”正式推向市场，一举击溃所有单连杆对手。"
+          ],
+          "audioScript": "克里滕登领导的工程团队在弹仓两侧对称布置了双平行钢制推拉杆。这项天才发明彻底消除了泵动手感偏偏扭扭的顽疾，不管左撇子还是戴着厚手套，推拉动作始终如丝般顺滑。雷明顿八七零因此一战成名。",
+          "audioUrl": "audio/rem870/story_act2_zh.mp3",
+          "focusPartId": "rem870_action_bars",
+          "focusPartLabel": "Model 870 双侧平行合金钢推拉连杆组"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1966–1987",
+          "title": "斜楔闭锁的机械灵魂与警用马格南进化",
+          "paragraphs": [
+            "在内构机械学上，雷明顿 870 并未随波逐流采用旋转枪机头，而是精雕细琢出极度紧凑的上翘斜楔闭锁块（Tilting Wedge Locking Block）。推杆滑块后部斜面在闭锁最后七毫米冲程中，平稳强硬地将锻钢楔块抬升进入枪管延长段顶部的坚固闭锁凹槽，直接由枪管承受三英寸马格南鹿弹近八十兆帕的膛压膨胀，机匣本体仅充当导轨框架。",
+            "越战潮湿泥泞的丛林巡逻以及美国警界对近距破门、暴乱平息的极端苛求，催生了纯血统的 Police Magnum 特仕版。雷明顿为其装配了坚固耐撞的阳极氧化铝合金快拆扳机座、弹力上浮百分之二十的重磅击锤簧、反光极低的高耐磨锰磷化涂层，以及即便暴力循环也不会刮蹭弹壳的硬铬镜面枪机。"
+          ],
+          "audioScript": "八七零放弃了脆弱的旋转机头，采用一块厚重的上翘锻钢斜楔。推杆最后七毫米冲程把斜楔死死顶入枪管后端的闭锁凹槽，直接由厚壁枪管承受近八十兆帕的膛压膨胀。警用版更加配硬铬枪机与铝合金扳机座，坚如磐石。",
+          "audioUrl": "audio/rem870/story_act3_zh.mp3",
+          "focusPartId": "rem870_locking_block",
+          "focusPartLabel": "锻钢上翘楔形闭锁块"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1987–至今",
+          "title": "千万王座：防夹手托弹勺与全球执法传奇",
+          "paragraphs": [
+            "在残酷的战术射击高压训练中，早期霰弹枪若发生供弹故障，射手手指极易被紧贴的托弹板咬死。1987 年，雷明顿推出了里程碑式的 Flexitab 纠错托弹总成，在硬铬托弹板中央开设纵向导向槽，配合斜面枪机滑块，即使遭遇双重进弹亦可在三秒内强行泵动排障，彻底清除了执法一线的心理顾虑。",
+            "配合十二道深凹槽的玉米棒核桃木战术护木与高可视度鲜橙色弹仓托弹杯，雷明顿 870 Police Magnum 成为从巡警车枪架到联邦调查局特房救援队的绝对中坚。逾一千一百万支的庞大总产出与零差评的机械可靠性，令其毫无争议地加冕为人类军械史上产量最高、服役最广的泵动霰弹王者。"
+          ],
+          "audioScript": "一九八七年推出的防夹手托弹勺彻底解决了双进弹卡死的后顾之忧。配上十二环深凹槽的玉米棒前护木与鲜橙色托弹杯，八七零警用马格南成为了全球特警与军营的绝对基石，一千一百万支的辉煌战绩至今无人能破。",
+          "audioUrl": "audio/rem870/story_act4_zh.mp3",
+          "focusPartId": "rem870_forend",
+          "focusPartLabel": "深环槽玉米棒核桃木警用泵动前护木"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "零应力偏载：双平行对称钢推拉杆",
+          "tag": "对称推拉机构",
+          "summary": "彻底颠覆二战前单推杆泵动布局，在弹仓两侧配置经热处理的双平行实心拉杆，彻底消除了侧向受力时机匣导轨内部的偏载扭曲与咬死，实现全天候极速泵动顺畅度。",
+          "focusPartId": "rem870_action_bars",
+          "focusPartLabel": "Model 870 双侧平行合金钢推拉连杆组"
+        },
+        {
+          "id": "bt2",
+          "title": "高膛压自吸收：倾斜钢楔直接咬合枪管延长段",
+          "tag": "刚性斜楔闭锁",
+          "summary": "枪机上翘式斜楔闭锁块通过滑块凸轮升起，咬入淬硬枪管后端的闭锁顶槽。弹药激燃应力由枪管自身闭锁肩闭环消化，不仅彻底解放机匣结构负荷，更赋予发射 3 英寸马格南重弹的充沛冗余。",
+          "focusPartId": "rem870_locking_block",
+          "focusPartLabel": "锻钢上翘楔形闭锁块"
+        },
+        {
+          "id": "bt3",
+          "title": "警用级快拆铝合金一体火控座",
+          "tag": "模块化火控",
+          "summary": "区别于民用冲压件，Police 规格采用高强度铸造与 CNC 精加工的阳极氧化铝合金扳机座，仅需冲出机匣两侧定位销即可整包抽出维护，内置重型击锤簧与推杆释放锁。",
+          "focusPartId": "rem870_trigger_plate",
+          "focusPartLabel": "Police Magnum 铝合金双销快拆火控盒座"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1950",
+          "title": "Model 870 震撼问世",
+          "detail": "克里滕登设计团队在纽约伊利昂发布配备整钢机匣与双平行推拉连杆的 Model 870 Wingmaster，改写全球泵动霰弹枪制造基准。"
+        },
+        {
+          "year": "1966",
+          "title": "美国海军陆战队列装 Mk 1",
+          "detail": "美国海军陆战队将配备刺刀卡座与 21 英寸枪管的 Model 870 Mk 1 作为主力近战防暴枪送往东南亚热带雨林战场。"
+        },
+        {
+          "year": "1973–1984",
+          "title": "两百万与三百万里程碑",
+          "detail": "雷明顿 870 生产线突破三百万支大关，彻底垄断北美民用猎枪、农场防卫以及各州公路巡警车内配枪席位。"
+        },
+        {
+          "year": "1987",
+          "title": "防夹手 Flexitab 机构投产",
+          "detail": "雷明顿全面升级带 U 型开槽托弹板与防卡滞斜面枪机的 Flexitab 供弹总成，杜绝战场紧急排障因双重供弹咬手瘫痪。"
+        },
+        {
+          "year": "1990s",
+          "title": "Police Magnum 成为执法标杆",
+          "detail": "配备硬铬枪机、加强击锤簧与铝合金火控底座的 870 Police Magnum 成为全美特警巡警战术攻坚与破门的标准配置。"
+        },
+        {
+          "year": "2009–至今",
+          "title": "破千万总产销量皇者",
+          "detail": "雷明顿 870 平台总装配量突破一千一百万支，成为枪械工业史上海量列装、经受最多实战检验的泵动长枪神话。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "The Sovereign of Steel: Remington 870 Police Magnum Chronicles",
+      "deck": "Forged from a monolithic billet of high-carbon steel and driven by non-binding twin action bars, the Remington 870 transcended sportsmanship to become the quintessential law-enforcement combat shotgun, exceeding eleven million units.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1940–1950",
+          "title": "Escaping the Single-Bar Trap: Postwar Demand & the Solid-Billet Receiver",
+          "paragraphs": [
+            "In the booming postwar American arms landscape, pump-action shotguns ruled duck blinds and patrol cruisers. Yet market titans like Winchester's Model 12 were intensely labor-intensive, while Remington's own Model 31, despite its legendary silk-smooth action, suffered from an inherent mechanical vulnerability: its single operating slide bar. Heavy lateral torque, sand infiltration, or one-handed tactical pumping could twist the single bar inside receiver raceways, inducing disastrous binding jams.",
+            "Remington's design leadership at Ilion, New York recognized that true mechanical supremacy demanded an unyielding foundation. Rejecting cheaper stamped metal or early aluminum alloys, they opted to machine the entire receiver from a single monolithic billet of forged high-carbon ordnance steel. This forged backbone gave the future Model 870 immense structural rigidity capable of surviving hundreds of thousands of high-pressure magnum cycles without frame stretch."
+          ],
+          "audioScript": "Following the Second World War, pump shotguns faced severe mechanical binding from old single action bar setups under side loads. Remington engineers answered by carving a monolithic receiver out of solid forged ordnance steel. This dense, indestructible receiver formed the backbone of the Model 870, guaranteeing zero frame deformation under decades of punishing recoil.",
+          "audioUrl": "audio/rem870/story_act1_en.mp3",
+          "focusPartId": null,
+          "focusPartLabel": null
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1950–1966",
+          "title": "Twin Action Bars: The Ilion Engineering Breakthrough",
+          "paragraphs": [
+            "In 1950, a dedicated engineering quadrumvirate—L. Ray Crittendon, Phillip Haskell, Ellis Hailston, and G.E. Pinckney—filed a revolutionary design patent that would permanently redefine pump-action geometry: symmetrical twin parallel steel action bars. By straddling the under-barrel tubular magazine with two rigid heat-treated steel arms, manual pumping force was balanced perfectly along the firearm's centerline.",
+            "This symmetrical thrust vector eliminated torsional twisting entirely. Whether cycled violently by a gloved tactical officer, dragged through jungle mud, or racked off-axis in high-stress close-quarters combat, the slide glided without hesitation. Introduced commercially as the Wingmaster, the Model 870 swiftly outpaced every single-bar competitor across military, police, and sporting arenas."
+          ],
+          "audioScript": "Led by engineer Ray Crittendon, the Remington team mounted parallel steel bars along both flanks of the tubular magazine. This breakthrough distributed racking energy with pure mechanical symmetry, banishing slide binding forever. Racked by hand or off a barricade, the Model 870 action cycled with crisp, unstoppable authority.",
+          "audioUrl": "audio/rem870/story_act2_en.mp3",
+          "focusPartId": null,
+          "focusPartLabel": null
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1966–1987",
+          "title": "The Mechanical Soul: Tilting Wedge Lockup & Police Magnum Pedigree",
+          "paragraphs": [
+            "Rather than relying on delicate rotating bolt lugs, the Model 870 employed an exceptionally robust tilting steel wedge locking block. During the final seven millimeters of forward forend travel, twin cam ramps on the slide block lifted this solid forged wedge upward into a hardened recess inside the barrel extension. Firing stress from heavy twelve-gauge magnum loads was absorbed entirely by the barrel itself, insulating the receiver from longitudinal tensile fatigue.",
+            "As combat feedback flowed back from Vietnam's riverine patrols and urban law-enforcement encounters, Remington established the elite Police Magnum standard. Built on dedicated assembly lines, this tactical variant received a precision CNC-machined aluminum trigger plate, twenty percent heavier hammer springs to detonate hard military primers, non-reflective manganese phosphate Parkerizing, and a polished hard-chrome breech bolt that wiped fouling clean with ease."
+          ],
+          "audioScript": "Instead of delicate rotary lugs, the 870 relies on a massive tilting steel wedge locking block. In the final stroke, slide ramps drive this forged wedge into the barrel extension, keeping chamber stresses isolated from the frame. The dedicated Police Magnum elevated this mechanism with an all-metal trigger group and hard-chrome bolt.",
+          "audioUrl": "audio/rem870/story_act3_en.mp3",
+          "focusPartId": null,
+          "focusPartLabel": null
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "1987–Present",
+          "title": "Eleven Million Strong: The Flexitab System & Tactical Supremacy",
+          "paragraphs": [
+            "High-stress tactical reloads revealed a lingering vulnerability common to traditional shotguns: should a shell slip past the stop latches beneath the bolt, it could wedge beneath the carrier lifter, bricking the weapon. In 1987, Remington fielded the revolutionary Flexitab conversion kit. By machining an escape clearance channel into the chrome shell lifter and adding an angled bolt-carrier notch, operators could force the slide rearward to shear or clear double feeds in seconds without disassembly.",
+            "Mated to the unmistakable twelve-groove corn-cob walnut pump forend and high-visibility neon-orange magazine follower, the Model 870 Police Magnum earned its place as the definitive shotgun in cruisers, federal armories, and international breach teams. Surpassing eleven million manufactured units, it stands unchallenged as the most durable and prolific pump-action ordnance system in human history."
+          ],
+          "audioScript": "The introduction of the anti-jam Flexitab lifter ensured operators could clear double feeds in mere seconds under battlefield stress. Equipped with its iconic corn-cob walnut forend and safety-orange follower, the Model 870 Police Magnum surpassed eleven million units, proving itself the undisputed champion of combat pump shotguns worldwide.",
+          "audioUrl": "audio/rem870/story_act4_en.mp3",
+          "focusPartId": null,
+          "focusPartLabel": null
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Zero-Bind Symmetrical Twin Action Bars",
+          "tag": "Parallel Action Link",
+          "summary": "Eliminated the historical binding curse of single-bar shotguns by coupling dual heat-treated parallel steel rods directly between the pump forend and bolt slide block, ensuring perfectly balanced linear travel under off-axis strain.",
+          "focusPartId": "rem870_action_bars",
+          "focusPartLabel": "Model 870 Twin Parallel Steel Action Bars & Tube"
+        },
+        {
+          "id": "bt2",
+          "title": "Direct-to-Barrel Tilting Wedge Lockup",
+          "tag": "Tilting Steel Wedge",
+          "summary": "Engineered a forged steel tilting wedge that cams upward into a precision notch within the barrel extension, containing 79 MPa chamber pressures inside the barrel steel and sparing the receiver from cyclic stress fatigue.",
+          "focusPartId": "rem870_locking_block",
+          "focusPartLabel": "Tilting Steel Wedge Locking Block"
+        },
+        {
+          "id": "bt3",
+          "title": "Dual-Pin Aluminum Police Trigger Plate",
+          "tag": "Modular Fire Control",
+          "summary": "Replaced commercial polymer units with a heavy-duty anodized aluminum trigger housing retained by two push-pins, integrating an extra-power hammer spring, crossbolt safety, and left-side slide release lever for instant field maintenance.",
+          "focusPartId": "rem870_trigger_plate",
+          "focusPartLabel": "Dual-Pin Anodized Aluminum Police Trigger Plate"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1950",
+          "title": "Model 870 Wingmaster Unveiled",
+          "detail": "Remington debuts the Model 870 at Ilion, New York, featuring a solid-billet steel receiver and patented non-binding twin action bars."
+        },
+        {
+          "year": "1966",
+          "title": "U.S. Marine Corps Fields Mk 1",
+          "detail": "The United States Marine Corps adopts the Model 870 Mk 1 riot configuration with bayonet lug and 21-inch barrel for intense jungle fighting."
+        },
+        {
+          "year": "1973–1984",
+          "title": "Two-Million and Three-Million Marks",
+          "detail": "Surpassing three million units built, the Model 870 secures total dominance over municipal police cruiser racks and international security forces."
+        },
+        {
+          "year": "1987",
+          "title": "Anti-Jam Flexitab System Standardized",
+          "detail": "Remington introduces the slotted Flexitab shell carrier lifter and modified bolt, enabling instant tactile clearance of double-feed jams."
+        },
+        {
+          "year": "1990s",
+          "title": "Police Magnum Becomes Law Enforcement Benchmark",
+          "detail": "Featuring hand-inspected billet receivers, extra-power hammer springs, and hard-chrome bolts, the Police Magnum becomes the tactical gold standard."
+        },
+        {
+          "year": "2009–Present",
+          "title": "Eleven Million Production Record",
+          "detail": "Total production surpasses 11 million units, securing the Remington 870's status as the highest-volume combat and sporting shotgun in history."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "rem870_barrel": {
+      "partId": "rem870_barrel",
+      "bomCode": "B-01",
+      "calloutLabelEn": "18\" Heavy-Wall Barrel",
+      "zh": {
+        "roleTag": "457mm 重型军警锰磷化管壁 · 尾部闭锁块顶部契合卯口",
+        "overview": "这是雷明顿 870 警用型专用的 18 英寸重壁滑膛枪管，前端设改良圆柱喉缩，底部硬钎焊有弹仓导环。枪管尾部延伸体直接插入锻钢机匣前端，并在顶部开有精密承载后坐力的闭锁卯槽。",
+        "craftAndMaterial": "选用 4140 铬钼高强度合金钢实心深孔钻削成型，整体实施军规深灰无反光锰磷化表面处理；加厚管壁不仅强化了耐撞击破门能力，更在尾端提供了能承受 79 兆帕膛压的钢制锁闭台阶。",
+        "kinematicRole": "在发射全周期中作为静止内弹道基准，闭锁块直接嵌入其尾卯承担火药气体压力；分解进度达 22% 至 56% 时，旋下弹仓盖即可向前平移拔出机匣脱离。",
+        "designHighlight": "不同于民用薄壁猎枪管，警用重壁规格防止了在战术破门或巡逻车枪架频繁磕碰下的微量变形，确保发射鹿弹或独头弹时弹道收束始终一致。",
+        "audioScript": "这根十八英寸重壁滑膛枪管是八七零警用型的精髓。枪管尾部直接车削出倾斜闭锁凹槽，击发时七十九兆帕的高压火药燃气被倾斜钢楔直接锁定在枪管内部，避免了机匣本身承受破坏性拉伸载荷。",
+        "audioUrl": "audio/rem870/parts/rem870_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "18-Inch Parkerized Heavy Barrel with Breech Extension",
+        "overview": "This is the dedicated eighteen-inch heavy-wall smoothbore barrel for the Remington 870 Police Magnum, featuring an improved-cylinder choke and brazed magazine guide ring. Its thick rear extension slips directly into the solid steel receiver and houses the precision locking recess.",
+        "craftAndMaterial": "Precision drilled from 4140 chrome-moly ordnance steel and treated with a non-reflective matte manganese phosphate finish. The thick cross-section withstands breaching shocks while providing an ultra-rigid locking shoulder.",
+        "kinematicRole": "Remains static throughout the firing cycle to handle internal ballistics and lockup thrust. During disassembly between twenty-two and fifty-six percent progression, it slides straight forward off the magazine tube once the cap is removed.",
+        "designHighlight": "Unlike thinner sporting barrels, the heavy police profile prevents bore deformation when mounted in patrol vehicle locking racks or subjected to rapid door-breaching impacts.",
+        "audioScript": "This heavy eighteen-inch barrel is built from forty-one forty ordnance steel with a rugged Parkerized finish. Notice the barrel extension at the breech end. Its precision milled locking notch locks directly to the tilting bolt wedge, keeping all seventy-nine megapascals of chamber pressure safely contained within the barrel rather than stressing the receiver body.",
+        "audioUrl": "audio/rem870/parts/rem870_barrel_en.mp3"
+      }
+    },
+    "rem870_front_sight": {
+      "partId": "rem870_front_sight",
+      "bomCode": "B-02",
+      "calloutLabelEn": "Tritium Ramp Front Sight",
+      "zh": {
+        "roleTag": "高对比夜光白点 · 警用近战速瞄与破门防钩挂斜坡",
+        "overview": "这是牢固银焊在枪口上方的斜坡防勾挂大白点准星，内置自发光氚光玻璃管。它是执法人员在低光近战与突入破门时快速压制目标的视觉焦点。",
+        "craftAndMaterial": "基座采用渗碳淬火碳钢通过高温银铜钎焊一体熔接于枪管，正面点缀高反差哑光白环与氚气发光核心，平滑过渡的后掠倾角防止勾挂枪套或战术背心。",
+        "kinematicRole": "随枪管刚性固定，射击时为射手提供快速捕捉准星的参考系；随枪管在分解前期同步位移，在全枪深度拆解时可单独冲出销钉分解。",
+        "designHighlight": "实心斜坡造型兼具准星护翼与导角功能，即使在突击队员强行撞门或从巡逻车内紧急拔枪时，也绝不会卡死在织物缝隙中。",
+        "audioScript": "枪口前方的斜坡前准星采用高强度银钎焊工艺固定。醒目的氚光白点在暗光环境下持续自发光，光滑后掠的斜面设计确保快速拔枪或近距离破门时绝不挂蹭战术背心或门帘绳索。",
+        "audioUrl": "audio/rem870/parts/rem870_front_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "High-Contrast Tritium Sight with Anti-Snag Ramp",
+        "overview": "This ramped steel front sight is silver-brazed near the muzzle, housing a high-visibility white outline and self-luminous tritium insert. It serves as the primary tactical sighting reference during rapid room entry and low-light operations.",
+        "craftAndMaterial": "Constructed from case-hardened carbon steel with an integral ramped profile and silver-brazed to the barrel exterior, finished in combat Parkerizing to resist abrasion.",
+        "kinematicRole": "Remains permanently indexed to the barrel centerline during firing. It travels forward alongside the barrel assembly during initial strip and separates in armorer-level detail disassembly.",
+        "designHighlight": "The snag-free angled ramp eliminates catch points when drawing rapidly from vehicle racks or operating within confined CQB cordons.",
+        "audioScript": "Brazed securely to the muzzle, this ramped front sight features a self-illuminating tritium core within a bright white dot. The smooth sweep prevents snagging on web gear or doorframes, allowing instant target indexing in high-stress close-quarters encounters.",
+        "audioUrl": "audio/rem870/parts/rem870_front_sight_en.mp3"
+      }
+    },
+    "rem870_forend": {
+      "partId": "rem870_forend",
+      "bomCode": "P-01",
+      "calloutLabelEn": "Grooved Walnut Forend",
+      "zh": {
+        "roleTag": "12道深凹防滑指槽 · 湿手与战术手套急推拉零打滑",
+        "overview": "这是经典警用巡逻型标志性的十二环槽玉米棒美洲黑胡桃木泵动前护木。它套组在钢制护木管外部，是射手左手手动驱动全枪完成循环的核心人机接口。",
+        "craftAndMaterial": "选用高等级美洲硬质黑胡桃木经数控车削与浸油硬化处理，外表切削有十二圈宽深凹槽；内腔开有配合钢推管外径的精密通孔与前端锁紧螺母承座沉孔。",
+        "kinematicRole": "由射手强力后拉 7.9 厘米完成抽壳抛壳与压锤，随后前推 8.6 厘米送弹入膛并促使闭锁；在分解至 16% 到 50% 阶段向后脱离弹仓管。",
+        "designHighlight": "比民用猎枪护木更短且后缩，避免后拉时遮挡机匣底部的装弹口，深肋条玉米棒结构在沾染雨水、泥浆或戴厚战术手套时能提供极强抓握力。",
+        "audioScript": "这件著名的玉米棒胡桃木前护木拥有十二道深环槽。经过浸油硬化的高密度木料不仅质感出众，更能让特警队员在戴着厚重手套或雨水打湿时，依然能以十余公斤的爆发力猛推猛拉完成泵动换弹。",
+        "audioUrl": "audio/rem870/parts/rem870_forend_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Twelve-Groove Corn-Cob Walnut Pump Slide Grip",
+        "overview": "This is the iconic twelve-groove corn-cob walnut forend characteristic of classic Police Magnum shotguns. It surrounds the steel action tube and serves as the primary manual pumping interface for cycling the action.",
+        "craftAndMaterial": "Turned from dense American black walnut and treated with tung-oil sealant. Deep radial ribs are routed along its circumference to maximize tactile traction without sharp checkering that traps debris.",
+        "kinematicRole": "Driven manually rearward seventy-nine millimeters to extract, eject, and cock the internal hammer, then slammed forward eighty-six millimeters to chamber and lock. Slides free between sixteen and fifty percent disassembly.",
+        "designHighlight": "The compact police profile does not overlap the loading port when racked fully to the rear, preventing thumb pinches during high-stress combat tactical reloads.",
+        "audioScript": "Turned from premium American black walnut, this corn-cob forend features twelve deep radial grooves. The textured ribs provide unmatched mechanical grip when operating with muddy gloved hands, allowing the operator to cycle the action with uncompromising authority.",
+        "audioUrl": "audio/rem870/parts/rem870_forend_en.mp3"
+      }
+    },
+    "rem870_action_bars": {
+      "partId": "rem870_action_bars",
+      "bomCode": "P-02",
+      "calloutLabelEn": "Twin Steel Action Bars",
+      "zh": {
+        "roleTag": "1950划时代对称双钢杆 · 彻底消除单连杆偏心卡滞",
+        "overview": "这是 1950 年雷明顿颠覆性设计的对称双平行合金钢推拉连杆组，牢固钎焊在护木滑动钢管的两侧。两根平直扁钢深入机匣内腔，驱动枪机滑块进行纯平面的前后往复运动。",
+        "craftAndMaterial": "采用高抗扭高韧性弹簧合金钢精密冲压并经调质淬火，表面经黑色氮化耐磨涂层处理；两侧扁杆厚度、间距与平行度公差控制在极小范围内以杜绝侧偏扭力。",
+        "kinematicRole": "射手推拉护木时，双推杆完全对称地传递拉力和推力，右推杆控制内侧托弹板与抽壳阻铁，左推杆与扳机推杆锁互锁；在分解中段随护木总成整体抽离机匣。",
+        "designHighlight": "相比早期霰弹枪单侧推杆容易因为射手发力偏斜导致机匣内部别劲卡死，对称双杆设计彻底根治了剧烈泵动时的偏心扭力抱死缺陷。",
+        "audioScript": "雷明顿八七零之所以被公认为泵动霰弹枪的可靠性标杆，核心就在这组双平行钢推拉连杆。左右对称的双杆彻底消除了单侧发力带来的扭曲应力，即便在单手依托巡逻车门极限上膛时，也绝不卡滞。",
+        "audioUrl": "audio/rem870/parts/rem870_action_bars_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Symmetrical Dual Action Bars Brazed to Guide Tube",
+        "overview": "This critical assembly consists of twin parallel hardened steel action bars furnace-brazed to a central guide tube. The dual arms extend into the billet receiver to drive the internal slide block without lateral canting.",
+        "craftAndMaterial": "Stamped and ground from spring-temper high-strength alloy steel, followed by QPQ salt-bath nitriding for extreme surface hardness and slick gliding within the receiver guide ways.",
+        "kinematicRole": "Translates push-pull pump strokes directly into internal bolt and carrier motion while simultaneously tripping magazine latches and the action bar lock. Slides out of the receiver at twenty-six to sixty-two percent disassembly.",
+        "designHighlight": "Prior shotguns relied on single action bars that bound up if pumped at an angle. The twin-bar layout distributes stroke forces equally across both flanks of the tubular magazine.",
+        "audioScript": "The twin parallel action bars represent Remington's definitive 1950 breakthrough. By distributing racking forces symmetrically along both sides of the magazine tube, these dual steel bars eliminate binding entirely, even when stroked violently from awkward shooting postures.",
+        "audioUrl": "audio/rem870/parts/rem870_action_bars_en.mp3"
+      }
+    },
+    "rem870_slide_block": {
+      "partId": "rem870_slide_block",
+      "bomCode": "P-03",
+      "calloutLabelEn": "Action-Bar Slide Block",
+      "zh": {
+        "roleTag": "前导自由滑行 7mm · 斜面强拉倾斜闭锁块下行开锁",
+        "overview": "这是搭接在双推拉连杆后部凹槽内的锻钢凸轮驱动滑块，位于机机体正下方。它是将推拉杆的纯水平位移转换为闭锁块上下倾斜动作的关键机构。",
+        "craftAndMaterial": "采用合金工具钢全数控铣削并经整体深层渗碳淬火，表面带有特定的多级驱动斜坡、击针限位槽和双推拉杆定位耳扣，表面经极细抛光以降低摩擦。",
+        "kinematicRole": "护木后拉的前 7 毫米内，滑块在枪机下方空走，利用凸轮斜面强力下拉闭锁块脱离枪管卯口；前推至最后 7 毫米时，滑块前斜坡重新将闭锁块顶起咬死。",
+        "designHighlight": "巧妙的时序延迟设计让高压膛压在开锁前完全释出，其坚实的下部承台在机栓后坐时还能直接把击锤推压回待击挂起位置。",
+        "audioScript": "这块不起眼的钢滑块是八七零开闭锁的心脏。射手后拉护木的前七毫米，滑块会在枪机下方空走，利用内侧精密计算的凸轮斜面将闭锁块强行下拉开锁；随后再拖拽整颗枪机后坐压倒击锤。",
+        "audioUrl": "audio/rem870/parts/rem870_slide_block_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Machined Steel Bolt Carrier Camming Slide Block",
+        "overview": "This machined alloy-steel cam block rests upon the twin action bars directly beneath the breech bolt. It converts the pure horizontal pumping stroke into the vertical tilting lockup and unlock sequence.",
+        "craftAndMaterial": "CNC milled from forged chrome-alloy steel and deep case-hardened. Its upper face features dual angled cam ramps that interface directly with the tilting locking block wedge.",
+        "kinematicRole": "Travels the first seven millimeters rearward independently to cam the locking block down before engaging the breech bolt. On full forward lockup, its ramps wedge the block firmly into the barrel extension.",
+        "designHighlight": "The seven-millimeter mechanical dwell time guarantees chamber pressures drop to ambient before the action starts extraction, preventing ruptured hull heads under magnum loads.",
+        "audioScript": "Resting directly on the action bars, this precision-milled slide block orchestrates the lockup timing. As the forend moves rearward, the block moves independently for the first seven millimeters, camming the overhead locking wedge downward to unlock before dragging the bolt.",
+        "audioUrl": "audio/rem870/parts/rem870_slide_block_en.mp3"
+      }
+    },
+    "rem870_breech_bolt": {
+      "partId": "rem870_breech_bolt",
+      "bomCode": "P-04",
+      "calloutLabelEn": "Hard-Chrome Breech Bolt",
+      "zh": {
+        "roleTag": "79mm 泵动长行程 + 大爪侧抽壳钩抛壳窗口视觉反差",
+        "overview": "这是雷明顿 870 标志性的镜面抛光硬铬圆弧顶枪机主体，坐落于滑块之上。它直接承受 12 号马格南霰弹底缘，负责将弹药推入弹膛并由右侧外露式抽壳钩紧扣底槽。",
+        "craftAndMaterial": "由实心合金钢坯经多次拉削与精密磨床加工，外表面电镀工业级厚硬铬层，顶部开有贯通的倾斜闭锁槽，内腔贯通长击针孔道与横向销钉定位槽。",
+        "kinematicRole": "随滑块向后滑行 7.9 厘米抽取弹壳，并由尾部撞击击锤实施待击；前行时从托弹板上推弹入膛，并在终点保持水平就位；在分解至 26% 到 62% 时整体取出。",
+        "designHighlight": "厚硬铬镀层不仅在深灰机匣内部形成鲜明的执法美学对比，更提供了极佳的自润滑性与耐泥沙磨损能力，即使缺乏枪油也不会发生干涩黏滞。",
+        "audioScript": "这颗闪亮的硬铬枪机是八七零巡逻型最醒目的特征。全钢实心切削的机体经过镜面硬铬电镀，不仅能在泥沙和海水泼溅下提供超凡的抗腐蚀润滑性，还能承受百万次抽壳冲击而毫无裂纹。",
+        "audioUrl": "audio/rem870/parts/rem870_breech_bolt_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Mirror Hard-Chrome Plated Machined Breech Bolt",
+        "overview": "This is the signature polished hard-chrome breech bolt body, riding above the cam slide within the receiver. It strips fresh twelve-gauge shells from the carrier, seals the breech face, and extracts fired hulls via a massive spring-loaded extractor.",
+        "craftAndMaterial": "Broached from billet alloy steel and plated with a heavy layer of industrial hard chrome, yielding an ultra-smooth low-friction surface that resists corrosion and fouling without grease.",
+        "kinematicRole": "Retracts seventy-nine millimeters along the receiver rails to extract and reset the hammer, then advances forward to chamber a shell before becoming locked by the overhead wedge.",
+        "designHighlight": "The slick hard-chrome finish prevents carbon binding and cycling drag, ensuring smooth operation even in sand, sleet, or heavy salt spray environments.",
+        "audioScript": "Machined from solid billet steel, this breech bolt is coated in mirror-bright hard chrome. The slick chrome finish drastically reduces friction inside the Parkerized steel receiver, ensuring completely effortless cycling even when coated in grit or operating bone-dry.",
+        "audioUrl": "audio/rem870/parts/rem870_breech_bolt_en.mp3"
+      }
+    },
+    "rem870_locking_block": {
+      "partId": "rem870_locking_block",
+      "bomCode": "P-05",
+      "calloutLabelEn": "Tilting Locking Block",
+      "zh": {
+        "roleTag": "顶入枪管延长段闭锁肩 · 承受 3 英寸马格南重弹高压",
+        "overview": "这是容纳在枪机顶部矩形开槽内的重型锻钢上翘式闭锁块。当枪机推弹入膛到位后，它向上抬起，将坚固的锁闭凸榫直接嵌入枪管延伸段顶部的卯口之中。",
+        "craftAndMaterial": "选用高规格铬镍钼合金钢模锻成型，经精密渗碳与淬火回火达到高表面硬度与极佳芯部韧性，底部带有与驱动滑块完全吻合的 45 度精密升降导向斜面。",
+        "kinematicRole": "在闭锁阶段受滑块斜坡顶推向上倾斜并咬合枪管尾端，击发时吸收全部轴向后坐力；开锁阶段被滑块反向凸轮下拉收回枪机内；在分解后期自枪机顶部脱出。",
+        "designHighlight": "这种枪管到闭锁块的纯钢对纯钢直接刚性闭锁，使机匣本身完全脱离了高压受力框架，这也是 870 历经数十年高强度射击而机匣绝不变形的根本秘密。",
+        "audioScript": "这枚上翘楔形闭锁块是整枪最关键的承压构件。在护木闭锁到位的一瞬间，滑块的斜面会将其向上硬生生顶起，死死嵌入枪管尾部的凹槽中，将三英寸马格南重弹的狂暴后坐力完全消化在枪管内部。",
+        "audioUrl": "audio/rem870/parts/rem870_locking_block_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Forged Tilting Steel Wedge Locking Block",
+        "overview": "This forged alloy-steel tilting wedge sits within the top cutout of the breech bolt. Upon lockup, it tilts upward to seat its massive lug directly into the hardened locking shoulder of the barrel extension.",
+        "craftAndMaterial": "Drop-forged from nickel-chrome-moly steel and precision heat-treated to fifty Rockwell C. The bottom profile features dual forty-five-degree cam surfaces engineered to mate with the slide block.",
+        "kinematicRole": "Elevates into the barrel roof during the final seven millimeters of forward stroke to lock the breech, and drops back flush during unlocking. Lifts out cleanly from the bolt at thirty-four to seventy-two percent disassembly.",
+        "designHighlight": "Because locking forces are transmitted directly between the steel locking wedge and the barrel extension, the receiver itself experiences negligible longitudinal tensile stress during firing.",
+        "audioScript": "This forged steel locking wedge handles the full brunt of firing. When the action closes, the slide block drives this heavy wedge upward into the roof of the barrel extension, creating an impenetrable steel-to-steel lockup directly behind the shotshell primer.",
+        "audioUrl": "audio/rem870/parts/rem870_locking_block_en.mp3"
+      }
+    },
+    "rem870_firing_pin": {
+      "partId": "rem870_firing_pin",
+      "bomCode": "P-06",
+      "calloutLabelEn": "Inertia Firing Pin",
+      "zh": {
+        "roleTag": "尾部击锤档 + 弹簧复位防猛推护木惯性走火",
+        "overview": "这是穿装在硬铬枪机轴线中心孔道内的高强度不锈钢长击针，前端设有同轴复位螺旋弹簧。在击锤撞击其尾部后，它前冲撞击底火，随后在弹簧张力下立即缩回。",
+        "craftAndMaterial": "采用高抗疲劳特种不锈钢精细车削与无心磨加工，针尖端呈光滑球面防刺穿底火，针身铣有扁位限位槽，防止横向转动并由枪机横销实施行程限定。",
+        "kinematicRole": "发射时在击锤打击下向前冲程击发底火，弹簧将其迅速回弹拉回枪机面以内；在分解推进至 30% 到 68% 冲出枪机定位横销后向后取出。",
+        "designHighlight": "惯性短行程配合强力弹簧复位，彻底防止了射手以极大加速度猛烈向前推合护木时，击针因自身惯性前探击发底火造成的危险走火事故。",
+        "audioScript": "穿装在枪机中心的不锈钢长击针采用惯性悬浮设计。击针前端配备复位螺旋弹簧，不仅保证击发后迅速缩回枪机面防止划破后继弹壳，更彻底杜绝了左手猛烈推击护木上膛时的惯性自击发风险。",
+        "audioUrl": "audio/rem870/parts/rem870_firing_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Stainless-Steel Inertia Firing Pin with Return Spring",
+        "overview": "This elongated stainless-steel firing pin resides in the longitudinal center channel of the breech bolt, tensioned rearward by a dedicated coil spring. It transfers hammer energy to the shotshell primer and immediately rebounds.",
+        "craftAndMaterial": "Precision machined from fatigue-resistant stainless steel with a radiused striking tip to prevent primer piercing. Features an anti-rotation flat that interfaces with the bolt cross-pin.",
+        "kinematicRole": "Driven forward by the falling hammer to detonate the primer, then instantaneously retracted inside the breech face by its spring. Removed rearward once the retaining pin is drifted out at thirty to sixty-eight percent disassembly.",
+        "designHighlight": "The true inertia design requires the hammer's sharp impulse to strike the primer; violent forward slamming of the forend cannot cause an inertia slam-fire.",
+        "audioScript": "Machined from high-tensile stainless steel, this spring-loaded firing pin sits centered within the bolt. Its robust return spring keeps the tip concealed until struck decisively by the hammer, eliminating any danger of slam-firing during aggressive tactical pumping.",
+        "audioUrl": "audio/rem870/parts/rem870_firing_pin_en.mp3"
+      }
+    },
+    "rem870_receiver": {
+      "partId": "rem870_receiver",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Solid Steel Receiver",
+      "zh": {
+        "roleTag": "全钢实心锻坯掏空 · 与铝合金机匣竞争中独步半个世纪",
+        "overview": "这是雷明顿 870 历经数十年风雨的核心骨干：整块实心锻造高碳合金钢掏铣而成的一体化重型机匣。它不仅为全部内构提供刚性轨道，更构成了全枪坚固的防护外壳。",
+        "craftAndMaterial": "由整块 8620 低合金高强度锻钢经多轴数控中心深孔掏空成型，整体实施军用哑光深灰锰磷化处理；底部设有大尺寸推弹与托弹板窗口，右侧开有加强倒角抛壳窗。",
+        "kinematicRole": "全枪核心静止受力与装配基座，所有导轨、扳机组、弹仓管与枪管均定位其上；在装配图中处于核心不动位置，三维分解时其余部件均向周围四散分离。",
+        "designHighlight": "在现代大量霰弹枪采用轻薄铝合金压铸机匣的背景下，870 依然坚持重型实心锻钢掏铣，极高结构刚性让它即便在巡逻车严重撞击碾压后依然能顺畅拉动上膛。",
+        "audioScript": "这块沉重的钢机匣是八七零警用型的灵魂所在。它并非冲压件或铝铸件，而是由一整块实心低合金钢坯通过数十道数控工序彻底掏空切削而成。坚如磐石的机匣刚度，保证全枪遭受剧烈冲撞碾压后依然顺滑如初。",
+        "audioUrl": "audio/rem870/parts/rem870_receiver_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Milled Solid Billet Steel Receiver Housing",
+        "overview": "This is the legendary backbone of the Remington 870: a rigid receiver milled from a solid billet of ordnance-grade forged steel. It anchors all moving groups, the barrel, the buttstock, and the magazine tube into an unbreakable platform.",
+        "craftAndMaterial": "Carved from a solid 8620 forged steel billet on multi-axis CNC mills and treated with a non-reflective manganese phosphate Parkerized finish for ultimate combat durability.",
+        "kinematicRole": "Acts as the static structural reference datum for the entire firearm. Guides the action bars, bolt carrier, and trigger group while remaining fixed during firing cycles and disassembly.",
+        "designHighlight": "While competitors adopted lightweight cast aluminum housings, the 870 steadfastly retained solid steel, rendering it invulnerable to cracking around cross-pin holes or bending under aggressive vehicle-rack storage.",
+        "audioScript": "Milled from a single solid billet of forged alloy steel, this receiver represents unmatched structural integrity. Unlike cast-aluminum alternatives, this steel chassis resists warping under extreme duty abuse and provides smooth, glass-like raceways for the cycling bolt assembly.",
+        "audioUrl": "audio/rem870/parts/rem870_receiver_en.mp3"
+      }
+    },
+    "rem870_rear_sight": {
+      "partId": "rem870_rear_sight",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Ghost-Ring Rear Sight",
+      "zh": {
+        "roleTag": "双护翼防撞击钢座 · 兼顾 00 鹿弹快瞄与百米独头弹精度",
+        "overview": "这是牢固安装在机匣后方顶部的警用战斗鬼环照门，带有厚实的两侧钢制防护耳翼。它将霰弹枪从视线模糊的近距离压制武器升格为可在百米精准命中胸靶的战术系统。",
+        "craftAndMaterial": "采用高强度合金碳钢线切割与铣削制造，经发黑硬化处理，外设高耸双侧护翼保护中空大孔径光圈，带有精密风偏与高低调节螺杆及防松弹簧。",
+        "kinematicRole": "刚性紧固于机匣顶部，在射击循环中保持完全静止，射手透过大孔径光圈自然对准前准星；在深度分解阶段可松开沉头螺栓与机匣分离。",
+        "designHighlight": "特警战术鬼环利用了人眼视网膜对圆心自动对准的生理本能，在近战时大光圈等同于虚景快瞄，在发射独头弹时又能提供媲美卡宾枪的中距离精度。",
+        "audioScript": "安装在机匣顶部的警用鬼环照门由实心钢材切削而成，两侧带有厚实的防撞护翼。射手肉眼在透过大口径觇孔瞄准时，视线会自动居中，兼顾了十米内快速捕靶与百米外精确狙击独头弹的弹道要求。",
+        "audioUrl": "audio/rem870/parts/rem870_rear_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Winged Steel Police Ghost-Ring Aperture Sight",
+        "overview": "Mounted securely to the drilled-and-tapped receiver roof, this steel ghost-ring aperture sight features rugged protective lateral ears. It transforms the scattergun into a precision platform capable of hundred-yard slug engagements.",
+        "craftAndMaterial": "CNC machined from hardened bar stock and matte Parkerized. Features heavy side protective wings guarding a wide-aperture peep ring with micrometer windage and elevation screw adjustments.",
+        "kinematicRole": "Remains static atop the receiver, providing the rear optical datum that aligns the shooter's eye with the front ramp. Removed during armorer detail disassembly via receiver top screws.",
+        "designHighlight": "The ghost-ring aperture leverages the eye's natural centering reflex, providing carbine-like precision when shooting heavy slugs while remaining completely unobstructed during rapid buckshot sweeps.",
+        "audioScript": "Guarded by robust steel side wings, this ghost-ring rear sight mounts directly to the receiver spine. The wide combat aperture allows your subconscious vision to center the front post instantly, delivering surgical precision when firing full-bore slugs out to one hundred yards.",
+        "audioUrl": "audio/rem870/parts/rem870_rear_sight_en.mp3"
+      }
+    },
+    "rem870_walnut_stock": {
+      "partId": "rem870_walnut_stock",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Oiled Walnut Buttstock",
+      "zh": {
+        "roleTag": "半手枪握把控枪弧度 · 中空长通孔穿装拉紧螺栓",
+        "overview": "这是标准警用巡逻霰弹枪配备的美洲黑胡桃木后枪托，采用流畅的半手枪握把造型。前端凹槽与钢机匣后轮廓严密贴合，内部贯通长孔供高强度拉紧螺栓穿过锁定。",
+        "craftAndMaterial": "精选抗震吸能效果极佳的直纹美洲黑胡桃木经数控仿形车削与手工打磨，表面经多道天然亚麻籽油渗透固化处理，木质细腻且具有极强的抗干裂变形能力。",
+        "kinematicRole": "作为抵肩承载后坐脉冲与握持控制全枪的结构载体，射击中保持静止；拆下橡胶缓冲垫并旋松内部通心螺栓后，在分解 20% 到 60% 阶段向后拔出。",
+        "designHighlight": "半手枪握把的弧度经过半个多世纪的实战人机验证，既能保证警员双手快速抵肩指向目标，又在戴防暴手套或腰际射击时保持极度舒适自然的握持手腕角度。",
+        "audioScript": "这柄警用美洲黑胡桃木后枪托兼具经典美学与抗震耐用性。优美的半手枪握把弧度极度贴合手掌，中心钻有长达二十多厘米的贯通孔道，由一颗粗壮的钢制拉紧螺栓与钢机匣死死拽紧成不可分割的刚性整体。",
+        "audioUrl": "audio/rem870/parts/rem870_walnut_stock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Oiled American Walnut Stock with Semi-Pistol Grip",
+        "overview": "This is the traditional American black walnut buttstock found on standard Police Magnum shotguns, shaped with an ergonomic semi-pistol grip. Its inletted forward shoulders seat perfectly against the rear receiver contour.",
+        "craftAndMaterial": "Machined from dense, straight-grain American walnut and treated with deep penetrating hand-rubbed oil. An internal clearance bore runs lengthwise along its entire central axis to house the draw-bolt.",
+        "kinematicRole": "Provides shoulder brace stability and control during firing impulses. Disassembles rearward between twenty and sixty percent progress once the buttpad and through-bolt are loosened.",
+        "designHighlight": "The walnut core dampens the sharp shockwave of twelve-gauge magnum loads more progressively than hollow synthetic stocks, reducing felt fatigue during intense qualifications.",
+        "audioScript": "Shaped from solid American black walnut, this buttstock features a classic semi-pistol grip. The dense natural wood grain absorbs harsh recoil spikes while providing instinctive pointability. A deep central channel houses the massive steel draw-bolt that anchors it to the receiver.",
+        "audioUrl": "audio/rem870/parts/rem870_walnut_stock_en.mp3"
+      }
+    },
+    "rem870_buttplate": {
+      "partId": "rem870_buttplate",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Vented Rubber Recoil Pad",
+      "zh": {
+        "roleTag": "大幅吸收 12ga 3 英寸马格南鹿弹重后坐脉冲",
+        "overview": "这是安装在胡桃木托尾端的警用通气开孔多重缓冲橡胶肩垫。它通过两颗加长木螺钉紧固在枪托尾部，负责将 12 号马格南弹药发射时的剧烈冲击波平缓释放至射手肩窝。",
+        "craftAndMaterial": "采用高抗撕裂硫化合成橡胶一体模压注塑，侧面带有三组横向通气减震溃缩孔，背面注塑有硬质复合材料安装底板并预留两处自闭合螺丝刀穿插缝隙。",
+        "kinematicRole": "击发瞬间在几毫秒内发生显著轴向弹性变形，通过内部空腔压缩吸收峰值后坐动能；分解阶段旋出两颗木螺钉后向后移出，为拆卸后托螺栓敞开通道。",
+        "designHighlight": "独特的横向开孔形变仓设计能够把尖锐的瞬态后坐脉冲拉长为平滑的推力，即便警员在全天战术训练中高频连发 00 鹿弹也不会造成肩部软组织挫伤。",
+        "audioScript": "这块加厚硫化橡胶缓冲肩垫不仅在底面刻有防滑网格，侧面更设有工程级通气溃缩孔。在击发 12 号重弹时，橡胶空腔迅速压缩形变，将尖锐的后坐顿挫转化为平缓的推力，极大减轻射手肩部疲劳。",
+        "audioUrl": "audio/rem870/parts/rem870_buttplate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Molded Vented Rubber Recoil Absorption Buttpad",
+        "overview": "Fastened to the walnut stock heel with twin long screws, this vented solid rubber recoil pad cushions the heavy kick of twelve-gauge magnum loads against the shooter's shoulder pocket.",
+        "craftAndMaterial": "Molded from resilient vulcanized black synthetic rubber with an integrated internal polymer baseplate. Features three transverse hollow air channels engineered to collapse progressively under impact.",
+        "kinematicRole": "Compresses elastically along the recoil axis during the firing impulse to attenuate peak shock forces. Removed first during buttstock disassembly to expose the internal draw-bolt recess.",
+        "designHighlight": "The progressive collapse of the lateral vent chambers prolongs recoil impulse duration, transforming painful abrupt recoil spikes into a manageable, controlled rearward push.",
+        "audioScript": "Mounted to the stock heel, this vented rubber recoil pad is designed to tame the stout impulse of full-power twelve-gauge loads. Lateral hollow vents collapse progressively during the recoil stroke, dissipating shock energy before it reaches the officer's shoulder.",
+        "audioUrl": "audio/rem870/parts/rem870_buttplate_en.mp3"
+      }
+    },
+    "rem870_stock_bolt": {
+      "partId": "rem870_stock_bolt",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Stock Long Draw-Bolt",
+      "zh": {
+        "roleTag": "单颗大螺栓将重木托与全钢机匣死死拉紧为一体",
+        "overview": "这是纵向贯穿整个胡桃木枪托内部的长达 25 厘米六角头钢制拉紧螺栓，配有加厚弹簧防松垫圈。它从枪托后方沉孔深入，直接旋入钢机匣尾壁的螺纹座中。",
+        "craftAndMaterial": "采用高屈服强度中碳冷镦合金钢制造，经黑色发蓝防锈处理，螺纹段经高精度滚压加工以提供抗震抗拉扯疲劳强度，螺帽端带有大尺寸加厚垫片槽。",
+        "kinematicRole": "提供数十千牛的纵向预紧夹紧力，将木托与全钢机匣紧密压实为不可分割的整体；在分解至 28% 到 72% 阶段，使用专用加长套筒工具将其旋出即可卸下枪托。",
+        "designHighlight": "这种单螺栓贯通拉紧布局结构极度精简牢固，即使后托历经万次马格南重后坐的反复挤压震动，加厚弹簧垫圈也能确保螺纹不发生丝毫松动旷量。",
+        "audioScript": "这根二十多厘米长的六角高强拉紧钢螺栓，是维系整枪人机骨架的幕后功臣。它深埋在木托中心孔道，配合加厚防松垫圈施加巨大的预紧力，将实心胡桃木后托与实心钢机匣死死拉成一体，历经千发重弹后坐也绝不松动旷量。",
+        "audioUrl": "audio/rem870/parts/rem870_stock_bolt_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Long High-Tensile Steel Stock Draw-Bolt & Washer",
+        "overview": "This ten-inch high-tensile steel draw-bolt passes completely through the walnut buttstock to anchor into the rear threaded boss of the steel receiver, backed by a heavy lock washer.",
+        "craftAndMaterial": "Cold-headed and rolled from high-yield carbon alloy steel, finished in deep anti-corrosive black oxide. Accompanied by a heavy flat washer and split-ring spring lock washer.",
+        "kinematicRole": "Maintains tons of axial clamping preload between the wooden stock inlet and the receiver face. Backed out with an extended socket wrench between twenty-eight and seventy-two percent disassembly to detach the buttstock.",
+        "designHighlight": "The through-bolt design distributes recoil stresses across the full cross-sectional grain of the walnut stock rather than concentrating tension on vulnerable perimeter screws.",
+        "audioScript": "Spanning over ten inches in length, this heavy-duty steel draw-bolt anchors the buttstock directly to the receiver tail. Tightened with a deep socket, its rolled threads and heavy spring washer maintain tremendous clamping force, ensuring the stock never loosens during rigorous field use.",
+        "audioUrl": "audio/rem870/parts/rem870_stock_bolt_en.mp3"
+      }
+    },
+    "rem870_trigger_plate": {
+      "partId": "rem870_trigger_plate",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Police Trigger Plate",
+      "zh": {
+        "roleTag": "双销快拆全金属火控底座与托弹枢纽",
+        "overview": "这是警用马格南专属的一体化快拆火控盒座，通过前后两枚钢销牢牢固定于钢机匣底腹部。它不仅是击锤、阻铁与扳机连杆的刚性支架，更是托弹勺摆动与推杆锁定的基准框架。",
+        "craftAndMaterial": "采用高强度压铸铝合金经CNC数控铣削精修并施以重型哑光阳极氧化，抗形变刚度远超普通民用型聚合物底座。壁板内预留高精轴孔与防尘导槽，杜绝销轴旷量。",
+        "kinematicRole": "射击全程作为静止导向机架，承受击锤撞击反冲与推杆凸轮的动态侧推力；在分解进度达百分之十二至四十四时，顶出双销后整体向下抽出脱离机匣。",
+        "designHighlight": "警用规格坚决保留厚壁锻造铝合金壳体，相比民用塑料基座在高低温极端环境下绝无形变卡死隐患，在高频防暴射击中能够承受击锤上万次重击而保持同轴度。",
+        "audioScript": "您现在看到的是雷明顿警用型专属的重型铝合金火控盒座。只要从机匣侧面顶出前后两根固定销，整个火控与托弹系统就能整体向下抽出。金属基座保证了内部各联动连杆严丝合缝，即使在极寒严酷环境下也绝不发生变形阻滞。",
+        "audioUrl": "audio/rem870/parts/rem870_trigger_plate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dual-Pin Cast Aluminum Fire Control Housing",
+        "overview": "This is the dedicated Police-spec cast and milled aluminum trigger plate secured inside the lower receiver cavity by two cross pins. It serves as the primary structural housing for the hammer, sear, safety, action lock, and shell lifter assemblies.",
+        "craftAndMaterial": "Engineered from high-tensile cast aluminum alloy with precision CNC finish and matte hard-anodized finish. Rigid inner guide tracks and hardened pin bosses prevent flex under aggressive cyclic stress, unlike commercial plastic versions.",
+        "kinematicRole": "Remains static during the firing cycle to provide rigid pivot journals for the hammer and carrier; during field strip at twelve to forty-four percent explode progress, it slides downward out of the receiver once cross pins are drifted.",
+        "designHighlight": "Remington retained this metal trigger plate specifically for law enforcement contracts to prevent thermal expansion warping, ensuring reliable sear engagement and carrier lift even after rapid high-volume buckshot fire.",
+        "audioScript": "This is the heavy-duty aluminum trigger plate exclusive to the Police Magnum. Unlike consumer models using polymer, this rigid housing prevents warping during rapid strings of fire. Drifting out the front and rear receiver cross pins lets the entire firing and carrier assembly drop right out of the bottom.",
+        "audioUrl": "audio/rem870/parts/rem870_trigger_plate_en.mp3"
+      }
+    },
+    "rem870_trigger": {
+      "partId": "rem870_trigger",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Grooved Steel Trigger",
+      "zh": {
+        "roleTag": "防滑细密纵纹两磅级战斗阻力扳机",
+        "overview": "防滑纵纹扳机通过枢轴悬挂于火控盒内，尾端紧密配合扳机护圈后方的横穿推栓式保险机构。射手扣动指面即可克服阻铁簧力，平稳释放待击高惯量击锤完成击发。",
+        "craftAndMaterial": "采用模锻合金钢配合黑色渗氮硬化涂层，正面线切割有细密防滑纵向微槽。其前缘符合人体工学弧度，即使特警穿戴厚重战术手套也能清晰感知行程临界点。",
+        "kinematicRole": "射击阶段一向后摆动约三毫米推开阻铁；在击发展开进度达四十八至八十四时，随同横栓保险与回位簧脱离底座销轴分解。",
+        "designHighlight": "横栓保险采用大直径双向推销，推向左侧显露醒目红圈即为解除待发；内部配有精密截断凸耳，闭锁未完全咬合时强行阻断扳机行程防早爆。",
+        "audioScript": "这枚战斗扳机表面刻有细密的防滑纵纹，保证警员在潮湿或佩戴厚手套时拥有极佳的扳机感知力。后方的横推保险只需食指指节一顶即可迅速解除待击，提供干净清脆的击发阻断感。",
+        "audioUrl": "audio/rem870/parts/rem870_trigger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Combat Steel Trigger and Crossbolt Safety",
+        "overview": "This grooved alloy steel trigger pivots inside the trigger plate, backed directly by the push-button crossbolt safety bar behind the guard. Pulling the trigger trips the sear notch to unleash the cocked hammer against the firing pin.",
+        "craftAndMaterial": "Precision drop-forged high-carbon steel with melonite black nitriding and serrated vertical traction ribs. The wide curvature distributes trigger weight comfortably while ensuring distinct tactile reset cues.",
+        "kinematicRole": "Pivots rearward roughly three millimeters in phase one to cam the sear off the hammer notch; separates along with the crossbolt detent at forty-eight to eighty-four percent explode progress.",
+        "designHighlight": "The oversized safety button provides immediate visual and tactile status confirmation with its bright red ring, while the trigger sear hook includes mechanical disconnector protection against out-of-battery discharge.",
+        "audioScript": "Precision machined from hardened carbon steel, this trigger features crisp vertical serrations for positive finger purchase in high-stress situations. The oversized crossbolt safety behind it can be flipped off with a quick nudge of the index knuckle.",
+        "audioUrl": "audio/rem870/parts/rem870_trigger_en.mp3"
+      }
+    },
+    "rem870_hammer": {
+      "partId": "rem870_hammer",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Forged Internal Hammer",
+      "zh": {
+        "roleTag": "高惯量双向联锁全封闭击锤",
+        "overview": "高惯量击锤全封闭安装于火控盒内部，受重磅主簧强力驱动绕轴旋转。前冲敲击长击针的同时，其侧缘凸角同步下压推杆锁，为射手泵动退壳提供动力学解锁信号。",
+        "craftAndMaterial": "经高碳铬钼合金钢整体模锻并在打击面进行局部高频淬火，表面附着耐腐蚀哑光黑色氧化层。顶端为平整打击砧面，侧面设计有与推杆锁连动的复位下压斜面。",
+        "kinematicRole": "阶段一被扳机解脱向前上方猛烈转动六十度重击击针；阶段四枪机后退将其向后下方压倒七十五度并被阻铁咬合待击；分解进度达五十至八十六时脱离销轴。",
+        "designHighlight": "击锤与推杆锁的一体联动是雷明顿八七零顺畅泵动的精髓，只有击锤击发降落后才解除推杆机械干涉，无需射手刻意按压解锁钮即可一气呵成退壳上膛。",
+        "audioScript": "这枚全钢模锻击锤藏身于机匣内部。当您扣下扳机，击锤在重磅主簧驱动下高速扑向击针；同时击锤基部的凸轮面会顺势压下推杆解锁块，让您可以直接向后大力拉动护木退壳。",
+        "audioUrl": "audio/rem870/parts/rem870_hammer_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Forged High-Inertia Internal Hammer",
+        "overview": "This forged alloy steel hammer resides enclosed within the trigger housing, powered by a heavy helical spring. It pivots forward to strike the firing pin tail while simultaneously depressing the action bar lock.",
+        "craftAndMaterial": "Manufactured from high-impact forged chrome-moly steel with induction-hardened striking faces and black melonite finish. Features an optimized center of gravity and integral decocking cam profiles.",
+        "kinematicRole": "Rotates violently forward sixty degrees in phase one to detonate the primer; cocks downward seventy-five degrees as the bolt carrier recoils rearward in phase four; leaves the plate at fifty to eighty-six percent progress.",
+        "designHighlight": "Its lower cam lobe dynamically trips the slide lock upon release, automatically freeing the twin action bars so the operator can pump the action rearward instantly without touching any release buttons.",
+        "audioScript": "Encased inside the receiver, this forged steel hammer delivers authoritative primer ignition. As it strikes the inertia firing pin, a contour on its base simultaneously drops the action bar lock, allowing an instant, effortless pump stroke right after firing.",
+        "audioUrl": "audio/rem870/parts/rem870_hammer_en.mp3"
+      }
+    },
+    "rem870_action_release": {
+      "partId": "rem870_action_release",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "Action Bar Release",
+      "zh": {
+        "roleTag": "扳机护圈左侧推杆防走火锁定拨片",
+        "overview": "该解锁拨片位于扳机护圈左前方醒目斜突处，内臂直接咬合左推杆后端的止动凹槽。它在待击状态下物理锁死闭锁系统，只有在击发或手动上抬拨片时才允许后拉护木开膛。",
+        "craftAndMaterial": "采用冲压渗碳高弹性工具钢板制造，外露操作部具有利于指腹施压的防滑纵向压花与防腐磷化层。长臂结构兼顾弹性回位与受力时的超强抗剪切性能。",
+        "kinematicRole": "处于闭锁状态时保持上抬卡死推杆；阶段一击锤下落将其敲击下沉解锁；手动验枪时手指向上推压强制降锁；在分解进度达五十二至八十八时自火控座侧销分离。",
+        "designHighlight": "这是雷明顿八七零极度可靠的安全防呆设计，闭锁完全后死死锁住两根推杆，防止在翻滚、携行或剧烈震荡中护木半后退造成哑火或炸膛危险。",
+        "audioScript": "位于扳机护圈左侧的推杆解锁拨片是关键的安全关卡。在待击闭锁状态下，它牢牢咬住左侧钢推杆防止意外开膛；如果您需要退出未击发的实弹，只需用食指轻轻往上一按即可解除拉动护木。",
+        "audioUrl": "audio/rem870/parts/rem870_action_release_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Left Action-Bar Locking Disconnector Lever",
+        "overview": "Mounted on the forward left shoulder of the trigger guard, this spring-biased steel lever interfaces with the left action bar notch. It mechanically locks the pump forend in battery until fired or manually depressed for clearing.",
+        "craftAndMaterial": "Formed from heat-treated spring-grade alloy sheet steel with coarse serrations on the tactile finger pad and deep manganese Parkerizing for maximum friction and corrosion defense.",
+        "kinematicRole": "Holds the action bar notch locked during stages one and two; dropped by hammer impact during cycling or pushed manually during clearing; disassembles laterally at fifty-two to eighty-eight percent progress.",
+        "designHighlight": "Provides rock-solid out-of-battery prevention, ensuring the massive twelve-gauge breech cannot accidentally jar open under rugged vehicular transit or vigorous tactical operations.",
+        "audioScript": "Positioned conveniently in front of the trigger guard on the left, this action release lever locks the twin bars securely forward. To eject an unfired live cartridge, press this tab upward with your trigger finger to unlock the forend.",
+        "audioUrl": "audio/rem870/parts/rem870_action_release_en.mp3"
+      }
+    },
+    "rem870_hammer_spring": {
+      "partId": "rem870_hammer_spring",
+      "bomCode": "FC-05",
+      "calloutLabelEn": "Heavy Hammer Spring",
+      "zh": {
+        "roleTag": "警用规格高弹力螺旋击锤主簧",
+        "overview": "这根警用加强级击锤主簧套在导杆外侧，深藏于火控盒尾部管腔内并向击锤底部提供强劲推力。它的强劲势能是确保各类严苛弹药可靠击发的核心动力源泉。",
+        "craftAndMaterial": "选用军规级冷拉高应力油淬火回火硅铬合金弹簧钢丝绕制，表面经喷丸抗疲劳强化与防锈防油钝化处理。线径与节距较民用版增加约百分之十五。",
+        "kinematicRole": "阶段四随击锤被枪机压倒而被高倍压缩蓄能；阶段一骤然释放能量弹起击锤打击底火；分解进度达五十四至九十时自火控座尾部导引杆滑脱。",
+        "designHighlight": "警用马格南型特意强化了百分之二十的主簧劲度，专为砸穿硬质军规厚底火及应对低温严寒中润滑油变稠黏滞而设计，杜绝击发无力故障。",
+        "audioScript": "警用马格南采用了特制的重磅击锤主簧。相比民用猎枪版本，它的弹力增强了五分之一，就算面对极其坚硬的军规霰弹底火或是零下数十度的极寒泥泞，也能百分之百干脆利落地砸穿击发。",
+        "audioUrl": "audio/rem870/parts/rem870_hammer_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Police-Spec Extra-Power Hammer Spring",
+        "overview": "This heavy helical spring rides on a plunger guide seated in the rear cavity of the trigger housing, driving the hammer base forward. It delivers the decisive kinetic energy required for reliable primer detonation in any environment.",
+        "craftAndMaterial": "Precision coiled from shot-peened oil-tempered silicon-chrome spring steel wire with protective anti-friction phosphate finish. Engineered with a fifteen percent thicker cross-section than commercial sporting springs.",
+        "kinematicRole": "Compresses under high tension during carrier rear travel in phase four; violently expands during phase one to snap the hammer forward; detaches over its guide rod at fifty-four to ninety percent progress.",
+        "designHighlight": "Calibrated with twenty percent extra power to crush hard military-spec primers and overcome sluggish sluggishness caused by frozen grease in extreme combat conditions.",
+        "audioScript": "This extra-power mainspring is a defining feature of the Police Magnum. Rated twenty percent stiffer than consumer springs, it generates violent hammer acceleration to reliably pierce hard-cup tactical buckshot primers even in sub-zero frost.",
+        "audioUrl": "audio/rem870/parts/rem870_hammer_spring_en.mp3"
+      }
+    },
+    "rem870_firing_pin_spring": {
+      "partId": "rem870_firing_pin_spring",
+      "bomCode": "FC-06",
+      "calloutLabelEn": "Pin Return Spring",
+      "zh": {
+        "roleTag": "机芯内置惯性击针防走火复位簧",
+        "overview": "击针复位簧套置于细长击针前段轴肩处，深藏于硬铬枪机芯体内。它时刻向后推挤击针尾部，使其完全缩回枪机弹底窝平面内，防止走火事故。",
+        "craftAndMaterial": "由耐高温耐腐蚀不锈钢精细拉拔琴钢丝绕制而成，两端经过垂直磨平处理，确保在枪机高速来回撞击中不发生偏载或轴向侧翻变形。",
+        "kinematicRole": "阶段一被击锤惯性撞击瞬间压缩；击发后毫秒内迅速回弹将击针拉回窝内；阶段三至七防止击针前探；分解进度达三十四至七十二时随击针抽出。",
+        "designHighlight": "这是对抗暴力推泵闭锁产生惯性早爆的最后物理防线，即使射手极其凶狠地向前甩动护木闭锁，其高预压阻尼也足以拉紧击针使其无法接触弹壳底火。",
+        "audioScript": "套在长击针中段的小弹簧起着至关重要的防早爆保险作用。当您暴力前推护木上膛闭锁时，它依靠持续的预压力将击针牢牢锁在枪机面以内，避免击针依靠惯性意外戳爆底火。",
+        "audioUrl": "audio/rem870/parts/rem870_firing_pin_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Internal Inertial Firing Pin Return Spring",
+        "overview": "Coiled closely over the firing pin shank inside the chrome breech bolt body, this spring keeps the firing pin tip retracted behind the bolt face until struck decisively by the hammer.",
+        "craftAndMaterial": "Wound from high-durability cold-drawn stainless music wire with ground flat ends to ensure perfectly concentric axial compression inside the deep oil-lubricated bolt channel.",
+        "kinematicRole": "Compresses momentarily when hit by the hammer in phase one; snaps the firing pin immediately rearward post-ignition; prevents slam-fires during phase six and seven; removed at thirty-four to seventy-two percent progress.",
+        "designHighlight": "Critical fail-safe geometry prevents slam-fires during violent high-speed pumping, absorbing secondary inertial forward momentum before the bolt locking wedge is securely seated.",
+        "audioScript": "Riding around the firing pin inside the bolt, this small spring serves as a vital safeguard. It constantly pulls the firing pin tip flush inside the bolt face, preventing inertia-induced slam-fires during rapid, aggressive pump charging.",
+        "audioUrl": "audio/rem870/parts/rem870_firing_pin_spring_en.mp3"
+      }
+    },
+    "rem870_mag_tube": {
+      "partId": "rem870_mag_tube",
+      "bomCode": "M-01",
+      "calloutLabelEn": "4+1 Tubular Magazine",
+      "zh": {
+        "roleTag": "重壁四发装无缝焊接磷化管式弹仓",
+        "overview": "这是枪管下方平行的四加一发容量管式弹仓，尾端永久银焊固结于铣削钢机匣下孔内。它为霰弹储存提供内腔，同时外部光滑圆柱面作为前护木往复滑动导轨。",
+        "craftAndMaterial": "精选无缝重壁冷拔低碳合金钢管，内外壁全面经过深层锰磷化防腐打底处理。内壁经镜面微珩磨降低托弹阻力，前端带有滚花盖螺纹与枪管导环限位段。",
+        "kinematicRole": "全程作为前护木套管沿轴线往复前后滑动的结构导轨；容纳弹簧、托弹杯与四发重装十二号弹药；在分解展开进度达二十四至六十时向斜下方移出机匣前域。",
+        "designHighlight": "采用重壁一体银铜硬钎焊直接固定在机匣上，不仅提供了无可比拟的结构刚性，更在无护木受力时作为全枪下部主要抗弯曲大梁，跌落测试中绝不弯曲裂损。",
+        "audioScript": "这根无缝钢管就是四加一容量的管状弹仓。它永久焊接在钢机匣下腹部，内壁经过精密珩磨以便平滑推进十二号霰弹，外壁则直接充当前护木滑块前后拉动的导轨支撑。",
+        "audioUrl": "audio/rem870/parts/rem870_mag_tube_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Seamless Parkerized Steel Magazine Tube",
+        "overview": "Welded directly into the lower front receiver port, this seamless steel magazine tube holds four two-and-three-quarter-inch shells. It acts as both the ammunition reservoir and the physical guide rail for the reciprocating pump forend.",
+        "craftAndMaterial": "Drawn from seamless heavy-wall low-carbon alloy steel tubing, internally micro-honed and finished with deep manganese Parkerizing. Features precision rolled front threads and smooth exterior bearing surfaces.",
+        "kinematicRole": "Static structural datum supporting the pump forend slide during rearward and forward cycles; houses the spring and follower; explodes forward and down at twenty-four to sixty percent disassembly progress.",
+        "designHighlight": "Furnace-brazed directly into the solid steel billet receiver, creating an indestructible single-piece chassis capable of handling immense recoil torque and rough field door-breaching impacts.",
+        "audioScript": "This heavy-wall seamless steel tube serves as the four-round magazine reservoir. Permanently brazed into the front of the receiver, its exterior acts as the perfectly aligned guide rail over which the wooden pump forend smoothly glides.",
+        "audioUrl": "audio/rem870/parts/rem870_mag_tube_en.mp3"
+      }
+    },
+    "rem870_mag_cap": {
+      "partId": "rem870_mag_cap",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Knurled Magazine Cap",
+      "zh": {
+        "roleTag": "快拆免工具粗滚花定位弹珠端盖",
+        "overview": "滚花端盖螺接于管式弹仓最前端，将枪管下导环死死锁紧在弹仓管肩部。它是徒手分解全枪的第一道关卡，内部配合枪管导环上的弹簧定位销实现可靠防震自锁。",
+        "craftAndMaterial": "整块合金钢棒材车削成型并施以深层磷化防反光处理，外表面滚压有菱形防滑排屑粗花纹。内侧基底设计有与枪管珠槽咬合的一圈细密定位棘齿轮槽。",
+        "kinematicRole": "射击与循环全阶段提供轴向锁紧压力将枪管固定在机匣上；分解步骤的第一步，在展开进度达百分之二至十八时旋转两点二弧度旋下脱离弹仓。",
+        "designHighlight": "经典的钢珠棘轮防松机构彻底杜绝了十二号马格南重弹后坐震松端盖的危险，野外全枪拆解完全无需扳手，单手用力拧转即可听见清脆的咔嗒防松声。",
+        "audioScript": "这枚刻有粗犷滚花的全钢端盖是徒手拆卸全枪的起点。拧紧它就能将整根枪管紧压在机匣上，其内部隐藏的定位弹珠棘齿能有效防止高威力霰弹射击时因震动而自行松脱。",
+        "audioUrl": "audio/rem870/parts/rem870_mag_cap_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Knurled Steel Magazine Cap with Ball Detent",
+        "overview": "Threaded onto the front tip of the tubular magazine, this steel cap clamps the barrel support ring firmly against the tube collar. It represents the primary tool-free takedown fastener for field stripping the shotgun.",
+        "craftAndMaterial": "Turned from solid steel bar stock with aggressive diamond knurling for bare-hand grip and finished in matte dark Parkerizing. Internal face contains radial detent teeth to engage the barrel ring spring ball.",
+        "kinematicRole": "Maintains longitudinal clamping preload on the barrel ring throughout firing; is the very first component unscrewed at two to eighteen percent explode progress, turning through two point two radians.",
+        "designHighlight": "The spring-loaded ball detent interface locks each rotational click securely, guaranteeing the barrel will never shake loose during rapid-fire breaching or full-power magnum recoil.",
+        "audioScript": "Featuring aggressive diamond knurling, this steel magazine cap is the starting point for field stripping. Threaded onto the magazine tube, it firmly anchors the barrel ring in place and relies on a spring detent ball to prevent recoil loosening.",
+        "audioUrl": "audio/rem870/parts/rem870_mag_cap_en.mp3"
+      }
+    },
+    "rem870_mag_follower": {
+      "partId": "rem870_mag_follower",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Orange Police Follower",
+      "zh": {
+        "roleTag": "战术高可视警示橙红自润滑托弹杯",
+        "overview": "鲜艳的橙色托弹杯位于弹仓弹簧最顶端，在仓管内紧随最后一发霰弹推进。它的存在使射手在检查装弹口时能瞬间确认弹仓是否完全打空。",
+        "craftAndMaterial": "采用高抗冲超高分子量自润滑工程聚合物注塑成型，亮橙色母粒抗紫外线不褪色。柱塞外壁设有两条微型减摩导向凹槽，兼顾防泥沙异物与耐严寒防膨胀特性。",
+        "kinematicRole": "阶段五在主弹簧推动下将实弹压出弹仓并滑上托弹勺；最后一发打空后封堵弹仓出口；在分解展开进度达二十八至六十八时从弹仓口向前飞出。",
+        "designHighlight": "警用型特意摒弃了普通民用版的薄钢压制杯，改用加厚尾裙防翻倒工程塑料杯，即便内部沾满沙尘或侧向受力也绝不在弹仓内发生倾翻卡死，可靠性极高。",
+        "audioScript": "这个警用专属的高可视度亮橙色托弹杯，让特警队员在光线昏暗的战术走廊中翻转枪身，一眼就能通过装弹口确认弹仓已空。自润滑材质能有效杜绝推弹时在仓内侧倾卡死。",
+        "audioUrl": "audio/rem870/parts/rem870_mag_follower_zh.mp3"
+      },
+      "en": {
+        "roleTag": "High-Visibility Orange Polymer Magazine Follower",
+        "overview": "Positioned ahead of the heavy magazine spring inside the tube, this high-visibility orange follower pushes cartridges toward the receiver. It provides instant visual and tactile confirmation of an empty magazine tube.",
+        "craftAndMaterial": "Injection molded from high-impact self-lubricating polymer dyed in safety-orange. Equipped with an extended tail skirt and anti-binding longitudinal dirt flutes to resist thermal warping.",
+        "kinematicRole": "Advances forward under spring tension in phase five to feed shells onto the lifted carrier; blocks the magazine aperture when empty; ejects forward during teardown at twenty-eight to sixty-eight percent progress.",
+        "designHighlight": "Engineered with anti-tilt geometry that replaces fragile stamped sheet metal cups, ensuring flawless feeding without wedging even when fouled with unburned powder flakes or sandy grit.",
+        "audioScript": "Molded in high-visibility safety orange, this polymer magazine follower lets officers instantly confirm an empty magazine at a glance through the loading port. Its extended skirt prevents tilting and binding inside the tube.",
+        "audioUrl": "audio/rem870/parts/rem870_mag_follower_en.mp3"
+      }
+    },
+    "rem870_mag_spring": {
+      "partId": "rem870_mag_spring",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Tubular Magazine Spring",
+      "zh": {
+        "roleTag": "等径三十四圈长寿命重型抗疲劳托弹簧",
+        "overview": "这根长达三十四圈的螺旋托弹簧纵贯整个管状弹仓内部，前顶端盖内部，后顶橙色托弹杯。它为供弹系统提供持续而均匀的推弹动力，确保高速泵动下供弹不掉链。",
+        "craftAndMaterial": "精选高屈服强度弹簧不锈钢丝密排绕制，两端闭合平整，经多次预压定型处理。具有出色的耐水汽生锈能力与超长周期抗应力松弛性能。",
+        "kinematicRole": "装弹时被逐步压缩压缩比达五倍以上；阶段五逐发膨胀伸展推送重装鹿弹到位；在分解展开进度达三十二至七十二时自拧开的弹仓管口前弹跳移出。",
+        "designHighlight": "警用级弹簧经过特殊热处理，即使全枪常年在巡逻车架上长期满弹压仓存放，其回弹推力衰减率也极低，随时保持击发后第一时间将最后一颗重弹精准推上托弹勺。",
+        "audioScript": "这根拥有三十四圈的不锈钢长螺旋弹簧是弹仓的心脏。即使整枪常年处于装满重装弹药的满压待命状态，它的弹力也几乎不会衰减，确保无论多快的泵动手速，霰弹都能准时到位。",
+        "audioUrl": "audio/rem870/parts/rem870_mag_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Heavy-Duty 34-Coil Magazine Spring",
+        "overview": "Spanning the entire length of the magazine tube between the cap and follower, this long multi-coil spring powers the feeding column. It delivers uniform, swift cartridge advancement into the action.",
+        "craftAndMaterial": "Formed from high-tensile corrosion-resistant stainless spring steel wire with heat-set tempering. Designed with ground ends and uniform pitch to avoid lateral buckling inside the tube cavity.",
+        "kinematicRole": "Undergoes heavy compression when loading four rounds; progressively expands during phase five to feed rounds onto the carrier lifter; pulls cleanly out of the tube at thirty-two to seventy-two percent progress.",
+        "designHighlight": "Formulated specifically to endure continuous long-term compression inside squad car racks without taking a set, guaranteeing adequate spring force to throw heavy magnum slugs into the receiver.",
+        "audioScript": "Spanning thirty-four coils of stress-relieved stainless steel wire, this durable spring powers the feeding column. Even if kept fully loaded in a patrol car for months, it retains optimal push tension to shove heavy shells cleanly back onto the lifter.",
+        "audioUrl": "audio/rem870/parts/rem870_mag_spring_en.mp3"
+      }
+    },
+    "rem870_shell_carrier": {
+      "partId": "rem870_shell_carrier",
+      "bomCode": "M-05",
+      "calloutLabelEn": "Hard-Chrome Lifter",
+      "zh": {
+        "roleTag": "Flexi-Tab防卡弹凹槽硬铬升降托弹勺",
+        "overview": "硬铬托弹勺通过枢轴横跨于火控座前部，常态下平伏于机匣底部弹仓口。当推杆前推时，托弹勺在凸轮带动下向上翻起约二十度，精准托起霰弹送入弹膛中心线。",
+        "craftAndMaterial": "采用高韧性合金钢板整体冲压拉延成型并镀覆镜面级低摩擦硬铬，尾部开有标志性的梯形纠错U型槽。镜面镀层赋予其极度顺滑的输弹表面，耐磨耐划痕。",
+        "kinematicRole": "阶段五下伏承接后退滑出的新弹；阶段六随推杆前推向上仰起二十度扶正弹底对准膛口；阶段七回落让位；分解进度达三十六至七十六时从火控座前轴拆离。",
+        "designHighlight": "雷明顿享誉业界的专利纠错槽设计：若发生未完全击发导致的双进弹卡壳，纠错槽允许射手强力将护木向后拉，硬铬勺的纵槽能直接容纳下发弹底缘通过，无需工具徒手即可瞬间排障。",
+        "audioScript": "这块光亮的硬铬托弹勺负责将弹仓滑出的实弹向上抬起二十度对准枪膛。请注意它尾部特有的凹槽，这是雷明顿著名的防双进排障槽，即使发生严重新手卡弹，射手大力回拉护木也能直接滑脱排除故障。",
+        "audioUrl": "audio/rem870/parts/rem870_shell_carrier_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Pivoting Hard-Chrome Shell Lifter with Flexi-Tab",
+        "overview": "Pivoting across the forward shoulders of the trigger plate assembly, this mirror hard-chrome shell carrier rests beneath the feeding chamber. It angles upward to elevate newly released cartridges directly in line with the barrel chamber.",
+        "craftAndMaterial": "Stamped from high-strength carbon steel with an ultra-slick mirror hard-chrome electroplate finish. Features the distinctive stamped U-shaped Flexi-Tab cut-out in its rear plate section.",
+        "kinematicRole": "Receives the magazine shell in phase five; tilts upward twenty degrees in phase six during forend forward travel to align the cartridge; resets down in phase seven; separates at thirty-six to seventy-six percent explode progress.",
+        "designHighlight": "The patented Flexi-Tab slot is a legendary combat-proven innovation: if a shell slips under the bolt, this clearance cut allows the action to be pumped rearward with brute force, effortlessly clearing an otherwise catastrophic dead-lock.",
+        "audioScript": "Finished in mirror hard chrome, this shell lifter scoops up each fresh shell and tilts upward twenty degrees to guide it directly into the chamber. The distinctive slot stamped in its center is the famous Flexi-Tab cut, designed to clear double feeds under brute hand force.",
+        "audioUrl": "audio/rem870/parts/rem870_shell_carrier_en.mp3"
+      }
+    }
+  }
+}

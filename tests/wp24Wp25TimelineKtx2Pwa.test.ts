@@ -15,7 +15,7 @@ const ROOT = process.cwd();
 const CJK_REGEX = /[\u4e00-\u9fff]/;
 
 describe('WP-24 Timeline & WP-25a KTX2/Basis + PWA Offline Museum', () => {
-  it('covers all 27 exhibits across 6 historical lineages with valid ancestors and 0-CJK EN metadata', () => {
+  it('covers all 29 exhibits across 6 historical lineages with valid ancestors and 0-CJK EN metadata', () => {
     const nodeIds = new Set(HISTORY_TIMELINE_NODES.map((n) => n.weaponId));
     expect(nodeIds.size).toBe(WEAPON_IDS.length);
     for (const id of WEAPON_IDS) {
@@ -29,7 +29,7 @@ describe('WP-24 Timeline & WP-25a KTX2/Basis + PWA Offline Museum', () => {
     }
 
     for (const node of HISTORY_TIMELINE_NODES) {
-      expect(node.year).toBeGreaterThanOrEqual(1898);
+      expect(node.year).toBeGreaterThanOrEqual(1894);
       expect(node.year).toBeLessThanOrEqual(2026);
       expect(lineageIds.has(node.lineageId)).toBe(true);
       expect(CJK_REGEX.test(node.designerEn)).toBe(false);

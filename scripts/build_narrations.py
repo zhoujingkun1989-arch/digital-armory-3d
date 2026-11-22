@@ -84,6 +84,8 @@ ALL_WEAPON_IDS = [
     "m1a2",
     "leopard2a7",
     "tiger1",
+    "winchester1894",
+    "rem870",
 ]
 
 WEAPON_CONTEXT_HINTS: dict[str, dict[str, str]] = {
@@ -799,6 +801,80 @@ WEAPON_CONTEXT_HINTS: dict[str, dict[str, str]] = {
             "Act 3 -> 'tiger_interleaved_wheels' (3-Row Overlapping Schachtellaufwerk Interleaved Road Wheels); "
             "Act 4 -> 'tiger_maybach_v12' (23.1L 700-HP Maybach HL230 P45 V12 Gasoline Engine); "
             "Breakthroughs -> 'tiger_breech_block', 'tiger_interleaved_wheels', and 'tiger_transmission'."
+        ),
+    },
+    "winchester1894": {
+        "historicalContext": (
+            "Engineered by John Moses Browning in Ogden, Utah and acquired by the Winchester Repeating Arms Company "
+            "of New Haven, Connecticut under U.S. Patent 524,702 (issued August 21, 1894), the Model 1894 lever-action "
+            "carbine was purposefully designed to harness smokeless powder pressures after earlier black-powder toggle "
+            "actions of 1866 and 1873 proved insufficiently strong. Paired with Winchester's 1895 .30 W.C.F. (.30-30 "
+            "Winchester—America's first commercial sporting smokeless cartridge), the compact 20-inch Saddle-Ring "
+            "Carbine became the quintessential North American frontier utility firearm and surpassed seven million "
+            "serial numbers across over a century of continuous production."
+        ),
+        "mechanicalCore": (
+            "Rather than fragile side-by-side toggle links, Browning dropped a pivoted steel link bridge out of the "
+            "receiver floor beneath a forged D-loop finger lever ('win94_lever'). Opening the lever cams the vertical "
+            "H-shaped steel locking bolt ('win94_locking_bolt') straight down out of upper receiver abutment shoulders, "
+            "unlocks and retracts the cylindrical top-eject breech bolt ('win94_breech_bolt') while lifting the brass "
+            "shell carrier ('win94_carrier') loaded via King's Patent right-side spring loading gate ('win94_loading_gate') "
+            "and full-length 7-round tubular magazine ('win94_mag_tube'), and thumbs back the exposed hammer ('win94_hammer'). "
+            "A two-piece interlocked firing pin ('win94_firing_pin') and lower-tang lever squeeze safety block sear release "
+            "until the lever seats flush."
+        ),
+        "milestoneAnchors": (
+            "Aug 21, 1894 (John M. Browning receives U.S. Patent 524,702 for rising-wedge Model 1894 lever action) -> "
+            "1895 (.30 W.C.F. / .30-30 Winchester debuts as America's first smokeless sporting cartridge) -> "
+            "1927 (Serial number 1,000,000 Model 1894 presented to President Calvin Coolidge) -> "
+            "1964 (Stamping & sintered parts revision separates revered forged Pre-64 carbines) -> "
+            "1982–1992 (U.S. Repeating Arms introduces Angle-Eject & cross-bolt safety variants) -> "
+            "Present (Over 7.5 million Model 1894 rifles built worldwide)"
+        ),
+        "focusPartGuidance": (
+            "Recommended exact focusPartId anchors from BOM: "
+            "Act 1 -> 'win94_receiver' (Top-Eject Forged Flat-Side Receiver w/ Tang Slots); "
+            "Act 2 -> 'win94_barrel' (20-inch Tapered .30-30 Round Carbine Barrel); "
+            "Act 3 -> 'win94_locking_bolt' (Browning Vertical Rising Locking Block) & 'win94_lever' (D-Loop Lever); "
+            "Act 4 -> 'win94_saddle_ring' (Cavalry Saddle Ring) or 'win94_carrier' (Brass Shell Lifter); "
+            "Breakthroughs -> 'win94_locking_bolt', 'win94_carrier', and 'win94_firing_pin'."
+        ),
+    },
+    "rem870": {
+        "historicalContext": (
+            "Introduced in 1950 by Remington Arms Company of Ilion, New York as a rugged, economical successor to "
+            "John Pedersen's Model 31 and engineered by L. Ray Crittendon, Phillip Haskell, Ellis Hailston, and G.E. "
+            "Pinckney, the Model 870 Wingmaster (and its heavy-duty law-enforcement sibling, the Model 870 Police Magnum) "
+            "revolutionized pump-action shotguns through a milled billet-steel receiver paired with twin non-binding "
+            "parallel action bars. Surpassing eleven million units produced, it stands as the highest-production "
+            "pump-action combat and sporting shotgun in history."
+        ),
+        "mechanicalCore": (
+            "Stroking the 12-groove corn-cob American walnut pump forend ('rem870_forend') drives twin parallel hardened "
+            "steel action bars ('rem870_action_bars') flanking the 4+1 tubular magazine into the milled billet receiver "
+            "('rem870_receiver'), eliminating torsional binding even under sand, ice, or stressed one-handed clearing. "
+            "The action bars drag an angled steel camming slide block ('rem870_slide_block') rearward inside the bolt "
+            "carrier, pulling the tilting steel wedge locking block ('rem870_locking_block') downward out of the 18-inch "
+            "Parkerized 12-gauge barrel extension before retracting the mirror hard-chrome breech bolt ('rem870_breech_bolt'). "
+            "A removable dual-pin aluminum Police trigger plate ('rem870_trigger_plate'), spring-loaded Flexi-Tab hard-chrome "
+            "shell carrier ('rem870_shell_carrier'), and high-visibility safety-orange follower ('rem870_mag_follower') "
+            "complete the combat cycle."
+        ),
+        "milestoneAnchors": (
+            "1950 (Remington debuts Model 870 Wingmaster w/ twin action bars & billet steel receiver at Ilion, NY) -> "
+            "1966 (U.S. Marine Corps fields Model 870 Mk 1 riot shotgun in Southeast Asia) -> "
+            "1973–1984 (Two-million & three-million milestones solidify Model 870 dominance) -> "
+            "1987 (Remington introduces anti-jam Flexi-Tab shell carrier upgrade) -> "
+            "1990s (Model 870 Police Magnum standardized across U.S. federal & municipal SWAT teams) -> "
+            "2009–Present (Over 11 million Model 870 shotguns manufactured globally)"
+        ),
+        "focusPartGuidance": (
+            "Recommended exact focusPartId anchors from BOM: "
+            "Act 1 -> 'rem870_receiver' (Machined Solid Billet Steel 12-Gauge Receiver); "
+            "Act 2 -> 'rem870_action_bars' (Twin Non-Binding Parallel Steel Action Bars & Sleeve); "
+            "Act 3 -> 'rem870_locking_block' (Tilting Steel Wedge Locking Block) & 'rem870_breech_bolt' (Hard-Chrome Bolt); "
+            "Act 4 -> 'rem870_forend' (12-Groove Corn-Cob Walnut Pump Forend) & 'rem870_shell_carrier' (Hard-Chrome Lifter); "
+            "Breakthroughs -> 'rem870_action_bars', 'rem870_locking_block', and 'rem870_trigger_plate'."
         ),
     },
 }

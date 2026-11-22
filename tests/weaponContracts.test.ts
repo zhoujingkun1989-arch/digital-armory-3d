@@ -105,6 +105,8 @@ const DYNAMIC_SPRING_PARTS: Readonly<Record<WeaponId, readonly string[]>> = {
   m1a2: ['m1a2_recoil_springs', 'm1a2_door_spring'],
   leopard2a7: ['leo_recoil_springs', 'leo_breech_spring'],
   tiger1: ['tiger_recoil_springs', 'tiger_breech_spring'],
+  winchester1894: ['win94_mainspring', 'win94_sear_spring', 'win94_mag_spring'],
+  rem870: ['rem870_hammer_spring', 'rem870_firing_pin_spring', 'rem870_mag_spring'],
 };
 
 const ROTATING_BOLT_PARTS: ReadonlyArray<{
@@ -144,6 +146,8 @@ const FIXED_BARREL_PARTS: ReadonlyArray<{
   { weaponId: 'm249', partId: 'm249_barrel' },
   { weaponId: 'vector', partId: 'vector_barrel' },
   { weaponId: 'vss', partId: 'vss_barrel' },
+  { weaponId: 'winchester1894', partId: 'win94_barrel' },
+  { weaponId: 'rem870', partId: 'rem870_barrel' },
 ];
 
 interface ParsedWebpHeader {
@@ -216,23 +220,23 @@ function findFirstNonFiniteIndex(arr: ArrayLike<number>): number {
   return -1;
 }
 
-describe('27-Exhibit Digital Armory WP-18 1:1 plugin, geometry, kinematics & PBR contracts', () => {
-  it('registers all 27 iconic exhibits totaling 683 parts across all 9 categories with accurate camera presets', () => {
-    expect(WEAPON_MANIFESTS).toHaveLength(27);
-    expect(ARMORY_WEAPONS).toHaveLength(27);
+describe('29-Exhibit Digital Armory V5.0 1:1 plugin, geometry, kinematics & PBR contracts', () => {
+  it('registers all 29 iconic exhibits totaling 731 parts across all 9 categories with accurate camera presets', () => {
+    expect(WEAPON_MANIFESTS).toHaveLength(29);
+    expect(ARMORY_WEAPONS).toHaveLength(29);
 
     const totalCatalogParts = WEAPON_MANIFESTS.reduce(
       (sum, m) => sum + m.catalog.partsCount,
       0
     );
-    expect(totalCatalogParts).toBe(683);
+    expect(totalCatalogParts).toBe(731);
 
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'all'))
-    ).toHaveLength(27);
+    ).toHaveLength(29);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'assault'))
-    ).toHaveLength(7);
+    ).toHaveLength(8);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'lmg'))
     ).toHaveLength(2);
@@ -244,7 +248,7 @@ describe('27-Exhibit Digital Armory WP-18 1:1 plugin, geometry, kinematics & PBR
     ).toHaveLength(3);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'shotgun'))
-    ).toHaveLength(1);
+    ).toHaveLength(2);
     expect(
       ARMORY_WEAPONS.filter((w) => matchesArmoryCategory(w, 'pistol'))
     ).toHaveLength(5);
@@ -471,8 +475,8 @@ describe('27-Exhibit Digital Armory WP-18 1:1 plugin, geometry, kinematics & PBR
       }
     }
 
-    expect(totalRuntimeParts).toBe(683);
-    expect(globalPartIds.size).toBe(683);
+    expect(totalRuntimeParts).toBe(731);
+    expect(globalPartIds.size).toBe(731);
 
     // 1. M82A1 short-recoil barrel + accelerator motion law
     const m82Plugin = loadedPlugins.get('m82a1')!;
@@ -941,6 +945,61 @@ describe('27-Exhibit Digital Armory WP-18 1:1 plugin, geometry, kinematics & PBR
     expect(maxAn94PulleyAbsRz).toBeGreaterThan(4.0);
     expect(maxAn94RammerDx).toBeGreaterThan(2.0);
 
+    // 3g. WP-25b Winchester 1894 lever-action vertical H-block + Remington 870 twin-bar pump wedge
+    const win94Plugin = loadedPlugins.get('winchester1894')!;
+    let maxWin94LeverAbsRz = 0;
+    let minWin94LockBoltDy = 0;
+    let minWin94BoltDx = 0;
+    let maxWin94CarrierRz = 0;
+    for (const f of DENSE_FIRING_SWEEP) {
+      maxWin94LeverAbsRz = Math.max(
+        maxWin94LeverAbsRz,
+        Math.abs(win94Plugin.computeFiringKinematics('win94_lever', f).rot[2])
+      );
+      minWin94LockBoltDy = Math.min(
+        minWin94LockBoltDy,
+        win94Plugin.computeFiringKinematics('win94_locking_bolt', f).pos[1]
+      );
+      minWin94BoltDx = Math.min(
+        minWin94BoltDx,
+        win94Plugin.computeFiringKinematics('win94_breech_bolt', f).pos[0]
+      );
+      maxWin94CarrierRz = Math.max(
+        maxWin94CarrierRz,
+        win94Plugin.computeFiringKinematics('win94_carrier', f).rot[2]
+      );
+    }
+    expect(maxWin94LeverAbsRz).toBeGreaterThan(0.45);
+    expect(minWin94LockBoltDy).toBeLessThan(-0.6);
+    expect(minWin94BoltDx).toBeLessThan(-4.0);
+    expect(maxWin94CarrierRz).toBeGreaterThan(0.3);
+
+    const rem870Plugin = loadedPlugins.get('rem870')!;
+    let minRem870ForendDx = 0;
+    let minRem870BarsDx = 0;
+    let minRem870BoltDx = 0;
+    let maxAbsRem870LockMotion = 0;
+    for (const f of DENSE_FIRING_SWEEP) {
+      const fe = rem870Plugin.computeFiringKinematics('rem870_forend', f);
+      const ab = rem870Plugin.computeFiringKinematics('rem870_action_bars', f);
+      const bb = rem870Plugin.computeFiringKinematics('rem870_breech_bolt', f);
+      const lb = rem870Plugin.computeFiringKinematics(
+        'rem870_locking_block',
+        f
+      );
+      minRem870ForendDx = Math.min(minRem870ForendDx, fe.pos[0]);
+      minRem870BarsDx = Math.min(minRem870BarsDx, ab.pos[0]);
+      minRem870BoltDx = Math.min(minRem870BoltDx, bb.pos[0]);
+      maxAbsRem870LockMotion = Math.max(
+        maxAbsRem870LockMotion,
+        Math.abs(lb.pos[1]) + Math.abs(lb.rot[2])
+      );
+    }
+    expect(minRem870ForendDx).toBeLessThan(-4.5);
+    expect(minRem870BarsDx).toBeCloseTo(minRem870ForendDx, 2);
+    expect(minRem870BoltDx).toBeLessThan(-4.5);
+    expect(maxAbsRem870LockMotion).toBeGreaterThan(0.25);
+
     // 4. Endpoint continuity across f = 0.995 -> 1.0 (catches modulo wrap-around snaps on single-shot completion)
     for (const [wid, plugin] of loadedPlugins.entries()) {
       for (const part of plugin.parts) {
@@ -983,7 +1042,7 @@ describe('27-Exhibit Digital Armory WP-18 1:1 plugin, geometry, kinematics & PBR
     }
   });
 
-  it('builds all 683 CSG/parametric BufferGeometries with finite attributes, unit normals, positive 3D volume, and [0, 1] custom-atlas UVs', async () => {
+  it('builds all 731 CSG/parametric BufferGeometries with finite attributes, unit normals, positive 3D volume, and [0, 1] custom-atlas UVs', async () => {
     let builtPartsCount = 0;
 
     for (const manifest of WEAPON_MANIFESTS) {
@@ -1249,10 +1308,10 @@ describe('27-Exhibit Digital Armory WP-18 1:1 plugin, geometry, kinematics & PBR
       }
     }
 
-    expect(builtPartsCount).toBe(683);
+    expect(builtPartsCount).toBe(731);
   }, 120000);
 
-  it('verifies all 351 WebP PBR textures exist on disk (0 PNGs) and all 118 *_roughness.webp ORM maps have valid RGB WebP headers', async () => {
+  it('verifies all 369 WebP PBR textures exist on disk (0 PNGs) and all 124 *_roughness.webp ORM maps have valid RGB WebP headers', async () => {
     expect(fs.existsSync(TEXTURES_DIR)).toBe(true);
     const diskFiles = fs.readdirSync(TEXTURES_DIR);
     const webpFiles = diskFiles.filter((f) => f.endsWith('.webp')).sort();
@@ -1263,13 +1322,13 @@ describe('27-Exhibit Digital Armory WP-18 1:1 plugin, geometry, kinematics & PBR
     );
     const normalFiles = webpFiles.filter((f) => f.endsWith('_normal.webp'));
 
-    expect(webpFiles).toHaveLength(351);
+    expect(webpFiles).toHaveLength(369);
     expect(pngFiles).toHaveLength(0);
-    expect(albedoFiles).toHaveLength(115);
-    expect(roughnessFiles).toHaveLength(118);
-    expect(normalFiles).toHaveLength(118);
+    expect(albedoFiles).toHaveLength(121);
+    expect(roughnessFiles).toHaveLength(124);
+    expect(normalFiles).toHaveLength(124);
 
-    // Binary RIFF/WEBP header validation across all 351 textures
+    // Binary RIFF/WEBP header validation across all 369 textures
     for (const fileName of webpFiles) {
       const fullPath = path.join(TEXTURES_DIR, fileName);
       const buf = fs.readFileSync(fullPath);
@@ -1433,7 +1492,7 @@ describe('27-Exhibit Digital Armory WP-18 1:1 plugin, geometry, kinematics & PBR
       .readdirSync(TTS_CACHE_DIR)
       .filter((f) => f.endsWith('_tts_hashes.json'))
       .sort();
-    expect(hashFilesOnDisk).toHaveLength(27);
+    expect(hashFilesOnDisk).toHaveLength(29);
     let totalVerifiedHashes = 0;
 
     for (const manifest of WEAPON_MANIFESTS) {
@@ -1600,10 +1659,10 @@ describe('27-Exhibit Digital Armory WP-18 1:1 plugin, geometry, kinematics & PBR
       assertZeroCjkInEnglish(metaEn, `${wid}.metaEn`);
     }
 
-    // 683 total parts across 27 exhibits -> 216 story MP3s + 1,366 part MP3s = 1,582 MP3 files
-    expect(totalNarratedParts).toBe(683);
-    expect(allReferencedAudioPaths).toHaveLength(1582);
-    expect(totalVerifiedHashes).toBe(1582);
+    // 731 total parts across 29 exhibits -> 232 story MP3s + 1,462 part MP3s = 1,694 MP3 files
+    expect(totalNarratedParts).toBe(731);
+    expect(allReferencedAudioPaths).toHaveLength(1694);
+    expect(totalVerifiedHashes).toBe(1694);
 
     const countDiskMp3s = (dir: string): number => {
       let n = 0;
@@ -1614,7 +1673,7 @@ describe('27-Exhibit Digital Armory WP-18 1:1 plugin, geometry, kinematics & PBR
       }
       return n;
     };
-    expect(countDiskMp3s(AUDIO_DIR)).toBe(1582);
+    expect(countDiskMp3s(AUDIO_DIR)).toBe(1694);
 
     for (const relAudio of allReferencedAudioPaths) {
       const fullMp3Path = path.join(ROOT_DIR, 'public', relAudio);
