@@ -48,6 +48,10 @@ import {
   getArmoryPhysicsState,
   setBrassFloorImpactListener,
 } from '../physics/armoryPhysics';
+import {
+  getCachedCausalityEvaluation,
+  useCausalitySandboxStore,
+} from '../physics/causalitySandbox';
 import { ArmoryPostProcessing } from './ArmoryPostProcessing';
 import { CaliperActor } from './CaliperActor';
 import { MonographCaptureRig } from '../../features/monograph/MonographCaptureRig';
@@ -639,7 +643,20 @@ const DisassemblyRig: React.FC = () => {
         !state.malfunctionActive &&
         nextAnimatedT < 0.02
       ) {
-        const step = BASE_FIRING_RATE * state.fireSpeedMultiplier * dt;
+        let cadenceMultiplier = 1;
+        const causality = useCausalitySandboxStore.getState();
+        if (state.screen === 'workbench' && causality.enabled) {
+          const ev = getCachedCausalityEvaluation(
+            state.activeWeaponId,
+            causality
+          );
+          cadenceMultiplier = Math.max(
+            0.35,
+            Math.min(2.2, ev.modifiedRpm / Math.max(1, ev.baselineRpm))
+          );
+        }
+        const step =
+          BASE_FIRING_RATE * state.fireSpeedMultiplier * cadenceMultiplier * dt;
         const nextF = playbackClock.getState().fireProgress + step;
         if (nextF >= 1) {
           if (state.fireLoop) {

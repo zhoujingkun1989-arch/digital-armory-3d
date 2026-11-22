@@ -255,6 +255,17 @@ export function applyLocationToStore(searchOverride?: string): void {
       .getState()
       .openMonographModal(monographDeepLink.weaponId ?? weaponId, launchOptions);
   }
+
+  const rawPanel = params.get('panel');
+  if (rawPanel === 'causality') {
+    const st = useAppStore.getState();
+    if (st.screen !== 'workbench') {
+      st.enterWorkbench(weaponId, 'firing');
+    }
+    useAppStore.getState().setCausalitySandboxOpen(true);
+  } else if (rawPanel === 'armor') {
+    useAppStore.getState().openArmorPenetrationModal();
+  }
 }
 
 export function buildSearchString(

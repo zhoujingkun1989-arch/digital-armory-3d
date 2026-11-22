@@ -48,6 +48,7 @@ import {
 } from '../engine/materials/armoryShader';
 import type { EngineeringRole } from '../engine/materials/engineeringRoles';
 import { resetArmoryPhysics } from '../engine/physics/armoryPhysics';
+import { useCausalitySandboxStore } from '../engine/physics/causalitySandbox';
 import {
   type ExternalProjectileId,
   type ExternalProjectileInput,
@@ -253,6 +254,8 @@ export interface AppState {
   monographLaunchOptions: MonographModalLaunchOptions | null;
   posterShareModalOpen: boolean;
   posterShareOptions: PosterModalLaunchOptions | null;
+  causalitySandboxOpen: boolean;
+  armorPenetrationModalOpen: boolean;
   commandPaletteOpen: boolean;
   xrayShells: boolean;
   sectionCut: boolean;
@@ -381,6 +384,11 @@ export interface AppState {
   openPosterModal: (options?: PosterModalLaunchOptions) => void;
   closePosterModal: () => void;
   togglePosterModal: (options?: PosterModalLaunchOptions) => void;
+  setCausalitySandboxOpen: (open: boolean) => void;
+  toggleCausalitySandbox: () => void;
+  setArmorPenetrationModalOpen: (open: boolean) => void;
+  openArmorPenetrationModal: () => void;
+  closeArmorPenetrationModal: () => void;
   setCommandPaletteOpen: (open: boolean) => void;
   openCommandPalette: () => void;
   closeCommandPalette: () => void;
@@ -461,6 +469,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   monographLaunchOptions: null,
   posterShareModalOpen: false,
   posterShareOptions: null,
+  causalitySandboxOpen: false,
+  armorPenetrationModalOpen: false,
   commandPaletteOpen: false,
   xrayShells: false,
   sectionCut: false,
@@ -1339,6 +1349,40 @@ export const useAppStore = create<AppState>((set, get) => ({
       cur.openPosterModal(options);
     }
   },
+  setCausalitySandboxOpen: (causalitySandboxOpen) => {
+    if (causalitySandboxOpen) {
+      useCausalitySandboxStore.getState().setEnabled(true);
+    }
+    set((s) => ({
+      causalitySandboxOpen,
+      mode: causalitySandboxOpen ? 'firing' : s.mode,
+      fieldStripActive: causalitySandboxOpen ? false : s.fieldStripActive,
+      malfunctionActive: causalitySandboxOpen ? false : s.malfunctionActive,
+      commandPaletteOpen: causalitySandboxOpen ? false : s.commandPaletteOpen,
+      hudHidden: causalitySandboxOpen ? false : s.hudHidden,
+    }));
+  },
+  toggleCausalitySandbox: () => {
+    const cur = get();
+    cur.setCausalitySandboxOpen(!cur.causalitySandboxOpen);
+  },
+  setArmorPenetrationModalOpen: (armorPenetrationModalOpen) =>
+    set((s) => ({
+      armorPenetrationModalOpen,
+      textureModalOpen: armorPenetrationModalOpen ? false : s.textureModalOpen,
+      monographModalOpen: armorPenetrationModalOpen
+        ? false
+        : s.monographModalOpen,
+      posterShareModalOpen: armorPenetrationModalOpen
+        ? false
+        : s.posterShareModalOpen,
+      commandPaletteOpen: armorPenetrationModalOpen
+        ? false
+        : s.commandPaletteOpen,
+      hudHidden: armorPenetrationModalOpen ? false : s.hudHidden,
+    })),
+  openArmorPenetrationModal: () => get().setArmorPenetrationModalOpen(true),
+  closeArmorPenetrationModal: () => get().setArmorPenetrationModalOpen(false),
   setCommandPaletteOpen: (commandPaletteOpen) => set({ commandPaletteOpen }),
   openCommandPalette: () => set({ commandPaletteOpen: true }),
   closeCommandPalette: () => set({ commandPaletteOpen: false }),
@@ -1665,6 +1709,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   resetAll: () => {
     const activeId = get().activeWeaponId;
     resetWeaponPhysicsAndAction(activeId, true);
+    useCausalitySandboxStore.getState().reset();
     fieldStripStore.reset(activeId, true);
     malfunctionStore.syncWeapon(activeId, false);
     caliperStore.clearPoints();
@@ -1700,6 +1745,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       hudHidden: false,
       posterShareModalOpen: false,
       posterShareOptions: null,
+      causalitySandboxOpen: false,
+      armorPenetrationModalOpen: false,
       commandPaletteOpen: false,
       selectedPartId: null,
       hiddenGroups: { ...DEFAULT_HIDDEN_GROUPS },

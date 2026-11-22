@@ -43,6 +43,12 @@ const LazyPosterShareModal = lazy(
 const LazySplitShowdownOverlay = lazy(
   () => import('./features/showdown3d/SplitShowdownOverlay')
 );
+const LazyCausalitySandboxModal = lazy(
+  () => import('./features/sandbox/CausalitySandboxModal')
+);
+const LazyArmorPenetrationModal = lazy(
+  () => import('./features/armorlab/ArmorPenetrationModal')
+);
 
 export const App: React.FC = () => {
   useUrlStateSync();
@@ -59,6 +65,13 @@ export const App: React.FC = () => {
   const posterShareModalOpen = useAppStore((s) => s.posterShareModalOpen);
   const posterShareOptions = useAppStore((s) => s.posterShareOptions);
   const closePosterModal = useAppStore((s) => s.closePosterModal);
+  const causalitySandboxOpen = useAppStore((s) => s.causalitySandboxOpen);
+  const armorPenetrationModalOpen = useAppStore(
+    (s) => s.armorPenetrationModalOpen
+  );
+  const closeArmorPenetrationModal = useAppStore(
+    (s) => s.closeArmorPenetrationModal
+  );
   const environmentPreset = useAppStore((s) => s.environmentPreset);
   const telemetryHudOpen = useAppStore((s) => s.telemetryHudOpen);
   const sectionCut = useAppStore((s) => s.sectionCut);
@@ -146,12 +159,20 @@ export const App: React.FC = () => {
           <>
             <WorkbenchHeader />
             <BomTreeSidebar />
-            {(showLiveTelemetry || engineeringTint || caliperActive) && (
+            {(showLiveTelemetry ||
+              engineeringTint ||
+              caliperActive ||
+              causalitySandboxOpen) && (
               <div
                 className={`ballistics-telemetry-slot ${
                   sidebarCollapsed ? 'sidebar-collapsed' : 'sidebar-open'
                 }`}
               >
+                {causalitySandboxOpen && (
+                  <Suspense fallback={null}>
+                    <LazyCausalitySandboxModal />
+                  </Suspense>
+                )}
                 {caliperActive && <CaliperHud />}
                 {showLiveTelemetry && <BallisticsTelemetryHud />}
                 {engineeringTint && <EngineeringTintLegend />}
@@ -203,6 +224,13 @@ export const App: React.FC = () => {
             armorerRank={posterShareOptions?.armorerRank}
             onClose={closePosterModal}
           />
+        </Suspense>
+      )}
+
+      {/* Lazy-loaded 1:1 Composite Armor Penetration Lab (`WP-20b`) */}
+      {armorPenetrationModalOpen && (
+        <Suspense fallback={null}>
+          <LazyArmorPenetrationModal onClose={closeArmorPenetrationModal} />
         </Suspense>
       )}
     </div>

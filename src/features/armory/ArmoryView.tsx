@@ -464,6 +464,23 @@ export const ArmoryView: React.FC = () => {
 
           <button
             type="button"
+            className="armory-showcase-btn armory-armor-btn"
+            onClick={() => {
+              playWorkbenchFoley('preset_detent');
+              useAppStore.getState().openArmorPenetrationModal();
+            }}
+            title={
+              lang === 'en'
+                ? 'Open 1:1 Composite Armor Penetration Lab'
+                : '打开 1:1 主战坦克复合装甲抗弹与穿甲实验室'
+            }
+          >
+            <Shield size={13} aria-hidden="true" />
+            <span>{lang === 'en' ? 'Armor Lab' : '穿甲抗弹台'}</span>
+          </button>
+
+          <button
+            type="button"
             className="armory-showcase-btn armory-poster-btn"
             onClick={() =>
               openPosterModal({

@@ -18,7 +18,9 @@ import {
   Ruler,
   Scissors,
   Share2,
+  Shield,
   ShieldAlert,
+  SlidersHorizontal,
   Sparkles,
   Tag,
   Volume2,
@@ -58,6 +60,10 @@ export const WorkbenchHeader: React.FC = () => {
   const fieldStripActive = useAppStore((s) => s.fieldStripActive);
   const malfunctionActive = useAppStore((s) => s.malfunctionActive);
   const caliperActive = useAppStore((s) => s.caliperActive);
+  const causalitySandboxOpen = useAppStore((s) => s.causalitySandboxOpen);
+  const armorPenetrationModalOpen = useAppStore(
+    (s) => s.armorPenetrationModalOpen
+  );
   const showEdges = useAppStore((s) => s.showEdges);
   const showLabels = useAppStore((s) => s.showLabels);
   const sfxMuted = useAppStore((s) => s.sfxMuted);
@@ -76,6 +82,10 @@ export const WorkbenchHeader: React.FC = () => {
   const openCartridgeLab = useAppStore((s) => s.openCartridgeLab);
   const openExternalBallistics = useAppStore((s) => s.openExternalBallistics);
   const openPosterModal = useAppStore((s) => s.openPosterModal);
+  const toggleCausalitySandbox = useAppStore((s) => s.toggleCausalitySandbox);
+  const openArmorPenetrationModal = useAppStore(
+    (s) => s.openArmorPenetrationModal
+  );
   const toggleShowEdges = useAppStore((s) => s.toggleShowEdges);
   const toggleShowLabels = useAppStore((s) => s.toggleShowLabels);
   const toggleSfxMuted = useAppStore((s) => s.toggleSfxMuted);
@@ -99,6 +109,8 @@ export const WorkbenchHeader: React.FC = () => {
     (fieldStripActive && mode === 'explode') ||
     (mode === 'firing' && !malfunctionActive) ||
     malfunctionActive ||
+    causalitySandboxOpen ||
+    armorPenetrationModalOpen ||
     showEdges ||
     !pbrTexturesEnabled;
 
@@ -398,6 +410,49 @@ export const WorkbenchHeader: React.FC = () => {
                   >
                     <GitCompareArrows size={13} aria-hidden="true" />
                     <span>{lang === 'en' ? '3D Split' : '3D 同屏对比'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    role="menuitemcheckbox"
+                    aria-checked={causalitySandboxOpen}
+                    className={`toggle-chip ${
+                      causalitySandboxOpen ? 'active-cyan' : ''
+                    }`}
+                    onClick={() => {
+                      setToolsMenuOpen(false);
+                      toggleCausalitySandbox();
+                    }}
+                    title={
+                      lang === 'en'
+                        ? 'Tune gas port, spring k, bolt mass, and powder charge live'
+                        : '实时调节导气量、复进簧刚度、机框质量与装药量并驱动 3D 循环'
+                    }
+                  >
+                    <SlidersHorizontal size={13} aria-hidden="true" />
+                    <span>
+                      {lang === 'en' ? 'Causality Sandbox' : '物理因果沙盒'}
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="toggle-chip"
+                    onClick={() => {
+                      setToolsMenuOpen(false);
+                      openArmorPenetrationModal();
+                    }}
+                    title={
+                      lang === 'en'
+                        ? 'Evaluate APFSDS / APCR vs composite armor & ERA layers'
+                        : '进入 1:1 主战坦克复合装甲抗弹与穿甲推演台'
+                    }
+                  >
+                    <Shield size={13} aria-hidden="true" />
+                    <span>
+                      {lang === 'en' ? 'Armor Penetration' : '穿甲抗弹实验室'}
+                    </span>
                   </button>
                 </div>
               </div>

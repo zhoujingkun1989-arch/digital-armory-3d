@@ -1154,6 +1154,22 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
           <button
             type="button"
             className="eb-dope-jump-btn"
+            title={
+              isZh
+                ? '进入 1:1 主战坦克复合装甲与穿甲弹推演台'
+                : 'Open 1:1 Composite Armor Penetration Lab'
+            }
+            onClick={() => {
+              playWorkbenchFoley('preset_detent');
+              useAppStore.getState().openArmorPenetrationModal();
+            }}
+          >
+            <Shield size={13} aria-hidden="true" />
+            <span>{isZh ? '穿甲抗弹实验室' : 'Armor Penetration Lab'}</span>
+          </button>
+          <button
+            type="button"
+            className="eb-dope-jump-btn"
             title={ui.dopeJumpTitle}
             onClick={() => {
               playWorkbenchFoley('toggle_switch');

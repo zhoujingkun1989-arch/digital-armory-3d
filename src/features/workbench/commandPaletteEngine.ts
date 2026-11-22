@@ -717,6 +717,86 @@ export function buildCommandPaletteItems(
       },
     },
     {
+      id: 'lab:causality',
+      group: 'labs',
+      icon: 'firing',
+      title:
+        state.lang === 'zh'
+          ? '闭锁与内弹道因果沙盒'
+          : 'Ballistic & Action Causality Sandbox',
+      subtitle:
+        state.lang === 'zh'
+          ? '实时调参导气量、复进簧 k、机框质量与装药量并驱动 3D 射速与后坐'
+          : 'Live-couple gas port, spring k, bolt mass, and charge to 3D cadence',
+      statusBadge: state.causalitySandboxOpen ? str.modal.onBadge : undefined,
+      statusTone: state.causalitySandboxOpen ? 'cyan' : undefined,
+      isActive: state.causalitySandboxOpen,
+      primaryFields: [
+        'Ballistic & Action Causality Sandbox',
+        '闭锁与内弹道因果沙盒',
+        'Overgas Short-Stroke Bolt Mass',
+      ],
+      secondaryFields: [
+        'causality',
+        'sandbox',
+        'gas',
+        'spring',
+        'overgas',
+        'short stroke',
+        '沙盒',
+        '导气',
+        '复进簧',
+        '因果',
+      ],
+      execute: () => {
+        playWorkbenchFoley('preset_detent');
+        const cur = useAppStore.getState();
+        if (cur.screen !== 'workbench') {
+          cur.enterWorkbench(cur.activeWeaponId, 'firing');
+        }
+        useAppStore.getState().setCausalitySandboxOpen(true);
+      },
+    },
+    {
+      id: 'lab:armor-penetration',
+      group: 'labs',
+      icon: 'armory',
+      title:
+        state.lang === 'zh'
+          ? '1:1 复合装甲与穿甲抗弹实验室'
+          : '1:1 Composite Armor Penetration Lab',
+      subtitle:
+        state.lang === 'zh'
+          ? '125mm/120mm APFSDS、88mm PzGr.39 对抗 ZTZ-99A / M1A2 / 豹2A7 / 虎式装甲'
+          : 'Lanz-Odermatt APFSDS vs ZTZ-99A, M1A2, Leopard 2A7V & Tiger I composite/ERA arrays',
+      statusBadge: state.armorPenetrationModalOpen
+        ? str.modal.onBadge
+        : undefined,
+      statusTone: state.armorPenetrationModalOpen ? 'amber' : undefined,
+      isActive: state.armorPenetrationModalOpen,
+      primaryFields: [
+        '1:1 Composite Armor Penetration Lab',
+        '穿甲抗弹实验室',
+        'APFSDS RHAe ERA Composite',
+      ],
+      secondaryFields: [
+        'armor',
+        'penetration',
+        'apfsds',
+        'era',
+        'rhae',
+        'ricochet',
+        '穿甲',
+        '装甲',
+        '反应装甲',
+        '跳弹',
+      ],
+      execute: () => {
+        playWorkbenchFoley('preset_detent');
+        useAppStore.getState().openArmorPenetrationModal();
+      },
+    },
+    {
       id: 'lab:atlas',
       group: 'labs',
       icon: 'atlas',
