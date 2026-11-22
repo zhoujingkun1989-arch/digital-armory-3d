@@ -271,6 +271,10 @@ export function applyLocationToStore(searchOverride?: string): void {
     useAppStore.getState().openDirectorReelModal();
   } else if (rawPanel === 'passport') {
     useAppStore.getState().openPassportModal();
+  } else if (rawPanel === 'timeline') {
+    useAppStore.getState().openTimelineModal();
+  } else if (rawPanel === 'offline') {
+    useAppStore.getState().openOfflineModal();
   } else if (rawPanel === 'crew') {
     const targetId = isTankWeapon(weaponId) ? weaponId : 'ztz99a';
     const st = useAppStore.getState();

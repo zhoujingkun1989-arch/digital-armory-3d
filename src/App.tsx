@@ -58,6 +58,12 @@ const LazyDirectorReelModal = lazy(
 const LazyArmorerPassportModal = lazy(
   () => import('./features/passport/ArmorerPassportModal')
 );
+const LazyHistoryTimelineModal = lazy(
+  () => import('./features/timeline/HistoryTimelineModal')
+);
+const LazyOfflineMuseumModal = lazy(
+  () => import('./features/offline/OfflineMuseumModal')
+);
 
 export const App: React.FC = () => {
   useUrlStateSync();
@@ -87,6 +93,10 @@ export const App: React.FC = () => {
   );
   const passportModalOpen = useAppStore((s) => s.passportModalOpen);
   const closePassportModal = useAppStore((s) => s.closePassportModal);
+  const timelineModalOpen = useAppStore((s) => s.timelineModalOpen);
+  const closeTimelineModal = useAppStore((s) => s.closeTimelineModal);
+  const offlineModalOpen = useAppStore((s) => s.offlineModalOpen);
+  const closeOfflineModal = useAppStore((s) => s.closeOfflineModal);
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const tankCrewActive = useTankCrewStore((s) => s.active);
   const environmentPreset = useAppStore((s) => s.environmentPreset);
@@ -264,6 +274,20 @@ export const App: React.FC = () => {
       {passportModalOpen && (
         <Suspense fallback={null}>
           <LazyArmorerPassportModal onClose={closePassportModal} />
+        </Suspense>
+      )}
+
+      {/* Lazy-loaded 1898-2026 Interactive History Timeline (`WP-24`) */}
+      {timelineModalOpen && (
+        <Suspense fallback={null}>
+          <LazyHistoryTimelineModal onClose={closeTimelineModal} />
+        </Suspense>
+      )}
+
+      {/* Lazy-loaded PWA Offline Museum & KTX2 Pipeline Center (`WP-25a`) */}
+      {offlineModalOpen && (
+        <Suspense fallback={null}>
+          <LazyOfflineMuseumModal onClose={closeOfflineModal} />
         </Suspense>
       )}
     </div>

@@ -881,6 +881,58 @@ export function buildCommandPaletteItems(
       },
     },
     {
+      id: 'lab:history-timeline',
+      group: 'labs',
+      icon: 'story',
+      title:
+        state.lang === 'zh'
+          ? '1898–2026 枪械与装甲演化时间轴'
+          : '1898 - 2026 Interactive History & Lineage Timeline',
+      subtitle:
+        state.lang === 'zh'
+          ? '6 大机构脉系、祖源连线追踪与 4 条精选策展导览路线'
+          : 'Explore all 27 exhibits across 6 mechanical lineages & 4 curated tours',
+      statusBadge: state.timelineModalOpen ? str.modal.onBadge : undefined,
+      statusTone: state.timelineModalOpen ? 'amber' : undefined,
+      isActive: state.timelineModalOpen,
+      primaryFields: [
+        'History Timeline Patent Lineage',
+        '演化时间轴专利谱系',
+        '1898 2026 Cold War Evolution',
+      ],
+      secondaryFields: ['timeline', 'history', 'lineage', 'patent', 'evolution', '时间轴', '历史', '脉系'],
+      execute: () => {
+        playWorkbenchFoley('preset_detent');
+        useAppStore.getState().openTimelineModal();
+      },
+    },
+    {
+      id: 'lab:offline-museum',
+      group: 'labs',
+      icon: 'atlas',
+      title:
+        state.lang === 'zh'
+          ? 'PWA 离线博物馆与 KTX2 纹理中心'
+          : 'PWA Offline Museum Cache & KTX2 Pipeline',
+      subtitle:
+        state.lang === 'zh'
+          ? '按展品预缓存 GLB 精模与 4K 贴图以支持离线断网博物馆漫游'
+          : 'Pre-cache GLB models & PBR textures for air-gapped offline museum browsing',
+      statusBadge: state.offlineModalOpen ? str.modal.onBadge : undefined,
+      statusTone: state.offlineModalOpen ? 'emerald' : undefined,
+      isActive: state.offlineModalOpen,
+      primaryFields: [
+        'Offline Museum Cache PWA KTX2',
+        '离线博物馆缓存与 KTX2',
+        'Basis Universal Transcoder',
+      ],
+      secondaryFields: ['offline', 'pwa', 'cache', 'ktx2', 'basis', '离线', '缓存'],
+      execute: () => {
+        playWorkbenchFoley('preset_detent');
+        useAppStore.getState().openOfflineModal();
+      },
+    },
+    {
       id: 'lab:atlas',
       group: 'labs',
       icon: 'atlas',

@@ -259,6 +259,8 @@ export interface AppState {
   armorPenetrationModalOpen: boolean;
   directorReelModalOpen: boolean;
   passportModalOpen: boolean;
+  timelineModalOpen: boolean;
+  offlineModalOpen: boolean;
   commandPaletteOpen: boolean;
   xrayShells: boolean;
   sectionCut: boolean;
@@ -398,6 +400,12 @@ export interface AppState {
   setPassportModalOpen: (open: boolean) => void;
   openPassportModal: () => void;
   closePassportModal: () => void;
+  setTimelineModalOpen: (open: boolean) => void;
+  openTimelineModal: () => void;
+  closeTimelineModal: () => void;
+  setOfflineModalOpen: (open: boolean) => void;
+  openOfflineModal: () => void;
+  closeOfflineModal: () => void;
   setCommandPaletteOpen: (open: boolean) => void;
   openCommandPalette: () => void;
   closeCommandPalette: () => void;
@@ -482,6 +490,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   armorPenetrationModalOpen: false,
   directorReelModalOpen: false,
   passportModalOpen: false,
+  timelineModalOpen: false,
+  offlineModalOpen: false,
   commandPaletteOpen: false,
   xrayShells: false,
   sectionCut: false,
@@ -1434,6 +1444,42 @@ export const useAppStore = create<AppState>((set, get) => ({
     })),
   openPassportModal: () => get().setPassportModalOpen(true),
   closePassportModal: () => get().setPassportModalOpen(false),
+  setTimelineModalOpen: (timelineModalOpen) =>
+    set((s) => ({
+      timelineModalOpen,
+      textureModalOpen: timelineModalOpen ? false : s.textureModalOpen,
+      monographModalOpen: timelineModalOpen ? false : s.monographModalOpen,
+      posterShareModalOpen: timelineModalOpen ? false : s.posterShareModalOpen,
+      armorPenetrationModalOpen: timelineModalOpen
+        ? false
+        : s.armorPenetrationModalOpen,
+      directorReelModalOpen: timelineModalOpen
+        ? false
+        : s.directorReelModalOpen,
+      passportModalOpen: timelineModalOpen ? false : s.passportModalOpen,
+      offlineModalOpen: timelineModalOpen ? false : s.offlineModalOpen,
+      commandPaletteOpen: timelineModalOpen ? false : s.commandPaletteOpen,
+      hudHidden: timelineModalOpen ? false : s.hudHidden,
+    })),
+  openTimelineModal: () => get().setTimelineModalOpen(true),
+  closeTimelineModal: () => get().setTimelineModalOpen(false),
+  setOfflineModalOpen: (offlineModalOpen) =>
+    set((s) => ({
+      offlineModalOpen,
+      textureModalOpen: offlineModalOpen ? false : s.textureModalOpen,
+      monographModalOpen: offlineModalOpen ? false : s.monographModalOpen,
+      posterShareModalOpen: offlineModalOpen ? false : s.posterShareModalOpen,
+      armorPenetrationModalOpen: offlineModalOpen
+        ? false
+        : s.armorPenetrationModalOpen,
+      directorReelModalOpen: offlineModalOpen ? false : s.directorReelModalOpen,
+      passportModalOpen: offlineModalOpen ? false : s.passportModalOpen,
+      timelineModalOpen: offlineModalOpen ? false : s.timelineModalOpen,
+      commandPaletteOpen: offlineModalOpen ? false : s.commandPaletteOpen,
+      hudHidden: offlineModalOpen ? false : s.hudHidden,
+    })),
+  openOfflineModal: () => get().setOfflineModalOpen(true),
+  closeOfflineModal: () => get().setOfflineModalOpen(false),
   setCommandPaletteOpen: (commandPaletteOpen) => set({ commandPaletteOpen }),
   openCommandPalette: () => set({ commandPaletteOpen: true }),
   closeCommandPalette: () => set({ commandPaletteOpen: false }),
@@ -1802,6 +1848,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       armorPenetrationModalOpen: false,
       directorReelModalOpen: false,
       passportModalOpen: false,
+      timelineModalOpen: false,
+      offlineModalOpen: false,
       commandPaletteOpen: false,
       selectedPartId: null,
       hiddenGroups: { ...DEFAULT_HIDDEN_GROUPS },

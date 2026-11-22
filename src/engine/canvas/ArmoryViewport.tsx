@@ -44,6 +44,7 @@ import {
   type ArmoryThermalVisualState,
   setArmoryThermalVisualState,
 } from '../materials/armoryShader';
+import { initKtx2Support } from '../materials/ktx2Support';
 import {
   getArmoryPhysicsState,
   isTankWeapon,
@@ -964,6 +965,7 @@ export const ArmoryViewport: React.FC = () => {
         camera={{ position: [14.5, 2.2, 54.0], fov: 41, near: 0.1, far: 1200 }}
         onCreated={({ gl }) => {
           gl.shadowMap.type = THREE.PCFSoftShadowMap;
+          initKtx2Support(gl);
           canvasCleanupRef.current?.();
           const dom = gl.domElement;
           const onLost = (ev: Event) => {

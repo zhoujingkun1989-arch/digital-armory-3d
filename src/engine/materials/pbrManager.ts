@@ -5,6 +5,7 @@ import type {
   WeaponId,
 } from '../../weapons/types';
 import { isWeaponId } from '../../weapons/types';
+import { getKtx2Loader, resolvePreferredTexturePath } from './ktx2Support';
 import { resolveTextureUrl } from '../utils/assetUrl';
 
 export interface PartPbrBundle {
@@ -180,7 +181,8 @@ function loadCachedTexture(
     ownerWeapon: WeaponId | 'shared';
   }
 ): { key: string; tex: THREE.Texture | null } {
-  const url = resolveTextureUrl(fileName, opts.baseOverride);
+  const preferred = resolvePreferredTexturePath(fileName, opts.baseOverride);
+  const url = preferred.url || resolveTextureUrl(fileName, opts.baseOverride);
   const repeatTag = opts.repeat ?? (opts.wrapRepeat ? 'rep' : 1);
   const key = `${url}|${opts.srgb ? 'srgb' : 'lin'}|${repeatTag}`;
   if (typeof window === 'undefined') {
@@ -199,10 +201,24 @@ function loadCachedTexture(
     loaderInstance = new THREE.TextureLoader();
   }
 
-  const tex = loaderInstance.load(url, () => {
+  const ktx2 = preferred.isKtx2 ? getKtx2Loader() : null;
+  const fallbackWebpUrl = resolveTextureUrl(fileName, opts.baseOverride);
+  const tex = loaderInstance.load(fallbackWebpUrl, () => {
     tex.needsUpdate = true;
     notifyKeyReady(key);
   });
+  if (ktx2 && preferred.isKtx2) {
+    void ktx2
+      .loadAsync(url)
+      .then((compressedTex) => {
+        tex.image = compressedTex.image;
+        tex.needsUpdate = true;
+        notifyKeyReady(key);
+      })
+      .catch(() => {
+        // Fallback WebP already loading seamlessly
+      });
+  }
   if (opts.srgb) {
     tex.colorSpace = THREE.SRGBColorSpace;
   } else {

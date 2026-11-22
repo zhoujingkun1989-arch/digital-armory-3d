@@ -6,11 +6,13 @@ import {
   Box,
   Camera,
   ChevronDown,
+  Clock,
   Compass,
   Crosshair,
   Eye,
   Flame,
   GitCompareArrows,
+  HardDrive,
   Image as ImageIcon,
   Layers,
   Palette,
@@ -92,6 +94,8 @@ export const WorkbenchHeader: React.FC = () => {
   );
   const openDirectorReelModal = useAppStore((s) => s.openDirectorReelModal);
   const openPassportModal = useAppStore((s) => s.openPassportModal);
+  const openTimelineModal = useAppStore((s) => s.openTimelineModal);
+  const openOfflineModal = useAppStore((s) => s.openOfflineModal);
   const tankCrewActive = useTankCrewStore((s) => s.active);
   const toggleTankCrew = useTankCrewStore((s) => s.toggleActive);
   const isTank = isTankWeapon(activeWeaponId);
@@ -499,6 +503,42 @@ export const WorkbenchHeader: React.FC = () => {
                   >
                     <Award size={13} aria-hidden="true" />
                     <span>{lang === 'en' ? 'Passport' : '军械师护照'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="toggle-chip"
+                    onClick={() => {
+                      setToolsMenuOpen(false);
+                      openTimelineModal();
+                    }}
+                    title={
+                      lang === 'en'
+                        ? 'Open 1898-2026 Firearms & Armor History Timeline'
+                        : '浏览 1898-2026 全馆 patent 谱系演化时间轴'
+                    }
+                  >
+                    <Clock size={13} aria-hidden="true" />
+                    <span>{lang === 'en' ? 'History Timeline' : '演化时间轴'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="toggle-chip"
+                    onClick={() => {
+                      setToolsMenuOpen(false);
+                      openOfflineModal();
+                    }}
+                    title={
+                      lang === 'en'
+                        ? 'Manage Offline PWA Cache & GPU KTX2 Pipeline'
+                        : '管理 PWA 离线博物馆缓存包与 KTX2 管线'
+                    }
+                  >
+                    <HardDrive size={13} aria-hidden="true" />
+                    <span>{lang === 'en' ? 'Offline Cache' : '离线缓存包'}</span>
                   </button>
 
                   {isTank && (

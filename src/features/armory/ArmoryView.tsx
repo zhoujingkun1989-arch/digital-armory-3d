@@ -11,6 +11,7 @@ import {
   Eye,
   GitCompareArrows,
   Globe2,
+  HardDrive,
   Headphones,
   Image as ImageIcon,
   Layers,
@@ -494,6 +495,40 @@ export const ArmoryView: React.FC = () => {
           >
             <Award size={13} aria-hidden="true" />
             <span>{lang === 'en' ? 'Passport' : '军械护照'}</span>
+          </button>
+
+          <button
+            type="button"
+            className="armory-showcase-btn armory-timeline-btn"
+            onClick={() => {
+              playWorkbenchFoley('preset_detent');
+              useAppStore.getState().openTimelineModal();
+            }}
+            title={
+              lang === 'en'
+                ? 'Explore 1898-2026 Mechanical Patent Lineage Timeline'
+                : '打开 1898-2026 全馆机械专利演化时间轴'
+            }
+          >
+            <Clock size={13} aria-hidden="true" />
+            <span>{lang === 'en' ? 'Timeline' : '演化时间轴'}</span>
+          </button>
+
+          <button
+            type="button"
+            className="armory-showcase-btn armory-offline-btn"
+            onClick={() => {
+              playWorkbenchFoley('preset_detent');
+              useAppStore.getState().openOfflineModal();
+            }}
+            title={
+              lang === 'en'
+                ? 'Manage Offline PWA Museum Storage & KTX2 Pipeline'
+                : '打开 PWA 离线博物馆缓存与 KTX2 纹理状态中心'
+            }
+          >
+            <HardDrive size={13} aria-hidden="true" />
+            <span>{lang === 'en' ? 'Offline' : '离线中心'}</span>
           </button>
 
           <button
