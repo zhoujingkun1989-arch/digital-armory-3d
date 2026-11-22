@@ -75,7 +75,7 @@ Flagship exhibits use our **Dual-Track Draco `.glb` + CSG Worker** architecture:
    - **3-Channel RGB only** (zero alpha channel) on every `*_normal.webp` and `*_roughness.webp` map; `pbrManager.ts` locks linear color space against R3F sRGB clobbering.
    - glTF `UV.y` (`v_gltf = 1 - v_blender`) is automatically flipped once in `glbAssetService.ts` so `TextureLoader(flipY = true)` samples upright WebPs uniformly.
 6. **Asset Size Budget**: Total bundle (`<id>.glb` + all `<id>_v3_*.webp`) must stay **`<= 12 MB`** for rifles, SMGs, and 4K Heavy Armor Main Battle Tanks (`ztz99a` / `m1a2` / `leopard2a7` / `tiger1`) and **`<= 10 MB`** for pistols/revolvers.
-7. **Registry & Contract Sync**: Register `pbrOverrides` and `dynamicSpringParts` in `src/engine/geometry/glbAssetService.ts`, update exact WebP counts in `src/i18n/{uiStrings,showcaseStrings}.ts` and `tests/{armoryIntegration,weaponContracts,glbAsset}.test.ts` (current vault: `27` exhibits, `683` parts, `351` WebP maps across `80` PBR suites).
+7. **Registry & Contract Sync**: Register `pbrOverrides` and `dynamicSpringParts` in `src/engine/geometry/glbAssetService.ts`, update exact WebP counts in `src/i18n/{uiStrings,showcaseStrings}.ts` and `tests/{armoryIntegration,weaponContracts,glbAsset}.test.ts` (current vault: `29` exhibits, `731` parts, `369` WebP maps across `86` PBR suites).
 
 ### Runtime Performance & Bilingual Rules
 - **60Hz Zero-GC Clock**: Continuous animation/kinematics progress must flow through `src/engine/clock/playbackClock.ts` inside R3F `useFrame`—never write 60fps progress into Zustand or React state.
@@ -124,5 +124,5 @@ npm run build       # 生产多入口构建（全部 chunk < 800 kB，零体积�
   - 每个实心零件按 `src/weapons/<id>/plugin.ts` 中的精确 `partId` 导出为独立水密流形网格（`non_manifold = 0`、`vol > 0`），节点变换保持单位矩阵（Identity）。
   - 带有 `aSpringParam` GPU 实时压缩变形的动态弹簧**不要**由 GLB 覆盖，须列入 `src/engine/geometry/glbAssetService.ts` 的 `dynamicSpringParts`，交由 CSG Worker 保留实时形变。
   - Cycles 烘焙 2K/4K 5 通道 Packed ORM（`R=AO, G=Roughness, B=Metalness`）贴图（轻武器/弓弩外观 `2048×2048`，重装甲大厅主战坦克外观 `4096×4096` 配合共享 `512×512` 装甲微细节贴图），法线与 ORM WebP 必须为 **3 通道 RGB（无 Alpha）**；单把展品总资产（`.glb` + 全部 `_v3_*.webp`）手枪/转轮 `<= 10 MB`，步枪/冲锋枪/4K 主战坦克 `<= 12 MB`。
-  - 新增贴图或展品后须同步更新 `glbAssetService.ts`、`src/i18n/{uiStrings,showcaseStrings}.ts` 以及 `tests/{glbAsset,armoryIntegration,weaponContracts}.test.ts`（当前基线：`27` 款展品、`683` 零件、`351` 张 WebP / `80` 套 PBR 图集）。
+  - 新增贴图或展品后须同步更新 `glbAssetService.ts`、`src/i18n/{uiStrings,showcaseStrings}.ts` 以及 `tests/{glbAsset,armoryIntegration,weaponContracts}.test.ts`（当前基线：`29` 款展品、`731` 零件、`369` 张 WebP / `86` 套 PBR 图集）。
 - **60Hz 零重渲染 & 中英 100% 对等**：高频动画通过 `playbackClock.ts` 驱动，禁止高频写入 Zustand；所有新增界面文案必须提供完整中英双语，且英文词条严禁残留 CJK 字符。

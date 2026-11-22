@@ -1,7 +1,7 @@
 {
   "name": "digital-armory-3d",
-  "version": "4.0.0",
-  "description": "Browser-Native Open-Source 3D Firearms, Archery & Heavy Armor Mechanical Museum & Interactive Engineering Encyclopedia (27 Exhibits: 21 Legendary Firearms + 2 Compound Archery + 4 1:1 Main Battle Tanks ZTZ-99A, M1A2 SEP v3, Leopard 2A7V & Tiger I 131; 683 Blender 5.2 Draco GLB + Dynamic CSG Parts, 351 2K/4K 5-Ch ORM WebP Maps, 1,582 Charon Gemini TTS Voiceovers, 15+3 1:1 Ordnance Cutaways, 1,000m RK4 External Ballistics & DOPE Lab, Armorer Blind Qualification Exam, 9x9x9 Mechanism Showdown, Cmd+K Palette, Live CT Cutaway, HD 3D Share Poster Studio & 27/27 Cycles 17-Plate Monograph Print Studio)",
+  "version": "5.0.0",
+  "description": "Browser-Native Open-Source 3D Firearms, Archery & Heavy Armor Mechanical Museum & Interactive Engineering Encyclopedia (29 Exhibits: 23 Legendary Firearms + 2 Compound Archery + 4 1:1 Main Battle Tanks ZTZ-99A, M1A2 SEP v3, Leopard 2A7V & Tiger I 131; 731 Blender 5.2 Draco GLB + Dynamic CSG Parts, 369 2K/4K 5-Ch ORM WebP Maps, 1,694 Charon Gemini TTS Voiceovers, 16+3 1:1 Ordnance Cutaways, 1,000m RK4 External Ballistics & DOPE Lab, 1:1 Composite Armor Penetration Lab, Linked Dual-Viewport Split Showdown, Armorer Blind Qualification & Speedrun Leaderboard, 9x9x9 Mechanism Showdown, Cmd+K Palette, 3-Axis Live CT Cutaway, HD 3D Share Poster Studio & 29/29 Cycles 17-Plate Monograph Print Studio)",
   "license": "MIT",
   "type": "module",
   "repository": {

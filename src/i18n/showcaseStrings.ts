@@ -214,7 +214,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
   zh: {
     nav: {
       ariaLabel: '产品宣传页主导航',
-      versionBadge: `v4.0 · ${VAULT_EXHIBIT_COUNT} 馆藏重装甲旗舰版`,
+      versionBadge: `v5.0 · ${VAULT_EXHIBIT_COUNT} 馆藏双屏与重装甲旗舰版`,
       capabilities: '四大核心模式',
       documentary: 'AI 导演纪录片',
       gallery: '实机渲染画廊',
@@ -324,7 +324,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       },
     },
     documentary: {
-      kicker: 'MULTIMODAL AUDIO-VISUAL ENGINE · V4.0',
+      kicker: 'MULTIMODAL AUDIO-VISUAL ENGINE · V5.0',
       title: 'AI 四幕双语研发纪录片 · 3D 导演运镜 & 军械声场',
       desc: `告别无声手动拖拽模型的传统看图模式：全馆藏 ${VAULT_EXHIBIT_COUNT} 款名枪、复合弓弩与 1:1 主战坦克内置中英双语四幕研发史、${VAULT_PARTS_TOTAL} 枚零件独立配音、自动镜头编排器与程序化 Web Audio 机械合成声效。`,
       directorBadge: '3D STORY DIRECTOR · 自动运镜编排',
@@ -683,7 +683,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
   en: {
     nav: {
       ariaLabel: 'Product showcase primary navigation',
-      versionBadge: `v4.0 · ${VAULT_EXHIBIT_COUNT}-EXHIBIT HEAVY ARMOR`,
+      versionBadge: `v5.0 · ${VAULT_EXHIBIT_COUNT}-EXHIBIT SPLIT & ARMOR`,
       capabilities: '4 Core Modes',
       documentary: 'AI 3D Director',
       gallery: 'Live Captures',
@@ -796,7 +796,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       },
     },
     documentary: {
-      kicker: 'MULTIMODAL AUDIO-VISUAL ENGINE · V4.0',
+      kicker: 'MULTIMODAL AUDIO-VISUAL ENGINE · V5.0',
       title: 'Bilingual 4-Act AI Documentary · 3D Director & Acoustic Engine',
       desc: `Beyond silent manual model viewers: all ${VAULT_EXHIBIT_COUNT} firearms, compound archery & 1:1 main battle tank exhibits ship with bilingual 4-act R&D documentaries, ${VAULT_PARTS_TOTAL} spoken component breakdowns, automated 3D camera choreography, and procedural Web Audio acoustics.`,
       directorBadge: '3D STORY DIRECTOR · AUTO-CHOREOGRAPHY',

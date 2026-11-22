@@ -29,7 +29,7 @@ jobs:
       - name: ESLint static analysis
         run: npm run lint
 
-      - name: Vitest full 27-exhibit V4.0 contract suite
+      - name: Vitest full 29-exhibit V5.0 contract suite
         run: npm test
 
       - name: Production Vite bundle build
