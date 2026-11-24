@@ -688,17 +688,18 @@ def _build_walnut_mat(name: str = "W_WinchesterWalnut") -> bpy.types.Material:
     nt.links.new(mix2.outputs[2], mix_p.inputs[6])
     nt.links.new(mix_p.outputs[2], bsdf.inputs["Base Color"])
 
+    # Refined hand-rubbed linseed-oiled Pre-64 Winchester American walnut roughness (R = 0.34-0.44)
     r_wood = nt.nodes.new("ShaderNodeMapRange")
     r_wood.clamp = True
     r_wood.inputs["From Min"].default_value = 0.20
     r_wood.inputs["From Max"].default_value = 0.80
     r_wood.inputs["To Min"].default_value = 0.34
-    r_wood.inputs["To Max"].default_value = 0.48
+    r_wood.inputs["To Max"].default_value = 0.41
     nt.links.new(n_fib.outputs["Fac"], r_wood.inputs["Value"])
 
     r_pore = nt.nodes.new("ShaderNodeMath")
     r_pore.operation = "MULTIPLY_ADD"
-    r_pore.inputs[1].default_value = 0.14
+    r_pore.inputs[1].default_value = 0.045
     nt.links.new(pore_m.outputs["Result"], r_pore.inputs[0])
     nt.links.new(r_wood.outputs["Result"], r_pore.inputs[2])
     nt.links.new(r_pore.outputs["Value"], bsdf.inputs["Roughness"])
@@ -717,11 +718,11 @@ def _build_walnut_mat(name: str = "W_WinchesterWalnut") -> bpy.types.Material:
     nt.links.new(h_pore.outputs["Value"], h_fib.inputs[2])
 
     bev = nt.nodes.new("ShaderNodeBevel")
-    bev.samples = 4
+    bev.samples = 5
     bev.inputs["Radius"].default_value = 0.024
     bump = nt.nodes.new("ShaderNodeBump")
-    bump.inputs["Strength"].default_value = 0.16
-    bump.inputs["Distance"].default_value = 0.018
+    bump.inputs["Strength"].default_value = 0.13
+    bump.inputs["Distance"].default_value = 0.016
     nt.links.new(h_fib.outputs["Value"], bump.inputs["Height"])
     nt.links.new(bev.outputs["Normal"], bump.inputs["Normal"])
     nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
@@ -731,13 +732,14 @@ def _build_walnut_mat(name: str = "W_WinchesterWalnut") -> bpy.types.Material:
 def create_material_library() -> dict[str, bpy.types.Material]:
     return {
         "W_WinchesterWalnut": _build_walnut_mat("W_WinchesterWalnut"),
+        # AgX-calibrated Pre-64 Winchester Royal Blued steel (sRGB 0.20-0.29, R=0.25-0.31)
         "R_RoyalBlued": _build_pbr_mat(
             "R_RoyalBlued",
-            base_srgb=(0.186, 0.214, 0.278),
-            roughness=0.22,
+            base_srgb=(0.204, 0.232, 0.296),
+            roughness=0.26,
             metallic=0.90,
             bevel_r=0.028,
-            edge_wear=0.58,
+            edge_wear=0.56,
             edge_srgb=(0.78, 0.81, 0.86),
             grain_scale=38.0,
             grain_bump=0.018,
@@ -746,38 +748,38 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         ),
         "R_CaseHardened": _build_pbr_mat(
             "R_CaseHardened",
-            base_srgb=(0.345, 0.310, 0.285),
-            roughness=0.27,
+            base_srgb=(0.355, 0.318, 0.292),
+            roughness=0.28,
             metallic=0.88,
             bevel_r=0.024,
             edge_wear=0.52,
             edge_srgb=(0.80, 0.78, 0.76),
             grain_scale=18.0,
-            grain_bump=0.024,
-            rough_var=0.036,
+            grain_bump=0.022,
+            rough_var=0.034,
         ),
         "R_SaddleIron": _build_pbr_mat(
             "R_SaddleIron",
-            base_srgb=(0.245, 0.268, 0.312),
-            roughness=0.28,
+            base_srgb=(0.255, 0.278, 0.322),
+            roughness=0.29,
             metallic=0.89,
             bevel_r=0.020,
             edge_wear=0.48,
             grain_scale=34.0,
-            grain_bump=0.022,
+            grain_bump=0.020,
         ),
         "R_InnerDark": _build_pbr_mat(
             "R_InnerDark",
-            base_srgb=(0.125, 0.135, 0.152),
-            roughness=0.42,
-            metallic=0.78,
+            base_srgb=(0.180, 0.194, 0.218),
+            roughness=0.38,
+            metallic=0.84,
             bevel_r=0.016,
             grain_scale=42.0,
             grain_bump=0.020,
         ),
         "M_BluedSteel": _build_pbr_mat(
             "M_BluedSteel",
-            base_srgb=(0.180, 0.208, 0.272),
+            base_srgb=(0.200, 0.228, 0.290),
             roughness=0.23,
             metallic=0.90,
             bevel_r=0.026,
@@ -1126,6 +1128,151 @@ def bool_subtract(target: bpy.types.Object, cutters: list[bpy.types.Object], sol
     return target
 
 
+def _smoothstep_f(e0: float, e1: float, x: float) -> float:
+    t = max(0.0, min(1.0, (x - e0) / max(e1 - e0, 1e-6)))
+    return t * t * (3.0 - 2.0 * t)
+
+
+def sample_quad_bezier(
+    p0: tuple[float, float],
+    p1: tuple[float, float],
+    p2: tuple[float, float],
+    steps: int = 12,
+    include_start: bool = False,
+) -> list[tuple[float, float]]:
+    pts: list[tuple[float, float]] = []
+    start = 0 if include_start else 1
+    for i in range(start, steps + 1):
+        t = i / steps
+        mt = 1.0 - t
+        pts.append((
+            mt * mt * p0[0] + 2.0 * mt * t * p1[0] + t * t * p2[0],
+            mt * mt * p0[1] + 2.0 * mt * t * p1[1] + t * t * p2[1],
+        ))
+    return pts
+
+
+def sample_cubic_bezier(
+    p0: tuple[float, float],
+    p1: tuple[float, float],
+    p2: tuple[float, float],
+    p3: tuple[float, float],
+    steps: int = 16,
+    include_start: bool = False,
+) -> list[tuple[float, float]]:
+    pts: list[tuple[float, float]] = []
+    start = 0 if include_start else 1
+    for i in range(start, steps + 1):
+        t = i / steps
+        mt = 1.0 - t
+        pts.append((
+            mt**3 * p0[0] + 3.0 * mt**2 * t * p1[0] + 3.0 * mt * t**2 * p2[0] + t**3 * p3[0],
+            mt**3 * p0[1] + 3.0 * mt**2 * t * p1[1] + 3.0 * mt * t**2 * p2[1] + t**3 * p3[1],
+        ))
+    return pts
+
+
+def mk_swept_bow(
+    name: str,
+    centerline_xy: list[tuple[float, float]],
+    rx_fn,
+    rz_fn,
+    sec_n: int = 24,
+    super_exp: float = 0.72,
+    xform=None,
+    mat=None,
+) -> bpy.types.Object:
+    bm = bmesh.new()
+    rings = []
+    n_pts = len(centerline_xy)
+    for i, (cx, cy) in enumerate(centerline_xy):
+        t = i / max(1, n_pts - 1)
+        if i == 0:
+            tx, ty = centerline_xy[1][0] - cx, centerline_xy[1][1] - cy
+        elif i == n_pts - 1:
+            tx, ty = cx - centerline_xy[-2][0], cy - centerline_xy[-2][1]
+        else:
+            tx, ty = centerline_xy[i + 1][0] - centerline_xy[i - 1][0], centerline_xy[i + 1][1] - centerline_xy[i - 1][1]
+        tl = max(1e-6, math.hypot(tx, ty))
+        nx, ny = -ty / tl, tx / tl
+        rx = rx_fn(t)
+        rz = rz_fn(t)
+        ring = []
+        for s in range(sec_n):
+            a = (s / sec_n) * 2.0 * math.pi
+            ca, sa = math.cos(a), math.sin(a)
+            px = math.copysign(abs(ca) ** super_exp, ca) * rx
+            pz = math.copysign(abs(sa) ** super_exp, sa) * rz
+            ring.append(bm.verts.new((cx + nx * px, cy + ny * px, pz)))
+        rings.append(ring)
+    for i in range(len(rings) - 1):
+        for s in range(sec_n):
+            sn = (s + 1) % sec_n
+            bm.faces.new((rings[i][s], rings[i][sn], rings[i + 1][sn], rings[i + 1][s]))
+    bm.faces.new(list(reversed(rings[0])))
+    bm.faces.new(rings[-1])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    _apply_three_xform(bm, xform or [])
+    return _bm_to_obj(name, bm, mat)
+
+
+def mk_stadium_2d(length_x: float, height_y: float, arc_segs: int = 10) -> list[tuple[float, float]]:
+    r = height_y * 0.5
+    half_straight = max(1e-4, length_x * 0.5 - r)
+    pts: list[tuple[float, float]] = []
+    for k in range(arc_segs + 1):
+        a = -math.pi * 0.5 + math.pi * (k / arc_segs)
+        pts.append((half_straight + r * math.cos(a), r * math.sin(a)))
+    for k in range(arc_segs + 1):
+        a = math.pi * 0.5 + math.pi * (k / arc_segs)
+        pts.append((-half_straight + r * math.cos(a), r * math.sin(a)))
+    return pts
+
+
+def bool_union(objs: list[bpy.types.Object], name: str, solver: str = "EXACT") -> bpy.types.Object:
+    objs = [o for o in objs if o is not None]
+    assert len(objs) >= 1
+    base = objs[0]
+    rest = objs[1:]
+    for idx, other in enumerate(rest):
+        for m in other.data.materials:
+            if m and m.name not in [tm.name for tm in base.data.materials if tm]:
+                base.data.materials.append(m)
+        backup_mesh = base.data.copy()
+        tried = [solver, "MANIFOLD" if solver == "EXACT" else "EXACT"]
+        ok = False
+        for slv in tried:
+            select_only([base], base)
+            mod = base.modifiers.new(name=f"Union_{idx}", type="BOOLEAN")
+            mod.operation = "UNION"
+            mod.solver = slv
+            mod.object = other
+            if slv == "EXACT":
+                mod.use_self = True
+                mod.use_hole_tolerant = True
+            bpy.ops.object.modifier_apply(modifier=mod.name)
+            if _count_non_manifold(base) == 0 and len(base.data.polygons) > 0:
+                ok = True
+                break
+            old_m = base.data
+            base.data = backup_mesh.copy()
+            bpy.data.meshes.remove(old_m)
+        if not ok:
+            select_only([base], base)
+            mod = base.modifiers.new(name=f"UnionF_{idx}", type="BOOLEAN")
+            mod.operation = "UNION"
+            mod.solver = "EXACT"
+            mod.use_self = True
+            mod.use_hole_tolerant = True
+            mod.object = other
+            bpy.ops.object.modifier_apply(modifier=mod.name)
+        bpy.data.meshes.remove(backup_mesh)
+    delete_objs(rest)
+    base.name = name
+    base.data.name = name
+    return base
+
+
 def finish_part(obj: bpy.types.Object, bevel_w: float = 0.0, bevel_segs: int = 2, sharp_deg: float = 36.0, weighted_normals: bool = True) -> bpy.types.Object:
     select_only([obj], obj)
     if bevel_w > 0.0:
@@ -1192,20 +1339,41 @@ def build_win94_barrel(mats):
 
 def build_win94_front_sight(mats):
     m_blued, m_brass = mats["M_BluedSteel"], mats["M_Brass"]
-    blade = mk_extrude_z("w94_fs_b", [(-0.95, -0.34), (0.92, -0.34), (0.75, 0.48), (0.28, 0.88), (-0.35, 0.22)], -0.14, 0.14, bevel=0.02, mat=m_blued)
-    base = mk_box("w94_fs_base", 1.90, 0.34, 0.82, [("t", 0.0, -0.26, 0.0)], mat=m_blued, bevel=0.03)
-    bead = mk_cyl("w94_fs_bead", 0.14, 0.14, 0.42, axis="x", segs=18, xform=[("t", -0.10, 0.62, 0.0)], mat=m_brass, bevel=0.02)
-    return finish_part(join_objects([base, blade, bead], "win94_front_sight"), sharp_deg=36.0)
+    # Contoured dovetail base + gracefully swept ramp blade + domed solid brass front bead
+    base = mk_extrude_z("w94_fs_base", [(-0.98, -0.40), (0.98, -0.40), (0.78, -0.06), (-0.78, -0.06)], -0.44, 0.44, bevel=0.04, mat=m_blued)
+    blade_pts = [(-0.88, -0.14), (0.86, -0.14)] + sample_quad_bezier((0.86, -0.14), (0.82, 0.46), (0.28, 0.88), steps=10) + sample_quad_bezier((0.28, 0.88), (-0.18, 0.45), (-0.88, -0.14), steps=10)
+    blade = mk_extrude_z("w94_fs_b", blade_pts, -0.13, 0.13, bevel=0.025, mat=m_blued)
+    bead_stem = mk_cyl("w94_fs_bs", 0.14, 0.14, 0.36, axis="x", segs=20, xform=[("t", -0.04, 0.64, 0.0)], mat=m_brass, bevel=0.03)
+    bead_cap = mk_lathe_x(
+        "w94_fs_bc",
+        [(0.0, -0.18), (0.12, -0.16), (0.16, -0.08), (0.16, 0.08), (0.11, 0.16), (0.0, 0.18)],
+        segs=20, xform=[("t", -0.14, 0.64, 0.0)], mat=m_brass,
+    )
+    return finish_part(join_objects([base, blade, bead_stem, bead_cap], "win94_front_sight"), sharp_deg=36.0)
 
 
 def build_win94_rear_sight(mats):
     m_blued = mats["M_BluedSteel"]
-    leaf = mk_box("w94_rs_leaf", 3.80, 0.24, 0.72, None, mat=m_blued, bevel=0.03)
-    ramp = mk_box("w94_rs_ramp", 1.80, 0.56, 0.68, [("t", -0.70, 0.22, 0.0)], mat=m_blued, bevel=0.03)
-    post = mk_box("w94_rs_post", 0.38, 0.68, 1.12, [("t", -1.55, 0.42, 0.0)], mat=m_blued, bevel=0.03)
-    vcut = mk_box("c_rs_v", 0.70, 0.48, 0.28, [("t", -1.55, 0.68, 0.0)], mat=m_blued)
-    post_cut = bool_subtract(post, [vcut])
-    return finish_part(join_objects([leaf, ramp, post_cut], "win94_rear_sight"), sharp_deg=34.0)
+    # Authentic Winchester semi-buckhorn rear sight w/ dovetail base, spring leaf & 5-step elevator ramp!
+    base = mk_extrude_z("w94_rs_dv", [(1.10, -0.26), (2.10, -0.26), (1.92, 0.06), (1.28, 0.06)], -0.48, 0.48, bevel=0.03, mat=m_blued)
+    leaf_pts = [(-1.85, 0.06), (1.92, -0.08), (1.92, 0.14), (-1.85, 0.30)]
+    leaf = mk_extrude_z("w94_rs_leaf", leaf_pts, -0.34, 0.34, bevel=0.03, mat=m_blued)
+    # 5-stepped elevation elevator wedge beneath leaf (`X in [-1.35, +0.95]`)
+    elev_pts = [(-1.30, -0.16), (0.95, -0.16), (0.95, -0.04)]
+    for st in range(5):
+        sx0 = 0.72 - st * 0.38
+        sx1 = sx0 - 0.34
+        sy = -0.02 + st * 0.08
+        elev_pts.extend([(sx0, sy), (sx1, sy)])
+    elev_pts.append((-1.30, 0.32))
+    elevator = mk_extrude_z("w94_rs_el", elev_pts, -0.32, 0.32, bevel=0.02, mat=m_blued)
+    # Iconic swept curved semi-buckhorn rear sight ears framing central U-notch (in Z-Y plane -> rotate ry(pi/2))
+    horn_l = sample_cubic_bezier((-0.14, 0.24), (-0.42, 0.26), (-0.72, 0.56), (-0.54, 0.94), steps=14, include_start=True)
+    horn_r = sample_cubic_bezier(( 0.14, 0.24), ( 0.42, 0.26), ( 0.72, 0.56), ( 0.54, 0.94), steps=14, include_start=True)
+    ear_l = mk_swept_bow("w94_rs_hl", horn_l, lambda t: 0.12 - 0.04 * t, lambda t: 0.16, sec_n=14, super_exp=0.65, xform=[("ry", math.pi * 0.5), ("t", -1.68, 0.18, 0.0)], mat=m_blued)
+    ear_r = mk_swept_bow("w94_rs_hr", horn_r, lambda t: 0.12 - 0.04 * t, lambda t: 0.16, sec_n=14, super_exp=0.65, xform=[("ry", math.pi * 0.5), ("t", -1.68, 0.18, 0.0)], mat=m_blued)
+    saddle = mk_box("w94_rs_sd", 0.34, 0.28, 0.46, [("t", -1.68, 0.34, 0.0)], mat=m_blued, bevel=0.03)
+    return finish_part(join_objects([base, leaf, elevator, ear_l, ear_r, saddle], "win94_rear_sight"), sharp_deg=34.0)
 
 
 def build_win94_breech_bolt(mats):
@@ -1246,20 +1414,38 @@ def build_win94_locking_bolt(mats):
 
 def build_win94_lever(mats):
     m_ch, m_blued = mats["R_CaseHardened"], mats["R_RoyalBlued"]
-    loop = mk_extrude_z(
-        "w94_lev_loop",
-        [(-0.68, -0.45), (0.68, -0.45), (0.74, 0.48), (-0.55, 0.48), (-10.80, -3.55), (-11.40, -4.35), (-6.20, -4.35), (-4.80, -2.55)],
-        -0.48, 0.48, bevel=0.05, mat=m_ch,
+    # Authentic John Browning Model 1894 swept curved oval finger-lever loop (`assembledPos=(0.80, -1.65, 0)`)!
+    # Forward pivot knuckle & locking-bolt camming tongue
+    pivot_head = mk_cyl("w94_lev_pv", 0.62, 0.62, 0.96, axis="z", segs=24, xform=[("t", 0.0, 0.02, 0.0)], mat=m_ch, bevel=0.05)
+    cam_tongue = mk_extrude_z("w94_lev_cam", [(-0.72, -0.25), (0.64, -0.25), (0.58, 0.85), (-0.42, 0.92), (-0.85, 0.32)], -0.38, 0.38, bevel=0.04, mat=m_blued)
+    # Continuous smooth cubic-Bezier swept D-loop:
+    # Front neck along receiver belly -> sweeping down ahead of trigger (`x=-5.6`) -> curved bottom finger bar
+    # under trigger (`x=-8.0, y=-3.05`) -> rounded Western heel loop (`x=-13.85`) -> upper rear tang kissing
+    # underside of straight wrist & pressing tang safety (`x=-9.2`)!
+    loop_pts = (
+        [(0.0, -0.06)]
+        + sample_cubic_bezier((0.0, -0.06), (-2.10, -0.20), (-4.20, -0.28), (-5.45, -0.45), steps=12)
+        + sample_cubic_bezier((-5.45, -0.45), (-5.78, -1.55), (-6.10, -2.72), (-7.45, -2.98), steps=16)
+        + sample_cubic_bezier((-7.45, -2.98), (-9.60, -3.18), (-11.65, -3.22), (-12.95, -3.02), steps=14)
+        + sample_cubic_bezier((-12.95, -3.02), (-14.12, -2.75), (-14.18, -1.55), (-12.75, -1.04), steps=18)
+        + sample_cubic_bezier((-12.75, -1.04), (-11.35, -0.72), (-9.85, -0.48), (-8.65, -0.20), steps=12)
     )
-    hole = mk_extrude_z("c_lev_h", [(-10.10, -3.58), (-5.85, -3.58), (-5.25, -2.55), (-8.85, -2.95)], -0.90, 0.90, mat=m_ch)
-    cam = mk_box("w94_lev_cam", 1.20, 0.85, 0.72, [("t", -0.20, 0.25, 0.0)], mat=m_blued, bevel=0.04)
-    loop_cut = bool_subtract(loop, [hole])
-    return finish_part(join_objects([loop_cut, cam], "win94_lever"), sharp_deg=34.0)
+    swept_loop = mk_swept_bow(
+        "w94_lev_bow",
+        loop_pts,
+        lambda t: 0.34 - 0.07 * _smoothstep_f(0.14, 0.30, t) + 0.04 * _smoothstep_f(0.55, 0.72, t) - 0.04 * _smoothstep_f(0.84, 1.0, t),
+        lambda t: 0.48 - 0.04 * _smoothstep_f(0.20, 0.85, t),
+        sec_n=24, super_exp=0.68, mat=m_ch,
+    )
+    # Small tang-safety actuator lug on upper rear lever bar (`x = -9.2`)
+    saf_boss = mk_box("w94_lev_sb", 0.92, 0.42, 0.62, [("t", -9.20, -0.20, 0.0)], mat=m_blued, bevel=0.05)
+    lever_u = bool_union([pivot_head, swept_loop, cam_tongue, saf_boss], "win94_lever")
+    return finish_part(lever_u, sharp_deg=36.0)
 
 
 def build_win94_link(mats):
     m_blued = mats["R_RoyalBlued"]
-    body = mk_extrude_z("w94_lnk", [(-2.35, -0.42), (2.45, -0.35), (2.55, 0.48), (1.25, 0.65), (-1.85, 0.45), (-2.45, -0.05)], -0.62, 0.62, bevel=0.04, mat=m_blued)
+    body = mk_extrude_z("w94_lnk", [(-2.35, -0.42), (2.45, -0.35), (2.55, 0.48), (1.25, 0.65), (-1.85, 0.45), (-2.45, -0.05)], -0.62, 0.62, bevel=0.05, mat=m_blued)
     slot = mk_box("c_lnk_s", 3.40, 0.48, 0.46, [("t", 0.10, 0.45, 0.0)], mat=m_blued)
     res = bool_subtract(body, [slot])
     res.name = "win94_link"
@@ -1268,17 +1454,41 @@ def build_win94_link(mats):
 
 
 def build_win94_receiver(mats):
-    m_blue, m_dark = mats["R_RoyalBlued"], mats["R_InnerDark"]
-    outer = mk_box("w94_rec", 12.20, 4.10, 2.80, None, mat=m_blue, bevel=0.11, bevel_segs=3)
-    ltang = mk_box("w94_rec_lt", 6.80, 1.35, 1.68, [("t", -6.20, -1.10, 0.0)], mat=m_blue, bevel=0.07)
-    utang = mk_box("w94_rec_ut", 5.60, 0.62, 1.48, [("t", -6.20, 0.85, 0.0)], mat=m_blue, bevel=0.05)
+    m_blue, m_dark, m_iron = mats["R_RoyalBlued"], mats["R_InnerDark"], mats["R_SaddleIron"]
+    # Crisp milled flat-sided Model 1894 forged receiver (`X in [-6.10, +6.10]`, Hero UV flanks planar!)
+    outer = mk_box("w94_rec", 12.20, 4.10, 2.80, None, mat=m_blue, bevel=0.13, bevel_segs=3)
+    # Smoothly contoured upper & lower straight-grip wrist tangs mating flush onto walnut stock!
+    utang_pts = (
+        [(-5.40, 0.45), (-5.40, 1.18)]
+        + sample_quad_bezier((-5.40, 1.18), (-8.40, 0.98), (-11.35, 0.56), steps=12)
+        + sample_quad_bezier((-11.35, 0.56), (-11.75, 0.42), (-11.30, 0.24), steps=6)
+        + sample_quad_bezier((-11.30, 0.24), (-8.40, 0.42), (-5.40, 0.45), steps=12)
+    )
+    utang = mk_extrude_z("w94_rec_ut", utang_pts, -0.72, 0.72, bevel=0.06, bevel_segs=2, mat=m_blue)
+    ltang_pts = (
+        [(-5.40, -2.02), (-5.40, -1.20)]
+        + sample_quad_bezier((-5.40, -1.20), (-8.80, -1.56), (-12.05, -2.08), steps=12)
+        + sample_quad_bezier((-12.05, -2.08), (-12.35, -2.28), (-11.90, -2.44), steps=6)
+        + sample_quad_bezier((-11.90, -2.44), (-8.80, -2.18), (-5.40, -2.02), steps=12)
+    )
+    ltang = mk_extrude_z("w94_rec_lt", ltang_pts, -0.78, 0.78, bevel=0.07, bevel_segs=2, mat=m_blue)
+    # Front receiver barrel-ring & mag-tube shoulder collar
+    bbl_ring = mk_cyl("w94_rec_br", 1.24, 1.28, 0.90, axis="x", segs=32, xform=[("t", 5.90, 1.20, 0.0)], mat=m_blue, bevel=0.06)
+
     top_ej = mk_box("c_rec_top", 9.20, 2.20, 1.65, [("t", 0.35, 1.45, 0.0)], mat=m_dark)
     bot_sl = mk_box("c_rec_bot", 9.40, 2.20, 1.56, [("t", 0.20, -1.50, 0.0)], mat=m_dark)
-    bbl_sk = mk_cyl("c_rec_bsk", 0.95, 0.95, 3.20, axis="x", segs=24, xform=[("t", 5.50, 1.20, 0.0)], mat=m_dark)
-    l_port = mk_box("c_rec_lp", 4.40, 1.45, 0.65, [("t", 1.30, -0.15, 1.32)], mat=m_dark)
-    rec = bool_subtract(join_objects([outer, ltang, utang], "w94_rec_solid"), [top_ej, bot_sl, bbl_sk, l_port])
-    rec.name = "win94_receiver"
-    return finish_part(rec, sharp_deg=36.0)
+    bbl_sk = mk_cyl("c_rec_bsk", 0.95, 0.95, 3.60, axis="x", segs=24, xform=[("t", 5.50, 1.20, 0.0)], mat=m_dark)
+    # Rounded stadium right-flank loading gate cutout
+    l_port = mk_extrude_z("c_rec_lp", mk_stadium_2d(4.40, 1.42, 10), 0.90, 1.80, xform=[("t", 1.30, -0.15, 0.0)], mat=m_dark)
+    rec = bool_subtract(join_objects([outer, utang, ltang, bbl_ring], "w94_rec_solid"), [top_ej, bot_sl, bbl_sk, l_port])
+    # Flush domed receiver cross-screws & upper tang screw
+    t_scr = mk_cyl("w94_rec_ts", 0.26, 0.26, 0.26, axis="y", segs=18, xform=[("t", -10.40, 0.62, 0.0)], mat=m_iron, bevel=0.04)
+    pins = [
+        mk_cyl(f"w94_rec_p{i}", 0.22, 0.22, 2.86, axis="z", segs=18, xform=[("t", px, py, 0.0)], mat=m_iron, bevel=0.03)
+        for i, (px, py) in enumerate([(-4.70, -1.35), (1.80, -1.45), (4.65, -0.95)])
+    ]
+    res = join_objects([rec, t_scr, *pins], "win94_receiver")
+    return finish_part(res, sharp_deg=36.0)
 
 
 def build_win94_rear_sight_alias(mats):
@@ -1287,80 +1497,241 @@ def build_win94_rear_sight_alias(mats):
 
 def build_win94_saddle_ring(mats):
     m_iron = mats["R_SaddleIron"]
-    stud = mk_cyl("w94_sr_stud", 0.28, 0.28, 0.52, axis="z", segs=20, mat=m_iron, bevel=0.03)
-    pts = [Vector((math.cos(2.0 * math.pi * i / 32) * 0.92, math.sin(2.0 * math.pi * i / 32) * 0.92 - 0.85, -0.18)) for i in range(32)]
-    ring = mk_tube_along_pts("w94_sr_ring", pts, 0.14, ring_segs=14, closed=True, mat=m_iron)
-    return finish_part(join_objects([stud, ring], "win94_saddle_ring"), sharp_deg=34.0)
+    # Contoured screw-in cavalry saddle-ring staple boss + beveled collar + 40-seg forged iron ring
+    collar = mk_cyl("w94_sr_col", 0.42, 0.48, 0.22, axis="z", segs=24, xform=[("t", 0.0, 0.0, 0.16)], mat=m_iron, bevel=0.04)
+    stud = mk_cyl("w94_sr_stud", 0.26, 0.28, 0.56, axis="z", segs=22, mat=m_iron, bevel=0.04)
+    eye_pts = [Vector((math.cos(2.0 * math.pi * i / 40) * 0.94, math.sin(2.0 * math.pi * i / 40) * 0.94 - 0.86, -0.18)) for i in range(40)]
+    ring = mk_tube_along_pts("w94_sr_ring", eye_pts, 0.145, ring_segs=16, closed=True, mat=m_iron)
+    return finish_part(join_objects([collar, stud, ring], "win94_saddle_ring"), sharp_deg=36.0)
 
 
 def build_win94_forend(mats):
     m_wal = mats["W_WinchesterWalnut"]
-    # Contoured ovoid carbine forend extruded along X in [-15.6, +15.6]
-    stations = [
-        (-15.6, _oval_zy(-0.10, 1.12, 1.48, 28)),
-        (-13.5, _oval_zy(-0.10, 1.16, 1.525, 28)),
-        ( 13.5, _oval_zy(-0.10, 1.12, 1.48, 28)),
-        ( 15.6, _oval_zy(-0.10, 1.06, 1.42, 28)),
-    ]
+    # 18-station x 36-ring organically contoured American walnut carbine forend (`X in [-16.38, +14.78]`)!
+    # Rear meets receiver front face (`world X = +5.10`) flush; nose tucks cleanly into front barrel band (`world X = +36.20`)!
+    N_ST = 18
+    N_RING = 36
+    stations = []
+    for i in range(N_ST):
+        u = i / (N_ST - 1)
+        x = -16.38 + u * 31.16
+        # Gentle organic grip swell through mid-forend tapering softly to receiver rear & barrel band nose
+        swell = math.sin(math.pi * u) ** 0.72
+        nose_taper = 1.0 - 0.09 * _smoothstep_f(0.84, 1.0, u)
+        rz = (1.38 + 0.17 * swell) * nose_taper
+        y_top = 0.98 + 0.06 * swell - 0.05 * _smoothstep_f(0.84, 1.0, u)
+        y_bot = -1.26 - 0.10 * swell + 0.08 * _smoothstep_f(0.84, 1.0, u)
+        yc = 0.5 * (y_top + y_bot)
+        ry = 0.5 * (y_top - y_bot)
+        ring = []
+        for k in range(N_RING):
+            th = 2.0 * math.pi * k / N_RING
+            ct, st = math.cos(th), math.sin(th)
+            # Authentic Winchester rounded-belly ovoid cross-section (slightly broader mid-upper palm grip)
+            w_mod = 0.92 + 0.08 * math.sin(max(0.0, ct) * math.pi * 0.5)
+            z = st * rz * w_mod
+            y = yc + ct * ry
+            ring.append((z, y))
+        stations.append((x, ring))
+
     blank = mk_loft_x("w94_fe_b", stations, mat=m_wal)
-    bbl_g = mk_cyl("c_fe_b", 0.84, 0.84, 32.4, axis="x", segs=24, xform=[("t", 0.0, 1.00, 0.0)], mat=m_wal)
-    mag_c = mk_cyl("c_fe_m", 0.62, 0.62, 32.4, axis="x", segs=20, xform=[("t", 0.0, -0.80, 0.0)], mat=m_wal)
+    bbl_g = mk_cyl("c_fe_b", 0.84, 0.84, 32.8, axis="x", segs=28, xform=[("t", -0.60, 1.00, 0.0)], mat=m_wal)
+    mag_c = mk_cyl("c_fe_m", 0.62, 0.62, 32.8, axis="x", segs=24, xform=[("t", -0.60, -0.80, 0.0)], mat=m_wal)
     fe = bool_subtract(blank, [bbl_g, mag_c])
     fe.name = "win94_forend"
-    return finish_part(fe, sharp_deg=42.0)
+    return finish_part(fe, sharp_deg=44.0)
 
 
 def build_win94_barrel_bands(mats):
     m_blue, m_iron = mats["M_BluedSteel"], mats["M_PolishedSteel"]
-    strap = mk_box("w94_bb_s", 2.40, 3.35, 3.25, None, mat=m_blue, bevel=0.10)
-    boss = mk_cyl("w94_bb_b", 0.32, 0.32, 3.45, axis="z", segs=18, xform=[("t", 0.0, -0.78, 0.0)], mat=m_iron, bevel=0.03)
-    h1 = mk_cyl("c_bb_1", 0.75, 0.75, 2.80, axis="x", segs=24, xform=[("t", 0.0, 0.90, 0.0)], mat=m_blue)
-    h2 = mk_cyl("c_bb_2", 0.56, 0.56, 2.80, axis="x", segs=20, xform=[("t", 0.0, -0.90, 0.0)], mat=m_blue)
-    res = bool_subtract(strap, [h1, h2])
-    return finish_part(join_objects([res, boss], "win94_barrel_bands"), sharp_deg=34.0)
+
+    # Helper: authentic sculpted figure-8 rounded-arch Winchester Model 94 carbine barrel band!
+    def _mk_fig8_band(tag: str, x_center: float, width_x: float, r_bbl_out: float, r_mag_out: float, waist_z: float, bbl_r_in: float, mag_r_in: float):
+        # Smooth 40-pt figure-8 perimeter in (z, y): top arch centered at y=+0.90, bottom arch at y=-0.90
+        pts_zy = []
+        n_arc = 18
+        for k in range(n_arc + 1):
+            a = -0.18 * math.pi + 1.36 * math.pi * (k / n_arc)  # right -> top -> left
+            z = r_bbl_out * math.cos(a)
+            y = 0.90 + r_bbl_out * math.sin(a)
+            pts_zy.append((z, y))
+        # Left gentle waist curve
+        pts_zy.append((-waist_z, 0.0))
+        for k in range(n_arc + 1):
+            a = 0.82 * math.pi + 1.36 * math.pi * (k / n_arc)  # left -> bottom -> right
+            z = r_mag_out * math.cos(a)
+            y = -0.90 + r_mag_out * math.sin(a)
+            pts_zy.append((z, y))
+        pts_zy.append((waist_z, 0.0))
+
+        # Slight crown/chamfer along X edges so specular light catches rounded milled band edges!
+        hx = width_x * 0.5
+        ch = 0.14
+        def _scale_ring(s: float):
+            return [(z * s, y * (0.985 + 0.015 * s)) for (z, y) in pts_zy]
+
+        band_blank = mk_loft_x(
+            f"{tag}_body",
+            [
+                (x_center - hx,      _scale_ring(0.94)),
+                (x_center - hx + ch, _scale_ring(1.00)),
+                (x_center + hx - ch, _scale_ring(1.00)),
+                (x_center + hx,      _scale_ring(0.94)),
+            ],
+            mat=m_blue,
+        )
+        h1 = mk_cyl(f"c_{tag}_1", bbl_r_in, bbl_r_in, width_x + 0.60, axis="x", segs=28, xform=[("t", x_center,  0.90, 0.0)], mat=m_blue)
+        h2 = mk_cyl(f"c_{tag}_2", mag_r_in, mag_r_in, width_x + 0.60, axis="x", segs=24, xform=[("t", x_center, -0.90, 0.0)], mat=m_blue)
+        band = bool_subtract(band_blank, [h1, h2])
+        # Recessed slotted clamping cross-screw boss on lower belly
+        scr = mk_cyl(f"{tag}_scr", 0.24, 0.24, waist_z * 2.15, axis="z", segs=20, xform=[("t", x_center, -0.18, 0.0)], mat=m_iron, bevel=0.04)
+        return [band, scr]
+
+    # 1. Rear forend-nose carbine barrel band (`world X = 36.20`, hugging walnut forend nose cleanly!)
+    rear_band = _mk_fig8_band("w94_bb_rear", 0.0, 2.35, r_bbl_out=1.18, r_mag_out=1.08, waist_z=1.34, bbl_r_in=0.75, mag_r_in=0.58)
+    # 2. Forward muzzle carbine barrel band (`world X = 52.00`, clamping barrel & mag tube ahead of forend!)
+    front_band = _mk_fig8_band("w94_bb_fwd", 15.80, 1.55, r_bbl_out=1.02, r_mag_out=0.88, waist_z=0.72, bbl_r_in=0.73, mag_r_in=0.58)
+    return finish_part(join_objects([*rear_band, *front_band], "win94_barrel_bands"), sharp_deg=36.0)
+
+
+def _win94_stock_cross_section(x: float, n_ring: int = 36, scale_z: float = 1.0, scale_y: float = 1.0) -> list[tuple[float, float]]:
+    """Shared mathematically exact Pre-64 Winchester 1894 straight-grip buttstock cross-section in stock local coords."""
+    # Rear butt x = -15.00 (`world X = -37.50`), front receiver shoulder x = +15.42 (`world X = -7.08`)
+    # Smooth Western comb arch -> graceful comb nose drop -> slender oval straight wrist -> flush receiver shoulder
+    t_comb = _smoothstep_f(-15.0, 4.5, x)
+    t_wrist = _smoothstep_f(4.5, 12.2, x)
+    t_rec = _smoothstep_f(11.8, 15.42, x)
+
+    y_top = 2.02 + 0.72 * t_comb + 0.42 * t_wrist + 0.28 * t_rec
+    # Sweeping classic straight-grip carbine toe/belly -> slim straight wrist -> receiver bottom (+0.78)
+    y_bot = (
+        -5.62
+        + 3.92 * _smoothstep_f(-15.0, 5.2, x)
+        + 2.06 * _smoothstep_f(5.0, 11.8, x)
+        + 0.42 * _smoothstep_f(11.6, 15.42, x)
+    )
+    # Slim Western silhouette: rounded butt (`1.46`) -> slender oval wrist (`1.12`) -> flush receiver width (`1.36`)
+    hw = (
+        1.46
+        + 0.04 * math.sin(math.pi * _smoothstep_f(-15.0, 2.0, x))
+        - 0.34 * _smoothstep_f(1.0, 11.0, x)
+        + 0.24 * _smoothstep_f(12.2, 15.42, x)
+    ) * scale_z
+
+    yc = 0.5 * (y_top + y_bot)
+    ry = max(0.38, 0.5 * (y_top - y_bot)) * scale_y
+    # Teardrop comb taper at butt smoothly transitioning to oval wrist & flat-flanked receiver shoulder!
+    top_taper = 0.62 + 0.24 * t_wrist + 0.12 * t_rec
+    super_p = 1.0 - 0.24 * t_rec  # slightly squarer superellipse right at flat-sided receiver junction!
+
+    ring = []
+    for k in range(n_ring):
+        th = 2.0 * math.pi * k / n_ring
+        ct, st = math.cos(th), math.sin(th)
+        w_mod = top_taper + (1.0 - top_taper) * _smoothstep_f(0.95, -0.25, ct)
+        z = math.copysign(abs(st) ** super_p, st) * hw * w_mod
+        y = yc + math.copysign(abs(ct) ** super_p, ct) * ry
+        ring.append((z, y))
+    return ring
 
 
 def build_win94_walnut_stock(mats):
     m_wal = mats["W_WinchesterWalnut"]
-    # Organically lofted straight-grip carbine buttstock matching exact local bounds X in [-15.0..+14.8]
-    def _stock_ring(yc: float, ytop: float, ybot: float, rz: float, segs: int = 28):
-        cy = 0.5 * (ytop + ybot)
-        ry = max(0.35, 0.5 * (ytop - ybot))
-        return [(rz * math.sin(2.0 * math.pi * k / segs), cy + ry * math.cos(2.0 * math.pi * k / segs)) for k in range(segs)]
+    # 28-station x 36-ring organically lofted American black walnut straight-grip Western carbine buttstock!
+    N_ST = 28
+    stations = []
+    for i in range(N_ST):
+        u = i / (N_ST - 1)
+        x = -15.00 + u * 30.42
+        stations.append((x, _win94_stock_cross_section(x, n_ring=36)))
 
-    stations = [
-        (-15.0, _stock_ring(-1.80, 2.05, -5.65, 1.44, 28)),
-        ( -8.0, _stock_ring(-1.45, 2.28, -4.45, 1.44, 28)),
-        (  0.0, _stock_ring(-0.85, 2.55, -2.95, 1.36, 28)),
-        (  8.5, _stock_ring( 0.35, 2.88, -0.45, 1.18, 28)),
-        ( 10.8, _stock_ring( 1.25, 2.95,  0.25, 1.06, 28)),
-        ( 14.8, _stock_ring( 1.60, 2.95,  0.25, 1.04, 28)),
-    ]
     blank = mk_loft_x("w94_stk_b", stations, mat=m_wal)
-    um = mk_box("c_stk_um", 4.80, 0.68, 1.56, [("t", 12.60, 2.85, 0.0)], mat=m_wal)
-    lm = mk_box("c_stk_lm", 5.20, 0.75, 1.72, [("t", 12.40, 0.35, 0.0)], mat=m_wal)
+    # Crisp flush upper & lower tang inletting mortises (`world X in [-12.5, -7.1]` -> `stock local x in [+10.0, +15.6]`)
+    um = mk_box("c_stk_um", 5.80, 0.65, 1.48, [("rz", 0.08), ("t", 12.80, 3.32, 0.0)], mat=m_wal)
+    lm = mk_box("c_stk_lm", 6.20, 0.72, 1.60, [("rz", 0.09), ("t", 12.60, 0.56, 0.0)], mat=m_wal)
     stk = bool_subtract(blank, [um, lm])
     stk.name = "win94_walnut_stock"
     return finish_part(stk, sharp_deg=44.0)
 
 
 def build_win94_buttplate(mats):
-    m_blue = mats["R_RoyalBlued"]
-    bp = mk_extrude_z("win94_buttplate", [(-0.55, -4.10), (0.85, -4.10), (0.85, 3.80), (0.05, 3.95), (-0.62, 3.72), (-0.28, 0.0)], -1.425, 1.425, bevel=0.10, mat=m_blue)
-    return finish_part(bp, sharp_deg=36.0)
+    m_blue, m_iron = mats["R_RoyalBlued"], mats["R_SaddleIron"]
+    # Iconic curved crescent steel Winchester carbine buttplate lofted directly from the exact rear stock oval!
+    # Stock assembledPos = (-22.50, -2.55, 0), buttplate assembledPos = (-38.40, -4.15, 0)
+    # Offset stock -> buttplate: dx = +15.90, dy = +1.60 (so stock x=-15.00 maps to bp_x=+0.90, stock y maps to y+1.60!)
+    N_RING = 36
+    base_ring = [(z, y + 1.60) for (z, y) in _win94_stock_cross_section(-15.00, n_ring=N_RING)]
+
+    # Build curved crescent steel shell with concave shoulder profile (horns at heel/toe hook back to bp_x = -0.56,
+    # hollow center scoops smoothly forward to bp_x = +0.20, front lip wraps flush over walnut at bp_x = +0.90..+1.10!)
+    bm = bmesh.new()
+    slices = [
+        # (x_base, cup_amp, sz, sy)
+        (-0.56, 0.72, 0.88, 0.96),   # Rear crescent bevel rim
+        (-0.46, 0.70, 1.015, 1.01),  # Outer crescent ridge
+        ( 0.88, 0.06, 1.032, 1.018), # Flush walnut mating shoulder
+        ( 1.12, 0.00, 1.026, 1.014), # Steel wrap lip hugging walnut rear perimeter
+        ( 1.16, 0.00, 0.980, 0.990), # Clean inward bevel return
+    ]
+    rings = []
+    yc = 0.5 * (max(p[1] for p in base_ring) + min(p[1] for p in base_ring))
+    ry = max(0.1, 0.5 * (max(p[1] for p in base_ring) - min(p[1] for p in base_ring)))
+    for x_b, cup_amp, sz, sy in slices:
+        ring = []
+        for (z0, y0) in base_ring:
+            yn = max(-1.0, min(1.0, (y0 - yc) / ry))  # +1 heel, -1 toe
+            x_v = x_b + cup_amp * (1.0 - yn * yn)
+            y_v = yc + (y0 - yc) * sy
+            z_v = z0 * sz
+            ring.append(bm.verts.new((x_v, y_v, z_v)))
+        rings.append(ring)
+    for s in range(len(rings) - 1):
+        a, b = rings[s], rings[s + 1]
+        for k in range(N_RING):
+            kn = (k + 1) % N_RING
+            bm.faces.new((a[k], b[k], b[kn], a[kn]))
+    bm.faces.new(list(reversed(rings[0])))
+    bm.faces.new(rings[-1])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    _apply_three_xform(bm, [])
+    shell = _bm_to_obj("w94_bp_shell", bm, m_blue)
+
+    # Iconic Winchester curved upper heel comb tang wrapping 2.4 cm forward over walnut comb (`bp_x in [+0.80, +3.35]`)
+    tang_pts = [(0.70, 3.35), (0.70, 3.68)] + sample_quad_bezier((0.70, 3.68), (2.05, 3.74), (3.35, 3.72), steps=10) + [(3.20, 3.48), (0.80, 3.35)]
+    heel_tang = mk_extrude_z("w94_bp_ht", tang_pts, -0.78, 0.78, bevel=0.06, bevel_segs=2, mat=m_blue)
+    # Twin countersunk slotted steel buttplate screws (upper heel tang + lower crescent toe)
+    scr_top = mk_cyl("w94_bp_st", 0.24, 0.24, 0.26, axis="y", segs=18, xform=[("t", 2.15, 3.66, 0.0)], mat=m_iron, bevel=0.03)
+    scr_bot = mk_cyl("w94_bp_sb", 0.25, 0.25, 0.26, axis="x", segs=18, xform=[("t", -0.24, -2.65, 0.0)], mat=m_iron, bevel=0.03)
+    return finish_part(join_objects([shell, heel_tang, scr_top, scr_bot], "win94_buttplate"), sharp_deg=40.0)
 
 
 def build_win94_hammer(mats):
     m_blue = mats["M_BluedSteel"]
-    hm = mk_extrude_z("win94_hammer", [(-0.48, -0.58), (0.55, -0.58), (0.68, 1.45), (0.18, 2.35), (-1.55, 2.48), (-1.35, 1.92), (-0.35, 1.68)], -0.46, 0.46, bevel=0.04, mat=m_blue)
-    return finish_part(hm, sharp_deg=34.0)
+    # Classic sculpted curved external Winchester Model 94 spur hammer w/ rounded thumb crest & 6 grip serrations!
+    hm_pts = (
+        [(-0.48, -0.58), (0.56, -0.58)]
+        + sample_quad_bezier((0.56, -0.58), (0.72, 0.45), (0.62, 1.48), steps=10)
+        + sample_quad_bezier((0.62, 1.48), (0.42, 2.28), (-0.08, 2.46), steps=10)
+        + sample_quad_bezier((-0.08, 2.46), (-0.95, 2.58), (-1.62, 2.42), steps=10)
+        + sample_quad_bezier((-1.62, 2.42), (-1.66, 2.02), (-1.22, 1.90), steps=8)
+        + sample_quad_bezier((-1.22, 1.90), (-0.52, 1.78), (-0.36, 1.45), steps=8)
+        + [(-0.48, -0.58)]
+    )
+    hm = mk_extrude_z("w94_hm_b", hm_pts, -0.44, 0.44, bevel=0.05, bevel_segs=2, mat=m_blue)
+    # 6 crisp cross-serrations along upper thumb spur crest
+    serrs = [
+        mk_box(f"w94_hm_s{k}", 0.14, 0.12, 0.84, [("rz", -0.10), ("t", -1.42 + k * 0.22, 2.49 + 0.015 * math.sin(k * 0.6), 0.0)], mat=m_blue, bevel=0.015)
+        for k in range(6)
+    ]
+    return finish_part(join_objects([hm, *serrs], "win94_hammer"), sharp_deg=36.0)
 
 
 def build_win94_trigger(mats):
     m_blue = mats["M_BluedSteel"]
-    top = mk_extrude_z("w94_tr_top", [(-0.52, -0.25), (0.65, -0.25), (0.65, 1.15), (-0.45, 1.15)], -0.28, 0.28, bevel=0.03, mat=m_blue)
-    shoe = mk_box("w94_tr_shoe", 0.58, 1.85, 0.44, [("rz", 0.28), ("t", 0.12, -1.05, 0.0)], mat=m_blue, bevel=0.04)
-    return finish_part(join_objects([top, shoe], "win94_trigger"), sharp_deg=34.0)
+    top = mk_extrude_z("w94_tr_top", [(-0.52, -0.25), (0.65, -0.25), (0.65, 1.15), (-0.45, 1.15)], -0.28, 0.28, bevel=0.04, mat=m_blue)
+    shoe_pts = sample_cubic_bezier((0.08, -0.10), (-0.08, -0.78), (0.04, -1.42), (0.48, -1.92), steps=16, include_start=True)
+    shoe = mk_swept_bow("w94_tr_shoe", shoe_pts, lambda t: 0.22 - 0.04 * t, lambda t: 0.22, sec_n=16, super_exp=0.60, mat=m_blue)
+    return finish_part(bool_union([top, shoe], "win94_trigger"), sharp_deg=36.0)
 
 
 def build_win94_tang_safety(mats):
@@ -1371,13 +1742,20 @@ def build_win94_tang_safety(mats):
 
 
 def build_win94_mag_tube(mats):
-    m_blue = mats["M_BluedSteel"]
+    m_blue, m_iron = mats["M_BluedSteel"], mats["M_PolishedSteel"]
+    # Full-length blued tubular magazine w/ beveled crowned end-plug & barrel hanger lug
     tube = mk_lathe_x(
-        "win94_mag_tube",
-        [(0.48, -24.50), (0.58, -24.50), (0.58, 24.45), (0.64, 24.45), (0.64, 24.60), (0.0, 24.60), (0.0, 23.75), (0.48, 23.75), (0.48, -24.50)],
-        segs=28, mat=m_blue,
+        "w94_mt_t",
+        [
+            (0.48, -24.80), (0.58, -24.80), (0.58, 24.30), (0.65, 24.38),
+            (0.65, 24.72), (0.54, 24.86), (0.28, 24.92), (0.00, 24.92),
+            (0.00, 23.75), (0.48, 23.75), (0.48, -24.80),
+        ],
+        segs=32, mat=m_blue,
     )
-    return finish_part(tube, sharp_deg=36.0)
+    plug_scr = mk_cyl("w94_mt_ps", 0.16, 0.16, 0.18, axis="x", segs=16, xform=[("t", 24.92, 0.0, 0.0)], mat=m_iron, bevel=0.02)
+    hanger = mk_box("w94_mt_hg", 1.20, 1.30, 0.52, [("t", 23.40, 0.95, 0.0)], mat=m_blue, bevel=0.04)
+    return finish_part(join_objects([tube, plug_scr, hanger], "win94_mag_tube"), sharp_deg=36.0)
 
 
 def build_win94_mag_follower(mats):
@@ -1391,10 +1769,12 @@ def build_win94_mag_follower(mats):
 
 
 def build_win94_loading_gate(mats):
-    m_blue = mats["R_RoyalBlued"]
-    gate = mk_box("w94_lg_g", 4.30, 1.38, 0.24, None, mat=m_blue, bevel=0.04)
-    tang = mk_box("w94_lg_t", 1.20, 0.55, 0.18, [("t", 2.20, 0.15, -0.10)], mat=m_blue, bevel=0.02)
-    return finish_part(join_objects([gate, tang], "win94_loading_gate"), sharp_deg=34.0)
+    m_blue, m_iron = mats["R_RoyalBlued"], mats["R_SaddleIron"]
+    # Contoured King's patent rounded stadium loading gate cover w/ recessed thumb bevel & mounting screw
+    gate = mk_extrude_z("w94_lg_g", mk_stadium_2d(4.32, 1.36, 10), -0.12, 0.12, bevel=0.04, bevel_segs=2, mat=m_blue)
+    tang = mk_box("w94_lg_t", 1.20, 0.52, 0.18, [("t", 2.18, 0.12, -0.10)], mat=m_blue, bevel=0.03)
+    scr = mk_cyl("w94_lg_s", 0.18, 0.18, 0.28, axis="z", segs=16, xform=[("t", 1.75, 0.0, 0.04)], mat=m_iron, bevel=0.03)
+    return finish_part(join_objects([gate, tang, scr], "win94_loading_gate"), sharp_deg=36.0)
 
 
 def build_win94_carrier(mats):
@@ -1494,8 +1874,8 @@ def unwrap_walnut_atlas(walnut_objs):
             continue
         for loop in f.loops:
             vco = loop.vert.co
-            xn = max(0.0, min(1.0, (vco.x - (-15.0)) / 29.8))
-            yn = max(0.0, min(1.0, (vco.z - (-5.7)) / 8.7))
+            xn = max(0.0, min(1.0, (vco.x - (-15.0)) / 30.45))
+            yn = max(0.0, min(1.0, (vco.z - (-5.7)) / 9.30))
             if cls == "HERO_LEFT":
                 loop[uv_layer].uv = (0.015 + (1.0 - xn) * 0.970, 0.680 + yn * 0.305)
             else:
