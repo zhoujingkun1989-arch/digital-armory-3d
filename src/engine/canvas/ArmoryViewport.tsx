@@ -26,6 +26,7 @@ import { ExhibitionTurntable } from '../actors/ExhibitionTurntable';
 import { MagazineAmmoStack } from '../actors/MagazineAmmoStack';
 import { MalfunctionActor } from '../actors/MalfunctionActor';
 import { PartActor } from '../actors/PartActor';
+import { RiflingBoreActor } from '../actors/RiflingBoreActor';
 import { playBrassCasingBounceSound } from '../audio/mechanicalSoundEngine';
 import { updateCalloutOverlay60fps } from '../callout/CalloutOverlay';
 import {
@@ -1217,6 +1218,7 @@ const DisassemblyRig: React.FC = () => {
                   />
                 ))}
                 <MagazineAmmoStack />
+                <RiflingBoreActor />
                 <AttachmentActor />
                 <BallisticsSystem worldFx={false} />
                 <MalfunctionActor />
