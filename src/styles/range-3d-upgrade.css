@@ -378,3 +378,133 @@
   }
 }
 
+/* ============================================================================
+ * Cycle 4C · Single-Canvas Live Target-Cam / Spotter PIP Optical Bezel Overlay
+ * ============================================================================ */
+
+/* Shift 5-round scorecard to bottom-left whenever bottom-right Target-Cam PIP is active */
+.eb-range3d-scorecard.has-pip-active {
+  right: auto;
+  left: 12px;
+}
+
+.eb-range3d-pip-toggle.is-active {
+  border-color: rgba(56, 189, 248, 0.72);
+  background: rgba(14, 165, 233, 0.22);
+  color: #e0f2fe;
+}
+
+:is([data-theme='light'], .theme-light, body.studio-light-ui)
+  .eb-range3d-pip-toggle.is-active {
+  border-color: rgba(2, 132, 199, 0.65);
+  background: rgba(2, 132, 199, 0.14);
+  color: #0369a1;
+}
+
+.eb-range3d-pip-frame {
+  position: absolute;
+  z-index: 5;
+  box-sizing: border-box;
+  pointer-events: none;
+  border-radius: 0;
+  border: 1.5px solid rgba(56, 189, 248, 0.76);
+  box-shadow:
+    0 12px 32px rgba(2, 6, 23, 0.62),
+    inset 0 0 0 1px rgba(15, 23, 42, 0.72),
+    inset 0 0 24px rgba(2, 6, 23, 0.42);
+  overflow: hidden;
+}
+
+.eb-range3d-pip-frame.is-flir {
+  border-color: rgba(226, 232, 240, 0.78);
+}
+
+:is([data-theme='light'], .theme-light, body.studio-light-ui)
+  .eb-range3d-pip-frame {
+  border-color: rgba(2, 132, 199, 0.78);
+  box-shadow:
+    0 10px 26px rgba(15, 23, 42, 0.28),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+}
+
+.eb-pip-reticle-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.eb-pip-header-bar {
+  position: absolute;
+  top: 6px;
+  left: 7px;
+  right: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.eb-pip-badge,
+.eb-pip-range-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: rgba(2, 6, 23, 0.76);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  color: #e2e8f0;
+  white-space: nowrap;
+}
+
+.eb-pip-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 6px rgba(52, 211, 153, 0.9);
+}
+
+.eb-pip-range-pill {
+  color: #7dd3fc;
+}
+
+.eb-pip-footer-bar {
+  position: absolute;
+  bottom: 5px;
+  left: 7px;
+  right: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.eb-pip-micro-tag {
+  padding: 1.5px 5px;
+  border-radius: 4px;
+  background: rgba(2, 6, 23, 0.68);
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #cbd5e1;
+}
+
+@media (max-width: 719px) {
+  .eb-range3d-pip-frame {
+    display: none;
+  }
+
+  .eb-range3d-scorecard.has-pip-active {
+    left: 8px;
+    right: 8px;
+  }
+}
+

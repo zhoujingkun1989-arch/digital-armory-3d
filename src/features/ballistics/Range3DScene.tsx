@@ -17,6 +17,7 @@ import {
   Eye,
   Flame,
   Pause,
+  PictureInPicture2,
   Play,
   RotateCcw,
   Target,
@@ -46,9 +47,13 @@ import {
   buildRangeTrajectory3D,
   computeFiveRoundGrouping,
   computeStringPlaybackSync,
+  computeTargetCamPipRect,
+  computeTargetCamPipRectInto,
+  computeTargetCamPoseInto,
   computeWindFlagStates,
   createMutableCameraPose3D,
   createMutableProjectilePose3D,
+  createMutableTargetCamPipRect,
   evaluateGelCavityPulse01,
   evaluateRangeCameraPoseInto,
   evaluateSteelPendulumAngle,
@@ -101,6 +106,7 @@ interface SimClockState {
   speed: RangeSpeedMultiplier;
   cameraMode: RangeCameraMode;
   flirEnabled: boolean;
+  targetCamPipEnabled: boolean;
   impactTriggered: boolean;
   overviewNeedsFrame: boolean;
   audioMuted: boolean;
@@ -131,6 +137,8 @@ const getServerSnapshot = () => false;
 const _poseScratch = createMutableProjectilePose3D();
 const _tracerPoseScratch = createMutableProjectilePose3D();
 const _camPoseScratch = createMutableCameraPose3D();
+const _pipPoseScratch = createMutableCameraPose3D();
+const _pipRectScratch = createMutableTargetCamPipRect();
 const _camGoalPos = new THREE.Vector3();
 const _camGoalLook = new THREE.Vector3();
 const _eulerScratch = new THREE.Euler(0, 0, 0, 'YZX');
@@ -207,34 +215,183 @@ function formatSignedCm(valCm: number): string {
   return `${valCm > 0 ? '+' : ''}${valCm.toFixed(1)} cm`;
 }
 
-/** Deterministic high-desert / alpine proving ground terrain heightfield. */
-function sampleTerrainHeight(x: number, z: number): number {
+/** Deterministic 2D hash in [0, 1] for multi-octave geological terrain noise. */
+function hash2D(ix: number, iz: number): number {
+  let h = (Math.imul(ix, 374761393) + Math.imul(iz, 668265263)) | 0;
+  h = Math.imul(h ^ (h >>> 13), 1274126177);
+  return ((h ^ (h >>> 16)) >>> 0) / 4294967296;
+}
+
+/** Smooth 2D value noise in [0, 1] using cubic Hermite interpolation (Zero-GC). */
+function valueNoise2D(x: number, z: number): number {
+  const ix = Math.floor(x);
+  const iz = Math.floor(z);
+  const fx = x - ix;
+  const fz = z - iz;
+  const ux = fx * fx * (3 - 2 * fx);
+  const uz = fz * fz * (3 - 2 * fz);
+
+  const a = hash2D(ix, iz);
+  const b = hash2D(ix + 1, iz);
+  const c = hash2D(ix, iz + 1);
+  const d = hash2D(ix + 1, iz + 1);
+
+  return a + (b - a) * ux + (c - a) * uz + (a - b - c + d) * ux * uz;
+}
+
+/** Multi-octave standard FBM in [0, 1] for desert washes & sedimentary strata warp. */
+function fbm2D(x: number, z: number, octaves = 4): number {
+  let sum = 0;
+  let amp = 0.5;
+  let freq = 1;
+  let norm = 0;
+  for (let o = 0; o < octaves; o++) {
+    sum += valueNoise2D(x * freq, z * freq) * amp;
+    norm += amp;
+    freq *= 2.04;
+    amp *= 0.5;
+  }
+  return sum / Math.max(1e-6, norm);
+}
+
+/** 5-octave Ridged Multifractal FBM in [0, 1] sculpting craggy mountain crests & hogbacks. */
+function ridgedFbm2D(x: number, z: number, octaves = 5): number {
+  let sum = 0;
+  let amp = 0.54;
+  let freq = 1;
+  let weight = 1;
+  let norm = 0;
+  for (let o = 0; o < octaves; o++) {
+    const n = valueNoise2D(x * freq + o * 17.3, z * freq - o * 11.7);
+    let signal = 1 - Math.abs(n * 2 - 1);
+    signal = signal * signal * weight;
+    weight = Math.max(0.25, Math.min(1, signal * 1.65));
+    sum += signal * amp;
+    norm += amp;
+    freq *= 2.12;
+    amp *= 0.48;
+  }
+  return sum / Math.max(1e-6, norm);
+}
+
+/**
+ * Deterministic multi-octave craggy high-desert & alpine proving ground heightfield.
+ * Preserves a dead-flat compacted firing corridor (`|z| <= 16 m` up to `x <= 1,028 m`)
+ * while sculpting terraced sandstone escarpments and jagged granite mountain ridges.
+ */
+export function sampleTerrainHeight(x: number, z: number): number {
   const absZ = Math.abs(z);
-  // Keep firing lane flat within |z| <= 17 m up to 1,035 m
+  // Keep firing corridor dead-flat within |z| <= 16 m up to 1,028 m
   const corridorBlend = THREE.MathUtils.smoothstep(absZ, 16, 46);
-  const backBerm = THREE.MathUtils.smoothstep(x, 1028, 1110) * 34;
+  const backBerm = THREE.MathUtils.smoothstep(x, 1028, 1098) * 32;
 
-  const ridgeA =
-    Math.sin(x * 0.0082 + 0.6) * Math.cos(z * 0.011) * 14 +
-    Math.sin(x * 0.019 - z * 0.014) * 5.2;
+  // Multi-octave rolling desert wash & gullies outside the firing lane
+  const washFbm = fbm2D(x * 0.0085 + 3.1, z * 0.0095 - 1.7, 4);
+  const desertFloor =
+    Math.max(0, (washFbm - 0.24) * 18.5 + Math.sin(x * 0.0075) * 3.2) *
+    corridorBlend;
+
+  // Flanking craggy mountain ridges (5-octave ridged multifractal + subtle sedimentary benching)
+  const flankMask = Math.pow(THREE.MathUtils.smoothstep(absZ, 50, 295), 1.32);
+  const cragNoise = ridgedFbm2D(x * 0.0048 + 1.4, z * 0.0056 + 2.2, 5);
+  const detailSpurs = ridgedFbm2D(x * 0.014 - 4.2, z * 0.015 + 0.8, 3);
+  const rawFlankH = flankMask * (24 + cragNoise * 76 + detailSpurs * 16);
+  // Soft sedimentary cliff terracing between 14 m and 46 m
+  const terracePhase = rawFlankH / 9.5;
+  const terracedFlank =
+    (Math.floor(terracePhase) +
+      THREE.MathUtils.smoothstep(terracePhase - Math.floor(terracePhase), 0.18, 0.88)) *
+    9.5;
+  const mesaBlend =
+    THREE.MathUtils.smoothstep(rawFlankH, 12, 24) *
+    (1 - THREE.MathUtils.smoothstep(rawFlankH, 42, 58)) *
+    0.42;
   const alpinePeaks =
-    Math.pow(THREE.MathUtils.smoothstep(absZ, 55, 290), 1.45) *
-    (52 +
-      24 * Math.sin(x * 0.0055 + z * 0.004) +
-      14 * Math.cos(x * 0.013 - z * 0.009));
+    rawFlankH * (1 - mesaBlend) + terracedFlank * mesaBlend;
 
-  const desertFloor = Math.max(0, ridgeA * 0.5 + 4.8) * corridorBlend;
-  const backMountains =
-    THREE.MathUtils.smoothstep(x, 1045, 1195) *
-    (44 + 18 * Math.sin(z * 0.012 + 0.9) + 9 * Math.cos(z * 0.028));
+  // Towering multi-octave backstop massif behind the 1,000 m impact berm
+  const backMask = THREE.MathUtils.smoothstep(x, 1042, 1192);
+  const backCrag = ridgedFbm2D(x * 0.0052 - 2.3, z * 0.0064 + 4.1, 5);
+  const backMountains = backMask * (26 + backCrag * 72 + detailSpurs * 14);
 
   return desertFloor + alpinePeaks + backBerm * 0.65 + backMountains;
 }
 
-/** Builds a smooth procedural vertex-colored proving ground BufferGeometry. */
-function createProvingGroundGeometry(): THREE.BufferGeometry {
-  const segX = 96;
-  const segZ = 64;
+/**
+ * Computes per-vertex altitude & slope geological strata color across 5 zones:
+ * compacted gravel corridor -> desert sandstone wash -> ochre/terracotta cliff bands
+ * -> craggy dark granite/slate ridges -> slope-shedding alpine snow peaks.
+ */
+export function sampleGeologicalStrataColor(
+  x: number,
+  y: number,
+  z: number,
+  slope01: number,
+  out: THREE.Color
+): THREE.Color {
+  const absZ = Math.abs(z);
+  const safeSlope = Math.max(0, Math.min(1, slope01));
+
+  if (absZ < 14.5 && x >= -18 && x <= 1025) {
+    // Compacted proving-ground gravel firing corridor
+    const laneEdge = THREE.MathUtils.smoothstep(absZ, 10.5, 14.5);
+    return out.setRGB(
+      0.34 + laneEdge * 0.14,
+      0.32 + laneEdge * 0.1,
+      0.29 + laneEdge * 0.05
+    );
+  }
+
+  // Sedimentary bedding ripple warped subtly by spatial FBM
+  const warp = fbm2D(x * 0.012, z * 0.012, 3);
+  const strataWave = 0.5 + 0.5 * Math.sin(y * 0.62 + warp * 4.4);
+  const fineBand = 0.5 + 0.5 * Math.sin(y * 1.65 - warp * 3.1);
+
+  if (y > 64) {
+    // High alpine granite ridge with snow-dusted saddles (steep faces shed snow!)
+    const elevSnow = THREE.MathUtils.smoothstep(y, 64, 84);
+    const snowCover = elevSnow * (1 - THREE.MathUtils.smoothstep(safeSlope, 0.44, 0.72));
+    const graniteR = 0.27 + fineBand * 0.06 - safeSlope * 0.07;
+    const graniteG = 0.29 + fineBand * 0.06 - safeSlope * 0.06;
+    const graniteB = 0.34 + fineBand * 0.07 - safeSlope * 0.04;
+    return out.setRGB(
+      graniteR + (0.85 - graniteR) * snowCover,
+      graniteG + (0.88 - graniteG) * snowCover,
+      graniteB + (0.92 - graniteB) * snowCover
+    );
+  }
+
+  if (y > 42) {
+    // Craggy dark slate & fractured granite upper ridges transitioning from upper cliff bands
+    const ridgeT = THREE.MathUtils.smoothstep(y, 42, 64);
+    const slateR = 0.42 - ridgeT * 0.14 - safeSlope * 0.08 + fineBand * 0.04;
+    const slateG = 0.35 - ridgeT * 0.06 - safeSlope * 0.07 + fineBand * 0.04;
+    const slateB = 0.31 + ridgeT * 0.04 - safeSlope * 0.05 + fineBand * 0.05;
+    return out.setRGB(slateR, slateG, slateB);
+  }
+
+  if (y > 14) {
+    // Stratified desert sedimentary cliff bands: ochre sandstone <-> burnt terracotta <-> caliche
+    const terraR = 0.58 + strataWave * 0.11 - safeSlope * 0.13;
+    const terraG = 0.35 + strataWave * 0.15 + fineBand * 0.05 - safeSlope * 0.11;
+    const terraB = 0.23 + strataWave * 0.1 + fineBand * 0.06 - safeSlope * 0.06;
+    return out.setRGB(terraR, terraG, terraB);
+  }
+
+  // Arid Mojave desert sandstone wash & sagebrush scrub flats
+  const scrub = fbm2D(x * 0.045 + 7.2, z * 0.048 - 2.4, 3);
+  const sageMask = THREE.MathUtils.smoothstep(scrub, 0.48, 0.74);
+  return out.setRGB(
+    0.58 - sageMask * 0.18 - safeSlope * 0.06,
+    0.47 - sageMask * 0.07 - safeSlope * 0.05,
+    0.34 - sageMask * 0.06 - safeSlope * 0.04
+  );
+}
+
+/** Builds a smooth multi-octave craggy vertex-colored proving ground BufferGeometry. */
+export function createProvingGroundGeometry(): THREE.BufferGeometry {
+  const segX = 160;
+  const segZ = 104;
   const widthX = 1280; // X in [-80 .. 1200]
   const widthZ = 680; // Z in [-340 .. +340]
   const geo = new THREE.PlaneGeometry(widthX, widthZ, segX, segZ);
@@ -243,6 +400,7 @@ function createProvingGroundGeometry(): THREE.BufferGeometry {
   const pos = geo.attributes.position as THREE.BufferAttribute;
   const colors = new Float32Array(pos.count * 3);
   const c = new THREE.Color();
+  const slopeEps = 2.5;
 
   for (let i = 0; i < pos.count; i++) {
     const x = pos.getX(i) + 560;
@@ -250,40 +408,17 @@ function createProvingGroundGeometry(): THREE.BufferGeometry {
     const y = sampleTerrainHeight(x, z);
     pos.setXYZ(i, x, y, z);
 
-    const absZ = Math.abs(z);
-    if (absZ < 14.5 && x >= -18 && x <= 1025) {
-      // Compacted proving-ground gravel firing corridor
-      const laneEdge = THREE.MathUtils.smoothstep(absZ, 10.5, 14.5);
-      c.setRGB(
-        0.34 + laneEdge * 0.12,
-        0.32 + laneEdge * 0.09,
-        0.29 + laneEdge * 0.05
-      );
-    } else if (y > 46) {
-      // High-altitude alpine snow-dusted ridge
-      const snowT = THREE.MathUtils.smoothstep(y, 46, 78);
-      c.setRGB(
-        0.36 + snowT * 0.44,
-        0.37 + snowT * 0.45,
-        0.4 + snowT * 0.45
-      );
-    } else if (y > 16) {
-      // Stratified desert mesa & granite rock
-      const rockT = THREE.MathUtils.smoothstep(y, 16, 46);
-      c.setRGB(
-        0.48 - rockT * 0.14,
-        0.41 - rockT * 0.06,
-        0.31 + rockT * 0.08
-      );
-    } else {
-      // Arid ochre sand & sagebrush scrub
-      const scrub = 0.5 + 0.5 * Math.sin(x * 0.065) * Math.cos(z * 0.075);
-      c.setRGB(
-        0.52 - scrub * 0.11,
-        0.44 - scrub * 0.04,
-        0.32 - scrub * 0.03
-      );
-    }
+    const dhdx =
+      (sampleTerrainHeight(x + slopeEps, z) -
+        sampleTerrainHeight(x - slopeEps, z)) /
+      (2 * slopeEps);
+    const dhdz =
+      (sampleTerrainHeight(x, z + slopeEps) -
+        sampleTerrainHeight(x, z - slopeEps)) /
+      (2 * slopeEps);
+    const slope01 = Math.min(1, Math.hypot(dhdx, dhdz) * 1.45);
+
+    sampleGeologicalStrataColor(x, y, z, slope01, c);
     colors[i * 3] = c.r;
     colors[i * 3 + 1] = c.g;
     colors[i * 3 + 2] = c.b;
@@ -2019,6 +2154,93 @@ const SimulationClockDriver: React.FC<{
   return null;
 };
 
+/**
+ * Single-Canvas Live Target-Cam PIP Scissor Renderer (Zero extra WebGL context, Zero-GC).
+ * Mounted LAST inside `Range3DWorld` with R3F priority `1` so Pass 1 renders the primary
+ * range camera and Pass 2 renders a tightly framed spotting-scope inset directly over
+ * the bottom-right corner (`gl.setScissor` / `gl.setViewport` restored cleanly every frame).
+ */
+const TargetCamPipRenderer: React.FC<{
+  traj: RangeTrajectory3D;
+  simRef: React.MutableRefObject<SimClockState>;
+  ribbonMeshRef: React.RefObject<THREE.Mesh | null>;
+}> = ({ traj, simRef, ribbonMeshRef }) => {
+  const pipCamRef = useRef<THREE.PerspectiveCamera | null>(null);
+
+  useFrame((state) => {
+    const { gl, scene, camera, size } = state;
+    const cssW = Math.max(1, size.width);
+    const cssH = Math.max(1, size.height);
+    const prevAutoClear = gl.autoClear;
+
+    // Pass 1: Primary Full-Viewport Camera
+    gl.autoClear = true;
+    gl.setScissorTest(false);
+    gl.setViewport(0, 0, cssW, cssH);
+    gl.render(scene, camera);
+
+    // Pass 2: Bottom-Right Live Target-Cam / Spotter PIP Inset
+    const st = simRef.current;
+    if (st.targetCamPipEnabled && st.cameraMode !== 'spotter_flir') {
+      const rect = computeTargetCamPipRectInto(cssW, cssH, _pipRectScratch);
+      if (rect.visible) {
+        if (!pipCamRef.current) {
+          pipCamRef.current = new THREE.PerspectiveCamera(26, 1.6, 0.08, 420);
+        }
+        const pipCam = pipCamRef.current;
+        computeTargetCamPoseInto(
+          traj.targetCenterX,
+          traj.targetCenterY,
+          traj.targetCenterZ,
+          traj.targetType,
+          traj.spec.category === 'armor',
+          _pipPoseScratch
+        );
+        pipCam.position.set(
+          _pipPoseScratch.posX,
+          _pipPoseScratch.posY,
+          _pipPoseScratch.posZ
+        );
+        pipCam.lookAt(
+          _pipPoseScratch.lookX,
+          _pipPoseScratch.lookY,
+          _pipPoseScratch.lookZ
+        );
+        if (
+          Math.abs(pipCam.aspect - rect.aspect) > 0.002 ||
+          Math.abs(pipCam.fov - _pipPoseScratch.fovDeg) > 0.05
+        ) {
+          pipCam.aspect = rect.aspect;
+          pipCam.fov = _pipPoseScratch.fovDeg;
+          pipCam.updateProjectionMatrix();
+        }
+
+        // Hide thick overview trajectory tube ONLY during optical close-up PIP pass
+        // so the AR500 steel gong face, lead-splash chips, and gel block remain unobstructed
+        const ribbonMesh = ribbonMeshRef.current;
+        const prevRibbonVis = ribbonMesh ? ribbonMesh.visible : true;
+        if (ribbonMesh) ribbonMesh.visible = false;
+
+        gl.setScissorTest(true);
+        gl.setScissor(rect.x, rect.yBottom, rect.width, rect.height);
+        gl.setViewport(rect.x, rect.yBottom, rect.width, rect.height);
+        gl.autoClear = false;
+        gl.clear(true, true, false);
+        gl.render(scene, pipCam);
+
+        if (ribbonMesh) ribbonMesh.visible = prevRibbonVis;
+      }
+    }
+
+    // Restore clean WebGL viewport / scissor / autoClear state after every frame
+    gl.setScissorTest(false);
+    gl.setViewport(0, 0, cssW, cssH);
+    gl.autoClear = prevAutoClear;
+  }, 1);
+
+  return null;
+};
+
 // ============================================================================
 // Sub-component: 3D World Scene Inside R3F Canvas
 // ============================================================================
@@ -2053,6 +2275,7 @@ const Range3DWorld: React.FC<{
 }) => {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
   const machRingGroupRef = useRef<THREE.Group>(null);
+  const mainRibbonMeshRef = useRef<THREE.Mesh>(null);
 
   // 1. Proving Ground Terrain
   const terrainGeo = useMemo(() => createProvingGroundGeometry(), []);
@@ -2306,17 +2529,17 @@ const Range3DWorld: React.FC<{
         maxPolarAngle={Math.PI * 0.486}
       />
 
-      {/* Contoured 1,000m Desert / Alpine Terrain with Procedural Gravel-Rock Albedo & Bump Maps */}
+      {/* Contoured 1,000m Craggy Desert / Alpine Strata Terrain with Procedural Gravel-Rock Albedo & Bump Maps */}
       <mesh geometry={terrainGeo} receiveShadow>
         <meshStandardMaterial
           vertexColors={!flirActive}
-          color={flirActive ? '#2b394d' : '#ffffff'}
+          color={flirActive ? '#2d3c52' : '#ffffff'}
           map={flirActive ? null : terrainTextures?.albedoTex ?? undefined}
           bumpMap={terrainTextures?.bumpTex ?? undefined}
-          bumpScale={flirActive ? 0.25 : 0.62}
+          bumpScale={flirActive ? 0.42 : 0.72}
           emissive={flirActive ? '#17212f' : '#000000'}
-          emissiveIntensity={flirActive ? 0.55 : 0}
-          roughness={0.94}
+          emissiveIntensity={flirActive ? 0.52 : 0}
+          roughness={flirActive ? 0.88 : 0.94}
           metalness={0.03}
         />
       </mesh>
@@ -2482,7 +2705,7 @@ const Range3DWorld: React.FC<{
       ))}
 
       {/* Focused Caliber 3D Mach-Gradient Trajectory Ribbon */}
-      <mesh geometry={mainRibbonGeo}>
+      <mesh ref={mainRibbonMeshRef} geometry={mainRibbonGeo}>
         <meshBasicMaterial
           vertexColors={!flirActive}
           color={flirActive ? '#cbd5e1' : '#ffffff'}
@@ -2550,6 +2773,13 @@ const Range3DWorld: React.FC<{
 
       {/* Zero-GC Staggered 5-Round Grouping Tracer Streaks */}
       <StringTracersRig traj={traj} flirActive={flirActive} simRef={simRef} />
+
+      {/* Single-Canvas Priority-1 Live Target-Cam PIP Scissor Renderer */}
+      <TargetCamPipRenderer
+        traj={traj}
+        simRef={simRef}
+        ribbonMeshRef={mainRibbonMeshRef}
+      />
     </>
   );
 };
@@ -2584,6 +2814,12 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
   const [targetType, setTargetType] = useState<RangeTargetType>('steel_gong');
   const [aimMode, setAimMode] = useState<RangeAimMode>('dope_dial');
   const [flirEnabled, setFlirEnabled] = useState<boolean>(false);
+  const [targetCamPipEnabled, setTargetCamPipEnabled] = useState<boolean>(true);
+  const [viewportSize, setViewportSize] = useState<{
+    width: number;
+    height: number;
+  }>({ width: 1024, height: 480 });
+  const viewportWrapRef = useRef<HTMLDivElement | null>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [localAudioMuted, setLocalAudioMuted] = useState<boolean>(false);
   const [groupingState, setGroupingState] = useState<{
@@ -2650,6 +2886,7 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
     speed: 0.2,
     cameraMode: 'overview',
     flirEnabled: false,
+    targetCamPipEnabled: true,
     impactTriggered: false,
     overviewNeedsFrame: true,
     audioMuted: false,
@@ -2691,6 +2928,7 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
     simRef.current.speed = speedMultiplier;
     simRef.current.cameraMode = cameraMode;
     simRef.current.flirEnabled = flirEnabled;
+    simRef.current.targetCamPipEnabled = targetCamPipEnabled;
     simRef.current.audioMuted = effectiveMuted;
     if (effectiveMuted) {
       clearScheduledAudio();
@@ -2699,9 +2937,35 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
     speedMultiplier,
     cameraMode,
     flirEnabled,
+    targetCamPipEnabled,
     effectiveMuted,
     clearScheduledAudio,
   ]);
+
+  // Measure viewport padding-box CSS dimensions (`clientWidth x clientHeight`) matching
+  // R3F `<Canvas>` `state.size` and `position: absolute` origin to 0px drift
+  useEffect(() => {
+    const el = viewportWrapRef.current;
+    if (!el) return;
+    const syncSize = () => {
+      const rect = el.getBoundingClientRect();
+      const nextW = el.clientWidth > 0 ? el.clientWidth : Math.round(rect.width);
+      const nextH =
+        el.clientHeight > 0 ? el.clientHeight : Math.round(rect.height);
+      if (nextW > 0 && nextH > 0) {
+        setViewportSize((prev) =>
+          prev.width === nextW && prev.height === nextH
+            ? prev
+            : { width: nextW, height: nextH }
+        );
+      }
+    };
+    syncSize();
+    if (typeof ResizeObserver === 'undefined') return;
+    const ro = new ResizeObserver(syncSize);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   // Reframe overview camera smoothly and clear stale target-plate chips when trajectory configuration changes
   useEffect(() => {
@@ -3055,6 +3319,12 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
   };
 
   const flirActive = flirEnabled;
+  const pipRect = useMemo(
+    () => computeTargetCamPipRect(viewportSize.width, viewportSize.height),
+    [viewportSize.width, viewportSize.height]
+  );
+  const showTargetCamPip =
+    targetCamPipEnabled && cameraMode !== 'spotter_flir' && pipRect.visible;
   const mach1Summary = traj.machRing.visible
     ? `${Math.round(traj.machRing.rangeM)} m`
     : focusedSolution.isInitiallySubsonic
@@ -3103,6 +3373,33 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
             ))}
           </div>
 
+          {/* Single-Canvas Live Target-Cam PIP Toggle */}
+          <button
+            type="button"
+            className={`eb-tab-btn eb-range3d-pip-toggle ${
+              targetCamPipEnabled && cameraMode !== 'spotter_flir'
+                ? 'is-active'
+                : ''
+            }`}
+            aria-pressed={targetCamPipEnabled && cameraMode !== 'spotter_flir'}
+            title={ui.range3dPipTitle}
+            data-testid="range3d-pip-toggle"
+            onClick={() => {
+              playWorkbenchFoley('toggle_switch');
+              if (cameraMode === 'spotter_flir') {
+                setCameraMode('overview');
+                setFlirEnabled(false);
+                simRef.current.overviewNeedsFrame = true;
+                setTargetCamPipEnabled(true);
+              } else {
+                setTargetCamPipEnabled((prev) => !prev);
+              }
+            }}
+          >
+            <PictureInPicture2 size={12} aria-hidden="true" />
+            <span>{ui.range3dPipBtn}</span>
+          </button>
+
           {/* FLIR White-Hot Thermal Toggle */}
           <button
             type="button"
@@ -3140,6 +3437,7 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
 
       {/* 3D Viewport Container */}
       <div
+        ref={viewportWrapRef}
         className={`eb-range3d-viewport ${flirActive ? 'is-flir-mode' : ''} ${
           expanded ? 'is-expanded' : ''
         }`}
@@ -3328,10 +3626,106 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
           </div>
         </div>
 
+        {/* Pixel-Locked Target-Cam PIP Optical Spotting-Scope Bezel Overlay */}
+        {showTargetCamPip && (
+          <div
+            className={`eb-range3d-pip-frame ${flirActive ? 'is-flir' : ''}`}
+            data-testid="range3d-pip-overlay"
+            aria-hidden="true"
+            style={{
+              left: `${pipRect.x}px`,
+              top: `${pipRect.yTop}px`,
+              width: `${pipRect.width}px`,
+              height: `${pipRect.height}px`,
+            }}
+          >
+            <svg
+              className="eb-pip-reticle-svg"
+              viewBox="0 0 240 150"
+              preserveAspectRatio="none"
+            >
+              {/* Corner optical fiducial brackets */}
+              <path
+                d="M10,22 L10,10 L22,10 M218,10 L230,10 L230,22 M10,128 L10,140 L22,140 M218,140 L230,140 L230,128"
+                fill="none"
+                stroke={
+                  flirActive
+                    ? 'rgba(241, 245, 249, 0.72)'
+                    : 'rgba(56, 189, 248, 0.75)'
+                }
+                strokeWidth="1.4"
+              />
+              {/* Fine spotting-scope center mil crosshairs */}
+              <line
+                x1="88"
+                y1="75"
+                x2="112"
+                y2="75"
+                stroke="rgba(248, 250, 252, 0.56)"
+                strokeWidth="0.9"
+              />
+              <line
+                x1="128"
+                y1="75"
+                x2="152"
+                y2="75"
+                stroke="rgba(248, 250, 252, 0.56)"
+                strokeWidth="0.9"
+              />
+              <line
+                x1="120"
+                y1="52"
+                x2="120"
+                y2="67"
+                stroke="rgba(248, 250, 252, 0.56)"
+                strokeWidth="0.9"
+              />
+              <line
+                x1="120"
+                y1="83"
+                x2="120"
+                y2="98"
+                stroke="rgba(248, 250, 252, 0.56)"
+                strokeWidth="0.9"
+              />
+              <circle
+                cx="120"
+                cy="75"
+                r="14"
+                fill="none"
+                stroke={
+                  flirActive
+                    ? 'rgba(241, 245, 249, 0.4)'
+                    : 'rgba(56, 189, 248, 0.45)'
+                }
+                strokeWidth="0.9"
+                strokeDasharray="3 3"
+              />
+            </svg>
+            <div className="eb-pip-header-bar">
+              <span className="eb-pip-badge">
+                <span className="eb-pip-live-dot" />
+                <span>{ui.range3dPipBadge}</span>
+              </span>
+              <span className="eb-pip-range-pill">
+                {Math.round(traj.targetRangeM)}m
+              </span>
+            </div>
+            <div className="eb-pip-footer-bar">
+              <span className="eb-pip-micro-tag">{ui.range3dPipLiveTag}</span>
+              <span className="eb-pip-micro-tag">
+                {targetType === 'steel_gong'
+                  ? ui.range3dPipTargetSteel
+                  : ui.range3dPipTargetGel}
+              </span>
+            </div>
+          </div>
+        )}
+
         {/* Live Translucent MOA / CEP50 5-Round Grouping Scorecard HUD */}
         {activeGrouping && (
           <aside
-            className="eb-range3d-scorecard"
+            className={`eb-range3d-scorecard ${showTargetCamPip ? 'has-pip-active' : ''}`}
             data-testid="range3d-grouping-scorecard"
           >
             <div className="eb-scorecard-head">
