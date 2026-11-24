@@ -1,0 +1,896 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "m1911",
+  "generatedAt": "2026-11-24T04:00:00.000000+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "Colt M1911A1 U.S. Army",
+    "subtitle": ".45 ACP Single-Link Short-Recoil Service Pistol",
+    "originCountry": "United States",
+    "weaponType": "Semi-Automatic Service Pistol",
+    "categoryLabel": "Pistol",
+    "actionMechanism": "Browning Single-Link Tilting-Barrel Short Recoil · Dual Top Locking Ribs · Single-Action Straight-Pull Trigger",
+    "statusLabel": "In Vault · Field Strippable",
+    "description": "Designed by John Moses Browning and adopted as the standard United States military sidearm in March 1911, the Colt M1911A1 established the foundational architecture of modern semi-automatic pistols. Its single swinging barrel link, dual upper locking ribs, straight-pull stirrup trigger, and triple safety triad endured through two World Wars, Korea, Vietnam, and over a century of global service.",
+    "highlights": [
+      "Browning 0.278-Inch Single Swinging Barrel Link & Dual Top Locking Ribs",
+      "Straight-Pull Sliding Trigger Bow, Exposed Spur Hammer & 3-Leaf Sear Spring",
+      "Frame-Mounted Condition 1 Thumb Safety & Automatic Tang Grip Safety",
+      "1924 A1 Arched Mainspring Housing, Finger Relief Cuts & Double-Diamond Walnut"
+    ],
+    "workbenchTitle": "Colt M1911A1 3D Kinematics & Swinging-Link Workbench",
+    "workbenchSubtitle": "4 Modular Groups · 24 Parts · Browning Single-Link Drop, Tilting Barrel, Spur Hammer & Straight Trigger Simulation",
+    "cutawayLabel": "Swinging Link & Fire Control Cutaway",
+    "cutawayTitle": "Switch to cutaway focus on Browning swinging barrel link, dual locking ribs, straight trigger bow, and 7-round single-stack magazine",
+    "searchPlaceholder": "Search BOM parts (e.g., Barrel Link, Bushing, Hammer, Grip Safety, U-03)...",
+    "firingMilestoneLabel": "Swinging-Link Barrel Drop",
+    "rateOfFire": "Semi-Automatic (40–60 rpm Practical)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Ready to Fire",
+        "subLabel": "0% Assembled",
+        "desc": "Factory-assembled 1943 Hartford Colt M1911A1 U.S. Army service pistol in full battery: dual top barrel ribs locked into upper slide recesses, swinging link vertical on the slide-stop pin, and spur hammer cocked."
+      },
+      "field_strip": {
+        "label": "FM 23-35 Field Strip",
+        "subLabel": "30% Field Strip",
+        "desc": "Toolless U.S. Army field strip: eject the 7-round single-stack magazine, depress the recoil plug and rotate the barrel bushing 45 degrees, align the slide takedown notch to push out the slide-stop pin, and slide the upper assembly forward."
+      },
+      "sub_assembly": {
+        "label": "Slide & Fire Control Strip",
+        "subLabel": "65% Sub-Assembly",
+        "desc": "Withdraw the 5-inch dual-rib barrel and swinging link forward through the slide, depress the firing pin to slip off the stop plate and extract the internal extractor, and separate the walnut grips, thumb safety, and arched mainspring housing."
+      },
+      "full_exploded": {
+        "label": "Full 24-Part Exploded View",
+        "subLabel": "100% Full Exploded",
+        "desc": "Complete zero-overlap 1:1 explosion of all 24 precision steel and walnut components illustrating John Moses Browning's single-link short-recoil locking train and iconic three-prong sear spring."
+      }
+    },
+    "firingPhases": {
+      "m1911_phase_1": {
+        "shortLabel": "Grip Safety & Straight Trigger",
+        "title": "Phase 1 · Grip Safety Depressed, Straight-Pull Trigger Drops Spur Hammer",
+        "description": "Web pressure depresses the automatic tang grip safety, clearing the trigger stirrup bow. Pulling the short trigger straight rearward 4.2 mm rotates the sear, releasing the 23-lb mainspring to snap the spur hammer into the inertia firing pin."
+      },
+      "m1911_phase_2": {
+        "shortLabel": ".45 ACP 145 MPa Ignition",
+        "title": "Phase 2 · 230gr .45 ACP Primer Ignites, Dual Top Barrel Ribs Lock Solid",
+        "description": "The inertia firing pin flies forward to crush the large pistol primer, spiking chamber pressure to 145 MPa. Dual radial locking ribs atop the 5-inch barrel remain locked inside the slide roof while the 230-grain round-nose bullet accelerates."
+      },
+      "m1911_phase_3": {
+        "shortLabel": "Muzzle Exit & 3mm Dwell",
+        "title": "Phase 3 · 230gr Bullet Exits at 255 m/s During 3mm Locked Short Recoil",
+        "description": "The heavy .451-inch projectile departs the muzzle crown at 255 m/s while slide and barrel recoil rearward together for roughly 3 mm of locked dwell, allowing chamber pressures to decay safely as the swinging link passes vertical."
+      },
+      "m1911_phase_4": {
+        "shortLabel": "Swinging-Link Drop Unlock",
+        "title": "Phase 4 · Browning Swinging Link Pivots 53 deg to Pull Barrel Breech Down",
+        "description": "Pivoting around the fixed slide-stop pin, the 0.278-inch figure-eight link swings rearward 53 degrees, pulling the barrel rear underlug downward 2.7 mm and tilting the barrel +2.1 degrees so both upper ribs cleanly disengage from the slide."
+      },
+      "m1911_phase_5": {
+        "shortLabel": "Slide Recoil, Recock & Eject",
+        "title": "Phase 5 · Slide Recoils 45.5 mm, Recocks Hammer, Disconnects & Ejects Brass",
+        "description": "Unlocked from the arrested barrel, the slide drives rearward 45.5 mm against the 16-lb recoil spring, depressing the vertical disconnector, recocking the exposed spur hammer, and flicking the spent .45 ACP brass off the frame ejector."
+      },
+      "m1911_phase_6": {
+        "shortLabel": "Controlled Feed Chambering",
+        "title": "Phase 6 · 16-lb Recoil Spring Drives Slide Forward for Controlled Feed",
+        "description": "The single-stack magazine lifts a fresh .45 ACP cartridge into the tapered feed lips; the advancing breechface slips the rim upward beneath the internal tubular extractor claw and guides the nose smoothly up the feed ramp."
+      },
+      "m1911_phase_7": {
+        "shortLabel": "Link Lockup & Sear Reset",
+        "title": "Phase 7 · Swinging Link Elevates Barrel into Lock, Disconnector Resets",
+        "description": "In the final 6.5 mm of forward travel, the slide drives the barrel forward so the link swings upright and elevates the dual locking ribs into the slide roof. Releasing the trigger lets the center leaf spring lift the disconnector for the next shot."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "百年铁血标准：柯尔特 M1911A1 单绞链偏移闭锁与美国陆军手枪传奇",
+      "deck": "从美菲战场点三八转轮手枪的停止力危机，到约翰·摩西·勃朗宁在六千发极限魔鬼测试中零故障夺魁，M1911A1 用百年实战铸就了现代自动手枪的永恒黄金法典。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1899–1906",
+          "title": "丛林停止力危机与点四五口径回归",
+          "paragraphs": [
+            "十九世纪末的美菲战争期间，美国陆军一线官兵普遍配发点三八长柯尔特（.38 Long Colt）双动转轮手枪。然而在潮湿炎热的密林近战中，轻质低能的点三八铅弹频频暴露出致命的停止力不足，美军不得不紧急从军火库重新调拨沉重的点四五老式单动转轮枪救场。这一惨痛教训促使美国陆军军械部于 1904 年展开了著名的汤普森-拉加德（Thompson-LaGarde）实弹弹道评估试验。",
+            "试验最终给出斩钉截铁的结论：美军未来的制式自卫手枪口径绝不可低于点四五英寸（11.43 毫米）。与此同时，欧洲与美洲的轻武器设计师正竞相探索自动手枪方案，但早期装弹复杂、结构脆弱的半自动手枪能否承受重型大口径弹药的剧烈后坐冲击，仍是军界最深切的疑虑。",
+            "面对美国陆军严苛的招标书，天才枪械大师约翰·摩西·勃朗宁与柯尔特专利枪械制造公司携手研发了专为新枪定做的 230 格令圆头 .45 ACP（Automatic Colt Pistol）自动手枪弹，拉开了改变二十世纪单兵手枪格局的序幕。"
+          ],
+          "audioScript": "二十世纪初的美菲丛林战场上，点三八口径转轮手枪暴露出严重的停止力缺陷。美国陆军军械部痛定思痛，下令新一代制式自动手枪必须重返点四五重口径。约翰·勃朗宁迅速推出二百三十格令点四五自动手枪弹，一场改写百年手枪史的军工竞标就此展开。",
+          "audioUrl": "audio/m1911/story_act1_zh.mp3",
+          "focusPartId": "m1911_barrel",
+          "focusPartLabel": "5英寸 .45 ACP 六膛线枪管 (含顶部双闭锁筋与下绞链耳)"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1907–1911",
+          "title": "单绞链神来之笔与六千发魔鬼考验",
+          "paragraphs": [
+            "在最初的 M1900 与 M1905 原型枪上，勃朗宁在枪管前后各设一根绞链令枪管平行下沉解锁，结构繁复且握把倾角偏直。为了回应陆军骑兵部对马背单手操控性与绝对可靠性的苛刻要求，勃朗宁在 1910 型原型机上完成了脱胎换骨的重构：果断取消前绞链，仅在枪管膛室正下方保留一枚两孔中心距仅 7.06 毫米的“8”字形单绞链，并引入符合人机工程学的 18 度自然指向握把角与自动握把保险。",
+            "1911 年 3 月，柯尔特样枪与萨维奇（Savage）样枪迎来了轻武器史上堪称残酷的终极耐久测试：单枪连续发射六千发 .45 ACP 实弹，每打完一百发允许冷却五分钟，每打完一千发才准许简易擦拭涂油，期间还要经受浸酸锈蚀、沙泥掩埋与畸形弹强行击发等魔鬼折磨。",
+            "当测试尘埃落定，对手萨维奇样枪累计出现三十七次故障与零件断裂，而勃朗宁设计的柯尔特手枪竟以令人瞠目结舌的零故障、零零件损坏傲然通关！1911 年 3 月 29 日，美国陆军正式将其定型列装为「Model of 1911 U.S. Army」。"
+          ],
+          "audioScript": "面对美军六千发连续射击、浸酸锈蚀与泥沙掩埋的魔鬼考核，勃朗宁用一枚仅七毫米孔距的单绞链彻底简化了枪管闭锁。测试终场时，对手故障频发，而柯尔特样枪竟交出六千发零故障的惊人奇迹，在一九一一年三月正式加冕为美国陆军制式手枪。",
+          "audioUrl": "audio/m1911/story_act2_zh.mp3",
+          "focusPartId": "m1911_barrel_link",
+          "focusPartLabel": "勃朗宁 0.278英寸单绞链闭锁摇臂与铰销"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1911–1945",
+          "title": "单动火控美学与 A1 战时进化",
+          "paragraphs": [
+            "拆开 M1911A1 的锻钢骨架，每一处零件都闪烁着极简主义机械智慧。射击时，枪管顶部两道半圆闭锁筋与套筒顶槽死锁共同后坐约 3 毫米待膛压跌落，随后单绞链绕空仓挂机横销向后摆动 53 度，精准下拉枪管尾部 2.7 毫米完成偏移开锁。而在火控端，环抱弹匣井的 U 形直推扳机框省去所有旋转支点，令食指作纯水平直拉，造就手枪界公认最清脆的“折断玻璃棒”单动击发手感。",
+            "仅靠一片无需螺钉的三叉弹簧钢片，勃朗宁便同时赋予了阻铁、断连器与握把保险精准弹力；再加上惯性短击针、空仓挂机兼分解销以及仅凭枪口旋转衬套就能徒手拆解的精巧构造，整枪即便在战壕泥泞中用一枚实弹壳底缘就能完成野战大拆。",
+            "一战结束后，美国陆军结合欧洲战壕实战反馈，于 1924 年定型推出改进型 M1911A1：缩短滚花扳机面、在扳机护圈后方铣出左右食指避让凹槽、改用贴合掌心的弧形防滑主簧壳，并加长握把保险尾舌杜绝击锤咬手。二战期间，柯尔特、雷明顿兰德、伊萨卡等军工厂共赶制出逾一百九十万支磷化钢 M1911A1 奔赴全球各大战区。"
+          ],
+          "audioScript": "M1911A1 内部蕴藏着无与伦比的极简工程之美：纯水平直推的扳机框造就了清脆如玻璃折断的单动击发手感，一片三叉板簧同时兼管阻铁、断连器与握把保险。经过一九二四年弧背主簧壳与指槽改良后，近两百万支磷化钢 A1 手枪伴随盟军官兵走过二战硝烟。",
+          "audioUrl": "audio/m1911/story_act3_zh.mp3",
+          "focusPartId": "m1911_trigger",
+          "focusPartLabel": "A1 短型滚花直推扳机与环抱式扳机框"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1945–至今",
+          "title": "跨越百年的现代自动手枪活化石",
+          "paragraphs": [
+            "从诺曼底海滩、瓜达尔卡纳尔丛林到朝鲜冰原与越南地道，柯尔特 M1911A1 在美国武装部队一线整整服役了七十四年，直至 1985 年才由 9 毫米贝雷塔 M9 接替主力位置。即便如此，美国海军陆战队远征侦察部队（MEU(SOC)）与多支特种反恐单位仍将深度定制的 1911（如 M45A1）沿用至二十一世纪，视其大口径停止力与毫秒级单动首发精度为近战生命线。",
+            "更深远的影响体现在整个世界轻武器设计谱系中：从今天的格洛克、西格绍尔到全球绝大多数中大口径军警手枪，几乎全部延续了勃朗宁在 1911 年确立的“套筒包覆枪管 + 枪管尾部下沉偏移闭锁 + 可拆盒式握把弹匣”这一经典范式。",
+            "历经逾百十载春秋，M1911A1 早已超越普通制式武器的范畴，成为二十世纪工业美学与机械工程的永恒图腾，在全球博物馆与精密靶场中持续回响着约翰·摩西·勃朗宁不朽的钢铁交响。"
+          ],
+          "audioScript": "在美军一线整整服役七十四载后，柯尔特 M1911A1 依然活跃在二十一世纪的特种作战与世界顶级竞技靶场。它所开创的套筒偏移闭锁范式，至今仍是全球绝大多数现代半自动手枪的共同基因，堪称人类轻武器史上最不朽的百年丰碑。",
+          "audioUrl": "audio/m1911/story_act4_zh.mp3",
+          "focusPartId": "m1911_slide",
+          "focusPartLabel": "磷化锻钢圆顶套筒 (含14道后防滑纹与机械准星照门)"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "勃朗宁单绞链偏移短后坐闭锁",
+          "tag": "单绞链闭锁",
+          "summary": "用一枚孔距 7.06 mm 的“8”字形单绞链取代早期双绞链，在 3 mm 闭锁短后坐后沿精确圆弧拉降枪管尾部 2.7 mm，使双顶闭锁筋干脆脱离套筒，奠定百年现代手枪闭锁范式。",
+          "focusPartId": "m1911_barrel_link",
+          "focusPartLabel": "勃朗宁 0.278英寸单绞链闭锁摇臂与铰销"
+        },
+        {
+          "id": "bt2",
+          "title": "纯直线滑动单动扳机与三叉一体板簧",
+          "tag": "直推单动火控",
+          "summary": "U 形钢框环抱单排弹匣井作纯水平直推，无铰链杠杆力臂变化，配合一簧三用的三叉钢板簧，在零螺钉条件下实现阻铁、断连器与握把保险的极简可靠联动。",
+          "focusPartId": "m1911_trigger",
+          "focusPartLabel": "A1 短型滚花直推扳机与环抱式扳机框"
+        },
+        {
+          "id": "bt3",
+          "title": "旋转枪口衬套与多职合一空仓挂机销",
+          "tag": "无工具野战分解",
+          "summary": "空仓挂机横销同时充当枪管绞链定轴与上下机匣主锁销，配合顺时针旋转 45° 即卸的枪口衬套，实现完全免工具且零散碎小零件的战壕快速维护。",
+          "focusPartId": "m1911_barrel_bushing",
+          "focusPartLabel": "枪口快拆旋转衬套 (Barrel Bushing)"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1904",
+          "title": "汤普森-拉加德试验锁定 .45 口径",
+          "detail": "美国陆军实弹评估确立未来制式手枪不得低于点四五英寸口径，催生约翰·勃朗宁研发 230 格令 .45 ACP 弹药。"
+        },
+        {
+          "year": "1911",
+          "title": "6,000 发零故障夺魁正式定型",
+          "detail": "柯尔特单绞链样枪在浸酸、沙泥与 6,000 发连续魔鬼考核中零故障胜出，3 月 29 日获美军定型为 M1911。"
+        },
+        {
+          "year": "1917–1918",
+          "title": "第一次世界大战西线战壕洗礼",
+          "detail": "数十万支 M1911 随美国远征军登陆欧洲，在近距战壕清剿中以惊人的可靠性与停止力赢得崇高声誉。"
+        },
+        {
+          "year": "1924",
+          "title": "M1911A1 人机工程全面定型",
+          "detail": "增设弧背防滑主簧壳、加长握把保险尾舌、短滚花扳机与护圈后指槽，形成流传后世最经典的 A1 形态。"
+        },
+        {
+          "year": "1941–1945",
+          "title": "二战 190 万支磷化钢军工大生产",
+          "detail": "柯尔特、雷明顿兰德、伊萨卡、联合开关及胜家协同制造逾 190 万支 M1911A1，装备全球盟军战区。"
+        },
+        {
+          "year": "1985–至今",
+          "title": "74 年主力服役与百年不朽传承",
+          "detail": "虽于 1985 年交棒 M9，其特种改型 M45A1 与勃朗宁闭锁架构至今仍统治着全球战术手枪与竞技射击领域。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "A Century of Forged Steel: The Colt M1911A1 Swinging-Link Legend",
+      "deck": "Born from the jungle stopping-power crisis and immortalized by a zero-malfunction 6,000-round endurance triumph, John Moses Browning's .45 ACP service pistol wrote the blueprint for every modern semi-automatic handgun.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1899–1906",
+          "title": "The Stopping-Power Crisis and the Return of .45 Caliber",
+          "paragraphs": [
+            "During the turn-of-the-century Philippine-American campaign, United States troops issued .38 Long Colt double-action revolvers encountered alarming ballistic failures in dense jungle close-quarters combat. Desperate commanders requisitioned aging single-action .45 revolvers from depot storage, prompting the U.S. Army Ordnance Department to convene the landmark 1904 Thompson-LaGarde ballistic tests.",
+            "The board's verdict was uncompromising: America's next standard military sidearm must fire a projectile of at least .45 caliber. Yet harnessing the fierce recoil impulse of a heavy 230-grain round inside a compact self-loading pistol pushed early twentieth-century metallurgy and locking kinematics to their absolute limits.",
+            "Rising to the War Department's challenge, master inventor John Moses Browning partnered with Colt's Patent Fire Arms Manufacturing Company in Hartford, Connecticut, crafting the purpose-built .45 Automatic Colt Pistol cartridge alongside a bold new short-recoil operating platform."
+          ],
+          "audioScript": "In the dense jungles at the turn of the twentieth century, standard point-thirty-eight revolvers failed to stop determined close-range assaults. Following rigorous ordnance trials, the United States Army mandated a return to heavy point-forty-five caliber power. John Moses Browning answered with a stout two-hundred-thirty-grain automatic cartridge and set out to conquer the mechanics of heavy-caliber self-loading pistols.",
+          "audioUrl": "audio/m1911/story_act1_en.mp3",
+          "focusPartId": "m1911_barrel",
+          "focusPartLabel": "5\" .45 ACP Rifled Barrel w/ Dual Top Locking Ribs"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1907–1911",
+          "title": "The Single Swinging Link and the 6,000-Round Torture Trial",
+          "paragraphs": [
+            "Browning's early M1900 and M1905 prototypes used paired front and rear barrel links that lowered the entire barrel parallel to the frame. Seeking cavalry-ready durability and effortless natural pointing, Browning radically simplified his 1910 submission: he eliminated the front link altogether, leaving a lone 0.278-inch figure-eight rear swinging link coupled with an ergonomic eighteen-degree grip angle and an automatic tang grip safety.",
+            "In March 1911, Colt's pistol squared off against its final rival from Savage Arms in one of the most punishing military trials ever devised. Each pistol fired 6,000 rounds of .45 ACP ammunition, cooled only briefly in water tubs, subjected to acid corrosion baths, packed with mud and sand, and forced to digest intentionally deformed cartridges.",
+            "While the competing Savage entry accumulated thirty-seven stoppages and fractured parts, Browning's Colt pistol completed all 6,000 rounds with zero malfunctions and zero broken components. On March 29, 1911, the U.S. Army formally adopted it as the Model of 1911."
+          ],
+          "audioScript": "Replacing twin parallel links with a single seven-millimeter swinging rear link transformed the pistol into a mechanical masterpiece. During the brutal March 1911 army endurance trial—six thousand rounds, acid rust baths, and mud immersion—the Colt pistol finished without a single malfunction or broken part, earning formal adoption as the Model of 1911.",
+          "audioUrl": "audio/m1911/story_act2_en.mp3",
+          "focusPartId": "m1911_barrel_link",
+          "focusPartLabel": "Browning 0.278\" Swinging Barrel Link & Pin"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1911–1945",
+          "title": "Single-Action Purity and the Wartime M1911A1 Evolution",
+          "paragraphs": [
+            "Beneath its parkerized steel skin, the M1911A1 is an essay in kinematic economy. Upon ignition, dual top barrel ribs hold the breech locked to the slide through 3 millimeters of rearward travel until pressures drop; the swinging link then pivots fifty-three degrees on the slide-stop pin, pulling the chamber downward 2.7 millimeters to unlock cleanly. In the fire control train, a U-shaped stirrup bow glides straight rearward without rotational pivot leverage, producing the crisp glass-rod trigger break revered by marksmen worldwide.",
+            "A single screwless three-prong flat leaf spring simultaneously tensions the sear, lifts the disconnector and trigger bow, and pushes out the automatic grip safety. A quarter-turn muzzle bushing and multi-role slide-stop pin allow total toolless disassembly in muddy trenches using nothing more than a spent brass cartridge rim.",
+            "Drawing on World War I trench lessons, the Ordnance Department standardized the improved M1911A1 in 1924 with an arched serrated mainspring housing, scalloped finger relief cuts behind the trigger guard, a shorter checkered trigger, and a lengthened grip-safety tang. Over 1.9 million M1911A1 pistols rolled off Allied production lines across World War II."
+          ],
+          "audioScript": "Inside the forged steel frame lies pure minimalist genius: a straight-sliding stirrup trigger delivers an unmatched crisp single-action break, while a single three-leaf spring drives the sear, disconnector, and grip safety without a single screw. Refined in 1924 into the arched-backstrap M1911A1, nearly two million wartime pistols served Allied soldiers across every theater of World War II.",
+          "audioUrl": "audio/m1911/story_act3_en.mp3",
+          "focusPartId": "m1911_trigger",
+          "focusPartLabel": "Short Checkered Straight-Pull Trigger & Stirrup Bow"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "1945–Present",
+          "title": "A Century of Service and the Blueprint of Modern Pistols",
+          "paragraphs": [
+            "From Normandy beaches and Guadalcanal ridges to the frozen Chosin Reservoir and Southeast Asian tunnels, the Colt M1911A1 stood as the United States military's frontline sidearm for seventy-four consecutive years until 1985. Even after standardization on 9mm NATO, elite Marine Expeditionary Unit special operators continued fielding modernized descendants like the M45A1 well into the twenty-first century.",
+            "Its deepest legacy lives inside almost every serious centerfire handgun manufactured today. The enclosing reciprocating slide, rear-dropping tilting barrel lockup, frame-mounted controls, and detachable grip magazine pioneered in 1911 remain the universal architectural grammar of modern combat handguns.",
+            "More than a century after its adoption, the Colt M1911A1 endures not merely as a historical artifact, but as a living benchmark of forged steel craftsmanship, ergonomic harmony, and John Moses Browning's unmatched engineering clarity."
+          ],
+          "audioScript": "After seventy-four consecutive years as America's standard military sidearm, the Colt M1911A1 still thrives in elite special operations and precision competition today. Its reciprocating slide and tilting-barrel locking grammar became the shared DNA of nearly every modern service handgun, cementing John Browning's 1911 design as an immortal monument of mechanical engineering.",
+          "audioUrl": "audio/m1911/story_act4_en.mp3",
+          "focusPartId": "m1911_slide",
+          "focusPartLabel": "Parkerized Forged Steel Slide w/ Rear Serrations & GI Sights"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Browning Single-Link Tilting-Barrel Short Recoil",
+          "tag": "Swinging-Link Lock",
+          "summary": "Replaced dual parallel barrel links with a single 0.278-inch figure-eight rear link that pulls the breech downward 2.7 mm after 3 mm of locked recoil, establishing the enduring tilting-barrel handgun paradigm.",
+          "focusPartId": "m1911_barrel_link",
+          "focusPartLabel": "Browning 0.278\" Swinging Barrel Link & Pin"
+        },
+        {
+          "id": "bt2",
+          "title": "Straight-Sliding Stirrup Trigger & 3-Leaf Sear Spring",
+          "tag": "Linear Single Action",
+          "summary": "Slides straight rearward along internal frame tracks rather than pivoting, delivering a crisp zero-creep break paired with a screwless three-prong flat leaf spring powering sear, disconnector, and grip safety.",
+          "focusPartId": "m1911_trigger",
+          "focusPartLabel": "Short Checkered Straight-Pull Trigger & Stirrup Bow"
+        },
+        {
+          "id": "bt3",
+          "title": "Quarter-Turn Muzzle Bushing & Multi-Role Slide Stop",
+          "tag": "Toolless Field Strip",
+          "summary": "Unifies the barrel link pivot axis, slide-lock latch, and takedown pin into one robust cross-pin while a quarter-turn muzzle bushing retains the recoil spring for rapid toolless trench maintenance.",
+          "focusPartId": "m1911_barrel_bushing",
+          "focusPartLabel": "Quarter-Turn Removable Muzzle Barrel Bushing"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1904",
+          "title": "Thompson-LaGarde Board Mandates .45 Caliber",
+          "detail": "U.S. Army ballistic trials conclude service handguns must not fall below .45 caliber, catalyzing John Browning's 230-grain .45 ACP cartridge."
+        },
+        {
+          "year": "1911",
+          "title": "Zero-Malfunction 6,000-Round Trial Victory",
+          "detail": "Colt's single-link submission survives 6,000 rounds, acid immersion, and mud torture with zero stoppages, earning adoption on March 29, 1911."
+        },
+        {
+          "year": "1917–1918",
+          "title": "Western Front Trench Baptism in World War I",
+          "detail": "Hundreds of thousands of M1911 pistols equip the American Expeditionary Forces, forging an ironclad reputation for close-quarters reliability."
+        },
+        {
+          "year": "1924",
+          "title": "Standardization of the Ergonomic M1911A1",
+          "detail": "Adopts the arched mainspring housing, finger relief cutouts, shorter checkered trigger, and lengthened grip-safety tang requested by veterans."
+        },
+        {
+          "year": "1941–1945",
+          "title": "1.9 Million Wartime Parkerized Pistols Built",
+          "detail": "Colt, Remington Rand, Ithaca, Union Switch & Signal, and Singer produce over 1.9 million M1911A1 sidearms for Allied forces worldwide."
+        },
+        {
+          "year": "1985–Present",
+          "title": "74 Years of Frontline Service & Centennial Legacy",
+          "detail": "After 74 years as the standard U.S. sidearm, specialized M45A1 variants and Browning's locking blueprint continue dominating global pistol craft."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "m1911_slide": {
+      "partId": "m1911_slide",
+      "bomCode": "U-01",
+      "calloutLabelEn": "Parkerized Steel Slide",
+      "zh": {
+        "roleTag": "圆拱顶锻钢自动机套筒与双半圆内顶闭锁槽",
+        "overview": "这是整支 M1911A1 的核心往复运动外壳，横跨全枪上部并完整包覆 5 英寸枪管、击针与内置抽壳钩。其圆润顶拱配平直侧壁的造型是二十世纪最具辨识度的手枪剪影。",
+        "craftAndMaterial": "由整块高强合金钢锻坯精密立铣而成，表面经二战军用锰系磷化（Parkerized）防锈哑光处理，后部双侧铣出 12 至 14 道垂直防滑拉槽并滚压哈特福德厂铭与美军军械编号。",
+        "kinematicRole": "击发初期与枪管闭锁共同后坐 3 毫米，单绞链下拉枪管开锁后独自高速后坐 45.5 毫米压倒外露击锤、压下断连器并完成抛壳，随后在 16 磅复进簧推动下前冲推弹重新闭锁。",
+        "designHighlight": "内顶壁精密车削两道与枪管完全咬合的半圆凹槽，将高压闭锁力均匀分散至厚实的顶部钢拱，奠定了百年现代套筒手枪的结构母本。",
+        "audioScript": "眼前这件圆顶平壁的磷化锻钢套筒，是柯尔特 M1911A1 最经典的视觉标识。它的内顶隐藏着两道精密半圆闭锁凹槽，在射击瞬间与枪管顶筋死死咬合。解锁后，它独自向后飞驰四十五点五毫米，一气呵成完成抛壳、压锤与复进推弹的全部循环。",
+        "audioUrl": "audio/m1911/parts/m1911_slide_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Reciprocating Forged Slide with Dual Roof Recesses",
+        "overview": "This monolithic forged steel slide forms the reciprocating upper body of the M1911A1, enclosing the 5-inch barrel, inertia firing pin, and internal extractor. Its rounded crown and flat flanks created the archetype of twentieth-century service pistols.",
+        "craftAndMaterial": "Milled from solid forged alloy steel and finished in matte wartime manganese-phosphate parkerizing to resist salt and jungle corrosion, featuring crisp rear cocking serrations and deep Hartford rollmarks.",
+        "kinematicRole": "Recoils rearward 3 mm locked to the barrel, then accelerates rearward 45.5 mm alone after link unlock to eject brass, depress the disconnector, and recock the spur hammer before returning to battery.",
+        "designHighlight": "Two internal radial roof recesses mate directly with matching ribs atop the barrel, distributing heavy .45 ACP breech thrust symmetrically across the strongest arch of the slide.",
+        "audioScript": "This rounded-crown parkerized steel slide defines the silhouette of the Colt M1911A1. Inside its roof sit two machined semicircular locking recesses that capture the barrel ribs during peak pressure. Once unlocked, it rockets back forty-five point five millimeters, ejecting spent brass and recocking the exposed spur hammer in a single crisp stroke.",
+        "audioUrl": "audio/m1911/parts/m1911_slide_en.mp3"
+      }
+    },
+    "m1911_barrel": {
+      "partId": "m1911_barrel",
+      "bomCode": "U-02",
+      "calloutLabelEn": "5-Inch Dual-Rib Barrel",
+      "zh": {
+        "roleTag": "127.8毫米左旋六膛线与顶部双闭锁凸筋枪管",
+        "overview": "这根全长 5.03 英寸的精密枪管承载着重达 230 格令的 .45 ACP 弹药加速任务。膛室前段顶部一体加工双半圆闭锁筋，底部焊铣双耳支座与勃朗宁单绞链相连。",
+        "craftAndMaterial": "选用优质铬钼枪管钢深孔钻削并拉削出 6 条 1:16 英寸左旋膛线，外表面在膛顶区保持抛光亮钢压印 COLT .45 AUTO 铭文，其余管壁施以耐磨防锈烤蓝。",
+        "kinematicRole": "在击发阶段三随套筒共同闭锁短后坐 3 毫米，阶段四由单绞链将尾部拉降 2.7 毫米并仰起 2.1 度彻底脱离套筒顶槽，随即由底把冲击床止停待套筒复进推回闭锁。",
+        "designHighlight": "抛弃了早期复杂的多向平行联动结构，仅凭顶部双筋与尾部下沉倾转便以极高机械效率实现重口径短后坐闭锁。",
+        "audioScript": "这根五英寸点四五口径枪管内部刻有六条左旋膛线，赋予二百三十格令重弹稳定的旋转陀螺效应。请注意膛室正前方高耸的两道半圆闭锁凸筋——它们像钢铁齿牙一样卡入套筒顶部，只有在弹头飞离枪口、单绞链拉降枪尾后才顺畅脱锁。",
+        "audioUrl": "audio/m1911/parts/m1911_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "5-Inch 1:16 Left-Twist Barrel with Dual Locking Ribs",
+        "overview": "This 5.03-inch rifled barrel stabilizes the heavy 230-grain .45 ACP projectile while serving as the primary pressure vessel. Two integral radial locking ribs crown its chamber section, while dual lower standing lugs pin directly to the swinging barrel link.",
+        "craftAndMaterial": "Deep-hole drilled from high-tensile ordnance steel with six left-hand 1:16 twist rifling grooves, featuring a bright polished chamber hood stamped COLT .45 AUTO and a blued forward tube.",
+        "kinematicRole": "Travels locked rearward 3 mm with the slide upon firing, then drops 2.7 mm at the breech and tilts upward 2.1 degrees under swinging-link control to disengage both locking ribs cleanly.",
+        "designHighlight": "Replacing complex twin-link parallel motion with a controlled rear tilting arc dramatically increased mud tolerance and mechanical simplicity under severe battlefield conditions.",
+        "audioScript": "Machined from chrome-moly ordnance steel with six left-hand rifling grooves, this five-inch barrel channels the heavy two-hundred-thirty-grain forty-five caliber projectile. Look closely at the two radial locking ribs just ahead of the chamber hood: they lock rigidly into the slide roof until Browning's swinging link pulls the breech smoothly downward.",
+        "audioUrl": "audio/m1911/parts/m1911_barrel_en.mp3"
+      }
+    },
+    "m1911_barrel_link": {
+      "partId": "m1911_barrel_link",
+      "bomCode": "U-03",
+      "calloutLabelEn": "Swinging Barrel Link",
+      "zh": {
+        "roleTag": "7.06毫米中心距圆弧摆动拉降开锁核心摇臂",
+        "overview": "这枚小巧却至关重要的“8”字形锻钢单绞链，是连接枪管下耳与底把静止空仓挂机横销的唯一运动桥梁，精准定义着枪管开锁与闭锁的圆弧轨迹。",
+        "craftAndMaterial": "采用高抗拉铬镍合金钢模锻并精密铰孔成形，两圆孔中心距严格控制在 0.278 英寸（7.06 毫米），配以高硬渗碳圆柱横销嵌入枪管下耳凹槽。",
+        "kinematicRole": "击发闭锁时近乎垂直微向前倾支撑枪膛；短后坐期间绕下孔静止横销向后旋转 53 度，以严格圆弧强迫枪管尾部下沉 2.7 毫米完成偏移解锁，复进时则反向摆正将枪管顶升死锁。",
+        "designHighlight": "勃朗宁用这枚仅重数克的单绞链一举取代了早年的双绞链结构，既保留了完美的短后坐延迟时间窗口，又令全枪可靠度跃升至六千发零故障的传奇高度。",
+        "audioScript": "不要小看这枚仅有指节大小的八字形钢制单绞链，它正是约翰·勃朗宁一九一一年专利的机械灵魂。它的下孔套在静止的空仓挂机销上，枪管后坐时绞链向后优雅摆动五十三度，像精准圆规一样将枪管尾部拉降二点七毫米，干脆利落地解除闭锁。",
+        "audioUrl": "audio/m1911/parts/m1911_barrel_link_zh.mp3"
+      },
+      "en": {
+        "roleTag": "0.278-Inch Circular-Arc Tilting Unlock Linkage",
+        "overview": "This compact figure-eight forged steel link forms the sole articulated bridge between the barrel underlugs and the stationary slide-stop cross-pin, mathematically governing the exact unlock and lockup arc.",
+        "craftAndMaterial": "Drop-forged from high-tensile alloy steel and precision reamed to an exact 0.278-inch center-to-center spacing, paired with a hardened cylindrical upper cross-pin riding inside the barrel lugs.",
+        "kinematicRole": "Stands slightly forward of vertical at battery, then pivots rearward 53 degrees around the fixed slide-stop pin during short recoil to pull the breech down 2.7 mm before lifting it back into battery.",
+        "designHighlight": "Weighing only a few grams, this solitary swinging link eliminated the dual-link complexity of Browning's earlier pistols and unlocked the legendary 6,000-round zero-malfunction reliability.",
+        "audioScript": "Small enough to rest on a fingertip, this figure-eight steel swinging link is the mechanical heart of Browning's 1911 breakthrough. Pivoting around the fixed slide-stop pin, it swings rearward fifty-three degrees during recoil, drawing the barrel breech down along a precise circular arc so both upper locking ribs clear the slide effortlessly.",
+        "audioUrl": "audio/m1911/parts/m1911_barrel_link_en.mp3"
+      }
+    },
+    "m1911_barrel_bushing": {
+      "partId": "m1911_barrel_bushing",
+      "bomCode": "U-04",
+      "calloutLabelEn": "Muzzle Barrel Bushing",
+      "zh": {
+        "roleTag": "旋转45度免工具快拆与枪口同心精密定位衬套",
+        "overview": "嵌锁于套筒最前端的环形烤蓝钢衬套，内部高精度包覆枪管前段外圆，下方垂挂半月形挡裙牢牢压住复进簧帽防止弹出。",
+        "craftAndMaterial": "采用高耐磨合金钢精密车铣成形，内孔预留微量喇叭形避让锥角，确保枪管尾部下沉仰起 2.1 度时管壁与衬套丝滑配合而不产生死点卡阻。",
+        "kinematicRole": "射击全程随套筒刚性往复运动并为仰起的枪管前端提供滑动支点；野战快拆阶段只需压下复进簧帽并将其顺时针旋转 45 度即可徒手取出。",
+        "designHighlight": "将枪口射击精度定位基准与复进机构快拆锁扣合二为一，战地枪匠还可单独更换微米级比赛衬套以大幅提升散布精度。",
+        "audioScript": "套在枪口最前端的这枚旋转钢衬套身兼两项绝活：射击时它像精密轴承一样托住倾斜摆动的枪管前端，确保每一发弹着点归中如一；而在战壕快拆时，只需压下复进簧帽将其顺时针轻转四十五度，整套复进机构便能免工具轻松卸下。",
+        "audioUrl": "audio/m1911/parts/m1911_barrel_bushing_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Quarter-Turn Concentric Barrel & Plug Retainer",
+        "overview": "Locked into the forward muzzle face of the slide, this precision steel collar centers the barrel crown on every lockup while its lower crescent apron retains the spring-loaded recoil plug.",
+        "craftAndMaterial": "Turned and milled from tough alloy steel with subtle internal relief geometry allowing the barrel to tilt upward 2.1 degrees smoothly without binding during short-recoil unlock.",
+        "kinematicRole": "Reciprocates rigidly with the slide as a front sliding bearing for the tilting barrel; twists 45 degrees clockwise during field stripping to release the recoil spring plug without tools.",
+        "designHighlight": "Unifies barrel-to-slide match accuracy alignment with a toolless takedown latch, allowing armorers to hand-fit oversized match bushings for pinpoint target precision.",
+        "audioScript": "Seated right at the muzzle face, this quarter-turn steel barrel bushing performs double duty. During firing, it holds the front of the barrel concentric to the slide for consistent accuracy; during field stripping, depressing the plug and twisting the bushing forty-five degrees unlocks the entire recoil system without a single tool.",
+        "audioUrl": "audio/m1911/parts/m1911_barrel_bushing_en.mp3"
+      }
+    },
+    "m1911_recoil_plug": {
+      "partId": "m1911_recoil_plug",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Checkered Recoil Plug",
+      "zh": {
+        "roleTag": "防滑滚花端面空心钢帽与复进簧前端承压座",
+        "overview": "安装在套筒前下方圆筒孔内的深腔空心钢帽，负责兜住 16 磅螺旋复进簧的前端并将弹簧推力均匀传递给枪口旋转衬套挡裙。",
+        "craftAndMaterial": "由碳钢棒料车削成薄壁深筒并做烤蓝防锈处理，前端平面精雕防滑滚花纹路便于拇指直接按压拆解，筒侧冲压防脱卡舌钩住复进簧末圈。",
+        "kinematicRole": "在击发循环中随套筒向后飞驰 45.5 毫米，持续将套筒后坐动能压缩进螺旋复进簧中；拆解时率先自枪口衬套下方顶出分离。",
+        "designHighlight": "完全封闭的滚花端面既彻底隔绝了前向泥沙灌入复进簧通道，又为野战无工具按压释力提供了清晰的防滑受力支点。",
+        "audioScript": "位于枪管正下方的这枚滚花钢帽，是十六磅螺旋复进簧的前端顶座。它牢牢顶在枪口衬套挡裙后方，将泥沙挡在复进通道之外。按压这处滚花端面并旋开衬套，正是美军教范中分解柯尔特手枪的经典起手式。",
+        "audioUrl": "audio/m1911/parts/m1911_recoil_plug_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Knurled Hollow Front Cap Retaining Recoil Spring",
+        "overview": "Nested inside the forward lower tunnel of the slide, this deep hollow steel cap encloses the front coils of the 16-lb recoil spring and transfers its compression load directly against the barrel bushing apron.",
+        "craftAndMaterial": "Turned from bar-stock carbon steel with a blued protective finish, featuring a deeply checkered front face for positive thumb traction and a small punched tab that retains the spring.",
+        "kinematicRole": "Travels rearward 45.5 mm with the slide during recoil, compressing the helical spring against the stationary guide flange; releases forward first during field stripping.",
+        "designHighlight": "Its closed frontal cap seals the recoil spring tunnel against battlefield grit while presenting a tactile checkered pad for thumb-powered toolless disassembly.",
+        "audioScript": "Tucked directly beneath the muzzle sits the checkered hollow recoil spring plug. Captured behind the barrel bushing apron, it seals the spring tunnel against dirt and transfers the full slide recoil stroke directly into the sixteen-pound spring. Depressing this knurled cap is the signature first step of every 1911 field strip.",
+        "audioUrl": "audio/m1911/parts/m1911_recoil_plug_en.mp3"
+      }
+    },
+    "m1911_recoil_guide": {
+      "partId": "m1911_recoil_guide",
+      "bomCode": "U-06",
+      "calloutLabelEn": "Recoil Spring Guide Rod",
+      "zh": {
+        "roleTag": "半月形宽法兰短导杆与底把防冲击缓冲垫板",
+        "overview": "安装于复进簧后端的经典军用短型金属导杆，后部带有宽大弧形法兰面紧密贴合在底把前冲击台面与枪管下耳之间。",
+        "craftAndMaterial": "经精密车铣加工并表面抛光的优质合金钢制成，后法兰顶沿铣出精确半圆弧槽以无干涉让开倾斜下沉的枪管下表面。",
+        "kinematicRole": "击发全程静止紧贴在底把前壁，不仅防止高速压缩的螺旋复进簧弯折失稳，更在套筒后坐到达终点时承接刚性止停冲击。",
+        "designHighlight": "勃朗宁刻意采用短导杆而非全长导杆，正是为了让士兵能够从枪口前端直接下压复进簧帽实现单手快速野战分解。",
+        "audioScript": "这根结构精悍的短型钢制复进导杆，后部宽大的弧形法兰紧贴在底把前壁上，专门用来吸收套筒全行程后坐的终点撞击。勃朗宁刻意不把导杆做到枪口齐平，正是为了让士兵能轻松压入复进簧帽，完成免工具的战地快拆。",
+        "audioUrl": "audio/m1911/parts/m1911_recoil_guide_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Flanged Short Guide Bearing Rear Recoil Impact",
+        "overview": "Seated behind the recoil spring, this classic military short steel guide rod pairs a cylindrical spring core with a wide half-moon rear flange resting flush against the frame impact abutment.",
+        "craftAndMaterial": "Lathe-turned and milled from tough polished alloy steel with an upper concave radius precisely contoured to clear the barrel underside as the breech drops.",
+        "kinematicRole": "Remains anchored against the frame throughout cycling, guiding the rear coils against buckling while buffering the abrupt slide stop at maximum rearward travel.",
+        "designHighlight": "Browning purposefully kept the guide rod short rather than full-length so soldiers could depress the front recoil plug with a thumb and strip the pistol without wrenches.",
+        "audioScript": "Resting flush against the frame impact face, this compact flanged steel guide rod prevents the compressed recoil spring from kinking while absorbing the slide's full-stroke stop. Browning deliberately left it short so troops could depress the front recoil plug by hand for effortless field maintenance.",
+        "audioUrl": "audio/m1911/parts/m1911_recoil_guide_en.mp3"
+      }
+    },
+    "m1911_recoil_spring": {
+      "partId": "m1911_recoil_spring",
+      "bomCode": "U-07",
+      "calloutLabelEn": "16-lb Recoil Spring",
+      "zh": {
+        "roleTag": "22圈高碳琴钢丝动态压缩蓄能与高速复进驱动簧",
+        "overview": "纵置在枪管正下方的 16 磅军用标准螺旋压簧，负责吸收 .45 ACP 重弹猛烈的后坐动能，并在后坐终点反弹推动套筒前冲推弹上膛与闭锁。",
+        "craftAndMaterial": "采用高疲劳寿命冷拔高碳琴钢丝卷绕热定型而成，两端磨平贴合导杆法兰与空心簧帽，本馆藏保留 GPU 实时等径螺旋压缩变形仿真。",
+        "kinematicRole": "击发阶段三至五随套筒后坐 45.5 毫米被实时压缩至原长的 49%，阶段六至七释放储存弹力推送套筒与枪管平稳回归闭锁位。",
+        "designHighlight": "16 磅刚度系数与 230 格令 .45 ACP 亚音速重弹动量高度匹配，既柔和缓冲底把冲击又确保泥泞污染环境下拥有充沛的推弹闭锁裕度。",
+        "audioScript": "藏在枪管下方的这根十六磅琴钢丝复进簧，是协调大口径后坐节拍的储能引擎。每次扣动扳机，后冲的套筒将它瞬间压缩过半，随后它爆发弹性势能，不仅将下一发点四五实弹平稳送入弹膛，还顺势推动单绞链将枪管顶回闭锁死点。",
+        "audioUrl": "audio/m1911/parts/m1911_recoil_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "22-Coil Dynamic Helical Energy Storage Spring",
+        "overview": "Running longitudinally beneath the barrel, this standard 16-pound military helical spring absorbs the heavy recoil impulse of .45 ACP ammunition and drives the slide briskly forward to feed and lock the next round.",
+        "craftAndMaterial": "Wound from high-fatigue cold-drawn music wire with ground flat ends seating cleanly against the guide flange and recoil plug, animated with real-time constant-wire helical compression.",
+        "kinematicRole": "Compresses smoothly down to 49 percent of free length across the 45.5 mm slide stroke in phases 3 through 5, then expands cleanly during phases 6 and 7 to chamber and lock the barrel.",
+        "designHighlight": "Its 16-pound spring rate balances soft felt recoil against authoritative forward momentum capable of pushing heavy .45 cartridges into battery even in mud-fouled trenches.",
+        "audioScript": "Nested along the lower slide tunnel, this sixteen-pound music-wire recoil spring governs the pistol's entire operating rhythm. Compressed to half its length during the forty-five-millimeter slide stroke, it stores kinetic energy and rebounds decisively to strip, chamber, and lock the next forty-five caliber round.",
+        "audioUrl": "audio/m1911/parts/m1911_recoil_spring_en.mp3"
+      }
+    },
+    "m1911_firing_pin": {
+      "partId": "m1911_firing_pin",
+      "bomCode": "U-08",
+      "calloutLabelEn": "Inertia Firing Pin & Stop",
+      "zh": {
+        "roleTag": "短于通道防跌落走火惯性击针与矩形尾止动板",
+        "overview": "由一根短尺寸圆柱不锈钢惯性击针与一块垂直滑入套筒尾槽的矩形烤蓝止动板组成，负责传递击锤撞击能量点燃 .45 ACP 大号底火。",
+        "craftAndMaterial": "击针采用耐冲击硬化不锈钢车削成型，针尖抛光圆滑防止击穿底火；尾部止动板由高碳工具钢精密铣削，底部倒角半径还微妙影响着套筒初段后坐阻力。",
+        "kinematicRole": "平时受小簧顶推完全缩藏在弹底窝之后，阶段一受外露击锤高速猛击后脱离击锤借惯性前飞 3.8 毫米击发底火，随即迅速弹回安全退缩位。",
+        "designHighlight": "惯性击针全长刻意短于套筒孔道，即便击锤完全放下顶在针尾遭遇枪口坠地磕碰，击针尖也绝不会触碰膛内底火；一块尾止动板更是同时锁住击针与抽壳钩。",
+        "audioScript": "勃朗宁在这根细长的惯性击针上倾注了精妙的安全哲学：它的总长度刻意短于套筒通道，平时深藏不出。只有遭受击锤高速猛击，它才会像台球一样借惯性前飞点燃底火并立刻回弹，从根源上防止手枪坠地引发意外走火。",
+        "audioUrl": "audio/m1911/parts/m1911_firing_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Drop-Safe Inertia Firing Pin & Dual-Lock Stop Plate",
+        "overview": "Combining a shortened cylindrical stainless inertia firing pin with a vertically sliding rectangular steel stop plate, this assembly transfers hammer velocity cleanly to the .45 ACP primer.",
+        "craftAndMaterial": "The pin is turned from shock-hardened stainless steel with a hemispherical tip to prevent primer piercing, while the blued tool-steel stop plate simultaneously retains both pin and extractor.",
+        "kinematicRole": "Rests recessed behind the breechface until struck by the falling spur hammer in phase 1, flying forward 3.8 mm under pure inertia to dent the primer before rebounding clear.",
+        "designHighlight": "Because the firing pin is shorter than its slide tunnel, even a hammer resting directly against its tail cannot push the tip into a chambered primer if the pistol is dropped.",
+        "audioScript": "Browning engineered passive drop safety directly into the length of this stainless inertia firing pin. Deliberately shorter than its slide channel, it never touches the primer at rest—flying forward like a billiard ball only when struck at full speed by the falling spur hammer, while a single vertical stop plate locks both pin and extractor in place.",
+        "audioUrl": "audio/m1911/parts/m1911_firing_pin_en.mp3"
+      }
+    },
+    "m1911_extractor": {
+      "partId": "m1911_extractor",
+      "bomCode": "U-09",
+      "calloutLabelEn": "Internal Claw Extractor",
+      "zh": {
+        "roleTag": "全内置受控供弹弹簧钢片管状抽壳钩",
+        "overview": "纵向隐藏于套筒右侧长圆孔内的长条形弹性钢抽壳钩，前端弯爪伸入弹底窝边缘，负责在推弹入膛时提前抱住弹底缘并在后坐时强力拔出空弹壳。",
+        "craftAndMaterial": "采用高弹性弹簧钢整体铣削并经精密热处理定型，中部略作预弯施加恰当夹紧预紧力，全机身藏于套筒之内绝不暴露于外部尘泥。",
+        "kinematicRole": "全程随套筒往复运行：阶段六新弹沿坡道上滑时弹底顺势滑入抓爪下方实现受控供弹，阶段五则死死咬住膨胀铜壳拉出膛室送往抛壳挺。",
+        "designHighlight": "整件无需任何外置销钉或螺旋压簧，仅靠自身细长钢杆弹性便能稳定服役数万发，尾部直接卡入击针止动板凹槽防转定位。",
+        "audioScript": "深藏在套筒右侧长孔内的这根管状抽壳钩，浑身没有一颗小弹簧或销钉，全靠高强弹簧钢自身的预弯弹性牢牢夹住弹壳底缘。上膛时新弹底缘直接滑入抓爪下方，这种受控供弹设计让 M1911A1 即便倒置射击也能稳定抓壳抛壳。",
+        "audioUrl": "audio/m1911/parts/m1911_extractor_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Self-Tensioning Internal Controlled-Feed Extractor",
+        "overview": "Housed completely inside a longitudinal tunnel along the right rear of the slide, this slender spring-steel extractor grips the .45 ACP case rim during feeding and extracts spent brass reliably under heavy fouling.",
+        "craftAndMaterial": "Machined from spring-tempered alloy steel with a calibrated mid-body bend providing permanent lateral tension, shielded completely from external dirt and impact inside the slide.",
+        "kinematicRole": "Reciprocates with the slide: captures the rising cartridge rim underneath its claw during phase 6 controlled feeding, then pulls the fired brass rearward into the fixed ejector during phase 5.",
+        "designHighlight": "Requires zero separate coil springs or cross-pins—relying purely on its own tempered steel flexure and indexed cleanly against rotation by the firing pin stop plate.",
+        "audioScript": "Hidden completely inside a bored channel on the right side of the slide, this slender spring-steel extractor needs no separate coil spring or pivot pin. Relying purely on its own tempered flexure, it captures rising cartridge rims from below for true controlled feeding and drags stubborn brass clear of the chamber.",
+        "audioUrl": "audio/m1911/parts/m1911_extractor_en.mp3"
+      }
+    },
+    "m1911_frame": {
+      "partId": "m1911_frame",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Forged Steel Frame",
+      "zh": {
+        "roleTag": "18度黄金指向握把角与全封闭护圈锻钢底把",
+        "overview": "整支手枪不可动摇的刚性基础骨架，集成全长套筒导轨、前防尘罩、封闭式扳机护圈、单排弹匣井以及容纳全套单动火控的精密内腔。",
+        "craftAndMaterial": "由整块高强碳锰合金钢锻坯经数十道精密铣削与拉削工序加工而成，表面施以防眩光军用锰磷化涂层，右前侧深压 UNITED STATES PROPERTY 与 1943 年军械序列号。",
+        "kinematicRole": "击发全程保持零位静止作为全枪空间基准，既引导套筒直线滑行、固定空仓挂机横销作为单绞链支点，又在后坐终点承接枪管冲击停止。",
+        "designHighlight": "勃朗宁确定的 18 度（108°）握把倾角让手腕抬起即自然对准瞄准线；1924 年 A1 改型特别在扳机护圈后方双侧铣出食指避让凹槽，极大改善中小手型扣扳机舒适度。",
+        "audioScript": "这座整块锻钢铣削而成的底把，是 M1911A1 历经百年仍坚不可摧的脊梁。约翰·勃朗宁精心调校的十八度自然指向握把角，让射手抬手瞬间就能本能套准目标。扳机护圈后方优雅的指窝凹槽，正是识别一九二四年 A1 改型的经典细节。",
+        "audioUrl": "audio/m1911/parts/m1911_frame_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Forged 18-Degree Grip Frame with A1 Finger Scallops",
+        "overview": "This monolithic forged steel receiver serves as the structural foundation of the pistol, integrating full-length slide rails, the forward dust cover, closed trigger guard, slim single-stack magwell, and fire-control pockets.",
+        "craftAndMaterial": "Forged and precision-milled from carbon-manganese alloy steel with wartime manganese-phosphate parkerizing, stamped UNITED STATES PROPERTY, M1911A1 U.S. ARMY, and the G.H.D. inspector cartouche.",
+        "kinematicRole": "Remains strictly stationary throughout all seven phases, guiding the reciprocating slide, anchoring the slide-stop link pin, and arresting barrel rearward travel on its machined impact bed.",
+        "designHighlight": "Browning's iconic 18-degree grip rake delivers effortless natural pointability, enhanced in 1924 with twin scalloped finger relief cuts behind the trigger guard for improved trigger reach.",
+        "audioScript": "Machined from a solid steel forging, this receiver frame gives the M1911A1 its legendary backbone and natural balance. Browning's celebrated eighteen-degree grip angle aligns the wrist instinctively with the sights, while the twin scalloped finger reliefs behind the trigger guard mark the refined 1924 A1 specification.",
+        "audioUrl": "audio/m1911/parts/m1911_frame_en.mp3"
+      }
+    },
+    "m1911_slide_stop": {
+      "partId": "m1911_slide_stop",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Slide Stop & Link Pin",
+      "zh": {
+        "roleTag": "集枪管绞链定轴、空仓挂机与分解主销于一身",
+        "overview": "位于底把左侧的经典滚花长臂杠杆，前端一体延伸出一根贯穿左右底把与枪管单绞链下孔的粗壮圆柱横销。",
+        "craftAndMaterial": "采用高抗剪切铬镍工具钢模锻精加工并施以深烤蓝，拇指按压台面铣有清晰防滑纹路，内侧凸耳与单排弹匣托弹板左耳精准对位。",
+        "kinematicRole": "正常连发期间静止锁定上下机匣并充当单绞链固定旋转轴；当 7 发弹匣打空最后一发时由托弹板顶起卡入套筒缺口实现空仓挂机；分解时横向抽出即解锁套筒。",
+        "designHighlight": "高度集成的三合一设计彻底省去了额外的机匣固定销或分解卡笋，使整枪结构精炼至极。",
+        "audioScript": "底把左侧的这根空仓挂机杆，堪称勃朗宁化繁为简的教科书典范。它的一根横销同时承担了三重重任：锁紧上下机匣、充当枪管单绞链的静止支轴，以及在末发子弹打空时将套筒高高挂起提示换匣。野战分解时只需对齐缺口将它轻轻推出。",
+        "audioUrl": "audio/m1911/parts/m1911_slide_stop_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Tri-Function Link Axle, Slide Lock & Takedown Pin",
+        "overview": "Mounted along the left flank of the frame, this contoured serrated thumb lever extends an integral transverse steel axle directly through the receiver walls and the lower eye of the swinging barrel link.",
+        "craftAndMaterial": "Drop-forged from shear-resistant alloy steel with deep bluing, featuring a serrated thumb release shelf and an internal engagement lug indexed directly above the magazine follower ledge.",
+        "kinematicRole": "Acts as the stationary rotational axis for the swinging barrel link during firing, pivots upward when the empty follower lifts its lug to lock the slide open, and pushes out laterally for field stripping.",
+        "designHighlight": "Combining the takedown pin, barrel-link fulcrum, and last-round hold-open lever into one monolithic part eliminated multiple redundant pins and latches.",
+        "audioScript": "Mounted along the left flank, this single forged steel component performs three vital jobs at once. Its cross-pin serves as the immovable fulcrum for the swinging barrel link, locks the slide onto the frame, and lets the empty magazine follower catch the slide open on the seventh shot—all pulling straight out for toolless disassembly.",
+        "audioUrl": "audio/m1911/parts/m1911_slide_stop_en.mp3"
+      }
+    },
+    "m1911_thumb_safety": {
+      "partId": "m1911_thumb_safety",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Frame Thumb Safety",
+      "zh": {
+        "roleTag": "待击上锁模式同步死锁阻铁与套筒的拇指保险",
+        "overview": "安装于底把左后方握把顶部的手动滚花拨片保险，专供右手拇指在上膛待击状态下快速拨上锁止或出枪瞬间一键下压解除。",
+        "craftAndMaterial": "由淬火碳钢精密铸铣成型并表面烤蓝，外侧拨片滚压清晰菱格防滑纹，内部轴柱铣有与阻铁侧面精准贴合的刚性锁止凸轮块。",
+        "kinematicRole": "在射击循环中处于下压解脱位置允许击发与套筒滑行；向上拨至保险位时仅在击锤满待击态生效，同步顶死阻铁并嵌入套筒下方凹槽锁闭套筒。",
+        "designHighlight": "成就了战术射击史上著名的 Condition 1（上膛、满待击、上保险）携行法则，兼顾绝对防误触安全与毫秒级出枪首发响应。",
+        "audioScript": "这枚位于右手拇指自然落点处的手动保险，缔造了 1911 传奇的待击上锁携行法。当击锤处于满待击状态时向上一挑，它不仅从内部锁死单动阻铁，还同步卡进套筒凹槽锁闭自动机；遇到险情只需拇指顺势下压，瞬间即可精确击发。",
+        "audioUrl": "audio/m1911/parts/m1911_thumb_safety_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Condition 1 Positive Sear & Slide Blocking Safety",
+        "overview": "Pivoting at the left rear of the frame directly beneath the shooting thumb, this checkered paddle safety enables secure cocked-and-locked carry with instantaneous downward deactivation upon presentation.",
+        "craftAndMaterial": "Precision-milled from hardened carbon steel with a blued finish, checkered thumb pad, and an internal locking stud contoured to arrest sear rotation positively.",
+        "kinematicRole": "Rests depressed throughout active firing cycles; when rotated upward with the hammer cocked, it blocks sear movement internally while projecting a shield flange into the slide notch.",
+        "designHighlight": "Engineered specifically at U.S. Cavalry request for safe horseback holstering, pioneering the classic Condition 1 ready carry still practiced by elite tactical units today.",
+        "audioScript": "Positioned right beneath the shooting thumb, this checkered steel safety enabled the legendary Condition One cocked-and-locked carry. Swept upward over a cocked hammer, it mechanically blocks the sear inside the frame while locking the slide shut—then drops away instinctively under thumb pressure the instant sights reach the target.",
+        "audioUrl": "audio/m1911/parts/m1911_thumb_safety_en.mp3"
+      }
+    },
+    "m1911_mainspring_housing": {
+      "partId": "m1911_mainspring_housing",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Arched Mainspring Housing",
+      "zh": {
+        "roleTag": "1924 A1 标志性弧背掌托主簧壳与军用系枪环",
+        "overview": "沿底把后背燕尾槽滑入并由底销锁固的弧形钢制背壳，既构成贴合掌心的饱满握背曲线，又是包裹 23 磅击锤螺旋主簧的密闭套筒。",
+        "craftAndMaterial": "高强度合金钢铣削成 A1 标志性圆弧隆起造型，背面加工密集纵向防滑直纹，底部一体铆装骑兵与伞兵防丢系枪钢环，通体磷化处理。",
+        "kinematicRole": "击发全程静止锁固于握把后脊，承受 23 磅螺旋主簧反作用力并将三叉板簧下脚牢牢夹紧在底把槽内；拆解时抽出横销即可向下整体滑脱。",
+        "designHighlight": "美军一战统计发现直背 M1911 在应激速射时容易打低，1924 年换装的弧背主簧壳巧妙撑高掌心自然将枪口微抬回瞄准线。",
+        "audioScript": "握把后脊这块微微隆起的弧形防滑钢壳，是区分二战 M1911A1 与一战早期型最直观的徽记。当年美军发现直背握把在仓促举枪时容易偏低，改用这块贴合掌心的弧背主簧壳后，不仅自然矫正了指向高度，还严密收纳着二十三磅击锤主簧与底端系枪环。",
+        "audioUrl": "audio/m1911/parts/m1911_mainspring_housing_zh.mp3"
+      },
+      "en": {
+        "roleTag": "1924 A1 Arched Palm-Swell Housing & Lanyard Loop",
+        "overview": "Sliding upward into twin rear frame dovetails, this contoured steel backstrap forms the signature ergonomic palm swell of the M1911A1 while enclosing the 23-lb hammer mainspring inside its bored core.",
+        "craftAndMaterial": "Milled from parkerized alloy steel with crisp vertical anti-slip serrations across its arched profile and a forged GI lanyard loop pinned cleanly at the heel.",
+        "kinematicRole": "Remains anchored rigidly to the grip backstrap during firing, reacting hammer-mainspring thrust and clamping the foot of the three-leaf sear spring firmly in position.",
+        "designHighlight": "Introduced in 1924 after World War I reports showed troops shooting slightly low under stress with flat backstraps—the subtle palm swell naturally raises muzzle elevation onto target.",
+        "audioScript": "This gently curved, vertically serrated backstrap is the unmistakable signature of the 1924 M1911A1 upgrade. Battlefield studies showed flat-backstrap pistols tended to point slightly low during snap shots; adding this palm-filling arch raised natural point of aim while housing the twenty-three-pound mainspring and military lanyard ring.",
+        "audioUrl": "audio/m1911/parts/m1911_mainspring_housing_en.mp3"
+      }
+    },
+    "m1911_grip_left": {
+      "partId": "m1911_grip_left",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Left Walnut Grip Panel",
+      "zh": {
+        "roleTag": "20线手工双菱格滚花美洲黑胡桃木左侧护片",
+        "overview": "通过两枚一字槽钢螺钉与黄铜底套紧固在底把左侧面的纤薄实木护片，为单排 .45 ACP 握把提供温润牢固的贴掌摩擦面。",
+        "craftAndMaterial": "精选致密美洲黑胡桃木精雕 20 LPI 锋利金字塔菱格滚花，围绕上下螺钉孔保留标志性双菱形光面岛区并经手工亚麻籽油浸润。",
+        "kinematicRole": "作为外部人机工学护壳静止贴附于底把左壁，遮蔽内部扳机框导槽与弹匣井侧窗，抵御恶劣环境泥水侵入。",
+        "designHighlight": "经典的柯尔特双菱格（Double-Diamond）图案兼具视觉辨识度与极佳防滑排水性，即便在雨林泥泞与满手血汗中仍能稳控重口径后坐。",
+        "audioScript": "镶嵌在底把左侧的这片美洲黑胡桃木护片，精雕着柯尔特举世闻名的双菱格二十线防滑滚花。围绕上下两颗一字螺钉留出的光面菱形岛区，与密布的金字塔尖棱相映成趣，让射手在泥水湿滑环境中依然能牢牢锁死点四五口径的澎湃后坐。",
+        "audioUrl": "audio/m1911/parts/m1911_grip_left_zh.mp3"
+      },
+      "en": {
+        "roleTag": "20-LPI Double-Diamond Checkered American Walnut",
+        "overview": "Anchored to the left flank of the frame by twin slotted screws and threaded bushings, this slim walnut panel provides positive recoil control while keeping grip circumference trim around the single-stack magwell.",
+        "craftAndMaterial": "Carved from dense oil-finished American black walnut with crisp 20-LPI pyramidal checkering framed by smooth perimeter borders and twin uncheckered diamonds around each screw.",
+        "kinematicRole": "Rests stationary on the left grip strap as an ergonomic barrier shielding the magazine well and trigger-bow channels from grit and moisture.",
+        "designHighlight": "Colt's iconic double-diamond pattern sheds water and sweat efficiently while offering a warm, non-conductive grip texture across sub-zero winters and tropical campaigns.",
+        "audioScript": "Fastened cleanly along the left grip strap, this oil-rubbed American black walnut panel wears Colt's unmistakable twenty-line double-diamond checkering. Leaving smooth walnut diamonds around both slotted grip screws created a classic museum aesthetic that locks firmly into the hand even under heavy forty-five caliber recoil.",
+        "audioUrl": "audio/m1911/parts/m1911_grip_left_en.mp3"
+      }
+    },
+    "m1911_grip_right": {
+      "partId": "m1911_grip_right",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Right Walnut Grip Panel",
+      "zh": {
+        "roleTag": "对称配对双菱格美洲黑胡桃木右侧握把护片",
+        "overview": "与左侧对称匹配的美洲黑胡桃木右侧护片，完整封闭底把右壁并承载右手掌心与指尖在连发过程中的稳定反作用力。",
+        "craftAndMaterial": "采用同批次直纹美洲黑胡桃木双面精雕 20 线双菱格纹路，边缘倒圆避免磕手，配以黄铜防滑螺套与烤蓝一字螺钉稳固锁紧。",
+        "kinematicRole": "静止锁紧于底把右侧壁并在一级之后细拆阶段沿右侧轴向剥离，便于展示内部纤细单排弹匣井与直推扳机框。",
+        "designHighlight": "连同左侧护片在内的全握把总厚仅约 32 毫米，令大威力 .45 ACP 军用手枪拥有堪比现代紧凑型手枪的绝佳单手掌控感。",
+        "audioScript": "与左侧对称配对的这片右侧双菱格黑胡桃木护片，共同将整枪握把厚度控制在仅仅三十二毫米左右。如此纤薄贴手的单排人机尺寸，令重口径点四五军用手枪竟拥有令不同手型射手一握倾心的绝妙握持感。",
+        "audioUrl": "audio/m1911/parts/m1911_grip_right_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Matched Right Double-Diamond Walnut Grip Panel",
+        "overview": "Paired symmetrically with the left grip, this right-side walnut panel closes the right grip frame window and anchors palm and fingertip traction through rapid follow-up shots.",
+        "craftAndMaterial": "Crafted from matched straight-grain American black walnut with 20-LPI double-diamond checkering, hand-rubbed linseed oil sheen, and twin slotted screw escutcheons.",
+        "kinematicRole": "Remains fixed to the right frame wall during operation and separates laterally during detailed stripping to reveal the internal trigger bow and single-stack magwell.",
+        "designHighlight": "Together with the left panel, it holds total grip width to a slender 32 mm, granting a heavy .45 ACP service pistol remarkably agile one-handed control.",
+        "audioScript": "Matched symmetrically to its partner on the right flank, this checkered walnut grip panel keeps total grip width to a remarkably slim thirty-two millimeters. That slender single-stack feel is why shooters of every hand size still praise the 1911 as the most comfortable combat handgun ever built.",
+        "audioUrl": "audio/m1911/parts/m1911_grip_right_en.mp3"
+      }
+    },
+    "m1911_hammer": {
+      "partId": "m1911_hammer",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Spur Hammer & Strut",
+      "zh": {
+        "roleTag": "外露宽尾滚花单动击锤、半待击保险齿与传力挺杆",
+        "overview": "矗立于套筒尾部上方的标志性外露式长尾单动击锤，下方铰接一根细长钢制挺杆斜向下伸入弧背主簧壳内对接 23 磅主簧。",
+        "craftAndMaterial": "采用高硬度锻造碳钢精密线切割与表面淬火成形，尾部滚压防滑拇指纹并经典保留脊部烤蓝与两侧拉丝亮钢的双色工艺。",
+        "kinematicRole": "阶段一脱开阻铁后向前迅猛旋转 50 度猛击惯性击针；阶段五被后坐套筒底部重新向后压倒至满待击位并由阻铁牢牢挂接。",
+        "designHighlight": "下部特别设有深切半待击安全缺口，即便单动扣放或意外震动导致击锤滑脱阻铁，也会被半待击齿死死拦停防止误击发。",
+        "audioScript": "高耸在套筒尾后的这枚宽尾滚花外露击锤，底部铰接了一根细长钢挺杆直插弧背主簧壳。阻铁释放瞬间，它借二十三磅主簧之力迅猛前扑敲飞惯性击针，随即又被后坐的套筒顺势重新压回满待击位，并自带半待击防滑脱机械保险齿。",
+        "audioUrl": "audio/m1911/parts/m1911_hammer_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Exposed Checkered Spur Hammer with Half-Cock Notch",
+        "overview": "Rising prominently behind the slide, this exposed wide-spur single-action hammer pivots on a solid cross-pin and links downward through an articulated steel strut into the 23-lb mainspring.",
+        "craftAndMaterial": "Drop-forged and case-hardened alloy steel with checkered thumb spur traction and classic Colt blued edges paired with bright brushed side flats.",
+        "kinematicRole": "Snaps forward 50 degrees in phase 1 to launch the inertia firing pin, then gets swept rearward into full cock by the recoiling slide during phase 5.",
+        "designHighlight": "Includes a deep captive half-cock safety notch engineered to arrest the hammer mid-arc if the sear ever slips under extreme shock, preventing accidental discharge.",
+        "audioScript": "Rising cleanly behind the slide, this exposed wide-spur hammer channels twenty-three pounds of mainspring energy through its articulated steel strut. Released by the sear, it arcs forward fifty degrees to launch the firing pin, gets recocked smoothly by the recoiling slide, and carries a deep half-cock intercept notch against accidental slips.",
+        "audioUrl": "audio/m1911/parts/m1911_hammer_en.mp3"
+      }
+    },
+    "m1911_trigger": {
+      "partId": "m1911_trigger",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Straight-Pull Trigger",
+      "zh": {
+        "roleTag": "纯水平直线后滑无旋转弧度的传奇单动扳机框",
+        "overview": "由前部 A1 改型短式滚花指面与后部环抱单排弹匣井两侧的 U 形薄钢板框一体铆合而成，是造就 1911 传奇手感的绝对功臣。",
+        "craftAndMaterial": "指面采用硬化防滑烤蓝钢，U 形扳机框由高刚性冷轧不锈钢片精密冲压焊接并在底把左右滑槽内手工抛光消除摩擦滞涩。",
+        "kinematicRole": "阶段一在食指扣压下作纯水平直线后移 4.2 毫米直接顶推单发断连器与阻铁解脱击锤，击发后借三叉板簧中臂弹力顺滑前推复位。",
+        "designHighlight": "彻底摒弃传统摆动扳机因力臂角度变化带来的拖泥带水感，纯直线平移配合极短行程铸就了手枪界“折断玻璃棒”般的至高击发标杆。",
+        "audioScript": "为什么百年后的今天，全球射手依然公认 1911 拥有手枪界最顶级的扳机手感？奥秘就在这套环抱弹匣井的 U 形直推扳机框！它不像普通扳机那样绕轴旋转，而是沿着底把滑槽做纯水平直线后移四点二毫米，成就了清脆如玻璃折断的传奇一道火。",
+        "audioUrl": "audio/m1911/parts/m1911_trigger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Linear-Sliding Stirrup Trigger for Crisp Single Action",
+        "overview": "Comprising a short checkered A1 finger pad riveted to a U-shaped sheet-steel stirrup bow straddling both sides of the magazine well, this trigger delivers the benchmark single-action break of pistol history.",
+        "craftAndMaterial": "Hardened serrated carbon-steel trigger shoe joined to a precision-stamped polished steel stirrup gliding smoothly inside twin machined frame tracks.",
+        "kinematicRole": "Translates strictly horizontally rearward 4.2 mm in phase 1 to press the disconnector and sear cleanly, resetting forward under center leaf-spring pressure in phase 7.",
+        "designHighlight": "Eliminating rotational pivot geometry removes changing finger leverage and rotational stack, producing a short, clean break famously compared to snapping a thin glass rod.",
+        "audioScript": "Ask any master marksman why the 1911 remains the gold standard for handgun triggers, and the answer is this straight-pull stirrup bow. Rather than pivoting on a pin, its U-shaped steel frame glides strictly rearward along milled receiver tracks for four point two millimeters, creating the crisp, zero-creep break famous worldwide.",
+        "audioUrl": "audio/m1911/parts/m1911_trigger_en.mp3"
+      }
+    },
+    "m1911_sear_disconnector": {
+      "partId": "m1911_sear_disconnector",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Sear & Disconnector",
+      "zh": {
+        "roleTag": "精密单动阻铁与套筒半月槽联动单发防早发断连器",
+        "overview": "同轴叠装于底把火控舱内的两枚微米级关键联锁件：阻铁以精密斜齿挂住击锤，垂直桨状断连器则向上伸出底把顶面探查套筒闭锁状态。",
+        "craftAndMaterial": "选用高耐磨工具钢精密磨削并镜面抛光阻铁鼻端咬合面，确保击发阻力稳定在约 2.2 公斤且历经数万次循环绝不钝化走火。",
+        "kinematicRole": "唯有套筒完全闭锁时断连器圆头才能向上弹入套筒凹槽连通扳机框与阻铁；射击后套筒一开始后坐便立即将断连器压降 1.8 毫米切断传动，杜绝连发与未闭锁早发。",
+        "designHighlight": "一根极其精巧的垂直桨片同时兼任半自动单发断连器与未闭锁击发机械安全锁，结构之紧凑令后世无数设计师叹服。",
+        "audioScript": "共轴装配在火控舱内的阻铁与桨状断连器，是全枪最精密的逻辑开关。只有当套筒完全归位闭锁，断连器圆头才能顶进套筒底部的半月凹槽连通扳机；套筒一旦后坐便瞬间将它压下断路，既杜绝了失控连发，又彻底锁死了未闭锁早发隐患。",
+        "audioUrl": "audio/m1911/parts/m1911_sear_disconnector_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Precision Single-Action Sear & Out-of-Battery Interlock",
+        "overview": "Sharing a common frame cross-pin, this precision steel sear holds the full-cock hammer hooks while the vertical paddle disconnector protrudes through the frame roof to sense slide lockup.",
+        "craftAndMaterial": "Tool-steel precision-ground and honed to mirror smoothness on the sear nose engagement angle, sustaining a crisp 5-pound trigger break across tens of thousands of cycles.",
+        "kinematicRole": "The disconnector bridges trigger bow to sear only when its rounded head rises into a semicircular slide cutout at full battery; rearward slide motion immediately depresses it 1.8 mm to disconnect fire control.",
+        "designHighlight": "A single vertical paddle simultaneously enforces semi-automatic single-shot discipline and acts as a positive out-of-battery mechanical safety.",
+        "audioScript": "Sharing a single frame pin, the honed steel sear and vertical paddle disconnector act as the pistol's mechanical logic gate. Only when the slide reaches full lockup can the disconnector head rise into its slide recess to link trigger and sear—instantly dropping clear during recoil to prevent full-auto runaway or out-of-battery firing.",
+        "audioUrl": "audio/m1911/parts/m1911_sear_disconnector_en.mp3"
+      }
+    },
+    "m1911_grip_safety": {
+      "partId": "m1911_grip_safety",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "Tang Grip Safety",
+      "zh": {
+        "roleTag": "虎口压入解脱扳机框阻断的自动尾舌握把保险",
+        "overview": "铰接于握把上后部的自动被动安全构件，外侧具有贴合虎口的加长 A1 尾舌护翼，内侧向前伸出一根顶在直推扳机框正后方的实心阻断臂。",
+        "craftAndMaterial": "采用军用磷化锻钢精密成形，A1 改型显著加长上尾舌以在猛烈后坐时完全隔开外露击锤与射手手掌虎口，消除“击锤咬手”痛点。",
+        "kinematicRole": "平时在三叉板簧右臂推力下向外顶出并物理顶死扳机框阻止击发；阶段一射手握实枪柄压入 8 度后内阻断臂上抬让开扳机后退路径。",
+        "designHighlight": "无需任何有意识动作即可在正常握持瞬间自动解锁，而在枪械跌落或衣物误勾扳机时死死锁定火控，成为骑兵与野战官兵最信赖的被动护盾。",
+        "audioScript": "握把虎口处的这道自动握把保险，源自一百一十年前美国骑兵防止马背跌落走火的严苛需求。不握实枪柄时，它的内舌死死顶在直推扳机框正后方；一旦手掌自然握紧压入八度，阻断瞬间解除，同时 A1 加长尾舌还贴心保护虎口不被后倒的击锤夹伤。",
+        "audioUrl": "audio/m1911/parts/m1911_grip_safety_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Passive Hand-Actuated Trigger-Bow Block Safety",
+        "overview": "Pivoting at the upper grip backstrap, this automatic passive safety features an elongated A1 tang horn protecting the web of the hand and an internal blocking arm directly behind the trigger bow.",
+        "craftAndMaterial": "Forged and parkerized alloy steel contoured with the lengthened 1924 A1 tang profile that shields the shooter's thumb web from hammer bite under heavy recoil.",
+        "kinematicRole": "Held rearward at rest by the right leaf of the sear spring to physically block trigger travel; pivots inward 8 degrees in phase 1 under natural firing grip to lift the blocking arm clear.",
+        "designHighlight": "Deactivates effortlessly the instant a firing grip is established yet arrests trigger inertia completely if the pistol is dropped or snagged in brush.",
+        "audioScript": "Added at the insistence of the U.S. Cavalry to prevent accidental discharges on horseback, this automatic grip safety blocks the trigger bow solidly from behind whenever the gun is out of hand. Establishing a normal firing grip presses it inward eight degrees to clear the trigger while its extended A1 tang guards the hand against hammer bite.",
+        "audioUrl": "audio/m1911/parts/m1911_grip_safety_en.mp3"
+      }
+    },
+    "m1911_leaf_spring": {
+      "partId": "m1911_leaf_spring",
+      "bomCode": "FC-05",
+      "calloutLabelEn": "Three-Prong Sear Spring",
+      "zh": {
+        "roleTag": "一簧三用无需螺钉的勃朗宁三叉弹簧钢片",
+        "overview": "藏于握把后腔内的薄片状三叉分岔弹性钢片，凭借底部插脚卡入底把槽并由弧背主簧壳压紧，以单一零件同时驱动三套独立火控机构。",
+        "craftAndMaterial": "采用高弹性蓝火回火特种弹簧钢带冲压弯折成形，三根独立弹臂经过精密弧度调校分别输出恰如其分的回弹力矩。",
+        "kinematicRole": "左弹臂持续给单动阻铁施加咬合扭力，中弹臂向上顶升断连器并推动直推扳机复位，右弹臂则将自动握把保险顶回锁定态。",
+        "designHighlight": "堪称枪械设计史上最令人拍案叫绝的零件合并杰作：无需一颗螺钉或轴销，一簧取代三组螺旋压簧，大幅降低战地维护遗失风险。",
+        "audioScript": "藏在握把后腔的这片三叉弹簧钢片，堪称约翰·勃朗宁零件合并哲学的巅峰奇迹。全件不需要一颗螺钉固定，单靠三片独立分叉的钢臂，左臂压住阻铁、中臂顶升断连器与扳机、右臂推回握把保险——一片弹簧钢，搞定三套核心机构！",
+        "audioUrl": "audio/m1911/parts/m1911_leaf_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Screwless Tri-Prong Flat Fire-Control Leaf Spring",
+        "overview": "Nestled inside the rear grip cavity and clamped solely by the mainspring housing, this stamped three-fingered flat steel leaf spring powers three separate fire-control subsystems simultaneously.",
+        "craftAndMaterial": "Blanked and formed from temper-blued spring-steel strip with individually tuned arcs across its left, center, and right flexure arms.",
+        "kinematicRole": "Its left leaf biases the sear into the hammer hooks, its center leaf elevates the disconnector and resets the trigger bow, and its right leaf pushes the grip safety back into lock.",
+        "designHighlight": "A legendary feat of engineering minimalism: eliminating three separate coil springs, plungers, and retaining screws in favor of a single foolproof stamped leaf.",
+        "audioScript": "Tucked inside the backstrap cavity sits one of the greatest feats of mechanical consolidation in firearms history: Browning's three-prong flat leaf spring. Held in place without a single screw, its left finger tensions the sear, its middle finger lifts the disconnector and trigger bow, and its right finger powers the automatic grip safety.",
+        "audioUrl": "audio/m1911/parts/m1911_leaf_spring_en.mp3"
+      }
+    },
+    "m1911_mainspring": {
+      "partId": "m1911_mainspring",
+      "bomCode": "FC-06",
+      "calloutLabelEn": "23-lb Hammer Mainspring",
+      "zh": {
+        "roleTag": "藏于弧背主簧壳内的23磅螺旋击锤驱动主簧",
+        "overview": "沿 18 度握把倾角密封安装于弧背主簧壳中空管腔内的重型螺旋琴钢丝主簧，通过顶部圆帽顶托击锤挺杆输出强悍击发力矩。",
+        "craftAndMaterial": "采用高强冷拔琴钢丝紧密卷绕 20 圈并做防腐磷化，本馆藏保留动态 GPU 等径螺旋伸缩形变，直观呈现每次击发与压锤过程中的真实压缩行程。",
+        "kinematicRole": "阶段一击锤前摆时伸张释放能量推打惯性击针；阶段五套筒后坐压倒击锤时挺杆向下将其猛烈压缩 14% 蓄能，同时显著辅助缓冲套筒初段后坐速度。",
+        "designHighlight": "23 磅高劲度主簧不仅保证严寒结霜下可靠引燃军用硬底火，更与 16 磅复进簧协同构成双重后坐能量吸收系统。",
+        "audioScript": "密闭藏身在弧背主簧壳内部的这根二十三磅螺旋主簧，与握把呈十八度倾角同轴排布。它不仅在击锤释放瞬间爆发强大扭力击发军用硬底火，更在套筒后坐压倒击锤时顺势吸收相当一部分后坐能量，让重口径手枪的射击节奏沉稳有序。",
+        "audioUrl": "audio/m1911/parts/m1911_mainspring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "23-lb Enclosed Helical Hammer Drive Spring",
+        "overview": "Sealed along the 18-degree grip axis inside the bored core of the arched mainspring housing, this stout helical spring pushes upward on the hammer strut to deliver decisive ignition energy.",
+        "craftAndMaterial": "Coiled from 20 turns of heavy-gauge music wire with corrosion-resistant finish and real-time constant-wire helical GPU deformation across firing and recocking phases.",
+        "kinematicRole": "Extends rapidly in phase 1 as the hammer snaps forward onto the firing pin, then compresses sharply in phase 5 when the recoiling slide cams the hammer strut downward.",
+        "designHighlight": "Beyond igniting hard military primers in sub-zero weather, its 23-pound resistance helps brake early slide velocity alongside the 16-pound recoil spring.",
+        "audioScript": "Sealed safely inside the arched mainspring housing, this twenty-three-pound helical spring sits aligned along the eighteen-degree grip axis. It snaps the exposed spur hammer forward to crush tough military primers, then compresses forcefully during slide recoil to help tame the heavy forty-five caliber impulse.",
+        "audioUrl": "audio/m1911/parts/m1911_mainspring_en.mp3"
+      }
+    },
+    "m1911_mag_body": {
+      "partId": "m1911_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "7-Rd Single-Stack Mag",
+      "zh": {
+        "roleTag": "13.8毫米纤薄单排双色热处理钢制弹匣壳",
+        "overview": "专为 11.43 毫米大直径 .45 ACP 弹药打造的单排 7 发钢制弹匣，顶部抱弹唇带有精准渐进释放几何弧度，底部满焊平板托底并冲有两侧 5 孔余弹视窗。",
+        "craftAndMaterial": "采用优质薄钢板折弯滚焊成型，复刻经典二战双色热处理工艺（顶部抱弹唇局部退火回火呈灰亮钢色防止开裂，下段主体深烤蓝防锈）。",
+        "kinematicRole": "固定锁扣在握把弹匣井内充当受控供弹引导槽，精准控制每一发 230 格令圆头弹脱离抱弹唇的仰角与时机；分解时首个自握把底部滑出。",
+        "designHighlight": "柯尔特原厂渐进释放锥形抱弹唇确保实弹在离开弹匣前就已经平顺滑入抽壳钩抓爪下方，堪称决定 1911 供弹可靠性的隐形基石。",
+        "audioScript": "这枚宽度不足十四毫米的七发单排钢制弹匣，复刻了二战柯尔特经典的双色局部热处理工艺——顶部抱弹唇专门保留高韧性亮钢防止反复装弹变形开裂。渐进张开的锥形抱弹唇精确控制点四五实弹的出匣仰角，确保每一发都顺滑滑入抽壳钩下方。",
+        "audioUrl": "audio/m1911/parts/m1911_mag_body_zh.mp3"
+      },
+      "en": {
+        "roleTag": "7-Round Two-Tone Tempered Single-Stack Magazine",
+        "overview": "Engineered around the stout 11.43 mm diameter of the .45 ACP cartridge, this slim 7-round single-stack steel magazine features tapered progressive feed lips, five lateral witness holes, and a welded flat baseplate.",
+        "craftAndMaterial": "Formed and seam-welded from high-grade sheet steel showcasing classic WWII two-tone heat treatment—tempered bright steel across the high-stress upper lips above a blued lower body.",
+        "kinematicRole": "Locks inside the grip magwell to present cartridges at an exact climbing angle into the breechface and extractor claw; drops free first during field stripping.",
+        "designHighlight": "Browning's progressive tapered feed lips release each heavy .45 round smoothly only after its rim engages the internal extractor, guaranteeing dependable controlled feed.",
+        "audioScript": "Barely fourteen millimeters thick, this seven-round single-stack magazine wears the classic wartime two-tone heat-treated finish—tempered bright steel at the high-stress feed lips over a blued lower body. Its subtly tapered feed lips time cartridge release so every heavy forty-five round slips cleanly under the extractor claw.",
+        "audioUrl": "audio/m1911/parts/m1911_mag_body_en.mp3"
+      }
+    },
+    "m1911_mag_follower": {
+      "partId": "m1911_mag_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Dimpled Steel Follower",
+      "zh": {
+        "roleTag": "顶面勃朗宁防惯性前窜凸点与空仓挂机抬升托板",
+        "overview": "沿单排弹匣内腔上下滑动的折弯钢制托弹板，顶面中央冲压有一枚标志性圆形凸点，左前缘伸出触发空仓挂机杆的直角抬升台面。",
+        "craftAndMaterial": "由表面硬化的光亮合金钢板冲压折弯而成，前部加长防倾覆滑裙消除推弹偏斜，顶部微倾角精准承托第 7 发末弹。",
+        "kinematicRole": "在 CT 纵剖视中严丝合缝贴靠于 7 发实弹柱最底发正下方；阶段六随托弹簧上举托送新弹，打空末发后由左耳顶起空仓挂机杆。",
+        "designHighlight": "顶面中央那枚极易被忽视的小圆凸点（Browning Dimple）专门嵌入末发弹底沟槽，彻底根治猛烈后坐导致末发实弹因惯性提前蹿出抱弹唇的卡壳顽疾。",
+        "audioScript": "仔细观察这枚光亮钢制托弹板的顶面中央，有一颗貌不惊人的圆形小凸点——这正是闻名遐迩的勃朗宁凸点！当弹匣只剩最后一发子弹、手枪剧烈后坐时，全靠这颗小凸点卡住弹壳底缘防止它因惯性前窜滑脱，展现了大师对每一毫秒物理细节的极致洞察。",
+        "audioUrl": "audio/m1911/parts/m1911_mag_follower_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Browning Dimpled Anti-Inertia Single-Stack Follower",
+        "overview": "Gliding vertically inside the single-stack tube, this stamped steel follower pairs a raised central control dimple with a long front anti-tilt skirt and a left-side slide-stop lifting shelf.",
+        "craftAndMaterial": "Stamped and folded from case-hardened polished sheet steel to minimize friction along the blued magazine walls while resisting wear on its slide-stop tab.",
+        "kinematicRole": "Sits flush beneath the bottom .45 ACP cartridge in CT cutaway view, pulsing upward in phase 6 to elevate fresh rounds and lifting the slide stop once the seventh round fires.",
+        "designHighlight": "The tiny stamped center dimple arrests the rim of the final round during violent slide recoil, preventing inertia from jumping the last cartridge ahead of the extractor.",
+        "audioScript": "Look closely at the top deck of this polished steel follower and you will spot a tiny raised bump known as the Browning dimple. Under fierce forty-five caliber recoil, that miniature steel bead hooks the final cartridge rim to stop inertia from jerking the last round prematurely out of the feed lips—a masterclass in mechanical foresight.",
+        "audioUrl": "audio/m1911/parts/m1911_mag_follower_en.mp3"
+      }
+    },
+    "m1911_mag_spring": {
+      "partId": "m1911_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Single-Stack Mag Spring",
+      "zh": {
+        "roleTag": "18度同轴压缩单排弹匣高韧性螺旋托弹压簧",
+        "overview": "支承在弹匣底板与凸点托弹板之间的高张力压缩托弹簧，沿着 18 度握把轴线持续向上托举 7 发沉重的 230 格令 .45 ACP 弹药柱。",
+        "craftAndMaterial": "采用抗应力松弛冷拔高碳弹簧钢丝精密绕制，在 CT 纵剖面下严密压缩于托弹板正下方零穿模，并保留 GPU 实时伸缩动态仿真。",
+        "kinematicRole": "在击发阶段五至六随着上方首弹剥离平滑伸展 28%，持续保持充沛向上供弹推力，直至将空仓挂机杆干脆顶起锁住套筒。",
+        "designHighlight": "经过严格疲劳测试的高弹力弹簧钢设计，即便满装 7 发实弹长期战备存放数月仍能瞬间爆发可靠推弹速率。",
+        "audioScript": "紧密盘踞在单排弹匣底部的这根高韧性托弹压簧，承担着在零点一秒内将沉重的二百三十格令点四五弹柱瞬间推举到位的艰巨任务。开启实时纵剖面，你可以清晰看到它严密顶托在凸点托弹板下方，随每次抛壳顺畅伸展供弹。",
+        "audioUrl": "audio/m1911/parts/m1911_mag_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "18-Degree Coaxial Compressed Magazine Follower Spring",
+        "overview": "Compressed cleanly between the welded baseplate and the dimpled follower along the 18-degree grip axis, this high-tension spring drives the heavy 7-round column of 230-grain .45 ACP cartridges upward.",
+        "craftAndMaterial": "Formed from stress-relieved cold-drawn spring wire sized precisely beneath the follower deck for zero-clipping CT cutaway alignment with real-time GPU helical extension.",
+        "kinematicRole": "Expands smoothly by 28 percent during phases 5 and 6 as the top cartridge strips forward into the chamber, maintaining brisk upward feed pressure through the final shot.",
+        "designHighlight": "Engineered to resist compression set during long-term loaded standby, ensuring reliable magazine feeding and positive last-round slide lockup even after years of service.",
+        "audioScript": "Compressed tightly beneath the dimpled steel follower, this high-tension spring lifts seven heavy two-hundred-thirty-grain forty-five caliber rounds into battery in fractions of a second. In live cutaway view, you can watch it sit flush beneath the stack with zero interference, extending briskly as each fresh round rises to meet the returning slide.",
+        "audioUrl": "audio/m1911/parts/m1911_mag_spring_en.mp3"
+      }
+    }
+  }
+}

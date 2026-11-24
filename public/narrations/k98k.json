@@ -1,0 +1,896 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "k98k",
+  "generatedAt": "2026-11-24T04:00:00.000000+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "Mauser Karabiner 98k Bolt-Action Rifle",
+    "subtitle": "7.92x57mm Mauser 98 Controlled-Round Feed Service Carbine",
+    "originCountry": "Germany",
+    "weaponType": "Bolt-Action Rifle",
+    "categoryLabel": "Rifle",
+    "actionMechanism": "90-Deg Rotating Bolt (Dual Front Lugs + Rear Safety Lug) · Non-Rotating Mauser Claw Extractor · 5-Rd Stripper Clip",
+    "statusLabel": "In Vault · Field Strippable",
+    "description": "Perfected by Paul Mauser in 1898 and standardized as the compact 1,110 mm Karabiner 98 kurz in 1935, the K98k established the enduring benchmark for bolt-action rifle engineering. Its large-ring forged receiver locks two massive front lugs backed by a third rear safety lug, while a non-rotating full-length claw extractor maintains positive rim control from magazine to chamber. Paired with a 3-position wing flag safety, laminated beechwood stock with buttstock takedown disk, and 5-round brass stripper clips, over 14.6 million rifles were built and its Model 98 action still defines sporting rifles worldwide.",
+    "highlights": [
+      "90-Deg 3-Lug Mauser 98 Rotating Bolt & Swept-Down Handle",
+      "Non-Rotating Full-Length Claw Extractor (Controlled-Round Feed)",
+      "3-Position Wing Flag Safety & Gas-Deflecting Bolt Shroud",
+      "Laminated Beechwood Stock w/ Sling Cutout & Takedown Disk"
+    ],
+    "workbenchTitle": "Mauser Karabiner 98k 3D Bolt Kinematics & Cutaway Workbench",
+    "workbenchSubtitle": "4 Modular Groups · 24 Parts · 90-Deg 3-Lug Lockup, Non-Rotating Claw Extractor & 7.92x57mm Simulation",
+    "cutawayLabel": "Mauser 98 Bolt & Claw Cutaway",
+    "cutawayTitle": "Switch to cutaway focus on the 3-lug rotating bolt, non-rotating claw extractor, 3-position flag safety, and staggered internal magazine",
+    "searchPlaceholder": "Search BOM parts (e.g., Bolt, Claw Extractor, Flag Safety, Stripper Clip, B-03)...",
+    "firingMilestoneLabel": "90-Deg Bolt Lift",
+    "rateOfFire": "15 rpm (Manual Stripper-Clip Bolt Cycle)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Ready to Fire",
+        "subLabel": "0% Assembled",
+        "desc": "Fully assembled Mauser Karabiner 98k (byf 43 Oberndorf): 600 mm stepped barrel, dual front locking lugs and rear safety lug sealed in the large-ring receiver, with a 5-round brass stripper clip seated at the rear C-ring bridge."
+      },
+      "field_strip": {
+        "label": "Bolt & Furniture Field Strip",
+        "subLabel": "30% Field Strip",
+        "desc": "Flip the flag safety vertical to withdraw the Mauser 98 bolt assembly, unscrew the underbarrel cleaning rod, release both H-pattern barrel bands and upper handguard, and unlatch the removable magazine floorplate."
+      },
+      "sub_assembly": {
+        "label": "Bolt Shroud & Trigger Strip",
+        "subLabel": "65% Sub-Assembly",
+        "desc": "Use the buttstock steel takedown disk to compress the firing pin mainspring, separating the non-rotating claw extractor, gas-deflecting bolt shroud, 3-position flag safety, striker, and two-stage trigger group."
+      },
+      "full_exploded": {
+        "label": "Full 24-Part Exploded View",
+        "subLabel": "100% Full Exploded",
+        "desc": "All 24 precision components separated with zero obstruction, revealing Paul Mauser's 1898 architecture of controlled-round feeding, triple-lug pressure safety, and tool-less military maintenance."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "Two-Stage Trigger Break",
+        "title": "Phase 1 · Two-Stage Twin-Fulcrum Trigger Clears Take-Up and Drops Sear",
+        "description": "Squeezing the curved military trigger pivots first across its forward fulcrum hump for smooth first-stage slack, then hits the rear fulcrum wall and depresses the sear against its vertical coil spring."
+      },
+      "phase_2": {
+        "shortLabel": "390 MPa Ignition & Lock",
+        "title": "Phase 2 · Long Striker Ignites 7.92x57mm Primer Under 3-Lug Lockup",
+        "description": "The 22-coil mainspring drives the full-length firing pin forward 12.5 mm to crush the primer cup. Peak pressure surges to 390 MPa while twin front lugs and the third rear safety lug anchor the bolt rock-solid."
+      },
+      "phase_3": {
+        "shortLabel": "198gr Spitzer Exit",
+        "title": "Phase 3 · 198gr Heavy Spitzer Exits 600mm Stepped Barrel at 760 m/s",
+        "description": "Stabilized by four 1:240 mm right-hand rifling grooves, the 12.8-gram s.S. boat-tail projectile clears the crowned muzzle at 760 meters per second with zero gas bleed."
+      },
+      "phase_4": {
+        "shortLabel": "90-Deg Lift & Cocking",
+        "title": "Phase 4 · 90-Deg Bolt Lift Unlocks Lugs, Cams Primary Extraction & Cocks Striker",
+        "description": "Lifting the bent bolt handle ninety degrees rotates the bolt body out of front-ring recesses, cams the fired brass 3.5 mm rearward, and recocks the firing pin while the claw extractor and shroud stay level."
+      },
+      "phase_5": {
+        "shortLabel": "11cm Draw & Ejection",
+        "title": "Phase 5 · Straight 110mm Bolt Draw Extracts and Ejects 57mm Brass Case",
+        "description": "The non-rotating full-length claw extractor pulls the spent 7.92x57mm case 110 mm rearward until the fixed left-side receiver ejector blade strikes the case head and flings it briskly right-upward."
+      },
+      "phase_6": {
+        "shortLabel": "Controlled-Round Feed",
+        "title": "Phase 6 · Stepped Follower Lifts Fresh Round Under Claw Extractor into Chamber",
+        "description": "Driven by the internal magazine spring, the stepped steel follower elevates the next staggered round so its rim slides directly beneath the Mauser claw extractor, guiding it positively into the chamber."
+      },
+      "phase_7": {
+        "shortLabel": "90-Deg 3-Lug Lockup",
+        "title": "Phase 7 · Closing Bent Handle 90 Deg Locks Three Lugs & Hands Off Cocking Piece",
+        "description": "Pressing the bent bolt handle down ninety degrees cams the cartridge the final 3.5 mm into tight headspace, engaging twin front lugs and the rear safety lug as the cocking piece seats onto the sear."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "百年栓动之巅：毛瑟 98k 受控供弹与奥伯恩多夫钢铁教科书",
+      "deck": "从 1898 年保罗·毛瑟在奥伯恩多夫锻造出划时代的三突笋旋转后拉枪机，到 1935 年定型为步骑合一的 98k 短步枪，这套机械架构定义了整整一个世纪的军民栓动步枪灵魂。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1888–1898",
+          "title": "无烟火药风暴与保罗·毛瑟的终极答卷",
+          "paragraphs": [
+            "十九世纪八十年代末，法国勒贝尔步枪率先将无烟火药送上战场，令欧洲列强的所有黑火药步枪一夜落伍。德意志帝国仓促推出的 1888 式委员会步枪在实战中暴露出退壳卡壳、双进弹与炸膛伤眼等严重隐患，奥伯恩多夫毛瑟兵工厂的创始人保罗·毛瑟深知，人类需要一套从底层重构的全新手动栓动体系。",
+            "在西班牙 1893 式与瑞典 1896 式步枪连续十年的残酷试错与迭代后，保罗·毛瑟于 1898 年交出了他的毕生杰作——Gewehr 98。面对高压无烟火药可能导致的弹壳破裂漏气，他在大环锻钢机匣与枪机本体上构筑了史无前例的气体导流防线：枪机腹部双泄气孔、大环侧壁排压孔以及枪机尾套宽大左侧防气挡翼，将致命的高压燃气导向下方的弹仓空腔而非射手双眼。",
+            "更令人赞叹的是其双排交错内置 5 发弹仓与 5 发黄铜桥夹的绝妙配合。机匣左侧铣出的拇指弧槽与 C 形后桥夹导槽，让士兵单指一压即可在一秒内将五发 7.92×57mm 无底缘步枪弹整齐压入与木托下缘完全齐平的弹仓内，既不钩挂战壕泥土，又将装填射速提升至手动步枪的巅峰。"
+          ],
+          "audioScript": "十九世纪末无烟火药掀起全球军备革命，早期仓促上马的步枪屡屡遭遇炸膛与双进弹危机。一八九八年，奥伯恩多夫的保罗·毛瑟推出集大成之作毛瑟九八式。大环锻钢机匣、周密的防爆泄气通道与齐平式五发双排桥夹弹仓，一举为整个现代手动步枪确立了黄金标准。",
+          "audioUrl": "audio/k98k/story_act1_zh.mp3",
+          "focusPartId": "k98k_receiver",
+          "focusPartLabel": "毛瑟 98 大环锻钢机匣（含拇指槽与桥夹导槽）"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1898–1935",
+          "title": "从长矛战壕到步骑合一的 98k 卡宾枪",
+          "paragraphs": [
+            "第一次世界大战的堑壕实战揭示了全长 1.25 米、枪管长达 740 毫米的 Gewehr 98 在狭窄战壕与装甲车辆内的笨拙。德军步兵、工兵与骑兵纷纷青睐更加轻便紧凑的 Kar. 98a 与 98b 短步枪，但各兵种互不兼容的枪管长度与表尺曲线给后勤制造了巨大负担。",
+            "1935 年 6 月，德国正式定型并装备全军统一制式步枪——Karabiner 98 kurz（简称 K98k，“kurz”意为短型）。工程师将阶梯式四膛线枪管精确裁定为 600 毫米，全枪长度缩减至黄金平衡的 1,110 毫米；传统的平直拉机柄被优雅地向下弯折并紧贴托身挖槽，既方便背负又不干扰光学瞄准镜安装。",
+            "与此同时，K98k 将传统底部背带环彻底改造为左侧中枪箍铁环与枪托穿孔侧背带槽，使步枪能像卡宾枪般紧贴士兵后背或胸前携带；准星加装弹簧钢圆拱护罩，弧形表尺重新按 198 格令重尖弹（s.S. Patrone）弹道镌刻 100 至 2000 米刻度，成就了机械工程与单兵工效的巅峰融合。"
+          ],
+          "audioScript": "一战战壕证明一米二五的旧式长步枪过于笨重。一九三五年，奥伯恩多夫推出了集步兵与骑兵之长的毛瑟九八k短步枪。六百毫米阶梯枪管、贴身下弯球头拉机柄、护罩大麦粒准星与侧穿式枪托背带孔，让这支全长一米一一的经典卡宾枪兼具远射精度与战场机动性。",
+          "audioUrl": "audio/k98k/story_act2_zh.mp3",
+          "focusPartId": "k98k_bolt_body",
+          "focusPartLabel": "毛瑟 98 三突笋旋转枪机体与下弯球头拉机柄"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "核心机构解剖",
+          "title": "受控供弹大抓钩与三档旗式保险的精密交响",
+          "paragraphs": [
+            "拨开 K98k 的抛光白钢枪机，你会看到轻武器史上最具统治力的机械奇迹——全长不旋转大抓钩抽壳钩。它通过游动钢环套在旋转枪机体颈槽外侧，当射手向上翻转弯拉机柄 90° 解锁前双主突笋与后第三保险突笋时，枪机本体旋转而大抓钩纹丝不动，始终水平稳居右侧。",
+            "这套被称为受控供弹（Controlled-Round Feed）的机制威力惊人：推栓前送瞬间，下一发 7.92×57mm 实弹的底缘尚未完全离开弹仓口，便已顺势滑入宽大抓钩的钢铁利爪之下。无论射手是俯卧、仰射甚至倒悬在半空拉栓，弹药始终被抓钩牢牢掌控，从物理根源彻底根除了双进弹卡壳，并凭借 90° 开锁螺旋斜面在 3.5 毫米预抽壳行程内产生数百公斤拔壳巨力。",
+            "在枪机尾套之上，三档翼形旗式保险更是机械安全哲学的典范：向左平放为击发档；竖直立起时直接物理楔退击针并挡住瞄准线，却仍允许安全拉栓退弹与无工具旋出尾套分解全机；翻向右侧则将击针与枪机双双死锁。配合枪托上的圆形钢制拆解盘，士兵无需任何螺丝刀就能在泥泞战壕中几秒拆光整根枪机。"
+          ],
+          "audioScript": "毛瑟九八k的机械灵魂藏在枪机与大抓钩的精密分工里。当你九十度上抬弯拉机柄解锁三枚突笋时，旋转的只有枪机体，全长抓钩抽壳钩始终保持水平不转。推弹入膛的瞬间底缘滑入抓钩掌控，即便倒挂操枪也绝不双进卡壳；配合三档旗式保险，树立了百年无法撼动的安全典范。",
+          "audioUrl": "audio/k98k/story_act3_zh.mp3",
+          "focusPartId": "k98k_claw_extractor",
+          "focusPartLabel": "毛瑟全长不旋转受控供弹大抓钩抽壳钩"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1937–至今",
+          "title": "层压榉木的战时淬炼与跨越世纪的全球遗产",
+          "paragraphs": [
+            "面对急剧膨胀的军工产能与优质欧洲胡桃木原材短缺，德国军械部门自 1937 年起大规模推行酚醛树脂热压层压榉木枪托（Schichtholz），并于 1940 年起标配深冲包边杯状钢制托底板。由数十层薄榉木胶合而成的枪托虽略重百余克，却彻底克服了实木在极寒东线与酷热北非的湿胀开裂，切面流露出的深浅水平层纹反成 K98k 最迷人的工业标识。",
+            "从 1935 年至 1945 年，仅毛瑟奥伯恩多夫工厂（战时代号 byf）与柏林、萨尔、布鲁诺等数十座兵工厂便累计生产了超过 1,460 万支 K98k，使之成为人类历史上总产量最高的栓动军用步枪之一。战后，无数 K98k 继续服役于以色列、挪威、南斯拉夫与世界各地武装力量，更衍生出众多民用口径改型。",
+            "直至二十一世纪的今天，全球绝大多数顶级大口径猎枪、非洲危险猎物步枪与高精度定制栓动步枪，依然沿用着保罗·毛瑟 1898 年确立的前双突笋、第三保险突笋、受控供弹大抓钩与三档翼形保险基因。K98k 不仅是一段尘封的历史，更是永不过时的机械工程活化石。"
+          ],
+          "audioScript": "一九三七年后全面换装的酚醛层压榉木枪托与杯状钢底板，赋予了毛瑟九八k横跨极寒冰原与烈日沙漠的惊人耐用性。逾一千四百六十万支的惊人产量只是起点，直到今天，世界各地的顶级手工猎枪依然跳动着保罗·毛瑟在一八九八年亲手铸就的机械心脏。",
+          "audioUrl": "audio/k98k/story_act4_zh.mp3",
+          "focusPartId": "k98k_stock",
+          "focusPartLabel": "层压榉木半手枪握把枪托（含背带孔与钢制拆解盘）"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "全长不旋转大抓钩受控供弹",
+          "tag": "受控供弹",
+          "summary": "大抓钩抽壳钩借游动钢环套装于旋转枪机外侧，90° 开闭锁旋转期间始终保持水平不转（rx = 0），新弹离匣瞬间底缘即滑入爪内全程受控，彻底杜绝倒持跌弹与双进弹卡壳。",
+          "focusPartId": "k98k_claw_extractor",
+          "focusPartLabel": "毛瑟全长不旋转受控供弹大抓钩抽壳钩"
+        },
+        {
+          "id": "bt2",
+          "title": "前双主突笋 + 后第三保险突笋与立体泄气防线",
+          "tag": "三突笋防爆",
+          "summary": "前双对称突笋稳固承受 390 MPa 峰值膛压，根部增设第三保险突笋防止极端过压断栓后飞；配合枪机腹孔、前环排压孔与尾套防气挡板，构建多层物理护眼防线。",
+          "focusPartId": "k98k_bolt_body",
+          "focusPartLabel": "毛瑟 98 三突笋旋转枪机体与下弯球头拉机柄"
+        },
+        {
+          "id": "bt3",
+          "title": "三档翼形旗式保险与枪托拆解盘免工具维护",
+          "tag": "三档旗式保险",
+          "summary": "翼形保险集击发、锁针可退弹分解与全锁死三态于一体，配合嵌入层压榉木枪托内的环形钢制拆解盘，野战条件下零工具数秒即可完成枪机全部分解擦拭。",
+          "focusPartId": "k98k_flag_safety",
+          "focusPartLabel": "经典毛瑟三档翼形旗式机械保险"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1898",
+          "title": "保罗·毛瑟定型划时代 Gewehr 98",
+          "detail": "奥伯恩多夫毛瑟工厂推出 Model 98 旋转后拉栓动系统，奠定前双突笋加第三保险突笋与受控供弹架构。"
+        },
+        {
+          "year": "1905",
+          "title": "7.92×57mm IS 尖头重弹标准确立",
+          "detail": "德国升级 8.22mm 弹径 S/s.S. 尖头船尾步枪弹，令毛瑟 98 平台的初速与千米存能跃居世界前列。"
+        },
+        {
+          "year": "1935",
+          "title": "Karabiner 98k 正式列装标准短步枪",
+          "detail": "定型 600mm 阶梯枪管、下弯球头拉机柄、左侧背带系统与枪托拆解盘，实现步骑全兵种制式统一。"
+        },
+        {
+          "year": "1937–1940",
+          "title": "层压榉木枪托、准星护罩与杯状底板升级",
+          "detail": "全面换装防变形酚醛层压榉木（Schichtholz）、弹簧钢准星圆护罩及包边杯状钢制托底板，大幅提升战地抗毁性。"
+        },
+        {
+          "year": "1943",
+          "title": "奥伯恩多夫 byf 43 峰值产能定型",
+          "detail": "采用代号 byf 冲压标识与 WaA135 兵工检验章的 1943 年型在保证精密锻造大环机匣的同时优化冲压钢箍工艺。"
+        },
+        {
+          "year": "1945–至今",
+          "title": "逾 1,460 万支产量与永恒的 M98 民用基因",
+          "detail": "成为史上产量最高的栓动军用步枪之一，至今仍是全球高端危险猎物步枪与现代栓动设计的黄金蓝本。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Apex of the Bolt Action: The Mauser Karabiner 98k Engineering Standard",
+      "deck": "From Paul Mauser's 1898 masterwork in Oberndorf to the 1935 Karabiner 98 kurz, its three-lug rotating bolt and non-rotating claw extractor wrote the permanent textbook for bolt-action rifles.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1888–1898",
+          "title": "The Smokeless Tempest and Paul Mauser's Definitive Answer",
+          "paragraphs": [
+            "When France fielded the smokeless-powder Lebel rifle in 1886, every black-powder service arm across Europe became obsolete overnight. Imperial Germany's hurried Gewehr 1888 Commission Rifle suffered from feed jams, double feeds, and catastrophic gas blowback. In Oberndorf am Neckar, master gunmaker Paul Mauser set out to engineer an unbreakable bolt action from first principles.",
+            "Distilling a decade of hard lessons from the Spanish Model 1893 and Swedish Model 1896, Paul Mauser unveiled the Gewehr 98 in 1898. Anticipating ruptured brass cases under intense nitrocellulose pressure, he sculpted a layered gas-management fortress: twin oval vent holes beneath the bolt body, a front receiver ring gas relief port, and a broad left-hand gas-deflecting flange on the bolt shroud that diverted scorching gas downward into the magazine well and away from the shooter's eyes.",
+            "Equally transformative was its flush five-round staggered internal box magazine fed by brass stripper clips. A milled thumb cutout on the left receiver wall paired with a machined rear C-ring charger guide allowed an infantryman to sweep five rimless 7.92x57mm cartridges straight into the flush steel well in a single thumb stroke, eliminating snagging protrusions while maximizing sustained rate of fire."
+          ],
+          "audioScript": "The smokeless powder revolution of the late nineteenth century exposed dangerous flaws in early hurried rifles. In eighteen ninety-eight, Paul Mauser of Oberndorf answered with the definitive Model ninety-eight. Combining a large-ring forged receiver, layered gas venting, and a flush five-round stripper-clip magazine, he established the enduring gold standard for bolt-action engineering.",
+          "audioUrl": "audio/k98k/story_act1_en.mp3",
+          "focusPartId": "k98k_receiver",
+          "focusPartLabel": "Forged Mauser 98 Large-Ring Receiver & Clip Bridge"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1898–1935",
+          "title": "From Trench Pike to Universal Carbine: The Karabiner 98k",
+          "paragraphs": [
+            "Trench warfare during the First World War proved that the 1,250-millimeter Gewehr 98 with its long 740-millimeter barrel was unwieldy inside narrow dugouts and armored vehicles. Troops favored shorter cavalry carbines such as the Kar. 98a and 98b, yet overlapping barrel lengths and disparate sight graduations complicated logistics across every corps.",
+            "In June 1935, German ordnance standardized a single universal rifle for infantry, cavalry, and mechanized crews alike: the Karabiner 98 kurz, or K98k. Engineers shortened the stepped four-groove barrel to an ideal 600 millimeters for a balanced 1,110-millimeter overall length, while sweeping the spherical bolt handle gracefully downward into a relieved stock recess for snag-free carry and low-profile optical scope clearance.",
+            "To complete its transformation into a true modern carbine, the K98k replaced traditional bottom swivels with a left-side rear barrel band sling bar and an iconic buttstock pass-through sling cutout so the rifle lay completely flat across a soldier's back. Paired with a hooded inverted-V barleycorn front sight and a 100-to-2,000-meter tangent rear sight calibrated for the heavy 198-grain s.S. boat-tail cartridge, the K98k struck an unmatched balance of reach and agility."
+          ],
+          "audioScript": "First World War trenches revealed that meter-and-a-quarter infantry rifles were far too cumbersome in close quarters. In nineteen thirty-five, Oberndorf unified infantry and cavalry needs with the Karabiner ninety-eight kurz. Its six-hundred-millimeter stepped barrel, swept-down bolt handle, hooded front sight, and side-mounted sling slot fused carbine handling with full-power rifle ballistics.",
+          "audioUrl": "audio/k98k/story_act2_en.mp3",
+          "focusPartId": "k98k_bolt_body",
+          "focusPartLabel": "Mauser 98 3-Lug Rotating Bolt Body & Bent Handle"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "Core Kinematics",
+          "title": "Controlled-Round Feed and the Symphony of Three-Lug Safety",
+          "paragraphs": [
+            "Inspect the polished steel bolt of the K98k and you uncover the most influential mechanism in bolt-action history: the full-length non-rotating Mauser claw extractor. Anchored by a free-turning steel collar riding in a circumferential groove, the extractor remains strictly horizontal at zero degrees roll even as the shooter rotates the bent bolt handle ninety degrees upward to unlock twin front lugs and the third rear safety lug.",
+            "This geometry powers true controlled-round feeding. As the bolt moves forward, the rim of the rising 7.92x57mm cartridge slips directly up behind the broad claw hook before its nose even exits the magazine lips. Even if cycled upside down in mud or snow, the round stays mechanically captive from magazine to chamber, preventing double feeds while helical primary extraction cams generate immense mechanical leverage over the first 3.5 millimeters of lift.",
+            "Crowning the rear bolt shroud sits Paul Mauser's celebrated three-position wing flag safety. Flipped left it permits fire; vertical it cams the firing pin safely off the sear and obstructs the sightline while allowing bolt cycling and tool-less shroud removal; flipped right it locks both striker and bolt solid. Combined with the steel takedown disk inset into the buttstock, a soldier can completely strip the bolt in seconds without a single screwdriver."
+          ],
+          "audioScript": "The heart of the Mauser ninety-eight is the choreographed separation between rotating steel and stationary control. As you lift the bent bolt handle ninety degrees to unlock its three lugs, the full-length claw extractor stays perfectly level. Every fresh cartridge slides captive beneath the claw as it chambers, eliminating double feeds even upside down, while the three-position flag safety delivers unyielding mechanical security.",
+          "audioUrl": "audio/k98k/story_act3_en.mp3",
+          "focusPartId": "k98k_claw_extractor",
+          "focusPartLabel": "Non-Rotating Full-Length Mauser Claw Extractor"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "1937–Present",
+          "title": "Laminated Resilience and an Eternal Global Lineage",
+          "paragraphs": [
+            "Confronted with massive wartime production quotas and dwindling stocks of seasoned European walnut, German arsenals began transitioning in 1937 to phenolic-resin laminated beechwood stocks known as Schichtholz, followed in 1940 by deep-drawn cupped steel buttplates. Though slightly heavier than solid walnut, these cross-bonded laminated plies resisted warping from Arctic blizzards to Sahara heat, and their unmistakable horizontal stripe bands became a signature visual hallmark of the K98k.",
+            "Between 1935 and 1945, Mauser-Werke Oberndorf under wartime code byf alongside dozens of European factories manufactured over 14.6 million Karabiner 98k rifles, making it one of the most prolific military bolt-action rifles ever produced. After 1945, rebuilt K98k rifles served across Israel, Norway, Yugoslavia, and dozens of national armies in both original 7.92mm and converted 7.62mm NATO chamberings.",
+            "More than a century and a quarter after Paul Mauser filed his 1898 blueprints, the Mauser 98 action remains unsurpassed. Virtually every flagship dangerous-game safari rifle and bespoke controlled-feed hunting action manufactured today still carries the dual front lugs, third safety lug, non-rotating claw extractor, and three-position shroud safety born in Oberndorf."
+          ],
+          "audioScript": "Introduced from nineteen thirty-seven onward, phenolic laminated beechwood stocks and cupped steel buttplates fortified the Karabiner ninety-eight k against brutal extremes from frozen steppe to desert dust. More than fourteen million rifles rolled off assembly lines, yet its true monument lives on today in every dangerous-game safari rifle still built upon Paul Mauser's immortal ninety-eight action.",
+          "audioUrl": "audio/k98k/story_act4_en.mp3",
+          "focusPartId": "k98k_stock",
+          "focusPartLabel": "Laminated Beechwood Stock w/ Sling Slot & Takedown Disk"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Non-Rotating Full-Length Claw Extractor",
+          "tag": "Controlled Feed",
+          "summary": "Mounted via a slip collar so the broad extractor stays at zero degrees roll during 90-degree bolt rotation, capturing each cartridge rim straight out of the magazine to eliminate double feeds in any orientation.",
+          "focusPartId": "k98k_claw_extractor",
+          "focusPartLabel": "Non-Rotating Full-Length Mauser Claw Extractor"
+        },
+        {
+          "id": "bt2",
+          "title": "Triple-Lug Lockup & Layered Gas Relief",
+          "tag": "3-Lug Pressure Safety",
+          "summary": "Pairs massive dual front locking lugs with a third rear safety lug to contain 390 MPa loads, backed by dual underside bolt vents, a receiver ring gas hole, and a shroud gas flange shielding the shooter's face.",
+          "focusPartId": "k98k_bolt_body",
+          "focusPartLabel": "Mauser 98 3-Lug Rotating Bolt Body & Bent Handle"
+        },
+        {
+          "id": "bt3",
+          "title": "3-Position Wing Flag Safety & Stock Disk",
+          "tag": "3-Position Safety",
+          "summary": "Integrates Fire, Safe-Unload/Disassembly, and Full Bolt-Lock modes directly on the firing pin nut, paired with a buttstock steel takedown disk for rapid tool-less bolt maintenance in the field.",
+          "focusPartId": "k98k_flag_safety",
+          "focusPartLabel": "3-Position Mauser Wing Flag Safety"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1898",
+          "title": "Paul Mauser Finalizes the Gewehr 98",
+          "detail": "Oberndorf introduces the Model 98 rotating bolt with dual front lugs, third rear safety lug, and non-rotating controlled-feed claw extractor."
+        },
+        {
+          "year": "1905",
+          "title": "7.92x57mm IS Spitzer Cartridge Adopted",
+          "detail": "Upgraded 8.22 mm spitzer and later 198-grain heavy boat-tail loads propel the Mauser 98 to long-range ballistic dominance."
+        },
+        {
+          "year": "1935",
+          "title": "Standardization of Karabiner 98 kurz",
+          "detail": "Universal 600 mm stepped barrel, swept-down bolt handle, side sling mounting, and buttstock takedown disk unify infantry and cavalry arms."
+        },
+        {
+          "year": "1937–1940",
+          "title": "Laminated Beechwood, Sight Hood & Cupped Buttplate",
+          "detail": "Transition to warp-proof phenolic laminated beechwood stocks, spring-steel front sight hoods, and cupped steel buttplates hardens field durability."
+        },
+        {
+          "year": "1943",
+          "title": "Peak Oberndorf byf 43 Production Standard",
+          "detail": "Wartime byf 43 rifles with WaA135 inspection stamps retain forged large-ring receivers paired with streamlined stamped bands and hardware."
+        },
+        {
+          "year": "1945–Present",
+          "title": "14.6 Million Produced & Immortal M98 Legacy",
+          "detail": "Ranks among history's most-produced bolt-action service rifles and continues to anchor modern controlled-round-feed sporting rifle design."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "k98k_barrel": {
+      "partId": "k98k_barrel",
+      "bomCode": "B-01",
+      "calloutLabelEn": "600mm Stepped Barrel",
+      "zh": {
+        "roleTag": "600毫米四膛线一比二百四十缠距双阶梯军用烤蓝枪管",
+        "overview": "这是一根全长 600 毫米的德国标准毛瑟阶梯外轮廓军用枪管，尾端经粗牙螺纹紧固旋入大环锻钢机匣前环，构成承受 390 MPa 峰值膛压的刚性弹道基座。",
+        "craftAndMaterial": "选用优质铬钼炮钢深孔钻削并拉削四条 1:240 毫米右旋深膛线，外表面按药室段、表尺段与枪口段切削出经典双阶梯减重轮廓并施以深德式热烤蓝防腐层。",
+        "kinematicRole": "在七阶段击发全程保持绝对静止以保证步枪远射谐振稳定性，在全枪拆解进度百分之二十二至五十六阶段随枪管瞄具组向前上方分离。",
+        "designHighlight": "相比早期 740 毫米 Gewehr 98 步枪，缩减至 600 毫米的阶梯枪管既充分燃烧 7.92×57mm 发射药达到 760 m/s 初速，又显著降低全枪重心提升机动操控。",
+        "audioScript": "这根六百毫米长的双阶梯枪管，是毛瑟九八k兼顾远射威力和短小便携的秘诀。内部拉削四条一比二百四十毫米右旋深膛线，将一百九十八格令重尖弹加速至每秒七百六十米。阶梯状外壁在高压药室段保持厚实壁厚，向前逐级减重，令步枪端持极为平衡。",
+        "audioUrl": "audio/k98k/parts/k98k_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "600mm 4-Groove 1:240mm Stepped Barrel",
+        "overview": "This 600-millimeter stepped military barrel threads directly into the large-ring forged steel receiver, forming a rigid pressure vessel built for full-power 7.92x57mm Mauser loads.",
+        "craftAndMaterial": "Deep-hole drilled from chrome-molybdenum ordnance steel with four 1:240 mm right-hand rifling grooves, profiled in two signature exterior reduction steps and finished in deep German hot bluing.",
+        "kinematicRole": "Remains completely stationary throughout all seven firing phases to maximize harmonic accuracy; translates forward-upward with the barrel assembly between twenty-two and fifty-six percent disassembly.",
+        "designHighlight": "Shortened from the 740 mm Gewehr 98 length to 600 mm, the stepped contour retains heavy wall strength around the 390 MPa chamber while shedding forward weight for crisp carbine balance.",
+        "audioScript": "This six-hundred-millimeter stepped military barrel balances carbine agility with full-power rifle ballistics. Four deep right-hand grooves spin the heavy one-hundred-ninety-eight-grain spitzer to seven hundred sixty meters per second, while two machined external steps keep wall thickness dense over the chamber and trim toward the muzzle.",
+        "audioUrl": "audio/k98k/parts/k98k_barrel_en.mp3"
+      }
+    },
+    "k98k_front_sight": {
+      "partId": "k98k_front_sight",
+      "bomCode": "B-02",
+      "calloutLabelEn": "Hooded Front Sight",
+      "zh": {
+        "roleTag": "燕尾横调倒V大麦粒准星配防眩光弹性钢圆拱护罩",
+        "overview": "安装于枪口斜坡基座燕尾槽内的倒 V 形大麦粒准星片与外扣圆拱护罩总成，提供清晰锐利的远距离瞄准基准并保护准星尖免受战壕磕碰。",
+        "craftAndMaterial": "准星片由硬化碳钢精密铣削成标志性倒 V 三角轮廓，外层护罩采用冲压烤蓝弹簧钢弯成弹性 C 形环卡入斜坡两侧纵槽，内壁哑光防反光。",
+        "kinematicRole": "在击发全程与枪管前端刚性固连不动，保障瞄准基线零偏移；在全拆解后半程百分之五十六至九十阶段脱离枪口斜坡。",
+        "designHighlight": "自 1939 年全面列装的圆拱弹簧钢护罩既防止泥土冲击敲歪准星，又在强光逆射环境下为倒 V 大麦粒准星营造均匀阴影衬底，大幅提升瞄准速度。",
+        "audioScript": "枪口端这套带圆拱护罩的大麦粒准星，是二战德军步枪极具辨识度的剪影特征。倒V形准星尖精准切入表尺缺口，而一九三九年起普及的弹性弹簧钢护罩不仅抵挡战壕磕碰，更在刺眼阳光下遮蔽眩光，让射手迅速锁定目标。",
+        "audioUrl": "audio/k98k/parts/k98k_front_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dovetail Barleycorn Blade & Spring Hood",
+        "overview": "Mounted via a transverse windage dovetail atop the muzzle ramp, this inverted-V barleycorn sight and arched protective hood establish a crisp, combat-hardened aiming reference.",
+        "craftAndMaterial": "Milled from hardened carbon steel into a sharp triangular barleycorn profile, enclosed within a stamped spring-steel circular hood snapped into milled ramp grooves with anti-glare bluing.",
+        "kinematicRole": "Stays fixed rigidly at the muzzle crown across all firing stages to preserve sight zero; detaches upward from the barrel ramp between fifty-six and ninety percent teardown.",
+        "designHighlight": "Standardized from 1939 onward, the arched spring-steel hood shields the fine sight apex from impact damage while casting uniform shade across the blade in harsh sunlight.",
+        "audioScript": "Crowning the muzzle sits the hooded barleycorn front sight. Its sharp inverted-V blade drifts laterally in a dovetail for zeroing, while the clipped spring-steel hood introduced in nineteen thirty-nine guards the tip against rough handling and cuts glare in bright battlefield light.",
+        "audioUrl": "audio/k98k/parts/k98k_front_sight_en.mp3"
+      }
+    },
+    "k98k_bolt_body": {
+      "partId": "k98k_bolt_body",
+      "bomCode": "B-03",
+      "calloutLabelEn": "3-Lug Rotating Bolt",
+      "zh": {
+        "roleTag": "前双闭锁主突笋加后第三保险突笋 · 90度上抬下弯球头拉机柄",
+        "overview": "毛瑟 98 步枪的机械中枢：整体模锻圆柱枪机体前端设双对称闭锁主突笋，后根部设第三保险突笋，尾部一体化锻造向下弯折的球头拉机柄。",
+        "craftAndMaterial": "由表面渗碳硬化合金钢整体模锻并精密磨削抛光呈明亮白钢本色；中部车削抽壳钩卡环回转槽，腹部钻通双椭圆形防爆泄气孔，尾部铣削螺旋待击斜面。",
+        "kinematicRole": "阶段一至三锁死承压；阶段四手动上抬 90° 开锁并驱动 3.5mm 预抽壳及顶回击针待击；阶段五至六直线后拉 11.0cm 退壳并推新弹入膛；阶段七下压 90° 死锁。",
+        "designHighlight": "前双主突笋提供极高对称承压刚度，后置第三保险突笋在极端过压主突笋失效时兜底拦截枪机后飞，双泄气腹孔将炸壳燃气安全导向弹仓。",
+        "audioScript": "这根抛光白钢枪机体堪称手动步枪的工业奇迹。前端双闭锁突笋死锁承受近四百兆帕膛压，后方还设有一枚防断栓的第三保险突笋。向上翻转下弯球头拉机柄九十度，螺旋斜面同步撬松铜壳并把击针顶回待击，腹部双泄气孔更在意外炸壳时护住射手双眼。",
+        "audioUrl": "audio/k98k/parts/k98k_bolt_body_zh.mp3"
+      },
+      "en": {
+        "roleTag": "3-Lug Rotating Bolt & Swept-Down Handle",
+        "overview": "The structural heart of the Mauser 98: a monolithic forged steel cylinder uniting twin symmetrical front locking lugs, a rear third safety lug, and a swept-down spherical bolt handle.",
+        "craftAndMaterial": "Drop-forged from case-hardened alloy steel and left in bright ground finish for low friction, incorporating a recessed extractor collar raceway, twin underside gas vents, and a rear cocking cam helix.",
+        "kinematicRole": "Remains locked solid through ignition; rotates 90 degrees upward in phase four for primary extraction and cock-on-opening, strokes 110 mm rearward in phase five, feeds forward in phase six, and locks down in phase seven.",
+        "designHighlight": "Twin front lugs seat directly behind the chamber for maximum rigidity, while the third rear safety lug acts as an emergency backstop and twin underside vents redirect ruptured-case gas downward.",
+        "audioScript": "Forged from a single billet of case-hardened steel, the Mauser ninety-eight bolt body is a masterclass in safety and leverage. Massive twin front lugs resist nearly four hundred megapascals, backed by a third safety lug at the root. Lifting the swept-down handle ninety degrees cams loose sticky brass and cocks the striker in one fluid motion.",
+        "audioUrl": "audio/k98k/parts/k98k_bolt_body_en.mp3"
+      }
+    },
+    "k98k_claw_extractor": {
+      "partId": "k98k_claw_extractor",
+      "bomCode": "B-04",
+      "calloutLabelEn": "Mauser Claw Extractor",
+      "zh": {
+        "roleTag": "卡环游动全程不随枪机旋转 · 宽爪死咬底缘实现受控供弹",
+        "overview": "沿枪机体右侧全长延伸的弹性钢大抓钩抽壳钩及其游动套环，是毛瑟 98 区别于普通推入式步枪、实现传奇受控供弹的核心灵魂部件。",
+        "craftAndMaterial": "采用高韧性弹性弹簧钢精密锻铣并回火烤蓝，前端打造宽厚弧形勾爪紧扣 7.92×57mm 无底缘弹壳退壳槽，中段通过独立开口钢环卡入枪机颈槽。",
+        "kinematicRole": "枪机 90° 上抬旋转开闭锁期间始终保持水平不转（rx = 0），仅随枪机前后直线往复 11.0 厘米，推弹瞬间即捉住新弹底缘，后拉全程强制拔壳直至撞击抛壳挺。",
+        "designHighlight": "受控供弹使步枪即使在倒置、剧烈晃动或沾满泥沙的战壕环境下，弹药仍被宽爪绝对掌控，彻底消灭推入式枪机常见的双进弹故障。",
+        "audioScript": "这条贯穿枪机右侧的烤蓝弹簧钢长条，就是令全球枪械大师顶礼膜拜的毛瑟全长抓钩抽壳钩。它靠游动钢环套在枪机上，拉机柄旋转九十度时它却丝毫不转，始终稳稳水平抓牢弹底。新弹刚离弹仓就滑入它的铁爪，哪怕倒立拉栓也绝不双进卡壳。",
+        "audioUrl": "audio/k98k/parts/k98k_claw_extractor_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Non-Rotating Controlled-Feed Extractor",
+        "overview": "Running the full right flank of the bolt on a free-turning steel collar, this massive spring-steel claw extractor delivers Paul Mauser's signature controlled-round feeding.",
+        "craftAndMaterial": "Milled and spring-tempered from tough alloy steel with dark bluing, uniting a heavy rim-capturing forward hook with a flexible leaf body and circumferential rotating collar ring.",
+        "kinematicRole": "Holds strictly at zero degrees roll during 90-degree bolt rotation while stroking 110 mm straight fore and aft with the bolt, gripping fresh rims as they rise and dragging spent brass cleanly to the ejector.",
+        "designHighlight": "Positive rim control from magazine lips to chamber prevents double feeds or dropped rounds even when cycling upside down, cementing the Mauser 98 as the premier dangerous-game action.",
+        "audioScript": "Riding along the right flank on a rotating steel collar, this full-length spring-steel claw extractor defines the Mauser ninety-eight. While the bolt turns ninety degrees around it, the extractor stays strictly horizontal, capturing every fresh cartridge rim straight from the magazine so double feeds become mechanically impossible.",
+        "audioUrl": "audio/k98k/parts/k98k_claw_extractor_en.mp3"
+      }
+    },
+    "k98k_bolt_shroud": {
+      "partId": "k98k_bolt_shroud",
+      "bomCode": "B-05",
+      "calloutLabelEn": "Gas-Deflecting Shroud",
+      "zh": {
+        "roleTag": "不旋转枪机尾套 · 左侧宽大导气挡板护眼并承载旗式保险",
+        "overview": "旋接在枪机体尾端的钢制非旋转尾套，既是三档旗式保险与长击针尾铁的安装基座，也是阻挡底火穿孔高压燃气倒灌的最后一道钢铁护盾。",
+        "craftAndMaterial": "整体精密铸锻碳钢机加工而成，前端带粗牙螺纹与弹性定位顶销防止射击松脱，左侧延伸出加宽防气挡翼并经深烤蓝耐磨处理。",
+        "kinematicRole": "由机匣导槽限定全程不随枪机旋转（rx = 0），仅在阶段四至七随枪机总成直线后拉并前推 11.0 厘米，同时支承击针主簧后端。",
+        "designHighlight": "将防气护盾、保险轴座与无工具旋拆卡笋集于一身：只需将旗式保险竖直立起即可按住尾套卡笋直接旋出整套击针组件。",
+        "audioScript": "拧在枪机尾部的这枚不旋转尾套，是保罗·毛瑟为射手设下的贴身护盾。左侧那片厚实的导气挡翼，能够在底火穿孔漏气时瞬间将炽热燃气偏转出视线之外。同时它承载着三档旗式保险与主簧底座，免工具旋拧即可将内部击针整组拆出。",
+        "audioUrl": "audio/k98k/parts/k98k_bolt_shroud_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Non-Rotating Gas-Shield Bolt Shroud",
+        "overview": "Threaded into the rear of the bolt body, this non-rotating steel shroud anchors the three-position flag safety, supports the mainspring rear, and shields the shooter's eyes from blowback gas.",
+        "craftAndMaterial": "Machined from forged ordnance steel with coarse assembly threads, a spring-loaded retention plunger, and a distinctive broad left-hand gas-deflecting flange finished in deep bluing.",
+        "kinematicRole": "Guided straight by the receiver tang at zero roll while traveling 110 mm back and forth with the bolt assembly; forms the stationary rear abutment for the firing pin spring.",
+        "designHighlight": "Combines eye-level gas protection with tool-less field maintenance: flipping the flag safety vertical allows the entire shroud and striker sub-assembly to unscrew directly by hand.",
+        "audioScript": "Threaded into the rear of the bolt sits the non-rotating bolt shroud. Look at the broad steel flange projecting to the left—it acts as an eye shield to deflect hot gases if a primer ever pierces. It also houses the flag safety and unscrews by hand for rapid field maintenance.",
+        "audioUrl": "audio/k98k/parts/k98k_bolt_shroud_en.mp3"
+      }
+    },
+    "k98k_flag_safety": {
+      "partId": "k98k_flag_safety",
+      "bomCode": "B-06",
+      "calloutLabelEn": "3-Pos Wing Flag Safety",
+      "zh": {
+        "roleTag": "左击发 / 中竖立锁针可拉栓分解 / 右倒全锁击针与枪机",
+        "overview": "耸立于毛瑟 98 尾套后上方的标志性三档翼形旗式机械保险，直接以刚性凸轮轴作用于待击尾铁而非脆弱的扳机连杆，安全性冠绝百年。",
+        "craftAndMaterial": "由高强度工具钢精铣出带防滑波纹的弧形拇指拨翼与偏心半圆凸轮轴，抛光白钢与深烤蓝尾套形成高对比度视觉状态指示。",
+        "kinematicRole": "在击发状态下处于向左平放档并随尾套直线往复 11.0 厘米；向上拨至 90° 中档即可顶退击针并解锁枪机无工具分解，拨右 180° 彻底死锁枪机。",
+        "designHighlight": "中档竖立时拨翼正好竖在照门正前方形成触觉与视觉双重保险警示，即便在伸手不见五指的黑夜中凭拇指一摸即可确知枪械保险状态。",
+        "audioScript": "这片标志性的翼形旗式保险，是全球枪械史上最稳妥的三档机械保险之一。向左放平可以射击；向上竖直立起时直接挡住瞄准线并死锁击针，但允许安全拉栓退弹与分解枪机；彻底翻向右侧则将击针与枪机一并锁死，哪怕跌落悬崖也绝不走火。",
+        "audioUrl": "audio/k98k/parts/k98k_flag_safety_zh.mp3"
+      },
+      "en": {
+        "roleTag": "3-Position Direct-Striker Flag Safety",
+        "overview": "Mounted atop the bolt shroud, this iconic Mauser wing flag safety acts directly upon the firing pin nut across three positive detents rather than merely blocking the trigger.",
+        "craftAndMaterial": "Precision-milled from hardened alloy steel with a checkered thumb paddle and an eccentric half-round cam shaft, polished bright for crisp visual contrast against the blued shroud.",
+        "kinematicRole": "Rides horizontally to the left in the Fire setting across the 110 mm bolt stroke; rotates upright to retract the striker for safe unloading and stripping, or right to lock both bolt and striker.",
+        "designHighlight": "In its vertical middle setting the wing physically obscures the sightline while retracting the firing pin off the sear, delivering unmistakable tactile and visual confirmation even in total darkness.",
+        "audioScript": "Perched above the shroud is Paul Mauser's celebrated three-position wing flag safety. Left means ready to fire; vertical retracts the striker off the sear and blocks the sights while letting you safely unload or strip the bolt; right locks both striker and bolt handle solid.",
+        "audioUrl": "audio/k98k/parts/k98k_flag_safety_en.mp3"
+      }
+    },
+    "k98k_firing_pin": {
+      "partId": "k98k_firing_pin",
+      "bomCode": "B-07",
+      "calloutLabelEn": "Firing Pin & Cocking Piece",
+      "zh": {
+        "roleTag": "171毫米一体长击针配防气双翼与后端待击指示尾铁",
+        "overview": "贯穿枪机体与尾套中心轴线的全长一体式击针及尾端卡装的待击尾铁（Schlagbolzenmutter），直接承受高张力主簧推力完成 12.5 毫米强劲击发行程。",
+        "craftAndMaterial": "针杆由高韧性工具钢精密车削并研磨圆润撞针尖，中段设防燃气后喷双导翼，尾端烤蓝钢制待击尾铁带防滑竖槽与下方阻铁挂钩凸耳。",
+        "kinematicRole": "阶段二受主簧驱动极速前冲 12.5 毫米引燃 7.92×57mm 底火；阶段四随枪机 90° 上抬被螺旋待击斜面强制顶回满待击位；全程随枪机前后往复 11.0 厘米。",
+        "designHighlight": "待击尾铁后凸于尾套之外，射手在夜间只需手指轻触尾端是否突出即可盲判步枪是否已待击，且可在必要时直接手拉尾铁重新待击哑火弹。",
+        "audioScript": "这根长达一百七十一毫米的整体长击针与待击尾铁，赋予了毛瑟九八k在极寒冰雪中依然一击必响的可靠性。中段双导翼拦截窜入针孔的火药燃气，后端待击尾铁探出尾套之外，既是直观的触觉待击指示器，也能在必要时徒手拉回二次击发。",
+        "audioUrl": "audio/k98k/parts/k98k_firing_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Full-Length Striker & Cocking Piece",
+        "overview": "Spanning the full core of the bolt and shroud, this one-piece steel striker and keyed cocking piece deliver a forceful 12.5 mm ignition throw to fire hard military primers reliably.",
+        "craftAndMaterial": "Turned from shock-resistant tool steel with twin mid-shaft gas-blocking guide flanges and a blued rear cocking piece featuring gripping serrations and a hardened lower sear engagement lug.",
+        "kinematicRole": "Snaps forward 12.5 mm in phase two to detonate the primer, gets cammed rearward to full cock by the bolt helix during 90-degree lift in phase four, and travels 110 mm with the bolt cycle.",
+        "designHighlight": "The cocking piece protrudes visibly behind the shroud whenever cocked, providing instant visual and tactile readiness verification in darkness and allowing manual recocking on a dud primer.",
+        "audioScript": "Running down the spine of the bolt is the full-length firing pin and keyed cocking piece. Twin mid-shaft flanges block escaping gases, while its hefty twelve-and-a-half-millimeter throw crushes tough military primers even in sub-zero frost. The protruding rear cocking piece lets a soldier feel instantly in the dark whether the rifle is cocked.",
+        "audioUrl": "audio/k98k/parts/k98k_firing_pin_en.mp3"
+      }
+    },
+    "k98k_firing_pin_spring": {
+      "partId": "k98k_firing_pin_spring",
+      "bomCode": "B-08",
+      "calloutLabelEn": "Firing Pin Mainspring",
+      "zh": {
+        "roleTag": "22圈高张力冷拔琴钢丝螺旋主簧 · 极寒恶劣环境可靠击穿硬底火",
+        "overview": "紧密套装于毛瑟长击针杆身外侧、前端顶靠击针台肩而后端抵住尾套前壁的 22 圈重型螺旋主簧，为整个击发系统提供强劲势能。",
+        "craftAndMaterial": "采用高弹性冷拔琴钢丝绕制并经去应力回火与轻油防锈处理，保留实时 GPU 恒定丝径轴向伸缩形变特性，久压不易产生塑性衰减。",
+        "kinematicRole": "阶段二随击针前冲伸长释放蓄能（轴向伸展率 14.2%）；阶段四在 90° 上抬拉机柄瞬间被螺旋斜面重新压缩回满蓄能状态，并随枪机整体平移 11.0 厘米。",
+        "designHighlight": "大冗余劲度系数令 K98k 即使在零下四十摄氏度油脂凝固的严冬仍能以雷霆之力击穿厚铜军用底火，分解时仅借枪托拆解盘抵压即可轻松卸下。",
+        "audioScript": "套在长击针上的这根二十二圈螺旋主簧，是毛瑟步枪耐寒可靠的能量源泉。每当你上抬拉机柄九十度，它就被强力压紧蓄能十二点五毫米；扣下扳机的瞬间，强劲弹力猛推击针前冲，即便枪机沾满凝固冻油也能干脆击穿军用硬底火。",
+        "audioUrl": "audio/k98k/parts/k98k_firing_pin_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "22-Coil Heavy Helical Mainspring",
+        "overview": "Coiled around the firing pin shaft between the forward striker flange and the bolt shroud face, this twenty-two-coil mainspring stores the heavy mechanical energy driving primer ignition.",
+        "craftAndMaterial": "Wound from high-tensile cold-drawn music wire with stress-relief tempering and protective oil film, preserving constant wire diameter throughout dynamic axial compression.",
+        "kinematicRole": "Extends 14.2 percent during phase two as the striker falls forward, then re-compresses cleanly to full energy during the 90-degree cock-on-opening lift in phase four while tracking bolt travel.",
+        "designHighlight": "Generous spring force ensures positive ignition even when heavy military grease thickens in Arctic winters, yet strips effortlessly without tools using the buttstock takedown disk.",
+        "audioScript": "Wrapped around the striker is the heavy twenty-two-coil firing pin mainspring. Lifting the bolt handle compresses it by twelve and a half millimeters, storing abundant power to ignite thick military primers even when grease freezes stiff in winter trenches.",
+        "audioUrl": "audio/k98k/parts/k98k_firing_pin_spring_en.mp3"
+      }
+    },
+    "k98k_receiver": {
+      "partId": "k98k_receiver",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Large-Ring M98 Receiver",
+      "zh": {
+        "roleTag": "35.8毫米大前环锻钢机匣 · 左侧压弹拇指槽与后桥5发桥夹导槽",
+        "overview": "整支 K98k 步枪的承力脊梁：前大环螺纹紧固枪管并内设双主闭锁支承面，左侧壁铣有压弹拇指缺口与“Mod. 98”铭文，C 形后桥顶开 5 发桥夹导槽。",
+        "craftAndMaterial": "由整块铬钼锻钢经数十道精密铣削与渗碳淬火成型，表面施以德式深烤蓝处理；前环顶面冲印奥伯恩多夫 1943 年代号“byf / 43”，侧壁刻有序列号“6842 b”及“WaA135”军械章。",
+        "kinematicRole": "作为整枪绝对静止的核心基准壳体，精准引导枪机旋转与 11.0 厘米直线导轨行程，同时支承右侧拉机柄锁槽、左侧枪机止动抛壳座及下部弹仓供弹口。",
+        "designHighlight": "前大环直径达 35.8 毫米且内置一体后坐耳与防爆排压孔，强度之高使战后大量民用马格南猎枪直接沿用毛瑟 98 大环机匣改造。",
+        "audioScript": "这座由整块锻钢切削而成的毛瑟大环机匣，是整支步枪不可撼动的骨架。前环顶面清晰的byf四三印记昭示着它一九四三年诞生于奥伯恩多夫本厂；左侧壁的拇指缺口配后桥桥夹导槽，让士兵一秒压入五发实弹，左侧铭刻的Mod.98更是一代机械图腾。",
+        "audioUrl": "audio/k98k/parts/k98k_receiver_zh.mp3"
+      },
+      "en": {
+        "roleTag": "35.8mm Large-Ring Forged Receiver",
+        "overview": "The monolithic structural spine of the Karabiner 98k, combining a 35.8 mm large front locking ring, integral recoil lug, left charger thumb cutout, rear C-ring stripper-clip bridge, and hinged left bolt-stop box.",
+        "craftAndMaterial": "Machined through dozens of milling operations from case-hardened chrome-molybdenum billet in deep German bluing, stamped with Oberndorf wartime code byf 43 on the front crest, Mod. 98 on the left rail, serial 6842 b, and WaA135 proofs.",
+        "kinematicRole": "Acts as the stationary datum chassis guiding the 90-degree rotating lugs, 110 mm linear bolt stroke, fixed left-side ejector blade, and upward staggered magazine feed path.",
+        "designHighlight": "Its massive front ring, gas escape hole, and third safety-lug recess deliver immense structural margin, explaining why custom magnum hunting rifles still replicate the Model 98 receiver.",
+        "audioScript": "Machined from solid forged steel, this large-ring receiver anchors the entire Karabiner ninety-eight k. Notice the wartime byf forty-three code stamped atop the front ring from Mauser Oberndorf, Mod. ninety-eight along the left rail, the sculpted thumb cutout for rapid clip loading, and the rear C-ring bridge slot.",
+        "audioUrl": "audio/k98k/parts/k98k_receiver_en.mp3"
+      }
+    },
+    "k98k_rear_sight": {
+      "partId": "k98k_rear_sight",
+      "bomCode": "F-02",
+      "calloutLabelEn": "2000m Tangent Rear Sight",
+      "zh": {
+        "roleTag": "100至2000米弧形切线表尺照门 · 双侧滚花压钮精密调距滑块",
+        "overview": "套焊在枪管第一阶梯段上的毛瑟弧形切线表尺座与可调表尺板，正面清晰雕刻 1 至 20 百米分划刻度，精准匹配 7.92×57mm 重尖弹道曲线。",
+        "craftAndMaterial": "表尺套箍与两侧弧形凸轮墙由烤蓝碳钢精密铣削，平顶表尺板经弹簧淬火与深凹刻度雕刻填白，配备带双侧滚花按压锁钮的钢制游标滑块。",
+        "kinematicRole": "击发全程随枪管静止不动，为射手提供与大麦粒准星匹配的 V 形缺口照门；在全枪拆解后半程百分之五十八至九十二阶段向上脱离枪管。",
+        "designHighlight": "相比旧式 Gewehr 98 高耸易撞弯的过山车式兰格表尺，K98k 的扁平弧形切线表尺坚固低矮且平贴护木，更适配现代步兵快速瞄准与野战抗毁需求。",
+        "audioScript": "套在枪管第一阶梯上的这具弧形表尺，正面清晰镌刻着从一百米到两千米的密密刻度。只需捏住滑块两侧的滚花压钮前后滑动，表尺板就会顺着弧形底座平滑抬升，精确补偿七点九二毫米重尖弹在远距离上的弹道下坠。",
+        "audioUrl": "audio/k98k/parts/k98k_rear_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "100–2000m Graduated Tangent Leaf Sight",
+        "overview": "Soldered onto the first barrel step, this tangent leaf rear sight pairs a low-profile curved cam base with a V-notch sight leaf graduated from 100 to 2,000 meters.",
+        "craftAndMaterial": "Milled from blued ordnance steel with a crisp flat-topped leaf bearing deeply engraved numerals from 1 through 20 and a sliding elevation cursor operated by twin knurled pinch buttons.",
+        "kinematicRole": "Remains strictly fixed on the stepped barrel throughout firing to maintain ballistic zero; elevates off the barrel step during the fifty-eight to ninety-two percent teardown window.",
+        "designHighlight": "Replacing the tall, fragile Lange Visier roller-coaster sight of the Gewehr 98, the flat tangent leaf hugs the handguard cleanly while matching the 198-grain s.S. trajectory.",
+        "audioScript": "Sleeved onto the first barrel step sits the graduated tangent rear sight. Numbered crisply from one to twenty for one hundred to two thousand meters, its twin-button slider rides smoothly up a curved ramp to elevate the V-notch for long-range seven-point-nine-two ballistics.",
+        "audioUrl": "audio/k98k/parts/k98k_rear_sight_en.mp3"
+      }
+    },
+    "k98k_stock": {
+      "partId": "k98k_stock",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Laminated Beech Stock",
+      "zh": {
+        "roleTag": "酚醛热压层压榉木一体长枪托 · 穿孔背带槽与环形钢制拆解盘",
+        "overview": "自 1937 年成为 K98k 标志性特征的酚醛层压榉木一体全长枪托：集成半手枪握把、两侧手指抓槽、横贯后坐钢栓、枪托穿孔背带槽与环形钢制枪机拆解圆盘。",
+        "craftAndMaterial": "由数十层薄欧洲榉木板涂覆深褐酚醛胶高温高压压合铣削成型，形成深浅水平交替的标志性层纹；嵌装穿心钢制后坐横栓与双面凹孔钢制拆解盘（Zerlegescheibe）。",
+        "kinematicRole": "作为整枪的工效与减震载体将后坐冲量通过后坐横栓平顺传至射手肩窝，并在拆解进度百分之十八至五十六阶段向下分离暴露机匣与弹仓全貌。",
+        "designHighlight": "层压木彻底解决了实木在严寒湿热战场扭曲影响精度的痼疾，而嵌入托身的环形钢制拆解盘更让士兵无需任何工具即可顶压击针尾铁分解整套枪机。",
+        "audioScript": "这支布满深浅交替水平纹路的层压榉木枪托，是战时毛瑟九八k最鲜明的视觉名片。数十层胶压榉木无惧东线严寒与北非酷暑绝不变形；托尾的镂空穿槽让背带紧贴身侧，而中央那枚环形钢制拆解盘，正是士兵徒手顶压分解整根枪机的巧思工具。",
+        "audioUrl": "audio/k98k/parts/k98k_stock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Laminated Beechwood Stock & Takedown Disk",
+        "overview": "This full-length military rifle stock integrates a semi-pistol grip, forend finger grooves, steel recoil cross-bolt, buttstock sling pass-through cutout, and recessed steel bolt takedown disk.",
+        "craftAndMaterial": "Formed from dozens of thin European beech veneers bonded under heat and pressure with dark phenolic resin for distinct horizontal stripe bands, reinforced with a steel cross-bolt and recessed Zerlegescheibe takedown disk.",
+        "kinematicRole": "Channels 7.92x57mm recoil cleanly through the cross-bolt into the shooter's shoulder while remaining stationary during firing; drops downward between eighteen and fifty-six percent disassembly.",
+        "designHighlight": "Phenolic laminate resisted warping across Arctic and desert theaters far better than solid walnut, while the inset steel takedown disk turns the rifle stock itself into a built-in armorer's bolt tool.",
+        "audioScript": "Those unmistakable alternating light and dark horizontal stripes identify wartime laminated beechwood, or Schichtholz. Bonded with tough phenolic resin, this stock resisted warping in snow and desert heat alike. Look near the butt for the pass-through cavalry sling cutout and the inset steel takedown disk used to strip the bolt without tools.",
+        "audioUrl": "audio/k98k/parts/k98k_stock_en.mp3"
+      }
+    },
+    "k98k_handguard": {
+      "partId": "k98k_handguard",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Laminated Handguard",
+      "zh": {
+        "roleTag": "半圆瓦状层压榉木隔热上护木 · 避让表尺并由前后双箍锁定",
+        "overview": "覆盖在机匣前环至前 H 型枪箍之间枪管顶部的半圆瓦状木质隔热护木，后端精准开窗避让弧形表尺基座，保护左手在快速射击与拼刺时免被烫伤。",
+        "craftAndMaterial": "采用与主枪托同工艺的酚醛热压层压榉木掏空半圆枪管弧槽成型，经亚光军用防潮漆封孔，外表面呈现自然流畅的层压年轮弧纹。",
+        "kinematicRole": "在射击过程中随枪托与枪箍保持静止隔热，不参与运动循环；在野战分解早期百分之十四至四十八阶段率先向上方拆离。",
+        "designHighlight": "前后两端分别楔入表尺套肩台与 H 型前枪箍内槽，无需螺钉钻孔即可稳固紧夹，既防松脱又便于士兵快速检查枪管锈蚀。",
+        "audioScript": "覆盖在枪管上方的这片半圆形层压榉木上护木，自机匣前环跨越表尺一直延伸到前枪箍。它在连续射击后隔离灼热枪管保护射手左手，只需卸下前后双箍即可免工具向上取下，迅速检查枪管外壁是否生锈。",
+        "audioUrl": "audio/k98k/parts/k98k_handguard_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Laminated Beech Upper Heat Shield",
+        "overview": "Spanning from the receiver ring to the front H-band with a contoured cutout around the tangent rear sight, this upper handguard insulates the support hand during rapid fire and bayonet drills.",
+        "craftAndMaterial": "Machined from matching phenolic-bonded laminated beechwood with an internal stepped barrel channel and satin military protective finish revealing curved ply contours.",
+        "kinematicRole": "Remains fixed atop the barrel by barrel-band tension throughout firing; lifts clear upward early during the fourteen to forty-eight percent field-strip window.",
+        "designHighlight": "Retained strictly by spring-loaded barrel bands without penetrating screws, allowing infantrymen to inspect and oil the concealed barrel top rapidly in the field.",
+        "audioScript": "Arched cleanly over the stepped barrel sits the laminated beechwood upper handguard. Relieved around the tangent rear sight base, it shields the support hand from barrel heat during sustained fire and lifts straight off once the barrel bands slide forward.",
+        "audioUrl": "audio/k98k/parts/k98k_handguard_en.mp3"
+      }
+    },
+    "k98k_front_band": {
+      "partId": "k98k_front_band",
+      "bomCode": "F-05",
+      "calloutLabelEn": "H-Band & Bayonet Lug",
+      "zh": {
+        "roleTag": "H形双翼锁紧上下护木前端 · 下挂T形 S84/98 一体刺刀座",
+        "overview": "卡箍于护木尖端与枪管前段之间的标志性 H 型钢制前枪箍，下端一体化前伸 T 形导轨刺刀挂耳以锁装 S84/98 III 型军用匕首刺刀，并兼作通条前导孔。",
+        "craftAndMaterial": "由厚壁冷轧合金钢铣削或冲焊成双环 H 形框架，配磷化深灰/烤蓝防锈层，底部 T 形刺刀轨经高频淬火以承受白刃格斗剧烈弯矩。",
+        "kinematicRole": "击发全程将前护木、上护木与枪管锁成刚性整体；在拆解进度百分之十至四十二阶段按压弹簧卡笋后沿枪口方向前滑取下。",
+        "designHighlight": "H 形双环跨度设计显著增大木托前端抱持面积，避免刺刀拼刺冲击导致层压木前端劈裂，并隐蔽引导下挂钢制通条。",
+        "audioScript": "锁在护木最前端的这件H形钢制前枪箍，集成了三项关键功能：双侧钢桥紧紧夹住上下护木与枪管，底部T形导轨稳稳卡住S84九八型军刺，而内腔还正好充当下置通条的穿行导套，把军械实用主义发挥到了极致。",
+        "audioUrl": "audio/k98k/parts/k98k_front_band_zh.mp3"
+      },
+      "en": {
+        "roleTag": "H-Pattern Front Band & S84/98 Bayonet Lug",
+        "overview": "Clamping the forend nose and upper handguard onto the barrel, this H-pattern steel front band integrates a hardened underbarrel T-rail lug for the S84/98 bayonet and guides the cleaning rod.",
+        "craftAndMaterial": "Formed from heavy ordnance steel with twin fore-and-aft clamping rings linked by side bridges, finished in matte dark parkerizing and bluing over a hardened bayonet rail.",
+        "kinematicRole": "Locks the forward stock and handguard rigidly onto the barrel during firing and bayonet stress; slides forward toward the muzzle between ten and forty-two percent disassembly.",
+        "designHighlight": "The wide H-profile distributes violent bayonet thrust across both wood halves to prevent forend splitting while concealing the cleaning rod channel underneath.",
+        "audioScript": "Clamping the forend tip is the signature H-pattern front barrel band. Twin steel rings lock the upper handguard and stock tightly around the barrel, while an integral underbarrel T-rail mounts the S84 ninety-eight bayonet and funnels the cleaning rod neatly underneath.",
+        "audioUrl": "audio/k98k/parts/k98k_front_band_en.mp3"
+      }
+    },
+    "k98k_rear_band": {
+      "partId": "k98k_rear_band",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Rear Band & Sling Bar",
+      "zh": {
+        "roleTag": "中后抱箍紧固上护木 · 左侧直立背带铁环成就平贴卡宾挎枪法",
+        "overview": "套装在护木中段的钢制后枪箍，左侧焊装坚固的立式皮背带铁环，与枪托右侧镂空背带孔共同构成 K98k 标志性的平贴侧挎背负系统。",
+        "craftAndMaterial": "采用高强度冲压/铣削碳钢环箍经烤蓝磷化防锈处理，左侧背带柱与竖杆满焊加固，底端切有弹簧卡笋定位凹槽。",
+        "kinematicRole": "在击发与行军中固定中段护木不松动；在拆解进度百分之十二至四十四阶段于卸下前枪箍后顺枪管向前滑出。",
+        "designHighlight": "将传统步枪位于枪腹下方的背带环改至左侧面，使步枪斜背于士兵身后或跨骑马背时枪身完全平贴身体，再无拉机柄顶硌背部的困扰。",
+        "audioScript": "中段这只看似朴素的后枪箍，藏着九八k变身卡宾枪的点睛之笔。工程师把背带挂环从传统枪腹移到了左侧面，再配合枪托上的镂空穿槽，士兵背起皮带时整支步枪像盾牌一样平贴后背，行军骑马都极为顺手。",
+        "audioUrl": "audio/k98k/parts/k98k_rear_band_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Mid Barrel Band & Left Cavalry Sling Bar",
+        "overview": "Encircling the middle of the stock and upper handguard, this steel barrel band carries a vertical left-side sling bar that pairs with the buttstock cutout for flat cavalry carry.",
+        "craftAndMaterial": "Stamped and milled from spring-hardened steel in durable blued-phosphate finish, featuring a welded vertical left-flank sling loop and a bottom band-spring detent notch.",
+        "kinematicRole": "Secures the middle section of the handguard and anchors forward sling tension; slips forward off the barrel following front-band removal between twelve and forty-four percent strip.",
+        "designHighlight": "Moving the sling bar from the underside onto the left flank allows the K98k to hang flat against a marching soldier's back or horseback saddle without poking the bolt handle into the spine.",
+        "audioScript": "Securing the middle of the handguard is the rear barrel band with its distinctive left-side sling bar. By shifting the sling attachment from underneath onto the left flank to match the buttstock slot, German designers made the K98k hang completely flat across a soldier's back.",
+        "audioUrl": "audio/k98k/parts/k98k_rear_band_en.mp3"
+      }
+    },
+    "k98k_cleaning_rod": {
+      "partId": "k98k_cleaning_rod",
+      "bomCode": "F-07",
+      "calloutLabelEn": "Underbarrel Cleaning Rod",
+      "zh": {
+        "roleTag": "31.5厘米螺纹随枪收纳钢通条 · 双条对拧即可刷通600毫米全膛",
+        "overview": "隐蔽收纳于枪管正下方护木通道内的 31.5 厘米实心钢制通条，尾端旋入护木内嵌螺母固定，前端带长圆擦布穿孔与防滑圆头露于刺刀座下。",
+        "craftAndMaterial": "采用高刚度冷拉碳钢圆棒车削成型并深烤蓝防锈，头部铣通穿布长眼，尾部滚压精密连接外螺纹，头部预留内螺孔以便双杆对接。",
+        "kinematicRole": "击发全程紧锁于护木下方保持静止；在野战拆解最早期百分之六至三十六阶段逆时针旋松并沿枪口方向率先抽出。",
+        "designHighlight": "单根长度刚好隐匿于紧凑短枪护木内不突兀，实战中两名战友将各自通条首尾对拧即刻拼成超 600 毫米全长擦膛杆，轻松清除腐蚀性底火残渣。",
+        "audioScript": "藏在刺刀座正下方的这根烤蓝钢制通条，体现了极高的单兵战地智慧。因为短步枪护木空间有限，单根通条长三十一点五厘米，但首尾都车有对接螺纹。实战宿营时，两名士兵把各自的通条一拧，就能瞬间拼成一根刷通六百毫米全膛的长通条。",
+        "audioUrl": "audio/k98k/parts/k98k_cleaning_rod_zh.mp3"
+      },
+      "en": {
+        "roleTag": "31.5cm Threaded Underbarrel Cleaning Rod",
+        "overview": "Stowed neatly beneath the barrel and bayonet lug, this 31.5-centimeter solid steel cleaning rod threads into an internal stock nut and features a slotted cloth jag at the muzzle end.",
+        "craftAndMaterial": "Turned from tough cold-drawn carbon steel bar stock with deep bluing, incorporating a milled patch eye at the flared tip and mating threads that allow two rods to join end-to-end.",
+        "kinematicRole": "Stays threaded tightly underneath the forend during firing; unscrews and pulls forward first out of the nose cap between six and thirty-six percent disassembly.",
+        "designHighlight": "Compact enough to fit invisibly inside the shortened carbine forend, two soldiers simply screw their individual rods together in the field to scrub the entire 600 mm bore.",
+        "audioScript": "Tucked neatly underneath the bayonet lug is the thirty-one-and-a-half-centimeter steel cleaning rod. Too short alone to reach the full six-hundred-millimeter bore, its threaded ends allow two soldiers to screw their rods together in seconds to scrub corrosive primer residue out in the field.",
+        "audioUrl": "audio/k98k/parts/k98k_cleaning_rod_en.mp3"
+      }
+    },
+    "k98k_buttplate": {
+      "partId": "k98k_buttplate",
+      "bomCode": "F-08",
+      "calloutLabelEn": "Cupped Steel Buttplate",
+      "zh": {
+        "roleTag": "1940年升级杯状包边冲压钢底板 · 紧裹层压木尾防磕裂湿胀",
+        "overview": "自 1940 年全面取代平底板的深度冲压杯状钢制军用枪托底板，四周深翻边如铁靴般紧紧包覆层压榉木托踵与托趾，抵御严酷战场冲击。",
+        "craftAndMaterial": "采用厚钢板深冲成型并施以耐磨磷化/烤蓝表面防锈处理，后抵肩面带防滑压纹，由双颗沉头粗牙木螺钉牢牢锁固于木托后端。",
+        "kinematicRole": "射击时将 7.92×57mm 强悍后坐均匀传递至射手肩窝；在全枪拆解后半程百分之五十六至九十阶段与木托尾端分离。",
+        "designHighlight": "杯状翻边结构彻底封住层压榉木端面脆弱的胶合缝，避免立枪顿地、泥水浸泡或白刃托击导致层压木片分层开裂。",
+        "audioScript": "紧裹在枪托末端的这只杯状钢制托底板，是一九四零年后针对层压木枪托量身定制的强化升级。深冲翻边像一只坚固的铁靴严密包住木托尾部，彻底杜绝层压胶缝受潮开裂或立枪顿地时把托趾磕碎。",
+        "audioUrl": "audio/k98k/parts/k98k_buttplate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Deep-Drawn Cupped Steel Buttplate",
+        "overview": "Adopted from 1940 onward to replace earlier flat plates, this deep-drawn cupped steel buttplate wraps around the heel and toe of the laminated stock like an armored shoe.",
+        "craftAndMaterial": "Heavy-gauge sheet steel cold-stamped into a contoured protective cup with matte phosphate-blued finish and dual countersunk mounting screws.",
+        "kinematicRole": "Transfers full-power 7.92x57mm recoil squarely into the shoulder; detaches rearward from the buttstock between fifty-six and ninety percent full disassembly.",
+        "designHighlight": "Its raised perimeter lip seals and reinforces the vulnerable end-grain glue seams of laminated beechwood against wet trenches, rifle-butt strikes, and rough grounding.",
+        "audioScript": "Capping the rear of the stock is the cupped stamped steel buttplate introduced in nineteen forty. Wrapping over both heel and toe like an armored boot, its raised lip seals the exposed laminate plies against moisture and prevents the wood from splitting under hard military abuse.",
+        "audioUrl": "audio/k98k/parts/k98k_buttplate_en.mp3"
+      }
+    },
+    "k98k_trigger": {
+      "partId": "k98k_trigger",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Two-Stage Mauser Trigger",
+      "zh": {
+        "roleTag": "顶部前后双支点凸肩极简两道火 · 一道火柔和预压接二道火硬墙",
+        "overview": "毛瑟 98 堪称机械极简主义典范的双支点两道火弧形扳机：仅凭顶部铣出的高低双凸肩贴靠机匣底面，就以寥寥零件实现了教科书级军用两道火击发手感。",
+        "craftAndMaterial": "由淬火工具钢精密锻铣成型，弧形扳机指面精细倒圆抛光并施以烤蓝防腐，顶部前后两处杠杆支点经局部高频淬硬以防长年磨损改变扳机力。",
+        "kinematicRole": "阶段一绕阻铁横销顺时针偏转，先以前凸肩借大杠杆比走完轻松一道火预行程，接触后凸肩形成清晰硬墙并突破释放阻铁；阶段四后松指复位。",
+        "designHighlight": "仅靠单一零件的几何双支点切换杠杆比，在极高战场安全性与精准击发预报之间取得了绝妙平衡，令无数现代狙击步枪竞相效仿。",
+        "audioScript": "这枚弧形扳机展示了保罗·毛瑟令人惊叹的极简功力。注意它顶部的两个圆弧凸肩：扣下前半段时，前凸肩贴着机匣提供柔和轻松的一道火预行程；触碰后凸肩瞬间杠杆比突变，手指立刻感受到清晰的二道火硬墙，微微加力便干脆释放击针。",
+        "audioUrl": "audio/k98k/parts/k98k_trigger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Twin-Fulcrum Two-Stage Military Trigger",
+        "overview": "A triumph of mechanical simplicity, this curved Mauser trigger uses two stepped upper fulcrum humps bearing against the receiver underside to deliver a crisp military two-stage pull.",
+        "craftAndMaterial": "Drop-forged and milled from hardened alloy steel with a smoothly radiused finger blade and wear-hardened dual upper fulcrum pads finished in deep bluing.",
+        "kinematicRole": "Pivots smoothly rearward during phase one—gliding over the forward hump for light first-stage take-up before hitting the rear hump wall to drop the sear—then resets after ignition.",
+        "designHighlight": "Achieves tactile two-stage predictability through pure lever-arm geometry without fragile set screws or extra springs, keeping the pull safe in gloved hands yet accurate at long range.",
+        "audioScript": "Look closely at the top edge of this curved trigger to spot Paul Mauser's minimalist genius. Two stepped fulcrum humps bear directly against the receiver: the front hump gives a light, smooth first-stage take-up, and the rear hump creates a crisp second-stage wall for predictable long-range shots.",
+        "audioUrl": "audio/k98k/parts/k98k_trigger_en.mp3"
+      }
+    },
+    "k98k_sear": {
+      "partId": "k98k_sear",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Pivoting Mauser Sear",
+      "zh": {
+        "roleTag": "穿槽直挂待击尾铁的杠杆阻铁 · 下沉干脆解脱高能长击针",
+        "overview": "铰接于机匣底面纵槽内的淬火钢制杠杆阻铁，后端高耸阻铁齿探入机匣内腔牢牢挂住待击尾铁下耳，下端销接两道火扳机构成极简直接火控链。",
+        "craftAndMaterial": "采用高硬度渗碳工具钢精密立铣而成，阻铁挂钩工作面经细油石镜面研磨确保击发瞬间零拖泥带水，表面呈深蓝回火硬化层。",
+        "kinematicRole": "阶段一随两道火扳机下拽而后端下沉 1.6 毫米脱钩释放击针，同时前端上翘压缩立式阻铁簧；阶段七在闭锁尾声微降承接待击尾铁安全复位。",
+        "designHighlight": "兼作防过拉限位与火控传递核心，整个 K98k 火控系统仅由扳机、阻铁与单根螺旋簧三件组成，几乎永不损坏且不惧泥沙侵入。",
+        "audioScript": "藏在机匣正下方的这根杠杆阻铁，把整个九八k的火控精简到了极致。后端阻铁齿直接穿过机匣槽牢牢勾住待击尾铁，扳机一拉它便向下沉降干脆放行击针。整套火控拢共只有扳机、阻铁和一根小弹簧三件零件，却皮实得可以历经百年战火。",
+        "audioUrl": "audio/k98k/parts/k98k_sear_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Direct-Engagement Pivoting Sear Bar",
+        "overview": "Pinned directly beneath the receiver tang, this hardened steel sear reaches up through a receiver slot to retain the cocking piece directly, forming an ultra-reliable three-part fire control group.",
+        "craftAndMaterial": "Milled from case-hardened tool steel with a finely honed top engagement nose to minimize creep and a spring-tempered blued finish.",
+        "kinematicRole": "Tilts downward in phase one as the trigger breaks to release the cocked striker while compressing the forward sear spring, then dips slightly in phase seven to catch the recocked striker on bolt closure.",
+        "designHighlight": "Along with the trigger and a single coil spring, this sear comprises the entire K98k firing mechanism—virtually impervious to dirt, frost, or battlefield wear.",
+        "audioScript": "Hinged directly underneath the receiver sits the hardened steel sear bar. Its top nose projects straight up into the action to hold back the cocking piece. Together with the trigger and one small spring, just three rugged components form the entire Mauser fire control system.",
+        "audioUrl": "audio/k98k/parts/k98k_sear_en.mp3"
+      }
+    },
+    "k98k_sear_spring": {
+      "partId": "k98k_sear_spring",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Sear Return Spring",
+      "zh": {
+        "roleTag": "立式螺旋阻铁与扳机复位压簧 · 驱动阻铁可靠上抬挂接尾铁",
+        "overview": "垂直嵌装在机匣底部盲孔与杠杆阻铁前鼻之间的 8 圈高碳钢螺旋压簧，持续向后下方顶推阻铁使其后端挂齿始终处于高位待击拦截状态。",
+        "craftAndMaterial": "冷拔弹簧钢丝紧密绕制并经高温定型与润油处理，在实时 3D 击发仿真中保持恒定钢丝直径的精确垂直轴向压缩形变。",
+        "kinematicRole": "阶段一随阻铁前鼻上翘沿垂直轴线清晰压缩至 72% 高度（变化量 28%）；击发松指后迅速回弹将阻铁与两道火扳机推回初始预压位。",
+        "designHighlight": "隐藏于机匣与阻铁封闭盲孔之间，完全隔绝外界泥水尘土污染，以单一螺旋压簧同时承担一道火预压阻力与阻铁复位的双重使命。",
+        "audioScript": "顶在机匣盲孔和阻铁前鼻之间的这枚立式小弹簧，肩负着一簧两用的巧思。扣动两道火扳机时它被垂直压缩提供柔和的一道火手感，击发松指后又立刻把阻铁弹回高位，准备迎候下一发闭锁归位的待击尾铁。",
+        "audioUrl": "audio/k98k/parts/k98k_sear_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Vertical Helical Sear Return Spring",
+        "overview": "Seated vertically inside a blind pocket between the receiver floor and the forward sear nose, this eight-coil compression spring supplies both first-stage trigger tension and positive sear reset.",
+        "craftAndMaterial": "Wound from oil-tempered carbon spring wire and calibrated for constant-wire-diameter vertical GPU compression during firing.",
+        "kinematicRole": "Compresses vertically down to seventy-two percent of rest height during phase one as the sear tilts, then rebounds immediately to elevate the sear nose for cocking-piece handoff.",
+        "designHighlight": "Protected inside an enclosed receiver recess away from mud and grit, a single rugged coil spring governs both first-stage take-up weight and crisp sear engagement.",
+        "audioScript": "Tucked vertically between the receiver floor and the front of the sear is this compact coil return spring. Shielded from mud inside a blind pocket, it simultaneously generates the smooth first-stage trigger take-up and snaps the sear firmly back into position for the next shot.",
+        "audioUrl": "audio/k98k/parts/k98k_sear_spring_en.mp3"
+      }
+    },
+    "k98k_trigger_guard": {
+      "partId": "k98k_trigger_guard",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "Milled Trigger Guard & Box",
+      "zh": {
+        "roleTag": "整块锻钢铣削全封闭扳机护圈与齐平式 5 发内置弹仓框",
+        "overview": "将全封闭钢制扳机护圈与 5 发双排内置弹仓盒融为一体的重型下底盘，通过前后两颗带防松副螺钉的主机匣螺钉紧锁木托与机匣形成坚不可摧的刚性三明治结构。",
+        "craftAndMaterial": "1943 年奥伯恩多夫中期标准件仍保留高刚度整块锻钢铣削加工，表面施以耐磨德式烤蓝；护圈宽大圆润便于戴冬用手套操作，弹仓盒底面与木托腹部完全齐平。",
+        "kinematicRole": "击发全程静止构成内置 5 发双排弹柱的刚性四壁导框并保护两道火扳机；在拆解进度百分之二十二至五十八阶段整体向下分离。",
+        "designHighlight": "全齐平内置式弹仓盒设计让步枪下腹线条如流水般平滑，匍匐爬行或单手托枪行军时绝不钩挂草木战壕，且极大强化了全枪纵向骨架刚度。",
+        "audioScript": "这件将扳机护圈与五发弹仓盒合二为一的铣削钢框架，完全嵌入层压榉木枪托腹部，下缘与木托浑然齐平。前后两颗粗大主螺钉穿过它把机匣、木托与护圈拧成一个刚性整体，既防战壕钩挂又确保百米射击精度如一。",
+        "audioUrl": "audio/k98k/parts/k98k_trigger_guard_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Milled Trigger Guard & Flush Mag Box",
+        "overview": "Combining a solid closed-loop trigger guard bow with the integral five-round staggered magazine box, this steel bottom metal bolts through the stock into the receiver to form a rigid bedding chassis.",
+        "craftAndMaterial": "Precision-milled from forged steel with deep German bluing, featuring a spacious winter-glove trigger bow, integral floorplate latch recess, and front/rear action-screw escutcheons.",
+        "kinematicRole": "Remains stationary as the rigid housing guiding the five staggered 7.92x57mm cartridges and guarding the trigger blade; drops cleanly downward between twenty-two and fifty-eight percent strip.",
+        "designHighlight": "Its completely flush profile eliminates the snagging underside magazine box of earlier rifles, making prone shooting, crawling, and one-handed balance markedly cleaner.",
+        "audioScript": "Milled as one rugged steel chassis, the trigger guard and flush five-round magazine box sit completely recessed inside the belly of the stock. Two heavy action screws clamp this bottom metal straight into the receiver, creating a rock-solid foundation without any snagging underside box.",
+        "audioUrl": "audio/k98k/parts/k98k_trigger_guard_en.mp3"
+      }
+    },
+    "k98k_mag_follower": {
+      "partId": "k98k_mag_follower",
+      "bomCode": "M-01",
+      "calloutLabelEn": "Staggered Bolt-Stop Follower",
+      "zh": {
+        "roleTag": "双排交错阶梯白钢托弹板 · 第五发射空自动上顶卡阻枪机示警",
+        "overview": "置于 5 发内置弹仓内的精密阶梯状抛光钢托弹板：左高右低的错层表面引导 5 发 7.92×57mm 实弹紧密双排交错码放，后端凸肩兼作空仓挂机阻挡台。",
+        "craftAndMaterial": "由坚硬碳钢机加工成精准错层双阶面并经高度抛光白钢处理以降低摩擦，底面开有与托弹簧扣合的燕尾卡槽。",
+        "kinematicRole": "在阶段五至六待枪机后拉让开弹仓口时向上托举 3.7 毫米将下一发交错新弹顶至受控供弹高度；当第 5 发打空后顶升至最高位直接拦住枪机面提示装填。",
+        "designHighlight": "巧妙的空仓顶栓台肩让士兵在炮火震天、无暇数弹的战场上无需低头看枪，只需感到枪机推不动便瞬间知道弹仓已空，立即抓起下一枚 5 发黄铜桥夹补弹。",
+        "audioScript": "这块镜面抛光的阶梯托弹板暗藏两重巧妙设计。左高右低的阶面让五发七点九二步枪弹紧密交错叠成双排，巧妙塞进齐平枪腹；而当第五发子弹打光后，它后端的高台会直挺挺升起挡住枪机面，用直接的手感提醒士兵立刻装填新桥夹。",
+        "audioUrl": "audio/k98k/parts/k98k_mag_follower_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Stepped Staggered Bolt-Stop Follower",
+        "overview": "Riding inside the flush magazine box, this polished stepped steel follower staggers five rimless 7.92x57mm rounds into two compact columns and physically blocks the bolt when empty.",
+        "craftAndMaterial": "Machined from hardened carbon steel with a ground bright finish to eliminate brass drag, incorporating an asymmetrical staggered deck and a raised rear bolt-hold-open shoulder.",
+        "kinematicRole": "Rises 3.7 mm during phases five and six once the bolt clears rearward, presenting the next staggered round to the feed lips before halting the bolt face after the fifth round fires.",
+        "designHighlight": "Its raised bolt-stop rear shoulder provides instant tactile empty-magazine feedback in loud combat—when the bolt refuses to close forward, the soldier reaches instinctively for a fresh stripper clip.",
+        "audioScript": "This polished steel follower performs two vital jobs inside the flush magazine. Its asymmetrical stepped top staggers five heavy cartridges into two compact columns, and once the fifth round is fired, its raised rear shoulder blocks the bolt face from closing—signaling immediately by touch that it is time to reload.",
+        "audioUrl": "audio/k98k/parts/k98k_mag_follower_en.mp3"
+      }
+    },
+    "k98k_mag_spring": {
+      "partId": "k98k_mag_spring",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Internal Magazine Spring",
+      "zh": {
+        "roleTag": "高弹限内置 5 发弹仓托弹簧 · 锚定底板持续向上稳推送弹柱",
+        "overview": "支承于可拆式弹仓底板与双排阶梯托弹板之间的高弹力托弹压簧，提供均匀充足的向上推力以确保每发 7.92×57mm 实弹准确贴合机匣供弹唇。",
+        "craftAndMaterial": "采用高强度琴钢丝精密绕制并经回火定型与防锈润油工艺，保持实时 GPU 恒定丝径垂直伸缩变形。",
+        "kinematicRole": "底部固定于静止弹仓底板，阶段五至六在枪机后拉让出上方窗口瞬间向上伸展 24%，随托弹板托升下一发实弹后再次压紧蓄能。",
+        "designHighlight": "全封闭式内置结构使其无需像可拆弹匣般承受频繁摔砸变形，即使装满 5 发实弹长期储存亦能维持恒定供弹张力。",
+        "audioScript": "支承在弹仓底板和托弹板之间的这根强力托弹簧，负责把沉重的五发七点九二步枪弹稳稳向上顶紧。枪机每次拉向后方，它便迅捷伸展推动托弹板举起下一发新弹，让弹底顺利滑进大抓钩的掌握之中。",
+        "audioUrl": "audio/k98k/parts/k98k_mag_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Flush 5-Round Magazine Drive Spring",
+        "overview": "Anchored on the removable magazine floorplate directly beneath the stepped follower, this high-tension drive spring maintains steady upward feed pressure across the five-round staggered column.",
+        "craftAndMaterial": "Wound from tempered music wire with protective oil coating, preserving true constant wire diameter through dynamic vertical GPU compression and extension.",
+        "kinematicRole": "Extends twenty-four percent upward during phases five and six as the bolt draws back, elevating the next 7.92x57mm cartridge into positive controlled-round feed alignment.",
+        "designHighlight": "Protected inside the rigid milled magazine box away from drop damage, it maintains reliable upward feed force across decades of service and long-term loaded storage.",
+        "audioScript": "Resting on the floorplate beneath the stepped follower, this stout magazine spring drives five heavy seven-point-nine-two cartridges upward. Each time the bolt strokes back, the spring expands smoothly to lift the next staggered rim straight into path of the claw extractor.",
+        "audioUrl": "audio/k98k/parts/k98k_mag_spring_en.mp3"
+      }
+    },
+    "k98k_mag_floorplate": {
+      "partId": "k98k_mag_floorplate",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Removable Mag Floorplate",
+      "zh": {
+        "roleTag": "弹尖免工具解脱式钢制弹仓底板 · 野战一秒开仓泄弹清淤",
+        "overview": "封锁内置 5 发弹仓底部的可拆式钢制底板，前端以榫舌勾挂弹仓框，后端由弹性卡笋锁定，只需用一发 7.92mm 弹尖顶压小孔即可免工具前滑拆下。",
+        "craftAndMaterial": "由高强度碳钢铣削或重型冷冲压成型，外表面烤蓝防锈与护圈下腹严丝合缝，后端嵌装精密圆孔解脱卡笋。",
+        "kinematicRole": "击发全程紧锁在弹仓盒底端作为托弹簧的刚性支座；在野战清淤或全拆解后半程百分之六十至九十四阶段向下脱离弹仓框。",
+        "designHighlight": "巧妙利用士兵手边最现成的工具——一发步枪弹尖即可瞬间打开弹仓底板倾倒未发弹药或冲洗战壕淤泥，无需逐发反复拉栓退弹。",
+        "audioScript": "封住弹仓底部的这块钢制底板，体现了毛瑟极为人性化的野战维护理念。当步枪掉进泥坑或者需要迅速清空弹仓时，士兵根本不用找螺丝刀，只需拿起一发步枪子弹的尖头往小孔里一顶，底板便能向前滑出，瞬间卸空整仓泥沙与余弹。",
+        "audioUrl": "audio/k98k/parts/k98k_mag_floorplate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Bullet-Tip Release Magazine Floorplate",
+        "overview": "Closing the base of the flush internal magazine box, this removable steel floorplate locks via a front lug and rear spring plunger designed to release using the tip of a single rifle bullet.",
+        "craftAndMaterial": "Precision-milled or heavy-stamped blued carbon steel fitted flush with the bottom metal, integrating a spring-retaining slot and recessed rear release button.",
+        "kinematicRole": "Remains locked solidly as the lower abutment for the magazine spring during firing; detaches downward beneath the trigger guard during the sixty to ninety-four percent teardown phase.",
+        "designHighlight": "Using any standard pointed cartridge tip to depress the flush catch lets troops dump live ammunition safely or rinse mud from the magazine without cycling rounds through the chamber.",
+        "audioScript": "Sealing the underside of the flush magazine is this removable steel floorplate. Rather than requiring a screwdriver, its flush release latch is sized for the pointed tip of a single cartridge—press it in, slide the plate clear, and you can dump live rounds or flush out trench mud in seconds.",
+        "audioUrl": "audio/k98k/parts/k98k_mag_floorplate_en.mp3"
+      }
+    },
+    "k98k_stripper_clip": {
+      "partId": "k98k_stripper_clip",
+      "bomCode": "M-04",
+      "calloutLabelEn": "5-Rd Brass Stripper Clip",
+      "zh": {
+        "roleTag": "毛瑟 98 五发冲压黄铜桥夹 · 单指齐压五发并由推栓自动弹飞",
+        "overview": "插立在机匣 C 形后桥导槽内的毛瑟 98 经典 5 发黄铜桥夹（Ladestreifen），两侧折边夹紧 5 发 7.92×57mm 弹底槽并内置烤蓝波形弹簧片稳固弹药。",
+        "craftAndMaterial": "采用高延展性冷轧黄铜带冲压折弯成 C 形双轨槽身，内嵌高弹蓝钢波形稳弹片与上下防脱折耳，呈现温润鲜明的金黄铜光泽。",
+        "kinematicRole": "装填时直立卡入机匣后桥导槽供拇指沿左侧缺口一次将 5 发实弹压入弹仓，随后向前推闭枪机时枪机面会自动将空桥夹向上顶弹出槽；在拆解最早期百分之二至三十阶段率先移出。",
+        "designHighlight": "造价低廉却将手动步枪装弹效率推向极限：五发成组携带于步兵三联弹药盒内，一插一压一推栓，短短三秒即可令 K98k 重满火力。",
+        "audioScript": "竖立在机匣后桥导槽上的这枚五发黄铜桥夹，是毛瑟九八k高速装填的秘密武器。冷冲黄铜槽内嵌蓝钢弹簧片，把五发步枪弹整齐夹成一排。士兵将其往后桥一插，右手拇指借左侧缺口顺势一压，五发实弹瞬间落仓，向前一推枪机还能自动把空桥夹弹飞出去。",
+        "audioUrl": "audio/k98k/parts/k98k_stripper_clip_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Mauser 98 5-Round Brass Charger Clip",
+        "overview": "Docked upright in the machined C-ring rear receiver bridge slot, this five-round brass stripper clip holds five 7.92x57mm cartridges aligned for single-stroke thumb loading.",
+        "craftAndMaterial": "Cold-stamped from resilient cartridge-grade brass into a ribbed C-channel with folded retaining lips, end stop tabs, and an internal blued spring-steel tension leaf.",
+        "kinematicRole": "Sits vertically in the rear bridge guide during reloading so a single downward thumb push sweeps all five rounds into the staggered box; closing the bolt automatically kicks the empty clip clear, and it lifts off first between two and thirty percent disassembly.",
+        "designHighlight": "Inexpensive, lightweight, and devastatingly fast—carried in triple leather belt pouches, brass Mauser clips enabled trained infantrymen to reload five rounds in under three seconds.",
+        "audioScript": "Seated upright in the rear receiver bridge sits the iconic five-round brass Mauser stripper clip. An internal blued tension leaf holds five heavy cartridges squarely in line so one decisive downward thumb stroke sweeps all five into the flush magazine—and closing the bolt automatically kicks the empty brass clip away.",
+        "audioUrl": "audio/k98k/parts/k98k_stripper_clip_en.mp3"
+      }
+    }
+  }
+}
