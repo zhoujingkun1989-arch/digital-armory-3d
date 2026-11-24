@@ -39,6 +39,9 @@ interface DocsCaptureModule {
   DEFAULT_JPEG_QUALITY: number;
   MIN_NON_BG_PIXEL_RATIO: number;
   VALID_SHOT_GROUPS: readonly string[];
+  POST_ACTION_CONFIGS: Readonly<
+    Record<string, { description: string; fireProgress?: number }>
+  >;
   FLAGSHIP_DOC_SHOTS: readonly DocShotSpec[];
   parseCliArgs: (argv?: string[]) => {
     group: string;
@@ -192,7 +195,7 @@ describe('Cycle 16A · PWA Service Worker, Offline Pack Integrity & Flagship 192
       expect(helpText).toContain('--json');
     });
 
-    it('emits valid 32-shot JSON manifest on --dry-run --json with unique filenames and valid WeaponIds', () => {
+    it('emits valid 38-shot JSON manifest on --dry-run --json with unique filenames, valid WeaponIds, and wired postAction handlers', () => {
       const stdout = execFileSync(
         process.execPath,
         [CAPTURE_SCRIPT_PATH, '--dry-run', '--json'],
@@ -209,6 +212,7 @@ describe('Cycle 16A · PWA Service Worker, Offline Pack Integrity & Flagship 192
           group: string;
           weaponId: string | null;
           isHeavy: boolean;
+          postAction: string | null;
           url: string;
         }>;
       };
@@ -216,12 +220,13 @@ describe('Cycle 16A · PWA Service Worker, Offline Pack Integrity & Flagship 192
       expect(plan.dryRun).toBe(true);
       expect(plan.viewport).toBe('1920x1080');
       expect(plan.quality).toBe(92);
-      expect(plan.totalShots).toBe(32);
-      expect(plan.shots).toHaveLength(32);
+      expect(plan.totalShots).toBe(38);
+      expect(plan.shots).toHaveLength(38);
 
       const idSet = new Set<string>();
       const fileSet = new Set<string>();
       const validWeaponIds = new Set<string>(WEAPON_MANIFESTS.map((m) => m.id));
+      const captureSrc = fs.readFileSync(CAPTURE_SCRIPT_PATH, 'utf-8');
 
       for (const shot of plan.shots) {
         expect(idSet.has(shot.id)).toBe(false);
@@ -232,12 +237,19 @@ describe('Cycle 16A · PWA Service Worker, Offline Pack Integrity & Flagship 192
         if (shot.weaponId !== null) {
           expect(validWeaponIds.has(shot.weaponId)).toBe(true);
         }
+        if (shot.postAction !== null) {
+          expect(
+            captureMod.POST_ACTION_CONFIGS[shot.postAction],
+            `Missing POST_ACTION_CONFIGS entry for ${shot.postAction}`
+          ).toBeDefined();
+          expect(captureSrc).toContain(`actionName === '${shot.postAction}'`);
+        }
       }
 
-      // Check core, sculptures, and labs counts + key README filenames
+      // Check core (5), sculptures (22 incl. Wave 8), and labs (11 incl. V7 showcase) counts + key README filenames
       expect(plan.shots.filter((s) => s.group === 'core')).toHaveLength(5);
-      expect(plan.shots.filter((s) => s.group === 'sculptures')).toHaveLength(19);
-      expect(plan.shots.filter((s) => s.group === 'labs')).toHaveLength(8);
+      expect(plan.shots.filter((s) => s.group === 'sculptures')).toHaveLength(22);
+      expect(plan.shots.filter((s) => s.group === 'labs')).toHaveLength(11);
       for (const requiredFile of [
         'showcase-landing.jpg',
         'armory-showcase.jpg',
@@ -247,17 +259,42 @@ describe('Cycle 16A · PWA Service Worker, Offline Pack Integrity & Flagship 192
         'gau8-v6-hero.jpg',
         'p08-v3-macro.jpg',
         'benellim4-v3-macro.jpg',
+        'g17-v3-macro.jpg',
+        'm82a1-v3-macro.jpg',
+        'awm-v3-macro.jpg',
         'v6-range-3d.jpg',
         'v7-scale-wall.jpg',
         'v7-recoil-lab.jpg',
         'v7-showdown-radar.jpg',
         'v7-caliper-daylight.jpg',
+        'v7-mbt-sabot-discard.jpg',
+        'v7-gau8-rotary-blur.jpg',
+        'v7-passport-mastery.jpg',
       ]) {
         expect(fileSet.has(requiredFile)).toBe(true);
       }
 
       const gau8Shot = plan.shots.find((s) => s.id === 'gau8-v6-hero');
       expect(gau8Shot?.isHeavy).toBe(true);
+
+      const sabotShot = plan.shots.find((s) => s.id === 'v7-mbt-sabot-discard');
+      expect(sabotShot?.isHeavy).toBe(true);
+      expect(sabotShot?.postAction).toBe('mbt_sabot_discard');
+      expect(sabotShot?.url).toContain('weapon=ztz99a');
+      expect(sabotShot?.url).toContain('mode=firing');
+
+      const rotaryShot = plan.shots.find((s) => s.id === 'v7-gau8-rotary-blur');
+      expect(rotaryShot?.isHeavy).toBe(true);
+      expect(rotaryShot?.postAction).toBe('gau8_rotary_blur');
+      expect(rotaryShot?.url).toContain('weapon=gau8');
+      expect(rotaryShot?.url).toContain('mode=firing');
+
+      const passportShot = plan.shots.find((s) => s.id === 'v7-passport-mastery');
+      expect(passportShot?.url).toContain('panel=passport');
+      expect(captureMod.POST_ACTION_CONFIGS.mbt_sabot_discard.fireProgress).toBeGreaterThan(0.2);
+      expect(captureMod.POST_ACTION_CONFIGS.mbt_sabot_discard.fireProgress).toBeLessThan(0.36);
+      expect(captureMod.POST_ACTION_CONFIGS.gau8_rotary_blur.fireProgress).toBeGreaterThan(0.16);
+      expect(captureMod.POST_ACTION_CONFIGS.gau8_rotary_blur.fireProgress).toBeLessThan(0.35);
     });
 
     it('supports group/only CLI selection and validates capture quality invariants', () => {
