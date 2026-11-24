@@ -445,6 +445,45 @@ export const MP5_HK_SLAP_PARTIALS_HZ = [1940, 3620, 5480] as const;
  */
 export const GAU8_HYDRAULIC_BRRRT_PARTIALS_HZ = [65, 130, 820, 2480] as const;
 
+/**
+ * High-frequency aluminum 3-petal discarding-sabot shear ring modal partials (Hz)
+ * heard +18..28 ms after smoothbore APFSDS muzzle exit (ZTZ-99A, M1A2, Leopard 2A7).
+ */
+export const APFSDS_SABOT_PETAL_PARTIALS_HZ = [2680, 4120, 6240] as const;
+
+/**
+ * Heavy steel/brass MBT combustible-case metallic stub-base ejection & floor deflector
+ * clang modal partials (Hz) for carousel autoloaders and turret floor pans.
+ */
+export const TANK_STUB_CLANG_PARTIALS_HZ = [480, 860, 1520] as const;
+
+/**
+ * Rotary cannon motor drive harmonic profiles (Hz) for twin 3,000 PSI hydraulic motors
+ * (`gau8`) and 28V DC electric drive stator (`m134`).
+ */
+export const ROTARY_DRIVE_MOTOR_PROFILES = {
+  gau8: { baseHz: 410, peakHz: 860, harmonicRatio: 2.0, maxGain: 0.14 },
+  m134: { baseHz: 290, peakHz: 620, harmonicRatio: 2.5, maxGain: 0.12 },
+} as const;
+
+export type AcousticTelemetryRoomId = AcousticEnvironmentPreset | 'open_field';
+
+export const ACOUSTIC_TELEMETRY_ROOMS: readonly AcousticTelemetryRoomId[] = [
+  ...ACOUSTIC_ENVIRONMENT_PRESETS,
+  'open_field',
+] as const;
+
+export interface ActiveAcousticTelemetry {
+  signatureId: string;
+  signatureLabelZh: string;
+  signatureLabelEn: string;
+  reverbRt60Sec: number;
+  caliberClassZh: string;
+  caliberClassEn: string;
+  highlightsZh: readonly string[];
+  highlightsEn: readonly string[];
+}
+
 export const MASTER_SOFT_LIMITER_CONFIG = {
   thresholdDb: -6,
   kneeDb: 12,
@@ -637,6 +676,224 @@ export function getWeaponBespokeAcousticSignature(
   weaponId: WeaponId
 ): WeaponBespokeAcousticSignature | null {
   return BESPOKE_WEAPON_ACOUSTIC_SIGNATURES[weaponId] ?? null;
+}
+
+const HEAVY_TELEMETRY_OVERRIDES: Partial<
+  Record<
+    WeaponId,
+    {
+      signatureId: string;
+      signatureLabelZh: string;
+      signatureLabelEn: string;
+      highlightsZh: readonly string[];
+      highlightsEn: readonly string[];
+    }
+  >
+> = {
+  ztz99a: {
+    signatureId: 'ztz99a_apfsds_autoloader',
+    signatureLabelZh: '125mm 滑膛主炮脱壳爆鸣 + AZ 转盘底托金属撞击',
+    signatureLabelEn: '125mm APFSDS Sabot Crack + AZ Carousel Stub-Case Clang',
+    highlightsZh: ['APFSDS 脱壳气爆', 'AZ 转盘抛底托', '24 Hz 主炮冲击波'],
+    highlightsEn: [
+      'APFSDS Sabot Crack',
+      'AZ Stub-Case Clang',
+      '24 Hz Main Gun Shock',
+    ],
+  },
+  m1a2: {
+    signatureId: 'm1a2_apfsds_bustle',
+    signatureLabelZh: '120mm M256 脱壳裂空 + 尾舱隔爆门与底托弹跳',
+    signatureLabelEn: '120mm M256 Sabot Whip-Crack + Aft Baseplate Deflector Clang',
+    highlightsZh: ['三瓣弹托气动裂空', '金属底托砸底板', '隔爆门气压泄放'],
+    highlightsEn: [
+      '3-Petal Sabot Crack',
+      'Baseplate Floor Clang',
+      'Bustle Door Pneumatic Hiss',
+    ],
+  },
+  leopard2a7: {
+    signatureId: 'leopard2a7_l55_apfsds',
+    signatureLabelZh: 'L/55 高初速脱壳穿甲裂空 + 立楔炮闩底托撞击',
+    signatureLabelEn: 'L/55 High-Velocity Sabot Crack + Vertical-Wedge Stub Clang',
+    highlightsZh: ['L/55 超音速脱壳', '炮尾钢制底托撞击', '26 Hz 炮口余震'],
+    highlightsEn: [
+      'L/55 Supersonic Sabot',
+      'Wedge Stub-Case Clang',
+      '26 Hz Overpressure Tail',
+    ],
+  },
+  tiger1: {
+    signatureId: 'tiger1_kwk36_brass',
+    signatureLabelZh: '88mm KwK 36 双室制退侧喷 + 全金属黄铜弹壳余鸣',
+    signatureLabelEn: '88mm KwK 36 Twin-Baffle Slap + Full Drawn-Brass Shell Ring',
+    highlightsZh: ['双室制退器侧向拍击', '88mm 全黄铜壳长鸣', '克虏伯立楔闭锁'],
+    highlightsEn: [
+      'Twin-Baffle Brake Slap',
+      '88mm Brass Shell Ring',
+      'Krupp Wedge Lockup',
+    ],
+  },
+  gau8: {
+    signatureId: 'gau8_hydraulic_brrrt',
+    signatureLabelZh: '双液压马达启停啸叫 + 3,900 RPM 65 Hz 航炮撕裂咆哮',
+    signatureLabelEn: 'Twin 3,000 PSI Hydraulic Whine + 3,900 RPM 65 Hz BRRRT!',
+    highlightsZh: ['双液压马达变频啸叫', '65 Hz 3,900 RPM 咆哮', '无链弹鼓铝壳回传'],
+    highlightsEn: [
+      'Dual Hydraulic Motor Whine',
+      '65 Hz 3,900 RPM BRRRT!',
+      'Linkless Drum Return',
+    ],
+  },
+  m134: {
+    signatureId: 'm134_electric_gatling',
+    signatureLabelZh: '28V 直流电机启停谐波 + 3,000 RPM 50 Hz 六管连射',
+    signatureLabelEn: '28V DC Electric Spin-Up Whine + 3,000 RPM 50 Hz Cyclic Burst',
+    highlightsZh: ['28V 电机起转/停机啸叫', '50 Hz 六管脉冲波', '供弹脱链机高频脆响'],
+    highlightsEn: [
+      '28V Electric Drive Whine',
+      '50 Hz 6-Barrel Pulse',
+      'Delinker Feeder Clatter',
+    ],
+  },
+};
+
+function resolveCaliberClassLabels(weaponId: WeaponId): {
+  zh: string;
+  en: string;
+} {
+  const manifest = getWeaponManifest(weaponId);
+  const cat = manifest.catalog.category;
+  if (cat === 'armor') {
+    return { zh: '1:1 重装主战坦克主炮', en: '1:1 Main Battle Tank Cannon' };
+  }
+  if (cat === 'ordnance') {
+    return { zh: '1:1 重型航空旋转机炮', en: '1:1 Heavy Aero Rotary Autocannon' };
+  }
+  if (cat === 'archery') {
+    return { zh: '复合弓弩机械储能发声', en: 'Compound Archery Limb & Cam Acoustics' };
+  }
+  if (cat === 'sniper') {
+    return { zh: '高膛压精确狙击/反器材', en: 'High-Pressure Precision / Anti-Materiel' };
+  }
+  if (cat === 'lmg') {
+    return { zh: '弹链供弹高射速机枪', en: 'Belt-Fed Sustained-Fire Machine Gun' };
+  }
+  if (cat === 'shotgun') {
+    return { zh: '大口径滑膛霰弹枪', en: 'Large-Bore Smoothbore Shotgun' };
+  }
+  if (cat === 'smg') {
+    return { zh: '紧凑冲锋枪/个人防卫', en: 'Compact Submachine Gun / PDW' };
+  }
+  if (cat === 'pistol') {
+    return { zh: '战术手枪/重型转轮', en: 'Service Sidearm / Magnum Revolver' };
+  }
+  return { zh: '制式自动步枪/突击卡宾', en: 'Service Assault Rifle / Carbine' };
+}
+
+/**
+ * Pure telemetry descriptor resolving the active exhibit's acoustic signature,
+ * room RT60 decay, caliber class, and acoustic highlights across all 34 exhibits
+ * and all 4 room spaces (`bench_close`, `indoor_range`, `tactical_hall`, `open_field`).
+ */
+export function getActiveAcousticTelemetry(
+  weaponId: WeaponId,
+  roomId: AcousticTelemetryRoomId = 'tactical_hall'
+): ActiveAcousticTelemetry {
+  const manifest = getWeaponManifest(weaponId);
+  const profile = CALIBER_ACOUSTIC_PROFILES[manifest.caliberProfile];
+  const style = resolveWeaponMechanismAcousticStyle(weaponId);
+  const bespoke = getWeaponBespokeAcousticSignature(weaponId);
+  const caliberClass = resolveCaliberClassLabels(weaponId);
+  const reverbRt60Sec =
+    roomId === 'open_field'
+      ? 0.08
+      : ACOUSTIC_ENVIRONMENT_CONFIGS[roomId].rt60LowSec;
+
+  const heavyOverride = HEAVY_TELEMETRY_OVERRIDES[weaponId];
+  if (heavyOverride) {
+    return {
+      signatureId: heavyOverride.signatureId,
+      signatureLabelZh: heavyOverride.signatureLabelZh,
+      signatureLabelEn: heavyOverride.signatureLabelEn,
+      reverbRt60Sec,
+      caliberClassZh: caliberClass.zh,
+      caliberClassEn: caliberClass.en,
+      highlightsZh: heavyOverride.highlightsZh,
+      highlightsEn: heavyOverride.highlightsEn,
+    };
+  }
+
+  if (bespoke) {
+    const partialStr = bespoke.modalPartialsHz
+      .slice(0, 2)
+      .map((hz) => `${Math.round(hz)} Hz`)
+      .join(' / ');
+    return {
+      signatureId: `${weaponId}_${style}`,
+      signatureLabelZh: bespoke.labelZh,
+      signatureLabelEn: bespoke.labelEn,
+      reverbRt60Sec,
+      caliberClassZh: caliberClass.zh,
+      caliberClassEn: caliberClass.en,
+      highlightsZh: [
+        '专属机械声纹',
+        `模态频点 ${partialStr}`,
+        `基频 ${profile.subFreqHz} Hz`,
+      ],
+      highlightsEn: [
+        'Bespoke Mechanical Foley',
+        `Modal Partials ${partialStr}`,
+        `Sub Impulse ${profile.subFreqHz} Hz`,
+      ],
+    };
+  }
+
+  const isArchery =
+    profile.mechanismStyle === 'compound_bow' ||
+    profile.mechanismStyle === 'compound_crossbow';
+  if (isArchery) {
+    return {
+      signatureId: `${weaponId}_${style}`,
+      signatureLabelZh: `${profile.labelZh} · 高张力弓弦谐振与凸轮释能`,
+      signatureLabelEn: `${profile.labelEn} · High-Tension Bowstring Twang & Cam Release`,
+      reverbRt60Sec,
+      caliberClassZh: caliberClass.zh,
+      caliberClassEn: caliberClass.en,
+      highlightsZh: ['碳纤维弓片回弹', '拉弦共振谐波', '无火药静音发射'],
+      highlightsEn: [
+        'Composite Limb Snap',
+        'Stretched String Partials',
+        'Zero-Powder Silent Release',
+      ],
+    };
+  }
+
+  const isSuppressed = weaponId === 'vss';
+  return {
+    signatureId: `${weaponId}_${style}`,
+    signatureLabelZh: `${profile.labelZh} · 钢材频散波导与膛口冲击合成`,
+    signatureLabelEn: `${profile.labelEn} · Steel Waveguide & Muzzle Impulse Synthesis`,
+    reverbRt60Sec,
+    caliberClassZh: caliberClass.zh,
+    caliberClassEn: caliberClass.en,
+    highlightsZh: [
+      isSuppressed ? '亚音速整体消音泄压' : `超音速裂空 ${profile.crackCutoffHz} Hz`,
+      `膛压低频 ${profile.subFreqHz} Hz`,
+      profile.casingRingHz > 0
+        ? `弹壳模态 ${profile.casingRingHz} Hz`
+        : '无抛壳闭环结构',
+    ],
+    highlightsEn: [
+      isSuppressed
+        ? 'Integral Subsonic Baffle Bleed'
+        : `Supersonic Crack ${profile.crackCutoffHz} Hz`,
+      `Sub Punch ${profile.subFreqHz} Hz`,
+      profile.casingRingHz > 0
+        ? `Brass Shell ${profile.casingRingHz} Hz`
+        : 'Non-Ejecting Mechanism',
+    ],
+  };
 }
 
 /** Stretched partials for high-tension braided BCY-X bowstrings. */
@@ -937,8 +1194,13 @@ class ProceduralGunsmithSoundEngine {
   private brassBounceRingCursor = 0;
   private environmentPreset: AcousticEnvironmentPreset = 'tactical_hall';
   private activeSpeedMultiplier: 0.25 | 0.5 | 1.0 = 1.0;
+  private rotaryDriveOsc1: OscillatorNode | null = null;
+  private rotaryDriveOsc2: OscillatorNode | null = null;
+  private rotaryDriveGain: GainNode | null = null;
+  private rotaryDriveTimer: ReturnType<typeof setTimeout> | null = null;
 
   public reset(): void {
+    this.stopRotaryDriveMotor(true);
     this.ctx = null;
     this.masterGain = null;
     this.softLimiter = null;
@@ -1125,6 +1387,9 @@ class ProceduralGunsmithSoundEngine {
   }
 
   public syncGainStates(muted: boolean, narrationPlaying: boolean): void {
+    if (muted) {
+      this.stopRotaryDriveMotor(true);
+    }
     if (!this.ctx || !this.masterGain || !this.duckingGain) return;
     const now = this.ctx.currentTime;
     const targetMaster = muted ? 0 : 0.88;
@@ -1135,6 +1400,133 @@ class ProceduralGunsmithSoundEngine {
       now,
       narrationPlaying ? 0.05 : 0.14
     );
+  }
+
+  /**
+   * Frequency-ramped rotary hydraulic (`gau8`) or 28V electric (`m134`) drive motor
+   * harmonic undertone synced to firing bursts, routed through the soft-limiter and
+   * stereo reverb bus, with automatic spin-down and guaranteed zero lingering nodes.
+   */
+  public pulseRotaryDriveMotor(
+    weaponId: WeaponId,
+    speedMultiplier: 0.25 | 0.5 | 1.0 = 1.0,
+    burstDurationSec = 0.42
+  ): void {
+    if (weaponId !== 'gau8' && weaponId !== 'm134') return;
+    if (useAppStore.getState().sfxMuted) return;
+    const ctx = this.unlock();
+    if (!ctx || ctx.state !== 'running') return;
+
+    const motor = ROTARY_DRIVE_MOTOR_PROFILES[weaponId];
+    const speedPitchScale =
+      speedMultiplier <= 0.25 ? 0.62 : speedMultiplier <= 0.5 ? 0.82 : 1.0;
+    const now = ctx.currentTime + 0.002;
+    const targetF1 = motor.peakHz * speedPitchScale;
+    const targetF2 = targetF1 * motor.harmonicRatio;
+    const clampedBurst = Math.max(0.18, Math.min(1.2, burstDurationSec));
+
+    if (this.rotaryDriveTimer !== null) {
+      clearTimeout(this.rotaryDriveTimer);
+      this.rotaryDriveTimer = null;
+    }
+
+    if (this.rotaryDriveOsc1 && this.rotaryDriveOsc2 && this.rotaryDriveGain) {
+      try {
+        this.rotaryDriveOsc1.frequency.setTargetAtTime(targetF1, now, 0.045);
+        this.rotaryDriveOsc2.frequency.setTargetAtTime(targetF2, now, 0.045);
+        this.rotaryDriveGain.gain.setTargetAtTime(motor.maxGain, now, 0.03);
+      } catch {
+        // Fallback if mock AudioParam lacks setTargetAtTime
+      }
+    } else {
+      try {
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.0001, now);
+        gain.gain.exponentialRampToValueAtTime(motor.maxGain, now + 0.055);
+
+        const filter = ctx.createBiquadFilter();
+        filter.type = 'bandpass';
+        filter.frequency.setValueAtTime(targetF1 * 1.4, now);
+        filter.Q.setValueAtTime(2.4, now);
+
+        const osc1 = ctx.createOscillator();
+        osc1.type = 'triangle';
+        osc1.frequency.setValueAtTime(motor.baseHz * speedPitchScale, now);
+        osc1.frequency.exponentialRampToValueAtTime(targetF1, now + 0.09);
+
+        const osc2 = ctx.createOscillator();
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(
+          motor.baseHz * motor.harmonicRatio * speedPitchScale,
+          now
+        );
+        osc2.frequency.exponentialRampToValueAtTime(targetF2, now + 0.09);
+
+        const osc2Gain = ctx.createGain();
+        osc2Gain.gain.setValueAtTime(0.38, now);
+
+        osc1.connect(filter);
+        osc2.connect(osc2Gain);
+        osc2Gain.connect(filter);
+        filter.connect(gain);
+        this.connectToBus(gain, 'mechanical');
+
+        osc1.start(now);
+        osc2.start(now);
+
+        this.rotaryDriveOsc1 = osc1;
+        this.rotaryDriveOsc2 = osc2;
+        this.rotaryDriveGain = gain;
+      } catch {
+        this.stopRotaryDriveMotor(true);
+        return;
+      }
+    }
+
+    this.rotaryDriveTimer = setTimeout(() => {
+      this.rotaryDriveTimer = null;
+      this.stopRotaryDriveMotor(false);
+    }, Math.round(clampedBurst * 1000));
+  }
+
+  public stopRotaryDriveMotor(immediate = false): void {
+    if (this.rotaryDriveTimer !== null) {
+      clearTimeout(this.rotaryDriveTimer);
+      this.rotaryDriveTimer = null;
+    }
+
+    const osc1 = this.rotaryDriveOsc1;
+    const osc2 = this.rotaryDriveOsc2;
+    const gain = this.rotaryDriveGain;
+    this.rotaryDriveOsc1 = null;
+    this.rotaryDriveOsc2 = null;
+    this.rotaryDriveGain = null;
+
+    if (!osc1 && !osc2 && !gain) return;
+
+    const now = this.ctx ? this.ctx.currentTime : 0;
+    const releaseSec = immediate ? 0.015 : 0.14;
+    try {
+      if (gain && this.ctx) {
+        gain.gain.setTargetAtTime(0.0001, now, releaseSec * 0.32);
+      }
+      if (!immediate && this.ctx) {
+        osc1?.frequency.setTargetAtTime(160, now, releaseSec * 0.55);
+        osc2?.frequency.setTargetAtTime(320, now, releaseSec * 0.55);
+      }
+    } catch {
+      // Ignore constrained mock AudioParam calls
+    }
+    try {
+      osc1?.stop(now + releaseSec + 0.01);
+    } catch {
+      // Already stopped
+    }
+    try {
+      osc2?.stop(now + releaseSec + 0.01);
+    } catch {
+      // Already stopped
+    }
   }
 
   public getRecordingAudioStream(): MediaStream | null {
@@ -1416,8 +1808,28 @@ class ProceduralGunsmithSoundEngine {
       isTankWeapon(weaponId) ||
       isTankCaliber(manifest.caliberProfile)
     ) {
-      this.playTankCannonFiringEvent(kind, weaponId, profile, now, isSlowMo);
+      this.playTankCannonFiringEvent(
+        kind,
+        weaponId,
+        profile,
+        now,
+        isSlowMo,
+        speedMultiplier
+      );
       return;
+    }
+
+    if (
+      (weaponId === 'gau8' || weaponId === 'm134') &&
+      (kind === 'sear_release' ||
+        kind === 'primer_ignition' ||
+        kind === 'gas_or_recoil')
+    ) {
+      this.pulseRotaryDriveMotor(
+        weaponId,
+        speedMultiplier,
+        isSlowMo ? 0.62 : 0.38
+      );
     }
 
     switch (kind) {
@@ -3474,10 +3886,15 @@ class ProceduralGunsmithSoundEngine {
     weaponId: WeaponId,
     profile: CaliberAcousticProfile,
     now: number,
-    isSlowMo: boolean
+    isSlowMo: boolean,
+    speedMultiplier: 0.25 | 0.5 | 1.0 = 1.0
   ): void {
     const isTiger = weaponId === 'tiger1';
     const isAutoloader = weaponId === 'ztz99a';
+    const isApfsdsSmoothbore =
+      weaponId === 'ztz99a' ||
+      weaponId === 'm1a2' ||
+      weaponId === 'leopard2a7';
 
     switch (kind) {
       case 'sear_release': {
@@ -3578,7 +3995,57 @@ class ProceduralGunsmithSoundEngine {
           bus: 'ballistic',
         });
 
-        // 6. Tiger I twin-baffle 88mm KwK 36 lateral muzzle-brake overpressure slap
+        // 6. APFSDS Discarding-Sabot Supersonic Separation Crack (+22 ms at 1x, scaled gently in slow-mo)
+        if (isApfsdsSmoothbore) {
+          const sabotDelaySec =
+            speedMultiplier <= 0.25
+              ? 0.058
+              : speedMultiplier <= 0.5
+                ? 0.036
+                : 0.022;
+          const tSabot = tBlast + sabotDelaySec;
+
+          // Dual-transient high-frequency aerodynamic whip-crack
+          this.emitNoiseBurst({
+            startTime: tSabot,
+            duration: isSlowMo ? 0.058 : 0.034,
+            filterType: 'bandpass',
+            freqStart: 3680,
+            freqEnd: 1420,
+            q: 1.9,
+            gainPeak: 0.46,
+            attack: 0.0007,
+            saturate: true,
+            bus: 'ballistic',
+          });
+          this.emitNoiseBurst({
+            startTime: tSabot + (isSlowMo ? 0.016 : 0.007),
+            duration: isSlowMo ? 0.046 : 0.026,
+            filterType: 'bandpass',
+            freqStart: 5400,
+            freqEnd: 2180,
+            q: 2.6,
+            gainPeak: 0.34,
+            attack: 0.0006,
+            bus: 'ballistic',
+          });
+
+          // 3-petal aluminum sabot shear ring partials
+          for (let p = 0; p < APFSDS_SABOT_PETAL_PARTIALS_HZ.length; p++) {
+            const hz = APFSDS_SABOT_PETAL_PARTIALS_HZ[p];
+            this.emitModalPing({
+              startTime: tSabot + p * (isSlowMo ? 0.007 : 0.003),
+              duration: (isSlowMo ? 0.075 : 0.046) / (1 + p * 0.28),
+              freqStart: hz,
+              freqEnd: hz * 0.94,
+              type: 'sine',
+              gainPeak: 0.095 / (1 + p * 0.35),
+              bus: 'ballistic',
+            });
+          }
+        }
+
+        // 7. Tiger I twin-baffle 88mm KwK 36 lateral muzzle-brake overpressure slap
         if (isTiger) {
           this.emitNoiseBurst({
             startTime: tBlast + 0.003,
@@ -3671,14 +4138,68 @@ class ProceduralGunsmithSoundEngine {
           });
         }
         if (isAutoloader) {
-          // ZTZ-99A rear turret stub-ejector roof hatch snap-open clank
+          // ZTZ-99A AZ carousel stub-case pan drop clang + rear turret roof ejector hatch clank
+          const panDropAt = now + (isSlowMo ? 0.036 : 0.018);
           this.emitSteelWaveguideStrike({
-            startTime: now + (isSlowMo ? 0.045 : 0.022),
+            startTime: panDropAt,
+            fundamentalHz: TANK_STUB_CLANG_PARTIALS_HZ[0],
+            baseDecaySec: 0.082,
+            gainPeak: 0.28,
+            hardness01: 0.84,
+            massBodyHz: 142,
+            bus: 'mechanical',
+          });
+          this.emitModalPing({
+            startTime: panDropAt + 0.004,
+            duration: isSlowMo ? 0.14 : 0.088,
+            freqStart: TANK_STUB_CLANG_PARTIALS_HZ[1],
+            freqEnd: TANK_STUB_CLANG_PARTIALS_HZ[1] * 0.97,
+            type: 'triangle',
+            gainPeak: 0.14,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + (isSlowMo ? 0.068 : 0.034),
             fundamentalHz: 1120,
             baseDecaySec: 0.055,
             gainPeak: 0.24,
             hardness01: 0.82,
             massBodyHz: 168,
+            bus: 'mechanical',
+          });
+        } else if (!isTiger) {
+          // M1A2 / Leopard 2A7 aft brass/steel combustible-case baseplate double-bounce on floor deflector
+          const bounce1At = now + (isSlowMo ? 0.04 : 0.02);
+          const bounce2At = now + (isSlowMo ? 0.095 : 0.052);
+          this.emitSteelWaveguideStrike({
+            startTime: bounce1At,
+            fundamentalHz: TANK_STUB_CLANG_PARTIALS_HZ[1],
+            baseDecaySec: 0.072,
+            gainPeak: 0.27,
+            hardness01: 0.86,
+            massBodyHz: 158,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: bounce2At,
+            fundamentalHz: TANK_STUB_CLANG_PARTIALS_HZ[2],
+            baseDecaySec: 0.048,
+            gainPeak: 0.18,
+            hardness01: 0.82,
+            massBodyHz: 186,
+            bus: 'mechanical',
+          });
+        } else {
+          // Tiger I 88mm full brass shell casing heavy thump into turret canvas catch basket
+          this.emitNoiseBurst({
+            startTime: now + (isSlowMo ? 0.062 : 0.034),
+            duration: isSlowMo ? 0.075 : 0.045,
+            filterType: 'lowpass',
+            freqStart: 420,
+            freqEnd: 130,
+            q: 1.1,
+            gainPeak: 0.22,
+            attack: 0.004,
             bus: 'mechanical',
           });
         }
@@ -4516,8 +5037,32 @@ export function playWeaponFiringEventSound(
 }
 
 /**
+ * Auditions the active exhibit's flagship live-shot / heavy-ordnance signature:
+ * - APFSDS MBTs (`ztz99a`, `m1a2`, `leopard2a7`): main gun shock + discarding-sabot crack + stub-case clang
+ * - `tiger1`: 88mm KwK 36 twin-baffle bark + drawn-brass casing bell-ring
+ * - Rotary cannons (`gau8`, `m134`): hydraulic/electric motor spin-up whine + BRRRT! burst
+ * - Small arms & archery: authentic `primer_ignition` live-shot synthesis
+ */
+export function playHeavyOrdnanceSignatureAudition(
+  weaponId: WeaponId,
+  speedMultiplier: 0.25 | 0.5 | 1.0 = 1.0
+): void {
+  if (weaponId === 'gau8' || weaponId === 'm134') {
+    soundEngine.pulseRotaryDriveMotor(weaponId, speedMultiplier, 0.45);
+  }
+  soundEngine.playFiringEvent('primer_ignition', weaponId, speedMultiplier);
+  if (isTankWeapon(weaponId)) {
+    soundEngine.playFiringEvent('extract_eject', weaponId, speedMultiplier);
+  }
+}
+
+export function stopRotaryDriveMotorSound(immediate = false): void {
+  soundEngine.stopRotaryDriveMotor(immediate);
+}
+
+/**
  * Returns a captureable Web Audio MediaStream synchronized with `masterGain`
- * for `WP-22` Director Reel video exports. Returns null if unavailable.
+ * for Director Reel video exports. Returns null if unavailable.
  */
 export function getRecordingAudioStream(): MediaStream | null {
   return soundEngine.getRecordingAudioStream();
@@ -4543,6 +5088,7 @@ export function useMechanicalSoundEngine(): void {
     const unsubFire = playbackClock.subscribeFireProgress((nextF) => {
       const state = useAppStore.getState();
       if (state.activeWeaponId !== prevWeaponId) {
+        soundEngine.stopRotaryDriveMotor(false);
         prevWeaponId = state.activeWeaponId;
         prevFireProgress = nextF;
         return;
@@ -4553,11 +5099,13 @@ export function useMechanicalSoundEngine(): void {
         state.mode !== 'firing' ||
         state.sfxMuted
       ) {
+        soundEngine.stopRotaryDriveMotor(state.sfxMuted);
         prevFireProgress = nextF;
         return;
       }
 
       if (!state.isFiringPlaying) {
+        soundEngine.stopRotaryDriveMotor(false);
         prevFireProgress = nextF;
         return;
       }
@@ -4629,6 +5177,7 @@ export function useMechanicalSoundEngine(): void {
     });
 
     return () => {
+      soundEngine.stopRotaryDriveMotor(true);
       window.removeEventListener('pointerdown', onGesture);
       window.removeEventListener('keydown', onGesture);
       unsubFire();
