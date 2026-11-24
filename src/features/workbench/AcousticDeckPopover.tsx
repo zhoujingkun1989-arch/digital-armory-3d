@@ -9,6 +9,7 @@ import {
   VolumeX,
   Waves,
   Wrench,
+  Zap,
 } from 'lucide-react';
 import {
   ACOUSTIC_ENVIRONMENT_CONFIGS,
@@ -16,8 +17,10 @@ import {
   CALIBER_ACOUSTIC_PROFILES,
   type AcousticEnvironmentPreset,
   type MechanismAcousticStyle,
+  getActiveAcousticTelemetry,
   getWeaponBespokeAcousticSignature,
   playBrassCasingBounceSound,
+  playHeavyOrdnanceSignatureAudition,
   playPressCheckSpringSound,
   playWeaponFiringEventSound,
   playWorkbenchFoley,
@@ -68,6 +71,102 @@ export function formatAcousticPartialHz(hz: number): string {
     return `${(hz / 1000).toFixed(2).replace(/\.00$/, '')} kHz`;
   }
   return `${Math.round(hz)} Hz`;
+}
+
+export interface LiveShotAuditionMeta {
+  label: string;
+  cueTag: string;
+  title: string;
+}
+
+export function getLiveShotAuditionMeta(
+  weaponId: WeaponId,
+  lang: LanguageCode
+): LiveShotAuditionMeta {
+  if (
+    weaponId === 'ztz99a' ||
+    weaponId === 'm1a2' ||
+    weaponId === 'leopard2a7'
+  ) {
+    return lang === 'en'
+      ? {
+          label: 'APFSDS + Stub',
+          cueTag: 'APFSDS Sabot + Stub Clang',
+          title:
+            'Audition smoothbore main gun shockwave, discarding-sabot crack & stub-case clang',
+        }
+      : {
+          label: '脱壳穿甲+抛底托',
+          cueTag: 'APFSDS 脱壳爆鸣 + 底托撞击',
+          title: '试听滑膛主炮冲击波、APFSDS 脱壳气爆与金属底托撞击音',
+        };
+  }
+  if (weaponId === 'tiger1') {
+    return lang === 'en'
+      ? {
+          label: '88mm + Brass',
+          cueTag: '88mm KwK 36 + Brass Ring',
+          title:
+            'Audition 88mm KwK 36 twin-baffle blast & full drawn-brass casing ring',
+        }
+      : {
+          label: '88炮+黄铜壳鸣',
+          cueTag: '88mm KwK 36 主炮 + 黄铜弹壳长鸣',
+          title: '试听 88mm KwK 36 双室制退炮口爆鸣与全金属黄铜弹壳余鸣',
+        };
+  }
+  if (weaponId === 'gau8') {
+    return lang === 'en'
+      ? {
+          label: 'Hydraulic BRRRT',
+          cueTag: 'Hydraulic Spin-Up + 65 Hz BRRRT!',
+          title:
+            'Audition GAU-8/A dual hydraulic drive whine & 3,900 RPM rotary burst',
+        }
+      : {
+          label: '液压转管咆哮',
+          cueTag: '双液压起转 + 65 Hz 航炮咆哮',
+          title: '试听 GAU-8/A 双液压马达起转啸叫与 3,900 RPM 旋转机炮咆哮',
+        };
+  }
+  if (weaponId === 'm134') {
+    return lang === 'en'
+      ? {
+          label: 'Electric Burst',
+          cueTag: '28V Electric Whine + 50 Hz Burst',
+          title:
+            'Audition M134D 28V DC electric motor whine & 3,000 RPM 6-barrel burst',
+        }
+      : {
+          label: '电动六管连射',
+          cueTag: '28V 电机起转 + 50 Hz 六管连射',
+          title: '试听 M134D 28V 直流电机起转啸叫与 3,000 RPM 六管连射',
+        };
+  }
+  if (weaponId === 'lift33' || weaponId === 'r500') {
+    return lang === 'en'
+      ? {
+          label: 'Release Twang',
+          cueTag: 'Bowstring & Cam Release',
+          title: 'Audition high-tension bowstring twang & composite limb release',
+        }
+      : {
+          label: '弦响释能音',
+          cueTag: '高张力弓弦与凸轮释能音',
+          title: '试听复合弓弩高张力弓弦谐振与碳纤维弓片释能音',
+        };
+  }
+  return lang === 'en'
+    ? {
+        label: 'Live Shot',
+        cueTag: 'Live Muzzle Impulse',
+        title: 'Audition live caliber muzzle impulse & stereo convolution tail',
+      }
+    : {
+        label: '实弹击发声',
+        cueTag: '实弹枪口冲击与混响尾音',
+        title: '试听当前口径实弹击发枪口冲击波与立体声卷积混响尾音',
+      };
 }
 
 export const MECHANISM_STYLE_LABELS: Readonly<
@@ -193,6 +292,11 @@ export const AcousticDeckPopover: React.FC<AcousticDeckPopoverProps> = ({
   const caliberProfile = CALIBER_ACOUSTIC_PROFILES[manifest.caliberProfile];
   const mechanismStyle = resolveWeaponMechanismAcousticStyle(activeWeaponId);
   const activeRoomCfg = ACOUSTIC_ENVIRONMENT_CONFIGS[acousticEnvironment];
+  const telemetry = getActiveAcousticTelemetry(
+    activeWeaponId,
+    acousticEnvironment
+  );
+  const liveShotMeta = getLiveShotAuditionMeta(activeWeaponId, lang);
   const brassSupported = isBrassDropFoleySupported(activeWeaponId);
   const brassUnsupportedNote = getBrassDropUnsupportedReason(
     activeWeaponId,
@@ -251,6 +355,12 @@ export const AcousticDeckPopover: React.FC<AcousticDeckPopoverProps> = ({
     playWeaponFiringEventSound('battery_lockup', activeWeaponId, 1.0);
     playWorkbenchFoley('preset_detent');
     setLastCueTag(lang === 'en' ? 'Chamber Lockup Cue' : '闭锁入膛冲击音');
+  };
+
+  const handleAuditionShot = () => {
+    ensureAuditionReady();
+    playHeavyOrdnanceSignatureAudition(activeWeaponId, 1.0);
+    setLastCueTag(liveShotMeta.cueTag);
   };
 
   const triggerLabel = ui.sfxChip;
@@ -486,6 +596,41 @@ export const AcousticDeckPopover: React.FC<AcousticDeckPopoverProps> = ({
                 </>
               )}
 
+              <div
+                className="acoustic-deck-telemetry"
+                data-testid="acoustic-deck-telemetry"
+                data-signature-id={telemetry.signatureId}
+                data-rt60-sec={telemetry.reverbRt60Sec.toFixed(2)}
+              >
+                <div className="acoustic-deck-telemetry-head">
+                  <span className="acoustic-deck-telemetry-class">
+                    {lang === 'en'
+                      ? telemetry.caliberClassEn
+                      : telemetry.caliberClassZh}
+                  </span>
+                  <span className="acoustic-deck-telemetry-rt60">
+                    RT60 {telemetry.reverbRt60Sec.toFixed(2)}s
+                  </span>
+                </div>
+                {!bespokeSignature && (
+                  <p className="acoustic-deck-telemetry-summary">
+                    {lang === 'en'
+                      ? telemetry.signatureLabelEn
+                      : telemetry.signatureLabelZh}
+                  </p>
+                )}
+                <div className="acoustic-deck-highlights">
+                  {(lang === 'en'
+                    ? telemetry.highlightsEn
+                    : telemetry.highlightsZh
+                  ).map((item) => (
+                    <span key={item} className="acoustic-deck-highlight-chip">
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
               <div className="acoustic-metrics-strip">
                 <span>
                   {lang === 'en' ? 'Sub' : '低频'}{' '}
@@ -511,7 +656,7 @@ export const AcousticDeckPopover: React.FC<AcousticDeckPopoverProps> = ({
             </div>
           </div>
 
-          {/* Section 3: 3 Live 1-Click Foley Audition Buttons */}
+          {/* Section 3: 4 Live 1-Click Foley & Heavy Ordnance Audition Buttons */}
           <div className="popover-section">
             <div className="acoustic-section-row">
               <div className="popover-section-head">
@@ -520,17 +665,34 @@ export const AcousticDeckPopover: React.FC<AcousticDeckPopoverProps> = ({
                   {lang === 'en' ? 'Live Foley Audition' : '实时机械声效试听'}
                 </span>
               </div>
-              {lastCueTag && (
-                <span className="acoustic-last-cue" aria-live="polite">
-                  {lastCueTag}
-                </span>
-              )}
+              <span
+                className="acoustic-last-cue"
+                role="status"
+                aria-live="polite"
+                aria-atomic="true"
+                data-testid="acoustic-live-cue"
+              >
+                {lastCueTag ?? ''}
+              </span>
             </div>
 
             <div
-              className="acoustic-foley-grid"
+              className="acoustic-foley-grid acoustic-deck-foley-4grid"
               data-testid="acoustic-foley-auditions"
             >
+              <button
+                type="button"
+                className="acoustic-foley-btn acoustic-deck-shot-btn"
+                data-testid="acoustic-audition-shot"
+                onClick={handleAuditionShot}
+                title={liveShotMeta.title}
+              >
+                <Zap size={12} aria-hidden="true" />
+                <span className="acoustic-foley-label">
+                  {liveShotMeta.label}
+                </span>
+              </button>
+
               <button
                 type="button"
                 className="acoustic-foley-btn"
