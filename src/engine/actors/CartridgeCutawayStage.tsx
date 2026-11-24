@@ -49,6 +49,64 @@ export function subscribeCartridgeDossierCollapsed(
   };
 }
 
+export type CartridgeAnatomyLayer = 'core' | 'propellant' | 'primer';
+
+let cartridgeHighlightLayer: CartridgeAnatomyLayer | null = null;
+const highlightLayerListeners = new Set<() => void>();
+
+export function getCartridgeHighlightLayer(): CartridgeAnatomyLayer | null {
+  return cartridgeHighlightLayer;
+}
+
+export function setCartridgeHighlightLayer(
+  layer: CartridgeAnatomyLayer | null
+): void {
+  if (cartridgeHighlightLayer === layer) return;
+  cartridgeHighlightLayer = layer;
+  for (const fn of highlightLayerListeners) {
+    fn();
+  }
+}
+
+export function subscribeCartridgeHighlightLayer(
+  listener: () => void
+): () => void {
+  highlightLayerListeners.add(listener);
+  return () => {
+    highlightLayerListeners.delete(listener);
+  };
+}
+
+const LAYER_EMISSIVE_OFF = new THREE.Color(0x000000);
+const LAYER_EMISSIVE_CORE = new THREE.Color(0x38bdf8);
+const LAYER_EMISSIVE_PROPELLANT = new THREE.Color(0xf97316);
+const LAYER_EMISSIVE_PRIMER = new THREE.Color(0xfbbf24);
+
+function applyLayerHighlightInPlace(
+  mesh: THREE.Mesh | null,
+  active: boolean,
+  tint: THREE.Color,
+  intensity: number
+): void {
+  if (!mesh) return;
+  const mat = mesh.material;
+  if (
+    !(
+      mat instanceof THREE.MeshStandardMaterial ||
+      mat instanceof THREE.MeshPhysicalMaterial
+    )
+  ) {
+    return;
+  }
+  if (active) {
+    mat.emissive.copy(tint);
+    mat.emissiveIntensity = intensity;
+  } else if (mat.emissiveIntensity !== 0) {
+    mat.emissive.copy(LAYER_EMISSIVE_OFF);
+    mat.emissiveIntensity = 0;
+  }
+}
+
 interface StageOffsetVec {
   x: number;
   y: number;
@@ -427,6 +485,52 @@ const SingleCartridgeSpecimen: React.FC<SingleCartridgeSpecimenProps> =
         const pulse = 0.5 + 0.5 * Math.sin(performance.now() * 0.0045);
         haloRef.current.scale.setScalar(0.985 + 0.03 * pulse);
       }
+
+      // Zero-GC in-place emissive layer highlight driven by external anatomy store
+      const hl = isActive ? cartridgeHighlightLayer : null;
+      const hlPulse = hl
+        ? 0.58 + 0.34 * (0.5 + 0.5 * Math.sin(performance.now() * 0.006))
+        : 0;
+      const hlCore = hl === 'core';
+      const hlProp = hl === 'propellant';
+      const hlPrim = hl === 'primer';
+
+      applyLayerHighlightInPlace(
+        jacketRef.current,
+        hlCore,
+        LAYER_EMISSIVE_CORE,
+        hlPulse * 0.55
+      );
+      applyLayerHighlightInPlace(
+        coreSlugRef.current,
+        hlCore,
+        LAYER_EMISSIVE_CORE,
+        hlPulse
+      );
+      applyLayerHighlightInPlace(
+        penetratorRef.current,
+        hlCore,
+        LAYER_EMISSIVE_CORE,
+        hlPulse * 1.15
+      );
+      applyLayerHighlightInPlace(
+        propellantRef.current,
+        hlProp,
+        LAYER_EMISSIVE_PROPELLANT,
+        hlPulse * 1.1
+      );
+      applyLayerHighlightInPlace(
+        primerRef.current,
+        hlPrim,
+        LAYER_EMISSIVE_PRIMER,
+        hlPulse
+      );
+      applyLayerHighlightInPlace(
+        anvilRef.current,
+        hlPrim,
+        LAYER_EMISSIVE_PRIMER,
+        hlPulse * 1.1
+      );
     });
 
     const handleClick = (e: ThreeEvent<MouseEvent>) => {
@@ -641,9 +745,10 @@ export const CartridgeCutawayStage: React.FC = () => {
     [selectLabCartridge]
   );
 
-  // Reset hover pointer cursor cleanly if user navigates away while hovering a specimen
+  // Reset hover pointer cursor & anatomy highlight cleanly on unmount
   useEffect(() => {
     return () => {
+      setCartridgeHighlightLayer(null);
       if (typeof document !== 'undefined') {
         document.body.style.cursor = 'auto';
       }

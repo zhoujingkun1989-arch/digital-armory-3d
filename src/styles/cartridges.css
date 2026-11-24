@@ -1,4 +1,4 @@
-/* ==================== WP-06: 1:1 SAAMI / CIP Cartridge Cutaway Lab ==================== */
+/* ==================== 1:1 SAAMI / CIP Cartridge & Heavy Ordnance Cutaway Lab ==================== */
 .cartridge-lab-overlay {
   position: absolute;
   inset: 0;
@@ -787,7 +787,7 @@
   }
 }
 
-/* WP-18 Small Arms (15) vs Heavy Tank Ordnance (3) Gallery Switcher */
+/* Small Arms (17) vs Heavy Tank & Aero Ordnance (4) Gallery Switcher */
 .cartridge-gallery-switcher {
   display: inline-flex;
   align-items: center;
@@ -911,5 +911,293 @@
   .cartridge-header .brand-title {
     font-size: 12.5px;
     line-height: 1.2;
+  }
+}
+
+/* ==================== Interactive 3D Anatomy Layer Highlight & 1v1 Duel ==================== */
+.c-anatomy-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin-bottom: 2px;
+}
+
+.c-note-row.is-interactive {
+  width: 100%;
+  padding: 5.5px 7px;
+  border-radius: 7px;
+  border: 1px solid transparent;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.14s ease, background 0.14s ease, box-shadow 0.14s ease;
+}
+
+.c-note-row.is-interactive:hover {
+  background: var(--surface-pill);
+  border-color: rgba(56, 189, 248, 0.35);
+}
+
+.c-note-row.is-interactive.is-highlighted {
+  border-color: rgba(56, 189, 248, 0.72);
+  background: rgba(14, 165, 233, 0.14);
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.3);
+}
+
+.c-note-row.is-interactive.is-layer-propellant.is-highlighted {
+  border-color: rgba(249, 115, 22, 0.75);
+  background: rgba(249, 115, 22, 0.14);
+  box-shadow: 0 0 0 1px rgba(249, 115, 22, 0.3);
+}
+
+.c-note-row.is-interactive.is-layer-primer.is-highlighted {
+  border-color: rgba(245, 158, 11, 0.75);
+  background: rgba(245, 158, 11, 0.14);
+  box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.3);
+}
+
+:is([data-theme='light'], .theme-light) .c-note-row.is-interactive.is-highlighted {
+  background: #e0f2fe;
+  border-color: #0284c7;
+}
+
+:is([data-theme='light'], .theme-light)
+  .c-note-row.is-interactive.is-layer-propellant.is-highlighted {
+  background: #ffedd5;
+  border-color: #ea580c;
+}
+
+:is([data-theme='light'], .theme-light)
+  .c-note-row.is-interactive.is-layer-primer.is-highlighted {
+  background: #fef3c7;
+  border-color: #d97706;
+}
+
+.c-note-key-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.c-note-active-pill {
+  padding: 1px 5px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 800;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.18);
+}
+
+:is([data-theme='light'], .theme-light) .c-note-active-pill {
+  color: #0369a1;
+  background: rgba(2, 132, 199, 0.16);
+}
+
+/* Cross-Caliber 1v1 Ballistic Duel Strip */
+.cartridge-duel-box {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-radius: 9px;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-subtle);
+  overflow: hidden;
+}
+
+.cartridge-duel-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 9px;
+  background: transparent;
+  border: none;
+  color: var(--color-text-primary);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cartridge-duel-toggle:hover {
+  background: var(--surface-pill);
+}
+
+.c-duel-toggle-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-accent-cyan-text);
+}
+
+.c-duel-chevron {
+  transition: transform 0.16s ease;
+  color: var(--color-text-muted);
+}
+
+.c-duel-chevron.is-rotated {
+  transform: rotate(180deg);
+}
+
+.cartridge-duel-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 0 9px 9px;
+}
+
+.cartridge-duel-select {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 7px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-pill);
+  color: var(--color-text-primary);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.c-duel-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.c-duel-stat {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 5px 6px;
+  border-radius: 6px;
+  background: var(--surface-pill);
+  border: 1px solid var(--border-subtle);
+}
+
+.c-duel-stat span {
+  font-size: 9px;
+  color: var(--color-text-muted);
+}
+
+.c-duel-stat strong {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-text-primary);
+}
+
+.c-duel-oal-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.c-duel-oal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 9.5px;
+  color: var(--color-text-muted);
+}
+
+.c-duel-oal-head strong {
+  font-family: var(--font-mono);
+  color: var(--color-accent-cyan-text);
+}
+
+.c-duel-oal-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.c-duel-oal-row {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr) 54px;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+}
+
+.c-duel-code {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-text-secondary);
+}
+
+.c-duel-bar-track {
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.22);
+  overflow: hidden;
+}
+
+.c-duel-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.c-duel-bar-fill.is-primary {
+  background: #38bdf8;
+}
+
+.c-duel-bar-fill.is-opponent {
+  background: #f59e0b;
+}
+
+.c-duel-mm {
+  text-align: right;
+  color: var(--color-text-muted);
+}
+
+/* Sortable Comparison Matrix Column Headers & SD Column */
+.c-sort-th-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px;
+  margin: -2px -4px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.c-sort-th-btn:hover {
+  background: var(--surface-pill);
+  color: var(--color-accent-cyan-text);
+}
+
+.c-sort-icon {
+  opacity: 0.55;
+  flex-shrink: 0;
+}
+
+.c-sort-icon.is-active {
+  opacity: 1;
+  color: var(--color-accent-cyan);
+}
+
+.cartridge-comparison-table td[data-col='sd']::before {
+  content: var(--col-sd, 'SD');
+}
+
+@media (max-width: 768px) {
+  .c-note-row.is-interactive,
+  .cartridge-duel-toggle,
+  .cartridge-duel-select,
+  .c-sort-th-btn {
+    min-height: 40px;
+  }
+
+  .c-duel-stats-grid {
+    grid-template-columns: 1fr;
   }
 }
