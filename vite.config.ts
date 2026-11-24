@@ -57,7 +57,8 @@ export default defineConfig({
             normId.includes('/src/weapons/manifests.ts') ||
             normId.includes('/src/engine/physics/armoryPhysics.ts') ||
             normId.includes('/src/engine/utils/assetUrl.ts') ||
-            normId.includes('/src/engine/canvas/graphicsQuality.ts')
+            normId.includes('/src/engine/canvas/graphicsQuality.ts') ||
+            normId.includes('/src/engine/canvas/gpuTelemetryBus.ts')
           ) {
             return 'armory-catalog';
           }
