@@ -203,6 +203,12 @@ export interface ExternalBallisticsUiCopy {
   range3dMetricMpi: string;
   range3dDownloadCardBtn: string;
   range3dDownloadCardTitle: string;
+  range3dPipBtn: string;
+  range3dPipTitle: string;
+  range3dPipBadge: string;
+  range3dPipLiveTag: string;
+  range3dPipTargetSteel: string;
+  range3dPipTargetGel: string;
 }
 
 export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
@@ -425,6 +431,12 @@ export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
     range3dMetricMpi: '弹着中心偏移',
     range3dDownloadCardBtn: '导出 PNG 靶纸',
     range3dDownloadCardTitle: '下载 1200×800 高清工程靶纸成绩单 PNG',
+    range3dPipBtn: '靶面画中画',
+    range3dPipTitle: '开启或关闭单画布实时光学靶面画中画观测窗',
+    range3dPipBadge: '靶面画中画',
+    range3dPipLiveTag: '20× 实时着弹观测',
+    range3dPipTargetSteel: 'AR500 钢靶',
+    range3dPipTargetGel: '10% 弹道明胶',
   },
 
   en: {
@@ -653,6 +665,12 @@ export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
     range3dMetricMpi: 'Group Offset',
     range3dDownloadCardBtn: 'Export Target PNG',
     range3dDownloadCardTitle: 'Download 1200x800 engineering range target card PNG',
+    range3dPipBtn: 'Target-Cam PIP',
+    range3dPipTitle: 'Toggle single-canvas live Target-Cam optical spotting inset',
+    range3dPipBadge: 'TARGET-CAM',
+    range3dPipLiveTag: '20x LIVE IMPACT',
+    range3dPipTargetSteel: 'AR500 STEEL',
+    range3dPipTargetGel: '10% GEL BLOCK',
   },
 };
 

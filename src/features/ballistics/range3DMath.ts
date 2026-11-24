@@ -1480,3 +1480,189 @@ export function computeStringPlaybackSync(
     landedCount,
   };
 }
+
+// ============================================================================
+// Cycle 4C · Single-Canvas Live Target-Cam / Spotter PIP Inset Math
+// ============================================================================
+
+export const TARGET_CAM_PIP_MIN_VIEWPORT_W = 720;
+export const TARGET_CAM_PIP_MIN_VIEWPORT_H = 260;
+
+export interface TargetCamPipRect {
+  visible: boolean;
+  /** Left offset in CSS pixels from canvas left edge */
+  x: number;
+  /** Bottom offset in CSS pixels from canvas bottom edge (for WebGL setViewport/setScissor & CSS bottom) */
+  yBottom: number;
+  /** Top offset in CSS pixels from canvas top edge (for CSS top overlay alignment) */
+  yTop: number;
+  /** Right margin in CSS pixels from canvas right edge */
+  marginRight: number;
+  width: number;
+  height: number;
+  aspect: number;
+}
+
+export interface TargetCamTargetPosition {
+  x: number;
+  y: number;
+  z: number;
+}
+
+export function createMutableTargetCamPipRect(): TargetCamPipRect {
+  return {
+    visible: false,
+    x: 0,
+    yBottom: 0,
+    yTop: 0,
+    marginRight: 14,
+    width: 0,
+    height: 0,
+    aspect: 1.6,
+  };
+}
+
+/**
+ * Zero-GC Target-Cam PIP scissor/viewport rectangle calculator in CSS pixels.
+ * Auto-hides cleanly on mobile/narrow viewports (`canvasW < 720` or `canvasH < 260`),
+ * and reserves top HUD chip clearance and bottom Mach-legend strip clearance.
+ */
+export function computeTargetCamPipRectInto(
+  canvasW: number,
+  canvasH: number,
+  out: TargetCamPipRect
+): TargetCamPipRect {
+  const safeW = Number.isFinite(canvasW) ? Math.floor(canvasW) : 0;
+  const safeH = Number.isFinite(canvasH) ? Math.floor(canvasH) : 0;
+
+  if (
+    safeW < TARGET_CAM_PIP_MIN_VIEWPORT_W ||
+    safeH < TARGET_CAM_PIP_MIN_VIEWPORT_H
+  ) {
+    out.visible = false;
+    out.x = 0;
+    out.yBottom = 0;
+    out.yTop = 0;
+    out.marginRight = 14;
+    out.width = 0;
+    out.height = 0;
+    out.aspect = 1.6;
+    return out;
+  }
+
+  const marginRight = 14;
+  const bottomStripClearance = 44;
+  const topHudClearance = 68;
+  const targetAspect = 1.6; // Crisp 16:10 optical spotting-scope inset
+
+  const maxAllowedH = Math.max(
+    108,
+    Math.min(192, safeH - bottomStripClearance - topHudClearance)
+  );
+  const idealW = Math.round(clamp(safeW * 0.24, 196, 304));
+  let height = Math.round(idealW / targetAspect);
+  let width = idealW;
+  if (height > maxAllowedH) {
+    height = maxAllowedH;
+    width = Math.round(height * targetAspect);
+  }
+  width = Math.min(width, Math.max(120, safeW - marginRight * 2));
+  height = Math.max(88, Math.min(height, maxAllowedH));
+
+  const x = Math.max(marginRight, safeW - marginRight - width);
+  const yBottom = bottomStripClearance;
+  const yTop = Math.max(0, safeH - yBottom - height);
+
+  out.visible = true;
+  out.x = x;
+  out.yBottom = yBottom;
+  out.yTop = yTop;
+  out.marginRight = marginRight;
+  out.width = width;
+  out.height = height;
+  out.aspect = width / Math.max(1, height);
+  return out;
+}
+
+/**
+ * Pure allocating wrapper returning the bottom-right Target-Cam PIP inset geometry
+ * for a given canvas size (`visible: false` below `720px` width).
+ */
+export function computeTargetCamPipRect(
+  canvasW: number,
+  canvasH: number
+): TargetCamPipRect {
+  return computeTargetCamPipRectInto(
+    canvasW,
+    canvasH,
+    createMutableTargetCamPipRect()
+  );
+}
+
+/**
+ * Zero-GC optical spotting-scope PIP camera pose calculator tightly framing either
+ * the swinging AR500 steel gong face or the translucent 10% FBI ballistic gel block
+ * with unobstructed downrange line-of-sight across `100m..1,000m`.
+ */
+export function computeTargetCamPoseInto(
+  targetX: number,
+  targetY: number,
+  targetZ: number,
+  targetMode: RangeTargetType,
+  isArmor: boolean,
+  out: CameraPose3D
+): CameraPose3D {
+  if (targetMode === 'ballistic_gel') {
+    const gelScale = isArmor ? 2.2 : 1.4;
+    const gelHalfLen = ((GEL_BLOCK_LENGTH_CM / 100) * gelScale) * 0.5;
+    out.posX = targetX - (isArmor ? 0.95 : 0.52);
+    out.posY = targetY + (isArmor ? 0.42 : 0.2);
+    out.posZ = targetZ + (isArmor ? 2.45 : 1.38);
+    out.lookX = targetX + gelHalfLen;
+    out.lookY = targetY;
+    out.lookZ = targetZ;
+    out.fovDeg = isArmor ? 30 : 28;
+    return out;
+  }
+
+  // AR500 Steel Gong: 3/4 oblique front spotting perspective showing painted face,
+  // incoming streak, persistent lead-splash chips & rearward pendulum recoil swing
+  if (isArmor) {
+    out.posX = targetX - 8.4;
+    out.posY = targetY + 0.52;
+    out.posZ = targetZ + 2.55;
+    out.lookX = targetX + 0.22;
+    out.lookY = targetY + 0.12;
+    out.lookZ = targetZ;
+    out.fovDeg = 28;
+    return out;
+  }
+
+  out.posX = targetX - 2.65;
+  out.posY = targetY + 0.22;
+  out.posZ = targetZ + 0.82;
+  out.lookX = targetX + 0.08;
+  out.lookY = targetY + 0.05;
+  out.lookZ = targetZ;
+  out.fovDeg = 26;
+  return out;
+}
+
+/**
+ * Pure optical Target-Cam PIP camera pose framing `targetPos` cleanly for
+ * `'steel_gong'` or `'ballistic_gel'` across small arms and heavy armor scales.
+ */
+export function computeTargetCamPose(
+  targetPos: TargetCamTargetPosition,
+  targetMode: RangeTargetType,
+  isArmor: boolean
+): CameraPose3D {
+  return computeTargetCamPoseInto(
+    targetPos.x,
+    targetPos.y,
+    targetPos.z,
+    targetMode,
+    isArmor,
+    createMutableCameraPose3D()
+  );
+}

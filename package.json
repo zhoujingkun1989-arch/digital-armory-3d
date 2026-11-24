@@ -33,6 +33,7 @@
     "monograph:pdf": "node scripts/export_dk_pdf.mjs",
     "assets:audit": "node scripts/audit_asset_budget.mjs",
     "qa:visual": "node scripts/qa_visual_gate.mjs",
+    "qa:perf": "node scripts/qa_perf_soak.mjs",
     "textures:build": "python3 scripts/build_textures.py --regenerate",
     "narrations:build": "python3 scripts/build_narrations.py"
   },
