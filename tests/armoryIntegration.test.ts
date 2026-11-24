@@ -778,11 +778,11 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
     expect(useAppStore.getState().activeCartridgeCaliber).toBe('45_acp');
   });
 
-  it('ships v5.0 release metadata, showcase gallery WebPs, og-banner, and resolves all Markdown images', () => {
+  it('ships v6.0 release metadata, showcase gallery WebPs, og-banner, and resolves all Markdown images', () => {
     const pkgJson = JSON.parse(
       fs.readFileSync(path.resolve(process.cwd(), 'package.json'), 'utf8')
     ) as { version: string };
-    expect(pkgJson.version).toBe('5.0.0');
+    expect(pkgJson.version).toBe('6.0.0');
 
     const publicDir = path.resolve(process.cwd(), 'public');
     const requiredAssets = new Set<string>([
@@ -793,7 +793,7 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
 
     for (const lang of ['zh', 'en'] as const) {
       const showcase = SHOWCASE_STRINGS[lang];
-      expect(showcase.nav.versionBadge).toContain('v5.0');
+      expect(showcase.nav.versionBadge).toContain('v6.0');
       for (const item of showcase.gallery.items) {
         requiredAssets.add(item.imageFile.replace(/^\/+/, ''));
       }

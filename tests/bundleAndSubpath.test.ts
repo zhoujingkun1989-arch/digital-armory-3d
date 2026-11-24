@@ -286,7 +286,7 @@ describe('Bundle Code-Splitting, VITE_BASE_PATH Subpath & HD Poster Studio Contr
 
     const ciPath = path.resolve(__dirname, '../.github/workflows/ci.yml');
     const ciText = fs.readFileSync(ciPath, 'utf8');
-    expect(ciText).toContain('Vitest full 29-exhibit V5.0 contract suite');
+    expect(ciText).toContain('Vitest full 34-exhibit V6.0 contract suite');
 
     // Verify posterComposer reuses Monograph QR module without duplicate QR encoding logic
     const composerPath = path.resolve(

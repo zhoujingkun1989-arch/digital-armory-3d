@@ -8,9 +8,9 @@
   <a href="CONTRIBUTING.md#-简体中文指南">参与贡献指南</a>
 </p>
 
-# Digital Armory 3D · v5.0 双屏对比、装甲侵彻与跨世代经典旗舰版
+# Digital Armory 3D · v6.0 三维物理剧场、模块化改装与十殿堂传奇旗舰版
 
-**全球首个浏览器端开源 3D 轻武器、复合弓弩与 1:1 主战坦克机械博物馆 · 交互式工程百科全书**
+**全球首个浏览器端开源 3D 轻武器、复合弓弩、1:1 主战坦克与航空重武机械博物馆 · 交互式工程百科全书**
 
 [![CI](https://github.com/zhoujingkun1989-arch/digital-armory-3d/actions/workflows/ci.yml/badge.svg)](https://github.com/zhoujingkun1989-arch/digital-armory-3d/actions/workflows/ci.yml)
 [![GitHub Pages](https://github.com/zhoujingkun1989-arch/digital-armory-3d/actions/workflows/deploy-pages.yml/badge.svg)](https://zhoujingkun1989-arch.github.io/digital-armory-3d/showcase.html?lang=zh)
@@ -22,34 +22,62 @@
 <h3>
   <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/showcase.html?lang=zh">✦ 官方交互式宣传主页 (Showcase)</a>
   &nbsp;·&nbsp;
-  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=armory&lang=zh">🚀 进入 29 槽 3D 数字兵器库</a>
+  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=armory&lang=zh">🚀 进入 34 槽 10 大展厅兵器库</a>
   &nbsp;·&nbsp;
-  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=workbench&mode=split&weapon=ztz99a&splitWeapon=m1a2&cut=1&lang=zh">⚔️ 双视口同步分屏对比</a>
+  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=gau8&screen=workbench&cut=1&lang=zh">✈️ 1:1 GAU-8/A 30mm 航炮纵剖</a>
   &nbsp;·&nbsp;
-  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=ztz99a&screen=workbench&cut=1&lang=zh">🛡️ 1:1 重装甲纵剖工作台</a>
+  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=split_showdown&weaponA=ztz99a&weaponB=m1a2&lang=zh">⚔️ 实时 3D 分屏对决</a>
   &nbsp;·&nbsp;
-  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=ballistics&lang=zh">🎯 1,000m 千米外弹道靶场</a>
+  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=ballistics&lang=zh">🎯 3D 千米靶场与子弹镜头</a>
   &nbsp;·&nbsp;
-  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=cartridges&lang=zh">🧪 16+3 实弹与炮弹纵剖馆</a>
+  <a href="https://zhoujingkun1989-arch.github.io/digital-armory-3d/?screen=cartridges&lang=zh">🧪 17+4 实弹与炮弹纵剖馆</a>
 </h3>
 
 </div>
 
 ---
 
-![Digital Armory 3D v5.0 — AK-15M1 实时 CT 扫描纵剖与极简博物馆工作台](docs/screenshots/hero-ct-cutaway.jpg)
+![Digital Armory 3D v6.0 — AK-15M1 实时 CT 扫描纵剖与极简博物馆工作台](docs/screenshots/hero-ct-cutaway.jpg)
 
-> 基于 **React 18 + TypeScript 5.6 + Three.js (`@react-three/fiber` / 双轨 Blender 5.2 Draco `.glb` + Web Worker `three-bvh-csg` / Web Audio API)** 构建——零客户端安装、原生秒开，全站生产分包严格 **`<800 kB` 零警告**。
+> 基于 **React 18 + TypeScript 5.6 + Three.js (`@react-three/fiber` / 双轨 Blender 5.2 Draco `.glb` + Web Worker `three-bvh-csg` / Web Audio API)** 构建——零客户端安装、原生秒开，配套 **生产级 KTX2 (`toktx`) + 重媒体 CDN 路由（`VITE_CDN_ASSET_BASE_URL`）+ PWA 离线博物馆**，全站生产分包严格 **`<800 kB` 零警告**。
 >
-> 实时检视 **29 款传奇展品、731 个可动 CAD 零件**（**23 款传奇名枪含温彻斯特 M1894 杠杆与雷明顿 M870 泵动 + 2 款复合弓弩 + 4 款 1:1 真实尺度主战坦克**：**中国 ZTZ-99A**、**美国 M1A2 SEP v3 艾布拉姆斯**、**德国 KMW 豹 2A7V** 与 **德国虎式 I 131 号**），由 **29/29（100%）Blender 5.2 Cycles 照片级大满贯**驱动（**`667` 个水密精模 Draco `.glb` 零件 + `64` 个保留 `aSpringParam` GPU 实时形变的动态 CSG 弹簧/主炮复进簧/弓片/弓弦 = `731/731` 全零件**，单款轻武器 `1.25–7.05 MB`、4K 主战坦克 `9.94–11.27 MB` 且单侧配备 `74–96` 块独立铰接下垂履带板）、**369 张 2K/4K 5 通道 Packed ORM 与微表面细节 WebP 贴图（`0` 张 PNG，`86` 套 PBR 图集含 `24` 张 4K 坦克外观图与 `512×512` 无缝 RHA/CARC 装甲微细节图）**、**4 套 Cycles 32-bit `.hdr` 环境光**（3 档桌面影棚 + 专用 `1:1` **重装装配机库 HDRI**）、**连续射击黑体热辐射与膛口积碳 / Jimenez 多重反弹 AO / Lagarde 镜面遮蔽 / 光学 AR 多层镀膜菲涅耳虹彩**、**`18 m × 12 m` 边缘羽化做旧混凝土地坪**（`1u = 1cm`，Ultra `4096×4096` 主光阴影）、**全局 `Cmd+K` 中英双语瞬搜指令面板**、**双视口锁步分屏对比工作台（`?mode=split`）**、**1:1 复合装甲与穿甲弹侵彻物理实验室（Lanz-Odermatt / De Marre）**、**三轴实时可拖拽 CT 扫描纵剖面（`[C]`，`Z Long / X Cross / Y Top`，轻武器 `±25 mm` / 主战坦克 `±1,800 mm`，含剖面体积光）**、**1,000m RK4 G1/G7 外弹道与 FFP 分划板靶场（`[R]`，21 套弹道档案）**、**军械师盲拆竞速榜与未知故障盲考（`[G] / [J]`）**、**16+3 口径实弹与坦克主炮弹 1:1 纵剖实验室（`[B]`）**、**9×9×9 三轴原理流派对照矩阵（`[S]`，21 组对决）**、**高清 3D 分享海报工坊（`[U]`）**、**全馆 29/29 Cycles 17 图版收藏图鉴与儿童 3D 绘本打印工坊（`[Ctrl/Cmd+P]`）**，以及 **1,694 段中英双语 `Charon`（`gemini-3.8-flash-tts`）语音导览与 4 场所欧拉-伯努利声场引擎**。
+> 实时检视 **34 款传奇展品、10 大展厅、854 个可动 CAD 零件**（**27 款传奇名枪**含 **柯尔特 M1911A1**、**MG 42**、**毛瑟 K98k**、**汤姆逊 M1928A1**、温彻斯特 M1894 与雷明顿 M870 + **2 款复合弓弩** + **4 款 1:1 真实尺度主战坦克**：**ZTZ-99A**、**M1A2 SEP v3**、**豹 2A7V**、**虎式 131** + **第十展厅「航空重武」**：**1:1 通用电气 GAU-8/A「复仇者」`30×173mm` 七管旋转机炮与 1,150 发螺旋弹鼓**），由 **34/34（100%）Blender 5.2 Cycles 照片级大满贯**驱动（**`775` 个水密精模 Draco `.glb` 零件 + `79` 个保留 `aSpringParam` GPU 实时形变的动态 CSG 弹簧/弓片/弓弦 = `854/854` 全零件**，`34/34` 通过 `npm run assets:audit <= 12 MB`）、**414 张 2K/4K 5 通道 Packed ORM 与微表面细节 WebP 贴图（`0` 张 PNG，`101` 套 PBR 图集含 `24` 张 4K 坦克外观图与 `512×512` 无缝 RHA/CARC 装甲微细节图）**、**4 套 Cycles 32-bit `.hdr` 环境光**、**1:1 复合装甲三维慢动作穿甲剖视剧场（`5` 款穿甲弹含 `30×173mm PGU-14/B API`）**、**1,000m 三维交互实弹靶场与子弹时间追踪镜头（`[R]`，`23` 套 RK4 档案，AR500 钢靶单摆、弹道明胶瞬态空腔与 `d/343` 声速回传）**、**物理耦合模块化光学与枪口改装工作台（`[O]` — CT 切开 K 挡板/LPVO/FLIR 内构、挡板燃气涡旋、声学衰减与后坐联动）**、**单画布实时 3D 分屏对决（`?screen=split_showdown`）**、**实时耦合机械因果沙盒**、**三轴 CT 纵剖与 6 面 3D 剖切盒（`[C]`）**、**两级精拆 DAG、军械师精通护照与 1:1 坦克乘员 FLIR 火控**、**1894–2026 百年演化时间线**、**1080p 导演录屏**、**17+4 口径实弹/航炮与坦克主炮弹 1:1 纵剖馆（`[B]`）**、**9×9×9 流派对照矩阵（`[S]`，`30` 组对决）**、**34/34 Cycles 340 图版绘本与图鉴打印（`[Ctrl/Cmd+P]`）**，以及 **1,980 段中英双语 `Charon`（`gemini-3.8-flash-tts`）语音导览**。
+
+---
+
+## v6.0 三维物理剧场、模块化改装台与十殿堂传奇扩馆（`WP-26 ~ WP-30` · WebGL 2.0 实机直拍）
+
+*以下三维剧场均在浏览器 WebGL 2.0 内以 60 FPS Zero-GC 实时渲染与物理耦合运行；下方五款 V6.0 新增展品（`BAY-30 ~ BAY-34`）展示自开源 MIT Blender 5.2 Cycles 印刷级主图。*
+
+| **🛡️ 1:1 复合装甲三维慢动作穿甲剖视剧场 (`WP-27` · ERA 双飞板 / 崩落粒子锥)** | **🎯 1,000m 三维交互实弹靶场与子弹时间镜头 (`WP-28` · RK4 / 明胶空腔 / AR500)** |
+| :---: | :---: |
+| ![1:1 复合装甲三维慢动作穿甲剖视剧场与崩落锥](docs/screenshots/v6-armor-3d.jpg) | ![1,000m 三维交互实弹靶场与子弹时间追踪镜头](docs/screenshots/v6-range-3d.jpg) |
+
+| **🔧 物理耦合模块化光学与枪口改装台 (`[O]` · `WP-29` · 实时 CT 切开 7 级 K 挡板消音器与 1–8× LPVO 镜组)** |
+| :---: |
+| ![M4A1 模块化钛合金 K 挡板消音器与 1-8x LPVO 实时 CT 纵剖](docs/screenshots/v6-mods-cutaway.jpg) |
+
+<!-- Wave 3C archival swap: replace the 5 public/plates/{gau8,m1911,mg42,k98k,thompson}/cover_hero.webp links below with docs/screenshots/{gau8,m1911,mg42,k98k,thompson}-v6-hero.jpg once archived from 1080p visual QA -->
+
+| **✈️ 第十展厅 (`ordnance`) · BAY-34 GE GAU-8/A「复仇者」(`30×173mm` · 1:1 全长 `6.06 m` · 7 管 3,900 RPM 与 1,150 发螺旋弹鼓 · `2.87 MB`)** |
+| :---: |
+| ![GE GAU-8/A 复仇者 30mm 七管航炮与 1,150 发螺旋弹鼓 Cycles 主图](public/plates/gau8/cover_hero.webp) |
+
+| **🇺🇸 BAY-30 柯尔特 M1911A1 (`.45 ACP`) · *勃朗宁 0.278" 单绞链短后坐与三叉板簧 (`1.88 MB`)*** | **🇩🇪 BAY-31 MG 42 (`7.92×57mm`) · *对称双滚柱 1,200 RPM 短后坐、5 秒快换枪管门与 S 槽拨弹 (`1.88 MB`)*** |
+| :---: | :---: |
+| ![柯尔特 M1911A1 军用自动手枪 Cycles 主图](public/plates/m1911/cover_hero.webp) | ![MG 42 通用机枪 Cycles 主图](public/plates/mg42/cover_hero.webp) |
+
+| **🇩🇪 BAY-32 毛瑟 Karabiner 98k (`7.92×57mm`) · *90° 三突笋防爆栓动、全长不旋转大抓钩受控供弹 (`1.77 MB`)*** | **🇺🇸 BAY-33 汤姆逊 M1928A1 (`.45 ACP`) · *45° 青铜 H 型布利什锁、散热鳍枪管与 50 发发条圆鼓 (`1.71 MB`)*** |
+| :---: | :---: |
+| ![毛瑟 Karabiner 98k 栓动步枪 Cycles 主图](public/plates/k98k/cover_hero.webp) | ![汤姆逊 M1928A1 冲锋枪与 50 发弹鼓 Cycles 主图](public/plates/thompson/cover_hero.webp) |
 
 ---
 
 ## v5.0 物理对比巅峰与跨世代经典展品（`WP-19 ~ WP-25b` · WebGL 2.0 实机直拍）
 
-| **⚔️ 双视口锁步分屏对比 (`?mode=split`) · ZTZ-99A vs M1A2 纵剖同屏** | **🛡️ 1:1 复合装甲与穿甲弹侵彻实验室 (`WP-20` Lanz-Odermatt / De Marre)** |
+| **⚔️ 单画布实时 3D 分屏对决 (`?screen=split_showdown`) · ZTZ-99A vs M1A2 纵剖同屏** | **🛡️ 1:1 复合装甲与穿甲弹侵彻实验室 (`WP-20` Lanz-Odermatt / De Marre)** |
 | :---: | :---: |
-| ![ZTZ-99A vs M1A2 SEP v3 双视口同步分屏 CT 纵剖对比](docs/screenshots/v5-split-showdown.jpg) | ![1:1 复合装甲与动能穿甲弹侵彻定量实验室](docs/screenshots/v5-armor-penetration.jpg) |
+| ![ZTZ-99A vs M1A2 SEP v3 实时 3D 分屏 CT 纵剖对决](docs/screenshots/v5-split-showdown.jpg) | ![1:1 复合装甲与动能穿甲弹侵彻定量实验室](docs/screenshots/v5-armor-penetration.jpg) |
 
 | **🤠 BAY-28 温彻斯特 M1894 (`.30-30 Win`) vs 🦅 BAY-29 雷明顿 M870 (`12 Ga`) · 双经典机械结构同台纵剖** |
 | :---: |
@@ -57,7 +85,7 @@
 
 ---
 
-## v5.0 重装装甲展厅 · 1:1 真实尺度主战坦克（`BAY-24 ~ BAY-27` · WebGL 2.0 实机直拍）
+## 重装装甲展厅 · 1:1 真实尺度主战坦克（`BAY-24 ~ BAY-27` · WebGL 2.0 实机直拍）
 
 *严格遵循 **`1 world unit = 1 cm = 10 mm`** 实车 `1:1` 尺寸（全长 `8.45–10.97 m`，战斗全重 `55–66.8 吨`），陈列于带 C2 五次方边缘羽化与暗色油渍的 **`18 m × 12 m` 做旧混凝土地坪** 之上，匹配 **`1:1` 32-bit Cycles 重装装配机库 HDRI** 与 `4096×4096` Ultra 主光阴影；全车配备 **`4096×4096` Cycles 4K 外观贴图**、**512px 三平面 RNM 装甲钢与 CARC 微表面细节**、**单侧 `74–96` 块独立下垂履带板**、**光学 AR 镀膜镜片**、`near = 2.0 / far = 9000` 光学视锥、可被 `±1,800 mm` 活体 CT 纵剖面（`45° ISO 128` 金属剖面线）干净劈开的中空装甲车体/炮塔，以及 7 阶段主炮后坐、自动装弹机与隔爆门装填运动学。以下画面均为 `1920×1080` Chromium 实时渲染未修直出。*
 
@@ -83,7 +111,7 @@
 
 ---
 
-## v5.0 照片级轻武器与复合弓弩旗舰画廊（29/29 Blender 5.2 大满贯 · 100% WebGL 2.0 实机直拍）
+## 照片级轻武器与复合弓弩旗舰画廊（34/34 Blender 5.2 大满贯 · 100% WebGL 2.0 实机直拍）
 
 *以下每一帧均由开源 **Blender 5.2 LTS 无头 Draco `.glb` + Cycles 2K Packed ORM** 管线与 **32-bit 摄影棚 `.hdr`** 在 Chromium 1920×1080 实时渲染输出。*
 
@@ -141,28 +169,27 @@
 
 ---
 
-## v5.0 旗舰工程架构与核心能力
+## v6.0 旗舰工程架构与核心能力
 
-| **全局 `Cmd+K` / `Ctrl+K` 中英双语瞬搜指令面板** | **29 槽交互式 3D 数字兵器库与重装甲展厅** |
+| **全局 `Cmd+K` / `Ctrl+K` 中英双语瞬搜指令面板** | **34 槽 10 大展厅交互式 3D 数字兵器库** |
 | :---: | :---: |
-| ![全局 Cmd+K 双语指令面板](docs/screenshots/ux-cmdk-palette.jpg) | ![Digital Armory 3D 29 槽数字兵器库](docs/screenshots/armory-showcase.jpg) |
+| ![全局 Cmd+K 双语指令面板](docs/screenshots/ux-cmdk-palette.jpg) | ![Digital Armory 3D 34 槽数字兵器库](docs/screenshots/armory-showcase.jpg) |
 
-- **✦ 双轨 Blender 5.2 Draco `.glb` + Web Worker CSG 建模引擎（`PR-02` ~ `PR-04`, `WP-17` ~ `WP-25b`）**：
-  - **29/29（100%）照片级大满贯**：全馆全部 **29 款展品**（23 款枪械 + 2 款复合弓弩 + 4 款 1:1 主战坦克）均由仓储内 MIT 开源无头 Python 脚本（`scripts/blender/build_*_photoreal.py`）程序化雕塑并 Cycles GPU 烘焙为紧凑 Draco `.glb`（`667` 个水密精模 CAD 零件，单展品总包 `1.25–11.27 MB`，含单侧 `74–96` 块独立下垂履带板的 4K 主战坦克包，`100%` 流形、严格 `1u = 1cm`），配套 `369` 张 2K/4K 5 通道 Packed ORM 与微表面细节 WebP 贴图（`121` Albedo / `124` Normal / `124` ORM 与细节图，`86` 套图集含 `24` 张 4K 坦克外观图与 `512×512` 无缝 RHA/CARC 细节图，`0` 张 PNG），并附离线 KTX2 UASTC/ETC1S 资源打包管线（`scripts/build_ktx2_textures.mjs`）。
-  - **零妥协 GPU 实时形变弹簧、弓片与弓弦**：全馆 `64` 个螺旋复进簧、管状弹仓推弹簧、主炮复进/炮闩弹簧、V 形主簧与复合弓弩四片弓片/凸轮轴/弓弦缆绳继续保留在 Web Worker CSG 轨道，确保逐顶点 `aSpringParam` 在 60 FPS 下精确压缩弯曲（并保留完整 CSG 离线兜底）。
-  - **影棚光学与重装装配机库（`PR-01`, `WP-18`, `WP-21`, `WP-24`）**：内置 4 套 Cycles 32-bit `.hdr`（3 档轻武器影棚 + 专用 `1:1` `heavy_armor_hangar.hdr`）、带 `2.6 m` C2 五次方圆角边缘羽化溶解与油渍/履带压痕的 `18 m × 12 m` 做旧混凝土地坪（`Y = -120.0 cm`、`4096×4096` Ultra 紧凑主光阴影与 `near=2.0/far=9000` 远景光学）、直射光微阴影 + Jimenez 多重反弹 AO + Lagarde 镜面遮蔽、512px 三平面 RNM 微表面法线、光学 AR 镀膜菲涅耳虹彩、GGX Specular AA、实时服役磨损（`出厂 / 微油 / 沧桑`）、连续射击身管黑体热辐射红热（`1,100K`）与膛口积碳、微距景深、半分辨率 GTAO + AgX 色调映射及三档自适配画质（`Ultra / Balanced / Eco`）。
-- **✦ 双视口锁步分屏对比工作台（`?mode=split`，`WP-19`）与 `1:1` 复合装甲侵彻物理实验室（`WP-20`）**：支持同屏独立双 WebGL 视口对任意两款展品同步旋转、纵剖与击发比对；内置 Lanz-Odermatt 长杆穿甲与 De Marre 钢穿甲方程定量解算多层次爆反/NERA/RHAe 防护与跳弹窗口。
-- **✦ 三轴实时可拖拽 CT 扫描纵剖面（`[C]`，`Z Long / X Cross / Y Top`，`PR-04`, `WP-18`, `WP-21`, `WP-24`）**：支持轻武器 `±25 mm` 与主战坦克 `±1,800 mm` 三轴正交实时滑动切片、`+Z / -Z` 翻转、倾斜局部 Z 剖切（如 AN-94 `15°` 右倾弹匣中轴剖切）、剖切面体积光束与 60 FPS 自动扫描（零着色器重编译，同步 Two-Pass WebGL Stencil 45° ISO 128 金属剖面线与 `sectionAwareMeshRaycast` 穿透拾取）。
-- **✦ 全局 `Cmd+K` / `Ctrl+K` 指令面板与极简玻璃态工作台（`PR-04`）**：在全站任意页面一键呼出多关键词中英瞬搜，直达全部 **29 款展品**、**731 个零件**、**双屏对比模式**、**1:1 装甲侵彻实验室**、**重装甲大厅**、**1:1 坦克炮弹实验室**、各大实验室与视觉开关。
-- **✦ 1,000m RK4 G1/G7 外弹道、横风偏流与第一像面分划板 DOPE 靶场（`[R]`）**：Zero-GC 四阶龙格-库塔（RK4）3-DOF 引擎实时解算全部 **21 套弹头/箭矢/坦克炮弹气动档案**（含 `.30-30 Win` 与 `armor` 重装甲炮弹筛选和预设），支持 ICAO 海拔/温度大气修正、BRL G1/G7 跨音速阻力曲线、精准归零仰角求解（`< 0.02 cm`）、Mach 1.0 失稳检测、FFP MIL 圣诞树分划板与 7 档距离 `MIL / MOA` DOPE 射表。
-- **✦ 军械师限时盲拆竞速榜（`[G]`，`WP-22`）与未知故障盲考诊断（`[J]`）**：覆盖全馆 **29 款展品** 真实有向拆装依赖图（DAG）与 4 类典型卡阻/阻断（烟囱卡壳、双进弹、轻敲拒发、未闭锁击发阻断），支持 `0 → N → 0` 无提示限时盲拆复装（含铜/银/金/军械师四阶竞速榜）与随机故障定性排障，评定持久化 `S / A / B / C` 认证星章。
-- **✦ 6 大机械职能分色（`[T]`）、火药燃气流线 & SAAMI/CIP/STANAG/GJB 遥测**：零重编译语义分色与 60fps 膛压 $P(t)$（`MPa`）/ 初速 $V(t)$（`m/s`）/ 动能（`J / MJ`）示波器，配套 `SAFE / SEMI / AUTO` 快慢机（`[V]`）、验膛（`[P]`）与两道火扳机（`[F]`）手操。
-- **✦ 16+3 口径实弹与炮弹纵剖馆（`[B]`）、9×9×9 流派对照矩阵（`[S]`）与 3D 游标卡尺（`[K]`）**：涵盖 **16 款轻武器实弹**（`9×19mm`、`.30-30 Win` 至 `.50 BMG`）+ **3 款坦克主炮弹**（`88mm PzGr.39`、`120mm NATO APFSDS`、`125mm DTC10-125`）、**21 组跨时代机械对决预设**（含 `ZTZ-99A vs M1A2`、`豹 2A7V vs ZTZ-99A`、`M1A2 vs 虎式 131`、`温彻斯特 1894 vs M1 加兰德`、`雷明顿 870 vs 伯奈利 M4`）与 `1u = 10mm` 空间卡尺量测。
-- **✦ 四幕双语纪录片、1,694 段 `Charon` 语音、分享海报（`[U]`）与 29/29 Cycles 17 图版绘本打印（`[Ctrl/Cmd+P]`）**：3D 导演自动运镜、4 场所立体声卷积 IR + 欧拉-伯努利钢材频散波导（M1 加兰德 `"PING!"`、M134D 3,000 RPM 电锯蜂鸣、VSS 微声、Winchester 1894 杠杆抛壳、Remington 870 `"CHK-CHK"` 泵动声与 125/120/88mm 主炮冲击波/涡轮/V12/转盘声效）、`16:9 / 4:5` 二维码海报及 **29/29 展品 Blender 5.2 Cycles 2880×1800 透明底印刷主图** 驱动的 A4/Letter DK 百科与儿童 3D 绘本打印。
+- **✦ 双轨 Blender 5.2 Draco `.glb` + Web Worker CSG 建模引擎（`PR-02` ~ `PR-04`, `WP-17` ~ `WP-30`）**：
+  - **34/34（100%）十殿堂照片级大满贯**：全馆全部 **34 款展品 / 10 大展厅**（27 款传奇名枪 + 2 款复合弓弩 + 4 款 1:1 主战坦克 + 第十展厅 `ordnance` 1:1 30mm 七管航炮 `gau8`）均由仓储内 MIT 开源无头 Python 脚本（`scripts/blender/build_*_photoreal.py`）程序化雕塑并 Cycles GPU 烘焙为紧凑 Draco `.glb`（`775` 个水密精模 CAD 零件，单展品总包 `1.25–11.27 MB`，`34/34` 通过 `npm run assets:audit <= 12 MB`），配套 `414` 张 2K/4K 5 通道 Packed ORM 与微表面细节 WebP 贴图（`136` Albedo / `139` Normal / `139` ORM 与细节图，`101` 套图集，`0` 张 PNG）。
+  - **零妥协 GPU 实时形变弹簧、弓片与弓弦**：全馆 `79` 个螺旋复进簧、缓冲簧、发条弹鼓簧、主炮复进/炮闩弹簧、V 形主簧与复合弓弩四片弓片/凸轮轴/弓弦缆绳保留在 Web Worker CSG 轨道，确保逐顶点 `aSpringParam` 在 60 FPS 下精确压缩弯曲（并保留完整 CSG 离线兜底）。
+  - **生产级 KTX2 (`toktx`)、可选 CDN 路由、资产预算审计与 1080p 视觉门禁（`WP-25a`, `WP-26`）**：真实 Khronos `toktx` UASTC+Zstd（线性）/ ETC1S（sRGB）纹理编码流水线（自动 WebP 解码、缺 `toktx` 零破坏回退 WebP，配套 `public/basis/`）、`npm run assets:audit` 自动体积门禁、`VITE_CDN_ASSET_BASE_URL` 重媒体 CDN 路由（`audio/textures/models/plates/hdri` 无缝切流且保持根路径与子路径幂等）、PWA 离线博物馆管理器（`?panel=offline`）以及零依赖 `npm run qa:visual` 1080p 无头 Chromium 视觉回归门禁。
+- **✦ 1:1 复合装甲三维慢动作穿甲剖视剧场（`?panel=armor`，`WP-20` + `WP-27`）**：覆盖 **5 款动能穿甲弹**（`125mm DTC10-125`、`120mm M829A4 / DM63`、`88mm PzGr.39`、`30×173mm GAU-8 PGU-14/B API`、`.50 BMG M2 AP`）× 4 款主战坦克 × 4 防区，支持 `3D 剖视剧场 / 2D 原理剖图 / 3D+2D 双屏` 切换，以 `0.15x / 0.5x / 1x` 实时演绎 ERA 双飞板爆轰剪切、高温侵彻空腔、车内高速崩落粒子锥与大倾角跳弹。
+- **✦ 1,000m 三维交互实弹靶场与子弹时间追踪镜头（`[R]`，`WP-14` + `WP-28`）**：Zero-GC RK4 3-DOF 引擎实时解算全部 **23 套弹道档案**（新增 `7.92×57mm Mauser` 与 `30×173mm PGU-14/B API`），驱动 1,000m 3D 靶场，提供 `Range Overview / Bullet-Cam / Spotter FLIR` 三机位、AR500 钢靶单摆与 `d/343` 声速回传、弹道明胶瞬态空腔、风旗阵列、发光 Mach 1.0 跨音速环、FFP MIL 圣诞树分划板与 7 档 `MIL / MOA` DOPE 射表。
+- **✦ 物理耦合模块化光学与枪口改装工作台（`[O]`，`WP-29`）**：全馆 **34 展品** 世界空间 `boreY` 齐平锚点（4 枪口 × 4 光学 × 4 战术预设），实时打通 **四维物理耦合**：CT `[C]` 纵剖直视消音器 7 级 K 挡板/LPVO 5 片式镜组/FLIR 传感器 PCB、`GasFlowVisualizer` 挡板涡流与制退器侧喷流、`mechanicalSoundEngine` `-28 dB / +6 dB` 声谱衰减及后坐/初速遥测联动。
+- **✦ 单画布实时 3D 分屏对决（`?screen=split_showdown`，`WP-19`）、因果沙盒（`?panel=causality`，`WP-20`）与三轴 CT 纵剖 + 6 面 3D 剖切盒（`[C]`，`WP-21`）**：单画布双裁剪任意两款展品并行对决；装药/导气/质量/簧力因果沙盒；`Z / X / Y` 三轴正交与 6 平面 3D 剖切盒、身管黑体热辐射（`1,100K`）与膛口积碳。
+- **✦ 两级全枪精拆 DAG（`[G]`）、军械师精通护照（`?panel=passport`）、未知故障盲考（`[J]`）、1:1 坦克乘员 FLIR 火控（`?panel=crew`）与百年时间线（`?panel=timeline`）**：全馆 **34 款展品** 野战快拆与全枪精拆两级 DAG、可导入/导出 JSON 认证护照、4 款主战坦克 360° 炮塔/俯仰/激光火控与炮长 FLIR 瞄镜，以及 1894–2026 六大谱系交互时间线。
+- **✦ 17+4 口径实弹与炮弹纵剖馆（`[B]`）、9×9×9 流派对照矩阵（`[S]`）与 3D 游标卡尺（`[K]`）**：涵盖 **17 款轻武器实弹**（新增 `7.92×57mm Mauser`）+ **4 款重型航炮与坦克主炮弹**（`30×173mm PGU-14/B API`、`88mm PzGr.39`、`120mm NATO APFSDS`、`125mm DTC10-125`）、**30 组跨时代经典对决预设**（含 `M1911 vs P08`、`K98k vs Garand`、`MG 42 vs M249`、`Thompson vs Vector`、`GAU-8 vs M134D`、`GAU-8 vs ZTZ-99A`）与 `1u = 10mm` 空间卡尺量测。
+- **✦ 1,980 段 `Charon` 语音、1080p 导演录屏（`?panel=reel`）、分享海报（`[U]`）与 34/34 Cycles 340 图版绘本打印（`[Ctrl/Cmd+P]`）**：3D 导演自动运镜、4 场所立体声卷积 IR + 欧拉-伯努利波导声场（含 MG 42 1,200 RPM 撕布声、Thompson 50 发圆鼓连射、GAU-8/A 3,900 RPM `"BRRRT!"` 低频咆哮）、浏览器原生 `16:9 / 9:16` 导演短片录制、二维码海报及全馆 **34/34 Cycles 2880×1800 透明底印刷主图（340 张 WebP）** 驱动的 DK 百科与儿童 3D 绘本打印。
 
 ---
 
-## 29 款殿堂级馆藏全览矩阵（731 运动零件 · 29/29 Blender 5.2 大满贯）
+## 34 款殿堂级馆藏全览矩阵（10 大展厅 · 854 运动零件 · 34/34 Blender 5.2 大满贯）
 
 | 展位 | 展品名称 | 管线 | 口径 / 弹药 | 核心自动、闭锁与装填机构 | 零件数 | 在线直达 |
 | :--- | :--- | :---: | :--- | :--- | :---: | :---: |
@@ -195,6 +222,11 @@
 | `BAY-27` | **🇩🇪 虎式 I 131 号重型坦克** | `GLB v3` | `88×571mmR PzGr.39 APCBC` | 88mm KwK 36 L/56 线膛炮 · 克虏伯横楔炮闩 + 48 交错负重轮 + HL230 V12 | 26 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=tiger1&screen=workbench&lang=zh) |
 | `BAY-28` | **🇺🇸 温彻斯特 M1894 卡宾枪** | `GLB v3` | `.30-30 Winchester (.30 WCF)` | 勃朗宁下压指环杠杆四连杆 · 下垂闭锁楔块 + 管仓垂直供弹托板 | 24 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=winchester1894&screen=workbench&lang=zh) |
 | `BAY-29` | **🇺🇸 雷明顿 M870 Police Magnum** | `GLB v3` | `12 Gauge (2¾" / 3" Magnum)` | 整锻机匣罗纹泵动 · 双连杆 + 上倾闭锁块 + 双阻铁托弹板供弹 | 24 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=rem870&screen=workbench&lang=zh) |
+| `BAY-30` | **🇺🇸 柯尔特 M1911A1 军用自动手枪** | `GLB v3` | `.45 ACP (11.43×23mm)` | 勃朗宁 0.278" 单绞链短后坐偏移枪管 · 直推单动扳机框 + 一簧三用三叉板簧 | 24 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=m1911&screen=workbench&lang=zh) |
+| `BAY-31` | **🇩🇪 MG 42 通用机枪** | `GLB v3` | `7.92×57mm Mauser (8mm s.S.)` | 开膛枪口助退 8.5mm 短后坐 · 对称双滚柱闭锁（1,200 RPM）+ 5 秒快换枪管门与 S 槽拨弹 | 25 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=mg42&screen=workbench&lang=zh) |
+| `BAY-32` | **🇩🇪 毛瑟 Karabiner 98k (byf 43)** | `GLB v3` | `7.92×57mm Mauser (8×57 IS)` | 90° 三突笋防爆栓动 · 全长不旋转大抓钩受控供弹 + 三档翼形旗式保险 | 24 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=k98k&screen=workbench&lang=zh) |
+| `BAY-33` | **🇺🇸 汤姆逊 M1928A1 冲锋枪** | `GLB v3` | `.45 ACP (11.43×23mm)` | 开膛 45° 磷青铜 H 型布利什延迟锁 · 28 鳍枪管 + 卡茨防跳器 + 50 发发条螺旋圆鼓 | 25 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=thompson&screen=workbench&lang=zh) |
+| `BAY-34` | **🇺🇸 GE GAU-8/A「复仇者」(第十展厅)** | `GLB v3` | `30×173mm PGU-14/B API` | 1:1 全长 `6.06 m` 双 38.5 马力液压七管航炮 · 360° 正弦凸轮槽 + 1,150 发闭环螺旋弹鼓（3,900 RPM） | 25 | [拆解](https://zhoujingkun1989-arch.github.io/digital-armory-3d/?weapon=gau8&screen=workbench&lang=zh) |
 
 ---
 
@@ -202,30 +234,32 @@
 
 ### URL 深度链接参数
 - 官方中英双语宣传页：`/showcase.html?lang=zh` 或 `/?screen=showcase&lang=zh`
-- 29 槽数字兵器库与重装甲大厅：`/?screen=armory&weapon=ztz99a&lang=zh`
-- 双视口锁步分屏对比工作台：`/?screen=workbench&mode=split&weapon=winchester1894&splitWeapon=rem870&cut=1&lang=zh`
-- 实时纵剖工作台（轻武器 / 1:1 主战坦克）：`/?weapon=ztz99a&screen=workbench&cut=1&lang=zh`
-- 1,000m RK4 外弹道与分划板 DOPE 实验室：`/?screen=ballistics&caliber=125mm_apfsds&lang=zh`
-- 16+3 1:1 实弹与坦克主炮弹纵剖对比馆：`/?screen=cartridges&caliber=125mm_apfsds&lang=zh`
+- 34 槽 10 大展厅兵器库、重装甲大厅与航空重武展厅：`/?screen=armory&weapon=gau8&lang=zh`
+- 单画布实时 3D 分屏对决：`/?screen=split_showdown&weaponA=ztz99a&weaponB=m1a2&lang=zh`
+- 实时纵剖工作台（轻武器 / 1:1 主战坦克 / 1:1 GAU-8/A）：`/?weapon=gau8&screen=workbench&cut=1&lang=zh`
+- 3D 1,000m 交互靶场、Bullet-Cam 与外弹道 DOPE 实验室：`/?screen=ballistics&caliber=30x173_gau8&lang=zh`
+- 17+4 口径实弹、航炮与坦克主炮弹纵剖对比馆：`/?screen=cartridges&caliber=30x173_gau8&lang=zh`
+- 专题实验与博物馆面板直达：`/?panel=armor`（3D 穿甲剧场）· `/?panel=causality`（因果沙盒）· `/?panel=crew&optic=flir`（坦克乘员 FLIR 火控）· `/?panel=timeline`（1894–2026 时间线）· `/?panel=reel`（1080p 导演录屏）· `/?panel=passport`（军械师护照）· `/?panel=offline`（离线博物馆）
 
 ### 全局工程快捷键
 | 按键 | 功能说明 |
 | :---: | :--- |
-| `Cmd / Ctrl + K` | 打开 **全局中英双语瞬搜指令面板**（29 展品、731 零件、双屏对比、装甲侵彻、重装甲大厅与视觉开关） |
+| `Cmd / Ctrl + K` | 打开 **全局中英双语瞬搜指令面板**（34 展品、854 零件、10 大展厅、三维物理剧场与视觉开关） |
 | `Space` | 播放 / 暂停三级爆炸拆解或 7 阶段实弹击发循环 |
-| `C` | 开启 / 关闭 **三轴实时可拖拽 CT 扫描实心纵剖面**（`Z Long / X Cross / Y Top`，轻武器 `±25 mm` / 坦克 `±1,800 mm`，`+Z/-Z` 翻转，ISO 128 剖面线） |
-| `T` | 开启 / 关闭 **6 大机械职能语义分色** 与剖切面同步换色（自适应轻武器/重装甲词条） |
-| `G` | 进入 / 退出 **军械师引导式野战快拆、竞速排行榜与限时盲拆考证（DAG）** |
+| `C` | 开启 / 关闭 **三轴实时可拖拽 CT 扫描实心纵剖面与 6 面 3D 剖切盒**（`Z / X / Y / 3D Box`，轻武器 `±25 mm` / 坦克与航炮 `±1,800 mm`） |
+| `O` | 打开 / 关闭 **物理耦合模块化光学与枪口改装工作台**（消音器 / 制退器 / 消焰器 · 红点 / LPVO / FLIR 热成像） |
+| `T` | 开启 / 关闭 **6 大机械职能语义分色** 与剖切面同步换色（自适应轻武器/重装甲/航炮词条） |
+| `G` | 进入 / 退出 **军械师引导式野战快拆、全枪精拆与限时盲拆考证（两级 DAG）** |
 | `J` | 开启 / 退出 **经典故障剖视排障室与随机未知故障盲考**（烟囱卡壳 / 双进弹 / 轻敲拒发 / 未闭锁阻断） |
 | `K` | 开启 / 退出 **1:1 3D 军械游标卡尺**（`mm`）与全车/全枪三维包络标尺 |
-| `R` | 进入 / 返回 **1,000m RK4 外弹道、横风偏流与第一像面分划板 DOPE 靶场**（21 套档案） |
+| `R` | 进入 / 返回 **3D 1,000m 交互实弹靶场、子弹时间镜头与 RK4 DOPE 实验室**（23 套档案） |
 | `U` | 打开 / 关闭 **即时高清 3D 剖视社交分享海报工坊**（`16:9 / 4:5` + 二维码 + 认证印章） |
-| `B` | 进入 / 退出独立 **16+3 口径轻武器实弹与坦克主炮弹 1:1 纵剖对比实验室** |
-| `S` | 打开 / 关闭 **9×9×9 三轴自动原理谱系矩阵与双展品同屏对照实验室**（21 组对决，支持一键进双屏） |
-| `X` | 开启 / 关闭外层机匣、套筒或装甲壳体 X-Ray 光学透视 |
+| `B` | 进入 / 退出独立 **17+4 口径轻武器实弹、航炮与坦克主炮弹 1:1 纵剖对比实验室** |
+| `S` | 打开 / 关闭 **9×9×9 三轴自动原理谱系矩阵与双展品同屏对照实验室**（30 组对决，支持一键进 3D 分屏） |
+| `X` | 开启 / 关闭外层机匣、套筒、弹鼓或装甲壳体 X-Ray 光学透视 |
 | `P / V / F` | 半拉验膛（`P`） · 切换 `SAFE / SEMI / AUTO` 快慢机（`V`） · 按住扣动扳机（`F`） |
 | `E / L / M / H` | CAD 硬边描边（`E`） · 3D 空间编号标签（`L`） · Web Audio 静音（`M`） · **纯净全屏展示**（`H`） |
-| `Ctrl/Cmd + P` | 打开 **17 图版收藏图鉴与儿童 3D 绘本打印工坊**（全馆 29/29 Cycles 印刷主图加持） |
+| `Ctrl/Cmd + P` | 打开 **34/34 Cycles 17 图版收藏图鉴与儿童 3D 绘本打印工坊**（340 张透明底印刷主图加持） |
 | `Shift + R / Esc` | 一键复位至 0% 合拢态与默认视角 / 收起弹窗或返回 3D 兵器库 |
 
 ---
@@ -236,6 +270,7 @@
 - **Node.js** `>= 20`
 - *（可选 — 传统纹理烘焙）* **Python** `>= 3.10` + `numpy` + `Pillow`
 - *（可选 — 照片级 `.glb` 与 Cycles 图鉴主图渲染）* **Blender 5.2 LTS**（无头命令行）
+- *（可选 — GPU 压缩 KTX2 贴图编码）* **Khronos `toktx`**（`brew install ktx`）
 
 ```bash
 # 1. 安装依赖
@@ -244,21 +279,28 @@ npm ci
 # 2. 启动本地 Vite 开发服务器（同时服务 / 与 /showcase.html）
 npm run dev
 
-# 3. 运行四道强制工程质量门禁（0 错误、0 警告、全部 chunk < 800 kB）
+# 3. 运行五道强制自动化工程质量门禁（0 错误、0 警告、全部 chunk < 800 kB）
 npm run typecheck
 npm run lint
 npm test
 npm run build
+npm run assets:audit
+
+# 4. 可选：运行 1920x1080 无头 Chromium 自动化视觉回归门禁
+npm run qa:visual -- --weapons gau8,m1911 --cut
 ```
 
-### 可选：离线重建 Blender 5.2 照片级 `.glb` 或 29/29 Cycles DK 印刷主图
+### 可选：离线重建 Blender 5.2 照片级 `.glb`、KTX2 贴图或 34/34 Cycles DK 印刷主图
 
 ```bash
-# 无头重建任意一款旗舰 Draco GLB + Cycles 2K/4K Packed ORM 贴图套件（全馆 29 款均提供对应脚本）：
+# 无头重建任意一款旗舰 Draco GLB + Cycles 2K/4K Packed ORM 贴图套件（全馆 34 款均提供对应脚本）：
 blender --factory-startup --background --python scripts/blender/build_<id>_photoreal.py
 
-# 批量渲染全馆 29/29 展品 2880×1800 Cycles 32-bit RGBA 透明底印刷主图（public/plates/）：
+# 批量渲染全馆 34/34 展品 2880×1800 Cycles 32-bit RGBA 透明底印刷主图（public/plates/）：
 blender --factory-startup --background --python scripts/blender/render_dk_plates.py -- --weapons all --fast
+
+# 试运行或编码 GPU 压缩 KTX2 纹理（法线/ORM 走 UASTC 线性、反照率走 ETC1S sRGB）：
+node scripts/build_ktx2_textures.mjs --dry-run
 ```
 
 ---
@@ -270,45 +312,52 @@ digital-armory-3d/
 ├── index.html                     # 3D 数字兵器库与拆解工作台主入口
 ├── showcase.html                  # 中英双语产品宣传展示主页入口
 ├── public/
-│   ├── audio/                     # 1,694 段中英双语四幕研发史与零件语音 (Charon Gemini TTS MP3)
+│   ├── audio/                     # 1,980 段中英双语四幕研发史与零件语音 (Charon Gemini TTS MP3)
+│   ├── basis/                     # 自托管 Khronos Basis Universal WASM KTX2 解码器
 │   ├── draco/                     # 自托管 Three.js WebAssembly Draco 网格解码器
 │   ├── hdri/                      # 4 套 Cycles 32-bit .hdr 环境贴图 (3 影棚 + 1:1 重装装配机库)
-│   ├── models/                    # 29 款 Blender 5.2 Draco 压缩 .glb 展品 (23 名枪 + 2 弓弩 + 4 主战坦克)
-│   ├── narrations/                # 29 套结构化中英双语四幕研发史与零件工程 JSON
-│   ├── plates/                    # 全馆 29/29 Cycles 2880×1800 RGBA 透明底 DK 印刷主图 (290 张 WebP)
+│   ├── manifest.webmanifest & sw.js # 子路径安全 PWA 清单与离线博物馆 Service Worker
+│   ├── models/                    # 34 款 Blender 5.2 Draco 压缩 .glb 展品 (27 名枪 + 2 弓弩 + 4 主战坦克 + 1:1 GAU-8/A)
+│   ├── narrations/                # 34 套结构化中英双语四幕研发史与零件工程 JSON
+│   ├── plates/                    # 全馆 34/34 Cycles 2880×1800 RGBA 透明底 DK 印刷主图 (340 张 WebP)
 │   ├── showcase/                  # 宣传主页实机 WebGL 2.0 高清展示图 (WebP)
-│   └── textures/                  # 369 张 2K/4K 5 通道 Packed ORM 与装甲微细节 WebP (86 套图集，0 张 PNG)
+│   └── textures/                  # 414 张 2K/4K 5 通道 Packed ORM 与装甲微细节 WebP (101 套图集，0 张 PNG)
 ├── scripts/
-│   ├── blender/                   # 29 套 MIT 无头 Blender 5.2 雕塑脚本 + HDRI 与 DK 印刷主图渲染器
-│   ├── narrations/.cache/         # 29 份 SHA-256 Charon TTS 语音校验清单
+│   ├── audit_asset_budget.mjs     # 全馆 34/34 展品 <= 12 MB 与 6 大 public/ 目录体积自动审计器
+│   ├── blender/                   # 34 套 MIT 无头 Blender 5.2 雕塑脚本 + HDRI 与 DK 印刷主图渲染器
+│   ├── build_ktx2_textures.mjs    # 生产级 Khronos toktx UASTC/ETC1S 纹理压缩与清单生成器
+│   ├── narrations/.cache/         # 34 份 SHA-256 Charon TTS 语音校验清单
 │   ├── pbr_core/ & pbr/           # Worley / 滚花 / 512px 无缝 RHA/CARC 细节图与 PBR 烘焙工具链
-│   ├── build_ktx2_textures.mjs    # KTX2 UASTC/ETC1S 纹理压缩清单与编码器
+│   ├── qa_visual_gate.mjs         # 1920×1080 无头 Chromium 零错误自动化视觉回归门禁
 │   └── export_dk_pdf.mjs          # 离线 300 DPI Pre-Press PDF 批量出版脚本
 ├── src/
-│   ├── app/                       # 双向 URL 状态同步 (?cut=1 / ?mode=split / ?screen=ballistics / ?screen=cartridges)、快捷键与错误边界
+│   ├── app/                       # 双向 URL 状态同步 (?cut=1 / ?screen=split_showdown / ?screen=ballistics / ?screen=cartridges / ?panel=*)、快捷键与错误边界
 │   ├── engine/
-│   │   ├── actors/                # PartActor、三轴 StencilSectionCap 纵剖与体积光、BallisticsSystem、GasFlowVisualizer
-│   │   ├── audio/                 # 4 场所立体声卷积 IR + 钢材频散波导、弓弩弦响、杠杆/泵动与 125/120/88mm 主炮声场引擎
+│   │   ├── actors/                # PartActor、AttachmentActor、三轴 StencilSectionCap + SectionBoxGuide、BallisticsSystem、GasFlowVisualizer
+│   │   ├── attachments/           # 34 展品齐平锚点、4 枪口 × 4 光学 × 4 预设与 Zero-GC 四维物理耦合
+│   │   ├── audio/                 # 4 场所立体声卷积 IR + 钢材频散波导、弓弩弦响、改装声学、MG 42/GAU-8 与主炮声场引擎
 │   │   ├── callout/               # ResizeObserver HUD 避障缓存与 60fps 零回流引出线
 │   │   ├── canvas/                # ArmoryViewport、studioHdriManager、GunsmithStageMat (18×12m 机库地坪) 与 GTAO/AgX 后处理
 │   │   ├── caliper/               # 1:1 3D 游标卡尺 (`1u = 10mm`) 与三维包络标尺
-│   │   ├── cartridges/            # 19 口径 1:1 实弹与坦克主炮弹纵剖规范 (16 轻武器 + 3 坦克主炮弹)
+│   │   ├── cartridges/            # 21 口径 1:1 实弹、航炮与坦克主炮弹纵剖规范 (17 轻武器 + 4 重型火炮/航炮弹)
 │   │   ├── clock/                 # 60Hz 零 React 重渲染瞬态时钟
-│   │   ├── exam/                  # 军械师限时盲拆、竞速排行榜与随机未知故障盲考评分系统
-│   │   ├── fieldstrip/            # 全馆 29 展品野战勤务拆装有向依赖图 (DAG)
+│   │   ├── exam/                  # 军械师限时盲拆、全枪精拆与未知故障盲考评分 + JSON 精通护照仓库
+│   │   ├── fieldstrip/            # 全馆 34 展品野战快拆与全枪精拆两级无环依赖图 (DAG)
 │   │   ├── geometry/              # 双轨 Draco GLB 加载器 (glbAssetService) + Web Worker CSG 与穿透拾取
-│   │   ├── interaction/           # 3D 视口直接手操拉机柄/杠杆、验膛与 SAFE/SEMI/AUTO 火控交互
+│   │   ├── interaction/           # 3D 视口直接手操拉机柄/杠杆/拉栓、验膛与 SAFE/SEMI/AUTO 火控交互
 │   │   ├── kinematics/            # Zero-GC 关键帧插值与 7 阶段运动学求解
-│   │   ├── malfunctions/          # 4 类经典故障剖视定位与标准排障演练 (29 展品)
-│   │   ├── materials/             # 定制 GLSL armoryShader (黑体热辐射/积碳/微阴影/Lagarde SO/RNM/AR 镀膜/磨损)、6 职能分色与 KTX2 分档
-│   │   ├── physics/               # 16+3+2 内弹道物理 + 1:1 复合装甲侵彻求解器 (Lanz-Odermatt/De Marre) + 1,000m RK4 外弹道 (21 档案)
-│   │   └── utils/                 # 兼容 / 与 /digital-armory-3d/ 子路径的静态资源路径解析器
-│   ├── features/                  # 模块化界面 (showcase / armory / workbench / split / armor / Cmd+K / ballistics / share / monograph / cartridges / story / atlas)
+│   │   ├── malfunctions/          # 4 类经典故障剖视定位与标准排障演练 (34 展品)
+│   │   ├── materials/             # 定制 GLSL armoryShader (黑体热辐射/积碳/微阴影/Lagarde SO/RNM/AR 镀膜/磨损)、6 职能分色与 KTX2 回退
+│   │   ├── offline/               # 按展品粒度离线缓存固定与校验管理器 (PWA Offline Museum)
+│   │   ├── physics/               # 17+4+2 内弹道物理 + 因果沙盒 + 1:1 复合装甲侵彻 (5 穿甲弹) + 1,000m RK4 外弹道 (23 档案)
+│   │   ├── tank/                  # 4 款 1:1 主战坦克 360° 炮塔、耳轴俯仰、激光火控与炮长 FLIR 瞄镜仓库
+│   │   └── utils/                 # 兼容 /、/digital-armory-3d/ 与可选 VITE_CDN_ASSET_BASE_URL 的静态资源路径解析器
+│   ├── features/                  # 模块化界面 (showcase / armory / workbench / showdown3d / armorlab / ballistics / sandbox / video / passport / timeline / offline / share / monograph / cartridges / story / atlas)
 │   ├── i18n/                      # 100% 对等中英双语词典 (英文零 CJK 字符漏出)
 │   ├── narration/                 # 音频队列、speechSynthesis 兜底与 3D 导演运镜器
 │   ├── store/                     # 强类型 Zustand 状态仓库
-│   └── weapons/                   # 29 套按需懒加载自包含展品插件
-└── tests/                         # 29 套 Vitest 几何、GLB、分屏、侵彻、Cmd+K、CT 剖面、UV、运动学、弹道、考核与双语契约测试
+│   └── weapons/                   # 34 套按需懒加载自包含展品插件 (27 名枪 + 2 弓弩 + 4 主战坦克 + 1:1 GAU-8/A)
+└── tests/                         # 33 套 Vitest 几何、GLB、3D 穿甲/靶场/改装、Track A 基建、分屏、运动学、考核与双语契约测试 (257 项)
 ```
 
 ---

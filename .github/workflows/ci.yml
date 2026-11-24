@@ -29,8 +29,11 @@ jobs:
       - name: ESLint static analysis
         run: npm run lint
 
-      - name: Vitest full 29-exhibit V5.0 contract suite
+      - name: Vitest full 34-exhibit V6.0 contract suite
         run: npm test
 
       - name: Production Vite bundle build
         run: npm run build
+
+      - name: Asset budget audit (34/34 exhibits <= 12 MB)
+        run: npm run assets:audit
