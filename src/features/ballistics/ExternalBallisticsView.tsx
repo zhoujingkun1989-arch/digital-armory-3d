@@ -5,9 +5,12 @@ import {
   Compass,
   Crosshair,
   Gauge,
+  Layers,
+  LineChart,
   RotateCcw,
   Shield,
   Table2,
+  Video,
   Wind,
   Zap,
 } from 'lucide-react';
@@ -41,10 +44,12 @@ import {
   EXTERNAL_BALLISTICS_STRINGS,
   WAVE2_WEAPON_LABELS,
 } from './externalBallisticsStrings';
+import { Range3DScene } from './Range3DScene';
 import '../../styles/external-ballistics.css';
 
 const MAX_ACTIVE_PROJECTILES = 4;
 
+type WorkspaceViewMode = 'split' | 'range3d' | 'charts2d';
 type SecondaryChartMode = 'wind' | 'velocity' | 'energy';
 type EnergyScaleMode = 'linear' | 'sqrt';
 type ReticleIllumMode = 'etched' | 'red' | 'cyan';
@@ -187,6 +192,7 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
   const dropClipId = `eb-drop-clip-${rawUid}`;
   const secClipId = `eb-sec-clip-${rawUid}`;
   const scopeClipId = `eb-scope-clip-${rawUid}`;
+  const range3dSectionRef = useRef<HTMLDivElement>(null);
   const dopeSectionRef = useRef<HTMLElement>(null);
 
   const lang = useAppStore((s) => s.lang);
@@ -273,6 +279,8 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
   const [scrubRangeM, setScrubRangeM] = useState<number>(() =>
     Math.round(defaultPreset.maxRangeM * 0.6)
   );
+  const [workspaceViewMode, setWorkspaceViewMode] =
+    useState<WorkspaceViewMode>('split');
   const [secondaryMode, setSecondaryMode] =
     useState<SecondaryChartMode>('wind');
   const [energyScale, setEnergyScale] = useState<EnergyScaleMode>('sqrt');
@@ -1153,6 +1161,23 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
           <LanguageSwitchPill compact />
           <button
             type="button"
+            className={`eb-dope-jump-btn eb-range3d-header-btn ${
+              workspaceViewMode === 'range3d' ? 'is-active' : ''
+            }`}
+            title={ui.range3dJumpTitle}
+            onClick={() => {
+              playWorkbenchFoley('preset_detent');
+              setWorkspaceViewMode((prev) =>
+                prev === 'charts2d' ? 'split' : 'range3d'
+              );
+              range3dSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+            }}
+          >
+            <Video size={13} aria-hidden="true" />
+            <span>{ui.range3dJumpBtn}</span>
+          </button>
+          <button
+            type="button"
             className="eb-dope-jump-btn"
             title={
               isZh
@@ -1516,7 +1541,72 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
         </div>
       </section>
 
+      {/* ==================== Workspace Layout Mode Strip ==================== */}
+      <div
+        className="eb-workspace-mode-bar"
+        role="tablist"
+        aria-label={ui.workspaceModeAria}
+      >
+        <button
+          type="button"
+          role="tab"
+          aria-selected={workspaceViewMode === 'split'}
+          className={`eb-tab-btn ${workspaceViewMode === 'split' ? 'is-active' : ''}`}
+          onClick={() => {
+            playWorkbenchFoley('toggle_switch');
+            setWorkspaceViewMode('split');
+          }}
+        >
+          <Layers size={12} aria-hidden="true" />
+          <span>{ui.workspaceModeSplit}</span>
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={workspaceViewMode === 'range3d'}
+          className={`eb-tab-btn ${workspaceViewMode === 'range3d' ? 'is-active' : ''}`}
+          onClick={() => {
+            playWorkbenchFoley('toggle_switch');
+            setWorkspaceViewMode('range3d');
+          }}
+        >
+          <Video size={12} aria-hidden="true" />
+          <span>{ui.workspaceModeRange3d}</span>
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={workspaceViewMode === 'charts2d'}
+          className={`eb-tab-btn ${workspaceViewMode === 'charts2d' ? 'is-active' : ''}`}
+          onClick={() => {
+            playWorkbenchFoley('toggle_switch');
+            setWorkspaceViewMode('charts2d');
+          }}
+        >
+          <LineChart size={12} aria-hidden="true" />
+          <span>{ui.workspaceModeCharts2d}</span>
+        </button>
+      </div>
+
+      {/* ==================== Track B2 · 3D 1,000m Interactive Firing Range & Bullet-Cam ==================== */}
+      {workspaceViewMode !== 'charts2d' && focusedSolution && (
+        <div ref={range3dSectionRef}>
+          <Range3DScene
+            focusedSolution={focusedSolution}
+            comparisonSolutions={solutions}
+            slotColors={palette}
+            maxRangeM={maxRangeM}
+            targetRangeM={effectiveScrubM}
+            signedCrosswindMps={signedCrosswindMps}
+            lang={lang}
+            isLightTheme={isLightTheme}
+            expanded={workspaceViewMode === 'range3d'}
+          />
+        </div>
+      )}
+
       {/* ==================== Main 2-Column Workspace ==================== */}
+      {workspaceViewMode !== 'range3d' && (
       <div className="eb-main-grid">
         {/* Left Column: Synchronized Dual Interactive Vector Charts */}
         <div className="eb-charts-col">
@@ -2617,6 +2707,7 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
           </section>
         </aside>
       </div>
+      )}
 
       {/* ==================== Bottom Multi-Range Sniper DOPE Drop Card ==================== */}
       {focusedSolution && (

@@ -1135,3 +1135,372 @@
   color: #92400e;
   border-color: rgba(180, 83, 9, 0.4);
 }
+
+
+/* ==========================================================================
+   Track B2 · 3D 1,000m Interactive Firing Range & Slow-Motion Bullet-Cam
+   ========================================================================== */
+.eb-range3d-header-btn {
+  background: linear-gradient(
+    135deg,
+    rgba(2, 132, 199, 0.22),
+    rgba(13, 148, 136, 0.22)
+  );
+  border-color: rgba(56, 189, 248, 0.48);
+  color: var(--color-accent-cyan-text);
+}
+
+.eb-range3d-header-btn:hover,
+.eb-range3d-header-btn.is-active {
+  background: linear-gradient(135deg, #0284c7, #0d9488);
+  border-color: #38bdf8;
+  color: #ffffff;
+}
+
+.eb-workspace-mode-bar {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 5px 8px;
+  border-radius: 10px;
+  background: var(--surface-glass-strong);
+  border: 1px solid var(--border-subtle);
+  align-self: flex-start;
+  flex-shrink: 0;
+}
+
+.eb-range3d-card {
+  gap: 9px;
+}
+
+.eb-range3d-top-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.eb-range3d-top-controls .eb-seg-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px 8px;
+}
+
+.eb-tab-btn.is-flir-on {
+  background: rgba(248, 250, 252, 0.16);
+  border-color: #f8fafc;
+  color: #f8fafc;
+  box-shadow: 0 0 12px rgba(248, 250, 252, 0.24);
+}
+
+:is([data-theme='light'], .theme-light) .eb-tab-btn.is-flir-on {
+  background: #0f172a;
+  border-color: #0f172a;
+  color: #f8fafc;
+}
+
+.eb-range3d-viewport {
+  position: relative;
+  width: 100%;
+  height: 430px;
+  border-radius: 11px;
+  overflow: hidden;
+  background: #0b111c;
+  border: 1px solid var(--border-subtle);
+  box-shadow: inset 0 0 28px rgba(0, 0, 0, 0.45);
+}
+
+.eb-range3d-viewport.is-expanded {
+  height: min(68vh, 660px);
+  min-height: 480px;
+}
+
+.eb-range3d-viewport.is-flir-mode canvas {
+  filter: grayscale(0.84) contrast(1.26) brightness(1.12);
+}
+
+.eb-range3d-ssr-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+/* FLIR White-Hot Thermal Optic Overlay */
+.eb-range3d-flir-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 4;
+  box-shadow: inset 0 0 90px rgba(0, 0, 0, 0.72);
+}
+
+.eb-flir-scanlines {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.03) 0px,
+    rgba(255, 255, 255, 0.03) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+.eb-flir-reticle-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Live 60fps Ballistic HUD Overlay Chips */
+.eb-range3d-hud-top {
+  position: absolute;
+  top: 9px;
+  left: 9px;
+  right: 9px;
+  z-index: 5;
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: 5px;
+  pointer-events: none;
+}
+
+.eb-range3d-hud-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 4px 8px;
+  border-radius: 7px;
+  background: rgba(7, 11, 19, 0.76);
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  min-width: 96px;
+}
+
+.eb-range3d-hud-chip.is-status {
+  margin-inline-start: auto;
+  border-color: rgba(56, 189, 248, 0.5);
+}
+
+.eb-hud-k {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgba(148, 163, 184, 0.88);
+}
+
+.eb-hud-v {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: #f8fafc;
+}
+
+.eb-range3d-hud-chip.is-status .eb-hud-v {
+  color: #38bdf8;
+}
+
+/* Bottom Strip Inside 3D Canvas (Mach Gradient + Wind/Acoustic Meta) */
+.eb-range3d-hud-bottom-strip {
+  position: absolute;
+  left: 9px;
+  right: 9px;
+  bottom: 9px;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px;
+  pointer-events: none;
+}
+
+.eb-range3d-mach-legend {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(7, 11, 19, 0.76);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #e2e8f0;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.eb-mach-swatch {
+  width: 10px;
+  height: 4px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.eb-mach-swatch.is-sup {
+  background: linear-gradient(90deg, #22d3ee, #34d399);
+}
+
+.eb-mach-swatch.is-trans {
+  background: linear-gradient(90deg, #f59e0b, #f43f5e);
+}
+
+.eb-mach-swatch.is-sub {
+  background: linear-gradient(90deg, #818cf8, #64748b);
+}
+
+.eb-range3d-meta-pills {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.eb-range3d-meta-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(7, 11, 19, 0.76);
+  border: 1px solid rgba(148, 163, 184, 0.26);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-variant-numeric: tabular-nums;
+  color: #e2e8f0;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/* Interactive Trigger, Timeline Scrubber & Target Controls Dock */
+.eb-range3d-dock {
+  display: grid;
+  grid-template-columns: auto minmax(180px, 1fr) auto;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: var(--surface-subtle);
+  border: 1px solid var(--border-divider);
+}
+
+.eb-range3d-transport {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.eb-range3d-fire-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 14px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #dc2626, #ea580c);
+  border: 1px solid #f97316;
+  color: #ffffff;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  box-shadow: 0 0 16px rgba(234, 88, 12, 0.34);
+  transition: transform 0.12s ease, box-shadow 0.15s ease;
+}
+
+.eb-range3d-fire-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 22px rgba(249, 115, 22, 0.55);
+}
+
+.eb-range3d-fire-btn:active {
+  transform: translateY(0);
+}
+
+.eb-range3d-speed-seg {
+  min-width: 148px;
+}
+
+.eb-range3d-scrubber-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.eb-range3d-scrub-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.eb-range3d-target-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.eb-range3d-target-controls .eb-seg-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px 8px;
+}
+
+/* Terminal Quantitative Impact Summary Strip */
+.eb-range3d-terminal-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--surface-glass);
+  border: 1px solid var(--border-divider);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text-secondary);
+}
+
+.eb-range3d-term-item strong {
+  color: var(--color-text-primary);
+}
+
+@media (max-width: 1120px) {
+  .eb-range3d-dock {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .eb-range3d-viewport {
+    height: 340px;
+  }
+
+  .eb-range3d-hud-chip {
+    min-width: 82px;
+    padding: 3px 6px;
+  }
+}
