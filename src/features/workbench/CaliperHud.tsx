@@ -6,6 +6,11 @@ import {
   WORLD_UNIT_TO_MM,
   caliperStore,
   computeWeaponEnvelopeMetrics,
+  convertMmToInches,
+  formatCaliperDistance,
+  formatCaliperPlaceholder,
+  formatCaliperSignedDelta,
+  getCaliperBenchmarkNote,
 } from '../../engine/caliper/caliperStore';
 import { playbackClock } from '../../engine/clock/playbackClock';
 import { fieldStripStore } from '../../engine/fieldstrip/fieldStripStore';
@@ -21,15 +26,30 @@ import { isArcheryWeapon } from '../../engine/physics/armoryPhysics';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import { resolvePartCalloutLabel } from '../../i18n/weaponFallbacks';
 import { useWeaponNarration } from '../../narration/narrationService';
+import type { LanguageCode } from '../../narration/types';
 import { useAppStore } from '../../store/useAppStore';
 import { useWeaponPlugin } from '../../weapons/registry';
+import type { WeaponId } from '../../weapons/types';
 
 const _hudScratchPose = createMutablePose();
 
-export const CaliperHud: React.FC = () => {
+export interface CaliperHudProps {
+  /** Optional overrides for deterministic SSR/unit verification */
+  forceVisible?: boolean;
+  weaponIdOverride?: WeaponId;
+  langOverride?: LanguageCode;
+}
+
+export const CaliperHud: React.FC<CaliperHudProps> = ({
+  forceVisible = false,
+  weaponIdOverride,
+  langOverride,
+}) => {
   const screen = useAppStore((s) => s.screen);
-  const activeWeaponId = useAppStore((s) => s.activeWeaponId);
-  const lang = useAppStore((s) => s.lang);
+  const storeWeaponId = useAppStore((s) => s.activeWeaponId);
+  const storeLang = useAppStore((s) => s.lang);
+  const activeWeaponId = weaponIdOverride ?? storeWeaponId;
+  const lang = langOverride ?? storeLang;
   const mode = useAppStore((s) => s.mode);
   const fieldStripActive = useAppStore((s) => s.fieldStripActive);
   const caliperActive = useAppStore((s) => s.caliperActive);
@@ -60,21 +80,25 @@ export const CaliperHud: React.FC = () => {
 
     const tick = () => {
       const hover = caliperStore.getTransientHover();
+      const unit = caliperStore.getUnitSystem();
       if (liveReadoutRef.current) {
         if (hover.active) {
           const distMm =
             Math.hypot(hover.x - ax, hover.y - ay, hover.z - az) *
             WORLD_UNIT_TO_MM;
-          liveReadoutRef.current.textContent = `${distMm.toFixed(1)} mm`;
+          liveReadoutRef.current.textContent = formatCaliperDistance(
+            distMm,
+            unit
+          );
         } else {
-          liveReadoutRef.current.textContent = '---.- mm';
+          liveReadoutRef.current.textContent = formatCaliperPlaceholder(unit);
         }
       }
       rafId = window.requestAnimationFrame(tick);
     };
     rafId = window.requestAnimationFrame(tick);
     return () => window.cancelAnimationFrame(rafId);
-  }, [caliperActive, snap.pointA, snap.pointB]);
+  }, [caliperActive, snap.pointA, snap.pointB, snap.unitSystem]);
 
   const envelopeMetrics = useMemo(() => {
     if (!plugin || geoStatus.readyCount === 0 || geoStatus.version < 0) {
@@ -114,7 +138,7 @@ export const CaliperHud: React.FC = () => {
     fieldStripActive,
   ]);
 
-  if (screen !== 'workbench' || !caliperActive) {
+  if (!forceVisible && (screen !== 'workbench' || !caliperActive)) {
     return null;
   }
 
@@ -122,6 +146,14 @@ export const CaliperHud: React.FC = () => {
   const ui = isArcheryWeapon(activeWeaponId)
     ? { ...rawUi, ...rawUi.archery }
     : rawUi;
+  const unit = snap.unitSystem;
+  const activeBenchmarkNote = snap.activeBenchmark
+    ? getCaliperBenchmarkNote(activeWeaponId, snap.activeBenchmark)
+    : null;
+  const benchmarkDeltaMm =
+    activeBenchmarkNote && snap.measurement
+      ? snap.measurement.distanceMm - activeBenchmarkNote.nominalMm
+      : null;
 
   const resolvePartName = (partId: string): string => {
     const spec = plugin?.parts.find((p) => p.id === partId);
@@ -169,6 +201,36 @@ export const CaliperHud: React.FC = () => {
         </div>
 
         <div className="caliper-header-actions">
+          <div
+            className="caliper-unit-seg"
+            role="group"
+            data-testid="caliper-unit-toggle"
+            aria-label={
+              lang === 'en'
+                ? 'Select measurement unit system'
+                : '切换毫米 / 英寸计量单位'
+            }
+          >
+            <button
+              type="button"
+              className={`caliper-unit-btn ${unit === 'mm' ? 'active' : ''}`}
+              data-testid="caliper-unit-mm"
+              aria-pressed={unit === 'mm'}
+              onClick={() => caliperStore.setUnitSystem('mm')}
+            >
+              mm
+            </button>
+            <button
+              type="button"
+              className={`caliper-unit-btn ${unit === 'in' ? 'active' : ''}`}
+              data-testid="caliper-unit-in"
+              aria-pressed={unit === 'in'}
+              onClick={() => caliperStore.setUnitSystem('in')}
+            >
+              in
+            </button>
+          </div>
+
           <button
             type="button"
             className={`caliper-mini-btn ${
@@ -215,23 +277,66 @@ export const CaliperHud: React.FC = () => {
                 ? ui.promptPointB
                 : ui.promptPointA}
           </span>
-          <span className="caliper-lcd-value" ref={liveReadoutRef}>
+          <span
+            className="caliper-lcd-value"
+            ref={liveReadoutRef}
+            data-testid="caliper-lcd-value"
+          >
             {snap.measurement
-              ? `${snap.measurement.distanceMm.toFixed(1)} mm`
-              : '0.0 mm'}
+              ? formatCaliperDistance(snap.measurement.distanceMm, unit)
+              : unit === 'in'
+                ? '0.00 in'
+                : '0.0 mm'}
           </span>
         </div>
 
         {snap.measurement && (
           <div className="caliper-axis-deltas">
             <span>
-              {ui.deltaX}: <strong>{snap.measurement.dxMm.toFixed(1)} mm</strong>
+              {ui.deltaX}:{' '}
+              <strong>
+                {formatCaliperDistance(snap.measurement.dxMm, unit)}
+              </strong>
             </span>
             <span>
-              {ui.deltaY}: <strong>{snap.measurement.dyMm.toFixed(1)} mm</strong>
+              {ui.deltaY}:{' '}
+              <strong>
+                {formatCaliperDistance(snap.measurement.dyMm, unit)}
+              </strong>
             </span>
             <span>
-              {ui.deltaZ}: <strong>{snap.measurement.dzMm.toFixed(1)} mm</strong>
+              {ui.deltaZ}:{' '}
+              <strong>
+                {formatCaliperDistance(snap.measurement.dzMm, unit)}
+              </strong>
+            </span>
+          </div>
+        )}
+
+        {activeBenchmarkNote && (
+          <div
+            className="caliper-benchmark-note"
+            data-testid="caliper-benchmark-note"
+          >
+            <span className="caliper-benchmark-note-title">
+              {lang === 'en'
+                ? activeBenchmarkNote.labelEn
+                : activeBenchmarkNote.labelZh}
+            </span>
+            <span className="caliper-benchmark-note-meta">
+              {lang === 'en' ? 'Nominal' : '标称'}:{' '}
+              <strong>
+                {formatCaliperDistance(activeBenchmarkNote.nominalMm, unit)}
+              </strong>
+              {benchmarkDeltaMm !== null && (
+                <>
+                  {' '}
+                  · Δ{' '}
+                  <strong>
+                    {formatCaliperSignedDelta(benchmarkDeltaMm, unit)}
+                  </strong>
+                </>
+              )}
             </span>
           </div>
         )}
@@ -280,14 +385,22 @@ export const CaliperHud: React.FC = () => {
       </div>
 
       <div className="caliper-footer-meta">
-        <span>{ui.unitNote}</span>
+        <span>
+          {unit === 'in'
+            ? lang === 'en'
+              ? '1:1 CAD Scale · 25.4 mm = 1.00 in'
+              : '1:1 真实工程尺度 · 25.4 mm = 1.00 in'
+            : ui.unitNote}
+        </span>
         {envelopeMetrics && (
           <strong className="caliper-env-summary">
-            {ui.envelopeSummary(
-              envelopeMetrics.lengthMm.toFixed(0),
-              envelopeMetrics.heightMm.toFixed(0),
-              envelopeMetrics.widthMm.toFixed(0)
-            )}
+            {unit === 'in'
+              ? `${lang === 'en' ? 'Envelope' : '包络'} ${convertMmToInches(envelopeMetrics.lengthMm).toFixed(1)} × ${convertMmToInches(envelopeMetrics.heightMm).toFixed(1)} × ${convertMmToInches(envelopeMetrics.widthMm).toFixed(1)} in`
+              : ui.envelopeSummary(
+                  envelopeMetrics.lengthMm.toFixed(0),
+                  envelopeMetrics.heightMm.toFixed(0),
+                  envelopeMetrics.widthMm.toFixed(0)
+                )}
           </strong>
         )}
       </div>
