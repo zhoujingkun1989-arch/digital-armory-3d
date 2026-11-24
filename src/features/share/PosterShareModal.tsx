@@ -535,6 +535,13 @@ export const PosterShareModal: React.FC<PosterShareModalProps> = ({
             <span className="ps-dims-pill" data-testid="poster-dims-badge">
               {dims.width} × {dims.height} PX · {aspect} · {metadata.bayCode}
             </span>
+            <span
+              className="ps-dims-pill"
+              data-testid="poster-rifling-stamp"
+              title={metadata.riflingMetrology.detailLabel}
+            >
+              {metadata.riflingMetrology.stampLabel}
+            </span>
           </div>
           <h2 id={titleId} className="ps-studio-title">
             {copy.studioTitle}
