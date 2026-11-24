@@ -5,6 +5,7 @@ import {
   Download,
   HardDrive,
   RefreshCw,
+  Sparkles,
   Trash2,
   WifiOff,
   X,
@@ -12,13 +13,16 @@ import {
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import { getKtx2SupportStatus } from '../../engine/materials/ktx2Support';
 import {
+  ARMOR_HALL_OFFLINE_IDS,
   buildExhibitOfflineAssetUrls,
   cacheExhibitOffline,
+  FEATURED_LEGENDS_OFFLINE_IDS,
   type OfflineStorageEstimate,
   purgeAllOfflineCaches,
   queryAllCachedWeaponIds,
   queryOfflineStorageStatus,
   removeExhibitOfflineCache,
+  summarizeOfflinePack,
 } from '../../engine/offline/offlineMuseumManager';
 import { getLocalizedShortWeaponLabel } from '../../i18n/weaponFallbacks';
 import { useAppStore } from '../../store/useAppStore';
@@ -34,14 +38,16 @@ interface CacheProgressState {
   label: string;
   done: number;
   total: number;
+  exhibitIndex?: number;
+  exhibitTotal?: number;
+  exhibitDone?: number;
+  exhibitFilesTotal?: number;
 }
 
 interface StatusBannerState {
   tone: 'info' | 'success' | 'error';
   text: string;
 }
-
-const ARMOR_HALL_IDS = ['ztz99a', 'm1a2', 'leopard2a7', 'tiger1'] as const;
 
 export const OFFLINE_MUSEUM_STRINGS = {
   zh: {
@@ -56,6 +62,7 @@ export const OFFLINE_MUSEUM_STRINGS = {
     ktx2Label: 'Basis / KTX2 GPU 状态',
     ktx2Ready: 'BasisU 转码器就绪 (WebP 无损回退)',
     ktx2Standby: 'WebP 默认在线流式渲染',
+    cacheFeaturedLegendsBtn: '一键缓存五大殿堂传奇 (5)',
     cacheArmorHallBtn: '一键缓存重装坦克展厅 (4)',
     purgeBtn: '清空离线缓存',
     cachedPill: '已离线缓存',
@@ -66,10 +73,22 @@ export const OFFLINE_MUSEUM_STRINGS = {
     cachingBusy: '写入中',
     cachingProgressStatus: (label: string, done: number, total: number) =>
       `正在写入离线保护缓存：${label}（${done} / ${total}）`,
+    batchCachingProgressStatus: (
+      exhibitIndex: number,
+      exhibitTotal: number,
+      label: string,
+      exhibitDone: number,
+      exhibitFilesTotal: number,
+      totalDone: number,
+      totalFiles: number
+    ) =>
+      `正在批量同步离线包 · 展品 ${exhibitIndex}/${exhibitTotal}（${label}）· ${exhibitDone}/${exhibitFilesTotal} 文件（总计 ${totalDone}/${totalFiles}）`,
     cachedCompleteStatus: (label: string, total: number) =>
       `已完成「${label}」全量离线包缓存（${total} / ${total} 项资产已锁定）`,
     cachedPartialStatus: (label: string, cached: number, total: number) =>
       `「${label}」部分资产写入失败（${cached} / ${total}），请检查网络后重试`,
+    featuredLegendsCompleteStatus: (cached: number, total: number) =>
+      `五大殿堂传奇离线包同步完成（${cached} / ${total} 款核心馆藏就绪）`,
     armorHallCompleteStatus: (cachedTanks: number, totalTanks: number) =>
       `重装坦克展厅离线同步完成（${cachedTanks} / ${totalTanks} 辆主战坦克就绪）`,
     removedStatus: (label: string) => `已移除「${label}」离线缓存包`,
@@ -88,6 +107,7 @@ export const OFFLINE_MUSEUM_STRINGS = {
     ktx2Label: 'Basis / KTX2 Pipeline',
     ktx2Ready: 'BasisU Transcoder Ready (WebP Fallback)',
     ktx2Standby: 'WebP Runtime Streaming',
+    cacheFeaturedLegendsBtn: 'Cache Featured 5 Legends',
     cacheArmorHallBtn: 'Cache Heavy Armor Hall (4)',
     purgeBtn: 'Purge All Cache',
     cachedPill: 'Cached Offline',
@@ -98,10 +118,22 @@ export const OFFLINE_MUSEUM_STRINGS = {
     cachingBusy: 'Caching',
     cachingProgressStatus: (label: string, done: number, total: number) =>
       `Caching protected offline pack: ${label} (${done} / ${total})`,
+    batchCachingProgressStatus: (
+      exhibitIndex: number,
+      exhibitTotal: number,
+      label: string,
+      exhibitDone: number,
+      exhibitFilesTotal: number,
+      totalDone: number,
+      totalFiles: number
+    ) =>
+      `Exhibit ${exhibitIndex}/${exhibitTotal} (${label}) · ${exhibitDone}/${exhibitFilesTotal} files (${totalDone}/${totalFiles} total)`,
     cachedCompleteStatus: (label: string, total: number) =>
       `Cached full offline pack for ${label} (${total} / ${total} assets locked)`,
     cachedPartialStatus: (label: string, cached: number, total: number) =>
       `Incomplete cache for ${label} (${cached} / ${total} assets) — retry when online`,
+    featuredLegendsCompleteStatus: (cached: number, total: number) =>
+      `Featured 5 Legends offline sync complete (${cached} / ${total} iconic exhibits ready)`,
     armorHallCompleteStatus: (cachedTanks: number, totalTanks: number) =>
       `Heavy Armor Hall offline sync complete (${cachedTanks} / ${totalTanks} MBTs ready)`,
     removedStatus: (label: string) => `Removed offline package for ${label}`,
@@ -143,6 +175,15 @@ export const OfflineMuseumModal: React.FC<OfflineMuseumModalProps> = ({
     }
     return map;
   }, []);
+
+  const featuredLegendsSummary = useMemo(
+    () => summarizeOfflinePack(FEATURED_LEGENDS_OFFLINE_IDS),
+    []
+  );
+  const armorHallSummary = useMemo(
+    () => summarizeOfflinePack(ARMOR_HALL_OFFLINE_IDS),
+    []
+  );
 
   const refreshStatus = useCallback(async () => {
     const [ids, est] = await Promise.all([
@@ -227,43 +268,61 @@ export const OfflineMuseumModal: React.FC<OfflineMuseumModalProps> = ({
     setBusyId(null);
   };
 
-  const handleCacheArmorHall = async () => {
+  const handleCacheBatchPack = async (
+    packKey: 'featured_legends' | 'armor_hall',
+    packIds: readonly WeaponId[]
+  ) => {
     if (!estimate.supported) {
       setStatusBanner({ tone: 'error', text: ui.unsupportedStatus });
       return;
     }
-    setBusyId('armor_hall');
+    setBusyId(packKey);
     playWorkbenchFoley('preset_detent');
 
-    const totalAssets = ARMOR_HALL_IDS.reduce(
+    const totalAssets = packIds.reduce(
       (acc, id) => acc + (exhibitSizes.get(id)?.assetCount ?? 0),
       0
     );
     let completedBefore = 0;
-    let succeededTanks = 0;
+    let succeededCount = 0;
 
-    for (const id of ARMOR_HALL_IDS) {
-      const tankLabel = getLocalizedShortWeaponLabel(id, lang);
-      const tankTotal = exhibitSizes.get(id)?.assetCount ?? 0;
+    for (let idx = 0; idx < packIds.length; idx += 1) {
+      const id = packIds[idx];
+      const exhibitLabel = getLocalizedShortWeaponLabel(id, lang);
+      const exhibitTotal = exhibitSizes.get(id)?.assetCount ?? 0;
+      const exhibitIndex = idx + 1;
+
       setProgress({
-        label: tankLabel,
+        label: exhibitLabel,
         done: completedBefore,
         total: totalAssets,
+        exhibitIndex,
+        exhibitTotal: packIds.length,
+        exhibitDone: 0,
+        exhibitFilesTotal: exhibitTotal,
       });
-      const res = await cacheExhibitOffline(id, (done) => {
+
+      const res = await cacheExhibitOffline(id, (done, totalFiles) => {
         setProgress({
-          label: tankLabel,
+          label: exhibitLabel,
           done: completedBefore + done,
           total: totalAssets,
+          exhibitIndex,
+          exhibitTotal: packIds.length,
+          exhibitDone: done,
+          exhibitFilesTotal: totalFiles,
         });
       });
-      if (res.ok) succeededTanks += 1;
-      completedBefore += tankTotal;
+      if (res.ok) succeededCount += 1;
+      completedBefore += exhibitTotal;
     }
 
     setStatusBanner({
-      tone: succeededTanks === ARMOR_HALL_IDS.length ? 'success' : 'error',
-      text: ui.armorHallCompleteStatus(succeededTanks, ARMOR_HALL_IDS.length),
+      tone: succeededCount === packIds.length ? 'success' : 'error',
+      text:
+        packKey === 'featured_legends'
+          ? ui.featuredLegendsCompleteStatus(succeededCount, packIds.length)
+          : ui.armorHallCompleteStatus(succeededCount, packIds.length),
     });
 
     await refreshStatus();
@@ -285,6 +344,23 @@ export const OfflineMuseumModal: React.FC<OfflineMuseumModalProps> = ({
     progress && progress.total > 0
       ? Math.min(100, Math.round((progress.done / progress.total) * 100))
       : 0;
+
+  const progressMessage = progress
+    ? progress.exhibitIndex !== undefined &&
+      progress.exhibitTotal !== undefined &&
+      progress.exhibitDone !== undefined &&
+      progress.exhibitFilesTotal !== undefined
+      ? ui.batchCachingProgressStatus(
+          progress.exhibitIndex,
+          progress.exhibitTotal,
+          progress.label,
+          progress.exhibitDone,
+          progress.exhibitFilesTotal,
+          progress.done,
+          progress.total
+        )
+      : ui.cachingProgressStatus(progress.label, progress.done, progress.total)
+    : statusBanner?.text;
 
   return (
     <dialog
@@ -315,16 +391,54 @@ export const OfflineMuseumModal: React.FC<OfflineMuseumModalProps> = ({
           <div className="offline-head-actions">
             <button
               type="button"
-              className="offline-btn is-accent"
+              className="offline-btn is-legends"
+              data-testid="offline-cache-legends-btn"
               disabled={busyId !== null}
-              onClick={() => void handleCacheArmorHall()}
+              onClick={() =>
+                void handleCacheBatchPack(
+                  'featured_legends',
+                  FEATURED_LEGENDS_OFFLINE_IDS
+                )
+              }
+            >
+              <Sparkles size={13} aria-hidden="true" />
+              <span className="tabular">
+                {busyId === 'featured_legends' &&
+                progress &&
+                progress.exhibitIndex !== undefined &&
+                progress.exhibitTotal !== undefined
+                  ? `${progress.exhibitIndex}/${progress.exhibitTotal} · ${progress.exhibitDone ?? 0}/${progress.exhibitFilesTotal ?? 0}`
+                  : ui.cacheFeaturedLegendsBtn}
+              </span>
+              {busyId !== 'featured_legends' && (
+                <span className="offline-pack-mb tabular">
+                  ~{featuredLegendsSummary.estimatedMb.toFixed(1)} MB
+                </span>
+              )}
+            </button>
+            <button
+              type="button"
+              className="offline-btn is-accent"
+              data-testid="offline-cache-armor-btn"
+              disabled={busyId !== null}
+              onClick={() =>
+                void handleCacheBatchPack('armor_hall', ARMOR_HALL_OFFLINE_IDS)
+              }
             >
               <Download size={13} aria-hidden="true" />
-              <span>
-                {busyId === 'armor_hall' && progress
-                  ? `${progress.done} / ${progress.total}`
+              <span className="tabular">
+                {busyId === 'armor_hall' &&
+                progress &&
+                progress.exhibitIndex !== undefined &&
+                progress.exhibitTotal !== undefined
+                  ? `${progress.exhibitIndex}/${progress.exhibitTotal} · ${progress.exhibitDone ?? 0}/${progress.exhibitFilesTotal ?? 0}`
                   : ui.cacheArmorHallBtn}
               </span>
+              {busyId !== 'armor_hall' && (
+                <span className="offline-pack-mb tabular">
+                  ~{armorHallSummary.estimatedMb.toFixed(1)} MB
+                </span>
+              )}
             </button>
             <button
               type="button"
@@ -376,52 +490,21 @@ export const OfflineMuseumModal: React.FC<OfflineMuseumModalProps> = ({
             <div
               role="status"
               aria-live="polite"
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 6,
-                padding: '9px 12px',
-                borderRadius: 10,
-                border:
-                  progress || statusBanner?.tone === 'success'
-                    ? '1px solid rgba(52, 211, 153, 0.42)'
-                    : statusBanner?.tone === 'error'
-                      ? '1px solid rgba(248, 113, 113, 0.45)'
-                      : '1px solid rgba(148, 163, 184, 0.28)',
-                background:
-                  progress || statusBanner?.tone === 'success'
-                    ? 'rgba(16, 185, 129, 0.12)'
-                    : statusBanner?.tone === 'error'
-                      ? 'rgba(239, 68, 68, 0.12)'
-                      : 'var(--surface-subtle, rgba(15, 23, 42, 0.56))',
-                fontSize: 12,
-              }}
+              data-testid="offline-status-banner"
+              className={`offline-status-banner ${
+                progress || statusBanner?.tone === 'success'
+                  ? 'is-success'
+                  : statusBanner?.tone === 'error'
+                    ? 'is-error'
+                    : 'is-info'
+              }`}
             >
-              <span>
-                {progress
-                  ? ui.cachingProgressStatus(
-                      progress.label,
-                      progress.done,
-                      progress.total
-                    )
-                  : statusBanner?.text}
-              </span>
+              <span className="tabular">{progressMessage}</span>
               {progress && (
-                <div
-                  style={{
-                    height: 5,
-                    borderRadius: 999,
-                    background: 'rgba(148, 163, 184, 0.22)',
-                    overflow: 'hidden',
-                  }}
-                >
+                <div className="offline-progress-track">
                   <div
-                    style={{
-                      width: `${progressPct}%`,
-                      height: '100%',
-                      background: '#34d399',
-                      transition: 'width 0.15s ease',
-                    }}
+                    className="offline-progress-fill"
+                    style={{ width: `${progressPct}%` }}
                   />
                 </div>
               )}
@@ -451,14 +534,7 @@ export const OfflineMuseumModal: React.FC<OfflineMuseumModalProps> = ({
                   <div className="offline-item-meta">
                     <span className="offline-bay">{m.catalog.bayCode}</span>
                     <strong>{shortName}</strong>
-                    <span
-                      className="tabular"
-                      style={{
-                        fontSize: 10,
-                        opacity: 0.72,
-                        whiteSpace: 'nowrap',
-                      }}
-                    >
+                    <span className="offline-item-mb tabular">
                       ~{estMb.toFixed(1)} MB
                     </span>
                   </div>
