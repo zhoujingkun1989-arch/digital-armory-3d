@@ -1481,6 +1481,331 @@ function applyChamferedSquareOuterWall(
 }
 
 /**
+ * Builds a photorealistic 1:1 APFSDS-T (Armor-Piercing Fin-Stabilized Discarding Sabot)
+ * cutaway or full 360° mesh bundle for 120×570mm NATO (M829A4/DM63A1) and
+ * 125mm PLA (DTC10-125) tank cannon rounds:
+ *   - `caseGeo`: Stepped steel obturating stub base + semi-combustible nitrocellulose cylinder
+ *   - `primerCupGeo` / `anvilGeo`: Long axial electric ignition primer tube (DM12A1 / GUV-7)
+ *   - `propellantGeo`: Bundled cylindrical combustible propellant sticks packed around the dart tail
+ *   - `jacketGeo`: Sub-caliber Ø25–26mm tungsten/DU long-rod penetrator dart + 6 swept tail fins
+ *     + buttress drive grooves + needle ogive reaching exact `oalH` (`spec.oalMm / 10`)
+ *   - `coreSlugGeo`: Sculpted 3-petal grooved aerospace aluminum hourglass saddle sabot
+ *   - `penetratorGeo`: Proud metallic obturator sealing band + ballistic windscreen cap + tracer cup
+ */
+function buildApfsdsCutawayBundle(
+  s: CartridgeLabSpec,
+  cutaway: boolean
+): CartridgeCutawayMeshBundle {
+  const caseH = s.caseLengthMm / 10;
+  const oalH = s.oalMm / 10;
+  const rRim = s.rimDiameterMm / 20;
+  const rBase = s.baseDiameterMm / 20;
+  const rNeck = s.neckDiameterMm / 20;
+  const rBullet = s.bulletDiameterMm / 20;
+  const rimT = s.rimThicknessMm / 10;
+
+  const is125 = s.caliber === '125mm_apfsds';
+  const rDart = is125 ? 1.3 : 1.25; // Ø26mm (DTC10-125) / Ø25mm (M829A4)
+  const stubTopY = Math.min(caseH * 0.24, 11.2);
+  const pocketR = 1.38;
+  const pocketH = 2.0;
+  const flashHoleR = 0.52;
+  const webFloorY = 3.2;
+  const wallT = 0.58;
+  const rInnerBase = rBase - wallT;
+  const rInnerMouth = rNeck - 0.48;
+
+  // 1. Stepped Steel Obturating Stub Base + Semi-Combustible Nitrocellulose Cylinder
+  const casePts: THREE.Vector2[] = [
+    new THREE.Vector2(pocketR, 0),
+    new THREE.Vector2(rRim - 0.12, 0),
+    new THREE.Vector2(rRim, 0.14),
+    new THREE.Vector2(rRim, rimT),
+    new THREE.Vector2(rBase + 0.14, rimT + 0.22),
+    new THREE.Vector2(rBase + 0.12, stubTopY - 0.35),
+    new THREE.Vector2(rBase - 0.04, stubTopY),
+    new THREE.Vector2(rNeck + 0.25, caseH * 0.84),
+    new THREE.Vector2(rNeck, caseH - 0.25),
+    new THREE.Vector2(rNeck - 0.1, caseH),
+    new THREE.Vector2(rInnerMouth, caseH),
+    new THREE.Vector2(rInnerMouth + 0.16, caseH * 0.82),
+    new THREE.Vector2(rInnerBase, stubTopY),
+    new THREE.Vector2(rInnerBase - 0.15, webFloorY + 0.6),
+    new THREE.Vector2(flashHoleR, webFloorY),
+    new THREE.Vector2(flashHoleR, pocketH),
+    new THREE.Vector2(pocketR, pocketH),
+  ];
+  const caseGeo = buildRevolvedCutaway(casePts, 44, cutaway);
+
+  // 2. Long Axial Electric Primer Ignition Tube (DM12A1 / GUV-7)
+  const dartBaseY = webFloorY + (caseH - webFloorY) * (is125 ? 0.18 : 0.22);
+  const primerTubeTopY = Math.max(webFloorY + 3.5, dartBaseY - 1.1);
+  const primerPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, 0.04),
+    new THREE.Vector2(pocketR * 0.96, 0.04),
+    new THREE.Vector2(pocketR * 0.96, pocketH - 0.04),
+    new THREE.Vector2(flashHoleR * 0.92, pocketH + 0.15),
+    new THREE.Vector2(flashHoleR * 0.88, primerTubeTopY),
+    new THREE.Vector2(flashHoleR * 0.56, primerTubeTopY),
+    new THREE.Vector2(flashHoleR * 0.56, 0.42),
+    new THREE.Vector2(0, 0.42),
+  ];
+  const primerCupGeo = buildRevolvedCutaway(primerPts, 32, cutaway);
+
+  // 3. Electric Ignition Contact & Axial Flash Core
+  const anvilPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, 0.46),
+    new THREE.Vector2(flashHoleR * 0.48, 0.46),
+    new THREE.Vector2(flashHoleR * 0.42, primerTubeTopY - 0.25),
+    new THREE.Vector2(0, primerTubeTopY - 0.05),
+  ];
+  const anvilGeo = buildRevolvedCutaway(anvilPts, 24, cutaway);
+
+  // 4. Bundled Cylindrical Combustible Stick-Propellant Grains around submerged dart tail
+  const stickBaseY = webFloorY + 0.7;
+  const stickTopY = caseH - 1.9;
+  const stickLen = Math.max(4.0, stickTopY - stickBaseY);
+  const stickMidY = (stickBaseY + stickTopY) * 0.5;
+  const stickParts: THREE.BufferGeometry[] = [];
+
+  const innerRingR = rDart + 1.55;
+  const midRingR = (innerRingR + (rInnerMouth - 0.65)) * 0.52;
+  const outerRingR = Math.min(rInnerBase, rInnerMouth) - 0.62;
+  const rings: readonly { radius: number; count: number; stickR: number }[] = [
+    { radius: innerRingR, count: 10, stickR: 0.34 },
+    { radius: midRingR, count: 16, stickR: 0.38 },
+    { radius: outerRingR, count: 22, stickR: 0.38 },
+  ];
+
+  for (const ring of rings) {
+    for (let i = 0; i < ring.count; i++) {
+      const ang = (i / ring.count) * Math.PI * 2 + 0.14;
+      const cx = Math.cos(ang) * ring.radius;
+      const cz = Math.sin(ang) * ring.radius;
+      if (cutaway && cz > -ring.stickR * 0.25) continue;
+      const stick = new THREE.CylinderGeometry(
+        ring.stickR,
+        ring.stickR,
+        stickLen,
+        10,
+        1
+      );
+      stick.translate(cx, stickMidY, cz);
+      stickParts.push(stick);
+    }
+  }
+  // Base propellant wafer disc cradling the sticks cleanly above the case web
+  const baseBedPts: THREE.Vector2[] = [
+    new THREE.Vector2(flashHoleR + 0.12, stickBaseY - 0.45),
+    new THREE.Vector2(rInnerBase - 0.18, stickBaseY - 0.45),
+    new THREE.Vector2(rInnerBase - 0.18, stickBaseY + 0.55),
+    new THREE.Vector2(flashHoleR + 0.12, stickBaseY + 0.55),
+  ];
+  stickParts.push(buildRevolvedCutaway(baseBedPts, 32, cutaway));
+
+  const propellantGeo = mergeSimpleGeometries(stickParts);
+  for (const part of stickParts) {
+    part.dispose();
+  }
+
+  // 5. Sub-Caliber Finned Tungsten / DU Long-Rod Penetrator Dart (`jacketGeo`, max.y === oalH!)
+  const finSpanR = rBullet * 0.72;
+  const finBottomY = dartBaseY + 1.4;
+  const finTopY = dartBaseY + 14.5;
+  const sabotBaseY = is125 ? caseH - 3.2 : caseH - 4.8;
+  const sabotTopY = is125 ? caseH + 24.5 : caseH + 21.5;
+  const ogiveStartY = oalH - (is125 ? 16.0 : 14.2);
+
+  const dartPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, dartBaseY),
+    new THREE.Vector2(rDart * 0.76, dartBaseY),
+    new THREE.Vector2(rDart * 0.94, dartBaseY + 1.1),
+    new THREE.Vector2(rDart * 0.96, finTopY + 1.0),
+    new THREE.Vector2(rDart, sabotBaseY),
+  ];
+  // Machined buttress drive grooves inside the sabot grip zone
+  const grooveSteps = 8;
+  for (let g = 0; g < grooveSteps; g++) {
+    const gy0 = THREE.MathUtils.lerp(
+      sabotBaseY + 2.4,
+      sabotTopY - 3.0,
+      g / grooveSteps
+    );
+    const gy1 = THREE.MathUtils.lerp(
+      sabotBaseY + 2.4,
+      sabotTopY - 3.0,
+      (g + 0.52) / grooveSteps
+    );
+    dartPts.push(
+      new THREE.Vector2(rDart + 0.14, gy0),
+      new THREE.Vector2(rDart - 0.08, gy1)
+    );
+  }
+  dartPts.push(
+    new THREE.Vector2(rDart, sabotTopY + 0.8),
+    new THREE.Vector2(rDart * 0.98, ogiveStartY)
+  );
+  // Needle-sharp high-fineness ballistic nose ogive terminating cleanly at y = oalH
+  for (let step = 1; step <= 8; step++) {
+    const u = step / 8;
+    const y = THREE.MathUtils.lerp(ogiveStartY, oalH, u);
+    const r = step === 8 ? 0 : rDart * 0.98 * (1 - Math.pow(u, 1.38));
+    dartPts.push(new THREE.Vector2(r, y));
+  }
+
+  const dartParts: THREE.BufferGeometry[] = [
+    buildRevolvedCutaway(dartPts, 36, cutaway),
+  ];
+
+  // 6 Swept Stabilizing Tail Fins (crisp trapezoidal swept delta profile)
+  const finShape = new THREE.Shape();
+  finShape.moveTo(rDart * 0.82, finBottomY);
+  finShape.lineTo(finSpanR, finBottomY + 0.85);
+  finShape.lineTo(finSpanR, finTopY - 3.6);
+  finShape.lineTo(rDart * 0.82, finTopY);
+  finShape.closePath();
+
+  const finThickness = 0.28;
+  const finAngles = [
+    0,
+    Math.PI / 3,
+    (2 * Math.PI) / 3,
+    Math.PI,
+    (4 * Math.PI) / 3,
+    (5 * Math.PI) / 3,
+  ];
+  for (const ang of finAngles) {
+    // In cutaway mode keep the 4 rear/lateral fins (`z <= 0`) so the front slice plane stays unobstructed
+    if (cutaway && Math.sin(ang) > 0.25) continue;
+    const finGeo = new THREE.ExtrudeGeometry(finShape, {
+      depth: finThickness,
+      bevelEnabled: false,
+      curveSegments: 1,
+    });
+    finGeo.translate(0, 0, -finThickness * 0.5);
+    finGeo.rotateY(-ang);
+    dartParts.push(finGeo);
+  }
+
+  const jacketGeo = mergeSimpleGeometries(dartParts);
+  for (const part of dartParts) {
+    part.dispose();
+  }
+
+  // 6. Sculpted 3-Petal Grooved Aerospace Aluminum Hourglass Saddle Sabot (`coreSlugGeo`)
+  const rSabotBore = rBullet * 0.992;
+  const rSabotWaist = rDart + 1.18;
+  const sabotLen = sabotTopY - sabotBaseY;
+  const sabotPts: THREE.Vector2[] = [
+    // Inner bore gripping the dart's buttress grooves
+    new THREE.Vector2(rDart + 0.16, sabotBaseY),
+    // Rear full-bore pusher bulkhead + obturator seat groove
+    new THREE.Vector2(rSabotBore * 0.88, sabotBaseY),
+    new THREE.Vector2(rSabotBore, sabotBaseY + 0.5),
+    new THREE.Vector2(rSabotBore, sabotBaseY + 2.9),
+    new THREE.Vector2(rSabotBore * 0.93, sabotBaseY + 3.4),
+    // Deeply scooped rear hourglass weight-reduction ramp
+    new THREE.Vector2(rSabotBore * 0.66, sabotBaseY + sabotLen * 0.24),
+    new THREE.Vector2(rSabotWaist, sabotBaseY + sabotLen * 0.4),
+    new THREE.Vector2(rSabotWaist, sabotBaseY + sabotLen * 0.64),
+    // Forward concave saddle flare up to full-bore front bourrelet ring
+    new THREE.Vector2(rSabotBore * 0.72, sabotBaseY + sabotLen * 0.79),
+    new THREE.Vector2(rSabotBore, sabotBaseY + sabotLen * 0.88),
+    new THREE.Vector2(rSabotBore, sabotTopY - 0.55),
+    new THREE.Vector2(rSabotBore * 0.92, sabotTopY),
+    // Forward aerodynamic air-scoop cavity
+    new THREE.Vector2(rSabotBore * 0.78, sabotTopY),
+    new THREE.Vector2(rDart + 0.55, sabotTopY - 3.6),
+    new THREE.Vector2(rDart + 0.16, sabotTopY - 4.2),
+  ];
+
+  const sabotParts: THREE.BufferGeometry[] = [];
+  if (cutaway) {
+    // 2 rear-side 84° petals with a crisp 6° longitudinal petal-split gap along the back spine (`phi = PI`)
+    const petalRanges: readonly [number, number][] = [
+      [Math.PI * 0.5, Math.PI * 0.482],
+      [Math.PI * 1.018, Math.PI * 0.482],
+    ];
+    for (const [phiStart, phiLen] of petalRanges) {
+      const petalLathe = new THREE.LatheGeometry(sabotPts, 18, phiStart, phiLen);
+      petalLathe.computeVertexNormals();
+      sabotParts.push(petalLathe);
+    }
+    // Watertight longitudinal cutaway end-caps on the z = 0 plane (+X and -X walls)
+    const rightCapShape = new THREE.Shape();
+    rightCapShape.moveTo(sabotPts[0].x, sabotPts[0].y);
+    for (let i = 1; i < sabotPts.length; i++) {
+      rightCapShape.lineTo(sabotPts[i].x, sabotPts[i].y);
+    }
+    rightCapShape.closePath();
+    sabotParts.push(new THREE.ShapeGeometry(rightCapShape));
+
+    const leftCapShape = new THREE.Shape();
+    const lastPt = sabotPts[sabotPts.length - 1];
+    leftCapShape.moveTo(-lastPt.x, lastPt.y);
+    for (let i = sabotPts.length - 2; i >= 0; i--) {
+      leftCapShape.lineTo(-sabotPts[i].x, sabotPts[i].y);
+    }
+    leftCapShape.closePath();
+    sabotParts.push(new THREE.ShapeGeometry(leftCapShape));
+  } else {
+    // 3 distinct 114° aerospace-aluminum sabot petals separated by crisp 6° discard slots
+    const petalSpan = (114 * Math.PI) / 180;
+    const slotOffset = (3 * Math.PI) / 180;
+    for (let p = 0; p < 3; p++) {
+      const phiStart = p * ((Math.PI * 2) / 3) + slotOffset;
+      const petal = new THREE.LatheGeometry(sabotPts, 18, phiStart, petalSpan);
+      petal.computeVertexNormals();
+      sabotParts.push(petal);
+    }
+  }
+  const coreSlugGeo = mergeSimpleGeometries(sabotParts);
+  for (const part of sabotParts) {
+    part.dispose();
+  }
+
+  // 7. Proud Copper/Polymer Obturator Driving Band + Ballistic Nose Tip Cap + Rear Tracer Ring (`penetratorGeo`)
+  const obturatorPts: THREE.Vector2[] = [
+    new THREE.Vector2(rSabotBore * 0.96, sabotBaseY + 0.7),
+    new THREE.Vector2(rSabotBore * 1.032, sabotBaseY + 0.85),
+    new THREE.Vector2(rSabotBore * 1.032, sabotBaseY + 2.45),
+    new THREE.Vector2(rSabotBore * 0.96, sabotBaseY + 2.6),
+  ];
+  const noseCapPts: THREE.Vector2[] = [
+    new THREE.Vector2(rDart * 0.42, ogiveStartY + 1.4),
+    new THREE.Vector2(rDart * 1.02, ogiveStartY + 1.4),
+    new THREE.Vector2(rDart * 0.76, ogiveStartY + 5.6),
+    new THREE.Vector2(rDart * 0.34, ogiveStartY + 5.6),
+  ];
+  const tracerCupPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, dartBaseY - 0.55),
+    new THREE.Vector2(rDart * 0.78, dartBaseY - 0.55),
+    new THREE.Vector2(rDart * 0.88, dartBaseY + 0.4),
+    new THREE.Vector2(0, dartBaseY + 0.4),
+  ];
+
+  const accentParts: THREE.BufferGeometry[] = [
+    buildRevolvedCutaway(obturatorPts, 40, cutaway),
+    buildRevolvedCutaway(noseCapPts, 32, cutaway),
+    buildRevolvedCutaway(tracerCupPts, 28, cutaway),
+  ];
+  const penetratorGeo = mergeSimpleGeometries(accentParts);
+  for (const part of accentParts) {
+    part.dispose();
+  }
+
+  return {
+    caseGeo,
+    primerCupGeo,
+    anvilGeo,
+    propellantGeo,
+    jacketGeo,
+    penetratorGeo,
+    coreSlugGeo,
+  };
+}
+
+/**
  * Generates exact 1:1 SAAMI/CIP standing geometries (`1 unit = 1 cm = 10 mm`)
  * for any of the 15 calibers in either longitudinal cutaway (`true`) or full (`false`) mode.
  */
@@ -1497,6 +1822,11 @@ export function getCartridgeLabMeshBundle(
   if (cached) return cached;
 
   const s = CARTRIDGE_LAB_SPECS[safeCaliber];
+  if (s.coreKind === 'apfsds_sabot_dart') {
+    const apfsdsBundle = buildApfsdsCutawayBundle(s, cutaway);
+    cutawayCache.set(key, apfsdsBundle);
+    return apfsdsBundle;
+  }
   const caseH = s.caseLengthMm / 10;
   const oalH = s.oalMm / 10;
   const rRim = s.rimDiameterMm / 20;
@@ -1700,7 +2030,6 @@ export function getCartridgeLabMeshBundle(
     s.coreKind === 'steel_core_lead_shirt' ||
     s.coreKind === 'subsonic_tungsten_ap' ||
     s.coreKind === 'm33_heavy_steel' ||
-    s.coreKind === 'apfsds_sabot_dart' ||
     s.coreKind === 'apcbc_he_shell';
 
   const boatTailH =

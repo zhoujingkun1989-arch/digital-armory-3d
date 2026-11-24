@@ -55,7 +55,6 @@ import {
   RANGE_CAMERA_MODES,
   RANGE_SPEED_OPTIONS,
   RANGE_TARGET_TYPES,
-  RANGE_YARDAGE_MARKERS_M,
   sampleProjectilePoseAtTimeInto,
   writeMachGradientColorRGB,
   type ProjectilePose3D,
@@ -122,6 +121,8 @@ const SPARK_COUNT_MAX = 48;
 const FLAG_SEGMENTS = 10;
 const FLAG_LENGTH_M = 2.65;
 const FLAG_HEIGHT_M = 0.72;
+/** High-visibility proving-ground yardage gates along the 1,000m firing corridor */
+const PROVING_GROUND_GATE_MARKERS_M = [100, 300, 600, 1000] as const;
 
 // Deterministic spark burst velocities for AR500 steel impact
 interface SparkSeed {
@@ -392,6 +393,160 @@ function createYardageSignTexture(
   return tex;
 }
 
+/**
+ * Generates paired procedural desert gravel-rock albedo (`SRGBColorSpace`) and
+ * linear micro-bump (`NoColorSpace`) CanvasTextures for the 1,000m proving ground.
+ * Caller owns `.dispose()` for both textures.
+ */
+function createProvingGroundTerrainTextures(): {
+  albedoTex: THREE.CanvasTexture;
+  bumpTex: THREE.CanvasTexture;
+} | null {
+  if (typeof document === 'undefined') return null;
+  const size = 512;
+
+  const albedoCanvas = document.createElement('canvas');
+  albedoCanvas.width = size;
+  albedoCanvas.height = size;
+  const aCtx = albedoCanvas.getContext('2d');
+
+  const bumpCanvas = document.createElement('canvas');
+  bumpCanvas.width = size;
+  bumpCanvas.height = size;
+  const bCtx = bumpCanvas.getContext('2d');
+
+  if (!aCtx || !bCtx) return null;
+
+  // Base neutral-warm compacted soil & gravel tone (multiplies smoothly with vertex colors)
+  aCtx.fillStyle = '#dcd5ca';
+  aCtx.fillRect(0, 0, size, size);
+  bCtx.fillStyle = '#808080';
+  bCtx.fillRect(0, 0, size, size);
+
+  // Deterministic LCG PRNG for reproducible high-contrast gravel, pebbles & stratified sedimentary grain
+  let seed = 0x51a7f3c9;
+  const rand = () => {
+    seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
+    return seed / 0xffffffff;
+  };
+
+  // Subtle horizontal sedimentary striations & wind-swept dust bands
+  for (let i = 0; i < 64; i++) {
+    const y = rand() * size;
+    const h = 2 + rand() * 8;
+    const shade = Math.round(196 + (rand() - 0.5) * 44);
+    aCtx.fillStyle = `rgba(${shade}, ${shade - 7}, ${shade - 18}, 0.24)`;
+    aCtx.fillRect(0, y, size, h);
+    const bShade = Math.round(128 + (rand() - 0.5) * 48);
+    bCtx.fillStyle = `rgba(${bShade}, ${bShade}, ${bShade}, 0.22)`;
+    bCtx.fillRect(0, y, size, h);
+  }
+
+  // Multi-scale desert pebbles & crushed gravel chips
+  for (let i = 0; i < 3600; i++) {
+    const x = rand() * size;
+    const y = rand() * size;
+    const r = 0.8 + rand() * 2.8;
+    const bright = rand() > 0.45;
+    const tone = bright
+      ? Math.round(212 + rand() * 38)
+      : Math.round(115 + rand() * 58);
+    aCtx.fillStyle = `rgba(${tone}, ${Math.max(0, tone - 8)}, ${Math.max(0, tone - 18)}, ${0.28 + rand() * 0.42})`;
+    aCtx.beginPath();
+    aCtx.arc(x, y, r, 0, Math.PI * 2);
+    aCtx.fill();
+
+    const bumpVal = bright
+      ? Math.round(165 + rand() * 80)
+      : Math.round(45 + rand() * 75);
+    bCtx.fillStyle = `rgba(${bumpVal}, ${bumpVal}, ${bumpVal}, 0.55)`;
+    bCtx.beginPath();
+    bCtx.arc(x, y, r * 1.08, 0, Math.PI * 2);
+    bCtx.fill();
+  }
+
+  const albedoTex = new THREE.CanvasTexture(albedoCanvas);
+  albedoTex.colorSpace = THREE.SRGBColorSpace;
+  albedoTex.wrapS = THREE.RepeatWrapping;
+  albedoTex.wrapT = THREE.RepeatWrapping;
+  albedoTex.repeat.set(44, 24);
+  albedoTex.anisotropy = 4;
+  albedoTex.needsUpdate = true;
+
+  const bumpTex = new THREE.CanvasTexture(bumpCanvas);
+  bumpTex.colorSpace = THREE.NoColorSpace;
+  bumpTex.wrapS = THREE.RepeatWrapping;
+  bumpTex.wrapT = THREE.RepeatWrapping;
+  bumpTex.repeat.set(44, 24);
+  bumpTex.anisotropy = 4;
+  bumpTex.needsUpdate = true;
+
+  return { albedoTex, bumpTex };
+}
+
+/**
+ * Generates an atmospheric horizon sky dome CanvasTexture (`SRGBColorSpace`)
+ * adapting seamlessly across Daylight, Tactical Dusk, and FLIR Thermal modes.
+ * Caller owns `.dispose()`.
+ */
+function createAtmosphericSkyTexture(
+  isLightTheme: boolean,
+  flirActive: boolean
+): THREE.CanvasTexture | null {
+  if (typeof document === 'undefined') return null;
+  const canvas = document.createElement('canvas');
+  canvas.width = 512;
+  canvas.height = 512;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+
+  const grad = ctx.createLinearGradient(0, 0, 0, 512);
+  if (flirActive) {
+    grad.addColorStop(0.0, '#0a1019');
+    grad.addColorStop(0.38, '#131d2b');
+    grad.addColorStop(0.51, '#26364b');
+    grad.addColorStop(0.56, '#1b2636');
+    grad.addColorStop(1.0, '#0d141f');
+  } else if (isLightTheme) {
+    grad.addColorStop(0.0, '#1d5696');
+    grad.addColorStop(0.28, '#5394cc');
+    grad.addColorStop(0.45, '#a8cde9');
+    grad.addColorStop(0.5, '#ead8c0');
+    grad.addColorStop(0.54, '#cbb190');
+    grad.addColorStop(1.0, '#8d755a');
+  } else {
+    grad.addColorStop(0.0, '#070e1c');
+    grad.addColorStop(0.28, '#10203a');
+    grad.addColorStop(0.45, '#243a59');
+    grad.addColorStop(0.5, '#4c5163');
+    grad.addColorStop(0.54, '#2a3344');
+    grad.addColorStop(1.0, '#121826');
+  }
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 512, 512);
+
+  // Subtle solar / twilight atmospheric scatter glow above the downrange horizon
+  if (!flirActive) {
+    const sunGrad = ctx.createRadialGradient(340, 232, 6, 340, 232, 118);
+    if (isLightTheme) {
+      sunGrad.addColorStop(0, 'rgba(255, 251, 235, 0.72)');
+      sunGrad.addColorStop(0.35, 'rgba(254, 240, 200, 0.28)');
+      sunGrad.addColorStop(1, 'rgba(254, 240, 200, 0)');
+    } else {
+      sunGrad.addColorStop(0, 'rgba(251, 191, 36, 0.34)');
+      sunGrad.addColorStop(0.4, 'rgba(245, 158, 11, 0.12)');
+      sunGrad.addColorStop(1, 'rgba(245, 158, 11, 0)');
+    }
+    ctx.fillStyle = sunGrad;
+    ctx.fillRect(0, 0, 512, 512);
+  }
+
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.needsUpdate = true;
+  return tex;
+}
+
 /** Creates a high-vis painted AR500 steel gong plate face texture with rings & center bullseye. */
 function createSteelGongFaceTexture(): THREE.CanvasTexture | null {
   if (typeof document === 'undefined') return null;
@@ -476,17 +631,25 @@ const YardageMarkerBoard: React.FC<{
     };
   }, [texture]);
 
-  const zSide = isTargetMarker ? 8.2 : -11.8;
+  const zSide = isTargetMarker ? 8.8 : -12.2;
+  const mirrorZ = isTargetMarker ? -12.2 : 12.2;
+  const beaconColor = flirActive
+    ? isTargetMarker
+      ? '#f8fafc'
+      : '#94a3b8'
+    : isTargetMarker
+      ? '#22d3ee'
+      : '#f59e0b';
 
   return (
     <group position={[rangeM, 0, 0]}>
-      {/* Painted range distance transverse line across gravel lane */}
+      {/* Painted range distance transverse stripe across compacted gravel corridor */}
       <mesh
-        position={[0, 0.04, 0]}
+        position={[0, 0.045, 0]}
         rotation={[-Math.PI / 2, 0, 0]}
         receiveShadow
       >
-        <planeGeometry args={[isTargetMarker ? 0.55 : 0.3, 21]} />
+        <planeGeometry args={[isTargetMarker ? 0.62 : 0.36, 23.6]} />
         <meshBasicMaterial
           color={
             flirActive
@@ -495,33 +658,54 @@ const YardageMarkerBoard: React.FC<{
                 : '#475569'
               : isTargetMarker
                 ? '#38bdf8'
-                : '#cbd5e1'
+                : '#f8fafc'
           }
           transparent
-          opacity={isTargetMarker ? 0.72 : 0.34}
+          opacity={isTargetMarker ? 0.78 : 0.42}
         />
       </mesh>
 
-      {/* Signpost beside lane angled subtly toward shooter & panoramic camera */}
-      <group position={[0, 0, zSide]} rotation={[0, -Math.PI * 0.36, 0]}>
-        <mesh position={[-1.2, 1.5, 0]}>
-          <cylinderGeometry args={[0.075, 0.085, 3.0, 8]} />
+      {/* Opposite Flanking Proving-Ground Gate Pylon with High-Vis Range Beacon */}
+      <group position={[0, 0, mirrorZ]}>
+        <mesh position={[0, 1.85, 0]}>
+          <boxGeometry args={[0.24, 3.7, 0.24]} />
+          <meshStandardMaterial
+            color={flirActive ? '#3b4d63' : '#334155'}
+            metalness={0.55}
+            roughness={0.48}
+          />
+        </mesh>
+        <mesh position={[0, 3.45, 0]}>
+          <boxGeometry args={[0.3, 0.62, 0.3]} />
+          <meshStandardMaterial
+            color={beaconColor}
+            emissive={beaconColor}
+            emissiveIntensity={flirActive ? 0.55 : 0.42}
+            roughness={0.35}
+          />
+        </mesh>
+      </group>
+
+      {/* Primary High-Visibility Yardage Gate Signboard angled toward shooter & overview cam */}
+      <group position={[0, 0, zSide]} rotation={[0, -Math.PI * 0.34, 0]}>
+        <mesh position={[-1.35, 1.75, 0]}>
+          <cylinderGeometry args={[0.085, 0.1, 3.5, 8]} />
           <meshStandardMaterial
             color={flirActive ? '#334155' : '#475569'}
             metalness={0.6}
             roughness={0.5}
           />
         </mesh>
-        <mesh position={[1.2, 1.5, 0]}>
-          <cylinderGeometry args={[0.075, 0.085, 3.0, 8]} />
+        <mesh position={[1.35, 1.75, 0]}>
+          <cylinderGeometry args={[0.085, 0.1, 3.5, 8]} />
           <meshStandardMaterial
             color={flirActive ? '#334155' : '#475569'}
             metalness={0.6}
             roughness={0.5}
           />
         </mesh>
-        <mesh position={[0, 2.65, 0]}>
-          <boxGeometry args={[3.2, 1.6, 0.14]} />
+        <mesh position={[0, 3.05, 0]}>
+          <boxGeometry args={[3.6, 1.8, 0.16]} />
           <meshStandardMaterial
             color={flirActive ? '#334155' : '#ffffff'}
             map={flirActive ? null : texture ?? undefined}
@@ -532,9 +716,9 @@ const YardageMarkerBoard: React.FC<{
                   : '#475569'
                 : '#1e293b'
             }
-            emissiveIntensity={flirActive ? 0.5 : 0.25}
-            roughness={0.48}
-            metalness={0.1}
+            emissiveIntensity={flirActive ? 0.5 : 0.28}
+            roughness={0.45}
+            metalness={0.12}
           />
         </mesh>
       </group>
@@ -1707,11 +1891,30 @@ const Range3DWorld: React.FC<{
     return q;
   }, [traj.machRing]);
 
-  // 6. Yardage markers & wind flags
+  // 6. Proving-ground yardage gates (100m / 300m / 600m / 1000m) & animated wind flags
   const yardageMarkers = useMemo(
-    () => RANGE_YARDAGE_MARKERS_M.filter((m) => m <= maxRangeM),
+    () => PROVING_GROUND_GATE_MARKERS_M.filter((m) => m <= maxRangeM),
     [maxRangeM]
   );
+
+  // 7. Procedural desert gravel-rock albedo/bump textures & atmospheric sky gradient dome
+  const terrainTextures = useMemo(() => createProvingGroundTerrainTextures(), []);
+  useEffect(() => {
+    return () => {
+      terrainTextures?.albedoTex.dispose();
+      terrainTextures?.bumpTex.dispose();
+    };
+  }, [terrainTextures]);
+
+  const skyDomeTex = useMemo(
+    () => createAtmosphericSkyTexture(isLightTheme, flirActive),
+    [isLightTheme, flirActive]
+  );
+  useEffect(() => {
+    return () => {
+      skyDomeTex?.dispose();
+    };
+  }, [skyDomeTex]);
 
   const windFlags = useMemo(
     () => computeWindFlagStates(maxRangeM, signedCrosswindMps),
@@ -1807,7 +2010,20 @@ const Range3DWorld: React.FC<{
         onFrameTelemetry={onFrameTelemetry}
       />
       <color attach="background" args={[skyHex]} />
-      <fog attach="fog" args={[fogHex, 420, 1480]} />
+      <fog attach="fog" args={[fogHex, 480, 1620]} />
+
+      {/* Atmospheric Horizon Sky Gradient Dome */}
+      {skyDomeTex && (
+        <mesh position={[500, 0, 0]} renderOrder={-10}>
+          <sphereGeometry args={[1850, 32, 20]} />
+          <meshBasicMaterial
+            map={skyDomeTex}
+            side={THREE.BackSide}
+            depthWrite={false}
+            fog={false}
+          />
+        </mesh>
+      )}
 
       {/* Proving Ground Desert / Alpine Lighting */}
       <hemisphereLight
@@ -1839,34 +2055,126 @@ const Range3DWorld: React.FC<{
         maxPolarAngle={Math.PI * 0.486}
       />
 
-      {/* Contoured 1,000m Desert / Alpine Terrain */}
+      {/* Contoured 1,000m Desert / Alpine Terrain with Procedural Gravel-Rock Albedo & Bump Maps */}
       <mesh geometry={terrainGeo} receiveShadow>
         <meshStandardMaterial
           vertexColors={!flirActive}
           color={flirActive ? '#2b394d' : '#ffffff'}
+          map={flirActive ? null : terrainTextures?.albedoTex ?? undefined}
+          bumpMap={terrainTextures?.bumpTex ?? undefined}
+          bumpScale={flirActive ? 0.25 : 0.62}
           emissive={flirActive ? '#17212f' : '#000000'}
           emissiveIntensity={flirActive ? 0.55 : 0}
-          roughness={0.92}
-          metalness={0.04}
-          flatShading
+          roughness={0.94}
+          metalness={0.03}
         />
       </mesh>
 
-      {/* Firing Line Concrete Pad & Stylized Bench Rest at x = 0 */}
-      <group position={[0, 0, 0]}>
-        <mesh position={[-1.4, 0.08, 0]}>
-          <boxGeometry args={[6.4, 0.16, 8.2]} />
-          <meshStandardMaterial
-            color={flirActive ? '#1e293b' : '#64748b'}
-            roughness={0.85}
+      {/* Flanking Proving-Ground Lane Boundary Curbs running from x = 0 to maxRangeM */}
+      {[-11.8, 11.8].map((laneZ) => (
+        <mesh
+          key={laneZ}
+          position={[maxRangeM * 0.5, 0.05, laneZ]}
+          rotation={[-Math.PI / 2, 0, 0]}
+        >
+          <planeGeometry args={[maxRangeM + 20, 0.28]} />
+          <meshBasicMaterial
+            color={flirActive ? '#475569' : '#f59e0b'}
+            transparent
+            opacity={flirActive ? 0.35 : 0.42}
           />
         </mesh>
-        {/* Shooting Bench & Muzzle Silhouette */}
-        <mesh position={[-0.75, 0.9, 0]}>
-          <boxGeometry args={[1.4, 0.08, 0.88]} />
+      ))}
+
+      {/* Weathered Concrete Firing Line Pad, 4-Legged Shooting Bench & Canvas Sandbag Rests */}
+      <group position={[0, 0, 0]}>
+        {/* Main Concrete Pad */}
+        <mesh position={[-1.4, 0.09, 0]} receiveShadow>
+          <boxGeometry args={[6.8, 0.18, 9.2]} />
           <meshStandardMaterial
-            color={flirActive ? '#263242' : '#475569'}
-            roughness={0.7}
+            color={flirActive ? '#223044' : '#787e87'}
+            bumpMap={terrainTextures?.bumpTex ?? undefined}
+            bumpScale={0.08}
+            roughness={0.9}
+          />
+        </mesh>
+        {/* Painted Safety Firing-Line Stripe at x = 1.85 */}
+        <mesh position={[1.82, 0.186, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+          <planeGeometry args={[0.18, 9.0]} />
+          <meshBasicMaterial
+            color={flirActive ? '#cbd5e1' : '#f59e0b'}
+            transparent
+            opacity={0.85}
+          />
+        </mesh>
+        {/* Heavy Reinforced Shooting Bench Tabletop + 4 Anchored Steel/Concrete Legs */}
+        <mesh position={[-0.78, 0.92, 0]} castShadow receiveShadow>
+          <boxGeometry args={[1.62, 0.1, 1.05]} />
+          <meshStandardMaterial
+            color={flirActive ? '#2c3b50' : '#57534e'}
+            roughness={0.78}
+            metalness={0.12}
+          />
+        </mesh>
+        {[
+          [-1.42, -0.4],
+          [-1.42, 0.4],
+          [-0.14, -0.4],
+          [-0.14, 0.4],
+        ].map(([lx, lz], i) => (
+          <mesh key={i} position={[lx, 0.54, lz]}>
+            <boxGeometry args={[0.1, 0.72, 0.1]} />
+            <meshStandardMaterial
+              color={flirActive ? '#1e293b' : '#334155'}
+              metalness={0.62}
+              roughness={0.48}
+            />
+          </mesh>
+        ))}
+        {/* Stacked Tan Ballistic Canvas Front Sandbag Rest + Rear Squeeze Bag */}
+        <group position={[-0.36, 1.05, 0]}>
+          <mesh scale={[1.15, 0.65, 1.4]} rotation={[0, 0.08, 0]}>
+            <sphereGeometry args={[0.18, 16, 12]} />
+            <meshStandardMaterial
+              color={flirActive ? '#475c77' : '#a88c64'}
+              roughness={0.95}
+              metalness={0.02}
+            />
+          </mesh>
+          <mesh position={[0.04, 0.14, 0]} scale={[1.05, 0.62, 1.2]}>
+            <sphereGeometry args={[0.16, 16, 12]} />
+            <meshStandardMaterial
+              color={flirActive ? '#526884' : '#b79b72'}
+              roughness={0.95}
+              metalness={0.02}
+            />
+          </mesh>
+          {/* Side sandbag ears cradling the barrel/forend */}
+          {[-0.12, 0.12].map((ez, ei) => (
+            <mesh key={ei} position={[0.04, 0.25, ez]} scale={[0.9, 0.9, 0.58]}>
+              <sphereGeometry args={[0.1, 12, 10]} />
+              <meshStandardMaterial
+                color={flirActive ? '#5a7290' : '#c0a67f'}
+                roughness={0.95}
+              />
+            </mesh>
+          ))}
+        </group>
+        {/* Rear Canvas Squeeze Bag */}
+        <mesh position={[-1.12, 1.04, 0]} scale={[0.92, 0.62, 0.85]}>
+          <sphereGeometry args={[0.14, 14, 10]} />
+          <meshStandardMaterial
+            color={flirActive ? '#4a5f7a' : '#9c805a'}
+            roughness={0.95}
+          />
+        </mesh>
+        {/* Adjustable Elevation Bipod / Shooting Rest Post */}
+        <mesh position={[-0.32, 1.38, 0]}>
+          <cylinderGeometry args={[0.022, 0.028, 0.52, 10]} />
+          <meshStandardMaterial
+            color={flirActive ? '#64748b' : '#1e293b'}
+            metalness={0.8}
+            roughness={0.32}
           />
         </mesh>
         {/* Stylized Barrel Aligned to Solved Bore Elevation & Wind Lead */}

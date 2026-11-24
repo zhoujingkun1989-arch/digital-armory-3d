@@ -35,6 +35,18 @@ import '../../styles/cartridges.css';
 
 const MAX_SMALL_ARMS_OAL_MM = 138.43; // .50 BMG reference 100% bar height
 const MAX_TANK_ORDNANCE_OAL_MM = 1150.0; // 125mm DTC10-125 APFSDS reference 100% bar height
+const MOBILE_DOSSIER_COLLAPSE_PX = 768;
+
+const CARTRIDGE_WING_BADGES = {
+  zh: {
+    smallArms: '1:1 弹药纵剖馆 · SAAMI / CIP',
+    heavyOrdnance: '1:1 重装炮弹与航炮馆 · 30–125MM',
+  },
+  en: {
+    smallArms: '1:1 ORDNANCE LAB · SAAMI / CIP',
+    heavyOrdnance: '1:1 HEAVY ORDNANCE LAB · 30–125MM',
+  },
+} as const;
 
 function formatOrdnanceEnergy(energyJ: number): string {
   if (energyJ >= 1_000_000) {
@@ -67,7 +79,15 @@ export const CartridgeLabView: React.FC = () => {
   const explodeSliderId = useId();
   const tableCaptionId = useId();
 
-  useEffect(() => () => setCartridgeDossierCollapsed(false), []);
+  useEffect(() => {
+    if (
+      typeof window !== 'undefined' &&
+      window.innerWidth <= MOBILE_DOSSIER_COLLAPSE_PX
+    ) {
+      setCartridgeDossierCollapsed(true);
+    }
+    return () => setCartridgeDossierCollapsed(false);
+  }, []);
 
   const lang = useAppStore((s) => s.lang);
   const activeCaliber = useAppStore((s) => s.activeCartridgeCaliber);
@@ -167,7 +187,9 @@ export const CartridgeLabView: React.FC = () => {
               isTankGallery ? 'is-armor-badge' : ''
             }`}
           >
-            {isTankGallery ? ui.tankOrdnanceBadge : ui.badge}
+            {isTankGallery
+              ? CARTRIDGE_WING_BADGES[lang].heavyOrdnance
+              : CARTRIDGE_WING_BADGES[lang].smallArms}
           </div>
           <div>
             <h1 className="brand-title">

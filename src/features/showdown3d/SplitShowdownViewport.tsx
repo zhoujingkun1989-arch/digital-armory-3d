@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { createPortal, useFrame, useThree } from '@react-three/fiber';
 import { getArmoryEnvironment } from '../../engine/canvas/GunsmithStageMat';
@@ -16,10 +16,49 @@ import { useWeaponPlugin } from '../../weapons/registry';
 import type { WeaponId, WeaponScaleProfile } from '../../weapons/types';
 import {
   computeSplitCameraFraming,
+  computeSplitViewportRects,
+  SPLIT_CAMERA_FOV_DEG,
   splitShowdownCameraStore,
+  type SplitViewportLayout,
 } from './splitShowdownCamera';
 
 const SPLIT_FIRING_RATE = 0.42;
+
+/**
+ * Generates a soft radial studio floor vignette texture fading cleanly from a subtle
+ * architectural pool into full alpha transparency at the rim (zero harsh square borders).
+ * Caller owns `.dispose()`.
+ */
+function createSplitStageVignetteTexture(
+  isLightStudio: boolean
+): THREE.CanvasTexture | null {
+  if (typeof document === 'undefined') return null;
+  const size = 256;
+  const canvas = document.createElement('canvas');
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+
+  const half = size * 0.5;
+  const grad = ctx.createRadialGradient(half, half, 8, half, half, half);
+  if (isLightStudio) {
+    grad.addColorStop(0, 'rgba(148, 163, 184, 0.34)');
+    grad.addColorStop(0.55, 'rgba(203, 213, 225, 0.16)');
+    grad.addColorStop(1, 'rgba(226, 232, 240, 0)');
+  } else {
+    grad.addColorStop(0, 'rgba(30, 58, 95, 0.44)');
+    grad.addColorStop(0.52, 'rgba(15, 23, 42, 0.24)');
+    grad.addColorStop(1, 'rgba(5, 8, 15, 0)');
+  }
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, size, size);
+
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.needsUpdate = true;
+  return tex;
+}
 
 function applyVirtualSceneEnv(
   targetScene: THREE.Scene,
@@ -71,13 +110,13 @@ function renderSplitScissorFrame(
   renderer: THREE.WebGLRenderer,
   cssW: number,
   cssH: number,
+  layout: SplitViewportLayout,
   sceneA: THREE.Scene,
   camA: THREE.PerspectiveCamera,
   sceneB: THREE.Scene,
   camB: THREE.PerspectiveCamera
 ): void {
-  const leftW = Math.floor(cssW * 0.5);
-  const rightW = cssW - leftW;
+  const { rectA, rectB } = layout;
   const prevAutoClear = renderer.autoClear;
   renderer.autoClear = false;
   renderer.setScissorTest(false);
@@ -85,14 +124,14 @@ function renderSplitScissorFrame(
   renderer.clear(true, true, true);
   renderer.setScissorTest(true);
 
-  renderer.setViewport(0, 0, leftW, cssH);
-  renderer.setScissor(0, 0, leftW, cssH);
+  renderer.setViewport(rectA.x, rectA.y, rectA.width, rectA.height);
+  renderer.setScissor(rectA.x, rectA.y, rectA.width, rectA.height);
   renderer.clearDepth();
   renderer.clearStencil();
   renderer.render(sceneA, camA);
 
-  renderer.setViewport(leftW, 0, rightW, cssH);
-  renderer.setScissor(leftW, 0, rightW, cssH);
+  renderer.setViewport(rectB.x, rectB.y, rectB.width, rectB.height);
+  renderer.setScissor(rectB.x, rectB.y, rectB.width, rectB.height);
   renderer.clearDepth();
   renderer.clearStencil();
   renderer.render(sceneB, camB);
@@ -128,6 +167,23 @@ const SplitWeaponSidePortal: React.FC<SplitSideSceneProps> = ({
   const scaleProfile: WeaponScaleProfile = manifest.workbenchMeta.scaleProfile;
   const isTank = scaleProfile === 'main_battle_tank';
   const k = isTank ? 10 : 1;
+  const isLightStudio = envPreset.id === 'blueprint_daylight';
+
+  const stageVignetteTex = useMemo(
+    () => createSplitStageVignetteTexture(isLightStudio),
+    [isLightStudio]
+  );
+  useEffect(() => {
+    return () => {
+      stageVignetteTex?.dispose();
+    };
+  }, [stageVignetteTex]);
+
+  const floorY = manifest.workbenchMeta.gridY;
+  const floorX = manifest.cameraPresets.iso.target[0];
+  const floorZ = manifest.cameraPresets.iso.target[2];
+  const gridCenterColor = isLightStudio ? '#64748b' : '#1e3a5f';
+  const gridSubColor = isLightStudio ? '#cbd5e1' : '#101d30';
 
   useEffect(() => {
     let alive = true;
@@ -186,6 +242,24 @@ const SplitWeaponSidePortal: React.FC<SplitSideSceneProps> = ({
         ]}
       />
 
+      {/* Subtle Studio Floor Grid & Soft Radial Depth Vignette */}
+      <group position={[floorX, floorY, floorZ]}>
+        {stageVignetteTex && (
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.05 * k, 0]}>
+            <circleGeometry args={[115 * k, 48]} />
+            <meshBasicMaterial
+              map={stageVignetteTex}
+              transparent
+              depthWrite={false}
+            />
+          </mesh>
+        )}
+        <gridHelper
+          args={[160 * k, 24, gridCenterColor, gridSubColor]}
+          position={[0, 0, 0]}
+        />
+      </group>
+
       {plugin && (
         <>
           {parts.map((part) => (
@@ -228,8 +302,8 @@ export const SplitShowdownViewport: React.FC = () => {
   const [rig] = useState<SplitRig>(() => ({
     sceneA: new THREE.Scene(),
     sceneB: new THREE.Scene(),
-    camA: new THREE.PerspectiveCamera(40, 1, 0.1, 1200),
-    camB: new THREE.PerspectiveCamera(40, 1, 0.1, 1200),
+    camA: new THREE.PerspectiveCamera(SPLIT_CAMERA_FOV_DEG, 1, 0.1, 1200),
+    camB: new THREE.PerspectiveCamera(SPLIT_CAMERA_FOV_DEG, 1, 0.1, 1200),
   }));
   const rigRef = useRef<SplitRig>(rig);
 
@@ -295,15 +369,14 @@ export const SplitShowdownViewport: React.FC = () => {
 
     const cssW = Math.max(2, size.width);
     const cssH = Math.max(2, size.height);
-    const leftW = Math.floor(cssW * 0.5);
-    const rightW = cssW - leftW;
+    const layout = computeSplitViewportRects(cssW, cssH);
     const activeRig = rigRef.current;
 
     configureSplitCamera(
       activeRig.camA,
       st.splitShowdownWeaponA,
       nextAnimT,
-      leftW / cssH,
+      layout.rectA.aspect,
       splitShowdownCameraStore.poseA.azimuth,
       splitShowdownCameraStore.poseA.polar,
       splitShowdownCameraStore.poseA.zoom
@@ -312,7 +385,7 @@ export const SplitShowdownViewport: React.FC = () => {
       activeRig.camB,
       st.splitShowdownWeaponB,
       nextAnimT,
-      rightW / cssH,
+      layout.rectB.aspect,
       splitShowdownCameraStore.poseB.azimuth,
       splitShowdownCameraStore.poseB.polar,
       splitShowdownCameraStore.poseB.zoom
@@ -322,6 +395,7 @@ export const SplitShowdownViewport: React.FC = () => {
       r3fState.gl,
       cssW,
       cssH,
+      layout,
       activeRig.sceneA,
       activeRig.camA,
       activeRig.sceneB,

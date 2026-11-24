@@ -806,3 +806,42 @@
 .cartridge-dock.is-tank-dock .cartridge-dock-card {
   min-width: 196px;
 }
+
+/* Mobile Responsive Specificity Fix (wins cleanly after lazy-load of cartridges.css) */
+@media (max-width: 768px) {
+  .cartridge-header {
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .cartridge-header .brand-sub {
+    display: none;
+  }
+
+  .cartridge-header-actions {
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .cartridge-header-actions::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (max-width: 440px) {
+  .cartridge-header .brand-block {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  .cartridge-header .brand-title {
+    font-size: 13.5px;
+    line-height: 1.25;
+  }
+
+  .cartridge-header .cartridge-lab-badge {
+    font-size: 9.5px;
+    padding: 2px 7px;
+  }
+}

@@ -195,7 +195,7 @@ export function applyLocationToStore(searchOverride?: string): void {
     }
   } else if (targetScreen === 'split_showdown') {
     const rawWA = params.get('weaponA');
-    const rawWB = params.get('weaponB');
+    const rawWB = params.get('weaponB') ?? params.get('splitWeapon');
     current.openSplitShowdown(
       isWeaponId(rawWA) ? rawWA : weaponId,
       isWeaponId(rawWB) ? rawWB : undefined
@@ -309,6 +309,7 @@ export function buildSearchString(
   const params = new URLSearchParams(rawSearch);
   const defaultScreen = getDefaultEntryScreen();
   params.set('weapon', weaponId);
+  params.delete('splitWeapon');
   if (screen === 'workbench') {
     params.set('screen', 'workbench');
     params.set('mode', mode);

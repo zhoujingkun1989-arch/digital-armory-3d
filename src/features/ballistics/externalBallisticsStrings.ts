@@ -188,6 +188,9 @@ export interface ExternalBallisticsUiCopy {
   range3dTermSwing: string;
   range3dTermGelDepth: string;
   range3dTermGelCavity: string;
+  controlsDeckToggleExpand: string;
+  controlsDeckToggleCollapse: string;
+  controlsDeckSummaryLabel: string;
 }
 
 export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
@@ -196,7 +199,7 @@ export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
   zh: {
     backBtn: '返回枪库',
     backTitle: '返回 3D 武器陈列馆',
-    badge: 'WP-14 · RK4 外弹道靶场',
+    badge: '1,000m 外弹道实弹试验场 · RK4',
     title: '1,000m 外弹道、横风偏流与跨音速衰减实验室',
     subtitle:
       '四阶龙格-库塔 3-DOF 质点弹道解算 · G1/G7 跨音速激波阻力 · 第一像面圣诞树分划板与狙击 DOPE 射表',
@@ -395,12 +398,15 @@ export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
     range3dTermSwing: '摆幅 · 动量冲量',
     range3dTermGelDepth: '明胶侵彻深度',
     range3dTermGelCavity: '瞬时空腔直径',
+    controlsDeckToggleExpand: '展开弹种与大气参数控制台',
+    controlsDeckToggleCollapse: '收起参数控制台',
+    controlsDeckSummaryLabel: '射场参数',
   },
 
   en: {
     backBtn: 'Back to Vault',
     backTitle: 'Return to 3D Armory Exhibition Vault',
-    badge: 'WP-14 · RK4 RANGE LAB',
+    badge: '1,000M PROVING GROUND · RK4',
     title: '1,000m External Ballistics, Wind Drift & Transonic Lab',
     subtitle:
       '4th-Order Runge-Kutta 3-DOF Point-Mass Solver · G1/G7 Transonic Wave Drag · FFP Christmas-Tree Reticle & Sniper DOPE Card',
@@ -608,6 +614,9 @@ export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
     range3dTermSwing: 'Pendulum · Impulse',
     range3dTermGelDepth: 'Gel Penetration',
     range3dTermGelCavity: 'Temp Stretch Cavity',
+    controlsDeckToggleExpand: 'Expand Caliber & Atmosphere Controls',
+    controlsDeckToggleCollapse: 'Collapse Controls',
+    controlsDeckSummaryLabel: 'Range Config',
   },
 };
 

@@ -13,7 +13,9 @@ import {
   Play,
   RotateCcw,
   Scissors,
+  SlidersHorizontal,
   Wrench,
+  X,
 } from 'lucide-react';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import {
@@ -40,9 +42,13 @@ import {
 } from '../armory/mechanismShowdownSpecs';
 import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
 import { StudioEnvironmentBar } from '../workbench/StudioEnvironmentBar';
-import { splitShowdownCameraStore } from './splitShowdownCamera';
+import {
+  SPLIT_MOBILE_BREAKPOINT_PX,
+  splitShowdownCameraStore,
+} from './splitShowdownCamera';
 import { SPLIT_SHOWDOWN_STRINGS } from './splitShowdownStrings';
 import '../../styles/split-showdown.css';
+import '../../styles/split-showdown-upgrade.css';
 
 const SPLIT_SPEEDS: readonly (0.25 | 0.5 | 1.0)[] = [0.25, 0.5, 1.0];
 
@@ -83,6 +89,22 @@ export const SplitShowdownOverlay: React.FC = () => {
   const [linkedOrbit, setLinkedOrbit] = useState(
     () => splitShowdownCameraStore.linkCameras
   );
+  const [isVerticalSplit, setIsVerticalSplit] = useState(false);
+  const [mobileToolsOpen, setMobileToolsOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const syncLayout = () => {
+      const mobile = window.innerWidth < SPLIT_MOBILE_BREAKPOINT_PX;
+      setIsVerticalSplit(mobile);
+      if (!mobile) {
+        setMobileToolsOpen(false);
+      }
+    };
+    syncLayout();
+    window.addEventListener('resize', syncLayout);
+    return () => window.removeEventListener('resize', syncLayout);
+  }, []);
 
   const sliderRef = useRef<HTMLInputElement>(null);
   const pctRef = useRef<HTMLSpanElement>(null);
@@ -205,16 +227,32 @@ export const SplitShowdownOverlay: React.FC = () => {
     playWorkbenchFoley('toggle_switch');
   };
 
+  const resolvePointerSide = (clientX: number, clientY: number): 'A' | 'B' => {
+    if (isVerticalSplit) {
+      return clientY < window.innerHeight * 0.5 ? 'A' : 'B';
+    }
+    return clientX < window.innerWidth * 0.5 ? 'A' : 'B';
+  };
+
+  const mobileToolsLabel = mobileToolsOpen
+    ? lang === 'zh'
+      ? '收起'
+      : 'Close'
+    : lang === 'zh'
+      ? '对比工具'
+      : 'Controls';
+
   return (
-    <div className="split-showdown-overlay">
+    <div
+      className={`split-showdown-overlay ${isVerticalSplit ? 'is-vertical-split' : ''}`}
+    >
       {/* Unobstructed full-canvas orbit & zoom layer */}
       <div
         className="split-drag-surface"
         onPointerDown={(e) => {
-          const half = window.innerWidth * 0.5;
           dragStateRef.current = {
             active: true,
-            side: e.clientX < half ? 'A' : 'B',
+            side: resolvePointerSide(e.clientX, e.clientY),
             lastX: e.clientX,
             lastY: e.clientY,
           };
@@ -242,8 +280,7 @@ export const SplitShowdownOverlay: React.FC = () => {
           dragStateRef.current.active = false;
         }}
         onWheel={(e) => {
-          const half = window.innerWidth * 0.5;
-          const side: 'A' | 'B' = e.clientX < half ? 'A' : 'B';
+          const side = resolvePointerSide(e.clientX, e.clientY);
           const factor = e.deltaY > 0 ? 1.07 : 0.935;
           splitShowdownCameraStore.zoomBy(side, factor);
         }}
@@ -254,8 +291,10 @@ export const SplitShowdownOverlay: React.FC = () => {
         {ui.vsBadge}
       </div>
 
-      {/* Top Navigation & Comparison Toolbar */}
-      <header className="split-topbar">
+      {/* Top Navigation & Comparison Toolbar (collapsible compact header on mobile < 768px) */}
+      <header
+        className={`split-topbar ${mobileToolsOpen ? 'is-mobile-expanded' : ''}`}
+      >
         <div className="split-topbar-left">
           <button
             type="button"
@@ -268,7 +307,7 @@ export const SplitShowdownOverlay: React.FC = () => {
 
           <button
             type="button"
-            className="split-btn"
+            className="split-btn split-desktop-only-btn"
             onClick={() => {
               queueMechanismShowdownLaunch('showdown', weaponA, weaponB);
               returnToArmory();
@@ -280,6 +319,23 @@ export const SplitShowdownOverlay: React.FC = () => {
 
           <StudioEnvironmentBar compact />
           <LanguageSwitchPill compact />
+
+          <button
+            type="button"
+            className={`split-btn split-mobile-tools-toggle ${mobileToolsOpen ? 'is-active' : ''}`}
+            aria-expanded={mobileToolsOpen}
+            onClick={() => {
+              playWorkbenchFoley('toggle_switch');
+              setMobileToolsOpen((prev) => !prev);
+            }}
+          >
+            {mobileToolsOpen ? (
+              <X size={13} aria-hidden="true" />
+            ) : (
+              <SlidersHorizontal size={13} aria-hidden="true" />
+            )}
+            <span>{mobileToolsLabel}</span>
+          </button>
         </div>
 
         <div className="split-topbar-center">
