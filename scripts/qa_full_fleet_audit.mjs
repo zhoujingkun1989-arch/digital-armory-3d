@@ -38,15 +38,21 @@ import {
   waitForTargetReadiness,
 } from './qa_visual_gate.mjs';
 
-export const FLEET_VALID_MODES = Object.freeze(['quick', 'full']);
+export const FLEET_VALID_MODES = Object.freeze(['quick', 'flagship', 'full']);
 export const FLEET_VALID_THEMES = Object.freeze(['dark', 'light']);
 export const FLEET_QUICK_REPRESENTATIVES = Object.freeze([
+  // 6 Flagship representatives across small arms, archery, rotary heavy ordnance & 1:1 MBT
   'ak15',
   'p08',
   'm1911',
   'lift33',
   'gau8',
   'ztz99a',
+  // 4 Centennial representatives (auto-included once WEAPON_IDS scales 34 -> 100)
+  'ak47',
+  'm200',
+  't90m',
+  'm777',
 ]);
 
 export const FLEET_MUSEUM_VIEWS = Object.freeze([
@@ -81,11 +87,20 @@ export const FLEET_MUSEUM_VIEWS = Object.freeze([
 ]);
 
 export const HEAVY_EXHIBIT_IDS = new Set([
+  // Flagship 1:1 MBTs & Aviation Heavy Ordnance
   'ztz99a',
   'm1a2',
   'leopard2a7',
   'tiger1',
   'gau8',
+  // Centennial 1:1 MBTs & Heavy Ordnance
+  't90m',
+  'challenger2',
+  'merkava4',
+  't34_85',
+  'm61vulcan',
+  'bofors40',
+  'm777',
 ]);
 
 const DEFAULT_SETTLE_MS = 900;
@@ -291,24 +306,132 @@ function logError(msg) {
   process.stderr.write(`[qa-fleet] ERROR: ${msg}\n`);
 }
 
+function stripTsComments(source) {
+  return source
+    .replace(/\/\*[\s\S]*?\*\//g, '')
+    .replace(/\/\/[^\n]*/g, '');
+}
+
+/**
+ * Extracts string-literal IDs from a `export const <NAME> = [ ... ] as const` tuple,
+ * recursively expanding any `...SPREAD_IDENTIFIER` references from `sources` in exact order.
+ */
+function parseConstIdTuple(constName, sources, visited = new Set()) {
+  if (visited.has(constName)) return [];
+  visited.add(constName);
+
+  const arrayRe = new RegExp(
+    `(?:export\\s+)?const\\s+${constName}\\s*=\\s*\\[([\\s\\S]*?)\\]\\s*(?:as\\s+const)?`,
+    'm'
+  );
+  const aliasRe = new RegExp(
+    `(?:export\\s+)?const\\s+${constName}\\s*=\\s*([A-Za-z0-9_]+)\\s*(?:as\\s+const)?\\s*;`,
+    'm'
+  );
+  for (const raw of sources) {
+    if (!raw) continue;
+    const clean = stripTsComments(raw);
+    const match = arrayRe.exec(clean);
+    if (!match) {
+      const aliasMatch = aliasRe.exec(clean);
+      if (aliasMatch) {
+        const resolved = parseConstIdTuple(
+          aliasMatch[1],
+          sources,
+          new Set(visited)
+        );
+        if (resolved.length > 0) return resolved;
+      }
+      continue;
+    }
+
+    const ids = [];
+    const seen = new Set();
+    const tokenRe = /\.\.\.([A-Za-z0-9_]+)|['"]([a-z0-9_-]+)['"]/g;
+    for (const tok of match[1].matchAll(tokenRe)) {
+      if (tok[1]) {
+        for (const spreadId of parseConstIdTuple(
+          tok[1],
+          sources,
+          new Set(visited)
+        )) {
+          if (!seen.has(spreadId)) {
+            seen.add(spreadId);
+            ids.push(spreadId);
+          }
+        }
+      } else if (tok[2]) {
+        if (!seen.has(tok[2])) {
+          seen.add(tok[2]);
+          ids.push(tok[2]);
+        }
+      }
+    }
+    if (ids.length > 0) return ids;
+  }
+
+  return [];
+}
+
+/**
+ * Dynamically discovers the 34 Blender 5.2 flagship exhibit IDs from
+ * `src/weapons/expansion/centennialTypes.ts` (`FLAGSHIP_34_IDS`), falling back
+ * to `public/models/*.glb` or the first 34 IDs in `discoverFleetWeaponIds`.
+ */
+export function discoverFlagshipWeaponIds(repoRoot = DEFAULT_REPO_ROOT) {
+  const centennialTypesPath = path.join(
+    repoRoot,
+    'src',
+    'weapons',
+    'expansion',
+    'centennialTypes.ts'
+  );
+  if (fs.existsSync(centennialTypesPath)) {
+    const centennialSrc = fs.readFileSync(centennialTypesPath, 'utf8');
+    const flagshipIds = parseConstIdTuple('FLAGSHIP_34_IDS', [centennialSrc]);
+    if (flagshipIds.length > 0) return flagshipIds;
+  }
+
+  const allIds = discoverFleetWeaponIds(repoRoot);
+  if (allIds.length <= 34) return allIds;
+
+  const modelsDir = path.join(repoRoot, 'public', 'models');
+  if (fs.existsSync(modelsDir)) {
+    const modelSet = new Set(
+      fs
+        .readdirSync(modelsDir)
+        .filter((f) => f.toLowerCase().endsWith('.glb'))
+        .map((f) => f.replace(/\.glb$/i, '').toLowerCase())
+    );
+    const orderedFlagships = allIds.filter((id) => modelSet.has(id));
+    if (orderedFlagships.length > 0) return orderedFlagships;
+  }
+
+  return allIds.slice(0, 34);
+}
+
 /**
  * Dynamically discovers every exhibit weapon ID from `src/weapons/types.ts`
- * (`WEAPON_IDS`), falling back to `src/weapons/registry.ts` or `public/models/*.glb`.
+ * (`WEAPON_IDS`, supporting both inline literals and `...FLAGSHIP_34_IDS` /
+ * `...CENTENNIAL_66_IDS` spreads resolved from `src/weapons/expansion/centennialTypes.ts`),
+ * falling back to `src/weapons/registry.ts` or `public/models/*.glb`.
  */
 export function discoverFleetWeaponIds(repoRoot = DEFAULT_REPO_ROOT) {
   const typesPath = path.join(repoRoot, 'src', 'weapons', 'types.ts');
+  const centennialTypesPath = path.join(
+    repoRoot,
+    'src',
+    'weapons',
+    'expansion',
+    'centennialTypes.ts'
+  );
   if (fs.existsSync(typesPath)) {
-    const src = fs.readFileSync(typesPath, 'utf8');
-    const blockMatch = /export\s+const\s+WEAPON_IDS\s*=\s*\[([\s\S]*?)\]\s*as\s*const/.exec(
-      src
-    );
-    if (blockMatch) {
-      const ids = [];
-      for (const m of blockMatch[1].matchAll(/['"]([a-z0-9_-]+)['"]/g)) {
-        ids.push(m[1]);
-      }
-      if (ids.length > 0) return ids;
-    }
+    const typesSrc = fs.readFileSync(typesPath, 'utf8');
+    const centennialSrc = fs.existsSync(centennialTypesPath)
+      ? fs.readFileSync(centennialTypesPath, 'utf8')
+      : '';
+    const ids = parseConstIdTuple('WEAPON_IDS', [typesSrc, centennialSrc]);
+    if (ids.length > 0) return ids;
   }
 
   const registryPath = path.join(repoRoot, 'src', 'weapons', 'registry.ts');
@@ -477,7 +600,7 @@ export function parseFleetCliArgs(argv) {
 }
 
 /**
- * Builds the complete ordered fleet target list for either `quick` or `full` mode.
+ * Builds the complete ordered fleet target list for `quick`, `flagship`, or `full` mode.
  */
 export function buildFleetAuditTargets(baseUrl, options = {}) {
   const repoRoot = options.repoRoot ?? DEFAULT_REPO_ROOT;
@@ -487,10 +610,17 @@ export function buildFleetAuditTargets(baseUrl, options = {}) {
   const lang = options.lang ?? null;
 
   const allWeaponIds = discoverFleetWeaponIds(repoRoot);
-  const selectedWeapons =
-    mode === 'quick'
-      ? FLEET_QUICK_REPRESENTATIVES.filter((id) => allWeaponIds.includes(id))
-      : allWeaponIds;
+  let selectedWeapons;
+  if (mode === 'quick') {
+    selectedWeapons = FLEET_QUICK_REPRESENTATIVES.filter((id) =>
+      allWeaponIds.includes(id)
+    );
+  } else if (mode === 'flagship') {
+    const flagshipIds = discoverFlagshipWeaponIds(repoRoot);
+    selectedWeapons = flagshipIds.filter((id) => allWeaponIds.includes(id));
+  } else {
+    selectedWeapons = allWeaponIds;
+  }
 
   const normalizedBase = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
   const appendCommonParams = (params) => {
@@ -536,24 +666,24 @@ export function buildFleetAuditTargets(baseUrl, options = {}) {
 }
 
 export function formatFleetHelpText() {
-  return `Digital Armory 3D — Full 34-Exhibit Automated WebGL Fleet Audit Harness
+  return `Digital Armory 3D — Automated WebGL Fleet Audit Harness (34 Flagships -> 100 Exhibits)
 
 Usage:
   npm run qa:fleet -- [options]
   node scripts/qa_full_fleet_audit.mjs [options]
 
 Options:
-  --mode=quick|full        Sweep 6 representative exhibits + 8 views (quick) or all 34 exhibits + 8 views (full, default)
-  --theme=dark|light       Studio environment theme (default: dark; light passes env=blueprint_daylight)
-  --cut                    Enable CT longitudinal cutaway (cut=1) on all workbench exhibit targets
-  --lang=zh|en             Optional UI language override
-  --url <http://...>       Target an already-running preview/dev server (otherwise auto-starts vite preview)
-  --settle-ms <ms>         Additional settle delay after readiness (default: ${DEFAULT_SETTLE_MS})
-  --timeout-ms <ms>        Per-target readiness timeout (default: ${DEFAULT_TIMEOUT_MS})
-  --executable-path <path> Override Chromium/Chrome binary path
-  --dry-run                Print target audit plan without launching Chromium
-  --json                   Output structured JSON report to stdout
-  -h, --help               Show this help text
+  --mode=quick|flagship|full Sweep representative exhibits + 8 views (quick), 34 flagships + 8 views (flagship), or all discovered exhibits + 8 views (full, default)
+  --theme=dark|light         Studio environment theme (default: dark; light passes env=blueprint_daylight)
+  --cut                      Enable CT longitudinal cutaway (cut=1) on all workbench exhibit targets
+  --lang=zh|en               Optional UI language override
+  --url <http://...>         Target an already-running preview/dev server (otherwise auto-starts vite preview)
+  --settle-ms <ms>           Additional settle delay after readiness (default: ${DEFAULT_SETTLE_MS})
+  --timeout-ms <ms>          Per-target readiness timeout (default: ${DEFAULT_TIMEOUT_MS})
+  --executable-path <path>   Override Chromium/Chrome binary path
+  --dry-run                  Print target audit plan without launching Chromium
+  --json                     Output structured JSON report to stdout
+  -h, --help                 Show this help text
 `;
 }
 
