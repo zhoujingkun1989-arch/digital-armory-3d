@@ -20,6 +20,7 @@ export {
   type SectionCutAxis,
 };
 import {
+  ACOUSTIC_ENVIRONMENT_PRESETS,
   type AcousticEnvironmentPreset,
   setAcousticEnvironment,
 } from '../engine/audio/mechanicalSoundEngine';
@@ -251,8 +252,10 @@ export interface AppState {
   fireLoop: boolean;
   fireSpeedMultiplier: 0.25 | 0.5 | 1.0;
 
-  /** Studio lighting/stage environment, post-processing, wear patina & adaptive GPU quality */
+  /** Studio lighting/stage environment, acoustic reverb room, post-processing, wear patina & adaptive GPU quality */
   environmentPreset: ArmoryEnvironmentPreset;
+  acousticEnvironment: AcousticEnvironmentPreset;
+  acousticEnvironmentManual: boolean;
   postFxEnabled: boolean;
   telemetryHudOpen: boolean;
   gpuTelemetryOpen: boolean;
@@ -381,9 +384,11 @@ export interface AppState {
   toggleFireLoop: () => void;
   setFireSpeedMultiplier: (mult: 0.25 | 0.5 | 1.0) => void;
 
-  // Studio Environment, PostFX, Service Wear & Adaptive Quality Actions
+  // Studio Environment, Acoustic Room, PostFX, Service Wear & Adaptive Quality Actions
   setEnvironmentPreset: (preset: ArmoryEnvironmentPreset) => void;
   cycleEnvironmentPreset: () => void;
+  setAcousticEnvironmentPreset: (preset: AcousticEnvironmentPreset) => void;
+  resetAcousticEnvironmentAuto: () => void;
   setPostFxEnabled: (enabled: boolean) => void;
   togglePostFx: () => void;
   setTelemetryHudOpen: (open: boolean) => void;
@@ -502,6 +507,11 @@ export const useAppStore = create<AppState>((set, get) => ({
   fireSpeedMultiplier: 0.5,
 
   environmentPreset: 'tactical_vault',
+  acousticEnvironment: resolveAcousticEnvironmentForState(
+    'tactical_vault',
+    'explode'
+  ),
+  acousticEnvironmentManual: false,
   postFxEnabled: true,
   telemetryHudOpen: true,
   gpuTelemetryOpen: false,
@@ -1317,7 +1327,16 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   setEnvironmentPreset: (environmentPreset) => {
     if (!ENVIRONMENT_PRESET_CYCLE.includes(environmentPreset)) return;
-    set({ environmentPreset });
+    const nextAcoustic = resolveAcousticEnvironmentForState(
+      environmentPreset,
+      get().mode
+    );
+    setAcousticEnvironment(nextAcoustic);
+    set({
+      environmentPreset,
+      acousticEnvironment: nextAcoustic,
+      acousticEnvironmentManual: false,
+    });
   },
 
   cycleEnvironmentPreset: () =>
@@ -1325,8 +1344,36 @@ export const useAppStore = create<AppState>((set, get) => ({
       const idx = ENVIRONMENT_PRESET_CYCLE.indexOf(s.environmentPreset);
       const next =
         ENVIRONMENT_PRESET_CYCLE[(idx + 1) % ENVIRONMENT_PRESET_CYCLE.length];
-      return { environmentPreset: next };
+      const nextAcoustic = resolveAcousticEnvironmentForState(next, s.mode);
+      setAcousticEnvironment(nextAcoustic);
+      return {
+        environmentPreset: next,
+        acousticEnvironment: nextAcoustic,
+        acousticEnvironmentManual: false,
+      };
     }),
+
+  setAcousticEnvironmentPreset: (preset) => {
+    if (!ACOUSTIC_ENVIRONMENT_PRESETS.includes(preset)) return;
+    setAcousticEnvironment(preset);
+    set({
+      acousticEnvironment: preset,
+      acousticEnvironmentManual: true,
+    });
+  },
+
+  resetAcousticEnvironmentAuto: () => {
+    const s = get();
+    const nextAcoustic = resolveAcousticEnvironmentForState(
+      s.environmentPreset,
+      s.mode
+    );
+    setAcousticEnvironment(nextAcoustic);
+    set({
+      acousticEnvironment: nextAcoustic,
+      acousticEnvironmentManual: false,
+    });
+  },
 
   setPostFxEnabled: (postFxEnabled) => set({ postFxEnabled }),
 
@@ -2026,6 +2073,11 @@ export const useAppStore = create<AppState>((set, get) => ({
       scaleWallModalOpen: false,
       recoilLabOpen: false,
       commandPaletteOpen: false,
+      acousticEnvironment: resolveAcousticEnvironmentForState(
+        s.environmentPreset,
+        'explode'
+      ),
+      acousticEnvironmentManual: false,
       selectedPartId: null,
       hiddenGroups: { ...DEFAULT_HIDDEN_GROUPS },
       cameraCommand: { preset: 'iso', seq: s.cameraCommand.seq + 1 },
@@ -2054,13 +2106,25 @@ syncLiveSectionBoxPlanes(
 
 // Keep convolution IR room preset & live CT-Scan section plane synchronized with store state
 useAppStore.subscribe((state, prevState) => {
-  if (
-    state.environmentPreset !== prevState.environmentPreset ||
-    state.mode !== prevState.mode
-  ) {
-    setAcousticEnvironment(
-      resolveAcousticEnvironmentForState(state.environmentPreset, state.mode)
+  const envChanged = state.environmentPreset !== prevState.environmentPreset;
+  const modeChanged = state.mode !== prevState.mode;
+  if (envChanged || (modeChanged && !state.acousticEnvironmentManual)) {
+    const nextAcoustic = resolveAcousticEnvironmentForState(
+      state.environmentPreset,
+      state.mode
     );
+    setAcousticEnvironment(nextAcoustic);
+    if (
+      state.acousticEnvironment !== nextAcoustic ||
+      (envChanged && state.acousticEnvironmentManual)
+    ) {
+      useAppStore.setState({
+        acousticEnvironment: nextAcoustic,
+        acousticEnvironmentManual: envChanged
+          ? false
+          : state.acousticEnvironmentManual,
+      });
+    }
   }
   const scaleProfile = getWeaponManifest(state.activeWeaponId).workbenchMeta
     .scaleProfile;

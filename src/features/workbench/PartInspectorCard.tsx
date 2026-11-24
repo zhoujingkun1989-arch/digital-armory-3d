@@ -6,6 +6,7 @@ import {
   ChevronRight,
   Crosshair,
   Focus,
+  Gauge,
   GitCompareArrows,
   Loader2,
   Maximize2,
@@ -17,7 +18,10 @@ import {
   VolumeX,
   X,
 } from 'lucide-react';
-import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
+import {
+  getWeaponBespokeAcousticSignature,
+  playWorkbenchFoley,
+} from '../../engine/audio/mechanicalSoundEngine';
 import { useActiveFiringPhase } from '../../engine/clock/playbackClock';
 import {
   getCachedPartGeometry,
@@ -319,10 +323,16 @@ export const PartInspectorCard: React.FC<PartInspectorCardProps> = ({
   const materialSwatchHex = MATERIAL_SWATCH_MAP[part.material] ?? '#94a3b8';
   const suggestedRivalId = getSuggestedRivalWeaponId(activeWeaponId) as WeaponId;
   const rivalShortLabel = getWeaponManifest(suggestedRivalId).shortLabel;
+  const bespokeAcoustics = getWeaponBespokeAcousticSignature(activeWeaponId);
 
   const handleOpenSplitShowdown = () => {
     playWorkbenchFoley('preset_detent');
     useAppStore.getState().openSplitShowdown(activeWeaponId, suggestedRivalId);
+  };
+
+  const handleOpenRecoilLab = () => {
+    playWorkbenchFoley('preset_detent');
+    useAppStore.getState().openRecoilLab();
   };
 
   const trackKey = `part:${activeWeaponId}:${lang}:${part.id}`;
@@ -608,16 +618,54 @@ export const PartInspectorCard: React.FC<PartInspectorCardProps> = ({
         )}
       </div>
 
-      <button
-        type="button"
-        className="inspector-split-cta"
-        onClick={handleOpenSplitShowdown}
-        title={ui.compareSplit3dTitle(rivalShortLabel)}
-        data-rival-id={suggestedRivalId}
-      >
-        <GitCompareArrows size={13} aria-hidden="true" />
-        <span>{ui.compareSplit3dBtn(rivalShortLabel)}</span>
-      </button>
+      {bespokeAcoustics && (
+        <div
+          className="inspector-acoustics-badge"
+          data-testid="inspector-bespoke-acoustics-badge"
+          data-acoustic-style={bespokeAcoustics.mechanismStyle}
+          title={
+            lang === 'en' ? bespokeAcoustics.labelEn : bespokeAcoustics.labelZh
+          }
+        >
+          <Volume2 size={11} aria-hidden="true" />
+          <span className="inspector-acoustics-kicker">
+            {lang === 'en' ? 'Bespoke Acoustics' : '专属机械声学'}
+          </span>
+          <span className="inspector-acoustics-summary">
+            {lang === 'en'
+              ? bespokeAcoustics.labelEn
+              : bespokeAcoustics.labelZh}
+          </span>
+        </div>
+      )}
+
+      <div className="inspector-lab-links">
+        <button
+          type="button"
+          className="inspector-split-cta"
+          onClick={handleOpenSplitShowdown}
+          title={ui.compareSplit3dTitle(rivalShortLabel)}
+          data-rival-id={suggestedRivalId}
+        >
+          <GitCompareArrows size={13} aria-hidden="true" />
+          <span>{ui.compareSplit3dBtn(rivalShortLabel)}</span>
+        </button>
+
+        <button
+          type="button"
+          className="inspector-recoil-cta"
+          data-testid="inspector-recoil-lab-btn"
+          onClick={handleOpenRecoilLab}
+          title={
+            lang === 'en'
+              ? 'Open Recoil Impulse, Gas-Jet & Muzzle-Climb Lab'
+              : '打开后坐冲量、燃气动量与枪口上跳物理实验室'
+          }
+        >
+          <Gauge size={13} aria-hidden="true" />
+          <span>{lang === 'en' ? 'Recoil Lab' : '后坐物理'}</span>
+        </button>
+      </div>
 
       <div className="inspector-actions">
         <button
