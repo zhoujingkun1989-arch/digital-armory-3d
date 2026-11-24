@@ -5,7 +5,9 @@ import {
   Flame,
   GitBranch,
   GitCompareArrows,
+  Hexagon,
   Play,
+  Ruler,
   Scale,
   Scissors,
   Sparkles,
@@ -13,7 +15,9 @@ import {
   Zap,
 } from 'lucide-react';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
+import { WEAPON_RIFLING_SPECS } from '../../engine/ballistics/riflingSpecs';
 import { UI_STRINGS } from '../../i18n/uiStrings';
+import type { LanguageCode } from '../../narration/types';
 import { preloadWeaponNarration } from '../../narration/narrationService';
 import { useAppStore } from '../../store/useAppStore';
 import { ARMORY_WEAPONS } from '../../weapons/manifests';
@@ -23,7 +27,9 @@ import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
 import { SPLIT_SHOWDOWN_STRINGS } from '../showdown3d/splitShowdownStrings';
 import {
   buildShowdownDualSvgGeometry,
+  buildShowdownRadarGeometry,
   computeShowdownPeakLabelLayout,
+  computeWeaponRadarMetrics,
   findMatchingRivalryPreset,
   getActiveShowdownWeaponIds,
   getClassicRivalryPresets,
@@ -33,8 +39,12 @@ import {
   getTaxonomyFamiliesForAxis,
   interpolateShowdownCurveAt,
   MECHANISM_TAXONOMY_AXES,
+  resolveFreePairSelection,
+  resolveFreePairSwap,
+  SHOWDOWN_RADAR_AXES,
   type ShowdownChartScaleMode,
   type ShowdownExhibitProfile,
+  type ShowdownRadarAxisId,
   type TaxonomyAxisId,
 } from './mechanismShowdownSpecs';
 import { WeaponSilhouetteSvg } from './WeaponSilhouetteSvg';
@@ -46,6 +56,8 @@ export interface MechanismShowdownModalProps {
   initialMode?: ShowdownViewMode;
   initialWeaponA?: string;
   initialWeaponB?: string;
+  /** Optional language override for deterministic SSR/unit verification */
+  langOverride?: LanguageCode;
   onClose: () => void;
 }
 
@@ -93,6 +105,7 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
   initialMode = 'matrix',
   initialWeaponA,
   initialWeaponB,
+  langOverride,
   onClose,
 }) => {
   const titleId = useId();
@@ -100,7 +113,8 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
   const gradBId = useId();
   const dialogRef = useRef<HTMLDialogElement>(null);
 
-  const lang = useAppStore((s) => s.lang);
+  const storeLang = useAppStore((s) => s.lang);
+  const lang = langOverride ?? storeLang;
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const enterWorkbench = useAppStore((s) => s.enterWorkbench);
   const openSplitShowdown = useAppStore((s) => s.openSplitShowdown);
@@ -129,6 +143,8 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
   const [scaleMode, setScaleMode] =
     useState<ShowdownChartScaleMode>('normalized');
   const [hoverProgress, setHoverProgress] = useState<number | null>(null);
+  const [focusedRadarAxis, setFocusedRadarAxis] =
+    useState<ShowdownRadarAxisId>('energy');
 
   const ui = UI_STRINGS[lang].mechanismShowdown;
 
@@ -238,6 +254,26 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
     [weaponAId, weaponBId, scaleMode]
   );
 
+  const radarA = useMemo(
+    () => computeWeaponRadarMetrics(weaponAId),
+    [weaponAId]
+  );
+  const radarB = useMemo(
+    () => computeWeaponRadarMetrics(weaponBId),
+    [weaponBId]
+  );
+  const radarGeo = useMemo(
+    () => buildShowdownRadarGeometry(radarA, radarB),
+    [radarA, radarB]
+  );
+
+  const riflingA = isWeaponId(weaponAId)
+    ? WEAPON_RIFLING_SPECS[weaponAId]
+    : null;
+  const riflingB = isWeaponId(weaponBId)
+    ? WEAPON_RIFLING_SPECS[weaponBId]
+    : null;
+
   const visibleAxes = useMemo(
     () =>
       axisFilter === 'all'
@@ -248,24 +284,33 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
 
   const handleSwapPair = () => {
     playWorkbenchFoley('toggle_switch');
-    setWeaponAId(weaponBId);
-    setWeaponBId(weaponAId);
+    const [nextA, nextB] = resolveFreePairSwap(weaponAId, weaponBId);
+    setWeaponAId(nextA);
+    setWeaponBId(nextB);
   };
 
   const handleSelectWeaponA = (nextId: string) => {
     playWorkbenchFoley('preset_detent');
-    if (nextId === weaponBId) {
-      setWeaponBId(weaponAId);
-    }
-    setWeaponAId(nextId);
+    const [nextA, nextB] = resolveFreePairSelection(
+      'A',
+      nextId,
+      weaponAId,
+      weaponBId
+    );
+    setWeaponAId(nextA);
+    setWeaponBId(nextB);
   };
 
   const handleSelectWeaponB = (nextId: string) => {
     playWorkbenchFoley('preset_detent');
-    if (nextId === weaponAId) {
-      setWeaponAId(weaponBId);
-    }
-    setWeaponBId(nextId);
+    const [nextA, nextB] = resolveFreePairSelection(
+      'B',
+      nextId,
+      weaponAId,
+      weaponBId
+    );
+    setWeaponAId(nextA);
+    setWeaponBId(nextB);
   };
 
   const handleStageFromMatrixChip = (clickedId: string) => {
@@ -590,70 +635,101 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
 
       {/* Main Scrollable Stage */}
       <div className="showdown-scroll-body">
-        {viewMode === 'matrix' ? (
-          <>
-            {/* Staging Dock Bridging Lineage Matrix -> A-vs-B Showdown */}
-            <section className="sd-staging-bar">
-              <div className="sd-staging-pair">
-                <span className="sd-staging-kicker">{ui.stagingLabel}</span>
+        {/* Universal Free-Pair 34 × 33 Custom Duel Builder (Always Accessible Across Matrix & Showdown) */}
+        <section
+          className="sd-staging-bar sd-custom-duel-bar"
+          data-testid="sd-custom-duel-bar"
+          aria-label={
+            lang === 'zh'
+              ? '34 × 33 全馆自由配对对决构建器'
+              : 'Free-Pair 34 x 33 Custom Duel Builder'
+          }
+        >
+          <div className="sd-custom-duel-pickers">
+            <span className="sd-custom-duel-badge">
+              {lang === 'zh'
+                ? `${allProfiles.length}×${Math.max(1, allProfiles.length - 1)} 自由对决`
+                : `${allProfiles.length}×${Math.max(1, allProfiles.length - 1)} Custom Duel`}
+            </span>
 
-                <div className="sd-stage-slot is-a">
-                  <span className="sd-slot-dot slot-a">A</span>
-                  <span className="sd-stage-bay">{profileA.bayCode}</span>
-                  <strong>{profileA.shortLabel}</strong>
-                  <span className="sd-stage-cal">
-                    {profileA.compactCaliber}
-                  </span>
-                </div>
+            <div className="sd-select-group is-a">
+              <span className="sd-slot-pill slot-a">{ui.slotALabel}</span>
+              <select
+                aria-label={ui.selectWeaponAAria}
+                data-testid="sd-custom-select-a"
+                className="sd-weapon-select"
+                value={weaponAId}
+                onChange={(e) => handleSelectWeaponA(e.target.value)}
+              >
+                {allProfiles.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.bayCode} · {p.shortLabel} ({p.compactCaliber})
+                  </option>
+                ))}
+              </select>
+            </div>
 
+            <button
+              type="button"
+              className="sd-swap-icon-btn"
+              data-testid="sd-custom-swap-btn"
+              onClick={handleSwapPair}
+              title={ui.swapPairTitle}
+              aria-label={ui.swapPairTitle}
+            >
+              <ArrowLeftRight size={14} aria-hidden="true" />
+            </button>
+
+            <div className="sd-select-group is-b">
+              <span className="sd-slot-pill slot-b">{ui.slotBLabel}</span>
+              <select
+                aria-label={ui.selectWeaponBAria}
+                data-testid="sd-custom-select-b"
+                className="sd-weapon-select"
+                value={weaponBId}
+                onChange={(e) => handleSelectWeaponB(e.target.value)}
+              >
+                {allProfiles.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.bayCode} · {p.shortLabel} ({p.compactCaliber})
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div className="sd-staging-right">
+            <div className="sd-staging-actions">
+              {viewMode === 'matrix' && (
                 <button
                   type="button"
-                  className="sd-swap-icon-btn"
-                  onClick={handleSwapPair}
-                  title={ui.swapPairTitle}
-                  aria-label={ui.swapPairTitle}
+                  className="sd-launch-showdown-btn"
+                  data-testid="sd-custom-compare-btn"
+                  onClick={() => {
+                    playWorkbenchFoley('preset_detent');
+                    setViewMode('showdown');
+                  }}
                 >
-                  <ArrowLeftRight size={13} aria-hidden="true" />
+                  <Scale size={14} aria-hidden="true" />
+                  <span>{ui.openShowdownCta}</span>
                 </button>
+              )}
+              <button
+                type="button"
+                className="sd-launch-split3d-btn"
+                data-testid="sd-staging-split3d-cta"
+                title={SPLIT_SHOWDOWN_STRINGS[lang].matrixLaunchTitle}
+                onClick={() => handleLaunchSplit3d(weaponAId, weaponBId)}
+              >
+                <Scissors size={13} aria-hidden="true" />
+                <span>{split3dCtaLabel}</span>
+              </button>
+            </div>
+          </div>
+        </section>
 
-                <div className="sd-stage-slot is-b">
-                  <span className="sd-slot-dot slot-b">B</span>
-                  <span className="sd-stage-bay">{profileB.bayCode}</span>
-                  <strong>{profileB.shortLabel}</strong>
-                  <span className="sd-stage-cal">
-                    {profileB.compactCaliber}
-                  </span>
-                </div>
-              </div>
-
-              <div className="sd-staging-right">
-                <span className="sd-staging-hint">{ui.stagingHint}</span>
-                <div className="sd-staging-actions">
-                  <button
-                    type="button"
-                    className="sd-launch-showdown-btn"
-                    onClick={() => {
-                      playWorkbenchFoley('preset_detent');
-                      setViewMode('showdown');
-                    }}
-                  >
-                    <Scale size={14} aria-hidden="true" />
-                    <span>{ui.openShowdownCta}</span>
-                  </button>
-                  <button
-                    type="button"
-                    className="sd-launch-split3d-btn"
-                    data-testid="sd-staging-split3d-cta"
-                    title={SPLIT_SHOWDOWN_STRINGS[lang].matrixLaunchTitle}
-                    onClick={() => handleLaunchSplit3d(weaponAId, weaponBId)}
-                  >
-                    <Scissors size={13} aria-hidden="true" />
-                    <span>{split3dCtaLabel}</span>
-                  </button>
-                </div>
-              </div>
-            </section>
-
+        {viewMode === 'matrix' ? (
+          <>
             {/* Axis Filter Bar */}
             <div className="sd-axis-filter-row" role="tablist">
               <button
@@ -868,50 +944,6 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
                   })}
                 </div>
               </div>
-
-              <div className="sd-selector-bar">
-                <div className="sd-select-group is-a">
-                  <span className="sd-slot-pill slot-a">{ui.slotALabel}</span>
-                  <select
-                    aria-label={ui.selectWeaponAAria}
-                    className="sd-weapon-select"
-                    value={weaponAId}
-                    onChange={(e) => handleSelectWeaponA(e.target.value)}
-                  >
-                    {allProfiles.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.bayCode} · {p.shortLabel} ({p.compactCaliber})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <button
-                  type="button"
-                  className="sd-swap-icon-btn"
-                  onClick={handleSwapPair}
-                  title={ui.swapPairTitle}
-                  aria-label={ui.swapPairTitle}
-                >
-                  <ArrowLeftRight size={14} aria-hidden="true" />
-                </button>
-
-                <div className="sd-select-group is-b">
-                  <span className="sd-slot-pill slot-b">{ui.slotBLabel}</span>
-                  <select
-                    aria-label={ui.selectWeaponBAria}
-                    className="sd-weapon-select"
-                    value={weaponBId}
-                    onChange={(e) => handleSelectWeaponB(e.target.value)}
-                  >
-                    {allProfiles.map((p) => (
-                      <option key={p.id} value={p.id}>
-                        {p.bayCode} · {p.shortLabel} ({p.compactCaliber})
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
             </section>
 
             {/* Rivalry Thesis / Synthesized Lineage Summary Banner + 1-Click 3D Split Cutaway */}
@@ -957,6 +989,284 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
               {renderExhibitHeroCard(profileA, 'A')}
               {renderExhibitHeroCard(profileB, 'B')}
             </div>
+
+            {/* Live 6-Axis Quantitative Engineering Radar SVG + Bore/Rifling & Scale Parity Strip */}
+            <section
+              className="sd-radar-section"
+              data-testid="sd-radar-card"
+            >
+              <div className="sd-card-head">
+                <div>
+                  <h3 className="sd-card-title">
+                    <Hexagon size={14} aria-hidden="true" />
+                    <span>
+                      {lang === 'zh'
+                        ? '六维定量工程雷达图（对数归一化 0–100）'
+                        : '6-Axis Quantitative Engineering Radar (Log-Normalized 0–100)'}
+                    </span>
+                  </h3>
+                  <p className="sd-card-sub">
+                    {lang === 'zh'
+                      ? '悬停或聚焦任意坐标轴查看初速、枪口动能、射速、紧凑度、机构复杂度与有效射程精确对比'
+                      : 'Hover or focus any axis to inspect exact velocity, energy, tempo, compactness, complexity & reach deltas'}
+                  </p>
+                </div>
+
+                <div className="sd-radar-legend">
+                  <span className="sd-radar-leg-pill is-a">
+                    <i className="sd-radar-dot is-a" aria-hidden="true" />
+                    <span>A · {profileA.shortLabel}</span>
+                  </span>
+                  <span className="sd-radar-leg-pill is-b">
+                    <i className="sd-radar-dot is-b" aria-hidden="true" />
+                    <span>B · {profileB.shortLabel}</span>
+                  </span>
+                </div>
+              </div>
+
+              <div className="sd-radar-layout">
+                <div className="sd-radar-svg-wrap">
+                  <svg
+                    viewBox={`0 0 ${radarGeo.width} ${radarGeo.height}`}
+                    className="sd-radar-svg"
+                    data-testid="sd-radar-svg"
+                    role="img"
+                    aria-label={
+                      lang === 'zh'
+                        ? `${profileA.shortLabel} 对比 ${profileB.shortLabel} 六维定量工程雷达图`
+                        : `6-axis engineering radar comparing ${profileA.shortLabel} versus ${profileB.shortLabel}`
+                    }
+                  >
+                    {/* Concentric Hexagonal Scale Rings (25 / 50 / 75 / 100) */}
+                    {radarGeo.ringPolygons.map((ring) => (
+                      <polygon
+                        key={ring.level}
+                        points={ring.points}
+                        className={`sd-radar-ring ${
+                          ring.level === 100 ? 'is-outer' : ''
+                        }`}
+                      />
+                    ))}
+
+                    {/* 6 Radial Axis Spokes */}
+                    {radarGeo.vertices.map((v) => (
+                      <line
+                        key={v.axisId}
+                        x1={radarGeo.cx}
+                        y1={radarGeo.cy}
+                        x2={v.axisEndX}
+                        y2={v.axisEndY}
+                        className={`sd-radar-spoke ${
+                          focusedRadarAxis === v.axisId ? 'is-focused' : ''
+                        }`}
+                      />
+                    ))}
+
+                    {/* Exhibit B Amber Overlay Polygon */}
+                    <polygon
+                      points={radarGeo.polygonB}
+                      className="sd-radar-poly-b"
+                    />
+
+                    {/* Exhibit A Cyan Overlay Polygon */}
+                    <polygon
+                      points={radarGeo.polygonA}
+                      className="sd-radar-poly-a"
+                    />
+
+                    {/* Interactive Vertex Nodes & Perimeter Axis Labels */}
+                    {radarGeo.vertices.map((v, idx) => {
+                      const meta = SHOWDOWN_RADAR_AXES[idx];
+                      const isFocused = focusedRadarAxis === v.axisId;
+                      const anchor: 'middle' | 'start' | 'end' =
+                        Math.abs(v.labelX - radarGeo.cx) < 8
+                          ? 'middle'
+                          : v.labelX > radarGeo.cx
+                            ? 'start'
+                            : 'end';
+                      return (
+                        <g
+                          key={v.axisId}
+                          className={`sd-radar-axis-group ${
+                            isFocused ? 'is-focused' : ''
+                          }`}
+                          onMouseEnter={() => setFocusedRadarAxis(v.axisId)}
+                        >
+                          <circle
+                            cx={v.xB}
+                            cy={v.yB}
+                            r={isFocused ? 4.8 : 3.4}
+                            className="sd-radar-node-b"
+                          />
+                          <circle
+                            cx={v.xA}
+                            cy={v.yA}
+                            r={isFocused ? 4.8 : 3.4}
+                            className="sd-radar-node-a"
+                          />
+                          <text
+                            x={v.labelX}
+                            y={v.labelY + 3.5}
+                            textAnchor={anchor}
+                            className="sd-radar-axis-label"
+                          >
+                            {lang === 'zh' ? meta.shortZh : meta.shortEn}
+                          </text>
+                        </g>
+                      );
+                    })}
+                  </svg>
+                </div>
+
+                {/* Interactive 6-Axis Numeric Breakdown & Hover/Focus Tooltip */}
+                <div
+                  className="sd-radar-axis-list"
+                  data-testid="sd-radar-axis-table"
+                >
+                  {SHOWDOWN_RADAR_AXES.map((axis) => {
+                    const isFocused = focusedRadarAxis === axis.id;
+                    const scoreA = radarA[axis.id];
+                    const scoreB = radarB[axis.id];
+                    const formatRaw = (r: typeof radarA.raw): string => {
+                      switch (axis.id) {
+                        case 'velocity':
+                          return `${Math.round(r.velocityMps)} m/s`;
+                        case 'energy':
+                          return formatEnergyJ(r.energyJ);
+                        case 'cyclicRate':
+                          return `${Math.round(r.effectiveRpm)} RPM`;
+                        case 'compactness':
+                          return `${Math.round(r.overallLengthMm)} mm`;
+                        case 'partComplexity':
+                          return lang === 'zh'
+                            ? `${r.partsCount} 零件`
+                            : `${r.partsCount} parts`;
+                        case 'rangeReach':
+                          return `${Math.round(r.effectiveRangeM).toLocaleString('en-US')} m`;
+                      }
+                    };
+                    return (
+                      <button
+                        key={axis.id}
+                        type="button"
+                        className={`sd-radar-axis-row ${
+                          isFocused ? 'is-focused' : ''
+                        }`}
+                        data-radar-axis={axis.id}
+                        aria-pressed={isFocused}
+                        onMouseEnter={() => setFocusedRadarAxis(axis.id)}
+                        onFocus={() => setFocusedRadarAxis(axis.id)}
+                        onClick={() => setFocusedRadarAxis(axis.id)}
+                      >
+                        <div className="sd-radar-row-top">
+                          <span className="sd-radar-row-name">
+                            {lang === 'zh' ? axis.labelZh : axis.labelEn}
+                          </span>
+                          <span className="sd-radar-row-scores">
+                            <strong className="is-a">{scoreA}</strong>
+                            <span className="sd-radar-vs-sep">/</span>
+                            <strong className="is-b">{scoreB}</strong>
+                          </span>
+                        </div>
+                        <div className="sd-radar-row-raws">
+                          <span className="is-a">
+                            A: {formatRaw(radarA.raw)}
+                          </span>
+                          <span className="is-b">
+                            B: {formatRaw(radarB.raw)}
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Bore & Rifling + 1:1 Scale & Mass Parity Strip */}
+              <div
+                className="sd-rifling-scale-strip"
+                data-testid="sd-rifling-scale-strip"
+              >
+                <div className="sd-parity-cell">
+                  <span className="sd-parity-kicker">
+                    <Ruler size={11} aria-hidden="true" />
+                    <span>
+                      {lang === 'zh'
+                        ? `A · ${profileA.shortLabel} 膛线与内膛`
+                        : `A · ${profileA.shortLabel} Bore & Rifling`}
+                    </span>
+                  </span>
+                  <span className="sd-parity-value">
+                    {riflingA && riflingA.kind !== 'none'
+                      ? `${lang === 'zh' ? riflingA.labelZh : riflingA.labelEn} (Ø${riflingA.boreDiameterMm} mm)`
+                      : lang === 'zh'
+                        ? '复合弓弩机械推进（无膛线枪管）'
+                        : 'Compound Archery Elastic Propulsion (Non-Barreled)'}
+                  </span>
+                </div>
+
+                <div className="sd-parity-cell is-ratio">
+                  <span className="sd-parity-kicker">
+                    <Scale size={11} aria-hidden="true" />
+                    <span>
+                      {lang === 'zh' ? '1:1 尺度与质量比' : '1:1 Scale & Mass Ratio'}
+                    </span>
+                  </span>
+                  <span className="sd-parity-value tabular">
+                    {lang === 'zh' ? '长度 ' : 'OAL '}
+                    <strong>
+                      {(
+                        Math.max(
+                          profileA.overallLengthMm,
+                          profileB.overallLengthMm
+                        ) /
+                        Math.max(
+                          1,
+                          Math.min(
+                            profileA.overallLengthMm,
+                            profileB.overallLengthMm
+                          )
+                        )
+                      ).toFixed(2)}
+                      ×
+                    </strong>
+                    {' · '}
+                    {lang === 'zh' ? '质量 ' : 'Mass '}
+                    <strong>
+                      {(
+                        Math.max(profileA.emptyWeightKg, profileB.emptyWeightKg) /
+                        Math.max(
+                          0.05,
+                          Math.min(
+                            profileA.emptyWeightKg,
+                            profileB.emptyWeightKg
+                          )
+                        )
+                      ).toFixed(2)}
+                      ×
+                    </strong>
+                  </span>
+                </div>
+
+                <div className="sd-parity-cell is-b">
+                  <span className="sd-parity-kicker">
+                    <Ruler size={11} aria-hidden="true" />
+                    <span>
+                      {lang === 'zh'
+                        ? `B · ${profileB.shortLabel} 膛线与内膛`
+                        : `B · ${profileB.shortLabel} Bore & Rifling`}
+                    </span>
+                  </span>
+                  <span className="sd-parity-value">
+                    {riflingB && riflingB.kind !== 'none'
+                      ? `${lang === 'zh' ? riflingB.labelZh : riflingB.labelEn} (Ø${riflingB.boreDiameterMm} mm)`
+                      : lang === 'zh'
+                        ? '复合弓弩机械推进（无膛线枪管）'
+                        : 'Compound Archery Elastic Propulsion (Non-Barreled)'}
+                  </span>
+                </div>
+              </div>
+            </section>
 
             {/* Dual-Curve Quantitative SVG Chart + 6-Dimension Comparison Bars */}
             <div className="sd-quant-grid">
