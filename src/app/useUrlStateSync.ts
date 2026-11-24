@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   clampSectionCutOffset,
   type SectionCutAxis,
@@ -10,6 +10,7 @@ import type {
 import { useAttachmentStore } from '../engine/attachments/attachmentStore';
 import { playWorkbenchFoley } from '../engine/audio/mechanicalSoundEngine';
 import type { ArmoryEnvironmentPreset } from '../engine/canvas/GunsmithStageMat';
+import { playbackClock } from '../engine/clock/playbackClock';
 import {
   CARTRIDGE_LAB_SPECS,
   isCaliberProfile,
@@ -57,6 +58,7 @@ export interface WorkbenchDeepLinkOptions {
   muzzle?: MuzzleAttachmentId;
   optic?: OpticAttachmentId;
   selectedPartId?: string | null;
+  explodeProgress?: number;
 }
 
 const VALID_SECTION_AXES = new Set<SectionCutAxis>(['z', 'x', 'y', 'box']);
@@ -138,6 +140,39 @@ export function parseOpticUrlParam(
     return norm;
   }
   return null;
+}
+
+/**
+ * Parses optional `?explode=<0..1>` Workbench disassembly progress query param,
+ * clamping finite numeric values cleanly into `[0, 1]` and returning `null`
+ * when omitted or non-numeric.
+ */
+export function parseExplodeUrlParam(
+  raw: string | null | undefined
+): number | null {
+  if (raw === null || raw === undefined) return null;
+  const trimmed = raw.trim();
+  if (trimmed.length === 0) return null;
+  const parsed = Number(trimmed);
+  if (!Number.isFinite(parsed)) return null;
+  const clamped = Math.max(0, Math.min(1, parsed));
+  return Math.round(clamped * 1000) / 1000;
+}
+
+/**
+ * Serializes Workbench explode progress into canonical `?explode=` param,
+ * omitting `0` (assembled default) so default URLs stay clean.
+ */
+export function serializeExplodeUrlParam(
+  progress: number | undefined
+): string | null {
+  if (typeof progress !== 'number' || !Number.isFinite(progress)) {
+    return null;
+  }
+  const clamped = Math.max(0, Math.min(1, progress));
+  if (clamped <= 0.005) return null;
+  const rounded = Math.round(clamped * 100) / 100;
+  return String(rounded);
 }
 
 const copyLinkToastListeners = new Set<() => void>();
@@ -461,6 +496,15 @@ export function applyLocationToStore(searchOverride?: string): void {
     const wbStore = useAppStore.getState();
     const scaleProfile = getWeaponManifest(weaponId).workbenchMeta.scaleProfile;
 
+    // Hydrate optional `?explode=<0..1>` disassembly progress on Workbench load
+    const parsedExplode = parseExplodeUrlParam(params.get('explode'));
+    if (parsedExplode !== null && rawMode !== 'firing') {
+      if (wbStore.mode !== 'explode') {
+        wbStore.setMode('explode');
+      }
+      playbackClock.setTargetProgress(parsedExplode, true);
+    }
+
     // Apply X-Ray first so explicit `cut=1` takes visual precedence when both are present
     const rawXray = params.get('xray')?.trim().toLowerCase();
     if (rawXray === '1' || rawXray === 'true') {
@@ -640,6 +684,8 @@ export function applyLocationToStore(searchOverride?: string): void {
     useAppStore.getState().openScaleWallModal();
   } else if (rawPanel === 'recoil') {
     useAppStore.getState().openRecoilLab();
+  } else if (rawPanel === 'poster') {
+    useAppStore.getState().openPosterModal({ weaponId });
   } else if (rawPanel === 'crew') {
     const targetId = isTankWeapon(weaponId) ? weaponId : 'ztz99a';
     const st = useAppStore.getState();
@@ -662,6 +708,9 @@ export function applyLocationToStore(searchOverride?: string): void {
     if (liveModalState.recoilLabOpen) {
       liveModalState.closeRecoilLab();
     }
+    if (liveModalState.posterShareModalOpen) {
+      liveModalState.closePosterModal();
+    }
   }
 }
 
@@ -679,7 +728,8 @@ export function buildSearchString(
   workbenchDeepLink?: WorkbenchDeepLinkOptions,
   scaleWallModalOpen?: boolean,
   recoilLabOpen?: boolean,
-  environmentPreset?: ArmoryEnvironmentPreset
+  environmentPreset?: ArmoryEnvironmentPreset,
+  posterShareModalOpen?: boolean
 ): string {
   const rawSearch =
     baseSearch ?? (typeof window !== 'undefined' ? window.location.search : '');
@@ -766,10 +816,28 @@ export function buildSearchString(
       } else {
         params.delete('part');
       }
+
+      if (mode === 'explode') {
+        if (workbenchDeepLink.explodeProgress !== undefined) {
+          const serializedExplode = serializeExplodeUrlParam(
+            workbenchDeepLink.explodeProgress
+          );
+          if (serializedExplode) {
+            params.set('explode', serializedExplode);
+          } else {
+            params.delete('explode');
+          }
+        }
+      } else {
+        params.delete('explode');
+      }
+    } else if (mode !== 'explode') {
+      params.delete('explode');
     }
   } else if (screen === 'split_showdown') {
     params.set('screen', 'split_showdown');
     params.delete('mode');
+    params.delete('explode');
     params.delete('caliber');
     if (sectionCut) {
       params.set('cut', '1');
@@ -790,6 +858,7 @@ export function buildSearchString(
   } else if (screen === 'cartridges') {
     params.set('screen', 'cartridges');
     params.delete('mode');
+    params.delete('explode');
     params.delete('cut');
     params.delete('axis');
     params.delete('slice');
@@ -808,6 +877,7 @@ export function buildSearchString(
   } else if (screen === 'ballistics') {
     params.set('screen', 'ballistics');
     params.delete('mode');
+    params.delete('explode');
     params.delete('cut');
     params.delete('axis');
     params.delete('slice');
@@ -824,6 +894,7 @@ export function buildSearchString(
     );
   } else {
     params.delete('mode');
+    params.delete('explode');
     params.delete('caliber');
     params.delete('cut');
     params.delete('axis');
@@ -845,9 +916,12 @@ export function buildSearchString(
     params.set('panel', 'scalewall');
   } else if (recoilLabOpen === true) {
     params.set('panel', 'recoil');
+  } else if (posterShareModalOpen === true) {
+    params.set('panel', 'poster');
   } else if (
     (scaleWallModalOpen === false && params.get('panel') === 'scalewall') ||
-    (recoilLabOpen === false && params.get('panel') === 'recoil')
+    (recoilLabOpen === false && params.get('panel') === 'recoil') ||
+    (posterShareModalOpen === false && params.get('panel') === 'poster')
   ) {
     params.delete('panel');
   }
@@ -896,14 +970,31 @@ export function useUrlStateSync(): void {
   const splitShowdownWeaponB = useAppStore((s) => s.splitShowdownWeaponB);
   const scaleWallModalOpen = useAppStore((s) => s.scaleWallModalOpen);
   const recoilLabOpen = useAppStore((s) => s.recoilLabOpen);
+  const posterShareModalOpen = useAppStore((s) => s.posterShareModalOpen);
+  const isPlaying = useAppStore((s) => s.isPlaying);
   const environmentPreset = useAppStore((s) => s.environmentPreset);
   const activeLoadout = useAttachmentStore((s) => s.loadouts[activeWeaponId]);
   const activeMuzzle: MuzzleAttachmentId = activeLoadout?.muzzle ?? 'none';
   const activeOptic: OpticAttachmentId = activeLoadout?.optic ?? 'none';
 
+  const [syncedExplodeProgress, setSyncedExplodeProgress] = useState<number>(
+    () => Math.round(playbackClock.getState().targetProgress * 100) / 100
+  );
+
   const initializedRef = useRef(false);
   const applyingPopStateRef = useRef(false);
   const prevScreenRef = useRef<AppScreen>(screen);
+
+  // Track discrete Workbench explode progress updates (skip 60Hz churn during continuous playback)
+  useEffect(() => {
+    return playbackClock.subscribeExplodeProgress((nextT) => {
+      if (useAppStore.getState().isPlaying) return;
+      const quantized = Math.round(nextT * 100) / 100;
+      setSyncedExplodeProgress((prev) =>
+        prev === quantized ? prev : quantized
+      );
+    });
+  }, []);
 
   // Hydrate initial store state from URL & listen to browser back/forward
   useEffect(() => {
@@ -990,10 +1081,16 @@ export function useUrlStateSync(): void {
       live.splitShowdownWeaponB !== splitShowdownWeaponB ||
       live.scaleWallModalOpen !== scaleWallModalOpen ||
       live.recoilLabOpen !== recoilLabOpen ||
+      live.posterShareModalOpen !== posterShareModalOpen ||
       live.environmentPreset !== environmentPreset
     ) {
       return;
     }
+
+    const liveExplodeProgress =
+      mode === 'explode'
+        ? Math.round(playbackClock.getState().targetProgress * 100) / 100
+        : 0;
 
     const nextSearch = buildSearchString(
       activeWeaponId,
@@ -1014,10 +1111,12 @@ export function useUrlStateSync(): void {
         muzzle: activeMuzzle,
         optic: activeOptic,
         selectedPartId,
+        explodeProgress: liveExplodeProgress,
       },
       scaleWallModalOpen,
       recoilLabOpen,
-      environmentPreset
+      environmentPreset,
+      posterShareModalOpen
     );
     if (window.location.search === nextSearch) {
       prevScreenRef.current = screen;
@@ -1051,6 +1150,9 @@ export function useUrlStateSync(): void {
     splitShowdownWeaponB,
     scaleWallModalOpen,
     recoilLabOpen,
+    posterShareModalOpen,
+    isPlaying,
+    syncedExplodeProgress,
     environmentPreset,
   ]);
 }

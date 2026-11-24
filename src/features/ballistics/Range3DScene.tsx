@@ -1015,6 +1015,110 @@ const AnimatedWindFlags: React.FC<{
 };
 
 // ============================================================================
+// Schlieren-Photography Optical Mach-Cone Calibration (Cycle 14A)
+// ============================================================================
+export const SCHLIEREN_MACH_OUTER_OPACITY_SCALE = 0.52;
+export const SCHLIEREN_MACH_OUTER_FLIR_OPACITY_SCALE = 0.64;
+export const SCHLIEREN_MACH_LIP_OPACITY_SCALE = 0.68;
+export const SCHLIEREN_MACH_LIP_FLIR_OPACITY_SCALE = 0.76;
+export const SCHLIEREN_MACH_PEAK_ALPHA_CAP = 0.28;
+
+/**
+ * Pure Schlieren optical translucency curve for the 3D supersonic Mach-Cone:
+ * softens peak alpha by ~33–35% vs solid additive mist and clamps strictly
+ * beneath `SCHLIEREN_MACH_PEAK_ALPHA_CAP` so grazing Fresnel rim refraction
+ * reads like high-speed optical Schlieren photography instead of bright fog.
+ */
+export function computeSchlierenMachConeOpacities(
+  baseOpacity: number,
+  flirActive: boolean
+): { outerOpacity: number; lipOpacity: number } {
+  const safeBase = Number.isFinite(baseOpacity)
+    ? Math.max(0, Math.min(1, baseOpacity))
+    : 0;
+  const outerOpacity = Math.min(
+    SCHLIEREN_MACH_PEAK_ALPHA_CAP,
+    safeBase *
+      (flirActive
+        ? SCHLIEREN_MACH_OUTER_FLIR_OPACITY_SCALE
+        : SCHLIEREN_MACH_OUTER_OPACITY_SCALE)
+  );
+  const lipOpacity = Math.min(
+    SCHLIEREN_MACH_PEAK_ALPHA_CAP,
+    safeBase *
+      (flirActive
+        ? SCHLIEREN_MACH_LIP_FLIR_OPACITY_SCALE
+        : SCHLIEREN_MACH_LIP_OPACITY_SCALE)
+  );
+  return { outerOpacity, lipOpacity };
+}
+
+const SCHLIEREN_MACH_CONE_VERT = /* glsl */ `
+  varying vec2 vUv;
+  varying vec3 vViewNormal;
+  varying vec3 vViewDir;
+
+  void main() {
+    vUv = uv;
+    vViewNormal = normalize(normalMatrix * normal);
+    vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+    vViewDir = normalize(-mvPos.xyz);
+    gl_Position = projectionMatrix * mvPos;
+  }
+`;
+
+const SCHLIEREN_MACH_CONE_FRAG = /* glsl */ `
+  uniform vec3 uColor;
+  uniform float uOpacity;
+  uniform float uRimPower;
+  uniform float uNoseSoften;
+
+  varying vec2 vUv;
+  varying vec3 vViewNormal;
+  varying vec3 vViewDir;
+
+  void main() {
+    // Schlieren optical density gradient peaks at grazing silhouette edges (N·V -> 0)
+    // and stays ultra-transparent across center faces so the projectile remains razor-sharp
+    float ndotv = abs(dot(normalize(vViewNormal), normalize(vViewDir)));
+    float fresnel = pow(clamp(1.0 - ndotv, 0.0, 1.0), uRimPower);
+    float edgeDensity = mix(0.08, 1.0, fresnel);
+
+    // Three.js ConeGeometry: uv.y = 1.0 at nose apex, 0.0 at open aft skirt.
+    // Feather aft slipstream smoothly and gently soften the very tip (strict edge0 < edge1).
+    float aftFade = pow(smoothstep(0.0, 0.84, vUv.y), 1.35);
+    float noseFeather = mix(0.28, 1.0, 1.0 - smoothstep(uNoseSoften, 1.0, vUv.y));
+    float alpha = clamp(uOpacity * edgeDensity * aftFade * noseFeather, 0.0, 0.28);
+
+    // Subtle crisp Schlieren rim tint emphasis right at the shock boundary
+    vec3 col = mix(uColor * 0.88, uColor * 1.12, fresnel);
+    gl_FragColor = vec4(col, alpha);
+  }
+`;
+
+function createSchlierenMachMaterial(
+  colorHex: string,
+  initialOpacity: number,
+  rimPower: number,
+  noseSoften: number
+): THREE.ShaderMaterial {
+  return new THREE.ShaderMaterial({
+    uniforms: {
+      uColor: { value: new THREE.Color(colorHex) },
+      uOpacity: { value: initialOpacity },
+      uRimPower: { value: rimPower },
+      uNoseSoften: { value: noseSoften },
+    },
+    vertexShader: SCHLIEREN_MACH_CONE_VERT,
+    fragmentShader: SCHLIEREN_MACH_CONE_FRAG,
+    transparent: true,
+    side: THREE.DoubleSide,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+  });
+}
+
+// ============================================================================
 // Sub-component: Animated 3D Projectile Mesh + Bow Shock Cone + Tracer Wake
 // ============================================================================
 const ProjectileVisualMesh: React.FC<{
@@ -1069,23 +1173,19 @@ const ProjectileVisualMesh: React.FC<{
     lipGeo.translate(0, -machConeLength * 0.21, 0);
     lipGeo.rotateZ(-Math.PI / 2);
 
-    const outerMat = new THREE.MeshBasicMaterial({
-      color: flirActive ? '#f8fafc' : '#bae6fd',
-      transparent: true,
-      opacity: 0.22,
-      side: THREE.DoubleSide,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-    });
+    const outerMat = createSchlierenMachMaterial(
+      flirActive ? '#f8fafc' : '#bae6fd',
+      0.14,
+      2.35,
+      0.88
+    );
 
-    const lipMat = new THREE.MeshBasicMaterial({
-      color: flirActive ? '#ffffff' : '#e0f2fe',
-      transparent: true,
-      opacity: 0.34,
-      side: THREE.DoubleSide,
-      depthWrite: false,
-      blending: THREE.AdditiveBlending,
-    });
+    const lipMat = createSchlierenMachMaterial(
+      flirActive ? '#ffffff' : '#e0f2fe',
+      0.2,
+      1.85,
+      0.94
+    );
 
     return { outerGeo, lipGeo, outerMat, lipMat };
   }, [machConeLength, flirActive]);
@@ -1241,9 +1341,14 @@ const ProjectileVisualMesh: React.FC<{
         if (bowShockOuterRef.current) {
           bowShockOuterRef.current.scale.set(1, radialScale, radialScale);
           const outerMat = bowShockOuterRef.current
-            .material as THREE.MeshBasicMaterial;
-          outerMat.opacity =
-            _machConeScratch.opacity * (flirActive ? 0.95 : 0.78);
+            .material as THREE.ShaderMaterial;
+          outerMat.uniforms.uOpacity.value = Math.min(
+            SCHLIEREN_MACH_PEAK_ALPHA_CAP,
+            _machConeScratch.opacity *
+              (flirActive
+                ? SCHLIEREN_MACH_OUTER_FLIR_OPACITY_SCALE
+                : SCHLIEREN_MACH_OUTER_OPACITY_SCALE)
+          );
         }
         if (bowShockLipRef.current) {
           bowShockLipRef.current.scale.set(
@@ -1252,9 +1357,14 @@ const ProjectileVisualMesh: React.FC<{
             radialScale * 1.06
           );
           const lipMat = bowShockLipRef.current
-            .material as THREE.MeshBasicMaterial;
-          lipMat.opacity =
-            _machConeScratch.opacity * (flirActive ? 1.15 : 1.05);
+            .material as THREE.ShaderMaterial;
+          lipMat.uniforms.uOpacity.value = Math.min(
+            SCHLIEREN_MACH_PEAK_ALPHA_CAP,
+            _machConeScratch.opacity *
+              (flirActive
+                ? SCHLIEREN_MACH_LIP_FLIR_OPACITY_SCALE
+                : SCHLIEREN_MACH_LIP_OPACITY_SCALE)
+          );
         }
       }
     }

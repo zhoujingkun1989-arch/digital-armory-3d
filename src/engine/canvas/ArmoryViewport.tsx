@@ -157,17 +157,48 @@ export const TALL_GRIP_CT_EXTRA_CLEARANCE_CM = 1.4;
 export const TALL_GRIP_FIRING_CT_EXTRA_CLEARANCE_CM = 1.0;
 export const PORTRAIT_PHONE_ASPECT_MAX = 0.65;
 export const PORTRAIT_PHONE_DISTANCE_MULT = 1.29;
+export const PORTRAIT_PHONE_LONG_RIFLE_EXTRA_MULT = 1.065;
+export const PORTRAIT_PHONE_LONG_RIFLE_IDS: ReadonlySet<WeaponId> =
+  new Set<WeaponId>([
+    'ak15',
+    'm4a1',
+    'k98k',
+    'garand',
+    'm82a1',
+    'awm',
+    'mg42',
+    'scar',
+    'benellim4',
+    'rem870',
+    'winchester1894',
+    'vss',
+    'an94',
+    'm249',
+  ]);
 export const WORKBENCH_ENTRY_EASE_DURATION_S = 0.55;
 
 /**
  * Widens default Workbench camera distance by +29% on narrow portrait phones
- * (`aspect < 0.65`, e.g. 390×844) so long rifles like AK-15M1, M4A1, K98k,
- * M82A1, and GAU-8 frame with generous >= 6–8% left/right breathing margin
- * while leaving desktop `1920×1080` framing untouched (`1.0`).
+ * (`aspect < 0.65`, e.g. 390×844), plus an extra +6.5% (`~1.374x`) pull-back
+ * for long rifles (`> 90 cm` envelope such as AK-15M1, M4A1, K98k, M1 Garand,
+ * M82A1, AWM, MG 42, SCAR-L, Benelli M4, Remington 870, Winchester 1894,
+ * VSS, AN-94, and M249) so long muzzle brakes clear the right edge by >= 12px
+ * while keeping desktop & tablet framing untouched (`1.0`).
  */
-export function computePortraitPhoneDistanceMultiplier(aspect: number): number {
+export function computePortraitPhoneDistanceMultiplier(
+  aspect: number,
+  weaponId?: WeaponId | string | null
+): number {
   if (!Number.isFinite(aspect) || aspect <= 0) return 1.0;
-  return aspect < PORTRAIT_PHONE_ASPECT_MAX ? PORTRAIT_PHONE_DISTANCE_MULT : 1.0;
+  if (aspect >= PORTRAIT_PHONE_ASPECT_MAX) return 1.0;
+  if (weaponId && PORTRAIT_PHONE_LONG_RIFLE_IDS.has(weaponId as WeaponId)) {
+    return Number(
+      (
+        PORTRAIT_PHONE_DISTANCE_MULT * PORTRAIT_PHONE_LONG_RIFLE_EXTRA_MULT
+      ).toFixed(4)
+    );
+  }
+  return PORTRAIT_PHONE_DISTANCE_MULT;
 }
 
 /**
@@ -338,7 +369,8 @@ function applyWorkbenchFraming(
   const baseScale = isFixedClosePreset
     ? Math.max(1, 1.08 / aspect)
     : Math.max(vertScale, horizScale);
-  const scale = baseScale * computePortraitPhoneDistanceMultiplier(aspect);
+  const scale =
+    baseScale * computePortraitPhoneDistanceMultiplier(aspect, weaponId);
 
   const sectionBarOffsetY = computeWorkbenchSectionBarOffsetY(
     scaleProfile,
