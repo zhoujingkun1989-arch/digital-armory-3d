@@ -1,0 +1,909 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "gau8",
+  "generatedAt": "2026-11-24T04:00:00.000000+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "General Electric GAU-8/A Avenger",
+    "subtitle": "30×173mm 3,900 RPM Hydraulically Driven Seven-Barrel Rotary Autocannon",
+    "originCountry": "United States",
+    "weaponType": "Heavy Rotary Autocannon",
+    "categoryLabel": "Heavy Ordnance",
+    "actionMechanism": "Twin 38.5-HP Hydraulic 7-Barrel Rotary Gatling · 360° Helical Cam Track & 1,150-Rd Closed-Loop Drum",
+    "statusLabel": "Ordnance Hall · 1:1 Strippable",
+    "description": "Designed by General Electric around which Fairchild Republic literally built the A-10 Thunderbolt II attack aircraft, the 6.06-meter GAU-8/A Avenger is the ultimate triumph of rotary heavy ordnance engineering. Driven by twin 38.5-horsepower 3,000 PSI hydraulic motors, its seven 2.3-meter fluted barrels and central seven-flute star-rotor cycle seven titanium rotary bolts through a stationary 360-degree sinusoidal cam track at 3,900 rounds per minute. Fed from an 876-millimeter 1,150-round helical drum through double-ended linkless conveyor chutes that return every fired aluminum shell case back to the drum to preserve aircraft center of gravity, it unleashes 30×173mm PGU-14/B depleted-uranium armor-piercing incendiary rounds at 1,010 m/s.",
+    "highlights": [
+      "Seven 2,300 mm Rotating Barrels · 3,900 RPM (65 Rounds/Sec) Sustained Burst",
+      "Twin 38.5-HP (77 HP Total) 3,000 PSI Redundant Hydraulic Drive & Zero Misfire Stoppage",
+      "360° Elliptical Helical Cam Track Driving 7 Titanium Bolts Across a 300 mm Wave",
+      "1,150-Rd Ø876 mm Helical Drum w/ Closed-Loop Linkless Spent Aluminum Case Return"
+    ],
+    "workbenchTitle": "GE GAU-8/A Avenger 30mm Autocannon 1:1 Teardown & 3,900 RPM Rotary Kinematics",
+    "workbenchSubtitle": "4 Modular Groups · 25 Core Nodes · 7-Barrel Rotary Cluster, 360° Sinusoidal Cam Wave & 1,150-Rd Closed-Loop Helical Drum",
+    "cutawayLabel": "360° Cam Track & Helical Drum",
+    "cutawayTitle": "Switch to assembled CT cutaway view and focus on the 360-degree sinusoidal cam sleeve, seven orbiting titanium bolts, and 1,150-round helical drum",
+    "searchPlaceholder": "Search part name / code (e.g. barrel, cam track, bolt, hydraulic, drum, F-02)...",
+    "firingMilestoneLabel": "30mm Cam Cycle",
+    "rateOfFire": "3,900 rpm (65 rds/s)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "3,900 RPM Combat Ready",
+        "subLabel": "0% Combat Ready",
+        "desc": "General Electric GAU-8/A Avenger 30x173mm seven-barrel rotary autocannon at true 1:1 hangar scale (6,060 mm complete gun + helical drum system, 1,828 kg loaded): seven 2.3-meter barrels, twin 38.5-HP hydraulic motors, titanium recoil mount, and the Ø876 mm 1,150-round linkless drum ready for tank-busting close air support."
+      },
+      "field_strip": {
+        "label": "Airframe & Chute Strip",
+        "subLabel": "30% Airframe Strip",
+        "desc": "Following USAF A-10 armament squad maintenance procedures: unbolt the left live-round and right spent-case linkless conveyor chutes, roll the 1,150-round helical drum aft on its floor cradles, draw off the perforated muzzle clamp and dual titanium barrel spiders, and lift the twin 3,000 PSI hydraulic drive motors."
+      },
+      "sub_assembly": {
+        "label": "Rotor, Cam & Drum Tear",
+        "subLabel": "65% Rotor, Cam & Drum",
+        "desc": "Hoist the ribbed steel gun housing and seven-barrel cluster clear of the grounded titanium recoil mount, extract the 360-degree hardened sinusoidal cam sleeve and seven-flute star-rotor as all seven titanium rotary bolts fan outward in a seven-pointed star, and elevate the 30x173mm PGU-14/B helical round array clear of the drum."
+      },
+      "full_exploded": {
+        "label": "Full 25-Node 1:1 BOM",
+        "subLabel": "100% Full Exploded",
+        "desc": "Complete zero-overlap 1:1 heavy hangar explosion of all 25 aerospace ordnance nodes across six meters: from the seven 2.3-meter fluted barrels, 360-degree sinusoidal cam track, and seven phased titanium bolts to the 77-HP twin hydraulic gearbox, hydro-pneumatic recoil buffers, three dynamic springs, and 1,150-round closed-loop drum."
+      }
+    },
+    "firingPhases": {
+      "gau8_phase_1_hydraulic_spinup": {
+        "shortLabel": "77-HP Hydraulic Lock",
+        "title": "Phase 1 · Twin 38.5-HP 3,000 PSI Hydraulic Motors Spin Rotor & Lock Bolt #1 at 12 O'Clock",
+        "description": "Depressing the A-10 control-stick two-stage trigger delivers 77 horsepower from dual redundant 3,000 PSI hydraulic circuits through the torque-clutch spring into the central star-rotor, spinning the seven-barrel cluster up to speed and locking Bolt #1 at 12 o'clock top dead center."
+      },
+      "gau8_phase_2_du_ignition_bore": {
+        "shortLabel": "30mm 1,010 m/s Exit",
+        "title": "Phase 2 · 12 O'Clock Striker Ignites 430 MPa Load Launching 395g PGU-14/B at 1,010 m/s",
+        "description": "At f = 0.08, the 12 o'clock firing-cam striker spring snaps forward, igniting 430 MPa chamber pressure that accelerates the 395-gram depleted-uranium armor-piercing incendiary projectile down the 2,300 mm rifled barrel, clearing the perforated muzzle clamp at 1,010 m/s (201 kJ) with its signature supersonic 'BRRRT!' shockwave."
+      },
+      "gau8_phase_3_cam_unlock_recoil": {
+        "shortLabel": "Cam Unlock & 44.5 kN",
+        "title": "Phase 3 · Bolt #1 Enters Descending 360° Cam Ramp as Twin Buffers Absorb 44.5 kN Recoil",
+        "description": "Sweeping past 51.4 degrees, Bolt #1's radial cam follower descends the stationary 360-degree helical cam slope to rotate its three-lug bolt head free and unseat the 173 mm aluminum casing, while twin hydro-pneumatic cylinders and forged recuperator springs damp 44.5 kN of sustained recoil thrust."
+      },
+      "gau8_phase_4_closed_loop_return": {
+        "shortLabel": "300mm Return to Drum",
+        "title": "Phase 4 · Full 300 mm Cam Extraction Feeds Spent Aluminum Case Back Into Return Chute",
+        "description": "Traveling through 103 to 154 degrees, the sinusoidal cam withdraws Bolt #1 a full 300 mm clear of the chamber. At f = 0.44, the transfer star-wheel routes the hot spent aluminum shell case aft down the right-flank closed-loop return chute back into the helical drum—preserving A-10 center of gravity and preventing jet-engine FOD."
+      },
+      "gau8_phase_5_drum_helical_feed": {
+        "shortLabel": "Helical Drum Index",
+        "title": "Phase 5 · 1,150-Rd Helical Drum Rotor Indexes Synchronously to Feed Fresh PGU-14/B",
+        "description": "At bottom dead center, Bolt #1 opens a 290 mm loading window inside its rotor flute while the gear-synchronized 14-vane helical drum rotor advances fresh 695-gram 30x173mm aluminum-cased rounds up the left linkless conveyor chute into the breech transfer unit."
+      },
+      "gau8_phase_6_cam_chamber_ram": {
+        "shortLabel": "8-10:00 Cam Chamber",
+        "title": "Phase 6 · Bolt Climbs Ascending Helical Cam Ramp Driving 30x173mm Round Home",
+        "description": "Climbing the 206 to 309-degree ascending cam ramp, Bolt #1 accelerates smoothly forward, seating the fresh 290 mm PGU-14/B cartridge straight into the rifled chamber of Barrel #1 without links or feed-pawl impact."
+      },
+      "gau8_phase_7_lock_3900rpm": {
+        "shortLabel": "12:00 Lock 3,900 RPM",
+        "title": "Phase 7 · Rotational Lockup Sustains 7-Bolt 51.4° Phased Wave at 65 Rounds Per Second",
+        "description": "Returning to 12 o'clock top dead center, Bolt #1 locks rigidly into battery ready for the next ignition stroke. Behind it at exact 51.43-degree intervals, the six trailing bolts execute every operation concurrently in an unbroken sinusoidal wave firing 65 heavy 30mm shells every second."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "装在机炮上的攻击机：GE GAU-8/A「复仇者」30毫米七管航炮的航空重武史诗",
+      "deck": "全长逾 6 米、体积堪比甲壳虫轿车、连发后坐推力甚至超越战机单台涡扇发动机——为了在冷战中欧平原撕碎重型装甲洪流，通用电气缔造了人类航空史上最震撼的 30×173mm 七管加特林巨兽。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1970–1975",
+          "title": "先有炮，再造机：A-10 雷电 II 围绕六米钢铁巨兽而生",
+          "paragraphs": [
+            "二十世纪七十年代初，面对华约数以万计主战坦克陈兵中欧平原的钢铁洪流，美国空军启动 A-X 近距空中支援攻击机计划，并破天荒地提出了一条颠覆航空史的铁律：不再把机炮当作飞机的附属挂件，而是先研制一门足以在千米之外洞穿主战坦克顶甲与侧甲的 30 毫米重型旋转机炮，再围绕这门机炮量身设计整架攻击机！",
+            "1971 年，凭借 M61“火神”与 M134“迷你炮”独步天下的通用电气（General Electric）军械部与飞歌福特展开竞标。通用电气工程师给出的方案令评委倒吸凉气：七根长达 2.3 米（90.5 英寸）的 30 毫米重型线膛炮管、双联 38.5 马力机载高压液压马达、直径近一米的 1,150 发无链螺旋供弹鼓——整套 GAU-8/A「复仇者」系统全长高达 6.06 米，满载重量达到惊人的 1,828 公斤，占去了后来 A-10 雷电 II 攻击机空重的近六分之一！",
+            "为了驯服这头连发平均后坐力高达 44.5 千牛（相当于 10,000 磅推力、超过 A-10 单台 TF34 涡扇发动机最大推力！）的钢铁巨兽，费尔柴尔德工程师不得不将前起落架向右偏置 30 厘米，让 GAU-8/A 处于击发相位的炮管轴线严丝合缝地穿过整架飞机的几何重心线，并直接把飞行员座舱包裹在重型钛合金浴盆装甲内贴靠在巨炮正上方。"
+          ],
+          "audioScript": "一九七一年，面对冷战坦克洪流，美国空军立下一条颠覆航空史的规则：先造一门能撕碎主战坦克的三十毫米七管巨炮，再围绕它设计整架攻击机。通用电气交出的 GAU-8/A 复仇者全长逾六米、满载近一点八吨，连发后坐力甚至超过战机单台涡扇发动机推力，堪称真正装在机炮上的传奇战机。",
+          "audioUrl": "audio/gau8/story_act1_zh.mp3",
+          "focusPartId": "gau8_barrel_cluster",
+          "focusPartLabel": "七管 2,300mm 30mm 旋转炮管簇"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1975–1977",
+          "title": "77 马力双液压心脏与 360° 螺旋凸轮的七炮闩狂响",
+          "paragraphs": [
+            "驱动七根 2.3 米重炮管与七套重型钛合金炮闩在不到半秒内飙升至每分钟 3,900 发（每秒 65 发！）的狂暴射速，普通 28 伏机载电机早已力不从心。通用电气工程师直接从 A-10 攻击机双套独立冗余 3,000 PSI 航空液压系统取力，在主炮匣尾端并列挂装两台 38.5 马力（总功率 77 马力）高压液压马达——即便战场上被高炮击毁一套液压管路，另一台马达依然能以半速维持致命火力。",
+            "切开厚重的椭圆凸轮钢炮匣，GAU-8/A 真正的机械灵魂豁然展露：静止炮匣内壁深嵌一枚淬火 360 度椭圆形正弦螺旋凸轮导轨套筒，中央则是五轴数控精铣的七槽星形中心转子。七套独立的镀硬铬钛合金三突笋炮闩环绕转子以精确 51.43 度相位排布，尾部大型滚轮死死咬合在静止正弦轨道中。",
+            "当转子以每分钟 557 转高速旋回，七套炮闩沿正弦槽划出长达 300 毫米的同步机械波：12 点钟刚性闭锁引燃 430 兆帕巨型 30×173mm 实弹，2 至 4 点钟旋松抽壳，6 点钟波谷腾空 290 毫米长弹窗，8 至 10 点钟加速推弹闭锁。由于完全依赖 77 马力外能源强驱，哪怕弹鼓中混入哑弹也会被冷酷抽出送返弹鼓，整炮绝不停顿一毫秒！"
+          ],
+          "audioScript": "为了让七根两米三的重型炮管在半秒内飙升至每分钟三千九百发，通用电气配备了总功率七十七马力的双余度三千磅高压液压马达。切开主炮匣，七套钛合金炮闩沿三百六十度淬火正弦凸轮槽划出三百毫米深行程波浪，单圈同步完成击发、抽壳与装填，外能源强驱彻底根除哑弹停射。",
+          "audioUrl": "audio/gau8/story_act2_zh.mp3",
+          "focusPartId": "gau8_cam_track",
+          "focusPartLabel": "360° 淬火螺旋正弦凸轮套筒"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1976–1991",
+          "title": "闭环无链螺旋弹鼓与 30×173mm 铝壳贫铀穿甲矛",
+          "paragraphs": [
+            "如果每秒 65 发、每发重近 700 克的 30 毫米炮弹沿用传统可散金属弹链，剧烈加速度与战机大过载机动将在瞬间撕裂链环引发灾难性卡弹；更致命的是，如果将上千枚沉重的 173 毫米空弹壳肆意抛向机外，不仅会令 A-10 机头骤然失重导致飞行重心危险后移，漫天飞舞的炽热金属壳更会被尾置双发涡扇发动机直接吸入引发空中停车！",
+            "通用电气以一座直径 876 毫米、长 1,816 毫米的 1,150 发巨型无链闭环螺旋供弹鼓给出了教科书级完美答案：中央十四翼螺旋转子与主炮机械硬同步旋转，通过左侧加筋无链输弹滑槽将新鲜炮弹高速递送至炮尾交接单元，同时将射击后抽出的每一枚空弹壳压入右侧回收滑槽 100% 送返弹鼓空槽！停射末段，清膛安全门更会自动空转排出膛内余弹杜绝高温烤燃。",
+            "而令这门巨炮成为坦克噩梦的弹药同样暗藏革命：30×173mm PGU-14/B 穿甲燃烧弹率先舍弃沉重黄铜，改用高强拉丝航空铝合金弹壳狂减逾三成死重；轻合金风帽内藏一枚重达 300 克的超高密度贫铀穿甲芯，以 1,010 米每秒出膛爆发逾 201 千焦单发巨能——两秒短点射倾泻的 130 发炽热重金属风暴，足以在千米之外击穿主战坦克相对薄弱的炮塔顶甲与侧甲！"
+          ],
+          "audioScript": "每秒六十五发的巨型三十毫米炮弹无法容忍传统弹链卡滞，更不能向机外抛撒灼热空壳危及飞机重心与涡扇发动机。通用电气打造了直径八十七厘米的一千一百五十发闭环螺旋弹鼓：左侧无链送弹、右侧将全部铝制空壳百分百回收返鼓。轻量化铝壳搭配三百克超高密度穿甲芯，以每秒一千米速度撕碎重甲。",
+          "audioUrl": "audio/gau8/story_act3_zh.mp3",
+          "focusPartId": "gau8_ammo_drum",
+          "focusPartLabel": "1,150 发巨型无链螺旋供弹鼓"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1991–至今",
+          "title": "撕裂苍穹的「BRRRT!」传奇：半世纪钢铁风暴的永恒图腾",
+          "paragraphs": [
+            "1991 年海湾战争的沙漠上空，A-10 雷电 II 攻击机携 GAU-8/A「复仇者」迎来了载入现代战争史的高光时刻。由于 30 毫米穿甲弹初速逾三倍音速，当低空俯冲的 A-10 扣下二段扳机，目标区地面人员往往先看见数百道烈焰弹柱如重锤般瞬间撕裂装甲车阵，整整一两秒后才听见那声宛如远古巨兽怒吼、每秒 65 次音爆叠合而成的低沉电锯长鸣——军迷与一线官兵永生难忘的「BRRRT!」之音。",
+            "半个世纪来，无数新型超音速隐身战机与精确制导导弹走上历史舞台，但每当低空云层压顶、地面步兵陷入重围呼唤近距支援，那门长达六米、搭载 1,150 发 30 毫米巨弹的七管旋转航炮依然是最令友军安心、最令装甲纵队胆寒的机械巅峰。更令人称奇的是，荷兰泰雷兹还将 GAU-8/A 整体移植上舰，演化出威震大洋的「守门员（Goalkeeper）」30 毫米七管反导近防炮。",
+            "在数字军械库重装航空大厅的 1:1 实尺舞台上，你可以沿着 6.06 米全炮纵深自由漫步，开启 CT 纵剖穿透航空底漆炮匣与 87.6 厘米巨型弹鼓，亲眼见证七根炮管、七套钛合金炮闩与 70 发 1:1 30×173mm 穿甲弹在 360 度正弦波浪中奏响的机械交响诗。"
+          ],
+          "audioScript": "自一九九一年沙漠上空一战封神以来，三倍音速炮弹先于撕裂长空的低沉电锯怒吼抵达战场，让复仇者成为全球军迷心中独一无二的空中雷霆图腾，甚至跨海演化出舰载守门员近防炮。如今在数字军械库一比一重装机库中，这门六米钢铁巨兽正以零遮挡三维剖视展现人类航空重武器的工程巅峰。",
+          "audioUrl": "audio/gau8/story_act4_zh.mp3",
+          "focusPartId": "gau8_hydraulic_motors",
+          "focusPartLabel": "双联 38.5 马力液压驱动马达"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "360° 椭圆形正弦凸轮槽与七炮闩 51.4° 相位波浪同步",
+          "tag": "七管 3,900 RPM 旋转自动机",
+          "summary": "炮匣内壁静止的 360° 淬火螺旋凸轮槽驱动七套钛合金炮闩执行长达 300 mm 轴向往复行程，单圈公转即并行完成 7 发 30×173mm 巨弹的进弹、闭锁、12 点位击发、开锁与深行程抽壳。",
+          "focusPartId": "gau8_cam_track",
+          "focusPartLabel": "360° 螺旋正弦凸轮套筒"
+        },
+        {
+          "id": "bt2",
+          "title": "1,150 发闭环无链螺旋弹鼓与 100% 空壳返鼓回收机制",
+          "tag": "重心守恒与防发动机 FOD",
+          "summary": "直径 876 mm 巨鼓内嵌十四翼同步螺旋转子，左侧无链槽高速供实弹、右侧回收槽将全部 173 mm 空铝壳送返弹鼓空位，彻底消除弹链卡滞、保持战机重心并杜绝双发涡扇吸入异物。",
+          "focusPartId": "gau8_ammo_drum",
+          "focusPartLabel": "1,150 发巨型无链螺旋供弹鼓"
+        },
+        {
+          "id": "bt3",
+          "title": "77 马力双余度 3,000 PSI 液压外驱与双液气反后坐阻尼",
+          "tag": "驯服 44.5 kN 狂暴后坐推力",
+          "summary": "两台 38.5 马力独立液压马达半秒将七管加速至 557 RPM 且遇哑弹零停射；重型钛合金反后坐适配器配合双液气节流筒与锻钢复进簧，将超越单台喷气发动机的 44.5 kN 后坐推力平稳导散至 A-10 主梁。",
+          "focusPartId": "gau8_recoil_buffers",
+          "focusPartLabel": "双联液气反后坐缓冲筒"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1970",
+          "title": "美国空军启动 A-X 攻击机与 30mm 重型反坦克航炮竞标",
+          "detail": "空军确立“先造 30mm 反装甲旋转机炮，再围绕机炮设计机身”的颠覆性指标，要求千米外击穿苏联主战坦克装甲。"
+        },
+        {
+          "year": "1973",
+          "title": "通用电气 GAU-8/A 击败飞歌福特 GAU-9/A 赢得定型合同",
+          "detail": "GE 凭借 30×173mm 铝合金弹壳、1,150 发无链闭环螺旋弹鼓与七管高可靠性设计中标，配装费尔柴尔德 YA-10A 首飞试射。"
+        },
+        {
+          "year": "1977",
+          "title": "A-10 雷电 II 携 GAU-8/A 正式形成初始作战能力（IOC）",
+          "detail": "量产型 GAU-8/A 标定 3,900 RPM 恒定射速、5 密位高精度散布与 20,000 发以上炮管簇寿命，进驻冷战欧洲前沿基地。"
+        },
+        {
+          "year": "1980",
+          "title": "荷兰泰雷兹移植 GAU-8/A 核心诞生「守门员」舰载近防炮",
+          "detail": "GAU-8/A 七管 30mm 炮身走出航空领域，演化为射速 4,200 RPM 的舰载反超音速导弹近程防御武器系统（Goalkeeper CIWS）。"
+        },
+        {
+          "year": "1991",
+          "title": "海湾战争「沙漠风暴」实战封神，缔造「BRRRT!」永恒传奇",
+          "detail": "配备 GAU-8/A 的 A-10 机队以超过 95% 任务妥善率摧毁数百辆伊拉克装甲车与坦克，奠定航空重机炮殿堂级传奇地位。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "The Gun With an Aircraft Built Around It: The GE GAU-8/A Avenger 30mm Rotary Legend",
+      "deck": "Stretching over six meters long, weighing 1.83 metric tons loaded, and generating more recoil thrust than one of its host jet's engines, General Electric's seven-barrel 30x173mm GAU-8/A Avenger stands as the apex of rotary aerospace ordnance.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "Act I",
+          "eraTag": "1970–1975",
+          "title": "Cannon First, Airframe Second: Designing the A-10 Around a Six-Meter Beast",
+          "paragraphs": [
+            "In the early 1970s, facing tens of thousands of Warsaw Pact main battle tanks massed across Central Europe, the U.S. Air Force rewrote aerospace procurement dogma under the A-X close-air-support program. Instead of hanging a gun beneath an existing fighter, engineers would first create a devastating 30mm rotary cannon capable of defeating heavy tank armor from over a kilometer away—and then wrap an entire twin-jet attack aircraft around that cannon.",
+            "Building on its M61 Vulcan and M134 Minigun heritage, General Electric Armament Systems answered with an engineering colossus. Combining seven 2.3-meter (90.5-inch) fluted rifled barrels, twin 38.5-horsepower hydraulic motors, and an 876-millimeter 1,150-round helical drum, the complete GAU-8/A Avenger spans 6.06 meters—longer than a classic Volkswagen Beetle—and weighs 1,828 kilograms fully loaded, accounting for nearly a sixth of the A-10 Thunderbolt II's empty weight.",
+            "Because firing at 3,900 rounds per minute unleashes 44.5 kilonewtons (10,000 pounds-force) of sustained recoil—exceeding the maximum thrust of one of the A-10's two TF34 turbofans—Fairchild Republic offset the nose landing gear 30 centimeters to starboard so the cannon's firing barrel could align directly along the fuselage centerline right beneath the pilot's titanium armor bathtub."
+          ],
+          "audioScript": "In 1971, confronting Cold War armored columns, the United States Air Force flipped aircraft design upside down: build a tank-killing thirty-millimeter rotary cannon first, then wrap an attack jet around it. General Electric's GAU-8/A Avenger stretched over six meters long, weighed nearly two tons loaded, and delivered more recoil force than one of the A-10's jet engines.",
+          "audioUrl": "audio/gau8/story_act1_en.mp3",
+          "focusPartId": "gau8_barrel_cluster",
+          "focusPartLabel": "7-Barrel 2,300mm 30mm Rotary Cluster"
+        },
+        {
+          "id": "act2",
+          "actNumber": "Act II",
+          "eraTag": "1975–1977",
+          "title": "77 Horsepower of Dual Hydraulics & the 360° Seven-Bolt Sinusoidal Wave",
+          "paragraphs": [
+            "Accelerating seven 2.3-meter heavy cannon barrels and seven massive titanium bolts from standstill to 3,900 rounds per minute (65 shells every second) in half a second demands industrial-grade torque far beyond a 28-volt electric motor. GE bolted two independent 38.5-horsepower, 3,000 PSI hydraulic motors directly to the rear reduction gearbox, tapping both of the A-10's redundant flight hydraulic systems so the cannon keeps firing even after battle damage.",
+            "Slice open the ribbed forged-steel gun housing in CT cutaway mode and the rotary clockwork reveals itself in breathtaking clarity. Pressed inside the stationary housing sits a case-hardened 360-degree elliptical sinusoidal cam track sleeve, encircling a five-axis CNC seven-flute star-rotor carrying seven reciprocating hard-chrome titanium rotary bolts spaced exactly 51.43 degrees apart.",
+            "As the rotor whirls at 557 revolutions per minute, each bolt's radial follower roller rides the stationary helical groove across a 300-millimeter axial stroke—locking and igniting a 430 MPa 30x173mm cartridge at 12 o'clock, unlocking and drawing the aluminum shell clear on the descending flank, and ramming a fresh round home on the ascending slope. Because external hydraulic power drives every cycle, a dud round is extracted harmlessly without a millisecond of stoppage."
+          ],
+          "audioScript": "Spinning seven two-point-three-meter cannon barrels to three thousand nine hundred rounds per minute in half a second requires seventy-seven horsepower from twin three-thousand-PSI hydraulic motors. Inside the steel housing, a stationary three-hundred-sixty-degree sinusoidal cam track drives seven phased titanium bolts across a three-hundred-millimeter wave—delivering sixty-five shells per second with zero misfire jams.",
+          "audioUrl": "audio/gau8/story_act2_en.mp3",
+          "focusPartId": "gau8_cam_track",
+          "focusPartLabel": "360° Helical Sinusoidal Cam Track"
+        },
+        {
+          "id": "act3",
+          "actNumber": "Act III",
+          "eraTag": "1976–1991",
+          "title": "Closed-Loop Helical Drum & the 30×173mm Aluminum-Cased PGU-14/B Armor Piercer",
+          "paragraphs": [
+            "Feeding sixty-five 695-gram cannon shells every second through disintegrating steel belt links under high-G combat dives would invite catastrophic link tearing. Worse still, dumping over a thousand spent 173-millimeter shell casings overboard would abruptly shift the A-10's center of gravity rearward while hurling hot metal debris straight toward the tailplane and twin rear-mounted turbofan intakes.",
+            "General Electric solved both challenges with one of ordnance history's greatest feeding masterpieces: an 876-millimeter-diameter, 1,816-millimeter-long closed-loop helical drum holding 1,150 rounds. Geared in rigid mechanical sync with the cannon, its internal 14-vane helical rotor feeds live rounds forward through the left linkless conveyor chute while the breech transfer unit routes 100 percent of fired cases back down the right return chute into empty drum pockets—maintaining aircraft balance and zero FOD risk.",
+            "The 30x173mm PGU-14/B armor-piercing incendiary round itself broke metallurgy conventions by replacing heavy brass with brushed aerospace aluminum casings, slashing ammunition deadweight by 30 percent. Its black ballistic windshield houses a dense 300-gram depleted-uranium core launched at 1,010 meters per second for 201 kilojoules per round—delivering a two-second, 130-round torrent capable of perforating tank roof and flank armor from over a kilometer away."
+          ],
+          "audioScript": "At sixty-five massive shells per second, conventional links would shred and ejected brass could ruin the jet's balance or destroy its engines. GE answered with an eight-hundred-seventy-six-millimeter closed-loop helical drum holding one thousand one hundred fifty rounds—feeding live aluminum-cased thirty-millimeter shells up the left chute while returning every empty casing back into the drum.",
+          "audioUrl": "audio/gau8/story_act3_en.mp3",
+          "focusPartId": "gau8_ammo_drum",
+          "focusPartLabel": "1,150-Round Helical Ammunition Drum"
+        },
+        {
+          "id": "act4",
+          "actNumber": "Act IV",
+          "eraTag": "1991–Present",
+          "title": "The Sky-Splitting 'BRRRT!': Half a Century as Aerospace Ordnance's Supreme Icon",
+          "paragraphs": [
+            "Over the deserts of Kuwait and Iraq in 1991, the A-10 Thunderbolt II and its GAU-8/A Avenger etched themselves permanently into military legend. Because its 30mm projectiles race downrange at Mach 3, ground troops watch an instant column of incendiary impacts hammer an armored formation a full heartbeat before the unmistakable sky-ripping bass buzz—sixty-five supersonic shockwaves per second fused into the iconic 'BRRRT!'—rolls across the battlefield.",
+            "Half a century after its first burst, through generations of stealth fighters and stand-off smart munitions, the Avenger remains unmatched in instantaneous morale impact and sustained armored-vehicle lethality. Its mechanical excellence even went to sea, forming the 4,200-RPM seven-barrel core of the Dutch Thales Goalkeeper naval close-in weapon system intercepting sea-skimming anti-ship missiles.",
+            "Here inside Digital Armory 3D's 1:1 Heavy Ordnance Hangar, you can walk the entire 6.06-meter span, slice straight through the stenciled housing and helical drum in live CT cutaway mode, and study every synchronized cam curve, titanium bolt, hydraulic buffer, and aluminum-cased 30x173mm round at full physical scale."
+          ],
+          "audioScript": "During Desert Storm, Mach-three thirty-millimeter impacts arrived a full heartbeat before sixty-five sonic booms per second fused into the legendary battlefield roar known as 'BRRRT!'. Even adopted at sea for the Goalkeeper naval missile defense system, the six-meter GAU-8/A Avenger stands in our one-to-one Heavy Ordnance Hangar as rotary engineering's enduring crown jewel.",
+          "audioUrl": "audio/gau8/story_act4_en.mp3",
+          "focusPartId": "gau8_hydraulic_motors",
+          "focusPartLabel": "Twin 38.5-HP Hydraulic Drive Motors"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "360° Elliptical Sinusoidal Cam Track & 7-Bolt 51.4° Phased Wave",
+          "tag": "3,900 RPM 7-Barrel Rotary Action",
+          "summary": "A stationary hardened 360-degree sinusoidal cam track sleeve drives seven reciprocating titanium bolts across a 300 mm axial stroke, executing feeding, lockup, 12 o'clock firing, unlocking, and deep extraction in parallel.",
+          "focusPartId": "gau8_cam_track",
+          "focusPartLabel": "360° Helical Sinusoidal Cam Track"
+        },
+        {
+          "id": "bt2",
+          "title": "1,150-Round Closed-Loop Helical Drum & 100% Spent Case Return",
+          "tag": "CG Preservation & Zero Jet FOD",
+          "summary": "An Ø876 mm linkless helical drum with a synchronized 14-vane rotor feeds live 30x173mm aluminum-cased rounds via the left chute while returning every fired casing down the right chute into empty drum pockets.",
+          "focusPartId": "gau8_ammo_drum",
+          "focusPartLabel": "1,150-Round Helical Ammunition Drum"
+        },
+        {
+          "id": "bt3",
+          "title": "77-HP Redundant 3,000 PSI Hydraulic Drive & Hydro-Pneumatic Recoil Mount",
+          "tag": "Taming 44.5 kN Recoil Thrust",
+          "summary": "Twin 38.5-HP hydraulic motors spin the cluster to 557 RPM in 0.5 seconds with zero misfire jams, while a heavy titanium fuselage adapter and dual hydro-pneumatic recoil cylinders damp 44.5 kN of sustained firing thrust.",
+          "focusPartId": "gau8_recoil_buffers",
+          "focusPartLabel": "Twin Hydro-Pneumatic Recoil Buffers"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1970",
+          "title": "USAF Launches A-X Aircraft & 30mm Tank-Killing Rotary Cannon Competition",
+          "detail": "The Air Force mandates designing an entire close-air-support airframe around a new 30mm anti-armor Gatling cannon capable of penetrating heavy tank armor."
+        },
+        {
+          "year": "1973",
+          "title": "GE GAU-8/A Wins Fly-Off Over Philco-Ford GAU-9/A",
+          "detail": "General Electric's aluminum-cased 30x173mm cartridge, closed-loop 1,150-round helical drum, and seven-barrel mechanism win selection for the Fairchild YA-10A."
+        },
+        {
+          "year": "1977",
+          "title": "A-10 Thunderbolt II & GAU-8/A Enter Frontline USAF Service",
+          "detail": "Production Avengers achieve 3,900 RPM sustained fire, 5-milliradian dispersion (80% within 12.4 m at 1,220 m), and 20,000+ round barrel-cluster endurance."
+        },
+        {
+          "year": "1980",
+          "title": "GAU-8/A Core Adapted Into the Naval Thales Goalkeeper CIWS",
+          "detail": "The seven-barrel 30mm cannon goes to sea at 4,200 RPM as Europe's premier shipboard close-in defense against supersonic anti-ship missiles."
+        },
+        {
+          "year": "1991",
+          "title": "Operation Desert Storm Cements the Legendary 'BRRRT!' Combat Icon",
+          "detail": "A-10 squadrons achieve over 95% mission readiness, knocking out hundreds of armored vehicles with devastating 30mm PGU-14/B gun runs."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "gau8_barrel_cluster": {
+      "partId": "gau8_barrel_cluster",
+      "bomCode": "B-01",
+      "calloutLabelEn": "7-Barrel 2.3m 30mm Cluster",
+      "zh": {
+        "roleTag": "2.3 米 7×51.4°同轴炮管阵列 · 单管仅承 557 发/分热负荷",
+        "overview": "由七根单管全长 2,300 mm 的冷精锻铬钼钒钢重型 30×173mm 线膛炮管构成的同轴旋转炮管簇，是 GAU-8/A「复仇者」最具压迫感的钢铁图腾。",
+        "craftAndMaterial": "航空级高纯铬钼钒合金钢经液压自紧强化与外表面纵向开槽减重，锰磷化缎面处理并在近炮口段呈现持续射击微热氧化过渡，前端设真实 30 mm 深线膛炮口。",
+        "kinematicRole": "击发期间与中心七槽星形转子保持 1:1 刚性同轴旋转（557 RPM，rx = 2πf），使每根炮管在击发后享有整整 308° 非击发强迫空冷弧段；拆解时随主炮匣上抬并向前抽离。",
+        "designHighlight": "七管分摊将单管实际射速控制在温和的 557 发/分，整束炮管寿命超过 20,000 发且在 1,220 米外仍保持 5 密位精准散布圆。",
+        "audioScript": "眼前这束长达两米三的七管重型三十毫米旋转炮管簇，正是复仇者的标志性轮廓。双液压马达驱使整束炮管以每分钟五百五十七转高速旋回，令每根炮管享有三百零八度风冷弧段，轻松驾驭每分钟三千九百发狂暴弹幕。",
+        "audioUrl": "audio/gau8/parts/gau8_barrel_cluster_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Seven 2,300 mm Fluted 30x173mm Barrels Sharing 3,900 RPM Heat",
+        "overview": "This commanding 2.3-meter bundle of seven heavy cold-forged 30x173mm rifled barrels arranged on a 74 mm pitch circle is the unmistakable silhouette of the GAU-8/A Avenger.",
+        "craftAndMaterial": "Aerospace chrome-moly-vanadium cannon steel with longitudinal cooling flutes, satin manganese-phosphate finish transitioning to subtle muzzle heat bloom, and true 30 mm hollow rifled crowns.",
+        "kinematicRole": "Rotates coaxially at 557 RPM with the central star-rotor during firing so each barrel cools through 308 degrees between shots; slides forward during teardown.",
+        "designHighlight": "Distributes thermal stress to just 557 rounds per minute per barrel, delivering over 20,000-round cluster life and tight 5-milliradian combat dispersion.",
+        "audioScript": "Stretching two point three meters long, this seven-barrel cluster of heavy thirty-millimeter fluted cannon barrels defines the Avenger's profile. Spinning at five hundred fifty-seven RPM, each barrel cools across three hundred eight degrees between shots.",
+        "audioUrl": "audio/gau8/parts/gau8_barrel_cluster_en.mp3"
+      }
+    },
+    "gau8_barrel_clamps": {
+      "partId": "gau8_barrel_clamps",
+      "bomCode": "B-02",
+      "calloutLabelEn": "Dual Titanium Barrel Clamps",
+      "zh": {
+        "roleTag": "高比强度 Ti-6Al-4V 双盘支撑 · 消除 557 RPM 离心鞭动与气动颤振",
+        "overview": "位于 2.3 米炮管簇中段的双级轻量化航空钛合金七孔稳定卡箍总成，由前后两片多孔夹盘与中心空心联轴管刚性联结。",
+        "craftAndMaterial": "航空级 Ti-6Al-4V 阳极氧化钛合金整体五轴 CNC 铣削减重孔并配高强镀铬内六角夹紧螺栓，兼具高刚度与极低转动惯量。",
+        "kinematicRole": "随七管炮管簇高速同步自转（rx = 2πf），抑制 557 RPM 离心外张与迎面 600 km/h 高速气流颤振；一级快拆阶段沿炮管向前上方滑出。",
+        "designHighlight": "双截面刚性支撑直接决定千米外 5 密位散布精度，确保 80% 穿甲弹精准落入主战坦克投影尺寸范围内。",
+        "audioScript": "锁固在炮管中段的这两片多孔航空钛合金七孔稳定箍，由中心空心联轴管连成一体。它们在每分钟五百五十七转高速离心力与强气流冲击下死死稳住七根长炮管，保障千米外五密位惊人精度。",
+        "audioUrl": "audio/gau8/parts/gau8_barrel_clamps_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Ti-6Al-4V Dual-Station Spider Clamps Controlling 5-Mil Dispersion",
+        "overview": "Spanning the midsection of the 2.3-meter barrel bundle, these dual seven-bore aerospace titanium spider clamps linked by a hollow central torque tube enforce strict barrel alignment.",
+        "craftAndMaterial": "Five-axis CNC-machined Ti-6Al-4V anodized titanium discs with weight-saving scallops and high-tensile chrome socket bolts minimizing rotational inertia.",
+        "kinematicRole": "Spins continuously in lockstep with the barrel cluster during firing to suppress centrifugal whip and aerodynamic flutter; slides forward and upward during field stripping.",
+        "designHighlight": "Maintains rigid parallel geometry under 44.5 kN recoil and 600 km/h airflow, keeping 80 percent of rounds inside a 12.4-meter circle at 1,220 meters.",
+        "audioScript": "Bracing the midsection of the seven barrels, these dual aerospace titanium spider clamps resist intense centrifugal whip and airspeed flutter—holding eighty percent of thirty-millimeter impacts inside a tank-sized circle at over a kilometer.",
+        "audioUrl": "audio/gau8/parts/gau8_barrel_clamps_en.mp3"
+      }
+    },
+    "gau8_muzzle_clamp": {
+      "partId": "gau8_muzzle_clamp",
+      "bomCode": "B-03",
+      "calloutLabelEn": "Perforated Muzzle Clamp",
+      "zh": {
+        "roleTag": "炮口调校同轴散布圆 · 持续连射呈现金铜至蓝紫高温氧化色带",
+        "overview": "紧箍于七根 30mm 炮管最前端的穿孔重型钛合金旋转炮口箍与中央气动导流锥，直面每秒 65 发超音速炽烈炮口燃气激波。",
+        "craftAndMaterial": "耐高温钛合金穿孔筒体配七道径向散热泄压槽与七枚不锈钢紧固螺栓，经连续扫射呈现真实金铜—蓝紫热回火氧化色带与前缘深黑积碳。",
+        "kinematicRole": "与七管炮管簇同步高速旋转并构成前基准支点；一级机务快拆最先沿 +X 轴前抽卸离炮口。",
+        "designHighlight": "兼具微调七管汇聚角与导流高温炮口燃气的双重职能，炽烈的蓝紫热回火色带见证了每秒 65 发巨炮的恐怖热流。",
+        "audioScript": "位于七根炮管最前端的穿孔钛合金炮口箍，直面每秒六十五发超音速炮口激波。它不仅精确锁紧炮口汇聚角，更在持续连射的高温冲刷下烙印出迷人的金铜至蓝紫热回火氧化色带。",
+        "audioUrl": "audio/gau8/parts/gau8_muzzle_clamp_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Heat-Tempered Perforated Rotary Muzzle Clamp & Blast Crown",
+        "overview": "Capping the forward tips of all seven 30mm barrels, this perforated titanium muzzle clamp and central spinner cone endure sixty-five supersonic muzzle blasts every second.",
+        "craftAndMaterial": "Heat-resistant titanium drum milled with seven radial vent slots and perimeter hex bolts, displaying authentic golden-bronze to heat-blued violet oxidation and velvety carbon soot.",
+        "kinematicRole": "Rotates coaxially at the muzzle plane during firing to govern dispersion convergence; pulls straight forward off the barrels first during crew strip.",
+        "designHighlight": "Doubles as the precision muzzle alignment collar and thermal blast crown, visually telling the story of sustained 3,900 RPM bursts through iridescent heat temper.",
+        "audioScript": "Capping the muzzle tips of all seven barrels, this perforated titanium muzzle clamp governs dispersion convergence while absorbing blistering supersonic gas blasts—developing an unmistakable golden-bronze and violet heat-temper patina.",
+        "audioUrl": "audio/gau8/parts/gau8_muzzle_clamp_en.mp3"
+      }
+    },
+    "gau8_rotor_core": {
+      "partId": "gau8_rotor_core",
+      "bomCode": "B-04",
+      "calloutLabelEn": "7-Flute CNC Star-Rotor",
+      "zh": {
+        "roleTag": "GAU-8/A 动力心脏 · 七条轴向 T 形导轨同步承载 77 HP 液压扭矩",
+        "overview": "深藏于主炮匣中轴的七槽五轴 CNC 钛钢星形中心转子，前端七孔重型闭锁盘旋锁七根炮管、尾端 28 齿硬化大齿轮直连双液压驱动箱。",
+        "craftAndMaterial": "整块高强度航空合金锻钢五轴 CNC 精铣七条 51.43° 轴向 T 形硬化导轨与镀铬帽缘，尾端一体化精切 28 齿高模数渐开线驱动大齿轮。",
+        "kinematicRole": "击发全程承接 77 马力液压扭矩以 557 RPM 连续公转（rx = 2πf），刚性带动七根炮管与七套钛合金旋转炮闩同步作圆周运动；二级拆解时垂直向上吊离主炮匣。",
+        "designHighlight": "整门六米巨炮唯一将动力输入、七管固定与七闩导向融为一体的旋转主脊，堪称重型加特林精密加工的巅峰杰作。",
+        "audioScript": "贯穿炮匣中轴的七槽五轴数控星形中心转子，是整门复仇者的动力脊梁。它尾端二十八齿大齿轮承接七十七马力液压扭矩，中段七条硬质导轨承载七套炮闩同步公转，前端重型闭锁盘则将七根两米三炮管刚性锁成一体。",
+        "audioUrl": "audio/gau8/parts/gau8_rotor_core_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Central 5-Axis CNC 7-Flute Star-Rotor, Lock Head & 28-Tooth Drive Gear",
+        "overview": "Turning at the very heart of the gun housing, this monolithic seven-flute CNC star-rotor unites the rear 28-tooth hydraulic drive gear, seven axial bolt tracks, and the forward seven-barrel locking disc.",
+        "craftAndMaterial": "Forged aerospace alloy steel precision-milled on five-axis tooling with hard-chrome T-rail caps, a bolted seven-bore barrel lock head, and a case-hardened 28-tooth main spur gear.",
+        "kinematicRole": "Transmits 77 horsepower of hydraulic drive torque at 557 RPM, turning the entire seven-barrel cluster and carrying all seven reciprocating bolts; lifts vertically clear during sub-assembly teardown.",
+        "designHighlight": "Serves as the single rigid rotational spine synchronizing barrel index, bolt orbital velocity, and linkless transfer timing under extreme combat torque.",
+        "audioScript": "Spinning inside the main housing is the monolithic seven-flute star-rotor. Its rear twenty-eight-tooth spur gear accepts seventy-seven horsepower of hydraulic torque, its seven milled T-rails carry the bolts, and its front locking disc anchors all seven barrels.",
+        "audioUrl": "audio/gau8/parts/gau8_rotor_core_en.mp3"
+      }
+    },
+    "gau8_bolt_1": {
+      "partId": "gau8_bolt_1",
+      "bomCode": "B-05",
+      "calloutLabelEn": "Bolt #1 (12:00 Firing)",
+      "zh": {
+        "roleTag": "0° 12点最前死点 · 三突笋刚性闭锁击发 30×173mm PGU-14/B",
+        "overview": "七套独立往复钛合金旋转炮闩中的 1 号基准炮闩，初始相位 0° 正处 12 点钟炮膛最前闭锁击发工位。",
+        "craftAndMaterial": "高比强度钛合金与镀硬铬精磨承力体，前配三突笋旋转闭锁机头与强力弹簧钢抽壳钩，背部设大直径淬火凸轮随动滚轮轴承。",
+        "kinematicRole": "击发循环中随星形转子公转 360° 并沿静止正弦凸轮槽作整整 300 mm 轴向往复，于 f = 0.08 在 12 点位承压 430 MPa 完成击发；爆炸拆解时呈七芒星辐射展开。",
+        "designHighlight": "以三对称重型闭锁突笋承受 30mm 炮弹高达 430 兆帕的瞬时膛底推力，同时保持极低往复质量以支撑每秒 65 发高频循环。",
+        "audioScript": "这是处于十二点钟正上方最前死点的 1 号钛合金旋转炮闩。它的三突笋机头此刻已刚性闭锁炮膛，顶部的淬火滚轮正抵达三百六十度正弦凸轮槽波峰，随时承受四百三十兆帕高压引燃三十毫米巨弹。",
+        "audioUrl": "audio/gau8/parts/gau8_bolt_1_zh.mp3"
+      },
+      "en": {
+        "roleTag": "0° 12-O-Clock Top Dead Center · 3-Lug Locked 30mm Ignition Station",
+        "overview": "Bolt #1 stands at 0 degrees top dead center—the live 12 o'clock firing station among the seven independent reciprocating titanium rotary bolts.",
+        "craftAndMaterial": "Hard-chrome plated titanium alloy carrier body fitted with a rotating three-lug locking head, heavy spring-steel extractor claw, coaxial firing pin tang, and hardened radial cam roller.",
+        "kinematicRole": "Orbits 360 degrees with the star-rotor while reciprocating across a 300 mm sinusoidal stroke, locking rigidly at 12 o'clock to withstand 430 MPa peak chamber pressure.",
+        "designHighlight": "Balances immense breech-pressure containment against low reciprocating inertia so seven bolts can smoothly execute 65 cycles per second.",
+        "audioScript": "Positioned at twelve o'clock top dead center, Bolt number one is our benchmark firing bolt. Its three symmetrical locking lugs seal four hundred thirty megapascals of chamber pressure as its cam roller crests the helical track.",
+        "audioUrl": "audio/gau8/parts/gau8_bolt_1_en.mp3"
+      }
+    },
+    "gau8_bolt_2": {
+      "partId": "gau8_bolt_2",
+      "bomCode": "B-06",
+      "calloutLabelEn": "Bolt #2 (Unlock Phase)",
+      "zh": {
+        "roleTag": "51.4° 凸轮回程初段 · 旋松三突笋拔松 173mm 铝弹壳",
+        "overview": "滞后 1 号炮闩精确 51.43° 的 2 号钛合金旋转炮闩，正处于击发泄压后的强制开锁与初次抽壳相位。",
+        "craftAndMaterial": "与其余六闩完全互换的镀硬铬钛合金本体、淬火三突笋机头与耐磨滚轮轴承。",
+        "kinematicRole": "随转子公转进入 360° 凸轮槽下降斜坡，滚轮导柱强制驱动机头回转解锁并将紧贴膛壁的 173 mm 铝合金空壳平稳拔松。",
+        "designHighlight": "精密正弦过渡斜坡大幅降低高速初次抽壳的尖峰载荷，严防拉断薄壁轻质铝合金弹壳底缘。",
+        "audioScript": "紧随 1 号炮闩五十一点四度之后的 2 号钛合金炮闩，刚刚驶入正弦凸轮槽下降段。它在炮膛泄压瞬间旋转解脱三突笋闭锁，以平顺渐增的拉力将一百七十三毫米铝制弹壳拔松抽离。",
+        "audioUrl": "audio/gau8/parts/gau8_bolt_2_zh.mp3"
+      },
+      "en": {
+        "roleTag": "51.4° Descending Cam Phase · Rotational Unlock & Primary Extraction",
+        "overview": "Trailing Bolt #1 by exactly 51.43 degrees, Bolt #2 occupies the rotational unlocking and primary extraction phase immediately after chamber blowdown.",
+        "craftAndMaterial": "Fully interchangeable hard-chrome titanium rotary bolt assembly with case-hardened cam roller bearing and wide extractor claw.",
+        "kinematicRole": "Rides down the descending wall of the stationary 360-degree cam sleeve, camming the three-lug bolt head unlocked and breaking the fired 173 mm aluminum casing free.",
+        "designHighlight": "Progressive sinusoidal cam curvature minimizes peak extraction jerk, preventing rim-shear on lightweight aluminum 30mm shell cases.",
+        "audioScript": "Fifty-one point four degrees behind Bolt one, Bolt number two enters the descending cam slope—rotating its three locking lugs free and gently breaking the expanded aluminum casing loose from the chamber walls.",
+        "audioUrl": "audio/gau8/parts/gau8_bolt_2_en.mp3"
+      }
+    },
+    "gau8_bolt_3": {
+      "partId": "gau8_bolt_3",
+      "bomCode": "B-07",
+      "calloutLabelEn": "Bolt #3 (Return Extract)",
+      "zh": {
+        "roleTag": "102.9° 右侧回程段 · 将空铝壳交接至右侧闭环回收槽",
+        "overview": "位于 102.9° 右下弧段的 3 号钛合金旋转炮闩，负责将灼热空铝弹壳彻底抽出炮膛并交接给闭环回收系统。",
+        "craftAndMaterial": "高耐磨硬铬拉丝钛合金闩体、淬火抽壳爪与高负荷滚动轴承凸轮导柱。",
+        "kinematicRole": "沿静止正弦凸轮槽向后疾驰逾 180 mm，将整枚 173 mm 空铝壳拖离弹膛并在交接窗口精准送入右侧返鼓回收滑槽。",
+        "designHighlight": "与炮尾交接星轮严格同步，确保每秒 65 枚灼热空壳零遗漏地返航弹鼓而不散落机外。",
+        "audioScript": "运行在右侧一百零三度位置的 3 号旋转炮闩，已被正弦凸轮槽向后拉出超过一百八十毫米，正将滚烫的三十毫米空铝弹壳彻底抽空，并准备交接给右侧闭环回收滑槽送返弹鼓。",
+        "audioUrl": "audio/gau8/parts/gau8_bolt_3_zh.mp3"
+      },
+      "en": {
+        "roleTag": "102.9° Right-Flank Stroke · Full Extraction to Closed-Loop Return",
+        "overview": "Sweeping past 102.9 degrees on the right flank, Bolt #3 completes deep extraction of the fired aluminum shell case for closed-loop drum recovery.",
+        "craftAndMaterial": "Hard-chrome titanium bolt carrier with heat-treated extractor hook and heavy-duty radial cam follower roller.",
+        "kinematicRole": "Retracts past 180 mm along the sinusoidal cam wave, pulling the hot 173 mm case completely clear of the barrel breech to meet the return transfer sprocket.",
+        "designHighlight": "Exact geometric phase timing guarantees all sixty-five spent aluminum casings per second enter the return chute without jams or overboard loss.",
+        "audioScript": "Sweeping down the right flank at one hundred three degrees, Bolt number three draws the hot aluminum shell completely clear of the breech, handing it straight to the closed-loop return conveyor.",
+        "audioUrl": "audio/gau8/parts/gau8_bolt_3_en.mp3"
+      }
+    },
+    "gau8_bolt_4": {
+      "partId": "gau8_bolt_4",
+      "bomCode": "B-08",
+      "calloutLabelEn": "Bolt #4 (Aft Dwell)",
+      "zh": {
+        "roleTag": "154.3° 临近 300mm 满后退波谷 · 彻底腾出 290mm 长弹窗",
+        "overview": "位于 154.3° 底部后止点弧段的 4 号钛合金旋转炮闩，正抵达 360° 正弦凸轮轨道的最尾端换向波谷。",
+        "craftAndMaterial": "精密磨削硬铬钛合金闩体与低摩擦滚柱凸轮轴承，专抗底部高频换向离心负荷。",
+        "kinematicRole": "抵达近 300 mm 满行程后死点，在星形转子沟槽前端彻底敞开充裕空间以容纳长达 290 mm 的 30×173mm 新弹。",
+        "designHighlight": "长达 300 毫米的往复冲程比 M134D 迷你炮大出六倍以上，完美适配巨型 30 毫米航炮弹体尺寸。",
+        "audioScript": "处于底部一百五十四度波谷处的 4 号旋转炮闩，已经完成了近三百毫米的深行程后撤。它在星形转子槽前彻底敞开宽大装填窗，静候长达二百九十毫米的新鲜穿甲弹进入。",
+        "audioUrl": "audio/gau8/parts/gau8_bolt_4_zh.mp3"
+      },
+      "en": {
+        "roleTag": "154.3° Rear Dead Center · Opening 290 mm Chambering Window",
+        "overview": "Approaching bottom dead center at 154.3 degrees, Bolt #4 reaches the aft trough of the 300-millimeter sinusoidal cam track.",
+        "craftAndMaterial": "Precision-ground hard-chrome titanium carrier engineered to withstand rapid axial reversal loads at 557 rotor RPM.",
+        "kinematicRole": "Retracts nearly 300 mm aft inside its rotor flute, exposing an unobstructed loading bay long enough for the towering 290 mm 30x173mm cartridge.",
+        "designHighlight": "Executes more than six times the axial bolt stroke of a 7.62mm Minigun while maintaining smooth harmonic acceleration.",
+        "audioScript": "Near bottom dead center at one hundred fifty-four degrees, Bolt number four reaches the deepest trough of its three-hundred-millimeter stroke—opening a wide loading window for the massive two-hundred-ninety-millimeter shell.",
+        "audioUrl": "audio/gau8/parts/gau8_bolt_4_en.mp3"
+      }
+    },
+    "gau8_bolt_5": {
+      "partId": "gau8_bolt_5",
+      "bomCode": "B-09",
+      "calloutLabelEn": "Bolt #5 (Linkless Feed)",
+      "zh": {
+        "roleTag": "205.7° 底部供弹窗 · 承接无链交接单元送入的 PGU-14/B 实弹",
+        "overview": "位于 205.7° 左下方位供弹工位的 5 号钛合金旋转炮闩，刚越过 180° 后止点开始接管新鲜无链实弹。",
+        "craftAndMaterial": "硬铬钛合金闩体前端镜面经精细倒角修圆，确保高速顶推铝合金弹底时平稳对中不刮伤底火。",
+        "kinematicRole": "驶上 360° 螺旋凸轮前推起始坡，精准托住炮尾交接单元送入的 30×173mm PGU-14/B 穿甲燃烧弹启动加速推弹。",
+        "designHighlight": "无链强制接弹设计彻底消除金属弹链脱链阻力，在大过载俯冲攻击时依然丝滑可靠。",
+        "audioScript": "越过底部死点来到二百零六度的 5 号旋转炮闩，刚刚开始驶上凸轮前推斜坡。它的精磨镜面精准托住无链交接单元送来的新鲜三十毫米穿甲燃烧弹，启动平稳上膛冲程。",
+        "audioUrl": "audio/gau8/parts/gau8_bolt_5_zh.mp3"
+      },
+      "en": {
+        "roleTag": "205.7° Ascending Pickup · Capturing Fresh Linkless PGU-14/B Round",
+        "overview": "Rounding the lower-left arc at 205.7 degrees, Bolt #5 begins climbing the forward cam ramp to collect a fresh linkless 30x173mm cartridge.",
+        "craftAndMaterial": "Hard-chrome titanium bolt face chamfered for smooth concentric engagement against the aluminum cartridge rim and recessed electric primer.",
+        "kinematicRole": "Engages the fresh PGU-14/B round delivered into the rotor flute by the breech transfer star-wheel, initiating controlled forward ramming.",
+        "designHighlight": "Direct linkless handoff eliminates belt-stripping drag entirely, sustaining flawless feeding through violent high-G combat pull-outs.",
+        "audioScript": "Climbing out of bottom dead center at two hundred six degrees, Bolt number five captures a fresh aluminum-cased PGU-14/B round straight from the linkless transfer unit and starts driving it forward.",
+        "audioUrl": "audio/gau8/parts/gau8_bolt_5_en.mp3"
+      }
+    },
+    "gau8_bolt_6": {
+      "partId": "gau8_bolt_6",
+      "bomCode": "B-10",
+      "calloutLabelEn": "Bolt #6 (Cam Ramming)",
+      "zh": {
+        "roleTag": "257.1° 左侧陡升凸轮段 · 平顺加速推送重达 695g 整弹入膛",
+        "overview": "处于 257.1° 左侧陡升推弹弧段的 6 号钛合金旋转炮闩，正以最高轴向速度将 695 克重型航炮弹送入炮膛。",
+        "craftAndMaterial": "高强硬铬钛合金承力滑块配渗碳耐磨滚轮轴承，承受高速推动重弹的强劲轴向正弦推力。",
+        "kinematicRole": "沿 360° 椭圆形正弦凸轮最陡前推段高速滑行，将 290 mm 长 30×173mm 炮弹笔直推进对应炮管线膛弹膛。",
+        "designHighlight": "正弦速度曲线使重达近七百克的炮弹平滑加减速，既杜绝进膛猛撞走火又满足每分钟 3,900 发极速节奏。",
+        "audioScript": "位于左侧二百五十七度的 6 号旋转炮闩正处于整圈最陡峭的凸轮上升段，它以丝滑的正弦加速度推动重达六百九十五克的三十毫米巨弹，精准笔直地滑入炮膛。",
+        "audioUrl": "audio/gau8/parts/gau8_bolt_6_zh.mp3"
+      },
+      "en": {
+        "roleTag": "257.1° Peak Ascending Slope · High-Speed Ramming of 695g Shell",
+        "overview": "Racing up the steepest forward slope of the cam track at 257.1 degrees, Bolt #6 drives a hefty 695-gram 30x173mm cartridge smoothly into its chamber.",
+        "craftAndMaterial": "Hard-chrome titanium slide body and heavy roller follower built to transmit peak axial ramming force without galling.",
+        "kinematicRole": "Reaches peak forward velocity along the harmonic cam curve, guiding the long 290 mm shell cleanly past the breech throat without rim battering.",
+        "designHighlight": "True harmonic velocity shaping cushions a 1.5-pound round into battery at 65 rounds per second while preventing slam-fire shock.",
+        "audioScript": "At two hundred fifty-seven degrees on the left flank, Bolt number six rides the steepest ascending cam slope—accelerating a hefty six-hundred-ninety-five-gram shell smoothly down the rotor track into its barrel.",
+        "audioUrl": "audio/gau8/parts/gau8_bolt_6_en.mp3"
+      }
+    },
+    "gau8_bolt_7": {
+      "partId": "gau8_bolt_7",
+      "bomCode": "B-11",
+      "calloutLabelEn": "Bolt #7 (Final Lockup)",
+      "zh": {
+        "roleTag": "308.6° 闭锁前夜 · 仅隔 15.4 毫秒接力 1 号炮闩完成下次雷霆击发",
+        "overview": "紧跟 1 号炮闩仅差 51.43° 的 7 号钛合金旋转炮闩，正完成终段推弹到位与三突笋旋转闭锁。",
+        "craftAndMaterial": "精密硬铬钛合金本体配高硬闭锁突笋与待击撞针尾舌，与 12 点位击发凸轮蓄势待接。",
+        "kinematicRole": "驶抵 308.6° 凸轮波峰前缘将实弹完全压紧膛肩并旋锁闭膛，仅隔 15.4 毫秒即可无缝接棒抵达 12 点钟实施下一次雷霆击发！",
+        "designHighlight": "与前方 1 号炮闩构成每秒 65 发永不间断的火风暴接力，令七套机构宛如七管交响乐队般分毫不差。",
+        "audioScript": "紧跟 1 号炮闩之后来到三百零九度的 7 号旋转炮闩，正在完成最后的推弹闭锁动作。在每分钟三千九百发满射速下，仅仅十五点四毫秒之后，它就会接棒抵达十二点位喷吐下一道三十毫米火流。",
+        "audioUrl": "audio/gau8/parts/gau8_bolt_7_zh.mp3"
+      },
+      "en": {
+        "roleTag": "308.6° Final Seating · 15.4 ms Behind Bolt #1 in 3,900 RPM Wave",
+        "overview": "Just 51.43 degrees behind Bolt #1, Bolt #7 executes final cartridge seating and three-lug rotational lockup moments before firing.",
+        "craftAndMaterial": "Precision hard-chrome titanium bolt with contoured locking lugs and rear striker tang poised to meet the 12 o'clock firing cam.",
+        "kinematicRole": "Completes forward cam rise and rotates into rigid breech lockup—trailing Bolt #1 by just 15.4 milliseconds at full 3,900 RPM rate of fire.",
+        "designHighlight": "Closes the unbroken seven-bolt harmonic ring, turning discrete mechanical strokes into a continuous 65-round-per-second wall of armor-piercing energy.",
+        "audioScript": "Just fifteen point four milliseconds behind Bolt one at three hundred nine degrees, Bolt number seven completes final seating and rotational lockup—ready to unleash the very next thirty-millimeter strike.",
+        "audioUrl": "audio/gau8/parts/gau8_bolt_7_en.mp3"
+      }
+    },
+    "gau8_gun_housing": {
+      "partId": "gau8_gun_housing",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Elliptical-Cam Gun Housing",
+      "zh": {
+        "roleTag": "承力航空圆筒主炮匣 · 左右平面精印 GAU-8/A AVENGER 30MM 军标",
+        "overview": "全长 1,060 mm、外径 352 mm 的重型加强筋锻钢圆柱主炮匣，包容整个 360° 螺旋凸轮套筒、七槽星形转子与七套往复炮闩。",
+        "craftAndMaterial": "航空级锻造合金钢筒体覆橄榄炭灰军用底漆，环布八道抗扭纵筋与十二螺栓前后重型钛合金法兰，左右平面铭牌喷印高清黄白 USAF 军标「GAU-8/A AVENGER 30MM」与 MIL-STD-130 二维码。",
+        "kinematicRole": "静态承力骨架，直接承受七炮闩凸轮反力与 44.5 kN 轴向后坐载荷；开启 CT 纵剖面（[C]）自动切开右半壳体直击内腔机构，拆解时由航吊整体垂直抬升。",
+        "designHighlight": "极高刚度薄壁圆筒与八纵筋几何结构将整门重炮核心质量压至极限，左右平面 USAF 铭文展现冷战航空军工的硬核美学。",
+        "audioScript": "这座全长一米零六、布满八道纵向加强筋的重型锻钢圆筒，是复仇者的主炮匣骨架。侧面清晰喷印着美国空军 GAU-8/A 军标与二维资产码。开启实时纵剖模式，就能瞬间切开厚重钢壁直击内部转子与七套炮闩。",
+        "audioUrl": "audio/gau8/parts/gau8_gun_housing_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Ribbed Forged-Steel Main Housing w/ USAF Stencil & ECC200 UID",
+        "overview": "Spanning 1,060 mm long and 352 mm wide, this heavily ribbed cylindrical forged-steel main housing encloses the 360-degree cam sleeve, star-rotor, and all seven rotary bolts.",
+        "craftAndMaterial": "Aerospace forged steel finished in olive-gunmetal primer with eight longitudinal torsion ribs, twelve-bolt titanium end flanges, and flat USAF nomenclature plates bearing a MIL-STD-130 UID matrix.",
+        "kinematicRole": "Stationary structural core reacting cam torque and 44.5 kN firing loads; slices cleanly open in CT cutaway mode and hoists vertically off the recoil mount during teardown.",
+        "designHighlight": "Combines maximum torsional stiffness with aerospace weight control, presenting authentic U.S. Air Force ordnance stenciling on both unobstructed flanks.",
+        "audioScript": "Over a meter long and braced by eight torsion ribs, this forged-steel cylindrical housing anchors the entire rotary action. Its side plates carry authentic Air Force nomenclature and UID codes, and slice cleanly open in CT cutaway view.",
+        "audioUrl": "audio/gau8/parts/gau8_gun_housing_en.mp3"
+      }
+    },
+    "gau8_cam_track": {
+      "partId": "gau8_cam_track",
+      "bomCode": "F-02",
+      "calloutLabelEn": "360° Helical Cam Track",
+      "zh": {
+        "roleTag": "300 mm 轴向正弦波浪槽 · 零气动依赖驱动七套 30mm 炮闩同步往复",
+        "overview": "深嵌于主炮匣内壁的 360° 椭圆形正弦螺旋凸轮导轨套筒，是整门 GAU-8/A 加特林自动原理最令人叹为观止的机械灵魂。",
+        "craftAndMaterial": "深层渗碳淬火工具钢圆筒外体配五轴数控精磨镜面硬铬内壁正弦双轨道，经受数百万次高负荷滚轮高速碾压仍保持微米级轮廓精度。",
+        "kinematicRole": "在炮匣内保持绝对静止，通过 300 mm 峰谷落差的闭环正弦槽迫使绕轴公转的七套钛合金炮闩同步完成进弹、闭锁、击发与抽壳全流程；二级拆解时向上抽出炮匣。",
+        "designHighlight": "纯粹用一道三维空间数学正弦曲面取代了传统机枪所有导气孔、活塞杆与缓冲闭锁复杂连杆，零气动依赖且永不卡壳。",
+        "audioScript": "深嵌在主炮匣内壁的这枚三百六十度正弦螺旋凸轮套筒，正是加特林原理的几何灵魂。它自身纹丝不动，仅凭内壁一道峰谷落差三百毫米的镜面硬铬波浪滑道，便精准编织出七套巨型炮闩的同步机械交响。",
+        "audioUrl": "audio/gau8/parts/gau8_cam_track_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Stationary 360° Hardened Sinusoidal Cam Sleeve (300 mm Stroke)",
+        "overview": "Pressed inside the main gun housing, this case-hardened 360-degree elliptical sinusoidal cam sleeve is the pure geometric heart of the Avenger's rotary operating cycle.",
+        "craftAndMaterial": "Deep-carburized tool steel outer drum enclosing a mirror-burnished hard-chrome internal helical channel precision-ground for millions of high-load roller passes.",
+        "kinematicRole": "Remains strictly stationary while forcing all seven orbiting bolt rollers across a smooth 300 mm harmonic wave; extracts upward above the housing during teardown.",
+        "designHighlight": "Replaces every gas port, piston rod, and delicate timing lever with a single indestructible mathematical curve.",
+        "audioScript": "Nested inside the main housing lies the geometric heart of the Gatling principle—a stationary three-hundred-sixty-degree hardened steel cam sleeve whose mirror-chrome sinusoidal channel guides all seven titanium bolts across a three-hundred-millimeter wave.",
+        "audioUrl": "audio/gau8/parts/gau8_cam_track_en.mp3"
+      }
+    },
+    "gau8_recoil_mount": {
+      "partId": "gau8_recoil_mount",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Titanium Recoil Mount",
+      "zh": {
+        "roleTag": "直连 A-10 钛合金浴盆前机身大梁 · 承载 44.5 kN 持续狂暴后坐力",
+        "overview": "将 GAU-8/A 主炮匣刚性对接至 A-10 攻击机前机身承力钛合金大梁的重型反后坐适配器，配航空黄黑警示涂装的重型机库地面维护支架。",
+        "craftAndMaterial": "上部采用航空级阳极氧化钛合金锻造双鞍座与纵梁，下部配备醒目航空安全黄 A 型斜撑钢架与高摩擦硫化橡胶防滑地轨，0.00 cm 精准贴合混凝土机库地坪。",
+        "kinematicRole": "作为整套 1:1 重武器展品扎根机库地坪的基准承重基座，承受 3,900 RPM 持续扫射高达 44.5 千牛的平均后坐推力；爆炸拆解全程稳立地面作为航吊基准。",
+        "designHighlight": "将超过一台喷气发动机推力的惊人后坐载荷均匀导散入 A-10 钛合金机身龙骨，确保战机俯冲开火时航向稳如磐石。",
+        "audioScript": "稳立在机库混凝土地坪上的这座钛合金反后坐适配器与黄黑维护基座，在实战中直接锁固在 A-10 攻击机前机身大梁上。连射时高达四十四点五千牛的恐怖后坐推力，全靠这座重型基座平稳导散至整架飞机龙骨。",
+        "audioUrl": "audio/gau8/parts/gau8_recoil_mount_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Heavy Titanium A-10 Fuselage Recoil Adapter & Hangar Cradle",
+        "overview": "Uniting the upper titanium A-10 fuselage trunnion saddles with a hazard-yellow aerospace hangar maintenance stand, this cradle anchors the Avenger against immense firing recoil.",
+        "craftAndMaterial": "Forged anodized titanium upper recoil saddles and side rails bolted atop an aviation-yellow braced steel A-frame with heavy vulcanized rubber floor skids.",
+        "kinematicRole": "Remains planted flush on the heavy concrete hangar floor throughout teardown, reacting 44.5 kN (10,000 lbf) of average continuous firing thrust.",
+        "designHighlight": "Channels recoil forces exceeding a single TF34 jet engine's thrust cleanly into the A-10's primary fuselage longerons without disturbing aiming trim.",
+        "audioScript": "Planted squarely on the hangar concrete, this heavy titanium recoil adapter and aviation-yellow maintenance cradle transfers ten thousand pounds of continuous firing thrust safely into the A-10's primary titanium fuselage structure.",
+        "audioUrl": "audio/gau8/parts/gau8_recoil_mount_en.mp3"
+      }
+    },
+    "gau8_recoil_buffers": {
+      "partId": "gau8_recoil_buffers",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Twin Recoil Buffers",
+      "zh": {
+        "roleTag": "双向节流液压阻尼 · 平抑每秒 65 发 30mm 炮弹的高频冲击脉动",
+        "overview": "对称并联于主炮匣左右腹侧的双联重型液气反后坐节流缓冲筒总成，配镜面镀铬伸缩活塞杆与尾端等压液压连通管。",
+        "craftAndMaterial": "阳极氧化钛合金压力筒体、航空钴蓝高压端盖歧管、高光硬镀铬活塞杆及高压氮气充注阀。",
+        "kinematicRole": "击发期间随每秒 65 次 30mm 击发冲量沿 -X 轴高频平顺往复阻尼，将刚性冲击转化为柔和稳态推力；拆解时整体前移滑离支架。",
+        "designHighlight": "有效隔绝 65 Hz 高能击发谐振，避免剧烈震动损毁 A-10 机头航电雷达与飞行员平视显示器。",
+        "audioScript": "对称挂装在炮匣两侧的这两具液气反后坐节流缓冲筒，以高压氮气室与镜面镀铬活塞杆协同工作，将每秒六十五发巨炮的刚性高频冲击平顺柔化，保护机载航电不受共振摧毁。",
+        "audioUrl": "audio/gau8/parts/gau8_recoil_buffers_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Symmetrical Hydro-Pneumatic Recoil Dampers & Chrome Piston Rods",
+        "overview": "Flanking the lower sides of the gun housing, these twin hydro-pneumatic recoil absorber cylinders and their cross-equalizer manifold damp 65-Hz heavy cannon shockwaves.",
+        "craftAndMaterial": "Anodized titanium pressure barrels, aerospace-blue hydraulic end manifolds, nitrogen charging valves, and mirror-chrome telescoping piston rods.",
+        "kinematicRole": "Reciprocates smoothly rearward under sustained 44.5 kN recoil ripple during firing; detaches forward and downward beneath the barrel cluster during disassembly.",
+        "designHighlight": "Isolates the A-10 airframe, avionics bays, and pilot head-up display from destructive high-frequency firing harmonics.",
+        "audioScript": "Flanking the lower housing, these twin hydro-pneumatic recoil dampers use pressurized nitrogen and mirror-chrome pistons to transform sixty-five hammering thirty-millimeter impulses per second into smooth airframe loads.",
+        "audioUrl": "audio/gau8/parts/gau8_recoil_buffers_en.mp3"
+      }
+    },
+    "gau8_recoil_springs": {
+      "partId": "gau8_recoil_springs",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Twin Recoil Springs",
+      "zh": {
+        "roleTag": "17 mm 粗航空弹簧钢丝 · 保留恒线径 GPU 实时动态压缩形变",
+        "overview": "并列布置于左右双液气缓冲筒下方的重型锻钢反后坐复进螺旋弹簧组，以澎湃弹性势能辅助整炮精准复位。",
+        "craftAndMaterial": "直径 17 mm 航空级硅锰弹簧钢丝经喷丸强化精绕成型，保留完整 `aSpringParam` 恒线径 GPU 实时动态压缩形变属性。",
+        "kinematicRole": "击发连射期间随 44.5 kN 后坐脉动从 1.00 实时线性压缩至 0.74 长度并高频弹性回弹；拆解时向液气筒正下方平行分离。",
+        "designHighlight": "作为纯机械冗余复进保障，即便液气氮压衰减仍能可靠将沉重炮身顶回战斗基准位。",
+        "audioScript": "并列于双液气缓冲筒下方的这两根重型锻钢螺旋复进簧，采用十七毫米粗航空硅锰弹簧钢精绕而成。连发期间它们随巨大后坐推力实时动态压缩蓄能，协同液气筒稳稳托回炮身基准。",
+        "audioUrl": "audio/gau8/parts/gau8_recoil_springs_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Twin 17 mm Wire Forged Recuperator Coils w/ Live GPU Compression",
+        "overview": "Mounted parallel beneath the twin hydro-pneumatic dampers, these forged helical recuperator springs provide positive mechanical counter-recoil return force.",
+        "craftAndMaterial": "Shot-peened 17 mm chrome-silicon aerospace spring wire preserving constant-wire-diameter GPU compression via `aSpringParam`.",
+        "kinematicRole": "Compresses dynamically down to 74 percent free length in sync with the 44.5 kN firing ripple; lowers cleanly beneath the recoil cylinders during teardown.",
+        "designHighlight": "Adds fail-safe mechanical return redundancy alongside pressurized nitrogen recuperators under extreme cold-altitude combat duty.",
+        "audioScript": "Parallel to the hydraulic dampers sit these twin forged helical recuperator springs wound from seventeen-millimeter aerospace wire. During live firing they compress dynamically to seventy-four percent length, returning the heavy cannon assembly smoothly into battery.",
+        "audioUrl": "audio/gau8/parts/gau8_recoil_springs_en.mp3"
+      }
+    },
+    "gau8_hydraulic_motors": {
+      "partId": "gau8_hydraulic_motors",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Twin 38.5-HP Hydraulic Motors",
+      "zh": {
+        "roleTag": "总功率 77 马力双余度机载液压 · 0.5 秒加速至 3,900 RPM 零哑弹停射",
+        "overview": "锁固于主炮匣尾端的减速齿轮箱与顶置双联 38.5 马力 3,000 PSI 高压航空液压驱动马达总成，是整门 30mm 旋转巨炮的狂暴动力源泉。",
+        "craftAndMaterial": "航空钴蓝带散热翅片液压马达筒体、不锈钢高压油路歧管接头与减速箱铸壳，顶置高对比红黄黑 USAF 警示牌「DANGER HIGH PRESSURE HYDRAULICS · 3,000 PSI」。",
+        "kinematicRole": "将 A-10 双独立液压回路输出转化为 77 马力澎湃扭矩驱动 28 齿转子主齿轮；一级机务维护时向后上方吊离炮尾。",
+        "designHighlight": "双独立液压冗余赋予战损生存奇迹——单套液压遭击穿仍可半速续射，外能源强驱令哑弹直接退出绝不卡炮。",
+        "audioScript": "蹲踞在主炮匣尾部的这两台钴蓝色三十八点五马力液压马达，合并输出高达七十七马力惊人功率，顶部醒目警示着三千磅超高液压。双独立油路不仅能在半秒内把七管推上满速，战损一侧后仍能继续倾泻火力。",
+        "audioUrl": "audio/gau8/parts/gau8_hydraulic_motors_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dual Redundant 38.5-HP (77 HP Total) 3,000 PSI Hydraulic Drive",
+        "overview": "Bolted to the aft bulkhead of the gun housing, this pear-shaped reduction gearbox topped by twin 38.5-horsepower 3,000 PSI hydraulic motors powers the entire Avenger system.",
+        "craftAndMaterial": "Finned aerospace-blue hydraulic motor barrels, stainless high-pressure manifold fittings, and a bold yellow-red-black USAF high-pressure hydraulics warning placard.",
+        "kinematicRole": "Converts dual redundant aircraft hydraulic pressure into 77 horsepower driving the 28-tooth main rotor gear; hoists aft and upward during maintenance stripping.",
+        "designHighlight": "Dual-circuit survivability lets the cannon keep firing at half rate even if enemy fire severs one hydraulic system, while shrugging off dud primers.",
+        "audioScript": "Crowning the rear gearbox are twin thirty-eight-point-five-horsepower hydraulic drive motors topped with a bold three-thousand-PSI hazard placard. Tapping both of the A-10's independent hydraulic systems, they unleash seventy-seven horsepower and keep firing even after battle damage.",
+        "audioUrl": "audio/gau8/parts/gau8_hydraulic_motors_en.mp3"
+      }
+    },
+    "gau8_transfer_unit": {
+      "partId": "gau8_transfer_unit",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Transfer & Clearing Unit",
+      "zh": {
+        "roleTag": "同步完成进实弹与退空壳双向换向 · 右侧黄红 SAFE/ARMED 清膛安全门",
+        "overview": "紧贴主炮匣尾腹部的双路无链供弹交接单元与机械清膛安全门总成，是连接巨型螺旋弹鼓与七管主炮的交通枢纽。",
+        "craftAndMaterial": "航空底漆重型数控铝钢壳体配左右双滑槽对接法兰与内嵌精密星轮转鼓，右侧装设醒目黄红双色「SAFE / ARMED」清膛安全门与绯红快拆定位钮。",
+        "kinematicRole": "一侧接引左侧滑槽送来的新鲜 30mm 穿甲弹进入主转子，另一侧同步接管抽出的空铝壳送入右侧返鼓滑槽；停射末段联动清膛门自动排空膛内余弹。",
+        "designHighlight": "完美集成进实弹、退空壳与防高温烤燃自动清膛三大航空安全职能，把复杂供弹闭环压缩在极其紧凑的炮尾腹部空间。",
+        "audioScript": "紧扣在炮尾下方的无链交接单元，是弹药进出的双向枢纽。它一边把左侧送来的新鲜炮弹推入七管主转子，一边接管打空的铝壳压回右侧回收槽，右侧醒目的黄红安全门更能在停射瞬间自动清膛防止高温自发。",
+        "audioUrl": "audio/gau8/parts/gau8_transfer_unit_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Dual-Path Linkless Transfer Hub & Yellow/Red SAFE/ARMED Gate",
+        "overview": "Mounted directly beneath the rear gun housing, this linkless transfer unit and clearing sector gate serve as the two-way traffic hub between the helical drum and seven-barrel rotor.",
+        "craftAndMaterial": "CNC-machined aerospace alloy housing with flanged left and right chute collars, internal timing sprocket, and a firewalled yellow/crimson SAFE/ARMED clearing sector plate.",
+        "kinematicRole": "Simultaneously transfers live 30mm rounds from the left chute into the rotor and diverts spent aluminum casings into the right return chute; automatically clears chambers at burst end.",
+        "designHighlight": "Prevents hot-barrel cook-offs after intense bursts by mechanically isolating live rounds so the spinning rotor sweeps every chamber empty.",
+        "audioScript": "Beneath the breech sits the linkless transfer unit—a bidirectional traffic hub feeding fresh shells from the left chute into the rotor while steering spent aluminum casings back down the right chute, complete with a yellow-and-crimson SAFE and ARMED clearing sector gate.",
+        "audioUrl": "audio/gau8/parts/gau8_transfer_unit_en.mp3"
+      }
+    },
+    "gau8_buffer_spring": {
+      "partId": "gau8_buffer_spring",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Drive Clutch Spring",
+      "zh": {
+        "roleTag": "平抑 77 HP 液压马达瞬时启停冲击 · 保护 28 齿主驱动齿轮与星轮正时",
+        "overview": "隐藏于尾部减速箱传动轴系内的扭力离合与交接同步缓冲螺旋弹簧，柔化 77 马力液压系统瞬时启停的巨大扭矩尖峰。",
+        "craftAndMaterial": "高疲劳航空琴钢丝精密卷绕并保留恒线径 `aSpringParam` GPU 实时压缩属性。",
+        "kinematicRole": "射击循环中随七管 65 Hz 击发节拍高频轴向压缩脉动（scaleX 0.76–1.00），保护 28 齿主驱动齿轮与交接星轮免遭过载断齿；拆解时随减速箱后移展开。",
+        "designHighlight": "以极简弹性缓冲吸收数百公斤高速旋转组件在半秒内启停的角动量反冲，大幅延长整套传动系大修间隔。",
+        "audioScript": "藏在尾部减速箱内的这根液压离合缓冲螺旋簧，在七十七马力马达瞬间启停的半秒间高频动态压缩，吸收剧烈扭矩冲击，保护二十八齿驱动大齿轮与无链供弹正时万无一失。",
+        "audioUrl": "audio/gau8/parts/gau8_buffer_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "77-HP Hydraulic Torque-Clutch & Transfer Sync Shock Spring",
+        "overview": "Nested inside the rear reduction gearbox, this helical torque-clutch buffer spring cushions violent spin-up and burst-stop loads from the twin 38.5-HP hydraulic motors.",
+        "craftAndMaterial": "High-endurance aerospace music wire wound with constant-wire-diameter `aSpringParam` GPU deformation.",
+        "kinematicRole": "Pulses dynamically seven times per rotor revolution in sync with firing impulses and spin-up torque; separates aft beneath the hydraulic motors during teardown.",
+        "designHighlight": "Shields the 28-tooth rotor spur gear and synchronized drum transfer shaft from overload tooth shear across thousands of combat bursts.",
+        "audioScript": "Tucked inside the rear reduction gearbox, this helical clutch buffer spring pulses seven times every revolution to absorb sudden seventy-seven-horsepower spin-up torque and protect the precision gear train from shear.",
+        "audioUrl": "audio/gau8/parts/gau8_buffer_spring_en.mp3"
+      }
+    },
+    "gau8_striker_spring": {
+      "partId": "gau8_striker_spring",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "12:00 Striker Spring",
+      "zh": {
+        "roleTag": "高响应击发储能压簧 · 12 点位闭锁瞬间高速释放引燃 30mm 底火",
+        "overview": "布置于主炮匣 12 点钟顶部击发凸轮工位内的重型撞针储能螺旋弹簧，为每秒 65 发高频机械击发提供可靠能量。",
+        "craftAndMaterial": "耐高温抗松弛铬硅弹簧钢丝精绕成型，具备完整 `aSpringParam` 动态恒线径形变参数。",
+        "kinematicRole": "每当旋转炮闩携实弹爬升至 12 点闭锁工位时线性压缩至 68% 蓄能，越过凸轮释放肩瞬间高速弹射撞针引燃 30mm 强装底火；拆解时向上前方展开。",
+        "designHighlight": "在高达 65 Hz 的极端击发频率下依然保持干脆利落的撞击能量与零弹簧共振疲劳。",
+        "audioScript": "守候在十二点钟击发工位上的重型撞针储能螺旋簧，每逢一套炮闩闭锁到位便迅速压缩蓄能至百分之六十八，随即在微秒间干脆弹射撞针，以每秒六十五次的节拍引燃三十毫米强装底火。",
+        "audioUrl": "audio/gau8/parts/gau8_striker_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "High-Frequency 12-O-Clock Firing-Cam Percussion Striker Spring",
+        "overview": "Positioned at the 12 o'clock firing cam station atop the breech, this heavy helical striker spring delivers crisp percussion ignition sixty-five times every second.",
+        "craftAndMaterial": "Heat-resistant chrome-silicon spring wire retaining full constant-wire-diameter `aSpringParam` GPU compression.",
+        "kinematicRole": "Compresses sharply to 68 percent free length as each bolt reaches top dead center before snapping forward at f = 0.08 to ignite the 30mm primer.",
+        "designHighlight": "Tuned against surge harmonics so firing-pin strike energy remains unwavering throughout rapid 3,900 RPM bursts.",
+        "audioScript": "Positioned at the twelve o'clock firing station, this heavy striker coil spring compresses to sixty-eight percent length as each bolt locks home, snapping forward sixty-five times per second to ignite the heavy thirty-millimeter primer.",
+        "audioUrl": "audio/gau8/parts/gau8_striker_spring_en.mp3"
+      }
+    },
+    "gau8_ammo_drum": {
+      "partId": "gau8_ammo_drum",
+      "bomCode": "M-01",
+      "calloutLabelEn": "1,150-Rd Helical Drum",
+      "zh": {
+        "roleTag": "直径 87.6 cm × 长 181.6 cm 航空铝巨鼓 · 满载重逾 1.1 吨可装 1,150 发 30mm 炮弹",
+        "overview": "占据整套六米系统后半壁江山的巨型无链闭环螺旋供弹鼓（Ø876×1,816 mm），满载 1,150 发 30×173mm 巨炮弹时堪称一座飞行军火库。",
+        "craftAndMaterial": "航空橄榄绿阳极氧化高强铝合金空心圆筒配五道钛合金加强箍环与十六螺栓前后端盖，双侧平面铭牌高清喷涂 USAF 军标「GAU-8/A HELICAL AMMO DRUM · 1,150 RDS · PGU-14/B API」及黄黑危险警示带，底部航空黄承重底座精准贴地。",
+        "kinematicRole": "全封闭高强弹药容器，保护 1,150 发巨弹并在闭环回路中收纳全部返鼓空铝壳；开启 CT 纵剖（[C]）即可直接切开右壁俯瞰满鼓 30mm 炮弹，拆解时沿机库地轨平顺后移。",
+        "designHighlight": "以惊人的空间利用效率将逾一吨重的 1,150 发重型航炮弹紧凑安置于 A-10 攻击机中机身重心正中，满弹持续火力令任何轻型航炮望尘莫及。",
+        "audioScript": "位于后方的这座直径八十七点六厘米、长一米八二的航空橄榄绿巨筒，就是可容纳一千一百五十发三十毫米巨弹的无链螺旋供弹鼓。它满载重逾一吨半，侧壁喷印着醒目的美国空军军标与黄黑危险警示，开启纵剖即可一览满鼓穿甲炮弹。",
+        "audioUrl": "audio/gau8/parts/gau8_ammo_drum_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Ø876 x 1,816 mm Aerospace Aluminum 1,150-Rd Closed-Loop Drum",
+        "overview": "Dominating the aft half of the six-meter system, this gargantuan 876-millimeter-diameter, 1,816-millimeter-long helical drum stores 1,150 massive 30x173mm rounds at the A-10's center of gravity.",
+        "craftAndMaterial": "Hollow olive-anodized aerospace aluminum cylinder braced by five titanium stiffening hoops, sixteen-bolt end bulkheads, bold USAF hazard plaques, and grounded yellow floor cradles.",
+        "kinematicRole": "Houses both live rounds and returned spent aluminum cases inside a sealed closed loop; slices open cleanly in CT cutaway mode and rolls aft along hangar rails during disassembly.",
+        "designHighlight": "Packs over a metric ton of anti-armor firepower tightly around the jet's aerodynamic center of gravity while eliminating vulnerable external ammunition belts.",
+        "audioScript": "Measuring eighty-seven point six centimeters wide and over one point eight meters long, this olive-anodized helical ammunition drum holds one thousand one hundred fifty thirty-millimeter shells. Stenciled with bold Air Force explosive markings, it slices open in cutaway view to expose the entire loaded spiral.",
+        "audioUrl": "audio/gau8/parts/gau8_ammo_drum_en.mp3"
+      }
+    },
+    "gau8_drum_rotor": {
+      "partId": "gau8_drum_rotor",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Helical Drum Rotor",
+      "zh": {
+        "roleTag": "与炮身液压系统机械硬同步 · 螺旋推进实弹并腾空后槽收纳空壳",
+        "overview": "深嵌于 1,150 发巨型弹鼓中轴的十四翼精密螺旋拨弹转子与重型中央不锈钢驱动轴，驱动整鼓逾一吨重的弹药螺旋行进。",
+        "craftAndMaterial": "高强不锈钢中央重载扭矩轴配前后双加强端盘与十四片精密倒角径向分弹翼板，拉丝防磨损工业表面。",
+        "kinematicRole": "击发期间与主炮七槽星形转子严格同步反向旋转，以精准步进角将螺旋弹药推向前方出弹滑槽并腾出空位接纳返鼓空壳；拆解时自弹鼓正上方高举抽出。",
+        "designHighlight": "机械硬同步传动彻底消除弹鼓与机炮之间的供弹滞后，确保从扣下扳机第一发到第一千一百五十发全程零错齿。",
+        "audioScript": "贯穿弹鼓中轴的十四翼不锈钢螺旋拨弹转子，经传动轴与前方七管主炮保持严格机械硬同步。开火瞬间它稳健旋动逾一吨重的炮弹阵列向前供弹，同时精准腾出后方空位收纳返回的空铝弹壳。",
+        "audioUrl": "audio/gau8/parts/gau8_drum_rotor_zh.mp3"
+      },
+      "en": {
+        "roleTag": "14-Vane Gear-Synchronized Internal Helical Conveyor Rotor",
+        "overview": "Running down the central axis of the 1,150-round drum, this 14-vane stainless steel helical conveyor rotor indexes over a ton of 30mm ammunition in lockstep with the cannon.",
+        "craftAndMaterial": "Heavy brushed stainless central torque shaft fitted with machined end bulkheads and fourteen chamfered radial cartridge-separator vanes.",
+        "kinematicRole": "Counter-rotates synchronously during firing to advance live shells toward the left feed exit while opening trailing slots for returning empty casings; hoists vertically above the drum during teardown.",
+        "designHighlight": "Hard mechanical shaft synchronization guarantees zero timing lag between the drum spiral and the 3,900 RPM breech transfer unit.",
+        "audioScript": "Running down the center of the giant drum is this fourteen-vane stainless steel helical conveyor rotor. Mechanically synchronized with the cannon's hydraulic drive, it steadily indexes over a ton of thirty-millimeter shells while opening empty slots for returning spent cases.",
+        "audioUrl": "audio/gau8/parts/gau8_drum_rotor_en.mp3"
+      }
+    },
+    "gau8_ammo_belt_stack": {
+      "partId": "gau8_ammo_belt_stack",
+      "bomCode": "M-03",
+      "calloutLabelEn": "30x173mm PGU-14/B Stack",
+      "zh": {
+        "roleTag": "全长 290 mm 巨型航炮弹 · 拉丝航空铝弹壳减重 30% + 绯红穿甲燃烧弹带",
+        "overview": "沿螺旋弹鼓内圈按 1:1 真实尺度密集排布的 70 发可视化 30×173mm PGU-14/B 穿甲燃烧弹（API）群，单发大小堪比玻璃瓶！",
+        "craftAndMaterial": "四重严格 UV 防火墙清晰呈现 173 mm 轻质拉丝航空铝合金弹壳、红铜膛线导带、炭黑轻合金穿甲风帽与醒目绯红燃烧弹尖识别环。",
+        "kinematicRole": "随十四翼螺旋拨弹转子同步旋转推进，直观展现 1,150 发巨型航炮弹在弹鼓内层的螺旋排布奇观；拆解时作为壮观的环形弹药列阵整体升出弹鼓。",
+        "designHighlight": "以拉丝航空铝弹壳取代黄铜为 A-10 狂减逾 300 公斤死重，内藏 300 克贫铀/钨合金高密度穿甲芯，单发枪口动能高达 201 千焦！",
+        "audioScript": "排列在螺旋弹鼓内圈的这七十发一比一实体三十乘一百七十三毫米穿甲燃烧弹，每一发全长高达二百九十毫米。亮银拉丝航空铝弹壳大幅减重三成，搭配红铜导带、炭黑弹体与醒目绯红燃烧鼻环，单发释放逾二百千焦反装甲动能。",
+        "audioUrl": "audio/gau8/parts/gau8_ammo_belt_stack_zh.mp3"
+      },
+      "en": {
+        "roleTag": "70-Round 1:1 Helical Array of Aluminum-Cased 30x173mm PGU-14/B API",
+        "overview": "Arranged inside the drum annulus at true 1:1 scale, this gleaming five-tier spiral of seventy 30x173mm PGU-14/B armor-piercing incendiary rounds reveals the sheer scale of bottle-sized 30mm ordnance.",
+        "craftAndMaterial": "Strict four-way UV material separation distinguishing brushed 173 mm aerospace aluminum cases, warm copper driving bands, matte-black ballistic bodies, and crimson incendiary nose rings.",
+        "kinematicRole": "Orbits seamlessly with the 14-vane helical drum rotor during live firing and lifts clear of the drum housing as a dramatic cylindrical display during teardown.",
+        "designHighlight": "Aerospace aluminum casings cut ammunition deadweight by 30 percent, while each 395-gram depleted-uranium-core projectile packs 201 kilojoules of armor-defeating energy.",
+        "audioScript": "Nested around the drum rotor is a breathtaking one-to-one spiral of seventy thirty-by-one-seventy-three-millimeter PGU-14/B armor-piercing incendiary shells. Each bottle-sized round pairs a weight-saving brushed aluminum case with a copper driving band, black body, and crimson incendiary nose.",
+        "audioUrl": "audio/gau8/parts/gau8_ammo_belt_stack_en.mp3"
+      }
+    },
+    "gau8_chute_feed": {
+      "partId": "gau8_chute_feed",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Linkless Live Feed Chute",
+      "zh": {
+        "roleTag": "全封闭无金属弹链导向通道 · 杜绝 3,900 RPM 脱链卡滞与过载故障",
+        "overview": "架设于螺旋弹鼓左前方与炮尾无链交接单元之间的加筋航空铝合金实弹高速输送通道，侧面视窗直观展现疾驰向前的 30mm 穿甲实弹。",
+        "craftAndMaterial": "高强航空钛铝合金矩形风道外壳配七道橄榄底漆加强肋框与螺栓对接法兰，侧窗内置拉丝铝壳与绯红弹尖 30×173mm 实弹列队。",
+        "kinematicRole": "在每秒 65 发极端速度与 A-10 大过载俯冲机动下无链强制引导重型实弹奔赴炮膛；一级机务快拆最先向左侧（-Z）整体解脱分离。",
+        "designHighlight": "彻底淘汰脆弱的可散金属弹链，以双端无链刚性通道造就了复仇者惊人的高过载供弹可靠性。",
+        "audioScript": "左侧这条带有七道加强肋框的航空铝通道，是复仇者的无链实弹高速输弹槽。它彻底告别了在每分钟三千九百发下极易扯断的传统金属弹链，经侧面观察窗即可看到银白铝壳、绯红鼻环的三十毫米实弹疾驰奔向炮尾。",
+        "audioUrl": "audio/gau8/parts/gau8_chute_feed_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Ribbed Linkless Conveyor Tunnel Feeding Live 30mm Rounds Forward",
+        "overview": "Bridging the forward-left port of the helical drum to the breech transfer unit, this stiffened aerospace conveyor chute channels live 30x173mm API rounds forward at 65 shells per second.",
+        "craftAndMaterial": "Anodized aerospace alloy rectangular duct reinforced by seven olive-primer structural ribs, revealing live aluminum-cased, red-nosed 30mm cartridges along its inspection bay.",
+        "kinematicRole": "Guides heavy 695-gram linkless rounds under positive mechanical control through high-G dive maneuvers; unbolts cleanly outward to the left during crew field stripping.",
+        "designHighlight": "Eliminates disintegrating steel links entirely, removing the single biggest failure point of ultra-high-rate aircraft cannons.",
+        "audioScript": "Bridging the drum and breech on the left flank is the ribbed linkless live-round feed chute. By replacing vulnerable metal belt links with a rigid conveyor duct, it feeds sixty-five bottle-sized shells per second cleanly even under high-G combat dives.",
+        "audioUrl": "audio/gau8/parts/gau8_chute_feed_en.mp3"
+      }
+    },
+    "gau8_chute_return": {
+      "partId": "gau8_chute_return",
+      "bomCode": "M-05",
+      "calloutLabelEn": "Closed-Loop Return Chute",
+      "zh": {
+        "roleTag": "A-10 重心守恒关键设计 · 100% 回收空壳严防涡扇进气道吸入异物",
+        "overview": "对称架设于右侧（+Z）的闭环空铝弹壳返鼓回收滑槽，将每一枚发射后的 173 mm 空铝壳全部原路送返巨型螺旋弹鼓。",
+        "craftAndMaterial": "与左侧进弹槽对称的航空钛铝合金加筋通道与七道加强肋框，侧面观察窗内清晰呈现已脱去弹头的空铝壳返航队列。",
+        "kinematicRole": "承接炮尾交接单元退出的全部灼热空壳并反向压回弹鼓空槽，保持 A-10 攻击机机身重心恒定与零异物吸入风险；一级快拆阶段向右下方整体解脱。",
+        "designHighlight": "人类航空火炮工程史上最精妙的系统级权衡——宁可多背几百公斤空铝壳返航，也要誓死守卫战机气动重心与双发涡扇发动机安全。",
+        "audioScript": "右侧这条对称的加筋滑槽，蕴含着复仇者最精妙的航空系统智慧：它绝不向机外抛撒任何一枚灼热空壳，而是把打空的铝弹壳百分百压回弹鼓空位——既守住了 A-10 战机飞行重心，更严防空壳被后方涡扇发动机吸入。",
+        "audioUrl": "audio/gau8/parts/gau8_chute_return_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Closed-Loop Spent Aluminum Case Return Chute Preserving A-10 CG",
+        "overview": "Mirroring the feed tunnel along the right flank, this closed-loop return chute channels every spent 173 mm aluminum shell case straight back into the helical drum.",
+        "craftAndMaterial": "Ribbed aerospace titanium-aluminum conveyor housing matching the left feed duct, showcasing headless fired aluminum casings returning aft through its inspection channel.",
+        "kinematicRole": "Receives 65 hot empty casings per second from the transfer hub and packs them back into vacant drum pockets; detaches cleanly outward to the right during field stripping.",
+        "designHighlight": "Prevents hundreds of kilograms of jettisoned brass from shifting the A-10's aerodynamic center of gravity or causing catastrophic turbofan foreign-object damage.",
+        "audioScript": "On the right flank runs one of aviation ordnance's smartest engineering solutions: the closed-loop spent-case return chute. Rather than dumping hot aluminum shells overboard where they could upset the jet's center of gravity or damage the rear turbofans, it packs every empty casing right back into the drum.",
+        "audioUrl": "audio/gau8/parts/gau8_chute_return_en.mp3"
+      }
+    }
+  }
+}
