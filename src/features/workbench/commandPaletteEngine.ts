@@ -1,4 +1,8 @@
 import { openKeyboardShortcutsModal } from '../../app/useKeyboardShortcuts';
+import {
+  copyCurrent3dViewLink,
+  triggerSlowMoCutawayCinema,
+} from '../../app/useUrlStateSync';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import {
   ARMORY_WEAR_PRESETS,
@@ -1233,6 +1237,70 @@ export function buildCommandPaletteItems(
   const nextWearLabel = studioUi.wearPresets[nextWear].label;
 
   items.push(
+    {
+      id: 'action:slow-mo-cutaway-cinema',
+      group: 'actions',
+      icon: 'firing',
+      title: UI_STRINGS[lang].timeline.cinemaDemoCmdTitle,
+      subtitle: UI_STRINGS[lang].timeline.cinemaDemoCmdSub,
+      statusBadge: '0.25x CT',
+      statusTone: 'amber',
+      primaryFields: [
+        UI_STRINGS[lang].timeline.cinemaDemoCmdTitle,
+        'Slow-Mo Cutaway Cinema Demo',
+        'Matt Rittman Slow Motion Cutaway',
+        '一键慢动作剖视演示',
+      ],
+      secondaryFields: [
+        'cinema',
+        'demo',
+        'slow',
+        'slowmo',
+        '0.25x',
+        'cutaway',
+        'firing',
+        'gas',
+        'rittman',
+        '慢动作',
+        '剖视',
+        '演示',
+        '击发',
+      ],
+      execute: () => {
+        triggerSlowMoCutawayCinema();
+      },
+    },
+    {
+      id: 'action:copy-3d-view-link',
+      group: 'actions',
+      icon: 'poster',
+      title: UI_STRINGS[lang].workbench.copyViewLinkBtn,
+      subtitle: UI_STRINGS[lang].workbench.copyViewLinkCmdSub,
+      statusBadge: 'URL',
+      statusTone: 'cyan',
+      primaryFields: [
+        UI_STRINGS[lang].workbench.copyViewLinkBtn,
+        'Copy 3D View Link',
+        'Share Deep Link URL',
+        '复制 3D 视角链接',
+      ],
+      secondaryFields: [
+        'copy',
+        'link',
+        'url',
+        'share',
+        'deeplink',
+        'clipboard',
+        '复制',
+        '链接',
+        '分享',
+        '直达',
+      ],
+      execute: () => {
+        playWorkbenchFoley('preset_detent');
+        void copyCurrent3dViewLink();
+      },
+    },
     {
       id: 'action:section-cut',
       group: 'actions',

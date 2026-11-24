@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import {
   Activity,
+  Clapperboard,
   Crosshair,
   Flame,
   Layers,
@@ -14,6 +15,7 @@ import {
   Wrench,
   Zap,
 } from 'lucide-react';
+import { triggerSlowMoCutawayCinema } from '../../app/useUrlStateSync';
 import {
   playWorkbenchFoley,
   triggerManualPhasePreviewSound,
@@ -51,6 +53,8 @@ const EMPTY_PRESETS: readonly TimelinePresetItem[] = [];
 const EMPTY_PHASES: readonly FiringPhaseInfo[] = [];
 
 const SPEED_VALUES: readonly (0.25 | 0.5 | 1.0)[] = [0.25, 0.5, 1.0];
+
+export { triggerSlowMoCutawayCinema };
 
 export const TimelineDock: React.FC = () => {
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
@@ -221,6 +225,17 @@ export const TimelineDock: React.FC = () => {
 
         {mode === 'firing' && !malfunctionActive && (
           <div className="firing-sub-controls" data-mobile-scroll="true">
+            <button
+              type="button"
+              className="cinema-demo-pill"
+              data-testid="cinema-demo-btn"
+              onClick={triggerSlowMoCutawayCinema}
+              title={ui.cinemaDemoTitle}
+            >
+              <Clapperboard size={12} aria-hidden="true" />
+              <span>{ui.cinemaDemoPill}</span>
+            </button>
+
             <div
               ref={selectorGroupRef}
               className="fcg-selector-group"
