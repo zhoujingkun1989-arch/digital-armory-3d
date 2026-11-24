@@ -708,6 +708,15 @@ describe('worker zero-copy serialization of CAD attributes', () => {
         'rem870_firing_pin_spring',
         'rem870_mag_spring',
       ],
+      m1911: ['m1911_recoil_spring', 'm1911_mainspring', 'm1911_mag_spring'],
+      mg42: ['mg42_recoil_spring', 'mg42_buffer_spring', 'mg42_sear_spring'],
+      k98k: ['k98k_firing_pin_spring', 'k98k_sear_spring', 'k98k_mag_spring'],
+      thompson: [
+        'thompson_recoil_spring',
+        'thompson_sear_spring',
+        'thompson_drum_spring',
+      ],
+      gau8: ['gau8_recoil_springs', 'gau8_buffer_spring', 'gau8_striker_spring'],
     };
 
     for (const [wid, partIds] of Object.entries(dynamicSprings) as Array<

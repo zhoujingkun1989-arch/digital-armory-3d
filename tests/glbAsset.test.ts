@@ -252,7 +252,7 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
   it('resolves subpath-safe Draco decoder & GLB model URLs for ALL 29/29 exhibits and routes loaders to vendor-three-postfx', () => {
     // Root deployment ('/') across all 29 exhibits
     expect(resolveDracoDecoderPath('/')).toBe('/draco/');
-    expect(WEAPON_IDS).toHaveLength(29);
+    expect(WEAPON_IDS).toHaveLength(34);
     for (const wid of WEAPON_IDS) {
       expect(resolveWeaponGlbUrl(wid, '/')).toBe(`/models/${wid}.glb`);
     }
@@ -330,8 +330,13 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
       'tiger1',
       'winchester1894',
       'rem870',
+      'm1911',
+      'mg42',
+      'k98k',
+      'thompson',
+      'gau8',
     ];
-    expect(migrated).toHaveLength(29);
+    expect(migrated).toHaveLength(34);
     expect([...migrated].sort()).toEqual([...WEAPON_IDS].sort());
     for (const wid of migrated) {
       expect(hasGlbWeaponAsset(wid)).toBe(true);
@@ -1697,7 +1702,7 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
       expect(seenSuites.size).toBe(3);
     }
 
-    // --- V5.0 29/29 part accounting invariant: 667 solid GLB + 64 dynamic CSG = 731 total parts ---
+    // --- V6.0 34/34 part accounting invariant: 775 solid GLB + 79 dynamic CSG = 854 total parts ---
     const totalSolidGlbParts = migrated.reduce(
       (sum, wid) => sum + Object.keys(GLB_WEAPON_CONFIGS[wid].pbrOverrides).length,
       0
@@ -1706,9 +1711,9 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
       (sum, wid) => sum + GLB_WEAPON_CONFIGS[wid].dynamicSpringParts.length,
       0
     );
-    expect(totalSolidGlbParts).toBe(667);
-    expect(totalDynamicCsgParts).toBe(64);
-    expect(totalSolidGlbParts + totalDynamicCsgParts).toBe(731);
+    expect(totalSolidGlbParts).toBe(775);
+    expect(totalDynamicCsgParts).toBe(79);
+    expect(totalSolidGlbParts + totalDynamicCsgParts).toBe(854);
 
     // --- Verify on-disk binary GLB headers, exact node/mesh alignment, referenced v3 WebP maps & per-exhibit MB size budgets ---
     const modelsDir = path.resolve(__dirname, '../public/models');
@@ -1743,6 +1748,11 @@ describe('Dual-Track Draco GLB Loading Engine (PR-02)', () => {
       tiger1: 12 * 1024 * 1024,
       winchester1894: 12 * 1024 * 1024,
       rem870: 12 * 1024 * 1024,
+      m1911: 12 * 1024 * 1024,
+      mg42: 12 * 1024 * 1024,
+      k98k: 12 * 1024 * 1024,
+      thompson: 12 * 1024 * 1024,
+      gau8: 12 * 1024 * 1024,
     };
 
     for (const wid of migrated) {

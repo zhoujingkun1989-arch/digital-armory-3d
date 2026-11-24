@@ -2,6 +2,7 @@ export type PenetratorId =
   | '125mm_apfsds'
   | '120mm_apfsds'
   | '88mm_pzgr39'
+  | '30x173_gau8'
   | '50_bmg';
 
 export type ArmorTargetTankId = 'ztz99a' | 'm1a2' | 'leopard2a7' | 'tiger1';
@@ -153,6 +154,21 @@ export const PENETRATOR_SPECS: Readonly<Record<PenetratorId, PenetratorSpec>> =
       velocityExponent: 1.42,
       ricochetAngleDeg: 68,
       isSubCaliberRod: false,
+    },
+    '30x173_gau8': {
+      id: '30x173_gau8',
+      code: '30×173mm PGU-14/B API',
+      nameZh: '30×173mm GAU-8 PGU-14/B 贫铀/钨合金航空穿甲弹',
+      nameEn: '30×173mm GAU-8 PGU-14/B DU/Tungsten Aviation API',
+      muzzleVelocityMps: 1010,
+      penetratorMassKg: 0.3,
+      coreDiameterMm: 16.0,
+      coreLengthMm: 108.0,
+      refPenetration0mRhaeMm: 78,
+      dragDecayPerKm: 0.165,
+      velocityExponent: 1.44,
+      ricochetAngleDeg: 70,
+      isSubCaliberRod: true,
     },
     '50_bmg': {
       id: '50_bmg',
@@ -571,6 +587,7 @@ export const PENETRATOR_IDS: readonly PenetratorId[] = [
   '125mm_apfsds',
   '120mm_apfsds',
   '88mm_pzgr39',
+  '30x173_gau8',
   '50_bmg',
 ];
 

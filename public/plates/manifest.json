@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-11-22T05:48:35Z",
+  "generatedAt": "2026-11-24T05:12:22Z",
   "weapons": {
     "p08": {
       "renderer": "Blender 5.2 Cycles",
@@ -2608,6 +2608,456 @@
           "height": 1800,
           "azimuthDeg": -4.18,
           "elevationDeg": 6.66,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "m1911": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/m1911/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/m1911/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/m1911/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/m1911/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/m1911/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/m1911/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/m1911/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/m1911/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/m1911/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/m1911/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 9.05,
+          "elevationDeg": 8.56,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "mg42": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/mg42/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/mg42/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/mg42/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/mg42/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/mg42/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/mg42/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/mg42/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/mg42/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/mg42/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/mg42/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 5.48,
+          "elevationDeg": 7.25,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "k98k": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/k98k/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/k98k/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/k98k/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/k98k/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/k98k/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/k98k/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/k98k/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/k98k/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/k98k/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/k98k/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 1.22,
+          "elevationDeg": 10.38,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "thompson": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/thompson/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/thompson/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/thompson/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/thompson/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/thompson/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/thompson/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/thompson/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/thompson/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/thompson/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/thompson/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 6.78,
+          "elevationDeg": 5.59,
+          "fovDeg": 36.0
+        }
+      }
+    },
+    "gau8": {
+      "renderer": "Blender 5.2 Cycles",
+      "resolution": [
+        2880,
+        1800
+      ],
+      "transparent": true,
+      "plates": {
+        "cover_hero": {
+          "file": "plates/gau8/cover_hero.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 9.5,
+          "fovDeg": 36.0
+        },
+        "ortho_right": {
+          "file": "plates/gau8/ortho_right.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_left": {
+          "file": "plates/gau8/ortho_left.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 180.0,
+          "elevationDeg": 1.0,
+          "fovDeg": 36.0
+        },
+        "ortho_top": {
+          "file": "plates/gau8/ortho_top.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 0.0,
+          "elevationDeg": 83.0,
+          "fovDeg": 36.0
+        },
+        "exploded_bom": {
+          "file": "plates/gau8/exploded_bom.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 10.0,
+          "elevationDeg": 7.5,
+          "fovDeg": 36.0
+        },
+        "group_slide": {
+          "file": "plates/gau8/group_slide.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 20.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "group_frame": {
+          "file": "plates/gau8/group_frame.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 18.0,
+          "elevationDeg": 12.0,
+          "fovDeg": 36.0
+        },
+        "group_fcg": {
+          "file": "plates/gau8/group_fcg.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 22.0,
+          "elevationDeg": 15.0,
+          "fovDeg": 36.0
+        },
+        "group_mag": {
+          "file": "plates/gau8/group_mag.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 24.0,
+          "elevationDeg": 14.0,
+          "fovDeg": 36.0
+        },
+        "breech_closeup": {
+          "file": "plates/gau8/breech_closeup.webp",
+          "width": 2880,
+          "height": 1800,
+          "azimuthDeg": 15.44,
+          "elevationDeg": 11.83,
           "fovDeg": 36.0
         }
       }

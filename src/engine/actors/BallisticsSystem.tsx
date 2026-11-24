@@ -1465,6 +1465,127 @@ function build88mmPzgr39Geometries(): CaliberGeometryBundle {
   return { caseGeo, bulletGeo, ...primers, xHead };
 }
 
+/**
+ * 7.92×57mm Mauser (CIP 8×57 IS: 57.0mm case, 82.0mm OAL, 19.13° shoulder, 198gr s.S. boat-tail)
+ */
+function build792MauserGeometries(): CaliberGeometryBundle {
+  const pocket: PrimerPocketSpec = {
+    xHead: -1.42,
+    rPocket: 0.148,
+    pocketDepth: 0.095,
+  };
+  const casePts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -1.325),
+    new THREE.Vector2(0.148, -1.325),
+    new THREE.Vector2(0.148, -1.408),
+    new THREE.Vector2(0.162, -1.42),
+    new THREE.Vector2(0.292, -1.42),
+    new THREE.Vector2(0.31, -1.4),
+    new THREE.Vector2(0.31, -1.33),
+    new THREE.Vector2(0.258, -1.298),
+    new THREE.Vector2(0.258, -1.21),
+    new THREE.Vector2(0.308, -1.16),
+    new THREE.Vector2(0.285, 0.78),
+    new THREE.Vector2(0.214, 1.06),
+    new THREE.Vector2(0.212, 1.42),
+    new THREE.Vector2(0.194, 1.42),
+    new THREE.Vector2(0.194, 1.02),
+    new THREE.Vector2(0, 1.02),
+  ];
+  const bulletPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -0.44),
+    new THREE.Vector2(0.155, -0.44),
+    new THREE.Vector2(0.194, -0.32),
+    new THREE.Vector2(0.194, 0.14),
+    new THREE.Vector2(0.165, 0.44),
+    new THREE.Vector2(0.108, 0.7),
+    new THREE.Vector2(0.044, 0.88),
+    new THREE.Vector2(0.014, 0.94),
+    new THREE.Vector2(0, 0.95),
+  ];
+  return {
+    caseGeo: finalizeLathe(casePts, 26),
+    bulletGeo: finalizeLathe(bulletPts, 24),
+    ...buildBoxerPrimerGeometries(pocket),
+    xHead: pocket.xHead,
+  };
+}
+
+/**
+ * 1:1 USAF 30×173mm PGU-14/B API (GAU-8/A Avenger):
+ * - `caseGeo`: 17.3 cm lightweight brushed aluminum alloy bottleneck case (Ø4.26 cm base)
+ * - `bulletGeo`: Charcoal-black aluminum windshield, crimson incendiary band, & plastic/copper driving band (OAL 29.0 cm)
+ */
+function build30x173Gau8Geometries(): CaliberGeometryBundle {
+  const xHead = -8.65;
+  const xMouth = 8.65; // 17.3 cm aluminum case length
+  const rRim = 2.13;
+  const rBase = 2.11;
+  const rShoulder = 1.98;
+  const rNeck = 1.62;
+  const rPocket = 0.48;
+  const pocketDepth = 0.36;
+
+  const casePts: THREE.Vector2[] = [
+    new THREE.Vector2(rPocket, xHead),
+    new THREE.Vector2(rRim - 0.12, xHead),
+    new THREE.Vector2(rRim, xHead + 0.15),
+    new THREE.Vector2(rRim, xHead + 0.58),
+    new THREE.Vector2(rRim - 0.24, xHead + 0.72),
+    new THREE.Vector2(rRim - 0.24, xHead + 1.18),
+    new THREE.Vector2(rBase, xHead + 1.42),
+    new THREE.Vector2(rShoulder, xMouth - 3.6),
+    new THREE.Vector2(rNeck, xMouth - 1.9),
+    new THREE.Vector2(rNeck, xMouth),
+    new THREE.Vector2(rNeck - 0.12, xMouth),
+    new THREE.Vector2(rNeck - 0.14, xMouth - 2.1),
+    new THREE.Vector2(rPocket, xHead + 1.6),
+    new THREE.Vector2(rPocket, xHead),
+  ];
+  const caseGeo = paintSubGeo(finalizeLathe(casePts, 28), '#cbd5e1');
+
+  // 30mm PGU-14/B API projectile (L = 14.5 cm, Ø 3.0 cm; bulletLocalOffset = 9.0 -> tip at +20.35)
+  const rProj = 1.5;
+  const bodyPts: THREE.Vector2[] = [
+    new THREE.Vector2(0, -3.1),
+    new THREE.Vector2(rProj * 0.9, -3.1),
+    new THREE.Vector2(rProj, -2.4),
+    new THREE.Vector2(rProj, 2.2),
+    new THREE.Vector2(rProj * 0.84, 5.6),
+    new THREE.Vector2(rProj * 0.48, 8.9),
+    new THREE.Vector2(0.18, 11.15),
+    new THREE.Vector2(0, 11.35),
+  ];
+  const bodyGeo = paintSubGeo(finalizeLathe(bodyPts, 24), '#1f2937');
+
+  // Driving band (copper-bronze obturation band)
+  const bandPts: THREE.Vector2[] = [
+    new THREE.Vector2(rProj - 0.03, -1.6),
+    new THREE.Vector2(rProj + 0.08, -1.5),
+    new THREE.Vector2(rProj + 0.08, -0.2),
+    new THREE.Vector2(rProj - 0.03, -0.1),
+  ];
+  const bandGeo = paintSubGeo(finalizeLathe(bandPts, 22), '#c8662d');
+
+  // Signature USAF crimson incendiary identification band
+  const redBandPts: THREE.Vector2[] = [
+    new THREE.Vector2(rProj - 0.02, 2.1),
+    new THREE.Vector2(rProj * 0.97, 2.2),
+    new THREE.Vector2(rProj * 0.9, 3.6),
+    new THREE.Vector2(rProj * 0.88, 3.7),
+  ];
+  const redBandGeo = paintSubGeo(finalizeLathe(redBandPts, 22), '#dc2626');
+
+  const bulletParts = [bodyGeo, bandGeo, redBandGeo];
+  const bulletGeo = mergeGeometries(bulletParts, false);
+  for (const p of bulletParts) p.dispose();
+  bulletGeo.computeBoundingBox();
+  bulletGeo.computeBoundingSphere();
+
+  const primers = buildBoxerPrimerGeometries({ xHead, rPocket, pocketDepth });
+  return { caseGeo, bulletGeo, ...primers, xHead };
+}
+
 export interface CaliberVisualSpec {
   caseColor: string;
   reserveCaseColor: string;
@@ -1687,6 +1808,26 @@ export const CALIBER_VISUAL_SPECS: Record<CaliberProfile, CaliberVisualSpec> = {
     flashScaleMult: 10.2,
     streakThickness: 3.4,
   },
+  '792_mauser': {
+    caseColor: '#dca82d',
+    reserveCaseColor: '#b5871f',
+    bulletColor: '#bd4c19',
+    primerColor: '#e2e8f0',
+    bulletLocalOffset: 1.48,
+    reserveTiltZ: 0.05,
+    flashScaleMult: 1.44,
+    streakThickness: 0.23,
+  },
+  '30x173_gau8': {
+    caseColor: '#cbd5e1',
+    reserveCaseColor: '#94a3b8',
+    bulletColor: '#1f2937',
+    primerColor: '#e2e8f0',
+    bulletLocalOffset: 9.0,
+    reserveTiltZ: 0,
+    flashScaleMult: 5.6,
+    streakThickness: 1.65,
+  },
 };
 
 export interface WeaponRoundFitSpec {
@@ -1729,6 +1870,11 @@ export const WEAPON_ROUND_FIT: Record<WeaponId, WeaponRoundFitSpec> = {
   tiger1: { roundScale: 1.0, magLocalShiftX: 0, ignitionF: 0.11 },
   winchester1894: { roundScale: 0.88, magLocalShiftX: 0, ignitionF: 0.12 },
   rem870: { roundScale: 0.44, magLocalShiftX: -0.11, ignitionF: 0.11 },
+  m1911: { roundScale: 0.96, magLocalShiftX: -0.32, ignitionF: 0.16 },
+  mg42: { roundScale: 1.25, magLocalShiftX: -0.32, ignitionF: 0.22 },
+  k98k: { roundScale: 1.25, magLocalShiftX: -0.3, ignitionF: 0.14 },
+  thompson: { roundScale: 0.92, magLocalShiftX: -0.34, ignitionF: 0.22 },
+  gau8: { roundScale: 1.0, magLocalShiftX: 0, ignitionF: 0.09 },
 };
 
 const caliberGeoCache = new Map<CaliberProfile, CaliberGeometryBundle>();
@@ -1794,6 +1940,12 @@ export function getCaliberGeometries(
       break;
     case '88mm_pzgr39':
       built = build88mmPzgr39Geometries();
+      break;
+    case '792_mauser':
+      built = build792MauserGeometries();
+      break;
+    case '30x173_gau8':
+      built = build30x173Gau8Geometries();
       break;
     case 'arrow_400gr':
       built = buildArcheryBundle({
@@ -1938,6 +2090,8 @@ const CALIBER_CASE_COLORS: Record<CaliberProfile, THREE.Color> = {
   '125mm_apfsds': new THREE.Color(CALIBER_VISUAL_SPECS['125mm_apfsds'].caseColor),
   '120mm_apfsds': new THREE.Color(CALIBER_VISUAL_SPECS['120mm_apfsds'].caseColor),
   '88mm_pzgr39': new THREE.Color(CALIBER_VISUAL_SPECS['88mm_pzgr39'].caseColor),
+  '792_mauser': new THREE.Color(CALIBER_VISUAL_SPECS['792_mauser'].caseColor),
+  '30x173_gau8': new THREE.Color(CALIBER_VISUAL_SPECS['30x173_gau8'].caseColor),
 };
 
 interface EjectionSpawnSpec {
@@ -2255,6 +2409,37 @@ const MUZZLE_DEVICE_SPECS: Record<WeaponId, MuzzleDeviceSpec> = {
   winchester1894: { kind: 'bare', forwardDamp: 1, jets: [] },
   // Remington 870 Police Magnum 18" heavy smoothbore bare crown
   rem870: { kind: 'bare', forwardDamp: 1, jets: [] },
+  // Colt M1911A1 5.03" .45 ACP bare crowned muzzle
+  m1911: { kind: 'bare', forwardDamp: 1, jets: [] },
+  // WWII MG 42 conical muzzle recoil booster w/ radial gas vents
+  mg42: {
+    kind: 'flash_hider',
+    forwardDamp: 0.88,
+    jets: radialProngJets([0, 90, 180, -90], 1.55, 0.36),
+  },
+  // Mauser Karabiner 98k 600mm stepped military bare crown
+  k98k: { kind: 'bare', forwardDamp: 1, jets: [] },
+  // Thompson M1928A1 4-slot upward-venting Cutts anti-climb compensator
+  thompson: {
+    kind: 'brake',
+    forwardDamp: 0.84,
+    jets: [-1.8, -1.25, -0.7, -0.2].map((ox, idx) => ({
+      offsetX: ox,
+      offsetY: 0.38,
+      offsetZ: 0,
+      dir: [0.12, 0.98, 0] as [number, number, number],
+      length: 1.55 - idx * 0.14,
+      radius: 0.28,
+      layer: (idx % 2 === 0 ? 0 : 1) as 0 | 1,
+      intensity: 0.78 - idx * 0.1,
+    })),
+  },
+  // General Electric GAU-8/A Avenger 7-barrel 30mm rotary cannon cluster
+  gau8: {
+    kind: 'flash_hider',
+    forwardDamp: 0.94,
+    jets: radialProngJets([0, 51, 103, 154, -154, -103, -51], 6.4, 1.45),
+  },
 };
 
 const _jetUp = new THREE.Vector3(0, 1, 0);

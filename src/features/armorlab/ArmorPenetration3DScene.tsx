@@ -257,7 +257,8 @@ function buildPenetratorBundle(
     };
   }
 
-  if (id === '88mm_pzgr39') {
+  if (id === '88mm_pzgr39' || id === '30x173_gau8') {
+    const isGau8 = id === '30x173_gau8';
     const capLen = L * 0.34;
     const noseCapGeo = buildLatheProfileAlongNegX(
       [
@@ -303,11 +304,11 @@ function buildPenetratorBundle(
       finGeo: null,
       tracerGeo,
       machConeGeo: null,
-      bodyColor: '#334155',
-      bodyMetalness: 0.84,
-      bodyRoughness: 0.34,
-      noseColor: '#94a3b8',
-      accentColor: '#d97706',
+      bodyColor: isGau8 ? '#1f2937' : '#334155',
+      bodyMetalness: isGau8 ? 0.88 : 0.84,
+      bodyRoughness: isGau8 ? 0.28 : 0.34,
+      noseColor: isGau8 ? '#cbd5e1' : '#94a3b8',
+      accentColor: isGau8 ? '#dc2626' : '#d97706',
       finCount: 0,
       finOffsetX: 0,
       finRadiusY: 0,

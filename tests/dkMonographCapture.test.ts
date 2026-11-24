@@ -134,7 +134,7 @@ describe('DK Visual Encyclopedia Capture Engine & Callout Solver', () => {
   });
 
   describe('solveDkAnnotatedCallouts & projectLoupeAnchors', () => {
-    it('solves non-crossing, collision-free, group-diverse DK callouts across all 27 exhibits', async () => {
+    it('solves non-crossing, collision-free, group-diverse DK callouts across all 34 exhibits', async () => {
       const cam = new THREE.PerspectiveCamera(36, 16 / 10, 0.1, 680);
       cam.position.set(16, 10, 86);
       cam.lookAt(2, -1, 0);
@@ -320,7 +320,7 @@ describe('DK Visual Encyclopedia Capture Engine & Callout Solver', () => {
       assertNoCalloutCrossings(tiedSolved);
     });
 
-    it('projects all 5 DK circular loupe anchors accurately across all 27 exhibits', async () => {
+    it('projects all 5 DK circular loupe anchors accurately across all 34 exhibits', async () => {
       const cam = new THREE.PerspectiveCamera(36, 16 / 10, 0.1, 680);
       cam.position.set(14, 8, 72);
       cam.lookAt(2, 0, 0);
@@ -699,7 +699,7 @@ describe('DK Visual Encyclopedia Capture Engine & Callout Solver', () => {
   });
 
   describe('public/plates Cycles master-plate manifest completeness', () => {
-    it('ships all 27/27 weapons × 10 Cycles 2880×1800 RGBA plates (270 WebPs) on disk', () => {
+    it('ships all 34/34 exhibits × 10 Cycles 2880×1800 RGBA plates (340 WebPs) on disk', () => {
       const manifestPath = path.resolve(
         process.cwd(),
         'public',
@@ -751,7 +751,7 @@ describe('DK Visual Encyclopedia Capture Engine & Callout Solver', () => {
         }
       }
 
-      expect(totalVerifiedPlates).toBe(29 * 10);
+      expect(totalVerifiedPlates).toBe(34 * 10);
     });
   });
 });

@@ -102,7 +102,7 @@ describe('WP-20 Causality Sandbox & Armor Penetration Physics', () => {
     });
     expect(overmatchSide.outcome).toBe('perforation');
 
-    expect(PENETRATOR_IDS.length).toBe(4);
+    expect(PENETRATOR_IDS.length).toBe(5);
     expect(ARMOR_TARGET_TANK_IDS.length).toBe(4);
     expect(ARMOR_ZONE_IDS.length).toBe(4);
   });

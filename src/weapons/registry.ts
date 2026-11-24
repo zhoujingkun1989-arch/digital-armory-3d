@@ -34,6 +34,11 @@ const PLUGIN_LOADERS: Record<WeaponId, () => Promise<WeaponRuntimePlugin>> = {
   winchester1894: () =>
     import('./winchester1894/plugin').then((m) => m.WINCHESTER1894_PLUGIN),
   rem870: () => import('./rem870/plugin').then((m) => m.REM870_PLUGIN),
+  m1911: () => import('./m1911/plugin').then((m) => m.M1911_PLUGIN),
+  mg42: () => import('./mg42/plugin').then((m) => m.MG42_PLUGIN),
+  k98k: () => import('./k98k/plugin').then((m) => m.K98K_PLUGIN),
+  thompson: () => import('./thompson/plugin').then((m) => m.THOMPSON_PLUGIN),
+  gau8: () => import('./gau8/plugin').then((m) => m.GAU8_PLUGIN),
 };
 
 const pluginCache = new Map<WeaponId, WeaponRuntimePlugin>();

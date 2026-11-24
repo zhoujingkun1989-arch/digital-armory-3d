@@ -232,7 +232,7 @@ describe('WP-13 Armorer Blind Field-Strip Exam & Random Unknown Stoppage Triage'
   });
 
   it('executes full Blind Timed Field-Strip & Reassembly (0 -> N -> 0) dynamically across all 29 exhibits while locking hints/auto-solve', async () => {
-    expect(WEAPON_IDS).toHaveLength(29);
+    expect(WEAPON_IDS).toHaveLength(34);
     for (const weaponId of WEAPON_IDS) {
       const plan = FIELD_STRIP_PLANS[weaponId];
       const topoSteps = resolveValidTopologicalOrder(plan.steps);

@@ -42,7 +42,7 @@ describe('WP-07 Hands-On Guided Military Field-Strip DAG & Runtime Contracts', (
   });
 
   it('validates acyclic DAG topology, valid part IDs, and non-overlapping explodeSteps across all 29 exhibits', async () => {
-    expect(WEAPON_IDS).toHaveLength(29);
+    expect(WEAPON_IDS).toHaveLength(34);
     for (const weaponId of WEAPON_IDS) {
       const plan = FIELD_STRIP_PLANS[weaponId];
       expect(plan).toBeDefined();

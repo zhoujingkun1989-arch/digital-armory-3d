@@ -41,6 +41,7 @@ const GAS_OPERATED_WEAPONS: ReadonlySet<WeaponId> = new Set([
   'g11',
   'vss',
   'an94',
+  'mg42',
 ]);
 
 const ELASTIC_DRIVE_WEAPONS: ReadonlySet<WeaponId> = new Set([
@@ -110,7 +111,7 @@ describe('WP-05 Engineering Functional Role Tint & Gas-Flow Contracts', () => {
       }
     }
 
-    expect(totalParts).toBe(731);
+    expect(totalParts).toBe(854);
   });
 
   it('keeps WebGL shader program cache keys 100% invariant when functional tint uniforms toggle', () => {

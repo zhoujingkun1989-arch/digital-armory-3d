@@ -5,20 +5,24 @@ import {
   type WeaponId,
 } from '../weapons/types';
 
-const VAULT_EXHIBIT_COUNT = WEAPON_IDS.length; // 29
+const VAULT_EXHIBIT_COUNT = WEAPON_IDS.length; // 34
 const VAULT_ARCHERY_COUNT = 2;
 const VAULT_ARMOR_COUNT = 4;
+const VAULT_ORDNANCE_COUNT = 1;
 const VAULT_FIREARM_COUNT =
-  VAULT_EXHIBIT_COUNT - VAULT_ARCHERY_COUNT - VAULT_ARMOR_COUNT; // 23
-const VAULT_EXHIBIT_ZH = '二十九';
-const VAULT_PARTS_TOTAL = 731;
-const VAULT_TEXTURES_TOTAL = 369;
-const VAULT_SUITES_TOTAL = 86;
-const VAULT_AUDIO_TOTAL = 1694;
-const LAB_CALIBER_TOTAL = 16;
-const TANK_ORDNANCE_TOTAL = 3;
-const ORDNANCE_TOTAL = LAB_CALIBER_TOTAL + TANK_ORDNANCE_TOTAL; // 19
-const BALLISTICS_PROFILES_TOTAL = 21;
+  VAULT_EXHIBIT_COUNT -
+  VAULT_ARCHERY_COUNT -
+  VAULT_ARMOR_COUNT -
+  VAULT_ORDNANCE_COUNT; // 27
+const VAULT_EXHIBIT_ZH = '三十四';
+const VAULT_PARTS_TOTAL = 854;
+const VAULT_TEXTURES_TOTAL = 414;
+const VAULT_SUITES_TOTAL = 101;
+const VAULT_AUDIO_TOTAL = 1980;
+const LAB_CALIBER_TOTAL = 17;
+const TANK_ORDNANCE_TOTAL = 4;
+const ORDNANCE_TOTAL = LAB_CALIBER_TOTAL + TANK_ORDNANCE_TOTAL; // 21
+const BALLISTICS_PROFILES_TOTAL = 23;
 
 export type ShowcaseGalleryAction =
   'armory' | 'explode' | 'firing' | 'section' | 'atlas';
@@ -553,6 +557,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         pistol: '手枪 / 转轮',
         archery: '复合弓 / 弩',
         armor: '重装甲大厅',
+        ordnance: '航空重武',
       },
       partsPill: (n) => `${n} 零件`,
       specCaliber: '口径',
@@ -1028,6 +1033,7 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
         pistol: 'Pistol / Revolver',
         archery: 'Bow / Crossbow',
         armor: 'Heavy Armor',
+        ordnance: 'Heavy Ordnance',
       },
       partsPill: (n) => `${n} Parts`,
       specCaliber: 'Caliber',

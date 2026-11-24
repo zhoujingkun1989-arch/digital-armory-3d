@@ -242,10 +242,10 @@ function buildSyntheticPdf(
 
 describe('DK Pre-Press PDF Batch Pipeline utilities', () => {
   describe('weapon registry parity', () => {
-    it('covers all 29 exhibits from WEAPON_MANIFESTS in exact parity', () => {
+    it('covers all 34 exhibits from WEAPON_MANIFESTS in exact parity', () => {
       const manifestIds = WEAPON_MANIFESTS.map((m) => m.id).sort();
       const cliIds = [...utils.ALL_WEAPON_IDS].sort();
-      expect(utils.ALL_WEAPON_IDS).toHaveLength(29);
+      expect(utils.ALL_WEAPON_IDS).toHaveLength(34);
       expect(cliIds).toEqual(manifestIds);
     });
   });
@@ -291,7 +291,7 @@ describe('DK Pre-Press PDF Batch Pipeline utilities', () => {
         '--lang',
         'en',
       ]);
-      expect(parsed.weapons).toHaveLength(29);
+      expect(parsed.weapons).toHaveLength(34);
       expect(parsed.weapons).toContain('p08');
       expect(parsed.weapons).toContain('m249');
       expect(parsed.weapons).toContain('vector');

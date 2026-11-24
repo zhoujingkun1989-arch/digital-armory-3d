@@ -389,6 +389,98 @@ function getWeaponCategoryTokens(
       '玉米棒'
     );
   }
+  if (id === 'm1911') {
+    tokens.push(
+      'm1911',
+      'm1911a1',
+      '1911',
+      'colt',
+      'browning',
+      '45 acp',
+      '.45',
+      'swinging link',
+      'government model',
+      '柯尔特',
+      '勃朗宁',
+      '单绞链',
+      '手枪'
+    );
+  }
+  if (id === 'mg42') {
+    tokens.push(
+      'mg42',
+      'mg 42',
+      'maschinengewehr',
+      'buzzsaw',
+      'roller',
+      '7.92',
+      '8mm mauser',
+      '1200 rpm',
+      'gurttrommel',
+      '通用机枪',
+      '双滚柱',
+      '撕布机'
+    );
+  }
+  if (id === 'k98k') {
+    tokens.push(
+      'k98k',
+      'kar98k',
+      'karabiner 98k',
+      'mauser',
+      '98k',
+      'byf 43',
+      '7.92',
+      '8mm mauser',
+      'claw extractor',
+      'stripper clip',
+      '毛瑟',
+      '毛瑟98k',
+      '栓动步枪',
+      '桥夹'
+    );
+  }
+  if (id === 'thompson') {
+    tokens.push(
+      'thompson',
+      'm1928a1',
+      'tommy gun',
+      'chicago typewriter',
+      'blish',
+      'drum',
+      'cutts',
+      '45 acp',
+      '汤姆逊',
+      '芝加哥打字机',
+      '布利什',
+      '发条弹鼓'
+    );
+  }
+  if (category === 'ordnance' || id === 'gau8') {
+    tokens.push(
+      'ordnance',
+      'heavy ordnance',
+      'aero cannon',
+      'autocannon',
+      'gau-8',
+      'gau8',
+      'avenger',
+      'a-10',
+      'warthog',
+      'brrrt',
+      '30mm',
+      '30x173',
+      'pgu-14',
+      'gatling',
+      'rotary cannon',
+      '航空重武',
+      '航空机炮',
+      '复仇者',
+      '疣猪',
+      '30毫米',
+      '加特林航炮'
+    );
+  }
   if (category === 'rifle') {
     tokens.push('assault', 'carbine', '步枪');
   }

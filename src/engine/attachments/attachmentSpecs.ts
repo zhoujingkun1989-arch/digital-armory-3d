@@ -33,7 +33,8 @@ export type PlatformAttachmentClass =
   | 'lmg'
   | 'shotgun'
   | 'archery'
-  | 'armor';
+  | 'armor'
+  | 'ordnance';
 
 export const MUZZLE_ATTACHMENT_ORDER: readonly MuzzleAttachmentId[] = [
   'none',
@@ -929,6 +930,84 @@ export const WEAPON_ATTACHMENT_PROFILES: Readonly<
       '虎式 131 配备蔡司 TZF 9b 炮长双目光学镜，请开启「坦克车长火控台」操纵炮塔回转与观瞄！',
     opticCompatibilityNoteEn:
       'Tiger 131 uses Zeiss TZF 9b binocular gunner optics — open Tank Crew FCS to operate turret traverse & optics!',
+  },
+  // --- V6.0 Track C Exhibits (BAY-30 ~ BAY-34) ---
+  m1911: {
+    weaponId: 'm1911',
+    platformClass: 'pistol',
+    modelScale: 0.72,
+    muzzleAnchor: [11.6, 2.55, 0],
+    muzzleFollowPartId: 'm1911_barrel',
+    muzzleReplacedPartIds: [],
+    opticRailAnchor: [-4.2, 3.62, 0],
+    opticFollowPartId: 'm1911_slide',
+    opticReplacedPartIds: [],
+    allowedMuzzles: ALL_MUZZLES,
+    allowedOptics: PISTOL_OPTICS,
+    opticCompatibilityNoteZh:
+      '往复式手枪套筒仅兼容超轻微型反射红点（重型变倍镜/热像仪将阻碍勃朗宁单绞链短后坐循环）。',
+    opticCompatibilityNoteEn:
+      'Reciprocating slide accepts Micro Reflex Red Dot only (heavy optics stall Browning swinging-link cycling).',
+  },
+  mg42: {
+    weaponId: 'mg42',
+    platformClass: 'lmg',
+    modelScale: 0.96,
+    muzzleAnchor: [73.2, 1.5, 0],
+    muzzleFollowPartId: 'mg42_barrel',
+    muzzleReplacedPartIds: ['mg42_muzzle_booster'],
+    opticRailAnchor: [4.2, 5.05, 0],
+    opticFollowPartId: null,
+    opticReplacedPartIds: [],
+    allowedMuzzles: ALL_MUZZLES,
+    allowedOptics: ALL_OPTICS,
+  },
+  k98k: {
+    weaponId: 'k98k',
+    platformClass: 'rifle',
+    modelScale: 0.92,
+    muzzleAnchor: [66.2, 1.5, 0],
+    muzzleFollowPartId: null,
+    muzzleReplacedPartIds: [],
+    opticRailAnchor: [1.5, 3.28, 0],
+    opticFollowPartId: null,
+    opticReplacedPartIds: [],
+    allowedMuzzles: ALL_MUZZLES,
+    allowedOptics: ALL_OPTICS,
+  },
+  thompson: {
+    weaponId: 'thompson',
+    platformClass: 'smg',
+    modelScale: 0.88,
+    muzzleAnchor: [39.0, 1.6, 0],
+    muzzleFollowPartId: null,
+    muzzleReplacedPartIds: ['thompson_cutts_comp'],
+    opticRailAnchor: [7.2, 3.32, 0],
+    opticFollowPartId: null,
+    opticReplacedPartIds: [],
+    allowedMuzzles: ALL_MUZZLES,
+    allowedOptics: ALL_OPTICS,
+  },
+  gau8: {
+    weaponId: 'gau8',
+    platformClass: 'ordnance',
+    modelScale: 1.0,
+    muzzleAnchor: null,
+    muzzleFollowPartId: null,
+    muzzleReplacedPartIds: [],
+    opticRailAnchor: null,
+    opticFollowPartId: null,
+    opticReplacedPartIds: [],
+    allowedMuzzles: NONE_MUZZLE,
+    allowedOptics: NONE_OPTIC,
+    muzzleCompatibilityNoteZh:
+      'GAU-8/A 七管 30×173mm 航炮采用 557 RPM 旋转穿孔炮口稳定箍，不兼容单兵轻武器枪口螺纹附件。',
+    muzzleCompatibilityNoteEn:
+      'GAU-8/A’s 7-barrel 30x173mm rotary cluster spins inside a perforated muzzle clamp and does not accept small-arms muzzle devices.',
+    opticCompatibilityNoteZh:
+      '该航空重武固定安装于 A-10 攻击机机头纵轴内，由座舱 HUD 光学平显与火控计算机统一瞄准解算。',
+    opticCompatibilityNoteEn:
+      'Hard-mounted along the A-10 Thunderbolt II fuselage centerline and aimed via cockpit HUD & CCIP fire-control computer.',
   },
 };
 

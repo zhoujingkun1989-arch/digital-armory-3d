@@ -225,6 +225,41 @@ export const WEAPON_TURNTABLE_BOUNDS: Readonly<
     spanX: 100.0,
     explode58: { cx: 8.0, minY: -25.5, maxY: 24.5, spanX: 158.0 },
   },
+  m1911: {
+    cx: 0.86,
+    minY: -9.7,
+    maxY: 4.07,
+    spanX: 21.48,
+    explode58: { cx: 1.98, minY: -21.14, maxY: 12.55, spanX: 35.26 },
+  },
+  mg42: {
+    cx: 20.0,
+    minY: -10.0,
+    maxY: 8.5,
+    spanX: 124.0,
+    explode58: { cx: 18.0, minY: -26.0, maxY: 25.0, spanX: 178.0 },
+  },
+  k98k: {
+    cx: 10.68,
+    minY: -15.5,
+    maxY: 8.2,
+    spanX: 116.0,
+    explode58: { cx: 21.76, minY: -34.5, maxY: 27.0, spanX: 158.0 },
+  },
+  thompson: {
+    cx: 3.6,
+    minY: -16.4,
+    maxY: 6.5,
+    spanX: 88.0,
+    explode58: { cx: 3.6, minY: -31.0, maxY: 22.0, spanX: 142.0 },
+  },
+  gau8: {
+    cx: 17.1,
+    minY: -74.0,
+    maxY: 35.5,
+    spanX: 605.8,
+    explode58: { cx: 28.34, minY: -74.0, maxY: 88.46, spanX: 740.06 },
+  },
 };
 
 export function getTurntableRadius(weaponId: WeaponId): number {

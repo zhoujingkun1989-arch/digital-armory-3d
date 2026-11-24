@@ -31,11 +31,13 @@ export type MetallicCaliberProfile =
   | '12_gauge'
   | '762_nato'
   | '30_30_win'
+  | '792_mauser'
   | '30_06'
   | '338_lapua'
   | '50_bmg';
 
 export type TankOrdnanceCaliberProfile =
+  | '30x173_gau8'
   | '88mm_pzgr39'
   | '120mm_apfsds'
   | '125mm_apfsds';
@@ -56,13 +58,15 @@ export const CARTRIDGE_LAB_ORDER: readonly MetallicCaliberProfile[] = [
   '12_gauge',
   '762_nato',
   '30_30_win',
+  '792_mauser',
   '30_06',
   '338_lapua',
   '50_bmg',
 ];
 
-/** Separate 1:1 Heavy Armor tank-cannon ordnance rack order (keeps 15-caliber small-arms rack crisp). */
+/** Separate 1:1 Heavy Armor & Aero Ordnance rack order (keeps 17-caliber small-arms rack crisp). */
 export const TANK_ORDNANCE_ORDER: readonly TankOrdnanceCaliberProfile[] = [
+  '30x173_gau8',
   '88mm_pzgr39',
   '120mm_apfsds',
   '125mm_apfsds',
@@ -72,6 +76,7 @@ export function isTankOrdnanceProfile(
   val: string | null | undefined
 ): val is TankOrdnanceCaliberProfile {
   return (
+    val === '30x173_gau8' ||
     val === '88mm_pzgr39' ||
     val === '120mm_apfsds' ||
     val === '125mm_apfsds'
@@ -174,7 +179,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '124 gr Full Metal Jacket Round-Nose',
     representativeWeapons: ['g17', 'mp5', 'p320', 'p08'],
     primaryWeaponId: 'g17',
-    lineupXCm: -20.25,
+    lineupXCm: -20.8,
     caseLengthMm: 19.15,
     oalMm: 29.69,
     bulletDiameterMm: 9.01,
@@ -217,9 +222,9 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     nameEn: '.45 ACP (11.43×23mm M1911 Ball)',
     loadSubtitleZh: '230 格令全金属被甲圆头重铅芯弹（FMJ-RN）',
     loadSubtitleEn: '230 gr Full Metal Jacket Round-Nose (FMJ-RN)',
-    representativeWeapons: ['vector'],
-    primaryWeaponId: 'vector',
-    lineupXCm: -17.55,
+    representativeWeapons: ['m1911', 'thompson', 'vector'],
+    primaryWeaponId: 'm1911',
+    lineupXCm: -18.2,
     caseLengthMm: 22.81,
     oalMm: 32.39,
     bulletDiameterMm: 11.48,
@@ -265,7 +270,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '31 gr Hardened Steel Penetrator + Aluminum Core',
     representativeWeapons: ['p90'],
     primaryWeaponId: 'p90',
-    lineupXCm: -9.45,
+    lineupXCm: -10.4,
     caseLengthMm: 28.9,
     oalMm: 40.5,
     bulletDiameterMm: 5.7,
@@ -310,7 +315,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '300 gr Skived Jacketed Hollow Point (JHP)',
     representativeWeapons: ['deagle'],
     primaryWeaponId: 'deagle',
-    lineupXCm: -6.75,
+    lineupXCm: -7.8,
     caseLengthMm: 32.64,
     oalMm: 40.89,
     bulletDiameterMm: 12.7,
@@ -355,7 +360,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '123 gr Bimetal Jacket Mild-Steel Core Boat-Tail',
     representativeWeapons: ['ak15'],
     primaryWeaponId: 'ak15',
-    lineupXCm: -1.35,
+    lineupXCm: -2.6,
     caseLengthMm: 38.7,
     oalMm: 56.0,
     bulletDiameterMm: 7.92,
@@ -400,7 +405,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '62 gr M855 / SS109 Dual-Core Penetrator',
     representativeWeapons: ['m4a1', 'scar', 'aug', 'm249'],
     primaryWeaponId: 'm4a1',
-    lineupXCm: 4.05,
+    lineupXCm: 2.6,
     caseLengthMm: 44.7,
     oalMm: 57.4,
     bulletDiameterMm: 5.7,
@@ -445,7 +450,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '250 gr Lapua Scenar Open-Tip Match VLD Boat-Tail',
     representativeWeapons: ['awm'],
     primaryWeaponId: 'awm',
-    lineupXCm: 17.55,
+    lineupXCm: 18.2,
     caseLengthMm: 69.2,
     oalMm: 93.5,
     bulletDiameterMm: 8.59,
@@ -490,7 +495,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '660 gr M33 Hardened Mild-Steel Core Boat-Tail',
     representativeWeapons: ['m82a1'],
     primaryWeaponId: 'm82a1',
-    lineupXCm: 20.25,
+    lineupXCm: 20.8,
     caseLengthMm: 99.31,
     oalMm: 138.43,
     bulletDiameterMm: 12.98,
@@ -535,7 +540,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '158 gr Cannelured Jacketed Soft-Point (JSP)',
     representativeWeapons: ['python'],
     primaryWeaponId: 'python',
-    lineupXCm: -12.15,
+    lineupXCm: -13.0,
     caseLengthMm: 32.77,
     oalMm: 40.39,
     bulletDiameterMm: 9.07,
@@ -580,7 +585,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '9-Pellet .33" Antimonial Lead 00 Buckshot + Shot-Cup Wad',
     representativeWeapons: ['benellim4', 'rem870'],
     primaryWeaponId: 'benellim4',
-    lineupXCm: 6.75,
+    lineupXCm: 5.2,
     caseLengthMm: 58.5,
     oalMm: 69.8,
     bulletDiameterMm: 18.53,
@@ -625,7 +630,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '150 gr M2 Ball Flat-Base Gilding-Metal Spitzer',
     representativeWeapons: ['garand'],
     primaryWeaponId: 'garand',
-    lineupXCm: 14.85,
+    lineupXCm: 15.6,
     caseLengthMm: 63.35,
     oalMm: 84.84,
     bulletDiameterMm: 7.82,
@@ -670,7 +675,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '170 gr Tubular-Safe Jacketed Soft-Point Flat-Nose',
     representativeWeapons: ['winchester1894'],
     primaryWeaponId: 'winchester1894',
-    lineupXCm: 12.15,
+    lineupXCm: 10.4,
     caseLengthMm: 51.79,
     oalMm: 64.77,
     bulletDiameterMm: 7.82,
@@ -715,7 +720,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '50 gr Telescoped Copper Spitzer + 8×8mm Molded HITP Block',
     representativeWeapons: ['g11'],
     primaryWeaponId: 'g11',
-    lineupXCm: -14.85,
+    lineupXCm: -15.6,
     caseLengthMm: 31.8,
     oalMm: 33.0,
     bulletDiameterMm: 4.73,
@@ -760,7 +765,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '250 gr Hardened Steel/Tungsten-Core Subsonic AP (290 m/s)',
     representativeWeapons: ['vss'],
     primaryWeaponId: 'vss',
-    lineupXCm: -4.05,
+    lineupXCm: -5.2,
     caseLengthMm: 39.0,
     oalMm: 56.0,
     bulletDiameterMm: 9.25,
@@ -805,7 +810,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '53 gr Hollow-Nose Air-Cavity Steel-Core Boat-Tail (7N6)',
     representativeWeapons: ['an94'],
     primaryWeaponId: 'an94',
-    lineupXCm: 1.35,
+    lineupXCm: 0.0,
     caseLengthMm: 39.82,
     oalMm: 57.0,
     bulletDiameterMm: 5.62,
@@ -850,7 +855,7 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     loadSubtitleEn: '147 gr M80 Gilding-Metal FMJ Boat-Tail (M13 Linked)',
     representativeWeapons: ['m134'],
     primaryWeaponId: 'm134',
-    lineupXCm: 9.45,
+    lineupXCm: 7.8,
     caseLengthMm: 51.18,
     oalMm: 71.12,
     bulletDiameterMm: 7.82,
@@ -884,11 +889,106 @@ const METALLIC_CARTRIDGE_LAB_SPECS: Readonly<
     coreSlugColor: '#475569',
     propellantColor: '#1e293b',
   },
+
+  '792_mauser': {
+    caliber: '792_mauser',
+    code: '7.92×57mm',
+    standard: 'CIP',
+    nameZh: '7.92×57mm 毛瑟重尖船尾步枪弹（8mm Mauser s.S.）',
+    nameEn: '7.92×57mm Mauser (8mm IS · s.S. Patrone)',
+    loadSubtitleZh: '198 格令重尖船尾全被甲铅芯弹（s.S. FMJ-BT）',
+    loadSubtitleEn: '198 gr schweres Spitzgeschoss Boat-Tail (FMJ-BT)',
+    representativeWeapons: ['mg42', 'k98k'],
+    primaryWeaponId: 'mg42',
+    lineupXCm: 13.0,
+    caseLengthMm: 57.0,
+    oalMm: 82.0,
+    bulletDiameterMm: 8.22,
+    neckDiameterMm: 9.08,
+    shoulderDiameterMm: 10.95,
+    baseDiameterMm: 11.95,
+    rimDiameterMm: 11.95,
+    rimThicknessMm: 1.3,
+    caseCapacityMl: 4.09,
+    propellantMassG: 3.15,
+    propellantFillRatio: 0.86,
+    propellantTypeZh: 'Nz.R.P. 硝化纤维片管状单基步枪发射药',
+    propellantTypeEn: 'Nz.R.P. Single-Base Nitrocellulose Flake/Tubular Powder',
+    primerTypeZh: 'Berdan 88 大型步枪防漏耐压底火（绿/黑防水环漆）',
+    primerTypeEn: 'Berdan 88 Large Rifle High-Pressure Primer (Lacquer Sealed)',
+    projectileMassG: 12.8,
+    projectileGrain: 198,
+    coreKind: 'fmj_spitzer',
+    coreAnatomyZh: '覆铜钢/黄铜流线型船尾被甲 + 高密度铅锑合金重弹芯',
+    coreAnatomyEn:
+      'Gilding-Metal Streamlined Boat-Tail Jacket + Heavy Antimonial Lead Core',
+    peakPressureMPa: 390,
+    muzzleVelocityMps: 755,
+    muzzleEnergyJ: 3648,
+    highlightZh:
+      '1888 年定型、1905 年升级 S 尖头弹并最终演进为 198 格令重尖船尾（s.S.）弹的欧洲步枪弹祖师：11.95 mm 无底缘底径成为后世 .30-06 与 7.62 NATO 共同几何母本，在 MG 42 与 K98k 上倾泻 3,648 J 全威力动能！',
+    highlightEn:
+      'Pioneering 1888 rimless military bottleneck case (11.95 mm head — ancestor to .30-06 and 7.62 NATO): its streamlined 198 gr s.S. boat-tail delivers 3,648 J across MG 42 & K98k.',
+    caseColor: '#e2b22a',
+    jacketColor: '#c3541e',
+    penetratorColor: '#cbd5e1',
+    coreSlugColor: '#475569',
+    propellantColor: '#1f2937',
+  },
 };
 
 export const TANK_ORDNANCE_LAB_SPECS: Readonly<
   Record<TankOrdnanceCaliberProfile, CartridgeLabSpec>
 > = {
+  '30x173_gau8': {
+    caliber: '30x173_gau8',
+    code: '30×173mm GAU-8',
+    standard: 'NATO STANAG',
+    nameZh: '30×173mm GAU-8/A PGU-14/B 航空穿甲燃烧弹 (API)',
+    nameEn: '30×173mm GAU-8/A PGU-14/B Armor-Piercing Incendiary (API)',
+    loadSubtitleZh:
+      '395g 铝壳风帽 + 300g 贫铀/钨合金高密度穿甲芯 + 152g 球状双基装药',
+    loadSubtitleEn:
+      '395g Aluminum-Cased Shell + 300g Depleted-Uranium/Tungsten Core + 152g Propellant',
+    representativeWeapons: ['gau8'],
+    primaryWeaponId: 'gau8',
+    lineupXCm: -36.0,
+    caseLengthMm: 173.0,
+    oalMm: 290.0,
+    bulletDiameterMm: 30.0,
+    neckDiameterMm: 33.4,
+    shoulderDiameterMm: 41.0,
+    baseDiameterMm: 42.6,
+    rimDiameterMm: 42.6,
+    rimThicknessMm: 3.6,
+    caseCapacityMl: 182.0,
+    propellantMassG: 152.0,
+    propellantFillRatio: 0.89,
+    propellantTypeZh: 'WC 870 级双基球状高能航炮发射药（152 g）',
+    propellantTypeEn:
+      'WC 870 Class Double-Base Ball Autocannon Propellant (152 g)',
+    primerTypeZh: 'M52A3B1 重型电击发航空耐压底火',
+    primerTypeEn: 'M52A3B1 Heavy Percussion/Electric Aviation Cannon Primer',
+    projectileMassG: 395.0,
+    projectileGrain: 6096,
+    coreKind: 'subsonic_tungsten_ap',
+    coreAnatomyZh:
+      '轻合金炭黑空气动力风帽 + 绯红燃烧剂环 + Ø16mm 300g 超高密度贫铀/钨合金穿甲芯 + 红铜导带',
+    coreAnatomyEn:
+      'Lightweight Black Alloy Windshield + Crimson Incendiary Ring + Ø16mm 300g High-Density DU/Tungsten Core + Copper Driving Band',
+    peakPressureMPa: 430,
+    muzzleVelocityMps: 1010,
+    muzzleEnergyJ: 201470,
+    highlightZh:
+      '单发高 290 mm 堪比玻璃汽水瓶！率先改用拉丝航空铝合金弹壳替代黄铜狂减 30% 死重，在 430 MPa 膛压下将 300g 高密度穿甲芯轰至 1,010 m/s（201 kJ），每秒 65 发撕碎重装甲顶甲！',
+    highlightEn:
+      'Towering 290 mm tall like a soda bottle: pioneered brushed aerospace aluminum casings to slash weight 30%, driving a dense 300 g DU/tungsten core to 1,010 m/s (201 kJ) at 65 rounds per second.',
+    caseColor: '#cfd8e3',
+    jacketColor: '#2c313a',
+    penetratorColor: '#94a3b8',
+    coreSlugColor: '#cf2e2a',
+    propellantColor: '#1e293b',
+  },
   '88mm_pzgr39': {
     caliber: '88mm_pzgr39',
     code: '88×571mmR',
@@ -899,7 +999,7 @@ export const TANK_ORDNANCE_LAB_SPECS: Readonly<
     loadSubtitleEn: '10.2 kg Hardened APCBC-HE Shell + 2.41 kg Diglycol Charge + Rimmed Brass Case',
     representativeWeapons: ['tiger1'],
     primaryWeaponId: 'tiger1',
-    lineupXCm: -24.0,
+    lineupXCm: -14.0,
     caseLengthMm: 571.0,
     oalMm: 822.0,
     bulletDiameterMm: 88.0,
@@ -943,7 +1043,7 @@ export const TANK_ORDNANCE_LAB_SPECS: Readonly<
     loadSubtitleEn: '4.6 kg DU/Tungsten Long-Rod Dart + 3-Petal Sabot + Combustible Case',
     representativeWeapons: ['m1a2', 'leopard2a7'],
     primaryWeaponId: 'leopard2a7',
-    lineupXCm: 0.0,
+    lineupXCm: 10.0,
     caseLengthMm: 570.0,
     oalMm: 984.0,
     bulletDiameterMm: 120.0,
@@ -987,7 +1087,7 @@ export const TANK_ORDNANCE_LAB_SPECS: Readonly<
     loadSubtitleEn: '4.8 kg High-L/D Tungsten Penetrator + Separate Combustible Charge (1,780 m/s)',
     representativeWeapons: ['ztz99a'],
     primaryWeaponId: 'ztz99a',
-    lineupXCm: 24.0,
+    lineupXCm: 34.0,
     caseLengthMm: 408.0,
     oalMm: 1150.0,
     bulletDiameterMm: 125.0,

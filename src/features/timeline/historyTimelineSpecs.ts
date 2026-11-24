@@ -125,6 +125,45 @@ export const HISTORY_TIMELINE_NODES: readonly HistoryTimelineNodeSpec[] = [
       'Over-center articulated knee-joint toggle lock and birth of 9x19mm Parabellum',
   },
   {
+    weaponId: 'm1911',
+    year: 1911,
+    lineageId: 'toggle_short_recoil',
+    lane: 0,
+    ancestors: ['p08'],
+    designerZh: '约翰·摩西·勃朗宁 (John M. Browning)',
+    designerEn: 'John Moses Browning / Colt',
+    innovationZh:
+      '0.278" 单绞链偏移枪管闭锁、纯直推单动扳机框与一簧三用三叉钢板簧，奠定现代手枪百年范式',
+    innovationEn:
+      '0.278" swinging barrel link, straight-pull single-action stirrup trigger & screwless 3-leaf sear spring',
+  },
+  {
+    weaponId: 'thompson',
+    year: 1928,
+    lineageId: 'roller_blowback_delayed',
+    lane: 2,
+    ancestors: [],
+    designerZh: '约翰·汤姆逊 & 奥斯卡·佩恩 (Auto-Ordnance)',
+    designerEn: 'John T. Thompson & Oscar Payne / Auto-Ordnance',
+    innovationZh:
+      '45° 青铜布利什延迟锁、28 道散热鳍卡茨防跳器与 50 发阿基米德螺旋发条大弹鼓',
+    innovationEn:
+      '45° bronze Blish delayed lock, 28-fin Cutts comp barrel & 50-rd clockwork spiral drum',
+  },
+  {
+    weaponId: 'k98k',
+    year: 1935,
+    lineageId: 'manual_revolver_lever',
+    lane: 3,
+    ancestors: ['winchester1894'],
+    designerZh: '保罗·毛瑟 / 奥伯恩多夫毛瑟工厂',
+    designerEn: 'Paul Mauser / Mauser-Werke Oberndorf',
+    innovationZh:
+      '90° 前双主突笋加第三保险突笋 + 全长不旋转抓钩受控供弹 + 三档翼形旗式保险与层压榉木枪托',
+    innovationEn:
+      '90° dual front + rear safety lugs, non-rotating claw controlled-round feed, 3-position flag safety & laminated stock',
+  },
+  {
     weaponId: 'garand',
     year: 1936,
     lineageId: 'gas_rotating_bolt',
@@ -135,6 +174,19 @@ export const HISTORY_TIMELINE_NODES: readonly HistoryTimelineNodeSpec[] = [
     innovationZh: '首款大规模列装的长行程活塞回转闭锁半自动制式步枪',
     innovationEn:
       'First mass-issued semi-automatic rotating-bolt service rifle with en-bloc ping',
+  },
+  {
+    weaponId: 'mg42',
+    year: 1942,
+    lineageId: 'roller_blowback_delayed',
+    lane: 2,
+    ancestors: ['p08'],
+    designerZh: '维尔纳·格鲁纳 (Werner Gruner / Grossfuss)',
+    designerEn: 'Werner Gruner / Grossfuss',
+    innovationZh:
+      '冷冲压多孔散热护筒、对称双滚柱短后坐 1,200 RPM 与顶盖 S 槽双向供弹',
+    innovationEn:
+      'Stamped perforated shroud, symmetric twin-roller 1,200 RPM short recoil & S-cam shuttle belt feed',
   },
   {
     weaponId: 'tiger1',
@@ -207,6 +259,19 @@ export const HISTORY_TIMELINE_NODES: readonly HistoryTimelineNodeSpec[] = [
     innovationZh: '无托聚合材质机匣与快拆枪管一体化短行程导气系统',
     innovationEn:
       'Modular bullpup chassis uniting polymer housings, optic carry handle, and quick-change barrel',
+  },
+  {
+    weaponId: 'gau8',
+    year: 1977,
+    lineageId: 'roller_blowback_delayed',
+    lane: 2,
+    ancestors: ['m134'],
+    designerZh: '通用电气军械部 (General Electric Armament Systems)',
+    designerEn: 'General Electric Armament Systems (Burlington, VT)',
+    innovationZh:
+      '围绕 6.06m 30×173mm 七管液压航炮造就 A-10 攻击机：铝壳贫铀穿甲弹 + 1,150 发闭环空壳返鼓弹鼓',
+    innovationEn:
+      '6.06 m 30x173mm 7-barrel hydraulic cannon around which the A-10 was built: aluminum DU-core rounds & closed-loop 1,150-rd drum',
   },
   {
     weaponId: 'g17',

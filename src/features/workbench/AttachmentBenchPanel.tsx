@@ -160,7 +160,8 @@ const AttachmentBenchPanel: React.FC = () => {
       {!supported ? (
         <div className="att-notice-box" role="status">
           <div className="att-notice-title">
-            {profile.platformClass === 'armor' ? (
+            {profile.platformClass === 'armor' ||
+            profile.platformClass === 'ordnance' ? (
               <Shield size={14} aria-hidden="true" />
             ) : (
               <Info size={14} aria-hidden="true" />
@@ -168,7 +169,11 @@ const AttachmentBenchPanel: React.FC = () => {
             <span>
               {profile.platformClass === 'armor'
                 ? ui.tankNoticeTitle
-                : ui.archeryNoticeTitle}
+                : profile.platformClass === 'ordnance'
+                  ? lang === 'zh'
+                    ? '航空重武 / 固定机炮平台'
+                    : 'Heavy Ordnance / Aero Platform'
+                  : ui.archeryNoticeTitle}
             </span>
           </div>
           {profile.muzzleCompatibilityNoteZh && (

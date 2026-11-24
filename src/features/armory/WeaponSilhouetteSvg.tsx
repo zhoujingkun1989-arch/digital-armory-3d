@@ -3829,6 +3829,589 @@ export const WeaponSilhouetteSvg: React.FC<WeaponSilhouetteSvgProps> =
           </svg>
         );
       }
+
+      case 'm1911': {
+        const parkerized = available ? '#47505c' : fill;
+        const blued = available ? '#28303b' : fill;
+        const polished = available ? '#cbd5e1' : accent;
+        const walnut = available ? '#7a4b2a' : subFill;
+        return (
+          <svg
+            viewBox="0 0 180 86"
+            className="weapon-silhouette-svg"
+            aria-hidden
+          >
+            {/* Rounded Forged Parkerized Slide + Front/Rear Sights + Polished Chamber Hood */}
+            <rect
+              x="34"
+              y="15"
+              width="112"
+              height="15"
+              rx="2"
+              fill={parkerized}
+              stroke={stroke}
+              strokeWidth="1.35"
+            />
+            <polygon points="139,15 143,15 141.5,11.2 138.5,15" fill={blued} />
+            <rect x="40" y="12" width="5" height="3" rx="0.6" fill={blued} />
+            <rect
+              x="74"
+              y="15"
+              width="22"
+              height="6.5"
+              rx="1"
+              fill={polished}
+              stroke={stroke}
+              strokeWidth="0.9"
+            />
+            {[42, 45.5, 49, 52.5, 56].map((sx) => (
+              <line
+                key={sx}
+                x1={sx}
+                y1="17.5"
+                x2={sx}
+                y2="28"
+                stroke={stroke}
+                strokeWidth="0.85"
+                opacity="0.65"
+              />
+            ))}
+            {/* Exposed Spur Hammer */}
+            <path
+              d="M34 22 L27 17 L29 14 L36 19 Z"
+              fill={blued}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            {/* Forged Frame + Dust Cover + 18-Deg Grip + Closed Trigger Guard */}
+            <path
+              d="M34 30 L122 30 L122 37 L96 37 L96 50 L74 50 L60 76 L32 74 L43 39 L30 33 Z"
+              fill={parkerized}
+              stroke={stroke}
+              strokeWidth="1.3"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M76 37 L92 37 L92 46 L76 46 Z"
+              fill={cutout}
+              stroke={stroke}
+              strokeWidth="0.9"
+            />
+            <rect x="77" y="38" width="5" height="7" rx="1" fill={blued} />
+            {/* Double-Diamond Checkered Walnut Grip & Arched M1911A1 Mainspring Housing */}
+            <path
+              d="M44 41 L64 41 L54 71 L36 70 Z"
+              fill={walnut}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            <path
+              d="M35 42 Q30 57 32 73 L36 73 Q34 57 39 42 Z"
+              fill={blued}
+              stroke={stroke}
+              strokeWidth="0.95"
+            />
+          </svg>
+        );
+      }
+
+      case 'mg42': {
+        const stamped = available ? '#353c45' : fill;
+        const bakelite = available ? '#6e3222' : subFill;
+        const feldgrau = available ? '#4d584b' : subFill;
+        return (
+          <svg
+            viewBox="0 0 180 86"
+            className="weapon-silhouette-svg"
+            aria-hidden
+          >
+            {/* Marbled Bakelite Buttstock */}
+            <path
+              d="M8 36 L34 32 L36 45 L10 53 Z"
+              fill={bakelite}
+              stroke={stroke}
+              strokeWidth="1.25"
+              strokeLinejoin="round"
+            />
+            {/* Stamped Receiver & Perforated Rectangular Cooling Shroud */}
+            <path
+              d="M34 30 L96 29 L160 31.5 L160 38.5 L96 41 L34 42 Z"
+              fill={stamped}
+              stroke={stroke}
+              strokeWidth="1.3"
+            />
+            {/* Top Feed Cover & Flip-Up AA Spider Sight */}
+            <rect
+              x="64"
+              y="26.5"
+              width="34"
+              height="4.2"
+              rx="0.8"
+              fill={stamped}
+              stroke={stroke}
+              strokeWidth="1.05"
+            />
+            <circle
+              cx="103"
+              cy="22"
+              r="4.2"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            {/* Cooling Shroud Slots */}
+            {[106, 117, 128, 139, 150].map((vx) => (
+              <rect
+                key={vx}
+                x={vx}
+                y="33.2"
+                width="7.2"
+                height="3.2"
+                rx="1"
+                fill={cutout}
+              />
+            ))}
+            {/* Conical Muzzle Recoil Booster */}
+            <path
+              d="M160 31.8 L172 30.2 L173 39.8 L160 38.2 Z"
+              fill={stamped}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            {/* 50-Rd Gurttrommel 34 Assault Drum & Bakelite Pistol Grip */}
+            <circle
+              cx="84"
+              cy="46.5"
+              r="9.2"
+              fill={feldgrau}
+              stroke={stroke}
+              strokeWidth="1.25"
+            />
+            <path
+              d="M52 42 L61 42 L57 60 L48 59 Z"
+              fill={bakelite}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            {/* Folded Zweibein 42 Bipod */}
+            <path
+              d="M150 38.5 L122 50 L119 47.5 L146 38.5 Z"
+              fill={stamped}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+          </svg>
+        );
+      }
+
+      case 'k98k': {
+        const laminate = available ? '#8a5c36' : subFill;
+        const lamStripe = available ? '#5c381c' : fill;
+        const blued = available ? '#2b3444' : fill;
+        const bright = available ? '#c4cedb' : accent;
+        const brass = available ? '#d6a944' : accent;
+        return (
+          <svg
+            viewBox="0 0 180 86"
+            className="weapon-silhouette-svg"
+            aria-hidden
+          >
+            <path
+              d="M8 42 L44 39 L53 38 L142 36 L142 41 L92 46 L68 47 L58 51 L51 49 L9 61 Z"
+              fill={laminate}
+              stroke={stroke}
+              strokeWidth="1.2"
+              strokeLinejoin="round"
+            />
+            <path
+              d="M12 46 L48 43 M11 51 L54 47 M10 56 L40 52 M80 41 L138 39"
+              stroke={lamStripe}
+              strokeWidth="0.9"
+              opacity="0.7"
+            />
+            <path
+              d="M6.5 41.5 L10.5 41.5 L11.5 61.2 L7.2 61.4 Z"
+              fill={blued}
+              stroke={stroke}
+              strokeWidth="1.05"
+            />
+            <rect
+              x="16"
+              y="46.5"
+              width="7"
+              height="4.2"
+              rx="1"
+              fill={cutout}
+              stroke={stroke}
+              strokeWidth="0.85"
+            />
+            <circle
+              cx="29"
+              cy="48.8"
+              r="2.4"
+              fill={blued}
+              stroke={stroke}
+              strokeWidth="0.9"
+            />
+            <path
+              d="M86 33.5 L141 34 L141 37 L86 37.5 Z"
+              fill={laminate}
+              stroke={stroke}
+              strokeWidth="1.0"
+            />
+            <rect
+              x="82"
+              y="34.2"
+              width="91"
+              height="3.4"
+              rx="0.7"
+              fill={blued}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            <line
+              x1="138"
+              y1="39.5"
+              x2="165"
+              y2="39.5"
+              stroke={blued}
+              strokeWidth="1.1"
+            />
+            <circle
+              cx="168.5"
+              cy="32.2"
+              r="2.2"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+            <path
+              d="M139 33 L145 33 L145 41.5 L154 41.5 L154 43.3 L139 43.3 Z"
+              fill={blued}
+              stroke={stroke}
+              strokeWidth="1.0"
+            />
+            <rect
+              x="114"
+              y="33.2"
+              width="3.6"
+              height="8.6"
+              rx="0.5"
+              fill={blued}
+              stroke={stroke}
+              strokeWidth="0.95"
+            />
+            <path
+              d="M91 31.8 L103 32.8 L103 34.8 L91 34.8 Z"
+              fill={blued}
+              stroke={stroke}
+              strokeWidth="0.95"
+            />
+            <rect
+              x="57"
+              y="33"
+              width="27"
+              height="8.5"
+              rx="1.2"
+              fill={blued}
+              stroke={stroke}
+              strokeWidth="1.25"
+            />
+            <path
+              d="M57 46 L68 46 Q67 53 60 53 Q56 52 57 46 Z"
+              fill="none"
+              stroke={stroke}
+              strokeWidth="1.25"
+            />
+            <rect
+              x="54"
+              y="34.2"
+              width="24"
+              height="3.6"
+              rx="1"
+              fill={bright}
+              stroke={stroke}
+              strokeWidth="0.95"
+            />
+            <path
+              d="M61 36.5 L59.5 43.5"
+              stroke={bright}
+              strokeWidth="2.0"
+              strokeLinecap="round"
+            />
+            <circle
+              cx="59.2"
+              cy="44.2"
+              r="2.1"
+              fill={bright}
+              stroke={stroke}
+              strokeWidth="0.85"
+            />
+            <path
+              d="M55 34 L52.5 29.8 L56.5 30.2 L57.5 34 Z"
+              fill={bright}
+              stroke={stroke}
+              strokeWidth="0.8"
+            />
+            <rect
+              x="64.5"
+              y="22.5"
+              width="3.4"
+              height="10.8"
+              rx="0.6"
+              fill={brass}
+              stroke={stroke}
+              strokeWidth="0.9"
+            />
+          </svg>
+        );
+      }
+
+      case 'thompson': {
+        const blued = available ? '#26303d' : fill;
+        const walnut = available ? '#7a4526' : subFill;
+        const bronze = available ? '#c88c44' : accent;
+        return (
+          <svg
+            viewBox="0 0 180 86"
+            className="weapon-silhouette-svg"
+            aria-hidden
+          >
+            {/* Quick-Detach Sloped American Black Walnut Buttstock */}
+            <path
+              d="M8 46 L48 33 L50 42 L10 62 Z"
+              fill={walnut}
+              stroke={stroke}
+              strokeWidth="1.25"
+              strokeLinejoin="round"
+            />
+            {/* Solid Milled Du-Lite Upper & Lower Receiver + Lyman Rear Sight */}
+            <rect
+              x="47"
+              y="28"
+              width="66"
+              height="11"
+              rx="1.2"
+              fill={blued}
+              stroke={stroke}
+              strokeWidth="1.3"
+            />
+            <rect
+              x="52"
+              y="23.5"
+              width="9"
+              height="4.5"
+              rx="0.8"
+              fill={blued}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            {/* Top Knurled Actuator & Bronze Blish Indicator */}
+            <rect
+              x="76"
+              y="25.2"
+              width="8"
+              height="2.8"
+              rx="0.8"
+              fill={bronze}
+              stroke={stroke}
+              strokeWidth="0.85"
+            />
+            <rect
+              x="54"
+              y="39"
+              width="36"
+              height="6.2"
+              rx="1"
+              fill={blued}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            {/* Rear Walnut Pistol Grip */}
+            <path
+              d="M54 44 L64 44 L59 64 L49 62 Z"
+              fill={walnut}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            {/* 50-Rd Type L Clockwork Spiral Drum Magazine */}
+            <circle
+              cx="102"
+              cy="55"
+              r="14.5"
+              fill={blued}
+              stroke={stroke}
+              strokeWidth="1.35"
+            />
+            <circle
+              cx="102"
+              cy="55"
+              r="6.2"
+              fill="none"
+              stroke={bronze}
+              strokeWidth="1.1"
+              opacity="0.8"
+            />
+            {/* 28-Fin Barrel + Cutts Compensator + Vertical Walnut Foregrip */}
+            <rect
+              x="113"
+              y="30.5"
+              width="45"
+              height="4.4"
+              rx="0.7"
+              fill={blued}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            {[118, 122, 126, 130, 134, 138, 142, 146].map((fx) => (
+              <line
+                key={fx}
+                x1={fx}
+                y1="29.5"
+                x2={fx}
+                y2="36"
+                stroke={stroke}
+                strokeWidth="0.9"
+              />
+            ))}
+            <path
+              d="M158 29.5 L171 29.2 L171 35.8 L158 35.4 Z"
+              fill={blued}
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+            <path
+              d="M134 36 L142 36 L146 58 L137 59 Z"
+              fill={walnut}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+          </svg>
+        );
+      }
+
+      case 'gau8': {
+        const oliveDrum = available ? '#4a5547' : subFill;
+        const housingSteel = available ? '#353e4a' : fill;
+        const barrelSteel = available ? '#2a313b' : fill;
+        const hazardYellow = available ? '#eab308' : accent;
+        const thermalBronze = available ? '#b47442' : accent;
+        return (
+          <svg
+            viewBox="0 0 180 86"
+            className="weapon-silhouette-svg"
+            aria-hidden
+          >
+            {/* Ø876mm 1,150-Rd Helical Ammunition Drum (Aft) */}
+            <rect
+              x="8"
+              y="26"
+              width="48"
+              height="34"
+              rx="5"
+              fill={oliveDrum}
+              stroke={stroke}
+              strokeWidth="1.35"
+            />
+            <line
+              x1="18"
+              y1="26"
+              x2="18"
+              y2="60"
+              stroke={hazardYellow}
+              strokeWidth="1.6"
+              opacity="0.85"
+            />
+            <line
+              x1="46"
+              y1="26"
+              x2="46"
+              y2="60"
+              stroke={stroke}
+              strokeWidth="1.1"
+            />
+            {/* Closed-Loop Linkless Feed & Return Chutes */}
+            <path
+              d="M56 34 L76 34 L76 52 L56 52 Z"
+              fill={subFill}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            {/* Elliptical Heavy Forged Gun Housing & Twin Hydraulic Motors */}
+            <rect
+              x="74"
+              y="29"
+              width="34"
+              height="24"
+              rx="3"
+              fill={housingSteel}
+              stroke={stroke}
+              strokeWidth="1.35"
+            />
+            <rect
+              x="78"
+              y="22.5"
+              width="14"
+              height="6.5"
+              rx="1.5"
+              fill={hazardYellow}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            {/* Titanium Recoil Adapter Cradle */}
+            <path
+              d="M78 53 L104 53 L109 63 L73 63 Z"
+              fill={housingSteel}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+            {/* 7-Barrel 2.3m 30mm Rotary Cluster + Intermediate & Perforated Muzzle Clamps */}
+            {[33.5, 37.5, 41.5, 45.5, 49.5].map((by) => (
+              <rect
+                key={by}
+                x="108"
+                y={by}
+                width="62"
+                height="2.1"
+                rx="0.5"
+                fill={barrelSteel}
+                stroke={stroke}
+                strokeWidth="0.65"
+              />
+            ))}
+            <rect
+              x="128"
+              y="32"
+              width="4.5"
+              height="20.5"
+              rx="1"
+              fill={housingSteel}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            <rect
+              x="148"
+              y="32"
+              width="4.5"
+              height="20.5"
+              rx="1"
+              fill={housingSteel}
+              stroke={stroke}
+              strokeWidth="1"
+            />
+            <rect
+              x="166"
+              y="31.2"
+              width="7.5"
+              height="22"
+              rx="1.5"
+              fill={thermalBronze}
+              stroke={stroke}
+              strokeWidth="1.15"
+            />
+          </svg>
+        );
+      }
     }
   });
 

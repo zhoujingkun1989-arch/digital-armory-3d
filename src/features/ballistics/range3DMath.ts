@@ -201,7 +201,7 @@ export function resolveProjectileVisualStyle(
   if (spec.id === '120mm_apfsds' || spec.id === '125mm_apfsds') {
     return 'apfsds_tungsten';
   }
-  if (spec.id === '88mm_pzgr39') {
+  if (spec.id === '88mm_pzgr39' || spec.id === '30x173_gau8') {
     return 'apcbc_shell';
   }
   if (spec.pelletCount > 1 || spec.category === 'shotgun') {
@@ -236,8 +236,9 @@ export function computeProjectileSpinRateRadS(
     return 18;
   }
   if (style === 'apcbc_shell') {
-    // KwK 36 88mm rifling twist ~1:28 calibers = 2.46 m
-    return (safeV / 2.46) * Math.PI * 2;
+    // KwK 36 88mm rifling twist ~2.46 m; GAU-8 30mm gain-twist exit ~0.85 m
+    const shellTwistM = spec.id === '30x173_gau8' ? 0.85 : 2.46;
+    return (safeV / shellTwistM) * Math.PI * 2;
   }
   if (style === 'pistol_copper') {
     // Typical pistol 1:10" – 1:16" (~0.30 m)

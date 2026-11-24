@@ -28,8 +28,8 @@ const CJK_RE = /[\u3400-\u9fff\uf900-\ufaff]/;
 
 describe('WP-14 · 1,000m RK4 External Ballistics, Wind Drift & Reticle DOPE Lab', () => {
   it('registers all 21 canonical projectile profiles including WP-18 tank cannons (88mm/120mm/125mm), WP-25b (.30-30 Win), WP-17, Wave-2 & 400gr bow/crossbow', () => {
-    expect(EXTERNAL_PROJECTILE_ORDER).toHaveLength(21);
-    expect(new Set(EXTERNAL_PROJECTILE_ORDER).size).toBe(21);
+    expect(EXTERNAL_PROJECTILE_ORDER).toHaveLength(23);
+    expect(new Set(EXTERNAL_PROJECTILE_ORDER).size).toBe(23);
 
     const expectedIds = [
       '9mm_para',

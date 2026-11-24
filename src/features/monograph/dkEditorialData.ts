@@ -1369,6 +1369,8 @@ export function buildDkScaleReference(
       caption = `全长 ${oalFmt} mm · 约为成人手掌 (190 mm) 的 ${ratioPercent}%`;
     } else if (weaponId === 'lift33') {
       caption = `轮轴距 ${oalFmt} mm · 约为成人身高的 ${ratioPercent}%`;
+    } else if (weaponId === 'gau8') {
+      caption = `全长 ${oalFmt} mm（含螺旋弹鼓）· 约为成人身高的 ${ratioPercent}%（超越甲壳虫轿车）`;
     } else if (isTank) {
       caption = `全长 ${oalFmt} mm（含主炮）· 约为成人身高的 ${ratioPercent}%`;
     } else {
@@ -1381,6 +1383,8 @@ export function buildDkScaleReference(
       caption = `${oalFmt} mm ATA · ~${ratioPercent}% of adult archer height`;
     } else if (silhouetteKind === 'archer') {
       caption = `${oalFmt} mm OAL · ~${ratioPercent}% of adult archer height`;
+    } else if (weaponId === 'gau8') {
+      caption = `${oalFmt} mm complete length (~${ratioPercent}% of adult height — larger than a VW Beetle)`;
     } else if (isTank) {
       caption = `${oalFmt} mm OAL (incl. gun) · ~${ratioPercent}% of adult height`;
     } else {
@@ -2341,6 +2345,181 @@ const EVOLUTION_TIMELINE_SEEDS: Readonly<
       eraRelation: 'successor',
     },
   ],
+  m1911: [
+    {
+      year: '1900',
+      name: { zh: '柯尔特 M1900 (.38 ACP)', en: 'Colt Model 1900 (.38 ACP)' },
+      subtitle: { zh: '勃朗宁前后双绞链平行下沉鼻祖', en: 'Browning Dual-Link Parallel Drop Ancestor' },
+      eraRelation: 'ancestor',
+    },
+    {
+      year: '1910',
+      name: { zh: '柯尔特 M1910 试制型', en: 'Colt Model 1910 Trials Prototype' },
+      subtitle: { zh: '首创单绞链与 18° 握把倾角原型', en: 'First Single-Link & 18-Deg Grip Prototype' },
+      eraRelation: 'predecessor',
+    },
+    {
+      year: '1911',
+      name: { zh: 'Colt M1911A1 U.S. Army', en: 'Colt M1911A1 U.S. Army' },
+      subtitle: { zh: '单绞链 .45 ACP 百年军用手枪法典', en: 'Swinging-Link .45 ACP Centennial Standard' },
+      eraRelation: 'current',
+    },
+    {
+      year: '1914',
+      name: { zh: '鲁格 Luger P08 (一战型)', en: 'DWM Luger P08 (WWI Era)' },
+      subtitle: { zh: '同代德军 9mm 屈膝肘节战场劲敌', en: 'Contemporary 9mm Toggle-Lock Rival' },
+      eraRelation: 'rival',
+    },
+    {
+      year: '1935',
+      name: { zh: '勃朗宁 Hi-Power (P-35)', en: 'Browning Hi-Power (GP-35)' },
+      subtitle: { zh: '无绞链斜坡闭锁与双排弹匣直系演进', en: 'Linkless Cam Ramp & Double-Stack Evolution' },
+      eraRelation: 'successor',
+    },
+  ],
+  mg42: [
+    {
+      year: '1919',
+      name: { zh: '勃朗宁 M1919A4', en: 'Browning M1919A4' },
+      subtitle: { zh: '早期风冷短后坐中机枪体系先驱', en: 'Early Air-Cooled Short-Recoil Medium MG' },
+      eraRelation: 'ancestor',
+    },
+    {
+      year: '1934',
+      name: { zh: '毛瑟 MG 34 通用机枪', en: 'Mauser MG 34 GPMG' },
+      subtitle: { zh: '人类首款轻重两用通用机枪直系前身', en: 'World’s First GPMG Predecessor' },
+      eraRelation: 'predecessor',
+    },
+    {
+      year: '1942',
+      name: { zh: 'MG 42 (cra 1943)', en: 'MG 42 (cra 1943)' },
+      subtitle: { zh: '双滚柱 1,200 RPM · 5 秒快拆枪管', en: 'Twin-Roller 1,200 RPM · 5-Sec Barrel Swap' },
+      eraRelation: 'current',
+    },
+    {
+      year: '1943',
+      name: { zh: '苏军 SG-43 郭留诺夫', en: 'Soviet SG-43 Goryunov' },
+      subtitle: { zh: '二战东线气动快换重管机枪宿敌', en: 'Eastern Front Gas-Operated Quick-Barrel Rival' },
+      eraRelation: 'rival',
+    },
+    {
+      year: '1959',
+      name: { zh: '莱茵金属 MG3 (7.62 NATO)', en: 'Rheinmetall MG3 (7.62 NATO)' },
+      subtitle: { zh: '战后北约制式化并服役逾六十载直系传人', en: 'Postwar NATO-Caliber Direct Descendant' },
+      eraRelation: 'successor',
+    },
+  ],
+  k98k: [
+    {
+      year: '1893',
+      name: { zh: '西班牙毛瑟 Model 1893', en: 'Spanish Mauser Model 1893' },
+      subtitle: {
+        zh: '双排齐平内置弹仓与全长不旋转抓钩雏形',
+        en: 'Flush Staggered Magazine & Claw Extractor Pioneer',
+      },
+      eraRelation: 'ancestor',
+    },
+    {
+      year: '1898',
+      name: { zh: '德意志 Gewehr 98', en: 'German Gewehr 98' },
+      subtitle: {
+        zh: '保罗·毛瑟三突笋闭锁与立体泄气定型母本',
+        en: 'Paul Mauser 3-Lug Lock & Gas-Vent Archetype',
+      },
+      eraRelation: 'predecessor',
+    },
+    {
+      year: '1935',
+      name: { zh: 'Mauser Karabiner 98k', en: 'Mauser Karabiner 98k' },
+      subtitle: {
+        zh: '600mm 阶梯管 · 下弯拉机柄 · 层压榉木短步枪',
+        en: '600mm Stepped Barrel · Bent Handle · Laminated Stock',
+      },
+      eraRelation: 'current',
+    },
+    {
+      year: '1936',
+      name: { zh: '美国 M1 加兰德步枪', en: 'U.S. M1 Garand Rifle' },
+      subtitle: {
+        zh: '8 发半自动导气漏夹同代战场宿敌',
+        en: '8-Rd Semi-Auto Gas-Operated En-Bloc Rival',
+      },
+      eraRelation: 'rival',
+    },
+    {
+      year: '1996',
+      name: { zh: '现代 M98 定制猎枪与 AWM', en: 'Modern M98 Safari & Precision Rifles' },
+      subtitle: {
+        zh: '延续毛瑟三突笋受控供弹基因的百年传奇',
+        en: 'Modern Controlled-Feed Actions Descended from M98',
+      },
+      eraRelation: 'successor',
+    },
+  ],
+  thompson: [
+    {
+      year: '1918',
+      name: { zh: 'Annihilator 战壕清扫原型', en: 'Annihilator Trench Prototype' },
+      subtitle: { zh: '汤姆逊准将青铜布利什锁首款手提机枪样枪', en: 'First Blish-Lock Submachine Gun Prototype' },
+      eraRelation: 'ancestor',
+    },
+    {
+      year: '1921',
+      name: { zh: 'Colt Model 1921', en: 'Colt Model 1921' },
+      subtitle: { zh: '850 RPM 高射速民用与执法传奇初版', en: 'High-Rate 850 RPM Original Production Model' },
+      eraRelation: 'predecessor',
+    },
+    {
+      year: '1928',
+      name: { zh: 'Thompson M1928A1', en: 'Thompson M1928A1' },
+      subtitle: { zh: '青铜布利什 · 卡茨防跳 · 50 发发条圆鼓', en: 'Bronze Blish · Cutts Comp · 50-Rd Drum' },
+      eraRelation: 'current',
+    },
+    {
+      year: '1940',
+      name: { zh: '德军 MP 40 冲锋枪', en: 'German MP 40 SMG' },
+      subtitle: { zh: '冲压钢自由枪机 9mm 欧洲战场劲敌', en: 'Stamped-Steel Straight-Blowback 9mm Rival' },
+      eraRelation: 'rival',
+    },
+    {
+      year: '1942',
+      name: { zh: 'Thompson M1A1', en: 'Thompson M1A1' },
+      subtitle: { zh: '简化自由枪机、侧拉机柄与纯直匣战时大产型', en: 'Simplified Straight-Blowback Wartime Model' },
+      eraRelation: 'successor',
+    },
+  ],
+  gau8: [
+    {
+      year: '1862',
+      name: { zh: '加特林手摇转管机枪', en: 'Gatling Crank-Driven Gun' },
+      subtitle: { zh: '多管旋转与静止圆柱凸轮导轨开山鼻祖', en: 'Multi-Barrel Rotary Cam-Track Ancestor' },
+      eraRelation: 'ancestor',
+    },
+    {
+      year: '1959',
+      name: { zh: '通用电气 M61 Vulcan 20mm', en: 'GE M61 Vulcan 20mm' },
+      subtitle: { zh: '超音速战机六管电动 6,000 RPM 航炮前身', en: 'Supersonic 6-Barrel 20mm Fighter Cannon' },
+      eraRelation: 'predecessor',
+    },
+    {
+      year: '1977',
+      name: { zh: 'GE GAU-8/A Avenger 30mm', en: 'GE GAU-8/A Avenger 30mm' },
+      subtitle: { zh: '6.06 米 77 HP 液压七管 · A-10 反装甲核心', en: '6.06 m 77-HP Hydraulic 7-Barrel A-10 Core' },
+      eraRelation: 'current',
+    },
+    {
+      year: '1981',
+      name: { zh: '苏联 GSh-6-30 六管导气航炮', en: 'Soviet GSh-6-30 30mm Rotary' },
+      subtitle: { zh: '同代火药导气自驱 30mm 超高速转管对手', en: 'Gas-Driven 30mm Soviet Rotary Cannon Rival' },
+      eraRelation: 'rival',
+    },
+    {
+      year: '1985',
+      name: { zh: 'Goalkeeper 30mm 近防系统', en: 'Goalkeeper 30mm CIWS' },
+      subtitle: { zh: '直接移植 GAU-8/A 炮体的舰载反导防空演进', en: 'Naval Anti-Missile CIWS Derivative of GAU-8' },
+      eraRelation: 'successor',
+    },
+  ],
 };
 
 export function buildDkEvolutionTimeline(
@@ -2710,6 +2889,41 @@ const FCG_LOUPE_OVERRIDES: Partial<
       en: '12-groove corn-cob walnut forend drives symmetrical steel action bars with zero binding torque.',
     },
   },
+  m1911: {
+    title: { zh: '直推单动扳机与三叉板簧', en: 'Straight Trigger & 3-Leaf Spring' },
+    caption: {
+      zh: 'U 形扳机框纯水平直拉 4.2 mm 击发，一片无螺钉三叉弹簧同步驱动阻铁、断连器与握把保险。',
+      en: 'Linear U-bow slides 4.2 mm rearward while one screwless 3-leaf spring powers sear, disconnector & grip safety.',
+    },
+  },
+  mg42: {
+    title: { zh: '纯连发开膛阻铁与 S/F 保险', en: 'Open-Bolt Auto Sear & S/F Safety' },
+    caption: {
+      zh: '极简开膛阻铁停射即挂起机框风冷枪管，横推 S/F 物理保险栓直锁扳机杠杆。',
+      en: 'Heavy open-bolt sear holds the carrier rearward for barrel cooling behind a positive S/F cross-bolt safety.',
+    },
+  },
+  k98k: {
+    title: { zh: '三档翼形旗式保险与两道火', en: '3-Pos Flag Safety & 2-Stage' },
+    caption: {
+      zh: '尾套顶置三档旗式保险直锁击针尾铁，配合双支点两道火极简三件式军用扳机。',
+      en: 'Shroud-mounted 3-position flag safety cams directly onto the striker nut above a twin-fulcrum two-stage trigger.',
+    },
+  },
+  thompson: {
+    title: { zh: '双桨式快慢机与惯性击锤', en: 'Twin Paddle Levers & Inertia Hammer' },
+    caption: {
+      zh: '左侧双独立桨式拨片分控单连发与保险，枪机内置防早发杠杆惯性击锤确保完全闭锁才击发。',
+      en: 'Twin left-side paddles separate selector and safety while a pivoting bolt hammer prevents out-of-battery firing.',
+    },
+  },
+  gau8: {
+    title: { zh: '双 38.5 HP 液压马达与清膛门', en: '77-HP Hydraulic Drive & Clearing Gate' },
+    caption: {
+      zh: '3,000 PSI 冗余双液压马达无视哑弹强驱七管 3,900 RPM 狂旋，停射清膛门自动排空防烤燃。',
+      en: 'Redundant 3,000 PSI hydraulic motors spin seven barrels at 3,900 RPM while the clearing gate prevents cook-offs.',
+    },
+  },
 };
 
 const BREECH_LOUPE_OVERRIDES: Partial<
@@ -2776,6 +2990,41 @@ const BREECH_LOUPE_OVERRIDES: Partial<
     caption: {
       zh: '凸轮滑块顶升淬火斜楔咬合枪管肩台，下方集成双销铝合金警用火控座与推杆释放片。',
       en: 'Camming slide tilts a steel locking wedge into the barrel above the dual-pin Police trigger pack.',
+    },
+  },
+  m1911: {
+    title: { zh: '0.278" 单绞链与双顶闭锁筋', en: '0.278" Link & Dual Top Ribs' },
+    caption: {
+      zh: '3 mm 共同短后坐后单绞链绕横销后摆 53°，拉降枪管尾部 2.7 mm 脱离套筒顶槽。',
+      en: 'After 3 mm locked dwell, the swinging link pivots 53 deg to drop the breech 2.7 mm out of lock.',
+    },
+  },
+  mg42: {
+    title: { zh: '对称双滚柱与击针斜楔核心', en: 'Twin Rollers & Locking Wedge' },
+    caption: {
+      zh: '双轴承钢滚柱被斜楔外撑死锁于枪管节套承压 390 MPa，短后坐 8.5 mm 后内缩飙出 1,200 RPM。',
+      en: 'Twin hardened rollers lock into the barrel extension at 390 MPa, camming inward after 8.5 mm recoil.',
+    },
+  },
+  k98k: {
+    title: { zh: '前双+后三突笋与不旋转抓钩', en: '3-Lug Bolt & Claw Extractor' },
+    caption: {
+      zh: '90° 上抬下弯球头柄解锁三突笋并顶回击针，全长不旋转抓钩稳锁底缘实现受控供弹。',
+      en: '90-deg bent handle unlocks three lugs and cocks the striker while the non-rotating claw maintains full rim control.',
+    },
+  },
+  thompson: {
+    title: { zh: '45° 倾斜轨道与青铜 H 型布利什锁', en: '45° Rails & Bronze Blish Lock' },
+    caption: {
+      zh: '磷青铜 H 型滑块在闭锁末瞬沿机匣 45° 斜槽下沉 5.5 mm 延迟开膛，配顶置滚花拉机柄。',
+      en: 'Cast phosphor-bronze H-piece drops 5.5 mm into 45° receiver tracks beneath the top actuator knob.',
+    },
+  },
+  gau8: {
+    title: { zh: '360° 正弦凸轮与七钛炮闩波', en: '360° Helical Cam & 7 Titanium Bolts' },
+    caption: {
+      zh: '静止渗碳正弦套筒驱动七套三突笋钛合金炮闩作 300 mm 错相正弦波浪闭锁击发与抽壳。',
+      en: 'Stationary hardened sinusoidal sleeve drives seven 3-lug titanium bolts through a 300 mm firing wave.',
     },
   },
 };
@@ -2870,6 +3119,41 @@ const MAG_LOUPE_OVERRIDES: Partial<
     caption: {
       zh: '4+1 磷化管仓内置高可视鲜橙色聚合物托弹杯，联动硬铬 Flexitab 托弹勺可靠上举 12 号鹿弹。',
       en: 'High-vis orange follower drives shells onto the hard-chrome Flexitab carrier from the 4+1 tube.',
+    },
+  },
+  m1911: {
+    title: { zh: '7 发双色单排匣与凸点托板', en: '7-Rd Two-Tone Mag & Dimple' },
+    caption: {
+      zh: '13.8 mm 纤薄单排钢匣采用双色热处理抱弹唇，托弹板中央勃朗宁凸点杜绝末发惯性前窜。',
+      en: '13.8 mm two-tone single-stack steel mag with progressive feed lips and Browning dimpled follower.',
+    },
+  },
+  mg42: {
+    title: { zh: '顶盖 S 槽双级拨弹与 50 发突击弹鼓', en: 'S-Cam Shuttle & Gurttrommel 34' },
+    caption: {
+      zh: '后坐半步与复进半步接力拉动 Gurt 34 钢链，配侧挂 50 发野战灰突击弹鼓。',
+      en: 'Dual-stage pawls split Gurt 34 belt tension across both strokes from the 50-rd side assault drum.',
+    },
+  },
+  k98k: {
+    title: { zh: '5 发齐平双排仓与黄铜桥夹', en: 'Flush 5-Rd Box & Brass Clip' },
+    caption: {
+      zh: '5 发黄铜桥夹插立于 C 形后桥导槽单指压装，阶梯托弹板打空自动顶起拦栓示警。',
+      en: '5-round brass stripper clip feeds the flush staggered box while the stepped follower locks the bolt back when empty.',
+    },
+  },
+  thompson: {
+    title: { zh: '50 发 L 型阿基米德螺旋发条大弹鼓', en: '50-Rd Type L Clockwork Drum' },
+    caption: {
+      zh: '前置折叠钥匙上弦 9 响，驱动四翼星轮转子沿双圈阿基米德螺线推送 .45 ACP 重弹。',
+      en: 'Front key winds 9 clicks to power a 4-arm spider rotor along twin Archimedean .45 ACP spiral tracks.',
+    },
+  },
+  gau8: {
+    title: { zh: '1,150 发螺旋弹鼓与闭环回壳槽', en: '1,150-Rd Drum & Closed-Loop Return' },
+    caption: {
+      zh: 'Ø876mm 航空弹鼓配十四翼转子以无链滑槽供弹，并将全部空铝弹壳 100% 送返弹鼓保重心。',
+      en: 'Ø876mm helical drum feeds 1,150 linkless 30mm rounds and returns every spent aluminum case to preserve A-10 CG.',
     },
   },
 };

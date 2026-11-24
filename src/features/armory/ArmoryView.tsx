@@ -80,6 +80,7 @@ const CATEGORY_KEYS: readonly ArmoryFilterKey[] = [
   'pistol',
   'archery',
   'armor',
+  'ordnance',
 ];
 
 function matchesCategoryWithLmg(
@@ -127,7 +128,7 @@ const ArmoryRackBayCard: React.FC<ArmoryRackBayCardProps> = ({
       tabIndex={0}
       className={`armory-weapon-card bay-card ${
         item.available ? 'is-ready' : 'is-planned'
-      } ${item.category === 'armor' ? 'is-armor-card' : ''} ${
+      } ${item.category === 'armor' || item.category === 'ordnance' ? 'is-armor-card' : ''} ${
         isOnTurntable ? 'is-on-turntable' : ''
       }`}
       onMouseEnter={() => {
@@ -399,11 +400,11 @@ export const ArmoryView: React.FC = () => {
                   key={key}
                   type="button"
                   className={`armory-filter-btn ${
-                    key === 'armor' ? 'is-armor-pill' : ''
+                    key === 'armor' || key === 'ordnance' ? 'is-armor-pill' : ''
                   } ${category === key ? 'active' : ''}`}
                   onClick={() => setCategory(key)}
                 >
-                  {key === 'armor' && (
+                  {(key === 'armor' || key === 'ordnance') && (
                     <Shield size={12} className="filter-pill-icon" aria-hidden="true" />
                   )}
                   <span>

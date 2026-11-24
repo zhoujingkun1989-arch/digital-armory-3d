@@ -56,6 +56,11 @@ const MIN_ROUND_COUNTS: Readonly<Record<WeaponId, number>> = {
   tiger1: 0,
   winchester1894: 5,
   rem870: 4,
+  m1911: 7,
+  mg42: 0,
+  k98k: 5,
+  thompson: 0,
+  gau8: 0,
 };
 
 function computePartWorldBox(
@@ -239,8 +244,8 @@ describe('23-Exhibit Full-Capacity 3D Magazine, Belt, Cylinder, Tubular, En-Bloc
         ).toBeLessThanOrEqual(0.05);
       }
 
-      // 2. Column stagger verification (Deagle single-stack z=0 vs double-stack stagger)
-      if (weaponId === 'deagle') {
+      // 2. Column stagger verification (Deagle & M1911A1 single-stack z=0 vs double-stack stagger)
+      if (weaponId === 'deagle' || weaponId === 'm1911') {
         for (let i = 0; i < spec.roundCount; i++) {
           evaluateMagazineRoundSlotInto(weaponId, i, 0, pose);
           expect(Math.abs(pose.pz)).toBeLessThan(1e-6);

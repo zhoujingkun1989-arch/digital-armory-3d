@@ -41,6 +41,12 @@ export const GEOMETRY_MODULE_LOADERS: Record<
     import('./winchester1894/geometries').then((m) => m.GEOMETRY_BUILDERS),
   rem870: () =>
     import('./rem870/geometries').then((m) => m.GEOMETRY_BUILDERS),
+  m1911: () => import('./m1911/geometries').then((m) => m.GEOMETRY_BUILDERS),
+  mg42: () => import('./mg42/geometries').then((m) => m.GEOMETRY_BUILDERS),
+  k98k: () => import('./k98k/geometries').then((m) => m.GEOMETRY_BUILDERS),
+  thompson: () =>
+    import('./thompson/geometries').then((m) => m.GEOMETRY_BUILDERS),
+  gau8: () => import('./gau8/geometries').then((m) => m.GEOMETRY_BUILDERS),
 };
 
 export function loadWeaponGeometryBuilders(

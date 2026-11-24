@@ -296,6 +296,106 @@ export const CALIPER_V2_BENCHMARK_NOTES: Readonly<
       nominalMm: 82,
     },
   ],
+  m1911: [
+    {
+      kind: 'overall_envelope',
+      labelZh: '柯尔特 M1911A1 全枪水平包络总长',
+      labelEn: 'Colt M1911A1 Overall Horizontal Envelope',
+      nominalMm: 216,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '5.03" (127.8mm) .45 ACP 双闭锁筋枪管实长',
+      labelEn: '5.03" (127.8mm) .45 ACP Dual-Rib Barrel Span',
+      nominalMm: 128,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '勃朗宁 0.278" 单绞链与套筒闭锁行程跨度',
+      labelEn: 'Browning 0.278" Swinging Link & Slide Recoil Span',
+      nominalMm: 191,
+    },
+  ],
+  mg42: [
+    {
+      kind: 'overall_envelope',
+      labelZh: 'MG 42 通用机枪含助退器全长',
+      labelEn: 'MG 42 Overall Length (w/ Recoil Booster)',
+      nominalMm: 1220,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '530 mm 7.92×57mm 快拆线膛枪管实长',
+      labelEn: '530 mm Quick-Change 7.92mm Barrel Length',
+      nominalMm: 530,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '对称双滚柱张开闭锁跨度（含滚柱机头）',
+      labelEn: 'Symmetric Twin Locking Rollers Span',
+      nominalMm: 27,
+    },
+  ],
+  k98k: [
+    {
+      kind: 'overall_envelope',
+      labelZh: '毛瑟 Karabiner 98k 全枪包络总长',
+      labelEn: 'Mauser Karabiner 98k Overall Length',
+      nominalMm: 1110,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '600 mm 阶梯四膛线军用枪管实长',
+      labelEn: '600 mm Stepped 4-Groove Military Barrel Length',
+      nominalMm: 600,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '毛瑟 98 三突笋旋转枪机体全长跨度',
+      labelEn: 'Mauser 98 3-Lug Rotating Bolt Body Span',
+      nominalMm: 143,
+    },
+  ],
+  thompson: [
+    {
+      kind: 'overall_envelope',
+      labelZh: '汤姆逊 M1928A1 含卡茨防跳器与木托全长',
+      labelEn: 'Thompson M1928A1 Overall Length (w/ Cutts & Stock)',
+      nominalMm: 852,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '10.5 英寸 28 道散热鳍枪管实长',
+      labelEn: '10.5" 28-Fin Cooled Barrel Length',
+      nominalMm: 267,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '50 发 L 型发条螺旋圆鼓外径',
+      labelEn: '50-Round Type L Clockwork Drum Outer Diameter',
+      nominalMm: 165,
+    },
+  ],
+  gau8: [
+    {
+      kind: 'overall_envelope',
+      labelZh: 'GAU-8/A 全系统总长（螺旋弹鼓尾盖至穿孔炮口箍）',
+      labelEn: 'GAU-8/A Complete System Overall Length (Drum Aft to Muzzle Clamp)',
+      nominalMm: 6058,
+    },
+    {
+      kind: 'barrel_length',
+      labelZh: '七管 90.5" (2,300mm) 冷锻 30mm 旋转炮管簇跨度',
+      labelEn: '7-Barrel 90.5" (2,300mm) 30x173mm Rotary Barrel Cluster Span',
+      nominalMm: 2300,
+    },
+    {
+      kind: 'bolt_lug_span',
+      labelZh: '七槽星形中心转子与 360° 螺旋凸轮闭锁核心跨度',
+      labelEn: '7-Flute Central Star-Rotor & 360° Cam Track Lockup Span',
+      nominalMm: 1118,
+    },
+  ],
 };
 
 export interface CaliperSurfacePoint {
@@ -496,20 +596,23 @@ function findBenchmarkTargetPart(
 ): WeaponPartSpec | null {
   if (kind === 'barrel_length') {
     return (
-      parts.find((p) => p.id === 'm134_barrel_cluster') ??
+      parts.find(
+        (p) => p.id === 'm134_barrel_cluster' || p.id === 'gau8_barrel_cluster'
+      ) ??
       parts.find((p) => /(?:^|_)(?:barrel|main_gun)$/.test(p.id)) ??
       parts.find((p) => /barrel/.test(p.id) && !/spring|lock|cross|clamp/.test(p.id)) ??
       parts.find((p) => p.id === 'lift33_arrow_shaft' || p.id === 'r500_flight_rail') ??
       null
     );
   }
-  // bolt_lug_span: prefer rotating/locking bolt head (or tank main gun breech block / revolver cylinder / P08 toggle / Super V slider / M134 rotor), else slide
+  // bolt_lug_span: prefer rotating/locking bolt head (or tank main gun breech block / revolver cylinder / P08 toggle / Super V slider / M134/GAU-8 rotor), else slide
   return (
     parts.find(
       (p) =>
         p.id === 'python_cylinder' ||
         p.id === 'vector_slider' ||
-        p.id === 'm134_rotor_assembly'
+        p.id === 'm134_rotor_assembly' ||
+        p.id === 'gau8_rotor_core'
     ) ??
     parts.find(
       (p) =>

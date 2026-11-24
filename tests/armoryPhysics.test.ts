@@ -57,6 +57,8 @@ const EXPECTED_PMAX: Record<CaliberProfile, number> = {
   '125mm_apfsds': 650,
   '120mm_apfsds': 670,
   '88mm_pzgr39': 320,
+  '792_mauser': 390,
+  '30x173_gau8': 430,
 };
 
 const DT = 1 / 60;
@@ -89,8 +91,8 @@ function playCycle(input: ArmoryPhysicsInput, rate = 0.42): void {
 }
 
 describe('SAAMI / CIP internal ballistics model', () => {
-  it('covers all 16 firearm/shotgun calibers with authentic peak chamber pressures', () => {
-    expect(BALLISTIC_CALIBERS).toHaveLength(16);
+  it('covers all 17 firearm/shotgun calibers with authentic peak chamber pressures', () => {
+    expect(BALLISTIC_CALIBERS).toHaveLength(17);
     for (const cal of BALLISTIC_CALIBERS) {
       expect(CALIBER_BALLISTICS[cal].peakPressureMPa).toBe(EXPECTED_PMAX[cal]);
     }
@@ -101,8 +103,9 @@ describe('SAAMI / CIP internal ballistics model', () => {
     expect(evaluateInternalBallistics('9x39_subsonic', computePeakPressureF('9x39_subsonic')).pressureMPa).toBeCloseTo(280, 4);
     expect(evaluateInternalBallistics('762_nato', computePeakPressureF('762_nato')).pressureMPa).toBeCloseTo(415, 4);
     expect(evaluateInternalBallistics('545_m74', computePeakPressureF('545_m74')).pressureMPa).toBeCloseTo(294, 4);
-    // WP-18 Heavy Armor Tank Cannon Calibers (88mm / 120mm / 125mm)
-    expect(TANK_CANNON_CALIBERS).toHaveLength(3);
+    expect(evaluateInternalBallistics('792_mauser', computePeakPressureF('792_mauser')).pressureMPa).toBeCloseTo(390, 4);
+    // WP-18 / V6.0 Heavy Armor & Aero Cannon Calibers (30mm / 88mm / 120mm / 125mm)
+    expect(TANK_CANNON_CALIBERS).toHaveLength(4);
     for (const tankCal of TANK_CANNON_CALIBERS) {
       expect(CALIBER_BALLISTICS[tankCal].peakPressureMPa).toBe(
         EXPECTED_PMAX[tankCal]
@@ -235,8 +238,8 @@ describe('SAAMI / CIP internal ballistics model', () => {
     expect(computeGasPortUncoverF('762_nato', WEAPON_FIRING_TIMING.m134)).toBeNull();
   });
 
-  it('defines ordered firing timing for all 29 exhibits and retains revolver / caseless G11 zero-brass physics', () => {
-    expect(WEAPON_IDS).toHaveLength(29);
+  it('defines ordered firing timing for all 34 exhibits and retains revolver / caseless G11 zero-brass physics', () => {
+    expect(WEAPON_IDS).toHaveLength(34);
     for (const id of WEAPON_IDS) {
       const t = WEAPON_FIRING_TIMING[id];
       expect(t.ignitionF).toBeLessThan(t.muzzleExitF);

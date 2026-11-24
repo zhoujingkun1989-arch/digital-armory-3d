@@ -847,7 +847,7 @@ describe('Collector Military Monograph Print Studio Contracts', () => {
       return [];
     };
 
-    expect(WEAPON_IDS.length).toBe(29);
+    expect(WEAPON_IDS.length).toBe(34);
 
     for (const id of WEAPON_IDS) {
       const plugin = await loadWeaponPlugin(id);

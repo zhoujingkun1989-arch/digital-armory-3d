@@ -2165,6 +2165,304 @@ export const ALL_ATLAS_EN_STRINGS: Readonly<
       },
     },
   },
+  m1911: {
+    heading:
+      'Colt M1911A1 U.S. Army (.45 ACP) 2K 5-Ch Packed ORM Atlas (Albedo / Normal / Packed ORM)',
+    suites: {
+      m1911_walnut: {
+        title: 'Double-Diamond 20-LPI Checkered American Walnut Grip Atlas',
+        tabTitle: 'Walnut Grips',
+        summary:
+          'Offline Cycles-baked 2K 5-channel ORM atlas for both grip panels featuring crisp pyramidal double-diamond checkering, linseed-oiled walnut pores, and UV-firewalled brass slotted screws.',
+        highlights: [
+          'Dedicated Hero UV outer faces with deep 20-LPI double-diamond checkering',
+          'Warm linseed-oiled American walnut grain & hand-worn border bevels',
+          'Zero-bleed UV firewall separating brass grip screws from wood',
+        ],
+        channels: [
+          { note: 'sRGB · Oiled American walnut & double-diamond ridge highlights' },
+          { note: 'Linear · Pyramidal checkering valleys & slotted screw normals' },
+          { note: 'Linear · R:Cycles AO / G:Walnut sheen(0.36-0.72) / B:Metalness' },
+        ],
+      },
+      m1911_slide: {
+        title: '1943 Hartford Parkerized Slide, Forged Frame & U.S. Army Rollmarks',
+        tabTitle: 'Slide & Frame',
+        summary:
+          'Wartime manganese-phosphate Parkerized ordnance steel 2K ORM suite with non-mirrored flat Hero UV rollmarks for Browning patents, Colt Hartford address, UNITED STATES PROPERTY & G.H.D. cartouche.',
+        highlights: [
+          'AgX-calibrated matte manganese-phosphate steel (sRGB 0.22-0.27, zero black crush)',
+          'Razor-sharp Hero UV rollmarks on all four slide and frame flanks',
+          'Sculpted rear cocking serrations & A1 arched mainspring housing AO',
+        ],
+        channels: [
+          { note: 'sRGB · 1943 Parkerized ordnance gray steel & bright stamped markings' },
+          { note: 'Linear · Deep engraved rollmark recesses & crystalline phosphate grain' },
+          { note: 'Linear · R:Contact AO / G:Parkerized satin(0.35) / B:Metalness' },
+        ],
+      },
+      m1911_metal: {
+        title: '5" Dual-Rib Barrel, Swinging Link, Fire Control & Two-Tone Magazine',
+        tabTitle: 'Barrel & Action',
+        summary:
+          '2K ORM metal atlas uniting the polished chamber hood (COLT .45 AUTO), swinging link, blued controls, straight trigger bow, and classic WWII two-tone tempered 7-round magazine.',
+        highlights: [
+          'Chamber top Hero UV stamped COLT .45 AUTO / P PROOF TESTED',
+          '>= 80px UV firewall separating bright stainless/polished parts from blued steel',
+          'Authentic two-tone heat-treated feed lips on the 7-round single-stack mag',
+        ],
+        channels: [
+          { note: 'sRGB · Polished stainless barrel/link vs deep blued steel controls' },
+          { note: 'Linear · Lathe machining marks, rifling lands & chamber rollmark' },
+          { note: 'Linear · R:AO / G:Polished(0.18)-Blued(0.27) / B:Metalness(0.90-0.96)' },
+        ],
+      },
+      m1911_seamless_springs: {
+        title: 'Three Dynamic Music-Wire Helical Springs Micro-Surface Map',
+        tabTitle: 'Helical Springs',
+        summary:
+          'Shared 512x512 seamless steel wire detail textures driving the real-time GPU-compressed 16-lb recoil spring, 23-lb hammer mainspring, and 7-round single-stack mag spring.',
+        highlights: [
+          'Preserves real-time aSpringParam helical deformation on all 3 springs',
+          'Fine drawn high-carbon wire sheen and protective oil film variation',
+        ],
+        channels: [
+          { note: 'Linear · Seamless drawn steel wire micro-normal' },
+          { note: 'Linear · Protective oil film roughness variation' },
+        ],
+      },
+    },
+  },
+  mg42: {
+    heading:
+      'MG 42 General-Purpose Machine Gun 2K 5-Channel Packed ORM Texture Atlas (Albedo / Normal / Roughness)',
+    suites: {
+      mg42_shroud: {
+        title: 'Stamped Perforated Shroud, cra 1943 Rollmarks & AA Spider Sight Suite',
+        tabTitle: 'Shroud & Sights',
+        summary:
+          'Cycles-baked 2K 5-channel Packed ORM suite for cold-stamped phosphated sheet steel with crisp non-mirrored cra 1943 Berlin rollmarks, cooling vents, and conical muzzle recoil booster.',
+        highlights: [
+          'AgX-calibrated satin dark phosphate stamped steel with metallic crease wear',
+          'Flat non-mirrored Hero UV left flank: MG 42 · cra 1943 · 4812 d · WaA 749',
+          'True assembled Cycles contact AO across barrel latch, top cover, and bipod',
+        ],
+        channels: [
+          { note: 'sRGB · Stamped phosphated sheet steel & cra 1943 factory rollmarks' },
+          { note: 'Linear · Stamped bend bevels, deeply struck legends & booster knurling' },
+          { note: 'Linear · R:Cycles AO / G:Satin phosphate(0.32) / B:Steel metalness(0.88)' },
+        ],
+      },
+      mg42_furniture: {
+        title: 'Marbled Bakelite Buttstock, Grip Scales & 50-Rd Gurttrommel 34 Suite',
+        tabTitle: 'Bakelite & Drum',
+        summary:
+          'Rich reddish-brown marbled phenolic Bakelite buttstock and grip panels paired with a Feldgrau painted 50-round Gurttrommel 34 drum featuring white ordnance stencils.',
+        highlights: [
+          'Dielectric marbled phenolic Bakelite with organic satin sheen (M=0.0, R=0.34–0.46)',
+          'Feldgrau Gurttrommel 34 drum with crisp GURTTROMMEL 34 · 50 PATR. 7,92 stencil',
+          'High-contrast burnished S-cam feed pawls and stamped feed tray wear tracks',
+        ],
+        channels: [
+          { note: 'sRGB · Marbled phenolic Bakelite & Feldgrau 50-rd drum stencil' },
+          { note: 'Linear · Ribbed grip scales, Bakelite pores & drum reinforcing beads' },
+          { note: 'Linear · R:Contact AO / G:Bakelite & enamel roughness / B:Dielectric vs steel' },
+        ],
+      },
+      mg42_metal: {
+        title: '530mm Barrel, Twin Hardened Locking Rollers & Gurt 34 Brass Belt Suite',
+        tabTitle: 'Rollers & Belt',
+        summary:
+          'Precision internal ordnance suite separating blued CHF barrel, mirror-ground twin locking rollers, and a >=74px UV-firewalled quadrant for C26000 brass 7.92×57mm Mauser belt rounds.',
+        highlights: [
+          'Mirror-ground high-chrome locking rollers & firing-pin wedge (R=0.15–0.20)',
+          '>=74px UV firewall preventing brass/copper color bleed into steel internals',
+          'Lathe-turned barrel cooling taper and forged barrel extension micro-detail',
+        ],
+        channels: [
+          { note: 'sRGB · Blued 530mm barrel, chrome rollers & firewalled 7.92mm brass belt' },
+          { note: 'Linear · Turning grooves, roller chamfers & Gurt 34 spring-steel links' },
+          { note: 'Linear · R:Internal AO / G:Chrome(0.15)–Phosphate(0.32) / B:Pure metal' },
+        ],
+      },
+    },
+  },
+  k98k: {
+    heading:
+      'Mauser Karabiner 98k (byf 43) 2K 5-Ch Packed ORM Atlas (Albedo / Normal / Packed ORM)',
+    suites: {
+      k98k_stock: {
+        title: 'Laminated Beechwood Stock (Schichtholz) & Upper Handguard Suite',
+        tabTitle: 'Laminated Beechwood',
+        summary:
+          'Cycles-baked 2K 5-channel Packed ORM atlas for wartime phenolic-bonded laminated beechwood furniture: crisp alternating horizontal veneer layers, buttstock sling cutout edge wear, inset steel takedown disk isolation, and satin military lacquer roughness.',
+        highlights: [
+          'Authentic alternating light/dark horizontal laminated beechwood plies',
+          'Buttstock sling pass-through slot, steel takedown disk & recoil cross-bolt AO',
+          'Satin military protective oil roughness (0.44-0.62) & fine beech ray pores',
+        ],
+        channels: [
+          { note: 'sRGB · Phenolic laminated beechwood layers & right-flank ordnance cartouche' },
+          { note: 'Linear · Laminate seam micro-relief, wood pores & chamfered inletting normals' },
+          { note: 'Linear · R:Cycles AO / G:Satin wood roughness / B:Isolated steel disk metalness' },
+        ],
+      },
+      k98k_receiver: {
+        title: 'Oberndorf byf 43 Large-Ring Receiver, Bottom Metal & Barrel Bands Suite',
+        tabTitle: 'byf 43 Receiver',
+        summary:
+          'AgX-calibrated deep German blued steel 2K Packed ORM suite featuring distortion-free Hero UV engravings: left rail Mod. 98, front receiver ring byf 43, serial 6842 b, and WaA135 inspection stamps alongside H-band and cupped buttplate edge wear.',
+        highlights: [
+          'AgX-calibrated deep German blued steel (sRGB 0.19-0.28, R = 0.28-0.36)',
+          '1:1 non-mirrored Mod. 98, byf 43, 6842 b & WaA135 Oberndorf rollmarks',
+          'Milled trigger guard, H-pattern front bayonet band & cupped steel buttplate',
+        ],
+        channels: [
+          { note: 'sRGB · Deep German blued receiver, parkerized bands & crisp factory markings' },
+          { note: 'Linear · Milled machining grain, stamped rollmark depth & bevel normals' },
+          { note: 'Linear · R:Contact AO / G:Satin blued steel (0.25-0.38) / B:High metalness' },
+        ],
+      },
+      k98k_metal: {
+        title: '600mm Stepped Barrel, 2000m Tangent Sight, Bright Bolt & Brass Clip Suite',
+        tabTitle: 'Barrel, Bolt & Clip',
+        summary:
+          'Multi-material 2K Packed ORM atlas spanning the stepped 600 mm barrel, 1-20 graduated tangent rear sight leaf, ground bright Mauser 98 bolt body, spring-tempered blue claw extractor, and UV-firewalled 5-round brass stripper clip.',
+        highlights: [
+          'Crisp 1-20 hundred-meter tangent sight leaf graduations on positive-Jacobian UV band',
+          'Bright polished bolt steel vs deep blued spring-steel claw extractor contrast',
+          'Dedicated >=70px UV firewall isolating the 5-round brass stripper clip with zero bleed',
+        ],
+        channels: [
+          { note: 'sRGB · Stepped blued barrel, graduated sight leaf, bright bolt & brass clip' },
+          { note: 'Linear · Engraved 1-20 sight numerals, lathe grain & bolt-lug chamfers' },
+          { note: 'Linear · Bright steel (0.19) vs brass clip (0.23) vs German blued (0.29)' },
+        ],
+      },
+      k98k_seamless_springs: {
+        title: 'Three Dynamic Helical Music-Wire Springs Seamless Detail Suite',
+        tabTitle: 'Dynamic Springs',
+        summary:
+          'Seamless 512x512 brushed music-wire normal and oiled roughness maps shared by the 24-coil firing pin mainspring, vertical sear return spring, and internal 5-round magazine spring.',
+        highlights: [
+          'Preserves GPU constant-wire-diameter compression via aSpringParam (w = 1)',
+          'High-frequency drawn spring-wire micro-grain & protective military gun oil film',
+        ],
+        channels: [
+          { note: 'Linear · Drawn music-wire micro-normal for all 3 dynamic helical springs' },
+          { note: 'Linear · Oiled spring-steel roughness variation' },
+        ],
+      },
+    },
+  },
+  thompson: {
+    heading:
+      'Thompson M1928A1 Submachine Gun 2K 5-Channel Packed ORM Texture Atlas (Albedo / Normal / Roughness)',
+    suites: {
+      thompson_walnut: {
+        title: 'American Black Walnut Vertical Foregrip, Pistol Grip & Detachable Stock',
+        tabTitle: 'Walnut Furniture',
+        summary:
+          'Cycles-baked 2K 5-channel Packed ORM suite for contoured quarter-sawn American black walnut finished in hand-rubbed linseed oil with subtle GEG and WB inspection cartouches.',
+        highlights: [
+          'Rich cathedral-grain black walnut with warm chestnut linseed-oil sheen',
+          'Crisp GEG & WB ordnance cartouche stamps along the right buttstock wrist',
+          'Natural wood-pore bump and assembled contact AO against steel slide mounts',
+        ],
+        channels: [
+          { note: 'sRGB · Hand-rubbed American black walnut grain & GEG cartouche' },
+          { note: 'Linear · Open wood-pore normal relief & contoured grip bevels' },
+          { note: 'Linear · R:Cycles AO / G:Oiled satin walnut(0.36–0.48) / B:Dielectric wood' },
+        ],
+      },
+      thompson_receiver: {
+        title: 'Milled Du-Lite Blued Receiver, Bridgeport Rollmarks & Lyman Sight Suite',
+        tabTitle: 'Receiver & FCG',
+        summary:
+          'Solid milled Du-Lite deep blued steel upper and lower receivers carrying razor-sharp flat Hero UV rollmarks for Thompson Submachine Gun Model of 1928A1 and Auto-Ordnance Bridgeport.',
+        highlights: [
+          'AgX-calibrated pre-war Du-Lite deep blued steel sheen (R=0.25, M=0.90)',
+          'Flat non-mirrored Hero UV flanks with Model of 1928A1 & Auto-Ordnance legends',
+          'Machined horizontal milling striations across receiver, Lyman sight & paddles',
+        ],
+        channels: [
+          { note: 'sRGB · Du-Lite deep blued steel & silvered factory rollmarks' },
+          { note: 'Linear · Horizontal milling grain & deeply struck receiver engravings' },
+          { note: 'Linear · R:Contact AO / G:Satin blue(0.25) / B:Forged billet steel(0.90)' },
+        ],
+      },
+      thompson_metal: {
+        title: '28-Fin Barrel, Bronze Blish H-Lock & 50-Rd Type L Clockwork Drum Suite',
+        tabTitle: 'Blish & Drum',
+        summary:
+          'Flagship internal and ordnance atlas featuring circular Type L drum Hero stamping plus twin >=80px UV firewalls isolating the cast-bronze Blish H-piece and .45 ACP brass spiral rounds.',
+        highlights: [
+          'Dedicated >=80px UV firewall for gleaming cast phosphor-bronze Blish H-lock',
+          'Circular Hero UV faceplate stamping on the 50-round Type L clockwork drum',
+          'Second >=80px UV firewall isolating golden .45 ACP brass & copper spiral rounds',
+        ],
+        channels: [
+          { note: 'sRGB · 28-fin blued barrel, phosphor bronze Blish lock & 50-rd drum rounds' },
+          { note: 'Linear · Radial fin turning marks, drum beads & circular stamped legends' },
+          { note: 'Linear · R:Internal AO / G:Bronze(0.23)–Steel(0.17–0.27) / B:Metalness' },
+        ],
+      },
+    },
+  },
+  gau8: {
+    heading:
+      'GE GAU-8/A Avenger 30mm Rotary Autocannon 2K 5-Ch Packed ORM Atlas (Albedo / Normal / Packed ORM)',
+    suites: {
+      gau8_v3_exterior: {
+        title: '7-Barrel 2.3m Cluster, Heat-Blued Muzzle Clamp, USAF Housing & Twin Hydraulics',
+        tabTitle: 'Exterior & Hydraulics',
+        summary:
+          'Cycles Metal GPU-baked 2K 5-channel Packed ORM atlas capturing the 2.3 m seven-barrel rotary cluster, heat-tempered bronze/blue perforated muzzle clamp, non-mirrored USAF housing stencils with MIL-STD-130 UID matrix, twin 3,000 PSI hydraulic warning plaques, and SAFE/ARMED clearing sector.',
+        highlights: [
+          'Dual-flank 1:1 USAF GAU-8/A AVENGER 30MM CAGE 05606 stencils & 16×16 UID code',
+          'Twin 3,000 PSI hydraulic hazard placards & UV-firewalled SAFE/ARMED clearing gate',
+          '3,900 RPM thermal-blued titanium muzzle clamp & machined A-10 recoil cradle',
+        ],
+        channels: [
+          { note: 'sRGB · Aerospace primer housing, USAF stencils, heat-blued clamp & anodized hydraulics' },
+          { note: 'Linear · Forged housing ribs, barrel turning rings, fasteners & stencil relief' },
+          { note: 'Linear · R:Cycles AO / G:Chrome(0.16)-Phosphate(0.32)-Primer(0.46) / B:Metalness' },
+        ],
+      },
+      gau8_v3_internal: {
+        title: '360° Hardened Helical Cam Sleeve, 7-Flute Star-Rotor & 7 Titanium Bolts',
+        tabTitle: 'Cam Track & 7 Bolts',
+        summary:
+          'Purpose-built 2K Packed ORM internal suite engineered for live CT sectioning ([C]): showcases the mirror-burnished 360° sinusoidal cam groove with lifted cavity AO, 5-axis CNC 7-flute star-rotor with 28-tooth bull gear, and all seven hard-chromed titanium rotary bolts.',
+        highlights: [
+          'Mirror-honed 360° elliptical sinusoidal cam track with cavity-lifted AO for CT views',
+          '5-axis CNC 7-flute central star-rotor and hardened 28-tooth main drive gear grain',
+          'Unified lubricated hard-chrome roughness across all seven orbiting titanium bolts',
+        ],
+        channels: [
+          { note: 'sRGB · Honed sinusoidal cam groove, CNC star-rotor & 7 chrome-titanium bolts' },
+          { note: 'Linear · Roller wear tracks, 5-axis rotor toolpaths & 3-lug bolt chamfers' },
+          { note: 'Linear · R:Cavity-lifted AO / G:Chrome(0.17)-Carburized(0.34) / B:High metalness' },
+        ],
+      },
+      gau8_v3_drum: {
+        title: '1,150-Rd Helical Ammo Drum, 14-Blade Rotor, 30mm PGU-14/B API & Chutes',
+        tabTitle: 'Helical Drum & 30mm API',
+        summary:
+          '2K 5-channel Packed ORM atlas for the Ø876mm aerospace olive-primer helical drum carrying high-visibility USAF ordnance stencils and chevron hazard bands, plus four-way >=50px UV-firewalled 30×173mm PGU-14/B API rounds separating brushed aluminum cases, charcoal penetrators, crimson incendiary bands, and copper driving bands.',
+        highlights: [
+          'Dual-flank USAF HELICAL AMMUNITION DRUM 1,150 RDS PGU-14/B API stencils & hazard stripes',
+          'Four-zone >=50px UV firewall isolating aluminum shell, black ogive, crimson band & copper band',
+          'Ribbed linkless aluminum feed/return chutes & 14-blade stainless helical conveyor rotor',
+        ],
+        channels: [
+          { note: 'sRGB · Aerospace olive drum stencils, hazard stripes & brushed-aluminum 30mm rounds' },
+          { note: 'Linear · Drum stiffening ribs, rivets, spun aluminum grain & linkless chute corrugations' },
+          { note: 'Linear · R:Contact AO / G:Aluminum(0.20)-Olive primer(0.50)-Rubber(0.80) / B:Metalness' },
+        ],
+      },
+    },
+  },
 };
 
 export const ATLAS_EN_STRINGS: Readonly<

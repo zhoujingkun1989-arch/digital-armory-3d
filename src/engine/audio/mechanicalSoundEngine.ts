@@ -365,6 +365,32 @@ export const CALIBER_ACOUSTIC_PROFILES: Record<
     casingRingHz: 840,
     mechanismStyle: 'tank_ww2_cannon',
   },
+  '792_mauser': {
+    caliber: '792_mauser',
+    labelEn: '7.92×57mm Mauser (8×57 IS)',
+    labelZh: '7.92×57mm 毛瑟全威力重尖步枪弹',
+    subFreqHz: 55,
+    punchDecaySec: 0.34,
+    blastTailSec: 0.62,
+    crackCutoffHz: 2640,
+    peakGain: 0.91,
+    brakeRoarGain: 0.34,
+    casingRingHz: 2340,
+    mechanismStyle: 'bolt_action',
+  },
+  '30x173_gau8': {
+    caliber: '30x173_gau8',
+    labelEn: '30×173mm PGU-14/B API (GAU-8/A)',
+    labelZh: '30×173mm 贫铀穿甲燃烧航炮弹 (GAU-8/A)',
+    subFreqHz: 42,
+    punchDecaySec: 0.52,
+    blastTailSec: 0.92,
+    crackCutoffHz: 1480,
+    peakGain: 1.0,
+    brakeRoarGain: 0.72,
+    casingRingHz: 1460,
+    mechanismStyle: 'electric_gatling',
+  },
 };
 
 /**
@@ -1168,6 +1194,48 @@ class ProceduralGunsmithSoundEngine {
             attack: 0.008,
             bus: 'mechanical',
           });
+        } else if (weaponId === 'gau8') {
+          // GE GAU-8/A twin 38.5-HP 3,000 PSI hydraulic motor servo whine + 7-bolt cam clatter
+          this.emitModalPing({
+            startTime: now,
+            duration: isSlowMo ? 0.22 : 0.13,
+            freqStart: 780,
+            freqEnd: 1180,
+            type: 'triangle',
+            gainPeak: 0.26,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + 0.006,
+            fundamentalHz: 2640,
+            baseDecaySec: 0.042,
+            gainPeak: 0.22,
+            hardness01: 0.9,
+            massBodyHz: 165,
+            bus: 'mechanical',
+          });
+        } else if (weaponId === 'mg42') {
+          // MG 42 open-bolt heavy sear release + braided driving spring surge
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 1540,
+            baseDecaySec: 0.04,
+            gainPeak: 0.29,
+            hardness01: 0.9,
+            massBodyHz: 230,
+            bus: 'mechanical',
+          });
+        } else if (weaponId === 'thompson') {
+          // Thompson M1928A1 heavy milled open-bolt sear drop + bronze Blish clack
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 1380,
+            baseDecaySec: 0.045,
+            gainPeak: 0.26,
+            hardness01: 0.84,
+            massBodyHz: 205,
+            bus: 'mechanical',
+          });
         } else if (weaponId === 'vss') {
           // VSS Vintorez hammerless silent linear striker glide (muted low-noise click!)
           this.emitSteelWaveguideStrike({
@@ -1369,6 +1437,37 @@ class ProceduralGunsmithSoundEngine {
             freqEnd: 48,
             type: 'sawtooth',
             gainPeak: 0.28,
+            bus: 'ballistic',
+          });
+        } else if (weaponId === 'gau8') {
+          // Iconic A-10 GAU-8/A Avenger 3,900 RPM (65 Hz) supersonic "BRRRT!" pulse-train horn + 42 Hz shock
+          this.emitModalPing({
+            startTime: tBlast + 0.004,
+            duration: isSlowMo ? 0.22 : 0.125,
+            freqStart: 67,
+            freqEnd: 63,
+            type: 'sawtooth',
+            gainPeak: 0.36,
+            bus: 'ballistic',
+          });
+          this.emitModalPing({
+            startTime: tBlast + 0.01,
+            duration: isSlowMo ? 0.28 : 0.16,
+            freqStart: 130,
+            freqEnd: 126,
+            type: 'sawtooth',
+            gainPeak: 0.18,
+            bus: 'ballistic',
+          });
+        } else if (weaponId === 'mg42') {
+          // Iconic 1,200 RPM (20 Hz) "Hitler's Buzzsaw" rapid ripping canvas secondary pulse
+          this.emitModalPing({
+            startTime: tBlast + 0.008,
+            duration: isSlowMo ? 0.1 : 0.055,
+            freqStart: 42,
+            freqEnd: 38,
+            type: 'sawtooth',
+            gainPeak: 0.22,
             bus: 'ballistic',
           });
         }

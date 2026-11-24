@@ -49,13 +49,15 @@ export const BALLISTIC_CALIBERS: readonly CaliberProfile[] = [
   '556_nato',
   '30_30_win',
   '762_nato',
+  '792_mauser',
   '30_06',
   '338_lapua',
   '50_bmg',
 ];
 
-/** Ordered tank main-gun ordnance profiles (1:1 Heavy Armor Hall). */
+/** Ordered heavy ordnance & tank main-gun profiles (1:1 Heavy Armor & Ordnance Halls). */
 export const TANK_CANNON_CALIBERS: readonly CaliberProfile[] = [
+  '30x173_gau8',
   '88mm_pzgr39',
   '120mm_apfsds',
   '125mm_apfsds',
@@ -752,6 +754,56 @@ export const CALIBER_BALLISTICS: Readonly<
     caseMassG: 4200,
     shockDiamonds: 5,
   }),
+  '792_mauser': defineCaliber({
+    caliber: '792_mauser',
+    labelEn: '7.92×57mm Mauser 198gr s.S. Boat-Tail',
+    labelZh: '7.92×57mm 毛瑟 198格令 s.S. 重尖船尾弹',
+    standard: 'CIP',
+    peakPressureMPa: 390,
+    muzzleVelocityMps: 755,
+    projectileMassG: 12.8,
+    safeUnlockPressureMPa: 12,
+    boreTimeMs: 1.18,
+    referenceBarrelMm: 530,
+    pressureShapeK: 4.2,
+    peakU: 0.43,
+    heatPerShotC: 22,
+    foulingPerShot: 0.019,
+    recoilKickCm: 1.38,
+    recoilRiseCm: 0.25,
+    muzzleClimbRad: 0.028,
+    barrelWhipCm: 0.044,
+    ejectSpeedCmS: 225,
+    caseHalfLenCm: 1.42,
+    caseRadiusCm: 0.3,
+    caseMassG: 11.4,
+    shockDiamonds: 4,
+  }),
+  '30x173_gau8': defineCaliber({
+    caliber: '30x173_gau8',
+    labelEn: '30×173mm GAU-8 PGU-14/B API (395g DU/Tungsten Core)',
+    labelZh: '30×173mm GAU-8 PGU-14/B 贫铀/钨芯穿甲燃烧弹 (395g)',
+    standard: 'NATO EPVAT',
+    peakPressureMPa: 430,
+    muzzleVelocityMps: 1010,
+    projectileMassG: 395,
+    safeUnlockPressureMPa: 12,
+    boreTimeMs: 3.15,
+    referenceBarrelMm: 2300,
+    pressureShapeK: 4.2,
+    peakU: 0.39,
+    heatPerShotC: 19,
+    foulingPerShot: 0.022,
+    recoilKickCm: 3.6,
+    recoilRiseCm: 0.55,
+    muzzleClimbRad: 0.008,
+    barrelWhipCm: 0.16,
+    ejectSpeedCmS: 195,
+    caseHalfLenCm: 8.65,
+    caseRadiusCm: 2.13,
+    caseMassG: 148,
+    shockDiamonds: 6,
+  }),
 };
 
 export function getCaliberBallisticsSpec(
@@ -875,6 +927,16 @@ export const WEAPON_FIRING_TIMING: Readonly<
   winchester1894: timing(0.12, 0.27, 0.5, 0.94, null, -0.18, 0.92, 0.34),
   // Remington 870 Police Magnum 12ga pump-action — manual corn-cob forend rack + twin action bars + right ejection
   rem870: timing(0.11, 0.27, 0.45, 0.955, null, 0.16, 0.44, 0.88),
+  // Colt M1911A1 U.S. Army .45 ACP — Browning 0.278" swinging-link tilting barrel short recoil + right-up ejection
+  m1911: timing(0.16, 0.29, 0.49, 0.87, null, -0.26, 0.62, 0.74),
+  // MG 42 7.92×57mm — open-bolt muzzle-boosted short recoil + twin rollers + downward belly brass ejection
+  mg42: timing(0.21, 0.3, 0.5, 0.84, 0.94, -0.1, -0.98, 0.14),
+  // Mauser Karabiner 98k 7.92×57mm — manual 90° 3-lug bolt lift + non-rotating claw extraction
+  k98k: timing(0.14, 0.26, 0.61, 0.96, null, -0.22, 0.54, 0.81),
+  // Thompson M1928A1 .45 ACP — open-bolt 45° bronze Blish delayed blowback + Cutts comp + right ejection
+  thompson: timing(0.23, 0.32, 0.52, 0.85, null, -0.18, 0.35, 0.92),
+  // GE GAU-8/A Avenger 30×173mm — twin 38.5-HP hydraulic 7-barrel rotary + closed-loop aluminum case return
+  gau8: timing(0.08, 0.19, 0.44, 0.88, null, -0.82, -0.32, 0.48),
 };
 
 export function getWeaponFiringTiming(

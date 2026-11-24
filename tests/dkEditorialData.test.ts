@@ -43,12 +43,13 @@ function loadNarrationBundle(weaponId: WeaponId): WeaponNarrationBundle {
 }
 
 describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () => {
-  it('produces valid bilingual DkScaleReference for all 29 exhibits with accurate silhouettes', () => {
-    expect(WEAPON_IDS.length).toBe(29);
+  it('produces valid bilingual DkScaleReference for all 34 exhibits with accurate silhouettes', () => {
+    expect(WEAPON_IDS.length).toBe(34);
 
     for (const weaponId of WEAPON_IDS) {
       const manifest = getWeaponManifest(weaponId);
       const isTank = manifest.catalog.category === 'armor';
+      const isHeavyOrdnance = manifest.catalog.category === 'ordnance';
       const expectedSilhouette =
         manifest.catalog.category === 'pistol'
           ? 'hand'
@@ -69,6 +70,16 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
           expect(ref.weightKg).toBeLessThanOrEqual(80000);
           expect(ref.ratioPercent).toBeGreaterThanOrEqual(400);
           expect(ref.ratioPercent).toBeLessThanOrEqual(750);
+        } else if (isHeavyOrdnance) {
+          expect(ref.oalMm).toBeGreaterThanOrEqual(2500);
+          expect(ref.oalMm).toBeLessThanOrEqual(7000);
+          expect(Number.isFinite(ref.barrelMm)).toBe(true);
+          expect(ref.barrelMm).toBeGreaterThanOrEqual(1500);
+          expect(Number.isFinite(ref.weightKg)).toBe(true);
+          expect(ref.weightKg).toBeGreaterThanOrEqual(100);
+          expect(ref.weightKg).toBeLessThanOrEqual(2500);
+          expect(ref.ratioPercent).toBeGreaterThanOrEqual(150);
+          expect(ref.ratioPercent).toBeLessThanOrEqual(450);
         } else {
           expect(ref.oalMm).toBeGreaterThanOrEqual(180);
           expect(ref.oalMm).toBeLessThanOrEqual(1600);
@@ -288,8 +299,8 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
       }
     }
 
-    // 29 exhibits (731 total parts) × 2 languages = 1,462 part micro-copies checked
-    expect(totalPartsChecked).toBe(1462);
+    // 34 exhibits (854 total parts) × 2 languages = 1,708 part micro-copies checked
+    expect(totalPartsChecked).toBe(1708);
   });
 
   it('handles null narration fallback cleanly in buildDkPartMicroCopy for both zh and en', async () => {
@@ -314,9 +325,9 @@ describe('DK Visual Encyclopedia Editorial Data Layer & Vector Components', () =
     }
   });
 
-  it('computes exact 1:1 physical mm cartridge layouts for all 16 small-arms calibers, 1:10 for 3 tank cannon rounds, and 1:4/1:5 for archery without NaN or A4 overflow', () => {
-    expect(CARTRIDGE_LAB_ORDER.length).toBe(16);
-    expect(TANK_ORDNANCE_ORDER.length).toBe(3);
+  it('computes exact 1:1 physical mm cartridge layouts for all 17 small-arms calibers, 1:10 for 4 heavy ordnance rounds, and 1:4/1:5 for archery without NaN or A4 overflow', () => {
+    expect(CARTRIDGE_LAB_ORDER.length).toBe(17);
+    expect(TANK_ORDNANCE_ORDER.length).toBe(4);
 
     for (const caliber of CARTRIDGE_LAB_ORDER) {
       const spec = CARTRIDGE_LAB_SPECS[caliber];

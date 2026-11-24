@@ -90,9 +90,11 @@ export const EXTERNAL_PROJECTILE_ORDER: readonly ExternalProjectileId[] = [
   '556_nato',
   '30_30_win',
   '762_nato',
+  '792_mauser',
   '30_06',
   '338_lapua',
   '50_bmg',
+  '30x173_gau8',
   '88mm_pzgr39',
   '120mm_apfsds',
   '125mm_apfsds',
@@ -201,8 +203,8 @@ export const EXTERNAL_PROJECTILE_SPECS: Readonly<
     pelletCount: 1,
     defaultSightHeightCm: 4.8,
     recommendedZeroM: 25,
-    representativeWeaponIds: ['vector'],
-    primaryWeaponId: 'vector',
+    representativeWeaponIds: ['m1911', 'thompson', 'vector'],
+    primaryWeaponId: 'm1911',
     noteZh:
       '天生亚音速（Mach 0.76）重弹头无激波阻力突变，配合微声抑制器极佳，但远距重力下坠显著。',
     noteEn:
@@ -683,6 +685,56 @@ export const EXTERNAL_PROJECTILE_SPECS: Readonly<
     noteEn:
       'Tubular-magazine safe flat-nose smokeless round (2,470 J): flat trajectory inside 250 m brush hunting before G1 drag steepens past 350 m.',
   }),
+
+  '792_mauser': defineProjectile({
+    id: '792_mauser',
+    code: '7.92×57mm',
+    nameZh: '7.92×57mm 毛瑟 (s.S.)',
+    nameEn: '7.92×57mm Mauser (8mm s.S.)',
+    loadLabelZh: '198 gr s.S. 重尖船尾全威力弹',
+    loadLabelEn: '198 gr s.S. Heavy Spitzer Boat-Tail',
+    category: 'rifle',
+    dragModel: 'G7',
+    bc: 0.278,
+    muzzleVelocityMps: 755,
+    massGrains: 198,
+    massGrams: 12.8,
+    caliberMm: 8.22,
+    pelletCount: 1,
+    defaultSightHeightCm: 4.8,
+    recommendedZeroM: 100,
+    representativeWeaponIds: ['mg42', 'k98k'],
+    primaryWeaponId: 'mg42',
+    noteZh:
+      '198 格令流线型船尾重弹（G7 BC 0.278）具备惊人远距存速与抗横风能力，超音速直抵约 880 m，专为 MG 42 远距压制与 K98k 精确射击设计。',
+    noteEn:
+      'Streamlined 198 gr s.S. boat-tail (G7 BC 0.278) resists crosswind fiercely and stays supersonic past 880 m, powering both MG 42 sustained suppression and K98k marksmanship.',
+  }),
+
+  '30x173_gau8': defineProjectile({
+    id: '30x173_gau8',
+    code: '30×173mm API',
+    nameZh: '30×173mm GAU-8 PGU-14/B API',
+    nameEn: '30×173mm GAU-8 PGU-14/B API',
+    loadLabelZh: '395 g (6,096 gr) 贫铀/钨芯航空穿甲燃烧弹',
+    loadLabelEn: '395 g (6,096 gr) DU/Tungsten Aviation API',
+    category: 'armor',
+    dragModel: 'G7',
+    bc: 0.88,
+    muzzleVelocityMps: 1010,
+    massGrains: 6096,
+    massGrams: 395,
+    caliberMm: 30.0,
+    pelletCount: 1,
+    defaultSightHeightCm: 14.0,
+    recommendedZeroM: 300,
+    representativeWeaponIds: ['gau8'],
+    primaryWeaponId: 'gau8',
+    noteZh:
+      'GAU-8/A 七管航炮 395 克高断面密度重弹（G7 BC 0.88 · 201.5 kJ），1,000 m 外仍保持 730 m/s 逾两倍音速与惊人低风偏，精准覆盖 1,220 m 反装甲俯冲攻击距离。',
+    noteEn:
+      'GAU-8/A’s high-sectional-density 395 g API projectile (G7 BC 0.88, 201.5 kJ) stays past Mach 2.1 at 1,000 m with negligible wind drift across the A-10’s 1,220 m slant-attack envelope.',
+  }),
 };
 
 export function normalizeExternalProjectileId(
@@ -706,6 +758,12 @@ export function normalizeExternalProjectileId(
   }
   if (input === '125mm' || input === 'dtc10' || input === 'dtc10_125') {
     return '125mm_apfsds';
+  }
+  if (input === '7.92x57' || input === '8mm_mauser' || input === '792x57') {
+    return '792_mauser';
+  }
+  if (input === '30mm' || input === '30x173' || input === 'pgu14') {
+    return '30x173_gau8';
   }
   return input in EXTERNAL_PROJECTILE_SPECS
     ? (input as ExternalProjectileId)

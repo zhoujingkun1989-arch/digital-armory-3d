@@ -2084,6 +2084,157 @@ export const SHOWDOWN_EXHIBIT_SPECS: Readonly<
       en: 'Requires deliberate full-stroke manual cycling under stress to avoid short-stroking, and solid steel adds ~350 g over aluminum receivers',
     },
   },
+  // V6.0 Wave 2 Additions (BAY-30 .. BAY-34):
+  m1911: {
+    id: 'm1911',
+    driveFamily: 'short_recoil_barrel',
+    lockingFamily: 'tilting_barrel_cam',
+    feedFamily: 'staggered_box_magazine',
+    driveDetail: {
+      zh: '全包锻钢套筒与 5" 枪管闭锁共同短后坐 3 mm 待膛压安全下降，随后单绞链将枪管拉停在底把冲击床上，套筒独自后坐 45.5 mm。',
+      en: 'Forged slide and 5" barrel recoil locked together 3 mm before the swinging link arrests the barrel on the frame bed while the slide completes a 45.5 mm stroke.',
+    },
+    lockingDetail: {
+      zh: '枪管顶部双半圆闭锁筋死锁套筒顶槽；孔距 7.06 mm 单绞链绕空仓挂机横销向后旋转 53° 拉降枪尾 2.7 mm，仰起 +2.1° 干脆脱锁。',
+      en: 'Dual top barrel ribs lock into slide roof mortises until the 0.278" swinging link pivots 53 deg around the slide-stop pin, dropping the breech 2.7 mm.',
+    },
+    feedDetail: {
+      zh: '18° 纤薄握把容纳 7 发 .45 ACP 单排钢弹匣，渐进锥形抱弹唇配合内置管状抽壳钩实现高可靠受控供弹，托弹板中央带勃朗宁防前窜凸点。',
+      en: '18 deg slim grip houses a 7-round single-stack .45 ACP steel magazine with progressive controlled-feed lips and Browning dimpled follower.',
+    },
+    fireControlDetail: {
+      zh: '纯水平直线滑动 U 形扳机框驱动单动阻铁与垂直断连器，由一片无螺钉三叉板簧统管三套机构，配 Condition 1 拇指保险与虎口自动握把保险。',
+      en: 'Straight-sliding U-stirrup trigger actuates a single-action sear & paddle disconnector powered by one screwless 3-leaf spring with thumb and grip safeties.',
+    },
+    signatureAdvantage: {
+      zh: '6,000 发零故障历史传奇、纯直线“玻璃棒”单动扳机手感与统治百年的套筒偏移闭锁范式',
+      en: '6,000-round zero-malfunction pedigree, crisp straight-pull single-action trigger, and the foundational tilting-barrel pistol layout',
+    },
+    engineeringTradeoff: {
+      zh: '单排弹匣容弹量仅 7+1 发，且全锻钢结构 1.1 kg 空重高于现代聚合物双排手枪',
+      en: '7+1 single-stack capacity and 1.1 kg all-steel mass trail modern double-stack polymer service pistols',
+    },
+  },
+  mg42: {
+    id: 'mg42',
+    driveFamily: 'short_recoil_barrel',
+    lockingFamily: 'roller_or_mass_blowback',
+    feedFamily: 'disintegrating_belt_shuttle',
+    driveDetail: {
+      zh: '锥形枪口助退器截留高压尾流猛推 530mm 枪管与节套整体短后坐 8.5 mm，开锁瞬间滚柱反推斜楔将能量高效注入 550g 重机框。',
+      en: 'Conical muzzle recoil booster traps exit gases to drive the 530mm barrel and extension back 8.5 mm before unlocking cams accelerate the 550g carrier.',
+    },
+    lockingDetail: {
+      zh: '左右两枚对称硬化轴承钢滚柱受击针斜楔外撑死锁于锻钢枪管节套内，完全封闭 390 MPa 膛压，解放冷冲压薄钢板机匣。',
+      en: 'Symmetric twin hardened bearing-steel rollers are wedged outward by the firing-pin locking piece into the forged barrel extension, isolating 390 MPa from the stamped receiver.',
+    },
+    feedDetail: {
+      zh: '机框顶柱沿顶盖 S 型曲线轨道驱动双级拨弹爪在后坐与复进双程接力拉动 Gurt 34 不可散钢链与 50 发侧挂突击弹鼓。',
+      en: 'A vertical bolt-carrier stud rides the top-cover S-cam to drive dual-stage shuttle pawls across both strokes, feeding Gurt 34 belts and 50-rd assault drums.',
+    },
+    fireControlDetail: {
+      zh: '极简纯全自动开膛待击阻铁配横推 S/F 保险栓，三股绞合复进簧抗 20 Hz 共振断裂。',
+      en: 'Rugged full-auto-only open-bolt sear with S/F cross-bolt safety and anti-resonance 3-strand braided driving spring.',
+    },
+    signatureAdvantage: {
+      zh: '冷冲压工时腰斩、5 秒单侧门极速换管、1,200 RPM 压倒性火力与现代西方通用机枪共同的 S 槽供弹血统',
+      en: 'Half the machining time via presswork, 5-second side-door barrel swaps, 1,200 RPM suppression, and the S-cam belt feed inherited by NATO machine guns',
+    },
+    engineeringTradeoff: {
+      zh: '极高射速导致弹药消耗巨大且连发 250 发即须频繁换管，纯连发设计对射手食指点放控枪训练要求极高',
+      en: 'Blistering cyclic rate devours ammunition rapidly, requires barrel changes every ~250 rounds, and demands disciplined short bursts',
+    },
+  },
+  k98k: {
+    id: 'k98k',
+    driveFamily: 'manual_bolt_or_revolver_linkage',
+    lockingFamily: 'rotating_lug_bolt',
+    feedFamily: 'staggered_box_magazine',
+    driveDetail: {
+      zh: '手动 90° 上抬下弯球头拉机柄同步完成开锁、3.5 mm 螺旋预抽壳与顶回击针待击，再直拉 110 mm 完成抽抛壳与推弹闭锁。',
+      en: 'Manual 90-degree lift of the bent bolt handle unlocks three lugs, generates 3.5 mm cammed primary extraction, and cocks the striker before a 110 mm linear extraction stroke.',
+    },
+    lockingDetail: {
+      zh: '前端双对称大面积闭锁主突笋锁入 Ø35.8mm 大环锻钢机匣，辅以后根部第三保险突笋与多层泄气孔防炸膛。',
+      en: 'Massive symmetrical dual front locking lugs seat into the 35.8 mm large-ring forged receiver, reinforced by a rear third safety lug and multi-stage gas venting.',
+    },
+    feedDetail: {
+      zh: '与木托下缘齐平的 5 发双排交错内置钢制弹仓，支持后桥 5 发黄铜桥夹单指压装，由全长不旋转大抓钩全程受控供弹。',
+      en: 'Flush 5-round staggered internal steel magazine top-loaded via 5-round brass stripper clips and positively controlled from mag lips to chamber by the non-rotating claw extractor.',
+    },
+    fireControlDetail: {
+      zh: '三零件极简双支点两道火军用扳机 + 杠杆阻铁，尾套顶置直锁击针的三档翼形旗式机械保险。',
+      en: 'Three-part twin-fulcrum two-stage military trigger and pivoting sear paired with Paul Mauser’s direct-striker three-position wing flag safety on the bolt shroud.',
+    },
+    signatureAdvantage: {
+      zh: '全长不旋转大抓钩受控供弹 + 三突笋防爆泄气 + 免工具拆解盘，缔造统治全球 125 年的栓动步枪工业标准',
+      en: 'Non-rotating claw controlled-round feed, triple-lug gas safety, and tool-less takedown disk established the 125-year global standard for bolt-action rifles',
+    },
+    engineeringTradeoff: {
+      zh: '手动 90° 抬栓射速（15 发/分）显著低于半自动步枪，且早期竖直旗式保险与低置光学瞄准镜存在空间干涉',
+      en: 'Manual 90-degree bolt cycling (~15 rpm) lags semi-auto firepower, and the tall vertical flag safety interferes with low-mounted optical scopes',
+    },
+  },
+  thompson: {
+    id: 'thompson',
+    driveFamily: 'delayed_or_straight_blowback',
+    lockingFamily: 'sliding_wedge_breech',
+    feedFamily: 'staggered_box_magazine',
+    driveDetail: {
+      zh: '开膛半自由枪机配约翰·布利什 45° 斜槽青铜延迟块，靠 72° 枪机斜面与 45° 机匣槽几何角度配比控制开膛时序。',
+      en: 'Open-bolt Blish delayed blowback balances 45° inclined receiver rails against 72° bolt ramps via a sliding phosphor-bronze H-piece.',
+    },
+    lockingDetail: {
+      zh: '铸造磷青铜 H 型布利什滑块在闭锁末瞬沿 45° 斜槽前下沉 5.5 mm，借助青铜/钢异质界面高压摩擦阻滞延缓开膛，随后由枪机斜面抬升解锁。',
+      en: 'Cast phosphor-bronze H-piece drops 5.5 mm into 45° receiver ears at battery to delay initial opening before camming upward along 72° bolt slots.',
+    },
+    feedDetail: {
+      zh: '50 发 L 型冲压钢发条大弹鼓：前置折叠钥匙上弦 9 响，中心四翼星轮转子沿双圈阿基米德螺旋轨道旋推 .45 ACP 重弹直达顶颈（兼容 20/30 发直匣）。',
+      en: '50-round Type L clockwork drum wound 9 clicks drives a central 4-arm spider rotor along concentric Archimedean spiral tracks (also accepts 20/30-rd stick mags).',
+    },
+    fireControlDetail: {
+      zh: '左侧双独立桨式拨片分别控制 FULL AUTO/SINGLE 与 FIRE/SAFE，枪机内置防早发杠杆惯性击锤。',
+      en: 'Twin left-side paddles decouple FULL AUTO/SINGLE from FIRE/SAFE, paired with a bolt-mounted pivoting inertia hammer.',
+    },
+    signatureAdvantage: {
+      zh: '50 发圆鼓超大容弹、28 道散热鳍配卡茨防跳器与重型铣削钢壳造就极其平稳的 .45 ACP 近战火力与传世工艺质感',
+      en: '50-round drum capacity, 28 cooling fins, Cutts compensator, and milled steel mass deliver smooth .45 ACP control and unmatched heirloom finish',
+    },
+    engineeringTradeoff: {
+      zh: '整块锻钢立铣与布利什斜槽工时极高且空枪重达 4.9 kg（满鼓逾 7 kg），促使二战后期演化出简化自由枪机 M1A1',
+      en: 'Expensive billet machining and 4.9 kg empty mass (over 7 kg with loaded drum) led to the simplified wartime straight-blowback M1A1',
+    },
+  },
+  gau8: {
+    id: 'gau8',
+    driveFamily: 'external_electric_rotary',
+    lockingFamily: 'rotating_lug_bolt',
+    feedFamily: 'autoloader_carousel_or_blast_bustle',
+    driveDetail: {
+      zh: '双 38.5 马力（77 HP）3,000 PSI 冗余液压马达外能源强驱 · 遇哑弹直接抽出返鼓零卡炮',
+      en: 'Twin 38.5-HP (77 HP) 3,000 PSI redundant hydraulic drive — extracts misfires with zero stoppage',
+    },
+    lockingDetail: {
+      zh: '静止 360° 硬化正弦凸轮套筒驱动 7 套三突笋钛合金炮闩作 300mm 错相波浪闭锁',
+      en: 'Stationary 360° sinusoidal cam sleeve cycling 7 three-lug titanium rotary bolts across 300 mm',
+    },
+    feedDetail: {
+      zh: 'Ø876mm 1,150 发无链螺旋弹鼓 + 双通道滑槽 100% 回收空铝壳保战机重心',
+      en: 'Ø876mm 1,150-rd linkless helical drum w/ closed-loop spent aluminum case return preserving aircraft CG',
+    },
+    fireControlDetail: {
+      zh: 'A-10 二段扳机液压电控 + 清膛安全门停射自动空转清膛防烤燃',
+      en: 'Two-stage stick hydraulic trigger + automatic burst-end clearing sector gate preventing cook-off',
+    },
+    signatureAdvantage: {
+      zh: '每秒 65 发 395g 贫铀/钨芯 30mm 穿甲弹幕（单发 201 kJ），千米外撕碎主战坦克顶甲',
+      en: '65 rounds/sec of 395g DU/tungsten 30mm API (201 kJ/rd) shredding tank roof armor past 1,200 m',
+    },
+    engineeringTradeoff: {
+      zh: '整套系统长 6.06 m、满载 1,828 kg、后坐力达 44.5 kN，必须围绕机炮专属打造整架 A-10 攻击机',
+      en: '6.06 m length, 1,828 kg loaded mass & 44.5 kN recoil required designing the entire A-10 airframe around it',
+    },
+  },
 };
 
 const DEFAULT_CLASSIFICATION: ShowdownExhibitClassification =
@@ -2459,6 +2610,160 @@ export const CLASSIC_RIVALRY_SEEDS: readonly ClassicRivalrySeed[] = [
     verdict: {
       zh: '使用完全同款 12 号 00 号鹿弹：雷明顿 870 靠双平行钢推杆与全钢机匣直接以人手强力泵动通吃低威橡胶弹至 3 英寸马格南，机械零对弹药燃气依赖；伯奈利 M4 则以双对称 ARGO 自调泄压气室全自动完成闭锁与抛壳，将连射速度成倍放大！',
       en: 'Shooting identical 12-gauge 00 buckshot: the Remington 870 uses human-powered dual steel action bars and a billet steel receiver to digest any load regardless of gas energy, whereas Benelli M4 pairs twin self-regulating ARGO pistons with a 2-lug rotating bolt for semi-automatic rapid fire.',
+    },
+  },
+  // V6.0 Wave 2 Classic & Heavy Ordnance Showdowns:
+  {
+    id: 'm1911_vs_p08',
+    weaponA: 'm1911',
+    weaponB: 'p08',
+    pillLabel: {
+      zh: '柯尔特 M1911A1 单绞链 vs 鲁格 P08 肘节',
+      en: 'Colt M1911A1 Link vs Luger P08 Toggle',
+    },
+    headline: {
+      zh: '两次世界大战王牌手枪世纪对决：美国 .45 ACP 单绞链套筒 vs 德国 9mm 双连杆屈膝肘节',
+      en: 'World Wars Sidearm Clash: U.S. .45 ACP Swinging Link vs German 9mm Knee-Joint Toggle',
+    },
+    verdict: {
+      zh: '两款诞生于二十世纪初的军用手枪走了截然相反的机械道路：鲁格 P08 以精密钟表般的过死点屈膝肘节与 55° 握把缔造 9×19mm 传奇；柯尔特 M1911A1 则凭借全包防尘套筒与 0.278" 单绞链在 6,000 发泥沙酷刑中零故障封神，并最终塑造了整个现代自动手枪工业！',
+      en: 'Two iconic early-1900s sidearms took opposite kinematic paths: the Luger P08 paired watchmaker toggle links with a 55-deg grip to pioneer 9x19mm, while the M1911A1 paired an enclosing dust-proof slide with a 0.278" swinging link to survive 6,000 rounds unscathed and define modern pistols.',
+    },
+  },
+  {
+    id: 'm1911_vs_g17',
+    weaponA: 'm1911',
+    weaponB: 'g17',
+    pillLabel: {
+      zh: 'M1911A1 单绞链全钢 vs Glock 17 无绞链聚合物',
+      en: 'M1911A1 Steel Link vs Glock 17 Linkless',
+    },
+    headline: {
+      zh: '跨越七十年的勃朗宁闭锁传承：1911 锻钢单绞链单动 vs 1982 聚合物开式凸轮平移击针',
+      en: '70 Years of Browning Lockup: 1911 Forged Swinging Link vs 1982 Polymer Linkless Cam',
+    },
+    verdict: {
+      zh: '加斯顿·格洛克将勃朗宁的双顶筋简化为直接卡入抛壳窗的方形膛室、以固定斜坡取代了单绞链，并以聚合物底把将容弹量翻倍至 17 发；但 M1911A1 凭借纯直线滑动单动扳机与沉稳锻钢配重，至今仍稳居手枪击发手感的至高殿堂！',
+      en: 'Gaston Glock streamlined Browning’s ribs into a squared ejection-port lock, replaced the swinging link with an open cam ramp, and doubled capacity to 17 rounds—yet the M1911A1’s linear single-action trigger remains the gold standard of handgun feel.',
+    },
+  },
+  {
+    id: 'k98k_vs_garand',
+    weaponA: 'k98k',
+    weaponB: 'garand',
+    pillLabel: {
+      zh: '毛瑟 98k 三突笋桥夹 vs M1 加兰德导气漏夹',
+      en: 'Mauser K98k Bolt vs M1 Garand Gas',
+    },
+    headline: {
+      zh: '二战步兵制式主战步枪终极交锋：德国 7.92mm 手动受控栓动 vs 美国 .30-06 八发半自动导气',
+      en: 'WWII Service Rifle Clash: German 7.92mm Mauser 98 Bolt vs U.S. .30-06 Semi-Auto Garand',
+    },
+    verdict: {
+      zh: '毛瑟 Karabiner 98k 将 1898 年三突笋防爆闭锁与全长不旋转大抓钩受控供弹推向机械可靠性巅峰；M1 加兰德则以膛口长行程导气活塞与 8 发弹夹漏夹赋予美军步兵压倒性半自动火力密度——前者铸就百年民用与狙击栓动标准，后者宣告自动装填时代不可逆转地降临！',
+      en: 'The Mauser K98k perfected triple-lug safety and non-rotating claw controlled feeding into the benchmark bolt action, whereas the M1 Garand harnessed muzzle gas and 8-round en-bloc clips to deliver overwhelming semi-automatic squad firepower.',
+    },
+  },
+  {
+    id: 'k98k_vs_awm',
+    weaponA: 'k98k',
+    weaponB: 'awm',
+    pillLabel: {
+      zh: '毛瑟 K98k 90° 受控栓动 vs AWM 60° 现代狙击',
+      en: 'Mauser K98k 90° CRF vs AWM 60° Modern Bolt',
+    },
+    headline: {
+      zh: '跨越一个世纪的旋转栓动进化：1898 90° 双前突笋+不旋转大抓钩 vs 1996 60° 六突笋推弹供弹',
+      en: 'A Century of Bolt-Action Evolution: 1898 90° Claw CRF vs 1996 60° 6-Lug Push Feed',
+    },
+    verdict: {
+      zh: '从 90° 双主突笋加后第三保险突笋的不旋转抓钩，演进至 60° 短抬行程六突笋与铝合金底盘可拆弹匣，毛瑟 98 奠定的前突笋闭锁与受控泄气基因仍深深镌刻在每一支现代远程高精度狙击步枪之中。',
+      en: 'From 90-deg twin front lugs and a full-length claw extractor to 60-deg 6-lug chassis repeaters, Paul Mauser’s front-locking, gas-vented architecture remains the DNA of modern precision rifles.',
+    },
+  },
+  {
+    id: 'mg42_vs_m249',
+    weaponA: 'mg42',
+    weaponB: 'm249',
+    pillLabel: {
+      zh: 'MG 42 双滚柱 1,200 RPM vs M249 长活塞 S 槽',
+      en: 'MG 42 1,200 RPM Roller vs M249 SAW',
+    },
+    headline: {
+      zh: '两代通用与班用机枪血脉对决：1942 冷冲压双滚柱短后坐 7.92mm vs 1984 长行程活塞 5.56mm 弹链',
+      en: 'Machine Gun Lineage: 1942 Stamped Twin-Roller 7.92mm MG 42 vs 1984 Long-Stroke 5.56mm M249 SAW',
+    },
+    verdict: {
+      zh: 'MG 42 用冷冲压钢板、5 秒快拆枪管、锥形助退双滚柱与顶盖 S 槽双向拨弹爪重新定义了现代机枪；四十余年后 FN M249 完整继承了 MG 42 的顶盖 S 槽双向拉链构型，改用 5.56 NATO 长行程导气并新增步枪弹匣应急供弹井。',
+      en: 'The MG 42 redefined automatic support via stamped sheet steel, 5-second barrel swaps, muzzle-boosted rollers, and its top-cover S-cam feed—the exact belt shuttle blueprint FN M249 inherited for 5.56 NATO with an added STANAG backup mag well.',
+    },
+  },
+  {
+    id: 'thompson_vs_vector',
+    weaponA: 'thompson',
+    weaponB: 'vector',
+    pillLabel: {
+      zh: '汤姆逊青铜布利什圆鼓 vs KRISS Super V',
+      en: 'Thompson Blish Drum vs KRISS Super V',
+    },
+    headline: {
+      zh: '跨越九十年 .45 ACP 冲锋枪巅峰对决：1928 整钢铣削 45° 布利什+50发圆鼓 vs 2009 偏轴 110° 垂直滑块',
+      en: '90 Years of .45 ACP SMGs: 1928 Milled Bronze Blish 50-Rd Drum vs 2009 Off-Axis Super V Slider',
+    },
+    verdict: {
+      zh: '同为发射重达 230 格令 .45 ACP 亚音速重弹的传奇冲锋枪：汤姆逊 M1928A1 靠 4.9 kg 铣削钢重量、青铜布利什斜槽与卡茨防跳器压稳 750 RPM 弹幕；KRISS Vector 则将后坐动量 110° 下折导入握把前方滑槽，以一半重量驯服 1,200 RPM 狂飙射速。',
+      en: 'Both tame heavy 230-gr .45 ACP automatic fire by opposite physics: Thompson relies on 4.9 kg milled steel inertia, a 45° bronze Blish lock, and Cutts jets at 750 RPM, whereas Vector redirects recoil 110° downward to master 1,200 RPM at half the mass.',
+    },
+  },
+  {
+    id: 'thompson_vs_mp5',
+    weaponA: 'thompson',
+    weaponB: 'mp5',
+    pillLabel: {
+      zh: '汤姆逊青铜布利什开膛 vs MP5 滚柱延迟闭膛',
+      en: 'Thompson Bronze Blish vs HK MP5 Roller',
+    },
+    headline: {
+      zh: '延迟闭锁冲锋枪两大经典学派：1928 磷青铜 45° 斜槽开膛 .45 vs 1966 1:4 双滚柱闭膛 9mm',
+      en: 'Delayed Blowback Schools: 1928 Open-Bolt Bronze Blish .45 vs 1966 Closed-Bolt Roller-Delayed 9mm',
+    },
+    verdict: {
+      zh: '汤姆逊以整块锻钢铣削机匣、开膛青铜布利什锁与 50 发发条螺旋鼓铸就近战火力图腾；MP5 则引入冷冲压钢机匣与闭膛击锤 1:4 滚柱楔铁延迟，将冲锋枪的首发精准度与轻量化推向反恐战术新高度。',
+      en: 'Thompson embodies solid-billet craftsmanship, open-bolt Blish delay, and 50-round clockwork suppression, while MP5 perfected stamped receivers and 1:4 closed-bolt roller leverage for surgical CQB precision.',
+    },
+  },
+  {
+    id: 'gau8_vs_m134',
+    weaponA: 'gau8',
+    weaponB: 'm134',
+    pillLabel: {
+      zh: 'GAU-8/A 30mm 复仇者 vs M134D 7.62mm 迷你炮',
+      en: 'GAU-8/A 30mm Avenger vs M134D Minigun',
+    },
+    headline: {
+      zh: '现代加特林转管兵器大小王对决：6 米 77 马力液压七管 30mm 航炮 vs 3.2 马力电驱六管 7.62mm 直升机炮',
+      en: 'Rotary Gatling Apex: 6.06 m 77-HP Hydraulic 30mm Avenger vs 3.2-HP Electric 7.62mm Minigun',
+    },
+    verdict: {
+      zh: '同出通用电气 360° 静止正弦凸轮与星形转子血统：M134D 以 28V 电机驱动六管 3,000 RPM 扫射 7.62 NATO（3.3 kJ/发）；GAU-8/A 将其等比放大至超越甲壳虫轿车的 6.06 米 1.83 吨巨兽，以 77 马力双液压马达轰出每秒 65 发 30mm 贫铀穿甲弹（单发 201 kJ——能量飙升 60 倍）！',
+      en: 'Sharing General Electric’s stationary 360° sinusoidal cam heritage, the M134D spins six 7.62 NATO barrels at 3,000 RPM (3.3 kJ/rd), whereas the 6.06 m, 1,828 kg GAU-8/A scales up to twin 77-HP hydraulic motors pouring 65 rounds/sec of 201 kJ 30mm DU API!',
+    },
+  },
+  {
+    id: 'gau8_vs_ztz99a',
+    weaponA: 'gau8',
+    weaponB: 'ztz99a',
+    pillLabel: {
+      zh: 'GAU-8/A 30mm 穿甲风暴 vs ZTZ-99A 主战坦克',
+      en: 'GAU-8/A 30mm API vs ZTZ-99A MBT',
+    },
+    headline: {
+      zh: '现代空地矛与盾的极致尺度碰撞：每秒 65 发 30mm 俯冲顶攻暴雨 vs 125mm 7.60 MJ 单发重锤与 FY-4 复合装甲',
+      en: 'Air-to-Armor Physics Duel: 3,900 RPM 30mm API Saturation vs 125mm 7.60 MJ Single-Shot & FY-4 ERA',
+    },
+    verdict: {
+      zh: '两座 1:1 真实尺度的机械巨兽同台较量：ZTZ-99A 将全部 7.60 兆焦动能浓缩于单发 1,780 m/s 125mm 钨芯长杆穿甲弹以正面对穿 700mm+ 复合主甲；GAU-8/A 则凭借 A-10 攻击机 30° 俯冲航线，在一秒内向坦克相对薄弱的顶甲与动力舱倾泻 65 发累计 13.1 兆焦的 30mm 贫铀穿甲暴雨！',
+      en: 'Two 1:1 titans of modern ordnance: ZTZ-99A concentrates 7.60 MJ into one 1,780 m/s 125mm dart defeating 700+ mm frontal composite armor, while GAU-8/A delivers 65 rounds (13.1 MJ aggregate) per second onto vulnerable roof and engine-deck armor from a diving A-10!',
     },
   },
 ];

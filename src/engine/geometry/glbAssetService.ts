@@ -637,6 +637,111 @@ const REM870_V3_METAL_PBR: PbrBindingSpec = {
   normalScale: 0.86,
 };
 
+const M1911_V3_WALNUT_PBR: PbrBindingSpec = {
+  albedoFile: 'm1911_v3_walnut_albedo.webp',
+  normalFile: 'm1911_v3_walnut_normal.webp',
+  roughnessFile: 'm1911_v3_walnut_roughness.webp',
+  normalScale: 0.92,
+};
+
+const M1911_V3_SLIDE_PBR: PbrBindingSpec = {
+  albedoFile: 'm1911_v3_slide_albedo.webp',
+  normalFile: 'm1911_v3_slide_normal.webp',
+  roughnessFile: 'm1911_v3_slide_roughness.webp',
+  normalScale: 0.88,
+};
+
+const M1911_V3_METAL_PBR: PbrBindingSpec = {
+  albedoFile: 'm1911_v3_metal_albedo.webp',
+  normalFile: 'm1911_v3_metal_normal.webp',
+  roughnessFile: 'm1911_v3_metal_roughness.webp',
+  normalScale: 0.84,
+};
+
+const K98K_V3_STOCK_PBR: PbrBindingSpec = {
+  albedoFile: 'k98k_v3_stock_albedo.webp',
+  normalFile: 'k98k_v3_stock_normal.webp',
+  roughnessFile: 'k98k_v3_stock_roughness.webp',
+  normalScale: 0.92,
+};
+
+const K98K_V3_RECEIVER_PBR: PbrBindingSpec = {
+  albedoFile: 'k98k_v3_receiver_albedo.webp',
+  normalFile: 'k98k_v3_receiver_normal.webp',
+  roughnessFile: 'k98k_v3_receiver_roughness.webp',
+  normalScale: 0.88,
+};
+
+const K98K_V3_METAL_PBR: PbrBindingSpec = {
+  albedoFile: 'k98k_v3_metal_albedo.webp',
+  normalFile: 'k98k_v3_metal_normal.webp',
+  roughnessFile: 'k98k_v3_metal_roughness.webp',
+  normalScale: 0.86,
+};
+
+const MG42_V3_SHROUD_PBR: PbrBindingSpec = {
+  albedoFile: 'mg42_v3_shroud_albedo.webp',
+  normalFile: 'mg42_v3_shroud_normal.webp',
+  roughnessFile: 'mg42_v3_shroud_roughness.webp',
+  normalScale: 0.88,
+};
+
+const MG42_V3_FURNITURE_PBR: PbrBindingSpec = {
+  albedoFile: 'mg42_v3_furniture_albedo.webp',
+  normalFile: 'mg42_v3_furniture_normal.webp',
+  roughnessFile: 'mg42_v3_furniture_roughness.webp',
+  normalScale: 0.9,
+};
+
+const MG42_V3_METAL_PBR: PbrBindingSpec = {
+  albedoFile: 'mg42_v3_metal_albedo.webp',
+  normalFile: 'mg42_v3_metal_normal.webp',
+  roughnessFile: 'mg42_v3_metal_roughness.webp',
+  normalScale: 0.85,
+};
+
+const THOMPSON_V3_WALNUT_PBR: PbrBindingSpec = {
+  albedoFile: 'thompson_v3_walnut_albedo.webp',
+  normalFile: 'thompson_v3_walnut_normal.webp',
+  roughnessFile: 'thompson_v3_walnut_roughness.webp',
+  normalScale: 0.9,
+};
+
+const THOMPSON_V3_RECEIVER_PBR: PbrBindingSpec = {
+  albedoFile: 'thompson_v3_receiver_albedo.webp',
+  normalFile: 'thompson_v3_receiver_normal.webp',
+  roughnessFile: 'thompson_v3_receiver_roughness.webp',
+  normalScale: 0.88,
+};
+
+const THOMPSON_V3_METAL_PBR: PbrBindingSpec = {
+  albedoFile: 'thompson_v3_metal_albedo.webp',
+  normalFile: 'thompson_v3_metal_normal.webp',
+  roughnessFile: 'thompson_v3_metal_roughness.webp',
+  normalScale: 0.86,
+};
+
+const GAU8_V3_EXTERIOR_PBR: PbrBindingSpec = {
+  albedoFile: 'gau8_v3_exterior_albedo.webp',
+  normalFile: 'gau8_v3_exterior_normal.webp',
+  roughnessFile: 'gau8_v3_exterior_roughness.webp',
+  normalScale: 1.05,
+};
+
+const GAU8_V3_INTERNAL_PBR: PbrBindingSpec = {
+  albedoFile: 'gau8_v3_internal_albedo.webp',
+  normalFile: 'gau8_v3_internal_normal.webp',
+  roughnessFile: 'gau8_v3_internal_roughness.webp',
+  normalScale: 0.94,
+};
+
+const GAU8_V3_DRUM_PBR: PbrBindingSpec = {
+  albedoFile: 'gau8_v3_drum_albedo.webp',
+  normalFile: 'gau8_v3_drum_normal.webp',
+  roughnessFile: 'gau8_v3_drum_roughness.webp',
+  normalScale: 1.02,
+};
+
 export const GLB_WEAPON_CONFIGS: Readonly<
   Record<WeaponId, GlbWeaponAssetConfig>
 > = {
@@ -1591,6 +1696,164 @@ export const GLB_WEAPON_CONFIGS: Readonly<
       rem870_stock_bolt: REM870_V3_METAL_PBR,
       rem870_mag_follower: REM870_V3_METAL_PBR,
       rem870_shell_carrier: REM870_V3_METAL_PBR,
+    },
+  },
+  m1911: {
+    modelFile: 'm1911.glb',
+    dynamicSpringParts: [
+      'm1911_recoil_spring',
+      'm1911_mainspring',
+      'm1911_mag_spring',
+    ],
+    pbrOverrides: {
+      m1911_grip_left: M1911_V3_WALNUT_PBR,
+      m1911_grip_right: M1911_V3_WALNUT_PBR,
+      m1911_slide: M1911_V3_SLIDE_PBR,
+      m1911_frame: M1911_V3_SLIDE_PBR,
+      m1911_mainspring_housing: M1911_V3_SLIDE_PBR,
+      m1911_grip_safety: M1911_V3_SLIDE_PBR,
+      m1911_barrel: M1911_V3_METAL_PBR,
+      m1911_barrel_link: M1911_V3_METAL_PBR,
+      m1911_barrel_bushing: M1911_V3_METAL_PBR,
+      m1911_recoil_plug: M1911_V3_METAL_PBR,
+      m1911_recoil_guide: M1911_V3_METAL_PBR,
+      m1911_firing_pin: M1911_V3_METAL_PBR,
+      m1911_extractor: M1911_V3_METAL_PBR,
+      m1911_slide_stop: M1911_V3_METAL_PBR,
+      m1911_thumb_safety: M1911_V3_METAL_PBR,
+      m1911_hammer: M1911_V3_METAL_PBR,
+      m1911_trigger: M1911_V3_METAL_PBR,
+      m1911_sear_disconnector: M1911_V3_METAL_PBR,
+      m1911_leaf_spring: M1911_V3_METAL_PBR,
+      m1911_mag_body: M1911_V3_METAL_PBR,
+      m1911_mag_follower: M1911_V3_METAL_PBR,
+    },
+  },
+  mg42: {
+    modelFile: 'mg42.glb',
+    dynamicSpringParts: [
+      'mg42_recoil_spring',
+      'mg42_buffer_spring',
+      'mg42_sear_spring',
+    ],
+    pbrOverrides: {
+      mg42_receiver_shroud: MG42_V3_SHROUD_PBR,
+      mg42_top_cover: MG42_V3_SHROUD_PBR,
+      mg42_barrel_latch: MG42_V3_SHROUD_PBR,
+      mg42_muzzle_booster: MG42_V3_SHROUD_PBR,
+      mg42_aa_sight: MG42_V3_SHROUD_PBR,
+      mg42_bipod: MG42_V3_SHROUD_PBR,
+      mg42_buttstock: MG42_V3_FURNITURE_PBR,
+      mg42_grip_frame: MG42_V3_FURNITURE_PBR,
+      mg42_ammo_drum: MG42_V3_FURNITURE_PBR,
+      mg42_feed_tray: MG42_V3_FURNITURE_PBR,
+      mg42_feed_pawl: MG42_V3_FURNITURE_PBR,
+      mg42_barrel: MG42_V3_METAL_PBR,
+      mg42_bolt_head: MG42_V3_METAL_PBR,
+      mg42_locking_rollers: MG42_V3_METAL_PBR,
+      mg42_locking_roller_left: MG42_V3_METAL_PBR,
+      mg42_locking_wedge: MG42_V3_METAL_PBR,
+      mg42_bolt_carrier: MG42_V3_METAL_PBR,
+      mg42_charging_handle: MG42_V3_METAL_PBR,
+      mg42_recoil_buffer: MG42_V3_METAL_PBR,
+      mg42_trigger: MG42_V3_METAL_PBR,
+      mg42_sear: MG42_V3_METAL_PBR,
+      mg42_ammo_belt: MG42_V3_METAL_PBR,
+    },
+  },
+  k98k: {
+    modelFile: 'k98k.glb',
+    dynamicSpringParts: [
+      'k98k_firing_pin_spring',
+      'k98k_sear_spring',
+      'k98k_mag_spring',
+    ],
+    pbrOverrides: {
+      k98k_stock: K98K_V3_STOCK_PBR,
+      k98k_handguard: K98K_V3_STOCK_PBR,
+      k98k_receiver: K98K_V3_RECEIVER_PBR,
+      k98k_trigger_guard: K98K_V3_RECEIVER_PBR,
+      k98k_mag_floorplate: K98K_V3_RECEIVER_PBR,
+      k98k_buttplate: K98K_V3_RECEIVER_PBR,
+      k98k_front_band: K98K_V3_RECEIVER_PBR,
+      k98k_rear_band: K98K_V3_RECEIVER_PBR,
+      k98k_barrel: K98K_V3_METAL_PBR,
+      k98k_front_sight: K98K_V3_METAL_PBR,
+      k98k_rear_sight: K98K_V3_METAL_PBR,
+      k98k_cleaning_rod: K98K_V3_METAL_PBR,
+      k98k_bolt_body: K98K_V3_METAL_PBR,
+      k98k_claw_extractor: K98K_V3_METAL_PBR,
+      k98k_bolt_shroud: K98K_V3_METAL_PBR,
+      k98k_flag_safety: K98K_V3_METAL_PBR,
+      k98k_firing_pin: K98K_V3_METAL_PBR,
+      k98k_trigger: K98K_V3_METAL_PBR,
+      k98k_sear: K98K_V3_METAL_PBR,
+      k98k_mag_follower: K98K_V3_METAL_PBR,
+      k98k_stripper_clip: K98K_V3_METAL_PBR,
+    },
+  },
+  thompson: {
+    modelFile: 'thompson.glb',
+    dynamicSpringParts: [
+      'thompson_recoil_spring',
+      'thompson_sear_spring',
+      'thompson_drum_spring',
+    ],
+    pbrOverrides: {
+      thompson_foregrip: THOMPSON_V3_WALNUT_PBR,
+      thompson_pistol_grip: THOMPSON_V3_WALNUT_PBR,
+      thompson_buttstock: THOMPSON_V3_WALNUT_PBR,
+      thompson_receiver: THOMPSON_V3_RECEIVER_PBR,
+      thompson_lyman_sight: THOMPSON_V3_RECEIVER_PBR,
+      thompson_lower_frame: THOMPSON_V3_RECEIVER_PBR,
+      thompson_buttplate: THOMPSON_V3_RECEIVER_PBR,
+      thompson_trigger: THOMPSON_V3_RECEIVER_PBR,
+      thompson_sear: THOMPSON_V3_RECEIVER_PBR,
+      thompson_selector_levers: THOMPSON_V3_RECEIVER_PBR,
+      thompson_mag_catch: THOMPSON_V3_RECEIVER_PBR,
+      thompson_barrel: THOMPSON_V3_METAL_PBR,
+      thompson_cutts_comp: THOMPSON_V3_METAL_PBR,
+      thompson_bolt: THOMPSON_V3_METAL_PBR,
+      thompson_blish_lock: THOMPSON_V3_METAL_PBR,
+      thompson_actuator: THOMPSON_V3_METAL_PBR,
+      thompson_hammer_pin: THOMPSON_V3_METAL_PBR,
+      thompson_buffer_pilot: THOMPSON_V3_METAL_PBR,
+      thompson_oiler: THOMPSON_V3_METAL_PBR,
+      thompson_drum_mag: THOMPSON_V3_METAL_PBR,
+      thompson_drum_rotor: THOMPSON_V3_METAL_PBR,
+      thompson_drum_rounds: THOMPSON_V3_METAL_PBR,
+    },
+  },
+  gau8: {
+    modelFile: 'gau8.glb',
+    dynamicSpringParts: [
+      'gau8_recoil_springs',
+      'gau8_buffer_spring',
+      'gau8_striker_spring',
+    ],
+    pbrOverrides: {
+      gau8_barrel_cluster: GAU8_V3_EXTERIOR_PBR,
+      gau8_barrel_clamps: GAU8_V3_EXTERIOR_PBR,
+      gau8_muzzle_clamp: GAU8_V3_EXTERIOR_PBR,
+      gau8_gun_housing: GAU8_V3_EXTERIOR_PBR,
+      gau8_recoil_mount: GAU8_V3_EXTERIOR_PBR,
+      gau8_recoil_buffers: GAU8_V3_EXTERIOR_PBR,
+      gau8_hydraulic_motors: GAU8_V3_EXTERIOR_PBR,
+      gau8_transfer_unit: GAU8_V3_EXTERIOR_PBR,
+      gau8_cam_track: GAU8_V3_INTERNAL_PBR,
+      gau8_rotor_core: GAU8_V3_INTERNAL_PBR,
+      gau8_bolt_1: GAU8_V3_INTERNAL_PBR,
+      gau8_bolt_2: GAU8_V3_INTERNAL_PBR,
+      gau8_bolt_3: GAU8_V3_INTERNAL_PBR,
+      gau8_bolt_4: GAU8_V3_INTERNAL_PBR,
+      gau8_bolt_5: GAU8_V3_INTERNAL_PBR,
+      gau8_bolt_6: GAU8_V3_INTERNAL_PBR,
+      gau8_bolt_7: GAU8_V3_INTERNAL_PBR,
+      gau8_ammo_drum: GAU8_V3_DRUM_PBR,
+      gau8_drum_rotor: GAU8_V3_DRUM_PBR,
+      gau8_ammo_belt_stack: GAU8_V3_DRUM_PBR,
+      gau8_chute_feed: GAU8_V3_DRUM_PBR,
+      gau8_chute_return: GAU8_V3_DRUM_PBR,
     },
   },
 };

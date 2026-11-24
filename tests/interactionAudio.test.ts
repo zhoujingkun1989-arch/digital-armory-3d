@@ -64,8 +64,9 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
       'g11',
       'vss',
       'an94',
+      'thompson',
     ];
-    const openBoltAutoWeapons: WeaponId[] = ['m249', 'm134'];
+    const openBoltAutoWeapons: WeaponId[] = ['m249', 'm134', 'mg42', 'gau8'];
     const semiOnlyWeapons: WeaponId[] = [
       'g17',
       'p320',
@@ -84,6 +85,8 @@ describe('Hands-On 3D Mechanical Manipulation & Waveguide Convolution Acoustics'
       'tiger1',
       'winchester1894',
       'rem870',
+      'm1911',
+      'k98k',
     ];
 
     expect(

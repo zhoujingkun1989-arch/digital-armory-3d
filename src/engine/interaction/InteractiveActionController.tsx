@@ -81,6 +81,11 @@ const WEAPON_SELECTOR_CAPABILITIES: Record<
   tiger1: SEMI_ONLY_MODES,
   winchester1894: SEMI_ONLY_MODES,
   rem870: SEMI_ONLY_MODES,
+  m1911: SEMI_ONLY_MODES,
+  mg42: OPEN_BOLT_AUTO_MODES,
+  k98k: SEMI_ONLY_MODES,
+  thompson: SELECT_FIRE_MODES,
+  gau8: OPEN_BOLT_AUTO_MODES,
 };
 
 /**
@@ -1037,6 +1042,160 @@ export const WEAPON_FIRE_CONTROL_PROFILES: Record<
       },
     },
   },
+  m1911: {
+    weaponId: 'm1911',
+    supportedModes: SEMI_ONLY_MODES,
+    mechanismSummaryZh:
+      '左置 Condition 1 拇指保险 + 虎口自动握把保险 + 纯直推单动扳机与单发断连器',
+    mechanismSummaryEn:
+      'Condition 1 Frame Thumb Safety + Automatic Tang Grip Safety + Straight Single-Action Disconnector',
+    modes: {
+      safe: {
+        mode: 'safe',
+        code: 'SAFE',
+        labelZh: '待击上锁保险 (SAFE)',
+        labelEn: 'THUMB & GRIP SAFE',
+        tooltipZh:
+          '击锤满待击时上挑拇指保险同步死锁阻铁与套筒，未握实枪柄时自动握把保险内舌物理阻断直推扳机框。',
+        tooltipEn:
+          'Upward thumb safety locks both sear and slide in Condition 1 while the unpressed grip safety blocks the trigger bow.',
+      },
+      semi: {
+        mode: 'semi',
+        code: 'FIRE',
+        labelZh: '单动半自动击发 (SEMI)',
+        labelEn: 'SINGLE-ACTION SEMI',
+        tooltipZh:
+          '握实压入握把保险并下拨拇指保险：直推扳机后移 4.2 mm 干脆释放击锤，后坐套筒压下断连器强制单发复位。',
+        tooltipEn:
+          'Depressing the grip safety and sweeping thumb safety down yields a crisp 4.2 mm straight single-action break with slide disconnector reset.',
+      },
+    },
+  },
+  mg42: {
+    weaponId: 'mg42',
+    supportedModes: OPEN_BOLT_AUTO_MODES,
+    mechanismSummaryZh: '极简纯全自动开膛待击阻铁 + 横推 S/F 物理保险栓',
+    mechanismSummaryEn:
+      'Full-Auto Only Open-Bolt Sear Catch + S/F Cross-Bolt Safety',
+    modes: {
+      safe: {
+        mode: 'safe',
+        code: 'S',
+        labelZh: '保险 (S · Sicher)',
+        labelEn: 'SAFE (S)',
+        tooltipZh: '横推保险栓至 S 位直接从物理上锁死重型开膛阻铁。',
+        tooltipEn: 'Cross-bolt pushed to S physically locks the heavy open-bolt sear.',
+      },
+      auto: {
+        mode: 'auto',
+        code: 'F',
+        labelZh: '全自动 1,200 RPM (F · Feuer)',
+        labelEn: 'FULL AUTO 1,200 RPM (F)',
+        tooltipZh:
+          '纯连发开膛循环：扣住扳机以 1,200 发/分释放双滚柱弹幕，松手即由阻铁截停散热。',
+        tooltipEn:
+          'Pure open-bolt full auto at 1,200 RPM; releasing the trigger raises the sear to vent the barrel.',
+      },
+    },
+  },
+  k98k: {
+    weaponId: 'k98k',
+    supportedModes: SEMI_ONLY_MODES,
+    mechanismSummaryZh:
+      '毛瑟三档翼形旗式尾套保险 + 双支点两道火军用扳机 + 90° 手动三突笋栓动',
+    mechanismSummaryEn:
+      'Mauser 3-Position Shroud Wing Flag Safety + Twin-Fulcrum Two-Stage Trigger + 90° Bolt',
+    modes: {
+      safe: {
+        mode: 'safe',
+        code: 'SAFE',
+        labelZh: '旗式保险右翻/竖立 (SAFE)',
+        labelEn: 'FLAG SAFETY LOCKED',
+        tooltipZh:
+          '翼形旗式保险竖直立起挡住瞄准线并顶退击针（可安全拉栓退弹与拆机），右翻 180° 则同时死锁击针与旋转枪机。',
+        tooltipEn:
+          'Vertical flag retracts the striker off the sear while permitting safe unloading; flipped right locks both striker and bolt solid.',
+      },
+      semi: {
+        mode: 'semi',
+        code: 'FIRE',
+        labelZh: '旗式保险左放单发 (FIRE)',
+        labelEn: 'BOLT SINGLE SHOT',
+        tooltipZh:
+          '翼形旗式保险向左放平解锁击针，扣过两道火硬墙击发 7.92×57mm 重尖弹，随后手抬弯拉机柄 90° 开锁并直拉 110 mm 抽抛壳。',
+        tooltipEn:
+          'Flag folded left frees the striker for two-stage ignition of 7.92×57mm, followed by a 90° bolt lift and 110 mm manual extraction.',
+      },
+    },
+  },
+  thompson: {
+    weaponId: 'thompson',
+    supportedModes: SELECT_FIRE_MODES,
+    mechanismSummaryZh: '开膛双模式阻铁摇臂 + 左侧双独立桨式快慢机与保险拨片',
+    mechanismSummaryEn:
+      'Open-Bolt Select-Fire Sear & Rocker + Twin Left-Side Paddle Levers',
+    modes: {
+      safe: {
+        mode: 'safe',
+        code: 'SAFE',
+        labelZh: '后桨保险 (SAFE)',
+        labelEn: 'SAFE (Rear Paddle)',
+        tooltipZh: '后拨片旋至 SAFE 挡死开膛主阻铁与枪机防跌落走火。',
+        tooltipEn: 'Rear paddle rotated to SAFE mechanically blocks the open-bolt sear.',
+      },
+      semi: {
+        mode: 'semi',
+        code: 'SINGLE',
+        labelZh: '前桨单发 (SINGLE)',
+        labelEn: 'SEMI (SINGLE)',
+        tooltipZh:
+          '单发断连摇臂每发后自动脱钩让阻铁升起截停枪机，实现精准半自动点射。',
+        tooltipEn:
+          'Disconnector rocker trips after each shot so the sear catches the bolt open for accurate single fire.',
+      },
+      auto: {
+        mode: 'auto',
+        code: 'FULL AUTO',
+        labelZh: '前桨连发 (FULL AUTO)',
+        labelEn: 'FULL AUTO (750 RPM)',
+        tooltipZh:
+          '快慢机顶死单发摇臂，持续扣机以 750 发/分倾泻 50 发发条大弹鼓火力。',
+        tooltipEn:
+          'Selector bypasses the disconnector for continuous 750 RPM fire fed by the 50-rd clockwork drum.',
+      },
+    },
+  },
+  gau8: {
+    weaponId: 'gau8',
+    supportedModes: OPEN_BOLT_AUTO_MODES,
+    mechanismSummaryZh:
+      'A-10 二段扳机 3,000 PSI 液压电控 + 停射自动空转清膛安全门',
+    mechanismSummaryEn:
+      'A-10 Two-Stage Hydraulic-Electric Trigger + Burst-End Clearing Sector Gate',
+    modes: {
+      safe: {
+        mode: 'safe',
+        code: 'SAFE',
+        labelZh: '机载主臂保险 (MASTER SAFE)',
+        labelEn: 'MASTER ARM SAFE',
+        tooltipZh:
+          '切断双 38.5 马力液压驱动电磁阀并关闭清膛滑门，确保停机坪勤务安全。',
+        tooltipEn:
+          'Isolates twin 38.5-HP hydraulic solenoid valves and locks the clearing sector gate safe.',
+      },
+      auto: {
+        mode: 'auto',
+        code: '3,900 RPM',
+        labelZh: '3,900 RPM 液压旋射 (BRRRT)',
+        labelEn: '3,900 RPM ROTARY',
+        tooltipZh:
+          '全压二段扳机启动双液压马达以 65 发/秒倾泻 30×173mm 贫铀穿甲弹幕，松手自动反转半圈清膛防烤燃。',
+        tooltipEn:
+          'Full trigger drives twin hydraulic motors at 65 rds/sec of 30×173mm API with automatic clearing cycle on release.',
+      },
+    },
+  },
 };
 
 function isArcheryInteractiveWeapon(
@@ -1136,6 +1295,11 @@ const EXPLICIT_WEAPON_ACTION_PARTS: Record<WeaponId, readonly string[]> = {
   ],
   winchester1894: ['win94_lever', 'win94_breech_bolt', 'win94_locking_bolt'],
   rem870: ['rem870_forend', 'rem870_action_bars', 'rem870_breech_bolt'],
+  m1911: ['m1911_slide', 'm1911_barrel', 'm1911_barrel_link'],
+  mg42: ['mg42_charging_handle', 'mg42_bolt_carrier', 'mg42_bolt_head'],
+  k98k: ['k98k_bolt_body', 'k98k_claw_extractor', 'k98k_bolt_shroud'],
+  thompson: ['thompson_actuator', 'thompson_bolt', 'thompson_blish_lock'],
+  gau8: ['gau8_rotor_core', 'gau8_barrel_cluster', 'gau8_bolt_1', 'gau8_bolt_2'],
 };
 
 const GENERIC_ACTION_PART_INCLUDE_RE =
@@ -1206,11 +1370,21 @@ export function mapManualRackToFireProgress(
   if (weaponId === 'm134' || weaponId === 'an94') {
     return 0.2 + r * 0.28;
   }
+  if (weaponId === 'm1911') {
+    return 0.3 + r * 0.27;
+  }
+  if (weaponId === 'k98k') {
+    return 0.35 + r * 0.29;
+  }
+  if (weaponId === 'mg42' || weaponId === 'thompson') {
+    return 0.28 + r * 0.3;
+  }
   if (
     weaponId === 'ztz99a' ||
     weaponId === 'm1a2' ||
     weaponId === 'leopard2a7' ||
-    weaponId === 'tiger1'
+    weaponId === 'tiger1' ||
+    weaponId === 'gau8'
   ) {
     return 0.2 + r * 0.34;
   }
@@ -1296,6 +1470,21 @@ export function computeRecoilSpringForceN(
   } else if (weaponId === 'rem870') {
     preloadN = 24;
     rateN = 22;
+  } else if (weaponId === 'm1911') {
+    preloadN = 42;
+    rateN = 34;
+  } else if (weaponId === 'mg42') {
+    preloadN = 92;
+    rateN = 84;
+  } else if (weaponId === 'k98k') {
+    preloadN = 40;
+    rateN = 34;
+  } else if (weaponId === 'thompson') {
+    preloadN = 68;
+    rateN = 58;
+  } else if (weaponId === 'gau8') {
+    preloadN = 1400;
+    rateN = 1800;
   } else if (
     weaponId === 'ztz99a' ||
     weaponId === 'm1a2' ||

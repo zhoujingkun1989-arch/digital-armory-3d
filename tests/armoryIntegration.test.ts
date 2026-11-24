@@ -415,11 +415,11 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
     expect(armoryCss).not.toContain('.schematic-watermark');
   });
 
-  it('resolves getLocalizedCatalogSpecs & resolveWeaponDisplayMeta in English with zero CJK characters across all 29 WEAPON_IDS', () => {
+  it('resolves getLocalizedCatalogSpecs & resolveWeaponDisplayMeta in English with zero CJK characters across all 34 WEAPON_IDS', () => {
     const cjkRe = /[\u4e00-\u9fff]/;
     const narrationsDir = path.resolve(__dirname, '../public/narrations');
 
-    expect(WEAPON_IDS.length).toBe(29);
+    expect(WEAPON_IDS.length).toBe(34);
 
     for (const id of WEAPON_IDS) {
       const specs = getLocalizedCatalogSpecs(id, 'en');
@@ -476,7 +476,7 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
     const cjkRe = /[\u4e00-\u9fff]/;
 
     expect(Object.keys(ATLAS_EN_STRINGS).sort()).toEqual([...WEAPON_IDS].sort());
-    expect(WEAPON_IDS.length).toBe(29);
+    expect(WEAPON_IDS.length).toBe(34);
 
     let totalSuites = 0;
     for (const weaponId of WEAPON_IDS) {
@@ -584,9 +584,9 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
           expect(s).not.toMatch(cjkRe);
         }
       }
-      expect(modal.subtitle).toContain('369');
-      expect(modal.subtitle).toContain('731');
-      expect(modal.kicker).toContain('29');
+      expect(modal.subtitle).toContain('414');
+      expect(modal.subtitle).toContain('854');
+      expect(modal.kicker).toContain('34');
     }
 
     // 2. Archery UI sub-dictionaries: completeness, zero CJK in EN, zero leftover firearm jargon
@@ -656,14 +656,14 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
     }
   });
 
-  it('synchronizes SHOWCASE_STRINGS metrics (29 / 731 / 1694 / 369) with WEAPON_IDS, plugins, audio & public/textures', async () => {
+  it('synchronizes SHOWCASE_STRINGS metrics (34 / 854 / 1980 / 414) with WEAPON_IDS, plugins, audio & public/textures', async () => {
     const texturesDir = path.resolve(__dirname, '../public/textures');
     const audioDir = path.resolve(__dirname, '../public/audio');
 
     const textureFiles = fs
       .readdirSync(texturesDir)
       .filter((f) => f.endsWith('.webp'));
-    expect(textureFiles.length).toBe(369);
+    expect(textureFiles.length).toBe(414);
 
     const countMp3Files = (dir: string): number => {
       let count = 0;
@@ -674,29 +674,29 @@ describe('Wave-2 Master Armory Integration & Bilingual UI Parity', () => {
       }
       return count;
     };
-    expect(countMp3Files(audioDir)).toBe(1694);
+    expect(countMp3Files(audioDir)).toBe(1980);
 
     let totalParts = 0;
     for (const weaponId of WEAPON_IDS) {
       const plugin = await loadWeaponPlugin(weaponId);
       totalParts += plugin.parts.length;
     }
-    expect(WEAPON_IDS.length).toBe(29);
-    expect(totalParts).toBe(731);
+    expect(WEAPON_IDS.length).toBe(34);
+    expect(totalParts).toBe(854);
 
     for (const lang of ['zh', 'en'] as const) {
       const showcase = SHOWCASE_STRINGS[lang];
       const metricValues = showcase.metrics.map((m) => m.val).join(' | ');
-      expect(metricValues).toContain('29');
-      expect(metricValues).toContain('731');
-      expect(metricValues).toContain('369');
-      expect(metricValues).toContain('1694');
+      expect(metricValues).toContain('34');
+      expect(metricValues).toContain('854');
+      expect(metricValues).toContain('414');
+      expect(metricValues).toContain('1980');
 
-      expect(showcase.hero.eyebrow).toContain('29');
-      expect(showcase.hero.eyebrow).toContain('1694');
-      expect(showcase.hero.subPartsStrong).toContain('731');
-      expect(showcase.hero.subMapsStrong).toContain('369');
-      expect(showcase.hero.subAudioStrong).toContain('1694');
+      expect(showcase.hero.eyebrow).toContain('34');
+      expect(showcase.hero.eyebrow).toContain('1980');
+      expect(showcase.hero.subPartsStrong).toContain('854');
+      expect(showcase.hero.subMapsStrong).toContain('414');
+      expect(showcase.hero.subAudioStrong).toContain('1980');
 
       const caliberText = showcase.documentary.caliberRows
         .map((r) => `${r.caliber} ${r.weaponTag} ${r.signature}`)

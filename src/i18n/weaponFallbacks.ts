@@ -962,6 +962,176 @@ export const WEAPON_EN_FALLBACKS: Record<
       'Search module / BOM code (e.g. action bars, locking block, forend, carrier, P-02)...',
     firingMilestoneLabel: 'Manual Pump Stroke',
   },
+  m1911: {
+    shortLabel: 'Colt M1911A1',
+    name: 'Colt M1911A1 U.S. Army Pistol',
+    originCountry: 'United States',
+    weaponType: 'Service Pistol',
+    statusLabel: 'V6.0 Flagship · Ready',
+    caliber: '.45 ACP (11.43×23mm)',
+    compactCaliber: '.45 ACP · 230gr FMJ',
+    actionMechanism:
+      'Browning Single-Link Tilting-Barrel Short Recoil · Dual Top Ribs · Straight Single-Action',
+    overallLengthMm: '216 mm (5.03" Government Model)',
+    barrelSpec: '127.8 mm (5.03" 6-LH 1:16" Rifled Barrel)',
+    weightKg: '1.105 kg (Empty)',
+    muzzleVelocityMs: '255 m/s (.45 ACP 230 gr FMJ-RN)',
+    effectiveRangeM: '50 m',
+    rateOfFire: 'Semi-Automatic (40–60 rpm Practical)',
+    description:
+      'John Moses Browning’s immortal 1911 service pistol (1943 Hartford wartime M1911A1): following a 6,000-round zero-malfunction trial victory, it served frontline U.S. troops for 74 years. A 0.278-inch figure-eight swinging barrel link pulls the dual-rib 5-inch barrel down 2.7 mm after 3 mm of locked recoil, paired with a straight-sliding stirrup trigger, screwless three-leaf sear spring, Condition 1 thumb safety, automatic tang grip safety, arched mainspring housing, and double-diamond walnut grips.',
+    highlights: [
+      'Browning 0.278" Swinging Barrel Link & Dual Top Radial Locking Ribs',
+      'Straight-Sliding Stirrup Trigger, Spur Hammer & Screwless 3-Leaf Spring',
+      'Frame Thumb Safety, Automatic Tang Grip Safety & Inertia Firing Pin',
+      '1943 Hartford Parkerized Rollmarks, Arched Backstrap & Walnut Grips',
+    ],
+    workbenchTitle: 'Colt M1911A1 (.45 ACP) 3D Teardown & Swinging-Link Cycle',
+    workbenchSubtitle:
+      '4 Assemblies · 24 CAD Parts · Single-Link Drop, Dual Locking Ribs & Linear Trigger',
+    cutawayLabel: 'Swinging Link & Fire Control Cutaway',
+    cutawayTitle:
+      'Switch to cutaway view and frame the 0.278" swinging barrel link, dual top ribs, straight stirrup trigger & 7-round single-stack magazine',
+    searchPlaceholder:
+      'Search module / BOM code (e.g. barrel link, bushing, hammer, grip safety, U-03)...',
+    firingMilestoneLabel: 'Swinging-Link Unlock',
+  },
+  mg42: {
+    shortLabel: 'MG 42',
+    name: 'Maschinengewehr 42 General-Purpose Machine Gun',
+    originCountry: 'Germany',
+    weaponType: 'General-Purpose MG',
+    statusLabel: 'V6.0 Flagship · Ready',
+    caliber: '7.92×57mm Mauser (8×57 IS)',
+    compactCaliber: '7.92×57mm · 1,200 RPM',
+    actionMechanism:
+      'Open-Bolt · Muzzle-Boosted 8.5mm Short Recoil · Symmetric Twin-Roller Lock · S-Cam Belt Feed',
+    overallLengthMm: '1,220 mm',
+    barrelSpec: '530 mm (4-RH 1:240 mm · 5-Sec Quick-Change)',
+    weightKg: '11.6 kg (with Zweibein 42 Bipod)',
+    muzzleVelocityMs: '755 m/s (198 gr s.S. Spitzer)',
+    effectiveRangeM: '1,000 m (Bipod) / 2,000 m (Tripod)',
+    rateOfFire: '1,200–1,500 rpm (Full-Auto Open-Bolt)',
+    description:
+      'Werner Gruner’s 1942 stamped-steel revolution (Berlin cra 1943): symmetric twin hardened locking rollers wedged into a forged barrel extension isolate 390 MPa chamber pressure from the sheet-metal shroud, while a conical muzzle booster rockets cyclic fire to 1,200 RPM alongside a 5-second hinged barrel latch and the top-cover S-cam belt feed inherited by modern NATO machine guns.',
+    highlights: [
+      'Symmetric Twin Hardened Locking Rollers & Firing-Pin Wedge',
+      'Stamped Perforated Shroud & 5-Second Hinged Quick-Change Barrel Door',
+      'Conical Muzzle Recoil Booster Driving 1,200 RPM & Downward Ejection',
+      'Top-Cover S-Cam Dual-Stage Shuttle & 50-Rd Gurttrommel 34 Drum',
+    ],
+    workbenchTitle: 'MG 42 GPMG 3D Twin-Roller Lock & S-Cam Feed Workbench',
+    workbenchSubtitle:
+      '4 Assemblies · 25 CAD Parts · Muzzle-Boosted Short Recoil, Twin Rollers & S-Cam Belt Feed',
+    cutawayLabel: 'Twin Rollers & S-Cam Cutaway',
+    cutawayTitle:
+      'Switch to cutaway view and frame the symmetric twin locking rollers, locking wedge, barrel extension, and top-cover S-cam feed shuttle',
+    searchPlaceholder:
+      'Search part name / BOM code (e.g. locking rollers, booster, barrel latch, feed pawl, B-05)...',
+    firingMilestoneLabel: 'Twin-Roller Unlock',
+  },
+  k98k: {
+    shortLabel: 'Karabiner 98k',
+    name: 'Mauser Karabiner 98k Bolt-Action Rifle',
+    originCountry: 'Germany',
+    weaponType: 'Bolt-Action Rifle',
+    statusLabel: 'V6.0 Flagship · Ready',
+    caliber: '7.92×57mm Mauser (8×57 IS)',
+    compactCaliber: '7.92×57mm · 198gr',
+    actionMechanism:
+      '90° 3-Lug Rotating Bolt · Non-Rotating Claw Extractor · 5-Rd Stripper Clip',
+    overallLengthMm: '1,110 mm (600 mm Stepped Barrel)',
+    barrelSpec: '600 mm · 4-RH 1:240mm Stepped Military Barrel',
+    weightKg: '3.92 kg (Unloaded)',
+    muzzleVelocityMs: '760 m/s (198 gr s.S. Spitzer)',
+    effectiveRangeM: '500 m (Sight Graduated 100–2,000 m)',
+    rateOfFire: '15 rpm (Manual Stripper-Clip Bolt)',
+    description:
+      'Paul Mauser’s immortal Model 98 perfected into the 1935 Karabiner 98 kurz (byf 43 Oberndorf): 600 mm stepped 4-groove barrel, large-ring forged receiver with dual front lugs plus third rear safety lug, non-rotating full-length claw extractor for controlled-round feeding, 3-position wing flag safety, laminated beechwood stock with sling slot and steel takedown disk, and 5-round brass stripper clips.',
+    highlights: [
+      '90° 3-Lug Mauser 98 Rotating Bolt & Bent Handle',
+      'Non-Rotating Full-Length Claw Controlled Feed',
+      '3-Position Wing Flag Safety & Stock Takedown Disk',
+      'Laminated Beechwood Stock & 5-Rd Brass Clip',
+    ],
+    workbenchTitle: 'Mauser Karabiner 98k 3D Bolt Kinematics & Disassembly',
+    workbenchSubtitle:
+      '4 Assemblies · 24 CAD Parts · 90° 3-Lug Lockup, Claw Extractor & 7.92×57mm Cycle',
+    cutawayLabel: 'Mauser 98 Bolt & Claw Focus',
+    cutawayTitle:
+      'Switch to cutaway and frame the 3-lug rotating bolt, non-rotating claw extractor & 3-position flag safety',
+    searchPlaceholder:
+      'Search part name / BOM code (e.g. claw extractor, flag safety, B-03)...',
+    firingMilestoneLabel: '90° Bolt Lift',
+  },
+  thompson: {
+    shortLabel: 'Thompson M1928A1',
+    name: 'Thompson M1928A1 Submachine Gun',
+    originCountry: 'United States',
+    weaponType: 'Submachine Gun',
+    statusLabel: 'V6.0 Flagship · Ready',
+    caliber: '.45 ACP (11.43×23mm)',
+    compactCaliber: '.45 ACP · 50-Rd Drum',
+    actionMechanism:
+      'Open-Bolt · 45° Inclined Bronze Blish Delayed Blowback · 50-Rd Clockwork Spiral Drum',
+    overallLengthMm: '852 mm (w/ Cutts Comp & Stock)',
+    barrelSpec: '267 mm / 10.5" (6-RH 1:406 mm · 28 Cooling Fins)',
+    weightKg: '4.9 kg (Empty) / 7.1 kg (Loaded 50-Rd Drum)',
+    muzzleVelocityMs: '285 m/s (230 gr FMJ-RN)',
+    effectiveRangeM: '150 m',
+    rateOfFire: '700–800 rpm (Semi / Full-Auto Twin Paddles)',
+    description:
+      'Brig. Gen. John T. Thompson’s iconic submachine gun (Auto-Ordnance Bridgeport M1928A1): a solid milled Du-Lite blued steel receiver houses Commander John Blish’s cast phosphor-bronze H-piece riding 45° inclined slots, paired with a 28-fin barrel, 4-slot Cutts compensator, Lyman ladder sight, American black walnut vertical foregrip, and a 9-click wind-up 50-round Type L Archimedean spiral drum.',
+    highlights: [
+      '45° Inclined Phosphor-Bronze Blish H-Lock & Top Knurled Actuator',
+      '28-Fin Cooled 10.5" Barrel, Cutts Compensator & Lyman Ladder Sight',
+      '50-Rd Type L Clockwork Drum w/ 4-Arm Archimedean Spiral Rotor',
+      'Solid Milled Billet Du-Lite Receiver & Oiled Black Walnut Furniture',
+    ],
+    workbenchTitle: 'Thompson M1928A1 3D Blish Lock & 50-Rd Drum Workbench',
+    workbenchSubtitle:
+      '4 Assemblies · 25 CAD Parts · 45° Bronze Blish Delay, Cutts Comp & Spiral Drum Cycle',
+    cutawayLabel: 'Bronze Blish & Drum Cutaway',
+    cutawayTitle:
+      'Switch to cutaway view and frame the 45° bronze Blish H-lock, bolt inertia hammer, and 50-round Type L spiral drum rotor',
+    searchPlaceholder:
+      'Search part name / BOM code (e.g. blish lock, drum rotor, cutts, foregrip, B-04)...',
+    firingMilestoneLabel: 'Bronze Blish Lift',
+  },
+  gau8: {
+    shortLabel: 'GAU-8/A Avenger',
+    name: 'General Electric GAU-8/A Avenger 30mm Autocannon',
+    originCountry: 'United States',
+    weaponType: 'Rotary Heavy Autocannon',
+    statusLabel: 'Ordnance Hall · 1:1 Ready',
+    caliber: '30×173mm (PGU-14/B API)',
+    compactCaliber: '30×173mm · 3,900 RPM',
+    actionMechanism:
+      'Twin 38.5-HP Hydraulic 7-Barrel Rotary · 360° Cam Track & 1,150-Rd Drum',
+    overallLengthMm: '6,060 mm (Complete) / 2,850 mm (Gun)',
+    barrelSpec: '2,300 mm (90.5") × 7 · 14-RH Gain-Twist',
+    weightKg: '281 kg (Gun) / 1,828 kg (Loaded)',
+    muzzleVelocityMs: '1,010 m/s',
+    effectiveRangeM: '1,220 m (Point) / 3,660 m (Max)',
+    rateOfFire: '3,900 rpm (65 rds/s)',
+    description:
+      'Six-meter General Electric 30x173mm seven-barrel rotary autocannon around which the A-10 Thunderbolt II was built: 77 HP redundant 3,000 PSI hydraulic drive, stationary 360° sinusoidal cam sleeve cycling seven titanium bolts, dual hydro-pneumatic recoil buffers taming 44.5 kN thrust, and a 1,150-round closed-loop helical drum returning every spent aluminum shell case.',
+    highlights: [
+      '7 × 2.3 m Rotary Barrels · 3,900 RPM (65 rds/s)',
+      '360° Helical Cam & 7 Phased Titanium Bolts',
+      '77 HP Twin Hydraulic Drive & 44.5 kN Recoil Mount',
+      '1,150-Rd Closed-Loop Aluminum-Case Helical Drum',
+    ],
+    workbenchTitle: 'GE GAU-8/A Avenger 30mm 1:1 Teardown & Rotary Simulation',
+    workbenchSubtitle:
+      '4 Assemblies · 25 CAD Nodes · 7-Barrel Spin, 360° Cam Wave & 1,150-Rd Helical Drum',
+    cutawayLabel: '360° Cam Track & Helical Drum',
+    cutawayTitle:
+      'Switch to live CT cutaway and inspect the 360-degree sinusoidal cam track, seven orbiting bolts, and 1,150-round helical drum',
+    searchPlaceholder:
+      'Search part name / BOM code (e.g. barrel, cam, bolt, hydraulic, drum, F-02)...',
+    firingMilestoneLabel: '30mm Cam Wave',
+  },
 };
 
 export function getLocalizedShortWeaponLabel(
@@ -995,6 +1165,11 @@ const COMPACT_ZH_CALIBER: Partial<Record<FallbackWeaponId, string>> = {
   tiger1: '88×571mmR · PzGr. 39',
   winchester1894: '.30-30 Win · 平头步枪弹',
   rem870: '12号 00鹿弹 · 泵动',
+  m1911: '.45 ACP · 230 gr',
+  mg42: '7.92×57 · 1,200 RPM',
+  k98k: '7.92×57 毛瑟重尖弹',
+  thompson: '.45 ACP · 50发圆鼓',
+  gau8: '30×173mm · 3,900 RPM',
 };
 
 export function getLocalizedCatalogSpecs(
@@ -1110,6 +1285,11 @@ const WALNUT_HARDWOOD_PART_IDS = new Set<string>([
   'win94_forend',
   'rem870_walnut_stock',
   'rem870_forend',
+  'm1911_grip_left',
+  'm1911_grip_right',
+  'thompson_foregrip',
+  'thompson_pistol_grip',
+  'thompson_buttstock',
 ]);
 
 const P08_EUROPEAN_WALNUT_PART_IDS = new Set<string>([
@@ -1139,13 +1319,46 @@ export function resolvePartMaterialLabel(
     (wid === 'python' ||
       wid === 'garand' ||
       wid === 'winchester1894' ||
-      wid === 'rem870') &&
+      wid === 'rem870' ||
+      wid === 'm1911' ||
+      wid === 'thompson') &&
     part.material === 'polymer_frame' &&
     WALNUT_HARDWOOD_PART_IDS.has(part.id)
   ) {
     return lang === 'zh'
       ? '亚麻籽油浸润北美黑胡桃实木'
       : 'Linseed-Oiled American Black Walnut Hardwood';
+  }
+  if (
+    wid === 'k98k' &&
+    (part.id === 'k98k_stock' || part.id === 'k98k_handguard')
+  ) {
+    return lang === 'zh'
+      ? '酚醛胶压战时层压榉木实木 (Schichtholz)'
+      : 'Wartime Phenolic Laminated Beechwood (Schichtholz)';
+  }
+  if (
+    wid === 'mg42' &&
+    (part.id === 'mg42_buttstock' || part.id === 'mg42_grip_frame')
+  ) {
+    return lang === 'zh'
+      ? '红褐大理石纹酚醛树脂胶木与冲压钢构 (Bakelite)'
+      : 'Marbled Phenolic Bakelite & Stamped Sheet Steel';
+  }
+  if (wid === 'thompson' && part.id === 'thompson_blish_lock') {
+    return lang === 'zh'
+      ? '精密铸造高强磷青铜 H 型布利什延迟锁块'
+      : 'Cast Phosphor-Bronze H-Shaped Blish Delay Lock';
+  }
+  if (wid === 'gau8' && part.id === 'gau8_hydraulic_motors') {
+    return lang === 'zh'
+      ? '航空级阳极钛蓝双联 3,000 PSI 液压伺服马达 (77 HP)'
+      : 'Aerospace Anodized Twin 3,000 PSI Hydraulic Drive Motors (77 HP)';
+  }
+  if (wid === 'gau8' && part.id === 'gau8_recoil_mount') {
+    return lang === 'zh'
+      ? 'A-10 机身钛合金反后坐适配座与航空机库滚轮支架'
+      : 'A-10 Titanium Recoil Adapter Mount & Hangar Service Cradle';
   }
   if (
     wid === 'p08' &&

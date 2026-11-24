@@ -86,6 +86,11 @@ ALL_WEAPON_IDS = [
     "tiger1",
     "winchester1894",
     "rem870",
+    "m1911",
+    "mg42",
+    "k98k",
+    "thompson",
+    "gau8",
 ]
 
 WEAPON_CONTEXT_HINTS: dict[str, dict[str, str]] = {

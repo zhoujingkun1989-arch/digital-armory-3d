@@ -30,6 +30,11 @@ export const WEAPON_IDS = [
   'tiger1',
   'winchester1894',
   'rem870',
+  'm1911',
+  'mg42',
+  'k98k',
+  'thompson',
+  'gau8',
 ] as const;
 
 export type WeaponId = (typeof WEAPON_IDS)[number];
@@ -43,7 +48,8 @@ export type ArmoryCategory =
   | 'shotgun'
   | 'pistol'
   | 'archery'
-  | 'armor';
+  | 'armor'
+  | 'ordnance';
 
 export type AssemblyGroupKey = 'slide' | 'frame' | 'fire_control' | 'magazine';
 
@@ -77,7 +83,9 @@ export type CaliberProfile =
   | '30_30_win'
   | '125mm_apfsds'
   | '120mm_apfsds'
-  | '88mm_pzgr39';
+  | '88mm_pzgr39'
+  | '792_mauser'
+  | '30x173_gau8';
 
 export type WeaponScaleProfile =
   | 'pistol'
@@ -275,7 +283,8 @@ export interface ArmoryWeaponItem {
     | 'sniper'
     | 'shotgun'
     | 'archery'
-    | 'armor';
+    | 'armor'
+    | 'ordnance';
   categoryCn: string;
   caliber: string;
   actionMechanism: string;

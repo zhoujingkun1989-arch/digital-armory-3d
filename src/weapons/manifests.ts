@@ -1979,6 +1979,354 @@ export const WEAPON_MANIFESTS: readonly WeaponManifest[] = [
       firingMilestoneLabel: '手动后拉泵动',
     },
   },
+  {
+    id: 'm1911',
+    orderIndex: 30,
+    shortLabel: 'Colt M1911A1',
+    caliberProfile: '45_acp',
+    atlasHeadingCn:
+      '美国柯尔特 M1911A1 军用自动手枪 2K 5-Ch Packed ORM 贴图库 (Albedo / Normal / Packed ORM)',
+    catalog: {
+      id: 'm1911',
+      bayCode: 'BAY-30',
+      modelCode: 'COLT M1911A1 U.S. ARMY · .45 ACP GOVERNMENT',
+      nameCn: '柯尔特 M1911A1 军用自动手枪',
+      subtitleEn: '.45 ACP Single-Link Short-Recoil Service Pistol',
+      originCountryCn: '美国',
+      weaponTypeCn: '半自动军用手枪',
+      category: 'pistol',
+      categoryCn: '手枪',
+      caliber: '.45 ACP (11.43×23mm)',
+      actionMechanism:
+        '勃朗宁单绞链偏移枪管短后坐 · 顶部双闭锁筋 · 直推单动火控与三重保险',
+      specs1To1: {
+        overallLengthMm: '216 mm',
+        barrelSpec: '127.8 mm (5.03") · 6左旋 1:406mm',
+        emptyWeightKg: '1.105 kg (空枪)',
+        muzzleVelocityMs: '255 m/s (230 gr FMJ-RN)',
+        effectiveRangeM: '50 m',
+        rateOfFire: '半自动 (40–60 发/分实战)',
+      },
+      assembliesCount: 4,
+      partsCount: 24,
+      firingStagesCount: 7,
+      available: true,
+      statusLabel: 'V6.0 典藏 · 可拆解',
+      description:
+        '约翰·摩西·勃朗宁巅峰传世巨作，1911 年在 6,000 发极限魔鬼耐久考核中以零故障夺魁列装美军并连续服役 74 载：采用两孔中心距仅 7.06 mm（0.278"）的“8”字形单绞链在 3 mm 闭锁短后坐后沿精确圆弧拉降枪管尾部 2.7 mm，令顶部双半圆闭锁筋顺滑脱离磷化锻钢套筒；搭配纯水平直推 U 形扳机框、一簧三用无螺钉三叉板簧、A1 弧背主簧壳与双菱格黑胡桃木护片，铸就现代半自动手枪百年黄金法典。',
+      highlights: [
+        '勃朗宁 0.278" 单绞链圆弧偏移短后坐 + 5" 枪管顶部双半圆闭锁筋',
+        '纯水平直推 U 形扳机框 + 外露宽尾击锤 + 一簧三用三叉弹簧钢片',
+        '左置 Condition 1 拇指保险 + 虎口加长尾舌自动握把保险 + 惯性击针',
+        '1943 哈特福德军用磷化铭文 + A1 弧背主簧壳与双菱格美洲黑胡桃护片',
+      ],
+    },
+    cameraPresets: {
+      armory_showcase: { pos: [9.0, 1.8, 33.0], target: [0.85, -2.8, 0] },
+      iso: { pos: [11.5, 7.0, 35.0], target: [0.85, -1.2, 0] },
+      right: { pos: [0.85, -1.0, 34.5], target: [0.85, -1.2, 0] },
+      left: { pos: [0.85, -1.0, -34.5], target: [0.85, -1.2, 0] },
+      top: { pos: [0.85, 37.5, 3.6], target: [0.85, 0, 0] },
+      cutaway_focus: { pos: [1.5, 3.0, 15.8], target: [-0.8, 0.8, 0.1] },
+      firing_view: { pos: [7.5, 4.0, 32.0], target: [1.4, 0.9, 0] },
+    },
+    workbenchMeta: {
+      badge: 'COLT 1943 · M1911A1 U.S. ARMY',
+      title: '柯尔特 M1911A1 (.45 ACP) 3D 拆解与勃朗宁单绞链偏移闭锁演示',
+      subtitle:
+        '4 大总成 · 24 核心节点 · 单绞链 53° 摆动拉降枪管、双闭锁筋脱锁、直推单动与三叉板簧模拟',
+      cutawayLabel: '单绞链闭锁与火控剖视',
+      cutawayTitle:
+        '切换至合拢透视状态并聚焦勃朗宁单绞链、双顶闭锁筋、直推扳机框与 7 发单排弹匣',
+      cutawayFocusPartId: 'm1911_barrel_link',
+      searchPlaceholder:
+        '搜索零件名 / 编号 (如 单绞链, 枪口衬套, 击锤, 握把保险, U-03)...',
+      muzzlePos: [11.6, 2.55, 0],
+      chamberGlowPos: [0.25, 2.55, 0],
+      scaleProfile: 'pistol',
+      gridY: -18.5,
+      firingMilestoneLabel: '绞链拉降开锁',
+    },
+  },
+  {
+    id: 'mg42',
+    orderIndex: 31,
+    shortLabel: 'MG 42',
+    caliberProfile: '792_mauser',
+    atlasHeadingCn:
+      '德国 MG 42 通用机枪 2K 5-Ch Packed ORM 贴图库 (Albedo / Normal / Packed ORM)',
+    catalog: {
+      id: 'mg42',
+      bayCode: 'BAY-31',
+      modelCode: 'MASCHINENGEWEHR 42 · 7.92×57MM MAUSER (cra 1943)',
+      nameCn: 'MG 42 通用机枪',
+      subtitleEn:
+        '7.92×57mm Mauser Short-Recoil Twin-Roller General-Purpose Machine Gun',
+      originCountryCn: '德国',
+      weaponTypeCn: '通用机枪',
+      category: 'lmg',
+      categoryCn: '机枪',
+      caliber: '7.92×57mm Mauser (8mm Mauser s.S.)',
+      actionMechanism:
+        '开膛待击 · 枪口助退 8.5mm 短后坐 · 对称双滚柱闭锁 · 顶盖 S 槽双向拨弹爪与下抛壳',
+      specs1To1: {
+        overallLengthMm: '1,220 mm',
+        barrelSpec: '530 mm (4 右旋膛线 · 1:240 mm · 5秒侧门快换)',
+        emptyWeightKg: '11.6 kg (含 Zweibein 42 两脚架)',
+        muzzleVelocityMs: '755 m/s (198 gr s.S. 重尖船尾弹)',
+        effectiveRangeM: '1,000 m (两脚架) / 2,000 m (三脚架)',
+        rateOfFire: '1,200–1,500 rpm (纯全自动开膛)',
+      },
+      assembliesCount: 4,
+      partsCount: 25,
+      firingStagesCount: 7,
+      available: true,
+      statusLabel: '馆藏就绪 · 可拆解/剖视',
+      description:
+        '由金属冲压专家维尔纳·格鲁纳（Grossfuss）于 1942 年定型的冷冲压钢板通用机枪鼻祖：对称双滚柱刚性短后坐闭锁配合锥形枪口助退器爆发 1,200 发/分恐怖“撕布声”射速，右侧铰接门实现 5 秒免工具快换枪管，顶盖 S 型凸轮双级拨弹机直接奠定现代西方机枪供弹范式。',
+      highlights: [
+        '对称双淬火滚柱短后坐闭锁 + 击针斜楔机械防早发',
+        '冷冲压多孔矩形散热护筒 + 右侧铰接 5 秒快换枪管锁门',
+        '锥形枪口反冲助退器驱动 1,200 RPM 极速循环与垂直下抛壳',
+        '顶盖 S 槽双级梭动拨弹爪 + 50 发 Gurttrommel 34 侧挂突击弹鼓',
+      ],
+    },
+    cameraPresets: {
+      armory_showcase: { pos: [40, 18, 84], target: [16, 0.5, 0] },
+      iso: { pos: [42, 22, 86], target: [16, 0.5, 0] },
+      right: { pos: [16, 2, 92], target: [16, 0.5, 0] },
+      left: { pos: [16, 2, -92], target: [16, 0.5, 0] },
+      top: { pos: [16, 98, 4], target: [16, 0.5, 0] },
+      cutaway_focus: { pos: [14, 5.5, 34], target: [11, 1.5, 0] },
+      firing_view: { pos: [24, 9, 44], target: [14, 1.5, 0] },
+    },
+    workbenchMeta: {
+      badge: 'BAY-31 · 7.92×57MM MAUSER · 1,200 RPM',
+      title: 'MG 42 通用机枪 3D 滚柱闭锁与 S 槽供弹工作台',
+      subtitle:
+        '4 大功能模块 · 25 个 1:1 精密构件 · 枪口助退短后坐、对称双滚柱闭锁与双级 S 槽拨弹仿真',
+      cutawayLabel: '双滚柱与S槽纵剖',
+      cutawayTitle:
+        '切换纵剖特写聚焦对称双闭锁滚柱、击针斜楔、枪管节套与顶盖 S 槽拨弹爪',
+      cutawayFocusPartId: 'mg42_locking_rollers',
+      searchPlaceholder:
+        '搜索零件 (如: 闭锁滚柱、换管门、助退器、拨弹爪、B-05)...',
+      muzzlePos: [81.0, 1.5, 0],
+      chamberGlowPos: [20.2, 1.5, 0],
+      scaleProfile: 'heavy_sniper',
+      gridY: -10.2,
+      firingMilestoneLabel: '双滚柱内缩开锁',
+    },
+  },
+  {
+    id: 'k98k',
+    orderIndex: 32,
+    shortLabel: 'Karabiner 98k',
+    caliberProfile: '792_mauser',
+    atlasHeadingCn:
+      '德国毛瑟 Karabiner 98k (byf 43) 栓动步枪 2K 5-Ch Packed ORM 贴图库 (Albedo / Normal / Packed ORM)',
+    catalog: {
+      id: 'k98k',
+      bayCode: 'BAY-32',
+      modelCode: 'MAUSER KARABINER 98k (byf 43) · 7.92×57mm IS',
+      nameCn: '毛瑟 98k 栓动步枪',
+      subtitleEn: '7.92×57mm Mauser 98 Controlled-Round Feed Service Carbine',
+      originCountryCn: '德国',
+      weaponTypeCn: '栓动步枪',
+      category: 'rifle',
+      categoryCn: '步枪',
+      caliber: '7.92×57mm Mauser (8×57 IS)',
+      actionMechanism:
+        '90° 三突笋旋转后拉枪机（前双主突笋 + 后第三保险突笋）· 全长不旋转抓钩受控供弹 · 5 发黄铜桥夹',
+      specs1To1: {
+        overallLengthMm: '1,110 mm (标准 600mm 阶梯军用枪管)',
+        barrelSpec: '600 mm · 4右旋 1:240mm 阶梯军用枪管',
+        emptyWeightKg: '3.92 kg (含层压榉木枪托与通条)',
+        muzzleVelocityMs: '760 m/s (198 gr s.S. 重尖船尾弹)',
+        effectiveRangeM: '500 m (弧形表尺标定 100–2,000 m)',
+        rateOfFire: '15 发/分 (手动桥夹栓动循环)',
+      },
+      assembliesCount: 4,
+      partsCount: 24,
+      firingStagesCount: 7,
+      available: true,
+      statusLabel: 'V6.0 典藏 · 可拆解',
+      description:
+        '保罗·毛瑟于 1898 年奠基并于 1935 年定型为步骑合一制式短步枪的百年栓动教科书（奥伯恩多夫 byf 43 型）：前双对称主闭锁突笋配后置第三保险突笋构筑 390 MPa 防爆堡垒，全长不旋转毛瑟大抓钩实现倒持亦绝不双进的受控供弹，搭配三档翼形旗式保险、5 发齐平双排桥夹弹仓与带背带穿槽及钢制拆解盘的层压榉木枪托，累计产量逾 1,460 万支。',
+      highlights: [
+        '前双主突笋 + 后第三保险突笋 · 90° 上抬弯柄开锁与预抽壳',
+        '全长不旋转毛瑟大抓钩（rx = 0）· 零双进受控供弹教科书',
+        '经典三档翼形旗式机械保险 + 防气倒灌尾套与枪托钢制拆解盘',
+        '酚醛热压层压榉木枪托 + 100–2,000m 弧形表尺与 5 发黄铜桥夹',
+      ],
+    },
+    cameraPresets: {
+      armory_showcase: { pos: [38, 12, 86], target: [10.5, -1.2, 0] },
+      iso: { pos: [32, 16, 78], target: [9.5, -1.0, 0] },
+      right: { pos: [10.5, 1.5, 88], target: [10.5, -1.0, 0] },
+      left: { pos: [10.5, 1.5, -88], target: [10.5, -1.0, 0] },
+      top: { pos: [10.5, 86, 12], target: [10.5, 0, 0] },
+      cutaway_focus: { pos: [-1.0, 4.5, 25.5], target: [-1.5, 0.2, 0] },
+      firing_view: { pos: [6.0, 5.5, 34.0], target: [1.5, 0.8, 0] },
+    },
+    workbenchMeta: {
+      badge: 'BAY-32 · 7.92×57mm MAUSER',
+      title: '毛瑟 Karabiner 98k 三维拆解与受控供弹运动学工作台',
+      subtitle:
+        '4 大模块 · 24 个 CAD 零件 · 90° 三突笋闭锁、不旋转大抓钩抽壳与 7.92×57mm 实弹仿真',
+      cutawayLabel: '毛瑟 98 枪机与大抓钩剖视',
+      cutawayTitle:
+        '切换纵剖面聚焦三突笋旋转枪机、全长不旋转抓钩抽壳钩、三档旗式保险与 5 发双排内置弹仓',
+      cutawayFocusPartId: 'k98k_bolt_body',
+      searchPlaceholder:
+        '搜索零件名称 / BOM 编号 (例如：抓钩、旗式保险、桥夹、B-03)...',
+      muzzlePos: [66.2, 1.5, 0],
+      chamberGlowPos: [8.6, 1.5, 0],
+      scaleProfile: 'rifle',
+      gridY: -12.0,
+      firingMilestoneLabel: '90°抬柄开锁',
+    },
+  },
+  {
+    id: 'thompson',
+    orderIndex: 33,
+    shortLabel: 'Thompson M1928A1',
+    caliberProfile: '45_acp',
+    atlasHeadingCn:
+      '美国汤姆逊 M1928A1 冲锋枪 2K 5-Ch Packed ORM 贴图库 (Albedo / Normal / Packed ORM)',
+    catalog: {
+      id: 'thompson',
+      bayCode: 'BAY-33',
+      modelCode: 'U.S. SUBMACHINE GUN CAL. .45 M1928A1 · AUTO-ORDNANCE',
+      nameCn: '汤姆逊 M1928A1 冲锋枪',
+      subtitleEn:
+        '.45 ACP Bronze Blish-Lock & 50-Round Clockwork Drum Submachine Gun',
+      originCountryCn: '美国',
+      weaponTypeCn: '冲锋枪',
+      category: 'smg',
+      categoryCn: '冲锋枪',
+      caliber: '.45 ACP (11.43×23mm)',
+      actionMechanism:
+        '开膛待击 · 45° 斜槽青铜 H 型布利什延迟枪机 · 顶置拉机柄 · 50 发 L 型发条螺旋圆鼓',
+      specs1To1: {
+        overallLengthMm: '852 mm (含卡茨防跳器与快拆木托)',
+        barrelSpec: '267 mm / 10.5" (6 右旋膛线 · 1:406 mm · 28 道散热鳍)',
+        emptyWeightKg: '4.9 kg (空枪) / 7.1 kg (满载 50 发圆鼓)',
+        muzzleVelocityMs: '285 m/s (230 gr FMJ-RN 重圆头弹)',
+        effectiveRangeM: '150 m',
+        rateOfFire: '700–800 rpm (半自动/全自动双拨片)',
+      },
+      assembliesCount: 4,
+      partsCount: 25,
+      firingStagesCount: 7,
+      available: true,
+      statusLabel: '馆藏就绪 · 可拆解/剖视',
+      description:
+        '由约翰·汤姆逊准将构想的二十世纪最具传奇色彩冲锋枪：整块锻钢立铣深烤蓝机匣内嵌约翰·布利什专利青铜 H 型延迟锁块、28 道径向散热鳍枪管配四槽卡茨防跳器、莱曼精密梯形照门、美洲黑胡桃木垂直前握把以及上弦 9 响的 50 发 L 型发条阿基米德螺旋大弹鼓。',
+      highlights: [
+        '铸造磷青铜 H 型布利什粘附延迟锁块沿 45° 机匣斜槽滑移',
+        '10.5 英寸 28 道精车径向散热鳍枪管 + 四槽卡茨防跳制退器',
+        '50 发 L 型发条大弹鼓：透视/剖视直击四翼转子与 .45 ACP 螺旋弹阵',
+        '整块铣削机匣、顶置滚花拉机柄、莱曼表尺与黑胡桃木指槽垂直握把',
+      ],
+    },
+    cameraPresets: {
+      armory_showcase: { pos: [26, 12, 66], target: [4, -2.2, 0] },
+      iso: { pos: [28, 16, 68], target: [4, -2.2, 0] },
+      right: { pos: [4, -1.5, 72], target: [4, -2.2, 0] },
+      left: { pos: [4, -1.5, -72], target: [4, -2.2, 0] },
+      top: { pos: [4, 74, 4], target: [4, -1.5, 0] },
+      cutaway_focus: { pos: [8, 0.5, 32], target: [4.5, -2.4, 0] },
+      firing_view: { pos: [16, 5.5, 38], target: [6, -1.2, 0] },
+    },
+    workbenchMeta: {
+      badge: 'BAY-33 · .45 ACP · BLISH LOCK & TYPE L DRUM',
+      title: '汤姆逊 M1928A1 3D 青铜布利什锁与发条圆鼓工作台',
+      subtitle:
+        '4 大功能模块 · 25 个 1:1 精密构件 · 45° 青铜布利什延迟、顶置拉机柄与 50 发螺旋弹鼓仿真',
+      cutawayLabel: '布利什锁与圆鼓纵剖',
+      cutawayTitle:
+        '切换纵剖特写聚焦青铜 H 型布利什延迟锁块、45° 斜槽与 50 发螺旋弹鼓',
+      cutawayFocusPartId: 'thompson_blish_lock',
+      searchPlaceholder:
+        '搜索零件 (如: 布利什、卡茨、散热鳍、发条转子、B-04)...',
+      muzzlePos: [46.2, 1.6, 0],
+      chamberGlowPos: [12.5, 1.6, 0],
+      scaleProfile: 'rifle',
+      gridY: -16.8,
+      firingMilestoneLabel: '青铜布利什上滑解锁',
+    },
+  },
+  {
+    id: 'gau8',
+    orderIndex: 34,
+    shortLabel: 'GAU-8/A Avenger',
+    caliberProfile: '30x173_gau8',
+    atlasHeadingCn:
+      'GE GAU-8/A 复仇者 30mm 七管航炮与螺旋弹鼓 2K 5-Ch Packed ORM 贴图图集',
+    catalog: {
+      id: 'gau8',
+      bayCode: 'BAY-34',
+      modelCode: 'GENERAL ELECTRIC GAU-8/A AVENGER · 30×173MM',
+      nameCn: '通用电气 GAU-8/A「复仇者」30mm 七管航炮',
+      subtitleEn:
+        '30×173mm 3,900 RPM Hydraulic 7-Barrel Rotary Autocannon & 1,150-Rd Drum',
+      originCountryCn: '美国',
+      weaponTypeCn: '七管重型航空机炮',
+      category: 'ordnance',
+      categoryCn: '航空重武',
+      caliber: '30×173mm (PGU-14/B API / PGU-13/B HEI)',
+      actionMechanism:
+        '双 38.5 马力 3,000 PSI 液压外驱 · 七管同轴星形转子 · 360° 螺旋凸轮槽 + 1,150 发闭环无链螺旋弹鼓',
+      specs1To1: {
+        overallLengthMm: '6,060 mm (全系统含螺旋弹鼓) / 2,850 mm (机炮本体)',
+        barrelSpec: '2,300 mm (90.5") × 7 管 · 14 膛线渐速右旋',
+        emptyWeightKg: '281 kg (炮本体) / 1,828 kg (含 1,150 发满载弹鼓)',
+        muzzleVelocityMs: '1,010 m/s (30×173mm PGU-14/B API)',
+        effectiveRangeM: '1,220 m (点装甲目标) / 3,660 m (最大直瞄)',
+        rateOfFire: '3,900 发/分 (65 发/秒 · 双液压驱动)',
+      },
+      assembliesCount: 4,
+      partsCount: 25,
+      firingStagesCount: 7,
+      available: true,
+      statusLabel: '航空重武大厅 · 1:1 可拆解',
+      description:
+        '美国通用电气（GE）围绕其量身缔造出 A-10「雷电 II」攻击机的航空重武图腾——GAU-8/A「复仇者」30×173mm 七管旋转机炮：1:1 真实工程尺度（含 1,150 发巨型螺旋弹鼓全长 6.06 米、满载重达 1.83 吨）还原七根 2.3 米冷锻炮管簇、双联 38.5 马力 3,000 PSI 高压液压马达、内嵌 360° 淬火正弦凸轮导轨与七套错相往复钛合金旋转炮闩，以及直径 876 mm 的闭环无链螺旋弹鼓与 100% 空铝壳返鼓回收通道，开启 CT 纵剖可穿透炮匣与巨鼓直击 3,900 RPM 钢铁风暴全循环！',
+      highlights: [
+        '七根 2,300 mm 冷锻重型 30mm 炮管簇 + 557 RPM 旋回 · 3,900 RPM 持续火力',
+        '360° 渗碳淬火正弦螺旋凸轮导轨（300mm 深行程）+ 七套 51.4° 错相钛合金炮闩',
+        '双 38.5 马力（77 HP）3,000 PSI 冗余液压马达 + 双液气反后坐缓冲筒驯服 44.5 kN 推力',
+        'Ø876×1,816 mm 1,150 发无链螺旋弹鼓 + 拉丝铝壳 30×173mm PGU-14/B API 与闭环空壳回收',
+      ],
+    },
+    cameraPresets: {
+      armory_showcase: { pos: [420, 155, 580], target: [22, -16, 0] },
+      iso: { pos: [380, 190, 620], target: [24, -10, 0] },
+      right: { pos: [18, 8, 760], target: [18, -12, 0] },
+      left: { pos: [18, 8, -760], target: [18, -12, 0] },
+      top: { pos: [18, 790, 80], target: [18, -6, 0] },
+      cutaway_focus: { pos: [95, 52, 240], target: [34, 4, 0] },
+      firing_view: { pos: [215, 76, 440], target: [86, 4, 0] },
+    },
+    workbenchMeta: {
+      badge: 'GE GAU-8/A AVENGER · 30×173MM 3,900 RPM',
+      title: 'GE GAU-8/A「复仇者」30mm 七管航炮 1:1 3D 剖视与旋转循环演示',
+      subtitle:
+        '4 大总成 · 25 核心节点 · 77 HP 双液压驱动、七管旋转、360° 正弦凸轮七炮闩波与 1,150 发闭环螺旋弹鼓',
+      cutawayLabel: '360° 凸轮槽与螺旋弹鼓特写',
+      cutawayTitle:
+        '切换至合拢透视状态并聚焦内嵌 360° 螺旋正弦凸轮导轨、七套钛合金旋转炮闩、七槽星形转子与 1,150 发螺旋弹鼓',
+      cutawayFocusPartId: 'gau8_cam_track',
+      searchPlaceholder:
+        '搜索零件名 / 编号 (如 炮管簇, 凸轮, 炮闩, 液压马达, 螺旋弹鼓, F-02)...',
+      muzzlePos: [320.0, 7.4, 0],
+      chamberGlowPos: [78.0, 7.4, 0],
+      scaleProfile: 'main_battle_tank',
+      gridY: -75.0,
+      firingMilestoneLabel: '30mm凸轮波',
+    },
+  },
 ];
 
 const MANIFEST_MAP: Record<WeaponId, WeaponManifest> = Object.fromEntries(
@@ -2037,6 +2385,13 @@ export function matchesArmoryCategory(
     item.id === 'tiger1' ||
     typeTag.includes('坦克') ||
     typeTag.includes('重装');
+  const isOrdnance =
+    item.category === 'ordnance' ||
+    item.id === 'gau8' ||
+    typeTag.includes('航炮') ||
+    typeTag.includes('航空重武') ||
+    typeTag.includes('航空机炮') ||
+    typeTag.includes('火炮');
 
   if (filter === 'pistol') return isPistol;
   if (filter === 'lmg') return isLmg;
@@ -2045,6 +2400,7 @@ export function matchesArmoryCategory(
   if (filter === 'shotgun') return isShotgun;
   if (filter === 'archery') return isArchery;
   if (filter === 'armor') return isArmor;
+  if (filter === 'ordnance') return isOrdnance;
   if (filter === 'assault') {
     return (
       !isPistol &&
@@ -2053,7 +2409,8 @@ export function matchesArmoryCategory(
       !isSniper &&
       !isShotgun &&
       !isArchery &&
-      !isArmor
+      !isArmor &&
+      !isOrdnance
     );
   }
   return true;

@@ -133,10 +133,18 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
       if (weaponId === 'p90' || weaponId === 'g11') {
         expect(prof.ejectionUpSign).toBe(-1);
         expect(prof.magStripOffsetCm[1]).toBeGreaterThan(0);
-      } else if (weaponId === 'm1a2' || weaponId === 'leopard2a7') {
+      } else if (
+        weaponId === 'm1a2' ||
+        weaponId === 'leopard2a7' ||
+        weaponId === 'gau8'
+      ) {
         expect(prof.ejectionUpSign).toBe(-1);
         expect(prof.magStripOffsetCm[0]).toBeLessThan(0);
-      } else if (weaponId === 'm134' || weaponId === 'tiger1') {
+      } else if (
+        weaponId === 'm134' ||
+        weaponId === 'tiger1' ||
+        weaponId === 'mg42'
+      ) {
         expect(prof.ejectionUpSign).toBe(-1);
         expect(prof.magStripOffsetCm[1]).toBeLessThan(0);
       } else if (isArcheryMalfunctionWeapon(weaponId)) {
@@ -434,8 +442,8 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
     }
   }, 45000);
 
-  it('WP-06: builds all 16 SAAMI/CIP cartridges & shotshells incl. WP-17/V5 calibers at exact 1:1 CAD height (9x19mm = 29.69 mm vs .50 BMG = 138.43 mm)', () => {
-    expect(CARTRIDGE_LAB_ORDER).toHaveLength(16);
+  it('WP-06: builds all 17 SAAMI/CIP cartridges & shotshells incl. WP-17/V5/V6 calibers at exact 1:1 CAD height (9x19mm = 29.69 mm vs .50 BMG = 138.43 mm)', () => {
+    expect(CARTRIDGE_LAB_ORDER).toHaveLength(17);
     expect(isCaliberProfile('50_bmg')).toBe(true);
     expect(isCaliberProfile('45_acp')).toBe(true);
     expect(isCaliberProfile('473_caseless')).toBe(true);
@@ -509,16 +517,21 @@ describe('Wave 2 Contracts — WP-09 Malfunctions, WP-10 Caliper & WP-06 1:1 Car
       CARTRIDGE_LAB_SPECS['9mm_para'].muzzleEnergyJ * 30
     );
 
-    // WP-18 Heavy Armor Tank Cannon Ordnance (3× 1:1 rounds: 88mm / 120mm / 125mm)
-    expect(TANK_ORDNANCE_ORDER).toHaveLength(3);
+    // WP-18 / V6.0 Heavy Armor & Aero Cannon Ordnance (4× 1:1 rounds: 30mm / 88mm / 120mm / 125mm)
+    expect(TANK_ORDNANCE_ORDER).toHaveLength(4);
     expect(isTankOrdnanceProfile('88mm_pzgr39')).toBe(true);
     expect(isTankOrdnanceProfile('120mm_apfsds')).toBe(true);
     expect(isTankOrdnanceProfile('125mm_apfsds')).toBe(true);
     expect(isTankOrdnanceProfile('556_nato')).toBe(false);
     for (const tankCal of TANK_ORDNANCE_ORDER) {
       const spec = CARTRIDGE_LAB_SPECS[tankCal];
-      expect(spec.oalMm).toBeGreaterThan(800);
-      expect(spec.muzzleEnergyJ).toBeGreaterThan(3_000_000);
+      if (tankCal === '30x173_gau8') {
+        expect(spec.oalMm).toBeGreaterThanOrEqual(280);
+        expect(spec.muzzleEnergyJ).toBeGreaterThan(190_000);
+      } else {
+        expect(spec.oalMm).toBeGreaterThan(800);
+        expect(spec.muzzleEnergyJ).toBeGreaterThan(3_000_000);
+      }
       for (const cutaway of [true, false]) {
         const bundle = getCartridgeLabMeshBundle(tankCal, cutaway);
         const caseBox = assertFiniteGeometry(

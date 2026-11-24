@@ -10,17 +10,17 @@ import {
   type MaterialKind,
 } from '../weapons/types';
 
-const VAULT_EXHIBIT_COUNT = WEAPON_IDS.length; // 29
-const VAULT_EXHIBIT_ZH = '二十九';
-const VAULT_PARTS_TOTAL = 731;
-const VAULT_TEXTURES_TOTAL = 369;
-const VAULT_SUITES_TOTAL = 86;
-const VAULT_AUDIO_TOTAL = 1694;
-const LAB_CALIBER_TOTAL = 16;
-const LAB_CALIBER_ZH = '十六';
-const TANK_ORDNANCE_TOTAL = 3;
-const ORDNANCE_TOTAL = LAB_CALIBER_TOTAL + TANK_ORDNANCE_TOTAL; // 19
-const BALLISTICS_PROFILES_TOTAL = 21;
+const VAULT_EXHIBIT_COUNT = WEAPON_IDS.length; // 34
+const VAULT_EXHIBIT_ZH = '三十四';
+const VAULT_PARTS_TOTAL = 854;
+const VAULT_TEXTURES_TOTAL = 414;
+const VAULT_SUITES_TOTAL = 101;
+const VAULT_AUDIO_TOTAL = 1980;
+const LAB_CALIBER_TOTAL = 17;
+const LAB_CALIBER_ZH = '十七';
+const TANK_ORDNANCE_TOTAL = 4;
+const ORDNANCE_TOTAL = LAB_CALIBER_TOTAL + TANK_ORDNANCE_TOTAL; // 21
+const BALLISTICS_PROFILES_TOTAL = 23;
 
 export interface UiDictionary {
   watermark: string;
@@ -823,6 +823,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         pistol: '手枪 / 转轮',
         archery: '复合弓 / 弩',
         armor: '重装甲大厅',
+        ordnance: '航空重武',
       },
       showcaseBtn: '产品宣传页',
       showcaseTitle: '打开项目官方宣传与架构展示主页',
@@ -1714,6 +1715,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         pistol: 'Pistol / Revolver',
         archery: 'Bow / Crossbow',
         armor: 'Heavy Armor',
+        ordnance: 'Heavy Ordnance',
       },
       showcaseBtn: 'Showcase',
       showcaseTitle: 'Open official product & engineering showcase page',

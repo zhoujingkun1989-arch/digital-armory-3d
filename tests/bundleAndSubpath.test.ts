@@ -371,7 +371,7 @@ describe('Bundle Code-Splitting, VITE_BASE_PATH Subpath & HD Poster Studio Contr
 
   it('generates valid poster filenames, metrology, ballistics & scannable ISO 18004 QR matrices for all 29 exhibits (16:9 & 4:5, S/A/B/C rank seals)', () => {
     const ranks: (PosterArmorerRank | null)[] = ['S', 'A', 'B', 'C', null];
-    expect(WEAPON_IDS).toHaveLength(29);
+    expect(WEAPON_IDS).toHaveLength(34);
 
     WEAPON_IDS.forEach((weaponId, idx) => {
       expect(buildPosterFilename(weaponId)).toBe(
