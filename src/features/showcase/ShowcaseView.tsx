@@ -167,6 +167,9 @@ export const ShowcaseView: React.FC = () => {
   const openMonographModal = useAppStore((s) => s.openMonographModal);
   const openCartridgeLab = useAppStore((s) => s.openCartridgeLab);
   const openExternalBallistics = useAppStore((s) => s.openExternalBallistics);
+  const openArmorPenetrationModal = useAppStore(
+    (s) => s.openArmorPenetrationModal
+  );
   const openPosterModal = useAppStore((s) => s.openPosterModal);
 
   const s = SHOWCASE_STRINGS[lang];
@@ -544,6 +547,16 @@ export const ShowcaseView: React.FC = () => {
             >
               <Compass size={14} aria-hidden="true" />
               <span>{s.hero.ctaBallistics}</span>
+            </button>
+
+            <button
+              type="button"
+              className="showcase-cta-ghost"
+              onClick={() => openArmorPenetrationModal()}
+              title={s.hero.ctaArmorTheaterTitle}
+            >
+              <Shield size={14} aria-hidden="true" />
+              <span>{s.hero.ctaArmorTheater}</span>
             </button>
 
             <button
@@ -1063,7 +1076,7 @@ export const ShowcaseView: React.FC = () => {
           </div>
         </section>
 
-        {/* SECTION 3: 13-EXHIBIT MASTER ARSENAL MATRIX */}
+        {/* SECTION 3: 34-EXHIBIT 10-HALL MASTER ARSENAL MATRIX */}
         <section id="arsenal" className="showcase-section showcase-section-alt">
           <div className="showcase-container">
             <div className="section-header">

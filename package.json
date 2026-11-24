@@ -1,7 +1,7 @@
 {
   "name": "digital-armory-3d",
-  "version": "5.0.0",
-  "description": "Browser-Native Open-Source 3D Firearms, Archery & Heavy Armor Mechanical Museum & Interactive Engineering Encyclopedia (29 Exhibits: 23 Legendary Firearms + 2 Compound Archery + 4 1:1 Main Battle Tanks ZTZ-99A, M1A2 SEP v3, Leopard 2A7V & Tiger I 131; 731 Blender 5.2 Draco GLB + Dynamic CSG Parts, 369 2K/4K 5-Ch ORM WebP Maps, 1,694 Charon Gemini TTS Voiceovers, 16+3 1:1 Ordnance Cutaways, 1,000m RK4 External Ballistics & DOPE Lab, 1:1 Composite Armor Penetration Lab, Linked Dual-Viewport Split Showdown, Armorer Blind Qualification & Speedrun Leaderboard, 9x9x9 Mechanism Showdown, Cmd+K Palette, 3-Axis Live CT Cutaway, HD 3D Share Poster Studio & 29/29 Cycles 17-Plate Monograph Print Studio)",
+  "version": "6.0.0",
+  "description": "Browser-Native Open-Source 3D Firearms, Archery, Heavy Armor & Aero Ordnance Mechanical Museum & Interactive Engineering Encyclopedia (34 Exhibits / 10 Halls: 27 Legendary Firearms incl. M1911A1, MG 42, Mauser K98k & Thompson M1928A1 + 2 Compound Archery + 4 1:1 Main Battle Tanks + 1:1 GE GAU-8/A Avenger 30mm Rotary Autocannon; 854 Blender 5.2 Draco GLB + Dynamic CSG Parts, 414 2K/4K 5-Ch ORM WebP Maps across 101 Suites, 1,980 Charon Gemini TTS Voiceovers, 3D Composite Armor Penetration Cutaway Theater, 3D 1,000m Firing Range & Bullet-Cam across 23 RK4 Profiles, Physically Coupled Modular Optics & Muzzle Bench, 17+4 1:1 Ordnance Cutaways, Live 3D Split-Screen Showdown, 9x9x9 Mechanism Showdown with 30 Rivalries, Cmd+K Palette, Tri-Axial CT Cutaway & 3D Slice Box, KTX2/CDN/1080p Visual QA Gate, HD 3D Share Poster Studio & 34/34 Cycles 340-Plate Monograph Print Studio)",
   "license": "MIT",
   "type": "module",
   "repository": {
