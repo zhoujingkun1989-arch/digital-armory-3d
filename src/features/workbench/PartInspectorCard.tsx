@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   BookOpen,
+  Check,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  ClipboardCopy,
   Crosshair,
   Focus,
   Gauge,
@@ -40,6 +42,7 @@ import {
   resolvePartEngineeringRole,
 } from '../../engine/materials/engineeringRoles';
 import { isArcheryWeapon } from '../../engine/physics/armoryPhysics';
+import { formatWeaponPartTechDossierMarkdown } from '../../engine/utils/techDossierMarkdown';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import {
   resolveFiringPhaseText,
@@ -101,6 +104,36 @@ const RIFLING_KIND_LABELS: Readonly<
 const BARREL_PART_EN_RE = /barrel|bore|chamber|tube|cannon|gun|muzzle/i;
 const BARREL_PART_ZH_RE = /枪管|炮管|身管|内膛|弹膛|主炮/;
 const INSPECTOR_CJK_RE = /[\u3400-\u9fff\u3000-\u303f\uff00-\uffef]/;
+const DOSSIER_COPY_RESET_MS = 2200;
+
+async function copyDossierTextToClipboard(text: string): Promise<boolean> {
+  if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      // Fall through to legacy textarea execCommand fallback
+    }
+  }
+  if (typeof document !== 'undefined' && document.body) {
+    try {
+      const textarea = document.createElement('textarea');
+      textarea.value = text;
+      textarea.setAttribute('readonly', '');
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      textarea.style.pointerEvents = 'none';
+      document.body.appendChild(textarea);
+      textarea.select();
+      const copied = document.execCommand('copy');
+      document.body.removeChild(textarea);
+      return copied;
+    } catch {
+      return false;
+    }
+  }
+  return false;
+}
 
 export function resolvePartInspectorSecondaryTitle(params: {
   lang: LanguageCode;
@@ -224,7 +257,17 @@ export const PartInspectorCard: React.FC<PartInspectorCardProps> = ({
   const activateCutawayFocus = useAppStore((s) => s.activateCutawayFocus);
 
   const [mobileFiringExpanded, setMobileFiringExpanded] = useState(false);
+  const [copiedSignature, setCopiedSignature] = useState<string | null>(null);
+  const copyResetTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [, setGeoTick] = useState(0);
+  useEffect(() => {
+    return () => {
+      if (copyResetTimerRef.current !== null) {
+        clearTimeout(copyResetTimerRef.current);
+        copyResetTimerRef.current = null;
+      }
+    };
+  }, []);
   useEffect(() => {
     return subscribeGeometryStatus((changedWeaponId) => {
       if (changedWeaponId === activeWeaponId) {
@@ -469,6 +512,39 @@ export const PartInspectorCard: React.FC<PartInspectorCardProps> = ({
 
   const handleTriggerBoreCutaway = () => {
     activateBoreRiflingCutaway();
+  };
+
+  const activeCopySignature = `${activeWeaponId}:${part.id}:${lang}`;
+  const dossierCopied = copiedSignature === activeCopySignature;
+
+  const handleCopyTechDossier = () => {
+    const shareUrl =
+      typeof window !== 'undefined' ? window.location.href : undefined;
+    const markdown = formatWeaponPartTechDossierMarkdown({
+      weaponId: activeWeaponId,
+      partId: part.id,
+      lang,
+      shareUrl,
+      partOverride: {
+        part,
+        groupTitle,
+        materialLabel,
+        engineeringNote: localizedPartNarration?.overview ?? fallbackDescription,
+        cadEnvelopeMm: cachedGeo ? cadEnvelopeLabel : undefined,
+      },
+    });
+    void copyDossierTextToClipboard(markdown).then((ok) => {
+      if (!ok) return;
+      playWorkbenchFoley('preset_detent');
+      setCopiedSignature(activeCopySignature);
+      if (copyResetTimerRef.current !== null) {
+        clearTimeout(copyResetTimerRef.current);
+      }
+      copyResetTimerRef.current = setTimeout(() => {
+        copyResetTimerRef.current = null;
+        setCopiedSignature(null);
+      }, DOSSIER_COPY_RESET_MS);
+    });
   };
 
   const trackKey = `part:${activeWeaponId}:${lang}:${part.id}`;
@@ -858,6 +934,48 @@ export const PartInspectorCard: React.FC<PartInspectorCardProps> = ({
           <Gauge size={13} aria-hidden="true" />
           <span>{lang === 'en' ? 'Recoil Lab' : '后坐物理'}</span>
         </button>
+      </div>
+
+      <div className="inspector-copy-dossier-row">
+        <button
+          type="button"
+          className={`inspector-copy-dossier-btn ${dossierCopied ? 'is-copied' : ''}`}
+          data-testid="inspector-copy-dossier-btn"
+          onClick={handleCopyTechDossier}
+          title={
+            lang === 'en'
+              ? 'Copy Smithsonian Markdown engineering specification sheet for this exhibit & selected component'
+              : '一键复制当前展品与所选零件的史密森尼式 Markdown 工程技术规格卡'
+          }
+        >
+          {dossierCopied ? (
+            <Check size={13} aria-hidden="true" />
+          ) : (
+            <ClipboardCopy size={13} aria-hidden="true" />
+          )}
+          <span>
+            {dossierCopied
+              ? lang === 'en'
+                ? 'Copied Markdown Spec ✓'
+                : '已复制 Markdown 工程卡 ✓'
+              : lang === 'en'
+                ? 'Copy Tech Dossier'
+                : '复制工程卡'}
+          </span>
+        </button>
+        <span
+          className="inspector-copy-dossier-status"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          data-testid="inspector-copy-dossier-status"
+        >
+          {dossierCopied
+            ? lang === 'en'
+              ? 'Copied Markdown Spec ✓'
+              : '已复制 Markdown 工程卡 ✓'
+            : ''}
+        </span>
       </div>
 
       <div className="inspector-actions">
