@@ -13,13 +13,16 @@
 
 .tex-modal-card {
   width: min(1140px, 100%);
+  max-width: 100%;
   max-height: calc(100vh - 40px);
   overflow-y: auto;
+  overflow-x: clip;
   padding: 18px 20px 20px;
   border-radius: 16px;
   background: var(--surface-glass-strong);
   border: 1px solid var(--border-strong);
   box-shadow: var(--shadow-modal);
+  box-sizing: border-box;
 }
 
 .tex-modal-header {
@@ -704,6 +707,121 @@
   color: #fbbf24;
 }
 
+/* ==================== Archival Live Texture Pipeline & 4K/KTX2 Telemetry Banner ==================== */
+.tex-telemetry-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 12px;
+  padding: 10px 13px;
+  border-radius: 10px;
+  background: linear-gradient(
+    90deg,
+    rgba(14, 165, 233, 0.1) 0%,
+    rgba(245, 158, 11, 0.08) 100%
+  );
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  border-left: 3px solid var(--color-accent-cyan);
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.tex-telemetry-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+}
+
+.tex-telemetry-kicker {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-accent-cyan);
+}
+
+.tex-telemetry-inventory {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.tex-telemetry-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.tex-telemetry-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3.5px 9px;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--color-text-secondary);
+}
+
+.tex-telemetry-pill.is-codec {
+  background: rgba(56, 189, 248, 0.14);
+  border-color: rgba(56, 189, 248, 0.34);
+  color: var(--color-accent-cyan-text);
+}
+
+.tex-telemetry-pill.is-ktx2 {
+  background: rgba(139, 92, 246, 0.14);
+  border-color: rgba(139, 92, 246, 0.34);
+  color: #c4b5fd;
+}
+
+.tex-telemetry-pill.is-ktx2.is-gpu-ready {
+  background: rgba(16, 185, 129, 0.16);
+  border-color: rgba(16, 185, 129, 0.42);
+  color: #34d399;
+}
+
+[data-theme='light'] .tex-telemetry-banner {
+  background: linear-gradient(90deg, #f0f9ff 0%, #fffbeb 100%);
+  border-color: #bae6fd;
+  border-left-color: #0284c7;
+}
+
+[data-theme='light'] .tex-telemetry-kicker {
+  color: #0369a1;
+}
+
+[data-theme='light'] .tex-telemetry-inventory {
+  color: #0f172a;
+}
+
+[data-theme='light'] .tex-telemetry-pill.is-codec {
+  background: #e0f2fe;
+  border-color: #7dd3fc;
+  color: #075985;
+}
+
+[data-theme='light'] .tex-telemetry-pill.is-ktx2 {
+  background: #ede9fe;
+  border-color: #c4b5fd;
+  color: #5b21b6;
+}
+
+[data-theme='light'] .tex-telemetry-pill.is-ktx2.is-gpu-ready {
+  background: #d1fae5;
+  border-color: #6ee7b7;
+  color: #065f46;
+}
+
 [data-theme='light'] .tex-tier-pill.is-4k.active,
 [data-theme='light'] .tex-result-chip.is-4k .tex-res-tag,
 [data-theme='light'] .tex-pipe-badge.is-4k,
@@ -729,12 +847,15 @@
 @media (max-width: 768px) {
   .tex-modal-backdrop {
     padding: 8px;
+    overflow-x: clip;
   }
 
   .tex-modal-card {
     max-height: calc(100vh - 16px);
     padding: 12px 12px 14px;
     border-radius: 12px;
+    max-width: 100%;
+    overflow-x: clip;
   }
 
   .tex-modal-header {
@@ -749,7 +870,31 @@
 
   .tex-search-input-wrap {
     max-width: none;
+    min-width: 0;
+    width: 100%;
     flex: 1 1 100%;
+  }
+
+  .tex-search-input {
+    min-height: 36px;
+  }
+
+  .tex-weapon-pill,
+  .tex-tier-pill,
+  .tex-result-chip,
+  .tex-reset-search-btn,
+  .tex-search-clear-btn,
+  .tex-live-toggle,
+  .tex-close-btn,
+  .tex-suite-tab,
+  .tex-download-link {
+    min-height: 34px;
+    min-width: 34px;
+  }
+
+  .tex-telemetry-head {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
   .tex-suite-tabs {
@@ -760,5 +905,13 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 5px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tex-modal-card,
+  .tex-modal-card * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 }
