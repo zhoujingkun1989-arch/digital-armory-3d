@@ -4,6 +4,7 @@ import {
   triggerSlowMoCutawayCinema,
 } from '../../app/useUrlStateSync';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
+import { ENGINEERING_GLOSSARY_TERMS } from '../../engine/encyclopedia/engineeringGlossary';
 import {
   ARMORY_WEAR_PRESETS,
   resolveWearPresetFromLevel,
@@ -28,11 +29,17 @@ import {
 import type { WeaponId, WeaponPartSpec } from '../../weapons/types';
 import { queueMechanismShowdownLaunch } from '../armory/mechanismShowdownSpecs';
 
-export type CommandPaletteGroupId = 'weapons' | 'parts' | 'labs' | 'actions';
+export type CommandPaletteGroupId =
+  | 'weapons'
+  | 'parts'
+  | 'principles'
+  | 'labs'
+  | 'actions';
 
 export type CommandPaletteIconKey =
   | 'weapon'
   | 'part'
+  | 'principle'
   | 'armory'
   | 'showcase'
   | 'cartridge'
@@ -95,6 +102,7 @@ export interface CommandPaletteBuildContext {
 export const COMMAND_GROUP_ORDER: readonly CommandPaletteGroupId[] = [
   'weapons',
   'parts',
+  'principles',
   'labs',
   'actions',
 ];
@@ -628,6 +636,60 @@ export function buildCommandPaletteItems(
       execute: () => {
         playWorkbenchFoley('part_select');
         useAppStore.getState().focusWorkbenchPart(part.id);
+      },
+    });
+  }
+
+  // 2b. Authoritative 28-Term Mechanical Engineering Glossary (instant cross-exhibit jumps)
+  const manifestById = new Map(WEAPON_MANIFESTS.map((m) => [m.id, m]));
+  for (const term of ENGINEERING_GLOSSARY_TERMS) {
+    const flagshipId = term.relatedWeaponIds[0];
+    const flagshipManifest = manifestById.get(flagshipId);
+    const flagshipShort =
+      lang === 'en'
+        ? WEAPON_EN_FALLBACKS[flagshipId].shortLabel
+        : (flagshipManifest?.shortLabel ?? flagshipId.toUpperCase());
+
+    const relatedSearchTokens: string[] = [];
+    for (const relId of term.relatedWeaponIds) {
+      const m = manifestById.get(relId);
+      const fb = WEAPON_EN_FALLBACKS[relId];
+      relatedSearchTokens.push(relId, fb.shortLabel, fb.name);
+      if (m) {
+        relatedSearchTokens.push(m.shortLabel, m.catalog.nameCn);
+      }
+    }
+
+    items.push({
+      id: `principle:${term.id}`,
+      group: 'principles',
+      icon: 'principle',
+      title: lang === 'en' ? term.termEn : term.termZh,
+      subtitle: lang === 'en' ? term.summaryEn : term.summaryZh,
+      codeBadge: flagshipShort,
+      statusBadge: lang === 'en' ? 'Principle' : '机械原理',
+      statusTone: 'amber',
+      weaponId: flagshipId,
+      primaryFields: [
+        term.termEn,
+        term.termZh,
+        term.id.replace(/_/g, ' '),
+      ],
+      secondaryFields: [
+        term.summaryEn,
+        term.summaryZh,
+        'glossary',
+        'principle',
+        'encyclopedia',
+        'mechanism',
+        '原理',
+        '词典',
+        '百科',
+        ...relatedSearchTokens,
+      ],
+      execute: () => {
+        playWorkbenchFoley('preset_detent');
+        useAppStore.getState().enterWorkbench(flagshipId, 'explode');
       },
     });
   }
@@ -1951,6 +2013,7 @@ export interface FilterCommandPaletteOptions {
 const DEFAULT_EMPTY_CAPS: Record<CommandPaletteGroupId, number> = {
   weapons: WEAPON_MANIFESTS.length,
   parts: 8,
+  principles: 6,
   labs: 11,
   actions: 12,
 };
@@ -1973,6 +2036,7 @@ export function filterCommandPaletteItems(
   > = {
     weapons: [],
     parts: [],
+    principles: [],
     labs: [],
     actions: [],
   };
@@ -2010,9 +2074,15 @@ export function filterCommandPaletteItems(
 
     const sliced = trimmed ? list : list.slice(0, caps[groupId]);
     const groupItems = sliced.map((entry) => entry.item);
+    const groupLabel =
+      groupId === 'principles'
+        ? lang === 'en'
+          ? 'Engineering Principles'
+          : '机械原理词典'
+        : str.modal.groups[groupId];
     groups.push({
       id: groupId,
-      label: str.modal.groups[groupId],
+      label: groupLabel,
       items: groupItems,
     });
     for (const item of groupItems) {

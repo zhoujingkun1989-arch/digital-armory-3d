@@ -1,5 +1,7 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import {
+  ArrowUpRight,
+  BookMarked,
   ChevronLeft,
   ChevronRight,
   Clock,
@@ -8,12 +10,21 @@ import {
   History,
   Layers,
   Play,
+  RotateCcw,
+  Search,
   Sparkles,
   X,
 } from 'lucide-react';
 import { useDialogAccessibility } from '../../app/useDialogAccessibility';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
-import { getLocalizedShortWeaponLabel } from '../../i18n/weaponFallbacks';
+import {
+  ENGINEERING_GLOSSARY_TERMS,
+  type EngineeringGlossaryTerm,
+} from '../../engine/encyclopedia/engineeringGlossary';
+import {
+  getLocalizedShortWeaponLabel,
+  WEAPON_EN_FALLBACKS,
+} from '../../i18n/weaponFallbacks';
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
 import {
@@ -37,10 +48,38 @@ import {
 } from './historyTimelineSpecs';
 import '../../styles/timeline-museum.css';
 
+export type TimelineModalTab = 'timeline' | 'glossary';
+
 export interface HistoryTimelineModalProps {
   onClose: () => void;
   initialEraId?: TimelineEraId;
   initialTourId?: TimelineTourId | null;
+  initialTab?: TimelineModalTab;
+  initialGlossaryQuery?: string;
+}
+
+/**
+ * Pure bilingual filter over all 28 engineering glossary terms, matching term
+ * titles, physics explanations, canonical IDs, and linked vault exhibit names.
+ */
+export function filterEngineeringGlossaryTerms(
+  query: string
+): readonly EngineeringGlossaryTerm[] {
+  const normalized = query.trim().toLowerCase();
+  if (!normalized) return ENGINEERING_GLOSSARY_TERMS;
+  const tokens = normalized.split(/\s+/).filter(Boolean);
+  return ENGINEERING_GLOSSARY_TERMS.filter((term) => {
+    const weaponHaystack = term.relatedWeaponIds
+      .map((wid) => {
+        const m = getWeaponManifest(wid);
+        const fb = WEAPON_EN_FALLBACKS[wid];
+        return `${wid} ${m.shortLabel} ${m.catalog.nameCn} ${fb.shortLabel} ${fb.name}`;
+      })
+      .join(' ');
+    const haystack =
+      `${term.id.replace(/_/g, ' ')} ${term.termZh} ${term.termEn} ${term.summaryZh} ${term.summaryEn} ${weaponHaystack}`.toLowerCase();
+    return tokens.every((tok) => haystack.includes(tok));
+  });
 }
 
 export const TIMELINE_STRINGS = {
@@ -65,6 +104,16 @@ export const TIMELINE_STRINGS = {
     noAncestors: '原始独立开山专利结构',
     inspect3d: '进入 3D 拆解台',
     compare3d: '启动双屏 3D 对比',
+    tabTimeline: `演化时间轴 (${MUSEUM_TIMELINE_NODE_COUNT})`,
+    tabGlossary: `原理词典 (${ENGINEERING_GLOSSARY_TERMS.length})`,
+    tabsAria: '切换演化时间轴与机械原理百科词典',
+    glossarySearchAria: '检索 28 项机械原理词条与关联馆藏',
+    glossarySearchPlaceholder: '搜索原理、闭锁机构或展品 (如 滚柱、布利什、尾翼、MG 42)...',
+    glossaryClearSearch: '清空检索词',
+    glossaryEmptyTitle: '未找到匹配的机械原理词条',
+    glossaryResetSearch: '显示全部 28 项原理',
+    glossaryExhibitsCount: (n: number) => `${n} 款关联馆藏`,
+    glossaryCompareLabel: '一键跳转 3D 拆解',
   },
   en: {
     badge: 'MECHANICAL EVOLUTION & PATENT ARCHIVE',
@@ -87,6 +136,18 @@ export const TIMELINE_STRINGS = {
     noAncestors: 'Foundational Patent Architecture',
     inspect3d: 'Inspect in 3D',
     compare3d: '3D Split-Compare',
+    tabTimeline: `Patent Timeline (${MUSEUM_TIMELINE_NODE_COUNT})`,
+    tabGlossary: `Glossary (${ENGINEERING_GLOSSARY_TERMS.length})`,
+    tabsAria: 'Switch between Patent Timeline and Engineering Glossary',
+    glossarySearchAria:
+      'Search 28 mechanical engineering principles and linked exhibits',
+    glossarySearchPlaceholder:
+      'Search principles, lockups, or exhibits (e.g. blish, roller, sabot, ARGO)...',
+    glossaryClearSearch: 'Clear glossary search',
+    glossaryEmptyTitle: 'No engineering principles match this query',
+    glossaryResetSearch: 'Show All 28 Principles',
+    glossaryExhibitsCount: (n: number) => `${n} Exhibits`,
+    glossaryCompareLabel: 'Inspect in 3D Vault',
   },
 } as const;
 
@@ -113,6 +174,8 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
   onClose,
   initialEraId = 'all',
   initialTourId = null,
+  initialTab = 'timeline',
+  initialGlossaryQuery = '',
 }) => {
   const titleId = useId();
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -124,6 +187,8 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
   const setSectionCut = useAppStore((s) => s.setSectionCut);
   const openSplitShowdown = useAppStore((s) => s.openSplitShowdown);
 
+  const [activeTab, setActiveTab] = useState<TimelineModalTab>(initialTab);
+  const [glossaryQuery, setGlossaryQuery] = useState(initialGlossaryQuery);
   const [selectedEra, setSelectedEra] = useState<TimelineEraId>(initialEraId);
   const [selectedLineage, setSelectedLineage] = useState<
     TimelineLineageId | 'all'
@@ -142,6 +207,10 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
   const ui = TIMELINE_STRINGS[lang];
   const isZh = lang === 'zh';
   const eraCounts = useMemo(() => getTimelineEraCounts(), []);
+  const filteredGlossaryTerms = useMemo(
+    () => filterEngineeringGlossaryTerms(glossaryQuery),
+    [glossaryQuery]
+  );
 
   useDialogAccessibility({
     isOpen: true,
@@ -297,7 +366,159 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
         </header>
 
         <div className="timeline-body">
-          {/* Interactive Historical Era Filter Strip */}
+          {/* Segmented Modal View Switch: Patent Timeline vs. 28-Term Engineering Glossary */}
+          <div
+            className="timeline-mode-tabs"
+            role="tablist"
+            aria-label={ui.tabsAria}
+            data-testid="timeline-modal-tabs"
+          >
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === 'timeline'}
+              className={`timeline-mode-tab ${activeTab === 'timeline' ? 'is-active' : ''}`}
+              data-testid="timeline-tab-timeline"
+              onClick={() => {
+                playWorkbenchFoley('toggle_switch');
+                setActiveTab('timeline');
+              }}
+            >
+              <Clock size={13} aria-hidden="true" />
+              <span>{ui.tabTimeline}</span>
+            </button>
+
+            <button
+              type="button"
+              role="tab"
+              aria-selected={activeTab === 'glossary'}
+              className={`timeline-mode-tab ${activeTab === 'glossary' ? 'is-active' : ''}`}
+              data-testid="timeline-tab-glossary"
+              onClick={() => {
+                playWorkbenchFoley('toggle_switch');
+                setActiveTab('glossary');
+              }}
+            >
+              <BookMarked size={13} aria-hidden="true" />
+              <span>{ui.tabGlossary}</span>
+            </button>
+          </div>
+
+          {activeTab === 'glossary' ? (
+            <div
+              className="timeline-glossary-panel"
+              data-testid="timeline-glossary-panel"
+            >
+              <div className="timeline-glossary-toolbar">
+                <div className="timeline-glossary-search-wrap">
+                  <Search
+                    size={14}
+                    className="timeline-glossary-search-icon"
+                    aria-hidden="true"
+                  />
+                  <input
+                    type="search"
+                    className="timeline-glossary-search"
+                    data-testid="timeline-glossary-search"
+                    aria-label={ui.glossarySearchAria}
+                    placeholder={ui.glossarySearchPlaceholder}
+                    value={glossaryQuery}
+                    onChange={(e) => setGlossaryQuery(e.target.value)}
+                  />
+                  {glossaryQuery.trim().length > 0 && (
+                    <button
+                      type="button"
+                      className="timeline-glossary-clear-btn"
+                      aria-label={ui.glossaryClearSearch}
+                      onClick={() => setGlossaryQuery('')}
+                    >
+                      <X size={12} aria-hidden="true" />
+                    </button>
+                  )}
+                </div>
+                <span
+                  className="timeline-glossary-count"
+                  data-testid="timeline-glossary-count"
+                >
+                  {filteredGlossaryTerms.length} /{' '}
+                  {ENGINEERING_GLOSSARY_TERMS.length}
+                </span>
+              </div>
+
+              {filteredGlossaryTerms.length === 0 ? (
+                <div
+                  className="timeline-glossary-empty"
+                  data-testid="timeline-glossary-empty"
+                  role="status"
+                >
+                  <span>{ui.glossaryEmptyTitle}</span>
+                  <button
+                    type="button"
+                    className="timeline-cta-btn is-primary"
+                    onClick={() => setGlossaryQuery('')}
+                  >
+                    <RotateCcw size={13} aria-hidden="true" />
+                    <span>{ui.glossaryResetSearch}</span>
+                  </button>
+                </div>
+              ) : (
+                <div className="timeline-glossary-grid">
+                  {filteredGlossaryTerms.map((term) => (
+                    <article
+                      key={term.id}
+                      className="timeline-glossary-card"
+                      data-testid={`encyclopedia-term-${term.id}`}
+                    >
+                      <div className="timeline-glossary-card-head">
+                        <h3 className="timeline-glossary-term-title">
+                          {isZh ? term.termZh : term.termEn}
+                        </h3>
+                        <span className="timeline-glossary-term-badge">
+                          {ui.glossaryExhibitsCount(
+                            term.relatedWeaponIds.length
+                          )}
+                        </span>
+                      </div>
+                      <p className="timeline-glossary-term-summary">
+                        {isZh ? term.summaryZh : term.summaryEn}
+                      </p>
+                      <div className="timeline-glossary-card-foot">
+                        <span className="timeline-glossary-foot-label">
+                          {ui.glossaryCompareLabel}
+                        </span>
+                        <div className="timeline-glossary-jump-pills">
+                          {term.relatedWeaponIds.map((relId) => {
+                            const label = getLocalizedShortWeaponLabel(
+                              relId,
+                              lang
+                            );
+                            return (
+                              <button
+                                key={relId}
+                                type="button"
+                                className="timeline-glossary-jump-pill"
+                                data-testid={`encyclopedia-jump-${term.id}-${relId}`}
+                                onClick={() => {
+                                  playWorkbenchFoley('preset_detent');
+                                  onClose();
+                                  enterWorkbench(relId, 'explode');
+                                }}
+                              >
+                                <span>{label}</span>
+                                <ArrowUpRight size={11} aria-hidden="true" />
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            <>
+              {/* Interactive Historical Era Filter Strip */}
           <div
             className="timeline-era-strip"
             data-testid="timeline-era-strip"
@@ -825,6 +1046,8 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
               </button>
             </div>
           </div>
+            </>
+          )}
         </div>
       </div>
     </dialog>

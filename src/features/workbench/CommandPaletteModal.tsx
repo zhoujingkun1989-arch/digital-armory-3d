@@ -6,6 +6,7 @@ import React, {
   useState,
 } from 'react';
 import {
+  BookMarked,
   BookOpen,
   Box,
   Compass,
@@ -79,6 +80,8 @@ function renderCommandIcon(icon: CommandPaletteIconKey): React.ReactNode {
       return <Crosshair size={size} aria-hidden="true" />;
     case 'part':
       return <Layers size={size} aria-hidden="true" />;
+    case 'principle':
+      return <BookMarked size={size} aria-hidden="true" />;
     case 'armory':
       return <Shield size={size} aria-hidden="true" />;
     case 'showcase':
