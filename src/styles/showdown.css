@@ -1729,3 +1729,463 @@
     flex-shrink: 0;
   }
 }
+
+/* ==================== Cycle 11C: Free-Pair 34×33 Custom Duel Builder, 6-Axis Radar SVG & Parity Strip ==================== */
+.sd-custom-duel-bar {
+  margin-bottom: 12px;
+  gap: 10px;
+}
+
+.sd-custom-duel-pickers {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.sd-custom-duel-badge {
+  padding: 4px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(56, 189, 248, 0.36);
+  background: rgba(14, 165, 233, 0.14);
+  color: #7dd3fc;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.sd-custom-duel-pickers .sd-select-group {
+  flex: 1 1 210px;
+  min-width: 180px;
+}
+
+.sd-radar-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.62);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.sd-radar-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.sd-radar-leg-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3.5px 9px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.sd-radar-leg-pill.is-a {
+  background: rgba(56, 189, 248, 0.14);
+  border: 1px solid rgba(56, 189, 248, 0.38);
+  color: #7dd3fc;
+}
+
+.sd-radar-leg-pill.is-b {
+  background: rgba(245, 158, 11, 0.14);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fde68a;
+}
+
+.sd-radar-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+}
+
+.sd-radar-dot.is-a {
+  background: #38bdf8;
+}
+
+.sd-radar-dot.is-b {
+  background: #f59e0b;
+}
+
+.sd-radar-layout {
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+}
+
+.sd-radar-svg-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 12px;
+  background: rgba(2, 6, 23, 0.42);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.sd-radar-svg {
+  width: 100%;
+  max-width: 340px;
+  height: auto;
+  display: block;
+}
+
+.sd-radar-ring {
+  fill: none;
+  stroke: rgba(148, 163, 184, 0.18);
+  stroke-width: 1;
+}
+
+.sd-radar-ring.is-outer {
+  stroke: rgba(148, 163, 184, 0.32);
+}
+
+.sd-radar-spoke {
+  stroke: rgba(148, 163, 184, 0.2);
+  stroke-width: 1;
+  transition: stroke 0.15s ease;
+}
+
+.sd-radar-spoke.is-focused {
+  stroke: rgba(56, 189, 248, 0.72);
+  stroke-width: 1.5;
+}
+
+.sd-radar-poly-a {
+  fill: rgba(56, 189, 248, 0.24);
+  stroke: #38bdf8;
+  stroke-width: 2.2;
+  stroke-linejoin: round;
+  transition: opacity 0.15s ease;
+}
+
+.sd-radar-poly-b {
+  fill: rgba(245, 158, 11, 0.2);
+  stroke: #f59e0b;
+  stroke-width: 2.2;
+  stroke-linejoin: round;
+  transition: opacity 0.15s ease;
+}
+
+.sd-radar-node-a {
+  fill: #38bdf8;
+  stroke: #0f172a;
+  stroke-width: 1.4;
+}
+
+.sd-radar-node-b {
+  fill: #f59e0b;
+  stroke: #0f172a;
+  stroke-width: 1.4;
+}
+
+.sd-radar-axis-label {
+  fill: #cbd5e1;
+  font-size: 10.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sd-radar-axis-group.is-focused .sd-radar-axis-label {
+  fill: #ffffff;
+}
+
+.sd-radar-axis-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.sd-radar-axis-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(15, 23, 42, 0.54);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    transform 0.15s ease;
+}
+
+.sd-radar-axis-row:hover,
+.sd-radar-axis-row.is-focused {
+  border-color: rgba(56, 189, 248, 0.56);
+  background: rgba(14, 165, 233, 0.12);
+  transform: translateY(-1px);
+}
+
+.sd-radar-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.sd-radar-row-name {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.sd-radar-row-scores {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.sd-radar-row-scores strong.is-a {
+  color: #38bdf8;
+}
+
+.sd-radar-row-scores strong.is-b {
+  color: #fbbf24;
+}
+
+.sd-radar-vs-sep {
+  margin: 0 3px;
+  color: #64748b;
+}
+
+.sd-radar-row-raws {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+.sd-radar-row-raws .is-a {
+  color: #93c5fd;
+}
+
+.sd-radar-row-raws .is-b {
+  color: #fcd34d;
+}
+
+.sd-rifling-scale-strip {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.sd-parity-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 7px 10px;
+  border-radius: 9px;
+  background: rgba(15, 23, 42, 0.52);
+  border: 1px solid rgba(56, 189, 248, 0.24);
+  min-width: 0;
+}
+
+.sd-parity-cell.is-ratio {
+  border-color: rgba(148, 163, 184, 0.26);
+  text-align: center;
+  justify-content: center;
+}
+
+.sd-parity-cell.is-b {
+  border-color: rgba(245, 158, 11, 0.28);
+}
+
+.sd-parity-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  font-weight: 800;
+  color: #94a3b8;
+  letter-spacing: 0.03em;
+}
+
+.sd-parity-cell.is-ratio .sd-parity-kicker {
+  justify-content: center;
+}
+
+.sd-parity-value {
+  font-size: 11px;
+  font-weight: 600;
+  color: #e2e8f0;
+  line-height: 1.35;
+}
+
+.sd-parity-value strong {
+  color: #38bdf8;
+}
+
+/* Blueprint Daylight ([data-theme='light']) Overrides */
+:is([data-theme='light'], .theme-light) .sd-custom-duel-badge {
+  background: #e0f2fe;
+  border-color: rgba(2, 132, 199, 0.36);
+  color: #0369a1;
+}
+
+:is([data-theme='light'], .theme-light) .sd-radar-section {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.14);
+}
+
+:is([data-theme='light'], .theme-light) .sd-radar-leg-pill.is-a {
+  background: #e0f2fe;
+  border-color: rgba(2, 132, 199, 0.36);
+  color: #0369a1;
+}
+
+:is([data-theme='light'], .theme-light) .sd-radar-leg-pill.is-b {
+  background: #fef3c7;
+  border-color: rgba(217, 119, 6, 0.4);
+  color: #92400e;
+}
+
+:is([data-theme='light'], .theme-light) .sd-radar-svg-wrap {
+  background: #f8fafc;
+  border-color: rgba(15, 23, 42, 0.12);
+}
+
+:is([data-theme='light'], .theme-light) .sd-radar-ring {
+  stroke: rgba(15, 23, 42, 0.12);
+}
+
+:is([data-theme='light'], .theme-light) .sd-radar-ring.is-outer {
+  stroke: rgba(15, 23, 42, 0.26);
+}
+
+:is([data-theme='light'], .theme-light) .sd-radar-spoke {
+  stroke: rgba(15, 23, 42, 0.16);
+}
+
+:is([data-theme='light'], .theme-light) .sd-radar-spoke.is-focused {
+  stroke: #0284c7;
+}
+
+:is([data-theme='light'], .theme-light) .sd-radar-poly-a {
+  fill: rgba(2, 132, 199, 0.2);
+  stroke: #0284c7;
+}
+
+:is([data-theme='light'], .theme-light) .sd-radar-poly-b {
+  fill: rgba(217, 119, 6, 0.18);
+  stroke: #b45309;
+}
+
+:is([data-theme='light'], .theme-light) .sd-radar-node-a {
+  fill: #0284c7;
+  stroke: #ffffff;
+}
+
+:is([data-theme='light'], .theme-light) .sd-radar-node-b {
+  fill: #b45309;
+  stroke: #ffffff;
+}
+
+:is([data-theme='light'], .theme-light) .sd-radar-axis-label {
+  fill: #334155;
+}
+
+:is([data-theme='light'], .theme-light) .sd-radar-axis-group.is-focused .sd-radar-axis-label {
+  fill: #0f172a;
+}
+
+:is([data-theme='light'], .theme-light) .sd-radar-axis-row {
+  background: #f8fafc;
+  border-color: rgba(15, 23, 42, 0.12);
+}
+
+:is([data-theme='light'], .theme-light) .sd-radar-axis-row:hover,
+:is([data-theme='light'], .theme-light) .sd-radar-axis-row.is-focused {
+  background: #f0f9ff;
+  border-color: #0284c7;
+}
+
+:is([data-theme='light'], .theme-light) .sd-radar-row-name {
+  color: #0f172a;
+}
+
+:is([data-theme='light'], .theme-light) .sd-radar-row-scores strong.is-a,
+:is([data-theme='light'], .theme-light) .sd-radar-row-raws .is-a {
+  color: #0369a1;
+}
+
+:is([data-theme='light'], .theme-light) .sd-radar-row-scores strong.is-b,
+:is([data-theme='light'], .theme-light) .sd-radar-row-raws .is-b {
+  color: #b45309;
+}
+
+:is([data-theme='light'], .theme-light) .sd-parity-cell {
+  background: #f8fafc;
+  border-color: rgba(2, 132, 199, 0.24);
+}
+
+:is([data-theme='light'], .theme-light) .sd-parity-cell.is-ratio {
+  border-color: rgba(15, 23, 42, 0.14);
+}
+
+:is([data-theme='light'], .theme-light) .sd-parity-cell.is-b {
+  border-color: rgba(217, 119, 6, 0.28);
+}
+
+:is([data-theme='light'], .theme-light) .sd-parity-kicker {
+  color: #475569;
+}
+
+:is([data-theme='light'], .theme-light) .sd-parity-value {
+  color: #0f172a;
+}
+
+:is([data-theme='light'], .theme-light) .sd-parity-value strong {
+  color: #0369a1;
+}
+
+@media (max-width: 768px) {
+  .sd-custom-duel-pickers {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sd-custom-duel-pickers .sd-select-group {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .sd-radar-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sd-radar-axis-list {
+    grid-template-columns: 1fr;
+  }
+
+  .sd-rifling-scale-strip {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sd-radar-spoke,
+  .sd-radar-poly-a,
+  .sd-radar-poly-b,
+  .sd-radar-axis-row {
+    transition: none;
+  }
+}

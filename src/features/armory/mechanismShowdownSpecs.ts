@@ -3521,3 +3521,368 @@ export function computeShowdownPeakLabelLayout(
     peakB: finalize('B', textB, mB.x, mB.y, xB, yB, wB, anchorB),
   };
 }
+
+// ============================================================================
+// Cycle 11C · Free-Pair 34×33 Custom Duel Helpers & 6-Axis Engineering Radar
+// ============================================================================
+
+export type ShowdownRadarAxisId =
+  | 'velocity'
+  | 'energy'
+  | 'cyclicRate'
+  | 'compactness'
+  | 'partComplexity'
+  | 'rangeReach';
+
+export interface ShowdownRadarAxisMeta {
+  id: ShowdownRadarAxisId;
+  labelZh: string;
+  labelEn: string;
+  shortZh: string;
+  shortEn: string;
+}
+
+export const SHOWDOWN_RADAR_AXES: readonly ShowdownRadarAxisMeta[] = [
+  {
+    id: 'velocity',
+    labelZh: '弹道初速',
+    labelEn: 'Muzzle Velocity',
+    shortZh: '初速',
+    shortEn: 'Velocity',
+  },
+  {
+    id: 'energy',
+    labelZh: '枪口动能',
+    labelEn: 'Muzzle Energy',
+    shortZh: '动能',
+    shortEn: 'Energy',
+  },
+  {
+    id: 'cyclicRate',
+    labelZh: '循环射速',
+    labelEn: 'Cyclic Tempo',
+    shortZh: '射速',
+    shortEn: 'Tempo',
+  },
+  {
+    id: 'compactness',
+    labelZh: '紧凑尺度',
+    labelEn: 'Compactness',
+    shortZh: '紧凑',
+    shortEn: 'Compact',
+  },
+  {
+    id: 'partComplexity',
+    labelZh: '机构复杂度',
+    labelEn: 'Mechanism Complexity',
+    shortZh: '复杂度',
+    shortEn: 'Complex',
+  },
+  {
+    id: 'rangeReach',
+    labelZh: '有效射程',
+    labelEn: 'Effective Reach',
+    shortZh: '射程',
+    shortEn: 'Reach',
+  },
+] as const;
+
+export interface WeaponRadarRawMetrics {
+  velocityMps: number;
+  energyJ: number;
+  effectiveRpm: number;
+  overallLengthMm: number;
+  partsCount: number;
+  effectiveRangeM: number;
+  emptyWeightKg: number;
+}
+
+export interface WeaponRadarMetrics {
+  weaponId: string;
+  velocity: number;
+  energy: number;
+  cyclicRate: number;
+  compactness: number;
+  partComplexity: number;
+  rangeReach: number;
+  raw: WeaponRadarRawMetrics;
+}
+
+const RADAR_DRIVE_COMPLEXITY_BONUS: Readonly<Record<DriveFamilyId, number>> = {
+  external_electric_rotary: 24,
+  hydro_pneumatic_cannon_recoil: 22,
+  compound_cam_elastic: 18,
+  short_stroke_piston: 14,
+  delayed_or_straight_blowback: 13,
+  direct_impingement: 12,
+  long_stroke_piston: 11,
+  short_recoil_barrel: 10,
+  manual_bolt_or_revolver_linkage: 6,
+};
+
+const RADAR_LOCKING_COMPLEXITY_BONUS: Readonly<Record<LockingFamilyId, number>> =
+  {
+    rotary_cylindrical_breech: 20,
+    super_v_off_axis_cam: 18,
+    sliding_wedge_breech: 16,
+    cam_letoff_or_adf_sled: 15,
+    toggle_knee_joint: 14,
+    roller_or_mass_blowback: 12,
+    rotating_lug_bolt: 11,
+    cylinder_notch_ratchet: 9,
+    tilting_barrel_cam: 7,
+  };
+
+const RADAR_FEED_COMPLEXITY_BONUS: Readonly<Record<FeedFamilyId, number>> = {
+  autoloader_carousel_or_blast_bustle: 16,
+  overhead_caseless_rammer: 15,
+  top_helical_90deg: 13,
+  disintegrating_belt_shuttle: 12,
+  top_enbloc_clip: 9,
+  underbarrel_tubular_elevator: 8,
+  swing_out_cylinder: 7,
+  drop_away_or_flight_track: 7,
+  staggered_box_magazine: 5,
+};
+
+function clampScore100(val: number): number {
+  if (!Number.isFinite(val)) return 0;
+  return Math.max(0, Math.min(100, Math.round(val)));
+}
+
+function logNormalize0To100(value: number, minVal: number, maxVal: number): number {
+  const safe = Math.max(minVal, Math.min(maxVal, value));
+  const lo = Math.log10(minVal);
+  const hi = Math.log10(maxVal);
+  if (hi <= lo) return 0;
+  return clampScore100(((Math.log10(safe) - lo) / (hi - lo)) * 100);
+}
+
+function resolveEffectiveRpm(
+  weaponId: string,
+  profile: ShowdownExhibitProfile,
+  rawRateOfFire: string
+): number {
+  if (profile.cyclicRateRpm !== null && profile.cyclicRateRpm > 0) {
+    return profile.cyclicRateRpm;
+  }
+  if (/(发\/分|rpm)/i.test(rawRateOfFire)) {
+    const cleaned = rawRateOfFire.replace(/,/g, '');
+    const nums = cleaned.match(/\d+(?:\.\d+)?/g);
+    if (nums && nums.length >= 2 && (cleaned.includes('–') || cleaned.includes('-'))) {
+      const lo = Number(nums[0]);
+      const hi = Number(nums[1]);
+      if (Number.isFinite(lo) && Number.isFinite(hi) && hi >= lo && hi > 0) {
+        return Math.round((lo + hi) * 0.5);
+      }
+    }
+    if (nums && nums.length > 0) {
+      const n = Number(nums[0]);
+      if (Number.isFinite(n) && n > 0) return n;
+    }
+  }
+  if (weaponId === 'r500') return 3;
+  if (weaponId === 'lift33') return 6;
+  if (weaponId === 'awm') return 12;
+  if (weaponId === 'm82a1' || weaponId === 'python') return 30;
+  if (weaponId === 'deagle' || weaponId === 'rem870') return 35;
+  if (weaponId === 'benellim4') return 60;
+  return 45;
+}
+
+function resolveEffectiveRangeM(weaponId: string): number {
+  if (isWeaponId(weaponId)) {
+    const raw = getWeaponManifest(weaponId).catalog.specs1To1.effectiveRangeM;
+    return parseFirstPositiveNumber(raw, 300);
+  }
+  return 300;
+}
+
+/**
+ * Pure 6-axis quantitative engineering radar evaluator covering all 34 exhibits.
+ * Uses log-scale curves on velocity, kinetic energy, cyclic tempo, physical compactness,
+ * and engagement reach so both 9mm handguns and 125mm APFSDS MBTs separate legibly.
+ */
+export function computeWeaponRadarMetrics(weaponId: string): WeaponRadarMetrics {
+  const profile = getShowdownExhibitProfile(weaponId, 'en');
+  const rawRateOfFire = isWeaponId(weaponId)
+    ? getWeaponManifest(weaponId).catalog.specs1To1.rateOfFire
+    : profile.rateOfFireDisplay;
+
+  const velocityMps = Math.max(1, profile.muzzleVelocityMps);
+  const energyJ = Math.max(1, profile.muzzleEnergyJ);
+  const effectiveRpm = resolveEffectiveRpm(weaponId, profile, rawRateOfFire);
+  const overallLengthMm = Math.max(100, profile.overallLengthMm);
+  const effectiveRangeM = Math.max(25, resolveEffectiveRangeM(weaponId));
+
+  // 1. Velocity: log10 [80 .. 1,900 m/s]
+  const velocity = logNormalize0To100(velocityMps, 80, 1900);
+
+  // 2. Kinetic Energy: log10 [50 J .. 15,000,000 J]
+  const energy = logNormalize0To100(energyJ, 50, 15_000_000);
+
+  // 3. Cyclic Tempo: log10 [3 .. 4,200 RPM]
+  const cyclicRate = logNormalize0To100(effectiveRpm, 3, 4200);
+
+  // 4. Compactness: inverse log10 physical length [180 mm .. 11,500 mm]
+  const lengthScore = logNormalize0To100(overallLengthMm, 180, 11500);
+  const compactness = clampScore100(100 - lengthScore);
+
+  // 5. Mechanism Complexity: CAD independent part count + 3-axis architecture complexity
+  const partBase = Math.max(
+    0,
+    Math.min(48, ((profile.partsCount - 14) / 22) * 48)
+  );
+  const archBonus =
+    RADAR_DRIVE_COMPLEXITY_BONUS[profile.driveFamily] +
+    RADAR_LOCKING_COMPLEXITY_BONUS[profile.lockingFamily] +
+    RADAR_FEED_COMPLEXITY_BONUS[profile.feedFamily];
+  const exoticBonus =
+    weaponId === 'an94' || weaponId === 'g11' || weaponId === 'gau8' ? 8 : 0;
+  const partComplexity = clampScore100(
+    partBase + archBonus * 0.88 + exoticBonus
+  );
+
+  // 6. Effective Engagement Reach: log10 [35 m .. 5,000 m]
+  const rangeReach = logNormalize0To100(effectiveRangeM, 35, 5000);
+
+  return {
+    weaponId,
+    velocity,
+    energy,
+    cyclicRate,
+    compactness,
+    partComplexity,
+    rangeReach,
+    raw: {
+      velocityMps,
+      energyJ,
+      effectiveRpm,
+      overallLengthMm,
+      partsCount: profile.partsCount,
+      effectiveRangeM,
+      emptyWeightKg: profile.emptyWeightKg,
+    },
+  };
+}
+
+export interface ShowdownRadarVertex {
+  axisId: ShowdownRadarAxisId;
+  angleRad: number;
+  xA: number;
+  yA: number;
+  xB: number;
+  yB: number;
+  axisEndX: number;
+  axisEndY: number;
+  labelX: number;
+  labelY: number;
+  scoreA: number;
+  scoreB: number;
+}
+
+export interface ShowdownRadarGeometry {
+  width: number;
+  height: number;
+  cx: number;
+  cy: number;
+  radius: number;
+  ringPolygons: readonly { level: number; points: string }[];
+  vertices: readonly ShowdownRadarVertex[];
+  polygonA: string;
+  polygonB: string;
+}
+
+export function buildShowdownRadarGeometry(
+  metricsA: WeaponRadarMetrics,
+  metricsB: WeaponRadarMetrics,
+  width = 340,
+  height = 296,
+  radius = 96
+): ShowdownRadarGeometry {
+  const cx = width * 0.5;
+  const cy = height * 0.5;
+  const count = SHOWDOWN_RADAR_AXES.length;
+  const labelOffset = radius + 24;
+
+  const ringPolygons = [25, 50, 75, 100].map((level) => {
+    const r = (level / 100) * radius;
+    const pts: string[] = [];
+    for (let i = 0; i < count; i++) {
+      const angle = -Math.PI / 2 + (i * Math.PI * 2) / count;
+      pts.push(
+        `${(cx + Math.cos(angle) * r).toFixed(1)},${(cy + Math.sin(angle) * r).toFixed(1)}`
+      );
+    }
+    return { level, points: pts.join(' ') };
+  });
+
+  const vertices: ShowdownRadarVertex[] = SHOWDOWN_RADAR_AXES.map((axis, i) => {
+    const angleRad = -Math.PI / 2 + (i * Math.PI * 2) / count;
+    const cos = Math.cos(angleRad);
+    const sin = Math.sin(angleRad);
+    const scoreA = metricsA[axis.id];
+    const scoreB = metricsB[axis.id];
+    const rA = (scoreA / 100) * radius;
+    const rB = (scoreB / 100) * radius;
+    return {
+      axisId: axis.id,
+      angleRad,
+      xA: cx + cos * rA,
+      yA: cy + sin * rA,
+      xB: cx + cos * rB,
+      yB: cy + sin * rB,
+      axisEndX: cx + cos * radius,
+      axisEndY: cy + sin * radius,
+      labelX: cx + cos * labelOffset,
+      labelY: cy + sin * labelOffset,
+      scoreA,
+      scoreB,
+    };
+  });
+
+  const polygonA = vertices
+    .map((v) => `${v.xA.toFixed(1)},${v.yA.toFixed(1)}`)
+    .join(' ');
+  const polygonB = vertices
+    .map((v) => `${v.xB.toFixed(1)},${v.yB.toFixed(1)}`)
+    .join(' ');
+
+  return {
+    width,
+    height,
+    cx,
+    cy,
+    radius,
+    ringPolygons,
+    vertices,
+    polygonA,
+    polygonB,
+  };
+}
+
+/** Pure helper for 1-click A ↔ B swap in Free-Pair 34×33 Showdown builder. */
+export function resolveFreePairSwap(
+  weaponA: string,
+  weaponB: string
+): [string, string] {
+  return [weaponB, weaponA];
+}
+
+/**
+ * Pure helper ensuring Exhibit A and Exhibit B stay strictly distinct across
+ * all 34 × 33 = 1,122 ordered pairs (selecting the rival's exhibit swaps slots cleanly).
+ */
+export function resolveFreePairSelection(
+  slot: 'A' | 'B',
+  nextId: string,
+  currentA: string,
+  currentB: string
+): [string, string] {
+  if (slot === 'A') {
+    if (nextId === currentB) return [nextId, currentA];
+    return [nextId, currentB];
+  }
+  if (nextId === currentA) return [currentB, nextId];
+  return [currentA, nextId];
+}
