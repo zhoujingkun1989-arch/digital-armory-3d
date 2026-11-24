@@ -2510,8 +2510,155 @@ const SMOKE_WISP_FRAG_GLSL = /* glsl */ `
 
 const MAX_SHOCK_DIAMONDS = 5;
 const DIAMOND_SLOTS = [0, 1, 2, 3, 4] as const;
+const MUZZLE_PUFF_SLOTS = [0, 1, 2] as const;
 const CASING_SLOTS = Array.from({ length: SPENT_CASING_POOL_SIZE }, (_, i) => i);
 const SMOKE_SLOTS = Array.from({ length: SMOKE_WISP_POOL_SIZE }, (_, i) => i);
+
+/** Warm-amber internal chamber deflagration bounce light constants (Matt Rittman slow-mo cutaway). */
+export const CHAMBER_IGNITION_LIGHT_COLOR = '#ff9c42';
+export const CHAMBER_IGNITION_WINDOW_START = 0.04;
+export const CHAMBER_IGNITION_WINDOW_END = 0.24;
+
+export type CaliberVfxTier =
+  | 'archery'
+  | 'pistol'
+  | 'rifle'
+  | 'heavy_50'
+  | 'autocannon_30mm'
+  | 'mbt_cannon';
+
+export interface CaliberVfxClassScale {
+  tier: CaliberVfxTier;
+  smokeScale: number;
+  diamondScale: number;
+  puffDurationF: number;
+  chamberBouncePeak: number;
+}
+
+/**
+ * Classifies every caliber/ordnance profile into a calibrated VFX intensity & physical scale tier
+ * (pistol < rifle < .50 BMG < 30mm GAU-8 < 88/120/125mm MBT; strictly zero for archery).
+ */
+export function resolveCaliberVfxClassScale(
+  caliber: CaliberProfile
+): CaliberVfxClassScale {
+  if (caliber === 'arrow_400gr' || caliber === 'bolt_400gr') {
+    return {
+      tier: 'archery',
+      smokeScale: 0,
+      diamondScale: 0,
+      puffDurationF: 0,
+      chamberBouncePeak: 0,
+    };
+  }
+  if (
+    caliber === '125mm_apfsds' ||
+    caliber === '120mm_apfsds' ||
+    caliber === '88mm_pzgr39'
+  ) {
+    return {
+      tier: 'mbt_cannon',
+      smokeScale: 12.5,
+      diamondScale: 5.2,
+      puffDurationF: 0.36,
+      chamberBouncePeak: 58,
+    };
+  }
+  if (caliber === '30x173_gau8') {
+    return {
+      tier: 'autocannon_30mm',
+      smokeScale: 4.6,
+      diamondScale: 2.75,
+      puffDurationF: 0.3,
+      chamberBouncePeak: 26,
+    };
+  }
+  if (caliber === '50_bmg') {
+    return {
+      tier: 'heavy_50',
+      smokeScale: 2.1,
+      diamondScale: 1.65,
+      puffDurationF: 0.33,
+      chamberBouncePeak: 11.5,
+    };
+  }
+  if (
+    caliber === '9mm_para' ||
+    caliber === '45_acp' ||
+    caliber === '357_magnum' ||
+    caliber === '57_28' ||
+    caliber === '9x39_subsonic'
+  ) {
+    return {
+      tier: 'pistol',
+      smokeScale: caliber === '9x39_subsonic' ? 0.65 : 0.92,
+      diamondScale: caliber === '9x39_subsonic' ? 0.52 : 0.78,
+      puffDurationF: 0.22,
+      chamberBouncePeak: 5.8,
+    };
+  }
+  if (caliber === '50_ae') {
+    return {
+      tier: 'pistol',
+      smokeScale: 1.28,
+      diamondScale: 1.05,
+      puffDurationF: 0.25,
+      chamberBouncePeak: 7.4,
+    };
+  }
+  return {
+    tier: 'rifle',
+    smokeScale: caliber === '338_lapua' ? 1.55 : 1.24,
+    diamondScale: caliber === '338_lapua' ? 1.22 : 1.0,
+    puffDurationF: 0.27,
+    chamberBouncePeak: caliber === '338_lapua' ? 9.2 : 7.8,
+  };
+}
+
+/**
+ * Evaluates the warm-amber chamber ignition bounce point-light intensity for firing phase `f ∈ [0, 1]`.
+ * Strictly zero outside `f ∈ [0.04, 0.24]` and strictly zero for archery exhibits.
+ * Strongly attenuated (`0.18x`) in opaque assembled view so chamber light never bleeds through closed steel,
+ * while illuminating the bolt face, locking lugs & brass cartridge vividly in CT cutaway / X-ray mode.
+ */
+export function computeChamberIgnitionBounceIntensity(
+  f: number,
+  caliber: CaliberProfile,
+  isArchery: boolean,
+  isCutawayOrXray: boolean,
+  pressure01 = 0.85
+): number {
+  if (
+    isArchery ||
+    !Number.isFinite(f) ||
+    f < CHAMBER_IGNITION_WINDOW_START ||
+    f > CHAMBER_IGNITION_WINDOW_END
+  ) {
+    return 0;
+  }
+  const vfx = resolveCaliberVfxClassScale(caliber);
+  if (vfx.chamberBouncePeak <= 0) return 0;
+
+  // Rapid primer ignition rise [0.04..0.11] -> bright combustion plateau [0.11..0.16] -> smooth rolloff [0.16..0.24]
+  let env: number;
+  if (f < 0.11) {
+    const u = (f - CHAMBER_IGNITION_WINDOW_START) / (0.11 - CHAMBER_IGNITION_WINDOW_START);
+    env = u * u * (3 - 2 * u);
+  } else if (f <= 0.16) {
+    env = 1.0;
+  } else {
+    const u = (f - 0.16) / (CHAMBER_IGNITION_WINDOW_END - 0.16);
+    const inv = 1 - u;
+    env = inv * inv * (3 - 2 * inv);
+  }
+
+  const pClamped = Number.isFinite(pressure01)
+    ? Math.max(0, Math.min(1, pressure01))
+    : 0;
+  const pressureDrive = 0.35 + 0.65 * Math.max(pClamped, 0.25);
+  const visibilityScale = isCutawayOrXray ? 1.0 : 0.18;
+  return vfx.chamberBouncePeak * env * pressureDrive * visibilityScale;
+}
 
 // ============================================================================
 // Physical recoil transform for the weapon assembly (Wave-2 ArmoryViewport hook)
@@ -2839,8 +2986,37 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
   const muzzleBallMatRef = useRef<THREE.MeshBasicMaterial>(null);
   const diamondMeshRefs = useRef<(THREE.Mesh | null)[]>([]);
   const diamondMatRefs = useRef<(THREE.MeshBasicMaterial | null)[]>([]);
+  const diamondHaloMeshRefs = useRef<(THREE.Mesh | null)[]>([]);
+  const diamondHaloMatRefs = useRef<(THREE.MeshBasicMaterial | null)[]>([]);
+  const muzzlePuffMeshRefs = useRef<(THREE.Mesh | null)[]>([]);
+  const muzzlePuffMatRefs = useRef<(THREE.ShaderMaterial | null)[]>([]);
   const jetMatRefs = useRef<(THREE.MeshBasicMaterial | null)[]>([]);
   const muzzleLightRef = useRef<THREE.PointLight>(null);
+
+  const muzzlePuffGeo = useMemo(() => new THREE.IcosahedronGeometry(1, 2), []);
+  const muzzlePuffShaderArgs = useMemo(
+    () =>
+      MUZZLE_PUFF_SLOTS.map(
+        () =>
+          [
+            {
+              uniforms: {
+                uColor: { value: SMOKE_GREY.clone() },
+                uOpacity: { value: 0 },
+              },
+              vertexShader: SMOKE_WISP_VERT_GLSL,
+              fragmentShader: SMOKE_WISP_FRAG_GLSL,
+            },
+          ] as [THREE.ShaderMaterialParameters]
+      ),
+    []
+  );
+
+  useEffect(() => {
+    return () => {
+      muzzlePuffGeo.dispose();
+    };
+  }, [muzzlePuffGeo]);
 
   const shockRingRef = useRef<THREE.Group | THREE.Mesh>(null);
   const shockRingMatRef = useRef<THREE.MeshBasicMaterial>(null);
@@ -3017,8 +3193,10 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
       }
     }
 
-    // 3. Chamber ignition glow, scaled by instantaneous chamber pressure
+    // 3. Chamber ignition glow + synchronized warm-amber breech bounce point-light (`f ∈ [0.04, 0.24]`)
     const p01 = ib.pressure01;
+    const isCutawayOrXray = state.sectionCut || state.xrayShells;
+    const calVfx = resolveCaliberVfxClassScale(curProfile);
     if (chamberFlashRef.current) {
       const intensity = isArchery
         ? 0
@@ -3031,11 +3209,13 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
       );
       const baseChamberScale = isTank
         ? 8.5
-        : curProfile === '50_bmg'
-          ? 1.25
-          : curProfile === '338_lapua'
-            ? 1.05
-            : 0.72;
+        : curProfile === '30x173_gau8'
+          ? 2.8
+          : curProfile === '50_bmg'
+            ? 1.25
+            : curProfile === '338_lapua'
+              ? 1.05
+              : 0.72;
       const s = baseChamberScale + intensity * (isTank ? 6.5 : 0.75);
       chamberFlashRef.current.scale.set(s * 1.45, s, s);
       (chamberFlashRef.current.material as THREE.MeshBasicMaterial).opacity =
@@ -3043,10 +3223,19 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
     }
 
     if (chamberLightRef.current) {
-      const lightBoost = isTank ? 48 : curProfile === '50_bmg' ? 7.5 : 4.5;
-      chamberLightRef.current.intensity = isArchery
-        ? 0
-        : Math.max(st.chamberFlashIntensity, p01) * lightBoost;
+      const bounceIntensity = computeChamberIgnitionBounceIntensity(
+        f,
+        curProfile,
+        isArchery,
+        isCutawayOrXray,
+        Math.max(st.chamberFlashIntensity, p01)
+      );
+      chamberLightRef.current.intensity = bounceIntensity;
+      chamberLightRef.current.position.set(
+        curMeta.chamberGlowPos[0] + muzzleShiftX * 0.65 + (isTank ? 4.0 : 0.3),
+        curMeta.chamberGlowPos[1],
+        curMeta.chamberGlowPos[2] + (isTank ? 16.0 : 1.15)
+      );
     }
 
     // 3b. Gas-block / piston port tap glow (driven by quantitative port pressure; also bore evacuator purge on MBTs)
@@ -3141,22 +3330,34 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
           muzzleBallRef.current.scale.set(bs * 1.25, bs, bs);
         }
 
-        // Supersonic under-expanded jet: standing Mach diamonds along +X
+        // Supersonic under-expanded jet: layered standing Mach shock diamonds (incandescent core + flame halo)
+        const dClassScale = Math.min(2.2, Math.max(0.7, calVfx.diamondScale));
         for (let i = 0; i < MAX_SHOCK_DIAMONDS; i++) {
           const mesh = diamondMeshRefs.current[i];
           const mat = diamondMatRefs.current[i];
+          const halo = diamondHaloMeshRefs.current[i];
+          const haloMat = diamondHaloMatRefs.current[i];
           if (!mesh || !mat) continue;
           const on =
             i < curBallistic.shockDiamonds &&
             attLoadout.muzzle !== 'suppressor';
           mesh.visible = on;
+          if (halo) halo.visible = on;
           if (!on) continue;
-          const spacing = 0.95 + i * 0.08;
-          mesh.position.x = 0.75 + i * spacing;
+          const spacing = (0.95 + i * 0.08) * (0.82 + 0.18 * dClassScale);
+          const dx = 0.75 + i * spacing;
+          mesh.position.x = dx;
           const shrink = 1 - i * 0.14;
           const pulse = 0.92 + 0.08 * Math.sin(phys.simTimeSec * 140 + i * 1.7);
-          mesh.scale.set(0.42 * shrink * pulse, 0.2 * shrink, 0.2 * shrink);
+          const sx = 0.42 * shrink * pulse * (0.78 + 0.22 * dClassScale);
+          const sy = 0.2 * shrink * (0.82 + 0.18 * dClassScale);
+          mesh.scale.set(sx, sy, sy);
           mat.opacity = plumeOpacity * (0.95 - i * 0.15) * fwd;
+          if (halo && haloMat) {
+            halo.position.x = dx + 0.06;
+            halo.scale.set(sx * 1.62, sy * 1.85, sy * 1.85);
+            haloMat.opacity = plumeOpacity * (0.44 - i * 0.07) * fwd * flicker;
+          }
         }
 
         const jetsNow = getMuzzleJets(weaponId);
@@ -3261,6 +3462,44 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
         magnumRingOuterMatRef.current.opacity = plumeOpacity * 0.78;
         magnumRingCoreMatRef.current.opacity = plumeOpacity * 0.95;
       }
+    }
+
+    // 4d. Lingering translucent propellant gunsmoke puff expanding forward/upward from active muzzle
+    const puffStart = timing.muzzleExitF;
+    const puffDur = calVfx.puffDurationF;
+    const isSuppressed =
+      attLoadout.muzzle === 'suppressor' || curProfile === '9x39_subsonic';
+    const isBrakeMounted = attLoadout.muzzle === 'muzzle_brake';
+    for (let i = 0; i < MUZZLE_PUFF_SLOTS.length; i++) {
+      const pMesh = muzzlePuffMeshRefs.current[i];
+      const pMat = muzzlePuffMatRefs.current[i];
+      if (!pMesh || !pMat) continue;
+      const stagger = i * 0.022;
+      const uRaw = puffDur > 0 ? (f - (puffStart + stagger)) / puffDur : -1;
+      const activePuff = !isArchery && calVfx.smokeScale > 0 && uRaw > 0 && uRaw < 1;
+      pMesh.visible = activePuff;
+      if (!activePuff) continue;
+      const easeOut = 1 - (1 - uRaw) * (1 - uRaw);
+      const fade = Math.sin(Math.min(1, uRaw * 3.4) * (Math.PI * 0.5)) * Math.pow(1 - uRaw, 1.45);
+      const sMult = isSuppressed ? 0.56 : isBrakeMounted ? 0.88 : 1.0;
+      const baseR = (0.58 + 2.35 * easeOut + i * 0.34) * calVfx.smokeScale * sMult;
+      const driftX = (0.7 + 4.8 * easeOut + i * 0.85) * calVfx.smokeScale * (isSuppressed ? 0.62 : 1.0);
+      const driftY = (0.18 + 1.55 * uRaw * uRaw + i * 0.22) * calVfx.smokeScale;
+      const lateralSpread = isBrakeMounted ? (i === 1 ? 1.15 : i === 2 ? -1.15 : 0) * calVfx.smokeScale * easeOut : (i - 1) * 0.14 * calVfx.smokeScale;
+      pMesh.position.set(
+        liveMuzzleX + driftX,
+        curMeta.muzzlePos[1] + phys.barrelWhipY + driftY,
+        curMeta.muzzlePos[2] + lateralSpread
+      );
+      pMesh.rotation.set(i * 1.1, uRaw * 1.4 + i * 0.7, i * 0.5);
+      pMesh.scale.set(
+        baseR * (isBrakeMounted ? 0.92 : 1.32),
+        baseR * 0.86,
+        baseR * (isBrakeMounted ? 1.38 : 0.95)
+      );
+      pMat.uniforms.uOpacity.value =
+        fade * (isSuppressed ? 0.11 : isTank ? 0.22 : 0.17) * (1 - i * 0.16);
+      pMat.uniforms.uColor.value.copy(isSuppressed ? SMOKE_HAZE : SMOKE_GREY);
     }
 
     // 5. Magazine / Quiver feed round (Slot 0; reserve stack rendered by MagazineAmmoStack)
@@ -3394,13 +3633,22 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
       <pointLight
         ref={chamberLightRef}
         position={[
-          meta.chamberGlowPos[0] + (isTankActive ? 4.0 : 0.2),
+          meta.chamberGlowPos[0] + (isTankActive ? 4.0 : 0.3),
           meta.chamberGlowPos[1],
-          isTankActive ? 12.0 : 0.6,
+          meta.chamberGlowPos[2] + (isTankActive ? 16.0 : 1.15),
         ]}
-        color="#f97316"
+        color={CHAMBER_IGNITION_LIGHT_COLOR}
         intensity={0}
-        distance={isTankActive ? 210 : 14}
+        decay={2}
+        distance={
+          isTankActive
+            ? 240
+            : caliberProfile === '30x173_gau8'
+              ? 75
+              : is50Bmg
+                ? 22
+                : 16
+        }
       />
 
       {/* 3b. Gas-Block / Piston Port Tap Impulse Glow */}
@@ -3488,30 +3736,52 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
           />
         </mesh>
 
-        {/* Supersonic Mach shock diamonds (barrel-stretched octahedra) */}
+        {/* Supersonic Mach shock diamonds (coaxial plasma core + translucent flame sheath halo) */}
         {DIAMOND_SLOTS.map((i) => (
-          <mesh
-            key={`diamond-${i}`}
-            ref={(el) => {
-              diamondMeshRefs.current[i] = el;
-            }}
-            position={[0.75 + i, 0, 0]}
-            visible={i < diamondCount}
-            renderOrder={11}
-          >
-            <octahedronGeometry args={[1, 0]} />
-            <meshBasicMaterial
+          <React.Fragment key={`diamond-${i}`}>
+            <mesh
               ref={(el) => {
-                diamondMatRefs.current[i] = el;
+                diamondMeshRefs.current[i] = el;
               }}
-              color={HDR_DIAMOND}
-              transparent
-              opacity={0}
-              depthWrite={false}
-              blending={THREE.AdditiveBlending}
-              toneMapped={false}
-            />
-          </mesh>
+              position={[0.75 + i, 0, 0]}
+              visible={i < diamondCount}
+              renderOrder={11}
+            >
+              <octahedronGeometry args={[1, 0]} />
+              <meshBasicMaterial
+                ref={(el) => {
+                  diamondMatRefs.current[i] = el;
+                }}
+                color={HDR_DIAMOND}
+                transparent
+                opacity={0}
+                depthWrite={false}
+                blending={THREE.AdditiveBlending}
+                toneMapped={false}
+              />
+            </mesh>
+            <mesh
+              ref={(el) => {
+                diamondHaloMeshRefs.current[i] = el;
+              }}
+              position={[0.81 + i, 0, 0]}
+              visible={i < diamondCount}
+              renderOrder={10}
+            >
+              <octahedronGeometry args={[1, 0]} />
+              <meshBasicMaterial
+                ref={(el) => {
+                  diamondHaloMatRefs.current[i] = el;
+                }}
+                color={HDR_FLAME}
+                transparent
+                opacity={0}
+                depthWrite={false}
+                blending={THREE.AdditiveBlending}
+                toneMapped={false}
+              />
+            </mesh>
+          </React.Fragment>
         ))}
 
         {/* Directional brake jets (±35° rearward-lateral) / flash-hider prongs */}
@@ -3611,6 +3881,29 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
           />
         </mesh>
       </group>
+
+      {/* Lingering translucent muzzle gunsmoke puff (caliber & muzzle-device coupled) */}
+      {MUZZLE_PUFF_SLOTS.map((i) => (
+        <mesh
+          key={`muzzle-puff-${i}`}
+          ref={(el) => {
+            muzzlePuffMeshRefs.current[i] = el;
+          }}
+          geometry={muzzlePuffGeo}
+          raycast={noSmokeRaycast}
+          visible={false}
+          renderOrder={11}
+        >
+          <shaderMaterial
+            ref={(el) => {
+              muzzlePuffMatRefs.current[i] = el;
+            }}
+            args={muzzlePuffShaderArgs[i]}
+            transparent
+            depthWrite={false}
+          />
+        </mesh>
+      ))}
 
       {/* 5. Next Complete Cartridge / Quiver Arrow (with Boxer Primer / Nock Collar) */}
       <group ref={nextRoundRef} scale={roundFit.roundScale}>

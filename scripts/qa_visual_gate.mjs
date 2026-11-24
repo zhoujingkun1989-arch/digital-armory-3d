@@ -90,6 +90,8 @@ export function parseCliArgs(argv) {
     outDir: DEFAULT_QA_OUT_DIR,
     cut: false,
     cutMode: 'off', // 'off' | 'only' | 'both'
+    explode: false,
+    explodeMode: 'off', // 'off' | 'only' | 'both'
     format: 'png',
     lang: null,
     settleMs: DEFAULT_SETTLE_MS,
@@ -203,6 +205,19 @@ export function parseCliArgs(argv) {
         } else {
           opts.cut = true;
           opts.cutMode = 'only';
+        }
+        break;
+      }
+      case '--explode': {
+        if (inline === 'both') {
+          opts.explode = true;
+          opts.explodeMode = 'both';
+        } else if (inline === 'false' || inline === '0') {
+          opts.explode = false;
+          opts.explodeMode = 'off';
+        } else {
+          opts.explode = true;
+          opts.explodeMode = 'only';
         }
         break;
       }
@@ -358,24 +373,34 @@ export function buildQaTargets(baseUrl, options) {
           : options.cutMode === 'only' || options.cut
             ? [true]
             : [false];
+      const explodeVariants =
+        options.explodeMode === 'both'
+          ? [false, true]
+          : options.explodeMode === 'only' || options.explode
+            ? [true]
+            : [false];
 
       for (const isCut of cutVariants) {
-        const params = {
-          screen: 'workbench',
-          weapon: weaponId,
-        };
-        if (isCut) params.cut = '1';
-        if (options.lang) params.lang = options.lang;
-        const id = isCut ? `workbench-${weaponId}-cut` : `workbench-${weaponId}`;
-        targets.push({
-          id,
-          screen: 'workbench',
-          weaponId,
-          cut: isCut,
-          expectsWebgl: true,
-          url: buildUrl(params),
-          fileName: `${id}.${ext}`,
-        });
+        for (const isExplode of explodeVariants) {
+          const params = {
+            screen: 'workbench',
+            weapon: weaponId,
+          };
+          if (isCut) params.cut = '1';
+          if (isExplode) params.explode = '1';
+          if (options.lang) params.lang = options.lang;
+          const id = `workbench-${weaponId}${isCut ? '-cut' : ''}${isExplode ? '-explode' : ''}`;
+          targets.push({
+            id,
+            screen: 'workbench',
+            weaponId,
+            cut: isCut,
+            explode: isExplode,
+            expectsWebgl: true,
+            url: buildUrl(params),
+            fileName: `${id}.${ext}`,
+          });
+        }
       }
     }
   }
@@ -481,7 +506,8 @@ async function terminateProcess(child, label = 'process') {
  */
 export async function startLocalViteServer(
   repoRoot = DEFAULT_REPO_ROOT,
-  timeoutMs = 30_000
+  timeoutMs = 30_000,
+  quiet = false
 ) {
   const distIndexPath = path.join(repoRoot, 'dist', 'index.html');
   const hasDist = fs.existsSync(distIndexPath);
@@ -497,9 +523,11 @@ export async function startLocalViteServer(
     ? [viteJsPath, ...viteArgs]
     : ['vite', ...viteArgs];
 
-  logInfo(
-    `Auto-starting local Vite ${mode} server (${hasDist ? 'serving dist/' : 'dev fallback — dist/ not found'})...`
-  );
+  if (!quiet) {
+    logInfo(
+      `Auto-starting local Vite ${mode} server (${hasDist ? 'serving dist/' : 'dev fallback — dist/ not found'})...`
+    );
+  }
 
   const child = spawn(command, spawnArgs, {
     cwd: repoRoot,
@@ -575,7 +603,9 @@ export async function startLocalViteServer(
     throw new Error(`Vite ${mode} announced ${detectedUrl} but HTTP probe failed.`);
   }
 
-  logInfo(`Local Vite ${mode} server ready at ${detectedUrl}`);
+  if (!quiet) {
+    logInfo(`Local Vite ${mode} server ready at ${detectedUrl}`);
+  }
   return {
     url: detectedUrl,
     mode,
@@ -589,7 +619,7 @@ export async function startLocalViteServer(
  * In-page probe evaluating DOM readiness, geometry build completion, WebGL canvas status,
  * and image load completion.
  */
-const PAGE_READINESS_PROBE_SCRIPT = `(() => {
+export const PAGE_READINESS_PROBE_SCRIPT = `(() => {
   const canvases = Array.from(document.querySelectorAll('canvas')).map((c) => {
     const r = c.getBoundingClientRect();
     return {
@@ -624,7 +654,7 @@ const PAGE_READINESS_PROBE_SCRIPT = `(() => {
   };
 })()`;
 
-const WAIT_STABILIZE_FRAMES_SCRIPT = `(async (frameCount) => {
+export const WAIT_STABILIZE_FRAMES_SCRIPT = `(async (frameCount) => {
   if (document.fonts && document.fonts.ready) {
     await Promise.race([
       document.fonts.ready.catch(() => undefined),
@@ -637,10 +667,34 @@ const WAIT_STABILIZE_FRAMES_SCRIPT = `(async (frameCount) => {
   return true;
 })`;
 
+export const SET_EXPLODE_FULL_SCRIPT = `(() => {
+  const slider = document.querySelector('input.explode-slider');
+  if (!slider) return false;
+  const setter = Object.getOwnPropertyDescriptor(
+    window.HTMLInputElement.prototype,
+    'value'
+  )?.set;
+  if (setter) {
+    setter.call(slider, '1000');
+  } else {
+    slider.value = '1000';
+  }
+  slider.dispatchEvent(new Event('input', { bubbles: true }));
+  slider.dispatchEvent(new Event('change', { bubbles: true }));
+  return true;
+})()`;
+
+const DETACHED_WORKER_SCRIPT_RE =
+  /(?:\.worker(?:[-.][^/?#]*)?\.js|\/sw\.js)(?:[?#]|$)/i;
+
+function isDetachedWorkerScriptUrl(url) {
+  return typeof url === 'string' && DETACHED_WORKER_SCRIPT_RE.test(url);
+}
+
 /**
  * Minimal Node 22+ native WebSocket Chrome DevTools Protocol client.
  */
-class NativeCdpClient {
+export class NativeCdpClient {
   constructor(ws) {
     this.ws = ws;
     this.nextId = 1;
@@ -788,7 +842,7 @@ class NativeCdpClient {
   }
 }
 
-async function waitForTargetReadiness({
+export async function waitForTargetReadiness({
   probeFn,
   waitFramesFn,
   getInFlightUrls,
@@ -973,6 +1027,20 @@ async function tryCreatePlaywrightDriver(options) {
           timeoutMs: runOpts.timeoutMs,
           settleMs: runOpts.settleMs,
         });
+
+        if (target.explode) {
+          const moved = await page.evaluate(
+            (expr) => (0, eval)(expr),
+            SET_EXPLODE_FULL_SCRIPT
+          );
+          if (moved) {
+            await sleep(900);
+            await page.evaluate(
+              ({ expr, n }) => (0, eval)(expr)(n),
+              { expr: WAIT_STABILIZE_FRAMES_SCRIPT, n: 16 }
+            );
+          }
+        }
 
         await fs.promises.mkdir(path.dirname(outPath), { recursive: true });
         const screenshotBuf = await page.screenshot({
@@ -1176,7 +1244,12 @@ async function createNativeCdpDriver(options) {
             if (url.startsWith('data:') || url.startsWith('blob:')) return;
             // Dedicated/Service Worker bootstrap requests have an empty loaderId and
             // complete in their own worker target without firing loadingFinished here.
-            if (!params.loaderId && params.documentURL === url) return;
+            if (
+              (!params.loaderId && params.documentURL === url) ||
+              isDetachedWorkerScriptUrl(url)
+            ) {
+              return;
+            }
             activeRequests.set(params.requestId, {
               url,
               method: params.request?.method || 'GET',
@@ -1268,6 +1341,24 @@ async function createNativeCdpDriver(options) {
           settleMs: runOpts.settleMs,
         });
 
+        if (target.explode) {
+          const moved = await evalInSession(
+            sessionId,
+            SET_EXPLODE_FULL_SCRIPT,
+            false,
+            10_000
+          );
+          if (moved) {
+            await sleep(900);
+            await evalInSession(
+              sessionId,
+              `(${WAIT_STABILIZE_FRAMES_SCRIPT})(16)`,
+              true,
+              15_000
+            );
+          }
+        }
+
         const shot = await cdp.send(
           'Page.captureScreenshot',
           {
@@ -1329,6 +1420,50 @@ async function createBrowserDriver(options) {
   return createNativeCdpDriver(options);
 }
 
+export function summarizeWebglInvariants(results) {
+  const list = Array.isArray(results) ? results : [];
+  const webglTargets = list.filter(
+    (r) =>
+      r.expectsWebgl === true ||
+      r.screen === 'workbench' ||
+      r.screen === 'cartridges' ||
+      r.screen === 'split_showdown'
+  );
+  const canvasesVerified = webglTargets.filter((r) =>
+    Boolean(r.canvas && r.canvas.width > 0 && r.canvas.height > 0)
+  ).length;
+  const errorBoundaryHits = list.filter(
+    (r) =>
+      r.reasons?.includes('webgl-error-boundary-rendered') ||
+      r.readiness?.hasErrorBoundary === true
+  ).length;
+  const zeroConsoleErrors = list.every(
+    (r) => (r.consoleErrors?.length ?? 0) === 0
+  );
+  const zeroPageErrors = list.every((r) => (r.pageErrors?.length ?? 0) === 0);
+  const zeroFailedRequests = list.every(
+    (r) => (r.failedRequests?.length ?? 0) === 0
+  );
+  const allCanvasesPresent = canvasesVerified === webglTargets.length;
+
+  return {
+    webglTargetCount: webglTargets.length,
+    canvasesVerified,
+    allCanvasesPresent,
+    errorBoundaryHits,
+    zeroConsoleErrors,
+    zeroPageErrors,
+    zeroFailedRequests,
+    allInvariantsPassed:
+      list.length > 0 &&
+      allCanvasesPresent &&
+      errorBoundaryHits === 0 &&
+      zeroConsoleErrors &&
+      zeroPageErrors &&
+      zeroFailedRequests,
+  };
+}
+
 export function formatHelpText() {
   return `Digital Armory 3D — Automated 1920×1080 Headless Chromium Visual QA Gate
 
@@ -1342,6 +1477,7 @@ Options:
   --screens <csv>        Comma-separated screens (${VALID_SCREENS.join(', ')})
   --out <dir>            Output directory for screenshots & qa-report.json (default: ${DEFAULT_QA_OUT_DIR})
   --cut[=both]           Capture workbench with CT cutaway (?cut=1); use --cut=both for normal + cutaway
+  --explode[=both]       Capture workbench in exploded view (?explode=1); use --explode=both for assembled + exploded
   --format <png|jpg>     Screenshot format (default: png)
   --lang <zh|en>         Optional locale query parameter
   --settle-ms <ms>       Extra WebGL stabilization delay in ms (default: ${DEFAULT_SETTLE_MS})
@@ -1353,7 +1489,7 @@ Options:
 
 Examples:
   node scripts/qa_visual_gate.mjs --weapons ak15
-  node scripts/qa_visual_gate.mjs --weapons ak15,ztz99a --cut=both --out exports/qa-v6
+  node scripts/qa_visual_gate.mjs --weapons ak15,ztz99a --cut=both --explode=both --out exports/qa-v6
   node scripts/qa_visual_gate.mjs --screens armory,cartridges,ballistics --weapons ak15
 `;
 }
@@ -1441,6 +1577,8 @@ async function main() {
           screen: target.screen,
           weaponId: target.weaponId,
           cut: target.cut,
+          explode: Boolean(target.explode),
+          expectsWebgl: target.expectsWebgl,
           url: target.url,
           passed: false,
           reasons: [fatalError || 'Unknown capture failure'],
@@ -1494,6 +1632,8 @@ async function main() {
         screen: target.screen,
         weaponId: target.weaponId,
         cut: target.cut,
+        explode: Boolean(target.explode),
+        expectsWebgl: target.expectsWebgl,
         url: target.url,
         passed,
         reasons,
@@ -1504,6 +1644,7 @@ async function main() {
         readiness: {
           ready: outcome.readiness.ready,
           hasGeoBuildBanner: outcome.readiness.probe?.hasGeoBuildBanner ?? false,
+          hasErrorBoundary: outcome.readiness.probe?.hasErrorBoundary ?? false,
           brokenImages: outcome.readiness.probe?.brokenImgs ?? 0,
         },
         screenshot: {
@@ -1544,6 +1685,8 @@ async function main() {
       totalPageErrors === 0 &&
       totalFailedRequests === 0;
 
+    const webglInvariants = summarizeWebglInvariants(results);
+
     const report = {
       generatedAt: new Date().toISOString(),
       baseUrl,
@@ -1566,6 +1709,7 @@ async function main() {
         totalFailedRequests,
         totalElapsedSec: Number(((Date.now() - totalStart) / 1000).toFixed(2)),
       },
+      webglInvariants,
       targets: results,
     };
 

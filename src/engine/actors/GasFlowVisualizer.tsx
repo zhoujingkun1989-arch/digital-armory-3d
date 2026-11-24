@@ -25,6 +25,7 @@ const STREAM_CHEVRON_COUNT = 24;
 const SUPP_VORTEX_SLOTS = [0, 1, 2, 3, 4] as const;
 const BRAKE_JET_SLOTS = [0, 1, 2, 3] as const;
 const FH_PRONG_SLOTS = [0, 1, 2] as const;
+const BREECH_WISP_SLOTS = [0, 1, 2] as const;
 const BRAKE_SWEEP_RAD = (32 * Math.PI) / 180;
 const noRaycast = (): null => null;
 
@@ -65,6 +66,8 @@ const COL_GAS_TAP_CYAN = new THREE.Color('#22d3ee');
 const COL_SAFE_BLOWDOWN = new THREE.Color('#06b6d4');
 const COL_SEALED_RING = new THREE.Color('#fbbf24');
 const COL_SAFE_UNLOCK = new THREE.Color('#10b981');
+const COL_BREECH_WISP_WARM = new THREE.Color('#e2c9a6');
+const COL_BREECH_WISP_COOL = new THREE.Color('#b8c4d4');
 
 function clamp01(x: number): number {
   if (!(x > 0)) return 0;
@@ -129,6 +132,8 @@ export const GasFlowVisualizer: React.FC = () => {
   const brakeJetMatRefs = useRef<(THREE.MeshBasicMaterial | null)[]>([]);
   const fhProngRefs = useRef<(THREE.Mesh | null)[]>([]);
   const fhProngMatRefs = useRef<(THREE.MeshBasicMaterial | null)[]>([]);
+  const breechWispRefs = useRef<(THREE.Mesh | null)[]>([]);
+  const breechWispMatRefs = useRef<(THREE.MeshBasicMaterial | null)[]>([]);
 
   useEffect(() => {
     const inst = chevronsRef.current;
@@ -316,6 +321,10 @@ export const GasFlowVisualizer: React.FC = () => {
       for (let i = 0; i < FH_PRONG_SLOTS.length; i++) {
         const fp = fhProngRefs.current[i];
         if (fp) fp.visible = false;
+      }
+      for (let i = 0; i < BREECH_WISP_SLOTS.length; i++) {
+        const bw = breechWispRefs.current[i];
+        if (bw) bw.visible = false;
       }
 
       // Animated elastic strain chevrons: cams -> nock -> +X arrow launch trajectory
@@ -1081,6 +1090,48 @@ export const GasFlowVisualizer: React.FC = () => {
       }
     }
 
+    // 4d. Subtle breech / ejection-port gas escape wisps during unlocking & blowdown
+    //     (heightened slightly when a suppressor raises port backpressure; scaled cleanly by caliber class)
+    const wispStartF = Math.max(timing.muzzleExitF, _sample.safeUnlockF - 0.04);
+    const wispSpanF = Math.max(0.14, blowdownEndF - wispStartF + 0.08);
+    const wispScale = isTank
+      ? 9.2
+      : caliber === '30x173_gau8'
+        ? 3.8
+        : caliber === '50_bmg'
+          ? 1.55
+          : 1.0;
+    const suppBackpressureBoost = activeMuzzle === 'suppressor' ? 1.42 : 1.0;
+    for (let i = 0; i < BREECH_WISP_SLOTS.length; i++) {
+      const wMesh = breechWispRefs.current[i];
+      const wMat = breechWispMatRefs.current[i];
+      if (!wMesh || !wMat) continue;
+      const u = (f - (wispStartF + i * 0.025)) / wispSpanF;
+      const showWisp = u > 0 && u < 1;
+      wMesh.visible = showWisp;
+      if (!showWisp) continue;
+      const env = Math.sin(u * Math.PI) * (1 - u * 0.45);
+      const lift = (0.35 + u * 2.4 + i * 0.25) * wispScale;
+      const side = (0.55 + u * 1.35 + i * 0.22) * wispScale;
+      const back = (-0.25 - u * 0.75) * wispScale;
+      wMesh.position.set(
+        manifold.chamberX + back,
+        manifold.boreY + lift,
+        side
+      );
+      const rad = (0.28 + 0.56 * u + i * 0.08) * wispScale;
+      wMesh.scale.set(rad * 1.15, rad * 1.45, rad);
+      wMesh.rotation.set(i * 0.6 + u, u * 1.2, -0.32);
+      _colorWork
+        .copy(COL_BREECH_WISP_WARM)
+        .lerp(COL_BREECH_WISP_COOL, clamp01(u * 1.35));
+      wMat.color.copy(_colorWork);
+      wMat.opacity = Math.min(
+        0.24,
+        env * 0.13 * suppBackpressureBoost * (1 - i * 0.18)
+      );
+    }
+
     while (cursor < STREAM_CHEVRON_COUNT) {
       inst.setMatrixAt(cursor, _hiddenMat4);
       cursor++;
@@ -1404,6 +1455,31 @@ export const GasFlowVisualizer: React.FC = () => {
             side={THREE.DoubleSide}
             depthWrite={false}
             blending={THREE.AdditiveBlending}
+          />
+        </mesh>
+      ))}
+
+      {/* Subtle breech / ejection-port residual gas escape wisps (Zero-GC pre-allocated) */}
+      {BREECH_WISP_SLOTS.map((i) => (
+        <mesh
+          key={`breech-wisp-${i}`}
+          ref={(el) => {
+            breechWispRefs.current[i] = el;
+          }}
+          visible={false}
+          frustumCulled={false}
+          raycast={noRaycast}
+          renderOrder={14}
+        >
+          <icosahedronGeometry args={[1, 1]} />
+          <meshBasicMaterial
+            ref={(el) => {
+              breechWispMatRefs.current[i] = el;
+            }}
+            color="#d6cfc4"
+            transparent
+            opacity={0}
+            depthWrite={false}
           />
         </mesh>
       ))}
