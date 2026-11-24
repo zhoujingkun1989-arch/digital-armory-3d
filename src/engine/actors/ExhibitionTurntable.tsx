@@ -44,6 +44,9 @@ export interface TurntablePedestalGeometries {
   insert: THREE.CircleGeometry;
   statusRing: THREE.RingGeometry;
   indexNotch: THREE.BoxGeometry;
+  outerBevelRing: THREE.LatheGeometry;
+  scanTickRing: THREE.RingGeometry;
+  groundShadowDisc: THREE.CircleGeometry;
 }
 
 /** CNC-turned billet profiles: chamfered anodized platter + flared brushed-steel chassis. */
@@ -119,6 +122,34 @@ export function buildTurntablePedestalGeometries(
   );
   indexNotch.translate(R * (P.dialOuter + 0.012), 0.008 * hScale, 0);
 
+  // Refined brushed-anodized outer chamfer collar catching specular studio rim light
+  const outerBevelRing = new THREE.LatheGeometry(
+    [
+      new THREE.Vector2(R - c * 1.18, 0.0015 * hScale),
+      new THREE.Vector2(R - c * 0.88, 0.003 * hScale),
+      new THREE.Vector2(R - c * 0.22, -c * 0.14),
+      new THREE.Vector2(R * 1.003, -c * 0.96),
+      new THREE.Vector2(R * 1.003, -c * 1.18),
+      new THREE.Vector2(R - c * 0.06, -c * 1.18),
+    ],
+    160
+  );
+
+  // Luminous segmented azimuth scan tick ring (animates smoothly while auto-rotating)
+  const scanTickRing = new THREE.RingGeometry(
+    R * 0.968,
+    R * 0.996,
+    160,
+    1
+  );
+  scanTickRing.rotateX(-Math.PI / 2);
+  scanTickRing.translate(0, 0.009 * hScale, 0);
+
+  // Soft radial AO depth grounding shadow anchored at the studio floor datum
+  const groundShadowDisc = new THREE.CircleGeometry(R * 1.38, 96);
+  groundShadowDisc.rotateX(-Math.PI / 2);
+  groundShadowDisc.translate(0, -totalH + 0.004 * hScale, 0);
+
   return {
     platter,
     chassis,
@@ -127,6 +158,9 @@ export function buildTurntablePedestalGeometries(
     insert,
     statusRing,
     indexNotch,
+    outerBevelRing,
+    scanTickRing,
+    groundShadowDisc,
   };
 }
 
@@ -317,6 +351,115 @@ function getSpunFinishTexture(): THREE.CanvasTexture | null {
   return spunTexture;
 }
 
+/**
+ * Generates a linear brushed-anodized micro-roughness map for the CNC outer chamfer bevel.
+ * Locked via `lockLinearTextureColorSpace` so R3F v8 cannot overwrite to sRGB. Caller owns `.dispose()`.
+ */
+function createBrushedBevelRoughnessTexture(): THREE.CanvasTexture | null {
+  const c = makeCanvas(512);
+  if (!c) return null;
+  const { ctx } = c;
+  const rand = createSeededRandom(0x7c3b19);
+  ctx.fillStyle = 'rgb(88,88,88)';
+  ctx.fillRect(0, 0, 512, 512);
+  for (let y = 0; y < 512; y += 2) {
+    const v = Math.round(62 + rand() * 56);
+    ctx.fillStyle = `rgb(${v},${v},${v})`;
+    ctx.fillRect(0, y, 512, 2);
+  }
+  const tex = new THREE.CanvasTexture(c.canvas);
+  lockLinearTextureColorSpace(tex);
+  tex.wrapS = THREE.RepeatWrapping;
+  tex.wrapT = THREE.RepeatWrapping;
+  tex.repeat.set(8, 1);
+  tex.anisotropy = 4;
+  tex.needsUpdate = true;
+  return tex;
+}
+
+/**
+ * Generates a high-contrast segmented azimuth scanner tick texture for the rotating outer ring.
+ * Caller owns `.dispose()`.
+ */
+function createAzimuthScanRingTexture(
+  accentHex: string
+): THREE.CanvasTexture | null {
+  const c = makeCanvas(512);
+  if (!c) return null;
+  const { ctx } = c;
+  const cx = 256;
+  const cy = 256;
+  ctx.clearRect(0, 0, 512, 512);
+
+  // 4 sweeping precision telemetry arcs + micro vernier ticks around circumference
+  const sweepStarts = [0, Math.PI * 0.5, Math.PI, Math.PI * 1.5];
+  ctx.lineCap = 'round';
+  for (const baseAng of sweepStarts) {
+    ctx.strokeStyle = accentHex;
+    ctx.lineWidth = 5;
+    ctx.globalAlpha = 0.88;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 248, baseAng, baseAng + 0.34);
+    ctx.stroke();
+
+    ctx.globalAlpha = 0.42;
+    ctx.lineWidth = 2.5;
+    ctx.beginPath();
+    ctx.arc(cx, cy, 248, baseAng + 0.38, baseAng + 0.62);
+    ctx.stroke();
+  }
+
+  // Fine perimeter pulse ticks every 10 deg
+  ctx.globalAlpha = 0.52;
+  ctx.lineWidth = 2;
+  for (let deg = 0; deg < 360; deg += 10) {
+    const a = THREE.MathUtils.degToRad(deg);
+    ctx.beginPath();
+    ctx.moveTo(cx + Math.cos(a) * 242, cy + Math.sin(a) * 242);
+    ctx.lineTo(cx + Math.cos(a) * 252, cy + Math.sin(a) * 252);
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+
+  const tex = new THREE.CanvasTexture(c.canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 4;
+  tex.needsUpdate = true;
+  return tex;
+}
+
+/**
+ * Generates a soft radial ambient-occlusion depth grounding shadow beneath the plinth.
+ * Caller owns `.dispose()`.
+ */
+function createTurntableGroundShadowTexture(
+  isLight: boolean
+): THREE.CanvasTexture | null {
+  const c = makeCanvas(512);
+  if (!c) return null;
+  const { ctx } = c;
+  const half = 256;
+  const grad = ctx.createRadialGradient(half, half, 92, half, half, half);
+  if (isLight) {
+    grad.addColorStop(0.0, 'rgba(15, 23, 42, 0.36)');
+    grad.addColorStop(0.58, 'rgba(15, 23, 42, 0.24)');
+    grad.addColorStop(0.78, 'rgba(30, 41, 59, 0.08)');
+    grad.addColorStop(1.0, 'rgba(30, 41, 59, 0)');
+  } else {
+    grad.addColorStop(0.0, 'rgba(0, 0, 0, 0.72)');
+    grad.addColorStop(0.58, 'rgba(2, 6, 18, 0.48)');
+    grad.addColorStop(0.8, 'rgba(2, 6, 18, 0.14)');
+    grad.addColorStop(1.0, 'rgba(2, 6, 18, 0)');
+  }
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 512, 512);
+
+  const tex = new THREE.CanvasTexture(c.canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.needsUpdate = true;
+  return tex;
+}
+
 // =====================================================================================
 // Component
 // =====================================================================================
@@ -330,6 +473,8 @@ export const ExhibitionTurntable: React.FC<ExhibitionTurntableProps> =
   React.memo(({ weaponId, environmentPreset = DEFAULT_ARMORY_ENVIRONMENT }) => {
     const screen = useAppStore((s) => s.screen);
     const groupRef = useRef<THREE.Group>(null);
+    const scanRingRef = useRef<THREE.Mesh>(null);
+    const scanMatRef = useRef<THREE.MeshBasicMaterial>(null);
 
     const radius = getTurntableRadius(weaponId);
     const env = getArmoryEnvironment(environmentPreset);
@@ -349,6 +494,9 @@ export const ExhibitionTurntable: React.FC<ExhibitionTurntableProps> =
         geos.insert.dispose();
         geos.statusRing.dispose();
         geos.indexNotch.dispose();
+        geos.outerBevelRing.dispose();
+        geos.scanTickRing.dispose();
+        geos.groundShadowDisc.dispose();
       },
       [geos]
     );
@@ -360,7 +508,23 @@ export const ExhibitionTurntable: React.FC<ExhibitionTurntableProps> =
     );
     const spunTex = useMemo(() => getSpunFinishTexture(), []);
 
-    useFrame(() => {
+    // Component-owned Smithsonian finish textures (strictly disposed on unmount/theme change)
+    const bevelRoughTex = useMemo(() => createBrushedBevelRoughnessTexture(), []);
+    useEffect(() => () => bevelRoughTex?.dispose(), [bevelRoughTex]);
+
+    const scanArcTex = useMemo(
+      () => createAzimuthScanRingTexture(tt.accentCyan),
+      [tt.accentCyan]
+    );
+    useEffect(() => () => scanArcTex?.dispose(), [scanArcTex]);
+
+    const groundShadowTex = useMemo(
+      () => createTurntableGroundShadowTexture(isLight),
+      [isLight]
+    );
+    useEffect(() => () => groundShadowTex?.dispose(), [groundShadowTex]);
+
+    useFrame((_, delta) => {
       if (!groupRef.current) return;
       const st = useAppStore.getState();
       if (st.screen === 'workbench') return;
@@ -369,6 +533,29 @@ export const ExhibitionTurntable: React.FC<ExhibitionTurntableProps> =
         playbackClock.getState().animatedProgress
       );
       groupRef.current.position.set(envl.cx, envl.platterTopY, 0);
+
+      // Subtle animated azimuth scan tick ring when auto-rotating (Zero-GC)
+      const dt = Math.min(delta, 0.05);
+      if (scanRingRef.current) {
+        if (st.armoryAutoRotate) {
+          scanRingRef.current.rotation.y += dt * 0.42;
+        }
+      }
+      if (scanMatRef.current) {
+        const targetOpacity = st.armoryAutoRotate
+          ? isLight
+            ? 0.62
+            : 0.82
+          : isLight
+            ? 0.16
+            : 0.24;
+        scanMatRef.current.opacity = THREE.MathUtils.damp(
+          scanMatRef.current.opacity,
+          targetOpacity,
+          6.0,
+          dt
+        );
+      }
     });
 
     if (screen === 'workbench') return null;
@@ -478,6 +665,55 @@ export const ExhibitionTurntable: React.FC<ExhibitionTurntableProps> =
             roughness={0.3}
           />
         </mesh>
+
+        {/* Smithsonian Brushed-Anodized Outer Chamfer Bevel Collar */}
+        <mesh
+          geometry={geos.outerBevelRing}
+          receiveShadow
+          raycast={noopRaycast}
+        >
+          <meshPhysicalMaterial
+            color={isLight ? '#94a3b8' : '#475569'}
+            metalness={0.92}
+            roughness={0.32}
+            roughnessMap={bevelRoughTex}
+            clearcoat={0.45}
+            clearcoatRoughness={0.22}
+            envMapIntensity={isLight ? 1.05 : 1.35}
+          />
+        </mesh>
+
+        {/* Subtle Animated Azimuth Scan Tick Ring (sweeps smoothly during auto-rotate) */}
+        {scanArcTex && (
+          <mesh
+            ref={scanRingRef}
+            geometry={geos.scanTickRing}
+            raycast={noopRaycast}
+          >
+            <meshBasicMaterial
+              ref={scanMatRef}
+              map={scanArcTex}
+              transparent
+              opacity={isLight ? 0.5 : 0.72}
+              depthWrite={false}
+              polygonOffset
+              polygonOffsetFactor={-3}
+              polygonOffsetUnits={-3}
+            />
+          </mesh>
+        )}
+
+        {/* Crisp Radial Depth Grounding AO Shadow beneath Plinth */}
+        {groundShadowTex && (
+          <mesh geometry={geos.groundShadowDisc} raycast={noopRaycast}>
+            <meshBasicMaterial
+              map={groundShadowTex}
+              transparent
+              opacity={1}
+              depthWrite={false}
+            />
+          </mesh>
+        )}
       </group>
     );
   });

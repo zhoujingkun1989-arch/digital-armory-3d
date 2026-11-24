@@ -13,15 +13,18 @@ import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import {
   Camera,
   Crosshair,
+  Download,
   Eye,
   Flame,
   Pause,
   Play,
   RotateCcw,
   Target,
+  Trash2,
   Volume2,
   VolumeX,
   Wind,
+  Zap,
 } from 'lucide-react';
 import { ViewportErrorBoundary } from '../../app/ViewportErrorBoundary';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
@@ -41,6 +44,8 @@ import {
 } from './range3DAudio';
 import {
   buildRangeTrajectory3D,
+  computeFiveRoundGrouping,
+  computeStringPlaybackSync,
   computeWindFlagStates,
   createMutableCameraPose3D,
   createMutableProjectilePose3D,
@@ -52,21 +57,25 @@ import {
   GEL_BLOCK_HEIGHT_CM,
   GEL_BLOCK_LENGTH_CM,
   GEL_BLOCK_WIDTH_CM,
+  GROUPING_STRING_SHOT_COUNT,
   RANGE_AIM_MODES,
   RANGE_CAMERA_MODES,
   RANGE_SPEED_OPTIONS,
   RANGE_TARGET_TYPES,
   sampleProjectilePoseAtTimeInto,
   writeMachGradientColorRGB,
+  type GroupingShotResult,
   type ProjectilePose3D,
   type Range3DPoint,
   type RangeAimMode,
   type RangeCameraMode,
+  type RangeGroupingResult,
   type RangeSpeedMultiplier,
   type RangeTargetType,
   type RangeTrajectory3D,
   type WindFlagState,
 } from './range3DMath';
+import { downloadRangeTargetCardPng } from './targetCardExporter';
 
 export interface Range3DSceneProps {
   focusedSolution: BallisticSolution;
@@ -80,6 +89,12 @@ export interface Range3DSceneProps {
   expanded?: boolean;
 }
 
+interface PersistentImpactChip {
+  offsetYM: number;
+  offsetZM: number;
+  impactStampS: number;
+}
+
 interface SimClockState {
   simTimeS: number;
   playing: boolean;
@@ -90,6 +105,11 @@ interface SimClockState {
   overviewNeedsFrame: boolean;
   audioMuted: boolean;
   audioTimerId: number | null;
+  stringAudioTimers: number[];
+  activeString: RangeGroupingResult | null;
+  stringFiredFlags: boolean[];
+  stringImpactFlags: boolean[];
+  persistentChips: PersistentImpactChip[];
 }
 
 interface HudDomRefs {
@@ -109,16 +129,20 @@ const getServerSnapshot = () => false;
 
 // Module-level reusable scratch primitives (Zero-GC inside useFrame)
 const _poseScratch = createMutableProjectilePose3D();
+const _tracerPoseScratch = createMutableProjectilePose3D();
 const _camPoseScratch = createMutableCameraPose3D();
 const _camGoalPos = new THREE.Vector3();
 const _camGoalLook = new THREE.Vector3();
 const _eulerScratch = new THREE.Euler(0, 0, 0, 'YZX');
 const _sparkDummy = new THREE.Object3D();
+const _tracerDummy = new THREE.Object3D();
+const _chipDummy = new THREE.Object3D();
 const _tmpColor = new THREE.Color();
 const _upAxis = new THREE.Vector3(0, 1, 0);
 const _xAxis = new THREE.Vector3(1, 0, 0);
 
 const SPARK_COUNT_MAX = 48;
+const MAX_PERSISTENT_CHIPS = 25;
 const FLAG_SEGMENTS = 10;
 const FLAG_LENGTH_M = 2.65;
 const FLAG_HEIGHT_M = 0.72;
@@ -1283,6 +1307,8 @@ const TargetArrayRig: React.FC<{
   const pendulumRef = useRef<THREE.Group>(null);
   const impactHotspotRef = useRef<THREE.Mesh>(null);
   const sparksMeshRef = useRef<THREE.InstancedMesh>(null);
+  const chipsSplashRef = useRef<THREE.InstancedMesh>(null);
+  const chipsCoreRef = useRef<THREE.InstancedMesh>(null);
   const acousticRingRef = useRef<THREE.Mesh>(null);
   const gelStretchRef = useRef<THREE.Mesh>(null);
   const gelTrackRef = useRef<THREE.Mesh>(null);
@@ -1325,16 +1351,112 @@ const TargetArrayRig: React.FC<{
     const postT = Math.max(0, st.simTimeS - traj.totalFlightTimeS);
     const hasHitTime = st.simTimeS >= traj.totalFlightTimeS;
 
-    // 1. AR500 Steel Gong Pendulum Swing
+    // 1. AR500 Steel Gong Pendulum Swing (stacks recoil cleanly across 5-round strings!)
     if (pendulumRef.current && traj.targetType === 'steel_gong') {
-      const swingRad = evaluateSteelPendulumAngle(traj.steelImpact, postT);
+      let swingRad = 0;
+      if (st.activeString) {
+        const shots = st.activeString.shots;
+        for (let i = 0; i < shots.length; i++) {
+          const sh = shots[i];
+          if (sh.hit && st.simTimeS >= sh.impactTimeS) {
+            swingRad +=
+              evaluateSteelPendulumAngle(
+                traj.steelImpact,
+                st.simTimeS - sh.impactTimeS
+              ) * 0.72;
+          }
+        }
+        swingRad = Math.min(1.15, Math.max(-0.55, swingRad));
+      } else {
+        swingRad = evaluateSteelPendulumAngle(traj.steelImpact, postT);
+      }
       // Positive Z rotation swings hanging (0, -chainL, 0) backward downrange (+X)
       pendulumRef.current.rotation.z = swingRad;
     }
 
-    // 2. Impact Thermal / Lead Splatter Hotspot on Steel Face
+    // 1b. Persistent Glowing Lead-Splash / Carbon Impact Chips on AR500 Gong Face (Zero-GC)
+    if (
+      chipsSplashRef.current &&
+      chipsCoreRef.current &&
+      traj.targetType === 'steel_gong'
+    ) {
+      const chips = st.persistentChips;
+      const nowSec = typeof performance !== 'undefined' ? performance.now() * 0.001 : 0;
+      const splashX = -(isArmor ? 0.075 : 0.02);
+      const coreX = -(isArmor ? 0.077 : 0.0215);
+      const baseChipR = isArmor ? 0.11 : 0.028;
+
+      for (let i = 0; i < MAX_PERSISTENT_CHIPS; i++) {
+        if (i >= chips.length) {
+          _chipDummy.position.set(0, -100, 0);
+          _chipDummy.scale.setScalar(0.0001);
+          _chipDummy.rotation.set(0, -Math.PI / 2, 0);
+          _chipDummy.updateMatrix();
+          chipsSplashRef.current.setMatrixAt(i, _chipDummy.matrix);
+          chipsCoreRef.current.setMatrixAt(i, _chipDummy.matrix);
+          continue;
+        }
+        const chip = chips[i];
+        const ageS = Math.max(0, nowSec - chip.impactStampS);
+        const heat01 = Math.exp(-ageS / (flirActive ? 5.5 : 1.15));
+
+        _chipDummy.position.set(splashX, chip.offsetYM, chip.offsetZM);
+        _chipDummy.rotation.set(0, -Math.PI / 2, 0);
+        _chipDummy.scale.setScalar(baseChipR * (1.28 + 0.32 * heat01));
+        _chipDummy.updateMatrix();
+        chipsSplashRef.current.setMatrixAt(i, _chipDummy.matrix);
+
+        if (flirActive) {
+          _tmpColor.setRGB(
+            0.48 + 0.52 * heat01,
+            0.48 + 0.52 * heat01,
+            0.52 + 0.48 * heat01
+          );
+        } else {
+          // Bright incandescent lead-splash cooling into brushed silver-grey bare steel chip
+          _tmpColor.setRGB(
+            0.76 + 0.24 * heat01,
+            0.78 + 0.16 * heat01,
+            0.82 - 0.58 * heat01
+          );
+        }
+        chipsSplashRef.current.setColorAt(i, _tmpColor);
+
+        _chipDummy.position.set(coreX, chip.offsetYM, chip.offsetZM);
+        _chipDummy.scale.setScalar(baseChipR * 0.62);
+        _chipDummy.updateMatrix();
+        chipsCoreRef.current.setMatrixAt(i, _chipDummy.matrix);
+
+        if (flirActive) {
+          _tmpColor.setRGB(
+            0.65 + 0.35 * heat01,
+            0.65 + 0.35 * heat01,
+            0.68 + 0.32 * heat01
+          );
+        } else {
+          // Dark carbon crater core with brief hot ember glow
+          _tmpColor.setRGB(
+            0.12 + 0.85 * heat01,
+            0.14 + 0.42 * heat01,
+            0.18 + 0.06 * heat01
+          );
+        }
+        chipsCoreRef.current.setColorAt(i, _tmpColor);
+      }
+      chipsSplashRef.current.instanceMatrix.needsUpdate = true;
+      chipsCoreRef.current.instanceMatrix.needsUpdate = true;
+      if (chipsSplashRef.current.instanceColor) {
+        chipsSplashRef.current.instanceColor.needsUpdate = true;
+      }
+      if (chipsCoreRef.current.instanceColor) {
+        chipsCoreRef.current.instanceColor.needsUpdate = true;
+      }
+    }
+
+    // 2. Single-shot Impact Thermal / Lead Splatter Hotspot on Steel Face
+    // Suppressed during 5-round strings so no phantom 6th nominal-center mark appears
     if (impactHotspotRef.current && traj.targetType === 'steel_gong') {
-      const showHotspot = hasHitTime && traj.steelImpact.hit;
+      const showHotspot = !st.activeString && hasHitTime && traj.steelImpact.hit;
       impactHotspotRef.current.visible = showHotspot;
       if (showHotspot) {
         const cool01 = Math.exp(-postT / (flirActive ? 2.4 : 0.42));
@@ -1595,6 +1717,26 @@ const TargetArrayRig: React.FC<{
                   <circleGeometry args={[isArmor ? 0.14 : 0.036, 16]} />
                   <meshBasicMaterial color="#ffffff" />
                 </mesh>
+
+                {/* Persistent Glowing Lead-Splash Rings (swings physically with AR500 gong!) */}
+                <instancedMesh
+                  ref={chipsSplashRef}
+                  args={[undefined, undefined, MAX_PERSISTENT_CHIPS]}
+                  frustumCulled={false}
+                >
+                  <circleGeometry args={[1, 18]} />
+                  <meshBasicMaterial color="#ffffff" />
+                </instancedMesh>
+
+                {/* Persistent Carbon Crater Cores */}
+                <instancedMesh
+                  ref={chipsCoreRef}
+                  args={[undefined, undefined, MAX_PERSISTENT_CHIPS]}
+                  frustumCulled={false}
+                >
+                  <circleGeometry args={[1, 14]} />
+                  <meshBasicMaterial color="#ffffff" />
+                </instancedMesh>
               </group>
             </group>
 
@@ -1736,6 +1878,85 @@ function syncPerspectiveCameraClip(
 }
 
 /**
+ * Zero-GC staggered 5-round tracer streak rig rendering all in-flight rounds
+ * during a 5-round precision grouping string (`InstancedMesh`, zero `new THREE.` in `useFrame`).
+ */
+const StringTracersRig: React.FC<{
+  traj: RangeTrajectory3D;
+  flirActive: boolean;
+  simRef: React.MutableRefObject<SimClockState>;
+}> = ({ traj, flirActive, simRef }) => {
+  const tracersRef = useRef<THREE.InstancedMesh>(null);
+
+  useFrame(() => {
+    const mesh = tracersRef.current;
+    if (!mesh) return;
+    const st = simRef.current;
+    const str = st.activeString;
+    const isArmor = traj.spec.category === 'armor';
+    const baseZCm = traj.steelImpact.impactOffsetZCm;
+    const baseYCm = traj.steelImpact.impactOffsetYCm;
+    const streakLen = Math.max(
+      isArmor ? 4.2 : 1.6,
+      Math.min(14, traj.targetRangeM * 0.015)
+    );
+    const streakThick = isArmor ? 0.16 : 0.065;
+
+    for (let i = 0; i < GROUPING_STRING_SHOT_COUNT; i++) {
+      if (!str || i >= str.shots.length) {
+        _tracerDummy.position.set(0, -100, 0);
+        _tracerDummy.scale.setScalar(0.0001);
+        _tracerDummy.updateMatrix();
+        mesh.setMatrixAt(i, _tracerDummy.matrix);
+        continue;
+      }
+      const shot = str.shots[i];
+      const localT = st.simTimeS - shot.fireDelayS;
+      if (localT < 0 || localT > traj.totalFlightTimeS) {
+        _tracerDummy.position.set(0, -100, 0);
+        _tracerDummy.scale.setScalar(0.0001);
+        _tracerDummy.updateMatrix();
+        mesh.setMatrixAt(i, _tracerDummy.matrix);
+        continue;
+      }
+
+      sampleProjectilePoseAtTimeInto(traj, localT, _tracerPoseScratch);
+      const u = _tracerPoseScratch.progress01;
+      const dispYM = ((shot.offsetYCm - baseYCm) / 100) * u;
+      const dispZM = ((shot.offsetZCm - baseZCm) / 100) * u;
+
+      _tracerDummy.position.set(
+        _tracerPoseScratch.x,
+        _tracerPoseScratch.y + dispYM,
+        _tracerPoseScratch.z + dispZM
+      );
+      _eulerScratch.set(
+        0,
+        _tracerPoseScratch.yawRad,
+        _tracerPoseScratch.pitchRad,
+        'YZX'
+      );
+      _tracerDummy.rotation.copy(_eulerScratch);
+      _tracerDummy.scale.set(streakLen, streakThick, streakThick);
+      _tracerDummy.updateMatrix();
+      mesh.setMatrixAt(i, _tracerDummy.matrix);
+    }
+    mesh.instanceMatrix.needsUpdate = true;
+  });
+
+  return (
+    <instancedMesh
+      ref={tracersRef}
+      args={[undefined, undefined, GROUPING_STRING_SHOT_COUNT]}
+      frustumCulled={false}
+    >
+      <boxGeometry args={[1, 1, 1]} />
+      <meshBasicMaterial color={flirActive ? '#ffffff' : '#fbbf24'} />
+    </instancedMesh>
+  );
+};
+
+/**
  * Mounted FIRST inside Range3DWorld so `simTimeS` always advances BEFORE
  * child projectile, target, and camera rigs read it in the same frame (zero 1-frame lag!).
  */
@@ -1743,27 +1964,50 @@ const SimulationClockDriver: React.FC<{
   traj: RangeTrajectory3D;
   simRef: React.MutableRefObject<SimClockState>;
   onImpactReached: () => void;
+  onStringShotFired: (shotIndex: number) => void;
+  onStringShotImpact: (shot: GroupingShotResult) => void;
   onPlaybackFinished: () => void;
   onFrameTelemetry: (simTimeS: number, pose: ProjectilePose3D) => void;
 }> = ({
   traj,
   simRef,
   onImpactReached,
+  onStringShotFired,
+  onStringShotImpact,
   onPlaybackFinished,
   onFrameTelemetry,
 }) => {
   useFrame((_, delta) => {
     const st = simRef.current;
     const clampedDelta = Math.min(delta, 0.05);
+    const activeStr = st.activeString;
+    const timelineMax = activeStr
+      ? activeStr.totalStringTimelineS
+      : traj.totalTimelineS;
 
     if (st.playing) {
       st.simTimeS += clampedDelta * st.speed;
-      if (st.simTimeS >= traj.totalFlightTimeS && !st.impactTriggered) {
+
+      if (activeStr) {
+        const shots = activeStr.shots;
+        for (let i = 0; i < shots.length; i++) {
+          const shot = shots[i];
+          if (!st.stringFiredFlags[i] && st.simTimeS >= shot.fireDelayS) {
+            st.stringFiredFlags[i] = true;
+            onStringShotFired(i);
+          }
+          if (!st.stringImpactFlags[i] && st.simTimeS >= shot.impactTimeS) {
+            st.stringImpactFlags[i] = true;
+            onStringShotImpact(shot);
+          }
+        }
+      } else if (st.simTimeS >= traj.totalFlightTimeS && !st.impactTriggered) {
         st.impactTriggered = true;
         onImpactReached();
       }
-      if (st.simTimeS >= traj.totalTimelineS) {
-        st.simTimeS = traj.totalTimelineS;
+
+      if (st.simTimeS >= timelineMax) {
+        st.simTimeS = timelineMax;
         st.playing = false;
         onPlaybackFinished();
       }
@@ -1789,6 +2033,8 @@ const Range3DWorld: React.FC<{
   simRef: React.MutableRefObject<SimClockState>;
   onFrameTelemetry: (simTimeS: number, pose: ProjectilePose3D) => void;
   onImpactReached: () => void;
+  onStringShotFired: (shotIndex: number) => void;
+  onStringShotImpact: (shot: GroupingShotResult) => void;
   onPlaybackFinished: () => void;
 }> = ({
   traj,
@@ -1801,6 +2047,8 @@ const Range3DWorld: React.FC<{
   simRef,
   onFrameTelemetry,
   onImpactReached,
+  onStringShotFired,
+  onStringShotImpact,
   onPlaybackFinished,
 }) => {
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
@@ -2007,6 +2255,8 @@ const Range3DWorld: React.FC<{
         traj={traj}
         simRef={simRef}
         onImpactReached={onImpactReached}
+        onStringShotFired={onStringShotFired}
+        onStringShotImpact={onStringShotImpact}
         onPlaybackFinished={onPlaybackFinished}
         onFrameTelemetry={onFrameTelemetry}
       />
@@ -2297,6 +2547,9 @@ const Range3DWorld: React.FC<{
         flirActive={flirActive}
         simRef={simRef}
       />
+
+      {/* Zero-GC Staggered 5-Round Grouping Tracer Streaks */}
+      <StringTracersRig traj={traj} flirActive={flirActive} simRef={simRef} />
     </>
   );
 };
@@ -2333,6 +2586,16 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
   const [flirEnabled, setFlirEnabled] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [localAudioMuted, setLocalAudioMuted] = useState<boolean>(false);
+  const [groupingState, setGroupingState] = useState<{
+    trajKey: string;
+    result: RangeGroupingResult;
+    landedCount: number;
+  } | null>(null);
+  const [chipCountState, setChipCountState] = useState<{
+    trajKey: string;
+    count: number;
+  }>({ trajKey: '', count: 0 });
+  const stringRunCounterRef = useRef(0);
 
   const effectiveMuted = globalSfxMuted || localAudioMuted;
 
@@ -2347,6 +2610,18 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
       ),
     [focusedSolution, targetRangeM, aimMode, targetType]
   );
+
+  const trajKey = `${traj.projectileId}|${Math.round(traj.targetRangeM)}|${traj.aimMode}|${traj.targetType}|${signedCrosswindMps.toFixed(1)}`;
+  const activeGrouping =
+    groupingState && groupingState.trajKey === trajKey
+      ? groupingState.result
+      : null;
+  const landedShotCount =
+    groupingState && groupingState.trajKey === trajKey
+      ? groupingState.landedCount
+      : 0;
+  const visibleChipCount =
+    chipCountState.trajKey === trajKey ? chipCountState.count : 0;
 
   // Build secondary comparison trajectories
   const comparisonTrajs = useMemo(() => {
@@ -2379,6 +2654,11 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
     overviewNeedsFrame: true,
     audioMuted: false,
     audioTimerId: null,
+    stringAudioTimers: [],
+    activeString: null,
+    stringFiredFlags: [false, false, false, false, false],
+    stringImpactFlags: [false, false, false, false, false],
+    persistentChips: [],
   });
 
   const hudRefs = useRef<HudDomRefs>({
@@ -2393,9 +2673,16 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
   });
 
   const clearScheduledAudio = useCallback(() => {
-    if (simRef.current.audioTimerId !== null && typeof window !== 'undefined') {
+    if (typeof window === 'undefined') return;
+    if (simRef.current.audioTimerId !== null) {
       window.clearTimeout(simRef.current.audioTimerId);
       simRef.current.audioTimerId = null;
+    }
+    if (simRef.current.stringAudioTimers.length > 0) {
+      for (const id of simRef.current.stringAudioTimers) {
+        window.clearTimeout(id);
+      }
+      simRef.current.stringAudioTimers = [];
     }
   }, []);
 
@@ -2416,14 +2703,16 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
     clearScheduledAudio,
   ]);
 
-  // Reframe overview camera smoothly when target range or trajectory updates
+  // Reframe overview camera smoothly and clear stale target-plate chips when trajectory configuration changes
   useEffect(() => {
     simRef.current.overviewNeedsFrame = true;
-    // Clamp simTimeS within new trajectory timeline cleanly
+    simRef.current.activeString = null;
+    simRef.current.persistentChips = [];
+    clearScheduledAudio();
     if (simRef.current.simTimeS > traj.totalTimelineS) {
       simRef.current.simTimeS = traj.totalFlightTimeS;
     }
-  }, [traj]);
+  }, [traj, trajKey, clearScheduledAudio]);
 
   // Cleanup pending acoustic audio timer on unmount
   useEffect(() => {
@@ -2432,12 +2721,38 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
     };
   }, [clearScheduledAudio]);
 
-  // Triggered once when simulation crosses impact moment
+  const stampSteelImpactChip = useCallback(
+    (offsetYCm: number, offsetZCm: number) => {
+      const chips = simRef.current.persistentChips;
+      const nowSec =
+        typeof performance !== 'undefined' ? performance.now() * 0.001 : 0;
+      chips.push({
+        offsetYM: offsetYCm / 100,
+        offsetZM: offsetZCm / 100,
+        impactStampS: nowSec,
+      });
+      if (chips.length > MAX_PERSISTENT_CHIPS) {
+        chips.shift();
+      }
+      setChipCountState({ trajKey, count: chips.length });
+    },
+    [trajKey]
+  );
+
+  // Triggered once when single-shot simulation crosses impact moment
   const handleImpactReached = useCallback(() => {
     const st = simRef.current;
+    const isArmor = traj.spec.category === 'armor';
+
+    if (traj.targetType === 'steel_gong' && traj.steelImpact.hit) {
+      stampSteelImpactChip(
+        traj.steelImpact.impactOffsetYCm,
+        traj.steelImpact.impactOffsetZCm
+      );
+    }
+
     if (st.audioMuted) return;
 
-    const isArmor = traj.spec.category === 'armor';
     if (traj.targetType === 'ballistic_gel') {
       if (traj.gelCavity.hit) {
         playBallisticGelThump(traj.gelCavity.impactEnergyJ, false);
@@ -2452,9 +2767,10 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
       return;
     }
 
+    const normRadius =
+      traj.steelImpact.radialErrorCm /
+      Math.max(1, traj.steelImpact.plateRadiusM * 100);
     // Authentic speed-of-sound acoustic return delay (`distance / 343`)!
-    // In Spotter scope (target-side camera), sound arrives near-instantly (~40ms).
-    // In slow-motion Bullet-Cam, cap wall-clock wait so user hears crisp ping clearly.
     const rawDelayMs = traj.steelImpact.acousticReturnDelayS * 1000;
     const delayMs =
       st.cameraMode === 'spotter_flir'
@@ -2468,11 +2784,80 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
       st.audioTimerId = window.setTimeout(() => {
         st.audioTimerId = null;
         if (!simRef.current.audioMuted) {
-          playSteelTargetPing(traj.steelImpact.impactEnergyJ, isArmor, false);
+          playSteelTargetPing(
+            traj.steelImpact.impactEnergyJ,
+            isArmor,
+            false,
+            normRadius
+          );
         }
       }, delayMs);
     }
-  }, [traj, clearScheduledAudio]);
+  }, [traj, clearScheduledAudio, stampSteelImpactChip]);
+
+  const handleStringShotFired = useCallback(() => {
+    const st = simRef.current;
+    if (st.audioMuted) return;
+    const isArchery = traj.spec.dragModel === 'ARROW';
+    const isArmor = traj.spec.category === 'armor';
+    playRangeMuzzleLaunch(traj.spec.muzzleEnergyJ, isArchery, isArmor, false);
+  }, [traj]);
+
+  const handleStringShotImpact = useCallback(
+    (shot: GroupingShotResult) => {
+      const st = simRef.current;
+      const isArmor = traj.spec.category === 'armor';
+      if (traj.targetType === 'steel_gong' && shot.hit) {
+        stampSteelImpactChip(shot.offsetYCm, shot.offsetZCm);
+      }
+      setGroupingState((prev) =>
+        prev && prev.trajKey === trajKey
+          ? {
+              ...prev,
+              landedCount: Math.max(prev.landedCount, shot.shotNumber),
+            }
+          : prev
+      );
+
+      if (st.audioMuted) return;
+      if (traj.targetType === 'ballistic_gel') {
+        if (shot.hit) {
+          playBallisticGelThump(traj.gelCavity.impactEnergyJ, false);
+        } else {
+          playDirtBermMiss(false);
+        }
+        return;
+      }
+
+      if (!shot.hit) {
+        playDirtBermMiss(false);
+        return;
+      }
+
+      const rawDelayMs = traj.steelImpact.acousticReturnDelayS * 1000;
+      const delayMs =
+        st.cameraMode === 'spotter_flir'
+          ? 35
+          : st.speed < 1.0
+            ? Math.min(rawDelayMs, 950)
+            : Math.min(rawDelayMs, 1600);
+
+      if (typeof window !== 'undefined') {
+        const tId = window.setTimeout(() => {
+          if (!simRef.current.audioMuted) {
+            playSteelTargetPing(
+              traj.steelImpact.impactEnergyJ,
+              isArmor,
+              false,
+              shot.normalizedRadius01
+            );
+          }
+        }, delayMs);
+        st.stringAudioTimers.push(tId);
+      }
+    },
+    [traj, trajKey, stampSteelImpactChip]
+  );
 
   const handlePlaybackFinished = useCallback(() => {
     setIsPlaying(false);
@@ -2481,9 +2866,12 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
   const handleFrameTelemetry = useCallback(
     (simTimeS: number, pose: ProjectilePose3D) => {
       const h = hudRefs.current;
+      const totalDuration = simRef.current.activeString
+        ? simRef.current.activeString.totalStringTimelineS
+        : traj.totalTimelineS;
       if (h.scrubber) {
         const sliderVal = Math.round(
-          (simTimeS / Math.max(0.01, traj.totalTimelineS)) * 1000
+          (simTimeS / Math.max(0.01, totalDuration)) * 1000
         );
         if (Number(h.scrubber.value) !== sliderVal) {
           h.scrubber.value = String(sliderVal);
@@ -2538,24 +2926,91 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
       effectiveMuted
     );
 
+    simRef.current.activeString = null;
     simRef.current.simTimeS = 0;
     simRef.current.impactTriggered = false;
     simRef.current.playing = true;
     setIsPlaying(true);
   };
 
+  const handleFireFiveRoundString = () => {
+    clearScheduledAudio();
+    stringRunCounterRef.current += 1;
+    const seed =
+      (104729 +
+        stringRunCounterRef.current * 7919 +
+        Math.round(traj.targetRangeM) * 31) >>>
+      0;
+    const result = computeFiveRoundGrouping(traj, seed);
+
+    simRef.current.activeString = result;
+    simRef.current.stringFiredFlags = [false, false, false, false, false];
+    simRef.current.stringImpactFlags = [false, false, false, false, false];
+    simRef.current.simTimeS = 0;
+    simRef.current.impactTriggered = false;
+    simRef.current.playing = true;
+
+    setGroupingState({ trajKey, result, landedCount: 0 });
+    setIsPlaying(true);
+  };
+
+  const handleClearImpactMarks = () => {
+    playWorkbenchFoley('toggle_switch');
+    clearScheduledAudio();
+    simRef.current.persistentChips = [];
+    simRef.current.activeString = null;
+    setChipCountState({ trajKey, count: 0 });
+    setGroupingState(null);
+  };
+
+  const handleDownloadTargetCard = () => {
+    if (!activeGrouping) return;
+    playWorkbenchFoley('preset_detent');
+    downloadRangeTargetCardPng({
+      grouping: activeGrouping,
+      traj,
+      lang,
+      signedCrosswindMps,
+      elevDialMil: traj.elevDialRad * 1000,
+      windDialMil: traj.windDialRad * 1000,
+    });
+  };
+
+  const syncStringFlagsForTime = (nextT: number) => {
+    const st = simRef.current;
+    const sync = computeStringPlaybackSync(
+      st.activeString,
+      traj.totalTimelineS,
+      nextT
+    );
+    st.stringFiredFlags = sync.firedFlags;
+    st.stringImpactFlags = sync.impactFlags;
+    if (st.activeString) {
+      setGroupingState((prev) =>
+        prev && prev.trajKey === trajKey
+          ? { ...prev, landedCount: sync.landedCount }
+          : prev
+      );
+    }
+  };
+
   const handleTogglePlayPause = () => {
     playWorkbenchFoley('toggle_switch');
-    if (simRef.current.playing) {
-      simRef.current.playing = false;
+    const st = simRef.current;
+    if (st.playing) {
+      st.playing = false;
       clearScheduledAudio();
       setIsPlaying(false);
     } else {
-      if (simRef.current.simTimeS >= traj.totalTimelineS - 0.01) {
-        simRef.current.simTimeS = 0;
-        simRef.current.impactTriggered = false;
+      const totalDuration = st.activeString
+        ? st.activeString.totalStringTimelineS
+        : traj.totalTimelineS;
+      if (st.simTimeS >= totalDuration - 0.01) {
+        st.simTimeS = 0;
+        st.impactTriggered = false;
+        syncStringFlagsForTime(0);
       }
-      simRef.current.playing = true;
+      st.playing = true;
       setIsPlaying(true);
     }
   };
@@ -2567,16 +3022,22 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
     simRef.current.impactTriggered = false;
     simRef.current.playing = false;
     simRef.current.overviewNeedsFrame = true;
+    syncStringFlagsForTime(0);
     setIsPlaying(false);
   };
 
   const handleScrubTimeline = (rawSliderVal: number) => {
     clearScheduledAudio();
+    const st = simRef.current;
+    const totalDuration = st.activeString
+      ? st.activeString.totalStringTimelineS
+      : traj.totalTimelineS;
     const frac = Math.max(0, Math.min(1, rawSliderVal / 1000));
-    const nextT = frac * traj.totalTimelineS;
-    simRef.current.simTimeS = nextT;
-    simRef.current.impactTriggered = nextT >= traj.totalFlightTimeS;
-    simRef.current.playing = false;
+    const nextT = frac * totalDuration;
+    st.simTimeS = nextT;
+    st.impactTriggered = nextT >= traj.totalFlightTimeS;
+    st.playing = false;
+    syncStringFlagsForTime(nextT);
     setIsPlaying(false);
   };
 
@@ -2711,6 +3172,8 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
                 simRef={simRef}
                 onFrameTelemetry={handleFrameTelemetry}
                 onImpactReached={handleImpactReached}
+                onStringShotFired={handleStringShotFired}
+                onStringShotImpact={handleStringShotImpact}
                 onPlaybackFinished={handlePlaybackFinished}
               />
             </Canvas>
@@ -2865,6 +3328,77 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
           </div>
         </div>
 
+        {/* Live Translucent MOA / CEP50 5-Round Grouping Scorecard HUD */}
+        {activeGrouping && (
+          <aside
+            className="eb-range3d-scorecard"
+            data-testid="range3d-grouping-scorecard"
+          >
+            <div className="eb-scorecard-head">
+              <span className="eb-scorecard-title">
+                {ui.range3dScorecardTitle}
+              </span>
+              <button
+                type="button"
+                className="eb-scorecard-export-btn"
+                title={ui.range3dDownloadCardTitle}
+                onClick={handleDownloadTargetCard}
+              >
+                <Download size={11} aria-hidden="true" />
+                <span>{ui.range3dDownloadCardBtn}</span>
+              </button>
+            </div>
+
+            <div className="eb-scorecard-grid">
+              <div className="eb-scorecard-cell is-cyan">
+                <span>{ui.range3dMetricEs}</span>
+                <strong>
+                  {activeGrouping.extremeSpreadCm.toFixed(1)} cm ·{' '}
+                  {activeGrouping.extremeSpreadMoa.toFixed(2)} MOA
+                </strong>
+              </div>
+              <div className="eb-scorecard-cell is-amber">
+                <span>{ui.range3dMetricCep50}</span>
+                <strong>{activeGrouping.cep50Cm.toFixed(1)} cm</strong>
+              </div>
+              <div className="eb-scorecard-cell">
+                <span>{ui.range3dMetricMr}</span>
+                <strong>{activeGrouping.meanRadiusCm.toFixed(1)} cm</strong>
+              </div>
+              <div className="eb-scorecard-cell is-emerald">
+                <span>{ui.range3dMetricHits}</span>
+                <strong>
+                  {activeGrouping.hitCount} / {activeGrouping.shotCount}
+                </strong>
+              </div>
+              <div className="eb-scorecard-cell is-wide">
+                <span>{ui.range3dMetricMpi}</span>
+                <strong>
+                  X {activeGrouping.groupCenterOffsetCm.x >= 0 ? '+' : ''}
+                  {activeGrouping.groupCenterOffsetCm.x.toFixed(1)} / Y{' '}
+                  {activeGrouping.groupCenterOffsetCm.y >= 0 ? '+' : ''}
+                  {activeGrouping.groupCenterOffsetCm.y.toFixed(1)} cm
+                </strong>
+              </div>
+            </div>
+
+            <div className="eb-scorecard-pips" aria-label={ui.range3dMetricHits}>
+              {activeGrouping.shots.map((shot) => {
+                const landed = landedShotCount >= shot.shotNumber;
+                return (
+                  <span
+                    key={shot.shotNumber}
+                    className={`eb-shot-pip ${landed ? (shot.hit ? 'is-hit' : 'is-miss') : 'is-pending'}`}
+                    title={`#${shot.shotNumber}: ${shot.radialErrorCm.toFixed(1)} cm`}
+                  >
+                    #{shot.shotNumber}
+                  </span>
+                );
+              })}
+            </div>
+          </aside>
+        )}
+
         {/* Mach Gradient Legend + Wind / Acoustic Badge */}
         <div className="eb-range3d-hud-bottom-strip">
           <div className="eb-range3d-mach-legend">
@@ -2915,6 +3449,30 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
             <Flame size={14} aria-hidden="true" />
             <span>{ui.range3dFireBtn}</span>
           </button>
+
+          <button
+            type="button"
+            className="eb-range3d-string5-btn"
+            onClick={handleFireFiveRoundString}
+            title={ui.range3dString5Title}
+            data-testid="range3d-string5-btn"
+          >
+            <Zap size={13} aria-hidden="true" />
+            <span>{ui.range3dString5Btn}</span>
+          </button>
+
+          {(visibleChipCount > 0 || activeGrouping !== null) && (
+            <button
+              type="button"
+              className="eb-reset-btn eb-range3d-clear-btn"
+              onClick={handleClearImpactMarks}
+              title={ui.range3dClearMarksTitle}
+              data-testid="range3d-clear-marks-btn"
+            >
+              <Trash2 size={12} aria-hidden="true" />
+              <span>{ui.range3dClearMarksBtn}</span>
+            </button>
+          )}
 
           <button
             type="button"
