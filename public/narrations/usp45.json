@@ -1,0 +1,786 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "usp45",
+  "generatedAt": "2026-11-25T00:00:00.000Z",
+  "generatorModels": {
+    "text": "centennial-blueprint-v1",
+    "storyTts": "web-speech-api",
+    "partTts": "web-speech-api"
+  },
+  "uiMetaEn": {
+    "name": "H&K USP45 Tactical Pistol",
+    "subtitle": "Dual-Spring Recoil Buffer & O-Ring Match Polygonal Barrel .45 ACP Sidearm",
+    "originCountry": "Germany",
+    "weaponType": "Dual-Buffer Tactical .45 ACP Pistol",
+    "categoryLabel": "Handgun",
+    "actionMechanism": "Modified Browning Linkless Lock · Dual Mechanical Recoil Buffer · O-Ring Polygonal Barrel",
+    "statusLabel": "Vault Ready · Interactive 3D",
+    "description": "Distilled from H&K’s SOCOM Mk 23 offensive handgun program, the German USP45 Tactical integrates a patented dual-spring mechanical recoil reducer, an O-ring-stabilized polygonal left-hand-twist match barrel, and factory suppressor threads for subsonic .45 ACP precision.",
+    "highlights": [
+      "Patented dual captive recoil buffer cuts peak .45 ACP +P frame shock by ~30%",
+      "High-temp barrel O-ring centers the muzzle in the slide for match-grade lockup",
+      "Cold-hammer-forged 6-sided LH polygonal rifling improves gas seal and barrel life",
+      "Modular control plate supports nine trigger/safety/decocker variants plus suppressor height sights"
+    ],
+    "workbenchTitle": "H&K USP45 Tactical Pistol 3D Mechanical Teardown & Kinematics",
+    "workbenchSubtitle": "4 Assemblies · 20 Core Components · Modified Browning Linkless Lock · Dual Mechanical Recoil Buffer · O-Ring Polygonal Barrel",
+    "cutawayLabel": "Breech & Action Cutaway",
+    "cutawayTitle": "Engage live longitudinal cutaway on H&K USP45 Tactical Pistol to inspect internal locking and feed geometry",
+    "searchPlaceholder": "Search part name or BOM code (e.g., Barrel, Bolt, U-01, M-01)...",
+    "firingMilestoneLabel": "Barrel Tilt Unlock",
+    "rateOfFire": "55 RPM (practical semi-auto)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0%",
+        "desc": "H&K USP45 Tactical Pistol (1993) in complete operational battery with all 20 assemblies seated in 1:1 alignment."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Primary operator maintenance stage: clear ammunition supply and separate upper operating group for routine inspection."
+      },
+      "sub_assembly": {
+        "label": "Sub-Assembly",
+        "subLabel": "65%",
+        "desc": "Intermediate armorer teardown exposing locking interfaces, fire-control linkage, and recoil energy storage springs."
+      },
+      "full_exploded": {
+        "label": "Full Exploded View",
+        "subLabel": "100%",
+        "desc": "Complete 20-component isometric CAD explosion displaying every functional group across 218 mm (8.6 in w/ Threaded Muzzle)."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "Trigger & Sear",
+        "title": "Phase 1 · HK USP45 Trigger Release & Ignition Drive",
+        "description": "Pulling the trigger disengages the sear, freeing the spring-driven hammer or striker to impact the .45 ACP (11.43×23mm) primer."
+      },
+      "phase_2": {
+        "shortLabel": "Primer Ignition",
+        "title": "Phase 2 · 145 MPa Chamber Pressure Rise",
+        "description": "The propellant charge ignites inside the locked chamber, driving peak pressure to 145 MPa while sealing the cartridge case against the breech."
+      },
+      "phase_3": {
+        "shortLabel": "Bore Acceleration",
+        "title": "Phase 3 · 129 mm Barrel Engraving & Acceleration",
+        "description": "The projectile engages the 6-groove bore and accelerates to 265 m/s (525 J)."
+      },
+      "phase_4": {
+        "shortLabel": "Barrel Tilt Unlock",
+        "title": "Phase 4 · Barrel Tilt Unlock & Operating Impulse",
+        "description": "Once chamber pressure decays safely, barrel and slide recoil locked together before the lower cam lug tilts the breech downward to unlock."
+      },
+      "phase_5": {
+        "shortLabel": "Extract & Eject",
+        "title": "Phase 5 · Spent Case Extraction & Ejection",
+        "description": "The extractor pulls the fired brass clear of the chamber and pivots it out the ejection port while the recoil spring compresses."
+      },
+      "phase_6": {
+        "shortLabel": "Feed & Lock",
+        "title": "Phase 6 · Next-Round Stripping & Breech Lockup",
+        "description": "Driven forward by the recoil spring, the breech strips the next round from the 12-round supply and locks solidly into battery."
+      },
+      "phase_7": {
+        "shortLabel": "Trigger Reset",
+        "title": "Phase 7 · Disconnector Handoff & Sear Reset",
+        "description": "Releasing the trigger hands control cleanly back to the primary sear, leaving the HK USP45 staged for its 55 RPM (practical semi-auto) cadence."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "德国 H&K USP45 战术型半自动手枪：1993 年机械传奇与工程剖析",
+      "deck": "德国黑克勒-科赫 USP45 战术型脱胎于美军特种作战司令部 Mk 23 计划：独创双级串联机械复进缓冲簧将 .45 ACP 强劲后坐力削减 30%，配合多边形冷锻枪管前端高温 O 形定心环与原厂螺纹枪口，天生为消音精准射击而生。 本馆以 1:1 真实工程比例重现其 20 大核心构件与完整工作循环。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1989–1993",
+          "title": "时代召唤与研发立项：HK USP45 的诞生背景",
+          "paragraphs": [
+            "1993 年问世的 德国 H&K USP45 战术型半自动手枪 由德国黑克勒-科赫（Heckler & Koch）主导研制，定位为经典的双簧缓冲战术半自动手枪。1993 年上市的 USP（通用自动手枪）是 H&K 专为高强 .40 S&W 与 .45 ACP 口径正向设计的初代现代聚合物手枪，至今仍是特战与消音射击的典范。",
+            "德国黑克勒-科赫 USP45 战术型脱胎于美军特种作战司令部 Mk 23 计划：独创双级串联机械复进缓冲簧将 .45 ACP 强劲后坐力削减 30%，配合多边形冷锻枪管前端高温 O 形定心环与原厂螺纹枪口，天生为消音精准射击而生。 整件装备总长 218 mm（含 16mm 左旋螺纹膛口）、空重 0.862 kg，成为同期手枪左轮领域最具辨识度的里程碑之一。"
+          ],
+          "audioScript": "第一幕，时代起源。1993 年，德国黑克勒-科赫（Heckler & Koch）推出了划时代的德国 H&K USP45 战术型半自动手枪。1993 年上市的 USP（通用自动手枪）是 H&K 专为高强 .40 S&W 与 .45 ACP 口径正向设计的初代现代聚合物手枪，至今仍是特战与消音射击的典范。 它的核心设计聚焦于专利双弹簧嵌套式机械后坐缓冲器，大幅降低 .45 +P 高压弹峰值冲击，奠定了其在手枪左轮发展史中的经典地位。",
+          "audioUrl": "",
+          "focusPartId": "usp45_receiver",
+          "focusPartLabel": "精密铣削往复式钢制套筒"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1993",
+          "title": "核心机械构造与闭锁奥秘",
+          "paragraphs": [
+            "德国 H&K USP45 战术型半自动手枪 的机械灵魂在于其「勃朗宁偏移闭锁 · 专利双套筒机械后坐缓冲器 · 多边形 O 环比赛枪管」结构体系。在发射工作循环中，枪管与套筒短距共同后坐后由下凸耳引导枪管尾端下倾脱离闭锁槽，将高压能量精确约束于承力框架之内。",
+            "制造工艺方面，关键承力件采用硬质阳极氧化铝合金、氮化钢与高强度聚合物精加工而成。枪管前部高温橡胶 O 形定心环消除套筒闭锁游隙，达成比赛级散布精度，在严苛实战条件下依然保持顺畅节拍与长期尺寸稳定性。"
+          ],
+          "audioScript": "第二幕，核心机械原理。德国 H&K USP45 战术型半自动手枪 采用勃朗宁偏移闭锁 · 专利双套筒机械后坐缓冲器 · 多边形 O 环比赛枪管。在每个击发周期中，枪管与套筒短距共同后坐后由下凸耳引导枪管尾端下倾脱离闭锁槽。借助硬质阳极氧化铝合金、氮化钢与高强度聚合物工艺与高强度配合，实现了枪管前部高温橡胶 O 形定心环消除套筒闭锁游隙，达成比赛级散布精度。",
+          "audioUrl": "",
+          "focusPartId": "usp45_bolt",
+          "focusPartLabel": "高强度闭锁枪机头与抽壳钩"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1993–1996",
+          "title": "弹道性能、内膛工艺与实战效能",
+          "paragraphs": [
+            "该平台配用 .45 ACP (11.43×23mm) 弹药规格与 129 mm（5.09 in 冷锻多边形左旋膛线 · O 形精密定位环），最高工作膛压约 145 MPa，可赋予弹头 265 m/s 的出膛初速与 525 J 动能，有效作用距离达 50 米。",
+            "内膛技术特点方面，129 mm 六边多边形左旋冷锻枪管配前端耐高温 O 形环，将枪管与套筒间隙锁定至微米级。同时，冷锻 6 边多边形左旋膛线密封火药燃气更严密且寿命逾数万发，令其在 55 发/分（实用半自动） 的节奏下兼具精准控制与可靠输出。"
+          ],
+          "audioScript": "第三幕，弹道与实战表现。配备 129 毫米身管与 .45 ACP (11.43×23mm) 口径，德国 H&K USP45 战术型半自动手枪 实现了每秒 265 米的初速与 50 米有效射程。129 mm 六边多边形左旋冷锻枪管配前端耐高温 O 形环，将枪管与套筒间隙锁定至微米级，展现了卓越的工程平衡。",
+          "audioUrl": "",
+          "focusPartId": "usp45_barrel",
+          "focusPartLabel": "129mm 精密内膛枪管总成"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "2008–2026",
+          "title": "人机工效、供弹哲学与百年遗产",
+          "paragraphs": [
+            "围绕 12 发容量的12 发可拆式双排弹匣壳体与 37 mm 膛轴设计，德国 H&K USP45 战术型半自动手枪 将单发后坐冲量控制在 4.3 N·s 水平。模块化火控支持 9 种扳机保险配置（含经典单双动带解脱与保险）。",
+            "如今在数字兵器库 3D 百年展厅（BAY-83）中，您可以随时通过三轴剖视、100% 爆炸视图与实时运动学滑块，零距离拆解这座跨越时代的机械工程杰作。"
+          ],
+          "audioScript": "第四幕，百年遗产。凭借 12 发容量的12 发可拆式双排弹匣壳体与出色的整体工效，模块化火控支持 9 种扳机保险配置（含经典单双动带解脱与保险）。欢迎在 BAY-83 展位亲手切开剖面、逐件拆解，感受 德国 H&K USP45 战术型半自动手枪 的机械魅力。",
+          "audioUrl": "",
+          "focusPartId": "usp45_mag_body",
+          "focusPartLabel": "12 发可拆式双排弹匣壳体"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "核心动作与闭锁架构",
+          "tag": "BAY-83",
+          "summary": "勃朗宁偏移闭锁 · 专利双套筒机械后坐缓冲器 · 多边形 O 环比赛枪管；专利双弹簧嵌套式机械后坐缓冲器，大幅降低 .45 +P 高压弹峰值冲击。",
+          "focusPartId": "usp45_bolt",
+          "focusPartLabel": "高强度闭锁枪机头与抽壳钩"
+        },
+        {
+          "id": "bt2",
+          "title": "内膛弹道与能量释放",
+          "tag": "265 m/s",
+          "summary": "129 mm（5.09 in 冷锻多边形左旋膛线 · O 形精密定位环），129 mm 六边多边形左旋冷锻枪管配前端耐高温 O 形环，将枪管与套筒间隙锁定至微米级。",
+          "focusPartId": "usp45_barrel",
+          "focusPartLabel": "129mm 精密内膛枪管总成"
+        },
+        {
+          "id": "bt3",
+          "title": "供弹与实战人机工效",
+          "tag": "12 rds",
+          "summary": "冷锻 6 边多边形左旋膛线密封火药燃气更严密且寿命逾数万发；模块化火控支持 9 种扳机保险配置（含经典单双动带解脱与保险）。",
+          "focusPartId": "usp45_mag_body",
+          "focusPartLabel": "12 发可拆式双排弹匣壳体"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1989",
+          "title": "战术指标与概念构型",
+          "detail": "德国提出新一代双簧缓冲战术半自动手枪战术指标，确立口径与机动平衡方向。"
+        },
+        {
+          "year": "1993",
+          "title": "HK USP45 正式定型投产",
+          "detail": "黑克勒-科赫（Heckler & Koch）完成 H&K USP45 TACTICAL 定型，采用勃朗宁偏移闭锁 · 专利双套筒机械后坐缓冲器 · 多边形 O 环比赛枪管架构。"
+        },
+        {
+          "year": "1996",
+          "title": "实战部署与工艺演进",
+          "detail": "专利双弹簧嵌套式机械后坐缓冲器，大幅降低 .45 +P 高压弹峰值冲击，在全球多个战区与演训环境中验证了高可靠性。"
+        },
+        {
+          "year": "2008",
+          "title": "工程典范与历史传承",
+          "detail": "1993 年上市的 USP（通用自动手枪）是 H&K 专为高强 .40 S&W 与 .45 ACP 口径正向设计的初代现代聚合物手枪，至今仍是特战与消音射击的典范。"
+        },
+        {
+          "year": "2026",
+          "title": "入藏数字兵器库 3D（BAY-83）",
+          "detail": "完整构建 1:1 参数化 20 零件三维装配模型，支持剖切、爆炸与运动学实时仿真。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "H&K USP45 Tactical Pistol: The 1993 Mechanical Legend",
+      "deck": "Distilled from H&K’s SOCOM Mk 23 offensive handgun program, the German USP45 Tactical integrates a patented dual-spring mechanical recoil reducer, an O-ring-stabilized polygonal left-hand-twist match barrel, and factory suppressor threads for subsonic .45 ACP precision. Preserved in 1:1 interactive 3D CAD scale across all 20 functional assemblies in BAY-83.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "Act I",
+          "eraTag": "1989–1993",
+          "title": "Origins & Operational Mandate of the HK USP45",
+          "paragraphs": [
+            "Introduced in 1993 by Heckler & Koch in Germany, the H&K USP45 Tactical Pistol emerged as a defining Dual-Buffer Tactical .45 ACP Pistol. Launched in 1993 as H&K’s Universal Self-Loading Pistol, the USP45 Tactical packaged Mk 23 suppressed endurance into a practical duty-sized sidearm.",
+            "Distilled from H&K’s SOCOM Mk 23 offensive handgun program, the German USP45 Tactical integrates a patented dual-spring mechanical recoil reducer, an O-ring-stabilized polygonal left-hand-twist match barrel, and factory suppressor threads for subsonic .45 ACP precision. Measuring 218 mm (8.6 in w/ Threaded Muzzle) at an unloaded weight of 0.862 kg, it reshaped expectations across the Handgun class."
+          ],
+          "audioScript": "Act One: Historical Origins. In 1993, Heckler & Koch of Germany introduced the H&K USP45 Tactical Pistol. Launched in 1993 as H&K’s Universal Self-Loading Pistol, the USP45 Tactical packaged Mk 23 suppressed endurance into a practical duty-sized sidearm. Anchored by its hallmark design trait — Patented dual captive recoil buffer cuts peak .45 ACP +P frame shock by ~30% — it quickly established an enduring engineering benchmark.",
+          "audioUrl": "",
+          "focusPartId": "usp45_receiver",
+          "focusPartLabel": "Machined Steel Reciprocating Slide"
+        },
+        {
+          "id": "act2",
+          "actNumber": "Act II",
+          "eraTag": "1993",
+          "title": "Core Operating Architecture & Lockup Mechanics",
+          "paragraphs": [
+            "At the mechanical heart of the H&K USP45 Tactical Pistol sits its Modified Browning Linkless Lock · Dual Mechanical Recoil Buffer · O-Ring Polygonal Barrel. Throughout every firing cycle, barrel and slide recoil locked together before the lower cam lug tilts the breech downward to unlock, containing 145 MPa of operating pressure safely.",
+            "Constructed in hard-coat anodized aluminum, nitrided steel, and reinforced polymer, the assembly achieves durable field tolerances. Notably, High-temp barrel O-ring centers the muzzle in the slide for match-grade lockup, sustaining dependable operation under severe environmental stress."
+          ],
+          "audioScript": "Act Two: Core Mechanical Architecture. The H&K USP45 Tactical Pistol relies on Modified Browning Linkless Lock · Dual Mechanical Recoil Buffer · O-Ring Polygonal Barrel. During each cycle, barrel and slide recoil locked together before the lower cam lug tilts the breech downward to unlock. Machined from hard-coat anodized aluminum, nitrided steel, and reinforced polymer, it delivers standout engineering reliability: High-temp barrel O-ring centers the muzzle in the slide for match-grade lockup.",
+          "audioUrl": "",
+          "focusPartId": "usp45_bolt",
+          "focusPartLabel": "Hardened Locking Bolt & Extractor"
+        },
+        {
+          "id": "act3",
+          "actNumber": "Act III",
+          "eraTag": "1993–1996",
+          "title": "Ballistic Performance, Bore Craft & Range Reach",
+          "paragraphs": [
+            "Chambered for .45 ACP (11.43×23mm) with 129 mm (5.09 in Cold-Forged Polygonal LH · Precision O-Ring), the H&K USP45 Tactical Pistol develops 265 m/s muzzle velocity and 525 J of kinetic energy for effective engagement out to 50 meters.",
+            "Internally, 129 mm 6-sided LH polygonal cold-forged barrel with muzzle O-ring lockup for match precision. Combined with its 55 RPM (practical semi-auto) tempo, Cold-hammer-forged 6-sided LH polygonal rifling improves gas seal and barrel life, delivering disciplined accuracy across demanding field conditions."
+          ],
+          "audioScript": "Act Three: Ballistic Performance. Driving .45 ACP (11.43×23mm) through its 129 millimeter bore, the H&K USP45 Tactical Pistol achieves 265 meters per second and 50 meters of effective reach. 129 mm 6-sided LH polygonal cold-forged barrel with muzzle O-ring lockup for match precision.",
+          "audioUrl": "",
+          "focusPartId": "usp45_barrel",
+          "focusPartLabel": "129mm Precision Rifled Barrel"
+        },
+        {
+          "id": "act4",
+          "actNumber": "Act IV",
+          "eraTag": "2008–2026",
+          "title": "Feed Philosophy, Ergonomics & Centennial Legacy",
+          "paragraphs": [
+            "Fed by a 12-round 12-round detachable magazine body with a 37 mm bore-axis height, the platform manages 4.3 N-s of recoil impulse cleanly. Modular control plate supports nine trigger/safety/decocker variants plus suppressor height sights.",
+            "Now archived in Digital Armory 3D Centennial Gallery (BAY-83), all 20 interactive assemblies can be sectioned live along three axes, exploded to 100%, and inspected part by part."
+          ],
+          "audioScript": "Act Four: Engineering Legacy. Pairing its 12-round 12-round detachable magazine body with disciplined recoil geometry, Modular control plate supports nine trigger/safety/decocker variants plus suppressor height sights. Explore BAY-83 in live section cut and exploded disassembly to study every working link of the H&K USP45 Tactical Pistol.",
+          "audioUrl": "",
+          "focusPartId": "usp45_mag_body",
+          "focusPartLabel": "12-Round Detachable Magazine Body"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Operating & Lockup Principle",
+          "tag": "BAY-83",
+          "summary": "Modified Browning Linkless Lock · Dual Mechanical Recoil Buffer · O-Ring Polygonal Barrel — Patented dual captive recoil buffer cuts peak .45 ACP +P frame shock by ~30%.",
+          "focusPartId": "usp45_bolt",
+          "focusPartLabel": "Hardened Locking Bolt & Extractor"
+        },
+        {
+          "id": "bt2",
+          "title": "Bore & Ballistic Efficiency",
+          "tag": "265 m/s",
+          "summary": "129 mm (5.09 in Cold-Forged Polygonal LH · Precision O-Ring); 129 mm 6-sided LH polygonal cold-forged barrel with muzzle O-ring lockup for match precision.",
+          "focusPartId": "usp45_barrel",
+          "focusPartLabel": "129mm Precision Rifled Barrel"
+        },
+        {
+          "id": "bt3",
+          "title": "Feed & Ergonomic Mastery",
+          "tag": "12 rds",
+          "summary": "Cold-hammer-forged 6-sided LH polygonal rifling improves gas seal and barrel life; Modular control plate supports nine trigger/safety/decocker variants plus suppressor height sights.",
+          "focusPartId": "usp45_mag_body",
+          "focusPartLabel": "12-Round Detachable Magazine Body"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1989",
+          "title": "Operational Requirement Defined",
+          "detail": "Germany ordnance planners established specifications for a new Dual-Buffer Tactical .45 ACP Pistol class."
+        },
+        {
+          "year": "1993",
+          "title": "HK USP45 Official Introduction",
+          "detail": "Heckler & Koch finalized H&K USP45 TACTICAL around Modified Browning Linkless Lock · Dual Mechanical Recoil Buffer · O-Ring Polygonal Barrel."
+        },
+        {
+          "year": "1996",
+          "title": "Field Deployment & Service Validation",
+          "detail": "Patented dual captive recoil buffer cuts peak .45 ACP +P frame shock by ~30%, proving mechanical endurance across real-world operations."
+        },
+        {
+          "year": "2008",
+          "title": "Enduring Historical Influence",
+          "detail": "Launched in 1993 as H&K’s Universal Self-Loading Pistol, the USP45 Tactical packaged Mk 23 suppressed endurance into a practical duty-sized sidearm."
+        },
+        {
+          "year": "2026",
+          "title": "Archived in Digital Armory 3D (BAY-83)",
+          "detail": "Modeled as a 1:1 interactive 20-component CAD exhibit with live cutaway, exploded disassembly, and kinematics."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "usp45_receiver": {
+      "partId": "usp45_receiver",
+      "bomCode": "U-01",
+      "calloutLabelEn": "Steel Reciprocating Slide",
+      "zh": {
+        "roleTag": "闭锁往复运动与抛壳导轨",
+        "overview": "德国 H&K USP45 战术型半自动手枪（U-01）的精密铣削往复式钢制套筒，隶属 20 件套标准装配体系，负责闭锁往复运动与抛壳导轨。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1993年代黑克勒-科赫（Heckler & Koch）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：专利双弹簧嵌套式机械后坐缓冲器，大幅降低 .45 +P 高压弹峰值冲击。",
+        "audioScript": "U-01，精密铣削往复式钢制套筒。作为 德国 H&K USP45 战术型半自动手枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担闭锁往复运动与抛壳导轨职能。与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Reciprocating Breech Housing",
+        "overview": "Machined Steel Reciprocating Slide (U-01) of the H&K USP45 Tactical Pistol, serving as the dedicated reciprocating breech housing node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Heckler & Koch service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Patented dual captive recoil buffer cuts peak .45 ACP +P frame shock by ~30%.",
+        "audioScript": "U-01, Machined Steel Reciprocating Slide. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the H&K USP45 Tactical Pistol, this component handles reciprocating breech housing. Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "usp45_barrel": {
+      "partId": "usp45_barrel",
+      "bomCode": "U-02",
+      "calloutLabelEn": "129mm Precision Barrel",
+      "zh": {
+        "roleTag": "密闭高压燃气并赋予弹头自旋",
+        "overview": "德国 H&K USP45 战术型半自动手枪（U-02）的129mm 精密内膛枪管总成，隶属 20 件套标准装配体系，负责密闭高压燃气并赋予弹头自旋。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1993年代黑克勒-科赫（Heckler & Koch）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：枪管前部高温橡胶 O 形定心环消除套筒闭锁游隙，达成比赛级散布精度。",
+        "audioScript": "U-02，129mm 精密内膛枪管总成。作为 德国 H&K USP45 战术型半自动手枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担密闭高压燃气并赋予弹头自旋职能。与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Pressure Vessel & Spin Axis",
+        "overview": "129mm Precision Rifled Barrel (U-02) of the H&K USP45 Tactical Pistol, serving as the dedicated pressure vessel & spin axis node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Heckler & Koch service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: High-temp barrel O-ring centers the muzzle in the slide for match-grade lockup.",
+        "audioScript": "U-02, 129mm Precision Rifled Barrel. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the H&K USP45 Tactical Pistol, this component handles pressure vessel & spin axis. Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "usp45_muzzle": {
+      "partId": "usp45_muzzle",
+      "bomCode": "U-03",
+      "calloutLabelEn": "Acoustic Suppressor",
+      "zh": {
+        "roleTag": "火药燃气降噪消焰",
+        "overview": "德国 H&K USP45 战术型半自动手枪（U-03）的多室消音器与膛口耦合节，隶属 20 件套标准装配体系，负责火药燃气降噪消焰。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1993年代黑克勒-科赫（Heckler & Koch）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：冷锻 6 边多边形左旋膛线密封火药燃气更严密且寿命逾数万发。",
+        "audioScript": "U-03，多室消音器与膛口耦合节。作为 德国 H&K USP45 战术型半自动手枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担火药燃气降噪消焰职能。与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Acoustic & Flash Attenuation",
+        "overview": "Multi-Baffle Acoustic Suppressor (U-03) of the H&K USP45 Tactical Pistol, serving as the dedicated acoustic & flash attenuation node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Heckler & Koch service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Cold-hammer-forged 6-sided LH polygonal rifling improves gas seal and barrel life.",
+        "audioScript": "U-03, Multi-Baffle Acoustic Suppressor. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the H&K USP45 Tactical Pistol, this component handles acoustic & flash attenuation. Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "usp45_bolt_carrier": {
+      "partId": "usp45_bolt_carrier",
+      "bomCode": "U-04",
+      "calloutLabelEn": "Locking Cam Block",
+      "zh": {
+        "roleTag": "驱动解锁、后坐与复位循环",
+        "overview": "德国 H&K USP45 战术型半自动手枪（U-04）的复进导杆与闭锁凸轮滑块，隶属 20 件套标准装配体系，负责驱动解锁、后坐与复位循环。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1993年代黑克勒-科赫（Heckler & Koch）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：枪管与套筒短距共同后坐后由下凸耳引导枪管尾端下倾脱离闭锁槽。",
+        "designHighlight": "工程亮点呼应整枪特征：模块化火控支持 9 种扳机保险配置（含经典单双动带解脱与保险）。",
+        "audioScript": "U-04，复进导杆与闭锁凸轮滑块。作为 德国 H&K USP45 战术型半自动手枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担驱动解锁、后坐与复位循环职能。在击发循环中承担核心联动：枪管与套筒短距共同后坐后由下凸耳引导枪管尾端下倾脱离闭锁槽。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Primary Cycling Actuator",
+        "overview": "Recoil Guide & Locking Cam Block (U-04) of the H&K USP45 Tactical Pistol, serving as the dedicated primary cycling actuator node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Heckler & Koch service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: barrel and slide recoil locked together before the lower cam lug tilts the breech downward to unlock.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Modular control plate supports nine trigger/safety/decocker variants plus suppressor height sights.",
+        "audioScript": "U-04, Recoil Guide & Locking Cam Block. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the H&K USP45 Tactical Pistol, this component handles primary cycling actuator. Drives the core operating sequence: barrel and slide recoil locked together before the lower cam lug tilts the breech downward to unlock.",
+        "audioUrl": ""
+      }
+    },
+    "usp45_bolt": {
+      "partId": "usp45_bolt",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Locking Bolt Head",
+      "zh": {
+        "roleTag": "刚性闭锁膛压并可靠抽壳",
+        "overview": "德国 H&K USP45 战术型半自动手枪（U-05）的高强度闭锁枪机头与抽壳钩，隶属 20 件套标准装配体系，负责刚性闭锁膛压并可靠抽壳。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1993年代黑克勒-科赫（Heckler & Koch）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：枪管与套筒短距共同后坐后由下凸耳引导枪管尾端下倾脱离闭锁槽。",
+        "designHighlight": "工程亮点呼应整枪特征：专利双弹簧嵌套式机械后坐缓冲器，大幅降低 .45 +P 高压弹峰值冲击。",
+        "audioScript": "U-05，高强度闭锁枪机头与抽壳钩。作为 德国 H&K USP45 战术型半自动手枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担刚性闭锁膛压并可靠抽壳职能。在击发循环中承担核心联动：枪管与套筒短距共同后坐后由下凸耳引导枪管尾端下倾脱离闭锁槽。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Breech Lock & Case Extraction",
+        "overview": "Hardened Locking Bolt & Extractor (U-05) of the H&K USP45 Tactical Pistol, serving as the dedicated breech lock & case extraction node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Heckler & Koch service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: barrel and slide recoil locked together before the lower cam lug tilts the breech downward to unlock.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Patented dual captive recoil buffer cuts peak .45 ACP +P frame shock by ~30%.",
+        "audioScript": "U-05, Hardened Locking Bolt & Extractor. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the H&K USP45 Tactical Pistol, this component handles breech lock & case extraction. Drives the core operating sequence: barrel and slide recoil locked together before the lower cam lug tilts the breech downward to unlock.",
+        "audioUrl": ""
+      }
+    },
+    "usp45_recoil_spring": {
+      "partId": "usp45_recoil_spring",
+      "bomCode": "U-06",
+      "calloutLabelEn": "Helical Recoil Spring",
+      "zh": {
+        "roleTag": "吸收后坐动能并驱动复进闭膛",
+        "overview": "德国 H&K USP45 战术型半自动手枪（U-06）的主复进螺旋弹簧总成，隶属 20 件套标准装配体系，负责吸收后坐动能并驱动复进闭膛。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1993年代黑克勒-科赫（Heckler & Koch）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 55 发/分（实用半自动） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：枪管前部高温橡胶 O 形定心环消除套筒闭锁游隙，达成比赛级散布精度。",
+        "audioScript": "U-06，主复进螺旋弹簧总成。作为 德国 H&K USP45 战术型半自动手枪 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担吸收后坐动能并驱动复进闭膛职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 55 发/分（实用半自动） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Storage & Return Drive",
+        "overview": "Main Helical Recoil Spring (U-06) of the H&K USP45 Tactical Pistol, serving as the dedicated recoil storage & return drive node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to Heckler & Koch service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 55 RPM (practical semi-auto) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: High-temp barrel O-ring centers the muzzle in the slide for match-grade lockup.",
+        "audioScript": "U-06, Main Helical Recoil Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the H&K USP45 Tactical Pistol, this component handles recoil storage & return drive. Stores and returns cyclic elastic energy via live coil compression to maintain 55 RPM (practical semi-auto) timing.",
+        "audioUrl": ""
+      }
+    },
+    "usp45_handguard": {
+      "partId": "usp45_handguard",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Tactical Handguard",
+      "zh": {
+        "roleTag": "隔绝枪管高温并提供稳定握持",
+        "overview": "德国 H&K USP45 战术型半自动手枪（F-01）的散热隔热战术前护木，隶属 20 件套标准装配体系，负责隔绝枪管高温并提供稳定握持。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1993年代黑克勒-科赫（Heckler & Koch）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：冷锻 6 边多边形左旋膛线密封火药燃气更严密且寿命逾数万发。",
+        "audioScript": "F-01，散热隔热战术前护木。作为 德国 H&K USP45 战术型半自动手枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担隔绝枪管高温并提供稳定握持职能。与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Thermal Shield & Support Hand",
+        "overview": "Ventilated Tactical Handguard (F-01) of the H&K USP45 Tactical Pistol, serving as the dedicated thermal shield & support hand node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Heckler & Koch service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Cold-hammer-forged 6-sided LH polygonal rifling improves gas seal and barrel life.",
+        "audioScript": "F-01, Ventilated Tactical Handguard. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the H&K USP45 Tactical Pistol, this component handles thermal shield & support hand. Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "usp45_stock": {
+      "partId": "usp45_stock",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Lower Frame Chassis",
+      "zh": {
+        "roleTag": "统筹击发机构与手掌抵御后坐",
+        "overview": "德国 H&K USP45 战术型半自动手枪（F-02）的下套筒座与人机握把骨架，隶属 20 件套标准装配体系，负责统筹击发机构与手掌抵御后坐。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1993年代黑克勒-科赫（Heckler & Koch）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：模块化火控支持 9 种扳机保险配置（含经典单双动带解脱与保险）。",
+        "audioScript": "F-02，下套筒座与人机握把骨架。作为 德国 H&K USP45 战术型半自动手枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担统筹击发机构与手掌抵御后坐职能。与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Main Chassis & Ergonomics",
+        "overview": "Lower Frame & Grip Chassis (F-02) of the H&K USP45 Tactical Pistol, serving as the dedicated main chassis & ergonomics node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Heckler & Koch service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Modular control plate supports nine trigger/safety/decocker variants plus suppressor height sights.",
+        "audioScript": "F-02, Lower Frame & Grip Chassis. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the H&K USP45 Tactical Pistol, this component handles main chassis & ergonomics. Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "usp45_grip": {
+      "partId": "usp45_grip",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Ergonomic Main Grip",
+      "zh": {
+        "roleTag": "锁定手腕角度优化扳机控枪",
+        "overview": "德国 H&K USP45 战术型半自动手枪（F-03）的人体工学防滑主握把，隶属 20 件套标准装配体系，负责锁定手腕角度优化扳机控枪。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1993年代黑克勒-科赫（Heckler & Koch）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：专利双弹簧嵌套式机械后坐缓冲器，大幅降低 .45 +P 高压弹峰值冲击。",
+        "audioScript": "F-03，人体工学防滑主握把。作为 德国 H&K USP45 战术型半自动手枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担锁定手腕角度优化扳机控枪职能。与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Wrist Alignment & Control",
+        "overview": "Ergonomic Textured Main Grip (F-03) of the H&K USP45 Tactical Pistol, serving as the dedicated wrist alignment & control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Heckler & Koch service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Patented dual captive recoil buffer cuts peak .45 ACP +P frame shock by ~30%.",
+        "audioScript": "F-03, Ergonomic Textured Main Grip. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the H&K USP45 Tactical Pistol, this component handles wrist alignment & control. Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "usp45_optic": {
+      "partId": "usp45_optic",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Adjustable Iron Sights",
+      "zh": {
+        "roleTag": "建立精准弹道瞄准基线",
+        "overview": "德国 H&K USP45 战术型半自动手枪（F-04）的可调机械准星照门组，隶属 20 件套标准装配体系，负责建立精准弹道瞄准基线。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1993年代黑克勒-科赫（Heckler & Koch）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：枪管前部高温橡胶 O 形定心环消除套筒闭锁游隙，达成比赛级散布精度。",
+        "audioScript": "F-04，可调机械准星照门组。作为 德国 H&K USP45 战术型半自动手枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担建立精准弹道瞄准基线职能。与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ballistic Sightline Datum",
+        "overview": "Adjustable Iron Sight Assembly (F-04) of the H&K USP45 Tactical Pistol, serving as the dedicated ballistic sightline datum node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Heckler & Koch service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: High-temp barrel O-ring centers the muzzle in the slide for match-grade lockup.",
+        "audioScript": "F-04, Adjustable Iron Sight Assembly. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the H&K USP45 Tactical Pistol, this component handles ballistic sightline datum. Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "usp45_gas_system": {
+      "partId": "usp45_gas_system",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Gas & Recoil System",
+      "zh": {
+        "roleTag": "定量调控自动循环能量平衡",
+        "overview": "德国 H&K USP45 战术型半自动手枪（F-05）的导气活塞/缓冲传动调节组件，隶属 20 件套标准装配体系，负责定量调控自动循环能量平衡。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1993年代黑克勒-科赫（Heckler & Koch）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：枪管与套筒短距共同后坐后由下凸耳引导枪管尾端下倾脱离闭锁槽。",
+        "designHighlight": "工程亮点呼应整枪特征：冷锻 6 边多边形左旋膛线密封火药燃气更严密且寿命逾数万发。",
+        "audioScript": "F-05，导气活塞/缓冲传动调节组件。作为 德国 H&K USP45 战术型半自动手枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担定量调控自动循环能量平衡职能。在击发循环中承担核心联动：枪管与套筒短距共同后坐后由下凸耳引导枪管尾端下倾脱离闭锁槽。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Operating Energy Regulation",
+        "overview": "Gas Drive / Recoil Buffer System (F-05) of the H&K USP45 Tactical Pistol, serving as the dedicated operating energy regulation node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Heckler & Koch service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: barrel and slide recoil locked together before the lower cam lug tilts the breech downward to unlock.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Cold-hammer-forged 6-sided LH polygonal rifling improves gas seal and barrel life.",
+        "audioScript": "F-05, Gas Drive / Recoil Buffer System. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the H&K USP45 Tactical Pistol, this component handles operating energy regulation. Drives the core operating sequence: barrel and slide recoil locked together before the lower cam lug tilts the breech downward to unlock.",
+        "audioUrl": ""
+      }
+    },
+    "usp45_mount_rail": {
+      "partId": "usp45_mount_rail",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Accessory Mount Rail",
+      "zh": {
+        "roleTag": "提供稳固依托与模块化拓展",
+        "overview": "德国 H&K USP45 战术型半自动手枪（F-06）的战术附件导轨与背带支座，隶属 20 件套标准装配体系，负责提供稳固依托与模块化拓展。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1993年代黑克勒-科赫（Heckler & Koch）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：模块化火控支持 9 种扳机保险配置（含经典单双动带解脱与保险）。",
+        "audioScript": "F-06，战术附件导轨与背带支座。作为 德国 H&K USP45 战术型半自动手枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担提供稳固依托与模块化拓展职能。与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Modular Support & Optics Base",
+        "overview": "Accessory Rail & Sling Mount (F-06) of the H&K USP45 Tactical Pistol, serving as the dedicated modular support & optics base node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Heckler & Koch service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Modular control plate supports nine trigger/safety/decocker variants plus suppressor height sights.",
+        "audioScript": "F-06, Accessory Rail & Sling Mount. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the H&K USP45 Tactical Pistol, this component handles modular support & optics base. Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "usp45_trigger": {
+      "partId": "usp45_trigger",
+      "bomCode": "T-01",
+      "calloutLabelEn": "Trigger & Guard",
+      "zh": {
+        "roleTag": "清晰干脆释放阻铁启动击发",
+        "overview": "德国 H&K USP45 战术型半自动手枪（T-01）的精密机械扳机与护圈总成，隶属 20 件套标准装配体系，负责清晰干脆释放阻铁启动击发。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1993年代黑克勒-科赫（Heckler & Koch）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：专利双弹簧嵌套式机械后坐缓冲器，大幅降低 .45 +P 高压弹峰值冲击。",
+        "audioScript": "T-01，精密机械扳机与护圈总成。作为 德国 H&K USP45 战术型半自动手枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担清晰干脆释放阻铁启动击发职能。与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Crisp Firing Release Input",
+        "overview": "Precision Trigger & Guard Assembly (T-01) of the H&K USP45 Tactical Pistol, serving as the dedicated crisp firing release input node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Heckler & Koch service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Patented dual captive recoil buffer cuts peak .45 ACP +P frame shock by ~30%.",
+        "audioScript": "T-01, Precision Trigger & Guard Assembly. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the H&K USP45 Tactical Pistol, this component handles crisp firing release input. Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "usp45_hammer": {
+      "partId": "usp45_hammer",
+      "bomCode": "T-02",
+      "calloutLabelEn": "Hammer / Striker Unit",
+      "zh": {
+        "roleTag": "高速释放储能精确击发底火/弓弦",
+        "overview": "德国 H&K USP45 战术型半自动手枪（T-02）的硬化击锤/平移击针击发组件，隶属 20 件套标准装配体系，负责高速释放储能精确击发底火/弓弦。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1993年代黑克勒-科赫（Heckler & Koch）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：枪管前部高温橡胶 O 形定心环消除套筒闭锁游隙，达成比赛级散布精度。",
+        "audioScript": "T-02，硬化击锤/平移击针击发组件。作为 德国 H&K USP45 战术型半自动手枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担高速释放储能精确击发底火/弓弦职能。与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-Speed Ignition Impactor",
+        "overview": "Hardened Hammer / Striker Unit (T-02) of the H&K USP45 Tactical Pistol, serving as the dedicated high-speed ignition impactor node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Heckler & Koch service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: High-temp barrel O-ring centers the muzzle in the slide for match-grade lockup.",
+        "audioScript": "T-02, Hardened Hammer / Striker Unit. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the H&K USP45 Tactical Pistol, this component handles high-speed ignition impactor. Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "usp45_hammer_spring": {
+      "partId": "usp45_hammer_spring",
+      "bomCode": "T-03",
+      "calloutLabelEn": "Hammer Drive Spring",
+      "zh": {
+        "roleTag": "为可靠击发提供充沛冲击能量",
+        "overview": "德国 H&K USP45 战术型半自动手枪（T-03）的主击发扭簧/螺旋打击簧，隶属 20 件套标准装配体系，负责为可靠击发提供充沛冲击能量。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1993年代黑克勒-科赫（Heckler & Koch）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 55 发/分（实用半自动） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：冷锻 6 边多边形左旋膛线密封火药燃气更严密且寿命逾数万发。",
+        "audioScript": "T-03，主击发扭簧/螺旋打击簧。作为 德国 H&K USP45 战术型半自动手枪 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担为可靠击发提供充沛冲击能量职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 55 发/分（实用半自动） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ignition Drive Energy",
+        "overview": "Main Hammer / Striker Drive Spring (T-03) of the H&K USP45 Tactical Pistol, serving as the dedicated ignition drive energy node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to Heckler & Koch service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 55 RPM (practical semi-auto) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Cold-hammer-forged 6-sided LH polygonal rifling improves gas seal and barrel life.",
+        "audioScript": "T-03, Main Hammer / Striker Drive Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the H&K USP45 Tactical Pistol, this component handles ignition drive energy. Stores and returns cyclic elastic energy via live coil compression to maintain 55 RPM (practical semi-auto) timing.",
+        "audioUrl": ""
+      }
+    },
+    "usp45_selector": {
+      "partId": "usp45_selector",
+      "bomCode": "T-04",
+      "calloutLabelEn": "Fire Selector & Safety",
+      "zh": {
+        "roleTag": "可靠锁止扳机阻铁并切换射态",
+        "overview": "德国 H&K USP45 战术型半自动手枪（T-04）的快慢机与机械保险杠杆，隶属 20 件套标准装配体系，负责可靠锁止扳机阻铁并切换射态。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1993年代黑克勒-科赫（Heckler & Koch）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：模块化火控支持 9 种扳机保险配置（含经典单双动带解脱与保险）。",
+        "audioScript": "T-04，快慢机与机械保险杠杆。作为 德国 H&K USP45 战术型半自动手枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担可靠锁止扳机阻铁并切换射态职能。与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Safety Interlock & Mode Control",
+        "overview": "Fire Selector & Safety Lever (T-04) of the H&K USP45 Tactical Pistol, serving as the dedicated safety interlock & mode control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Heckler & Koch service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Modular control plate supports nine trigger/safety/decocker variants plus suppressor height sights.",
+        "audioScript": "T-04, Fire Selector & Safety Lever. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the H&K USP45 Tactical Pistol, this component handles safety interlock & mode control. Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "usp45_mag_body": {
+      "partId": "usp45_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "12-Rd Magazine Body",
+      "zh": {
+        "roleTag": "高速快换供弹核心",
+        "overview": "德国 H&K USP45 战术型半自动手枪（M-01）的12 发可拆式双排弹匣壳体，隶属 20 件套标准装配体系，负责高速快换供弹核心。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1993年代黑克勒-科赫（Heckler & Koch）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：专利双弹簧嵌套式机械后坐缓冲器，大幅降低 .45 +P 高压弹峰值冲击。",
+        "audioScript": "M-01，12 发可拆式双排弹匣壳体。作为 德国 H&K USP45 战术型半自动手枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担高速快换供弹核心职能。与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Detachable Ammunition Feed",
+        "overview": "12-Round Detachable Magazine Body (M-01) of the H&K USP45 Tactical Pistol, serving as the dedicated detachable ammunition feed node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Heckler & Koch service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Patented dual captive recoil buffer cuts peak .45 ACP +P frame shock by ~30%.",
+        "audioScript": "M-01, 12-Round Detachable Magazine Body. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the H&K USP45 Tactical Pistol, this component handles detachable ammunition feed. Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "usp45_follower": {
+      "partId": "usp45_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Anti-Tilt Follower",
+      "zh": {
+        "roleTag": "保持供弹仰角与空仓挂机触发",
+        "overview": "德国 H&K USP45 战术型半自动手枪（M-02）的防倾倒高对比度托弹板，隶属 20 件套标准装配体系，负责保持供弹仰角与空仓挂机触发。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1993年代黑克勒-科赫（Heckler & Koch）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：枪管前部高温橡胶 O 形定心环消除套筒闭锁游隙，达成比赛级散布精度。",
+        "audioScript": "M-02，防倾倒高对比度托弹板。作为 德国 H&K USP45 战术型半自动手枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担保持供弹仰角与空仓挂机触发职能。与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Feed Angle & Hold-Open",
+        "overview": "Anti-Tilt High-Vis Follower (M-02) of the H&K USP45 Tactical Pistol, serving as the dedicated feed angle & hold-open node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Heckler & Koch service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: High-temp barrel O-ring centers the muzzle in the slide for match-grade lockup.",
+        "audioScript": "M-02, Anti-Tilt High-Vis Follower. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the H&K USP45 Tactical Pistol, this component handles feed angle & hold-open. Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "usp45_mag_spring": {
+      "partId": "usp45_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Magazine Lift Spring",
+      "zh": {
+        "roleTag": "高射速下可靠托举下一发弹",
+        "overview": "德国 H&K USP45 战术型半自动手枪（M-03）的高弹性不锈钢托弹弹簧，隶属 20 件套标准装配体系，负责高射速下可靠托举下一发弹。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1993年代黑克勒-科赫（Heckler & Koch）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 55 发/分（实用半自动） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：冷锻 6 边多边形左旋膛线密封火药燃气更严密且寿命逾数万发。",
+        "audioScript": "M-03，高弹性不锈钢托弹弹簧。作为 德国 H&K USP45 战术型半自动手枪 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担高射速下可靠托举下一发弹职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 55 发/分（实用半自动） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Rapid-Cycle Feed Tension",
+        "overview": "Stainless Magazine Lift Spring (M-03) of the H&K USP45 Tactical Pistol, serving as the dedicated rapid-cycle feed tension node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to Heckler & Koch service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 55 RPM (practical semi-auto) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Cold-hammer-forged 6-sided LH polygonal rifling improves gas seal and barrel life.",
+        "audioScript": "M-03, Stainless Magazine Lift Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the H&K USP45 Tactical Pistol, this component handles rapid-cycle feed tension. Stores and returns cyclic elastic energy via live coil compression to maintain 55 RPM (practical semi-auto) timing.",
+        "audioUrl": ""
+      }
+    },
+    "usp45_mag_base": {
+      "partId": "usp45_mag_base",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Magazine Floorplate",
+      "zh": {
+        "roleTag": "底盖防跌落缓冲与快速拆洗",
+        "overview": "德国 H&K USP45 战术型半自动手枪（M-04）的防震快拆弹匣底板与锁片，隶属 20 件套标准装配体系，负责底盖防跌落缓冲与快速拆洗。",
+        "craftAndMaterial": "采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，表面按1993年代黑克勒-科赫（Heckler & Koch）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：模块化火控支持 9 种扳机保险配置（含经典单双动带解脱与保险）。",
+        "audioScript": "M-04，防震快拆弹匣底板与锁片。作为 德国 H&K USP45 战术型半自动手枪 的关键构件，它采用硬质阳极氧化铝合金、氮化钢与高强度聚合物制造，主要承担底盖防跌落缓冲与快速拆洗职能。与相邻模块保持精密基准配合，协同支撑 .45 ACP (11.43×23mm) 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Impact-Resistant Baseplate",
+        "overview": "Reinforced Magazine Floorplate (M-04) of the H&K USP45 Tactical Pistol, serving as the dedicated impact-resistant baseplate node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from hard-coat anodized aluminum, nitrided steel, and reinforced polymer to Heckler & Koch service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Modular control plate supports nine trigger/safety/decocker variants plus suppressor height sights.",
+        "audioScript": "M-04, Reinforced Magazine Floorplate. Crafted from hard-coat anodized aluminum, nitrided steel, and reinforced polymer for the H&K USP45 Tactical Pistol, this component handles impact-resistant baseplate. Maintains datum alignment with adjacent HK USP45 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    }
+  }
+}

@@ -1,0 +1,786 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "m777",
+  "generatedAt": "2026-11-25T00:00:00.000Z",
+  "generatorModels": {
+    "text": "centennial-blueprint-v1",
+    "storyTts": "web-speech-api",
+    "partTts": "web-speech-api"
+  },
+  "uiMetaEn": {
+    "name": "BAE M777A2 155mm Ultralightweight Howitzer",
+    "subtitle": "Titanium-Alloy Split-Trail 39-Caliber Howitzer & Digital Excalibur FCS",
+    "originCountry": "United Kingdom / United States",
+    "weaponType": "155mm Titanium Ultralightweight Howitzer",
+    "categoryLabel": "Aviation & Heavy Ordnance",
+    "actionMechanism": "Separate-Loading Interrupted-Screw Breech · Hydro-Pneumatic Recoil · Titanium Carriage",
+    "statusLabel": "Vault Ready · Interactive 3D",
+    "description": "The first 155mm howitzer built extensively from aerospace titanium-alloy castings, the BAE M777A2 slashes weight by 41% to 4,218 kg for CH-47 and V-22 sling-load mobility while guiding M982 Excalibur GPS shells out to 40 km via digital fire control.",
+    "highlights": [
+      "Aerospace titanium cradle and split trails cut weight to 4,218 kg for helicopter lift",
+      "Low-trunnion geometry channels massive 155mm recoil loads straight into ground spades",
+      "Double-baffle muzzle brake and dual hydro-pneumatic cylinders tame 46 kN·s impulse",
+      "Digital Fire Control System (DFCS) and inductive fuze setter support 40 km Excalibur"
+    ],
+    "workbenchTitle": "BAE M777A2 155mm Ultralightweight Howitzer 3D Mechanical Teardown & Kinematics",
+    "workbenchSubtitle": "4 Assemblies · 20 Core Components · Separate-Loading Interrupted-Screw Breech · Hydro-Pneumatic Recoil · Titanium Carriage",
+    "cutawayLabel": "Breech & Recoil Cradle Cutaway",
+    "cutawayTitle": "Engage live longitudinal cutaway on BAE M777A2 155mm Ultralightweight Howitzer to inspect internal locking and feed geometry",
+    "searchPlaceholder": "Search part name or BOM code (e.g., Barrel, Bolt, U-01, M-01)...",
+    "firingMilestoneLabel": "Hydro-Pneumatic Recoil",
+    "rateOfFire": "5 RPM (burst · 2 RPM sustained)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0%",
+        "desc": "BAE M777A2 155mm Ultralightweight Howitzer (2005) in complete operational battery with all 20 assemblies seated in 1:1 alignment."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Primary operator maintenance stage: clear ammunition supply and separate upper operating group for routine inspection."
+      },
+      "sub_assembly": {
+        "label": "Sub-Assembly",
+        "subLabel": "65%",
+        "desc": "Intermediate armorer teardown exposing locking interfaces, fire-control linkage, and recoil energy storage springs."
+      },
+      "full_exploded": {
+        "label": "Full Exploded View",
+        "subLabel": "100%",
+        "desc": "Complete 20-component isometric CAD explosion displaying every functional group across 10,700 mm (combat deployed · 9,500 mm towed)."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "FCS Fire Solenoid",
+        "title": "Phase 1 · M777A2 155 Firing Solenoid & Primer Ignition",
+        "description": "Closing the crew firing circuit energizes the breech firing pin, igniting the primary propellant charge inside the sealed 155mm NATO M795 / M982 Excalibur (39-Caliber) chamber."
+      },
+      "phase_2": {
+        "shortLabel": "Peak Pressure",
+        "title": "Phase 2 · 380 MPa Chamber Deflagration",
+        "description": "Rapid propellant burn drives chamber pressure to 380 MPa against the heavy locked breechblock while accelerating the heavy projectile."
+      },
+      "phase_3": {
+        "shortLabel": "In-Bore Travel",
+        "title": "Phase 3 · 6045 mm Ordnance Acceleration",
+        "description": "Expanding gases accelerate the 155mm NATO M795 / M982 Excalibur (39-Caliber) round along the 6045 mm barrel up to 827 m/s (14,870,000 J)."
+      },
+      "phase_4": {
+        "shortLabel": "Muzzle Exit",
+        "title": "Phase 4 · Bore Clearance & Muzzle Blast",
+        "description": "The projectile clears the muzzle crown cleanly for engagements out to 30000 m while bore gases evacuate safely away from the crew."
+      },
+      "phase_5": {
+        "shortLabel": "Recoil Stroke",
+        "title": "Phase 5 · Hydropneumatic Recoil Absorption",
+        "description": "Recoil cylinders absorb 46200 N-s of impulse smoothly across the cradle while transferring residual load into the chassis."
+      },
+      "phase_6": {
+        "shortLabel": "Breech Ejection",
+        "title": "Phase 6 · Breech Opening & Stub Extraction",
+        "description": "During battery runout, interrupted-screw breech seals 155mm chamber pressure while hydropneumatic buffers anchor recoil into titanium trails, ejecting the spent base stub cleanly into the deflector bin."
+      },
+      "phase_7": {
+        "shortLabel": "Reload & Ready",
+        "title": "Phase 7 · Munition Ramming & Battery Lock",
+        "description": "The next 155mm NATO M795 / M982 Excalibur (39-Caliber) round seats into the chamber and locks the breechblock back into firing readiness."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "BAE M777A2 155mm 超轻型钛合金榴弹炮：2005 年机械传奇与工程剖析",
+      "deck": "BAE M777A2 是人类首款大面积采用航空级钛合金与高强度铝合金铸焊炮架的 155mm 榴弹炮：全重仅 4,218 kg（比前代 M198 减重 41%），可由 V-22 鱼鹰或 CH-47 吊运部署，并在 40 公里外以数字火控引导“神剑”精确命中。 本馆以 1:1 真实工程比例重现其 20 大核心构件与完整工作循环。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "2001–2005",
+          "title": "时代召唤与研发立项：M777A2 155 的诞生背景",
+          "paragraphs": [
+            "2005 年问世的 BAE M777A2 155mm 超轻型钛合金榴弹炮 由英国 / 美国BAE 系统公司（巴罗因弗内斯）主导研制，定位为经典的155mm 钛合金超轻型牵引榴弹炮。M777A2 作为馆藏第 100 号收官巨炮，将轻武器、弓弩、1:1 主战坦克与重型野战炮兵的机械演进史完整串联成跨越六百余年（1415–2026）的百年军械百科全书。",
+            "BAE M777A2 是人类首款大面积采用航空级钛合金与高强度铝合金铸焊炮架的 155mm 榴弹炮：全重仅 4,218 kg（比前代 M198 减重 41%），可由 V-22 鱼鹰或 CH-47 吊运部署，并在 40 公里外以数字火控引导“神剑”精确命中。 整件装备总长 10,700 mm（战斗展开全长 · 行军 9,500 mm）、空重 4218 kg，成为同期航空重武领域最具辨识度的里程碑之一。"
+          ],
+          "audioScript": "第一幕，时代起源。2005 年，英国 / 美国BAE 系统公司（巴罗因弗内斯）推出了划时代的BAE M777A2 155mm 超轻型钛合金榴弹炮。M777A2 作为馆藏第 100 号收官巨炮，将轻武器、弓弩、1:1 主战坦克与重型野战炮兵的机械演进史完整串联成跨越六百余年（1415–2026）的百年军械百科全书。 它的核心设计聚焦于大规模航空级钛合金摇架与前伸稳定驻锄，全重 4.2 吨可直升机吊运，奠定了其在航空重武发展史中的经典地位。",
+          "audioUrl": "",
+          "focusPartId": "m777_receiver",
+          "focusPartLabel": "炮尾摇架与耳轴承力机匣"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "2005",
+          "title": "核心机械构造与闭锁奥秘",
+          "paragraphs": [
+            "BAE M777A2 155mm 超轻型钛合金榴弹炮 的机械灵魂在于其「分装式断隔螺式炮闩 · 液气双驻退复进筒 · 全钛合金低重心炮架」结构体系。在发射工作循环中，螺式炮闩闭锁 155mm 高压药室，发射后液气驻退机经钛合金大架导力入地，将高压能量精确约束于承力框架之内。",
+            "制造工艺方面，关键承力件采用哑光航空级钛合金与高强度 CNC 铝合金精加工而成。低耳轴高度几何设计将 155mm 巨大后坐力直接导入双开大架驻锄，在严苛实战条件下依然保持顺畅节拍与长期尺寸稳定性。"
+          ],
+          "audioScript": "第二幕，核心机械原理。BAE M777A2 155mm 超轻型钛合金榴弹炮 采用分装式断隔螺式炮闩 · 液气双驻退复进筒 · 全钛合金低重心炮架。在每个击发周期中，螺式炮闩闭锁 155mm 高压药室，发射后液气驻退机经钛合金大架导力入地。借助哑光航空级钛合金与高强度 CNC 铝合金工艺与高强度配合，实现了低耳轴高度几何设计将 155mm 巨大后坐力直接导入双开大架驻锄。",
+          "audioUrl": "",
+          "focusPartId": "m777_bolt",
+          "focusPartLabel": "重型立楔/螺式主炮炮闩"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "2005–2008",
+          "title": "弹道性能、内膛工艺与实战效能",
+          "paragraphs": [
+            "该平台配用 155mm NATO M795 / M982 Excalibur (39-Caliber) 弹药规格与 6,045 mm（155mm L/39 · 48 条右旋膛线 · 双室高效制退器），最高工作膛压约 380 MPa，可赋予弹头 827 m/s 的出膛初速与 14,870,000 J 动能，有效作用距离达 30000 米。",
+            "内膛技术特点方面，155mm M776 L/39 镀铬 48 条深膛线身管，兼容模块化装药与 GPS 制导“神剑”炮弹。同时，双室高效膛口制退器配合左右双液气驻退复进筒吸收近半后坐冲量，令其在 5 发/分（急促射 · 2 发/分持续射） 的节奏下兼具精准控制与可靠输出。"
+          ],
+          "audioScript": "第三幕，弹道与实战表现。配备 6045 毫米身管与 155mm NATO M795 / M982 Excalibur (39-Caliber) 口径，BAE M777A2 155mm 超轻型钛合金榴弹炮 实现了每秒 827 米的初速与 30000 米有效射程。155mm M776 L/39 镀铬 48 条深膛线身管，兼容模块化装药与 GPS 制导“神剑”炮弹，展现了卓越的工程平衡。",
+          "audioUrl": "",
+          "focusPartId": "m777_barrel",
+          "focusPartLabel": "6045mm 精密内膛枪管总成"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "2020–2026",
+          "title": "人机工效、供弹哲学与百年遗产",
+          "paragraphs": [
+            "围绕 1 发容量的分装炮弹与模块化发射药装填台与 1380 mm 膛轴设计，BAE M777A2 155mm 超轻型钛合金榴弹炮 将单发后坐冲量控制在 46200 N·s 水平。A2 型集成数字化火控（DFCS）与感应装定器，支持 40 km 神剑精确打击。",
+            "如今在数字兵器库 3D 百年展厅（BAY-100）中，您可以随时通过三轴剖视、100% 爆炸视图与实时运动学滑块，零距离拆解这座跨越时代的机械工程杰作。"
+          ],
+          "audioScript": "第四幕，百年遗产。凭借 1 发容量的分装炮弹与模块化发射药装填台与出色的整体工效，A2 型集成数字化火控（DFCS）与感应装定器，支持 40 km 神剑精确打击。欢迎在 BAY-100 展位亲手切开剖面、逐件拆解，感受 BAE M777A2 155mm 超轻型钛合金榴弹炮 的机械魅力。",
+          "audioUrl": "",
+          "focusPartId": "m777_mag_body",
+          "focusPartLabel": "分装炮弹与模块化发射药装填台"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "核心动作与闭锁架构",
+          "tag": "BAY-100",
+          "summary": "分装式断隔螺式炮闩 · 液气双驻退复进筒 · 全钛合金低重心炮架；大规模航空级钛合金摇架与前伸稳定驻锄，全重 4.2 吨可直升机吊运。",
+          "focusPartId": "m777_bolt",
+          "focusPartLabel": "重型立楔/螺式主炮炮闩"
+        },
+        {
+          "id": "bt2",
+          "title": "内膛弹道与能量释放",
+          "tag": "827 m/s",
+          "summary": "6,045 mm（155mm L/39 · 48 条右旋膛线 · 双室高效制退器），155mm M776 L/39 镀铬 48 条深膛线身管，兼容模块化装药与 GPS 制导“神剑”炮弹。",
+          "focusPartId": "m777_barrel",
+          "focusPartLabel": "6045mm 精密内膛枪管总成"
+        },
+        {
+          "id": "bt3",
+          "title": "供弹与实战人机工效",
+          "tag": "1 rds",
+          "summary": "双室高效膛口制退器配合左右双液气驻退复进筒吸收近半后坐冲量；A2 型集成数字化火控（DFCS）与感应装定器，支持 40 km 神剑精确打击。",
+          "focusPartId": "m777_mag_body",
+          "focusPartLabel": "分装炮弹与模块化发射药装填台"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "2001",
+          "title": "战术指标与概念构型",
+          "detail": "英国 / 美国提出新一代155mm 钛合金超轻型牵引榴弹炮战术指标，确立口径与机动平衡方向。"
+        },
+        {
+          "year": "2005",
+          "title": "M777A2 155 正式定型投产",
+          "detail": "BAE 系统公司（巴罗因弗内斯）完成 BAE M777A2 155MM L/39 定型，采用分装式断隔螺式炮闩 · 液气双驻退复进筒 · 全钛合金低重心炮架架构。"
+        },
+        {
+          "year": "2008",
+          "title": "实战部署与工艺演进",
+          "detail": "大规模航空级钛合金摇架与前伸稳定驻锄，全重 4.2 吨可直升机吊运，在全球多个战区与演训环境中验证了高可靠性。"
+        },
+        {
+          "year": "2020",
+          "title": "工程典范与历史传承",
+          "detail": "M777A2 作为馆藏第 100 号收官巨炮，将轻武器、弓弩、1:1 主战坦克与重型野战炮兵的机械演进史完整串联成跨越六百余年（1415–2026）的百年军械百科全书。"
+        },
+        {
+          "year": "2026",
+          "title": "入藏数字兵器库 3D（BAY-100）",
+          "detail": "完整构建 1:1 参数化 20 零件三维装配模型，支持剖切、爆炸与运动学实时仿真。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "BAE M777A2 155mm Ultralightweight Howitzer: The 2005 Mechanical Legend",
+      "deck": "The first 155mm howitzer built extensively from aerospace titanium-alloy castings, the BAE M777A2 slashes weight by 41% to 4,218 kg for CH-47 and V-22 sling-load mobility while guiding M982 Excalibur GPS shells out to 40 km via digital fire control. Preserved in 1:1 interactive 3D CAD scale across all 20 functional assemblies in BAY-100.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "Act I",
+          "eraTag": "2001–2005",
+          "title": "Origins & Operational Mandate of the M777A2 155",
+          "paragraphs": [
+            "Introduced in 2005 by BAE Systems Global Combat Systems in United Kingdom / United States, the BAE M777A2 155mm Ultralightweight Howitzer emerged as a defining 155mm Titanium Ultralightweight Howitzer. Crowning Bay 100 of the museum, the M777A2 bridges small arms, medieval archery, 1:1 main battle tanks, and modern titanium field artillery across six centuries of mechanical engineering (1415–2026).",
+            "The first 155mm howitzer built extensively from aerospace titanium-alloy castings, the BAE M777A2 slashes weight by 41% to 4,218 kg for CH-47 and V-22 sling-load mobility while guiding M982 Excalibur GPS shells out to 40 km via digital fire control. Measuring 10,700 mm (combat deployed · 9,500 mm towed) at an unloaded weight of 4218 kg, it reshaped expectations across the Aviation & Heavy Ordnance class."
+          ],
+          "audioScript": "Act One: Historical Origins. In 2005, BAE Systems Global Combat Systems of United Kingdom / United States introduced the BAE M777A2 155mm Ultralightweight Howitzer. Crowning Bay 100 of the museum, the M777A2 bridges small arms, medieval archery, 1:1 main battle tanks, and modern titanium field artillery across six centuries of mechanical engineering (1415–2026). Anchored by its hallmark design trait — Aerospace titanium cradle and split trails cut weight to 4,218 kg for helicopter lift — it quickly established an enduring engineering benchmark.",
+          "audioUrl": "",
+          "focusPartId": "m777_receiver",
+          "focusPartLabel": "Ordnance Cradle & Trunnion Ring"
+        },
+        {
+          "id": "act2",
+          "actNumber": "Act II",
+          "eraTag": "2005",
+          "title": "Core Operating Architecture & Lockup Mechanics",
+          "paragraphs": [
+            "At the mechanical heart of the BAE M777A2 155mm Ultralightweight Howitzer sits its Separate-Loading Interrupted-Screw Breech · Hydro-Pneumatic Recoil · Titanium Carriage. Throughout every firing cycle, interrupted-screw breech seals 155mm chamber pressure while hydropneumatic buffers anchor recoil into titanium trails, containing 380 MPa of operating pressure safely.",
+            "Constructed in matte aerospace titanium alloy and billet aluminum, the assembly achieves durable field tolerances. Notably, Low-trunnion geometry channels massive 155mm recoil loads straight into ground spades, sustaining dependable operation under severe environmental stress."
+          ],
+          "audioScript": "Act Two: Core Mechanical Architecture. The BAE M777A2 155mm Ultralightweight Howitzer relies on Separate-Loading Interrupted-Screw Breech · Hydro-Pneumatic Recoil · Titanium Carriage. During each cycle, interrupted-screw breech seals 155mm chamber pressure while hydropneumatic buffers anchor recoil into titanium trails. Machined from matte aerospace titanium alloy and billet aluminum, it delivers standout engineering reliability: Low-trunnion geometry channels massive 155mm recoil loads straight into ground spades.",
+          "audioUrl": "",
+          "focusPartId": "m777_bolt",
+          "focusPartLabel": "Heavy Sliding-Wedge / Screw Breech"
+        },
+        {
+          "id": "act3",
+          "actNumber": "Act III",
+          "eraTag": "2005–2008",
+          "title": "Ballistic Performance, Bore Craft & Range Reach",
+          "paragraphs": [
+            "Chambered for 155mm NATO M795 / M982 Excalibur (39-Caliber) with 6,045 mm (155mm L/39 · 48-Groove RH · Double-Baffle Brake), the BAE M777A2 155mm Ultralightweight Howitzer develops 827 m/s muzzle velocity and 14,870,000 J of kinetic energy for effective engagement out to 30000 meters.",
+            "Internally, 155mm M776 L/39 chrome-lined 48-groove rifled barrel supporting modular charges and Excalibur GPS shells. Combined with its 5 RPM (burst · 2 RPM sustained) tempo, Double-baffle muzzle brake and dual hydro-pneumatic cylinders tame 46 kN·s impulse, delivering disciplined accuracy across demanding field conditions."
+          ],
+          "audioScript": "Act Three: Ballistic Performance. Driving 155mm NATO M795 / M982 Excalibur (39-Caliber) through its 6045 millimeter bore, the BAE M777A2 155mm Ultralightweight Howitzer achieves 827 meters per second and 30000 meters of effective reach. 155mm M776 L/39 chrome-lined 48-groove rifled barrel supporting modular charges and Excalibur GPS shells.",
+          "audioUrl": "",
+          "focusPartId": "m777_barrel",
+          "focusPartLabel": "6045mm Precision Rifled Barrel"
+        },
+        {
+          "id": "act4",
+          "actNumber": "Act IV",
+          "eraTag": "2020–2026",
+          "title": "Feed Philosophy, Ergonomics & Centennial Legacy",
+          "paragraphs": [
+            "Fed by a 1-round 155mm loading tray & charge cradle with a 1380 mm bore-axis height, the platform manages 46200 N-s of recoil impulse cleanly. Digital Fire Control System (DFCS) and inductive fuze setter support 40 km Excalibur.",
+            "Now archived in Digital Armory 3D Centennial Gallery (BAY-100), all 20 interactive assemblies can be sectioned live along three axes, exploded to 100%, and inspected part by part."
+          ],
+          "audioScript": "Act Four: Engineering Legacy. Pairing its 1-round 155mm loading tray & charge cradle with disciplined recoil geometry, Digital Fire Control System (DFCS) and inductive fuze setter support 40 km Excalibur. Explore BAY-100 in live section cut and exploded disassembly to study every working link of the BAE M777A2 155mm Ultralightweight Howitzer.",
+          "audioUrl": "",
+          "focusPartId": "m777_mag_body",
+          "focusPartLabel": "155mm Loading Tray & Charge Cradle"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Operating & Lockup Principle",
+          "tag": "BAY-100",
+          "summary": "Separate-Loading Interrupted-Screw Breech · Hydro-Pneumatic Recoil · Titanium Carriage — Aerospace titanium cradle and split trails cut weight to 4,218 kg for helicopter lift.",
+          "focusPartId": "m777_bolt",
+          "focusPartLabel": "Heavy Sliding-Wedge / Screw Breech"
+        },
+        {
+          "id": "bt2",
+          "title": "Bore & Ballistic Efficiency",
+          "tag": "827 m/s",
+          "summary": "6,045 mm (155mm L/39 · 48-Groove RH · Double-Baffle Brake); 155mm M776 L/39 chrome-lined 48-groove rifled barrel supporting modular charges and Excalibur GPS shells.",
+          "focusPartId": "m777_barrel",
+          "focusPartLabel": "6045mm Precision Rifled Barrel"
+        },
+        {
+          "id": "bt3",
+          "title": "Feed & Ergonomic Mastery",
+          "tag": "1 rds",
+          "summary": "Double-baffle muzzle brake and dual hydro-pneumatic cylinders tame 46 kN·s impulse; Digital Fire Control System (DFCS) and inductive fuze setter support 40 km Excalibur.",
+          "focusPartId": "m777_mag_body",
+          "focusPartLabel": "155mm Loading Tray & Charge Cradle"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "2001",
+          "title": "Operational Requirement Defined",
+          "detail": "United Kingdom / United States ordnance planners established specifications for a new 155mm Titanium Ultralightweight Howitzer class."
+        },
+        {
+          "year": "2005",
+          "title": "M777A2 155 Official Introduction",
+          "detail": "BAE Systems Global Combat Systems finalized BAE M777A2 155MM L/39 around Separate-Loading Interrupted-Screw Breech · Hydro-Pneumatic Recoil · Titanium Carriage."
+        },
+        {
+          "year": "2008",
+          "title": "Field Deployment & Service Validation",
+          "detail": "Aerospace titanium cradle and split trails cut weight to 4,218 kg for helicopter lift, proving mechanical endurance across real-world operations."
+        },
+        {
+          "year": "2020",
+          "title": "Enduring Historical Influence",
+          "detail": "Crowning Bay 100 of the museum, the M777A2 bridges small arms, medieval archery, 1:1 main battle tanks, and modern titanium field artillery across six centuries of mechanical engineering (1415–2026)."
+        },
+        {
+          "year": "2026",
+          "title": "Archived in Digital Armory 3D (BAY-100)",
+          "detail": "Modeled as a 1:1 interactive 20-component CAD exhibit with live cutaway, exploded disassembly, and kinematics."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "m777_receiver": {
+      "partId": "m777_receiver",
+      "bomCode": "U-01",
+      "calloutLabelEn": "Cradle & Trunnion Ring",
+      "zh": {
+        "roleTag": "大口径火炮俯仰后坐导轨",
+        "overview": "BAE M777A2 155mm 超轻型钛合金榴弹炮（U-01）的炮尾摇架与耳轴承力机匣，隶属 20 件套标准装配体系，负责大口径火炮俯仰后坐导轨。",
+        "craftAndMaterial": "采用哑光航空级钛合金与高强度 CNC 铝合金制造，表面按2005年代BAE 系统公司（巴罗因弗内斯）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：大规模航空级钛合金摇架与前伸稳定驻锄，全重 4.2 吨可直升机吊运。",
+        "audioScript": "U-01，炮尾摇架与耳轴承力机匣。作为 BAE M777A2 155mm 超轻型钛合金榴弹炮 的关键构件，它采用哑光航空级钛合金与高强度 CNC 铝合金制造，主要承担大口径火炮俯仰后坐导轨职能。与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Elevation & Recoil Cradle",
+        "overview": "Ordnance Cradle & Trunnion Ring (U-01) of the BAE M777A2 155mm Ultralightweight Howitzer, serving as the dedicated elevation & recoil cradle node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from matte aerospace titanium alloy and billet aluminum to BAE Systems Global Combat Systems service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Aerospace titanium cradle and split trails cut weight to 4,218 kg for helicopter lift.",
+        "audioScript": "U-01, Ordnance Cradle & Trunnion Ring. Crafted from matte aerospace titanium alloy and billet aluminum for the BAE M777A2 155mm Ultralightweight Howitzer, this component handles elevation & recoil cradle. Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m777_barrel": {
+      "partId": "m777_barrel",
+      "bomCode": "U-02",
+      "calloutLabelEn": "6045mm Precision Barrel",
+      "zh": {
+        "roleTag": "密闭高压燃气并赋予弹头自旋",
+        "overview": "BAE M777A2 155mm 超轻型钛合金榴弹炮（U-02）的6045mm 精密内膛枪管总成，隶属 20 件套标准装配体系，负责密闭高压燃气并赋予弹头自旋。",
+        "craftAndMaterial": "采用哑光航空级钛合金与高强度 CNC 铝合金制造，表面按2005年代BAE 系统公司（巴罗因弗内斯）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：低耳轴高度几何设计将 155mm 巨大后坐力直接导入双开大架驻锄。",
+        "audioScript": "U-02，6045mm 精密内膛枪管总成。作为 BAE M777A2 155mm 超轻型钛合金榴弹炮 的关键构件，它采用哑光航空级钛合金与高强度 CNC 铝合金制造，主要承担密闭高压燃气并赋予弹头自旋职能。与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Pressure Vessel & Spin Axis",
+        "overview": "6045mm Precision Rifled Barrel (U-02) of the BAE M777A2 155mm Ultralightweight Howitzer, serving as the dedicated pressure vessel & spin axis node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from matte aerospace titanium alloy and billet aluminum to BAE Systems Global Combat Systems service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Low-trunnion geometry channels massive 155mm recoil loads straight into ground spades.",
+        "audioScript": "U-02, 6045mm Precision Rifled Barrel. Crafted from matte aerospace titanium alloy and billet aluminum for the BAE M777A2 155mm Ultralightweight Howitzer, this component handles pressure vessel & spin axis. Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m777_muzzle": {
+      "partId": "m777_muzzle",
+      "bomCode": "U-03",
+      "calloutLabelEn": "Heavy Muzzle Brake",
+      "zh": {
+        "roleTag": "巨额后坐能量泄压",
+        "overview": "BAE M777A2 155mm 超轻型钛合金榴弹炮（U-03）的重型多室炮口制退器，隶属 20 件套标准装配体系，负责巨额后坐能量泄压。",
+        "craftAndMaterial": "采用哑光航空级钛合金与高强度 CNC 铝合金制造，表面按2005年代BAE 系统公司（巴罗因弗内斯）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：双室高效膛口制退器配合左右双液气驻退复进筒吸收近半后坐冲量。",
+        "audioScript": "U-03，重型多室炮口制退器。作为 BAE M777A2 155mm 超轻型钛合金榴弹炮 的关键构件，它采用哑光航空级钛合金与高强度 CNC 铝合金制造，主要承担巨额后坐能量泄压职能。与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Impulse Mitigation",
+        "overview": "Heavy Multi-Baffle Muzzle Brake (U-03) of the BAE M777A2 155mm Ultralightweight Howitzer, serving as the dedicated recoil impulse mitigation node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from matte aerospace titanium alloy and billet aluminum to BAE Systems Global Combat Systems service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Double-baffle muzzle brake and dual hydro-pneumatic cylinders tame 46 kN·s impulse.",
+        "audioScript": "U-03, Heavy Multi-Baffle Muzzle Brake. Crafted from matte aerospace titanium alloy and billet aluminum for the BAE M777A2 155mm Ultralightweight Howitzer, this component handles recoil impulse mitigation. Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m777_bolt_carrier": {
+      "partId": "m777_bolt_carrier",
+      "bomCode": "U-04",
+      "calloutLabelEn": "Breech Ring & Recoil",
+      "zh": {
+        "roleTag": "吸收巨额发射后坐冲量",
+        "overview": "BAE M777A2 155mm 超轻型钛合金榴弹炮（U-04）的炮尾环与液气复进筒组，隶属 20 件套标准装配体系，负责吸收巨额发射后坐冲量。",
+        "craftAndMaterial": "采用哑光航空级钛合金与高强度 CNC 铝合金制造，表面按2005年代BAE 系统公司（巴罗因弗内斯）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：螺式炮闩闭锁 155mm 高压药室，发射后液气驻退机经钛合金大架导力入地。",
+        "designHighlight": "工程亮点呼应整枪特征：A2 型集成数字化火控（DFCS）与感应装定器，支持 40 km 神剑精确打击。",
+        "audioScript": "U-04，炮尾环与液气复进筒组。作为 BAE M777A2 155mm 超轻型钛合金榴弹炮 的关键构件，它采用哑光航空级钛合金与高强度 CNC 铝合金制造，主要承担吸收巨额发射后坐冲量职能。在击发循环中承担核心联动：螺式炮闩闭锁 155mm 高压药室，发射后液气驻退机经钛合金大架导力入地。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Hydropneumatic Recoil Unit",
+        "overview": "Breech Ring & Recoil Cylinders (U-04) of the BAE M777A2 155mm Ultralightweight Howitzer, serving as the dedicated hydropneumatic recoil unit node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from matte aerospace titanium alloy and billet aluminum to BAE Systems Global Combat Systems service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: interrupted-screw breech seals 155mm chamber pressure while hydropneumatic buffers anchor recoil into titanium trails.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Digital Fire Control System (DFCS) and inductive fuze setter support 40 km Excalibur.",
+        "audioScript": "U-04, Breech Ring & Recoil Cylinders. Crafted from matte aerospace titanium alloy and billet aluminum for the BAE M777A2 155mm Ultralightweight Howitzer, this component handles hydropneumatic recoil unit. Drives the core operating sequence: interrupted-screw breech seals 155mm chamber pressure while hydropneumatic buffers anchor recoil into titanium trails.",
+        "audioUrl": ""
+      }
+    },
+    "m777_bolt": {
+      "partId": "m777_bolt",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Heavy Cannon Breech",
+      "zh": {
+        "roleTag": "密闭数百兆帕高压炮膛",
+        "overview": "BAE M777A2 155mm 超轻型钛合金榴弹炮（U-05）的重型立楔/螺式主炮炮闩，隶属 20 件套标准装配体系，负责密闭数百兆帕高压炮膛。",
+        "craftAndMaterial": "采用哑光航空级钛合金与高强度 CNC 铝合金制造，表面按2005年代BAE 系统公司（巴罗因弗内斯）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：螺式炮闩闭锁 155mm 高压药室，发射后液气驻退机经钛合金大架导力入地。",
+        "designHighlight": "工程亮点呼应整枪特征：大规模航空级钛合金摇架与前伸稳定驻锄，全重 4.2 吨可直升机吊运。",
+        "audioScript": "U-05，重型立楔/螺式主炮炮闩。作为 BAE M777A2 155mm 超轻型钛合金榴弹炮 的关键构件，它采用哑光航空级钛合金与高强度 CNC 铝合金制造，主要承担密闭数百兆帕高压炮膛职能。在击发循环中承担核心联动：螺式炮闩闭锁 155mm 高压药室，发射后液气驻退机经钛合金大架导力入地。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-Pressure Breech Seal",
+        "overview": "Heavy Sliding-Wedge / Screw Breech (U-05) of the BAE M777A2 155mm Ultralightweight Howitzer, serving as the dedicated high-pressure breech seal node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from matte aerospace titanium alloy and billet aluminum to BAE Systems Global Combat Systems service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: interrupted-screw breech seals 155mm chamber pressure while hydropneumatic buffers anchor recoil into titanium trails.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Aerospace titanium cradle and split trails cut weight to 4,218 kg for helicopter lift.",
+        "audioScript": "U-05, Heavy Sliding-Wedge / Screw Breech. Crafted from matte aerospace titanium alloy and billet aluminum for the BAE M777A2 155mm Ultralightweight Howitzer, this component handles high-pressure breech seal. Drives the core operating sequence: interrupted-screw breech seals 155mm chamber pressure while hydropneumatic buffers anchor recoil into titanium trails.",
+        "audioUrl": ""
+      }
+    },
+    "m777_recoil_spring": {
+      "partId": "m777_recoil_spring",
+      "bomCode": "U-06",
+      "calloutLabelEn": "Recuperator Spring",
+      "zh": {
+        "roleTag": "吸收后坐动能并驱动复进闭膛",
+        "overview": "BAE M777A2 155mm 超轻型钛合金榴弹炮（U-06）的主炮重型复进弹簧组，隶属 20 件套标准装配体系，负责吸收后坐动能并驱动复进闭膛。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按2005年代BAE 系统公司（巴罗因弗内斯）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 5 发/分（急促射 · 2 发/分持续射） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：低耳轴高度几何设计将 155mm 巨大后坐力直接导入双开大架驻锄。",
+        "audioScript": "U-06，主炮重型复进弹簧组。作为 BAE M777A2 155mm 超轻型钛合金榴弹炮 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担吸收后坐动能并驱动复进闭膛职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 5 发/分（急促射 · 2 发/分持续射） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Storage & Return Drive",
+        "overview": "Main-Gun Recuperator Spring (U-06) of the BAE M777A2 155mm Ultralightweight Howitzer, serving as the dedicated recoil storage & return drive node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to BAE Systems Global Combat Systems service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 5 RPM (burst · 2 RPM sustained) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Low-trunnion geometry channels massive 155mm recoil loads straight into ground spades.",
+        "audioScript": "U-06, Main-Gun Recuperator Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the BAE M777A2 155mm Ultralightweight Howitzer, this component handles recoil storage & return drive. Stores and returns cyclic elastic energy via live coil compression to maintain 5 RPM (burst · 2 RPM sustained) timing.",
+        "audioUrl": ""
+      }
+    },
+    "m777_handguard": {
+      "partId": "m777_handguard",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Gun Shield & Shroud",
+      "zh": {
+        "roleTag": "炮手防护与结构抗扭支撑",
+        "overview": "BAE M777A2 155mm 超轻型钛合金榴弹炮（F-01）的防盾护板与散热框架罩，隶属 20 件套标准装配体系，负责炮手防护与结构抗扭支撑。",
+        "craftAndMaterial": "采用哑光航空级钛合金与高强度 CNC 铝合金制造，表面按2005年代BAE 系统公司（巴罗因弗内斯）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：双室高效膛口制退器配合左右双液气驻退复进筒吸收近半后坐冲量。",
+        "audioScript": "F-01，防盾护板与散热框架罩。作为 BAE M777A2 155mm 超轻型钛合金榴弹炮 的关键构件，它采用哑光航空级钛合金与高强度 CNC 铝合金制造，主要承担炮手防护与结构抗扭支撑职能。与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Crew Shield & Chassis",
+        "overview": "Gun Shield & Structural Shroud (F-01) of the BAE M777A2 155mm Ultralightweight Howitzer, serving as the dedicated crew shield & chassis node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from matte aerospace titanium alloy and billet aluminum to BAE Systems Global Combat Systems service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Double-baffle muzzle brake and dual hydro-pneumatic cylinders tame 46 kN·s impulse.",
+        "audioScript": "F-01, Gun Shield & Structural Shroud. Crafted from matte aerospace titanium alloy and billet aluminum for the BAE M777A2 155mm Ultralightweight Howitzer, this component handles crew shield & chassis. Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m777_stock": {
+      "partId": "m777_stock",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Artillery Carriage Base",
+      "zh": {
+        "roleTag": "将发射反冲力稳固导入地面",
+        "overview": "BAE M777A2 155mm 超轻型钛合金榴弹炮（F-02）的开脚大架/双耳轴炮架底座，隶属 20 件套标准装配体系，负责将发射反冲力稳固导入地面。",
+        "craftAndMaterial": "采用哑光航空级钛合金与高强度 CNC 铝合金制造，表面按2005年代BAE 系统公司（巴罗因弗内斯）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：A2 型集成数字化火控（DFCS）与感应装定器，支持 40 km 神剑精确打击。",
+        "audioScript": "F-02，开脚大架/双耳轴炮架底座。作为 BAE M777A2 155mm 超轻型钛合金榴弹炮 的关键构件，它采用哑光航空级钛合金与高强度 CNC 铝合金制造，主要承担将发射反冲力稳固导入地面职能。与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ground Recoil Anchoring",
+        "overview": "Split-Trail / Pedestal Carriage (F-02) of the BAE M777A2 155mm Ultralightweight Howitzer, serving as the dedicated ground recoil anchoring node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from matte aerospace titanium alloy and billet aluminum to BAE Systems Global Combat Systems service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Digital Fire Control System (DFCS) and inductive fuze setter support 40 km Excalibur.",
+        "audioScript": "F-02, Split-Trail / Pedestal Carriage. Crafted from matte aerospace titanium alloy and billet aluminum for the BAE M777A2 155mm Ultralightweight Howitzer, this component handles ground recoil anchoring. Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m777_grip": {
+      "partId": "m777_grip",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Ergonomic Main Grip",
+      "zh": {
+        "roleTag": "锁定手腕角度优化扳机控枪",
+        "overview": "BAE M777A2 155mm 超轻型钛合金榴弹炮（F-03）的人体工学防滑主握把，隶属 20 件套标准装配体系，负责锁定手腕角度优化扳机控枪。",
+        "craftAndMaterial": "采用哑光航空级钛合金与高强度 CNC 铝合金制造，表面按2005年代BAE 系统公司（巴罗因弗内斯）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：大规模航空级钛合金摇架与前伸稳定驻锄，全重 4.2 吨可直升机吊运。",
+        "audioScript": "F-03，人体工学防滑主握把。作为 BAE M777A2 155mm 超轻型钛合金榴弹炮 的关键构件，它采用哑光航空级钛合金与高强度 CNC 铝合金制造，主要承担锁定手腕角度优化扳机控枪职能。与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Wrist Alignment & Control",
+        "overview": "Ergonomic Textured Main Grip (F-03) of the BAE M777A2 155mm Ultralightweight Howitzer, serving as the dedicated wrist alignment & control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from matte aerospace titanium alloy and billet aluminum to BAE Systems Global Combat Systems service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Aerospace titanium cradle and split trails cut weight to 4,218 kg for helicopter lift.",
+        "audioScript": "F-03, Ergonomic Textured Main Grip. Crafted from matte aerospace titanium alloy and billet aluminum for the BAE M777A2 155mm Ultralightweight Howitzer, this component handles wrist alignment & control. Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m777_optic": {
+      "partId": "m777_optic",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Precision Optical Sight",
+      "zh": {
+        "roleTag": "建立精准弹道瞄准基线",
+        "overview": "BAE M777A2 155mm 超轻型钛合金榴弹炮（F-04）的精密光学瞄准镜与高刚度镜座，隶属 20 件套标准装配体系，负责建立精准弹道瞄准基线。",
+        "craftAndMaterial": "采用哑光航空级钛合金与高强度 CNC 铝合金制造，表面按2005年代BAE 系统公司（巴罗因弗内斯）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：低耳轴高度几何设计将 155mm 巨大后坐力直接导入双开大架驻锄。",
+        "audioScript": "F-04，精密光学瞄准镜与高刚度镜座。作为 BAE M777A2 155mm 超轻型钛合金榴弹炮 的关键构件，它采用哑光航空级钛合金与高强度 CNC 铝合金制造，主要承担建立精准弹道瞄准基线职能。与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ballistic Sightline Datum",
+        "overview": "Precision Optical Sight & Mount (F-04) of the BAE M777A2 155mm Ultralightweight Howitzer, serving as the dedicated ballistic sightline datum node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from matte aerospace titanium alloy and billet aluminum to BAE Systems Global Combat Systems service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Low-trunnion geometry channels massive 155mm recoil loads straight into ground spades.",
+        "audioScript": "F-04, Precision Optical Sight & Mount. Crafted from matte aerospace titanium alloy and billet aluminum for the BAE M777A2 155mm Ultralightweight Howitzer, this component handles ballistic sightline datum. Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m777_gas_system": {
+      "partId": "m777_gas_system",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Gas & Recoil System",
+      "zh": {
+        "roleTag": "定量调控自动循环能量平衡",
+        "overview": "BAE M777A2 155mm 超轻型钛合金榴弹炮（F-05）的导气活塞/缓冲传动调节组件，隶属 20 件套标准装配体系，负责定量调控自动循环能量平衡。",
+        "craftAndMaterial": "采用哑光航空级钛合金与高强度 CNC 铝合金制造，表面按2005年代BAE 系统公司（巴罗因弗内斯）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：螺式炮闩闭锁 155mm 高压药室，发射后液气驻退机经钛合金大架导力入地。",
+        "designHighlight": "工程亮点呼应整枪特征：双室高效膛口制退器配合左右双液气驻退复进筒吸收近半后坐冲量。",
+        "audioScript": "F-05，导气活塞/缓冲传动调节组件。作为 BAE M777A2 155mm 超轻型钛合金榴弹炮 的关键构件，它采用哑光航空级钛合金与高强度 CNC 铝合金制造，主要承担定量调控自动循环能量平衡职能。在击发循环中承担核心联动：螺式炮闩闭锁 155mm 高压药室，发射后液气驻退机经钛合金大架导力入地。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Operating Energy Regulation",
+        "overview": "Gas Drive / Recoil Buffer System (F-05) of the BAE M777A2 155mm Ultralightweight Howitzer, serving as the dedicated operating energy regulation node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from matte aerospace titanium alloy and billet aluminum to BAE Systems Global Combat Systems service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: interrupted-screw breech seals 155mm chamber pressure while hydropneumatic buffers anchor recoil into titanium trails.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Double-baffle muzzle brake and dual hydro-pneumatic cylinders tame 46 kN·s impulse.",
+        "audioScript": "F-05, Gas Drive / Recoil Buffer System. Crafted from matte aerospace titanium alloy and billet aluminum for the BAE M777A2 155mm Ultralightweight Howitzer, this component handles operating energy regulation. Drives the core operating sequence: interrupted-screw breech seals 155mm chamber pressure while hydropneumatic buffers anchor recoil into titanium trails.",
+        "audioUrl": ""
+      }
+    },
+    "m777_mount_rail": {
+      "partId": "m777_mount_rail",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Accessory Mount Rail",
+      "zh": {
+        "roleTag": "提供稳固依托与模块化拓展",
+        "overview": "BAE M777A2 155mm 超轻型钛合金榴弹炮（F-06）的战术附件导轨与背带支座，隶属 20 件套标准装配体系，负责提供稳固依托与模块化拓展。",
+        "craftAndMaterial": "采用哑光航空级钛合金与高强度 CNC 铝合金制造，表面按2005年代BAE 系统公司（巴罗因弗内斯）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：A2 型集成数字化火控（DFCS）与感应装定器，支持 40 km 神剑精确打击。",
+        "audioScript": "F-06，战术附件导轨与背带支座。作为 BAE M777A2 155mm 超轻型钛合金榴弹炮 的关键构件，它采用哑光航空级钛合金与高强度 CNC 铝合金制造，主要承担提供稳固依托与模块化拓展职能。与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Modular Support & Optics Base",
+        "overview": "Accessory Rail & Sling Mount (F-06) of the BAE M777A2 155mm Ultralightweight Howitzer, serving as the dedicated modular support & optics base node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from matte aerospace titanium alloy and billet aluminum to BAE Systems Global Combat Systems service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Digital Fire Control System (DFCS) and inductive fuze setter support 40 km Excalibur.",
+        "audioScript": "F-06, Accessory Rail & Sling Mount. Crafted from matte aerospace titanium alloy and billet aluminum for the BAE M777A2 155mm Ultralightweight Howitzer, this component handles modular support & optics base. Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m777_trigger": {
+      "partId": "m777_trigger",
+      "bomCode": "T-01",
+      "calloutLabelEn": "Trigger & Guard",
+      "zh": {
+        "roleTag": "清晰干脆释放阻铁启动击发",
+        "overview": "BAE M777A2 155mm 超轻型钛合金榴弹炮（T-01）的精密机械扳机与护圈总成，隶属 20 件套标准装配体系，负责清晰干脆释放阻铁启动击发。",
+        "craftAndMaterial": "采用哑光航空级钛合金与高强度 CNC 铝合金制造，表面按2005年代BAE 系统公司（巴罗因弗内斯）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：大规模航空级钛合金摇架与前伸稳定驻锄，全重 4.2 吨可直升机吊运。",
+        "audioScript": "T-01，精密机械扳机与护圈总成。作为 BAE M777A2 155mm 超轻型钛合金榴弹炮 的关键构件，它采用哑光航空级钛合金与高强度 CNC 铝合金制造，主要承担清晰干脆释放阻铁启动击发职能。与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Crisp Firing Release Input",
+        "overview": "Precision Trigger & Guard Assembly (T-01) of the BAE M777A2 155mm Ultralightweight Howitzer, serving as the dedicated crisp firing release input node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from matte aerospace titanium alloy and billet aluminum to BAE Systems Global Combat Systems service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Aerospace titanium cradle and split trails cut weight to 4,218 kg for helicopter lift.",
+        "audioScript": "T-01, Precision Trigger & Guard Assembly. Crafted from matte aerospace titanium alloy and billet aluminum for the BAE M777A2 155mm Ultralightweight Howitzer, this component handles crisp firing release input. Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m777_hammer": {
+      "partId": "m777_hammer",
+      "bomCode": "T-02",
+      "calloutLabelEn": "Cannon Firing Pin",
+      "zh": {
+        "roleTag": "高速释放储能精确击发底火/弓弦",
+        "overview": "BAE M777A2 155mm 超轻型钛合金榴弹炮（T-02）的电/机械双模式主炮击针组，隶属 20 件套标准装配体系，负责高速释放储能精确击发底火/弓弦。",
+        "craftAndMaterial": "采用哑光航空级钛合金与高强度 CNC 铝合金制造，表面按2005年代BAE 系统公司（巴罗因弗内斯）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：低耳轴高度几何设计将 155mm 巨大后坐力直接导入双开大架驻锄。",
+        "audioScript": "T-02，电/机械双模式主炮击针组。作为 BAE M777A2 155mm 超轻型钛合金榴弹炮 的关键构件，它采用哑光航空级钛合金与高强度 CNC 铝合金制造，主要承担高速释放储能精确击发底火/弓弦职能。与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-Speed Ignition Impactor",
+        "overview": "Dual-Mode Cannon Firing Pin (T-02) of the BAE M777A2 155mm Ultralightweight Howitzer, serving as the dedicated high-speed ignition impactor node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from matte aerospace titanium alloy and billet aluminum to BAE Systems Global Combat Systems service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Low-trunnion geometry channels massive 155mm recoil loads straight into ground spades.",
+        "audioScript": "T-02, Dual-Mode Cannon Firing Pin. Crafted from matte aerospace titanium alloy and billet aluminum for the BAE M777A2 155mm Ultralightweight Howitzer, this component handles high-speed ignition impactor. Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m777_hammer_spring": {
+      "partId": "m777_hammer_spring",
+      "bomCode": "T-03",
+      "calloutLabelEn": "Hammer Drive Spring",
+      "zh": {
+        "roleTag": "为可靠击发提供充沛冲击能量",
+        "overview": "BAE M777A2 155mm 超轻型钛合金榴弹炮（T-03）的主击发扭簧/螺旋打击簧，隶属 20 件套标准装配体系，负责为可靠击发提供充沛冲击能量。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按2005年代BAE 系统公司（巴罗因弗内斯）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 5 发/分（急促射 · 2 发/分持续射） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：双室高效膛口制退器配合左右双液气驻退复进筒吸收近半后坐冲量。",
+        "audioScript": "T-03，主击发扭簧/螺旋打击簧。作为 BAE M777A2 155mm 超轻型钛合金榴弹炮 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担为可靠击发提供充沛冲击能量职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 5 发/分（急促射 · 2 发/分持续射） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ignition Drive Energy",
+        "overview": "Main Hammer / Striker Drive Spring (T-03) of the BAE M777A2 155mm Ultralightweight Howitzer, serving as the dedicated ignition drive energy node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to BAE Systems Global Combat Systems service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 5 RPM (burst · 2 RPM sustained) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Double-baffle muzzle brake and dual hydro-pneumatic cylinders tame 46 kN·s impulse.",
+        "audioScript": "T-03, Main Hammer / Striker Drive Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the BAE M777A2 155mm Ultralightweight Howitzer, this component handles ignition drive energy. Stores and returns cyclic elastic energy via live coil compression to maintain 5 RPM (burst · 2 RPM sustained) timing.",
+        "audioUrl": ""
+      }
+    },
+    "m777_selector": {
+      "partId": "m777_selector",
+      "bomCode": "T-04",
+      "calloutLabelEn": "FCS Mode & Safety",
+      "zh": {
+        "roleTag": "可靠锁止扳机阻铁并切换射态",
+        "overview": "BAE M777A2 155mm 超轻型钛合金榴弹炮（T-04）的火控安全联锁与击发模式开关，隶属 20 件套标准装配体系，负责可靠锁止扳机阻铁并切换射态。",
+        "craftAndMaterial": "采用哑光航空级钛合金与高强度 CNC 铝合金制造，表面按2005年代BAE 系统公司（巴罗因弗内斯）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：A2 型集成数字化火控（DFCS）与感应装定器，支持 40 km 神剑精确打击。",
+        "audioScript": "T-04，火控安全联锁与击发模式开关。作为 BAE M777A2 155mm 超轻型钛合金榴弹炮 的关键构件，它采用哑光航空级钛合金与高强度 CNC 铝合金制造，主要承担可靠锁止扳机阻铁并切换射态职能。与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Safety Interlock & Mode Control",
+        "overview": "FCS Interlock & Firing Mode Switch (T-04) of the BAE M777A2 155mm Ultralightweight Howitzer, serving as the dedicated safety interlock & mode control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from matte aerospace titanium alloy and billet aluminum to BAE Systems Global Combat Systems service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Digital Fire Control System (DFCS) and inductive fuze setter support 40 km Excalibur.",
+        "audioScript": "T-04, FCS Interlock & Firing Mode Switch. Crafted from matte aerospace titanium alloy and billet aluminum for the BAE M777A2 155mm Ultralightweight Howitzer, this component handles safety interlock & mode control. Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m777_mag_body": {
+      "partId": "m777_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "155mm Loading Tray",
+      "zh": {
+        "roleTag": "炮弹快速连续供弹",
+        "overview": "BAE M777A2 155mm 超轻型钛合金榴弹炮（M-01）的分装炮弹与模块化发射药装填台，隶属 20 件套标准装配体系，负责炮弹快速连续供弹。",
+        "craftAndMaterial": "采用哑光航空级钛合金与高强度 CNC 铝合金制造，表面按2005年代BAE 系统公司（巴罗因弗内斯）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：大规模航空级钛合金摇架与前伸稳定驻锄，全重 4.2 吨可直升机吊运。",
+        "audioScript": "M-01，分装炮弹与模块化发射药装填台。作为 BAE M777A2 155mm 超轻型钛合金榴弹炮 的关键构件，它采用哑光航空级钛合金与高强度 CNC 铝合金制造，主要承担炮弹快速连续供弹职能。与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ordnance Munition Feed",
+        "overview": "155mm Loading Tray & Charge Cradle (M-01) of the BAE M777A2 155mm Ultralightweight Howitzer, serving as the dedicated ordnance munition feed node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from matte aerospace titanium alloy and billet aluminum to BAE Systems Global Combat Systems service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Aerospace titanium cradle and split trails cut weight to 4,218 kg for helicopter lift.",
+        "audioScript": "M-01, 155mm Loading Tray & Charge Cradle. Crafted from matte aerospace titanium alloy and billet aluminum for the BAE M777A2 155mm Ultralightweight Howitzer, this component handles ordnance munition feed. Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m777_follower": {
+      "partId": "m777_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Breech Ramming Guide",
+      "zh": {
+        "roleTag": "炮弹入膛精准限位",
+        "overview": "BAE M777A2 155mm 超轻型钛合金榴弹炮（M-02）的推弹杆与定位托架，隶属 20 件套标准装配体系，负责炮弹入膛精准限位。",
+        "craftAndMaterial": "采用哑光航空级钛合金与高强度 CNC 铝合金制造，表面按2005年代BAE 系统公司（巴罗因弗内斯）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：低耳轴高度几何设计将 155mm 巨大后坐力直接导入双开大架驻锄。",
+        "audioScript": "M-02，推弹杆与定位托架。作为 BAE M777A2 155mm 超轻型钛合金榴弹炮 的关键构件，它采用哑光航空级钛合金与高强度 CNC 铝合金制造，主要承担炮弹入膛精准限位职能。与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Chambering Alignment",
+        "overview": "Breech Ramming Guide (M-02) of the BAE M777A2 155mm Ultralightweight Howitzer, serving as the dedicated chambering alignment node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from matte aerospace titanium alloy and billet aluminum to BAE Systems Global Combat Systems service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Low-trunnion geometry channels massive 155mm recoil loads straight into ground spades.",
+        "audioScript": "M-02, Breech Ramming Guide. Crafted from matte aerospace titanium alloy and billet aluminum for the BAE M777A2 155mm Ultralightweight Howitzer, this component handles chambering alignment. Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m777_mag_spring": {
+      "partId": "m777_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Feed Pawl Spring",
+      "zh": {
+        "roleTag": "棘爪复位保持供弹节拍",
+        "overview": "BAE M777A2 155mm 超轻型钛合金榴弹炮（M-03）的供弹棘爪复进弹簧，隶属 20 件套标准装配体系，负责棘爪复位保持供弹节拍。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按2005年代BAE 系统公司（巴罗因弗内斯）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 5 发/分（急促射 · 2 发/分持续射） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：双室高效膛口制退器配合左右双液气驻退复进筒吸收近半后坐冲量。",
+        "audioScript": "M-03，供弹棘爪复进弹簧。作为 BAE M777A2 155mm 超轻型钛合金榴弹炮 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担棘爪复位保持供弹节拍职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 5 发/分（急促射 · 2 发/分持续射） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Feed Indexing Return",
+        "overview": "Feed Pawl Return Spring (M-03) of the BAE M777A2 155mm Ultralightweight Howitzer, serving as the dedicated feed indexing return node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to BAE Systems Global Combat Systems service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 5 RPM (burst · 2 RPM sustained) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Double-baffle muzzle brake and dual hydro-pneumatic cylinders tame 46 kN·s impulse.",
+        "audioScript": "M-03, Feed Pawl Return Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the BAE M777A2 155mm Ultralightweight Howitzer, this component handles feed indexing return. Stores and returns cyclic elastic energy via live coil compression to maintain 5 RPM (burst · 2 RPM sustained) timing.",
+        "audioUrl": ""
+      }
+    },
+    "m777_mag_base": {
+      "partId": "m777_mag_base",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Primer Mag Block",
+      "zh": {
+        "roleTag": "供弹机构固定承托",
+        "overview": "BAE M777A2 155mm 超轻型钛合金榴弹炮（M-04）的药筒底火装填挡板，隶属 20 件套标准装配体系，负责供弹机构固定承托。",
+        "craftAndMaterial": "采用哑光航空级钛合金与高强度 CNC 铝合金制造，表面按2005年代BAE 系统公司（巴罗因弗内斯）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：A2 型集成数字化火控（DFCS）与感应装定器，支持 40 km 神剑精确打击。",
+        "audioScript": "M-04，药筒底火装填挡板。作为 BAE M777A2 155mm 超轻型钛合金榴弹炮 的关键构件，它采用哑光航空级钛合金与高强度 CNC 铝合金制造，主要承担供弹机构固定承托职能。与 BAE M777A2 155mm 超轻型钛合金榴弹炮 重装结构刚性耦合，承受 380 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Feed Base Retention",
+        "overview": "Primer Magazine Block (M-04) of the BAE M777A2 155mm Ultralightweight Howitzer, serving as the dedicated feed base retention node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from matte aerospace titanium alloy and billet aluminum to BAE Systems Global Combat Systems service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Digital Fire Control System (DFCS) and inductive fuze setter support 40 km Excalibur.",
+        "audioScript": "M-04, Primer Magazine Block. Crafted from matte aerospace titanium alloy and billet aluminum for the BAE M777A2 155mm Ultralightweight Howitzer, this component handles feed base retention. Anchors rigidly within the BAE M777A2 155mm Ultralightweight Howitzer heavy assembly to withstand 380 MPa firing loads.",
+        "audioUrl": ""
+      }
+    }
+  }
+}

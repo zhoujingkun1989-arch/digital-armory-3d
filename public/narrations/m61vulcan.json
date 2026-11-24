@@ -1,0 +1,786 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "m61vulcan",
+  "generatedAt": "2026-11-25T00:00:00.000Z",
+  "generatorModels": {
+    "text": "centennial-blueprint-v1",
+    "storyTts": "web-speech-api",
+    "partTts": "web-speech-api"
+  },
+  "uiMetaEn": {
+    "name": "GE M61A1 Vulcan 20mm Rotary Cannon",
+    "subtitle": "6,000 RPM Hydraulic Six-Barrel Gatling Fighter Cannon (F-15 / F-16 / F/A-18)",
+    "originCountry": "United States",
+    "weaponType": "20mm Six-Barrel Rotary Aviation Cannon",
+    "categoryLabel": "Aviation & Heavy Ordnance",
+    "actionMechanism": "Hydraulic Externally Driven 6-Barrel Gatling · 360° Stationary Elliptical Cam Track",
+    "statusLabel": "Vault Ready · Interactive 3D",
+    "description": "The definitive supersonic fighter cannon for over six decades, the hydraulically driven M61A1 Vulcan spins six 20mm barrels at 1,000 RPM around a stationary elliptical cam track, pairing electric priming with a linkless closed-loop drum for 100 rounds per second.",
+    "highlights": [
+      "6,000 RPM (100 rds/sec) fires 50 twenty-millimeter shells in a half-second burst",
+      "External hydraulic drive ejects dud primers automatically with zero jam stoppage",
+      "Stationary elliptical cam housing drives six synchronized rotating bolt assemblies",
+      "Closed-loop linkless helical drum feeds reliably through 9G fighter maneuvers"
+    ],
+    "workbenchTitle": "GE M61A1 Vulcan 20mm Rotary Cannon 3D Mechanical Teardown & Kinematics",
+    "workbenchSubtitle": "4 Assemblies · 20 Core Components · Hydraulic Externally Driven 6-Barrel Gatling · 360° Stationary Elliptical Cam Track",
+    "cutawayLabel": "Helical Cam & Rotor Cutaway",
+    "cutawayTitle": "Engage live longitudinal cutaway on GE M61A1 Vulcan 20mm Rotary Cannon to inspect internal locking and feed geometry",
+    "searchPlaceholder": "Search part name or BOM code (e.g., Barrel, Bolt, U-01, M-01)...",
+    "firingMilestoneLabel": "Rotary Cam Firing",
+    "rateOfFire": "6,000 RPM (100 rounds/sec)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0%",
+        "desc": "GE M61A1 Vulcan 20mm Rotary Cannon (1959) in complete operational battery with all 20 assemblies seated in 1:1 alignment."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Primary operator maintenance stage: clear ammunition supply and separate upper operating group for routine inspection."
+      },
+      "sub_assembly": {
+        "label": "Sub-Assembly",
+        "subLabel": "65%",
+        "desc": "Intermediate armorer teardown exposing locking interfaces, fire-control linkage, and recoil energy storage springs."
+      },
+      "full_exploded": {
+        "label": "Full Exploded View",
+        "subLabel": "100%",
+        "desc": "Complete 20-component isometric CAD explosion displaying every functional group across 1,827 mm (71.9 in Overall)."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "Trigger & Sear",
+        "title": "Phase 1 · M61 Vulcan Trigger Release & Ignition Drive",
+        "description": "Pulling the trigger disengages the sear, freeing the spring-driven hammer or striker to impact the 20×102mm NATO M50 Series primer."
+      },
+      "phase_2": {
+        "shortLabel": "Primer Ignition",
+        "title": "Phase 2 · 417 MPa Chamber Pressure Rise",
+        "description": "The propellant charge ignites inside the locked chamber, driving peak pressure to 417 MPa while sealing the cartridge case against the breech."
+      },
+      "phase_3": {
+        "shortLabel": "Bore Acceleration",
+        "title": "Phase 3 · 1524 mm Barrel Engraving & Acceleration",
+        "description": "The projectile engages the 9-groove bore and accelerates to 1050 m/s (55125 J)."
+      },
+      "phase_4": {
+        "shortLabel": "Rotary Cam Firing",
+        "title": "Phase 4 · Rotary Cam Firing & Operating Impulse",
+        "description": "Once chamber pressure decays safely, six rotating barrels follow a stationary 360-degree helical cam track for continuous firing cycles."
+      },
+      "phase_5": {
+        "shortLabel": "Extract & Eject",
+        "title": "Phase 5 · Spent Case Extraction & Ejection",
+        "description": "The extractor pulls the fired brass clear of the chamber and pivots it out the ejection port while the recoil spring compresses."
+      },
+      "phase_6": {
+        "shortLabel": "Feed & Lock",
+        "title": "Phase 6 · Next-Round Stripping & Breech Lockup",
+        "description": "Driven forward by the recoil spring, the breech strips the next round from the 511-round supply and locks solidly into battery."
+      },
+      "phase_7": {
+        "shortLabel": "Trigger Reset",
+        "title": "Phase 7 · Disconnector Handoff & Sear Reset",
+        "description": "Releasing the trigger hands control cleanly back to the primary sear, leaving the M61 Vulcan staged for its 6,000 RPM (100 rounds/sec) cadence."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "通用电气 M61A1 “火神” 20mm 六管航炮：1959 年机械传奇与工程剖析",
+      "deck": "通用电气 M61A1 “火神”是现代超音速战斗机近距格斗的绝对王者：液压马达带动六根 20mm 炮管以每分钟 1,000 转高速旋转，配合无链闭环螺旋弹鼓实现每秒 100 发零停顿火力墙与高可靠性电击发。 本馆以 1:1 真实工程比例重现其 20 大核心构件与完整工作循环。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1955–1959",
+          "title": "时代召唤与研发立项：M61 Vulcan 的诞生背景",
+          "paragraphs": [
+            "1959 年问世的 通用电气 M61A1 “火神” 20mm 六管航炮 由美国通用电气 / 通用动力军械系统主导研制，定位为经典的20mm 航空六管旋转机炮。自 1959 年装备 F-104 星战士以来，M61 火神系列已连续服役逾 65 年，先后武装了 F-4、F-14、F-15、F-16、F/A-18、F-22 以及海军密集阵近防系统。",
+            "通用电气 M61A1 “火神”是现代超音速战斗机近距格斗的绝对王者：液压马达带动六根 20mm 炮管以每分钟 1,000 转高速旋转，配合无链闭环螺旋弹鼓实现每秒 100 发零停顿火力墙与高可靠性电击发。 整件装备总长 1,827 mm（全炮总长）、空重 112 kg，成为同期航空重武领域最具辨识度的里程碑之一。"
+          ],
+          "audioScript": "第一幕，时代起源。1959 年，美国通用电气 / 通用动力军械系统推出了划时代的通用电气 M61A1 “火神” 20mm 六管航炮。自 1959 年装备 F-104 星战士以来，M61 火神系列已连续服役逾 65 年，先后武装了 F-4、F-14、F-15、F-16、F/A-18、F-22 以及海军密集阵近防系统。 它的核心设计聚焦于6,000 发/分（100 发/秒）超高理论射速，0.5 秒点射即可倾泻 50 发 20mm 炮弹，奠定了其在航空重武发展史中的经典地位。",
+          "audioUrl": "",
+          "focusPartId": "m61vulcan_receiver",
+          "focusPartLabel": "固定式 360° 螺旋凸轮主外壳"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1959",
+          "title": "核心机械构造与闭锁奥秘",
+          "paragraphs": [
+            "通用电气 M61A1 “火神” 20mm 六管航炮 的机械灵魂在于其「液压外能源驱动六管旋转 · 360° 固定椭圆凸轮闭锁轨道」结构体系。在发射工作循环中，六管旋转簇与 360° 螺旋凸轮轨道同步完成供弹、闭锁、电击发与抽壳循环，将高压能量精确约束于承力框架之内。",
+            "制造工艺方面，关键承力件采用磷酸锰军规磷化钢精加工而成。外能源液压驱动完全无视哑弹，故障弹随转子自动抛出绝不卡炮，在严苛实战条件下依然保持顺畅节拍与长期尺寸稳定性。"
+          ],
+          "audioScript": "第二幕，核心机械原理。通用电气 M61A1 “火神” 20mm 六管航炮 采用液压外能源驱动六管旋转 · 360° 固定椭圆凸轮闭锁轨道。在每个击发周期中，六管旋转簇与 360° 螺旋凸轮轨道同步完成供弹、闭锁、电击发与抽壳循环。借助磷酸锰军规磷化钢工艺与高强度配合，实现了外能源液压驱动完全无视哑弹，故障弹随转子自动抛出绝不卡炮。",
+          "audioUrl": "",
+          "focusPartId": "m61vulcan_bolt",
+          "focusPartLabel": "高强度闭锁枪机头与抽壳钩"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1959–1962",
+          "title": "弹道性能、内膛工艺与实战效能",
+          "paragraphs": [
+            "该平台配用 20×102mm NATO M50 Series 弹药规格与 1,524 mm × 6 管（9 条渐速右旋膛线 · 1:20\"），最高工作膛压约 417 MPa，可赋予弹头 1050 m/s 的出膛初速与 55,125 J 动能，有效作用距离达 2000 米。",
+            "内膛技术特点方面，六根独立冷锻镀铬 20mm 身管以 1,000 RPM 旋转，单管仅承受 1,000 发/分热负荷。同时，双列固定椭圆凸轮轨道同步驱动 6 组独立旋转闭锁枪机循环，令其在 6,000 发/分（每秒 100 发） 的节奏下兼具精准控制与可靠输出。"
+          ],
+          "audioScript": "第三幕，弹道与实战表现。配备 1524 毫米身管与 20×102mm NATO M50 Series 口径，通用电气 M61A1 “火神” 20mm 六管航炮 实现了每秒 1050 米的初速与 2000 米有效射程。六根独立冷锻镀铬 20mm 身管以 1,000 RPM 旋转，单管仅承受 1,000 发/分热负荷，展现了卓越的工程平衡。",
+          "audioUrl": "",
+          "focusPartId": "m61vulcan_barrel",
+          "focusPartLabel": "六管旋转冷锻身管集群"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1974–2026",
+          "title": "人机工效、供弹哲学与百年遗产",
+          "paragraphs": [
+            "围绕 511 发容量的无链螺旋供弹鼓与导槽与 115 mm 膛轴设计，通用电气 M61A1 “火神” 20mm 六管航炮 将单发后坐冲量控制在 138 N·s 水平。无链螺旋闭环弹鼓与柔性输弹滑槽在 9G 高过载机动下稳定供弹。",
+            "如今在数字兵器库 3D 百年展厅（BAY-98）中，您可以随时通过三轴剖视、100% 爆炸视图与实时运动学滑块，零距离拆解这座跨越时代的机械工程杰作。"
+          ],
+          "audioScript": "第四幕，百年遗产。凭借 511 发容量的无链螺旋供弹鼓与导槽与出色的整体工效，无链螺旋闭环弹鼓与柔性输弹滑槽在 9G 高过载机动下稳定供弹。欢迎在 BAY-98 展位亲手切开剖面、逐件拆解，感受 通用电气 M61A1 “火神” 20mm 六管航炮 的机械魅力。",
+          "audioUrl": "",
+          "focusPartId": "m61vulcan_mag_body",
+          "focusPartLabel": "无链螺旋供弹鼓与导槽"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "核心动作与闭锁架构",
+          "tag": "BAY-98",
+          "summary": "液压外能源驱动六管旋转 · 360° 固定椭圆凸轮闭锁轨道；6,000 发/分（100 发/秒）超高理论射速，0.5 秒点射即可倾泻 50 发 20mm 炮弹。",
+          "focusPartId": "m61vulcan_bolt",
+          "focusPartLabel": "高强度闭锁枪机头与抽壳钩"
+        },
+        {
+          "id": "bt2",
+          "title": "内膛弹道与能量释放",
+          "tag": "1050 m/s",
+          "summary": "1,524 mm × 6 管（9 条渐速右旋膛线 · 1:20\"），六根独立冷锻镀铬 20mm 身管以 1,000 RPM 旋转，单管仅承受 1,000 发/分热负荷。",
+          "focusPartId": "m61vulcan_barrel",
+          "focusPartLabel": "六管旋转冷锻身管集群"
+        },
+        {
+          "id": "bt3",
+          "title": "供弹与实战人机工效",
+          "tag": "511 rds",
+          "summary": "双列固定椭圆凸轮轨道同步驱动 6 组独立旋转闭锁枪机循环；无链螺旋闭环弹鼓与柔性输弹滑槽在 9G 高过载机动下稳定供弹。",
+          "focusPartId": "m61vulcan_mag_body",
+          "focusPartLabel": "无链螺旋供弹鼓与导槽"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1955",
+          "title": "战术指标与概念构型",
+          "detail": "美国提出新一代20mm 航空六管旋转机炮战术指标，确立口径与机动平衡方向。"
+        },
+        {
+          "year": "1959",
+          "title": "M61 Vulcan 正式定型投产",
+          "detail": "通用电气 / 通用动力军械系统完成 GE M61A1 VULCAN 20MM 定型，采用液压外能源驱动六管旋转 · 360° 固定椭圆凸轮闭锁轨道架构。"
+        },
+        {
+          "year": "1962",
+          "title": "实战部署与工艺演进",
+          "detail": "6,000 发/分（100 发/秒）超高理论射速，0.5 秒点射即可倾泻 50 发 20mm 炮弹，在全球多个战区与演训环境中验证了高可靠性。"
+        },
+        {
+          "year": "1974",
+          "title": "工程典范与历史传承",
+          "detail": "自 1959 年装备 F-104 星战士以来，M61 火神系列已连续服役逾 65 年，先后武装了 F-4、F-14、F-15、F-16、F/A-18、F-22 以及海军密集阵近防系统。"
+        },
+        {
+          "year": "2026",
+          "title": "入藏数字兵器库 3D（BAY-98）",
+          "detail": "完整构建 1:1 参数化 20 零件三维装配模型，支持剖切、爆炸与运动学实时仿真。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "GE M61A1 Vulcan 20mm Rotary Cannon: The 1959 Mechanical Legend",
+      "deck": "The definitive supersonic fighter cannon for over six decades, the hydraulically driven M61A1 Vulcan spins six 20mm barrels at 1,000 RPM around a stationary elliptical cam track, pairing electric priming with a linkless closed-loop drum for 100 rounds per second. Preserved in 1:1 interactive 3D CAD scale across all 20 functional assemblies in BAY-98.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "Act I",
+          "eraTag": "1955–1959",
+          "title": "Origins & Operational Mandate of the M61 Vulcan",
+          "paragraphs": [
+            "Introduced in 1959 by General Electric / General Dynamics Ordnance in United States, the GE M61A1 Vulcan 20mm Rotary Cannon emerged as a defining 20mm Six-Barrel Rotary Aviation Cannon. Entering service in 1959 on the F-104 Starfighter, the M61 family has served continuously for over 65 years across the F-4, F-14, F-15, F-16, F/A-18, F-22, and naval Phalanx CIWS.",
+            "The definitive supersonic fighter cannon for over six decades, the hydraulically driven M61A1 Vulcan spins six 20mm barrels at 1,000 RPM around a stationary elliptical cam track, pairing electric priming with a linkless closed-loop drum for 100 rounds per second. Measuring 1,827 mm (71.9 in Overall) at an unloaded weight of 112 kg, it reshaped expectations across the Aviation & Heavy Ordnance class."
+          ],
+          "audioScript": "Act One: Historical Origins. In 1959, General Electric / General Dynamics Ordnance of United States introduced the GE M61A1 Vulcan 20mm Rotary Cannon. Entering service in 1959 on the F-104 Starfighter, the M61 family has served continuously for over 65 years across the F-4, F-14, F-15, F-16, F/A-18, F-22, and naval Phalanx CIWS. Anchored by its hallmark design trait — 6,000 RPM (100 rds/sec) fires 50 twenty-millimeter shells in a half-second burst — it quickly established an enduring engineering benchmark.",
+          "audioUrl": "",
+          "focusPartId": "m61vulcan_receiver",
+          "focusPartLabel": "Stationary Helical Cam Housing"
+        },
+        {
+          "id": "act2",
+          "actNumber": "Act II",
+          "eraTag": "1959",
+          "title": "Core Operating Architecture & Lockup Mechanics",
+          "paragraphs": [
+            "At the mechanical heart of the GE M61A1 Vulcan 20mm Rotary Cannon sits its Hydraulic Externally Driven 6-Barrel Gatling · 360° Stationary Elliptical Cam Track. Throughout every firing cycle, six rotating barrels follow a stationary 360-degree helical cam track for continuous firing cycles, containing 417 MPa of operating pressure safely.",
+            "Constructed in manganese-phosphate Parkerized ordnance steel, the assembly achieves durable field tolerances. Notably, External hydraulic drive ejects dud primers automatically with zero jam stoppage, sustaining dependable operation under severe environmental stress."
+          ],
+          "audioScript": "Act Two: Core Mechanical Architecture. The GE M61A1 Vulcan 20mm Rotary Cannon relies on Hydraulic Externally Driven 6-Barrel Gatling · 360° Stationary Elliptical Cam Track. During each cycle, six rotating barrels follow a stationary 360-degree helical cam track for continuous firing cycles. Machined from manganese-phosphate Parkerized ordnance steel, it delivers standout engineering reliability: External hydraulic drive ejects dud primers automatically with zero jam stoppage.",
+          "audioUrl": "",
+          "focusPartId": "m61vulcan_bolt",
+          "focusPartLabel": "Hardened Locking Bolt & Extractor"
+        },
+        {
+          "id": "act3",
+          "actNumber": "Act III",
+          "eraTag": "1959–1962",
+          "title": "Ballistic Performance, Bore Craft & Range Reach",
+          "paragraphs": [
+            "Chambered for 20×102mm NATO M50 Series with 1,524 mm × 6 Barrels (9-Groove Progressive RH · 1:20\"), the GE M61A1 Vulcan 20mm Rotary Cannon develops 1050 m/s muzzle velocity and 55,125 J of kinetic energy for effective engagement out to 2000 meters.",
+            "Internally, Six cold-forged 20mm barrels spin at 1,000 RPM, distributing 6,000 RPM heat across six tubes. Combined with its 6,000 RPM (100 rounds/sec) tempo, Stationary elliptical cam housing drives six synchronized rotating bolt assemblies, delivering disciplined accuracy across demanding field conditions."
+          ],
+          "audioScript": "Act Three: Ballistic Performance. Driving 20×102mm NATO M50 Series through its 1524 millimeter bore, the GE M61A1 Vulcan 20mm Rotary Cannon achieves 1050 meters per second and 2000 meters of effective reach. Six cold-forged 20mm barrels spin at 1,000 RPM, distributing 6,000 RPM heat across six tubes.",
+          "audioUrl": "",
+          "focusPartId": "m61vulcan_barrel",
+          "focusPartLabel": "Six-Barrel Rotary Forged Cluster"
+        },
+        {
+          "id": "act4",
+          "actNumber": "Act IV",
+          "eraTag": "1974–2026",
+          "title": "Feed Philosophy, Ergonomics & Centennial Legacy",
+          "paragraphs": [
+            "Fed by a 511-round linkless helical feed drum with a 115 mm bore-axis height, the platform manages 138 N-s of recoil impulse cleanly. Closed-loop linkless helical drum feeds reliably through 9G fighter maneuvers.",
+            "Now archived in Digital Armory 3D Centennial Gallery (BAY-98), all 20 interactive assemblies can be sectioned live along three axes, exploded to 100%, and inspected part by part."
+          ],
+          "audioScript": "Act Four: Engineering Legacy. Pairing its 511-round linkless helical feed drum with disciplined recoil geometry, Closed-loop linkless helical drum feeds reliably through 9G fighter maneuvers. Explore BAY-98 in live section cut and exploded disassembly to study every working link of the GE M61A1 Vulcan 20mm Rotary Cannon.",
+          "audioUrl": "",
+          "focusPartId": "m61vulcan_mag_body",
+          "focusPartLabel": "Linkless Helical Feed Drum"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Operating & Lockup Principle",
+          "tag": "BAY-98",
+          "summary": "Hydraulic Externally Driven 6-Barrel Gatling · 360° Stationary Elliptical Cam Track — 6,000 RPM (100 rds/sec) fires 50 twenty-millimeter shells in a half-second burst.",
+          "focusPartId": "m61vulcan_bolt",
+          "focusPartLabel": "Hardened Locking Bolt & Extractor"
+        },
+        {
+          "id": "bt2",
+          "title": "Bore & Ballistic Efficiency",
+          "tag": "1050 m/s",
+          "summary": "1,524 mm × 6 Barrels (9-Groove Progressive RH · 1:20\"); Six cold-forged 20mm barrels spin at 1,000 RPM, distributing 6,000 RPM heat across six tubes.",
+          "focusPartId": "m61vulcan_barrel",
+          "focusPartLabel": "Six-Barrel Rotary Forged Cluster"
+        },
+        {
+          "id": "bt3",
+          "title": "Feed & Ergonomic Mastery",
+          "tag": "511 rds",
+          "summary": "Stationary elliptical cam housing drives six synchronized rotating bolt assemblies; Closed-loop linkless helical drum feeds reliably through 9G fighter maneuvers.",
+          "focusPartId": "m61vulcan_mag_body",
+          "focusPartLabel": "Linkless Helical Feed Drum"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1955",
+          "title": "Operational Requirement Defined",
+          "detail": "United States ordnance planners established specifications for a new 20mm Six-Barrel Rotary Aviation Cannon class."
+        },
+        {
+          "year": "1959",
+          "title": "M61 Vulcan Official Introduction",
+          "detail": "General Electric / General Dynamics Ordnance finalized GE M61A1 VULCAN 20MM around Hydraulic Externally Driven 6-Barrel Gatling · 360° Stationary Elliptical Cam Track."
+        },
+        {
+          "year": "1962",
+          "title": "Field Deployment & Service Validation",
+          "detail": "6,000 RPM (100 rds/sec) fires 50 twenty-millimeter shells in a half-second burst, proving mechanical endurance across real-world operations."
+        },
+        {
+          "year": "1974",
+          "title": "Enduring Historical Influence",
+          "detail": "Entering service in 1959 on the F-104 Starfighter, the M61 family has served continuously for over 65 years across the F-4, F-14, F-15, F-16, F/A-18, F-22, and naval Phalanx CIWS."
+        },
+        {
+          "year": "2026",
+          "title": "Archived in Digital Armory 3D (BAY-98)",
+          "detail": "Modeled as a 1:1 interactive 20-component CAD exhibit with live cutaway, exploded disassembly, and kinematics."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "m61vulcan_receiver": {
+      "partId": "m61vulcan_receiver",
+      "bomCode": "U-01",
+      "calloutLabelEn": "Helical Cam Housing",
+      "zh": {
+        "roleTag": "驱动六路枪机同步循环导轨",
+        "overview": "通用电气 M61A1 “火神” 20mm 六管航炮（U-01）的固定式 360° 螺旋凸轮主外壳，隶属 20 件套标准装配体系，负责驱动六路枪机同步循环导轨。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1959年代通用电气 / 通用动力军械系统军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：6,000 发/分（100 发/秒）超高理论射速，0.5 秒点射即可倾泻 50 发 20mm 炮弹。",
+        "audioScript": "U-01，固定式 360° 螺旋凸轮主外壳。作为 通用电气 M61A1 “火神” 20mm 六管航炮 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担驱动六路枪机同步循环导轨职能。与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "360-Deg Cam Track Housing",
+        "overview": "Stationary Helical Cam Housing (U-01) of the GE M61A1 Vulcan 20mm Rotary Cannon, serving as the dedicated 360-deg cam track housing node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to General Electric / General Dynamics Ordnance service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 6,000 RPM (100 rds/sec) fires 50 twenty-millimeter shells in a half-second burst.",
+        "audioScript": "U-01, Stationary Helical Cam Housing. Crafted from manganese-phosphate Parkerized ordnance steel for the GE M61A1 Vulcan 20mm Rotary Cannon, this component handles 360-deg cam track housing. Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m61vulcan_barrel": {
+      "partId": "m61vulcan_barrel",
+      "bomCode": "U-02",
+      "calloutLabelEn": "6-Barrel Rotary Cluster",
+      "zh": {
+        "roleTag": "轮换射散热与弹道稳定",
+        "overview": "通用电气 M61A1 “火神” 20mm 六管航炮（U-02）的六管旋转冷锻身管集群，隶属 20 件套标准装配体系，负责轮换射散热与弹道稳定。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1959年代通用电气 / 通用动力军械系统军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：外能源液压驱动完全无视哑弹，故障弹随转子自动抛出绝不卡炮。",
+        "audioScript": "U-02，六管旋转冷锻身管集群。作为 通用电气 M61A1 “火神” 20mm 六管航炮 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担轮换射散热与弹道稳定职能。与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Thermal-Sharing Barrel Cluster",
+        "overview": "Six-Barrel Rotary Forged Cluster (U-02) of the GE M61A1 Vulcan 20mm Rotary Cannon, serving as the dedicated thermal-sharing barrel cluster node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to General Electric / General Dynamics Ordnance service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: External hydraulic drive ejects dud primers automatically with zero jam stoppage.",
+        "audioScript": "U-02, Six-Barrel Rotary Forged Cluster. Crafted from manganese-phosphate Parkerized ordnance steel for the GE M61A1 Vulcan 20mm Rotary Cannon, this component handles thermal-sharing barrel cluster. Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m61vulcan_muzzle": {
+      "partId": "m61vulcan_muzzle",
+      "bomCode": "U-03",
+      "calloutLabelEn": "6-Barrel Front Clamp",
+      "zh": {
+        "roleTag": "多管同心度锁定",
+        "overview": "通用电气 M61A1 “火神” 20mm 六管航炮（U-03）的六管前端束箍与膛口夹环，隶属 20 件套标准装配体系，负责多管同心度锁定。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1959年代通用电气 / 通用动力军械系统军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：双列固定椭圆凸轮轨道同步驱动 6 组独立旋转闭锁枪机循环。",
+        "audioScript": "U-03，六管前端束箍与膛口夹环。作为 通用电气 M61A1 “火神” 20mm 六管航炮 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担多管同心度锁定职能。与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Cluster Alignment Clamp",
+        "overview": "6-Barrel Front Clamp Collar (U-03) of the GE M61A1 Vulcan 20mm Rotary Cannon, serving as the dedicated cluster alignment clamp node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to General Electric / General Dynamics Ordnance service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Stationary elliptical cam housing drives six synchronized rotating bolt assemblies.",
+        "audioScript": "U-03, 6-Barrel Front Clamp Collar. Crafted from manganese-phosphate Parkerized ordnance steel for the GE M61A1 Vulcan 20mm Rotary Cannon, this component handles cluster alignment clamp. Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m61vulcan_bolt_carrier": {
+      "partId": "m61vulcan_bolt_carrier",
+      "bomCode": "U-04",
+      "calloutLabelEn": "Central 6-Track Rotor",
+      "zh": {
+        "roleTag": "每分钟数千转高速回转传动",
+        "overview": "通用电气 M61A1 “火神” 20mm 六管航炮（U-04）的中心六路旋转主转子总成，隶属 20 件套标准装配体系，负责每分钟数千转高速回转传动。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1959年代通用电气 / 通用动力军械系统军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：六管旋转簇与 360° 螺旋凸轮轨道同步完成供弹、闭锁、电击发与抽壳循环。",
+        "designHighlight": "工程亮点呼应整枪特征：无链螺旋闭环弹鼓与柔性输弹滑槽在 9G 高过载机动下稳定供弹。",
+        "audioScript": "U-04，中心六路旋转主转子总成。作为 通用电气 M61A1 “火神” 20mm 六管航炮 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担每分钟数千转高速回转传动职能。在击发循环中承担核心联动：六管旋转簇与 360° 螺旋凸轮轨道同步完成供弹、闭锁、电击发与抽壳循环。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-Speed Rotary Carrier",
+        "overview": "Central 6-Track Rotor Assembly (U-04) of the GE M61A1 Vulcan 20mm Rotary Cannon, serving as the dedicated high-speed rotary carrier node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to General Electric / General Dynamics Ordnance service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: six rotating barrels follow a stationary 360-degree helical cam track for continuous firing cycles.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Closed-loop linkless helical drum feeds reliably through 9G fighter maneuvers.",
+        "audioScript": "U-04, Central 6-Track Rotor Assembly. Crafted from manganese-phosphate Parkerized ordnance steel for the GE M61A1 Vulcan 20mm Rotary Cannon, this component handles high-speed rotary carrier. Drives the core operating sequence: six rotating barrels follow a stationary 360-degree helical cam track for continuous firing cycles.",
+        "audioUrl": ""
+      }
+    },
+    "m61vulcan_bolt": {
+      "partId": "m61vulcan_bolt",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Locking Bolt Head",
+      "zh": {
+        "roleTag": "刚性闭锁膛压并可靠抽壳",
+        "overview": "通用电气 M61A1 “火神” 20mm 六管航炮（U-05）的高强度闭锁枪机头与抽壳钩，隶属 20 件套标准装配体系，负责刚性闭锁膛压并可靠抽壳。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1959年代通用电气 / 通用动力军械系统军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：六管旋转簇与 360° 螺旋凸轮轨道同步完成供弹、闭锁、电击发与抽壳循环。",
+        "designHighlight": "工程亮点呼应整枪特征：6,000 发/分（100 发/秒）超高理论射速，0.5 秒点射即可倾泻 50 发 20mm 炮弹。",
+        "audioScript": "U-05，高强度闭锁枪机头与抽壳钩。作为 通用电气 M61A1 “火神” 20mm 六管航炮 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担刚性闭锁膛压并可靠抽壳职能。在击发循环中承担核心联动：六管旋转簇与 360° 螺旋凸轮轨道同步完成供弹、闭锁、电击发与抽壳循环。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Breech Lock & Case Extraction",
+        "overview": "Hardened Locking Bolt & Extractor (U-05) of the GE M61A1 Vulcan 20mm Rotary Cannon, serving as the dedicated breech lock & case extraction node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to General Electric / General Dynamics Ordnance service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: six rotating barrels follow a stationary 360-degree helical cam track for continuous firing cycles.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 6,000 RPM (100 rds/sec) fires 50 twenty-millimeter shells in a half-second burst.",
+        "audioScript": "U-05, Hardened Locking Bolt & Extractor. Crafted from manganese-phosphate Parkerized ordnance steel for the GE M61A1 Vulcan 20mm Rotary Cannon, this component handles breech lock & case extraction. Drives the core operating sequence: six rotating barrels follow a stationary 360-degree helical cam track for continuous firing cycles.",
+        "audioUrl": ""
+      }
+    },
+    "m61vulcan_recoil_spring": {
+      "partId": "m61vulcan_recoil_spring",
+      "bomCode": "U-06",
+      "calloutLabelEn": "Helical Recoil Spring",
+      "zh": {
+        "roleTag": "吸收后坐动能并驱动复进闭膛",
+        "overview": "通用电气 M61A1 “火神” 20mm 六管航炮（U-06）的主复进螺旋弹簧总成，隶属 20 件套标准装配体系，负责吸收后坐动能并驱动复进闭膛。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1959年代通用电气 / 通用动力军械系统军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 6,000 发/分（每秒 100 发） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：外能源液压驱动完全无视哑弹，故障弹随转子自动抛出绝不卡炮。",
+        "audioScript": "U-06，主复进螺旋弹簧总成。作为 通用电气 M61A1 “火神” 20mm 六管航炮 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担吸收后坐动能并驱动复进闭膛职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 6,000 发/分（每秒 100 发） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Storage & Return Drive",
+        "overview": "Main Helical Recoil Spring (U-06) of the GE M61A1 Vulcan 20mm Rotary Cannon, serving as the dedicated recoil storage & return drive node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to General Electric / General Dynamics Ordnance service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 6,000 RPM (100 rounds/sec) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: External hydraulic drive ejects dud primers automatically with zero jam stoppage.",
+        "audioScript": "U-06, Main Helical Recoil Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the GE M61A1 Vulcan 20mm Rotary Cannon, this component handles recoil storage & return drive. Stores and returns cyclic elastic energy via live coil compression to maintain 6,000 RPM (100 rounds/sec) timing.",
+        "audioUrl": ""
+      }
+    },
+    "m61vulcan_handguard": {
+      "partId": "m61vulcan_handguard",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Gun Shield & Shroud",
+      "zh": {
+        "roleTag": "炮手防护与结构抗扭支撑",
+        "overview": "通用电气 M61A1 “火神” 20mm 六管航炮（F-01）的防盾护板与散热框架罩，隶属 20 件套标准装配体系，负责炮手防护与结构抗扭支撑。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1959年代通用电气 / 通用动力军械系统军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：双列固定椭圆凸轮轨道同步驱动 6 组独立旋转闭锁枪机循环。",
+        "audioScript": "F-01，防盾护板与散热框架罩。作为 通用电气 M61A1 “火神” 20mm 六管航炮 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担炮手防护与结构抗扭支撑职能。与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Crew Shield & Chassis",
+        "overview": "Gun Shield & Structural Shroud (F-01) of the GE M61A1 Vulcan 20mm Rotary Cannon, serving as the dedicated crew shield & chassis node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to General Electric / General Dynamics Ordnance service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Stationary elliptical cam housing drives six synchronized rotating bolt assemblies.",
+        "audioScript": "F-01, Gun Shield & Structural Shroud. Crafted from manganese-phosphate Parkerized ordnance steel for the GE M61A1 Vulcan 20mm Rotary Cannon, this component handles crew shield & chassis. Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m61vulcan_stock": {
+      "partId": "m61vulcan_stock",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Tactical Buttstock",
+      "zh": {
+        "roleTag": "直线传导后坐并支撑贴腮瞄准",
+        "overview": "通用电气 M61A1 “火神” 20mm 六管航炮（F-02）的高刚度战术抵肩枪托，隶属 20 件套标准装配体系，负责直线传导后坐并支撑贴腮瞄准。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1959年代通用电气 / 通用动力军械系统军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：无链螺旋闭环弹鼓与柔性输弹滑槽在 9G 高过载机动下稳定供弹。",
+        "audioScript": "F-02，高刚度战术抵肩枪托。作为 通用电气 M61A1 “火神” 20mm 六管航炮 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担直线传导后坐并支撑贴腮瞄准职能。与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Transfer & Cheek Weld",
+        "overview": "Tactical Ergonomic Buttstock (F-02) of the GE M61A1 Vulcan 20mm Rotary Cannon, serving as the dedicated recoil transfer & cheek weld node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to General Electric / General Dynamics Ordnance service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Closed-loop linkless helical drum feeds reliably through 9G fighter maneuvers.",
+        "audioScript": "F-02, Tactical Ergonomic Buttstock. Crafted from manganese-phosphate Parkerized ordnance steel for the GE M61A1 Vulcan 20mm Rotary Cannon, this component handles recoil transfer & cheek weld. Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m61vulcan_grip": {
+      "partId": "m61vulcan_grip",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Ergonomic Main Grip",
+      "zh": {
+        "roleTag": "锁定手腕角度优化扳机控枪",
+        "overview": "通用电气 M61A1 “火神” 20mm 六管航炮（F-03）的人体工学防滑主握把，隶属 20 件套标准装配体系，负责锁定手腕角度优化扳机控枪。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1959年代通用电气 / 通用动力军械系统军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：6,000 发/分（100 发/秒）超高理论射速，0.5 秒点射即可倾泻 50 发 20mm 炮弹。",
+        "audioScript": "F-03，人体工学防滑主握把。作为 通用电气 M61A1 “火神” 20mm 六管航炮 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担锁定手腕角度优化扳机控枪职能。与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Wrist Alignment & Control",
+        "overview": "Ergonomic Textured Main Grip (F-03) of the GE M61A1 Vulcan 20mm Rotary Cannon, serving as the dedicated wrist alignment & control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to General Electric / General Dynamics Ordnance service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 6,000 RPM (100 rds/sec) fires 50 twenty-millimeter shells in a half-second burst.",
+        "audioScript": "F-03, Ergonomic Textured Main Grip. Crafted from manganese-phosphate Parkerized ordnance steel for the GE M61A1 Vulcan 20mm Rotary Cannon, this component handles wrist alignment & control. Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m61vulcan_optic": {
+      "partId": "m61vulcan_optic",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Adjustable Iron Sights",
+      "zh": {
+        "roleTag": "建立精准弹道瞄准基线",
+        "overview": "通用电气 M61A1 “火神” 20mm 六管航炮（F-04）的可调机械准星照门组，隶属 20 件套标准装配体系，负责建立精准弹道瞄准基线。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1959年代通用电气 / 通用动力军械系统军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：外能源液压驱动完全无视哑弹，故障弹随转子自动抛出绝不卡炮。",
+        "audioScript": "F-04，可调机械准星照门组。作为 通用电气 M61A1 “火神” 20mm 六管航炮 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担建立精准弹道瞄准基线职能。与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ballistic Sightline Datum",
+        "overview": "Adjustable Iron Sight Assembly (F-04) of the GE M61A1 Vulcan 20mm Rotary Cannon, serving as the dedicated ballistic sightline datum node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to General Electric / General Dynamics Ordnance service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: External hydraulic drive ejects dud primers automatically with zero jam stoppage.",
+        "audioScript": "F-04, Adjustable Iron Sight Assembly. Crafted from manganese-phosphate Parkerized ordnance steel for the GE M61A1 Vulcan 20mm Rotary Cannon, this component handles ballistic sightline datum. Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m61vulcan_gas_system": {
+      "partId": "m61vulcan_gas_system",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Rotary Drive Motor",
+      "zh": {
+        "roleTag": "外能源驱动数千发每分射速",
+        "overview": "通用电气 M61A1 “火神” 20mm 六管航炮（F-05）的大功率液压/电动驱动马达与减速箱，隶属 20 件套标准装配体系，负责外能源驱动数千发每分射速。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1959年代通用电气 / 通用动力军械系统军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：六管旋转簇与 360° 螺旋凸轮轨道同步完成供弹、闭锁、电击发与抽壳循环。",
+        "designHighlight": "工程亮点呼应整枪特征：双列固定椭圆凸轮轨道同步驱动 6 组独立旋转闭锁枪机循环。",
+        "audioScript": "F-05，大功率液压/电动驱动马达与减速箱。作为 通用电气 M61A1 “火神” 20mm 六管航炮 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担外能源驱动数千发每分射速职能。在击发循环中承担核心联动：六管旋转簇与 360° 螺旋凸轮轨道同步完成供弹、闭锁、电击发与抽壳循环。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "External Rotary Powerplant",
+        "overview": "Rotary Drive Motor & Gearbox (F-05) of the GE M61A1 Vulcan 20mm Rotary Cannon, serving as the dedicated external rotary powerplant node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to General Electric / General Dynamics Ordnance service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: six rotating barrels follow a stationary 360-degree helical cam track for continuous firing cycles.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Stationary elliptical cam housing drives six synchronized rotating bolt assemblies.",
+        "audioScript": "F-05, Rotary Drive Motor & Gearbox. Crafted from manganese-phosphate Parkerized ordnance steel for the GE M61A1 Vulcan 20mm Rotary Cannon, this component handles external rotary powerplant. Drives the core operating sequence: six rotating barrels follow a stationary 360-degree helical cam track for continuous firing cycles.",
+        "audioUrl": ""
+      }
+    },
+    "m61vulcan_mount_rail": {
+      "partId": "m61vulcan_mount_rail",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Accessory Mount Rail",
+      "zh": {
+        "roleTag": "提供稳固依托与模块化拓展",
+        "overview": "通用电气 M61A1 “火神” 20mm 六管航炮（F-06）的战术附件导轨与背带支座，隶属 20 件套标准装配体系，负责提供稳固依托与模块化拓展。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1959年代通用电气 / 通用动力军械系统军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：无链螺旋闭环弹鼓与柔性输弹滑槽在 9G 高过载机动下稳定供弹。",
+        "audioScript": "F-06，战术附件导轨与背带支座。作为 通用电气 M61A1 “火神” 20mm 六管航炮 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担提供稳固依托与模块化拓展职能。与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Modular Support & Optics Base",
+        "overview": "Accessory Rail & Sling Mount (F-06) of the GE M61A1 Vulcan 20mm Rotary Cannon, serving as the dedicated modular support & optics base node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to General Electric / General Dynamics Ordnance service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Closed-loop linkless helical drum feeds reliably through 9G fighter maneuvers.",
+        "audioScript": "F-06, Accessory Rail & Sling Mount. Crafted from manganese-phosphate Parkerized ordnance steel for the GE M61A1 Vulcan 20mm Rotary Cannon, this component handles modular support & optics base. Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m61vulcan_trigger": {
+      "partId": "m61vulcan_trigger",
+      "bomCode": "T-01",
+      "calloutLabelEn": "Firing Switch Solenoid",
+      "zh": {
+        "roleTag": "清晰干脆释放阻铁启动击发",
+        "overview": "通用电气 M61A1 “火神” 20mm 六管航炮（T-01）的电控击发扳机与火控开关，隶属 20 件套标准装配体系，负责清晰干脆释放阻铁启动击发。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1959年代通用电气 / 通用动力军械系统军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：6,000 发/分（100 发/秒）超高理论射速，0.5 秒点射即可倾泻 50 发 20mm 炮弹。",
+        "audioScript": "T-01，电控击发扳机与火控开关。作为 通用电气 M61A1 “火神” 20mm 六管航炮 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担清晰干脆释放阻铁启动击发职能。与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Crisp Firing Release Input",
+        "overview": "Electric Firing Switch & Solenoid (T-01) of the GE M61A1 Vulcan 20mm Rotary Cannon, serving as the dedicated crisp firing release input node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to General Electric / General Dynamics Ordnance service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 6,000 RPM (100 rds/sec) fires 50 twenty-millimeter shells in a half-second burst.",
+        "audioScript": "T-01, Electric Firing Switch & Solenoid. Crafted from manganese-phosphate Parkerized ordnance steel for the GE M61A1 Vulcan 20mm Rotary Cannon, this component handles crisp firing release input. Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m61vulcan_hammer": {
+      "partId": "m61vulcan_hammer",
+      "bomCode": "T-02",
+      "calloutLabelEn": "Hammer / Striker Unit",
+      "zh": {
+        "roleTag": "高速释放储能精确击发底火/弓弦",
+        "overview": "通用电气 M61A1 “火神” 20mm 六管航炮（T-02）的硬化击锤/平移击针击发组件，隶属 20 件套标准装配体系，负责高速释放储能精确击发底火/弓弦。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1959年代通用电气 / 通用动力军械系统军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：外能源液压驱动完全无视哑弹，故障弹随转子自动抛出绝不卡炮。",
+        "audioScript": "T-02，硬化击锤/平移击针击发组件。作为 通用电气 M61A1 “火神” 20mm 六管航炮 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担高速释放储能精确击发底火/弓弦职能。与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-Speed Ignition Impactor",
+        "overview": "Hardened Hammer / Striker Unit (T-02) of the GE M61A1 Vulcan 20mm Rotary Cannon, serving as the dedicated high-speed ignition impactor node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to General Electric / General Dynamics Ordnance service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: External hydraulic drive ejects dud primers automatically with zero jam stoppage.",
+        "audioScript": "T-02, Hardened Hammer / Striker Unit. Crafted from manganese-phosphate Parkerized ordnance steel for the GE M61A1 Vulcan 20mm Rotary Cannon, this component handles high-speed ignition impactor. Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m61vulcan_hammer_spring": {
+      "partId": "m61vulcan_hammer_spring",
+      "bomCode": "T-03",
+      "calloutLabelEn": "Hammer Drive Spring",
+      "zh": {
+        "roleTag": "为可靠击发提供充沛冲击能量",
+        "overview": "通用电气 M61A1 “火神” 20mm 六管航炮（T-03）的主击发扭簧/螺旋打击簧，隶属 20 件套标准装配体系，负责为可靠击发提供充沛冲击能量。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1959年代通用电气 / 通用动力军械系统军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 6,000 发/分（每秒 100 发） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：双列固定椭圆凸轮轨道同步驱动 6 组独立旋转闭锁枪机循环。",
+        "audioScript": "T-03，主击发扭簧/螺旋打击簧。作为 通用电气 M61A1 “火神” 20mm 六管航炮 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担为可靠击发提供充沛冲击能量职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 6,000 发/分（每秒 100 发） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ignition Drive Energy",
+        "overview": "Main Hammer / Striker Drive Spring (T-03) of the GE M61A1 Vulcan 20mm Rotary Cannon, serving as the dedicated ignition drive energy node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to General Electric / General Dynamics Ordnance service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 6,000 RPM (100 rounds/sec) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Stationary elliptical cam housing drives six synchronized rotating bolt assemblies.",
+        "audioScript": "T-03, Main Hammer / Striker Drive Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the GE M61A1 Vulcan 20mm Rotary Cannon, this component handles ignition drive energy. Stores and returns cyclic elastic energy via live coil compression to maintain 6,000 RPM (100 rounds/sec) timing.",
+        "audioUrl": ""
+      }
+    },
+    "m61vulcan_selector": {
+      "partId": "m61vulcan_selector",
+      "bomCode": "T-04",
+      "calloutLabelEn": "Fire Selector & Safety",
+      "zh": {
+        "roleTag": "可靠锁止扳机阻铁并切换射态",
+        "overview": "通用电气 M61A1 “火神” 20mm 六管航炮（T-04）的快慢机与机械保险杠杆，隶属 20 件套标准装配体系，负责可靠锁止扳机阻铁并切换射态。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1959年代通用电气 / 通用动力军械系统军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：无链螺旋闭环弹鼓与柔性输弹滑槽在 9G 高过载机动下稳定供弹。",
+        "audioScript": "T-04，快慢机与机械保险杠杆。作为 通用电气 M61A1 “火神” 20mm 六管航炮 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担可靠锁止扳机阻铁并切换射态职能。与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Safety Interlock & Mode Control",
+        "overview": "Fire Selector & Safety Lever (T-04) of the GE M61A1 Vulcan 20mm Rotary Cannon, serving as the dedicated safety interlock & mode control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to General Electric / General Dynamics Ordnance service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Closed-loop linkless helical drum feeds reliably through 9G fighter maneuvers.",
+        "audioScript": "T-04, Fire Selector & Safety Lever. Crafted from manganese-phosphate Parkerized ordnance steel for the GE M61A1 Vulcan 20mm Rotary Cannon, this component handles safety interlock & mode control. Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m61vulcan_mag_body": {
+      "partId": "m61vulcan_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "Linkless Feed Drum",
+      "zh": {
+        "roleTag": "高射速连续供弹储仓",
+        "overview": "通用电气 M61A1 “火神” 20mm 六管航炮（M-01）的无链螺旋供弹鼓与导槽，隶属 20 件套标准装配体系，负责高射速连续供弹储仓。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1959年代通用电气 / 通用动力军械系统军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：6,000 发/分（100 发/秒）超高理论射速，0.5 秒点射即可倾泻 50 发 20mm 炮弹。",
+        "audioScript": "M-01，无链螺旋供弹鼓与导槽。作为 通用电气 M61A1 “火神” 20mm 六管航炮 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担高射速连续供弹储仓职能。与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-Rate Ammunition Drum",
+        "overview": "Linkless Helical Feed Drum (M-01) of the GE M61A1 Vulcan 20mm Rotary Cannon, serving as the dedicated high-rate ammunition drum node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to General Electric / General Dynamics Ordnance service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 6,000 RPM (100 rds/sec) fires 50 twenty-millimeter shells in a half-second burst.",
+        "audioScript": "M-01, Linkless Helical Feed Drum. Crafted from manganese-phosphate Parkerized ordnance steel for the GE M61A1 Vulcan 20mm Rotary Cannon, this component handles high-rate ammunition drum. Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m61vulcan_follower": {
+      "partId": "m61vulcan_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Feed Conveyor Sprocket",
+      "zh": {
+        "roleTag": "炮弹同步导送入膛",
+        "overview": "通用电气 M61A1 “火神” 20mm 六管航炮（M-02）的螺旋供弹拨轮与导向滑块，隶属 20 件套标准装配体系，负责炮弹同步导送入膛。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1959年代通用电气 / 通用动力军械系统军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：外能源液压驱动完全无视哑弹，故障弹随转子自动抛出绝不卡炮。",
+        "audioScript": "M-02，螺旋供弹拨轮与导向滑块。作为 通用电气 M61A1 “火神” 20mm 六管航炮 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担炮弹同步导送入膛职能。与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Synchronized Feed Drive",
+        "overview": "Helical Conveyor Sprocket (M-02) of the GE M61A1 Vulcan 20mm Rotary Cannon, serving as the dedicated synchronized feed drive node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to General Electric / General Dynamics Ordnance service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: External hydraulic drive ejects dud primers automatically with zero jam stoppage.",
+        "audioScript": "M-02, Helical Conveyor Sprocket. Crafted from manganese-phosphate Parkerized ordnance steel for the GE M61A1 Vulcan 20mm Rotary Cannon, this component handles synchronized feed drive. Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "m61vulcan_mag_spring": {
+      "partId": "m61vulcan_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Feed Tension Spring",
+      "zh": {
+        "roleTag": "防止高速断链卡弹",
+        "overview": "通用电气 M61A1 “火神” 20mm 六管航炮（M-03）的供弹离合张紧弹簧组，隶属 20 件套标准装配体系，负责防止高速断链卡弹。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1959年代通用电气 / 通用动力军械系统军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 6,000 发/分（每秒 100 发） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：双列固定椭圆凸轮轨道同步驱动 6 组独立旋转闭锁枪机循环。",
+        "audioScript": "M-03，供弹离合张紧弹簧组。作为 通用电气 M61A1 “火神” 20mm 六管航炮 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担防止高速断链卡弹职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 6,000 发/分（每秒 100 发） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-RPM Feed Tension",
+        "overview": "Feed Clutch Tension Spring (M-03) of the GE M61A1 Vulcan 20mm Rotary Cannon, serving as the dedicated high-rpm feed tension node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to General Electric / General Dynamics Ordnance service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 6,000 RPM (100 rounds/sec) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Stationary elliptical cam housing drives six synchronized rotating bolt assemblies.",
+        "audioScript": "M-03, Feed Clutch Tension Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the GE M61A1 Vulcan 20mm Rotary Cannon, this component handles high-rpm feed tension. Stores and returns cyclic elastic energy via live coil compression to maintain 6,000 RPM (100 rounds/sec) timing.",
+        "audioUrl": ""
+      }
+    },
+    "m61vulcan_mag_base": {
+      "partId": "m61vulcan_mag_base",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Drum Endplate & Chute",
+      "zh": {
+        "roleTag": "闭合供弹回路封装",
+        "overview": "通用电气 M61A1 “火神” 20mm 六管航炮（M-04）的弹鼓端盖与弹壳回收集槽，隶属 20 件套标准装配体系，负责闭合供弹回路封装。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1959年代通用电气 / 通用动力军械系统军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：无链螺旋闭环弹鼓与柔性输弹滑槽在 9G 高过载机动下稳定供弹。",
+        "audioScript": "M-04，弹鼓端盖与弹壳回收集槽。作为 通用电气 M61A1 “火神” 20mm 六管航炮 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担闭合供弹回路封装职能。与 通用电气 M61A1 “火神” 20mm 六管航炮 重装结构刚性耦合，承受 417 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Closed-Loop Drum Seal",
+        "overview": "Drum Endplate & Return Chute (M-04) of the GE M61A1 Vulcan 20mm Rotary Cannon, serving as the dedicated closed-loop drum seal node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to General Electric / General Dynamics Ordnance service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Closed-loop linkless helical drum feeds reliably through 9G fighter maneuvers.",
+        "audioScript": "M-04, Drum Endplate & Return Chute. Crafted from manganese-phosphate Parkerized ordnance steel for the GE M61A1 Vulcan 20mm Rotary Cannon, this component handles closed-loop drum seal. Anchors rigidly within the GE M61A1 Vulcan 20mm Rotary Cannon heavy assembly to withstand 417 MPa firing loads.",
+        "audioUrl": ""
+      }
+    }
+  }
+}

@@ -5,12 +5,19 @@ import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { beforeAll, describe, expect, it } from 'vitest';
 import type { WeaponNarrationBundle } from '../src/narration/types';
-import type { CentennialWeaponBlueprint } from '../src/weapons/expansion/centennialTypes';
+import {
+  ALL_100_WEAPON_IDS,
+  CENTENNIAL_66_IDS,
+  FLAGSHIP_34_IDS,
+  type CentennialWeaponBlueprint,
+} from '../src/weapons/expansion/centennialTypes';
 import { ARCHERY_ARMOR_ORDNANCE_BLUEPRINTS } from '../src/weapons/expansion/catalog/archeryArmorOrdnance';
+import { RIFLES_AND_LMGS_BLUEPRINTS } from '../src/weapons/expansion/catalog/riflesAndLmgs';
 import { SHOTGUNS_AND_PISTOLS_BLUEPRINTS } from '../src/weapons/expansion/catalog/shotgunsAndPistols';
 import { SMGS_AND_SNIPERS_BLUEPRINTS } from '../src/weapons/expansion/catalog/smgsAndSnipers';
 
 const REPO_ROOT = path.resolve(__dirname, '..');
+const NARRATIONS_DIR = path.join(REPO_ROOT, 'public', 'narrations');
 const GENERATOR_SCRIPT_PATH = path.join(
   REPO_ROOT,
   'scripts',
@@ -71,7 +78,7 @@ const EXPECTED_FIRING_PHASE_KEYS = [
   'phase_7',
 ] as const;
 
-describe('100-Weapon Expansion Phase 2F — Deterministic Bilingual Narration Generator', () => {
+describe('100-Weapon Expansion Phase 2F / 3A — Deterministic Bilingual Narration Generator & 100/100 On-Disk Bundles', () => {
   let mod: NarrationGeneratorModule;
 
   beforeAll(async () => {
@@ -80,7 +87,8 @@ describe('100-Weapon Expansion Phase 2F — Deterministic Bilingual Narration Ge
     )) as NarrationGeneratorModule;
   });
 
-  const mergedBlueprints: readonly CentennialWeaponBlueprint[] = [
+  const all66Blueprints: readonly CentennialWeaponBlueprint[] = [
+    ...RIFLES_AND_LMGS_BLUEPRINTS,
     ...SMGS_AND_SNIPERS_BLUEPRINTS,
     ...SHOTGUNS_AND_PISTOLS_BLUEPRINTS,
     ...ARCHERY_ARMOR_ORDNANCE_BLUEPRINTS,
@@ -122,12 +130,37 @@ describe('100-Weapon Expansion Phase 2F — Deterministic Bilingual Narration Ge
     }
   }
 
-  it('generates schema-valid 4-act + 20-part WeaponNarrationBundles for all 44 merged blueprints with 0 EN CJK, 0 WP-XX & audioUrl === ""', () => {
-    expect(mergedBlueprints).toHaveLength(44);
+  it('locks 100/100 narration bundles on disk (34 Flagship + 66 Centennial) and validates all 66 on-disk Centennial bundles', () => {
+    expect(all66Blueprints).toHaveLength(66);
+    expect(all66Blueprints.map((b) => b.id)).toEqual([...CENTENNIAL_66_IDS]);
     expect(mod.CANONICAL_20_PART_SLOTS).toHaveLength(20);
 
-    for (const bp of mergedBlueprints) {
-      const bundle = mod.buildCentennialNarrationBundle(bp);
+    // Exact 100 .json files on disk in public/narrations/
+    const diskJsonFiles = fs
+      .readdirSync(NARRATIONS_DIR)
+      .filter((f) => f.endsWith('.json'))
+      .sort();
+    expect(diskJsonFiles).toHaveLength(100);
+    expect(diskJsonFiles).toEqual(
+      [...ALL_100_WEAPON_IDS].map((id) => `${id}.json`).sort()
+    );
+
+    // All 34 Flagship JSONs remain intact on disk
+    for (const flagshipId of FLAGSHIP_34_IDS) {
+      expect(fs.existsSync(path.join(NARRATIONS_DIR, `${flagshipId}.json`))).toBe(
+        true
+      );
+    }
+
+    // Validate all 66 on-disk Centennial JSON files
+    for (const bp of all66Blueprints) {
+      const diskPath = path.join(NARRATIONS_DIR, `${bp.id}.json`);
+      expect(fs.existsSync(diskPath), `missing ${diskPath}`).toBe(true);
+
+      const diskRaw = fs.readFileSync(diskPath, 'utf8');
+      const bundle = JSON.parse(diskRaw) as WeaponNarrationBundle;
+      const expectedBundle = mod.buildCentennialNarrationBundle(bp);
+      expect(bundle).toEqual(expectedBundle);
 
       expect(bundle.schemaVersion).toBe(1);
       expect(bundle.weaponId).toBe(bp.id);
@@ -216,8 +249,7 @@ describe('100-Weapon Expansion Phase 2F — Deterministic Bilingual Narration Ge
     }
   });
 
-  it('supports standalone Node CLI --dry-run and --out-dir execution cleanly without touching public/narrations/', async () => {
-    // 1. Standalone Node shell CLI dry-run
+  it('supports standalone Node CLI --dry-run (66/66 exhibits · 1,320 parts) and isolated --out-dir write', async () => {
     const stdout = execFileSync(
       process.execPath,
       [GENERATOR_SCRIPT_PATH, '--dry-run', '--json'],
@@ -225,23 +257,29 @@ describe('100-Weapon Expansion Phase 2F — Deterministic Bilingual Narration Ge
     );
     const cliResult = JSON.parse(stdout) as GenerationResult;
     expect(cliResult.dryRun).toBe(true);
-    expect(cliResult.count).toBeGreaterThanOrEqual(44);
-    expect(cliResult.totalParts).toBe(cliResult.count * 20);
+    expect(cliResult.count).toBe(66);
+    expect(cliResult.totalParts).toBe(1320);
 
-    // 2. Programmatic write to isolated temp dir
     const tmpDir = fs.mkdtempSync(
       path.join(os.tmpdir(), 'armory-centennial-narr-')
     );
     try {
       const writeRes = await mod.generateCentennialNarrations({
         outDir: tmpDir,
-        only: new Set(['uzi', 'm200', 't90m', 'englishlongbow', 'm777']),
+        only: new Set(['ak47', 'uzi', 'm200', 't90m', 'englishlongbow', 'm777']),
       });
       expect(writeRes.dryRun).toBe(false);
-      expect(writeRes.count).toBe(5);
-      expect(writeRes.totalParts).toBe(100);
+      expect(writeRes.count).toBe(6);
+      expect(writeRes.totalParts).toBe(120);
 
-      for (const id of ['uzi', 'm200', 't90m', 'englishlongbow', 'm777']) {
+      for (const id of [
+        'ak47',
+        'uzi',
+        'm200',
+        't90m',
+        'englishlongbow',
+        'm777',
+      ]) {
         const filePath = path.join(tmpDir, `${id}.json`);
         expect(fs.existsSync(filePath)).toBe(true);
         const parsed = JSON.parse(
