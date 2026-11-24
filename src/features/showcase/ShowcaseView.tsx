@@ -5,6 +5,8 @@ import {
   BookOpen,
   Box,
   Check,
+  ChevronLeft,
+  ChevronRight,
   Clapperboard,
   Compass,
   Copy,
@@ -136,6 +138,12 @@ export const ShowcaseView: React.FC = () => {
 
   const heroSectionRef = useRef<HTMLElement>(null);
   const liveWindowRef = useRef<HTMLDivElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const scrollExhibitCarousel = (dir: -1 | 1) => {
+    const el = carouselRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * 320, behavior: 'smooth' });
+  };
   const dragStateRef = useRef<{
     active: boolean;
     pointerId: number;
@@ -483,17 +491,17 @@ export const ShowcaseView: React.FC = () => {
           <div className="showcase-hero-ctas">
             <button
               type="button"
-              className="showcase-cta-primary"
+              className="showcase-cta-primary showcase-cta-hero-lg"
               onClick={returnToArmory}
             >
-              <Layers size={15} aria-hidden="true" />
-              <span>{s.hero.ctaArmory}</span>
-              <ArrowRight size={15} aria-hidden="true" />
+              <Layers size={16} aria-hidden="true" />
+              <span>{s.hero.ctaArmoryVault}</span>
+              <ArrowRight size={16} aria-hidden="true" />
             </button>
 
             <button
               type="button"
-              className="showcase-cta-director"
+              className="showcase-cta-director showcase-cta-hero-lg"
               onMouseEnter={() => preloadWeaponNarration(featuredWeapon.id)}
               onClick={() => {
                 unlockMechanicalAudio();
@@ -502,92 +510,8 @@ export const ShowcaseView: React.FC = () => {
                 });
               }}
             >
-              <Clapperboard size={14} aria-hidden="true" />
-              <span>{s.hero.ctaDirector(shortWeaponTag)}</span>
-            </button>
-
-            <button
-              type="button"
-              className="showcase-cta-secondary"
-              onClick={() => enterWorkbench(featuredWeapon.id, 'explode')}
-            >
-              <Wrench size={14} aria-hidden="true" />
-              <span>{s.hero.ctaExplode(shortWeaponTag)}</span>
-            </button>
-
-            <button
-              type="button"
-              className="showcase-cta-firing"
-              onClick={() => {
-                unlockMechanicalAudio();
-                enterWorkbench(featuredWeapon.id, 'firing');
-              }}
-            >
-              <Flame size={14} aria-hidden="true" />
-              <span>{s.hero.ctaFiring}</span>
-            </button>
-
-            <button
-              type="button"
-              className="showcase-cta-ghost"
-              onClick={() => {
-                queueMechanismShowdownLaunch('matrix', featuredWeapon.id);
-                returnToArmory();
-              }}
-              title={s.hero.ctaShowdownTitle}
-            >
-              <GitCompareArrows size={14} aria-hidden="true" />
-              <span>{s.hero.ctaShowdown}</span>
-            </button>
-
-            <button
-              type="button"
-              className="showcase-cta-ghost"
-              onClick={() => openExternalBallistics()}
-              title={s.hero.ctaBallisticsTitle}
-            >
-              <Compass size={14} aria-hidden="true" />
-              <span>{s.hero.ctaBallistics}</span>
-            </button>
-
-            <button
-              type="button"
-              className="showcase-cta-ghost"
-              onClick={() => openArmorPenetrationModal()}
-              title={s.hero.ctaArmorTheaterTitle}
-            >
-              <Shield size={14} aria-hidden="true" />
-              <span>{s.hero.ctaArmorTheater}</span>
-            </button>
-
-            <button
-              type="button"
-              className="showcase-cta-ghost"
-              onClick={() => openCartridgeLab()}
-              title={s.hero.ctaCartridgesTitle}
-            >
-              <Ruler size={14} aria-hidden="true" />
-              <span>{s.hero.ctaCartridges}</span>
-            </button>
-
-            <button
-              type="button"
-              className="showcase-cta-ghost"
-              onClick={() => openPosterModal({ weaponId: featuredWeapon.id })}
-              title={s.hero.ctaPosterTitle}
-            >
-              <Share2 size={14} aria-hidden="true" />
-              <span>{s.hero.ctaPoster}</span>
-            </button>
-
-            <button
-              type="button"
-              className="showcase-cta-ghost"
-              onClick={() => openMonographModal(featuredWeapon.id)}
-              title={s.hero.ctaMonographTitle}
-            >
-              <Printer size={14} aria-hidden="true" />
-              <span>{s.hero.ctaMonograph(shortWeaponTag)}</span>
+              <Clapperboard size={15} aria-hidden="true" />
+              <span>{s.hero.ctaDirectorWatch(shortWeaponTag)}</span>
             </button>
           </div>
         </div>
@@ -714,28 +638,54 @@ export const ShowcaseView: React.FC = () => {
               </button>
             </div>
 
-            <div
-              className="stage-weapon-pills"
-              aria-label={s.hero.weaponPillsAria}
-            >
-              {ARMORY_WEAPONS.map((w) => {
-                const active = w.id === activeWeaponId;
-                return (
-                  <button
-                    key={w.id}
-                    type="button"
-                    className={`stage-weapon-pill ${active ? 'active' : ''}`}
-                    aria-pressed={active}
-                    onMouseEnter={() => preloadWeaponPlugin(w.id)}
-                    onClick={() => handleHeroWeaponSwitch(w.id)}
-                  >
-                    <span className="swp-bay">
-                      {w.bayCode.replace('BAY-', '#')}
-                    </span>
-                    <span>{getLocalizedShortWeaponLabel(w.id, lang)}</span>
-                  </button>
-                );
-              })}
+            <div className="stage-carousel-shell">
+              <button
+                type="button"
+                className="stage-carousel-arrow"
+                aria-label={s.hero.carouselPrevAria}
+                onClick={() => scrollExhibitCarousel(-1)}
+              >
+                <ChevronLeft size={15} aria-hidden="true" />
+              </button>
+              <div
+                ref={carouselRef}
+                className="stage-weapon-pills stage-weapon-carousel"
+                aria-label={s.hero.weaponPillsAria}
+              >
+                {ARMORY_WEAPONS.map((w) => {
+                  const active = w.id === activeWeaponId;
+                  return (
+                    <button
+                      key={w.id}
+                      type="button"
+                      className={`stage-weapon-pill ${active ? 'active' : ''}`}
+                      aria-pressed={active}
+                      onMouseEnter={() => preloadWeaponPlugin(w.id)}
+                      onClick={(e) => {
+                        handleHeroWeaponSwitch(w.id);
+                        e.currentTarget.scrollIntoView?.({
+                          behavior: 'smooth',
+                          inline: 'center',
+                          block: 'nearest',
+                        });
+                      }}
+                    >
+                      <span className="swp-bay">
+                        {w.bayCode.replace('BAY-', '#')}
+                      </span>
+                      <span>{getLocalizedShortWeaponLabel(w.id, lang)}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              <button
+                type="button"
+                className="stage-carousel-arrow"
+                aria-label={s.hero.carouselNextAria}
+                onClick={() => scrollExhibitCarousel(1)}
+              >
+                <ChevronRight size={15} aria-hidden="true" />
+              </button>
             </div>
           </div>
         </div>
@@ -754,6 +704,202 @@ export const ShowcaseView: React.FC = () => {
           </div>
         </div>
 
+        {/* SECTION 0: EXPLORE 3D PHYSICS THEATERS & ENGINEERING LABS BENTO */}
+        <section
+          id="physics-labs"
+          className="showcase-section showcase-section-alt showcase-labs-section"
+        >
+          <div className="showcase-container">
+            <div className="section-header">
+              <span className="section-kicker">{s.physicsLabs.kicker}</span>
+              <h2 className="section-title">{s.physicsLabs.title}</h2>
+              <p className="section-desc">{s.physicsLabs.desc}</p>
+            </div>
+
+            <div className="labs-bento-grid">
+              <button
+                type="button"
+                className="lab-bento-card lab-accent-cyan"
+                onClick={() => openExternalBallistics()}
+                title={s.hero.ctaBallisticsTitle}
+              >
+                <div className="lab-card-top">
+                  <span className="lab-card-icon">
+                    <Compass size={17} aria-hidden="true" />
+                  </span>
+                  <span className="lab-card-badge">
+                    {s.physicsLabs.cards.range3d.badge}
+                  </span>
+                </div>
+                <h3>{s.physicsLabs.cards.range3d.title}</h3>
+                <p>{s.physicsLabs.cards.range3d.desc}</p>
+                <span className="lab-card-cta">
+                  <span>{s.physicsLabs.cards.range3d.cta}</span>
+                  <ArrowRight size={14} aria-hidden="true" />
+                </span>
+              </button>
+
+              <button
+                type="button"
+                className="lab-bento-card lab-accent-amber"
+                onClick={() => openArmorPenetrationModal()}
+                title={s.hero.ctaArmorTheaterTitle}
+              >
+                <div className="lab-card-top">
+                  <span className="lab-card-icon">
+                    <Shield size={17} aria-hidden="true" />
+                  </span>
+                  <span className="lab-card-badge">
+                    {s.physicsLabs.cards.armorTheater.badge}
+                  </span>
+                </div>
+                <h3>{s.physicsLabs.cards.armorTheater.title}</h3>
+                <p>{s.physicsLabs.cards.armorTheater.desc}</p>
+                <span className="lab-card-cta">
+                  <span>{s.physicsLabs.cards.armorTheater.cta}</span>
+                  <ArrowRight size={14} aria-hidden="true" />
+                </span>
+              </button>
+
+              <button
+                type="button"
+                className="lab-bento-card lab-accent-gold"
+                onClick={() => openCartridgeLab()}
+                title={s.hero.ctaCartridgesTitle}
+              >
+                <div className="lab-card-top">
+                  <span className="lab-card-icon">
+                    <Ruler size={17} aria-hidden="true" />
+                  </span>
+                  <span className="lab-card-badge">
+                    {s.physicsLabs.cards.cartridgeLab.badge}
+                  </span>
+                </div>
+                <h3>{s.physicsLabs.cards.cartridgeLab.title}</h3>
+                <p>{s.physicsLabs.cards.cartridgeLab.desc}</p>
+                <span className="lab-card-cta">
+                  <span>{s.physicsLabs.cards.cartridgeLab.cta}</span>
+                  <ArrowRight size={14} aria-hidden="true" />
+                </span>
+              </button>
+
+              <button
+                type="button"
+                className="lab-bento-card lab-accent-teal"
+                onClick={() => {
+                  queueMechanismShowdownLaunch('matrix', featuredWeapon.id);
+                  returnToArmory();
+                }}
+                title={s.hero.ctaShowdownTitle}
+              >
+                <div className="lab-card-top">
+                  <span className="lab-card-icon">
+                    <GitCompareArrows size={17} aria-hidden="true" />
+                  </span>
+                  <span className="lab-card-badge">
+                    {s.physicsLabs.cards.showdown.badge}
+                  </span>
+                </div>
+                <h3>{s.physicsLabs.cards.showdown.title}</h3>
+                <p>{s.physicsLabs.cards.showdown.desc}</p>
+                <span className="lab-card-cta">
+                  <span>{s.physicsLabs.cards.showdown.cta}</span>
+                  <ArrowRight size={14} aria-hidden="true" />
+                </span>
+              </button>
+
+              <button
+                type="button"
+                className="lab-bento-card"
+                onClick={() => enterWorkbench(featuredWeapon.id, 'explode')}
+              >
+                <div className="lab-card-top">
+                  <span className="lab-card-icon">
+                    <Wrench size={16} aria-hidden="true" />
+                  </span>
+                  <span className="lab-card-badge">
+                    {s.physicsLabs.cards.explode.badge}
+                  </span>
+                </div>
+                <h3>{s.physicsLabs.cards.explode.title}</h3>
+                <p>{s.physicsLabs.cards.explode.desc}</p>
+                <span className="lab-card-cta">
+                  <span>{s.physicsLabs.cards.explode.cta(shortWeaponTag)}</span>
+                  <ArrowRight size={14} aria-hidden="true" />
+                </span>
+              </button>
+
+              <button
+                type="button"
+                className="lab-bento-card"
+                onClick={() => {
+                  unlockMechanicalAudio();
+                  enterWorkbench(featuredWeapon.id, 'firing');
+                }}
+              >
+                <div className="lab-card-top">
+                  <span className="lab-card-icon">
+                    <Flame size={16} aria-hidden="true" />
+                  </span>
+                  <span className="lab-card-badge">
+                    {s.physicsLabs.cards.firing.badge}
+                  </span>
+                </div>
+                <h3>{s.physicsLabs.cards.firing.title}</h3>
+                <p>{s.physicsLabs.cards.firing.desc}</p>
+                <span className="lab-card-cta">
+                  <span>{s.physicsLabs.cards.firing.cta}</span>
+                  <ArrowRight size={14} aria-hidden="true" />
+                </span>
+              </button>
+
+              <button
+                type="button"
+                className="lab-bento-card"
+                onClick={() => openPosterModal({ weaponId: featuredWeapon.id })}
+                title={s.hero.ctaPosterTitle}
+              >
+                <div className="lab-card-top">
+                  <span className="lab-card-icon">
+                    <Share2 size={16} aria-hidden="true" />
+                  </span>
+                  <span className="lab-card-badge">
+                    {s.physicsLabs.cards.poster.badge}
+                  </span>
+                </div>
+                <h3>{s.physicsLabs.cards.poster.title}</h3>
+                <p>{s.physicsLabs.cards.poster.desc}</p>
+                <span className="lab-card-cta">
+                  <span>{s.physicsLabs.cards.poster.cta}</span>
+                  <ArrowRight size={14} aria-hidden="true" />
+                </span>
+              </button>
+
+              <button
+                type="button"
+                className="lab-bento-card"
+                onClick={() => openMonographModal(featuredWeapon.id)}
+                title={s.hero.ctaMonographTitle}
+              >
+                <div className="lab-card-top">
+                  <span className="lab-card-icon">
+                    <Printer size={16} aria-hidden="true" />
+                  </span>
+                  <span className="lab-card-badge">
+                    {s.physicsLabs.cards.monograph.badge}
+                  </span>
+                </div>
+                <h3>{s.physicsLabs.cards.monograph.title}</h3>
+                <p>{s.physicsLabs.cards.monograph.desc}</p>
+                <span className="lab-card-cta">
+                  <span>{s.physicsLabs.cards.monograph.cta(shortWeaponTag)}</span>
+                  <ArrowRight size={14} aria-hidden="true" />
+                </span>
+              </button>
+            </div>
+          </div>
+        </section>
+
         {/* SECTION 1: FOUR CORE INSPECTION MODES BENTO */}
         <section id="capabilities" className="showcase-section">
           <div className="showcase-container">
@@ -770,6 +916,7 @@ export const ShowcaseView: React.FC = () => {
                     src={resolveAssetUrl('showcase/ak15-callouts.webp')}
                     alt={s.capabilities.cards.explode.alt}
                     loading="lazy"
+                    decoding="async"
                   />
                   <span className="bento-tag">
                     {s.capabilities.cards.explode.tag}
@@ -800,6 +947,7 @@ export const ShowcaseView: React.FC = () => {
                     src={resolveAssetUrl('showcase/m82a1-firing.webp')}
                     alt={s.capabilities.cards.firing.alt}
                     loading="lazy"
+                    decoding="async"
                   />
                   <span className="bento-tag bento-tag-orange">
                     {s.capabilities.cards.firing.tag}
@@ -829,6 +977,7 @@ export const ShowcaseView: React.FC = () => {
                     src={resolveAssetUrl('showcase/ak15-section.webp')}
                     alt={s.capabilities.cards.section.alt}
                     loading="lazy"
+                    decoding="async"
                   />
                   <span className="bento-tag bento-tag-teal">
                     {s.capabilities.cards.section.tag}
@@ -859,6 +1008,7 @@ export const ShowcaseView: React.FC = () => {
                     src={resolveAssetUrl('showcase/pbr-atlas.webp')}
                     alt={s.capabilities.cards.pbr.alt}
                     loading="lazy"
+                    decoding="async"
                   />
                   <span className="bento-tag">
                     {s.capabilities.cards.pbr.tag}
@@ -1053,6 +1203,7 @@ export const ShowcaseView: React.FC = () => {
                       src={resolveAssetUrl(item.imageFile)}
                       alt={item.title}
                       loading="lazy"
+                      decoding="async"
                     />
                     <span className="gallery-zoom-pill">
                       {s.gallery.zoomPill}
@@ -1458,6 +1609,8 @@ export const ShowcaseView: React.FC = () => {
               src={resolveAssetUrl(lightboxItem.imageFile)}
               alt={lightboxItem.title}
               className="lightbox-img"
+              loading="lazy"
+              decoding="async"
             />
             <p className="lightbox-caption">{lightboxItem.subtitle}</p>
           </div>

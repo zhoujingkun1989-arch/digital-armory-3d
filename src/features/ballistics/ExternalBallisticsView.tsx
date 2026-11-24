@@ -2,6 +2,8 @@ import React, { useId, useMemo, useRef, useState } from 'react';
 import {
   ArrowLeft,
   ArrowUpRight,
+  ChevronDown,
+  ChevronUp,
   Compass,
   Crosshair,
   Gauge,
@@ -9,6 +11,7 @@ import {
   LineChart,
   RotateCcw,
   Shield,
+  SlidersHorizontal,
   Table2,
   Video,
   Wind,
@@ -46,6 +49,7 @@ import {
 } from './externalBallisticsStrings';
 import { Range3DScene } from './Range3DScene';
 import '../../styles/external-ballistics.css';
+import '../../styles/range-3d-upgrade.css';
 
 const MAX_ACTIVE_PROJECTILES = 4;
 
@@ -286,6 +290,10 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
   const [energyScale, setEnergyScale] = useState<EnergyScaleMode>('sqrt');
   const [reticleIllum, setReticleIllum] = useState<ReticleIllumMode>('etched');
   const [dopeUnitMode, setDopeUnitMode] = useState<DopeUnitMode>('both');
+  // Auto-collapse parameter deck on tablet & mobile so the 3D Proving Ground stays hero above fold
+  const [controlsCollapsed, setControlsCollapsed] = useState(
+    () => typeof window !== 'undefined' && window.innerWidth <= 1024
+  );
 
   // Derive valid focused projectile directly without cascading useEffect setState
   const effectiveFocusedProjectile: ExternalProjectileId =
@@ -1207,403 +1215,467 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
         </div>
       </header>
 
-      {/* ==================== Showdown Presets & 13-Projectile Selector Deck ==================== */}
-      <section className="eb-selector-deck">
-        <div className="eb-presets-row">
-          <div className="eb-presets-left">
-            <span className="eb-section-kicker">{ui.presetsLabel}</span>
-            {BALLISTICS_RANGE_PRESETS.map((preset) => {
-              const isAct = activePresetId === preset.id;
-              const isArmorPreset = preset.id === 'heavy_armor_cannons';
-              return (
-                <button
-                  key={preset.id}
-                  type="button"
-                  className={`eb-preset-pill ${
-                    isArmorPreset ? 'is-armor-preset' : ''
-                  } ${isAct ? 'is-active' : ''}`}
-                  aria-pressed={isAct}
-                  title={isZh ? preset.subtitleZh : preset.subtitleEn}
-                  onClick={() => handleApplyPreset(preset.id)}
-                >
-                  {isArmorPreset && (
-                    <Shield size={12} aria-hidden="true" />
-                  )}
-                  <span>{isZh ? preset.labelZh : preset.labelEn}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="eb-isa-cluster">
-            <span className="eb-isa-pill">
-              <Gauge size={12} aria-hidden="true" />
-              <span>
-                {ui.isaReadout(
-                  atmosphere.airDensityKgM3.toFixed(3),
-                  (atmosphere.densityRatio * 100).toFixed(1),
-                  atmosphere.speedOfSoundMps.toFixed(1),
-                  atmosphere.pressureHPa.toFixed(1)
-                )}
-              </span>
-            </span>
-
-            <button
-              type="button"
-              className="eb-reset-btn"
-              title={ui.resetEnvTitle}
-              onClick={handleResetEnvironment}
-            >
-              <RotateCcw size={11} aria-hidden="true" />
-              <span>{ui.resetEnvBtn}</span>
-            </button>
-          </div>
-        </div>
-
-        <div className="eb-caliber-strip-head">
-          <span className="eb-section-kicker">
-            {ui.projectilesLabel(
-              activeProjectiles.length,
-              MAX_ACTIVE_PROJECTILES
-            )}
-          </span>
-          <div
-            className="eb-category-filter-bar"
-            role="group"
-            aria-label={ui.categoryFilterAria}
+      {/* ==================== 3D-FIRST HERO: Mode Bar + 1,000m Proving Ground ==================== */}
+      <div className="eb-hero-range-stage">
+        <div
+          className="eb-workspace-mode-bar"
+          role="tablist"
+          aria-label={ui.workspaceModeAria}
+        >
+          <button
+            type="button"
+            role="tab"
+            aria-selected={workspaceViewMode === 'split'}
+            className={`eb-tab-btn ${workspaceViewMode === 'split' ? 'is-active' : ''}`}
+            onClick={() => {
+              playWorkbenchFoley('toggle_switch');
+              setWorkspaceViewMode('split');
+            }}
           >
-            {(
-              [
-                'all',
-                'armor',
-                'sniper',
-                'rifle',
-                'pdw',
-                'pistol',
-                'shotgun',
-                'archery',
-              ] as const
-            ).map((catKey) => {
-              const catCount =
-                catKey === 'all'
-                  ? EXTERNAL_PROJECTILE_ORDER.length
-                  : EXTERNAL_PROJECTILE_ORDER.filter(
-                      (id) => EXTERNAL_PROJECTILE_SPECS[id].category === catKey
-                    ).length;
-              const isAct = categoryFilter === catKey;
-              return (
-                <button
-                  key={catKey}
-                  type="button"
-                  className={`eb-cat-pill ${
-                    catKey === 'armor' ? 'is-armor-cat' : ''
-                  } ${isAct ? 'is-active' : ''}`}
-                  aria-pressed={isAct}
-                  onClick={() => {
-                    playWorkbenchFoley('toggle_switch');
-                    setCategoryFilter(catKey);
-                  }}
-                >
-                  <span>
-                    {ui.categoryLabels[catKey]} ({catCount})
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-          <span className="eb-slot-hint">{ui.slotLimitHint}</span>
+            <Layers size={12} aria-hidden="true" />
+            <span>{ui.workspaceModeSplit}</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={workspaceViewMode === 'range3d'}
+            className={`eb-tab-btn ${workspaceViewMode === 'range3d' ? 'is-active' : ''}`}
+            onClick={() => {
+              playWorkbenchFoley('toggle_switch');
+              setWorkspaceViewMode('range3d');
+            }}
+          >
+            <Video size={12} aria-hidden="true" />
+            <span>{ui.workspaceModeRange3d}</span>
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={workspaceViewMode === 'charts2d'}
+            className={`eb-tab-btn ${workspaceViewMode === 'charts2d' ? 'is-active' : ''}`}
+            onClick={() => {
+              playWorkbenchFoley('toggle_switch');
+              setWorkspaceViewMode('charts2d');
+            }}
+          >
+            <LineChart size={12} aria-hidden="true" />
+            <span>{ui.workspaceModeCharts2d}</span>
+          </button>
         </div>
 
-        <div className="eb-caliber-grid">
-          {EXTERNAL_PROJECTILE_ORDER.filter(
-            (id) =>
-              categoryFilter === 'all' ||
-              EXTERNAL_PROJECTILE_SPECS[id].category === categoryFilter
-          ).map((id) => {
-            const spec = EXTERNAL_PROJECTILE_SPECS[id];
-            const slotIdx = activeProjectiles.indexOf(id);
-            const isSelected = slotIdx !== -1;
-            const isFocused = isSelected && focusedProjectile === id;
-            const isArmor = spec.category === 'armor';
-            const slotColor = isSelected
-              ? palette[slotIdx % palette.length]
-              : undefined;
-
-            return (
-              <button
-                key={id}
-                type="button"
-                className={`eb-caliber-chip ${isArmor ? 'is-armor-chip' : ''} ${
-                  isSelected ? 'is-selected' : ''
-                } ${isFocused ? 'is-focused' : ''}`}
-                aria-pressed={isSelected}
-                style={
-                  slotColor
-                    ? ({
-                        '--chip-slot-color': slotColor,
-                      } as React.CSSProperties)
-                    : undefined
-                }
-                title={`${isZh ? spec.nameZh : spec.nameEn} · ${
-                  isZh ? spec.loadLabelZh : spec.loadLabelEn
-                }`}
-                onClick={() => handleToggleProjectileChip(id)}
-              >
-                <span className="eb-chip-dot" aria-hidden="true" />
-                <div className="eb-chip-body">
-                  <span className="eb-chip-code-row">
-                    <span className="eb-chip-code">{spec.code}</span>
-                    {isArmor && (
-                      <span className="eb-chip-armor-tag">{ui.armorBadge}</span>
-                    )}
-                  </span>
-                  <span className="eb-chip-meta">
-                    {Math.round(spec.muzzleVelocityMps)} m/s · {spec.dragModel}{' '}
-                    {spec.bc.toFixed(spec.bc >= 1 ? 2 : 3)}
-                  </span>
-                </div>
-              </button>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* ==================== Environmental & Range Control Console ==================== */}
-      <section className="eb-controls-bar">
-        {/* 1. Max Range */}
-        <div className="eb-ctrl-group">
-          <div className="eb-ctrl-head">
-            <span>{ui.maxRangeLabel}</span>
-            <span className="eb-ctrl-val">{maxRangeM} m</span>
-          </div>
-          <div className="eb-seg-row">
-            {ALLOWED_MAX_RANGES_M.map((r) => (
-              <button
-                key={r}
-                type="button"
-                className={`eb-seg-btn ${maxRangeM === r ? 'is-active' : ''}`}
-                aria-pressed={maxRangeM === r}
-                onClick={() => handleChangeMaxRange(r)}
-              >
-                {r}m
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* 2. Zero Distance */}
-        <div className="eb-ctrl-group">
-          <div className="eb-ctrl-head">
-            <span>{ui.zeroRangeLabel}</span>
-            <span className="eb-ctrl-val">{zeroRangeM} m</span>
-          </div>
-          <div className="eb-seg-row">
-            {ALLOWED_ZERO_RANGES_M.map((z) => (
-              <button
-                key={z}
-                type="button"
-                className={`eb-seg-btn ${zeroRangeM === z ? 'is-active' : ''}`}
-                aria-pressed={zeroRangeM === z}
-                onClick={() => {
-                  playWorkbenchFoley('toggle_switch');
-                  setZeroRangeM(z);
-                }}
-              >
-                {z}m
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* 3. Sight Height */}
-        <div className="eb-ctrl-group">
-          <div className="eb-ctrl-head">
-            <span>{ui.sightHeightLabel}</span>
-            <span className="eb-ctrl-val">{sightHeightCm.toFixed(1)} cm</span>
-          </div>
-          <div className="eb-seg-row">
-            {[
-              { val: 4.8, label: ui.sightStdShort },
-              { val: 6.2, label: ui.sightHighShort },
-              { val: 14.0, label: ui.sightTankShort },
-            ].map((opt) => (
-              <button
-                key={opt.val}
-                type="button"
-                className={`eb-seg-btn ${
-                  Math.abs(sightHeightCm - opt.val) < 0.05 ? 'is-active' : ''
-                }`}
-                aria-pressed={Math.abs(sightHeightCm - opt.val) < 0.05}
-                onClick={() => {
-                  playWorkbenchFoley('toggle_switch');
-                  setSightHeightCm(opt.val);
-                }}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* 4. 90° Crosswind */}
-        <div className="eb-ctrl-group">
-          <div className="eb-ctrl-head">
-            <span>{ui.crosswindLabel}</span>
-            <span className="eb-ctrl-val">
-              {formatSigned(signedCrosswindMps, 1)} m/s
-            </span>
-          </div>
-          <div className="eb-slider-row">
-            <input
-              type="range"
-              className="eb-range-input"
-              aria-label={ui.crosswindLabel}
-              min={0}
-              max={15}
-              step={0.5}
-              value={windSpeedMps}
-              onChange={(e) => setWindSpeedMps(Number(e.target.value))}
-            />
-            <button
-              type="button"
-              className="eb-wind-dir-btn"
-              title={ui.windDirToggleTitle}
-              onClick={() => {
-                playWorkbenchFoley('toggle_switch');
-                setWindSign((prev) => (prev === 1 ? -1 : 1));
-              }}
-            >
-              {windSign > 0 ? ui.windLeftToRight : ui.windRightToLeft}
-            </button>
-          </div>
-        </div>
-
-        {/* 5. Altitude */}
-        <div className="eb-ctrl-group">
-          <div className="eb-ctrl-head">
-            <span>{ui.altitudeLabel}</span>
-            <span className="eb-ctrl-val">{altitudeM} m</span>
-          </div>
-          <div className="eb-slider-row">
-            <input
-              type="range"
-              className="eb-range-input"
-              aria-label={ui.altitudeLabel}
-              min={0}
-              max={3000}
-              step={50}
-              value={altitudeM}
-              onChange={(e) => setAltitudeM(Number(e.target.value))}
+        {workspaceViewMode !== 'charts2d' && focusedSolution && (
+          <div ref={range3dSectionRef}>
+            <Range3DScene
+              focusedSolution={focusedSolution}
+              comparisonSolutions={solutions}
+              slotColors={palette}
+              maxRangeM={maxRangeM}
+              targetRangeM={effectiveScrubM}
+              signedCrosswindMps={signedCrosswindMps}
+              lang={lang}
+              isLightTheme={isLightTheme}
+              expanded={workspaceViewMode === 'range3d'}
             />
           </div>
-        </div>
-
-        {/* 6. Ambient Temperature */}
-        <div className="eb-ctrl-group">
-          <div className="eb-ctrl-head">
-            <span>{ui.temperatureLabel}</span>
-            <span className="eb-ctrl-val">
-              {tempC > 0 ? `+${tempC}` : tempC} °C
-            </span>
-          </div>
-          <div className="eb-slider-row">
-            <input
-              type="range"
-              className="eb-range-input"
-              aria-label={ui.temperatureLabel}
-              min={-20}
-              max={45}
-              step={1}
-              value={tempC}
-              onChange={(e) => setTempC(Number(e.target.value))}
-            />
-          </div>
-        </div>
-
-        {/* 7. Synchronized Target Cursor Scrubber */}
-        <div className="eb-ctrl-group">
-          <div className="eb-ctrl-head">
-            <span>{ui.targetScrubLabel}</span>
-            <span className="eb-ctrl-val">{effectiveScrubM} m</span>
-          </div>
-          <div className="eb-slider-row">
-            <input
-              type="range"
-              className="eb-range-input"
-              aria-label={ui.targetScrubLabel}
-              min={5}
-              max={maxRangeM}
-              step={maxRangeM >= 600 ? 5 : 1}
-              value={effectiveScrubM}
-              onChange={(e) => setScrubRangeM(Number(e.target.value))}
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* ==================== Workspace Layout Mode Strip ==================== */}
-      <div
-        className="eb-workspace-mode-bar"
-        role="tablist"
-        aria-label={ui.workspaceModeAria}
-      >
-        <button
-          type="button"
-          role="tab"
-          aria-selected={workspaceViewMode === 'split'}
-          className={`eb-tab-btn ${workspaceViewMode === 'split' ? 'is-active' : ''}`}
-          onClick={() => {
-            playWorkbenchFoley('toggle_switch');
-            setWorkspaceViewMode('split');
-          }}
-        >
-          <Layers size={12} aria-hidden="true" />
-          <span>{ui.workspaceModeSplit}</span>
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={workspaceViewMode === 'range3d'}
-          className={`eb-tab-btn ${workspaceViewMode === 'range3d' ? 'is-active' : ''}`}
-          onClick={() => {
-            playWorkbenchFoley('toggle_switch');
-            setWorkspaceViewMode('range3d');
-          }}
-        >
-          <Video size={12} aria-hidden="true" />
-          <span>{ui.workspaceModeRange3d}</span>
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={workspaceViewMode === 'charts2d'}
-          className={`eb-tab-btn ${workspaceViewMode === 'charts2d' ? 'is-active' : ''}`}
-          onClick={() => {
-            playWorkbenchFoley('toggle_switch');
-            setWorkspaceViewMode('charts2d');
-          }}
-        >
-          <LineChart size={12} aria-hidden="true" />
-          <span>{ui.workspaceModeCharts2d}</span>
-        </button>
+        )}
       </div>
 
-      {/* ==================== Track B2 · 3D 1,000m Interactive Firing Range & Bullet-Cam ==================== */}
-      {workspaceViewMode !== 'charts2d' && focusedSolution && (
-        <div ref={range3dSectionRef}>
-          <Range3DScene
-            focusedSolution={focusedSolution}
-            comparisonSolutions={solutions}
-            slotColors={palette}
-            maxRangeM={maxRangeM}
-            targetRangeM={effectiveScrubM}
-            signedCrosswindMps={signedCrosswindMps}
-            lang={lang}
-            isLightTheme={isLightTheme}
-            expanded={workspaceViewMode === 'range3d'}
-          />
+      {/* ==================== Collapsible Presets, Caliber Selector & Atmosphere Console ==================== */}
+      <div
+        className={`eb-controls-drawer-shell ${controlsCollapsed ? 'is-collapsed' : 'is-expanded'}`}
+      >
+        <div className="eb-controls-summary-bar">
+          <div className="eb-controls-summary-chips">
+            <span className="eb-summary-kicker">
+              {ui.controlsDeckSummaryLabel}
+            </span>
+            {solutions.map((sol, idx) => (
+              <span key={sol.projectileId} className="eb-summary-pill">
+                <span
+                  className="eb-summary-pill-dot"
+                  style={{ background: palette[idx % palette.length] }}
+                  aria-hidden="true"
+                />
+                <span>{sol.spec.code}</span>
+              </span>
+            ))}
+            <span className="eb-summary-pill">
+              {effectiveScrubM} m / {maxRangeM} m
+            </span>
+            <span className="eb-summary-pill">
+              Z {zeroRangeM} m · {windSummaryText}
+            </span>
+          </div>
+
+          <button
+            type="button"
+            className="eb-controls-toggle-btn"
+            aria-expanded={!controlsCollapsed}
+            onClick={() => {
+              playWorkbenchFoley('toggle_switch');
+              setControlsCollapsed((prev) => !prev);
+            }}
+          >
+            <SlidersHorizontal size={13} aria-hidden="true" />
+            <span>
+              {controlsCollapsed
+                ? ui.controlsDeckToggleExpand
+                : ui.controlsDeckToggleCollapse}
+            </span>
+            {controlsCollapsed ? (
+              <ChevronDown size={14} aria-hidden="true" />
+            ) : (
+              <ChevronUp size={14} aria-hidden="true" />
+            )}
+          </button>
         </div>
-      )}
+
+        {!controlsCollapsed && (
+          <div className="eb-controls-drawer-body">
+            {/* ==================== Showdown Presets & 23-Projectile Selector Deck ==================== */}
+            <section className="eb-selector-deck">
+              <div className="eb-presets-row">
+                <div className="eb-presets-left">
+                  <span className="eb-section-kicker">{ui.presetsLabel}</span>
+                  {BALLISTICS_RANGE_PRESETS.map((preset) => {
+                    const isAct = activePresetId === preset.id;
+                    const isArmorPreset = preset.id === 'heavy_armor_cannons';
+                    return (
+                      <button
+                        key={preset.id}
+                        type="button"
+                        className={`eb-preset-pill ${
+                          isArmorPreset ? 'is-armor-preset' : ''
+                        } ${isAct ? 'is-active' : ''}`}
+                        aria-pressed={isAct}
+                        title={isZh ? preset.subtitleZh : preset.subtitleEn}
+                        onClick={() => handleApplyPreset(preset.id)}
+                      >
+                        {isArmorPreset && (
+                          <Shield size={12} aria-hidden="true" />
+                        )}
+                        <span>{isZh ? preset.labelZh : preset.labelEn}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                <div className="eb-isa-cluster">
+                  <span className="eb-isa-pill">
+                    <Gauge size={12} aria-hidden="true" />
+                    <span>
+                      {ui.isaReadout(
+                        atmosphere.airDensityKgM3.toFixed(3),
+                        (atmosphere.densityRatio * 100).toFixed(1),
+                        atmosphere.speedOfSoundMps.toFixed(1),
+                        atmosphere.pressureHPa.toFixed(1)
+                      )}
+                    </span>
+                  </span>
+
+                  <button
+                    type="button"
+                    className="eb-reset-btn"
+                    title={ui.resetEnvTitle}
+                    onClick={handleResetEnvironment}
+                  >
+                    <RotateCcw size={11} aria-hidden="true" />
+                    <span>{ui.resetEnvBtn}</span>
+                  </button>
+                </div>
+              </div>
+
+              <div className="eb-caliber-strip-head">
+                <span className="eb-section-kicker">
+                  {ui.projectilesLabel(
+                    activeProjectiles.length,
+                    MAX_ACTIVE_PROJECTILES
+                  )}
+                </span>
+                <div
+                  className="eb-category-filter-bar"
+                  role="group"
+                  aria-label={ui.categoryFilterAria}
+                >
+                  {(
+                    [
+                      'all',
+                      'armor',
+                      'sniper',
+                      'rifle',
+                      'pdw',
+                      'pistol',
+                      'shotgun',
+                      'archery',
+                    ] as const
+                  ).map((catKey) => {
+                    const catCount =
+                      catKey === 'all'
+                        ? EXTERNAL_PROJECTILE_ORDER.length
+                        : EXTERNAL_PROJECTILE_ORDER.filter(
+                            (id) =>
+                              EXTERNAL_PROJECTILE_SPECS[id].category === catKey
+                          ).length;
+                    const isAct = categoryFilter === catKey;
+                    return (
+                      <button
+                        key={catKey}
+                        type="button"
+                        className={`eb-cat-pill ${
+                          catKey === 'armor' ? 'is-armor-cat' : ''
+                        } ${isAct ? 'is-active' : ''}`}
+                        aria-pressed={isAct}
+                        onClick={() => {
+                          playWorkbenchFoley('toggle_switch');
+                          setCategoryFilter(catKey);
+                        }}
+                      >
+                        <span>
+                          {ui.categoryLabels[catKey]} ({catCount})
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+                <span className="eb-slot-hint">{ui.slotLimitHint}</span>
+              </div>
+
+              <div className="eb-caliber-grid">
+                {EXTERNAL_PROJECTILE_ORDER.filter(
+                  (id) =>
+                    categoryFilter === 'all' ||
+                    EXTERNAL_PROJECTILE_SPECS[id].category === categoryFilter
+                ).map((id) => {
+                  const spec = EXTERNAL_PROJECTILE_SPECS[id];
+                  const slotIdx = activeProjectiles.indexOf(id);
+                  const isSelected = slotIdx !== -1;
+                  const isFocused = isSelected && focusedProjectile === id;
+                  const isArmor = spec.category === 'armor';
+                  const slotColor = isSelected
+                    ? palette[slotIdx % palette.length]
+                    : undefined;
+
+                  return (
+                    <button
+                      key={id}
+                      type="button"
+                      className={`eb-caliber-chip ${isArmor ? 'is-armor-chip' : ''} ${
+                        isSelected ? 'is-selected' : ''
+                      } ${isFocused ? 'is-focused' : ''}`}
+                      aria-pressed={isSelected}
+                      style={
+                        slotColor
+                          ? ({
+                              '--chip-slot-color': slotColor,
+                            } as React.CSSProperties)
+                          : undefined
+                      }
+                      title={`${isZh ? spec.nameZh : spec.nameEn} · ${
+                        isZh ? spec.loadLabelZh : spec.loadLabelEn
+                      }`}
+                      onClick={() => handleToggleProjectileChip(id)}
+                    >
+                      <span className="eb-chip-dot" aria-hidden="true" />
+                      <div className="eb-chip-body">
+                        <span className="eb-chip-code-row">
+                          <span className="eb-chip-code">{spec.code}</span>
+                          {isArmor && (
+                            <span className="eb-chip-armor-tag">
+                              {ui.armorBadge}
+                            </span>
+                          )}
+                        </span>
+                        <span className="eb-chip-meta">
+                          {Math.round(spec.muzzleVelocityMps)} m/s ·{' '}
+                          {spec.dragModel}{' '}
+                          {spec.bc.toFixed(spec.bc >= 1 ? 2 : 3)}
+                        </span>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </section>
+
+            {/* ==================== Environmental & Range Control Console ==================== */}
+            <section className="eb-controls-bar">
+              {/* 1. Max Range */}
+              <div className="eb-ctrl-group">
+                <div className="eb-ctrl-head">
+                  <span>{ui.maxRangeLabel}</span>
+                  <span className="eb-ctrl-val">{maxRangeM} m</span>
+                </div>
+                <div className="eb-seg-row">
+                  {ALLOWED_MAX_RANGES_M.map((r) => (
+                    <button
+                      key={r}
+                      type="button"
+                      className={`eb-seg-btn ${maxRangeM === r ? 'is-active' : ''}`}
+                      aria-pressed={maxRangeM === r}
+                      onClick={() => handleChangeMaxRange(r)}
+                    >
+                      {r}m
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 2. Zero Distance */}
+              <div className="eb-ctrl-group">
+                <div className="eb-ctrl-head">
+                  <span>{ui.zeroRangeLabel}</span>
+                  <span className="eb-ctrl-val">{zeroRangeM} m</span>
+                </div>
+                <div className="eb-seg-row">
+                  {ALLOWED_ZERO_RANGES_M.map((z) => (
+                    <button
+                      key={z}
+                      type="button"
+                      className={`eb-seg-btn ${zeroRangeM === z ? 'is-active' : ''}`}
+                      aria-pressed={zeroRangeM === z}
+                      onClick={() => {
+                        playWorkbenchFoley('toggle_switch');
+                        setZeroRangeM(z);
+                      }}
+                    >
+                      {z}m
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 3. Sight Height */}
+              <div className="eb-ctrl-group">
+                <div className="eb-ctrl-head">
+                  <span>{ui.sightHeightLabel}</span>
+                  <span className="eb-ctrl-val">
+                    {sightHeightCm.toFixed(1)} cm
+                  </span>
+                </div>
+                <div className="eb-seg-row">
+                  {[
+                    { val: 4.8, label: ui.sightStdShort },
+                    { val: 6.2, label: ui.sightHighShort },
+                    { val: 14.0, label: ui.sightTankShort },
+                  ].map((opt) => (
+                    <button
+                      key={opt.val}
+                      type="button"
+                      className={`eb-seg-btn ${
+                        Math.abs(sightHeightCm - opt.val) < 0.05
+                          ? 'is-active'
+                          : ''
+                      }`}
+                      aria-pressed={Math.abs(sightHeightCm - opt.val) < 0.05}
+                      onClick={() => {
+                        playWorkbenchFoley('toggle_switch');
+                        setSightHeightCm(opt.val);
+                      }}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* 4. 90° Crosswind */}
+              <div className="eb-ctrl-group">
+                <div className="eb-ctrl-head">
+                  <span>{ui.crosswindLabel}</span>
+                  <span className="eb-ctrl-val">
+                    {formatSigned(signedCrosswindMps, 1)} m/s
+                  </span>
+                </div>
+                <div className="eb-slider-row">
+                  <input
+                    type="range"
+                    className="eb-range-input"
+                    aria-label={ui.crosswindLabel}
+                    min={0}
+                    max={15}
+                    step={0.5}
+                    value={windSpeedMps}
+                    onChange={(e) => setWindSpeedMps(Number(e.target.value))}
+                  />
+                  <button
+                    type="button"
+                    className="eb-wind-dir-btn"
+                    title={ui.windDirToggleTitle}
+                    onClick={() => {
+                      playWorkbenchFoley('toggle_switch');
+                      setWindSign((prev) => (prev === 1 ? -1 : 1));
+                    }}
+                  >
+                    {windSign > 0 ? ui.windLeftToRight : ui.windRightToLeft}
+                  </button>
+                </div>
+              </div>
+
+              {/* 5. Altitude */}
+              <div className="eb-ctrl-group">
+                <div className="eb-ctrl-head">
+                  <span>{ui.altitudeLabel}</span>
+                  <span className="eb-ctrl-val">{altitudeM} m</span>
+                </div>
+                <div className="eb-slider-row">
+                  <input
+                    type="range"
+                    className="eb-range-input"
+                    aria-label={ui.altitudeLabel}
+                    min={0}
+                    max={3000}
+                    step={50}
+                    value={altitudeM}
+                    onChange={(e) => setAltitudeM(Number(e.target.value))}
+                  />
+                </div>
+              </div>
+
+              {/* 6. Ambient Temperature */}
+              <div className="eb-ctrl-group">
+                <div className="eb-ctrl-head">
+                  <span>{ui.temperatureLabel}</span>
+                  <span className="eb-ctrl-val">
+                    {tempC > 0 ? `+${tempC}` : tempC} °C
+                  </span>
+                </div>
+                <div className="eb-slider-row">
+                  <input
+                    type="range"
+                    className="eb-range-input"
+                    aria-label={ui.temperatureLabel}
+                    min={-20}
+                    max={45}
+                    step={1}
+                    value={tempC}
+                    onChange={(e) => setTempC(Number(e.target.value))}
+                  />
+                </div>
+              </div>
+
+              {/* 7. Synchronized Target Cursor Scrubber */}
+              <div className="eb-ctrl-group">
+                <div className="eb-ctrl-head">
+                  <span>{ui.targetScrubLabel}</span>
+                  <span className="eb-ctrl-val">{effectiveScrubM} m</span>
+                </div>
+                <div className="eb-slider-row">
+                  <input
+                    type="range"
+                    className="eb-range-input"
+                    aria-label={ui.targetScrubLabel}
+                    min={5}
+                    max={maxRangeM}
+                    step={maxRangeM >= 600 ? 5 : 1}
+                    value={effectiveScrubM}
+                    onChange={(e) => setScrubRangeM(Number(e.target.value))}
+                  />
+                </div>
+              </div>
+            </section>
+          </div>
+        )}
+      </div>
 
       {/* ==================== Main 2-Column Workspace ==================== */}
       {workspaceViewMode !== 'range3d' && (

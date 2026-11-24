@@ -100,6 +100,35 @@ export interface ShowcaseDictionary {
     rotateOn: string;
     rotateOff: string;
     weaponPillsAria: string;
+    carouselPrevAria: string;
+    carouselNextAria: string;
+    ctaArmoryVault: string;
+    ctaDirectorWatch: (shortTag: string) => string;
+  };
+  physicsLabs: {
+    kicker: string;
+    title: string;
+    desc: string;
+    cards: {
+      range3d: { badge: string; title: string; desc: string; cta: string };
+      armorTheater: { badge: string; title: string; desc: string; cta: string };
+      cartridgeLab: { badge: string; title: string; desc: string; cta: string };
+      showdown: { badge: string; title: string; desc: string; cta: string };
+      explode: {
+        badge: string;
+        title: string;
+        desc: string;
+        cta: (shortTag: string) => string;
+      };
+      firing: { badge: string; title: string; desc: string; cta: string };
+      poster: { badge: string; title: string; desc: string; cta: string };
+      monograph: {
+        badge: string;
+        title: string;
+        desc: string;
+        cta: (shortTag: string) => string;
+      };
+    };
   };
   metrics: readonly { val: string; lbl: string }[];
   capabilities: {
@@ -274,6 +303,65 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       rotateOn: '展台旋转中',
       rotateOff: '展台旋转已停',
       weaponPillsAria: '快速切换舞台展示枪械',
+      carouselPrevAria: '向左滚动展品轮播',
+      carouselNextAria: '向右滚动展品轮播',
+      ctaArmoryVault: `进入 ${VAULT_EXHIBIT_COUNT} 展位 3D 数字枪库`,
+      ctaDirectorWatch: (tag) => `观看 ${tag} 3D 导演纪录片`,
+    },
+    physicsLabs: {
+      kicker: '3D PHYSICS THEATERS & ENGINEERING LABS · V6.0',
+      title: '探索三维物理剧场与交互工程实验室',
+      desc: '超越静态展柜：从 1,000m 实弹靶场子弹时间追踪、1:1 复合装甲慢动作穿甲剖视、21 口径 1:1 实弹与穿甲弹纵剖馆，到单画布双视口 3D 同屏机构对决与出版级图鉴工坊，一键即开。',
+      cards: {
+        range3d: {
+          badge: '3D PROVING GROUND · R',
+          title: '3D 1,000m 交互实弹靶场与子弹镜头',
+          desc: `23 套 RK4 G1/G7 弹道档案、Bullet-Cam 子弹时间追踪、AR500 钢靶受击摆动与 d/343 声波回传。`,
+          cta: '进入千米实弹靶场',
+        },
+        armorTheater: {
+          badge: '3D ARMOR THEATER',
+          title: '1:1 复合装甲三维慢动作穿甲剧场',
+          desc: '5 款动能穿甲弹（含 30mm GAU-8 API 与 125mm APFSDS）实时演绎 ERA 双飞板剪切与崩落粒子锥。',
+          cta: '启动三维穿甲剧场',
+        },
+        cartridgeLab: {
+          badge: '1:1 ORDNANCE LAB · B',
+          title: `${ORDNANCE_TOTAL} 口径实弹、航炮与坦克穿甲弹纵剖馆`,
+          desc: `${LAB_CALIBER_TOTAL} 款轻武器实弹 + ${TANK_ORDNANCE_TOTAL} 款重型炮弹 1:1 毫米标尺并排纵剖，直视 APFSDS 尾翼穿甲杆与三瓣弹托。`,
+          cta: '进入弹药纵剖馆',
+        },
+        showdown: {
+          badge: 'LIVE 3D SPLIT-SCREEN · S',
+          title: '9×9×9 原理流派矩阵与双屏 3D 对决',
+          desc: `${SHOWDOWN_RIVALRIES_TOTAL} 组跨时代经典机械对决，支持单画布双裁剪 3D 同步剖视、爆炸与击发相位实时比对。`,
+          cta: '打开原理对照台',
+        },
+        explode: {
+          badge: 'WORKBENCH · DAG',
+          title: '三级爆炸拆解与军械师精拆台',
+          desc: '0%–100% 渐进爆炸拆解、两级野战/全枪精拆 DAG 实操、三轴 CT 扫描与物理耦合模块化改装。',
+          cta: (tag) => `直达 ${tag} 爆炸拆解`,
+        },
+        firing: {
+          badge: 'BALLISTICS & SFX',
+          title: '7 阶段内弹道示波与分口径声场',
+          desc: '60fps 膛压 P(t) 与膛内初速示波、高压燃气流线与四场所卷积混响/欧拉-伯努利钢材波导声效。',
+          cta: '播放实弹击发循环',
+        },
+        poster: {
+          badge: 'SHARE STUDIO · U',
+          title: '高清 3D 剖视社交分享海报工坊',
+          desc: '一键合成 16:9 / 4:5 博物馆收藏级 3D 剖视海报，附带直达二维码与军械师认证印章。',
+          cta: '制作分享海报',
+        },
+        monograph: {
+          badge: 'PRINT STUDIO · CMD+P',
+          title: '34/34 Cycles 17 图版 3D 绘本与图鉴',
+          desc: '调用全馆 2880×1800 Cycles 印刷主图，一键排版双语儿童 3D 机械绘本与 DK 风格视觉百科。',
+          cta: (tag) => `打印 ${tag} 17 图版图鉴`,
+        },
+      },
     },
     metrics: [
       {
@@ -758,6 +846,65 @@ export const SHOWCASE_STRINGS: Record<LanguageCode, ShowcaseDictionary> = {
       rotateOn: 'Rotating',
       rotateOff: 'Paused',
       weaponPillsAria: 'Switch live stage firearm',
+      carouselPrevAria: 'Scroll exhibit carousel left',
+      carouselNextAria: 'Scroll exhibit carousel right',
+      ctaArmoryVault: `Enter ${VAULT_EXHIBIT_COUNT}-Bay 3D Vault`,
+      ctaDirectorWatch: (tag) => `Watch ${tag} 3D Documentary`,
+    },
+    physicsLabs: {
+      kicker: '3D PHYSICS THEATERS & ENGINEERING LABS · V6.0',
+      title: 'Explore 3D Physics Theaters & Engineering Labs',
+      desc: 'Go beyond static displays: fire down a 1,000m 3D proving ground with Bullet-Cam tracking, replay 1:1 composite armor penetration in slow motion, inspect 21 ordnance cutaways at millimeter scale, or launch live 3D split-screen mechanism showdowns.',
+      cards: {
+        range3d: {
+          badge: '3D PROVING GROUND · R',
+          title: '3D 1,000m Interactive Range & Bullet-Cam',
+          desc: `${BALLISTICS_PROFILES_TOTAL} RK4 G1/G7 ballistic profiles, slow-mo Bullet-Cam chase, swinging AR500 steel gong & d/343 acoustic return.`,
+          cta: 'Launch 1,000m Range',
+        },
+        armorTheater: {
+          badge: '3D ARMOR THEATER',
+          title: '1:1 3D Composite Armor Penetration Theater',
+          desc: 'Watch 5 kinetic penetrators (incl. 30mm GAU-8 API & 125mm APFSDS) shear ERA flyer plates and project spall cones.',
+          cta: 'Open Armor Theater',
+        },
+        cartridgeLab: {
+          badge: '1:1 ORDNANCE LAB · B',
+          title: `${ORDNANCE_TOTAL}-Caliber 1:1 Ordnance Cutaway Lab`,
+          desc: `Compare ${LAB_CALIBER_TOTAL} small-arms cartridges & ${TANK_ORDNANCE_TOTAL} heavy cannon shells side-by-side at 1:1 millimeter scale with finned APFSDS darts.`,
+          cta: 'Enter Ordnance Lab',
+        },
+        showdown: {
+          badge: 'LIVE 3D SPLIT-SCREEN · S',
+          title: 'Mechanism Lineage Matrix & 3D Split Showdown',
+          desc: `${SHOWDOWN_RIVALRIES_TOTAL} cross-era rivalries with single-canvas dual-scissor live 3D cutaways, synchronized explosions & firing cycles.`,
+          cta: 'Launch Showdown Lab',
+        },
+        explode: {
+          badge: 'WORKBENCH · DAG',
+          title: '3-Stage Disassembly & Detail-Strip Bench',
+          desc: 'Continuous 0–100% exploded view, Field-Strip & Detail-Strip DAGs, tri-axial CT planes & modular optics/muzzle modding.',
+          cta: (tag) => `Disassemble ${tag}`,
+        },
+        firing: {
+          badge: 'BALLISTICS & SFX',
+          title: '7-Stage Internal Ballistics & Acoustic Engine',
+          desc: '60fps chamber pressure P(t) & velocity telemetry, propellant gas streams, and convolution-reverb acoustic synthesis.',
+          cta: 'Launch Live Ballistics',
+        },
+        poster: {
+          badge: 'SHARE STUDIO · U',
+          title: 'HD 3D Cutaway Share Poster Studio',
+          desc: 'Compose museum-grade 16:9 / 4:5 cutaway posters complete with QR deep-links and your verified Armorer Rank seal.',
+          cta: 'Create 3D Poster',
+        },
+        monograph: {
+          badge: 'PRINT STUDIO · CMD+P',
+          title: '34/34 Cycles 17-Plate Monograph Print Studio',
+          desc: 'Lay out 2880x1800 Cycles studio plates into bilingual 3D picture books and DK-style engineering encyclopedias.',
+          cta: (tag) => `Print ${tag} Monograph`,
+        },
+      },
     },
     metrics: [
       {

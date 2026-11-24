@@ -1,0 +1,138 @@
+/* ============================================================================
+ * Live 3D Split-Screen Showdown — Mobile Top/Bottom Vertical Split & Compact HUD
+ * Loaded by `SplitShowdownOverlay.tsx` after `split-showdown.css`.
+ * ============================================================================ */
+
+.split-mobile-tools-toggle {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .split-mobile-tools-toggle {
+    display: inline-flex;
+    margin-left: auto;
+  }
+
+  .split-desktop-only-btn {
+    display: none;
+  }
+
+  /* Compact single-row mobile topbar so Slot A upper 3D pane stays unobstructed */
+  .split-topbar {
+    padding: 6px 10px;
+    gap: 6px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .split-topbar-left {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+
+  .split-topbar:not(.is-mobile-expanded) .split-topbar-center,
+  .split-topbar:not(.is-mobile-expanded) .split-topbar-right {
+    display: none;
+  }
+
+  .split-topbar.is-mobile-expanded .split-topbar-center,
+  .split-topbar.is-mobile-expanded .split-topbar-right {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 5px;
+    padding-top: 4px;
+    border-top: 1px solid rgba(148, 163, 184, 0.16);
+  }
+
+  .split-topbar.is-mobile-expanded .split-select {
+    flex: 1 1 130px;
+    max-width: none;
+    font-size: 11px;
+  }
+
+  /* Horizontal mid-screen divider separating Top (Slot A) and Bottom (Slot B) */
+  .split-divider-line {
+    top: 50%;
+    bottom: auto;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 1px;
+    transform: translateY(-0.5px);
+    background: linear-gradient(
+      90deg,
+      rgba(56, 189, 248, 0.08) 0%,
+      rgba(56, 189, 248, 0.72) 50%,
+      rgba(245, 158, 11, 0.08) 100%
+    );
+  }
+
+  .split-vs-medallion {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 34px;
+    height: 34px;
+    font-size: 10.5px;
+  }
+
+  /* Position Slot A badge in upper pane and Slot B badge cleanly in lower pane */
+  .split-cards-row {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    display: block;
+    padding: 0;
+  }
+
+  .split-plaque {
+    position: fixed;
+    left: 10px;
+    right: auto;
+    max-width: calc(100vw - 20px);
+    width: min(240px, calc(100vw - 20px));
+    padding: 6px 9px;
+    border-radius: 10px;
+    pointer-events: auto;
+  }
+
+  .split-plaque.is-a {
+    top: 54px;
+  }
+
+  .split-plaque.is-b {
+    top: calc(50% + 12px);
+  }
+
+  .split-plaque-tag {
+    font-size: 9px;
+  }
+
+  .split-plaque-title {
+    font-size: 12px;
+    margin: 1px 0 3px;
+  }
+
+  .split-plaque-specs {
+    gap: 2px 8px;
+    font-size: 10px;
+  }
+
+  .split-plaque-specs > :nth-child(n + 3) {
+    display: none;
+  }
+
+  .split-bottom-dock {
+    bottom: 8px;
+    padding: 6px 10px;
+    gap: 6px;
+    width: calc(100vw - 16px);
+  }
+
+  .split-drag-hint {
+    display: none;
+  }
+}

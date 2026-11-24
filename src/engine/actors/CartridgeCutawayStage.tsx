@@ -166,6 +166,86 @@ const TANK_ACTIVE_HALO_GEO = (() => {
   g.rotateX(-Math.PI / 2);
   return g;
 })();
+const ACTIVE_INNER_HALO_GEO = (() => {
+  const g = new THREE.RingGeometry(1.18, 1.32, 36);
+  g.rotateX(-Math.PI / 2);
+  return g;
+})();
+const TANK_ACTIVE_INNER_HALO_GEO = (() => {
+  const g = new THREE.RingGeometry(7.72, 8.12, 48);
+  g.rotateX(-Math.PI / 2);
+  return g;
+})();
+
+/**
+ * Generates a crisp high-DPI `CanvasTexture` numeric `mm` scale rail strip
+ * aligned 1:1 with the vertical elevation ruler (`0..150 mm` for small arms,
+ * `0..1200 mm` for heavy tank & aero ordnance). Caller owns `.dispose()`.
+ */
+function createElevationRulerLabelTexture(
+  isTankGallery: boolean,
+  isDaylight: boolean,
+  align: 'left' | 'right'
+): THREE.CanvasTexture | null {
+  if (typeof document === 'undefined') return null;
+  const canvas = document.createElement('canvas');
+  canvas.width = 256;
+  canvas.height = 1024;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const maxCm = isTankGallery ? 122.0 : 15.2;
+  const stepMm = isTankGallery ? 200 : 20;
+  const maxLabelMm = isTankGallery ? 1200 : 140;
+
+  const textColor = isDaylight ? '#0f172a' : '#bae6fd';
+  const tickColor = isDaylight ? '#0284c7' : '#38bdf8';
+  const subColor = isDaylight ? '#475569' : '#64748b';
+
+  ctx.font = '700 32px "JetBrains Mono", ui-monospace, SFMono-Regular, monospace';
+  ctx.textBaseline = 'middle';
+  ctx.textAlign = align === 'left' ? 'right' : 'left';
+
+  for (let mm = 0; mm <= maxLabelMm; mm += stepMm) {
+    const cm = mm / 10;
+    const uY = 1 - cm / maxCm;
+    const py = Math.max(24, Math.min(canvas.height - 22, uY * canvas.height));
+
+    // Crisp calibration tick notch adjacent to the vertical stile
+    ctx.strokeStyle = tickColor;
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    if (align === 'left') {
+      ctx.moveTo(canvas.width - 28, py);
+      ctx.lineTo(canvas.width - 2, py);
+    } else {
+      ctx.moveTo(2, py);
+      ctx.lineTo(28, py);
+    }
+    ctx.stroke();
+
+    // High-contrast legibility backing pill for crisp readability against any studio backdrop
+    const label = `${mm} mm`;
+    const tx = align === 'left' ? canvas.width - 38 : 38;
+    const textW = ctx.measureText(label).width;
+    const pillX = align === 'left' ? tx - textW - 10 : tx - 8;
+    ctx.fillStyle = isDaylight
+      ? 'rgba(241, 245, 249, 0.82)'
+      : 'rgba(6, 12, 24, 0.72)';
+    ctx.fillRect(pillX, py - 19, textW + 18, 38);
+
+    ctx.fillStyle = mm === 0 ? subColor : textColor;
+    ctx.fillText(label, tx, py);
+  }
+
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.anisotropy = 4;
+  tex.needsUpdate = true;
+  return tex;
+}
 
 /**
  * Builds the 1:1 CNC elevation backdrop ruler (`0 mm` to `150 mm` = `0` to `15.0` world units)
@@ -312,6 +392,7 @@ const SingleCartridgeSpecimen: React.FC<SingleCartridgeSpecimenProps> =
         ? caseH * 0.22
         : Math.max(0.75, caseH * 0.32);
 
+      const isApfsds = spec.coreKind === 'apfsds_sabot_dart';
       if (primerRef.current) {
         primerRef.current.position.y =
           -t * ((isTankRound ? 3.2 : 0.95) + scaleSpan * 0.35);
@@ -324,17 +405,19 @@ const SingleCartridgeSpecimen: React.FC<SingleCartridgeSpecimenProps> =
         propellantRef.current.position.y = t * scaleSpan * 0.42;
       }
       if (jacketRef.current) {
-        jacketRef.current.position.y = t * scaleSpan * 1.15;
+        jacketRef.current.position.y = t * scaleSpan * (isApfsds ? 1.28 : 1.15);
       }
       if (coreSlugRef.current) {
-        coreSlugRef.current.position.y = t * scaleSpan * 1.72;
+        coreSlugRef.current.position.y =
+          t * scaleSpan * (isApfsds ? 2.02 : 1.72);
       }
       if (penetratorRef.current) {
-        penetratorRef.current.position.y = t * scaleSpan * 2.28;
+        penetratorRef.current.position.y =
+          t * scaleSpan * (isApfsds ? 2.45 : 2.28);
       }
       if (haloRef.current && isActive) {
         const pulse = 0.5 + 0.5 * Math.sin(performance.now() * 0.0045);
-        haloRef.current.scale.setScalar(0.98 + 0.05 * pulse);
+        haloRef.current.scale.setScalar(0.985 + 0.03 * pulse);
       }
     });
 
@@ -356,6 +439,7 @@ const SingleCartridgeSpecimen: React.FC<SingleCartridgeSpecimenProps> =
     };
 
     const isTankRound = isTankOrdnanceProfile(caliber);
+    const isApfsds = spec.coreKind === 'apfsds_sabot_dart';
 
     return (
       <group
@@ -383,24 +467,42 @@ const SingleCartridgeSpecimen: React.FC<SingleCartridgeSpecimenProps> =
             metalness={isDaylight ? 0.35 : 0.72}
             roughness={isDaylight ? 0.48 : 0.34}
             emissive={isActive ? '#0284c7' : '#000000'}
-            emissiveIntensity={isActive ? (isDaylight ? 0.16 : 0.24) : 0}
+            emissiveIntensity={isActive ? (isDaylight ? 0.14 : 0.22) : 0}
           />
         </mesh>
 
+        {/* Crisp Dual-Ring Luminous Cyan Plinth Halo (zero emissive wash on brass/steel specimen!) */}
         {isActive && (
-          <mesh
-            ref={haloRef}
-            geometry={isTankRound ? TANK_ACTIVE_HALO_GEO : ACTIVE_HALO_GEO}
-            position={[0, isTankRound ? 0.08 : 0.015, 0]}
-            renderOrder={12}
-          >
-            <meshBasicMaterial
-              color="#38bdf8"
-              transparent
-              opacity={0.85}
-              side={THREE.DoubleSide}
-            />
-          </mesh>
+          <group position={[0, isTankRound ? 0.08 : 0.015, 0]}>
+            <mesh
+              ref={haloRef}
+              geometry={isTankRound ? TANK_ACTIVE_HALO_GEO : ACTIVE_HALO_GEO}
+              renderOrder={12}
+            >
+              <meshBasicMaterial
+                color="#38bdf8"
+                transparent
+                opacity={0.92}
+                side={THREE.DoubleSide}
+              />
+            </mesh>
+            <mesh
+              geometry={
+                isTankRound
+                  ? TANK_ACTIVE_INNER_HALO_GEO
+                  : ACTIVE_INNER_HALO_GEO
+              }
+              position={[0, 0.01, 0]}
+              renderOrder={13}
+            >
+              <meshBasicMaterial
+                color="#e0f2fe"
+                transparent
+                opacity={0.85}
+                side={THREE.DoubleSide}
+              />
+            </mesh>
+          </group>
         )}
 
         {/* 1. Drawn Brass / Polymer Hull / Combustible HITP Block / Tank Semi-Combustible Case */}
@@ -412,8 +514,8 @@ const SingleCartridgeSpecimen: React.FC<SingleCartridgeSpecimenProps> =
                 ? 0.08
                 : spec.coreKind === 'buckshot_wad_column'
                   ? 0.16
-                  : spec.coreKind === 'apfsds_sabot_dart'
-                    ? 0.24
+                  : isApfsds
+                    ? 0.22
                     : 0.9
             }
             roughness={
@@ -421,25 +523,19 @@ const SingleCartridgeSpecimen: React.FC<SingleCartridgeSpecimenProps> =
                 ? 0.72
                 : spec.coreKind === 'buckshot_wad_column'
                   ? 0.42
-                  : spec.coreKind === 'apfsds_sabot_dart'
+                  : isApfsds
                     ? 0.56
                     : 0.22
             }
             clearcoat={spec.coreKind === 'caseless_telescoped' ? 0.04 : 0.18}
             clearcoatRoughness={0.2}
-            emissive={isActive ? '#0ea5e9' : '#000000'}
-            emissiveIntensity={isActive ? 0.06 : 0}
           />
-          {(showEdges || isActive) && (
-            <Edges
-              threshold={42}
-              lineWidth={isActive ? 1.05 : 0.75}
-              color={isActive ? '#38bdf8' : '#78350f'}
-            />
+          {showEdges && (
+            <Edges threshold={42} lineWidth={0.75} color="#78350f" />
           )}
         </mesh>
 
-        {/* 2. Nickel-Plated Boxer Primer Cup */}
+        {/* 2. Nickel-Plated Boxer Primer Cup / Axial Electric Ignition Tube */}
         <mesh ref={primerRef} geometry={bundle.primerCupGeo} castShadow>
           <meshPhysicalMaterial
             color="#e2e8f0"
@@ -449,7 +545,7 @@ const SingleCartridgeSpecimen: React.FC<SingleCartridgeSpecimenProps> =
           />
         </mesh>
 
-        {/* 3. Brass Boxer Anvil */}
+        {/* 3. Brass Boxer Anvil / Electric Squib Core */}
         <mesh ref={anvilRef} geometry={bundle.anvilGeo}>
           <meshStandardMaterial
             color="#f59e0b"
@@ -458,43 +554,46 @@ const SingleCartridgeSpecimen: React.FC<SingleCartridgeSpecimenProps> =
           />
         </mesh>
 
-        {/* 4. Granular Smokeless Propellant Charge Column */}
+        {/* 4. Granular Smokeless Propellant / Bundled Cylindrical Combustible Sticks */}
         <mesh ref={propellantRef} geometry={bundle.propellantGeo}>
           <meshStandardMaterial
-            color={spec.propellantColor}
-            metalness={0.08}
-            roughness={0.88}
+            color={isApfsds ? '#2d343d' : spec.propellantColor}
+            metalness={isApfsds ? 0.12 : 0.08}
+            roughness={isApfsds ? 0.8 : 0.88}
           />
         </mesh>
 
-        {/* 5. Gilding-Metal / Copper Projectile Jacket */}
+        {/* 5. Gilding-Metal Jacket / Sub-Caliber Finned Tungsten Long-Rod Dart (APFSDS) */}
         <mesh ref={jacketRef} geometry={bundle.jacketGeo} castShadow>
           <meshPhysicalMaterial
-            color={spec.jacketColor}
+            color={isApfsds ? '#475569' : spec.jacketColor}
             metalness={0.92}
-            roughness={0.21}
+            roughness={isApfsds ? 0.22 : 0.21}
             clearcoat={0.16}
             clearcoatRoughness={0.18}
           />
-          {showEdges && <Edges threshold={42} lineWidth={0.75} color="#7c2d12" />}
+          {showEdges && (
+            <Edges threshold={42} lineWidth={0.75} color="#7c2d12" />
+          )}
         </mesh>
 
-        {/* 6. Rear Lead / Steel Core Slug */}
-        <mesh ref={coreSlugRef} geometry={bundle.coreSlugGeo}>
-          <meshStandardMaterial
-            color={spec.coreSlugColor}
-            metalness={0.76}
-            roughness={0.42}
+        {/* 6. Rear Core Slug / 3-Petal Grooved Aerospace Aluminum Saddle Sabot (APFSDS) */}
+        <mesh ref={coreSlugRef} geometry={bundle.coreSlugGeo} castShadow>
+          <meshPhysicalMaterial
+            color={isApfsds ? '#d4dee9' : spec.coreSlugColor}
+            metalness={isApfsds ? 0.88 : 0.76}
+            roughness={isApfsds ? 0.22 : 0.42}
+            clearcoat={isApfsds ? 0.18 : 0.04}
           />
         </mesh>
 
-        {/* 7. Forward Hardened Steel Penetrator Tip (M855 / SS190) */}
+        {/* 7. Forward Hardened Steel Penetrator Tip / Copper Obturator & Ballistic Cap (APFSDS) */}
         {bundle.penetratorGeo && (
           <mesh ref={penetratorRef} geometry={bundle.penetratorGeo}>
             <meshPhysicalMaterial
-              color={spec.penetratorColor}
-              metalness={0.95}
-              roughness={0.16}
+              color={isApfsds ? '#e08e36' : spec.penetratorColor}
+              metalness={isApfsds ? 0.9 : 0.95}
+              roughness={isApfsds ? 0.22 : 0.16}
               clearcoat={0.2}
             />
           </mesh>
@@ -596,10 +695,39 @@ export const CartridgeCutawayStage: React.FC = () => {
     );
   });
 
-  if (screen !== 'cartridges') return null;
-
   const isDaylight = environmentPreset === 'blueprint_daylight';
   const isTankGallery = isTankOrdnanceProfile(activeCaliber);
+
+  // High-DPI numeric `mm` ruler rail textures for left & right elevation stiles (properly disposed!)
+  const leftRulerTex = useMemo(
+    () =>
+      screen === 'cartridges'
+        ? createElevationRulerLabelTexture(isTankGallery, isDaylight, 'left')
+        : null,
+    [screen, isTankGallery, isDaylight]
+  );
+  const rightRulerTex = useMemo(
+    () =>
+      screen === 'cartridges'
+        ? createElevationRulerLabelTexture(isTankGallery, isDaylight, 'right')
+        : null,
+    [screen, isTankGallery, isDaylight]
+  );
+
+  useEffect(() => {
+    return () => {
+      leftRulerTex?.dispose();
+    };
+  }, [leftRulerTex]);
+
+  useEffect(() => {
+    return () => {
+      rightRulerTex?.dispose();
+    };
+  }, [rightRulerTex]);
+
+  if (screen !== 'cartridges') return null;
+
   const activeOrder = isTankGallery ? TANK_ORDNANCE_ORDER : CARTRIDGE_LAB_ORDER;
   const backdropGeos = isTankGallery
     ? TANK_BACKDROP_SCALE_GEOS
@@ -613,6 +741,12 @@ export const CartridgeCutawayStage: React.FC = () => {
     useAppStore.getState().hudHidden,
     useAppStore.getState().cartridgeExplodeProgress
   );
+
+  const rulerH = isTankGallery ? 122.0 : 15.2;
+  const rulerW = isTankGallery ? 16.5 : 3.2;
+  const rulerZ = isTankGallery ? -11.92 : -2.32;
+  const leftRailX = isTankGallery ? -48.0 - rulerW * 0.5 : -21.8 - rulerW * 0.5;
+  const rightRailX = isTankGallery ? 48.0 + rulerW * 0.5 : 22.0 + rulerW * 0.5;
 
   return (
     <group
@@ -651,6 +785,28 @@ export const CartridgeCutawayStage: React.FC = () => {
           opacity={0.62}
         />
       </lineSegments>
+
+      {/* High-DPI Numeric mm Calibration Labels on Left & Right Elevation Stiles */}
+      {leftRulerTex && (
+        <mesh position={[leftRailX, rulerH * 0.5, rulerZ]}>
+          <planeGeometry args={[rulerW, rulerH]} />
+          <meshBasicMaterial
+            map={leftRulerTex}
+            transparent
+            depthWrite={false}
+          />
+        </mesh>
+      )}
+      {rightRulerTex && (
+        <mesh position={[rightRailX, rulerH * 0.5, rulerZ]}>
+          <planeGeometry args={[rulerW, rulerH]} />
+          <meshBasicMaterial
+            map={rightRulerTex}
+            transparent
+            depthWrite={false}
+          />
+        </mesh>
+      )}
 
       {/* Side-by-Side 1:1 Cutaway Specimens */}
       {activeOrder.map((caliber) => (
