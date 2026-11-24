@@ -10,6 +10,7 @@ import {
 } from '../../engine/geometry/geometryService';
 import { MagazineAmmoStack } from '../../engine/actors/MagazineAmmoStack';
 import { PartActor } from '../../engine/actors/PartActor';
+import { RiflingBoreActor } from '../../engine/actors/RiflingBoreActor';
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
 import { useWeaponPlugin } from '../../weapons/registry';
@@ -273,6 +274,7 @@ const SplitWeaponSidePortal: React.FC<SplitSideSceneProps> = ({
             />
           ))}
           <MagazineAmmoStack weaponIdOverride={weaponId} />
+          <RiflingBoreActor weaponIdOverride={weaponId} isSplitView />
         </>
       )}
     </>,
