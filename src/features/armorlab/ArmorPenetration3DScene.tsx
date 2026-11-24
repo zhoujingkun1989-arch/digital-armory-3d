@@ -845,6 +845,17 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
       [badgeTag, layer.physicalMm, badgeAccentHex]
     );
 
+    const badgeSpriteMat = useMemo(() => {
+      if (!badgeTex) return null;
+      return new THREE.SpriteMaterial({
+        map: badgeTex,
+        transparent: true,
+        depthWrite: false,
+        depthTest: false,
+        sizeAttenuation: true,
+      });
+    }, [badgeTex]);
+
     useEffect(() => {
       return () => {
         edgesGeo.dispose();
@@ -853,26 +864,39 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
 
     useEffect(() => {
       return () => {
+        badgeSpriteMat?.dispose();
         badgeTex?.dispose();
       };
-    }, [badgeTex]);
+    }, [badgeSpriteMat, badgeTex]);
 
-    const badgeStaggerY = (layer.index % 2) * 5.2;
-    const badgeY = topEdgeY + 4.8 + badgeStaggerY;
-    const badgePlate = badgeTex ? (
-      <group position={[centerX, badgeY, 0.35]}>
-        <mesh position={[0, -(2.4 + badgeStaggerY * 0.5), -0.06]}>
-          <boxGeometry args={[0.24, 4.6 + badgeStaggerY, 0.12]} />
-          <meshBasicMaterial color={badgeAccentHex} transparent opacity={0.72} />
+    const badgeStaggerY = (layer.index % 2) * 5.6;
+    const leaderH = 4.8 + badgeStaggerY;
+    const badgeY = topEdgeY + leaderH + 2.2;
+    const badgePlate = badgeSpriteMat ? (
+      <group
+        name={`ArmorLayerBillboard-${layer.index}`}
+        position={[centerX, topEdgeY, 0.25]}
+      >
+        {/* Crisp high-contrast anchor tick & vertical leader connecting top armor edge to billboard */}
+        <mesh position={[0, 0.25, 0]}>
+          <sphereGeometry args={[0.42, 10, 8]} />
+          <meshBasicMaterial color={badgeAccentHex} />
         </mesh>
-        <mesh>
-          <planeGeometry args={[14.5, 5.0]} />
+        <mesh position={[0, leaderH * 0.5, 0]}>
+          <boxGeometry args={[0.2, leaderH, 0.2]} />
           <meshBasicMaterial
-            map={badgeTex}
+            color={badgeAccentHex}
             transparent
-            depthWrite={false}
+            opacity={0.88}
           />
         </mesh>
+        {/* Camera-facing THREE.Sprite billboard: razor-legible from any orbit angle */}
+        <sprite
+          position={[0, badgeY - topEdgeY, 0]}
+          scale={[15.8, 5.4, 1]}
+          material={badgeSpriteMat}
+          renderOrder={14}
+        />
       </group>
     ) : null;
 

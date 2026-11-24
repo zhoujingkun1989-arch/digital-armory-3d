@@ -63,6 +63,12 @@ export const STUDIO_SOFTBOX_REFLECTION_CARDS: Readonly<
       radiance: [2.45, 2.52, 2.64],
     },
     {
+      id: 'front_mid_chrome_ribbon',
+      position: [0, 2.0, 26],
+      scale: [58, 7.5],
+      radiance: [2.65, 2.7, 2.78],
+    },
+    {
       id: 'front_lower_silver_bounce',
       position: [0, -3.6, 26],
       scale: [52, 9],
@@ -73,6 +79,12 @@ export const STUDIO_SOFTBOX_REFLECTION_CARDS: Readonly<
       position: [-4, 6.2, -26],
       scale: [54, 11],
       radiance: [2.25, 2.34, 2.48],
+    },
+    {
+      id: 'rear_mid_chrome_ribbon',
+      position: [0, 2.0, -26],
+      scale: [58, 7.5],
+      radiance: [2.35, 2.4, 2.5],
     },
     {
       id: 'rear_lower_silver_bounce',
@@ -107,6 +119,12 @@ export const STUDIO_SOFTBOX_REFLECTION_CARDS: Readonly<
       radiance: [2.22, 2.18, 2.1],
     },
     {
+      id: 'front_mid_chrome_ribbon',
+      position: [0, 2.0, 26],
+      scale: [58, 7.5],
+      radiance: [2.38, 2.36, 2.32],
+    },
+    {
       id: 'front_lower_silver_bounce',
       position: [0, -3.6, 26],
       scale: [52, 9],
@@ -117,6 +135,12 @@ export const STUDIO_SOFTBOX_REFLECTION_CARDS: Readonly<
       position: [-4, 6.2, -26],
       scale: [54, 11],
       radiance: [2.05, 2.12, 2.24],
+    },
+    {
+      id: 'rear_mid_chrome_ribbon',
+      position: [0, 2.0, -26],
+      scale: [58, 7.5],
+      radiance: [2.16, 2.18, 2.24],
     },
     {
       id: 'rear_lower_silver_bounce',

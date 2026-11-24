@@ -153,6 +153,51 @@ function smoothAlpha(edge0: number, edge1: number, x: number): number {
 }
 
 /**
+ * Strict upper-hemisphere margin (px): any part anchor projecting clearly above
+ * `weaponMidY - UPPER_HEMISPHERE_LOCK_MARGIN_PX` is strictly locked into the upper
+ * hemisphere (`'top'`) so its leader line NEVER crosses downward through the firearm
+ * or tank silhouette (e.g. AK-15 recoil spring, ZTZ-99A CITV roof sight).
+ */
+export const UPPER_HEMISPHERE_LOCK_MARGIN_PX = 24;
+
+export function resolveStrictCalloutHemisphere(
+  anchorY: number,
+  weaponMidY: number,
+  preferredDir: 'up' | 'down'
+): 'top' | 'bottom' {
+  if (anchorY < weaponMidY - UPPER_HEMISPHERE_LOCK_MARGIN_PX) {
+    return 'top';
+  }
+  if (anchorY > weaponMidY + UPPER_HEMISPHERE_LOCK_MARGIN_PX) {
+    return 'bottom';
+  }
+  return preferredDir === 'up' ? 'top' : 'bottom';
+}
+
+export function enforceUpperHemisphereClamp(
+  anchorY: number,
+  weaponMidY: number,
+  candidateY: number,
+  absMinY: number,
+  clearPad = 18
+): { hemisphere: 'top' | 'bottom'; clampedY: number; lockedUpper: boolean } {
+  const lockedUpper = anchorY < weaponMidY - UPPER_HEMISPHERE_LOCK_MARGIN_PX;
+  if (!lockedUpper) {
+    return {
+      hemisphere: candidateY < weaponMidY ? 'top' : 'bottom',
+      clampedY: candidateY,
+      lockedUpper: false,
+    };
+  }
+  const maxUpperY = Math.max(absMinY, weaponMidY - clearPad);
+  return {
+    hemisphere: 'top',
+    clampedY: Math.max(absMinY, Math.min(candidateY, maxUpperY)),
+    lockedUpper: true,
+  };
+}
+
+/**
  * Resolves the callout hemisphere ('up' vs 'down') from the anchor's vertical
  * position relative to the weapon's projected vertical centroid (`weaponMidY`).
  * Upper parts (e.g. tank CITV roof sights, top rails, scopes) always prefer the
@@ -312,6 +357,7 @@ const relaxAnchorX = new Float64Array(MAX_RELAX_SLOTS);
 const relaxAnchorY = new Float64Array(MAX_RELAX_SLOTS);
 const relaxMinX = new Float64Array(MAX_RELAX_SLOTS);
 const relaxMaxX = new Float64Array(MAX_RELAX_SLOTS);
+const relaxLockedUpper = new Uint8Array(MAX_RELAX_SLOTS);
 
 const DX_CANDIDATES = [
   0, -24, 24, -50, 50, -80, 80, -114, 114, -152, 152, -194, 194, -240, 240,
@@ -741,25 +787,31 @@ export function updateCalloutOverlay60fps(
       ? viewportH - Math.max(168, bottomPx)
       : viewportH - 26;
 
-    const dir = resolveCalloutHemisphere(
-      c.sy,
-      weaponMidY,
-      c.part.calloutDir,
-      colTopY,
-      colBotY,
-      minY,
-      approxFloorLimit
-    );
+    const lockedUpper = c.sy < weaponMidY - UPPER_HEMISPHERE_LOCK_MARGIN_PX;
+    const dir = lockedUpper
+      ? 'up'
+      : resolveCalloutHemisphere(
+          c.sy,
+          weaponMidY,
+          c.part.calloutDir,
+          colTopY,
+          colBotY,
+          minY,
+          approxFloorLimit
+        );
 
     const stemScale = isCompact ? 0.8 : 0.96;
     const clearPad = isCompact ? 18 : 24;
+    const maxUpperSlotY = Math.max(absMinY, weaponMidY - clearPad);
     const idealLy =
       dir === 'up'
         ? Math.min(c.sy - c.part.calloutStem * stemScale, colTopY - clearPad)
         : Math.max(c.sy + c.part.calloutStem * stemScale, colBotY + clearPad);
 
     let chosenLx = Math.max(absMinX, Math.min(absMaxX, c.sx));
-    let chosenLy = Math.max(absMinY, Math.min(absMaxY, idealLy));
+    let chosenLy = lockedUpper
+      ? Math.max(absMinY, Math.min(maxUpperSlotY, idealLy))
+      : Math.max(absMinY, Math.min(absMaxY, idealLy));
     let bestCost = Infinity;
     let fallbackLx = chosenLx;
     let fallbackLy = chosenLy;
@@ -837,7 +889,7 @@ export function updateCalloutOverlay60fps(
       }
     }
 
-    if (bestCost === Infinity) {
+    if (bestCost === Infinity && !lockedUpper) {
       const altSign = -stepSign;
       for (let dIdx = 0; dIdx < DX_CANDIDATES.length; dIdx++) {
         const candLx = Math.max(
@@ -862,7 +914,10 @@ export function updateCalloutOverlay60fps(
     }
 
     const initLx = bestCost < Infinity ? chosenLx : fallbackLx;
-    const initLy = bestCost < Infinity ? chosenLy : fallbackLy;
+    const rawInitLy = bestCost < Infinity ? chosenLy : fallbackLy;
+    const initLy = lockedUpper
+      ? Math.max(absMinY, Math.min(maxUpperSlotY, rawInitLy))
+      : rawInitLy;
 
     relaxLx[rank] = initLx;
     relaxLy[rank] = initLy;
@@ -871,6 +926,7 @@ export function updateCalloutOverlay60fps(
     relaxAnchorY[rank] = c.sy;
     relaxMinX[rank] = absMinX;
     relaxMaxX[rank] = absMaxX;
+    relaxLockedUpper[rank] = lockedUpper ? 1 : 0;
 
     let slotBox = placedBoxPool[placedCount];
     if (!slotBox) {
@@ -894,6 +950,7 @@ export function updateCalloutOverlay60fps(
   const minGapX = isCompact ? 8 : 11;
   const minGapY = isCompact ? 5.5 : 7.5;
   const halfH = labelH * 0.5;
+  const upperClampMaxY = Math.max(absMinY, weaponMidY - (isCompact ? 18 : 24));
 
   for (let iter = 0; iter < RELAX_ITERATIONS; iter++) {
     let anyOverlap = false;
@@ -962,8 +1019,10 @@ export function updateCalloutOverlay60fps(
 
         relaxLx[i] = Math.max(relaxMinX[i], Math.min(relaxMaxX[i], relaxLx[i]));
         relaxLx[j] = Math.max(relaxMinX[j], Math.min(relaxMaxX[j], relaxLx[j]));
-        relaxLy[i] = Math.max(absMinY, Math.min(absMaxY, relaxLy[i]));
-        relaxLy[j] = Math.max(absMinY, Math.min(absMaxY, relaxLy[j]));
+        const maxYi = relaxLockedUpper[i] ? upperClampMaxY : absMaxY;
+        const maxYj = relaxLockedUpper[j] ? upperClampMaxY : absMaxY;
+        relaxLy[i] = Math.max(absMinY, Math.min(maxYi, relaxLy[i]));
+        relaxLy[j] = Math.max(absMinY, Math.min(maxYj, relaxLy[j]));
       }
     }
 
@@ -994,12 +1053,13 @@ export function updateCalloutOverlay60fps(
           let nextX = lx;
           let nextY = ly;
 
+          const maxAllowedY = relaxLockedUpper[i] ? upperClampMaxY : absMaxY;
           if (escUp >= absMinY && Math.abs(escUp - ly) < bestShift) {
             bestShift = Math.abs(escUp - ly);
             nextX = lx;
             nextY = escUp;
           }
-          if (escDown <= absMaxY && Math.abs(escDown - ly) < bestShift) {
+          if (escDown <= maxAllowedY && Math.abs(escDown - ly) < bestShift) {
             bestShift = Math.abs(escDown - ly);
             nextX = lx;
             nextY = escDown;
@@ -1015,7 +1075,7 @@ export function updateCalloutOverlay60fps(
           }
 
           relaxLx[i] = Math.max(relaxMinX[i], Math.min(relaxMaxX[i], nextX));
-          relaxLy[i] = Math.max(absMinY, Math.min(absMaxY, nextY));
+          relaxLy[i] = Math.max(absMinY, Math.min(maxAllowedY, nextY));
         }
       }
     }
