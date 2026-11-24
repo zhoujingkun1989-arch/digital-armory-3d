@@ -23,6 +23,14 @@ export interface KeyboardShortcutGroupSpec {
   items: readonly KeyboardShortcutEntry[];
 }
 
+export interface KeyboardPowerToolEntry {
+  id: string;
+  accessZh: string;
+  accessEn: string;
+  labelZh: string;
+  labelEn: string;
+}
+
 export const KEYBOARD_SHORTCUT_GROUPS: readonly KeyboardShortcutGroupSpec[] = [
   {
     id: 'viewport',
@@ -30,8 +38,8 @@ export const KEYBOARD_SHORTCUT_GROUPS: readonly KeyboardShortcutGroupSpec[] = [
       {
         id: 'section-cut',
         keys: ['C'],
-        labelZh: '切换 1:1 实时 CT 纵剖面与滑条',
-        labelEn: 'Toggle 1:1 Live CT Section Cutaway',
+        labelZh: '切换三轴实时 CT 纵剖、3D 剖切盒与膛线剖视',
+        labelEn: 'Toggle 3-Axis CT Cutaway, 3D Slice Box & Bore Rifling',
       },
       {
         id: 'xray',
@@ -60,14 +68,14 @@ export const KEYBOARD_SHORTCUT_GROUPS: readonly KeyboardShortcutGroupSpec[] = [
       {
         id: 'hud-hidden',
         keys: ['H'],
-        labelZh: '纯净展陈模式（隐藏/恢复 HUD）',
+        labelZh: '纯净展陈模式（隐藏 / 恢复 HUD）',
         labelEn: 'Hide / Restore UI for Clean Showcase',
       },
       {
         id: 'sfx-mute',
         keys: ['M'],
-        labelZh: '静音或开启实弹与机械声场',
-        labelEn: 'Mute / Unmute Ballistic & Mechanical SFX',
+        labelZh: '静音 / 开启声场（点顶栏音效键打开声学试听台）',
+        labelEn: 'Mute / Unmute SFX (Header SFX Chip Opens Acoustic Deck)',
       },
     ],
   },
@@ -83,8 +91,8 @@ export const KEYBOARD_SHORTCUT_GROUPS: readonly KeyboardShortcutGroupSpec[] = [
       {
         id: 'field-strip',
         keys: ['G'],
-        labelZh: '开启 / 退出军械师亲手快拆模式',
-        labelEn: 'Toggle Hands-On Guided Field-Strip',
+        labelZh: '开启 / 退出野战快拆与全枪精拆 DAG 实操',
+        labelEn: 'Toggle Guided Field-Strip & Detail-Strip DAG',
       },
       {
         id: 'malfunction',
@@ -101,8 +109,8 @@ export const KEYBOARD_SHORTCUT_GROUPS: readonly KeyboardShortcutGroupSpec[] = [
       {
         id: 'attachments',
         keys: ['O'],
-        labelZh: '开启 / 关闭模块化光学与枪口改装台',
-        labelEn: 'Toggle Modular Optics & Muzzle Bench',
+        labelZh: '开启 / 关闭物理耦合模块化光学与枪口改装台',
+        labelEn: 'Toggle Modular Optics & Muzzle Mods Bench',
       },
       {
         id: 'reset-workbench',
@@ -134,6 +142,12 @@ export const KEYBOARD_SHORTCUT_GROUPS: readonly KeyboardShortcutGroupSpec[] = [
         labelEn: 'Retract Bolt / Slide for Press-Check',
       },
       {
+        id: 'mechanism-showdown',
+        keys: ['S'],
+        labelZh: '枪库页呼出 9×9×9 原理流派对照矩阵',
+        labelEn: 'Open Mechanism Lineage Matrix & Showdown (Armory)',
+      },
+      {
         id: 'cartridge-lab',
         keys: ['B'],
         labelZh: '进入 1:1 实弹与坦克炮弹纵剖馆',
@@ -143,7 +157,7 @@ export const KEYBOARD_SHORTCUT_GROUPS: readonly KeyboardShortcutGroupSpec[] = [
         id: 'ballistics-range',
         keys: ['R'],
         labelZh: '进入 1,000m 三维实弹靶场与外弹道',
-        labelEn: 'Open 1,000m 3D External Ballistics Range',
+        labelEn: 'Open 1,000m 3D Proving Ground & Ballistics Range',
       },
       {
         id: 'poster-share',
@@ -159,8 +173,8 @@ export const KEYBOARD_SHORTCUT_GROUPS: readonly KeyboardShortcutGroupSpec[] = [
       {
         id: 'command-palette',
         keys: ['⌘ / Ctrl', 'K'],
-        labelZh: '呼出全局双语瞬搜指令面板',
-        labelEn: 'Open Global Instant Command Palette',
+        labelZh: '全局双语瞬搜（直达 34 展品、854 零件与全部实验室）',
+        labelEn: 'Global Bilingual Search (34 Exhibits, 854 Parts & All Labs)',
       },
       {
         id: 'shortcuts-help',
@@ -171,8 +185,8 @@ export const KEYBOARD_SHORTCUT_GROUPS: readonly KeyboardShortcutGroupSpec[] = [
       {
         id: 'monograph-print',
         keys: ['⌘ / Ctrl', 'P'],
-        labelZh: '呼出收藏级图鉴与绘本打印工坊',
-        labelEn: 'Open Collector Monograph Print Studio',
+        labelZh: '呼出收藏级 17 图版图鉴与绘本打印工坊',
+        labelEn: 'Open 17-Plate Collector Monograph Print Studio',
       },
       {
         id: 'escape',
@@ -181,6 +195,56 @@ export const KEYBOARD_SHORTCUT_GROUPS: readonly KeyboardShortcutGroupSpec[] = [
         labelEn: 'Dismiss Modal, Deselect Part, or Return to Armory',
       },
     ],
+  },
+];
+
+/**
+ * Museum power tools & interactive physics theaters accessible directly via the
+ * Command Palette (`Cmd/Ctrl+K`) or Workbench chrome (listed honestly without
+ * fabricating unimplemented single-key shortcuts).
+ */
+export const KEYBOARD_POWER_TOOLS: readonly KeyboardPowerToolEntry[] = [
+  {
+    id: 'slow-mo-cinema',
+    accessZh: '底栏 / ⌘K',
+    accessEn: 'Dock / ⌘K',
+    labelZh: '一键慢放剖视大片演示（0.25× CT 击发）',
+    labelEn: 'Slow-Mo Cutaway Cinema Demo (0.25× CT Firing)',
+  },
+  {
+    id: 'acoustic-deck',
+    accessZh: '顶栏音效键',
+    accessEn: 'Header SFX',
+    labelZh: '军械声学空间切换与 3 路机械音效试听台',
+    labelEn: 'Acoustic Studio Deck (Reverb Rooms & Live Foley)',
+  },
+  {
+    id: 'scale-wall',
+    accessZh: '⌘K · 实验室',
+    accessEn: '⌘K · Labs',
+    labelZh: '1:1 真实尺度对比墙（全馆 34 展品）',
+    labelEn: '1:1 True-Scale Museum Wall (All 34 Exhibits)',
+  },
+  {
+    id: 'recoil-lab',
+    accessZh: '⌘K · 实验室',
+    accessEn: '⌘K · Labs',
+    labelZh: '后坐冲量、燃气动量与枪口上跳实验室',
+    labelEn: 'Recoil Impulse, Gas-Jet & Muzzle-Climb Lab',
+  },
+  {
+    id: 'armor-theater',
+    accessZh: '⌘K · 实验室',
+    accessEn: '⌘K · Labs',
+    labelZh: '1:1 复合装甲三维慢动作穿甲剧场',
+    labelEn: '1:1 3D Composite Armor Penetration Theater',
+  },
+  {
+    id: 'copy-deep-link',
+    accessZh: '工具菜单 / ⌘K',
+    accessEn: 'Tools / ⌘K',
+    labelZh: '一键复制当前精确 3D 剖切与改装直达链接',
+    labelEn: 'Copy Exact 3D View Deep-Link (Slice / Mods / Part)',
   },
 ];
 
@@ -280,6 +344,34 @@ export const KeyboardShortcutsModal: React.FC<KeyboardShortcutsModalProps> = ({
               </ul>
             </section>
           ))}
+
+          <section
+            className="kb-shortcuts-group kb-power-tools-group"
+            data-testid="kb-power-tools-section"
+            aria-label={
+              lang === 'en'
+                ? 'Quick-Access Physics Labs and Power Tools'
+                : '快捷物理剧场与工程工具入口'
+            }
+          >
+            <h3 className="kb-shortcuts-group-title">
+              {lang === 'en'
+                ? 'Quick-Access Labs & Power Tools (via ⌘/Ctrl+K or Toolbar)'
+                : '快捷物理剧场与工程工具（通过 ⌘/Ctrl+K 或工具栏直达）'}
+            </h3>
+            <ul className="kb-power-tools-grid">
+              {KEYBOARD_POWER_TOOLS.map((tool) => (
+                <li key={tool.id} className="kb-shortcuts-row">
+                  <span className="kb-shortcuts-desc">
+                    {lang === 'en' ? tool.labelEn : tool.labelZh}
+                  </span>
+                  <span className="kb-access-pill">
+                    {lang === 'en' ? tool.accessEn : tool.accessZh}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </section>
         </div>
 
         <div className="kb-shortcuts-footer">

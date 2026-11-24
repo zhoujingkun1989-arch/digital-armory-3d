@@ -1390,3 +1390,41 @@
   color: #b45309;
   border-color: rgba(180, 83, 9, 0.38);
 }
+
+/* Cycle 9C: Armory Plaque Bore & Rifling Spec Row */
+.plaque-rifling-cell {
+  border-color: rgba(56, 189, 248, 0.24);
+  background: rgba(14, 165, 233, 0.06);
+}
+
+.plaque-rifling-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.plaque-rifling-meta {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--color-accent-cyan-text);
+}
+
+.plaque-rifling-value {
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+:is([data-theme='light'], .theme-light) .plaque-rifling-cell {
+  background: #f0f9ff;
+  border-color: rgba(2, 132, 199, 0.24);
+}
+
+:is([data-theme='light'], .theme-light) .plaque-rifling-meta {
+  color: #0369a1;
+}
+
+:is([data-theme='light'], .theme-light) .plaque-rifling-value {
+  color: #0f172a;
+}

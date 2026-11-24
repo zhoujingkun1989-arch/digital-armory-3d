@@ -13,6 +13,7 @@ import {
   Minimize2,
   Pause,
   Play,
+  Scissors,
   ShieldCheck,
   Volume2,
   VolumeX,
@@ -22,7 +23,14 @@ import {
   getWeaponBespokeAcousticSignature,
   playWorkbenchFoley,
 } from '../../engine/audio/mechanicalSoundEngine';
-import { useActiveFiringPhase } from '../../engine/clock/playbackClock';
+import {
+  WEAPON_RIFLING_SPECS,
+  type RiflingKind,
+} from '../../engine/ballistics/riflingSpecs';
+import {
+  playbackClock,
+  useActiveFiringPhase,
+} from '../../engine/clock/playbackClock';
 import {
   getCachedPartGeometry,
   subscribeGeometryStatus,
@@ -46,6 +54,7 @@ import {
   useNarrationAudioPlayer,
 } from '../../narration/audioPlayer';
 import { useWeaponNarration } from '../../narration/narrationService';
+import type { LanguageCode } from '../../narration/types';
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
 import {
@@ -80,21 +89,67 @@ const MATERIAL_SWATCH_MAP: Readonly<Record<MaterialKind, string>> = {
   copper_accent: '#d97706',
 };
 
+const RIFLING_KIND_LABELS: Readonly<
+  Record<Exclude<RiflingKind, 'none'>, { zh: string; en: string }>
+> = {
+  cut_rifled: { zh: '切削/冷锻膛线', en: 'Rifled Bore' },
+  polygonal: { zh: '多边形膛线', en: 'Polygonal Rifling' },
+  smoothbore: { zh: '镜面滑膛', en: 'Smoothbore' },
+};
+
+const BARREL_PART_EN_RE = /barrel|bore|chamber|tube|cannon|gun|muzzle/i;
+const BARREL_PART_ZH_RE = /枪管|炮管|身管|内膛|弹膛|主炮/;
+
+export function isBarrelOrBorePart(part: {
+  id: string;
+  nameEn: string;
+  nameZh: string;
+}): boolean {
+  return (
+    BARREL_PART_EN_RE.test(part.id) ||
+    BARREL_PART_EN_RE.test(part.nameEn) ||
+    BARREL_PART_ZH_RE.test(part.nameZh)
+  );
+}
+
+/**
+ * 1-click Z-axis longitudinal CT cutaway helper that immediately collapses any
+ * exploded separation so the Cycle 8E 3D helical rifling bore liner is revealed.
+ */
+export function activateBoreRiflingCutaway(): void {
+  const store = useAppStore.getState();
+  playWorkbenchFoley('preset_detent');
+  store.setSectionCutAxis('z');
+  store.resetSectionCutOffset();
+  if (
+    store.mode === 'explode' &&
+    (playbackClock.getState().targetProgress > 0.02 ||
+      playbackClock.getState().animatedProgress > 0.02)
+  ) {
+    store.setTargetProgress(0);
+    playbackClock.setTargetProgress(0, true);
+  }
+  store.setSectionCut(true);
+}
+
 export interface PartInspectorCardProps {
   /** Optional overrides for SSR/unit testing; runtime reads directly from `useAppStore`. */
   weaponIdOverride?: WeaponId;
   partIdOverride?: string | null;
   modeOverride?: 'explode' | 'firing';
+  langOverride?: LanguageCode;
 }
 
 export const PartInspectorCard: React.FC<PartInspectorCardProps> = ({
   weaponIdOverride,
   partIdOverride,
   modeOverride,
+  langOverride,
 }) => {
   const storeWeaponId = useAppStore((s) => s.activeWeaponId);
   const activeWeaponId = weaponIdOverride ?? storeWeaponId;
-  const lang = useAppStore((s) => s.lang);
+  const storeLang = useAppStore((s) => s.lang);
+  const lang = langOverride ?? storeLang;
   const environmentPreset = useAppStore((s) => s.environmentPreset);
   const autoPlayPartAudio = useAppStore((s) => s.autoPlayPartAudio);
   const toggleAutoPlayPartAudio = useAppStore((s) => s.toggleAutoPlayPartAudio);
@@ -324,6 +379,8 @@ export const PartInspectorCard: React.FC<PartInspectorCardProps> = ({
   const suggestedRivalId = getSuggestedRivalWeaponId(activeWeaponId) as WeaponId;
   const rivalShortLabel = getWeaponManifest(suggestedRivalId).shortLabel;
   const bespokeAcoustics = getWeaponBespokeAcousticSignature(activeWeaponId);
+  const riflingSpec = WEAPON_RIFLING_SPECS[activeWeaponId];
+  const isBarrelFocus = isBarrelOrBorePart(part);
 
   const handleOpenSplitShowdown = () => {
     playWorkbenchFoley('preset_detent');
@@ -333,6 +390,10 @@ export const PartInspectorCard: React.FC<PartInspectorCardProps> = ({
   const handleOpenRecoilLab = () => {
     playWorkbenchFoley('preset_detent');
     useAppStore.getState().openRecoilLab();
+  };
+
+  const handleTriggerBoreCutaway = () => {
+    activateBoreRiflingCutaway();
   };
 
   const trackKey = `part:${activeWeaponId}:${lang}:${part.id}`;
@@ -617,6 +678,59 @@ export const PartInspectorCard: React.FC<PartInspectorCardProps> = ({
           <div className="part-description">{part.description}</div>
         )}
       </div>
+
+      {riflingSpec.kind !== 'none' && (
+        <div
+          className={`inspector-rifling-card ${
+            isBarrelFocus ? 'is-barrel-highlight' : ''
+          }`}
+          data-testid="inspector-rifling-badge"
+          data-rifling-kind={riflingSpec.kind}
+          data-barrel-focus={isBarrelFocus ? 'true' : 'false'}
+        >
+          <div className="inspector-rifling-top">
+            <span className="inspector-rifling-kicker">
+              {lang === 'en' ? 'Bore & Rifling' : '膛线与内膛'}
+            </span>
+            <div className="inspector-rifling-tags">
+              <span className="inspector-rifling-chip">
+                {RIFLING_KIND_LABELS[riflingSpec.kind][lang]}
+              </span>
+              <span className="inspector-rifling-chip is-mono">
+                Ø{riflingSpec.boreDiameterMm} mm
+              </span>
+              {riflingSpec.chromeLined && (
+                <span className="inspector-rifling-chip is-chrome">
+                  {lang === 'en' ? 'Chrome-Lined' : '硬铬内膛'}
+                </span>
+              )}
+            </div>
+          </div>
+          <div className="inspector-rifling-bottom">
+            <span
+              className="inspector-rifling-label"
+              title={lang === 'en' ? riflingSpec.labelEn : riflingSpec.labelZh}
+            >
+              {lang === 'en' ? riflingSpec.labelEn : riflingSpec.labelZh}
+            </span>
+            <button
+              type="button"
+              className="inspector-bore-cutaway-btn"
+              data-testid="inspector-bore-cutaway-btn"
+              onClick={handleTriggerBoreCutaway}
+              title={
+                lang === 'en'
+                  ? 'Activate Z-axis CT longitudinal cutaway to inspect 3D helical rifling bore ([C])'
+                  : '一键开启 Z 轴纵剖面并合拢枪身，直视 3D 螺旋膛线与内膛结构 ([C])'
+              }
+            >
+              <Scissors size={11} aria-hidden="true" />
+              <span>{lang === 'en' ? 'Bore Cutaway' : '膛线纵剖'}</span>
+              <kbd className="inspector-kbd-hint">C</kbd>
+            </button>
+          </div>
+        </div>
+      )}
 
       {bespokeAcoustics && (
         <div
