@@ -1,8 +1,13 @@
 import {
+  WEAPON_RIFLING_SPECS,
+  type RiflingKind,
+} from '../../engine/ballistics/riflingSpecs';
+import {
   archeryProjectileToLabSpec,
   CARTRIDGE_LAB_SPECS,
   getArcheryProjectileMeta,
 } from '../../engine/cartridges/cartridgeSpecs';
+import { getGlossaryTermsForWeapon } from '../../engine/encyclopedia/engineeringGlossary';
 import {
   computePeakPressureF,
   computeSafeUnlockF,
@@ -192,6 +197,16 @@ export interface PosterMetrologyCell {
   subValue: string;
 }
 
+export interface PosterRiflingMetrology {
+  kind: RiflingKind;
+  /** Compact bore & rifling (or compound cam) metrology stamp for 3D poster stage & modal header */
+  stampLabel: string;
+  /** Authoritative bilingual rifling / propulsion specification */
+  detailLabel: string;
+  /** Concise top engineering principles from the 28-term encyclopedia */
+  principlesLabel: string;
+}
+
 export interface BallisticCurveSample {
   f: number;
   pressureNorm: number;
@@ -211,6 +226,7 @@ export interface PosterComposedMetadata {
   exhibitCategory: string;
   isArchery: boolean;
   isHeavyScale: boolean;
+  riflingMetrology: PosterRiflingMetrology;
   modeBadges: { label: string; highlight: boolean }[];
   metrologyCells: [
     PosterMetrologyCell,
@@ -244,7 +260,7 @@ function isArmorerRank(val: unknown): val is PosterArmorerRank {
 }
 
 /**
- * Safely inspects persisted WP-13 Armorer Qualification Exam records in `localStorage`
+ * Safely inspects persisted Armorer Qualification Exam records in `localStorage`
  * (`digital-armory-v2-exam-certs`) if present, returning the highest earned rank for `weaponId`.
  */
 export function readSavedArmorerRank(
@@ -358,6 +374,67 @@ export function computePosterLayout(
     curveRect: { x: pad + 1060, y: 726, w: 368, h: 268 },
     qrRect: { x: pad + 1448, y: 726, w: 384, h: 268 },
     footerRect: { x: pad, y: 1004, w: innerW, h: 32 },
+  };
+}
+
+/**
+ * Formats an exhibit's authoritative Bore & Rifling specification (from
+ * `WEAPON_RIFLING_SPECS`) and core engineering principles (from the 28-term
+ * encyclopedia) into concise, zero-CJK-in-EN poster metrology stamps.
+ *
+ * Non-rifled archery exhibits (`lift33`, `r500`) display their authentic
+ * compound/helical cam propulsion spec rather than firearm rifling data.
+ */
+export function formatPosterRiflingMetrology(
+  weaponId: WeaponId,
+  lang: LanguageCode
+): PosterRiflingMetrology {
+  const spec = WEAPON_RIFLING_SPECS[weaponId];
+  const isZh = lang === 'zh';
+  const detailLabel = isZh ? spec.labelZh : spec.labelEn;
+
+  let stampLabel: string;
+  if (spec.kind === 'none') {
+    if (weaponId === 'lift33') {
+      stampLabel = isZh
+        ? '复合弓滑轮 · SwitchWeight-X 凸轮 · 下落式箭台'
+        : 'COMPOUND CAM · SWITCHWEIGHT-X · DROP-AWAY REST';
+    } else if (weaponId === 'r500') {
+      stampLabel = isZh
+        ? '螺旋凸轮复合弩 · Versa-Drive 驱动 · 悬浮箭轨'
+        : 'HELICAL CAM · VERSA-DRIVE · FRICTIONLESS RAIL';
+    } else {
+      stampLabel = detailLabel;
+    }
+  } else if (spec.kind === 'smoothbore') {
+    stampLabel = isZh
+      ? `内膛 Ø${spec.boreDiameterMm}mm · 滑膛身管${spec.chromeLined ? ' · 镜面硬铬' : ''}`
+      : `BORE Ø${spec.boreDiameterMm}mm · SMOOTHBORE${spec.chromeLined ? ' · HARD-CHROME' : ''}`;
+  } else if (spec.kind === 'polygonal') {
+    const dirZh = spec.direction === 'LH' ? '左旋' : '右旋';
+    stampLabel = isZh
+      ? `内膛 Ø${spec.boreDiameterMm}mm · ${spec.grooves}边多边形膛线 1:${spec.twistInches}" (${spec.twistMm}mm) ${dirZh}${spec.chromeLined ? ' · 镀铬' : ''}`
+      : `BORE Ø${spec.boreDiameterMm}mm · ${spec.grooves}-POLYGONAL 1:${spec.twistInches}" (${spec.twistMm}mm) ${spec.direction}${spec.chromeLined ? ' · CHROME' : ''}`;
+  } else {
+    const dirZh = spec.direction === 'LH' ? '左旋' : '右旋';
+    stampLabel = isZh
+      ? `内膛 Ø${spec.boreDiameterMm}mm · ${spec.grooves}条${dirZh}膛线 1:${spec.twistInches}" (${spec.twistMm}mm)${spec.chromeLined ? ' · 镀铬' : ''}`
+      : `BORE Ø${spec.boreDiameterMm}mm · ${spec.grooves}G 1:${spec.twistInches}" (${spec.twistMm}mm) ${spec.direction}${spec.chromeLined ? ' · CHROME' : ''}`;
+  }
+
+  const principles = getGlossaryTermsForWeapon(weaponId)
+    .slice(0, 2)
+    .map((term) => (isZh ? term.termZh : term.termEn));
+  const principlesLabel =
+    principles.length > 0
+      ? `${isZh ? '核心原理' : 'PRINCIPLES'} · ${principles.join(' · ')}`
+      : '';
+
+  return {
+    kind: spec.kind,
+    stampLabel,
+    detailLabel,
+    principlesLabel,
   };
 }
 
@@ -576,6 +653,7 @@ export function assemblePosterMetadata(
 
   const deepLinkUrl = buildPosterDeepLinkUrl(weaponId, deepLinkOptions);
   const qrMatrix = encodeQrMatrix(deepLinkUrl);
+  const riflingMetrology = formatPosterRiflingMetrology(weaponId, lang);
 
   return {
     weaponId,
@@ -590,6 +668,7 @@ export function assemblePosterMetadata(
     exhibitCategory: catalog.category,
     isArchery,
     isHeavyScale,
+    riflingMetrology,
     modeBadges,
     metrologyCells,
     curveTitle: isArchery
@@ -1492,6 +1571,64 @@ export function renderPosterToCanvas(opts: RenderPosterOptions): void {
   ctx.textAlign = 'left';
   ctx.textBaseline = 'middle';
   ctx.fillText(scaleTag, sr.x + 35, sr.y + 35.5);
+
+  // Bore & Rifling (or Compound Cam) Metrology Stamp + Core Engineering Principles below Scale Tag
+  const maxStageStampW = Math.max(240, sr.w - 316);
+  const boreStampText = metadata.riflingMetrology.stampLabel;
+  if (boreStampText) {
+    fitFontToWidth(
+      ctx,
+      boreStampText,
+      maxStageStampW - 24,
+      700,
+      11,
+      7.5,
+      MONO_STACK
+    );
+    const boreW = Math.min(
+      maxStageStampW,
+      ctx.measureText(boreStampText).width + 22
+    );
+    drawRoundedRect(ctx, sr.x + 24, sr.y + 54, boreW, 25, 6);
+    ctx.fillStyle = isSmithsonian
+      ? 'rgba(6, 20, 40, 0.84)'
+      : 'rgba(8, 13, 22, 0.78)';
+    ctx.fill();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = theme.accentPrimary;
+    ctx.stroke();
+    ctx.fillStyle = isSmithsonian ? '#e5c158' : '#fde68a';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(boreStampText, sr.x + 35, sr.y + 66.8);
+  }
+
+  const principlesStampText = metadata.riflingMetrology.principlesLabel;
+  if (principlesStampText) {
+    fitFontToWidth(
+      ctx,
+      principlesStampText,
+      maxStageStampW - 24,
+      600,
+      10.5,
+      7.0,
+      SANS_STACK
+    );
+    const prinW = Math.min(
+      maxStageStampW,
+      ctx.measureText(principlesStampText).width + 22
+    );
+    drawRoundedRect(ctx, sr.x + 24, sr.y + 84, prinW, 23, 6);
+    ctx.fillStyle = 'rgba(8, 13, 22, 0.72)';
+    ctx.fill();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(148, 163, 184, 0.28)';
+    ctx.stroke();
+    ctx.fillStyle = '#cbd5e1';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(principlesStampText, sr.x + 35, sr.y + 95.8);
+  }
 
   // Optional Armorer Qualification Rank Seal (`S / A / B / C`) in Top-Right of Stage
   if (metadata.armorerRank && metadata.armorerRankTitle) {
