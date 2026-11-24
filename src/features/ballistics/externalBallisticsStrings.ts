@@ -474,8 +474,7 @@ export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
     backTitle: 'Return to 3D Armory Exhibition Vault',
     badge: '1,000M PROVING GROUND · RK4',
     title: '1,000m External Ballistics & 3D Range',
-    subtitle:
-      '4th-Order Runge-Kutta 3-DOF Point-Mass Solver · G1/G7 Transonic Wave Drag · FFP Christmas-Tree Reticle & Sniper DOPE Card',
+    subtitle: 'RK4 3-DOF Solver · G1/G7 Wave Drag · FFP Reticle & DOPE',
     dopeJumpBtn: 'DOPE Card',
     dopeJumpTitle: 'Scroll to multi-range quantitative Sniper DOPE Drop Card',
 

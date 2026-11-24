@@ -431,7 +431,7 @@
   position: absolute;
   top: var(--hud-top-offset, 86px);
   right: 14px;
-  width: min(780px, calc(100vw - 404px));
+  width: min(1340px, calc(100vw - 404px));
   max-height: calc(100vh - var(--hud-top-offset, 86px) - var(--hud-bottom-offset, 118px));
   display: flex;
   flex-direction: column;
@@ -504,7 +504,7 @@
 
 .cartridge-comparison-table th,
 .cartridge-comparison-table td {
-  padding: 8px 10px;
+  padding: 7px 8px;
   border-bottom: 1px solid var(--border-subtle);
   text-align: left;
   white-space: nowrap;
@@ -602,6 +602,8 @@
     font-size: 10.5px;
     font-weight: 700;
     color: var(--color-text-muted);
+    margin-right: 8px;
+    flex-shrink: 0;
   }
 
   .cartridge-comparison-table td[data-col='standard']::before {
@@ -615,6 +617,9 @@
   }
   .cartridge-comparison-table td[data-col='projectile']::before {
     content: var(--col-projectile);
+  }
+  .cartridge-comparison-table td[data-col='sd']::before {
+    content: var(--col-sd, 'SD');
   }
   .cartridge-comparison-table td[data-col='pressure']::before {
     content: var(--col-pressure);
@@ -1183,10 +1188,6 @@
 .c-sort-icon.is-active {
   opacity: 1;
   color: var(--color-accent-cyan);
-}
-
-.cartridge-comparison-table td[data-col='sd']::before {
-  content: var(--col-sd, 'SD');
 }
 
 @media (max-width: 768px) {
