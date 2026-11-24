@@ -13,6 +13,7 @@ import {
   getActiveWeaponAttachmentPhysics,
   getWeaponAttachmentLoadout,
 } from '../attachments/attachmentStore';
+import { computeRiflingBoreBounds } from '../ballistics/riflingSpecs';
 import { playbackClock } from '../clock/playbackClock';
 import { WEAPON_GAS_MANIFOLD_PROFILES } from '../materials/engineeringRoles';
 import {
@@ -22,6 +23,7 @@ import {
   getArmoryPhysicsState,
   getWeaponFiringTiming,
 } from '../physics/armoryPhysics';
+import { RIFLING_EXPLODE_VISIBILITY_MAX } from './RiflingBoreActor';
 
 const STREAM_CHEVRON_COUNT = 24;
 const SUPP_VORTEX_SLOTS = [0, 1, 2, 3, 4] as const;
@@ -38,6 +40,62 @@ const TAKEDOWN_MAT_FLOOR_OFFSET_Y = 0.45;
 
 export const THERMAL_MIRAGE_HEAT_THRESHOLD = 0.22;
 export const THERMAL_MIRAGE_RIBBON_COUNT = THERMAL_MIRAGE_SLOTS.length;
+
+// Cycle 15A: Matt Rittman In-Bore Propellant Deflagration & Boxer Primer Flash constants
+export const IN_BORE_RADIUS_CLEARANCE_SCALE = 0.88;
+export const IN_BORE_TEMP_PEAK_K = 3200;
+export const IN_BORE_TEMP_EXPANSION_K = 1900;
+export const IN_BORE_TEMP_EMBER_K = 1150;
+export const IN_BORE_PRIMER_WINDOW_PRE_F = 0.008;
+export const IN_BORE_PRIMER_WINDOW_POST_F = 0.056;
+export const IN_BORE_BLOWDOWN_TAIL_F = 0.14;
+
+export interface InBoreDeflagrationSample {
+  /** True whenever either Boxer primer flash spark or in-bore plasma column is visible */
+  active: boolean;
+  /** Crisp white-amber Boxer primer ignition burst intensity `[0, 1]` at flash-hole onset */
+  primerFlashIntensity01: number;
+  /** World-space X anchor (cm) of the rear Boxer primer flash-hole spark */
+  primerFlashX: number;
+  /** True while incandescent propellant deflagration plasma occupies the bore */
+  columnActive: boolean;
+  /** World-space breech start X (cm) of the expanding propellant column */
+  columnStartX: number;
+  /** World-space bullet-base end X (cm), clamped strictly inside `[chamberX..muzzleX]` */
+  columnEndX: number;
+  /** Plasma column radius (cm), strictly `boreRadiusCm * 0.88` to clear sliced rifling lands */
+  columnRadiusCm: number;
+  /** Normalized plasma brightness `[0, 1]` coupled directly to `P(t) / P_max` */
+  columnIntensity01: number;
+  /** Physical propellant gas blackbody color temperature in Kelvin (`1,150K..3,200K`) */
+  colorTempK: number;
+  /** Chamber breech anchor X (cm) */
+  chamberX: number;
+  /** Inset rifled muzzle crown anchor X (cm) from `computeRiflingBoreBounds` */
+  muzzleX: number;
+  /** Exact world-space bore centerline Y (cm) */
+  boreY: number;
+  /** Exact world-space bore centerline Z (cm) */
+  boreZ: number;
+}
+
+export function createMutableInBoreDeflagrationSample(): InBoreDeflagrationSample {
+  return {
+    active: false,
+    primerFlashIntensity01: 0,
+    primerFlashX: 0,
+    columnActive: false,
+    columnStartX: 0,
+    columnEndX: 0,
+    columnRadiusCm: 0,
+    columnIntensity01: 0,
+    colorTempK: IN_BORE_TEMP_EMBER_K,
+    chamberX: 0,
+    muzzleX: 0,
+    boreY: 0,
+    boreZ: 0,
+  };
+}
 
 export interface MuzzleShockwaveSample {
   active: boolean;
@@ -332,6 +390,189 @@ export function computeThermalMirageSample(
   return writeThermalMirageSampleInto(weaponId, barrelHeat01, out);
 }
 
+/**
+ * Zero-GC physical blackbody ramp mapping propellant deflagration gas temperature
+ * (`1,150K` soft ember -> `1,900K` burnt orange adiabatic expansion -> `3,200K` incandescent white-gold)
+ * into a reusable `THREE.Color`.
+ */
+export function inBoreColorTempToRgbInto(
+  colorTempK: number,
+  out: THREE.Color
+): THREE.Color {
+  const k = Number.isFinite(colorTempK)
+    ? Math.max(IN_BORE_TEMP_EMBER_K, Math.min(IN_BORE_TEMP_PEAK_K, colorTempK))
+    : IN_BORE_TEMP_EMBER_K;
+  if (k <= IN_BORE_TEMP_EXPANSION_K) {
+    const t = clamp01(
+      (k - IN_BORE_TEMP_EMBER_K) /
+        (IN_BORE_TEMP_EXPANSION_K - IN_BORE_TEMP_EMBER_K)
+    );
+    return out.copy(COL_INBORE_EMBER).lerp(COL_INBORE_ORANGE, t);
+  }
+  const t = clamp01(
+    (k - IN_BORE_TEMP_EXPANSION_K) /
+      (IN_BORE_TEMP_PEAK_K - IN_BORE_TEMP_EXPANSION_K)
+  );
+  return out.copy(COL_INBORE_ORANGE).lerp(COL_INBORE_WHITE_GOLD, t);
+}
+
+/**
+ * Zero-GC evaluator writing Cycle 15A Boxer primer ignition spark and in-bore
+ * propellant deflagration plasma state into `out`.
+ * Strictly inactive when `!isCutawayZ`, when `explodeProgress >= 0.04`, when
+ * `fireProgress <= 0` or outside ignition/bore-transit/blowdown window, or on
+ * unbarreled compound archery (`lift33`, `r500`).
+ */
+export function writeInBoreDeflagrationSampleInto(
+  weaponId: WeaponId,
+  fireProgress: number,
+  pressureRatio01: number,
+  boreTravelRatio01: number,
+  isCutawayZ: boolean,
+  out: InBoreDeflagrationSample,
+  explodeProgress = 0
+): InBoreDeflagrationSample {
+  out.active = false;
+  out.primerFlashIntensity01 = 0;
+  out.primerFlashX = 0;
+  out.columnActive = false;
+  out.columnStartX = 0;
+  out.columnEndX = 0;
+  out.columnRadiusCm = 0;
+  out.columnIntensity01 = 0;
+  out.colorTempK = IN_BORE_TEMP_EMBER_K;
+  out.chamberX = 0;
+  out.muzzleX = 0;
+  out.boreY = 0;
+  out.boreZ = 0;
+
+  if (
+    !isCutawayZ ||
+    !Number.isFinite(explodeProgress) ||
+    explodeProgress >= RIFLING_EXPLODE_VISIBILITY_MAX ||
+    !Number.isFinite(fireProgress) ||
+    fireProgress <= 0
+  ) {
+    return out;
+  }
+
+  const bounds = computeRiflingBoreBounds(weaponId);
+  if (!bounds) {
+    return out;
+  }
+
+  const manifest = getWeaponManifest(weaponId);
+  const chamberX = Math.min(manifest.workbenchMeta.chamberGlowPos[0], bounds.startX);
+  const muzzleX = bounds.endX;
+  const columnRadiusCm = bounds.boreRadiusCm * IN_BORE_RADIUS_CLEARANCE_SCALE;
+  const caseBackOffset = Math.min(
+    bounds.throatLengthCm * 0.45,
+    Math.max(0.18, (bounds.startX - chamberX) * 0.35)
+  );
+  const primerFlashX = chamberX - caseBackOffset;
+
+  out.chamberX = chamberX;
+  out.muzzleX = muzzleX;
+  out.boreY = bounds.boreY;
+  out.boreZ = bounds.boreZ;
+  out.columnRadiusCm = columnRadiusCm;
+  out.primerFlashX = primerFlashX;
+  out.columnStartX = chamberX;
+  out.columnEndX = chamberX;
+
+  const timing = getWeaponFiringTiming(weaponId);
+  const primerStartF = Math.max(
+    0.004,
+    timing.ignitionF - IN_BORE_PRIMER_WINDOW_PRE_F
+  );
+  const primerEndF = timing.ignitionF + IN_BORE_PRIMER_WINDOW_POST_F;
+  const blowdownEndF = Math.min(0.95, timing.muzzleExitF + IN_BORE_BLOWDOWN_TAIL_F);
+
+  if (fireProgress < primerStartF || fireProgress > blowdownEndF) {
+    return out;
+  }
+
+  // 1. Intense crisp white-amber Boxer primer ignition burst at flash-hole onset
+  let primerFlashIntensity01 = 0;
+  if (fireProgress >= primerStartF && fireProgress <= primerEndF) {
+    const primerPeakF = timing.ignitionF + 0.005;
+    if (fireProgress <= primerPeakF) {
+      primerFlashIntensity01 = smoothstep01(
+        primerStartF,
+        primerPeakF,
+        fireProgress
+      );
+    } else {
+      const decayU = clamp01(
+        (fireProgress - primerPeakF) /
+          Math.max(0.015, primerEndF - primerPeakF)
+      );
+      primerFlashIntensity01 = Math.exp(-5.2 * decayU) * (1 - decayU);
+    }
+  }
+
+  // 2. Incandescent propellant deflagration plasma chasing the bullet base down the sliced rifled bore
+  const clampedP = clamp01(Number.isFinite(pressureRatio01) ? pressureRatio01 : 0);
+  const clampedTravel = clamp01(
+    Number.isFinite(boreTravelRatio01) ? boreTravelRatio01 : 0
+  );
+  const postExitFade =
+    fireProgress <= timing.muzzleExitF
+      ? 1
+      : Math.pow(
+          1 -
+            clamp01(
+              (fireProgress - timing.muzzleExitF) /
+                Math.max(0.03, blowdownEndF - timing.muzzleExitF)
+            ),
+          1.45
+        );
+
+  const columnStartX = chamberX;
+  const columnEndX = chamberX + (muzzleX - chamberX) * clampedTravel;
+  const colorTempK = Math.round(
+    IN_BORE_TEMP_EMBER_K +
+      (IN_BORE_TEMP_PEAK_K - IN_BORE_TEMP_EMBER_K) * Math.pow(clampedP, 0.65)
+  );
+  const columnIntensity01 =
+    fireProgress >= timing.ignitionF
+      ? clamp01(Math.pow(clampedP, 0.5) * postExitFade)
+      : 0;
+  const columnActive =
+    columnIntensity01 > 0.01 && columnEndX > columnStartX + 1e-4;
+
+  out.primerFlashIntensity01 = primerFlashIntensity01;
+  out.columnActive = columnActive;
+  out.columnStartX = columnStartX;
+  out.columnEndX = columnEndX;
+  out.columnIntensity01 = columnActive ? columnIntensity01 : 0;
+  out.colorTempK = colorTempK;
+  out.active = primerFlashIntensity01 > 0.01 || columnActive;
+  return out;
+}
+
+/**
+ * Pure allocating wrapper for `writeInBoreDeflagrationSampleInto`.
+ */
+export function computeInBoreDeflagrationSample(
+  weaponId: WeaponId,
+  fireProgress: number,
+  pressureRatio01: number,
+  boreTravelRatio01: number,
+  isCutawayZ: boolean,
+  explodeProgress = 0
+): InBoreDeflagrationSample {
+  return writeInBoreDeflagrationSampleInto(
+    weaponId,
+    fireProgress,
+    pressureRatio01,
+    boreTravelRatio01,
+    isCutawayZ,
+    createMutableInBoreDeflagrationSample(),
+    explodeProgress
+  );
+}
+
 const SHOCKWAVE_RING_VERT_GLSL = /* glsl */ `
   varying vec2 vUv;
   void main() {
@@ -413,8 +654,104 @@ const THERMAL_MIRAGE_FRAG_GLSL = /* glsl */ `
   }
 `;
 
+// Cycle 15A: Incandescent in-bore propellant deflagration plasma column shader
+// Cylinder oriented along +X (rotateZ(-PI/2)): vUv.y = 0 at chamber breech -> 1 at bullet base.
+const IN_BORE_PLASMA_VERT_GLSL = /* glsl */ `
+  varying vec2 vUv;
+  varying vec3 vViewNormal;
+  varying vec3 vViewDir;
+
+  void main() {
+    vUv = uv;
+    vViewNormal = normalize(normalMatrix * normal);
+    vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+    vViewDir = normalize(-mvPos.xyz);
+    gl_Position = projectionMatrix * mvPos;
+  }
+`;
+
+const IN_BORE_PLASMA_FRAG_GLSL = /* glsl */ `
+  uniform vec3 uCoreColor;
+  uniform vec3 uEdgeColor;
+  uniform float uIntensity;
+  uniform float uPressure;
+  uniform float uTime;
+
+  varying vec2 vUv;
+  varying vec3 vViewNormal;
+  varying vec3 vViewDir;
+
+  void main() {
+    // Center-weighted plasma core with soft edge falloff inside the rifled grooves (no hard tube silhouette)
+    float ndotv = abs(dot(normalize(vViewNormal), normalize(vViewDir)));
+    float coreProfile = pow(clamp(ndotv, 0.0, 1.0), 0.72);
+
+    // Smooth axial breech & bullet-base caps (strict edge0 < edge1 per GLSL ES spec)
+    float breechCap = smoothstep(0.0, 0.08, vUv.y);
+    float bulletBaseCap = 1.0 - smoothstep(0.92, 1.0, vUv.y);
+    float axialMask = breechCap * bulletBaseCap;
+
+    // Turbulent deflagration gas filaments accelerating from chamber breech (+X) toward bullet base
+    float scroll = vUv.y * 11.0 - uTime * 22.0;
+    float streakA = 0.5 + 0.5 * sin(scroll + sin(vUv.x * 12.56637) * 1.4);
+    float streakB = 0.5 + 0.5 * cos(vUv.y * 19.0 - uTime * 34.0 + vUv.x * 18.84955);
+    float turbulence = 0.66 + 0.34 * (streakA * 0.62 + streakB * 0.38);
+
+    // Brightest near chamber throat & bullet-base stagnation compression wave
+    float throatHot = 1.0 - smoothstep(0.0, 0.42, vUv.y);
+    float baseHot = smoothstep(0.62, 0.94, vUv.y);
+    float axialGlow = 0.72 + 0.28 * max(throatHot, baseHot * 0.85);
+
+    float coreMix = clamp(coreProfile * (0.45 + 0.55 * uPressure) * axialGlow, 0.0, 1.0);
+    vec3 col = mix(uEdgeColor, uCoreColor, coreMix);
+    float alpha = clamp(axialMask * (0.28 + 0.72 * coreProfile) * turbulence * uIntensity * 0.82, 0.0, 0.88);
+    if (alpha <= 0.004) discard;
+
+    gl_FragColor = vec4(col * (1.0 + 0.35 * coreMix * uPressure), alpha);
+  }
+`;
+
+// Cycle 15A: Crisp white-amber Boxer primer flash-hole spark shader
+const PRIMER_SPARK_VERT_GLSL = /* glsl */ `
+  varying vec2 vUv;
+  void main() {
+    vUv = uv;
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+  }
+`;
+
+const PRIMER_SPARK_FRAG_GLSL = /* glsl */ `
+  uniform vec3 uCoreColor;
+  uniform vec3 uHaloColor;
+  uniform float uIntensity;
+  varying vec2 vUv;
+
+  void main() {
+    vec2 p = vUv * 2.0 - 1.0;
+    float r = length(p);
+    if (r >= 0.99) discard;
+
+    float ang = atan(p.y, p.x);
+    float hotCore = exp(-r * r * 14.0);
+    float corona = exp(-r * 3.4) * (1.0 - smoothstep(0.55, 0.98, r));
+    // 6-ray incandescent ignition spark star oriented along flash-hole axis
+    float rays = pow(abs(cos(ang * 3.0)), 10.0) * exp(-r * 3.2) * (1.0 - smoothstep(0.25, 0.95, r));
+
+    float strength = (hotCore * 1.15 + corona * 0.55 + rays * 0.65) * uIntensity;
+    vec3 col = mix(uHaloColor, uCoreColor, clamp(hotCore + rays * 0.5, 0.0, 1.0));
+    float alpha = clamp(strength, 0.0, 0.95);
+    if (alpha <= 0.005) discard;
+
+    gl_FragColor = vec4(col * (1.0 + 0.45 * hotCore), alpha);
+  }
+`;
+
 // Module-pooled Zero-GC math & color scratch objects (never allocate in useFrame)
 const _sample = createInternalBallisticsSample('556_nato');
+const _inBoreSample: InBoreDeflagrationSample =
+  createMutableInBoreDeflagrationSample();
+const _inBoreCoreColor = new THREE.Color();
+const _inBoreEdgeColor = new THREE.Color();
 const _shockSample: MuzzleShockwaveSample = {
   active: false,
   radiusCm: 0,
@@ -472,6 +809,11 @@ const COL_SHOCK_WAVE = new THREE.Color('#e8dcc6');
 const COL_SHOCK_DUST = new THREE.Color('#a89b86');
 const COL_MIRAGE_WARM = new THREE.Color('#f4d6a8');
 const COL_MIRAGE_COOL = new THREE.Color('#cbd5e1');
+const COL_INBORE_WHITE_GOLD = new THREE.Color('#fff4d2');
+const COL_INBORE_ORANGE = new THREE.Color('#fb7a18');
+const COL_INBORE_EMBER = new THREE.Color('#b8320a');
+const COL_PRIMER_CORE = new THREE.Color('#fffbeb');
+const COL_PRIMER_HALO = new THREE.Color('#f59e0b');
 
 function clamp01(x: number): number {
   if (!(x > 0)) return 0;
@@ -501,6 +843,9 @@ export const GasFlowVisualizer: React.FC = () => {
   const shockDustRef = useRef<THREE.Mesh>(null);
   const mirageGroupRef = useRef<THREE.Group>(null);
   const mirageMeshRefs = useRef<(THREE.Mesh | null)[]>([]);
+  const inBoreGroupRef = useRef<THREE.Group>(null);
+  const inBorePlasmaMeshRef = useRef<THREE.Mesh>(null);
+  const primerSparkMeshRef = useRef<THREE.Mesh>(null);
   const boreOuterRef = useRef<THREE.Mesh>(null);
   const boreOuterMatRef = useRef<THREE.MeshBasicMaterial>(null);
   const boreCoreRef = useRef<THREE.Mesh>(null);
@@ -608,6 +953,44 @@ export const GasFlowVisualizer: React.FC = () => {
     []
   );
 
+  const inBorePlasmaMat = useMemo(
+    () =>
+      new THREE.ShaderMaterial({
+        vertexShader: IN_BORE_PLASMA_VERT_GLSL,
+        fragmentShader: IN_BORE_PLASMA_FRAG_GLSL,
+        transparent: true,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+        blending: THREE.AdditiveBlending,
+        uniforms: {
+          uCoreColor: { value: COL_INBORE_WHITE_GOLD.clone() },
+          uEdgeColor: { value: COL_INBORE_ORANGE.clone() },
+          uIntensity: { value: 0 },
+          uPressure: { value: 0 },
+          uTime: { value: 0 },
+        },
+      }),
+    []
+  );
+
+  const primerSparkMat = useMemo(
+    () =>
+      new THREE.ShaderMaterial({
+        vertexShader: PRIMER_SPARK_VERT_GLSL,
+        fragmentShader: PRIMER_SPARK_FRAG_GLSL,
+        transparent: true,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+        blending: THREE.AdditiveBlending,
+        uniforms: {
+          uCoreColor: { value: COL_PRIMER_CORE.clone() },
+          uHaloColor: { value: COL_PRIMER_HALO.clone() },
+          uIntensity: { value: 0 },
+        },
+      }),
+    []
+  );
+
   useEffect(
     () => () => {
       shockPrimaryMat.dispose();
@@ -615,8 +998,10 @@ export const GasFlowVisualizer: React.FC = () => {
       for (let i = 0; i < mirageMats.length; i++) {
         mirageMats[i].dispose();
       }
+      inBorePlasmaMat.dispose();
+      primerSparkMat.dispose();
     },
-    [shockPrimaryMat, shockDustMat, mirageMats]
+    [shockPrimaryMat, shockDustMat, mirageMats, inBorePlasmaMat, primerSparkMat]
   );
 
   useEffect(() => {
@@ -754,10 +1139,88 @@ export const GasFlowVisualizer: React.FC = () => {
       }
     }
 
+    // --- Cycle 15A: Matt Rittman In-Bore Propellant Deflagration Glow & Boxer Primer Spark ---
+    if (!isArchery) {
+      evaluateInternalBallisticsInto(caliber, f, _sample, timing);
+    }
+    const isCutawayZ = appState.sectionCut && appState.sectionCutAxis === 'z';
+    const explodeT = playbackClock.getState().animatedProgress;
+    writeInBoreDeflagrationSampleInto(
+      weaponId,
+      f,
+      isArchery ? 0 : _sample.pressure01,
+      isArchery ? 0 : _sample.boreTravelRatio,
+      isCutawayZ,
+      _inBoreSample,
+      explodeT
+    );
+    const inBoreVisible = _inBoreSample.active;
+    const inBoreGroup = inBoreGroupRef.current;
+    if (inBoreGroup) {
+      inBoreGroup.visible = inBoreVisible;
+      if (inBoreVisible) {
+        const plasmaMesh = inBorePlasmaMeshRef.current;
+        if (plasmaMesh) {
+          plasmaMesh.visible = _inBoreSample.columnActive;
+          if (_inBoreSample.columnActive) {
+            const colLen = Math.max(
+              0.08,
+              _inBoreSample.columnEndX - _inBoreSample.columnStartX
+            );
+            const colMidX = _inBoreSample.columnStartX + colLen * 0.5;
+            const colR = _inBoreSample.columnRadiusCm;
+            plasmaMesh.position.set(
+              colMidX,
+              _inBoreSample.boreY,
+              _inBoreSample.boreZ
+            );
+            plasmaMesh.scale.set(colR, colLen, colR);
+
+            inBoreColorTempToRgbInto(_inBoreSample.colorTempK, _inBoreCoreColor);
+            inBoreColorTempToRgbInto(
+              Math.max(IN_BORE_TEMP_EMBER_K, _inBoreSample.colorTempK - 750),
+              _inBoreEdgeColor
+            );
+            const pMat = plasmaMesh.material as THREE.ShaderMaterial;
+            (pMat.uniforms.uCoreColor.value as THREE.Color).copy(
+              _inBoreCoreColor
+            );
+            (pMat.uniforms.uEdgeColor.value as THREE.Color).copy(
+              _inBoreEdgeColor
+            );
+            pMat.uniforms.uIntensity.value = _inBoreSample.columnIntensity01;
+            pMat.uniforms.uPressure.value = clamp01(_sample.pressure01);
+            pMat.uniforms.uTime.value = state.clock.elapsedTime;
+          }
+        }
+
+        const sparkMesh = primerSparkMeshRef.current;
+        if (sparkMesh) {
+          const sparkIntensity = _inBoreSample.primerFlashIntensity01;
+          sparkMesh.visible = sparkIntensity > 0.01;
+          if (sparkIntensity > 0.01) {
+            const zSide = appState.sectionCutFlip ? -1 : 1;
+            const sparkRadius = Math.max(
+              _inBoreSample.columnRadiusCm * (1.75 + sparkIntensity * 1.15),
+              isHeavyPlatform ? 4.2 : 0.48
+            );
+            sparkMesh.position.set(
+              _inBoreSample.primerFlashX,
+              _inBoreSample.boreY,
+              _inBoreSample.boreZ + zSide * _inBoreSample.columnRadiusCm * 0.32
+            );
+            sparkMesh.scale.set(sparkRadius, sparkRadius, 1);
+            const sMat = sparkMesh.material as THREE.ShaderMaterial;
+            sMat.uniforms.uIntensity.value = sparkIntensity;
+          }
+        }
+      }
+    }
+
     const gasGroup = gasGroupRef.current;
     if (!appState.gasFlowVisible) {
       if (gasGroup) gasGroup.visible = false;
-      root.visible = shockVisible || mirageVisible;
+      root.visible = shockVisible || mirageVisible || inBoreVisible;
       return;
     }
 
@@ -992,12 +1455,10 @@ export const GasFlowVisualizer: React.FC = () => {
     if (impulseHeadRef.current)
       impulseHeadRef.current.quaternion.copy(_ringAxisX);
 
-    evaluateInternalBallisticsInto(caliber, f, _sample, timing);
-
     const blowdownEndF = Math.min(0.95, _sample.safeUnlockF + 0.11);
     if (f < timing.ignitionF || f > blowdownEndF) {
       if (gasGroup) gasGroup.visible = false;
-      root.visible = shockVisible || mirageVisible;
+      root.visible = shockVisible || mirageVisible || inBoreVisible;
       return;
     }
     if (gasGroup) gasGroup.visible = true;
@@ -1048,12 +1509,13 @@ export const GasFlowVisualizer: React.FC = () => {
       .lerp(COL_HIGH_PRESSURE, clamp01(pNorm * 1.6))
       .lerp(COL_PEAK_PLASMA, clamp01((pNorm - 0.55) * 2.2));
 
+    const legacyBoreMix = _inBoreSample.columnActive ? 0.24 : 1.0;
     if (boreOuterRef.current && boreOuterMatRef.current) {
       boreOuterRef.current.visible = boreAlpha > 0.015;
       boreOuterRef.current.position.set(boreMidX, manifold.boreY, 0);
       boreOuterRef.current.scale.set(boreRadius, liveLen, boreRadius);
       boreOuterMatRef.current.color.copy(_colorWork);
-      boreOuterMatRef.current.opacity = boreAlpha * 0.52;
+      boreOuterMatRef.current.opacity = boreAlpha * 0.52 * legacyBoreMix;
     }
     if (boreCoreRef.current && boreCoreMatRef.current) {
       boreCoreRef.current.visible = boreAlpha > 0.02;
@@ -1066,7 +1528,8 @@ export const GasFlowVisualizer: React.FC = () => {
       boreCoreMatRef.current.color
         .copy(_colorWork)
         .lerp(COL_PEAK_PLASMA, 0.55);
-      boreCoreMatRef.current.opacity = Math.min(0.82, boreAlpha * 0.88);
+      boreCoreMatRef.current.opacity =
+        Math.min(0.82, boreAlpha * 0.88) * legacyBoreMix;
     }
 
     // 2. Gas-tap riser, manifold channel & carrier/piston impulse glow
@@ -1795,6 +2258,37 @@ export const GasFlowVisualizer: React.FC = () => {
             <planeGeometry args={[1, 1, 1, 1]} />
           </mesh>
         ))}
+      </group>
+
+      {/* Cycle 15A: Matt Rittman In-Bore Propellant Deflagration Plasma & Boxer Primer Ignition Spark */}
+      <group
+        ref={inBoreGroupRef}
+        name="InBorePropellantDeflagration"
+        visible={false}
+      >
+        <mesh
+          ref={inBorePlasmaMeshRef}
+          rotation={[0, 0, -Math.PI / 2]}
+          material={inBorePlasmaMat}
+          visible={false}
+          frustumCulled={false}
+          raycast={noRaycast}
+          userData={{ excludeFromGtao: true }}
+          renderOrder={13}
+        >
+          <cylinderGeometry args={[1, 1, 1, 18, 1, true]} />
+        </mesh>
+        <mesh
+          ref={primerSparkMeshRef}
+          material={primerSparkMat}
+          visible={false}
+          frustumCulled={false}
+          raycast={noRaycast}
+          userData={{ excludeFromGtao: true }}
+          renderOrder={14}
+        >
+          <planeGeometry args={[2, 2, 1, 1]} />
+        </mesh>
       </group>
 
       <group ref={gasGroupRef} name="PropellantGasFlowSubgroup" visible={false}>
