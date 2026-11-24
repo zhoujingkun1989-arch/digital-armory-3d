@@ -15,6 +15,23 @@ export const THEATER_T_RICOCHET_PIVOT_END = 0.3;
 
 export const SPALL_PARTICLE_COUNT = 56;
 export const SPARK_PARTICLE_COUNT = 56;
+export const BACK_JET_PARTICLE_COUNT = 36;
+export const BACK_JET_CONE_MIN_DEG = 32;
+export const BACK_JET_CONE_MAX_DEG = 52;
+export const HYDRODYNAMIC_LONG_ROD_RESIDUAL_MIN = 0.34;
+export const HYDRODYNAMIC_RIGID_AP_RESIDUAL_MIN = 0.82;
+export const HYDRODYNAMIC_RICOCHET_RESIDUAL_MIN = 0.95;
+
+export interface HydrodynamicRodErosionSample {
+  /** Remaining longitudinal fraction of penetrator length `[0.34..1.0]` */
+  remainingLengthRatio: number;
+  /** Radial tip mushrooming / adiabatic shear-band flare multiplier `[1.0..1.7]` */
+  mushroomTipScale: number;
+  /** Molten crater back-jet ejecta spray intensity `[0..1]` during active transit */
+  backJetIntensity01: number;
+  /** Hydrodynamic penetration channel radial dilation multiplier `[1.0..1.28]` */
+  erosionChannelRadiusMult: number;
+}
 
 export type TheaterPlaybackSpeed = 0.15 | 0.5 | 1;
 
@@ -135,6 +152,16 @@ export interface ArmorTheaterFrameState {
   rodPitchRad: number;
   rodLengthFraction: number;
   rodGlowIntensity: number;
+  /** Normalized armor transit progress `[0..1]` driving Tate hydrodynamic erosion */
+  penetrationFrac01: number;
+  /** Radial self-sharpening mushroom tip flare multiplier `[1.0..1.7]` */
+  rodMushroomTipScale: number;
+  /** Molten crater back-jet ejecta intensity `[0..1]` (`0` pre-impact) */
+  backJetIntensity01: number;
+  /** Normalized progression `[0..1]` of backward molten crater ejecta streaks */
+  backJetProgress: number;
+  /** Hydrodynamic cavity radial expansion factor `[1.0..1.28]` */
+  erosionChannelRadiusMult: number;
   cavityDepthLosCm: number;
   cavityRadiusCm: number;
   cavityGlowIntensity: number;
@@ -286,6 +313,97 @@ export const SPALL_PARTICLE_SEEDS: readonly ParticleSeed[] =
 
 export const SPARK_PARTICLE_SEEDS: readonly ParticleSeed[] =
   createDeterministicSeeds(SPARK_PARTICLE_COUNT, 0x88f4c307);
+
+export const BACK_JET_PARTICLE_SEEDS: readonly ParticleSeed[] =
+  createDeterministicSeeds(BACK_JET_PARTICLE_COUNT, 0x71e4b903);
+
+export function createMutableHydrodynamicRodErosion(): HydrodynamicRodErosionSample {
+  return {
+    remainingLengthRatio: 1,
+    mushroomTipScale: 1,
+    backJetIntensity01: 0,
+    erosionChannelRadiusMult: 1,
+  };
+}
+
+/**
+ * Zero-GC Tate / Alekseevskii hydrodynamic penetrator erosion & molten crater
+ * back-jet evaluator writing directly into `out`:
+ * - Long-rod APFSDS (`125mm DTC10-125`, `120mm M829A4 / DM63`): erodes
+ *   monotonically from `1.0 -> 0.34` with pronounced self-sharpening mushroom tip
+ *   flare and intense molten hydrodynamic back-jet spray.
+ * - Rigid AP / API shells (`88mm PzGr.39`, `30mm PGU-14/B`, `.50 BMG M2 AP`):
+ *   preserve rigid core length (`1.0 -> 0.82`) with moderate splashback.
+ * - Ricochets: remain virtually un-eroded (`>= 0.95`) with grazing flash only.
+ */
+export function writeHydrodynamicRodErosionInto(
+  penetrationFrac01: number,
+  isLongRodApfsds: boolean,
+  isRicochet: boolean,
+  out: HydrodynamicRodErosionSample
+): HydrodynamicRodErosionSample {
+  const f = Number.isFinite(penetrationFrac01)
+    ? clamp01(penetrationFrac01)
+    : 0;
+
+  if (f <= 0) {
+    out.remainingLengthRatio = 1;
+    out.mushroomTipScale = 1;
+    out.backJetIntensity01 = 0;
+    out.erosionChannelRadiusMult = 1;
+    return out;
+  }
+
+  if (isRicochet) {
+    const ease = easeOutQuad(f);
+    out.remainingLengthRatio =
+      1 - (1 - HYDRODYNAMIC_RICOCHET_RESIDUAL_MIN) * ease;
+    out.mushroomTipScale = 1 + 0.12 * Math.sin(f * Math.PI);
+    out.backJetIntensity01 = 0.24 * Math.sin(f * Math.PI);
+    out.erosionChannelRadiusMult = 1 + 0.05 * ease;
+    return out;
+  }
+
+  if (isLongRodApfsds) {
+    const erodeCurve = 0.72 * f + 0.28 * easeOutQuad(f);
+    out.remainingLengthRatio =
+      1 - (1 - HYDRODYNAMIC_LONG_ROD_RESIDUAL_MIN) * erodeCurve;
+    out.mushroomTipScale =
+      1 + 0.66 * Math.pow(Math.sin(Math.min(1, f * 1.04) * Math.PI * 0.88), 0.72);
+    out.backJetIntensity01 = clamp01(
+      Math.pow(Math.sin(f * Math.PI), 0.52) * (1.12 - 0.2 * f)
+    );
+    out.erosionChannelRadiusMult = 1 + 0.26 * easeOutQuad(f);
+    return out;
+  }
+
+  const rigidEase = easeOutQuad(f);
+  out.remainingLengthRatio =
+    1 - (1 - HYDRODYNAMIC_RIGID_AP_RESIDUAL_MIN) * rigidEase;
+  out.mushroomTipScale = 1 + 0.26 * Math.pow(Math.sin(f * Math.PI), 0.7);
+  out.backJetIntensity01 = clamp01(Math.pow(Math.sin(f * Math.PI), 0.58) * 0.76);
+  out.erosionChannelRadiusMult = 1 + 0.12 * rigidEase;
+  return out;
+}
+
+/**
+ * Pure allocating wrapper for `writeHydrodynamicRodErosionInto`.
+ */
+export function computeHydrodynamicRodErosion(
+  penetrationFrac01: number,
+  isLongRodApfsds: boolean,
+  isRicochet: boolean
+): HydrodynamicRodErosionSample {
+  return writeHydrodynamicRodErosionInto(
+    penetrationFrac01,
+    isLongRodApfsds,
+    isRicochet,
+    createMutableHydrodynamicRodErosion()
+  );
+}
+
+const _erosionScratch: HydrodynamicRodErosionSample =
+  createMutableHydrodynamicRodErosion();
 
 /**
  * Computes the complete static 1:1 3D theater geometry & terminal-ballistic
@@ -593,6 +711,11 @@ export function createArmorTheaterFrameState(): ArmorTheaterFrameState {
     rodPitchRad: 0,
     rodLengthFraction: 1,
     rodGlowIntensity: 0,
+    penetrationFrac01: 0,
+    rodMushroomTipScale: 1,
+    backJetIntensity01: 0,
+    backJetProgress: 0,
+    erosionChannelRadiusMult: 1,
     cavityDepthLosCm: 0,
     cavityRadiusCm: 1.5,
     cavityGlowIntensity: 0,
@@ -651,6 +774,11 @@ export function evaluateArmorTheaterFrameInto(
       : Math.max(0.85, cavityBaseRadiusCm);
 
   // Reset transient per-outcome channels cleanly
+  out.penetrationFrac01 = 0;
+  out.rodMushroomTipScale = 1;
+  out.backJetIntensity01 = 0;
+  out.backJetProgress = 0;
+  out.erosionChannelRadiusMult = 1;
   out.arrestShockRadiusCm = 0;
   out.arrestShockOpacity = 0;
   out.spallActive = false;
@@ -736,6 +864,7 @@ export function evaluateArmorTheaterFrameInto(
   out.shockwaveOpacity = (1 - shockU) * (1 - shockU) * 0.92;
 
   // --- Outcome A: PERFORATION ---
+  const isLongRod = layout.result.projectile.isSubCaliberRod;
   if (layout.outcome === 'perforation') {
     if (p < THEATER_T_PERFORATION_EXIT) {
       const penU =
@@ -744,6 +873,12 @@ export function evaluateArmorTheaterFrameInto(
       // Slight hydrodynamic deceleration across the armor stack
       const depthCurve = 0.85 * penU + 0.15 * easeOutQuad(penU);
       const depthCm = layout.totalLosCm * depthCurve;
+      const erosion = writeHydrodynamicRodErosionInto(
+        penU,
+        isLongRod,
+        false,
+        _erosionScratch
+      );
 
       out.phase =
         layout.eraActive && p < THEATER_T_IMPACT + 0.11
@@ -752,8 +887,12 @@ export function evaluateArmorTheaterFrameInto(
       out.rodNoseX = depthCm;
       out.rodNoseY = 0;
       out.rodPitchRad = 0;
-      out.rodLengthFraction =
-        1 - (1 - layout.residualLengthFraction) * easeOutQuad(penU);
+      out.penetrationFrac01 = penU;
+      out.rodLengthFraction = erosion.remainingLengthRatio;
+      out.rodMushroomTipScale = erosion.mushroomTipScale;
+      out.backJetIntensity01 = erosion.backJetIntensity01;
+      out.backJetProgress = clamp01(penU * 0.82);
+      out.erosionChannelRadiusMult = erosion.erosionChannelRadiusMult;
       out.rodGlowIntensity = 0.45 + 0.55 * penU;
       out.cavityDepthLosCm = depthCm;
       out.cavityGlowIntensity = 0.72 + 0.28 * Math.sin(penU * Math.PI);
@@ -770,12 +909,26 @@ export function evaluateArmorTheaterFrameInto(
       );
       const exitFlightCm = Math.max(48, layout.spallMaxReachCm * 0.95);
       const noseX = layout.exitXCm + exitFlightCm * exitU;
+      const finalErosion = writeHydrodynamicRodErosionInto(
+        1,
+        isLongRod,
+        false,
+        _erosionScratch
+      );
 
       out.phase = 'perforation_spall';
       out.rodNoseX = noseX;
       out.rodNoseY = -1.6 * exitU * exitU;
       out.rodPitchRad = -0.04 * exitU;
-      out.rodLengthFraction = layout.residualLengthFraction;
+      out.penetrationFrac01 = 1;
+      out.rodLengthFraction = finalErosion.remainingLengthRatio;
+      out.rodMushroomTipScale =
+        1 + (finalErosion.mushroomTipScale - 1) * (1 - 0.55 * exitU);
+      // Residual molten ejecta smoothly fades to 0 post-perforation
+      out.backJetIntensity01 =
+        exitU < 0.36 ? 0.38 * (1 - exitU / 0.36) * (1 - exitU / 0.36) : 0;
+      out.backJetProgress = clamp01(0.82 + exitU * 0.5);
+      out.erosionChannelRadiusMult = finalErosion.erosionChannelRadiusMult;
       out.rodGlowIntensity = 0.95 * (1 - 0.45 * exitU);
       out.cavityDepthLosCm = layout.totalLosCm;
       out.cavityGlowIntensity = Math.max(0.28, 0.88 * (1 - 0.62 * exitU));
@@ -805,11 +958,21 @@ export function evaluateArmorTheaterFrameInto(
 
   // --- Outcome B: PARTIAL PENETRATION / DEFEATED ---
   if (layout.outcome === 'partial_penetration') {
+    const stopRatio = clamp01(
+      layout.maxCavityDepthLosCm / Math.max(1, layout.totalLosCm)
+    );
     if (p < THEATER_T_DEFEAT_STALL) {
       const penU =
         (p - THEATER_T_IMPACT) / (THEATER_T_DEFEAT_STALL - THEATER_T_IMPACT);
       const depthEase = easeOutQuad(penU);
       const depthCm = layout.maxCavityDepthLosCm * depthEase;
+      const effFrac = clamp01(Math.max(penU * 0.85, depthEase * stopRatio));
+      const erosion = writeHydrodynamicRodErosionInto(
+        effFrac,
+        isLongRod,
+        false,
+        _erosionScratch
+      );
 
       out.phase =
         layout.eraActive && p < THEATER_T_IMPACT + 0.11
@@ -818,8 +981,12 @@ export function evaluateArmorTheaterFrameInto(
       out.rodNoseX = depthCm;
       out.rodNoseY = 0;
       out.rodPitchRad = 0;
-      out.rodLengthFraction =
-        1 - (1 - layout.residualLengthFraction) * depthEase;
+      out.penetrationFrac01 = effFrac;
+      out.rodLengthFraction = erosion.remainingLengthRatio;
+      out.rodMushroomTipScale = erosion.mushroomTipScale;
+      out.backJetIntensity01 = erosion.backJetIntensity01;
+      out.backJetProgress = clamp01(penU * 0.86);
+      out.erosionChannelRadiusMult = erosion.erosionChannelRadiusMult;
       out.rodGlowIntensity = 0.45 + 0.55 * penU;
       out.cavityDepthLosCm = depthCm;
       out.cavityGlowIntensity = 0.68 + 0.32 * Math.sin(penU * Math.PI);
@@ -832,11 +999,26 @@ export function evaluateArmorTheaterFrameInto(
       const restU = clamp01(
         (p - THEATER_T_DEFEAT_STALL) / (1 - THEATER_T_DEFEAT_STALL)
       );
+      const stallFrac = clamp01(Math.max(0.85, stopRatio));
+      const stallErosion = writeHydrodynamicRodErosionInto(
+        stallFrac,
+        isLongRod,
+        false,
+        _erosionScratch
+      );
+
       out.phase = 'defeated_arrest';
       out.rodNoseX = layout.maxCavityDepthLosCm;
       out.rodNoseY = 0;
       out.rodPitchRad = 0;
-      out.rodLengthFraction = layout.residualLengthFraction;
+      out.penetrationFrac01 = stallFrac;
+      out.rodLengthFraction = stallErosion.remainingLengthRatio;
+      out.rodMushroomTipScale =
+        1 + (stallErosion.mushroomTipScale - 1) * (1 - 0.4 * restU);
+      out.backJetIntensity01 =
+        restU < 0.4 ? 0.34 * (1 - restU / 0.4) * (1 - restU / 0.4) : 0;
+      out.backJetProgress = clamp01(0.86 + restU * 0.35);
+      out.erosionChannelRadiusMult = stallErosion.erosionChannelRadiusMult;
       out.rodGlowIntensity = Math.max(0.22, 0.92 * (1 - 0.72 * restU));
       out.cavityDepthLosCm = layout.maxCavityDepthLosCm;
       out.cavityGlowIntensity = Math.max(0.2, 0.75 * (1 - 0.72 * restU));
@@ -866,13 +1048,24 @@ export function evaluateArmorTheaterFrameInto(
     const gougeCm = layout.maxCavityDepthLosCm * easeOutQuad(pivotU);
     const surfaceLiftCm =
       layout.penetratorDiameterCm * 0.55 * easeOutQuad(pivotU);
+    const ricErosion = writeHydrodynamicRodErosionInto(
+      pivotU,
+      isLongRod,
+      true,
+      _erosionScratch
+    );
+
     out.rodNoseX =
       gougeCm * layout.slopeTangentX + surfaceLiftCm * layout.outwardNormalX;
     out.rodNoseY =
       gougeCm * layout.slopeTangentY + surfaceLiftCm * layout.outwardNormalY;
     out.rodPitchRad = ricAngleRad * easeOutQuad(pivotU);
-    out.rodLengthFraction =
-      1 - (1 - layout.residualLengthFraction) * pivotU;
+    out.penetrationFrac01 = pivotU;
+    out.rodLengthFraction = ricErosion.remainingLengthRatio;
+    out.rodMushroomTipScale = ricErosion.mushroomTipScale;
+    out.backJetIntensity01 = ricErosion.backJetIntensity01;
+    out.backJetProgress = clamp01(pivotU * 0.55);
+    out.erosionChannelRadiusMult = ricErosion.erosionChannelRadiusMult;
     out.rodGlowIntensity = 0.45 + 0.45 * pivotU;
     out.cavityDepthLosCm = gougeCm;
     out.cavityGlowIntensity = 0.92;
@@ -895,6 +1088,12 @@ export function evaluateArmorTheaterFrameInto(
       startLiftCm * layout.outwardNormalY;
     const travelCm = layout.ricochetTravelCm * flyU;
     const extraClearanceCm = 9.5 * easeOutQuad(flyU);
+    const ricFinal = writeHydrodynamicRodErosionInto(
+      1,
+      isLongRod,
+      true,
+      _erosionScratch
+    );
 
     out.rodNoseX =
       startX +
@@ -907,7 +1106,12 @@ export function evaluateArmorTheaterFrameInto(
       1.6 * flyU * flyU;
     // Deflected projectile aligns with reflection vector and begins slight upward yaw/tumble
     out.rodPitchRad = ricAngleRad + 0.3 * flyU;
-    out.rodLengthFraction = layout.residualLengthFraction;
+    out.penetrationFrac01 = 1;
+    out.rodLengthFraction = ricFinal.remainingLengthRatio;
+    out.rodMushroomTipScale = 1;
+    out.backJetIntensity01 = 0;
+    out.backJetProgress = 1;
+    out.erosionChannelRadiusMult = ricFinal.erosionChannelRadiusMult;
     out.rodGlowIntensity = Math.max(0.14, 0.78 * (1 - 0.72 * flyU));
     out.cavityDepthLosCm = layout.maxCavityDepthLosCm;
     out.cavityGlowIntensity = Math.max(0.14, 0.85 * (1 - 0.82 * flyU));
@@ -1059,4 +1263,72 @@ export function evaluateSparkParticleInto(
     out.scaleZ = 0.26 * fade;
     out.heat = clamp01((1 - 0.65 * u) * frame.sparkIntensity);
   }
+}
+
+/**
+ * Zero-GC per-particle evaluator for the 36-streak hydrodynamic molten crater
+ * back-jet ejecta spray erupting backward off the armor strike face (`entryX = 0`)
+ * along an authentic `32°–52°` conical hydrodynamic splash sheet.
+ */
+export function evaluateBackJetParticleInto(
+  layout: ArmorTheaterLayout,
+  frame: ArmorTheaterFrameState,
+  index: number,
+  out: ParticleTransformOut
+): void {
+  if (
+    frame.backJetIntensity01 <= 0.05 ||
+    frame.progress < THEATER_T_IMPACT
+  ) {
+    out.visible = false;
+    out.scaleX = 0;
+    out.scaleY = 0;
+    out.scaleZ = 0;
+    out.heat = 0;
+    return;
+  }
+
+  const seed = BACK_JET_PARTICLE_SEEDS[index % BACK_JET_PARTICLE_SEEDS.length];
+  // Recycle streaks continuously across active crater boring so the molten collar stays alive
+  const cycleU = (frame.backJetProgress * 1.45 + seed.delayFrac * 2.2) % 1;
+  const u = clamp01(cycleU);
+  const easeU = easeOutQuad(u);
+
+  const coneDeg =
+    BACK_JET_CONE_MIN_DEG +
+    (BACK_JET_CONE_MAX_DEG - BACK_JET_CONE_MIN_DEG) * seed.radialFrac;
+  const coneRad = (coneDeg * Math.PI) / 180;
+  const cosC = Math.cos(coneRad);
+  const sinC = Math.sin(coneRad);
+  const cosA = Math.cos(seed.azimuthRad);
+  const sinA = Math.sin(seed.azimuthRad);
+
+  // Exact 3D conical direction around outwardNormal (dot(dir, outwardNormal) === cos(coneRad))
+  const dirX =
+    layout.outwardNormalX * cosC + layout.slopeTangentX * sinC * cosA;
+  const dirY =
+    layout.outwardNormalY * cosC + layout.slopeTangentY * sinC * cosA;
+  const dirZ = sinC * sinA;
+
+  const isLongRod = layout.result.projectile.isSubCaliberRod;
+  const maxReachCm = (isLongRod ? 26 : 16) * (0.55 + 0.72 * seed.speedScale);
+  const dist = easeU * maxReachCm;
+  const craterLipR = Math.max(0.9, frame.cavityRadiusCm * 0.95);
+
+  out.visible = true;
+  out.x = dirX * (craterLipR + dist);
+  out.y = dirY * (craterLipR + dist) - 3.6 * u * u;
+  out.z = 0.35 + dirZ * (craterLipR + dist);
+
+  // Align streak +X axis cleanly with velocity vector (yaw & pitch)
+  const horizLen = Math.hypot(dirX, dirZ) || 1e-5;
+  out.rotX = 0;
+  out.rotY = Math.atan2(-dirZ, dirX);
+  out.rotZ = Math.atan2(dirY, horizLen);
+
+  const fade = (1 - u * 0.72) * frame.backJetIntensity01;
+  out.scaleX = (2.2 + 2.8 * seed.speedScale) * fade;
+  out.scaleY = (0.34 + 0.24 * seed.sizeCm) * fade;
+  out.scaleZ = (0.34 + 0.24 * seed.sizeCm) * fade;
+  out.heat = clamp01((1 - 0.55 * u) * frame.backJetIntensity01);
 }

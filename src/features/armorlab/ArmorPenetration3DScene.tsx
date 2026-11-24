@@ -12,6 +12,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { Camera, Pause, Play, RotateCcw } from 'lucide-react';
 import { ViewportErrorBoundary } from '../../app/ViewportErrorBoundary';
+import type { ArmoryEnvironmentPreset } from '../../engine/canvas/GunsmithStageMat';
 import { lockLinearTextureColorSpace } from '../../engine/materials/pbrManager';
 import type {
   ArmorPenetrationResult,
@@ -19,14 +20,17 @@ import type {
 } from '../../engine/physics/armorPenetration';
 import type { LanguageCode } from '../../narration/types';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
+import { useAppStore } from '../../store/useAppStore';
 import { ARMOR_PENETRATION_STRINGS } from './armorPenetrationStrings';
 import {
   type ArmorLayerLayout,
   type ArmorTheaterFrameState,
   type ArmorTheaterLayout,
+  BACK_JET_PARTICLE_COUNT,
   buildArmorTheaterLayout,
   createArmorTheaterFrameState,
   evaluateArmorTheaterFrameInto,
+  evaluateBackJetParticleInto,
   evaluateSpallParticleInto,
   evaluateSparkParticleInto,
   type ParticleTransformOut,
@@ -160,8 +164,110 @@ const _scratchParticleOut: ParticleTransformOut = {
 const _colorWhiteHot = new THREE.Color('#fde68a');
 const _colorMoltenOrange = new THREE.Color('#f97316');
 const _colorDeepEmber = new THREE.Color('#991b1b');
+const _colorBackJetGold = new THREE.Color('#f59e0b');
+const _colorBackJetEmber = new THREE.Color('#c2410c');
 const _colorRicochetCyan = new THREE.Color('#7dd3fc');
 const _colorRicochetGold = new THREE.Color('#fef08a');
+const _colorCrewAlert = new THREE.Color('#f87171');
+const _colorCrewIdleDark = new THREE.Color('#334155');
+const _colorCrewIdleDaylight = new THREE.Color('#475569');
+
+export interface ArmorTheaterThemePalette {
+  readonly isDaylight: boolean;
+  readonly backgroundHex: string;
+  readonly fogHex: string;
+  readonly floorHex: string;
+  readonly floorMetalness: number;
+  readonly floorRoughness: number;
+  readonly gridMinorHex: string;
+  readonly gridMinorOpacity: number;
+  readonly gridMajorHex: string;
+  readonly gridMajorOpacity: number;
+  readonly rayGuideHex: string;
+  readonly ricochetGuideHex: string;
+  readonly hemiSkyHex: string;
+  readonly hemiGroundHex: string;
+  readonly hemiIntensity: number;
+  readonly keyLightHex: string;
+  readonly keyLightIntensity: number;
+  readonly rimLightHex: string;
+  readonly rimLightIntensity: number;
+  readonly fillLightHex: string;
+  readonly fillLightIntensity: number;
+  readonly badgeBgRgba: string;
+  readonly badgeTitleHex: string;
+  readonly badgeMetaHex: string;
+  readonly crewBorderIdleHex: string;
+}
+
+const DARK_THEATER_PALETTE: ArmorTheaterThemePalette = {
+  isDaylight: false,
+  backgroundHex: '#060b16',
+  fogHex: '#060b16',
+  floorHex: '#070c17',
+  floorMetalness: 0.55,
+  floorRoughness: 0.72,
+  gridMinorHex: '#1e293b',
+  gridMinorOpacity: 0.48,
+  gridMajorHex: '#0284c7',
+  gridMajorOpacity: 0.34,
+  rayGuideHex: '#38bdf8',
+  ricochetGuideHex: '#22d3ee',
+  hemiSkyHex: '#7dd3fc',
+  hemiGroundHex: '#0f172a',
+  hemiIntensity: 0.65,
+  keyLightHex: '#e0f2fe',
+  keyLightIntensity: 2.1,
+  rimLightHex: '#fb923c',
+  rimLightIntensity: 1.05,
+  fillLightHex: '#38bdf8',
+  fillLightIntensity: 0.45,
+  badgeBgRgba: 'rgba(7, 13, 26, 0.92)',
+  badgeTitleHex: '#f8fafc',
+  badgeMetaHex: '#94a3b8',
+  crewBorderIdleHex: '#334155',
+};
+
+const DAYLIGHT_THEATER_PALETTE: ArmorTheaterThemePalette = {
+  isDaylight: true,
+  backgroundHex: '#e8eef6',
+  fogHex: '#e8eef6',
+  floorHex: '#dbe4f0',
+  floorMetalness: 0.14,
+  floorRoughness: 0.88,
+  gridMinorHex: '#94a3b8',
+  gridMinorOpacity: 0.44,
+  gridMajorHex: '#0284c7',
+  gridMajorOpacity: 0.42,
+  rayGuideHex: '#0369a1',
+  ricochetGuideHex: '#0284c7',
+  hemiSkyHex: '#ffffff',
+  hemiGroundHex: '#cbd5e1',
+  hemiIntensity: 1.15,
+  keyLightHex: '#ffffff',
+  keyLightIntensity: 2.45,
+  rimLightHex: '#ea580c',
+  rimLightIntensity: 0.72,
+  fillLightHex: '#0284c7',
+  fillLightIntensity: 0.55,
+  badgeBgRgba: 'rgba(248, 250, 252, 0.96)',
+  badgeTitleHex: '#0f172a',
+  badgeMetaHex: '#1d4ed8',
+  crewBorderIdleHex: '#475569',
+};
+
+/**
+ * Pure theme resolver syncing the 3D Composite Armor Penetration Theater
+ * backdrop, calibration grid floor, 3-point lighting, and staggered `THREE.Sprite`
+ * layer pills with the global `environmentPreset` (`blueprint_daylight` vs Dark Studio).
+ */
+export function resolveArmorTheaterThemePalette(
+  preset: ArmoryEnvironmentPreset | string | null | undefined
+): ArmorTheaterThemePalette {
+  return preset === 'blueprint_daylight'
+    ? DAYLIGHT_THEATER_PALETTE
+    : DARK_THEATER_PALETTE;
+}
 
 interface ArmorSurfaceTextureSet {
   rhaMap: THREE.CanvasTexture;
@@ -466,7 +572,8 @@ function createArmorSurfaceTextures(): ArmorSurfaceTextureSet | null {
 function createArmorLayerBadgeTexture(
   tag: string,
   physicalMm: number,
-  accentHex: string
+  accentHex: string,
+  palette: ArmorTheaterThemePalette = DARK_THEATER_PALETTE
 ): THREE.CanvasTexture | null {
   if (typeof document === 'undefined') return null;
   const canvas = document.createElement('canvas');
@@ -476,7 +583,7 @@ function createArmorLayerBadgeTexture(
   if (!ctx) return null;
 
   ctx.clearRect(0, 0, 256, 88);
-  ctx.fillStyle = 'rgba(7, 13, 26, 0.92)';
+  ctx.fillStyle = palette.badgeBgRgba;
   ctx.beginPath();
   if (typeof ctx.roundRect === 'function') {
     ctx.roundRect(4, 4, 248, 80, 14);
@@ -493,12 +600,12 @@ function createArmorLayerBadgeTexture(
   ctx.fillStyle = accentHex;
   ctx.fillRect(14, 16, 6, 56);
 
-  ctx.fillStyle = '#f8fafc';
+  ctx.fillStyle = palette.badgeTitleHex;
   ctx.font = '700 28px ui-monospace, SFMono-Regular, Menlo, monospace';
   ctx.textBaseline = 'middle';
   ctx.fillText(tag, 30, 34);
 
-  ctx.fillStyle = '#94a3b8';
+  ctx.fillStyle = palette.badgeMetaHex;
   ctx.font = '600 21px ui-monospace, SFMono-Regular, Menlo, monospace';
   ctx.fillText(`${Math.round(physicalMm)} mm`, 30, 64);
 
@@ -721,9 +828,11 @@ function buildPenetratorBundle(
 
 interface LabBackdropProps {
   layout: ArmorTheaterLayout;
+  themePalette: ArmorTheaterThemePalette;
 }
 
-const LabBackdrop: React.FC<LabBackdropProps> = React.memo(({ layout }) => {
+const LabBackdrop: React.FC<LabBackdropProps> = React.memo(
+  ({ layout, themePalette }) => {
   const floorY = -Math.max(42, layout.slabHeightCm * 0.52);
 
   const { gridMinorGeo, gridMajorGeo, rayGuideGeo, ricochetGuideGeo } =
@@ -809,28 +918,44 @@ const LabBackdrop: React.FC<LabBackdropProps> = React.memo(({ layout }) => {
       >
         <boxGeometry args={[420, 1.2, 180]} />
         <meshStandardMaterial
-          color="#070c17"
-          metalness={0.55}
-          roughness={0.72}
+          color={themePalette.floorHex}
+          metalness={themePalette.floorMetalness}
+          roughness={themePalette.floorRoughness}
         />
       </mesh>
 
       {/* 100mm / 500mm Metric Calibration Grid */}
       <lineSegments geometry={gridMinorGeo}>
-        <lineBasicMaterial color="#1e293b" transparent opacity={0.48} />
+        <lineBasicMaterial
+          color={themePalette.gridMinorHex}
+          transparent
+          opacity={themePalette.gridMinorOpacity}
+        />
       </lineSegments>
       <lineSegments geometry={gridMajorGeo}>
-        <lineBasicMaterial color="#0284c7" transparent opacity={0.34} />
+        <lineBasicMaterial
+          color={themePalette.gridMajorHex}
+          transparent
+          opacity={themePalette.gridMajorOpacity}
+        />
       </lineSegments>
 
       {/* Incoming Line-of-Fire Axis Hairline */}
       <lineSegments geometry={rayGuideGeo}>
-        <lineBasicMaterial color="#38bdf8" transparent opacity={0.35} />
+        <lineBasicMaterial
+          color={themePalette.rayGuideHex}
+          transparent
+          opacity={themePalette.isDaylight ? 0.45 : 0.35}
+        />
       </lineSegments>
 
       {layout.outcome === 'ricochet' && (
         <lineSegments geometry={ricochetGuideGeo}>
-          <lineBasicMaterial color="#22d3ee" transparent opacity={0.32} />
+          <lineBasicMaterial
+            color={themePalette.ricochetGuideHex}
+            transparent
+            opacity={themePalette.isDaylight ? 0.45 : 0.32}
+          />
         </lineSegments>
       )}
     </group>
@@ -852,6 +977,7 @@ interface ArmorLayerMeshProps {
   backingGlowMatRef: React.RefObject<THREE.MeshBasicMaterial>;
   exitLocalYCm: number;
   outcome: ArmorTheaterLayout['outcome'];
+  themePalette: ArmorTheaterThemePalette;
 }
 
 const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
@@ -868,6 +994,7 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
     backingGlowMatRef,
     exitLocalYCm,
     outcome,
+    themePalette,
   }) => {
     const centerX = layer.localStartCm + layer.localThicknessCm * 0.5;
     const zCenter = -slabDepthCm * 0.5;
@@ -885,21 +1012,30 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
     const badgeTag = formatArmorLayerBadgeTag(layer);
     const badgeAccentHex =
       layer.kind === 'era'
-        ? '#f59e0b'
+        ? themePalette.isDaylight
+          ? '#d97706'
+          : '#f59e0b'
         : layer.kind === 'ceramic_nera'
-          ? '#38bdf8'
+          ? themePalette.isDaylight
+            ? '#0284c7'
+            : '#38bdf8'
           : layer.kind === 'du_composite'
-            ? '#10b981'
-            : '#94a3b8';
+            ? themePalette.isDaylight
+              ? '#059669'
+              : '#10b981'
+            : themePalette.isDaylight
+              ? '#475569'
+              : '#94a3b8';
 
     const badgeTex = useMemo(
       () =>
         createArmorLayerBadgeTexture(
           badgeTag,
           layer.physicalMm,
-          badgeAccentHex
+          badgeAccentHex,
+          themePalette
         ),
-      [badgeTag, layer.physicalMm, badgeAccentHex]
+      [badgeTag, layer.physicalMm, badgeAccentHex, themePalette]
     );
 
     const badgeSpriteMat = useMemo(() => {
@@ -1340,6 +1476,7 @@ interface TheaterInnerSceneProps {
   clock: ArmorTheaterClock;
   onHudTick: (frame: ArmorTheaterFrameState) => void;
   cameraResetTrigger: number;
+  themePalette: ArmorTheaterThemePalette;
 }
 
 const TheaterInnerScene: React.FC<TheaterInnerSceneProps> = ({
@@ -1347,6 +1484,7 @@ const TheaterInnerScene: React.FC<TheaterInnerSceneProps> = ({
   clock,
   onHudTick,
   cameraResetTrigger,
+  themePalette,
 }) => {
   const { camera } = useThree();
   const controlsRef = useRef<ComponentRef<typeof OrbitControls>>(null);
@@ -1397,6 +1535,7 @@ const TheaterInnerScene: React.FC<TheaterInnerSceneProps> = ({
   const spallConeMatRef = useRef<THREE.MeshBasicMaterial>(null);
   const spallInstancedRef = useRef<THREE.InstancedMesh>(null);
   const sparkInstancedRef = useRef<THREE.InstancedMesh>(null);
+  const backJetInstancedRef = useRef<THREE.InstancedMesh>(null);
 
   const crewZoneBorderMatRef = useRef<THREE.LineBasicMaterial>(null);
   const crewZoneFillMatRef = useRef<THREE.MeshBasicMaterial>(null);
@@ -1445,6 +1584,9 @@ const TheaterInnerScene: React.FC<TheaterInnerSceneProps> = ({
     const shockRing = new THREE.RingGeometry(0.82, 1.0, 40);
     const spallShard = new THREE.OctahedronGeometry(1, 0);
     const sparkStreak = new THREE.BoxGeometry(1, 1, 1);
+    // Tapered molten hydrodynamic crater back-jet ejecta droplet oriented along +X
+    const backJetStreak = new THREE.CylinderGeometry(0.16, 0.44, 1, 6);
+    backJetStreak.rotateZ(-Math.PI / 2);
 
     const crewW = Math.max(44, layout.crewZoneEndXCm - layout.crewZoneStartXCm);
     const crewH = Math.min(82, Math.max(54, layout.slabHeightCm * 0.65));
@@ -1459,12 +1601,28 @@ const TheaterInnerScene: React.FC<TheaterInnerSceneProps> = ({
       shockRing,
       spallShard,
       sparkStreak,
+      backJetStreak,
       crewEdges,
       crewW,
       crewH,
       crewD,
     };
   }, [layout.crewZoneStartXCm, layout.crewZoneEndXCm, layout.slabHeightCm, layout.slabDepthCm]);
+
+  const backJetMat = useMemo(
+    () =>
+      new THREE.MeshBasicMaterial({
+        color: '#ffffff',
+        transparent: true,
+        opacity: themePalette.isDaylight ? 0.92 : 0.88,
+        blending: themePalette.isDaylight
+          ? THREE.NormalBlending
+          : THREE.AdditiveBlending,
+        depthWrite: false,
+        toneMapped: true,
+      }),
+    [themePalette.isDaylight]
+  );
 
   useEffect(() => {
     return () => {
@@ -1473,9 +1631,16 @@ const TheaterInnerScene: React.FC<TheaterInnerSceneProps> = ({
       effectGeos.shockRing.dispose();
       effectGeos.spallShard.dispose();
       effectGeos.sparkStreak.dispose();
+      effectGeos.backJetStreak.dispose();
       effectGeos.crewEdges.dispose();
     };
   }, [effectGeos]);
+
+  useEffect(() => {
+    return () => {
+      backJetMat.dispose();
+    };
+  }, [backJetMat]);
 
   // Pre-seed InstancedMesh instanceColor buffers before first render so Three.js compiles USE_INSTANCING_COLOR cleanly
   useEffect(() => {
@@ -1498,6 +1663,17 @@ const TheaterInnerScene: React.FC<TheaterInnerSceneProps> = ({
       }
       sparkMesh.instanceMatrix.needsUpdate = true;
       if (sparkMesh.instanceColor) sparkMesh.instanceColor.needsUpdate = true;
+    }
+    const backJetMesh = backJetInstancedRef.current;
+    if (backJetMesh) {
+      for (let i = 0; i < BACK_JET_PARTICLE_COUNT; i++) {
+        backJetMesh.setMatrixAt(i, zeroMat);
+        backJetMesh.setColorAt(i, white);
+      }
+      backJetMesh.instanceMatrix.needsUpdate = true;
+      if (backJetMesh.instanceColor) {
+        backJetMesh.instanceColor.needsUpdate = true;
+      }
     }
   }, [effectGeos]);
 
@@ -1569,8 +1745,9 @@ const TheaterInnerScene: React.FC<TheaterInnerSceneProps> = ({
       penetratorGroupRef.current.rotation.set(0, 0, frame.rodPitchRad);
     }
     if (penetratorBodyScaleRef.current) {
+      // Tip-anchored (local x = 0) longitudinal shortening: tail advances authentically into the cavity
       penetratorBodyScaleRef.current.scale.set(
-        Math.max(0.15, frame.rodLengthFraction),
+        Math.max(0.28, frame.rodLengthFraction),
         1,
         1
       );
@@ -1581,7 +1758,8 @@ const TheaterInnerScene: React.FC<TheaterInnerSceneProps> = ({
       const baseGlowRadius = Math.min(2.6, layout.penetratorDiameterCm * 0.48);
       const tipScale =
         baseGlowRadius * (0.72 + 0.38 * frame.rodGlowIntensity);
-      erodingTipRef.current.scale.set(tipScale * 1.15, tipScale, tipScale);
+      const mushroomR = tipScale * frame.rodMushroomTipScale;
+      erodingTipRef.current.scale.set(tipScale * 1.08, mushroomR, mushroomR);
       const maxOpacity = layout.outcome === 'ricochet' ? 0.42 : 0.88;
       erodingTipMatRef.current.opacity = Math.min(
         maxOpacity,
@@ -1669,7 +1847,7 @@ const TheaterInnerScene: React.FC<TheaterInnerSceneProps> = ({
         cavityGroupRef.current.rotation.set(0, 0, cavAngle);
 
         const len = frame.cavityDepthLosCm;
-        const r = frame.cavityRadiusCm;
+        const r = frame.cavityRadiusCm * frame.erosionChannelRadiusMult;
         cavityCoreRef.current.scale.set(len, r * 0.72, r * 0.72);
         cavityOuterRef.current.scale.set(len * 1.02, r * 1.32, r * 1.32);
 
@@ -1858,16 +2036,66 @@ const TheaterInnerScene: React.FC<TheaterInnerSceneProps> = ({
       }
     }
 
+    // 7b. Cycle 16C: 36-Streak Molten Hydrodynamic Crater Back-Jet Ejecta Spray (32°-52° cone, clamped orange-gold)
+    if (backJetInstancedRef.current) {
+      const mesh = backJetInstancedRef.current;
+      const showBackJet =
+        frame.backJetIntensity01 > 0.05 && frame.progress >= THEATER_T_IMPACT;
+      mesh.visible = showBackJet;
+      if (showBackJet) {
+        for (let i = 0; i < BACK_JET_PARTICLE_COUNT; i++) {
+          evaluateBackJetParticleInto(layout, frame, i, _scratchParticleOut);
+          if (_scratchParticleOut.visible) {
+            _scratchPos.set(
+              _scratchParticleOut.x,
+              _scratchParticleOut.y,
+              _scratchParticleOut.z
+            );
+            _scratchEuler.set(
+              _scratchParticleOut.rotX,
+              _scratchParticleOut.rotY,
+              _scratchParticleOut.rotZ,
+              'YXZ'
+            );
+            _scratchQuat.setFromEuler(_scratchEuler);
+            _scratchScale.set(
+              _scratchParticleOut.scaleX,
+              _scratchParticleOut.scaleY,
+              _scratchParticleOut.scaleZ
+            );
+            _scratchMatrix.compose(_scratchPos, _scratchQuat, _scratchScale);
+            mesh.setMatrixAt(i, _scratchMatrix);
+
+            _scratchColor.lerpColors(
+              _colorBackJetEmber,
+              _colorBackJetGold,
+              Math.min(1, _scratchParticleOut.heat)
+            );
+            mesh.setColorAt(i, _scratchColor);
+          } else {
+            _scratchMatrix.makeScale(0, 0, 0);
+            mesh.setMatrixAt(i, _scratchMatrix);
+          }
+        }
+        mesh.instanceMatrix.needsUpdate = true;
+        if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true;
+      }
+    }
+
     // 8. Crew Compartment warning border highlight when perforated
     if (crewZoneBorderMatRef.current && crewZoneFillMatRef.current) {
       const alert = frame.crewAlertIntensity;
       if (alert > 0.02) {
-        crewZoneBorderMatRef.current.color.set('#f87171');
+        crewZoneBorderMatRef.current.color.copy(_colorCrewAlert);
         crewZoneBorderMatRef.current.opacity = 0.35 + alert * 0.55;
         crewZoneFillMatRef.current.opacity = 0.04 + alert * 0.1;
       } else {
-        crewZoneBorderMatRef.current.color.set('#334155');
-        crewZoneBorderMatRef.current.opacity = 0.28;
+        crewZoneBorderMatRef.current.color.copy(
+          themePalette.isDaylight ? _colorCrewIdleDaylight : _colorCrewIdleDark
+        );
+        crewZoneBorderMatRef.current.opacity = themePalette.isDaylight
+          ? 0.42
+          : 0.28;
         crewZoneFillMatRef.current.opacity = 0.025;
       }
     }
@@ -1899,27 +2127,33 @@ const TheaterInnerScene: React.FC<TheaterInnerSceneProps> = ({
 
   return (
     <>
-      <color attach="background" args={['#060b16']} />
-      <fog attach="fog" args={['#060b16', 240, 560]} />
+      <color attach="background" args={[themePalette.backgroundHex]} />
+      <fog attach="fog" args={[themePalette.fogHex, 240, 560]} />
 
-      {/* Dark Armored Lab 3-Point Studio Lighting */}
-      <hemisphereLight args={['#7dd3fc', '#0f172a', 0.65]} />
+      {/* Armored Lab 3-Point Studio Lighting (Dark Studio & Blueprint Daylight synced) */}
+      <hemisphereLight
+        args={[
+          themePalette.hemiSkyHex,
+          themePalette.hemiGroundHex,
+          themePalette.hemiIntensity,
+        ]}
+      />
       <directionalLight
         position={[-65, 110, 95]}
-        intensity={2.1}
-        color="#e0f2fe"
+        intensity={themePalette.keyLightIntensity}
+        color={themePalette.keyLightHex}
         castShadow
         shadow-mapSize={[1024, 1024]}
       />
       <directionalLight
         position={[95, 55, -60]}
-        intensity={1.05}
-        color="#fb923c"
+        intensity={themePalette.rimLightIntensity}
+        color={themePalette.rimLightHex}
       />
       <directionalLight
         position={[15, -40, 80]}
-        intensity={0.45}
-        color="#38bdf8"
+        intensity={themePalette.fillLightIntensity}
+        color={themePalette.fillLightHex}
       />
 
       {/* Dynamic Impact / ERA Detonation & Molten Cavity Point Lights */}
@@ -1950,7 +2184,7 @@ const TheaterInnerScene: React.FC<TheaterInnerSceneProps> = ({
         maxPolarAngle={Math.PI * 0.62}
       />
 
-      <LabBackdrop layout={layout} />
+      <LabBackdrop layout={layout} themePalette={themePalette} />
 
       {/* 1:1 Dynamically Tilted Composite Armor Cutaway Cross-Section Block */}
       <group rotation={[0, 0, -layout.visualTiltRad]}>
@@ -1969,6 +2203,7 @@ const TheaterInnerScene: React.FC<TheaterInnerSceneProps> = ({
             backingGlowMatRef={backingGlowMatRef}
             exitLocalYCm={exitLocalYCm}
             outcome={layout.outcome}
+            themePalette={themePalette}
           />
         ))}
 
@@ -2216,14 +2451,24 @@ const TheaterInnerScene: React.FC<TheaterInnerSceneProps> = ({
         />
       </instancedMesh>
 
+      {/* Cycle 16C: 36 Zero-GC Instanced Molten Hydrodynamic Crater Back-Jet Ejecta Streaks */}
+      <instancedMesh
+        ref={backJetInstancedRef}
+        name="MoltenCraterBackJetEjecta"
+        args={[effectGeos.backJetStreak, backJetMat, BACK_JET_PARTICLE_COUNT]}
+        visible={false}
+        frustumCulled={false}
+        renderOrder={11}
+      />
+
       {/* Protected Crew Compartment Zone Wireframe Behind Backing Plate */}
       <group position={[crewCenterX, 0, -layout.slabDepthCm * 0.48]}>
         <lineSegments geometry={effectGeos.crewEdges}>
           <lineBasicMaterial
             ref={crewZoneBorderMatRef}
-            color="#334155"
+            color={themePalette.crewBorderIdleHex}
             transparent
-            opacity={0.28}
+            opacity={themePalette.isDaylight ? 0.42 : 0.28}
           />
         </lineSegments>
         <mesh>
@@ -2249,6 +2494,11 @@ export const ArmorPenetration3DScene: React.FC<ArmorPenetration3DSceneProps> = (
   compact = false,
 }) => {
   const ui = ARMOR_PENETRATION_STRINGS[lang];
+  const environmentPreset = useAppStore((s) => s.environmentPreset);
+  const themePalette = useMemo(
+    () => resolveArmorTheaterThemePalette(environmentPreset),
+    [environmentPreset]
+  );
   const layout = useMemo(() => buildArmorTheaterLayout(result), [result]);
 
   const [clock] = useState<ArmorTheaterClock>(() => createArmorTheaterClock());
@@ -2470,6 +2720,7 @@ export const ArmorPenetration3DScene: React.FC<ArmorPenetration3DSceneProps> = (
                 clock={clock}
                 onHudTick={handleHudTick}
                 cameraResetTrigger={cameraResetTrigger}
+                themePalette={themePalette}
               />
             </Canvas>
           </ViewportErrorBoundary>
