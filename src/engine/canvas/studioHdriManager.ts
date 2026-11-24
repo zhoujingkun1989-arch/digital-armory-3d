@@ -27,10 +27,207 @@ export const HEAVY_ARMOR_HDRI_FILE = 'heavy_armor_hangar.hdr';
 export const STUDIO_HDRI_ENV_INTENSITY: Readonly<
   Record<ArmoryEnvironmentPreset, number>
 > = {
-  tactical_vault: 1.25,
-  gunsmith_bench: 1.18,
+  tactical_vault: 1.28,
+  gunsmith_bench: 1.24,
   blueprint_daylight: 0.96,
 };
+
+export interface StudioSoftboxCardSpec {
+  id: string;
+  position: readonly [number, number, number];
+  scale: readonly [number, number];
+  /** Linear HDR RGB radiance added onto the small-arms reflection dome. */
+  radiance: readonly [number, number, number];
+}
+
+/**
+ * Wide horizontal neutral-white & brushed-silver studio softbox reflection cards
+ * composited additively into the small-arms PMREM environment for dark studio presets.
+ * Ensures vertical chrome/stainless flats (e.g. Desert Eagle .50 AE Chrome, Colt Python)
+ * and dark parkerized steel bevels reflect luminous photographic light ribbons rather than black void.
+ */
+export const STUDIO_SOFTBOX_REFLECTION_CARDS: Readonly<
+  Record<'tactical_vault' | 'gunsmith_bench', readonly StudioSoftboxCardSpec[]>
+> = {
+  tactical_vault: [
+    {
+      id: 'overhead_key_ribbon',
+      position: [0, 22, 4],
+      scale: [46, 10],
+      radiance: [1.52, 1.56, 1.64],
+    },
+    {
+      id: 'front_chrome_horizon_strip',
+      position: [4, 6.2, 26],
+      scale: [54, 11],
+      radiance: [2.45, 2.52, 2.64],
+    },
+    {
+      id: 'front_lower_silver_bounce',
+      position: [0, -3.6, 26],
+      scale: [52, 9],
+      radiance: [1.42, 1.5, 1.62],
+    },
+    {
+      id: 'rear_chrome_horizon_strip',
+      position: [-4, 6.2, -26],
+      scale: [54, 11],
+      radiance: [2.25, 2.34, 2.48],
+    },
+    {
+      id: 'rear_lower_silver_bounce',
+      position: [0, -3.6, -26],
+      scale: [52, 9],
+      radiance: [1.32, 1.4, 1.52],
+    },
+    {
+      id: 'muzzle_end_rim_card',
+      position: [28, 5.5, 4],
+      scale: [22, 7.5],
+      radiance: [1.22, 1.26, 1.34],
+    },
+    {
+      id: 'breech_end_rim_card',
+      position: [-28, 5.5, -4],
+      scale: [22, 7.5],
+      radiance: [1.14, 1.2, 1.3],
+    },
+  ],
+  gunsmith_bench: [
+    {
+      id: 'overhead_shop_ribbon',
+      position: [0, 22, 2],
+      scale: [48, 10],
+      radiance: [1.58, 1.48, 1.34],
+    },
+    {
+      id: 'front_chrome_horizon_strip',
+      position: [4, 6.2, 26],
+      scale: [54, 11],
+      radiance: [2.22, 2.18, 2.1],
+    },
+    {
+      id: 'front_lower_silver_bounce',
+      position: [0, -3.6, 26],
+      scale: [52, 9],
+      radiance: [1.28, 1.3, 1.34],
+    },
+    {
+      id: 'rear_chrome_horizon_strip',
+      position: [-4, 6.2, -26],
+      scale: [54, 11],
+      radiance: [2.05, 2.12, 2.24],
+    },
+    {
+      id: 'rear_lower_silver_bounce',
+      position: [0, -3.6, -26],
+      scale: [52, 9],
+      radiance: [1.18, 1.24, 1.32],
+    },
+    {
+      id: 'muzzle_end_rim_card',
+      position: [28, 5.5, 4],
+      scale: [22, 7.5],
+      radiance: [1.24, 1.18, 1.1],
+    },
+    {
+      id: 'breech_end_rim_card',
+      position: [-28, 5.5, -4],
+      scale: [22, 7.5],
+      radiance: [1.08, 1.16, 1.26],
+    },
+  ],
+};
+
+function createSoftboxFeatherDataTexture(size = 64): THREE.DataTexture {
+  const data = new Uint8Array(size * size * 4);
+  for (let y = 0; y < size; y++) {
+    const ny = ((y + 0.5) / size) * 2 - 1;
+    const fy = 1 - Math.min(1, Math.pow(Math.abs(ny), 2.4));
+    const sy = fy * fy * (3 - 2 * fy);
+    for (let x = 0; x < size; x++) {
+      const nx = ((x + 0.5) / size) * 2 - 1;
+      const fx = 1 - Math.min(1, Math.pow(Math.abs(nx), 3.0));
+      const sx = fx * fx * (3 - 2 * fx);
+      const alpha = Math.max(0, Math.min(255, Math.round(sx * sy * 255)));
+      const idx = (y * size + x) * 4;
+      data[idx] = 255;
+      data[idx + 1] = 255;
+      data[idx + 2] = 255;
+      data[idx + 3] = alpha;
+    }
+  }
+  const tex = new THREE.DataTexture(data, size, size, THREE.RGBAFormat);
+  tex.colorSpace = THREE.NoColorSpace;
+  tex.minFilter = THREE.LinearFilter;
+  tex.magFilter = THREE.LinearFilter;
+  tex.wrapS = THREE.ClampToEdgeWrapping;
+  tex.wrapT = THREE.ClampToEdgeWrapping;
+  tex.needsUpdate = true;
+  return tex;
+}
+
+function buildCompositeSmallArmsPmrem(
+  pmrem: THREE.PMREMGenerator,
+  equirectTex: THREE.Texture,
+  preset: 'tactical_vault' | 'gunsmith_bench'
+): THREE.WebGLRenderTarget {
+  const cards = STUDIO_SOFTBOX_REFLECTION_CARDS[preset];
+  const envScene = new THREE.Scene();
+  const disposables: Array<{ dispose: () => void }> = [];
+
+  try {
+    const domeGeo = new THREE.SphereGeometry(50, 48, 24);
+    const domeMat = new THREE.MeshBasicMaterial({
+      map: equirectTex,
+      side: THREE.BackSide,
+      depthWrite: false,
+      toneMapped: false,
+    });
+    disposables.push(domeGeo, domeMat);
+    const domeMesh = new THREE.Mesh(domeGeo, domeMat);
+    domeMesh.renderOrder = 0;
+    envScene.add(domeMesh);
+
+    const cardGeo = new THREE.PlaneGeometry(1, 1);
+    const featherTex = createSoftboxFeatherDataTexture(64);
+    disposables.push(cardGeo, featherTex);
+
+    for (const spec of cards) {
+      const cardMat = new THREE.MeshBasicMaterial({
+        color: new THREE.Color(
+          spec.radiance[0],
+          spec.radiance[1],
+          spec.radiance[2]
+        ),
+        map: featherTex,
+        transparent: true,
+        blending: THREE.AdditiveBlending,
+        depthTest: false,
+        depthWrite: false,
+        side: THREE.DoubleSide,
+        toneMapped: false,
+      });
+      disposables.push(cardMat);
+      const cardMesh = new THREE.Mesh(cardGeo, cardMat);
+      cardMesh.position.set(
+        spec.position[0],
+        spec.position[1],
+        spec.position[2]
+      );
+      cardMesh.scale.set(spec.scale[0], spec.scale[1], 1);
+      cardMesh.lookAt(0, 0, 0);
+      cardMesh.renderOrder = 1;
+      envScene.add(cardMesh);
+    }
+
+    return pmrem.fromScene(envScene, 0.015, 0.1, 120);
+  } finally {
+    for (const item of disposables) {
+      item.dispose();
+    }
+  }
+}
 
 /**
  * Calibrated environment IBL intensity multipliers for the Heavy Armor Assembly Hangar HDRI
@@ -128,13 +325,19 @@ export function loadStudioHdriTexture(
   }
 
   const fileName = getStudioHdriFileNameForScale(preset, scaleProfile);
+  const useSmallArmsSoftboxComposite =
+    !isHeavyArmorHdriActive(preset, scaleProfile) &&
+    (preset === 'tactical_vault' || preset === 'gunsmith_bench');
+  const cacheKey = useSmallArmsSoftboxComposite
+    ? `${fileName}#softbox`
+    : fileName;
   const cache = getRendererCache(renderer);
-  const existing = cache.targets.get(fileName);
+  const existing = cache.targets.get(cacheKey);
   if (existing) {
     return Promise.resolve(existing.texture);
   }
 
-  const inflight = cache.inflight.get(fileName);
+  const inflight = cache.inflight.get(cacheKey);
   if (inflight) {
     return inflight;
   }
@@ -149,27 +352,43 @@ export function loadStudioHdriTexture(
       (equirectTex) => {
         try {
           equirectTex.mapping = THREE.EquirectangularReflectionMapping;
-          const rt = cache.pmrem.fromEquirectangular(equirectTex);
+          let rt: THREE.WebGLRenderTarget;
+          if (
+            useSmallArmsSoftboxComposite &&
+            typeof cache.pmrem.fromScene === 'function'
+          ) {
+            try {
+              rt = buildCompositeSmallArmsPmrem(
+                cache.pmrem,
+                equirectTex,
+                preset
+              );
+            } catch {
+              rt = cache.pmrem.fromEquirectangular(equirectTex);
+            }
+          } else {
+            rt = cache.pmrem.fromEquirectangular(equirectTex);
+          }
           equirectTex.dispose();
-          rt.texture.name = `ArmoryStudioHDRI.${fileName}`;
-          cache.targets.set(fileName, rt);
-          cache.inflight.delete(fileName);
+          rt.texture.name = `ArmoryStudioHDRI.${cacheKey}`;
+          cache.targets.set(cacheKey, rt);
+          cache.inflight.delete(cacheKey);
           resolve(rt.texture);
         } catch {
           equirectTex.dispose();
-          cache.inflight.delete(fileName);
+          cache.inflight.delete(cacheKey);
           resolve(null);
         }
       },
       undefined,
       () => {
-        cache.inflight.delete(fileName);
+        cache.inflight.delete(cacheKey);
         resolve(null);
       }
     );
   });
 
-  cache.inflight.set(fileName, promise);
+  cache.inflight.set(cacheKey, promise);
   return promise;
 }
 

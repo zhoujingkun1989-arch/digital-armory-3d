@@ -36,10 +36,12 @@ interface SuppressorMeshes {
 
 function buildSuppressorGeometries(): SuppressorMeshes {
   // Hollow titanium outer sleeve (Lathe around Y then rotated to +X):
-  // spans X in [0.0, 17.4], outer R = 1.90, inner wall R = 1.66 (2.4 mm Ti-6Al-4V wall)
+  // spans X in [-0.48, 17.4], outer R = 1.90, inner wall R = 1.66 (2.4 mm Ti-6Al-4V wall)
+  // Rear QD skirt seats flush over factory barrel shoulder / crush washer with zero double-collar seam.
   const tubePts = [
-    new THREE.Vector2(1.18, -0.32), // Rear QD thread overlap collar (flush, zero gap)
-    new THREE.Vector2(1.52, -0.32),
+    new THREE.Vector2(0.62, -0.48), // Rear barrel-shoulder seat (flush, encapsulates crush washer/spigot)
+    new THREE.Vector2(1.38, -0.48),
+    new THREE.Vector2(1.52, -0.18),
     new THREE.Vector2(1.52, 0.72),
     new THREE.Vector2(1.88, 1.05),
     new THREE.Vector2(1.9, 1.45),
@@ -56,7 +58,7 @@ function buildSuppressorGeometries(): SuppressorMeshes {
     new THREE.Vector2(1.64, 17.4),
     new THREE.Vector2(1.64, 1.1),
     new THREE.Vector2(1.18, 0.72),
-    new THREE.Vector2(1.18, -0.32),
+    new THREE.Vector2(0.62, -0.48),
   ];
   const outerTube = new THREE.LatheGeometry(tubePts, 36);
   outerTube.rotateZ(-Math.PI / 2);
@@ -149,10 +151,11 @@ interface BrakeMeshes {
 }
 
 function buildMuzzleBrakeGeometries(): BrakeMeshes {
-  // Rear crush washer + hex timing collar overlapping barrel shoulder at X = -0.28..0.85
-  const rearCollar = new THREE.CylinderGeometry(1.18, 1.24, 1.18, 16);
+  // Rear tapered timing collar spanning X in [-0.48, +1.28] to seat flush over barrel shoulder
+  // and completely encapsulate factory crush washers / threaded spigots with zero double-collar seam.
+  const rearCollar = new THREE.CylinderGeometry(1.18, 1.24, 1.76, 16);
   rearCollar.rotateZ(-Math.PI / 2);
-  rearCollar.translate(0.3, 0, 0);
+  rearCollar.translate(0.4, 0, 0);
 
   // Upper & lower machined steel bridge plates forming twin open lateral gas chambers
   const spineTop = new THREE.BoxGeometry(5.6, 0.44, 2.24);
@@ -186,14 +189,17 @@ interface FlashHiderMeshes {
 }
 
 function buildFlashHiderGeometries(): FlashHiderMeshes {
+  // Tapered rear barrel-shoulder sleeve spans X in [-0.48, +1.72], cleanly seating over
+  // factory barrel crush washers & threaded spigots with a seamless single-collar silhouette.
   const basePts = [
-    new THREE.Vector2(0.54, -0.28),
-    new THREE.Vector2(1.16, -0.28),
-    new THREE.Vector2(1.22, 0.25),
+    new THREE.Vector2(0.54, -0.48),
+    new THREE.Vector2(1.06, -0.48),
+    new THREE.Vector2(1.18, -0.14),
+    new THREE.Vector2(1.22, 0.28),
     new THREE.Vector2(1.18, 1.45),
     new THREE.Vector2(1.05, 1.72),
     new THREE.Vector2(0.58, 1.72),
-    new THREE.Vector2(0.54, -0.28),
+    new THREE.Vector2(0.54, -0.48),
   ];
   const baseMount = new THREE.LatheGeometry(basePts, 24);
   baseMount.rotateZ(-Math.PI / 2);

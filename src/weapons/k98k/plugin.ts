@@ -602,6 +602,33 @@ export const K98K_FIRING_PHASES: FiringPhaseInfo[] = [
 ];
 
 /**
+ * Explode threshold (`t > 0.04`) and open-bolt firing phase window (`f ∈ [0.55, 0.79]`)
+ * during which the K98k 5-round brass stripper clip is revealed cleanly.
+ * When assembled with the Mauser 98 bolt closed & locked (`t <= 0.04` or closed bolt),
+ * the stripper clip is stowed/hidden so it never protrudes vertically from a locked action.
+ */
+export const K98K_STRIPPER_CLIP_EXPLODE_REVEAL_T = 0.04;
+export const K98K_STRIPPER_CLIP_OPEN_BOLT_MIN_F = 0.55;
+export const K98K_STRIPPER_CLIP_OPEN_BOLT_MAX_F = 0.79;
+
+export function isK98kStripperClipVisible(
+  mode: 'explode' | 'firing',
+  explodeProgress: number,
+  fireProgress: number,
+  isFieldStrip: boolean,
+  isSelected: boolean
+): boolean {
+  if (isFieldStrip || isSelected) return true;
+  if (mode === 'firing') {
+    return (
+      fireProgress >= K98K_STRIPPER_CLIP_OPEN_BOLT_MIN_F &&
+      fireProgress <= K98K_STRIPPER_CLIP_OPEN_BOLT_MAX_F
+    );
+  }
+  return explodeProgress > K98K_STRIPPER_CLIP_EXPLODE_REVEAL_T;
+}
+
+/**
  * Real-time manual Mauser 98 bolt-action kinematics for all 24 K98k parts at progress f ∈ [0, 1].
  * Right-hand rule verification:
  *  - Around +X: bent bolt handle extends to +Z (right) and -Y (down).
@@ -722,6 +749,20 @@ export function computeK98kFiringKinematics(
       // Vertical coil anchored at floorplate (local x = 0, assembledRot = [0, 0, +PI/2]).
       // Extends cleanly upward under rising follower (scaleX: 1.00 -> 1.24 -> 1.00, delta = 0.24 > 0.08)!
       scaleX = 1 + 0.24 * magFeedPulse;
+      break;
+    }
+
+    case 'k98k_stripper_clip': {
+      // Smoothly seats into the open rear-bridge charger slot while bolt is drawn rearward
+      // (`f ∈ [0.55..0.79]`) and ejects cleanly upward as the bolt advances forward to close.
+      const windowFadeIn = seg(f, 0.48, 0.55);
+      const insertDrop = 1 - seg(f, 0.55, 0.63);
+      const ejectPop = seg(f, 0.71, 0.79);
+      const returnSettle = seg(f, 0.82, 0.92);
+      const activeLift =
+        windowFadeIn * (insertDrop * 2.2 + ejectPop * 3.1) * (1 - returnSettle);
+      dy = activeLift;
+      rz = -0.22 * ejectPop * (1 - returnSettle);
       break;
     }
 

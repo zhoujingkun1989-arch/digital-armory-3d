@@ -470,6 +470,7 @@ export const MG42_PARTS: WeaponPartSpec[] = [
     nameEn: 'Stamped Grip Housing, Ribbed Bakelite Scales & Cross-Bolt Safety',
     group: 'fire_control',
     material: 'polymer_frame',
+    isShell: true,
     assembledPos: [-2.2, -3.95, 0],
     explodeSteps: [
       { range: [0.1, 0.26], offset: [-2.0, -9.8, 0] },
