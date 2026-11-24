@@ -1,0 +1,919 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "thompson",
+  "generatedAt": "2026-11-24T04:10:00.000000+00:00",
+  "generatorModels": {
+    "text": "gemini-3.8-flash",
+    "storyTts": "gemini-3.8-flash-tts",
+    "partTts": "gemini-3.8-flash-tts"
+  },
+  "uiMetaEn": {
+    "name": "Thompson M1928A1 Submachine Gun",
+    "subtitle": ".45 ACP Bronze Blish-Lock & 50-Round Clockwork Drum Submachine Gun",
+    "originCountry": "United States",
+    "weaponType": "Submachine Gun",
+    "categoryLabel": "SMG",
+    "actionMechanism": "Open-Bolt Blish Bronze Adhesion-Delayed Blowback · Top Actuator · 50-Rd Clockwork Drum",
+    "statusLabel": "In Vault · Field Strippable",
+    "description": "Conceived by Brigadier General John T. Thompson in 1918 as a 'trench broom' and refined into the legendary M1928A1, the Thompson submachine gun fused opulent interwar machining with punishing .45 ACP firepower. Featuring a deeply finned 10.5-inch barrel topped by a four-slot Cutts compensator, a milled steel receiver housing Commander John Blish's patent cast-bronze H-piece delayed blowback lock, a Lyman ladder sight, contoured American black walnut grips, and a winding 50-round Type L clockwork drum, it defined both the Roaring Twenties and World War II Allied assaults.",
+    "highlights": [
+      "Cast-Bronze H-Piece Blish Lock Sliding in 45° Receiver Slots",
+      "28-Fin Cooled Barrel w/ Four-Slot Cutts Muzzle Compensator",
+      "50-Round Type L Clockwork Drum w/ 4-Arm Rotor & Spiral .45 ACP Track",
+      "Milled Billet Receiver, Lyman Ladder Sight & Contoured Black Walnut"
+    ],
+    "workbenchTitle": "Thompson M1928A1 3D Kinematics & Blish-Lock Workbench",
+    "workbenchSubtitle": "4 Modular Groups · 25 Parts · 45° Bronze Blish Delay, Top Actuator, Bolt Hammer & 50-Round Spiral Drum",
+    "cutawayLabel": "Blish Lock & 50-Rd Drum Cutaway",
+    "cutawayTitle": "Switch to cutaway focus on the cast-bronze Blish H-piece lock, 45° receiver tracks, and 50-round Type L spiral drum",
+    "searchPlaceholder": "Search BOM parts (e.g., Blish Lock, Cutts Comp, Drum Rotor, Lyman Sight, B-04)...",
+    "firingMilestoneLabel": "Blish 45° Cam-Out",
+    "rateOfFire": "700–800 rpm (Select-Fire Open-Bolt)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Open-Bolt Ready",
+        "subLabel": "0% Open-Bolt Ready",
+        "desc": "Fully assembled Thompson M1928A1 (852 mm overall): top-mounted actuator and milled bolt latched rearward on the open-bolt sear with the 50-round Type L clockwork drum slid into the receiver T-slots."
+      },
+      "field_strip": {
+        "label": "Field Strip & Drum Removal",
+        "subLabel": "30% Field Strip",
+        "desc": "Follow FM 23-40 teardown: slide the 50-round Type L drum sideways off the receiver, detach the slide-on walnut buttstock, depress the buffer pilot button to split upper and lower receivers, and draw out the spring, bronze Blish lock, and bolt."
+      },
+      "sub_assembly": {
+        "label": "Blish Lock & Drum Teardown",
+        "subLabel": "65% Sub-Assembly",
+        "desc": "Separate the cast-bronze Blish H-piece, brass felt oilers, bolt inertia hammer, and firing pin; open the 50-round Type L drum housing to expose the 4-arm clockwork rotor and spiral .45 ACP cartridge array."
+      },
+      "full_exploded": {
+        "label": "Full 25-Part Exploded View",
+        "subLabel": "100% Full Exploded",
+        "desc": "Complete mechanical breakdown of all 25 precision 1:1 components, celebrating the craftsmanship of the 'Chicago Typewriter' from its 28 cooling fins to its winding clockwork drum."
+      }
+    },
+    "firingPhases": {
+      "thompson_sear_drop": {
+        "shortLabel": "Sear Drop & Surge",
+        "title": "Phase 1 · Selectors on FIRE / FULL AUTO, Trigger Lowers Open-Bolt Sear",
+        "description": "With the twin left-side paddles set to FIRE and FULL AUTO, squeezing the curved trigger lowers the pivoting sear. The compressed piano-wire driving spring accelerates the milled bolt and bronze Blish lock forward."
+      },
+      "thompson_feed_blish_lock": {
+        "shortLabel": "Feed & 45° Blish Drop",
+        "title": "Phase 2 · Bolt Chambers .45 ACP, Bronze H-Piece Drops into 45° Slots & Trips Hammer",
+        "description": "The advancing breechblock strips a 230-grain .45 ACP round from the Type L drum neck into the 10.5-inch barrel. At battery, the bronze Blish H-piece drops 5.5 mm down the 45° receiver slots while the bolt-mounted hammer strikes the firing pin."
+      },
+      "thompson_blish_delay": {
+        "shortLabel": "145 MPa Blish Delay",
+        "title": "Phase 3 · Heavy .45 ACP Exits Cutts Compensator While Bronze H-Piece Resists Early Opening",
+        "description": "Combustion gases at 145 MPa drive the 14.9-gram round down the 28-fin barrel and through the four-slot Cutts compensator, venting gas upward to counter climb while the bronze H-piece presses against the 45° steel tracks."
+      },
+      "thompson_blish_cam_out": {
+        "shortLabel": "Blish 72° Cam-Out",
+        "title": "Phase 4 · Pressure Drops & 72° Bolt Slots Cam Bronze H-Piece Upward to Unlock",
+        "description": "As chamber pressure subsides, bolt thrust along the 72° internal slots lifts the bronze Blish lock upward 5.5 millimeters out of the receiver ears, freeing the bolt and top actuator to recoil."
+      },
+      "thompson_recoil_drum_wind": {
+        "shortLabel": "Eject & Drum Rotor Step",
+        "title": "Phase 5 · Bolt & Top Actuator Recoil, Right-Ejecting Brass as 4-Arm Drum Rotor Indexes",
+        "description": "The bolt, bronze lock, and top actuator knob travel swiftly rearward, flipping the spent .45 ACP brass out the right port while the wound clockwork drum rotor turns around the X axis to present the next round."
+      },
+      "thompson_fiber_rebound": {
+        "shortLabel": "Fiber Buffer Rebound",
+        "title": "Phase 6 · Bolt Cushions Against Red Vulcanized Fiber Buffer & Rebounds Forward",
+        "description": "Overtraveling 21 millimeters behind the sear, the milled bolt impacts the red-brown vulcanized fiber buffer disc on the guide pilot and rebounds smoothly under driving spring tension."
+      },
+      "thompson_open_bolt_ready": {
+        "shortLabel": "Open-Bolt Catch",
+        "title": "Phase 7 · Sear Rises to Lock Bolt Open, Leaving Chamber Vented & Next Round Staged",
+        "description": "Upon trigger release—or disconnector handoff in SINGLE mode—the open-bolt sear rises cleanly into the bolt notch, leaving the chamber cool and ventilated over the staged drum cartridge."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "青铜斜槽与芝加哥打字机：汤姆逊 M1928A1 冲锋枪的百年传奇",
+      "deck": "从一战战壕扫帚构想与布利什青铜粘附专利，到二十八道散热鳍、黑胡桃木前握把与上弦五十发圆鼓，汤姆逊 M1928A1 成为二十世纪最具辨识度的文化与军工图腾。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1916–1921",
+          "title": "“战壕扫帚”与布利什青铜专利",
+          "paragraphs": [
+            "第一次世界大战欧洲西线的泥泞堑壕战让传统栓动长步枪陷入近身肉搏困境。曾任美军军械署高官的约翰·T·汤姆逊准将敏锐意识到，步兵需要一把能像扫帚一样瞬间清扫战壕的单兵全自动近战利器——他亲手为其创造了“冲锋枪（Submachine Gun）”这一流传至今的英文专有名词。",
+            "为打造出既紧凑轻便又能承受重型点四五自动手枪弹连发冲击的自动机构，汤姆逊创立了自动军械公司（Auto-Ordnance），并重金购得海军司令官约翰·布利什的神奇专利：利用青铜与钢两种异质金属在极高压强下倾斜接触产生高静摩擦粘附效应的 H 型延迟闭锁块。",
+            "虽然在一九一八年停战钟声敲响时首批样枪才刚刚装船启运，错过了欧战硝烟，但总设计师西奥多·艾克霍夫与奥斯卡·佩恩在柯尔特工厂的支持下，于一九二一年完成了做工堪称奢华艺术品的 M1921 商业型汤姆逊冲锋枪。"
+          ],
+          "audioScript": "一战堑壕战的残酷僵局，催生了约翰·汤姆逊准将打造单兵“战壕扫帚”的构想。他引入海军军官布利什的青铜延迟锁专利，在柯尔特工厂精湛工艺的加持下，铸就了人类历史上最声名显赫的冲锋枪传奇。",
+          "audioUrl": "audio/thompson/story_act1_zh.mp3",
+          "focusPartId": "thompson_receiver",
+          "focusPartLabel": "整块锻钢立铣上机匣"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1926–1938",
+          "title": "散热鳍、卡茨防跳器与咆哮的二十年代",
+          "paragraphs": [
+            "最初诞生的 M1921 虽拥有每分钟九百发惊人射速，却因高达两百美元的天价（相当于当时半辆福特 T 型轿车）而在战后和平市场乏人问津。直至禁酒令席卷美国都市，挂着圆鼓与垂直胡桃木前握把的汤姆逊瞬间成为芝加哥街头与联邦调查局探员对峙的绝对主角，赢得“芝加哥打字机”与“汤米枪”的响亮绰号。",
+            "一九二六年，自动军械公司引入海军陆战队上校研制的四槽卡茨防跳制退器（Cutts Compensator），将枪口高压燃气向上喷出产生强力下压矩，极大驯服了点四五重弹连发时的剧烈枪口上跳；两年后又应美国海军要求加重枪机把射速降至更易控的七百至八百发每分钟，定型为经典的 M1928。",
+            "整块锻钢立铣机匣、二十八道车削径向散热鳍、精密的莱曼六百码梯形表尺、双面油浸毛毡润滑垫以及手搓亚麻籽油的美洲黑胡桃木前后握把，将黄金年代工业制造的奢华与考究推向极致。"
+          ],
+          "audioScript": "咆哮的二十年代赋予了汤姆逊“芝加哥打字机”的传奇威名。加装四槽卡茨防跳制退器驯服连发上跳、配以二十八道精车散热鳍与黑胡桃木垂直前握把的 M1928，将机械雕塑感与近战火力推向了前所未有的美学巅峰。",
+          "audioUrl": "audio/thompson/story_act2_zh.mp3",
+          "focusPartId": "thompson_barrel",
+          "focusPartLabel": "10.5英寸28道径向散热鳍烤蓝精钢枪管"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1921–1942",
+          "title": "45°青铜斜槽与50发发条圆鼓的钟表机械",
+          "paragraphs": [
+            "打开汤姆逊 M1928A1 的纵向剖视，两项跨越时代的机械奇观赫然入目：其一是横贯铣削枪机中央的铸造磷青铜 H 型布利什锁块，当顶置滚花拉机柄随枪机前冲闭锁时，青铜双耳顺着机匣两侧四十五度斜槽下沉五点五毫米锁入，击发瞬间靠青铜与钢界面摩擦阻滞短暂延缓开膛，随后再沿枪机七十二度斜面顺滑上滑解锁。",
+            "其二则是令人过目难忘的 L 型五十发冲压钢发条大弹鼓：弹壳内部冲压出双圈阿基米德螺旋导轨，五十发沉重的点四五黄铜实弹头尾相接环绕排布；射手扣紧前盖后拧动前置钢片钥匙上弦九响蓄满发条，每次射击四翼星轮转子绕轴步进旋转，将重达十四点九克的圆头大弹源源不断推入顶颈抱弹口。",
+            "此外，M1928A1 还配备了枪机前置防早发杠杆击锤、内置毛毡自动注油垫以及红褐硫化纤维后坐缓冲垫，整套开膛火控更通过左侧独立双拨片实现精准半自动单发与全自动连发无缝切换。"
+          ],
+          "audioScript": "剖开 M1928A1 的厚重钢壳，宛如步入精密钟表工坊。亮金色的青铜 H 型布利什块沿机匣四十五度斜槽上下滑动延迟开锁；下方五十发发条大弹鼓上弦九响后，由四翼星轮转子驱动阿基米德螺旋轨道内的重弹滚滚上膛。",
+          "audioUrl": "audio/thompson/story_act3_zh.mp3",
+          "focusPartId": "thompson_blish_lock",
+          "focusPartLabel": "约翰·布利什专利青铜H型异质金属粘附延迟锁块"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1940–至今",
+          "title": "从诺曼底海滩到太平洋丛林的盟军传奇",
+          "paragraphs": [
+            "第二次世界大战全面爆发后，英国突击队与美军陆战队率先大批订购 M1928A1。萨维奇与布里奇波特工厂开足马力生产，温斯顿·丘吉尔手提五十发圆鼓汤姆逊视察防线的经典照片传遍全球，令这支美国冲锋枪化作反法西斯盟军的坚韧象征。",
+            "尽管一九四二年后为了适应战时爆发式产能需求，军方简化取消了昂贵的青铜布利什块、散热鳍、卡茨防跳器与圆鼓滑槽，演化出侧置拉机柄的自由枪机 M1A1，但 M1928A1 依然凭借其不可复制的机械复杂度、华丽外型与厚重手感，稳坐全球收藏界与军械博物馆的皇冠明珠。",
+            "累计生产逾一百五十万支的汤姆逊系列服役横跨二战、朝鲜与越南战场，而 M1928A1 更是二十世纪机械美学、实木与深烤蓝精钢工艺完美交融的永恒丰碑。"
+          ],
+          "audioScript": "二战烽火中，从北非沙漠、诺曼底海滩到太平洋岛屿，M1928A1 陪伴盟军突击队员浴血奋战。即便战时为降本简化为 M1A1，带散热鳍、卡茨防跳器、青铜布利什锁与五十发发条圆鼓的 M1928A1，始终是轻武器殿堂里无可替代的永恒经典。",
+          "audioUrl": "audio/thompson/story_act4_zh.mp3",
+          "focusPartId": "thompson_drum_mag",
+          "focusPartLabel": "50发L型发条螺旋冲压钢大弹鼓外壳"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "约翰·布利什 45° 青铜 H 型粘附延迟闭锁",
+          "tag": "青铜布利什延迟锁",
+          "summary": "利用铸造磷青铜 H 形双耳滑块在机匣 45° 斜槽与枪机 72° 导槽间的异质金属高压阻滞特性，配合内置毛毡润滑油垫，赋予 M1928A1 独一无二的半自由延迟开膛循环。",
+          "focusPartId": "thompson_blish_lock",
+          "focusPartLabel": "约翰·布利什专利青铜H型异质金属粘附延迟锁块"
+        },
+        {
+          "id": "bt2",
+          "title": "50发 L 型阿基米德螺旋发条大弹鼓",
+          "tag": "发条螺旋大弹鼓",
+          "summary": "冲压圆形鼓壳内置双圈阿基米德螺旋弹道与中心盘簧四翼转子，前置折叠钥匙拧紧 9 响即可为 50 发重型 .45 ACP 圆头弹提供充沛恒定供弹扭矩。",
+          "focusPartId": "thompson_drum_rotor",
+          "focusPartLabel": "发条弹鼓四翼星轮供弹转子与前置折叠上弦钥匙"
+        },
+        {
+          "id": "bt3",
+          "title": "28道散热鳍枪管与卡茨四槽防跳制退器",
+          "tag": "散热鳍与防跳器",
+          "summary": "10.5 英寸枪管精车 28 道径向散热环加速连发散热，枪口四槽卡茨防跳器向上偏转高压尾流产生向下力矩，大幅抑制 750 发/分连发枪口上跳。",
+          "focusPartId": "thompson_cutts_comp",
+          "focusPartLabel": "卡茨四槽防跳制退器与圆环片状前准星"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1918",
+          "title": "“战壕扫帚”样枪诞生并定名 Submachine Gun",
+          "detail": "约翰·汤姆逊准将与自动军械公司完成 .45 ACP 便携式全自动样枪，创造现代冲锋枪专有名词。"
+        },
+        {
+          "year": "1921",
+          "title": "柯尔特制造首批 15,000 支 M1921 精工版",
+          "detail": "配备 28 道散热鳍、垂直胡桃木前握把与 50/100 发发条圆鼓，成为禁酒令时代最具辨识度枪械。"
+        },
+        {
+          "year": "1928",
+          "title": "海军型 M1928 加装卡茨防跳器并降至 750 RPM",
+          "detail": "引入四槽卡茨枪口防跳制退器并优化枪机惯量，显著提升全自动连发可控性。"
+        },
+        {
+          "year": "1940",
+          "title": "英军突击队与美军大规模列装 M1928A1",
+          "detail": "萨维奇与布里奇波特产线全力运转，成为反法西斯盟军空降兵与突击队标志武器。"
+        },
+        {
+          "year": "1942",
+          "title": "战时简化纯自由枪机 M1 / M1A1 衍生型投产",
+          "detail": "为缩短战时工时取消青铜布利什锁、散热鳍与圆鼓槽，凸显早期 M1928A1 的奢华机械工艺价值。"
+        },
+        {
+          "year": "1945–至今",
+          "title": "产量逾 150 万支的二十世纪机械文化丰碑",
+          "detail": "历经多场现代战争考验，成为全球轻武器博物馆与流行文化中最具标志性的经典冲锋枪。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Bronze Angles and Clockwork Steel: The Thompson M1928A1 Legend",
+      "deck": "Born as a World War I trench broom powered by Commander John Blish's bronze locking wedge, the M1928A1 married 28-fin machining, American black walnut, and a winding 50-round drum into the twentieth century's defining submachine gun.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "ACT I",
+          "eraTag": "1916–1921",
+          "title": "The Trench Broom and the Blish Bronze Patent",
+          "paragraphs": [
+            "The brutal stalemate of World War I trench warfare exposed the awkwardness of long bolt-action rifles inside tight dugouts. Retired U.S. Army Brigadier General John T. Thompson envisioned a one-man, hand-held machine gun—a 'trench broom' firing hard-hitting .45 ACP pistol rounds—and coined the enduring term 'Submachine Gun' to describe it.",
+            "To control full-auto recoil without bulky rifle bolts, Thompson founded Auto-Ordnance Corporation and licensed Commander John Blish's curious metallurgical patent: an H-shaped bronze block theorized to adhere under peak chamber pressure across angled steel contact surfaces before slipping freely once gas pressure dropped.",
+            "Although the first prototypes reached the New York docks on the very day of the 1918 Armistice, chief engineers Theodore Eickhoff and Oscar Payne partnered with Colt's Patent Fire Arms to launch the luxuriously machined Model 1921."
+          ],
+          "audioScript": "Forged to break the bloody stalemate of World War One trenches, Brigadier General John Thompson's vision literally invented the name Submachine Gun. Partnering with Colt and licensing John Blish's bronze wedge patent, Auto-Ordnance created an American mechanical icon.",
+          "audioUrl": "audio/thompson/story_act1_en.mp3",
+          "focusPartId": "thompson_receiver",
+          "focusPartLabel": "Solid Milled Billet Steel Upper Receiver w/ 45° Blish & Drum Slots"
+        },
+        {
+          "id": "act2",
+          "actNumber": "ACT II",
+          "eraTag": "1926–1938",
+          "title": "Cooling Fins, the Cutts Compensator, and the Roaring Twenties",
+          "paragraphs": [
+            "At two hundred dollars—nearly half the price of a Model T automobile—early M1921 Thompsons initially languished in peacetime showrooms. Prohibition changed everything overnight: fitted with vertical contoured walnut foregrips and circular drums, the 'Chicago Typewriter' became the unmistakable silhouette of gangland shootouts and FBI lawmen alike.",
+            "In 1926, Auto-Ordnance introduced Colonel Richard Cutts' four-slot muzzle compensator, venting high-pressure gas upward to drive the muzzle down during bursts. Two years later, adopting a heavier actuator for the U.S. Navy tamed cyclic speed from 900 down to a controllable 700–800 rounds per minute—birthing the celebrated M1928.",
+            "Carved from solid alloy billet with 28 radial barrel cooling fins, an intricate 600-yard Lyman ladder sight, internal oil-soaked felt pads, and hand-rubbed American black walnut furniture, the M1928A1 represented the zenith of pre-war firearms craftsmanship."
+          ],
+          "audioScript": "Prohibition turned the Thompson into the notorious Chicago Typewriter. Adding the four-slot Cutts muzzle compensator to tame climb, pairing twenty-eight machined cooling fins with contoured walnut grips, the Model 1928 elevated submachine gun craftsmanship into industrial art.",
+          "audioUrl": "audio/thompson/story_act2_en.mp3",
+          "focusPartId": "thompson_barrel",
+          "focusPartLabel": "10.5\" Deeply Finned Blued Alloy Steel Barrel (28 Cooling Fins)"
+        },
+        {
+          "id": "act3",
+          "actNumber": "ACT III",
+          "eraTag": "1921–1942",
+          "title": "The 45-Degree Bronze Lock and 50-Round Clockwork Drum",
+          "paragraphs": [
+            "Slice the M1928A1 open in cutaway view and two mechanical marvels leap into focus. First sits the cast-bronze H-piece Blish lock riding inside the milled bolt: as the top-mounted actuator slams closed, the bronze ears slide 5.5 millimeters downward along 45-degree receiver grooves, resisting initial breech pressure before camming smoothly up the bolt's 72-degree slots to unlock.",
+            "Beneath the receiver hangs the equally legendary 50-round Type L clockwork drum. Stamped with concentric Archimedean spiral tracks, its steel body packs fifty heavy 230-grain .45 ACP rounds around a central four-arm rotor spider. Winding the front folding key nine sharp clicks loads a heavy clockwork mainspring that turns the rotor with each shot.",
+            "Refined down to its finest internal touches, the M1928A1 also features a bolt-face pivoting inertia hammer preventing out-of-battery discharge, brass-framed felt oiler pads, a red vulcanized fiber buffer disc, and twin left-side paddles for crisp semi- and full-auto fire."
+          ],
+          "audioScript": "Inside the milled steel receiver beats the heart of a mechanical watch. The warm bronze Blish H-piece slides smoothly along forty-five-degree inclined rails to time opening, while below, a clockwork four-arm rotor winds nine clicks to spiral fifty heavy forty-five caliber rounds straight up to the breech.",
+          "audioUrl": "audio/thompson/story_act3_en.mp3",
+          "focusPartId": "thompson_blish_lock",
+          "focusPartLabel": "Patent Cast-Bronze H-Piece Blish Adhesion-Delayed Blowback Lock"
+        },
+        {
+          "id": "act4",
+          "actNumber": "ACT IV",
+          "eraTag": "1940–Present",
+          "title": "From British Commandos to the Beaches of Normandy",
+          "paragraphs": [
+            "When World War II erupted, British Commandos and U.S. Marines clamored for every M1928A1 Savage and Bridgeport could mill. Winston Churchill's famous photograph cradling a drum-fed Thompson became an instant global emblem of Allied defiance.",
+            "Although wartime urgency in 1942 eventually stripped away the costly bronze Blish lock, cooling fins, Lyman ladder sight, and drum slots to spawn the simplified straight-blowback M1A1, the ornate M1928A1 remained the undisputed crown jewel of the Thompson lineage.",
+            "With over 1.5 million Thompsons manufactured across its variants, the M1928A1 stands today as an enduring monument to gilded-age precision machining, warm American walnut, and sheer mechanical personality."
+          ],
+          "audioScript": "Across North Africa, Normandy, and the Pacific islands, the Thompson M1928A1 stood beside Allied commandos and paratroopers. Even after wartime simplification birthed the M1A1, the finned, drum-fed M1928A1 remains the timeless crown jewel of twentieth-century submachine guns.",
+          "audioUrl": "audio/thompson/story_act4_en.mp3",
+          "focusPartId": "thompson_drum_mag",
+          "focusPartLabel": "50-Round Type L Clockwork Drum Magazine Housing & Spiral Track"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "John Blish 45° Cast-Bronze H-Piece Lock",
+          "tag": "Bronze Blish Lock",
+          "summary": "Pairs a milled bronze H-shaped sliding lock with 45° inclined receiver grooves, 72° bolt cam tracks, and internal felt oiler pads to create the Thompson's signature delayed-blowback cadence.",
+          "focusPartId": "thompson_blish_lock",
+          "focusPartLabel": "Patent Cast-Bronze H-Piece Blish Adhesion-Delayed Blowback Lock"
+        },
+        {
+          "id": "bt2",
+          "title": "50-Round Type L Clockwork Spiral Drum",
+          "tag": "Clockwork Spiral Drum",
+          "summary": "Stamped Archimedean spiral guide tracks and a central 4-arm mainspring rotor wound nine clicks via a front folding key deliver 50 heavy .45 ACP rounds under steady clockwork torque.",
+          "focusPartId": "thompson_drum_rotor",
+          "focusPartLabel": "Central 4-Arm Clockwork Rotor Spider & Front Folding Winding Key"
+        },
+        {
+          "id": "bt3",
+          "title": "28-Fin Cooled Barrel & 4-Slot Cutts Compensator",
+          "tag": "Finned Barrel & Comp",
+          "summary": "Twenty-eight turned radial barrel cooling fins shed sustained-fire heat while four upward gas slots in the Cutts compensator drive the muzzle downward during 750 RPM bursts.",
+          "focusPartId": "thompson_cutts_comp",
+          "focusPartLabel": "4-Slot Cutts Muzzle Compensator w/ Ring Front Sight Blade"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1918",
+          "title": "Trench Broom Prototypes Coin 'Submachine Gun'",
+          "detail": "Brigadier General John T. Thompson and Auto-Ordnance finalize .45 ACP portable automatic prototypes."
+        },
+        {
+          "year": "1921",
+          "title": "Colt Manufactures 15,000 Commercial M1921s",
+          "detail": "Finned barrels, vertical walnut foregrips, and clockwork drums define the Roaring Twenties."
+        },
+        {
+          "year": "1928",
+          "title": "Navy M1928 Adds Cutts Compensator & 750 RPM Tune",
+          "detail": "Four-slot muzzle brake and heavier actuator tame climb into controllable military bursts."
+        },
+        {
+          "year": "1940",
+          "title": "Allied Wartime Production of the M1928A1",
+          "detail": "Savage Arms and Auto-Ordnance Bridgeport arm British Commandos, Marines, and airborne troops."
+        },
+        {
+          "year": "1942",
+          "title": "Simplified Straight-Blowback M1 / M1A1 Introduced",
+          "detail": "Wartime simplification deletes the bronze Blish lock, cooling fins, and drum tracks, cementing M1928A1 prestige."
+        },
+        {
+          "year": "1945–Present",
+          "title": "1.5 Million Built — Enduring Cultural & Mechanical Icon",
+          "detail": "Celebrated worldwide as the pinnacle of interwar milled-steel and black-walnut firearms artistry."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "thompson_barrel": {
+      "partId": "thompson_barrel",
+      "bomCode": "B-01",
+      "calloutLabelEn": "28-Fin Cooled Barrel",
+      "zh": {
+        "roleTag": "267毫米精车28道径向散热鳍的烤蓝合金钢重枪管",
+        "overview": "全长十点五英寸的点四五口径六膛线线膛枪管，尾端带重型螺纹拧入整块铣削上机匣，外圆密布二十八道标志性径向冷却散热鳍。",
+        "craftAndMaterial": "优质高碳铬钼钢深孔钻镗与仿形精密车削成型，外表面覆传统深邃烤蓝防腐油膜，每一道散热环均车出清晰利落的微倒角。",
+        "kinematicRole": "在击发全程保持刚性静止密封一百四十五兆帕点四五弹膛压并稳定二百三十格令重弹头；全枪拆解进度百分之二十至五十六向前抽出。",
+        "designHighlight": "二十八道深切散热鳍使枪管外表面散热面积倍增，在连续打空五十发大弹鼓时显著抑制热衰减，更造就了汤姆逊独步全球的雕塑轮廓。",
+        "audioScript": "这根十点五英寸长的烤蓝重枪管，是汤姆逊 M1928A1 最耀眼的视觉名片。外圆精车出的整整二十八道径向散热鳍，既像发动机缸体般高效驱散连发热量，又展现出二十世纪二十年代奢华考究的机加工艺。",
+        "audioUrl": "audio/thompson/parts/thompson_barrel_zh.mp3"
+      },
+      "en": {
+        "roleTag": "10.5\" 28-Fin Machined Blued Barrel",
+        "overview": "A 267-millimeter six-groove .45 ACP barrel threaded solidly into the milled receiver nose and turned externally with 28 signature radial cooling fins.",
+        "craftAndMaterial": "Deep-drilled chrome-moly alloy steel lathe-turned with crisp fin chamfers and finished in lustrous pre-war Du-Lite deep blue.",
+        "kinematicRole": "Remains strictly stationary throughout all seven firing phases, guiding 230-grain projectiles cleanly into the Cutts compensator; separates forward during disassembly.",
+        "designHighlight": "Twenty-eight concentric fins dramatically expand radiative cooling surface area during 50-round drum dumps while creating one of history's most recognizable silhouettes.",
+        "audioScript": "Threaded solidly into the milled receiver, this ten-and-a-half-inch barrel wears twenty-eight precision-turned radial cooling fins. Designed to shed heat during sustained fifty-round bursts, these fins became the defining sculptural hallmark of the M1928A1.",
+        "audioUrl": "audio/thompson/parts/thompson_barrel_en.mp3"
+      }
+    },
+    "thompson_cutts_comp": {
+      "partId": "thompson_cutts_comp",
+      "bomCode": "B-02",
+      "calloutLabelEn": "Cutts Compensator",
+      "zh": {
+        "roleTag": "顶部四道斜槽向上泄气压制枪口上跳的卡茨防跳制退器",
+        "overview": "旋装并销固于枪管最前端的著名卡茨防跳补偿器，内部设圆柱膨气腔，顶部精铣四道宽大前倾排气槽，顶端一体安装圆环片状前准星。",
+        "craftAndMaterial": "实心锻造碳钢整体车铣成形，内部抗烧蚀抛光，外表面深烤蓝防锈，前端准星经防眩光哑光磨砂处理。",
+        "kinematicRole": "射击全程固定于枪口端面，在阶段三弹头飞越瞬间将高压火药燃气向上方剧烈喷射形成向下反作用力矩；拆解时随枪管旋转卸离。",
+        "designHighlight": "有效削减约三成连发枪口上扬，让沉重的点四五重弹在每分钟七百五十发全自动扫射下依然牢牢贴合瞄准线。",
+        "audioScript": "锁固在枪口最前端的这节带槽钢筒，是海军陆战队上校研制的四槽卡茨防跳制退器。子弹冲出枪口的瞬间，顶部四道斜槽把高压火药燃气猛烈向上喷出，产生强大的下压力驯服连发上跳。",
+        "audioUrl": "audio/thompson/parts/thompson_cutts_comp_zh.mp3"
+      },
+      "en": {
+        "roleTag": "4-Slot Cutts Muzzle Compensator & Front Sight",
+        "overview": "Threaded and pinned to the muzzle, this baffled expansion chamber vents propellant gas through four angled top slots to force the muzzle downward, topped by an integral ring front sight.",
+        "craftAndMaterial": "Machined from solid bar stock steel with deep Du-Lite bluing and a crisp glare-reduced front aiming blade.",
+        "kinematicRole": "Stays fixed at the muzzle throughout firing, generating an upward gas plume in phase three that counters full-auto climb; unscrews forward during teardown.",
+        "designHighlight": "Cut full-auto muzzle rise roughly thirty percent, keeping heavy 230-grain bursts dramatically flatter on target.",
+        "audioScript": "Pinned to the muzzle sits Colonel Richard Cutts' four-slot compensator. As each heavy forty-five bullet exits, four angled top slots jet expanding gas skyward, pushing the muzzle back down to keep 750-RPM bursts tightly controlled.",
+        "audioUrl": "audio/thompson/parts/thompson_cutts_comp_en.mp3"
+      }
+    },
+    "thompson_bolt": {
+      "partId": "thompson_bolt",
+      "bomCode": "B-03",
+      "calloutLabelEn": "Milled Open-Bolt",
+      "zh": {
+        "roleTag": "整块合金钢立铣带72度斜导槽的重型开膛枪机",
+        "overview": "沿上机匣长导轨直线高速往复的整块铣削钢制枪机，中部精铣七十二度倾斜布利什导槽，前端嵌装弹性抽壳钩与铰接击锤，底部开有阻铁挂机槽。",
+        "craftAndMaterial": "高强度镍铬合金钢实心铣削并经表面渗碳硬化，滑行外侧面保持精密精磨亮钢本色以降低摩擦磨损。",
+        "kinematicRole": "阶段二受复进簧驱动前冲六十八毫米从五十发弹鼓推弹入膛，阶段四至五后坐越程二十一毫米压向纤维缓冲垫并将空铜壳自右窗抛出。",
+        "designHighlight": "精密的七十二度内斜槽与机匣四十五度斜槽构成巧妙的角度几何放大关系，确保青铜布利什锁块在高压时自锁、低压时顺畅解锁。",
+        "audioScript": "这块精磨亮钢重型铣削枪机，是 M1928A1 内部最精良的运动中枢。它腹部那道斜切七十二度的精铣槽口专为托载青铜布利什块而生，开膛释放瞬间前冲六十八毫米，干脆利落地把弹鼓顶发大弹推入枪膛。",
+        "audioUrl": "audio/thompson/parts/thompson_bolt_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Milled Open-Bolt Breechblock w/ 72° Blish Slots",
+        "overview": "A heavy solid-milled steel open-bolt breechblock featuring precision 72-degree internal cam grooves for the bronze Blish lock, a spring extractor, and bottom sear catch notch.",
+        "craftAndMaterial": "Case-hardened nickel-chrome steel milled from solid billet and left in bright ground satin steel along high-speed bearing flats.",
+        "kinematicRole": "Surges 68 millimeters forward in phase two to strip and chamber a .45 ACP round, pauses under Blish delay in phase three, and recoils 21 millimeters past the sear to eject brass.",
+        "designHighlight": "Its 72-degree internal cam angle interacts directly with the receiver's 45-degree rails to lift the bronze H-piece clear the moment chamber pressure falls.",
+        "audioScript": "Machined from solid alloy steel, this bright-finished breechblock cycles sixty-eight millimeters forward from its open-bolt sear. Notice the seventy-two-degree angled slot milled right through its waist—that geometric ramp cams the bronze Blish lock clear as pressure subsides.",
+        "audioUrl": "audio/thompson/parts/thompson_bolt_en.mp3"
+      }
+    },
+    "thompson_blish_lock": {
+      "partId": "thompson_blish_lock",
+      "bomCode": "B-04",
+      "calloutLabelEn": "Bronze Blish H-Lock",
+      "zh": {
+        "roleTag": "沿机匣45度斜槽滑动的约翰·布利什专利磷青铜H型延迟锁",
+        "overview": "汤姆逊 M1928A1 最负盛名也最具传奇色彩的核心零件：整体铸造精铣的赤金色磷青铜 H 型双耳锁块，横向跨骑于枪机槽内并嵌合机匣四十五度倾斜轨道。",
+        "craftAndMaterial": "选用高强耐磨铸造锡磷青铜（Phosphor Bronze）整体精铣成型，凭借青铜与合金钢异质金属配对展现出迷人赤金金属光泽与优异自润滑减摩特性。",
+        "kinematicRole": "阶段二闭锁瞬间沿四十五度机匣斜槽向前下方落入五点五毫米锁位，阶段三高压期间抵紧钢槽阻滞延迟开膛，阶段四被枪机七十二度斜面顺滑抬升解锁。",
+        "designHighlight": "纵使百年后的力学界对其粘附理论仍有饶有趣味的学术探讨，这枚闪耀赤金色泽的青铜 H 块仍是轻武器机械史上最迷人的奇思妙想之一。",
+        "audioScript": "眼前这枚闪耀温暖赤金光泽的磷青铜 H 型滑块，就是大名鼎鼎的布利什延迟闭锁块。枪机闭锁时它顺着机匣四十五度斜槽下沉五点五毫米，靠青铜与钢的摩擦阻滞延缓开膛，堪称二十世纪最富传奇色彩的机械发明。",
+        "audioUrl": "audio/thompson/parts/thompson_blish_lock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Patent Cast-Bronze H-Piece Blish Lock",
+        "overview": "The M1928A1's legendary centerpiece: a solid phosphor-bronze H-shaped sliding lock bridging the bolt slots and riding inside 45-degree inclined receiver tracks.",
+        "craftAndMaterial": "Precision-milled cast phosphor bronze chosen explicitly for its dissimilar-metal friction pairing against hardened blued receiver steel, displaying a warm burnished bronze luster.",
+        "kinematicRole": "Slides 5.5 millimeters down and forward along 45° receiver tracks upon battery in phase two, resists peak breech force in phase three, and cams smoothly upward in phase four.",
+        "designHighlight": "Even a century later, Commander Blish's bronze wedge remains one of the most storied and visually striking mechanical ideas ever built into a service submachine gun.",
+        "audioScript": "Gleaming in warm phosphor bronze, this H-shaped wedge is Commander John Blish's famous adhesion-delayed lock. As the bolt slams into battery, its angled bronze ears drop 5.5 millimeters into forty-five-degree receiver slots, delaying opening until chamber pressure safely subsides.",
+        "audioUrl": "audio/thompson/parts/thompson_blish_lock_en.mp3"
+      }
+    },
+    "thompson_actuator": {
+      "partId": "thompson_actuator",
+      "bomCode": "B-05",
+      "calloutLabelEn": "Top Actuator Knob",
+      "zh": {
+        "roleTag": "中央开V型瞄准透光槽的M1928A1标志性顶置滚花拉机柄",
+        "overview": "穿出上机匣顶部长槽并直接卡连于青铜布利什块顶耳的圆盘形滚花拉机柄。圆盘顶面中央铣出 V 形通槽，避免遮挡后方莱曼照门瞄准视线。",
+        "craftAndMaterial": "高强度合金钢精密车铣，手柄外缘轧制菱形防滑滚花纹，底杆经镜面研磨在顶盖长槽内丝滑往复。",
+        "kinematicRole": "区别于战时简化侧置拉柄的 M1A1，它在整个实弹射击期间随枪机与布利什块全程高速前后往复，清晰展现每秒十二次的机械脉动。",
+        "designHighlight": "顶置中轴对称布局让左右撇子射手都能以同样顺手的姿势拉栓挂机，滚花圆球更成为二十年代“汤米枪”剪影的标志符号。",
+        "audioScript": "矗立在机匣正上方的这枚滚花圆盘拉机柄，是辨认经典 M1928A1 的第一眼标志。它顶端贴心地铣出一道 V 形瞄准槽绝不挡眼，射击时更是随枪机与青铜布利什块以每秒十二次的节奏在顶部飞速往返。",
+        "audioUrl": "audio/thompson/parts/thompson_actuator_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Top-Mounted Knurled Open-Bolt Actuator Knob",
+        "overview": "The iconic knurled circular charging knob protruding through the top receiver slot, keyed directly to the bronze Blish lock and slotted centrally for an unobstructed sight picture.",
+        "craftAndMaterial": "Machined bright alloy steel with crisp diamond rim knurling and a ground longitudinal bridge riding smoothly along the upper receiver channel.",
+        "kinematicRole": "Reciprocates in direct lockstep with the bolt and Blish lock across all seven phases—a defining visual cue distinguishing M1928A1s from later side-charging M1A1s.",
+        "designHighlight": "Ambidextrous top-center ergonomics let left- or right-handed shooters cock the open bolt effortlessly while the V-notch keeps the Lyman sight line crystal clear.",
+        "audioScript": "Perched right atop the receiver, this knurled circular actuator knob instantly distinguishes an authentic M1928A1 from wartime M1A1s. A clean V-slot milled right down its center preserves the Lyman sight line while the knob races back and forth at 750 cycles per minute.",
+        "audioUrl": "audio/thompson/parts/thompson_actuator_en.mp3"
+      }
+    },
+    "thompson_hammer_pin": {
+      "partId": "thompson_hammer_pin",
+      "bomCode": "B-06",
+      "calloutLabelEn": "Bolt Inertia Hammer & Pin",
+      "zh": {
+        "roleTag": "闭锁末瞬撞击机匣前壁翻转敲出浮动击针的机头防早发击发组",
+        "overview": "隐藏装配在枪机前端内腔的小型枢轴杠杆击锤与独立浮动击针组件。在枪机前冲推弹途中击针始终缩回，唯有彻底到位才翻转击发。",
+        "craftAndMaterial": "经高频热处理的耐冲击工具钢精车加工，击针前端圆润镜面抛光以保证对点四五大号底火的均匀稳定击穿。",
+        "kinematicRole": "随枪机同步前冲并在阶段二末段闭锁到位瞬间前摆负零点三五弧度，将浮动击针顶出枪机镜面二点八毫米点燃底火。",
+        "designHighlight": "相比战时廉价冲锋枪直接车死在机头上的固定击针，这套精巧的前置杠杆击锤赋予汤姆逊更高的闭锁安全性与底火击发一致性。",
+        "audioScript": "藏在枪机最前端的这组迷你杠杆击锤与浮动击针，彰显了早期汤姆逊毫不妥协的精密标准。推弹途中击针始终安稳缩藏，唯有枪机彻底贴合枪膛的一刻，击锤才会撞击前壁翻腕将击针敲出引燃底火。",
+        "audioUrl": "audio/thompson/parts/thompson_hammer_pin_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Bolt-Mounted Pivoting Inertia Hammer & Firing Pin",
+        "overview": "A miniature hinged hammer lever and separate floating firing pin tucked inside the bolt nose so ignition occurs only upon full battery closure.",
+        "craftAndMaterial": "Heat-treated shock-resistant tool steel with a smoothly radiused firing-pin nose calibrated for large pistol primers.",
+        "kinematicRole": "Travels with the bolt and pivots forward 0.35 radians at phase two closure, driving the floating firing pin 2.8 millimeters past the bolt face.",
+        "designHighlight": "Eliminates the slamfire risks of crude fixed-pin blowback bolts, ensuring crisp, mechanically timed primer strikes.",
+        "audioScript": "Unlike crude open-bolt submachine guns with fixed pins machined into the bolt face, the M1928A1 hides a tiny hinged hammer inside the bolt nose. Only at full closure does it trip against the receiver face to strike the floating firing pin cleanly.",
+        "audioUrl": "audio/thompson/parts/thompson_hammer_pin_en.mp3"
+      }
+    },
+    "thompson_buffer_pilot": {
+      "partId": "thompson_buffer_pilot",
+      "bomCode": "B-07",
+      "calloutLabelEn": "Guide Pilot & Fiber Buffer",
+      "zh": {
+        "roleTag": "兼任上下机匣快拆卡销的复进簧钢导杆与暗红硫化纤维缓冲盘",
+        "overview": "贯入复进簧内腔的圆柱钢导杆、吸收枪机后坐撞击的暗红硫化纤维缓冲垫盘以及穿出机匣尾板的圆柱拆解按钮一体化组件。",
+        "craftAndMaterial": "实心车削烤蓝碳钢长导杆嵌装高密度耐油暗红色硫化纤维垫圈（Vulcanized Fiber），吸能柔顺且长期浸油不脆裂。",
+        "kinematicRole": "在阶段五至六承受后坐越程二十一毫米的重枪机撞击并微幅压缩三点五毫米柔和卸力；野战拆解时按下尾端圆钮即可分离上下机匣。",
+        "designHighlight": "一物三用：既是防止长复进簧弯折扭曲的刚性导柱、又是护框缓冲垫，同时化身免工具拆枪的巧思锁销。",
+        "audioScript": "这根贯穿复进簧中央的烤蓝钢导杆可谓一物三用。中段那片醒目的暗红色硫化纤维圆盘，柔和接住高速后退的厚重钢枪机；伸出机匣后壁的圆头按钮，更是免工具分离上下机匣的快拆机关。",
+        "audioUrl": "audio/thompson/parts/thompson_buffer_pilot_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Recoil Spring Pilot Rod & Vulcanized Fiber Buffer",
+        "overview": "A turned steel guide rod mounting a red-brown vulcanized fiber shock pad and terminating in the protruding rear button that locks the upper and lower receivers together.",
+        "craftAndMaterial": "Blued lathe-turned carbon steel rod mated to an oil-resistant high-density red vulcanized fiber buffer washer.",
+        "kinematicRole": "Supports the driving spring across every shot and cushions bolt overtravel by 3.5 millimeters in phase six; pressing its rear stud unlocks field disassembly.",
+        "designHighlight": "Ingeniously combines spring alignment, recoil shock absorption, and tool-free receiver takedown into one elegant subassembly.",
+        "audioScript": "This turned steel pilot rod performs triple duty inside the rear receiver. It guides the long driving spring straight, cushions heavy bolt impact with a dense red vulcanized fiber pad, and pokes out the rear wall as the tool-free takedown latch.",
+        "audioUrl": "audio/thompson/parts/thompson_buffer_pilot_en.mp3"
+      }
+    },
+    "thompson_recoil_spring": {
+      "partId": "thompson_recoil_spring",
+      "bomCode": "B-08",
+      "calloutLabelEn": "Helical Driving Spring",
+      "zh": {
+        "roleTag": "驱动重枪机以750发/分绵密节奏往复的高弹钢琴钢丝复进主簧",
+        "overview": "套装于钢制导杆外围、深入枪机后端长孔内的细密螺旋复进驱动主簧，后端顶于缓冲盘，为整套开膛自动机提供恒定推力。",
+        "craftAndMaterial": "高碳琴钢丝精密等距冷卷成形并经去应力蓝化回火，具有极佳的弹性回复线性度与抗长时压持松弛能力。",
+        "kinematicRole": "实时沿膛轴动态伸缩：阶段一释放预压伸展至一点四八倍长推动枪机前冲上膛，阶段五至六在重枪机越程后坐时强力压缩蓄能。",
+        "designHighlight": "弹簧刚度经过精密匹配，配合加重的拉机柄将 M1928A1 射速精准驯化在每分钟七百五十发左右的黄金连发节奏。",
+        "audioScript": "套装在导杆上的这根细密琴钢丝螺旋主簧，为沉重的铣削枪机注入绵延不绝的推力。开膛待击时它已紧绷蓄能，扣下扳机瞬间迅猛伸展推弹上膛，后坐时又温柔压缩，稳稳托起七百五十发每分的黄金射速。",
+        "audioUrl": "audio/thompson/parts/thompson_recoil_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Piano-Wire Open-Bolt Driving Spring",
+        "overview": "A long, closely wound helical driving spring riding over the buffer pilot rod and nesting deep inside the rear bore of the milled bolt.",
+        "craftAndMaterial": "Precision cold-wound tempered piano wire treated against corrosion and calibrated for steady force across long bursts.",
+        "kinematicRole": "Deforms dynamically in real time—extending 48 percent as the open bolt rushes forward to chamber and compressing tightly against the fiber buffer during recoil.",
+        "designHighlight": "Carefully matched with bolt and actuator mass to hold the M1928A1 right in its signature controllable 750-RPM sweet spot.",
+        "audioScript": "Wrapped along the guide pilot, this closely coiled piano-wire driving spring powers the entire open-bolt rhythm. Pre-loaded at rest, it extends nearly fifty percent during forward feeding before compressing cleanly back into the fiber buffer.",
+        "audioUrl": "audio/thompson/parts/thompson_recoil_spring_en.mp3"
+      }
+    },
+    "thompson_oiler": {
+      "partId": "thompson_oiler",
+      "bomCode": "B-09",
+      "calloutLabelEn": "Felt Blish Oiler Pads",
+      "zh": {
+        "roleTag": "浸油毛毡配黄铜背板持续润泽45度斜槽的自动润滑油垫",
+        "overview": "嵌装在机匣前侧壁内槽中的一对黄铜架浸油毛毡润滑垫片，紧贴枪机与青铜布利什块的高频往复滑行通道两侧。",
+        "craftAndMaterial": "冲压弯折 C26000 黄铜弹性支架牢固夹持高密度羊毛吸油毡块，滴注机油后可在数百发连射中持续微渗润泽金属接触面。",
+        "kinematicRole": "静置镶嵌于上机匣内壁，在枪机与青铜布利什块每一次往返擦过时自动补敷极薄油膜；于细拆阶段自上机匣内取出。",
+        "designHighlight": "这是 M1928A1 堪称奢侈的和平年代精工缩影——后来为了战时降本，简化版 M1A1 连同布利什锁一道取消了这套考究的自润滑系统。",
+        "audioScript": "隐藏在机匣内壁两侧的这对黄铜毛毡油垫，是老派军工极致考究的见证。吸满枪油的厚实毛毡紧贴枪机导轨，每打一发都自动给四十五度布利什斜槽涂上一层细腻油膜，丝滑无比。",
+        "audioUrl": "audio/thompson/parts/thompson_oiler_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Brass-Backed Felt Blish-Lock Oiler Pads",
+        "overview": "A paired brass spring clip holding oil-saturated wool felt pads tucked inside the upper receiver walls beside the 45-degree Blish lock tracks.",
+        "craftAndMaterial": "Stamped C26000 brass spring frame cradling dense industrial wool felt engineered to meter a micro-film of lubricant under vibration.",
+        "kinematicRole": "Rests inside the receiver raceways, wiping a continuous thin lubricating film across the bolt and bronze Blish ears on every cycle; lifts out during detail strip.",
+        "designHighlight": "An unmistakable hallmark of interwar mechanical luxury omitted entirely from wartime simplified M1A1 receivers.",
+        "audioScript": "Tucked inside the receiver flanks sit these brass-backed wool felt oiler pads—an extraordinary detail of interwar craftsmanship. Saturated with gun oil, they automatically wiped a microscopic lubricating film onto the bronze Blish lock with every single shot.",
+        "audioUrl": "audio/thompson/parts/thompson_oiler_en.mp3"
+      }
+    },
+    "thompson_receiver": {
+      "partId": "thompson_receiver",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Milled Steel Receiver",
+      "zh": {
+        "roleTag": "整块优质合金钢坯立铣而成的45度斜槽与T型弹鼓滑轨上机匣",
+        "overview": "构成汤姆逊厚重底气与传世品相的整体铣削上机匣：顶部开设拉机柄通槽，右侧开抛壳窗，双内壁铣有四十五度布利什斜槽，底腹横向精铣五十发 L 型弹鼓 T 形挂轨。",
+        "craftAndMaterial": "实心锻造中碳合金钢历经数十道精密立铣与拉削成形，表面采用经典的深蓝黑 Du-Lite 热烤蓝工艺，左右平面清晰压印 Auto-Ordnance 原厂铭文与专利号。",
+        "kinematicRole": "作为整枪绝对基准架构支撑枪管、布利什枪机组、莱曼照门与下挂五十发圆鼓；透视或剖视下清晰展现四十五度斜槽与圆鼓接口。",
+        "designHighlight": "哪怕在今天看来都极为奢华的全铣削厚壁机匣，赋予 M1928A1 极低后坐震感与历经百年而不变形的钢铁脊梁。",
+        "audioScript": "这块沉甸甸的深烤蓝上机匣，完全由一整块实心锻钢坯历经数十道精密立铣雕琢而成。左右侧面刻满清晰的汤姆逊与自动军械厂原厂钢印，腹部横向铣出的 T 型滑轨，正用来承挂那只威风凛凛的五十发大圆鼓。",
+        "audioUrl": "audio/thompson/parts/thompson_receiver_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Solid Milled Billet Steel Upper Receiver",
+        "overview": "A heavyweight solid-milled steel upper receiver incorporating the top actuator track, right ejection port, internal 45-degree Blish ramps, and transverse T-slots for the 50-round drum.",
+        "craftAndMaterial": "Machined through dozens of milling passes from forged carbon alloy billet, finished in deep satin Du-Lite bluing with crisp Thompson Model of 1928 factory rollmarks.",
+        "kinematicRole": "Anchors the barrel, Blish action, Lyman sight, lower frame, and drum magazine; turns translucent in X-Ray and slices cleanly in cutaway mode.",
+        "designHighlight": "Its substantial milled steel mass absorbs recoil gracefully and preserves dead-true alignment across a century of service.",
+        "audioScript": "Milled from a single solid block of alloy steel, this deep-blued upper receiver gives the M1928A1 its substantial, rock-solid feel. Look along its flat flanks for crisp Auto-Ordnance rollmarks, and underneath for the transverse T-slots built to lock in the fifty-round drum.",
+        "audioUrl": "audio/thompson/parts/thompson_receiver_en.mp3"
+      }
+    },
+    "thompson_lyman_sight": {
+      "partId": "thompson_lyman_sight",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Lyman Ladder Rear Sight",
+      "zh": {
+        "roleTag": "带两侧厚钢防撞护翼的莱曼600码精密可调梯形觇孔表尺",
+        "overview": "铆装在上机匣尾端的著名莱曼（Lyman）精密可调立式梯形机械照门，兼具放倒式近战缺口与竖起式高低风偏微调觇孔游标，两侧护以厚钢防撞翼。",
+        "craftAndMaterial": "优质工具钢精密立铣与微雕刻度数字，配滚花高低与风偏调节小手轮，表面防眩光深烤蓝处理。",
+        "kinematicRole": "稳固铆接于上机匣尾部脊面提供长基线精密瞄准基准；在全分解中段向上整体移出展示结构细节。",
+        "designHighlight": "虽然点四五手枪弹有效实战射程约一百五十米，但高达六百码的精密莱曼表尺完美映照出二十世纪二十年代“把冲锋枪当步枪精造”的浪漫情怀。",
+        "audioScript": "铆在机匣尾顶的这具双护翼莱曼梯形表尺，堪称轻武器工艺的奢侈浪漫。虽然点四五子弹主要用于中近距突击，但它依然配备了能精密调节高低与风偏的六百码觇孔游标尺，是 M1928A1 身价不凡的铁证。",
+        "audioUrl": "audio/thompson/parts/thompson_lyman_sight_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Lyman Adjustable Aperture Ladder Rear Sight",
+        "overview": "The renowned Lyman folding leaf rear sight riveted atop the rear receiver, offering a close-range battle notch folded down and a 600-yard windage- and elevation-adjustable aperture raised upright.",
+        "craftAndMaterial": "Milled tool steel with protective side ears, finely engraved yardage graduations, knurled adjustment knobs, and anti-glare blued finish.",
+        "kinematicRole": "Stays anchored to the rear receiver datum across all firing stages, sighting cleanly through the V-cut in the top actuator knob.",
+        "designHighlight": "Though optimistic for subsonic .45 ACP ballistics, its rifle-grade precision epitomizes the uncompromising craftsmanship of early Thompsons.",
+        "audioScript": "Riveted atop the rear receiver sits the famed Lyman adjustable ladder sight with protective wings. Graduated optimistically out to six hundred yards with fine windage and elevation drums, it captures the lavish craftsmanship stripped away on later wartime M1A1s.",
+        "audioUrl": "audio/thompson/parts/thompson_lyman_sight_en.mp3"
+      }
+    },
+    "thompson_lower_frame": {
+      "partId": "thompson_lower_frame",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Lower Trigger Frame",
+      "zh": {
+        "roleTag": "长燕尾滑轨扣合上机匣的整块铣削下机匣火控盒与闭环护圈",
+        "overview": "包覆全套单连发火控杠杆与双拨片快慢机的整块铣削钢下机匣，一体铣出前后无缝闭环扳机护圈，并在后端集成快拆木枪托燕尾滑轨。",
+        "craftAndMaterial": "锻钢整体精密铣削，表面与上机匣一致施以缎面深烤蓝，上下接缝处精细配磨达到严丝合缝的贴合精度。",
+        "kinematicRole": "承托扳机、开膛阻铁、双独立快慢机拨片与弹鼓卡笋，借后导杆按钮锁定于上机匣；拆解时向后下方整组滑离。",
+        "designHighlight": "独特的免工具尾部燕尾滑轨设计，使射手按下木托解锁钮一秒即可把固定枪托变身为短小精悍的无托突击构型。",
+        "audioScript": "与上机匣通过精密长滑轨严丝合缝扣合的这块铣削下机匣，不仅包藏了单连发全套火控，前端一体铣出坚固的闭环扳机护圈，尾端更巧妙设有燕尾滑道，让黑胡桃木后枪托一按即可秒速卸下。",
+        "audioUrl": "audio/thompson/parts/thompson_lower_frame_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Milled Lower Trigger Frame & Buttstock Slide",
+        "overview": "A solid-milled steel trigger housing mating along full-length dovetails to the upper receiver, integrating a closed trigger guard, FCG pocket, and quick-detach rear buttstock rail.",
+        "craftAndMaterial": "Forged carbon steel machined to match the upper receiver's deep Du-Lite blue finish with zero-gap seam fitting.",
+        "kinematicRole": "Houses the trigger, select-fire sear, twin paddles, and magazine catch; slides rearward and downward free once the buffer pilot stud is depressed.",
+        "designHighlight": "Its rear dovetail slide track converts the carbine-stocked submachine gun into a compact stockless room-clearer in seconds.",
+        "audioScript": "Sliding seamlessly onto the upper receiver along full-length steel rails, this milled lower frame houses the select-fire mechanism and a solid closed trigger guard. Its rear dovetail track even lets the walnut buttstock snap right off for tight quarters.",
+        "audioUrl": "audio/thompson/parts/thompson_lower_frame_en.mp3"
+      }
+    },
+    "thompson_foregrip": {
+      "partId": "thompson_foregrip",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Walnut Vertical Foregrip",
+      "zh": {
+        "roleTag": "四指弧槽雕塑美洲黑胡桃木垂直前握把与重型钢制悬梁",
+        "overview": "锁装于枪管下方重型烤蓝钢悬梁上的标志性垂直手枪式前握把，前缘流畅雕琢四道贴合手指的人体工学弧槽，构成汤姆逊最具辨识度的经典剪影。",
+        "craftAndMaterial": "精选北美直纹黑胡桃实木车铣雕琢并经多道手工亚麻籽油抛光呈现出深暖栗褐色泽，顶梁采用厚实烤蓝合金钢锁紧于机匣鼻端。",
+        "kinematicRole": "为射手弱手提供强劲向下的抗上跳抓握支点，在满挂沉重五十发大弹鼓时依然轻松操控指向；拆解阶段向下前方抽离。",
+        "designHighlight": "早在现代战术步枪流行垂直前握把的整整八十年前，汤姆逊就凭借这根极具手感的黑胡桃垂直握把奠定了近战抵腰控枪的人机学标杆。",
+        "audioScript": "枪管正下方这根雕琢着四道流畅指槽的黑胡桃木垂直前握把，是“芝加哥打字机”最迷人的灵魂剪影。早在现代战术握把问世八十年前，它就让射手在满挂沉重五十发圆鼓时依然能稳稳压住枪口指向扫射。",
+        "audioUrl": "audio/thompson/parts/thompson_foregrip_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Contoured Black Walnut Vertical Foregrip & Mount Bar",
+        "overview": "The iconic sculpted vertical foregrip bolted beneath a blued steel barrel hanger bar, featuring four smooth finger contours shaped for assertive muzzle control.",
+        "craftAndMaterial": "Quarter-sawn American black walnut finished in hand-rubbed satin linseed oil, mounted on a heavy milled blued steel attachment beam.",
+        "kinematicRole": "Anchors the support hand cleanly ahead of the 50-round drum to control 750 RPM bursts; detaches downward during mid disassembly.",
+        "designHighlight": "Pioneered the vertical tactical foregrip eighty years before Picatinny rails, pairing effortless pointability with timeless sculpted warmth.",
+        "audioScript": "Bolted to a stout steel hanger beneath the finned barrel hangs the iconic sculpted vertical foregrip. Hand-rubbed American black walnut carved with four ergonomic finger grooves gave gunners rock-solid control eighty years before modern tactical grips existed.",
+        "audioUrl": "audio/thompson/parts/thompson_foregrip_en.mp3"
+      }
+    },
+    "thompson_pistol_grip": {
+      "partId": "thompson_pistol_grip",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Walnut Pistol Grip",
+      "zh": {
+        "roleTag": "后倾舒适弧角手搓亚麻籽油美洲黑胡桃木后手枪握把",
+        "overview": "通过纵向长钢螺钉垂直固接于下机匣腹后的实木后手枪握把，宽大饱满的握持截面与前垂直握把形成高度和谐的对称美学。",
+        "craftAndMaterial": "与前握把及枪托同批精选的直纹美洲黑胡桃木，经细腻打磨与亚麻籽油浸润保养，木纹温润、握感厚实防滑。",
+        "kinematicRole": "承载射击手虎口与食指发力基准，令大拇指自然搭触左侧双拨片快慢机与保险；在细拆阶段随下机匣分离卸出。",
+        "designHighlight": "较大的后倾角完美适配抵腰突击与抵肩精确瞄准两种射姿，展现二十年代美国枪械人体工学的深厚底蕴。",
+        "audioScript": "固定在下机匣后腹的这根黑胡桃木手枪握把，与前方的垂直握把遥相呼应。饱满温润的木质握感让大拇指刚好轻搭在左侧双拨片上，无论抵腰速射还是抵肩精瞄都得心应手。",
+        "audioUrl": "audio/thompson/parts/thompson_pistol_grip_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Contoured American Black Walnut Rear Pistol Grip",
+        "overview": "A full-bodied contoured black walnut rear pistol grip bolted upward into the lower trigger frame, visually balancing the front vertical grip.",
+        "craftAndMaterial": "Matched straight-grain American black walnut finished in hand-rubbed linseed oil for warm satin sheen and sure palm purchase.",
+        "kinematicRole": "Positions the firing hand ergonomically behind the trigger and within effortless thumb reach of the twin left-side selector paddles.",
+        "designHighlight": "Its generous raked grip angle transitions seamlessly between hip-fire assault bursts and shouldered aimed shots.",
+        "audioScript": "Bolted directly beneath the trigger frame, this contoured black walnut pistol grip balances the vertical foregrip ahead. Its comfortable rake places the gunner's thumb right beside the left-side selector and safety paddles.",
+        "audioUrl": "audio/thompson/parts/thompson_pistol_grip_en.mp3"
+      }
+    },
+    "thompson_buttstock": {
+      "partId": "thompson_buttstock",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Detachable Walnut Stock",
+      "zh": {
+        "roleTag": "一键燕尾滑轨快拆大下倾美洲黑胡桃木实心枪托",
+        "overview": "带有优雅大下倾落差的实心美洲黑胡桃木枪托，前端镶嵌钢制燕尾快拆锁座，下腹装有金属背带环，右侧托身压印 GEG 军械厂检戳记。",
+        "craftAndMaterial": "整块优质美洲黑胡桃实木精铣成形，保留自然细腻的深褐教堂花纹年轮，手搓亚麻籽油防潮护木并透出丝绸般柔光。",
+        "kinematicRole": "抵肩吸收连续扫射后坐力并赋予自然低贴腮瞄准高度；在野战快拆阶段率先向后滑离下机匣导轨，令全枪即刻化作短巧近战态。",
+        "designHighlight": "独特的大下倾造型精准顺应低矮的机械瞄准基线，同时兼顾快速一键拆托适应装甲车与狭窄战壕携行。",
+        "audioScript": "这支线条优雅、带有显著下倾角度的实心美洲黑胡桃木枪托，是 M1928A1 尊贵气质的点睛之笔。它借顶部燕尾滑轨与下机匣扣合，按动解锁钮一秒向后抽出，整支冲锋枪便立刻缩成短小精悍的室内突击形态。",
+        "audioUrl": "audio/thompson/parts/thompson_buttstock_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Quick-Detach Slide-On Black Walnut Buttstock",
+        "overview": "A richly grained solid American black walnut buttstock with pronounced drop-at-heel geometry, sling swivel, ordnance GEG cartouche, and quick-detach steel slide mount.",
+        "craftAndMaterial": "Carved from solid American black walnut exhibiting warm chestnut cathedral grain, sealed in satin hand-rubbed linseed oil.",
+        "kinematicRole": "Stabilizes shouldered bursts along the low iron sight axis; slides rearward off the lower frame dovetail first during field disassembly.",
+        "designHighlight": "Rapid tool-free detachment shrank overall length by a quarter for armored vehicle crews and close-quarters raids.",
+        "audioScript": "Shaped from solid American black walnut with a pronounced classic drop, this buttstock aligns the eye effortlessly behind the Lyman sight. Depressing its steel catch lets the entire stock slide right off the rear rail in one second for vehicle crews.",
+        "audioUrl": "audio/thompson/parts/thompson_buttstock_en.mp3"
+      }
+    },
+    "thompson_buttplate": {
+      "partId": "thompson_buttplate",
+      "bomCode": "F-07",
+      "calloutLabelEn": "Trapdoor Steel Buttplate",
+      "zh": {
+        "roleTag": "内藏油壶弹簧暗门的防滑烤蓝钢制枪托底板",
+        "overview": "严密包覆黑胡桃木托尾端的冲压弧形烤蓝钢托底板，表面轧制防滑格纹并在中央开设带弹簧扣的维护暗门，可收纳随枪保养油壶。",
+        "craftAndMaterial": "高碳冲压合金钢经热锻成型与深烤蓝表面处理，抵御潮湿战壕磕碰保护实木托尾不开裂。",
+        "kinematicRole": "紧贴射手肩窝均匀分散七百五十发每分连发后坐压强；在全分解深层阶段自木托尾端分离展示装配关系。",
+        "designHighlight": "内置暗门随枪油壶与机匣毛毡润滑油垫前后呼应，体现出二十年代精密轻武器完善的野战维保闭环理念。",
+        "audioScript": "严密裹住木托尾端的这片防滑烤蓝钢托底板，不仅能防止实木在激烈行军中磕裂，中央还暗藏一扇小巧的弹簧暗门，打开便能取出随枪携带的金属油壶，随时给布利什毛毡垫补充润滑油。",
+        "audioUrl": "audio/thompson/parts/thompson_buttplate_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Blued Steel Trapdoor Buttplate",
+        "overview": "A contoured stamped blued-steel buttplate protecting the walnut stock heel, complete with an integral spring-latched trapdoor storing a field oiler bottle.",
+        "craftAndMaterial": "Formed carbon steel with slip-resistant checkering and matching deep Du-Lite bluing.",
+        "kinematicRole": "Seats comfortably into the shooter's shoulder pocket during sustained bursts and separates rearward from the walnut stock at full explode.",
+        "designHighlight": "Its hidden oiler compartment mirrors the receiver's internal felt oiler pads, forming a complete self-contained maintenance ecosystem.",
+        "audioScript": "Capping the rear of the walnut stock sits this checkered blued steel buttplate. Beyond protecting the wood against battlefield knocks, its spring-loaded center trapdoor conceals a compact oiler bottle to keep those internal Blish felt pads lubricated.",
+        "audioUrl": "audio/thompson/parts/thompson_buttplate_en.mp3"
+      }
+    },
+    "thompson_trigger": {
+      "partId": "thompson_trigger",
+      "bomCode": "FC-01",
+      "calloutLabelEn": "Select-Fire Trigger",
+      "zh": {
+        "roleTag": "协同摇臂切换单发与全自动的弧形铣削钢制扳机",
+        "overview": "安装于闭环护圈内的实心精铣弧形扳机，顶部与单发断连摇臂精准咬合，能够根据左侧快慢机档位干脆输出单发或全自动连发。",
+        "craftAndMaterial": "热处理合金工具钢精铣与细腻抛光，扳机指面线条圆润考究，扣动行程短促清晰。",
+        "kinematicRole": "阶段一向后旋转负零点二四弧度撬动开膛阻铁释放枪机，在阶段六随手指松开平顺回位等待下一发循环。",
+        "designHighlight": "极低的扳机虚位与干脆清脆的释放点，使重达近五公斤的 M1928A1 甚至能以半自动模式精准点射百米外的标靶。",
+        "audioScript": "护圈内这枚线型考究的铣削钢扳机，借顶部精巧的断连摇臂实现了精准单发与绵密连发双模式切换。扣压行程短促干脆，让这支重型冲锋枪在半自动档位下拥有惊人的百米点射准头。",
+        "audioUrl": "audio/thompson/parts/thompson_trigger_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Milled Select-Fire Curved Trigger",
+        "overview": "A solid-milled curved steel trigger housed within the closed guard, engaging the disconnector rocker to deliver crisp single shots or sustained full-auto bursts.",
+        "craftAndMaterial": "Heat-treated machined tool steel with a smooth contoured finger face and clean crisp break geometry.",
+        "kinematicRole": "Rotates rearward 0.24 radians in phase one to depress the open-bolt sear and resets cleanly before phase seven.",
+        "designHighlight": "Exceptionally crisp trigger pull geometry allows accurate 100-meter semi-automatic hits uncommon among open-bolt submachine guns.",
+        "audioScript": "Nested inside the solid trigger guard, this milled curved trigger couples to an ingenious disconnector rocker. Its remarkably crisp pull lets the gunner switch instantly from precise hundred-yard single shots to blistering room-clearing bursts.",
+        "audioUrl": "audio/thompson/parts/thompson_trigger_en.mp3"
+      }
+    },
+    "thompson_sear": {
+      "partId": "thompson_sear",
+      "bomCode": "FC-02",
+      "calloutLabelEn": "Select-Fire Open-Bolt Sear",
+      "zh": {
+        "roleTag": "兼具半自动单发截获与全自动直通的双模式开膛阻铁组",
+        "overview": "横置于下机匣顶腔的渗碳硬化主阻铁与摇臂组合件，前端挂机鼻垂直向上锁定铣削枪机底槽，精准掌管开膛待击与停火时机。",
+        "craftAndMaterial": "高强度合金钢精密铣削并经表面深层硬化处理，关键咬合棱边精细研磨确保数十万次击发不打滑走火。",
+        "kinematicRole": "阶段一受扳机杠杆压低三点二毫米放开枪机前冲，阶段七在弹簧推顶下果断抬升重新咬死后退归位的枪机。",
+        "designHighlight": "在二十世纪二十年代冲锋枪普遍仅有粗放连发功能的背景下，汤姆逊通过精妙阻铁摇臂率先实现了成熟可靠的单连发切换。",
+        "audioScript": "横卧在枪机正下方的这组渗碳主阻铁与摇臂，是汤姆逊精密单连发火控的枢纽。扣机瞬间下沉三点二毫米放飞重枪机，松指或单发截获时立刻弹起挂稳，令开膛循环收放自如。",
+        "audioUrl": "audio/thompson/parts/thompson_sear_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Select-Fire Open-Bolt Primary Sear & Rocker",
+        "overview": "A case-hardened steel primary sear and rocker assembly projecting up from the lower frame to lock the heavy milled bolt rearward in open-bolt readiness.",
+        "craftAndMaterial": "Precision-milled case-hardened alloy steel with honed engagement faces engineered for long-term wear immunity.",
+        "kinematicRole": "Drops 3.2 millimeters in phase one to launch the bolt forward, then snaps briskly upward in phase seven to arrest the returning bolt cleanly.",
+        "designHighlight": "Delivered mature, dependable semi-automatic and full-automatic selection decades before it became universal on service submachine guns.",
+        "audioScript": "Working quietly beneath the breechblock, this hardened open-bolt sear and rocker govern both semi- and full-automatic fire. Dropping just 3.2 millimeters to unleash the bolt, it snaps cleanly upright to leave the chamber cool and open between bursts.",
+        "audioUrl": "audio/thompson/parts/thompson_sear_en.mp3"
+      }
+    },
+    "thompson_selector_levers": {
+      "partId": "thompson_selector_levers",
+      "bomCode": "FC-03",
+      "calloutLabelEn": "Twin Selector & Safety Paddles",
+      "zh": {
+        "roleTag": "左侧并列双独立桨式拨片：前快慢机(FULL AUTO/SINGLE)与后保险(FIRE/SAFE)",
+        "overview": "汤姆逊下机匣左侧极具人机辨识度的两枚独立旋转桨式拨片：前拨片切换全自动与半自动，后拨片切换击发与物理保险锁。",
+        "craftAndMaterial": "实心锻钢铣削并深烤蓝，桨片边缘带防滑倒角与清晰的“FULL AUTO / SINGLE / FIRE / SAFE”压印标字。",
+        "kinematicRole": "射击全程静驻工作档位：安全档位轴凸轮直接物理锁死开膛阻铁与枪机防跌落走火；拆解阶段向左侧轴向抽出。",
+        "designHighlight": "两枚独立桨片将保险与单连发彻底解耦，射手大拇指盲摸拨片朝向即可一秒确认枪械状态，设计直觉远超同时代竞品。",
+        "audioScript": "下机匣左侧并排矗立的这两片标志性旋转钢桨，把保险与单连发切换彻底分开。前片控制全自动与单发，后片控制击发与保险，大拇指无需看枪，一摸朝向就能瞬间感知武器状态。",
+        "audioUrl": "audio/thompson/parts/thompson_selector_levers_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Left-Side Twin Paddle Selector & Safety Levers",
+        "overview": "The Thompson's unmistakable paired left-side rotating steel paddles: forward paddle selects FULL AUTO or SINGLE, while the rear paddle toggles FIRE or SAFE.",
+        "craftAndMaterial": "Milled forged steel paddles finished in matching deep blue, operating rotary cam shafts aligned with engraved frame legends.",
+        "kinematicRole": "Remains locked in the selected firing detent during operation, with SAFE mechanically blocking sear travel; pulls laterally clear during disassembly.",
+        "designHighlight": "Decoupling safety from fire-mode selection lets the thumb identify status purely by touch in pitch darkness.",
+        "audioScript": "Along the left flank sit the Thompson's signature twin rotating steel paddles. The forward paddle flips between full auto and single shot, while the rear paddle controls fire and safe—giving instant tactile confirmation by thumb alone.",
+        "audioUrl": "audio/thompson/parts/thompson_selector_levers_en.mp3"
+      }
+    },
+    "thompson_mag_catch": {
+      "partId": "thompson_mag_catch",
+      "bomCode": "FC-04",
+      "calloutLabelEn": "Thumb Magazine Catch",
+      "zh": {
+        "roleTag": "单指向上拨动解锁50发圆鼓与20/30发直弹匣的左侧通用卡笋",
+        "overview": "安装于扳机前左壁的带滚花指垫旋转式供弹具卡笋，一机兼容下插式双排直弹匣与横滑式五十发 L 型大圆鼓。",
+        "craftAndMaterial": "耐磨碳钢精铣，拇指按压圆垫刻有防滑纹理，弹簧复位干脆利落。",
+        "kinematicRole": "射击中牢牢锁紧重达两公斤多的满载五十发大圆鼓防止震落；换弹或拆解时向上拨起释放弹鼓横向滑出。",
+        "designHighlight": "精巧的锁舌几何让一把冲锋枪无需任何改装即可在轻便二十发直弹匣与压制型五十发圆鼓间无缝自由切换。",
+        "audioScript": "扳机前方左侧这枚带圆垫的小巧钢卡笋，牢牢锁住重达两公斤多的满载五十发大圆鼓。大拇指轻轻向上一挑，既能横向滑卸圆鼓，又能无缝换装二十发或三十发直弹匣，兼容度满分。",
+        "audioUrl": "audio/thompson/parts/thompson_mag_catch_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Left-Side Universal Magazine & Drum Catch",
+        "overview": "A knurled thumb-operated rotary catch ahead of the trigger guard engineered to lock both vertical 20/30-round stick magazines and transverse 50-round Type L drums.",
+        "craftAndMaterial": "Precision-milled blued carbon steel lever with checkered thumb pad and sturdy locking stud.",
+        "kinematicRole": "Retains the heavy loaded drum solidly against 750 RPM vibration; lifting the thumb pad frees the drum to slide sideways clear.",
+        "designHighlight": "Dual-compatible latch geometry allowed seamless battlefield switching between compact box magazines and high-capacity clockwork drums.",
+        "audioScript": "Positioned cleanly ahead of the trigger guard, this thumb-operated steel catch supports over two kilograms of loaded drum magazine. One upward flick releases the Type L drum sideways—or swaps seamlessly to twenty- or thirty-round stick magazines.",
+        "audioUrl": "audio/thompson/parts/thompson_mag_catch_en.mp3"
+      }
+    },
+    "thompson_sear_spring": {
+      "partId": "thompson_sear_spring",
+      "bomCode": "FC-05",
+      "calloutLabelEn": "Sear Return Spring",
+      "zh": {
+        "roleTag": "驱动开膛阻铁与扳机迅速清晰复位的垂直螺旋弹簧",
+        "overview": "垂直撑顶于下机匣火控槽与主阻铁之间的紧凑螺旋复位压簧，保障每次扣放扳机时火控机构干脆灵敏回弹。",
+        "craftAndMaterial": "优质淬火琴钢丝精密绕制，表面蓝化防锈，抗长年压缩蠕变。",
+        "kinematicRole": "在阶段一扣动扳机期间动态压缩百分之二十五，释放扳机瞬间推顶阻铁利落回位截停重枪机。",
+        "designHighlight": "为汤姆逊倍受赞誉的清脆单连发扳机手感提供了稳定的机械回弹阻尼。",
+        "audioScript": "藏在下机匣火控腔中的这枚小巧琴钢丝螺旋压簧，在扣压扳机时动态压缩四分之一，松开手指的刹那果断将阻铁顶回高位，确保每发点射收枪利落毫不拖泥带水。",
+        "audioUrl": "audio/thompson/parts/thompson_sear_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Helical Trigger & Sear Return Spring",
+        "overview": "A vertical compression spring seated beneath the primary sear inside the milled lower frame to ensure crisp trigger and sear return.",
+        "craftAndMaterial": "Tempered high-carbon piano wire coiled to uniform tension with protective blued oxide.",
+        "kinematicRole": "Compresses dynamically by 25 percent during phase one trigger pull and snaps the sear back upright ahead of phase seven.",
+        "designHighlight": "Contributes directly to the M1928A1's famously crisp, predictable select-fire trigger reset.",
+        "audioScript": "Nested upright beneath the sear inside the lower frame, this compact piano-wire spring compresses twenty-five percent on trigger pull and delivers the crisp, positive snap-back that gives the Thompson its clean trigger feel.",
+        "audioUrl": "audio/thompson/parts/thompson_sear_spring_en.mp3"
+      }
+    },
+    "thompson_drum_mag": {
+      "partId": "thompson_drum_mag",
+      "bomCode": "M-01",
+      "calloutLabelEn": "50-Rd Type L Drum",
+      "zh": {
+        "roleTag": "冲压双圈阿基米德螺旋导轨的50发L型发条大弹鼓外壳",
+        "overview": "外径一百六十五毫米的经典 L 型五十发圆盘冲压钢弹鼓外壳，由后鼓体、可拆前盖与顶部横向 T 形燕尾供弹颈组成，内壁冲压出清晰的阿基米德螺旋滑道。",
+        "craftAndMaterial": "深拉冷轧钢板冲压成形并施以深烤蓝防锈层，正面冲压醒目的环形铭文“MAGAZINE TYPE L · 50 CARTRIDGES CAL. .45 · WIND TO 9 CLICKS”。",
+        "kinematicRole": "通过顶部 T 形轨道横滑锁固于机匣腹下，在 X-Ray 透视与 CT 纵剖模式下自动半透或剖开，完美呈现内部螺旋实弹阵与四翼星轮转子！",
+        "designHighlight": "以惊人的五十发超大口径容弹量改写了二十年代近战火力密度定义，成为影视与军事史上永不褪色的视觉符号。",
+        "audioScript": "挂在机匣腹下这只直径十六点五厘米的深烤蓝铁圆鼓，正是让全球军迷魂牵梦萦的 L 型五十发大弹鼓。壳面冲压着清晰环形钢印与上弦九响提示，打开透视或剖视就能直击内部精密的阿基米德螺旋弹道！",
+        "audioUrl": "audio/thompson/parts/thompson_drum_mag_zh.mp3"
+      },
+      "en": {
+        "roleTag": "50-Round Type L Clockwork Drum Housing",
+        "overview": "The iconic 165-millimeter circular blued-steel Type L drum body and removable faceplate, stamped internally with twin Archimedean spiral guide tracks and topped by transverse T-rail feed lips.",
+        "craftAndMaterial": "Deep-drawn cold-rolled sheet steel finished in satin blue and stamped circularly with 'MAGAZINE TYPE L · 50 CARTRIDGES CAL. .45 · WIND TO 9 CLICKS'.",
+        "kinematicRole": "Locks transversely beneath the receiver; turns translucent in X-Ray and slices open cleanly in cutaway mode to showcase the spiral rounds and clockwork rotor inside.",
+        "designHighlight": "Packed fifty heavy .45 ACP rounds into a compact circular envelope, becoming an immortal silhouette in firearms history.",
+        "audioScript": "Locked transversely beneath the receiver hangs the legendary 165-millimeter Type L fifty-round drum. Stamped with classic circular winding instructions, its blued steel shell turns translucent in X-ray or cutaway mode to reveal the mesmerizing Archimedean spiral track inside.",
+        "audioUrl": "audio/thompson/parts/thompson_drum_mag_en.mp3"
+      }
+    },
+    "thompson_drum_rotor": {
+      "partId": "thompson_drum_rotor",
+      "bomCode": "M-02",
+      "calloutLabelEn": "4-Arm Clockwork Rotor",
+      "zh": {
+        "roleTag": "前置折叠上弦钥匙蓄能9响驱动的四翼星轮供弹转子",
+        "overview": "坐落于五十发圆鼓轴心的四翼星形钢转子与前盖外置折叠上弦钢钥匙总成。拧动钥匙上弦九响后，四根径向长臂从中心向圆周同步扫推整列螺旋弹柱。",
+        "craftAndMaterial": "中心轴毂与四条细长扫弹臂采用高韧性抛光合金钢精密冲压铆焊而成，前置折叠上弦钥匙覆烤蓝耐磨层。",
+        "kinematicRole": "在击发阶段五至六受发条扭矩驱使，绕枪管轴线（X 轴）顺滑步进旋转零点三四弧度，同步推动螺旋轨道内的五十发大弹向顶部抱弹口攀升！",
+        "designHighlight": "宛如一座大口径机械八音盒或瑞士座钟机芯，以纯粹精密的旋转机械传动攻克了五十发沉重点四五实弹的超高供弹负载。",
+        "audioScript": "透过弹鼓外壳，你能看到中央这架宛如精密钟表机芯的四翼星轮转子，以及前盖上标志性的折叠上弦钥匙。装满五十发子弹后顺时针拧满九声清脆咔哒，每打一枪转子便顺滑旋推整列弹阵滚滚向上。",
+        "audioUrl": "audio/thompson/parts/thompson_drum_rotor_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Central 4-Arm Clockwork Rotor & Folding Winding Key",
+        "overview": "A central hub with four radial sweeper arms inside the Type L drum coupled directly to the exterior front folding steel winding key.",
+        "craftAndMaterial": "Polished high-tensile steel rotor hub and sweeper arms paired with a blued folding spring-steel winding handle.",
+        "kinematicRole": "Rotates smoothly around the bore axis (X) by 0.34 radians during phase five and six to index the spiral stack of .45 ACP cartridges upward into the feed lips.",
+        "designHighlight": "Operates with the tactile charm of a giant mechanical timepiece, winding nine clicks to keep fifty heavy cartridges moving at 750 RPM.",
+        "audioScript": "At the heart of the drum spins this four-arm steel rotor spider connected to the front folding winding key. Wound nine crisp clicks after loading, it turns like a heavy clockwork escapement around the bore axis to sweep fifty heavy cartridges up to the feed lips.",
+        "audioUrl": "audio/thompson/parts/thompson_drum_rotor_en.mp3"
+      }
+    },
+    "thompson_drum_rounds": {
+      "partId": "thompson_drum_rounds",
+      "bomCode": "M-03",
+      "calloutLabelEn": ".45 ACP Spiral Round Track",
+      "zh": {
+        "roleTag": "沿双圈阿基米德螺线径向密排的 .45 ACP 230格令黄铜实弹阵",
+        "overview": "整齐嵌卧于 L 型弹鼓双圈阿基米德螺旋轨道内的点四五口径自动手枪黄铜实弹列，每发实弹水平指向前方并紧贴四翼转子扫臂依次向顶部供弹颈爬升。",
+        "craftAndMaterial": "冷拉 C26000 金黄铜直筒无底缘弹壳，配装十四点九克（二百三十格令）厚壁紫铜全被甲圆头亚音速重弹头。",
+        "kinematicRole": "在阶段五至六随四翼发条转子同步绕中心轴小幅步进旋转，首尾相接地将新一发点四五重弹推举至顶颈抱弹口等待枪机前冲推膛。",
+        "designHighlight": "圆润粗壮的点四五圆头弹天生具备极强近战停止力，在螺旋弹鼓内排列出的黄金几何漩涡堪称轻武器剖视美学的巅峰画面。",
+        "audioScript": "沿着弹鼓内部双圈阿基米德螺线密密麻麻排布的，正是金光灿灿的点四五 ACP 二百三十格令重型圆头黄铜实弹阵。在剖视视角下，这一圈金黄与紫铜交织的螺旋弹阵宛如机械工业的黄金漩涡，令人叹为观止。",
+        "audioUrl": "audio/thompson/parts/thompson_drum_rounds_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Radial Spiral Array of .45 ACP 230gr Cartridges",
+        "overview": "A tight concentric spiral array of heavy 230-grain .45 ACP brass-cased, copper-jacketed round-nose cartridges nested inside the Type L drum's twin spiral guide channels.",
+        "craftAndMaterial": "Drawn C26000 straight-walled brass cases topped with heavy 14.9-gram gliding-metal round-nose subsonic bullets.",
+        "kinematicRole": "Steps cleanly in angular lockstep with the 4-arm clockwork rotor during phases five and six to feed fresh rounds steadily up to the drum neck.",
+        "designHighlight": "Revealed in cutaway or X-Ray mode, the golden brass spiral forms one of the most iconic internal engineering vistas in firearm design.",
+        "audioScript": "Coiled along twin Archimedean tracks inside the drum sit golden brass forty-five ACP cartridges tipped with heavy 230-grain round-nose bullets. Seen in cutaway view, this gleaming spiral array is pure mechanical spectacle.",
+        "audioUrl": "audio/thompson/parts/thompson_drum_rounds_en.mp3"
+      }
+    },
+    "thompson_drum_spring": {
+      "partId": "thompson_drum_spring",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Clockwork Drum Mainspring",
+      "zh": {
+        "roleTag": "封装于四翼转子轴心内的重型发条驱动储能盘簧",
+        "overview": "深藏于五十发弹鼓中央转子轴毂内部的高储能发条弹簧，经由前置上弦钥匙旋紧蓄积强大旋转扭矩，持续驱动整盘弹阵对抗重力向上攀升。",
+        "craftAndMaterial": "高碳弹性发条弹簧钢精密卷制并经油淬回火防疲劳处理，能承受连续五十发高速释放而不衰力。",
+        "kinematicRole": "在击发阶段五至六随转子旋转同步产生动态弹性脉动形变，持续释放稳定扭矩维持七百五十发每分高速供弹不断链。",
+        "designHighlight": "唯有这颗如同怀表主发条般澎湃的钢铁心脏，才能把总重超过一公斤的五十发点四五重弹轻松送上枪膛。",
+        "audioScript": "藏在四翼转子轴心深处的这盘强力发条主簧，是整个五十发大弹鼓的能量源泉。拧紧九响上弦钥匙后，它积蓄起充沛扭矩，稳稳托起超过一公斤重的五十发点四五重弹飞速攀升供弹。",
+        "audioUrl": "audio/thompson/parts/thompson_drum_spring_zh.mp3"
+      },
+      "en": {
+        "roleTag": "Central Clockwork Drum Tension Mainspring",
+        "overview": "A heavy clockwork mainspring housed inside the central drum rotor hub, tensioned by the exterior folding key to supply constant upward feed torque for all 50 rounds.",
+        "craftAndMaterial": "Oil-tempered high-carbon clockwork spring steel formulated for high energy storage and endurance across repeated full-drum dumps.",
+        "kinematicRole": "Pulses dynamically in tension and rotates in lockstep with the 4-arm rotor during phases five and six as each cartridge feeds upward.",
+        "designHighlight": "Provides the formidable mechanical torque needed to lift over a kilogram of heavy .45-caliber ammunition at 750 rounds per minute.",
+        "audioScript": "Sealed inside the center of the rotor hub coils this powerhouse clockwork mainspring. Wound tight by the front key, it unleashes steady rotational torque to hoist over a full kilogram of forty-five caliber ammunition straight into the action.",
+        "audioUrl": "audio/thompson/parts/thompson_drum_spring_en.mp3"
+      }
+    }
+  }
+}
