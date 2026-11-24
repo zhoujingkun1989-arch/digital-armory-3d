@@ -571,6 +571,8 @@ export function applyLocationToStore(searchOverride?: string): void {
     useAppStore.getState().openTimelineModal();
   } else if (rawPanel === 'offline') {
     useAppStore.getState().openOfflineModal();
+  } else if (rawPanel === 'scalewall') {
+    useAppStore.getState().openScaleWallModal();
   } else if (rawPanel === 'crew') {
     const targetId = isTankWeapon(weaponId) ? weaponId : 'ztz99a';
     const st = useAppStore.getState();
@@ -585,6 +587,8 @@ export function applyLocationToStore(searchOverride?: string): void {
       crew.setTurretYawDeg(18);
       crew.setGunElevDeg(4.5, targetId);
     }
+  } else if (useAppStore.getState().scaleWallModalOpen) {
+    useAppStore.getState().closeScaleWallModal();
   }
 }
 
@@ -599,7 +603,8 @@ export function buildSearchString(
   activeBallisticsCaliber: ExternalProjectileId,
   baseSearch?: string,
   splitShowdownPair?: { weaponA: WeaponId; weaponB: WeaponId },
-  workbenchDeepLink?: WorkbenchDeepLinkOptions
+  workbenchDeepLink?: WorkbenchDeepLinkOptions,
+  scaleWallModalOpen?: boolean
 ): string {
   const rawSearch =
     baseSearch ?? (typeof window !== 'undefined' ? window.location.search : '');
@@ -757,6 +762,14 @@ export function buildSearchString(
       params.set('screen', screen);
     }
   }
+  if (scaleWallModalOpen === true) {
+    params.set('panel', 'scalewall');
+  } else if (
+    scaleWallModalOpen === false &&
+    params.get('panel') === 'scalewall'
+  ) {
+    params.delete('panel');
+  }
   const browserDefaultLang = detectBrowserDefaultLanguage();
   const explicitParamLang = params.get('lang');
   if (lang !== browserDefaultLang || explicitParamLang === lang) {
@@ -790,6 +803,7 @@ export function useUrlStateSync(): void {
   const activeBallisticsCaliber = useAppStore((s) => s.activeBallisticsCaliber);
   const splitShowdownWeaponA = useAppStore((s) => s.splitShowdownWeaponA);
   const splitShowdownWeaponB = useAppStore((s) => s.splitShowdownWeaponB);
+  const scaleWallModalOpen = useAppStore((s) => s.scaleWallModalOpen);
   const activeLoadout = useAttachmentStore((s) => s.loadouts[activeWeaponId]);
   const activeMuzzle: MuzzleAttachmentId = activeLoadout?.muzzle ?? 'none';
   const activeOptic: OpticAttachmentId = activeLoadout?.optic ?? 'none';
@@ -880,7 +894,8 @@ export function useUrlStateSync(): void {
       live.cartridgeLineupOverview !== cartridgeLineupOverview ||
       live.activeBallisticsCaliber !== activeBallisticsCaliber ||
       live.splitShowdownWeaponA !== splitShowdownWeaponA ||
-      live.splitShowdownWeaponB !== splitShowdownWeaponB
+      live.splitShowdownWeaponB !== splitShowdownWeaponB ||
+      live.scaleWallModalOpen !== scaleWallModalOpen
     ) {
       return;
     }
@@ -904,7 +919,8 @@ export function useUrlStateSync(): void {
         muzzle: activeMuzzle,
         optic: activeOptic,
         selectedPartId,
-      }
+      },
+      scaleWallModalOpen
     );
     if (window.location.search === nextSearch) {
       prevScreenRef.current = screen;
@@ -936,5 +952,6 @@ export function useUrlStateSync(): void {
     activeBallisticsCaliber,
     splitShowdownWeaponA,
     splitShowdownWeaponB,
+    scaleWallModalOpen,
   ]);
 }

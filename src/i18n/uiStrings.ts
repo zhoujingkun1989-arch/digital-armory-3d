@@ -242,6 +242,10 @@ export interface UiDictionary {
     copyViewLinkTitle: string;
     copyViewLinkToast: string;
     copyViewLinkCmdSub: string;
+    scaleWallChip: string;
+    scaleWallChipTitle: string;
+    scaleWallCmdTitle: string;
+    scaleWallCmdSub: string;
   };
   bom: {
     collapsedBtn: (count: number) => string;
@@ -1127,6 +1131,12 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       copyViewLinkToast: '已复制当前 3D 视角直达链接',
       copyViewLinkCmdSub:
         '复制当前完整 3D 剖视、改装与选中零件直达 URL 到剪贴板',
+      scaleWallChip: '1:1 尺度对比墙',
+      scaleWallChipTitle:
+        '打开 1:1 真实尺度对比墙：按毫米级比例并排对比全馆 34 款名枪、坦克与 30mm 航炮及人体身高参照',
+      scaleWallCmdTitle: '1:1 真实尺度对比墙',
+      scaleWallCmdSub:
+        '按真实毫米比例并排对比全馆 34 款名枪、主战坦克、30mm 航炮与 1.75m 人体/手掌参照',
     },
     bom: {
       collapsedBtn: (n) => `零件目录 (${n})`,
@@ -2139,6 +2149,12 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       copyViewLinkToast: 'Copied 3D View Link',
       copyViewLinkCmdSub:
         'Copy exact shareable 3D cutaway, attachment, and part deep-link URL to clipboard',
+      scaleWallChip: '1:1 True-Scale Wall',
+      scaleWallChipTitle:
+        'Open 1:1 True-Scale Museum Wall: compare all 34 exhibits side-by-side at true millimeter scale with human reference',
+      scaleWallCmdTitle: '1:1 True-Scale Museum Wall',
+      scaleWallCmdSub:
+        'Compare all 34 firearms, 1:1 MBTs & 30mm GAU-8 at true millimeter scale with 1.75m human & hand references',
     },
     bom: {
       collapsedBtn: (n) => `BOM Parts (${n})`,

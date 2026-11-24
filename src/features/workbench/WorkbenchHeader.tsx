@@ -117,6 +117,7 @@ export const WorkbenchHeader: React.FC = () => {
   const openPassportModal = useAppStore((s) => s.openPassportModal);
   const openTimelineModal = useAppStore((s) => s.openTimelineModal);
   const openOfflineModal = useAppStore((s) => s.openOfflineModal);
+  const openScaleWallModal = useAppStore((s) => s.openScaleWallModal);
   const tankCrewActive = useTankCrewStore((s) => s.active);
   const toggleTankCrew = useTankCrewStore((s) => s.toggleActive);
   const attachmentBenchOpen = useAttachmentStore((s) => s.benchOpen);
@@ -678,6 +679,22 @@ export const WorkbenchHeader: React.FC = () => {
                   >
                     <Clock size={13} aria-hidden="true" />
                     <span>{lang === 'en' ? 'History Timeline' : '演化时间轴'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className="toggle-chip"
+                    data-testid="wb-scale-wall-btn"
+                    onClick={() => {
+                      playWorkbenchFoley('preset_detent');
+                      setToolsMenuOpen(false);
+                      openScaleWallModal();
+                    }}
+                    title={ui.scaleWallChipTitle}
+                  >
+                    <Ruler size={13} aria-hidden="true" />
+                    <span>{ui.scaleWallChip}</span>
                   </button>
 
                   <button
