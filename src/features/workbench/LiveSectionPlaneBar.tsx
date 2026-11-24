@@ -8,6 +8,7 @@ import {
   X,
 } from 'lucide-react';
 import {
+  clampSectionCutOffset,
   formatSectionOffsetMm,
   getAxisSectionCutRange,
   getDefaultSectionBoxParams,
@@ -16,26 +17,125 @@ import {
   type SectionCutAxis,
 } from '../../engine/actors/StencilSectionCap';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
+import {
+  isArcheryWeapon,
+  isTankWeapon,
+} from '../../engine/physics/armoryPhysics';
 import { COMMAND_PALETTE_STRINGS } from '../../i18n/commandPaletteStrings';
+import { UI_STRINGS } from '../../i18n/uiStrings';
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
+import type { WeaponId, WeaponScaleProfile } from '../../weapons/types';
 
 const SWEEP_ANGULAR_RAD_PER_SEC = 1.15;
+
+export type LiveSectionPresetLabelKey =
+  | 'center'
+  | 'locking'
+  | 'feed'
+  | 'bore'
+  | 'tankBreech'
+  | 'tankAutoloader'
+  | 'tankPowerpack'
+  | 'archeryCam'
+  | 'archeryLimb';
+
+export interface LiveSectionQuickPreset {
+  id: 'center' | 'locking' | 'feed' | 'bore';
+  /** World cm offset strictly clamped to the active axis & scale range */
+  offset: number;
+  labelKey: LiveSectionPresetLabelKey;
+}
+
+/**
+ * Computes scale-aware & axis-aware CT cutaway quick-slice presets.
+ * Dynamically scales offsets between small arms / archery (`±25 mm` Z, `-380..+580 mm` X, `±180 mm` Y)
+ * and 1:1 heavy armor / GAU-8 (`±1,800 mm` Z, `-4,200..+6,500 mm` X, `-1,150..+1,450 mm` Y).
+ */
+export function getLiveSectionQuickPresets(
+  scaleProfile: WeaponScaleProfile | null | undefined,
+  axis: Exclude<SectionCutAxis, 'box'> = 'z',
+  weaponId?: WeaponId | string | null
+): LiveSectionQuickPreset[] {
+  const isHeavyScale = scaleProfile === 'main_battle_tank';
+  const isTank = isTankWeapon(weaponId);
+  const isArchery = isArcheryWeapon(weaponId);
+
+  const lockingLabel: LiveSectionPresetLabelKey = isTank
+    ? 'tankBreech'
+    : isArchery
+      ? 'archeryCam'
+      : 'locking';
+  const feedLabel: LiveSectionPresetLabelKey = isTank
+    ? 'tankAutoloader'
+    : isArchery
+      ? 'archeryLimb'
+      : 'feed';
+  const boreLabel: LiveSectionPresetLabelKey = isTank
+    ? 'tankPowerpack'
+    : 'bore';
+
+  let rawOffsets: readonly [number, number, number, number];
+  if (isHeavyScale) {
+    rawOffsets =
+      axis === 'x'
+        ? [0, 120, -120, -264]
+        : axis === 'y'
+          ? [0, 56, -32, 104]
+          : [0, 48, -56, 116];
+  } else {
+    rawOffsets =
+      axis === 'x'
+        ? [0, 6.0, -6.0, 26.0]
+        : axis === 'y'
+          ? [0, 3.5, -4.5, 8.0]
+          : [0, 0.85, -0.75, 1.65];
+  }
+
+  return [
+    {
+      id: 'center',
+      offset: clampSectionCutOffset(rawOffsets[0], scaleProfile, axis),
+      labelKey: 'center',
+    },
+    {
+      id: 'locking',
+      offset: clampSectionCutOffset(rawOffsets[1], scaleProfile, axis),
+      labelKey: lockingLabel,
+    },
+    {
+      id: 'feed',
+      offset: clampSectionCutOffset(rawOffsets[2], scaleProfile, axis),
+      labelKey: feedLabel,
+    },
+    {
+      id: 'bore',
+      offset: clampSectionCutOffset(rawOffsets[3], scaleProfile, axis),
+      labelKey: boreLabel,
+    },
+  ];
+}
 
 export interface LiveSectionPlaneBarProps {
   /** Optional overrides for SSR/unit testing; runtime reads directly from `useAppStore`. */
   forceVisible?: boolean;
   offsetOverride?: number;
+  axisOverride?: SectionCutAxis;
+  weaponIdOverride?: WeaponId;
 }
 
 export const LiveSectionPlaneBar: React.FC<LiveSectionPlaneBarProps> = ({
   forceVisible,
   offsetOverride,
+  axisOverride,
+  weaponIdOverride,
 }) => {
   const lang = useAppStore((s) => s.lang);
-  const activeWeaponId = useAppStore((s) => s.activeWeaponId);
+  const storeWeaponId = useAppStore((s) => s.activeWeaponId);
+  const activeWeaponId = weaponIdOverride ?? storeWeaponId;
   const storeSectionCut = useAppStore((s) => s.sectionCut);
-  const sectionCutAxis = useAppStore((s) => s.sectionCutAxis);
+  const storeAxis = useAppStore((s) => s.sectionCutAxis);
+  const sectionCutAxis = axisOverride ?? storeAxis;
   const setSectionCutAxis = useAppStore((s) => s.setSectionCutAxis);
   const storeOffset = useAppStore((s) => s.sectionCutOffset);
   const sectionCut = forceVisible ?? storeSectionCut;
@@ -94,8 +194,12 @@ export const LiveSectionPlaneBar: React.FC<LiveSectionPlaneBarProps> = ({
   if (!sectionCut) return null;
 
   const ui = COMMAND_PALETTE_STRINGS[lang].sectionPlane;
+  const presetsUi = UI_STRINGS[lang].sectionPresets;
   const isStoryDrawerExpanded = storyOpen && !storyMinimized;
   const isBoxMode = sectionCutAxis === 'box';
+  const quickPresets = isBoxMode
+    ? []
+    : getLiveSectionQuickPresets(scaleProfile, sectionCutAxis, activeWeaponId);
   const isCentered = isBoxMode
     ? Math.abs(sectionBoxCenter[0] - boxBounds.center[0]) < 1e-3 &&
       Math.abs(sectionBoxCenter[1] - boxBounds.center[1]) < 1e-3 &&
@@ -152,7 +256,7 @@ export const LiveSectionPlaneBar: React.FC<LiveSectionPlaneBarProps> = ({
   return (
     <div
       className={`live-section-bar ${
-        isBoxMode ? 'is-box-mode' : ''
+        isBoxMode ? 'is-box-mode' : 'has-presets'
       } ${isStoryDrawerExpanded ? 'is-story-open' : ''}`}
       role="region"
       aria-label={ui.barAria}
@@ -283,6 +387,48 @@ export const LiveSectionPlaneBar: React.FC<LiveSectionPlaneBarProps> = ({
           </button>
         </div>
       </div>
+
+      {!isBoxMode && quickPresets.length > 0 && (
+        <div
+          className="live-section-presets-row"
+          role="group"
+          aria-label={presetsUi.groupAria}
+        >
+          {quickPresets.map((preset) => {
+            const isPresetActive =
+              !activeSweeping &&
+              Math.abs(sectionCutOffset - preset.offset) <=
+                sectionRange.step * 0.55;
+            const presetMm = formatSectionOffsetMm(
+              preset.offset,
+              scaleProfile,
+              sectionCutAxis
+            );
+            return (
+              <button
+                key={preset.id}
+                type="button"
+                className={`live-section-preset-pill ${
+                  isPresetActive ? 'is-active' : ''
+                }`}
+                aria-pressed={isPresetActive}
+                data-section-preset={preset.id}
+                title={`${presetsUi[preset.labelKey]} (${presetMm})`}
+                onClick={() => {
+                  setIsSweeping(false);
+                  playWorkbenchFoley('preset_detent');
+                  setSectionCutOffset(preset.offset);
+                }}
+              >
+                <span className="live-section-preset-name">
+                  {presetsUi[preset.labelKey]}
+                </span>
+                <span className="live-section-preset-mm">{presetMm}</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
 
       {isBoxMode && (
         <div className="live-section-box-row">

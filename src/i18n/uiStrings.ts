@@ -236,6 +236,13 @@ export interface UiDictionary {
     collapseTitle: string;
     showGroup: string;
     hideGroup: string;
+    clearSearchAria: string;
+    allRolesLabel: string;
+    roleFilterAria: string;
+    matchCount: (matched: number, total: number) => string;
+    emptyTitle: string;
+    emptyHint: string;
+    emptyResetBtn: string;
   };
   inspector: {
     firingBadge: (stepNum: string) => string;
@@ -264,6 +271,10 @@ export interface UiDictionary {
     secKinematics: string;
     secDesign: string;
     openStoryLink: string;
+    engineeringRoleBadgeTitle: string;
+    metallurgyTagTitle: string;
+    compareSplit3dBtn: (rivalLabel: string) => string;
+    compareSplit3dTitle: (rivalLabel: string) => string;
     isolateEnter: string;
     isolateExit: string;
     prevPart: string;
@@ -776,6 +787,33 @@ export interface UiDictionary {
     tankNoticeBtn: string;
     archeryNoticeTitle: string;
   };
+  sectionPresets: {
+    groupAria: string;
+    center: string;
+    locking: string;
+    feed: string;
+    bore: string;
+    tankBreech: string;
+    tankAutoloader: string;
+    tankPowerpack: string;
+    archeryCam: string;
+    archeryLimb: string;
+  };
+  shortcutsModal: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    closeAria: string;
+    footerHint: string;
+    cmdPaletteTitle: string;
+    cmdPaletteSub: string;
+    groups: {
+      viewport: string;
+      cutaway: string;
+      firing: string;
+      navigation: string;
+    };
+  };
 }
 
 export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
@@ -1055,6 +1093,14 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       collapseTitle: '收起侧栏',
       showGroup: '显示该总成',
       hideGroup: '隐藏该总成',
+      clearSearchAria: '清空零件搜索',
+      allRolesLabel: '全部',
+      roleFilterAria: '按机械职能筛选零件',
+      matchCount: (matched, total) => `${matched}/${total}`,
+      emptyTitle: '未找到匹配零件',
+      emptyHint:
+        '试试搜索中英文零件名、BOM 编号或机械职能（如 闭锁、弹簧、bolt、breech）',
+      emptyResetBtn: '重置筛选',
     },
     inspector: {
       firingBadge: (step) => `发射循环实时解析 · ${step} / 07`,
@@ -1093,6 +1139,11 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       secKinematics: '击发运动与拆解时序',
       secDesign: '研发演进与工程巧思',
       openStoryLink: '查看全枪完整研发故事',
+      engineeringRoleBadgeTitle: '机械职能分类（按 T 开启 3D 原理分色）',
+      metallurgyTagTitle: '零件核心材质与表面处理工艺',
+      compareSplit3dBtn: (rivalLabel) => `双屏对决对比 · vs ${rivalLabel}`,
+      compareSplit3dTitle: (rivalLabel) =>
+        `在单画布双裁剪 3D 分屏中与 ${rivalLabel} 并排对比自动原理、剖视内构与击发循环`,
       isolateEnter: '单独隔离查看该零件',
       isolateExit: '退出单独隔离',
       prevPart: '上一个零件',
@@ -1708,6 +1759,36 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       tankNoticeBtn: '开启坦克车长火控台 (FLIR)',
       archeryNoticeTitle: '复合弓弩专用冷兵器挂点说明',
     },
+    sectionPresets: {
+      groupAria: 'CT 剖面快捷切片预设',
+      center: '中心 0mm',
+      locking: '闭锁 / 枪机',
+      feed: '供弹 / 弹匣',
+      bore: '枪管 / 膛轴',
+      tankBreech: '主炮 / 炮闩',
+      tankAutoloader: '弹舱 / 装填',
+      tankPowerpack: '动力 / 车体',
+      archeryCam: '凸轮 / 弦锁',
+      archeryLimb: '弓片 / 力缆',
+    },
+    shortcutsModal: {
+      badge: '军械师热键参考 · KEYMAP',
+      title: '工作台键盘快捷键一览',
+      subtitle:
+        '无需离开 3D 视口即可单键控制剖视、拆解、击发、排障与全馆实验室',
+      closeAria: '关闭快捷键指南 (Esc)',
+      footerHint:
+        '提示：在输入框聚焦时自动屏蔽单键热键；随时按 Esc 或 ? 关闭此面板',
+      cmdPaletteTitle: '快捷键一览',
+      cmdPaletteSub:
+        '查看全站 3D 视口、剖视拆解、实弹击发与跨馆导航单键热键 (?)',
+      groups: {
+        viewport: '视口与画面渲染',
+        cutaway: '剖视与军械拆装',
+        firing: '实弹击发与实验室',
+        navigation: '全局检索与导航',
+      },
+    },
   },
   en: {
     watermark:
@@ -1993,6 +2074,14 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       collapseTitle: 'Collapse BOM sidebar',
       showGroup: 'Show assembly group',
       hideGroup: 'Hide assembly group',
+      clearSearchAria: 'Clear component search',
+      allRolesLabel: 'All',
+      roleFilterAria: 'Filter components by engineering role',
+      matchCount: (matched, total) => `${matched}/${total}`,
+      emptyTitle: 'No matching components',
+      emptyHint:
+        'Try a component name, BOM code, metallurgy, or mechanical role (e.g. bolt, spring, breech)',
+      emptyResetBtn: 'Reset Filters',
     },
     inspector: {
       firingBadge: (step) => `LIVE FIRING CYCLE · PHASE ${step} / 07`,
@@ -2032,6 +2121,12 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       secKinematics: '7-Stage Kinematics & Strip',
       secDesign: 'R&D Engineering Insight',
       openStoryLink: 'Open Full Weapon R&D Story',
+      engineeringRoleBadgeTitle:
+        'Mechanical engineering role (press T for 3D role tint)',
+      metallurgyTagTitle: 'Component metallurgy and surface treatment',
+      compareSplit3dBtn: (rivalLabel) => `Compare in Split 3D · vs ${rivalLabel}`,
+      compareSplit3dTitle: (rivalLabel) =>
+        `Launch side-by-side Split-Screen 3D Showdown against ${rivalLabel}`,
       isolateEnter: 'Isolate Selected Part',
       isolateExit: 'Exit Part Isolation',
       prevPart: 'Previous component',
@@ -2705,6 +2800,36 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       tankNoticeTitle: '1:1 Main Battle Tank Integral Optics & Remote FCS',
       tankNoticeBtn: 'Launch Tank Crew FCS (FLIR)',
       archeryNoticeTitle: 'Compound Archery Non-Ballistic Platform',
+    },
+    sectionPresets: {
+      groupAria: 'CT cutaway quick-slice presets',
+      center: 'Center 0mm',
+      locking: 'Locking / Bolt',
+      feed: 'Feed / Mag',
+      bore: 'Bore / Gas',
+      tankBreech: 'Gun / Breech',
+      tankAutoloader: 'Rack / Loader',
+      tankPowerpack: 'Power / Hull',
+      archeryCam: 'Cam / Latch',
+      archeryLimb: 'Limbs / Cables',
+    },
+    shortcutsModal: {
+      badge: 'ARMORER KEYMAP · SHORTCUTS',
+      title: 'Workbench Keyboard Shortcuts',
+      subtitle:
+        'Drive cutaways, disassembly, live firing, diagnostics, and labs without leaving the 3D viewport',
+      closeAria: 'Close keyboard shortcuts (Esc)',
+      footerHint:
+        'Tip: Single-key hotkeys pause while typing in inputs. Press Esc or ? anytime to dismiss.',
+      cmdPaletteTitle: 'Keyboard Shortcuts',
+      cmdPaletteSub:
+        'View all 3D viewport, cutaway, live firing, and museum navigation hotkeys (?)',
+      groups: {
+        viewport: 'Viewport & Camera',
+        cutaway: 'Cutaway & Disassembly',
+        firing: 'Live Firing & Labs',
+        navigation: 'Navigation',
+      },
     },
   },
 };

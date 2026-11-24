@@ -1,6 +1,10 @@
 import React, { Suspense, lazy, useEffect } from 'react';
 import { Sparkles } from 'lucide-react';
-import { useKeyboardShortcuts } from './app/useKeyboardShortcuts';
+import {
+  closeKeyboardShortcutsModal,
+  useKeyboardShortcuts,
+  useKeyboardShortcutsModalOpen,
+} from './app/useKeyboardShortcuts';
 import { useUrlStateSync } from './app/useUrlStateSync';
 import { ViewportErrorBoundary } from './app/ViewportErrorBoundary';
 import { useMechanicalSoundEngine } from './engine/audio/mechanicalSoundEngine';
@@ -68,6 +72,9 @@ const LazyHistoryTimelineModal = lazy(
 const LazyOfflineMuseumModal = lazy(
   () => import('./features/offline/OfflineMuseumModal')
 );
+const LazyKeyboardShortcutsModal = lazy(
+  () => import('./features/workbench/KeyboardShortcutsModal')
+);
 
 export const App: React.FC = () => {
   useUrlStateSync();
@@ -101,6 +108,7 @@ export const App: React.FC = () => {
   const closeTimelineModal = useAppStore((s) => s.closeTimelineModal);
   const offlineModalOpen = useAppStore((s) => s.offlineModalOpen);
   const closeOfflineModal = useAppStore((s) => s.closeOfflineModal);
+  const keyboardShortcutsOpen = useKeyboardShortcutsModalOpen();
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const tankCrewActive = useTankCrewStore((s) => s.active);
   const attachmentBenchOpen = useAttachmentStore((s) => s.benchOpen);
@@ -300,6 +308,13 @@ export const App: React.FC = () => {
       {offlineModalOpen && (
         <Suspense fallback={null}>
           <LazyOfflineMuseumModal onClose={closeOfflineModal} />
+        </Suspense>
+      )}
+
+      {/* Lazy-loaded Linear-grade Bilingual Keyboard Shortcuts Reference (`?`) */}
+      {keyboardShortcutsOpen && (
+        <Suspense fallback={null}>
+          <LazyKeyboardShortcutsModal onClose={closeKeyboardShortcutsModal} />
         </Suspense>
       )}
     </div>

@@ -5,6 +5,7 @@ import {
   ChevronRight,
   Crosshair,
   Focus,
+  GitCompareArrows,
   Loader2,
   Maximize2,
   Minimize2,
@@ -15,11 +16,16 @@ import {
   VolumeX,
   X,
 } from 'lucide-react';
+import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import { useActiveFiringPhase } from '../../engine/clock/playbackClock';
 import {
   getCachedPartGeometry,
   subscribeGeometryStatus,
 } from '../../engine/geometry/geometryService';
+import {
+  getEngineeringRoleMeta,
+  resolvePartEngineeringRole,
+} from '../../engine/materials/engineeringRoles';
 import { isArcheryWeapon } from '../../engine/physics/armoryPhysics';
 import { UI_STRINGS } from '../../i18n/uiStrings';
 import {
@@ -36,8 +42,17 @@ import {
 } from '../../narration/audioPlayer';
 import { useWeaponNarration } from '../../narration/narrationService';
 import { useAppStore } from '../../store/useAppStore';
-import { useWeaponPlugin } from '../../weapons/registry';
-import type { FiringPhaseInfo } from '../../weapons/types';
+import { getWeaponManifest } from '../../weapons/manifests';
+import {
+  getLoadedWeaponPlugin,
+  useWeaponPlugin,
+} from '../../weapons/registry';
+import type {
+  FiringPhaseInfo,
+  MaterialKind,
+  WeaponId,
+} from '../../weapons/types';
+import { getSuggestedRivalWeaponId } from '../armory/mechanismShowdownSpecs';
 
 const EMPTY_FIRING_PHASES: readonly FiringPhaseInfo[] = [];
 
@@ -50,8 +65,28 @@ const LIGHT_GROUP_BADGE_MAP: Readonly<Record<string, string>> = {
   '#10b981': '#047857',
 };
 
-export const PartInspectorCard: React.FC = () => {
-  const activeWeaponId = useAppStore((s) => s.activeWeaponId);
+const MATERIAL_SWATCH_MAP: Readonly<Record<MaterialKind, string>> = {
+  nitride_steel: '#64748b',
+  barrel_steel: '#94a3b8',
+  stainless: '#cbd5e1',
+  polymer_frame: '#475569',
+  spring_steel: '#38bdf8',
+  follower_orange: '#f97316',
+  copper_accent: '#d97706',
+};
+
+export interface PartInspectorCardProps {
+  /** Optional overrides for SSR/unit testing; runtime reads directly from `useAppStore`. */
+  weaponIdOverride?: WeaponId;
+  partIdOverride?: string | null;
+}
+
+export const PartInspectorCard: React.FC<PartInspectorCardProps> = ({
+  weaponIdOverride,
+  partIdOverride,
+}) => {
+  const storeWeaponId = useAppStore((s) => s.activeWeaponId);
+  const activeWeaponId = weaponIdOverride ?? storeWeaponId;
   const lang = useAppStore((s) => s.lang);
   const environmentPreset = useAppStore((s) => s.environmentPreset);
   const autoPlayPartAudio = useAppStore((s) => s.autoPlayPartAudio);
@@ -60,7 +95,9 @@ export const PartInspectorCard: React.FC = () => {
   const setInspectorMinimized = useAppStore((s) => s.setInspectorMinimized);
   const setStoryOpen = useAppStore((s) => s.setStoryOpen);
   const mode = useAppStore((s) => s.mode);
-  const selectedPartId = useAppStore((s) => s.selectedPartId);
+  const storeSelectedPartId = useAppStore((s) => s.selectedPartId);
+  const selectedPartId =
+    partIdOverride !== undefined ? partIdOverride : storeSelectedPartId;
   const isolateSelected = useAppStore((s) => s.isolateSelected);
   const selectPart = useAppStore((s) => s.selectPart);
   const toggleIsolateSelected = useAppStore((s) => s.toggleIsolateSelected);
@@ -75,7 +112,8 @@ export const PartInspectorCard: React.FC = () => {
     });
   }, [activeWeaponId]);
 
-  const plugin = useWeaponPlugin(activeWeaponId);
+  const plugin =
+    useWeaponPlugin(activeWeaponId) ?? getLoadedWeaponPlugin(activeWeaponId);
   const { bundle } = useWeaponNarration(activeWeaponId);
   const audio = useNarrationAudioPlayer();
 
@@ -231,6 +269,22 @@ export const PartInspectorCard: React.FC = () => {
   const roleTagDisplay =
     localizedPartNarration?.roleTag ??
     (lang === 'en' ? part.nameEn : part.roleTag);
+  const engineeringRole = resolvePartEngineeringRole(activeWeaponId, part);
+  const engineeringRoleMeta = getEngineeringRoleMeta(
+    engineeringRole,
+    activeWeaponId
+  );
+  const engineeringRoleLabel =
+    lang === 'en' ? engineeringRoleMeta.labelEn : engineeringRoleMeta.labelZh;
+  const materialLabel = resolvePartMaterialLabel(activeWeaponId, part, lang);
+  const materialSwatchHex = MATERIAL_SWATCH_MAP[part.material] ?? '#94a3b8';
+  const suggestedRivalId = getSuggestedRivalWeaponId(activeWeaponId) as WeaponId;
+  const rivalShortLabel = getWeaponManifest(suggestedRivalId).shortLabel;
+
+  const handleOpenSplitShowdown = () => {
+    playWorkbenchFoley('preset_detent');
+    useAppStore.getState().openSplitShowdown(activeWeaponId, suggestedRivalId);
+  };
 
   const trackKey = `part:${activeWeaponId}:${lang}:${part.id}`;
   const isThisPartActive = audio.activeKey === trackKey;
@@ -369,6 +423,37 @@ export const PartInspectorCard: React.FC = () => {
       <h2 className="part-title-zh">{primaryTitle}</h2>
       <div className="part-title-en">{secondaryTitle}</div>
 
+      <div className="inspector-spec-pills">
+        <span
+          className="inspector-role-pill"
+          data-engineering-role={engineeringRole}
+          title={ui.engineeringRoleBadgeTitle}
+          style={{
+            borderColor: `${engineeringRoleMeta.colorHex}66`,
+            backgroundColor: `${engineeringRoleMeta.colorHex}1a`,
+          }}
+        >
+          <span
+            className="inspector-role-dot"
+            style={{ backgroundColor: engineeringRoleMeta.colorHex }}
+            aria-hidden="true"
+          />
+          <span>{engineeringRoleLabel}</span>
+        </span>
+        <span
+          className="inspector-material-tag"
+          data-material-kind={part.material}
+          title={ui.metallurgyTagTitle}
+        >
+          <span
+            className="inspector-material-swatch"
+            style={{ backgroundColor: materialSwatchHex }}
+            aria-hidden="true"
+          />
+          <span>{materialLabel}</span>
+        </span>
+      </div>
+
       {/* Google Gemini TTS Part Audio Guide Bar */}
       {localizedPartNarration && (
         <div className="part-voice-bar">
@@ -483,6 +568,17 @@ export const PartInspectorCard: React.FC = () => {
           <div className="part-description">{part.description}</div>
         )}
       </div>
+
+      <button
+        type="button"
+        className="inspector-split-cta"
+        onClick={handleOpenSplitShowdown}
+        title={ui.compareSplit3dTitle(rivalShortLabel)}
+        data-rival-id={suggestedRivalId}
+      >
+        <GitCompareArrows size={13} aria-hidden="true" />
+        <span>{ui.compareSplit3dBtn(rivalShortLabel)}</span>
+      </button>
 
       <div className="inspector-actions">
         <button

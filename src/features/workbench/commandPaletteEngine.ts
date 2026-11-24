@@ -1,3 +1,4 @@
+import { openKeyboardShortcutsModal } from '../../app/useKeyboardShortcuts';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import {
   ARMORY_WEAR_PRESETS,
@@ -1676,6 +1677,36 @@ export function buildCommandPaletteItems(
       execute: () => {
         playWorkbenchFoley('toggle_switch');
         useAppStore.getState().toggleLang();
+      },
+    },
+    {
+      id: 'action:keyboard-shortcuts',
+      group: 'actions',
+      icon: 'story',
+      title: UI_STRINGS[lang].shortcutsModal.cmdPaletteTitle,
+      subtitle: UI_STRINGS[lang].shortcutsModal.cmdPaletteSub,
+      shortcut: '?',
+      primaryFields: [
+        UI_STRINGS[lang].shortcutsModal.cmdPaletteTitle,
+        'Keyboard Shortcuts',
+        'Hotkeys Keymap Reference',
+        '快捷键一览',
+        '键盘快捷键',
+      ],
+      secondaryFields: [
+        'keyboard',
+        'shortcuts',
+        'hotkey',
+        'keymap',
+        'help',
+        '?',
+        '按键',
+        '热键',
+        '帮助',
+      ],
+      execute: () => {
+        playWorkbenchFoley('toggle_switch');
+        openKeyboardShortcutsModal();
       },
     },
     {
