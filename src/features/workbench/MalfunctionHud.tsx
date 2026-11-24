@@ -154,7 +154,17 @@ export const MalfunctionHud: React.FC = () => {
   );
 
   return (
-    <div className="malfunction-hud">
+    <div
+      className="malfunction-hud"
+      role="region"
+      aria-label={
+        isTriageActive
+          ? exUi.triage.examBadge
+          : isArchery
+            ? ui.archeryBadge
+            : ui.badge
+      }
+    >
       {/* Top Diagnostics Header & Action Controls */}
       <div className="malf-header">
         <div className="malf-title-cluster">
@@ -449,7 +459,15 @@ export const MalfunctionHud: React.FC = () => {
         ) : (
           <>
             {/* Step A: 4 Weapon-Authentic Diagnosis Choice Buttons */}
-            <div className="malf-scenario-tabs">
+            <div
+              className="malf-scenario-tabs"
+              role="group"
+              aria-label={
+                isZh
+                  ? '未知故障盲测诊断选项'
+                  : 'Blind stoppage diagnosis options'
+              }
+            >
               {MALFUNCTION_ORDER.map((kind) => {
                 const item = getMalfunctionScenario(kind, activeWeaponId);
                 const isWrong = triage.wrongGuesses.includes(kind);
@@ -462,6 +480,7 @@ export const MalfunctionHud: React.FC = () => {
                   <button
                     key={kind}
                     type="button"
+                    aria-pressed={isConfirmed}
                     className={`malf-tab-btn is-blind-choice kind-${kind} ${
                       isWrong ? 'is-wrong-guess' : ''
                     } ${isConfirmed ? 'is-confirmed-choice' : ''} ${
@@ -524,7 +543,15 @@ export const MalfunctionHud: React.FC = () => {
                   )}
                 </div>
 
-                <div className="exam-optics-shortcuts">
+                <div
+                  className="exam-optics-shortcuts"
+                  role="group"
+                  aria-label={
+                    isZh
+                      ? '剖视与透视快捷观察开关'
+                      : 'Cutaway and X-ray inspection toggles'
+                  }
+                >
                   <button
                     type="button"
                     className={`exam-optic-chip ${sectionCut ? 'active' : ''}`}
@@ -632,7 +659,13 @@ export const MalfunctionHud: React.FC = () => {
       ) : (
         <>
           {/* Guided Mode: 4 Canonical Malfunction & Safety Scenario Selector Tabs */}
-          <div className="malf-scenario-tabs">
+          <div
+            className="malf-scenario-tabs"
+            role="group"
+            aria-label={
+              isZh ? '故障情景选择' : 'Stoppage scenario selection'
+            }
+          >
             {MALFUNCTION_ORDER.map((kind) => {
               const item = getMalfunctionScenario(kind, activeWeaponId);
               const isSelected = snap.activeKind === kind;

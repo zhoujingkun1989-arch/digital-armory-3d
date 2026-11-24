@@ -1018,9 +1018,79 @@
   outline-offset: 2px;
 }
 
+/* Blueprint Daylight (`[data-theme='light']`) parity for triage chips & locked notice */
+:is([data-theme='light'], .theme-light) .exam-optic-chip {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.2);
+  color: #334155;
+}
+
+:is([data-theme='light'], .theme-light) .exam-optic-chip:hover,
+:is([data-theme='light'], .theme-light) .exam-optic-chip.active {
+  background: #eff6ff;
+  border-color: #2563eb;
+  color: #1d4ed8;
+}
+
+:is([data-theme='light'], .theme-light) .exam-locked-steps-strip {
+  background: #f8fafc;
+  border-color: rgba(15, 23, 42, 0.22);
+  color: #475569;
+}
+
+:is([data-theme='light'], .theme-light) .exam-cert-exit-btn {
+  background: #f8fafc;
+  border-color: rgba(15, 23, 42, 0.22);
+  color: #334155;
+}
+
+:is([data-theme='light'], .theme-light) .exam-cert-exit-btn:hover {
+  background: #eff6ff;
+  border-color: #2563eb;
+  color: #0f172a;
+}
+
+/* Mobile `<= 768px` Touch-Target (`>= 34px`) & Zero-Overflow Hardening */
+@media (max-width: 768px) {
+  .field-strip-hud,
+  .malfunction-hud,
+  .exam-certificate-card,
+  .exam-redacted-banner,
+  .exam-blind-nodes-grid {
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: clip;
+  }
+
+  .exam-mode-toggle-pill,
+  .exam-optic-chip,
+  .exam-cert-retry-btn,
+  .exam-cert-exit-btn,
+  .exam-cert-passport-btn,
+  .exam-cert-share-btn,
+  .field-strip-hud .fs-phase-btn,
+  .field-strip-hud .fs-ctrl-btn,
+  .field-strip-hud .fs-step-pill,
+  .field-strip-hud .fs-alert-dismiss,
+  .malfunction-hud .malf-ctrl-btn,
+  .malfunction-hud .malf-tab-btn,
+  .malfunction-hud .malf-step-btn-card {
+    min-height: 34px;
+    min-width: 34px;
+  }
+
+  .exam-cert-actions,
+  .exam-optics-shortcuts,
+  .exam-telemetry-strip {
+    flex-wrap: wrap;
+    max-width: 100%;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .exam-blind-node.is-current .exam-node-dot,
   .exam-mistake-pill.has-mistakes,
+  .exam-inline-error-bar,
   .malf-tab-btn.is-wrong-guess,
   .exam-certificate-card,
   .exam-qualification-seal,
@@ -1029,6 +1099,7 @@
   }
 
   .exam-mode-toggle-pill,
+  .exam-optic-chip,
   .exam-blind-node,
   .exam-cert-retry-btn,
   .exam-cert-exit-btn,

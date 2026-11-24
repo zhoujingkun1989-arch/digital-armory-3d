@@ -168,7 +168,11 @@ export const FieldStripHud: React.FC = () => {
   );
 
   return (
-    <div className="field-strip-hud">
+    <div
+      className="field-strip-hud"
+      role="region"
+      aria-label={isExamActive ? exUi.fieldStrip.examBadge : ui.badge}
+    >
       {/* Top Toolbar Row: Manual Title, Blind Exam Toggle, Telemetry & Action Buttons */}
       <div className="field-strip-top-row">
         <div className="field-strip-title-cluster">
@@ -202,10 +206,15 @@ export const FieldStripHud: React.FC = () => {
         </div>
 
         <div className="field-strip-actions-cluster">
-          <div className="fs-phase-toggle" role="group">
+          <div
+            className="fs-phase-toggle"
+            role="group"
+            aria-label={lang === 'zh' ? '拆解深度模式' : 'Disassembly tier'}
+          >
             <button
               type="button"
               disabled={isExamActive}
+              aria-pressed={snap.tier === 'field'}
               className={`fs-phase-btn ${
                 snap.tier === 'field' ? 'active-strip' : ''
               }`}
@@ -216,6 +225,7 @@ export const FieldStripHud: React.FC = () => {
             <button
               type="button"
               disabled={isExamActive}
+              aria-pressed={snap.tier === 'detail'}
               className={`fs-phase-btn ${
                 snap.tier === 'detail' ? 'active-strip' : ''
               }`}
@@ -322,7 +332,13 @@ export const FieldStripHud: React.FC = () => {
             </>
           ) : (
             <>
-              <div className="field-strip-phase-switch" role="group">
+              <div
+                className="field-strip-phase-switch"
+                role="group"
+                aria-label={
+                  lang === 'zh' ? '拆解与复装阶段' : 'Strip and reassembly phase'
+                }
+              >
                 <button
                   type="button"
                   className={`fs-phase-btn ${
@@ -538,7 +554,13 @@ export const FieldStripHud: React.FC = () => {
         ) : (
           <>
             {/* Numbered Blind Progress Nodes (`01 ✓`, `02 ●`, `03 ?`...) — Zero Part/Step Spoilers */}
-            <div className="exam-blind-nodes-grid" role="list">
+            <div
+              className="exam-blind-nodes-grid"
+              role="list"
+              aria-label={
+                lang === 'zh' ? '盲拆考核步骤进度' : 'Blind exam step progress'
+              }
+            >
               {plan.steps.map((step, idx) => {
                 const status: 'done' | 'current' | 'pending' =
                   idx < exam.completedPhaseSteps
@@ -604,7 +626,11 @@ export const FieldStripHud: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <div aria-live="polite" className="field-strip-guidance">
+              <div
+                role="status"
+                aria-live="polite"
+                className="field-strip-guidance"
+              >
                 <div className="fs-guidance-text">
                   <strong>
                     {exam.phase === 'reassembly'
@@ -624,7 +650,13 @@ export const FieldStripHud: React.FC = () => {
       ) : (
         <>
           {/* Guided Mode: Named DAG Step Pipeline Strip */}
-          <div className="field-strip-steps-grid">
+          <div
+            className="field-strip-steps-grid"
+            role="group"
+            aria-label={
+              lang === 'zh' ? '拆解步骤流程' : 'Disassembly step pipeline'
+            }
+          >
             {plan.steps.map((step) => {
               const isStripped = strippedSet.has(step.id);
               const isRecommended = snap.recommendedStepId === step.id;
@@ -702,6 +734,7 @@ export const FieldStripHud: React.FC = () => {
             </div>
           ) : snap.fullCycleCompleted && snap.strippedCount === 0 ? (
             <div
+              role="status"
               aria-live="polite"
               className="field-strip-guidance is-completed"
             >
@@ -748,7 +781,11 @@ export const FieldStripHud: React.FC = () => {
               </div>
             </div>
           ) : recommendedStep ? (
-            <div aria-live="polite" className="field-strip-guidance">
+            <div
+              role="status"
+              aria-live="polite"
+              className="field-strip-guidance"
+            >
               <div className="fs-guidance-text">
                 <strong>
                   {snap.phase === 'strip'

@@ -947,11 +947,16 @@ export const TankCrewHud: React.FC = () => {
           </div>
         </div>
 
-        <div className="tank-crew-pills">
+        <div
+          className="tank-crew-pills"
+          role="group"
+          aria-label={lang === 'zh' ? '车组工位视角' : 'Crew station view'}
+        >
           {STATION_ORDER.map((st) => (
             <button
               key={st}
               type="button"
+              aria-pressed={station === st}
               className={`tank-crew-pill ${station === st ? 'is-active' : ''}`}
               onClick={() => {
                 playWorkbenchFoley('toggle_switch');
@@ -964,11 +969,16 @@ export const TankCrewHud: React.FC = () => {
           ))}
         </div>
 
-        <div className="tank-crew-pills">
+        <div
+          className="tank-crew-pills"
+          role="group"
+          aria-label={lang === 'zh' ? '观瞄成像模式' : 'Optic imaging mode'}
+        >
           {opticProfile.supportedOpticModes.map((op) => (
             <button
               key={op}
               type="button"
+              aria-pressed={opticMode === op}
               className={`tank-crew-pill is-optic ${opticMode === op ? 'is-active' : ''}`}
               onClick={() => {
                 playWorkbenchFoley('toggle_switch');
@@ -982,7 +992,7 @@ export const TankCrewHud: React.FC = () => {
 
         {opticProfile.reticleStyle === 'ww2_tzf9b' &&
           opticMode !== 'daylight' && (
-            <div className="tank-crew-study-note">
+            <div className="tank-crew-study-note" role="note">
               {lang === 'zh'
                 ? opticProfile.museumStudyThermalNoteZh
                 : opticProfile.museumStudyThermalNoteEn}
@@ -997,6 +1007,8 @@ export const TankCrewHud: React.FC = () => {
             </div>
             <input
               type="range"
+              aria-label={ui.yaw}
+              aria-valuetext={`${Math.round(turretYawDeg)}°`}
               min={-180}
               max={180}
               step={1}
@@ -1014,6 +1026,8 @@ export const TankCrewHud: React.FC = () => {
             </div>
             <input
               type="range"
+              aria-label={ui.elev}
+              aria-valuetext={`${gunElevDeg.toFixed(1)}°`}
               min={minElev}
               max={maxElev}
               step={0.2}
@@ -1031,6 +1045,8 @@ export const TankCrewHud: React.FC = () => {
             </div>
             <input
               type="range"
+              aria-label={rangeLabel}
+              aria-valuetext={`${lrfRangeM} m`}
               min={200}
               max={opticProfile.rangeDrumMaxM}
               step={50}
@@ -1049,6 +1065,8 @@ export const TankCrewHud: React.FC = () => {
             </div>
             <input
               type="range"
+              aria-label={ui.speed}
+              aria-valuetext={`${targetSpeedKph > 0 ? '+' : ''}${targetSpeedKph} km/h`}
               min={-60}
               max={60}
               step={2}
@@ -1059,7 +1077,17 @@ export const TankCrewHud: React.FC = () => {
         </div>
 
         <div className="tank-crew-fcs-bar">
-          <div className="tank-crew-fcs-stats tabular">
+          <div
+            className="tank-crew-fcs-stats tabular"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+            aria-label={
+              lang === 'zh'
+                ? '火控弹道解算遥测'
+                : 'Fire-control ballistic solution'
+            }
+          >
             <span>
               {ui.superelevation}: {fcs.superelevationMil.toFixed(1)} MIL
             </span>
