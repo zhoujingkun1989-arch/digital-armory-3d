@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useSyncExternalStore } from 'react';
+import React, { useEffect, useMemo, useRef, useSyncExternalStore } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { useAppStore } from '../../store/useAppStore';
@@ -29,6 +29,7 @@ const _vecA = new THREE.Vector3();
 const _vecB = new THREE.Vector3();
 const _dir = new THREE.Vector3();
 const _upAxis = new THREE.Vector3(0, 1, 0);
+const _zAxis = new THREE.Vector3(0, 0, 1);
 const _quat = new THREE.Quaternion();
 const _normVec = new THREE.Vector3();
 const _scratchPose = createMutablePose();
@@ -197,6 +198,12 @@ export const CaliperActor: React.FC = () => {
     return buildSpanAndProjectionLines(snap.pointA.pos, snap.pointB.pos, isTank);
   }, [snap.pointA, snap.pointB, isTank]);
 
+  useEffect(() => {
+    return () => {
+      lockedSpanGeo?.dispose();
+    };
+  }, [lockedSpanGeo]);
+
   // Locked solid A -> B cylinder transform
   const lockedBeamTransform = useMemo(() => {
     if (!snap.pointA || !snap.pointB) return null;
@@ -264,6 +271,12 @@ export const CaliperActor: React.FC = () => {
     isTank,
   ]);
 
+  useEffect(() => {
+    return () => {
+      envelopeGeo?.dispose();
+    };
+  }, [envelopeGeo]);
+
   // 60fps Zero-GC hover reticle & rubber-band beam from Point A -> live surface cursor
   useFrame(() => {
     const st = useAppStore.getState();
@@ -287,12 +300,8 @@ export const CaliperActor: React.FC = () => {
           _normVec.set(hover.nx, hover.ny, hover.nz);
           if (_normVec.lengthSq() < 1e-4) _normVec.set(0, 0, 1);
           else _normVec.normalize();
-          _quat.setFromUnitVectors(_upAxis, _normVec);
           // RingGeometry faces +Z by default; orient its Z axis along surface normal
-          hRing.quaternion.setFromUnitVectors(
-            new THREE.Vector3(0, 0, 1),
-            _normVec
-          );
+          hRing.quaternion.setFromUnitVectors(_zAxis, _normVec);
         }
       }
     }

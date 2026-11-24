@@ -421,6 +421,43 @@ export interface WeaponGeometryStatus {
   version: number;
 }
 
+export interface GeometryCacheStats {
+  cachedWeaponsCount: number;
+  cachedPartsCount: number;
+  glbPartsCount: number;
+  csgPartsCount: number;
+  lruOrder: readonly WeaponId[];
+}
+
+/**
+ * Returns live telemetry for the bounded GPU geometry LRU cache, breaking down
+ * cached parts between Track A (`userData.isGlbAsset === true`) and Track B (CSG).
+ */
+export function getGeometryCacheStats(): GeometryCacheStats {
+  let cachedPartsCount = 0;
+  let glbPartsCount = 0;
+  let csgPartsCount = 0;
+
+  weaponPools.forEach((entry) => {
+    entry.parts.forEach((geo) => {
+      cachedPartsCount += 1;
+      if (geo.userData?.isGlbAsset === true) {
+        glbPartsCount += 1;
+      } else {
+        csgPartsCount += 1;
+      }
+    });
+  });
+
+  return {
+    cachedWeaponsCount: weaponPools.size,
+    cachedPartsCount,
+    glbPartsCount,
+    csgPartsCount,
+    lruOrder: [...lruOrder],
+  };
+}
+
 export function getWeaponGeometrySnapshot(
   weaponIdRaw: string,
   expectedTotal = 0

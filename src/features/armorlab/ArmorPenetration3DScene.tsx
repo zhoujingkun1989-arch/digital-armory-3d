@@ -11,6 +11,7 @@ import * as THREE from 'three';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import { Camera, Pause, Play, RotateCcw } from 'lucide-react';
+import { ViewportErrorBoundary } from '../../app/ViewportErrorBoundary';
 import type {
   ArmorPenetrationResult,
   PenetratorId,
@@ -45,6 +46,10 @@ export interface ArmorPenetration3DSceneProps {
 const PLAYBACK_SPEEDS: readonly TheaterPlaybackSpeed[] = [0.15, 0.5, 1];
 const BASE_CYCLE_DURATION_SEC = 3.6;
 const TERMINAL_HOLD_SEC = 0.9;
+
+const emptySubscribe = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
 
 interface ArmorTheaterClock {
   step: (dt: number) => number;
@@ -1696,12 +1701,27 @@ export const ArmorPenetration3DScene: React.FC<ArmorPenetration3DSceneProps> = (
     clock.getPlaying,
     clock.getPlaying
   );
+  const isClient = useSyncExternalStore(
+    emptySubscribe,
+    getClientSnapshot,
+    getServerSnapshot
+  );
   const [speed, setSpeed] = useState<TheaterPlaybackSpeed>(0.5);
   const [cameraResetTrigger, setCameraResetTrigger] = useState<number>(0);
   const [contextLost, setContextLost] = useState<boolean>(false);
+  const [contextEpoch, setContextEpoch] = useState<number>(0);
+  const [canvasRetryKey, setCanvasRetryKey] = useState<number>(0);
 
   const scrubbingRef = useRef<boolean>(false);
   const canvasCleanupRef = useRef<(() => void) | null>(null);
+
+  const handleRetryWebgl = useCallback(() => {
+    playWorkbenchFoley('preset_detent');
+    canvasCleanupRef.current?.();
+    canvasCleanupRef.current = null;
+    setContextLost(false);
+    setCanvasRetryKey((k) => k + 1);
+  }, []);
 
   // Direct DOM refs for 60fps HUD telemetry without React re-renders
   const scrubberRef = useRef<HTMLInputElement>(null);
@@ -1851,47 +1871,88 @@ export const ArmorPenetration3DScene: React.FC<ArmorPenetration3DSceneProps> = (
           <span>{ui.theater.orbitHint}</span>
         </div>
 
-        {contextLost ? (
-          <div className="armor-theater-fallback">
-            <span>{ui.theater.webglFallback}</span>
-          </div>
+        {isClient ? (
+          <ViewportErrorBoundary>
+            <Canvas
+              key={canvasRetryKey}
+              shadows="soft"
+              dpr={[1, 2]}
+              gl={{
+                antialias: true,
+                powerPreference: 'high-performance',
+                toneMapping: THREE.AgXToneMapping,
+                toneMappingExposure: 1.08,
+              }}
+              camera={{ fov: 38, near: 0.5, far: 1200, position: [-20, 32, 148] }}
+              onCreated={({ gl }) => {
+                canvasCleanupRef.current?.();
+                const dom = gl.domElement;
+                const onLost = (ev: Event) => {
+                  ev.preventDefault();
+                  setContextLost(true);
+                };
+                const onRestored = () => {
+                  setContextLost(false);
+                  setContextEpoch((e) => e + 1);
+                };
+                dom.addEventListener('webglcontextlost', onLost, false);
+                dom.addEventListener('webglcontextrestored', onRestored, false);
+                canvasCleanupRef.current = () => {
+                  dom.removeEventListener('webglcontextlost', onLost, false);
+                  dom.removeEventListener(
+                    'webglcontextrestored',
+                    onRestored,
+                    false
+                  );
+                };
+              }}
+              style={{ width: '100%', height: '100%' }}
+            >
+              <TheaterInnerScene
+                key={contextEpoch}
+                layout={layout}
+                clock={clock}
+                onHudTick={handleHudTick}
+                cameraResetTrigger={cameraResetTrigger}
+              />
+            </Canvas>
+          </ViewportErrorBoundary>
         ) : (
-          <Canvas
-            shadows="soft"
-            dpr={[1, 2]}
-            gl={{
-              antialias: true,
-              powerPreference: 'high-performance',
-              toneMapping: THREE.AgXToneMapping,
-              toneMappingExposure: 1.08,
-            }}
-            camera={{ fov: 38, near: 0.5, far: 1200, position: [-20, 32, 148] }}
-            onCreated={({ gl }) => {
-              canvasCleanupRef.current?.();
-              const dom = gl.domElement;
-              const onLost = (ev: Event) => {
-                ev.preventDefault();
-                setContextLost(true);
-              };
-              const onRestored = () => {
-                setContextLost(false);
-              };
-              dom.addEventListener('webglcontextlost', onLost, false);
-              dom.addEventListener('webglcontextrestored', onRestored, false);
-              canvasCleanupRef.current = () => {
-                dom.removeEventListener('webglcontextlost', onLost, false);
-                dom.removeEventListener('webglcontextrestored', onRestored, false);
-              };
-            }}
-            style={{ width: '100%', height: '100%' }}
+          <div className="armor-theater-fallback">
+            <span>{ui.theater.title}</span>
+          </div>
+        )}
+
+        {contextLost && (
+          <div
+            className="viewport-error-fallback armor-theater-fallback"
+            role="alert"
+            style={{ zIndex: 8 }}
           >
-            <TheaterInnerScene
-              layout={layout}
-              clock={clock}
-              onHudTick={handleHudTick}
-              cameraResetTrigger={cameraResetTrigger}
-            />
-          </Canvas>
+            <div className="viewport-error-card">
+              <span className="viewport-error-badge">
+                WEBGL CONTEXT RECOVERY
+              </span>
+              <h3 className="viewport-error-title">
+                {lang === 'en'
+                  ? 'Restoring 3D Armor Theater…'
+                  : '正在恢复 3D 穿甲剖视剧场…'}
+              </h3>
+              <p className="viewport-error-desc">{ui.theater.webglFallback}</p>
+              <button
+                type="button"
+                className="viewport-error-retry"
+                onClick={handleRetryWebgl}
+              >
+                <RotateCcw size={14} aria-hidden="true" />
+                <span>
+                  {lang === 'en'
+                    ? 'Reinitialize 3D Viewport'
+                    : '重新初始化 3D 视口'}
+                </span>
+              </button>
+            </div>
+          </div>
         )}
       </div>
 

@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import * as THREE from 'three';
 import { type ThreeEvent, useFrame, useThree } from '@react-three/fiber';
 import { Edges } from '@react-three/drei';
@@ -169,8 +169,8 @@ const TANK_ACTIVE_HALO_GEO = (() => {
 
 /**
  * Builds the 1:1 CNC elevation backdrop ruler (`0 mm` to `150 mm` = `0` to `15.0` world units)
- * behind the 15-caliber lineup (`z = -2.4 cm`), with `10 mm` (`1 cm`) horizontal hairlines
- * and `50 mm` (`5 cm`) major datum rules.
+ * behind the 17-caliber small-arms lineup (`z = -2.35 cm`), with `10 mm` (`1 cm`) horizontal
+ * hairlines and `50 mm` (`5 cm`) major datum rules.
  */
 function buildElevationScaleBackdrop(): {
   minorGeo: THREE.BufferGeometry;
@@ -215,9 +215,10 @@ function buildElevationScaleBackdrop(): {
 }
 
 /**
- * Builds the 1:1 Heavy Tank Ordnance elevation backdrop ruler (`0 mm` to `1,200 mm` = `0..120 cm`)
- * behind the 3 tank cannon rounds (`z = -12.0 cm`), spanning above the `1,150 mm` 125mm DTC10-125 nose,
- * with `100 mm` minor hairlines, `200 mm` major rules, and `50 mm` stile half-ticks.
+ * Builds the 1:1 Heavy Armor & Aero Ordnance elevation backdrop ruler (`0 mm` to `1,200 mm` = `0..120 cm`)
+ * behind the 4 ordnance rounds (`30×173mm` GAU-8 through `125mm` DTC10-125 at `z = -12.0 cm`, spanning
+ * `x ∈ [-48, +48]` cleanly around `lineupXCm ∈ [-36, +34]`), with `100 mm` minor hairlines,
+ * `200 mm` major rules, and `50 mm` stile half-ticks.
  */
 function buildTankElevationScaleBackdrop(): {
   minorGeo: THREE.BufferGeometry;
@@ -276,6 +277,9 @@ const SingleCartridgeSpecimen: React.FC<SingleCartridgeSpecimenProps> =
   React.memo(
     ({ caliber, cutaway, isActive, isDaylight, showEdges, onSelect }) => {
     const spec = CARTRIDGE_LAB_SPECS[caliber];
+    // NOTE: `getCartridgeLabMeshBundle` returns cached module-level singletons (`cutawayCache`)
+    // and stage plinth/pedestal/backdrop geometries are module-level singletons — never `.dispose()` here.
+    // All JSX materials are disposed automatically by R3F on unmount.
     const bundle = useMemo(
       () => getCartridgeLabMeshBundle(caliber, cutaway),
       [caliber, cutaway]
@@ -502,11 +506,12 @@ const SingleCartridgeSpecimen: React.FC<SingleCartridgeSpecimenProps> =
 SingleCartridgeSpecimen.displayName = 'SingleCartridgeSpecimen';
 
 /**
- * WP-06 — 1:1 SAAMI / CIP Cartridge Cutaway Lab Stage
- * ---------------------------------------------------
- * Displays all 7 arsenal calibers (`9×19mm` through `.50 BMG`) side-by-side at
- * exact `1:1` physical scale (`1 world unit = 1 cm = 10 mm`) with longitudinal
- * `180°` cutaway anatomy and a `0–150 mm` CNC elevation ruler backdrop.
+ * WP-06 — 1:1 SAAMI / CIP Cartridge & Heavy Ordnance Cutaway Lab Stage
+ * ---------------------------------------------------------------------
+ * Displays all 17 small-arms calibers (`9×19mm` through `.50 BMG`) and the 4 heavy
+ * ordnance rounds (`30×173mm` GAU-8, `88mm`, `120mm`, `125mm`) side-by-side at exact
+ * `1:1` physical scale (`1 world unit = 1 cm = 10 mm`) with longitudinal `180°` cutaway
+ * anatomy and CNC elevation ruler backdrops.
  */
 export const CartridgeCutawayStage: React.FC = () => {
   const { size } = useThree();
@@ -521,6 +526,22 @@ export const CartridgeCutawayStage: React.FC = () => {
   const showEdges = useAppStore((s) => s.showEdges);
   const environmentPreset = useAppStore((s) => s.environmentPreset);
   const selectLabCartridge = useAppStore((s) => s.selectLabCartridge);
+
+  const handleSelectCartridge = useCallback(
+    (cal: CaliberProfile) => {
+      selectLabCartridge(cal, true);
+    },
+    [selectLabCartridge]
+  );
+
+  // Reset hover pointer cursor cleanly if user navigates away while hovering a specimen
+  useEffect(() => {
+    return () => {
+      if (typeof document !== 'undefined') {
+        document.body.style.cursor = 'auto';
+      }
+    };
+  }, []);
 
   useFrame((_, delta) => {
     const grp = stageGroupRef.current;
@@ -640,7 +661,7 @@ export const CartridgeCutawayStage: React.FC = () => {
           isActive={caliber === activeCaliber}
           isDaylight={isDaylight}
           showEdges={showEdges}
-          onSelect={(cal) => selectLabCartridge(cal, true)}
+          onSelect={handleSelectCartridge}
         />
       ))}
     </group>
