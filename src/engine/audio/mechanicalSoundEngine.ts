@@ -12,6 +12,14 @@ import type {
   WeaponId,
 } from '../../weapons/types';
 import { playbackClock } from '../clock/playbackClock';
+import type {
+  AttachmentPhysicsDelta,
+  MuzzleAttachmentId,
+} from '../attachments/attachmentSpecs';
+import {
+  getActiveWeaponAttachmentPhysics,
+  getWeaponAttachmentLoadout,
+} from '../attachments/attachmentStore';
 import {
   isArcheryCaliber,
   isArcheryWeapon,
@@ -515,6 +523,127 @@ export function detectCrossedFiringCues(
  */
 export function computeNarrationDuckingGain(narrationPlaying: boolean): number {
   return narrationPlaying ? 0.24 : 1.0;
+}
+
+export interface ModifiedGunshotAcoustics {
+  muzzleId: MuzzleAttachmentId;
+  subGain: number;
+  punchDecaySec: number;
+  crackFilterType: BiquadFilterType;
+  crackCutoffHz: number;
+  crackEndHz: number;
+  crackGain: number;
+  blastTailSec: number;
+  tailCutoffHz: number;
+  tailGain: number;
+  tailSaturate: boolean;
+  /** Damped metallic K-baffle thump + baffle gas-bleed gain (suppressor) */
+  baffleThumpGain: number;
+  /** Crisp high-frequency lateral concussion crack gain (muzzle brake) */
+  lateralCrackGain: number;
+  /** Subtle 3-prong tuning-fork metallic shimmer gain (flash hider) */
+  prongPingGain: number;
+}
+
+/**
+ * Pure acoustic transfer model coupling modular muzzle devices (suppressor,
+ * competition brake, 3-prong flash hider) to Web Audio gunshot synthesis.
+ */
+export function computeModifiedGunshotAcoustics(
+  profile: Readonly<CaliberAcousticProfile>,
+  delta: Readonly<AttachmentPhysicsDelta>,
+  muzzleId: MuzzleAttachmentId
+): ModifiedGunshotAcoustics {
+  // Perceptual Web Audio gain scaling from dB delta (audible contrast without silencing)
+  const dbGain = Math.max(
+    0.22,
+    Math.min(1.42, Math.pow(10, delta.soundDbDelta / 44))
+  );
+
+  if (muzzleId === 'suppressor') {
+    const lpHz = Math.min(
+      profile.crackCutoffHz,
+      delta.lowPassHz ?? 1280
+    );
+    return {
+      muzzleId,
+      subGain: profile.peakGain * 0.36 * dbGain,
+      punchDecaySec: Math.max(0.08, profile.punchDecaySec * 0.56),
+      crackFilterType: 'lowpass',
+      crackCutoffHz: lpHz,
+      crackEndHz: Math.max(240, lpHz * 0.36),
+      crackGain: profile.peakGain * 0.34 * dbGain,
+      blastTailSec: Math.max(0.11, profile.blastTailSec * 0.48),
+      tailCutoffHz: Math.max(420, lpHz * 0.72),
+      tailGain: Math.max(0.12, (0.24 + profile.brakeRoarGain * 0.14) * dbGain),
+      tailSaturate: false,
+      baffleThumpGain: Math.max(0.28, profile.peakGain * 0.46),
+      lateralCrackGain: 0,
+      prongPingGain: 0,
+    };
+  }
+
+  if (muzzleId === 'muzzle_brake') {
+    const boostedCrackHz = Math.min(5400, profile.crackCutoffHz * 1.24);
+    return {
+      muzzleId,
+      subGain: Math.min(1.0, profile.peakGain * 0.88 * dbGain),
+      punchDecaySec: profile.punchDecaySec * 0.94,
+      crackFilterType: 'bandpass',
+      crackCutoffHz: boostedCrackHz,
+      crackEndHz: boostedCrackHz * 0.52,
+      crackGain: Math.min(1.0, profile.peakGain * 0.94 * dbGain),
+      blastTailSec: profile.blastTailSec * 1.12,
+      tailCutoffHz: Math.min(4800, boostedCrackHz * 0.92),
+      tailGain: Math.min(
+        1.0,
+        (0.46 + Math.max(profile.brakeRoarGain, 0.48) * 0.54) * dbGain
+      ),
+      tailSaturate: true,
+      baffleThumpGain: 0,
+      lateralCrackGain: Math.min(
+        0.92,
+        profile.peakGain * (0.58 + delta.highFreqCrackBoost * 0.36)
+      ),
+      prongPingGain: 0,
+    };
+  }
+
+  if (muzzleId === 'flash_hider') {
+    return {
+      muzzleId,
+      subGain: profile.peakGain * 0.78 * dbGain,
+      punchDecaySec: profile.punchDecaySec,
+      crackFilterType: 'bandpass',
+      crackCutoffHz: profile.crackCutoffHz * 0.96,
+      crackEndHz: profile.crackCutoffHz * 0.52,
+      crackGain: profile.peakGain * 0.82 * dbGain,
+      blastTailSec: profile.blastTailSec * 0.94,
+      tailCutoffHz: profile.crackCutoffHz * 0.82,
+      tailGain: (0.33 + profile.brakeRoarGain * 0.46) * dbGain,
+      tailSaturate: profile.brakeRoarGain > 0.3,
+      baffleThumpGain: 0,
+      lateralCrackGain: 0,
+      prongPingGain: 0.068,
+    };
+  }
+
+  return {
+    muzzleId: 'none',
+    subGain: profile.peakGain * 0.8,
+    punchDecaySec: profile.punchDecaySec,
+    crackFilterType: 'bandpass',
+    crackCutoffHz: profile.crackCutoffHz,
+    crackEndHz: profile.crackCutoffHz * 0.55,
+    crackGain: profile.peakGain * 0.88,
+    blastTailSec: profile.blastTailSec,
+    tailCutoffHz: profile.crackCutoffHz * 0.85,
+    tailGain: 0.35 + profile.brakeRoarGain * 0.52,
+    tailSaturate: profile.brakeRoarGain > 0.3,
+    baffleThumpGain: 0,
+    lateralCrackGain: 0,
+    prongPingGain: 0,
+  };
 }
 
 type WebkitWindow = Window & {
@@ -1075,48 +1204,127 @@ class ProceduralGunsmithSoundEngine {
           bus: 'mechanical',
         });
 
-        // 2. Propellant detonation + caliber-differentiated supersonic muzzle blast
+        // 2. Propellant detonation + caliber- & attachment-differentiated muzzle blast
         const blastDelay = isSlowMo ? 0.028 : 0.006;
         const tBlast = now + blastDelay;
+        const attLoadout = getWeaponAttachmentLoadout(weaponId);
+        const attPhys = getActiveWeaponAttachmentPhysics(weaponId);
+        const ac = computeModifiedGunshotAcoustics(
+          profile,
+          attPhys,
+          attLoadout.muzzle
+        );
 
         // Layer A: Sub-bass chamber pressure shockwave
         this.emitModalPing({
           startTime: tBlast,
-          duration: profile.punchDecaySec,
+          duration: ac.punchDecaySec,
           freqStart: profile.subFreqHz * 2.9,
           freqEnd: profile.subFreqHz,
           type: 'sine',
-          gainPeak: profile.peakGain * 0.8,
+          gainPeak: ac.subGain,
           bus: 'ballistic',
         });
 
-        // Layer B: Supersonic N-wave muzzle crack (excites room ConvolverNode slapback!)
+        // Layer B: Supersonic N-wave crack (or tight low-pass attenuated transient when suppressed!)
         this.emitNoiseBurst({
           startTime: tBlast,
-          duration: Math.min(0.085, profile.punchDecaySec * 0.42),
-          filterType: 'bandpass',
-          freqStart: profile.crackCutoffHz,
-          freqEnd: profile.crackCutoffHz * 0.55,
-          q: 1.05,
-          gainPeak: profile.peakGain * 0.88,
-          attack: 0.0008,
-          saturate: true,
+          duration: Math.min(0.085, ac.punchDecaySec * 0.42),
+          filterType: ac.crackFilterType,
+          freqStart: ac.crackCutoffHz,
+          freqEnd: ac.crackEndHz,
+          q: ac.muzzleId === 'suppressor' ? 0.72 : 1.05,
+          gainPeak: ac.crackGain,
+          attack: ac.muzzleId === 'suppressor' ? 0.0022 : 0.0008,
+          saturate: ac.muzzleId !== 'suppressor',
           bus: 'ballistic',
         });
 
         // Layer C: Muzzle brake & expanding gas blast tail
         this.emitNoiseBurst({
           startTime: tBlast + 0.004,
-          duration: profile.blastTailSec,
+          duration: ac.blastTailSec,
           filterType: 'lowpass',
-          freqStart: profile.crackCutoffHz * 0.85,
+          freqStart: ac.tailCutoffHz,
           freqEnd: Math.max(95, profile.subFreqHz * 2.2),
           q: 0.85,
-          gainPeak: 0.35 + profile.brakeRoarGain * 0.52,
+          gainPeak: ac.tailGain,
           attack: 0.0035,
-          saturate: profile.brakeRoarGain > 0.3,
+          saturate: ac.tailSaturate,
           bus: 'ballistic',
         });
+
+        // Layer D: Modular muzzle attachment acoustic signatures
+        if (ac.baffleThumpGain > 0) {
+          // Titanium K-baffle damped chamber thump + low-passed baffle swirl bleed ("pfft-thump")
+          this.emitModalPing({
+            startTime: tBlast + 0.001,
+            duration: isSlowMo ? 0.11 : 0.068,
+            freqStart: 162,
+            freqEnd: 58,
+            type: 'triangle',
+            gainPeak: ac.baffleThumpGain,
+            bus: 'mechanical',
+          });
+          this.emitNoiseBurst({
+            startTime: tBlast + 0.003,
+            duration: isSlowMo ? 0.14 : 0.085,
+            filterType: 'lowpass',
+            freqStart: Math.min(1180, ac.crackCutoffHz),
+            freqEnd: 320,
+            q: 1.4,
+            gainPeak: ac.baffleThumpGain * 0.62,
+            attack: 0.002,
+            saturate: false,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: tBlast + 0.002,
+            fundamentalHz: 940,
+            baseDecaySec: 0.028,
+            gainPeak: ac.baffleThumpGain * 0.34,
+            hardness01: 0.45,
+            massBodyHz: 145,
+            bus: 'mechanical',
+          });
+        } else if (ac.lateralCrackGain > 0) {
+          // Dual-Chamber Muzzle Brake crisp high-frequency lateral concussion shockwave slap
+          this.emitNoiseBurst({
+            startTime: tBlast + 0.001,
+            duration: isSlowMo ? 0.095 : 0.052,
+            filterType: 'bandpass',
+            freqStart: 3950,
+            freqEnd: 1520,
+            q: 1.45,
+            gainPeak: ac.lateralCrackGain,
+            attack: 0.0006,
+            saturate: true,
+            bus: 'ballistic',
+          });
+          this.emitNoiseBurst({
+            startTime: tBlast + 0.004,
+            duration: isSlowMo ? 0.14 : 0.082,
+            filterType: 'highpass',
+            freqStart: 2250,
+            freqEnd: 1380,
+            q: 1.1,
+            gainPeak: ac.lateralCrackGain * 0.48,
+            attack: 0.0008,
+            saturate: true,
+            bus: 'ballistic',
+          });
+        } else if (ac.prongPingGain > 0) {
+          // 3-Prong Flash Hider signature subtle open-tine tuning-fork ring
+          this.emitModalPing({
+            startTime: tBlast + 0.003,
+            duration: isSlowMo ? 0.16 : 0.095,
+            freqStart: 4260,
+            freqEnd: 4220,
+            type: 'sine',
+            gainPeak: ac.prongPingGain,
+            bus: 'mechanical',
+          });
+        }
 
         // Platform-signature ballistic harmonics (AN-94 1,800 RPM double-tap + brake whistle; M134 50Hz BRRRT buzz)
         if (weaponId === 'an94') {

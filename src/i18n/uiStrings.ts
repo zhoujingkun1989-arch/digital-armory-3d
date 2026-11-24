@@ -172,6 +172,8 @@ export interface UiDictionary {
     malfunctionChipTitle: string;
     caliperChip: string;
     caliperChipTitle: string;
+    attachmentsChip: string;
+    attachmentsChipTitle: string;
     cartridgeChip: string;
     cartridgeChipTitle: string;
     ballisticsChip: string;
@@ -704,6 +706,37 @@ export interface UiDictionary {
     strengthTag: string;
     tradeoffTag: string;
   };
+  attachmentBench: {
+    badge: string;
+    title: string;
+    subtitle: string;
+    presetsHeading: string;
+    muzzleHeading: string;
+    opticHeading: string;
+    metricsHeading: string;
+    metricMass: string;
+    metricSound: string;
+    metricRecoil: string;
+    metricVelocity: string;
+    gasRetentionLabel: string;
+    sideBlastLabel: string;
+    lowPassLabel: string;
+    ctCutawayBtn: string;
+    ctCutawayTitle: string;
+    testFireBtn: string;
+    testFireTitle: string;
+    resetBtn: string;
+    resetTitle: string;
+    closeTitle: string;
+    incompatibleBadge: string;
+    mountedBadge: string;
+    stockBadge: string;
+    couplingSummaryPrefix: string;
+    couplingStockNote: string;
+    tankNoticeTitle: string;
+    tankNoticeBtn: string;
+    archeryNoticeTitle: string;
+  };
 }
 
 export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
@@ -913,6 +946,9 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       caliperChip: '游标卡尺',
       caliperChipTitle:
         '开启 1:1 3D 军械游标卡尺与空间包络标尺：在 3D 表面点选任意两点测量毫米级间距与轴向分量 (K)',
+      attachmentsChip: '光学/枪口改装',
+      attachmentsChipTitle:
+        '打开模块化光学瞄具与枪口装置改装台：实时耦合 3D 模型、CT 纵剖内构、火药燃气流与 Web Audio 声场 (O)',
       cartridgeChip: '实弹馆',
       cartridgeChipTitle: `打开 ${ORDNANCE_TOTAL} 口径（${LAB_CALIBER_TOTAL} 轻武器实弹 + ${TANK_ORDNANCE_TOTAL} 坦克主炮弹）1:1 纵剖对比实验室 (B)`,
       ballisticsChip: '外弹道',
@@ -1561,6 +1597,38 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       strengthTag: '优势',
       tradeoffTag: '代价',
     },
+    attachmentBench: {
+      badge: 'MODULAR OPTICS & MUZZLE · 物理耦合改装台',
+      title: '光学瞄具与枪口装置改装台',
+      subtitle: '1:1 零悬空挂点 · 同步驱动 3D 剖视内构、燃气羽流、后坐与实弹声学',
+      presetsHeading: '一键战术配置方案',
+      muzzleHeading: '枪口装置 (Muzzle)',
+      opticHeading: '光学瞄具 (Optics)',
+      metricsHeading: '实时物理修正量',
+      metricMass: '附加质量',
+      metricSound: '声压变化',
+      metricRecoil: '后坐上跳',
+      metricVelocity: '初速修正',
+      gasRetentionLabel: '隔板截气',
+      sideBlastLabel: '侧向分流',
+      lowPassLabel: '声学低通',
+      ctCutawayBtn: 'CT 剖视内构',
+      ctCutawayTitle: '开启/关闭活体 CT 纵剖 [C]，透视消音器 7 级 K 隔板或 LPVO 透镜组',
+      testFireBtn: '实弹试射',
+      testFireTitle: '切入动态击发模式验证改装后的燃气流向、后坐幅值与实弹声学',
+      resetBtn: '恢复原厂',
+      resetTitle: '卸除当前枪械全部外挂配件恢复出厂状态',
+      closeTitle: '关闭改装台面板 (Esc)',
+      incompatibleBadge: '不兼容',
+      mountedBadge: '已挂装',
+      stockBadge: '原厂基准',
+      couplingSummaryPrefix: '当前物理耦合',
+      couplingStockNote:
+        '原厂出厂配置：基准声学频谱、原厂膛口燃气羽流与标准后坐冲量。',
+      tankNoticeTitle: '1:1 重装主战坦克集成观瞄与火控系统',
+      tankNoticeBtn: '开启坦克车长火控台 (FLIR)',
+      archeryNoticeTitle: '复合弓弩专用冷兵器挂点说明',
+    },
   },
   en: {
     watermark:
@@ -1772,6 +1840,9 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       caliperChip: '3D Caliper',
       caliperChipTitle:
         'Toggle 1:1 3D armorer vernier caliper & CAD envelope scale ruler: click any 2 surface points for millimeter measurement (K)',
+      attachmentsChip: 'Optics & Muzzle',
+      attachmentsChipTitle:
+        'Open Modular Optics & Muzzle Attachment Bench: live physical coupling to 3D cutaway meshes, gas flow, recoil & acoustics (O)',
       cartridgeChip: 'Ammo Lab',
       cartridgeChipTitle: `Open ${ORDNANCE_TOTAL}-Caliber (${LAB_CALIBER_TOTAL} Small-Arms + ${TANK_ORDNANCE_TOTAL} Tank Ordnance) 1:1 Cutaway Lab (B)`,
       ballisticsChip: '1km Range',
@@ -2478,6 +2549,41 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       rowVerdict: 'Signature Strength vs Penalty',
       strengthTag: 'PRO',
       tradeoffTag: 'CON',
+    },
+    attachmentBench: {
+      badge: 'MODULAR OPTICS & MUZZLE · PHYSICALLY COUPLED',
+      title: 'Optics & Muzzle Attachment Bench',
+      subtitle:
+        'Flush 1:1 CAD mounts coupled live to CT cutaway internals, gas flow, recoil & acoustics',
+      presetsHeading: 'One-Click Tactical Presets',
+      muzzleHeading: 'Muzzle Device',
+      opticHeading: 'Optic Rail Mount',
+      metricsHeading: 'Live Physics Modifiers',
+      metricMass: 'Added Mass',
+      metricSound: 'Sound Delta',
+      metricRecoil: 'Recoil Rise',
+      metricVelocity: 'Velocity V₀',
+      gasRetentionLabel: 'Baffle Trap',
+      sideBlastLabel: 'Side Blast',
+      lowPassLabel: 'Acoustic LP',
+      ctCutawayBtn: 'CT Slice',
+      ctCutawayTitle:
+        'Toggle Live CT Section Cut [C] to inspect internal K-baffles, LPVO lenses & FLIR sensor',
+      testFireBtn: 'Fire Test',
+      testFireTitle:
+        'Switch to Live Firing Cycle to observe coupled gas plumes, recoil & gunshot acoustics',
+      resetBtn: 'Stock',
+      resetTitle: 'Reset this firearm to factory stock configuration',
+      closeTitle: 'Close Attachment Bench (Esc)',
+      incompatibleBadge: 'N/A',
+      mountedBadge: 'Mounted',
+      stockBadge: 'Factory',
+      couplingSummaryPrefix: 'Live Coupling',
+      couplingStockNote:
+        'Factory Stock: baseline acoustic spectrum, OEM muzzle plume, and standard recoil impulse.',
+      tankNoticeTitle: '1:1 Main Battle Tank Integral Optics & Remote FCS',
+      tankNoticeBtn: 'Launch Tank Crew FCS (FLIR)',
+      archeryNoticeTitle: 'Compound Archery Non-Ballistic Platform',
     },
   },
 };

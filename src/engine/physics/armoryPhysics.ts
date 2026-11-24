@@ -1332,6 +1332,8 @@ export interface ArmoryPhysicsInput {
   gasVentX: number;
   gasVentY: number;
   gasVentZ: number;
+  /** Optional modular attachment recoil scaling multiplier (default 1.0) */
+  recoilMultiplier?: number;
 }
 
 export function createArmoryPhysicsInput(): ArmoryPhysicsInput {
@@ -1359,6 +1361,7 @@ export function createArmoryPhysicsInput(): ArmoryPhysicsInput {
     gasVentX: 0,
     gasVentY: 0,
     gasVentZ: 0,
+    recoilMultiplier: 1,
   };
 }
 
@@ -1560,10 +1563,17 @@ const PITCH_PEAK_RATIO = firstPeakRatio(PITCH_ZETA);
  * Applies a single discharge to the micro-physics state: recoil impulse,
  * muzzle-climb torque, barrel-whip excitation, heat and fouling.
  */
-export function applyArmoryShot(caliber: CaliberProfile): void {
+export function applyArmoryShot(
+  caliber: CaliberProfile,
+  recoilMultiplier = 1.0
+): void {
   const spec = getCaliberBallisticsSpec(caliber);
   const s = physicsState;
   s.caliber = spec.caliber;
+  const modRecoil =
+    Number.isFinite(recoilMultiplier) && recoilMultiplier > 0
+      ? Math.max(0.25, Math.min(2.0, recoilMultiplier))
+      : 1.0;
   // Platform-specific mechanical recoil mitigation:
   // - KRISS Vector Super V -65° off-axis tungsten slider + low bore axis slashes vertical rise & climb
   // - FN M249 SAW 7.5 kg mass + PIP hydraulic stock buffer attenuates linear kick & climb
@@ -1615,9 +1625,15 @@ export function applyArmoryShot(caliber: CaliberProfile): void {
             : isVss
               ? 0.6
               : 1;
-  s.recoilVelX -= ((spec.recoilKickCm * kickMult) * RECOIL_OMEGA) / RECOIL_PEAK_RATIO;
-  s.recoilVelY += ((spec.recoilRiseCm * riseMult) * RECOIL_OMEGA) / RECOIL_PEAK_RATIO;
-  s.recoilPitchVel += ((spec.muzzleClimbRad * climbMult) * PITCH_OMEGA) / PITCH_PEAK_RATIO;
+  s.recoilVelX -=
+    ((spec.recoilKickCm * kickMult * modRecoil) * RECOIL_OMEGA) /
+    RECOIL_PEAK_RATIO;
+  s.recoilVelY +=
+    ((spec.recoilRiseCm * riseMult * modRecoil) * RECOIL_OMEGA) /
+    RECOIL_PEAK_RATIO;
+  s.recoilPitchVel +=
+    ((spec.muzzleClimbRad * climbMult * modRecoil) * PITCH_OMEGA) /
+    PITCH_PEAK_RATIO;
   s.whipAmpCm = spec.barrelWhipCm;
   s.whipAgeSec = 0;
   s.barrelTempC = Math.min(MAX_BARREL_TEMP_C, s.barrelTempC + spec.heatPerShotC);
@@ -1979,7 +1995,7 @@ export function stepArmoryPhysics(
   if (s.hasLastFire && input.firing) {
     const prev = s.lastFireProgress;
     if (crossedForward(prev, f, t.ignitionF)) {
-      applyArmoryShot(input.caliber);
+      applyArmoryShot(input.caliber, input.recoilMultiplier ?? 1.0);
     }
     if (!isArchery) {
       if (crossedForward(prev, f, t.muzzleExitF)) {

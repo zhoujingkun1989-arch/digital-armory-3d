@@ -3,6 +3,15 @@ import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
+import { getLoadedWeaponPlugin } from '../../weapons/registry';
+import {
+  MUZZLE_ATTACHMENT_SPECS,
+  getWeaponAttachmentMountProfile,
+} from '../attachments/attachmentSpecs';
+import {
+  getActiveWeaponAttachmentPhysics,
+  getWeaponAttachmentLoadout,
+} from '../attachments/attachmentStore';
 import { playbackClock } from '../clock/playbackClock';
 import { WEAPON_GAS_MANIFOLD_PROFILES } from '../materials/engineeringRoles';
 import {
@@ -12,7 +21,11 @@ import {
   getWeaponFiringTiming,
 } from '../physics/armoryPhysics';
 
-const STREAM_CHEVRON_COUNT = 16;
+const STREAM_CHEVRON_COUNT = 24;
+const SUPP_VORTEX_SLOTS = [0, 1, 2, 3, 4] as const;
+const BRAKE_JET_SLOTS = [0, 1, 2, 3] as const;
+const FH_PRONG_SLOTS = [0, 1, 2] as const;
+const BRAKE_SWEEP_RAD = (32 * Math.PI) / 180;
 const noRaycast = (): null => null;
 
 // Module-pooled Zero-GC math & color scratch objects (never allocate in useFrame)
@@ -106,6 +119,16 @@ export const GasFlowVisualizer: React.FC = () => {
 
   const chevronsRef = useRef<THREE.InstancedMesh>(null);
   const chevronMatRef = useRef<THREE.MeshBasicMaterial>(null);
+
+  // Modular muzzle attachment physical gas-dynamics refs (Zero-GC pre-allocated)
+  const suppRingRefs = useRef<(THREE.Mesh | null)[]>([]);
+  const suppRingMatRefs = useRef<(THREE.MeshBasicMaterial | null)[]>([]);
+  const suppExitPlumeRef = useRef<THREE.Mesh>(null);
+  const suppExitPlumeMatRef = useRef<THREE.MeshBasicMaterial>(null);
+  const brakeJetRefs = useRef<(THREE.Mesh | null)[]>([]);
+  const brakeJetMatRefs = useRef<(THREE.MeshBasicMaterial | null)[]>([]);
+  const fhProngRefs = useRef<(THREE.Mesh | null)[]>([]);
+  const fhProngMatRefs = useRef<(THREE.MeshBasicMaterial | null)[]>([]);
 
   useEffect(() => {
     const inst = chevronsRef.current;
@@ -281,6 +304,19 @@ export const GasFlowVisualizer: React.FC = () => {
       if (manifoldLeftRef.current) manifoldLeftRef.current.visible = false;
       if (impulseLeftRef.current) impulseLeftRef.current.visible = false;
       if (cylinderGapRingRef.current) cylinderGapRingRef.current.visible = false;
+      for (let i = 0; i < SUPP_VORTEX_SLOTS.length; i++) {
+        const sr = suppRingRefs.current[i];
+        if (sr) sr.visible = false;
+      }
+      if (suppExitPlumeRef.current) suppExitPlumeRef.current.visible = false;
+      for (let i = 0; i < BRAKE_JET_SLOTS.length; i++) {
+        const bj = brakeJetRefs.current[i];
+        if (bj) bj.visible = false;
+      }
+      for (let i = 0; i < FH_PRONG_SLOTS.length; i++) {
+        const fp = fhProngRefs.current[i];
+        if (fp) fp.visible = false;
+      }
 
       // Animated elastic strain chevrons: cams -> nock -> +X arrow launch trajectory
       const inst = chevronsRef.current;
@@ -802,6 +838,249 @@ export const GasFlowVisualizer: React.FC = () => {
       }
     }
 
+    // 4c. Modular Muzzle Attachment Gas Dynamics (Suppressor K-baffle vortices,
+    //     Muzzle-Brake twin lateral side-jets, 3-Prong Flash-Hider split plumes)
+    const attLoadout = getWeaponAttachmentLoadout(weaponId);
+    const attPhys = getActiveWeaponAttachmentPhysics(weaponId);
+    const attProfile = getWeaponAttachmentMountProfile(weaponId);
+    const activeMuzzle = attLoadout.muzzle;
+    const muzzleAnchor = attProfile.muzzleAnchor;
+    const attScale = attProfile.modelScale;
+
+    let ax = muzzleAnchor ? muzzleAnchor[0] : manifold.muzzleX;
+    let ay = muzzleAnchor ? muzzleAnchor[1] : manifold.boreY;
+    let az = muzzleAnchor ? muzzleAnchor[2] : 0;
+    if (muzzleAnchor && attProfile.muzzleFollowPartId) {
+      const loadedPlugin = getLoadedWeaponPlugin(weaponId);
+      if (loadedPlugin) {
+        const kd = loadedPlugin.computeFiringKinematics(
+          attProfile.muzzleFollowPartId,
+          f
+        );
+        if (kd.pos) {
+          ax += kd.pos[0];
+          ay += kd.pos[1];
+          az += kd.pos[2];
+        }
+      }
+    }
+
+    const muzzleOnsetF = Math.max(timing.ignitionF, timing.muzzleExitF - 0.025);
+    const muzzleActive =
+      activeMuzzle !== 'none' &&
+      muzzleAnchor !== null &&
+      f >= muzzleOnsetF &&
+      f <= blowdownEndF;
+    const muzzleWave01 = muzzleActive
+      ? clamp01(
+          (f - muzzleOnsetF) / Math.max(0.03, timing.muzzleExitF + 0.055 - muzzleOnsetF)
+        )
+      : 0;
+    const muzzleDecay = muzzleActive
+      ? f <= timing.muzzleExitF + 0.02
+        ? 1
+        : 1 -
+          clamp01(
+            (f - (timing.muzzleExitF + 0.02)) /
+              Math.max(0.035, blowdownEndF - (timing.muzzleExitF + 0.02))
+          )
+      : 0;
+    const muzzleStrength = muzzleActive
+      ? clamp01((0.35 + 0.65 * Math.sqrt(Math.max(pNorm, 0.12))) * muzzleDecay)
+      : 0;
+
+    // Suppressor: 5 swirling K-baffle expansion vortices + attenuated exit plume
+    const showSuppressor =
+      activeMuzzle === 'suppressor' && muzzleStrength > 0.025;
+    for (let i = 0; i < SUPP_VORTEX_SLOTS.length; i++) {
+      const mesh = suppRingRefs.current[i];
+      const mat = suppRingMatRefs.current[i];
+      if (!mesh || !mat) continue;
+      if (showSuppressor) {
+        const stageRatio = i / (SUPP_VORTEX_SLOTS.length - 1);
+        const stageArrived = clamp01((muzzleWave01 - stageRatio * 0.52) / 0.36);
+        const swirlPulse =
+          0.76 + 0.24 * Math.sin(state.clock.elapsedTime * 18.0 - i * 1.15);
+        mesh.visible = stageArrived > 0.04;
+        if (mesh.visible) {
+          const chamberX = ax + (3.2 + i * 2.85) * attScale;
+          const rChamber =
+            (0.92 + 0.56 * stageArrived * swirlPulse) *
+            attScale *
+            (1 - stageRatio * 0.14);
+          mesh.position.set(chamberX, ay, az);
+          mesh.rotation.set(
+            state.clock.elapsedTime * (12.0 - i * 1.4),
+            Math.PI * 0.5,
+            0
+          );
+          mesh.scale.set(rChamber, rChamber, rChamber * 1.15);
+          // Blast chamber glows hot amber -> cools progressively to cyan across K-baffles
+          _colorWork
+            .copy(COL_HIGH_PRESSURE)
+            .lerp(COL_GAS_TAP_CYAN, clamp01(stageRatio * 0.92 + (1 - pNorm) * 0.35));
+          mat.color.copy(_colorWork);
+          mat.opacity =
+            muzzleStrength *
+            stageArrived *
+            (0.45 + 0.42 * attPhys.gasBaffleRetention) *
+            (1 - stageRatio * 0.28);
+
+          if (cursor < STREAM_CHEVRON_COUNT) {
+            const ang = state.clock.elapsedTime * 9.5 + i * 1.45;
+            const cy = Math.cos(ang);
+            const sz = Math.sin(ang);
+            _dirVec.set(0.28, -sz, cy).normalize();
+            _quat.setFromUnitVectors(_upAxis, _dirVec);
+            const rOrb = 1.02 * attScale * stageArrived;
+            _posVec.set(chamberX, ay + cy * rOrb, az + sz * rOrb);
+            const sC = 0.62 * attScale;
+            _scaleVec.set(sC, sC, sC);
+            _mat4.compose(_posVec, _quat, _scaleVec);
+            inst.setMatrixAt(cursor, _mat4);
+            inst.setColorAt(cursor, _colorWork);
+            cursor++;
+          }
+        }
+      } else {
+        mesh.visible = false;
+      }
+    }
+
+    if (suppExitPlumeRef.current && suppExitPlumeMatRef.current) {
+      if (showSuppressor && muzzleWave01 > 0.45) {
+        const exitLen =
+          (2.2 + 2.4 * muzzleStrength) *
+          attScale *
+          Math.max(0.18, 1 - attPhys.gasBaffleRetention);
+        const exitX =
+          ax + MUZZLE_ATTACHMENT_SPECS.suppressor.lengthCm * attScale;
+        suppExitPlumeRef.current.visible = true;
+        suppExitPlumeRef.current.position.set(exitX + exitLen * 0.5, ay, az);
+        suppExitPlumeRef.current.scale.set(
+          0.55 * attScale,
+          exitLen,
+          0.55 * attScale
+        );
+        suppExitPlumeMatRef.current.color.copy(COL_SAFE_BLOWDOWN);
+        suppExitPlumeMatRef.current.opacity =
+          muzzleStrength * (1 - attPhys.gasBaffleRetention) * 1.45;
+      } else {
+        suppExitPlumeRef.current.visible = false;
+      }
+    }
+
+    // Muzzle Brake: twin high-velocity rearward-swept lateral side-jet plumes (±Z × 2 chambers)
+    const showBrake =
+      activeMuzzle === 'muzzle_brake' && muzzleStrength > 0.025;
+    for (let i = 0; i < BRAKE_JET_SLOTS.length; i++) {
+      const mesh = brakeJetRefs.current[i];
+      const mat = brakeJetMatRefs.current[i];
+      if (!mesh || !mat) continue;
+      if (showBrake) {
+        const chamberIdx = i >> 1; // 0 = rear chamber, 1 = front chamber
+        const zSide = i % 2 === 0 ? 1 : -1;
+        const falloff = chamberIdx === 0 ? 1.0 : 0.78;
+        const jetLen =
+          (4.6 + 4.4 * muzzleStrength) *
+          attScale *
+          attPhys.sideBlastRatio *
+          falloff;
+        const jetRad = (0.72 + 0.48 * muzzleStrength) * attScale * falloff;
+        const portX = ax + (chamberIdx === 0 ? 1.65 : 3.55) * attScale;
+        _dirVec
+          .set(
+            -Math.sin(BRAKE_SWEEP_RAD),
+            0.06,
+            zSide * Math.cos(BRAKE_SWEEP_RAD)
+          )
+          .normalize();
+        _quat.setFromUnitVectors(_upAxis, _dirVec);
+        mesh.visible = true;
+        mesh.position.set(
+          portX + _dirVec.x * (jetLen * 0.5),
+          ay + _dirVec.y * (jetLen * 0.5),
+          az + zSide * (0.95 * attScale) + _dirVec.z * (jetLen * 0.5)
+        );
+        mesh.quaternion.copy(_quat);
+        mesh.scale.set(jetRad, jetLen, jetRad);
+        _colorWork
+          .copy(COL_HIGH_PRESSURE)
+          .lerp(COL_PEAK_PLASMA, clamp01(pNorm * 0.9))
+          .lerp(COL_GAS_TAP_CYAN, chamberIdx * 0.25);
+        mat.color.copy(_colorWork);
+        mat.opacity = muzzleStrength * (0.68 + 0.26 * attPhys.sideBlastRatio) * falloff;
+
+        if (cursor < STREAM_CHEVRON_COUNT) {
+          const u = (phaseScroll + chamberIdx * 0.35) % 1;
+          const dist = (1.1 + jetLen * u) * 0.88;
+          _posVec.set(
+            portX + _dirVec.x * dist,
+            ay + _dirVec.y * dist,
+            az + zSide * (0.95 * attScale) + _dirVec.z * dist
+          );
+          const sC = (0.78 + 0.22 * Math.sin(u * Math.PI)) * attScale;
+          _scaleVec.set(sC, sC, sC);
+          _mat4.compose(_posVec, _quat, _scaleVec);
+          inst.setMatrixAt(cursor, _mat4);
+          inst.setColorAt(cursor, _colorWork);
+          cursor++;
+        }
+      } else {
+        mesh.visible = false;
+      }
+    }
+
+    // 3-Prong Flash Hider: split forward plume into 3 muted 120° radial prongs
+    const showFlashHider =
+      activeMuzzle === 'flash_hider' && muzzleStrength > 0.025;
+    for (let i = 0; i < FH_PRONG_SLOTS.length; i++) {
+      const mesh = fhProngRefs.current[i];
+      const mat = fhProngMatRefs.current[i];
+      if (!mesh || !mat) continue;
+      if (showFlashHider) {
+        const ang = (i * Math.PI * 2) / 3 + Math.PI / 6;
+        const cy = Math.cos(ang);
+        const sz = Math.sin(ang);
+        _dirVec.set(0.76, cy * 0.65, sz * 0.65).normalize();
+        _quat.setFromUnitVectors(_upAxis, _dirVec);
+        const pLen = (2.6 + 2.0 * muzzleStrength) * attScale;
+        const pRad = (0.42 + 0.22 * muzzleStrength) * attScale;
+        const originX = ax + 3.4 * attScale;
+        mesh.visible = true;
+        mesh.position.set(
+          originX + _dirVec.x * pLen * 0.5,
+          ay + cy * 0.38 * attScale + _dirVec.y * pLen * 0.5,
+          az + sz * 0.38 * attScale + _dirVec.z * pLen * 0.5
+        );
+        mesh.quaternion.copy(_quat);
+        mesh.scale.set(pRad, pLen, pRad);
+        _colorWork
+          .copy(COL_SAFE_BLOWDOWN)
+          .lerp(COL_HIGH_PRESSURE, clamp01(pNorm * 0.55));
+        mat.color.copy(_colorWork);
+        mat.opacity =
+          muzzleStrength * Math.max(0.22, 1 - attPhys.flashAttenuation * 0.65);
+
+        if (cursor < STREAM_CHEVRON_COUNT) {
+          const u = (phaseScroll + i * 0.33) % 1;
+          _posVec.set(
+            originX + _dirVec.x * pLen * u,
+            ay + cy * 0.38 * attScale + _dirVec.y * pLen * u,
+            az + sz * 0.38 * attScale + _dirVec.z * pLen * u
+          );
+          const sC = 0.68 * attScale;
+          _scaleVec.set(sC, sC, sC);
+          _mat4.compose(_posVec, _quat, _scaleVec);
+          inst.setMatrixAt(cursor, _mat4);
+          inst.setColorAt(cursor, _colorWork);
+          cursor++;
+        }
+      } else {
+        mesh.visible = false;
+      }
+    }
+
     while (cursor < STREAM_CHEVRON_COUNT) {
       inst.setMatrixAt(cursor, _hiddenMat4);
       cursor++;
@@ -1028,7 +1307,108 @@ export const GasFlowVisualizer: React.FC = () => {
         />
       </mesh>
 
-      {/* 16 pre-allocated instanced directional flow chevrons */}
+      {/* Suppressor internal swirling K-baffle gas expansion vortices (5 chambers) */}
+      {SUPP_VORTEX_SLOTS.map((i) => (
+        <mesh
+          key={`supp-vortex-${i}`}
+          ref={(el) => {
+            suppRingRefs.current[i] = el;
+          }}
+          visible={false}
+          frustumCulled={false}
+          raycast={noRaycast}
+          renderOrder={16}
+        >
+          <torusGeometry args={[1, 0.34, 10, 24]} />
+          <meshBasicMaterial
+            ref={(el) => {
+              suppRingMatRefs.current[i] = el;
+            }}
+            color="#22d3ee"
+            transparent
+            opacity={0}
+            depthWrite={false}
+            blending={THREE.AdditiveBlending}
+          />
+        </mesh>
+      ))}
+
+      {/* Suppressor markedly attenuated forward exit blowdown plume */}
+      <mesh
+        ref={suppExitPlumeRef}
+        visible={false}
+        rotation={[0, 0, -Math.PI / 2]}
+        frustumCulled={false}
+        raycast={noRaycast}
+        renderOrder={15}
+      >
+        <coneGeometry args={[1, 1, 14, 1, true]} />
+        <meshBasicMaterial
+          ref={suppExitPlumeMatRef}
+          color="#06b6d4"
+          transparent
+          opacity={0}
+          side={THREE.DoubleSide}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </mesh>
+
+      {/* Dual-Chamber Muzzle Brake twin high-velocity lateral side-jet plumes */}
+      {BRAKE_JET_SLOTS.map((i) => (
+        <mesh
+          key={`brake-jet-${i}`}
+          ref={(el) => {
+            brakeJetRefs.current[i] = el;
+          }}
+          visible={false}
+          frustumCulled={false}
+          raycast={noRaycast}
+          renderOrder={16}
+        >
+          <coneGeometry args={[1, 1, 14, 1, true]} />
+          <meshBasicMaterial
+            ref={(el) => {
+              brakeJetMatRefs.current[i] = el;
+            }}
+            color="#f59e0b"
+            transparent
+            opacity={0}
+            side={THREE.DoubleSide}
+            depthWrite={false}
+            blending={THREE.AdditiveBlending}
+          />
+        </mesh>
+      ))}
+
+      {/* 3-Prong Flash Hider split muted forward dispersion plumes */}
+      {FH_PRONG_SLOTS.map((i) => (
+        <mesh
+          key={`fh-prong-${i}`}
+          ref={(el) => {
+            fhProngRefs.current[i] = el;
+          }}
+          visible={false}
+          frustumCulled={false}
+          raycast={noRaycast}
+          renderOrder={15}
+        >
+          <coneGeometry args={[1, 1, 12, 1, true]} />
+          <meshBasicMaterial
+            ref={(el) => {
+              fhProngMatRefs.current[i] = el;
+            }}
+            color="#22d3ee"
+            transparent
+            opacity={0}
+            side={THREE.DoubleSide}
+            depthWrite={false}
+            blending={THREE.AdditiveBlending}
+          />
+        </mesh>
+      ))}
+
+      {/* 24 pre-allocated instanced directional flow chevrons */}
       <instancedMesh
         ref={chevronsRef}
         args={[undefined, undefined, STREAM_CHEVRON_COUNT]}

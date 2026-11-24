@@ -7,6 +7,7 @@ import { useMechanicalSoundEngine } from './engine/audio/mechanicalSoundEngine';
 import { CalloutOverlay } from './engine/callout/CalloutOverlay';
 import { scheduleHudBoundsRefresh } from './engine/callout/hudBoundsCache';
 import { ArmoryViewport } from './engine/canvas/ArmoryViewport';
+import { useAttachmentStore } from './engine/attachments/attachmentStore';
 import { isTankWeapon } from './engine/physics/armoryPhysics';
 import { useTankCrewStore } from './engine/tank/tankCrewStore';
 import { ArmoryView } from './features/armory/ArmoryView';
@@ -48,6 +49,9 @@ const LazySplitShowdownOverlay = lazy(
 );
 const LazyCausalitySandboxModal = lazy(
   () => import('./features/sandbox/CausalitySandboxModal')
+);
+const LazyAttachmentBenchPanel = lazy(
+  () => import('./features/workbench/AttachmentBenchPanel')
 );
 const LazyArmorPenetrationModal = lazy(
   () => import('./features/armorlab/ArmorPenetrationModal')
@@ -99,6 +103,7 @@ export const App: React.FC = () => {
   const closeOfflineModal = useAppStore((s) => s.closeOfflineModal);
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const tankCrewActive = useTankCrewStore((s) => s.active);
+  const attachmentBenchOpen = useAttachmentStore((s) => s.benchOpen);
   const environmentPreset = useAppStore((s) => s.environmentPreset);
   const telemetryHudOpen = useAppStore((s) => s.telemetryHudOpen);
   const sectionCut = useAppStore((s) => s.sectionCut);
@@ -130,6 +135,7 @@ export const App: React.FC = () => {
     fieldStripActive,
     malfunctionActive,
     caliperActive,
+    attachmentBenchOpen,
     hudHidden,
   ]);
 
@@ -190,6 +196,7 @@ export const App: React.FC = () => {
               engineeringTint ||
               caliperActive ||
               causalitySandboxOpen ||
+              attachmentBenchOpen ||
               (tankCrewActive && isTankWeapon(activeWeaponId))) && (
               <div
                 className={`ballistics-telemetry-slot ${
@@ -197,6 +204,11 @@ export const App: React.FC = () => {
                 }`}
               >
                 {tankCrewActive && isTankWeapon(activeWeaponId) && <TankCrewHud />}
+                {attachmentBenchOpen && (
+                  <Suspense fallback={null}>
+                    <LazyAttachmentBenchPanel />
+                  </Suspense>
+                )}
                 {causalitySandboxOpen && (
                   <Suspense fallback={null}>
                     <LazyCausalitySandboxModal />

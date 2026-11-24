@@ -8,6 +8,11 @@ import { getWeaponManifest } from '../../weapons/manifests';
 import { getLoadedWeaponPlugin } from '../../weapons/registry';
 import type { CaliberProfile, WeaponId } from '../../weapons/types';
 import { playbackClock } from '../clock/playbackClock';
+import { computeMountedMuzzleExitX } from '../attachments/attachmentSpecs';
+import {
+  getActiveWeaponAttachmentPhysics,
+  getWeaponAttachmentLoadout,
+} from '../attachments/attachmentStore';
 import { GasFlowVisualizer } from './GasFlowVisualizer';
 import {
   SMOKE_WISP_POOL_SIZE,
@@ -2687,9 +2692,14 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
     inp.matMaxX = curMeta.chamberGlowPos[0] + MAT_HALF_X;
     inp.matMinZ = -MAT_HALF_Z;
     inp.matMaxZ = MAT_HALF_Z;
-    inp.muzzleX = curMeta.muzzlePos[0] + computeMuzzleRecoilShiftX(weaponId, f);
+    const attLoadout = getWeaponAttachmentLoadout(weaponId);
+    const attPhys = getActiveWeaponAttachmentPhysics(weaponId);
+    inp.muzzleX =
+      computeMountedMuzzleExitX(weaponId, attLoadout.muzzle, curMeta.muzzlePos[0]) +
+      computeMuzzleRecoilShiftX(weaponId, f);
     inp.muzzleY = curMeta.muzzlePos[1];
     inp.muzzleZ = curMeta.muzzlePos[2];
+    inp.recoilMultiplier = attPhys.recoilRiseMultiplier;
     inp.casingScale = WEAPON_ROUND_FIT[weaponId].roundScale;
     if (plugin) {
       const ej = getEjectionSpawnSpec(weaponId, plugin);
@@ -2900,6 +2910,17 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
     }
 
     // 4. Muzzle blast: core fireball + flame cone + Mach shock diamonds + device jets
+    const attLoadout = getWeaponAttachmentLoadout(weaponId);
+    const attPhys = getActiveWeaponAttachmentPhysics(weaponId);
+    const hasCustomMuzzle = attLoadout.muzzle !== 'none';
+    const liveMuzzleX =
+      computeMountedMuzzleExitX(weaponId, attLoadout.muzzle, curMeta.muzzlePos[0]) +
+      muzzleShiftX;
+    const muzzleFlashGain = hasCustomMuzzle
+      ? Math.max(0.1, 1 - attPhys.flashAttenuation) *
+        (attLoadout.muzzle === 'muzzle_brake' ? 0.56 : 1.0)
+      : 1.0;
+
     const plumeOpacity = isArchery ? 0 : st.muzzlePlumeOpacity;
     const plumeActive = !isArchery && plumeOpacity > 0.02;
     const flicker = 0.86 + 0.14 * Math.sin(phys.simTimeSec * 97.0);
@@ -2907,13 +2928,20 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
       muzzleGroupRef.current.visible = plumeActive;
       if (plumeActive) {
         muzzleGroupRef.current.position.set(
-          curMeta.muzzlePos[0] + muzzleShiftX,
+          liveMuzzleX,
           curMeta.muzzlePos[1] + phys.barrelWhipY,
           curMeta.muzzlePos[2]
         );
-        const s = st.muzzlePlumeScale * curSpec.flashScaleMult;
+        const s =
+          st.muzzlePlumeScale *
+          curSpec.flashScaleMult *
+          (attLoadout.muzzle === 'suppressor'
+            ? 0.42
+            : attLoadout.muzzle === 'flash_hider'
+              ? 0.65
+              : 1.0);
         muzzleGroupRef.current.scale.setScalar(s);
-        const fwd = curDevice.forwardDamp;
+        const fwd = (hasCustomMuzzle ? 1.0 : curDevice.forwardDamp) * muzzleFlashGain;
 
         if (muzzleOuterMatRef.current) {
           muzzleOuterMatRef.current.opacity = plumeOpacity * 0.5 * fwd * flicker;
@@ -2922,7 +2950,8 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
           muzzleCoreMatRef.current.opacity = plumeOpacity * 0.85 * fwd;
         }
         if (muzzleBallRef.current && muzzleBallMatRef.current) {
-          muzzleBallMatRef.current.opacity = plumeOpacity * 0.9 * flicker;
+          muzzleBallMatRef.current.opacity =
+            plumeOpacity * 0.9 * flicker * muzzleFlashGain;
           const bs = 0.55 + 0.25 * flicker;
           muzzleBallRef.current.scale.set(bs * 1.25, bs, bs);
         }
@@ -2932,7 +2961,9 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
           const mesh = diamondMeshRefs.current[i];
           const mat = diamondMatRefs.current[i];
           if (!mesh || !mat) continue;
-          const on = i < curBallistic.shockDiamonds;
+          const on =
+            i < curBallistic.shockDiamonds &&
+            attLoadout.muzzle !== 'suppressor';
           mesh.visible = on;
           if (!on) continue;
           const spacing = 0.95 + i * 0.08;
@@ -2947,10 +2978,12 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
         for (let i = 0; i < jetsNow.length; i++) {
           const mat = jetMatRefs.current[i];
           if (mat) {
-            mat.opacity =
-              plumeOpacity *
-              jetsNow[i].spec.intensity *
-              (jetsNow[i].spec.layer === 0 ? 1 : flicker);
+            // Suppress stock factory muzzle-device jets when an aftermarket muzzle attachment is mounted
+            mat.opacity = hasCustomMuzzle
+              ? 0
+              : plumeOpacity *
+                jetsNow[i].spec.intensity *
+                (jetsNow[i].spec.layer === 0 ? 1 : flicker);
           }
         }
       }
@@ -2959,9 +2992,11 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
     if (muzzleLightRef.current) {
       muzzleLightRef.current.intensity = isArchery
         ? 0
-        : plumeOpacity * (isTank ? 65 : isHighMagnumCaliber(curProfile) ? 9 : 5);
+        : plumeOpacity *
+          (isTank ? 65 : isHighMagnumCaliber(curProfile) ? 9 : 5) *
+          muzzleFlashGain;
       muzzleLightRef.current.position.set(
-        curMeta.muzzlePos[0] + muzzleShiftX + (isTank ? 24 : 1.2),
+        liveMuzzleX + (isTank ? 24 : 1.2),
         curMeta.muzzlePos[1] + phys.barrelWhipY,
         curMeta.muzzlePos[2] + (isTank ? 10 : 0.6)
       );
@@ -2969,10 +3004,11 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
 
     // 4b. Primary shock collar at the crown
     if (shockRingRef.current && shockRingMatRef.current) {
-      shockRingRef.current.visible = plumeActive;
-      if (plumeActive) {
+      shockRingRef.current.visible =
+        plumeActive && attLoadout.muzzle !== 'suppressor';
+      if (shockRingRef.current.visible) {
         shockRingRef.current.position.set(
-          curMeta.muzzlePos[0] + (isTank ? 4.5 : 0.25) + muzzleShiftX,
+          liveMuzzleX + (isTank ? 4.5 : 0.25),
           curMeta.muzzlePos[1] + phys.barrelWhipY,
           curMeta.muzzlePos[2]
         );
@@ -2992,14 +3028,19 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
                       : 1.5;
         const rs = st.muzzlePlumeScale * ringBoost;
         shockRingRef.current.scale.set(rs, rs, rs);
-        shockRingMatRef.current.opacity = plumeOpacity * 0.62;
+        shockRingMatRef.current.opacity = plumeOpacity * 0.62 * muzzleFlashGain;
       }
     }
 
-    // 4c. Expanding spherical blast-wave front (Mach disk → acoustic shock; muted on subsonic VSS)
+    // 4c. Expanding spherical blast-wave front (Mach disk → acoustic shock; muted on subsonic VSS & suppressors)
     if (blastRingRef.current && blastRingMatRef.current) {
       const u = (f - timing.muzzleExitF) / 0.1;
-      const on = !isArchery && curProfile !== '9x39_subsonic' && u > 0 && u < 1;
+      const on =
+        !isArchery &&
+        curProfile !== '9x39_subsonic' &&
+        attLoadout.muzzle !== 'suppressor' &&
+        u > 0 &&
+        u < 1;
       blastRingRef.current.visible = on;
       if (on) {
         const energyScale = isTank
@@ -3007,12 +3048,13 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
           : Math.cbrt(curBallistic.muzzleEnergyJ / 1500);
         const rad = (0.6 + 7.5 * Math.sqrt(u)) * energyScale;
         blastRingRef.current.position.set(
-          curMeta.muzzlePos[0] + muzzleShiftX + rad * 0.35,
+          liveMuzzleX + rad * 0.35,
           curMeta.muzzlePos[1],
           curMeta.muzzlePos[2]
         );
         blastRingRef.current.scale.setScalar(rad);
-        blastRingMatRef.current.opacity = (1 - u) * (1 - u) * 0.38;
+        blastRingMatRef.current.opacity =
+          (1 - u) * (1 - u) * 0.38 * Math.max(0.35, muzzleFlashGain);
       }
     }
 

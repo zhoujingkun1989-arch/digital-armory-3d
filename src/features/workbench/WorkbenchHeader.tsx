@@ -32,6 +32,8 @@ import {
   Wrench,
 } from 'lucide-react';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
+import { DEFAULT_ATTACHMENT_LOADOUT } from '../../engine/attachments/attachmentSpecs';
+import { useAttachmentStore } from '../../engine/attachments/attachmentStore';
 import { scheduleHudBoundsRefresh } from '../../engine/callout/hudBoundsCache';
 import { isTankWeapon } from '../../engine/physics/armoryPhysics';
 import { useTankCrewStore } from '../../engine/tank/tankCrewStore';
@@ -98,6 +100,14 @@ export const WorkbenchHeader: React.FC = () => {
   const openOfflineModal = useAppStore((s) => s.openOfflineModal);
   const tankCrewActive = useTankCrewStore((s) => s.active);
   const toggleTankCrew = useTankCrewStore((s) => s.toggleActive);
+  const attachmentBenchOpen = useAttachmentStore((s) => s.benchOpen);
+  const toggleAttachmentBench = useAttachmentStore((s) => s.toggleBenchOpen);
+  const activeAttachmentLoadout = useAttachmentStore(
+    (s) => s.loadouts[activeWeaponId] ?? DEFAULT_ATTACHMENT_LOADOUT
+  );
+  const hasMountedAttachments =
+    activeAttachmentLoadout.muzzle !== 'none' ||
+    activeAttachmentLoadout.optic !== 'none';
   const isTank = isTankWeapon(activeWeaponId);
   const toggleShowEdges = useAppStore((s) => s.toggleShowEdges);
   const toggleShowLabels = useAppStore((s) => s.toggleShowLabels);
@@ -122,6 +132,8 @@ export const WorkbenchHeader: React.FC = () => {
     (fieldStripActive && mode === 'explode') ||
     (mode === 'firing' && !malfunctionActive) ||
     malfunctionActive ||
+    attachmentBenchOpen ||
+    hasMountedAttachments ||
     causalitySandboxOpen ||
     armorPenetrationModalOpen ||
     (isTank && tankCrewActive) ||
@@ -354,6 +366,27 @@ export const WorkbenchHeader: React.FC = () => {
                     <ShieldAlert size={13} aria-hidden="true" />
                     <span>{ui.malfunctionChip}</span>
                     <kbd className="popover-kbd">J</kbd>
+                  </button>
+
+                  <button
+                    type="button"
+                    role="menuitemcheckbox"
+                    aria-checked={attachmentBenchOpen}
+                    className={`toggle-chip ${
+                      attachmentBenchOpen || hasMountedAttachments
+                        ? 'active-amber'
+                        : ''
+                    }`}
+                    onClick={() => {
+                      playWorkbenchFoley('toggle_switch');
+                      toggleAttachmentBench();
+                      setToolsMenuOpen(false);
+                    }}
+                    title={ui.attachmentsChipTitle}
+                  >
+                    <Crosshair size={13} aria-hidden="true" />
+                    <span>{ui.attachmentsChip}</span>
+                    <kbd className="popover-kbd">O</kbd>
                   </button>
                 </div>
               </div>
