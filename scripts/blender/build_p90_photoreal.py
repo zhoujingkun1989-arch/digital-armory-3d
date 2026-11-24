@@ -352,27 +352,30 @@ if "--postprocess" in sys.argv:
             _paste_uv_band(red_ink, dr_im, u0_d, u1_d, 0.340, 0.470)
             _paste_uv_band(mold_recess, dm_im, u0_d, u1_d, 0.340, 0.470)
 
-        # Fine VDI-27 tactile grip stipple grain inside grip pads
+        # Fine VDI-27 tactile grip stipple grain + subtle all-over glass-filled polyamide micro-texture
         rng_st = np.random.default_rng(5728)
         stip_noise = rng_st.uniform(-1.0, 1.0, size=(h, w)).astype(np.float32)
-        stip_noise = ndimage.gaussian_filter(stip_noise, sigma=0.75)
-        stip_soft = ndimage.gaussian_filter(stipple_m, sigma=4.0)
-        stip_bump = stip_soft * stip_noise * 0.42
+        stip_fine = ndimage.gaussian_filter(stip_noise, sigma=0.65)
+        glass_grain = ndimage.gaussian_filter(rng_st.normal(0.0, 1.0, size=(h, w)).astype(np.float32), sigma=0.45)
+        stip_soft = ndimage.gaussian_filter(stipple_m, sigma=3.5)
+        poly_mask = (met < 0.20).astype(np.float32)
+        stip_bump = stip_soft * stip_fine * 0.46 + poly_mask * (1.0 - stip_soft) * np.clip(glass_grain, -1.0, 1.0) * 0.032
 
         # Composite tactile grip darkening, molded rollmarks, crisp white/crimson markings
-        _mix(albedo, (0.148, 0.155, 0.168), stip_soft * 0.36)
-        _mix(rgh, 0.68, stip_soft * 0.55)
+        _mix(albedo, (0.118, 0.124, 0.136), stip_soft * 0.42)
+        _mix(rgh, 0.66, stip_soft * 0.58)
+        rgh = np.clip(rgh + 0.022 * np.clip(glass_grain, -1.0, 1.0) * poly_mask, 0.14, 0.92)
 
         ink_all = np.maximum(white_ink, red_ink)
-        decal_h = -0.52 * _bevel_mask(mold_recess, width_px=1.4) + stip_bump
-        _mix(albedo, (0.86, 0.88, 0.91), white_ink * 0.88)
-        _mix(albedo, (0.88, 0.09, 0.07), red_ink * 0.96)
-        _mix(rgh, 0.36, white_ink * 0.72)
-        _mix(rgh, 0.24, red_ink * 0.88)
+        decal_h = -0.56 * _bevel_mask(mold_recess, width_px=1.25) + stip_bump
+        _mix(albedo, (0.88, 0.90, 0.93), white_ink * 0.90)
+        _mix(albedo, (0.90, 0.08, 0.06), red_ink * 0.96)
+        _mix(rgh, 0.34, white_ink * 0.75)
+        _mix(rgh, 0.22, red_ink * 0.88)
         _mix(met, 0.02, ink_all * 0.90)
-        ao *= 1.0 - 0.14 * np.maximum(mold_recess, ink_all)
+        ao *= 1.0 - 0.16 * np.maximum(mold_recess, ink_all)
 
-        decal_nrm = _height_to_normal_01(decal_h, strength=2.6)
+        decal_nrm = _height_to_normal_01(decal_h, strength=2.8)
         nrm_final = _rnm_blend(nrm, decal_nrm)
 
         rgh = np.clip(rgh, 0.14, 0.92)
@@ -521,44 +524,84 @@ if "--postprocess" in sys.argv:
         ammo_rgb = ammo_rgb * (1.0 - row_top_a[..., None]) + row_top_rgb * row_top_a[..., None]
         ammo_cov = np.clip(np.maximum(row_top_a, row_bot_a * 0.85), 0.0, 1.0) * in_ammo_x * in_wall_z
 
-        # Front pocket (tx in [+6.55 .. +9.95]): orange twin-roller follower & bright zigzag flat spring peek!
-        in_follower = _smoothstep(6.52, 6.72, tx_top) * (1.0 - _smoothstep(7.72, 7.88, tx_top)) * in_wall_z
-        in_spring = _smoothstep(7.90, 8.05, tx_top) * (1.0 - _smoothstep(9.85, 10.0, tx_top)) * in_wall_z
-        spr_zig = np.exp(-((np.sin((tx_top - 8.0) * 14.0) * 0.34 - (zn_top - 0.5)) ** 2) / 0.008) * in_spring
+        # Front pocket (tx in [+6.52 .. +9.95]): articulated twin-roller orange follower + 3D-shaded steel coil spring!
+        in_follower = _smoothstep(6.50, 6.66, tx_top) * (1.0 - _smoothstep(7.72, 7.86, tx_top)) * in_wall_z
+        # Subtle beveled dummy-roller contours inside the orange follower carriage
+        fol_roller = np.exp(-((tx_top - 6.82) ** 2) / 0.032) * _smoothstep(0.10, 0.16, zn_top) * (1.0 - _smoothstep(0.84, 0.90, zn_top))
+        fol_body_shade = 0.76 + 0.28 * np.sin(np.clip((zn_top - 0.08) / 0.84, 0.0, 1.0) * math.pi)
+        fol_rgb = (
+            np.array([0.84, 0.34, 0.07], dtype=np.float32) * fol_body_shade[..., None] * (1.0 - 0.55 * fol_roller[..., None])
+            + np.array([0.36, 0.24, 0.14], dtype=np.float32) * (0.55 * fol_roller[..., None])
+        )
 
-        # Subtle darkened ring shadow directly over 90-deg helical feed turret throat (local x = +0.35)
-        turret_dist = np.hypot((tx_top - 0.35) / 1.12, (zn_top - 0.50) * 2.54 / 1.12)
-        turret_ring = _smoothstep(0.78, 0.96, turret_dist) * (1.0 - _smoothstep(0.96, 1.18, turret_dist))
+        # Realistic 3D-shaded coiled flat-wire magazine spring (alternating front/rear shaded wire loops + metallic glint!)
+        in_spring = _smoothstep(7.88, 8.02, tx_top) * (1.0 - _smoothstep(9.88, 10.02, tx_top)) * in_wall_z
+        sp_phase = (tx_top - 7.95) * 4.4  # ~8.5 compressed coils
+        z_wire_f = 0.50 + 0.33 * np.sin(sp_phase * math.pi)
+        z_wire_b = 0.50 - 0.33 * np.sin(sp_phase * math.pi)
+        # Front strand (bright steel wire with cylindrical specular crest) + rear strand (darker recessed steel)
+        d_wf = np.abs(zn_top - z_wire_f)
+        d_wb = np.abs(zn_top - z_wire_b)
+        m_wf = np.clip(1.0 - d_wf / 0.048, 0.0, 1.0) * in_spring
+        m_wb = np.clip(1.0 - d_wb / 0.045, 0.0, 1.0) * in_spring
+        wf_cyl = np.sqrt(np.clip(1.0 - (d_wf / 0.048) ** 2, 0.0, 1.0))
+        wb_cyl = np.sqrt(np.clip(1.0 - (d_wb / 0.045) ** 2, 0.0, 1.0))
+        spr_rgb = (
+            amber_cavity * (1.0 - m_wb[..., None])
+            + (np.array([0.32, 0.31, 0.29], dtype=np.float32) * (0.45 + 0.55 * wb_cyl[..., None])) * m_wb[..., None]
+        )
+        spr_rgb = (
+            spr_rgb * (1.0 - m_wf[..., None])
+            + (np.array([0.66, 0.65, 0.62], dtype=np.float32) * (0.38 + 0.62 * wf_cyl[..., None])) * m_wf[..., None]
+        )
+        spr_cov = np.clip(np.maximum(m_wf, m_wb * 0.85), 0.0, 1.0)
 
-        # Apply smoked-amber translucent polycarbonate filter over internal cartridge rows!
-        # Glossy smoked amber transmits warm golds/coppers richly while adding subtle amber glaze & rim darkening.
-        edge_bezel = 1.0 - _smoothstep(0.03, 0.10, zn_top) * (1.0 - _smoothstep(0.90, 0.97, zn_top))
-        amber_filter = np.array([0.82, 0.67, 0.44], dtype=np.float32)
+        # Articulated 90-deg helical feed-ramp turret ring & curved brass spiral guide glimpsed through roof (tx = +0.35)!
+        turret_dx = (tx_top - 0.35) / 1.08
+        turret_dz = (zn_top - 0.50) * 2.54 / 1.08
+        turret_dist = np.hypot(turret_dx, turret_dz)
+        turret_ring = _smoothstep(0.76, 0.94, turret_dist) * (1.0 - _smoothstep(0.94, 1.16, turret_dist))
+        turret_ang = np.arctan2(turret_dz, turret_dx)
+        helix_arc = np.exp(-((turret_dist - 0.62) ** 2) / 0.012) * _smoothstep(-0.3, 0.8, np.sin(turret_ang + 0.6)) * (turret_dist < 0.95)
+
+        # Smoked-amber translucent polycarbonate filter + realistic glass Fresnel reflection ribbons!
+        edge_bezel = 1.0 - _smoothstep(0.03, 0.11, zn_top) * (1.0 - _smoothstep(0.89, 0.97, zn_top))
+        amber_filter = np.array([0.84, 0.66, 0.40], dtype=np.float32)
+        # Subtle amber specular Fresnel streaks running longitudinally along curved polycarbonate roof shoulders
+        glass_sheen_top = (
+            np.exp(-((zn_top - 0.17) ** 2) / 0.0022) * 0.16
+            + np.exp(-((zn_top - 0.83) ** 2) / 0.0022) * 0.11
+        ) * (1.0 - edge_bezel)
+
         top_rgb = amber_cavity * (1.0 - ammo_cov[..., None]) + (ammo_rgb * amber_filter) * ammo_cov[..., None]
-        # Add follower orange & steel spring glimpse inside front pocket
-        top_rgb = top_rgb * (1.0 - in_follower[..., None] * 0.72) + np.array([0.74, 0.31, 0.08], dtype=np.float32) * (in_follower[..., None] * 0.72)
-        top_rgb = top_rgb * (1.0 - spr_zig[..., None] * 0.62) + np.array([0.52, 0.50, 0.44], dtype=np.float32) * (spr_zig[..., None] * 0.62)
-        # Subtle smoked-amber glaze & perimeter wall frame
-        top_rgb = top_rgb * 0.82 + amber_shell_base * 0.18
-        top_rgb = top_rgb * (1.0 - edge_bezel[..., None] * 0.55) + np.array([0.195, 0.148, 0.102], dtype=np.float32) * (edge_bezel[..., None] * 0.55)
-        top_rgb *= 1.0 - 0.22 * turret_ring[..., None]
+        # Blend follower, coiled steel spring & subtle helical brass feed guide inside smoked polycarbonate
+        top_rgb = top_rgb * (1.0 - in_follower[..., None] * 0.82) + (fol_rgb * amber_filter) * (in_follower[..., None] * 0.82)
+        top_rgb = top_rgb * (1.0 - spr_cov[..., None] * 0.86) + (spr_rgb * amber_filter) * (spr_cov[..., None] * 0.86)
+        top_rgb = top_rgb * (1.0 - helix_arc[..., None] * 0.28) + np.array([0.62, 0.45, 0.18], dtype=np.float32) * (helix_arc[..., None] * 0.28)
+        # Smoked-amber glaze + longitudinal polycarbonate Fresnel glass streaks + perimeter frame
+        top_rgb = top_rgb * 0.84 + amber_shell_base * 0.16 + glass_sheen_top[..., None] * np.array([0.55, 0.44, 0.30], dtype=np.float32)
+        top_rgb = top_rgb * (1.0 - edge_bezel[..., None] * 0.62) + np.array([0.165, 0.125, 0.088], dtype=np.float32) * (edge_bezel[..., None] * 0.62)
+        top_rgb *= 1.0 - 0.26 * turret_ring[..., None]
 
-        # Subtle molded cross-rib darkening aligned with the 9 physical top ribs (x = -8.6 + i*2.15)
+        # Crisp cast shadow & molded cross-rib darkening aligned with the 9 physical top ribs (x = -8.6 + i*2.15)
         rib_band = np.zeros_like(tx_top, dtype=np.float32)
+        rib_shad = np.zeros_like(tx_top, dtype=np.float32)
         for ri in range(9):
             rx = -8.6 + ri * 2.15
-            rib_band = np.maximum(rib_band, np.exp(-((tx_top - rx) ** 2) / (0.14 ** 2)))
-        top_rgb = top_rgb * (1.0 - 0.52 * rib_band[..., None]) + np.array([0.185, 0.145, 0.105], dtype=np.float32) * (0.52 * rib_band[..., None])
+            rib_band = np.maximum(rib_band, np.exp(-((tx_top - rx) ** 2) / (0.12 ** 2)))
+            rib_shad = np.maximum(rib_shad, np.exp(-((tx_top - rx) ** 2) / (0.28 ** 2)))
+        top_rgb *= 1.0 - 0.24 * (rib_shad - rib_band).clip(0.0, 1.0)[..., None]
+        top_rgb = top_rgb * (1.0 - 0.58 * rib_band[..., None]) + np.array([0.160, 0.122, 0.088], dtype=np.float32) * (0.58 * rib_band[..., None])
 
         albedo[top_mask] = np.clip(top_rgb[top_mask], 0.0, 1.0)
-        # Glossy polycarbonate roof (R=0.15-0.19 over clear window, R=0.38 over frosted ribs & bezel)
-        top_rgh = 0.155 + 0.22 * rib_band + 0.14 * edge_bezel
-        top_met = 0.04 + 0.14 * ammo_cov * (1.0 - rib_band) * (1.0 - edge_bezel)
+        # Glossy smoked polycarbonate roof (R=0.12-0.16 over clear bays, R=0.38 over frosted ribs & bezel)
+        top_rgh = 0.130 + 0.24 * rib_band + 0.16 * edge_bezel
+        top_met = 0.03 + 0.18 * np.maximum(ammo_cov, spr_cov) * (1.0 - rib_band) * (1.0 - edge_bezel)
         rgh[top_mask] = top_rgh[top_mask]
         met[top_mask] = top_met[top_mask]
 
         # =====================================================================
-        # 2) HERO BAND 2: RIGHT MAG FLANK (+Z: Staggered Brass Case Heads + Primers!)
+        # 2) HERO BAND 2: RIGHT MAG FLANK (+Z: 3D-Shaded Staggered Brass Case Heads + Primers!)
         #    u in [0.015, 0.985], v in [0.630, 0.745]
         # =====================================================================
         rmag_mask = (u_grid >= 0.014) & (u_grid <= 0.986) & (v_grid >= 0.629) & (v_grid <= 0.746)
@@ -566,45 +609,76 @@ if "--postprocess" in sys.argv:
         yn_rm = np.clip((v_grid - 0.630) / 0.115, 0.0, 1.0)  # 0 bottom -> 1 top
 
         in_rx = _smoothstep(-9.72, -9.55, tx_rm) * (1.0 - _smoothstep(6.32, 6.50, tx_rm))
-        # Double-stack vertical centers: upper row at yn = 0.63, lower staggered row at yn = 0.37
-        head_rgb = np.broadcast_to(amber_cavity, (h, w, 3)).copy()
+        # Deep shadowed polycarbonate interior cavity (darker toward bottom lip, glossy Fresnel band near top)
+        cav_grad_r = (0.62 + 0.42 * yn_rm)[..., None] * amber_cavity
+        head_rgb = cav_grad_r.copy()
         head_cov = np.zeros((h, w), dtype=np.float32)
-        for row_y, ph in ((0.37, 0.5), (0.63, 0.0)):
+        head_spec = np.zeros((h, w), dtype=np.float32)
+        for row_y, ph, row_depth in ((0.36, 0.5, 0.80), (0.64, 0.0, 1.00)):
             dx_c = (((tx_rm + 9.65 + ph * pitch) / pitch) % 1.0 - 0.5) * pitch
             dy_c = (yn_rm - row_y) * 1.40
             rr = np.hypot(dx_c, dy_c)
-            # 5.7x28mm case head radius ~ 0.245 cm; Boxer primer radius ~ 0.095 cm
-            m_head = 1.0 - _smoothstep(0.225, 0.255, rr)
-            m_bevel = _smoothstep(0.185, 0.235, rr) * m_head
-            m_prim_ring = _smoothstep(0.085, 0.105, rr) * (1.0 - _smoothstep(0.105, 0.125, rr))
-            m_prim = 1.0 - _smoothstep(0.085, 0.102, rr)
-            # Brass case head + gleaming silver-nickel Boxer primer!
-            c_hd = np.array([0.82, 0.63, 0.24], dtype=np.float32) * (1.0 - 0.30 * m_bevel[..., None])
-            c_hd = c_hd * (1.0 - m_prim_ring[..., None] * 0.65)
-            c_hd = c_hd * (1.0 - m_prim[..., None]) + np.array([0.80, 0.78, 0.70], dtype=np.float32) * m_prim[..., None]
-            # Subtle directional sheen across disc
-            disc_sh = 0.78 + 0.28 * np.clip(0.5 - dy_c * 2.2, -0.5, 0.5)
-            c_hd = np.clip(c_hd * disc_sh[..., None], 0.0, 1.0)
+            # 5.7x28mm case head outer radius 0.252 cm w/ chamfered rim, recessed headstamp dish & silver Boxer primer
+            m_head = 1.0 - _smoothstep(0.232, 0.256, rr)
+            m_outer_chamf = _smoothstep(0.195, 0.242, rr) * m_head
+            m_rim_hl = np.exp(-((rr - 0.205) ** 2) / 0.00055) * np.clip(0.55 + dy_c * 3.2 - dx_c * 1.8, 0.0, 1.0)
+            m_stamp_grv = np.exp(-((rr - 0.150) ** 2) / 0.00030)
+            m_prim_pocket = np.exp(-((rr - 0.102) ** 2) / 0.00028)
+            m_prim = 1.0 - _smoothstep(0.084, 0.098, rr)
+            # Domed Boxer primer specular catchlight (upper-left studio key reflection!)
+            prim_dome = np.sqrt(np.clip(1.0 - (rr / 0.095) ** 2, 0.0, 1.0)) * m_prim
+            prim_spec = np.exp(-((dx_c + 0.028) ** 2 + (dy_c - 0.030) ** 2) / 0.00095) * m_prim
+
+            # Rich metallic brass base + beveled rim darkening + deep primer pocket shadow + nickel primer dome
+            c_hd = np.array([0.84, 0.64, 0.23], dtype=np.float32) * (1.0 - 0.44 * m_outer_chamf[..., None])
+            c_hd *= 1.0 - 0.24 * m_stamp_grv[..., None]
+            c_hd *= 1.0 - 0.72 * m_prim_pocket[..., None]
+            # Smooth directional metallic sheen across the flat brass case head
+            disc_sh = (0.58 + 0.48 * np.clip(0.45 + dy_c * 2.6 - dx_c * 1.4, 0.0, 1.0)) * row_depth
+            c_hd = c_hd * disc_sh[..., None] + m_rim_hl[..., None] * np.array([0.46, 0.38, 0.18], dtype=np.float32) * row_depth
+            # Silver-nickel Boxer primer cup with bright glossy dome highlight
+            c_pr = (
+                np.array([0.76, 0.74, 0.66], dtype=np.float32) * (0.42 + 0.62 * prim_dome[..., None])
+                + prim_spec[..., None] * np.array([0.48, 0.48, 0.46], dtype=np.float32)
+            ) * row_depth
+            c_hd = c_hd * (1.0 - m_prim[..., None]) + c_pr * m_prim[..., None]
+            c_hd = np.clip(c_hd, 0.0, 1.0)
+            # Cast dark contact shadow halo onto lower staggered row!
+            m_ao_ring = (1.0 - _smoothstep(0.240, 0.305, rr)) * (1.0 - m_head)
+            head_rgb *= 1.0 - 0.42 * m_ao_ring[..., None]
             head_rgb = head_rgb * (1.0 - m_head[..., None]) + c_hd * m_head[..., None]
             head_cov = np.maximum(head_cov, m_head)
+            head_spec = np.maximum(head_spec, np.maximum(m_rim_hl, prim_spec))
 
         head_cov *= in_rx
-        rm_edge = 1.0 - _smoothstep(0.08, 0.18, yn_rm) * (1.0 - _smoothstep(0.82, 0.92, yn_rm))
+        # Follower orange block & steel spring visible on right side of front pocket (tx in [+6.52 .. +9.95])
+        r_fol = _smoothstep(6.50, 6.66, tx_rm) * (1.0 - _smoothstep(7.72, 7.86, tx_rm)) * _smoothstep(0.14, 0.24, yn_rm) * (1.0 - _smoothstep(0.76, 0.86, yn_rm))
+        r_spr = _smoothstep(7.88, 8.02, tx_rm) * (1.0 - _smoothstep(9.88, 10.02, tx_rm)) * _smoothstep(0.16, 0.26, yn_rm) * (1.0 - _smoothstep(0.74, 0.84, yn_rm))
+        r_spr_coil = np.power(0.5 + 0.5 * np.cos((tx_rm - 7.95) * 4.4 * math.pi), 2.5) * r_spr
+
+        rm_edge = 1.0 - _smoothstep(0.08, 0.19, yn_rm) * (1.0 - _smoothstep(0.81, 0.92, yn_rm))
         rm_rib = np.zeros_like(tx_rm, dtype=np.float32)
+        rm_shad = np.zeros_like(tx_rm, dtype=np.float32)
         for ri in range(9):
             rx = -8.6 + ri * 2.15
-            rm_rib = np.maximum(rm_rib, np.exp(-((tx_rm - rx) ** 2) / (0.14 ** 2)))
-        rm_rgb = amber_cavity * (1.0 - head_cov[..., None]) + (head_rgb * amber_filter) * head_cov[..., None]
-        rm_rgb = rm_rgb * 0.80 + amber_shell_base * 0.20
-        rm_rgb = rm_rgb * (1.0 - rm_edge[..., None] * 0.55) + np.array([0.19, 0.145, 0.10], dtype=np.float32) * (rm_edge[..., None] * 0.55)
-        rm_rgb = rm_rgb * (1.0 - 0.52 * rm_rib[..., None]) + np.array([0.18, 0.14, 0.10], dtype=np.float32) * (0.52 * rm_rib[..., None])
+            rm_rib = np.maximum(rm_rib, np.exp(-((tx_rm - rx) ** 2) / (0.12 ** 2)))
+            rm_shad = np.maximum(rm_shad, np.exp(-((tx_rm - rx) ** 2) / (0.28 ** 2)))
+        # Continuous glossy smoked-polycarbonate specular horizon band!
+        rm_glass = np.exp(-((yn_rm - 0.78) ** 2) / 0.008) * 0.16 * (1.0 - rm_edge)
+        rm_rgb = cav_grad_r * (1.0 - head_cov[..., None]) + (head_rgb * amber_filter) * head_cov[..., None]
+        rm_rgb = rm_rgb * (1.0 - r_fol[..., None] * 0.76) + np.array([0.74, 0.30, 0.06], dtype=np.float32) * (r_fol[..., None] * 0.76)
+        rm_rgb = rm_rgb * (1.0 - r_spr_coil[..., None] * 0.56) + np.array([0.48, 0.44, 0.36], dtype=np.float32) * (r_spr_coil[..., None] * 0.56)
+        rm_rgb = rm_rgb * 0.82 + amber_shell_base * 0.18 + rm_glass[..., None] * np.array([0.58, 0.46, 0.32], dtype=np.float32)
+        rm_rgb *= 1.0 - 0.24 * (rm_shad - rm_rib).clip(0.0, 1.0)[..., None]
+        rm_rgb = rm_rgb * (1.0 - rm_edge[..., None] * 0.62) + np.array([0.165, 0.125, 0.088], dtype=np.float32) * (rm_edge[..., None] * 0.62)
+        rm_rgb = rm_rgb * (1.0 - 0.58 * rm_rib[..., None]) + np.array([0.160, 0.122, 0.088], dtype=np.float32) * (0.58 * rm_rib[..., None])
 
         albedo[rmag_mask] = np.clip(rm_rgb[rmag_mask], 0.0, 1.0)
-        rgh[rmag_mask] = (0.165 + 0.22 * rm_rib + 0.14 * rm_edge)[rmag_mask]
-        met[rmag_mask] = (0.04 + 0.14 * head_cov * (1.0 - rm_rib))[rmag_mask]
+        rgh[rmag_mask] = (0.140 + 0.24 * rm_rib + 0.16 * rm_edge - 0.04 * head_spec)[rmag_mask]
+        met[rmag_mask] = (0.03 + 0.20 * head_cov * (1.0 - rm_rib) * (1.0 - rm_edge))[rmag_mask]
 
         # =====================================================================
-        # 3) HERO BAND 3: LEFT MAG FLANK (-Z: Staggered SS190 Copper/Steel Bullet Tips!)
+        # 3) HERO BAND 3: LEFT MAG FLANK (-Z: 3D-Shaded SS190 Copper/Steel Bullet Tips!)
         #    u in [0.015, 0.985] (reversed: +X left!), v in [0.495, 0.610]
         # =====================================================================
         lmag_mask = (u_grid >= 0.014) & (u_grid <= 0.986) & (v_grid >= 0.494) & (v_grid <= 0.611)
@@ -612,35 +686,53 @@ if "--postprocess" in sys.argv:
         yn_lm = np.clip((v_grid - 0.495) / 0.115, 0.0, 1.0)
 
         in_lx = _smoothstep(-9.72, -9.55, tx_lm) * (1.0 - _smoothstep(6.32, 6.50, tx_lm))
-        tip_rgb = np.broadcast_to(amber_cavity, (h, w, 3)).copy()
+        cav_grad_l = (0.60 + 0.44 * yn_lm)[..., None] * amber_cavity
+        tip_rgb = cav_grad_l.copy()
         tip_cov = np.zeros((h, w), dtype=np.float32)
-        for row_y, ph in ((0.37, 0.5), (0.63, 0.0)):
+        for row_y, ph, row_depth in ((0.36, 0.5, 0.78), (0.64, 0.0, 1.00)):
             dx_c = (((tx_lm + 9.65 + ph * pitch) / pitch) % 1.0 - 0.5) * pitch
             dy_c = (yn_lm - row_y) * 1.40
             rr = np.hypot(dx_c, dy_c)
-            # Outer copper jacket ring (r ~ 0.17) + dark blue-grey SS190 AP steel core nose (r ~ 0.085)
-            m_cop = 1.0 - _smoothstep(0.160, 0.195, rr)
-            m_steel = 1.0 - _smoothstep(0.075, 0.098, rr)
-            c_tp = np.array([0.78, 0.40, 0.19], dtype=np.float32) * (1.0 - m_steel[..., None]) + np.array([0.22, 0.28, 0.38], dtype=np.float32) * m_steel[..., None]
-            disc_sh = 0.74 + 0.32 * np.clip(0.5 - dy_c * 2.6, -0.5, 0.5)
-            c_tp = np.clip(c_tp * disc_sh[..., None], 0.0, 1.0)
-            tip_rgb = tip_rgb * (1.0 - m_cop[..., None]) + c_tp * m_cop[..., None]
-            tip_cov = np.maximum(tip_cov, m_cop)
+            # Subtle brass bottleneck shoulder behind copper ogive (r~0.235) -> copper jacket (0.185) -> dark SS190 AP tip (0.090)
+            m_sh = 1.0 - _smoothstep(0.215, 0.242, rr)
+            m_cop = 1.0 - _smoothstep(0.160, 0.188, rr)
+            m_steel = 1.0 - _smoothstep(0.072, 0.092, rr)
+            # 3D conical spire-point shading (bright upper-left highlight on cone!)
+            cone_n = np.clip(0.55 + (dy_c * 3.8 + dx_c * 2.0), 0.15, 1.25)
+            cone_spec = np.exp(-((dx_c - 0.035) ** 2 + (dy_c - 0.055) ** 2) / 0.0022) * m_cop
+            c_sh = np.array([0.58, 0.42, 0.16], dtype=np.float32) * (0.45 + 0.40 * np.clip(1.0 - rr / 0.25, 0.0, 1.0))[..., None]
+            c_cop = np.array([0.82, 0.42, 0.19], dtype=np.float32) * cone_n[..., None] + cone_spec[..., None] * np.array([0.48, 0.34, 0.20], dtype=np.float32)
+            c_stl = np.array([0.19, 0.26, 0.38], dtype=np.float32) * (0.65 + 0.55 * np.clip(1.0 - rr / 0.095, 0.0, 1.0))[..., None]
+            c_tp = c_sh * (1.0 - m_cop[..., None]) + c_cop * m_cop[..., None]
+            c_tp = c_tp * (1.0 - m_steel[..., None]) + c_stl * m_steel[..., None]
+            c_tp = np.clip(c_tp * row_depth, 0.0, 1.0)
+            tip_rgb = tip_rgb * (1.0 - m_sh[..., None]) + c_tp * m_sh[..., None]
+            tip_cov = np.maximum(tip_cov, m_sh)
 
         tip_cov *= in_lx
-        lm_edge = 1.0 - _smoothstep(0.08, 0.18, yn_lm) * (1.0 - _smoothstep(0.82, 0.92, yn_lm))
+        l_fol = _smoothstep(6.50, 6.66, tx_lm) * (1.0 - _smoothstep(7.72, 7.86, tx_lm)) * _smoothstep(0.14, 0.24, yn_lm) * (1.0 - _smoothstep(0.76, 0.86, yn_lm))
+        l_spr = _smoothstep(7.88, 8.02, tx_lm) * (1.0 - _smoothstep(9.88, 10.02, tx_lm)) * _smoothstep(0.16, 0.26, yn_lm) * (1.0 - _smoothstep(0.74, 0.84, yn_lm))
+        l_spr_coil = np.power(0.5 + 0.5 * np.cos((tx_lm - 7.95) * 4.4 * math.pi), 2.5) * l_spr
+
+        lm_edge = 1.0 - _smoothstep(0.08, 0.19, yn_lm) * (1.0 - _smoothstep(0.81, 0.92, yn_lm))
         lm_rib = np.zeros_like(tx_lm, dtype=np.float32)
+        lm_shad = np.zeros_like(tx_lm, dtype=np.float32)
         for ri in range(9):
             rx = -8.6 + ri * 2.15
-            lm_rib = np.maximum(lm_rib, np.exp(-((tx_lm - rx) ** 2) / (0.14 ** 2)))
-        lm_rgb = amber_cavity * (1.0 - tip_cov[..., None]) + (tip_rgb * amber_filter) * tip_cov[..., None]
-        lm_rgb = lm_rgb * 0.80 + amber_shell_base * 0.20
-        lm_rgb = lm_rgb * (1.0 - lm_edge[..., None] * 0.55) + np.array([0.19, 0.145, 0.10], dtype=np.float32) * (lm_edge[..., None] * 0.55)
-        lm_rgb = lm_rgb * (1.0 - 0.52 * lm_rib[..., None]) + np.array([0.18, 0.14, 0.10], dtype=np.float32) * (0.52 * lm_rib[..., None])
+            lm_rib = np.maximum(lm_rib, np.exp(-((tx_lm - rx) ** 2) / (0.12 ** 2)))
+            lm_shad = np.maximum(lm_shad, np.exp(-((tx_lm - rx) ** 2) / (0.28 ** 2)))
+        lm_glass = np.exp(-((yn_lm - 0.78) ** 2) / 0.008) * 0.16 * (1.0 - lm_edge)
+        lm_rgb = cav_grad_l * (1.0 - tip_cov[..., None]) + (tip_rgb * amber_filter) * tip_cov[..., None]
+        lm_rgb = lm_rgb * (1.0 - l_fol[..., None] * 0.76) + np.array([0.74, 0.30, 0.06], dtype=np.float32) * (l_fol[..., None] * 0.76)
+        lm_rgb = lm_rgb * (1.0 - l_spr_coil[..., None] * 0.56) + np.array([0.48, 0.44, 0.36], dtype=np.float32) * (l_spr_coil[..., None] * 0.56)
+        lm_rgb = lm_rgb * 0.82 + amber_shell_base * 0.18 + lm_glass[..., None] * np.array([0.58, 0.46, 0.32], dtype=np.float32)
+        lm_rgb *= 1.0 - 0.24 * (lm_shad - lm_rib).clip(0.0, 1.0)[..., None]
+        lm_rgb = lm_rgb * (1.0 - lm_edge[..., None] * 0.62) + np.array([0.165, 0.125, 0.088], dtype=np.float32) * (lm_edge[..., None] * 0.62)
+        lm_rgb = lm_rgb * (1.0 - 0.58 * lm_rib[..., None]) + np.array([0.160, 0.122, 0.088], dtype=np.float32) * (0.58 * lm_rib[..., None])
 
         albedo[lmag_mask] = np.clip(lm_rgb[lmag_mask], 0.0, 1.0)
-        rgh[lmag_mask] = (0.165 + 0.22 * lm_rib + 0.14 * lm_edge)[lmag_mask]
-        met[lmag_mask] = (0.04 + 0.12 * tip_cov * (1.0 - lm_rib))[lmag_mask]
+        rgh[lmag_mask] = (0.140 + 0.24 * lm_rib + 0.16 * lm_edge)[lmag_mask]
+        met[lmag_mask] = (0.03 + 0.16 * tip_cov * (1.0 - lm_rib) * (1.0 - lm_edge))[lmag_mask]
 
         # =====================================================================
         # 4) CRISP WHITE 10 / 25 / 50 ROUND COUNTERS & FLANK/OPTIC MARKINGS
@@ -1309,58 +1401,58 @@ def _build_p90_flash_hider_heat_mat() -> bpy.types.Material:
 
 def create_material_library() -> dict[str, bpy.types.Material]:
     return {
-        # --- SUITE 1: p90_v3_stock (Monocoque Polymer Stock, Buttplate, Controls & Hammer Pack) ---
+        # --- SUITE 1: p90_v3_stock (Monocoque Glass-Filled Polyamide Stock, Buttplate, Controls & Hammer Pack) ---
         "S_PolyamideMain": _build_pbr_mat(
             "S_PolyamideMain",
-            base_srgb=(0.188, 0.196, 0.212),
-            roughness=0.56,
+            base_srgb=(0.148, 0.156, 0.172),
+            roughness=0.47,
             metallic=0.00,
-            bevel_r=0.034,
-            edge_wear=0.22,
-            edge_srgb=(0.285, 0.298, 0.318),
-            grain_scale=64.0,
-            grain_bump=0.048,
-            voronoi_grain=0.62,
-            voronoi_scale=96.0,
-            rough_var=0.045,
+            bevel_r=0.032,
+            edge_wear=0.18,
+            edge_srgb=(0.245, 0.258, 0.278),
+            grain_scale=68.0,
+            grain_bump=0.042,
+            voronoi_grain=0.60,
+            voronoi_scale=104.0,
+            rough_var=0.055,
         ),
         "S_PolyamideDark": _build_pbr_mat(
             "S_PolyamideDark",
-            base_srgb=(0.128, 0.134, 0.146),
-            roughness=0.66,
+            base_srgb=(0.105, 0.112, 0.124),
+            roughness=0.60,
             metallic=0.00,
             bevel_r=0.020,
-            grain_scale=48.0,
-            grain_bump=0.034,
-            rough_var=0.035,
+            grain_scale=52.0,
+            grain_bump=0.032,
+            rough_var=0.038,
         ),
         "S_RubberButt": _build_pbr_mat(
             "S_RubberButt",
-            base_srgb=(0.168, 0.174, 0.186),
-            roughness=0.72,
+            base_srgb=(0.132, 0.138, 0.150),
+            roughness=0.68,
             metallic=0.00,
             bevel_r=0.028,
-            edge_wear=0.14,
-            edge_srgb=(0.235, 0.242, 0.256),
+            edge_wear=0.12,
+            edge_srgb=(0.210, 0.218, 0.232),
             grain_scale=76.0,
-            grain_bump=0.068,
+            grain_bump=0.064,
             voronoi_grain=0.72,
             voronoi_scale=112.0,
-            rough_var=0.040,
+            rough_var=0.042,
         ),
         "S_ControlPolymer": _build_pbr_mat(
             "S_ControlPolymer",
-            base_srgb=(0.178, 0.186, 0.200),
-            roughness=0.49,
+            base_srgb=(0.145, 0.154, 0.168),
+            roughness=0.44,
             metallic=0.00,
             bevel_r=0.024,
-            edge_wear=0.24,
-            edge_srgb=(0.295, 0.308, 0.328),
+            edge_wear=0.22,
+            edge_srgb=(0.265, 0.278, 0.298),
             grain_scale=54.0,
-            grain_bump=0.036,
+            grain_bump=0.034,
             voronoi_grain=0.45,
             voronoi_scale=84.0,
-            rough_var=0.038,
+            rough_var=0.042,
         ),
         "S_HammerPackTan": _build_pbr_mat(
             "S_HammerPackTan",
@@ -1518,17 +1610,17 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         ),
         "MO_SightAlloy": _build_pbr_mat(
             "MO_SightAlloy",
-            base_srgb=(0.258, 0.274, 0.298),
-            roughness=0.36,
-            metallic=0.72,
+            base_srgb=(0.195, 0.212, 0.236),
+            roughness=0.29,
+            metallic=0.84,
             bevel_r=0.024,
-            edge_wear=0.45,
-            edge_srgb=(0.70, 0.74, 0.80),
-            grain_scale=52.0,
-            grain_bump=0.028,
-            voronoi_grain=0.38,
-            voronoi_scale=84.0,
-            rough_var=0.032,
+            edge_wear=0.38,
+            edge_srgb=(0.68, 0.72, 0.78),
+            grain_scale=54.0,
+            grain_bump=0.024,
+            voronoi_grain=0.35,
+            voronoi_scale=88.0,
+            rough_var=0.042,
         ),
         "MO_SightInnerDark": _build_pbr_mat(
             "MO_SightInnerDark",
@@ -1561,33 +1653,33 @@ def create_material_library() -> dict[str, bpy.types.Material]:
             rough_var=0.006,
         ),
 
-        # --- SUITE 3: p90_v3_metal (Anodized Upper Receiver, CHF Barrel, Slant Comp, Heavy Bolt & Rods) ---
+        # --- SUITE 3: p90_v3_metal (Hard-Anodized Charcoal Alloy Upper, CHF Barrel, Slant Comp, Heavy Bolt & Rods) ---
         "M_UpperAnodized": _build_pbr_mat(
             "M_UpperAnodized",
-            base_srgb=(0.268, 0.286, 0.314),
-            roughness=0.35,
-            metallic=0.72,
-            bevel_r=0.028,
-            edge_wear=0.48,
-            edge_srgb=(0.78, 0.82, 0.88),
-            grain_scale=56.0,
-            grain_bump=0.024,
-            voronoi_grain=0.36,
-            voronoi_scale=88.0,
-            rough_var=0.032,
+            base_srgb=(0.198, 0.215, 0.240),
+            roughness=0.28,
+            metallic=0.84,
+            bevel_r=0.026,
+            edge_wear=0.38,
+            edge_srgb=(0.74, 0.78, 0.84),
+            grain_scale=58.0,
+            grain_bump=0.022,
+            voronoi_grain=0.34,
+            voronoi_scale=92.0,
+            rough_var=0.044,
         ),
         "M_RailSteel": _build_pbr_mat(
             "M_RailSteel",
-            base_srgb=(0.292, 0.310, 0.338),
-            roughness=0.31,
-            metallic=0.80,
-            bevel_r=0.020,
-            edge_wear=0.52,
-            edge_srgb=(0.84, 0.87, 0.92),
+            base_srgb=(0.228, 0.244, 0.270),
+            roughness=0.25,
+            metallic=0.88,
+            bevel_r=0.018,
+            edge_wear=0.44,
+            edge_srgb=(0.82, 0.86, 0.90),
             grain_scale=42.0,
-            grain_bump=0.022,
+            grain_bump=0.020,
             aniso_stretch=(0.45, 3.2, 3.2),
-            rough_var=0.028,
+            rough_var=0.036,
         ),
         "M_BarrelCHF": _build_pbr_mat(
             "M_BarrelCHF",
@@ -2299,9 +2391,12 @@ def finish_part(
     bevel_segs: int = 2,
     sharp_deg: float = 34.0,
     weighted_normals: bool = True,
+    lock_flat_walls: bool = False,
 ) -> bpy.types.Object:
     select_only([obj], obj)
     if bevel_w > 0.0:
+        nm_pre = _count_non_manifold(obj)
+        backup = obj.data.copy()
         mod = obj.modifiers.new(name="Bevel", type="BEVEL")
         mod.offset_type = "OFFSET"
         mod.width = bevel_w
@@ -2311,23 +2406,37 @@ def finish_part(
         mod.use_clamp_overlap = True
         mod.miter_outer = "MITER_ARC"
         bpy.ops.object.modifier_apply(modifier=mod.name)
+        if _count_non_manifold(obj) > nm_pre:
+            old = obj.data
+            obj.data = backup
+            bpy.data.meshes.remove(old)
+        else:
+            bpy.data.meshes.remove(backup)
 
     bm = bmesh.new()
     bm.from_mesh(obj.data)
     bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)
-    degen = [f for f in bm.faces if f.calc_area() < 1e-10]
-    if degen:
-        bmesh.ops.delete(bm, geom=degen, context="FACES")
+    bmesh.ops.dissolve_degenerate(bm, dist=1e-6, edges=bm.edges)
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
     if bm.calc_volume(signed=True) < 0.0:
         bmesh.ops.reverse_faces(bm, faces=bm.faces)
 
     angle_rad = math.radians(sharp_deg)
+    flat_rad = math.radians(12.0)
     for f in bm.faces:
         f.smooth = True
     for e in bm.edges:
         if len(e.link_faces) == 2:
-            e.smooth = e.calc_face_angle(0.0) < angle_rad
+            ang = e.calc_face_angle(0.0)
+            is_flat_wall = False
+            if lock_flat_walls and ang > flat_rad:
+                f0, f1 = e.link_faces[0], e.link_faces[1]
+                # Lock planar +-Z cheeks (Blender Y axis) optically flat!
+                if (abs(f0.normal.y) > 0.985 or abs(f1.normal.y) > 0.985) and (
+                    f0.calc_area() > 0.08 or f1.calc_area() > 0.08
+                ):
+                    is_flat_wall = True
+            e.smooth = (ang < angle_rad) and (not is_flat_wall)
         else:
             e.smooth = False
     bm.to_mesh(obj.data)
@@ -2337,8 +2446,9 @@ def finish_part(
     if weighted_normals:
         select_only([obj], obj)
         wn = obj.modifiers.new(name="WeightedNormal", type="WEIGHTED_NORMAL")
-        wn.mode = "FACE_AREA"
-        wn.weight = 50
+        wn.mode = "FACE_AREA_WITH_ANGLE"
+        wn.weight = 100
+        wn.thresh = 0.01
         wn.keep_sharp = True
         bpy.ops.object.modifier_apply(modifier=wn.name)
     return obj
@@ -2370,38 +2480,37 @@ def build_p90_stock(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
     hull += _quad_bez((-5.86, -4.18), (-9.86, -4.44), (-14.86, -6.54), segs=14) # Tapered bullpup buttstock belly
     hull.append((-16.16, -6.72))
 
-    # Multi-segment generous edge bevel (0.14 cm, 3 segs) gives organic monocoque curves
+    # Multi-segment generous edge bevel (0.18 cm, 4 segs) gives lush organic monocoque curves
     # while keeping wide flat side planes at |Z| = 1.11 for distortion-free rollmarks!
-    stock = mk_extrude_z("stock_hull", hull, -1.11, 1.11, bevel=0.14, bevel_segs=3, mat=m_main)
+    stock = mk_extrude_z("stock_hull", hull, -1.11, 1.11, bevel=0.18, bevel_segs=4, mat=m_main)
 
-    # 2. Internal cavities, sculpted ergonomic thumbhole, trigger window, selector window & downward chute
-    #    Beveled elliptical cylinders create smooth radiused ergonomic thumbhole & trigger-bow inner edges!
-    thumb_cut = mk_cyl(
-        "cut_thumb", 1.44, 1.44, 2.80, axis="z", segs=40,
-        xform=[("s", 1.02, 1.16, 1.0), ("t", 3.05, -4.35, 0.0)], mat=m_dark,
-    )
-    # Flared chamfer cones on both flanks of thumbhole for silky finger ergonomics
-    thumb_flare_r = mk_cyl(
-        "cut_th_fr", 1.60, 1.38, 0.28, axis="z", segs=40,
-        xform=[("s", 1.02, 1.16, 1.0), ("t", 3.05, -4.35, 1.02)], mat=m_main,
-    )
-    thumb_flare_l = mk_cyl(
-        "cut_th_fl", 1.38, 1.60, 0.28, axis="z", segs=40,
-        xform=[("s", 1.02, 1.16, 1.0), ("t", 3.05, -4.35, -1.02)], mat=m_main,
-    )
+    # Helper: smooth 6-ring quarter-round bell-mouth fillet cutter for plush ergonomic hand-wells!
+    def _mk_bell_hole_cutter(
+        name: str, r_in: float, r_fillet: float, sx: float, sy: float, cx: float, cy: float, segs: int = 44
+    ) -> bpy.types.Object:
+        prof = [(0.0, -1.26), (r_in + r_fillet + 0.05, -1.26)]
+        # Left (-Z) quarter-round ergonomic bell-mouth entry (z from -1.11 inward to -1.11 + r_fillet)
+        for k in range(6):
+            th = (k / 5.0) * (math.pi * 0.5)
+            rr = r_in + r_fillet * (1.0 - math.sin(th))
+            zz = -1.11 + r_fillet * (1.0 - math.cos(th))
+            prof.append((rr, zz))
+        # Right (+Z) quarter-round ergonomic bell-mouth exit (z from +1.11 - r_fillet outward to +1.11)
+        for k in range(6):
+            th = (k / 5.0) * (math.pi * 0.5)
+            rr = r_in + r_fillet * (1.0 - math.cos(th))
+            zz = 1.11 - r_fillet * (1.0 - math.sin(th))
+            prof.append((rr, zz))
+        prof.extend([(r_in + r_fillet + 0.05, 1.26), (0.0, 1.26)])
+        return mk_lathe_z(
+            name, prof, segs=segs,
+            xform=[("s", sx, sy, 1.0), ("t", cx, cy, 0.0)],
+            mat=m_main,
+        )
 
-    trig_cut = mk_cyl(
-        "cut_trig", 1.56, 1.56, 2.80, axis="z", segs=40,
-        xform=[("s", 1.06, 1.24, 1.0), ("t", 6.95, -3.72, 0.0)], mat=m_dark,
-    )
-    trig_flare_r = mk_cyl(
-        "cut_tr_fr", 1.70, 1.50, 0.26, axis="z", segs=40,
-        xform=[("s", 1.06, 1.24, 1.0), ("t", 6.95, -3.72, 1.03)], mat=m_main,
-    )
-    trig_flare_l = mk_cyl(
-        "cut_tr_fl", 1.50, 1.70, 0.26, axis="z", segs=40,
-        xform=[("s", 1.06, 1.24, 1.0), ("t", 6.95, -3.72, -1.03)], mat=m_main,
-    )
+    # 2. Internal cavities + silky smooth radiused ergonomic thumbhole & winter trigger-bow hand-wells!
+    thumb_cut = _mk_bell_hole_cutter("cut_thumb", r_in=1.42, r_fillet=0.28, sx=1.02, sy=1.16, cx=3.05, cy=-4.35, segs=48)
+    trig_cut = _mk_bell_hole_cutter("cut_trig", r_in=1.54, r_fillet=0.26, sx=1.06, sy=1.24, cx=6.95, cy=-3.72, segs=48)
 
     bolt_channel = mk_box("cut_bolt_ch", 18.25, 1.98, 1.74, xform=[("t", -7.12, 0.80, 0.0)], mat=m_dark)
     pack_bay = mk_box("cut_pack_bay", 6.85, 2.35, 1.54, xform=[("t", -12.95, -0.78, 0.0)], mat=m_dark)
@@ -2412,11 +2521,22 @@ def build_p90_stock(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
     sling_slot = mk_box("cut_sling", 1.76, 0.44, 2.60, xform=[("t", -13.85, -3.65, 0.0)], mat=m_dark)
     td_hole = mk_cyl("cut_td_pin", 0.25, 0.25, 2.60, axis="z", segs=22, xform=[("t", 1.55, 1.38, 0.0)], mat=m_dark)
 
+    # Authentic FN P90 recessed clamshell Torx screw counterbore pockets along right flank (+Z)
+    screw_coords = ((-14.95, 0.72), (-14.95, -5.25), (-7.20, -3.55), (-0.85, -3.55), (0.85, -0.65), (12.40, -1.05))
+    screw_pockets = [
+        mk_cyl(f"cut_sc_pkt_{idx}", 0.165, 0.145, 0.10, axis="z", segs=20, xform=[("t", sx, sy, 1.08)], mat=m_dark)
+        for idx, (sx, sy) in enumerate(screw_coords)
+    ]
+
+    # Subtle authentic centerline injection-mold clamshell parting seam groove along lower belly & front nose
+    seam_belly = mk_box("cut_seam_belly", 9.6, 0.12, 0.026, xform=[("rz", 0.23), ("t", -10.5, -5.28, 0.0)], mat=m_dark)
+    seam_nose = mk_box("cut_seam_nose", 0.12, 5.2, 0.026, xform=[("rz", -0.14), ("t", 14.32, -2.95, 0.0)], mat=m_dark)
+
     stock = bool_subtract(stock, [
-        thumb_cut, thumb_flare_r, thumb_flare_l,
-        trig_cut, trig_flare_r, trig_flare_l,
+        thumb_cut, trig_cut,
         bolt_channel, pack_bay, turret_well, fwd_trough,
         sel_window, eject_chute, sling_slot, td_hole,
+        *screw_pockets, seam_belly, seam_nose,
     ])
 
     # 3. Sculpted authentic FN P90 monocoque exterior details (staying strictly inside Z in [-1.12, +1.12]!)
@@ -2425,29 +2545,27 @@ def build_p90_stock(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
     for sgn in (-1.0, 1.0):
         extras.append(mk_box(
             f"cheek_rib_{int(sgn)}", 9.8, 0.34, 0.05,
-            xform=[("t", -10.8, 1.48, sgn * 1.095)], mat=m_main, bevel=0.016,
+            xform=[("t", -10.8, 1.48, sgn * 1.095)], mat=m_main, bevel=0.018,
         ))
         # Tactile index-finger rest rib above trigger bow
         extras.append(mk_box(
             f"finger_ledge_{int(sgn)}", 4.2, 0.16, 0.06,
-            xform=[("t", 6.8, -1.45, sgn * 1.09)], mat=m_main, bevel=0.015,
+            xform=[("t", 6.8, -1.45, sgn * 1.09)], mat=m_main, bevel=0.016,
         ))
         # Subtle longitudinal molding boss ridge along lower buttstock belly
         extras.append(mk_box(
             f"belly_rib_{int(sgn)}", 6.8, 0.14, 0.04,
             xform=[("rz", 0.24), ("t", -10.6, -4.45, sgn * 1.095)], mat=m_main, bevel=0.012,
         ))
-    # Authentic FN P90 clamshell Torx assembly screw heads recessed along right flank (+Z)
-    for idx, (sx, sy) in enumerate((
-        (-14.95, 0.72), (-14.95, -5.25), (-7.20, -3.55), (-0.85, -3.55), (0.85, -0.65), (12.40, -1.05),
-    )):
+    # Flush-seated clamshell Torx assembly screw heads nestled cleanly inside their recessed counterbores!
+    for idx, (sx, sy) in enumerate(screw_coords):
         extras.append(mk_cyl(
-            f"shell_screw_{idx}", 0.125, 0.125, 0.05, axis="z", segs=16,
-            xform=[("t", sx, sy, 1.095)], mat=m_steel, bevel=0.010,
+            f"shell_screw_{idx}", 0.122, 0.122, 0.055, axis="z", segs=18,
+            xform=[("t", sx, sy, 1.065)], mat=m_steel, bevel=0.012,
         ))
 
     obj = join_objects(extras, "p90_stock")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=36.0, lock_flat_walls=True)
 
 
 def build_p90_buttplate(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
@@ -2747,7 +2865,7 @@ def build_p90_mag_body(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
     parts.append(turret_collar)
 
     obj = join_objects(parts, "p90_mag_body")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0, lock_flat_walls=True)
 
 
 def build_p90_helical_ramp(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
@@ -2927,7 +3045,7 @@ def build_p90_ring_sight(mats: dict[str, bpy.types.Material]) -> bpy.types.Objec
         [housing, collector_bezel, collector_prism, obj_lens, ocu_lens, wind_drum, elev_screw, bolt_f, bolt_r],
         "p90_ring_sight",
     )
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0, lock_flat_walls=True)
 
 
 # =============================================================================
@@ -2970,11 +3088,19 @@ def build_p90_upper_receiver(mats: dict[str, bpy.types.Material]) -> bpy.types.O
         (1.00, 4.10), (1.16, 4.10), (1.28, 4.17), (1.28, 4.47), (1.16, 4.54), (1.00, 4.54),
     ]
     side_rail_base = mk_extrude_x("up_rail_base", rail_zy, 8.10, 12.70, bevel=0.016, mat=m_rail)
-    # Cut 5 recoil cross-slots cleanly across the right Picatinny rail -> 6 sharp lugs!
-    slot_cuts = [
-        mk_box(f"cut_rslot_{i}", 0.34, 0.58, 0.14, xform=[("t", 8.84 + i * 0.78, 4.32, 1.24)], mat=m_dark)
-        for i in range(5)
-    ]
+    # Cut 5 precision 45-deg beveled recoil cross-slots across the right Picatinny rail -> 6 crisp chamfered lugs!
+    slot_cuts = []
+    for i in range(5):
+        sx = 8.84 + i * 0.78
+        slot_xz = [
+            (sx - 0.17, 1.165), (sx + 0.17, 1.165),
+            (sx + 0.17, 1.248), (sx + 0.202, 1.286),
+            (sx + 0.202, 1.380), (sx - 0.202, 1.380),
+            (sx - 0.202, 1.286), (sx - 0.17, 1.248),
+        ]
+        slot_cuts.append(
+            mk_extrude_z(f"cut_rslot_{i}", slot_xz, -0.32, 0.32, xform=[("rx", math.pi * 0.5), ("t", 0.0, 4.32, 0.0)], mat=m_dark)
+        )
     side_rail = bool_subtract(side_rail_base, slot_cuts)
     parts.append(side_rail)
 
@@ -2995,7 +3121,7 @@ def build_p90_upper_receiver(mats: dict[str, bpy.types.Material]) -> bpy.types.O
     parts.append(mk_box("up_td_lug", 0.75, 0.36, 0.84, xform=[("t", 2.18, 0.04, 0.0)], mat=m_rail, bevel=0.025))
 
     obj = join_objects(parts, "p90_upper_receiver")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0, lock_flat_walls=True)
 
 
 def build_p90_barrel(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
@@ -3100,12 +3226,19 @@ def build_p90_flash_hider(mats: dict[str, bpy.types.Material]) -> bpy.types.Obje
         (0.240, -0.220),  # Expansion chamber
         (0.305, -0.300),  # Internal baffle step
         (0.305, -0.810),
-    ], segs=36, mat=m_heat)
+    ], segs=48, mat=m_heat)
 
-    # 32-deg downward-slanted crown face + 4 radial upper/lateral compensator ports + 4 rear wrench flats
+    # 32-deg downward-slanted crown face + 4 CNC-beveled radial birdcage compensator ports + 4 rear wrench flats
     slant_cut = mk_box("cut_fh_slant", 1.24, 1.64, 1.44, xform=[("rz", -0.56), ("t", 1.26, -0.25, 0.0)], mat=m_heat)
+    # Chamfered trapezoidal slot cross-section in (Z, Y) -> 45-deg flared outer port walls!
+    port_zy = [
+        (-0.068, 0.17), ( 0.068, 0.17),
+        ( 0.068, 0.39), ( 0.098, 0.435),
+        ( 0.098, 0.56), (-0.098, 0.56),
+        (-0.098, 0.435), (-0.068, 0.39),
+    ]
     port_cuts = [
-        mk_box(f"cut_fh_p{k}", 0.74, 0.30, 0.13, xform=[("t", 0.18, 0.32, 0.0), ("rx", ang)], mat=m_dark)
+        mk_extrude_x(f"cut_fh_p{k}", port_zy, -0.19, 0.55, bevel=0.025, bevel_segs=2, xform=[("rx", ang)], mat=m_dark)
         for k, ang in enumerate((0.62, -0.62, 1.47, -1.47))
     ]
     flat_cuts = [
@@ -3878,8 +4011,8 @@ def verify_meshes(all_objs: list[bpy.types.Object]) -> dict:
     return report
 
 
-def export_draco_glb(all_objs: list[bpy.types.Object]):
-    _set_identity_layout(all_objs)
+def triangulate_all_keep_normals(all_objs: list[bpy.types.Object]):
+    """Pre-bake BEAUTY triangulation preserving custom split normals -> ZERO normal-map triangulation drift!"""
     for o in all_objs:
         select_only([o], o)
         mod = o.modifiers.new(name="Triangulate", type="TRIANGULATE")
@@ -3888,6 +4021,9 @@ def export_draco_glb(all_objs: list[bpy.types.Object]):
         mod.keep_custom_normals = True
         bpy.ops.object.modifier_apply(modifier=mod.name)
 
+
+def export_draco_glb(all_objs: list[bpy.types.Object]):
+    _set_identity_layout(all_objs)
     select_only(all_objs, all_objs[0])
     bpy.ops.export_scene.gltf(
         filepath=str(MODELS_OUT),
@@ -3906,6 +4042,135 @@ def export_draco_glb(all_objs: list[bpy.types.Object]):
         export_draco_texcoord_quantization=12,
     )
     print(f"[EXPORT] Wrote Draco GLB -> {MODELS_OUT} ({MODELS_OUT.stat().st_size / 1024:.1f} KB)")
+
+
+def render_qa_previews(
+    stock_objs: list[bpy.types.Object],
+    mag_objs: list[bpy.types.Object],
+    metal_objs: list[bpy.types.Object],
+):
+    print("\n[QA] Rendering 5 museum studio Cycles QA preview plates to /tmp/p90_qa_*.png...")
+    all_objs = stock_objs + mag_objs + metal_objs
+    scene = bpy.context.scene
+    scene.render.engine = "CYCLES"
+    scene.cycles.samples = 48
+    scene.cycles.use_denoising = True
+    scene.cycles.max_bounces = 6
+    scene.cycles.diffuse_bounces = 3
+    scene.cycles.glossy_bounces = 4
+    scene.render.resolution_x = 1280
+    scene.render.resolution_y = 720
+    scene.render.image_settings.file_format = "PNG"
+    scene.view_settings.view_transform = "AgX"
+    scene.view_settings.look = "AgX - Medium High Contrast"
+    scene.view_settings.exposure = 0.25
+
+    def _make_baked_mat(name: str, prefix: str, nrm_str: float = 0.88):
+        mat = bpy.data.materials.new(name)
+        nt = mat.node_tree
+        nt.nodes.clear()
+        out = nt.nodes.new("ShaderNodeOutputMaterial")
+        bsdf = nt.nodes.new("ShaderNodeBsdfPrincipled")
+        nt.links.new(bsdf.outputs["BSDF"], out.inputs["Surface"])
+
+        t_alb = nt.nodes.new("ShaderNodeTexImage")
+        t_alb.image = bpy.data.images.load(str(TEX_OUT_DIR / f"{prefix}_albedo.webp"))
+        t_alb.image.colorspace_settings.name = "sRGB"
+
+        t_orm = nt.nodes.new("ShaderNodeTexImage")
+        t_orm.image = bpy.data.images.load(str(TEX_OUT_DIR / f"{prefix}_roughness.webp"))
+        t_orm.image.colorspace_settings.name = "Non-Color"
+
+        t_nrm = nt.nodes.new("ShaderNodeTexImage")
+        t_nrm.image = bpy.data.images.load(str(TEX_OUT_DIR / f"{prefix}_normal.webp"))
+        t_nrm.image.colorspace_settings.name = "Non-Color"
+
+        sep = nt.nodes.new("ShaderNodeSeparateColor")
+        nt.links.new(t_orm.outputs["Color"], sep.inputs["Color"])
+
+        ao_mix = nt.nodes.new("ShaderNodeMix")
+        ao_mix.data_type = "RGBA"
+        ao_mix.blend_type = "MULTIPLY"
+        ao_mix.inputs[0].default_value = 0.88
+        nt.links.new(t_alb.outputs["Color"], ao_mix.inputs[6])
+        nt.links.new(sep.outputs["Red"], ao_mix.inputs[7])
+
+        nmap = nt.nodes.new("ShaderNodeNormalMap")
+        nmap.inputs["Strength"].default_value = nrm_str
+        nt.links.new(t_nrm.outputs["Color"], nmap.inputs["Color"])
+
+        nt.links.new(ao_mix.outputs[2], bsdf.inputs["Base Color"])
+        nt.links.new(sep.outputs["Green"], bsdf.inputs["Roughness"])
+        nt.links.new(sep.outputs["Blue"], bsdf.inputs["Metallic"])
+        nt.links.new(nmap.outputs["Normal"], bsdf.inputs["Normal"])
+        return mat
+
+    m_s = _make_baked_mat("QA_Stock", "p90_v3_stock", 0.90)
+    m_mo = _make_baked_mat("QA_MagOptic", "p90_v3_mag_optic", 0.86)
+    m_m = _make_baked_mat("QA_Metal", "p90_v3_metal", 0.86)
+    for o in stock_objs:
+        o.data.materials.clear(); o.data.materials.append(m_s)
+    for o in mag_objs:
+        o.data.materials.clear(); o.data.materials.append(m_mo)
+    for o in metal_objs:
+        o.data.materials.clear(); o.data.materials.append(m_m)
+
+    # Assemble all 23 parts in exact world coordinates
+    for o in all_objs:
+        px, py, pz = ASSEMBLED_POS[o.name]
+        o.location = t2b(px, py, pz)
+        o.rotation_euler = (0.0, 0.0, 0.0)
+        o.hide_render = False
+    bpy.context.view_layer.update()
+
+    # Studio environment
+    wnt = scene.world.node_tree
+    wnt.nodes.clear()
+    wout = wnt.nodes.new("ShaderNodeOutputWorld")
+    wbg = wnt.nodes.new("ShaderNodeBackground")
+    hdri_p = REPO_ROOT / "public" / "hdri" / "tactical_vault.hdr"
+    if hdri_p.exists():
+        env = wnt.nodes.new("ShaderNodeTexEnvironment")
+        env.image = bpy.data.images.load(str(hdri_p))
+        wnt.links.new(env.outputs["Color"], wbg.inputs["Color"])
+        wbg.inputs["Strength"].default_value = 1.25
+    else:
+        wbg.inputs["Color"].default_value = (0.04, 0.055, 0.075, 1.0)
+        wbg.inputs["Strength"].default_value = 1.2
+    wnt.links.new(wbg.outputs["Background"], wout.inputs["Surface"])
+
+    for lname, loc, tgt, energy, sz in (
+        ("QA_Key", t2b(6.0, 22.0, 26.0), t2b(0.0, -1.0, 0.0), 1400.0, 18.0),
+        ("QA_Fill", t2b(-10.0, 14.0, -26.0), t2b(0.0, -1.0, 0.0), 950.0, 18.0),
+        ("QA_Top", t2b(0.0, 30.0, 4.0), t2b(0.0, 2.0, 0.0), 800.0, 20.0),
+    ):
+        ld = bpy.data.lights.new(lname, type="AREA")
+        ld.energy = energy; ld.size = sz
+        lo = bpy.data.objects.new(lname, ld)
+        scene.collection.objects.link(lo)
+        lo.location = loc
+        lo.rotation_euler = (tgt - loc).to_track_quat("-Z", "Y").to_euler()
+
+    cam_d = bpy.data.cameras.new("QACam")
+    cam_o = bpy.data.objects.new("QACam", cam_d)
+    scene.collection.objects.link(cam_o)
+    scene.camera = cam_o
+
+    views = [
+        ("right", t2b(0.0, -0.5, 42.0), t2b(0.0, -1.0, 0.0), 50.0),
+        ("left", t2b(0.0, -0.5, -42.0), t2b(0.0, -1.0, 0.0), 50.0),
+        ("top", t2b(-2.0, 34.0, 8.0), t2b(-1.0, 2.2, 0.0), 52.0),
+        ("macro_mag", t2b(-4.0, 5.2, 16.5), t2b(-4.0, 2.2, 0.0), 60.0),
+        ("macro_muzzle", t2b(23.5, 5.5, 16.5), t2b(10.5, 2.2, 0.0), 56.0),
+    ]
+    for tag, loc, tgt, lens in views:
+        cam_d.lens = lens
+        cam_o.location = loc
+        cam_o.rotation_euler = (tgt - loc).to_track_quat("-Z", "Y").to_euler()
+        out_p = f"/tmp/p90_qa_{tag}.png"
+        scene.render.filepath = out_p
+        bpy.ops.render.render(write_still=True)
+        print(f"  [QA-RENDER] Saved {out_p}")
 
 
 def main():
@@ -3960,6 +4225,9 @@ def main():
     unwrap_mag_optic_atlas(mag_objs)
     unwrap_metal_atlas(metal_objs)
 
+    # Pre-bake BEAUTY triangulation preserving custom split normals -> zero normal-map diagonal drift!
+    triangulate_all_keep_normals(all_objs)
+
     for label, group in (("stock", stock_objs), ("mag_optic", mag_objs), ("metal", metal_objs)):
         tot_area = 0.0
         for o in group:
@@ -3991,6 +4259,9 @@ def main():
         )
 
     export_draco_glb(all_objs)
+
+    if "--preview" in sys.argv:
+        render_qa_previews(stock_objs, mag_objs, metal_objs)
 
     outputs = [
         MODELS_OUT,
