@@ -859,12 +859,12 @@ def _build_pbr_mat(
         ao_edge.samples = 8
         ao_edge.inside = True
         ao_edge.only_local = True
-        ao_edge.inputs["Distance"].default_value = 0.075
+        ao_edge.inputs["Distance"].default_value = 0.055
 
         ramp = nt.nodes.new("ShaderNodeValToRGB")
-        ramp.color_ramp.elements[0].position = 0.32
+        ramp.color_ramp.elements[0].position = 0.24
         ramp.color_ramp.elements[0].color = (edge_wear, edge_wear, edge_wear, 1.0)
-        ramp.color_ramp.elements[1].position = 0.78
+        ramp.color_ramp.elements[1].position = 0.64
         ramp.color_ramp.elements[1].color = (0.0, 0.0, 0.0, 1.0)
         nt.links.new(ao_edge.outputs["AO"], ramp.inputs["Fac"])
 
@@ -1080,48 +1080,48 @@ def _build_muzzle_crown_soot_mat() -> bpy.types.Material:
 def create_material_library() -> dict[str, bpy.types.Material]:
     return {
         # --- Suite 1: benellim4_v3_receiver (Satin Type-III Charcoal 7075-T6 Aluminum, Sights & FCG) ---
-        # Calibrated strictly in sRGB 0.21-0.27, M=0.82, R=0.30-0.38 so flanks catch silky studio softboxes!
+        # Calibrated strictly for AgX satin-anodized dark aluminum (cool slate sheen clearly distinct from matte polymer & olive-parkerized barrel!)
         "R_AnodizedCharcoal": _build_pbr_mat(
             "R_AnodizedCharcoal",
-            base_srgb=(0.228, 0.238, 0.254),
-            roughness=0.33,
-            metallic=0.82,
-            bevel_r=0.034,
-            edge_wear=0.46,
-            edge_srgb=(0.80, 0.82, 0.86),
+            base_srgb=(0.194, 0.206, 0.226),
+            roughness=0.28,
+            metallic=0.87,
+            bevel_r=0.026,
+            edge_wear=0.38,
+            edge_srgb=(0.76, 0.79, 0.84),
             grain_scale=62.0,
-            grain_bump=0.028,
+            grain_bump=0.024,
             aniso_stretch=(0.45, 2.8, 2.8),
-            voronoi_grain=0.36,
-            voronoi_scale=88.0,
-            rough_var=0.034,
+            voronoi_grain=0.32,
+            voronoi_scale=92.0,
+            rough_var=0.036,
         ),
         "R_RailSightsAnodized": _build_pbr_mat(
             "R_RailSightsAnodized",
-            base_srgb=(0.214, 0.224, 0.240),
-            roughness=0.35,
-            metallic=0.82,
-            bevel_r=0.026,
-            edge_wear=0.52,
-            edge_srgb=(0.80, 0.83, 0.87),
+            base_srgb=(0.180, 0.192, 0.210),
+            roughness=0.30,
+            metallic=0.86,
+            bevel_r=0.022,
+            edge_wear=0.44,
+            edge_srgb=(0.78, 0.81, 0.86),
             grain_scale=56.0,
-            grain_bump=0.030,
-            voronoi_grain=0.42,
-            voronoi_scale=84.0,
+            grain_bump=0.026,
+            voronoi_grain=0.38,
+            voronoi_scale=88.0,
             rough_var=0.034,
         ),
         "R_TriggerGuardAlu": _build_pbr_mat(
             "R_TriggerGuardAlu",
-            base_srgb=(0.218, 0.228, 0.244),
-            roughness=0.34,
-            metallic=0.82,
-            bevel_r=0.030,
-            edge_wear=0.48,
-            edge_srgb=(0.78, 0.81, 0.85),
+            base_srgb=(0.184, 0.196, 0.214),
+            roughness=0.31,
+            metallic=0.85,
+            bevel_r=0.026,
+            edge_wear=0.40,
+            edge_srgb=(0.76, 0.79, 0.84),
             grain_scale=60.0,
-            grain_bump=0.028,
-            voronoi_grain=0.40,
-            voronoi_scale=86.0,
+            grain_bump=0.026,
+            voronoi_grain=0.36,
+            voronoi_scale=88.0,
             rough_var=0.034,
         ),
         "R_TriggerBluedSteel": _build_pbr_mat(
@@ -1184,21 +1184,21 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         ),
 
         # --- Suite 2: benellim4_v3_metal (18.5" Parkerized Barrel, Mirror-Chrome ARGO Pistons & Rotating Bolt) ---
-        # Satin military manganese-phosphate steel (sRGB 0.22-0.25, M=0.84, R=0.34, subtle olive-slate cast)
+        # Authentic warm olive-slate USMC manganese-phosphate steel (distinct contrast vs cool-slate 7075-T6 receiver!)
         "M_ParkerizedSteel": _build_pbr_mat(
             "M_ParkerizedSteel",
-            base_srgb=(0.224, 0.240, 0.234),
+            base_srgb=(0.214, 0.230, 0.218),
             roughness=0.34,
             metallic=0.84,
-            bevel_r=0.028,
-            edge_wear=0.48,
-            edge_srgb=(0.80, 0.82, 0.85),
+            bevel_r=0.024,
+            edge_wear=0.42,
+            edge_srgb=(0.78, 0.80, 0.83),
             grain_scale=48.0,
-            grain_bump=0.032,
+            grain_bump=0.030,
             aniso_stretch=(4.2, 0.5, 0.5),
-            voronoi_grain=0.38,
-            voronoi_scale=84.0,
-            rough_var=0.034,
+            voronoi_grain=0.36,
+            voronoi_scale=88.0,
+            rough_var=0.036,
         ),
         "M_KnurledBlackSteel": _build_pbr_mat(
             "M_KnurledBlackSteel",
@@ -1277,76 +1277,76 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         ),
 
         # --- Suite 3: benellim4_v3_furniture (Fiberglass-Reinforced Nylon Forend/Stock, Steel Tube, Safety-Orange Follower) ---
-        # Matte charcoal fiberglass-reinforced nylon strictly in sRGB 0.17-0.21, M=0.0, R=0.58-0.68!
+        # Rich tactical matte obsidian-charcoal glass-filled nylon (distinct dielectric roughness & Voronoi pebble vs metal!)
         "F_NylonForend": _build_pbr_mat(
             "F_NylonForend",
-            base_srgb=(0.188, 0.196, 0.210),
-            roughness=0.62,
+            base_srgb=(0.142, 0.148, 0.160),
+            roughness=0.60,
             metallic=0.00,
-            bevel_r=0.036,
-            edge_wear=0.16,
-            edge_srgb=(0.28, 0.29, 0.31),
-            grain_scale=64.0,
-            grain_bump=0.095,
-            voronoi_grain=0.62,
-            voronoi_scale=96.0,
-            rough_var=0.040,
+            bevel_r=0.032,
+            edge_wear=0.14,
+            edge_srgb=(0.24, 0.25, 0.27),
+            grain_scale=68.0,
+            grain_bump=0.115,
+            voronoi_grain=0.68,
+            voronoi_scale=112.0,
+            rough_var=0.044,
         ),
         "F_NylonStock": _build_pbr_mat(
             "F_NylonStock",
-            base_srgb=(0.180, 0.188, 0.202),
-            roughness=0.64,
+            base_srgb=(0.136, 0.142, 0.154),
+            roughness=0.62,
             metallic=0.00,
-            bevel_r=0.038,
-            edge_wear=0.16,
-            edge_srgb=(0.27, 0.28, 0.30),
-            grain_scale=66.0,
-            grain_bump=0.095,
-            voronoi_grain=0.65,
-            voronoi_scale=94.0,
-            rough_var=0.042,
+            bevel_r=0.034,
+            edge_wear=0.14,
+            edge_srgb=(0.23, 0.24, 0.26),
+            grain_scale=70.0,
+            grain_bump=0.110,
+            voronoi_grain=0.68,
+            voronoi_scale=108.0,
+            rough_var=0.044,
         ),
         "F_GripStipple": _build_pbr_mat(
             "F_GripStipple",
-            base_srgb=(0.172, 0.179, 0.192),
-            roughness=0.68,
+            base_srgb=(0.128, 0.134, 0.144),
+            roughness=0.70,
             metallic=0.00,
-            bevel_r=0.026,
-            edge_wear=0.12,
-            edge_srgb=(0.26, 0.27, 0.29),
-            grain_scale=88.0,
-            grain_bump=0.165,
-            voronoi_grain=0.84,
-            voronoi_scale=132.0,
-            rough_var=0.040,
+            bevel_r=0.024,
+            edge_wear=0.10,
+            edge_srgb=(0.22, 0.23, 0.25),
+            grain_scale=92.0,
+            grain_bump=0.185,
+            voronoi_grain=0.86,
+            voronoi_scale=145.0,
+            rough_var=0.042,
         ),
         "F_CheekElastomer": _build_pbr_mat(
             "F_CheekElastomer",
-            base_srgb=(0.174, 0.182, 0.194),
-            roughness=0.58,
+            base_srgb=(0.134, 0.140, 0.150),
+            roughness=0.56,
             metallic=0.00,
-            bevel_r=0.042,
-            edge_wear=0.10,
-            edge_srgb=(0.24, 0.25, 0.27),
+            bevel_r=0.038,
+            edge_wear=0.08,
+            edge_srgb=(0.21, 0.22, 0.24),
             grain_scale=52.0,
             grain_bump=0.055,
-            voronoi_grain=0.42,
-            voronoi_scale=76.0,
+            voronoi_grain=0.44,
+            voronoi_scale=80.0,
             rough_var=0.032,
         ),
         "F_ButtpadRubber": _build_pbr_mat(
             "F_ButtpadRubber",
-            base_srgb=(0.152, 0.158, 0.168),
-            roughness=0.82,
+            base_srgb=(0.116, 0.122, 0.130),
+            roughness=0.84,
             metallic=0.00,
-            bevel_r=0.038,
-            edge_wear=0.10,
-            edge_srgb=(0.23, 0.24, 0.25),
-            grain_scale=68.0,
-            grain_bump=0.110,
-            voronoi_grain=0.70,
-            voronoi_scale=92.0,
-            rough_var=0.036,
+            bevel_r=0.034,
+            edge_wear=0.08,
+            edge_srgb=(0.19, 0.20, 0.21),
+            grain_scale=70.0,
+            grain_bump=0.125,
+            voronoi_grain=0.72,
+            voronoi_scale=96.0,
+            rough_var=0.038,
         ),
         "F_SteelRecoilTube": _build_pbr_mat(
             "F_SteelRecoilTube",
@@ -1848,6 +1848,7 @@ def finish_part(
     bevel_segs: int = 2,
     sharp_deg: float = 34.0,
     weighted_normals: bool = True,
+    lock_flat_walls: bool = False,
 ) -> bpy.types.Object:
     select_only([obj], obj)
     if bevel_w > 0.0:
@@ -1864,9 +1865,7 @@ def finish_part(
     bm = bmesh.new()
     bm.from_mesh(obj.data)
     bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)
-    degen = [f for f in bm.faces if f.calc_area() < 1e-10]
-    if degen:
-        bmesh.ops.delete(bm, geom=degen, context="FACES")
+    bmesh.ops.dissolve_degenerate(bm, dist=1e-6, edges=bm.edges)
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
     if bm.calc_volume(signed=True) < 0.0:
         bmesh.ops.reverse_faces(bm, faces=bm.faces)
@@ -1877,6 +1876,12 @@ def finish_part(
     for e in bm.edges:
         if len(e.link_faces) == 2:
             e.smooth = e.calc_face_angle(0.0) < angle_rad
+            if lock_flat_walls and e.smooth:
+                f0, f1 = e.link_faces[0], e.link_faces[1]
+                flat0 = abs(f0.normal.y) > 0.96 and f0.calc_area() > 0.15
+                flat1 = abs(f1.normal.y) > 0.96 and f1.calc_area() > 0.15
+                if flat0 != flat1:
+                    e.smooth = False
         else:
             e.smooth = False
     bm.to_mesh(obj.data)
@@ -1886,11 +1891,23 @@ def finish_part(
     if weighted_normals:
         select_only([obj], obj)
         wn = obj.modifiers.new(name="WeightedNormal", type="WEIGHTED_NORMAL")
-        wn.mode = "FACE_AREA"
+        wn.mode = "FACE_AREA_WITH_ANGLE"
         wn.weight = 50
         wn.keep_sharp = True
         bpy.ops.object.modifier_apply(modifier=wn.name)
     return obj
+
+
+def triangulate_all_keep_normals(all_objs: list[bpy.types.Object]):
+    """Triangulate all meshes BEFORE Cycles tangent-normal baking so baked tangent frames
+    match exported Draco glTF triangles 1:1 (zero diagonal facet streaks!)."""
+    for o in all_objs:
+        select_only([o], o)
+        mod = o.modifiers.new(name="TriangulatePreBake", type="TRIANGULATE")
+        mod.quad_method = "BEAUTY"
+        mod.ngon_method = "BEAUTY"
+        mod.keep_custom_normals = True
+        bpy.ops.object.modifier_apply(modifier=mod.name)
 
 
 # =============================================================================
@@ -1914,17 +1931,28 @@ def build_benellim4_receiver(mats: dict[str, bpy.types.Material]) -> bpy.types.O
         (9.45, 2.82),
         (-9.15, 2.82),
     ]
-    prof_xy += _quad_bez((-9.15, 2.82), (-10.25, 2.62), (-10.80, 1.48), segs=10)
-    raw = mk_extrude_z("bm4_recv_raw", prof_xy, -1.75, 1.75, bevel=0.065, bevel_segs=2, mat=m_alu)
+    prof_xy += _quad_bez((-9.15, 2.82), (-10.25, 2.62), (-10.80, 1.48), segs=12)
+    raw = mk_extrude_z("bm4_recv_raw", prof_xy, -1.75, 1.75, bevel=0.072, bevel_segs=3, mat=m_alu)
 
     # 2. Carve internal bolt/elevator cavity, front barrel & mag sockets, dual ARGO bulkhead holes,
     #    angled stock socket, 3" beveled +Z ejection port, charging-handle slot, flared loading port,
     #    trigger-pack cross-pin hole, and subtle upper Benelli receiver shoulder bevels!
     # Rounded stadium 3" ejection port cutter (+Z flank: X in [+0.55, +7.95], Y in [+0.68, +2.06])
-    ej_pts = _rounded_rect_pts(3.70, 0.69, 0.22, corner_segs=5)
+    ej_pts = _rounded_rect_pts(3.70, 0.69, 0.24, corner_segs=6)
     ej_cut = mk_extrude_z(
         "c_recv_eject", ej_pts, 0.90, 2.10, bevel=0.0,
         xform=[("t", 4.25, 1.37, 0.0)], mat=m_dark,
+    )
+    # Crisp 45-deg exterior chamfer flare around the 3" ejection port lip (+Z outer surface!)
+    ej_bev_pts = _rounded_rect_pts(3.78, 0.77, 0.28, corner_segs=6)
+    ej_bev_cut = mk_loft_rings(
+        "c_recv_ej_bev",
+        [
+            [(p[0] + 4.25, p[1] + 1.37, 1.66) for p in ej_pts],
+            [(p[0] + 4.25, p[1] + 1.37, 1.78) for p in ej_bev_pts],
+            [(p[0] + 4.25, p[1] + 1.37, 1.92) for p in ej_bev_pts],
+        ],
+        mat=m_satin,
     )
     # Charging handle travel slot extending cleanly back to X = -4.90 so full -8.4cm BCG stroke clears!
     chg_pts = _rounded_rect_pts(2.85, 0.25, 0.14, corner_segs=4)
@@ -1958,6 +1986,7 @@ def build_benellim4_receiver(mats: dict[str, bpy.types.Material]) -> bpy.types.O
         # Trigger housing retention cross-pin through-bore at (-8.95, -1.73)
         mk_cyl("c_recv_tpin", 0.225, 0.225, 4.00, axis="z", segs=20, xform=[("t", -8.95, -1.73, 0.0)], mat=m_dark),
         ej_cut,
+        ej_bev_cut,
         chg_cut,
         load_cut,
         flare_l,
@@ -1986,7 +2015,7 @@ def build_benellim4_receiver(mats: dict[str, bpy.types.Material]) -> bpy.types.O
     pin_esc_r = bool_subtract(pin_esc_r, [mk_cyl("c_pr", 0.225, 0.225, 0.20, axis="z", segs=20, xform=[("t", -8.95, -1.73,  1.74)], mat=m_dark)])
 
     obj = join_objects([shell, deflector, rel_collar, rel_btn, pin_esc_l, pin_esc_r], "benellim4_receiver")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0, lock_flat_walls=True)
 
 
 def build_benellim4_picatinny_rail(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
@@ -2015,12 +2044,16 @@ def build_benellim4_picatinny_rail(mats: dict[str, bpy.types.Material]) -> bpy.t
     cutters = [
         mk_box("c_rail_chan", 14.80, 0.30, 0.66, [("t", 2.10, 3.22, 0.0)], mat=m_dark),
     ]
-    # 13 precision MIL-STD-1913 transverse recoil slots (0.52 cm wide, 1.00 cm pitch, X = -4.00..+8.00)
+    # 13 precision MIL-STD-1913 transverse recoil slots w/ crisp 45-deg lug chamfers (X = -4.00..+8.00)
     for i in range(13):
         sx = -4.00 + i * 1.00
-        cutters.append(
-            mk_box(f"c_rslot_{i}", 0.52, 0.34, 2.24, [("t", sx, 3.20, 0.0)], mat=m_dark)
-        )
+        slot_prof = [
+            (sx - 0.26, 3.03), (sx + 0.26, 3.03),
+            (sx + 0.26, 3.27), (sx + 0.31, 3.33),
+            (sx + 0.31, 3.40), (sx - 0.31, 3.40),
+            (sx - 0.31, 3.33), (sx - 0.26, 3.27),
+        ]
+        cutters.append(mk_extrude_z(f"c_rslot_{i}", slot_prof, -1.14, 1.14, mat=m_dark))
     rail_milled = bool_subtract(raw, cutters)
 
     # 4 recessed stainless steel countersunk Torx mounting screws at X = -4.10, -0.40, +3.60, +7.80
@@ -2726,58 +2759,72 @@ def build_benellim4_shell_elevator(mats: dict[str, bpy.types.Material]) -> bpy.t
 # PART BUILDERS — ATLAS 3: FOREND, RECOIL TUBE/GRIP, TELESTOCK & FOLLOWER (4 parts)
 # =============================================================================
 def build_benellim4_forend(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
-    """F-05: 2-Piece Glass-Reinforced Ribbed Tactical Polymer Forend / Handguard.
+    """F-05: 2-Piece Glass-Reinforced Sculpted Ergonomic Polymer Forend / Handguard.
+    Features rounded stadium ARGO cooling vents and 11 pairs of angled concave tactile
+    finger-traction cove flutes carved seamlessly into the contoured palm swells (zero boxy sticks!).
     assembledPos: [21.5, -0.35, 0] | spans X in [-11.20, +11.20], Y in [-2.48, +1.68], Z in [-2.29, +2.29]."""
     m_poly = mats["F_NylonForend"]
     m_grip = mats["F_GripStipple"]
 
     # Contoured ergonomic U-trough cross-section in (Z, Y) extruded along X in [-11.20, +11.20]
-    # Inner clearance widened cleanly (inner Z=±1.88, inner floor Y=-2.19) -> ZERO clipping w/ ARGO cyls or mag tube!
+    # Smoothly rounded ergonomic palm swell out to Z=±2.27 while keeping inner Z=±1.88 & floor Y=-2.18 100% clear!
     u_zy = [
         (-1.68,  1.68),
-        (-2.18,  0.52),
+        (-2.22,  0.54),
     ]
-    u_zy += _quad_bez((-2.18, 0.52), (-2.26, -1.84), (-1.35, -2.48), segs=8)
-    u_zy.append((1.35, -2.48))
-    u_zy += _quad_bez((1.35, -2.48), (2.26, -1.84), (2.18, 0.52), segs=8)
+    u_zy += _quad_bez((-2.22, 0.54), (-2.33, -1.78), (-1.34, -2.48), segs=12)
+    u_zy.append((1.34, -2.48))
+    u_zy += _quad_bez((1.34, -2.48), (2.33, -1.78), (2.22, 0.54), segs=12)
     u_zy += [
         ( 1.68,  1.68),
         ( 1.38,  1.68),
         ( 1.88,  0.48),
     ]
-    u_zy += _quad_bez((1.88, 0.48), (1.92, -1.56), (1.16, -2.18), segs=8)
+    u_zy += _quad_bez((1.88, 0.48), (1.92, -1.56), (1.16, -2.18), segs=10)
     u_zy.append((-1.16, -2.18))
-    u_zy += _quad_bez((-1.16, -2.18), (-1.92, -1.56), (-1.88, 0.48), segs=8)
+    u_zy += _quad_bez((-1.16, -2.18), (-1.92, -1.56), (-1.88, 0.48), segs=10)
     u_zy.append((-1.38, 1.68))
 
-    raw = mk_extrude_x("fe_raw", u_zy, -11.20, 11.20, bevel=0.065, bevel_segs=2, mat=m_poly)
+    raw = mk_extrude_x("fe_raw", u_zy, -11.20, 11.20, bevel=0.085, bevel_segs=3, mat=m_poly)
 
-    # Carve 6 pairs of underside ARGO gas-vent louver slots, 4 pairs of upper shoulder cooling slots,
-    # and the subtle longitudinal 2-piece shell parting groove along bottom Z=0!
+    # Carve 6 pairs of rounded underside ARGO gas-vent louvers, 4 pairs of rounded upper cooling slots,
+    # 2-piece bottom clamshell parting seam, tapered nose relief, AND 11 pairs of angled concave tactile flutes!
     cutters = [
         mk_box("c_fe_seam", 22.60, 0.14, 0.08, [("t", 0.0, -2.46, 0.0)], mat=m_poly),
     ]
+    v_lo_pts = _rounded_rect_pts(0.78, 0.28, 0.22, corner_segs=5)
     for i in range(6):
         vx = -7.50 + i * 2.85
-        cutters.append(mk_box(f"c_fe_vl_{i}", 1.55, 0.68, 0.56, [("t", vx, -2.28, -1.14)], mat=m_poly))
-        cutters.append(mk_box(f"c_fe_vr_{i}", 1.55, 0.68, 0.56, [("t", vx, -2.28,  1.14)], mat=m_poly))
+        cutters.append(
+            mk_extrude_z(f"c_fe_vl_{i}", v_lo_pts, -0.34, 0.34, xform=[("rx", math.pi * 0.5), ("t", vx, -2.28, -1.14)], mat=m_poly)
+        )
+        cutters.append(
+            mk_extrude_z(f"c_fe_vr_{i}", v_lo_pts, -0.34, 0.34, xform=[("rx", math.pi * 0.5), ("t", vx, -2.28,  1.14)], mat=m_poly)
+        )
+    v_up_pts = _rounded_rect_pts(0.92, 0.17, 0.14, corner_segs=5)
     for i in range(4):
         sx = -6.20 + i * 3.80
-        cutters.append(mk_box(f"c_fe_ul_{i}", 1.85, 0.34, 0.65, [("t", sx, 1.18, -1.88)], mat=m_poly))
-        cutters.append(mk_box(f"c_fe_ur_{i}", 1.85, 0.34, 0.65, [("t", sx, 1.18,  1.88)], mat=m_poly))
+        cutters.append(mk_extrude_z(f"c_fe_ul_{i}", v_up_pts, -2.35, -1.45, xform=[("t", sx, 1.18, 0.0)], mat=m_poly))
+        cutters.append(mk_extrude_z(f"c_fe_ur_{i}", v_up_pts,  1.45,  2.35, xform=[("t", sx, 1.18, 0.0)], mat=m_poly))
     # Front tapered upper shoulder relief so forend nose hugs barrel smoothly
     cutters.append(mk_box("c_fe_nose", 2.60, 1.20, 4.80, [("rz", -0.34), ("t", 10.75, 1.52, 0.0)], mat=m_poly))
-    body = bool_subtract(raw, cutters)
 
-    # 11 pairs of crisp beveled wrap-around tactile anti-slip grip ribs along both flanks
-    parts = [body]
+    # 11 pairs of angled (10 deg) concave tactile finger-traction cove flutes carved directly into the
+    # rounded polymer palm flanks (depth reaches |Z|=2.12, safely outside inner cavity |Z|=1.88!)
     for r in range(11):
-        rx = -9.20 + r * 1.84
-        parts.append(mk_box(f"fe_rl_{r}", 0.36, 2.30, 0.15, [("t", rx, -0.40, -2.215)], m_grip, bevel=0.032))
-        parts.append(mk_box(f"fe_rr_{r}", 0.36, 2.30, 0.15, [("t", rx, -0.40,  2.215)], m_grip, bevel=0.032))
+        rx = -9.15 + r * 1.83
+        for si, z_sign in enumerate((-1.0, 1.0)):
+            flute = mk_cyl(
+                f"c_fe_fl_{r}_{si}", 0.215, 0.215, 2.08, axis="y", segs=16,
+                xform=[("rz", -0.175), ("t", rx, -0.45, z_sign * 2.335)],
+                mat=m_grip, bevel=0.06,
+            )
+            cutters.append(flute)
 
-    obj = join_objects(parts, "benellim4_forend")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=36.0)
+    body = bool_subtract(raw, cutters)
+    body.name = "benellim4_forend"
+    body.data.name = "benellim4_forend"
+    return finish_part(body, bevel_w=0.0, sharp_deg=38.0)
 
 
 def build_benellim4_recoil_tube(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
@@ -2843,7 +2890,7 @@ def build_benellim4_recoil_tube(mats: dict[str, bpy.types.Material]) -> bpy.type
         (-11.20, -1.84, -5.24, 1.50, 2.4),
         (-11.55, -1.92, -5.22, 1.48, 2.4),
     ]
-    n_ring = 28
+    n_ring = 36
     grip_rings = []
     for y_st, xf, xb, hz, p_exp in grip_stations:
         xc = 0.5 * (xf + xb)
@@ -2939,8 +2986,8 @@ def build_benellim4_telestock(mats: dict[str, bpy.types.Material]) -> bpy.types.
         (-4.52,  2.72),
         (-6.52,  2.72),
     ]
-    rear_col_raw = mk_extrude_z("ts_rcol", rear_col_xy, -1.36, 1.36, bevel=0.10, bevel_segs=2, mat=m_poly)
-    sling_pts = _rounded_rect_pts(0.24, 0.90, 0.18, corner_segs=5)
+    rear_col_raw = mk_extrude_z("ts_rcol", rear_col_xy, -1.36, 1.36, bevel=0.12, bevel_segs=3, mat=m_poly)
+    sling_pts = _rounded_rect_pts(0.24, 0.90, 0.18, corner_segs=6)
     sling_cut = mk_extrude_z("c_ts_sling", sling_pts, -1.80, 1.80,
                              xform=[("t", -5.58, -5.85, 0.0)], mat=m_poly)
     rear_col = bool_subtract(rear_col_raw, [sling_cut])
@@ -2955,7 +3002,7 @@ def build_benellim4_telestock(mats: dict[str, bpy.types.Material]) -> bpy.types.
         ( 2.85, -0.25),   # inner neck transition
         ( 3.65,  1.15),   # solidly anchored inside sliding collar
     ]
-    strut_solid = mk_extrude_z("ts_strut", strut_outer_xy, -0.86, 0.86, bevel=0.10, bevel_segs=2, mat=m_poly)
+    strut_solid = mk_extrude_z("ts_strut", strut_outer_xy, -0.86, 0.86, bevel=0.12, bevel_segs=3, mat=m_poly)
 
     # Union sliding collar + rear butt column + closed skeleton strut, then bore clean central r=1.40 tube passage!
     frame_union = bool_union([collar_outer, rear_col, strut_solid], "ts_frame_union")
@@ -2991,8 +3038,15 @@ def build_benellim4_telestock(mats: dict[str, bpy.types.Material]) -> bpy.types.
     btn_knob = mk_knurled_cyl("ts_btn", 0.45, 0.48, axis="z", flutes=22, depth=0.018,
                               xform=[("t", 4.60, 0.25, 1.81)], mat=m_steel)
 
-    # 5. Thick Contoured Vulcanized Black Rubber Recoil Buttpad w/ 12 horizontal anti-slip traction ribs!
-    pad_raw = mk_box("ts_pad_raw", 1.16, 10.84, 3.24, [("t", -6.92, -2.68, 0.0)], m_rub, bevel=0.16)
+    # 5. Thick Contoured Vulcanized Black Rubber Recoil Buttpad w/ rounded heel/toe & 12 traction ribs!
+    pad_xy = [
+        (-6.34, -8.08), (-7.20, -8.08),
+    ]
+    pad_xy += _quad_bez((-7.20, -8.08), (-7.50, -7.85), (-7.50, -7.10), segs=6)
+    pad_xy.append((-7.50, 1.85))
+    pad_xy += _quad_bez((-7.50, 1.85), (-7.50, 2.74), (-7.08, 2.74), segs=6)
+    pad_xy.append((-6.34, 2.74))
+    pad_raw = mk_extrude_z("ts_pad_raw", pad_xy, -1.62, 1.62, bevel=0.22, bevel_segs=3, mat=m_rub)
     pad_cuts = []
     for ri in range(12):
         ry = -7.35 + ri * 0.84
@@ -3004,7 +3058,7 @@ def build_benellim4_telestock(mats: dict[str, bpy.types.Material]) -> bpy.types.
     buttpad = bool_subtract(pad_raw, pad_cuts)
 
     obj = join_objects([stock_frame, cheek, btn_bezel, btn_knob, buttpad], "benellim4_telestock")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=38.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=38.0, lock_flat_walls=True)
 
 
 def build_benellim4_mag_follower(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
@@ -3503,13 +3557,6 @@ def verify_meshes(all_objs: list[bpy.types.Object]) -> dict:
 
 def export_draco_glb(all_objs: list[bpy.types.Object]):
     _set_identity_layout(all_objs)
-    for o in all_objs:
-        select_only([o], o)
-        mod = o.modifiers.new(name="Triangulate", type="TRIANGULATE")
-        mod.quad_method = "BEAUTY"
-        mod.ngon_method = "BEAUTY"
-        mod.keep_custom_normals = True
-        bpy.ops.object.modifier_apply(modifier=mod.name)
 
     select_only(all_objs, all_objs[0])
     bpy.ops.export_scene.gltf(
@@ -3529,6 +3576,114 @@ def export_draco_glb(all_objs: list[bpy.types.Object]):
         export_draco_texcoord_quantization=12,
     )
     print(f"[EXPORT] Wrote Draco GLB -> {MODELS_OUT} ({MODELS_OUT.stat().st_size / 1024:.1f} KB)")
+
+
+def _render_studio_previews(all_objs: list[bpy.types.Object]):
+    """Renders 5 museum Cycles QA preview shots using final baked benellim4_v3_* WebP PBR suites."""
+    scene = bpy.context.scene
+    scene.view_settings.view_transform = "AgX"
+    scene.view_settings.look = "AgX - Medium High Contrast"
+    scene.view_settings.exposure = 0.25
+    scene.render.resolution_x = 1280
+    scene.render.resolution_y = 720
+    scene.cycles.samples = 48
+    scene.cycles.use_denoising = True
+    scene.cycles.max_bounces = 6
+    scene.cycles.diffuse_bounces = 3
+    scene.cycles.glossy_bounces = 3
+
+    def mk_baked_mat(suite: str, nrm_str: float = 0.85) -> bpy.types.Material:
+        mat = bpy.data.materials.new(f"Baked_{suite}")
+        nt = mat.node_tree
+        nt.nodes.clear()
+        out = nt.nodes.new("ShaderNodeOutputMaterial")
+        bsdf = nt.nodes.new("ShaderNodeBsdfPrincipled")
+        nt.links.new(bsdf.outputs["BSDF"], out.inputs["Surface"])
+
+        t_alb = nt.nodes.new("ShaderNodeTexImage")
+        t_alb.image = bpy.data.images.load(str(TEX_OUT_DIR / f"benellim4_v3_{suite}_albedo.webp"))
+        t_alb.image.colorspace_settings.name = "sRGB"
+        t_orm = nt.nodes.new("ShaderNodeTexImage")
+        t_orm.image = bpy.data.images.load(str(TEX_OUT_DIR / f"benellim4_v3_{suite}_roughness.webp"))
+        t_orm.image.colorspace_settings.name = "Non-Color"
+        sep = nt.nodes.new("ShaderNodeSeparateColor")
+        nt.links.new(t_orm.outputs["Color"], sep.inputs["Color"])
+        mix_ao = nt.nodes.new("ShaderNodeMix")
+        mix_ao.data_type = "RGBA"
+        mix_ao.blend_type = "MULTIPLY"
+        mix_ao.inputs["Factor"].default_value = 0.85
+        nt.links.new(t_alb.outputs["Color"], mix_ao.inputs[6])
+        nt.links.new(sep.outputs["Red"], mix_ao.inputs[7])
+        nt.links.new(mix_ao.outputs[2], bsdf.inputs["Base Color"])
+        nt.links.new(sep.outputs["Green"], bsdf.inputs["Roughness"])
+        nt.links.new(sep.outputs["Blue"], bsdf.inputs["Metallic"])
+
+        t_nrm = nt.nodes.new("ShaderNodeTexImage")
+        t_nrm.image = bpy.data.images.load(str(TEX_OUT_DIR / f"benellim4_v3_{suite}_normal.webp"))
+        t_nrm.image.colorspace_settings.name = "Non-Color"
+        nmap = nt.nodes.new("ShaderNodeNormalMap")
+        nmap.inputs["Strength"].default_value = nrm_str
+        nt.links.new(t_nrm.outputs["Color"], nmap.inputs["Color"])
+        nt.links.new(nmap.outputs["Normal"], bsdf.inputs["Normal"])
+        return mat
+
+    m_r = mk_baked_mat("receiver", 0.85)
+    m_m = mk_baked_mat("metal", 0.85)
+    m_f = mk_baked_mat("furniture", 0.88)
+    for o in all_objs:
+        o.data.materials.clear()
+        o.data.materials.append(m_r if o.name in RECEIVER_PARTS else (m_m if o.name in METAL_PARTS else m_f))
+        px, py, pz = ASSEMBLED_POS[o.name]
+        o.location = t2b(px, py, pz)
+        o.rotation_euler = (0.0, 0.0, 0.0)
+        o.hide_render = False
+
+    w_nt = scene.world.node_tree
+    w_nt.nodes.clear()
+    w_out = w_nt.nodes.new("ShaderNodeOutputWorld")
+    w_bg = w_nt.nodes.new("ShaderNodeBackground")
+    hdri = REPO_ROOT / "public" / "hdri" / "studio_dark_armory.hdr"
+    if hdri.exists():
+        env = w_nt.nodes.new("ShaderNodeTexEnvironment")
+        env.image = bpy.data.images.load(str(hdri))
+        w_nt.links.new(env.outputs["Color"], w_bg.inputs["Color"])
+        w_bg.inputs["Strength"].default_value = 1.65
+    w_nt.links.new(w_bg.outputs["Background"], w_out.inputs["Surface"])
+
+    for lname, loc_t, energy, size in (
+        ("KeyL", (22.0, 32.0, 58.0), 42000.0, 34.0),
+        ("FillL", (-14.0, 14.0, -54.0), 26000.0, 34.0),
+        ("RimL", (16.0, 44.0, -18.0), 30000.0, 22.0),
+    ):
+        ld = bpy.data.lights.new(lname, type="AREA")
+        ld.energy = energy
+        ld.size = size
+        lo = bpy.data.objects.new(lname, ld)
+        scene.collection.objects.link(lo)
+        lo.location = t2b(*loc_t)
+        lo.rotation_euler = (t2b(10.0, 0.0, 0.0) - lo.location).to_track_quat("-Z", "Y").to_euler()
+
+    cd = bpy.data.cameras.new("QACam")
+    co = bpy.data.objects.new("QACam", cd)
+    scene.collection.objects.link(co)
+    scene.camera = co
+
+    shots = [
+        ("/tmp/benellim4_qa_right.png",       ( 24.0,  7.0,  86.0), (  9.0, -1.5, 0.0), 48.0, None),
+        ("/tmp/benellim4_qa_left.png",        ( 22.0,  7.0, -86.0), (  9.0, -1.5, 0.0), 48.0, None),
+        ("/tmp/benellim4_qa_macro_breech.png",(  5.5,  3.2,  26.0), (  3.0,  0.5, 0.0), 58.0, None),
+        ("/tmp/benellim4_qa_macro_forend.png",( 25.0,  4.0,  26.0), ( 20.5, -0.5, 0.0), 55.0, None),
+        ("/tmp/benellim4_qa_macro_argo.png",  ( 21.0,  4.0,  24.0), ( 17.5,  0.2, 0.0), 55.0, {"benellim4_forend"}),
+    ]
+    for fp, cpos, ctgt, lens, hide_set in shots:
+        for o in all_objs:
+            o.hide_render = bool(hide_set and o.name in hide_set)
+        cd.lens = lens
+        co.location = t2b(*cpos)
+        co.rotation_euler = (t2b(*ctgt) - co.location).to_track_quat("-Z", "Y").to_euler()
+        scene.render.filepath = fp
+        bpy.ops.render.render(write_still=True)
+        print(f"  [QA-RENDER] Saved {fp}")
 
 
 def main():
@@ -3598,6 +3753,9 @@ def main():
         print(f"  [UV-AUDIT] {label:10s}: total_uv_area={tot_area:.4f} (strictly <= 0.98, zero overlap!)")
         assert 0.20 < tot_area <= 0.98, f"{label} atlas UV area out of bounds: {tot_area:.4f}"
 
+    print("[TRI] Pre-bake triangulation with preserved custom normals (1:1 tangent-frame lock)...")
+    triangulate_all_keep_normals(all_objs)
+
     with tempfile.TemporaryDirectory(prefix="benellim4_bake_") as tmp_str:
         tmp_dir = Path(tmp_str)
         print("[CYCLES] Baking benellim4_v3_receiver (2048x2048, 7 hero receiver/rail/sights/FCG parts)...")
@@ -3614,6 +3772,10 @@ def main():
         )
 
     export_draco_glb(all_objs)
+
+    if "--preview" in sys.argv:
+        print("\n[QA] Rendering 5 museum studio Cycles QA preview plates to /tmp/benellim4_qa_*.png...")
+        _render_studio_previews(all_objs)
 
     outputs = [
         MODELS_OUT,
