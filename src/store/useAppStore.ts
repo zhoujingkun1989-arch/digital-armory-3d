@@ -29,6 +29,7 @@ import {
   GRAPHICS_QUALITY_TIERS,
   type GraphicsQualityTier,
 } from '../engine/canvas/graphicsQuality';
+import { setGpuTelemetryEnabled } from '../engine/canvas/gpuTelemetryBus';
 import { playbackClock } from '../engine/clock/playbackClock';
 import { caliperStore } from '../engine/caliper/caliperStore';
 import {
@@ -226,6 +227,7 @@ export interface AppState {
   screen: AppScreen;
   activeWeaponId: WeaponId;
   armoryAutoRotate: boolean;
+  workbenchAutoOrbit: boolean;
 
   /** Bilingual UI & narration state */
   lang: LanguageCode;
@@ -253,6 +255,7 @@ export interface AppState {
   environmentPreset: ArmoryEnvironmentPreset;
   postFxEnabled: boolean;
   telemetryHudOpen: boolean;
+  gpuTelemetryOpen: boolean;
   weaponWearLevel: number;
   graphicsQuality: GraphicsQualityTier;
   qualityLockedByUser: boolean;
@@ -358,6 +361,8 @@ export interface AppState {
   enterWorkbench: (weaponId?: string, initialMode?: AppViewMode) => void;
   returnToArmory: () => void;
   toggleArmoryAutoRotate: () => void;
+  setWorkbenchAutoOrbit: (enabled: boolean) => void;
+  toggleWorkbenchAutoOrbit: () => void;
 
   // Disassembly Actions
   setMode: (mode: AppViewMode) => void;
@@ -381,6 +386,8 @@ export interface AppState {
   togglePostFx: () => void;
   setTelemetryHudOpen: (open: boolean) => void;
   toggleTelemetryHud: () => void;
+  setGpuTelemetryOpen: (open: boolean) => void;
+  toggleGpuTelemetry: () => void;
   setWeaponWearLevel: (level: number) => void;
   setWeaponWearPreset: (preset: ArmoryWearPreset) => void;
   setGraphicsQuality: (
@@ -465,6 +472,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   screen: 'showcase',
   activeWeaponId: 'ak15',
   armoryAutoRotate: true,
+  workbenchAutoOrbit: false,
 
   lang: detectPreferredLanguage(),
   storyOpen: false,
@@ -487,6 +495,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   environmentPreset: 'tactical_vault',
   postFxEnabled: true,
   telemetryHudOpen: true,
+  gpuTelemetryOpen: false,
   weaponWearLevel: DEFAULT_ARMORY_WEAR_LEVEL,
   graphicsQuality: detectDefaultGraphicsQuality(),
   qualityLockedByUser: false,
@@ -1150,6 +1159,11 @@ export const useAppStore = create<AppState>((set, get) => ({
   toggleArmoryAutoRotate: () =>
     set((s) => ({ armoryAutoRotate: !s.armoryAutoRotate })),
 
+  setWorkbenchAutoOrbit: (workbenchAutoOrbit) => set({ workbenchAutoOrbit }),
+
+  toggleWorkbenchAutoOrbit: () =>
+    set((s) => ({ workbenchAutoOrbit: !s.workbenchAutoOrbit })),
+
   setMode: (mode) => {
     const s = get();
     if (mode === 'firing') {
@@ -1295,6 +1309,17 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   toggleTelemetryHud: () =>
     set((s) => ({ telemetryHudOpen: !s.telemetryHudOpen })),
+
+  setGpuTelemetryOpen: (open) => {
+    setGpuTelemetryEnabled(open);
+    set({ gpuTelemetryOpen: open });
+  },
+
+  toggleGpuTelemetry: () => {
+    const next = !get().gpuTelemetryOpen;
+    setGpuTelemetryEnabled(next);
+    set({ gpuTelemetryOpen: next });
+  },
 
   setWeaponWearLevel: (level) => {
     const clamped = setArmoryWearLevel(level);
@@ -1714,6 +1739,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         malfunctionActive: false,
         caliperActive: false,
         envelopeRulerVisible: false,
+        workbenchAutoOrbit: false,
         isPlaying: false,
         isFiringPlaying: false,
         isolateSelected: false,
@@ -1781,6 +1807,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         caliperActive: true,
         envelopeRulerVisible: true,
         fieldStripActive: false,
+        workbenchAutoOrbit: false,
         isPlaying: false,
         isFiringPlaying: false,
       });
@@ -1877,6 +1904,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       malfunctionActive: false,
       caliperActive: false,
       envelopeRulerVisible: false,
+      workbenchAutoOrbit: false,
       engineeringTint: false,
       focusedEngineeringRole: null,
       gasFlowVisible: true,

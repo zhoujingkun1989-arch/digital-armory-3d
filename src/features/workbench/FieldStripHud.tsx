@@ -385,7 +385,7 @@ export const FieldStripHud: React.FC = () => {
                 </div>
                 <div className="exam-cert-titles">
                   <div className="exam-cert-overline">
-                    <span>{exUi.fieldStrip.certBadge}</span>
+                    <span>{ui.certBadge}</span>
                     {exam.isNewRecord && (
                       <span className="exam-new-record-pill">
                         {exUi.common.newRecordBadge}

@@ -393,16 +393,6 @@
   :root {
     --hud-top-offset: 66px;
   }
-
-  .field-strip-steps-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 480px) {
-  .field-strip-steps-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* Short-viewport clearance guards (preserve narrow mobile breakpoints) */
@@ -884,6 +874,131 @@ a {
 
   .ballistics-telemetry-hud.is-collapsed {
     border-radius: 9px;
+  }
+
+  /* Compact Mobile Field-Strip, Malfunction & Caliper HUD Guards (keep central 3D firearm unobstructed) */
+  .field-strip-hud,
+  .malfunction-hud {
+    gap: 5px;
+    max-width: 100%;
+  }
+
+  .field-strip-top-row,
+  .malf-header {
+    gap: 4px 6px;
+  }
+
+  .field-strip-manual-name {
+    display: none;
+  }
+
+  .field-strip-actions-cluster,
+  .malf-controls {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    max-inline-size: 100%;
+    gap: 4.5px;
+  }
+
+  .field-strip-actions-cluster > *,
+  .malf-controls > * {
+    flex-shrink: 0;
+  }
+
+  .field-strip-steps-grid,
+  .malf-scenario-tabs,
+  .malfunction-steps-list {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 5px;
+    max-inline-size: 100%;
+  }
+
+  .field-strip-actions-cluster::-webkit-scrollbar,
+  .malf-controls::-webkit-scrollbar,
+  .field-strip-steps-grid::-webkit-scrollbar,
+  .malf-scenario-tabs::-webkit-scrollbar,
+  .malfunction-steps-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .field-strip-steps-grid .fs-step-pill {
+    flex: 0 0 auto;
+    max-width: 176px;
+    padding: 4.5px 8px;
+    font-size: 10.5px;
+  }
+
+  .field-strip-guidance,
+  .field-strip-alert {
+    padding: 5px 8px;
+    font-size: 11px;
+    max-height: 70px;
+    overflow-y: auto;
+  }
+
+  .malf-scenario-tabs .malf-tab-btn {
+    flex: 0 0 auto;
+    min-width: 114px;
+    padding: 4.5px 8px;
+  }
+
+  .malf-diagnosis-banner {
+    padding: 6px 8px;
+    font-size: 10.5px;
+    max-height: 74px;
+    overflow-y: auto;
+  }
+
+  .malfunction-steps-list .malf-step-item {
+    flex: 0 0 auto;
+    width: 184px;
+  }
+
+  .malfunction-steps-list .malf-step-btn-card {
+    padding: 5px 7px;
+  }
+
+  .ballistics-telemetry-slot > .caliper-hud,
+  .caliper-hud {
+    width: 100%;
+    max-width: calc(100vw - 16px);
+    padding: 7px 9px;
+    gap: 5px;
+    max-height: min(34vh, 210px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .caliper-lcd-box {
+    padding: 5px 7px;
+    gap: 3px;
+  }
+
+  .caliper-lcd-value {
+    font-size: 15px;
+  }
+
+  .caliper-mini-btn {
+    padding: 3px 6px;
+    font-size: 10px;
+  }
+
+  .caliper-bench-pills {
+    gap: 4px;
+  }
+
+  .caliper-bench-btn {
+    padding: 4px 5px;
+    font-size: 10px;
   }
 }
 

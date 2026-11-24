@@ -3,7 +3,7 @@ import * as THREE from 'three';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
-import { useAppStore } from '../../store/useAppStore';
+import { type AppScreen, useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
 import { getLoadedWeaponPlugin, useWeaponPlugin } from '../../weapons/registry';
 import type {
@@ -78,6 +78,51 @@ import {
 
 const BASE_FIRING_RATE = 0.42;
 const INITIAL_TURNTABLE_AZIMUTH = 0.24;
+export const ARMORY_AUTO_ROTATE_SPEED = 1.65;
+export const WORKBENCH_AUTO_ORBIT_SPEED = 0.65;
+
+export interface EffectiveOrbitAutoRotateParams {
+  screen: AppScreen;
+  armoryAutoRotate: boolean;
+  workbenchAutoOrbit: boolean;
+  showcaseDragging: boolean;
+  fieldStripActive: boolean;
+  caliperActive: boolean;
+}
+
+/**
+ * Pure camera orbit resolver separating Showcase/Armory turntable spin (`1.65`)
+ * from slow cinematic Workbench museum orbit (`0.65`, automatically inhibited
+ * while hands-on Field-Strip or 3D Caliper precision picking is active).
+ */
+export function computeEffectiveOrbitAutoRotate({
+  screen,
+  armoryAutoRotate,
+  workbenchAutoOrbit,
+  showcaseDragging,
+  fieldStripActive,
+  caliperActive,
+}: EffectiveOrbitAutoRotateParams): {
+  autoRotate: boolean;
+  autoRotateSpeed: number;
+} {
+  if (screen === 'showcase' || screen === 'armory') {
+    return {
+      autoRotate: armoryAutoRotate && !showcaseDragging,
+      autoRotateSpeed: ARMORY_AUTO_ROTATE_SPEED,
+    };
+  }
+  if (screen === 'workbench') {
+    return {
+      autoRotate: workbenchAutoOrbit && !fieldStripActive && !caliperActive,
+      autoRotateSpeed: WORKBENCH_AUTO_ORBIT_SPEED,
+    };
+  }
+  return {
+    autoRotate: false,
+    autoRotateSpeed: ARMORY_AUTO_ROTATE_SPEED,
+  };
+}
 
 // Module-pooled scratch math primitives for zero heap churn on camera focus & 60Hz thermal sync
 const _focusWorldCenter = new THREE.Vector3();
@@ -231,6 +276,9 @@ const DisassemblyRig: React.FC = () => {
   const screen = useAppStore((s) => s.screen);
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const armoryAutoRotate = useAppStore((s) => s.armoryAutoRotate);
+  const workbenchAutoOrbit = useAppStore((s) => s.workbenchAutoOrbit);
+  const fieldStripActive = useAppStore((s) => s.fieldStripActive);
+  const caliperActive = useAppStore((s) => s.caliperActive);
   const selectedPartId = useAppStore((s) => s.selectedPartId);
   const cameraCommand = useAppStore((s) => s.cameraCommand);
   const sectionCut = useAppStore((s) => s.sectionCut);
@@ -896,6 +944,14 @@ const DisassemblyRig: React.FC = () => {
 
   const weaponParts = plugin?.parts ?? [];
   const isTurntableScreen = screen === 'showcase' || screen === 'armory';
+  const orbitBehavior = computeEffectiveOrbitAutoRotate({
+    screen,
+    armoryAutoRotate,
+    workbenchAutoOrbit,
+    showcaseDragging,
+    fieldStripActive,
+    caliperActive,
+  });
 
   return (
     <>
@@ -908,14 +964,18 @@ const DisassemblyRig: React.FC = () => {
         enablePan={!isTurntableScreen}
         minPolarAngle={isTurntableScreen ? Math.PI * 0.3 : 0}
         maxPolarAngle={isTurntableScreen ? Math.PI * 0.58 : Math.PI}
-        autoRotate={isTurntableScreen && armoryAutoRotate && !showcaseDragging}
-        autoRotateSpeed={1.65}
+        autoRotate={orbitBehavior.autoRotate}
+        autoRotateSpeed={orbitBehavior.autoRotateSpeed}
         minDistance={isTankScale ? 85 : isTankOrdnanceGallery ? 24 : 3}
         maxDistance={isTankScale ? 3200 : isTankOrdnanceGallery ? 950 : 520}
         onStart={() => {
           flyRef.current.active = false;
           turntableRigRef.current.active = false;
           userOrbitedRef.current = true;
+          const st = useAppStore.getState();
+          if (st.screen === 'workbench' && st.workbenchAutoOrbit) {
+            st.setWorkbenchAutoOrbit(false);
+          }
         }}
       />
 

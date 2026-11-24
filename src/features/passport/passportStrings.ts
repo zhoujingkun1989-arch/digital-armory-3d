@@ -30,7 +30,7 @@ export interface PassportLocaleStrings {
 
 export const PASSPORT_STRINGS: Record<LanguageCode, PassportLocaleStrings> = {
   zh: {
-    badge: 'WP-23 · 军械师资格护照',
+    badge: '军械师资格认证 · PASSPORT',
     title: `全馆 ${MUSEUM_EXHIBIT_COUNT} 款展品机械资质护照与履历档案`,
     subtitle:
       '汇总全部名枪、复合弓弩、主战坦克与航空重武的野战盲拆、军械所全拆与故障盲考 S/A/B/C 等级，支持 JSON 离线导出与跨设备恢复',
@@ -57,7 +57,7 @@ export const PASSPORT_STRINGS: Record<LanguageCode, PassportLocaleStrings> = {
     inspectBtn: '进入考台',
   },
   en: {
-    badge: 'WP-23 · ARMORER MASTERY PASSPORT',
+    badge: 'ARMORER CERTIFICATION · PASSPORT',
     title: `${MUSEUM_EXHIBIT_COUNT}-Exhibit Armorer Certification Ledger & Passport`,
     subtitle:
       `Unified S/A/B/C mastery matrix spanning Service Field-Strip, Detail Strip, and Blind Triage across all ${MUSEUM_EXHIBIT_COUNT} exhibits with portable JSON backup`,

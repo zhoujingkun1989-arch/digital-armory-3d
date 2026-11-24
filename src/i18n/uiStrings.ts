@@ -227,6 +227,14 @@ export interface UiDictionary {
     sfxChipTitle: (muted: boolean) => string;
     resetChip: string;
     resetChipTitle: string;
+    orbitBtn: string;
+    orbitTitle: (active: boolean) => string;
+    gpuTelemetryChip: string;
+    gpuTelemetryChipTitle: string;
+    gpuTelemetryCmdTitle: string;
+    gpuTelemetryCmdSub: string;
+    shortcutsChip: string;
+    shortcutsChipTitle: string;
   };
   bom: {
     collapsedBtn: (count: number) => string;
@@ -406,6 +414,7 @@ export interface UiDictionary {
   };
   fieldStrip: {
     badge: string;
+    certBadge: string;
     phaseStrip: string;
     phaseReassemble: string;
     progressLabel: (done: number, total: number) => string;
@@ -430,6 +439,7 @@ export interface UiDictionary {
   };
   malfunction: {
     badge: string;
+    certBadge: string;
     progressLabel: (done: number, total: number) => string;
     nextStepBtn: string;
     nextStepTitle: string;
@@ -1084,6 +1094,19 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
           : `开启/静音 Web Audio 军械机械咬合声与 ${ORDNANCE_TOTAL} 口径实弹/主炮声场 (M)`,
       resetChip: '复位',
       resetChipTitle: '重置回默认合拢态与标准视角 (Shift+R)',
+      orbitBtn: '环绕',
+      orbitTitle: (active) =>
+        active
+          ? '停止工作台展厅缓速 360° 环绕检视（拖拽视角亦可自动暂停）'
+          : '开启工作台展厅缓速 360° 环绕检视（拖拽、快拆或卡尺时自动暂停）',
+      gpuTelemetryChip: 'GPU 遥测',
+      gpuTelemetryChipTitle:
+        '显示/隐藏实时 WebGL 帧率、P95 耗时、Draw Calls 与显存/LRU/KTX2 性能遥测',
+      gpuTelemetryCmdTitle: '实时 GPU 性能遥测',
+      gpuTelemetryCmdSub:
+        '切换实时 FPS、P95 帧耗时、Draw Calls、GPU 显存对象与 KTX2/LRU 缓存面板',
+      shortcutsChip: '热键',
+      shortcutsChipTitle: '查看工作台全部单键快捷键参考 (?)',
     },
     bom: {
       collapsedBtn: (n) => `零件目录 (${n})`,
@@ -1296,7 +1319,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         '最小化为顶部迷你播放条，边看 3D 弓弩边听讲解 (Esc)',
     },
     engineeringTint: {
-      badge: 'WP-05 · 机械职能语义分色',
+      badge: '工程原理 · 机械职能语义分色',
       closeTitle: '关闭机械原理分色视图 (T)',
       filterHint: '点击图例单独聚光该类机构 · 再次点击恢复全彩',
       showAllBtn: '全显',
@@ -1311,7 +1334,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       },
     },
     fieldStrip: {
-      badge: 'WP-07 · 军械教范引导拆装',
+      badge: '勤务拆装台 · 军械教范引导拆装',
+      certBadge: '军械师拆装资格认证',
       phaseStrip: '拆解阶段',
       phaseReassemble: '逆序复装',
       progressLabel: (done, total) => `已拆 ${done} / ${total} 步`,
@@ -1338,7 +1362,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         '生成带本枪军械师考核等级印章与扫码直达剖视台二维码的高清分享海报 (U)',
     },
     malfunction: {
-      badge: 'WP-09 · 经典枪械故障剖视排障室',
+      badge: '故障排障室 · 经典枪械剖视排障',
+      certBadge: '军械师排障盲测认证',
       progressLabel: (done, total) => `排障进度 ${done} / ${total}`,
       nextStepBtn: '执行下一步排障',
       nextStepTitle:
@@ -1358,7 +1383,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       shareCertPosterBtn: '生成资格海报',
       shareCertPosterTitle:
         '生成带本枪排障诊断考核等级印章与扫码直达剖视台二维码的高清分享海报 (U)',
-      archeryBadge: 'WP-09 · 弓弩机械故障剖视排障室',
+      archeryBadge: '故障排障室 · 弓弩机械剖视排障',
       archeryRootCauseLabel: '弓弩机械诱因：',
       archerySafetyNoteLabel: '防空放安全规范：',
       archeryClick3dHint:
@@ -1368,7 +1393,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         '羽片刮擦、夹箭与空放隐患已按弓弩技师教范排除，滑轮凸轮组与弓弦恢复标准支距啮合，可切换其他工况演练。',
     },
     caliper: {
-      badge: 'WP-10 · 1:1 3D 军械游标卡尺',
+      badge: '精密测绘 · 1:1 3D 军械游标卡尺',
       closeTitle: '关闭 3D 游标卡尺与全枪包络标尺 (K)',
       unitNote: '1 场景单位 = 10.0 mm · 支持穿透纵剖面点选内部闭锁与枪管表面',
       promptPointA: '第 1 步：在 3D 枪械表面单击拾取测量基准点 A',
@@ -1405,7 +1430,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       },
     },
     cartridgeLab: {
-      badge: 'WP-06 · SAAMI / CIP 1:1 实弹纵剖馆',
+      badge: '弹药剖视馆 · SAAMI / CIP 1:1 实弹纵剖',
       title: `${LAB_CALIBER_ZH}大口径实弹 1:1 纵剖对比实验室`,
       subtitle:
         '严格遵循 1 单位 = 10mm 绝对比例并排纵剖陈列 · 直视发射药柱、4.73 无壳药块、底火砧座、12号鹿弹碗塞与双芯穿甲锥结构',
@@ -1660,7 +1685,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       plaqueCompareTitle: (selfShort, rivalShort) =>
         `打开双展品原理对照实验室：同屏对比 ${selfShort} 与 ${rivalShort} 的自动驱动、闭锁、供弹与内弹道曲线 (S)`,
       dialogAria: '自动原理流派对照矩阵与双展品同屏对比实验室',
-      badge: 'WP-11 · 自动原理流派对照馆',
+      badge: '流派对照馆 · 自动原理横向对决',
       exhibitCountPill: (exhibits, axes) =>
         `${exhibits} 款馆藏 · ${axes} 大正交机械轴`,
       title: '自动原理流派谱系矩阵 & 双展品同屏对照实验室',
@@ -2065,6 +2090,19 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       resetChip: 'Reset',
       resetChipTitle:
         'Reset to 0% assembled state & default isometric camera (Shift+R)',
+      orbitBtn: 'Orbit',
+      orbitTitle: (active) =>
+        active
+          ? 'Stop slow 360° museum workbench orbit (also pauses automatically on drag)'
+          : 'Start slow cinematic 360° workbench orbit (auto-pauses on drag, Field-Strip, or Caliper)',
+      gpuTelemetryChip: 'GPU HUD',
+      gpuTelemetryChipTitle:
+        'Toggle live WebGL FPS, P95 frame time, draw calls, GPU buffers, and KTX2/LRU telemetry HUD',
+      gpuTelemetryCmdTitle: 'GPU & WebGL Telemetry',
+      gpuTelemetryCmdSub:
+        'Inspect live FPS, P95 frame time, draw calls, GPU resources, and KTX2/LRU cache stats',
+      shortcutsChip: 'Keys',
+      shortcutsChipTitle: 'View all workbench keyboard shortcuts (?)',
     },
     bom: {
       collapsedBtn: (n) => `BOM Parts (${n})`,
@@ -2295,7 +2333,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         'Minimize to floating bar so you can inspect the 3D bow/crossbow while listening (Esc)',
     },
     engineeringTint: {
-      badge: 'WP-05 · FUNCTIONAL ROLE TINT',
+      badge: 'ENGINEERING LAB · FUNCTIONAL ROLE TINT',
       closeTitle: 'Disable functional role tint (T)',
       filterHint: 'Click any role chip to spotlight · Click again to show all',
       showAllBtn: 'All Roles',
@@ -2311,7 +2349,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       },
     },
     fieldStrip: {
-      badge: 'WP-07 · GUIDED FIELD-STRIP DAG',
+      badge: 'FIELD-STRIP LAB · GUIDED DAG',
+      certBadge: 'ARMORER CERTIFICATION',
       phaseStrip: 'Strip Phase',
       phaseReassemble: 'Reassemble',
       progressLabel: (done, total) => `${done} / ${total} Stripped`,
@@ -2342,7 +2381,8 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         'Generate an HD 3D Cutaway Share Poster stamped with your earned Armorer Qualification Rank & QR code (U)',
     },
     malfunction: {
-      badge: 'WP-09 · MALFUNCTION CUTAWAY & CLEARING LAB',
+      badge: 'DIAGNOSTICS LAB · MALFUNCTION CUTAWAY',
+      certBadge: 'TRIAGE CERTIFICATION',
       progressLabel: (done, total) => `Clearing ${done} / ${total}`,
       nextStepBtn: 'Execute Next Step',
       nextStepTitle:
@@ -2365,7 +2405,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       shareCertPosterBtn: 'Share Rank Poster',
       shareCertPosterTitle:
         'Generate an HD 3D Cutaway Share Poster stamped with your earned Triage Qualification Rank & QR code (U)',
-      archeryBadge: 'WP-09 · ARCHERY TIMING & STOP DIAGNOSTICS',
+      archeryBadge: 'DIAGNOSTICS LAB · ARCHERY TIMING & STOP',
       archeryRootCauseLabel: 'Archery Root Cause:',
       archerySafetyNoteLabel: 'Anti-Dry-Fire Safety Protocol:',
       archeryClick3dHint:
@@ -2376,7 +2416,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         'All vane contact, nock pinch, and dry-fire interlock hazards were cleared per pro-shop technician doctrine, restoring proper brace alignment.',
     },
     caliper: {
-      badge: 'WP-10 · 1:1 3D VERNIER CALIPER',
+      badge: '3D CAD CALIPER · 1:1 VERNIER',
       closeTitle: 'Close 3D vernier caliper & CAD envelope ruler (K)',
       unitNote:
         '1 world unit = 10.0 mm · Raycasts through cutaway planes onto internal locking surfaces',
@@ -2418,7 +2458,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       },
     },
     cartridgeLab: {
-      badge: 'WP-06 · SAAMI / CIP 1:1 CARTRIDGE CUTAWAY LAB',
+      badge: 'BALLISTICS ARCHIVE · SAAMI / CIP 1:1 CARTRIDGE LAB',
       title: `${LAB_CALIBER_TOTAL}-Caliber 1:1 SAAMI Cartridge Cutaway Lab`,
       subtitle:
         'True 1:1 side-by-side longitudinal cutaways (1 unit = 10 mm) · Compare propellant columns, 4.73mm caseless blocks, Boxer anvils, 12ga buckshot wads, dual-core penetrators & muzzle energy',
@@ -2696,7 +2736,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
         `Open A-vs-B Mechanism Showdown comparing ${selfShort} against ${rivalShort} across drive, locking, feed & ballistics (S)`,
       dialogAria:
         'Mechanism Showdown Lineage Matrix and Dual-Exhibit Comparison Lab',
-      badge: 'WP-11 · MECHANISM SHOWDOWN',
+      badge: 'MECHANISM MATRIX · ACTION SHOWDOWN',
       exhibitCountPill: (exhibits, axes) =>
         `${exhibits} EXHIBITS · ${axes} TAXONOMY AXES`,
       title: 'Mechanical Lineage Matrix & Dual-Exhibit Showdown Lab',

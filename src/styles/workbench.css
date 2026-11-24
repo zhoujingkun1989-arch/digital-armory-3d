@@ -3187,7 +3187,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .kb-shortcuts-backdrop,
-  .kb-shortcuts-dialog {
+  .kb-shortcuts-dialog,
+  .wb-orbit-spinning {
     animation: none;
   }
 
@@ -3197,4 +3198,45 @@
   .kb-shortcuts-close {
     transition: none;
   }
+}
+
+/* Workbench Auto-Orbit & Compact [?] Shortcuts Trigger */
+.wb-orbit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3.5px;
+}
+
+.wb-orbit-spinning {
+  animation: wbOrbitSpin 5.5s linear infinite;
+}
+
+@keyframes wbOrbitSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.wb-shortcuts-btn {
+  gap: 4px;
+  padding-inline: 7px;
+}
+
+.wb-shortcuts-kbd {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 4px;
+  border: 1px solid var(--border-strong);
+  background: var(--surface-pill);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
 }
