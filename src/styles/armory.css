@@ -17,6 +17,8 @@
 
 .armory-header {
   grid-area: header;
+  position: relative;
+  z-index: calc(var(--z-banner, 20) + 14);
   min-inline-size: 0;
   max-inline-size: 100%;
   display: flex;
@@ -35,9 +37,10 @@
 }
 
 .armory-brand-block {
-  flex: 0 1 auto;
-  min-inline-size: 0;
-  max-inline-size: 320px;
+  flex: 0 0 auto;
+  flex-shrink: 0;
+  min-inline-size: auto;
+  max-inline-size: none;
 }
 
 .armory-brand-block .brand-sub {
@@ -45,7 +48,17 @@
 }
 
 .armory-brand-titles {
-  min-inline-size: 0;
+  flex: 0 0 auto;
+  flex-shrink: 0;
+  min-inline-size: auto;
+}
+
+.armory-brand-block .brand-title,
+.armory-title-desktop {
+  flex-shrink: 0;
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: clip;
 }
 
 .armory-title-mobile,
@@ -63,7 +76,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  flex: 1 1 auto;
+  flex: 1 1 0%;
   min-inline-size: 0;
 }
 

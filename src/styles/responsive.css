@@ -716,7 +716,18 @@ a {
 
   .armory-header .armory-brand-block {
     flex: 1 1 auto;
+    min-inline-size: 0;
     max-inline-size: none;
+  }
+
+  .armory-header .armory-brand-titles {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  .armory-header .armory-brand-block .brand-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .top-bar .toolbar-cluster-primary,
@@ -1119,6 +1130,60 @@ a {
 
   .ballistics-telemetry-hud.is-collapsed {
     border-radius: 9px;
+    padding: 4px 8px !important;
+    max-height: 36px;
+    overflow: hidden;
+  }
+
+  .ballistics-telemetry-hud.is-collapsed .ballistics-hud-header {
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 6px !important;
+    margin-bottom: 0 !important;
+    min-height: 24px;
+    min-width: 0;
+  }
+
+  .ballistics-telemetry-hud.is-collapsed .ballistics-hud-title {
+    flex-shrink: 0;
+    font-size: 10px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 38%;
+  }
+
+  .ballistics-telemetry-hud.is-collapsed .ballistics-hud-controls {
+    flex: 1 1 auto;
+    flex-wrap: nowrap !important;
+    justify-content: flex-end;
+    gap: 5px !important;
+    min-width: 0;
+  }
+
+  .ballistics-telemetry-hud.is-collapsed .ballistics-hud-summary {
+    min-width: 0;
+    font-size: 9.5px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .ballistics-telemetry-hud.is-collapsed .ballistics-collapse-btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding: 2px 7px !important;
+  }
+
+  /* Guarantee 0px overlap on mobile when live telemetry oscilloscope is expanded */
+  .ballistics-telemetry-slot:has(.ballistics-telemetry-hud:not(.is-collapsed)) {
+    z-index: calc(var(--z-hud) + 3);
+    max-block-size: min(46vh, 336px);
+  }
+
+  .ballistics-telemetry-slot:has(.ballistics-telemetry-hud:not(.is-collapsed))
+    ~ .inspector-card.firing-compact-card {
+    display: none;
   }
 
   /* Compact Mobile Field-Strip, Malfunction & Caliper HUD Guards (keep central 3D firearm unobstructed) */
@@ -1467,6 +1532,20 @@ dialog::backdrop {
   .top-bar .cam-btn {
     padding-inline: 5.5px;
     font-size: 10.5px;
+  }
+
+  .ballistics-telemetry-hud.is-collapsed {
+    max-height: 34px;
+  }
+
+  .ballistics-telemetry-hud.is-collapsed .ballistics-hud-title {
+    max-width: 34%;
+    font-size: 9.5px !important;
+  }
+
+  .ballistics-telemetry-slot:has(.ballistics-telemetry-hud.is-collapsed)
+    ~ .inspector-card.firing-compact-card {
+    top: calc(var(--hud-top-offset, 66px) + 84px);
   }
 }
 

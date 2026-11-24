@@ -92,6 +92,8 @@ export const TELEMETRY_HUD_STRINGS = {
     expandScope: '展开示波',
     collapseTitle: '折叠示波器曲线以保持移动端 3D 击发视野畅通',
     expandTitle: '展开 60fps 实时内弹道膛压与初速示波曲线',
+    compactTitle: '内弹道遥测',
+    archeryCompactTitle: '弓弩遥测',
   },
   en: {
     title: 'Internal Ballistics Telemetry Scope',
@@ -152,6 +154,8 @@ export const TELEMETRY_HUD_STRINGS = {
     expandScope: 'Expand',
     collapseTitle: 'Collapse oscilloscope trace to keep 3D firing viewport unobstructed',
     expandTitle: 'Expand 60fps live internal ballistics pressure & velocity trace',
+    compactTitle: 'Ballistics',
+    archeryCompactTitle: 'Archery',
   },
 } as const;
 
@@ -726,6 +730,24 @@ function formatFixed(v: number, digits: number): string {
   return v.toFixed(digits);
 }
 
+export const TELEMETRY_MOBILE_COLLAPSE_MAX_WIDTH = 768;
+
+/**
+ * Resolves the initial collapse state for the internal ballistics telemetry scope:
+ * defaults collapsed on mobile viewports (`<= 640px` / `<= 768px`) so the compact
+ * 1-line telemetry bar stacks cleanly clear of `.firing-compact-card` with 0px overlap.
+ */
+export function shouldDefaultCollapseTelemetry(
+  viewportWidth: number | undefined,
+  defaultCollapsed?: boolean
+): boolean {
+  if (defaultCollapsed !== undefined) return defaultCollapsed;
+  return (
+    typeof viewportWidth === 'number' &&
+    viewportWidth <= TELEMETRY_MOBILE_COLLAPSE_MAX_WIDTH
+  );
+}
+
 export interface BallisticsTelemetryHudProps {
   /** Override the active weapon (defaults to the store's `activeWeaponId`) */
   weaponId?: WeaponId;
@@ -756,10 +778,23 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
   const activeWeaponId = weaponId ?? storeWeaponId;
   const s = TELEMETRY_HUD_STRINGS[lang];
   const [zoomBore, setZoomBore] = useState(false);
-  const [collapsed, setCollapsed] = useState<boolean>(() => {
-    if (defaultCollapsed !== undefined) return defaultCollapsed;
-    return typeof window !== 'undefined' && window.innerWidth <= 768;
-  });
+  const userToggledRef = useRef(false);
+  const [collapsed, setCollapsed] = useState<boolean>(() =>
+    shouldDefaultCollapseTelemetry(
+      typeof window !== 'undefined' ? window.innerWidth : undefined,
+      defaultCollapsed
+    )
+  );
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || defaultCollapsed !== undefined) return;
+    const onResize = () => {
+      if (userToggledRef.current) return;
+      setCollapsed(window.innerWidth <= TELEMETRY_MOBILE_COLLAPSE_MAX_WIDTH);
+    };
+    window.addEventListener('resize', onResize, { passive: true });
+    return () => window.removeEventListener('resize', onResize);
+  }, [defaultCollapsed]);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pRef = useRef<HTMLSpanElement>(null);
@@ -1008,6 +1043,7 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
     ? `${(effectiveE0 / 1_000_000).toFixed(2)} MJ`
     : `${Math.round(effectiveE0).toLocaleString('en-US')} J`;
   const headerTitle = isArchery ? s.archeryTitle : s.title;
+  const compactHeaderTitle = isArchery ? s.archeryCompactTitle : s.compactTitle;
   const recoilPctDelta = Math.round((attPhysics.recoilRiseMultiplier - 1) * 100);
   const modSummary = hasAttachmentMods
     ? ` · MOD ${attPhysics.soundDbDelta !== 0 ? `${attPhysics.soundDbDelta > 0 ? '+' : ''}${attPhysics.soundDbDelta} dB` : ''}${recoilPctDelta !== 0 ? ` ${recoilPctDelta > 0 ? '+' : ''}${recoilPctDelta}% ${lang === 'zh' ? '后坐' : 'Recoil'}` : ''}`
@@ -1048,22 +1084,69 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
       data-collapsed={collapsed ? 'true' : 'false'}
     >
       <div
+        className="ballistics-hud-header"
         style={
           collapsed
-            ? { ...HEADER_STYLE, alignItems: 'center', marginBottom: 0 }
+            ? {
+                ...HEADER_STYLE,
+                alignItems: 'center',
+                flexWrap: 'nowrap',
+                gap: 6,
+                marginBottom: 0,
+                minWidth: 0,
+              }
             : HEADER_STYLE
         }
       >
-        <span style={TITLE_STYLE}>{headerTitle}</span>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            flexWrap: 'wrap',
-          }}
+        <span
+          className="ballistics-hud-title"
+          style={
+            collapsed
+              ? {
+                  ...TITLE_STYLE,
+                  flexShrink: 0,
+                  whiteSpace: 'nowrap',
+                }
+              : TITLE_STYLE
+          }
         >
-          <span style={SUB_STYLE}>
+          {collapsed ? compactHeaderTitle : headerTitle}
+        </span>
+        <div
+          className="ballistics-hud-controls"
+          style={
+            collapsed
+              ? {
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                  gap: 6,
+                  flexWrap: 'nowrap',
+                  minWidth: 0,
+                  flex: '1 1 auto',
+                }
+              : {
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 6,
+                  flexWrap: 'wrap',
+                }
+          }
+        >
+          <span
+            className="ballistics-hud-summary"
+            style={
+              collapsed
+                ? {
+                    ...SUB_STYLE,
+                    minWidth: 0,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }
+                : SUB_STYLE
+            }
+          >
             {collapsed ? compactSummary : headerSummary}
           </span>
           {!collapsed && (
@@ -1093,7 +1176,10 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
             data-testid="ballistics-collapse-btn"
             aria-expanded={!collapsed}
             title={collapsed ? s.expandTitle : s.collapseTitle}
-            onClick={() => setCollapsed((prev) => !prev)}
+            onClick={() => {
+              userToggledRef.current = true;
+              setCollapsed((prev) => !prev);
+            }}
             style={{
               fontSize: 9,
               fontFamily: 'inherit',
@@ -1106,6 +1192,8 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
                 : 'rgba(15, 23, 42, 0.85)',
               color: collapsed ? '#bae6fd' : '#cbd5e1',
               cursor: 'pointer',
+              flexShrink: 0,
+              whiteSpace: 'nowrap',
             }}
           >
             {collapsed ? s.expandScope : s.collapseScope}

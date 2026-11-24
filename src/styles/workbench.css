@@ -4,7 +4,7 @@
   top: 12px;
   left: 16px;
   right: 16px;
-  z-index: var(--z-hud);
+  z-index: calc(var(--z-banner, 20) + 14);
   display: flex;
   align-items: safe center;
   justify-content: space-between;
@@ -2595,7 +2595,7 @@
 
 /* ==================== WP-10: 1:1 3D Armorer Vernier Caliper HUD ==================== */
 .caliper-hud {
-  width: min(392px, calc(100vw - 24px));
+  width: min(388px, calc(100vw - 24px));
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -2616,13 +2616,17 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
+  gap: 8px;
+  min-width: 0;
 }
 
 .caliper-badge {
   display: inline-flex;
   align-items: center;
   gap: 5px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
   font-family: var(--font-mono);
   font-size: 10.5px;
   font-weight: 800;
@@ -2631,11 +2635,16 @@
   white-space: nowrap;
 }
 
-.caliper-header-actions {
+.caliper-badge svg {
+  flex-shrink: 0;
+}
+
+.caliper-hud-actions {
   display: flex;
   align-items: center;
-  gap: 4px;
-  flex-shrink: 0;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-width: 0;
 }
 
 .caliper-mini-btn {
@@ -2650,6 +2659,7 @@
   font-weight: 600;
   color: var(--color-text-secondary);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .caliper-mini-btn.active {
@@ -2667,12 +2677,20 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   width: 22px;
   height: 22px;
   border-radius: 6px;
   background: var(--surface-pill);
   border: 1px solid var(--border-subtle);
   color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+:is([data-theme='light'], .theme-light) .caliper-close-btn {
+  background: #f1f5f9;
+  border-color: rgba(15, 23, 42, 0.16);
+  color: #334155;
 }
 
 .caliper-lcd-box {
@@ -3350,6 +3368,11 @@
   background: #f59e0b;
   box-shadow: 0 0 6px rgba(245, 158, 11, 0.72);
   flex-shrink: 0;
+}
+
+.workbench-popover-menu,
+.acoustic-deck-popover {
+  z-index: calc(var(--z-banner, 20) + 20);
 }
 
 .acoustic-deck-popover {
@@ -4146,7 +4169,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  max-width: min(860px, calc(100vw - 24px));
+  max-width: min(920px, calc(100vw - 48px));
   padding: 5px 8px 5px 10px;
   border-radius: 999px;
   background: var(--surface-glass-strong);

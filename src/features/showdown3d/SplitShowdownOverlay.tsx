@@ -496,13 +496,15 @@ export const SplitShowdownOverlay: React.FC = () => {
             <div className="split-plaque-tag">
               {bayA} · {ui.leftPaneTag}
             </div>
-            <h2 className="split-plaque-title">{displayA.name}</h2>
+            <h2 className="split-plaque-title" title={displayA.name}>
+              {displayA.name}
+            </h2>
           </div>
           <div className="split-plaque-specs">
-            <span>
+            <span className="split-plaque-caliber" title={displayA.caliber}>
               {ui.caliberLabel}: <strong>{displayA.caliber}</strong>
             </span>
-            <span>
+            <span className="split-plaque-velocity">
               {ui.velocityLabel}:{' '}
               <strong>{Math.round(balA.muzzleVelocityMps)} m/s</strong>
             </span>
@@ -536,13 +538,15 @@ export const SplitShowdownOverlay: React.FC = () => {
             <div className="split-plaque-tag">
               {bayB} · {ui.rightPaneTag}
             </div>
-            <h2 className="split-plaque-title">{displayB.name}</h2>
+            <h2 className="split-plaque-title" title={displayB.name}>
+              {displayB.name}
+            </h2>
           </div>
           <div className="split-plaque-specs">
-            <span>
+            <span className="split-plaque-caliber" title={displayB.caliber}>
               {ui.caliberLabel}: <strong>{displayB.caliber}</strong>
             </span>
-            <span>
+            <span className="split-plaque-velocity">
               {ui.velocityLabel}:{' '}
               <strong>{Math.round(balB.muzzleVelocityMps)} m/s</strong>
             </span>
