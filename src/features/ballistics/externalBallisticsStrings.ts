@@ -3,6 +3,12 @@ import type {
   ProjectileCategory,
 } from '../../engine/physics/externalBallistics';
 import type { LanguageCode } from '../../narration/types';
+import type {
+  RangeAimMode,
+  RangeCameraMode,
+  RangeTargetType,
+  SteelHitZone,
+} from './range3DMath';
 
 // ============================================================================
 // WP-14 · External Ballistics Range Lab — 100% Bilingual Dictionary (zh / en)
@@ -134,6 +140,54 @@ export interface ExternalBallisticsUiCopy {
   colRegime: string;
   zeroBadge: string;
   outOfEnvelopeLabel: string;
+
+  // Track B2 · 3D 1,000m Interactive Firing Range & Slow-Motion Bullet-Cam
+  workspaceModeAria: string;
+  workspaceModeSplit: string;
+  workspaceModeRange3d: string;
+  workspaceModeCharts2d: string;
+  range3dJumpBtn: string;
+  range3dJumpTitle: string;
+  range3dBadge: string;
+  range3dTitle: string;
+  range3dSubtitle: (
+    calCode: string,
+    targetM: number,
+    acousticDelayS: string
+  ) => string;
+  range3dCamGroupAria: string;
+  range3dCameraLabels: Record<RangeCameraMode, string>;
+  range3dFlirBtn: string;
+  range3dFlirTitle: string;
+  range3dAudioTitle: string;
+  range3dAudioOn: string;
+  range3dAudioMuted: string;
+  range3dFireBtn: string;
+  range3dPlayBtn: string;
+  range3dPauseBtn: string;
+  range3dResetBtn: string;
+  range3dSpeedLabel: string;
+  range3dTimelineLabel: string;
+  range3dTargetTypeLabel: string;
+  range3dTargetLabels: Record<RangeTargetType, string>;
+  range3dAimModeLabel: string;
+  range3dAimLabels: Record<RangeAimMode, string>;
+  range3dHudRange: string;
+  range3dHudVelMach: string;
+  range3dHudTof: string;
+  range3dHudEnergy: string;
+  range3dHudDropWind: string;
+  range3dHudStatus: string;
+  range3dAcousticLabel: string;
+  range3dHitStatus: (zone: SteelHitZone) => string;
+  range3dMissStatus: string;
+  range3dGelImpactStatus: (depthCm: string, passesThrough: boolean) => string;
+  range3dTermImpactVel: string;
+  range3dTermTof: string;
+  range3dTermGongResult: string;
+  range3dTermSwing: string;
+  range3dTermGelDepth: string;
+  range3dTermGelCavity: string;
 }
 
 export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
@@ -280,6 +334,67 @@ export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
     colRegime: '流态',
     zeroBadge: '归零',
     outOfEnvelopeLabel: '超出平射包络',
+
+    workspaceModeAria: '切换 3D 靶场与 2D 曲线工作台布局',
+    workspaceModeSplit: '3D 靶场 + 2D 曲线同屏',
+    workspaceModeRange3d: '3D 靶场影院模式',
+    workspaceModeCharts2d: '仅 2D 曲线与分划板',
+    range3dJumpBtn: '3D 靶场 · 子弹时间',
+    range3dJumpTitle: '切换至 3D 1,000m 实弹靶场与慢动作子弹追踪镜头',
+    range3dBadge: '3D PROVING GROUND · BULLET-CAM',
+    range3dTitle: '3D 1,000m 交互式实弹靶场与慢动作子弹时间追踪',
+    range3dSubtitle: (calCode, targetM, acousticDelayS) =>
+      `RK4 真实三维弹道驱动 · 主追踪 [${calCode}] @ ${targetM} m · 钢靶声波回传延迟 ${acousticDelayS} s (d / 343)`,
+    range3dCamGroupAria: '切换 3D 靶场机位视角',
+    range3dCameraLabels: {
+      overview: '靶场全景',
+      bullet_cam: '子弹追踪视角',
+      spotter_flir: '观察手 / FLIR',
+    },
+    range3dFlirBtn: 'FLIR 白热成像',
+    range3dFlirTitle: '开启或关闭观察手白热红外热成像着弹滤镜',
+    range3dAudioTitle: '切换靶场击发与 AR500 钢靶回传音效',
+    range3dAudioOn: '靶场音效开',
+    range3dAudioMuted: '已静音',
+    range3dFireBtn: '击发 FIRE',
+    range3dPlayBtn: '播放',
+    range3dPauseBtn: '暂停',
+    range3dResetBtn: '重置弹道回放',
+    range3dSpeedLabel: '慢动作回放倍率',
+    range3dTimelineLabel: '飞行时间轴',
+    range3dTargetTypeLabel: '切换靶标类型',
+    range3dTargetLabels: {
+      steel_gong: 'AR500 钢靶',
+      ballistic_gel: '弹道明胶块',
+    },
+    range3dAimModeLabel: '瞄具修正模式',
+    range3dAimLabels: {
+      dope_dial: 'DOPE 满修',
+      elev_only: '仅修高低(测风偏)',
+      raw_zero: '原始归零',
+    },
+    range3dHudRange: '当前射程',
+    range3dHudVelMach: '瞬时速度 · 马赫',
+    range3dHudTof: '飞行时间',
+    range3dHudEnergy: '留存动能',
+    range3dHudDropWind: '下坠 / 风偏',
+    range3dHudStatus: '飞行 / 着弹状态',
+    range3dAcousticLabel: '声波回传延迟',
+    range3dHitStatus: (zone) =>
+      zone === 'bullseye'
+        ? '命中靶心 PING!'
+        : zone === 'edge'
+          ? '擦边命中钢靶'
+          : '命中钢靶 PING!',
+    range3dMissStatus: '脱靶 (落入沙堤)',
+    range3dGelImpactStatus: (depthCm, passesThrough) =>
+      passesThrough ? `明胶贯穿 ${depthCm} cm` : `明胶侵入 ${depthCm} cm`,
+    range3dTermImpactVel: '着弹存速',
+    range3dTermTof: '总飞行时间',
+    range3dTermGongResult: '钢靶判定',
+    range3dTermSwing: '摆幅 · 动量冲量',
+    range3dTermGelDepth: '明胶侵彻深度',
+    range3dTermGelCavity: '瞬时空腔直径',
   },
 
   en: {
@@ -429,6 +544,70 @@ export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
     colRegime: 'Regime',
     zeroBadge: 'ZERO',
     outOfEnvelopeLabel: 'Sub-Terminal',
+
+    workspaceModeAria: 'Switch between 3D Firing Range and 2D Charts layout',
+    workspaceModeSplit: '3D Range + 2D Lab',
+    workspaceModeRange3d: '3D Range Cinema',
+    workspaceModeCharts2d: '2D Charts & Reticle',
+    range3dJumpBtn: '3D Range / Bullet-Cam',
+    range3dJumpTitle:
+      'Focus the interactive 3D 1,000m Firing Range & Slow-Motion Bullet-Cam',
+    range3dBadge: '3D PROVING GROUND · BULLET-CAM',
+    range3dTitle: '3D 1,000m Interactive Firing Range & Slow-Motion Bullet-Cam',
+    range3dSubtitle: (calCode, targetM, acousticDelayS) =>
+      `True RK4 3-DOF trajectory · Tracking [${calCode}] @ ${targetM} m · Acoustic steel return delay ${acousticDelayS} s (d / 343)`,
+    range3dCamGroupAria: 'Select 3D firing range camera mode',
+    range3dCameraLabels: {
+      overview: 'Range Overview',
+      bullet_cam: 'Bullet-Cam',
+      spotter_flir: 'Spotter / FLIR',
+    },
+    range3dFlirBtn: 'FLIR White-Hot',
+    range3dFlirTitle: 'Toggle FLIR white-hot thermal spotting scope shader',
+    range3dAudioTitle: 'Toggle muzzle launch & delayed steel gong audio ping',
+    range3dAudioOn: 'Range SFX',
+    range3dAudioMuted: 'Muted',
+    range3dFireBtn: 'FIRE',
+    range3dPlayBtn: 'Play',
+    range3dPauseBtn: 'Pause',
+    range3dResetBtn: 'Reset trajectory playback',
+    range3dSpeedLabel: 'Slow-motion speed multiplier',
+    range3dTimelineLabel: 'Flight Timeline',
+    range3dTargetTypeLabel: 'Select target array type',
+    range3dTargetLabels: {
+      steel_gong: 'AR500 Steel Gong',
+      ballistic_gel: 'Ballistic Gel Block',
+    },
+    range3dAimModeLabel: 'Select sight compensation mode',
+    range3dAimLabels: {
+      dope_dial: 'DOPE Dial',
+      elev_only: 'Elev Only (Wind Test)',
+      raw_zero: 'Raw Zero',
+    },
+    range3dHudRange: 'Range',
+    range3dHudVelMach: 'Velocity · Mach',
+    range3dHudTof: 'Flight Time',
+    range3dHudEnergy: 'Kinetic Energy',
+    range3dHudDropWind: 'Drop / Drift',
+    range3dHudStatus: 'Status',
+    range3dAcousticLabel: 'Acoustic Return',
+    range3dHitStatus: (zone) =>
+      zone === 'bullseye'
+        ? 'BULLSEYE PING!'
+        : zone === 'edge'
+          ? 'EDGE HIT!'
+          : 'STEEL HIT PING!',
+    range3dMissStatus: 'MISS (Berm Impact)',
+    range3dGelImpactStatus: (depthCm, passesThrough) =>
+      passesThrough
+        ? `GEL PASS-THRU ${depthCm} cm`
+        : `GEL PEN ${depthCm} cm`,
+    range3dTermImpactVel: 'Impact Velocity',
+    range3dTermTof: 'Total ToF',
+    range3dTermGongResult: 'Steel Impact',
+    range3dTermSwing: 'Pendulum · Impulse',
+    range3dTermGelDepth: 'Gel Penetration',
+    range3dTermGelCavity: 'Temp Stretch Cavity',
   },
 };
 
