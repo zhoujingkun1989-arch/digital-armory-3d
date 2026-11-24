@@ -180,4 +180,31 @@
   .split-dock-hint {
     display: none;
   }
+
+  :is([data-theme='light'], .theme-light) .split-topbar.is-mobile-expanded .split-env-cluster-wrap,
+  :is([data-theme='light'], .theme-light) .split-topbar.is-mobile-expanded .split-topbar-center,
+  :is([data-theme='light'], .theme-light) .split-topbar.is-mobile-expanded .split-topbar-right {
+    border-color: rgba(15, 23, 42, 0.14);
+  }
+
+  :is([data-theme='light'], .theme-light) .split-divider-line {
+    background: linear-gradient(
+      90deg,
+      rgba(2, 132, 199, 0.1) 0%,
+      rgba(2, 132, 199, 0.72) 50%,
+      rgba(180, 83, 9, 0.12) 100%
+    );
+  }
+
+  :is([data-theme='light'], .theme-light) .split-plaque {
+    background: rgba(255, 255, 255, 0.94);
+    border-color: rgba(15, 23, 42, 0.16);
+    color: #0f172a;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.1);
+  }
+
+  :is([data-theme='light'], .theme-light) .split-bottom-dock {
+    background: rgba(248, 250, 252, 0.95);
+    border-color: rgba(15, 23, 42, 0.16);
+  }
 }

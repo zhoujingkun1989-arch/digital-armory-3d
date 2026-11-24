@@ -1,5 +1,5 @@
 /* ==========================================================================
-   WP-19 · Live 3D Split-Screen Synchronized Mechanism Showdown Overlay
+   Live 3D Split-Screen Synchronized Mechanism Showdown Overlay
    ========================================================================== */
 
 .split-showdown-overlay {
@@ -282,18 +282,107 @@
   text-align: center;
 }
 
+:is([data-theme='light'], .theme-light) .split-topbar,
+:is([data-theme='light'], .theme-light) .split-bottom-dock {
+  background: rgba(248, 250, 252, 0.94);
+  border-color: rgba(15, 23, 42, 0.14);
+  color: #0f172a;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+:is([data-theme='light'], .theme-light) .split-btn {
+  background: #f1f5f9;
+  border-color: rgba(15, 23, 42, 0.16);
+  color: #334155;
+}
+
+:is([data-theme='light'], .theme-light) .split-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+  border-color: #0284c7;
+}
+
+:is([data-theme='light'], .theme-light) .split-btn.is-active {
+  background: rgba(2, 132, 199, 0.14);
+  border-color: #0284c7;
+  color: #0369a1;
+}
+
+:is([data-theme='light'], .theme-light) .split-btn.is-teal {
+  background: rgba(13, 148, 136, 0.14);
+  border-color: #0d9488;
+  color: #0f766e;
+}
+
+:is([data-theme='light'], .theme-light) .split-btn.is-orange {
+  background: rgba(217, 119, 6, 0.15);
+  border-color: #d97706;
+  color: #b45309;
+}
+
 :is([data-theme='light'], .theme-light) .split-select {
-  background: rgba(255, 255, 255, 0.96);
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.2);
   color: #0f172a;
 }
 
 :is([data-theme='light'], .theme-light) .split-plaque {
-  background: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.94);
+  border-color: rgba(15, 23, 42, 0.15);
+  color: #0f172a;
+  box-shadow: 0 8px 22px rgba(15, 23, 42, 0.1);
+}
+
+:is([data-theme='light'], .theme-light) .split-plaque.is-a {
+  border-left-color: #0284c7;
+}
+
+:is([data-theme='light'], .theme-light) .split-plaque.is-b {
+  border-right-color: #d97706;
+}
+
+:is([data-theme='light'], .theme-light) .split-plaque-tag {
+  color: #0369a1;
+}
+
+:is([data-theme='light'], .theme-light) .split-plaque.is-b .split-plaque-tag {
+  color: #b45309;
+}
+
+:is([data-theme='light'], .theme-light) .split-plaque-title {
+  color: #0f172a;
+}
+
+:is([data-theme='light'], .theme-light) .split-plaque-specs {
+  color: #334155;
+}
+
+:is([data-theme='light'], .theme-light) .split-plaque-live {
+  border-top-color: rgba(15, 23, 42, 0.12);
+  color: #0369a1;
+}
+
+:is([data-theme='light'], .theme-light) .split-plaque.is-b .split-plaque-live {
+  color: #b45309;
 }
 
 :is([data-theme='light'], .theme-light) .split-vs-medallion {
   background: #ffffff;
+  border-color: #0284c7;
   color: #0f172a;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.16);
+}
+
+:is([data-theme='light'], .theme-light) .split-dock-slider {
+  accent-color: #0284c7;
+}
+
+:is([data-theme='light'], .theme-light) .split-dock-pct {
+  color: #0f172a;
+}
+
+:is([data-theme='light'], .theme-light) .split-dock-hint {
+  color: #475569;
 }
 
 @media (max-width: 780px) {

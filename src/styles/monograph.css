@@ -3086,6 +3086,113 @@
   word-break: break-all;
 }
 
+/* ==================== Blueprint Daylight (`[data-theme='light']`) Studio Chrome Parity ==================== */
+@media screen {
+  :is([data-theme='light'], .theme-light) .monograph-dialog {
+    background: #f8fafc;
+    color: #0f172a;
+    border-color: rgba(15, 23, 42, 0.18);
+    box-shadow: 0 28px 72px rgba(15, 23, 42, 0.24);
+  }
+
+  :is([data-theme='light'], .theme-light) .monograph-dialog::backdrop {
+    background: rgba(15, 23, 42, 0.48);
+  }
+
+  :is([data-theme='light'], .theme-light) .monograph-studio-header {
+    background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+    border-bottom-color: rgba(15, 23, 42, 0.14);
+  }
+
+  :is([data-theme='light'], .theme-light) .ms-studio-title {
+    color: #0f172a;
+  }
+
+  :is([data-theme='light'], .theme-light) .ms-serial-pill {
+    color: #0369a1;
+  }
+
+  :is([data-theme='light'], .theme-light) .ms-reshoot-btn,
+  :is([data-theme='light'], .theme-light) .ms-close-btn {
+    background: #ffffff;
+    border-color: rgba(15, 23, 42, 0.18);
+    color: #334155;
+  }
+
+  :is([data-theme='light'], .theme-light) .ms-reshoot-btn:hover:not(:disabled),
+  :is([data-theme='light'], .theme-light) .ms-close-btn:hover {
+    background: #e2e8f0;
+    border-color: #0284c7;
+    color: #0f172a;
+  }
+
+  :is([data-theme='light'], .theme-light) .monograph-studio-controls {
+    background: #f1f5f9;
+    border-bottom-color: rgba(15, 23, 42, 0.14);
+  }
+
+  :is([data-theme='light'], .theme-light) .ms-weapon-pill {
+    background: #ffffff;
+    border-color: rgba(15, 23, 42, 0.15);
+    color: #334155;
+  }
+
+  :is([data-theme='light'], .theme-light) .ms-weapon-pill.active {
+    background: #e0f2fe;
+    border-color: #0284c7;
+    color: #0c4a6e;
+  }
+
+  :is([data-theme='light'], .theme-light) .ms-seg-group,
+  :is([data-theme='light'], .theme-light) .ms-prepress-toggle {
+    background: #e2e8f0;
+    border-color: rgba(15, 23, 42, 0.16);
+    color: #334155;
+  }
+
+  :is([data-theme='light'], .theme-light) .ms-seg-btn {
+    color: #334155;
+  }
+
+  :is([data-theme='light'], .theme-light) .ms-callsign-input {
+    background: #ffffff;
+    border-color: rgba(15, 23, 42, 0.2);
+    color: #0f172a;
+  }
+
+  :is([data-theme='light'], .theme-light) .ms-cp-left span {
+    color: #334155;
+  }
+
+  :is([data-theme='light'], .theme-light) .monograph-preview-stage {
+    background: radial-gradient(circle at 50% 0%, #e2e8f0 0%, #cbd5e1 80%);
+  }
+
+  :is([data-theme='light'], .theme-light) .ms-page-jump-rail {
+    background: rgba(255, 255, 255, 0.94);
+    border-color: rgba(15, 23, 42, 0.16);
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.12);
+  }
+
+  :is([data-theme='light'], .theme-light) .ms-page-jump-pill {
+    color: #334155;
+  }
+
+  :is([data-theme='light'], .theme-light) .ms-page-jump-pill:hover,
+  :is([data-theme='light'], .theme-light) .ms-page-jump-pill.active {
+    background: #e0f2fe;
+    color: #0369a1;
+  }
+
+  :is([data-theme='light'], .theme-light) .ms-loading-dossier {
+    color: #0f172a;
+  }
+
+  :is([data-theme='light'], .theme-light) .monograph-page {
+    box-shadow: 0 18px 46px rgba(15, 23, 42, 0.2);
+  }
+}
+
 /* ==========================================================================
    Zero-Margin Dynamic Vector Print Stylesheet (`@media print`)
    Supports A4 Portrait (210×297mm / 216×303mm) & DK A3 Spread (420×297mm / 426×303mm)

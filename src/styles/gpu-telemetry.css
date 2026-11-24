@@ -33,12 +33,13 @@
 }
 
 .gpu-telemetry-hud--light,
-[data-armory-theme='light'] .gpu-telemetry-hud {
+:is([data-theme='light'], .theme-light, [data-armory-theme='light'])
+  .gpu-telemetry-hud {
   border-color: rgba(15, 23, 42, 0.16);
-  background: rgba(244, 247, 251, 0.88);
+  background: rgba(248, 250, 252, 0.94);
   box-shadow:
     0 12px 32px rgba(15, 23, 42, 0.14),
-    inset 0 1px 0 rgba(255, 255, 255, 0.78);
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
   color: #0f172a;
 }
 
@@ -53,8 +54,9 @@
 }
 
 .gpu-telemetry-hud--light .gpu-telemetry-header,
-[data-armory-theme='light'] .gpu-telemetry-header {
-  border-bottom-color: rgba(15, 23, 42, 0.12);
+:is([data-theme='light'], .theme-light, [data-armory-theme='light'])
+  .gpu-telemetry-header {
+  border-bottom-color: rgba(15, 23, 42, 0.14);
 }
 
 .gpu-telemetry-title-wrap {
@@ -118,7 +120,7 @@
 }
 
 .gpu-telemetry-hud--light .gpu-telemetry-tier-pill,
-[data-armory-theme='light'] .gpu-telemetry-tier-pill {
+:is([data-theme='light'], .theme-light, [data-armory-theme='light']) .gpu-telemetry-tier-pill {
   background: rgba(2, 132, 199, 0.11);
   border-color: rgba(2, 132, 199, 0.28);
   color: #0369a1;
@@ -163,7 +165,7 @@
 }
 
 .gpu-telemetry-hud--light .gpu-telemetry-kpi,
-[data-armory-theme='light'] .gpu-telemetry-kpi {
+:is([data-theme='light'], .theme-light, [data-armory-theme='light']) .gpu-telemetry-kpi {
   background: rgba(255, 255, 255, 0.72);
   border-color: rgba(15, 23, 42, 0.1);
 }
@@ -176,7 +178,7 @@
 }
 
 .gpu-telemetry-hud--light .gpu-telemetry-kpi-label,
-[data-armory-theme='light'] .gpu-telemetry-kpi-label {
+:is([data-theme='light'], .theme-light, [data-armory-theme='light']) .gpu-telemetry-kpi-label {
   color: #475569;
 }
 
@@ -206,17 +208,17 @@
 }
 
 .gpu-telemetry-hud--light .gpu-telemetry-kpi-value--good,
-[data-armory-theme='light'] .gpu-telemetry-kpi-value--good {
+:is([data-theme='light'], .theme-light, [data-armory-theme='light']) .gpu-telemetry-kpi-value--good {
   color: #059669;
 }
 
 .gpu-telemetry-hud--light .gpu-telemetry-kpi-value--warn,
-[data-armory-theme='light'] .gpu-telemetry-kpi-value--warn {
+:is([data-theme='light'], .theme-light, [data-armory-theme='light']) .gpu-telemetry-kpi-value--warn {
   color: #d97706;
 }
 
 .gpu-telemetry-hud--light .gpu-telemetry-kpi-value--poor,
-[data-armory-theme='light'] .gpu-telemetry-kpi-value--poor {
+:is([data-theme='light'], .theme-light, [data-armory-theme='light']) .gpu-telemetry-kpi-value--poor {
   color: #dc2626;
 }
 
@@ -234,7 +236,7 @@
 }
 
 .gpu-telemetry-hud--light .gpu-telemetry-kpi-sub,
-[data-armory-theme='light'] .gpu-telemetry-kpi-sub {
+:is([data-theme='light'], .theme-light, [data-armory-theme='light']) .gpu-telemetry-kpi-sub {
   color: #64748b;
 }
 
@@ -245,7 +247,7 @@
 }
 
 .gpu-telemetry-hud--light .gpu-telemetry-section,
-[data-armory-theme='light'] .gpu-telemetry-section {
+:is([data-theme='light'], .theme-light, [data-armory-theme='light']) .gpu-telemetry-section {
   border-top-color: rgba(15, 23, 42, 0.12);
 }
 
@@ -259,7 +261,7 @@
 }
 
 .gpu-telemetry-hud--light .gpu-telemetry-section-title,
-[data-armory-theme='light'] .gpu-telemetry-section-title {
+:is([data-theme='light'], .theme-light, [data-armory-theme='light']) .gpu-telemetry-section-title {
   color: #475569;
 }
 
@@ -277,7 +279,7 @@
 }
 
 .gpu-telemetry-hud--light .gpu-telemetry-row-label,
-[data-armory-theme='light'] .gpu-telemetry-row-label {
+:is([data-theme='light'], .theme-light, [data-armory-theme='light']) .gpu-telemetry-row-label {
   color: #334155;
 }
 
@@ -294,7 +296,7 @@
 }
 
 .gpu-telemetry-hud--light .gpu-telemetry-row-val,
-[data-armory-theme='light'] .gpu-telemetry-row-val {
+:is([data-theme='light'], .theme-light, [data-armory-theme='light']) .gpu-telemetry-row-val {
   color: #0f172a;
 }
 
@@ -327,17 +329,17 @@
 }
 
 .gpu-telemetry-hud--light .gpu-telemetry-badge--ktx2,
-[data-armory-theme='light'] .gpu-telemetry-badge--ktx2 {
+:is([data-theme='light'], .theme-light, [data-armory-theme='light']) .gpu-telemetry-badge--ktx2 {
   color: #047857;
 }
 
 .gpu-telemetry-hud--light .gpu-telemetry-badge--webp,
-[data-armory-theme='light'] .gpu-telemetry-badge--webp {
+:is([data-theme='light'], .theme-light, [data-armory-theme='light']) .gpu-telemetry-badge--webp {
   color: #b45309;
 }
 
 .gpu-telemetry-hud--light .gpu-telemetry-badge--idle,
-[data-armory-theme='light'] .gpu-telemetry-badge--idle {
+:is([data-theme='light'], .theme-light, [data-armory-theme='light']) .gpu-telemetry-badge--idle {
   color: #475569;
 }
 
@@ -359,7 +361,7 @@
 }
 
 .gpu-telemetry-hud--light .gpu-telemetry-lru,
-[data-armory-theme='light'] .gpu-telemetry-lru {
+:is([data-theme='light'], .theme-light, [data-armory-theme='light']) .gpu-telemetry-lru {
   background: rgba(15, 23, 42, 0.05);
   color: #475569;
 }
