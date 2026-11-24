@@ -4179,6 +4179,12 @@
   pointer-events: auto;
 }
 
+@media (min-width: 1280px) {
+  .curator-trail-bar {
+    max-width: min(980px, calc(100vw - 48px));
+  }
+}
+
 .curator-trail-head {
   display: inline-flex;
   align-items: center;

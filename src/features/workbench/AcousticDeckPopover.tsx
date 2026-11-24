@@ -276,7 +276,7 @@ export const AcousticDeckPopover: React.FC<AcousticDeckPopoverProps> = ({
         } ${isOpen ? 'active-cyan' : ''}`}
         data-testid="wb-acoustic-deck-trigger"
         aria-expanded={isOpen}
-        aria-controls={panelId}
+        aria-controls={isOpen ? panelId : undefined}
         aria-haspopup="dialog"
         onClick={handleTogglePopover}
         title={

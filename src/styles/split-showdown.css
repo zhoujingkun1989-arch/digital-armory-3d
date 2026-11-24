@@ -84,6 +84,18 @@
   flex-wrap: wrap;
 }
 
+.split-topbar-title {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 .split-topbar-left,
 .split-topbar-center,
 .split-topbar-right {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useId, useRef, useState } from 'react';
 import {
   Activity,
   ArrowLeft,
@@ -142,6 +142,7 @@ export const WorkbenchHeader: React.FC = () => {
   const [mobileToolsOpen, setMobileToolsOpen] = useState(false);
   const [copyLinkToastVisible, setCopyLinkToastVisible] = useState(false);
   const toolsPopoverRef = useRef<HTMLDivElement>(null);
+  const toolsPopoverId = useId();
   const copyToastTimerRef = useRef<number | null>(null);
   const isToolsMenuOpen = toolsMenuOpen && !hudHidden;
   const isMobileToolsOpen = mobileToolsOpen && !hudHidden;
@@ -399,6 +400,7 @@ export const WorkbenchHeader: React.FC = () => {
               isToolsMenuOpen ? 'active-cyan' : ''
             }`}
             aria-expanded={isToolsMenuOpen}
+            aria-controls={isToolsMenuOpen ? toolsPopoverId : undefined}
             aria-haspopup="menu"
             title={menuUi.toolsBtnTitle}
             onClick={() => {
@@ -424,6 +426,7 @@ export const WorkbenchHeader: React.FC = () => {
 
           {isToolsMenuOpen && (
             <div
+              id={toolsPopoverId}
               className="workbench-popover-menu workbench-tools-popover"
               role="menu"
               aria-label={menuUi.toolsPopoverAria}
