@@ -31,6 +31,7 @@ export const PUBLIC_AUDIT_DIRS = Object.freeze([
 export const DEFAULT_WEAPON_BUDGET_MB = 12;
 export const DEFAULT_DIST_WARN_MB = 800;
 export const GITHUB_PAGES_LIMIT_MB = 1024;
+export const EXPECTED_PLATES_PER_WEAPON = 10;
 const BYTES_PER_MB = 1024 * 1024;
 
 export const WEAPON_TEXTURE_PREFIX_ALIASES = Object.freeze({
@@ -102,6 +103,40 @@ export function measureDirectory(dirPath) {
     mb: roundMb(bytes),
     fileCount,
   };
+}
+
+/**
+ * Recursively finds files under `dirPath` matching case-insensitive extension `ext`
+ * (e.g. `.png`), returning sorted POSIX-style relative paths.
+ */
+export function findFilesWithExtension(dirPath, ext) {
+  if (!fs.existsSync(dirPath)) {
+    return [];
+  }
+  const needle = String(ext).toLowerCase();
+  const matches = [];
+  const stack = [dirPath];
+
+  while (stack.length > 0) {
+    const current = stack.pop();
+    let entries;
+    try {
+      entries = fs.readdirSync(current, { withFileTypes: true });
+    } catch {
+      continue;
+    }
+    for (const entry of entries) {
+      const fullPath = path.join(current, entry.name);
+      if (entry.isDirectory()) {
+        stack.push(fullPath);
+      } else if (entry.isFile() && entry.name.toLowerCase().endsWith(needle)) {
+        const rel = path.relative(dirPath, fullPath).split(path.sep).join('/');
+        matches.push(rel);
+      }
+    }
+  }
+
+  return matches.sort();
 }
 
 /**
@@ -358,6 +393,8 @@ export function runAssetBudgetAudit(options = {}) {
   const distRoot = path.join(repoRoot, 'dist');
   const modelsDir = path.join(publicRoot, 'models');
   const texturesDir = path.join(publicRoot, 'textures');
+  const platesDir = path.join(publicRoot, 'plates');
+  const platesManifestPath = path.join(platesDir, 'manifest.json');
 
   const publicDirs = {};
   for (const dirName of PUBLIC_AUDIT_DIRS) {
@@ -463,6 +500,139 @@ export function runAssetBudgetAudit(options = {}) {
     errors.push(`Weapon "${weaponFilter}" was not found in public/models/ or glbAssetService.ts.`);
   }
 
+  // Strict zero-PNG hygiene check across public/textures/ and public/plates/
+  const rogueTexturePngs = findFilesWithExtension(texturesDir, '.png');
+  const roguePlatePngs = findFilesWithExtension(platesDir, '.png');
+  const allRoguePngs = [
+    ...rogueTexturePngs.map((f) => `public/textures/${f}`),
+    ...roguePlatePngs.map((f) => `public/plates/${f}`),
+  ];
+  if (allRoguePngs.length > 0) {
+    const sample = allRoguePngs.slice(0, 10).join(', ');
+    const more =
+      allRoguePngs.length > 10 ? ` (+${allRoguePngs.length - 10} more)` : '';
+    errors.push(
+      `Rogue PNG asset(s) detected in public/textures/ or public/plates/ (${allRoguePngs.length} found; zero-PNG WebP policy): ${sample}${more}`
+    );
+  }
+
+  // Strict Cycles plates manifest parity check (34/34 weapons × 10 plates = 340 on disk)
+  // Skipped cleanly on minimal synthetic test fixtures that do not ship public/plates/manifest.json.
+  const platesAudit = {
+    checked: false,
+    manifestExists: fs.existsSync(platesManifestPath),
+    manifestWeaponCount: 0,
+    expectedWeaponCount: weaponIds.length,
+    expectedPlatesPerWeapon: EXPECTED_PLATES_PER_WEAPON,
+    expectedTotalPlates: weaponIds.length * EXPECTED_PLATES_PER_WEAPON,
+    verifiedPlateFiles: 0,
+    missingWeapons: [],
+    extraWeapons: [],
+    underPopulatedWeapons: [],
+    missingPlateFiles: [],
+    ok: true,
+  };
+
+  if (platesAudit.manifestExists) {
+    platesAudit.checked = true;
+    let parsedManifest = null;
+    try {
+      parsedManifest = JSON.parse(fs.readFileSync(platesManifestPath, 'utf8'));
+    } catch (err) {
+      platesAudit.ok = false;
+      errors.push(
+        `Invalid JSON in public/plates/manifest.json: ${err instanceof Error ? err.message : String(err)}`
+      );
+    }
+
+    if (
+      parsedManifest &&
+      parsedManifest.weapons &&
+      typeof parsedManifest.weapons === 'object'
+    ) {
+      const manifestWeapons = parsedManifest.weapons;
+      const manifestKeys = Object.keys(manifestWeapons).sort();
+      platesAudit.manifestWeaponCount = manifestKeys.length;
+
+      if (!weaponFilter) {
+        const discoveredSet = new Set(weaponIds);
+        for (const extraId of manifestKeys) {
+          if (!discoveredSet.has(extraId)) {
+            platesAudit.extraWeapons.push(extraId);
+          }
+        }
+        if (platesAudit.extraWeapons.length > 0) {
+          platesAudit.ok = false;
+          errors.push(
+            `public/plates/manifest.json contains unregistered weapon(s): ${platesAudit.extraWeapons.join(', ')}`
+          );
+        }
+      }
+
+      for (const weaponId of weaponIds) {
+        const entry = manifestWeapons[weaponId];
+        if (!entry || typeof entry !== 'object') {
+          platesAudit.missingWeapons.push(weaponId);
+          platesAudit.ok = false;
+          errors.push(
+            `public/plates/manifest.json missing exhibit "${weaponId}" (expected ${weaponIds.length}/${weaponIds.length} parity).`
+          );
+          continue;
+        }
+
+        const plateEntries =
+          entry.plates && typeof entry.plates === 'object'
+            ? Object.entries(entry.plates)
+            : [];
+        if (plateEntries.length !== EXPECTED_PLATES_PER_WEAPON) {
+          platesAudit.underPopulatedWeapons.push({
+            weaponId,
+            plateCount: plateEntries.length,
+          });
+          platesAudit.ok = false;
+          errors.push(
+            `Exhibit "${weaponId}" in public/plates/manifest.json has ${plateEntries.length} plate(s) (expected ${EXPECTED_PLATES_PER_WEAPON}).`
+          );
+        }
+
+        for (const [plateKey, plateMeta] of plateEntries) {
+          const relFile =
+            typeof plateMeta?.file === 'string' && plateMeta.file.length > 0
+              ? plateMeta.file
+              : `plates/${weaponId}/${plateKey}.webp`;
+          const fullPlatePath = path.join(publicRoot, relFile);
+          let validFile = false;
+          try {
+            validFile =
+              fs.existsSync(fullPlatePath) && fs.statSync(fullPlatePath).size > 0;
+          } catch {
+            validFile = false;
+          }
+          if (validFile) {
+            platesAudit.verifiedPlateFiles += 1;
+          } else {
+            platesAudit.missingPlateFiles.push(`public/${relFile}`);
+            platesAudit.ok = false;
+          }
+        }
+      }
+
+      if (platesAudit.missingPlateFiles.length > 0) {
+        const sample = platesAudit.missingPlateFiles.slice(0, 10).join(', ');
+        const more =
+          platesAudit.missingPlateFiles.length > 10
+            ? ` (+${platesAudit.missingPlateFiles.length - 10} more)`
+            : '';
+        errors.push(
+          `Missing or empty Cycles plate file(s) referenced in public/plates/manifest.json (${platesAudit.missingPlateFiles.length}): ${sample}${more}`
+        );
+      }
+    } else if (parsedManifest !== null) {
+      platesAudit.ok = false;
+      errors.push('public/plates/manifest.json is missing a valid "weapons" map.');
+    }
+  }
+
   if (!distStats.exists) {
     warnings.push(
       `dist/ directory not found yet (run "npm run build" to measure final bundle size; public/ alone is currently ${formatBytes(publicTotal.bytes)}).`
@@ -507,6 +677,15 @@ export function runAssetBudgetAudit(options = {}) {
       },
     },
     weapons,
+    hygiene: {
+      roguePngs: {
+        textures: rogueTexturePngs,
+        plates: roguePlatePngs,
+        totalCount: allRoguePngs.length,
+        ok: allRoguePngs.length === 0,
+      },
+      platesManifest: platesAudit,
+    },
     summary: {
       weaponCount: weapons.length,
       withinBudgetCount: weapons.length - overBudgetWeapons.length,
@@ -594,6 +773,25 @@ export function formatHumanReport(report) {
   lines.push(
     ` Weapon Budgets  : ${report.summary.withinBudgetCount}/${report.summary.weaponCount} within <= ${report.thresholds.weaponBudgetMb} MB`
   );
+
+  if (report.hygiene) {
+    const pngs = report.hygiene.roguePngs;
+    const pm = report.hygiene.platesManifest;
+    lines.push('');
+    lines.push('3. Media Hygiene & Cycles Print Plates Parity');
+    lines.push('-----------------------------------------------------------------------------------');
+    lines.push(
+      ` Zero-PNG Gate   : ${pngs.totalCount} rogue .png file(s) in textures/ & plates/ (${pngs.ok ? 'PASS' : 'FAIL'})`
+    );
+    if (pm.checked) {
+      lines.push(
+        ` Cycles Plates   : ${pm.manifestWeaponCount}/${pm.expectedWeaponCount} exhibits · ${pm.verifiedPlateFiles}/${pm.expectedTotalPlates} plates on disk (${pm.ok ? 'PASS' : 'FAIL'})`
+      );
+    } else {
+      lines.push(' Cycles Plates   : skipped (no public/plates/manifest.json in target root)');
+    }
+    lines.push('-----------------------------------------------------------------------------------');
+  }
 
   if (report.summary.warnings.length > 0) {
     lines.push('');

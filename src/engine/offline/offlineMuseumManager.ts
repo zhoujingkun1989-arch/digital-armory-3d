@@ -24,6 +24,30 @@ export const DRACO_RUNTIME_ASSET_PATHS = [
   'draco/draco_wasm_wrapper.js',
 ] as const;
 
+/** Curated 5-legend cross-hall offline starter pack (Rifle · Pistol · WWII Icon · 30mm Aero Cannon · 1:1 MBT). */
+export const FEATURED_LEGENDS_OFFLINE_IDS: readonly WeaponId[] = [
+  'ak15',
+  'p08',
+  'm1911',
+  'gau8',
+  'ztz99a',
+] as const;
+
+/** Complete 4-tank Heavy Armor Hall offline pack. */
+export const ARMOR_HALL_OFFLINE_IDS: readonly WeaponId[] = [
+  'ztz99a',
+  'm1a2',
+  'leopard2a7',
+  'tiger1',
+] as const;
+
+export interface OfflinePackSummary {
+  weaponIds: readonly WeaponId[];
+  uniqueUrls: readonly string[];
+  totalAssetRequests: number;
+  estimatedMb: number;
+}
+
 export interface ExhibitOfflineManifest {
   weaponId: WeaponId;
   urls: readonly string[];
@@ -120,6 +144,35 @@ export function buildExhibitOfflineAssetUrls(
     weaponId,
     urls: Array.from(urlSet),
     estimatedMb: estimateExhibitOfflineMb(weaponId, uniqueTextures.length),
+  };
+}
+
+/**
+ * Summarizes an offline batch pack (e.g. Featured 5 Legends or Heavy Armor Hall):
+ * deduplicates shared URLs while computing accurate aggregate MB estimate.
+ */
+export function summarizeOfflinePack(
+  weaponIds: readonly WeaponId[],
+  baseOverride?: string
+): OfflinePackSummary {
+  const uniqueUrls = new Set<string>();
+  let totalAssetRequests = 0;
+  let totalMb = 0;
+
+  for (const weaponId of weaponIds) {
+    const manifest = buildExhibitOfflineAssetUrls(weaponId, baseOverride);
+    totalAssetRequests += manifest.urls.length;
+    totalMb += manifest.estimatedMb;
+    for (const url of manifest.urls) {
+      uniqueUrls.add(url);
+    }
+  }
+
+  return {
+    weaponIds: [...weaponIds],
+    uniqueUrls: Array.from(uniqueUrls),
+    totalAssetRequests,
+    estimatedMb: Number(totalMb.toFixed(1)),
   };
 }
 

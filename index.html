@@ -2,22 +2,29 @@
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" href="/favicon.ico" />
+    <link rel="icon" href="./favicon.ico" />
     <link rel="manifest" href="./manifest.webmanifest" />
     <meta name="theme-color" content="#0b1120" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="Armory 3D" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Digital Armory 3D v6.0 — 开源 1:1 三十四款名枪、弓弩、主战坦克与 30mm 七管航炮三维数字博物馆</title>
+    <title>Digital Armory 3D v6.0 — 34 Exhibits · 10 Halls · 854 Parts · 1:1 3D Firearms, Heavy Armor &amp; 30mm Aviation Ordnance Museum</title>
     <meta
       name="description"
-      content="把三十四款世界传奇名枪、复合弓弩、1:1 真实尺度主战坦克与 1:1 通用电气 GAU-8/A「复仇者」30mm 七管航炮（10 大展厅 · 27 款名枪含 M1911A1 / MG 42 / 毛瑟 98k / 汤姆逊 M1928A1 + 2 款复合弓弩 + 4 款 1:1 主战坦克 + 1 款 1:1 航空重武）的机械内构装进你的浏览器：Blender 5.2 Draco .glb + 动态 CSG 双轨 854 个运动零件、414 张 2K/4K 5 通道 ORM 物理贴图（101 套）、1,980 段 Gemini Charon 双语配音、1:1 复合装甲 3D 慢动作穿甲剖视剧场（5 款穿甲弹）、1,000m 三维交互实弹靶场与子弹时间追踪镜头（R · 23 套 RK4 档案）、物理耦合模块化光学与枪口改装工作台（O）、单画布 3D 分屏对决、17+4 口径实弹/航炮与坦克炮弹纵剖馆（B）、9×9×9 原理流派对照（S · 30 组对决）、三轴 CT 纵剖与 3D 剖切盒（C）、Cmd+K 全局瞬搜、1080p 导演录屏、高清 3D 分享海报（U）与 34/34 Cycles 340 图版绘本 / 图鉴打印（Ctrl/Cmd+P）。"
+      content="34 Exhibits · 10 Halls · 854 Parts — Browser-native 1:1 3D Firearms, Compound Archery, Heavy Armor &amp; 30mm Aviation Ordnance Museum (传奇名枪、复合弓弩、1:1 主战坦克与 GAU-8/A 30mm 七管航炮): 34/34 Blender 5.2 Draco .glb + Web Worker CSG, 414 2K/4K 5-Ch Packed ORM WebP maps (101 suites), 1,980 bilingual Gemini narrations, 3D composite armor penetration theater, 1,000m 3D proving ground with Bullet-Cam &amp; Live Target-Cam PIP, modular optics/muzzle workbench, dual-scissor 3D split cutaway showdown, 17+4 1:1 ordnance cutaway lab, tri-axis CT sectioning &amp; 34/34 Cycles 340-plate print studio."
     />
+    <meta property="og:site_name" content="Digital Armory 3D" />
     <meta
       property="og:title"
-      content="Digital Armory 3D v6.0 · 三维物理剧场与十殿堂传奇旗舰版 — 34 款名枪、主战坦克与 1:1 30mm 航炮三维博物馆"
+      content="Digital Armory 3D v6.0 · 34 Exhibits · 10 Halls · 854 Parts — 1:1 3D Firearms, Heavy Armor &amp; 30mm Aviation Ordnance Museum"
     />
     <meta
       property="og:description"
-      content="34 款馆藏 / 10 大展厅 · 854 运动零件 (34/34 Blender 5.2 GLB + 动态 CSG) · 414 张 2K/4K 5 通道 ORM 贴图 · 1,980 段双语语音 · 3D 复合装甲穿甲剧场 · 1,000m 3D 实弹靶场与 Bullet-Cam (R) · 模块化光学与枪口改装台 (O) · 1:1 GAU-8/A 30mm 航炮 · 17+4 实弹与炮弹纵剖 (B) · 三轴 CT 纵剖 (C) · 34/34 Cycles 图鉴打印。"
+      content="Explore 34 legendary firearms, compound archery, 1:1 main battle tanks &amp; the 30mm GAU-8/A rotary cannon across 10 museum halls with 854 interactive parts, 414 2K/4K ORM PBR maps, 1,980 bilingual narrations, 3D armor penetration theater, 1,000m 3D proving ground &amp; 340 Cycles print plates."
     />
     <meta property="og:type" content="website" />
     <meta
@@ -31,11 +38,11 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta
       name="twitter:title"
-      content="Digital Armory 3D v6.0 · 34 款名枪、主战坦克与 1:1 GAU-8/A 航炮机械内构三维博物馆"
+      content="Digital Armory 3D v6.0 · 34 Exhibits · 10 Halls · 854 Parts — 1:1 3D Firearms, Heavy Armor &amp; 30mm Aviation Ordnance Museum"
     />
     <meta
       name="twitter:description"
-      content="Blender 5.2 Draco GLB + CSG 双轨 854 零件 · 414 张 2K/4K 5 通道 ORM 贴图 · 1,980 段双语配音 · 3D 复合装甲穿甲剧场 · 1,000m 3D 靶场与 Bullet-Cam (R) · 光学/枪口改装台 (O) · 17+4 实弹与炮弹纵剖 (B) · 三轴 CT 纵剖 (C) · 34/34 Cycles 图鉴打印"
+      content="34/34 Blender 5.2 Draco GLB + CSG (854 parts) · 414 2K/4K 5-Ch ORM maps · 1,980 bilingual narrations · 3D armor penetration theater · 1,000m 3D range &amp; Bullet-Cam · Split-Screen 3D Showdown · 34/34 Cycles 340-plate Print Studio."
     />
     <meta
       name="twitter:image"

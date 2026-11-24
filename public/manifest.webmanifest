@@ -1,18 +1,47 @@
 {
-  "name": "Digital Armory 3D Museum",
+  "id": "./",
+  "name": "Digital Armory 3D — 34 Exhibits · 10 Halls · 1:1 Firearms, Heavy Armor & 30mm Aviation Ordnance Museum",
   "short_name": "Armory 3D",
-  "description": "Browser-native 1:1 3D firearms, compound archery, and heavy armor mechanical engineering encyclopedia.",
+  "description": "34 Exhibits · 10 Halls · 854 Parts — Browser-native 1:1 3D Firearms, Compound Archery, Heavy Armor & 30mm Aviation Ordnance Mechanical Engineering Museum.",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "landscape",
   "background_color": "#090d16",
   "theme_color": "#0b1120",
+  "categories": ["education", "reference", "entertainment"],
   "icons": [
     {
       "src": "./favicon.ico",
       "sizes": "48x48",
-      "type": "image/x-icon"
+      "type": "image/x-icon",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "34-Bay 3D Vault",
+      "short_name": "3D Vault",
+      "description": "Browse all 34 exhibits across 10 museum halls with 854 interactive 3D parts.",
+      "url": "./?screen=armory"
+    },
+    {
+      "name": "1,000m Proving Ground",
+      "short_name": "1000m Range",
+      "description": "Interactive 1,000m 3D ballistics proving ground with Bullet-Cam, Live Target-Cam PIP, and 23 RK4 profiles.",
+      "url": "./?screen=ballistics"
+    },
+    {
+      "name": "1:1 Ordnance Cutaway Lab",
+      "short_name": "Ordnance Lab",
+      "description": "Compare 17 small-arms cartridges and 4 heavy tank & 30mm GAU-8/A cannon rounds at true 1:1 cutaway scale.",
+      "url": "./?screen=cartridges"
+    },
+    {
+      "name": "Split-Screen 3D Showdown",
+      "short_name": "3D Showdown",
+      "description": "Side-by-side dual-scissor 3D cutaway comparison across 30 cross-era mechanical rivalries.",
+      "url": "./?screen=split_showdown"
     }
   ]
 }
