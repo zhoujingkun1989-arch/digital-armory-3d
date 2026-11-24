@@ -1667,9 +1667,9 @@ const TargetArrayRig: React.FC<{
       depthWrite: false,
     });
     const gelVaporGeo = new THREE.ConeGeometry(1, 1, 18, 1, true);
-    // Apex at gel front face (x = 0), opening outward toward -X
+    // Apex at gel front face (x = 0), opening outward toward -X (`rotateZ(-PI/2)` maps -Y -> -X)
     gelVaporGeo.translate(0, -0.5, 0);
-    gelVaporGeo.rotateZ(Math.PI / 2);
+    gelVaporGeo.rotateZ(-Math.PI / 2);
     const gelVaporMat = new THREE.MeshBasicMaterial({
       color: flirActive ? '#f8fafc' : '#e0f2fe',
       transparent: true,

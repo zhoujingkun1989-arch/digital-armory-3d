@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import * as THREE from 'three';
 import { describe, expect, it } from 'vitest';
 import {
   RANGE_IMPACT_BURST_MAX_WINDOW_S,
@@ -220,5 +221,15 @@ describe('Cycle 17C — 1,000m Proving Ground AR500 Impact Spark Burst, Berm Dus
     expect(src).toContain('computeTargetCamPipRectInto');
     expect(src).toContain('SCHLIEREN_MACH_CONE_FRAG');
     expect(src).toContain('machConeAssets.outerGeo.dispose()');
+
+    // Verify gel entry vapor cone opens outward toward -X (bbox X in [-1, 0]) and never into the gel block (+X)
+    expect(src).toContain('gelVaporGeo.rotateZ(-Math.PI / 2)');
+    const verifyCone = new THREE.ConeGeometry(1, 1, 18, 1, true);
+    verifyCone.translate(0, -0.5, 0);
+    verifyCone.rotateZ(-Math.PI / 2);
+    verifyCone.computeBoundingBox();
+    expect(verifyCone.boundingBox!.min.x).toBeCloseTo(-1, 4);
+    expect(verifyCone.boundingBox!.max.x).toBeCloseTo(0, 4);
+    verifyCone.dispose();
   });
 });
