@@ -156,12 +156,14 @@ export const TALL_GRIP_PISTOL_IDS: ReadonlySet<WeaponId> = new Set<WeaponId>([
 export const TALL_GRIP_CT_EXTRA_CLEARANCE_CM = 1.4;
 export const TALL_GRIP_FIRING_CT_EXTRA_CLEARANCE_CM = 1.0;
 export const PORTRAIT_PHONE_ASPECT_MAX = 0.65;
-export const PORTRAIT_PHONE_DISTANCE_MULT = 1.12;
+export const PORTRAIT_PHONE_DISTANCE_MULT = 1.29;
 export const WORKBENCH_ENTRY_EASE_DURATION_S = 0.55;
 
 /**
- * Widens default Workbench camera distance by +12% on narrow portrait phones
- * (`aspect < 0.65`, e.g. 390×844) so long rifles like AK-15M1 never graze screen edges.
+ * Widens default Workbench camera distance by +29% on narrow portrait phones
+ * (`aspect < 0.65`, e.g. 390×844) so long rifles like AK-15M1, M4A1, K98k,
+ * M82A1, and GAU-8 frame with generous >= 6–8% left/right breathing margin
+ * while leaving desktop `1920×1080` framing untouched (`1.0`).
  */
 export function computePortraitPhoneDistanceMultiplier(aspect: number): number {
   if (!Number.isFinite(aspect) || aspect <= 0) return 1.0;

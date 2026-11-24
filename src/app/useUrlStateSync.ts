@@ -537,6 +537,18 @@ export function applyLocationToStore(searchOverride?: string): void {
       isWeaponId(rawWA) ? rawWA : weaponId,
       isWeaponId(rawWB) ? rawWB : undefined
     );
+    const splitStore = useAppStore.getState();
+    const rawXray = params.get('xray')?.trim().toLowerCase();
+    if (rawXray === '1' || rawXray === 'true') {
+      splitStore.setXrayShells(true);
+    }
+    if (rawCut === '1' || rawCut === 'true') {
+      splitStore.setSectionCut(true);
+    }
+    const parsedAxis = parseSectionAxisUrlParam(params.get('axis'));
+    if (parsedAxis) {
+      splitStore.setSectionCutAxis(parsedAxis);
+    }
   } else if (targetScreen === 'cartridges') {
     if (rawWeapon && isWeaponId(rawWeapon)) {
       current.selectArmoryWeapon(rawWeapon);
@@ -759,7 +771,11 @@ export function buildSearchString(
     params.set('screen', 'split_showdown');
     params.delete('mode');
     params.delete('caliber');
-    params.delete('cut');
+    if (sectionCut) {
+      params.set('cut', '1');
+    } else {
+      params.delete('cut');
+    }
     params.delete('axis');
     params.delete('slice');
     params.delete('xray');

@@ -12,6 +12,7 @@ import type {
   WeaponPartSpec,
 } from '../../weapons/types';
 import { playbackClock } from '../clock/playbackClock';
+import { WEAPON_RIFLING_SPECS } from '../ballistics/riflingSpecs';
 import {
   selectIsPartReplacedByAttachment,
   useAttachmentStore,
@@ -66,14 +67,49 @@ import {
   SECTION_CUT_BOX_PLANES,
   SECTION_CUT_PLANES,
   type SectionCapSyncFn,
+  type SectionCutAxis,
   StencilSectionCap,
   disposeSectionStencilPassMaterials,
   getSideMountedShellLocalZOffset,
   isThinWallCutawayShell,
   syncLocalZOffsetSectionPlane,
 } from './StencilSectionCap';
+import { RIFLING_EXPLODE_VISIBILITY_MAX } from './RiflingBoreActor';
 
 export { SECTION_CUT_PLANES };
+
+const MAIN_BARREL_PART_ID_RE = /^(?:.*_)?(?:barrel|barrel_cluster|main_gun)$/;
+
+/**
+ * Pure predicate deciding whether a weapon part is the main barrel/gun tube
+ * that must be longitudinally clipped along `Z` (`SECTION_CUT_PLANES`) to
+ * physically expose the 3D `RiflingBoreActor` helical rifling / chrome
+ * smoothbore interior when Z-axis CT Cutaway is active in assembled state
+ * (`explodeProgress < 0.04`). Never slices bolts, triggers, pins, springs,
+ * magazines, linkages, or compound archery exhibits.
+ */
+export function shouldSliceBarrelForRifling(
+  weaponId: WeaponId,
+  part: Pick<WeaponPartSpec, 'id' | 'material' | 'isShell'>,
+  sectionCut: boolean,
+  sectionCutAxis: SectionCutAxis,
+  explodeProgress: number,
+  isSelected: boolean
+): boolean {
+  if (
+    !sectionCut ||
+    sectionCutAxis !== 'z' ||
+    isSelected ||
+    !Number.isFinite(explodeProgress) ||
+    explodeProgress >= RIFLING_EXPLODE_VISIBILITY_MAX
+  ) {
+    return false;
+  }
+  if (WEAPON_RIFLING_SPECS[weaponId].kind === 'none') {
+    return false;
+  }
+  return MAIN_BARREL_PART_ID_RE.test(part.id);
+}
 
 interface ArmoryMaterialConfig {
   metalness: number;
@@ -319,6 +355,17 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
     );
     const selectPart = useAppStore((s) => s.selectPart);
     const hoverPart = useAppStore((s) => s.hoverPart);
+
+    const isMainBarrelPart =
+      MAIN_BARREL_PART_ID_RE.test(part.id) &&
+      WEAPON_RIFLING_SPECS[weaponId].kind !== 'none';
+    const [isAssemblyClosedForRifling, setIsAssemblyClosedForRifling] =
+      useState(
+        () =>
+          playbackClock.getState().animatedProgress <
+          RIFLING_EXPLODE_VISIBILITY_MAX
+      );
+    const barrelClosedRef = useRef(isAssemblyClosedForRifling);
 
     const isTank =
       getWeaponManifest(weaponId).workbenchMeta.scaleProfile ===
@@ -597,6 +644,16 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
             : clock.animatedProgress > 0.04);
       }
 
+      // Sync main barrel rifling-cutaway gating on the single threshold edge (`explodeProgress < 0.04`)
+      if (isMainBarrelPart) {
+        const closedNow =
+          clock.animatedProgress < RIFLING_EXPLODE_VISIBILITY_MAX;
+        if (closedNow !== barrelClosedRef.current) {
+          barrelClosedRef.current = closedNow;
+          setIsAssemblyClosedForRifling(closedNow);
+        }
+      }
+
       const u = armoryUniforms;
       if (armoryFeatures.spring) {
         // GPU constant-wire-diameter compression: never squash the wire via object scale
@@ -712,7 +769,16 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
 
     if (!geometry || isGroupHidden || isReplacedByAttachment) return null;
 
-    const isSectionCutShell = sectionCut && !!part.isShell && !isSelected;
+    const isBarrelRiflingCut = shouldSliceBarrelForRifling(
+      weaponId,
+      part,
+      sectionCut,
+      sectionCutAxis,
+      isAssemblyClosedForRifling ? 0 : RIFLING_EXPLODE_VISIBILITY_MAX,
+      isSelected
+    );
+    const isSectionCutShell =
+      (sectionCut && !!part.isShell && !isSelected) || isBarrelRiflingCut;
     const isTransparent = isGhostByIsolate || isXrayHousing;
 
     const albedoReady =
@@ -864,10 +930,13 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       selectPart(isSelected ? null : part.id);
     };
 
-    // Armory shader stays off on optical X-ray housings (clean glass look), except springs
+    // Armory shader stays off on optical X-ray housings (clean glass look), except springs.
+    // Sliced main barrels intentionally skip StencilSectionCap so a solid-core lathe barrel
+    // never plugs the hollow bore cavity covering `RiflingBoreActor`.
     const armoryActive = !isXrayHousing || armoryFeatures.spring;
     const showSectionCap =
       isSectionCutShell &&
+      !isBarrelRiflingCut &&
       !isXrayHousing &&
       !isGhostByIsolate &&
       sectionCutAxis !== 'box' &&

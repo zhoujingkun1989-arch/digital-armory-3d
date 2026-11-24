@@ -43,7 +43,7 @@ const _throatChromeBase = new THREE.Color('#c8ccd2');
 const _throatFouledColor = new THREE.Color('#342d28');
 const _throatEmissiveHot = new THREE.Color('#ff6a1a');
 const _boreEmissiveHot = new THREE.Color('#d9480f');
-const _boreNormalScale = new THREE.Vector2(1.05, 1.05);
+const _boreNormalScale = new THREE.Vector2(1.35, 1.35);
 
 export interface RiflingVisibilityQuery {
   sectionCut: boolean;
@@ -182,7 +182,7 @@ function buildRiflingTextureSuite(
   }
 
   // Pass 2: encode albedo (chrome/steel + subtle driving-edge copper trace), analytical normal & roughness
-  const normalStrength = isSmoothbore ? 1.4 : isPolygonal ? 3.2 : 5.4;
+  const normalStrength = isSmoothbore ? 1.8 : isPolygonal ? 4.2 : 6.8;
 
   for (let py = 0; py < h; py++) {
     const pyUp = (py - 1 + h) % h;
@@ -205,22 +205,24 @@ function buildRiflingTextureSuite(
       nz *= invLen;
 
       // Subtle copper gilding-metal smear along high-slope driving edges on rifled barrels
-      const edgeSlope = isSmoothbore ? 0 : Math.min(1, Math.hypot(dhdu, dhdv) * 4.5);
-      const copperMix = edgeSlope * (isPolygonal ? 0.14 : 0.24);
+      const edgeSlope = isSmoothbore ? 0 : Math.min(1, Math.hypot(dhdu, dhdv) * 4.8);
+      const copperMix = edgeSlope * (isPolygonal ? 0.18 : 0.28);
 
+      // Crisp land-crest vs recessed-groove contrast so helical rifling reads unmistakably
+      // under both Dark Studio and sunlit Blueprint Daylight inside the sliced steel barrel
       const baseLum = isChrome
-        ? 162 + hVal * 78
-        : 108 + hVal * 82;
-      const rCol = baseLum * (1 - copperMix) + 196 * copperMix;
-      const gCol = baseLum * (1 - copperMix) + 128 * copperMix;
-      const bCol = (baseLum + (isChrome ? 8 : 3)) * (1 - copperMix) + 74 * copperMix;
+        ? 136 + hVal * 112
+        : 86 + hVal * 122;
+      const rCol = baseLum * (1 - copperMix) + 206 * copperMix;
+      const gCol = baseLum * (1 - copperMix) + 134 * copperMix;
+      const bCol = (baseLum + (isChrome ? 10 : 4)) * (1 - copperMix) + 76 * copperMix;
 
-      // Polished chrome lands / smoothbore (~0.16-0.22) vs matte groove floors (~0.38-0.48)
+      // Polished chrome lands / smoothbore (~0.14-0.20) vs matte groove floors (~0.40-0.52)
       const rough01 = isSmoothbore
-        ? 0.16 + (1 - hVal) * 0.08
+        ? 0.14 + (1 - hVal) * 0.08
         : isChrome
-          ? 0.17 + (1 - hVal) * 0.24
-          : 0.24 + (1 - hVal) * 0.26;
+          ? 0.15 + (1 - hVal) * 0.28
+          : 0.20 + (1 - hVal) * 0.32;
       const roughByte = clampByte(rough01 * 255);
 
       const o = idx * 4;
@@ -473,14 +475,15 @@ export const RiflingBoreActor: React.FC<RiflingBoreActorProps> = ({
       <mesh
         geometry={geometries.boreGeo}
         position={[centerX, 0, 0]}
-        renderOrder={1}
+        renderOrder={2}
         raycast={noRiflingRaycast}
       >
         <meshStandardMaterial
           ref={boreMatRef}
           color={spec.chromeLined ? '#dde5ee' : '#9ea8b4'}
           metalness={spec.chromeLined ? 0.92 : 0.86}
-          roughness={spec.chromeLined ? 0.24 : 0.34}
+          roughness={spec.chromeLined ? 0.22 : 0.30}
+          envMapIntensity={spec.chromeLined ? 1.85 : 1.55}
           side={THREE.BackSide}
           polygonOffset
           polygonOffsetFactor={-1}
@@ -494,14 +497,15 @@ export const RiflingBoreActor: React.FC<RiflingBoreActorProps> = ({
       <mesh
         geometry={geometries.throatGeo}
         position={[throatCenterX, 0, 0]}
-        renderOrder={1}
+        renderOrder={2}
         raycast={noRiflingRaycast}
       >
         <meshStandardMaterial
           ref={throatMatRef}
           color={spec.chromeLined ? '#c8ccd2' : '#b88966'}
           metalness={spec.chromeLined ? 0.88 : 0.84}
-          roughness={spec.chromeLined ? 0.28 : 0.36}
+          roughness={spec.chromeLined ? 0.26 : 0.34}
+          envMapIntensity={1.45}
           side={THREE.BackSide}
           polygonOffset
           polygonOffsetFactor={-1}
