@@ -195,6 +195,7 @@ export interface ArmorTheaterThemePalette {
   readonly fillLightHex: string;
   readonly fillLightIntensity: number;
   readonly badgeBgRgba: string;
+  readonly badgeBorderHex: string | null;
   readonly badgeTitleHex: string;
   readonly badgeMetaHex: string;
   readonly crewBorderIdleHex: string;
@@ -223,6 +224,7 @@ const DARK_THEATER_PALETTE: ArmorTheaterThemePalette = {
   fillLightHex: '#38bdf8',
   fillLightIntensity: 0.45,
   badgeBgRgba: 'rgba(7, 13, 26, 0.92)',
+  badgeBorderHex: null,
   badgeTitleHex: '#f8fafc',
   badgeMetaHex: '#94a3b8',
   crewBorderIdleHex: '#334155',
@@ -251,6 +253,7 @@ const DAYLIGHT_THEATER_PALETTE: ArmorTheaterThemePalette = {
   fillLightHex: '#0284c7',
   fillLightIntensity: 0.55,
   badgeBgRgba: 'rgba(248, 250, 252, 0.96)',
+  badgeBorderHex: '#334155',
   badgeTitleHex: '#0f172a',
   badgeMetaHex: '#1d4ed8',
   crewBorderIdleHex: '#475569',
@@ -592,22 +595,22 @@ function createArmorLayerBadgeTexture(
   }
   ctx.fill();
 
-  ctx.strokeStyle = accentHex;
-  ctx.lineWidth = 3;
+  ctx.strokeStyle = palette.badgeBorderHex ?? accentHex;
+  ctx.lineWidth = palette.isDaylight ? 4 : 3;
   ctx.stroke();
 
-  // Accent bar on left edge
+  // Rich accent band on left edge (slightly wider in Daylight for AAA figure-ground separation)
   ctx.fillStyle = accentHex;
-  ctx.fillRect(14, 16, 6, 56);
+  ctx.fillRect(14, 15, palette.isDaylight ? 8 : 6, 58);
 
   ctx.fillStyle = palette.badgeTitleHex;
   ctx.font = '700 28px ui-monospace, SFMono-Regular, Menlo, monospace';
   ctx.textBaseline = 'middle';
-  ctx.fillText(tag, 30, 34);
+  ctx.fillText(tag, palette.isDaylight ? 32 : 30, 34);
 
   ctx.fillStyle = palette.badgeMetaHex;
-  ctx.font = '600 21px ui-monospace, SFMono-Regular, Menlo, monospace';
-  ctx.fillText(`${Math.round(physicalMm)} mm`, 30, 64);
+  ctx.font = '700 21px ui-monospace, SFMono-Regular, Menlo, monospace';
+  ctx.fillText(`${Math.round(physicalMm)} mm`, palette.isDaylight ? 32 : 30, 64);
 
   const tex = new THREE.CanvasTexture(canvas);
   tex.colorSpace = THREE.SRGBColorSpace;
@@ -1013,18 +1016,18 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
     const badgeAccentHex =
       layer.kind === 'era'
         ? themePalette.isDaylight
-          ? '#d97706'
+          ? '#b45309'
           : '#f59e0b'
         : layer.kind === 'ceramic_nera'
           ? themePalette.isDaylight
-            ? '#0284c7'
+            ? '#0369a1'
             : '#38bdf8'
           : layer.kind === 'du_composite'
             ? themePalette.isDaylight
-              ? '#059669'
+              ? '#047857'
               : '#10b981'
             : themePalette.isDaylight
-              ? '#475569'
+              ? '#334155'
               : '#94a3b8';
 
     const badgeTex = useMemo(
@@ -1046,6 +1049,8 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
         depthWrite: false,
         depthTest: false,
         sizeAttenuation: true,
+        fog: false,
+        toneMapped: false,
       });
     }, [badgeTex]);
 
@@ -1072,14 +1077,15 @@ const ArmorLayerMesh: React.FC<ArmorLayerMeshProps> = React.memo(
         {/* Crisp high-contrast anchor tick & vertical leader connecting top armor edge to billboard */}
         <mesh position={[0, 0.25, 0]}>
           <sphereGeometry args={[0.42, 10, 8]} />
-          <meshBasicMaterial color={badgeAccentHex} />
+          <meshBasicMaterial color={badgeAccentHex} fog={false} />
         </mesh>
         <mesh position={[0, leaderH * 0.5, 0]}>
           <boxGeometry args={[0.2, leaderH, 0.2]} />
           <meshBasicMaterial
             color={badgeAccentHex}
             transparent
-            opacity={0.88}
+            opacity={0.92}
+            fog={false}
           />
         </mesh>
         {/* Camera-facing THREE.Sprite billboard: staggered even/odd tier elevations prevent contact on tilted glacis */}
