@@ -38,6 +38,7 @@ import {
   type TaxonomyAxisId,
 } from './mechanismShowdownSpecs';
 import { WeaponSilhouetteSvg } from './WeaponSilhouetteSvg';
+import '../../styles/showdown.css';
 
 export type ShowdownViewMode = 'matrix' | 'showdown';
 
@@ -473,8 +474,9 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
     <dialog
       ref={dialogRef}
       className="showdown-dialog"
+      role="dialog"
+      aria-modal="true"
       aria-labelledby={titleId}
-      aria-label={ui.dialogAria}
     >
       {/* Top Studio Header */}
       <header className="showdown-header">

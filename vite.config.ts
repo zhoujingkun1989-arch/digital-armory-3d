@@ -56,6 +56,13 @@ export default defineConfig({
             normId.includes('/src/weapons/types.ts') ||
             normId.includes('/src/weapons/manifests.ts') ||
             normId.includes('/src/engine/physics/armoryPhysics.ts') ||
+            normId.includes('/src/engine/utils/assetUrl.ts') ||
+            normId.includes('/src/engine/canvas/graphicsQuality.ts')
+          ) {
+            return 'armory-catalog';
+          }
+
+          if (
             normId.includes('/src/engine/fieldstrip/fieldStripSpecs.ts') ||
             normId.includes('/src/engine/malfunctions/malfunctionSpecs.ts') ||
             normId.includes('/src/engine/cartridges/cartridgeSpecs.ts')
@@ -63,16 +70,34 @@ export default defineConfig({
             return 'armory-specs';
           }
 
+          if (normId.includes('/src/engine/physics/externalBallistics.ts')) {
+            return 'armory-ballistics-physics';
+          }
+
           if (
             normId.includes('/src/i18n/uiStrings.ts') ||
-            normId.includes('/src/i18n/weaponFallbacks.ts') ||
-            normId.includes('/src/features/armory/mechanismShowdownSpecs.ts')
+            normId.includes('/src/i18n/weaponFallbacks.ts')
           ) {
             return 'armory-i18n';
           }
 
+          if (normId.includes('/src/features/armory/mechanismShowdownSpecs.ts')) {
+            return 'armory-showdown-specs';
+          }
+
           if (normId.includes('/src/features/armory/WeaponSilhouetteSvg.tsx')) {
             return 'armory-silhouettes';
+          }
+
+          if (
+            normId.includes('/src/engine/materials/') ||
+            normId.includes('/src/engine/actors/StencilSectionCap.tsx')
+          ) {
+            return 'armory-materials';
+          }
+
+          if (normId.includes('/src/engine/geometry/glbAssetService.ts')) {
+            return 'armory-glb';
           }
 
           if (
@@ -82,8 +107,16 @@ export default defineConfig({
             return 'armory-audio';
           }
 
-          if (normId.includes('/src/engine/geometry/glbAssetService.ts')) {
-            return 'armory-glb';
+          if (
+            normId.includes('/src/engine/actors/') ||
+            normId.includes('/src/engine/canvas/') ||
+            normId.includes('/src/engine/ballistics/magazineStackSpecs.ts') ||
+            normId.includes('/src/features/monograph/MonographCaptureRig.tsx') ||
+            normId.includes(
+              '/src/features/showdown3d/SplitShowdownViewport.tsx'
+            )
+          ) {
+            return 'armory-stage';
           }
 
           return undefined;

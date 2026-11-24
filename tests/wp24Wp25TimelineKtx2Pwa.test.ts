@@ -90,10 +90,19 @@ describe('WP-24 Timeline & WP-25a KTX2/Basis + PWA Offline Museum', () => {
       '/digital-armory-3d/'
     );
     expect(tankOffline.urls).toContain(
+      '/digital-armory-3d/models/ztz99a.glb'
+    );
+    expect(tankOffline.urls).toContain(
       '/digital-armory-3d/narrations/ztz99a.json'
     );
     expect(tankOffline.urls).toContain(
-      '/digital-armory-3d/textures/ztz99a_v3_hull_albedo.webp'
+      '/digital-armory-3d/textures/ztz99a_v3_armor_hull_albedo.webp'
+    );
+    expect(tankOffline.urls).toContain(
+      '/digital-armory-3d/hdri/heavy_armor_hangar.hdr'
+    );
+    expect(tankOffline.urls).toContain(
+      '/digital-armory-3d/draco/draco_decoder.wasm'
     );
   });
 });

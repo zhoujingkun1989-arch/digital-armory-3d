@@ -58,6 +58,8 @@ import { assembleMonographDossier } from './monographDataAssembler';
 import { MonographDkDocument } from './MonographDkDocument';
 import { MonographDocument } from './MonographDocument';
 import { MonographKidsDocument } from './MonographKidsDocument';
+import '../../styles/monograph.css';
+import '../../styles/dk-monograph.css';
 
 export interface MonographPrintReadySignal {
   ready: boolean;
@@ -232,14 +234,21 @@ function waitWithTimeout<T>(promise: Promise<T>, ms: number): Promise<T | void> 
   ]);
 }
 
-export const MonographPrintModal: React.FC = () => {
+export interface MonographPrintModalProps {
+  forceOpen?: boolean;
+}
+
+export const MonographPrintModal: React.FC<MonographPrintModalProps> = ({
+  forceOpen = false,
+}) => {
   const titleId = useId();
   const callsignInputId = useId();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const previewScrollRef = useRef<HTMLDivElement>(null);
   const printPortalRef = useRef<HTMLDivElement>(null);
 
-  const open = useAppStore((s) => s.monographModalOpen);
+  const storeOpen = useAppStore((s) => s.monographModalOpen);
+  const open = forceOpen || storeOpen;
   const weaponId = useAppStore((s) => s.monographWeaponId);
   const launchOptions = useAppStore((s) => s.monographLaunchOptions);
   const setWeaponId = useAppStore((s) => s.setMonographWeaponId);
@@ -655,6 +664,16 @@ export const MonographPrintModal: React.FC = () => {
     };
 
     const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !e.defaultPrevented) {
+        e.preventDefault();
+        if (dialogRef.current?.open) {
+          dialogRef.current.close();
+        } else {
+          cancelMonographCapture();
+          closeModal();
+        }
+        return;
+      }
       if (
         (e.metaKey || e.ctrlKey) &&
         !e.altKey &&
@@ -678,7 +697,7 @@ export const MonographPrintModal: React.FC = () => {
       );
       window.removeEventListener('keydown', onKeyDown);
     };
-  }, [open, readyToPrint, handleTriggerPrint]);
+  }, [open, readyToPrint, handleTriggerPrint, closeModal]);
 
   if (!open) return null;
 
@@ -746,6 +765,8 @@ export const MonographPrintModal: React.FC = () => {
       <dialog
         ref={dialogRef}
         className="monograph-dialog"
+        role="dialog"
+        aria-modal="true"
         aria-labelledby={titleId}
         {...({ closedby: 'any' } as Record<string, string>)}
       >

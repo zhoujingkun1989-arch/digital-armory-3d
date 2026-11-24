@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useId, useRef, useState } from 'react';
 import {
   Check,
   Download,
@@ -21,9 +21,19 @@ import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest, WEAPON_MANIFESTS } from '../../weapons/manifests';
 import { preloadWeaponPlugin, useWeaponPlugin } from '../../weapons/registry';
 import type { WeaponId } from '../../weapons/types';
+import '../../styles/atlas-modal.css';
 
-export const TextureAtlasModal: React.FC = () => {
-  const open = useAppStore((s) => s.textureModalOpen);
+export interface TextureAtlasModalProps {
+  forceOpen?: boolean;
+}
+
+export const TextureAtlasModal: React.FC<TextureAtlasModalProps> = ({
+  forceOpen = false,
+}) => {
+  const titleId = useId();
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const storeOpen = useAppStore((s) => s.textureModalOpen);
+  const open = forceOpen || storeOpen;
   const setOpen = useAppStore((s) => s.setTextureModalOpen);
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const lang = useAppStore((s) => s.lang);
@@ -32,6 +42,30 @@ export const TextureAtlasModal: React.FC = () => {
 
   const [weaponTab, setWeaponTab] = useState<WeaponId>(activeWeaponId);
   const [activeSuiteId, setActiveSuiteId] = useState<string>('');
+
+  useEffect(() => {
+    if (!open || typeof window === 'undefined') return;
+    const previousFocus =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+    closeBtnRef.current?.focus();
+
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation();
+        setOpen(false);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown, true);
+    return () => {
+      window.removeEventListener('keydown', onKeyDown, true);
+      if (previousFocus && previousFocus.isConnected) {
+        previousFocus.focus();
+      }
+    };
+  }, [open, setOpen]);
 
   const tabManifest = getWeaponManifest(weaponTab);
   const tabPlugin = useWeaponPlugin(weaponTab);
@@ -54,7 +88,7 @@ export const TextureAtlasModal: React.FC = () => {
       onClick={() => setOpen(false)}
       role="dialog"
       aria-modal="true"
-      aria-label={atlasUi.dialogAria}
+      aria-labelledby={titleId}
     >
       <div className="tex-modal-card" onClick={(e) => e.stopPropagation()}>
         {/* Header */}
@@ -90,7 +124,7 @@ export const TextureAtlasModal: React.FC = () => {
               </div>
             </div>
             <div>
-              <h2 className="tex-modal-title">
+              <h2 id={titleId} className="tex-modal-title">
                 {getLocalizedAtlasHeading(
                   weaponTab,
                   lang,
@@ -112,6 +146,7 @@ export const TextureAtlasModal: React.FC = () => {
             </button>
 
             <button
+              ref={closeBtnRef}
               type="button"
               className="tex-close-btn"
               onClick={() => setOpen(false)}
