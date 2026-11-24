@@ -728,7 +728,7 @@ MODELS_OUT.parent.mkdir(parents=True, exist_ok=True)
 TEX_OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 ATLAS_SIZE = 2048
-BAKE_AO_SAMPLES = 48
+BAKE_AO_SAMPLES = 28
 BAKE_NORMAL_SAMPLES = 16
 
 # Exact Three.js (X=muzzle, Y=up, Z=right) -> Blender (X=muzzle, Y=-right, Z=up) matrix (det = +1)
@@ -953,9 +953,9 @@ def _build_pbr_mat(
 
     base_col_a = srgb_to_lin(*base_srgb)
     base_col_b = srgb_to_lin(
-        min(1.0, base_srgb[0] * 1.05),
-        min(1.0, base_srgb[1] * 1.05),
-        min(1.0, base_srgb[2] * 1.05),
+        min(1.0, base_srgb[0] * 1.032),
+        min(1.0, base_srgb[1] * 1.032),
+        min(1.0, base_srgb[2] * 1.032),
     )
     mix_base = nt.nodes.new("ShaderNodeMix")
     mix_base.data_type = "RGBA"
@@ -977,13 +977,24 @@ def _build_pbr_mat(
     met_sock = met_node.outputs[0]
 
     if edge_wear > 0.001:
-        geom = nt.nodes.new("ShaderNodeNewGeometry")
+        # Tight Cycles inside-AO convexity mask (replaces blotchy Pointiness on large flat receiver/mag/scope faces!)
+        ao_in = nt.nodes.new("ShaderNodeAmbientOcclusion")
+        ao_in.samples = 8
+        ao_in.inside = True
+        ao_in.only_local = True
+        ao_in.inputs["Distance"].default_value = 0.048
+
+        inv_ao = nt.nodes.new("ShaderNodeMath")
+        inv_ao.operation = "SUBTRACT"
+        inv_ao.inputs[0].default_value = 1.0
+        nt.links.new(ao_in.outputs["AO"], inv_ao.inputs[1])
+
         ramp = nt.nodes.new("ShaderNodeValToRGB")
-        ramp.color_ramp.elements[0].position = 0.522
+        ramp.color_ramp.elements[0].position = 0.26
         ramp.color_ramp.elements[0].color = (0.0, 0.0, 0.0, 1.0)
-        ramp.color_ramp.elements[1].position = 0.592
+        ramp.color_ramp.elements[1].position = 0.66
         ramp.color_ramp.elements[1].color = (edge_wear, edge_wear, edge_wear, 1.0)
-        nt.links.new(geom.outputs["Pointiness"], ramp.inputs["Fac"])
+        nt.links.new(inv_ao.outputs["Value"], ramp.inputs["Fac"])
 
         mul_w = nt.nodes.new("ShaderNodeMath")
         mul_w.operation = "MULTIPLY"
@@ -999,7 +1010,7 @@ def _build_pbr_mat(
 
         mix_edge_r = nt.nodes.new("ShaderNodeMix")
         mix_edge_r.data_type = "FLOAT"
-        mix_edge_r.inputs[3].default_value = max(0.15, roughness - 0.16)
+        mix_edge_r.inputs[3].default_value = max(0.15, roughness - 0.14)
         nt.links.new(mul_w.outputs["Value"], mix_edge_r.inputs[0])
         nt.links.new(rgh_sock, mix_edge_r.inputs[2])
         rgh_sock = mix_edge_r.outputs[0]
@@ -1156,30 +1167,40 @@ def _build_arrowhead_brake_outer_mat() -> bpy.types.Material:
         el.color = srgb_to_lin(*rgb)
     nt.links.new(add_h.outputs["Value"], ramp_c.inputs["Fac"])
 
-    # Bright silver edge wear along angular arrowhead tank-brake facets!
-    geom = nt.nodes.new("ShaderNodeNewGeometry")
+    # Crisp inside-AO metallic edge highlight along angular arrowhead tank-brake facets (zero Pointiness blotches!)
+    ao_in = nt.nodes.new("ShaderNodeAmbientOcclusion")
+    ao_in.samples = 8
+    ao_in.inside = True
+    ao_in.only_local = True
+    ao_in.inputs["Distance"].default_value = 0.052
+
+    inv_ao = nt.nodes.new("ShaderNodeMath")
+    inv_ao.operation = "SUBTRACT"
+    inv_ao.inputs[0].default_value = 1.0
+    nt.links.new(ao_in.outputs["AO"], inv_ao.inputs[1])
+
     ramp_e = nt.nodes.new("ShaderNodeValToRGB")
-    ramp_e.color_ramp.elements[0].position = 0.520
+    ramp_e.color_ramp.elements[0].position = 0.28
     ramp_e.color_ramp.elements[0].color = (0.0, 0.0, 0.0, 1.0)
-    ramp_e.color_ramp.elements[1].position = 0.585
-    ramp_e.color_ramp.elements[1].color = (0.58, 0.58, 0.58, 1.0)
-    nt.links.new(geom.outputs["Pointiness"], ramp_e.inputs["Fac"])
+    ramp_e.color_ramp.elements[1].position = 0.68
+    ramp_e.color_ramp.elements[1].color = (0.36, 0.36, 0.36, 1.0)
+    nt.links.new(inv_ao.outputs["Value"], ramp_e.inputs["Fac"])
 
     mix_col = nt.nodes.new("ShaderNodeMix")
     mix_col.data_type = "RGBA"
-    mix_col.inputs[7].default_value = srgb_to_lin(0.80, 0.82, 0.86)
+    mix_col.inputs[7].default_value = srgb_to_lin(0.72, 0.74, 0.78)
     nt.links.new(ramp_e.outputs["Color"], mix_col.inputs[0])
     nt.links.new(ramp_c.outputs["Color"], mix_col.inputs[6])
 
     mix_rgh = nt.nodes.new("ShaderNodeMix")
     mix_rgh.data_type = "FLOAT"
-    mix_rgh.inputs[2].default_value = 0.31
-    mix_rgh.inputs[3].default_value = 0.17
+    mix_rgh.inputs[2].default_value = 0.28
+    mix_rgh.inputs[3].default_value = 0.16
     nt.links.new(ramp_e.outputs["Color"], mix_rgh.inputs[0])
 
     mix_met = nt.nodes.new("ShaderNodeMix")
     mix_met.data_type = "FLOAT"
-    mix_met.inputs[2].default_value = 0.85
+    mix_met.inputs[2].default_value = 0.87
     mix_met.inputs[3].default_value = 0.96
     nt.links.new(ramp_e.outputs["Color"], mix_met.inputs[0])
 
@@ -1352,122 +1373,123 @@ def _build_a2_diamond_checkering_mat() -> bpy.types.Material:
 def create_material_library() -> dict[str, bpy.types.Material]:
     return {
         # --- SUITE 1: Receiver Atlas Materials (`m82a1_v3_receiver`) ---
+        # Deep manganese-phosphate charcoal parkerized heavy stamped steel (AgX calibrated, zero chalky blotches!)
         "R_UpperParkerized": _build_pbr_mat(
             "R_UpperParkerized",
-            base_srgb=(0.214, 0.222, 0.236),
-            roughness=0.31,
-            metallic=0.82,
-            bevel_r=0.036,
-            edge_wear=0.52,
-            edge_srgb=(0.80, 0.82, 0.86),
+            base_srgb=(0.188, 0.195, 0.207),
+            roughness=0.295,
+            metallic=0.86,
+            bevel_r=0.026,
+            edge_wear=0.28,
+            edge_srgb=(0.68, 0.71, 0.76),
             grain_scale=66.0,
-            grain_bump=0.042,
-            voronoi_grain=0.56,
-            voronoi_scale=90.0,
-            rough_var=0.038,
+            grain_bump=0.032,
+            voronoi_grain=0.46,
+            voronoi_scale=92.0,
+            rough_var=0.028,
         ),
         "R_LowerParkerized": _build_pbr_mat(
             "R_LowerParkerized",
-            base_srgb=(0.212, 0.220, 0.234),
-            roughness=0.32,
-            metallic=0.82,
-            bevel_r=0.038,
-            edge_wear=0.52,
-            edge_srgb=(0.80, 0.82, 0.86),
+            base_srgb=(0.184, 0.191, 0.203),
+            roughness=0.305,
+            metallic=0.86,
+            bevel_r=0.028,
+            edge_wear=0.28,
+            edge_srgb=(0.68, 0.71, 0.76),
             grain_scale=68.0,
-            grain_bump=0.044,
-            voronoi_grain=0.56,
-            voronoi_scale=92.0,
-            rough_var=0.040,
+            grain_bump=0.034,
+            voronoi_grain=0.46,
+            voronoi_scale=94.0,
+            rough_var=0.030,
         ),
         "R_DarkReinforce": _build_pbr_mat(
             "R_DarkReinforce",
-            base_srgb=(0.162, 0.168, 0.180),
-            roughness=0.36,
-            metallic=0.83,
-            bevel_r=0.026,
-            edge_wear=0.54,
-            edge_srgb=(0.78, 0.80, 0.84),
+            base_srgb=(0.148, 0.154, 0.165),
+            roughness=0.34,
+            metallic=0.86,
+            bevel_r=0.022,
+            edge_wear=0.30,
+            edge_srgb=(0.66, 0.70, 0.74),
             grain_scale=60.0,
-            grain_bump=0.038,
-            voronoi_grain=0.50,
+            grain_bump=0.030,
+            voronoi_grain=0.42,
             voronoi_scale=84.0,
-            rough_var=0.036,
+            rough_var=0.028,
         ),
         "R_BrassDeflector": _build_m82_brass_deflector_mat(),
         "R_RailCrest": _build_pbr_mat(
             "R_RailCrest",
-            base_srgb=(0.228, 0.236, 0.250),
-            roughness=0.26,
-            metallic=0.87,
-            bevel_r=0.022,
-            edge_wear=0.60,
-            edge_srgb=(0.86, 0.88, 0.92),
+            base_srgb=(0.198, 0.206, 0.218),
+            roughness=0.25,
+            metallic=0.88,
+            bevel_r=0.018,
+            edge_wear=0.32,
+            edge_srgb=(0.74, 0.77, 0.82),
             grain_scale=36.0,
-            grain_bump=0.026,
+            grain_bump=0.022,
             aniso_stretch=(0.5, 3.0, 3.0),
-            rough_var=0.032,
+            rough_var=0.026,
         ),
         "R_SlotDark": _build_pbr_mat(
             "R_SlotDark",
             base_srgb=(0.095, 0.100, 0.108),
-            roughness=0.52,
-            metallic=0.72,
-            bevel_r=0.016,
+            roughness=0.50,
+            metallic=0.74,
+            bevel_r=0.014,
             grain_scale=36.0,
-            grain_bump=0.026,
-            rough_var=0.030,
+            grain_bump=0.024,
+            rough_var=0.026,
         ),
         "R_BrightSteel": _build_pbr_mat(
             "R_BrightSteel",
             base_srgb=(0.78, 0.81, 0.85),
             roughness=0.18,
             metallic=0.96,
-            bevel_r=0.020,
-            edge_wear=0.22,
+            bevel_r=0.018,
+            edge_wear=0.18,
             edge_srgb=(0.92, 0.94, 0.96),
             grain_scale=28.0,
-            grain_bump=0.020,
+            grain_bump=0.018,
             aniso_stretch=(0.45, 3.0, 3.0),
-            rough_var=0.024,
+            rough_var=0.022,
         ),
         "R_SorbothaneRubber": _build_pbr_mat(
             "R_SorbothaneRubber",
-            base_srgb=(0.106, 0.110, 0.118),
+            base_srgb=(0.092, 0.096, 0.103),
             roughness=0.88,
             metallic=0.00,
-            bevel_r=0.032,
-            edge_wear=0.14,
-            edge_srgb=(0.19, 0.196, 0.208),
+            bevel_r=0.028,
+            edge_wear=0.08,
+            edge_srgb=(0.17, 0.176, 0.186),
             grain_scale=64.0,
-            grain_bump=0.110,
-            voronoi_grain=0.68,
+            grain_bump=0.095,
+            voronoi_grain=0.62,
             voronoi_scale=92.0,
-            rough_var=0.036,
+            rough_var=0.032,
         ),
         "R_CarryHandleGrip": _build_pbr_mat(
             "R_CarryHandleGrip",
-            base_srgb=(0.115, 0.120, 0.128),
-            roughness=0.78,
+            base_srgb=(0.105, 0.110, 0.118),
+            roughness=0.76,
             metallic=0.00,
-            bevel_r=0.028,
-            edge_wear=0.18,
-            edge_srgb=(0.22, 0.228, 0.240),
+            bevel_r=0.024,
+            edge_wear=0.12,
+            edge_srgb=(0.20, 0.208, 0.220),
             grain_scale=66.0,
-            grain_bump=0.120,
-            voronoi_grain=0.72,
+            grain_bump=0.100,
+            voronoi_grain=0.66,
             voronoi_scale=88.0,
-            rough_var=0.042,
+            rough_var=0.036,
         ),
         "R_InnerDark": _build_pbr_mat(
             "R_InnerDark",
-            base_srgb=(0.105, 0.110, 0.118),
-            roughness=0.52,
-            metallic=0.75,
-            bevel_r=0.016,
+            base_srgb=(0.098, 0.103, 0.112),
+            roughness=0.50,
+            metallic=0.76,
+            bevel_r=0.014,
             grain_scale=34.0,
-            grain_bump=0.024,
-            rough_var=0.028,
+            grain_bump=0.022,
+            rough_var=0.026,
         ),
 
         # --- SUITE 2: Ordnance / Barrel / Brake / Bolt / Bipod / FCG (`m82a1_v3_ordnance`) ---
@@ -1475,94 +1497,94 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         "M_BrakeChamberSoot": _build_arrowhead_chamber_soot_mat(),
         "M_FlutedBarrelSteel": _build_pbr_mat(
             "M_FlutedBarrelSteel",
-            base_srgb=(0.212, 0.220, 0.232),
-            roughness=0.27,
-            metallic=0.86,
-            bevel_r=0.026,
-            edge_wear=0.54,
-            edge_srgb=(0.82, 0.85, 0.89),
-            grain_scale=42.0,
-            grain_bump=0.036,
+            base_srgb=(0.198, 0.206, 0.219),
+            roughness=0.25,
+            metallic=0.89,
+            bevel_r=0.022,
+            edge_wear=0.30,
+            edge_srgb=(0.74, 0.77, 0.82),
+            grain_scale=44.0,
+            grain_bump=0.028,
             aniso_stretch=(4.2, 0.45, 0.45),
-            rough_var=0.034,
+            rough_var=0.026,
         ),
         "M_BarrelFluteValley": _build_pbr_mat(
             "M_BarrelFluteValley",
-            base_srgb=(0.152, 0.159, 0.172),
+            base_srgb=(0.132, 0.138, 0.150),
             roughness=0.36,
-            metallic=0.83,
-            bevel_r=0.018,
-            edge_wear=0.28,
-            edge_srgb=(0.68, 0.70, 0.74),
+            metallic=0.85,
+            bevel_r=0.016,
+            edge_wear=0.18,
+            edge_srgb=(0.60, 0.63, 0.68),
             grain_scale=38.0,
-            grain_bump=0.032,
+            grain_bump=0.028,
             aniso_stretch=(0.45, 3.6, 3.6),
-            rough_var=0.032,
+            rough_var=0.028,
         ),
         "M_BipodParkerized": _build_pbr_mat(
             "M_BipodParkerized",
-            base_srgb=(0.194, 0.202, 0.214),
-            roughness=0.33,
-            metallic=0.83,
-            bevel_r=0.028,
-            edge_wear=0.52,
-            edge_srgb=(0.80, 0.82, 0.86),
+            base_srgb=(0.176, 0.184, 0.196),
+            roughness=0.31,
+            metallic=0.86,
+            bevel_r=0.024,
+            edge_wear=0.28,
+            edge_srgb=(0.68, 0.71, 0.76),
             grain_scale=64.0,
-            grain_bump=0.044,
-            voronoi_grain=0.52,
+            grain_bump=0.034,
+            voronoi_grain=0.44,
             voronoi_scale=88.0,
-            rough_var=0.038,
+            rough_var=0.030,
         ),
         "M_OiledCarrier": _build_pbr_mat(
             "M_OiledCarrier",
-            base_srgb=(0.224, 0.233, 0.246),
-            roughness=0.23,
-            metallic=0.91,
-            bevel_r=0.028,
-            edge_wear=0.58,
-            edge_srgb=(0.86, 0.88, 0.92),
+            base_srgb=(0.205, 0.214, 0.228),
+            roughness=0.22,
+            metallic=0.92,
+            bevel_r=0.022,
+            edge_wear=0.30,
+            edge_srgb=(0.76, 0.79, 0.84),
             grain_scale=30.0,
-            grain_bump=0.028,
+            grain_bump=0.022,
             aniso_stretch=(0.35, 3.6, 3.6),
-            rough_var=0.034,
+            rough_var=0.026,
         ),
         "M_MachinedSteel": _build_pbr_mat(
             "M_MachinedSteel",
             base_srgb=(0.76, 0.79, 0.83),
             roughness=0.18,
             metallic=0.96,
-            bevel_r=0.020,
-            edge_wear=0.24,
+            bevel_r=0.018,
+            edge_wear=0.18,
             edge_srgb=(0.92, 0.94, 0.96),
             grain_scale=28.0,
-            grain_bump=0.020,
+            grain_bump=0.018,
             aniso_stretch=(0.45, 3.2, 3.2),
-            rough_var=0.025,
+            rough_var=0.022,
         ),
         "M_BoltMidSteel": _build_pbr_mat(
             "M_BoltMidSteel",
             base_srgb=(0.54, 0.57, 0.62),
-            roughness=0.23,
+            roughness=0.22,
             metallic=0.94,
-            bevel_r=0.020,
-            edge_wear=0.32,
+            bevel_r=0.018,
+            edge_wear=0.22,
             edge_srgb=(0.86, 0.88, 0.92),
             grain_scale=32.0,
-            grain_bump=0.024,
+            grain_bump=0.022,
             aniso_stretch=(0.45, 3.2, 3.2),
-            rough_var=0.028,
+            rough_var=0.024,
         ),
         "M_DarkHardware": _build_pbr_mat(
             "M_DarkHardware",
-            base_srgb=(0.155, 0.162, 0.174),
-            roughness=0.35,
-            metallic=0.84,
-            bevel_r=0.022,
-            edge_wear=0.46,
-            edge_srgb=(0.78, 0.80, 0.84),
+            base_srgb=(0.148, 0.155, 0.166),
+            roughness=0.33,
+            metallic=0.86,
+            bevel_r=0.018,
+            edge_wear=0.26,
+            edge_srgb=(0.66, 0.70, 0.75),
             grain_scale=52.0,
-            grain_bump=0.034,
-            rough_var=0.034,
+            grain_bump=0.028,
+            rough_var=0.028,
         ),
         "M_SpringSteel": _build_pbr_mat(
             "M_SpringSteel",
@@ -1576,40 +1598,41 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         ),
         "M_InnerDark": _build_pbr_mat(
             "M_InnerDark",
-            base_srgb=(0.095, 0.100, 0.108),
-            roughness=0.52,
+            base_srgb=(0.092, 0.097, 0.105),
+            roughness=0.50,
             metallic=0.76,
-            bevel_r=0.016,
+            bevel_r=0.014,
             grain_scale=34.0,
-            grain_bump=0.026,
-            rough_var=0.028,
+            grain_bump=0.024,
+            rough_var=0.026,
         ),
 
         # --- SUITE 3: Optics, Scope Rings, Grip & Giant .50 BMG Mag (`m82a1_v3_optics_mag`) ---
+        # Satin Type-III hardcoat anodized Leupold Mark 4 optical tube (deep obsidian black, silky specular!)
         "O_ScopeAnodized": _build_pbr_mat(
             "O_ScopeAnodized",
-            base_srgb=(0.148, 0.155, 0.166),
-            roughness=0.26,
-            metallic=0.78,
-            bevel_r=0.024,
-            edge_wear=0.44,
-            edge_srgb=(0.76, 0.78, 0.82),
+            base_srgb=(0.132, 0.138, 0.149),
+            roughness=0.24,
+            metallic=0.82,
+            bevel_r=0.020,
+            edge_wear=0.22,
+            edge_srgb=(0.64, 0.67, 0.72),
             grain_scale=56.0,
-            grain_bump=0.026,
+            grain_bump=0.018,
             aniso_stretch=(3.5, 0.5, 0.5),
-            rough_var=0.028,
+            rough_var=0.022,
         ),
         "O_TurretDrum": _build_pbr_mat(
             "O_TurretDrum",
-            base_srgb=(0.162, 0.170, 0.184),
-            roughness=0.30,
-            metallic=0.76,
-            bevel_r=0.018,
-            edge_wear=0.36,
-            edge_srgb=(0.78, 0.80, 0.84),
+            base_srgb=(0.148, 0.155, 0.168),
+            roughness=0.27,
+            metallic=0.80,
+            bevel_r=0.016,
+            edge_wear=0.20,
+            edge_srgb=(0.66, 0.69, 0.74),
             grain_scale=46.0,
-            grain_bump=0.022,
-            rough_var=0.024,
+            grain_bump=0.018,
+            rough_var=0.020,
         ),
         "O_LeupoldGoldRing": _build_pbr_mat(
             "O_LeupoldGoldRing",
@@ -1632,45 +1655,45 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         ),
         "O_RingSteel": _build_pbr_mat(
             "O_RingSteel",
-            base_srgb=(0.178, 0.186, 0.198),
-            roughness=0.30,
-            metallic=0.85,
-            bevel_r=0.024,
-            edge_wear=0.52,
-            edge_srgb=(0.80, 0.82, 0.86),
+            base_srgb=(0.162, 0.169, 0.180),
+            roughness=0.28,
+            metallic=0.87,
+            bevel_r=0.020,
+            edge_wear=0.28,
+            edge_srgb=(0.68, 0.71, 0.76),
             grain_scale=54.0,
-            grain_bump=0.032,
-            voronoi_grain=0.45,
+            grain_bump=0.026,
+            voronoi_grain=0.40,
             voronoi_scale=80.0,
-            rough_var=0.032,
+            rough_var=0.026,
         ),
         "O_MagParkerized": _build_pbr_mat(
             "O_MagParkerized",
-            base_srgb=(0.214, 0.222, 0.236),
-            roughness=0.31,
-            metallic=0.82,
-            bevel_r=0.028,
-            edge_wear=0.56,
-            edge_srgb=(0.82, 0.84, 0.88),
+            base_srgb=(0.186, 0.193, 0.205),
+            roughness=0.295,
+            metallic=0.86,
+            bevel_r=0.024,
+            edge_wear=0.28,
+            edge_srgb=(0.68, 0.71, 0.76),
             grain_scale=64.0,
-            grain_bump=0.042,
-            voronoi_grain=0.56,
+            grain_bump=0.032,
+            voronoi_grain=0.46,
             voronoi_scale=88.0,
-            rough_var=0.038,
+            rough_var=0.028,
         ),
         "O_GripPolymer": _build_pbr_mat(
             "O_GripPolymer",
-            base_srgb=(0.132, 0.138, 0.148),
-            roughness=0.74,
+            base_srgb=(0.114, 0.119, 0.128),
+            roughness=0.72,
             metallic=0.00,
-            bevel_r=0.038,
-            edge_wear=0.22,
-            edge_srgb=(0.25, 0.26, 0.275),
+            bevel_r=0.030,
+            edge_wear=0.12,
+            edge_srgb=(0.20, 0.208, 0.220),
             grain_scale=64.0,
-            grain_bump=0.125,
-            voronoi_grain=0.74,
+            grain_bump=0.095,
+            voronoi_grain=0.66,
             voronoi_scale=86.0,
-            rough_var=0.045,
+            rough_var=0.036,
         ),
         "O_A2Checkering": _build_a2_diamond_checkering_mat(),
         "O_FollowerOrange": _build_pbr_mat(
@@ -1691,11 +1714,11 @@ def create_material_library() -> dict[str, bpy.types.Material]:
             roughness=0.18,
             metallic=0.96,
             bevel_r=0.018,
-            edge_wear=0.22,
+            edge_wear=0.18,
             edge_srgb=(0.92, 0.94, 0.96),
             grain_scale=28.0,
-            grain_bump=0.020,
-            rough_var=0.024,
+            grain_bump=0.018,
+            rough_var=0.022,
         ),
         "O_SpringSteel": _build_pbr_mat(
             "O_SpringSteel",
@@ -1710,12 +1733,12 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         "O_InnerDark": _build_pbr_mat(
             "O_InnerDark",
             base_srgb=(0.088, 0.092, 0.100),
-            roughness=0.56,
-            metallic=0.72,
+            roughness=0.54,
+            metallic=0.74,
             bevel_r=0.014,
             grain_scale=34.0,
-            grain_bump=0.024,
-            rough_var=0.028,
+            grain_bump=0.022,
+            rough_var=0.026,
         ),
     }
 
@@ -2389,6 +2412,7 @@ def finish_part(
     bevel_segs: int = 2,
     sharp_deg: float = 34.0,
     weighted_normals: bool = True,
+    lock_flat_walls: bool = False,
 ) -> bpy.types.Object:
     select_only([obj], obj)
     if bevel_w > 0.0:
@@ -2405,6 +2429,7 @@ def finish_part(
     bm = bmesh.new()
     bm.from_mesh(obj.data)
     bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)
+    bmesh.ops.dissolve_degenerate(bm, dist=1e-6, edges=bm.edges)
     degen = [f for f in bm.faces if f.calc_area() < 1e-10]
     if degen:
         bmesh.ops.delete(bm, geom=degen, context="FACES")
@@ -2413,11 +2438,20 @@ def finish_part(
         bmesh.ops.reverse_faces(bm, faces=bm.faces)
 
     angle_rad = math.radians(sharp_deg)
+    flat_rad = math.radians(12.0)
     for f in bm.faces:
         f.smooth = True
     for e in bm.edges:
         if len(e.link_faces) == 2:
-            e.smooth = e.calc_face_angle(0.0) < angle_rad
+            ang = e.calc_face_angle(0.0)
+            is_flat_wall_edge = False
+            if lock_flat_walls and ang > flat_rad:
+                f0, f1 = e.link_faces[0], e.link_faces[1]
+                if (abs(f0.normal.y) > 0.985 or abs(f1.normal.y) > 0.985) and (
+                    f0.calc_area() > 0.08 or f1.calc_area() > 0.08
+                ):
+                    is_flat_wall_edge = True
+            e.smooth = (ang < angle_rad) and (not is_flat_wall_edge)
         else:
             e.smooth = False
     bm.to_mesh(obj.data)
@@ -2428,7 +2462,8 @@ def finish_part(
         select_only([obj], obj)
         wn = obj.modifiers.new(name="WeightedNormal", type="WEIGHTED_NORMAL")
         wn.mode = "FACE_AREA_WITH_ANGLE"
-        wn.weight = 50
+        wn.weight = 100 if lock_flat_walls else 50
+        wn.thresh = 0.01
         wn.keep_sharp = True
         bpy.ops.object.modifier_apply(modifier=wn.name)
     return obj
@@ -2464,14 +2499,14 @@ def build_m82a1_upper_receiver(mats: dict) -> bpy.types.Object:
         ( 1.16, 1.76),
         ( 1.16, 0.20),
     ]
-    shell = mk_extrude_x("up_raw", cross_zy, -20.80, 16.50, bevel=0.030, bevel_segs=2, mat=m_up)
+    shell = mk_extrude_x("up_raw", cross_zy, -20.80, 16.50, bevel=0.032, bevel_segs=3, mat=m_up)
 
     # Disjoint hollowing & cutouts:
     # 1) Interior bolt/barrel tunnel (-20.50 .. +16.20)
     cut_tunnel = mk_box("up_c_tun", 36.70, 2.02, 1.94, [("t", -2.15, 1.15, 0.0)], m_in)
     # 2) Front barrel bushing bore + massive .50 BMG right-side ejection port (disjoint!)
     cut_front_ej = join_objects([
-        mk_cyl("up_c_bore", 0.82, 0.82, 2.20, "x", 28, [("t", 16.10, 1.25, 0.0)], m_in),
+        mk_cyl("up_c_bore", 0.82, 0.82, 2.20, "x", 36, [("t", 16.10, 1.25, 0.0)], m_in),
         mk_box("up_c_ej", 5.70, 1.24, 1.10, [("t", 5.00, 1.32, 0.85)], m_in),
     ], "up_c_fr_ej")
     # 3) Reciprocating right-side charging handle track slot (X in [-7.05, +2.25])
@@ -2480,8 +2515,8 @@ def build_m82a1_upper_receiver(mats: dict) -> bpy.types.Object:
     vent_objs = []
     for i in range(7):
         vx = 8.50 + i * 1.10
-        vent_objs.append(mk_stadium_z(f"up_v_t{i}", 0.21, 0.18, 1.35, 8, [("t", vx, 1.98, 0.0)], m_in))
-        vent_objs.append(mk_stadium_z(f"up_v_b{i}", 0.23, 0.19, 1.35, 8, [("t", vx, 1.06, 0.0)], m_in))
+        vent_objs.append(mk_stadium_z(f"up_v_t{i}", 0.21, 0.18, 1.35, 14, [("t", vx, 1.98, 0.0)], m_in))
+        vent_objs.append(mk_stadium_z(f"up_v_b{i}", 0.23, 0.19, 1.35, 14, [("t", vx, 1.06, 0.0)], m_in))
     cut_vents = join_objects(vent_objs, "up_c_vents")
 
     shell = bool_subtract(shell, [cut_tunnel, cut_front_ej, cut_chg, cut_vents])
@@ -2559,7 +2594,7 @@ def build_m82a1_upper_receiver(mats: dict) -> bpy.types.Object:
     parts.append(mk_box("up_ejlip", 5.86, 0.10, 0.08, [("t", 5.00, 1.98, 1.12)], m_dk, bevel=0.012, bevel_segs=1))
 
     obj = join_objects(parts, "m82a1_upper_receiver")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0, lock_flat_walls=True)
 
 
 def build_m82a1_lower_receiver(mats: dict) -> bpy.types.Object:
@@ -2588,7 +2623,7 @@ def build_m82a1_lower_receiver(mats: dict) -> bpy.types.Object:
         (-19.62, -4.65),
         (-20.80, -4.65),
     ]
-    hull = mk_extrude_z("lo_hull", lower_xy, -1.12, 1.12, bevel=0.040, bevel_segs=2, mat=m_lo)
+    hull = mk_extrude_z("lo_hull", lower_xy, -1.12, 1.12, bevel=0.042, bevel_segs=3, mat=m_lo)
 
     cut_trough = mk_box("lo_c_tr", 35.60, 1.35, 1.88, [("t", -2.40, -0.35, 0.0)], m_in)
     cut_cavs = join_objects([
@@ -2651,7 +2686,7 @@ def build_m82a1_lower_receiver(mats: dict) -> bpy.types.Object:
     )
 
     obj = join_objects(parts, "m82a1_lower_receiver")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0, lock_flat_walls=True)
 
 
 def build_m82a1_carry_handle(mats: dict) -> bpy.types.Object:
@@ -2875,7 +2910,7 @@ def build_m82a1_barrel(mats: dict) -> bpy.types.Object:
         (0.470,  4.200),  # Breech chamfer
         (0.420,  4.150),
     ]
-    bbl_obj = mk_lathe_x("bbl_main", pts_r_x, segs=48, mat=m_bbl)
+    bbl_obj = mk_lathe_x("bbl_main", pts_r_x, segs=64, mat=m_bbl)
     # Assign dark bore material to interior bore/chamber faces
     bbl_obj.data.materials.append(m_in)
     in_idx = len(bbl_obj.data.materials) - 1
@@ -2894,13 +2929,13 @@ def build_m82a1_barrel(mats: dict) -> bpy.types.Object:
         ca, sa = math.cos(ang), math.sin(ang)
         cutters.append(
             mk_capsule_x(
-                f"bbl_ff_{k}", 0.155, 11.90, segs=18, cap_rings=6,
+                f"bbl_ff_{k}", 0.155, 11.90, segs=24, cap_rings=8,
                 xform=[("t", 23.45, ca * 0.780, sa * 0.780)], mat=m_flt,
             )
         )
         cutters.append(
             mk_capsule_x(
-                f"bbl_rf_{k}", 0.145, 4.70, segs=14, cap_rings=5,
+                f"bbl_rf_{k}", 0.145, 4.70, segs=20, cap_rings=6,
                 xform=[("t", 11.35, ca * 0.805, sa * 0.805)], mat=m_flt,
             )
         )
@@ -3367,7 +3402,7 @@ def build_m82a1_scope(mats: dict) -> bpy.types.Object:
         (0.680, -7.08),
         (0.680, -7.40),
     ] + tube_pts[1:]
-    main_tube = mk_lathe_x("sc_tube", tube_pts_full, segs=48, mat=m_sc)
+    main_tube = mk_lathe_x("sc_tube", tube_pts_full, segs=64, mat=m_sc)
     main_tube.data.materials.append(m_in)
     main_tube.data.materials.append(m_gr)
     in_idx = len(main_tube.data.materials) - 2
@@ -3383,26 +3418,26 @@ def build_m82a1_scope(mats: dict) -> bpy.types.Object:
     parts = [
         main_tube,
         # Iconic Leupold 24K Gold Ring around 50mm objective bell (X in [5.56, 5.74])
-        mk_cyl("sc_goldring", 1.084, 1.084, 0.16, "x", 48, [("t", 5.66, 0.0, 0.0)], m_gd, bevel=0.010),
+        mk_cyl("sc_goldring", 1.084, 1.084, 0.16, "x", 64, [("t", 5.66, 0.0, 0.0)], m_gd, bevel=0.010),
         # 3D Knurled 4.5-14x Magnification Power Ring + Tactile Throw Fin
-        mk_knurled_cyl("sc_pwrring", 0.755, 0.50, "x", flutes=36, depth=0.022, xform=[("t", -4.58, 0.0, 0.0)], mat=m_sc),
-        mk_box("sc_pwrfin", 0.34, 0.30, 0.18, [("rx", -0.65), ("t", -4.58, 0.80, -0.46)], m_sc, bevel=0.024, bevel_segs=2),
+        mk_knurled_cyl("sc_pwrring", 0.755, 0.50, "x", flutes=40, depth=0.022, xform=[("t", -4.58, 0.0, 0.0)], mat=m_sc),
+        mk_box("sc_pwrfin", 0.34, 0.30, 0.18, [("rx", -0.65), ("t", -4.58, 0.80, -0.46)], m_sc, bevel=0.024, bevel_segs=3),
         # Sculpted rounded-square Leupold Mark 4 erector saddle turret block at X = -0.30
-        mk_sphere("sc_saddle", 0.90, 0.77, 0.77, u_segs=28, v_segs=18, xform=[("t", -0.30, 0.0, 0.0)], mat=m_sc),
+        mk_sphere("sc_saddle", 0.90, 0.77, 0.77, u_segs=36, v_segs=22, xform=[("t", -0.30, 0.0, 0.0)], mat=m_sc),
         # 1) Tall Top M1 Tactical Elevation Turret (smooth vernier drum + 3D knurled crown + zero-stop cap)
-        mk_cyl("sc_el_drum", 0.49, 0.51, 0.82, "y", 36, [("t", -0.30, 1.03, 0.0)], m_td, bevel=0.012),
-        mk_knurled_cyl("sc_el_knurl", 0.53, 0.22, "y", flutes=36, depth=0.020, xform=[("t", -0.30, 1.49, 0.0)], mat=m_sc),
-        mk_cyl("sc_el_cap", 0.18, 0.18, 0.04, "y", 18, [("t", -0.30, 1.59, 0.0)], m_bs, bevel=0.008),
+        mk_cyl("sc_el_drum", 0.49, 0.51, 0.82, "y", 48, [("t", -0.30, 1.03, 0.0)], m_td, bevel=0.012),
+        mk_knurled_cyl("sc_el_knurl", 0.53, 0.22, "y", flutes=40, depth=0.020, xform=[("t", -0.30, 1.49, 0.0)], mat=m_sc),
+        mk_cyl("sc_el_cap", 0.18, 0.18, 0.04, "y", 24, [("t", -0.30, 1.59, 0.0)], m_bs, bevel=0.008),
         # 2) Right M1 Tactical Windage Turret (graduated drum + 3D knurled crown + cap)
-        mk_cyl("sc_wd_drum", 0.45, 0.47, 0.72, "z", 36, [("t", -0.30, 0.0, 0.96)], m_td, bevel=0.012),
-        mk_knurled_cyl("sc_wd_knurl", 0.49, 0.20, "z", flutes=32, depth=0.018, xform=[("t", -0.30, 0.0, 1.37)], mat=m_sc),
-        mk_cyl("sc_wd_cap", 0.16, 0.16, 0.04, "z", 16, [("t", -0.30, 0.0, 1.46)], m_bs, bevel=0.008),
+        mk_cyl("sc_wd_drum", 0.45, 0.47, 0.72, "z", 48, [("t", -0.30, 0.0, 0.96)], m_td, bevel=0.012),
+        mk_knurled_cyl("sc_wd_knurl", 0.49, 0.20, "z", flutes=36, depth=0.018, xform=[("t", -0.30, 0.0, 1.37)], mat=m_sc),
+        mk_cyl("sc_wd_cap", 0.16, 0.16, 0.04, "z", 22, [("t", -0.30, 0.0, 1.46)], m_bs, bevel=0.008),
         # 3) Left Side-Focus Parallax Turret (drum + 3D knurled cap)
-        mk_cyl("sc_px_drum", 0.43, 0.45, 0.62, "z", 32, [("t", -0.30, 0.0, -0.91)], m_sc, bevel=0.012),
-        mk_knurled_cyl("sc_px_knurl", 0.46, 0.18, "z", flutes=28, depth=0.018, xform=[("t", -0.30, 0.0, -1.26)], mat=m_sc),
+        mk_cyl("sc_px_drum", 0.43, 0.45, 0.62, "z", 44, [("t", -0.30, 0.0, -0.91)], m_sc, bevel=0.012),
+        mk_knurled_cyl("sc_px_knurl", 0.46, 0.18, "z", flutes=32, depth=0.018, xform=[("t", -0.30, 0.0, -1.26)], mat=m_sc),
         # 4) Convex Multi-Coated Sapphire-Emerald Objective & Ocular Glass Lenses
-        mk_sphere("sc_lens_f", 0.17, 0.94, 0.94, u_segs=32, v_segs=20, xform=[("t",  5.86, 0.0, 0.0)], mat=m_ln),
-        mk_sphere("sc_lens_r", 0.11, 0.67, 0.67, u_segs=28, v_segs=18, xform=[("t", -7.14, 0.0, 0.0)], mat=m_ln),
+        mk_sphere("sc_lens_f", 0.17, 0.94, 0.94, u_segs=44, v_segs=24, xform=[("t",  5.86, 0.0, 0.0)], mat=m_ln),
+        mk_sphere("sc_lens_r", 0.11, 0.67, 0.67, u_segs=36, v_segs=22, xform=[("t", -7.14, 0.0, 0.0)], mat=m_ln),
     ]
     obj = join_objects(parts, "m82a1_scope")
     return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
@@ -3468,8 +3503,8 @@ def build_m82a1_pistol_grip(mats: dict) -> bpy.types.Object:
 
     # --- 1. Organically Sculpted 26-Station Super-Ellipse Ergonomic A2 Grip Loft (ZERO flat slab!) ---
     # Exact CSG grip envelope: X in [-3.05, +0.72], Y in [-4.58, +0.10], Z in [-0.76, +0.76]
-    n_stations = 26
-    ring_segs = 32
+    n_stations = 32
+    ring_segs = 40
     front_ctrl = [
         (0.00,  0.70,  0.08),
         (0.18,  0.44, -0.78),
@@ -3598,26 +3633,67 @@ def build_m82a1_pistol_grip(mats: dict) -> bpy.types.Object:
         mk_cyl("pg_screw", 0.18, 0.18, 0.24, "y", 6, [("rz", -0.38), ("t", -1.42, -2.55, 0.0)], m_bs, bevel=0.015),
     ]
 
-    # Molded horizontal backstrap traction serration ribs along curved backstrap
+    # Smooth-contoured conformal backstrap traction serration ribs sculpted directly along super-ellipse curve
+    # (ZERO boxy spikes protruding past the ergonomic A2 grip curvature!)
+    bm_ribs = bmesh.new()
+    rib_arcs = 12
     for i in range(9):
         u = 0.22 + i * 0.075
-        bx, by = _interp_curve(back_ctrl, u)
-        parts.append(mk_box(f"pg_brib_{i}", 0.07, 0.065, 0.62, [("rz", -0.38), ("t", bx + 0.01, by, 0.0)], m_pl, bevel=0.016))
+        u0, u1 = u - 0.016, u + 0.016
+        rib_rings = []
+        for uu, bump_r in ((u0, 0.000), (u - 0.006, 0.024), (u + 0.006, 0.024), (u1, 0.000)):
+            fx, fy = _interp_curve(front_ctrl, uu)
+            bx, by = _interp_curve(back_ctrl, uu)
+            cx = 0.5 * (fx + bx)
+            cy = 0.5 * (fy + by)
+            hx = max(0.54, 0.5 * (fx - bx))
+            hz = 0.585 + 0.135 * math.sin(min(1.0, uu * 1.06) * math.pi) + 0.055 * (uu * uu)
+            r_in, r_out = [], []
+            for j in range(rib_arcs + 1):
+                frac = (j / rib_arcs) * 2.0 - 1.0
+                ang = math.pi + frac * 0.54
+                ca, sa = math.cos(ang), math.sin(ang)
+                sx = math.copysign(abs(ca) ** (2.0 / 2.15), ca)
+                sz = math.copysign(abs(sa) ** (2.0 / 2.15), sa)
+                end_taper = math.sin((j / rib_arcs) * math.pi)
+                lift = bump_r * (0.25 + 0.75 * end_taper)
+                px = cx + (hx + lift) * sx
+                py = cy + 0.5 * (fy - by) * sx
+                pz = (hz + lift * 0.45) * sz
+                px_in = cx + (hx - 0.04) * sx
+                pz_in = (hz - 0.04) * sz
+                r_in.append(bm_ribs.verts.new((px_in, py, pz_in)))
+                r_out.append(bm_ribs.verts.new((px, py, pz)))
+            rib_rings.append((r_in, r_out))
+        for ri in range(len(rib_rings) - 1):
+            in_a, out_a = rib_rings[ri]
+            in_b, out_b = rib_rings[ri + 1]
+            for j in range(rib_arcs):
+                bm_ribs.faces.new((out_a[j], out_b[j], out_b[j + 1], out_a[j + 1]))
+                bm_ribs.faces.new((in_a[j], in_a[j + 1], in_b[j + 1], in_b[j]))
+            bm_ribs.faces.new((in_a[0], out_a[0], out_b[0], in_b[0]))
+            bm_ribs.faces.new((in_a[-1], in_b[-1], out_b[-1], out_a[-1]))
+        for j in range(rib_arcs):
+            bm_ribs.faces.new((rib_rings[0][0][j], rib_rings[0][1][j], rib_rings[0][1][j + 1], rib_rings[0][0][j + 1]))
+            bm_ribs.faces.new((rib_rings[-1][0][j], rib_rings[-1][0][j + 1], rib_rings[-1][1][j + 1], rib_rings[-1][1][j]))
+    bmesh.ops.recalc_face_normals(bm_ribs, faces=bm_ribs.faces)
+    _apply_three_xform(bm_ribs, [])
+    parts.append(_bm_to_obj("pg_bribs", bm_ribs, m_pl))
 
     # Smooth-curved enlarged winter-gloved steel Trigger Guard + front & rear stainless pivot roll pins
     guard_xy = [
         (0.45,  0.02),
         (0.85,  0.02),
     ]
-    guard_xy.extend(_quad_bez((0.85, 0.02), (1.10, -1.25), (1.42, -1.30), 6))
+    guard_xy.extend(_quad_bez((0.85, 0.02), (1.10, -1.25), (1.42, -1.30), 12))
     guard_xy.append((3.28, -1.30))
-    guard_xy.extend(_quad_bez((3.28, -1.30), (3.58, -1.25), (3.96, 0.02), 6))
+    guard_xy.extend(_quad_bez((3.28, -1.30), (3.58, -1.25), (3.96, 0.02), 12))
     guard_xy.append((4.22,  0.02))
-    guard_xy.extend(_quad_bez((4.22, 0.02), (3.80, -1.52), (3.44, -1.54), 6))
+    guard_xy.extend(_quad_bez((4.22, 0.02), (3.80, -1.52), (3.44, -1.54), 12))
     guard_xy.append((1.24, -1.54))
-    guard_xy.extend(_quad_bez((1.24, -1.54), (0.90, -1.48), (0.45, 0.02), 6))
+    guard_xy.extend(_quad_bez((1.24, -1.54), (0.90, -1.48), (0.45, 0.02), 12))
 
-    parts.append(mk_extrude_z("pg_guard", guard_xy, -0.34, 0.34, bevel=0.032, bevel_segs=2, mat=m_rg))
+    parts.append(mk_extrude_z("pg_guard", guard_xy, -0.34, 0.34, bevel=0.036, bevel_segs=3, mat=m_rg))
     parts.append(mk_cyl("pg_gpin1", 0.065, 0.065, 0.86, "z", 14, [("t", 0.68, -0.06, 0.0)], m_bs, bevel=0.008))
     parts.append(mk_cyl("pg_gpin2", 0.065, 0.065, 0.86, "z", 14, [("t", 4.06, -0.06, 0.0)], m_bs, bevel=0.008))
 
@@ -3678,7 +3754,7 @@ def build_m82a1_mag_body(mats: dict) -> bpy.types.Object:
         parts.append(mk_extrude_x(f"mg_lip_{side}", lip_zy, -2.78, 2.60, bevel=0.012, bevel_segs=1, mat=m_bs))
 
     obj = join_objects(parts, "m82a1_mag_body")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0, lock_flat_walls=True)
 
 
 def build_m82a1_mag_follower(mats: dict) -> bpy.types.Object:
@@ -4017,11 +4093,13 @@ def unwrap_optics_mag_atlas(opt_objs: list[bpy.types.Object]):
             continue
         fc = f.calc_center_median()
         if tag == "turret_elev":
-            ac = math.atan2(-fc.y, fc.x + 0.30)
+            # Right-handed exterior tangent check: V=+Y, N=(cos t, 0, sin t) -> U_screen = V x N = (sin t, 0, -cos t)
+            # So u MUST increase as atan2(-tz, tx + 0.30) increases! (Blender fc.y == -tz, so atan2(fc.y, fc.x + 0.30)!)
+            ac = math.atan2(fc.y, fc.x + 0.30)
             for loop in f.loops:
                 vco = loop.vert.co
                 tx, ty, tz = vco.x, vco.z, -vco.y
-                av = math.atan2(tz, tx + 0.30)
+                av = math.atan2(-tz, tx + 0.30)
                 da = (av - ac + math.pi) % (2.0 * math.pi) - math.pi
                 u_turn = max(0.0, min(1.0, (ac + da + math.pi) / (2.0 * math.pi)))
                 hn = max(0.0, min(1.0, (ty - 0.62) / 0.82))
@@ -4189,15 +4267,15 @@ def bake_atlas_suite(
     _set_grid_isolated_layout(all_objs)
 
     saved = _route_bsdf_input_to_emit(mats_set, "Base Color")
-    run_bake("albedo", "EMIT", samples=2, fill_color=(0.04, 0.045, 0.05, 1.0))
+    run_bake("albedo", "EMIT", samples=4, fill_color=(0.04, 0.045, 0.05, 1.0))
     _restore_bsdf(saved)
 
     saved = _route_bsdf_input_to_emit(mats_set, "Roughness")
-    run_bake("roughness", "EMIT", samples=2, fill_color=(0.5, 0.5, 0.5, 1.0))
+    run_bake("roughness", "EMIT", samples=4, fill_color=(0.5, 0.5, 0.5, 1.0))
     _restore_bsdf(saved)
 
     saved = _route_bsdf_input_to_emit(mats_set, "Metallic")
-    run_bake("metalness", "EMIT", samples=2, fill_color=(0.0, 0.0, 0.0, 1.0))
+    run_bake("metalness", "EMIT", samples=4, fill_color=(0.0, 0.0, 0.0, 1.0))
     _restore_bsdf(saved)
 
     run_bake("normal", "NORMAL", samples=BAKE_NORMAL_SAMPLES, fill_color=(0.5, 0.5, 1.0, 1.0), normal_op=True)
@@ -4229,7 +4307,7 @@ def bake_atlas_suite(
     arr[:, 3] = 1.0
     img_m.pixels.foreach_set(arr.ravel())
     nodes_m = _attach_bake_image_node({white_mat}, img_m)
-    scene.cycles.samples = 1
+    scene.cycles.samples = 4
     select_only(ext_targets, ext_targets[0])
     bpy.ops.object.bake(type="EMIT", margin=6, use_clear=False)
     _save_image_npy(img_m, tmp_dir / f"{prefix}_ext_mask.npy")
@@ -4284,8 +4362,8 @@ def verify_meshes(all_objs: list[bpy.types.Object]) -> dict:
     return report
 
 
-def export_draco_glb(all_objs: list[bpy.types.Object]):
-    _set_identity_layout(all_objs)
+def triangulate_keep_normals(all_objs: list[bpy.types.Object]):
+    """Locks WeightedNormal planar loop normals into beauty triangles BEFORE Cycles NORMAL baking & export!"""
     for o in all_objs:
         select_only([o], o)
         mod = o.modifiers.new(name="Triangulate", type="TRIANGULATE")
@@ -4294,6 +4372,9 @@ def export_draco_glb(all_objs: list[bpy.types.Object]):
         mod.keep_custom_normals = True
         bpy.ops.object.modifier_apply(modifier=mod.name)
 
+
+def export_draco_glb(all_objs: list[bpy.types.Object]):
+    _set_identity_layout(all_objs)
     select_only(all_objs, all_objs[0])
     bpy.ops.export_scene.gltf(
         filepath=str(MODELS_OUT),
@@ -4312,6 +4393,137 @@ def export_draco_glb(all_objs: list[bpy.types.Object]):
         export_draco_texcoord_quantization=12,
     )
     print(f"[EXPORT] Wrote Draco GLB -> {MODELS_OUT} ({MODELS_OUT.stat().st_size / 1024:.1f} KB)")
+
+
+def render_studio_preview(all_objs: list[bpy.types.Object]):
+    """Renders 5 museum AgX studio QA views using the FINAL baked 2K 5-Ch ORM WebP atlases!"""
+    scene = bpy.context.scene
+    for o in all_objs:
+        o.hide_render = False
+        px, py, pz = ASSEMBLED_POS[o.name]
+        o.location = t2b(px, py, pz)
+        rx, ry, rz = ASSEMBLED_ROT_THREE.get(o.name, (0.0, 0.0, 0.0))
+        o.rotation_euler = (rx, -rz, ry)
+
+    def _mk_baked_mat(label: str, tex_prefix: str) -> bpy.types.Material:
+        mat = bpy.data.materials.new(f"QA_{label}")
+        nt = mat.node_tree
+        nt.nodes.clear()
+        out = nt.nodes.new("ShaderNodeOutputMaterial")
+        bsdf = nt.nodes.new("ShaderNodeBsdfPrincipled")
+        nt.links.new(bsdf.outputs["BSDF"], out.inputs["Surface"])
+
+        tex_alb = nt.nodes.new("ShaderNodeTexImage")
+        tex_alb.image = bpy.data.images.load(str(TEX_OUT_DIR / f"{tex_prefix}_albedo.webp"))
+        tex_alb.image.colorspace_settings.name = "sRGB"
+
+        tex_orm = nt.nodes.new("ShaderNodeTexImage")
+        tex_orm.image = bpy.data.images.load(str(TEX_OUT_DIR / f"{tex_prefix}_roughness.webp"))
+        tex_orm.image.colorspace_settings.name = "Non-Color"
+        sep = nt.nodes.new("ShaderNodeSeparateColor")
+        nt.links.new(tex_orm.outputs["Color"], sep.inputs["Color"])
+
+        mix_ao = nt.nodes.new("ShaderNodeMix")
+        mix_ao.data_type = "RGBA"
+        mix_ao.blend_type = "MULTIPLY"
+        mix_ao.inputs["Factor"].default_value = 0.85
+        nt.links.new(tex_alb.outputs["Color"], mix_ao.inputs[6])
+        nt.links.new(sep.outputs["Red"], mix_ao.inputs[7])
+        nt.links.new(mix_ao.outputs[2], bsdf.inputs["Base Color"])
+        nt.links.new(sep.outputs["Green"], bsdf.inputs["Roughness"])
+        nt.links.new(sep.outputs["Blue"], bsdf.inputs["Metallic"])
+
+        tex_nrm = nt.nodes.new("ShaderNodeTexImage")
+        tex_nrm.image = bpy.data.images.load(str(TEX_OUT_DIR / f"{tex_prefix}_normal.webp"))
+        tex_nrm.image.colorspace_settings.name = "Non-Color"
+        nmap = nt.nodes.new("ShaderNodeNormalMap")
+        nmap.inputs["Strength"].default_value = 1.0
+        nt.links.new(tex_nrm.outputs["Color"], nmap.inputs["Color"])
+        nt.links.new(nmap.outputs["Normal"], bsdf.inputs["Normal"])
+        return mat
+
+    mat_recv = _mk_baked_mat("receiver", "m82a1_v3_receiver")
+    mat_ord = _mk_baked_mat("ordnance", "m82a1_v3_ordnance")
+    mat_opt = _mk_baked_mat("optics_mag", "m82a1_v3_optics_mag")
+    for o in all_objs:
+        o.data.materials.clear()
+        if o.name in RECEIVER_PARTS:
+            o.data.materials.append(mat_recv)
+        elif o.name in ORDNANCE_PARTS:
+            o.data.materials.append(mat_ord)
+        else:
+            o.data.materials.append(mat_opt)
+
+    world = scene.world
+    wnt = world.node_tree
+    wnt.nodes.clear()
+    wout = wnt.nodes.new("ShaderNodeOutputWorld")
+    wbg = wnt.nodes.new("ShaderNodeBackground")
+    hdri = REPO_ROOT / "public" / "hdri" / "gunsmith_bench.hdr"
+    if hdri.exists():
+        env = wnt.nodes.new("ShaderNodeTexEnvironment")
+        env.image = bpy.data.images.load(str(hdri))
+        wnt.links.new(env.outputs["Color"], wbg.inputs["Color"])
+        wbg.inputs["Strength"].default_value = 1.05
+    else:
+        wbg.inputs["Color"].default_value = (0.055, 0.058, 0.066, 1.0)
+        wbg.inputs["Strength"].default_value = 0.65
+    wnt.links.new(wbg.outputs["Background"], wout.inputs["Surface"])
+
+    def _add_area(name: str, pos_t: tuple, aim_t: tuple, energy: float, sx: float, sy: float, col=(1.0, 0.98, 0.95)):
+        ld = bpy.data.lights.new(name, type="AREA")
+        ld.shape = "RECTANGLE"
+        ld.energy = energy
+        ld.size = sx
+        ld.size_y = sy
+        ld.color = col
+        lo = bpy.data.objects.new(name, ld)
+        scene.collection.objects.link(lo)
+        lo.location = t2b(*pos_t)
+        d = Vector(t2b(*aim_t)) - Vector(lo.location)
+        lo.rotation_euler = d.to_track_quat("-Z", "Y").to_euler()
+
+    _add_area("KeyTop",   ( 6.0, 38.0,  38.0), (5.0, 0.0, 0.0), 14000.0, 62.0, 22.0, (1.0, 0.98, 0.95))
+    _add_area("FillLeft", ( 6.0, 28.0, -40.0), (5.0, 0.0, 0.0),  9500.0, 56.0, 20.0, (0.93, 0.96, 1.0))
+    _add_area("SideRight",( 6.0,  6.0,  42.0), (5.0, 0.5, 0.0),  5000.0, 52.0, 16.0, (0.96, 0.97, 1.0))
+    _add_area("SideLeft", ( 6.0,  6.0, -42.0), (5.0, 0.5, 0.0),  5000.0, 52.0, 16.0, (0.95, 0.97, 1.0))
+    _add_area("RimBack",  (-32.0, 22.0,  8.0), (4.0, 1.0, 0.0),  6500.0, 34.0, 14.0, (0.96, 0.98, 1.0))
+
+    cam_data = bpy.data.cameras.new("QACam")
+    cam_obj = bpy.data.objects.new("QACam", cam_data)
+    scene.collection.objects.link(cam_obj)
+    scene.camera = cam_obj
+
+    scene.view_settings.view_transform = "AgX"
+    try:
+        scene.view_settings.look = "AgX - Medium High Contrast"
+    except Exception:
+        scene.view_settings.look = "None"
+    scene.view_settings.exposure = 0.30
+    scene.cycles.samples = 48
+    scene.cycles.use_denoising = True
+    scene.cycles.max_bounces = 6
+    scene.cycles.diffuse_bounces = 3
+    scene.cycles.glossy_bounces = 3
+    scene.render.image_settings.file_format = "PNG"
+
+    views = [
+        ("/tmp/m82a1_qa_right.png",        ( 8.0,  4.0,  72.0), ( 5.5, -0.5, 0.0), 46.0, 1440, 820),
+        ("/tmp/m82a1_qa_left.png",         ( 8.0,  4.0, -72.0), ( 5.5, -0.5, 0.0), 46.0, 1440, 820),
+        ("/tmp/m82a1_qa_macro_breech.png", ( 3.2,  5.5,  19.5), ( 1.8,  1.8, 0.0), 62.0, 1200, 900),
+        ("/tmp/m82a1_qa_macro_brake.png",  (30.5,  3.5,  15.5), (29.2,  1.2, 0.0), 65.0, 1200, 900),
+        ("/tmp/m82a1_qa_macro_grip.png",   (-1.5, -1.5, -17.5), (-2.4, -2.5, 0.0), 65.0, 1200, 900),
+    ]
+    for path, pos_t, aim_t, lens, rx, ry in views:
+        scene.render.resolution_x = rx
+        scene.render.resolution_y = ry
+        cam_data.lens = lens
+        cam_obj.location = t2b(*pos_t)
+        d = Vector(t2b(*aim_t)) - Vector(cam_obj.location)
+        cam_obj.rotation_euler = d.to_track_quat("-Z", "Y").to_euler()
+        scene.render.filepath = path
+        bpy.ops.render.render(write_still=True)
+        print(f"[PREVIEW] Rendered {path}")
 
 
 def main():
@@ -4361,6 +4573,9 @@ def main():
     unwrap_receiver_atlas(recv_objs)
     unwrap_ordnance_atlas(ord_objs)
     unwrap_optics_mag_atlas(opt_objs)
+
+    # Lock WeightedNormal planar normals into beauty triangles BEFORE Cycles NORMAL baking & glTF export!
+    triangulate_keep_normals(all_objs)
 
     for label, group in (("receiver", recv_objs), ("ordnance", ord_objs), ("optics_mag", opt_objs)):
         tot_area = 0.0
@@ -4416,6 +4631,9 @@ def main():
     print(f"  TOTAL ({len(outputs)} files): {total_mb:.2f} MB (budget <= 12.00 MB)")
     print(f"=== COMPLETE in {time.time() - t_start:.1f}s ===")
     assert total_mb <= 12.0, f"Asset budget exceeded: {total_mb:.2f} MB > 12.00 MB"
+
+    if "--preview" in sys.argv:
+        render_studio_preview(all_objs)
 
 
 if __name__ == "__main__":
