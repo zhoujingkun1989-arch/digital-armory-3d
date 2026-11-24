@@ -167,7 +167,7 @@ export const TimelineDock: React.FC = () => {
     >
       {/* Mode Switcher Header Row */}
       <div className="dock-mode-bar">
-        <div className="mode-tabs">
+        <div className="mode-tabs" data-mobile-scroll="true">
           <button
             type="button"
             className={`mode-tab ${
@@ -220,7 +220,7 @@ export const TimelineDock: React.FC = () => {
         </div>
 
         {mode === 'firing' && !malfunctionActive && (
-          <div className="firing-sub-controls">
+          <div className="firing-sub-controls" data-mobile-scroll="true">
             <div
               ref={selectorGroupRef}
               className="fcg-selector-group"
@@ -334,7 +334,7 @@ export const TimelineDock: React.FC = () => {
         <FieldStripHud key="field-strip-dock-body" />
       ) : mode === 'explode' ? (
         <div key="explode-dock-body">
-          <div className="timeline-presets">
+          <div className="timeline-presets" data-mobile-scroll="true">
             {timelinePresets.map((preset) => {
               const isActive = activePresetId === preset.id;
               const locPreset = resolveTimelinePresetText(preset, lang, bundle);
@@ -408,7 +408,7 @@ export const TimelineDock: React.FC = () => {
       ) : (
         <div key="firing-dock-body">
           {/* 7-Phase Firing Cycle Interactive Stepper */}
-          <div className="firing-phases-grid">
+          <div className="firing-phases-grid" data-mobile-scroll="true">
             {firingPhases.map((ph) => {
               const isCurrent = activePhase?.id === ph.id;
               const locPhase = resolveFiringPhaseText(ph, lang, bundle);
@@ -433,81 +433,83 @@ export const TimelineDock: React.FC = () => {
           </div>
 
           <div className="timeline-scrubber-row">
-            <button
-              type="button"
-              className={`press-check-btn ${
-                actionSnap.isPressCheck ? 'active' : ''
-              }`}
-              aria-pressed={actionSnap.isPressCheck}
-              onClick={() => togglePressCheck()}
-              title={ui.pressCheckTitle}
-            >
-              <Crosshair size={13} aria-hidden="true" />
-              <span>
-                {actionSnap.isPressCheck
-                  ? ui.pressCheckActiveBtn
-                  : ui.pressCheckBtn}
-              </span>
-            </button>
+            <div className="firing-action-strip" data-mobile-scroll="true">
+              <button
+                type="button"
+                className={`press-check-btn ${
+                  actionSnap.isPressCheck ? 'active' : ''
+                }`}
+                aria-pressed={actionSnap.isPressCheck}
+                onClick={() => togglePressCheck()}
+                title={ui.pressCheckTitle}
+              >
+                <Crosshair size={13} aria-hidden="true" />
+                <span>
+                  {actionSnap.isPressCheck
+                    ? ui.pressCheckActiveBtn
+                    : ui.pressCheckBtn}
+                </span>
+              </button>
 
-            <button
-              ref={holdTriggerBtnRef}
-              type="button"
-              className={`hold-trigger-btn ${
-                actionSnap.isTriggerHeld ? 'is-held' : ''
-              } ${
-                actionSnap.selectorMode === 'safe' ? 'is-safe-mode' : ''
-              } ${
-                actionSnap.awaitingDisconnectorReset ? 'is-awaiting-reset' : ''
-              }`}
-              title={ui.holdTriggerTitle}
-              onPointerDown={(e) => {
-                if (e.button !== 0) return;
-                e.currentTarget.setPointerCapture(e.pointerId);
-                pressInteractiveTrigger();
-              }}
-              onPointerUp={() => releaseInteractiveTrigger()}
-              onPointerCancel={() => releaseInteractiveTrigger()}
-              onLostPointerCapture={() => releaseInteractiveTrigger()}
-              onPointerLeave={() => {
-                if (interactiveActionStore.getState().isTriggerHeld) {
-                  releaseInteractiveTrigger();
-                }
-              }}
-            >
-              {actionSnap.selectorMode === 'safe' ? (
-                <ShieldAlert size={13} aria-hidden="true" />
-              ) : (
-                <Flame size={13} aria-hidden="true" />
-              )}
-              <span>
-                {actionSnap.selectorMode === 'safe'
-                  ? ui.holdTriggerSafeBtn
-                  : actionSnap.awaitingDisconnectorReset
-                    ? ui.holdTriggerResetBtn
-                    : ui.holdTriggerBtn}
-              </span>
-            </button>
+              <button
+                ref={holdTriggerBtnRef}
+                type="button"
+                className={`hold-trigger-btn ${
+                  actionSnap.isTriggerHeld ? 'is-held' : ''
+                } ${
+                  actionSnap.selectorMode === 'safe' ? 'is-safe-mode' : ''
+                } ${
+                  actionSnap.awaitingDisconnectorReset ? 'is-awaiting-reset' : ''
+                }`}
+                title={ui.holdTriggerTitle}
+                onPointerDown={(e) => {
+                  if (e.button !== 0) return;
+                  e.currentTarget.setPointerCapture(e.pointerId);
+                  pressInteractiveTrigger();
+                }}
+                onPointerUp={() => releaseInteractiveTrigger()}
+                onPointerCancel={() => releaseInteractiveTrigger()}
+                onLostPointerCapture={() => releaseInteractiveTrigger()}
+                onPointerLeave={() => {
+                  if (interactiveActionStore.getState().isTriggerHeld) {
+                    releaseInteractiveTrigger();
+                  }
+                }}
+              >
+                {actionSnap.selectorMode === 'safe' ? (
+                  <ShieldAlert size={13} aria-hidden="true" />
+                ) : (
+                  <Flame size={13} aria-hidden="true" />
+                )}
+                <span>
+                  {actionSnap.selectorMode === 'safe'
+                    ? ui.holdTriggerSafeBtn
+                    : actionSnap.awaitingDisconnectorReset
+                      ? ui.holdTriggerResetBtn
+                      : ui.holdTriggerBtn}
+                </span>
+              </button>
 
-            <button
-              className="single-shot-btn"
-              onClick={triggerSingleShot}
-              title={ui.singleShotTitle}
-            >
-              <Zap size={14} />
-              <span>{ui.singleShot}</span>
-            </button>
+              <button
+                className="single-shot-btn"
+                onClick={triggerSingleShot}
+                title={ui.singleShotTitle}
+              >
+                <Zap size={14} />
+                <span>{ui.singleShot}</span>
+              </button>
 
-            <button
-              className={`play-btn fire-play-btn ${
-                isFiringPlaying ? 'playing' : ''
-              }`}
-              onClick={toggleFiringPlay}
-              title={ui.firingPlayTitle}
-            >
-              {isFiringPlaying ? <Pause size={15} /> : <Play size={15} />}
-              <span>{isFiringPlaying ? ui.pause : ui.resumeFiring}</span>
-            </button>
+              <button
+                className={`play-btn fire-play-btn ${
+                  isFiringPlaying ? 'playing' : ''
+                }`}
+                onClick={toggleFiringPlay}
+                title={ui.firingPlayTitle}
+              >
+                {isFiringPlaying ? <Pause size={15} /> : <Play size={15} />}
+                <span>{isFiringPlaying ? ui.pause : ui.resumeFiring}</span>
+              </button>
+            </div>
 
             <div className="slider-wrapper">
               <input

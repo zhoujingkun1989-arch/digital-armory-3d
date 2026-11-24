@@ -391,11 +391,7 @@
 
 @media (max-width: 720px) {
   :root {
-    --hud-top-offset: 142px;
-  }
-
-  .firing-phases-grid {
-    grid-template-columns: repeat(4, 1fr);
+    --hud-top-offset: 66px;
   }
 
   .field-strip-steps-grid {
@@ -787,16 +783,107 @@ a {
   }
 
   .timeline-dock {
+    bottom: 10px;
     left: 8px;
     right: 8px;
     width: auto;
     transform: none;
-    padding: 8px 10px 10px;
+    padding: 7px 10px 8px;
   }
 
   .dock-mode-bar {
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 5px;
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+  }
+
+  .dock-mode-bar .mode-tabs,
+  .dock-mode-bar .firing-sub-controls {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    max-inline-size: 100%;
+    width: 100%;
+  }
+
+  .dock-mode-bar .mode-tabs::-webkit-scrollbar,
+  .dock-mode-bar .firing-sub-controls::-webkit-scrollbar,
+  .timeline-presets::-webkit-scrollbar,
+  .firing-phases-grid::-webkit-scrollbar,
+  .firing-action-strip::-webkit-scrollbar {
+    display: none;
+  }
+
+  .dock-mode-bar .mode-tab {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding: 4.5px 9px;
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .dock-mode-bar .firing-sub-controls > * {
+    flex-shrink: 0;
+  }
+
+  /* Single-row horizontally scrollable preset & 7-phase pills on <= 768px mobile */
+  .timeline-presets,
+  .firing-phases-grid {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: 5px;
+    margin-bottom: 6px;
+  }
+
+  .timeline-presets .preset-pill,
+  .firing-phases-grid .phase-step-pill {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    padding: 4.5px 9px;
+    font-size: 11px;
+  }
+
+  .timeline-scrubber-row {
+    gap: 5px 7px;
+  }
+
+  .firing-action-strip {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 5px;
+    flex: 1 1 100%;
+    max-inline-size: 100%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .firing-action-strip > button {
+    flex: 0 0 auto;
+    padding: 5px 9px;
+    font-size: 11px;
+  }
+
+  .stage-ticks {
+    font-size: 9.5px;
+  }
+
+  .stage-ticks .tick-optional {
+    display: none;
+  }
+
+  .ballistics-telemetry-hud.is-collapsed {
+    border-radius: 9px;
   }
 }
 
@@ -871,14 +958,18 @@ a {
     display: none;
   }
 
-  .timeline-presets {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 5px;
+  /* Preserve compact single-row horizontal scrolling on narrow phones (zero 4-row dock bloat) */
+  .timeline-presets,
+  .firing-phases-grid {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 4.5px;
   }
 
-  .firing-phases-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .timeline-dock .pct-readout {
+    font-size: 11px;
+    min-width: 34px;
   }
 }
 
@@ -955,6 +1046,7 @@ dialog::backdrop {
   .ps-close-btn,
   .story-close-btn,
   .story-minimize-btn,
+  .kb-shortcuts-close,
   .att-icon-btn,
   .att-action-pill,
   .att-preset-btn,
@@ -979,6 +1071,7 @@ dialog::backdrop {
   .director-reel-close-btn,
   .ps-close-btn,
   .story-close-btn,
+  .kb-shortcuts-close,
   .att-icon-btn,
   .causality-icon-btn,
   .rack-scroll-btn {

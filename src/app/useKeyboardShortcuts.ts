@@ -1,10 +1,69 @@
-import { useEffect } from 'react';
+import { useEffect, useSyncExternalStore } from 'react';
 import { useAttachmentStore } from '../engine/attachments/attachmentStore';
 import {
   getNarrationAudioSnapshot,
   stopNarrationAudio,
 } from '../narration/audioPlayer';
 import { useAppStore } from '../store/useAppStore';
+
+let keyboardShortcutsOpen = false;
+const shortcutModalListeners = new Set<() => void>();
+
+function emitShortcutsModalChange(): void {
+  shortcutModalListeners.forEach((listener) => listener());
+}
+
+function subscribeShortcutsModal(listener: () => void): () => void {
+  shortcutModalListeners.add(listener);
+  return () => {
+    shortcutModalListeners.delete(listener);
+  };
+}
+
+export function isKeyboardShortcutsModalOpen(): boolean {
+  return keyboardShortcutsOpen;
+}
+
+export function openKeyboardShortcutsModal(): void {
+  if (keyboardShortcutsOpen) return;
+  keyboardShortcutsOpen = true;
+  emitShortcutsModalChange();
+}
+
+export function closeKeyboardShortcutsModal(): void {
+  if (!keyboardShortcutsOpen) return;
+  keyboardShortcutsOpen = false;
+  emitShortcutsModalChange();
+}
+
+export function toggleKeyboardShortcutsModal(): void {
+  keyboardShortcutsOpen = !keyboardShortcutsOpen;
+  emitShortcutsModalChange();
+}
+
+export function useKeyboardShortcutsModalOpen(): boolean {
+  return useSyncExternalStore(
+    subscribeShortcutsModal,
+    isKeyboardShortcutsModalOpen,
+    isKeyboardShortcutsModalOpen
+  );
+}
+
+/**
+ * Recognizes the `?` (Shift+`/` on US/ISO keyboards) trigger while ignoring
+ * modifier chords (`Ctrl`, `Meta`, `Alt`).
+ */
+export function isShortcutsModalTriggerEvent(e: {
+  key: string;
+  code?: string;
+  shiftKey?: boolean;
+  metaKey?: boolean;
+  ctrlKey?: boolean;
+  altKey?: boolean;
+}): boolean {
+  if (e.metaKey || e.ctrlKey || e.altKey) return false;
+  return e.key === '?' || (e.code === 'Slash' && Boolean(e.shiftKey));
+}
 
 function isEditableElement(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false;
@@ -61,6 +120,11 @@ export function useKeyboardShortcuts(): void {
       if (state.monographModalOpen) return;
 
       if (e.key === 'Escape') {
+        if (isKeyboardShortcutsModalOpen()) {
+          e.preventDefault();
+          closeKeyboardShortcutsModal();
+          return;
+        }
         const audioSnap = getNarrationAudioSnapshot();
         if (state.posterShareModalOpen) {
           e.preventDefault();
@@ -149,7 +213,21 @@ export function useKeyboardShortcuts(): void {
         return;
       }
 
-      if (isEditableElement(e.target) || state.textureModalOpen) return;
+      if (
+        isEditableElement(e.target) ||
+        state.textureModalOpen ||
+        state.commandPaletteOpen
+      ) {
+        return;
+      }
+
+      if (isShortcutsModalTriggerEvent(e)) {
+        e.preventDefault();
+        toggleKeyboardShortcutsModal();
+        return;
+      }
+
+      if (isKeyboardShortcutsModalOpen()) return;
 
       const lowerKey = e.key.toLowerCase();
 

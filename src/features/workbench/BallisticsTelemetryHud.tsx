@@ -88,6 +88,10 @@ export const TELEMETRY_HUD_STRINGS = {
     archeryPhaseLaunch: '弦推加速离弦',
     archeryPhaseClear: '弓臂阻尼回稳',
     archeryPhaseReNock: '箭壶补箭归位',
+    collapseScope: '收起示波',
+    expandScope: '展开示波',
+    collapseTitle: '折叠示波器曲线以保持移动端 3D 击发视野畅通',
+    expandTitle: '展开 60fps 实时内弹道膛压与初速示波曲线',
   },
   en: {
     title: 'Internal Ballistics Telemetry Scope',
@@ -144,6 +148,10 @@ export const TELEMETRY_HUD_STRINGS = {
     archeryPhaseLaunch: 'Power-Stroke Launch',
     archeryPhaseClear: 'Limb / Vane Damping',
     archeryPhaseReNock: 'Quiver Re-Nock',
+    collapseScope: 'Compact',
+    expandScope: 'Expand',
+    collapseTitle: 'Collapse oscilloscope trace to keep 3D firing viewport unobstructed',
+    expandTitle: 'Expand 60fps live internal ballistics pressure & velocity trace',
   },
 } as const;
 
@@ -725,6 +733,8 @@ export interface BallisticsTelemetryHudProps {
   style?: React.CSSProperties;
   /** Render even when the Workbench is not in firing mode */
   alwaysVisible?: boolean;
+  /** Start collapsed into a compact header bar (defaults to `true` on <= 768px mobile viewports) */
+  defaultCollapsed?: boolean;
 }
 
 /**
@@ -738,6 +748,7 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
   className,
   style,
   alwaysVisible = false,
+  defaultCollapsed,
 }) => {
   const storeWeaponId = useAppStore((s) => s.activeWeaponId);
   const lang = useAppStore((s) => s.lang);
@@ -745,6 +756,10 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
   const activeWeaponId = weaponId ?? storeWeaponId;
   const s = TELEMETRY_HUD_STRINGS[lang];
   const [zoomBore, setZoomBore] = useState(false);
+  const [collapsed, setCollapsed] = useState<boolean>(() => {
+    if (defaultCollapsed !== undefined) return defaultCollapsed;
+    return typeof window !== 'undefined' && window.innerWidth <= 768;
+  });
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const pRef = useRef<HTMLSpanElement>(null);
@@ -776,7 +791,7 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
     (attLoadout.muzzle !== 'none' || attLoadout.optic !== 'none');
 
   useEffect(() => {
-    if (!visible) return;
+    if (!visible || collapsed) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
@@ -974,7 +989,7 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
       canvas.removeEventListener('pointerup', onPointerUp);
       canvas.removeEventListener('pointercancel', onPointerUp);
     };
-  }, [visible, activeWeaponId, caliber, lang, zoomBore, velMult]);
+  }, [visible, collapsed, activeWeaponId, caliber, lang, zoomBore, velMult]);
 
   if (!visible) return null;
 
@@ -1002,109 +1017,177 @@ export const BallisticsTelemetryHud: React.FC<BallisticsTelemetryHudProps> = ({
       ? `${caliberLabel} · ATA/IBO · ${s.archeryPeakDraw} ${archeryMeta.peakDrawForceLb} lb (${archeryMeta.peakDrawForceN} N) · ${s.muzzleVelocity} ${archeryMeta.velocityFps} FPS (${archeryMeta.muzzleVelocityMps} m/s) · ${s.archeryKinetic} ${archeryMeta.muzzleEnergyJ.toFixed(1)} J`
       : `${caliberLabel} · ${spec.standard} · ${s.peak} ${spec.peakPressureMPa} MPa · ${s.muzzleVelocity} ${effectiveV0} m/s · ${s.muzzleEnergy} ${headerEnergyStr}${modSummary}`;
 
+  const compactSummary =
+    isArchery && archeryMeta
+      ? `${caliberLabel} · ${archeryMeta.peakDrawForceLb} lb · ${archeryMeta.muzzleVelocityMps} m/s`
+      : `${caliberLabel} · ${spec.peakPressureMPa} MPa · ${effectiveV0} m/s`;
+
+  const rootClassName = [
+    'ballistics-telemetry-hud',
+    collapsed ? 'is-collapsed' : '',
+    className ?? '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
     <div
-      className={className}
-      style={style ? { ...ROOT_STYLE, ...style } : ROOT_STYLE}
+      className={rootClassName}
+      style={
+        style
+          ? {
+              ...ROOT_STYLE,
+              ...(collapsed ? { padding: '6px 10px' } : undefined),
+              ...style,
+            }
+          : collapsed
+            ? { ...ROOT_STYLE, padding: '6px 10px' }
+            : ROOT_STYLE
+      }
       data-testid="ballistics-telemetry-hud"
+      data-collapsed={collapsed ? 'true' : 'false'}
     >
-      <div style={HEADER_STYLE}>
+      <div
+        style={
+          collapsed
+            ? { ...HEADER_STYLE, alignItems: 'center', marginBottom: 0 }
+            : HEADER_STYLE
+        }
+      >
         <span style={TITLE_STYLE}>{headerTitle}</span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-          <span style={SUB_STYLE}>{headerSummary}</span>
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 6,
+            flexWrap: 'wrap',
+          }}
+        >
+          <span style={SUB_STYLE}>
+            {collapsed ? compactSummary : headerSummary}
+          </span>
+          {!collapsed && (
+            <button
+              type="button"
+              onClick={() => setZoomBore((z) => !z)}
+              style={{
+                fontSize: 9,
+                fontFamily: 'inherit',
+                fontWeight: 600,
+                padding: '2px 6px',
+                borderRadius: 4,
+                border: '1px solid rgba(251, 191, 36, 0.35)',
+                background: zoomBore
+                  ? 'rgba(245, 158, 11, 0.24)'
+                  : 'rgba(15, 23, 42, 0.85)',
+                color: zoomBore ? '#fde68a' : '#cbd5e1',
+                cursor: 'pointer',
+              }}
+            >
+              {zoomBore ? s.fullCycle : isArchery ? s.archeryZoomStroke : s.zoomBore}
+            </button>
+          )}
           <button
             type="button"
-            onClick={() => setZoomBore((z) => !z)}
+            className="ballistics-collapse-btn"
+            data-testid="ballistics-collapse-btn"
+            aria-expanded={!collapsed}
+            title={collapsed ? s.expandTitle : s.collapseTitle}
+            onClick={() => setCollapsed((prev) => !prev)}
             style={{
               fontSize: 9,
               fontFamily: 'inherit',
               fontWeight: 600,
-              padding: '2px 6px',
+              padding: '2px 7px',
               borderRadius: 4,
-              border: '1px solid rgba(251, 191, 36, 0.35)',
-              background: zoomBore
-                ? 'rgba(245, 158, 11, 0.24)'
+              border: '1px solid rgba(148, 163, 184, 0.35)',
+              background: collapsed
+                ? 'rgba(56, 189, 248, 0.2)'
                 : 'rgba(15, 23, 42, 0.85)',
-              color: zoomBore ? '#fde68a' : '#cbd5e1',
+              color: collapsed ? '#bae6fd' : '#cbd5e1',
               cursor: 'pointer',
             }}
           >
-            {zoomBore ? s.fullCycle : isArchery ? s.archeryZoomStroke : s.zoomBore}
+            {collapsed ? s.expandScope : s.collapseScope}
           </button>
         </div>
       </div>
 
-      <canvas
-        ref={canvasRef}
-        style={CANVAS_STYLE}
-        title={s.scrubHint}
-        aria-label={`${headerTitle} — ${s.scrubHint}`}
-        role="img"
-      />
+      {!collapsed && (
+        <>
+          <canvas
+            ref={canvasRef}
+            style={CANVAS_STYLE}
+            title={s.scrubHint}
+            aria-label={`${headerTitle} — ${s.scrubHint}`}
+            role="img"
+          />
 
-      <div style={READOUT_ROW_STYLE}>
-        <div style={CELL_STYLE}>
-          <span style={CELL_LABEL_STYLE}>
-            {isArchery ? `${s.archeryForce} · N` : `${s.pressure} · MPa`}
-          </span>
-          <span ref={pRef} style={{ ...CELL_VALUE_STYLE, color: C_PRESSURE }}>
-            {isArchery ? '0' : '0.0'}
-          </span>
-        </div>
-        <div style={CELL_STYLE}>
-          <span style={CELL_LABEL_STYLE}>
-            {isArchery ? `${s.archeryVelocity} · m/s` : `${s.velocity} · m/s`}
-          </span>
-          <span ref={vRef} style={{ ...CELL_VALUE_STYLE, color: C_VELOCITY }}>
-            {isArchery ? '0.0' : '0'}
-          </span>
-        </div>
-        <div style={CELL_STYLE}>
-          <span style={CELL_LABEL_STYLE}>
-            {s.energy} · {isMegajoule ? 'MJ' : 'J'}
-          </span>
-          <span ref={eRef} style={{ ...CELL_VALUE_STYLE, color: '#e2e8f0' }}>
-            {isArchery ? '0.0' : isMegajoule ? '0.00' : '0'}
-          </span>
-        </div>
-        <div style={CELL_STYLE}>
-          <span style={CELL_LABEL_STYLE}>
-            {isArchery ? `${s.archeryLetOff} · %` : `${s.barrelTemp} · °C`}
-          </span>
-          <span
-            ref={tRef}
-            style={{
-              ...CELL_VALUE_STYLE,
-              color: isArchery ? '#38bdf8' : '#fb923c',
-            }}
-          >
-            {isArchery && archeryMeta ? String(archeryMeta.letOffPercent) : '22.0'}
-          </span>
-        </div>
-        <div style={CELL_STYLE}>
-          <span style={CELL_LABEL_STYLE}>
-            {isArchery ? `${s.archeryBrace} · mm` : `${s.fouling} · %`}
-          </span>
-          <span ref={foulRef} style={{ ...CELL_VALUE_STYLE, color: '#a8a29e' }}>
-            {isArchery && archeryMeta ? String(archeryMeta.braceHeightMm) : '0'}
-          </span>
-        </div>
-        <div style={CELL_STYLE}>
-          <span style={CELL_LABEL_STYLE}>{s.shots}</span>
-          <span ref={nRef} style={{ ...CELL_VALUE_STYLE, color: '#e2e8f0' }}>
-            0
-          </span>
-        </div>
-      </div>
+          <div style={READOUT_ROW_STYLE}>
+            <div style={CELL_STYLE}>
+              <span style={CELL_LABEL_STYLE}>
+                {isArchery ? `${s.archeryForce} · N` : `${s.pressure} · MPa`}
+              </span>
+              <span ref={pRef} style={{ ...CELL_VALUE_STYLE, color: C_PRESSURE }}>
+                {isArchery ? '0' : '0.0'}
+              </span>
+            </div>
+            <div style={CELL_STYLE}>
+              <span style={CELL_LABEL_STYLE}>
+                {isArchery ? `${s.archeryVelocity} · m/s` : `${s.velocity} · m/s`}
+              </span>
+              <span ref={vRef} style={{ ...CELL_VALUE_STYLE, color: C_VELOCITY }}>
+                {isArchery ? '0.0' : '0'}
+              </span>
+            </div>
+            <div style={CELL_STYLE}>
+              <span style={CELL_LABEL_STYLE}>
+                {s.energy} · {isMegajoule ? 'MJ' : 'J'}
+              </span>
+              <span ref={eRef} style={{ ...CELL_VALUE_STYLE, color: '#e2e8f0' }}>
+                {isArchery ? '0.0' : isMegajoule ? '0.00' : '0'}
+              </span>
+            </div>
+            <div style={CELL_STYLE}>
+              <span style={CELL_LABEL_STYLE}>
+                {isArchery ? `${s.archeryLetOff} · %` : `${s.barrelTemp} · °C`}
+              </span>
+              <span
+                ref={tRef}
+                style={{
+                  ...CELL_VALUE_STYLE,
+                  color: isArchery ? '#38bdf8' : '#fb923c',
+                }}
+              >
+                {isArchery && archeryMeta ? String(archeryMeta.letOffPercent) : '22.0'}
+              </span>
+            </div>
+            <div style={CELL_STYLE}>
+              <span style={CELL_LABEL_STYLE}>
+                {isArchery ? `${s.archeryBrace} · mm` : `${s.fouling} · %`}
+              </span>
+              <span ref={foulRef} style={{ ...CELL_VALUE_STYLE, color: '#a8a29e' }}>
+                {isArchery && archeryMeta ? String(archeryMeta.braceHeightMm) : '0'}
+              </span>
+            </div>
+            <div style={CELL_STYLE}>
+              <span style={CELL_LABEL_STYLE}>{s.shots}</span>
+              <span ref={nRef} style={{ ...CELL_VALUE_STYLE, color: '#e2e8f0' }}>
+                0
+              </span>
+            </div>
+          </div>
 
-      <div style={STATUS_STYLE}>
-        <span ref={phaseRef} style={{ color: '#fbbf24' }}>
-          {isArchery ? s.archeryPhaseReady : s.phaseCocked}
-        </span>
-        <span ref={statusRef} style={{ color: '#4ade80' }}>
-          {isArchery ? s.archerySafeAlert : s.safeToUnlock}
-        </span>
-      </div>
+          <div style={STATUS_STYLE}>
+            <span ref={phaseRef} style={{ color: '#fbbf24' }}>
+              {isArchery ? s.archeryPhaseReady : s.phaseCocked}
+            </span>
+            <span ref={statusRef} style={{ color: '#4ade80' }}>
+              {isArchery ? s.archerySafeAlert : s.safeToUnlock}
+            </span>
+          </div>
+        </>
+      )}
     </div>
   );
 };
