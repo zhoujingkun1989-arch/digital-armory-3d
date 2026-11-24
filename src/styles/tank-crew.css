@@ -1,5 +1,5 @@
 /* ==========================================================================
-   WP-23b · 1:1 Heavy Armor Tank Crew Station & Gunner FLIR Reticle HUD
+   1:1 Heavy Armor Tank Crew Station & 4-Nation Gunner Optics Reticle HUD
    ========================================================================== */
 
 .canvas-container[data-flir-optic='whot'] canvas {
@@ -8,6 +8,15 @@
 
 .canvas-container[data-flir-optic='bhot'] canvas {
   filter: grayscale(100%) invert(100%) contrast(1.36) brightness(1.04);
+}
+
+.canvas-container[data-flir-optic='green_nvg'] canvas {
+  filter: grayscale(100%) sepia(100%) hue-rotate(78deg) saturate(2.35)
+    contrast(1.28) brightness(0.96);
+}
+
+.canvas-container[data-flir-optic='zeiss_day'] canvas {
+  filter: contrast(1.06) saturate(0.92) sepia(8%);
 }
 
 .tank-gunner-reticle-overlay {
@@ -21,20 +30,38 @@
 }
 
 .tank-gunner-reticle-overlay.is-daylight {
-  color: rgba(251, 191, 36, 0.85);
+  color: rgba(251, 191, 36, 0.88);
+}
+
+.tank-gunner-reticle-overlay.is-reticle-pla_ztz99a.is-daylight {
+  color: rgba(52, 211, 153, 0.92);
+}
+
+.tank-gunner-reticle-overlay.is-reticle-de_emes15.is-daylight {
+  color: rgba(248, 113, 113, 0.9);
+}
+
+.tank-gunner-reticle-overlay.is-reticle-ww2_tzf9b.is-daylight {
+  color: rgba(226, 232, 216, 0.92);
 }
 
 .tank-gunner-reticle-overlay.is-flir_whot {
-  color: rgba(110, 231, 183, 0.88);
+  color: rgba(110, 231, 183, 0.92);
 }
 
 .tank-gunner-reticle-overlay.is-flir_bhot {
-  color: rgba(248, 113, 113, 0.88);
+  color: rgba(248, 113, 113, 0.9);
+}
+
+.tank-gunner-reticle-overlay.is-green_nvg {
+  color: rgba(74, 222, 128, 0.94);
 }
 
 .tank-reticle-svg {
   width: 100%;
   height: 100%;
+  max-width: 100vw;
+  max-height: 100vh;
 }
 
 .tank-crew-hud {
@@ -48,6 +75,22 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.tank-crew-hud.is-nation-pla_ztz99a {
+  border-color: rgba(34, 211, 238, 0.42);
+}
+
+.tank-crew-hud.is-nation-us_m1a2_gps {
+  border-color: rgba(245, 158, 11, 0.42);
+}
+
+.tank-crew-hud.is-nation-de_emes15 {
+  border-color: rgba(248, 113, 113, 0.4);
+}
+
+.tank-crew-hud.is-nation-ww2_tzf9b {
+  border-color: rgba(217, 199, 148, 0.42);
 }
 
 :is([data-theme='light'], .theme-light) .tank-crew-hud {
@@ -73,14 +116,44 @@
   color: #a3e635;
 }
 
+.tank-crew-nation-tag {
+  font-style: normal;
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid rgba(148, 163, 184, 0.36);
+  background: rgba(15, 23, 42, 0.72);
+  color: #e2e8f0;
+  font-size: 9.5px;
+}
+
 :is([data-theme='light'], .theme-light) .tank-crew-badge {
   color: #4d7c0f;
+}
+
+:is([data-theme='light'], .theme-light) .tank-crew-nation-tag {
+  background: #e2e8f0;
+  color: #0f172a;
 }
 
 .tank-crew-sight {
   margin: 2px 0 0;
   font-size: 11px;
   color: #94a3b8;
+}
+
+.tank-crew-study-note {
+  padding: 5px 8px;
+  border-radius: 7px;
+  border: 1px solid rgba(245, 158, 11, 0.48);
+  background: rgba(120, 53, 15, 0.28);
+  color: #fde68a;
+  font-size: 10.5px;
+  line-height: 1.35;
+}
+
+:is([data-theme='light'], .theme-light) .tank-crew-study-note {
+  background: rgba(254, 243, 199, 0.92);
+  color: #92400e;
 }
 
 .tank-crew-head-btns {
@@ -132,6 +205,11 @@
   color: #334155;
 }
 
+:is([data-theme='light'], .theme-light) .tank-crew-pill.is-active {
+  background: rgba(132, 204, 22, 0.2);
+  color: #365314;
+}
+
 .tank-crew-sliders {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -147,6 +225,7 @@
 .tank-crew-slider div {
   display: flex;
   justify-content: space-between;
+  gap: 6px;
   font-size: 10px;
 }
 
@@ -194,4 +273,30 @@
 
 :is([data-theme='light'], .theme-light) .tank-crew-lase-btn {
   color: #365314;
+}
+
+@media (max-width: 768px) {
+  .tank-crew-hud {
+    padding: 8px 10px;
+    gap: 6px;
+  }
+
+  .tank-crew-sliders {
+    grid-template-columns: 1fr;
+    gap: 5px;
+  }
+
+  .tank-crew-pill {
+    padding: 5px 8px;
+    font-size: 10px;
+  }
+
+  .tank-crew-fcs-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .tank-crew-lase-btn {
+    justify-content: center;
+  }
 }

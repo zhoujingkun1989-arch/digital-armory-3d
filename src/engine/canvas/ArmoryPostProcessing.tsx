@@ -21,6 +21,11 @@ import {
   stepDownGraphicsQuality,
   updateFpsWatchdog,
 } from './graphicsQuality';
+import {
+  isGpuTelemetryEnabled,
+  publishGpuTelemetrySample,
+  type GpuTelemetrySampleInput,
+} from './gpuTelemetryBus';
 
 // =====================================================================================
 // 1. Post-Processing Configuration & Pure Testable Helpers (1 world unit = 1 cm)
@@ -623,9 +628,83 @@ interface ComposerRig {
   outputPass: OutputPass;
   filmicLensPass: ShaderPass;
   smaaPass: SMAAPass | null;
+  lastCssW: number;
+  lastCssH: number;
+  lastDpr: number;
+  lastQuality: GtaoQualityMode;
 }
 
 const _bokehOrigin = new THREE.Vector3();
+
+// Pre-allocated mutable sample payload so telemetry sampling performs zero GC in `useFrame`
+const _gpuTelemetrySample: GpuTelemetrySampleInput = {
+  frameMs: 0,
+  drawCalls: 0,
+  triangles: 0,
+  geometries: 0,
+  textures: 0,
+  programs: 0,
+};
+
+/**
+ * Zero-overhead WebGL renderer telemetry sampler invoked at the end of each rendered frame.
+ * Strictly gated behind `isGpuTelemetryEnabled()` (single boolean check when HUD is closed;
+ * zero `gl.info` reads and zero heap allocations).
+ */
+export function sampleRendererGpuTelemetry(
+  gl: Pick<THREE.WebGLRenderer, 'info'>,
+  deltaSec: number
+): boolean {
+  if (!isGpuTelemetryEnabled()) {
+    return false;
+  }
+  const safeMs =
+    deltaSec > 0 && Number.isFinite(deltaSec)
+      ? Math.min(1000, deltaSec * 1000)
+      : 16.67;
+  _gpuTelemetrySample.frameMs = safeMs;
+  _gpuTelemetrySample.drawCalls = gl.info.render.calls;
+  _gpuTelemetrySample.triangles = gl.info.render.triangles;
+  _gpuTelemetrySample.geometries = gl.info.memory.geometries;
+  _gpuTelemetrySample.textures = gl.info.memory.textures;
+  _gpuTelemetrySample.programs = gl.info.programs?.length ?? 0;
+  return publishGpuTelemetrySample(_gpuTelemetrySample);
+}
+
+/**
+ * Complete GPU teardown for Three.js r169 `GTAOPass`, disposing internal materials & cached
+ * object maps that upstream `GTAOPass.dispose()` omits (`gtaoMaterial`, `blendMaterial`,
+ * `depthTexture`, `_visibilityCache`).
+ */
+export function disposeGtaoPassResources(gtaoPass: GTAOPass): void {
+  gtaoPass.dispose();
+  const ext = gtaoPass as unknown as {
+    gtaoMaterial?: THREE.Material;
+    blendMaterial?: THREE.Material;
+    depthTexture?: THREE.Texture | null;
+    _visibilityCache?: Map<THREE.Object3D, boolean>;
+  };
+  ext.gtaoMaterial?.dispose();
+  ext.blendMaterial?.dispose();
+  if (ext.depthTexture && typeof ext.depthTexture.dispose === 'function') {
+    ext.depthTexture.dispose();
+  }
+  ext._visibilityCache?.clear();
+}
+
+/**
+ * Minimal zero-overhead telemetry sampler active only when `EffectComposer` is bypassed (e.g. Eco tier),
+ * guaranteeing live GPU metrics across all three quality profiles while costing 1 boolean check when closed.
+ */
+const PassiveGpuTelemetrySampler: React.FC = () => {
+  const { gl } = useThree();
+  useFrame((_, delta) => {
+    if (isGpuTelemetryEnabled()) {
+      sampleRendererGpuTelemetry(gl, delta);
+    }
+  });
+  return null;
+};
 
 const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
   environmentPreset,
@@ -813,12 +892,16 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
       outputPass,
       filmicLensPass,
       smaaPass,
+      lastCssW: cssW,
+      lastCssH: cssH,
+      lastDpr: curDpr,
+      lastQuality: qualityRef.current,
     };
 
     return () => {
       rigRef.current = null;
       renderPass.dispose();
-      gtaoPass.dispose();
+      disposeGtaoPassResources(gtaoPass);
       bloomPass.dispose();
       bokehPass.dispose();
       outputPass.dispose();
@@ -830,7 +913,7 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [gl, scene, camera, contextEpoch]);
 
-  // Handle window / canvas / DPR resize cleanly
+  // Handle window / canvas / DPR resize cleanly without redundant RT reallocations
   useEffect(() => {
     qualityRef.current = gtaoQuality;
     const rig = rigRef.current;
@@ -838,8 +921,23 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
     const cssW = Math.max(1, size.width);
     const cssH = Math.max(1, size.height);
     const curDpr = gl.getPixelRatio();
-    rig.composer.setPixelRatio(curDpr);
-    rig.composer.setSize(cssW, cssH);
+    const sizeChanged = rig.lastCssW !== cssW || rig.lastCssH !== cssH;
+    const dprChanged = rig.lastDpr !== curDpr;
+    const qualityChanged = rig.lastQuality !== gtaoQuality;
+    if (!sizeChanged && !dprChanged && !qualityChanged) return;
+
+    rig.lastCssW = cssW;
+    rig.lastCssH = cssH;
+    rig.lastDpr = curDpr;
+    rig.lastQuality = gtaoQuality;
+
+    if (dprChanged) {
+      // `setPixelRatio` updates internal pixelRatio and triggers a resize; only call setSize after if CSS dims changed too
+      rig.composer.setPixelRatio(curDpr);
+    }
+    if (sizeChanged || qualityChanged || !dprChanged) {
+      rig.composer.setSize(cssW, cssH);
+    }
   }, [gl, size.width, size.height, dpr, gtaoQuality]);
 
   // Sync preset, scale-aware GTAO reach & pass toggles without tearing down GPU targets
@@ -977,9 +1075,19 @@ const ActiveArmoryComposer: React.FC<ActiveComposerProps> = ({
       u.focus.value = bokeh.focus;
       u.aperture.value = bokeh.aperture;
       u.maxblur.value = bokeh.maxblur;
+      if ((camera as THREE.PerspectiveCamera).isPerspectiveCamera) {
+        const persp = camera as THREE.PerspectiveCamera;
+        if (u.nearClip) u.nearClip.value = persp.near;
+        if (u.farClip) u.farClip.value = persp.far;
+      }
     }
 
     rig.composer.render(Math.min(delta, 0.1));
+
+    // Zero-overhead GPU telemetry hook (strict single-boolean no-op when telemetry HUD is closed)
+    if (isGpuTelemetryEnabled()) {
+      sampleRendererGpuTelemetry(gl, delta);
+    }
   }, 1);
 
   return null;
@@ -1059,7 +1167,7 @@ export const ArmoryPostProcessing: React.FC<ArmoryPostProcessingProps> =
         );
       }, [gl, presetParams]);
 
-      if (!enabled) return null;
+      if (!enabled) return <PassiveGpuTelemetrySampler />;
 
       return (
         <ActiveArmoryComposer

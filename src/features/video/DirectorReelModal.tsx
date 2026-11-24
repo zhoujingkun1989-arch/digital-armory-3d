@@ -1,8 +1,9 @@
-import React, { useEffect, useId, useRef, useState } from 'react';
+import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import {
   Clapperboard,
   Download,
   Film,
+  Layers,
   Square,
   Video,
   Volume2,
@@ -17,10 +18,12 @@ import { formatExamDuration } from '../../engine/exam/armorerExamStore';
 import { resolveWeaponDisplayMeta } from '../../i18n/weaponFallbacks';
 import { getNarrationAudioSnapshot } from '../../narration/audioPlayer';
 import { useWeaponNarration } from '../../narration/narrationService';
+import { useActiveDirectorBeat } from '../../narration/storyDirector';
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
 import {
   buildReelFilename,
+  buildReelLowerThirdMeta,
   DirectorReelRecorderSession,
   REEL_PRESET_IDS,
   REEL_PRESETS,
@@ -44,13 +47,16 @@ export const DirectorReelModal: React.FC<DirectorReelModalProps> = ({
   const lang = useAppStore((s) => s.lang);
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const mode = useAppStore((s) => s.mode);
+  const sectionCut = useAppStore((s) => s.sectionCut);
+  const xrayShells = useAppStore((s) => s.xrayShells);
   const setMode = useAppStore((s) => s.setMode);
   const stopFiringPlay = useAppStore((s) => s.stopFiringPlay);
-  const telemetry = getNarrationAudioSnapshot();
+  const activeBeat = useActiveDirectorBeat();
   const { bundle } = useWeaponNarration(activeWeaponId);
 
   const [presetId, setPresetId] = useState<DirectorReelPresetId>('1080p_16x9');
   const [includeAudio, setIncludeAudio] = useState(true);
+  const [showLowerThird, setShowLowerThird] = useState(true);
   const [autoCycleFiring, setAutoCycleFiring] = useState(true);
   const [recording, setRecording] = useState(false);
   const [elapsedMs, setElapsedMs] = useState(0);
@@ -59,6 +65,36 @@ export const DirectorReelModal: React.FC<DirectorReelModalProps> = ({
   const ui = DIRECTOR_REEL_STRINGS[lang];
   const manifest = getWeaponManifest(activeWeaponId);
   const displayMeta = resolveWeaponDisplayMeta(activeWeaponId, lang, bundle);
+  const activeBeatStageBadge = activeBeat
+    ? lang === 'zh'
+      ? activeBeat.stageBadgeZh
+      : activeBeat.stageBadgeEn
+    : null;
+  const activeBeatBadgeRef = useRef<string | null>(activeBeatStageBadge);
+  useEffect(() => {
+    activeBeatBadgeRef.current = activeBeatStageBadge;
+  }, [activeBeatStageBadge]);
+
+  const lowerThirdPreview = useMemo(
+    () =>
+      buildReelLowerThirdMeta(activeWeaponId, lang, {
+        displayName: displayMeta.name,
+        mode,
+        sectionCut,
+        xrayShells,
+        activeStageBadge: activeBeatStageBadge,
+      }),
+    [
+      activeWeaponId,
+      lang,
+      displayMeta.name,
+      mode,
+      sectionCut,
+      xrayShells,
+      activeBeatStageBadge,
+    ]
+  );
+
   const recorderSupported =
     typeof window !== 'undefined' && typeof MediaRecorder !== 'undefined';
 
@@ -109,6 +145,10 @@ export const DirectorReelModal: React.FC<DirectorReelModalProps> = ({
     setStatusMessage(null);
     playWorkbenchFoley('director_cue');
 
+    const activePreset = REEL_PRESETS[presetId];
+    const presetTelemetryLabel =
+      lang === 'zh' ? activePreset.labelZh : activePreset.labelEn;
+
     try {
       await session.start({
         sourceCanvas: canvas,
@@ -116,26 +156,30 @@ export const DirectorReelModal: React.FC<DirectorReelModalProps> = ({
         includeAudio,
         audioStream: includeAudio ? getRecordingAudioStream() : null,
         lang,
-        getOverlayMeta: () => {
+        showLowerThird,
+        fillOverlayMetaInto: (out) => {
           const st = useAppStore.getState();
           const curDisplay = resolveWeaponDisplayMeta(
             st.activeWeaponId,
             st.lang,
             bundle
           );
-          const curManifest = getWeaponManifest(st.activeWeaponId);
-          const curMeta = curManifest.workbenchMeta;
+          const lt = buildReelLowerThirdMeta(st.activeWeaponId, st.lang, {
+            displayName: curDisplay.name,
+            mode: st.mode,
+            sectionCut: st.sectionCut,
+            xrayShells: st.xrayShells,
+            activeStageBadge: activeBeatBadgeRef.current,
+          });
           const snap = getNarrationAudioSnapshot();
-          return {
-            weaponTitle: curDisplay.name,
-            weaponMetaLine: `${curMeta.badge} · ${curManifest.catalog.caliber}`,
-            captionText:
-              snap.activeLabel ??
-              (st.mode === 'firing'
-                ? `${curMeta.badge} Live Firing Kinematics`
-                : `${curMeta.badge} Cutaway Architecture`),
-            telemetryLine: REEL_PRESETS[presetId].labelEn,
-          };
+          out.weaponTitle = lt.weaponTitle;
+          out.weaponMetaLine = lt.caliberYearLine;
+          out.bayBadge = lt.bayBadge;
+          out.phaseTag = lt.phaseTag;
+          out.watermarkText = lt.watermarkText;
+          out.showLowerThird = showLowerThird;
+          out.captionText = snap.activeLabel ?? '';
+          out.telemetryLine = presetTelemetryLabel;
         },
         onTick: (ms) => {
           setElapsedMs(Math.round(ms));
@@ -179,7 +223,7 @@ export const DirectorReelModal: React.FC<DirectorReelModalProps> = ({
     setStatusMessage(ui.savedMsg);
   };
 
-  void telemetry;
+  const isVerticalPreset = presetId === '1080p_9x16';
 
   return (
     <dialog
@@ -228,6 +272,54 @@ export const DirectorReelModal: React.FC<DirectorReelModalProps> = ({
             </span>
           </div>
 
+          {/* Crisp Broadcast Framing & Lower-Third Live Preview */}
+          <div className="director-reel-section">
+            <div className="director-reel-preview-head">
+              <h3>{ui.previewHeading}</h3>
+              <span className="director-reel-preview-pill">
+                {showLowerThird
+                  ? ui.previewBroadcastTag
+                  : ui.previewCleanFeedTag}
+              </span>
+            </div>
+            <div className="director-reel-preview-stage">
+              <div
+                className={`director-reel-preview-frame ${
+                  isVerticalPreset ? 'is-vertical' : 'is-widescreen'
+                }`}
+                data-testid="director-reel-preview"
+              >
+                <div className="director-reel-safe-guide" aria-hidden="true" />
+                {showLowerThird && (
+                  <>
+                    <div className="director-reel-preview-top">
+                      <span>{lowerThirdPreview.watermarkText}</span>
+                      <strong className="director-reel-rec-code">
+                        REC {recording ? formatExamDuration(elapsedMs) : '00:00'}
+                      </strong>
+                    </div>
+                    <div className="director-reel-lower-third">
+                      <div className="director-reel-lt-card">
+                        <span className="director-reel-lt-bay">
+                          {lowerThirdPreview.bayBadge}
+                        </span>
+                        <strong className="director-reel-lt-title">
+                          {lowerThirdPreview.weaponTitle}
+                        </strong>
+                        <span className="director-reel-lt-meta">
+                          {lowerThirdPreview.caliberYearLine}
+                        </span>
+                      </div>
+                      <span className="director-reel-lt-phase">
+                        {lowerThirdPreview.phaseTag}
+                      </span>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+
           <div className="director-reel-section">
             <h3>{ui.presetHeading}</h3>
             <div className="director-reel-preset-grid">
@@ -258,6 +350,17 @@ export const DirectorReelModal: React.FC<DirectorReelModalProps> = ({
           </div>
 
           <div className="director-reel-options">
+            <label className="director-reel-check">
+              <input
+                type="checkbox"
+                checked={showLowerThird}
+                disabled={recording}
+                onChange={(e) => setShowLowerThird(e.target.checked)}
+              />
+              <Layers size={14} aria-hidden="true" />
+              <span>{ui.includeLowerThird}</span>
+            </label>
+
             <label className="director-reel-check">
               <input
                 type="checkbox"

@@ -1,12 +1,13 @@
 /* ==========================================================================
-   WP-22 · WebGL Director Reel Video Capture & Export Modal
+   WebGL Broadcast Director Reel Video Capture & Export Modal
    ========================================================================== */
 
 .director-reel-dialog {
   border: none;
   padding: 0;
   margin: auto;
-  width: min(680px, 94vw);
+  width: min(700px, 94vw);
+  max-height: 94vh;
   border-radius: 16px;
   background: transparent;
   color: #e2e8f0;
@@ -18,11 +19,16 @@
 }
 
 .director-reel-shell {
-  background: linear-gradient(155deg, rgba(13, 19, 32, 0.98), rgba(7, 10, 19, 0.98));
+  background: linear-gradient(
+    155deg,
+    rgba(13, 19, 32, 0.98),
+    rgba(7, 10, 19, 0.98)
+  );
   border: 1px solid rgba(56, 189, 248, 0.34);
   border-radius: 16px;
   box-shadow: 0 28px 70px rgba(0, 0, 0, 0.7);
-  overflow: hidden;
+  overflow-y: auto;
+  max-height: 94vh;
 }
 
 :is([data-theme='light'], .theme-light) .director-reel-shell {
@@ -89,7 +95,7 @@
   padding: 16px 20px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 13px;
 }
 
 .director-reel-exhibit-pill {
@@ -116,6 +122,156 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #94a3b8;
+}
+
+.director-reel-preview-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.director-reel-preview-head h3 {
+  margin: 0;
+}
+
+.director-reel-preview-pill {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  border: 1px solid rgba(56, 189, 248, 0.32);
+  background: rgba(14, 165, 233, 0.14);
+  color: #7dd3fc;
+}
+
+:is([data-theme='light'], .theme-light) .director-reel-preview-pill {
+  color: #0369a1;
+}
+
+.director-reel-preview-stage {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(4, 7, 15, 0.65);
+}
+
+.director-reel-preview-frame {
+  position: relative;
+  border-radius: 8px;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  background: radial-gradient(
+    ellipse at 50% 45%,
+    rgba(30, 41, 59, 0.92),
+    rgba(7, 11, 20, 0.98)
+  );
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 10px 12px;
+  color: #f8fafc;
+}
+
+.director-reel-preview-frame.is-widescreen {
+  width: 100%;
+  max-width: 420px;
+  aspect-ratio: 16 / 9;
+}
+
+.director-reel-preview-frame.is-vertical {
+  height: 224px;
+  aspect-ratio: 9 / 16;
+  padding: 8px;
+}
+
+.director-reel-safe-guide {
+  position: absolute;
+  inset: 8px;
+  border: 1px dashed rgba(148, 163, 184, 0.22);
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.director-reel-preview-top {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.05em;
+  color: #38bdf8;
+}
+
+.director-reel-rec-code {
+  color: #f87171;
+  font-weight: 700;
+}
+
+.director-reel-lower-third {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.director-reel-preview-frame.is-vertical .director-reel-lower-third {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.director-reel-lt-card {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 9px;
+  border-left: 3px solid #38bdf8;
+  border-radius: 0 5px 5px 0;
+  background: rgba(8, 15, 29, 0.84);
+  border-top: 1px solid rgba(148, 163, 184, 0.22);
+  border-right: 1px solid rgba(148, 163, 184, 0.22);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+  min-width: 0;
+}
+
+.director-reel-lt-bay {
+  font-family: var(--font-mono);
+  font-size: 7.5px;
+  font-weight: 700;
+  color: #38bdf8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.director-reel-lt-title {
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.director-reel-lt-meta {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  color: #cbd5e1;
+}
+
+.director-reel-lt-phase {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  color: #fbbf24;
+  white-space: nowrap;
 }
 
 .director-reel-preset-grid {

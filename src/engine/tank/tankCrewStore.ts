@@ -1,11 +1,19 @@
 import { create } from 'zustand';
 import type { MutablePartPose, WeaponId } from '../../weapons/types';
-import { getCaliberBallisticsSpec, isTankWeapon } from '../physics/armoryPhysics';
+import {
+  getCaliberBallisticsSpec,
+  isTankWeapon,
+} from '../physics/armoryPhysics';
 import { getWeaponManifest } from '../../weapons/manifests';
 
 export type TankCrewStation = 'exterior' | 'gunner' | 'interior';
-export type TankOpticMode = 'daylight' | 'flir_whot' | 'flir_bhot';
+export type TankOpticMode = 'daylight' | 'flir_whot' | 'flir_bhot' | 'green_nvg';
 export type TankWeaponId = 'ztz99a' | 'm1a2' | 'leopard2a7' | 'tiger1';
+export type TankReticleStyle =
+  | 'pla_ztz99a'
+  | 'us_m1a2_gps'
+  | 'de_emes15'
+  | 'ww2_tzf9b';
 
 export interface TankCrewKinematicsSpec {
   weaponId: TankWeaponId;
@@ -17,6 +25,118 @@ export interface TankCrewKinematicsSpec {
   sightNameEn: string;
   turretPartIds: ReadonlySet<string>;
   gunPartIds: ReadonlySet<string>;
+}
+
+export interface TankGunnerOpticProfile {
+  weaponId: TankWeaponId;
+  reticleStyle: TankReticleStyle;
+  nationCode: 'CN' | 'US' | 'DE' | 'DE-1943';
+  designationZh: string;
+  designationEn: string;
+  ammoTag: string;
+  readyLabelZh: string;
+  readyLabelEn: string;
+  magnificationLabel: string;
+  supportedOpticModes: readonly TankOpticMode[];
+  defaultOpticMode: TankOpticMode;
+  hasLaserRangefinder: boolean;
+  hasCantIndicator: boolean;
+  rangeDrumMaxM: number;
+  museumStudyThermalNoteZh: string | null;
+  museumStudyThermalNoteEn: string | null;
+}
+
+export const TANK_GUNNER_OPTIC_PROFILES: Readonly<
+  Record<TankWeaponId, TankGunnerOpticProfile>
+> = {
+  ztz99a: {
+    weaponId: 'ztz99a',
+    reticleStyle: 'pla_ztz99a',
+    nationCode: 'CN',
+    designationZh: '152 式双稳上反炮长主瞄 · 激光数字火控',
+    designationEn: 'Type-152 Stabilized Thermal FCS · Digital LRF',
+    ammoTag: 'APFSDS-125',
+    readyLabelZh: '激光测距 / 就绪 / APFSDS-125',
+    readyLabelEn: 'LASE / READY / APFSDS-125',
+    magnificationLabel: '6× / 12×',
+    supportedOpticModes: ['daylight', 'flir_whot', 'flir_bhot'],
+    defaultOpticMode: 'daylight',
+    hasLaserRangefinder: true,
+    hasCantIndicator: false,
+    rangeDrumMaxM: 4000,
+    museumStudyThermalNoteZh: null,
+    museumStudyThermalNoteEn: null,
+  },
+  m1a2: {
+    weaponId: 'm1a2',
+    reticleStyle: 'us_m1a2_gps',
+    nationCode: 'US',
+    designationZh: 'GPS 炮手主瞄镜 · 三代 FLIR 热成像',
+    designationEn: 'GPS Primary Sight · 3rd-Gen FLIR Thermal',
+    ammoTag: 'M829A4 SABOT',
+    readyLabelZh: '主炮就绪 · READY TO FIRE',
+    readyLabelEn: 'READY TO FIRE',
+    magnificationLabel: '3× / 10×',
+    supportedOpticModes: ['flir_whot', 'green_nvg', 'daylight'],
+    defaultOpticMode: 'daylight',
+    hasLaserRangefinder: true,
+    hasCantIndicator: false,
+    rangeDrumMaxM: 4000,
+    museumStudyThermalNoteZh: null,
+    museumStudyThermalNoteEn: null,
+  },
+  leopard2a7: {
+    weaponId: 'leopard2a7',
+    reticleStyle: 'de_emes15',
+    nationCode: 'DE',
+    designationZh: 'EMES-15 激光测距 + ATTICA 三代热像',
+    designationEn: 'EMES-15 Laser Rangefinder + ATTICA Thermal',
+    ammoTag: 'DM63A1 KE',
+    readyLabelZh: '激光锁定 · DM63A1 尾翼稳定脱穿',
+    readyLabelEn: 'LASER LOCK · DM63A1 KE',
+    magnificationLabel: '4× / 12×',
+    supportedOpticModes: ['daylight', 'flir_whot', 'flir_bhot'],
+    defaultOpticMode: 'daylight',
+    hasLaserRangefinder: true,
+    hasCantIndicator: true,
+    rangeDrumMaxM: 4000,
+    museumStudyThermalNoteZh: null,
+    museumStudyThermalNoteEn: null,
+  },
+  tiger1: {
+    weaponId: 'tiger1',
+    reticleStyle: 'ww2_tzf9b',
+    nationCode: 'DE-1943',
+    designationZh: 'Carl Zeiss TZF-9b 双目光学测距瞄准镜',
+    designationEn: 'Carl Zeiss TZF-9b Stadiametric Optical Sight',
+    ammoTag: 'PzGr.39 88mm',
+    readyLabelZh: '蔡司光学表尺 · 88mm PzGr.39',
+    readyLabelEn: 'ZEISS OPTICAL DRUM · 88mm PzGr.39',
+    magnificationLabel: '2.5× / 5×',
+    supportedOpticModes: ['daylight', 'flir_whot'],
+    defaultOpticMode: 'daylight',
+    hasLaserRangefinder: false,
+    hasCantIndicator: false,
+    rangeDrumMaxM: 4000,
+    museumStudyThermalNoteZh:
+      '博物馆 X-Ray / FLIR 教学研究模式（1943 原车仅配蔡司光学镜）',
+    museumStudyThermalNoteEn:
+      'Museum X-Ray / FLIR Study Mode (1943 Tiger 131 was optical-only)',
+  },
+};
+
+export function getTankGunnerOpticProfile(
+  weaponId: WeaponId | string
+): TankGunnerOpticProfile | null {
+  if (
+    weaponId === 'ztz99a' ||
+    weaponId === 'm1a2' ||
+    weaponId === 'leopard2a7' ||
+    weaponId === 'tiger1'
+  ) {
+    return TANK_GUNNER_OPTIC_PROFILES[weaponId];
+  }
+  return null;
 }
 
 export const TANK_CREW_SPECS: Readonly<
@@ -172,7 +292,7 @@ export function getTankCrewSpec(
 
 /**
  * Computes ballistic superelevation and dynamic target lead in milliradians (mrad)
- * for any of the 4 1:1 MBTs based on real muzzle velocity and LRF distance.
+ * for any of the 4 1:1 MBTs based on real muzzle velocity and LRF/optical distance.
  */
 export function computeTankFcsSolution(
   weaponId: WeaponId,
@@ -262,15 +382,19 @@ export interface TankCrewState {
   gunElevDeg: number;
   lrfRangeM: number;
   targetSpeedKph: number;
+  hullCantDeg: number;
+  fcsReady: boolean;
 
   setActive: (active: boolean) => void;
   toggleActive: () => void;
   setStation: (station: TankCrewStation) => void;
   setOpticMode: (mode: TankOpticMode) => void;
+  cycleOpticMode: (weaponId?: WeaponId) => void;
   setTurretYawDeg: (deg: number) => void;
   setGunElevDeg: (deg: number, weaponId?: WeaponId) => void;
   setLrfRangeM: (rangeM: number) => void;
   setTargetSpeedKph: (kph: number) => void;
+  setHullCantDeg: (deg: number) => void;
   laseAndAutoLay: (weaponId: WeaponId) => void;
   resetForWeapon: (weaponId: WeaponId) => void;
 }
@@ -283,6 +407,8 @@ export const useTankCrewStore = create<TankCrewState>((set, get) => ({
   gunElevDeg: 0,
   lrfRangeM: 1800,
   targetSpeedKph: 25,
+  hullCantDeg: 0,
+  fcsReady: true,
 
   setActive: (active) =>
     set((s) => ({
@@ -300,6 +426,17 @@ export const useTankCrewStore = create<TankCrewState>((set, get) => ({
 
   setOpticMode: (opticMode) => set({ opticMode }),
 
+  cycleOpticMode: (weaponId) => {
+    const cur = get();
+    const profile = weaponId ? getTankGunnerOpticProfile(weaponId) : null;
+    const modes: readonly TankOpticMode[] = profile
+      ? profile.supportedOpticModes
+      : ['daylight', 'flir_whot', 'flir_bhot'];
+    const idx = modes.indexOf(cur.opticMode);
+    const next = modes[(idx + 1) % modes.length] ?? modes[0];
+    set({ opticMode: next });
+  },
+
   setTurretYawDeg: (deg) =>
     set({
       turretYawDeg: Math.max(-180, Math.min(180, deg)),
@@ -315,12 +452,17 @@ export const useTankCrewStore = create<TankCrewState>((set, get) => ({
 
   setLrfRangeM: (rangeM) =>
     set({
-      lrfRangeM: Math.max(200, Math.min(3500, Math.round(rangeM))),
+      lrfRangeM: Math.max(200, Math.min(4000, Math.round(rangeM))),
     }),
 
   setTargetSpeedKph: (kph) =>
     set({
       targetSpeedKph: Math.max(-60, Math.min(60, Math.round(kph))),
+    }),
+
+  setHullCantDeg: (deg) =>
+    set({
+      hullCantDeg: Math.max(-10, Math.min(10, Number(deg.toFixed(1)))),
     }),
 
   laseAndAutoLay: (weaponId) => {
@@ -337,6 +479,7 @@ export const useTankCrewStore = create<TankCrewState>((set, get) => ({
         minE,
         Math.min(maxE, Number(sol.superelevationDeg.toFixed(2)))
       ),
+      fcsReady: true,
     });
   },
 
@@ -350,6 +493,8 @@ export const useTankCrewStore = create<TankCrewState>((set, get) => ({
       gunElevDeg: 0,
       lrfRangeM: isTank ? 1800 : 1200,
       targetSpeedKph: 25,
+      hullCantDeg: 0,
+      fcsReady: true,
     });
   },
 }));
