@@ -20,6 +20,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
+import { WEAPON_RIFLING_SPECS } from '../../engine/ballistics/riflingSpecs';
 import {
   ALLOWED_MAX_RANGES_M,
   ALLOWED_ZERO_RANGES_M,
@@ -28,9 +29,11 @@ import {
   computeAtmosphere,
   computeBallisticSolution,
   DEFAULT_DOPE_RANGES_M,
+  DEFAULT_EXTERNAL_BALLISTICS_ENVIRONMENT,
   EXTERNAL_PROJECTILE_ORDER,
   EXTERNAL_PROJECTILE_SPECS,
   interpolateTrajectoryAt,
+  MULTI_ZERO_PRESETS_M,
   normalizeExternalProjectileId,
   type BallisticSolution,
   type ExternalProjectileId,
@@ -280,6 +283,9 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
     defaultPreset.crosswindMps
   );
   const [windSign, setWindSign] = useState<1 | -1>(1);
+  const [includeSpinDrift, setIncludeSpinDrift] = useState<boolean>(
+    DEFAULT_EXTERNAL_BALLISTICS_ENVIRONMENT.includeSpinDrift
+  );
   const [altitudeM, setAltitudeM] = useState<number>(0);
   const [tempC, setTempC] = useState<number>(15);
 
@@ -313,26 +319,42 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
     [altitudeM, tempC]
   );
 
+  const activeWeaponId = useAppStore((s) => s.activeWeaponId);
+
   const solutions = useMemo<BallisticSolution[]>(
     () =>
-      activeProjectiles.map((id) =>
-        computeBallisticSolution(id, {
+      activeProjectiles.map((id) => {
+        const spec = EXTERNAL_PROJECTILE_SPECS[id];
+        const weaponForRifling = spec.representativeWeaponIds.includes(
+          activeWeaponId
+        )
+          ? activeWeaponId
+          : spec.primaryWeaponId;
+        const rifling = isWeaponId(weaponForRifling)
+          ? WEAPON_RIFLING_SPECS[weaponForRifling]
+          : null;
+        return computeBallisticSolution(id, {
           maxRangeM,
-          zeroRangeM,
+          zeroDistanceM: zeroRangeM,
           sightHeightCm,
           crosswindMps: signedCrosswindMps,
           altitudeM,
           tempC,
-        })
-      ),
+          includeSpinDrift,
+          twistInches: rifling?.twistInches,
+          twistDirection: rifling?.direction,
+        });
+      }),
     [
       activeProjectiles,
+      activeWeaponId,
       maxRangeM,
       zeroRangeM,
       sightHeightCm,
       signedCrosswindMps,
       altitudeM,
       tempC,
+      includeSpinDrift,
     ]
   );
 
@@ -435,6 +457,9 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
     setTempC(15);
     setWindSpeedMps(4.5);
     setWindSign(1);
+    setIncludeSpinDrift(
+      DEFAULT_EXTERNAL_BALLISTICS_ENVIRONMENT.includeSpinDrift
+    );
   };
 
   const handleBackClick = () => {
@@ -1338,6 +1363,99 @@ export const ExternalBallisticsView: React.FC<ExternalBallisticsViewProps> = ({
             <span className="eb-summary-pill">
               Z {zeroRangeM} m · {windSummaryText}
             </span>
+
+            {/* Applied Ballistics Quick Zero (100/200/300m), Spin Drift Toggle & Miller Sg Pill */}
+            <div
+              className="eb-quick-zero-group"
+              role="group"
+              aria-label={ui.zeroRangeLabel}
+              data-testid="eb-quick-zero-bar"
+            >
+              <span className="eb-quick-zero-label">{ui.zeroQuickLabel}:</span>
+              {MULTI_ZERO_PRESETS_M.map((z) => (
+                <button
+                  key={z}
+                  type="button"
+                  className={`eb-quick-zero-btn ${zeroRangeM === z ? 'is-active' : ''}`}
+                  aria-pressed={zeroRangeM === z}
+                  onClick={() => {
+                    playWorkbenchFoley('toggle_switch');
+                    setZeroRangeM(z);
+                  }}
+                >
+                  {z}m
+                </button>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              className={`eb-spin-toggle-btn ${includeSpinDrift ? 'is-active' : ''}`}
+              aria-pressed={includeSpinDrift}
+              title={ui.spinDriftToggleTitle}
+              data-testid="eb-spin-drift-toggle"
+              onClick={() => {
+                playWorkbenchFoley('toggle_switch');
+                setIncludeSpinDrift((prev) => !prev);
+              }}
+            >
+              <span>
+                {ui.spinDriftToggleLabel}:{' '}
+                {includeSpinDrift ? ui.spinDriftOn : ui.spinDriftOff}
+              </span>
+            </button>
+
+            {focusedSolution && (
+              <span
+                className={`eb-stability-pill is-${focusedSolution.stability.status}`}
+                data-testid="eb-stability-pill"
+              >
+                {focusedSolution.stability.status === 'fin_stabilized' ? (
+                  <>
+                    <span>
+                      {ui.stabilityStatusLabels.fin_stabilized} ·{' '}
+                      {ui.twistDirLabels[focusedSolution.twistDirection]}
+                    </span>
+                    <span className="eb-stability-sep" aria-hidden="true">
+                      ·
+                    </span>
+                    <span>{ui.spinDriftReadout('0.0 cm')}</span>
+                  </>
+                ) : (
+                  <>
+                    <span>
+                      {ui.stabilityBadgeLabel}{' '}
+                      <strong>{focusedSolution.stability.sg.toFixed(2)}</strong>
+                    </span>
+                    <span className="eb-stability-sep" aria-hidden="true">
+                      ·
+                    </span>
+                    <span>
+                      {ui.stabilityStatusLabels[focusedSolution.stability.status]}
+                    </span>
+                    <span className="eb-stability-sep" aria-hidden="true">
+                      ·
+                    </span>
+                    <span>
+                      1:{focusedSolution.twistInches}&quot;{' '}
+                      {ui.twistDirLabels[focusedSolution.twistDirection]}
+                    </span>
+                    {focusedSample && (
+                      <>
+                        <span className="eb-stability-sep" aria-hidden="true">
+                          ·
+                        </span>
+                        <span>
+                          {ui.spinDriftReadout(
+                            `${formatSigned(focusedSample.spinDriftCm, 1)} cm`
+                          )}
+                        </span>
+                      </>
+                    )}
+                  </>
+                )}
+              </span>
+            )}
           </div>
 
           <button

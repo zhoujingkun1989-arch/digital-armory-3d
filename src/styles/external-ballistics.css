@@ -1671,6 +1671,187 @@
   color: #0f172a;
 }
 
+/* ==================== Applied Ballistics Multi-Zero, Spin Drift & Miller Sg Strip ==================== */
+.eb-quick-zero-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px 5px;
+  border-radius: 7px;
+  background: rgba(15, 23, 42, 0.56);
+  border: 1px solid var(--border-subtle);
+}
+
+.eb-quick-zero-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+  padding-inline: 2px;
+  white-space: nowrap;
+}
+
+.eb-quick-zero-btn {
+  padding: 2px 6px;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.14s ease;
+}
+
+.eb-quick-zero-btn:hover {
+  color: var(--color-text-primary);
+  background: rgba(56, 189, 248, 0.14);
+}
+
+.eb-quick-zero-btn.is-active {
+  background: linear-gradient(135deg, #0284c7, #0ea5e9);
+  border-color: rgba(56, 189, 248, 0.72);
+  color: #ffffff;
+}
+
+.eb-spin-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 7px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(15, 23, 42, 0.56);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.14s ease;
+}
+
+.eb-spin-toggle-btn.is-active {
+  background: rgba(14, 165, 233, 0.18);
+  border-color: rgba(56, 189, 248, 0.52);
+  color: #7dd3fc;
+}
+
+.eb-stability-pill {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 7px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(15, 23, 42, 0.62);
+  color: var(--color-text-secondary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.eb-stability-pill strong {
+  color: var(--color-text-primary);
+  font-weight: 800;
+}
+
+.eb-stability-pill.is-stable {
+  background: rgba(16, 185, 129, 0.14);
+  border-color: rgba(52, 211, 153, 0.42);
+  color: #6ee7b7;
+}
+
+.eb-stability-pill.is-marginal {
+  background: rgba(245, 158, 11, 0.16);
+  border-color: rgba(251, 191, 36, 0.45);
+  color: #fcd34d;
+}
+
+.eb-stability-pill.is-unstable {
+  background: rgba(239, 68, 68, 0.16);
+  border-color: rgba(248, 113, 113, 0.48);
+  color: #fca5a5;
+}
+
+.eb-stability-pill.is-fin_stabilized {
+  background: rgba(56, 189, 248, 0.14);
+  border-color: rgba(56, 189, 248, 0.42);
+  color: #7dd3fc;
+}
+
+.eb-stability-sep {
+  opacity: 0.45;
+}
+
+:is([data-theme='light'], .theme-light) .eb-quick-zero-group,
+:is([data-theme='light'], .theme-light) .eb-spin-toggle-btn {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(15, 23, 42, 0.16);
+  color: #334155;
+}
+
+:is([data-theme='light'], .theme-light) .eb-quick-zero-label {
+  color: #475569;
+}
+
+:is([data-theme='light'], .theme-light) .eb-quick-zero-btn {
+  color: #334155;
+}
+
+:is([data-theme='light'], .theme-light) .eb-quick-zero-btn.is-active {
+  color: #ffffff;
+}
+
+:is([data-theme='light'], .theme-light) .eb-spin-toggle-btn.is-active {
+  background: rgba(2, 132, 199, 0.14);
+  border-color: rgba(2, 132, 199, 0.42);
+  color: #0369a1;
+}
+
+:is([data-theme='light'], .theme-light) .eb-stability-pill {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(15, 23, 42, 0.16);
+  color: #334155;
+}
+
+:is([data-theme='light'], .theme-light) .eb-stability-pill strong {
+  color: #0f172a;
+}
+
+:is([data-theme='light'], .theme-light) .eb-stability-pill.is-stable {
+  background: rgba(16, 185, 129, 0.14);
+  border-color: rgba(5, 150, 105, 0.38);
+  color: #047857;
+}
+
+:is([data-theme='light'], .theme-light) .eb-stability-pill.is-marginal {
+  background: rgba(245, 158, 11, 0.15);
+  border-color: rgba(180, 83, 9, 0.38);
+  color: #92400e;
+}
+
+:is([data-theme='light'], .theme-light) .eb-stability-pill.is-unstable {
+  background: rgba(239, 68, 68, 0.13);
+  border-color: rgba(185, 28, 28, 0.36);
+  color: #991b1b;
+}
+
+:is([data-theme='light'], .theme-light) .eb-stability-pill.is-fin_stabilized {
+  background: rgba(2, 132, 199, 0.12);
+  border-color: rgba(2, 132, 199, 0.36);
+  color: #0369a1;
+}
+
+@media (max-width: 640px) {
+  .eb-stability-pill {
+    white-space: normal;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .eb-lab-screen,
   .eb-lab-screen *,

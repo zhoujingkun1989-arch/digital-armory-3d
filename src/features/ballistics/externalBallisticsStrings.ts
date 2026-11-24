@@ -1,6 +1,8 @@
 import type {
   FlightRegime,
+  GyroscopicStabilityStatus,
   ProjectileCategory,
+  TwistDirection,
 } from '../../engine/physics/externalBallistics';
 import type { LanguageCode } from '../../narration/types';
 import type {
@@ -209,6 +211,15 @@ export interface ExternalBallisticsUiCopy {
   range3dPipLiveTag: string;
   range3dPipTargetSteel: string;
   range3dPipTargetGel: string;
+  zeroQuickLabel: string;
+  spinDriftToggleLabel: string;
+  spinDriftToggleTitle: string;
+  spinDriftOn: string;
+  spinDriftOff: string;
+  stabilityBadgeLabel: string;
+  stabilityStatusLabels: Record<GyroscopicStabilityStatus, string>;
+  twistDirLabels: Record<TwistDirection, string>;
+  spinDriftReadout: (cmStr: string) => string;
 }
 
 export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
@@ -437,6 +448,25 @@ export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
     range3dPipLiveTag: '20× 实时着弹观测',
     range3dPipTargetSteel: 'AR500 钢靶',
     range3dPipTargetGel: '10% 弹道明胶',
+    zeroQuickLabel: '归零',
+    spinDriftToggleLabel: '自旋偏流',
+    spinDriftToggleTitle:
+      '开启或关闭 Applied Ballistics 陀螺自旋偏流（右旋向右 +Z，左旋向左 -Z，滑膛/弓弩为 0）',
+    spinDriftOn: '开',
+    spinDriftOff: '关',
+    stabilityBadgeLabel: '米勒稳定度 Sg',
+    stabilityStatusLabels: {
+      stable: '稳定',
+      marginal: '临界',
+      unstable: '欠稳',
+      fin_stabilized: '尾翼稳定',
+    },
+    twistDirLabels: {
+      RH: '右旋 RH',
+      LH: '左旋 LH',
+      none: '滑膛/无膛线',
+    },
+    spinDriftReadout: (cmStr) => `自旋 ${cmStr}`,
   },
 
   en: {
@@ -671,6 +701,25 @@ export const EXTERNAL_BALLISTICS_STRINGS: Readonly<
     range3dPipLiveTag: '20x LIVE IMPACT',
     range3dPipTargetSteel: 'AR500 STEEL',
     range3dPipTargetGel: '10% GEL BLOCK',
+    zeroQuickLabel: 'Zero',
+    spinDriftToggleLabel: 'Spin Drift',
+    spinDriftToggleTitle:
+      'Toggle Applied Ballistics gyroscopic spin drift (RH right +Z, LH left -Z, 0 for smoothbore/archery)',
+    spinDriftOn: 'ON',
+    spinDriftOff: 'OFF',
+    stabilityBadgeLabel: 'Miller Sg',
+    stabilityStatusLabels: {
+      stable: 'Stable',
+      marginal: 'Marginal',
+      unstable: 'Unstable',
+      fin_stabilized: 'Fin-Stabilized',
+    },
+    twistDirLabels: {
+      RH: 'RH Twist',
+      LH: 'LH Twist',
+      none: 'Smoothbore / Unrifled',
+    },
+    spinDriftReadout: (cmStr) => `Spin ${cmStr}`,
   },
 };
 
