@@ -1,9 +1,9 @@
 /* ==========================================================================
-   WP-20a · Ballistic & Action Causality Sandbox HUD Card
+   Ballistic & Action Causality Sandbox HUD Card
    ========================================================================== */
 
 .causality-sandbox-card {
-  background: rgba(9, 13, 22, 0.88);
+  background: rgba(9, 13, 22, 0.9);
   border: 1px solid rgba(56, 189, 248, 0.34);
   border-radius: 12px;
   padding: 11px 12px;
@@ -13,10 +13,12 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  max-height: min(82vh, 720px);
+  overflow-y: auto;
 }
 
-:is([data-theme='light'], .theme-light) .causality-sandbox-card {
-  background: rgba(255, 255, 255, 0.94);
+:is([data-theme='light'], .theme-light, body.studio-light-ui) .causality-sandbox-card {
+  background: rgba(255, 255, 255, 0.95);
   border-color: rgba(2, 132, 199, 0.32);
   box-shadow: 0 12px 28px rgba(15, 23, 42, 0.12);
   color: #0f172a;
@@ -323,4 +325,290 @@
 .causality-diagnostic-banner p {
   margin: 0;
   opacity: 0.92;
+}
+
+/* ==========================================================================
+   Guided Physics Experiments & Visual Mechanical Margin Gauges
+   ========================================================================== */
+
+.causality-section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+
+:is([data-theme='light'], .theme-light, body.studio-light-ui)
+  .causality-section-label {
+  color: #475569;
+}
+
+.causality-experiments-section {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.causality-experiments-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.causality-experiment-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  background: rgba(15, 23, 42, 0.62);
+  color: #e2e8f0;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    transform 160ms ease;
+}
+
+.causality-experiment-btn:hover {
+  border-color: rgba(56, 189, 248, 0.55);
+  background: rgba(30, 41, 59, 0.72);
+}
+
+.causality-experiment-btn.is-active.is-nominal {
+  border-color: rgba(52, 211, 153, 0.75);
+  background: rgba(16, 185, 129, 0.16);
+}
+
+.causality-experiment-btn.is-active.is-warning {
+  border-color: rgba(250, 204, 21, 0.75);
+  background: rgba(234, 179, 8, 0.16);
+}
+
+.causality-experiment-btn.is-active.is-hazard {
+  border-color: rgba(248, 113, 113, 0.8);
+  background: rgba(239, 68, 68, 0.17);
+}
+
+:is([data-theme='light'], .theme-light, body.studio-light-ui)
+  .causality-experiment-btn {
+  background: rgba(241, 245, 249, 0.92);
+  color: #0f172a;
+}
+
+.causality-exp-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  width: 100%;
+}
+
+.causality-exp-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.causality-exp-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(148, 163, 184, 0.16);
+  color: #cbd5e1;
+  white-space: nowrap;
+}
+
+.causality-experiment-btn.is-nominal .causality-exp-tag {
+  color: #6ee7b7;
+  background: rgba(16, 185, 129, 0.16);
+}
+
+.causality-experiment-btn.is-warning .causality-exp-tag {
+  color: #fde047;
+  background: rgba(234, 179, 8, 0.16);
+}
+
+.causality-experiment-btn.is-hazard .causality-exp-tag {
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.18);
+}
+
+:is([data-theme='light'], .theme-light, body.studio-light-ui)
+  .causality-experiment-btn.is-nominal .causality-exp-tag {
+  color: #047857;
+}
+
+:is([data-theme='light'], .theme-light, body.studio-light-ui)
+  .causality-experiment-btn.is-warning .causality-exp-tag {
+  color: #a16207;
+}
+
+:is([data-theme='light'], .theme-light, body.studio-light-ui)
+  .causality-experiment-btn.is-hazard .causality-exp-tag {
+  color: #b91c1c;
+}
+
+.causality-experiment-insight {
+  margin: 0;
+  padding: 5px 8px;
+  border-radius: 7px;
+  border-left: 2.5px solid #38bdf8;
+  background: rgba(14, 165, 233, 0.1);
+  font-size: 10px;
+  line-height: 1.38;
+  color: #bae6fd;
+}
+
+:is([data-theme='light'], .theme-light, body.studio-light-ui)
+  .causality-experiment-insight {
+  background: rgba(2, 132, 199, 0.08);
+  color: #0369a1;
+}
+
+.causality-gauges-panel {
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: rgba(2, 6, 23, 0.48);
+  padding: 7px 8px;
+}
+
+:is([data-theme='light'], .theme-light, body.studio-light-ui)
+  .causality-gauges-panel {
+  background: rgba(248, 250, 252, 0.92);
+}
+
+.causality-gauges-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.causality-gauge-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.causality-gauge-meta {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 10px;
+}
+
+.causality-gauge-name {
+  font-weight: 700;
+  color: #cbd5e1;
+}
+
+:is([data-theme='light'], .theme-light, body.studio-light-ui)
+  .causality-gauge-name {
+  color: #1e293b;
+}
+
+.causality-gauge-values {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.causality-gauge-sub {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: #94a3b8;
+}
+
+.causality-gauge-val {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 800;
+}
+
+.causality-gauge-row.is-nominal .causality-gauge-val {
+  color: #34d399;
+}
+
+.causality-gauge-row.is-warning .causality-gauge-val {
+  color: #fbbf24;
+}
+
+.causality-gauge-row.is-hazard .causality-gauge-val {
+  color: #f87171;
+}
+
+:is([data-theme='light'], .theme-light, body.studio-light-ui)
+  .causality-gauge-row.is-nominal .causality-gauge-val {
+  color: #059669;
+}
+
+:is([data-theme='light'], .theme-light, body.studio-light-ui)
+  .causality-gauge-row.is-warning .causality-gauge-val {
+  color: #b45309;
+}
+
+:is([data-theme='light'], .theme-light, body.studio-light-ui)
+  .causality-gauge-row.is-hazard .causality-gauge-val {
+  color: #dc2626;
+}
+
+.causality-gauge-track {
+  position: relative;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.18);
+  overflow: hidden;
+}
+
+.causality-gauge-fill {
+  height: 100%;
+  border-radius: 999px;
+  transition:
+    width 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    background 220ms ease;
+}
+
+.causality-gauge-fill.is-nominal {
+  background: linear-gradient(90deg, #06b6d4 0%, #10b981 100%);
+}
+
+.causality-gauge-fill.is-warning {
+  background: linear-gradient(90deg, #f59e0b 0%, #facc15 100%);
+}
+
+.causality-gauge-fill.is-hazard {
+  background: linear-gradient(90deg, #f97316 0%, #ef4444 100%);
+}
+
+.causality-gauge-threshold {
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  width: 2px;
+  background: rgba(248, 250, 252, 0.88);
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+}
+
+:is([data-theme='light'], .theme-light, body.studio-light-ui)
+  .causality-gauge-threshold {
+  background: #0f172a;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .causality-gauge-fill,
+  .causality-experiment-btn {
+    transition: none;
+  }
 }

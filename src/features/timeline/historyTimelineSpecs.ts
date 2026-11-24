@@ -12,6 +12,106 @@ export type TimelineTourId =
   | 'heavy_armor_evolution'
   | 'unconventional_actions';
 
+export type TimelineEraId =
+  | 'all'
+  | 'pioneers'
+  | 'wwii_titans'
+  | 'cold_war'
+  | 'modern_armor';
+
+export interface HistoryTimelineEraSpec {
+  id: TimelineEraId;
+  minYear: number;
+  maxYear: number;
+  rangeLabel: string;
+  labelZh: string;
+  labelEn: string;
+  summaryZh: string;
+  summaryEn: string;
+}
+
+export const TIMELINE_ERAS: readonly HistoryTimelineEraSpec[] = [
+  {
+    id: 'all',
+    minYear: 1894,
+    maxYear: 2026,
+    rangeLabel: '1894–2026',
+    labelZh: '全馆跨代总览',
+    labelEn: 'Full Archive',
+    summaryZh: '横跨 132 年的无烟火药、自动闭锁、航空重炮与主战坦克演化全景',
+    summaryEn:
+      '132-year panorama spanning smokeless repeaters, automatic locking, rotary cannons, and MBTs',
+  },
+  {
+    id: 'pioneers',
+    minYear: 1894,
+    maxYear: 1918,
+    rangeLabel: '1894–1918',
+    labelZh: '机械奠基先驱',
+    labelEn: 'Pioneers',
+    summaryZh: '勃朗宁杠杆与短后坐偏移枪管、鲁格肘节闭锁奠定百年轻武器骨架',
+    summaryEn:
+      'Browning lever & swinging-link lockups alongside Luger toggle-links forge modern firearms geometry',
+  },
+  {
+    id: 'wwii_titans',
+    minYear: 1919,
+    maxYear: 1945,
+    rangeLabel: '1919–1945',
+    labelZh: '大战工业巨擘',
+    labelEn: 'WWII Titans',
+    summaryZh: '冷冲压高射速双滚柱机枪、毛瑟受控供弹栓动、加兰德长行程活塞与虎式 88mm 重炮',
+    summaryEn:
+      'Stamped twin-roller GPMGs, Mauser controlled-feed bolts, Garand gas rifles, and 88mm heavy armor',
+  },
+  {
+    id: 'cold_war',
+    minYear: 1946,
+    maxYear: 1990,
+    rangeLabel: '1946–1990',
+    labelZh: '冷战原理分流',
+    labelEn: 'Cold War',
+    summaryZh: '滚柱延迟、无托聚合机匣、聚合物平移击针、无壳时钟机匣与 30mm 七管液压航炮全面爆发',
+    summaryEn:
+      'Roller-delayed SMGs, bullpups, polymer strikers, caseless clockwork, and 30mm 7-barrel rotary cannons',
+  },
+  {
+    id: 'modern_armor',
+    minYear: 1991,
+    maxYear: 2026,
+    rangeLabel: '1991–2026',
+    labelZh: '现代模块化与重装',
+    labelEn: 'Modern Armor & Ordnance',
+    summaryZh: '模块化短活塞步枪、轴外延迟凸轮、三代半主战坦克自动装弹与 500 FPS 螺旋凸轮弓弩',
+    summaryEn:
+      'Modular short-stroke carbines, off-axis cams, modern composite MBTs, and 500 FPS helical archery',
+  },
+];
+
+export function matchesTimelineEra(year: number, eraId: TimelineEraId): boolean {
+  if (eraId === 'all') return true;
+  const spec = TIMELINE_ERAS.find((e) => e.id === eraId);
+  if (!spec) return true;
+  return year >= spec.minYear && year <= spec.maxYear;
+}
+
+export function getTimelineEraCounts(): Record<TimelineEraId, number> {
+  const counts: Record<TimelineEraId, number> = {
+    all: HISTORY_TIMELINE_NODES.length,
+    pioneers: 0,
+    wwii_titans: 0,
+    cold_war: 0,
+    modern_armor: 0,
+  };
+  for (const node of HISTORY_TIMELINE_NODES) {
+    if (matchesTimelineEra(node.year, 'pioneers')) counts.pioneers += 1;
+    else if (matchesTimelineEra(node.year, 'wwii_titans')) counts.wwii_titans += 1;
+    else if (matchesTimelineEra(node.year, 'cold_war')) counts.cold_war += 1;
+    else if (matchesTimelineEra(node.year, 'modern_armor')) counts.modern_armor += 1;
+  }
+  return counts;
+}
+
 export interface HistoryTimelineLineageSpec {
   id: TimelineLineageId;
   colorHex: string;
@@ -241,7 +341,7 @@ export const HISTORY_TIMELINE_NODES: readonly HistoryTimelineNodeSpec[] = [
     year: 1966,
     lineageId: 'roller_blowback_delayed',
     lane: 2,
-    ancestors: ['p08'],
+    ancestors: ['mg42', 'p08'],
     designerZh: '黑克勒-科赫 (Heckler & Koch)',
     designerEn: 'Heckler & Koch (Tilo Moller et al.)',
     innovationZh: '双对称圆柱滚柱利用 45° 斜面机械杠杆比实现闭膛高精度连发',
@@ -278,7 +378,7 @@ export const HISTORY_TIMELINE_NODES: readonly HistoryTimelineNodeSpec[] = [
     year: 1982,
     lineageId: 'toggle_short_recoil',
     lane: 0,
-    ancestors: ['p08'],
+    ancestors: ['m1911', 'p08'],
     designerZh: '加斯顿·格洛克 (Gaston Glock)',
     designerEn: 'Gaston Glock',
     innovationZh: 'Safe Action 半预压平移击针与一体化矩形闭锁方块聚合物套筒座',
@@ -314,7 +414,7 @@ export const HISTORY_TIMELINE_NODES: readonly HistoryTimelineNodeSpec[] = [
     year: 1984,
     lineageId: 'gas_rotating_bolt',
     lane: 1,
-    ancestors: ['garand'],
+    ancestors: ['garand', 'mg42'],
     designerZh: 'FN Herstal',
     designerEn: 'FN Herstal (Ernest Vervier)',
     innovationZh: 'M27 可散弹链顶推棘爪供弹与紧急 STANAG 弹匣双栖开膛待击',
@@ -386,7 +486,7 @@ export const HISTORY_TIMELINE_NODES: readonly HistoryTimelineNodeSpec[] = [
     year: 1996,
     lineageId: 'manual_revolver_lever',
     lane: 3,
-    ancestors: ['python'],
+    ancestors: ['k98k', 'python'],
     designerZh: '精密国际 (Accuracy International)',
     designerEn: 'Accuracy International / Malcolm Cooper',
     innovationZh: '7075 铝合金全长刚性底盘与防结冰双排三闭锁突笋 60° 短拉栓',
@@ -422,7 +522,7 @@ export const HISTORY_TIMELINE_NODES: readonly HistoryTimelineNodeSpec[] = [
     year: 2009,
     lineageId: 'roller_blowback_delayed',
     lane: 2,
-    ancestors: ['mp5'],
+    ancestors: ['thompson', 'mp5'],
     designerZh: 'KRISS USA (Renaud Kerbrat)',
     designerEn: 'KRISS USA / Renaud Kerbrat',
     innovationZh: 'Super V 轴外 75° 垂直导向滑块把 .45 ACP 后坐冲量转为向下分力',
@@ -529,10 +629,10 @@ export const HISTORY_TIMELINE_TOURS: readonly HistoryTimelineTourSpec[] = [
     id: 'german_precision',
     titleZh: '百年德系精密机构路线图',
     titleEn: 'Century of German Mechanical Precision',
-    subtitleZh: '从 1900 鲁格 P08 与 1942 虎式 88mm 炮一路追踪至豹 2A7V 与 G11',
+    subtitleZh: '从 1900 鲁格 P08、毛瑟 98k、MG 42 与虎式 88mm 炮一路追踪至豹 2A7V 与 G11',
     subtitleEn:
-      'From 1900 Luger P08 & 1942 Tiger I 88mm through HK MP5, G11 K2, and Leopard 2A7V',
-    weaponIds: ['p08', 'tiger1', 'mp5', 'g11', 'leopard2a7'],
+      'From 1900 Luger P08, Mauser K98k, MG 42 & Tiger I 88mm through HK MP5, G11 K2, and Leopard 2A7V',
+    weaponIds: ['p08', 'k98k', 'mg42', 'tiger1', 'mp5', 'g11', 'leopard2a7'],
   },
   {
     id: 'heavy_armor_evolution',
@@ -547,9 +647,9 @@ export const HISTORY_TIMELINE_TOURS: readonly HistoryTimelineTourSpec[] = [
     id: 'unconventional_actions',
     titleZh: '非常规几何延迟与能源奇观',
     titleEn: 'Unconventional Locking & Propulsion',
-    subtitleZh: '聚焦最反直觉的机械解法：轴外 V 型、钢索滑轮、无壳旋转与六管电驱',
+    subtitleZh: '聚焦最反直觉的机械解法：六管与七管 30mm 转管、无壳旋转、钢索滑轮与轴外 V 型',
     subtitleEn:
-      'Focus on non-traditional mechanisms: off-axis Super V, pulley-cable, caseless drum, and 6-barrel Gatling',
-    weaponIds: ['m134', 'g11', 'p90', 'an94', 'vector', 'r500'],
+      'Focus on non-traditional mechanisms: 6-barrel & 30mm 7-barrel rotary cannons, caseless drum, pulley-cable & Super V',
+    weaponIds: ['m134', 'gau8', 'g11', 'p90', 'an94', 'vector', 'r500'],
   },
 ];

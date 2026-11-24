@@ -4,7 +4,8 @@ export type PosterAspectRatio = '16:9' | '4:5';
 export type PosterThemeId =
   | 'obsidian_gold'
   | 'blueprint_white'
-  | 'cyber_cyan';
+  | 'cyber_cyan'
+  | 'smithsonian_blueprint';
 export type PosterArmorerRank = 'S' | 'A' | 'B' | 'C';
 
 export interface PosterShareCopy {
@@ -50,14 +51,25 @@ export interface PosterShareCopy {
     modeFiring: string;
     modeBattery: string;
     metricCaliber: string;
+    metricMainCannon: string;
+    metricAutocannon: string;
     metricMuzzleVel: string;
+    metricMuzzleEnergy: string;
     metricOal: string;
+    metricHullLength: string;
+    metricSystemLength: string;
     metricCadParts: string;
+    metricCombatWeight: string;
+    metricLoadedMass: string;
     partsUnit: (count: number, groups: number) => string;
     curveFirearmTitle: string;
     curveArcheryTitle: string;
+    curveArmorTitle: string;
+    curveOrdnanceTitle: string;
     peakPressureTag: (mpa: number) => string;
     drawPeakTag: (mpa: number) => string;
+    smithsonianAccession: string;
+    scaleBarCaption: string;
     qrTitle: string;
     qrSub: string;
     qrCutawayHint: string;
@@ -105,6 +117,10 @@ export const POSTER_SHARE_STRINGS: Readonly<
         label: '赛博青剖视',
         tip: '暗夜激光青矩阵网格配高亮遥测流光边框',
       },
+      smithsonian_blueprint: {
+        label: '史密森尼典藏蓝图',
+        tip: '普鲁士深蓝博物馆制图底板配双层鎏金展框、馆藏编号铭牌与精密比例标尺',
+      },
     },
     callsignLabel: '藏家署名铭牌',
     callsignPlaceholder: '输入专属呼号 (如 ARMORER-01)...',
@@ -133,7 +149,8 @@ export const POSTER_SHARE_STRINGS: Readonly<
       `已就绪 · ${width} × ${height} px (${aspect}) 无损 PNG · 扫码直达实时纵剖工作台`,
     fallbackStageNote: '1:1 实时 CSG 参数化精密建模视口',
     poster: {
-      museumKicker: 'DIGITAL ARMORY 3D · 开源 1:1 轻武器与弓弩三维机械博物馆',
+      museumKicker:
+        'DIGITAL ARMORY 3D · 开源 1:1 轻武器、主战坦克与航空重武三维机械博物馆',
       scaleTag: '1:1 CAD MILLIMETER METROLOGY · WEBGL 2.0',
       modeSectionCut: 'SECTION-CUT · 实心纵剖',
       modeXray: 'X-RAY · 透视外壳',
@@ -142,14 +159,25 @@ export const POSTER_SHARE_STRINGS: Readonly<
       modeFiring: 'LIVE BALLISTICS · 实弹循环',
       modeBattery: '1:1 IN-BATTERY · 精密合拢',
       metricCaliber: '口径规格 · CALIBER',
+      metricMainCannon: '主炮口径 · MAIN CANNON',
+      metricAutocannon: '七管航炮 · 7-BARREL CANNON',
       metricMuzzleVel: '初速动能 · MUZZLE VEL',
+      metricMuzzleEnergy: '炮口动能 · MUZZLE ENERGY',
       metricOal: '全长尺度 · 1:1 OAL',
+      metricHullLength: '全车尺度 · OVERALL LENGTH',
+      metricSystemLength: '整炮全长 · SYSTEM LENGTH',
       metricCadParts: '实时构件 · CAD PARTS',
+      metricCombatWeight: '战斗全重 · COMBAT WEIGHT',
+      metricLoadedMass: '满载整重 · LOADED MASS',
       partsUnit: (count, groups) => `${count} 件 · ${groups} 大总成`,
       curveFirearmTitle: 'SAAMI/CIP 膛压与初速曲线 P(t) · V(t)',
       curveArcheryTitle: '复合弓片蓄能与箭速曲线 F(t) · V(t)',
+      curveArmorTitle: '1:1 坦克主炮膛压与穿甲初速曲线 P(t) · V(t)',
+      curveOrdnanceTitle: '30×173mm 七管航炮膛压与初速曲线 P(t) · V(t)',
       peakPressureTag: (mpa) => `峰值膛压 ${mpa} MPa`,
       drawPeakTag: (mpa) => `等效峰值 ${mpa} MPa`,
+      smithsonianAccession: '馆藏档案编号 · ACCESSION',
+      scaleBarCaption: '1:1 精密比例标尺',
       qrTitle: '扫码直达 3D 实心纵剖台',
       qrSub: '零客户端安装 · 浏览器原生秒开实时拆解与击发',
       qrCutawayHint: '?screen=workbench · 自动开启纵剖透视',
@@ -195,6 +223,10 @@ export const POSTER_SHARE_STRINGS: Readonly<
         label: 'Cyber Cyan Cutaway',
         tip: 'Deep midnight schematic matrix with electric-cyan laser cutaway telemetry',
       },
+      smithsonian_blueprint: {
+        label: 'Smithsonian Exhibition Blueprint',
+        tip: 'Prussian-navy archival drafting plate with double-rule museum gold frame & calibrated metric scale bar',
+      },
     },
     callsignLabel: 'Collector Callsign',
     callsignPlaceholder: 'e.g. ARMORER-01 / Curator...',
@@ -233,14 +265,25 @@ export const POSTER_SHARE_STRINGS: Readonly<
       modeFiring: 'LIVE BALLISTICS',
       modeBattery: '1:1 IN-BATTERY',
       metricCaliber: 'CALIBER',
+      metricMainCannon: 'MAIN CANNON',
+      metricAutocannon: '7-BARREL CANNON',
       metricMuzzleVel: 'MUZZLE VEL',
+      metricMuzzleEnergy: 'MUZZLE ENERGY',
       metricOal: '1:1 OAL',
+      metricHullLength: 'OVERALL LENGTH',
+      metricSystemLength: 'SYSTEM LENGTH',
       metricCadParts: 'CAD PARTS',
+      metricCombatWeight: 'COMBAT WEIGHT',
+      metricLoadedMass: 'LOADED MASS',
       partsUnit: (count, groups) => `${count} PCS · ${groups} GROUPS`,
       curveFirearmTitle: 'SAAMI/CIP PRESSURE & VELOCITY P(t) · V(t)',
       curveArcheryTitle: 'CAM DRAW FORCE & VELOCITY F(t) · V(t)',
+      curveArmorTitle: 'MAIN CANNON PRESSURE & APFSDS VELOCITY P(t) · V(t)',
+      curveOrdnanceTitle: '30x173mm ROTARY CANNON PRESSURE & VELOCITY P(t) · V(t)',
       peakPressureTag: (mpa) => `PEAK ${mpa} MPa`,
       drawPeakTag: (mpa) => `EQUIV ${mpa} MPa`,
+      smithsonianAccession: 'SMITHSONIAN ARCHIVE · ACCESSION',
+      scaleBarCaption: '1:1 CALIBRATED METRIC SCALE',
       qrTitle: 'SCAN FOR LIVE 3D CUTAWAY',
       qrSub: 'Zero-Install Browser WebGL 2.0 Disassembly & Ballistics',
       qrCutawayHint: '?screen=workbench · Instant Cutaway View',

@@ -1,8 +1,176 @@
 import type {
   CausalityDiagnosticStatus,
+  CausalityEvaluation,
+  CausalityParameters,
   CausalityPresetId,
 } from '../../engine/physics/causalitySandbox';
 import type { LanguageCode } from '../../narration/types';
+
+export type CausalityExperimentId =
+  | 'mil_spec_equilibrium'
+  | 'subsonic_fte_short_stroke'
+  | 'overpressure_early_unlock'
+  | 'suppressed_backpressure_surge';
+
+export type MarginGaugeTone = 'nominal' | 'warning' | 'hazard';
+
+export interface CausalityExperimentSpec {
+  id: CausalityExperimentId;
+  expectedRegime: CausalityDiagnosticStatus;
+  params: Pick<
+    CausalityParameters,
+    'gasPortScale' | 'recoilSpringKScale' | 'boltMassScale' | 'powderLoadScale'
+  >;
+}
+
+export const CAUSALITY_EXPERIMENTS: readonly CausalityExperimentSpec[] = [
+  {
+    id: 'mil_spec_equilibrium',
+    expectedRegime: 'nominal',
+    params: {
+      gasPortScale: 1.0,
+      recoilSpringKScale: 1.0,
+      boltMassScale: 1.0,
+      powderLoadScale: 1.0,
+    },
+  },
+  {
+    id: 'subsonic_fte_short_stroke',
+    expectedRegime: 'short_stroke_fte',
+    params: {
+      gasPortScale: 0.7,
+      recoilSpringKScale: 1.24,
+      boltMassScale: 1.16,
+      powderLoadScale: 0.76,
+    },
+  },
+  {
+    id: 'overpressure_early_unlock',
+    expectedRegime: 'overgassed_early_unlock',
+    params: {
+      gasPortScale: 1.26,
+      recoilSpringKScale: 0.78,
+      boltMassScale: 0.84,
+      powderLoadScale: 1.34,
+    },
+  },
+  {
+    id: 'suppressed_backpressure_surge',
+    expectedRegime: 'overgassed_early_unlock',
+    params: {
+      gasPortScale: 1.48,
+      recoilSpringKScale: 0.72,
+      boltMassScale: 0.76,
+      powderLoadScale: 1.06,
+    },
+  },
+];
+
+export interface MechanicalMarginGaugeReading {
+  id: 'chamberSafety' | 'carrierStroke' | 'lockDwell';
+  fillPct: number;
+  thresholdPct: number;
+  numericValue: number;
+  minValue: number;
+  maxValue: number;
+  formattedValue: string;
+  subLabel: string;
+  tone: MarginGaugeTone;
+}
+
+function clampPct(val: number, min = 4, max = 100): number {
+  if (!Number.isFinite(val)) return min;
+  return Math.max(min, Math.min(max, val));
+}
+
+/**
+ * Pure first-principles margin gauge telemetry for visual mechanical safety bars:
+ * 1) Chamber Safety Margin (unlock pressure headroom below safe ceiling)
+ * 2) Bolt Carrier Stroke (0–120% with 78% FTE short-stroke cutoff tick)
+ * 3) Lock Dwell Window (ms after muzzle exit before breech unlock)
+ */
+export function computeMechanicalMarginGauges(
+  evaluation: CausalityEvaluation
+): [
+  MechanicalMarginGaugeReading,
+  MechanicalMarginGaugeReading,
+  MechanicalMarginGaugeReading,
+] {
+  const safeMpa = Math.max(1, evaluation.safeUnlockPressureMPa);
+  const marginPct = Math.round(
+    ((safeMpa - evaluation.chamberPressureAtUnlockMPa) / safeMpa) * 100
+  );
+  const safetyTone: MarginGaugeTone =
+    marginPct < -15 ? 'hazard' : marginPct < 5 ? 'warning' : 'nominal';
+
+  const strokePct = Math.round(evaluation.strokeRatio * 100);
+  const strokeTone: MarginGaugeTone =
+    evaluation.strokeRatio < 0.78
+      ? 'hazard'
+      : evaluation.strokeRatio > 1.12 || evaluation.boltVelocityRatio > 1.24
+        ? 'warning'
+        : 'nominal';
+
+  const dwellMs = evaluation.dwellMarginMs;
+  const dwellTone: MarginGaugeTone =
+    dwellMs <= 0.05 ? 'hazard' : dwellMs < 0.45 ? 'warning' : 'nominal';
+
+  return [
+    {
+      id: 'chamberSafety',
+      fillPct: clampPct(50 + marginPct * 0.5),
+      thresholdPct: 50,
+      numericValue: marginPct,
+      minValue: -100,
+      maxValue: 100,
+      formattedValue: `${marginPct >= 0 ? '+' : ''}${marginPct}%`,
+      subLabel: `${evaluation.chamberPressureAtUnlockMPa.toFixed(0)} / ${safeMpa.toFixed(0)} MPa`,
+      tone: safetyTone,
+    },
+    {
+      id: 'carrierStroke',
+      fillPct: clampPct((strokePct / 120) * 100),
+      thresholdPct: (78 / 120) * 100,
+      numericValue: strokePct,
+      minValue: 0,
+      maxValue: 120,
+      formattedValue: `${strokePct}%`,
+      subLabel: `v_bolt ${Math.round(evaluation.boltVelocityRatio * 100)}%`,
+      tone: strokeTone,
+    },
+    {
+      id: 'lockDwell',
+      fillPct: clampPct(((dwellMs + 0.5) / 3.0) * 100),
+      thresholdPct: (0.5 / 3.0) * 100,
+      numericValue: Number(dwellMs.toFixed(2)),
+      minValue: -0.5,
+      maxValue: 2.5,
+      formattedValue: `${dwellMs >= 0 ? '+' : ''}${dwellMs.toFixed(2)} ms`,
+      subLabel: `f_unlock ${Math.round(evaluation.unlockProgressF * 100)}%`,
+      tone: dwellTone,
+    },
+  ];
+}
+
+export function matchActiveCausalityExperiment(
+  params: Pick<
+    CausalityParameters,
+    'gasPortScale' | 'recoilSpringKScale' | 'boltMassScale' | 'powderLoadScale'
+  >
+): CausalityExperimentId | null {
+  for (const exp of CAUSALITY_EXPERIMENTS) {
+    if (
+      Math.abs(params.gasPortScale - exp.params.gasPortScale) < 0.005 &&
+      Math.abs(params.recoilSpringKScale - exp.params.recoilSpringKScale) <
+        0.005 &&
+      Math.abs(params.boltMassScale - exp.params.boltMassScale) < 0.005 &&
+      Math.abs(params.powderLoadScale - exp.params.powderLoadScale) < 0.005
+    ) {
+      return exp.id;
+    }
+  }
+  return null;
+}
 
 export interface CausalitySandboxLocaleStrings {
   badge: string;
@@ -15,6 +183,17 @@ export interface CausalitySandboxLocaleStrings {
   pauseFiring: string;
   reset: string;
   close: string;
+  experimentsHeading: string;
+  experiments: Record<
+    CausalityExperimentId,
+    { label: string; tag: string; insight: string }
+  >;
+  gaugesHeading: string;
+  gauges: {
+    chamberSafety: { label: string; threshold: string };
+    carrierStroke: { label: string; threshold: string };
+    lockDwell: { label: string; threshold: string };
+  };
   presetsHeading: string;
   sliders: {
     gasPort: string;
@@ -55,7 +234,7 @@ export const CAUSALITY_SANDBOX_STRINGS: Record<
   CausalitySandboxLocaleStrings
 > = {
   zh: {
-    badge: 'WP-20 · 物理沙盒',
+    badge: '机械因果实验室 · CAUSALITY LAB',
     title: '闭锁与内弹道因果沙盒',
     subtitle: '实时耦合导气量、复进簧刚度、机框质量与装药量，直接驱动 3D 射速与后坐行程',
     archerySubtitle: '实时耦合凸轮拉力、弓臂刚度、箭重与拉距做功，直接驱动撒放循环',
@@ -65,7 +244,49 @@ export const CAUSALITY_SANDBOX_STRINGS: Record<
     pauseFiring: '暂停击发',
     reset: '恢复出厂',
     close: '关闭沙盒',
-    presetsHeading: '典型工况预设',
+    experimentsHeading: '引导式机械因果实验',
+    experiments: {
+      mil_spec_equilibrium: {
+        label: '军标平衡工况',
+        tag: '1.00× 标定',
+        insight:
+          '膛压在弹头出膛后平稳跌破安全阈值才启动开锁，机框获得 100% 满行程抛壳与稳定复进。',
+      },
+      subsonic_fte_short_stroke: {
+        label: '亚音速欠气短行程',
+        tag: 'FTE 卡壳',
+        insight:
+          '低装药叠加高刚度复进簧令自动机冲量跌破 78% 临界行程，弹壳滞留抛壳窗且无法越过弹匣推弹。',
+      },
+      overpressure_early_unlock: {
+        label: '高膛压提前开锁',
+        tag: '早开锁危险',
+        insight:
+          '过量装药与高导气冲量在残余膛压未泄放前强行拉动开锁斜面，黄铜弹壳贴壁摩擦易拉断底缘。',
+      },
+      suppressed_backpressure_surge: {
+        label: '消音器背压激增',
+        tag: '背压过速',
+        insight:
+          '消音器多级挡板滞留火药燃气令导气通量跃升至 1.48×，显著抬高循环射速并放大机框尾铁撞击载荷。',
+      },
+    },
+    gaugesHeading: '实时机械安全裕度仪表',
+    gauges: {
+      chamberSafety: {
+        label: '闭锁膛压裕度',
+        threshold: '安全红线 0%',
+      },
+      carrierStroke: {
+        label: '机框后坐行程',
+        threshold: '78% 抛壳下限',
+      },
+      lockDwell: {
+        label: '闭锁延时窗口',
+        threshold: '0.0 ms 临界',
+      },
+    },
+    presetsHeading: '快速工况预设',
     sliders: {
       gasPort: '导气孔 / 驱动通量',
       gasPortArchery: '凸轮省力谷驱动比',
@@ -132,7 +353,7 @@ export const CAUSALITY_SANDBOX_STRINGS: Record<
     },
   },
   en: {
-    badge: 'WP-20 · CAUSALITY SANDBOX',
+    badge: 'CAUSALITY PHYSICS LAB',
     title: 'Ballistic & Action Causality Sandbox',
     subtitle:
       'Live-coupled gas drive, recoil spring stiffness k, bolt mass m, and charge scaling driving 3D cadence & stroke',
@@ -144,7 +365,49 @@ export const CAUSALITY_SANDBOX_STRINGS: Record<
     pauseFiring: 'Pause Cycle',
     reset: 'Factory Reset',
     close: 'Close Sandbox',
-    presetsHeading: 'Operating Regimes',
+    experimentsHeading: 'Guided Physics Experiments',
+    experiments: {
+      mil_spec_equilibrium: {
+        label: 'Mil-Spec Equilibrium',
+        tag: '1.00x Nominal',
+        insight:
+          'Chamber pressure drops safely below the extraction threshold before cam unlock, yielding full 100% carrier stroke.',
+      },
+      subsonic_fte_short_stroke: {
+        label: 'Subsonic FTE Short-Stroke',
+        tag: 'FTE Cutoff',
+        insight:
+          'Reduced propellant impulse against a stiff spring starves carrier travel below 78%, stranding spent brass in the port.',
+      },
+      overpressure_early_unlock: {
+        label: 'Overpressure Early Unlock',
+        tag: 'Early Unlock',
+        insight:
+          'Hot charge and oversized gas drive rotate the bolt before pressure decays, risking torn rims while brass grips the chamber.',
+      },
+      suppressed_backpressure_surge: {
+        label: 'Suppressed Backpressure Surge',
+        tag: 'Surge Load',
+        insight:
+          'Suppressor baffle dwell boosts gas flux to 1.48x, spiking cyclic cadence and slamming the carrier into the rear buffer.',
+      },
+    },
+    gaugesHeading: 'Live Mechanical Margin Gauges',
+    gauges: {
+      chamberSafety: {
+        label: 'Chamber Safety Margin',
+        threshold: '0% Ceiling',
+      },
+      carrierStroke: {
+        label: 'Bolt Carrier Stroke',
+        threshold: '78% FTE Min',
+      },
+      lockDwell: {
+        label: 'Lock Dwell Window',
+        threshold: '0.0 ms Floor',
+      },
+    },
+    presetsHeading: 'Quick Operating Regimes',
     sliders: {
       gasPort: 'Gas Port / Drive Flux',
       gasPortArchery: 'Cam Draw Drive Ratio',
