@@ -7,7 +7,14 @@ import {
 } from '../../narration/narrationService';
 import { useAppStore } from '../../store/useAppStore';
 import { getLoadedWeaponPlugin, useWeaponPlugin } from '../../weapons/registry';
-import type { WeaponPartSpec } from '../../weapons/types';
+import type { WeaponId, WeaponPartSpec } from '../../weapons/types';
+import {
+  DEFAULT_ATTACHMENT_LOADOUT,
+  OPTIC_ATTACHMENT_SPECS,
+  type OpticAttachmentId,
+  getWeaponAttachmentMountProfile,
+} from '../attachments/attachmentSpecs';
+import { useAttachmentStore } from '../attachments/attachmentStore';
 import {
   getCachedPartGeometry,
   getPartLocalCenter,
@@ -145,6 +152,138 @@ function smoothAlpha(edge0: number, edge1: number, x: number): number {
   return u * u * (3 - 2 * u);
 }
 
+/**
+ * Resolves the callout hemisphere ('up' vs 'down') from the anchor's vertical
+ * position relative to the weapon's projected vertical centroid (`weaponMidY`).
+ * Upper parts (e.g. tank CITV roof sights, top rails, scopes) always prefer the
+ * top hemisphere; lower parts (grips, magazines, lower hulls) prefer the bottom
+ * hemisphere, eliminating leaders crossing straight through the weapon body.
+ */
+export function resolveCalloutHemisphere(
+  anchorY: number,
+  weaponMidY: number,
+  preferredDir: 'up' | 'down',
+  colTopY: number,
+  colBotY: number,
+  minY: number,
+  approxFloorLimit: number
+): 'up' | 'down' {
+  let dir: 'up' | 'down' = preferredDir;
+  if (anchorY < weaponMidY - 10) {
+    dir = 'up';
+  } else if (anchorY > weaponMidY + 10) {
+    dir = 'down';
+  }
+
+  if (
+    dir === 'down' &&
+    approxFloorLimit - colBotY < 26 &&
+    colTopY - minY > 40
+  ) {
+    dir = 'up';
+  } else if (
+    dir === 'up' &&
+    colTopY - minY < 26 &&
+    approxFloorLimit - colBotY > 40
+  ) {
+    dir = 'down';
+  }
+  return dir;
+}
+
+/**
+ * Zero-GC crossing-minimization pass for callout leader lines.
+ * Operates independently within the upper (`ly < anchorY`) and lower
+ * (`ly >= anchorY`) hemispheres: whenever two labels in the same hemisphere
+ * have `anchorX[i] < anchorX[j]` but `lx[i] > lx[j]`, their horizontal/vertical
+ * label slots are swapped so leaders fan cleanly without X-crossings.
+ */
+export function untangleHemisphereLeaders(
+  anchorX: Float64Array,
+  anchorY: Float64Array,
+  lx: Float64Array,
+  ly: Float64Array,
+  halfW: Float64Array,
+  minX: Float64Array,
+  maxX: Float64Array,
+  count: number
+): void {
+  const MAX_PASSES = 6;
+  for (let pass = 0; pass < MAX_PASSES; pass++) {
+    let swapped = false;
+    for (let i = 0; i < count; i++) {
+      const iUpper = ly[i] < anchorY[i];
+      for (let j = i + 1; j < count; j++) {
+        const jUpper = ly[j] < anchorY[j];
+        if (iUpper !== jUpper) continue;
+
+        const anchorOrder = anchorX[i] - anchorX[j];
+        const labelOrder = lx[i] - lx[j];
+        // Crossing occurs when anchor order and label X order are inverted
+        if (
+          (anchorOrder < -1 && labelOrder > 1) ||
+          (anchorOrder > 1 && labelOrder < -1)
+        ) {
+          const tmpLx = lx[i];
+          const tmpLy = ly[i];
+          lx[i] = Math.max(minX[i], Math.min(maxX[i], lx[j]));
+          ly[i] = ly[j];
+          lx[j] = Math.max(minX[j], Math.min(maxX[j], tmpLx));
+          ly[j] = tmpLy;
+          swapped = true;
+        }
+      }
+    }
+    if (!swapped) break;
+  }
+
+  // Ensure monotonic left-to-right clearance for adjacent same-row labels in same hemisphere
+  for (let i = 0; i < count; i++) {
+    const iUpper = ly[i] < anchorY[i];
+    for (let j = i + 1; j < count; j++) {
+      const jUpper = ly[j] < anchorY[j];
+      if (iUpper !== jUpper) continue;
+      if (Math.abs(ly[i] - ly[j]) > 22) continue;
+      const leftIdx = anchorX[i] <= anchorX[j] ? i : j;
+      const rightIdx = leftIdx === i ? j : i;
+      const minSep = halfW[leftIdx] + halfW[rightIdx] + 8;
+      const curSep = lx[rightIdx] - lx[leftIdx];
+      if (curSep < minSep) {
+        const push = (minSep - curSep) * 0.5;
+        lx[leftIdx] = Math.max(
+          minX[leftIdx],
+          Math.min(maxX[leftIdx], lx[leftIdx] - push)
+        );
+        lx[rightIdx] = Math.max(
+          minX[rightIdx],
+          Math.min(maxX[rightIdx], lx[rightIdx] + push)
+        );
+      }
+    }
+  }
+}
+
+/**
+ * Returns the approximate 3D world-space AABB `[xMin, yMin, zMin, xMax, yMax, zMax]`
+ * of a mounted modular optic so upper-receiver callouts lift cleanly above it.
+ */
+export function computeMountedOpticClearanceBox(
+  weaponId: WeaponId,
+  opticId: OpticAttachmentId
+): readonly [number, number, number, number, number, number] | null {
+  if (opticId === 'none') return null;
+  const profile = getWeaponAttachmentMountProfile(weaponId);
+  if (!profile.opticRailAnchor) return null;
+  const spec = OPTIC_ATTACHMENT_SPECS[opticId];
+  const s = profile.modelScale;
+  const [ax, ay, az] = profile.opticRailAnchor;
+  const halfLen = Math.max(3.5, spec.lengthCm * 0.56) * s;
+  const height =
+    (opticId === 'thermal' ? 6.4 : opticId === 'lpvo' ? 5.8 : 4.6) * s;
+  const halfZ = 2.4 * s;
+  return [ax - halfLen, ay, az - halfZ, ax + halfLen, ay + height, az + halfZ];
+}
+
 const tmpVec = new THREE.Vector3();
 const tmpEuler = new THREE.Euler();
 const sharedPose = createMutablePose();
@@ -208,12 +347,19 @@ export function updateCalloutOverlay60fps(
     lang,
     mode,
     showLabels,
+    labelsUserToggled,
     xrayShells,
     isolateSelected,
     selectedPartId,
     hoveredPartId,
     hiddenGroups,
   } = state;
+  const autoExplodeLabels =
+    !labelsUserToggled && mode === 'explode' && animatedExplodeT >= 0.15;
+  const effectiveShowLabels = showLabels || autoExplodeLabels;
+  const autoExplodeFade = showLabels
+    ? 1
+    : smoothAlpha(0.15, 0.24, animatedExplodeT);
 
   const plugin = getLoadedWeaponPlugin(activeWeaponId);
   const narrationBundle = getLoadedNarrationBundle(activeWeaponId);
@@ -384,7 +530,7 @@ export function updateCalloutOverlay60fps(
 
     let alpha = 0;
     if (!groupHidden && !ghostedByIsolate) {
-      if (isSelected) {
+      if (isSelected || isHovered) {
         alpha = 1;
       } else if (isFieldStrip && showLabels) {
         const movedDist =
@@ -403,17 +549,18 @@ export function updateCalloutOverlay60fps(
         } else if (xrayShells && part.group === 'fire_control') {
           alpha = 0.88;
         }
-      } else if (mode === 'explode' && showLabels) {
+      } else if (mode === 'explode' && effectiveShowLabels) {
         if (part.labelAppearAt <= 0.01) {
-          alpha = 1;
+          alpha = autoExplodeFade;
         } else if (animatedExplodeT >= part.labelAppearAt - 0.02) {
-          alpha = smoothAlpha(
-            part.labelAppearAt - 0.02,
-            part.labelAppearAt + 0.05,
-            animatedExplodeT
-          );
+          alpha =
+            smoothAlpha(
+              part.labelAppearAt - 0.02,
+              part.labelAppearAt + 0.05,
+              animatedExplodeT
+            ) * autoExplodeFade;
         } else if (xrayShells && part.group === 'fire_control') {
-          alpha = 0.88;
+          alpha = 0.88 * autoExplodeFade;
         }
       }
     }
@@ -484,7 +631,55 @@ export function updateCalloutOverlay60fps(
     }
   }
 
+  // Inject active mounted modular optic silhouette into `silhouettePool` (Zero-GC)
+  // so upper-receiver callouts lift cleanly ABOVE LPVO / Thermal / Red Dot scopes.
+  const activeLoadout =
+    useAttachmentStore.getState().loadouts[activeWeaponId] ??
+    DEFAULT_ATTACHMENT_LOADOUT;
+  if (activeLoadout.optic !== 'none') {
+    const attProfile = getWeaponAttachmentMountProfile(activeWeaponId);
+    if (attProfile.opticRailAnchor) {
+      const opticSpec = OPTIC_ATTACHMENT_SPECS[activeLoadout.optic];
+      const s = attProfile.modelScale;
+      const halfLen = Math.max(3.5, opticSpec.lengthCm * 0.56) * s;
+      const height =
+        (activeLoadout.optic === 'thermal'
+          ? 6.4
+          : activeLoadout.optic === 'lpvo'
+            ? 5.8
+            : 4.6) * s;
+      const halfZ = 2.4 * s;
+      const [ax, ay, az] = attProfile.opticRailAnchor;
+      tmpEuler.set(0, 0, 0);
+      pushBoxSilhouette(
+        -halfLen,
+        0,
+        -halfZ,
+        halfLen,
+        height,
+        halfZ,
+        ax,
+        ay,
+        az,
+        1
+      );
+    }
+  }
+
   if (candidateCount === 0) return;
+
+  // Compute global projected vertical midpoint of the weapon for hemisphere routing
+  let globalSilMinY = viewportH;
+  let globalSilMaxY = 0;
+  for (let s = 0; s < silhouetteCount; s++) {
+    const sil = silhouettePool[s];
+    if (sil.yMin < globalSilMinY) globalSilMinY = sil.yMin;
+    if (sil.yMax > globalSilMaxY) globalSilMaxY = sil.yMax;
+  }
+  const weaponMidY =
+    globalSilMinY <= globalSilMaxY
+      ? (globalSilMinY + globalSilMaxY) * 0.5
+      : viewportH * 0.48;
 
   // In-place insertion sort on `candidateOrder[0..candidateCount)` by `sx` (Zero-GC)
   for (let i = 1; i < candidateCount; i++) {
@@ -546,20 +741,15 @@ export function updateCalloutOverlay60fps(
       ? viewportH - Math.max(168, bottomPx)
       : viewportH - 26;
 
-    let dir: 'up' | 'down' = c.part.calloutDir;
-    if (
-      dir === 'down' &&
-      approxFloorLimit - colBotY < 26 &&
-      colTopY - minY > 40
-    ) {
-      dir = 'up';
-    } else if (
-      dir === 'up' &&
-      colTopY - minY < 26 &&
-      approxFloorLimit - colBotY > 40
-    ) {
-      dir = 'down';
-    }
+    const dir = resolveCalloutHemisphere(
+      c.sy,
+      weaponMidY,
+      c.part.calloutDir,
+      colTopY,
+      colBotY,
+      minY,
+      approxFloorLimit
+    );
 
     const stemScale = isCompact ? 0.8 : 0.96;
     const clearPad = isCompact ? 18 : 24;
@@ -832,6 +1022,18 @@ export function updateCalloutOverlay60fps(
 
     if (!anyOverlap) break;
   }
+
+  // Crossing-minimization untangle within upper & lower hemispheres (Zero-GC)
+  untangleHemisphereLeaders(
+    relaxAnchorX,
+    relaxAnchorY,
+    relaxLx,
+    relaxLy,
+    relaxHalfW,
+    relaxMinX,
+    relaxMaxX,
+    candidateCount
+  );
 
   for (let rank = 0; rank < candidateCount; rank++) {
     const c = candidatePool[candidateOrder[rank]];

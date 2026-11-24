@@ -92,6 +92,34 @@ const _thermalSync: ArmoryThermalVisualState = {
   carbonFouling01: 0,
 };
 
+/**
+ * Computes a scale-aware negative camera/target Y shift when Workbench live CT
+ * `.live-section-bar` is visible above `TimelineDock`, lifting the exhibit (~11%
+ * of visible frame height) so pistol grips (P08/M1911/G17/Deagle/P320) and lower
+ * silhouettes sit cleanly above the bottom CT control bar with zero HUD collision.
+ */
+export function computeWorkbenchSectionBarOffsetY(
+  scaleProfile: WeaponScaleProfile,
+  preset: CameraPresetType,
+  sectionCutActive: boolean
+): number {
+  if (!sectionCutActive || preset === 'top' || preset === 'armory_showcase') {
+    return 0;
+  }
+  const isClose = preset === 'cutaway_focus' || preset === 'firing_view';
+  if (scaleProfile === 'main_battle_tank') {
+    return isClose ? -18 : -28;
+  }
+  if (scaleProfile === 'heavy_sniper') {
+    return isClose ? -1.8 : -3.4;
+  }
+  if (scaleProfile === 'compound_bow' || scaleProfile === 'rifle') {
+    return isClose ? -1.7 : -2.8;
+  }
+  // Pistols, revolvers, SMGs & compact platforms (p08, m1911, g17, deagle, p320, etc.)
+  return isClose ? -1.65 : -2.35;
+}
+
 function applyWorkbenchFraming(
   cfg: WeaponCameraMap[CameraPresetType],
   scaleProfile: WeaponScaleProfile,
@@ -99,7 +127,8 @@ function applyWorkbenchFraming(
   t: number,
   aspect: number,
   goalTarget: THREE.Vector3,
-  goalPos: THREE.Vector3
+  goalPos: THREE.Vector3,
+  sectionCutActive = false
 ): void {
   const isFixedClosePreset =
     preset === 'cutaway_focus' || preset === 'firing_view';
@@ -141,8 +170,14 @@ function applyWorkbenchFraming(
     ? Math.max(1, 1.08 / aspect)
     : Math.max(vertScale, horizScale);
 
+  const sectionBarOffsetY = computeWorkbenchSectionBarOffsetY(
+    scaleProfile,
+    preset,
+    sectionCutActive
+  );
   const finalXShift = isFixedClosePreset ? 0 : xShift;
-  const finalYShift = isFixedClosePreset ? 0 : yShift;
+  const finalYShift =
+    (isFixedClosePreset ? 0 : yShift) + sectionBarOffsetY;
 
   goalTarget.set(
     cfg.target[0] + finalXShift,
@@ -198,6 +233,7 @@ const DisassemblyRig: React.FC = () => {
   const armoryAutoRotate = useAppStore((s) => s.armoryAutoRotate);
   const selectedPartId = useAppStore((s) => s.selectedPartId);
   const cameraCommand = useAppStore((s) => s.cameraCommand);
+  const sectionCut = useAppStore((s) => s.sectionCut);
   const environmentPreset = useAppStore((s) => s.environmentPreset);
   const hudHidden = useAppStore((s) => s.hudHidden);
   const activeCartridgeCaliber = useAppStore((s) => s.activeCartridgeCaliber);
@@ -393,7 +429,8 @@ const DisassemblyRig: React.FC = () => {
         t,
         aspect,
         flyRef.current.goalTarget,
-        flyRef.current.goalPos
+        flyRef.current.goalPos,
+        screen === 'workbench' && sectionCut
       );
 
       if (!hasSnappedInitialRef.current && controlsRef.current) {
@@ -410,6 +447,7 @@ const DisassemblyRig: React.FC = () => {
     cameraCommand,
     activeWeaponId,
     screen,
+    sectionCut,
     size.width,
     size.height,
     showcaseWindowVer,
@@ -677,7 +715,8 @@ const DisassemblyRig: React.FC = () => {
           nextAnimatedT,
           aspect,
           flyRef.current.goalTarget,
-          flyRef.current.goalPos
+          flyRef.current.goalPos,
+          state.sectionCut
         );
         lastFramedTRef.current = nextAnimatedT;
         flyRef.current.active = true;

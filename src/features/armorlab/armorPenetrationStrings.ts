@@ -77,7 +77,7 @@ export const ARMOR_PENETRATION_STRINGS: Record<
   ArmorPenetrationLocaleStrings
 > = {
   zh: {
-    badge: 'WP-20 · 1:1 穿甲抗弹实验室',
+    badge: '1:1 复合装甲穿甲剧场',
     title: '主战坦克复合装甲抗弹与穿甲推演台',
     subtitle:
       '基于 Lanz-Odermatt 长杆穿甲方程与 De Marre 均质钢方程，实时解算爆炸反应装甲（ERA）、陶瓷复合背板与入射倾角抗弹边界',
@@ -164,7 +164,7 @@ export const ARMOR_PENETRATION_STRINGS: Record<
     },
   },
   en: {
-    badge: 'WP-20 · ARMOR PENETRATION LAB',
+    badge: '1:1 ARMOR PENETRATION THEATER',
     title: '1:1 Composite Armor & Kinetic Penetrator Lab',
     subtitle:
       'Lanz-Odermatt long-rod & De Marre steel perforation solver evaluating ERA shearing, ceramic NERA arrays, line-of-sight obliquity, and range decay',

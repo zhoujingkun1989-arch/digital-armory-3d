@@ -649,10 +649,29 @@ a {
     box-sizing: border-box;
   }
 
-  .armory-header .armory-actions-filters,
-  .armory-header .armory-filter-pills,
-  .armory-header .armory-actions-utility,
-  .armory-header .studio-env-cluster,
+  /* Tablet & Mobile Armory Header Consolidation: single crisp row <= 58px */
+  .armory-header {
+    flex-wrap: nowrap;
+    padding: 5px 10px;
+    gap: 8px;
+    min-height: 48px;
+  }
+
+  .armory-header .armory-halls-strip,
+  .armory-header .armory-desktop-ctrl,
+  .armory-header .armory-desktop-lang {
+    display: none;
+  }
+
+  .armory-header .armory-mobile-menu-btn {
+    display: inline-flex;
+  }
+
+  .armory-header .armory-brand-block {
+    flex: 1 1 auto;
+    max-inline-size: none;
+  }
+
   .top-bar .toolbar-cluster-primary,
   .top-bar .toolbar-cluster-tools,
   .top-bar .studio-env-cluster {
@@ -661,21 +680,9 @@ a {
     max-inline-size: 100%;
   }
 
-  .armory-header .armory-actions-filters,
-  .armory-header .armory-actions-utility,
   .top-bar .toolbar-cluster-tools {
     justify-content: flex-start;
     gap: 5px;
-  }
-
-  .armory-header .armory-actions-filters {
-    flex: 1 1 100%;
-    margin-inline-start: 0;
-  }
-
-  .armory-filter-pills {
-    gap: 4px;
-    padding: 3px 4px;
   }
 
   .top-bar .toolbar-divider {
@@ -704,6 +711,10 @@ a {
 
 /* iPad Portrait (768×1024) & Large Mobile */
 @media (max-width: 768px) {
+  :root {
+    --hud-top-offset: 66px;
+  }
+
   .armory-overlay {
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
@@ -714,14 +725,53 @@ a {
     gap: 8px;
   }
 
+  .armory-header {
+    padding: 5px 8px;
+    gap: 6px;
+  }
+
+  .armory-header .armory-vault-badge {
+    display: none;
+  }
+
   .armory-stage-controls {
     justify-self: end;
   }
 
+  /* Mobile Workbench Header Rescue: compact single row <= 58px unless expanded */
   .top-bar {
+    top: 8px;
     left: 8px;
     right: 8px;
-    padding: 6px 9px;
+    padding: 5px 8px;
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+
+  .top-bar .brand-block {
+    flex: 1 1 auto;
+    gap: 6px;
+    min-inline-size: 0;
+  }
+
+  .top-bar .wb-mobile-actions {
+    display: inline-flex;
+  }
+
+  .top-bar:not(.is-mobile-expanded) .toolbar-cluster-primary,
+  .top-bar:not(.is-mobile-expanded) .toolbar-cluster-tools {
+    display: none;
+  }
+
+  .top-bar.is-mobile-expanded {
+    flex-wrap: wrap;
+    max-height: min(76vh, 560px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .top-bar.is-mobile-expanded .brand-block {
+    flex: 1 1 100%;
   }
 
   .part-sidebar {
@@ -750,31 +800,46 @@ a {
   }
 }
 
+/* Hide bottom schematic watermark on narrow mobile (< 768px) so it never overlaps docks */
+@media (max-width: 767px) {
+  .schematic-watermark {
+    display: none !important;
+  }
+}
+
 /* Mobile Portrait (390×844) Zero-Overflow Guards */
 @media (max-width: 440px) {
   :root {
-    --hud-top-offset: 132px;
+    --hud-top-offset: 66px;
   }
 
   .brand-title {
-    font-size: 13px;
+    font-size: 12.5px;
   }
 
   .armory-header {
-    padding: 6px 8px;
+    padding: 5px 8px;
     gap: 5px;
   }
 
-  .armory-header .brand-block,
-  .top-bar .brand-block,
+  .armory-header .armory-brand-block,
+  .top-bar:not(.is-mobile-expanded) .brand-block {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  .armory-header .armory-quick-enter-btn span {
+    max-width: 88px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   .cartridge-header .brand-block {
     flex: 1 1 100%;
   }
 
-  .top-bar .toolbar-cluster-primary,
-  .top-bar .toolbar-cluster-tools,
-  .armory-header .armory-actions-filters,
-  .armory-header .armory-actions-utility {
+  .top-bar.is-mobile-expanded .toolbar-cluster-primary,
+  .top-bar.is-mobile-expanded .toolbar-cluster-tools {
     flex: 1 1 100%;
     justify-content: flex-start;
     flex-wrap: wrap;
@@ -863,8 +928,14 @@ dialog::backdrop {
   .top-bar .cam-btn,
   .top-bar .env-seg-btn,
   .top-bar .lang-seg-btn,
+  .armory-mobile-menu-btn,
+  .armory-drawer-close-btn,
+  .wb-mobile-cut-btn,
+  .wb-mobile-drawer-btn,
   .armory-quick-enter-btn,
   .armor-pen-reset-btn,
+  .armory-drawer-close-btn,
+  .wb-mobile-cut-btn,
   .armor-pen-close-btn,
   .armor-view-tab,
   .armor-theater-play-btn,
@@ -899,6 +970,8 @@ dialog::backdrop {
     min-height: 44px;
   }
 
+  .armory-drawer-close-btn,
+  .wb-mobile-cut-btn,
   .armor-pen-close-btn,
   .armor-theater-icon-btn,
   .timeline-close-btn,
@@ -944,6 +1017,10 @@ dialog::backdrop {
   .armory-showcase-btn,
   .armory-story-btn,
   .armory-showdown-btn,
+  .armory-mobile-menu-btn,
+  .armory-drawer-close-btn,
+  .wb-mobile-cut-btn,
+  .wb-mobile-drawer-btn,
   .armory-quick-enter-btn,
   .armory-ctrl-chip,
   .rack-scroll-btn,
@@ -979,6 +1056,10 @@ dialog::backdrop {
     min-height: 44px;
   }
 
+  .armory-mobile-menu-btn,
+  .armory-drawer-close-btn,
+  .wb-mobile-cut-btn,
+  .wb-mobile-drawer-btn,
   .armory-quick-enter-btn,
   .plaque-primary-cta,
   .play-action-btn,

@@ -38,11 +38,11 @@ export interface ArmorPenetrationModalProps {
 export type ArmorLabViewMode = 'theater3d' | 'schematic2d' | 'split';
 
 const SVG_CURVE_W = 540;
-const SVG_CURVE_H = 176;
+const SVG_CURVE_H = 152;
 const PAD_L = 48;
 const PAD_R = 16;
-const PAD_T = 14;
-const PAD_B = 26;
+const PAD_T = 12;
+const PAD_B = 28;
 
 export const ArmorPenetrationModal: React.FC<ArmorPenetrationModalProps> = ({
   onClose,
@@ -316,6 +316,7 @@ export const ArmorPenetrationModal: React.FC<ArmorPenetrationModalProps> = ({
       </div>
       <svg
         viewBox={`0 0 ${SVG_CURVE_W} ${SVG_CURVE_H}`}
+        preserveAspectRatio="xMidYMid meet"
         className="armor-curve-svg"
       >
         {[0, 0.25, 0.5, 0.75, 1].map((frac) => {

@@ -84,7 +84,10 @@ const AttachmentBenchPanel: React.FC = () => {
             <Wrench size={12} aria-hidden="true" />
             <span>{ui.badge}</span>
           </div>
-          <h3 className="att-title">
+          <h3
+            className="att-title"
+            title={`${ui.title} · ${manifest.shortLabel}`}
+          >
             {ui.title} · {manifest.shortLabel}
           </h3>
         </div>
