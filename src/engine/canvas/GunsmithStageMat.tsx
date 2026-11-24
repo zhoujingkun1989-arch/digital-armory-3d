@@ -626,6 +626,8 @@ export interface TakedownMatGeometries {
   slab: THREE.BufferGeometry;
   lip: THREE.BufferGeometry;
   trayFloor: THREE.BufferGeometry;
+  /** Warmer brushed-steel chamfered catchlight rim encircling the circular magnetic parts dish */
+  magneticDishRim: THREE.BufferGeometry;
 }
 
 export const TAKEDOWN_MAT_SURFACE_OFFSET_Y = TAKEDOWN_MAT_SPEC.thicknessCm;
@@ -717,11 +719,25 @@ export function buildTakedownMatGeometries(
     (tb.minZ + tb.maxZ) / 2
   );
 
+  // --- Chamfered brushed-steel catchlight rim around the circular magnetic parts dish ---
+  const magBowl =
+    spec.trayCompartments.find((c) => c.id === 'magnetic_bowl') ??
+    spec.trayCompartments[spec.trayCompartments.length - 1];
+  const dishRimR = (magBowl ? magBowl.width * 0.5 : 2.3) + 0.09;
+  const magneticDishRim = new THREE.TorusGeometry(dishRimR, 0.095, 14, 48);
+  magneticDishRim.rotateX(Math.PI / 2);
+  magneticDishRim.scale(1, 0.48, 1);
+  magneticDishRim.translate(
+    magBowl ? magBowl.cx : 48.0,
+    spec.thicknessCm + 0.018,
+    magBowl ? magBowl.cz : -13.9
+  );
+
   applyMatPlanarUv(slab, spec);
   applyMatPlanarUv(lip, spec);
   applyMatPlanarUv(trayFloor, spec);
 
-  return { slab, lip, trayFloor };
+  return { slab, lip, trayFloor, magneticDishRim };
 }
 
 // =====================================================================================
@@ -748,6 +764,65 @@ export function buildRulerTicks(lengthMm: number, stepMm = 10): RulerTick[] {
   }
   return ticks;
 }
+
+export type MillimeterVernierTickKind = 'mm' | 'half_cm' | 'cm' | 'major_cm';
+
+export interface MillimeterVernierTick {
+  mm: number;
+  kind: MillimeterVernierTickKind;
+  label: string | null;
+}
+
+/**
+ * High-density 1 mm Vernier bench reference graduations (`0–60 cm` / `0–600 mm`):
+ * 1 mm hairlines, 5 mm half-cm ticks, 10 mm cm ticks, and labeled 5 cm majors.
+ */
+export function buildMillimeterVernierTicks(
+  lengthMm = 600
+): MillimeterVernierTick[] {
+  const ticks: MillimeterVernierTick[] = [];
+  const count = Math.max(0, Math.floor(lengthMm));
+  for (let mm = 0; mm <= count; mm++) {
+    const kind: MillimeterVernierTickKind =
+      mm % 50 === 0
+        ? 'major_cm'
+        : mm % 10 === 0
+          ? 'cm'
+          : mm % 5 === 0
+            ? 'half_cm'
+            : 'mm';
+    ticks.push({
+      mm,
+      kind,
+      label: kind === 'major_cm' ? String(mm / 10) : null,
+    });
+  }
+  return ticks;
+}
+
+export const CORNER_FASTENER_FIDUCIALS: readonly {
+  readonly id: string;
+  readonly xCm: number;
+  readonly zCm: number;
+  readonly dirX: -1 | 1;
+  readonly dirZ: -1 | 1;
+}[] = [
+  { id: 'nw', xCm: -52.4, zCm: -23.4, dirX: 1, dirZ: 1 },
+  { id: 'ne', xCm: 52.4, zCm: -23.4, dirX: -1, dirZ: 1 },
+  { id: 'sw', xCm: -52.4, zCm: 23.4, dirX: 1, dirZ: -1 },
+  { id: 'se', xCm: 52.4, zCm: 23.4, dirX: -1, dirZ: -1 },
+];
+
+export const METRIC_FASTENER_GAUGES: readonly {
+  readonly label: string;
+  readonly radiusCm: number;
+  readonly xCm: number;
+}[] = [
+  { label: 'M2.5', radiusCm: 0.24, xCm: -48.6 },
+  { label: 'M3', radiusCm: 0.29, xCm: -46.2 },
+  { label: 'M4', radiusCm: 0.37, xCm: -43.5 },
+  { label: 'M5', radiusCm: 0.45, xCm: -40.5 },
+];
 
 export interface ProtractorGraduation {
   deg: number;
@@ -1337,6 +1412,128 @@ export function drawGunsmithMatInk(
     px(-49.5),
     pz(-17.8)
   );
+
+  // --- Cycle 9B.4: Far-edge 0–60 cm (600 mm) fine millimeter Vernier reference rule ---
+  const vernierZ = -D / 2 + 2.4; // -23.6 cm (clear of maker's plate & upper-right magnetic tray)
+  const vernierStartX = -38.0; // spans X in [-38, +22] cm = exact 60 cm
+  ctx.globalAlpha = 0.86;
+  ctx.strokeStyle = colors.ink;
+  ctx.lineWidth = Math.max(1, 0.055 * s);
+  ctx.beginPath();
+  ctx.moveTo(px(vernierStartX), pz(vernierZ));
+  ctx.lineTo(px(vernierStartX + 60), pz(vernierZ));
+  ctx.stroke();
+
+  const mmTicks = buildMillimeterVernierTicks(600);
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  for (let i = 0; i < mmTicks.length; i++) {
+    const t = mmTicks[i];
+    const x = vernierStartX + t.mm / 10;
+    const len =
+      t.kind === 'major_cm'
+        ? 1.25
+        : t.kind === 'cm'
+          ? 0.9
+          : t.kind === 'half_cm'
+            ? 0.62
+            : 0.34;
+    ctx.globalAlpha =
+      t.kind === 'major_cm'
+        ? 0.92
+        : t.kind === 'cm'
+          ? 0.78
+          : t.kind === 'half_cm'
+            ? 0.64
+            : 0.42;
+    ctx.strokeStyle =
+      t.kind === 'major_cm' || t.kind === 'cm' ? colors.inkMajor : colors.ink;
+    ctx.lineWidth = Math.max(
+      0.75,
+      (t.kind === 'major_cm' ? 0.075 : t.kind === 'cm' ? 0.05 : 0.028) * s
+    );
+    ctx.beginPath();
+    ctx.moveTo(px(x), pz(vernierZ));
+    ctx.lineTo(px(x), pz(vernierZ + len));
+    ctx.stroke();
+
+    if (t.label) {
+      ctx.globalAlpha = 0.88;
+      ctx.fillStyle = colors.inkMajor;
+      ctx.font = font(0.46, 700);
+      ctx.fillText(t.label, px(x), pz(vernierZ + len + 0.16));
+    }
+  }
+  ctx.globalAlpha = 0.85;
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'bottom';
+  ctx.fillStyle = colors.accent;
+  ctx.font = font(0.44, 700);
+  ctx.fillText('0–60 cm · VERNIER mm', px(vernierStartX), pz(vernierZ - 0.15));
+
+  // --- Cycle 9B.4: Corner fastener-diagram registration crosshair ticks ---
+  ctx.strokeStyle = colors.inkMajor;
+  ctx.lineWidth = Math.max(1, 0.055 * s);
+  for (const f of CORNER_FASTENER_FIDUCIALS) {
+    ctx.globalAlpha = 0.72;
+    const arm = 1.15;
+    // L-shaped calibration corner bracket
+    ctx.beginPath();
+    ctx.moveTo(px(f.xCm + f.dirX * arm), pz(f.zCm));
+    ctx.lineTo(px(f.xCm), pz(f.zCm));
+    ctx.lineTo(px(f.xCm), pz(f.zCm + f.dirZ * arm));
+    ctx.stroke();
+
+    // Precision fastener registration crosshair + pitch circle
+    const cx = f.xCm + f.dirX * 0.55;
+    const cz = f.zCm + f.dirZ * 0.55;
+    ctx.beginPath();
+    ctx.arc(px(cx), pz(cz), 0.28 * s, 0, Math.PI * 2);
+    ctx.moveTo(px(cx - 0.45), pz(cz));
+    ctx.lineTo(px(cx + 0.45), pz(cz));
+    ctx.moveTo(px(cx), pz(cz - 0.45));
+    ctx.lineTo(px(cx), pz(cz + 0.45));
+    ctx.stroke();
+  }
+
+  // --- Compact metric fastener head & pitch-circle reference strip below maker's plate ---
+  const fastZ = -15.6;
+  ctx.globalAlpha = 0.72;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  for (const g of METRIC_FASTENER_GAUGES) {
+    ctx.strokeStyle = colors.ink;
+    ctx.lineWidth = Math.max(0.85, 0.045 * s);
+    ctx.beginPath();
+    ctx.arc(px(g.xCm), pz(fastZ), g.radiusCm * s, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(px(g.xCm - g.radiusCm - 0.25), pz(fastZ));
+    ctx.lineTo(px(g.xCm + g.radiusCm + 0.25), pz(fastZ));
+    ctx.moveTo(px(g.xCm), pz(fastZ - g.radiusCm - 0.25));
+    ctx.lineTo(px(g.xCm), pz(fastZ + g.radiusCm + 0.25));
+    ctx.stroke();
+    ctx.fillStyle = colors.ink;
+    ctx.font = font(0.38, 600);
+    ctx.fillText(g.label, px(g.xCm), pz(fastZ + g.radiusCm + 0.22));
+  }
+
+  // Subtle concentric machined ring callout encircling the circular magnetic parts dish
+  const magBowl = spec.trayCompartments.find((c) => c.id === 'magnetic_bowl');
+  if (magBowl) {
+    ctx.globalAlpha = 0.78;
+    ctx.strokeStyle = colors.accent;
+    ctx.lineWidth = Math.max(1, 0.06 * s);
+    ctx.beginPath();
+    ctx.arc(
+      px(magBowl.cx),
+      pz(magBowl.cz),
+      (magBowl.width * 0.5 + 0.26) * s,
+      0,
+      Math.PI * 2
+    );
+    ctx.stroke();
+  }
 
   ctx.restore();
 }
@@ -3181,6 +3378,7 @@ export const GunsmithStageMat: React.FC<GunsmithStageMatProps> = React.memo(
         geos.slab.dispose();
         geos.lip.dispose();
         geos.trayFloor.dispose();
+        geos.magneticDishRim.dispose();
         hangarGeos.slab.dispose();
         hangarGeos.pitRing.dispose();
         floorGeo.dispose();
@@ -3360,6 +3558,21 @@ export const GunsmithStageMat: React.FC<GunsmithStageMatProps> = React.memo(
                 metalness={0.72}
                 roughness={0.46}
                 envMapIntensity={0.55}
+              />
+            </mesh>
+            {/* Warmer brushed-steel bevel catchlight rim encircling the circular magnetic parts dish */}
+            <mesh
+              geometry={geos.magneticDishRim}
+              receiveShadow
+              castShadow
+              raycast={noopRaycast}
+              name="gunsmith-mat-magnetic-dish-rim"
+            >
+              <meshStandardMaterial
+                color={isLight ? '#d8d0c4' : '#cfc2b0'}
+                metalness={0.92}
+                roughness={0.22}
+                envMapIntensity={1.18}
               />
             </mesh>
             {contactShadows && (
