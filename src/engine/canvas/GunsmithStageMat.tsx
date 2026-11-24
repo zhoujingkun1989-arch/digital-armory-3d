@@ -150,6 +150,12 @@ export const ARMORY_ENVIRONMENTS: Readonly<
         scale: [42, 8.5],
       },
       {
+        color: '#f5f8ff',
+        intensity: 2.6,
+        position: [0, 2.2, 24],
+        scale: [48, 5.2],
+      },
+      {
         color: '#cfdcf0',
         intensity: 1.45,
         position: [-8, -3.5, 24],
@@ -160,6 +166,12 @@ export const ARMORY_ENVIRONMENTS: Readonly<
         intensity: 2.65,
         position: [-6, 7.5, -24],
         scale: [42, 8.5],
+      },
+      {
+        color: '#f0f5ff',
+        intensity: 2.35,
+        position: [0, 2.2, -24],
+        scale: [48, 5.2],
       },
       {
         color: '#ffb873',
@@ -253,6 +265,12 @@ export const ARMORY_ENVIRONMENTS: Readonly<
         scale: [42, 8.5],
       },
       {
+        color: '#f4f3ef',
+        intensity: 2.3,
+        position: [0, 2.2, 24],
+        scale: [48, 5.2],
+      },
+      {
         color: '#b4c6dc',
         intensity: 1.35,
         position: [-8, -3.5, 24],
@@ -263,6 +281,12 @@ export const ARMORY_ENVIRONMENTS: Readonly<
         intensity: 2.25,
         position: [-6, 7.5, -24],
         scale: [42, 8.5],
+      },
+      {
+        color: '#e8edf5',
+        intensity: 2.1,
+        position: [0, 2.2, -24],
+        scale: [48, 5.2],
       },
       {
         color: '#ffd9b0',

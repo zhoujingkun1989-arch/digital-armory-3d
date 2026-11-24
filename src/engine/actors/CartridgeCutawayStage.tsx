@@ -15,6 +15,14 @@ import {
 /** Vertical datum floor of the 1:1 Cartridge Cutaway Lab (`y = -3.8 cm` in world space) */
 export const CARTRIDGE_STAGE_DATUM_Y = -3.8;
 
+/**
+ * Small-arms 1:1 CNC elevation ruler horizontal stiles (cm).
+ * Right rail sits at `+23.5 cm` (`+1.5 cm` past legacy `+22.0 cm`, giving `2.7 cm` center-to-stile
+ * clearance from `.50 BMG` at `lineupXCm = 20.8 cm` so `120 mm / 100 mm` labels never overlap).
+ */
+export const SMALL_ARMS_RULER_LEFT_X = -21.8;
+export const SMALL_ARMS_RULER_RIGHT_X = 23.5;
+
 const TAN_HALF_FOV_41 = Math.tan(THREE.MathUtils.degToRad(41 * 0.5));
 
 let cartridgeDossierCollapsed = false;
@@ -134,7 +142,7 @@ export function computeCartridgeStageOffsetInto(
   const camX = 1.6;
   const camZ = Math.max(29.5, 36.0 / aspect);
 
-  const stageSpanX = 47.4;
+  const stageSpanX = 49.6;
   const stageSpanY = 17.6 + 13.8 * explodeT;
 
   const dHoriz =
@@ -145,13 +153,13 @@ export function computeCartridgeStageOffsetInto(
   const worldOpenCenterX =
     camX + ndcCenterX * desiredDist * TAN_HALF_FOV_41 * aspect;
 
-  out.x = worldOpenCenterX - 0.1;
+  out.x = worldOpenCenterX - 0.75;
   out.y = -0.55 - 3.65 * explodeT;
   out.z = camZ - desiredDist;
   return out;
 }
 
-const PLINTH_GEO = new THREE.BoxGeometry(45.6, 0.85, 11.5);
+const PLINTH_GEO = new THREE.BoxGeometry(47.8, 0.85, 11.5);
 const PEDESTAL_DISC_GEO = new THREE.CylinderGeometry(1.22, 1.34, 0.16, 36);
 const ACTIVE_HALO_GEO = (() => {
   const g = new THREE.RingGeometry(1.3, 1.46, 40);
@@ -258,8 +266,8 @@ function buildElevationScaleBackdrop(): {
 } {
   const minorVerts: number[] = [];
   const majorVerts: number[] = [];
-  const xLeft = -21.8;
-  const xRight = 22.0;
+  const xLeft = SMALL_ARMS_RULER_LEFT_X;
+  const xRight = SMALL_ARMS_RULER_RIGHT_X;
   const zPlane = -2.35;
 
   // Vertical left & right stiles
@@ -745,8 +753,12 @@ export const CartridgeCutawayStage: React.FC = () => {
   const rulerH = isTankGallery ? 122.0 : 15.2;
   const rulerW = isTankGallery ? 16.5 : 3.2;
   const rulerZ = isTankGallery ? -11.92 : -2.32;
-  const leftRailX = isTankGallery ? -48.0 - rulerW * 0.5 : -21.8 - rulerW * 0.5;
-  const rightRailX = isTankGallery ? 48.0 + rulerW * 0.5 : 22.0 + rulerW * 0.5;
+  const leftRailX = isTankGallery
+    ? -48.0 - rulerW * 0.5
+    : SMALL_ARMS_RULER_LEFT_X - rulerW * 0.5;
+  const rightRailX = isTankGallery
+    ? 48.0 + rulerW * 0.5
+    : SMALL_ARMS_RULER_RIGHT_X + rulerW * 0.5;
 
   return (
     <group
@@ -760,7 +772,7 @@ export const CartridgeCutawayStage: React.FC = () => {
       {/* Machined CNC Datum Exhibition Plinth */}
       <mesh
         geometry={isTankGallery ? TANK_PLINTH_GEO : PLINTH_GEO}
-        position={isTankGallery ? [0, -1.8, -1.5] : [0.1, -0.52, -0.2]}
+        position={isTankGallery ? [0, -1.8, -1.5] : [0.85, -0.52, -0.2]}
         receiveShadow
       >
         <meshStandardMaterial

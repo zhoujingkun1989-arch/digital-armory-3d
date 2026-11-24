@@ -366,12 +366,18 @@ function buildLpvoGeometries(): LpvoMeshes {
   };
 }
 
-interface ThermalMeshes {
+export interface ThermalMeshes {
   railBase: THREE.BufferGeometry;
+  qdLever: THREE.BufferGeometry;
   chassisOuter: THREE.BufferGeometry;
+  chassisTopDeck: THREE.BufferGeometry;
+  coolingFin: THREE.BufferGeometry;
+  turretCap: THREE.BufferGeometry;
+  focusRing: THREE.BufferGeometry;
   lensHood: THREE.BufferGeometry;
   germaniumLens: THREE.BufferGeometry;
   batteryPod: THREE.BufferGeometry;
+  batteryCap: THREE.BufferGeometry;
   keypadButton: THREE.BufferGeometry;
   eyecup: THREE.BufferGeometry;
   voxSensor: THREE.BufferGeometry;
@@ -379,52 +385,129 @@ interface ThermalMeshes {
   oledPrism: THREE.BufferGeometry;
 }
 
-function buildThermalGeometries(): ThermalMeshes {
+/**
+ * Builds a sculpted dark-anodized magnesium FLIR thermal weapon sight with:
+ * - Chamfered octagonal CNC magnesium main housing + raised upper control deck
+ * - Milled flank cooling heat-sink fins (mounted bilaterally)
+ * - Knurled windage, elevation & objective manual-focus turret caps
+ * - Flared anti-glare objective sunshade hood + Germanium amber-violet coated lens
+ * - 4-bellows pleated vulcanized-rubber accordion eyecup
+ * - Full CT `[C]` cutaway internals (gold VOx microbolometer die, DSP PCB, OLED prism)
+ * Caller owns `.dispose()` on every returned BufferGeometry.
+ */
+export function buildThermalGeometries(): ThermalMeshes {
   // Twin-lever QD Picatinny rail clamp base seated flush at Y = 0
-  const railBase = new THREE.BoxGeometry(8.8, 0.78, 2.52);
+  const railBase = new THREE.BoxGeometry(8.8, 0.78, 2.56);
   railBase.translate(0, 0.33, 0);
 
-  // Ruggedized magnesium-alloy clip-on FLIR chassis (hollowed for CT slice!)
-  const chassisOuter = new THREE.BoxGeometry(10.6, 4.15, 4.45);
-  chassisOuter.translate(0.2, 2.8, 0);
+  // Side QD throw-lever latch bar (placed ×2 along left flank of rail clamp)
+  const qdLever = new THREE.BoxGeometry(1.75, 0.36, 0.42);
 
-  // Front circular lens bezel & flip hood
-  const hoodPts = [
-    new THREE.Vector2(1.48, 5.4),
-    new THREE.Vector2(1.92, 5.4),
-    new THREE.Vector2(2.04, 7.2),
-    new THREE.Vector2(1.78, 7.45),
-    new THREE.Vector2(1.62, 7.45),
-    new THREE.Vector2(1.62, 5.55),
-    new THREE.Vector2(1.48, 5.4),
+  // Sculpted chamfered octagonal magnesium chassis extruded along +X (replaces plain grey box)
+  const hw = 2.22; // half Z width
+  const hh = 2.02; // half Y height
+  const ch = 0.56; // 45° CNC corner chamfer
+  const bodyShape = new THREE.Shape();
+  bodyShape.moveTo(-hw + ch, -hh);
+  bodyShape.lineTo(hw - ch, -hh);
+  bodyShape.lineTo(hw, -hh + ch);
+  bodyShape.lineTo(hw, hh - ch);
+  bodyShape.lineTo(hw - ch, hh);
+  bodyShape.lineTo(-hw + ch, hh);
+  bodyShape.lineTo(-hw, hh - ch);
+  bodyShape.lineTo(-hw, -hh + ch);
+  bodyShape.closePath();
+
+  const chassisOuter = new THREE.ExtrudeGeometry(bodyShape, {
+    depth: 9.8,
+    bevelEnabled: true,
+    bevelThickness: 0.24,
+    bevelSize: 0.18,
+    bevelSegments: 2,
+  });
+  // Extrusion runs along +Z; rotate +90° around Y so length spans +X, centered around X = +0.15, Y = 2.82
+  chassisOuter.rotateY(Math.PI / 2);
+  chassisOuter.translate(-4.75, 2.82, 0);
+  chassisOuter.computeVertexNormals();
+
+  // Raised machined upper control bezel deck framing the 4-button tactile keypad
+  const chassisTopDeck = new THREE.BoxGeometry(6.8, 0.36, 2.9);
+  chassisTopDeck.translate(-0.2, 4.96, 0);
+
+  // Single chamfered magnesium cooling heat-sink fin (placed bilaterally ×7 along housing flanks)
+  const coolingFin = new THREE.BoxGeometry(0.28, 2.15, 0.48);
+
+  // Knurled/fluted turret cap (12-sided grip flutes; used for top elevation/menu & side windage turrets)
+  const turretCap = new THREE.CylinderGeometry(0.58, 0.64, 0.72, 12);
+
+  // Knurled objective manual-focus collar ring seated between main housing & flared sunshade hood
+  const focusRingPts = [
+    new THREE.Vector2(1.54, 4.95),
+    new THREE.Vector2(2.04, 4.95),
+    new THREE.Vector2(2.14, 5.18),
+    new THREE.Vector2(2.14, 5.92),
+    new THREE.Vector2(2.02, 6.08),
+    new THREE.Vector2(1.56, 6.08),
+    new THREE.Vector2(1.54, 4.95),
   ];
-  const lensHood = new THREE.LatheGeometry(hoodPts, 32);
+  const focusRing = new THREE.LatheGeometry(focusRingPts, 18);
+  focusRing.rotateZ(-Math.PI / 2);
+  focusRing.translate(0, 2.85, 0);
+  focusRing.computeVertexNormals();
+
+  // Flared stepped objective sunshade hood with internal anti-glare baffle ridge
+  const hoodPts = [
+    new THREE.Vector2(1.52, 6.02),
+    new THREE.Vector2(1.94, 6.02),
+    new THREE.Vector2(2.16, 6.85),
+    new THREE.Vector2(2.28, 8.25), // Flared sunshade crown
+    new THREE.Vector2(2.12, 8.42),
+    new THREE.Vector2(1.92, 8.42),
+    new THREE.Vector2(1.88, 7.65),
+    new THREE.Vector2(1.76, 7.45), // Internal anti-glare baffle step
+    new THREE.Vector2(1.66, 6.22),
+    new THREE.Vector2(1.52, 6.02),
+  ];
+  const lensHood = new THREE.LatheGeometry(hoodPts, 36);
   lensHood.rotateZ(-Math.PI / 2);
   lensHood.translate(0, 2.85, 0);
   lensHood.computeVertexNormals();
 
-  // Single-crystal Germanium LWIR metallic-violet objective lens
-  const germaniumLens = new THREE.CylinderGeometry(1.56, 1.56, 0.44, 30);
+  // Single-crystal Germanium LWIR metallic amber-violet objective lens recessed inside hood
+  const germaniumLens = new THREE.CylinderGeometry(1.62, 1.62, 0.42, 32);
   germaniumLens.rotateZ(-Math.PI / 2);
-  germaniumLens.translate(6.15, 2.85, 0);
+  germaniumLens.translate(6.65, 2.85, 0);
 
-  // Left-flank CR123 battery pod cylinder
-  const batteryPod = new THREE.CylinderGeometry(0.76, 0.76, 5.4, 20);
+  // Left-flank CR123 battery pod cylinder + knurled endcap
+  const batteryPod = new THREE.CylinderGeometry(0.76, 0.76, 5.2, 20);
   batteryPod.rotateZ(-Math.PI / 2);
-  batteryPod.translate(-0.6, 2.35, -2.55);
+  batteryPod.translate(-0.7, 2.18, -2.58);
+
+  const batteryCap = new THREE.CylinderGeometry(0.84, 0.84, 0.56, 12);
+  batteryCap.rotateZ(-Math.PI / 2);
+  batteryCap.translate(2.08, 2.18, -2.58);
 
   // Top tactile control button
-  const keypadButton = new THREE.CylinderGeometry(0.32, 0.36, 0.24, 14);
+  const keypadButton = new THREE.CylinderGeometry(0.3, 0.34, 0.24, 14);
 
-  // Rear micro-OLED ocular shroud & rubber eyecup
+  // Rear 4-bellows pleated rubber accordion eyecup + flared contoured ocular lip
   const eyePts = [
-    new THREE.Vector2(1.12, -6.9),
-    new THREE.Vector2(1.42, -6.9),
-    new THREE.Vector2(1.26, -5.05),
-    new THREE.Vector2(1.06, -5.05),
-    new THREE.Vector2(1.12, -6.9),
+    new THREE.Vector2(1.06, -4.85),
+    new THREE.Vector2(1.38, -4.85),
+    new THREE.Vector2(1.48, -5.2), // Bellows crest 1
+    new THREE.Vector2(1.22, -5.5), // Bellows valley 1
+    new THREE.Vector2(1.5, -5.82), // Bellows crest 2
+    new THREE.Vector2(1.24, -6.12), // Bellows valley 2
+    new THREE.Vector2(1.54, -6.45), // Bellows crest 3
+    new THREE.Vector2(1.28, -6.75), // Bellows valley 3
+    new THREE.Vector2(1.66, -7.25), // Flared rubber eye-cup rim
+    new THREE.Vector2(1.58, -7.45),
+    new THREE.Vector2(1.36, -7.45),
+    new THREE.Vector2(1.1, -6.65),
+    new THREE.Vector2(1.02, -4.85),
+    new THREE.Vector2(1.06, -4.85),
   ];
-  const eyecup = new THREE.LatheGeometry(eyePts, 28);
+  const eyecup = new THREE.LatheGeometry(eyePts, 32);
   eyecup.rotateZ(-Math.PI / 2);
   eyecup.translate(0, 2.85, 0);
   eyecup.computeVertexNormals();
@@ -443,10 +526,16 @@ function buildThermalGeometries(): ThermalMeshes {
 
   return {
     railBase,
+    qdLever,
     chassisOuter,
+    chassisTopDeck,
+    coolingFin,
+    turretCap,
+    focusRing,
     lensHood,
     germaniumLens,
     batteryPod,
+    batteryCap,
     keypadButton,
     eyecup,
     voxSensor,
@@ -462,6 +551,8 @@ function buildThermalGeometries(): ThermalMeshes {
 const K_BAFFLE_XS = [5.4, 7.25, 9.1, 10.95, 12.8, 14.65] as const;
 const LPVO_INNER_LENS_XS = [-4.2, -1.0, 2.1, 6.8] as const;
 const THERMAL_BTN_XS = [-2.4, -0.8, 0.8, 2.4] as const;
+const THERMAL_FIN_XS = [-3.0, -2.0, -1.0, 0.0, 1.0, 2.0, 3.0] as const;
+const THERMAL_QD_LEVER_XS = [-2.2, 2.2] as const;
 const PRONG_ANGLES = [0, (Math.PI * 2) / 3, (Math.PI * 4) / 3] as const;
 
 interface MuzzleMeshGroupProps {
@@ -1189,7 +1280,7 @@ const OpticMeshGroup: React.FC<OpticMeshGroupProps> = React.memo(
     if (opticId === 'thermal' && thermalGeos) {
       return (
         <group name="AttachmentOpticThermal">
-          {/* QD Picatinny Rail Mount Base */}
+          {/* QD Picatinny Rail Mount Base + Twin Throw Levers */}
           <mesh
             geometry={thermalGeos.railBase}
             castShadow
@@ -1198,16 +1289,33 @@ const OpticMeshGroup: React.FC<OpticMeshGroupProps> = React.memo(
           >
             <meshPhysicalMaterial
               key={`th-base-${matKey}`}
-              color="#373f4b"
-              metalness={0.84}
-              roughness={0.33}
+              color="#222831"
+              metalness={0.86}
+              roughness={0.31}
+              envMapIntensity={1.4}
               clippingPlanes={clipPlanes}
               clipShadows={sectionCut}
               side={shellSide}
             />
           </mesh>
+          {THERMAL_QD_LEVER_XS.map((qx, idx) => (
+            <mesh
+              key={`th-qd-${idx}`}
+              geometry={thermalGeos.qdLever}
+              position={[qx, 0.42, -1.46]}
+              castShadow
+              raycast={noRaycast}
+            >
+              <meshPhysicalMaterial
+                color="#333c48"
+                metalness={0.88}
+                roughness={0.28}
+                clippingPlanes={clipPlanes}
+              />
+            </mesh>
+          ))}
 
-          {/* Ruggedized Magnesium-Alloy Clip-On FLIR Chassis */}
+          {/* Sculpted Dark Anodized Magnesium-Alloy FLIR Main Chassis */}
           <mesh
             geometry={thermalGeos.chassisOuter}
             castShadow
@@ -1216,17 +1324,124 @@ const OpticMeshGroup: React.FC<OpticMeshGroupProps> = React.memo(
           >
             <meshPhysicalMaterial
               key={`th-ch-${matKey}`}
-              color="#434d5b"
-              metalness={0.42}
-              roughness={0.56}
-              envMapIntensity={1.15}
+              color="#20262f"
+              metalness={0.72}
+              roughness={0.38}
+              clearcoat={0.14}
+              clearcoatRoughness={0.32}
+              envMapIntensity={1.45}
               clippingPlanes={clipPlanes}
               clipShadows={sectionCut}
               side={shellSide}
             />
           </mesh>
 
-          {/* Front Objective Bezel & Flip Hood */}
+          {/* Raised CNC Upper Control Bezel Deck */}
+          <mesh
+            geometry={thermalGeos.chassisTopDeck}
+            castShadow
+            receiveShadow
+            raycast={noRaycast}
+          >
+            <meshPhysicalMaterial
+              key={`th-deck-${matKey}`}
+              color="#28303c"
+              metalness={0.78}
+              roughness={0.34}
+              envMapIntensity={1.4}
+              clippingPlanes={clipPlanes}
+              clipShadows={sectionCut}
+              side={shellSide}
+            />
+          </mesh>
+
+          {/* Bilateral Chamfered Cooling Heat-Sink Fins along Housing Flanks */}
+          {THERMAL_FIN_XS.map((fx, idx) => (
+            <React.Fragment key={`th-fin-${idx}`}>
+              <mesh
+                geometry={thermalGeos.coolingFin}
+                position={[fx, 2.86, 2.28]}
+                castShadow
+                receiveShadow
+                raycast={noRaycast}
+              >
+                <meshPhysicalMaterial
+                  color="#2d3643"
+                  metalness={0.82}
+                  roughness={0.32}
+                  envMapIntensity={1.5}
+                  clippingPlanes={clipPlanes}
+                />
+              </mesh>
+              <mesh
+                geometry={thermalGeos.coolingFin}
+                position={[fx, 3.16, -2.28]}
+                castShadow
+                receiveShadow
+                raycast={noRaycast}
+              >
+                <meshPhysicalMaterial
+                  color="#2d3643"
+                  metalness={0.82}
+                  roughness={0.32}
+                  envMapIntensity={1.5}
+                  clippingPlanes={clipPlanes}
+                />
+              </mesh>
+            </React.Fragment>
+          ))}
+
+          {/* Knurled Top Elevation/Menu Turret Cap & Right-Flank Windage Turret Cap */}
+          <mesh
+            geometry={thermalGeos.turretCap}
+            position={[3.65, 5.24, 0]}
+            castShadow
+            raycast={noRaycast}
+          >
+            <meshPhysicalMaterial
+              color="#343e4c"
+              metalness={0.86}
+              roughness={0.27}
+              envMapIntensity={1.5}
+              clippingPlanes={clipPlanes}
+            />
+          </mesh>
+          <mesh
+            geometry={thermalGeos.turretCap}
+            position={[3.45, 2.85, 2.48]}
+            rotation={[Math.PI / 2, 0, 0]}
+            castShadow
+            raycast={noRaycast}
+          >
+            <meshPhysicalMaterial
+              color="#343e4c"
+              metalness={0.86}
+              roughness={0.27}
+              envMapIntensity={1.5}
+              clippingPlanes={clipPlanes}
+            />
+          </mesh>
+
+          {/* Knurled Objective Manual-Focus Collar Ring */}
+          <mesh
+            geometry={thermalGeos.focusRing}
+            castShadow
+            receiveShadow
+            raycast={noRaycast}
+          >
+            <meshPhysicalMaterial
+              key={`th-focus-${matKey}`}
+              color="#2f3845"
+              metalness={0.84}
+              roughness={0.29}
+              envMapIntensity={1.48}
+              clippingPlanes={clipPlanes}
+              clipShadows={sectionCut}
+              side={shellSide}
+            />
+          </mesh>
+
+          {/* Flared Stepped Anti-Glare Objective Sunshade Hood */}
           <mesh
             geometry={thermalGeos.lensHood}
             castShadow
@@ -1235,43 +1450,56 @@ const OpticMeshGroup: React.FC<OpticMeshGroupProps> = React.memo(
           >
             <meshPhysicalMaterial
               key={`th-hood-${matKey}`}
-              color="#353d49"
+              color="#1c222b"
               metalness={0.76}
-              roughness={0.36}
+              roughness={0.35}
+              envMapIntensity={1.45}
               clippingPlanes={clipPlanes}
               clipShadows={sectionCut}
               side={shellSide}
             />
           </mesh>
 
-          {/* Iconic Metallic-Violet / Bronze Single-Crystal Germanium LWIR Lens */}
+          {/* Iconic Single-Crystal Germanium LWIR Amber-Violet Coated Objective Lens */}
           <mesh
             geometry={thermalGeos.germaniumLens}
             raycast={noRaycast}
             renderOrder={5}
           >
             <meshPhysicalMaterial
-              color="#7b5ba6"
-              metalness={0.76}
-              roughness={0.1}
-              clearcoat={0.9}
-              clearcoatRoughness={0.08}
+              color="#9a6448"
+              metalness={0.82}
+              roughness={0.08}
+              clearcoat={1.0}
+              clearcoatRoughness={0.06}
               iridescence={1.0}
-              iridescenceIOR={1.85}
-              envMapIntensity={2.0}
+              iridescenceIOR={1.95}
+              envMapIntensity={2.15}
             />
           </mesh>
 
-          {/* Side CR123 Battery Cylinder */}
+          {/* Left-Flank CR123 Battery Cylinder + Knurled Cap */}
           <mesh
             geometry={thermalGeos.batteryPod}
             castShadow
             raycast={noRaycast}
           >
             <meshPhysicalMaterial
-              color="#39424f"
-              metalness={0.78}
-              roughness={0.35}
+              color="#252c36"
+              metalness={0.8}
+              roughness={0.34}
+              clippingPlanes={clipPlanes}
+            />
+          </mesh>
+          <mesh
+            geometry={thermalGeos.batteryCap}
+            castShadow
+            raycast={noRaycast}
+          >
+            <meshPhysicalMaterial
+              color="#394352"
+              metalness={0.88}
+              roughness={0.26}
               clippingPlanes={clipPlanes}
             />
           </mesh>
@@ -1281,28 +1509,28 @@ const OpticMeshGroup: React.FC<OpticMeshGroupProps> = React.memo(
             <mesh
               key={`th-btn-${idx}`}
               geometry={thermalGeos.keypadButton}
-              position={[bx, 4.96, 0]}
+              position={[bx, 5.2, 0]}
               raycast={noRaycast}
             >
               <meshStandardMaterial
-                color={idx === 0 ? '#f59e0b' : '#64748b'}
-                metalness={0.2}
-                roughness={0.68}
+                color={idx === 0 ? '#f59e0b' : '#475569'}
+                metalness={0.22}
+                roughness={0.62}
                 clippingPlanes={clipPlanes}
               />
             </mesh>
           ))}
 
-          {/* Rear Micro-OLED Ocular Eyecup */}
+          {/* Rear 4-Bellows Pleated Rubber Accordion Eyecup */}
           <mesh
             geometry={thermalGeos.eyecup}
             castShadow
             raycast={noRaycast}
           >
             <meshStandardMaterial
-              color="#2f3640"
-              metalness={0.05}
-              roughness={0.82}
+              color="#1b2028"
+              metalness={0.04}
+              roughness={0.86}
               clippingPlanes={clipPlanes}
               side={shellSide}
             />
