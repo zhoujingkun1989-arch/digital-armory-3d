@@ -510,7 +510,7 @@ MODELS_OUT.parent.mkdir(parents=True, exist_ok=True)
 TEX_OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 ATLAS_SIZE = 2048
-BAKE_AO_SAMPLES = 48
+BAKE_AO_SAMPLES = 28
 BAKE_NORMAL_SAMPLES = 16
 
 # Exact Three.js (X=muzzle, Y=up, Z=right) -> Blender (X=muzzle, Y=-right, Z=up) matrix (det = +1)
@@ -758,13 +758,24 @@ def _build_pbr_mat(
     met_sock = met_node.outputs[0]
 
     if edge_wear > 0.001:
-        geom = nt.nodes.new("ShaderNodeNewGeometry")
+        # Tight Cycles inside-AO convexity mask (zero Pointiness triangle smudges on OD-green skins & flat action walls!)
+        ao_in = nt.nodes.new("ShaderNodeAmbientOcclusion")
+        ao_in.samples = 8
+        ao_in.inside = True
+        ao_in.only_local = True
+        ao_in.inputs["Distance"].default_value = 0.046
+
+        inv_ao = nt.nodes.new("ShaderNodeMath")
+        inv_ao.operation = "SUBTRACT"
+        inv_ao.inputs[0].default_value = 1.0
+        nt.links.new(ao_in.outputs["AO"], inv_ao.inputs[1])
+
         ramp = nt.nodes.new("ShaderNodeValToRGB")
-        ramp.color_ramp.elements[0].position = 0.555
+        ramp.color_ramp.elements[0].position = 0.26
         ramp.color_ramp.elements[0].color = (0.0, 0.0, 0.0, 1.0)
-        ramp.color_ramp.elements[1].position = 0.635
+        ramp.color_ramp.elements[1].position = 0.66
         ramp.color_ramp.elements[1].color = (edge_wear, edge_wear, edge_wear, 1.0)
-        nt.links.new(geom.outputs["Pointiness"], ramp.inputs["Fac"])
+        nt.links.new(inv_ao.outputs["Value"], ramp.inputs["Fac"])
 
         mul_w = nt.nodes.new("ShaderNodeMath")
         mul_w.operation = "MULTIPLY"
@@ -780,7 +791,7 @@ def _build_pbr_mat(
 
         mix_edge_r = nt.nodes.new("ShaderNodeMix")
         mix_edge_r.data_type = "FLOAT"
-        mix_edge_r.inputs[3].default_value = max(0.14, roughness - 0.16)
+        mix_edge_r.inputs[3].default_value = max(0.14, roughness - 0.14)
         nt.links.new(mul_w.outputs["Value"], mix_edge_r.inputs[0])
         nt.links.new(rgh_sock, mix_edge_r.inputs[2])
         rgh_sock = mix_edge_r.outputs[0]
@@ -921,32 +932,32 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         # Iconic British Military Olive-Drab (`OD Green`) textured fiberglass-polyamide chassis
         "C_ODGreenChassis": _build_pbr_mat(
             "C_ODGreenChassis",
-            base_srgb=(0.215, 0.252, 0.172),
-            roughness=0.70,
+            base_srgb=(0.208, 0.252, 0.162),
+            roughness=0.68,
             metallic=0.00,
-            bevel_r=0.044,
-            edge_wear=0.22,
-            edge_srgb=(0.315, 0.352, 0.255),
-            grain_scale=64.0,
-            grain_bump=0.118,
-            voronoi_grain=0.72,
-            voronoi_scale=96.0,
-            rough_var=0.055,
+            bevel_r=0.038,
+            edge_wear=0.18,
+            edge_srgb=(0.295, 0.338, 0.236),
+            grain_scale=68.0,
+            grain_bump=0.095,
+            voronoi_grain=0.68,
+            voronoi_scale=104.0,
+            rough_var=0.044,
         ),
         # High-relief molded EDM stipple panels on pistol grip & forend flanks
         "C_ODGreenGrip": _build_pbr_mat(
             "C_ODGreenGrip",
-            base_srgb=(0.205, 0.242, 0.164),
-            roughness=0.77,
+            base_srgb=(0.188, 0.230, 0.148),
+            roughness=0.78,
             metallic=0.00,
-            bevel_r=0.030,
-            edge_wear=0.16,
-            edge_srgb=(0.295, 0.332, 0.240),
-            grain_scale=76.0,
-            grain_bump=0.185,
-            voronoi_grain=0.84,
-            voronoi_scale=128.0,
-            rough_var=0.036,
+            bevel_r=0.028,
+            edge_wear=0.14,
+            edge_srgb=(0.278, 0.318, 0.224),
+            grain_scale=80.0,
+            grain_bump=0.165,
+            voronoi_grain=0.82,
+            voronoi_scale=132.0,
+            rough_var=0.032,
         ),
         "C_MatteBlackKydex": _build_pbr_mat(
             "C_MatteBlackKydex",
@@ -1029,30 +1040,30 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         # --- SUITE 2: METAL / ACTION / BARREL / BOLT / BEAM / FCG ATLAS (awm_v3_metal) ---
         "M_ActionSteel": _build_pbr_mat(
             "M_ActionSteel",
-            base_srgb=(0.182, 0.190, 0.204),
+            base_srgb=(0.198, 0.206, 0.220),
             roughness=0.30,
             metallic=0.85,
-            bevel_r=0.032,
-            edge_wear=0.22,
-            edge_srgb=(0.68, 0.71, 0.76),
+            bevel_r=0.026,
+            edge_wear=0.26,
+            edge_srgb=(0.70, 0.73, 0.78),
             grain_scale=72.0,
-            grain_bump=0.036,
-            voronoi_grain=0.52,
+            grain_bump=0.030,
+            voronoi_grain=0.46,
             voronoi_scale=96.0,
             rough_var=0.022,
         ),
         "M_RailCrest": _build_pbr_mat(
             "M_RailCrest",
             base_srgb=(0.214, 0.224, 0.240),
-            roughness=0.25,
-            metallic=0.88,
-            bevel_r=0.020,
-            edge_wear=0.58,
-            edge_srgb=(0.84, 0.86, 0.90),
+            roughness=0.26,
+            metallic=0.87,
+            bevel_r=0.018,
+            edge_wear=0.32,
+            edge_srgb=(0.74, 0.77, 0.82),
             grain_scale=36.0,
-            grain_bump=0.024,
+            grain_bump=0.022,
             aniso_stretch=(0.5, 3.0, 3.0),
-            rough_var=0.030,
+            rough_var=0.026,
         ),
         "M_SlotDark": _build_pbr_mat(
             "M_SlotDark",
@@ -1066,40 +1077,42 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         ),
         "M_AnodizedBeam": _build_pbr_mat(
             "M_AnodizedBeam",
-            base_srgb=(0.198, 0.210, 0.228),
-            roughness=0.29,
-            metallic=0.84,
-            bevel_r=0.028,
-            edge_wear=0.42,
-            edge_srgb=(0.78, 0.80, 0.84),
+            base_srgb=(0.248, 0.262, 0.282),
+            roughness=0.27,
+            metallic=0.88,
+            bevel_r=0.024,
+            edge_wear=0.28,
+            edge_srgb=(0.76, 0.79, 0.84),
             grain_scale=40.0,
-            grain_bump=0.030,
-            aniso_stretch=(0.45, 3.2, 3.2),
-            rough_var=0.034,
+            grain_bump=0.024,
+            aniso_stretch=(0.45, 3.4, 3.4),
+            rough_var=0.028,
         ),
+        # Bead-blasted satin match stainless barrel (refined muted silver, zero AgX white-chrome blowout!)
         "M_StainlessBarrel": _build_pbr_mat(
             "M_StainlessBarrel",
-            base_srgb=(0.56, 0.59, 0.63),
-            roughness=0.24,
-            metallic=0.94,
-            bevel_r=0.024,
-            edge_wear=0.26,
-            edge_srgb=(0.84, 0.87, 0.90),
-            grain_scale=44.0,
-            grain_bump=0.028,
-            aniso_stretch=(5.2, 0.45, 0.45),
-            rough_var=0.030,
+            base_srgb=(0.50, 0.525, 0.558),
+            roughness=0.27,
+            metallic=0.92,
+            bevel_r=0.022,
+            edge_wear=0.22,
+            edge_srgb=(0.76, 0.79, 0.83),
+            grain_scale=46.0,
+            grain_bump=0.024,
+            aniso_stretch=(5.4, 0.45, 0.45),
+            rough_var=0.026,
         ),
+        # Deeper milled satin-steel longitudinal flute valleys so all 6 barrel flutes pop razor-sharp under AgX!
         "M_StainlessFlute": _build_pbr_mat(
             "M_StainlessFlute",
-            base_srgb=(0.75, 0.78, 0.82),
-            roughness=0.17,
-            metallic=0.97,
-            bevel_r=0.018,
-            edge_wear=0.20,
-            edge_srgb=(0.91, 0.93, 0.96),
-            grain_scale=30.0,
-            grain_bump=0.020,
+            base_srgb=(0.33, 0.352, 0.386),
+            roughness=0.35,
+            metallic=0.90,
+            bevel_r=0.016,
+            edge_wear=0.16,
+            edge_srgb=(0.62, 0.65, 0.70),
+            grain_scale=34.0,
+            grain_bump=0.022,
             aniso_stretch=(0.35, 3.8, 3.8),
             rough_var=0.024,
         ),
@@ -1154,17 +1167,17 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         ),
         "M_ParkerizedCtrl": _build_pbr_mat(
             "M_ParkerizedCtrl",
-            base_srgb=(0.194, 0.202, 0.216),
-            roughness=0.27,
-            metallic=0.88,
-            bevel_r=0.024,
-            edge_wear=0.48,
-            edge_srgb=(0.80, 0.82, 0.86),
+            base_srgb=(0.196, 0.204, 0.218),
+            roughness=0.28,
+            metallic=0.87,
+            bevel_r=0.020,
+            edge_wear=0.28,
+            edge_srgb=(0.72, 0.75, 0.80),
             grain_scale=52.0,
-            grain_bump=0.036,
-            voronoi_grain=0.48,
+            grain_bump=0.030,
+            voronoi_grain=0.42,
             voronoi_scale=80.0,
-            rough_var=0.034,
+            rough_var=0.028,
         ),
         "M_GoldBrass": _build_pbr_mat(
             "M_GoldBrass",
@@ -1200,29 +1213,29 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         # --- SUITE 3: OPTIC, MOUNT, BIPOD & .338 LM MAG ATLAS (awm_v3_optic) ---
         "O_ScopeAnodize": _build_pbr_mat(
             "O_ScopeAnodize",
-            base_srgb=(0.172, 0.180, 0.193),
-            roughness=0.28,
-            metallic=0.83,
-            bevel_r=0.026,
-            edge_wear=0.14,
-            edge_srgb=(0.64, 0.67, 0.72),
+            base_srgb=(0.158, 0.165, 0.178),
+            roughness=0.27,
+            metallic=0.82,
+            bevel_r=0.022,
+            edge_wear=0.22,
+            edge_srgb=(0.66, 0.69, 0.74),
             grain_scale=68.0,
-            grain_bump=0.028,
-            voronoi_grain=0.42,
+            grain_bump=0.022,
+            voronoi_grain=0.36,
             voronoi_scale=94.0,
             rough_var=0.020,
         ),
         "O_ScopeTurretKnurl": _build_pbr_mat(
             "O_ScopeTurretKnurl",
-            base_srgb=(0.204, 0.214, 0.230),
-            roughness=0.25,
-            metallic=0.87,
-            bevel_r=0.018,
-            edge_wear=0.54,
-            edge_srgb=(0.84, 0.86, 0.90),
+            base_srgb=(0.194, 0.204, 0.220),
+            roughness=0.26,
+            metallic=0.86,
+            bevel_r=0.016,
+            edge_wear=0.30,
+            edge_srgb=(0.74, 0.77, 0.82),
             grain_scale=42.0,
-            grain_bump=0.026,
-            rough_var=0.030,
+            grain_bump=0.022,
+            rough_var=0.026,
         ),
         "O_ScopeRubber": _build_pbr_mat(
             "O_ScopeRubber",
@@ -1260,41 +1273,41 @@ def create_material_library() -> dict[str, bpy.types.Material]:
             "O_MountAlloy",
             base_srgb=(0.184, 0.194, 0.208),
             roughness=0.29,
-            metallic=0.84,
-            bevel_r=0.028,
-            edge_wear=0.46,
-            edge_srgb=(0.78, 0.80, 0.84),
+            metallic=0.85,
+            bevel_r=0.024,
+            edge_wear=0.28,
+            edge_srgb=(0.72, 0.75, 0.80),
             grain_scale=58.0,
-            grain_bump=0.034,
-            voronoi_grain=0.46,
+            grain_bump=0.028,
+            voronoi_grain=0.40,
             voronoi_scale=84.0,
-            rough_var=0.032,
+            rough_var=0.028,
         ),
         "O_BipodSteel": _build_pbr_mat(
             "O_BipodSteel",
-            base_srgb=(0.174, 0.182, 0.196),
+            base_srgb=(0.178, 0.186, 0.200),
             roughness=0.31,
-            metallic=0.88,
-            bevel_r=0.024,
-            edge_wear=0.50,
-            edge_srgb=(0.78, 0.80, 0.84),
+            metallic=0.87,
+            bevel_r=0.022,
+            edge_wear=0.28,
+            edge_srgb=(0.70, 0.73, 0.78),
             grain_scale=50.0,
-            grain_bump=0.038,
-            voronoi_grain=0.50,
+            grain_bump=0.032,
+            voronoi_grain=0.44,
             voronoi_scale=80.0,
-            rough_var=0.036,
+            rough_var=0.030,
         ),
         "O_MagSteel": _build_pbr_mat(
             "O_MagSteel",
-            base_srgb=(0.196, 0.205, 0.220),
-            roughness=0.32,
+            base_srgb=(0.198, 0.208, 0.222),
+            roughness=0.31,
             metallic=0.86,
-            bevel_r=0.024,
-            edge_wear=0.20,
-            edge_srgb=(0.68, 0.71, 0.75),
+            bevel_r=0.022,
+            edge_wear=0.24,
+            edge_srgb=(0.70, 0.73, 0.78),
             grain_scale=62.0,
-            grain_bump=0.038,
-            voronoi_grain=0.52,
+            grain_bump=0.032,
+            voronoi_grain=0.46,
             voronoi_scale=92.0,
             rough_var=0.024,
         ),
@@ -1612,21 +1625,25 @@ def mk_flared_cutout_z(
     z_overhang: float = 0.25,
     mat: bpy.types.Material | None = None,
 ) -> bpy.types.Object:
-    """Watertight hourglass lofted cutout solid along Z so boolean-subtracting it from a chassis skin
-    automatically carves smooth 3D ergonomic chamfered lips around thumbholes & stock windows!"""
+    """Watertight C2 cosine-eased hourglass lofted cutout solid along Z so boolean-subtracting it from
+    a chassis skin automatically carves silky ergonomic radiused lips around thumbholes & stock windows!"""
     base = _clean_poly2d(pts_xy)
     z_out = z_half_inner + z_overhang
     z_f0 = max(0.10, z_half_inner - flare_depth)
-    stations = [
-        (-z_out,       flare * 1.15),
-        (-z_half_inner, flare * 1.00),
-        (-z_f0 - flare_depth * 0.35, flare * 0.42),
-        (-z_f0,        0.0),
-        ( z_f0,        0.0),
-        ( z_f0 + flare_depth * 0.35, flare * 0.42),
-        ( z_half_inner, flare * 1.00),
-        ( z_out,       flare * 1.15),
-    ]
+    # 5-step smooth quarter-circle fillet curve on both +-Z faces
+    fillet_steps = 5
+    stations: list[tuple[float, float]] = [(-z_out, flare * 1.15)]
+    for k in range(fillet_steps + 1):
+        th = (math.pi * 0.5) * (k / fillet_steps)
+        z_v = -z_f0 - flare_depth * math.cos(th)
+        off_v = flare * (1.0 - math.sin(th))
+        stations.append((z_v, off_v))
+    for k in range(fillet_steps + 1):
+        th = (math.pi * 0.5) * (k / fillet_steps)
+        z_v = z_f0 + flare_depth * math.sin(th)
+        off_v = flare * (1.0 - math.cos(th))
+        stations.append((z_v, off_v))
+    stations.append((z_out, flare * 1.15))
     bm = bmesh.new()
     rings = []
     for z_val, off in stations:
@@ -2009,6 +2026,7 @@ def finish_part(
     bevel_segs: int = 2,
     sharp_deg: float = 34.0,
     weighted_normals: bool = True,
+    lock_flat_walls: bool = False,
 ) -> bpy.types.Object:
     select_only([obj], obj)
     if bevel_w > 0.0:
@@ -2025,6 +2043,7 @@ def finish_part(
     bm = bmesh.new()
     bm.from_mesh(obj.data)
     bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)
+    bmesh.ops.dissolve_degenerate(bm, dist=1e-6, edges=bm.edges)
     degen = [f for f in bm.faces if f.calc_area() < 1e-10]
     if degen:
         bmesh.ops.delete(bm, geom=degen, context="FACES")
@@ -2033,11 +2052,20 @@ def finish_part(
         bmesh.ops.reverse_faces(bm, faces=bm.faces)
 
     angle_rad = math.radians(sharp_deg)
+    flat_rad = math.radians(12.0)
     for f in bm.faces:
         f.smooth = True
     for e in bm.edges:
         if len(e.link_faces) == 2:
-            e.smooth = e.calc_face_angle(0.0) < angle_rad
+            ang = e.calc_face_angle(0.0)
+            is_flat_wall_edge = False
+            if lock_flat_walls and ang > flat_rad:
+                f0, f1 = e.link_faces[0], e.link_faces[1]
+                if (abs(f0.normal.y) > 0.985 or abs(f1.normal.y) > 0.985) and (
+                    f0.calc_area() > 0.08 or f1.calc_area() > 0.08
+                ):
+                    is_flat_wall_edge = True
+            e.smooth = (ang < angle_rad) and (not is_flat_wall_edge)
         else:
             e.smooth = False
     bm.to_mesh(obj.data)
@@ -2093,36 +2121,36 @@ def build_awm_chassis_skins(mats: dict) -> bpy.types.Object:
     outer_pts += _cubic_bez((-6.05, -5.15), (-7.15, -5.05), (-8.25, -4.65), (-8.85, -4.40), 12)
     outer_pts.append((-9.20, -4.40))
 
-    raw_skin = mk_extrude_z("skin_raw", outer_pts, -0.895, 0.895, bevel=0.075, bevel_segs=3, mat=m_od)
+    raw_skin = mk_extrude_z("skin_raw", outer_pts, -0.895, 0.895, bevel=0.115, bevel_segs=5, mat=m_od)
 
     # Sculpted 3D ergonomic palm-swell bolsters on left & right pistol-grip flanks (zero flat-box look!)
-    swell_l = mk_sphere("skin_swell_l", 0.72, 1.38, 0.19, 22, 14,
-                        [("rz", -0.26), ("t", -5.08, -2.95, -0.73)], m_gr)
-    swell_r = mk_sphere("skin_swell_r", 0.72, 1.38, 0.19, 22, 14,
-                        [("rz", -0.26), ("t", -5.08, -2.95,  0.73)], m_gr)
+    swell_l = mk_sphere("skin_swell_l", 0.74, 1.42, 0.21, 32, 20,
+                        [("rz", -0.26), ("t", -5.08, -2.95, -0.71)], m_gr)
+    swell_r = mk_sphere("skin_swell_r", 0.74, 1.42, 0.21, 32, 20,
+                        [("rz", -0.26), ("t", -5.08, -2.95,  0.71)], m_gr)
     # Slightly raised tactile molded EDM grip inlay pads on forend flanks (between fuller & underside)
-    fpad_l = mk_box("skin_fpad_l", 5.80, 0.54, 0.06, [("t", 8.95, -0.68, -0.880)], m_gr, bevel=0.025, bevel_segs=2)
-    fpad_r = mk_box("skin_fpad_r", 5.80, 0.54, 0.06, [("t", 8.95, -0.68,  0.880)], m_gr, bevel=0.025, bevel_segs=2)
+    fpad_l = mk_box("skin_fpad_l", 5.80, 0.54, 0.06, [("t", 8.95, -0.68, -0.880)], m_gr, bevel=0.025, bevel_segs=3)
+    fpad_r = mk_box("skin_fpad_r", 5.80, 0.54, 0.06, [("t", 8.95, -0.68,  0.880)], m_gr, bevel=0.025, bevel_segs=3)
     skin_body = bool_union([raw_skin, swell_l, swell_r, fpad_l, fpad_r], "skin_body", solver="EXACT")
 
-    # 1. Hourglass-beveled AI Enclosed Teardrop Thumbhole Cutout (smooth ergonomic chamfered rim!)
+    # 1. C2 Smooth Hourglass-Beveled AI Enclosed Teardrop Thumbhole Cutout (silky ergonomic radiused rim!)
     th_pts: list[tuple[float, float]] = [(-5.55, -0.58)]
-    th_pts += _cubic_bez((-5.55, -0.58), (-5.68, -1.65), (-5.92, -2.95), (-6.15, -3.98), 14)
-    th_pts += _cubic_bez((-6.15, -3.98), (-6.72, -4.12), (-7.45, -3.95), (-7.95, -3.68), 10)
-    th_pts += _cubic_bez((-7.95, -3.68), (-8.18, -2.65), (-8.18, -1.45), (-7.92, -0.62), 12)
-    th_pts += _cubic_bez((-7.92, -0.62), (-7.25, -0.38), (-6.22, -0.38), (-5.55, -0.58), 10)
-    cut_thumb = mk_flared_cutout_z("c_thumbhole", th_pts, z_half_inner=0.90, flare=0.085, flare_depth=0.16, mat=m_od)
+    th_pts += _cubic_bez((-5.55, -0.58), (-5.68, -1.65), (-5.92, -2.95), (-6.15, -3.98), 18)
+    th_pts += _cubic_bez((-6.15, -3.98), (-6.72, -4.12), (-7.45, -3.95), (-7.95, -3.68), 14)
+    th_pts += _cubic_bez((-7.95, -3.68), (-8.18, -2.65), (-8.18, -1.45), (-7.92, -0.62), 16)
+    th_pts += _cubic_bez((-7.92, -0.62), (-7.25, -0.38), (-6.22, -0.38), (-5.55, -0.58), 14)
+    cut_thumb = mk_flared_cutout_z("c_thumbhole", th_pts, z_half_inner=0.90, flare=0.115, flare_depth=0.22, mat=m_od)
 
-    # 2. Hourglass-beveled Oversized Arctic Trigger Guard Cutout (rounded comfort corners!)
+    # 2. C2 Smooth Hourglass-Beveled Oversized Arctic Trigger Guard Cutout (rounded comfort corners!)
     tg_pts: list[tuple[float, float]] = [(-2.22, -1.32), (-2.24, -2.30)]
-    tg_pts += _quad_bez((-2.24, -2.30), (-2.25, -2.48), (-2.44, -2.48), 5)
+    tg_pts += _quad_bez((-2.24, -2.30), (-2.25, -2.48), (-2.44, -2.48), 8)
     tg_pts.append((-3.64, -2.48))
-    tg_pts += _quad_bez((-3.64, -2.48), (-3.84, -2.48), (-3.86, -2.30), 5)
+    tg_pts += _quad_bez((-3.64, -2.48), (-3.84, -2.48), (-3.86, -2.30), 8)
     tg_pts.append((-3.94, -1.32))
-    tg_pts += _quad_bez((-3.94, -1.32), (-3.95, -1.24), (-3.82, -1.24), 4)
+    tg_pts += _quad_bez((-3.94, -1.32), (-3.95, -1.24), (-3.82, -1.24), 6)
     tg_pts.append((-2.34, -1.24))
-    tg_pts += _quad_bez((-2.34, -1.24), (-2.21, -1.24), (-2.22, -1.32), 4)
-    cut_trig_win = mk_flared_cutout_z("c_trigwin", tg_pts, z_half_inner=0.90, flare=0.065, flare_depth=0.13, mat=m_od)
+    tg_pts += _quad_bez((-2.34, -1.24), (-2.21, -1.24), (-2.22, -1.32), 6)
+    cut_trig_win = mk_flared_cutout_z("c_trigwin", tg_pts, z_half_inner=0.90, flare=0.088, flare_depth=0.18, mat=m_od)
 
     # 3. Internal structural channels & exterior molded grooves / counterbores
     cutters: list[bpy.types.Object] = [
@@ -2182,7 +2210,7 @@ def build_awm_chassis_skins(mats: dict) -> bpy.types.Object:
 
     carved = bool_subtract(skin_body, cutters, solver="EXACT")
     obj = join_objects([carved] + hardware, "awm_chassis_skins")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0, lock_flat_walls=True)
 
 
 def build_awm_folding_stock(mats: dict) -> bpy.types.Object:
@@ -2202,22 +2230,22 @@ def build_awm_folding_stock(mats: dict) -> bpy.types.Object:
         (-10.30, -4.40),
         ( -8.45, -4.40),  # Iconic AI rear bag-rider toe hook
     ]
-    stk_pts += _quad_bez((-8.45, -4.40), (-8.12, -3.40), (-7.95, -2.92), 6)
+    stk_pts += _quad_bez((-8.45, -4.40), (-8.12, -3.40), (-7.95, -2.92), 8)
     stk_pts.append((-3.65, -2.92))
-    stk_pts += _cubic_bez((-3.65, -2.92), (-2.45, -3.55), (-1.20, -4.25), (0.00, -4.40), 12)
+    stk_pts += _cubic_bez((-3.65, -2.92), (-2.45, -3.55), (-1.20, -4.25), (0.00, -4.40), 16)
 
-    raw_stock = mk_extrude_z("stk_raw", stk_pts, -0.845, 0.845, bevel=0.072, bevel_segs=3, mat=m_od)
+    raw_stock = mk_extrude_z("stk_raw", stk_pts, -0.845, 0.845, bevel=0.105, bevel_segs=5, mat=m_od)
 
-    # Smoothly rounded hourglass-beveled L115A3 oval weight-saving / sling window!
+    # Smoothly rounded C2 hourglass-beveled L115A3 oval weight-saving / sling window!
     win_pts: list[tuple[float, float]] = [(-3.00, -0.45), (-7.20, -0.45)]
-    win_pts += _quad_bez((-7.20, -0.45), (-7.55, -0.45), (-7.58, -0.80), 6)
+    win_pts += _quad_bez((-7.20, -0.45), (-7.55, -0.45), (-7.58, -0.80), 8)
     win_pts.append((-7.64, -1.62))
-    win_pts += _quad_bez((-7.64, -1.62), (-7.65, -1.96), (-7.30, -1.97), 6)
+    win_pts += _quad_bez((-7.64, -1.62), (-7.65, -1.96), (-7.30, -1.97), 8)
     win_pts.append((-2.90, -2.14))
-    win_pts += _quad_bez((-2.90, -2.14), (-2.54, -2.15), (-2.56, -1.80), 6)
+    win_pts += _quad_bez((-2.90, -2.14), (-2.54, -2.15), (-2.56, -1.80), 8)
     win_pts.append((-2.72, -0.80))
-    win_pts += _quad_bez((-2.72, -0.80), (-2.75, -0.45), (-3.00, -0.45), 6)
-    cut_win = mk_flared_cutout_z("c_stkwin", win_pts, z_half_inner=0.84, flare=0.075, flare_depth=0.14, mat=m_od)
+    win_pts += _quad_bez((-2.72, -0.80), (-2.75, -0.45), (-3.00, -0.45), 8)
+    cut_win = mk_flared_cutout_z("c_stkwin", win_pts, z_half_inner=0.84, flare=0.105, flare_depth=0.20, mat=m_od)
 
     cutters: list[bpy.types.Object] = [
         cut_win,
@@ -2270,7 +2298,7 @@ def build_awm_folding_stock(mats: dict) -> bpy.types.Object:
 
     carved = bool_subtract(raw_stock, cutters, solver="EXACT")
     obj = join_objects([carved] + hardware, "awm_folding_stock")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0, lock_flat_walls=True)
 
 
 def build_awm_cheekpiece(mats: dict) -> bpy.types.Object:
@@ -2281,8 +2309,8 @@ def build_awm_cheekpiece(mats: dict) -> bpy.types.Object:
 
     # Organically contoured inverted-U matte-black polyamide cheek saddle (Local X in [-3.22, +2.62])
     # Clears fully-retracted bolt shroud at World X = -11.23 (assembledPos X = -14.10 -> +2.62 = -11.48!)
-    outer_sad = mk_cyl("chk_outer", 0.82, 0.75, 5.84, "x", 36,
-                       [("s", 1.0, 0.92, 0.98), ("t", -0.30, 0.02, 0.0)], m_ky, bevel=0.06)
+    outer_sad = mk_cyl("chk_outer", 0.82, 0.75, 5.84, "x", 48,
+                       [("s", 1.0, 0.92, 0.98), ("t", -0.30, 0.02, 0.0)], m_ky, bevel=0.072)
     cut_under = mk_box("c_chk_u", 6.20, 0.86, 1.18, [("t", -0.30, -0.56, 0.0)], m_ky)
     cut_front = mk_box("c_chk_f", 0.96, 1.22, 1.84, [("rz", -0.46), ("t", 2.58, 0.32, 0.0)], m_ky)
     # Soft rear edge contour bevel
@@ -2446,7 +2474,7 @@ def build_awm_action_receiver(mats: dict) -> bpy.types.Object:
     ])
 
     obj = join_objects(parts, "awm_action_receiver")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0, lock_flat_walls=True)
 
 
 def build_awm_barrel(mats: dict) -> bpy.types.Object:
@@ -2455,7 +2483,7 @@ def build_awm_barrel(mats: dict) -> bpy.types.Object:
     m_sl = mats["M_SlotDark"]
     m_ss = mats["M_ChromeBolt"]
 
-    # Closed watertight hollow 27" Match Stainless Barrel Lathe (48 radial segments!)
+    # Closed watertight hollow 27" Match Stainless Barrel Lathe (64 radial segments!)
     # M27 breech tenon -> heavy chamber -> match taper -> M18 muzzle spigot -> 11-deg target crown -> .338 LM chamber!
     pts_r_x = [
         (0.390,  2.880),
@@ -2484,7 +2512,7 @@ def build_awm_barrel(mats: dict) -> bpy.types.Object:
         (0.415,  2.920),  # Polished breech chamber chamfer
         (0.390,  2.880),
     ]
-    outer = mk_lathe_x("bbl_raw", pts_r_x, segs=48, mat=m_bl)
+    outer = mk_lathe_x("bbl_raw", pts_r_x, segs=64, mat=m_bl)
 
     # Assign dark internal bore material strictly to interior bore faces (r < 0.395, x in [2.91..28.97])
     outer.data.materials.append(m_sl)
@@ -2498,7 +2526,7 @@ def build_awm_barrel(mats: dict) -> bpy.types.Object:
     bm.to_mesh(outer.data)
     bm.free()
 
-    # 6 Deep Ball-Endmill Longitudinal Flutes + 2 AI Barrel-Wrench Flats (assigned M_StainlessFlute for bright highlights!)
+    # 6 Deep Ball-Endmill Longitudinal Flutes + 2 AI Barrel-Wrench Flats (contrasting milled satin valleys!)
     flute_cutters: list[bpy.types.Object] = [
         mk_box("c_bflatR", 0.68, 0.72, 0.18, [("t", 5.35, 0.0,  0.74)], m_fl, bevel=0.02),
         mk_box("c_bflatL", 0.68, 0.72, 0.18, [("t", 5.35, 0.0, -0.74)], m_fl, bevel=0.02),
@@ -2511,7 +2539,7 @@ def build_awm_barrel(mats: dict) -> bpy.types.Object:
         tilt = 0.0065
         flute_cutters.append(
             mk_capsule_x(
-                f"c_bflute_{k}", 0.138, 17.50, segs=20, cap_rings=5,
+                f"c_bflute_{k}", 0.138, 17.50, segs=26, cap_rings=7,
                 xform=[("ry", math.sin(ang) * tilt), ("rz", -math.cos(ang) * tilt), ("t", 17.75, fy, fz)],
                 mat=m_fl,
             )
@@ -2621,15 +2649,15 @@ def build_awm_bolt_body(mats: dict) -> bpy.types.Object:
     m_br = mats["M_GoldBrass"]
 
     # Gleaming brushed hard-chrome cylindrical Magnum bolt shaft (R = 0.45, X in [-4.52, +2.92])
-    main_cyl = mk_cyl("blt_cyl", 0.45, 0.45, 7.44, "x", 48, [("t", -0.80, 0.0, 0.0)], m_ss, bevel=0.015)
+    main_cyl = mk_cyl("blt_cyl", 0.45, 0.45, 7.44, "x", 56, [("t", -0.80, 0.0, 0.0)], m_ss, bevel=0.015)
 
     cutters: list[bpy.types.Object] = [
         # Hollow striker & helical spring bore (stops cleanly behind solid bolt-face bulkhead X = +2.56!)
         mk_cyl("c_blt_str", 0.285, 0.285, 7.12, "x", 28, [("t", -0.97, 0.0, 0.0)], m_sl),
         # Recessed .338 Lapua Magnum bolt-face rim cup at X = +2.83
-        mk_cyl("c_blt_cup", 0.388, 0.388, 0.24, "x", 32, [("t", 2.85, 0.0, 0.0)], m_sl),
+        mk_cyl("c_blt_cup", 0.388, 0.388, 0.24, "x", 36, [("t", 2.85, 0.0, 0.0)], m_sl),
         # Circumferential locking-lug bridge relief groove at X = +2.35
-        mk_torus("c_blt_grv", 0.49, 0.06, "x", 32, 12, [("t", 2.35, 0.0, 0.0)], m_bf),
+        mk_torus("c_blt_grv", 0.49, 0.06, "x", 36, 12, [("t", 2.35, 0.0, 0.0)], m_bf),
         # Firing pin aperture, plunger-ejector pocket, and extractor mortise
         mk_cyl("c_blt_fp", 0.066, 0.066, 0.48, "x", 16, [("t", 2.73, 0.0, 0.0)], m_sl),
         mk_cyl("c_blt_ej", 0.072, 0.072, 0.30, "x", 16, [("t", 2.72, -0.16, -0.16)], m_sl),
@@ -2643,7 +2671,7 @@ def build_awm_bolt_body(mats: dict) -> bpy.types.Object:
         fy = math.cos(ang) * 0.468
         fz = math.sin(ang) * 0.468
         cutters.append(
-            mk_capsule_x(f"c_blt_fl_{k}", 0.112, 4.86, segs=18, cap_rings=4,
+            mk_capsule_x(f"c_blt_fl_{k}", 0.112, 4.86, segs=24, cap_rings=6,
                          xform=[("t", -0.92, fy, fz)], mat=m_bf)
         )
     fluted_body = bool_subtract(main_cyl, cutters, solver="EXACT")
@@ -3007,7 +3035,7 @@ def build_awm_scope(mats: dict) -> bpy.types.Object:
         (0.960,  8.76),  # Deeply recessed objective anti-reflection interior cavity
         (0.000,  8.76),
     ]
-    main_tube = mk_lathe_x("sc_tube", tube_pts, segs=48, mat=m_sc)
+    main_tube = mk_lathe_x("sc_tube", tube_pts, segs=64, mat=m_sc)
 
     # Assign dark internal sunshade/ocular baffle material strictly inside front/rear optical cavities
     main_tube.data.materials.append(m_sl)
@@ -3310,7 +3338,7 @@ def build_awm_mag_body(mats: dict) -> bpy.types.Object:
         parts.append(mk_cyl(f"mag_sw_{i}", 0.055, 0.055, 0.05, "x", 12, [("t", 3.16, wy, 0.0)], m_mg, bevel=0.008))
 
     obj = join_objects(parts, "awm_mag_body")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0, lock_flat_walls=True)
 
 
 def build_awm_mag_spring(mats: dict) -> bpy.types.Object:
@@ -3793,15 +3821,15 @@ def bake_atlas_suite(prefix: str, target_objs: list[bpy.types.Object], all_objs:
     _set_grid_isolated_layout(all_objs)
 
     saved = _route_bsdf_input_to_emit(mats_set, "Base Color")
-    run_bake("albedo", "EMIT", samples=2, fill_color=(0.04, 0.048, 0.042, 1.0))
+    run_bake("albedo", "EMIT", samples=4, fill_color=(0.04, 0.048, 0.042, 1.0))
     _restore_bsdf(saved)
 
     saved = _route_bsdf_input_to_emit(mats_set, "Roughness")
-    run_bake("roughness", "EMIT", samples=2, fill_color=(0.5, 0.5, 0.5, 1.0))
+    run_bake("roughness", "EMIT", samples=4, fill_color=(0.5, 0.5, 0.5, 1.0))
     _restore_bsdf(saved)
 
     saved = _route_bsdf_input_to_emit(mats_set, "Metallic")
-    run_bake("metalness", "EMIT", samples=2, fill_color=(0.0, 0.0, 0.0, 1.0))
+    run_bake("metalness", "EMIT", samples=4, fill_color=(0.0, 0.0, 0.0, 1.0))
     _restore_bsdf(saved)
 
     run_bake("normal", "NORMAL", samples=BAKE_NORMAL_SAMPLES, fill_color=(0.5, 0.5, 1.0, 1.0), normal_op=True)
@@ -3833,7 +3861,7 @@ def bake_atlas_suite(prefix: str, target_objs: list[bpy.types.Object], all_objs:
     arr[:, 3] = 1.0
     img_m.pixels.foreach_set(arr.ravel())
     nodes_m = _attach_bake_image_node({white_mat}, img_m)
-    scene.cycles.samples = 1
+    scene.cycles.samples = 4
     select_only(ext_targets, ext_targets[0])
     bpy.ops.object.bake(type="EMIT", margin=6, use_clear=False)
     _save_image_npy(img_m, tmp_dir / f"{prefix}_ext_mask.npy")
@@ -3888,8 +3916,8 @@ def verify_meshes(all_objs: list[bpy.types.Object]) -> dict:
     return report
 
 
-def export_draco_glb(all_objs: list[bpy.types.Object]):
-    _set_identity_layout(all_objs)
+def triangulate_keep_normals(all_objs: list[bpy.types.Object]):
+    """Locks WeightedNormal planar loop normals into beauty triangles BEFORE Cycles NORMAL baking & export!"""
     for o in all_objs:
         select_only([o], o)
         mod = o.modifiers.new(name="Triangulate", type="TRIANGULATE")
@@ -3898,6 +3926,9 @@ def export_draco_glb(all_objs: list[bpy.types.Object]):
         mod.keep_custom_normals = True
         bpy.ops.object.modifier_apply(modifier=mod.name)
 
+
+def export_draco_glb(all_objs: list[bpy.types.Object]):
+    _set_identity_layout(all_objs)
     select_only(all_objs, all_objs[0])
     bpy.ops.export_scene.gltf(
         filepath=str(MODELS_OUT),
@@ -3993,12 +4024,12 @@ def _render_studio_previews(all_objs: list[bpy.types.Object], preview_dir: Path)
     w_nt.nodes.clear()
     w_out = w_nt.nodes.new("ShaderNodeOutputWorld")
     w_bg = w_nt.nodes.new("ShaderNodeBackground")
-    hdri = REPO_ROOT / "public" / "hdri" / "studio_dark_armory.hdr"
+    hdri = REPO_ROOT / "public" / "hdri" / "gunsmith_bench.hdr"
     if hdri.exists():
         env = w_nt.nodes.new("ShaderNodeTexEnvironment")
         env.image = bpy.data.images.load(str(hdri))
         w_nt.links.new(env.outputs["Color"], w_bg.inputs["Color"])
-        w_bg.inputs["Strength"].default_value = 1.6
+        w_bg.inputs["Strength"].default_value = 1.15
     else:
         w_bg.inputs["Color"].default_value = (0.14, 0.16, 0.18, 1.0)
         w_bg.inputs["Strength"].default_value = 1.0
@@ -4091,6 +4122,9 @@ def main():
     unwrap_metal_atlas(metal_objs)
     unwrap_optic_atlas(optic_objs)
 
+    # Lock WeightedNormal planar normals into beauty triangles BEFORE Cycles NORMAL baking & glTF export!
+    triangulate_keep_normals(all_objs)
+
     for label, group in (("chassis", chassis_objs), ("metal", metal_objs), ("optic", optic_objs)):
         tot_area = 0.0
         for o in group:
@@ -4126,6 +4160,8 @@ def main():
     if "--render-preview" in sys.argv:
         pidx = sys.argv.index("--render-preview")
         _render_studio_previews(all_objs, Path(sys.argv[pidx + 1]))
+    elif "--preview" in sys.argv:
+        _render_studio_previews(all_objs, Path("/tmp/awm_qa"))
 
     outputs = [
         MODELS_OUT,
