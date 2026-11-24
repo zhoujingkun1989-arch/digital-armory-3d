@@ -3,6 +3,11 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { beforeAll, describe, expect, it } from 'vitest';
+import {
+  applyLocationToStore,
+  buildSearchString,
+} from '../src/app/useUrlStateSync';
+import { useAppStore } from '../src/store/useAppStore';
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 const SCRIPT_PATH = path.join(REPO_ROOT, 'scripts', 'qa_a11y_audit.mjs');
@@ -154,11 +159,14 @@ describe('Cycle 13B · WCAG 2.1 AA Keyboard, Focus-Trap, ARIA & Mobile Touch-Tar
       expect(stdout).toContain('--json');
       expect(stdout).toContain('shortcut_cmdk');
       expect(stdout).toContain('shortcut_help');
+      expect(stdout).toContain('panel_showdown');
+      expect(stdout).toContain('panel_atlas');
+      expect(stdout).toContain('panel_monograph');
       expect(stdout).toContain('hud_fieldstrip');
       expect(stdout).toContain('hud_story_drawer');
     });
 
-    it('emits valid 66-target JSON matrix on --dry-run --json covering all 6 screens, 11 modals & 5 interactive HUDs across 3 profiles', () => {
+    it('emits valid 75-target JSON matrix on --dry-run --json covering all 6 screens, 14 modals & 5 interactive HUDs across 3 profiles', () => {
       const stdout = execFileSync(
         process.execPath,
         [SCRIPT_PATH, '--dry-run', '--json'],
@@ -185,10 +193,10 @@ describe('Cycle 13B · WCAG 2.1 AA Keyboard, Focus-Trap, ARIA & Mobile Touch-Tar
         'dark_mobile',
       ]);
       expect(a11yMod.A11Y_SCREEN_SPECS).toHaveLength(6);
-      expect(a11yMod.A11Y_MODAL_SPECS).toHaveLength(11);
+      expect(a11yMod.A11Y_MODAL_SPECS).toHaveLength(14);
       expect(a11yMod.A11Y_HUD_SPECS).toHaveLength(5);
-      expect(plan.totalTargets).toBe(66);
-      expect(plan.targets).toHaveLength(66);
+      expect(plan.totalTargets).toBe(75);
+      expect(plan.targets).toHaveLength(75);
 
       const keys = new Set(plan.targets.map((t) => t.key));
       for (const requiredKey of [
@@ -209,6 +217,9 @@ describe('Cycle 13B · WCAG 2.1 AA Keyboard, Focus-Trap, ARIA & Mobile Touch-Tar
         'panel_causality',
         'shortcut_cmdk',
         'shortcut_help',
+        'panel_showdown',
+        'panel_atlas',
+        'panel_monograph',
         'hud_fieldstrip',
         'hud_malfunction',
         'hud_attachments',
@@ -221,7 +232,7 @@ describe('Cycle 13B · WCAG 2.1 AA Keyboard, Focus-Trap, ARIA & Mobile Touch-Tar
       const daylightTargets = plan.targets.filter(
         (t) => t.profileId === 'daylight_desktop'
       );
-      expect(daylightTargets).toHaveLength(22);
+      expect(daylightTargets).toHaveLength(25);
       for (const t of daylightTargets) {
         expect(t.url).toContain('env=blueprint_daylight');
         expect(t.viewport).toBe('1920x1080');
@@ -230,10 +241,138 @@ describe('Cycle 13B · WCAG 2.1 AA Keyboard, Focus-Trap, ARIA & Mobile Touch-Tar
       const mobileTargets = plan.targets.filter(
         (t) => t.profileId === 'dark_mobile'
       );
-      expect(mobileTargets).toHaveLength(22);
+      expect(mobileTargets).toHaveLength(25);
       for (const t of mobileTargets) {
         expect(t.viewport).toBe('390x844');
       }
+    });
+
+    it('hydrates and serializes ?panel=atlas and ?panel=monograph cleanly while preserving ?monograph=1 deep-links', () => {
+      // 1. ?panel=atlas opens TextureAtlasModal and strips cleanly on close / navigation
+      applyLocationToStore('?screen=workbench&weapon=ak15&panel=atlas&lang=en');
+      expect(useAppStore.getState().textureModalOpen).toBe(true);
+      expect(useAppStore.getState().activeWeaponId).toBe('ak15');
+
+      const atlasOpenQs = buildSearchString(
+        'ak15',
+        'workbench',
+        'explode',
+        false,
+        'en',
+        '556_nato',
+        true,
+        '556_nato',
+        '',
+        undefined,
+        undefined,
+        false,
+        false,
+        'tactical_vault',
+        false,
+        true,
+        false
+      );
+      expect(new URLSearchParams(atlasOpenQs).get('panel')).toBe('atlas');
+
+      const atlasClosedQs = buildSearchString(
+        'ak15',
+        'workbench',
+        'explode',
+        false,
+        'en',
+        '556_nato',
+        true,
+        '556_nato',
+        atlasOpenQs,
+        undefined,
+        undefined,
+        false,
+        false,
+        'tactical_vault',
+        false,
+        false,
+        false
+      );
+      expect(new URLSearchParams(atlasClosedQs).has('panel')).toBe(false);
+
+      applyLocationToStore('?screen=workbench&weapon=ak15&lang=en');
+      expect(useAppStore.getState().textureModalOpen).toBe(false);
+
+      // 2. ?panel=monograph opens MonographPrintModal for weaponId and strips cleanly on close
+      applyLocationToStore(
+        '?screen=workbench&weapon=m4a1&panel=monograph&lang=en'
+      );
+      expect(useAppStore.getState().monographModalOpen).toBe(true);
+      expect(useAppStore.getState().monographWeaponId).toBe('m4a1');
+
+      const monoOpenQs = buildSearchString(
+        'm4a1',
+        'workbench',
+        'explode',
+        false,
+        'en',
+        '556_nato',
+        true,
+        '556_nato',
+        '',
+        undefined,
+        undefined,
+        false,
+        false,
+        'tactical_vault',
+        false,
+        false,
+        true
+      );
+      expect(new URLSearchParams(monoOpenQs).get('panel')).toBe('monograph');
+
+      const monoClosedQs = buildSearchString(
+        'm4a1',
+        'workbench',
+        'explode',
+        false,
+        'en',
+        '556_nato',
+        true,
+        '556_nato',
+        monoOpenQs,
+        undefined,
+        undefined,
+        false,
+        false,
+        'tactical_vault',
+        false,
+        false,
+        false
+      );
+      expect(new URLSearchParams(monoClosedQs).has('panel')).toBe(false);
+
+      // 3. Existing ?monograph=1 deep-link stays untouched and does not inject duplicate panel=monograph
+      const legacyMonoQs = buildSearchString(
+        'p08',
+        'workbench',
+        'explode',
+        false,
+        'en',
+        '556_nato',
+        true,
+        '556_nato',
+        '?monograph=1&weapon=p08&layout=spread_a3',
+        undefined,
+        undefined,
+        false,
+        false,
+        'tactical_vault',
+        false,
+        false,
+        true
+      );
+      const legacyParams = new URLSearchParams(legacyMonoQs);
+      expect(legacyParams.get('monograph')).toBe('1');
+      expect(legacyParams.has('panel')).toBe(false);
+
+      applyLocationToStore('?screen=armory&weapon=ak15');
+      expect(useAppStore.getState().monographModalOpen).toBe(false);
     });
 
     it('parses valid CLI flags and rejects invalid profile or target keys', () => {
