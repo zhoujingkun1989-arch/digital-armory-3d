@@ -57,7 +57,7 @@ export const FLEET_MUSEUM_VIEWS = Object.freeze([
   {
     id: 'view:split_showdown',
     screen: 'split_showdown',
-    query: 'screen=split_showdown&weapon=gau8&rival=m134',
+    query: 'screen=split_showdown&weaponA=gau8&weaponB=m134',
     expectsWebgl: true,
   },
   {
@@ -80,11 +80,178 @@ export const FLEET_MUSEUM_VIEWS = Object.freeze([
   },
 ]);
 
+export const HEAVY_EXHIBIT_IDS = new Set([
+  'ztz99a',
+  'm1a2',
+  'leopard2a7',
+  'tiger1',
+  'gau8',
+]);
+
 const DEFAULT_SETTLE_MS = 900;
+const HEAVY_MIN_SETTLE_MS = 1_200;
 const DEFAULT_TIMEOUT_MS = 45_000;
 const DETACHED_WORKER_RE = /(?:\.worker(?:[-.][^/?#]*)?\.js|\/sw\.js)(?:[?#]|$)/i;
 
-const SAMPLE_NON_BG_PIXEL_RATIO_SCRIPT = `(() => {
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * Extended DOM & WebGL readiness probe that covers both legacy error-boundary
+ * selectors and the upgraded `.viewport-error-fallback` recovery UI while
+ * reporting active `data-theme` / `data-env` attributes.
+ */
+export const FLEET_READINESS_PROBE_SCRIPT = `(() => {
+  const base = ${PAGE_READINESS_PROBE_SCRIPT};
+  const fallbackEl = document.querySelector(
+    '.viewport-error-fallback, .viewport-error-boundary, .webgl-context-lost-banner'
+  );
+  const visibleImgs = Array.from(document.querySelectorAll('img')).filter((img) => {
+    const src = img.getAttribute('src');
+    if (!src) return false;
+    const style = window.getComputedStyle(img);
+    return style.display !== 'none' && style.visibility !== 'hidden';
+  });
+  const pendingImgs = visibleImgs.filter((img) => {
+    if (img.complete) return false;
+    const loadingAttr = (img.getAttribute('loading') || img.loading || '').toLowerCase();
+    if (loadingAttr !== 'lazy') return true;
+    const r = img.getBoundingClientRect();
+    return r.width > 0 && r.height > 0 && r.bottom >= 0 && r.top <= window.innerHeight + 250;
+  }).length;
+  const brokenImgs = visibleImgs.filter(
+    (img) => img.complete && img.naturalWidth === 0
+  ).length;
+  const appliedTheme = document.documentElement?.dataset?.theme ?? null;
+  const appliedEnv = document.documentElement?.dataset?.env ?? null;
+  return {
+    ...base,
+    visibleImages: visibleImgs.length,
+    pendingImgs,
+    brokenImgs,
+    hasErrorBoundary: Boolean(base?.hasErrorBoundary || fallbackEl),
+    appliedTheme,
+    appliedEnv,
+  };
+})()`;
+
+/**
+ * Activates Blueprint Daylight (`blueprint_daylight`) via real UI controls when
+ * the URL query parameter alone did not switch the studio theme.
+ */
+const ACTIVATE_BLUEPRINT_DAYLIGHT_SCRIPT = `(async () => {
+  if (document.documentElement?.dataset?.theme === 'light') {
+    return { switched: false, alreadyLight: true, theme: 'light' };
+  }
+  const waitFrames = async (n) => {
+    for (let i = 0; i < n; i += 1) {
+      await new Promise((r) => requestAnimationFrame(r));
+    }
+  };
+  let btn = document.querySelector('button.env-blueprint_daylight');
+  let openedPopoverTrigger = null;
+  if (!btn) {
+    const trigger = document.querySelector('button[aria-controls="armory-display-popover-panel"]');
+    if (trigger instanceof HTMLElement) {
+      trigger.click();
+      openedPopoverTrigger = trigger;
+      await waitFrames(3);
+      btn = document.querySelector('button.env-blueprint_daylight');
+    }
+  }
+  if (btn instanceof HTMLElement) {
+    btn.click();
+    await waitFrames(4);
+    if (openedPopoverTrigger instanceof HTMLElement) {
+      openedPopoverTrigger.click();
+      await waitFrames(2);
+    }
+    return {
+      switched: true,
+      alreadyLight: false,
+      theme: document.documentElement?.dataset?.theme ?? null,
+      env: document.documentElement?.dataset?.env ?? null,
+    };
+  }
+  return {
+    switched: false,
+    alreadyLight: false,
+    theme: document.documentElement?.dataset?.theme ?? null,
+    env: document.documentElement?.dataset?.env ?? null,
+  };
+})()`;
+
+/**
+ * Computes the non-background pixel ratio on the center stage area (x: 15%..85%,
+ * y: 16%..82% — avoiding edge HUD chrome) from a composited viewport screenshot
+ * so WebGL canvases with `preserveDrawingBuffer: false` are measured accurately.
+ */
+const SAMPLE_SCREENSHOT_NON_BG_FN = `(async (base64Jpeg) => {
+  try {
+    if (!base64Jpeg) return null;
+    const img = new Image();
+    await new Promise((resolve, reject) => {
+      img.onload = resolve;
+      img.onerror = reject;
+      img.src = 'data:image/jpeg;base64,' + base64Jpeg;
+    });
+    const w = 96;
+    const h = 54;
+    const off = document.createElement('canvas');
+    off.width = w;
+    off.height = h;
+    const ctx = off.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return null;
+    ctx.drawImage(img, 0, 0, w, h);
+    const data = ctx.getImageData(0, 0, w, h).data;
+
+    // Sample backdrop color from 4 stage-edge points (avoiding top/bottom HUD bars)
+    const sampleCoords = [
+      [4, 14],
+      [w - 5, 14],
+      [4, h - 14],
+      [w - 5, h - 14],
+    ];
+    const rs = [];
+    const gs = [];
+    const bs = [];
+    for (const [sx, sy] of sampleCoords) {
+      const idx = (sy * w + sx) * 4;
+      rs.push(data[idx]);
+      gs.push(data[idx + 1]);
+      bs.push(data[idx + 2]);
+    }
+    rs.sort((a, b) => a - b);
+    gs.sort((a, b) => a - b);
+    bs.sort((a, b) => a - b);
+    const bgR = Math.round((rs[1] + rs[2]) / 2);
+    const bgG = Math.round((gs[1] + gs[2]) / 2);
+    const bgB = Math.round((bs[1] + bs[2]) / 2);
+
+    const x0 = Math.floor(w * 0.15);
+    const x1 = Math.ceil(w * 0.85);
+    const y0 = Math.floor(h * 0.16);
+    const y1 = Math.ceil(h * 0.82);
+    let nonBg = 0;
+    let total = 0;
+    for (let y = y0; y < y1; y += 1) {
+      for (let x = x0; x < x1; x += 1) {
+        const idx = (y * w + x) * 4;
+        const dr = Math.abs(data[idx] - bgR);
+        const dg = Math.abs(data[idx + 1] - bgG);
+        const db = Math.abs(data[idx + 2] - bgB);
+        if (dr + dg + db > 22) nonBg += 1;
+        total += 1;
+      }
+    }
+    return total > 0 ? Number((nonBg / total).toFixed(4)) : null;
+  } catch {
+    return null;
+  }
+})`;
+
+const SAMPLE_CANVAS_NON_BG_FALLBACK_SCRIPT = `(() => {
   try {
     const canvases = Array.from(document.querySelectorAll('canvas'));
     const target = canvases.find((c) => c.width > 0 && c.height > 0);
@@ -464,11 +631,116 @@ async function terminateProcess(child) {
   });
 }
 
+export function summarizeFleetStats(results) {
+  const list = Array.isArray(results) ? results : [];
+  const loadTimes = list
+    .map((r) => r.loadMs)
+    .filter((v) => typeof v === 'number' && Number.isFinite(v))
+    .sort((a, b) => a - b);
+  const nonBgValues = list
+    .map((r) => r.nonBgPixelRatio)
+    .filter((v) => typeof v === 'number' && Number.isFinite(v))
+    .sort((a, b) => a - b);
+
+  const medianOf = (sorted) => {
+    if (sorted.length === 0) return null;
+    const mid = Math.floor(sorted.length / 2);
+    return sorted.length % 2 === 1
+      ? sorted[mid]
+      : Number(((sorted[mid - 1] + sorted[mid]) / 2).toFixed(4));
+  };
+
+  let fastest = null;
+  let slowest = null;
+  for (const r of list) {
+    if (typeof r.loadMs !== 'number') continue;
+    if (!fastest || r.loadMs < fastest.loadMs) {
+      fastest = { id: r.id, loadMs: r.loadMs };
+    }
+    if (!slowest || r.loadMs > slowest.loadMs) {
+      slowest = { id: r.id, loadMs: r.loadMs };
+    }
+  }
+
+  return {
+    fastest,
+    slowest,
+    medianLoadMs:
+      loadTimes.length > 0 ? Math.round(medianOf(loadTimes)) : null,
+    minNonBgRatio: nonBgValues.length > 0 ? nonBgValues[0] : null,
+    medianNonBgRatio: medianOf(nonBgValues),
+    maxNonBgRatio:
+      nonBgValues.length > 0 ? nonBgValues[nonBgValues.length - 1] : null,
+    lightThemeAppliedCount: list.filter(
+      (r) => r.readiness?.appliedTheme === 'light'
+    ).length,
+    errorBoundaryHits: list.filter(
+      (r) => r.readiness?.hasErrorBoundary === true
+    ).length,
+    readinessTimeouts: list.filter((r) => r.ready === false).length,
+  };
+}
+
+function getEffectiveSettleMs(target, opts) {
+  if (target.weaponId && HEAVY_EXHIBIT_IDS.has(target.weaponId)) {
+    return Math.max(opts.settleMs, HEAVY_MIN_SETTLE_MS);
+  }
+  return opts.settleMs;
+}
+
+function finalizeTargetEntry(target, raw) {
+  const entry = {
+    id: target.id,
+    url: target.url,
+    screen: target.screen,
+    expectsWebgl: target.expectsWebgl,
+    ready: raw.ready !== false,
+    pendingReasons: raw.pendingReasons ?? [],
+    canvas: raw.readiness?.primaryCanvas ?? null,
+    readiness: raw.readiness ?? null,
+    appliedTheme: raw.readiness?.appliedTheme ?? null,
+    appliedEnv: raw.readiness?.appliedEnv ?? null,
+    consoleErrors: [...raw.consoleErrors],
+    pageErrors: [...raw.pageErrors],
+    failedRequests: [...raw.failedRequests],
+    consoleErr: raw.consoleErrors.length,
+    pageErr: raw.pageErrors.length,
+    failedReq: raw.failedRequests.length,
+    nonBgPixelRatio: raw.nonBgPixelRatio ?? null,
+    loadMs: raw.loadMs,
+  };
+  const inv = summarizeWebglInvariants([entry]);
+  entry.webglInvariants = inv;
+  entry.passed =
+    entry.ready &&
+    entry.consoleErr === 0 &&
+    entry.pageErr === 0 &&
+    entry.failedReq === 0 &&
+    inv.allInvariantsPassed;
+  return entry;
+}
+
+function logTargetProgress(index, total, entry, jsonMode) {
+  const ratioStr =
+    typeof entry.nonBgPixelRatio === 'number'
+      ? ` nonBg=${(entry.nonBgPixelRatio * 100).toFixed(1)}%`
+      : '';
+  const themeStr = entry.appliedTheme ? ` theme=${entry.appliedTheme}` : '';
+  const errSummary =
+    entry.passed
+      ? ''
+      : ` [ready=${entry.ready} cons=${entry.consoleErr} page=${entry.pageErr} net=${entry.failedReq} webgl=${entry.webglInvariants.allInvariantsPassed}]`;
+  logInfo(
+    `[${index + 1}/${total}] ${entry.id.padEnd(22)} ${entry.passed ? 'PASS' : 'FAIL'} ${String(entry.loadMs).padStart(5)}ms${ratioStr}${themeStr}${errSummary}`,
+    jsonMode
+  );
+}
+
 async function tryLoadPlaywright() {
   for (const pkg of ['playwright', 'playwright-core']) {
     try {
       const mod = await import(pkg);
-      if (mod?.chromium) return mod.chromium;
+      if (mod?.chromium) return { chromium: mod.chromium, pkgName: pkg };
     } catch {
       // fallback to native CDP
     }
@@ -476,135 +748,221 @@ async function tryLoadPlaywright() {
   return null;
 }
 
-async function runFleetWithPlaywright(chromium, targets, opts) {
-  const executablePath = opts.executablePath ?? discoverChromiumExecutable();
+async function runFleetWithPlaywright(pwInfo, targets, opts) {
+  const { chromium, pkgName } = pwInfo;
+  let executablePath = opts.executablePath || undefined;
+  let isHeadlessShell = false;
+  if (!executablePath && pkgName === 'playwright-core') {
+    const discovered = discoverChromiumExecutable();
+    if (discovered) {
+      executablePath = discovered.executablePath;
+      isHeadlessShell = discovered.isHeadlessShell;
+    }
+  }
+
   const browser = await chromium.launch({
     headless: true,
-    executablePath: executablePath || undefined,
-    args: buildChromiumLaunchArgs({ headless: true }),
+    executablePath,
+    args: buildChromiumLaunchArgs({
+      mode: 'playwright',
+      isHeadlessShell,
+      viewportWidth: QA_VIEWPORT_WIDTH,
+      viewportHeight: QA_VIEWPORT_HEIGHT,
+      deviceScaleFactor: QA_DEVICE_SCALE_FACTOR,
+    }),
   });
 
   const results = [];
+  const context = await browser.newContext({
+    viewport: { width: QA_VIEWPORT_WIDTH, height: QA_VIEWPORT_HEIGHT },
+    deviceScaleFactor: QA_DEVICE_SCALE_FACTOR,
+  });
+
   try {
-    const context = await browser.newContext({
-      viewport: { width: QA_VIEWPORT_WIDTH, height: QA_VIEWPORT_HEIGHT },
-      deviceScaleFactor: QA_DEVICE_SCALE_FACTOR,
-    });
-    const page = await context.newPage();
-
-    let activeErrors = { consoleErrors: [], pageErrors: [], failedRequests: [] };
-    const inFlight = new Set();
-    let lastNetActivityMs = Date.now();
-
-    page.on('console', (msg) => {
-      if (msg.type() === 'error') {
-        activeErrors.consoleErrors.push(msg.text());
-      }
-    });
-    page.on('pageerror', (err) => {
-      activeErrors.pageErrors.push(err?.message ?? String(err));
-    });
-    page.on('request', (req) => {
-      const u = req.url();
-      if (!DETACHED_WORKER_RE.test(u)) {
-        inFlight.add(req);
-        lastNetActivityMs = Date.now();
-      }
-    });
-    page.on('requestfinished', (req) => {
-      inFlight.delete(req);
-      lastNetActivityMs = Date.now();
-    });
-    page.on('requestfailed', (req) => {
-      inFlight.delete(req);
-      lastNetActivityMs = Date.now();
-      const u = req.url();
-      if (!DETACHED_WORKER_RE.test(u)) {
-        activeErrors.failedRequests.push(`${req.method()} ${u}`);
-      }
-    });
-
-    for (const target of targets) {
+    for (let idx = 0; idx < targets.length; idx += 1) {
+      const target = targets[idx];
       const startedAt = Date.now();
-      activeErrors = { consoleErrors: [], pageErrors: [], failedRequests: [] };
-      inFlight.clear();
-      lastNetActivityMs = Date.now();
+      const consoleErrors = [];
+      const pageErrors = [];
+      const failedRequests = [];
+      const inFlight = new Map();
+      let lastNetActivityMs = Date.now();
+      let tearingDown = false;
+      const page = await context.newPage();
 
-      await page.goto(target.url, {
-        waitUntil: 'domcontentloaded',
-        timeout: opts.timeoutMs,
-      });
+      try {
+        page.on('console', (msg) => {
+          if (!tearingDown && msg.type() === 'error') {
+            consoleErrors.push(msg.text());
+          }
+        });
+        page.on('pageerror', (err) => {
+          if (!tearingDown) {
+            pageErrors.push(err?.message ?? String(err));
+          }
+        });
+        page.on('request', (req) => {
+          const u = req.url();
+          if (
+            !tearingDown &&
+            !u.startsWith('data:') &&
+            !u.startsWith('blob:') &&
+            !DETACHED_WORKER_RE.test(u)
+          ) {
+            inFlight.set(req, u);
+            lastNetActivityMs = Date.now();
+          }
+        });
+        page.on('requestfinished', (req) => {
+          inFlight.delete(req);
+          lastNetActivityMs = Date.now();
+        });
+        page.on('requestfailed', (req) => {
+          inFlight.delete(req);
+          lastNetActivityMs = Date.now();
+          if (tearingDown) return;
+          const u = req.url();
+          if (!DETACHED_WORKER_RE.test(u)) {
+            const reason = req.failure()?.errorText || 'requestfailed';
+            failedRequests.push(`${req.method()} ${u} (${reason})`);
+          }
+        });
+        page.on('response', (res) => {
+          lastNetActivityMs = Date.now();
+          if (tearingDown) return;
+          if (res.status() >= 400) {
+            failedRequests.push(`HTTP ${res.status()} ${res.url()}`);
+          }
+        });
 
-      const readyRes = await waitForTargetReadiness({
-        probeFn: () => page.evaluate(PAGE_READINESS_PROBE_SCRIPT),
-        waitFramesFn: (frames) =>
-          page.evaluate(`(${WAIT_STABILIZE_FRAMES_SCRIPT})(${frames})`),
-        getInFlightUrls: () => Array.from(inFlight).map((r) => r.url()),
-        getLastNetActivityMs: () => lastNetActivityMs,
-        expectsWebgl: target.expectsWebgl,
-        timeoutMs: opts.timeoutMs,
-        settleMs: opts.settleMs,
-      });
-      const readiness = readyRes?.probe ?? readyRes;
+        await page.goto(target.url, {
+          waitUntil: 'domcontentloaded',
+          timeout: opts.timeoutMs,
+        });
 
-      const nonBgPixelRatio = target.expectsWebgl
-        ? await page.evaluate(SAMPLE_NON_BG_PIXEL_RATIO_SCRIPT)
-        : null;
+        const effectiveSettleMs = getEffectiveSettleMs(target, opts);
+        let readyRes = await waitForTargetReadiness({
+          probeFn: () => page.evaluate(FLEET_READINESS_PROBE_SCRIPT),
+          waitFramesFn: (frames) =>
+            page.evaluate(`(${WAIT_STABILIZE_FRAMES_SCRIPT})(${frames})`),
+          getInFlightUrls: () => Array.from(inFlight.values()),
+          getLastNetActivityMs: () => lastNetActivityMs,
+          expectsWebgl: target.expectsWebgl,
+          timeoutMs: opts.timeoutMs,
+          settleMs: effectiveSettleMs,
+        });
 
-      const loadMs = Date.now() - startedAt;
-      const entry = {
-        id: target.id,
-        url: target.url,
-        screen: target.screen,
-        expectsWebgl: target.expectsWebgl,
-        canvas: readiness?.primaryCanvas ?? null,
-        readiness,
-        consoleErrors: [...activeErrors.consoleErrors],
-        pageErrors: [...activeErrors.pageErrors],
-        failedRequests: [...activeErrors.failedRequests],
-        consoleErr: activeErrors.consoleErrors.length,
-        pageErr: activeErrors.pageErrors.length,
-        failedReq: activeErrors.failedRequests.length,
-        nonBgPixelRatio,
-        loadMs,
-      };
-      const inv = summarizeWebglInvariants([entry]);
-      entry.webglInvariants = inv;
-      entry.passed =
-        entry.consoleErr === 0 &&
-        entry.pageErr === 0 &&
-        entry.failedReq === 0 &&
-        inv.allInvariantsPassed;
-      results.push(entry);
+        if (
+          opts.theme === 'light' &&
+          readyRes?.probe?.appliedTheme !== 'light'
+        ) {
+          const switched = await page.evaluate(ACTIVATE_BLUEPRINT_DAYLIGHT_SCRIPT);
+          if (switched?.switched) {
+            readyRes = await waitForTargetReadiness({
+              probeFn: () => page.evaluate(FLEET_READINESS_PROBE_SCRIPT),
+              waitFramesFn: (frames) =>
+                page.evaluate(`(${WAIT_STABILIZE_FRAMES_SCRIPT})(${frames})`),
+              getInFlightUrls: () => Array.from(inFlight.values()),
+              getLastNetActivityMs: () => lastNetActivityMs,
+              expectsWebgl: target.expectsWebgl,
+              timeoutMs: Math.min(opts.timeoutMs, 20_000),
+              settleMs: Math.min(effectiveSettleMs, 650),
+            });
+          }
+        }
+
+        const readiness = readyRes?.probe ?? readyRes;
+        let nonBgPixelRatio = null;
+        if (target.expectsWebgl) {
+          try {
+            const shotBuf = await page.screenshot({
+              type: 'jpeg',
+              quality: 65,
+              fullPage: false,
+            });
+            nonBgPixelRatio = await page.evaluate(
+              `(${SAMPLE_SCREENSHOT_NON_BG_FN})(${JSON.stringify(shotBuf.toString('base64'))})`
+            );
+          } catch {
+            nonBgPixelRatio = await page.evaluate(
+              SAMPLE_CANVAS_NON_BG_FALLBACK_SCRIPT
+            );
+          }
+        }
+
+        const entry = finalizeTargetEntry(target, {
+          ready: readyRes?.ready !== false,
+          pendingReasons: readyRes?.pendingReasons ?? [],
+          readiness,
+          consoleErrors,
+          pageErrors,
+          failedRequests,
+          nonBgPixelRatio,
+          loadMs: Date.now() - startedAt,
+        });
+        results.push(entry);
+        logTargetProgress(idx, targets.length, entry, opts.json);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        pageErrors.push(`Fleet harness error: ${msg}`);
+        const entry = finalizeTargetEntry(target, {
+          ready: false,
+          pendingReasons: [msg],
+          readiness: null,
+          consoleErrors,
+          pageErrors,
+          failedRequests,
+          nonBgPixelRatio: null,
+          loadMs: Date.now() - startedAt,
+        });
+        results.push(entry);
+        logTargetProgress(idx, targets.length, entry, opts.json);
+      } finally {
+        tearingDown = true;
+        await page.close().catch(() => undefined);
+      }
     }
-
-    await context.close();
   } finally {
-    await browser.close();
+    await context.close().catch(() => undefined);
+    await browser.close().catch(() => undefined);
   }
 
   return results;
 }
 
 async function runFleetWithNativeCdp(targets, opts) {
-  const executablePath = opts.executablePath ?? discoverChromiumExecutable();
-  if (!executablePath) {
+  const discovered = discoverChromiumExecutable({
+    explicitPath: opts.executablePath,
+  });
+  if (!discovered) {
     throw new Error(
-      'No Chromium/Chrome executable found. Install Playwright Chromium or pass --executable-path.'
+      opts.executablePath
+        ? `Chromium executable not found at "${opts.executablePath}".`
+        : 'No Chromium/Chrome executable found. Install Playwright Chromium or pass --executable-path.'
     );
   }
+
+  logInfo(
+    `Launching headless Chromium via native-cdp (${discovered.source}: ${discovered.executablePath})...`,
+    opts.json
+  );
 
   const userDataDir = fs.mkdtempSync(
     path.join(os.tmpdir(), 'armory-qa-fleet-')
   );
   const chromeArgs = [
-    ...buildChromiumLaunchArgs({ headless: true }),
-    '--remote-debugging-port=0',
-    `--user-data-dir=${userDataDir}`,
+    ...buildChromiumLaunchArgs({
+      mode: 'cdp',
+      isHeadlessShell: discovered.isHeadlessShell,
+      userDataDir,
+      viewportWidth: QA_VIEWPORT_WIDTH,
+      viewportHeight: QA_VIEWPORT_HEIGHT,
+      deviceScaleFactor: QA_DEVICE_SCALE_FACTOR,
+    }),
     'about:blank',
   ];
 
-  const chromeProc = spawn(executablePath, chromeArgs, {
+  const chromeProc = spawn(discovered.executablePath, chromeArgs, {
     stdio: ['ignore', 'pipe', 'pipe'],
   });
 
@@ -613,143 +971,350 @@ async function runFleetWithNativeCdp(targets, opts) {
   try {
     const wsUrl = await new Promise((resolve, reject) => {
       let stderrBuf = '';
+      let settled = false;
+      const finishResolve = (u) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        resolve(u);
+      };
+      const finishReject = (err) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        reject(err);
+      };
       const timer = setTimeout(() => {
-        reject(new Error(`Chromium DevTools failed to start: ${stderrBuf}`));
+        finishReject(
+          new Error(`Chromium DevTools failed to start:\n${stderrBuf}`)
+        );
       }, 20_000);
+      timer.unref?.();
+
       const onData = (chunk) => {
         stderrBuf += chunk.toString('utf8');
         const m = /DevTools listening on (ws:\/\/[^\s]+)/.exec(stderrBuf);
-        if (m) {
-          clearTimeout(timer);
-          resolve(m[1]);
-        }
+        if (m) finishResolve(m[1]);
       };
       chromeProc.stderr.on('data', onData);
-      chromeProc.once('exit', (code) => {
-        clearTimeout(timer);
-        reject(new Error(`Chromium exited prematurely (${code}): ${stderrBuf}`));
+      chromeProc.stdout.on('data', onData);
+      chromeProc.once('error', (err) => {
+        finishReject(
+          new Error(
+            `Failed to spawn Chromium (${discovered.executablePath}): ${err.message}`
+          )
+        );
+      });
+      chromeProc.once('exit', (code, signal) => {
+        finishReject(
+          new Error(
+            `Chromium exited prematurely (code=${code}, signal=${signal}):\n${stderrBuf}`
+          )
+        );
       });
     });
 
-    const devUrl = new URL(wsUrl);
-    const listRes = await fetch(`http://${devUrl.host}/json/list`);
-    const pages = await listRes.json();
-    const pageTarget = pages.find((p) => p.type === 'page') ?? pages[0];
-    if (!pageTarget?.webSocketDebuggerUrl) {
-      throw new Error('Could not acquire Chromium page WebSocket target.');
-    }
+    cdp = await NativeCdpClient.connect(wsUrl);
 
-    cdp = new NativeCdpClient(pageTarget.webSocketDebuggerUrl);
-    await cdp.connect();
-    await cdp.send('Page.enable');
-    await cdp.send('Runtime.enable');
-    await cdp.send('Network.enable');
-    await cdp.send('Emulation.setDeviceMetricsOverride', {
-      width: QA_VIEWPORT_WIDTH,
-      height: QA_VIEWPORT_HEIGHT,
-      deviceScaleFactor: QA_DEVICE_SCALE_FACTOR,
-      mobile: false,
-    });
-
-    let activeErrors = { consoleErrors: [], pageErrors: [], failedRequests: [] };
-    const inFlightMap = new Map();
-    let lastNetActivityMs = Date.now();
-
-    cdp.on('Runtime.consoleAPICalled', (evt) => {
-      if (evt.type === 'error') {
-        const text = (evt.args ?? [])
-          .map((a) => a.value ?? a.description ?? '')
-          .join(' ');
-        activeErrors.consoleErrors.push(text);
-      }
-    });
-    cdp.on('Runtime.exceptionThrown', (evt) => {
-      activeErrors.pageErrors.push(
-        evt.exceptionDetails?.text ?? 'Unhandled exception'
+    const evalInSession = async (
+      sessionId,
+      expression,
+      awaitPromise = true,
+      timeoutMs = 30_000
+    ) => {
+      const resp = await cdp.send(
+        'Runtime.evaluate',
+        {
+          expression,
+          awaitPromise,
+          returnByValue: true,
+        },
+        sessionId,
+        timeoutMs
       );
-    });
-    cdp.on('Network.requestWillBeSent', (evt) => {
-      const u = evt.request?.url ?? '';
-      if (!DETACHED_WORKER_RE.test(u)) {
-        inFlightMap.set(evt.requestId, u);
-        lastNetActivityMs = Date.now();
+      if (resp?.exceptionDetails) {
+        const desc =
+          resp.exceptionDetails.exception?.description ||
+          resp.exceptionDetails.text ||
+          'Unknown JS evaluation error';
+        throw new Error(`Page evaluation error: ${desc}`);
       }
-    });
-    cdp.on('Network.loadingFinished', (evt) => {
-      inFlightMap.delete(evt.requestId);
-      lastNetActivityMs = Date.now();
-    });
-    cdp.on('Network.loadingFailed', (evt) => {
-      const u = inFlightMap.get(evt.requestId) ?? '';
-      inFlightMap.delete(evt.requestId);
-      lastNetActivityMs = Date.now();
-      if (evt.canceled || DETACHED_WORKER_RE.test(u)) return;
-      activeErrors.failedRequests.push(
-        `${evt.errorText ?? 'Network load failed'} ${u}`.trim()
-      );
-    });
-
-    const evalJs = async (expression) => {
-      const resp = await cdp.send('Runtime.evaluate', {
-        expression,
-        awaitPromise: true,
-        returnByValue: true,
-      });
       return resp?.result?.value;
     };
 
-    for (const target of targets) {
+    for (let idx = 0; idx < targets.length; idx += 1) {
+      const target = targets[idx];
       const startedAt = Date.now();
-      activeErrors = { consoleErrors: [], pageErrors: [], failedRequests: [] };
-      inFlightMap.clear();
-      lastNetActivityMs = Date.now();
-      await cdp.send('Page.navigate', { url: target.url });
+      const consoleErrors = [];
+      const pageErrors = [];
+      const failedRequests = [];
+      const activeRequests = new Map();
+      let lastNetActivityMs = Date.now();
+      let tearingDown = false;
+      const unsubs = [];
+      let targetId = null;
 
-      const readyRes = await waitForTargetReadiness({
-        probeFn: () => evalJs(PAGE_READINESS_PROBE_SCRIPT),
-        waitFramesFn: (frames) =>
-          evalJs(`(${WAIT_STABILIZE_FRAMES_SCRIPT})(${frames})`),
-        getInFlightUrls: () => Array.from(inFlightMap.values()),
-        getLastNetActivityMs: () => lastNetActivityMs,
-        expectsWebgl: target.expectsWebgl,
-        timeoutMs: opts.timeoutMs,
-        settleMs: opts.settleMs,
-      });
-      const readiness = readyRes?.probe ?? readyRes;
+      try {
+        const created = await cdp.send('Target.createTarget', {
+          url: 'about:blank',
+        });
+        targetId = created.targetId;
 
-      const nonBgPixelRatio = target.expectsWebgl
-        ? await evalJs(SAMPLE_NON_BG_PIXEL_RATIO_SCRIPT)
-        : null;
+        const attached = await cdp.send('Target.attachToTarget', {
+          targetId,
+          flatten: true,
+        });
+        const sessionId = attached.sessionId;
 
-      const loadMs = Date.now() - startedAt;
-      const entry = {
-        id: target.id,
-        url: target.url,
-        screen: target.screen,
-        expectsWebgl: target.expectsWebgl,
-        canvas: readiness?.primaryCanvas ?? null,
-        readiness,
-        consoleErrors: [...activeErrors.consoleErrors],
-        pageErrors: [...activeErrors.pageErrors],
-        failedRequests: [...activeErrors.failedRequests],
-        consoleErr: activeErrors.consoleErrors.length,
-        pageErr: activeErrors.pageErrors.length,
-        failedReq: activeErrors.failedRequests.length,
-        nonBgPixelRatio,
-        loadMs,
-      };
-      const inv = summarizeWebglInvariants([entry]);
-      entry.webglInvariants = inv;
-      entry.passed =
-        entry.consoleErr === 0 &&
-        entry.pageErr === 0 &&
-        entry.failedReq === 0 &&
-        inv.allInvariantsPassed;
-      results.push(entry);
+        unsubs.push(
+          cdp.on('Runtime.consoleAPICalled', (params, sid) => {
+            if (sid !== sessionId || tearingDown || params.type !== 'error') {
+              return;
+            }
+            const text = (params.args ?? [])
+              .map((a) => a.value ?? a.description ?? '')
+              .filter(Boolean)
+              .join(' ');
+            if (text) consoleErrors.push(text);
+          })
+        );
+        unsubs.push(
+          cdp.on('Runtime.exceptionThrown', (params, sid) => {
+            if (sid !== sessionId || tearingDown) return;
+            const desc =
+              params.exceptionDetails?.exception?.description ||
+              params.exceptionDetails?.text ||
+              'Unhandled exception';
+            pageErrors.push(desc);
+          })
+        );
+        unsubs.push(
+          cdp.on('Log.entryAdded', (params, sid) => {
+            if (sid !== sessionId || tearingDown) return;
+            const entry = params.entry;
+            if (!entry || entry.level !== 'error') return;
+            if (entry.source === 'network') return;
+            const msg = entry.text || 'Browser log error';
+            if (!consoleErrors.includes(msg)) {
+              consoleErrors.push(msg);
+            }
+          })
+        );
+        unsubs.push(
+          cdp.on('Network.requestWillBeSent', (params, sid) => {
+            if (sid !== sessionId || tearingDown) return;
+            const u = params.request?.url ?? '';
+            if (u.startsWith('data:') || u.startsWith('blob:')) return;
+            if (
+              (!params.loaderId && params.documentURL === u) ||
+              DETACHED_WORKER_RE.test(u)
+            ) {
+              return;
+            }
+            activeRequests.set(params.requestId, {
+              url: u,
+              method: params.request?.method || 'GET',
+            });
+            lastNetActivityMs = Date.now();
+          })
+        );
+        unsubs.push(
+          cdp.on('Network.responseReceived', (params, sid) => {
+            if (sid !== sessionId || tearingDown) return;
+            lastNetActivityMs = Date.now();
+            const status = params.response?.status;
+            const meta = activeRequests.get(params.requestId);
+            const u = params.response?.url || meta?.url || '';
+            if (typeof status === 'number' && status >= 400) {
+              failedRequests.push(`HTTP ${status} ${u}`.trim());
+            }
+          })
+        );
+        unsubs.push(
+          cdp.on('Network.requestServedFromCache', (params, sid) => {
+            if (sid !== sessionId) return;
+            activeRequests.delete(params.requestId);
+            lastNetActivityMs = Date.now();
+          })
+        );
+        unsubs.push(
+          cdp.on('Network.loadingFinished', (params, sid) => {
+            if (sid !== sessionId) return;
+            activeRequests.delete(params.requestId);
+            lastNetActivityMs = Date.now();
+          })
+        );
+        unsubs.push(
+          cdp.on('Network.loadingFailed', (params, sid) => {
+            if (sid !== sessionId) return;
+            const meta = activeRequests.get(params.requestId);
+            activeRequests.delete(params.requestId);
+            lastNetActivityMs = Date.now();
+            if (tearingDown) return;
+            const u = meta?.url ?? '';
+            if (params.canceled || DETACHED_WORKER_RE.test(u)) return;
+            failedRequests.push(
+              `${params.errorText ?? 'Network load failed'} ${u}`.trim()
+            );
+          })
+        );
+
+        await cdp.send('Page.enable', {}, sessionId);
+        await cdp.send('Runtime.enable', {}, sessionId);
+        await cdp.send('Network.enable', {}, sessionId);
+        await cdp.send('Log.enable', {}, sessionId);
+        await cdp.send(
+          'Emulation.setDeviceMetricsOverride',
+          {
+            width: QA_VIEWPORT_WIDTH,
+            height: QA_VIEWPORT_HEIGHT,
+            deviceScaleFactor: QA_DEVICE_SCALE_FACTOR,
+            mobile: false,
+          },
+          sessionId
+        );
+
+        const nav = await cdp.send(
+          'Page.navigate',
+          { url: target.url },
+          sessionId
+        );
+        if (nav?.errorText) {
+          throw new Error(`Navigation failed for ${target.url}: ${nav.errorText}`);
+        }
+
+        const effectiveSettleMs = getEffectiveSettleMs(target, opts);
+        let readyRes = await waitForTargetReadiness({
+          probeFn: () =>
+            evalInSession(sessionId, FLEET_READINESS_PROBE_SCRIPT, false, 15_000),
+          waitFramesFn: (frames) =>
+            evalInSession(
+              sessionId,
+              `(${WAIT_STABILIZE_FRAMES_SCRIPT})(${frames})`,
+              true,
+              15_000
+            ),
+          getInFlightUrls: () =>
+            Array.from(activeRequests.values()).map((r) => r.url),
+          getLastNetActivityMs: () => lastNetActivityMs,
+          expectsWebgl: target.expectsWebgl,
+          timeoutMs: opts.timeoutMs,
+          settleMs: effectiveSettleMs,
+        });
+
+        if (
+          opts.theme === 'light' &&
+          readyRes?.probe?.appliedTheme !== 'light'
+        ) {
+          const switched = await evalInSession(
+            sessionId,
+            ACTIVATE_BLUEPRINT_DAYLIGHT_SCRIPT,
+            true,
+            15_000
+          );
+          if (switched?.switched) {
+            readyRes = await waitForTargetReadiness({
+              probeFn: () =>
+                evalInSession(
+                  sessionId,
+                  FLEET_READINESS_PROBE_SCRIPT,
+                  false,
+                  15_000
+                ),
+              waitFramesFn: (frames) =>
+                evalInSession(
+                  sessionId,
+                  `(${WAIT_STABILIZE_FRAMES_SCRIPT})(${frames})`,
+                  true,
+                  15_000
+                ),
+              getInFlightUrls: () =>
+                Array.from(activeRequests.values()).map((r) => r.url),
+              getLastNetActivityMs: () => lastNetActivityMs,
+              expectsWebgl: target.expectsWebgl,
+              timeoutMs: Math.min(opts.timeoutMs, 20_000),
+              settleMs: Math.min(effectiveSettleMs, 650),
+            });
+          }
+        }
+
+        const readiness = readyRes?.probe ?? readyRes;
+        let nonBgPixelRatio = null;
+        if (target.expectsWebgl) {
+          try {
+            const shot = await cdp.send(
+              'Page.captureScreenshot',
+              {
+                format: 'jpeg',
+                quality: 65,
+                fromSurface: true,
+              },
+              sessionId,
+              20_000
+            );
+            if (shot?.data) {
+              nonBgPixelRatio = await evalInSession(
+                sessionId,
+                `(${SAMPLE_SCREENSHOT_NON_BG_FN})(${JSON.stringify(shot.data)})`,
+                true,
+                15_000
+              );
+            }
+          } catch {
+            nonBgPixelRatio = await evalInSession(
+              sessionId,
+              SAMPLE_CANVAS_NON_BG_FALLBACK_SCRIPT,
+              false,
+              10_000
+            );
+          }
+        }
+
+        const entry = finalizeTargetEntry(target, {
+          ready: readyRes?.ready !== false,
+          pendingReasons: readyRes?.pendingReasons ?? [],
+          readiness,
+          consoleErrors,
+          pageErrors,
+          failedRequests,
+          nonBgPixelRatio,
+          loadMs: Date.now() - startedAt,
+        });
+        results.push(entry);
+        logTargetProgress(idx, targets.length, entry, opts.json);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        pageErrors.push(`Fleet harness error: ${msg}`);
+        const entry = finalizeTargetEntry(target, {
+          ready: false,
+          pendingReasons: [msg],
+          readiness: null,
+          consoleErrors,
+          pageErrors,
+          failedRequests,
+          nonBgPixelRatio: null,
+          loadMs: Date.now() - startedAt,
+        });
+        results.push(entry);
+        logTargetProgress(idx, targets.length, entry, opts.json);
+      } finally {
+        tearingDown = true;
+        for (const off of unsubs) off();
+        if (targetId) {
+          await cdp
+            .send('Target.closeTarget', { targetId }, undefined, 5000)
+            .catch(() => undefined);
+        }
+        // Give Chromium a brief moment to release WebGL/GPU buffers between heavy tabs
+        await sleep(50);
+      }
     }
   } finally {
     try {
-      await cdp?.close();
+      await cdp
+        ?.send('Browser.close', {}, undefined, 5000)
+        .catch(() => undefined);
+      cdp?.close();
     } catch {
       // ignore
     }
@@ -803,6 +1368,7 @@ async function main() {
   }
 
   let serverHandle = null;
+  let exitCode = 1;
   try {
     let baseUrl = opts.url;
     if (!baseUrl) {
@@ -817,19 +1383,20 @@ async function main() {
       opts.json
     );
 
-    const playwrightChromium = await tryLoadPlaywright();
-    const results = playwrightChromium
-      ? await runFleetWithPlaywright(playwrightChromium, targets, opts)
+    const pwInfo = await tryLoadPlaywright();
+    const results = pwInfo
+      ? await runFleetWithPlaywright(pwInfo, targets, opts)
       : await runFleetWithNativeCdp(targets, opts);
 
     const webglInvariants = summarizeWebglInvariants(results);
+    const stats = summarizeFleetStats(results);
     const passedCount = results.filter((r) => r.passed).length;
     const report = {
       generatedAt: new Date().toISOString(),
       mode: opts.mode,
       theme: opts.theme,
       cut: opts.cut,
-      driver: playwrightChromium ? 'playwright' : 'native-cdp',
+      driver: pwInfo ? `playwright (${pwInfo.pkgName})` : 'native-cdp',
       results,
       webglInvariants,
       summary: {
@@ -837,6 +1404,7 @@ async function main() {
         passedCount,
         failedCount: results.length - passedCount,
         ok: passedCount === results.length && webglInvariants.allInvariantsPassed,
+        ...stats,
       },
     };
 
@@ -846,10 +1414,10 @@ async function main() {
       process.stdout.write(formatFleetSummaryTable(report));
     }
 
-    process.exit(report.summary.ok ? 0 : 1);
+    exitCode = report.summary.ok ? 0 : 1;
   } catch (err) {
     logError(err instanceof Error ? err.message : String(err));
-    process.exit(1);
+    exitCode = 1;
   } finally {
     if (typeof serverHandle?.stop === 'function') {
       await serverHandle.stop();
@@ -857,6 +1425,7 @@ async function main() {
       await terminateProcess(serverHandle.child);
     }
   }
+  process.exit(exitCode);
 }
 
 const isDirectRun =
