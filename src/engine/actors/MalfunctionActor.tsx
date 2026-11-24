@@ -65,6 +65,12 @@ const ARCHERY_DIAG_RING_GEO = (() => {
   return g;
 })();
 
+const DEFAULT_ROUND_FIT = {
+  roundScale: 0.72,
+  magLocalShiftX: 0,
+  ignitionF: 0.32,
+} as const;
+
 /**
  * WP-09 — Classic Firearm Malfunction 3D Cutaway Cartridge & Stoppage Actor
  * -------------------------------------------------------------------------
@@ -84,16 +90,15 @@ export const MalfunctionActor: React.FC = () => {
     caliberProfile === '12_gauge' || caliberProfile === '357_magnum';
   const calSpec =
     CALIBER_VISUAL_SPECS[caliberProfile] ?? CALIBER_VISUAL_SPECS['556_nato'];
-  const roundFit = WEAPON_ROUND_FIT[activeWeaponId] ?? {
-    roundScale: 0.72,
-    magLocalShiftX: 0,
-    ignitionF: 0.32,
-  };
+  const roundFit = WEAPON_ROUND_FIT[activeWeaponId] ?? DEFAULT_ROUND_FIT;
   const safeCaliberKey =
     CALIBER_VISUAL_SPECS[caliberProfile] !== undefined
       ? caliberProfile
       : ('556_nato' as const);
 
+  // NOTE: `getCaliberGeometries` returns cached module-level singletons shared with
+  // `BallisticsSystem` and `MagazineAmmoStack` (`caliberGeoCache`) — never `.dispose()` here.
+  // All JSX `<meshStandardMaterial>` / `<meshBasicMaterial>` children are disposed by R3F on unmount.
   const { caseGeo, bulletGeo, livePrimerGeo, spentPrimerGeo, sootRingGeo, xHead } =
     useMemo(() => getCaliberGeometries(safeCaliberKey), [safeCaliberKey]);
 
@@ -120,11 +125,7 @@ export const MalfunctionActor: React.FC = () => {
     const isArcheryActive = isArcheryMalfunctionWeapon(weaponId);
     const curManifest = getWeaponManifest(weaponId);
     const meta = curManifest.workbenchMeta;
-    const fit = WEAPON_ROUND_FIT[weaponId] ?? {
-      roundScale: 0.72,
-      magLocalShiftX: 0,
-      ignitionF: 0.32,
-    };
+    const fit = WEAPON_ROUND_FIT[weaponId] ?? DEFAULT_ROUND_FIT;
     const prof = WEAPON_MALFUNCTION_PROFILES[weaponId];
     const plugin = getLoadedWeaponPlugin(weaponId);
     const timing = getWeaponFiringTiming(weaponId);
