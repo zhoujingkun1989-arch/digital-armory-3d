@@ -119,6 +119,7 @@ export interface PosterShareModalProps {
 const ASPECT_LIST: readonly PosterAspectRatio[] = ['16:9', '4:5'];
 const THEME_LIST: readonly PosterThemeId[] = [
   'obsidian_gold',
+  'smithsonian_blueprint',
   'blueprint_white',
   'cyber_cyan',
 ];
@@ -531,8 +532,8 @@ export const PosterShareModal: React.FC<PosterShareModalProps> = ({
               <Sparkles size={11} aria-hidden="true" />
               <span>{copy.studioBadge}</span>
             </span>
-            <span className="ps-dims-pill">
-              {dims.width} × {dims.height} PX · {metadata.bayCode}
+            <span className="ps-dims-pill" data-testid="poster-dims-badge">
+              {dims.width} × {dims.height} PX · {aspect} · {metadata.bayCode}
             </span>
           </div>
           <h2 id={titleId} className="ps-studio-title">
@@ -663,7 +664,7 @@ export const PosterShareModal: React.FC<PosterShareModalProps> = ({
             </div>
           </div>
 
-          {/* 3 Curatorial Themes */}
+          {/* 4 Curatorial Themes */}
           <div className="ps-control-group">
             <div className="ps-control-label">
               <Palette size={13} aria-hidden="true" />

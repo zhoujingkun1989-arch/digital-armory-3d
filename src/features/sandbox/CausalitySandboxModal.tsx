@@ -3,6 +3,8 @@ import {
   Activity,
   AlertTriangle,
   CheckCircle2,
+  FlaskConical,
+  Gauge,
   Pause,
   Play,
   RotateCcw,
@@ -26,7 +28,13 @@ import {
 } from '../../engine/physics/causalitySandbox';
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
-import { CAUSALITY_SANDBOX_STRINGS } from './causalitySandboxStrings';
+import {
+  CAUSALITY_EXPERIMENTS,
+  CAUSALITY_SANDBOX_STRINGS,
+  type CausalityExperimentSpec,
+  computeMechanicalMarginGauges,
+  matchActiveCausalityExperiment,
+} from './causalitySandboxStrings';
 import '../../styles/causality-sandbox.css';
 
 const PRESET_ORDER: readonly CausalityPresetId[] = [
@@ -276,6 +284,40 @@ const CausalitySandboxModal: React.FC = () => {
         ? 'is-warning'
         : 'is-hazard';
 
+  const activeExperimentId = enabled
+    ? matchActiveCausalityExperiment({
+        gasPortScale,
+        recoilSpringKScale,
+        boltMassScale,
+        powderLoadScale,
+      })
+    : null;
+
+  const marginGauges = computeMechanicalMarginGauges(evaluation);
+
+  const handleRunExperiment = useCallback(
+    (exp: CausalityExperimentSpec) => {
+      playWorkbenchFoley('preset_detent');
+      setGasPortScale(exp.params.gasPortScale);
+      setRecoilSpringKScale(exp.params.recoilSpringKScale);
+      setBoltMassScale(exp.params.boltMassScale);
+      setPowderLoadScale(exp.params.powderLoadScale);
+      setEnabled(true);
+      if (mode !== 'firing') {
+        setMode('firing');
+      }
+    },
+    [
+      mode,
+      setBoltMassScale,
+      setEnabled,
+      setGasPortScale,
+      setMode,
+      setPowderLoadScale,
+      setRecoilSpringKScale,
+    ]
+  );
+
   return (
     <section
       ref={containerRef}
@@ -372,6 +414,107 @@ const CausalitySandboxModal: React.FC = () => {
       <p className="causality-sub">
         {archery ? ui.archerySubtitle : ui.subtitle}
       </p>
+
+      {/* Ciechanowski-Grade Guided Physics Experiments */}
+      <div className="causality-experiments-section">
+        <div className="causality-section-label">
+          <FlaskConical size={11} aria-hidden="true" />
+          <span>{ui.experimentsHeading}</span>
+        </div>
+        <div
+          className="causality-experiments-grid"
+          role="group"
+          aria-label={ui.experimentsHeading}
+        >
+          {CAUSALITY_EXPERIMENTS.map((exp) => {
+            const copy = ui.experiments[exp.id];
+            const isActive = activeExperimentId === exp.id;
+            const toneClass =
+              exp.expectedRegime === 'nominal'
+                ? 'is-nominal'
+                : exp.expectedRegime === 'short_stroke_fte'
+                  ? 'is-warning'
+                  : 'is-hazard';
+            return (
+              <button
+                key={exp.id}
+                type="button"
+                data-experiment-id={exp.id}
+                aria-pressed={isActive}
+                className={`causality-experiment-btn ${toneClass} ${
+                  isActive ? 'is-active' : ''
+                }`}
+                onClick={() => handleRunExperiment(exp)}
+              >
+                <span className="causality-exp-head">
+                  <span className="causality-exp-label">{copy.label}</span>
+                  <span className="causality-exp-tag">{copy.tag}</span>
+                </span>
+              </button>
+            );
+          })}
+        </div>
+        {activeExperimentId && (
+          <p className="causality-experiment-insight">
+            {ui.experiments[activeExperimentId].insight}
+          </p>
+        )}
+      </div>
+
+      {/* Animated Visual Mechanical Margin Gauges */}
+      <div
+        className="causality-gauges-panel"
+        aria-label={ui.gaugesHeading}
+      >
+        <div className="causality-section-label">
+          <Gauge size={11} aria-hidden="true" />
+          <span>{ui.gaugesHeading}</span>
+        </div>
+        <div className="causality-gauges-stack">
+          {marginGauges.map((g) => {
+            const meta = ui.gauges[g.id];
+            return (
+              <div
+                key={g.id}
+                className={`causality-gauge-row is-${g.tone}`}
+                data-gauge-id={g.id}
+              >
+                <div className="causality-gauge-meta">
+                  <span className="causality-gauge-name">{meta.label}</span>
+                  <span className="causality-gauge-values">
+                    <span className="causality-gauge-sub tabular">
+                      {g.subLabel}
+                    </span>
+                    <strong className="causality-gauge-val tabular">
+                      {g.formattedValue}
+                    </strong>
+                  </span>
+                </div>
+                <div
+                  className="causality-gauge-track"
+                  role="meter"
+                  aria-label={meta.label}
+                  aria-valuemin={g.minValue}
+                  aria-valuemax={g.maxValue}
+                  aria-valuenow={g.numericValue}
+                  aria-valuetext={g.formattedValue}
+                >
+                  <div
+                    className={`causality-gauge-fill is-${g.tone}`}
+                    style={{ width: `${g.fillPct.toFixed(1)}%` }}
+                  />
+                  <span
+                    className="causality-gauge-threshold"
+                    style={{ left: `${g.thresholdPct.toFixed(1)}%` }}
+                    title={meta.threshold}
+                    aria-hidden="true"
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
 
       <div className="causality-presets-row" role="group" aria-label={ui.presetsHeading}>
         {PRESET_ORDER.map((id) => {

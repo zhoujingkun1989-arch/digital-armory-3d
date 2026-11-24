@@ -154,6 +154,28 @@ export const POSTER_THEMES: Readonly<
     qrDark: '#040b14',
     isLight: false,
   },
+  smithsonian_blueprint: {
+    id: 'smithsonian_blueprint',
+    bgTop: '#061428',
+    bgMid: '#0b2140',
+    bgBottom: '#051020',
+    gridColor: 'rgba(186, 230, 253, 0.085)',
+    outerBorder: 'rgba(212, 175, 55, 0.78)',
+    cardBg: 'rgba(8, 25, 48, 0.9)',
+    cardBorder: 'rgba(212, 175, 55, 0.36)',
+    stageBgCenter: '#0d2647',
+    stageBgEdge: '#051122',
+    stageBorder: 'rgba(212, 175, 55, 0.58)',
+    accentPrimary: '#e5c158',
+    accentSecondary: '#7dd3fc',
+    accentSoftBg: 'rgba(229, 193, 88, 0.16)',
+    textPrimary: '#f8fafc',
+    textSecondary: '#dbeafe',
+    textMuted: '#93c5fd',
+    qrLight: '#f8fafc',
+    qrDark: '#061428',
+    isLight: false,
+  },
 };
 
 export interface PosterActiveModes {
@@ -186,7 +208,9 @@ export interface PosterComposedMetadata {
   secondaryTitle: string;
   originAndMechanismPrimary: string;
   originAndMechanismSecondary: string;
+  exhibitCategory: string;
   isArchery: boolean;
+  isHeavyScale: boolean;
   modeBadges: { label: string; highlight: boolean }[];
   metrologyCells: [
     PosterMetrologyCell,
@@ -452,45 +476,103 @@ export function assemblePosterMetadata(
   const compactWeight =
     rawWeight.length > 28 ? rawWeight.split('/')[0].trim() : rawWeight;
   const roundedPeakMpa = Math.round(ballisticsSpec.peakPressureMPa);
+  const isArmor = catalog.category === 'armor';
+  const isOrdnance = catalog.category === 'ordnance';
+  const isHeavyScale = isArmor || isOrdnance;
+
+  const formattedEnergy =
+    muzzleEnergyJ >= 1_000_000
+      ? `${(muzzleEnergyJ / 1_000_000).toFixed(2)} MJ`
+      : muzzleEnergyJ >= 100_000
+        ? `${(muzzleEnergyJ / 1000).toFixed(1)} kJ`
+        : `${muzzleEnergyJ.toLocaleString('en-US')} J`;
 
   const metrologyCells: [
     PosterMetrologyCell,
     PosterMetrologyCell,
     PosterMetrologyCell,
     PosterMetrologyCell,
-  ] = [
-    {
-      label: copy.poster.metricCaliber,
-      value: primaryMeta.caliber,
-      subValue: `${standardLabel} · ${
-        isArchery
-          ? copy.poster.drawPeakTag(roundedPeakMpa)
-          : copy.poster.peakPressureTag(roundedPeakMpa)
-      }`,
-    },
-    {
-      label: copy.poster.metricMuzzleVel,
-      value: `${muzzleVelMps} m/s`,
-      subValue: `${
-        muzzleEnergyJ >= 1_000_000
-          ? `${(muzzleEnergyJ / 1_000_000).toFixed(2)} MJ`
-          : `${muzzleEnergyJ.toLocaleString('en-US')} J`
-      } · Mach ${machNumber}`,
-    },
-    {
-      label: copy.poster.metricOal,
-      value: compactOal,
-      subValue: compactBarrel,
-    },
-    {
-      label: copy.poster.metricCadParts,
-      value: copy.poster.partsUnit(
-        catalog.partsCount,
-        catalog.assembliesCount
-      ),
-      subValue: compactWeight,
-    },
-  ];
+  ] = isArmor
+    ? [
+        {
+          label: copy.poster.metricMainCannon,
+          value: primaryMeta.caliber,
+          subValue: `${standardLabel} · ${copy.poster.peakPressureTag(roundedPeakMpa)}`,
+        },
+        {
+          label: copy.poster.metricMuzzleEnergy,
+          value: formattedEnergy,
+          subValue: `${muzzleVelMps} m/s · Mach ${machNumber}`,
+        },
+        {
+          label: copy.poster.metricHullLength,
+          value: compactOal,
+          subValue: compactBarrel,
+        },
+        {
+          label: copy.poster.metricCombatWeight,
+          value: compactWeight,
+          subValue: copy.poster.partsUnit(
+            catalog.partsCount,
+            catalog.assembliesCount
+          ),
+        },
+      ]
+    : isOrdnance
+      ? [
+          {
+            label: copy.poster.metricAutocannon,
+            value: primaryMeta.caliber,
+            subValue: `${standardLabel} · ${copy.poster.peakPressureTag(roundedPeakMpa)}`,
+          },
+          {
+            label: copy.poster.metricMuzzleEnergy,
+            value: formattedEnergy,
+            subValue: `${muzzleVelMps} m/s · Mach ${machNumber}`,
+          },
+          {
+            label: copy.poster.metricSystemLength,
+            value: compactOal,
+            subValue: compactBarrel,
+          },
+          {
+            label: copy.poster.metricLoadedMass,
+            value: compactWeight,
+            subValue: copy.poster.partsUnit(
+              catalog.partsCount,
+              catalog.assembliesCount
+            ),
+          },
+        ]
+      : [
+          {
+            label: copy.poster.metricCaliber,
+            value: primaryMeta.caliber,
+            subValue: `${standardLabel} · ${
+              isArchery
+                ? copy.poster.drawPeakTag(roundedPeakMpa)
+                : copy.poster.peakPressureTag(roundedPeakMpa)
+            }`,
+          },
+          {
+            label: copy.poster.metricMuzzleVel,
+            value: `${muzzleVelMps} m/s`,
+            subValue: `${formattedEnergy} · Mach ${machNumber}`,
+          },
+          {
+            label: copy.poster.metricOal,
+            value: compactOal,
+            subValue: compactBarrel,
+          },
+          {
+            label: copy.poster.metricCadParts,
+            value: copy.poster.partsUnit(
+              catalog.partsCount,
+              catalog.assembliesCount
+            ),
+            subValue: compactWeight,
+          },
+        ];
 
   const deepLinkUrl = buildPosterDeepLinkUrl(weaponId, deepLinkOptions);
   const qrMatrix = encodeQrMatrix(deepLinkUrl);
@@ -505,12 +587,18 @@ export function assemblePosterMetadata(
     secondaryTitle: secondaryMeta.name,
     originAndMechanismPrimary: `${primaryMeta.originTag} · ${primaryMeta.actionMechanism}`,
     originAndMechanismSecondary: `${secondaryMeta.originTag} · ${secondaryMeta.actionMechanism}`,
+    exhibitCategory: catalog.category,
     isArchery,
+    isHeavyScale,
     modeBadges,
     metrologyCells,
     curveTitle: isArchery
       ? copy.poster.curveArcheryTitle
-      : copy.poster.curveFirearmTitle,
+      : isArmor
+        ? copy.poster.curveArmorTitle
+        : isOrdnance
+          ? copy.poster.curveOrdnanceTitle
+          : copy.poster.curveFirearmTitle,
     peakPressureMpa: roundedPeakMpa,
     muzzleVelocityMps: muzzleVelMps,
     peakPressureF: computePeakPressureF(caliberProfile, timing),
@@ -974,18 +1062,48 @@ export function renderPosterToCanvas(opts: RenderPosterOptions): void {
     ctx.stroke();
   }
 
-  // Outer Curatorial Frame Hairline
-  drawRoundedRect(
-    ctx,
-    18,
-    18,
-    layout.width - 36,
-    layout.height - 36,
-    20
-  );
-  ctx.lineWidth = 1.5;
-  ctx.strokeStyle = theme.outerBorder;
-  ctx.stroke();
+  // Outer Curatorial Frame Hairline (Double-rule museum brass frame for Smithsonian Blueprint)
+  const isSmithsonian = themeId === 'smithsonian_blueprint';
+  if (isSmithsonian) {
+    // Major archival blueprint gridlines every 128px
+    ctx.strokeStyle = 'rgba(186, 230, 253, 0.14)';
+    ctx.lineWidth = 1;
+    for (let gx = 0; gx <= layout.width; gx += 128) {
+      ctx.beginPath();
+      ctx.moveTo(gx + 0.5, 0);
+      ctx.lineTo(gx + 0.5, layout.height);
+      ctx.stroke();
+    }
+    for (let gy = 0; gy <= layout.height; gy += 128) {
+      ctx.beginPath();
+      ctx.moveTo(0, gy + 0.5);
+      ctx.lineTo(layout.width, gy + 0.5);
+      ctx.stroke();
+    }
+
+    // Outer brass rule + inner archival hairline
+    drawRoundedRect(ctx, 14, 14, layout.width - 28, layout.height - 28, 18);
+    ctx.lineWidth = 2.0;
+    ctx.strokeStyle = theme.outerBorder;
+    ctx.stroke();
+
+    drawRoundedRect(ctx, 22, 22, layout.width - 44, layout.height - 44, 14);
+    ctx.lineWidth = 1.0;
+    ctx.strokeStyle = 'rgba(229, 193, 88, 0.42)';
+    ctx.stroke();
+  } else {
+    drawRoundedRect(
+      ctx,
+      18,
+      18,
+      layout.width - 36,
+      layout.height - 36,
+      20
+    );
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = theme.outerBorder;
+    ctx.stroke();
+  }
 
   // 2. Top Curatorial Header
   const hr = layout.headerRect;
@@ -1011,7 +1129,9 @@ export function renderPosterToCanvas(opts: RenderPosterOptions): void {
   ctx.font = `600 12px ${MONO_STACK}`;
   ctx.fillStyle = theme.textMuted;
   ctx.fillText(
-    `${metadata.serialCode} · ${metadata.modelCode}`,
+    isSmithsonian
+      ? `${copy.poster.smithsonianAccession} · ${metadata.serialCode} · ${metadata.modelCode}`
+      : `${metadata.serialCode} · ${metadata.modelCode}`,
     hr.x + bayW + 14,
     hr.y + 37
   );
@@ -1406,6 +1526,51 @@ export function renderPosterToCanvas(opts: RenderPosterOptions): void {
       csX + 14,
       csY + 16.5
     );
+  }
+
+  // Calibrated Millimeter Scale Bar for Smithsonian Exhibition Blueprint Theme (Bottom-Right of Stage)
+  if (isSmithsonian) {
+    const barW = 240;
+    const barH = 44;
+    const barX = sr.x + sr.w - barW - 24;
+    const barY = sr.y + sr.h - barH - 18;
+    drawRoundedRect(ctx, barX, barY, barW, barH, 8);
+    ctx.fillStyle = 'rgba(6, 20, 40, 0.86)';
+    ctx.fill();
+    ctx.lineWidth = 1.2;
+    ctx.strokeStyle = 'rgba(229, 193, 88, 0.58)';
+    ctx.stroke();
+
+    ctx.font = `700 9.5px ${MONO_STACK}`;
+    ctx.fillStyle = '#e5c158';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillText(copy.poster.scaleBarCaption, barX + 12, barY + 14);
+
+    // Alternating 4-segment precision scale strip
+    const segX = barX + 12;
+    const segY = barY + 20;
+    const segTotalW = barW - 24;
+    const segW = segTotalW / 4;
+    for (let s = 0; s < 4; s++) {
+      ctx.fillStyle = s % 2 === 0 ? '#e5c158' : '#dbeafe';
+      ctx.fillRect(segX + s * segW, segY, segW, 6);
+    }
+    ctx.strokeStyle = 'rgba(229, 193, 88, 0.72)';
+    ctx.lineWidth = 0.8;
+    ctx.strokeRect(segX, segY, segTotalW, 6);
+
+    const scaleMarks = metadata.isHeavyScale
+      ? ['0', '1000', '2000 mm']
+      : ['0', '100', '200 mm'];
+    ctx.font = `700 9px ${MONO_STACK}`;
+    ctx.fillStyle = '#cbd5e1';
+    ctx.textAlign = 'left';
+    ctx.fillText(scaleMarks[0], segX, barY + 38);
+    ctx.textAlign = 'center';
+    ctx.fillText(scaleMarks[1], segX + segTotalW * 0.5, barY + 38);
+    ctx.textAlign = 'right';
+    ctx.fillText(scaleMarks[2], segX + segTotalW, barY + 38);
   }
 
   ctx.restore();

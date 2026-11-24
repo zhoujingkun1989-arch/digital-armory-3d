@@ -8,7 +8,7 @@ on:
 
 jobs:
   verify:
-    name: Typecheck · Lint · Contract Tests · Production Build
+    name: Typecheck · Lint · 34-Exhibit Contract Tests · Production Build · Asset Budget
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -32,8 +32,8 @@ jobs:
       - name: Vitest full 34-exhibit V6.0 contract suite
         run: npm test
 
-      - name: Production Vite bundle build
+      - name: Production Vite bundle build (< 800 kB chunks)
         run: npm run build
 
-      - name: Asset budget audit (34/34 exhibits <= 12 MB)
+      - name: Asset & bundle budget audit (34/34 exhibits <= 12 MB · Pages < 1 GB)
         run: npm run assets:audit

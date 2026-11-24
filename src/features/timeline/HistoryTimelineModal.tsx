@@ -1,5 +1,15 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
-import { Clock, Compass, GitCompareArrows, Layers, Sparkles, X } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  Compass,
+  GitCompareArrows,
+  History,
+  Layers,
+  Sparkles,
+  X,
+} from 'lucide-react';
 import { useDialogAccessibility } from '../../app/useDialogAccessibility';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import { getLocalizedShortWeaponLabel } from '../../i18n/weaponFallbacks';
@@ -14,9 +24,13 @@ import {
 } from '../../weapons/museumMetrics';
 import { isWeaponId } from '../../weapons/types';
 import {
+  getTimelineEraCounts,
   HISTORY_TIMELINE_NODES,
   HISTORY_TIMELINE_TOURS,
+  matchesTimelineEra,
+  TIMELINE_ERAS,
   TIMELINE_LINEAGES,
+  type TimelineEraId,
   type TimelineLineageId,
   type TimelineTourId,
 } from './historyTimelineSpecs';
@@ -24,30 +38,42 @@ import '../../styles/timeline-museum.css';
 
 export interface HistoryTimelineModalProps {
   onClose: () => void;
+  initialEraId?: TimelineEraId;
+  initialTourId?: TimelineTourId | null;
 }
 
-const TIMELINE_STRINGS = {
+export const TIMELINE_STRINGS = {
   zh: {
-    badge: 'WP-24 · 百年轻武器与装甲工程演化史',
+    badge: '百年机械演化谱系档案 · 1894–2026',
     title: `${MUSEUM_TIMELINE_MIN_YEAR} – ${MUSEUM_TIMELINE_MAX_YEAR} 交互式机构专利谱系与演化时间轴`,
-    subtitle: `横跨 ${MUSEUM_TIMELINE_LINEAGE_COUNT} 大机械闭锁脉系纵览全馆 ${MUSEUM_EXHIBIT_COUNT} 款名枪、复合弓弩、1:1 主战坦克与航空重武工程突破，支持精选策展导览、点击查看祖源连线与一键跳转 3D 剖视工作台`,
+    subtitle: `横跨 ${MUSEUM_TIMELINE_LINEAGE_COUNT} 大机械闭锁脉系纵览全馆 ${MUSEUM_EXHIBIT_COUNT} 款名枪、复合弓弩、1:1 主战坦克与航空重武工程突破，支持时代分期筛选、精选策展步进导览与一键跳转 3D 剖视工作台`,
     close: '关闭演化时间轴',
+    eraHeading: '历史时期分期',
     allLineages: `全部 ${MUSEUM_TIMELINE_LINEAGE_COUNT} 大脉系 (${MUSEUM_TIMELINE_NODE_COUNT})`,
     toursHeading: '策展主题导览路径',
     clearTour: '退出导览',
+    tourStopCounter: (step: number, total: number) => `第 ${step} / ${total} 站`,
+    tourPrev: '上一站',
+    tourNext: '下一站',
+    tourLaunch3d: '在 3D 工作台检视本站',
     ancestorsLabel: '机械源流追溯',
     noAncestors: '原始独立开山专利结构',
     inspect3d: '进入 3D 拆解台',
     compare3d: '启动双屏 3D 对比',
   },
   en: {
-    badge: 'WP-24 · MECHANICAL EVOLUTION & LINEAGE',
+    badge: 'MECHANICAL EVOLUTION & PATENT ARCHIVE',
     title: `${MUSEUM_TIMELINE_MIN_YEAR} - ${MUSEUM_TIMELINE_MAX_YEAR} Interactive Firearms & Armor Patent Timeline`,
-    subtitle: `Explore all ${MUSEUM_EXHIBIT_COUNT} exhibits across ${MUSEUM_TIMELINE_LINEAGE_COUNT} foundational mechanical lineages with ancestry links, curated curatorial mini-tours, and one-click 3D cutaway launches`,
+    subtitle: `Explore all ${MUSEUM_EXHIBIT_COUNT} exhibits across ${MUSEUM_TIMELINE_LINEAGE_COUNT} foundational mechanical lineages with historical era filtering, guided curatorial tour stepping, and one-click 3D cutaway launches`,
     close: 'Close History Timeline',
+    eraHeading: 'Historical Eras',
     allLineages: `All ${MUSEUM_TIMELINE_LINEAGE_COUNT} Lineages (${MUSEUM_TIMELINE_NODE_COUNT})`,
     toursHeading: 'Curated Tours',
-    clearTour: 'Show All',
+    clearTour: 'Exit Tour',
+    tourStopCounter: (step: number, total: number) => `Stop ${step} / ${total}`,
+    tourPrev: 'Prev',
+    tourNext: 'Next',
+    tourLaunch3d: 'Inspect in 3D Workbench',
     ancestorsLabel: 'Mechanical Ancestors',
     noAncestors: 'Foundational Patent Architecture',
     inspect3d: 'Inspect in 3D',
@@ -76,6 +102,8 @@ function normalizedXForYear(year: number): number {
 
 export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
   onClose,
+  initialEraId = 'all',
+  initialTourId = null,
 }) => {
   const titleId = useId();
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -86,16 +114,24 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
   const setSectionCut = useAppStore((s) => s.setSectionCut);
   const openSplitShowdown = useAppStore((s) => s.openSplitShowdown);
 
+  const [selectedEra, setSelectedEra] = useState<TimelineEraId>(initialEraId);
   const [selectedLineage, setSelectedLineage] = useState<
     TimelineLineageId | 'all'
   >('all');
-  const [activeTourId, setActiveTourId] = useState<TimelineTourId | null>(null);
-  const [selectedWeaponId, setSelectedWeaponId] = useState<string>(
-    activeWeaponId
+  const [activeTourId, setActiveTourId] = useState<TimelineTourId | null>(
+    initialTourId
   );
+  const [selectedWeaponId, setSelectedWeaponId] = useState<string>(() => {
+    if (initialTourId) {
+      const tour = HISTORY_TIMELINE_TOURS.find((t) => t.id === initialTourId);
+      if (tour?.weaponIds[0]) return tour.weaponIds[0];
+    }
+    return activeWeaponId;
+  });
 
   const ui = TIMELINE_STRINGS[lang];
   const isZh = lang === 'zh';
+  const eraCounts = useMemo(() => getTimelineEraCounts(), []);
 
   useDialogAccessibility({
     isOpen: true,
@@ -172,6 +208,11 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
     ? HISTORY_TIMELINE_TOURS.find((t) => t.id === activeTourId) ?? null
     : null;
   const tourSet = activeTour ? new Set(activeTour.weaponIds) : null;
+  const activeTourStepIndex = activeTour
+    ? Math.max(0, activeTour.weaponIds.indexOf(selectedWeaponId))
+    : -1;
+  const activeEraSpec =
+    TIMELINE_ERAS.find((e) => e.id === selectedEra) ?? TIMELINE_ERAS[0];
 
   const selectedCoord =
     nodeCoords.get(selectedWeaponId) ?? nodeCoords.get('ak15')!;
@@ -184,6 +225,15 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
   const comparePartnerId =
     selectedNode.ancestors[0] ??
     (selectedNode.weaponId === 'ak15' ? 'm4a1' : 'ak15');
+
+  const launchSelectedInWorkbench = () => {
+    playWorkbenchFoley('preset_detent');
+    onClose();
+    if (isWeaponId(selectedNode.weaponId)) {
+      enterWorkbench(selectedNode.weaponId, 'explode');
+      setSectionCut(true);
+    }
+  };
 
   return (
     <dialog
@@ -222,6 +272,57 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
         </header>
 
         <div className="timeline-body">
+          {/* Interactive Historical Era Filter Strip */}
+          <div
+            className="timeline-era-strip"
+            data-testid="timeline-era-strip"
+            role="group"
+            aria-label={ui.eraHeading}
+          >
+            <span className="timeline-tours-kicker">
+              <History size={12} aria-hidden="true" />
+              <span>{ui.eraHeading}:</span>
+            </span>
+            {TIMELINE_ERAS.map((era) => {
+              const isActive = selectedEra === era.id && !activeTourId;
+              return (
+                <button
+                  key={era.id}
+                  type="button"
+                  data-era-id={era.id}
+                  aria-pressed={isActive}
+                  title={isZh ? era.summaryZh : era.summaryEn}
+                  className={`timeline-era-pill ${isActive ? 'is-active' : ''}`}
+                  onClick={() => {
+                    playWorkbenchFoley('preset_detent');
+                    setSelectedEra(era.id);
+                    setActiveTourId(null);
+                    if (
+                      era.id !== 'all' &&
+                      !matchesTimelineEra(selectedNode.year, era.id)
+                    ) {
+                      const firstInEra = HISTORY_TIMELINE_NODES.find(
+                        (n) =>
+                          matchesTimelineEra(n.year, era.id) &&
+                          (selectedLineage === 'all' ||
+                            n.lineageId === selectedLineage)
+                      );
+                      const fallbackInEra = HISTORY_TIMELINE_NODES.find((n) =>
+                        matchesTimelineEra(n.year, era.id)
+                      );
+                      const nextNode = firstInEra ?? fallbackInEra;
+                      if (nextNode) setSelectedWeaponId(nextNode.weaponId);
+                    }
+                  }}
+                >
+                  <span className="timeline-era-range">{era.rangeLabel}</span>
+                  <span>{isZh ? era.labelZh : era.labelEn}</span>
+                  <span className="timeline-era-count">{eraCounts[era.id]}</span>
+                </button>
+              );
+            })}
+          </div>
+
           {/* Lineage Filters */}
           <div className="timeline-filter-row">
             <button
@@ -248,9 +349,13 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
                   playWorkbenchFoley('toggle_switch');
                   setSelectedLineage(lin.id);
                   setActiveTourId(null);
-                  const firstNode = HISTORY_TIMELINE_NODES.find(
-                    (n) => n.lineageId === lin.id
-                  );
+                  const firstNode =
+                    HISTORY_TIMELINE_NODES.find(
+                      (n) =>
+                        n.lineageId === lin.id &&
+                        matchesTimelineEra(n.year, selectedEra)
+                    ) ??
+                    HISTORY_TIMELINE_NODES.find((n) => n.lineageId === lin.id);
                   if (firstNode) setSelectedWeaponId(firstNode.weaponId);
                 }}
               >
@@ -276,12 +381,14 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
                 className={`timeline-tour-pill ${
                   activeTourId === tour.id ? 'is-active' : ''
                 }`}
+                aria-pressed={activeTourId === tour.id}
                 onClick={() => {
                   playWorkbenchFoley('preset_detent');
                   if (activeTourId === tour.id) {
                     setActiveTourId(null);
                   } else {
                     setActiveTourId(tour.id);
+                    setSelectedEra('all');
                     setSelectedLineage('all');
                     setSelectedWeaponId(tour.weaponIds[0]);
                   }
@@ -293,6 +400,109 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
             ))}
           </div>
 
+          {/* Guided Curatorial Tour Stepper Bar */}
+          {activeTour && (
+            <div
+              className="timeline-tour-stepper"
+              data-testid="timeline-tour-stepper"
+            >
+              <div className="timeline-stepper-info">
+                <div className="timeline-stepper-top">
+                  <span className="timeline-stepper-counter tabular">
+                    {ui.tourStopCounter(
+                      activeTourStepIndex + 1,
+                      activeTour.weaponIds.length
+                    )}
+                  </span>
+                  <strong className="timeline-stepper-title">
+                    {isZh ? activeTour.titleZh : activeTour.titleEn}
+                  </strong>
+                </div>
+                <p className="timeline-stepper-sub">
+                  {isZh ? activeTour.subtitleZh : activeTour.subtitleEn}
+                </p>
+                <div className="timeline-stepper-dots" role="group" aria-label={ui.toursHeading}>
+                  {activeTour.weaponIds.map((wid, idx) => {
+                    const isCurrent = idx === activeTourStepIndex;
+                    const stopLabel = isWeaponId(wid)
+                      ? getLocalizedShortWeaponLabel(wid, lang)
+                      : wid;
+                    return (
+                      <button
+                        key={wid}
+                        type="button"
+                        aria-current={isCurrent ? 'step' : undefined}
+                        className={`timeline-step-dot ${
+                          isCurrent ? 'is-active' : ''
+                        }`}
+                        onClick={() => {
+                          playWorkbenchFoley('part_select');
+                          setSelectedWeaponId(wid);
+                        }}
+                      >
+                        <span className="timeline-step-idx">{idx + 1}</span>
+                        <span>{stopLabel}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="timeline-stepper-controls">
+                <button
+                  type="button"
+                  className="timeline-step-nav-btn"
+                  disabled={activeTourStepIndex <= 0}
+                  onClick={() => {
+                    if (activeTourStepIndex > 0) {
+                      playWorkbenchFoley('preset_detent');
+                      setSelectedWeaponId(
+                        activeTour.weaponIds[activeTourStepIndex - 1]
+                      );
+                    }
+                  }}
+                >
+                  <ChevronLeft size={14} aria-hidden="true" />
+                  <span>{ui.tourPrev}</span>
+                </button>
+                <button
+                  type="button"
+                  className="timeline-step-nav-btn"
+                  disabled={activeTourStepIndex >= activeTour.weaponIds.length - 1}
+                  onClick={() => {
+                    if (activeTourStepIndex < activeTour.weaponIds.length - 1) {
+                      playWorkbenchFoley('preset_detent');
+                      setSelectedWeaponId(
+                        activeTour.weaponIds[activeTourStepIndex + 1]
+                      );
+                    }
+                  }}
+                >
+                  <span>{ui.tourNext}</span>
+                  <ChevronRight size={14} aria-hidden="true" />
+                </button>
+                <button
+                  type="button"
+                  className="timeline-step-launch-btn"
+                  onClick={launchSelectedInWorkbench}
+                >
+                  <Layers size={13} aria-hidden="true" />
+                  <span>{ui.tourLaunch3d}</span>
+                </button>
+                <button
+                  type="button"
+                  className="timeline-step-exit-btn"
+                  onClick={() => {
+                    playWorkbenchFoley('toggle_switch');
+                    setActiveTourId(null);
+                  }}
+                >
+                  {ui.clearTour}
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Interactive SVG Chrono-Lineage Canvas */}
           <div className="timeline-canvas-card">
             <svg
@@ -301,6 +511,25 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
               role="img"
               aria-label={ui.title}
             >
+              {/* Active Era Shaded Band */}
+              {selectedEra !== 'all' && !activeTour && (() => {
+                const plotW = SVG_W - PAD_L - PAD_R;
+                const x1 = PAD_L + normalizedXForYear(activeEraSpec.minYear) * plotW;
+                const x2 = PAD_L + normalizedXForYear(activeEraSpec.maxYear) * plotW;
+                return (
+                  <rect
+                    x={Math.max(PAD_L - 12, x1 - 14)}
+                    y={PAD_T - 10}
+                    width={Math.max(28, x2 - x1 + 28)}
+                    height={SVG_H - PAD_T - PAD_B + 16}
+                    rx={8}
+                    fill="rgba(56, 189, 248, 0.08)"
+                    stroke="rgba(56, 189, 248, 0.28)"
+                    strokeDasharray="4 4"
+                  />
+                );
+              })()}
+
               {/* Year Ticks */}
               {[1900, 1940, 1965, 1980, 1995, 2010, 2025].map((yr) => {
                 const x =
@@ -372,14 +601,41 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
                 });
               })}
 
+              {/* Active Curated Tour Route Overlay */}
+              {activeTour &&
+                activeTour.weaponIds.slice(0, -1).map((fromId, idx) => {
+                  const toId = activeTour.weaponIds[idx + 1];
+                  const fromPt = nodeCoords.get(fromId);
+                  const toPt = nodeCoords.get(toId);
+                  if (!fromPt || !toPt) return null;
+                  const midX = (fromPt.x + toPt.x) * 0.5;
+                  const d = `M${fromPt.x.toFixed(1)},${fromPt.y.toFixed(1)} C${midX.toFixed(1)},${fromPt.y.toFixed(1)} ${midX.toFixed(1)},${toPt.y.toFixed(1)} ${toPt.x.toFixed(1)},${toPt.y.toFixed(1)}`;
+                  return (
+                    <path
+                      key={`tour-${fromId}->${toId}`}
+                      d={d}
+                      fill="none"
+                      stroke="#fbbf24"
+                      strokeWidth={2.5}
+                      strokeOpacity={0.82}
+                      strokeDasharray="6 4"
+                    />
+                  );
+                })}
+
               {/* Clickable Exhibit Nodes */}
               {HISTORY_TIMELINE_NODES.map((node) => {
                 const pt = nodeCoords.get(node.weaponId)!;
                 const isSelected = node.weaponId === selectedWeaponId;
+                const inEra = matchesTimelineEra(node.year, selectedEra);
                 const dimmed =
+                  !inEra ||
                   (selectedLineage !== 'all' &&
                     node.lineageId !== selectedLineage) ||
                   (tourSet !== null && !tourSet.has(node.weaponId));
+                const tourOrder = activeTour
+                  ? activeTour.weaponIds.indexOf(node.weaponId)
+                  : -1;
                 const shortLabel = isWeaponId(node.weaponId)
                   ? getLocalizedShortWeaponLabel(node.weaponId, lang)
                   : node.weaponId;
@@ -388,7 +644,7 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
                     key={node.weaponId}
                     className="timeline-node-g"
                     style={{
-                      opacity: dimmed ? 0.22 : 1,
+                      opacity: dimmed ? 0.2 : 1,
                       cursor: 'pointer',
                     }}
                     onClick={() => {
@@ -396,6 +652,17 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
                       setSelectedWeaponId(node.weaponId);
                     }}
                   >
+                    {tourOrder >= 0 && (
+                      <circle
+                        cx={pt.x}
+                        cy={pt.y}
+                        r={isSelected ? 14 : 11}
+                        fill="none"
+                        stroke="#fbbf24"
+                        strokeWidth={1.6}
+                        strokeOpacity={isSelected ? 0.95 : 0.55}
+                      />
+                    )}
                     <circle
                       cx={pt.x}
                       cy={pt.y}
@@ -479,14 +746,7 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
               <button
                 type="button"
                 className="timeline-cta-btn is-primary"
-                onClick={() => {
-                  playWorkbenchFoley('preset_detent');
-                  onClose();
-                  if (isWeaponId(selectedNode.weaponId)) {
-                    enterWorkbench(selectedNode.weaponId, 'explode');
-                    setSectionCut(true);
-                  }
-                }}
+                onClick={launchSelectedInWorkbench}
               >
                 <Layers size={14} aria-hidden="true" />
                 <span>{ui.inspect3d}</span>
