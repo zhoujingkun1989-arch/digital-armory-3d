@@ -1,6 +1,7 @@
 import { execFileSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
@@ -309,9 +310,85 @@ describe('Cycle 8A · Full 34-Exhibit Automated WebGL Fleet Audit Harness', () =
       exhibitTargets: number;
       viewTargets: number;
       totalTargets: number;
+      targets: Array<{ id: string; url: string }>;
     };
     expect(quickPlan.exhibitTargets).toBe(6);
     expect(quickPlan.viewTargets).toBe(8);
     expect(quickPlan.totalTargets).toBe(14);
+
+    // Split Showdown target passes weaponA/weaponB as parsed by useUrlStateSync.ts
+    const splitTarget = quickPlan.targets.find((t) => t.id === 'view:split_showdown');
+    expect(splitTarget?.url).toContain('weaponA=gau8');
+    expect(splitTarget?.url).toContain('weaponB=m134');
+  });
+
+  it('hardens CDP launch unpacking, lazy-image readiness, heavy exhibit settling, zero-zombie exit, and fleet summary stats', async () => {
+    const fleetModUrl = pathToFileURL(FLEET_SCRIPT).href;
+    const fleetMod = (await import(/* @vite-ignore */ fleetModUrl)) as {
+      HEAVY_EXHIBIT_IDS: Set<string>;
+      FLEET_READINESS_PROBE_SCRIPT: string;
+      summarizeFleetStats: (results: Array<Record<string, unknown>>) => {
+        fastest: { id: string; loadMs: number } | null;
+        slowest: { id: string; loadMs: number } | null;
+        medianLoadMs: number | null;
+        minNonBgRatio: number | null;
+        medianNonBgRatio: number | null;
+        maxNonBgRatio: number | null;
+        lightThemeAppliedCount: number;
+        errorBoundaryHits: number;
+        readinessTimeouts: number;
+      };
+    };
+
+    for (const heavyId of ['ztz99a', 'm1a2', 'leopard2a7', 'tiger1', 'gau8']) {
+      expect(fleetMod.HEAVY_EXHIBIT_IDS.has(heavyId)).toBe(true);
+    }
+
+    expect(fleetMod.FLEET_READINESS_PROBE_SCRIPT).toContain(
+      '.viewport-error-fallback'
+    );
+    expect(fleetMod.FLEET_READINESS_PROBE_SCRIPT).toContain("loadingAttr !== 'lazy'");
+
+    const stats = fleetMod.summarizeFleetStats([
+      {
+        id: 'exhibit:deagle',
+        loadMs: 2530,
+        nonBgPixelRatio: 0.62,
+        ready: true,
+        readiness: { appliedTheme: 'dark', hasErrorBoundary: false },
+      },
+      {
+        id: 'exhibit:leopard2a7',
+        loadMs: 5796,
+        nonBgPixelRatio: 0.617,
+        ready: true,
+        readiness: { appliedTheme: 'light', hasErrorBoundary: false },
+      },
+      {
+        id: 'view:split_showdown',
+        loadMs: 3491,
+        nonBgPixelRatio: 0.2576,
+        ready: true,
+        readiness: { appliedTheme: 'light', hasErrorBoundary: false },
+      },
+    ]);
+    expect(stats.fastest).toEqual({ id: 'exhibit:deagle', loadMs: 2530 });
+    expect(stats.slowest).toEqual({ id: 'exhibit:leopard2a7', loadMs: 5796 });
+    expect(stats.medianLoadMs).toBe(3491);
+    expect(stats.minNonBgRatio).toBe(0.2576);
+    expect(stats.medianNonBgRatio).toBe(0.617);
+    expect(stats.maxNonBgRatio).toBe(0.62);
+    expect(stats.lightThemeAppliedCount).toBe(2);
+    expect(stats.errorBoundaryHits).toBe(0);
+    expect(stats.readinessTimeouts).toBe(0);
+
+    // Static contract checks on CDP driver and zero-zombie teardown
+    const scriptSrc = fs.readFileSync(FLEET_SCRIPT, 'utf8');
+    expect(scriptSrc).toContain('discovered.executablePath');
+    expect(scriptSrc).toContain('NativeCdpClient.connect(wsUrl)');
+    expect(scriptSrc).toContain("Target.createTarget");
+    expect(scriptSrc).toContain("Target.closeTarget");
+    expect(scriptSrc).toContain("Page.captureScreenshot");
+    expect(scriptSrc).toContain('process.exit(exitCode);');
   });
 });
