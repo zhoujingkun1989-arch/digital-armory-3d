@@ -1581,6 +1581,96 @@
   }
 }
 
+/* ==================== Blueprint Daylight (`[data-theme='light']`) Proving Ground Parity ==================== */
+:is([data-theme='light'], .theme-light) .eb-header {
+  background: rgba(248, 250, 252, 0.95);
+  border-bottom-color: rgba(15, 23, 42, 0.14);
+  color: #0f172a;
+}
+
+:is([data-theme='light'], .theme-light) .eb-title {
+  color: #0f172a;
+}
+
+:is([data-theme='light'], .theme-light) .eb-subtitle {
+  color: #475569;
+}
+
+:is([data-theme='light'], .theme-light) .eb-control-panel,
+:is([data-theme='light'], .theme-light) .eb-card,
+:is([data-theme='light'], .theme-light) .eb-range3d-dock,
+:is([data-theme='light'], .theme-light) .eb-range3d-terminal-strip {
+  background: rgba(248, 250, 252, 0.94);
+  border-color: rgba(15, 23, 42, 0.15);
+  color: #0f172a;
+}
+
+:is([data-theme='light'], .theme-light) .eb-seg-group {
+  background: #e2e8f0;
+  border-color: rgba(15, 23, 42, 0.14);
+}
+
+:is([data-theme='light'], .theme-light) .eb-seg-btn,
+:is([data-theme='light'], .theme-light) .eb-tab-btn,
+:is([data-theme='light'], .theme-light) .eb-preset-pill {
+  color: #334155;
+  border-color: rgba(15, 23, 42, 0.16);
+}
+
+:is([data-theme='light'], .theme-light) .eb-tab-btn,
+:is([data-theme='light'], .theme-light) .eb-preset-pill {
+  background: #ffffff;
+}
+
+:is([data-theme='light'], .theme-light) .eb-seg-btn.is-active,
+:is([data-theme='light'], .theme-light) .eb-range3d-header-btn.is-active {
+  color: #ffffff;
+  border-color: #0284c7;
+}
+
+:is([data-theme='light'], .theme-light) .eb-range3d-header-btn {
+  background: rgba(2, 132, 199, 0.12);
+  border-color: rgba(2, 132, 199, 0.34);
+  color: #0369a1;
+}
+
+:is([data-theme='light'], .theme-light) .eb-regime-pill.regime-supersonic {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(5, 150, 105, 0.42);
+  color: #047857;
+}
+
+:is([data-theme='light'], .theme-light) .eb-regime-pill.regime-transonic {
+  background: rgba(245, 158, 11, 0.16);
+  border-color: rgba(180, 83, 9, 0.42);
+  color: #92400e;
+}
+
+:is([data-theme='light'], .theme-light) .eb-regime-pill.regime-subsonic {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(185, 28, 28, 0.36);
+  color: #991b1b;
+}
+
+:is([data-theme='light'], .theme-light) .eb-dope-table th {
+  background: #f1f5f9;
+  color: #334155;
+  border-bottom-color: rgba(15, 23, 42, 0.16);
+}
+
+:is([data-theme='light'], .theme-light) .eb-dope-table td {
+  color: #0f172a;
+  border-bottom-color: rgba(15, 23, 42, 0.1);
+}
+
+:is([data-theme='light'], .theme-light) .eb-range3d-scrub-label {
+  color: #475569;
+}
+
+:is([data-theme='light'], .theme-light) .eb-range3d-term-item strong {
+  color: #0f172a;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .eb-lab-screen,
   .eb-lab-screen *,

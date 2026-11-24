@@ -302,3 +302,62 @@
     justify-content: center;
   }
 }
+
+/* ==================== Blueprint Daylight (`[data-theme='light']`) Control Deck Parity ====================
+   Note: Immersive FLIR / NVG / Zeiss optical vignette stays dark inside the eyepiece;
+   external `.tank-crew-hud` deck adapts to crisp archival vellum in Daylight Studio. */
+:is([data-theme='light'], .theme-light) .tank-crew-hud {
+  background: rgba(248, 250, 252, 0.95);
+  border-color: rgba(15, 23, 42, 0.18);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.16);
+  color: #0f172a;
+}
+
+:is([data-theme='light'], .theme-light) .tank-crew-hud.is-nation-pla_ztz99a {
+  border-color: rgba(2, 132, 199, 0.45);
+}
+
+:is([data-theme='light'], .theme-light) .tank-crew-hud.is-nation-us_m1a2_gps {
+  border-color: rgba(180, 83, 9, 0.45);
+}
+
+:is([data-theme='light'], .theme-light) .tank-crew-hud.is-nation-de_emes15 {
+  border-color: rgba(185, 28, 28, 0.42);
+}
+
+:is([data-theme='light'], .theme-light) .tank-crew-hud.is-nation-ww2_tzf9b {
+  border-color: rgba(120, 113, 108, 0.48);
+}
+
+:is([data-theme='light'], .theme-light) .tank-crew-sight {
+  color: #475569;
+}
+
+:is([data-theme='light'], .theme-light) .tank-crew-icon-btn {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.18);
+  color: #334155;
+}
+
+:is([data-theme='light'], .theme-light) .tank-crew-icon-btn:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+
+:is([data-theme='light'], .theme-light) .tank-crew-slider div {
+  color: #334155;
+}
+
+:is([data-theme='light'], .theme-light) .tank-crew-slider input[type='range'] {
+  accent-color: #0284c7;
+}
+
+:is([data-theme='light'], .theme-light) .tank-crew-fcs-bar {
+  border-top-color: rgba(15, 23, 42, 0.14);
+}
+
+:is([data-theme='light'], .theme-light) .tank-crew-lase-btn {
+  background: rgba(132, 204, 22, 0.22);
+  border-color: #65a30d;
+  color: #365314;
+}

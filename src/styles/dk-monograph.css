@@ -1776,6 +1776,34 @@
   color: var(--dk-crimson);
 }
 
+/* Blueprint Daylight (`[data-theme='light']`) Screen-Only Preview Elevation (keeps @media print 100% untouched) */
+@media screen {
+  :is([data-theme='light'], .theme-light) .dk-monograph {
+    --dk-ink: #0f172a;
+    --dk-rule: #cbd5e1;
+    --dk-rule-strong: #0f172a;
+  }
+
+  :is([data-theme='light'], .theme-light) .dk-spread-sheet,
+  :is([data-theme='light'], .theme-light) .dk-page-sheet {
+    box-shadow: 0 16px 44px rgba(15, 23, 42, 0.18);
+    border-color: rgba(15, 23, 42, 0.18);
+  }
+
+  :is([data-theme='light'], .theme-light)
+    .dk-page-sheet.has-bleed
+    .dk-sheet-trim-area,
+  :is([data-theme='light'], .theme-light)
+    .dk-spread-sheet.has-bleed
+    .dk-sheet-trim-area {
+    outline-color: rgba(2, 132, 199, 0.52);
+  }
+
+  :is([data-theme='light'], .theme-light) .dk-spread-gutter::after {
+    background: rgba(15, 23, 42, 0.18);
+  }
+}
+
 /* Mobile / Tablet Screen-Only Preview Guard (keeps @media print 100% untouched) */
 @media screen and (max-width: 768px) {
   .monograph-preview-sheets .dk-monograph {

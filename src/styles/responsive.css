@@ -1561,3 +1561,58 @@ dialog::backdrop {
     border-radius: 50%;
   }
 }
+
+/* ==================== Blueprint Daylight (`[data-theme='light']`) Mobile & Responsive Parity ==================== */
+@media (max-width: 768px) {
+  :is([data-theme='light'], .theme-light) .top-bar,
+  :is([data-theme='light'], .theme-light) .armory-header,
+  :is([data-theme='light'], .theme-light) .timeline-dock,
+  :is([data-theme='light'], .theme-light) .live-section-bar,
+  :is([data-theme='light'], .theme-light) .inspector-card.firing-compact-card,
+  :is([data-theme='light'], .theme-light) .ballistics-telemetry-hud,
+  :is([data-theme='light'], .theme-light) .field-strip-hud,
+  :is([data-theme='light'], .theme-light) .malfunction-hud,
+  :is([data-theme='light'], .theme-light) .caliper-hud {
+    background: rgba(248, 250, 252, 0.95);
+    border-color: rgba(15, 23, 42, 0.16);
+    color: #0f172a;
+    box-shadow: 0 6px 20px rgba(15, 23, 42, 0.12);
+  }
+
+  :is([data-theme='light'], .theme-light)
+    .inspector-card.firing-compact-card
+    .guide-title {
+    color: #0f172a;
+  }
+
+  :is([data-theme='light'], .theme-light)
+    .inspector-card.firing-compact-card
+    .guide-desc {
+    color: #334155;
+  }
+
+  :is([data-theme='light'], .theme-light)
+    .inspector-card.firing-compact-card
+    .firing-mobile-expand-btn,
+  :is([data-theme='light'], .theme-light)
+    .live-section-bar
+    .live-section-presets-toggle {
+    background: #ffffff;
+    border-color: rgba(15, 23, 42, 0.18);
+    color: #0f172a;
+  }
+
+  :is([data-theme='light'], .theme-light)
+    .live-section-bar
+    .live-section-readout {
+    background: #e0f2fe;
+    color: #0369a1;
+  }
+
+  :is([data-theme='light'], .theme-light) .armory-drawer-panel,
+  :is([data-theme='light'], .theme-light) .wb-mobile-drawer {
+    background: rgba(248, 250, 252, 0.97);
+    border-color: rgba(15, 23, 42, 0.16);
+    color: #0f172a;
+  }
+}
