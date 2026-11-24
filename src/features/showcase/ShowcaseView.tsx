@@ -53,6 +53,7 @@ import { resolveAssetUrl } from '../../engine/utils/assetUrl';
 import {
   SHOWCASE_STRINGS,
   type ShowcaseArchPillarCopy,
+  type ShowcaseCertificationBadgeCopy,
   type ShowcaseGalleryItemCopy,
 } from '../../i18n/showcaseStrings';
 import { UI_STRINGS } from '../../i18n/uiStrings';
@@ -119,6 +120,14 @@ const ARCH_ICONS: Record<ShowcaseArchPillarCopy['iconKey'], LucideIcon> = {
   sparkles: Sparkles,
   scissors: Scissors,
   shield: Shield,
+};
+
+const CERT_ICONS: Record<ShowcaseCertificationBadgeCopy['id'], LucideIcon> = {
+  exhibits: Layers,
+  wcag: Shield,
+  webgl: Gauge,
+  pwa: Zap,
+  bilingual: Globe2,
 };
 
 const QUICKSTART_SNIPPET = `git clone ${GITHUB_REPO_URL}.git
@@ -1461,6 +1470,35 @@ export const ShowcaseView: React.FC = () => {
               <span className="section-kicker">{s.architecture.kicker}</span>
               <h2 className="section-title">{s.architecture.title}</h2>
               <p className="section-desc">{s.architecture.desc}</p>
+            </div>
+
+            <div
+              className="showcase-cert-ribbon"
+              data-testid="showcase-certifications-ribbon"
+              role="list"
+              aria-label={s.architecture.certificationsAria}
+            >
+              {s.architecture.certifications.map((cert) => {
+                const CertIcon = CERT_ICONS[cert.id];
+                return (
+                  <div
+                    key={cert.id}
+                    role="listitem"
+                    className={`showcase-cert-pill is-${cert.tone}`}
+                    data-testid={`showcase-cert-${cert.id}`}
+                  >
+                    <CertIcon
+                      size={14}
+                      className="showcase-cert-icon"
+                      aria-hidden="true"
+                    />
+                    <div className="showcase-cert-text">
+                      <span className="showcase-cert-val">{cert.value}</span>
+                      <span className="showcase-cert-lbl">{cert.label}</span>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
 
             <div

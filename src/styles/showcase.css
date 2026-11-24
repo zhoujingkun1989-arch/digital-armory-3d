@@ -2244,7 +2244,7 @@
 }
 
 @media (max-width: 768px) {
-  /* WCAG 2.1 AA Mobile Touch-Target Parity (>= 32px min dimension on 390x844) */
+  /* WCAG 2.1 AA Mobile Touch-Target Parity (>= 34px min dimension on 390x844) */
   .showcase-brand,
   .showcase-nav .lang-seg-btn,
   .showcase-launch-pill,
@@ -2253,7 +2253,9 @@
   .stage-weapon-pill,
   .doc-weapon-pill,
   .gallery-launch-link,
-  .qs-copy-btn {
+  .qs-copy-btn,
+  .arsenal-tab,
+  .bento-action-btn {
     min-height: 34px;
     min-width: 34px;
   }
@@ -2269,6 +2271,137 @@
   }
 }
 
+/* ==================== Cycle 21A: Live Engineering Certifications & Architecture Pill Strip ==================== */
+.showcase-cert-ribbon {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 10px;
+  padding: 14px 16px;
+  margin-bottom: 18px;
+  border-radius: 14px;
+  background: linear-gradient(
+    135deg,
+    rgba(15, 23, 42, 0.9) 0%,
+    rgba(2, 6, 23, 0.72) 100%
+  );
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  box-shadow: 0 12px 28px rgba(2, 6, 23, 0.34);
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.showcase-cert-pill {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 11px;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  background: rgba(30, 41, 59, 0.84);
+  color: #e2e8f0;
+  min-width: 0;
+  transition:
+    border-color 0.16s ease,
+    background-color 0.16s ease,
+    transform 0.16s ease;
+}
+
+.showcase-cert-pill.is-cyan {
+  border-color: rgba(56, 189, 248, 0.38);
+  background: rgba(12, 74, 110, 0.42);
+  color: #bae6fd;
+}
+
+.showcase-cert-pill.is-emerald {
+  border-color: rgba(52, 211, 153, 0.38);
+  background: rgba(6, 78, 59, 0.44);
+  color: #a7f3d0;
+}
+
+.showcase-cert-pill.is-amber {
+  border-color: rgba(251, 191, 36, 0.38);
+  background: rgba(120, 53, 15, 0.44);
+  color: #fde68a;
+}
+
+.showcase-cert-icon {
+  flex-shrink: 0;
+}
+
+.showcase-cert-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.showcase-cert-val {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #f8fafc;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.showcase-cert-lbl {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: inherit;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1120px) {
+  .showcase-cert-ribbon {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .showcase-cert-ribbon {
+    grid-template-columns: 1fr;
+    padding: 12px;
+    gap: 8px;
+  }
+}
+
+/* Blueprint Daylight ([data-theme='light']) Harmonization for Showcase Certifications Ribbon */
+:is([data-theme='light'], .theme-light) .showcase-cert-ribbon {
+  background: rgba(248, 250, 252, 0.96);
+  border-color: rgba(2, 132, 199, 0.36);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.22);
+}
+
+:is([data-theme='light'], .theme-light) .showcase-cert-pill {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.16);
+  color: #0f172a;
+}
+
+:is([data-theme='light'], .theme-light) .showcase-cert-pill.is-cyan {
+  background: #f0f9ff;
+  border-color: rgba(2, 132, 199, 0.36);
+  color: #075985;
+}
+
+:is([data-theme='light'], .theme-light) .showcase-cert-pill.is-emerald {
+  background: #ecfdf5;
+  border-color: rgba(5, 150, 105, 0.36);
+  color: #065f46;
+}
+
+:is([data-theme='light'], .theme-light) .showcase-cert-pill.is-amber {
+  background: #fffbeb;
+  border-color: rgba(217, 119, 6, 0.4);
+  color: #78350f;
+}
+
+:is([data-theme='light'], .theme-light) .showcase-cert-val {
+  color: #0f172a;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .live-pulse-dot {
     animation: none;
@@ -2278,6 +2411,7 @@
   .lab-bento-card,
   .showcase-cta-director,
   .showcase-cta-primary,
+  .showcase-cert-pill,
   .bento-card img,
   .gallery-img-btn img {
     transition: none;
