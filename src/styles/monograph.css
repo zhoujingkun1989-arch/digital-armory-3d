@@ -1,6 +1,6 @@
 /* ==========================================================================
    17-Plate 3D Illustrated Picture Book & Pro Monograph Print Studio (`monograph.css`)
-   Across All 13 Digital Armory Exhibits · Kids Pictorial & Pro Technical Editions
+   Across All 34 Digital Armory Exhibits · DK, Kids Pictorial & Pro Technical Editions
    ========================================================================== */
 
 .monograph-print-portal {
@@ -589,8 +589,85 @@
 }
 
 @media screen and (max-width: 900px) {
-  .monograph-preview-sheets .monograph-document {
-    zoom: 0.68;
+  .monograph-preview-sheets .monograph-document:not(.dk-monograph) {
+    zoom: var(--dk-preview-scale, 0.68);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .monograph-dialog {
+    width: calc(100vw - 8px);
+    height: calc(100dvh - 8px);
+    border-radius: 10px;
+  }
+
+  .monograph-studio-header {
+    padding: 8px 10px;
+    gap: 6px 10px;
+  }
+
+  .ms-studio-sub {
+    display: none;
+  }
+
+  .monograph-studio-controls {
+    padding: 7px 10px;
+    gap: 6px;
+  }
+
+  .ms-weapon-strip {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+
+  .ms-weapon-strip::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ms-options-cluster {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    justify-content: flex-start;
+    gap: 6px;
+    padding-bottom: 2px;
+  }
+
+  .ms-options-cluster::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ms-callsign-field {
+    flex: 0 0 auto;
+    justify-content: flex-start;
+  }
+
+  .ms-callsign-input {
+    min-width: 140px;
+    max-width: 190px;
+  }
+
+  .monograph-preview-stage {
+    padding: 8px 8px 24px;
+    overflow-x: hidden;
+  }
+
+  .ms-page-jump-rail {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 5px 8px;
+    margin-bottom: 10px;
+  }
+
+  .ms-page-jump-rail::-webkit-scrollbar {
+    display: none;
+  }
+
+  .ms-print-tip-inline {
+    display: none;
   }
 }
 

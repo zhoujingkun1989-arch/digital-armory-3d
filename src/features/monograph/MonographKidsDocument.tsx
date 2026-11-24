@@ -12,6 +12,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { UI_STRINGS } from '../../i18n/uiStrings';
+import { getWeaponManifest } from '../../weapons/manifests';
 import type { MonographDossierData } from './monographDataAssembler';
 import type {
   MonographCaptureBundle,
@@ -84,9 +85,31 @@ export const MonographKidsDocument: React.FC<MonographKidsDocumentProps> = ({
 }) => {
   const { lang } = dossier;
   const isZh = lang === 'zh';
+  const isOrdnance =
+    getWeaponManifest(dossier.weaponId).catalog.category === 'ordnance';
   const ui = UI_STRINGS[lang].monograph;
   const kui = ui.kids;
   const kp = getMonographLocalizedStrings(lang).kidsPlaceholders;
+
+  const domainCoverBadge = dossier.isTank
+    ? isZh
+      ? '1:1 主战坦克 3D 绘本'
+      : '1:1 MAIN BATTLE TANK 3D PICTURE BOOK'
+    : isOrdnance
+      ? isZh
+        ? '1:1 航空重炮 3D 绘本'
+        : '1:1 AERO ROTARY CANNON 3D PICTURE BOOK'
+      : kui.coverBadge;
+
+  const domainAmmoBadge = dossier.isTank
+    ? isZh
+      ? '1:10 坦克主炮穿甲弹'
+      : '1:10 TANK CANNON SHELL'
+    : isOrdnance
+      ? isZh
+        ? '30×173mm 航空机炮弹'
+        : '30x173mm AERO CANNON SHELL'
+      : kui.ammoStripBadge(dossier.isArchery);
 
   const editionLabel =
     edition === 'blueprint_manual' ? kui.editionBright : kui.editionDark;
@@ -117,7 +140,7 @@ export const MonographKidsDocument: React.FC<MonographKidsDocumentProps> = ({
             <div className="km-cover-pill-row">
               <span className="km-kicker-pill">
                 <Sparkles size={12} aria-hidden="true" />
-                <span>{kui.coverBadge}</span>
+                <span>{domainCoverBadge}</span>
               </span>
               <span className="km-origin-pill">{dossier.originTag}</span>
             </div>
@@ -650,7 +673,7 @@ export const MonographKidsDocument: React.FC<MonographKidsDocumentProps> = ({
               </div>
               <div className="km-ammo-stats-col">
                 <span className="km-ammo-badge">
-                  {kui.ammoStripBadge(dossier.isArchery)}
+                  {domainAmmoBadge}
                 </span>
                 <strong className="km-ammo-name">
                   {isZh ? cSpec.nameZh : cSpec.nameEn}

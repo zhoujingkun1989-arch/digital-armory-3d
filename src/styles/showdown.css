@@ -1,5 +1,5 @@
 /* ==========================================================================
-   WP-11 · Mechanism Showdown — 3-Axis Lineage Matrix & Dual-Exhibit Lab
+   Mechanism Showdown — 3-Axis Lineage Matrix & Dual-Exhibit Lab
    Adaptive across Tactical Vault, Gunsmith Bench & Light Blueprint Daylight
    ========================================================================== */
 
@@ -1564,5 +1564,168 @@
 
   .sd-family-grid {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ============================================================================
+ * Cycle 5B · 1-Click Linked 3D Split Cutaway CTAs & <= 768px Mobile Polish
+ * ============================================================================ */
+
+.sd-staging-actions {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.sd-launch-split3d-btn,
+.sd-verdict-split3d-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+  border: 1px solid rgba(125, 211, 252, 0.55);
+  color: #ffffff;
+  font-size: 11.5px;
+  font-weight: 800;
+  white-space: nowrap;
+  flex-shrink: 0;
+  box-shadow: 0 5px 16px rgba(2, 132, 199, 0.34);
+  cursor: pointer;
+  transition:
+    filter 0.14s ease,
+    transform 0.14s ease;
+}
+
+.sd-launch-split3d-btn:hover,
+.sd-verdict-split3d-cta:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.sd-verdict-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+}
+
+.sd-verdict-copy {
+  flex: 1 1 420px;
+  min-width: 0;
+}
+
+.sd-preset-item {
+  display: inline-flex;
+  align-items: stretch;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-elevated);
+  transition: border-color 0.14s ease;
+}
+
+.sd-preset-item.active {
+  border-color: rgba(245, 158, 11, 0.58);
+}
+
+.sd-preset-item .sd-preset-pill {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+.sd-preset-item .sd-preset-pill.active {
+  background: var(--surface-amber-tint);
+}
+
+.sd-preset-split3d-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0 8px 0 6px;
+  border: none;
+  border-left: 1px solid var(--border-subtle);
+  background: rgba(14, 165, 233, 0.14);
+  color: var(--color-accent-cyan-text);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color 0.14s ease,
+    color 0.14s ease;
+}
+
+.sd-preset-split3d-btn:hover {
+  background: #0284c7;
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .showdown-dialog {
+    width: calc(100vw - 10px);
+    height: calc(100dvh - 10px);
+    border-radius: 12px;
+  }
+
+  .showdown-header {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .sd-main-sub {
+    display: none;
+  }
+
+  .showdown-scroll-body {
+    padding: 10px 12px 18px;
+  }
+
+  .sd-staging-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 9px 10px;
+  }
+
+  .sd-staging-right {
+    justify-content: flex-start;
+  }
+
+  .sd-staging-hint {
+    display: none;
+  }
+
+  .sd-staging-actions {
+    width: 100%;
+  }
+
+  .sd-launch-showdown-btn,
+  .sd-launch-split3d-btn,
+  .sd-verdict-split3d-cta {
+    flex: 1 1 auto;
+  }
+
+  .sd-axis-filter-row,
+  .sd-preset-pills {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 2px;
+  }
+
+  .sd-axis-filter-row::-webkit-scrollbar,
+  .sd-preset-pills::-webkit-scrollbar {
+    display: none;
+  }
+
+  .sd-preset-item {
+    flex-shrink: 0;
   }
 }

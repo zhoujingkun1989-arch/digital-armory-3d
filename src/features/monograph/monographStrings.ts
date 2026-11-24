@@ -133,7 +133,7 @@ const ARCHERY_DOMAIN_OVERRIDES: Record<
       'FIG 6.1 · 凸轮拉力 F(x) [N · ATA/IBO] 与矢箭初速 V(t) [m/s] 耦合曲线',
     chartCartridgeTitle:
       'FIG 6.2 · 配用 400 格令碳纤维矢箭 1:1 纵剖结构与储能参数',
-    energyLadderTitle: '当前矢箭动能与馆藏 7 大口径动能横向标尺 (J)',
+    energyLadderTitle: '当前矢箭动能与全馆 21 大口径动能横向标尺 (J)',
     coreAnatomyLabel: '碳杆与猎箭头结构',
     propellantLabel: '弹性储能驱动体系',
     primerLabel: '箭尾扣与撒放接口',
@@ -169,7 +169,7 @@ const ARCHERY_DOMAIN_OVERRIDES: Record<
     chartCartridgeTitle:
       'FIG 6.2 · 1:1 Carbon Arrow/Bolt Half-Section & Elastic Storage Spec',
     energyLadderTitle:
-      'Projectile Kinetic Energy vs. 7-Caliber Vault Scale (J)',
+      'Projectile Kinetic Energy vs. 21-Caliber Vault Scale (J)',
     coreAnatomyLabel: 'Shaft & Broadhead Anatomy',
     propellantLabel: 'Elastic Drive System',
     primerLabel: 'Nock & Release Latch',
@@ -256,6 +256,80 @@ const ARMOR_DOMAIN_OVERRIDES: typeof ARCHERY_DOMAIN_OVERRIDES = {
   },
 };
 
+const ORDNANCE_DOMAIN_OVERRIDES: typeof ARCHERY_DOMAIN_OVERRIDES = {
+  zh: {
+    coverMonographTag: '1:1 重型航空旋转机炮机械工程档案',
+    mechanismLabel: '七管液压旋转闭锁与无链供弹',
+    oalLabel: '整炮系统全长',
+    barrelLabel: '七管身管与螺旋凸轮',
+    weightLabel: '满载系统总重',
+    muzzleVelLabel: '炮口初速',
+    muzzleEnergy: '单发炮口动能',
+    plateBreechCaption:
+      'FIG 2.1 · 七管旋转转子机匣、360° 螺旋凸轮轨道与双液压马达微距解剖图版',
+    plateStencilCaption:
+      'FIG 3.1 · 双通道 WebGL Stencil 实心纵剖视图（揭示七管闭锁机匣、螺旋凸轮槽与 1,150 发闭环螺旋弹鼓）',
+    plateRolesCaption:
+      'FIG 3.2 · 34% 半分解态六大航空重武职能分色图版（七管转子 / 液压驱动 / 闭锁凸轮 / 电控击发 / 缓冲弹簧 / 闭环弹鼓）',
+    explodedLegendNote:
+      '标引色系说明：冷青 = 七管/转子/凸轮机匣 · 翠绿 = 承力框架/护架 · 绯红 = 闭锁栓/电击发控制 · 琥珀 = 1,150 发闭环螺旋弹鼓/输弹槽',
+    bomColMaterial: '航空合金与军械表面工艺',
+    secBallistics: 'CHAPTER 06 · 30×173mm 贫铀穿甲弹纵剖与超高速旋转航炮内弹道',
+    secBallisticsSub:
+      '30mm 航炮膛压 P(t) 与出膛初速 V(t) 定量曲线 · 航炮弹纵剖结构图与重武动能横向标尺',
+    chartPressureTitle:
+      'FIG 6.1 · 30×173mm 航炮膛压 P(t) [MPa] 与弹头初速 V(t) [m/s] 实时耦合曲线',
+    chartCartridgeTitle:
+      'FIG 6.2 · PGU-14/B 30×173mm 贫铀穿甲燃烧弹纵剖结构与装药参数',
+    energyLadderTitle: '30×173mm 航空重炮单发与全馆口径动能横向标尺 (kJ)',
+    coreAnatomyLabel: '贫铀穿甲芯与轻合金弹体',
+    propellantLabel: '双基发射药与铝制弹壳体系',
+    primerLabel: '电发火底火与塑料驱动带',
+    secArmorerManual: 'CHAPTER 07 · 航空军械师勤务拆装教范、停射排障卡与防伪封底',
+    secArmorerManualSub:
+      '航空军械师有向拓扑拆装规程、液压与弹鼓同步红线、四大航炮停射排障口诀与数字交互防伪印鉴',
+    fieldStripHeading: '航空军械师标准勤务拆装规程 (Field-Strip DAG)',
+    malfunctionsHeading: '四大 30mm 七管旋转航炮停射与供弹排障诊断卡',
+  },
+  en: {
+    coverMonographTag: '1:1 AERO ROTARY AUTOCANNON & ORDNANCE DOSSIER',
+    mechanismLabel: '7-Barrel Hydraulic Rotary & Linkless Feed',
+    oalLabel: 'System Overall Length',
+    barrelLabel: '7-Barrel Cluster & Cam Track',
+    weightLabel: 'Loaded System Mass',
+    muzzleVelLabel: 'Muzzle Velocity',
+    muzzleEnergy: 'Per-Round Muzzle Energy',
+    plateBreechCaption:
+      'FIG 2.1 · Macro Ordnance Plate: 7-Bolt Rotor, 360° Helical Cam Track & Twin Hydraulic Motors',
+    plateStencilCaption:
+      'FIG 3.1 · Two-Pass WebGL Stencil Longitudinal Cutaway (7-Barrel Rotor, Helical Cam Drum & 1,150-Rd Linkless Drum)',
+    plateRolesCaption:
+      'FIG 3.2 · 34% Semi-Exploded Six-Role Aero Ordnance Map (7-Barrel Rotor / Hydraulic Drive / Cam Lock / Electric Fire / Recoil Buffers / Linkless Drum)',
+    explodedLegendNote:
+      'Callout Palette: Cyan = 7-Barrel Cluster/Rotor/Cam Housing · Emerald = Chassis/Mounts · Rose = Bolts/Electric Fire Control · Amber = 1,150-Rd Linkless Drum/Chutes',
+    bomColMaterial: 'Aerospace Metallurgy & Finish',
+    secBallistics:
+      'CHAPTER 06 · 30x173mm API ORDNANCE CUTAWAY & ROTARY BALLISTICS',
+    secBallisticsSub:
+      '30mm Autocannon Pressure P(t) & Velocity V(t) Curves · Ordnance Cutaway & Kinetic Energy Scale',
+    chartPressureTitle:
+      'FIG 6.1 · 30x173mm Chamber Pressure P(t) [MPa] & Velocity V(t) [m/s]',
+    chartCartridgeTitle:
+      'FIG 6.2 · PGU-14/B 30x173mm Armor-Piercing Incendiary Cutaway & Charge Spec',
+    energyLadderTitle:
+      '30x173mm Aero Autocannon Energy Scale (kJ vs. Vault Calibers)',
+    coreAnatomyLabel: 'Depleted-Uranium Penetrator & Windshield',
+    propellantLabel: 'Double-Base Charge & Aluminum Case',
+    primerLabel: 'Electric Primer & Plastic Driving Band',
+    secArmorerManual:
+      'CHAPTER 07 · AERO ORDNANCE MAINTENANCE DAG, STOPPAGES & COLOPHON',
+    secArmorerManualSub:
+      'Directed Aero Armament Strip Sequence, Hydraulic/Drum Timing Interlocks, Four Cannon Diagnostics & QR Deep-Link',
+    fieldStripHeading: 'AERO ARMAMENT DEPOT SERVICE SEQUENCE (DAG)',
+    malfunctionsHeading: 'FOUR 30mm ROTARY CANNON & FEED DIAGNOSTIC DRILLS',
+  },
+};
+
 export interface MonographDomainLabels {
   coverMonographTag: string;
   mechanismLabel: string;
@@ -294,13 +368,14 @@ export function getMonographLocalizedStrings(
 }
 
 /**
- * Resolves firearm vs. compound archery terminology across Pro Monograph sections
- * while preserving 100% zh/en parity.
+ * Resolves firearm, compound archery, heavy armor (MBT), and aero ordnance (GAU-8/A)
+ * terminology across Pro/DK Monograph sections while preserving 100% zh/en parity.
  */
 export function getMonographDomainLabels(
   lang: LanguageCode,
   isArchery: boolean,
-  isTank = false
+  isTank = false,
+  isOrdnance = false
 ): MonographDomainLabels {
   const ui = UI_STRINGS[lang].monograph;
   const armoryUi = UI_STRINGS[lang].armory;
@@ -309,6 +384,13 @@ export function getMonographDomainLabels(
   if (isTank) {
     return {
       ...ARMOR_DOMAIN_OVERRIDES[lang],
+      rangeLabel: armoryUi.rangeLabel,
+    };
+  }
+
+  if (isOrdnance) {
+    return {
+      ...ORDNANCE_DOMAIN_OVERRIDES[lang],
       rangeLabel: armoryUi.rangeLabel,
     };
   }
@@ -442,7 +524,8 @@ export interface DkEncyclopediaStrings {
 export function getDkEncyclopediaStrings(
   lang: LanguageCode,
   isArchery: boolean,
-  isTank = false
+  isTank = false,
+  isOrdnance = false
 ): DkEncyclopediaStrings {
   if (lang === 'zh') {
     const actionPhases: DkEncyclopediaStrings['actionPhases'] = isTank
@@ -472,59 +555,86 @@ export function getDkEncyclopediaStrings(
               '复进机推炮管平滑复位，底置自动装弹机或人工装填手顺畅推入下一发炮弹。',
           },
         ]
-      : isArchery
+      : isOrdnance
         ? [
             {
               plateKey: 'comic_1_ready',
-              title: '满拉蓄能',
+              title: '液压起旋',
               caption:
-                '碳纤维弓片屈曲储存弹性势能，偏心凸轮越峰进入省力谷并稳定锁定。',
+                '双液压马达驱动七管转子与 1,150 发无链弹鼓同步提速，机栓沿 360° 螺旋凸轮推弹闭锁。',
             },
             {
               plateKey: 'comic_2_ignition',
-              title: '撒放释放',
+              title: '顶部电击发',
               caption:
-                '撒放机构零扭矩解脱弓弦，同步凸轮高速回转释放弦推力加速碳箭。',
+                '当炮管旋至 9 点钟垂直击发位时，电击发触点引燃 30×173mm 发射药并以 1,010 m/s 射出贫铀弹芯。',
             },
             {
               plateKey: 'comic_3_eject',
-              title: '清离出箭',
+              title: '凸轮开锁抽壳',
               caption:
-                '碳纤维箭矢沿推力轴线离弦飞出，落箭台或悬浮箭道零刮擦避让尾羽。',
+                '炮管转过 180° 泄压区间后螺旋凸轮强制后抽闭锁栓，拉出铝制空弹壳送入回弹输弹槽。',
             },
             {
               plateKey: 'comic_4_reload',
-              title: '阻尼归位',
+              title: '闭环返鼓供弹',
               caption:
-                '止弦器与谐波阻尼器吸收余振冲击，弓片与缆组平稳复位至初始弓档。',
+                '空弹壳经无链传送系统回收到大型螺旋弹鼓尾端维持战机重心，下一发实弹同步入膛。',
             },
           ]
-        : [
-            {
-              plateKey: 'comic_1_ready',
-              title: '闭锁待击',
-              caption:
-                '实弹入膛后闭锁机构与枪管刚性咬合，火控阻铁稳固锁持击针或击锤能量。',
-            },
-            {
-              plateKey: 'comic_2_ignition',
-              title: '击发建压',
-              caption:
-                '击针撞击底火引燃发射药，瞬时峰值膛压推动弹头沿膛线高速旋转出膛。',
-            },
-            {
-              plateKey: 'comic_3_eject',
-              title: '开锁抽抛',
-              caption:
-                '膛压泄至安全阈值后自动机解锁后坐，抽壳钩拉出空壳并经抛壳挺抛出。',
-            },
-            {
-              plateKey: 'comic_4_reload',
-              title: '复进推弹',
-              caption:
-                '复进簧释放储能推自动机前移，剥取下一发弹药顺坡入膛并重新闭锁。',
-            },
-          ];
+        : isArchery
+          ? [
+              {
+                plateKey: 'comic_1_ready',
+                title: '满拉蓄能',
+                caption:
+                  '碳纤维弓片屈曲储存弹性势能，偏心凸轮越峰进入省力谷并稳定锁定。',
+              },
+              {
+                plateKey: 'comic_2_ignition',
+                title: '撒放释放',
+                caption:
+                  '撒放机构零扭矩解脱弓弦，同步凸轮高速回转释放弦推力加速碳箭。',
+              },
+              {
+                plateKey: 'comic_3_eject',
+                title: '清离出箭',
+                caption:
+                  '碳纤维箭矢沿推力轴线离弦飞出，落箭台或悬浮箭道零刮擦避让尾羽。',
+              },
+              {
+                plateKey: 'comic_4_reload',
+                title: '阻尼归位',
+                caption:
+                  '止弦器与谐波阻尼器吸收余振冲击，弓片与缆组平稳复位至初始弓档。',
+              },
+            ]
+          : [
+              {
+                plateKey: 'comic_1_ready',
+                title: '闭锁待击',
+                caption:
+                  '实弹入膛后闭锁机构与枪管刚性咬合，火控阻铁稳固锁持击针或击锤能量。',
+              },
+              {
+                plateKey: 'comic_2_ignition',
+                title: '击发建压',
+                caption:
+                  '击针撞击底火引燃发射药，瞬时峰值膛压推动弹头沿膛线高速旋转出膛。',
+              },
+              {
+                plateKey: 'comic_3_eject',
+                title: '开锁抽抛',
+                caption:
+                  '膛压泄至安全阈值后自动机解锁后坐，抽壳钩拉出空壳并经抛壳挺抛出。',
+              },
+              {
+                plateKey: 'comic_4_reload',
+                title: '复进推弹',
+                caption:
+                  '复进簧释放储能推自动机前移，剥取下一发弹药顺坡入膛并重新闭锁。',
+              },
+            ];
 
     return {
       seriesWordmark: 'DIGITAL ARMORY · VISUAL ENCYCLOPEDIA',
@@ -532,57 +642,77 @@ export function getDkEncyclopediaStrings(
       a4EditionTag: 'DK 典藏图鉴',
       seriesSubtitle: isTank
         ? '重型装甲与主战坦克视觉机械百科全书'
-        : isArchery
-          ? '复合弓弩机械百科典藏卷'
-          : '世界轻武器机械视觉百科全书',
+        : isOrdnance
+          ? '重型航空旋转机炮视觉机械百科全书'
+          : isArchery
+            ? '复合弓弩机械百科典藏卷'
+            : '世界轻武器机械视觉百科全书',
       factFileHeading: isTank
         ? '装甲战车测绘档案 · FACT FILE'
-        : isArchery
-          ? '核心技术档案 · FACT FILE'
-          : '原厂测绘档案 · FACT FILE',
+        : isOrdnance
+          ? '航空重炮测绘档案 · FACT FILE'
+          : isArchery
+            ? '核心技术档案 · FACT FILE'
+            : '原厂测绘档案 · FACT FILE',
       scaleRulerKicker: isTank
         ? '全车实尺比例标尺与成人身高对照 · TRUE TO SCALE'
-        : isArchery
-          ? '真实比例尺与射手身高对照 · TRUE TO SCALE'
-          : '1:1 尺寸比例标尺与人体对照 · TRUE TO SCALE',
+        : isOrdnance
+          ? '6.06m 整炮实尺比例与成人身高对照 · TRUE TO SCALE'
+          : isArchery
+            ? '真实比例尺与射手身高对照 · TRUE TO SCALE'
+            : '1:1 尺寸比例标尺与人体对照 · TRUE TO SCALE',
       loupesHeading: isTank
         ? '主炮、炮尾与观瞄放大特写 · ANATOMY LOUPES'
-        : isArchery
-          ? '核心机构光学放大特写 · ANATOMY LOUPES'
-          : '关键闭锁与火控放大镜特写 · ANATOMY LOUPES',
+        : isOrdnance
+          ? '七管转子、螺旋凸轮与弹鼓放大特写 · ANATOMY LOUPES'
+          : isArchery
+            ? '核心机构光学放大特写 · ANATOMY LOUPES'
+            : '关键闭锁与火控放大镜特写 · ANATOMY LOUPES',
       loupesSub: isTank
         ? '2.0×–3.0× 微距检视楔形炮闩、液压驻退机、稳像观瞄与弹药装填机构'
-        : isArchery
-          ? '2.0×–3.0× 微距检视凸轮轮组、弓片力缆、撒放机构与箭道接口'
-          : '2.0×–3.0× 光学微距检视弹膛闭锁、自动机驱动、火控阻铁与供弹坡道',
+        : isOrdnance
+          ? '2.0×–3.0× 微距检视七管旋转炮管箍、360° 螺旋凸轮机匣、双液压马达与闭环螺旋弹鼓'
+          : isArchery
+            ? '2.0×–3.0× 微距检视凸轮轮组、弓片力缆、撒放机构与箭道接口'
+            : '2.0×–3.0× 光学微距检视弹膛闭锁、自动机驱动、火控阻铁与供弹坡道',
       spread1Section: '门扉总览 · GATEFOLD ANATOMY',
       spread2LeftKicker: '研发编年史 · HISTORICAL CHRONICLE',
       spread2RightKicker: isTank
         ? '重装纵剖与 1:10 穿甲弹解剖 · INSIDE THE TANK'
-        : isArchery
-          ? '纵剖解剖与矢箭动力学 · INSIDE THE MECHANISM'
-          : '实心纵剖与 1:1 实弹解剖 · INSIDE THE MECHANISM',
+        : isOrdnance
+          ? '航炮纵剖与 30×173mm 穿甲弹解剖 · INSIDE THE CANNON'
+          : isArchery
+            ? '纵剖解剖与矢箭动力学 · INSIDE THE MECHANISM'
+            : '实心纵剖与 1:1 实弹解剖 · INSIDE THE MECHANISM',
       spread3Kicker: '全机构爆炸蓝图 · EXPLODED BLUEPRINT',
       spread3Title: isTank
         ? '全车 100% 阶梯爆炸分解与六大装甲职能图谱'
-        : isArchery
-          ? '100% 阶梯分解全景与六大职能图谱'
-          : '全枪 100% 阶梯爆炸分解与六大机械职能图谱',
+        : isOrdnance
+          ? '整炮 100% 阶梯爆炸分解与六大航空重武职能图谱'
+          : isArchery
+            ? '100% 阶梯分解全景与六大职能图谱'
+            : '全枪 100% 阶梯爆炸分解与六大机械职能图谱',
       spread4LeftKicker: isTank
         ? '主炮射击与驻退循环时序 · FIRING CYCLE'
-        : isArchery
-          ? '拉弓蓄能与发射时序 · LAUNCH CYCLE'
-          : '自动机循环时序 · CYCLE OF OPERATION',
+        : isOrdnance
+          ? '七管旋转 3,900 RPM 击发时序 · ROTARY CYCLE'
+          : isArchery
+            ? '拉弓蓄能与发射时序 · LAUNCH CYCLE'
+            : '自动机循环时序 · CYCLE OF OPERATION',
       spread4RightKicker: isTank
         ? '装甲勤务拆装、排障与馆藏印鉴 · ARMOR MANUAL'
-        : isArchery
-          ? '弓弩勤务拆装、排障与馆藏印鉴 · ARCHIVE MANUAL'
-          : '野战拆装教范、排障诊断与馆藏印鉴 · ARMORER MANUAL',
+        : isOrdnance
+          ? '航空军械勤务拆装、排障与馆藏印鉴 · ORDNANCE MANUAL'
+          : isArchery
+            ? '弓弩勤务拆装、排障与馆藏印鉴 · ARCHIVE MANUAL'
+            : '野战拆装教范、排障诊断与馆藏印鉴 · ARMORER MANUAL',
       a4RightManualKicker: isTank
         ? '装甲勤务与印鉴 · MANUAL'
-        : isArchery
-          ? '勤务拆装与印鉴 · ARCHIVE'
-          : '拆装教范与印鉴 · MANUAL',
+        : isOrdnance
+          ? '航炮勤务与印鉴 · MANUAL'
+          : isArchery
+            ? '勤务拆装与印鉴 · ARCHIVE'
+            : '拆装教范与印鉴 · MANUAL',
       chronicleHeading: '四幕研制演进纪实',
       breakthroughsQuoteKicker: '三大核心工程突破 · KEY BREAKTHROUGHS',
       elevationsHeading: '正交工程视图 · ELEVATION PROFILES',
@@ -591,29 +721,39 @@ export function getDkEncyclopediaStrings(
       rightProfileLabel: '右侧正交主视图 · RIGHT ELEVATION',
       cutawayHeading: isTank
         ? '全车正中实心纵剖面解剖'
-        : isArchery
-          ? '正中纵剖内部结构透视'
-          : '45° 实心金属纵剖面解剖',
+        : isOrdnance
+          ? '七管机匣与 1,150 发弹鼓实心纵剖解剖'
+          : isArchery
+            ? '正中纵剖内部结构透视'
+            : '45° 实心金属纵剖面解剖',
       cutawaySub: isTank
         ? '双通道 Stencil 实体纵剖揭示复合装甲层、炮塔战斗室、楔形炮尾与动力舱布局'
-        : isArchery
-          ? '双通道模板剖切揭示铝合金桁架弓把、凸轮轴承槽与悬浮导轨内部结构'
-          : '双通道 Stencil 实体纵剖揭示弹膛闭锁面、导气孔道、膛线壁厚与火控啮合',
+        : isOrdnance
+          ? '双通道 Stencil 实体纵剖揭示七管旋转转子、螺旋闭锁凸轮槽、无链输弹槽与 1,150 发螺旋弹鼓'
+          : isArchery
+            ? '双通道模板剖切揭示铝合金桁架弓把、凸轮轴承槽与悬浮导轨内部结构'
+            : '双通道 Stencil 实体纵剖揭示弹膛闭锁面、导气孔道、膛线壁厚与火控啮合',
       cartridgeHeading: isTank
         ? '1:10 制式主炮弹药精密纵剖'
-        : isArchery
-          ? '配用碳纤维矢箭精密纵剖'
-          : '1:1 原大制式弹药剖视',
+        : isOrdnance
+          ? '30×173mm PGU-14/B 贫铀穿甲弹精密纵剖'
+          : isArchery
+            ? '配用碳纤维矢箭精密纵剖'
+            : '1:1 原大制式弹药剖视',
       ballisticsHeading: isTank
         ? '主炮膛压 P(t) 与炮口初速 V(t) 曲线'
-        : isArchery
-          ? '凸轮拉力与离弦箭速曲线'
-          : 'SAAMI/CIP 膛压与初速曲线',
+        : isOrdnance
+          ? '30mm 航炮膛压 P(t) 与出膛初速 V(t) 曲线'
+          : isArchery
+            ? '凸轮拉力与离弦箭速曲线'
+            : 'SAAMI/CIP 膛压与初速曲线',
       explodedHeading: isTank
         ? '全战车 100% 零穿模阶梯爆炸总图'
-        : isArchery
-          ? '全弓弩 100% 零穿模阶梯爆炸图'
-          : '全枪 100% 零穿模阶梯爆炸总图',
+        : isOrdnance
+          ? '整炮系统 100% 零穿模阶梯爆炸总图'
+          : isArchery
+            ? '全弓弩 100% 零穿模阶梯爆炸图'
+            : '全枪 100% 零穿模阶梯爆炸总图',
       explodedSub:
         '0.35pt 工程引导线直指核心机械节点，呈现真实装配空间坐标与零件职能精讲',
       functionalRolesHeading: '六大工程子系统语义分色图谱',
@@ -622,28 +762,38 @@ export function getDkEncyclopediaStrings(
         `共 ${partsCount} 个精密 CSG 零件 · ${trisFormatted} 三角流形网格`,
       cycleSequenceHeading: isTank
         ? '四阶段主炮击发、驻退与装填实景序列'
-        : isArchery
-          ? '四阶段发射慢动作实景序列'
-          : '四阶段击发与自动循环实景序列',
+        : isOrdnance
+          ? '四阶段七管旋转、电击发与闭环返鼓实景序列'
+          : isArchery
+            ? '四阶段发射慢动作实景序列'
+            : '四阶段击发与自动循环实景序列',
       actionPhases,
       cycle7Heading: isTank
         ? '七阶主炮击发、驻退与装填运动学时序'
-        : isArchery
-          ? '七阶弹性蓄能与做功时序链'
-          : '七阶击发闭锁与复进运动学时序',
+        : isOrdnance
+          ? '七阶 360° 螺旋凸轮闭锁、击发与返鼓时序'
+          : isArchery
+            ? '七阶弹性蓄能与做功时序链'
+            : '七阶击发闭锁与复进运动学时序',
       fieldStripHeading: isTank
         ? '装甲机械师勤务拆装次序 (DAG)'
-        : isArchery
-          ? '弓弩技师标准拆装次序 (DAG)'
-          : '原厂野战勤务快拆规程 (Field-Strip DAG)',
+        : isOrdnance
+          ? '航空军械师勤务拆装次序 (DAG)'
+          : isArchery
+            ? '弓弩技师标准拆装次序 (DAG)'
+            : '原厂野战勤务快拆规程 (Field-Strip DAG)',
       malfunctionsHeading: isTank
         ? '四大主战坦克火炮与装填排障诊断卡'
-        : isArchery
-          ? '典型弓弩故障与防空放诊断卡'
-          : '四大经典枪械故障排障诊断卡',
+        : isOrdnance
+          ? '四大 30mm 旋转航炮停射与供弹排障诊断卡'
+          : isArchery
+            ? '典型弓弩故障与防空放诊断卡'
+            : '四大经典枪械故障排障诊断卡',
       energyLadderHeading: isTank
         ? '重装主炮弹药动能横向标尺 (MJ)'
-        : '馆藏全口径动能横向标尺 (J)',
+        : isOrdnance
+          ? '30×173mm 航空重炮动能横向标尺 (kJ)'
+          : '馆藏全口径动能横向标尺 (J)',
       exLibrisHeading: 'EX LIBRIS · 馆藏典藏印鉴',
       qrCompanionHeading: '扫码进入实时 3D 交互剖视工作台',
       qrCompanionSub:
@@ -697,59 +847,86 @@ export function getDkEncyclopediaStrings(
             'Recuperator returns the cannon to battery as the autoloader or loader rams the next shell.',
         },
       ]
-    : isArchery
+    : isOrdnance
       ? [
           {
             plateKey: 'comic_1_ready',
-            title: 'Full-Draw Storage',
+            title: 'Hydraulic Spin-Up & Cam Lock',
             caption:
-              'Flexed split limbs store elastic energy as cams settle cleanly against the draw stop.',
+              'Twin hydraulic motors accelerate the 7-barrel rotor as bolts chamber 30x173mm rounds along the helical cam.',
           },
           {
             plateKey: 'comic_2_ignition',
-            title: 'Torque-Free Release',
+            title: '9-O-Clock Electric Ignition',
             caption:
-              'Latch releases cleanly while synchronized cams uncoil full tension into the shaft.',
+              'At top firing position, the electric primer fires the DU-core API projectile at 1,010 m/s.',
           },
           {
             plateKey: 'comic_3_eject',
-            title: 'Power Stroke & Clearance',
+            title: 'Helical Cam Unlock & Extract',
             caption:
-              'Carbon projectile accelerates straight while drop-away forks or track clear vanes.',
+              'After 180° blowdown, the stationary helical track unlocks the bolt and draws out the spent aluminum case.',
           },
           {
             plateKey: 'comic_4_reload',
-            title: 'Damped Brace Return',
+            title: 'Closed-Loop Drum Return',
             caption:
-              'String stops and harmonic dampers dissipate shock as limbs settle back to brace.',
+              'Empty cases route back into the 1,150-round helical drum to preserve aircraft CG while fresh rounds feed in.',
           },
         ]
-      : [
-          {
-            plateKey: 'comic_1_ready',
-            title: 'Locked & Ready',
-            caption:
-              'Round chambered in battery with breech locked and fire-control sear holding energy.',
-          },
-          {
-            plateKey: 'comic_2_ignition',
-            title: 'Ignition & Acceleration',
-            caption:
-              'Firing pin strikes primer; peak chamber pressure drives the bullet down the bore.',
-          },
-          {
-            plateKey: 'comic_3_eject',
-            title: 'Unlock & Ejection',
-            caption:
-              'After safe blowdown, the action unlocks rearward to extract and eject spent brass.',
-          },
-          {
-            plateKey: 'comic_4_reload',
-            title: 'Feed & Return to Battery',
-            caption:
-              'Recoil spring drives the bolt forward, chambering the next round into positive lockup.',
-          },
-        ];
+      : isArchery
+        ? [
+            {
+              plateKey: 'comic_1_ready',
+              title: 'Full-Draw Storage',
+              caption:
+                'Flexed split limbs store elastic energy as cams settle cleanly against the draw stop.',
+            },
+            {
+              plateKey: 'comic_2_ignition',
+              title: 'Torque-Free Release',
+              caption:
+                'Latch releases cleanly while synchronized cams uncoil full tension into the shaft.',
+            },
+            {
+              plateKey: 'comic_3_eject',
+              title: 'Power Stroke & Clearance',
+              caption:
+                'Carbon projectile accelerates straight while drop-away forks or track clear vanes.',
+            },
+            {
+              plateKey: 'comic_4_reload',
+              title: 'Damped Brace Return',
+              caption:
+                'String stops and harmonic dampers dissipate shock as limbs settle back to brace.',
+            },
+          ]
+        : [
+            {
+              plateKey: 'comic_1_ready',
+              title: 'Locked & Ready',
+              caption:
+                'Round chambered in battery with breech locked and fire-control sear holding energy.',
+            },
+            {
+              plateKey: 'comic_2_ignition',
+              title: 'Ignition & Acceleration',
+              caption:
+                'Firing pin strikes primer; peak chamber pressure drives the bullet down the bore.',
+            },
+            {
+              plateKey: 'comic_3_eject',
+              title: 'Unlock & Ejection',
+              caption:
+                'After safe blowdown, the action unlocks rearward to extract and eject spent brass.',
+            },
+            {
+              plateKey: 'comic_4_reload',
+              title: 'Feed & Return to Battery',
+              caption:
+                'Recoil spring drives the bolt forward, chambering the next round into positive lockup.',
+            },
+          ];
 
   return {
     seriesWordmark: 'DIGITAL ARMORY · VISUAL ENCYCLOPEDIA',
@@ -757,49 +934,65 @@ export function getDkEncyclopediaStrings(
     a4EditionTag: 'DK ENCYCLOPEDIA',
     seriesSubtitle: isTank
       ? 'DEFINITIVE VISUAL ENCYCLOPEDIA OF MAIN BATTLE TANKS'
-      : isArchery
-        ? 'COMPOUND ARCHERY MECHANICAL ARCHIVE'
-        : 'DEFINITIVE VISUAL HISTORY OF FIREARMS MECHANICS',
+      : isOrdnance
+        ? 'DEFINITIVE VISUAL ENCYCLOPEDIA OF AERO ROTARY ORDNANCE'
+        : isArchery
+          ? 'COMPOUND ARCHERY MECHANICAL ARCHIVE'
+          : 'DEFINITIVE VISUAL HISTORY OF FIREARMS MECHANICS',
     factFileHeading: 'SPECIFICATION LEDGER · FACT FILE',
     scaleRulerKicker: 'TRUE-TO-SCALE DIMENSIONS & SILHOUETTE COMPARISON',
     loupesHeading: isTank
       ? 'BREECH, RECOIL & OPTICS LOUPES · 2.0×–3.0×'
-      : isArchery
-        ? 'OPTICAL MECHANISM LOUPES · 2.0×–3.0×'
-        : 'LOCKING & FIRE-CONTROL LOUPES · 2.0×–3.0×',
+      : isOrdnance
+        ? '7-BARREL ROTOR, HELICAL CAM & DRUM LOUPES · 2.0×–3.0×'
+        : isArchery
+          ? 'OPTICAL MECHANISM LOUPES · 2.0×–3.0×'
+          : 'LOCKING & FIRE-CONTROL LOUPES · 2.0×–3.0×',
     loupesSub: isTank
       ? 'Magnified inspection of sliding wedge breech, recoil brakes, thermal FCS, and ammo stowage'
-      : isArchery
-        ? 'Magnified inspection of cams, flex limbs, release latches, and arrow track'
-        : 'Magnified studio inspection of breech lockup, operating drive, fire control, and feed path',
+      : isOrdnance
+        ? 'Magnified inspection of the 7-barrel cluster, 360° helical cam housing, hydraulic drive, and 1,150-rd drum'
+        : isArchery
+          ? 'Magnified inspection of cams, flex limbs, release latches, and arrow track'
+          : 'Magnified studio inspection of breech lockup, operating drive, fire control, and feed path',
     spread1Section: 'GATEFOLD ANATOMY & KEY FEATURES',
     spread2LeftKicker: 'HISTORICAL R&D CHRONICLE',
     spread2RightKicker: isTank
       ? 'INSIDE THE TANK & 1:10 MAIN-GUN ORDNANCE'
-      : isArchery
-        ? 'INSIDE THE MECHANISM & PROJECTILE DYNAMICS'
-        : 'INSIDE THE MECHANISM & 1:1 AMMUNITION',
+      : isOrdnance
+        ? 'INSIDE THE CANNON & 30x173mm API ORDNANCE'
+        : isArchery
+          ? 'INSIDE THE MECHANISM & PROJECTILE DYNAMICS'
+          : 'INSIDE THE MECHANISM & 1:1 AMMUNITION',
     spread3Kicker: 'EXPLODED MECHANICAL BLUEPRINT',
     spread3Title: isTank
       ? '100% Exploded Armored Architecture & Six-Role Subsystem Map'
-      : isArchery
-        ? '100% Exploded Architecture & Six-Role Subsystem Map'
-        : '100% Exploded Mechanical Blueprint & Six-Role Engineering Map',
+      : isOrdnance
+        ? '100% Exploded Rotary Cannon System & Six-Role Aero Ordnance Map'
+        : isArchery
+          ? '100% Exploded Architecture & Six-Role Subsystem Map'
+          : '100% Exploded Mechanical Blueprint & Six-Role Engineering Map',
     spread4LeftKicker: isTank
       ? 'MAIN-GUN RECOIL & LOADING CYCLE'
-      : isArchery
-        ? 'DRAW & LAUNCH KINEMATIC CYCLE'
-        : 'CYCLE OF OPERATION & KINEMATICS',
+      : isOrdnance
+        ? '7-BARREL 3,900 RPM ROTARY FIRING CYCLE'
+        : isArchery
+          ? 'DRAW & LAUNCH KINEMATIC CYCLE'
+          : 'CYCLE OF OPERATION & KINEMATICS',
     spread4RightKicker: isTank
       ? 'ARMOR MAINTENANCE MANUAL, STOPPAGES & ARCHIVE SEAL'
-      : isArchery
-        ? 'ARCHERY SERVICE MANUAL & MUSEUM ARCHIVE SEAL'
-        : 'FIELD-STRIP MANUAL, STOPPAGES & ARCHIVE SEAL',
+      : isOrdnance
+        ? 'AERO ORDNANCE MAINTENANCE MANUAL, STOPPAGES & ARCHIVE SEAL'
+        : isArchery
+          ? 'ARCHERY SERVICE MANUAL & MUSEUM ARCHIVE SEAL'
+          : 'FIELD-STRIP MANUAL, STOPPAGES & ARCHIVE SEAL',
     a4RightManualKicker: isTank
       ? 'ARMOR SERVICE & ARCHIVE'
-      : isArchery
-        ? 'SERVICE MANUAL & ARCHIVE'
-        : 'FIELD-STRIP & ARCHIVE',
+      : isOrdnance
+        ? 'ORDNANCE SERVICE & ARCHIVE'
+        : isArchery
+          ? 'SERVICE MANUAL & ARCHIVE'
+          : 'FIELD-STRIP & ARCHIVE',
     chronicleHeading: 'Four-Act Engineering Genesis',
     breakthroughsQuoteKicker: 'DEFINING ENGINEERING BREAKTHROUGHS',
     elevationsHeading: 'ORTHOGRAPHIC ELEVATION PROFILES',
@@ -808,29 +1001,39 @@ export function getDkEncyclopediaStrings(
     rightProfileLabel: 'RIGHT ELEVATION PROFILE',
     cutawayHeading: isTank
       ? 'Longitudinal Armored Hull & Turret Cutaway'
-      : isArchery
-        ? 'Longitudinal Structural Cross-Section'
-        : '45° Solid Metal Longitudinal Cutaway',
+      : isOrdnance
+        ? 'Longitudinal 7-Barrel Housing & 1,150-Rd Drum Cutaway'
+        : isArchery
+          ? 'Longitudinal Structural Cross-Section'
+          : '45° Solid Metal Longitudinal Cutaway',
     cutawaySub: isTank
       ? 'Two-pass stencil section exposing composite armor arrays, turret fighting bay, breech, and powerpack'
-      : isArchery
-        ? 'Two-pass stencil cutaway exposing 7075-T6 truss walls, cam channels, and flight track'
-        : 'Two-pass stencil section exposing bore wall thickness, locking recesses, gas path, and sear engagement',
+      : isOrdnance
+        ? 'Two-pass stencil cutaway exposing the 7-bolt rotary housing, helical cam drum, linkless chutes, and 1,150-rd drum'
+        : isArchery
+          ? 'Two-pass stencil cutaway exposing 7075-T6 truss walls, cam channels, and flight track'
+          : 'Two-pass stencil section exposing bore wall thickness, locking recesses, gas path, and sear engagement',
     cartridgeHeading: isTank
       ? '1:10 Main-Gun Tank Ordnance Cutaway'
-      : isArchery
-        ? 'Carbon Projectile Precision Cutaway'
-        : '1:1 Actual-Size Service Cartridge',
+      : isOrdnance
+        ? '30x173mm PGU-14/B API Cannon Round Cutaway'
+        : isArchery
+          ? 'Carbon Projectile Precision Cutaway'
+          : '1:1 Actual-Size Service Cartridge',
     ballisticsHeading: isTank
       ? 'Main Gun Pressure P(t) & Velocity V(t)'
-      : isArchery
-        ? 'Draw-Force F(x) & Launch Velocity V(t)'
-        : 'SAAMI/CIP Pressure P(t) & Velocity V(t)',
+      : isOrdnance
+        ? '30mm Rotary Cannon Pressure P(t) & Velocity V(t)'
+        : isArchery
+          ? 'Draw-Force F(x) & Launch Velocity V(t)'
+          : 'SAAMI/CIP Pressure P(t) & Velocity V(t)',
     explodedHeading: isTank
       ? '100% Collision-Free Exploded Tank Blueprint'
-      : isArchery
-        ? '100% Collision-Free Exploded Archery Blueprint'
-        : '100% Collision-Free Exploded Mechanical Blueprint',
+      : isOrdnance
+        ? '100% Collision-Free Exploded 30mm Rotary Cannon Blueprint'
+        : isArchery
+          ? '100% Collision-Free Exploded Archery Blueprint'
+          : '100% Collision-Free Exploded Mechanical Blueprint',
     explodedSub:
       '0.35pt architectural leader lines map key moving assemblies directly to concise DK mechanical micro-copy',
     functionalRolesHeading: 'Six-Role Functional Subsystem Color Map',
@@ -839,28 +1042,38 @@ export function getDkEncyclopediaStrings(
       `${partsCount} Parametric CSG Components · ${trisFormatted} Manifold Triangles`,
     cycleSequenceHeading: isTank
       ? 'Four-Phase Main Gun Firing & Recoil Strip'
-      : isArchery
-        ? 'Four-Phase Slow-Motion Launch Sequence'
-        : 'Four-Phase Action Sequence Cutaway Strip',
+      : isOrdnance
+        ? 'Four-Phase 7-Barrel Rotary Ignition & Return Strip'
+        : isArchery
+          ? 'Four-Phase Slow-Motion Launch Sequence'
+          : 'Four-Phase Action Sequence Cutaway Strip',
     actionPhases: actionPhasesEn,
     cycle7Heading: isTank
       ? '7-Stage Main Gun Firing, Recoil & Loading Breakdown'
-      : isArchery
-        ? '7-Stage Elastic Storage & Power-Stroke Breakdown'
-        : '7-Stage Firing, Locking & Recoil Breakdown',
+      : isOrdnance
+        ? '7-Stage 360° Helical Cam, Firing & Closed-Loop Drum Breakdown'
+        : isArchery
+          ? '7-Stage Elastic Storage & Power-Stroke Breakdown'
+          : '7-Stage Firing, Locking & Recoil Breakdown',
     fieldStripHeading: isTank
       ? 'Armored Depot Maintenance Sequence (DAG)'
-      : isArchery
-        ? 'Authorized Archery Strip Sequence (DAG)'
-        : 'Guided Military Field-Strip Order (DAG)',
+      : isOrdnance
+        ? 'Aero Armament Depot Maintenance Sequence (DAG)'
+        : isArchery
+          ? 'Authorized Archery Strip Sequence (DAG)'
+          : 'Guided Military Field-Strip Order (DAG)',
     malfunctionsHeading: isTank
       ? 'Main Gun & Loading Stoppage Diagnostics'
-      : isArchery
-        ? 'Archery Timing & Anti-Dry-Fire Diagnostics'
-        : 'Malfunction & Safety Stoppage Reference',
+      : isOrdnance
+        ? '30mm Rotary Cannon & Linkless Feed Diagnostics'
+        : isArchery
+          ? 'Archery Timing & Anti-Dry-Fire Diagnostics'
+          : 'Malfunction & Safety Stoppage Reference',
     energyLadderHeading: isTank
       ? 'Heavy Armor Ordnance Energy Scale (MJ)'
-      : 'Vault Muzzle Kinetic Energy Scale (J)',
+      : isOrdnance
+        ? '30x173mm Aero Ordnance Energy Scale (kJ)'
+        : 'Vault Muzzle Kinetic Energy Scale (J)',
     exLibrisHeading: 'EX LIBRIS · MUSEUM ARCHIVE SEAL',
     qrCompanionHeading: 'Scan for Live Interactive 3D Cutaway Workbench',
     qrCompanionSub:
