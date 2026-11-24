@@ -426,6 +426,7 @@ export const DEAGLE_PARTS: WeaponPartSpec[] = [
     nameEn: 'Wrap-Around Textured Black IMI/MR Rubber Grip',
     group: 'frame',
     material: 'polymer_frame',
+    isShell: true,
     assembledPos: [0, 0, 0],
     explodeSteps: [{ range: [0.7, 0.88], offset: [-6.6, -1.8, 0] }],
     calloutDir: 'down',

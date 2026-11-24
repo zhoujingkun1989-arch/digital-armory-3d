@@ -63,7 +63,9 @@ import {
   type SectionCapSyncFn,
   StencilSectionCap,
   disposeSectionStencilPassMaterials,
-  syncCantedLocalZSectionPlane,
+  getSideMountedShellLocalZOffset,
+  isThinWallCutawayShell,
+  syncLocalZOffsetSectionPlane,
 } from './StencilSectionCap';
 
 export { SECTION_CUT_PLANES };
@@ -408,21 +410,49 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
     ]);
 
     const capSyncRef = useRef<SectionCapSyncFn | null>(null);
-    // Canted shell parts (e.g. AN-94 15°-canted plum magazine) slice along their own tilted local Z=0 symmetry plane in Z-axis mode
+    // Canted shell parts (e.g. AN-94 15°-canted plum magazine) and left-flank side-hung drums
+    // (e.g. MG 42 Gurttrommel 34 at Z = -6.4 cm) slice along their own local Z plane in Z-axis mode.
     const isCantedShell =
       sectionCutAxis === 'z' &&
       !!part.isShell &&
       Math.abs(part.assembledRot?.[0] ?? 0) > 1e-4;
+    const sideMountedLocalZOffset =
+      sectionCutAxis === 'z' && !!part.isShell
+        ? getSideMountedShellLocalZOffset(part.id)
+        : null;
+    const usesPerPartLocalZPlane =
+      isCantedShell || sideMountedLocalZOffset !== null;
     const activeClipPlanes = useMemo(() => {
       if (sectionCutAxis === 'box') return SECTION_CUT_BOX_PLANES;
-      return isCantedShell
+      return usesPerPartLocalZPlane
         ? [new THREE.Plane(new THREE.Vector3(0, 0, -1), 0)]
         : SECTION_CUT_PLANES;
-    }, [isCantedShell, sectionCutAxis]);
+    }, [usesPerPartLocalZPlane, sectionCutAxis]);
     useEffect(() => {
-      if (!isCantedShell) return;
+      if (!usesPerPartLocalZPlane) return;
       return () => disposeSectionStencilPassMaterials(activeClipPlanes);
-    }, [isCantedShell, activeClipPlanes]);
+    }, [usesPerPartLocalZPlane, activeClipPlanes]);
+
+    // Ensure K98k charger stripper clip starts stowed cleanly when bolt is closed at t = 0
+    useEffect(() => {
+      const grp = groupRef.current;
+      if (!grp || part.id !== 'k98k_stripper_clip') return;
+      const appState = useAppStore.getState();
+      const clock = playbackClock.getState();
+      const fieldStripOn =
+        appState.screen === 'workbench' &&
+        appState.fieldStripActive &&
+        appState.mode === 'explode';
+      const selectedNow =
+        appState.screen === 'workbench' && appState.selectedPartId === part.id;
+      grp.visible =
+        fieldStripOn ||
+        selectedNow ||
+        (appState.mode === 'firing'
+          ? clock.animatedFireProgress >= 0.55 &&
+            clock.animatedFireProgress <= 0.79
+          : clock.animatedProgress > 0.04);
+    }, [part.id, isSelected]);
 
     useFrame(() => {
       const grp = groupRef.current;
@@ -487,6 +517,20 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       const p = poseRef.current;
       grp.position.set(p.px, p.py, p.pz);
       grp.rotation.set(p.rx, p.ry, p.rz);
+
+      // K98k 5-round brass stripper clip stows cleanly while the Mauser 98 bolt is closed & locked,
+      // revealing automatically during exploded disassembly (t > 0.04), field-strip, selection, or open-bolt reload.
+      if (part.id === 'k98k_stripper_clip') {
+        const isPartSelected =
+          appState.screen === 'workbench' && appState.selectedPartId === part.id;
+        grp.visible =
+          isFieldStrip ||
+          isPartSelected ||
+          (isFiring
+            ? clock.animatedFireProgress >= 0.55 &&
+              clock.animatedFireProgress <= 0.79
+            : clock.animatedProgress > 0.04);
+      }
 
       const u = armoryUniforms;
       if (armoryFeatures.spring) {
@@ -555,12 +599,13 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       }
 
       const syncCap = capSyncRef.current;
-      if (isCantedShell || syncCap) {
+      if (usesPerPartLocalZPlane || syncCap) {
         grp.updateWorldMatrix(true, false);
-        if (isCantedShell) {
-          syncCantedLocalZSectionPlane(
+        if (usesPerPartLocalZPlane) {
+          syncLocalZOffsetSectionPlane(
             grp.matrixWorld,
             SECTION_CUT_PLANES[0],
+            sideMountedLocalZOffset ?? 0,
             activeClipPlanes[0]
           );
         }
@@ -721,7 +766,8 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       isSectionCutShell &&
       !isXrayHousing &&
       !isGhostByIsolate &&
-      sectionCutAxis !== 'box';
+      sectionCutAxis !== 'box' &&
+      !isThinWallCutawayShell(part.id);
 
     // 1:1 Heavy Armor physical surface calibration:
     // Firearms use gun-oil clearcoat & CLP iridescence (`nitride_steel` clearcoat=0.28),
@@ -901,6 +947,7 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
               geometry={geometry}
               material={part.material}
               group={part.group}
+              partId={part.id}
               clippingPlanes={activeClipPlanes}
               engineeringRole={engineeringTint ? partRole : null}
               scaleProfile={

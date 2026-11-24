@@ -122,69 +122,69 @@ export const ARMORY_ENVIRONMENTS: Readonly<
       'Deep gunmetal obsidian void with a crisp cool-steel key and warm tungsten grazing rims that make nitrided steel, hard-anodized aluminium and brass gleam.',
     tone: 'dark',
     background: '#0b1017',
-    fog: { color: '#0e1014', near: 420, far: 555 },
-    ambient: { color: '#d4d8de', intensity: 0.14 },
+    fog: { color: '#0c111a', near: 420, far: 555 },
+    ambient: { color: '#d8e2f0', intensity: 0.18 },
     hemisphere: {
-      skyColor: '#d8dce2',
-      groundColor: '#121418',
-      intensity: 0.42,
+      skyColor: '#dce6f5',
+      groundColor: '#192230',
+      intensity: 0.54,
     },
-    keyLight: { color: '#fff9f2', intensity: 2.55, position: [14, 46, 28] },
-    rimLight: { color: '#ffe4c4', intensity: 1.55, position: [-22, 26, -30] },
-    fillLight: { color: '#dce4f0', intensity: 0.78, position: [-24, 12, 28] },
-    topLight: { color: '#ffffff', intensity: 0.88, position: [0, 42, 4] },
-    underLight: { color: '#6b7280', intensity: 0.36, position: [12, -16, -20] },
-    environmentBackground: '#07080a',
+    keyLight: { color: '#fff9f2', intensity: 2.75, position: [14, 46, 28] },
+    rimLight: { color: '#ffe8ce', intensity: 2.08, position: [-22, 26, -30] },
+    fillLight: { color: '#dce8f8', intensity: 1.04, position: [-24, 12, 28] },
+    topLight: { color: '#ffffff', intensity: 1.08, position: [0, 42, 4] },
+    underLight: { color: '#8898b0', intensity: 0.48, position: [12, -16, -20] },
+    environmentBackground: '#090d14',
     lightformers: [
       {
-        color: '#e8f1ff',
-        intensity: 2.6,
+        color: '#f4f8ff',
+        intensity: 3.1,
         position: [0, 15, 0],
         rotation: [Math.PI / 2, 0, 0],
-        scale: [48, 6],
+        scale: [54, 8],
       },
       {
-        color: '#d4e3ff',
-        intensity: 2.1,
-        position: [12, 8, 24],
-        scale: [28, 9],
+        color: '#eef5ff',
+        intensity: 2.85,
+        position: [6, 7.5, 24],
+        scale: [42, 8.5],
       },
       {
-        color: '#9fb3cf',
-        intensity: 1.1,
-        position: [-14, 5, 22],
-        scale: [24, 8],
+        color: '#cfdcf0',
+        intensity: 1.45,
+        position: [-8, -3.5, 24],
+        scale: [40, 6.5],
       },
       {
-        color: '#ffb066',
-        intensity: 2.8,
-        position: [-12, 7, -24],
-        scale: [30, 5],
+        color: '#f0f6ff',
+        intensity: 2.65,
+        position: [-6, 7.5, -24],
+        scale: [42, 8.5],
       },
       {
-        color: '#ffc58a',
-        intensity: 1.9,
-        position: [14, 4, -22],
-        scale: [24, 4],
+        color: '#ffb873',
+        intensity: 2.85,
+        position: [-14, 11, -24],
+        scale: [32, 5.5],
       },
       {
-        color: '#ffd3a1',
-        intensity: 1.6,
-        position: [28, 4, 0],
-        scale: [22, 6],
+        color: '#ffd6aa',
+        intensity: 1.95,
+        position: [28, 5, 0],
+        scale: [24, 7],
       },
       {
-        color: '#c7dcff',
-        intensity: 1.2,
-        position: [-28, 4, 0],
-        scale: [22, 6],
+        color: '#d4e5ff',
+        intensity: 1.65,
+        position: [-28, 5, 0],
+        scale: [24, 7],
       },
       {
-        color: '#1a2330',
-        intensity: 0.7,
+        color: '#222d3e',
+        intensity: 0.9,
         position: [0, -12, 0],
         rotation: [-Math.PI / 2, 0, 0],
-        scale: [52, 28],
+        scale: [54, 30],
       },
     ],
     toneMappingExposure: 1.28,
@@ -223,62 +223,68 @@ export const ARMORY_ENVIRONMENTS: Readonly<
     tone: 'dark',
     background: '#14181f',
     fog: { color: '#14181f', near: 420, far: 555 },
-    ambient: { color: '#c8b9a4', intensity: 0.1 },
-    hemisphere: { skyColor: '#ffe2bf', groundColor: '#0d1015', intensity: 0.34 },
-    keyLight: { color: '#ffddb8', intensity: 2.1, position: [12, 44, 30] },
-    rimLight: { color: '#90b6e8', intensity: 1.05, position: [-30, 18, -30] },
-    fillLight: { color: '#82a9d8', intensity: 0.52, position: [-26, 10, 26] },
-    topLight: { color: '#ffe4c2', intensity: 0.68, position: [0, 38, 0] },
-    underLight: { color: '#3d3a36', intensity: 0.2, position: [8, -16, 22] },
-    environmentBackground: '#0b0d11',
+    ambient: { color: '#d0c4b4', intensity: 0.15 },
+    hemisphere: { skyColor: '#ffe7cb', groundColor: '#151921', intensity: 0.45 },
+    keyLight: { color: '#ffe3c4', intensity: 2.38, position: [12, 44, 30] },
+    rimLight: { color: '#a8cbf5', intensity: 1.42, position: [-30, 18, -30] },
+    fillLight: { color: '#9ec0e8', intensity: 0.72, position: [-26, 10, 26] },
+    topLight: { color: '#ffe9cc', intensity: 0.88, position: [0, 38, 0] },
+    underLight: { color: '#5a5854', intensity: 0.34, position: [8, -16, 22] },
+    environmentBackground: '#0d1016',
     lightformers: [
       {
-        color: '#ffd6aa',
-        intensity: 3.0,
+        color: '#ffe0bc',
+        intensity: 3.1,
         position: [0, 15, -4],
         rotation: [Math.PI / 2, 0, 0],
-        scale: [54, 4],
+        scale: [54, 5.5],
       },
       {
-        color: '#ffd6aa',
-        intensity: 2.6,
+        color: '#f4f7fc',
+        intensity: 2.8,
         position: [0, 15, 6],
         rotation: [Math.PI / 2, 0, 0],
-        scale: [54, 4],
+        scale: [54, 5.5],
       },
       {
-        color: '#7ea6d8',
-        intensity: 1.8,
-        position: [-16, 6, 22],
-        scale: [26, 10],
+        color: '#eef3fa',
+        intensity: 2.4,
+        position: [6, 7.5, 24],
+        scale: [42, 8.5],
       },
       {
-        color: '#7ea6d8',
-        intensity: 1.5,
-        position: [16, 6, -22],
-        scale: [26, 10],
+        color: '#b4c6dc',
+        intensity: 1.35,
+        position: [-8, -3.5, 24],
+        scale: [40, 6.5],
       },
       {
-        color: '#ffe7c7',
+        color: '#d8e6f8',
+        intensity: 2.25,
+        position: [-6, 7.5, -24],
+        scale: [42, 8.5],
+      },
+      {
+        color: '#ffd9b0',
         intensity: 1.6,
-        position: [14, 8, 24],
-        scale: [24, 8],
+        position: [28, 4.5, 0],
+        scale: [22, 6.5],
       },
       {
-        color: '#ffcf9a',
-        intensity: 1.3,
-        position: [28, 4, 0],
-        scale: [20, 6],
+        color: '#a8c4e8',
+        intensity: 1.4,
+        position: [-28, 4.5, 0],
+        scale: [22, 6.5],
       },
       {
-        color: '#2a2622',
-        intensity: 0.8,
+        color: '#2c2925',
+        intensity: 0.9,
         position: [0, -12, 0],
         rotation: [-Math.PI / 2, 0, 0],
         scale: [52, 28],
       },
     ],
-    toneMappingExposure: 1.14,
+    toneMappingExposure: 1.18,
     postfx: { bloomStrength: 0.3, gtaoIntensity: 0.92 },
     grid: { cellColor: '#20262f', sectionColor: '#323b48', fadeDistance: 150 },
     contactShadowOpacity: 0.58,
@@ -1758,26 +1764,42 @@ export function paintHeavyArmorHangarAlbedo(
     ctx.fillRect(gx, gy, gw, gh);
   }
 
-  // Subtle poured-concrete radial overhead illumination & outer apron darkening
+  // Subtle poured-concrete radial overhead illumination & deep outer apron vignette so edges vanish smoothly
   const floorGrad = ctx.createRadialGradient(
     w * 0.5,
     h * 0.5,
     w * 0.07,
     w * 0.5,
     h * 0.5,
-    w * 0.54
+    w * 0.52
   );
   floorGrad.addColorStop(
     0,
-    isLight ? 'rgba(255,255,255,0.16)' : 'rgba(186,204,224,0.075)'
+    isLight ? 'rgba(255,255,255,0.16)' : 'rgba(186,204,224,0.08)'
   );
   floorGrad.addColorStop(
-    0.7,
-    isLight ? 'rgba(180,192,206,0.02)' : 'rgba(14,18,24,0.14)'
+    0.58,
+    isLight
+      ? 'rgba(180,192,206,0.02)'
+      : isBench
+        ? 'rgba(18,21,26,0.22)'
+        : 'rgba(11,15,22,0.18)'
+  );
+  floorGrad.addColorStop(
+    0.84,
+    isLight
+      ? 'rgba(40,52,68,0.08)'
+      : isBench
+        ? 'rgba(14,17,22,0.58)'
+        : 'rgba(8,12,18,0.52)'
   );
   floorGrad.addColorStop(
     1,
-    isLight ? 'rgba(30,41,59,0.12)' : 'rgba(4,6,10,0.44)'
+    isLight
+      ? 'rgba(30,41,59,0.14)'
+      : isBench
+        ? 'rgba(12,15,20,0.86)'
+        : 'rgba(6,9,14,0.82)'
   );
   ctx.fillStyle = floorGrad;
   ctx.fillRect(0, 0, w, h);
@@ -2432,11 +2454,13 @@ export function paintHeavyArmorHangarAlpha(
   const img = ctx.getImageData(0, 0, w, h);
   const data = img.data;
 
-  // Inner full-opacity rounded rect encloses the entire 18 m × 12 m marked bay & hazard stripes
-  const innerHalfX = S.widthCm * 0.5 + 15; // 915 cm
-  const innerHalfZ = S.depthCm * 0.5 + 8; // 608 cm
-  const cornerR = 175;
-  const featherWidth = Math.max(120, S.featherMarginCm - 32); // ~228 cm smooth C2 dissolve
+  // Inner full-opacity rounded rect encloses the active turntable pit & central depot bay,
+  // transitioning smoothly via combined rounded-box + wide elliptical radial falloff so neither
+  // side edges nor the grazing rear horizon ever show a hard rectangular cutoff in gunsmith_bench.
+  const innerHalfX = S.widthCm * 0.5 - 35; // 865 cm
+  const innerHalfZ = S.depthCm * 0.5 - 45; // 555 cm
+  const cornerR = 320;
+  const featherWidth = Math.max(180, S.featherMarginCm + 38); // ~298 cm ultra-soft C2 dissolve
 
   const invW = 1 / Math.max(1, w);
   const invH = 1 / Math.max(1, h);
@@ -2475,10 +2499,19 @@ export function paintHeavyArmorHangarAlpha(
       const quintic = t * t * t * (t * (t * 6 - 15) + 10);
       let alpha = 1 - quintic;
 
-      // Guarantee absolute zero taper at the very outer 28 cm geometric perimeter
+      // Smooth elliptical outer radial fade so corners and grazing rear horizon dissolve seamlessly
+      const rEllip = Math.hypot(
+        cmX / (halfTotalW * 0.96),
+        cmZ / (halfTotalD * 0.94)
+      );
+      const radT = THREE.MathUtils.clamp((rEllip - 0.64) / 0.36, 0, 1);
+      const radFade = 1 - radT * radT * radT * (radT * (radT * 6 - 15) + 10);
+      alpha *= radFade;
+
+      // Guarantee absolute zero taper at the very outer 32 cm geometric perimeter
       const marginX = halfTotalW - Math.abs(cmX);
       const marginZ = halfTotalD - Math.abs(cmZ);
-      const edgeT = THREE.MathUtils.clamp(Math.min(marginX, marginZ) / 28, 0, 1);
+      const edgeT = THREE.MathUtils.clamp(Math.min(marginX, marginZ) / 32, 0, 1);
       alpha *= edgeT * edgeT * (3 - 2 * edgeT);
 
       const byte = Math.max(0, Math.min(255, Math.round(alpha * 255)));
@@ -2628,6 +2661,70 @@ export interface ArmoryStudioEnvironmentProps {
   contextEpoch?: number;
 }
 
+export interface StudioCycloramaPalette {
+  zenith: string;
+  horizon: string;
+  keyGlow: string;
+  nadir: string;
+  keyGlowStrength: number;
+}
+
+/**
+ * Resolves the radial studio cyclorama backdrop palette for a preset & weapon scale:
+ * - `tactical_vault` small arms: subtle `#1d2d44` center key glow -> `#070b12` outer vignette
+ *   so dark parkerized & nitrided firearms separate crisply from the backdrop.
+ * - `gunsmith_bench` small arms: warm charcoal-amber studio backlight glow -> deep slate vignette;
+ *   heavy armor harmonizes with the feathered concrete depot floor so zero horizon seam appears.
+ * - `blueprint_daylight`: clean, neutral museum daylight cyclorama.
+ */
+export function getStudioCycloramaPalette(
+  preset: ArmoryEnvironmentPreset,
+  scaleProfile: WeaponScaleProfile = 'rifle'
+): StudioCycloramaPalette {
+  const isTank = scaleProfile === 'main_battle_tank';
+  if (preset === 'tactical_vault') {
+    return isTank
+      ? {
+          zenith: '#070b12',
+          horizon: '#141c29',
+          keyGlow: '#1a273b',
+          nadir: '#080c12',
+          keyGlowStrength: 0.42,
+        }
+      : {
+          zenith: '#070b12',
+          horizon: '#121c2c',
+          keyGlow: '#1d2d44',
+          nadir: '#070b12',
+          keyGlowStrength: 0.92,
+        };
+  }
+  if (preset === 'gunsmith_bench') {
+    return isTank
+      ? {
+          zenith: '#0f1319',
+          horizon: '#191d24',
+          keyGlow: '#20242c',
+          nadir: '#12151b',
+          keyGlowStrength: 0.36,
+        }
+      : {
+          zenith: '#090c11',
+          horizon: '#1d1c1b',
+          keyGlow: '#2c2926',
+          nadir: '#090b0f',
+          keyGlowStrength: 0.78,
+        };
+  }
+  return {
+    zenith: '#d4dde9',
+    horizon: '#edf2f8',
+    keyGlow: '#f5f8fc',
+    nadir: '#ced8e5',
+    keyGlowStrength: 0.28,
+  };
+}
+
 const STUDIO_BACKDROP_VERTEX = /* glsl */ `
   varying vec3 vDir;
   void main() {
@@ -2639,17 +2736,25 @@ const STUDIO_BACKDROP_VERTEX = /* glsl */ `
 const STUDIO_BACKDROP_FRAGMENT = /* glsl */ `
   uniform vec3 uZenithColor;
   uniform vec3 uHorizonColor;
+  uniform vec3 uKeyGlowColor;
   uniform vec3 uNadirColor;
+  uniform float uKeyGlowStrength;
   varying vec3 vDir;
   void main() {
-    float y = clamp(vDir.y, -1.0, 1.0);
+    vec3 dir = normalize(vDir);
+    float y = clamp(dir.y, -1.0, 1.0);
     // Soft commercial tabletop studio cyclorama glow around eye-level horizon, gently vignetting overhead & floor
-    float horizonBand = exp(-pow((y - 0.04) / 0.34, 2.0));
+    float horizonBand = exp(-pow((y - 0.03) / 0.36, 2.0));
     vec3 baseCol = mix(uNadirColor, uZenithColor, smoothstep(-0.35, 0.55, y));
-    vec3 col = mix(baseCol, uHorizonColor, horizonBand * 0.88);
-    // Subtle studio backlight bloom behind center so dark steel silhouettes cleanly separate from backdrop
-    float radialSpot = exp(-pow(abs(vDir.x) * 1.15, 2.0)) * horizonBand;
-    col += (uHorizonColor - baseCol) * radialSpot * 0.22;
+    vec3 col = mix(baseCol, uHorizonColor, horizonBand * 0.74);
+
+    // Camera-tracked radial studio backlight key pool directly behind the subject
+    float camLen = length(cameraPosition);
+    vec3 behindAxis = camLen > 1e-3 ? (-cameraPosition / camLen) : vec3(0.0, 0.0, -1.0);
+    float alignBehind = max(dot(dir, behindAxis), 0.0);
+    float radialHalo = pow(alignBehind, 3.0) * (0.45 + 0.55 * horizonBand);
+    col = mix(col, uKeyGlowColor, clamp(radialHalo * uKeyGlowStrength, 0.0, 0.96));
+
     gl_FragColor = vec4(col, 1.0);
     #include <tonemapping_fragment>
     #include <colorspace_fragment>
@@ -2732,37 +2837,24 @@ export const ArmoryStudioEnvironment: React.FC<ArmoryStudioEnvironmentProps> =
             depthWrite: false,
             fog: false,
             uniforms: {
-              uZenithColor: { value: new THREE.Color('#090b0f') },
-              uHorizonColor: { value: new THREE.Color('#1c2026') },
-              uNadirColor: { value: new THREE.Color('#080a0d') },
+              uZenithColor: { value: new THREE.Color('#070b12') },
+              uHorizonColor: { value: new THREE.Color('#121c2c') },
+              uKeyGlowColor: { value: new THREE.Color('#1d2d44') },
+              uNadirColor: { value: new THREE.Color('#070b12') },
+              uKeyGlowStrength: { value: 0.92 },
             },
           }),
         []
       );
 
       useEffect(() => {
-        if (preset === 'tactical_vault') {
-          backdropMat.uniforms.uZenithColor.value.set(
-            isTank ? '#080b10' : '#090b0e'
-          );
-          backdropMat.uniforms.uHorizonColor.value.set(
-            isTank ? '#181e27' : '#1e2228'
-          );
-          backdropMat.uniforms.uNadirColor.value.set(
-            isTank ? '#090c11' : '#08090c'
-          );
-        } else if (preset === 'gunsmith_bench') {
-          backdropMat.uniforms.uZenithColor.value.set('#0d0e11');
-          backdropMat.uniforms.uHorizonColor.value.set(
-            isTank ? '#211f1b' : '#25221e'
-          );
-          backdropMat.uniforms.uNadirColor.value.set('#0b0c0e');
-        } else {
-          backdropMat.uniforms.uZenithColor.value.set('#d4dde9');
-          backdropMat.uniforms.uHorizonColor.value.set('#edf2f8');
-          backdropMat.uniforms.uNadirColor.value.set('#ced8e5');
-        }
-      }, [preset, isTank, backdropMat]);
+        const pal = getStudioCycloramaPalette(preset, scaleProfile);
+        backdropMat.uniforms.uZenithColor.value.set(pal.zenith);
+        backdropMat.uniforms.uHorizonColor.value.set(pal.horizon);
+        backdropMat.uniforms.uKeyGlowColor.value.set(pal.keyGlow);
+        backdropMat.uniforms.uNadirColor.value.set(pal.nadir);
+        backdropMat.uniforms.uKeyGlowStrength.value = pal.keyGlowStrength;
+      }, [preset, scaleProfile, backdropMat]);
 
       useEffect(
         () => () => {
@@ -2809,9 +2901,17 @@ export const ArmoryStudioEnvironment: React.FC<ArmoryStudioEnvironmentProps> =
           <fog
             attach="fog"
             args={[
-              env.fog.color,
-              isTank ? 3600 : env.fog.near,
-              isTank ? 5400 : env.fog.far,
+              isTank && preset === 'gunsmith_bench' ? '#13161c' : env.fog.color,
+              isTank
+                ? preset === 'blueprint_daylight'
+                  ? 3600
+                  : 1950
+                : env.fog.near,
+              isTank
+                ? preset === 'blueprint_daylight'
+                  ? 5400
+                  : 4200
+                : env.fog.far,
             ]}
           />
           <mesh
@@ -2825,14 +2925,14 @@ export const ArmoryStudioEnvironment: React.FC<ArmoryStudioEnvironmentProps> =
             name="studio-cyclorama-backdrop"
           />
           <ambientLight
-            intensity={env.ambient.intensity * (isTank ? 0.62 : 1)}
+            intensity={env.ambient.intensity * (isTank ? 0.54 : 1)}
             color={env.ambient.color}
           />
           <hemisphereLight
             args={[
               env.hemisphere.skyColor,
               env.hemisphere.groundColor,
-              env.hemisphere.intensity * (isTank ? 0.74 : 1),
+              env.hemisphere.intensity * (isTank ? 0.62 : 1),
             ]}
             position={[0, 30 * lightScale, 0]}
           />
@@ -2841,7 +2941,7 @@ export const ArmoryStudioEnvironment: React.FC<ArmoryStudioEnvironmentProps> =
             position={
               shadowCfg.position as [number, number, number]
             }
-            intensity={env.keyLight.intensity * (isTank ? 1.24 : 1)}
+            intensity={env.keyLight.intensity * (isTank ? 1.15 : 1)}
             color={env.keyLight.color}
             castShadow
             shadow-mapSize={[shadowCfg.mapSize, shadowCfg.mapSize]}
@@ -2857,22 +2957,22 @@ export const ArmoryStudioEnvironment: React.FC<ArmoryStudioEnvironmentProps> =
           />
           <directionalLight
             position={scaleLightPos(env.rimLight.position)}
-            intensity={env.rimLight.intensity * (isTank ? 1.16 : 1)}
+            intensity={env.rimLight.intensity * (isTank ? 0.92 : 1)}
             color={env.rimLight.color}
           />
           <directionalLight
             position={scaleLightPos(env.fillLight.position)}
-            intensity={env.fillLight.intensity * (isTank ? 0.64 : 1)}
+            intensity={env.fillLight.intensity * (isTank ? 0.56 : 1)}
             color={env.fillLight.color}
           />
           <directionalLight
             position={scaleLightPos(env.topLight.position)}
-            intensity={env.topLight.intensity * (isTank ? 0.62 : 1)}
+            intensity={env.topLight.intensity * (isTank ? 0.55 : 1)}
             color={env.topLight.color}
           />
           <directionalLight
             position={scaleLightPos(env.underLight.position)}
-            intensity={env.underLight.intensity * (isTank ? 0.48 : 1)}
+            intensity={env.underLight.intensity * (isTank ? 0.42 : 1)}
             color={env.underLight.color}
           />
           {/* Immediate procedural fallback while 32-bit Cycles .hdr streams in; unmounted once HDRI binds */}

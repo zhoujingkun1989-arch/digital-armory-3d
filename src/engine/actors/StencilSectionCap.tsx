@@ -44,7 +44,7 @@ export const SECTION_CUT_OFFSET_DEFAULT = 0;
 export const TANK_SECTION_CUT_OFFSET_MIN = -180;
 export const TANK_SECTION_CUT_OFFSET_MAX = 180;
 export const TANK_SECTION_CUT_OFFSET_STEP = 2.0;
-export const TANK_SECTION_HATCH_SCALE = 8;
+export const TANK_SECTION_HATCH_SCALE = 18;
 
 export interface SectionCutRangeSpec {
   min: number;
@@ -332,6 +332,60 @@ export const noRaycast = (): null => null;
 // CNC engineering cross-section style
 // ------------------------------------------------------------------
 
+export type SectionCapMaterialVariant = 'standard' | 'wood_stock' | 'bakelite';
+
+/**
+ * Wood furniture parts (`polymer_frame` non-metallic substrate) that render with
+ * warm cross-cut walnut / laminated beechwood organic grain caps instead of CAD steel-blue.
+ */
+export const WOOD_SECTION_CAP_PART_IDS: ReadonlySet<string> = new Set([
+  'k98k_stock',
+  'k98k_handguard',
+  'garand_walnut_stock',
+  'garand_rear_handguard',
+  'garand_front_handguard',
+  'thompson_buttstock',
+  'thompson_pistol_grip',
+  'thompson_foregrip',
+  'win94_walnut_stock',
+  'win94_forend',
+  'rem870_walnut_stock',
+  'rem870_forend',
+  'vss_wood_stock',
+  'm1911_grip_left',
+  'm1911_grip_right',
+  'p08_grip_left',
+  'p08_grip_right',
+  'python_grip_left',
+  'python_grip_right',
+]);
+
+/**
+ * Phenolic resin / wartime bakelite furniture parts routed to warm marbled chestnut-amber
+ * organic cross-section caps instead of cold nylon-slate CAD hatching.
+ */
+export const BAKELITE_SECTION_CAP_PART_IDS: ReadonlySet<string> = new Set([
+  'mg42_buttstock',
+  'mg42_grip_frame',
+]);
+
+/**
+ * Resolves whether a part should use organic walnut/beech wood or marbled bakelite
+ * cross-section hatching instead of default synthetic polymer/steel CAD hatching.
+ */
+export function resolveSectionCapMaterialVariant(
+  partId?: string | null,
+  kind?: MaterialKind
+): SectionCapMaterialVariant {
+  if (!partId) return 'standard';
+  if (kind !== undefined && kind !== 'polymer_frame') return 'standard';
+  if (WOOD_SECTION_CAP_PART_IDS.has(partId)) return 'wood_stock';
+  if (BAKELITE_SECTION_CAP_PART_IDS.has(partId)) return 'bakelite';
+  if (/walnut|beech|birch|wood/i.test(partId)) return 'wood_stock';
+  if (/bakelite/i.test(partId)) return 'bakelite';
+  return 'standard';
+}
+
 export interface SectionCapStyle {
   /** Solid cross-section albedo (sRGB hex) */
   base: string;
@@ -343,8 +397,12 @@ export interface SectionCapStyle {
   hatchSpacing: number;
   /** Specular highlight strength */
   spec: number;
-  /** 1 = longitudinal brushed-steel grain, 0 = matte polymer stipple */
+  /** 1 = longitudinal brushed-steel grain, 0 = matte polymer/wood */
   brushed: number;
+  /** 0 = crisp ISO 128 CAD hatch, 1 = organic cross-cut wood grain, 0.55 = marbled bakelite */
+  organicGrain: number;
+  /** Resolved semantic material variant for cutaway styling & telemetry */
+  variant: SectionCapMaterialVariant;
 }
 
 const GROUP_HATCH: Record<AssemblyGroupKey, { dir: 1 | -1; spacing: number }> = {
@@ -359,22 +417,52 @@ export function getSectionCapStyle(
   kind: MaterialKind,
   group: AssemblyGroupKey,
   engineeringRole?: EngineeringRole | null,
-  hatchScale = 1
+  hatchScale = 1,
+  partId?: string | null
 ): SectionCapStyle {
   const h = GROUP_HATCH[group] ?? GROUP_HATCH.frame;
   const scaledSpacing = h.spacing * (hatchScale > 0 ? hatchScale : 1);
+  const variant = resolveSectionCapMaterialVariant(partId, kind);
   let style: SectionCapStyle;
   switch (kind) {
     case 'polymer_frame':
-      // Dark fibreglass-reinforced nylon
-      style = {
-        base: '#334155',
-        hatch: '#64748b',
-        hatchDir: h.dir,
-        hatchSpacing: scaledSpacing,
-        spec: 0.08,
-        brushed: 0,
-      };
+      if (variant === 'wood_stock') {
+        // Warm cross-cut oiled walnut / laminated beechwood organic wood-grain hatch
+        style = {
+          base: '#8b5a34',
+          hatch: '#5c371c',
+          hatchDir: h.dir,
+          hatchSpacing: scaledSpacing * 1.18,
+          spec: 0.06,
+          brushed: 0,
+          organicGrain: 1,
+          variant: 'wood_stock',
+        };
+      } else if (variant === 'bakelite') {
+        // Wartime marbled phenolic bakelite amber-chestnut cross-section
+        style = {
+          base: '#7a3f24',
+          hatch: '#4a2110',
+          hatchDir: h.dir,
+          hatchSpacing: scaledSpacing * 1.08,
+          spec: 0.14,
+          brushed: 0,
+          organicGrain: 0.55,
+          variant: 'bakelite',
+        };
+      } else {
+        // Dark fibreglass-reinforced nylon / synthetic rubber
+        style = {
+          base: '#334155',
+          hatch: '#64748b',
+          hatchDir: h.dir,
+          hatchSpacing: scaledSpacing,
+          spec: 0.08,
+          brushed: 0,
+          organicGrain: 0,
+          variant: 'standard',
+        };
+      }
       break;
     case 'follower_orange':
       style = {
@@ -384,6 +472,8 @@ export function getSectionCapStyle(
         hatchSpacing: scaledSpacing,
         spec: 0.12,
         brushed: 0,
+        organicGrain: 0,
+        variant: 'standard',
       };
       break;
     case 'copper_accent':
@@ -395,6 +485,8 @@ export function getSectionCapStyle(
         hatchSpacing: scaledSpacing,
         spec: 0.42,
         brushed: 1,
+        organicGrain: 0,
+        variant: 'standard',
       };
       break;
     case 'nitride_steel':
@@ -410,6 +502,8 @@ export function getSectionCapStyle(
         hatchSpacing: scaledSpacing,
         spec: 0.36,
         brushed: 1,
+        organicGrain: 0,
+        variant: 'standard',
       };
       break;
   }
@@ -419,6 +513,7 @@ export function getSectionCapStyle(
       ...style,
       base: roleMeta.capBaseHex,
       hatch: roleMeta.capHatchHex,
+      organicGrain: 0,
     };
   }
   return style;
@@ -449,6 +544,7 @@ uniform float uHatchSpacing;
 uniform float uSpec;
 uniform float uBrushed;
 uniform float uGrainScale;
+uniform float uOrganicGrain;
 varying vec3 vCapWorldPos;
 varying vec2 vCapPlaneCoord;
 varying vec3 vCapWorldNormal;
@@ -462,6 +558,7 @@ float capHash11( float p ) {
 
 void main() {
   vec2 p = vCapPlaneCoord;
+  float gScale = max( uGrainScale, 0.05 );
 
   // ISO 128 ±45° section hatching, anti-aliased with screen-space derivatives
   float d = ( p.x * uHatchDir + p.y ) * 0.70710678 / uHatchSpacing;
@@ -472,11 +569,24 @@ void main() {
   // Fade hatching smoothly when zoomed out to prevent moire aliasing
   line *= 1.0 - smoothstep( 0.25, 0.5, fw );
 
-  // Machined surface grain: brushed steel streaks along tangent U, or polymer stipple
-  float gScale = max( uGrainScale, 0.05 );
+  // Organic cross-cut wood & marbled bakelite grain streams (longitudinal fiber waves + fine pores)
+  float wave = sin( p.x * 0.22 * gScale ) * 0.42
+             + sin( p.x * 0.53 * gScale + p.y * 0.31 * gScale ) * 0.18
+             + cos( p.y * 0.44 * gScale - p.x * 0.14 * gScale ) * 0.14;
+  float fiberCoord = ( p.y * 1.15 + wave ) / max( uHatchSpacing * 0.95, 0.12 );
+  float fwWood = max( fwidth( fiberCoord ), 1e-4 );
+  float woodRing = 0.5 + 0.5 * sin( fiberCoord * 6.2831853 );
+  float woodBand = smoothstep( 0.32, 0.86, woodRing );
+  float fineVessels = capHash11( floor( p.x * 9.0 * gScale ) * 3.17 + floor( ( p.y + wave * 0.35 ) * 24.0 * gScale ) );
+  float organicPattern = clamp( woodBand * 0.68 + fineVessels * 0.18 + line * 0.22, 0.0, 1.0 );
+  organicPattern *= 1.0 - smoothstep( 0.45, 0.95, fwWood ) * 0.45;
+
+  // Machined surface grain: brushed steel streaks along tangent U, or polymer/wood micro-texture
   float grainBrushed = 0.88 + 0.12 * capHash11( floor( p.y * 140.0 * gScale ) );
   float grainStipple = 0.94 + 0.06 * capHash11( floor( p.x * 60.0 * gScale ) * 7.13 + floor( p.y * 60.0 * gScale ) );
-  vec3 base = uBaseColor * mix( grainStipple, grainBrushed, uBrushed );
+  float grainWood = 0.90 + 0.10 * capHash11( floor( p.x * 16.0 * gScale ) + floor( p.y * 42.0 * gScale ) * 11.3 );
+  float baseMod = mix( mix( grainStipple, grainBrushed, uBrushed ), grainWood, clamp( uOrganicGrain, 0.0, 1.0 ) );
+  vec3 base = uBaseColor * baseMod;
 
   vec3 N = normalize( vCapWorldNormal );
   vec3 rawV = cameraPosition - vCapWorldPos;
@@ -489,7 +599,8 @@ void main() {
   vec3 H = lenHSq > 1e-8 ? ( rawH * inversesqrt( lenHSq ) ) : N;
   float ndl = max( dot( N, L ), 0.0 );
   vec3 col = base * ( 0.6 + 0.4 * ndl );
-  col = mix( col, uHatchColor, line * 0.85 );
+  float hatchWeight = mix( line * 0.85, organicPattern * 0.78, clamp( uOrganicGrain, 0.0, 1.0 ) );
+  col = mix( col, uHatchColor, hatchWeight );
 
   // Anisotropic brushed specular streak + soft isotropic lobe
   float nh = max( dot( N, H ), 1e-5 );
@@ -505,21 +616,30 @@ void main() {
 
 const capMaterialCache = new Map<string, THREE.ShaderMaterial>();
 
-/** Builds the CNC cross-section cap material (cached per material kind × assembly group × role × scale). */
+/** Builds the CNC cross-section cap material (cached per material kind × variant × assembly group × role × scale). */
 export function getSectionCapMaterial(
   kind: MaterialKind,
   group: AssemblyGroupKey,
   engineeringRole?: EngineeringRole | null,
-  hatchScale = 1
+  hatchScale = 1,
+  partId?: string | null
 ): THREE.ShaderMaterial {
   const safeScale = hatchScale > 0 ? hatchScale : 1;
+  const variant = resolveSectionCapMaterialVariant(partId, kind);
+  const variantSuffix = variant === 'standard' ? '' : `|${variant}`;
   const key =
     safeScale === 1
-      ? `${kind}|${group}|${engineeringRole ?? 'none'}`
-      : `${kind}|${group}|${engineeringRole ?? 'none'}|x${safeScale}`;
+      ? `${kind}${variantSuffix}|${group}|${engineeringRole ?? 'none'}`
+      : `${kind}${variantSuffix}|${group}|${engineeringRole ?? 'none'}|x${safeScale}`;
   const cached = capMaterialCache.get(key);
   if (cached) return cached;
-  const style = getSectionCapStyle(kind, group, engineeringRole, safeScale);
+  const style = getSectionCapStyle(
+    kind,
+    group,
+    engineeringRole,
+    safeScale,
+    partId
+  );
   const mat = new THREE.ShaderMaterial({
     name: `SectionCap:${key}`,
     uniforms: {
@@ -530,6 +650,7 @@ export function getSectionCapMaterial(
       uSpec: { value: style.spec },
       uBrushed: { value: style.brushed },
       uGrainScale: { value: 1 / safeScale },
+      uOrganicGrain: { value: style.organicGrain },
     },
     vertexShader: CAP_VERTEX,
     fragmentShader: CAP_FRAGMENT,
@@ -676,6 +797,57 @@ export function sectionPlaneZ(plane: THREE.Plane): number {
 }
 
 /**
+ * Per-part local-Z section plane base offset (cm) for left-flank side-hung drum/magazine
+ * shells whose entire assembled bounding box sits behind the global Z = 0 centerline plane
+ * (e.g. MG 42 Gurttrommel 34 drum at Z = -6.4 cm cradling the 8-round Gurt 34 belt at Z ∈ [-6.89, -0.20]).
+ */
+export const SIDE_MOUNTED_SHELL_LOCAL_Z_OFFSETS: Readonly<
+  Record<string, number>
+> = {
+  mg42_ammo_drum: -0.8,
+};
+
+export function getSideMountedShellLocalZOffset(partId: string): number | null {
+  const offset = SIDE_MOUNTED_SHELL_LOCAL_Z_OFFSETS[partId];
+  return typeof offset === 'number' ? offset : null;
+}
+
+/**
+ * Stamped sheet-metal hollow drum shells modeled as closed outer hulls: clipping them
+ * cleanly with `DoubleSide` without a solid stencil fill exposes the realistic concave
+ * hollow interior cavity rather than painting a solid metal ingot across the drum face.
+ */
+export const THIN_WALL_CUTAWAY_SHELL_PART_IDS: ReadonlySet<string> = new Set([
+  'mg42_ammo_drum',
+]);
+
+export function isThinWallCutawayShell(partId: string): boolean {
+  return THIN_WALL_CUTAWAY_SHELL_PART_IDS.has(partId);
+}
+
+/**
+ * Synchronizes a per-part local-Z clipping plane shifted by `localZBaseOffset`
+ * plus the live global `sectionCutOffset` & `flip` so both canted shells (e.g. AN-94
+ * 15° magazine) and left-flank side-hung drums (e.g. MG 42 Gurttrommel 34) slice
+ * cleanly right across their internal mechanism / belted ammunition!
+ */
+export function syncLocalZOffsetSectionPlane(
+  partMatrixWorld: THREE.Matrix4,
+  referencePlane: THREE.Plane,
+  localZBaseOffset: number,
+  outPlane: THREE.Plane
+): THREE.Plane {
+  const flip = referencePlane.normal.z > 0;
+  const offset = localZBaseOffset + sectionPlaneZ(referencePlane);
+  _cantedNormal
+    .set(0, 0, flip ? 1 : -1)
+    .transformDirection(partMatrixWorld)
+    .normalize();
+  _cantedOrigin.set(0, 0, offset).applyMatrix4(partMatrixWorld);
+  return outPlane.setFromNormalAndCoplanarPoint(_cantedNormal, _cantedOrigin);
+}
+
+/**
  * Synchronizes a per-part local-Z clipping plane for canted shell parts
  * (e.g. `an94_mag_body` canted 15° around X) so the section slice follows the
  * part's own curved symmetry centerplane plus live `sectionCutOffset` & `flip`!
@@ -685,14 +857,7 @@ export function syncCantedLocalZSectionPlane(
   referencePlane: THREE.Plane,
   outPlane: THREE.Plane
 ): THREE.Plane {
-  const flip = referencePlane.normal.z > 0;
-  const offset = sectionPlaneZ(referencePlane);
-  _cantedNormal
-    .set(0, 0, flip ? 1 : -1)
-    .transformDirection(partMatrixWorld)
-    .normalize();
-  _cantedOrigin.set(0, 0, offset).applyMatrix4(partMatrixWorld);
-  return outPlane.setFromNormalAndCoplanarPoint(_cantedNormal, _cantedOrigin);
+  return syncLocalZOffsetSectionPlane(partMatrixWorld, referencePlane, 0, outPlane);
 }
 
 /**
@@ -854,6 +1019,7 @@ export interface StencilSectionCapProps {
   geometry: THREE.BufferGeometry;
   material: MaterialKind;
   group: AssemblyGroupKey;
+  partId?: string;
   clippingPlanes: THREE.Plane[];
   engineeringRole?: EngineeringRole | null;
   scaleProfile?: WeaponScaleProfile;
@@ -875,6 +1041,7 @@ export const StencilSectionCap: React.FC<StencilSectionCapProps> = ({
   geometry,
   material,
   group,
+  partId,
   clippingPlanes,
   engineeringRole = null,
   scaleProfile,
@@ -890,7 +1057,8 @@ export const StencilSectionCap: React.FC<StencilSectionCapProps> = ({
     material,
     group,
     engineeringRole,
-    range.hatchScale
+    range.hatchScale,
+    partId
   );
 
   useEffect(() => {
