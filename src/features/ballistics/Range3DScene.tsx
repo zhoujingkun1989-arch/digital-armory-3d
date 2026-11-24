@@ -2942,15 +2942,17 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
     clearScheduledAudio,
   ]);
 
-  // Measure viewport CSS dimensions for pixel-locked Target-Cam PIP optical bezel alignment
+  // Measure viewport padding-box CSS dimensions (`clientWidth x clientHeight`) matching
+  // R3F `<Canvas>` `state.size` and `position: absolute` origin to 0px drift
   useEffect(() => {
     const el = viewportWrapRef.current;
     if (!el) return;
     const syncSize = () => {
       const rect = el.getBoundingClientRect();
-      if (rect.width > 0 && rect.height > 0) {
-        const nextW = Math.round(rect.width);
-        const nextH = Math.round(rect.height);
+      const nextW = el.clientWidth > 0 ? el.clientWidth : Math.round(rect.width);
+      const nextH =
+        el.clientHeight > 0 ? el.clientHeight : Math.round(rect.height);
+      if (nextW > 0 && nextH > 0) {
         setViewportSize((prev) =>
           prev.width === nextW && prev.height === nextH
             ? prev

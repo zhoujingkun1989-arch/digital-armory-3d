@@ -170,8 +170,17 @@ describe('Cycle 4C · Live Target-Cam PIP Inset, Craggy Geological Mountain Stra
     expect(src).toContain('gl.setScissor(');
     expect(src).toContain('gl.setViewport(');
     expect(src).toContain('gl.setScissorTest(false)');
+    expect(src).toContain('el.clientWidth');
+    expect(src).toContain('el.clientHeight');
     expect(src).toContain('lockLinearTextureColorSpace(bumpTex)');
     expect(src).not.toContain('flatShading');
+
+    // Verify 0-corner-bleed optical bezel matching 90-deg WebGL scissor rect
+    const css = fs.readFileSync(
+      path.join(ROOT, 'src/styles/range-3d-upgrade.css'),
+      'utf8'
+    );
+    expect(css).toMatch(/\.eb-range3d-pip-frame\s*\{[^}]*border-radius:\s*0;/s);
   });
 
   it('maintains zh/en Target-Cam PIP string parity (0 CJK in EN), renders PIP toggle & bezel in SSR, and wires qa:perf in package.json', () => {
