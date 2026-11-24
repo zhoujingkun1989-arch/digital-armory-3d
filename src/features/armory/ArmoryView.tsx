@@ -40,6 +40,7 @@ import {
   Palette,
   Printer,
   Rotate3d,
+  RotateCcw,
   Ruler,
   Scissors,
   Search,
@@ -99,6 +100,15 @@ import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
 import { isMacLikePlatform } from '../workbench/CommandPaletteModal';
 import { EngineeringTintLegend } from '../workbench/EngineeringTintLegend';
 import type { ShowdownViewMode } from './MechanismShowdownModal';
+import {
+  ARMORY_MECHANISM_FILTERS,
+  ARMORY_SORT_FILTER_STRINGS,
+  ARMORY_SORT_KEYS,
+  formatArmorySortChipMetric,
+  sortAndFilterArmoryWeapons,
+  type ArmoryMechanismFilter,
+  type ArmorySortKey,
+} from './armorySortFilter';
 import {
   consumePendingShowdownLaunch,
   getShowdownExhibitProfile,
@@ -182,6 +192,7 @@ interface ArmoryRackBayCardProps {
   isOnTurntable: boolean;
   lang: LanguageCode;
   ui: (typeof UI_STRINGS)['zh']['armory'];
+  sortMetricBadge?: string | null;
   onCardClick: (item: ArmoryWeaponItem, el: HTMLDivElement) => void;
   onEnterWorkbench: (weaponId: WeaponId) => void;
 }
@@ -192,6 +203,7 @@ export const ArmoryRackBayCard = React.memo<ArmoryRackBayCardProps>(
     isOnTurntable,
     lang,
     ui,
+    sortMetricBadge,
     onCardClick,
     onEnterWorkbench,
   }) => {
@@ -292,6 +304,14 @@ export const ArmoryRackBayCard = React.memo<ArmoryRackBayCardProps>(
             <span className="wcard-caliber" title={itemMeta.caliber}>
               {itemMeta.compactCaliber}
             </span>
+            {sortMetricBadge && (
+              <span
+                className="wcard-sort-metric-pill"
+                data-testid="wcard-sort-metric"
+              >
+                {sortMetricBadge}
+              </span>
+            )}
             <span className="wcard-parts-pill">
               {lang === 'zh'
                 ? `${item.partsCount} 零件`
@@ -334,13 +354,30 @@ export interface ArmoryViewProps {
   weaponIdOverride?: WeaponId;
   /** Optional language override for deterministic SSR/unit verification */
   langOverride?: LanguageCode;
+  /** Optional initial hall category for SSR/unit verification */
+  initialCategory?: ArmoryFilterKey;
+  /** Optional initial rack sort order for SSR/unit verification */
+  initialSortKey?: ArmorySortKey;
+  /** Optional initial operating-mechanism filter for SSR/unit verification */
+  initialMechanismFilter?: ArmoryMechanismFilter;
 }
 
 export const ArmoryView: React.FC<ArmoryViewProps> = ({
   weaponIdOverride,
   langOverride,
+  initialCategory,
+  initialSortKey,
+  initialMechanismFilter,
 }) => {
-  const [category, setCategory] = useState<ArmoryFilterKey>('all');
+  const [category, setCategory] = useState<ArmoryFilterKey>(
+    initialCategory ?? 'all'
+  );
+  const [sortKey, setSortKey] = useState<ArmorySortKey>(
+    initialSortKey ?? 'curatorial'
+  );
+  const [mechFilter, setMechFilter] = useState<ArmoryMechanismFilter>(
+    initialMechanismFilter ?? 'all'
+  );
   const [plannedToast, setPlannedToast] = useState<string | null>(null);
   const [showdownRequest, setShowdownRequest] = useState<{
     mode: ShowdownViewMode;
@@ -406,6 +443,7 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
   const featuredExam = useWeaponExamSummary(featuredWeapon.id);
 
   const ui = UI_STRINGS[lang].armory;
+  const sortUi = ARMORY_SORT_FILTER_STRINGS[lang];
   const studioUi = UI_STRINGS[lang].studio;
   const monoUi = UI_STRINGS[lang].monograph;
   const showdownUi = UI_STRINGS[lang].mechanismShowdown;
@@ -565,10 +603,34 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
     return map;
   }, []);
 
-  const filteredWeapons = useMemo(
-    () => ARMORY_WEAPONS.filter((w) => matchesCategoryWithLmg(w, category)),
-    [category]
-  );
+  const filteredWeapons = useMemo(() => {
+    const byCategory = ARMORY_WEAPONS.filter((w) =>
+      matchesCategoryWithLmg(w, category)
+    );
+    return sortAndFilterArmoryWeapons(byCategory, sortKey, mechFilter);
+  }, [category, sortKey, mechFilter]);
+
+  const hasActiveSortOrMech =
+    sortKey !== 'curatorial' || mechFilter !== 'all';
+
+  const handleResetSortAndMech = useCallback(() => {
+    playWorkbenchFoley('toggle_switch');
+    setSortKey('curatorial');
+    setMechFilter('all');
+    if (rackScrollRef.current) {
+      rackScrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+    }
+  }, []);
+
+  const handleResetAllRackFilters = useCallback(() => {
+    playWorkbenchFoley('toggle_switch');
+    setCategory('all');
+    setSortKey('curatorial');
+    setMechFilter('all');
+    if (rackScrollRef.current) {
+      rackScrollRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+    }
+  }, []);
 
   const scrollRackBy = (dir: -1 | 1) => {
     if (!rackScrollRef.current) return;
@@ -1642,12 +1704,84 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
       {/* Bottom Compact Single-Row Armory Weapon Vault Rack (~176px tall) */}
       <section className="armory-rack-dock" aria-label={ui.rackAria}>
         <div className="rack-dock-header">
-          <div className="rack-dock-title">
-            <Shield size={13} className="rack-icon" />
-            <span>{ui.rackTitle}</span>
-            <span className="rack-count-pill armory-rack-counter">
-              {filteredWeapons.length} / {ARMORY_WEAPONS.length}
-            </span>
+          <div className="rack-dock-left">
+            <div className="rack-dock-title">
+              <Shield size={13} className="rack-icon" />
+              <span>{ui.rackTitle}</span>
+              <span className="rack-count-pill armory-rack-counter">
+                {filteredWeapons.length} / {ARMORY_WEAPONS.length}
+              </span>
+            </div>
+
+            <div
+              className="rack-sort-filter-bar"
+              data-testid="armory-rack-sort-filter"
+            >
+              <select
+                className={`rack-control-select ${
+                  sortKey !== 'curatorial' ? 'is-active' : ''
+                }`}
+                data-testid="armory-sort-select"
+                aria-label={sortUi.sortAria}
+                value={sortKey}
+                onChange={(e) => {
+                  const next = e.target.value as ArmorySortKey;
+                  playWorkbenchFoley('toggle_switch');
+                  setSortKey(next);
+                  if (rackScrollRef.current) {
+                    rackScrollRef.current.scrollTo({
+                      left: 0,
+                      behavior: 'smooth',
+                    });
+                  }
+                }}
+              >
+                {ARMORY_SORT_KEYS.map((key) => (
+                  <option key={key} value={key}>
+                    {sortUi.sortOptions[key]}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                className={`rack-control-select ${
+                  mechFilter !== 'all' ? 'is-active' : ''
+                }`}
+                data-testid="armory-mech-select"
+                aria-label={sortUi.mechAria}
+                value={mechFilter}
+                onChange={(e) => {
+                  const next = e.target.value as ArmoryMechanismFilter;
+                  playWorkbenchFoley('toggle_switch');
+                  setMechFilter(next);
+                  if (rackScrollRef.current) {
+                    rackScrollRef.current.scrollTo({
+                      left: 0,
+                      behavior: 'smooth',
+                    });
+                  }
+                }}
+              >
+                {ARMORY_MECHANISM_FILTERS.map((key) => (
+                  <option key={key} value={key}>
+                    {sortUi.mechOptions[key]}
+                  </option>
+                ))}
+              </select>
+
+              {hasActiveSortOrMech && (
+                <button
+                  type="button"
+                  className="rack-reset-pill"
+                  data-testid="armory-rack-reset-btn"
+                  title={sortUi.resetTitle}
+                  onClick={handleResetSortAndMech}
+                >
+                  <RotateCcw size={10} aria-hidden="true" />
+                  <span>{sortUi.resetBtn}</span>
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="rack-dock-right">
@@ -1676,17 +1810,43 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
         </div>
 
         <div ref={rackScrollRef} className="armory-cards-grid">
-          {filteredWeapons.map((item) => (
-            <ArmoryRackBayCard
-              key={item.id}
-              item={item}
-              isOnTurntable={item.id === activeWeaponId}
-              lang={lang}
-              ui={ui}
-              onCardClick={handleCardBodyClick}
-              onEnterWorkbench={enterWorkbench}
-            />
-          ))}
+          {filteredWeapons.length === 0 ? (
+            <div
+              className="armory-rack-empty"
+              data-testid="armory-rack-empty"
+              role="status"
+            >
+              <span className="armory-rack-empty-text">
+                {sortUi.emptyTitle}
+              </span>
+              <button
+                type="button"
+                className="rack-empty-reset-btn"
+                data-testid="armory-empty-reset-btn"
+                onClick={handleResetAllRackFilters}
+              >
+                <RotateCcw size={12} aria-hidden="true" />
+                <span>{sortUi.emptyAction}</span>
+              </button>
+            </div>
+          ) : (
+            filteredWeapons.map((item) => (
+              <ArmoryRackBayCard
+                key={item.id}
+                item={item}
+                isOnTurntable={item.id === activeWeaponId}
+                lang={lang}
+                ui={ui}
+                sortMetricBadge={formatArmorySortChipMetric(
+                  item,
+                  sortKey,
+                  lang
+                )}
+                onCardClick={handleCardBodyClick}
+                onEnterWorkbench={enterWorkbench}
+              />
+            ))
+          )}
         </div>
       </section>
 
