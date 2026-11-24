@@ -651,6 +651,7 @@ function resolveMbtSlotMeta(
   const isWwii = bp.archetype === 'mbt_wwii';
   const isFrontEngine = bp.id === 'merkava4';
   const cal = bp.caliberLabel;
+  const weightTonnes = Number((bp.emptyWeightKg / 1000).toFixed(1));
 
   const map: Record<CentennialPartSlot, PartTextSpec> = {
     receiver: {
@@ -736,8 +737,8 @@ function resolveMbtSlotMeta(
       calloutLabelEn: 'Armored Hull Chassis',
       roleTagZh: '承载车体',
       roleTagEn: 'Hull Structure',
-      descZh: `承载炮塔座圈、动力传动舱、乘员舱与防雷车底结构的 ${bp.emptyWeightKg} 吨级重型底盘。`,
-      descEn: `Monocoque armored hull supporting the turret ring, powertrain, crew bay, and blast protection of the ${bp.emptyWeightKg}-ton tank.`,
+      descZh: `承载炮塔座圈、动力传动舱、乘员舱与防雷车底结构的 ${weightTonnes} 吨级重型底盘。`,
+      descEn: `Monocoque armored hull supporting the turret ring, powertrain, crew bay, and blast protection of the ${weightTonnes}-ton tank.`,
     },
     grip: {
       material: 'polymer_frame',
@@ -781,8 +782,8 @@ function resolveMbtSlotMeta(
       calloutLabelEn: 'Tracks & Suspension',
       roleTagZh: '越野机动',
       roleTagEn: 'Armored Mobility',
-      descZh: `承载 ${bp.emptyWeightKg} 吨全车重量并吸收高速越野冲击，维持行进间火炮双向稳定。`,
-      descEn: `Distributes ${bp.emptyWeightKg} tonnes across low ground pressure while damping cross-country shocks for stabilized fire.`,
+      descZh: `承载 ${weightTonnes} 吨全车重量并吸收高速越野冲击，维持行进间火炮双向稳定。`,
+      descEn: `Distributes ${weightTonnes} tonnes across low ground pressure while damping cross-country shocks for stabilized fire.`,
     },
     mount_rail: {
       material: 'nitride_steel',
@@ -2142,6 +2143,10 @@ function resolvePistolSlotMeta(
 ): CentennialPartSlotMeta {
   const isBroomhandle = bp.archetype === 'pistol_broomhandle';
   const isOpenSlide = bp.id === 'beretta92';
+  const isDirectBlowback =
+    bp.kinematicLaw === 'closed_bolt_blowback' ||
+    bp.kinematicLaw === 'open_bolt_blowback';
+  const isLeverDelayed = bp.kinematicLaw === 'lever_delayed';
   const cal = bp.caliberLabel;
 
   const map: Record<CentennialPartSlot, PartTextSpec> = {
@@ -2192,26 +2197,50 @@ function resolvePistolSlotMeta(
       material: 'stainless',
       nameZh: isBroomhandle
         ? '内置矩形往复枪机体'
-        : bp.kinematicLaw === 'falling_block_pistol'
-          ? '双翼下落式楔形闭锁块'
-          : '枪管下方开闭锁凸轮耳',
+        : isDirectBlowback
+          ? '固定枪管套筒惯性后坐块'
+          : isLeverDelayed
+            ? '延迟杠杆缓冲滑块总成'
+            : bp.kinematicLaw === 'falling_block_pistol'
+              ? '双翼下落式楔形闭锁块'
+              : '枪管下方开闭锁凸轮耳',
       nameEn: isBroomhandle
         ? 'Internal Reciprocating Bolt Body'
-        : bp.kinematicLaw === 'falling_block_pistol'
-          ? 'Falling-Block Locking Wedge'
-          : 'Barrel Locking Cam Lug',
+        : isDirectBlowback
+          ? 'Fixed-Barrel Blowback Slide Mass'
+          : isLeverDelayed
+            ? 'Lever-Delayed Recoil Buffer Block'
+            : bp.kinematicLaw === 'falling_block_pistol'
+              ? 'Falling-Block Locking Wedge'
+              : 'Barrel Locking Cam Lug',
       calloutLabelZh: isBroomhandle
         ? '内置矩形枪机'
-        : bp.kinematicLaw === 'falling_block_pistol'
-          ? '下落式闭锁楔块'
-          : '枪管开锁凸轮耳',
+        : isDirectBlowback
+          ? '套筒惯性后坐块'
+          : isLeverDelayed
+            ? '延迟缓冲滑块'
+            : bp.kinematicLaw === 'falling_block_pistol'
+              ? '下落式闭锁楔块'
+              : '枪管开锁凸轮耳',
       calloutLabelEn: isBroomhandle
         ? 'Internal Bolt Body'
-        : bp.kinematicLaw === 'falling_block_pistol'
-          ? 'Falling Locking Block'
-          : 'Barrel Locking Lug',
-      roleTagZh: '短后坐闭锁',
-      roleTagEn: 'Locking Interface',
+        : isDirectBlowback
+          ? 'Blowback Slide Mass'
+          : isLeverDelayed
+            ? 'Delay Buffer Block'
+            : bp.kinematicLaw === 'falling_block_pistol'
+              ? 'Falling Locking Block'
+              : 'Barrel Locking Lug',
+      roleTagZh: isDirectBlowback
+        ? '自由枪机后坐'
+        : isLeverDelayed
+          ? '杠杆延迟后坐'
+          : '短后坐闭锁',
+      roleTagEn: isDirectBlowback
+        ? 'Blowback Inertia'
+        : isLeverDelayed
+          ? 'Delayed Blowback'
+          : 'Locking Interface',
       descZh: `执行 ${bp.actionMechanismZh} 核心闭锁与延迟开锁动作。`,
       descEn: `Executes the core ${bp.actionMechanismEn.toLowerCase()} lockup and unlock timing.`,
     },

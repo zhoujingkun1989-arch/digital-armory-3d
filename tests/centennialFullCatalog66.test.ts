@@ -273,5 +273,41 @@ describe('100-Weapon Expansion Phase 2G — Unified 66-Exhibit Catalog & 1,320-P
     expect(
       resolveCentennialPartMeta(CENTENNIAL_BLUEPRINT_MAP.bizon, 'mag_body').nameEn
     ).toContain('Helical');
+
+    // Regression lock: MBT weights formatted in tonnes (kg / 1000), never 48000/65000 tons
+    const mbtExpectedTonnes: ReadonlyArray<
+      readonly [keyof typeof CENTENNIAL_BLUEPRINT_MAP, string]
+    > = [
+      ['t90m', '48'],
+      ['challenger2', '64'],
+      ['merkava4', '65'],
+      ['t34_85', '32.2'],
+    ];
+    for (const [tankId, expectedTonnes] of mbtExpectedTonnes) {
+      const bp = CENTENNIAL_BLUEPRINT_MAP[tankId];
+      const stockMeta = resolveCentennialPartMeta(bp, 'stock');
+      const suspMeta = resolveCentennialPartMeta(bp, 'gas_system');
+      expect(stockMeta.descEn).toContain(`${expectedTonnes}-ton`);
+      expect(stockMeta.descZh).toContain(`${expectedTonnes} 吨级`);
+      expect(suspMeta.descEn).toContain(`${expectedTonnes} tonnes`);
+      expect(suspMeta.descZh).toContain(`${expectedTonnes} 吨`);
+      expect(stockMeta.descEn).not.toContain(`${bp.emptyWeightKg}-ton`);
+      expect(suspMeta.descEn).not.toContain(`${bp.emptyWeightKg} tonnes`);
+    }
+
+    // Regression lock: fixed-barrel blowback (PPK) & lever-delayed (Five-seveN) pistols
+    const ppkAction = resolveCentennialPartMeta(
+      CENTENNIAL_BLUEPRINT_MAP.ppk,
+      'bolt_carrier'
+    );
+    expect(ppkAction.nameEn).toContain('Blowback');
+    expect(ppkAction.roleTagZh).not.toBe('短后坐闭锁');
+
+    const fiveSevenAction = resolveCentennialPartMeta(
+      CENTENNIAL_BLUEPRINT_MAP.fiveseven,
+      'bolt_carrier'
+    );
+    expect(fiveSevenAction.nameEn).toContain('Lever-Delayed');
+    expect(fiveSevenAction.roleTagZh).not.toBe('短后坐闭锁');
   });
 });
