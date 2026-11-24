@@ -6,7 +6,7 @@
  * curated shot groups using the zero-zombie native Node 22+ WebSocket CDP runner
  * and an isolated ephemeral static `dist/` server:
  *   - core       (5 shots):  Showcase landing, Armory Vault, CT Cutaway, AK-15 Studio, Blueprint Exploded M4A1
- *   - sculptures (22 shots): Waves 1–8 Blender 5.2 hyper-sculpted exhibits (M1911A1..MP5 + Wave 8 G17/M82A1/AWM)
+ *   - sculptures (25 shots): Waves 1–9 Blender 5.2 hyper-sculpted exhibits (M1911A1..MP5 + Wave 8 G17/M82A1/AWM + Wave 9 SCAR-L/AUG/P320)
  *   - labs       (11 shots): 3D 1,000m Range + Schlieren Bullet-Cam, 3D Armor Theater,
  *                            3D Split Cutaway, 1:1 Cartridge Duel, 1:1 Scale Wall,
  *                            Blueprint Daylight Recoil Lab, 34×33 Showdown 6-Axis Radar,
@@ -143,7 +143,7 @@ export const FLAGSHIP_DOC_SHOTS = Object.freeze([
     readySelector: '.top-bar',
   }),
 
-  // ==================== Refreshed Sculptures — Waves 1–8 (22) ====================
+  // ==================== Refreshed Sculptures — Waves 1–9 (25) ====================
   Object.freeze({
     id: 'm1911-v6-hero',
     filename: 'm1911-v6-hero.jpg',
@@ -361,6 +361,36 @@ export const FLAGSHIP_DOC_SHOTS = Object.freeze([
     label: 'Accuracy International AWM .338 Lapua Magnum (Wave 8 Sniper Sculpture)',
     query: 'screen=workbench&weapon=awm',
     weaponId: 'awm',
+    expectsWebgl: true,
+    readySelector: '.top-bar',
+  }),
+  Object.freeze({
+    id: 'scar-v3-macro',
+    filename: 'scar-v3-macro.jpg',
+    group: 'sculptures',
+    label: 'FN SCAR-L Mk 16 5.56mm (Wave 9 50-Shades-of-FDE Sculpture)',
+    query: 'screen=workbench&weapon=scar',
+    weaponId: 'scar',
+    expectsWebgl: true,
+    readySelector: '.top-bar',
+  }),
+  Object.freeze({
+    id: 'aug-v3-macro',
+    filename: 'aug-v3-macro.jpg',
+    group: 'sculptures',
+    label: 'Steyr AUG A1 5.56mm (Wave 9 Swarovski 1.5× & Translucent Waffle Mag)',
+    query: 'screen=workbench&weapon=aug',
+    weaponId: 'aug',
+    expectsWebgl: true,
+    readySelector: '.top-bar',
+  }),
+  Object.freeze({
+    id: 'p320-v3-macro',
+    filename: 'p320-v3-macro.jpg',
+    group: 'sculptures',
+    label: 'SIG Sauer P320 M17 9×19mm (Wave 9 Coyote PVD Slide & Modular FCU)',
+    query: 'screen=workbench&weapon=p320',
+    weaponId: 'p320',
     expectsWebgl: true,
     readySelector: '.top-bar',
   }),
@@ -1084,6 +1114,8 @@ async function runPostAction(cdp, actionName) {
         const btns = [...document.querySelectorAll('.caliper-hud button')];
         const inBtn = btns.find((b) => /^in$/i.test((b.textContent || '').trim()));
         if (inBtn) inBtn.click();
+        const oalBtn = btns.find((b) => /overall length|全枪长|全长/i.test(b.textContent || ''));
+        if (oalBtn) oalBtn.click();
         const envBtn = btns.find((b) => /envelope|包络/i.test(b.textContent || ''));
         if (envBtn) envBtn.click();
       })()`
