@@ -305,6 +305,84 @@ export interface ArmoryShaderUniforms {
   uCuratorSpot: { value: number };
   uCuratorDim: { value: number };
   uCuratorRimColor: { value: THREE.Color };
+  /** Kaplanyan/Filament screen-space normal variance gain (`variance = min(strength * sigma2, threshold)`) */
+  uSpecularAaStrength: { value: number };
+  /** Upper variance clamp added to `roughnessFactor^2` before sqrt re-mapping */
+  uSpecularAaThreshold: { value: number };
+  /** Micro-detail procedural/triplanar normal damping (`1.0` dark studio -> attenuated under bright daylight IBL) */
+  uMicroDetailDamping: { value: number };
+}
+
+export type ArmoryStudioLightingPreset =
+  | 'tactical_vault'
+  | 'gunsmith_bench'
+  | 'blueprint_daylight';
+
+export interface ArmorySpecularAaParams {
+  readonly strength: number;
+  readonly threshold: number;
+  readonly microDetailDamping: number;
+}
+
+export const ARMORY_SPECULAR_AA_MARKER = 'armorySpecularAA';
+
+/**
+ * Per-studio Filament / Kaplanyan specular anti-aliasing presets (small arms, archery & rotary ordnance).
+ * - `tactical_vault`: crisp studio bevel glints + light Nyquist shimmer suppression (`microDetailDamping = 1.0`).
+ * - `gunsmith_bench`: balanced warm tungsten studio sheen with moderate micro-grain damping.
+ * - `blueprint_daylight`: strong normal-variance filtering + micro-detail damping so flat parkerized/nDLC
+ *   receivers read as silky satin matte steel under full-sphere high-luminance daylight IBL.
+ */
+export const ARMORY_SPECULAR_AA_PRESETS: Readonly<
+  Record<ArmoryStudioLightingPreset, ArmorySpecularAaParams>
+> = Object.freeze({
+  tactical_vault: Object.freeze({
+    strength: 0.32,
+    threshold: 0.1,
+    microDetailDamping: 1.0,
+  }),
+  gunsmith_bench: Object.freeze({
+    strength: 0.48,
+    threshold: 0.16,
+    microDetailDamping: 0.78,
+  }),
+  blueprint_daylight: Object.freeze({
+    strength: 1.65,
+    threshold: 0.42,
+    microDetailDamping: 0.18,
+  }),
+});
+
+/** Heavy-armor (`uSurfaceScale > 2`) presets preserve decimeter-scale RHA/CARC macro patina. */
+const ARMORY_SPECULAR_AA_TANK_PRESETS: Readonly<
+  Record<ArmoryStudioLightingPreset, ArmorySpecularAaParams>
+> = Object.freeze({
+  tactical_vault: Object.freeze({
+    strength: 0.32,
+    threshold: 0.1,
+    microDetailDamping: 1.0,
+  }),
+  gunsmith_bench: Object.freeze({
+    strength: 0.42,
+    threshold: 0.14,
+    microDetailDamping: 0.9,
+  }),
+  blueprint_daylight: Object.freeze({
+    strength: 0.95,
+    threshold: 0.24,
+    microDetailDamping: 0.72,
+  }),
+});
+
+/** Zero-GC lookup returning frozen studio Specular AA uniform values for the active environment preset. */
+export function resolveSpecularAaParams(
+  preset: ArmoryStudioLightingPreset,
+  isTank = false
+): ArmorySpecularAaParams {
+  const table = isTank
+    ? ARMORY_SPECULAR_AA_TANK_PRESETS
+    : ARMORY_SPECULAR_AA_PRESETS;
+  return table[preset] ?? table.tactical_vault;
 }
 
 /** Module-shared constant uniforms (identical across every armory material). */
@@ -413,12 +491,14 @@ export function createArmoryShaderUniforms(
   surfaceScale = 1
 ): ArmoryShaderUniforms {
   const prof = ARMORY_SURFACE_PROFILES[kind];
+  const safeScale = Math.max(1, surfaceScale);
+  const specAa = resolveSpecularAaParams('tactical_vault', safeScale > 2);
   return {
     uSpringScale: { value: 1 },
     uThermalHeat: { value: 0 },
     uCarbonFouling: { value: 0 },
     uWearLevel: { value: globalWearLevel },
-    uSurfaceScale: { value: Math.max(1, surfaceScale) },
+    uSurfaceScale: { value: safeScale },
     uThermalSpan: { value: new THREE.Vector2(-1, 1) },
     uThermalProfileMix: { value: 0 },
     uEdgeWear: { value: prof.edgeWear },
@@ -435,6 +515,9 @@ export function createArmoryShaderUniforms(
     uCuratorSpot: { value: 0 },
     uCuratorDim: { value: 1 },
     uCuratorRimColor: { value: new THREE.Color(CURATOR_SPOTLIGHT_RIM_DARK) },
+    uSpecularAaStrength: { value: specAa.strength },
+    uSpecularAaThreshold: { value: specAa.threshold },
+    uMicroDetailDamping: { value: specAa.microDetailDamping },
   };
 }
 
@@ -451,7 +534,7 @@ export interface ArmoryShaderFeatures {
   triplanarMap?: boolean;
 }
 
-export const ARMORY_SHADER_VERSION = 10;
+export const ARMORY_SHADER_VERSION = 11;
 export const ARMORY_CNC_BEVEL_GLINT_MARKER = 'armoryCncBevelGlint';
 export const ARMORY_CURATOR_SPOT_MARKER = 'armoryCuratorSpot';
 export const CURATOR_SPOTLIGHT_RIM_DARK = '#ffe8c2';
@@ -577,6 +660,9 @@ uniform float uHasArmorDetail;
 uniform float uCuratorSpot;
 uniform float uCuratorDim;
 uniform vec3 uCuratorRimColor;
+uniform float uSpecularAaStrength;
+uniform float uSpecularAaThreshold;
+uniform float uMicroDetailDamping;
 varying float vArmoryCurvature;
 varying vec3 vArmoryObjPos;
 varying vec3 vArmoryObjNormal;
@@ -855,13 +941,15 @@ float armoryCncBevelMask = 0.0;
     float armoryWearGain = 0.08 + armoryWear * 0.92;
     float armoryEdgeStrength = clamp( armoryEdge * uEdgeWear * armoryWearGain, 0.0, 1.0 ) * armoryNotOptic;
 
-    // Fine directional holster / field handling micro-scratches (only noticeable on oiled/battle-worn metal)
+    // Fine directional holster / field handling micro-scratches (only noticeable on oiled/battle-worn metal;
+    // gently attenuated under full-sphere daylight IBL so flat receivers never read as speckled noise)
     float armoryScratch = 0.0;
     if ( armoryWear > 0.12 && uEdgeMetal > 0.5 ) {
       float sBandA = armoryValueNoise( vec3( vArmoryObjPos.x * 0.95, vArmoryObjPos.y * 19.0, vArmoryObjPos.z * 19.0 ) );
       float sBandB = armoryValueNoise( vec3( vArmoryObjPos.x * 2.2 + vArmoryObjPos.y * 5.5, vArmoryObjPos.y * 14.0, vArmoryObjPos.z * 11.0 ) );
       float sMask = smoothstep( 0.78, 0.93, sBandA ) * smoothstep( 0.62, 0.86, sBandB );
-      armoryScratch = sMask * smoothstep( 0.12, 1.0, armoryWear ) * 0.38 * armoryNotOptic;
+      float armoryScratchStudioAtten = mix( 0.30, 1.0, clamp( uMicroDetailDamping, 0.0, 1.0 ) );
+      armoryScratch = sMask * smoothstep( 0.12, 1.0, armoryWear ) * 0.38 * armoryScratchStudioAtten * armoryNotOptic;
     }
 
     float armoryMetalExpose = clamp( armoryEdgeStrength * 0.52 + armoryScratch, 0.0, 0.75 );
@@ -939,6 +1027,7 @@ const FRAGMENT_NORMAL_TRIPLANAR = /* glsl */ `
   bool armoryNormIsTank = armoryNormScale > 2.0;
   vec3 armoryNormPos = vArmoryObjPos / armoryNormScale;
   float armoryPixSpan = max( length( fwidth( vArmoryObjPos ) ), 1e-4 ) / armoryNormScale;
+  float armoryMicroDamp = clamp( uMicroDetailDamping, 0.0, 1.0 );
 
   vec3 armoryObjPerturb;
   if ( armoryNormIsTank ) {
@@ -954,7 +1043,7 @@ const FRAGMENT_NORMAL_TRIPLANAR = /* glsl */ `
       vec3( 0.0, aX.y, aX.x ) * armoryTriW.x +
       vec3( aY.x, 0.0, aY.y ) * armoryTriW.y +
       vec3( aZ.x, aZ.y, 0.0 ) * armoryTriW.z
-    ) * ( armoryProcWeight * armoryArmorGrainFade );
+    ) * ( armoryProcWeight * armoryArmorGrainFade * mix( 0.55, 1.0, armoryMicroDamp ) );
   } else {
     float armoryGrainFade =
       ( 1.0 - smoothstep( 0.12, 0.52, armoryPixSpan ) ) *
@@ -967,7 +1056,7 @@ const FRAGMENT_NORMAL_TRIPLANAR = /* glsl */ `
       vec3( 0.0, sX.y, sX.x ) * armoryTriW.x +
       vec3( sY.x, 0.0, sY.y ) * armoryTriW.y +
       vec3( sZ.x, sZ.y, 0.0 ) * armoryTriW.z
-    ) * ( uTriplanarDetail * armoryGrainFade );
+    ) * ( uTriplanarDetail * armoryGrainFade * armoryMicroDamp );
   }
 
   #if defined( USE_NORMALMAP_TANGENTSPACE ) && defined( ARMORY_TRIPLANAR_MAP )
@@ -1009,8 +1098,8 @@ const FRAGMENT_NORMAL_TRIPLANAR = /* glsl */ `
 
       float armoryPaintWeight = 1.0 - smoothstep( 0.25, 0.65, metalnessFactor );
       float armoryDetailNormGain = armoryNormIsTank
-        ? mix( 0.34, 0.58, armoryPaintWeight ) * armoryDetailFade
-        : 0.14 * armoryDetailFade;
+        ? mix( 0.34, 0.58, armoryPaintWeight ) * armoryDetailFade * mix( 0.72, 1.0, armoryMicroDamp )
+        : 0.14 * armoryDetailFade * armoryMicroDamp;
 
       vec3 tX = texture2D( uArmorDetailNormal, dUvX ).xyz * 2.0 - 1.0;
       vec3 tY = texture2D( uArmorDetailNormal, dUvY ).xyz * 2.0 - 1.0;
@@ -1045,17 +1134,27 @@ const FRAGMENT_NORMAL_TRIPLANAR = /* glsl */ `
       float armoryDetailRghDelta = ( rX * armoryTriW.x + rY * armoryTriW.y + rZ * armoryTriW.z ) - 0.5;
       float armoryDetailRghGain = armoryNormIsTank
         ? mix( 0.11, 0.17, armoryPaintWeight ) * armoryDetailFade
-        : 0.055 * armoryDetailFade;
+        : 0.055 * armoryDetailFade * mix( 0.35, 1.0, armoryMicroDamp );
       roughnessFactor = clamp( roughnessFactor + armoryDetailRghDelta * armoryDetailRghGain, 0.04, 1.0 );
     }
   }
 
-  // --- Toksvig / Kaplanyan geometric specular anti-aliasing (eliminates metallic edge shimmer) ---
+  // --- Filament / Kaplanyan geometric & normal-map specular anti-aliasing (armorySpecularAA) ---
+  // Converts screen-space perturbed normal derivatives into roughness variance so baked normal micro-relief
+  // and fine machined bevels filter cleanly under full-sphere daylight HDRI without white firefly sparkle.
   vec3 armoryDnDx = dFdx( normal );
   vec3 armoryDnDy = dFdy( normal );
-  float armoryGeomVar = clamp( dot( armoryDnDx, armoryDnDx ) + dot( armoryDnDy, armoryDnDy ), 0.0, 1.0 );
-  float armorySpecAA = clamp( sqrt( armoryGeomVar ) * 0.34, 0.0, 0.22 );
-  roughnessFactor = clamp( sqrt( roughnessFactor * roughnessFactor + armorySpecAA * armorySpecAA ), 0.04, 1.0 );
+  float armoryGeomVar = dot( armoryDnDx, armoryDnDx ) + dot( armoryDnDy, armoryDnDy );
+  float armorySpecularAA =
+    min( max( uSpecularAaStrength, 0.0 ) * armoryGeomVar, clamp( uSpecularAaThreshold, 0.0, 0.65 ) ) *
+    ( 1.0 - armoryOpticMask );
+  float armorySpecAA = sqrt( armorySpecularAA );
+  float armoryAaRoughness = clamp(
+    sqrt( clamp( roughnessFactor * roughnessFactor + armorySpecAA * armorySpecAA, 0.0016, 1.0 ) ),
+    0.04,
+    1.0
+  );
+  roughnessFactor = mix( armoryAaRoughness, roughnessFactor, armoryOpticMask );
 }
 #endif
 `;
