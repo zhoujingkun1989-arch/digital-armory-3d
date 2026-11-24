@@ -280,6 +280,17 @@ describe('Cycle 22C — Filament/Kaplanyan Specular AA & Blueprint Daylight Matt
     expect(matKeyExpr).not.toContain('environmentPreset');
     expect(matKeyExpr).not.toContain('isDaylightTheme');
 
+    // Live studio toggle must sync Three.js's live material.normalScale directly (since R3F copies
+    // Vector2 props by value and skips diffProps when the Vector2 object identity is unchanged)
+    expect(partActorSrc).toContain('matRef.current?.normalScale.set(');
+    const normalSyncBlockMatch =
+      /useEffect\(\(\)\s*=>\s*\{[\s\S]*?matRef\.current\?\.normalScale\.set\([\s\S]*?\},\s*\[([\s\S]*?)\]\);/.exec(
+        partActorSrc
+      );
+    expect(normalSyncBlockMatch).not.toBeNull();
+    expect(normalSyncBlockMatch![1]).toContain('daylightTuning.normalScale');
+    expect(normalSyncBlockMatch![1]).toContain('matShaderKey');
+
     // PartActor wires Specular AA uniform updates in-place inside useFrame with zero `new THREE.` allocations
     const useFrameIdx = partActorSrc.indexOf('useFrame((');
     expect(useFrameIdx).toBeGreaterThan(-1);

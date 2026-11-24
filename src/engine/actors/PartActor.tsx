@@ -674,12 +674,6 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
           daylightTuning.normalScale
         )
     );
-    useEffect(() => {
-      normalScaleVec.set(
-        daylightTuning.normalScale,
-        daylightTuning.normalScale
-      );
-    }, [normalScaleVec, daylightTuning.normalScale]);
 
     // Clamp PBR texture anisotropy to the GPU's real capability (idempotent)
     const gl = useThree((s) => s.gl);
@@ -763,6 +757,52 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
     }, [armoryUniforms, engineeringTint, focusedEngineeringRole, partRole]);
 
     const usePbrNow = pbrTexturesEnabled && !isXrayHousing;
+    const isBarrelRiflingCut = shouldSliceBarrelForRifling(
+      weaponId,
+      part,
+      sectionCut,
+      sectionCutAxis,
+      isAssemblyClosedForRifling ? 0 : RIFLING_EXPLODE_VISIBILITY_MAX,
+      isSelected
+    );
+    const isSectionCutShell =
+      (sectionCut && !!part.isShell && !isSelected) || isBarrelRiflingCut;
+    const albedoReady =
+      usePbrNow && pbr.hasCustomAtlas && isTextureLoaded(pbr.map);
+    const normalReady = usePbrNow && isTextureLoaded(pbr.normalMap);
+    const roughReady = usePbrNow && isTextureLoaded(pbr.roughnessMap);
+
+    const activeMap = albedoReady ? pbr.map : null;
+    const activeNormalMap = normalReady ? pbr.normalMap : null;
+    const activeOrmMap = roughReady ? pbr.roughnessMap : null;
+    const activeMetalnessMap =
+      pbr.hasCustomAtlas && activeOrmMap ? activeOrmMap : null;
+    // Armory shader stays off on optical X-ray housings (clean glass look), except springs.
+    const armoryActive = !isXrayHousing || armoryFeatures.spring;
+    const matShaderKey = `${isXrayHousing ? 'x' : 's'}-${isTank ? 't1' : 't0'}-${isSectionCutShell ? (sectionCutAxis === 'box' ? 'cb' : 'c1') : 'c0'}-${isGlbAsset ? 'g1' : 'g0'}-${activeMap ? 'm1' : 'm0'}-${activeNormalMap ? 'n1' : 'n0'}-${activeOrmMap ? 'o1' : 'o0'}-${activeMetalnessMap ? 'mt1' : 'mt0'}-${armoryActive ? getArmoryProgramCacheKey(armoryFeatures) : 'plain'}`;
+    const hasMeshVisible = Boolean(
+      geometry && !isGroupHidden && !isReplacedByAttachment
+    );
+
+    // Sync BOTH the stable Vector2 prop AND Three.js's live material.normalScale directly:
+    // R3F copies Vector2 props by value (`targetProp.copy(value)`) and skips `diffProps`
+    // when the Vector2 reference is identical across live `[Vault] <-> [Blueprint]` toggles.
+    useEffect(() => {
+      normalScaleVec.set(
+        daylightTuning.normalScale,
+        daylightTuning.normalScale
+      );
+      matRef.current?.normalScale.set(
+        daylightTuning.normalScale,
+        daylightTuning.normalScale
+      );
+    }, [
+      normalScaleVec,
+      daylightTuning.normalScale,
+      matShaderKey,
+      hasMeshVisible,
+    ]);
+
     const armorDetailReady =
       usePbrNow &&
       isTextureLoaded(armorDetail.normalMap) &&
@@ -1098,28 +1138,7 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
 
     if (!geometry || isGroupHidden || isReplacedByAttachment) return null;
 
-    const isBarrelRiflingCut = shouldSliceBarrelForRifling(
-      weaponId,
-      part,
-      sectionCut,
-      sectionCutAxis,
-      isAssemblyClosedForRifling ? 0 : RIFLING_EXPLODE_VISIBILITY_MAX,
-      isSelected
-    );
-    const isSectionCutShell =
-      (sectionCut && !!part.isShell && !isSelected) || isBarrelRiflingCut;
     const isTransparent = isGhostByIsolate || isXrayHousing;
-
-    const albedoReady =
-      usePbrNow && pbr.hasCustomAtlas && isTextureLoaded(pbr.map);
-    const normalReady = usePbrNow && isTextureLoaded(pbr.normalMap);
-    const roughReady = usePbrNow && isTextureLoaded(pbr.roughnessMap);
-
-    const activeMap = albedoReady ? pbr.map : null;
-    const activeNormalMap = normalReady ? pbr.normalMap : null;
-    const activeOrmMap = roughReady ? pbr.roughnessMap : null;
-    const activeMetalnessMap =
-      pbr.hasCustomAtlas && activeOrmMap ? activeOrmMap : null;
     const useVertexColors = !isXrayHousing && !albedoReady;
 
     // Optical X-ray clarity: ultra-low front-face haze + clean depth sorting (renderOrder 12)
@@ -1263,10 +1282,8 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       selectPart(isSelected ? null : part.id);
     };
 
-    // Armory shader stays off on optical X-ray housings (clean glass look), except springs.
     // Sliced main barrels intentionally skip StencilSectionCap so a solid-core lathe barrel
     // never plugs the hollow bore cavity covering `RiflingBoreActor`.
-    const armoryActive = !isXrayHousing || armoryFeatures.spring;
     const showSectionCap =
       isSectionCutShell &&
       !isBarrelRiflingCut &&
@@ -1307,8 +1324,6 @@ export const PartActor: React.FC<PartActorProps> = React.memo(
       : pbr.hasCustomAtlas
         ? 0.65
         : 0.48;
-
-    const matShaderKey = `${isXrayHousing ? 'x' : 's'}-${isTank ? 't1' : 't0'}-${isSectionCutShell ? (sectionCutAxis === 'box' ? 'cb' : 'c1') : 'c0'}-${isGlbAsset ? 'g1' : 'g0'}-${activeMap ? 'm1' : 'm0'}-${activeNormalMap ? 'n1' : 'n0'}-${activeOrmMap ? 'o1' : 'o0'}-${activeMetalnessMap ? 'mt1' : 'mt0'}-${armoryActive ? getArmoryProgramCacheKey(armoryFeatures) : 'plain'}`;
 
     const armoryMaterialProps = armoryActive
       ? {
