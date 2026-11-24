@@ -6,8 +6,8 @@
   border: none;
   padding: 0;
   margin: auto;
-  width: min(1160px, 95vw);
-  max-height: 92vh;
+  width: min(1320px, 96vw);
+  max-height: 94vh;
   border-radius: 16px;
   background: transparent;
   color: #e2e8f0;
@@ -22,7 +22,7 @@
 .armor-pen-shell {
   display: flex;
   flex-direction: column;
-  max-height: 92vh;
+  max-height: 94vh;
   background: linear-gradient(155deg, rgba(13, 19, 32, 0.98), rgba(7, 10, 19, 0.98));
   border: 1px solid rgba(56, 189, 248, 0.34);
   border-radius: 16px;
@@ -466,4 +466,394 @@
 
 :is([data-theme='light'], .theme-light) .armor-status-pill.is-stopped {
   color: #047857;
+}
+
+/* ==========================================================================
+   Track B1 · 3D Interactive Composite Armor Penetration Cutaway Theater
+   ========================================================================== */
+
+.armor-card-head-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.armor-view-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  padding: 2px 2px 0;
+}
+
+.armor-view-bar-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #cbd5e1;
+}
+
+:is([data-theme='light'], .theme-light) .armor-view-bar-title {
+  color: #1e293b;
+}
+
+.armor-view-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  background: rgba(15, 23, 42, 0.72);
+}
+
+:is([data-theme='light'], .theme-light) .armor-view-toggle {
+  background: #f1f5f9;
+  border-color: rgba(100, 116, 139, 0.25);
+}
+
+.armor-view-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 7px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease, border-color 0.16s ease;
+}
+
+.armor-view-tab:hover {
+  color: #e2e8f0;
+}
+
+.armor-view-tab.is-active {
+  background: rgba(14, 165, 233, 0.22);
+  border-color: rgba(56, 189, 248, 0.58);
+  color: #e0f2fe;
+}
+
+:is([data-theme='light'], .theme-light) .armor-view-tab {
+  color: #475569;
+}
+
+:is([data-theme='light'], .theme-light) .armor-view-tab:hover {
+  color: #0f172a;
+}
+
+:is([data-theme='light'], .theme-light) .armor-view-tab.is-active {
+  background: #ffffff;
+  border-color: rgba(2, 132, 199, 0.45);
+  color: #0369a1;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+}
+
+.armor-split-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.38fr) minmax(0, 1fr);
+  gap: 10px;
+  align-items: stretch;
+}
+
+.armor-split-stage .armor-card {
+  justify-content: space-between;
+}
+
+.armor-split-stage .armor-cross-svg {
+  margin: auto 0;
+}
+
+.armor-theater-card {
+  display: flex;
+  flex-direction: column;
+  border-radius: 12px;
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  background: #060b16;
+  overflow: hidden;
+  box-shadow: inset 0 1px 0 rgba(148, 163, 184, 0.1);
+}
+
+.armor-theater-viewport {
+  position: relative;
+  width: 100%;
+  height: 368px;
+  background: radial-gradient(
+    circle at 50% 42%,
+    rgba(14, 30, 56, 0.72),
+    #060b16 74%
+  );
+}
+
+.armor-theater-card.is-compact .armor-theater-viewport {
+  height: 300px;
+}
+
+.armor-theater-overlay-top {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  z-index: 4;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.armor-theater-telemetry-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.armor-theater-phase-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 9px;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  background: rgba(15, 23, 42, 0.84);
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  color: #e2e8f0;
+  backdrop-filter: blur(6px);
+}
+
+.armor-theater-phase-pill[data-phase='era_detonation'] {
+  border-color: rgba(251, 191, 36, 0.72);
+  color: #fde68a;
+  background: rgba(120, 53, 15, 0.72);
+}
+
+.armor-theater-phase-pill[data-phase='penetration'] {
+  border-color: rgba(251, 146, 60, 0.72);
+  color: #fed7aa;
+  background: rgba(124, 45, 18, 0.72);
+}
+
+.armor-theater-phase-pill[data-phase='perforation_spall'] {
+  border-color: rgba(248, 113, 113, 0.78);
+  color: #fecaca;
+  background: rgba(127, 29, 29, 0.78);
+}
+
+.armor-theater-phase-pill[data-phase='defeated_arrest'] {
+  border-color: rgba(52, 211, 153, 0.72);
+  color: #a7f3d0;
+  background: rgba(6, 78, 59, 0.75);
+}
+
+.armor-theater-phase-pill[data-phase='ricochet_deflect'] {
+  border-color: rgba(56, 189, 248, 0.78);
+  color: #bae6fd;
+  background: rgba(12, 74, 110, 0.76);
+}
+
+.armor-theater-metric-pill {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: rgba(9, 14, 26, 0.78);
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  font-family: var(--font-mono);
+  backdrop-filter: blur(6px);
+}
+
+.armor-theater-metric-pill small {
+  font-size: 9.5px;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.armor-theater-metric-pill strong {
+  font-size: 11px;
+  color: #f8fafc;
+}
+
+.armor-theater-metric-pill.is-spall {
+  border-color: rgba(248, 113, 113, 0.48);
+}
+
+.armor-theater-metric-pill.is-spall strong {
+  color: #fca5a5;
+}
+
+.armor-theater-cam-btn {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 9px;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.34);
+  background: rgba(15, 23, 42, 0.78);
+  color: #cbd5e1;
+  font-size: 10.5px;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  white-space: nowrap;
+}
+
+.armor-theater-cam-btn:hover {
+  border-color: rgba(56, 189, 248, 0.65);
+  color: #f8fafc;
+}
+
+.armor-theater-overlay-bottom {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 8px;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  pointer-events: none;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: rgba(148, 163, 184, 0.84);
+}
+
+.armor-theater-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  font-size: 12px;
+  color: #94a3b8;
+  text-align: center;
+}
+
+.armor-theater-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-top: 1px solid rgba(148, 163, 184, 0.18);
+  background: rgba(11, 17, 32, 0.96);
+}
+
+.armor-theater-transport {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.armor-theater-play-btn,
+.armor-theater-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  background: rgba(14, 165, 233, 0.18);
+  color: #e0f2fe;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.armor-theater-icon-btn {
+  padding: 6px 8px;
+  border-color: rgba(148, 163, 184, 0.3);
+  background: rgba(15, 23, 42, 0.72);
+  color: #cbd5e1;
+}
+
+.armor-theater-play-btn:hover {
+  background: rgba(14, 165, 233, 0.28);
+}
+
+.armor-theater-icon-btn:hover {
+  border-color: rgba(56, 189, 248, 0.55);
+  color: #f8fafc;
+}
+
+.armor-theater-scrubber-wrap {
+  flex: 1 1 180px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 140px;
+}
+
+.armor-theater-scrubber {
+  flex: 1;
+  accent-color: #38bdf8;
+  cursor: pointer;
+}
+
+.armor-theater-pct {
+  min-width: 34px;
+  text-align: right;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+}
+
+.armor-theater-speed-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 2px;
+  border-radius: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  background: rgba(15, 23, 42, 0.72);
+}
+
+.armor-theater-speed-btn {
+  padding: 4px 8px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #94a3b8;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.armor-theater-speed-btn.is-active {
+  background: rgba(245, 158, 11, 0.22);
+  border-color: rgba(245, 158, 11, 0.65);
+  color: #fde68a;
+}
+
+@media (max-width: 1120px) {
+  .armor-split-stage {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .armor-kpi-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .armor-theater-viewport {
+    height: 290px;
+  }
+
+  .armor-theater-overlay-bottom {
+    display: none;
+  }
 }
