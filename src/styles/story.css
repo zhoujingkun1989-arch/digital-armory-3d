@@ -47,6 +47,16 @@
   box-shadow: 0 2px 6px rgba(37, 99, 235, 0.24);
 }
 
+@media (max-width: 768px) {
+  .lang-seg-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    min-height: 34px;
+  }
+}
+
 /* ==================== Armory R&D Story Entry Buttons ==================== */
 .armory-story-btn {
   display: inline-flex;

@@ -295,6 +295,7 @@ export const SplitShowdownOverlay: React.FC = () => {
       <header
         className={`split-topbar ${mobileToolsOpen ? 'is-mobile-expanded' : ''}`}
       >
+        <h1 className="split-topbar-title">{ui.title}</h1>
         <div className="split-topbar-left">
           <button
             type="button"

@@ -1192,7 +1192,10 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
                 activePopover === 'labs' ? 'active-cyan' : ''
               }`}
               aria-expanded={activePopover === 'labs'}
-              aria-controls="armory-labs-popover-panel"
+              aria-controls={
+                activePopover === 'labs' ? 'armory-labs-popover-panel' : undefined
+              }
+              data-popover-target="armory-labs-popover-panel"
               title={ui.labsMenuTitle}
               onClick={() => {
                 playWorkbenchFoley('toggle_switch');
@@ -1233,7 +1236,12 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
                 activePopover === 'display' ? 'active-cyan' : ''
               }`}
               aria-expanded={activePopover === 'display'}
-              aria-controls="armory-display-popover-panel"
+              aria-controls={
+                activePopover === 'display'
+                  ? 'armory-display-popover-panel'
+                  : undefined
+              }
+              data-popover-target="armory-display-popover-panel"
               title={ui.displayMenuTitle}
               onClick={() => {
                 playWorkbenchFoley('toggle_switch');
@@ -1279,7 +1287,9 @@ export const ArmoryView: React.FC<ArmoryViewProps> = ({
               isMobileDrawerOpen ? 'active-cyan' : ''
             }`}
             aria-expanded={isMobileDrawerOpen}
-            aria-controls="armory-mobile-nav-drawer"
+            aria-controls={
+              isMobileDrawerOpen ? 'armory-mobile-nav-drawer' : undefined
+            }
             onClick={() => {
               playWorkbenchFoley('toggle_switch');
               setOpenPopover(null);

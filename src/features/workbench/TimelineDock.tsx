@@ -56,6 +56,20 @@ const SPEED_VALUES: readonly (0.25 | 0.5 | 1.0)[] = [0.25, 0.5, 1.0];
 
 export { triggerSlowMoCutawayCinema };
 
+export function resolveTimelineSliderAriaLabel(
+  mode: 'explode' | 'firing',
+  lang: 'zh' | 'en'
+): string {
+  if (mode === 'firing') {
+    return lang === 'en'
+      ? 'Dynamic firing cycle progress'
+      : '动态击发循环进度';
+  }
+  return lang === 'en'
+    ? 'Exploded disassembly progress'
+    : '3D 爆炸拆解进度';
+}
+
 export const TimelineDock: React.FC = () => {
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const lang = useAppStore((s) => s.lang);
@@ -403,6 +417,7 @@ export const TimelineDock: React.FC = () => {
                 min={0}
                 max={1000}
                 defaultValue={Math.round(initialScalar * 1000)}
+                aria-label={resolveTimelineSliderAriaLabel('explode', lang)}
                 onChange={(e) => {
                   stopPlay();
                   setTargetProgress(Number(e.target.value) / 1000);
@@ -534,6 +549,7 @@ export const TimelineDock: React.FC = () => {
                 min={0}
                 max={1000}
                 defaultValue={Math.round(initialScalar * 1000)}
+                aria-label={resolveTimelineSliderAriaLabel('firing', lang)}
                 onChange={(e) => {
                   stopFiringPlay();
                   const nextVal = Number(e.target.value) / 1000;
