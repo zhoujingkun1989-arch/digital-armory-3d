@@ -26,9 +26,82 @@ import {
 } from '../../engine/offline/offlineMuseumManager';
 import { getLocalizedShortWeaponLabel } from '../../i18n/weaponFallbacks';
 import { useAppStore } from '../../store/useAppStore';
-import { WEAPON_MANIFESTS } from '../../weapons/manifests';
-import type { WeaponId } from '../../weapons/types';
+import {
+  matchesArmoryCategory,
+  WEAPON_MANIFESTS,
+} from '../../weapons/manifests';
+import type { ArmoryCategory, WeaponId } from '../../weapons/types';
 import '../../styles/offline-museum.css';
+
+export type OfflineSpecializedHallId = Exclude<ArmoryCategory, 'all'>;
+
+export const OFFLINE_SPECIALIZED_HALLS: readonly OfflineSpecializedHallId[] = [
+  'assault',
+  'lmg',
+  'smg',
+  'sniper',
+  'shotgun',
+  'pistol',
+  'archery',
+  'armor',
+  'ordnance',
+];
+
+export const OFFLINE_HALL_LABELS: Readonly<
+  Record<ArmoryCategory, { zh: string; en: string }>
+> = {
+  all: { zh: '全部 10 展厅', en: 'All 10 Halls' },
+  assault: { zh: '步枪/无托', en: 'Assault' },
+  lmg: { zh: '轻重机枪', en: 'LMG' },
+  smg: { zh: '冲锋枪', en: 'SMG' },
+  sniper: { zh: '狙击/反器材', en: 'Sniper' },
+  shotgun: { zh: '霰弹枪', en: 'Shotgun' },
+  pistol: { zh: '手枪/左轮', en: 'Pistol' },
+  archery: { zh: '复合弓弩', en: 'Archery' },
+  armor: { zh: '重装甲大厅', en: 'Heavy Armor' },
+  ordnance: { zh: '航空重武', en: 'Ordnance' },
+};
+
+export interface OfflineHallBreakdownItem {
+  hallId: OfflineSpecializedHallId;
+  labelZh: string;
+  labelEn: string;
+  cached: number;
+  total: number;
+  pct: number;
+  isComplete: boolean;
+}
+
+/**
+ * Pure 10-Hall offline collection partition computing cached vs total exhibit
+ * counts across all 9 specialized museum halls (exact partition summing to
+ * `WEAPON_MANIFESTS.length` = 34).
+ */
+export function buildOfflineHallBreakdown(
+  cachedIds: ReadonlySet<WeaponId> | readonly WeaponId[] = []
+): OfflineHallBreakdownItem[] {
+  const cachedSet =
+    cachedIds instanceof Set ? cachedIds : new Set<WeaponId>(cachedIds);
+
+  return OFFLINE_SPECIALIZED_HALLS.map((hallId) => {
+    const members = WEAPON_MANIFESTS.filter((m) =>
+      matchesArmoryCategory(m.catalog, hallId)
+    );
+    const total = members.length;
+    const cached = members.filter((m) => cachedSet.has(m.id)).length;
+    const pct = total > 0 ? Math.round((cached / total) * 100) : 0;
+    const labels = OFFLINE_HALL_LABELS[hallId];
+    return {
+      hallId,
+      labelZh: labels.zh,
+      labelEn: labels.en,
+      cached,
+      total,
+      pct,
+      isComplete: total > 0 && cached === total,
+    };
+  });
+}
 
 export interface OfflineMuseumModalProps {
   onClose: () => void;
@@ -183,6 +256,13 @@ export const OfflineMuseumModal: React.FC<OfflineMuseumModalProps> = ({
   const armorHallSummary = useMemo(
     () => summarizeOfflinePack(ARMOR_HALL_OFFLINE_IDS),
     []
+  );
+  const hallBreakdown = useMemo(
+    () => buildOfflineHallBreakdown(cachedIds),
+    [cachedIds]
+  );
+  const totalCachedPct = Math.round(
+    (cachedIds.size / Math.max(1, WEAPON_MANIFESTS.length)) * 100
   );
 
   const refreshStatus = useCallback(async () => {
@@ -377,6 +457,17 @@ export const OfflineMuseumModal: React.FC<OfflineMuseumModalProps> = ({
       }}
     >
       <div className="offline-shell">
+        {/* Persistent polite live region announcing cache progress, completion & purge events */}
+        <div
+          className="offline-sr-only"
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+          data-testid="offline-live-announcer"
+        >
+          {progressMessage ?? ''}
+        </div>
+
         <header className="offline-header">
           <div>
             <span className="offline-badge">
@@ -393,6 +484,7 @@ export const OfflineMuseumModal: React.FC<OfflineMuseumModalProps> = ({
               type="button"
               className="offline-btn is-legends"
               data-testid="offline-cache-legends-btn"
+              aria-label={`${ui.cacheFeaturedLegendsBtn} (~${featuredLegendsSummary.estimatedMb.toFixed(1)} MB)`}
               disabled={busyId !== null}
               onClick={() =>
                 void handleCacheBatchPack(
@@ -420,6 +512,7 @@ export const OfflineMuseumModal: React.FC<OfflineMuseumModalProps> = ({
               type="button"
               className="offline-btn is-accent"
               data-testid="offline-cache-armor-btn"
+              aria-label={`${ui.cacheArmorHallBtn} (~${armorHallSummary.estimatedMb.toFixed(1)} MB)`}
               disabled={busyId !== null}
               onClick={() =>
                 void handleCacheBatchPack('armor_hall', ARMOR_HALL_OFFLINE_IDS)
@@ -443,6 +536,7 @@ export const OfflineMuseumModal: React.FC<OfflineMuseumModalProps> = ({
             <button
               type="button"
               className="offline-btn is-danger"
+              aria-label={ui.purgeBtn}
               disabled={busyId !== null}
               onClick={() => void handlePurge()}
             >
@@ -486,10 +580,76 @@ export const OfflineMuseumModal: React.FC<OfflineMuseumModalProps> = ({
             </div>
           </div>
 
+          {/* 10-Hall Offline Collection Summary Bar */}
+          <section
+            className="offline-halls-section"
+            data-testid="offline-halls-breakdown"
+            aria-label={
+              lang === 'zh'
+                ? '十大展厅离线缓存进度汇总'
+                : '10-hall offline collection cache breakdown'
+            }
+          >
+            <div className="offline-halls-head">
+              <span className="offline-halls-title">
+                {lang === 'zh'
+                  ? '10 大展厅离线藏品覆盖进度'
+                  : '10-HALL OFFLINE COLLECTION COVERAGE'}
+              </span>
+              <span className="offline-halls-overall tabular">
+                {cachedIds.size} / {WEAPON_MANIFESTS.length} ({totalCachedPct}%)
+              </span>
+            </div>
+            <div className="offline-halls-bar" role="list">
+              <div
+                role="listitem"
+                className={`offline-hall-chip ${
+                  cachedIds.size === WEAPON_MANIFESTS.length ? 'is-complete' : ''
+                }`}
+              >
+                <span className="offline-hall-top">
+                  <span className="offline-hall-name">
+                    {OFFLINE_HALL_LABELS.all[lang]}
+                  </span>
+                  <span className="offline-hall-ratio tabular">
+                    {cachedIds.size}/{WEAPON_MANIFESTS.length}
+                  </span>
+                </span>
+                <span className="offline-hall-track" aria-hidden="true">
+                  <span
+                    className="offline-hall-fill"
+                    style={{ width: `${totalCachedPct}%` }}
+                  />
+                </span>
+              </div>
+              {hallBreakdown.map((h) => (
+                <div
+                  key={h.hallId}
+                  role="listitem"
+                  data-hall-id={h.hallId}
+                  className={`offline-hall-chip ${h.isComplete ? 'is-complete' : ''}`}
+                >
+                  <span className="offline-hall-top">
+                    <span className="offline-hall-name">
+                      {lang === 'zh' ? h.labelZh : h.labelEn}
+                    </span>
+                    <span className="offline-hall-ratio tabular">
+                      {h.cached}/{h.total}
+                    </span>
+                  </span>
+                  <span className="offline-hall-track" aria-hidden="true">
+                    <span
+                      className="offline-hall-fill"
+                      style={{ width: `${h.pct}%` }}
+                    />
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
+
           {(progress || statusBanner) && (
             <div
-              role="status"
-              aria-live="polite"
               data-testid="offline-status-banner"
               className={`offline-status-banner ${
                 progress || statusBanner?.tone === 'success'
@@ -541,6 +701,12 @@ export const OfflineMuseumModal: React.FC<OfflineMuseumModalProps> = ({
                   <button
                     type="button"
                     disabled={busyId !== null}
+                    aria-pressed={isCached}
+                    aria-label={
+                      isCached
+                        ? ui.removeTitle(shortName)
+                        : ui.cacheTitle(shortName, estMb)
+                    }
                     className={`offline-item-btn ${isCached ? 'is-cached' : ''}`}
                     title={
                       isCached
