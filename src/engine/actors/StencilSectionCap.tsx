@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useSyncExternalStore } from 'react';
 import * as THREE from 'three';
 import type {
   AssemblyGroupKey,
@@ -386,23 +386,263 @@ export function resolveSectionCapMaterialVariant(
   return 'standard';
 }
 
-export interface SectionCapStyle {
-  /** Solid cross-section albedo (sRGB hex) */
+export interface SectionCapPalette {
+  /** Solid cross-section fill albedo (sRGB hex) */
   base: string;
-  /** Hatch line colour (sRGB hex) */
+  /** Hatch line or organic end-grain colour (sRGB hex) */
   hatch: string;
-  /** +1 => ISO +45° hatch, -1 => -45° hatch */
-  hatchDir: 1 | -1;
-  /** Hatch pitch in world units (1 unit = 1 cm) */
-  hatchSpacing: number;
+  /** Architectural drafting-ink contour rim colour (sRGB hex) */
+  inkRim: string;
+  /** Architectural ink rim intensity (`0` dark studio -> crisp Prussian contour in blueprint_daylight) */
+  inkRimStrength: number;
   /** Specular highlight strength */
   spec: number;
   /** 1 = longitudinal brushed-steel grain, 0 = matte polymer/wood */
   brushed: number;
   /** 0 = crisp ISO 128 CAD hatch, 1 = organic cross-cut wood grain, 0.55 = marbled bakelite */
   organicGrain: number;
+  /** 0 = standard dark-vault ISO 128 styling, 1 = high-contrast Blueprint Daylight drafting ink */
+  daylightInk: number;
+}
+
+export interface SectionCapStyle extends SectionCapPalette {
+  /** +1 => ISO +45° hatch, -1 => -45° hatch */
+  hatchDir: 1 | -1;
+  /** Hatch pitch in world units (1 unit = 1 cm) */
+  hatchSpacing: number;
   /** Resolved semantic material variant for cutaway styling & telemetry */
   variant: SectionCapMaterialVariant;
+}
+
+// ------------------------------------------------------------------
+// Zero-circularity reactive studio-lighting mode bridge
+// (`useAppStore` imports `StencilSectionCap`, so `StencilSectionCap` stays an
+// acyclic leaf in `armory-materials` and receives studio updates via this bridge
+// plus automatic `scene.background` luminance detection in `onBeforeRender`.)
+// ------------------------------------------------------------------
+
+let sectionCapDaylightMode = false;
+const sectionCapDaylightListeners = new Set<() => void>();
+
+export function getSectionCapDaylightMode(): boolean {
+  return sectionCapDaylightMode;
+}
+
+export function setSectionCapDaylightMode(isDaylight: boolean): boolean {
+  const next = Boolean(isDaylight);
+  if (sectionCapDaylightMode === next) return sectionCapDaylightMode;
+  sectionCapDaylightMode = next;
+  for (const listener of sectionCapDaylightListeners) {
+    listener();
+  }
+  return sectionCapDaylightMode;
+}
+
+export function subscribeSectionCapDaylightMode(
+  listener: () => void
+): () => void {
+  sectionCapDaylightListeners.add(listener);
+  return () => {
+    sectionCapDaylightListeners.delete(listener);
+  };
+}
+
+/** Infers Blueprint Daylight (`#dce4ee`) vs Dark Studio / Bench from `scene.background`. */
+export function isLightSceneBackground(bg: unknown): boolean | null {
+  if (!(bg instanceof THREE.Color)) return null;
+  const lum = 0.2126 * bg.r + 0.7152 * bg.g + 0.0722 * bg.b;
+  return lum > 0.32;
+}
+
+/**
+ * Pure architectural cross-section palette resolver across Dark Studio / Gunsmith Bench
+ * (`isDaylight === false`, preserving legacy Dark-Vault palettes 100% unchanged) vs
+ * Blueprint Daylight (`isDaylight === true`, Swiss/Smithsonian Prussian drafting ink
+ * over bright machined silver-blue fill, deeper walnut/bakelite end-grain & crisp ink rim).
+ */
+export function resolveSectionCapPalette(
+  variant: SectionCapMaterialVariant,
+  role: EngineeringRole | null = null,
+  isDaylight = false,
+  kind: MaterialKind = 'nitride_steel'
+): SectionCapPalette {
+  let palette: SectionCapPalette;
+
+  if (!isDaylight) {
+    if (variant === 'wood_stock') {
+      palette = {
+        base: '#8b5a34',
+        hatch: '#5c371c',
+        inkRim: '#3b210e',
+        inkRimStrength: 0,
+        spec: 0.06,
+        brushed: 0,
+        organicGrain: 1,
+        daylightInk: 0,
+      };
+    } else if (variant === 'bakelite') {
+      palette = {
+        base: '#7a3f24',
+        hatch: '#4a2110',
+        inkRim: '#2e1207',
+        inkRimStrength: 0,
+        spec: 0.14,
+        brushed: 0,
+        organicGrain: 0.55,
+        daylightInk: 0,
+      };
+    } else {
+      switch (kind) {
+        case 'polymer_frame':
+          palette = {
+            base: '#334155',
+            hatch: '#64748b',
+            inkRim: '#1e293b',
+            inkRimStrength: 0,
+            spec: 0.08,
+            brushed: 0,
+            organicGrain: 0,
+            daylightInk: 0,
+          };
+          break;
+        case 'follower_orange':
+          palette = {
+            base: '#f97316',
+            hatch: '#9a3412',
+            inkRim: '#7c2d12',
+            inkRimStrength: 0,
+            spec: 0.12,
+            brushed: 0,
+            organicGrain: 0,
+            daylightInk: 0,
+          };
+          break;
+        case 'copper_accent':
+          palette = {
+            base: '#c2853f',
+            hatch: '#7c2d12',
+            inkRim: '#5c210b',
+            inkRimStrength: 0,
+            spec: 0.42,
+            brushed: 1,
+            organicGrain: 0,
+            daylightInk: 0,
+          };
+          break;
+        case 'nitride_steel':
+        case 'barrel_steel':
+        case 'stainless':
+        case 'spring_steel':
+        default:
+          palette = {
+            base: '#94a3b8',
+            hatch: '#475569',
+            inkRim: '#334155',
+            inkRimStrength: 0,
+            spec: 0.36,
+            brushed: 1,
+            organicGrain: 0,
+            daylightInk: 0,
+          };
+          break;
+      }
+    }
+  } else if (variant === 'wood_stock') {
+    // Rich sunlit cabinetmaker cross-cut walnut / laminated beechwood with deep espresso end-grain rings
+    palette = {
+      base: '#a36432',
+      hatch: '#351807',
+      inkRim: '#261004',
+      inkRimStrength: 0.55,
+      spec: 0.04,
+      brushed: 0,
+      organicGrain: 1,
+      daylightInk: 1,
+    };
+  } else if (variant === 'bakelite') {
+    // High-contrast wartime phenolic chestnut-amber with deep mahogany drafting veins
+    palette = {
+      base: '#944320',
+      hatch: '#311005',
+      inkRim: '#240b03',
+      inkRimStrength: 0.58,
+      spec: 0.1,
+      brushed: 0,
+      organicGrain: 0.55,
+      daylightInk: 1,
+    };
+  } else {
+    switch (kind) {
+      case 'polymer_frame':
+        // Architectural graphite-slate polymer fill with deep Prussian ink hatching (distinct from silver-blue steel)
+        palette = {
+          base: '#5a6f88',
+          hatch: '#0c1f3a',
+          inkRim: '#081529',
+          inkRimStrength: 0.68,
+          spec: 0.05,
+          brushed: 0,
+          organicGrain: 0,
+          daylightInk: 1,
+        };
+        break;
+      case 'follower_orange':
+        palette = {
+          base: '#ea580c',
+          hatch: '#5c1906',
+          inkRim: '#431104',
+          inkRimStrength: 0.62,
+          spec: 0.08,
+          brushed: 0,
+          organicGrain: 0,
+          daylightInk: 1,
+        };
+        break;
+      case 'copper_accent':
+        palette = {
+          base: '#d49442',
+          hatch: '#541f08',
+          inkRim: '#3d1505',
+          inkRimStrength: 0.62,
+          spec: 0.28,
+          brushed: 1,
+          organicGrain: 0,
+          daylightInk: 1,
+        };
+        break;
+      case 'nitride_steel':
+      case 'barrel_steel':
+      case 'stainless':
+      case 'spring_steel':
+      default:
+        // Swiss / Smithsonian Prussian architectural drafting ink over crisp silver-blue machined steel
+        palette = {
+          base: '#c9d8e8',
+          hatch: '#0e325c',
+          inkRim: '#092242',
+          inkRimStrength: 0.74,
+          spec: 0.22,
+          brushed: 1,
+          organicGrain: 0,
+          daylightInk: 1,
+        };
+        break;
+    }
+  }
+
+  if (role) {
+    const roleMeta = ENGINEERING_ROLE_META[role];
+    return {
+      ...palette,
+      base: roleMeta.capBaseHex,
+      hatch: roleMeta.capHatchHex,
+      inkRim: isDaylight ? '#0b1e36' : palette.inkRim,
+      inkRimStrength: isDaylight ? 0.54 : 0,
+      daylightInk: isDaylight ? 0.68 : 0,
+      organicGrain: 0,
+    };
+  }
+  return palette;
 }
 
 const GROUP_HATCH: Record<AssemblyGroupKey, { dir: 1 | -1; spacing: number }> = {
@@ -418,105 +658,26 @@ export function getSectionCapStyle(
   group: AssemblyGroupKey,
   engineeringRole?: EngineeringRole | null,
   hatchScale = 1,
-  partId?: string | null
+  partId?: string | null,
+  isDaylight = false
 ): SectionCapStyle {
   const h = GROUP_HATCH[group] ?? GROUP_HATCH.frame;
   const scaledSpacing = h.spacing * (hatchScale > 0 ? hatchScale : 1);
   const variant = resolveSectionCapMaterialVariant(partId, kind);
-  let style: SectionCapStyle;
-  switch (kind) {
-    case 'polymer_frame':
-      if (variant === 'wood_stock') {
-        // Warm cross-cut oiled walnut / laminated beechwood organic wood-grain hatch
-        style = {
-          base: '#8b5a34',
-          hatch: '#5c371c',
-          hatchDir: h.dir,
-          hatchSpacing: scaledSpacing * 1.18,
-          spec: 0.06,
-          brushed: 0,
-          organicGrain: 1,
-          variant: 'wood_stock',
-        };
-      } else if (variant === 'bakelite') {
-        // Wartime marbled phenolic bakelite amber-chestnut cross-section
-        style = {
-          base: '#7a3f24',
-          hatch: '#4a2110',
-          hatchDir: h.dir,
-          hatchSpacing: scaledSpacing * 1.08,
-          spec: 0.14,
-          brushed: 0,
-          organicGrain: 0.55,
-          variant: 'bakelite',
-        };
-      } else {
-        // Dark fibreglass-reinforced nylon / synthetic rubber
-        style = {
-          base: '#334155',
-          hatch: '#64748b',
-          hatchDir: h.dir,
-          hatchSpacing: scaledSpacing,
-          spec: 0.08,
-          brushed: 0,
-          organicGrain: 0,
-          variant: 'standard',
-        };
-      }
-      break;
-    case 'follower_orange':
-      style = {
-        base: '#f97316',
-        hatch: '#9a3412',
-        hatchDir: h.dir,
-        hatchSpacing: scaledSpacing,
-        spec: 0.12,
-        brushed: 0,
-        organicGrain: 0,
-        variant: 'standard',
-      };
-      break;
-    case 'copper_accent':
-      // Warm phosphor-bronze / cartridge brass
-      style = {
-        base: '#c2853f',
-        hatch: '#7c2d12',
-        hatchDir: h.dir,
-        hatchSpacing: scaledSpacing,
-        spec: 0.42,
-        brushed: 1,
-        organicGrain: 0,
-        variant: 'standard',
-      };
-      break;
-    case 'nitride_steel':
-    case 'barrel_steel':
-    case 'stainless':
-    case 'spring_steel':
-    default:
-      // Bright machined / brushed steel
-      style = {
-        base: '#94a3b8',
-        hatch: '#475569',
-        hatchDir: h.dir,
-        hatchSpacing: scaledSpacing,
-        spec: 0.36,
-        brushed: 1,
-        organicGrain: 0,
-        variant: 'standard',
-      };
-      break;
-  }
-  if (engineeringRole) {
-    const roleMeta = ENGINEERING_ROLE_META[engineeringRole];
-    return {
-      ...style,
-      base: roleMeta.capBaseHex,
-      hatch: roleMeta.capHatchHex,
-      organicGrain: 0,
-    };
-  }
-  return style;
+  const palette = resolveSectionCapPalette(
+    variant,
+    engineeringRole ?? null,
+    isDaylight,
+    kind
+  );
+  const spacingMult =
+    variant === 'wood_stock' ? 1.18 : variant === 'bakelite' ? 1.08 : 1;
+  return {
+    ...palette,
+    hatchDir: h.dir,
+    hatchSpacing: scaledSpacing * spacingMult,
+    variant,
+  };
 }
 
 const CAP_VERTEX = /* glsl */ `
@@ -539,6 +700,9 @@ void main() {
 const CAP_FRAGMENT = /* glsl */ `
 uniform vec3 uBaseColor;
 uniform vec3 uHatchColor;
+uniform vec3 uInkRimColor;
+uniform float uInkRimStrength;
+uniform float uDaylightInk;
 uniform float uHatchDir;
 uniform float uHatchSpacing;
 uniform float uSpec;
@@ -559,12 +723,14 @@ float capHash11( float p ) {
 void main() {
   vec2 p = vCapPlaneCoord;
   float gScale = max( uGrainScale, 0.05 );
+  float daylightInk = clamp( uDaylightInk, 0.0, 1.0 );
 
   // ISO 128 ±45° section hatching, anti-aliased with screen-space derivatives
+  // Under Blueprint Daylight, technical-pen drafting ink strokes widen slightly for crisp plate legibility
   float d = ( p.x * uHatchDir + p.y ) * 0.70710678 / uHatchSpacing;
   float fw = max( fwidth( d ), 1e-4 );
   float distToLine = abs( fract( d ) - 0.5 );
-  float halfWidth = 0.1;
+  float halfWidth = mix( 0.10, 0.138, daylightInk );
   float line = 1.0 - smoothstep( halfWidth - fw, halfWidth + fw, distToLine );
   // Fade hatching smoothly when zoomed out to prevent moire aliasing
   line *= 1.0 - smoothstep( 0.25, 0.5, fw );
@@ -598,9 +764,22 @@ void main() {
   float lenHSq = dot( rawH, rawH );
   vec3 H = lenHSq > 1e-8 ? ( rawH * inversesqrt( lenHSq ) ) : N;
   float ndl = max( dot( N, L ), 0.0 );
-  vec3 col = base * ( 0.6 + 0.4 * ndl );
-  float hatchWeight = mix( line * 0.85, organicPattern * 0.78, clamp( uOrganicGrain, 0.0, 1.0 ) );
+  float ndv = clamp( dot( N, V ), 0.0, 1.0 );
+  float lit = mix( 0.6 + 0.4 * ndl, 0.80 + 0.20 * ndl, daylightInk );
+  vec3 col = base * lit;
+  float hatchWeight = mix(
+    line * mix( 0.85, 0.95, daylightInk ),
+    organicPattern * mix( 0.78, 0.88, daylightInk ),
+    clamp( uOrganicGrain, 0.0, 1.0 )
+  );
   col = mix( col, uHatchColor, hatchWeight );
+
+  // Crisp Swiss architectural drafting-ink rim accent along oblique cutaway boundaries in Blueprint Daylight
+  float inkRimStrength = clamp( uInkRimStrength, 0.0, 1.0 );
+  if ( inkRimStrength > 0.001 ) {
+    float inkRim = pow( max( 1.0 - ndv, 1e-5 ), 2.2 ) * inkRimStrength;
+    col = mix( col, uInkRimColor, clamp( inkRim * 0.68, 0.0, 0.78 ) );
+  }
 
   // Anisotropic brushed specular streak + soft isotropic lobe
   float nh = max( dot( N, H ), 1e-5 );
@@ -616,21 +795,23 @@ void main() {
 
 const capMaterialCache = new Map<string, THREE.ShaderMaterial>();
 
-/** Builds the CNC cross-section cap material (cached per material kind × variant × assembly group × role × scale). */
+/** Builds the CNC cross-section cap material (cached per material kind × variant × assembly group × role × scale × theme). */
 export function getSectionCapMaterial(
   kind: MaterialKind,
   group: AssemblyGroupKey,
   engineeringRole?: EngineeringRole | null,
   hatchScale = 1,
-  partId?: string | null
+  partId?: string | null,
+  isDaylight = false
 ): THREE.ShaderMaterial {
   const safeScale = hatchScale > 0 ? hatchScale : 1;
   const variant = resolveSectionCapMaterialVariant(partId, kind);
   const variantSuffix = variant === 'standard' ? '' : `|${variant}`;
+  const themeSuffix = isDaylight ? '|day' : '';
   const key =
     safeScale === 1
-      ? `${kind}${variantSuffix}|${group}|${engineeringRole ?? 'none'}`
-      : `${kind}${variantSuffix}|${group}|${engineeringRole ?? 'none'}|x${safeScale}`;
+      ? `${kind}${variantSuffix}|${group}|${engineeringRole ?? 'none'}${themeSuffix}`
+      : `${kind}${variantSuffix}|${group}|${engineeringRole ?? 'none'}|x${safeScale}${themeSuffix}`;
   const cached = capMaterialCache.get(key);
   if (cached) return cached;
   const style = getSectionCapStyle(
@@ -638,13 +819,17 @@ export function getSectionCapMaterial(
     group,
     engineeringRole,
     safeScale,
-    partId
+    partId,
+    isDaylight
   );
   const mat = new THREE.ShaderMaterial({
     name: `SectionCap:${key}`,
     uniforms: {
       uBaseColor: { value: new THREE.Color(style.base) },
       uHatchColor: { value: new THREE.Color(style.hatch) },
+      uInkRimColor: { value: new THREE.Color(style.inkRim) },
+      uInkRimStrength: { value: style.inkRimStrength },
+      uDaylightInk: { value: style.daylightInk },
       uHatchDir: { value: style.hatchDir },
       uHatchSpacing: { value: style.hatchSpacing },
       uSpec: { value: style.spec },
@@ -1051,6 +1236,12 @@ export const StencilSectionCap: React.FC<StencilSectionCapProps> = ({
   const frontRef = useRef<THREE.Mesh>(null);
   const capRef = useRef<THREE.Mesh>(null);
 
+  const isDaylight = useSyncExternalStore(
+    subscribeSectionCapDaylightMode,
+    getSectionCapDaylightMode,
+    getSectionCapDaylightMode
+  );
+
   const range = getSectionCutRange(scaleProfile);
   const passMats = getSectionStencilPassMaterials(clippingPlanes);
   const capMat = getSectionCapMaterial(
@@ -1058,8 +1249,16 @@ export const StencilSectionCap: React.FC<StencilSectionCapProps> = ({
     group,
     engineeringRole,
     range.hatchScale,
-    partId
+    partId,
+    isDaylight
   );
+
+  // Sync cached ShaderMaterial assignment directly on live `[Vault] <-> [Blueprint]` toggle
+  useEffect(() => {
+    if (capRef.current) {
+      capRef.current.material = capMat;
+    }
+  }, [capMat]);
 
   useEffect(() => {
     const slot = acquireSectionCapSlot();
@@ -1076,7 +1275,14 @@ export const StencilSectionCap: React.FC<StencilSectionCapProps> = ({
     if (front) front.renderOrder = orders.front;
     if (cap) {
       cap.renderOrder = orders.cap;
-      cap.onBeforeRender = ((renderer: THREE.WebGLRenderer) => {
+      cap.onBeforeRender = ((
+        renderer: THREE.WebGLRenderer,
+        scene: THREE.Scene
+      ) => {
+        const sceneDay = isLightSceneBackground(scene?.background);
+        if (sceneDay !== null && sceneDay !== getSectionCapDaylightMode()) {
+          setSectionCapDaylightMode(sceneDay);
+        }
         const mat = cap.material as THREE.ShaderMaterial;
         const refObj = back ?? cap;
         const visible = computeSectionCapTransformInto(

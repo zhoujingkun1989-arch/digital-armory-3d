@@ -761,7 +761,7 @@ MODELS_OUT.parent.mkdir(parents=True, exist_ok=True)
 TEX_OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 ATLAS_SIZE = 2048
-BAKE_AO_SAMPLES = 48
+BAKE_AO_SAMPLES = 28
 BAKE_NORMAL_SAMPLES = 16
 P320_GRIP_ANGLE = math.radians(-18.0)
 
@@ -1016,13 +1016,24 @@ def _build_pbr_mat(
     met_sock = met_node.outputs[0]
 
     if edge_wear > 0.001:
-        geom = nt.nodes.new("ShaderNodeNewGeometry")
+        # Tight Cycles inside-AO convex edge curvature mask (zero vertex-density Pointiness artifacts!)
+        ao_edge = nt.nodes.new("ShaderNodeAmbientOcclusion")
+        ao_edge.samples = 8
+        ao_edge.inside = True
+        ao_edge.only_local = True
+        ao_edge.inputs["Distance"].default_value = 0.044
+
+        inv_ao = nt.nodes.new("ShaderNodeMath")
+        inv_ao.operation = "SUBTRACT"
+        inv_ao.inputs[0].default_value = 1.0
+        nt.links.new(ao_edge.outputs["AO"], inv_ao.inputs[1])
+
         ramp = nt.nodes.new("ShaderNodeValToRGB")
-        ramp.color_ramp.elements[0].position = 0.525
+        ramp.color_ramp.elements[0].position = 0.26
         ramp.color_ramp.elements[0].color = (0.0, 0.0, 0.0, 1.0)
-        ramp.color_ramp.elements[1].position = 0.595
+        ramp.color_ramp.elements[1].position = 0.66
         ramp.color_ramp.elements[1].color = (edge_wear, edge_wear, edge_wear, 1.0)
-        nt.links.new(geom.outputs["Pointiness"], ramp.inputs["Fac"])
+        nt.links.new(inv_ao.outputs["Value"], ramp.inputs["Fac"])
 
         mul_w = nt.nodes.new("ShaderNodeMath")
         mul_w.operation = "MULTIPLY"
@@ -1121,43 +1132,43 @@ def _build_muzzle_crown_soot_mat() -> bpy.types.Material:
 def create_material_library() -> dict[str, bpy.types.Material]:
     return {
         # --- SUITE 1: p320_v3_slide (5 parts) ---
-        # Iconic SIG M17 Coyote-Tan PVD Stainless Steel Slide (warm metallic champagne-coyote speculars!)
+        # Iconic SIG M17 Coyote-Tan PVD Stainless Steel Slide (rich metallic champagne-coyote speculars!)
         "S_CoyotePVD": _build_pbr_mat(
             "S_CoyotePVD",
-            base_srgb=(0.625, 0.512, 0.358),
-            roughness=0.275,
-            metallic=0.86,
+            base_srgb=(0.662, 0.542, 0.366),
+            roughness=0.245,
+            metallic=0.89,
             bevel_r=0.024,
-            edge_wear=0.0,  # Zero vertex-Pointiness triangulation streaks on hero slide flanks!
-            edge_srgb=(0.78, 0.68, 0.52),
-            grain_scale=36.0,
-            grain_bump=0.014,
-            aniso_stretch=(0.16, 4.0, 4.0),
-            rough_var=0.032,
+            edge_wear=0.0,  # Zero stochastic speckles on glossy brushed PVD slide bevels!
+            edge_srgb=(0.86, 0.78, 0.64),
+            grain_scale=40.0,
+            grain_bump=0.012,
+            aniso_stretch=(0.16, 4.2, 4.2),
+            rough_var=0.028,
         ),
         # Darker milled Coyote PVD recesses (serration roots, DPP optic pocket, bore tunnel, rail channels)
         "S_CoyoteMilled": _build_pbr_mat(
             "S_CoyoteMilled",
-            base_srgb=(0.355, 0.285, 0.195),
-            roughness=0.41,
-            metallic=0.80,
+            base_srgb=(0.340, 0.270, 0.182),
+            roughness=0.40,
+            metallic=0.82,
             bevel_r=0.016,
             grain_scale=44.0,
-            grain_bump=0.030,
-            rough_var=0.048,
+            grain_bump=0.028,
+            rough_var=0.042,
         ),
         # Deep Black Nitron / DLC Steel (Optic cover plate, night sight blades, external extractor, slide backplate)
         "S_NitronBlack": _build_pbr_mat(
             "S_NitronBlack",
-            base_srgb=(0.182, 0.192, 0.212),
-            roughness=0.29,
+            base_srgb=(0.194, 0.204, 0.222),
+            roughness=0.28,
             metallic=0.88,
             bevel_r=0.018,
-            edge_wear=0.36,
-            edge_srgb=(0.62, 0.66, 0.72),
+            edge_wear=0.28,
+            edge_srgb=(0.66, 0.70, 0.76),
             grain_scale=38.0,
-            grain_bump=0.024,
-            rough_var=0.042,
+            grain_bump=0.022,
+            rough_var=0.036,
         ),
         "S_NitronRecess": _build_pbr_mat(
             "S_NitronRecess",
@@ -1214,42 +1225,43 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         ),
 
         # --- SUITE 2: p320_v3_grip (3 parts) ---
-        # Warm Matte Coyote-Tan Glass-Filled Polyamide Grip Module & Floorplate (distinctly M=0.0 matte!)
+        # Warm Earthy Matte Coyote-Tan Glass-Filled Polyamide Grip Module & Floorplate (clear contrast vs metallic PVD slide!)
         "G_CoyotePoly": _build_pbr_mat(
             "G_CoyotePoly",
-            base_srgb=(0.562, 0.452, 0.312),
-            roughness=0.63,
+            base_srgb=(0.486, 0.390, 0.268),
+            roughness=0.64,
             metallic=0.00,
             bevel_r=0.028,
-            edge_wear=0.0,  # Clean injection-molded polyamide flanks (zero Pointiness streaks!)
-            grain_scale=64.0,
-            grain_bump=0.055,
-            voronoi_grain=0.45,
-            voronoi_scale=88.0,
-            rough_var=0.045,
+            edge_wear=0.08,
+            edge_srgb=(0.59, 0.49, 0.36),
+            grain_scale=68.0,
+            grain_bump=0.052,
+            voronoi_grain=0.48,
+            voronoi_scale=92.0,
+            rough_var=0.040,
         ),
         # 360-deg Wraparound Micro-Pebble Stippled Coyote Polymer (frontstrap & arched backstrap!)
         "G_CoyoteStipple": _build_pbr_mat(
             "G_CoyoteStipple",
-            base_srgb=(0.502, 0.400, 0.274),
-            roughness=0.74,
+            base_srgb=(0.428, 0.338, 0.228),
+            roughness=0.76,
             metallic=0.00,
             bevel_r=0.018,
-            grain_scale=96.0,
-            grain_bump=0.38,
+            grain_scale=98.0,
+            grain_bump=0.36,
             voronoi_grain=0.92,
-            voronoi_scale=112.0,
-            rough_var=0.048,
+            voronoi_scale=116.0,
+            rough_var=0.044,
         ),
         # Darker Coyote polymer recessed interior cavities, Picatinny slot bottoms & serial bezel walls
         "G_CoyoteInner": _build_pbr_mat(
             "G_CoyoteInner",
-            base_srgb=(0.435, 0.345, 0.235),
+            base_srgb=(0.375, 0.296, 0.200),
             roughness=0.72,
             metallic=0.00,
             bevel_r=0.016,
             grain_scale=62.0,
-            grain_bump=0.055,
+            grain_bump=0.052,
             voronoi_grain=0.38,
             voronoi_scale=78.0,
         ),
@@ -1290,29 +1302,29 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         # Gleaming Brushed 17-4PH Stainless Steel Drop-In FCU Chassis!
         "F_FcuStainless": _build_pbr_mat(
             "F_FcuStainless",
-            base_srgb=(0.745, 0.768, 0.798),
-            roughness=0.245,
-            metallic=0.945,
+            base_srgb=(0.768, 0.790, 0.822),
+            roughness=0.220,
+            metallic=0.955,
             bevel_r=0.020,
             edge_wear=0.18,
-            edge_srgb=(0.88, 0.90, 0.93),
+            edge_srgb=(0.90, 0.92, 0.95),
             grain_scale=34.0,
-            grain_bump=0.018,
-            aniso_stretch=(0.20, 4.2, 4.2),
-            rough_var=0.030,
+            grain_bump=0.016,
+            aniso_stretch=(0.20, 4.4, 4.4),
+            rough_var=0.026,
         ),
         # Clean Flawless Satin-Brushed Stainless FCU Right-Flank Serial Window Plate (`TC014829`)
         "F_FcuSerialPlate": _build_pbr_mat(
             "F_FcuSerialPlate",
-            base_srgb=(0.835, 0.855, 0.885),
-            roughness=0.30,
-            metallic=0.88,
+            base_srgb=(0.842, 0.862, 0.892),
+            roughness=0.275,
+            metallic=0.89,
             bevel_r=0.014,
             edge_wear=0.0,
             grain_scale=36.0,
-            grain_bump=0.012,
+            grain_bump=0.010,
             aniso_stretch=(0.15, 4.5, 4.5),
-            rough_var=0.022,
+            rough_var=0.020,
         ),
         # Mirror-Polished Stainless / Hard Chrome (Feed ramp, trigger bar, MIM sear nose, striker, inner guide rod)
         "F_PolishedStainless": _build_pbr_mat(
@@ -1538,6 +1550,7 @@ def mk_cyl(
     xform: list[tuple] | None = None,
     mat: bpy.types.Material | None = None,
     bevel: float = 0.0,
+    bevel_segs: int = 2,
 ) -> bpy.types.Object:
     bm = bmesh.new()
     bmesh.ops.create_cone(
@@ -1556,7 +1569,7 @@ def mk_cyl(
                 bm,
                 geom=cap_edges,
                 offset=bevel,
-                segments=2,
+                segments=bevel_segs,
                 profile=0.5,
                 affect="EDGES",
                 clamp_overlap=True,
@@ -2060,6 +2073,7 @@ def finish_part(
     bm = bmesh.new()
     bm.from_mesh(obj.data)
     bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)
+    bmesh.ops.dissolve_degenerate(bm, dist=1e-5, edges=bm.edges)
     degen = [f for f in bm.faces if f.calc_area() < 1e-10]
     if degen:
         bmesh.ops.delete(bm, geom=degen, context="FACES")
@@ -2097,6 +2111,24 @@ def finish_part(
         wn.keep_sharp = True
         bpy.ops.object.modifier_apply(modifier=wn.name)
 
+    if lock_flat_walls:
+        mesh = obj.data
+        mesh.update()
+        loop_n = [tuple(l.normal) for l in mesh.loops]
+        for poly in mesh.polygons:
+            n = poly.normal
+            if poly.area > 0.03:
+                if abs(n.y) > 0.996:
+                    fn = (0.0, 1.0 if n.y > 0.0 else -1.0, 0.0)
+                    for li in poly.loop_indices:
+                        loop_n[li] = fn
+                elif abs(n.z) > 0.996:
+                    fn = (0.0, 0.0, 1.0 if n.z > 0.0 else -1.0)
+                    for li in poly.loop_indices:
+                        loop_n[li] = fn
+        mesh.normals_split_custom_set(loop_n)
+        mesh.update()
+
     return obj
 
 
@@ -2113,53 +2145,54 @@ def build_p320_slide(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
     m_pvd = mats["S_CoyotePVD"]
     m_mil = mats["S_CoyoteMilled"]
 
-    # 1. Authentic SIG P320 M17 high-shoulder tri-top cross-section in (Z, Y)
+    # 1. Authentic SIG P320 M17 high-shoulder tri-top cross-section in (Z, Y) w/ silky C2 shoulder & crown fillets!
     pts_zy = [
         (-1.26, 0.90),
         ( 1.26, 0.90),
     ]
-    pts_zy += _quad_bez((1.26, 0.90), (1.335, 0.90), (1.335, 0.99), segs=4)
-    pts_zy.append((1.335, 2.48))
-    # Crisp SIG upper shoulder facets narrowing cleanly to the flat top optic deck
-    pts_zy.append((0.975, 3.48))
-    pts_zy += _quad_bez((0.975, 3.48), (0.91, 3.615), (0.78, 3.615), segs=5)
-    pts_zy.append((-0.78, 3.615))
-    pts_zy += _quad_bez((-0.78, 3.615), (-0.91, 3.615), (-0.975, 3.48), segs=5)
-    pts_zy.append((-1.335, 2.48))
+    pts_zy += _quad_bez((1.26, 0.90), (1.335, 0.90), (1.335, 0.99), segs=6)
+    pts_zy.append((1.335, 2.38))
+    # Smooth C2 shoulder transition from vertical wall onto SIG upper angled bevel (eliminates flat planar kink!)
+    pts_zy += _quad_bez((1.335, 2.38), (1.335, 2.50), (1.292, 2.62), segs=6)
+    pts_zy.append((1.015, 3.38))
+    pts_zy += _quad_bez((1.015, 3.38), (0.935, 3.615), (0.76, 3.615), segs=8)
+    pts_zy.append((-0.76, 3.615))
+    pts_zy += _quad_bez((-0.76, 3.615), (-0.935, 3.615), (-1.015, 3.38), segs=8)
+    pts_zy.append((-1.292, 2.62))
+    pts_zy += _quad_bez((-1.292, 2.62), (-1.335, 2.50), (-1.335, 2.38), segs=6)
     pts_zy.append((-1.335, 0.99))
-    pts_zy += _quad_bez((-1.335, 0.99), (-1.335, 0.90), (-1.26, 0.90), segs=4)
+    pts_zy += _quad_bez((-1.335, 0.99), (-1.335, 0.90), (-1.26, 0.90), segs=6)
 
-    slide_slab = mk_extrude_x("sl_slab", pts_zy, -7.85, 11.65, bevel=0.036, bevel_segs=2, mat=m_pvd)
+    slide_slab = mk_extrude_x("sl_slab", pts_zy, -7.85, 11.65, bevel=0.044, bevel_segs=3, mat=m_pvd)
 
     # Full-contour SIG front recoil-spring chin extending under 4.7" muzzle (X in [+9.30, +11.62])
     recoil_chin = mk_cyl(
-        "sl_chin", 0.645, 0.675, 2.32, axis="x", segs=32,
-        xform=[("t", 10.46, 1.32, 0.0)], mat=m_pvd, bevel=0.028,
+        "sl_chin", 0.645, 0.675, 2.32, axis="x", segs=48,
+        xform=[("t", 10.46, 1.32, 0.0)], mat=m_pvd, bevel=0.036, bevel_segs=3,
     )
     raw_slide = bool_union([slide_slab, recoil_chin], "p320_slide")
 
     cutters: list[bpy.types.Object] = []
 
-    # 2. Slanted rear M17 slide face bevel + front SIG bullnose muzzle chamfers + top 30° nose rake
+    # 2. Slanted rear M17 slide face bevel + smooth beveled SIG bullnose muzzle chamfers + top 30° nose rake
     cutters.append(
         mk_box("c_sl_rear", 0.95, 3.45, 3.10, [("rz", -0.14), ("t", -8.25, 2.35, 0.0)], m_pvd)
     )
     cutters.append(
-        mk_box("c_sl_tnose", 1.60, 0.62, 3.05, [("rz", -0.52), ("t", 11.49, 3.72, 0.0)], m_pvd)
+        mk_box("c_sl_tnose", 1.60, 0.62, 3.05, [("rz", -0.52), ("t", 11.49, 3.72, 0.0)], m_pvd, bevel=0.055, bevel_segs=3)
     )
     for sign in (-1.0, 1.0):
-        # True forward-tapering SIG M17 bullnose chamfer (ry = +sign*0.34 narrows toward +X muzzle,
-        # preserving >= 2.6 mm solid Coyote PVD steel wall around the r=0.76 barrel bore on both flanks!)
+        # True forward-tapering SIG M17 carry-melt bullnose chamfer (beveled cutter removes diagonal nose pinch!)
         cutters.append(
             mk_box(
                 f"c_sl_bn_{sign:+.0f}", 1.56, 3.05, 0.88,
-                [("ry", sign * 0.34), ("t", 11.45, 2.25, sign * 1.56)], m_pvd,
+                [("ry", sign * 0.34), ("t", 11.45, 2.25, sign * 1.56)], m_pvd, bevel=0.065, bevel_segs=3,
             )
         )
         cutters.append(
             mk_box(
                 f"c_sl_chin_{sign:+.0f}", 2.55, 0.66, 0.66,
-                [("rx", sign * 0.72), ("t", 10.52, 0.87, sign * 1.16)], m_pvd,
+                [("rx", sign * 0.72), ("t", 10.52, 0.87, sign * 1.16)], m_pvd, bevel=0.040, bevel_segs=2,
             )
         )
 
@@ -2168,10 +2201,10 @@ def build_p320_slide(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
     cutters.append(mk_box("c_sl_rails", 17.60, 0.22, 2.16, [("t", 0.75, 1.02, 0.0)], m_mil))
 
     # 4. Barrel bore (r=0.76 for zero tilt clipping!) + internal barrel-hood vault + recoil tunnel
-    cutters.append(mk_cyl("c_sl_bore", 0.76, 0.76, 12.60, axis="x", segs=32, xform=[("t", 5.55, 2.68, 0.0)], mat=m_mil))
+    cutters.append(mk_cyl("c_sl_bore", 0.76, 0.76, 12.60, axis="x", segs=48, xform=[("t", 5.55, 2.68, 0.0)], mat=m_mil))
     cutters.append(mk_box("c_sl_vault", 7.50, 1.38, 1.70, [("t", 6.40, 2.69, 0.0)], m_mil))
-    cutters.append(mk_cyl("c_sl_rec1", 0.52, 0.52, 9.50, axis="x", segs=26, xform=[("t", 6.35, 1.46, 0.0)], mat=m_mil))
-    cutters.append(mk_cyl("c_sl_rec2", 0.36, 0.36, 1.55, axis="x", segs=22, xform=[("t", 11.15, 1.46, 0.0)], mat=m_mil))
+    cutters.append(mk_cyl("c_sl_rec1", 0.52, 0.52, 9.50, axis="x", segs=36, xform=[("t", 6.35, 1.46, 0.0)], mat=m_mil))
+    cutters.append(mk_cyl("c_sl_rec2", 0.36, 0.36, 1.55, axis="x", segs=32, xform=[("t", 11.15, 1.46, 0.0)], mat=m_mil))
     cutters.append(mk_box("c_sl_slot", 9.10, 1.15, 1.16, [("t", 6.20, 2.05, 0.0)], m_mil))
 
     # 5. SIG Sauer Open Top-Right Ejection Port (X in [-0.55, +2.65]) + Forward-Raked Flare + Top M17 LCI Notch
@@ -2251,14 +2284,14 @@ def build_p320_optic_plate_sight(mats: dict[str, bpy.types.Material]) -> bpy.typ
     m_tri = mats["S_TritiumGreen"]
 
     # Precision-milled DPP cover plate sitting seamlessly flush inside the Coyote slide pocket
-    plate = mk_box("op_plate", 3.96, 0.32, 1.86, [("t", 0.0, 0.16, 0.0)], m_blk, bevel=0.022)
-    boss_l = mk_cyl("op_bossl", 0.095, 0.095, 0.10, axis="y", segs=18, xform=[("t", 1.63, -0.05, -0.48)], mat=m_hw, bevel=0.010)
-    boss_r = mk_cyl("op_bossr", 0.095, 0.095, 0.10, axis="y", segs=18, xform=[("t", 1.63, -0.05,  0.48)], mat=m_hw, bevel=0.010)
-    lci_lip = mk_box("op_lcilip", 0.24, 0.10, 0.34, [("t", 1.92, -0.03, 0.0)], m_blk, bevel=0.010)
+    plate = mk_box("op_plate", 3.96, 0.32, 1.86, [("t", 0.0, 0.16, 0.0)], m_blk, bevel=0.028, bevel_segs=3)
+    boss_l = mk_cyl("op_bossl", 0.095, 0.095, 0.10, axis="y", segs=22, xform=[("t", 1.63, -0.05, -0.48)], mat=m_hw, bevel=0.012, bevel_segs=2)
+    boss_r = mk_cyl("op_bossr", 0.095, 0.095, 0.10, axis="y", segs=22, xform=[("t", 1.63, -0.05,  0.48)], mat=m_hw, bevel=0.012, bevel_segs=2)
+    lci_lip = mk_box("op_lcilip", 0.24, 0.10, 0.34, [("t", 1.92, -0.03, 0.0)], m_blk, bevel=0.012)
 
     # Integral M17 protective-wing SIGLITE night rear sight rising cleanly above plate
     sight_xy = [(-1.74, 0.28), (-0.32, 0.28), (-0.50, 0.84), (-1.64, 0.84)]
-    sight_body = mk_extrude_z("op_sight", sight_xy, -0.79, 0.79, bevel=0.022, bevel_segs=2, mat=m_blk)
+    sight_body = mk_extrude_z("op_sight", sight_xy, -0.79, 0.79, bevel=0.028, bevel_segs=3, mat=m_blk)
 
     base = bool_union([plate, sight_body], "op_base")
 
@@ -2406,24 +2439,24 @@ def build_p320_grip_module(mats: dict[str, bpy.types.Material]) -> bpy.types.Obj
 
     # 1. Upper Dust-Cover Frame, High Sweeping M17 Beavertail & M1913 Rail Core (Y in [-0.54, +0.97])
     up_xy = [(-7.58, 0.965), (9.50, 0.965)]
-    up_xy += _quad_bez((9.50, 0.965), (9.66, 0.91), (9.61, 0.42), segs=6)
+    up_xy += _quad_bez((9.50, 0.965), (9.66, 0.91), (9.61, 0.42), segs=10)
     up_xy.append((9.32, -0.36))
     up_xy.append((2.68, -0.36))
-    up_xy += _quad_bez((2.68, -0.36), (2.22, -0.36), (1.96, -0.54), segs=6)
+    up_xy += _quad_bez((2.68, -0.36), (2.22, -0.36), (1.96, -0.54), segs=10)
     up_xy.append((-1.82, -0.54))
     up_xy.append((-6.65, -0.54))
-    up_xy += _cubic_bez((-6.65, -0.54), (-6.50, -0.18), (-6.78, 0.12), (-7.48, 0.24), segs=10)
-    up_xy += _quad_bez((-7.48, 0.24), (-8.66, 0.36), (-9.02, 0.52), segs=8)
-    up_xy += _quad_bez((-9.02, 0.52), (-9.09, 0.78), (-8.66, 0.87), segs=6)
+    up_xy += _cubic_bez((-6.65, -0.54), (-6.50, -0.18), (-6.78, 0.12), (-7.48, 0.24), segs=16)
+    up_xy += _quad_bez((-7.48, 0.24), (-8.66, 0.36), (-9.02, 0.52), segs=12)
+    up_xy += _quad_bez((-9.02, 0.52), (-9.09, 0.78), (-8.66, 0.87), segs=10)
     up_xy.append((-7.58, 0.965))
 
-    upper_frame = mk_extrude_z("gm_upper", up_xy, -1.245, 1.245, bevel=0.068, bevel_segs=3, mat=m_poly)
+    upper_frame = mk_extrude_z("gm_upper", up_xy, -1.245, 1.245, bevel=0.088, bevel_segs=4, mat=m_poly)
 
-    # 2. Organically Lofted Ergonomic Carry Pistol Grip (18 height stations down to exact -18° flush rim!)
+    # 2. Organically Lofted Ergonomic Carry Pistol Grip (30 height stations x 48 ring pts down to exact -18° flush rim!)
     # Smoothly merges into upper frame at top (Y = -0.32) with flush width so ZERO horizontal shelf step appears,
     # and terminates flush on the exact -18° plane (-5.247,-9.642) .. (-8.177,-8.690)!
-    n_stations = 18
-    ring_pts = 32
+    n_stations = 30
+    ring_pts = 48
     grip_rings = []
     for si in range(n_stations):
         t = si / (n_stations - 1)
@@ -2504,18 +2537,18 @@ def build_p320_grip_module(mats: dict[str, bpy.types.Material]) -> bpy.types.Obj
     grip_loft = _bm_to_obj("gm_loft", bm_g, m_poly)
     grip_loft.data.materials.append(m_stip)
 
-    # 3. Signature Rounded-Front Undercut SIG Sauer Trigger Guard (separate clean extrusion w/ center opening)
+    # 3. Signature Rounded-Front Undercut SIG Sauer Trigger Guard (silky high-seg rounded bow w/ chamfered inner arch)
     tg_outer = [(2.74, -0.26)]
-    tg_outer += _cubic_bez((2.74, -0.26), (2.76, -1.55), (2.52, -2.86), (1.72, -3.06), segs=12)
+    tg_outer += _cubic_bez((2.74, -0.26), (2.76, -1.55), (2.52, -2.86), (1.72, -3.06), segs=16)
     tg_outer.append((-1.48, -3.06))
-    tg_outer += _cubic_bez((-1.48, -3.06), (-1.95, -3.02), (-1.98, -2.28), (-2.32, -2.06), segs=10)
+    tg_outer += _cubic_bez((-1.48, -3.06), (-1.95, -3.02), (-1.98, -2.28), (-2.32, -2.06), segs=14)
     tg_outer.append((-2.08, -0.45))
-    tg_solid = mk_extrude_z("gm_tg_solid", tg_outer, -0.60, 0.60, bevel=0.055, bevel_segs=2, mat=m_poly)
+    tg_solid = mk_extrude_z("gm_tg_solid", tg_outer, -0.60, 0.60, bevel=0.072, bevel_segs=4, mat=m_poly)
 
     tg_hole_xy = [(1.98, -0.52)]
-    tg_hole_xy += _cubic_bez((1.98, -0.52), (2.08, -1.48), (1.92, -2.52), (1.34, -2.58), segs=12)
+    tg_hole_xy += _cubic_bez((1.98, -0.52), (2.08, -1.48), (1.92, -2.52), (1.34, -2.58), segs=16)
     tg_hole_xy.append((-1.32, -2.58))
-    tg_hole_xy += _quad_bez((-1.32, -2.58), (-1.74, -2.52), (-1.76, -1.82), segs=8)
+    tg_hole_xy += _quad_bez((-1.32, -2.58), (-1.74, -2.52), (-1.76, -1.82), segs=12)
     tg_hole_xy.append((-1.62, -0.52))
     tg_hole = mk_extrude_z("c_gm_tgh", tg_hole_xy, -0.90, 0.90, mat=m_in)
     trigger_guard = bool_subtract(tg_solid, [tg_hole])
@@ -2553,13 +2586,13 @@ def build_p320_grip_module(mats: dict[str, bpy.types.Material]) -> bpy.types.Obj
         # Ambi slide-catch protective recess + ergonomic thumb-rest scallop
         cutters.append(mk_box(f"c_gm_sc_{sign:+.0f}", 1.18, 0.34, 0.14, [("t", -2.55, 0.74, sign * 1.24)], m_in))
         cutters.append(
-            mk_sphere(f"c_gm_th_{sign:+.0f}", 0.76, 0.40, 0.15, 18, 12, [("t", -3.95, -0.95, sign * 1.27)], m_poly)
+            mk_sphere(f"c_gm_th_{sign:+.0f}", 0.76, 0.40, 0.15, 28, 18, [("t", -3.95, -0.95, sign * 1.27)], m_poly)
         )
     for idx_s, slot_x in enumerate((4.45, 6.15, 7.85)):
         cutters.append(mk_box(f"c_gm_pslot_{idx_s}", 0.52, 0.26, 2.72, [("t", slot_x, -0.27, 0.0)], m_in))
 
     sculpted = bool_subtract(raw_grip, cutters)
-    return finish_part(sculpted, bevel_w=0.0, sharp_deg=38.0)
+    return finish_part(sculpted, bevel_w=0.0, sharp_deg=38.0, lock_flat_walls=True)
 
 
 def build_p320_mag_follower(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
@@ -2590,11 +2623,11 @@ def build_p320_mag_baseplate(mats: dict[str, bpy.types.Material]) -> bpy.types.O
     m_det = mats["G_DetentSteel"]
 
     pad_xy = [(-1.54, -0.49), (1.68, -0.49)]
-    pad_xy += _quad_bez((1.68, -0.49), (1.80, -0.18), (1.58, 0.04), segs=8)
+    pad_xy += _quad_bez((1.68, -0.49), (1.80, -0.18), (1.58, 0.04), segs=12)
     pad_xy.append((-1.54, 0.04))
-    pad_xy += _quad_bez((-1.54, 0.04), (-1.62, -0.22), (-1.54, -0.49), segs=6)
+    pad_xy += _quad_bez((-1.54, 0.04), (-1.62, -0.22), (-1.54, -0.49), segs=10)
 
-    pad_raw = mk_extrude_z("bp_pad", pad_xy, -1.11, 1.11, bevel=0.052, bevel_segs=2, mat=m_poly)
+    pad_raw = mk_extrude_z("bp_pad", pad_xy, -1.11, 1.11, bevel=0.068, bevel_segs=3, mat=m_poly)
     cuts = [
         mk_cyl("c_bp_hole", 0.21, 0.21, 0.24, axis="y", segs=22, xform=[("t", 0.0, -0.44, 0.0)], mat=m_in),
     ]
@@ -2626,8 +2659,8 @@ def _mk_p320_rifled_bore_sleeve(mat: bpy.types.Material) -> bpy.types.Object:
     grooves = 6
     land_frac = 0.42
     twist_len = 25.4
-    r_segs = 60
-    a_segs = 20
+    r_segs = 72
+    a_segs = 28
     twist_tot = ((x_end - x_start) / twist_len) * 2.0 * math.pi
 
     def prof_r(t: float) -> float:
@@ -2682,16 +2715,16 @@ def build_p320_barrel(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
     m_rif = mats["F_RifledBoreSteel"]
     m_dark = mats["F_MachinedDark"]
 
-    tube = mk_cyl("bbl_tube", 0.65, 0.65, 9.04, axis="x", segs=36, xform=[("t", 7.14, 2.68, 0.0)], mat=m_blk)
+    tube = mk_cyl("bbl_tube", 0.65, 0.65, 9.04, axis="x", segs=56, xform=[("t", 7.14, 2.68, 0.0)], mat=m_blk)
     # Outer chamfered target crown collar at muzzle face (X = 11.64 .. 11.80)
-    crown_col = mk_cyl("bbl_ccol", 0.585, 0.65, 0.16, axis="x", segs=36, xform=[("t", 11.72, 2.68, 0.0)], mat=m_pol)
+    crown_col = mk_cyl("bbl_ccol", 0.585, 0.65, 0.16, axis="x", segs=56, xform=[("t", 11.72, 2.68, 0.0)], mat=m_pol)
 
     # Rectangular SIG Sauer Locking Chamber Hood (X in [-0.54, +2.64], Z in [-0.82, +0.82], Y in [1.98, 3.57])
     hood_zy = [(-0.81, 1.98), (0.81, 1.98), (0.81, 3.37)]
-    hood_zy += _quad_bez((0.81, 3.37), (0.81, 3.565), (0.62, 3.565), segs=5)
+    hood_zy += _quad_bez((0.81, 3.37), (0.81, 3.565), (0.62, 3.565), segs=8)
     hood_zy.append((-0.62, 3.565))
-    hood_zy += _quad_bez((-0.62, 3.565), (-0.81, 3.565), (-0.81, 3.37), segs=5)
-    hood = mk_extrude_x("bbl_hood", hood_zy, -0.54, 2.64, bevel=0.022, bevel_segs=2, mat=m_hood)
+    hood_zy += _quad_bez((-0.62, 3.565), (-0.81, 3.565), (-0.81, 3.37), segs=8)
+    hood = mk_extrude_x("bbl_hood", hood_zy, -0.54, 2.64, bevel=0.028, bevel_segs=3, mat=m_hood)
 
     # Browning tilting camming under-lug engaging FCU 38° steel ramp & D-flange guide rod
     lug_xy = [
@@ -2713,9 +2746,9 @@ def build_p320_barrel(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
 
     # Hollow 9x19mm bore, chamber throat, 11° recessed target crown dish, top LCI witness cut, extractor relief & guide seat
     cuts = [
-        mk_cyl("c_bbl_bore", 0.455, 0.455, 12.90, axis="x", segs=32, xform=[("t", 5.60, 2.68, 0.0)], mat=m_dark),
-        mk_cyl("c_bbl_chmb", 0.50, 0.50, 1.95, axis="x", segs=28, xform=[("t", 0.42, 2.68, 0.0)], mat=m_dark),
-        mk_cyl("c_bbl_crwn", 0.56, 0.455, 0.16, axis="x", segs=32, xform=[("t", 11.77, 2.68, 0.0)], mat=m_soot),
+        mk_cyl("c_bbl_bore", 0.455, 0.455, 12.90, axis="x", segs=48, xform=[("t", 5.60, 2.68, 0.0)], mat=m_dark),
+        mk_cyl("c_bbl_chmb", 0.50, 0.50, 1.95, axis="x", segs=36, xform=[("t", 0.42, 2.68, 0.0)], mat=m_dark),
+        mk_cyl("c_bbl_crwn", 0.56, 0.455, 0.16, axis="x", segs=48, xform=[("t", 11.77, 2.68, 0.0)], mat=m_soot),
         mk_box("c_bbl_lci", 0.74, 0.26, 0.22, [("t", -0.20, 3.50, 0.0)], m_dark),
         mk_box("c_bbl_ext", 0.42, 0.36, 0.24, [("t", -0.42, 2.68, 0.72)], m_dark),
         mk_cyl("c_bbl_gseat", 0.47, 0.47, 0.14, axis="x", segs=22, xform=[("t", 1.98, 1.46, 0.0)], mat=m_blk),
@@ -3094,19 +3127,19 @@ def build_p320_mag_body(mats: dict[str, bpy.types.Material]) -> bpy.types.Object
 
     rx, rz, cr = 1.23, 0.80, 0.22
     sec_xz = [(-rx + cr, -rz), (rx - cr, -rz)]
-    sec_xz += _quad_bez((rx - cr, -rz), (rx, -rz), (rx, -rz + cr), segs=5)
+    sec_xz += _quad_bez((rx - cr, -rz), (rx, -rz), (rx, -rz + cr), segs=8)
     sec_xz.append((rx, rz - cr))
-    sec_xz += _quad_bez((rx, rz - cr), (rx, rz), (rx - cr, rz), segs=5)
+    sec_xz += _quad_bez((rx, rz - cr), (rx, rz), (rx - cr, rz), segs=8)
     sec_xz.append((-rx + cr, rz))
-    sec_xz += _quad_bez((-rx + cr, rz), (-rx, rz), (-rx, rz - cr), segs=5)
+    sec_xz += _quad_bez((-rx + cr, rz), (-rx, rz), (-rx, rz - cr), segs=8)
     sec_xz.append((-rx, -rz + cr))
-    sec_xz += _quad_bez((-rx, -rz + cr), (-rx, -rz), (-rx + cr, -rz), segs=5)
+    sec_xz += _quad_bez((-rx, -rz + cr), (-rx, -rz), (-rx + cr, -rz), segs=8)
 
-    tube = mk_extrude_y("mb_tube", sec_xz, -4.80, 4.25, bevel=0.015, bevel_segs=2, mat=m_mag)
+    tube = mk_extrude_y("mb_tube", sec_xz, -4.80, 4.25, bevel=0.022, bevel_segs=3, mat=m_mag)
 
     # Double-stack-to-single-feed tapered upper neck (Y in [4.15, 5.10])
     neck = mk_cyl(
-        "mb_neck", 0.66, 1.06, 0.94, axis="y", segs=24,
+        "mb_neck", 0.66, 1.06, 0.94, axis="y", segs=36,
         xform=[("s", 1.52, 1.0, 0.94), ("t", 0.04, 4.65, 0.0)], mat=m_mag,
     )
     lip_l = mk_box("mb_lipl", 1.90, 0.36, 0.12, [("rx",  0.32), ("t", 0.06, 5.08, -0.41)], m_mag, bevel=0.014)
@@ -3542,15 +3575,15 @@ def bake_atlas_suite(
     _set_grid_isolated_layout(all_objs)
 
     saved = _route_bsdf_input_to_emit(mats_set, "Base Color")
-    run_bake("albedo", "EMIT", samples=2, fill_color=(0.12, 0.09, 0.06, 1.0))
+    run_bake("albedo", "EMIT", samples=4, fill_color=(0.12, 0.09, 0.06, 1.0))
     _restore_bsdf(saved)
 
     saved = _route_bsdf_input_to_emit(mats_set, "Roughness")
-    run_bake("roughness", "EMIT", samples=2, fill_color=(0.5, 0.5, 0.5, 1.0))
+    run_bake("roughness", "EMIT", samples=4, fill_color=(0.5, 0.5, 0.5, 1.0))
     _restore_bsdf(saved)
 
     saved = _route_bsdf_input_to_emit(mats_set, "Metallic")
-    run_bake("metalness", "EMIT", samples=2, fill_color=(0.0, 0.0, 0.0, 1.0))
+    run_bake("metalness", "EMIT", samples=4, fill_color=(0.0, 0.0, 0.0, 1.0))
     _restore_bsdf(saved)
 
     run_bake("normal", "NORMAL", samples=BAKE_NORMAL_SAMPLES, fill_color=(0.5, 0.5, 1.0, 1.0), normal_op=True)
@@ -3648,6 +3681,123 @@ def triangulate_keep_normals(all_objs: list[bpy.types.Object]):
         mod.ngon_method = "BEAUTY"
         mod.keep_custom_normals = True
         bpy.ops.object.modifier_apply(modifier=mod.name)
+
+
+def _build_baked_preview_mat(suite_name: str, prefix: str, normal_strength: float = 0.90) -> bpy.types.Material:
+    mat = bpy.data.materials.new(f"Preview_{suite_name}")
+    nt = mat.node_tree
+    nt.nodes.clear()
+    out = nt.nodes.new("ShaderNodeOutputMaterial")
+    bsdf = nt.nodes.new("ShaderNodeBsdfPrincipled")
+    nt.links.new(bsdf.outputs["BSDF"], out.inputs["Surface"])
+
+    def _load_tex(path: Path, cs: str):
+        img = bpy.data.images.load(str(path), check_existing=False)
+        img.colorspace_settings.name = cs
+        node = nt.nodes.new("ShaderNodeTexImage")
+        node.image = img
+        return node
+
+    t_alb = _load_tex(TEX_OUT_DIR / f"{prefix}_albedo.webp", "sRGB")
+    t_orm = _load_tex(TEX_OUT_DIR / f"{prefix}_roughness.webp", "Non-Color")
+    t_nrm = _load_tex(TEX_OUT_DIR / f"{prefix}_normal.webp", "Non-Color")
+
+    sep = nt.nodes.new("ShaderNodeSeparateColor")
+    nt.links.new(t_orm.outputs["Color"], sep.inputs["Color"])
+    mix_ao = nt.nodes.new("ShaderNodeMix")
+    mix_ao.data_type = "RGBA"
+    mix_ao.blend_type = "MULTIPLY"
+    mix_ao.inputs["Factor"].default_value = 0.55
+    nt.links.new(t_alb.outputs["Color"], mix_ao.inputs[6])
+    nt.links.new(sep.outputs["Red"], mix_ao.inputs[7])
+
+    nmap = nt.nodes.new("ShaderNodeNormalMap")
+    nmap.inputs["Strength"].default_value = normal_strength
+    nt.links.new(t_nrm.outputs["Color"], nmap.inputs["Color"])
+
+    nt.links.new(mix_ao.outputs[2], bsdf.inputs["Base Color"])
+    nt.links.new(sep.outputs["Green"], bsdf.inputs["Roughness"])
+    nt.links.new(sep.outputs["Blue"], bsdf.inputs["Metallic"])
+    nt.links.new(nmap.outputs["Normal"], bsdf.inputs["Normal"])
+    return mat
+
+
+def render_qa_previews(slide_objs, grip_objs, fcu_objs, all_objs):
+    scene = bpy.context.scene
+    m_sl = _build_baked_preview_mat("slide", "p320_v3_slide", 0.90)
+    m_gr = _build_baked_preview_mat("grip", "p320_v3_grip", 0.92)
+    m_fc = _build_baked_preview_mat("fcu", "p320_v3_fcu_metal", 0.90)
+    for grp, mat in ((slide_objs, m_sl), (grip_objs, m_gr), (fcu_objs, m_fc)):
+        for o in grp:
+            o.data.materials.clear()
+            o.data.materials.append(mat)
+    for o in all_objs:
+        o.hide_render = False
+        px, py, pz = ASSEMBLED_POS[o.name]
+        o.location = t2b(px, py, pz)
+        rx, ry, rz = ASSEMBLED_ROT_THREE.get(o.name, (0.0, 0.0, 0.0))
+        o.rotation_euler = (rx, -rz, ry)
+
+    hdri = REPO_ROOT / "public" / "hdri" / "gunsmith_bench.hdr"
+    wn = scene.world.node_tree
+    wn.nodes.clear()
+    wout = wn.nodes.new("ShaderNodeOutputWorld")
+    bg = wn.nodes.new("ShaderNodeBackground")
+    bg.inputs["Strength"].default_value = 1.05
+    if hdri.exists():
+        env = wn.nodes.new("ShaderNodeTexEnvironment")
+        env.image = bpy.data.images.load(str(hdri), check_existing=False)
+        wn.links.new(env.outputs["Color"], bg.inputs["Color"])
+    else:
+        bg.inputs["Color"].default_value = (0.14, 0.15, 0.17, 1.0)
+    wn.links.new(bg.outputs["Background"], wout.inputs["Surface"])
+
+    scene.view_settings.view_transform = "AgX"
+    scene.view_settings.look = "AgX - Medium High Contrast"
+    scene.render.film_transparent = False
+    scene.cycles.samples = 36
+    scene.cycles.use_denoising = True
+    scene.render.resolution_x = 1280
+    scene.render.resolution_y = 720
+    scene.render.image_settings.file_format = "PNG"
+
+    cam_d = bpy.data.cameras.new("QACam")
+    cam_d.lens = 58.0
+    cam_o = bpy.data.objects.new("QACam", cam_d)
+    scene.collection.objects.link(cam_o)
+    scene.camera = cam_o
+
+    def _aim(pos_t, tgt_t, lens=58.0):
+        cam_d.lens = lens
+        p = t2b(*pos_t)
+        t = t2b(*tgt_t)
+        cam_o.location = p
+        cam_o.rotation_euler = (t - p).to_track_quat("-Z", "Y").to_euler()
+
+    shots = [
+        ("right",        ( 4.5,  0.6,  27.5), ( 1.0, -2.5, 0.0), 54.0),
+        ("left",         ( 4.5,  0.6, -27.5), ( 1.0, -2.5, 0.0), 54.0),
+        ("macro_breech", (-1.5,  1.8,  12.0), (-2.0,  1.4, 0.0), 66.0),
+        ("macro_muzzle", (13.8,  3.6,  11.8), ( 6.8,  1.8, 0.0), 62.0),
+    ]
+    for tag, pos_t, tgt_t, lens in shots:
+        _aim(pos_t, tgt_t, lens)
+        out_p = Path(f"/tmp/p320_qa_{tag}.png")
+        scene.render.filepath = str(out_p)
+        bpy.ops.render.render(write_still=True)
+        print(f"[PREVIEW] Rendered {out_p}")
+
+    # Dedicated serialized stainless FCU chassis macro showcase
+    fcu_show = {"p320_fcu_chassis", "p320_trigger_shoe", "p320_trigger_bar", "p320_sear_group", "p320_manual_safety", "p320_takedown_lever", "p320_slide_catch"}
+    for o in all_objs:
+        o.hide_render = o.name not in fcu_show
+    _aim((3.2, 2.6, 13.5), (-1.5, 0.4, 0.0), 60.0)
+    out_p = Path("/tmp/p320_qa_macro_fcu.png")
+    scene.render.filepath = str(out_p)
+    bpy.ops.render.render(write_still=True)
+    print(f"[PREVIEW] Rendered {out_p}")
+    for o in all_objs:
+        o.hide_render = False
 
 
 def export_draco_glb(all_objs: list[bpy.types.Object]):
@@ -3760,6 +3910,9 @@ def main():
         )
 
     export_draco_glb(all_objs)
+
+    if "--preview" in sys.argv:
+        render_qa_previews(slide_objs, grip_objs, fcu_objs, all_objs)
 
     outputs = [
         MODELS_OUT,
