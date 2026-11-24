@@ -107,6 +107,126 @@ export function filterPassportRows<
   });
 }
 
+export type PassportMasteryRankTier = 'S' | 'A' | 'B' | 'C' | 'NONE';
+
+export interface PassportMasteryRingMetrics {
+  pct: number;
+  strokeDasharray: number;
+  strokeDashoffset: number;
+  rankTier: PassportMasteryRankTier;
+  radius: number;
+  circumference: number;
+}
+
+const ICONIC_NEXT_EXHIBIT_ORDER: readonly WeaponId[] = [
+  'ak15',
+  'm4a1',
+  'm1911',
+  'mp5',
+  'k98k',
+  'garand',
+  'mg42',
+  'gau8',
+  'ztz99a',
+  'm1a2',
+  'g17',
+  'p08',
+  'thompson',
+  'vector',
+  'm82a1',
+  'awm',
+  'lift33',
+  'leopard2a7',
+  'tiger1',
+  'deagle',
+  'p90',
+  'scar',
+  'aug',
+  'python',
+  'benellim4',
+  'm249',
+  'vss',
+  'g11',
+  'm134',
+  'an94',
+  'winchester1894',
+  'rem870',
+  'p320',
+  'r500',
+];
+
+/**
+ * Pure SVG radial mastery ring geometry & rank-tier derivation.
+ * Guarantees `0/N -> 0%` (full dashoffset), `N/N -> 100%` (0 dashoffset).
+ */
+export function computePassportMasteryRing(
+  certifiedCount: number,
+  totalCount: number,
+  radius = 38
+): PassportMasteryRingMetrics {
+  const safeTotal = Math.max(1, Math.floor(totalCount));
+  const safeCertified = Math.max(
+    0,
+    Math.min(safeTotal, Math.floor(certifiedCount))
+  );
+  const ratio = safeCertified / safeTotal;
+  const pct = Math.round(ratio * 100);
+  const circumference = Number((2 * Math.PI * radius).toFixed(2));
+  const strokeDashoffset = Number((circumference * (1 - ratio)).toFixed(2));
+
+  let rankTier: PassportMasteryRankTier = 'NONE';
+  if (pct >= 90) {
+    rankTier = 'S';
+  } else if (pct >= 65) {
+    rankTier = 'A';
+  } else if (pct >= 30) {
+    rankTier = 'B';
+  } else if (safeCertified > 0) {
+    rankTier = 'C';
+  }
+
+  return {
+    pct,
+    strokeDasharray: circumference,
+    strokeDashoffset,
+    rankTier,
+    radius,
+    circumference,
+  };
+}
+
+/**
+ * Selects the next iconic uncertified exhibit from the 34-exhibit vault
+ * for the Passport 1-click "Start Next Certification Drill" CTA.
+ * Returns `null` once all exhibits are certified.
+ */
+export function findNextUncertifiedExhibit(
+  records: Readonly<Record<string, WeaponExamRecord>>
+): WeaponManifest | null {
+  const byId = new Map<WeaponId, WeaponManifest>(
+    WEAPON_MANIFESTS.map((m) => [m.id, m])
+  );
+  const seen = new Set<WeaponId>();
+
+  for (const id of ICONIC_NEXT_EXHIBIT_ORDER) {
+    const manifest = byId.get(id);
+    if (!manifest) continue;
+    seen.add(id);
+    if (!buildSummaryFromRecord(id, records[id]).isCertified) {
+      return manifest;
+    }
+  }
+
+  for (const manifest of WEAPON_MANIFESTS) {
+    if (seen.has(manifest.id)) continue;
+    if (!buildSummaryFromRecord(manifest.id, records[manifest.id]).isCertified) {
+      return manifest;
+    }
+  }
+
+  return null;
+}
+
 export interface ArmorerPassportModalProps {
   onClose: () => void;
 }
@@ -170,7 +290,38 @@ export const ArmorerPassportModal: React.FC<ArmorerPassportModalProps> = ({
   const detailCertifiedCount = rows.filter(
     (r) => !!r.summary.detailStripRank
   ).length;
-  const pct = Math.round((certifiedCount / Math.max(1, rows.length)) * 100);
+  const masteryRing = useMemo(
+    () => computePassportMasteryRing(certifiedCount, rows.length),
+    [certifiedCount, rows.length]
+  );
+  const pct = masteryRing.pct;
+  const nextUncertified = useMemo(
+    () => findNextUncertifiedExhibit(ledger),
+    [ledger]
+  );
+  const nextUncertifiedLabel = nextUncertified
+    ? getLocalizedShortWeaponLabel(nextUncertified.id, lang)
+    : null;
+  const ringRankCaption =
+    masteryRing.rankTier === 'S'
+      ? lang === 'zh'
+        ? 'S 级殿堂军械大师'
+        : 'RANK S · MASTER ARMORER'
+      : masteryRing.rankTier === 'A'
+        ? lang === 'zh'
+          ? 'A 级高级军械师'
+          : 'RANK A · SENIOR ARMORER'
+        : masteryRing.rankTier === 'B'
+          ? lang === 'zh'
+            ? 'B 级合格军械师'
+            : 'RANK B · QUALIFIED ARMORER'
+          : masteryRing.rankTier === 'C'
+            ? lang === 'zh'
+              ? 'C 级见习军械员'
+              : 'RANK C · FIELD APPRENTICE'
+            : lang === 'zh'
+              ? '待启程 · 开启首项认证'
+              : 'UNRANKED · READY FOR DRILL';
 
   const hallScopedRows = useMemo(
     () => filterPassportRows(rows, 'all', hallFilter),
@@ -292,6 +443,7 @@ export const ArmorerPassportModal: React.FC<ArmorerPassportModalProps> = ({
               ref={fileInputRef}
               type="file"
               accept=".json,application/json"
+              aria-label={ui.importBtn}
               hidden
               onChange={(e) => void handleImportFile(e)}
             />
@@ -299,6 +451,101 @@ export const ArmorerPassportModal: React.FC<ArmorerPassportModalProps> = ({
         </header>
 
         <div className="passport-body">
+          {/* Radial SVG Mastery Progress Ring + 1-Click Next-Challenge CTA */}
+          <section
+            className="passport-mastery-banner"
+            aria-label={
+              lang === 'zh'
+                ? '全馆军械师精通进度环与下一项考核入口'
+                : 'Museum mastery progress ring and next certification challenge'
+            }
+          >
+            <div className="passport-ring-cluster">
+              <div className="passport-ring-wrap">
+                <svg
+                  className="passport-mastery-svg"
+                  viewBox="0 0 96 96"
+                  role="img"
+                  aria-label={
+                    lang === 'zh'
+                      ? `全馆认证进度 ${masteryRing.pct}%，已认证 ${certifiedCount} / ${rows.length} 款展品，当前等级 ${masteryRing.rankTier === 'NONE' ? '未定级' : masteryRing.rankTier}`
+                      : `Museum certification progress ${masteryRing.pct} percent, ${certifiedCount} of ${rows.length} exhibits certified, tier ${masteryRing.rankTier}`
+                  }
+                >
+                  <circle
+                    className="passport-ring-track"
+                    cx="48"
+                    cy="48"
+                    r={masteryRing.radius}
+                  />
+                  <circle
+                    className={`passport-ring-arc tier-${masteryRing.rankTier}`}
+                    cx="48"
+                    cy="48"
+                    r={masteryRing.radius}
+                    strokeDasharray={masteryRing.strokeDasharray}
+                    strokeDashoffset={masteryRing.strokeDashoffset}
+                    transform="rotate(-90 48 48)"
+                  />
+                </svg>
+                <div className="passport-ring-center" aria-hidden="true">
+                  <strong className="tabular">{masteryRing.pct}%</strong>
+                  <span className="tabular">
+                    {certifiedCount}/{rows.length}
+                  </span>
+                </div>
+              </div>
+
+              <div className="passport-ring-meta">
+                <span
+                  className={`passport-ring-tier-chip tier-${masteryRing.rankTier}`}
+                >
+                  <ShieldCheck size={12} aria-hidden="true" />
+                  <span>{ringRankCaption}</span>
+                </span>
+                <p className="passport-ring-desc">
+                  {nextUncertified
+                    ? lang === 'zh'
+                      ? `已完成 ${certifiedCount} / ${rows.length} 款馆藏取证 · 下一推荐考核：${nextUncertified.catalog.bayCode} ${nextUncertifiedLabel}`
+                      : `${certifiedCount} of ${rows.length} vault exhibits certified · Next recommended drill: ${nextUncertified.catalog.bayCode} ${nextUncertifiedLabel}`
+                    : lang === 'zh'
+                      ? `恭喜达成全馆 ${rows.length} / ${rows.length} 款藏品全满贯认证！`
+                      : `All ${rows.length} of ${rows.length} museum exhibits certified — Grand Master complete!`}
+                </p>
+              </div>
+            </div>
+
+            {nextUncertified ? (
+              <button
+                type="button"
+                className="passport-next-drill-btn"
+                data-testid="passport-next-drill-btn"
+                onClick={() => launchExamFor(nextUncertified.id)}
+              >
+                <Wrench size={14} aria-hidden="true" />
+                <span>
+                  {lang === 'zh'
+                    ? `开始下一项考核 · ${nextUncertifiedLabel}`
+                    : `Start Next Certification Drill · ${nextUncertifiedLabel}`}
+                </span>
+                <ArrowUpRight size={14} aria-hidden="true" />
+              </button>
+            ) : (
+              <span
+                className="passport-all-clear-pill"
+                role="status"
+                aria-live="polite"
+              >
+                <Award size={14} aria-hidden="true" />
+                <span>
+                  {lang === 'zh'
+                    ? '全馆 34/34 认证大满贯'
+                    : 'ALL 34/34 EXHIBITS CERTIFIED'}
+                </span>
+              </span>
+            )}
+          </section>
+
           <div className="passport-summary-strip">
             <div className="passport-kpi">
               <span>{ui.overallProgress}</span>
@@ -377,10 +624,13 @@ export const ArmorerPassportModal: React.FC<ArmorerPassportModalProps> = ({
               </div>
             </div>
 
-            <div className="passport-halls-strip" role="list">
+            <div
+              className="passport-halls-strip"
+              role="group"
+              aria-label={ui.hallBreakdownAria}
+            >
               <button
                 type="button"
-                role="listitem"
                 className={`passport-hall-card ${
                   hallFilter === 'all' ? 'is-active' : ''
                 }`}
@@ -408,7 +658,6 @@ export const ArmorerPassportModal: React.FC<ArmorerPassportModalProps> = ({
                 <button
                   key={item.hallId}
                   type="button"
-                  role="listitem"
                   className={`passport-hall-card ${
                     hallFilter === item.hallId ? 'is-active' : ''
                   } ${item.certified === item.total && item.total > 0 ? 'is-mastered' : ''}`}
@@ -439,7 +688,11 @@ export const ArmorerPassportModal: React.FC<ArmorerPassportModalProps> = ({
             </div>
           </section>
 
-          {notice && <div className="passport-notice">{notice}</div>}
+          {notice && (
+            <div className="passport-notice" role="status" aria-live="polite">
+              {notice}
+            </div>
+          )}
 
           {visibleRows.length === 0 ? (
             <div className="passport-empty-state" role="status">
