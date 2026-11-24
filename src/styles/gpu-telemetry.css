@@ -1,0 +1,374 @@
+/* =========================================================================
+ * Live GPU & Memory Telemetry HUD Overlay
+ * Imported lazily by GpuTelemetryOverlay.tsx (keeps main.css bundle lean).
+ * Supports both dark museum glassmorphism and blueprint_daylight light theme.
+ * ========================================================================= */
+
+.gpu-telemetry-hud {
+  position: fixed;
+  top: 72px;
+  right: 16px;
+  z-index: 42;
+  width: 312px;
+  max-width: calc(100vw - 24px);
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  background: rgba(11, 16, 24, 0.84);
+  backdrop-filter: blur(14px) saturate(1.25);
+  -webkit-backdrop-filter: blur(14px) saturate(1.25);
+  box-shadow:
+    0 14px 36px rgba(0, 0, 0, 0.44),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  color: #e2e8f0;
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+  user-select: none;
+  pointer-events: auto;
+}
+
+.gpu-telemetry-hud--light,
+[data-armory-theme='light'] .gpu-telemetry-hud {
+  border-color: rgba(15, 23, 42, 0.16);
+  background: rgba(244, 247, 251, 0.88);
+  box-shadow:
+    0 12px 32px rgba(15, 23, 42, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.78);
+  color: #0f172a;
+}
+
+.gpu-telemetry-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-bottom: 9px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+.gpu-telemetry-hud--light .gpu-telemetry-header,
+[data-armory-theme='light'] .gpu-telemetry-header {
+  border-bottom-color: rgba(15, 23, 42, 0.12);
+}
+
+.gpu-telemetry-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.gpu-telemetry-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: #38bdf8;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.7);
+}
+
+.gpu-telemetry-dot--good {
+  background: #34d399;
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.75);
+}
+
+.gpu-telemetry-dot--warn {
+  background: #fbbf24;
+  box-shadow: 0 0 8px rgba(251, 191, 36, 0.75);
+}
+
+.gpu-telemetry-dot--poor {
+  background: #f87171;
+  box-shadow: 0 0 8px rgba(248, 113, 113, 0.75);
+}
+
+.gpu-telemetry-title {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gpu-telemetry-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.gpu-telemetry-tier-pill {
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: rgba(56, 189, 248, 0.16);
+  border: 1px solid rgba(56, 189, 248, 0.34);
+  color: #7dd3fc;
+}
+
+.gpu-telemetry-hud--light .gpu-telemetry-tier-pill,
+[data-armory-theme='light'] .gpu-telemetry-tier-pill {
+  background: rgba(2, 132, 199, 0.11);
+  border-color: rgba(2, 132, 199, 0.28);
+  color: #0369a1;
+}
+
+.gpu-telemetry-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 6px;
+  background: rgba(148, 163, 184, 0.1);
+  color: inherit;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease;
+}
+
+.gpu-telemetry-close:hover {
+  background: rgba(248, 113, 113, 0.2);
+  border-color: rgba(248, 113, 113, 0.45);
+}
+
+.gpu-telemetry-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin-bottom: 10px;
+}
+
+.gpu-telemetry-kpi {
+  padding: 7px 8px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.56);
+  border: 1px solid rgba(148, 163, 184, 0.14);
+}
+
+.gpu-telemetry-hud--light .gpu-telemetry-kpi,
+[data-armory-theme='light'] .gpu-telemetry-kpi {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(15, 23, 42, 0.1);
+}
+
+.gpu-telemetry-kpi-label {
+  display: block;
+  font-size: 10px;
+  color: #94a3b8;
+  margin-bottom: 2px;
+}
+
+.gpu-telemetry-hud--light .gpu-telemetry-kpi-label,
+[data-armory-theme='light'] .gpu-telemetry-kpi-label {
+  color: #475569;
+}
+
+.gpu-telemetry-kpi-value {
+  display: block;
+  font-family:
+    'JetBrains Mono',
+    'SFMono-Regular',
+    ui-monospace,
+    monospace;
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.gpu-telemetry-kpi-value--good {
+  color: #34d399;
+}
+
+.gpu-telemetry-kpi-value--warn {
+  color: #fbbf24;
+}
+
+.gpu-telemetry-kpi-value--poor {
+  color: #f87171;
+}
+
+.gpu-telemetry-hud--light .gpu-telemetry-kpi-value--good,
+[data-armory-theme='light'] .gpu-telemetry-kpi-value--good {
+  color: #059669;
+}
+
+.gpu-telemetry-hud--light .gpu-telemetry-kpi-value--warn,
+[data-armory-theme='light'] .gpu-telemetry-kpi-value--warn {
+  color: #d97706;
+}
+
+.gpu-telemetry-hud--light .gpu-telemetry-kpi-value--poor,
+[data-armory-theme='light'] .gpu-telemetry-kpi-value--poor {
+  color: #dc2626;
+}
+
+.gpu-telemetry-kpi-sub {
+  display: block;
+  margin-top: 2px;
+  font-family:
+    'JetBrains Mono',
+    'SFMono-Regular',
+    ui-monospace,
+    monospace;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  color: #94a3b8;
+}
+
+.gpu-telemetry-hud--light .gpu-telemetry-kpi-sub,
+[data-armory-theme='light'] .gpu-telemetry-kpi-sub {
+  color: #64748b;
+}
+
+.gpu-telemetry-section {
+  padding-top: 8px;
+  margin-top: 8px;
+  border-top: 1px dashed rgba(148, 163, 184, 0.18);
+}
+
+.gpu-telemetry-hud--light .gpu-telemetry-section,
+[data-armory-theme='light'] .gpu-telemetry-section {
+  border-top-color: rgba(15, 23, 42, 0.12);
+}
+
+.gpu-telemetry-section-title {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+  margin-bottom: 5px;
+}
+
+.gpu-telemetry-hud--light .gpu-telemetry-section-title,
+[data-armory-theme='light'] .gpu-telemetry-section-title {
+  color: #475569;
+}
+
+.gpu-telemetry-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.gpu-telemetry-row-label {
+  color: #cbd5e1;
+  font-size: 11px;
+}
+
+.gpu-telemetry-hud--light .gpu-telemetry-row-label,
+[data-armory-theme='light'] .gpu-telemetry-row-label {
+  color: #334155;
+}
+
+.gpu-telemetry-row-val {
+  font-family:
+    'JetBrains Mono',
+    'SFMono-Regular',
+    ui-monospace,
+    monospace;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  color: #f8fafc;
+  text-align: right;
+}
+
+.gpu-telemetry-hud--light .gpu-telemetry-row-val,
+[data-armory-theme='light'] .gpu-telemetry-row-val {
+  color: #0f172a;
+}
+
+.gpu-telemetry-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 6px;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  border: 1px solid transparent;
+}
+
+.gpu-telemetry-badge--ktx2 {
+  background: rgba(16, 185, 129, 0.16);
+  border-color: rgba(16, 185, 129, 0.35);
+  color: #6ee7b7;
+}
+
+.gpu-telemetry-badge--webp {
+  background: rgba(245, 158, 11, 0.16);
+  border-color: rgba(245, 158, 11, 0.34);
+  color: #fcd34d;
+}
+
+.gpu-telemetry-badge--idle {
+  background: rgba(148, 163, 184, 0.16);
+  border-color: rgba(148, 163, 184, 0.3);
+  color: #cbd5e1;
+}
+
+.gpu-telemetry-hud--light .gpu-telemetry-badge--ktx2,
+[data-armory-theme='light'] .gpu-telemetry-badge--ktx2 {
+  color: #047857;
+}
+
+.gpu-telemetry-hud--light .gpu-telemetry-badge--webp,
+[data-armory-theme='light'] .gpu-telemetry-badge--webp {
+  color: #b45309;
+}
+
+.gpu-telemetry-hud--light .gpu-telemetry-badge--idle,
+[data-armory-theme='light'] .gpu-telemetry-badge--idle {
+  color: #475569;
+}
+
+.gpu-telemetry-lru {
+  margin-top: 3px;
+  padding: 4px 6px;
+  border-radius: 6px;
+  background: rgba(15, 23, 42, 0.44);
+  font-family:
+    'JetBrains Mono',
+    'SFMono-Regular',
+    ui-monospace,
+    monospace;
+  font-size: 10px;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gpu-telemetry-hud--light .gpu-telemetry-lru,
+[data-armory-theme='light'] .gpu-telemetry-lru {
+  background: rgba(15, 23, 42, 0.05);
+  color: #475569;
+}
+
+@media (max-width: 640px) {
+  .gpu-telemetry-hud {
+    top: 64px;
+    right: 10px;
+    width: 280px;
+    padding: 10px 12px;
+  }
+}

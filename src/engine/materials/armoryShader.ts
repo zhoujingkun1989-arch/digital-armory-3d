@@ -445,7 +445,20 @@ export interface ArmoryShaderFeatures {
   triplanarMap?: boolean;
 }
 
-export const ARMORY_SHADER_VERSION = 8;
+export const ARMORY_SHADER_VERSION = 9;
+export const ARMORY_CNC_BEVEL_GLINT_MARKER = 'armoryCncBevelGlint';
+
+/** Metallic ordnance-steel materials that receive CNC machined-edge bevel rim glint. */
+export const CNC_BEVEL_GLINT_MATERIALS: ReadonlySet<MaterialKind> = new Set<MaterialKind>([
+  'nitride_steel',
+  'barrel_steel',
+  'stainless',
+  'spring_steel',
+]);
+
+export function isCncBevelGlintMaterial(kind: MaterialKind): boolean {
+  return CNC_BEVEL_GLINT_MATERIALS.has(kind);
+}
 
 export function getArmoryProgramCacheKey(f: ArmoryShaderFeatures): string {
   return `armory-v${ARMORY_SHADER_VERSION}|s${f.spring ? 1 : 0}|c${f.curvature ? 1 : 0}|t${f.thermal ? 1 : 0}|f${f.fouling ? 1 : 0}|tm${f.triplanarMap ? 1 : 0}`;
@@ -717,6 +730,7 @@ const FRAGMENT_SURFACE = /* glsl */ `
 #ifdef ARMORY_SHADER
 float armoryOpticMask = 0.0;
 vec3 armoryOpticBaseRgb = vec3( 0.0 );
+float armoryCncBevelMask = 0.0;
 {
   // --- Optical AR multi-coated lens detector (tanks: CITV/EMES/GPS/JD-3/TZF 9b; rifles: AWM/VSS/M82A1/AUG/G11) ---
   // Evaluated on pristine material channels before procedural patina/wear, matching low roughness (< 0.14),
@@ -870,6 +884,25 @@ vec3 armoryOpticBaseRgb = vec3( 0.0 );
   roughnessFactor = mix( roughnessFactor, min( roughnessFactor, 0.055 ), armoryOpticMask );
   roughnessFactor = clamp( roughnessFactor, 0.04, 1.0 );
   metalnessFactor = clamp( metalnessFactor, 0.0, 1.0 );
+
+  // --- CNC machined-steel edge bevel glint mask (strictly 0 on flat faces, polymer, brass & optics) ---
+  // Activates only on convex aCurvature bevels (milled receiver chamfers, Picatinny teeth, bolt flutes,
+  // welded steel armor seams) while keeping flat dark steel base luminance strictly unchanged.
+  {
+    float armoryIsCoolSteel = 1.0 - smoothstep( 0.08, 0.25, uEdgeWearColor.r - uEdgeWearColor.b );
+    float armoryIsSteelEdge =
+      uEdgeMetal *
+      armoryIsCoolSteel *
+      smoothstep( 0.45, 0.82, metalnessFactor ) *
+      ( 1.0 - armoryOpticMask ) *
+      ( 1.0 - smoothstep( 0.05, 0.25, uFunctionalTintMix ) );
+    float armoryConvexEdge = max(
+      armoryLocalizedConvex,
+      smoothstep( 0.35, 0.88, vArmoryCurvature ) * smoothstep( 0.22, 0.78, armoryDeriv ) * 0.75
+    );
+    float armorySatinGate = 1.0 - smoothstep( 0.62, 0.90, roughnessFactor );
+    armoryCncBevelMask = clamp( armoryConvexEdge * armoryIsSteelEdge * armorySatinGate, 0.0, 1.0 );
+  }
 }
 #endif
 `;
@@ -1128,6 +1161,23 @@ const FRAGMENT_AOMAP_AND_OPTICAL_AR = /* glsl */ `
     );
     reflectedLight.directSpecular +=
       reflectedLight.directSpecular * armoryArTint * ( 0.45 * armoryOptGrazing ) * armoryOpticMask;
+  }
+
+  // --- CNC Machined-Edge Bevel Glint (Fresnel-weighted studio specular highlight along steel bevels) ---
+  if ( armoryCncBevelMask > 0.001 ) {
+    float armoryBevelDotNV = saturate( dot( geometryNormal, geometryViewDir ) );
+    float armoryBevelF1 = clamp( 1.0 - armoryBevelDotNV, 0.0, 1.0 );
+    float armoryBevelF = armoryBevelF1 * armoryBevelF1 * ( 0.35 + 0.65 * armoryBevelF1 );
+    vec3 armoryBevelEnv = vec3( 0.30 );
+    #if defined( USE_ENVMAP ) && defined( RE_IndirectSpecular )
+      armoryBevelEnv = clamp( radiance, vec3( 0.12 ), vec3( 2.8 ) );
+    #endif
+    vec3 armoryBevelTint = mix( vec3( 0.86, 0.90, 0.96 ), uEdgeWearColor, 0.55 );
+    float armoryBevelRim = armoryCncBevelMask * ( 0.14 + 0.86 * armoryBevelF );
+    vec3 armoryCncBevelGlint = armoryBevelTint * armoryBevelEnv * ( 0.22 * armoryBevelRim );
+    reflectedLight.indirectSpecular += armoryCncBevelGlint;
+    reflectedLight.directSpecular +=
+      reflectedLight.directSpecular * armoryBevelTint * ( 0.24 * armoryBevelRim );
   }
 }
 #endif
