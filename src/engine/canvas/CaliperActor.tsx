@@ -5,8 +5,12 @@ import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
 import { useWeaponPlugin } from '../../weapons/registry';
 import {
+  type CaliperUnitSystem,
+  MM_PER_INCH,
+  WORLD_UNIT_TO_MM,
   caliperStore,
   computeWeaponEnvelopeMetrics,
+  formatCaliperDistance,
 } from '../caliper/caliperStore';
 import { playbackClock } from '../clock/playbackClock';
 import { fieldStripStore } from '../fieldstrip/fieldStripStore';
@@ -15,6 +19,7 @@ import {
   useWeaponGeometries,
 } from '../geometry/geometryService';
 import { createMutablePose, evaluatePartPoseInto } from '../kinematics/math';
+import type { ArmoryEnvironmentPreset } from './GunsmithStageMat';
 
 const PROBE_SPHERE_GEO = new THREE.SphereGeometry(0.16, 18, 18);
 const PROBE_RING_GEO = new THREE.RingGeometry(0.24, 0.36, 28);
@@ -25,6 +30,8 @@ const BEAM_CYLINDER_GEO = (() => {
   return g;
 })();
 
+const noopRaycast: THREE.Object3D['raycast'] = () => {};
+
 const _vecA = new THREE.Vector3();
 const _vecB = new THREE.Vector3();
 const _dir = new THREE.Vector3();
@@ -34,10 +41,221 @@ const _quat = new THREE.Quaternion();
 const _normVec = new THREE.Vector3();
 const _scratchPose = createMutablePose();
 
-function buildSpanAndProjectionLines(
+export const CALIPER_METRIC_TICK_CM = 1.0;
+export const CALIPER_IMPERIAL_TICK_CM = MM_PER_INCH / WORLD_UNIT_TO_MM; // 2.54 cm = 1 in
+export const CALIPER_SPRITE_WIDTH = 512;
+export const CALIPER_SPRITE_HEIGHT = 148;
+
+/**
+ * Resolves the perpendicular vernier tick spacing in world units (cm):
+ * - Metric (`'mm'`): `1.0 cm` (10 mm) small arms / `10.0 cm` (100 mm) 1:1 MBTs
+ * - Imperial (`'in'`): `2.54 cm` (1 in) small arms / `25.4 cm` (10 in) 1:1 MBTs
+ */
+export function computeCaliperTickStepCm(
+  isTank: boolean,
+  unitSystem: CaliperUnitSystem = 'mm'
+): number {
+  const baseCm =
+    unitSystem === 'in' ? CALIPER_IMPERIAL_TICK_CM : CALIPER_METRIC_TICK_CM;
+  return isTank ? baseCm * 10 : baseCm;
+}
+
+export interface CaliperThemePalette {
+  isLight: boolean;
+  envelopeColor: string;
+  envelopeOpacity: number;
+  jawACore: string;
+  jawARing: string;
+  jawBCore: string;
+  jawBRing: string;
+  beamColor: string;
+  tickColor: string;
+  tickOpacity: number;
+  hoverCore: string;
+  hoverRing: string;
+  previewBeam: string;
+  pillBg: string;
+  pillBorder: string;
+  pillText: string;
+  pillSubtext: string;
+  pillAccentDot: string;
+}
+
+const DARK_STUDIO_CALIPER_PALETTE: CaliperThemePalette = {
+  isLight: false,
+  envelopeColor: '#38bdf8',
+  envelopeOpacity: 0.58,
+  jawACore: '#06b6d4',
+  jawARing: '#22d3ee',
+  jawBCore: '#f59e0b',
+  jawBRing: '#fbbf24',
+  beamColor: '#38bdf8',
+  tickColor: '#fbbf24',
+  tickOpacity: 0.68,
+  hoverCore: '#e2e8f0',
+  hoverRing: '#38bdf8',
+  previewBeam: '#22d3ee',
+  pillBg: 'rgba(9, 14, 24, 0.92)',
+  pillBorder: '#38bdf8',
+  pillText: '#f8fafc',
+  pillSubtext: '#fbbf24',
+  pillAccentDot: '#22d3ee',
+};
+
+const BLUEPRINT_DAYLIGHT_CALIPER_PALETTE: CaliperThemePalette = {
+  isLight: true,
+  envelopeColor: '#0369a1',
+  envelopeOpacity: 0.74,
+  jawACore: '#0284c7',
+  jawARing: '#0369a1',
+  jawBCore: '#b45309',
+  jawBRing: '#d97706',
+  beamColor: '#0284c7',
+  tickColor: '#b45309',
+  tickOpacity: 0.84,
+  hoverCore: '#0f172a',
+  hoverRing: '#0284c7',
+  previewBeam: '#0284c7',
+  pillBg: 'rgba(248, 250, 252, 0.96)',
+  pillBorder: '#0284c7',
+  pillText: '#0f172a',
+  pillSubtext: '#b45309',
+  pillAccentDot: '#0284c7',
+};
+
+/**
+ * Resolves theme-aware caliper wire, probe, and floating CAD dimension sprite
+ * colors (deep engineering cobalt `#0284c7` & ordnance amber `#b45309` on
+ * Blueprint Daylight so measurements pop crisply on bright drafting paper).
+ */
+export function getCaliperThemePalette(
+  preset: ArmoryEnvironmentPreset
+): CaliperThemePalette {
+  return preset === 'blueprint_daylight'
+    ? BLUEPRINT_DAYLIGHT_CALIPER_PALETTE
+    : DARK_STUDIO_CALIPER_PALETTE;
+}
+
+/**
+ * Paints the high-DPI floating CAD midpoint dimension readout pill onto a 2D
+ * canvas context (pure Canvas2D helper, headless-testable with mock contexts).
+ */
+export function paintCaliperDimensionPill(
+  ctx: CanvasRenderingContext2D,
+  width: number,
+  height: number,
+  primaryText: string,
+  secondaryText: string,
+  palette: CaliperThemePalette
+): void {
+  const pad = 10;
+  const r = 24;
+  const x0 = pad;
+  const y0 = pad;
+  const rw = width - pad * 2;
+  const rh = height - pad * 2;
+
+  ctx.clearRect(0, 0, width, height);
+  ctx.save();
+
+  // Rounded CAD badge background
+  ctx.beginPath();
+  ctx.moveTo(x0 + r, y0);
+  ctx.lineTo(x0 + rw - r, y0);
+  ctx.quadraticCurveTo(x0 + rw, y0, x0 + rw, y0 + r);
+  ctx.lineTo(x0 + rw, y0 + rh - r);
+  ctx.quadraticCurveTo(x0 + rw, y0 + rh, x0 + rw - r, y0 + rh);
+  ctx.lineTo(x0 + r, y0 + rh);
+  ctx.quadraticCurveTo(x0, y0 + rh, x0, y0 + rh - r);
+  ctx.lineTo(x0, y0 + r);
+  ctx.quadraticCurveTo(x0, y0, x0 + r, y0);
+  ctx.closePath();
+
+  ctx.fillStyle = palette.pillBg;
+  ctx.fill();
+
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = palette.pillBorder;
+  ctx.stroke();
+
+  // Subtle corner CAD registration ticks
+  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = palette.pillSubtext;
+  ctx.beginPath();
+  ctx.moveTo(x0 + 22, y0 + 18);
+  ctx.lineTo(x0 + 36, y0 + 18);
+  ctx.moveTo(x0 + rw - 36, y0 + 18);
+  ctx.lineTo(x0 + rw - 22, y0 + 18);
+  ctx.stroke();
+
+  // Jaw A -> Jaw B color dots flanking primary dimension
+  ctx.fillStyle = palette.pillAccentDot;
+  ctx.beginPath();
+  ctx.arc(x0 + 38, y0 + rh * 0.43, 8, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = palette.pillSubtext;
+  ctx.beginPath();
+  ctx.arc(x0 + rw - 38, y0 + rh * 0.43, 8, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Primary bold monospace measurement readout
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = palette.pillText;
+  ctx.font =
+    '700 50px "JetBrains Mono", "SF Mono", "Fira Code", ui-monospace, monospace';
+  ctx.fillText(primaryText, width * 0.5, y0 + rh * 0.42);
+
+  // Secondary cross-unit / CAD vector sub-readout
+  ctx.fillStyle = palette.pillSubtext;
+  ctx.font =
+    '600 26px "JetBrains Mono", "SF Mono", "Fira Code", ui-monospace, monospace';
+  ctx.fillText(secondaryText, width * 0.5, y0 + rh * 0.77);
+
+  ctx.restore();
+}
+
+function createCaliperDimensionSpriteTexture(
+  primaryText: string,
+  secondaryText: string,
+  palette: CaliperThemePalette
+): THREE.CanvasTexture | null {
+  if (
+    typeof document === 'undefined' ||
+    typeof document.createElement !== 'function'
+  ) {
+    return null;
+  }
+  const canvas = document.createElement('canvas');
+  canvas.width = CALIPER_SPRITE_WIDTH;
+  canvas.height = CALIPER_SPRITE_HEIGHT;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+
+  paintCaliperDimensionPill(
+    ctx,
+    CALIPER_SPRITE_WIDTH,
+    CALIPER_SPRITE_HEIGHT,
+    primaryText,
+    secondaryText,
+    palette
+  );
+
+  const tex = new THREE.CanvasTexture(canvas);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  tex.minFilter = THREE.LinearFilter;
+  tex.magFilter = THREE.LinearFilter;
+  tex.generateMipmaps = false;
+  tex.needsUpdate = true;
+  return tex;
+}
+
+export function buildSpanAndProjectionLines(
   a: readonly [number, number, number],
   b: readonly [number, number, number],
-  isTank = false
+  isTank = false,
+  unitSystem: CaliperUnitSystem = 'mm'
 ): THREE.BufferGeometry {
   const verts: number[] = [];
   const dx = b[0] - a[0];
@@ -52,8 +270,10 @@ function buildSpanAndProjectionLines(
   verts.push(corner1[0], corner1[1], corner1[2], corner2[0], corner2[1], corner2[2]);
   verts.push(corner2[0], corner2[1], corner2[2], b[0], b[1], b[2]);
 
-  // Precision vernier ticks perpendicular to span vector A -> B (10 mm for small arms, 100 mm for 1:1 MBTs)
-  const tickStepCm = isTank ? 10 : 1;
+  // Precision vernier ticks perpendicular to span vector A -> B
+  // Metric: 1 cm (10 mm) small arms / 10 cm (100 mm) MBTs
+  // Imperial: 2.54 cm (1 in) small arms / 25.4 cm (10 in) MBTs
+  const tickStepCm = computeCaliperTickStepCm(isTank, unitSystem);
   const tickScale = isTank ? 8 : 1;
   if (distCm > 0.2 * tickStepCm) {
     const ux = dx / distCm;
@@ -97,14 +317,15 @@ function buildSpanAndProjectionLines(
   return geo;
 }
 
-function buildEnvelopeRulerGeometry(
+export function buildEnvelopeRulerGeometry(
   min: readonly [number, number, number],
   max: readonly [number, number, number],
-  isTank = false
+  isTank = false,
+  unitSystem: CaliperUnitSystem = 'mm'
 ): THREE.BufferGeometry {
   const verts: number[] = [];
   const scale = isTank ? 8 : 1;
-  const tickStepCm = isTank ? 10 : 1;
+  const tickStepCm = computeCaliperTickStepCm(isTank, unitSystem);
   const pad = 1.35 * scale;
   const x0 = min[0];
   const x1 = max[0];
@@ -116,7 +337,7 @@ function buildEnvelopeRulerGeometry(
   const rulerY = y0 - pad;
   const rulerZ = z1 + pad;
 
-  // 1. Longitudinal X-axis overall length ruler (`10/50/100 mm` small arms, `100/500/1,000 mm` tanks)
+  // 1. Longitudinal X-axis overall length ruler (metric 10/50/100mm or imperial 1/5/10 in)
   verts.push(x0, rulerY, rulerZ, x1, rulerY, rulerZ);
   // Datum extension drop-lines to weapon nose & buttplate
   verts.push(x0, y0, z1, x0, rulerY - 0.45 * scale, rulerZ);
@@ -163,9 +384,10 @@ function buildEnvelopeRulerGeometry(
 /**
  * WP-10 — 1:1 3D Armorer Vernier Caliper & Full-Weapon Envelope Scale Ruler
  * -------------------------------------------------------------------------
- * Renders millimeter-accurate surface probes (`1 world unit = 1 cm = 10 mm`),
+ * Renders millimeter/inch-accurate surface probes (`1 world unit = 1 cm = 10 mm`),
  * live 60fps hover rubber-band span preview, orthogonal `ΔX / ΔY / ΔZ` CAD
- * projections, and a toggleable 3D weapon bounding ruler.
+ * projections, a floating camera-facing midpoint dimension readout sprite,
+ * and a toggleable 3D weapon bounding ruler with Blueprint Daylight parity.
  */
 export const CaliperActor: React.FC = () => {
   const screen = useAppStore((s) => s.screen);
@@ -174,12 +396,16 @@ export const CaliperActor: React.FC = () => {
   const envelopeRulerVisible = useAppStore((s) => s.envelopeRulerVisible);
   const mode = useAppStore((s) => s.mode);
   const fieldStripActive = useAppStore((s) => s.fieldStripActive);
+  const environmentPreset = useAppStore((s) => s.environmentPreset);
 
   const snap = useSyncExternalStore(
     caliperStore.subscribe,
     caliperStore.getSnapshot,
     caliperStore.getSnapshot
   );
+
+  const unitSystem = snap.unitSystem;
+  const palette = getCaliperThemePalette(environmentPreset);
 
   const plugin = useWeaponPlugin(activeWeaponId);
   const geoStatus = useWeaponGeometries(activeWeaponId, plugin?.parts ?? null);
@@ -192,11 +418,16 @@ export const CaliperActor: React.FC = () => {
   const hoverRingRef = useRef<THREE.Mesh>(null);
   const liveBeamRef = useRef<THREE.Mesh>(null);
 
-  // Locked A -> B tick & orthogonal projection lines
+  // Locked A -> B tick & orthogonal projection lines (metric or imperial step)
   const lockedSpanGeo = useMemo(() => {
     if (!snap.pointA || !snap.pointB) return null;
-    return buildSpanAndProjectionLines(snap.pointA.pos, snap.pointB.pos, isTank);
-  }, [snap.pointA, snap.pointB, isTank]);
+    return buildSpanAndProjectionLines(
+      snap.pointA.pos,
+      snap.pointB.pos,
+      isTank,
+      unitSystem
+    );
+  }, [snap.pointA, snap.pointB, isTank, unitSystem]);
 
   useEffect(() => {
     return () => {
@@ -204,7 +435,7 @@ export const CaliperActor: React.FC = () => {
     };
   }, [lockedSpanGeo]);
 
-  // Locked solid A -> B cylinder transform
+  // Locked solid A -> B cylinder transform & midpoint CAD dimension sprite data
   const lockedBeamTransform = useMemo(() => {
     if (!snap.pointA || !snap.pointB) return null;
     const a = snap.pointA.pos;
@@ -216,12 +447,49 @@ export const CaliperActor: React.FC = () => {
     if (len < 1e-4) return null;
     _dir.divideScalar(len);
     _quat.setFromUnitVectors(_upAxis, _dir);
+
+    const distMm = len * WORLD_UNIT_TO_MM;
+    const primaryLabel = formatCaliperDistance(distMm, unitSystem);
+    const altUnit: CaliperUnitSystem = unitSystem === 'in' ? 'mm' : 'in';
+    const secondaryLabel = `A ↔ B · ${formatCaliperDistance(distMm, altUnit)}`;
+    const spriteLiftY = isTank ? 24.0 : 2.15;
+    const spriteLiftZ = isTank ? 8.0 : 0.65;
+    const spriteHeight = isTank ? 18.0 : 1.75;
+    const spriteWidth =
+      spriteHeight * (CALIPER_SPRITE_WIDTH / CALIPER_SPRITE_HEIGHT);
+
     return {
       pos: [a[0], a[1], a[2]] as [number, number, number],
       rot: new THREE.Euler().setFromQuaternion(_quat),
       len,
+      midpoint: [
+        (a[0] + b[0]) * 0.5,
+        (a[1] + b[1]) * 0.5 + spriteLiftY,
+        (a[2] + b[2]) * 0.5 + spriteLiftZ,
+      ] as [number, number, number],
+      spriteScale: [spriteWidth, spriteHeight, 1] as [number, number, number],
+      primaryLabel,
+      secondaryLabel,
     };
-  }, [snap.pointA, snap.pointB]);
+  }, [snap.pointA, snap.pointB, isTank, unitSystem]);
+
+  const primaryDimensionLabel = lockedBeamTransform?.primaryLabel ?? null;
+  const secondaryDimensionLabel = lockedBeamTransform?.secondaryLabel ?? null;
+
+  const dimensionSpriteTex = useMemo(() => {
+    if (!primaryDimensionLabel || !secondaryDimensionLabel) return null;
+    return createCaliperDimensionSpriteTexture(
+      primaryDimensionLabel,
+      secondaryDimensionLabel,
+      palette
+    );
+  }, [primaryDimensionLabel, secondaryDimensionLabel, palette]);
+
+  useEffect(() => {
+    return () => {
+      dimensionSpriteTex?.dispose();
+    };
+  }, [dimensionSpriteTex]);
 
   // Full-weapon 3D CAD envelope ruler (assembled datum when at rest)
   const envelopeGeo = useMemo(() => {
@@ -259,7 +527,12 @@ export const CaliperActor: React.FC = () => {
       _scratchPose
     );
     if (!metrics) return null;
-    return buildEnvelopeRulerGeometry(metrics.min, metrics.max, isTank);
+    return buildEnvelopeRulerGeometry(
+      metrics.min,
+      metrics.max,
+      isTank,
+      unitSystem
+    );
   }, [
     envelopeRulerVisible,
     plugin,
@@ -269,6 +542,7 @@ export const CaliperActor: React.FC = () => {
     mode,
     fieldStripActive,
     isTank,
+    unitSystem,
   ]);
 
   useEffect(() => {
@@ -341,28 +615,40 @@ export const CaliperActor: React.FC = () => {
     <group>
       {/* 1. Full-Weapon 3D CAD Envelope Bounding Ruler */}
       {envelopeRulerVisible && envelopeGeo && (
-        <lineSegments geometry={envelopeGeo} renderOrder={14}>
+        <lineSegments
+          geometry={envelopeGeo}
+          renderOrder={14}
+          userData={{ excludeFromGtao: true }}
+        >
           <lineBasicMaterial
-            color="#38bdf8"
+            color={palette.envelopeColor}
             transparent
-            opacity={0.58}
+            opacity={palette.envelopeOpacity}
             depthWrite={false}
           />
         </lineSegments>
       )}
 
-      {/* 2. Vernier Probe Jaw A (Cyan) */}
+      {/* 2. Vernier Probe Jaw A */}
       {caliperActive && snap.pointA && (
         <group
           position={[snap.pointA.pos[0], snap.pointA.pos[1], snap.pointA.pos[2]]}
           scale={markerScale}
         >
-          <mesh geometry={PROBE_SPHERE_GEO} renderOrder={16}>
-            <meshBasicMaterial color="#06b6d4" depthTest={false} />
+          <mesh
+            geometry={PROBE_SPHERE_GEO}
+            renderOrder={16}
+            userData={{ excludeFromGtao: true }}
+          >
+            <meshBasicMaterial color={palette.jawACore} depthTest={false} />
           </mesh>
-          <mesh geometry={PROBE_RING_GEO} renderOrder={16}>
+          <mesh
+            geometry={PROBE_RING_GEO}
+            renderOrder={16}
+            userData={{ excludeFromGtao: true }}
+          >
             <meshBasicMaterial
-              color="#22d3ee"
+              color={palette.jawARing}
               side={THREE.DoubleSide}
               transparent
               opacity={0.85}
@@ -372,18 +658,26 @@ export const CaliperActor: React.FC = () => {
         </group>
       )}
 
-      {/* 3. Vernier Probe Jaw B (Amber) */}
+      {/* 3. Vernier Probe Jaw B */}
       {caliperActive && snap.pointB && (
         <group
           position={[snap.pointB.pos[0], snap.pointB.pos[1], snap.pointB.pos[2]]}
           scale={markerScale}
         >
-          <mesh geometry={PROBE_SPHERE_GEO} renderOrder={16}>
-            <meshBasicMaterial color="#f59e0b" depthTest={false} />
+          <mesh
+            geometry={PROBE_SPHERE_GEO}
+            renderOrder={16}
+            userData={{ excludeFromGtao: true }}
+          >
+            <meshBasicMaterial color={palette.jawBCore} depthTest={false} />
           </mesh>
-          <mesh geometry={PROBE_RING_GEO} renderOrder={16}>
+          <mesh
+            geometry={PROBE_RING_GEO}
+            renderOrder={16}
+            userData={{ excludeFromGtao: true }}
+          >
             <meshBasicMaterial
-              color="#fbbf24"
+              color={palette.jawBRing}
               side={THREE.DoubleSide}
               transparent
               opacity={0.85}
@@ -393,7 +687,7 @@ export const CaliperActor: React.FC = () => {
         </group>
       )}
 
-      {/* 4. Locked Vernier Measurement Rod + 10mm/100mm Scale Ticks + Orthogonal ΔX/ΔY/ΔZ Projections */}
+      {/* 4. Locked Vernier Measurement Rod + Metric/Imperial Scale Ticks + Orthogonal ΔX/ΔY/ΔZ Projections */}
       {caliperActive && lockedBeamTransform && (
         <mesh
           geometry={BEAM_CYLINDER_GEO}
@@ -401,9 +695,10 @@ export const CaliperActor: React.FC = () => {
           rotation={lockedBeamTransform.rot}
           scale={[markerScale, lockedBeamTransform.len, markerScale]}
           renderOrder={15}
+          userData={{ excludeFromGtao: true }}
         >
           <meshBasicMaterial
-            color="#38bdf8"
+            color={palette.beamColor}
             transparent
             opacity={0.92}
             depthTest={false}
@@ -412,29 +707,63 @@ export const CaliperActor: React.FC = () => {
       )}
 
       {caliperActive && lockedSpanGeo && (
-        <lineSegments geometry={lockedSpanGeo} renderOrder={15}>
+        <lineSegments
+          geometry={lockedSpanGeo}
+          renderOrder={15}
+          userData={{ excludeFromGtao: true }}
+        >
           <lineBasicMaterial
-            color="#fbbf24"
+            color={palette.tickColor}
             transparent
-            opacity={0.68}
+            opacity={palette.tickOpacity}
             depthTest={false}
           />
         </lineSegments>
       )}
 
+      {/* 4b. Floating Camera-Facing 3D Midpoint Dimension Readout Sprite (`mm / in` + Daylight Parity) */}
+      {caliperActive && lockedBeamTransform && dimensionSpriteTex && (
+        <sprite
+          position={lockedBeamTransform.midpoint}
+          scale={lockedBeamTransform.spriteScale}
+          renderOrder={17}
+          raycast={noopRaycast}
+          userData={{ excludeFromGtao: true }}
+          name="caliper-midpoint-readout-sprite"
+        >
+          <spriteMaterial
+            map={dimensionSpriteTex}
+            transparent
+            depthTest={false}
+            depthWrite={false}
+            toneMapped={false}
+          />
+        </sprite>
+      )}
+
       {/* 5. Live 60fps Surface Hover Crosshair & Rubber-Band Preview Beam */}
       <group ref={hoverGroupRef} visible={false}>
-        <mesh geometry={PROBE_SPHERE_GEO} scale={0.68} renderOrder={16}>
+        <mesh
+          geometry={PROBE_SPHERE_GEO}
+          scale={0.68}
+          renderOrder={16}
+          userData={{ excludeFromGtao: true }}
+        >
           <meshBasicMaterial
-            color="#e2e8f0"
+            color={palette.hoverCore}
             transparent
             opacity={0.9}
             depthTest={false}
           />
         </mesh>
-        <mesh ref={hoverRingRef} geometry={PROBE_RING_GEO} renderOrder={16}>
+        <mesh
+          ref={hoverRingRef}
+          geometry={PROBE_RING_GEO}
+          renderOrder={16}
+          userData={{ excludeFromGtao: true }}
+        >
           <meshBasicMaterial
-            color="#38bdf8"
+            color={palette.hoverRing}
             side={THREE.DoubleSide}
             transparent
             opacity={0.78}
@@ -448,9 +777,10 @@ export const CaliperActor: React.FC = () => {
         geometry={BEAM_CYLINDER_GEO}
         visible={false}
         renderOrder={15}
+        userData={{ excludeFromGtao: true }}
       >
         <meshBasicMaterial
-          color="#22d3ee"
+          color={palette.previewBeam}
           transparent
           opacity={0.58}
           depthTest={false}
