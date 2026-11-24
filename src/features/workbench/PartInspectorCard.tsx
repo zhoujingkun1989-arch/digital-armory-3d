@@ -67,6 +67,7 @@ import type {
   WeaponId,
 } from '../../weapons/types';
 import { getSuggestedRivalWeaponId } from '../armory/mechanismShowdownSpecs';
+import { GlossaryTermChips } from './GlossaryTermChips';
 
 const EMPTY_FIRING_PHASES: readonly FiringPhaseInfo[] = [];
 
@@ -828,6 +829,8 @@ export const PartInspectorCard: React.FC<PartInspectorCardProps> = ({
           </span>
         </div>
       )}
+
+      <GlossaryTermChips weaponId={activeWeaponId} lang={lang} />
 
       <div className="inspector-lab-links">
         <button
