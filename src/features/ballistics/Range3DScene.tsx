@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { ViewportErrorBoundary } from '../../app/ViewportErrorBoundary';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
+import { lockLinearTextureColorSpace } from '../../engine/materials/pbrManager';
 import {
   computeBuckshotPatternRadiusMm,
   type BallisticSolution,
@@ -474,7 +475,7 @@ function createProvingGroundTerrainTextures(): {
   albedoTex.needsUpdate = true;
 
   const bumpTex = new THREE.CanvasTexture(bumpCanvas);
-  bumpTex.colorSpace = THREE.NoColorSpace;
+  lockLinearTextureColorSpace(bumpTex);
   bumpTex.wrapS = THREE.RepeatWrapping;
   bumpTex.wrapT = THREE.RepeatWrapping;
   bumpTex.repeat.set(44, 24);

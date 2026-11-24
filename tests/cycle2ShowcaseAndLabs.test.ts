@@ -283,11 +283,11 @@ describe('Cycle 2B · Showcase Luxury Overhaul, APFSDS Lab, 3D-First Range & Spl
       useAppStore.setState({ lang: prevLang });
     }
 
-    // Verify Range3DScene upgrades: no flatShading, textured gravel + bump (linear NoColorSpace), sky dome & 100/300/600/1000m gates
+    // Verify Range3DScene upgrades: no flatShading, textured gravel + bump (R3F-safe linear lock), sky dome & 100/300/600/1000m gates
     const rangeSrc = readRepoFile('src/features/ballistics/Range3DScene.tsx');
     expect(rangeSrc).not.toContain('flatShading');
     expect(rangeSrc).toContain('createProvingGroundTerrainTextures');
-    expect(rangeSrc).toContain('THREE.NoColorSpace');
+    expect(rangeSrc).toContain('lockLinearTextureColorSpace(bumpTex)');
     expect(rangeSrc).toContain('createAtmosphericSkyTexture');
     expect(rangeSrc).toContain('terrainTextures?.albedoTex.dispose()');
     expect(rangeSrc).toContain('terrainTextures?.bumpTex.dispose()');
