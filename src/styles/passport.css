@@ -1,5 +1,5 @@
 /* ==========================================================================
-   WP-23a · 27-Exhibit Armorer Mastery Passport & Certification Ledger Modal
+   34-Exhibit · 10-Hall Armorer Mastery Passport & Certification Ledger Modal
    ========================================================================== */
 
 .passport-dialog {
@@ -258,12 +258,246 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 4px 8px;
-  border-radius: 6px;
-  border: 1px solid rgba(148, 163, 184, 0.28);
-  background: transparent;
-  color: inherit;
+  padding: 4.5px 9px;
+  border-radius: 7px;
+  border: 1px solid rgba(56, 189, 248, 0.34);
+  background: rgba(14, 165, 233, 0.1);
+  color: #bae6fd;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
+  white-space: nowrap;
   cursor: pointer;
+  transition:
+    background-color 0.14s ease,
+    border-color 0.14s ease,
+    color 0.14s ease;
+}
+
+.passport-train-btn:hover {
+  background: #0284c7;
+  border-color: #38bdf8;
+  color: #ffffff;
+}
+
+:is([data-theme='light'], .theme-light) .passport-train-btn {
+  background: #f0f9ff;
+  border-color: rgba(2, 132, 199, 0.35);
+  color: #0369a1;
+}
+
+:is([data-theme='light'], .theme-light) .passport-train-btn:hover {
+  background: #0284c7;
+  color: #ffffff;
+}
+
+/* ==================== 10-Hall Mastery Breakdown & Status Filter Pills ==================== */
+.passport-halls-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.passport-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.passport-section-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #fbbf24;
+}
+
+:is([data-theme='light'], .theme-light) .passport-section-label {
+  color: #b45309;
+}
+
+.passport-filter-bar {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.passport-filter-icon {
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+.passport-filter-pill {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  background: rgba(15, 23, 42, 0.56);
+  color: #cbd5e1;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.14s ease,
+    border-color 0.14s ease,
+    color 0.14s ease;
+}
+
+.passport-filter-pill:hover {
+  border-color: rgba(56, 189, 248, 0.5);
+  color: #ffffff;
+}
+
+.passport-filter-pill.is-active {
+  background: rgba(56, 189, 248, 0.22);
+  border-color: #38bdf8;
+  color: #e0f2fe;
+}
+
+:is([data-theme='light'], .theme-light) .passport-filter-pill {
+  background: #f1f5f9;
+  color: #334155;
+  border-color: #cbd5e1;
+}
+
+:is([data-theme='light'], .theme-light) .passport-filter-pill.is-active {
+  background: #0284c7;
+  border-color: #0284c7;
+  color: #ffffff;
+}
+
+.passport-halls-strip {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 7px;
+}
+
+@media (max-width: 820px) {
+  .passport-halls-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .passport-halls-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.passport-hall-card {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 7px 9px;
+  border-radius: 9px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  background: rgba(15, 23, 42, 0.52);
+  color: #e2e8f0;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.passport-hall-card:hover {
+  border-color: rgba(56, 189, 248, 0.5);
+  background: rgba(30, 41, 59, 0.72);
+}
+
+.passport-hall-card.is-active {
+  border-color: #fbbf24;
+  background: rgba(245, 158, 11, 0.14);
+}
+
+.passport-hall-card.is-mastered {
+  border-color: rgba(52, 211, 153, 0.55);
+}
+
+:is([data-theme='light'], .theme-light) .passport-hall-card {
+  background: #f8fafc;
+  color: #0f172a;
+  border-color: #e2e8f0;
+}
+
+:is([data-theme='light'], .theme-light) .passport-hall-card.is-active {
+  background: #fffbeb;
+  border-color: #d97706;
+}
+
+.passport-hall-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.passport-hall-name {
+  font-size: 11px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.passport-hall-ratio {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+.passport-hall-card.is-active .passport-hall-ratio {
+  color: #fcd34d;
+}
+
+:is([data-theme='light'], .theme-light) .passport-hall-card.is-active .passport-hall-ratio {
+  color: #b45309;
+}
+
+.passport-hall-bar {
+  display: block;
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.22);
+  overflow: hidden;
+}
+
+.passport-hall-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #38bdf8, #34d399);
+  transition: width 0.2s ease;
+}
+
+.passport-hall-card.is-active .passport-hall-fill {
+  background: linear-gradient(90deg, #fbbf24, #f59e0b);
+}
+
+.passport-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 26px 16px;
+  border-radius: 10px;
+  border: 1px dashed rgba(148, 163, 184, 0.28);
+  color: #94a3b8;
+  font-size: 12.5px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .passport-train-btn,
+  .passport-filter-pill,
+  .passport-hall-card,
+  .passport-hall-fill {
+    transition: none !important;
+  }
 }

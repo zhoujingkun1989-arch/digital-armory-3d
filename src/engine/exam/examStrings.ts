@@ -19,6 +19,14 @@ export interface ExamLocaleStrings {
     newRecordBadge: string;
     personalBestTitle: (rank: ExamRank, score: number) => string;
     lockedBtnTag: string;
+    openPassportBtn: string;
+    openPassportTitle: string;
+    sharePosterBtn: string;
+    qualificationSealLabel: (rank: ExamRank) => string;
+    accuracySummary: (accuracyPct: number, elapsed: string) => string;
+    highlightNextBtn: string;
+    highlightNextTitle: string;
+    guidedStartExamBtn: string;
   };
   fieldStrip: {
     toggleBtn: string;
@@ -122,6 +130,16 @@ export const EXAM_STRINGS: Readonly<Record<LanguageCode, ExamLocaleStrings>> = {
       newRecordBadge: '新纪录',
       personalBestTitle: (rank, score) => `本枪最佳认证：${rank} 级（${score} PTS）`,
       lockedBtnTag: '盲考禁用',
+      openPassportBtn: '查看军械护照',
+      openPassportTitle: '打开全馆 34 展品 10 展厅军械师资质护照与精通总览',
+      sharePosterBtn: '导出认证 3D 海报',
+      qualificationSealLabel: (rank) => `${rank} 级认证章`,
+      accuracySummary: (accuracyPct, elapsed) =>
+        `准确率 ${accuracyPct}% · 耗时 ${elapsed}`,
+      highlightNextBtn: '提示下一步',
+      highlightNextTitle:
+        '脉冲高亮当前下一步可拆装 3D 零件，帮助首次体验者快速定位机械解锁顺序',
+      guidedStartExamBtn: '立即挑战盲考评级',
     },
     fieldStrip: {
       toggleBtn: '盲拆考核 · Blind Exam',
@@ -151,7 +169,7 @@ export const EXAM_STRINGS: Readonly<Record<LanguageCode, ExamLocaleStrings>> = {
         '逆序复装干涉（-75 PTS）— 后续关联部件尚未先行装回，请按严格逆序拓扑归位！',
       wrongPartMsg:
         '无效拆装目标（-75 PTS）— 该部件不属于当前阶段可拆装运动子总成！',
-      certBadge: 'WP-13 军械师资格认证',
+      certBadge: '军械师资格认证',
       certTitle: '全盲计时勤务拆装考核证书',
       statFinalScore: '综合总分',
       statElapsedTime: '完赛耗时',
@@ -196,7 +214,7 @@ export const EXAM_STRINGS: Readonly<Record<LanguageCode, ExamLocaleStrings>> = {
       blindActionBadge: '??',
       blindActionSub: (stepNumber) => `点击作为第 ${stepNumber} 步排障工序执行`,
       completedActionBadge: (orderLabel) => `${orderLabel} ✓`,
-      certBadge: 'WP-13 排障盲测认证',
+      certBadge: '排障盲测认证',
       certTitle: '未知卡阻定性与盲测排障资格证书',
       statFinalScore: '综合总分',
       statElapsedTime: '排障耗时',
@@ -247,6 +265,17 @@ export const EXAM_STRINGS: Readonly<Record<LanguageCode, ExamLocaleStrings>> = {
       personalBestTitle: (rank, score) =>
         `Personal Best Certification: Rank ${rank} (${score} PTS)`,
       lockedBtnTag: 'Exam Locked',
+      openPassportBtn: 'Open Passport',
+      openPassportTitle:
+        'Open 34-Exhibit 10-Hall Armorer Mastery Passport & Certification Ledger',
+      sharePosterBtn: 'Share Certified 3D Poster',
+      qualificationSealLabel: (rank) => `RANK ${rank} SEAL`,
+      accuracySummary: (accuracyPct, elapsed) =>
+        `${accuracyPct}% Accuracy · ${elapsed}`,
+      highlightNextBtn: 'Highlight Next Step',
+      highlightNextTitle:
+        'Pulse-highlight the next valid 3D component so first-time learners spot mechanical order immediately',
+      guidedStartExamBtn: 'Start Blind Exam',
     },
     fieldStrip: {
       toggleBtn: 'Blind Exam',
@@ -277,7 +306,7 @@ export const EXAM_STRINGS: Readonly<Record<LanguageCode, ExamLocaleStrings>> = {
         'Reverse-assembly interference (-75 PTS) — Seat dependent sub-assemblies first before reinstalling this component!',
       wrongPartMsg:
         'Invalid target (-75 PTS) — Component is not an active removable sub-assembly in the current exam phase!',
-      certBadge: 'WP-13 ARMORER QUALIFICATION',
+      certBadge: 'ARMORER QUALIFICATION',
       certTitle: 'Blind Timed Field-Strip & Reassembly Certificate',
       statFinalScore: 'Final Score',
       statElapsedTime: 'Elapsed Time',
@@ -324,7 +353,7 @@ export const EXAM_STRINGS: Readonly<Record<LanguageCode, ExamLocaleStrings>> = {
       blindActionSub: (stepNumber) =>
         `Click to execute as Clearance Step ${stepNumber}`,
       completedActionBadge: (orderLabel) => `${orderLabel} ✓`,
-      certBadge: 'WP-13 TRIAGE QUALIFICATION',
+      certBadge: 'TRIAGE QUALIFICATION',
       certTitle: 'Unknown Stoppage Diagnosis & Clearance Certificate',
       statFinalScore: 'Final Score',
       statElapsedTime: 'Clearance Time',

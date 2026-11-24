@@ -12,6 +12,59 @@ export interface NarrationTrack {
   lang?: 'zh' | 'en';
 }
 
+export const MIN_NARRATION_PLAYBACK_RATE = 0.75;
+export const MAX_NARRATION_PLAYBACK_RATE = 1.5;
+export const DOCUMENTARY_PLAYBACK_RATES = [0.85, 1, 1.25] as const;
+export type DocumentaryPlaybackRate = (typeof DOCUMENTARY_PLAYBACK_RATES)[number];
+
+const PLAYBACK_RATE_STORAGE_KEY = 'digital-armory-narration-rate';
+
+export function clampNarrationPlaybackRate(rate: number): number {
+  if (!Number.isFinite(rate)) return 1;
+  const clamped = Math.max(
+    MIN_NARRATION_PLAYBACK_RATE,
+    Math.min(MAX_NARRATION_PLAYBACK_RATE, rate)
+  );
+  return Math.round(clamped * 100) / 100;
+}
+
+function loadPersistedPlaybackRate(): number {
+  try {
+    if (typeof globalThis !== 'undefined' && 'localStorage' in globalThis) {
+      const storage = (
+        globalThis as unknown as {
+          localStorage?: { getItem?: (k: string) => string | null };
+        }
+      ).localStorage;
+      const raw = storage?.getItem?.(PLAYBACK_RATE_STORAGE_KEY);
+      if (raw !== null && raw !== undefined) {
+        const parsed = Number(raw);
+        if (Number.isFinite(parsed)) {
+          return clampNarrationPlaybackRate(parsed);
+        }
+      }
+    }
+  } catch {
+    // Ignore restricted storage environments
+  }
+  return 1;
+}
+
+function persistPlaybackRate(rate: number): void {
+  try {
+    if (typeof globalThis !== 'undefined' && 'localStorage' in globalThis) {
+      const storage = (
+        globalThis as unknown as {
+          localStorage?: { setItem?: (k: string, v: string) => void };
+        }
+      ).localStorage;
+      storage?.setItem?.(PLAYBACK_RATE_STORAGE_KEY, String(rate));
+    }
+  } catch {
+    // Ignore QuotaExceeded / private browsing
+  }
+}
+
 export interface AudioPlayerSnapshot {
   isPlaying: boolean;
   isLoading: boolean;
@@ -26,7 +79,7 @@ export interface AudioPlayerSnapshot {
   currentTime: number;
   duration: number;
   progress: number;
-  playbackRate: 1 | 1.25 | 1.5;
+  playbackRate: number;
 }
 
 const INITIAL_SNAPSHOT: AudioPlayerSnapshot = {
@@ -43,7 +96,7 @@ const INITIAL_SNAPSHOT: AudioPlayerSnapshot = {
   currentTime: 0,
   duration: 0,
   progress: 0,
-  playbackRate: 1,
+  playbackRate: loadPersistedPlaybackRate(),
 };
 
 let currentSnapshot: AudioPlayerSnapshot = INITIAL_SNAPSHOT;
@@ -437,9 +490,15 @@ export function stopNarrationAudio(): void {
 
 export function seekNarrationAudio(ratio01: number): void {
   if (usingSpeechFallback) return;
+  const clamped = Math.max(0, Math.min(1, Number.isFinite(ratio01) ? ratio01 : 0));
   const el = ensureAudioElement();
-  if (!el || !Number.isFinite(el.duration) || el.duration <= 0) return;
-  const clamped = Math.max(0, Math.min(1, ratio01));
+  if (!el) return;
+  if (!Number.isFinite(el.duration) || el.duration <= 0) {
+    pendingSeekRatio = clamped;
+    emitSnapshot({ progress: clamped });
+    return;
+  }
+  pendingSeekRatio = null;
   el.currentTime = clamped * el.duration;
   emitSnapshot({
     currentTime: el.currentTime,
@@ -447,20 +506,29 @@ export function seekNarrationAudio(ratio01: number): void {
   });
 }
 
-export function cycleNarrationPlaybackRate(): void {
-  const nextRate: 1 | 1.25 | 1.5 =
-    currentSnapshot.playbackRate === 1
-      ? 1.25
-      : currentSnapshot.playbackRate === 1.25
-        ? 1.5
-        : 1;
+export function setNarrationPlaybackRate(rate: number): number {
+  const nextRate = clampNarrationPlaybackRate(rate);
   if (audioEl) {
     audioEl.playbackRate = nextRate;
   }
   if (activeUtterance) {
     activeUtterance.rate = nextRate;
   }
+  persistPlaybackRate(nextRate);
   emitSnapshot({ playbackRate: nextRate });
+  return nextRate;
+}
+
+export function cycleNarrationPlaybackRate(): void {
+  const cur = currentSnapshot.playbackRate;
+  const idx = DOCUMENTARY_PLAYBACK_RATES.findIndex(
+    (r) => Math.abs(r - cur) < 0.02
+  );
+  const nextRate =
+    idx >= 0
+      ? DOCUMENTARY_PLAYBACK_RATES[(idx + 1) % DOCUMENTARY_PLAYBACK_RATES.length]
+      : 1;
+  setNarrationPlaybackRate(nextRate);
 }
 
 export function subscribeAudioPlayer(listener: () => void): () => void {
@@ -484,6 +552,14 @@ export function useNarrationAudioPlayer(): AudioPlayerSnapshot {
     () => currentSnapshot,
     () => INITIAL_SNAPSHOT
   );
+}
+
+export function formatAudioTimestamp(seconds: number): string {
+  if (!Number.isFinite(seconds) || seconds < 0) return '00:00';
+  const total = Math.floor(seconds);
+  const mins = Math.floor(total / 60);
+  const secs = total % 60;
+  return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
 }
 
 export function formatAudioTime(seconds: number): string {

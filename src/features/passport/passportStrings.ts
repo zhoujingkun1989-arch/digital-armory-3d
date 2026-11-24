@@ -1,5 +1,6 @@
 import type { LanguageCode } from '../../narration/types';
 import { MUSEUM_EXHIBIT_COUNT } from '../../weapons/museumMetrics';
+import type { ArmoryCategory } from '../../weapons/types';
 
 export interface PassportLocaleStrings {
   badge: string;
@@ -10,6 +11,15 @@ export interface PassportLocaleStrings {
   certifiedCount: string;
   dualCertifiedCount: string;
   detailCertifiedCount: string;
+  hallBreakdownTitle: string;
+  hallBreakdownAria: string;
+  halls: Readonly<Record<ArmoryCategory, string>>;
+  filterGroupAria: string;
+  filterAll: (count: number) => string;
+  filterCertified: (count: number) => string;
+  filterPending: (count: number) => string;
+  emptyFilterTitle: string;
+  resetFilterBtn: string;
   exportBtn: string;
   importBtn: string;
   clearBtn: string;
@@ -26,6 +36,7 @@ export interface PassportLocaleStrings {
   };
   uncertified: string;
   inspectBtn: string;
+  launchDrillBtn: string;
 }
 
 export const PASSPORT_STRINGS: Record<LanguageCode, PassportLocaleStrings> = {
@@ -39,6 +50,26 @@ export const PASSPORT_STRINGS: Record<LanguageCode, PassportLocaleStrings> = {
     certifiedCount: '已取证展品',
     dualCertifiedCount: '双料认证（快拆+排障）',
     detailCertifiedCount: '军械所全拆取证',
+    hallBreakdownTitle: '10 大展厅精通分布',
+    hallBreakdownAria: '按十大展厅筛选展品认证进度',
+    halls: {
+      all: '全部 10 展厅',
+      assault: '步枪/无托',
+      lmg: '轻重机枪',
+      smg: '冲锋枪',
+      sniper: '狙击/反器材',
+      shotgun: '霰弹枪',
+      pistol: '手枪/左轮',
+      archery: '复合弓弩',
+      armor: '重装甲大厅',
+      ordnance: '航空重武',
+    },
+    filterGroupAria: '按认证状态筛选展品',
+    filterAll: (count) => `全部 ${count} 款`,
+    filterCertified: (count) => `已取证 (${count})`,
+    filterPending: (count) => `待考核 (${count})`,
+    emptyFilterTitle: '当前筛选条件下暂无匹配展品记录',
+    resetFilterBtn: `显示全部 ${MUSEUM_EXHIBIT_COUNT} 款展品`,
     exportBtn: '导出护照 JSON',
     importBtn: '导入恢复护照',
     clearBtn: '清空本地记录',
@@ -54,7 +85,8 @@ export const PASSPORT_STRINGS: Record<LanguageCode, PassportLocaleStrings> = {
       overall: '综合评级',
     },
     uncertified: '待考核',
-    inspectBtn: '进入考台',
+    inspectBtn: '开始实操考核',
+    launchDrillBtn: '开始实操考核',
   },
   en: {
     badge: 'ARMORER CERTIFICATION · PASSPORT',
@@ -66,6 +98,26 @@ export const PASSPORT_STRINGS: Record<LanguageCode, PassportLocaleStrings> = {
     certifiedCount: 'Certified Exhibits',
     dualCertifiedCount: 'Dual Certified',
     detailCertifiedCount: 'Detail Overhaul Certified',
+    hallBreakdownTitle: '10-Hall Mastery Breakdown',
+    hallBreakdownAria: 'Filter certification ledger across museum halls',
+    halls: {
+      all: 'All 10 Halls',
+      assault: 'Assault',
+      lmg: 'LMG',
+      smg: 'SMG',
+      sniper: 'Sniper',
+      shotgun: 'Shotgun',
+      pistol: 'Pistol',
+      archery: 'Archery',
+      armor: 'Heavy Armor',
+      ordnance: 'Heavy Ordnance',
+    },
+    filterGroupAria: 'Filter exhibits by certification status',
+    filterAll: (count) => `All ${count}`,
+    filterCertified: (count) => `Certified (${count})`,
+    filterPending: (count) => `Pending (${count})`,
+    emptyFilterTitle: 'No exhibits match the current filter criteria',
+    resetFilterBtn: `Show All ${MUSEUM_EXHIBIT_COUNT} Exhibits`,
     exportBtn: 'Export Passport JSON',
     importBtn: 'Import Passport JSON',
     clearBtn: 'Reset Ledger',
@@ -83,6 +135,7 @@ export const PASSPORT_STRINGS: Record<LanguageCode, PassportLocaleStrings> = {
       overall: 'Overall Rank',
     },
     uncertified: 'Pending',
-    inspectBtn: 'Train',
+    inspectBtn: 'Launch Drill',
+    launchDrillBtn: 'Launch Drill',
   },
 };

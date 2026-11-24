@@ -2,6 +2,7 @@ import React, { useEffect, useState, useSyncExternalStore } from 'react';
 import {
   AlertTriangle,
   Award,
+  BookOpen,
   CheckCircle2,
   Crosshair,
   Eye,
@@ -18,6 +19,7 @@ import {
 } from 'lucide-react';
 import { scheduleHudBoundsRefresh } from '../../engine/callout/hudBoundsCache';
 import {
+  computeExamAccuracyPct,
   formatExamDuration,
   nowExamMs,
   useArmorerExamStore,
@@ -82,6 +84,7 @@ export const MalfunctionHud: React.FC = () => {
   const lang = useAppStore((s) => s.lang);
   const setMalfunctionActive = useAppStore((s) => s.setMalfunctionActive);
   const openPosterModal = useAppStore((s) => s.openPosterModal);
+  const openPassportModal = useAppStore((s) => s.openPassportModal);
   const sectionCut = useAppStore((s) => s.sectionCut);
   const xrayShells = useAppStore((s) => s.xrayShells);
   const toggleSectionCut = useAppStore((s) => s.toggleSectionCut);
@@ -145,6 +148,10 @@ export const MalfunctionHud: React.FC = () => {
 
   const earnedRank = triage.rank ?? 'C';
   const rankMeta = exUi.ranks[earnedRank];
+  const triageAccuracyPct = computeExamAccuracyPct(
+    triage.totalClearanceSteps + 1,
+    triage.mistakeCount
+  );
 
   return (
     <div className="malfunction-hud">
@@ -306,17 +313,31 @@ export const MalfunctionHud: React.FC = () => {
           >
             <div className="exam-cert-top-row">
               <div className="exam-cert-identity">
-                <div className={`exam-rank-medallion rank-${earnedRank}`}>
-                  {earnedRank}
+                <div
+                  className={`exam-qualification-seal rank-${earnedRank}`}
+                  aria-label={exUi.common.qualificationSealLabel(earnedRank)}
+                >
+                  <div className={`exam-rank-medallion rank-${earnedRank}`}>
+                    {earnedRank}
+                  </div>
+                  <span className="exam-seal-caption">
+                    {exUi.common.qualificationSealLabel(earnedRank)}
+                  </span>
                 </div>
                 <div className="exam-cert-titles">
                   <div className="exam-cert-overline">
-                    <span>{ui.certBadge}</span>
+                    <span>{exUi.triage.certBadge}</span>
                     {triage.isNewRecord && (
                       <span className="exam-new-record-pill">
                         {exUi.common.newRecordBadge}
                       </span>
                     )}
+                    <span className="exam-cert-summary-pill">
+                      {exUi.common.accuracySummary(
+                        triageAccuracyPct,
+                        formatExamDuration(triage.elapsedMs)
+                      )}
+                    </span>
                   </div>
                   <strong className="exam-cert-main-heading">
                     {rankMeta.badgeLabel} · {exUi.triage.certTitle}
@@ -336,6 +357,15 @@ export const MalfunctionHud: React.FC = () => {
               <div className="exam-cert-actions">
                 <button
                   type="button"
+                  className="exam-cert-passport-btn"
+                  title={exUi.common.openPassportTitle}
+                  onClick={openPassportModal}
+                >
+                  <BookOpen size={12} aria-hidden="true" />
+                  <span>{exUi.common.openPassportBtn}</span>
+                </button>
+                <button
+                  type="button"
                   className="exam-cert-share-btn"
                   title={ui.shareCertPosterTitle}
                   onClick={() =>
@@ -346,7 +376,7 @@ export const MalfunctionHud: React.FC = () => {
                   }
                 >
                   <Share2 size={12} aria-hidden="true" />
-                  <span>{ui.shareCertPosterBtn}</span>
+                  <span>{exUi.common.sharePosterBtn}</span>
                 </button>
                 <button
                   type="button"
@@ -648,6 +678,25 @@ export const MalfunctionHud: React.FC = () => {
                     {' '}
                     {isArchery ? ui.archeryClearedDesc : ui.clearedDesc}
                   </span>
+                </div>
+                <div className="exam-guided-celebration-actions">
+                  <button
+                    type="button"
+                    className="exam-cert-retry-btn"
+                    onClick={() => startBlindTriage(activeWeaponId)}
+                  >
+                    <Award size={12} aria-hidden="true" />
+                    <span>{exUi.triage.toggleBtn}</span>
+                  </button>
+                  <button
+                    type="button"
+                    className="exam-cert-passport-btn"
+                    title={exUi.common.openPassportTitle}
+                    onClick={openPassportModal}
+                  >
+                    <BookOpen size={12} aria-hidden="true" />
+                    <span>{exUi.common.openPassportBtn}</span>
+                  </button>
                 </div>
               </div>
             ) : (

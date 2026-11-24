@@ -219,6 +219,17 @@ export function computeExamRank(score: number, mistakeCount: number): ExamRank {
   return 'C';
 }
 
+export function computeExamAccuracyPct(
+  completedActions: number,
+  mistakeCount: number
+): number {
+  const safeActions = Math.max(0, Math.floor(completedActions));
+  const safeMistakes = Math.max(0, Math.floor(mistakeCount));
+  const attempts = safeActions + safeMistakes;
+  if (attempts <= 0) return 100;
+  return Math.max(0, Math.min(100, Math.round((safeActions / attempts) * 100)));
+}
+
 export function computeFieldStripExamScore(params: {
   totalSteps: number;
   mistakeCount: number;
