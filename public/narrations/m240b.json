@@ -1,0 +1,786 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "m240b",
+  "generatedAt": "2026-11-25T00:00:00.000Z",
+  "generatorModels": {
+    "text": "centennial-blueprint-v1",
+    "storyTts": "web-speech-api",
+    "partTts": "web-speech-api"
+  },
+  "uiMetaEn": {
+    "name": "FN MAG / M240B",
+    "subtitle": "Browning BAR Locking Meets MG 42 Belt Feed — The NATO 7.62mm Workhorse",
+    "originCountry": "Belgium / United States",
+    "weaponType": "General-Purpose Machine Gun",
+    "categoryLabel": "Machine Gun",
+    "actionMechanism": "Under-Barrel Long-Stroke Gas Piston · BAR Dropping Locking Lever & MG 42 Belt Feed",
+    "statusLabel": "Vault Ready · Interactive 3D",
+    "description": "Ernest Vervier’s FN MAG (U.S. M240B / UK L7A2) fuses an inverted Browning BAR dropping locking lever with an MG 42-style twin-pawl belt feed—achieving over 26,000 mean rounds between stoppages in U.S. military trials.",
+    "highlights": [
+      "Fuses BAR-derived rigid locking with MG 42-derived smooth twin-pawl belt feeding",
+      "3-position exhaust gas regulator tunes cyclic rate from 650 to 950 RPM under fouling",
+      "M240B adds a heat shield, top Picatinny rail, and hydraulic buttstock buffer",
+      "Heavy riveted steel receiver serves identically as an infantry GPMG and MBT coaxial gun"
+    ],
+    "workbenchTitle": "FN MAG / M240B 3D Mechanical Teardown & Kinematics",
+    "workbenchSubtitle": "4 Assemblies · 20 Core Components · Under-Barrel Long-Stroke Gas Piston · BAR Dropping Locking Lever & MG 42 Belt Feed",
+    "cutawayLabel": "Breech & Action Cutaway",
+    "cutawayTitle": "Engage live longitudinal cutaway on FN MAG / M240B to inspect internal locking and feed geometry",
+    "searchPlaceholder": "Search part name or BOM code (e.g., Barrel, Bolt, U-01, M-01)...",
+    "firingMilestoneLabel": "Long-Stroke Unlock",
+    "rateOfFire": "650–950 RPM (3-position gas-regulated cadence)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0%",
+        "desc": "FN MAG / M240B (1958) in complete operational battery with all 20 assemblies seated in 1:1 alignment."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Primary operator maintenance stage: clear ammunition supply and separate upper operating group for routine inspection."
+      },
+      "sub_assembly": {
+        "label": "Sub-Assembly",
+        "subLabel": "65%",
+        "desc": "Intermediate armorer teardown exposing locking interfaces, fire-control linkage, and recoil energy storage springs."
+      },
+      "full_exploded": {
+        "label": "Full Exploded View",
+        "subLabel": "100%",
+        "desc": "Complete 20-component isometric CAD explosion displaying every functional group across 1,245 mm (With Flash Hider & Folding Bipod)."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "Trigger & Sear",
+        "title": "Phase 1 · FN MAG / M240B Trigger Release & Ignition Drive",
+        "description": "Pulling the trigger disengages the sear, freeing the spring-driven hammer or striker to impact the 7.62×51mm NATO primer."
+      },
+      "phase_2": {
+        "shortLabel": "Primer Ignition",
+        "title": "Phase 2 · 415 MPa Chamber Pressure Rise",
+        "description": "The propellant charge ignites inside the locked chamber, driving peak pressure to 415 MPa while sealing the cartridge case against the breech."
+      },
+      "phase_3": {
+        "shortLabel": "Bore Acceleration",
+        "title": "Phase 3 · 627 mm Barrel Engraving & Acceleration",
+        "description": "The projectile engages the 4-groove bore and accelerates to 853 m/s (3455 J)."
+      },
+      "phase_4": {
+        "shortLabel": "Long-Stroke Unlock",
+        "title": "Phase 4 · Long-Stroke Unlock & Operating Impulse",
+        "description": "Once chamber pressure decays safely, long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt."
+      },
+      "phase_5": {
+        "shortLabel": "Extract & Eject",
+        "title": "Phase 5 · Spent Case Extraction & Ejection",
+        "description": "The extractor pulls the fired brass clear of the chamber and pivots it out the ejection port while the recoil spring compresses."
+      },
+      "phase_6": {
+        "shortLabel": "Feed & Lock",
+        "title": "Phase 6 · Next-Round Stripping & Breech Lockup",
+        "description": "Driven forward by the recoil spring, the breech strips the next round from the 100-round supply and locks solidly into battery."
+      },
+      "phase_7": {
+        "shortLabel": "Trigger Reset",
+        "title": "Phase 7 · Disconnector Handoff & Sear Reset",
+        "description": "Releasing the trigger hands control cleanly back to the primary sear, leaving the FN MAG / M240B staged for its 650–950 RPM (3-position gas-regulated cadence) cadence."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "FN MAG / M240B 通用机枪：1958 年机械传奇与工程剖析",
+      "deck": "比利时设计师欧内斯特·韦尔维耶打造的 FN MAG（美军编号 M240B、英军编号 L7A2）堪称集大成之作：它把勃朗宁 BAR 的倒置下摆刚性闭锁机构与德国 MG 42 的流畅双爪拨弹顶盖完美嫁接，在美军严苛测试中以平均无故障逾 26,000 发震撼业界。 本馆以 1:1 真实工程比例重现其 20 大核心构件与完整工作循环。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1954–1958",
+          "title": "时代召唤与研发立项：FN MAG / M240B 的诞生背景",
+          "paragraphs": [
+            "1958 年问世的 FN MAG / M240B 通用机枪 由比利时 / 美国比利时 FN Herstal / 美国 FN America主导研制，定位为经典的通用机枪。1958 年问世的 FN MAG 至今已装备全球 80 余国，美军在 1990 年代以 M240B 全面取代 M60 步兵通用机枪，同时也是 M1A2 艾布拉姆斯主战坦克的并列机枪。",
+            "比利时设计师欧内斯特·韦尔维耶打造的 FN MAG（美军编号 M240B、英军编号 L7A2）堪称集大成之作：它把勃朗宁 BAR 的倒置下摆刚性闭锁机构与德国 MG 42 的流畅双爪拨弹顶盖完美嫁接，在美军严苛测试中以平均无故障逾 26,000 发震撼业界。 整件装备总长 1,245 mm（含消焰器与折叠两脚架）、空重 12.29 kg，成为同期通用机枪领域最具辨识度的里程碑之一。"
+          ],
+          "audioScript": "第一幕，时代起源。1958 年，比利时 / 美国比利时 FN Herstal / 美国 FN America推出了划时代的FN MAG / M240B 通用机枪。1958 年问世的 FN MAG 至今已装备全球 80 余国，美军在 1990 年代以 M240B 全面取代 M60 步兵通用机枪，同时也是 M1A2 艾布拉姆斯主战坦克的并列机枪。 它的核心设计聚焦于「BAR 闭锁 + MG 42 供弹」混血经典，双机械优势叠加成就恐怖平均无故障寿命，奠定了其在通用机枪发展史中的经典地位。",
+          "audioUrl": "",
+          "focusPartId": "m240b_receiver",
+          "focusPartLabel": "主体机匣与闭锁承力框架"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1958",
+          "title": "核心机械构造与闭锁奥秘",
+          "paragraphs": [
+            "FN MAG / M240B 通用机枪 的机械灵魂在于其「下置长行程导气活塞 · BAR 系下摆闭锁杠杆 + MG 42 系凸轮弹链拨弹」结构体系。在发射工作循环中，长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁，将高压能量精确约束于承力框架之内。",
+            "制造工艺方面，关键承力件采用磷酸锰军规磷化钢精加工而成。3 档外置泄气式导气调节环可在 650–950 发/分之间随污垢与环境灵活调速，在严苛实战条件下依然保持顺畅节拍与长期尺寸稳定性。"
+          ],
+          "audioScript": "第二幕，核心机械原理。FN MAG / M240B 通用机枪 采用下置长行程导气活塞 · BAR 系下摆闭锁杠杆 + MG 42 系凸轮弹链拨弹。在每个击发周期中，长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。借助磷酸锰军规磷化钢工艺与高强度配合，实现了3 档外置泄气式导气调节环可在 650–950 发/分之间随污垢与环境灵活调速。",
+          "audioUrl": "",
+          "focusPartId": "m240b_bolt",
+          "focusPartLabel": "高强度闭锁枪机头与抽壳钩"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1958–1961",
+          "title": "弹道性能、内膛工艺与实战效能",
+          "paragraphs": [
+            "该平台配用 7.62×51mm NATO 弹药规格与 627 mm 快换镀铬重枪管（4 条右旋膛线 · 305 mm / 1:12 缠距），最高工作膛压约 415 MPa，可赋予弹头 853 m/s 的出膛初速与 3,455 J 动能，有效作用距离达 1100 米。",
+            "内膛技术特点方面，厚壁快换枪管与液压后坐缓冲器组合，1,100 米区域压制精度极高。同时，M240B 配备热护木、顶部皮卡汀尼导轨与枪托液压缓冲器，显著改善连发可控性，令其在 650–950 发/分（3 档导气阀可调射速） 的节奏下兼具精准控制与可靠输出。"
+          ],
+          "audioScript": "第三幕，弹道与实战表现。配备 627 毫米身管与 7.62×51mm NATO 口径，FN MAG / M240B 通用机枪 实现了每秒 853 米的初速与 1100 米有效射程。厚壁快换枪管与液压后坐缓冲器组合，1,100 米区域压制精度极高，展现了卓越的工程平衡。",
+          "audioUrl": "",
+          "focusPartId": "m240b_barrel",
+          "focusPartLabel": "627mm 精密内膛枪管总成"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1973–2026",
+          "title": "人机工效、供弹哲学与百年遗产",
+          "paragraphs": [
+            "围绕 100 发容量的弹链受弹盘与挂弹箱体与 49 mm 膛轴设计，FN MAG / M240B 通用机枪 将单发后坐冲量控制在 11 N·s 水平。铆接钢板重型机匣与左侧 5 秒快拆枪管锁扣专为主战坦克并列与步兵重压制而生。",
+            "如今在数字兵器库 3D 百年展厅（BAY-51）中，您可以随时通过三轴剖视、100% 爆炸视图与实时运动学滑块，零距离拆解这座跨越时代的机械工程杰作。"
+          ],
+          "audioScript": "第四幕，百年遗产。凭借 100 发容量的弹链受弹盘与挂弹箱体与出色的整体工效，铆接钢板重型机匣与左侧 5 秒快拆枪管锁扣专为主战坦克并列与步兵重压制而生。欢迎在 BAY-51 展位亲手切开剖面、逐件拆解，感受 FN MAG / M240B 通用机枪 的机械魅力。",
+          "audioUrl": "",
+          "focusPartId": "m240b_mag_body",
+          "focusPartLabel": "弹链受弹盘与挂弹箱体"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "核心动作与闭锁架构",
+          "tag": "BAY-51",
+          "summary": "下置长行程导气活塞 · BAR 系下摆闭锁杠杆 + MG 42 系凸轮弹链拨弹；「BAR 闭锁 + MG 42 供弹」混血经典，双机械优势叠加成就恐怖平均无故障寿命。",
+          "focusPartId": "m240b_bolt",
+          "focusPartLabel": "高强度闭锁枪机头与抽壳钩"
+        },
+        {
+          "id": "bt2",
+          "title": "内膛弹道与能量释放",
+          "tag": "853 m/s",
+          "summary": "627 mm 快换镀铬重枪管（4 条右旋膛线 · 305 mm / 1:12 缠距），厚壁快换枪管与液压后坐缓冲器组合，1,100 米区域压制精度极高。",
+          "focusPartId": "m240b_barrel",
+          "focusPartLabel": "627mm 精密内膛枪管总成"
+        },
+        {
+          "id": "bt3",
+          "title": "供弹与实战人机工效",
+          "tag": "100 rds",
+          "summary": "M240B 配备热护木、顶部皮卡汀尼导轨与枪托液压缓冲器，显著改善连发可控性；铆接钢板重型机匣与左侧 5 秒快拆枪管锁扣专为主战坦克并列与步兵重压制而生。",
+          "focusPartId": "m240b_mag_body",
+          "focusPartLabel": "弹链受弹盘与挂弹箱体"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1954",
+          "title": "战术指标与概念构型",
+          "detail": "比利时 / 美国提出新一代通用机枪战术指标，确立口径与机动平衡方向。"
+        },
+        {
+          "year": "1958",
+          "title": "FN MAG / M240B 正式定型投产",
+          "detail": "比利时 FN Herstal / 美国 FN America完成 FN MAG-58 / U.S. M240B 定型，采用下置长行程导气活塞 · BAR 系下摆闭锁杠杆 + MG 42 系凸轮弹链拨弹架构。"
+        },
+        {
+          "year": "1961",
+          "title": "实战部署与工艺演进",
+          "detail": "「BAR 闭锁 + MG 42 供弹」混血经典，双机械优势叠加成就恐怖平均无故障寿命，在全球多个战区与演训环境中验证了高可靠性。"
+        },
+        {
+          "year": "1973",
+          "title": "工程典范与历史传承",
+          "detail": "1958 年问世的 FN MAG 至今已装备全球 80 余国，美军在 1990 年代以 M240B 全面取代 M60 步兵通用机枪，同时也是 M1A2 艾布拉姆斯主战坦克的并列机枪。"
+        },
+        {
+          "year": "2026",
+          "title": "入藏数字兵器库 3D（BAY-51）",
+          "detail": "完整构建 1:1 参数化 20 零件三维装配模型，支持剖切、爆炸与运动学实时仿真。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "FN MAG / M240B: The 1958 Mechanical Legend",
+      "deck": "Ernest Vervier’s FN MAG (U.S. M240B / UK L7A2) fuses an inverted Browning BAR dropping locking lever with an MG 42-style twin-pawl belt feed—achieving over 26,000 mean rounds between stoppages in U.S. military trials. Preserved in 1:1 interactive 3D CAD scale across all 20 functional assemblies in BAY-51.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "Act I",
+          "eraTag": "1954–1958",
+          "title": "Origins & Operational Mandate of the FN MAG / M240B",
+          "paragraphs": [
+            "Introduced in 1958 by FN Herstal / FN America in Belgium / United States, the FN MAG / M240B emerged as a defining General-Purpose Machine Gun. Adopted by over 80 nations since 1958, the FN MAG replaced the M60 as the U.S. Army’s M240B infantry GPMG and serves coaxially aboard the M1A2 Abrams.",
+            "Ernest Vervier’s FN MAG (U.S. M240B / UK L7A2) fuses an inverted Browning BAR dropping locking lever with an MG 42-style twin-pawl belt feed—achieving over 26,000 mean rounds between stoppages in U.S. military trials. Measuring 1,245 mm (With Flash Hider & Folding Bipod) at an unloaded weight of 12.29 kg, it reshaped expectations across the Machine Gun class."
+          ],
+          "audioScript": "Act One: Historical Origins. In 1958, FN Herstal / FN America of Belgium / United States introduced the FN MAG / M240B. Adopted by over 80 nations since 1958, the FN MAG replaced the M60 as the U.S. Army’s M240B infantry GPMG and serves coaxially aboard the M1A2 Abrams. Anchored by its hallmark design trait — Fuses BAR-derived rigid locking with MG 42-derived smooth twin-pawl belt feeding — it quickly established an enduring engineering benchmark.",
+          "audioUrl": "",
+          "focusPartId": "m240b_receiver",
+          "focusPartLabel": "Primary Receiver & Lock Housing"
+        },
+        {
+          "id": "act2",
+          "actNumber": "Act II",
+          "eraTag": "1958",
+          "title": "Core Operating Architecture & Lockup Mechanics",
+          "paragraphs": [
+            "At the mechanical heart of the FN MAG / M240B sits its Under-Barrel Long-Stroke Gas Piston · BAR Dropping Locking Lever & MG 42 Belt Feed. Throughout every firing cycle, long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt, containing 415 MPa of operating pressure safely.",
+            "Constructed in manganese-phosphate Parkerized ordnance steel, the assembly achieves durable field tolerances. Notably, 3-position exhaust gas regulator tunes cyclic rate from 650 to 950 RPM under fouling, sustaining dependable operation under severe environmental stress."
+          ],
+          "audioScript": "Act Two: Core Mechanical Architecture. The FN MAG / M240B relies on Under-Barrel Long-Stroke Gas Piston · BAR Dropping Locking Lever & MG 42 Belt Feed. During each cycle, long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt. Machined from manganese-phosphate Parkerized ordnance steel, it delivers standout engineering reliability: 3-position exhaust gas regulator tunes cyclic rate from 650 to 950 RPM under fouling.",
+          "audioUrl": "",
+          "focusPartId": "m240b_bolt",
+          "focusPartLabel": "Hardened Locking Bolt & Extractor"
+        },
+        {
+          "id": "act3",
+          "actNumber": "Act III",
+          "eraTag": "1958–1961",
+          "title": "Ballistic Performance, Bore Craft & Range Reach",
+          "paragraphs": [
+            "Chambered for 7.62×51mm NATO with 627 mm Quick-Change Chrome-Lined Barrel (4-Groove RH · 1:12\" Twist), the FN MAG / M240B develops 853 m/s muzzle velocity and 3,455 J of kinetic energy for effective engagement out to 1100 meters.",
+            "Internally, Heavy quick-change barrel and hydraulic buffer deliver exceptionally steady 1,100 m suppression. Combined with its 650–950 RPM (3-position gas-regulated cadence) tempo, M240B adds a heat shield, top Picatinny rail, and hydraulic buttstock buffer, delivering disciplined accuracy across demanding field conditions."
+          ],
+          "audioScript": "Act Three: Ballistic Performance. Driving 7.62×51mm NATO through its 627 millimeter bore, the FN MAG / M240B achieves 853 meters per second and 1100 meters of effective reach. Heavy quick-change barrel and hydraulic buffer deliver exceptionally steady 1,100 m suppression.",
+          "audioUrl": "",
+          "focusPartId": "m240b_barrel",
+          "focusPartLabel": "627mm Precision Rifled Barrel"
+        },
+        {
+          "id": "act4",
+          "actNumber": "Act IV",
+          "eraTag": "1973–2026",
+          "title": "Feed Philosophy, Ergonomics & Centennial Legacy",
+          "paragraphs": [
+            "Fed by a 100-round ammunition belt feed tray & box with a 49 mm bore-axis height, the platform manages 11 N-s of recoil impulse cleanly. Heavy riveted steel receiver serves identically as an infantry GPMG and MBT coaxial gun.",
+            "Now archived in Digital Armory 3D Centennial Gallery (BAY-51), all 20 interactive assemblies can be sectioned live along three axes, exploded to 100%, and inspected part by part."
+          ],
+          "audioScript": "Act Four: Engineering Legacy. Pairing its 100-round ammunition belt feed tray & box with disciplined recoil geometry, Heavy riveted steel receiver serves identically as an infantry GPMG and MBT coaxial gun. Explore BAY-51 in live section cut and exploded disassembly to study every working link of the FN MAG / M240B.",
+          "audioUrl": "",
+          "focusPartId": "m240b_mag_body",
+          "focusPartLabel": "Ammunition Belt Feed Tray & Box"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Operating & Lockup Principle",
+          "tag": "BAY-51",
+          "summary": "Under-Barrel Long-Stroke Gas Piston · BAR Dropping Locking Lever & MG 42 Belt Feed — Fuses BAR-derived rigid locking with MG 42-derived smooth twin-pawl belt feeding.",
+          "focusPartId": "m240b_bolt",
+          "focusPartLabel": "Hardened Locking Bolt & Extractor"
+        },
+        {
+          "id": "bt2",
+          "title": "Bore & Ballistic Efficiency",
+          "tag": "853 m/s",
+          "summary": "627 mm Quick-Change Chrome-Lined Barrel (4-Groove RH · 1:12\" Twist); Heavy quick-change barrel and hydraulic buffer deliver exceptionally steady 1,100 m suppression.",
+          "focusPartId": "m240b_barrel",
+          "focusPartLabel": "627mm Precision Rifled Barrel"
+        },
+        {
+          "id": "bt3",
+          "title": "Feed & Ergonomic Mastery",
+          "tag": "100 rds",
+          "summary": "M240B adds a heat shield, top Picatinny rail, and hydraulic buttstock buffer; Heavy riveted steel receiver serves identically as an infantry GPMG and MBT coaxial gun.",
+          "focusPartId": "m240b_mag_body",
+          "focusPartLabel": "Ammunition Belt Feed Tray & Box"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1954",
+          "title": "Operational Requirement Defined",
+          "detail": "Belgium / United States ordnance planners established specifications for a new General-Purpose Machine Gun class."
+        },
+        {
+          "year": "1958",
+          "title": "FN MAG / M240B Official Introduction",
+          "detail": "FN Herstal / FN America finalized FN MAG-58 / U.S. M240B around Under-Barrel Long-Stroke Gas Piston · BAR Dropping Locking Lever & MG 42 Belt Feed."
+        },
+        {
+          "year": "1961",
+          "title": "Field Deployment & Service Validation",
+          "detail": "Fuses BAR-derived rigid locking with MG 42-derived smooth twin-pawl belt feeding, proving mechanical endurance across real-world operations."
+        },
+        {
+          "year": "1973",
+          "title": "Enduring Historical Influence",
+          "detail": "Adopted by over 80 nations since 1958, the FN MAG replaced the M60 as the U.S. Army’s M240B infantry GPMG and serves coaxially aboard the M1A2 Abrams."
+        },
+        {
+          "year": "2026",
+          "title": "Archived in Digital Armory 3D (BAY-51)",
+          "detail": "Modeled as a 1:1 interactive 20-component CAD exhibit with live cutaway, exploded disassembly, and kinematics."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "m240b_receiver": {
+      "partId": "m240b_receiver",
+      "bomCode": "U-01",
+      "calloutLabelEn": "Primary Receiver",
+      "zh": {
+        "roleTag": "核心机构基准与耐压承力",
+        "overview": "FN MAG / M240B 通用机枪（U-01）的主体机匣与闭锁承力框架，隶属 20 件套标准装配体系，负责核心机构基准与耐压承力。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1958年代比利时 FN Herstal / 美国 FN America军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：「BAR 闭锁 + MG 42 供弹」混血经典，双机械优势叠加成就恐怖平均无故障寿命。",
+        "audioScript": "U-01，主体机匣与闭锁承力框架。作为 FN MAG / M240B 通用机枪 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担核心机构基准与耐压承力职能。与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Core Structural Chassis",
+        "overview": "Primary Receiver & Lock Housing (U-01) of the FN MAG / M240B, serving as the dedicated core structural chassis node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to FN Herstal / FN America service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Fuses BAR-derived rigid locking with MG 42-derived smooth twin-pawl belt feeding.",
+        "audioScript": "U-01, Primary Receiver & Lock Housing. Crafted from manganese-phosphate Parkerized ordnance steel for the FN MAG / M240B, this component handles core structural chassis. Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "m240b_barrel": {
+      "partId": "m240b_barrel",
+      "bomCode": "U-02",
+      "calloutLabelEn": "627mm Precision Barrel",
+      "zh": {
+        "roleTag": "密闭高压燃气并赋予弹头自旋",
+        "overview": "FN MAG / M240B 通用机枪（U-02）的627mm 精密内膛枪管总成，隶属 20 件套标准装配体系，负责密闭高压燃气并赋予弹头自旋。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1958年代比利时 FN Herstal / 美国 FN America军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：3 档外置泄气式导气调节环可在 650–950 发/分之间随污垢与环境灵活调速。",
+        "audioScript": "U-02，627mm 精密内膛枪管总成。作为 FN MAG / M240B 通用机枪 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担密闭高压燃气并赋予弹头自旋职能。与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Pressure Vessel & Spin Axis",
+        "overview": "627mm Precision Rifled Barrel (U-02) of the FN MAG / M240B, serving as the dedicated pressure vessel & spin axis node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to FN Herstal / FN America service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 3-position exhaust gas regulator tunes cyclic rate from 650 to 950 RPM under fouling.",
+        "audioScript": "U-02, 627mm Precision Rifled Barrel. Crafted from manganese-phosphate Parkerized ordnance steel for the FN MAG / M240B, this component handles pressure vessel & spin axis. Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "m240b_muzzle": {
+      "partId": "m240b_muzzle",
+      "bomCode": "U-03",
+      "calloutLabelEn": "Muzzle Flash Hider",
+      "zh": {
+        "roleTag": "抑制膛口炽热焰辉",
+        "overview": "FN MAG / M240B 通用机枪（U-03）的开槽式膛口消焰装置，隶属 20 件套标准装配体系，负责抑制膛口炽热焰辉。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1958年代比利时 FN Herstal / 美国 FN America军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：M240B 配备热护木、顶部皮卡汀尼导轨与枪托液压缓冲器，显著改善连发可控性。",
+        "audioScript": "U-03，开槽式膛口消焰装置。作为 FN MAG / M240B 通用机枪 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担抑制膛口炽热焰辉职能。与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Muzzle Flash Suppression",
+        "overview": "Slotted Muzzle Flash Hider (U-03) of the FN MAG / M240B, serving as the dedicated muzzle flash suppression node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to FN Herstal / FN America service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: M240B adds a heat shield, top Picatinny rail, and hydraulic buttstock buffer.",
+        "audioScript": "U-03, Slotted Muzzle Flash Hider. Crafted from manganese-phosphate Parkerized ordnance steel for the FN MAG / M240B, this component handles muzzle flash suppression. Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "m240b_bolt_carrier": {
+      "partId": "m240b_bolt_carrier",
+      "bomCode": "U-04",
+      "calloutLabelEn": "Bolt Carrier Group",
+      "zh": {
+        "roleTag": "驱动解锁、后坐与复位循环",
+        "overview": "FN MAG / M240B 通用机枪（U-04）的枪机框与拉机操作传动组，隶属 20 件套标准装配体系，负责驱动解锁、后坐与复位循环。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1958年代比利时 FN Herstal / 美国 FN America军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "designHighlight": "工程亮点呼应整枪特征：铆接钢板重型机匣与左侧 5 秒快拆枪管锁扣专为主战坦克并列与步兵重压制而生。",
+        "audioScript": "U-04，枪机框与拉机操作传动组。作为 FN MAG / M240B 通用机枪 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担驱动解锁、后坐与复位循环职能。在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Primary Cycling Actuator",
+        "overview": "Bolt Carrier & Operating Group (U-04) of the FN MAG / M240B, serving as the dedicated primary cycling actuator node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to FN Herstal / FN America service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Heavy riveted steel receiver serves identically as an infantry GPMG and MBT coaxial gun.",
+        "audioScript": "U-04, Bolt Carrier & Operating Group. Crafted from manganese-phosphate Parkerized ordnance steel for the FN MAG / M240B, this component handles primary cycling actuator. Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "audioUrl": ""
+      }
+    },
+    "m240b_bolt": {
+      "partId": "m240b_bolt",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Locking Bolt Head",
+      "zh": {
+        "roleTag": "刚性闭锁膛压并可靠抽壳",
+        "overview": "FN MAG / M240B 通用机枪（U-05）的高强度闭锁枪机头与抽壳钩，隶属 20 件套标准装配体系，负责刚性闭锁膛压并可靠抽壳。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1958年代比利时 FN Herstal / 美国 FN America军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "designHighlight": "工程亮点呼应整枪特征：「BAR 闭锁 + MG 42 供弹」混血经典，双机械优势叠加成就恐怖平均无故障寿命。",
+        "audioScript": "U-05，高强度闭锁枪机头与抽壳钩。作为 FN MAG / M240B 通用机枪 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担刚性闭锁膛压并可靠抽壳职能。在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Breech Lock & Case Extraction",
+        "overview": "Hardened Locking Bolt & Extractor (U-05) of the FN MAG / M240B, serving as the dedicated breech lock & case extraction node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to FN Herstal / FN America service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Fuses BAR-derived rigid locking with MG 42-derived smooth twin-pawl belt feeding.",
+        "audioScript": "U-05, Hardened Locking Bolt & Extractor. Crafted from manganese-phosphate Parkerized ordnance steel for the FN MAG / M240B, this component handles breech lock & case extraction. Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "audioUrl": ""
+      }
+    },
+    "m240b_recoil_spring": {
+      "partId": "m240b_recoil_spring",
+      "bomCode": "U-06",
+      "calloutLabelEn": "Helical Recoil Spring",
+      "zh": {
+        "roleTag": "吸收后坐动能并驱动复进闭膛",
+        "overview": "FN MAG / M240B 通用机枪（U-06）的主复进螺旋弹簧总成，隶属 20 件套标准装配体系，负责吸收后坐动能并驱动复进闭膛。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1958年代比利时 FN Herstal / 美国 FN America军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 650–950 发/分（3 档导气阀可调射速） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：3 档外置泄气式导气调节环可在 650–950 发/分之间随污垢与环境灵活调速。",
+        "audioScript": "U-06，主复进螺旋弹簧总成。作为 FN MAG / M240B 通用机枪 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担吸收后坐动能并驱动复进闭膛职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 650–950 发/分（3 档导气阀可调射速） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Storage & Return Drive",
+        "overview": "Main Helical Recoil Spring (U-06) of the FN MAG / M240B, serving as the dedicated recoil storage & return drive node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to FN Herstal / FN America service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 650–950 RPM (3-position gas-regulated cadence) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 3-position exhaust gas regulator tunes cyclic rate from 650 to 950 RPM under fouling.",
+        "audioScript": "U-06, Main Helical Recoil Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the FN MAG / M240B, this component handles recoil storage & return drive. Stores and returns cyclic elastic energy via live coil compression to maintain 650–950 RPM (3-position gas-regulated cadence) timing.",
+        "audioUrl": ""
+      }
+    },
+    "m240b_handguard": {
+      "partId": "m240b_handguard",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Tactical Handguard",
+      "zh": {
+        "roleTag": "隔绝枪管高温并提供稳定握持",
+        "overview": "FN MAG / M240B 通用机枪（F-01）的散热隔热战术前护木，隶属 20 件套标准装配体系，负责隔绝枪管高温并提供稳定握持。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1958年代比利时 FN Herstal / 美国 FN America军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：M240B 配备热护木、顶部皮卡汀尼导轨与枪托液压缓冲器，显著改善连发可控性。",
+        "audioScript": "F-01，散热隔热战术前护木。作为 FN MAG / M240B 通用机枪 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担隔绝枪管高温并提供稳定握持职能。与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Thermal Shield & Support Hand",
+        "overview": "Ventilated Tactical Handguard (F-01) of the FN MAG / M240B, serving as the dedicated thermal shield & support hand node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to FN Herstal / FN America service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: M240B adds a heat shield, top Picatinny rail, and hydraulic buttstock buffer.",
+        "audioScript": "F-01, Ventilated Tactical Handguard. Crafted from manganese-phosphate Parkerized ordnance steel for the FN MAG / M240B, this component handles thermal shield & support hand. Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "m240b_stock": {
+      "partId": "m240b_stock",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Tactical Buttstock",
+      "zh": {
+        "roleTag": "直线传导后坐并支撑贴腮瞄准",
+        "overview": "FN MAG / M240B 通用机枪（F-02）的高刚度战术抵肩枪托，隶属 20 件套标准装配体系，负责直线传导后坐并支撑贴腮瞄准。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1958年代比利时 FN Herstal / 美国 FN America军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：铆接钢板重型机匣与左侧 5 秒快拆枪管锁扣专为主战坦克并列与步兵重压制而生。",
+        "audioScript": "F-02，高刚度战术抵肩枪托。作为 FN MAG / M240B 通用机枪 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担直线传导后坐并支撑贴腮瞄准职能。与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Transfer & Cheek Weld",
+        "overview": "Tactical Ergonomic Buttstock (F-02) of the FN MAG / M240B, serving as the dedicated recoil transfer & cheek weld node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to FN Herstal / FN America service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Heavy riveted steel receiver serves identically as an infantry GPMG and MBT coaxial gun.",
+        "audioScript": "F-02, Tactical Ergonomic Buttstock. Crafted from manganese-phosphate Parkerized ordnance steel for the FN MAG / M240B, this component handles recoil transfer & cheek weld. Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "m240b_grip": {
+      "partId": "m240b_grip",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Ergonomic Main Grip",
+      "zh": {
+        "roleTag": "锁定手腕角度优化扳机控枪",
+        "overview": "FN MAG / M240B 通用机枪（F-03）的人体工学防滑主握把，隶属 20 件套标准装配体系，负责锁定手腕角度优化扳机控枪。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1958年代比利时 FN Herstal / 美国 FN America军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：「BAR 闭锁 + MG 42 供弹」混血经典，双机械优势叠加成就恐怖平均无故障寿命。",
+        "audioScript": "F-03，人体工学防滑主握把。作为 FN MAG / M240B 通用机枪 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担锁定手腕角度优化扳机控枪职能。与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Wrist Alignment & Control",
+        "overview": "Ergonomic Textured Main Grip (F-03) of the FN MAG / M240B, serving as the dedicated wrist alignment & control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to FN Herstal / FN America service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Fuses BAR-derived rigid locking with MG 42-derived smooth twin-pawl belt feeding.",
+        "audioScript": "F-03, Ergonomic Textured Main Grip. Crafted from manganese-phosphate Parkerized ordnance steel for the FN MAG / M240B, this component handles wrist alignment & control. Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "m240b_optic": {
+      "partId": "m240b_optic",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Carry Handle & Sight",
+      "zh": {
+        "roleTag": "建立精准弹道瞄准基线",
+        "overview": "FN MAG / M240B 通用机枪（F-04）的一体提把与机械照门组件，隶属 20 件套标准装配体系，负责建立精准弹道瞄准基线。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1958年代比利时 FN Herstal / 美国 FN America军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：3 档外置泄气式导气调节环可在 650–950 发/分之间随污垢与环境灵活调速。",
+        "audioScript": "F-04，一体提把与机械照门组件。作为 FN MAG / M240B 通用机枪 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担建立精准弹道瞄准基线职能。与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ballistic Sightline Datum",
+        "overview": "Carry Handle & Aperture Sight (F-04) of the FN MAG / M240B, serving as the dedicated ballistic sightline datum node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to FN Herstal / FN America service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 3-position exhaust gas regulator tunes cyclic rate from 650 to 950 RPM under fouling.",
+        "audioScript": "F-04, Carry Handle & Aperture Sight. Crafted from manganese-phosphate Parkerized ordnance steel for the FN MAG / M240B, this component handles ballistic sightline datum. Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "m240b_gas_system": {
+      "partId": "m240b_gas_system",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Gas & Recoil System",
+      "zh": {
+        "roleTag": "定量调控自动循环能量平衡",
+        "overview": "FN MAG / M240B 通用机枪（F-05）的导气活塞/缓冲传动调节组件，隶属 20 件套标准装配体系，负责定量调控自动循环能量平衡。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1958年代比利时 FN Herstal / 美国 FN America军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "designHighlight": "工程亮点呼应整枪特征：M240B 配备热护木、顶部皮卡汀尼导轨与枪托液压缓冲器，显著改善连发可控性。",
+        "audioScript": "F-05，导气活塞/缓冲传动调节组件。作为 FN MAG / M240B 通用机枪 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担定量调控自动循环能量平衡职能。在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Operating Energy Regulation",
+        "overview": "Gas Drive / Recoil Buffer System (F-05) of the FN MAG / M240B, serving as the dedicated operating energy regulation node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to FN Herstal / FN America service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "designHighlight": "Integrated directly with the platform's defining strength: M240B adds a heat shield, top Picatinny rail, and hydraulic buttstock buffer.",
+        "audioScript": "F-05, Gas Drive / Recoil Buffer System. Crafted from manganese-phosphate Parkerized ordnance steel for the FN MAG / M240B, this component handles operating energy regulation. Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "audioUrl": ""
+      }
+    },
+    "m240b_mount_rail": {
+      "partId": "m240b_mount_rail",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Folding Bipod & Rail",
+      "zh": {
+        "roleTag": "提供稳固依托与模块化拓展",
+        "overview": "FN MAG / M240B 通用机枪（F-06）的折叠精密两脚架与战术导轨座，隶属 20 件套标准装配体系，负责提供稳固依托与模块化拓展。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1958年代比利时 FN Herstal / 美国 FN America军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：铆接钢板重型机匣与左侧 5 秒快拆枪管锁扣专为主战坦克并列与步兵重压制而生。",
+        "audioScript": "F-06，折叠精密两脚架与战术导轨座。作为 FN MAG / M240B 通用机枪 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担提供稳固依托与模块化拓展职能。与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Modular Support & Optics Base",
+        "overview": "Folding Bipod & Accessory Rail (F-06) of the FN MAG / M240B, serving as the dedicated modular support & optics base node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to FN Herstal / FN America service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Heavy riveted steel receiver serves identically as an infantry GPMG and MBT coaxial gun.",
+        "audioScript": "F-06, Folding Bipod & Accessory Rail. Crafted from manganese-phosphate Parkerized ordnance steel for the FN MAG / M240B, this component handles modular support & optics base. Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "m240b_trigger": {
+      "partId": "m240b_trigger",
+      "bomCode": "T-01",
+      "calloutLabelEn": "Trigger & Guard",
+      "zh": {
+        "roleTag": "清晰干脆释放阻铁启动击发",
+        "overview": "FN MAG / M240B 通用机枪（T-01）的精密机械扳机与护圈总成，隶属 20 件套标准装配体系，负责清晰干脆释放阻铁启动击发。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1958年代比利时 FN Herstal / 美国 FN America军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：「BAR 闭锁 + MG 42 供弹」混血经典，双机械优势叠加成就恐怖平均无故障寿命。",
+        "audioScript": "T-01，精密机械扳机与护圈总成。作为 FN MAG / M240B 通用机枪 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担清晰干脆释放阻铁启动击发职能。与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Crisp Firing Release Input",
+        "overview": "Precision Trigger & Guard Assembly (T-01) of the FN MAG / M240B, serving as the dedicated crisp firing release input node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to FN Herstal / FN America service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Fuses BAR-derived rigid locking with MG 42-derived smooth twin-pawl belt feeding.",
+        "audioScript": "T-01, Precision Trigger & Guard Assembly. Crafted from manganese-phosphate Parkerized ordnance steel for the FN MAG / M240B, this component handles crisp firing release input. Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "m240b_hammer": {
+      "partId": "m240b_hammer",
+      "bomCode": "T-02",
+      "calloutLabelEn": "Hammer / Striker Unit",
+      "zh": {
+        "roleTag": "高速释放储能精确击发底火/弓弦",
+        "overview": "FN MAG / M240B 通用机枪（T-02）的硬化击锤/平移击针击发组件，隶属 20 件套标准装配体系，负责高速释放储能精确击发底火/弓弦。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1958年代比利时 FN Herstal / 美国 FN America军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：3 档外置泄气式导气调节环可在 650–950 发/分之间随污垢与环境灵活调速。",
+        "audioScript": "T-02，硬化击锤/平移击针击发组件。作为 FN MAG / M240B 通用机枪 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担高速释放储能精确击发底火/弓弦职能。与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-Speed Ignition Impactor",
+        "overview": "Hardened Hammer / Striker Unit (T-02) of the FN MAG / M240B, serving as the dedicated high-speed ignition impactor node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to FN Herstal / FN America service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 3-position exhaust gas regulator tunes cyclic rate from 650 to 950 RPM under fouling.",
+        "audioScript": "T-02, Hardened Hammer / Striker Unit. Crafted from manganese-phosphate Parkerized ordnance steel for the FN MAG / M240B, this component handles high-speed ignition impactor. Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "m240b_hammer_spring": {
+      "partId": "m240b_hammer_spring",
+      "bomCode": "T-03",
+      "calloutLabelEn": "Hammer Drive Spring",
+      "zh": {
+        "roleTag": "为可靠击发提供充沛冲击能量",
+        "overview": "FN MAG / M240B 通用机枪（T-03）的主击发扭簧/螺旋打击簧，隶属 20 件套标准装配体系，负责为可靠击发提供充沛冲击能量。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1958年代比利时 FN Herstal / 美国 FN America军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 650–950 发/分（3 档导气阀可调射速） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：M240B 配备热护木、顶部皮卡汀尼导轨与枪托液压缓冲器，显著改善连发可控性。",
+        "audioScript": "T-03，主击发扭簧/螺旋打击簧。作为 FN MAG / M240B 通用机枪 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担为可靠击发提供充沛冲击能量职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 650–950 发/分（3 档导气阀可调射速） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ignition Drive Energy",
+        "overview": "Main Hammer / Striker Drive Spring (T-03) of the FN MAG / M240B, serving as the dedicated ignition drive energy node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to FN Herstal / FN America service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 650–950 RPM (3-position gas-regulated cadence) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: M240B adds a heat shield, top Picatinny rail, and hydraulic buttstock buffer.",
+        "audioScript": "T-03, Main Hammer / Striker Drive Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the FN MAG / M240B, this component handles ignition drive energy. Stores and returns cyclic elastic energy via live coil compression to maintain 650–950 RPM (3-position gas-regulated cadence) timing.",
+        "audioUrl": ""
+      }
+    },
+    "m240b_selector": {
+      "partId": "m240b_selector",
+      "bomCode": "T-04",
+      "calloutLabelEn": "Fire Selector & Safety",
+      "zh": {
+        "roleTag": "可靠锁止扳机阻铁并切换射态",
+        "overview": "FN MAG / M240B 通用机枪（T-04）的快慢机与机械保险杠杆，隶属 20 件套标准装配体系，负责可靠锁止扳机阻铁并切换射态。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1958年代比利时 FN Herstal / 美国 FN America军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：铆接钢板重型机匣与左侧 5 秒快拆枪管锁扣专为主战坦克并列与步兵重压制而生。",
+        "audioScript": "T-04，快慢机与机械保险杠杆。作为 FN MAG / M240B 通用机枪 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担可靠锁止扳机阻铁并切换射态职能。与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Safety Interlock & Mode Control",
+        "overview": "Fire Selector & Safety Lever (T-04) of the FN MAG / M240B, serving as the dedicated safety interlock & mode control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to FN Herstal / FN America service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Heavy riveted steel receiver serves identically as an infantry GPMG and MBT coaxial gun.",
+        "audioScript": "T-04, Fire Selector & Safety Lever. Crafted from manganese-phosphate Parkerized ordnance steel for the FN MAG / M240B, this component handles safety interlock & mode control. Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "m240b_mag_body": {
+      "partId": "m240b_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "Belt Feed Tray & Box",
+      "zh": {
+        "roleTag": "金属弹链大持续火力供弹",
+        "overview": "FN MAG / M240B 通用机枪（M-01）的弹链受弹盘与挂弹箱体，隶属 20 件套标准装配体系，负责金属弹链大持续火力供弹。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1958年代比利时 FN Herstal / 美国 FN America军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：「BAR 闭锁 + MG 42 供弹」混血经典，双机械优势叠加成就恐怖平均无故障寿命。",
+        "audioScript": "M-01，弹链受弹盘与挂弹箱体。作为 FN MAG / M240B 通用机枪 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担金属弹链大持续火力供弹职能。与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Continuous Belt Supply",
+        "overview": "Ammunition Belt Feed Tray & Box (M-01) of the FN MAG / M240B, serving as the dedicated continuous belt supply node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to FN Herstal / FN America service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Fuses BAR-derived rigid locking with MG 42-derived smooth twin-pawl belt feeding.",
+        "audioScript": "M-01, Ammunition Belt Feed Tray & Box. Crafted from manganese-phosphate Parkerized ordnance steel for the FN MAG / M240B, this component handles continuous belt supply. Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "m240b_follower": {
+      "partId": "m240b_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Belt Feed Pawls",
+      "zh": {
+        "roleTag": "两步拨弹精准送入进弹口",
+        "overview": "FN MAG / M240B 通用机枪（M-02）的拨弹滑板与单向止退棘爪，隶属 20 件套标准装配体系，负责两步拨弹精准送入进弹口。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1958年代比利时 FN Herstal / 美国 FN America军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：3 档外置泄气式导气调节环可在 650–950 发/分之间随污垢与环境灵活调速。",
+        "audioScript": "M-02，拨弹滑板与单向止退棘爪。作为 FN MAG / M240B 通用机枪 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担两步拨弹精准送入进弹口职能。与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Two-Stage Belt Indexing",
+        "overview": "Belt Feed Pawls & Cam Slide (M-02) of the FN MAG / M240B, serving as the dedicated two-stage belt indexing node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to FN Herstal / FN America service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: 3-position exhaust gas regulator tunes cyclic rate from 650 to 950 RPM under fouling.",
+        "audioScript": "M-02, Belt Feed Pawls & Cam Slide. Crafted from manganese-phosphate Parkerized ordnance steel for the FN MAG / M240B, this component handles two-stage belt indexing. Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "m240b_mag_spring": {
+      "partId": "m240b_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Feed Pawl Spring",
+      "zh": {
+        "roleTag": "防止大仰角射击弹链滑脱",
+        "overview": "FN MAG / M240B 通用机枪（M-03）的拨弹棘爪压紧扭簧，隶属 20 件套标准装配体系，负责防止大仰角射击弹链滑脱。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1958年代比利时 FN Herstal / 美国 FN America军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 650–950 发/分（3 档导气阀可调射速） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：M240B 配备热护木、顶部皮卡汀尼导轨与枪托液压缓冲器，显著改善连发可控性。",
+        "audioScript": "M-03，拨弹棘爪压紧扭簧。作为 FN MAG / M240B 通用机枪 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担防止大仰角射击弹链滑脱职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 650–950 发/分（3 档导气阀可调射速） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Anti-Slip Belt Retention",
+        "overview": "Feed Pawl Tension Spring (M-03) of the FN MAG / M240B, serving as the dedicated anti-slip belt retention node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to FN Herstal / FN America service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 650–950 RPM (3-position gas-regulated cadence) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: M240B adds a heat shield, top Picatinny rail, and hydraulic buttstock buffer.",
+        "audioScript": "M-03, Feed Pawl Tension Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the FN MAG / M240B, this component handles anti-slip belt retention. Stores and returns cyclic elastic energy via live coil compression to maintain 650–950 RPM (3-position gas-regulated cadence) timing.",
+        "audioUrl": ""
+      }
+    },
+    "m240b_mag_base": {
+      "partId": "m240b_mag_base",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Feed Tray Base Plate",
+      "zh": {
+        "roleTag": "弹链通路支撑与排壳导向",
+        "overview": "FN MAG / M240B 通用机枪（M-04）的受弹机盖卡扣与防尘护板，隶属 20 件套标准装配体系，负责弹链通路支撑与排壳导向。",
+        "craftAndMaterial": "采用磷酸锰军规磷化钢制造，表面按1958年代比利时 FN Herstal / 美国 FN America军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：铆接钢板重型机匣与左侧 5 秒快拆枪管锁扣专为主战坦克并列与步兵重压制而生。",
+        "audioScript": "M-04，受弹机盖卡扣与防尘护板。作为 FN MAG / M240B 通用机枪 的关键构件，它采用磷酸锰军规磷化钢制造，主要承担弹链通路支撑与排壳导向职能。与相邻模块保持精密基准配合，协同支撑 7.62×51mm NATO 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Feed Path Support",
+        "overview": "Feed Cover Latch & Chute Plate (M-04) of the FN MAG / M240B, serving as the dedicated feed path support node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from manganese-phosphate Parkerized ordnance steel to FN Herstal / FN America service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Heavy riveted steel receiver serves identically as an infantry GPMG and MBT coaxial gun.",
+        "audioScript": "M-04, Feed Cover Latch & Chute Plate. Crafted from manganese-phosphate Parkerized ordnance steel for the FN MAG / M240B, this component handles feed path support. Maintains datum alignment with adjacent FN MAG / M240B assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    }
+  }
+}

@@ -1,0 +1,786 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "bofors40",
+  "generatedAt": "2026-11-25T00:00:00.000Z",
+  "generatorModels": {
+    "text": "centennial-blueprint-v1",
+    "storyTts": "web-speech-api",
+    "partTts": "web-speech-api"
+  },
+  "uiMetaEn": {
+    "name": "Bofors 40mm L/60 Autocannon",
+    "subtitle": "Long-Recoil Vertical Sliding-Wedge AA Autocannon with Continuous 4-Round Clips",
+    "originCountry": "Sweden",
+    "weaponType": "40mm Automatic Anti-Aircraft Gun",
+    "categoryLabel": "Aviation & Heavy Ordnance",
+    "actionMechanism": "Long-Recoil Hydro-Spring Autocannon · Vertical Sliding-Wedge Breech · 4-Round Top Clips",
+    "statusLabel": "Vault Ready · Interactive 3D",
+    "description": "Arguably the finest medium anti-aircraft gun of the 20th century, the Swedish Bofors 40mm L/60 harnesses full barrel recoil and hydro-spring counter-recoil to cycle its vertical sliding-wedge breech while loaders drop 4-round clips continuously into the top hopper at 120 RPM.",
+    "highlights": [
+      "Exposed concentric recuperator spring sleeve and signature flared flash cone",
+      "Top vertical feed hopper accepts 4-round clips continuously without halting fire",
+      "Counter-recoil ramming and vertical sliding-wedge lock enable 120 RPM sustained fire",
+      "Quick-change barrel collar enables rapid hot-tube swaps during sustained air defense"
+    ],
+    "workbenchTitle": "Bofors 40mm L/60 Autocannon 3D Mechanical Teardown & Kinematics",
+    "workbenchSubtitle": "4 Assemblies · 20 Core Components · Long-Recoil Hydro-Spring Autocannon · Vertical Sliding-Wedge Breech · 4-Round Top Clips",
+    "cutawayLabel": "Breech & Recoil Cradle Cutaway",
+    "cutawayTitle": "Engage live longitudinal cutaway on Bofors 40mm L/60 Autocannon to inspect internal locking and feed geometry",
+    "searchPlaceholder": "Search part name or BOM code (e.g., Barrel, Bolt, U-01, M-01)...",
+    "firingMilestoneLabel": "Recoil Wedge Cycle",
+    "rateOfFire": "120 RPM (continuous clip-fed)",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0%",
+        "desc": "Bofors 40mm L/60 Autocannon (1934) in complete operational battery with all 20 assemblies seated in 1:1 alignment."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Primary operator maintenance stage: clear ammunition supply and separate upper operating group for routine inspection."
+      },
+      "sub_assembly": {
+        "label": "Sub-Assembly",
+        "subLabel": "65%",
+        "desc": "Intermediate armorer teardown exposing locking interfaces, fire-control linkage, and recoil energy storage springs."
+      },
+      "full_exploded": {
+        "label": "Full Exploded View",
+        "subLabel": "100%",
+        "desc": "Complete 20-component isometric CAD explosion displaying every functional group across 4,100 mm (Mounted Length)."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "FCS Fire Solenoid",
+        "title": "Phase 1 · Bofors 40mm Firing Solenoid & Primer Ignition",
+        "description": "Closing the crew firing circuit energizes the breech firing pin, igniting the primary propellant charge inside the sealed 40×311mmR Bofors HE-T / AP-T chamber."
+      },
+      "phase_2": {
+        "shortLabel": "Peak Pressure",
+        "title": "Phase 2 · 310 MPa Chamber Deflagration",
+        "description": "Rapid propellant burn drives chamber pressure to 310 MPa against the heavy locked breechblock while accelerating the heavy projectile."
+      },
+      "phase_3": {
+        "shortLabel": "In-Bore Travel",
+        "title": "Phase 3 · 2250 mm Ordnance Acceleration",
+        "description": "Expanding gases accelerate the 40×311mmR Bofors HE-T / AP-T round along the 2250 mm barrel up to 881 m/s (349,000 J)."
+      },
+      "phase_4": {
+        "shortLabel": "Muzzle Exit",
+        "title": "Phase 4 · Bore Clearance & Muzzle Blast",
+        "description": "The projectile clears the muzzle crown cleanly for engagements out to 4800 m while bore gases evacuate safely away from the crew."
+      },
+      "phase_5": {
+        "shortLabel": "Recoil Stroke",
+        "title": "Phase 5 · Hydropneumatic Recoil Absorption",
+        "description": "Recoil cylinders absorb 1120 N-s of impulse smoothly across the cradle while transferring residual load into the chassis."
+      },
+      "phase_6": {
+        "shortLabel": "Breech Ejection",
+        "title": "Phase 6 · Breech Opening & Stub Extraction",
+        "description": "During battery runout, long-recoil barrel runout cycles the vertical sliding breech and feeds continuous 4-round top clips, ejecting the spent base stub cleanly into the deflector bin."
+      },
+      "phase_7": {
+        "shortLabel": "Reload & Ready",
+        "title": "Phase 7 · Munition Ramming & Battery Lock",
+        "description": "The next 40×311mmR Bofors HE-T / AP-T round seats into the chamber and locks the breechblock back into firing readiness."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "瑞典博福斯 40mm L/60 自动高射炮：1934 年机械传奇与工程剖析",
+      "deck": "瑞典博福斯 40mm L/60 是二十世纪最伟大的中口径防空机炮：身管后坐与复进全过程驱动垂直立楔炮闩开闭、抛壳与自动推弹，装填手只需源源不断从顶部漏斗插入 4 发桥夹即可保持每分钟 120 发持续防空火网。 本馆以 1:1 真实工程比例重现其 20 大核心构件与完整工作循环。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1930–1934",
+          "title": "时代召唤与研发立项：Bofors 40mm 的诞生背景",
+          "paragraphs": [
+            "1934 年问世的 瑞典博福斯 40mm L/60 自动高射炮 由瑞典瑞典博福斯兵工厂（AB Bofors）主导研制，定位为经典的40mm 自动高射机炮。二战期间同盟国与轴心国双方均广泛列装博福斯 40mm 高炮，美军仅在战舰与陆军就装备了逾 39,000 门，其后继型号至今仍在 AC-130 炮艇机与现代步战车上服役。",
+            "瑞典博福斯 40mm L/60 是二十世纪最伟大的中口径防空机炮：身管后坐与复进全过程驱动垂直立楔炮闩开闭、抛壳与自动推弹，装填手只需源源不断从顶部漏斗插入 4 发桥夹即可保持每分钟 120 发持续防空火网。 整件装备总长 4,100 mm（炮身与炮架总长）、空重 1980 kg，成为同期航空重武领域最具辨识度的里程碑之一。"
+          ],
+          "audioScript": "第一幕，时代起源。1934 年，瑞典瑞典博福斯兵工厂（AB Bofors）推出了划时代的瑞典博福斯 40mm L/60 自动高射炮。二战期间同盟国与轴心国双方均广泛列装博福斯 40mm 高炮，美军仅在战舰与陆军就装备了逾 39,000 门，其后继型号至今仍在 AC-130 炮艇机与现代步战车上服役。 它的核心设计聚焦于外露式同轴大型复进簧套筒与标志性锥形喇叭膛口消焰器，奠定了其在航空重武发展史中的经典地位。",
+          "audioUrl": "",
+          "focusPartId": "bofors40_receiver",
+          "focusPartLabel": "炮尾摇架与耳轴承力机匣"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1934",
+          "title": "核心机械构造与闭锁奥秘",
+          "paragraphs": [
+            "瑞典博福斯 40mm L/60 自动高射炮 的机械灵魂在于其「管退式长后坐自动机 · 垂直立楔炮闩 · 顶部 4 发桥夹连续供弹」结构体系。在发射工作循环中，长后坐炮管复进过程中自动驱动立楔炮闩并由顶部弹夹连续重力供弹，将高压能量精确约束于承力框架之内。",
+            "制造工艺方面，关键承力件采用橄榄绿军规防腐涂层钢与增强聚合物精加工而成。顶部垂直重力供弹漏斗支持 4 发桥夹不停火无缝续弹，在严苛实战条件下依然保持顺畅节拍与长期尺寸稳定性。"
+          ],
+          "audioScript": "第二幕，核心机械原理。瑞典博福斯 40mm L/60 自动高射炮 采用管退式长后坐自动机 · 垂直立楔炮闩 · 顶部 4 发桥夹连续供弹。在每个击发周期中，长后坐炮管复进过程中自动驱动立楔炮闩并由顶部弹夹连续重力供弹。借助橄榄绿军规防腐涂层钢与增强聚合物工艺与高强度配合，实现了顶部垂直重力供弹漏斗支持 4 发桥夹不停火无缝续弹。",
+          "audioUrl": "",
+          "focusPartId": "bofors40_bolt",
+          "focusPartLabel": "重型立楔/螺式主炮炮闩"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1934–1937",
+          "title": "弹道性能、内膛工艺与实战效能",
+          "paragraphs": [
+            "该平台配用 40×311mmR Bofors HE-T / AP-T 弹药规格与 2,250 mm（名义 L/60 · 16 条渐速右旋膛线 · 喇叭消焰器），最高工作膛压约 310 MPa，可赋予弹头 881 m/s 的出膛初速与 349,000 J 动能，有效作用距离达 4800 米。",
+            "内膛技术特点方面，16 条右旋渐速膛线快换身管，配备标志性锥形喇叭膛口消焰器与螺旋复进簧。同时，复进末端自动压弹入膛并由机械杠杆联动击发，结构精密耐用，令其在 120 发/分（不间断续夹连射） 的节奏下兼具精准控制与可靠输出。"
+          ],
+          "audioScript": "第三幕，弹道与实战表现。配备 2250 毫米身管与 40×311mmR Bofors HE-T / AP-T 口径，瑞典博福斯 40mm L/60 自动高射炮 实现了每秒 881 米的初速与 4800 米有效射程。16 条右旋渐速膛线快换身管，配备标志性锥形喇叭膛口消焰器与螺旋复进簧，展现了卓越的工程平衡。",
+          "audioUrl": "",
+          "focusPartId": "bofors40_barrel",
+          "focusPartLabel": "2250mm 精密内膛枪管总成"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1949–2026",
+          "title": "人机工效、供弹哲学与百年遗产",
+          "paragraphs": [
+            "围绕 4 发容量的顶部 4 发漏夹重力供弹斗与 1250 mm 膛轴设计，瑞典博福斯 40mm L/60 自动高射炮 将单发后坐冲量控制在 1120 N·s 水平。快换身管闭锁套环可在激烈防空作战中 30 秒完成热管更换。",
+            "如今在数字兵器库 3D 百年展厅（BAY-99）中，您可以随时通过三轴剖视、100% 爆炸视图与实时运动学滑块，零距离拆解这座跨越时代的机械工程杰作。"
+          ],
+          "audioScript": "第四幕，百年遗产。凭借 4 发容量的顶部 4 发漏夹重力供弹斗与出色的整体工效，快换身管闭锁套环可在激烈防空作战中 30 秒完成热管更换。欢迎在 BAY-99 展位亲手切开剖面、逐件拆解，感受 瑞典博福斯 40mm L/60 自动高射炮 的机械魅力。",
+          "audioUrl": "",
+          "focusPartId": "bofors40_mag_body",
+          "focusPartLabel": "顶部 4 发漏夹重力供弹斗"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "核心动作与闭锁架构",
+          "tag": "BAY-99",
+          "summary": "管退式长后坐自动机 · 垂直立楔炮闩 · 顶部 4 发桥夹连续供弹；外露式同轴大型复进簧套筒与标志性锥形喇叭膛口消焰器。",
+          "focusPartId": "bofors40_bolt",
+          "focusPartLabel": "重型立楔/螺式主炮炮闩"
+        },
+        {
+          "id": "bt2",
+          "title": "内膛弹道与能量释放",
+          "tag": "881 m/s",
+          "summary": "2,250 mm（名义 L/60 · 16 条渐速右旋膛线 · 喇叭消焰器），16 条右旋渐速膛线快换身管，配备标志性锥形喇叭膛口消焰器与螺旋复进簧。",
+          "focusPartId": "bofors40_barrel",
+          "focusPartLabel": "2250mm 精密内膛枪管总成"
+        },
+        {
+          "id": "bt3",
+          "title": "供弹与实战人机工效",
+          "tag": "4 rds",
+          "summary": "复进末端自动压弹入膛并由机械杠杆联动击发，结构精密耐用；快换身管闭锁套环可在激烈防空作战中 30 秒完成热管更换。",
+          "focusPartId": "bofors40_mag_body",
+          "focusPartLabel": "顶部 4 发漏夹重力供弹斗"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1930",
+          "title": "战术指标与概念构型",
+          "detail": "瑞典提出新一代40mm 自动高射机炮战术指标，确立口径与机动平衡方向。"
+        },
+        {
+          "year": "1934",
+          "title": "Bofors 40mm 正式定型投产",
+          "detail": "瑞典博福斯兵工厂（AB Bofors）完成 BOFORS 40MM L/60 M1936 定型，采用管退式长后坐自动机 · 垂直立楔炮闩 · 顶部 4 发桥夹连续供弹架构。"
+        },
+        {
+          "year": "1937",
+          "title": "实战部署与工艺演进",
+          "detail": "外露式同轴大型复进簧套筒与标志性锥形喇叭膛口消焰器，在全球多个战区与演训环境中验证了高可靠性。"
+        },
+        {
+          "year": "1949",
+          "title": "工程典范与历史传承",
+          "detail": "二战期间同盟国与轴心国双方均广泛列装博福斯 40mm 高炮，美军仅在战舰与陆军就装备了逾 39,000 门，其后继型号至今仍在 AC-130 炮艇机与现代步战车上服役。"
+        },
+        {
+          "year": "2026",
+          "title": "入藏数字兵器库 3D（BAY-99）",
+          "detail": "完整构建 1:1 参数化 20 零件三维装配模型，支持剖切、爆炸与运动学实时仿真。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Bofors 40mm L/60 Autocannon: The 1934 Mechanical Legend",
+      "deck": "Arguably the finest medium anti-aircraft gun of the 20th century, the Swedish Bofors 40mm L/60 harnesses full barrel recoil and hydro-spring counter-recoil to cycle its vertical sliding-wedge breech while loaders drop 4-round clips continuously into the top hopper at 120 RPM. Preserved in 1:1 interactive 3D CAD scale across all 20 functional assemblies in BAY-99.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "Act I",
+          "eraTag": "1930–1934",
+          "title": "Origins & Operational Mandate of the Bofors 40mm",
+          "paragraphs": [
+            "Introduced in 1934 by AB Bofors in Sweden, the Bofors 40mm L/60 Autocannon emerged as a defining 40mm Automatic Anti-Aircraft Gun. Adopted by both Allied and Axis forces in WWII—with over 39,000 built for US forces alone—the Bofors 40mm lineage continues to serve today aboard AC-130 gunships and modern IFVs.",
+            "Arguably the finest medium anti-aircraft gun of the 20th century, the Swedish Bofors 40mm L/60 harnesses full barrel recoil and hydro-spring counter-recoil to cycle its vertical sliding-wedge breech while loaders drop 4-round clips continuously into the top hopper at 120 RPM. Measuring 4,100 mm (Mounted Length) at an unloaded weight of 1980 kg, it reshaped expectations across the Aviation & Heavy Ordnance class."
+          ],
+          "audioScript": "Act One: Historical Origins. In 1934, AB Bofors of Sweden introduced the Bofors 40mm L/60 Autocannon. Adopted by both Allied and Axis forces in WWII—with over 39,000 built for US forces alone—the Bofors 40mm lineage continues to serve today aboard AC-130 gunships and modern IFVs. Anchored by its hallmark design trait — Exposed concentric recuperator spring sleeve and signature flared flash cone — it quickly established an enduring engineering benchmark.",
+          "audioUrl": "",
+          "focusPartId": "bofors40_receiver",
+          "focusPartLabel": "Ordnance Cradle & Trunnion Ring"
+        },
+        {
+          "id": "act2",
+          "actNumber": "Act II",
+          "eraTag": "1934",
+          "title": "Core Operating Architecture & Lockup Mechanics",
+          "paragraphs": [
+            "At the mechanical heart of the Bofors 40mm L/60 Autocannon sits its Long-Recoil Hydro-Spring Autocannon · Vertical Sliding-Wedge Breech · 4-Round Top Clips. Throughout every firing cycle, long-recoil barrel runout cycles the vertical sliding breech and feeds continuous 4-round top clips, containing 310 MPa of operating pressure safely.",
+            "Constructed in OD-green protective-coated steel and reinforced polymer, the assembly achieves durable field tolerances. Notably, Top vertical feed hopper accepts 4-round clips continuously without halting fire, sustaining dependable operation under severe environmental stress."
+          ],
+          "audioScript": "Act Two: Core Mechanical Architecture. The Bofors 40mm L/60 Autocannon relies on Long-Recoil Hydro-Spring Autocannon · Vertical Sliding-Wedge Breech · 4-Round Top Clips. During each cycle, long-recoil barrel runout cycles the vertical sliding breech and feeds continuous 4-round top clips. Machined from OD-green protective-coated steel and reinforced polymer, it delivers standout engineering reliability: Top vertical feed hopper accepts 4-round clips continuously without halting fire.",
+          "audioUrl": "",
+          "focusPartId": "bofors40_bolt",
+          "focusPartLabel": "Heavy Sliding-Wedge / Screw Breech"
+        },
+        {
+          "id": "act3",
+          "actNumber": "Act III",
+          "eraTag": "1934–1937",
+          "title": "Ballistic Performance, Bore Craft & Range Reach",
+          "paragraphs": [
+            "Chambered for 40×311mmR Bofors HE-T / AP-T with 2,250 mm (Nominal L/60 · 16-Groove RH · Flared Flash Cone), the Bofors 40mm L/60 Autocannon develops 881 m/s muzzle velocity and 349,000 J of kinetic energy for effective engagement out to 4800 meters.",
+            "Internally, Quick-change 16-groove RH rifled barrel with iconic flared flash cone and concentric recuperator spring. Combined with its 120 RPM (continuous clip-fed) tempo, Counter-recoil ramming and vertical sliding-wedge lock enable 120 RPM sustained fire, delivering disciplined accuracy across demanding field conditions."
+          ],
+          "audioScript": "Act Three: Ballistic Performance. Driving 40×311mmR Bofors HE-T / AP-T through its 2250 millimeter bore, the Bofors 40mm L/60 Autocannon achieves 881 meters per second and 4800 meters of effective reach. Quick-change 16-groove RH rifled barrel with iconic flared flash cone and concentric recuperator spring.",
+          "audioUrl": "",
+          "focusPartId": "bofors40_barrel",
+          "focusPartLabel": "2250mm Precision Rifled Barrel"
+        },
+        {
+          "id": "act4",
+          "actNumber": "Act IV",
+          "eraTag": "1949–2026",
+          "title": "Feed Philosophy, Ergonomics & Centennial Legacy",
+          "paragraphs": [
+            "Fed by a 4-round top 4-round stripper feed hopper with a 1250 mm bore-axis height, the platform manages 1120 N-s of recoil impulse cleanly. Quick-change barrel collar enables rapid hot-tube swaps during sustained air defense.",
+            "Now archived in Digital Armory 3D Centennial Gallery (BAY-99), all 20 interactive assemblies can be sectioned live along three axes, exploded to 100%, and inspected part by part."
+          ],
+          "audioScript": "Act Four: Engineering Legacy. Pairing its 4-round top 4-round stripper feed hopper with disciplined recoil geometry, Quick-change barrel collar enables rapid hot-tube swaps during sustained air defense. Explore BAY-99 in live section cut and exploded disassembly to study every working link of the Bofors 40mm L/60 Autocannon.",
+          "audioUrl": "",
+          "focusPartId": "bofors40_mag_body",
+          "focusPartLabel": "Top 4-Round Stripper Feed Hopper"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Operating & Lockup Principle",
+          "tag": "BAY-99",
+          "summary": "Long-Recoil Hydro-Spring Autocannon · Vertical Sliding-Wedge Breech · 4-Round Top Clips — Exposed concentric recuperator spring sleeve and signature flared flash cone.",
+          "focusPartId": "bofors40_bolt",
+          "focusPartLabel": "Heavy Sliding-Wedge / Screw Breech"
+        },
+        {
+          "id": "bt2",
+          "title": "Bore & Ballistic Efficiency",
+          "tag": "881 m/s",
+          "summary": "2,250 mm (Nominal L/60 · 16-Groove RH · Flared Flash Cone); Quick-change 16-groove RH rifled barrel with iconic flared flash cone and concentric recuperator spring.",
+          "focusPartId": "bofors40_barrel",
+          "focusPartLabel": "2250mm Precision Rifled Barrel"
+        },
+        {
+          "id": "bt3",
+          "title": "Feed & Ergonomic Mastery",
+          "tag": "4 rds",
+          "summary": "Counter-recoil ramming and vertical sliding-wedge lock enable 120 RPM sustained fire; Quick-change barrel collar enables rapid hot-tube swaps during sustained air defense.",
+          "focusPartId": "bofors40_mag_body",
+          "focusPartLabel": "Top 4-Round Stripper Feed Hopper"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1930",
+          "title": "Operational Requirement Defined",
+          "detail": "Sweden ordnance planners established specifications for a new 40mm Automatic Anti-Aircraft Gun class."
+        },
+        {
+          "year": "1934",
+          "title": "Bofors 40mm Official Introduction",
+          "detail": "AB Bofors finalized BOFORS 40MM L/60 M1936 around Long-Recoil Hydro-Spring Autocannon · Vertical Sliding-Wedge Breech · 4-Round Top Clips."
+        },
+        {
+          "year": "1937",
+          "title": "Field Deployment & Service Validation",
+          "detail": "Exposed concentric recuperator spring sleeve and signature flared flash cone, proving mechanical endurance across real-world operations."
+        },
+        {
+          "year": "1949",
+          "title": "Enduring Historical Influence",
+          "detail": "Adopted by both Allied and Axis forces in WWII—with over 39,000 built for US forces alone—the Bofors 40mm lineage continues to serve today aboard AC-130 gunships and modern IFVs."
+        },
+        {
+          "year": "2026",
+          "title": "Archived in Digital Armory 3D (BAY-99)",
+          "detail": "Modeled as a 1:1 interactive 20-component CAD exhibit with live cutaway, exploded disassembly, and kinematics."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "bofors40_receiver": {
+      "partId": "bofors40_receiver",
+      "bomCode": "U-01",
+      "calloutLabelEn": "Cradle & Trunnion Ring",
+      "zh": {
+        "roleTag": "大口径火炮俯仰后坐导轨",
+        "overview": "瑞典博福斯 40mm L/60 自动高射炮（U-01）的炮尾摇架与耳轴承力机匣，隶属 20 件套标准装配体系，负责大口径火炮俯仰后坐导轨。",
+        "craftAndMaterial": "采用橄榄绿军规防腐涂层钢与增强聚合物制造，表面按1934年代瑞典博福斯兵工厂（AB Bofors）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：外露式同轴大型复进簧套筒与标志性锥形喇叭膛口消焰器。",
+        "audioScript": "U-01，炮尾摇架与耳轴承力机匣。作为 瑞典博福斯 40mm L/60 自动高射炮 的关键构件，它采用橄榄绿军规防腐涂层钢与增强聚合物制造，主要承担大口径火炮俯仰后坐导轨职能。与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Elevation & Recoil Cradle",
+        "overview": "Ordnance Cradle & Trunnion Ring (U-01) of the Bofors 40mm L/60 Autocannon, serving as the dedicated elevation & recoil cradle node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from OD-green protective-coated steel and reinforced polymer to AB Bofors service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Exposed concentric recuperator spring sleeve and signature flared flash cone.",
+        "audioScript": "U-01, Ordnance Cradle & Trunnion Ring. Crafted from OD-green protective-coated steel and reinforced polymer for the Bofors 40mm L/60 Autocannon, this component handles elevation & recoil cradle. Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "bofors40_barrel": {
+      "partId": "bofors40_barrel",
+      "bomCode": "U-02",
+      "calloutLabelEn": "2250mm Precision Barrel",
+      "zh": {
+        "roleTag": "密闭高压燃气并赋予弹头自旋",
+        "overview": "瑞典博福斯 40mm L/60 自动高射炮（U-02）的2250mm 精密内膛枪管总成，隶属 20 件套标准装配体系，负责密闭高压燃气并赋予弹头自旋。",
+        "craftAndMaterial": "采用橄榄绿军规防腐涂层钢与增强聚合物制造，表面按1934年代瑞典博福斯兵工厂（AB Bofors）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：顶部垂直重力供弹漏斗支持 4 发桥夹不停火无缝续弹。",
+        "audioScript": "U-02，2250mm 精密内膛枪管总成。作为 瑞典博福斯 40mm L/60 自动高射炮 的关键构件，它采用橄榄绿军规防腐涂层钢与增强聚合物制造，主要承担密闭高压燃气并赋予弹头自旋职能。与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Pressure Vessel & Spin Axis",
+        "overview": "2250mm Precision Rifled Barrel (U-02) of the Bofors 40mm L/60 Autocannon, serving as the dedicated pressure vessel & spin axis node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from OD-green protective-coated steel and reinforced polymer to AB Bofors service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Top vertical feed hopper accepts 4-round clips continuously without halting fire.",
+        "audioScript": "U-02, 2250mm Precision Rifled Barrel. Crafted from OD-green protective-coated steel and reinforced polymer for the Bofors 40mm L/60 Autocannon, this component handles pressure vessel & spin axis. Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "bofors40_muzzle": {
+      "partId": "bofors40_muzzle",
+      "bomCode": "U-03",
+      "calloutLabelEn": "Heavy Muzzle Brake",
+      "zh": {
+        "roleTag": "巨额后坐能量泄压",
+        "overview": "瑞典博福斯 40mm L/60 自动高射炮（U-03）的重型多室炮口制退器，隶属 20 件套标准装配体系，负责巨额后坐能量泄压。",
+        "craftAndMaterial": "采用橄榄绿军规防腐涂层钢与增强聚合物制造，表面按1934年代瑞典博福斯兵工厂（AB Bofors）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：复进末端自动压弹入膛并由机械杠杆联动击发，结构精密耐用。",
+        "audioScript": "U-03，重型多室炮口制退器。作为 瑞典博福斯 40mm L/60 自动高射炮 的关键构件，它采用橄榄绿军规防腐涂层钢与增强聚合物制造，主要承担巨额后坐能量泄压职能。与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Impulse Mitigation",
+        "overview": "Heavy Multi-Baffle Muzzle Brake (U-03) of the Bofors 40mm L/60 Autocannon, serving as the dedicated recoil impulse mitigation node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from OD-green protective-coated steel and reinforced polymer to AB Bofors service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Counter-recoil ramming and vertical sliding-wedge lock enable 120 RPM sustained fire.",
+        "audioScript": "U-03, Heavy Multi-Baffle Muzzle Brake. Crafted from OD-green protective-coated steel and reinforced polymer for the Bofors 40mm L/60 Autocannon, this component handles recoil impulse mitigation. Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "bofors40_bolt_carrier": {
+      "partId": "bofors40_bolt_carrier",
+      "bomCode": "U-04",
+      "calloutLabelEn": "Breech Ring & Recoil",
+      "zh": {
+        "roleTag": "吸收巨额发射后坐冲量",
+        "overview": "瑞典博福斯 40mm L/60 自动高射炮（U-04）的炮尾环与液气复进筒组，隶属 20 件套标准装配体系，负责吸收巨额发射后坐冲量。",
+        "craftAndMaterial": "采用橄榄绿军规防腐涂层钢与增强聚合物制造，表面按1934年代瑞典博福斯兵工厂（AB Bofors）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：长后坐炮管复进过程中自动驱动立楔炮闩并由顶部弹夹连续重力供弹。",
+        "designHighlight": "工程亮点呼应整枪特征：快换身管闭锁套环可在激烈防空作战中 30 秒完成热管更换。",
+        "audioScript": "U-04，炮尾环与液气复进筒组。作为 瑞典博福斯 40mm L/60 自动高射炮 的关键构件，它采用橄榄绿军规防腐涂层钢与增强聚合物制造，主要承担吸收巨额发射后坐冲量职能。在击发循环中承担核心联动：长后坐炮管复进过程中自动驱动立楔炮闩并由顶部弹夹连续重力供弹。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Hydropneumatic Recoil Unit",
+        "overview": "Breech Ring & Recoil Cylinders (U-04) of the Bofors 40mm L/60 Autocannon, serving as the dedicated hydropneumatic recoil unit node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from OD-green protective-coated steel and reinforced polymer to AB Bofors service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: long-recoil barrel runout cycles the vertical sliding breech and feeds continuous 4-round top clips.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Quick-change barrel collar enables rapid hot-tube swaps during sustained air defense.",
+        "audioScript": "U-04, Breech Ring & Recoil Cylinders. Crafted from OD-green protective-coated steel and reinforced polymer for the Bofors 40mm L/60 Autocannon, this component handles hydropneumatic recoil unit. Drives the core operating sequence: long-recoil barrel runout cycles the vertical sliding breech and feeds continuous 4-round top clips.",
+        "audioUrl": ""
+      }
+    },
+    "bofors40_bolt": {
+      "partId": "bofors40_bolt",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Heavy Cannon Breech",
+      "zh": {
+        "roleTag": "密闭数百兆帕高压炮膛",
+        "overview": "瑞典博福斯 40mm L/60 自动高射炮（U-05）的重型立楔/螺式主炮炮闩，隶属 20 件套标准装配体系，负责密闭数百兆帕高压炮膛。",
+        "craftAndMaterial": "采用橄榄绿军规防腐涂层钢与增强聚合物制造，表面按1934年代瑞典博福斯兵工厂（AB Bofors）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：长后坐炮管复进过程中自动驱动立楔炮闩并由顶部弹夹连续重力供弹。",
+        "designHighlight": "工程亮点呼应整枪特征：外露式同轴大型复进簧套筒与标志性锥形喇叭膛口消焰器。",
+        "audioScript": "U-05，重型立楔/螺式主炮炮闩。作为 瑞典博福斯 40mm L/60 自动高射炮 的关键构件，它采用橄榄绿军规防腐涂层钢与增强聚合物制造，主要承担密闭数百兆帕高压炮膛职能。在击发循环中承担核心联动：长后坐炮管复进过程中自动驱动立楔炮闩并由顶部弹夹连续重力供弹。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-Pressure Breech Seal",
+        "overview": "Heavy Sliding-Wedge / Screw Breech (U-05) of the Bofors 40mm L/60 Autocannon, serving as the dedicated high-pressure breech seal node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from OD-green protective-coated steel and reinforced polymer to AB Bofors service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: long-recoil barrel runout cycles the vertical sliding breech and feeds continuous 4-round top clips.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Exposed concentric recuperator spring sleeve and signature flared flash cone.",
+        "audioScript": "U-05, Heavy Sliding-Wedge / Screw Breech. Crafted from OD-green protective-coated steel and reinforced polymer for the Bofors 40mm L/60 Autocannon, this component handles high-pressure breech seal. Drives the core operating sequence: long-recoil barrel runout cycles the vertical sliding breech and feeds continuous 4-round top clips.",
+        "audioUrl": ""
+      }
+    },
+    "bofors40_recoil_spring": {
+      "partId": "bofors40_recoil_spring",
+      "bomCode": "U-06",
+      "calloutLabelEn": "Recuperator Spring",
+      "zh": {
+        "roleTag": "吸收后坐动能并驱动复进闭膛",
+        "overview": "瑞典博福斯 40mm L/60 自动高射炮（U-06）的主炮重型复进弹簧组，隶属 20 件套标准装配体系，负责吸收后坐动能并驱动复进闭膛。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1934年代瑞典博福斯兵工厂（AB Bofors）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 120 发/分（不间断续夹连射） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：顶部垂直重力供弹漏斗支持 4 发桥夹不停火无缝续弹。",
+        "audioScript": "U-06，主炮重型复进弹簧组。作为 瑞典博福斯 40mm L/60 自动高射炮 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担吸收后坐动能并驱动复进闭膛职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 120 发/分（不间断续夹连射） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Storage & Return Drive",
+        "overview": "Main-Gun Recuperator Spring (U-06) of the Bofors 40mm L/60 Autocannon, serving as the dedicated recoil storage & return drive node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to AB Bofors service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 120 RPM (continuous clip-fed) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Top vertical feed hopper accepts 4-round clips continuously without halting fire.",
+        "audioScript": "U-06, Main-Gun Recuperator Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Bofors 40mm L/60 Autocannon, this component handles recoil storage & return drive. Stores and returns cyclic elastic energy via live coil compression to maintain 120 RPM (continuous clip-fed) timing.",
+        "audioUrl": ""
+      }
+    },
+    "bofors40_handguard": {
+      "partId": "bofors40_handguard",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Gun Shield & Shroud",
+      "zh": {
+        "roleTag": "炮手防护与结构抗扭支撑",
+        "overview": "瑞典博福斯 40mm L/60 自动高射炮（F-01）的防盾护板与散热框架罩，隶属 20 件套标准装配体系，负责炮手防护与结构抗扭支撑。",
+        "craftAndMaterial": "采用橄榄绿军规防腐涂层钢与增强聚合物制造，表面按1934年代瑞典博福斯兵工厂（AB Bofors）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：复进末端自动压弹入膛并由机械杠杆联动击发，结构精密耐用。",
+        "audioScript": "F-01，防盾护板与散热框架罩。作为 瑞典博福斯 40mm L/60 自动高射炮 的关键构件，它采用橄榄绿军规防腐涂层钢与增强聚合物制造，主要承担炮手防护与结构抗扭支撑职能。与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Crew Shield & Chassis",
+        "overview": "Gun Shield & Structural Shroud (F-01) of the Bofors 40mm L/60 Autocannon, serving as the dedicated crew shield & chassis node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from OD-green protective-coated steel and reinforced polymer to AB Bofors service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Counter-recoil ramming and vertical sliding-wedge lock enable 120 RPM sustained fire.",
+        "audioScript": "F-01, Gun Shield & Structural Shroud. Crafted from OD-green protective-coated steel and reinforced polymer for the Bofors 40mm L/60 Autocannon, this component handles crew shield & chassis. Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "bofors40_stock": {
+      "partId": "bofors40_stock",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Artillery Carriage Base",
+      "zh": {
+        "roleTag": "将发射反冲力稳固导入地面",
+        "overview": "瑞典博福斯 40mm L/60 自动高射炮（F-02）的开脚大架/双耳轴炮架底座，隶属 20 件套标准装配体系，负责将发射反冲力稳固导入地面。",
+        "craftAndMaterial": "采用橄榄绿军规防腐涂层钢与增强聚合物制造，表面按1934年代瑞典博福斯兵工厂（AB Bofors）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：快换身管闭锁套环可在激烈防空作战中 30 秒完成热管更换。",
+        "audioScript": "F-02，开脚大架/双耳轴炮架底座。作为 瑞典博福斯 40mm L/60 自动高射炮 的关键构件，它采用橄榄绿军规防腐涂层钢与增强聚合物制造，主要承担将发射反冲力稳固导入地面职能。与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ground Recoil Anchoring",
+        "overview": "Split-Trail / Pedestal Carriage (F-02) of the Bofors 40mm L/60 Autocannon, serving as the dedicated ground recoil anchoring node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from OD-green protective-coated steel and reinforced polymer to AB Bofors service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Quick-change barrel collar enables rapid hot-tube swaps during sustained air defense.",
+        "audioScript": "F-02, Split-Trail / Pedestal Carriage. Crafted from OD-green protective-coated steel and reinforced polymer for the Bofors 40mm L/60 Autocannon, this component handles ground recoil anchoring. Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "bofors40_grip": {
+      "partId": "bofors40_grip",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Ergonomic Main Grip",
+      "zh": {
+        "roleTag": "锁定手腕角度优化扳机控枪",
+        "overview": "瑞典博福斯 40mm L/60 自动高射炮（F-03）的人体工学防滑主握把，隶属 20 件套标准装配体系，负责锁定手腕角度优化扳机控枪。",
+        "craftAndMaterial": "采用橄榄绿军规防腐涂层钢与增强聚合物制造，表面按1934年代瑞典博福斯兵工厂（AB Bofors）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：外露式同轴大型复进簧套筒与标志性锥形喇叭膛口消焰器。",
+        "audioScript": "F-03，人体工学防滑主握把。作为 瑞典博福斯 40mm L/60 自动高射炮 的关键构件，它采用橄榄绿军规防腐涂层钢与增强聚合物制造，主要承担锁定手腕角度优化扳机控枪职能。与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Wrist Alignment & Control",
+        "overview": "Ergonomic Textured Main Grip (F-03) of the Bofors 40mm L/60 Autocannon, serving as the dedicated wrist alignment & control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from OD-green protective-coated steel and reinforced polymer to AB Bofors service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Exposed concentric recuperator spring sleeve and signature flared flash cone.",
+        "audioScript": "F-03, Ergonomic Textured Main Grip. Crafted from OD-green protective-coated steel and reinforced polymer for the Bofors 40mm L/60 Autocannon, this component handles wrist alignment & control. Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "bofors40_optic": {
+      "partId": "bofors40_optic",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Precision Optical Sight",
+      "zh": {
+        "roleTag": "建立精准弹道瞄准基线",
+        "overview": "瑞典博福斯 40mm L/60 自动高射炮（F-04）的精密光学瞄准镜与高刚度镜座，隶属 20 件套标准装配体系，负责建立精准弹道瞄准基线。",
+        "craftAndMaterial": "采用橄榄绿军规防腐涂层钢与增强聚合物制造，表面按1934年代瑞典博福斯兵工厂（AB Bofors）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：顶部垂直重力供弹漏斗支持 4 发桥夹不停火无缝续弹。",
+        "audioScript": "F-04，精密光学瞄准镜与高刚度镜座。作为 瑞典博福斯 40mm L/60 自动高射炮 的关键构件，它采用橄榄绿军规防腐涂层钢与增强聚合物制造，主要承担建立精准弹道瞄准基线职能。与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ballistic Sightline Datum",
+        "overview": "Precision Optical Sight & Mount (F-04) of the Bofors 40mm L/60 Autocannon, serving as the dedicated ballistic sightline datum node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from OD-green protective-coated steel and reinforced polymer to AB Bofors service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Top vertical feed hopper accepts 4-round clips continuously without halting fire.",
+        "audioScript": "F-04, Precision Optical Sight & Mount. Crafted from OD-green protective-coated steel and reinforced polymer for the Bofors 40mm L/60 Autocannon, this component handles ballistic sightline datum. Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "bofors40_gas_system": {
+      "partId": "bofors40_gas_system",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Gas & Recoil System",
+      "zh": {
+        "roleTag": "定量调控自动循环能量平衡",
+        "overview": "瑞典博福斯 40mm L/60 自动高射炮（F-05）的导气活塞/缓冲传动调节组件，隶属 20 件套标准装配体系，负责定量调控自动循环能量平衡。",
+        "craftAndMaterial": "采用橄榄绿军规防腐涂层钢与增强聚合物制造，表面按1934年代瑞典博福斯兵工厂（AB Bofors）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：长后坐炮管复进过程中自动驱动立楔炮闩并由顶部弹夹连续重力供弹。",
+        "designHighlight": "工程亮点呼应整枪特征：复进末端自动压弹入膛并由机械杠杆联动击发，结构精密耐用。",
+        "audioScript": "F-05，导气活塞/缓冲传动调节组件。作为 瑞典博福斯 40mm L/60 自动高射炮 的关键构件，它采用橄榄绿军规防腐涂层钢与增强聚合物制造，主要承担定量调控自动循环能量平衡职能。在击发循环中承担核心联动：长后坐炮管复进过程中自动驱动立楔炮闩并由顶部弹夹连续重力供弹。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Operating Energy Regulation",
+        "overview": "Gas Drive / Recoil Buffer System (F-05) of the Bofors 40mm L/60 Autocannon, serving as the dedicated operating energy regulation node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from OD-green protective-coated steel and reinforced polymer to AB Bofors service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: long-recoil barrel runout cycles the vertical sliding breech and feeds continuous 4-round top clips.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Counter-recoil ramming and vertical sliding-wedge lock enable 120 RPM sustained fire.",
+        "audioScript": "F-05, Gas Drive / Recoil Buffer System. Crafted from OD-green protective-coated steel and reinforced polymer for the Bofors 40mm L/60 Autocannon, this component handles operating energy regulation. Drives the core operating sequence: long-recoil barrel runout cycles the vertical sliding breech and feeds continuous 4-round top clips.",
+        "audioUrl": ""
+      }
+    },
+    "bofors40_mount_rail": {
+      "partId": "bofors40_mount_rail",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Accessory Mount Rail",
+      "zh": {
+        "roleTag": "提供稳固依托与模块化拓展",
+        "overview": "瑞典博福斯 40mm L/60 自动高射炮（F-06）的战术附件导轨与背带支座，隶属 20 件套标准装配体系，负责提供稳固依托与模块化拓展。",
+        "craftAndMaterial": "采用橄榄绿军规防腐涂层钢与增强聚合物制造，表面按1934年代瑞典博福斯兵工厂（AB Bofors）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：快换身管闭锁套环可在激烈防空作战中 30 秒完成热管更换。",
+        "audioScript": "F-06，战术附件导轨与背带支座。作为 瑞典博福斯 40mm L/60 自动高射炮 的关键构件，它采用橄榄绿军规防腐涂层钢与增强聚合物制造，主要承担提供稳固依托与模块化拓展职能。与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Modular Support & Optics Base",
+        "overview": "Accessory Rail & Sling Mount (F-06) of the Bofors 40mm L/60 Autocannon, serving as the dedicated modular support & optics base node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from OD-green protective-coated steel and reinforced polymer to AB Bofors service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Quick-change barrel collar enables rapid hot-tube swaps during sustained air defense.",
+        "audioScript": "F-06, Accessory Rail & Sling Mount. Crafted from OD-green protective-coated steel and reinforced polymer for the Bofors 40mm L/60 Autocannon, this component handles modular support & optics base. Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "bofors40_trigger": {
+      "partId": "bofors40_trigger",
+      "bomCode": "T-01",
+      "calloutLabelEn": "Trigger & Guard",
+      "zh": {
+        "roleTag": "清晰干脆释放阻铁启动击发",
+        "overview": "瑞典博福斯 40mm L/60 自动高射炮（T-01）的精密机械扳机与护圈总成，隶属 20 件套标准装配体系，负责清晰干脆释放阻铁启动击发。",
+        "craftAndMaterial": "采用橄榄绿军规防腐涂层钢与增强聚合物制造，表面按1934年代瑞典博福斯兵工厂（AB Bofors）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：外露式同轴大型复进簧套筒与标志性锥形喇叭膛口消焰器。",
+        "audioScript": "T-01，精密机械扳机与护圈总成。作为 瑞典博福斯 40mm L/60 自动高射炮 的关键构件，它采用橄榄绿军规防腐涂层钢与增强聚合物制造，主要承担清晰干脆释放阻铁启动击发职能。与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Crisp Firing Release Input",
+        "overview": "Precision Trigger & Guard Assembly (T-01) of the Bofors 40mm L/60 Autocannon, serving as the dedicated crisp firing release input node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from OD-green protective-coated steel and reinforced polymer to AB Bofors service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Exposed concentric recuperator spring sleeve and signature flared flash cone.",
+        "audioScript": "T-01, Precision Trigger & Guard Assembly. Crafted from OD-green protective-coated steel and reinforced polymer for the Bofors 40mm L/60 Autocannon, this component handles crisp firing release input. Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "bofors40_hammer": {
+      "partId": "bofors40_hammer",
+      "bomCode": "T-02",
+      "calloutLabelEn": "Cannon Firing Pin",
+      "zh": {
+        "roleTag": "高速释放储能精确击发底火/弓弦",
+        "overview": "瑞典博福斯 40mm L/60 自动高射炮（T-02）的电/机械双模式主炮击针组，隶属 20 件套标准装配体系，负责高速释放储能精确击发底火/弓弦。",
+        "craftAndMaterial": "采用橄榄绿军规防腐涂层钢与增强聚合物制造，表面按1934年代瑞典博福斯兵工厂（AB Bofors）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：顶部垂直重力供弹漏斗支持 4 发桥夹不停火无缝续弹。",
+        "audioScript": "T-02，电/机械双模式主炮击针组。作为 瑞典博福斯 40mm L/60 自动高射炮 的关键构件，它采用橄榄绿军规防腐涂层钢与增强聚合物制造，主要承担高速释放储能精确击发底火/弓弦职能。与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-Speed Ignition Impactor",
+        "overview": "Dual-Mode Cannon Firing Pin (T-02) of the Bofors 40mm L/60 Autocannon, serving as the dedicated high-speed ignition impactor node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from OD-green protective-coated steel and reinforced polymer to AB Bofors service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Top vertical feed hopper accepts 4-round clips continuously without halting fire.",
+        "audioScript": "T-02, Dual-Mode Cannon Firing Pin. Crafted from OD-green protective-coated steel and reinforced polymer for the Bofors 40mm L/60 Autocannon, this component handles high-speed ignition impactor. Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "bofors40_hammer_spring": {
+      "partId": "bofors40_hammer_spring",
+      "bomCode": "T-03",
+      "calloutLabelEn": "Hammer Drive Spring",
+      "zh": {
+        "roleTag": "为可靠击发提供充沛冲击能量",
+        "overview": "瑞典博福斯 40mm L/60 自动高射炮（T-03）的主击发扭簧/螺旋打击簧，隶属 20 件套标准装配体系，负责为可靠击发提供充沛冲击能量。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1934年代瑞典博福斯兵工厂（AB Bofors）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 120 发/分（不间断续夹连射） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：复进末端自动压弹入膛并由机械杠杆联动击发，结构精密耐用。",
+        "audioScript": "T-03，主击发扭簧/螺旋打击簧。作为 瑞典博福斯 40mm L/60 自动高射炮 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担为可靠击发提供充沛冲击能量职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 120 发/分（不间断续夹连射） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ignition Drive Energy",
+        "overview": "Main Hammer / Striker Drive Spring (T-03) of the Bofors 40mm L/60 Autocannon, serving as the dedicated ignition drive energy node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to AB Bofors service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 120 RPM (continuous clip-fed) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Counter-recoil ramming and vertical sliding-wedge lock enable 120 RPM sustained fire.",
+        "audioScript": "T-03, Main Hammer / Striker Drive Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Bofors 40mm L/60 Autocannon, this component handles ignition drive energy. Stores and returns cyclic elastic energy via live coil compression to maintain 120 RPM (continuous clip-fed) timing.",
+        "audioUrl": ""
+      }
+    },
+    "bofors40_selector": {
+      "partId": "bofors40_selector",
+      "bomCode": "T-04",
+      "calloutLabelEn": "FCS Mode & Safety",
+      "zh": {
+        "roleTag": "可靠锁止扳机阻铁并切换射态",
+        "overview": "瑞典博福斯 40mm L/60 自动高射炮（T-04）的火控安全联锁与击发模式开关，隶属 20 件套标准装配体系，负责可靠锁止扳机阻铁并切换射态。",
+        "craftAndMaterial": "采用橄榄绿军规防腐涂层钢与增强聚合物制造，表面按1934年代瑞典博福斯兵工厂（AB Bofors）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：快换身管闭锁套环可在激烈防空作战中 30 秒完成热管更换。",
+        "audioScript": "T-04，火控安全联锁与击发模式开关。作为 瑞典博福斯 40mm L/60 自动高射炮 的关键构件，它采用橄榄绿军规防腐涂层钢与增强聚合物制造，主要承担可靠锁止扳机阻铁并切换射态职能。与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Safety Interlock & Mode Control",
+        "overview": "FCS Interlock & Firing Mode Switch (T-04) of the Bofors 40mm L/60 Autocannon, serving as the dedicated safety interlock & mode control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from OD-green protective-coated steel and reinforced polymer to AB Bofors service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Quick-change barrel collar enables rapid hot-tube swaps during sustained air defense.",
+        "audioScript": "T-04, FCS Interlock & Firing Mode Switch. Crafted from OD-green protective-coated steel and reinforced polymer for the Bofors 40mm L/60 Autocannon, this component handles safety interlock & mode control. Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "bofors40_mag_body": {
+      "partId": "bofors40_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "Top 4-Rd Feed Hopper",
+      "zh": {
+        "roleTag": "炮弹快速连续供弹",
+        "overview": "瑞典博福斯 40mm L/60 自动高射炮（M-01）的顶部 4 发漏夹重力供弹斗，隶属 20 件套标准装配体系，负责炮弹快速连续供弹。",
+        "craftAndMaterial": "采用橄榄绿军规防腐涂层钢与增强聚合物制造，表面按1934年代瑞典博福斯兵工厂（AB Bofors）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：外露式同轴大型复进簧套筒与标志性锥形喇叭膛口消焰器。",
+        "audioScript": "M-01，顶部 4 发漏夹重力供弹斗。作为 瑞典博福斯 40mm L/60 自动高射炮 的关键构件，它采用橄榄绿军规防腐涂层钢与增强聚合物制造，主要承担炮弹快速连续供弹职能。与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ordnance Munition Feed",
+        "overview": "Top 4-Round Stripper Feed Hopper (M-01) of the Bofors 40mm L/60 Autocannon, serving as the dedicated ordnance munition feed node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from OD-green protective-coated steel and reinforced polymer to AB Bofors service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Exposed concentric recuperator spring sleeve and signature flared flash cone.",
+        "audioScript": "M-01, Top 4-Round Stripper Feed Hopper. Crafted from OD-green protective-coated steel and reinforced polymer for the Bofors 40mm L/60 Autocannon, this component handles ordnance munition feed. Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "bofors40_follower": {
+      "partId": "bofors40_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Gravity Feed Pawls",
+      "zh": {
+        "roleTag": "炮弹入膛精准限位",
+        "overview": "瑞典博福斯 40mm L/60 自动高射炮（M-02）的重力供弹压弹爪，隶属 20 件套标准装配体系，负责炮弹入膛精准限位。",
+        "craftAndMaterial": "采用橄榄绿军规防腐涂层钢与增强聚合物制造，表面按1934年代瑞典博福斯兵工厂（AB Bofors）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：顶部垂直重力供弹漏斗支持 4 发桥夹不停火无缝续弹。",
+        "audioScript": "M-02，重力供弹压弹爪。作为 瑞典博福斯 40mm L/60 自动高射炮 的关键构件，它采用橄榄绿军规防腐涂层钢与增强聚合物制造，主要承担炮弹入膛精准限位职能。与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Chambering Alignment",
+        "overview": "Gravity Feed Pawl Assembly (M-02) of the Bofors 40mm L/60 Autocannon, serving as the dedicated chambering alignment node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from OD-green protective-coated steel and reinforced polymer to AB Bofors service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Top vertical feed hopper accepts 4-round clips continuously without halting fire.",
+        "audioScript": "M-02, Gravity Feed Pawl Assembly. Crafted from OD-green protective-coated steel and reinforced polymer for the Bofors 40mm L/60 Autocannon, this component handles chambering alignment. Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "audioUrl": ""
+      }
+    },
+    "bofors40_mag_spring": {
+      "partId": "bofors40_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Feed Pawl Spring",
+      "zh": {
+        "roleTag": "棘爪复位保持供弹节拍",
+        "overview": "瑞典博福斯 40mm L/60 自动高射炮（M-03）的供弹棘爪复进弹簧，隶属 20 件套标准装配体系，负责棘爪复位保持供弹节拍。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1934年代瑞典博福斯兵工厂（AB Bofors）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 120 发/分（不间断续夹连射） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：复进末端自动压弹入膛并由机械杠杆联动击发，结构精密耐用。",
+        "audioScript": "M-03，供弹棘爪复进弹簧。作为 瑞典博福斯 40mm L/60 自动高射炮 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担棘爪复位保持供弹节拍职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 120 发/分（不间断续夹连射） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Feed Indexing Return",
+        "overview": "Feed Pawl Return Spring (M-03) of the Bofors 40mm L/60 Autocannon, serving as the dedicated feed indexing return node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to AB Bofors service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 120 RPM (continuous clip-fed) timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Counter-recoil ramming and vertical sliding-wedge lock enable 120 RPM sustained fire.",
+        "audioScript": "M-03, Feed Pawl Return Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Bofors 40mm L/60 Autocannon, this component handles feed indexing return. Stores and returns cyclic elastic energy via live coil compression to maintain 120 RPM (continuous clip-fed) timing.",
+        "audioUrl": ""
+      }
+    },
+    "bofors40_mag_base": {
+      "partId": "bofors40_mag_base",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Hopper Lock Plate",
+      "zh": {
+        "roleTag": "供弹机构固定承托",
+        "overview": "瑞典博福斯 40mm L/60 自动高射炮（M-04）的弹斗锁扣底板，隶属 20 件套标准装配体系，负责供弹机构固定承托。",
+        "craftAndMaterial": "采用橄榄绿军规防腐涂层钢与增强聚合物制造，表面按1934年代瑞典博福斯兵工厂（AB Bofors）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "designHighlight": "工程亮点呼应整枪特征：快换身管闭锁套环可在激烈防空作战中 30 秒完成热管更换。",
+        "audioScript": "M-04，弹斗锁扣底板。作为 瑞典博福斯 40mm L/60 自动高射炮 的关键构件，它采用橄榄绿军规防腐涂层钢与增强聚合物制造，主要承担供弹机构固定承托职能。与 瑞典博福斯 40mm L/60 自动高射炮 重装结构刚性耦合，承受 310 MPa 级发射载荷与整备震动。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Feed Base Retention",
+        "overview": "Feed Hopper Locking Plate (M-04) of the Bofors 40mm L/60 Autocannon, serving as the dedicated feed base retention node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from OD-green protective-coated steel and reinforced polymer to AB Bofors service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Quick-change barrel collar enables rapid hot-tube swaps during sustained air defense.",
+        "audioScript": "M-04, Feed Hopper Locking Plate. Crafted from OD-green protective-coated steel and reinforced polymer for the Bofors 40mm L/60 Autocannon, this component handles feed base retention. Anchors rigidly within the Bofors 40mm L/60 Autocannon heavy assembly to withstand 310 MPa firing loads.",
+        "audioUrl": ""
+      }
+    }
+  }
+}

@@ -1,0 +1,786 @@
+{
+  "schemaVersion": 1,
+  "weaponId": "ak47",
+  "generatedAt": "2026-11-25T00:00:00.000Z",
+  "generatorModels": {
+    "text": "centennial-blueprint-v1",
+    "storyTts": "web-speech-api",
+    "partTts": "web-speech-api"
+  },
+  "uiMetaEn": {
+    "name": "Kalashnikov AK-47 Type 3",
+    "subtitle": "Milled Forged-Steel Receiver & Long-Stroke Rotating-Bolt Icon",
+    "originCountry": "Soviet Union",
+    "weaponType": "Assault Rifle",
+    "categoryLabel": "Assault & Battle Rifle",
+    "actionMechanism": "Long-Stroke Gas Piston · Dual-Lug 35° Rotating Bolt in Forged Milled Receiver",
+    "statusLabel": "Vault Ready · Interactive 3D",
+    "description": "Mikhail Kalashnikov’s Type 3 AK-47 pairs a forged, milled-steel receiver with a generous-clearance long-stroke gas piston and dual-lug rotating bolt, setting the global industrial benchmark for mud, ice, and sand reliability.",
+    "highlights": [
+      "One-piece long-stroke piston and heavy bolt carrier deliver high over-gassed extraction authority",
+      "Forged milled receiver with lightening cuts solves early stamped-sheet rigidity tolerances",
+      "Generously tapered 7.62×39mm chamber and robust claw extractor ensure positive primary extraction",
+      "Iconic right-side dust-cover selector lever doubles as ejection-port seal and fire control"
+    ],
+    "workbenchTitle": "Kalashnikov AK-47 Type 3 3D Mechanical Teardown & Kinematics",
+    "workbenchSubtitle": "4 Assemblies · 20 Core Components · Long-Stroke Gas Piston · Dual-Lug 35° Rotating Bolt in Forged Milled Receiver",
+    "cutawayLabel": "Breech & Action Cutaway",
+    "cutawayTitle": "Engage live longitudinal cutaway on Kalashnikov AK-47 Type 3 to inspect internal locking and feed geometry",
+    "searchPlaceholder": "Search part name or BOM code (e.g., Barrel, Bolt, U-01, M-01)...",
+    "firingMilestoneLabel": "Long-Stroke Unlock",
+    "rateOfFire": "600 RPM cyclic · 40–100 RPM practical",
+    "timelinePresets": {
+      "assembled": {
+        "label": "Fully Assembled",
+        "subLabel": "0%",
+        "desc": "Kalashnikov AK-47 Type 3 (1949) in complete operational battery with all 20 assemblies seated in 1:1 alignment."
+      },
+      "field_strip": {
+        "label": "Field Strip",
+        "subLabel": "30%",
+        "desc": "Primary operator maintenance stage: clear ammunition supply and separate upper operating group for routine inspection."
+      },
+      "sub_assembly": {
+        "label": "Sub-Assembly",
+        "subLabel": "65%",
+        "desc": "Intermediate armorer teardown exposing locking interfaces, fire-control linkage, and recoil energy storage springs."
+      },
+      "full_exploded": {
+        "label": "Full Exploded View",
+        "subLabel": "100%",
+        "desc": "Complete 20-component isometric CAD explosion displaying every functional group across 880 mm (Fixed Laminated Wood Stock)."
+      }
+    },
+    "firingPhases": {
+      "phase_1": {
+        "shortLabel": "Trigger & Sear",
+        "title": "Phase 1 · AK-47 Type 3 Trigger Release & Ignition Drive",
+        "description": "Pulling the trigger disengages the sear, freeing the spring-driven hammer or striker to impact the 7.62×39mm M43 primer."
+      },
+      "phase_2": {
+        "shortLabel": "Primer Ignition",
+        "title": "Phase 2 · 355 MPa Chamber Pressure Rise",
+        "description": "The propellant charge ignites inside the locked chamber, driving peak pressure to 355 MPa while sealing the cartridge case against the breech."
+      },
+      "phase_3": {
+        "shortLabel": "Bore Acceleration",
+        "title": "Phase 3 · 415 mm Barrel Engraving & Acceleration",
+        "description": "The projectile engages the 4-groove bore and accelerates to 715 m/s (2010 J)."
+      },
+      "phase_4": {
+        "shortLabel": "Long-Stroke Unlock",
+        "title": "Phase 4 · Long-Stroke Unlock & Operating Impulse",
+        "description": "Once chamber pressure decays safely, long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt."
+      },
+      "phase_5": {
+        "shortLabel": "Extract & Eject",
+        "title": "Phase 5 · Spent Case Extraction & Ejection",
+        "description": "The extractor pulls the fired brass clear of the chamber and pivots it out the ejection port while the recoil spring compresses."
+      },
+      "phase_6": {
+        "shortLabel": "Feed & Lock",
+        "title": "Phase 6 · Next-Round Stripping & Breech Lockup",
+        "description": "Driven forward by the recoil spring, the breech strips the next round from the 30-round supply and locks solidly into battery."
+      },
+      "phase_7": {
+        "shortLabel": "Trigger Reset",
+        "title": "Phase 7 · Disconnector Handoff & Sear Reset",
+        "description": "Releasing the trigger hands control cleanly back to the primary sear, leaving the AK-47 Type 3 staged for its 600 RPM cyclic · 40–100 RPM practical cadence."
+      }
+    }
+  },
+  "story": {
+    "zh": {
+      "headline": "卡拉什尼科夫 AK-47 第三型突击步枪：1949 年机械传奇与工程剖析",
+      "deck": "米哈伊尔·卡拉什尼科夫设计的 AK-47 第三型采用整块锻钢铣削机匣与超大间隙长行程导气活塞，配合宽大双闭锁突笋与锥形弹壳抽壳几何，在泥沙、严寒与长期免维护条件下确立了人类轻武器可靠性的工业基准。 本馆以 1:1 真实工程比例重现其 20 大核心构件与完整工作循环。",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "第一幕",
+          "eraTag": "1945–1949",
+          "title": "时代召唤与研发立项：AK-47 Type 3 的诞生背景",
+          "paragraphs": [
+            "1949 年问世的 卡拉什尼科夫 AK-47 第三型突击步枪 由苏联伊热夫斯克机械制造厂（Izhmash）主导研制，定位为经典的突击步枪。1949 年苏军正式列装 AK-47，1955 年定型的第三型铣削机匣版本凭借卓越工艺成为世界各国步枪仿制与现代改进的母本，衍生族谱产量突破一亿支。",
+            "米哈伊尔·卡拉什尼科夫设计的 AK-47 第三型采用整块锻钢铣削机匣与超大间隙长行程导气活塞，配合宽大双闭锁突笋与锥形弹壳抽壳几何，在泥沙、严寒与长期免维护条件下确立了人类轻武器可靠性的工业基准。 整件装备总长 880 mm（固定桦木层压枪托）、空重 3.8 kg，成为同期突击步枪领域最具辨识度的里程碑之一。"
+          ],
+          "audioScript": "第一幕，时代起源。1949 年，苏联伊热夫斯克机械制造厂（Izhmash）推出了划时代的卡拉什尼科夫 AK-47 第三型突击步枪。1949 年苏军正式列装 AK-47，1955 年定型的第三型铣削机匣版本凭借卓越工艺成为世界各国步枪仿制与现代改进的母本，衍生族谱产量突破一亿支。 它的核心设计聚焦于与枪机框一体连结的长行程重型活塞，提供充沛过驱动抽壳能量，奠定了其在突击步枪发展史中的经典地位。",
+          "audioUrl": "",
+          "focusPartId": "ak47_receiver",
+          "focusPartLabel": "主体机匣与闭锁承力框架"
+        },
+        {
+          "id": "act2",
+          "actNumber": "第二幕",
+          "eraTag": "1949",
+          "title": "核心机械构造与闭锁奥秘",
+          "paragraphs": [
+            "卡拉什尼科夫 AK-47 第三型突击步枪 的机械灵魂在于其「长行程导气活塞 · 双闭锁突笋 35° 回转枪机与整锻铣削机匣」结构体系。在发射工作循环中，长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁，将高压能量精确约束于承力框架之内。",
+            "制造工艺方面，关键承力件采用苏联烤漆冲压钢与酚醛玻璃纤维电木精加工而成。整锻铣削机匣配合双侧减重槽，消除早期冲压工艺刚度不足问题，在严苛实战条件下依然保持顺畅节拍与长期尺寸稳定性。"
+          ],
+          "audioScript": "第二幕，核心机械原理。卡拉什尼科夫 AK-47 第三型突击步枪 采用长行程导气活塞 · 双闭锁突笋 35° 回转枪机与整锻铣削机匣。在每个击发周期中，长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。借助苏联烤漆冲压钢与酚醛玻璃纤维电木工艺与高强度配合，实现了整锻铣削机匣配合双侧减重槽，消除早期冲压工艺刚度不足问题。",
+          "audioUrl": "",
+          "focusPartId": "ak47_bolt",
+          "focusPartLabel": "高强度闭锁枪机头与抽壳钩"
+        },
+        {
+          "id": "act3",
+          "actNumber": "第三幕",
+          "eraTag": "1949–1952",
+          "title": "弹道性能、内膛工艺与实战效能",
+          "paragraphs": [
+            "该平台配用 7.62×39mm M43 弹药规格与 415 mm 镀铬冷锻枪管（4 条右旋膛线 · 240 mm 缠距），最高工作膛压约 355 MPa，可赋予弹头 715 m/s 的出膛初速与 2,010 J 动能，有效作用距离达 350 米。",
+            "内膛技术特点方面，4 条硬铬内膛切削膛线与锥度弹膛，兼顾极寒与风沙抽壳可靠性。同时，大锥度 7.62×39mm M43 弹膛与刚性抓壳钩实现强力一次预抽壳，令其在 600 发/分（自动）· 40–100 发/分（战斗） 的节奏下兼具精准控制与可靠输出。"
+          ],
+          "audioScript": "第三幕，弹道与实战表现。配备 415 毫米身管与 7.62×39mm M43 口径，卡拉什尼科夫 AK-47 第三型突击步枪 实现了每秒 715 米的初速与 350 米有效射程。4 条硬铬内膛切削膛线与锥度弹膛，兼顾极寒与风沙抽壳可靠性，展现了卓越的工程平衡。",
+          "audioUrl": "",
+          "focusPartId": "ak47_barrel",
+          "focusPartLabel": "415mm 精密内膛枪管总成"
+        },
+        {
+          "id": "act4",
+          "actNumber": "第四幕",
+          "eraTag": "1964–2026",
+          "title": "人机工效、供弹哲学与百年遗产",
+          "paragraphs": [
+            "围绕 30 发容量的30 发可拆式双排弹匣壳体与 44 mm 膛轴设计，卡拉什尼科夫 AK-47 第三型突击步枪 将单发后坐冲量控制在 7.8 N·s 水平。标志性右侧大片防尘快慢机兼任保险与机匣抛壳窗防尘盖。",
+            "如今在数字兵器库 3D 百年展厅（BAY-35）中，您可以随时通过三轴剖视、100% 爆炸视图与实时运动学滑块，零距离拆解这座跨越时代的机械工程杰作。"
+          ],
+          "audioScript": "第四幕，百年遗产。凭借 30 发容量的30 发可拆式双排弹匣壳体与出色的整体工效，标志性右侧大片防尘快慢机兼任保险与机匣抛壳窗防尘盖。欢迎在 BAY-35 展位亲手切开剖面、逐件拆解，感受 卡拉什尼科夫 AK-47 第三型突击步枪 的机械魅力。",
+          "audioUrl": "",
+          "focusPartId": "ak47_mag_body",
+          "focusPartLabel": "30 发可拆式双排弹匣壳体"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "核心动作与闭锁架构",
+          "tag": "BAY-35",
+          "summary": "长行程导气活塞 · 双闭锁突笋 35° 回转枪机与整锻铣削机匣；与枪机框一体连结的长行程重型活塞，提供充沛过驱动抽壳能量。",
+          "focusPartId": "ak47_bolt",
+          "focusPartLabel": "高强度闭锁枪机头与抽壳钩"
+        },
+        {
+          "id": "bt2",
+          "title": "内膛弹道与能量释放",
+          "tag": "715 m/s",
+          "summary": "415 mm 镀铬冷锻枪管（4 条右旋膛线 · 240 mm 缠距），4 条硬铬内膛切削膛线与锥度弹膛，兼顾极寒与风沙抽壳可靠性。",
+          "focusPartId": "ak47_barrel",
+          "focusPartLabel": "415mm 精密内膛枪管总成"
+        },
+        {
+          "id": "bt3",
+          "title": "供弹与实战人机工效",
+          "tag": "30 rds",
+          "summary": "大锥度 7.62×39mm M43 弹膛与刚性抓壳钩实现强力一次预抽壳；标志性右侧大片防尘快慢机兼任保险与机匣抛壳窗防尘盖。",
+          "focusPartId": "ak47_mag_body",
+          "focusPartLabel": "30 发可拆式双排弹匣壳体"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1945",
+          "title": "战术指标与概念构型",
+          "detail": "苏联提出新一代突击步枪战术指标，确立口径与机动平衡方向。"
+        },
+        {
+          "year": "1949",
+          "title": "AK-47 Type 3 正式定型投产",
+          "detail": "伊热夫斯克机械制造厂（Izhmash）完成 AK-47 TYPE 3 (56-A-212) 定型，采用长行程导气活塞 · 双闭锁突笋 35° 回转枪机与整锻铣削机匣架构。"
+        },
+        {
+          "year": "1952",
+          "title": "实战部署与工艺演进",
+          "detail": "与枪机框一体连结的长行程重型活塞，提供充沛过驱动抽壳能量，在全球多个战区与演训环境中验证了高可靠性。"
+        },
+        {
+          "year": "1964",
+          "title": "工程典范与历史传承",
+          "detail": "1949 年苏军正式列装 AK-47，1955 年定型的第三型铣削机匣版本凭借卓越工艺成为世界各国步枪仿制与现代改进的母本，衍生族谱产量突破一亿支。"
+        },
+        {
+          "year": "2026",
+          "title": "入藏数字兵器库 3D（BAY-35）",
+          "detail": "完整构建 1:1 参数化 20 零件三维装配模型，支持剖切、爆炸与运动学实时仿真。"
+        }
+      ]
+    },
+    "en": {
+      "headline": "Kalashnikov AK-47 Type 3: The 1949 Mechanical Legend",
+      "deck": "Mikhail Kalashnikov’s Type 3 AK-47 pairs a forged, milled-steel receiver with a generous-clearance long-stroke gas piston and dual-lug rotating bolt, setting the global industrial benchmark for mud, ice, and sand reliability. Preserved in 1:1 interactive 3D CAD scale across all 20 functional assemblies in BAY-35.",
+      "acts": [
+        {
+          "id": "act1",
+          "actNumber": "Act I",
+          "eraTag": "1945–1949",
+          "title": "Origins & Operational Mandate of the AK-47 Type 3",
+          "paragraphs": [
+            "Introduced in 1949 by Izhmash Arsenal in Soviet Union, the Kalashnikov AK-47 Type 3 emerged as a defining Assault Rifle. Adopted by the Soviet Army in 1949 and refined into the definitive milled Type 3 in 1955, the AK-47 became the most widely produced infantry rifle lineage in history with over 100 million derivatives.",
+            "Mikhail Kalashnikov’s Type 3 AK-47 pairs a forged, milled-steel receiver with a generous-clearance long-stroke gas piston and dual-lug rotating bolt, setting the global industrial benchmark for mud, ice, and sand reliability. Measuring 880 mm (Fixed Laminated Wood Stock) at an unloaded weight of 3.8 kg, it reshaped expectations across the Assault & Battle Rifle class."
+          ],
+          "audioScript": "Act One: Historical Origins. In 1949, Izhmash Arsenal of Soviet Union introduced the Kalashnikov AK-47 Type 3. Adopted by the Soviet Army in 1949 and refined into the definitive milled Type 3 in 1955, the AK-47 became the most widely produced infantry rifle lineage in history with over 100 million derivatives. Anchored by its hallmark design trait — One-piece long-stroke piston and heavy bolt carrier deliver high over-gassed extraction authority — it quickly established an enduring engineering benchmark.",
+          "audioUrl": "",
+          "focusPartId": "ak47_receiver",
+          "focusPartLabel": "Primary Receiver & Lock Housing"
+        },
+        {
+          "id": "act2",
+          "actNumber": "Act II",
+          "eraTag": "1949",
+          "title": "Core Operating Architecture & Lockup Mechanics",
+          "paragraphs": [
+            "At the mechanical heart of the Kalashnikov AK-47 Type 3 sits its Long-Stroke Gas Piston · Dual-Lug 35° Rotating Bolt in Forged Milled Receiver. Throughout every firing cycle, long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt, containing 355 MPa of operating pressure safely.",
+            "Constructed in Soviet-enamel stamped steel and glass-filled Bakelite, the assembly achieves durable field tolerances. Notably, Forged milled receiver with lightening cuts solves early stamped-sheet rigidity tolerances, sustaining dependable operation under severe environmental stress."
+          ],
+          "audioScript": "Act Two: Core Mechanical Architecture. The Kalashnikov AK-47 Type 3 relies on Long-Stroke Gas Piston · Dual-Lug 35° Rotating Bolt in Forged Milled Receiver. During each cycle, long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt. Machined from Soviet-enamel stamped steel and glass-filled Bakelite, it delivers standout engineering reliability: Forged milled receiver with lightening cuts solves early stamped-sheet rigidity tolerances.",
+          "audioUrl": "",
+          "focusPartId": "ak47_bolt",
+          "focusPartLabel": "Hardened Locking Bolt & Extractor"
+        },
+        {
+          "id": "act3",
+          "actNumber": "Act III",
+          "eraTag": "1949–1952",
+          "title": "Ballistic Performance, Bore Craft & Range Reach",
+          "paragraphs": [
+            "Chambered for 7.62×39mm M43 with 415 mm Chrome-Lined Barrel (4-Groove RH · 1:9.45\" / 240 mm Twist), the Kalashnikov AK-47 Type 3 develops 715 m/s muzzle velocity and 2,010 J of kinetic energy for effective engagement out to 350 meters.",
+            "Internally, 4-groove hard-chrome bore paired with tapered 7.62×39mm chamber geometry for harsh-environment extraction. Combined with its 600 RPM cyclic · 40–100 RPM practical tempo, Generously tapered 7.62×39mm chamber and robust claw extractor ensure positive primary extraction, delivering disciplined accuracy across demanding field conditions."
+          ],
+          "audioScript": "Act Three: Ballistic Performance. Driving 7.62×39mm M43 through its 415 millimeter bore, the Kalashnikov AK-47 Type 3 achieves 715 meters per second and 350 meters of effective reach. 4-groove hard-chrome bore paired with tapered 7.62×39mm chamber geometry for harsh-environment extraction.",
+          "audioUrl": "",
+          "focusPartId": "ak47_barrel",
+          "focusPartLabel": "415mm Precision Rifled Barrel"
+        },
+        {
+          "id": "act4",
+          "actNumber": "Act IV",
+          "eraTag": "1964–2026",
+          "title": "Feed Philosophy, Ergonomics & Centennial Legacy",
+          "paragraphs": [
+            "Fed by a 30-round 30-round detachable magazine body with a 44 mm bore-axis height, the platform manages 7.8 N-s of recoil impulse cleanly. Iconic right-side dust-cover selector lever doubles as ejection-port seal and fire control.",
+            "Now archived in Digital Armory 3D Centennial Gallery (BAY-35), all 20 interactive assemblies can be sectioned live along three axes, exploded to 100%, and inspected part by part."
+          ],
+          "audioScript": "Act Four: Engineering Legacy. Pairing its 30-round 30-round detachable magazine body with disciplined recoil geometry, Iconic right-side dust-cover selector lever doubles as ejection-port seal and fire control. Explore BAY-35 in live section cut and exploded disassembly to study every working link of the Kalashnikov AK-47 Type 3.",
+          "audioUrl": "",
+          "focusPartId": "ak47_mag_body",
+          "focusPartLabel": "30-Round Detachable Magazine Body"
+        }
+      ],
+      "breakthroughs": [
+        {
+          "id": "bt1",
+          "title": "Operating & Lockup Principle",
+          "tag": "BAY-35",
+          "summary": "Long-Stroke Gas Piston · Dual-Lug 35° Rotating Bolt in Forged Milled Receiver — One-piece long-stroke piston and heavy bolt carrier deliver high over-gassed extraction authority.",
+          "focusPartId": "ak47_bolt",
+          "focusPartLabel": "Hardened Locking Bolt & Extractor"
+        },
+        {
+          "id": "bt2",
+          "title": "Bore & Ballistic Efficiency",
+          "tag": "715 m/s",
+          "summary": "415 mm Chrome-Lined Barrel (4-Groove RH · 1:9.45\" / 240 mm Twist); 4-groove hard-chrome bore paired with tapered 7.62×39mm chamber geometry for harsh-environment extraction.",
+          "focusPartId": "ak47_barrel",
+          "focusPartLabel": "415mm Precision Rifled Barrel"
+        },
+        {
+          "id": "bt3",
+          "title": "Feed & Ergonomic Mastery",
+          "tag": "30 rds",
+          "summary": "Generously tapered 7.62×39mm chamber and robust claw extractor ensure positive primary extraction; Iconic right-side dust-cover selector lever doubles as ejection-port seal and fire control.",
+          "focusPartId": "ak47_mag_body",
+          "focusPartLabel": "30-Round Detachable Magazine Body"
+        }
+      ],
+      "milestones": [
+        {
+          "year": "1945",
+          "title": "Operational Requirement Defined",
+          "detail": "Soviet Union ordnance planners established specifications for a new Assault Rifle class."
+        },
+        {
+          "year": "1949",
+          "title": "AK-47 Type 3 Official Introduction",
+          "detail": "Izhmash Arsenal finalized AK-47 TYPE 3 (56-A-212) around Long-Stroke Gas Piston · Dual-Lug 35° Rotating Bolt in Forged Milled Receiver."
+        },
+        {
+          "year": "1952",
+          "title": "Field Deployment & Service Validation",
+          "detail": "One-piece long-stroke piston and heavy bolt carrier deliver high over-gassed extraction authority, proving mechanical endurance across real-world operations."
+        },
+        {
+          "year": "1964",
+          "title": "Enduring Historical Influence",
+          "detail": "Adopted by the Soviet Army in 1949 and refined into the definitive milled Type 3 in 1955, the AK-47 became the most widely produced infantry rifle lineage in history with over 100 million derivatives."
+        },
+        {
+          "year": "2026",
+          "title": "Archived in Digital Armory 3D (BAY-35)",
+          "detail": "Modeled as a 1:1 interactive 20-component CAD exhibit with live cutaway, exploded disassembly, and kinematics."
+        }
+      ]
+    }
+  },
+  "parts": {
+    "ak47_receiver": {
+      "partId": "ak47_receiver",
+      "bomCode": "U-01",
+      "calloutLabelEn": "Primary Receiver",
+      "zh": {
+        "roleTag": "核心机构基准与耐压承力",
+        "overview": "卡拉什尼科夫 AK-47 第三型突击步枪（U-01）的主体机匣与闭锁承力框架，隶属 20 件套标准装配体系，负责核心机构基准与耐压承力。",
+        "craftAndMaterial": "采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，表面按1949年代伊热夫斯克机械制造厂（Izhmash）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：与枪机框一体连结的长行程重型活塞，提供充沛过驱动抽壳能量。",
+        "audioScript": "U-01，主体机匣与闭锁承力框架。作为 卡拉什尼科夫 AK-47 第三型突击步枪 的关键构件，它采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，主要承担核心机构基准与耐压承力职能。与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Core Structural Chassis",
+        "overview": "Primary Receiver & Lock Housing (U-01) of the Kalashnikov AK-47 Type 3, serving as the dedicated core structural chassis node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Soviet-enamel stamped steel and glass-filled Bakelite to Izhmash Arsenal service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: One-piece long-stroke piston and heavy bolt carrier deliver high over-gassed extraction authority.",
+        "audioScript": "U-01, Primary Receiver & Lock Housing. Crafted from Soviet-enamel stamped steel and glass-filled Bakelite for the Kalashnikov AK-47 Type 3, this component handles core structural chassis. Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "ak47_barrel": {
+      "partId": "ak47_barrel",
+      "bomCode": "U-02",
+      "calloutLabelEn": "415mm Precision Barrel",
+      "zh": {
+        "roleTag": "密闭高压燃气并赋予弹头自旋",
+        "overview": "卡拉什尼科夫 AK-47 第三型突击步枪（U-02）的415mm 精密内膛枪管总成，隶属 20 件套标准装配体系，负责密闭高压燃气并赋予弹头自旋。",
+        "craftAndMaterial": "采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，表面按1949年代伊热夫斯克机械制造厂（Izhmash）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：整锻铣削机匣配合双侧减重槽，消除早期冲压工艺刚度不足问题。",
+        "audioScript": "U-02，415mm 精密内膛枪管总成。作为 卡拉什尼科夫 AK-47 第三型突击步枪 的关键构件，它采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，主要承担密闭高压燃气并赋予弹头自旋职能。与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Pressure Vessel & Spin Axis",
+        "overview": "415mm Precision Rifled Barrel (U-02) of the Kalashnikov AK-47 Type 3, serving as the dedicated pressure vessel & spin axis node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Soviet-enamel stamped steel and glass-filled Bakelite to Izhmash Arsenal service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Forged milled receiver with lightening cuts solves early stamped-sheet rigidity tolerances.",
+        "audioScript": "U-02, 415mm Precision Rifled Barrel. Crafted from Soviet-enamel stamped steel and glass-filled Bakelite for the Kalashnikov AK-47 Type 3, this component handles pressure vessel & spin axis. Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "ak47_muzzle": {
+      "partId": "ak47_muzzle",
+      "bomCode": "U-03",
+      "calloutLabelEn": "Muzzle Crown & Sight",
+      "zh": {
+        "roleTag": "弹头离膛气密基准",
+        "overview": "卡拉什尼科夫 AK-47 第三型突击步枪（U-03）的枪口冠面与准星座组件，隶属 20 件套标准装配体系，负责弹头离膛气密基准。",
+        "craftAndMaterial": "采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，表面按1949年代伊热夫斯克机械制造厂（Izhmash）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：大锥度 7.62×39mm M43 弹膛与刚性抓壳钩实现强力一次预抽壳。",
+        "audioScript": "U-03，枪口冠面与准星座组件。作为 卡拉什尼科夫 AK-47 第三型突击步枪 的关键构件，它采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，主要承担弹头离膛气密基准职能。与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Exit Crown & Sight Datum",
+        "overview": "Muzzle Crown & Front Sight Base (U-03) of the Kalashnikov AK-47 Type 3, serving as the dedicated exit crown & sight datum node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Soviet-enamel stamped steel and glass-filled Bakelite to Izhmash Arsenal service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Generously tapered 7.62×39mm chamber and robust claw extractor ensure positive primary extraction.",
+        "audioScript": "U-03, Muzzle Crown & Front Sight Base. Crafted from Soviet-enamel stamped steel and glass-filled Bakelite for the Kalashnikov AK-47 Type 3, this component handles exit crown & sight datum. Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "ak47_bolt_carrier": {
+      "partId": "ak47_bolt_carrier",
+      "bomCode": "U-04",
+      "calloutLabelEn": "Bolt Carrier Group",
+      "zh": {
+        "roleTag": "驱动解锁、后坐与复位循环",
+        "overview": "卡拉什尼科夫 AK-47 第三型突击步枪（U-04）的枪机框与拉机操作传动组，隶属 20 件套标准装配体系，负责驱动解锁、后坐与复位循环。",
+        "craftAndMaterial": "采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，表面按1949年代伊热夫斯克机械制造厂（Izhmash）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "designHighlight": "工程亮点呼应整枪特征：标志性右侧大片防尘快慢机兼任保险与机匣抛壳窗防尘盖。",
+        "audioScript": "U-04，枪机框与拉机操作传动组。作为 卡拉什尼科夫 AK-47 第三型突击步枪 的关键构件，它采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，主要承担驱动解锁、后坐与复位循环职能。在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Primary Cycling Actuator",
+        "overview": "Bolt Carrier & Operating Group (U-04) of the Kalashnikov AK-47 Type 3, serving as the dedicated primary cycling actuator node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Soviet-enamel stamped steel and glass-filled Bakelite to Izhmash Arsenal service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Iconic right-side dust-cover selector lever doubles as ejection-port seal and fire control.",
+        "audioScript": "U-04, Bolt Carrier & Operating Group. Crafted from Soviet-enamel stamped steel and glass-filled Bakelite for the Kalashnikov AK-47 Type 3, this component handles primary cycling actuator. Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "audioUrl": ""
+      }
+    },
+    "ak47_bolt": {
+      "partId": "ak47_bolt",
+      "bomCode": "U-05",
+      "calloutLabelEn": "Locking Bolt Head",
+      "zh": {
+        "roleTag": "刚性闭锁膛压并可靠抽壳",
+        "overview": "卡拉什尼科夫 AK-47 第三型突击步枪（U-05）的高强度闭锁枪机头与抽壳钩，隶属 20 件套标准装配体系，负责刚性闭锁膛压并可靠抽壳。",
+        "craftAndMaterial": "采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，表面按1949年代伊热夫斯克机械制造厂（Izhmash）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "designHighlight": "工程亮点呼应整枪特征：与枪机框一体连结的长行程重型活塞，提供充沛过驱动抽壳能量。",
+        "audioScript": "U-05，高强度闭锁枪机头与抽壳钩。作为 卡拉什尼科夫 AK-47 第三型突击步枪 的关键构件，它采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，主要承担刚性闭锁膛压并可靠抽壳职能。在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Breech Lock & Case Extraction",
+        "overview": "Hardened Locking Bolt & Extractor (U-05) of the Kalashnikov AK-47 Type 3, serving as the dedicated breech lock & case extraction node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Soviet-enamel stamped steel and glass-filled Bakelite to Izhmash Arsenal service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "designHighlight": "Integrated directly with the platform's defining strength: One-piece long-stroke piston and heavy bolt carrier deliver high over-gassed extraction authority.",
+        "audioScript": "U-05, Hardened Locking Bolt & Extractor. Crafted from Soviet-enamel stamped steel and glass-filled Bakelite for the Kalashnikov AK-47 Type 3, this component handles breech lock & case extraction. Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "audioUrl": ""
+      }
+    },
+    "ak47_recoil_spring": {
+      "partId": "ak47_recoil_spring",
+      "bomCode": "U-06",
+      "calloutLabelEn": "Helical Recoil Spring",
+      "zh": {
+        "roleTag": "吸收后坐动能并驱动复进闭膛",
+        "overview": "卡拉什尼科夫 AK-47 第三型突击步枪（U-06）的主复进螺旋弹簧总成，隶属 20 件套标准装配体系，负责吸收后坐动能并驱动复进闭膛。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1949年代伊热夫斯克机械制造厂（Izhmash）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 600 发/分（自动）· 40–100 发/分（战斗） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：整锻铣削机匣配合双侧减重槽，消除早期冲压工艺刚度不足问题。",
+        "audioScript": "U-06，主复进螺旋弹簧总成。作为 卡拉什尼科夫 AK-47 第三型突击步枪 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担吸收后坐动能并驱动复进闭膛职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 600 发/分（自动）· 40–100 发/分（战斗） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Storage & Return Drive",
+        "overview": "Main Helical Recoil Spring (U-06) of the Kalashnikov AK-47 Type 3, serving as the dedicated recoil storage & return drive node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to Izhmash Arsenal service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 600 RPM cyclic · 40–100 RPM practical timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Forged milled receiver with lightening cuts solves early stamped-sheet rigidity tolerances.",
+        "audioScript": "U-06, Main Helical Recoil Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Kalashnikov AK-47 Type 3, this component handles recoil storage & return drive. Stores and returns cyclic elastic energy via live coil compression to maintain 600 RPM cyclic · 40–100 RPM practical timing.",
+        "audioUrl": ""
+      }
+    },
+    "ak47_handguard": {
+      "partId": "ak47_handguard",
+      "bomCode": "F-01",
+      "calloutLabelEn": "Walnut Forend",
+      "zh": {
+        "roleTag": "隔绝枪管高温并提供稳定握持",
+        "overview": "卡拉什尼科夫 AK-47 第三型突击步枪（F-01）的油润实木前护木组件，隶属 20 件套标准装配体系，负责隔绝枪管高温并提供稳定握持。",
+        "craftAndMaterial": "采用经亚麻籽油浸润的精选实木/层压木料与钢制护箍制造，表面按1949年代伊热夫斯克机械制造厂（Izhmash）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：大锥度 7.62×39mm M43 弹膛与刚性抓壳钩实现强力一次预抽壳。",
+        "audioScript": "F-01，油润实木前护木组件。作为 卡拉什尼科夫 AK-47 第三型突击步枪 的关键构件，它采用经亚麻籽油浸润的精选实木/层压木料与钢制护箍制造，主要承担隔绝枪管高温并提供稳定握持职能。与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Thermal Shield & Support Hand",
+        "overview": "Oil-Finished Walnut Forend (F-01) of the Kalashnikov AK-47 Type 3, serving as the dedicated thermal shield & support hand node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from oil-finished selected hardwood paired with steel reinforcement ferrules to Izhmash Arsenal service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Generously tapered 7.62×39mm chamber and robust claw extractor ensure positive primary extraction.",
+        "audioScript": "F-01, Oil-Finished Walnut Forend. Crafted from oil-finished selected hardwood paired with steel reinforcement ferrules for the Kalashnikov AK-47 Type 3, this component handles thermal shield & support hand. Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "ak47_stock": {
+      "partId": "ak47_stock",
+      "bomCode": "F-02",
+      "calloutLabelEn": "Hardwood Buttstock",
+      "zh": {
+        "roleTag": "直线传导后坐并支撑贴腮瞄准",
+        "overview": "卡拉什尼科夫 AK-47 第三型突击步枪（F-02）的经典实木抵肩枪托，隶属 20 件套标准装配体系，负责直线传导后坐并支撑贴腮瞄准。",
+        "craftAndMaterial": "采用经亚麻籽油浸润的精选实木/层压木料与钢制护箍制造，表面按1949年代伊热夫斯克机械制造厂（Izhmash）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：标志性右侧大片防尘快慢机兼任保险与机匣抛壳窗防尘盖。",
+        "audioScript": "F-02，经典实木抵肩枪托。作为 卡拉什尼科夫 AK-47 第三型突击步枪 的关键构件，它采用经亚麻籽油浸润的精选实木/层压木料与钢制护箍制造，主要承担直线传导后坐并支撑贴腮瞄准职能。与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Recoil Transfer & Cheek Weld",
+        "overview": "Classic Hardwood Buttstock (F-02) of the Kalashnikov AK-47 Type 3, serving as the dedicated recoil transfer & cheek weld node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from oil-finished selected hardwood paired with steel reinforcement ferrules to Izhmash Arsenal service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Iconic right-side dust-cover selector lever doubles as ejection-port seal and fire control.",
+        "audioScript": "F-02, Classic Hardwood Buttstock. Crafted from oil-finished selected hardwood paired with steel reinforcement ferrules for the Kalashnikov AK-47 Type 3, this component handles recoil transfer & cheek weld. Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "ak47_grip": {
+      "partId": "ak47_grip",
+      "bomCode": "F-03",
+      "calloutLabelEn": "Checkered Wood Grip",
+      "zh": {
+        "roleTag": "锁定手腕角度优化扳机控枪",
+        "overview": "卡拉什尼科夫 AK-47 第三型突击步枪（F-03）的刻纹实木握把组件，隶属 20 件套标准装配体系，负责锁定手腕角度优化扳机控枪。",
+        "craftAndMaterial": "采用经亚麻籽油浸润的精选实木/层压木料与钢制护箍制造，表面按1949年代伊热夫斯克机械制造厂（Izhmash）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：与枪机框一体连结的长行程重型活塞，提供充沛过驱动抽壳能量。",
+        "audioScript": "F-03，刻纹实木握把组件。作为 卡拉什尼科夫 AK-47 第三型突击步枪 的关键构件，它采用经亚麻籽油浸润的精选实木/层压木料与钢制护箍制造，主要承担锁定手腕角度优化扳机控枪职能。与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Wrist Alignment & Control",
+        "overview": "Checkered Hardwood Pistol Grip (F-03) of the Kalashnikov AK-47 Type 3, serving as the dedicated wrist alignment & control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from oil-finished selected hardwood paired with steel reinforcement ferrules to Izhmash Arsenal service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: One-piece long-stroke piston and heavy bolt carrier deliver high over-gassed extraction authority.",
+        "audioScript": "F-03, Checkered Hardwood Pistol Grip. Crafted from oil-finished selected hardwood paired with steel reinforcement ferrules for the Kalashnikov AK-47 Type 3, this component handles wrist alignment & control. Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "ak47_optic": {
+      "partId": "ak47_optic",
+      "bomCode": "F-04",
+      "calloutLabelEn": "Adjustable Iron Sights",
+      "zh": {
+        "roleTag": "建立精准弹道瞄准基线",
+        "overview": "卡拉什尼科夫 AK-47 第三型突击步枪（F-04）的可调机械准星照门组，隶属 20 件套标准装配体系，负责建立精准弹道瞄准基线。",
+        "craftAndMaterial": "采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，表面按1949年代伊热夫斯克机械制造厂（Izhmash）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：整锻铣削机匣配合双侧减重槽，消除早期冲压工艺刚度不足问题。",
+        "audioScript": "F-04，可调机械准星照门组。作为 卡拉什尼科夫 AK-47 第三型突击步枪 的关键构件，它采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，主要承担建立精准弹道瞄准基线职能。与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ballistic Sightline Datum",
+        "overview": "Adjustable Iron Sight Assembly (F-04) of the Kalashnikov AK-47 Type 3, serving as the dedicated ballistic sightline datum node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Soviet-enamel stamped steel and glass-filled Bakelite to Izhmash Arsenal service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Forged milled receiver with lightening cuts solves early stamped-sheet rigidity tolerances.",
+        "audioScript": "F-04, Adjustable Iron Sight Assembly. Crafted from Soviet-enamel stamped steel and glass-filled Bakelite for the Kalashnikov AK-47 Type 3, this component handles ballistic sightline datum. Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "ak47_gas_system": {
+      "partId": "ak47_gas_system",
+      "bomCode": "F-05",
+      "calloutLabelEn": "Gas & Recoil System",
+      "zh": {
+        "roleTag": "定量调控自动循环能量平衡",
+        "overview": "卡拉什尼科夫 AK-47 第三型突击步枪（F-05）的导气活塞/缓冲传动调节组件，隶属 20 件套标准装配体系，负责定量调控自动循环能量平衡。",
+        "craftAndMaterial": "采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，表面按1949年代伊热夫斯克机械制造厂（Izhmash）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "designHighlight": "工程亮点呼应整枪特征：大锥度 7.62×39mm M43 弹膛与刚性抓壳钩实现强力一次预抽壳。",
+        "audioScript": "F-05，导气活塞/缓冲传动调节组件。作为 卡拉什尼科夫 AK-47 第三型突击步枪 的关键构件，它采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，主要承担定量调控自动循环能量平衡职能。在击发循环中承担核心联动：长行程导气活塞带动枪机框完成自由行程并驱动旋转闭锁解锁。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Operating Energy Regulation",
+        "overview": "Gas Drive / Recoil Buffer System (F-05) of the Kalashnikov AK-47 Type 3, serving as the dedicated operating energy regulation node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Soviet-enamel stamped steel and glass-filled Bakelite to Izhmash Arsenal service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Generously tapered 7.62×39mm chamber and robust claw extractor ensure positive primary extraction.",
+        "audioScript": "F-05, Gas Drive / Recoil Buffer System. Crafted from Soviet-enamel stamped steel and glass-filled Bakelite for the Kalashnikov AK-47 Type 3, this component handles operating energy regulation. Drives the core operating sequence: long-stroke gas piston drives carrier free-travel before cam-rotating the locking bolt.",
+        "audioUrl": ""
+      }
+    },
+    "ak47_mount_rail": {
+      "partId": "ak47_mount_rail",
+      "bomCode": "F-06",
+      "calloutLabelEn": "Accessory Mount Rail",
+      "zh": {
+        "roleTag": "提供稳固依托与模块化拓展",
+        "overview": "卡拉什尼科夫 AK-47 第三型突击步枪（F-06）的战术附件导轨与背带支座，隶属 20 件套标准装配体系，负责提供稳固依托与模块化拓展。",
+        "craftAndMaterial": "采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，表面按1949年代伊热夫斯克机械制造厂（Izhmash）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：标志性右侧大片防尘快慢机兼任保险与机匣抛壳窗防尘盖。",
+        "audioScript": "F-06，战术附件导轨与背带支座。作为 卡拉什尼科夫 AK-47 第三型突击步枪 的关键构件，它采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，主要承担提供稳固依托与模块化拓展职能。与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Modular Support & Optics Base",
+        "overview": "Accessory Rail & Sling Mount (F-06) of the Kalashnikov AK-47 Type 3, serving as the dedicated modular support & optics base node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Soviet-enamel stamped steel and glass-filled Bakelite to Izhmash Arsenal service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Iconic right-side dust-cover selector lever doubles as ejection-port seal and fire control.",
+        "audioScript": "F-06, Accessory Rail & Sling Mount. Crafted from Soviet-enamel stamped steel and glass-filled Bakelite for the Kalashnikov AK-47 Type 3, this component handles modular support & optics base. Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "ak47_trigger": {
+      "partId": "ak47_trigger",
+      "bomCode": "T-01",
+      "calloutLabelEn": "Trigger & Guard",
+      "zh": {
+        "roleTag": "清晰干脆释放阻铁启动击发",
+        "overview": "卡拉什尼科夫 AK-47 第三型突击步枪（T-01）的精密机械扳机与护圈总成，隶属 20 件套标准装配体系，负责清晰干脆释放阻铁启动击发。",
+        "craftAndMaterial": "采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，表面按1949年代伊热夫斯克机械制造厂（Izhmash）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：与枪机框一体连结的长行程重型活塞，提供充沛过驱动抽壳能量。",
+        "audioScript": "T-01，精密机械扳机与护圈总成。作为 卡拉什尼科夫 AK-47 第三型突击步枪 的关键构件，它采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，主要承担清晰干脆释放阻铁启动击发职能。与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Crisp Firing Release Input",
+        "overview": "Precision Trigger & Guard Assembly (T-01) of the Kalashnikov AK-47 Type 3, serving as the dedicated crisp firing release input node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Soviet-enamel stamped steel and glass-filled Bakelite to Izhmash Arsenal service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: One-piece long-stroke piston and heavy bolt carrier deliver high over-gassed extraction authority.",
+        "audioScript": "T-01, Precision Trigger & Guard Assembly. Crafted from Soviet-enamel stamped steel and glass-filled Bakelite for the Kalashnikov AK-47 Type 3, this component handles crisp firing release input. Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "ak47_hammer": {
+      "partId": "ak47_hammer",
+      "bomCode": "T-02",
+      "calloutLabelEn": "Hammer / Striker Unit",
+      "zh": {
+        "roleTag": "高速释放储能精确击发底火/弓弦",
+        "overview": "卡拉什尼科夫 AK-47 第三型突击步枪（T-02）的硬化击锤/平移击针击发组件，隶属 20 件套标准装配体系，负责高速释放储能精确击发底火/弓弦。",
+        "craftAndMaterial": "采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，表面按1949年代伊热夫斯克机械制造厂（Izhmash）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：整锻铣削机匣配合双侧减重槽，消除早期冲压工艺刚度不足问题。",
+        "audioScript": "T-02，硬化击锤/平移击针击发组件。作为 卡拉什尼科夫 AK-47 第三型突击步枪 的关键构件，它采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，主要承担高速释放储能精确击发底火/弓弦职能。与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "High-Speed Ignition Impactor",
+        "overview": "Hardened Hammer / Striker Unit (T-02) of the Kalashnikov AK-47 Type 3, serving as the dedicated high-speed ignition impactor node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Soviet-enamel stamped steel and glass-filled Bakelite to Izhmash Arsenal service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Forged milled receiver with lightening cuts solves early stamped-sheet rigidity tolerances.",
+        "audioScript": "T-02, Hardened Hammer / Striker Unit. Crafted from Soviet-enamel stamped steel and glass-filled Bakelite for the Kalashnikov AK-47 Type 3, this component handles high-speed ignition impactor. Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "ak47_hammer_spring": {
+      "partId": "ak47_hammer_spring",
+      "bomCode": "T-03",
+      "calloutLabelEn": "Hammer Drive Spring",
+      "zh": {
+        "roleTag": "为可靠击发提供充沛冲击能量",
+        "overview": "卡拉什尼科夫 AK-47 第三型突击步枪（T-03）的主击发扭簧/螺旋打击簧，隶属 20 件套标准装配体系，负责为可靠击发提供充沛冲击能量。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1949年代伊热夫斯克机械制造厂（Izhmash）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 600 发/分（自动）· 40–100 发/分（战斗） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：大锥度 7.62×39mm M43 弹膛与刚性抓壳钩实现强力一次预抽壳。",
+        "audioScript": "T-03，主击发扭簧/螺旋打击簧。作为 卡拉什尼科夫 AK-47 第三型突击步枪 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担为可靠击发提供充沛冲击能量职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 600 发/分（自动）· 40–100 发/分（战斗） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Ignition Drive Energy",
+        "overview": "Main Hammer / Striker Drive Spring (T-03) of the Kalashnikov AK-47 Type 3, serving as the dedicated ignition drive energy node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to Izhmash Arsenal service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 600 RPM cyclic · 40–100 RPM practical timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Generously tapered 7.62×39mm chamber and robust claw extractor ensure positive primary extraction.",
+        "audioScript": "T-03, Main Hammer / Striker Drive Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Kalashnikov AK-47 Type 3, this component handles ignition drive energy. Stores and returns cyclic elastic energy via live coil compression to maintain 600 RPM cyclic · 40–100 RPM practical timing.",
+        "audioUrl": ""
+      }
+    },
+    "ak47_selector": {
+      "partId": "ak47_selector",
+      "bomCode": "T-04",
+      "calloutLabelEn": "Fire Selector & Safety",
+      "zh": {
+        "roleTag": "可靠锁止扳机阻铁并切换射态",
+        "overview": "卡拉什尼科夫 AK-47 第三型突击步枪（T-04）的快慢机与机械保险杠杆，隶属 20 件套标准装配体系，负责可靠锁止扳机阻铁并切换射态。",
+        "craftAndMaterial": "采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，表面按1949年代伊热夫斯克机械制造厂（Izhmash）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：标志性右侧大片防尘快慢机兼任保险与机匣抛壳窗防尘盖。",
+        "audioScript": "T-04，快慢机与机械保险杠杆。作为 卡拉什尼科夫 AK-47 第三型突击步枪 的关键构件，它采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，主要承担可靠锁止扳机阻铁并切换射态职能。与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Safety Interlock & Mode Control",
+        "overview": "Fire Selector & Safety Lever (T-04) of the Kalashnikov AK-47 Type 3, serving as the dedicated safety interlock & mode control node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Soviet-enamel stamped steel and glass-filled Bakelite to Izhmash Arsenal service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Iconic right-side dust-cover selector lever doubles as ejection-port seal and fire control.",
+        "audioScript": "T-04, Fire Selector & Safety Lever. Crafted from Soviet-enamel stamped steel and glass-filled Bakelite for the Kalashnikov AK-47 Type 3, this component handles safety interlock & mode control. Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "ak47_mag_body": {
+      "partId": "ak47_mag_body",
+      "bomCode": "M-01",
+      "calloutLabelEn": "30-Rd Magazine Body",
+      "zh": {
+        "roleTag": "高速快换供弹核心",
+        "overview": "卡拉什尼科夫 AK-47 第三型突击步枪（M-01）的30 发可拆式双排弹匣壳体，隶属 20 件套标准装配体系，负责高速快换供弹核心。",
+        "craftAndMaterial": "采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，表面按1949年代伊热夫斯克机械制造厂（Izhmash）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：与枪机框一体连结的长行程重型活塞，提供充沛过驱动抽壳能量。",
+        "audioScript": "M-01，30 发可拆式双排弹匣壳体。作为 卡拉什尼科夫 AK-47 第三型突击步枪 的关键构件，它采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，主要承担高速快换供弹核心职能。与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Detachable Ammunition Feed",
+        "overview": "30-Round Detachable Magazine Body (M-01) of the Kalashnikov AK-47 Type 3, serving as the dedicated detachable ammunition feed node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Soviet-enamel stamped steel and glass-filled Bakelite to Izhmash Arsenal service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: One-piece long-stroke piston and heavy bolt carrier deliver high over-gassed extraction authority.",
+        "audioScript": "M-01, 30-Round Detachable Magazine Body. Crafted from Soviet-enamel stamped steel and glass-filled Bakelite for the Kalashnikov AK-47 Type 3, this component handles detachable ammunition feed. Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "ak47_follower": {
+      "partId": "ak47_follower",
+      "bomCode": "M-02",
+      "calloutLabelEn": "Anti-Tilt Follower",
+      "zh": {
+        "roleTag": "保持供弹仰角与空仓挂机触发",
+        "overview": "卡拉什尼科夫 AK-47 第三型突击步枪（M-02）的防倾倒高对比度托弹板，隶属 20 件套标准装配体系，负责保持供弹仰角与空仓挂机触发。",
+        "craftAndMaterial": "采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，表面按1949年代伊热夫斯克机械制造厂（Izhmash）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：整锻铣削机匣配合双侧减重槽，消除早期冲压工艺刚度不足问题。",
+        "audioScript": "M-02，防倾倒高对比度托弹板。作为 卡拉什尼科夫 AK-47 第三型突击步枪 的关键构件，它采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，主要承担保持供弹仰角与空仓挂机触发职能。与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Feed Angle & Hold-Open",
+        "overview": "Anti-Tilt High-Vis Follower (M-02) of the Kalashnikov AK-47 Type 3, serving as the dedicated feed angle & hold-open node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Soviet-enamel stamped steel and glass-filled Bakelite to Izhmash Arsenal service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Forged milled receiver with lightening cuts solves early stamped-sheet rigidity tolerances.",
+        "audioScript": "M-02, Anti-Tilt High-Vis Follower. Crafted from Soviet-enamel stamped steel and glass-filled Bakelite for the Kalashnikov AK-47 Type 3, this component handles feed angle & hold-open. Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    },
+    "ak47_mag_spring": {
+      "partId": "ak47_mag_spring",
+      "bomCode": "M-03",
+      "calloutLabelEn": "Magazine Lift Spring",
+      "zh": {
+        "roleTag": "高射速下可靠托举下一发弹",
+        "overview": "卡拉什尼科夫 AK-47 第三型突击步枪（M-03）的高弹性不锈钢托弹弹簧，隶属 20 件套标准装配体系，负责高射速下可靠托举下一发弹。",
+        "craftAndMaterial": "采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，表面按1949年代伊热夫斯克机械制造厂（Izhmash）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 600 发/分（自动）· 40–100 发/分（战斗） 的连续稳定节拍。",
+        "designHighlight": "工程亮点呼应整枪特征：大锥度 7.62×39mm M43 弹膛与刚性抓壳钩实现强力一次预抽壳。",
+        "audioScript": "M-03，高弹性不锈钢托弹弹簧。作为 卡拉什尼科夫 AK-47 第三型突击步枪 的关键构件，它采用高疲劳寿命硅铬琴钢丝冷卷热定型弹簧钢制造，主要承担高射速下可靠托举下一发弹职能。通过 GPU 实时螺旋压缩形变储存与释放弹性势能，保障 600 发/分（自动）· 40–100 发/分（战斗） 的连续稳定节拍。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Rapid-Cycle Feed Tension",
+        "overview": "Stainless Magazine Lift Spring (M-03) of the Kalashnikov AK-47 Type 3, serving as the dedicated rapid-cycle feed tension node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from cold-wound heat-set chrome-silicon music-wire spring steel to Izhmash Arsenal service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Stores and returns cyclic elastic energy via live coil compression to maintain 600 RPM cyclic · 40–100 RPM practical timing.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Generously tapered 7.62×39mm chamber and robust claw extractor ensure positive primary extraction.",
+        "audioScript": "M-03, Stainless Magazine Lift Spring. Crafted from cold-wound heat-set chrome-silicon music-wire spring steel for the Kalashnikov AK-47 Type 3, this component handles rapid-cycle feed tension. Stores and returns cyclic elastic energy via live coil compression to maintain 600 RPM cyclic · 40–100 RPM practical timing.",
+        "audioUrl": ""
+      }
+    },
+    "ak47_mag_base": {
+      "partId": "ak47_mag_base",
+      "bomCode": "M-04",
+      "calloutLabelEn": "Magazine Floorplate",
+      "zh": {
+        "roleTag": "底盖防跌落缓冲与快速拆洗",
+        "overview": "卡拉什尼科夫 AK-47 第三型突击步枪（M-04）的防震快拆弹匣底板与锁片，隶属 20 件套标准装配体系，负责底盖防跌落缓冲与快速拆洗。",
+        "craftAndMaterial": "采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，表面按1949年代伊热夫斯克机械制造厂（Izhmash）军械标准精整，兼顾耐磨与防蚀。",
+        "kinematicRole": "与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "designHighlight": "工程亮点呼应整枪特征：标志性右侧大片防尘快慢机兼任保险与机匣抛壳窗防尘盖。",
+        "audioScript": "M-04，防震快拆弹匣底板与锁片。作为 卡拉什尼科夫 AK-47 第三型突击步枪 的关键构件，它采用苏联烤漆冲压钢与酚醛玻璃纤维电木制造，主要承担底盖防跌落缓冲与快速拆洗职能。与相邻模块保持精密基准配合，协同支撑 7.62×39mm M43 发射周期中的定位、操持与可靠复位。",
+        "audioUrl": ""
+      },
+      "en": {
+        "roleTag": "Impact-Resistant Baseplate",
+        "overview": "Reinforced Magazine Floorplate (M-04) of the Kalashnikov AK-47 Type 3, serving as the dedicated impact-resistant baseplate node within the 20-part assembly.",
+        "craftAndMaterial": "Manufactured from Soviet-enamel stamped steel and glass-filled Bakelite to Izhmash Arsenal service tolerances for wear and corrosion resistance.",
+        "kinematicRole": "Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "designHighlight": "Integrated directly with the platform's defining strength: Iconic right-side dust-cover selector lever doubles as ejection-port seal and fire control.",
+        "audioScript": "M-04, Reinforced Magazine Floorplate. Crafted from Soviet-enamel stamped steel and glass-filled Bakelite for the Kalashnikov AK-47 Type 3, this component handles impact-resistant baseplate. Maintains datum alignment with adjacent AK-47 Type 3 assemblies throughout recoil, extraction, and return to battery.",
+        "audioUrl": ""
+      }
+    }
+  }
+}
