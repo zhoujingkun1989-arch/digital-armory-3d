@@ -42,6 +42,45 @@ export type ProjectileCategory =
 
 export type FlightRegime = 'supersonic' | 'transonic' | 'subsonic';
 
+export type TwistDirection = 'RH' | 'LH' | 'none';
+
+export type GyroscopicStabilityStatus =
+  | 'stable'
+  | 'marginal'
+  | 'unstable'
+  | 'fin_stabilized';
+
+export interface MillerStabilityResult {
+  /** Don Miller gyroscopic stability factor S_g (0 for fin-stabilized / unrifled projectiles) */
+  sg: number;
+  status: GyroscopicStabilityStatus;
+  twistInches: number;
+  twistDirection: TwistDirection;
+}
+
+export const MULTI_ZERO_PRESETS_M = [100, 200, 300] as const;
+export type MultiZeroDistanceM = (typeof MULTI_ZERO_PRESETS_M)[number];
+
+export interface ExternalBallisticsEnvironment {
+  zeroDistanceM: ZeroRangeOptionM;
+  includeSpinDrift: boolean;
+  crosswindMps: number;
+  /** Wind origin clock direction (12 = headwind, 3 = full right crosswind, 6 = tailwind, 9 = full left crosswind) */
+  windClockHours: number;
+  altitudeM: number;
+  tempC: number;
+}
+
+export const DEFAULT_EXTERNAL_BALLISTICS_ENVIRONMENT: Readonly<ExternalBallisticsEnvironment> =
+  Object.freeze({
+    zeroDistanceM: 100,
+    includeSpinDrift: true,
+    crosswindMps: 4.5,
+    windClockHours: 3,
+    altitudeM: 0,
+    tempC: 15,
+  });
+
 /** Standard gravity g₀ (m/s²) */
 export const GRAVITY_MPS2 = 9.80665;
 /** ICAO sea-level standard pressure P₀ (Pa) */
@@ -133,6 +172,14 @@ export interface ExternalProjectileSpec {
   defaultSightHeightCm: number;
   /** Recommended zero distance (m) */
   recommendedZeroM: ZeroRangeOptionM;
+  /** Primary barrel rifling twist rate in inches per turn (0 for smoothbore / archery) */
+  twistInches: number;
+  /** Barrel rifling twist chirality ('RH' | 'LH' | 'none') */
+  twistDirection: TwistDirection;
+  /** Projectile length expressed in calibers (L / d) for Miller stability */
+  lengthCalibers: number;
+  /** True for fin-stabilized smoothbore APFSDS darts & fletched archery arrows/bolts */
+  isFinStabilized: boolean;
   /** Representative museum weapon IDs (includes Wave-2 exhibits `m249`, `p08`, `vector`) */
   representativeWeaponIds: readonly string[];
   primaryWeaponId: string;
@@ -140,9 +187,55 @@ export interface ExternalProjectileSpec {
   noteEn: string;
 }
 
+interface ProjectileRiflingDefaults {
+  twistInches: number;
+  twistDirection: TwistDirection;
+  lengthCalibers: number;
+  isFinStabilized: boolean;
+}
+
+/**
+ * Authoritative rifling & projectile length-in-calibers metadata aligned 1:1
+ * with `WEAPON_RIFLING_SPECS[primaryWeaponId]` in `src/engine/ballistics/riflingSpecs.ts`
+ * (kept local here so `armory-ballistics-physics` remains a zero-cycle Rollup leaf).
+ */
+const PROJECTILE_RIFLING_DEFAULTS: Readonly<
+  Record<ExternalProjectileId, ProjectileRiflingDefaults>
+> = {
+  '9mm_para': { twistInches: 9.84, twistDirection: 'RH', lengthCalibers: 1.7, isFinStabilized: false },
+  '45_acp': { twistInches: 16.0, twistDirection: 'LH', lengthCalibers: 1.47, isFinStabilized: false },
+  '57_28': { twistInches: 9.1, twistDirection: 'RH', lengthCalibers: 3.75, isFinStabilized: false },
+  '357_magnum': { twistInches: 14.0, twistDirection: 'LH', lengthCalibers: 1.95, isFinStabilized: false },
+  '50_ae': { twistInches: 19.0, twistDirection: 'RH', lengthCalibers: 1.65, isFinStabilized: false },
+  '12_gauge': { twistInches: 0, twistDirection: 'none', lengthCalibers: 1.0, isFinStabilized: false },
+  '762_m43': { twistInches: 7.87, twistDirection: 'RH', lengthCalibers: 3.3, isFinStabilized: false },
+  '556_nato': { twistInches: 7.0, twistDirection: 'RH', lengthCalibers: 4.05, isFinStabilized: false },
+  '30_06': { twistInches: 10.0, twistDirection: 'RH', lengthCalibers: 3.6, isFinStabilized: false },
+  '338_lapua': { twistInches: 11.0, twistDirection: 'RH', lengthCalibers: 4.65, isFinStabilized: false },
+  '50_bmg': { twistInches: 15.0, twistDirection: 'RH', lengthCalibers: 4.55, isFinStabilized: false },
+  '473_caseless': { twistInches: 6.1, twistDirection: 'RH', lengthCalibers: 4.45, isFinStabilized: false },
+  '9x39_subsonic': { twistInches: 8.27, twistDirection: 'RH', lengthCalibers: 3.95, isFinStabilized: false },
+  '545_m74': { twistInches: 7.87, twistDirection: 'RH', lengthCalibers: 4.1, isFinStabilized: false },
+  '762_nato': { twistInches: 10.0, twistDirection: 'RH', lengthCalibers: 3.75, isFinStabilized: false },
+  '30_30_win': { twistInches: 12.0, twistDirection: 'RH', lengthCalibers: 3.45, isFinStabilized: false },
+  '792_mauser': { twistInches: 9.45, twistDirection: 'RH', lengthCalibers: 4.25, isFinStabilized: false },
+  '30x173_gau8': { twistInches: 39.4, twistDirection: 'RH', lengthCalibers: 3.83, isFinStabilized: false },
+  '88mm_pzgr39': { twistInches: 28.0, twistDirection: 'RH', lengthCalibers: 3.5, isFinStabilized: false },
+  '120mm_apfsds': { twistInches: 0, twistDirection: 'none', lengthCalibers: 24.0, isFinStabilized: true },
+  '125mm_apfsds': { twistInches: 0, twistDirection: 'none', lengthCalibers: 25.0, isFinStabilized: true },
+  arrow_400gr: { twistInches: 0, twistDirection: 'none', lengthCalibers: 140.0, isFinStabilized: true },
+  bolt_400gr: { twistInches: 0, twistDirection: 'none', lengthCalibers: 66.0, isFinStabilized: true },
+};
+
 type ProjectileSeed = Omit<
   ExternalProjectileSpec,
-  'totalPayloadGrams' | 'singleMuzzleEnergyJ' | 'muzzleEnergyJ'
+  | 'totalPayloadGrams'
+  | 'singleMuzzleEnergyJ'
+  | 'muzzleEnergyJ'
+  | 'twistInches'
+  | 'twistDirection'
+  | 'lengthCalibers'
+  | 'isFinStabilized'
 >;
 
 function defineProjectile(seed: ProjectileSeed): ExternalProjectileSpec {
@@ -150,8 +243,10 @@ function defineProjectile(seed: ProjectileSeed): ExternalProjectileSpec {
   const singleMuzzleEnergyJ =
     0.5 * singleMassKg * seed.muzzleVelocityMps * seed.muzzleVelocityMps;
   const totalPayloadGrams = seed.massGrams * seed.pelletCount;
+  const rifling = PROJECTILE_RIFLING_DEFAULTS[seed.id];
   return {
     ...seed,
+    ...rifling,
     totalPayloadGrams,
     singleMuzzleEnergyJ,
     muzzleEnergyJ: singleMuzzleEnergyJ * seed.pelletCount,
@@ -1056,6 +1151,122 @@ export function computeBuckshotPatternRadiusMm(
 }
 
 // ============================================================================
+// 2b. Applied Ballistics Miller Gyroscopic Stability (S_g) & Spin Drift
+// ============================================================================
+
+const MM_PER_INCH = 25.4;
+const CM_PER_INCH = 2.54;
+const MILLER_REF_VELOCITY_MPS = 853.44; // 2,800 fps standard reference
+
+/**
+ * Evaluates Don Miller's gyroscopic stability factor S_g with standard velocity
+ * correction:
+ *   S_g = [30 * m / (t^2 * d^3 * l * (1 + l^2))] * (v / 2800 fps)^(1/3)
+ * where `d` is caliber in inches, `t = twistInches / d` is twist in calibers/turn,
+ * `l` is projectile length in calibers, and `m` is projectile weight in grains.
+ *
+ * Smoothbore fin-stabilized tank APFSDS darts, smoothbore shotshells, and
+ * fletched archery arrows/bolts cleanly return `{ sg: 0, status: 'fin_stabilized' }`
+ * rather than synthetic spin stability values.
+ */
+export function computeMillerGyroscopicStability(
+  bulletDiameterMm: number,
+  massGr: number,
+  lengthCalibers: number,
+  twistInches: number,
+  velocityMps: number,
+  options: { isFinStabilized?: boolean; twistDirection?: TwistDirection } = {}
+): MillerStabilityResult {
+  const dir: TwistDirection =
+    options.twistDirection ?? (twistInches > 0 ? 'RH' : 'none');
+
+  if (
+    options.isFinStabilized ||
+    dir === 'none' ||
+    !Number.isFinite(twistInches) ||
+    twistInches <= 0 ||
+    !Number.isFinite(bulletDiameterMm) ||
+    bulletDiameterMm <= 0 ||
+    !Number.isFinite(massGr) ||
+    massGr <= 0 ||
+    !Number.isFinite(lengthCalibers) ||
+    lengthCalibers <= 0
+  ) {
+    return {
+      sg: 0,
+      status: 'fin_stabilized',
+      twistInches: 0,
+      twistDirection: 'none',
+    };
+  }
+
+  const dIn = bulletDiameterMm / MM_PER_INCH;
+  const twistCalibers = twistInches / dIn;
+  const denom =
+    twistCalibers *
+    twistCalibers *
+    dIn *
+    dIn *
+    dIn *
+    lengthCalibers *
+    (1 + lengthCalibers * lengthCalibers);
+  if (denom <= 1e-12) {
+    return {
+      sg: 0,
+      status: 'fin_stabilized',
+      twistInches: 0,
+      twistDirection: 'none',
+    };
+  }
+
+  const safeVelMps = clamp(
+    Number.isFinite(velocityMps) ? velocityMps : MILLER_REF_VELOCITY_MPS,
+    120,
+    2500
+  );
+  const velFactor = Math.cbrt(safeVelMps / MILLER_REF_VELOCITY_MPS);
+  const rawSg = ((30 * massGr) / denom) * velFactor;
+  const sg = Number(clamp(rawSg, 0, 99.99).toFixed(2));
+  const status: GyroscopicStabilityStatus =
+    sg >= 1.5 ? 'stable' : sg >= 1.0 ? 'marginal' : 'unstable';
+
+  return {
+    sg,
+    status,
+    twistInches,
+    twistDirection: dir,
+  };
+}
+
+/**
+ * Evaluates Applied Ballistics (Litz) empirical gyroscopic spin-drift deflection
+ * in centimeters at time-of-flight `tofSec`:
+ *   SD_in = 1.25 * (S_g + 1.2) * tofSec^1.83
+ *   SD_cm = SD_in * 2.54
+ * Signed `+` (rightward, +Z) for `'RH'` barrels, `-` (leftward, -Z) for `'LH'`
+ * barrels (e.g., Colt M1911A1 1:16" LH, Colt Python 1:14" LH), and strictly `0`
+ * for `'none'` (smoothbore APFSDS, shotguns, compound archery).
+ */
+export function computeGyroscopicSpinDriftCm(
+  tofSec: number,
+  stabilitySg: number,
+  twistDir: TwistDirection
+): number {
+  if (
+    twistDir === 'none' ||
+    !Number.isFinite(tofSec) ||
+    tofSec <= 0 ||
+    !Number.isFinite(stabilitySg) ||
+    stabilitySg <= 0
+  ) {
+    return 0;
+  }
+  const driftInches = 1.25 * (stabilitySg + 1.2) * Math.pow(tofSec, 1.83);
+  const driftCm = driftInches * CM_PER_INCH;
+  return twistDir === 'LH' ? -driftCm : driftCm;
+}
+
+// ============================================================================
 // 3. Sight-In Zero Elevation Solver & RK4 3-DOF Trajectory Integrator
 // ============================================================================
 
@@ -1064,6 +1275,8 @@ export interface BallisticsSolveOptions {
   maxRangeM?: number;
   /** Sight-in zero distance in meters (default: 100) */
   zeroRangeM?: number;
+  /** Alias for `zeroRangeM` matching `ExternalBallisticsEnvironment.zeroDistanceM` */
+  zeroDistanceM?: number;
   /** Optic / iron sight centerline height above bore axis in cm (default: 4.8) */
   sightHeightCm?: number;
   /** 90° lateral crosswind speed in m/s (+ = left-to-right +Z, - = right-to-left -Z; default: 0) */
@@ -1074,6 +1287,12 @@ export interface BallisticsSolveOptions {
   tempC?: number;
   /** Downrange sampling interval in meters (default: 5 m for >= 300 m, 2 m for 100 m) */
   sampleStepM?: number;
+  /** Include Litz gyroscopic spin drift in total horizontal deflection & windage MIL/MOA */
+  includeSpinDrift?: boolean;
+  /** Optional barrel rifling twist override in inches/turn (e.g. from `WEAPON_RIFLING_SPECS`) */
+  twistInches?: number;
+  /** Optional barrel rifling twist chirality override ('RH' | 'LH' | 'none') */
+  twistDirection?: TwistDirection;
 }
 
 export interface TrajectorySample {
@@ -1083,10 +1302,14 @@ export interface TrajectorySample {
   dropCm: number;
   /** Vertical height relative to Line of Sight in m */
   dropM: number;
-  /** Lateral crosswind drift in cm (+ = downwind right, - = left) */
+  /** Total lateral deflection in cm (`pureWindDriftCm + spinDriftCm` when spin drift enabled) */
   windDriftCm: number;
-  /** Lateral crosswind drift in m */
+  /** Total lateral deflection in m */
   windDriftM: number;
+  /** Pure aerodynamic crosswind drift component in cm (excluding gyroscopic spin drift) */
+  pureWindDriftCm: number;
+  /** Gyroscopic spin-drift deflection component in cm (+right RH, -left LH, 0 when off/smoothbore) */
+  spinDriftCm: number;
   /** Retained 3D speed |v| (m/s) */
   velocityMps: number;
   /** Instantaneous Mach number relative to air mass */
@@ -1109,9 +1332,9 @@ export interface TrajectorySample {
   holdoverMil: number;
   /** Required scope elevation holdover in true MOA (+ = hold UP when dropCm < 0) */
   holdoverMoa: number;
-  /** Lateral windage deflection in true MIL / mrad */
+  /** Total lateral windage deflection in true MIL / mrad */
   windageMil: number;
-  /** Lateral windage deflection in true MOA */
+  /** Total lateral windage deflection in true MOA */
   windageMoa: number;
   /** True while Mach >= 1.0 */
   isSupersonic: boolean;
@@ -1124,6 +1347,7 @@ export interface DopeCardRow {
   inFlight: boolean;
   dropCm: number;
   windDriftCm: number;
+  spinDriftCm: number;
   holdoverMil: number;
   holdoverMoa: number;
   windageMil: number;
@@ -1147,6 +1371,13 @@ export interface BallisticSolution {
   zeroRangeM: number;
   sightHeightCm: number;
   crosswindMps: number;
+  /** Whether gyroscopic spin drift is summed into `windDriftCm` / `windageMil` */
+  includeSpinDrift: boolean;
+  /** Effective barrel twist rate (inches/turn) & chirality used by the solver */
+  twistInches: number;
+  twistDirection: TwistDirection;
+  /** Don Miller gyroscopic stability factor & classification */
+  stability: MillerStabilityResult;
   /** Solved bore pitch angle relative to Line of Sight (rad) */
   zeroAngleRad: number;
   /** Solved bore pitch angle in true MIL (mrad) */
@@ -1381,7 +1612,10 @@ function buildTrajectorySample(
   vx: number,
   vy: number,
   vz: number,
-  timeS: number
+  timeS: number,
+  spinDriftActive: boolean,
+  stabilitySg: number,
+  twistDirection: TwistDirection
 ): TrajectorySample {
   const speedMps = Math.sqrt(vx * vx + vy * vy + vz * vz);
   const dwz = vz - crosswindMps;
@@ -1395,13 +1629,20 @@ function buildTrajectorySample(
   const retainedEnergyPct =
     spec.muzzleEnergyJ > 0 ? (energyJ / spec.muzzleEnergyJ) * 100 : 0;
 
+  const pureWindDriftCm = zM * 100;
+  const spinDriftCm = spinDriftActive
+    ? computeGyroscopicSpinDriftCm(timeS, stabilitySg, twistDirection)
+    : 0;
+  const totalDriftCm = pureWindDriftCm + spinDriftCm;
+  const totalDriftM = totalDriftCm / 100;
+
   let holdoverMil = 0;
   let holdoverMoa = 0;
   let windageMil = 0;
   let windageMoa = 0;
   if (rangeM > 1e-6) {
     const elevAngleRad = Math.atan2(-yM, rangeM);
-    const windAngleRad = Math.atan2(zM, rangeM);
+    const windAngleRad = Math.atan2(totalDriftM, rangeM);
     holdoverMil = elevAngleRad * MRAD_PER_RAD;
     holdoverMoa = elevAngleRad * MOA_PER_RAD;
     windageMil = windAngleRad * MRAD_PER_RAD;
@@ -1412,8 +1653,10 @@ function buildTrajectorySample(
     rangeM,
     dropCm: yM * 100,
     dropM: yM,
-    windDriftCm: zM * 100,
-    windDriftM: zM,
+    windDriftCm: totalDriftCm,
+    windDriftM: totalDriftM,
+    pureWindDriftCm,
+    spinDriftCm,
     velocityMps: speedMps,
     mach,
     dragCd,
@@ -1436,7 +1679,8 @@ function buildTrajectorySample(
  * Full deterministic RK4 3-DOF External Ballistics Solver.
  * Integrates 3D trajectory up to `maxRangeM` (and tracks supersonic Mach 1.0 crossing
  * out to 2,500 m when still supersonic at `maxRangeM` so `.338 LM` & `.50 BMG` report
- * exact transonic crossing distances).
+ * exact transonic crossing distances), plus optional Applied Ballistics gyroscopic
+ * spin-drift coupling (`includeSpinDrift`) & Don Miller stability ($S_g$).
  */
 export function computeBallisticSolution(
   projectileInput: ExternalProjectileInput,
@@ -1445,7 +1689,7 @@ export function computeBallisticSolution(
   const spec = getExternalProjectileSpec(projectileInput);
   const maxRangeM = clamp(options.maxRangeM ?? 1000, 25, 2500);
   const zeroRangeM = clamp(
-    options.zeroRangeM ?? spec.recommendedZeroM,
+    options.zeroDistanceM ?? options.zeroRangeM ?? spec.recommendedZeroM,
     10,
     1000
   );
@@ -1464,6 +1708,21 @@ export function computeBallisticSolution(
   const atmosphere = computeAtmosphere(
     options.altitudeM ?? 0,
     options.tempC ?? 15
+  );
+  const includeSpinDrift = options.includeSpinDrift === true;
+  const twistInches = options.twistInches ?? spec.twistInches;
+  const twistDirection: TwistDirection =
+    options.twistDirection ?? spec.twistDirection;
+  const stability = computeMillerGyroscopicStability(
+    spec.caliberMm,
+    spec.massGrains,
+    spec.lengthCalibers,
+    twistInches,
+    spec.muzzleVelocityMps,
+    {
+      isFinStabilized: spec.isFinStabilized,
+      twistDirection,
+    }
   );
 
   const sampleStepM =
@@ -1515,7 +1774,10 @@ export function computeBallisticSolution(
       vx,
       vy,
       vz,
-      0
+      0,
+      includeSpinDrift,
+      stability.sg,
+      stability.twistDirection
     ),
   ];
 
@@ -1656,7 +1918,10 @@ export function computeBallisticSolution(
           svx,
           svy,
           svz,
-          st
+          st,
+          includeSpinDrift,
+          stability.sg,
+          stability.twistDirection
         )
       );
       effectiveMaxRangeM = sx;
@@ -1683,7 +1948,10 @@ export function computeBallisticSolution(
           prevVx + (vx - prevVx) * u,
           prevVy + (vy - prevVy) * u,
           prevVz + (vz - prevVz) * u,
-          prevT + (t - prevT) * u
+          prevT + (t - prevT) * u,
+          includeSpinDrift,
+          stability.sg,
+          stability.twistDirection
         )
       );
       effectiveMaxRangeM = maxRangeM;
@@ -1709,7 +1977,10 @@ export function computeBallisticSolution(
             vx,
             vy,
             vz,
-            t
+            t,
+            includeSpinDrift,
+            stability.sg,
+            stability.twistDirection
           )
         );
         effectiveMaxRangeM = Math.min(x, maxRangeM);
@@ -1728,6 +1999,10 @@ export function computeBallisticSolution(
     zeroRangeM,
     sightHeightCm,
     crosswindMps,
+    includeSpinDrift,
+    twistInches: stability.twistInches,
+    twistDirection: stability.twistDirection,
+    stability,
     zeroAngleRad,
     zeroAngleMil: zeroAngleRad * MRAD_PER_RAD,
     zeroAngleMoa: zeroAngleRad * MOA_PER_RAD,
@@ -1780,7 +2055,19 @@ export function interpolateTrajectoryAt(
   const u = clamp((rangeM - a.rangeM) / span, 0, 1);
 
   const dropM = a.dropM + (b.dropM - a.dropM) * u;
-  const windDriftM = a.windDriftM + (b.windDriftM - a.windDriftM) * u;
+  const pureWindDriftCm =
+    a.pureWindDriftCm + (b.pureWindDriftCm - a.pureWindDriftCm) * u;
+  const timeOfFlightS =
+    a.timeOfFlightS + (b.timeOfFlightS - a.timeOfFlightS) * u;
+  const spinDriftCm = solution.includeSpinDrift
+    ? computeGyroscopicSpinDriftCm(
+        timeOfFlightS,
+        solution.stability.sg,
+        solution.stability.twistDirection
+      )
+    : 0;
+  const windDriftCm = pureWindDriftCm + spinDriftCm;
+  const windDriftM = windDriftCm / 100;
   const velocityMps = a.velocityMps + (b.velocityMps - a.velocityMps) * u;
   const mach = a.mach + (b.mach - a.mach) * u;
   const dragCd = a.dragCd + (b.dragCd - a.dragCd) * u;
@@ -1789,8 +2076,6 @@ export function interpolateTrajectoryAt(
   const energyJ = a.energyJ + (b.energyJ - a.energyJ) * u;
   const retainedEnergyPct =
     a.retainedEnergyPct + (b.retainedEnergyPct - a.retainedEnergyPct) * u;
-  const timeOfFlightS =
-    a.timeOfFlightS + (b.timeOfFlightS - a.timeOfFlightS) * u;
 
   const elevRad = rangeM > 1e-6 ? Math.atan2(-dropM, rangeM) : 0;
   const windRad = rangeM > 1e-6 ? Math.atan2(windDriftM, rangeM) : 0;
@@ -1799,8 +2084,10 @@ export function interpolateTrajectoryAt(
     rangeM,
     dropCm: dropM * 100,
     dropM,
-    windDriftCm: windDriftM * 100,
+    windDriftCm,
     windDriftM,
+    pureWindDriftCm,
+    spinDriftCm,
     velocityMps,
     mach,
     dragCd,
@@ -1842,6 +2129,9 @@ export function buildDopeCardRows(
           crosswindMps: solution.crosswindMps,
           altitudeM: solution.atmosphere.altitudeM,
           tempC: solution.atmosphere.tempC,
+          includeSpinDrift: solution.includeSpinDrift,
+          twistInches: solution.twistInches,
+          twistDirection: solution.twistDirection,
           sampleStepM: 5,
         })
       : solution;
@@ -1854,6 +2144,7 @@ export function buildDopeCardRows(
         inFlight: false,
         dropCm: 0,
         windDriftCm: 0,
+        spinDriftCm: 0,
         holdoverMil: 0,
         holdoverMoa: 0,
         windageMil: 0,
@@ -1872,6 +2163,7 @@ export function buildDopeCardRows(
       inFlight: true,
       dropCm: sample.dropCm,
       windDriftCm: sample.windDriftCm,
+      spinDriftCm: sample.spinDriftCm,
       holdoverMil: sample.holdoverMil,
       holdoverMoa: sample.holdoverMoa,
       windageMil: sample.windageMil,

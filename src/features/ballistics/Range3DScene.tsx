@@ -46,12 +46,14 @@ import {
 import {
   buildRangeTrajectory3D,
   computeFiveRoundGrouping,
+  computeMachConeStateInto,
   computeStringPlaybackSync,
   computeTargetCamPipRect,
   computeTargetCamPipRectInto,
   computeTargetCamPoseInto,
   computeWindFlagStates,
   createMutableCameraPose3D,
+  createMutableMachConeState,
   createMutableProjectilePose3D,
   createMutableTargetCamPipRect,
   evaluateGelCavityPulse01,
@@ -89,6 +91,7 @@ export interface Range3DSceneProps {
   maxRangeM: number;
   targetRangeM: number;
   signedCrosswindMps: number;
+  windClockHours?: number;
   lang: LanguageCode;
   isLightTheme: boolean;
   expanded?: boolean;
@@ -136,6 +139,7 @@ const getServerSnapshot = () => false;
 // Module-level reusable scratch primitives (Zero-GC inside useFrame)
 const _poseScratch = createMutableProjectilePose3D();
 const _tracerPoseScratch = createMutableProjectilePose3D();
+const _machConeScratch = createMutableMachConeState();
 const _camPoseScratch = createMutableCameraPose3D();
 const _pipPoseScratch = createMutableCameraPose3D();
 const _pipRectScratch = createMutableTargetCamPipRect();
@@ -937,12 +941,24 @@ const AnimatedWindFlags: React.FC<{
       const cosDroop = Math.cos(flag.droopRad);
       const sinDroop = Math.sin(flag.droopRad);
       const phase = fIdx * 1.37;
+      // Subtle downrange gust ripple modulating live lift/lean across multi-zone posts
+      const gustRipple =
+        flag.windSpeedMps > 0.25
+          ? 0.045 *
+            flag.gustFactor *
+            Math.sin(t * (1.4 + flag.flutterHz * 0.35) + phase)
+          : 0;
+      const effDroop = Math.max(0.04, flag.droopRad - gustRipple);
+      const effCos = Math.cos(effDroop);
+      const effSin = Math.sin(effDroop);
+      const blendCos = 0.65 * effCos + 0.35 * cosDroop;
+      const blendSin = 0.65 * effSin + 0.35 * sinDroop;
 
       for (let col = 0; col < cols; col++) {
         const u = col / FLAG_SEGMENTS;
         const dist = u * FLAG_LENGTH_M;
-        const zExt = dist * cosDroop;
-        const yDrop = -dist * sinDroop;
+        const zExt = dist * blendCos;
+        const yDrop = -dist * blendSin;
         const flutter = evaluateWindFlagFlutterOffset(flag, u, t, phase);
         const halfH = FLAG_HEIGHT_M * 0.5 * (1 - u * 0.36);
 
@@ -1008,9 +1024,80 @@ const ProjectileVisualMesh: React.FC<{
 }> = ({ traj, flirActive, simRef }) => {
   const rootRef = useRef<THREE.Group>(null);
   const spinGroupRef = useRef<THREE.Group>(null);
-  const bowShockRef = useRef<THREE.Mesh>(null);
+  const bowShockGroupRef = useRef<THREE.Group>(null);
+  const bowShockOuterRef = useRef<THREE.Mesh>(null);
+  const bowShockLipRef = useRef<THREE.Mesh>(null);
   const tracerRef = useRef<THREE.Mesh>(null);
   const buckRefs = useRef<(THREE.Mesh | null)[]>([]);
+
+  const machConeLength =
+    traj.visualStyle === 'apfsds_tungsten'
+      ? 0.62
+      : traj.visualStyle === 'apcbc_shell'
+        ? 0.44
+        : 0.28;
+  const machConeNoseX =
+    traj.visualStyle === 'apfsds_tungsten'
+      ? 0.44
+      : traj.visualStyle === 'apcbc_shell'
+        ? 0.28
+        : traj.visualStyle === 'pistol_copper'
+          ? 0.036
+          : 0.074;
+
+  // Pre-allocated unit-slope Mach cone (radius = height = machConeLength -> 45° reference,
+  // scaled along Y & Z by exact tan(asin(1 / mach)) in useFrame with Zero-GC!)
+  const machConeAssets = useMemo(() => {
+    const outerGeo = new THREE.ConeGeometry(
+      machConeLength,
+      machConeLength,
+      24,
+      1,
+      true
+    );
+    // Translate so cone apex is at origin (0,0,0) and opens aft along -X after rotation
+    outerGeo.translate(0, -machConeLength * 0.5, 0);
+    outerGeo.rotateZ(-Math.PI / 2);
+
+    const lipGeo = new THREE.ConeGeometry(
+      machConeLength * 0.42,
+      machConeLength * 0.42,
+      20,
+      1,
+      true
+    );
+    lipGeo.translate(0, -machConeLength * 0.21, 0);
+    lipGeo.rotateZ(-Math.PI / 2);
+
+    const outerMat = new THREE.MeshBasicMaterial({
+      color: flirActive ? '#f8fafc' : '#bae6fd',
+      transparent: true,
+      opacity: 0.22,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+
+    const lipMat = new THREE.MeshBasicMaterial({
+      color: flirActive ? '#ffffff' : '#e0f2fe',
+      transparent: true,
+      opacity: 0.34,
+      side: THREE.DoubleSide,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+
+    return { outerGeo, lipGeo, outerMat, lipMat };
+  }, [machConeLength, flirActive]);
+
+  useEffect(() => {
+    return () => {
+      machConeAssets.outerGeo.dispose();
+      machConeAssets.lipGeo.dispose();
+      machConeAssets.outerMat.dispose();
+      machConeAssets.lipMat.dispose();
+    };
+  }, [machConeAssets]);
 
   // Lathe-turned spitzer boat-tail bullet geometry (nose oriented along +X)
   const spitzerGeo = useMemo(() => {
@@ -1091,8 +1178,9 @@ const ProjectileVisualMesh: React.FC<{
     root.visible = !hideAfterSteelImpact;
 
     root.position.set(_poseScratch.x, _poseScratch.y, _poseScratch.z);
+    const spinSign = traj.spec.twistDirection === 'LH' ? -1 : 1;
     _eulerScratch.set(
-      _poseScratch.rollRad,
+      _poseScratch.rollRad * spinSign,
       _poseScratch.yawRad,
       _poseScratch.pitchRad,
       'YZX'
@@ -1139,16 +1227,35 @@ const ProjectileVisualMesh: React.FC<{
       }
     }
 
-    // Supersonic bow shock vapor cone visible while Mach >= 1.0
-    if (bowShockRef.current) {
-      const isSup = _poseScratch.mach >= 0.98 && !_poseScratch.hasImpacted;
-      bowShockRef.current.visible = isSup;
-      if (isSup) {
-        const machHalfAngle = Math.asin(
-          Math.min(0.95, 1 / Math.max(1.04, _poseScratch.mach))
-        );
-        const radialScale = Math.max(0.35, Math.tan(machHalfAngle) * 1.15);
-        bowShockRef.current.scale.set(1, radialScale, radialScale);
+    // Supersonic Mach-Cone Shockwave Shell: exact half-angle asin(1 / mach),
+    // visibly widening as projectile decelerates toward Mach 1.02 and vanishing subsonic
+    if (bowShockGroupRef.current) {
+      computeMachConeStateInto(
+        _poseScratch.mach,
+        _poseScratch.hasImpacted,
+        _machConeScratch
+      );
+      bowShockGroupRef.current.visible = _machConeScratch.visible;
+      if (_machConeScratch.visible) {
+        const radialScale = _machConeScratch.tanHalfAngle;
+        if (bowShockOuterRef.current) {
+          bowShockOuterRef.current.scale.set(1, radialScale, radialScale);
+          const outerMat = bowShockOuterRef.current
+            .material as THREE.MeshBasicMaterial;
+          outerMat.opacity =
+            _machConeScratch.opacity * (flirActive ? 0.95 : 0.78);
+        }
+        if (bowShockLipRef.current) {
+          bowShockLipRef.current.scale.set(
+            1,
+            radialScale * 1.06,
+            radialScale * 1.06
+          );
+          const lipMat = bowShockLipRef.current
+            .material as THREE.MeshBasicMaterial;
+          lipMat.opacity =
+            _machConeScratch.opacity * (flirActive ? 1.15 : 1.05);
+        }
       }
     }
 
@@ -1404,29 +1511,23 @@ const ProjectileVisualMesh: React.FC<{
         />
       </mesh>
 
-      {/* Supersonic Mach Bow Shock Vapor Cone */}
-      <mesh
-        ref={bowShockRef}
-        position={[style === 'apfsds_tungsten' ? 0.14 : -0.02, 0, 0]}
-        rotation={[0, 0, -Math.PI / 2]}
+      {/* Supersonic 3D Mach-Cone Shockwave Shell (half-angle = asin(1 / mach), apex at nose) */}
+      <group
+        ref={bowShockGroupRef}
+        position={[machConeNoseX, 0, 0]}
+        visible={false}
       >
-        <coneGeometry
-          args={[
-            style === 'apfsds_tungsten' ? 0.16 : 0.068,
-            style === 'apfsds_tungsten' ? 0.58 : 0.24,
-            18,
-            1,
-            true,
-          ]}
+        <mesh
+          ref={bowShockOuterRef}
+          geometry={machConeAssets.outerGeo}
+          material={machConeAssets.outerMat}
         />
-        <meshBasicMaterial
-          color={flirActive ? '#e2e8f0' : '#bae6fd'}
-          transparent
-          opacity={flirActive ? 0.24 : 0.2}
-          side={THREE.DoubleSide}
-          depthWrite={false}
+        <mesh
+          ref={bowShockLipRef}
+          geometry={machConeAssets.lipGeo}
+          material={machConeAssets.lipMat}
         />
-      </mesh>
+      </group>
     </group>
   );
 };
@@ -2249,6 +2350,7 @@ const Range3DWorld: React.FC<{
   comparisonTrajs: readonly { traj: RangeTrajectory3D; color: string }[];
   maxRangeM: number;
   signedCrosswindMps: number;
+  windClockHours: number;
   isLightTheme: boolean;
   cameraMode: RangeCameraMode;
   flirActive: boolean;
@@ -2263,6 +2365,7 @@ const Range3DWorld: React.FC<{
   comparisonTrajs,
   maxRangeM,
   signedCrosswindMps,
+  windClockHours,
   isLightTheme,
   cameraMode,
   flirActive,
@@ -2389,8 +2492,14 @@ const Range3DWorld: React.FC<{
   }, [skyDomeTex]);
 
   const windFlags = useMemo(
-    () => computeWindFlagStates(maxRangeM, signedCrosswindMps),
-    [maxRangeM, signedCrosswindMps]
+    () =>
+      computeWindFlagStates(
+        maxRangeM,
+        signedCrosswindMps,
+        undefined,
+        windClockHours
+      ),
+    [maxRangeM, signedCrosswindMps, windClockHours]
   );
 
   // Camera & Mach-ring loop (runs AFTER SimulationClockDriver + ProjectileVisualMesh so pose & camera are 100% locked)
@@ -2794,6 +2903,7 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
   maxRangeM,
   targetRangeM,
   signedCrosswindMps,
+  windClockHours = 3,
   lang,
   isLightTheme,
   expanded = false,
@@ -3464,6 +3574,7 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
                 comparisonTrajs={comparisonTrajs}
                 maxRangeM={maxRangeM}
                 signedCrosswindMps={signedCrosswindMps}
+                windClockHours={windClockHours}
                 isLightTheme={isLightTheme}
                 cameraMode={cameraMode}
                 flirActive={flirActive}

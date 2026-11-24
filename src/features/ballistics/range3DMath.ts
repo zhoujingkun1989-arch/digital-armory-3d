@@ -120,13 +120,44 @@ export interface WindFlagState {
   lateralZ: number;
   /** Y-axis yaw pointing downwind (+Z = 0, -Z = PI) */
   yawRad: number;
-  /** Downward droop angle from horizontal (0 = stiff horizontal, ~1.4 = limp vertical) */
+  /** Upward lift / lean deflection angle from vertical pole (0 = limp calm, ~1.32 rad = taut gale) */
+  leanRad: number;
+  /** Downward droop angle from horizontal (0 = stiff horizontal, ~1.38 = limp vertical) */
   droopRad: number;
+  /** Local multi-zone canyon gust multiplier (0.94..1.08) */
+  gustFactor: number;
   /** Wave flutter oscillation frequency in Hz */
   flutterHz: number;
   /** Wave flutter angular amplitude in radians */
   flutterAmpRad: number;
   windSpeedMps: number;
+}
+
+export const MACH_CONE_MIN_MACH = 1.02;
+
+export interface MachConeState {
+  visible: boolean;
+  /** True aerodynamic Mach cone half-angle μ = asin(1 / M) in radians */
+  halfAngleRad: number;
+  /** Cone radius-to-length slope tan(μ), clamped cleanly near Mach 1.02 */
+  tanHalfAngle: number;
+  /** Translucent shell opacity smoothly fading as Mach approaches 1.02 */
+  opacity: number;
+}
+
+export interface WindFlagDeflection {
+  /** Signed 90° crosswind component from windSpeedMps and windClockHours */
+  crosswindComponentMps: number;
+  /** Horizontal flag heading yaw in radians (3 o'clock +Z -> 0, 9 o'clock -Z -> PI) */
+  yawRad: number;
+  /** Upward aerodynamic lift / lean angle from vertical pole (radians, 0 at calm) */
+  leanRad: number;
+  /** Complementary droop angle below horizontal (radians, ~1.38 at calm -> ~0.06 at gale) */
+  droopRad: number;
+  /** Wave flutter frequency in Hz */
+  flutterHz: number;
+  /** Wave flutter angular amplitude in radians */
+  flutterAmpRad: number;
 }
 
 export interface ProjectilePose3D {
@@ -330,41 +361,155 @@ export function getMachGradientHex(mach: number): string {
   return `#${r}${g}${b}`;
 }
 
+export function createMutableMachConeState(): MachConeState {
+  return {
+    visible: false,
+    halfAngleRad: Math.PI / 2,
+    tanHalfAngle: 0,
+    opacity: 0,
+  };
+}
+
+/**
+ * Zero-GC supersonic Mach-cone shockwave solver (`halfAngleRad = asin(1 / mach)`).
+ * Visible whenever `mach > 1.02` in flight; widens dramatically as the bullet
+ * decelerates toward Mach 1.0 and vanishes smoothly when dropping subsonic.
+ */
+export function computeMachConeStateInto(
+  mach: number,
+  hasImpacted: boolean,
+  out: MachConeState
+): MachConeState {
+  if (hasImpacted || !Number.isFinite(mach) || mach <= MACH_CONE_MIN_MACH) {
+    out.visible = false;
+    out.halfAngleRad = Math.PI / 2;
+    out.tanHalfAngle = 0;
+    out.opacity = 0;
+    return out;
+  }
+  const halfAngleRad = Math.asin(1 / mach);
+  const tanHalfAngle = clamp(Math.tan(halfAngleRad), 0.14, 3.6);
+  const fade = clamp((mach - MACH_CONE_MIN_MACH) / 0.18, 0, 1);
+  // High-Mach shockwaves are crisper; near-transonic vapor shell fades smoothly before vanishing
+  const highMachBoost = clamp((mach - 1.2) / 2.2, 0, 1) * 0.08;
+  out.visible = true;
+  out.halfAngleRad = halfAngleRad;
+  out.tanHalfAngle = tanHalfAngle;
+  out.opacity = Number((fade * (0.28 + highMachBoost)).toFixed(4));
+  return out;
+}
+
+/**
+ * Pure allocating wrapper for `computeMachConeStateInto`.
+ */
+export function computeMachConeState(
+  mach: number,
+  hasImpacted = false
+): MachConeState {
+  return computeMachConeStateInto(
+    mach,
+    hasImpacted,
+    createMutableMachConeState()
+  );
+}
+
+/**
+ * Computes proving-ground wind-flag orientation (`yawRad`), aerodynamic pennant
+ * lift/lean angle (`leanRad`), droop (`droopRad`), and flutter physics from
+ * wind speed (m/s) and clock direction (`3` = full +Z crosswind, `9` = full -Z
+ * crosswind, `12` = headwind, `6` = tailwind).
+ */
+export function computeWindFlagDeflectionRad(
+  windSpeedMps: number,
+  windClockHours = 3
+): WindFlagDeflection {
+  const safeSpeed = Number.isFinite(windSpeedMps) ? windSpeedMps : 0;
+  const safeClock = Number.isFinite(windClockHours) ? windClockHours : 3;
+  const absSpeed = Math.abs(safeSpeed);
+
+  // If caller passes signed speed with default 3 o'clock, negative speed flips to 9 o'clock
+  const effectiveClock =
+    safeSpeed < 0 ? ((safeClock + 6) % 12 + 12) % 12 : ((safeClock % 12) + 12) % 12;
+  const clockRad = (effectiveClock / 12) * Math.PI * 2;
+  const crossSin = Math.sin(clockRad);
+  const crosswindComponentMps = absSpeed * crossSin;
+
+  // Map 3 o'clock (+Z) -> yaw 0, 9 o'clock (-Z) -> yaw PI, 12 o'clock (-X) -> -PI/2, 6 o'clock (+X) -> +PI/2
+  let yawRad: number;
+  if (Math.abs(effectiveClock - 3) < 1e-6) {
+    yawRad = 0;
+  } else if (Math.abs(effectiveClock - 9) < 1e-6) {
+    yawRad = Math.PI;
+  } else {
+    yawRad = Math.atan2(-Math.cos(clockRad), crossSin);
+  }
+
+  // Wind lifts pennant smoothly from hanging limp (lean = 0, droop = 1.38 rad) toward taut horizontal
+  const liftNorm = 1 - Math.exp(-absSpeed / 3.8);
+  const droopRad = 1.38 * (1 - liftNorm) + 0.06 * liftNorm;
+  const leanRad = Math.max(0, 1.38 - droopRad);
+  const flutterHz = 0.35 + absSpeed * 0.78;
+  const flutterAmpRad = 0.015 + Math.min(0.24, absSpeed * 0.018);
+
+  return {
+    crosswindComponentMps,
+    yawRad,
+    leanRad,
+    droopRad,
+    flutterHz,
+    flutterAmpRad,
+  };
+}
+
 /**
  * Computes animated range wind flag orientations and flutter physics along
- * the proving ground from signed crosswind speed (`+Z` left->right, `-Z` right->left).
+ * the proving ground from signed crosswind speed (`+Z` left->right, `-Z` right->left)
+ * and optional clock direction (`windClockHours`, default `3`).
  */
 export function computeWindFlagStates(
   maxRangeM: number,
   signedCrosswindMps: number,
-  markersM: readonly number[] = RANGE_YARDAGE_MARKERS_M
+  markersM: readonly number[] = RANGE_YARDAGE_MARKERS_M,
+  windClockHours = 3
 ): WindFlagState[] {
-  const windAbs = Math.abs(
-    Number.isFinite(signedCrosswindMps) ? signedCrosswindMps : 0
+  const safeSigned = Number.isFinite(signedCrosswindMps)
+    ? signedCrosswindMps
+    : 0;
+  const windAbs = Math.abs(safeSigned);
+  const baseDeflection = computeWindFlagDeflectionRad(
+    safeSigned,
+    windClockHours
   );
-  // Downwind heading: +Z is yaw = 0 in flag local space (+Z pennant extension), -Z is PI
-  const yawRad = signedCrosswindMps >= 0 ? 0 : Math.PI;
-  // Wind speed lifts the pennant from limp (~1.38 rad down) toward taut horizontal (~0.06 rad)
-  const liftNorm = 1 - Math.exp(-windAbs / 3.8);
-  const droopRad = 1.38 * (1 - liftNorm) + 0.06 * liftNorm;
-  const flutterHz = 0.35 + windAbs * 0.78;
-  const flutterAmpRad = 0.015 + Math.min(0.24, windAbs * 0.018);
 
   const selectedDistances = markersM.filter((d) => d <= maxRangeM);
   if (selectedDistances.length === 0) {
     selectedDistances.push(Math.min(50, Math.max(25, maxRangeM)));
   }
 
-  return selectedDistances.map((rangeM, idx) => ({
-    rangeM,
-    // Alternate lane sides cleanly outside the main firing corridor
-    lateralZ: idx % 2 === 0 ? -9.5 : 9.5,
-    yawRad,
-    droopRad,
-    flutterHz,
-    flutterAmpRad,
-    windSpeedMps: windAbs,
-  }));
+  return selectedDistances.map((rangeM, idx) => {
+    // Subtle canyon multi-zone gust variation across downrange yardage posts
+    const gustFactor = 0.94 + ((idx * 37) % 15) * 0.01;
+    const localSpeed = windAbs * gustFactor;
+    const localDef =
+      windAbs > 0
+        ? computeWindFlagDeflectionRad(
+            safeSigned >= 0 ? localSpeed : -localSpeed,
+            windClockHours
+          )
+        : baseDeflection;
+    return {
+      rangeM,
+      // Alternate lane sides cleanly outside the main firing corridor
+      lateralZ: idx % 2 === 0 ? -9.5 : 9.5,
+      yawRad: localDef.yawRad,
+      leanRad: localDef.leanRad,
+      droopRad: localDef.droopRad,
+      gustFactor,
+      flutterHz: localDef.flutterHz,
+      flutterAmpRad: localDef.flutterAmpRad,
+      windSpeedMps: localSpeed,
+    };
+  });
 }
 
 /**
