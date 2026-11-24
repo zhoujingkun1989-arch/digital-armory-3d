@@ -883,30 +883,30 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         # --- Suite 1: Receiver & Stock (AgX-safe charcoal polyamide >= 0.17, Russian enamel steel >= 0.21) ---
         "RS_IzhmashPolyamide": _build_pbr_mat(
             "RS_IzhmashPolyamide",
-            base_srgb=(0.185, 0.194, 0.210),
-            roughness=0.62,
+            base_srgb=(0.204, 0.214, 0.230),
+            roughness=0.52,
             metallic=0.00,
-            bevel_r=0.042,
-            edge_wear=0.22,
-            edge_srgb=(0.30, 0.32, 0.35),
+            bevel_r=0.038,
+            edge_wear=0.26,
+            edge_srgb=(0.33, 0.35, 0.38),
             grain_scale=62.0,
-            grain_bump=0.095,
-            voronoi_grain=0.68,
+            grain_bump=0.088,
+            voronoi_grain=0.66,
             voronoi_scale=88.0,
-            rough_var=0.042,
+            rough_var=0.044,
         ),
         "RS_PolyamideGrip": _build_pbr_mat(
             "RS_PolyamideGrip",
-            base_srgb=(0.174, 0.182, 0.196),
-            roughness=0.68,
+            base_srgb=(0.186, 0.195, 0.210),
+            roughness=0.60,
             metallic=0.00,
-            bevel_r=0.036,
-            edge_wear=0.18,
-            edge_srgb=(0.28, 0.30, 0.33),
-            grain_scale=76.0,
-            grain_bump=0.135,
-            voronoi_grain=0.78,
-            voronoi_scale=112.0,
+            bevel_r=0.032,
+            edge_wear=0.20,
+            edge_srgb=(0.30, 0.32, 0.35),
+            grain_scale=82.0,
+            grain_bump=0.145,
+            voronoi_grain=0.80,
+            voronoi_scale=124.0,
             rough_var=0.045,
         ),
         "RS_RubberButtpad": _build_pbr_mat(
@@ -1082,16 +1082,16 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         ),
         "BM_PlumMagPolymer": _build_pbr_mat(
             "BM_PlumMagPolymer",
-            base_srgb=(0.228, 0.176, 0.204),  # Authentic Izhmash Russian "Sliva" Plum-Black polyamide (>= 0.17!)
-            roughness=0.56,
+            base_srgb=(0.252, 0.178, 0.216),  # Authentic Izhmash Russian "Sliva" Plum-Violet glass-filled polyamide
+            roughness=0.47,
             metallic=0.00,
-            bevel_r=0.036,
-            edge_wear=0.24,
-            edge_srgb=(0.35, 0.28, 0.32),
+            bevel_r=0.034,
+            edge_wear=0.26,
+            edge_srgb=(0.39, 0.30, 0.35),
             grain_scale=64.0,
-            grain_bump=0.092,
-            voronoi_grain=0.65,
-            voronoi_scale=88.0,
+            grain_bump=0.088,
+            voronoi_grain=0.64,
+            voronoi_scale=92.0,
             rough_var=0.044,
         ),
         "BM_MagSteel": _build_pbr_mat(
@@ -1422,6 +1422,348 @@ def bool_subtract(target: bpy.types.Object, cutters: list[bpy.types.Object], sol
     return target
 
 
+def bool_union(target: bpy.types.Object, additions: list[bpy.types.Object], solver: str = "EXACT") -> bpy.types.Object:
+    if not additions:
+        return target
+    for a in additions:
+        for m in a.data.materials:
+            if m and m.name not in [tm.name for tm in target.data.materials if tm]:
+                target.data.materials.append(m)
+
+    for idx, add in enumerate(additions):
+        backup_mesh = target.data.copy()
+        tried = [solver, "MANIFOLD" if solver == "EXACT" else "EXACT"]
+        success = False
+        for slv in tried:
+            select_only([target], target)
+            mod = target.modifiers.new(name=f"BoolU_{idx}", type="BOOLEAN")
+            mod.operation = "UNION"
+            mod.solver = slv
+            mod.object = add
+            if slv == "EXACT":
+                mod.use_self = True
+                mod.use_hole_tolerant = True
+            bpy.ops.object.modifier_apply(modifier=mod.name)
+            if _count_non_manifold(target) == 0 and len(target.data.polygons) > 0:
+                success = True
+                break
+            old_m = target.data
+            target.data = backup_mesh.copy()
+            bpy.data.meshes.remove(old_m)
+        if not success:
+            select_only([target], target)
+            mod = target.modifiers.new(name=f"BoolUF_{idx}", type="BOOLEAN")
+            mod.operation = "UNION"
+            mod.solver = "EXACT"
+            mod.use_self = True
+            mod.use_hole_tolerant = True
+            mod.object = add
+            bpy.ops.object.modifier_apply(modifier=mod.name)
+        bpy.data.meshes.remove(backup_mesh)
+
+    delete_objs(additions)
+    return target
+
+
+def _smoothstep_f(e0: float, e1: float, x: float) -> float:
+    t = max(0.0, min(1.0, (x - e0) / max(e1 - e0, 1e-6)))
+    return t * t * (3.0 - 2.0 * t)
+
+
+def sample_quad_bezier(p0, p1, p2, segs: int = 10) -> list[tuple[float, float]]:
+    pts = []
+    for i in range(segs + 1):
+        t = i / segs
+        u = 1.0 - t
+        pts.append((u * u * p0[0] + 2 * u * t * p1[0] + t * t * p2[0],
+                    u * u * p0[1] + 2 * u * t * p1[1] + t * t * p2[1]))
+    return pts
+
+
+def sample_cubic_bezier(p0, p1, p2, p3, segs: int = 12) -> list[tuple[float, float]]:
+    pts = []
+    for i in range(segs + 1):
+        t = i / segs
+        u = 1.0 - t
+        pts.append((
+            u**3 * p0[0] + 3 * u**2 * t * p1[0] + 3 * u * t**2 * p2[0] + t**3 * p3[0],
+            u**3 * p0[1] + 3 * u**2 * t * p1[1] + 3 * u * t**2 * p2[1] + t**3 * p3[1],
+        ))
+    return pts
+
+
+def _superellipse_ring_zy(y_bot: float, y_top: float, hz_bot: float, hz_top: float, p_bot: float, p_top: float, n_ring: int = 28) -> list[tuple[float, float]]:
+    yc = 0.5 * (y_bot + y_top)
+    hy = max(0.02, 0.5 * (y_top - y_bot))
+    pts = []
+    for k in range(n_ring):
+        th = math.tau * k / n_ring
+        ct, st = math.cos(th), math.sin(th)
+        hz = hz_top if st >= 0.0 else hz_bot
+        pw = p_top if st >= 0.0 else p_bot
+        inv_p = 2.0 / max(pw, 1.2)
+        z = math.copysign(abs(ct) ** inv_p, ct) * hz
+        y = yc + math.copysign(abs(st) ** inv_p, st) * hy
+        pts.append((z, y))
+    return pts
+
+
+def mk_loft_x(
+    name: str,
+    stations: list[tuple[float, float, float, float, float, float, float]],
+    n_ring: int = 28,
+    mat: bpy.types.Material | None = None,
+    cap_ends: bool = True,
+) -> bpy.types.Object:
+    """Organic superellipse loft along X: station = (x, y_bot, y_top, hz_bot, hz_top, p_bot, p_top)."""
+    rings = []
+    for x, yb, yt, hzb, hzt, pb, pt in stations:
+        zy = _superellipse_ring_zy(yb, yt, hzb, hzt, pb, pt, n_ring=n_ring)
+        rings.append([(x, y, z) for z, y in zy])
+    return mk_loft_rings(name, rings, mat=mat, cap_ends=cap_ends)
+
+
+def mk_loft_y(
+    name: str,
+    stations: list[tuple[float, float, float, float, float, float]],
+    n_ring: int = 28,
+    mat: bpy.types.Material | None = None,
+    cap_ends: bool = True,
+) -> bpy.types.Object:
+    """Organic superellipse loft along Y: station = (y, x_back, x_front, hz, p_back, p_front)."""
+    rings = []
+    for y, xb, xf, hz, pb, pf in stations:
+        xc = 0.5 * (xb + xf)
+        hx = max(0.02, 0.5 * (xf - xb))
+        ring = []
+        for k in range(n_ring):
+            th = math.tau * k / n_ring
+            ct, st = math.cos(th), math.sin(th)
+            pw = pf if ct >= 0.0 else pb
+            inv_p = 2.0 / max(pw, 1.2)
+            x = xc + math.copysign(abs(ct) ** inv_p, ct) * hx
+            z = math.copysign(abs(st) ** inv_p, st) * hz
+            ring.append((x, y, z))
+        rings.append(ring)
+    return mk_loft_rings(name, rings, mat=mat, cap_ends=cap_ends)
+
+
+def mk_swept_bow(
+    name: str,
+    center_pts_xy: list[tuple[float, float]],
+    thickness: float,
+    half_z: float,
+    bevel: float = 0.05,
+    bevel_segs: int = 2,
+    mat: bpy.types.Material | None = None,
+) -> bpy.types.Object:
+    """Swept smooth curved ribbon (trigger guard / trigger shoe) extruded cleanly in Z."""
+    clean = []
+    for p in center_pts_xy:
+        if not clean or math.hypot(p[0] - clean[-1][0], p[1] - clean[-1][1]) > 1e-4:
+            clean.append(p)
+    n = len(clean)
+    ht = thickness * 0.5
+    left_side, right_side = [], []
+    for i in range(n):
+        if i == 0:
+            dx, dy = clean[1][0] - clean[0][0], clean[1][1] - clean[0][1]
+        elif i == n - 1:
+            dx, dy = clean[-1][0] - clean[-2][0], clean[-1][1] - clean[-2][1]
+        else:
+            dx, dy = clean[i + 1][0] - clean[i - 1][0], clean[i + 1][1] - clean[i - 1][1]
+        ln = max(1e-6, math.hypot(dx, dy))
+        nx, ny = -dy / ln, dx / ln
+        left_side.append((clean[i][0] + nx * ht, clean[i][1] + ny * ht))
+        right_side.append((clean[i][0] - nx * ht, clean[i][1] - ny * ht))
+    poly = left_side + list(reversed(right_side))
+    return mk_extrude_z(name, poly, -half_z, half_z, bevel=bevel, bevel_segs=bevel_segs, mat=mat)
+
+
+def mk_stadium_2d(cx: float, cy: float, length: float, width: float, segs: int = 10) -> list[tuple[float, float]]:
+    r = width * 0.5
+    hl = max(0.01, length * 0.5 - r)
+    pts = []
+    for i in range(segs + 1):
+        a = -math.pi * 0.5 + math.pi * (i / segs)
+        pts.append((cx + hl + r * math.cos(a), cy + r * math.sin(a)))
+    for i in range(segs + 1):
+        a = math.pi * 0.5 + math.pi * (i / segs)
+        pts.append((cx - hl + r * math.cos(a), cy + r * math.sin(a)))
+    return pts
+
+
+def mk_chamfered_stadium_cutter_z(
+    name: str,
+    cx: float, cy: float,
+    z_wall: float, depth: float,
+    length: float, width: float,
+    chamfer: float = 0.06,
+    side_sign: float = 1.0,
+    through_both: bool = False,
+    segs: int = 10,
+    mat: bpy.types.Material | None = None,
+) -> bpy.types.Object:
+    """Flared stadium Boolean cutter along Z producing crisp chamfered vent/relief slot edges."""
+    if through_both:
+        z_out = abs(z_wall)
+        stations = [
+            (-z_out - 0.18, chamfer + 0.08),
+            (-z_out + chamfer, 0.0),
+            (z_out - chamfer, 0.0),
+            (z_out + 0.18, chamfer + 0.08),
+        ]
+    else:
+        s = 1.0 if side_sign >= 0.0 else -1.0
+        z_in = z_wall - s * depth
+        z_ch = z_wall - s * chamfer
+        z_ov = z_wall + s * 0.16
+        stations = [(z_in, 0.0), (z_ch, 0.0), (z_ov, chamfer + 0.06)]
+        if s < 0.0:
+            stations.reverse()
+    rings = []
+    for z_pos, dr in stations:
+        pts2d = mk_stadium_2d(cx, cy, length + 2.0 * dr, width + 2.0 * dr, segs=segs)
+        rings.append([(x, y, z_pos) for x, y in pts2d])
+    return mk_loft_rings(name, rings, mat=mat, cap_ends=True)
+
+
+def mk_lathe_x(
+    name: str, pts_r_x: list[tuple[float, float]], segs: int = 36,
+    xform: list[tuple] | None = None,
+    mat: bpy.types.Material | None = None,
+) -> bpy.types.Object:
+    bm = bmesh.new()
+    closed_loop = (
+        len(pts_r_x) >= 3
+        and pts_r_x[0][0] > 1e-5
+        and math.hypot(pts_r_x[0][0] - pts_r_x[-1][0], pts_r_x[0][1] - pts_r_x[-1][1]) < 1e-4
+    )
+    pts = pts_r_x[:-1] if closed_loop else list(pts_r_x)
+    rings = []
+    for r, x in pts:
+        if r < 1e-5:
+            rings.append([bm.verts.new((x, 0.0, 0.0))])
+        else:
+            ring = []
+            for s in range(segs):
+                th = math.tau * s / segs
+                ring.append(bm.verts.new((x, r * math.cos(th), r * math.sin(th))))
+            rings.append(ring)
+    n = len(rings)
+    end_k = n if closed_loop else n - 1
+    for k in range(end_k):
+        a = rings[k]
+        b = rings[(k + 1) % n]
+        if len(a) == 1 and len(b) == 1:
+            continue
+        elif len(a) == 1 and len(b) > 1:
+            for s in range(segs):
+                bm.faces.new((a[0], b[(s + 1) % segs], b[s]))
+        elif len(a) > 1 and len(b) == 1:
+            for s in range(segs):
+                bm.faces.new((a[s], a[(s + 1) % segs], b[0]))
+        else:
+            for s in range(segs):
+                sn = (s + 1) % segs
+                bm.faces.new((a[s], a[sn], b[sn], b[s]))
+    _apply_three_xform(bm, xform or [])
+    return _bm_to_obj(name, bm, mat)
+
+
+def mk_knurled_cyl(
+    name: str, radius: float, length: float, axis: str = "z",
+    flutes: int = 24, depth: float = 0.022,
+    xform: list[tuple] | None = None,
+    mat: bpy.types.Material | None = None,
+) -> bpy.types.Object:
+    n_pts = flutes * 2
+    half_l = length * 0.5
+    bev = min(0.020, length * 0.15, radius * 0.14)
+    bm = bmesh.new()
+    stations = [
+        (-half_l, radius - depth * 0.7 - bev * 0.9),
+        (-half_l + bev, radius),
+        (half_l - bev, radius),
+        (half_l, radius - depth * 0.7 - bev * 0.9),
+    ]
+    rings = []
+    for s_idx, (ax_pos, r_base) in enumerate(stations):
+        ring = []
+        is_end = s_idx in (0, 3)
+        for k in range(n_pts):
+            th = math.tau * k / n_pts
+            rr = r_base if is_end else (r_base if (k % 2 == 0) else (r_base - depth))
+            u, v = rr * math.cos(th), rr * math.sin(th)
+            if axis == "x":
+                pt = (ax_pos, u, v)
+            elif axis == "y":
+                pt = (u, ax_pos, v)
+            else:
+                pt = (u, v, ax_pos)
+            ring.append(bm.verts.new(pt))
+        rings.append(ring)
+    for s in range(len(rings) - 1):
+        for k in range(n_pts):
+            kn = (k + 1) % n_pts
+            bm.faces.new((rings[s][k], rings[s + 1][k], rings[s + 1][kn], rings[s][kn]))
+    bm.faces.new(list(reversed(rings[0])))
+    bm.faces.new(rings[-1])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    _apply_three_xform(bm, xform or [])
+    return _bm_to_obj(name, bm, mat)
+
+
+def mk_braided_cable_along_pts(
+    name: str,
+    pts_three: list[Vector],
+    base_radius: float,
+    strands: int = 6,
+    twist_per_cm: float = 2.6,
+    mat: bpy.types.Material | None = None,
+) -> bpy.types.Object:
+    """Swept helically fluted multi-strand braided steel wire along a 3D centerline."""
+    bm = bmesh.new()
+    ring_segs = strands * 3
+    rings = []
+    prev_n = None
+    n_pts = len(pts_three)
+    arc_len = 0.0
+    for i, p in enumerate(pts_three):
+        if i > 0:
+            arc_len += (pts_three[i] - pts_three[i - 1]).length
+        if i == 0:
+            tang = (pts_three[1] - pts_three[0]).normalized()
+        elif i == n_pts - 1:
+            tang = (pts_three[-1] - pts_three[-2]).normalized()
+        else:
+            tang = (pts_three[i + 1] - pts_three[i - 1]).normalized()
+        if prev_n is None:
+            ref = Vector((0, 0, 1)) if abs(tang.z) < 0.85 else Vector((1, 0, 0))
+            n_vec = tang.cross(ref).normalized()
+        else:
+            n_vec = (prev_n - tang * prev_n.dot(tang)).normalized()
+        prev_n = n_vec
+        b_vec = tang.cross(n_vec).normalized()
+        twist = arc_len * twist_per_cm
+        ring = []
+        for s in range(ring_segs):
+            th = math.tau * s / ring_segs
+            r = base_radius * (0.90 + 0.14 * abs(math.cos(0.5 * strands * (th + twist))))
+            off = (n_vec * math.cos(th) + b_vec * math.sin(th)) * r
+            ring.append(bm.verts.new(p + off))
+        rings.append(ring)
+    for i in range(len(rings) - 1):
+        for s in range(ring_segs):
+            sn = (s + 1) % ring_segs
+            bm.faces.new((rings[i][s], rings[i + 1][s], rings[i + 1][sn], rings[i][sn]))
+    bm.faces.new(list(reversed(rings[0])))
+    bm.faces.new(rings[-1])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    _apply_three_xform(bm, [])
+    return _bm_to_obj(name, bm, mat)
+
+
 def finish_part(
     obj: bpy.types.Object,
     bevel_w: float = 0.0,
@@ -1477,217 +1819,379 @@ def finish_part(
 # SUITE 1 BUILDERS: RECEIVER & STOCK (7 parts)
 # =============================================================================
 def build_an94_outer_housing(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
-    """F-01: Izhmash Monocoque Charcoal Polyamide Outer Housing, Dovetail Rail,
-    Solidly Welded Trigger Guard Loop & 15°-Right-Canted Magwell."""
+    """F-01: Izhmash Monocoque Charcoal Polyamide Outer Housing, 45° Dovetail Rail,
+    Smoothly Swept Curved Trigger-Guard Bow, Sculpted Forend & 15°-Right-Canted Magwell."""
     m_poly = mats["RS_IzhmashPolyamide"]
     m_grip = mats["RS_PolyamideGrip"]
     m_stl = mats["RS_EnamelSteel"]
 
     # Main receiver chassis body: X ∈ [-16.8, +11.6], Y ∈ [-1.6, +2.55], Z ∈ [-1.95, +1.95]
-    chassis = mk_box("oh_main", 28.4, 4.15, 3.90, [("t", -2.6, 0.475, 0.0)], m_poly, bevel=0.14)
-    # Tapered sleek Izhmash forend handguard: X ∈ [+11.0, +29.0], Y ∈ [-0.85, +3.65], Z ∈ [-1.75, +1.75]
-    forend_zy = [
-        (-1.55, -0.85), (1.55, -0.85), (1.75, -0.15), (1.75, 2.95),
-        (1.30, 3.65), (-1.30, 3.65), (-1.75, 2.95), (-1.75, -0.15),
+    # Keep outer flanks planar across X ∈ [-16.1, +5.6] for distortion-free Cyrillic Hero UV rollmarks!
+    chassis = mk_box("oh_main", 28.4, 4.15, 3.90, [("t", -2.6, 0.475, 0.0)], m_poly, bevel=0.12, bevel_segs=3)
+
+    # Organically contoured Izhmash tapered glass-filled polyamide handguard forend (X ∈ [10.8, 29.0])
+    forend_stations = [
+        (10.8, -1.30, 3.35, 1.84, 1.80, 3.4, 3.6),
+        (12.2, -0.92, 3.60, 1.76, 1.74, 2.8, 3.4),
+        (15.5, -0.84, 3.66, 1.75, 1.72, 2.5, 3.2),
+        (19.8, -0.86, 3.66, 1.74, 1.70, 2.4, 3.2),
+        (24.2, -0.84, 3.62, 1.70, 1.66, 2.5, 3.2),
+        (27.8, -0.78, 3.55, 1.64, 1.58, 2.6, 3.4),
+        (29.0, -0.68, 3.42, 1.52, 1.46, 3.0, 3.6),
     ]
-    forend = mk_extrude_x("oh_forend", forend_zy, 11.0, 29.0, bevel=0.14, mat=m_poly)
-    # Front nose GP-25 / bayonet mounting fairing
-    nose_lug = mk_box("oh_nose", 3.4, 1.50, 1.90, [("t", 27.3, -1.25, 0.0)], m_grip, bevel=0.08)
+    forend = mk_loft_x("oh_forend", forend_stations, n_ring=28, mat=m_poly, cap_ends=True)
 
-    # 15°-Right-Canted Magazine Well Collar wrapping magazine throat cleanly!
-    mag_collar = mk_box("oh_magwell", 7.4, 4.4, 3.6,
-                        [("t", 0.0, -1.7, 0.0), ("rx", AN94_MAG_CANT_RX), ("t", *AN94_MAG_ORIGIN)],
-                        m_poly, bevel=0.12)
+    # Sculpted front GP-25 / bayonet mounting lug fairing under forend nose
+    nose_lug = mk_box("oh_nose", 3.4, 1.48, 1.86, [("t", 27.3, -1.24, 0.0)], m_grip, bevel=0.12, bevel_segs=3)
 
-    # SOLIDLY WELDED CONTINUOUS INTEGRAL TRIGGER GUARD LOOP (ZERO air gaps!)
-    tg_pts = [
-        (2.75, -1.35), (2.75, -4.42), (-6.15, -4.42), (-6.15, -1.35),
-        (-4.85, -1.35), (-4.85, -3.85), (1.45, -3.85), (1.45, -1.35),
-    ]
-    tguard = mk_extrude_z("oh_tguard", tg_pts, -0.70, 0.70, bevel=0.06, mat=m_poly)
-    grip_boss = mk_box("oh_gripboss", 4.6, 1.0, 2.8, [("t", -7.8, -1.5, 0.0)], m_poly, bevel=0.08)
+    # 15°-Right-Canted Magazine Well Collar wrapping magazine throat cleanly
+    mag_collar = mk_box(
+        "oh_magwell", 7.45, 4.45, 3.62,
+        [("t", 0.0, -1.72, 0.0), ("rx", AN94_MAG_CANT_RX), ("t", *AN94_MAG_ORIGIN)],
+        m_poly, bevel=0.14, bevel_segs=3,
+    )
 
-    # Join primary polymer shell & cut precision internal cavities
-    shell_raw = join_objects([chassis, forend, nose_lug, mag_collar, tguard, grip_boss], "oh_shell")
+    # Smoothly swept curved integral polyamide trigger-guard bow (watertight union with chassis & grip boss!)
+    tg_curve = (
+        [(2.55, -1.15)]
+        + sample_cubic_bezier((2.55, -1.45), (2.42, -3.55), (1.75, -4.18), (0.25, -4.18), segs=10)[1:]
+        + sample_quad_bezier((0.25, -4.18), (-1.90, -4.22), (-4.05, -4.18), segs=8)[1:]
+        + sample_cubic_bezier((-4.05, -4.18), (-5.45, -4.16), (-5.88, -3.35), (-5.92, -1.45), segs=10)[1:]
+        + [(-5.92, -1.15)]
+    )
+    tguard = mk_swept_bow("oh_tguard", tg_curve, thickness=0.46, half_z=0.68, bevel=0.08, bevel_segs=3, mat=m_poly)
+    grip_boss = mk_box("oh_gripboss", 4.7, 1.05, 2.86, [("t", -7.8, -1.48, 0.0)], m_poly, bevel=0.12, bevel_segs=2)
+
+    # Watertight bool_union before carving cavities & chamfered vents (prevents internal non-manifold walls!)
+    shell_raw = bool_union(chassis, [forend, nose_lug, mag_collar, tguard, grip_boss])
 
     cutters = [
         # Floating sub-receiver internal bay
         mk_box("c_bay", 27.4, 4.45, 3.04, [("t", -2.1, 1.375, 0.0)], m_poly),
-        # Lower buffer spring pocket: Y ∈ [-1.32, -0.55], leaving a 100% solid 2.8 mm polyamide bottom floor Y ∈ [-1.60, -1.32]
+        # Lower buffer spring pocket: Y ∈ [-1.32, -0.55], leaving a solid 2.8 mm bottom floor
         mk_box("c_buf", 17.0, 0.77, 1.24, [("t", -6.5, -0.935, 0.0)], m_poly),
         # Crisp trigger-blade passage slot through receiver floor
-        mk_box("c_trig", 1.15, 0.50, 0.64, [("t", -2.35, -1.47, 0.0)], m_poly),
+        mk_box("c_trig", 1.15, 0.56, 0.64, [("t", -2.35, -1.46, 0.0)], m_poly),
         # Floating barrel & gas-tube front clearance tunnel through handguard
-        mk_box("c_tun", 19.6, 3.55, 2.35, [("t", 20.6, 2.35, 0.0)], m_poly),
+        mk_box("c_tun", 19.8, 3.55, 2.35, [("t", 20.6, 2.35, 0.0)], m_poly),
         # 15°-right-canted magazine throat opening
-        mk_box("c_mag", 6.72, 6.4, 2.84,
-               [("t", 0.0, -1.6, 0.0), ("rx", AN94_MAG_CANT_RX), ("t", *AN94_MAG_ORIGIN)], m_poly),
+        mk_box(
+            "c_mag", 6.72, 6.6, 2.84,
+            [("t", 0.0, -1.6, 0.0), ("rx", AN94_MAG_CANT_RX), ("t", *AN94_MAG_ORIGIN)], m_poly,
+        ),
     ]
-    # Sculpted forend ventilation flutes (6 angled slots per side on X ∈ [13.5..25.5])
+    # 6 crisp chamfered stadium ventilation slots per side on contoured forend flanks
     for side in (-1.0, 1.0):
-        for sx in (14.5, 16.8, 19.1, 21.4, 23.7, 26.0):
+        for sx in (14.4, 16.7, 19.0, 21.3, 23.6, 25.9):
             cutters.append(
-                mk_box(f"c_vent_{side:+.0f}_{sx:.1f}", 1.35, 0.42, 0.35,
-                       [("t", sx, 2.25, side * 1.72)], m_poly)
+                mk_chamfered_stadium_cutter_z(
+                    f"c_vent_{side:+.0f}_{sx:.1f}",
+                    cx=sx, cy=2.28,
+                    z_wall=side * 1.71, depth=0.45,
+                    length=1.45, width=0.42, chamfer=0.055,
+                    side_sign=side, segs=8, mat=m_poly,
+                )
             )
     shell = bool_subtract(shell_raw, cutters)
 
-    # Steel hardware details mounted flush on outer housing (zero floating!)
+    # Authentic Russian 45° trapezoidal dovetail optics rail ("Ласточкин хвост", X ∈ [-12.2, -2.2])
+    dove_zy = [
+        (-1.90, 0.28), (-2.12, 0.44), (-2.24, 0.52), (-2.24, 1.28),
+        (-2.12, 1.36), (-1.90, 1.52),
+    ]
+    dovetail = mk_extrude_x("oh_dovetail", dove_zy, -12.2, -2.2, bevel=0.03, mat=m_stl)
+    # Contoured steel magazine release paddle behind canted magwell
+    magrel_xy = [
+        (3.45, -1.52), (4.12, -1.52), (4.22, -2.65), (3.85, -3.28), (3.42, -3.12), (3.62, -2.42),
+    ]
+    magrel = mk_extrude_z("oh_magrel", magrel_xy, -0.18, 0.88, bevel=0.05, bevel_segs=2, mat=m_stl)
+
     extras = [
         shell,
         # Rear steel stock hinge trunnion block
-        mk_box("oh_trun", 1.8, 3.8, 3.6, [("t", -15.9, 0.85, 0.0)], m_stl, bevel=0.08),
-        # Classic Soviet left-side dovetail optics rail ("Ласточкин хвост", X ∈ [-12.2, -2.2])
-        mk_box("oh_dovetail", 10.0, 1.25, 0.34, [("t", -7.2, 0.90, -2.03)], m_stl, bevel=0.04),
-        # Rear magazine paddle release lever behind canted magwell
-        mk_box("oh_magrel", 0.72, 1.75, 1.12, [("t", 3.8, -2.4, 0.35)], m_stl, bevel=0.04),
+        mk_box("oh_trun", 1.8, 3.8, 3.6, [("t", -15.9, 0.85, 0.0)], m_stl, bevel=0.08, bevel_segs=2),
+        dovetail,
+        # Dovetail recoil stop lug
+        mk_box("oh_dstop", 0.52, 0.90, 0.24, [("t", -11.9, 0.90, -2.14)], m_stl, bevel=0.03),
+        magrel,
+        mk_cyl("oh_magpin", 0.14, 0.14, 1.28, axis="z", segs=16, xform=[("t", 3.75, -1.85, 0.35)], mat=m_stl, bevel=0.02),
     ]
-    # 3 crisp steel dovetail rail rivets + molded ergonomic lower forend finger ribs
-    for rx in (-10.8, -7.2, -3.6):
-        extras.append(mk_cyl(f"oh_riv_{rx:.1f}", 0.22, 0.22, 0.14, axis="z", segs=16,
-                             xform=[("t", rx, 0.90, -2.18)], mat=m_stl, bevel=0.02))
-    for rx in (13.2, 15.2, 17.2, 19.2, 21.2, 23.2, 25.2):
-        extras.append(mk_box(f"oh_frib_{rx:.1f}", 0.55, 0.14, 2.6, [("t", rx, -0.82, 0.0)], m_grip, bevel=0.02))
+    # 3 domed steel dovetail rail rivets
+    for rx in (-10.6, -7.2, -3.8):
+        extras.append(mk_cyl(f"oh_riv_{rx:.1f}", 0.22, 0.24, 0.12, axis="z", segs=18,
+                             xform=[("t", rx, 0.90, -2.24)], mat=m_stl, bevel=0.03))
+    # Contoured lower forend ergonomic traction ribs hugging rounded belly
+    for rx in (13.2, 15.0, 16.8, 18.6, 20.4, 22.2, 24.0, 25.8):
+        extras.append(mk_box(f"oh_frib_{rx:.1f}", 0.46, 0.18, 2.38, [("t", rx, -0.82, 0.0)], m_grip, bevel=0.04, bevel_segs=2))
 
     obj = join_objects(extras, "an94_outer_housing")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=36.0)
 
 
 def build_an94_dust_cover(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
-    """F-02: Ribbed Stamped Russian Black-Enamel Top Dust Cover."""
+    """F-02: Smoothly Arched Ribbed Stamped Russian Black-Enamel Top Dust Cover."""
     m_stl = mats["RS_EnamelSteel"]
-    pts_zy = [
-        (-1.88, 2.22), (-1.88, 3.46), (-1.28, 4.14),
-        (1.28, 4.14), (1.88, 3.46), (1.88, 2.22),
-    ]
-    base = mk_extrude_x("dc_base", pts_zy, -16.22, 5.82, bevel=0.05, mat=m_stl)
-    cutters = [
-        mk_box("c_dc_in", 21.5, 1.88, 3.24, [("t", -5.2, 2.95, 0.0)], m_stl),
-        mk_box("c_dc_ej", 8.2, 1.38, 1.45, [("t", 1.5, 2.85, 1.62)], m_stl),
-        mk_box("c_dc_rs", 2.85, 1.45, 2.15, [("t", -13.6, 3.85, 0.0)], m_stl),
-    ]
-    body = bool_subtract(base, cutters)
+    # 16-segment smooth stamped Russian arch cross-section
+    pts_zy = [(-1.88, 2.22), (-1.88, 3.22)]
+    for i in range(13):
+        ang = math.pi * (1.0 - i / 12.0)
+        z = 1.88 * math.cos(ang)
+        y = 3.22 + 0.93 * math.sin(ang)
+        pts_zy.append((z, y))
+    pts_zy.append((1.88, 2.22))
 
-    # 5 stamped transverse stiffening ribs across dust cover roof
+    base = mk_extrude_x("dc_base", pts_zy, -16.22, 5.82, bevel=0.06, bevel_segs=2, mat=m_stl)
+    # Matching inner arch cavity cutter
+    in_zy = [(-1.62, 2.02), (-1.62, 3.12)]
+    for i in range(13):
+        ang = math.pi * (1.0 - i / 12.0)
+        z = 1.62 * math.cos(ang)
+        y = 3.12 + 0.78 * math.sin(ang)
+        in_zy.append((z, y))
+    in_zy.append((1.62, 2.02))
+    c_in = mk_extrude_x("c_dc_in", in_zy, -15.88, 5.48, mat=m_stl)
+    c_ej = mk_box("c_dc_ej", 8.2, 1.42, 1.48, [("t", 1.5, 2.82, 1.62)], m_stl, bevel=0.08, bevel_segs=2)
+    c_rs = mk_box("c_dc_rs", 2.90, 1.48, 2.18, [("t", -13.6, 3.85, 0.0)], m_stl, bevel=0.06)
+    body = bool_subtract(base, [c_in, c_ej, c_rs])
+
+    # 5 embossed curved transverse stiffening ribs following the arched dust cover roof!
     parts = [body]
+    rib_zy = []
+    for i in range(11):
+        ang = math.radians(150.0 - i * 12.0)
+        rib_zy.append((1.70 * math.cos(ang), 3.18 + 0.99 * math.sin(ang)))
+    for i in range(10, -1, -1):
+        ang = math.radians(150.0 - i * 12.0)
+        rib_zy.append((1.56 * math.cos(ang), 3.12 + 0.86 * math.sin(ang)))
     for rx in (-10.2, -7.8, -5.4, -3.0, -0.6):
-        parts.append(mk_box(f"dc_rib_{rx:.1f}", 0.42, 0.08, 2.15, [("t", rx, 4.14, 0.0)], m_stl, bevel=0.02))
+        parts.append(mk_extrude_x(f"dc_rib_{rx:.1f}", rib_zy, rx - 0.22, rx + 0.22, bevel=0.035, bevel_segs=2, mat=m_stl))
+    # Rolled ejection port top reinforcement lip
+    parts.append(mk_box("dc_lip", 8.4, 0.14, 0.22, [("t", 1.5, 3.56, 1.72)], m_stl, bevel=0.04))
     obj = join_objects(parts, "an94_dust_cover")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=36.0)
 
 
 def build_an94_buttstock(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
-    """F-06: Iconic Izhmash Right-Folding Ribbed Charcoal Polyamide Buttstock."""
+    """F-06: Ergonomically Contoured Izhmash Right-Folding Polyamide Buttstock w/ Recessed Truss
+    Pockets, Chamfered Oval Sling Slot, Detailed Hinge Knuckle & Curved Multi-Ribbed Rubber Buttpad."""
     m_poly = mats["RS_IzhmashPolyamide"]
     m_pad = mats["RS_RubberButtpad"]
     m_stl = mats["RS_EnamelSteel"]
 
-    stock_xy = [
-        (-1.4, 1.48), (-25.35, 1.78), (-25.35, -5.85),
-        (-20.5, -5.05), (-1.4, -1.65),
-    ]
-    body_raw = mk_extrude_z("bs_body", stock_xy, -1.42, 1.42, bevel=0.14, mat=m_poly)
+    # Smooth Bezier cheek comb & gracefully sweeping lower belly contour
+    top_comb = sample_cubic_bezier((-1.38, 1.48), (-8.5, 1.66), (-17.5, 1.76), (-25.32, 1.78), segs=12)
+    bot_belly = sample_cubic_bezier((-25.32, -5.82), (-21.0, -5.22), (-11.0, -3.28), (-1.38, -1.65), segs=12)
+    stock_xy = top_comb + bot_belly
+
+    body_raw = mk_extrude_z("bs_body", stock_xy, -1.42, 1.42, bevel=0.26, bevel_segs=5, mat=m_poly)
+
+    # Subdivide cheek faces cleanly with bisect planes and apply C^2 ergonomic cheek-rest & belly taper!
+    bm = bmesh.new()
+    bm.from_mesh(body_raw.data)
+    for bx in (-23.8, -22.0, -20.0, -17.5, -15.0, -12.5, -10.0, -7.5, -5.0, -3.0):
+        geom = list(bm.verts) + list(bm.edges) + list(bm.faces)
+        bmesh.ops.bisect_plane(bm, geom=geom, plane_co=(bx, 0.0, 0.0), plane_no=(1.0, 0.0, 0.0))
+    for bz_h in (-4.4, -3.2, -2.0, -0.8, 0.4):
+        geom = list(bm.verts) + list(bm.edges) + list(bm.faces)
+        bmesh.ops.bisect_plane(bm, geom=geom, plane_co=(0.0, 0.0, bz_h), plane_no=(0.0, 0.0, 1.0))
+    for v in bm.verts:
+        tx, ty, tz = v.co.x, v.co.z, -v.co.y
+        # Keep ends flush at hinge (tx > -2.6) and buttpad (tx < -24.6)
+        end_blend = _smoothstep_f(-24.8, -21.5, tx) * (1.0 - _smoothstep_f(-4.8, -2.2, tx))
+        # Fuller rounded cheek rest along upper comb (ty > -0.8), sleeker tapered lower strut
+        cheek_swell = 1.035 * _smoothstep_f(-1.2, 0.6, ty) + 0.84 * (1.0 - _smoothstep_f(-1.2, 0.6, ty))
+        scale_z = 1.0 + end_blend * (cheek_swell - 1.0)
+        v.co.y = -(tz * scale_z)
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    bm.to_mesh(body_raw.data)
+    bm.free()
+
+    # Carve crisp chamfered oval sling loop slot through rear buttstock + beveled side truss pockets!
     cutters = [
-        mk_box("c_bs_sl", 2.6, 1.45, 4.2, [("t", -22.2, -3.55, 0.0)], m_poly),
-        mk_box("c_bs_rec", 10.5, 1.55, 4.2, [("t", -12.5, -2.65, 0.0)], m_poly),
+        mk_chamfered_stadium_cutter_z(
+            "c_bs_sling", cx=-22.2, cy=-3.42,
+            z_wall=1.42, depth=3.2,
+            length=2.45, width=1.18, chamfer=0.10,
+            through_both=True, segs=10, mat=m_poly,
+        ),
     ]
+    for side in (-1.0, 1.0):
+        # Shallow recessed Izhmash molded truss lightening pockets on both flanks
+        cutters.append(
+            mk_chamfered_stadium_cutter_z(
+                f"c_bs_truss_{side:+.0f}", cx=-12.8, cy=-2.05,
+                z_wall=side * 1.24, depth=0.34,
+                length=11.6, width=1.12, chamfer=0.09,
+                side_sign=side, segs=10, mat=m_poly,
+            )
+        )
     body = bool_subtract(body_raw, cutters)
+
+    # Contoured vulcanized rubber recoil buttpad with gentle concave shoulder cup
+    pad_xy = (
+        [(-25.30, 1.82), (-25.95, 1.82)]
+        + sample_quad_bezier((-25.95, 1.82), (-25.72, -2.02), (-26.08, -5.88), segs=10)[1:]
+        + [(-25.30, -5.88)]
+    )
+    pad = mk_extrude_z("bs_pad", pad_xy, -1.52, 1.52, bevel=0.14, bevel_segs=3, mat=m_pad)
 
     parts = [
         body,
-        # Right-folding steel hinge knuckle & pivot pin (+Z side!)
-        mk_box("bs_hinge", 1.62, 3.42, 3.40, [("t", -0.80, 0.0, 0.0)], m_stl, bevel=0.08),
-        mk_cyl("bs_hpin", 0.42, 0.42, 3.62, axis="y", segs=24, xform=[("t", -0.20, 0.0, 1.65)], mat=m_stl, bevel=0.03),
-        # Vulcanized rubber serrated buttpad
-        mk_box("bs_pad", 0.85, 7.82, 3.10, [("t", -25.78, -2.05, 0.0)], m_pad, bevel=0.10),
+        pad,
+        # Steel sling loop bar inside oval sling slot
+        mk_cyl("bs_sbar", 0.14, 0.14, 1.35, axis="y", segs=16, xform=[("t", -22.2, -3.42, 0.0)], mat=m_stl, bevel=0.02),
+        # Detailed right-folding steel hinge knuckle, vertical pivot pin (+Z) & spring release button (-Z)
+        mk_box("bs_hinge", 1.62, 3.42, 3.40, [("t", -0.80, 0.0, 0.0)], m_stl, bevel=0.10, bevel_segs=2),
+        mk_cyl("bs_hknuck", 0.56, 0.56, 3.36, axis="y", segs=24, xform=[("t", -0.22, 0.0, 1.58)], mat=m_stl, bevel=0.05),
+        mk_cyl("bs_hpin", 0.34, 0.34, 3.66, axis="y", segs=24, xform=[("t", -0.22, 0.0, 1.58)], mat=m_stl, bevel=0.03),
+        mk_knurled_cyl("bs_relbtn", 0.34, 0.28, axis="z", flutes=18, depth=0.018, xform=[("t", -0.92, -0.45, -1.72)], mat=m_stl),
     ]
-    # Horizontal molded polymer stiffening ribs + buttpad grip grooves
-    for ry in (0.55, -0.65, -1.85):
-        parts.append(mk_box(f"bs_rib_{ry:.2f}", 18.4, 0.36, 3.16, [("t", -13.5, ry, 0.0)], m_poly, bevel=0.04))
-    for i in range(7):
-        gy = 1.1 - i * 1.05
-        parts.append(mk_box(f"bs_pg_{i}", 0.16, 0.24, 2.86, [("t", -26.15, gy, 0.0)], m_pad, bevel=0.02))
+    # Molded longitudinal polymer reinforcement spine rib above truss pocket
+    parts.append(mk_box("bs_rib_u", 19.2, 0.30, 2.94, [("t", -13.4, 0.38, 0.0)], m_poly, bevel=0.06, bevel_segs=2))
+    # 9 crisp anti-slip horizontal shoulder tread ribs along curved buttpad face
+    for i in range(9):
+        u = i / 8.0
+        gy = 1.35 - u * 6.70
+        gx_pad = -25.86 - 0.10 * ((2.0 * u - 1.0) ** 2)
+        parts.append(mk_box(f"bs_pg_{i}", 0.16, 0.24, 2.68, [("t", gx_pad, gy, 0.0)], m_pad, bevel=0.03))
 
     obj = join_objects(parts, "an94_buttstock")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=38.0)
 
 
 def build_an94_pistol_grip(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
-    """F-07: Contoured Izhmash Diamond-Checkered Charcoal Polyamide Pistol Grip."""
+    """F-07: Organically Lofted Ergonomic Izhmash Pistol Grip w/ Palm Swell, Finger Contour & Diagonal Ribbing."""
     m_poly = mats["RS_IzhmashPolyamide"]
     m_grip = mats["RS_PolyamideGrip"]
     m_stl = mats["RS_EnamelSteel"]
 
-    grip_xy = [
-        (-1.70, -0.38), (1.92, -0.38), (1.12, -3.60),
-        (-0.95, -9.80), (-4.38, -9.35), (-2.55, -2.60),
+    # 14-station ergonomic superellipse loft along Y (from receiver seat Y=-0.36 to base Y=-9.55)
+    # Station = (y, x_back, x_front, hz, p_back, p_front)
+    grip_stations = [
+        (-0.36, -1.68,  1.88, 1.24, 2.6, 2.6),
+        (-1.10, -2.02,  1.65, 1.20, 2.3, 2.2),  # slender upper thumb-web waist
+        (-2.05, -2.42,  1.32, 1.26, 2.2, 2.1),  # top finger groove arch
+        (-3.00, -2.68,  1.15, 1.34, 2.1, 2.2),  # palm swell begins
+        (-4.10, -2.92,  0.86, 1.40, 2.1, 2.3),  # anatomical palm swell peak
+        (-5.20, -3.18,  0.54, 1.40, 2.1, 2.3),
+        (-6.35, -3.48,  0.18, 1.36, 2.2, 2.3),
+        (-7.50, -3.80, -0.22, 1.32, 2.2, 2.4),
+        (-8.60, -4.12, -0.62, 1.30, 2.3, 2.5),
+        (-9.45, -4.34, -0.94, 1.34, 2.5, 2.6),  # subtle ergonomic heel flare
     ]
-    body = mk_extrude_z("pg_body", grip_xy, -1.32, 1.32, bevel=0.18, mat=m_poly)
-    parts = [
-        body,
-        mk_box("pg_cap", 3.45, 0.65, 2.75, [("t", -2.55, -9.75, 0.0)], m_grip, bevel=0.08),
-        mk_cyl("pg_screw", 0.42, 0.42, 0.22, axis="y", segs=18, xform=[("t", -2.55, -9.98, 0.0)], mat=m_stl, bevel=0.02),
+    body = mk_loft_y("pg_body", grip_stations, n_ring=32, mat=m_poly, cap_ends=True)
+
+    # Flared contoured heel base cap & recessed slotted steel grip screw
+    cap_stations = [
+        (-9.35, -4.40, -0.88, 1.38, 2.8, 2.8),
+        (-9.68, -4.44, -0.85, 1.40, 3.0, 3.0),
+        (-9.94, -4.32, -0.98, 1.30, 3.0, 3.0),
     ]
-    # Raised checkered side traction panels
+    cap = mk_loft_y("pg_cap", cap_stations, n_ring=28, mat=m_grip, cap_ends=True)
+    screw = mk_cyl("pg_screw", 0.38, 0.38, 0.22, axis="y", segs=20, xform=[("t", -2.62, -9.94, 0.0)], mat=m_stl, bevel=0.03)
+
+    parts = [body, cap, screw]
+    # Raised crowned textured Izhmash lateral traction panels + 7 molded diagonal grip serration ribs per side!
     for side in (-1.0, 1.0):
         parts.append(
-            mk_box(f"pg_chk_{side:+.0f}", 2.25, 6.20, 0.14,
-                   [("rz", -0.24), ("t", -1.35, -5.20, side * 1.31)], m_grip, bevel=0.03)
+            mk_box(
+                f"pg_chk_{side:+.0f}", 2.10, 5.95, 0.14,
+                [("rz", -0.28), ("t", -1.45, -5.25, side * 1.34)],
+                m_grip, bevel=0.05, bevel_segs=2,
+            )
         )
+        for k in range(7):
+            ry = -2.65 - k * 0.82
+            rx = -0.75 - k * 0.24
+            parts.append(
+                mk_box(
+                    f"pg_rib_{side:+.0f}_{k}", 1.85, 0.14, 0.10,
+                    [("rz", 0.22), ("t", rx, ry, side * 1.40)],
+                    m_grip, bevel=0.025,
+                )
+            )
+    # Frontstrap horizontal tactile traction ribs
+    for k in range(5):
+        ry = -3.4 - k * 1.05
+        rx = 1.02 - k * 0.34
+        parts.append(mk_box(f"pg_frib_{k}", 0.16, 0.22, 1.25, [("rz", -0.28), ("t", rx, ry, 0.0)], m_grip, bevel=0.03))
+
     obj = join_objects(parts, "an94_pistol_grip")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=36.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=42.0)
 
 
 def build_an94_rear_sight(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
-    """F-08: Iconic Nikonov 5-Position Rotary Star-Wheel Diopter Rear Sight (`2..7`)."""
+    """F-08: Iconic Nikonov 5-Position Rotary Star-Wheel Diopter Rear Sight (`2/3/4/5/7`) w/ Sculpted Ears & Knurled Axle."""
     m_stl = mats["RS_SightSteel"]
     m_ax = mats["RS_BrightAxle"]
 
+    # Swept curved protective side wings (authentic Russian diopter guard profile!)
+    ear_xy = (
+        [(-1.42, 0.28), (1.42, 0.28), (1.36, 1.22)]
+        + sample_cubic_bezier((1.36, 1.22), (1.15, 1.98), (-1.15, 1.98), (-1.36, 1.22), segs=12)[1:]
+    )
     parts = [
-        mk_box("rs_base", 3.20, 0.65, 2.20, [("t", 0.0, 0.15, 0.0)], m_stl, bevel=0.05),
-        mk_box("rs_ear_l", 2.80, 1.65, 0.34, [("t", 0.0, 1.05, -1.05)], m_stl, bevel=0.04),
-        mk_box("rs_ear_r", 2.80, 1.65, 0.34, [("t", 0.0, 1.05, 1.05)], m_stl, bevel=0.04),
-        mk_cyl("rs_axle", 0.24, 0.24, 2.45, axis="z", segs=24, xform=[("t", 0.0, 1.12, 0.0)], mat=m_ax, bevel=0.02),
-        mk_cyl("rs_hub", 0.85, 0.85, 0.88, axis="z", segs=32, xform=[("t", 0.0, 1.12, 0.0)], mat=m_stl, bevel=0.03),
+        mk_box("rs_base", 3.22, 0.64, 2.22, [("t", 0.0, 0.15, 0.0)], m_stl, bevel=0.06, bevel_segs=2),
+        mk_extrude_z("rs_ear_l", ear_xy, -1.22, -0.88, bevel=0.05, bevel_segs=2, mat=m_stl),
+        mk_extrude_z("rs_ear_r", ear_xy, 0.88, 1.22, bevel=0.05, bevel_segs=2, mat=m_stl),
+        mk_cyl("rs_axle", 0.24, 0.24, 2.46, axis="z", segs=24, xform=[("t", 0.0, 1.12, 0.0)], mat=m_ax, bevel=0.02),
+        # Knurled detent/windage axle drums on outer flanks
+        mk_knurled_cyl("rs_knob_l", 0.34, 0.20, axis="z", flutes=18, depth=0.018, xform=[("t", 0.0, 1.12, -1.24)], mat=m_stl),
+        mk_knurled_cyl("rs_knob_r", 0.34, 0.20, axis="z", flutes=18, depth=0.018, xform=[("t", 0.0, 1.12, 1.24)], mat=m_stl),
+        mk_cyl("rs_hub", 0.84, 0.84, 0.86, axis="z", segs=36, xform=[("t", 0.0, 1.12, 0.0)], mat=m_stl, bevel=0.05),
     ]
-    # 5 iconic star-wheel diopter aperture petals (`2 / 3 / 4 / 5 / 7`) with drilled peep holes!
+    # 5 iconic star-wheel diopter aperture barrels (`2 / 3 / 4 / 5 / 7`) with rounded cylindrical lugs & countersunk peep bores!
     for i in range(5):
         a = (i / 5.0) * math.tau + math.pi * 0.5
-        tx, ty = math.cos(a) * 0.92, 1.12 + math.sin(a) * 0.92
-        petal_raw = mk_box(f"rs_pet_{i}", 0.44, 0.58, 0.62, [("rz", a - math.pi * 0.5), ("t", tx, ty, 0.0)], m_stl, bevel=0.03)
-        peep = mk_cyl(f"c_peep_{i}", 0.09, 0.09, 0.90, axis="x", segs=14,
-                      xform=[("rz", a - math.pi * 0.5), ("t", math.cos(a) * 1.02, 1.12 + math.sin(a) * 1.02, 0.0)], mat=m_stl)
-        parts.append(bool_subtract(petal_raw, [peep]))
+        tx, ty = math.cos(a) * 0.90, 1.12 + math.sin(a) * 0.90
+        # Rounded cylindrical diopter sight lobe oriented tangentially along sightline
+        petal_cyl = mk_cyl(
+            f"rs_pet_{i}", 0.30, 0.30, 0.62, axis="x", segs=24,
+            xform=[("rz", a - math.pi * 0.5), ("t", tx, ty, 0.0)],
+            mat=m_stl, bevel=0.04,
+        )
+        # Web stem uniting petal to hub
+        stem = mk_box(
+            f"rs_stem_{i}", 0.38, 0.44, 0.54,
+            [("rz", a - math.pi * 0.5), ("t", math.cos(a) * 0.68, 1.12 + math.sin(a) * 0.68, 0.0)],
+            m_stl, bevel=0.03,
+        )
+        petal_u = bool_union(petal_cyl, [stem])
+        peep = mk_cyl(
+            f"c_peep_{i}", 0.11, 0.11, 1.00, axis="x", segs=18,
+            xform=[("rz", a - math.pi * 0.5), ("t", tx, ty, 0.0)], mat=m_ax,
+        )
+        parts.append(bool_subtract(petal_u, [peep]))
 
     obj = join_objects(parts, "an94_rear_sight")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=36.0)
 
 
 def build_an94_safety_switch(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
-    """FC-03: Dedicated Cross-Receiver Thumb Safety Latch w/ Crimson Fire Dot."""
+    """FC-03: Dedicated Cross-Receiver Thumb Safety Latch w/ Contoured Serrated Paddles & Crimson Fire Dot."""
     m_stl = mats["RS_SightSteel"]
     m_red = mats["RS_CrimsonDot"]
     parts = [
-        mk_cyl("saf_ax", 0.26, 0.26, 4.10, axis="z", segs=20, mat=m_stl, bevel=0.02),
-        mk_box("saf_pl", 1.35, 0.62, 0.36, [("t", -0.42, 0.06, -2.08)], m_stl, bevel=0.04),
-        mk_box("saf_pr", 1.35, 0.62, 0.36, [("t", -0.42, 0.06, 2.08)], m_stl, bevel=0.04),
-        mk_cyl("saf_red", 0.14, 0.14, 0.12, axis="z", segs=18, xform=[("t", -0.78, 0.06, -2.28)], mat=m_red, bevel=0.015),
+        mk_cyl("saf_ax", 0.26, 0.26, 4.10, axis="z", segs=24, mat=m_stl, bevel=0.025),
+        mk_box("saf_pl", 1.38, 0.62, 0.36, [("t", -0.42, 0.06, -2.08)], m_stl, bevel=0.06, bevel_segs=2),
+        mk_box("saf_pr", 1.38, 0.62, 0.36, [("t", -0.42, 0.06, 2.08)], m_stl, bevel=0.06, bevel_segs=2),
+        mk_cyl("saf_red", 0.14, 0.14, 0.12, axis="z", segs=20, xform=[("t", -0.78, 0.06, -2.28)], mat=m_red, bevel=0.02),
     ]
     obj = join_objects(parts, "an94_safety_switch")
     return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
 
 
 def build_an94_fire_selector(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
-    """FC-04: Rear-Left 3-Position Fire Selector (`ОД / 2 / АВ`) w/ Crimson Pointer."""
+    """FC-04: Rear-Left 3-Position Fire Selector (`ОД / 2 / АВ`) w/ Contoured Thumb Lever & Crimson Pointer."""
     m_stl = mats["RS_SightSteel"]
     m_grip = mats["RS_PolyamideGrip"]
     m_red = mats["RS_CrimsonDot"]
     parts = [
-        mk_cyl("fs_ax", 0.32, 0.32, 3.85, axis="z", segs=22, mat=m_stl, bevel=0.02),
-        mk_box("fs_cam", 0.95, 0.65, 1.40, [("t", 0.20, 0.18, 0.0)], m_stl, bevel=0.04),
-        mk_box("fs_arm", 2.15, 0.58, 0.34, [("t", 0.78, 0.0, -2.06)], m_stl, bevel=0.04),
-        mk_box("fs_pad", 0.55, 0.86, 0.44, [("t", 1.68, 0.0, -2.14)], m_grip, bevel=0.04),
-        mk_box("fs_ptr", 0.45, 0.12, 0.08, [("t", 1.32, 0.0, -2.31)], m_red, bevel=0.01),
+        mk_cyl("fs_ax", 0.32, 0.32, 3.85, axis="z", segs=24, mat=m_stl, bevel=0.025),
+        mk_box("fs_cam", 0.95, 0.65, 1.40, [("t", 0.20, 0.18, 0.0)], m_stl, bevel=0.05),
+        mk_box("fs_arm", 2.15, 0.56, 0.34, [("t", 0.78, 0.0, -2.06)], m_stl, bevel=0.06, bevel_segs=2),
+        mk_box("fs_pad", 0.58, 0.88, 0.44, [("t", 1.68, 0.0, -2.14)], m_grip, bevel=0.06, bevel_segs=2),
+        mk_box("fs_ptr", 0.45, 0.12, 0.08, [("t", 1.32, 0.0, -2.31)], m_red, bevel=0.015),
     ]
     obj = join_objects(parts, "an94_fire_selector")
     return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
@@ -1697,58 +2201,62 @@ def build_an94_fire_selector(mats: dict[str, bpy.types.Material]) -> bpy.types.O
 # SUITE 2 BUILDERS: PULLEY-CABLE FLOATING ACTION & FCG (10 parts)
 # =============================================================================
 def build_an94_inner_receiver(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
-    """S-01: Floating CNC Steel Sub-Receiver Carriage (Slides -4.2 cm inside Outer Housing)."""
+    """S-01: Floating CNC Steel Sub-Receiver Carriage w/ Polished Guide Rails & Chamfered Pulley Bay."""
     m_stl = mats["PM_InnerSteel"]
     m_car = mats["PM_OiledCarrier"]
     m_ss = mats["PM_BrightStainless"]
 
-    parts_raw = [
-        mk_box("ir_main", 24.4, 3.30, 2.84, [("t", -1.0, 1.10, 0.0)], m_stl, bevel=0.06),
-        mk_box("ir_trun", 3.4, 3.60, 2.95, [("t", 9.5, 1.30, 0.0)], m_car, bevel=0.08),
-        mk_box("ir_lug", 0.90, 0.78, 1.00, [("t", -6.75, -0.87, 0.0)], m_car, bevel=0.04),
-    ]
-    body_raw = join_objects(parts_raw, "ir_raw")
+    main_b = mk_box("ir_main", 24.4, 3.30, 2.84, [("t", -1.0, 1.10, 0.0)], m_stl, bevel=0.07, bevel_segs=2)
+    trun_b = mk_box("ir_trun", 3.4, 3.60, 2.95, [("t", 9.5, 1.30, 0.0)], m_car, bevel=0.08, bevel_segs=2)
+    lug_b = mk_box("ir_lug", 0.90, 0.78, 1.00, [("t", -6.75, -0.87, 0.0)], m_car, bevel=0.05)
+    body_raw = bool_union(main_b, [trun_b, lug_b])
+
     cutters = [
         mk_box("c_ir_run", 20.6, 2.35, 1.98, [("t", -1.8, 1.78, 0.0)], m_stl),
-        mk_box("c_ir_win", 19.2, 1.95, 1.42, [("t", -1.2, 0.85, 1.18)], m_stl),
-        mk_cyl("c_ir_bbl", 0.95, 0.95, 4.4, axis="x", segs=28, xform=[("t", 9.5, AN94_BORE_Y, 0.0)], mat=m_stl),
+        mk_box("c_ir_win", 19.2, 1.95, 1.42, [("t", -1.2, 0.85, 1.18)], m_stl, bevel=0.08),
+        mk_cyl("c_ir_bbl", 0.95, 0.95, 4.4, axis="x", segs=32, xform=[("t", 9.5, AN94_BORE_Y, 0.0)], mat=m_stl),
+        # Left-side chamfered weight-relief stadium windows exposing internal carriage precision!
+        mk_chamfered_stadium_cutter_z("c_ir_lw1", -7.5, 1.15, -1.42, 0.55, 5.2, 1.05, chamfer=0.06, side_sign=-1.0, segs=8, mat=m_stl),
+        mk_chamfered_stadium_cutter_z("c_ir_lw2", 0.8, 1.15, -1.42, 0.55, 6.4, 1.05, chamfer=0.06, side_sign=-1.0, segs=8, mat=m_stl),
     ]
     body = bool_subtract(body_raw, cutters)
 
-    # Gleaming polished guide rails & pulley axle boss + trunnion cross pins
+    # Gleaming polished reciprocating stainless guide rail shoes, flanged pulley stud & cross pins
     extras = [
         body,
-        mk_cyl("ir_pulley_stud", 0.42, 0.42, 0.56, axis="z", segs=24, xform=[("t", -9.2, 0.55, 0.65)], mat=m_ss, bevel=0.025),
-        mk_cyl("ir_trun_pin1", 0.24, 0.24, 2.94, axis="z", segs=18, xform=[("t", 8.6, 0.75, 0.0)], mat=m_ss, bevel=0.02),
-        mk_cyl("ir_trun_pin2", 0.24, 0.24, 2.94, axis="z", segs=18, xform=[("t", 10.4, 0.75, 0.0)], mat=m_ss, bevel=0.02),
+        mk_box("ir_rail_ul", 20.5, 0.24, 0.14, [("t", -1.5, 2.48, -1.43)], m_ss, bevel=0.025),
+        mk_box("ir_rail_ll", 20.5, 0.24, 0.14, [("t", -1.5, -0.28, -1.43)], m_ss, bevel=0.025),
+        mk_box("ir_rail_ur", 20.5, 0.24, 0.14, [("t", -1.5, 2.48, 1.43)], m_ss, bevel=0.025),
+        mk_box("ir_rail_lr", 20.5, 0.24, 0.14, [("t", -1.5, -0.28, 1.43)], m_ss, bevel=0.025),
+        mk_cyl("ir_pulley_stud", 0.42, 0.44, 0.56, axis="z", segs=28, xform=[("t", -9.2, 0.55, 0.65)], mat=m_ss, bevel=0.03),
+        mk_cyl("ir_trun_pin1", 0.24, 0.24, 2.94, axis="z", segs=20, xform=[("t", 8.6, 0.75, 0.0)], mat=m_ss, bevel=0.025),
+        mk_cyl("ir_trun_pin2", 0.24, 0.24, 2.94, axis="z", segs=20, xform=[("t", 10.4, 0.75, 0.0)], mat=m_ss, bevel=0.025),
     ]
     obj = join_objects(extras, "an94_inner_receiver")
     return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
 
 
 def build_an94_pulley_wheel(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
-    """S-05: THE STAR — Lathe-Turned CNC Machined Steel V-Groove Transmission Pulley Wheel + Bronze Hub."""
+    """S-05: THE STAR — 48-Seg CNC Lathe-Turned Deep V-Groove Transmission Pulley + 6 Lightening Holes & Flanged Bronze Hub."""
     m_ss = mats["PM_BrightStainless"]
     m_gr = mats["PM_InnerSteel"]
     m_bz = mats["PM_BronzeRammer"]
 
-    # Build a single watertight closed-loop lathe profile around Z for the steel V-groove pulley body
-    # Profile (r, z) in Three.js space: inner bore r=0.38 -> outer rim flanges r=1.06 with deep V-groove r=0.76!
     pts_rz = [
         (0.38, -0.28),
         (0.98, -0.28),
         (1.06, -0.24),
         (1.06, -0.15),
-        (0.94, -0.12),
-        (0.76, -0.07),
-        (0.76,  0.07),
-        (0.94,  0.12),
+        (0.95, -0.12),
+        (0.75, -0.065),
+        (0.75,  0.065),
+        (0.95,  0.12),
         (1.06,  0.15),
         (1.06,  0.24),
         (0.98,  0.28),
         (0.38,  0.28),
     ]
-    segs = 44
+    segs = 48
     bm = bmesh.new()
     rings = []
     for r, z in pts_rz:
@@ -1764,124 +2272,132 @@ def build_an94_pulley_wheel(mats: dict[str, bpy.types.Material]) -> bpy.types.Ob
         for s in range(segs):
             sn = (s + 1) % segs
             f = bm.faces.new((a[s], a[sn], b[sn], b[s]))
-            # Assign darker hardened-steel groove material inside the V-groove (indices 4..6)
             f.material_index = 1 if (4 <= k <= 6) else 0
     _apply_three_xform(bm, [])
     wheel = _bm_to_obj("pw_wheel", bm, m_ss)
     wheel.data.materials.append(m_gr)
 
-    # Drill 4 crisp circular weight-relief holes cleanly through the flat steel web (r = 0.60, hole r = 0.13)
+    # Drill 6 crisp chamfered circular weight-relief holes cleanly through the steel web!
     hole_cuts = []
-    for i in range(4):
-        a = i * math.pi * 0.5 + math.pi * 0.25
+    for i in range(6):
+        a = i * math.tau / 6.0 + math.pi / 6.0
+        hx, hy = math.cos(a) * 0.60, math.sin(a) * 0.60
         hole_cuts.append(
-            mk_cyl(f"c_pw_h{i}", 0.13, 0.13, 0.90, axis="z", segs=20,
-                   xform=[("t", math.cos(a) * 0.60, math.sin(a) * 0.60, 0.0)], mat=m_gr)
+            mk_cyl(f"c_pw_h{i}", 0.115, 0.115, 0.90, axis="z", segs=20,
+                   xform=[("t", hx, hy, 0.0)], mat=m_gr)
         )
     wheel = bool_subtract(wheel, hole_cuts)
 
-    # Watertight annular phosphor-bronze self-lubricating center hub bushing (r_in=0.18, r_out=0.39, z∈[-0.34, +0.34])
+    # Flanged self-lubricating phosphor-bronze center bearing bushing
     hub_rz = [
-        (0.18, -0.34), (0.36, -0.34), (0.39, -0.31),
-        (0.39,  0.31), (0.36,  0.34), (0.18,  0.34),
+        (0.18, -0.34), (0.37, -0.34), (0.42, -0.30), (0.42, -0.26), (0.39, -0.25),
+        (0.39,  0.25), (0.42,  0.26), (0.42,  0.30), (0.37,  0.34), (0.18,  0.34),
     ]
     bm_h = bmesh.new()
-    h_rings = [[bm_h.verts.new((r * math.cos(math.tau * s / 32), r * math.sin(math.tau * s / 32), z))
-                for s in range(32)] for r, z in hub_rz]
+    h_rings = [[bm_h.verts.new((r * math.cos(math.tau * s / 36), r * math.sin(math.tau * s / 36), z))
+                for s in range(36)] for r, z in hub_rz]
     for k in range(len(h_rings)):
         a, b = h_rings[k], h_rings[(k + 1) % len(h_rings)]
-        for s in range(32):
-            sn = (s + 1) % 32
+        for s in range(36):
+            sn = (s + 1) % 36
             bm_h.faces.new((a[s], a[sn], b[sn], b[s]))
     _apply_three_xform(bm_h, [])
     hub = _bm_to_obj("pw_hub", bm_h, m_bz)
 
-    # Prominent CNC radial cross-ribs on left & right faces so 275° spin is unmistakably visible!
-    spokes = [
-        mk_box("pw_sp1", 1.54, 0.13, 0.05, [("t", 0.0, 0.0,  0.295)], m_ss, bevel=0.012),
-        mk_box("pw_sp2", 0.13, 1.54, 0.05, [("t", 0.0, 0.0,  0.295)], m_ss, bevel=0.012),
-        mk_box("pw_sp3", 1.54, 0.13, 0.05, [("t", 0.0, 0.0, -0.295)], m_ss, bevel=0.012),
-        mk_box("pw_sp4", 0.13, 1.54, 0.05, [("t", 0.0, 0.0, -0.295)], m_ss, bevel=0.012),
-    ]
+    # 3 prominent CNC radial beveled cross-ribs on both faces so 275° spin pops in slow-mo!
+    spokes = []
+    for i in range(3):
+        ang = i * math.pi / 3.0
+        for sgn in (-1.0, 1.0):
+            spokes.append(mk_box(f"pw_sp_{i}_{sgn:+.0f}", 1.56, 0.11, 0.055,
+                                 [("rz", ang), ("t", 0.0, 0.0, sgn * 0.295)], m_ss, bevel=0.015))
     obj = join_objects([wheel, hub, *spokes], "an94_pulley_wheel")
     return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
 
 
 def build_an94_steel_cable(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
-    """S-06: Multi-Strand Braided Stainless-Steel Pulley Drive Cable Loop + Brass Ferrules."""
+    """S-06: Helically Twisted 6-Strand Braided Stainless Pulley Drive Cable + Stepped Swaged Brass Ferrules."""
     m_cab = mats["PM_BraidedCable"]
     m_brs = mats["PM_BrassFerrule"]
 
     pts = []
     r_wrap = 0.84
-    for i in range(9):
-        pts.append(Vector((7.2 * (1.0 - i / 8.0), r_wrap, 0.0)))
-    for i in range(1, 25):
-        a = math.pi * 0.5 + math.pi * (i / 24.0)
+    for i in range(18):
+        pts.append(Vector((7.2 * (1.0 - i / 17.0), r_wrap, 0.0)))
+    for i in range(1, 33):
+        a = math.pi * 0.5 + math.pi * (i / 32.0)
         pts.append(Vector((math.cos(a) * r_wrap, math.sin(a) * r_wrap, 0.0)))
-    for i in range(1, 13):
-        pts.append(Vector((12.8 * (i / 12.0), -r_wrap, 0.0)))
+    for i in range(1, 25):
+        pts.append(Vector((12.8 * (i / 24.0), -r_wrap, 0.0)))
 
+    # Stepped swaged brass end ferrules with crimping collar bands
+    fer_pts = [
+        (0.00, -0.44), (0.19, -0.44), (0.22, -0.38), (0.22, -0.10),
+        (0.18, -0.05), (0.18,  0.05), (0.22,  0.10), (0.22,  0.38),
+        (0.19,  0.44), (0.00,  0.44),
+    ]
     parts = [
-        mk_tube_along_pts("cab_wire", pts, 0.11, ring_segs=14, mat=m_cab),
-        mk_cyl("cab_fer_u", 0.22, 0.22, 0.85, axis="x", segs=22, xform=[("t", 7.2, r_wrap, 0.0)], mat=m_brs, bevel=0.022),
-        mk_cyl("cab_fer_l", 0.22, 0.22, 0.85, axis="x", segs=22, xform=[("t", 12.8, -r_wrap, 0.0)], mat=m_brs, bevel=0.022),
+        mk_braided_cable_along_pts("cab_wire", pts, base_radius=0.115, strands=6, twist_per_cm=2.8, mat=m_cab),
+        mk_lathe_x("cab_fer_u", fer_pts, segs=24, xform=[("t", 7.2, r_wrap, 0.0)], mat=m_brs),
+        mk_lathe_x("cab_fer_l", fer_pts, segs=24, xform=[("t", 12.8, -r_wrap, 0.0)], mat=m_brs),
     ]
     obj = join_objects(parts, "an94_steel_cable")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=36.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=42.0)
 
 
 def build_an94_feed_rammer(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
-    """S-07: Gleaming Phosphor-Bronze & Chrome 2-Stage Pre-Feed Shuttle & Tilted Loading Tray."""
+    """S-07: Gleaming Phosphor-Bronze & Chrome 2-Stage Pre-Feed Shuttle w/ Curved 5.45mm Cradle Trough."""
     m_bz = mats["PM_BronzeRammer"]
     m_ss = mats["PM_BrightStainless"]
     m_brs = mats["PM_BrassFerrule"]
 
+    # Curved U-cradle stainless pre-feed cartridge tray cross-section in Z-Y
+    tray_zy = [
+        (-0.88, 0.44), (-0.70, 0.44), (-0.64, 0.22), (-0.25, 0.14),
+        (0.14, 0.22), (0.20, 0.44), (0.38, 0.44), (0.38, 0.04), (-0.88, 0.04),
+    ]
+    tray = mk_extrude_x("fr_tray", tray_zy, -1.10, 3.70, bevel=0.035, bevel_segs=2, mat=m_ss)
     parts = [
-        mk_box("fr_bar", 5.60, 0.65, 0.72, [("t", 0.40, -0.42, 0.12)], m_bz, bevel=0.045),
-        mk_box("fr_tray", 4.80, 0.34, 1.25, [("t", 1.30, 0.18, -0.25)], m_ss, bevel=0.04),
-        mk_box("fr_dog", 0.55, 1.05, 0.95, [("t", -1.25, 0.42, -0.20)], m_bz, bevel=0.04),
-        mk_box("fr_hook", 0.85, 0.62, 0.45, [("t", -1.60, -0.58, 0.25)], m_brs, bevel=0.03),
-        # Polished feed guide side lips along tray
-        mk_box("fr_lip_l", 4.40, 0.22, 0.14, [("t", 1.35, 0.36, -0.78)], m_ss, bevel=0.02),
-        mk_box("fr_lip_r", 4.40, 0.22, 0.14, [("t", 1.35, 0.36, 0.28)], m_ss, bevel=0.02),
+        mk_box("fr_bar", 5.60, 0.64, 0.72, [("t", 0.40, -0.42, 0.12)], m_bz, bevel=0.06, bevel_segs=2),
+        tray,
+        mk_box("fr_dog", 0.56, 1.06, 0.96, [("t", -1.25, 0.42, -0.20)], m_bz, bevel=0.05, bevel_segs=2),
+        mk_box("fr_hook", 0.86, 0.62, 0.46, [("t", -1.60, -0.58, 0.25)], m_brs, bevel=0.04, bevel_segs=2),
+        mk_cyl("fr_pin", 0.14, 0.14, 0.56, axis="z", segs=16, xform=[("t", -1.78, -0.62, 0.25)], mat=m_ss, bevel=0.02),
     ]
     obj = join_objects(parts, "an94_feed_rammer")
     return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
 
 
 def build_an94_bolt_carrier(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
-    """S-02: Long-Stroke Chrome Piston Bolt Carrier w/ Upturned Charging Handle & Cable Clevis."""
+    """S-02: Long-Stroke Chrome Piston Bolt Carrier w/ Sculpted Upturned Charging Handle & Cable Clevis."""
     m_car = mats["PM_OiledCarrier"]
     m_ss = mats["PM_BrightStainless"]
     m_brs = mats["PM_BrassFerrule"]
 
-    raw = join_objects([
-        mk_box("bc_blk", 8.70, 1.65, 1.72, [("t", -0.15, 0.18, 0.0)], m_car, bevel=0.06),
-        mk_box("bc_boss", 2.60, 1.55, 1.25, [("t", 3.80, 1.15, 0.0)], m_car, bevel=0.05),
-        mk_cyl("bc_rod", 0.42, 0.42, 15.20, axis="x", segs=26, xform=[("t", 11.4, 1.90, 0.0)], mat=m_ss, bevel=0.02),
-        mk_cyl("bc_head", 0.64, 0.64, 1.35, axis="x", segs=28, xform=[("t", 19.0, 1.90, 0.0)], mat=m_ss, bevel=0.03),
-        mk_box("bc_ch_arm", 0.85, 0.68, 2.20, [("t", 1.85, 0.12, 1.85)], m_car, bevel=0.05),
-        mk_cyl("bc_ch_knob", 0.38, 0.44, 1.45, axis="y", segs=22, xform=[("t", 1.85, 0.55, 2.95)], mat=m_car, bevel=0.04),
-        mk_box("bc_clev", 1.15, 0.65, 0.48, [("t", -3.60, -0.32, 0.62)], m_brs, bevel=0.03),
-    ], "bc_raw")
-
-    cutters = [
-        mk_cyl("c_bc_bore", 0.62, 0.62, 5.4, axis="x", segs=24, xform=[("t", 2.6, 0.0, 0.0)], mat=m_car),
-        mk_box("c_bc_cam", 2.6, 0.42, 0.82, [("t", 1.8, 0.42, 0.72)], m_car),
+    blk = mk_box("bc_blk", 8.70, 1.65, 1.72, [("t", -0.15, 0.18, 0.0)], m_car, bevel=0.08, bevel_segs=2)
+    boss = mk_box("bc_boss", 2.60, 1.55, 1.25, [("t", 3.80, 1.15, 0.0)], m_car, bevel=0.06)
+    rod = mk_cyl("bc_rod", 0.42, 0.42, 15.20, axis="x", segs=28, xform=[("t", 11.4, 1.90, 0.0)], mat=m_ss, bevel=0.02)
+    head_pts = [
+        (0.00, 18.32), (0.64, 18.32), (0.64, 18.56), (0.52, 18.60), (0.52, 18.70),
+        (0.64, 18.74), (0.64, 18.92), (0.52, 18.96), (0.52, 19.06), (0.64, 19.10),
+        (0.64, 19.28), (0.52, 19.32), (0.52, 19.42), (0.64, 19.46), (0.64, 19.62),
+        (0.56, 19.68), (0.00, 19.68),
     ]
-    # 3 crisp piston head gas-sealing ring grooves
-    for gx in (18.62, 18.96, 19.30):
-        cutters.append(
-            bool_subtract(
-                mk_cyl(f"c_ring_o_{gx:.2f}", 0.72, 0.72, 0.12, axis="x", segs=24, xform=[("t", gx, 1.90, 0.0)], mat=m_ss),
-                [mk_cyl(f"c_ring_i_{gx:.2f}", 0.54, 0.54, 0.20, axis="x", segs=24, xform=[("t", gx, 1.90, 0.0)], mat=m_ss)],
-            )
-        )
-    obj = bool_subtract(raw, cutters)
-    obj.name = "an94_bolt_carrier"
-    obj.data.name = "an94_bolt_carrier"
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    phead = mk_lathe_x("bc_head", head_pts, segs=32, xform=[("t", 0.0, 1.90, 0.0)], mat=m_ss)
+    # Ergonomic swept upturned charging handle
+    ch_pts = sample_quad_bezier((0.0, 0.12), (2.25, 0.12), (2.95, 1.24), segs=10)
+    ch_arm = mk_tube_along_pts("bc_ch_arm", [Vector((1.85, py, pz)) for pz, py in ch_pts], radius=0.34, ring_segs=18, mat=m_car)
+    ch_knob = mk_cyl("bc_ch_knob", 0.40, 0.46, 0.72, axis="y", segs=24, xform=[("t", 1.85, 0.96, 2.95)], mat=m_car, bevel=0.08)
+    clev = mk_box("bc_clev", 1.15, 0.65, 0.48, [("t", -3.60, -0.32, 0.62)], m_brs, bevel=0.04)
+
+    raw = bool_union(blk, [boss])
+    cutters = [
+        mk_cyl("c_bc_bore", 0.62, 0.62, 5.4, axis="x", segs=28, xform=[("t", 2.6, 0.0, 0.0)], mat=m_car),
+        mk_box("c_bc_cam", 2.6, 0.42, 0.82, [("t", 1.8, 0.42, 0.72)], m_car, bevel=0.04),
+    ]
+    body = bool_subtract(raw, cutters)
+    obj = join_objects([body, rod, phead, ch_arm, ch_knob, clev], "an94_bolt_carrier")
+    return finish_part(obj, bevel_w=0.0, sharp_deg=36.0)
 
 
 def build_an94_bolt(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
@@ -1889,31 +2405,32 @@ def build_an94_bolt(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
     m_ss = mats["PM_BrightStainless"]
     m_car = mats["PM_OiledCarrier"]
 
-    raw = join_objects([
-        mk_cyl("blt_body", 0.56, 0.56, 4.80, axis="x", segs=32, xform=[("t", 0.20, 0.0, 0.0)], mat=m_ss, bevel=0.025),
-        mk_box("blt_lugs", 0.92, 0.48, 1.62, [("t", 1.95, 0.0, 0.0)], m_ss, bevel=0.035),
-        mk_box("blt_cam", 0.62, 0.56, 0.42, [("t", 0.05, 0.62, 0.0)], m_ss, bevel=0.03),
-        mk_box("blt_ext", 1.85, 0.24, 0.26, [("t", 1.45, 0.05, 0.58)], m_car, bevel=0.022),
-    ], "blt_raw")
+    raw = bool_union(
+        mk_cyl("blt_body", 0.56, 0.56, 4.80, axis="x", segs=36, xform=[("t", 0.20, 0.0, 0.0)], mat=m_ss, bevel=0.03),
+        [
+            mk_box("blt_lugs", 0.92, 0.48, 1.62, [("t", 1.95, 0.0, 0.0)], m_ss, bevel=0.04, bevel_segs=2),
+            mk_box("blt_cam", 0.62, 0.56, 0.42, [("t", 0.05, 0.62, 0.0)], m_ss, bevel=0.035),
+        ],
+    )
     cutters = [
-        mk_cyl("c_blt_face", 0.46, 0.46, 0.34, axis="x", segs=24, xform=[("t", 2.52, 0.0, 0.0)], mat=m_ss),
-        mk_cyl("c_blt_pin", 0.14, 0.14, 5.20, axis="x", segs=16, xform=[("t", 0.20, 0.0, 0.0)], mat=m_ss),
+        mk_cyl("c_blt_face", 0.46, 0.46, 0.34, axis="x", segs=28, xform=[("t", 2.52, 0.0, 0.0)], mat=m_ss),
+        mk_cyl("c_blt_pin", 0.14, 0.14, 5.20, axis="x", segs=18, xform=[("t", 0.20, 0.0, 0.0)], mat=m_ss),
     ]
-    obj = bool_subtract(raw, cutters)
-    obj.name = "an94_bolt"
-    obj.data.name = "an94_bolt"
+    body = bool_subtract(raw, cutters)
+    ext = mk_box("blt_ext", 1.85, 0.24, 0.26, [("t", 1.45, 0.05, 0.58)], m_car, bevel=0.025)
+    obj = join_objects([body, ext], "an94_bolt")
     return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
 
 
 def build_an94_firing_pin(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
     """S-04: Coaxial Stainless Stepped Firing Pin."""
     m_ss = mats["PM_BrightStainless"]
-    obj = join_objects([
-        mk_cyl("fp_tail", 0.26, 0.26, 0.85, axis="x", segs=22, xform=[("t", -2.0, 0.0, 0.0)], mat=m_ss, bevel=0.02),
-        mk_cyl("fp_shaft", 0.12, 0.15, 3.65, axis="x", segs=20, xform=[("t", 0.1, 0.0, 0.0)], mat=m_ss, bevel=0.012),
-        mk_cyl("fp_tip", 0.05, 0.11, 0.65, axis="x", segs=16, xform=[("t", 2.22, 0.0, 0.0)], mat=m_ss, bevel=0.01),
-    ], "an94_firing_pin")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=36.0)
+    pts = [
+        (0.00, -2.42), (0.26, -2.42), (0.26, -1.58), (0.16, -1.48),
+        (0.13, 1.88), (0.06, 2.54), (0.00, 2.54),
+    ]
+    obj = mk_lathe_x("an94_firing_pin", pts, segs=24, mat=m_ss)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=38.0)
 
 
 def build_an94_hammer(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
@@ -1922,31 +2439,34 @@ def build_an94_hammer(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
     m_car = mats["PM_OiledCarrier"]
     m_bz = mats["PM_BronzeRammer"]
 
-    h_xy = [(-0.55, -0.45), (0.55, -0.45), (0.75, 0.45), (0.35, 1.65), (-0.38, 1.65), (-0.62, 0.55)]
+    h_xy = (
+        [(-0.55, -0.45), (0.55, -0.45)]
+        + sample_quad_bezier((0.55, -0.45), (0.82, 0.45), (0.36, 1.65), segs=8)[1:]
+        + [(-0.38, 1.65)]
+        + sample_quad_bezier((-0.38, 1.65), (-0.72, 0.55), (-0.55, -0.45), segs=8)[1:-1]
+    )
     obj = join_objects([
-        mk_extrude_z("hm_body", h_xy, -0.36, 0.36, bevel=0.04, mat=m_ss),
-        mk_cyl("hm_pin", 0.28, 0.28, 1.65, axis="z", segs=22, mat=m_car, bevel=0.02),
-        mk_box("hm_ratchet", 1.65, 0.42, 0.28, [("t", -0.95, 0.25, -0.52)], m_bz, bevel=0.03),
+        mk_extrude_z("hm_body", h_xy, -0.36, 0.36, bevel=0.05, bevel_segs=2, mat=m_ss),
+        mk_cyl("hm_pin", 0.28, 0.28, 1.65, axis="z", segs=24, mat=m_car, bevel=0.025),
+        mk_box("hm_ratchet", 1.65, 0.42, 0.28, [("t", -0.95, 0.25, -0.52)], m_bz, bevel=0.035),
     ], "an94_hammer")
     return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
 
 
 def build_an94_trigger(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
-    """FC-02: Curved Steel Trigger Shoe & Articulated Floating-Action Disconnector Bar."""
+    """FC-02: Smoothly Swept Curved Steel Trigger Shoe & Articulated Floating-Action Disconnector Bar."""
     m_car = mats["PM_OiledCarrier"]
     m_ss = mats["PM_BrightStainless"]
     m_stl = mats["PM_InnerSteel"]
 
-    t_xy = [
-        (-0.45, 0.45), (0.55, 0.45), (0.38, -0.35), (0.05, -1.35),
-        (0.55, -2.05), (0.12, -2.25), (-0.48, -1.38), (-0.32, -0.35),
-    ]
+    shoe_curve = sample_cubic_bezier((0.06, 0.40), (-0.12, -0.55), (-0.36, -1.42), (0.32, -2.14), segs=12)
+    shoe = mk_swept_bow("tr_shoe", shoe_curve, thickness=0.46, half_z=0.27, bevel=0.06, bevel_segs=2, mat=m_car)
     obj = join_objects([
-        mk_extrude_z("tr_shoe", t_xy, -0.27, 0.27, bevel=0.035, mat=m_car),
-        mk_cyl("tr_pin", 0.22, 0.22, 1.45, axis="z", segs=20, xform=[("t", 0.0, 0.15, 0.0)], mat=m_ss, bevel=0.02),
-        mk_box("tr_bar", 3.40, 0.45, 0.32, [("t", -1.35, 0.65, -0.36)], m_stl, bevel=0.03),
+        shoe,
+        mk_cyl("tr_pin", 0.22, 0.22, 1.45, axis="z", segs=22, xform=[("t", 0.0, 0.15, 0.0)], mat=m_ss, bevel=0.025),
+        mk_box("tr_bar", 3.40, 0.45, 0.32, [("t", -1.35, 0.65, -0.36)], m_stl, bevel=0.035),
     ], "an94_trigger")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=36.0)
 
 
 def build_an94_recoil_guide(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
@@ -1957,10 +2477,10 @@ def build_an94_recoil_guide(mats: dict[str, bpy.types.Material]) -> bpy.types.Ob
     m_buf = mats["PM_BufferPoly"]
 
     obj = join_objects([
-        mk_box("rg_anc", 1.30, 1.35, 1.25, [("t", -5.85, -0.10, 0.0)], m_car, bevel=0.05),
-        mk_cyl("rg_r1", 0.24, 0.24, 7.60, axis="x", segs=22, xform=[("t", -1.80, 0.0, 0.0)], mat=m_ss, bevel=0.018),
-        mk_cyl("rg_r2", 0.18, 0.18, 5.20, axis="x", segs=20, xform=[("t", 4.00, 0.0, 0.0)], mat=m_stl, bevel=0.015),
-        mk_box("rg_buf", 0.55, 1.15, 1.10, [("t", -4.95, -0.10, 0.0)], m_buf, bevel=0.04),
+        mk_box("rg_anc", 1.30, 1.35, 1.25, [("t", -5.85, -0.10, 0.0)], m_car, bevel=0.06, bevel_segs=2),
+        mk_cyl("rg_r1", 0.24, 0.24, 7.60, axis="x", segs=24, xform=[("t", -1.80, 0.0, 0.0)], mat=m_ss, bevel=0.02),
+        mk_cyl("rg_r2", 0.18, 0.18, 5.20, axis="x", segs=22, xform=[("t", 4.00, 0.0, 0.0)], mat=m_stl, bevel=0.018),
+        mk_box("rg_buf", 0.55, 1.15, 1.10, [("t", -4.95, -0.10, 0.0)], m_buf, bevel=0.05),
     ], "an94_recoil_guide")
     return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
 
@@ -1969,111 +2489,197 @@ def build_an94_recoil_guide(mats: dict[str, bpy.types.Material]) -> bpy.types.Ob
 # SUITE 3 BUILDERS: 405mm FLOATING BARREL, FIGURE-8 BRAKE & 15° PLUM MAG (7 parts)
 # =============================================================================
 def build_an94_barrel(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
-    """F-03: 40.5 cm Floating Cold-Hammer-Forged Chrome-Lined 5.45x39mm Barrel."""
+    """F-03: 40.5 cm Floating Cold-Hammer-Forged Chrome-Lined 5.45x39mm Barrel w/ Stepped Lathe Contour."""
     m_bbl = mats["BM_BarrelSteel"]
     m_stl = mats["BM_MagSteel"]
 
-    raw = join_objects([
-        mk_cyl("bbl_ch", 0.92, 0.92, 7.20, axis="x", segs=36, xform=[("t", 3.60, 0.0, 0.0)], mat=m_bbl, bevel=0.03),
-        mk_cyl("bbl_mid", 0.76, 0.86, 19.00, axis="x", segs=32, xform=[("t", 16.50, 0.0, 0.0)], mat=m_bbl, bevel=0.02),
-        mk_cyl("bbl_fwd", 0.72, 0.75, 14.70, axis="x", segs=32, xform=[("t", 33.15, 0.0, 0.0)], mat=m_bbl, bevel=0.02),
-        mk_box("bbl_gb", 2.80, 2.50, 1.85, [("t", 25.50, 0.90, 0.0)], m_stl, bevel=0.06),
-        mk_box("bbl_bayo", 2.40, 0.85, 1.15, [("t", 34.80, -0.82, 0.0)], m_stl, bevel=0.04),
-    ], "bbl_raw")
-    bore = mk_cyl("c_bbl_bore", 0.285, 0.285, 41.4, axis="x", segs=24, xform=[("t", 20.25, 0.0, 0.0)], mat=m_bbl)
-    obj = bool_subtract(raw, [bore])
-    obj.name = "an94_barrel"
-    obj.data.name = "an94_barrel"
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    bbl_pts = [
+        (0.285, 0.00), (0.92, 0.00), (0.92, 7.10), (0.86, 7.45),
+        (0.76, 25.40), (0.75, 26.20), (0.72, 40.25), (0.68, 40.50),
+        (0.285, 40.50), (0.285, 0.00),
+    ]
+    bbl = mk_lathe_x("bbl_tube", bbl_pts, segs=40, mat=m_bbl)
+    gb = mk_box("bbl_gb", 2.80, 2.50, 1.85, [("t", 25.50, 0.90, 0.0)], m_stl, bevel=0.08, bevel_segs=2)
+    gb_bore = mk_cyl("c_gb_b", 0.78, 0.78, 3.2, axis="x", segs=28, xform=[("t", 25.50, 0.0, 0.0)], mat=m_stl)
+    gb = bool_subtract(gb, [gb_bore])
+    bayo = mk_box("bbl_bayo", 2.40, 0.85, 1.15, [("t", 34.80, -0.82, 0.0)], m_stl, bevel=0.05, bevel_segs=2)
+    obj = join_objects([bbl, gb, bayo], "an94_barrel")
+    return finish_part(obj, bevel_w=0.0, sharp_deg=36.0)
 
 
 def build_an94_gas_tube(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
-    """F-04: Upper High-Pressure Gas Cylinder & Tall Hooded Front Sight Tower."""
+    """F-04: Upper High-Pressure Gas Cylinder, Knurled Gas Plug & Tall Hooded Front Sight Tower."""
     m_stl = mats["BM_MagSteel"]
     m_bbl = mats["BM_BarrelSteel"]
     m_wht = mats["BM_SightTritiumWhite"]
 
-    raw = join_objects([
-        mk_cyl("gt_tube", 0.68, 0.68, 20.70, axis="x", segs=32, xform=[("t", -0.15, 0.0, 0.0)], mat=m_bbl, bevel=0.025),
-        mk_cyl("gt_plug", 0.84, 0.84, 1.45, axis="x", segs=28, xform=[("t", 9.70, 0.0, 0.0)], mat=m_stl, bevel=0.03),
-        mk_box("gt_fsb", 2.20, 2.35, 1.45, [("t", 9.20, 1.45, 0.0)], m_stl, bevel=0.05),
-        mk_cyl("gt_hood", 0.76, 0.76, 1.75, axis="x", segs=30, xform=[("t", 9.20, 2.55, 0.0)], mat=m_stl, bevel=0.025),
-    ], "gt_raw")
-    cutters = [
-        mk_cyl("c_gt_in", 0.46, 0.46, 20.0, axis="x", segs=22, xform=[("t", -0.60, 0.0, 0.0)], mat=m_bbl),
-        mk_cyl("c_gt_hd", 0.56, 0.56, 2.15, axis="x", segs=26, xform=[("t", 9.20, 2.55, 0.0)], mat=m_stl),
+    gt_pts = [
+        (0.46, -10.50), (0.68, -10.50), (0.68, 9.05), (0.84, 9.15),
+        (0.84, 10.42), (0.00, 10.42), (0.00, 9.40), (0.46, 9.40), (0.46, -10.50),
     ]
-    body = bool_subtract(raw, cutters)
-    post = mk_box("gt_post", 0.26, 0.92, 0.16, [("t", 9.20, 2.38, 0.0)], m_wht, bevel=0.015)
-    obj = join_objects([body, post], "an94_gas_tube")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    tube = mk_lathe_x("gt_tube", gt_pts, segs=36, mat=m_bbl)
+    fsb_xy = [
+        (8.10, 0.55), (10.30, 0.55), (10.05, 2.10), (8.35, 2.10),
+    ]
+    fsb = mk_extrude_z("gt_fsb", fsb_xy, -0.72, 0.72, bevel=0.08, bevel_segs=2, mat=m_stl)
+    hood_raw = mk_cyl("gt_hood", 0.76, 0.76, 1.75, axis="x", segs=36, xform=[("t", 9.20, 2.55, 0.0)], mat=m_stl, bevel=0.04)
+    hood = bool_subtract(hood_raw, [mk_cyl("c_gt_hd", 0.56, 0.56, 2.15, axis="x", segs=30, xform=[("t", 9.20, 2.55, 0.0)], mat=m_stl)])
+    plug_knurl = mk_knurled_cyl("gt_plug_k", 0.85, 0.65, axis="x", flutes=24, depth=0.020, xform=[("t", 10.08, 0.0, 0.0)], mat=m_stl)
+    wind_drum = mk_cyl("gt_drum", 0.24, 0.24, 1.48, axis="z", segs=20, xform=[("t", 9.20, 1.90, 0.0)], mat=m_stl, bevel=0.025)
+    post = mk_cyl("gt_post", 0.08, 0.11, 0.92, axis="y", segs=16, xform=[("t", 9.20, 2.38, 0.0)], mat=m_wht)
+    obj = join_objects([tube, fsb, hood, plug_knurl, wind_drum, post], "an94_gas_tube")
+    return finish_part(obj, bevel_w=0.0, sharp_deg=36.0)
 
 
 def build_an94_muzzle_brake(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
-    """F-05: THE SILHOUETTE ICON — Asymmetrical Figure-8 Twin-Chamber Self-Cleaning Whistling Muzzle Brake."""
+    """F-05: THE SILHOUETTE ICON — Sculpted Figure-8 Twin-Chamber Acoustic Whistling Muzzle Brake
+    with Smooth Hourglass Profile, Chamfered Stadium Vortex Exhaust Ports & Detent Locking Collar."""
     m_brk = mats["BM_Figure8BrakeHeat"]
     m_stl = mats["BM_MagSteel"]
 
-    raw = join_objects([
-        # Rear locking collar
-        mk_cyl("mb_col", 0.95, 0.95, 1.35, axis="x", segs=36, xform=[("t", 0.675, 0.0, 0.0)], mat=m_stl, bevel=0.03),
-        # UPPER offset cylindrical lobe (+0.58 Y) forming Figure-8 top ring
-        mk_cyl("mb_top", 0.92, 0.96, 4.35, axis="x", segs=36, xform=[("t", 3.42, 0.58, 0.0)], mat=m_brk, bevel=0.035),
-        # LOWER offset cylindrical lobe (-0.52 Y) forming Figure-8 bottom ring
-        mk_cyl("mb_bot", 0.88, 0.92, 4.35, axis="x", segs=36, xform=[("t", 3.42, -0.52, 0.0)], mat=m_brk, bevel=0.035),
-        # Central sculpted figure-8 waist web
-        mk_box("mb_web", 4.35, 1.25, 1.28, [("t", 3.42, 0.03, 0.0)], m_brk, bevel=0.04),
-    ], "mb_raw")
+    # Smooth 64-point figure-8 hourglass cross-section (upper lobe Y=+0.58, lower lobe Y=-0.52, pinched waist!)
+    fig8_zy = []
+    # Upper circular arc (+155° -> +25°, centered at (0, +0.58), r=0.92)
+    for i in range(21):
+        ang = math.radians(155.0 - i * (130.0 / 20.0))
+        fig8_zy.append((0.92 * math.cos(ang), 0.58 + 0.92 * math.sin(ang)))
+    # Right pinched waist curve (+Z)
+    fig8_zy.extend(sample_quad_bezier(fig8_zy[-1], (0.64, 0.03), (0.88 * math.cos(math.radians(-25.0)), -0.52 + 0.88 * math.sin(math.radians(-25.0))), segs=8)[1:])
+    # Lower circular arc (-25° -> -155°, centered at (0, -0.52), r=0.88)
+    for i in range(1, 21):
+        ang = math.radians(-25.0 - i * (130.0 / 20.0))
+        fig8_zy.append((0.88 * math.cos(ang), -0.52 + 0.88 * math.sin(ang)))
+    # Left pinched waist curve (-Z)
+    fig8_zy.extend(sample_quad_bezier(fig8_zy[-1], (-0.64, 0.03), fig8_zy[0], segs=8)[1:-1])
+
+    fig8_body = mk_extrude_x("mb_fig8", fig8_zy, 1.24, 5.60, bevel=0.08, bevel_segs=3, mat=m_brk)
+    # Stepped rear bayonet/detent locking collar w/ ribbed wrench ring
+    col_pts = [
+        (0.00, 0.00), (0.95, 0.00), (0.95, 0.95), (0.86, 1.02),
+        (0.86, 1.12), (0.95, 1.18), (0.95, 1.38), (0.00, 1.38),
+    ]
+    collar = mk_lathe_x("mb_col", col_pts, segs=40, mat=m_stl)
+    raw = bool_union(fig8_body, [collar])
 
     cutters = [
-        # Central 5.45mm bullet flight bore
-        mk_cyl("c_mb_bore", 0.36, 0.36, 6.2, axis="x", segs=24, xform=[("t", 2.8, 0.0, 0.0)], mat=m_brk),
-        # Twin upper & lower self-cleaning vortex whistle chambers
-        mk_box("c_mb_u", 2.65, 0.92, 2.50, [("t", 3.40, 0.62, 0.0)], m_brk),
-        mk_box("c_mb_l", 2.65, 0.85, 2.50, [("t", 3.40, -0.54, 0.0)], m_brk),
+        # Central 5.45mm bullet flight bore + front crown bevel counterbore
+        mk_cyl("c_mb_bore", 0.36, 0.36, 6.2, axis="x", segs=28, xform=[("t", 2.8, 0.0, 0.0)], mat=m_brk),
+        mk_cyl("c_mb_crown", 0.48, 0.36, 0.34, axis="x", segs=28, xform=[("t", 5.52, 0.0, 0.0)], mat=m_brk),
+        # Twin chamfered stadium upper & lower self-cleaning vortex whistle chambers!
+        mk_chamfered_stadium_cutter_z(
+            "c_mb_u", cx=3.42, cy=0.62, z_wall=0.96, depth=2.6,
+            length=2.72, width=0.90, chamfer=0.075, through_both=True, segs=10, mat=m_brk,
+        ),
+        mk_chamfered_stadium_cutter_z(
+            "c_mb_l", cx=3.42, cy=-0.54, z_wall=0.92, depth=2.6,
+            length=2.72, width=0.84, chamfer=0.075, through_both=True, segs=10, mat=m_brk,
+        ),
+        # Rear spring-detent locking notch on collar top
+        mk_box("c_mb_det", 0.35, 0.24, 0.36, [("t", 0.14, 0.94, 0.0)], m_stl),
     ]
     obj = bool_subtract(raw, cutters)
     obj.name = "an94_muzzle_brake"
     obj.data.name = "an94_muzzle_brake"
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+    return finish_part(obj, bevel_w=0.0, sharp_deg=36.0)
 
 
 def _mk_curved_arc_box(
     name: str, r_in: float, r_out: float, half_z: float,
     ang0: float, ang1: float, steps: int, mat: bpy.types.Material,
+    chamfer: float = 0.0,
 ) -> bpy.types.Object:
     rings = []
     for i in range(steps + 1):
         ang = ang0 + (ang1 - ang0) * (i / steps)
         ca, sa = math.cos(ang), math.sin(ang)
-        x_in, y_in = AN94_MAG_ARC_CX - ca * r_in, AN94_MAG_ARC_CY - sa * r_in
-        x_out, y_out = AN94_MAG_ARC_CX - ca * r_out, AN94_MAG_ARC_CY - sa * r_out
-        rings.append([
-            (x_in, y_in, -half_z),
-            (x_out, y_out, -half_z),
-            (x_out, y_out, half_z),
-            (x_in, y_in, half_z),
-        ])
+        if chamfer > 1e-4:
+            ri0, ri1 = r_in, r_in + chamfer
+            ro0, ro1 = r_out - chamfer, r_out
+            hz0, hz1 = half_z - chamfer, half_z
+            pts = [
+                (AN94_MAG_ARC_CX - ca * ri0, AN94_MAG_ARC_CY - sa * ri0, -hz0),
+                (AN94_MAG_ARC_CX - ca * ri1, AN94_MAG_ARC_CY - sa * ri1, -hz1),
+                (AN94_MAG_ARC_CX - ca * ro0, AN94_MAG_ARC_CY - sa * ro0, -hz1),
+                (AN94_MAG_ARC_CX - ca * ro1, AN94_MAG_ARC_CY - sa * ro1, -hz0),
+                (AN94_MAG_ARC_CX - ca * ro1, AN94_MAG_ARC_CY - sa * ro1,  hz0),
+                (AN94_MAG_ARC_CX - ca * ro0, AN94_MAG_ARC_CY - sa * ro0,  hz1),
+                (AN94_MAG_ARC_CX - ca * ri1, AN94_MAG_ARC_CY - sa * ri1,  hz1),
+                (AN94_MAG_ARC_CX - ca * ri0, AN94_MAG_ARC_CY - sa * ri0,  hz0),
+            ]
+        else:
+            x_in, y_in = AN94_MAG_ARC_CX - ca * r_in, AN94_MAG_ARC_CY - sa * r_in
+            x_out, y_out = AN94_MAG_ARC_CX - ca * r_out, AN94_MAG_ARC_CY - sa * r_out
+            pts = [
+                (x_in, y_in, -half_z),
+                (x_out, y_out, -half_z),
+                (x_out, y_out, half_z),
+                (x_in, y_in, half_z),
+            ]
+        rings.append(pts)
     return mk_loft_rings(name, rings, mat=mat, cap_ends=True)
 
 
 def build_an94_mag_body(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
-    """M-01: Iconic 15°-Right-Canted 30-Round Izhmash Dark Plum-Black 5.45x39mm Polymer Magazine."""
+    """M-01: Iconic 15°-Right-Canted 30-Round Izhmash Plum-Violet Polyamide Magazine w/ Chamfered Spine,
+    Molded Longitudinal Strengthening Ribs, Top/Bottom Collars & Steel Feed-Lip Liner."""
     m_plum = mats["BM_PlumMagPolymer"]
     m_stl = mats["BM_MagSteel"]
 
-    outer = _mk_curved_arc_box("mb_out", AN94_MAG_R_IN, AN94_MAG_R_OUT, 1.35, AN94_MAG_ANG_START, AN94_MAG_ANG_END, 24, m_plum)
-    inner = _mk_curved_arc_box("mb_in", AN94_MAG_R_IN + 0.34, AN94_MAG_R_OUT - 0.34, 1.08, AN94_MAG_ANG_START - 0.04, AN94_MAG_ANG_END + 0.04, 24, m_plum)
+    outer = _mk_curved_arc_box(
+        "mb_out", AN94_MAG_R_IN, AN94_MAG_R_OUT, 1.35,
+        AN94_MAG_ANG_START, AN94_MAG_ANG_END, 28, m_plum, chamfer=0.16,
+    )
+    inner = _mk_curved_arc_box(
+        "mb_in", AN94_MAG_R_IN + 0.34, AN94_MAG_R_OUT - 0.34, 1.08,
+        AN94_MAG_ANG_START - 0.04, AN94_MAG_ANG_END + 0.04, 28, m_plum,
+    )
     hollow = bool_subtract(outer, [inner])
+
+    # Molded curved front & rear longitudinal strengthening spine ribs (stay strictly on spine edges, clear of flat Hero UV cheeks!)
+    rib_front = _mk_curved_arc_box(
+        "mb_rib_f", AN94_MAG_R_IN - 0.04, AN94_MAG_R_IN + 0.42, 1.24,
+        AN94_MAG_ANG_START + 0.06, AN94_MAG_ANG_END - 0.03, 24, m_plum, chamfer=0.06,
+    )
+    rib_rear = _mk_curved_arc_box(
+        "mb_rib_r", AN94_MAG_R_OUT - 0.42, AN94_MAG_R_OUT + 0.04, 1.24,
+        AN94_MAG_ANG_START + 0.06, AN94_MAG_ANG_END - 0.03, 24, m_plum, chamfer=0.06,
+    )
+    # Molded bottom floorplate retaining flange & upper magwell insertion bolster (|tz|=1.40 -> outside Hero UV!)
+    bot_flange = _mk_curved_arc_box(
+        "mb_bot_fl", AN94_MAG_R_IN - 0.04, AN94_MAG_R_OUT + 0.04, 1.40,
+        AN94_MAG_ANG_END - 0.042, AN94_MAG_ANG_END, 8, m_plum, chamfer=0.06,
+    )
+    # Steel-reinforced upper feed-lip collar liner & front/rear steel locking lugs
+    feed_lip_l = _mk_curved_arc_box(
+        "mb_flip_l", AN94_MAG_R_IN + 0.16, AN94_MAG_R_OUT - 0.16, 1.28,
+        AN94_MAG_ANG_START, AN94_MAG_ANG_START + 0.055, 8, m_stl, chamfer=0.04,
+    )
+    feed_lip_cut = _mk_curved_arc_box(
+        "mb_flip_c", AN94_MAG_R_IN + 0.36, AN94_MAG_R_OUT - 0.36, 1.06,
+        AN94_MAG_ANG_START - 0.02, AN94_MAG_ANG_START + 0.075, 8, m_stl,
+    )
+    feed_lip = bool_subtract(feed_lip_l, [feed_lip_cut])
 
     fx, fy = mag_arc_local(0.02, AN94_MAG_R_IN - 0.12)
     rx, ry = mag_arc_local(0.04, AN94_MAG_R_OUT + 0.14)
-    obj = join_objects([
+    parts = [
         hollow,
-        mk_box("mb_flug", 0.55, 0.72, 1.65, [("t", fx, fy, 0.0)], m_stl, bevel=0.03),
-        mk_box("mb_rlug", 0.62, 0.95, 1.55, [("t", rx, ry, 0.0)], m_stl, bevel=0.03),
-    ], "an94_mag_body")
-    return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
+        rib_front,
+        rib_rear,
+        bot_flange,
+        feed_lip,
+        mk_box("mb_flug", 0.56, 0.72, 1.65, [("t", fx, fy, 0.0)], m_stl, bevel=0.04),
+        mk_box("mb_rlug", 0.64, 0.96, 1.56, [("t", rx, ry, 0.0)], m_stl, bevel=0.04),
+    ]
+    # 3 subtle molded round-count witness bosses along rear spine (`10 / 20 / 30`)
+    for frac in (0.34, 0.62, 0.88):
+        ang_w = AN94_MAG_ANG_START + frac * (AN94_MAG_ANG_END - AN94_MAG_ANG_START)
+        wx, wy = mag_arc_local(ang_w, AN94_MAG_R_OUT + 0.05)
+        parts.append(mk_cyl(f"mb_wit_{frac:.2f}", 0.13, 0.13, 0.10, axis="x", segs=14,
+                            xform=[("rz", ang_w), ("t", wx, wy, 0.0)], mat=m_stl))
+
+    obj = join_objects(parts, "an94_mag_body")
+    return finish_part(obj, bevel_w=0.0, sharp_deg=36.0)
 
 
 def build_an94_mag_follower(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
@@ -2081,10 +2687,10 @@ def build_an94_mag_follower(mats: dict[str, bpy.types.Material]) -> bpy.types.Ob
     m_org = mats["BM_FollowerOrange"]
     rot = [("rz", AN94_MAG_FOLLOWER_ANG)]
     parts = [
-        mk_box("fl_deck", 5.20, 0.42, 1.88, [("t", 0.0, 0.12, 0.0)] + rot, m_org, bevel=0.05),
-        mk_cyl("fl_step", 0.24, 0.24, 4.90, axis="x", segs=22, xform=[("t", 0.0, 0.38, -0.36)] + rot, mat=m_org, bevel=0.025),
-        mk_box("fl_sk_f", 0.55, 1.15, 1.76, [("t", 2.25, -0.45, 0.0)] + rot, m_org, bevel=0.04),
-        mk_box("fl_sk_r", 0.55, 1.15, 1.76, [("t", -2.25, -0.45, 0.0)] + rot, m_org, bevel=0.04),
+        mk_box("fl_deck", 5.20, 0.42, 1.88, [("t", 0.0, 0.12, 0.0)] + rot, m_org, bevel=0.06, bevel_segs=2),
+        mk_cyl("fl_step", 0.24, 0.24, 4.90, axis="x", segs=24, xform=[("t", 0.0, 0.38, -0.36)] + rot, mat=m_org, bevel=0.03),
+        mk_box("fl_sk_f", 0.55, 1.15, 1.76, [("t", 2.25, -0.45, 0.0)] + rot, m_org, bevel=0.05),
+        mk_box("fl_sk_r", 0.55, 1.15, 1.76, [("t", -2.25, -0.45, 0.0)] + rot, m_org, bevel=0.05),
     ]
     obj = join_objects(parts, "an94_mag_follower")
     return finish_part(obj, bevel_w=0.0, sharp_deg=36.0)
@@ -2108,12 +2714,15 @@ def build_an94_mag_spring(mats: dict[str, bpy.types.Material]) -> bpy.types.Obje
 
 
 def build_an94_mag_floorplate(mats: dict[str, bpy.types.Material]) -> bpy.types.Object:
-    """M-04: Stamped Black-Enamel Steel Magazine Floorplate & Lock Button."""
+    """M-04: Contoured Stamped Black-Enamel Steel Magazine Floorplate w/ Curled Side Rails & Detent Button."""
     m_stl = mats["BM_MagSteel"]
     rot = [("rz", AN94_MAG_ANG_END)]
     obj = join_objects([
-        mk_box("fp_plate", 6.90, 0.55, 2.86, [("t", 0.0, -0.22, 0.0)] + rot, m_stl, bevel=0.06),
-        mk_cyl("fp_btn", 0.32, 0.32, 0.25, axis="y", segs=20, xform=[("t", 0.0, -0.52, 0.0)] + rot, mat=m_stl, bevel=0.02),
+        mk_box("fp_plate", 6.90, 0.42, 2.86, [("t", 0.0, -0.26, 0.0)] + rot, m_stl, bevel=0.07, bevel_segs=2),
+        mk_box("fp_rail_l", 6.72, 0.30, 0.20, [("t", 0.0, -0.05, -1.33)] + rot, m_stl, bevel=0.04),
+        mk_box("fp_rail_r", 6.72, 0.30, 0.20, [("t", 0.0, -0.05,  1.33)] + rot, m_stl, bevel=0.04),
+        mk_box("fp_lip_f", 0.34, 0.38, 2.64, [("t", 3.28, -0.10, 0.0)] + rot, m_stl, bevel=0.04),
+        mk_cyl("fp_btn", 0.32, 0.34, 0.22, axis="y", segs=22, xform=[("t", 0.0, -0.50, 0.0)] + rot, mat=m_stl, bevel=0.03),
     ], "an94_mag_floorplate")
     return finish_part(obj, bevel_w=0.0, sharp_deg=34.0)
 
@@ -2275,7 +2884,7 @@ def unwrap_barrel_mag_atlas(objs: list[bpy.types.Object]):
         c = face.calc_center_median()
         n = face.normal
         tz, nz = -c.y, -n.y
-        return (nz > 0.72 and tz > 1.20) or (nz < -0.72 and tz < -1.20)
+        return (nz > 0.80 and 1.31 <= tz <= 1.375) or (nz < -0.80 and -1.375 <= tz <= -1.31)
 
     barrel_grp = [o for o in objs if o.name in {"an94_barrel", "an94_gas_tube", "an94_muzzle_brake"}]
     follower_grp = [o for o in objs if o.name == "an94_mag_follower"]

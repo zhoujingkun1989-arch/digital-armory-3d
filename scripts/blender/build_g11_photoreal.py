@@ -568,11 +568,11 @@ if "--postprocess" in sys.argv:
         in_block_y = (y_norm >= 0.11) & (y_norm <= 0.89)
         in_block = (in_block_x & in_block_y).astype(np.float32)
 
-        # Granular energetic tan-ochre HITP caseless propellant block shading with beveled vertical seams!
-        edge_bevel = np.clip(1.0 - np.power(np.abs(local_x) / 0.86, 4.0), 0.25, 1.0)
-        grain = ndimage.gaussian_filter(rng.normal(0.0, 0.024, (sh, sw)).astype(np.float32), sigma=0.7)
-        ochre_base = np.array([0.74, 0.58, 0.34], dtype=np.float32)
-        block_rgb = ochre_base * (0.72 + 0.30 * edge_bevel + tone_j + grain)[..., None]
+        # Granular energetic mint-tan/ochre HITP caseless propellant block shading with crisp beveled vertical seams!
+        edge_bevel = np.clip(1.0 - np.power(np.abs(local_x) / 0.86, 4.5), 0.20, 1.0)
+        grain = ndimage.gaussian_filter(rng.normal(0.0, 0.022, (sh, sw)).astype(np.float32), sigma=0.7)
+        ochre_base = np.array([0.78, 0.72, 0.48], dtype=np.float32)
+        block_rgb = ochre_base * (0.70 + 0.34 * edge_bevel + tone_j + grain)[..., None]
 
         # Flush gleaming copper 4.73mm spitzer bullet nose embedded in the bottom of each DM11 block (y_norm in [0.11..0.30])!
         cu_t = np.clip((0.30 - y_norm) / 0.19, 0.0, 1.0)
@@ -1085,32 +1085,32 @@ def _build_flash_hider_heat_mat() -> bpy.types.Material:
 
 def create_material_library() -> dict[str, bpy.types.Material]:
     return {
-        # --- SUITE 1: g11_v3_housing (AgX-Calibrated Bundeswehr Olive-Charcoal >= 0.175 sRGB!) ---
+        # --- SUITE 1: g11_v3_housing (AgX-Calibrated Bundeswehr Olive-Charcoal >= 0.19 sRGB!) ---
         "H_Olive_Monocoque": _build_pbr_mat(
             "H_Olive_Monocoque",
-            base_srgb=(0.222, 0.244, 0.212),
-            roughness=0.59,
+            base_srgb=(0.232, 0.256, 0.222),
+            roughness=0.52,
             metallic=0.00,
-            bevel_r=0.032,
-            edge_wear=0.22,
-            edge_srgb=(0.335, 0.362, 0.320),
+            bevel_r=0.030,
+            edge_wear=0.26,
+            edge_srgb=(0.355, 0.382, 0.338),
             grain_scale=64.0,
-            grain_bump=0.046,
-            voronoi_grain=0.58,
+            grain_bump=0.044,
+            voronoi_grain=0.56,
             voronoi_scale=96.0,
-            rough_var=0.042,
+            rough_var=0.044,
         ),
         "H_Dark_Polymer": _build_pbr_mat(
             "H_Dark_Polymer",
-            base_srgb=(0.192, 0.204, 0.196),
-            roughness=0.63,
+            base_srgb=(0.198, 0.212, 0.204),
+            roughness=0.55,
             metallic=0.00,
             bevel_r=0.026,
-            edge_wear=0.20,
-            edge_srgb=(0.298, 0.312, 0.302),
+            edge_wear=0.22,
+            edge_srgb=(0.312, 0.326, 0.316),
             grain_scale=68.0,
-            grain_bump=0.048,
-            voronoi_grain=0.60,
+            grain_bump=0.046,
+            voronoi_grain=0.58,
             voronoi_scale=98.0,
             rough_var=0.042,
         ),
@@ -1237,8 +1237,8 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         "C_Chrome_Breech": _build_pbr_mat(
             "C_Chrome_Breech",
             base_srgb=(0.88, 0.91, 0.95),
-            roughness=0.26,
-            metallic=0.76,
+            roughness=0.20,
+            metallic=0.92,
             bevel_r=0.020,
             edge_wear=0.28,
             edge_srgb=(0.96, 0.98, 1.00),
@@ -1250,8 +1250,8 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         "C_Chamber_Carbon": _build_pbr_mat(
             "C_Chamber_Carbon",
             base_srgb=(0.23, 0.24, 0.26),
-            roughness=0.48,
-            metallic=0.62,
+            roughness=0.46,
+            metallic=0.66,
             bevel_r=0.012,
             grain_scale=54.0,
             grain_bump=0.030,
@@ -1259,29 +1259,29 @@ def create_material_library() -> dict[str, bpy.types.Material]:
         ),
         "C_Stainless_Gear": _build_pbr_mat(
             "C_Stainless_Gear",
-            base_srgb=(0.84, 0.87, 0.91),
-            roughness=0.28,
-            metallic=0.78,
+            base_srgb=(0.85, 0.88, 0.92),
+            roughness=0.22,
+            metallic=0.93,
             bevel_r=0.016,
             edge_wear=0.34,
             edge_srgb=(0.95, 0.97, 0.99),
             grain_scale=32.0,
-            grain_bump=0.018,
+            grain_bump=0.016,
             aniso_stretch=(0.40, 3.5, 3.5),
-            rough_var=0.024,
+            rough_var=0.022,
         ),
         "C_Clockwork_Brass": _build_pbr_mat(
             "C_Clockwork_Brass",
             base_srgb=(0.94, 0.76, 0.30),
-            roughness=0.26,
-            metallic=0.84,
+            roughness=0.22,
+            metallic=0.92,
             bevel_r=0.016,
             edge_wear=0.34,
             edge_srgb=(0.99, 0.89, 0.56),
             grain_scale=34.0,
-            grain_bump=0.018,
+            grain_bump=0.016,
             aniso_stretch=(0.45, 3.0, 3.0),
-            rough_var=0.024,
+            rough_var=0.022,
         ),
         "C_Buffer_Elastomer": _build_pbr_mat(
             "C_Buffer_Elastomer",
@@ -1563,16 +1563,27 @@ def mk_spur_gear_z(
     bore_r: float = 0.0, mat: bpy.types.Material | None = None,
     xform: list[tuple] | None = None,
 ) -> bpy.types.Object:
+    """TRUE Involute-Profile Tapered CNC Spur Gear with chamfered root fillets & beveled crowns!"""
     pts = []
-    steps = teeth * 4
-    for i in range(steps):
-        a = (i / steps) * 2.0 * math.pi
-        ph = i % 4
-        r = r_tip if ph in (1, 2) else r_root
-        pts.append((math.cos(a) * r, math.sin(a) * r))
-    gear = mk_extrude_z(name, pts, z0, z1, bevel=0.018, bevel_segs=1, xform=xform, mat=mat)
+    r_mid = 0.5 * (r_root + r_tip)
+    step = math.tau / teeth
+    for i in range(teeth):
+        a0 = i * step
+        # 6-point involute-tapered tooth profile per pitch (wide root -> curved flank -> crisp land -> wide valley)
+        for frac, rad in (
+            (0.00, r_root),
+            (0.14, r_root),
+            (0.24, r_mid),
+            (0.32, r_tip),
+            (0.50, r_tip),
+            (0.58, r_mid),
+            (0.68, r_root),
+        ):
+            ang = a0 + frac * step
+            pts.append((math.cos(ang) * rad, math.sin(ang) * rad))
+    gear = mk_extrude_z(name, pts, z0, z1, bevel=0.020, bevel_segs=2, xform=xform, mat=mat)
     if bore_r > 0.05:
-        hole = mk_cyl(f"{name}_bore", bore_r, bore_r, abs(z1 - z0) + 0.8, axis="z", segs=24,
+        hole = mk_cyl(f"{name}_bore", bore_r, bore_r, abs(z1 - z0) + 0.8, axis="z", segs=32,
                       xform=[("t", 0.0, 0.0, (z0 + z1) * 0.5)] + (xform or []), mat=mat)
         gear = bool_diff(gear, [hole])
     return gear
@@ -1599,47 +1610,119 @@ def join_parts(name: str, objs: list[bpy.types.Object]) -> bpy.types.Object:
     return out
 
 
+def _count_non_manifold(obj: bpy.types.Object) -> int:
+    bm = bmesh.new()
+    bm.from_mesh(obj.data)
+    bad = sum(1 for e in bm.edges if len(e.link_faces) != 2)
+    bm.free()
+    return bad
+
+
 def bool_diff(target: bpy.types.Object, cutters: list[bpy.types.Object]) -> bpy.types.Object:
     for c in cutters:
-        select_only([target], target)
-        mod = target.modifiers.new(name="BoolCut", type="BOOLEAN")
-        mod.operation = "DIFFERENCE"
-        mod.solver = "EXACT"
-        mod.object = c
-        bpy.ops.object.modifier_apply(modifier=mod.name)
+        for m in c.data.materials:
+            if m and m.name not in [tm.name for tm in target.data.materials if tm]:
+                target.data.materials.append(m)
+        backup_mesh = target.data.copy()
+        success = False
+        for slv in ("EXACT", "MANIFOLD"):
+            select_only([target], target)
+            mod = target.modifiers.new(name="BoolCut", type="BOOLEAN")
+            mod.operation = "DIFFERENCE"
+            mod.solver = slv
+            mod.object = c
+            if slv == "EXACT":
+                mod.use_self = True
+                mod.use_hole_tolerant = True
+            bpy.ops.object.modifier_apply(modifier=mod.name)
+            if _count_non_manifold(target) == 0 and len(target.data.polygons) > 0:
+                success = True
+                break
+            old_m = target.data
+            target.data = backup_mesh.copy()
+            bpy.data.meshes.remove(old_m)
+        if not success:
+            select_only([target], target)
+            mod = target.modifiers.new(name="BoolCutF", type="BOOLEAN")
+            mod.operation = "DIFFERENCE"
+            mod.solver = "EXACT"
+            mod.use_self = True
+            mod.use_hole_tolerant = True
+            mod.object = c
+            bpy.ops.object.modifier_apply(modifier=mod.name)
+        bpy.data.meshes.remove(backup_mesh)
         bpy.data.objects.remove(c, do_unlink=True)
     return target
 
 
-def finalize_part(obj: bpy.types.Object, auto_smooth_deg: float = 34.0) -> bpy.types.Object:
+def bool_union(target: bpy.types.Object, additions: list[bpy.types.Object]) -> bpy.types.Object:
+    for a in additions:
+        for m in a.data.materials:
+            if m and m.name not in [tm.name for tm in target.data.materials if tm]:
+                target.data.materials.append(m)
+        backup_mesh = target.data.copy()
+        success = False
+        for slv in ("EXACT", "MANIFOLD"):
+            select_only([target], target)
+            mod = target.modifiers.new(name="BoolU", type="BOOLEAN")
+            mod.operation = "UNION"
+            mod.solver = slv
+            mod.object = a
+            if slv == "EXACT":
+                mod.use_self = True
+                mod.use_hole_tolerant = True
+            bpy.ops.object.modifier_apply(modifier=mod.name)
+            if _count_non_manifold(target) == 0 and len(target.data.polygons) > 0:
+                success = True
+                break
+            old_m = target.data
+            target.data = backup_mesh.copy()
+            bpy.data.meshes.remove(old_m)
+        if not success:
+            select_only([target], target)
+            mod = target.modifiers.new(name="BoolUF", type="BOOLEAN")
+            mod.operation = "UNION"
+            mod.solver = "EXACT"
+            mod.use_self = True
+            mod.use_hole_tolerant = True
+            mod.object = a
+            bpy.ops.object.modifier_apply(modifier=mod.name)
+        bpy.data.meshes.remove(backup_mesh)
+        bpy.data.objects.remove(a, do_unlink=True)
+    return target
+
+
+def finalize_watertight_part(obj: bpy.types.Object, sharp_deg: float = 36.0) -> bpy.types.Object:
+    """Watertight smooth shading + angle-based sharp creases + Face-Area-With-Angle Weighted Normals (0 non-manifold edges!)."""
     bm = bmesh.new()
     bm.from_mesh(obj.data)
     bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)
+    degen = [f for f in bm.faces if f.calc_area() < 1e-10]
+    if degen:
+        bmesh.ops.delete(bm, geom=degen, context="FACES")
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    if bm.calc_volume(signed=True) < 0.0:
+        bmesh.ops.reverse_faces(bm, faces=bm.faces)
+
+    angle_rad = math.radians(sharp_deg)
+    for f in bm.faces:
+        f.smooth = True
+    for e in bm.edges:
+        if len(e.link_faces) == 2:
+            e.smooth = e.calc_face_angle(0.0) < angle_rad
+        else:
+            e.smooth = False
     bm.to_mesh(obj.data)
     bm.free()
+    obj.data.update()
 
-    for p in obj.data.polygons:
-        p.use_smooth = True
     select_only([obj], obj)
-    mod = obj.modifiers.new(name="EdgeSplit", type="EDGE_SPLIT")
-    mod.use_edge_angle = True
-    mod.split_angle = math.radians(auto_smooth_deg)
-    bpy.ops.object.modifier_apply(modifier=mod.name)
-    # Re-weld clean manifold vertices after baking sharp visual crease normals? NO — wait!
-    # EdgeSplit opens edges if applied! Instead use smooth shading without splitting edges so non_manifold === 0!
-    return obj
-
-
-def finalize_watertight_part(obj: bpy.types.Object) -> bpy.types.Object:
-    bm = bmesh.new()
-    bm.from_mesh(obj.data)
-    bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)
-    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
-    bm.to_mesh(obj.data)
-    bm.free()
-    for p in obj.data.polygons:
-        p.use_smooth = False
+    wn = obj.modifiers.new(name="WeightedNormal", type="WEIGHTED_NORMAL")
+    wn.mode = "FACE_AREA_WITH_ANGLE"
+    wn.weight = 100
+    wn.thresh = 0.01
+    wn.keep_sharp = True
+    bpy.ops.object.modifier_apply(modifier=wn.name)
     return obj
 
 
@@ -1653,6 +1736,245 @@ def _quad_bez(p0, p1, p2, segs: int = 8):
     ]
 
 
+def sample_quad_bezier(p0, p1, p2, segs: int = 10) -> list[tuple[float, float]]:
+    return [p0] + _quad_bez(p0, p1, p2, segs)
+
+
+def sample_cubic_bezier(p0, p1, p2, p3, segs: int = 12) -> list[tuple[float, float]]:
+    pts = []
+    for i in range(segs + 1):
+        t = i / segs
+        u = 1.0 - t
+        pts.append((
+            u**3 * p0[0] + 3 * u**2 * t * p1[0] + 3 * u * t**2 * p2[0] + t**3 * p3[0],
+            u**3 * p0[1] + 3 * u**2 * t * p1[1] + 3 * u * t**2 * p2[1] + t**3 * p3[1],
+        ))
+    return pts
+
+
+def mk_loft_rings(
+    name: str,
+    rings_three: list[list[tuple[float, float, float]]],
+    mat: bpy.types.Material | None = None,
+    cap_ends: bool = True,
+) -> bpy.types.Object:
+    bm = bmesh.new()
+    n_ring = len(rings_three[0])
+    v_rings = [[bm.verts.new(pt) for pt in r] for r in rings_three]
+    for s in range(len(v_rings) - 1):
+        a, b = v_rings[s], v_rings[s + 1]
+        for k in range(n_ring):
+            kn = (k + 1) % n_ring
+            bm.faces.new((a[k], a[kn], b[kn], b[k]))
+    if cap_ends:
+        bm.faces.new(list(reversed(v_rings[0])))
+        bm.faces.new(v_rings[-1])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    if bm.calc_volume(signed=True) < 0.0:
+        bmesh.ops.reverse_faces(bm, faces=bm.faces)
+    _apply_three_xform(bm, [])
+    return _bm_to_obj(name, bm, mat)
+
+
+def mk_loft_y(
+    name: str,
+    stations: list[tuple[float, float, float, float, float, float]],
+    n_ring: int = 28,
+    mat: bpy.types.Material | None = None,
+    cap_ends: bool = True,
+) -> bpy.types.Object:
+    rings = []
+    for y, xb, xf, hz, pb, pf in stations:
+        xc = 0.5 * (xb + xf)
+        hx = max(0.02, 0.5 * (xf - xb))
+        ring = []
+        for k in range(n_ring):
+            th = math.tau * k / n_ring
+            ct, st = math.cos(th), math.sin(th)
+            pw = pf if ct >= 0.0 else pb
+            inv_p = 2.0 / max(pw, 1.2)
+            x = xc + math.copysign(abs(ct) ** inv_p, ct) * hx
+            z = math.copysign(abs(st) ** inv_p, st) * hz
+            ring.append((x, y, z))
+        rings.append(ring)
+    return mk_loft_rings(name, rings, mat=mat, cap_ends=cap_ends)
+
+
+def mk_swept_bow(
+    name: str,
+    center_pts_xy: list[tuple[float, float]],
+    thickness: float,
+    half_z: float,
+    bevel: float = 0.05,
+    bevel_segs: int = 2,
+    mat: bpy.types.Material | None = None,
+) -> bpy.types.Object:
+    clean = []
+    for p in center_pts_xy:
+        if not clean or math.hypot(p[0] - clean[-1][0], p[1] - clean[-1][1]) > 1e-4:
+            clean.append(p)
+    n = len(clean)
+    ht = thickness * 0.5
+    left_side, right_side = [], []
+    for i in range(n):
+        if i == 0:
+            dx, dy = clean[1][0] - clean[0][0], clean[1][1] - clean[0][1]
+        elif i == n - 1:
+            dx, dy = clean[-1][0] - clean[-2][0], clean[-1][1] - clean[-2][1]
+        else:
+            dx, dy = clean[i + 1][0] - clean[i - 1][0], clean[i + 1][1] - clean[i - 1][1]
+        ln = max(1e-6, math.hypot(dx, dy))
+        nx, ny = -dy / ln, dx / ln
+        left_side.append((clean[i][0] + nx * ht, clean[i][1] + ny * ht))
+        right_side.append((clean[i][0] - nx * ht, clean[i][1] - ny * ht))
+    poly = left_side + list(reversed(right_side))
+    return mk_extrude_z(name, poly, -half_z, half_z, bevel=bevel, bevel_segs=bevel_segs, mat=mat)
+
+
+def mk_stadium_2d(cx: float, cy: float, length: float, width: float, segs: int = 10, vertical: bool = False) -> list[tuple[float, float]]:
+    if vertical:
+        r = length * 0.5
+        hl = max(0.01, width * 0.5 - r)
+        pts = []
+        for i in range(segs + 1):
+            a = math.pi * (i / segs)
+            pts.append((cx + r * math.cos(a), cy + hl + r * math.sin(a)))
+        for i in range(segs + 1):
+            a = math.pi + math.pi * (i / segs)
+            pts.append((cx + r * math.cos(a), cy - hl + r * math.sin(a)))
+        return pts
+    r = width * 0.5
+    hl = max(0.01, length * 0.5 - r)
+    pts = []
+    for i in range(segs + 1):
+        a = -math.pi * 0.5 + math.pi * (i / segs)
+        pts.append((cx + hl + r * math.cos(a), cy + r * math.sin(a)))
+    for i in range(segs + 1):
+        a = math.pi * 0.5 + math.pi * (i / segs)
+        pts.append((cx - hl + r * math.cos(a), cy + r * math.sin(a)))
+    return pts
+
+
+def mk_chamfered_stadium_cutter_z(
+    name: str,
+    cx: float, cy: float,
+    z_wall: float, depth: float,
+    length: float, width: float,
+    chamfer: float = 0.06,
+    side_sign: float = 1.0,
+    through_both: bool = False,
+    segs: int = 10,
+    vertical: bool = False,
+    mat: bpy.types.Material | None = None,
+) -> bpy.types.Object:
+    if through_both:
+        z_out = abs(z_wall)
+        stations = [
+            (-z_out - 0.18, chamfer + 0.08),
+            (-z_out + chamfer, 0.0),
+            (z_out - chamfer, 0.0),
+            (z_out + 0.18, chamfer + 0.08),
+        ]
+    else:
+        s = 1.0 if side_sign >= 0.0 else -1.0
+        z_in = z_wall - s * depth
+        z_ch = z_wall - s * chamfer
+        z_ov = z_wall + s * 0.16
+        stations = [(z_in, 0.0), (z_ch, 0.0), (z_ov, chamfer + 0.06)]
+        if s < 0.0:
+            stations.reverse()
+    rings = []
+    for z_pos, dr in stations:
+        pts2d = mk_stadium_2d(cx, cy, length + 2.0 * dr, width + 2.0 * dr, segs=segs, vertical=vertical)
+        rings.append([(x, y, z_pos) for x, y in pts2d])
+    return mk_loft_rings(name, rings, mat=mat, cap_ends=True)
+
+
+def mk_knurled_cyl(
+    name: str, radius: float, length: float, axis: str = "z",
+    flutes: int = 24, depth: float = 0.024,
+    xform: list[tuple] | None = None,
+    mat: bpy.types.Material | None = None,
+) -> bpy.types.Object:
+    n_pts = flutes * 2
+    half_l = length * 0.5
+    bev = min(0.028, length * 0.14, radius * 0.14)
+    bm = bmesh.new()
+    stations = [
+        (-half_l, radius - depth * 0.7 - bev * 0.85),
+        (-half_l + bev, radius),
+        (half_l - bev, radius),
+        (half_l, radius - depth * 0.7 - bev * 0.85),
+    ]
+    rings = []
+    for s_idx, (ax_pos, r_base) in enumerate(stations):
+        ring = []
+        is_end = s_idx in (0, 3)
+        for k in range(n_pts):
+            th = math.tau * k / n_pts
+            rr = r_base if is_end else (r_base if (k % 2 == 0) else (r_base - depth))
+            u, v = rr * math.cos(th), rr * math.sin(th)
+            if axis == "x":
+                pt = (ax_pos, u, v)
+            elif axis == "y":
+                pt = (u, ax_pos, v)
+            else:
+                pt = (u, v, ax_pos)
+            ring.append(bm.verts.new(pt))
+        rings.append(ring)
+    for s in range(len(rings) - 1):
+        for k in range(n_pts):
+            kn = (k + 1) % n_pts
+            bm.faces.new((rings[s][k], rings[s + 1][k], rings[s + 1][kn], rings[s][kn]))
+    bm.faces.new(list(reversed(rings[0])))
+    bm.faces.new(rings[-1])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    _apply_three_xform(bm, xform or [])
+    return _bm_to_obj(name, bm, mat)
+
+
+def mk_tube_along_pts(
+    name: str,
+    pts_three: list[Vector],
+    radius: float,
+    ring_segs: int = 12,
+    mat: bpy.types.Material | None = None,
+) -> bpy.types.Object:
+    bm = bmesh.new()
+    rings = []
+    prev_n = None
+    n_pts = len(pts_three)
+    for i, p in enumerate(pts_three):
+        if i == 0:
+            tang = (pts_three[1] - pts_three[0]).normalized()
+        elif i == n_pts - 1:
+            tang = (pts_three[-1] - pts_three[-2]).normalized()
+        else:
+            tang = (pts_three[i + 1] - pts_three[i - 1]).normalized()
+        if prev_n is None:
+            ref = Vector((0, 0, 1)) if abs(tang.z) < 0.85 else Vector((1, 0, 0))
+            n_vec = tang.cross(ref).normalized()
+        else:
+            n_vec = (prev_n - tang * prev_n.dot(tang)).normalized()
+        prev_n = n_vec
+        b_vec = tang.cross(n_vec).normalized()
+        ring = []
+        for s in range(ring_segs):
+            th = math.tau * s / ring_segs
+            off = (n_vec * math.cos(th) + b_vec * math.sin(th)) * radius
+            ring.append(bm.verts.new(p + off))
+        rings.append(ring)
+    for i in range(len(rings) - 1):
+        for s in range(ring_segs):
+            sn = (s + 1) % ring_segs
+            bm.faces.new((rings[i][s], rings[i + 1][s], rings[i + 1][sn], rings[i][sn]))
+    bm.faces.new(list(reversed(rings[0])))
+    bm.faces.new(rings[-1])
+    bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
+    _apply_three_xform(bm, [])
+    return _bm_to_obj(name, bm, mat)
+
+
 # =============================================================================
 # 22 HIGH-DETAIL MUSEUM-GRADE H&K G11 K2 HARD-SURFACE PART BUILDERS
 # =============================================================================
@@ -1660,12 +1982,13 @@ def _quad_bez(p0, p1, p2, segs: int = 8):
 # --- SUITE 1: HOUSING (7 parts) ---
 
 def build_g11_outer_housing(mats) -> bpy.types.Object:
-    """Iconic Bundeswehr Olive-Charcoal Monocoque Polymer Casing (`X in [-34.6, +30.6]`)."""
+    """Iconic Chamfered Bundeswehr Olive-Charcoal Composite Monocoque Casing (`X in [-34.6, +30.6]`)
+    w/ Recessed Molded Forend Grip Serrations, Chamfered Stadium Louvers & Open Steel Sling Loops!"""
     pts = [
         (-34.6, -6.8), (-8.5, -5.8), (-3.2, -5.6),
         (3.5, -3.0), (30.6, -2.0), (30.6, 6.6), (-34.6, 6.6),
     ]
-    body = mk_extrude_z("g11_outer_housing", pts, -3.20, 3.20, bevel=0.22, bevel_segs=3, mat=mats["H_Olive_Monocoque"])
+    body = mk_extrude_z("g11_outer_housing", pts, -3.20, 3.20, bevel=0.28, bevel_segs=4, mat=mats["H_Olive_Monocoque"])
 
     cutters = [
         # Hollow floating inner receiver cavity
@@ -1676,207 +1999,344 @@ def build_g11_outer_housing(mats) -> bpy.types.Object:
         mk_box("c_bbl", 18.0, 2.50, 2.50, [("t", 22.5, 0.0, 0.0)], mat=mats["H_Inner_Cavity"]),
         # Lower trigger pack bay
         mk_box("c_fcu", 12.2, 3.80, 3.10, [("t", -1.2, -4.45, 0.0)], mat=mats["H_Inner_Cavity"]),
-        # Left-flank circular pop-out winding crank bay at (-15.2, -0.8, -3.2)
-        mk_cyl("c_wk", 2.58, 2.58, 0.90, axis="z", segs=36, xform=[("t", -15.2, -0.8, -3.0)], mat=mats["H_Inner_Cavity"]),
+        # Left-flank circular pop-out winding crank bay w/ chamfered rim at (-15.2, -0.8, -3.2)
+        mk_cyl("c_wk", 2.56, 2.56, 0.90, axis="z", segs=44, xform=[("t", -15.2, -0.8, -3.0)], mat=mats["H_Inner_Cavity"]),
+        mk_cyl("c_wk_ch", 2.56, 2.74, 0.22, axis="z", segs=44, xform=[("t", -15.2, -0.8, -3.14)], mat=mats["H_Dark_Polymer"]),
     ]
-    # 6 sculpted forward forend cooling louver vents on both flanks
+    # 6 crisp chamfered stadium forward forend cooling louver vents on both flanks!
     for i in range(6):
-        vx = 14.5 + i * 1.95
-        cutters.append(mk_box(f"c_vent_{i}", 1.15, 0.44, 6.9, [("t", vx, -0.4, 0.0)], mat=mats["H_Inner_Cavity"], bevel=0.05))
-
+        vx = 14.2 + i * 2.02
+        cutters.append(
+            mk_chamfered_stadium_cutter_z(
+                f"c_vent_{i}", cx=vx, cy=-0.28, z_wall=3.20, depth=6.9,
+                length=1.22, width=0.44, chamfer=0.06, through_both=True, segs=8, mat=mats["H_Inner_Cavity"],
+            )
+        )
+    # 12 crisp vertical recessed molded ergonomic grip serration grooves on BOTH forend flanks (X in [11.8..26.6])!
+    # Uses H_Dark_Polymer so recessed faces NEVER collide with H_Olive_Monocoque Hero UV rollmarks (which end at X=+5.4)!
+    for side in (-1.0, 1.0):
+        for k in range(12):
+            gx = 12.0 + k * 1.32
+            cutters.append(
+                mk_chamfered_stadium_cutter_z(
+                    f"c_fgrip_{side:+.0f}_{k}", cx=gx, cy=-1.42,
+                    z_wall=side * 3.20, depth=0.14,
+                    length=0.34, width=1.08, chamfer=0.045,
+                    side_sign=side, segs=6, vertical=True, mat=mats["H_Dark_Polymer"],
+                )
+            )
     body = bool_diff(body, cutters)
 
-    # Exterior molded reinforcement details (recessed rear sling bar, lower emergency hatch trim)
+    # Open steel sling bar loops + detailed bottom emergency misfire hatch + lower forend palm ribs
+    f_sling_pts = sample_cubic_bezier((24.1, -2.05), (24.0, -2.52), (26.0, -2.52), (25.9, -2.05), segs=12)
+    r_sling_pts = sample_cubic_bezier((-32.7, -6.45), (-32.8, -6.92), (-30.8, -6.92), (-30.9, -6.45), segs=12)
     extras = [
         body,
-        mk_box("h_misfire_hatch", 4.6, 0.34, 3.4, [("t", -21.2, -6.58, 0.0)], mat=mats["H_Dark_Polymer"], bevel=0.06),
-        mk_box("h_front_sling", 1.8, 0.45, 1.4, [("t", 25.0, -2.28, 0.0)], mat=mats["H_Control_Steel"], bevel=0.05),
-        mk_box("h_rear_sling", 1.8, 0.45, 1.4, [("t", -31.8, -6.52, 0.0)], mat=mats["H_Control_Steel"], bevel=0.05),
+        mk_box("h_misfire_hatch", 4.6, 0.34, 3.4, [("t", -21.2, -6.58, 0.0)], mat=mats["H_Dark_Polymer"], bevel=0.08, bevel_segs=2),
+        mk_box("h_hatch_latch", 1.15, 0.24, 1.45, [("t", -19.2, -6.68, 0.0)], mat=mats["H_Control_Steel"], bevel=0.04),
+        mk_box("h_front_sbase", 2.2, 0.24, 1.35, [("t", 25.0, -2.10, 0.0)], mat=mats["H_Control_Steel"], bevel=0.04),
+        mk_tube_along_pts("h_front_sling", [Vector((px, py, 0.0)) for px, py in f_sling_pts], radius=0.12, ring_segs=12, mat=mats["H_Control_Steel"]),
+        mk_box("h_rear_sbase", 2.2, 0.24, 1.35, [("t", -31.8, -6.52, 0.0)], mat=mats["H_Control_Steel"], bevel=0.04),
+        mk_tube_along_pts("h_rear_sling", [Vector((px, py, 0.0)) for px, py in r_sling_pts], radius=0.12, ring_segs=12, mat=mats["H_Control_Steel"]),
     ]
-    return finalize_watertight_part(join_parts("g11_outer_housing", extras))
+    # Molded underside forend tactile finger-grip ribs (X in [10.0 .. 22.8])
+    for k in range(8):
+        rx = 10.6 + k * 1.72
+        ry = -2.74 + ((rx - 3.5) / 27.1) * 1.00 - 0.02
+        extras.append(mk_box(f"h_brib_{k}", 0.55, 0.16, 4.65, [("rz", 0.037), ("t", rx, ry, 0.0)], mat=mats["H_Dark_Polymer"], bevel=0.04))
+
+    return finalize_watertight_part(join_parts("g11_outer_housing", extras), sharp_deg=36.0)
 
 
 def build_g11_optic_handle(mats) -> bpy.types.Object:
-    """Integral Carry-Handle Hensoldt 1x/3.5x Optical Sight w/ Firewalled Emerald-Sapphire Lenses."""
-    outer = mk_extrude_z(
-        "opt_body",
-        [(-14.6, -0.15), (14.6, -0.15), (14.6, 5.65), (-14.6, 5.65)],
-        -1.95, 1.95, bevel=0.14, bevel_segs=3, mat=mats["H_Olive_Monocoque"],
+    """Sculpted Ergonomic Carry-Handle Optics Bridge Housing 1×/3.5× Hensoldt Optical Reflex Sight
+    w/ Arched Finger Tunnel, Domed Emerald-Sapphire AR Lenses & Knurled Turret Drums!"""
+    # Swept tapered ergonomic carry-handle bridge profile (preserves flat side nameplates Y > 2.60!)
+    bridge_xy = [
+        (-14.60, -0.15), (14.60, -0.15), (14.60, 2.35), (14.35, 5.55),
+        (13.65, 5.66), (-13.65, 5.66), (-14.35, 5.55), (-14.60, 2.35),
+    ]
+    outer = mk_extrude_z("opt_body", bridge_xy, -1.95, 1.95, bevel=0.20, bevel_segs=4, mat=mats["H_Olive_Monocoque"])
+
+    # Smoothly chamfered ergonomic stadium carry-handle grip tunnel!
+    tunnel = mk_chamfered_stadium_cutter_z(
+        "opt_hole", cx=0.0, cy=1.42, z_wall=1.95, depth=4.4,
+        length=16.6, width=2.08, chamfer=0.16, through_both=True, segs=12, mat=mats["H_Inner_Cavity"],
     )
-    tunnel = mk_extrude_z(
-        "opt_hole",
-        [(-8.4, 0.45), (8.4, 0.45), (7.4, 2.55), (-7.4, 2.55)],
-        -2.5, 2.5, mat=mats["H_Inner_Cavity"],
-    )
-    # Recessed objective & ocular lens hoods
-    obj_cut = mk_cyl("opt_oc", 1.12, 1.12, 1.2, axis="x", segs=32, xform=[("t", 14.3, 4.10, 0.0)], mat=mats["H_Inner_Cavity"])
-    ocu_cut = mk_cyl("opt_ec", 1.18, 1.18, 1.2, axis="x", segs=32, xform=[("t", -14.3, 4.10, 0.0)], mat=mats["H_Inner_Cavity"])
+    # Recessed flared anti-glare objective & ocular lens hoods
+    obj_cut = mk_cyl("opt_oc", 1.16, 1.16, 1.30, axis="x", segs=36, xform=[("t", 14.25, 4.10, 0.0)], mat=mats["H_Inner_Cavity"])
+    ocu_cut = mk_cyl("opt_ec", 1.22, 1.22, 1.30, axis="x", segs=36, xform=[("t", -14.25, 4.10, 0.0)], mat=mats["H_Inner_Cavity"])
     frame = bool_diff(outer, [tunnel, obj_cut, ocu_cut])
+
+    # Domed convex multi-coated emerald-sapphire optical glass lenses (`H_Optic_Lens` firewall!)
+    obj_lens_pts = [(0.00, 14.22), (1.08, 14.22), (1.08, 14.36)]
+    for i in range(1, 8):
+        r = 1.08 * (1.0 - i / 7.0)
+        x = 14.36 + 0.16 * math.sqrt(max(0.0, 1.0 - (r / 1.12) ** 2))
+        obj_lens_pts.append((r, x))
+    oc_lens_pts = [(0.00, -14.22), (1.14, -14.22), (1.14, -14.36)]
+    for i in range(1, 8):
+        r = 1.14 * (1.0 - i / 7.0)
+        x = -14.36 - 0.16 * math.sqrt(max(0.0, 1.0 - (r / 1.18) ** 2))
+        oc_lens_pts.append((r, x))
+
+    # Chamfered black anodized objective & ocular lens retainer bezel rings
+    f_bez = mk_lathe_x("opt_fbez", [(1.02, 14.26), (1.17, 14.26), (1.17, 14.62), (1.07, 14.62), (1.02, 14.48), (1.02, 14.26)],
+                       segs=36, xform=[("t", 0.0, 4.10, 0.0)], mat=mats["H_Control_Steel"])
+    r_bez = mk_lathe_x("opt_rbez", [(1.08, -14.26), (1.23, -14.26), (1.23, -14.62), (1.13, -14.62), (1.08, -14.48), (1.08, -14.26)],
+                       segs=36, xform=[("t", 0.0, 4.10, 0.0)], mat=mats["H_Control_Steel"])
 
     parts = [
         frame,
-        # Top STANAG backup sight rib & emergency iron sights
-        mk_box("opt_rib", 24.0, 0.40, 1.48, [("t", 0.0, 5.65, 0.0)], mat=mats["H_Dark_Polymer"], bevel=0.05),
-        mk_box("opt_iron_f", 0.65, 0.36, 0.42, [("t", 11.4, 5.66, 0.0)], mat=mats["H_Control_Steel"], bevel=0.03),
-        mk_box("opt_iron_r", 0.75, 0.36, 0.92, [("t", -11.4, 5.66, 0.0)], mat=mats["H_Control_Steel"], bevel=0.03),
-        # Strictly firewalled emerald-sapphire multi-coated lenses (`H_Optic_Lens`!)
-        mk_cyl("opt_lens_f", 1.06, 1.06, 0.34, axis="x", segs=32, xform=[("t", 14.48, 4.10, 0.0)], mat=mats["H_Optic_Lens"], bevel=0.03),
-        mk_cyl("opt_lens_r", 1.12, 1.12, 0.34, axis="x", segs=32, xform=[("t", -14.48, 4.10, 0.0)], mat=mats["H_Optic_Lens"], bevel=0.03),
-        # Windage & 1x/3.5x magnification selector turret drums
-        mk_cyl("opt_turret_r", 0.46, 0.46, 0.56, axis="z", segs=24, xform=[("t", 1.5, 4.10, 1.98)], mat=mats["H_Control_Steel"], bevel=0.04),
-        mk_cyl("opt_turret_t", 0.44, 0.44, 0.32, axis="y", segs=24, xform=[("t", 1.5, 5.68, 0.0)], mat=mats["H_Control_Steel"], bevel=0.03),
+        f_bez,
+        r_bez,
+        # Top STANAG backup sight rib & sculpted emergency iron sights (protective front hood + rear aperture)
+        mk_box("opt_rib", 24.0, 0.36, 1.48, [("t", 0.0, 5.65, 0.0)], mat=mats["H_Dark_Polymer"], bevel=0.06, bevel_segs=2),
+        mk_box("opt_iron_fl", 0.72, 0.36, 0.14, [("t", 11.4, 5.66, -0.24)], mat=mats["H_Control_Steel"], bevel=0.025),
+        mk_box("opt_iron_fr", 0.72, 0.36, 0.14, [("t", 11.4, 5.66,  0.24)], mat=mats["H_Control_Steel"], bevel=0.025),
+        mk_cyl("opt_iron_fp", 0.06, 0.08, 0.32, axis="y", segs=12, xform=[("t", 11.4, 5.66, 0.0)], mat=mats["H_Control_Stainless"]),
+        mk_box("opt_iron_r", 0.75, 0.36, 0.92, [("t", -11.4, 5.66, 0.0)], mat=mats["H_Control_Steel"], bevel=0.04),
+        # Strictly firewalled domed emerald-sapphire multi-coated lenses!
+        mk_lathe_x("opt_lens_f", obj_lens_pts, segs=36, xform=[("t", 0.0, 4.10, 0.0)], mat=mats["H_Optic_Lens"]),
+        mk_lathe_x("opt_lens_r", oc_lens_pts, segs=36, xform=[("t", 0.0, 4.10, 0.0)], mat=mats["H_Optic_Lens"]),
+        # Deeply knurled windage, elevation & 1×/3.5× magnification selector turret drums
+        mk_knurled_cyl("opt_turret_r", 0.48, 0.56, axis="z", flutes=24, depth=0.022, xform=[("t", 1.5, 4.10, 1.98)], mat=mats["H_Control_Steel"]),
+        mk_knurled_cyl("opt_turret_t", 0.46, 0.32, axis="y", flutes=24, depth=0.022, xform=[("t", 1.5, 5.68, 0.0)], mat=mats["H_Control_Steel"]),
+        mk_knurled_cyl("opt_mag_ring", 0.42, 0.30, axis="z", flutes=20, depth=0.020, xform=[("t", -3.8, 4.10, -1.94)], mat=mats["H_Control_Steel"]),
     ]
-    return finalize_watertight_part(join_parts("g11_optic_handle", parts))
+    return finalize_watertight_part(join_parts("g11_optic_handle", parts), sharp_deg=38.0)
 
 
 def build_g11_pistol_grip(mats) -> bpy.types.Object:
-    """Ergonomic H&K Grip with Solidly Welded Closed Winter Trigger Guard (ZERO air gaps!)."""
-    pts = [
-        (-2.2, 1.1), (2.1, 1.1), (1.7, -3.6), (8.3, -3.6),
-        (8.7, 3.1), (9.6, 3.1), (9.1, -4.5), (1.5, -4.5),
-        (-0.4, -11.4), (-5.4, -11.0), (-2.4, -1.2),
+    """Organically Lofted Ergonomic H&K Contoured Pistol Grip w/ Palm Swell, Finger Grooves
+    & Smoothly Swept Closed Winter Trigger Guard (ZERO air gaps!)."""
+    # 12-station organic superellipse pistol grip loft along Y in [-11.15, +1.05]
+    # Station = (y, x_back, x_front, hz, p_back, p_front)
+    grip_stations = [
+        ( 1.05, -2.18,  2.08, 1.72, 2.8, 2.8),
+        (-0.20, -2.28,  1.95, 1.66, 2.5, 2.4),  # upper thumb-web saddle
+        (-1.55, -2.52,  1.72, 1.74, 2.3, 2.2),
+        (-2.90, -2.84,  1.42, 1.88, 2.2, 2.2),  # ergonomic top finger groove
+        (-4.35, -3.22,  1.10, 2.04, 2.1, 2.2),  # palm swell begins
+        (-5.80, -3.62,  0.74, 2.12, 2.1, 2.3),  # anatomical palm swell peak
+        (-7.35, -4.08,  0.34, 2.04, 2.1, 2.3),
+        (-8.85, -4.58, -0.04, 1.92, 2.2, 2.4),
+        (-10.15, -5.02, -0.32, 1.84, 2.4, 2.5),
+        (-11.10, -5.32, -0.45, 1.86, 2.6, 2.6),
     ]
-    grip = mk_extrude_z("grip_core", pts, -1.78, 1.78, bevel=0.16, bevel_segs=3, mat=mats["H_Dark_Polymer"])
-    # Ergonomic palm swells with high-friction stipple texture
-    swell = mk_box("grip_swell", 3.3, 7.6, 4.26, [("rz", -0.24), ("t", -2.2, -6.4, 0.0)], mat=mats["H_Grip_Stipple"], bevel=0.22, bevel_segs=3)
-    heel_cap = mk_box("grip_heel", 4.9, 0.62, 3.65, [("rz", 0.08), ("t", -2.9, -11.0, 0.0)], mat=mats["H_Olive_Monocoque"], bevel=0.08)
-    return finalize_watertight_part(join_parts("g11_pistol_grip", [grip, swell, heel_cap]))
+    grip_core = mk_loft_y("grip_core", grip_stations, n_ring=32, mat=mats["H_Dark_Polymer"], cap_ends=True)
+
+    # Smoothly swept contoured H&K winter trigger-guard bow (solidly unioned front & rear!)
+    tg_curve = (
+        [(1.25, -4.05)]
+        + sample_cubic_bezier((1.55, -4.05), (3.85, -4.18), (6.55, -4.22), (8.25, -4.02), segs=10)[1:]
+        + sample_cubic_bezier((8.25, -4.02), (9.05, -3.90), (9.18, -3.05), (9.16, -1.20), segs=8)[1:]
+        + [(9.15, 3.05)]
+    )
+    tguard = mk_swept_bow("grip_tg", tg_curve, thickness=0.82, half_z=1.52, bevel=0.14, bevel_segs=3, mat=mats["H_Dark_Polymer"])
+    grip_body = bool_union(grip_core, [tguard])
+
+    # Raised stippled ergonomic palm-swell traction panels + horizontal grip ribs + olive flared heel cap
+    parts = [grip_body]
+    for side in (-1.0, 1.0):
+        parts.append(
+            mk_box(
+                f"grip_sw_{side:+.0f}", 2.85, 6.80, 0.16,
+                [("rz", -0.25), ("t", -2.15, -6.35, side * 2.02)],
+                mat=mats["H_Grip_Stipple"], bevel=0.06, bevel_segs=2,
+            )
+        )
+    for k in range(5):
+        ry = -3.8 - k * 1.25
+        rx = 1.24 - k * 0.34
+        parts.append(mk_box(f"grip_frib_{k}", 0.20, 0.24, 1.85, [("rz", -0.25), ("t", rx, ry, 0.0)], mat=mats["H_Grip_Stipple"], bevel=0.04))
+    parts.append(mk_box("grip_heel", 5.05, 0.64, 3.72, [("rz", 0.07), ("t", -2.90, -11.02, 0.0)], mat=mats["H_Olive_Monocoque"], bevel=0.12, bevel_segs=3))
+
+    return finalize_watertight_part(join_parts("g11_pistol_grip", parts), sharp_deg=42.0)
 
 
 def build_g11_buttplate(mats) -> bpy.types.Object:
-    """Ribbed Charcoal Rubber Shoulder Buttpad & Rear Takedown Endcap."""
-    pad = mk_box("bp_main", 2.15, 13.25, 6.24, [("t", -0.24, -0.05, 0.0)], mat=mats["H_Rubber_Buttpad"], bevel=0.18, bevel_segs=3)
+    """Sculpted Contoured Ribbed Charcoal Rubber Shoulder Buttpad & Rear Takedown Endcap."""
+    bp_xy = (
+        [(0.82, 6.58), (-1.18, 6.55)]
+        + sample_quad_bezier((-1.18, 6.55), (-0.98, -0.05), (-1.26, -6.66), segs=12)[1:]
+        + [(0.82, -6.68)]
+    )
+    pad = mk_extrude_z("bp_main", bp_xy, -3.12, 3.12, bevel=0.22, bevel_segs=4, mat=mats["H_Rubber_Buttpad"])
     parts = [pad]
-    for i in range(8):
-        ry = -5.2 + i * 1.48
-        parts.append(mk_box(f"bp_rib_{i}", 0.28, 0.50, 5.55, [("t", -1.24, ry, 0.0)], mat=mats["H_Dark_Polymer"], bevel=0.04))
-    # Dual rear takedown retention pin heads
+    for i in range(10):
+        u = i / 9.0
+        ry = -5.55 + u * 11.00
+        rx_p = -1.26 + 0.16 * (1.0 - (2.0 * u - 1.0) ** 2)
+        parts.append(mk_box(f"bp_rib_{i}", 0.22, 0.42, 5.45, [("t", rx_p, ry, 0.0)], mat=mats["H_Dark_Polymer"], bevel=0.05, bevel_segs=2))
+    # Dual rear takedown retention pin heads w/ chamfered retaining collars
     for py in (-4.4, 4.2):
-        parts.append(mk_cyl(f"bp_pin_{py:.1f}", 0.42, 0.42, 6.26, axis="z", segs=18, xform=[("t", 0.15, py, 0.0)], mat=mats["H_Control_Steel"], bevel=0.04))
-    return finalize_watertight_part(join_parts("g11_buttplate", parts))
+        parts.append(mk_cyl(f"bp_pin_{py:.1f}", 0.42, 0.42, 6.26, axis="z", segs=24, xform=[("t", 0.15, py, 0.0)], mat=mats["H_Control_Steel"], bevel=0.05))
+    return finalize_watertight_part(join_parts("g11_buttplate", parts), sharp_deg=38.0)
 
 
 def build_g11_winding_knob(mats) -> bpy.types.Object:
-    """Iconic Circular Side-Mounted Pop-Out Clockwork Cocking Crank Handle w/ Brushed Gunmetal Disc."""
-    disc = mk_cyl("wk_disc", 2.42, 2.42, 0.64, axis="z", segs=40, xform=[("t", 0.0, 0.0, -0.25)], mat=mats["H_Winding_Steel"], bevel=0.08)
-    shaft = mk_cyl("wk_shaft", 0.68, 0.68, 0.84, axis="z", segs=24, xform=[("t", 0.0, 0.0, 0.22)], mat=mats["H_Control_Stainless"], bevel=0.04)
-    arm = mk_box("wk_arm", 2.75, 0.86, 0.46, [("t", 0.75, 0.0, -0.76)], mat=mats["H_Winding_Lever"], bevel=0.08, bevel_segs=2)
-    knob = mk_cyl("wk_knob", 0.42, 0.42, 0.64, axis="z", segs=24, xform=[("t", 1.85, 0.0, -0.82)], mat=mats["H_Control_Stainless"], bevel=0.05)
-    screw = mk_cyl("wk_scr", 0.44, 0.44, 0.24, axis="z", segs=20, xform=[("t", 0.0, 0.0, -0.58)], mat=mats["H_Control_Stainless"], bevel=0.03)
-    return finalize_watertight_part(join_parts("g11_winding_knob", [disc, shaft, arm, knob, screw]))
+    """Iconic Deeply Knurled Circular Pop-Out Clockwork Cocking Crank Knob w/ Brushed Disc & Folding Lever!"""
+    # Deeply knurled cylindrical winding drum (outer flat -Z face at tz=-0.57 stays 100% captured by Hero UV!)
+    disc = mk_knurled_cyl("wk_disc", 2.42, 0.64, axis="z", flutes=36, depth=0.036, xform=[("t", 0.0, 0.0, -0.25)], mat=mats["H_Winding_Steel"])
+    shaft = mk_cyl("wk_shaft", 0.68, 0.68, 0.84, axis="z", segs=28, xform=[("t", 0.0, 0.0, 0.22)], mat=mats["H_Control_Stainless"], bevel=0.04)
+    # Contoured tapered folding crank arm w/ chamfered finger-grip edges
+    arm_xy = [(-0.62, -0.44), (2.08, -0.34), (2.22, 0.0), (2.08, 0.34), (-0.62, 0.44)]
+    arm = mk_extrude_z("wk_arm", arm_xy, -0.99, -0.53, bevel=0.09, bevel_segs=3, mat=mats["H_Winding_Lever"])
+    # Deeply knurled rotating cylindrical crank grip knob + slotted center axle screw!
+    knob = mk_knurled_cyl("wk_knob", 0.43, 0.64, axis="z", flutes=22, depth=0.024, xform=[("t", 1.85, 0.0, -0.82)], mat=mats["H_Control_Stainless"])
+    screw_raw = mk_cyl("wk_scr", 0.44, 0.44, 0.24, axis="z", segs=24, xform=[("t", 0.0, 0.0, -0.58)], mat=mats["H_Control_Stainless"], bevel=0.035)
+    screw = bool_diff(screw_raw, [mk_box("wk_scr_slot", 0.62, 0.10, 0.12, [("t", 0.0, 0.0, -0.68)], mat=mats["H_Control_Stainless"])])
+    return finalize_watertight_part(join_parts("g11_winding_knob", [disc, shaft, arm, knob, screw]), sharp_deg=36.0)
 
 
 def build_g11_selector(mats) -> bpy.types.Object:
-    """Ambidextrous H&K G11 S / 1 / 3 / A Cross-Shaft & Sculpted Selector Levers."""
+    """Ambidextrous H&K G11 S / 1 / 3 / A Cross-Shaft & Tapered Sculpted Selector Levers."""
     parts = [
-        mk_cyl("sel_shaft", 0.42, 0.42, 6.84, axis="z", segs=24, mat=mats["H_Control_Steel"], bevel=0.03),
+        mk_cyl("sel_shaft", 0.42, 0.42, 6.84, axis="z", segs=28, mat=mats["H_Control_Steel"], bevel=0.035),
     ]
+    lev_xy = [(-0.76, -0.42), (1.58, -0.26), (1.76, 0.0), (1.58, 0.26), (-0.76, 0.42)]
     for sgn in (-1, 1):
-        parts.append(mk_box(f"sel_lev_{sgn}", 2.52, 0.86, 0.44, [("t", 0.50, 0.0, sgn * 3.45)], mat=mats["H_Control_Steel"], bevel=0.06, bevel_segs=2))
-        parts.append(mk_box(f"sel_red_{sgn}", 0.54, 0.24, 0.48, [("t", 1.42, 0.0, sgn * 3.45)], mat=mats["H_Selector_Red"], bevel=0.02))
-    return finalize_watertight_part(join_parts("g11_selector", parts))
+        z0, z1 = (3.23, 3.67) if sgn > 0 else (-3.67, -3.23)
+        parts.append(mk_extrude_z(f"sel_lev_{sgn}", lev_xy, z0, z1, bevel=0.06, bevel_segs=2, mat=mats["H_Control_Steel"]))
+        parts.append(mk_box(f"sel_red_{sgn}", 0.54, 0.20, 0.48, [("t", 1.38, 0.0, sgn * 3.45)], mat=mats["H_Selector_Red"], bevel=0.025))
+    return finalize_watertight_part(join_parts("g11_selector", parts), sharp_deg=36.0)
 
 
 def build_g11_spare_clips(mats) -> bpy.types.Object:
-    """G11 K2 Side-Mounted Twin Spare 45-Rd Caseless Magazine Holding Brackets."""
+    """G11 K2 Side-Mounted Twin Spare 45-Rd Caseless Magazine Holding Brackets w/ Spring Latch Ears."""
     parts = []
     for x_off in (-7.8, 7.8):
-        parts.append(mk_box(f"sc_top_{x_off}", 2.40, 0.42, 6.20, [("t", x_off, 1.12, 0.0)], mat=mats["H_Dark_Polymer"], bevel=0.05))
+        parts.append(mk_box(f"sc_top_{x_off}", 2.40, 0.42, 6.20, [("t", x_off, 1.12, 0.0)], mat=mats["H_Dark_Polymer"], bevel=0.06, bevel_segs=2))
         for sgn in (-1, 1):
-            parts.append(mk_box(f"sc_clip_{x_off}_{sgn}", 2.58, 2.64, 1.34, [("t", x_off, 0.0, sgn * 3.56)], mat=mats["H_Olive_Monocoque"], bevel=0.08, bevel_segs=2))
-            parts.append(mk_box(f"sc_latch_{x_off}_{sgn}", 1.10, 0.65, 0.34, [("t", x_off, -0.85, sgn * 4.06)], mat=mats["H_Control_Steel"], bevel=0.03))
+            parts.append(mk_box(f"sc_clip_{x_off}_{sgn}", 2.58, 2.64, 1.34, [("t", x_off, 0.0, sgn * 3.56)], mat=mats["H_Olive_Monocoque"], bevel=0.10, bevel_segs=3))
+            parts.append(mk_box(f"sc_latch_{x_off}_{sgn}", 1.10, 0.65, 0.34, [("t", x_off, -0.85, sgn * 4.06)], mat=mats["H_Control_Steel"], bevel=0.04))
     for sgn in (-1, 1):
-        parts.append(mk_box(f"sc_tie_{sgn}", 18.6, 0.84, 0.54, [("t", 0.0, 0.0, sgn * 3.25)], mat=mats["H_Dark_Polymer"], bevel=0.05))
-    return finalize_watertight_part(join_parts("g11_spare_clips", parts))
+        parts.append(mk_box(f"sc_tie_{sgn}", 18.6, 0.84, 0.54, [("t", 0.0, 0.0, sgn * 3.25)], mat=mats["H_Dark_Polymer"], bevel=0.06, bevel_segs=2))
+    return finalize_watertight_part(join_parts("g11_spare_clips", parts), sharp_deg=36.0)
 
 
-# --- SUITE 2: CLOCKWORK (9 parts — The Cutaway Showpiece!) ---
+# --- SUITE 2: CLOCKWORK (9 parts — The Cutaway Swiss-Watch Showpiece!) ---
 
 def build_g11_inner_receiver(mats) -> bpy.types.Object:
-    """Floating CNC Steel Barreled-Action Chassis w/ Skeletonized Clockwork Viewing Windows."""
+    """Floating CNC Steel Barreled-Action Chassis w/ Chamfered Stadium Clockwork Viewing Windows & Stainless Rails."""
     parts = []
     for sgn in (-1, 1):
         wall = mk_extrude_z(
             f"ir_wall_{sgn}",
             [(-28.8, -3.65), (14.2, -2.50), (14.2, 2.00), (-28.8, 2.00)],
-            sgn * 2.10, sgn * 2.42, bevel=0.03, bevel_segs=2, mat=mats["C_Inner_Receiver_Steel"],
+            sgn * 2.10, sgn * 2.42, bevel=0.04, bevel_segs=2, mat=mats["C_Inner_Receiver_Steel"],
         )
-        cut_breech = mk_cyl(f"ir_cb_{sgn}", 1.68, 1.68, 1.4, axis="z", segs=32, xform=[("t", -21.2, 0.0, sgn * 2.26)], mat=mats["C_Inner_Receiver_Steel"])
-        cut_gears = mk_box(f"ir_cg_{sgn}", 7.7, 2.90, 1.4, [("t", -14.35, -0.10, sgn * 2.26)], mat=mats["C_Inner_Receiver_Steel"], bevel=0.18)
+        cut_breech = mk_cyl(f"ir_cb_{sgn}", 1.70, 1.70, 1.4, axis="z", segs=36, xform=[("t", -21.2, 0.0, sgn * 2.26)], mat=mats["C_Inner_Receiver_Steel"])
+        cut_gears = mk_chamfered_stadium_cutter_z(
+            f"ir_cg_{sgn}", cx=-14.35, cy=-0.10, z_wall=sgn * 2.42, depth=0.65,
+            length=7.7, width=2.86, chamfer=0.06, side_sign=float(sgn), segs=10, mat=mats["C_Inner_Receiver_Steel"],
+        )
         parts.append(bool_diff(wall, [cut_breech, cut_gears]))
+        # Gleaming stainless longitudinal floating-action guide rails along outer upper/lower chassis edge
+        parts.append(mk_box(f"ir_rail_u_{sgn}", 41.2, 0.24, 0.14, [("t", -7.3, 1.88, sgn * 2.38)], mat=mats["C_Stainless_Gear"], bevel=0.025))
+        parts.append(mk_box(f"ir_rail_l_{sgn}", 41.2, 0.24, 0.14, [("t", -7.3, -2.85, sgn * 2.38)], mat=mats["C_Stainless_Gear"], bevel=0.025))
 
-    # Barrel trunnion block
-    trun = mk_box("ir_trun", 7.8, 2.75, 4.38, [("t", -15.1, 0.0, 0.0)], mat=mats["C_Inner_Receiver_Steel"], bevel=0.07)
-    trun_hole = mk_cyl("ir_th", 1.04, 1.04, 8.6, axis="x", segs=28, xform=[("t", -15.1, 0.0, 0.0)], mat=mats["C_Inner_Receiver_Steel"])
+    trun = mk_box("ir_trun", 7.8, 2.75, 4.38, [("t", -15.1, 0.0, 0.0)], mat=mats["C_Inner_Receiver_Steel"], bevel=0.08, bevel_segs=2)
+    trun_hole = mk_cyl("ir_th", 1.04, 1.04, 8.6, axis="x", segs=32, xform=[("t", -15.1, 0.0, 0.0)], mat=mats["C_Inner_Receiver_Steel"])
     parts.append(bool_diff(trun, [trun_hole]))
 
-    # Upper overhead magazine rail bridge with feed-throat cutout over rotary breech
-    top_rail = mk_box("ir_top", 38.7, 0.45, 4.46, [("t", -5.15, 1.98, 0.0)], mat=mats["C_Inner_Receiver_Steel"], bevel=0.04)
+    top_rail = mk_box("ir_top", 38.7, 0.45, 4.46, [("t", -5.15, 1.98, 0.0)], mat=mats["C_Inner_Receiver_Steel"], bevel=0.05)
     feed_slot = mk_box("ir_fs", 2.4, 1.0, 1.80, [("t", -21.2, 1.98, 0.0)], mat=mats["C_Inner_Receiver_Steel"])
     parts.append(bool_diff(top_rail, [feed_slot]))
 
-    # Rear bulkhead & stainless recoil-spring thrust abutment cleanly aligned to Y = -3.05!
-    parts.append(mk_box("ir_rear", 2.0, 5.55, 4.42, [("t", -27.8, -0.78, 0.0)], mat=mats["C_Inner_Receiver_Steel"], bevel=0.06))
-    parts.append(mk_box("ir_abut", 1.6, 1.45, 3.80, [("t", -18.6, -3.05, 0.0)], mat=mats["C_Stainless_Gear"], bevel=0.05))
-    return finalize_watertight_part(join_parts("g11_inner_receiver", parts))
+    parts.append(mk_box("ir_rear", 2.0, 5.55, 4.42, [("t", -27.8, -0.78, 0.0)], mat=mats["C_Inner_Receiver_Steel"], bevel=0.07, bevel_segs=2))
+    parts.append(mk_box("ir_abut", 1.6, 1.45, 3.80, [("t", -18.6, -3.05, 0.0)], mat=mats["C_Stainless_Gear"], bevel=0.06))
+    return finalize_watertight_part(join_parts("g11_inner_receiver", parts), sharp_deg=36.0)
 
 
 def build_g11_rotary_breech(mats) -> bpy.types.Object:
-    """THE STAR: Luminous Brushed-Chrome 90-Deg Rotating Cylindrical Breech Block w/ Cutaway-Visible
-    Transverse 4.73x33mm DM11 Caseless Chamber, Brass Obturation Collar & Rear -Z Meshing Spur Gear!"""
-    cyl = mk_cyl("rb_cyl", 1.98, 1.98, 2.74, axis="z", segs=48, xform=[("t", 0.0, 0.0, 0.11)], mat=mats["C_Chrome_Breech"], bevel=0.08)
-    # Deep cutaway-visible transverse rectangular 4.73x33mm caseless chamber trough open on +Z face!
-    chamber_cut = mk_box("rb_ch", 4.30, 0.92, 2.10, [("t", 0.0, 0.0, 0.65)], mat=mats["C_Chamber_Carbon"], bevel=0.04)
+    """THE STAR: Luminous Brushed-Chrome 90° Rotating Cylindrical Breech Block w/ Cutaway-Visible
+    4.73×33mm Caseless Chamber, Brass Obturation Seals & Razor-Crisp 24-Tooth Involute Spur Gear!"""
+    cyl = mk_cyl("rb_cyl", 1.98, 1.98, 2.74, axis="z", segs=56, xform=[("t", 0.0, 0.0, 0.11)], mat=mats["C_Chrome_Breech"], bevel=0.09)
+    chamber_cut = mk_box("rb_ch", 4.30, 0.92, 2.10, [("t", 0.0, 0.0, 0.65)], mat=mats["C_Chamber_Carbon"], bevel=0.05)
     slotted = bool_diff(cyl, [chamber_cut])
-    # Rear -Z 24-tooth spur gear rim meshing 1:1 with clockwork gears (leaves +Z chrome cylinder 100% visible!)
-    gear_l = mk_spur_gear_z("rb_gl", 24, 1.88, 2.035, -1.68, -1.26, bore_r=0.68, mat=mats["C_Stainless_Gear"])
-    # Brass front/rear chamber gas-obturation trim plates & rear axle hub
-    lip_top = mk_box("rb_lt", 3.25, 0.14, 0.24, [("t", 0.0, 0.52, 1.38)], mat=mats["C_Clockwork_Brass"], bevel=0.02)
-    lip_bot = mk_box("rb_lb", 3.25, 0.14, 0.24, [("t", 0.0, -0.52, 1.38)], mat=mats["C_Clockwork_Brass"], bevel=0.02)
-    hub_l = mk_cyl("rb_hl", 0.58, 0.58, 0.24, axis="z", segs=24, xform=[("t", 0.0, 0.0, -1.56)], mat=mats["C_Clockwork_Brass"], bevel=0.03)
-    return finalize_watertight_part(join_parts("g11_rotary_breech", [slotted, gear_l, lip_top, lip_bot, hub_l]))
+    # Razor-crisp 24-tooth TRUE involute spur gear on -Z meshing 1:1 with clockwork planetary gear!
+    gear_l = mk_spur_gear_z("rb_gl", 24, 1.86, 2.035, -1.68, -1.26, bore_r=0.68, mat=mats["C_Stainless_Gear"])
+    # Brass front/rear chamber gas-obturation seal lips, concentric brass bearing ring & indexing cam boss!
+    lip_top = mk_box("rb_lt", 3.32, 0.15, 0.26, [("t", 0.0, 0.52, 1.37)], mat=mats["C_Clockwork_Brass"], bevel=0.025)
+    lip_bot = mk_box("rb_lb", 3.32, 0.15, 0.26, [("t", 0.0, -0.52, 1.37)], mat=mats["C_Clockwork_Brass"], bevel=0.025)
+    # Recessed front +Z chamfered brass obturation bezel collar
+    ring_f = bool_diff(
+        mk_cyl("rb_rf_o", 1.88, 1.88, 0.12, axis="z", segs=44, xform=[("t", 0.0, 0.0, 1.43)], mat=mats["C_Clockwork_Brass"], bevel=0.02),
+        [mk_cyl("rb_rf_i", 1.68, 1.68, 0.30, axis="z", segs=40, xform=[("t", 0.0, 0.0, 1.43)], mat=mats["C_Clockwork_Brass"]),
+         mk_box("rb_rf_s", 4.20, 0.96, 0.40, [("t", 0.0, 0.0, 1.43)], mat=mats["C_Clockwork_Brass"])],
+    )
+    hub_l = mk_cyl("rb_hl", 0.58, 0.58, 0.26, axis="z", segs=28, xform=[("t", 0.0, 0.0, -1.56)], mat=mats["C_Clockwork_Brass"], bevel=0.035)
+    return finalize_watertight_part(join_parts("g11_rotary_breech", [slotted, gear_l, lip_top, lip_bot, ring_f, hub_l]), sharp_deg=36.0)
 
 
 def build_g11_clockwork_gears(mats) -> bpy.types.Object:
-    """Swiss-Watch CNC Stainless & Skeletonized 5-Spoke Golden C36000 Brass Planetary Gear Train!"""
-    # Rear -Z 26-tooth brushed-stainless spur gear meshing 1:1 with rotary breech & rack
-    gear_back = mk_spur_gear_z("cw_sl", 26, 1.94, 2.175, -1.70, -1.26, bore_r=0.72, mat=mats["C_Stainless_Gear"])
-    # Front +Z SKELETONIZED 5-spoke golden C36000 brass watchmaker planetary gear ring (`bore_r = 1.48`!)
-    brass_ring = mk_spur_gear_z("cw_br", 22, 1.92, 2.175, 1.22, 1.58, bore_r=1.48, mat=mats["C_Clockwork_Brass"])
+    """Swiss-Watch CNC Involute Stainless & 5-Spoke Golden C36000 Brass Planetary Gear Train
+    w/ Sculpted Drive Cam Ratchet Pawl, Lightening Holes & Jewel Bearing Hub!"""
+    # Rear -Z 26-tooth TRUE involute stainless spur gear w/ 5 weight-relief holes!
+    gear_back = mk_spur_gear_z("cw_sl", 26, 1.92, 2.175, -1.70, -1.26, bore_r=0.72, mat=mats["C_Stainless_Gear"])
+    gb_cuts = [
+        mk_cyl(f"cw_gbh_{i}", 0.24, 0.24, 0.70, axis="z", segs=20,
+               xform=[("t", math.cos(i * math.tau / 5.0) * 1.32, math.sin(i * math.tau / 5.0) * 1.32, -1.48)],
+               mat=mats["C_Stainless_Gear"])
+        for i in range(5)
+    ]
+    gear_back = bool_diff(gear_back, gb_cuts)
+
+    # Front +Z SKELETONIZED 5-spoke golden C36000 brass TRUE involute watchmaker gear ring (`bore_r = 1.46`)!
+    brass_ring = mk_spur_gear_z("cw_br", 22, 1.90, 2.175, 1.22, 1.58, bore_r=1.46, mat=mats["C_Clockwork_Brass"])
     spokes = []
     for i in range(5):
-        a = (i / 5.0) * 2.0 * math.pi
-        spokes.append(mk_box(f"cw_spk_{i}", 1.48, 0.24, 0.26, [("t", 0.85, 0.0, 1.40), ("rz", a)], mat=mats["C_Clockwork_Brass"], bevel=0.03))
-    # Gleaming central chrome jewel hub + stepped brass cam collar + lower eccentric tie-shaft below barrel
+        a = (i / 5.0) * math.tau
+        # Tapered watchmaker curved-shoulder spoke
+        spk_xy = [(0.35, -0.15), (1.56, -0.09), (1.56, 0.09), (0.35, 0.15)]
+        spokes.append(mk_extrude_z(f"cw_spk_{i}", spk_xy, 1.27, 1.53, bevel=0.03, bevel_segs=2, xform=[("rz", a)], mat=mats["C_Clockwork_Brass"]))
+
+    # Sculpted Swiss-watch drive cam ratchet pawl engaging top rim of brass gear (gleams in ?cut=1!)
+    pawl_curve = sample_quad_bezier((-1.35, 1.72), (-0.15, 2.02), (1.28, 1.62), segs=10)
+    pawl_arm = mk_swept_bow("cw_pawl", pawl_curve, thickness=0.26, half_z=0.14, bevel=0.03, bevel_segs=2, mat=mats["C_Stainless_Gear"])
+    bm_pw = bmesh.new()
+    bm_pw.from_mesh(pawl_arm.data)
+    for v in bm_pw.verts:
+        v.co.y -= 1.42  # Blender -Y = Three.js +Z!
+    bm_pw.to_mesh(pawl_arm.data)
+    bm_pw.free()
+    pawl_piv = mk_cyl("cw_ppiv", 0.22, 0.22, 0.42, axis="z", segs=18, xform=[("t", -1.35, 1.72, 1.42)], mat=mats["C_Clockwork_Brass"], bevel=0.025)
+
     parts = [
         gear_back,
         brass_ring,
         *spokes,
-        mk_cyl("cw_hub_f", 0.62, 0.62, 0.42, axis="z", segs=28, xform=[("t", 0.0, 0.0, 1.42)], mat=mats["C_Chrome_Breech"], bevel=0.04),
-        mk_cyl("cw_jewel", 0.34, 0.34, 0.56, axis="z", segs=24, xform=[("t", 0.0, 0.0, 1.48)], mat=mats["C_Clockwork_Brass"], bevel=0.03),
-        mk_cyl("cw_tie", 0.30, 0.30, 3.55, axis="z", segs=20, xform=[("t", 0.0, -1.55, 0.0)], mat=mats["C_Chrome_Breech"], bevel=0.03),
-        mk_cyl("cw_al", 0.45, 0.45, 0.56, axis="z", segs=20, xform=[("t", 0.0, 0.0, -1.58)], mat=mats["C_Clockwork_Brass"], bevel=0.04),
+        pawl_arm,
+        pawl_piv,
+        mk_cyl("cw_hub_f", 0.64, 0.64, 0.44, axis="z", segs=32, xform=[("t", 0.0, 0.0, 1.42)], mat=mats["C_Chrome_Breech"], bevel=0.045),
+        mk_cyl("cw_jewel", 0.34, 0.34, 0.58, axis="z", segs=28, xform=[("t", 0.0, 0.0, 1.48)], mat=mats["C_Clockwork_Brass"], bevel=0.035),
+        mk_cyl("cw_tie", 0.30, 0.30, 3.55, axis="z", segs=22, xform=[("t", 0.0, -1.55, 0.0)], mat=mats["C_Chrome_Breech"], bevel=0.03),
+        mk_cyl("cw_al", 0.45, 0.45, 0.56, axis="z", segs=24, xform=[("t", 0.0, 0.0, -1.58)], mat=mats["C_Clockwork_Brass"], bevel=0.04),
     ]
-    return finalize_watertight_part(join_parts("g11_clockwork_gears", parts))
+    return finalize_watertight_part(join_parts("g11_clockwork_gears", parts), sharp_deg=36.0)
 
 
 def build_g11_driving_rod(mats) -> bpy.types.Object:
-    """Twin Stainless Gas-Piston-Actuated Toothed Rack Bar (`Zahnstange`)."""
-    parts = [
-        mk_box("dr_yoke", 1.20, 0.94, 3.66, [("t", 8.80, 0.10, 0.0)], mat=mats["C_Stainless_Gear"], bevel=0.04),
-    ]
+    """Twin Stainless Gas-Piston-Actuated Involute Toothed Steel Drive Rack (`Zahnstange`)."""
+    yoke = mk_box("dr_yoke", 1.20, 0.94, 3.66, [("t", 8.80, 0.10, 0.0)], mat=mats["C_Stainless_Gear"], bevel=0.05, bevel_segs=2)
+    parts = [yoke]
+    # Precision trapezoidal involute rack tooth profile (16 teeth per side!)
+    tooth_xy = [(-0.18, 0.04), (0.18, 0.04), (0.10, 0.46), (-0.10, 0.46)]
     for sgn in (-1, 1):
-        parts.append(mk_box(f"dr_rail_{sgn}", 18.80, 0.56, 0.36, [("t", -0.20, -0.22, sgn * 1.66)], mat=mats["C_Stainless_Gear"], bevel=0.03))
-        for t in range(14):
-            tx = -9.1 + t * 0.55
-            parts.append(mk_box(f"dr_t_{sgn}_{t}", 0.28, 0.36, 0.34, [("t", tx, 0.24, sgn * 1.66)], mat=mats["C_Clockwork_Brass"], bevel=0.02))
-    return finalize_watertight_part(join_parts("g11_driving_rod", parts))
+        parts.append(mk_box(f"dr_rail_{sgn}", 18.80, 0.56, 0.36, [("t", -0.20, -0.22, sgn * 1.66)], mat=mats["C_Stainless_Gear"], bevel=0.04, bevel_segs=2))
+        z0, z1 = (1.49, 1.83) if sgn > 0 else (-1.83, -1.49)
+        for t in range(16):
+            tx = -9.15 + t * 0.52
+            parts.append(mk_extrude_z(f"dr_t_{sgn}_{t}", [(x + tx, y) for x, y in tooth_xy], z0, z1, bevel=0.025, bevel_segs=1, mat=mats["C_Clockwork_Brass"]))
+    return finalize_watertight_part(join_parts("g11_driving_rod", parts), sharp_deg=34.0)
 
 
 def build_g11_gas_piston(mats) -> bpy.types.Object:
     """Under-Barrel Short-Stroke Gas Tap Block & Chrome Annular Piston."""
-    collar = mk_box("gp_blk", 2.60, 2.20, 1.84, [("t", 3.10, 0.55, 0.0)], mat=mats["C_Inner_Receiver_Steel"], bevel=0.06)
-    bore = mk_cyl("gp_bh", 0.76, 0.76, 3.20, axis="x", segs=24, xform=[("t", 3.10, 1.55, 0.0)], mat=mats["C_Inner_Receiver_Steel"])
+    collar = mk_box("gp_blk", 2.60, 2.20, 1.84, [("t", 3.10, 0.55, 0.0)], mat=mats["C_Inner_Receiver_Steel"], bevel=0.07, bevel_segs=2)
+    bore = mk_cyl("gp_bh", 0.76, 0.76, 3.20, axis="x", segs=28, xform=[("t", 3.10, 1.55, 0.0)], mat=mats["C_Inner_Receiver_Steel"])
     gas_block = bool_diff(collar, [bore])
     piston = mk_lathe_x(
         "gp_pist",
@@ -1885,16 +2345,17 @@ def build_g11_gas_piston(mats) -> bpy.types.Object:
             (0.62, 1.55), (0.48, 1.62), (0.62, 1.72), (0.62, 2.30),
             (0.48, 2.38), (0.62, 2.48), (0.62, 3.00), (0.0, 3.00),
         ],
-        segs=28, mat=mats["C_Chrome_Breech"],
+        segs=36, mat=mats["C_Chrome_Breech"],
     )
-    return finalize_watertight_part(join_parts("g11_gas_piston", [gas_block, piston]))
+    return finalize_watertight_part(join_parts("g11_gas_piston", [gas_block, piston]), sharp_deg=36.0)
 
 
 def build_g11_loading_rammer(mats) -> bpy.types.Object:
-    """Vertical Spring-Cam Overhead Caseless Feed Rammer (`Zufuehrstoessel`)."""
-    yoke = mk_box("lr_yoke", 2.20, 0.94, 2.14, [("t", 0.0, 0.52, 0.0)], mat=mats["C_Stainless_Gear"], bevel=0.06)
-    plunger = mk_box("lr_plg", 1.15, 1.84, 0.96, [("t", 0.0, -0.42, 0.0)], mat=mats["C_Clockwork_Brass"], bevel=0.04)
-    return finalize_watertight_part(join_parts("g11_loading_rammer", [yoke, plunger]))
+    """Vertical Spring-Cam Overhead Caseless Feed Rammer (`Zufuehrstoessel`) w/ Roller Follower."""
+    yoke = mk_box("lr_yoke", 2.20, 0.94, 2.14, [("t", 0.0, 0.52, 0.0)], mat=mats["C_Stainless_Gear"], bevel=0.08, bevel_segs=2)
+    plunger = mk_box("lr_plg", 1.15, 1.84, 0.96, [("t", 0.0, -0.42, 0.0)], mat=mats["C_Clockwork_Brass"], bevel=0.05, bevel_segs=2)
+    roller = mk_cyl("lr_rol", 0.30, 0.30, 0.52, axis="z", segs=22, xform=[("t", 0.0, 0.52, 0.92)], mat=mats["C_Chrome_Breech"], bevel=0.03)
+    return finalize_watertight_part(join_parts("g11_loading_rammer", [yoke, plunger, roller]), sharp_deg=36.0)
 
 
 def build_g11_firing_pin(mats) -> bpy.types.Object:
@@ -1905,29 +2366,32 @@ def build_g11_firing_pin(mats) -> bpy.types.Object:
             (0.0, -2.85), (0.44, -2.85), (0.44, -1.60), (0.28, -1.45),
             (0.28, 0.65), (0.14, 0.95), (0.12, 1.35), (0.0, 1.35),
         ],
-        segs=24, mat=mats["C_Stainless_Gear"],
+        segs=28, mat=mats["C_Stainless_Gear"],
     )
-    lug = mk_box("fp_lug", 0.95, 0.94, 0.72, [("t", -2.00, -0.05, 0.0)], mat=mats["C_Inner_Receiver_Steel"], bevel=0.04)
-    return finalize_watertight_part(join_parts("g11_firing_pin", [rod, lug]))
+    lug = mk_box("fp_lug", 0.95, 0.94, 0.72, [("t", -2.00, -0.05, 0.0)], mat=mats["C_Inner_Receiver_Steel"], bevel=0.05, bevel_segs=2)
+    return finalize_watertight_part(join_parts("g11_firing_pin", [rod, lug]), sharp_deg=36.0)
 
 
 def build_g11_buffer_assembly(mats) -> bpy.types.Object:
     """Rear Hydraulic/Elastomer Floating-Action Recoil Buffer."""
-    blk = mk_box("buf_blk", 2.18, 5.58, 4.18, [("t", 0.05, -0.30, 0.0)], mat=mats["C_Inner_Receiver_Steel"], bevel=0.08)
-    pad = mk_box("buf_pad", 0.55, 4.40, 3.60, [("t", 0.95, 0.10, 0.0)], mat=mats["C_Buffer_Elastomer"], bevel=0.06)
-    seat = mk_cyl("buf_seat", 0.68, 0.68, 0.90, axis="x", segs=24, xform=[("t", 0.80, -1.45, 0.0)], mat=mats["C_Stainless_Gear"], bevel=0.04)
-    return finalize_watertight_part(join_parts("g11_buffer_assembly", [blk, pad, seat]))
+    blk = mk_box("buf_blk", 2.18, 5.58, 4.18, [("t", 0.05, -0.30, 0.0)], mat=mats["C_Inner_Receiver_Steel"], bevel=0.10, bevel_segs=3)
+    pad = mk_box("buf_pad", 0.55, 4.40, 3.60, [("t", 0.95, 0.10, 0.0)], mat=mats["C_Buffer_Elastomer"], bevel=0.08, bevel_segs=2)
+    seat = mk_cyl("buf_seat", 0.68, 0.68, 0.90, axis="x", segs=28, xform=[("t", 0.80, -1.45, 0.0)], mat=mats["C_Stainless_Gear"], bevel=0.05)
+    return finalize_watertight_part(join_parts("g11_buffer_assembly", [blk, pad, seat]), sharp_deg=36.0)
 
 
 def build_g11_trigger_pack(mats) -> bpy.types.Object:
-    """Internal Clockwork 3-Round Burst Counter & Sear Housing."""
-    housing = mk_box("tp_box", 8.58, 2.74, 2.64, [("t", 0.0, -0.10, 0.0)], mat=mats["C_Inner_Receiver_Steel"], bevel=0.08)
-    ratchet = mk_spur_gear_z("tp_rat", 12, 0.92, 1.12, -0.28, 0.28, bore_r=0.26, mat=mats["C_Clockwork_Brass"], xform=[("t", -1.20, 0.22, 0.0)])
+    """Internal Clockwork 3-Round Burst Counter & Sear Housing w/ Exposed Involute Ratchet & Pawl."""
+    housing_raw = mk_box("tp_box", 8.58, 2.74, 2.64, [("t", 0.0, -0.10, 0.0)], mat=mats["C_Inner_Receiver_Steel"], bevel=0.09, bevel_segs=2)
+    win = mk_chamfered_stadium_cutter_z("tp_win", -0.80, 0.10, 1.32, 0.55, 4.2, 1.55, chamfer=0.06, side_sign=1.0, segs=8, mat=mats["C_Inner_Receiver_Steel"])
+    housing = bool_diff(housing_raw, [win])
+    ratchet = mk_spur_gear_z("tp_rat", 12, 0.88, 1.12, -0.28, 1.24, bore_r=0.28, mat=mats["C_Clockwork_Brass"], xform=[("t", -1.20, 0.22, 0.0)])
+    pawl = mk_box("tp_pawl", 1.85, 0.28, 0.26, [("rz", -0.22), ("t", 0.55, 0.48, 1.05)], mat=mats["C_Stainless_Gear"], bevel=0.03)
     pins = [
-        mk_cyl(f"tp_p_{i}", 0.22, 0.22, 2.66, axis="z", segs=16, xform=[("t", px, py, 0.0)], mat=mats["C_Stainless_Gear"], bevel=0.02)
+        mk_cyl(f"tp_p_{i}", 0.22, 0.22, 2.66, axis="z", segs=20, xform=[("t", px, py, 0.0)], mat=mats["C_Stainless_Gear"], bevel=0.025)
         for i, (px, py) in enumerate(((-2.8, -0.4), (0.6, -0.2), (2.8, 0.3)))
     ]
-    return finalize_watertight_part(join_parts("g11_trigger_pack", [housing, ratchet, *pins]))
+    return finalize_watertight_part(join_parts("g11_trigger_pack", [housing, ratchet, pawl, *pins]), sharp_deg=36.0)
 
 
 # --- SUITE 3: BARREL & MAGAZINE (6 parts) ---
@@ -1942,19 +2406,18 @@ def build_g11_barrel(mats) -> bpy.types.Object:
             (0.68,  34.40), (0.64,  34.50), (0.64,  34.95), (0.58,  35.00),
             (0.25,  35.00), (0.25, -18.70), (0.32, -19.00),
         ],
-        segs=36, mat=mats["BM_Barrel_CHF"],
+        segs=44, mat=mats["BM_Barrel_CHF"],
     )
-    # Assign gleaming chrome bore material to inner bore polygons (r < 0.36)
     barrel.data.materials.append(mats["BM_Chrome_Bore"])
     for poly in barrel.data.polygons:
         c = poly.center
         if math.hypot(c.y, c.z) < 0.36:
             poly.material_index = 1
-    return finalize_watertight_part(barrel)
+    return finalize_watertight_part(barrel, sharp_deg=36.0)
 
 
 def build_g11_flash_hider(mats) -> bpy.types.Object:
-    """Slotted H&K G11 K2 Birdcage Flash Hider w/ Heat Temper, Carbon & Bayonet Lug."""
+    """Slotted H&K G11 K2 Birdcage Flash Hider w/ Heat Temper, Grenade Ring, Chamfered Slots & Bayonet Lug."""
     body = mk_lathe_x(
         "fh_body",
         [
@@ -1962,49 +2425,63 @@ def build_g11_flash_hider(mats) -> bpy.types.Object:
             (0.96, 1.55), (0.88, 1.65), (0.88, 4.35), (0.82, 4.50),
             (0.44, 4.50), (0.44, 1.05), (0.64, 0.95), (0.64, 0.00),
         ],
-        segs=32, mat=mats["BM_Flash_Hider_Heat"],
+        segs=40, mat=mats["BM_Flash_Hider_Heat"],
     )
     cutters = []
     for i in range(6):
-        a = (i / 6.0) * 2.0 * math.pi
-        cutters.append(mk_box(f"fh_s_{i}", 2.20, 0.24, 1.10, [("t", 2.95, 0.0, 0.65), ("rx", a)], mat=mats["BM_Flash_Hider_Heat"]))
+        a = (i / 6.0) * math.tau
+        cutters.append(mk_box(f"fh_s_{i}", 2.20, 0.24, 1.12, [("t", 2.95, 0.0, 0.65), ("rx", a)], mat=mats["BM_Flash_Hider_Heat"], bevel=0.04))
     slotted = bool_diff(body, cutters)
-    bayo = mk_box("fh_bayo", 2.40, 0.64, 0.62, [("t", 1.45, -1.02, 0.0)], mat=mats["BM_Flash_Hider_Heat"], bevel=0.05)
-    return finalize_watertight_part(join_parts("g11_flash_hider", [slotted, bayo]))
+    bayo = mk_box("fh_bayo", 2.40, 0.64, 0.62, [("t", 1.45, -1.02, 0.0)], mat=mats["BM_Flash_Hider_Heat"], bevel=0.06, bevel_segs=2)
+    return finalize_watertight_part(join_parts("g11_flash_hider", [slotted, bayo]), sharp_deg=36.0)
 
 
 def build_g11_trigger(mats) -> bpy.types.Object:
-    """Curved H&K Steel Trigger Shoe + Twin Stainless Transfer Bar."""
-    pts = [(-0.30, 1.25), (0.85, 1.25)] + _quad_bez((0.85, 1.25), (0.45, -0.40), (1.05, -1.85), 8) + [(0.32, -1.92)] + _quad_bez((0.32, -1.92), (-0.35, -0.45), (-0.30, 1.25), 8)
-    shoe = mk_extrude_z("trg_shoe", pts, -0.41, 0.41, bevel=0.04, bevel_segs=2, mat=mats["BM_Trigger_Steel"])
-    bar = mk_box("trg_bar", 5.60, 0.45, 1.18, [("t", -2.35, 1.10, 0.0)], mat=mats["BM_Transfer_Stainless"], bevel=0.03)
-    return finalize_watertight_part(join_parts("g11_trigger", [shoe, bar]))
+    """Smoothly Swept Curved H&K Steel Trigger Shoe + Twin Stainless Transfer Bar."""
+    shoe_curve = sample_cubic_bezier((0.28, 1.20), (0.04, 0.15), (-0.08, -0.95), (0.62, -1.86), segs=12)
+    shoe = mk_swept_bow("trg_shoe", shoe_curve, thickness=0.68, half_z=0.41, bevel=0.06, bevel_segs=2, mat=mats["BM_Trigger_Steel"])
+    bar = mk_box("trg_bar", 5.60, 0.45, 1.18, [("t", -2.35, 1.10, 0.0)], mat=mats["BM_Transfer_Stainless"], bevel=0.04, bevel_segs=2)
+    return finalize_watertight_part(join_parts("g11_trigger", [shoe, bar]), sharp_deg=36.0)
 
 
 def build_g11_mag_tube(mats) -> bpy.types.Object:
-    """Overhead 45-Rd Smoked Caseless Magazine Tube (clean hollow interior for live cutaway MagazineAmmoStack!)."""
-    outer = mk_box("mag_outer", 52.10, 3.58, 2.62, [("t", -0.10, 0.0, 0.0)], mat=mats["BM_Mag_Smoked"], bevel=0.09, bevel_segs=2)
+    """Overhead 45-Rd Smoked Caseless Magazine Housing w/ Top/Bottom Molded Frame Rails
+    (clean hollow interior for live cutaway MagazineAmmoStack & planar Hero flanks for DM11 blocks!)."""
+    outer = mk_box("mag_outer", 52.10, 3.58, 2.62, [("t", -0.10, 0.0, 0.0)], mat=mats["BM_Mag_Smoked"], bevel=0.10, bevel_segs=3)
     cav = mk_box("mag_cav", 51.40, 3.04, 2.02, [("t", 0.25, 0.0, 0.0)], mat=mats["BM_Mag_Smoked"])
     throat = mk_box("mag_th", 2.20, 1.20, 1.85, [("t", -24.80, -1.55, 0.0)], mat=mats["BM_Mag_Smoked"])
     shell = bool_diff(outer, [cav, throat])
-    shell.name = "g11_mag_tube"
-    shell.data.name = "g11_mag_tube"
-    return finalize_watertight_part(shell)
+    # Top & bottom structural molded rail ribs in BM_Mag_Cap_Poly (never collides w/ BM_Mag_Smoked Hero flanks!)
+    parts = [
+        shell,
+        mk_box("mag_top_rail_l", 50.8, 0.16, 0.26, [("t", -0.10,  1.72, -1.04)], mat=mats["BM_Mag_Cap_Poly"], bevel=0.03),
+        mk_box("mag_top_rail_r", 50.8, 0.16, 0.26, [("t", -0.10,  1.72,  1.04)], mat=mats["BM_Mag_Cap_Poly"], bevel=0.03),
+        mk_box("mag_bot_rail_l", 46.5, 0.16, 0.26, [("t",  1.60, -1.72, -1.04)], mat=mats["BM_Mag_Cap_Poly"], bevel=0.03),
+        mk_box("mag_bot_rail_r", 46.5, 0.16, 0.26, [("t",  1.60, -1.72,  1.04)], mat=mats["BM_Mag_Cap_Poly"], bevel=0.03),
+        mk_box("mag_rear_stop",   0.65, 3.54, 2.56, [("t", -25.82, 0.0, 0.0)], mat=mats["BM_Mag_Cap_Poly"], bevel=0.06),
+    ]
+    return finalize_watertight_part(join_parts("g11_mag_tube", parts), sharp_deg=36.0)
 
 
 def build_g11_mag_follower(mats) -> bpy.types.Object:
     """Strictly Firewalled Vivid Safety-Orange Horizontal Pusher Follower."""
-    body = mk_box("fol_main", 1.96, 2.68, 1.92, mat=mats["BM_Follower_Orange"], bevel=0.08, bevel_segs=2)
-    rail_t = mk_box("fol_rt", 1.82, 0.26, 1.44, [("t", 0.0, 1.21, 0.0)], mat=mats["BM_Follower_Orange"], bevel=0.03)
-    rail_b = mk_box("fol_rb", 1.82, 0.26, 1.44, [("t", 0.0, -1.21, 0.0)], mat=mats["BM_Follower_Orange"], bevel=0.03)
-    return finalize_watertight_part(join_parts("g11_mag_follower", [body, rail_t, rail_b]))
+    body = mk_box("fol_main", 1.96, 2.68, 1.92, mat=mats["BM_Follower_Orange"], bevel=0.09, bevel_segs=2)
+    rail_t = mk_box("fol_rt", 1.82, 0.26, 1.44, [("t", 0.0, 1.21, 0.0)], mat=mats["BM_Follower_Orange"], bevel=0.035)
+    rail_b = mk_box("fol_rb", 1.82, 0.26, 1.44, [("t", 0.0, -1.21, 0.0)], mat=mats["BM_Follower_Orange"], bevel=0.035)
+    return finalize_watertight_part(join_parts("g11_mag_follower", [body, rail_t, rail_b]), sharp_deg=36.0)
 
 
 def build_g11_mag_endcap(mats) -> bpy.types.Object:
-    """Front Twist-Lock Bayonet Caseless Magazine Endcap."""
-    cap = mk_box("ec_cap", 2.20, 3.54, 2.68, [("t", 0.85, 0.0, 0.0)], mat=mats["BM_Mag_Cap_Poly"], bevel=0.10, bevel_segs=2)
+    """Front Knurled Twist-Lock Bayonet Caseless Magazine Endcap w/ Spring Detent Latch."""
+    cap = mk_box("ec_cap", 2.20, 3.54, 2.68, [("t", 0.85, 0.0, 0.0)], mat=mats["BM_Mag_Cap_Poly"], bevel=0.14, bevel_segs=3)
     spigot = mk_box("ec_spg", 0.60, 2.70, 1.90, [("t", -0.05, 0.0, 0.0)], mat=mats["BM_Trigger_Steel"], bevel=0.05)
-    return finalize_watertight_part(join_parts("g11_mag_endcap", [cap, spigot]))
+    parts = [cap, spigot]
+    # Tactile grip ribs along left/right endcap flanks + front bayonet release button
+    for k in range(4):
+        rx = 0.22 + k * 0.42
+        parts.append(mk_box(f"ec_rib_{k}", 0.16, 2.65, 2.74, [("t", rx, 0.0, 0.0)], mat=mats["BM_Mag_Cap_Poly"], bevel=0.03))
+    parts.append(mk_cyl("ec_btn", 0.36, 0.36, 0.22, axis="x", segs=22, xform=[("t", 1.94, 0.0, 0.0)], mat=mats["BM_Trigger_Steel"], bevel=0.03))
+    return finalize_watertight_part(join_parts("g11_mag_endcap", parts), sharp_deg=36.0)
 
 
 # =============================================================================
