@@ -56,7 +56,11 @@ import {
   getCachedCausalityEvaluation,
   useCausalitySandboxStore,
 } from '../physics/causalitySandbox';
-import { getTankCrewSpec, useTankCrewStore } from '../tank/tankCrewStore';
+import {
+  computeTankGunnerCameraPose,
+  getTankCrewSpec,
+  useTankCrewStore,
+} from '../tank/tankCrewStore';
 import { ArmoryPostProcessing } from './ArmoryPostProcessing';
 import { CaliperActor } from './CaliperActor';
 import { MonographCaptureRig } from '../../features/monograph/MonographCaptureRig';
@@ -147,7 +151,19 @@ export const TALL_GRIP_PISTOL_IDS: ReadonlySet<WeaponId> = new Set<WeaponId>([
   'python',
 ]);
 export const TALL_GRIP_CT_EXTRA_CLEARANCE_CM = 1.4;
+export const TALL_GRIP_FIRING_CT_EXTRA_CLEARANCE_CM = 1.0;
+export const PORTRAIT_PHONE_ASPECT_MAX = 0.65;
+export const PORTRAIT_PHONE_DISTANCE_MULT = 1.12;
 export const WORKBENCH_ENTRY_EASE_DURATION_S = 0.55;
+
+/**
+ * Widens default Workbench camera distance by +12% on narrow portrait phones
+ * (`aspect < 0.65`, e.g. 390×844) so long rifles like AK-15M1 never graze screen edges.
+ */
+export function computePortraitPhoneDistanceMultiplier(aspect: number): number {
+  if (!Number.isFinite(aspect) || aspect <= 0) return 1.0;
+  return aspect < PORTRAIT_PHONE_ASPECT_MAX ? PORTRAIT_PHONE_DISTANCE_MULT : 1.0;
+}
 
 /**
  * Deterministic cubic ease-out (`1 - (1 - u)^3`) for smooth ~0.55s
@@ -166,14 +182,16 @@ export function evaluateCameraEaseProgress(
 /**
  * Computes a scale-aware negative camera/target Y shift when Workbench live CT
  * `.live-section-bar` is visible above `TimelineDock`, lifting the exhibit (~11%
- * of visible frame height, plus `+1.4 cm` extra clearance for tall-grip pistols)
- * so P08/M1911/G17/Deagle/P320/Python grips sit cleanly above the bottom CT bar.
+ * of visible frame height, plus `+1.4 cm` extra clearance for tall-grip pistols
+ * and an additional `+1.0 cm` when `mode === 'firing' && sectionCut`)
+ * so P08/M1911/G17/Deagle/P320/Python grips retain >= 24px air above the CT bar.
  */
 export function computeWorkbenchSectionBarOffsetY(
   scaleProfile: WeaponScaleProfile,
   preset: CameraPresetType,
   sectionCutActive: boolean,
-  weaponId?: WeaponId | string | null
+  weaponId?: WeaponId | string | null,
+  isFiringMode = false
 ): number {
   if (!sectionCutActive || preset === 'top' || preset === 'armory_showcase') {
     return 0;
@@ -190,11 +208,13 @@ export function computeWorkbenchSectionBarOffsetY(
   }
   // Pistols, revolvers, SMGs & compact platforms (p08, m1911, g17, deagle, p320, python)
   const baseLift = isClose ? -1.65 : -2.35;
-  const tallGripExtra =
+  const isTallGrip = Boolean(
     weaponId && TALL_GRIP_PISTOL_IDS.has(weaponId as WeaponId)
-      ? -TALL_GRIP_CT_EXTRA_CLEARANCE_CM
-      : 0;
-  return baseLift + tallGripExtra;
+  );
+  const tallGripExtra = isTallGrip ? -TALL_GRIP_CT_EXTRA_CLEARANCE_CM : 0;
+  const firingTallGripExtra =
+    isTallGrip && isFiringMode ? -TALL_GRIP_FIRING_CT_EXTRA_CLEARANCE_CM : 0;
+  return baseLift + tallGripExtra + firingTallGripExtra;
 }
 
 function applyWorkbenchFraming(
@@ -206,7 +226,8 @@ function applyWorkbenchFraming(
   goalTarget: THREE.Vector3,
   goalPos: THREE.Vector3,
   sectionCutActive = false,
-  weaponId?: WeaponId
+  weaponId?: WeaponId,
+  isFiringMode = false
 ): void {
   const isFixedClosePreset =
     preset === 'cutaway_focus' || preset === 'firing_view';
@@ -244,15 +265,17 @@ function applyWorkbenchFraming(
     yShift = -1.3 - (2.1 + (aspect < 0.85 ? 2.4 : 0)) * tCam;
   }
 
-  const scale = isFixedClosePreset
+  const baseScale = isFixedClosePreset
     ? Math.max(1, 1.08 / aspect)
     : Math.max(vertScale, horizScale);
+  const scale = baseScale * computePortraitPhoneDistanceMultiplier(aspect);
 
   const sectionBarOffsetY = computeWorkbenchSectionBarOffsetY(
     scaleProfile,
     preset,
     sectionCutActive,
-    weaponId
+    weaponId,
+    isFiringMode
   );
   const finalXShift = isFixedClosePreset ? 0 : xShift;
   const finalYShift =
@@ -342,6 +365,7 @@ const DisassemblyRig: React.FC = () => {
   });
 
   const screen = useAppStore((s) => s.screen);
+  const mode = useAppStore((s) => s.mode);
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
   const armoryAutoRotate = useAppStore((s) => s.armoryAutoRotate);
   const workbenchAutoOrbit = useAppStore((s) => s.workbenchAutoOrbit);
@@ -564,7 +588,8 @@ const DisassemblyRig: React.FC = () => {
         flyRef.current.goalTarget,
         flyRef.current.goalPos,
         screen === 'workbench' && sectionCut,
-        activeWeaponId
+        activeWeaponId,
+        screen === 'workbench' && mode === 'firing'
       );
 
       if (!hasSnappedInitialRef.current && controlsRef.current) {
@@ -615,6 +640,7 @@ const DisassemblyRig: React.FC = () => {
     cameraCommand,
     activeWeaponId,
     screen,
+    mode,
     sectionCut,
     size.width,
     size.height,
@@ -640,15 +666,20 @@ const DisassemblyRig: React.FC = () => {
     const [, ty] = spec.trunnionPivot;
 
     if (tankCrewStation === 'gunner') {
+      const gunnerPose = computeTankGunnerCameraPose(
+        activeWeaponId,
+        st.turretYawDeg
+      );
+      if (!gunnerPose) return;
       flyRef.current.goalPos.set(
-        rx - dirX * 105,
-        ty + 86,
-        rz - dirZ * 105 + 56
+        gunnerPose.eye[0],
+        gunnerPose.eye[1],
+        gunnerPose.eye[2]
       );
       flyRef.current.goalTarget.set(
-        rx + dirX * 420,
-        ty + 18,
-        rz + dirZ * 420
+        gunnerPose.target[0],
+        gunnerPose.target[1],
+        gunnerPose.target[2]
       );
       flyRef.current.timed = false;
       flyRef.current.active = true;
@@ -893,7 +924,8 @@ const DisassemblyRig: React.FC = () => {
           flyRef.current.goalTarget,
           flyRef.current.goalPos,
           state.sectionCut,
-          state.activeWeaponId
+          state.activeWeaponId,
+          false
         );
         lastFramedTRef.current = nextAnimatedT;
         flyRef.current.timed = false;

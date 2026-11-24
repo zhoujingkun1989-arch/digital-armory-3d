@@ -967,7 +967,8 @@
   color: var(--color-accent-cyan);
 }
 
-.rack-count-pill {
+.rack-count-pill,
+.armory-rack-counter {
   padding: 1px 6px;
   border-radius: 999px;
   background: var(--surface-cyan-tint);
@@ -975,6 +976,8 @@
   font-family: var(--font-mono);
   font-size: 10px;
   font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .rack-dock-right {

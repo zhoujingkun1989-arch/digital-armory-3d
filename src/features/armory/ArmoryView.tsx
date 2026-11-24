@@ -109,6 +109,18 @@ const LazyMechanismShowdownModal = lazy(
   () => import('./MechanismShowdownModal')
 );
 
+/**
+ * Keeps the desktop Armory header wordmark crisp beside the `DIGITAL ARMORY`
+ * badge in English (eliminating duplicate "Digital Armory" truncation while
+ * preserving the full localized Chinese title).
+ */
+export function resolveArmoryHeaderDesktopTitle(
+  lang: LanguageCode,
+  fallbackTitle: string
+): string {
+  return lang === 'en' ? '3D Vault' : fallbackTitle;
+}
+
 type ArmoryFilterKey = ArmoryCategory | 'lmg';
 
 const CATEGORY_KEYS: readonly ArmoryFilterKey[] = [
@@ -974,7 +986,9 @@ export const ArmoryView: React.FC = () => {
           <div className="brand-badge armory-vault-badge">DIGITAL ARMORY</div>
           <div className="armory-brand-titles">
             <h1 className="brand-title">
-              <span className="armory-title-desktop">{ui.title}</span>
+              <span className="armory-title-desktop">
+                {resolveArmoryHeaderDesktopTitle(lang, ui.title)}
+              </span>
               <span className="armory-title-mobile">{ui.mobileTitle}</span>
             </h1>
             <p className="brand-sub">{ui.subtitle}</p>
@@ -1564,7 +1578,7 @@ export const ArmoryView: React.FC = () => {
           <div className="rack-dock-title">
             <Shield size={13} className="rack-icon" />
             <span>{ui.rackTitle}</span>
-            <span className="rack-count-pill">
+            <span className="rack-count-pill armory-rack-counter">
               {filteredWeapons.length} / {ARMORY_WEAPONS.length}
             </span>
           </div>

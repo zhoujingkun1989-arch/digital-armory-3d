@@ -492,10 +492,12 @@ export const SplitShowdownOverlay: React.FC = () => {
       {/* Dual Corner Plaques */}
       <div className="split-cards-row">
         <aside className="split-plaque is-a">
-          <div className="split-plaque-tag">
-            {bayA} · {ui.leftPaneTag}
+          <div className="split-plaque-head">
+            <div className="split-plaque-tag">
+              {bayA} · {ui.leftPaneTag}
+            </div>
+            <h2 className="split-plaque-title">{displayA.name}</h2>
           </div>
-          <h2 className="split-plaque-title">{displayA.name}</h2>
           <div className="split-plaque-specs">
             <span>
               {ui.caliberLabel}: <strong>{displayA.caliber}</strong>
@@ -517,7 +519,7 @@ export const SplitShowdownOverlay: React.FC = () => {
               0.0 MPa · 0 m/s
             </div>
           )}
-          <div style={{ marginTop: 6 }}>
+          <div className="split-plaque-actions" style={{ marginTop: 6 }}>
             <button
               type="button"
               className="split-btn"
@@ -530,10 +532,12 @@ export const SplitShowdownOverlay: React.FC = () => {
         </aside>
 
         <aside className="split-plaque is-b">
-          <div className="split-plaque-tag">
-            {bayB} · {ui.rightPaneTag}
+          <div className="split-plaque-head">
+            <div className="split-plaque-tag">
+              {bayB} · {ui.rightPaneTag}
+            </div>
+            <h2 className="split-plaque-title">{displayB.name}</h2>
           </div>
-          <h2 className="split-plaque-title">{displayB.name}</h2>
           <div className="split-plaque-specs">
             <span>
               {ui.caliberLabel}: <strong>{displayB.caliber}</strong>
@@ -555,7 +559,10 @@ export const SplitShowdownOverlay: React.FC = () => {
               0.0 MPa · 0 m/s
             </div>
           )}
-          <div style={{ marginTop: 6, display: 'flex', justifyContent: 'flex-end' }}>
+          <div
+            className="split-plaque-actions"
+            style={{ marginTop: 6, display: 'flex', justifyContent: 'flex-end' }}
+          >
             <button
               type="button"
               className="split-btn"

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   BookOpen,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   Crosshair,
@@ -79,11 +80,13 @@ export interface PartInspectorCardProps {
   /** Optional overrides for SSR/unit testing; runtime reads directly from `useAppStore`. */
   weaponIdOverride?: WeaponId;
   partIdOverride?: string | null;
+  modeOverride?: 'explode' | 'firing';
 }
 
 export const PartInspectorCard: React.FC<PartInspectorCardProps> = ({
   weaponIdOverride,
   partIdOverride,
+  modeOverride,
 }) => {
   const storeWeaponId = useAppStore((s) => s.activeWeaponId);
   const activeWeaponId = weaponIdOverride ?? storeWeaponId;
@@ -94,7 +97,8 @@ export const PartInspectorCard: React.FC<PartInspectorCardProps> = ({
   const inspectorMinimized = useAppStore((s) => s.inspectorMinimized);
   const setInspectorMinimized = useAppStore((s) => s.setInspectorMinimized);
   const setStoryOpen = useAppStore((s) => s.setStoryOpen);
-  const mode = useAppStore((s) => s.mode);
+  const storeMode = useAppStore((s) => s.mode);
+  const mode = modeOverride ?? storeMode;
   const storeSelectedPartId = useAppStore((s) => s.selectedPartId);
   const selectedPartId =
     partIdOverride !== undefined ? partIdOverride : storeSelectedPartId;
@@ -103,6 +107,7 @@ export const PartInspectorCard: React.FC<PartInspectorCardProps> = ({
   const toggleIsolateSelected = useAppStore((s) => s.toggleIsolateSelected);
   const activateCutawayFocus = useAppStore((s) => s.activateCutawayFocus);
 
+  const [mobileFiringExpanded, setMobileFiringExpanded] = useState(false);
   const [, setGeoTick] = useState(0);
   useEffect(() => {
     return subscribeGeometryStatus((changedWeaponId) => {
@@ -119,9 +124,12 @@ export const PartInspectorCard: React.FC<PartInspectorCardProps> = ({
 
   const weaponParts = plugin?.parts ?? [];
   const partGroups = plugin?.partGroups ?? [];
-  const activePhase = useActiveFiringPhase(
+  const liveFiringPhase = useActiveFiringPhase(
     plugin?.firingPhases ?? EMPTY_FIRING_PHASES
   );
+  const activePhase =
+    liveFiringPhase ??
+    (modeOverride === 'firing' ? (plugin?.firingPhases[0] ?? null) : null);
 
   const currentIdx = selectedPartId
     ? weaponParts.findIndex((p) => p.id === selectedPartId)
@@ -195,9 +203,40 @@ export const PartInspectorCard: React.FC<PartInspectorCardProps> = ({
       if (!activePhase) return null;
       const locPhase = resolveFiringPhaseText(activePhase, lang, bundle);
       return (
-        <div className="inspector-card firing-compact-card">
-          <div className="guide-badge firing-badge">
-            {ui.firingBadge(activePhase.stepNum)}
+        <div
+          className={`inspector-card firing-compact-card ${
+            mobileFiringExpanded ? 'is-mobile-expanded' : ''
+          }`}
+        >
+          <div className="firing-compact-head">
+            <div className="guide-badge firing-badge">
+              {ui.firingBadge(activePhase.stepNum)}
+            </div>
+            <button
+              type="button"
+              className="firing-mobile-expand-btn"
+              data-testid="firing-card-mobile-toggle"
+              aria-expanded={mobileFiringExpanded}
+              aria-label={
+                mobileFiringExpanded
+                  ? lang === 'zh'
+                    ? '收起击发阶段说明'
+                    : 'Collapse firing phase details'
+                  : lang === 'zh'
+                    ? '展开击发阶段说明'
+                    : 'Expand firing phase details'
+              }
+              onClick={() => {
+                playWorkbenchFoley('toggle_switch');
+                setMobileFiringExpanded((prev) => !prev);
+              }}
+            >
+              <ChevronDown
+                size={13}
+                className={mobileFiringExpanded ? 'is-open' : ''}
+                aria-hidden="true"
+              />
+            </button>
           </div>
           <h3 className="guide-title">{locPhase.title}</h3>
           <p className="guide-desc">{locPhase.description}</p>

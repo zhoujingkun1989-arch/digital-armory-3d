@@ -109,36 +109,64 @@
     left: 10px;
     right: auto;
     max-width: calc(100vw - 20px);
-    width: min(240px, calc(100vw - 20px));
-    padding: 6px 9px;
-    border-radius: 10px;
+    width: min(268px, calc(100vw - 20px));
+    max-height: 54px;
+    padding: 5px 9px;
+    border-radius: 9px;
+    overflow: hidden;
+    text-align: left;
     pointer-events: auto;
   }
 
   .split-plaque.is-a {
-    top: 54px;
+    top: 52px;
   }
 
   .split-plaque.is-b {
-    top: calc(50% + 12px);
+    top: calc(50% + 10px);
+    text-align: left;
+  }
+
+  .split-plaque-head {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    min-width: 0;
   }
 
   .split-plaque-tag {
-    font-size: 9px;
+    flex-shrink: 0;
+    font-size: 8.5px;
+    line-height: 1.2;
+    white-space: nowrap;
   }
 
   .split-plaque-title {
-    font-size: 12px;
-    margin: 1px 0 3px;
+    font-size: 11.5px;
+    line-height: 1.25;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
   }
 
   .split-plaque-specs {
-    gap: 2px 8px;
-    font-size: 10px;
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+    font-size: 9.5px;
+    line-height: 1.25;
+    white-space: nowrap;
+    overflow: hidden;
   }
 
-  .split-plaque-specs > :nth-child(n + 3) {
-    display: none;
+  .split-plaque-specs > :nth-child(n + 3),
+  .split-plaque-live,
+  .split-plaque-actions {
+    display: none !important;
   }
 
   .split-bottom-dock {
