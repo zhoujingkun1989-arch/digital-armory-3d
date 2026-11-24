@@ -352,6 +352,7 @@ export const ScaleWallModal: React.FC<ScaleWallModalProps> = ({
             className="sw-blueprint-stage"
             data-testid="scalewall-blueprint-grid"
           >
+            <div className="sw-blueprint-scroll-inner">
             {/* Top Drafting Ruler */}
             <div className="sw-ruler-row">
               <div className="sw-ruler-meta tabular">
@@ -522,6 +523,7 @@ export const ScaleWallModal: React.FC<ScaleWallModalProps> = ({
                 </div>
               );
             })}
+            </div>
           </section>
 
           {/* Synchronized Quantitative Comparison Bars */}
