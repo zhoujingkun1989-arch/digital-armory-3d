@@ -112,6 +112,7 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
   const gradAId = useId();
   const gradBId = useId();
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
 
   const storeLang = useAppStore((s) => s.lang);
   const lang = langOverride ?? storeLang;
@@ -148,13 +149,21 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
 
   const ui = UI_STRINGS[lang].mechanismShowdown;
 
-  // Open native <dialog> in modal top-layer + capture-phase keyboard guard
+  // Open native <dialog> in modal top-layer + deterministic focus placement & capture-phase keyboard guard
   useEffect(() => {
     const dialog = dialogRef.current;
     if (!dialog) return;
 
+    const previousFocus =
+      document.activeElement instanceof HTMLElement
+        ? document.activeElement
+        : null;
+
     if (!dialog.open && typeof dialog.showModal === 'function') {
       dialog.showModal();
+    }
+    if (!dialog.contains(document.activeElement)) {
+      closeBtnRef.current?.focus();
     }
 
     const handleDialogClose = () => {
@@ -217,6 +226,9 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
       dialog.removeEventListener('pointerdown', onPointerDown);
       dialog.removeEventListener('pointerup', onPointerUp);
       window.removeEventListener('keydown', onKeyDownCapture, true);
+      if (previousFocus && previousFocus.isConnected) {
+        previousFocus.focus();
+      }
     };
   }, [onClose]);
 
@@ -622,6 +634,7 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
           <LanguageSwitchPill compact />
 
           <button
+            ref={closeBtnRef}
             type="button"
             className="sd-close-btn"
             onClick={onClose}
@@ -731,7 +744,15 @@ export const MechanismShowdownModal: React.FC<MechanismShowdownModalProps> = ({
         {viewMode === 'matrix' ? (
           <>
             {/* Axis Filter Bar */}
-            <div className="sd-axis-filter-row" role="tablist">
+            <div
+              className="sd-axis-filter-row"
+              role="tablist"
+              aria-label={
+                lang === 'zh'
+                  ? '按三大机械维度筛选流派'
+                  : 'Filter mechanical families by taxonomy axis'
+              }
+            >
               <button
                 type="button"
                 role="tab"

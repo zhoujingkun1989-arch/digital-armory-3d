@@ -686,6 +686,12 @@ export function applyLocationToStore(searchOverride?: string): void {
     useAppStore.getState().openRecoilLab();
   } else if (rawPanel === 'poster') {
     useAppStore.getState().openPosterModal({ weaponId });
+  } else if (rawPanel === 'atlas') {
+    useAppStore.getState().setTextureModalOpen(true);
+  } else if (rawPanel === 'monograph') {
+    if (!monographDeepLink.open) {
+      useAppStore.getState().openMonographModal(weaponId);
+    }
   } else if (rawPanel === 'crew') {
     const targetId = isTankWeapon(weaponId) ? weaponId : 'ztz99a';
     const st = useAppStore.getState();
@@ -711,6 +717,12 @@ export function applyLocationToStore(searchOverride?: string): void {
     if (liveModalState.posterShareModalOpen) {
       liveModalState.closePosterModal();
     }
+    if (liveModalState.textureModalOpen) {
+      liveModalState.setTextureModalOpen(false);
+    }
+    if (liveModalState.monographModalOpen && !monographDeepLink.open) {
+      liveModalState.closeMonographModal();
+    }
   }
 }
 
@@ -729,7 +741,9 @@ export function buildSearchString(
   scaleWallModalOpen?: boolean,
   recoilLabOpen?: boolean,
   environmentPreset?: ArmoryEnvironmentPreset,
-  posterShareModalOpen?: boolean
+  posterShareModalOpen?: boolean,
+  textureModalOpen?: boolean,
+  monographModalOpen?: boolean
 ): string {
   const rawSearch =
     baseSearch ?? (typeof window !== 'undefined' ? window.location.search : '');
@@ -918,10 +932,18 @@ export function buildSearchString(
     params.set('panel', 'recoil');
   } else if (posterShareModalOpen === true) {
     params.set('panel', 'poster');
+  } else if (textureModalOpen === true) {
+    params.set('panel', 'atlas');
+  } else if (monographModalOpen === true) {
+    if (!params.has('monograph')) {
+      params.set('panel', 'monograph');
+    }
   } else if (
     (scaleWallModalOpen === false && params.get('panel') === 'scalewall') ||
     (recoilLabOpen === false && params.get('panel') === 'recoil') ||
-    (posterShareModalOpen === false && params.get('panel') === 'poster')
+    (posterShareModalOpen === false && params.get('panel') === 'poster') ||
+    (textureModalOpen === false && params.get('panel') === 'atlas') ||
+    (monographModalOpen === false && params.get('panel') === 'monograph')
   ) {
     params.delete('panel');
   }
@@ -971,6 +993,8 @@ export function useUrlStateSync(): void {
   const scaleWallModalOpen = useAppStore((s) => s.scaleWallModalOpen);
   const recoilLabOpen = useAppStore((s) => s.recoilLabOpen);
   const posterShareModalOpen = useAppStore((s) => s.posterShareModalOpen);
+  const textureModalOpen = useAppStore((s) => s.textureModalOpen);
+  const monographModalOpen = useAppStore((s) => s.monographModalOpen);
   const isPlaying = useAppStore((s) => s.isPlaying);
   const environmentPreset = useAppStore((s) => s.environmentPreset);
   const activeLoadout = useAttachmentStore((s) => s.loadouts[activeWeaponId]);
@@ -1082,6 +1106,8 @@ export function useUrlStateSync(): void {
       live.scaleWallModalOpen !== scaleWallModalOpen ||
       live.recoilLabOpen !== recoilLabOpen ||
       live.posterShareModalOpen !== posterShareModalOpen ||
+      live.textureModalOpen !== textureModalOpen ||
+      live.monographModalOpen !== monographModalOpen ||
       live.environmentPreset !== environmentPreset
     ) {
       return;
@@ -1116,7 +1142,9 @@ export function useUrlStateSync(): void {
       scaleWallModalOpen,
       recoilLabOpen,
       environmentPreset,
-      posterShareModalOpen
+      posterShareModalOpen,
+      textureModalOpen,
+      monographModalOpen
     );
     if (window.location.search === nextSearch) {
       prevScreenRef.current = screen;
@@ -1151,6 +1179,8 @@ export function useUrlStateSync(): void {
     scaleWallModalOpen,
     recoilLabOpen,
     posterShareModalOpen,
+    textureModalOpen,
+    monographModalOpen,
     isPlaying,
     syncedExplodeProgress,
     environmentPreset,

@@ -1278,10 +1278,345 @@ function buildArcheryBundle(opts: {
   };
 }
 
+export type ApfsdsCaliberProfile = '120mm_apfsds' | '125mm_apfsds';
+export type SabotPetalIndex = 0 | 1 | 2;
+
+export const SABOT_PETAL_ARC_DEG = 114;
+export const SABOT_DISCARD_FADE_START_CM = 420;
+export const SABOT_DISCARD_MAX_DIST_CM = 620;
+const SABOT_PETAL_SLOTS = [0, 1, 2] as const;
+
+export interface DiscardingSabotKinematicsSample {
+  visible: boolean;
+  radialOffsetCm: number;
+  axialLagCm: number;
+  pitchOutRad: number;
+  rollSpinRad: number;
+  azimuthRad: number;
+  opacity: number;
+}
+
+export function createMutableDiscardingSabotKinematicsSample(): DiscardingSabotKinematicsSample {
+  return {
+    visible: false,
+    radialOffsetCm: 0,
+    axialLagCm: 0,
+    pitchOutRad: 0,
+    rollSpinRad: 0,
+    azimuthRad: 0,
+    opacity: 0,
+  };
+}
+
+/**
+ * Zero-GC evaluator writing 1:1 APFSDS 3-petal machined-aluminum discarding sabot
+ * aerodynamic separation kinematics into `out`.
+ * - In-bore (`distancePastMuzzleCm <= 0`): clamped tightly to the penetrator rod (`offset/lag/pitch/roll = 0`, `opacity = 1`).
+ * - Post-muzzle (`distancePastMuzzleCm > 0`): front air-scoop pressure drives symmetric 120° radial separation
+ *   along `azimuthRad = petalIndex * (2π/3) + π/6`, nose-up outward pitch (`~0.48–0.78 rad`), aerodynamic drag
+ *   axial lag (`< 0`), gentle roll-tumble, and smooth far-field fade well before cycle wrap.
+ */
+export function writeDiscardingSabotKinematicsInto(
+  distancePastMuzzleCm: number,
+  petalIndex: SabotPetalIndex,
+  caliber: ApfsdsCaliberProfile,
+  out: DiscardingSabotKinematicsSample
+): DiscardingSabotKinematicsSample {
+  const azimuthRad = petalIndex * ((Math.PI * 2) / 3) + Math.PI / 6;
+  out.azimuthRad = azimuthRad;
+
+  if (!Number.isFinite(distancePastMuzzleCm)) {
+    out.visible = false;
+    out.radialOffsetCm = 0;
+    out.axialLagCm = 0;
+    out.pitchOutRad = 0;
+    out.rollSpinRad = 0;
+    out.opacity = 0;
+    return out;
+  }
+
+  // In-bore travel (`distancePastMuzzleCm <= 0`, visible in [C] Cutaway): rigidly clamped around penetrator rod
+  if (distancePastMuzzleCm <= 0) {
+    out.visible = true;
+    out.radialOffsetCm = 0;
+    out.axialLagCm = 0;
+    out.pitchOutRad = 0;
+    out.rollSpinRad = 0;
+    out.opacity = 1;
+    return out;
+  }
+
+  const caliberScale = caliber === '125mm_apfsds' ? 1.06 : 1.0;
+  const clampedDist = Math.min(distancePastMuzzleCm, SABOT_DISCARD_MAX_DIST_CM);
+  const s = clampedDist / 300.0;
+
+  const radialOffsetCm = 36.0 * caliberScale * Math.pow(s, 1.32);
+  const axialLagCm = -68.0 * caliberScale * Math.pow(s, 1.48);
+  const pitchTarget = caliber === '125mm_apfsds' ? 0.74 : 0.68;
+  const pitchOutRad = pitchTarget * (1 - Math.exp(-clampedDist / 115.0));
+  const rollSpinRad =
+    0.42 * caliberScale * Math.pow(s, 1.25) * (1 + petalIndex * 0.08);
+
+  let opacity = 1;
+  if (distancePastMuzzleCm >= SABOT_DISCARD_MAX_DIST_CM) {
+    opacity = 0;
+  } else if (distancePastMuzzleCm > SABOT_DISCARD_FADE_START_CM) {
+    const fadeU =
+      (distancePastMuzzleCm - SABOT_DISCARD_FADE_START_CM) /
+      (SABOT_DISCARD_MAX_DIST_CM - SABOT_DISCARD_FADE_START_CM);
+    opacity = 1 - fadeU * fadeU * (3 - 2 * fadeU);
+  }
+
+  out.visible = opacity > 0.005;
+  out.radialOffsetCm = radialOffsetCm;
+  out.axialLagCm = axialLagCm;
+  out.pitchOutRad = pitchOutRad;
+  out.rollSpinRad = rollSpinRad;
+  out.opacity = out.visible ? opacity : 0;
+  return out;
+}
+
+/**
+ * Pure allocating wrapper for `writeDiscardingSabotKinematicsInto`.
+ */
+export function computeDiscardingSabotKinematics(
+  distancePastMuzzleCm: number,
+  petalIndex: SabotPetalIndex,
+  caliber: ApfsdsCaliberProfile
+): DiscardingSabotKinematicsSample {
+  return writeDiscardingSabotKinematicsInto(
+    distancePastMuzzleCm,
+    petalIndex,
+    caliber,
+    createMutableDiscardingSabotKinematicsSample()
+  );
+}
+
+/**
+ * Sweeps a closed clockwise 2D `(x, r)` cross-section loop across a symmetric azimuthal sector
+ * `[-sectorHalfRad, +sectorHalfRad]` centered on `+Y` around the `+X` bore axis, capping both
+ * radial split-kerf end faces with guaranteed outward-facing unit normals & vertex colors.
+ */
+function buildRevolvedSectorSolid(
+  profile: readonly (readonly [number, number])[],
+  azSegments: number,
+  sectorHalfRad: number,
+  hexColor: string
+): THREE.BufferGeometry {
+  const nPts = profile.length;
+  const positions: number[] = [];
+
+  const pushTri = (
+    ax: number,
+    ay: number,
+    az: number,
+    bx: number,
+    by: number,
+    bz: number,
+    cx: number,
+    cy: number,
+    cz: number
+  ): void => {
+    positions.push(ax, ay, az, bx, by, bz, cx, cy, cz);
+  };
+
+  // 1. Revolved outer/inner/front/rear walls along azimuth [-sectorHalfRad .. +sectorHalfRad]
+  for (let s = 0; s < azSegments; s++) {
+    const a0 = -sectorHalfRad + (2 * sectorHalfRad * s) / azSegments;
+    const a1 = -sectorHalfRad + (2 * sectorHalfRad * (s + 1)) / azSegments;
+    const c0 = Math.cos(a0);
+    const s0 = Math.sin(a0);
+    const c1 = Math.cos(a1);
+    const s1 = Math.sin(a1);
+
+    for (let j = 0; j < nPts; j++) {
+      const [x0, r0] = profile[j];
+      const [x1, r1] = profile[(j + 1) % nPts];
+
+      const p00x = x0;
+      const p00y = r0 * c0;
+      const p00z = r0 * s0;
+
+      const p01x = x0;
+      const p01y = r0 * c1;
+      const p01z = r0 * s1;
+
+      const p10x = x1;
+      const p10y = r1 * c0;
+      const p10z = r1 * s0;
+
+      const p11x = x1;
+      const p11y = r1 * c1;
+      const p11z = r1 * s1;
+
+      pushTri(p00x, p00y, p00z, p01x, p01y, p01z, p11x, p11y, p11z);
+      pushTri(p00x, p00y, p00z, p11x, p11y, p11z, p10x, p10y, p10z);
+    }
+  }
+
+  // 2. Solid radial split-kerf end caps at +sectorHalfRad and -sectorHalfRad
+  const contour = profile.map(([x, r]) => new THREE.Vector2(x, r));
+  const capFaces = THREE.ShapeUtils.triangulateShape(contour, []);
+  const caps: readonly { angle: number; ny: number; nz: number }[] = [
+    {
+      angle: sectorHalfRad,
+      ny: -Math.sin(sectorHalfRad),
+      nz: Math.cos(sectorHalfRad),
+    },
+    {
+      angle: -sectorHalfRad,
+      ny: -Math.sin(sectorHalfRad),
+      nz: -Math.cos(sectorHalfRad),
+    },
+  ];
+
+  for (const cap of caps) {
+    const ca = Math.cos(cap.angle);
+    const sa = Math.sin(cap.angle);
+    for (let t = 0; t < capFaces.length; t++) {
+      const [i0, i1, i2] = capFaces[t];
+      const [x0, r0] = profile[i0];
+      const [x1, r1] = profile[i1];
+      const [x2, r2] = profile[i2];
+
+      const ax = x0;
+      const ay = r0 * ca;
+      const az = r0 * sa;
+      const bx = x1;
+      const by = r1 * ca;
+      const bz = r1 * sa;
+      const cx = x2;
+      const cy = r2 * ca;
+      const cz = r2 * sa;
+
+      const e1x = bx - ax;
+      const e1y = by - ay;
+      const e1z = bz - az;
+      const e2x = cx - ax;
+      const e2y = cy - ay;
+      const e2z = cz - az;
+      const nCrossY = e1z * e2x - e1x * e2z;
+      const nCrossZ = e1x * e2y - e1y * e2x;
+
+      if (nCrossY * cap.ny + nCrossZ * cap.nz >= 0) {
+        pushTri(ax, ay, az, bx, by, bz, cx, cy, cz);
+      } else {
+        pushTri(ax, ay, az, cx, cy, cz, bx, by, bz);
+      }
+    }
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute(
+    'position',
+    new THREE.Float32BufferAttribute(positions, 3)
+  );
+  geo.computeVertexNormals();
+  return paintSubGeo(geo, hexColor);
+}
+
+/**
+ * Builds ONE 114° azimuthal machined-aluminum discarding-sabot petal sector centered on `+Y`
+ * around the `+X` bore axis (3 petals at 120° intervals yield crisp 6° split separation kerfs).
+ * Includes authentic front concave aerodynamic air-scoop bevel, double-ramp structural spool,
+ * inner saddle buttress drive-ring grooves, front/rear bourrelet bore-guide ribs, and rear
+ * amber-nylon gas-seal obturator band in PBR vertex colors.
+ */
+export function buildApfsdsSabotPetalGeometry(
+  caliber: ApfsdsCaliberProfile
+): THREE.BufferGeometry {
+  const is125 = caliber === '125mm_apfsds';
+  const rRod = 1.22;
+  const rInner = rRod + 0.05;
+  const rSabot = is125 ? 5.6 : 5.4;
+  const rWaist = is125 ? 2.65 : 2.55;
+  const rScoopInner = is125 ? 3.35 : 3.2;
+  const sectorHalfRad = ((SABOT_PETAL_ARC_DEG * Math.PI) / 180) * 0.5;
+
+  const parts: THREE.BufferGeometry[] = [];
+
+  // 1. Main 7075-T6 CNC machined aluminum double-ramp sabot petal body w/ front air-scoop pocket
+  const bodyProfile: readonly (readonly [number, number])[] = [
+    [-9.4, rInner],
+    [-9.4, rSabot * 0.72],
+    [-8.6, rSabot * 0.93],
+    [-5.4, rSabot * 0.95],
+    [-3.4, rWaist],
+    [3.2, rWaist],
+    [5.6, rSabot * 0.95],
+    [9.4, rSabot * 0.98],
+    [10.2, rSabot * 0.93],
+    [8.2, rScoopInner],
+    [7.2, rInner + 0.55],
+    [9.2, rInner],
+  ];
+  parts.push(
+    buildRevolvedSectorSolid(bodyProfile, 16, sectorHalfRad, '#cbd5e1')
+  );
+
+  // 2. Five circumferential inner-saddle buttress drive-ring ribs gripping the penetrator rod
+  for (let g = 0; g < 5; g++) {
+    const x0 = -6.4 + g * 2.85;
+    const x1 = x0 + 1.45;
+    const grooveProfile: readonly (readonly [number, number])[] = [
+      [x0, rInner - 0.02],
+      [x0 + 0.16, rInner + 0.32],
+      [x1 - 0.16, rInner + 0.32],
+      [x1, rInner - 0.02],
+    ];
+    parts.push(
+      buildRevolvedSectorSolid(
+        grooveProfile,
+        12,
+        sectorHalfRad * 0.96,
+        '#526071'
+      )
+    );
+  }
+
+  // 3. Front & rear precision-ground bourrelet bore-riding guide ribs
+  const rearBourrelet: readonly (readonly [number, number])[] = [
+    [-7.3, rSabot * 0.92],
+    [-7.1, rSabot],
+    [-5.8, rSabot],
+    [-5.6, rSabot * 0.92],
+  ];
+  const frontBourrelet: readonly (readonly [number, number])[] = [
+    [6.4, rSabot * 0.93],
+    [6.6, rSabot],
+    [8.6, rSabot],
+    [8.8, rSabot * 0.94],
+  ];
+  parts.push(
+    buildRevolvedSectorSolid(rearBourrelet, 16, sectorHalfRad, '#94a3b8')
+  );
+  parts.push(
+    buildRevolvedSectorSolid(frontBourrelet, 16, sectorHalfRad, '#94a3b8')
+  );
+
+  // 4. Rear sliding amber-nylon gas-seal obturator band (650–670 MPa smoothbore seal)
+  const obturatorBand: readonly (readonly [number, number])[] = [
+    [-8.75, rSabot * 0.91],
+    [-8.6, rSabot + 0.06],
+    [-7.75, rSabot + 0.06],
+    [-7.6, rSabot * 0.91],
+  ];
+  parts.push(
+    buildRevolvedSectorSolid(obturatorBand, 16, sectorHalfRad, '#c27824')
+  );
+
+  const merged = mergeGeometries(parts, false);
+  for (const p of parts) p.dispose();
+  merged.computeBoundingBox();
+  merged.computeBoundingSphere();
+  return merged;
+}
+
 /**
  * Builds 1:1 120mm / 125mm APFSDS tank cannon firing kinematics geometry:
  * - `caseGeo`: Drawn metallic aft stub base (retained after combustible propellant wall burns away)
- * - `bulletGeo`: Multi-tone DU/tungsten fin-stabilized long-rod penetrator dart + 3-petal sabot ring
+ * - `bulletGeo`: Multi-tone DU/tungsten fin-stabilized long-rod penetrator dart + 6 tail fins + base tracer
+ *   (the 3 machined-aluminum sabot petals are rendered & aerodynamically discarded independently via `buildApfsdsSabotPetalGeometry`)
  */
 function buildTankApfsdsGeometries(
   caliber: '120mm_apfsds' | '125mm_apfsds'
@@ -1349,21 +1684,6 @@ function buildTankApfsdsGeometries(
     is125 ? '#334155' : '#1e293b'
   );
 
-  // Mid-body machined aluminum discarding-sabot drive collar (saddle + bourrelet)
-  const rSabot = is125 ? 5.6 : 5.4;
-  const sabotPts: THREE.Vector2[] = [
-    new THREE.Vector2(rRod, -8.5),
-    new THREE.Vector2(rSabot * 0.85, -7.2),
-    new THREE.Vector2(rSabot, -5.2),
-    new THREE.Vector2(rSabot, -2.4),
-    new THREE.Vector2(rRod * 1.65, -0.5),
-    new THREE.Vector2(rRod * 1.65, 4.2),
-    new THREE.Vector2(rSabot, 5.8),
-    new THREE.Vector2(rSabot, 8.2),
-    new THREE.Vector2(rRod, 10.0),
-  ];
-  const sabotGeo = paintSubGeo(finalizeLathe(sabotPts, 24), '#cbd5e1');
-
   // Luminous magnesium-orange tracer base glow plug
   const tracerPts: THREE.Vector2[] = [
     new THREE.Vector2(0, xTail - 1.2),
@@ -1383,7 +1703,7 @@ function buildTankApfsdsGeometries(
     fins.push(paintSubGeo(fin, '#64748b'));
   }
 
-  const bulletParts = [rodGeo, sabotGeo, tracerGeo, ...fins];
+  const bulletParts = [rodGeo, tracerGeo, ...fins];
   const bulletGeo = mergeGeometries(bulletParts, false);
   for (const p of bulletParts) p.dispose();
   bulletGeo.computeBoundingBox();
@@ -2527,10 +2847,16 @@ export const CHAMBER_IGNITION_LIGHT_COLOR = '#ff9c42';
 export const CHAMBER_IGNITION_WINDOW_START = 0.04;
 export const CHAMBER_IGNITION_WINDOW_END = 0.24;
 
-// Zero-GC module-pooled scratch objects for Cycle 15A in-bore tracking bounce light
+// Zero-GC module-pooled scratch objects for Cycle 15A in-bore tracking bounce light & Cycle 20C discarding sabot
 const _ballisticsInBoreSample = createMutableInBoreDeflagrationSample();
 const _chamberLightColor = new THREE.Color(CHAMBER_IGNITION_LIGHT_COLOR);
 const _chamberDefaultColor = new THREE.Color(CHAMBER_IGNITION_LIGHT_COLOR);
+const _sabotKinematics = createMutableDiscardingSabotKinematicsSample();
+const _sabotAxisX = new THREE.Vector3(1, 0, 0);
+const _sabotAxisZ = new THREE.Vector3(0, 0, 1);
+const _sabotQuatAz = new THREE.Quaternion();
+const _sabotQuatPitch = new THREE.Quaternion();
+const _sabotQuatRoll = new THREE.Quaternion();
 
 export type CaliberVfxTier =
   | 'archery'
@@ -3140,6 +3466,39 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
     craterSootGeo,
   } = useMemo(() => getCaliberGeometries(caliberProfile), [caliberProfile]);
 
+  const apfsdsCaliber: ApfsdsCaliberProfile | null =
+    caliberProfile === '120mm_apfsds' || caliberProfile === '125mm_apfsds'
+      ? caliberProfile
+      : null;
+  const sabotPetalGeo = useMemo(
+    () => (apfsdsCaliber ? buildApfsdsSabotPetalGeometry(apfsdsCaliber) : null),
+    [apfsdsCaliber]
+  );
+  const sabotPetalMat = useMemo(
+    () =>
+      new THREE.MeshStandardMaterial({
+        color: '#ffffff',
+        vertexColors: true,
+        metalness: 0.78,
+        roughness: 0.28,
+        transparent: false,
+        opacity: 1,
+      }),
+    []
+  );
+
+  useEffect(() => {
+    return () => {
+      sabotPetalGeo?.dispose();
+    };
+  }, [sabotPetalGeo]);
+
+  useEffect(() => {
+    return () => {
+      sabotPetalMat.dispose();
+    };
+  }, [sabotPetalMat]);
+
   const jets = useMemo(() => getMuzzleJets(activeWeaponId), [activeWeaponId]);
 
   const is50Bmg = caliberProfile === '50_bmg';
@@ -3164,6 +3523,8 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
   const spentSootMatRef = useRef<THREE.MeshStandardMaterial>(null);
 
   const bulletGroupRef = useRef<THREE.Group>(null);
+  const sabotGroupRef = useRef<THREE.Group>(null);
+  const sabotPetalMeshRefs = useRef<(THREE.Mesh | null)[]>([]);
   const streakMeshRef = useRef<THREE.Mesh>(null);
 
   const chamberFlashRef = useRef<THREE.Mesh>(null);
@@ -3376,6 +3737,71 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
       );
       bulletGroupRef.current.rotation.set(f * (isTank ? 16 : 42), 0, 0);
       bulletGroupRef.current.scale.setScalar(curFit.roundScale);
+    }
+
+    // 2b. Cycle 20C: 1:1 MBT 3-Petal Discarding Sabot Aerodynamic Separation (120mm / 125mm APFSDS only)
+    if (sabotGroupRef.current) {
+      const isApfsds =
+        curProfile === '120mm_apfsds' || curProfile === '125mm_apfsds';
+      const activeSabot = isApfsds && st.bulletVisible;
+      sabotGroupRef.current.visible = activeSabot;
+      if (activeSabot) {
+        const muzzleExitDatumX =
+          curMeta.muzzlePos[0] + (weaponId === 'ztz99a' ? -1.9 : 0);
+        const distancePastMuzzleCm =
+          f <= timing.muzzleExitF
+            ? Math.min(0, st.bulletPos[0] - (curMeta.muzzlePos[0] + muzzleShiftX))
+            : Math.max(0.01, st.bulletPos[0] - muzzleExitDatumX);
+
+        const baseBulletX = st.bulletPos[0];
+        const baseBulletY = st.bulletPos[1] + phys.barrelWhipY;
+        const baseBulletZ = st.bulletPos[2];
+        let anyPetalVisible = false;
+
+        for (let p = 0; p < SABOT_PETAL_SLOTS.length; p++) {
+          const petalIndex = SABOT_PETAL_SLOTS[p];
+          writeDiscardingSabotKinematicsInto(
+            distancePastMuzzleCm,
+            petalIndex,
+            curProfile,
+            _sabotKinematics
+          );
+          const mesh = sabotPetalMeshRefs.current[p];
+          if (!mesh) continue;
+
+          mesh.visible = _sabotKinematics.visible;
+          if (!_sabotKinematics.visible) continue;
+          anyPetalVisible = true;
+
+          const az = _sabotKinematics.azimuthRad;
+          const cosAz = Math.cos(az);
+          const sinAz = Math.sin(az);
+          mesh.position.set(
+            baseBulletX + _sabotKinematics.axialLagCm,
+            baseBulletY + cosAz * _sabotKinematics.radialOffsetCm,
+            baseBulletZ + sinAz * _sabotKinematics.radialOffsetCm
+          );
+
+          // Compose qAzimuth * qPitchOut(+Z) * qRollSpin(+X) zero-GC so nose pitches cleanly outward
+          _sabotQuatAz.setFromAxisAngle(_sabotAxisX, az);
+          _sabotQuatPitch.setFromAxisAngle(_sabotAxisZ, _sabotKinematics.pitchOutRad);
+          _sabotQuatRoll.setFromAxisAngle(_sabotAxisX, _sabotKinematics.rollSpinRad);
+          mesh.quaternion
+            .copy(_sabotQuatAz)
+            .multiply(_sabotQuatPitch)
+            .multiply(_sabotQuatRoll);
+          mesh.scale.setScalar(curFit.roundScale);
+
+          if (p === 0) {
+            const pMat = mesh.material as THREE.MeshStandardMaterial;
+            const isTrans = _sabotKinematics.opacity < 0.99;
+            pMat.opacity = _sabotKinematics.opacity;
+            pMat.transparent = isTrans;
+            pMat.depthWrite = !isTrans;
+          }
+        }
+        sabotGroupRef.current.visible = anyPetalVisible;
+      }
     }
 
     if (streakMeshRef.current) {
@@ -3852,6 +4278,31 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
           {showEdges && <Edges threshold={36} color="#7c2d12" />}
         </mesh>
       </group>
+
+      {/* 2b. Cycle 20C: 1:1 MBT 3-Petal Machined-Aluminum Discarding Sabot (120mm / 125mm APFSDS only) */}
+      {sabotPetalGeo && (
+        <group
+          ref={sabotGroupRef}
+          name="ApfsdsDiscardingSabotPetals"
+          visible={false}
+        >
+          {SABOT_PETAL_SLOTS.map((petalIdx) => (
+            <mesh
+              key={`sabot-petal-${caliberProfile}-${petalIdx}`}
+              ref={(el) => {
+                sabotPetalMeshRefs.current[petalIdx] = el;
+              }}
+              geometry={sabotPetalGeo}
+              material={sabotPetalMat}
+              visible={false}
+              frustumCulled={false}
+              renderOrder={3}
+            >
+              {showEdges && <Edges threshold={36} color="#334155" />}
+            </mesh>
+          ))}
+        </group>
+      )}
 
       {/* Supersonic Projectile Motion Trail / Aerodynamic Arrow Air-Wake */}
       <mesh
