@@ -2158,6 +2158,54 @@
 }
 
 @media (max-width: 768px) {
+  .showdown-dialog {
+    width: calc(100vw - 10px);
+    max-width: calc(100vw - 10px);
+    height: calc(100dvh - 10px);
+    border-radius: 12px;
+    overflow-x: clip;
+  }
+
+  .showdown-header,
+  .showdown-scroll-body {
+    max-width: 100%;
+    overflow-x: clip;
+    box-sizing: border-box;
+  }
+
+  .sd-family-grid,
+  .sd-heroes-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .sd-mode-tab,
+  .sd-close-btn,
+  .sd-swap-icon-btn,
+  .sd-axis-pill,
+  .sd-ex-quick-vs-btn,
+  .sd-exhibit-select-area,
+  .sd-preset-pill,
+  .sd-preset-split3d-btn,
+  .sd-launch-showdown-btn,
+  .sd-launch-split3d-btn,
+  .sd-verdict-split3d-cta,
+  .sd-deep-cutaway-btn,
+  .sd-deep-cycle-btn,
+  .sd-radar-axis-row,
+  .showdown-dialog .lang-seg-btn {
+    min-height: 34px;
+    min-width: 34px;
+  }
+
+  .sd-swap-icon-btn {
+    width: 34px;
+    height: 34px;
+  }
+
+  .sd-weapon-select {
+    min-height: 36px;
+  }
+
   .sd-custom-duel-pickers {
     flex-direction: column;
     align-items: stretch;
