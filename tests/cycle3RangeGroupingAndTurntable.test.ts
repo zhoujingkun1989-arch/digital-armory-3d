@@ -14,6 +14,7 @@ import {
   buildRangeTrajectory3D,
   CM_PER_MOA_AT_100M,
   computeFiveRoundGrouping,
+  computeStringPlaybackSync,
   getProjectileDispersionProfile,
   GROUPING_STRING_SHOT_COUNT,
 } from '../src/features/ballistics/range3DMath';
@@ -305,6 +306,36 @@ describe('Cycle 3B · 5-Round Proving Ground Grouping, Target Card PNG, Gong Res
       })
     );
     expect(htmlZh).toContain('5 发连射散布');
+
+    // Verify 5-round string playback duration, replay reset, mid-string scrub sync & single-shot hotspot suppression
+    const traj = buildRangeTrajectory3D(sol, 600, 'dope_dial', 'steel_gong');
+    const str = computeFiveRoundGrouping(traj, 104729);
+    const atStart = computeStringPlaybackSync(str, traj.totalTimelineS, 0);
+    expect(atStart.totalDurationS).toBe(str.totalStringTimelineS);
+    expect(atStart.totalDurationS).toBeGreaterThan(traj.totalTimelineS);
+    expect(atStart.firedFlags).toEqual([false, false, false, false, false]);
+    expect(atStart.impactFlags).toEqual([false, false, false, false, false]);
+    expect(atStart.landedCount).toBe(0);
+
+    const midT = (str.shots[1].impactTimeS + str.shots[2].impactTimeS) * 0.5;
+    const atMid = computeStringPlaybackSync(str, traj.totalTimelineS, midT);
+    expect(atMid.landedCount).toBe(2);
+    expect(atMid.impactFlags).toEqual([true, true, false, false, false]);
+    expect(atMid.firedFlags[0]).toBe(true);
+    expect(atMid.firedFlags[1]).toBe(true);
+
+    const atEnd = computeStringPlaybackSync(
+      str,
+      traj.totalTimelineS,
+      str.totalStringTimelineS
+    );
+    expect(atEnd.landedCount).toBe(5);
+    expect(atEnd.impactFlags).toEqual([true, true, true, true, true]);
+
+    const rangeSrc = readRepoFile('src/features/ballistics/Range3DScene.tsx');
+    expect(rangeSrc).toContain('!st.activeString && hasHitTime && traj.steelImpact.hit');
+    expect(rangeSrc).toContain('syncStringFlagsForTime(0)');
+    expect(rangeSrc).toContain('syncStringFlagsForTime(nextT)');
   });
 
   it('4. Polishes ExhibitionTurntable with beveled collar, scan tick ring, grounding shadow, linear lock & zero new THREE in useFrame', () => {

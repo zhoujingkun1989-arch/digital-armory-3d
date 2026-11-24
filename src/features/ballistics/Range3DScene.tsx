@@ -45,6 +45,7 @@ import {
 import {
   buildRangeTrajectory3D,
   computeFiveRoundGrouping,
+  computeStringPlaybackSync,
   computeWindFlagStates,
   createMutableCameraPose3D,
   createMutableProjectilePose3D,
@@ -1452,9 +1453,10 @@ const TargetArrayRig: React.FC<{
       }
     }
 
-    // 2. Impact Thermal / Lead Splatter Hotspot on Steel Face
+    // 2. Single-shot Impact Thermal / Lead Splatter Hotspot on Steel Face
+    // Suppressed during 5-round strings so no phantom 6th nominal-center mark appears
     if (impactHotspotRef.current && traj.targetType === 'steel_gong') {
-      const showHotspot = hasHitTime && traj.steelImpact.hit;
+      const showHotspot = !st.activeString && hasHitTime && traj.steelImpact.hit;
       impactHotspotRef.current.visible = showHotspot;
       if (showHotspot) {
         const cool01 = Math.exp(-postT / (flirActive ? 2.4 : 0.42));
@@ -2974,18 +2976,41 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
     });
   };
 
+  const syncStringFlagsForTime = (nextT: number) => {
+    const st = simRef.current;
+    const sync = computeStringPlaybackSync(
+      st.activeString,
+      traj.totalTimelineS,
+      nextT
+    );
+    st.stringFiredFlags = sync.firedFlags;
+    st.stringImpactFlags = sync.impactFlags;
+    if (st.activeString) {
+      setGroupingState((prev) =>
+        prev && prev.trajKey === trajKey
+          ? { ...prev, landedCount: sync.landedCount }
+          : prev
+      );
+    }
+  };
+
   const handleTogglePlayPause = () => {
     playWorkbenchFoley('toggle_switch');
-    if (simRef.current.playing) {
-      simRef.current.playing = false;
+    const st = simRef.current;
+    if (st.playing) {
+      st.playing = false;
       clearScheduledAudio();
       setIsPlaying(false);
     } else {
-      if (simRef.current.simTimeS >= traj.totalTimelineS - 0.01) {
-        simRef.current.simTimeS = 0;
-        simRef.current.impactTriggered = false;
+      const totalDuration = st.activeString
+        ? st.activeString.totalStringTimelineS
+        : traj.totalTimelineS;
+      if (st.simTimeS >= totalDuration - 0.01) {
+        st.simTimeS = 0;
+        st.impactTriggered = false;
+        syncStringFlagsForTime(0);
       }
-      simRef.current.playing = true;
+      st.playing = true;
       setIsPlaying(true);
     }
   };
@@ -2997,16 +3022,22 @@ export const Range3DScene: React.FC<Range3DSceneProps> = ({
     simRef.current.impactTriggered = false;
     simRef.current.playing = false;
     simRef.current.overviewNeedsFrame = true;
+    syncStringFlagsForTime(0);
     setIsPlaying(false);
   };
 
   const handleScrubTimeline = (rawSliderVal: number) => {
     clearScheduledAudio();
+    const st = simRef.current;
+    const totalDuration = st.activeString
+      ? st.activeString.totalStringTimelineS
+      : traj.totalTimelineS;
     const frac = Math.max(0, Math.min(1, rawSliderVal / 1000));
-    const nextT = frac * traj.totalTimelineS;
-    simRef.current.simTimeS = nextT;
-    simRef.current.impactTriggered = nextT >= traj.totalFlightTimeS;
-    simRef.current.playing = false;
+    const nextT = frac * totalDuration;
+    st.simTimeS = nextT;
+    st.impactTriggered = nextT >= traj.totalFlightTimeS;
+    st.playing = false;
+    syncStringFlagsForTime(nextT);
     setIsPlaying(false);
   };
 

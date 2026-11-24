@@ -1434,3 +1434,49 @@ export function computeFiveRoundGrouping(
     totalStringTimelineS,
   };
 }
+
+export interface StringPlaybackSync {
+  totalDurationS: number;
+  firedFlags: boolean[];
+  impactFlags: boolean[];
+  landedCount: number;
+}
+
+/**
+ * Pure playback timeline synchronizer for single-shot vs 5-round precision strings.
+ * At `simTimeS <= 0` (reset or replay-from-start), all shot flags clear to `false`
+ * so shot #1 launches cleanly; for `simTimeS > 0` (mid-string scrub), flags mirror
+ * exact elapsed shot launch/impact timestamps.
+ */
+export function computeStringPlaybackSync(
+  activeString: RangeGroupingResult | null,
+  fallbackTimelineS: number,
+  simTimeS: number
+): StringPlaybackSync {
+  if (!activeString) {
+    return {
+      totalDurationS: fallbackTimelineS,
+      firedFlags: [false, false, false, false, false],
+      impactFlags: [false, false, false, false, false],
+      landedCount: 0,
+    };
+  }
+  const resetToStart = simTimeS <= 0;
+  const firedFlags: boolean[] = [];
+  const impactFlags: boolean[] = [];
+  let landedCount = 0;
+  for (let i = 0; i < activeString.shots.length; i++) {
+    const sh = activeString.shots[i];
+    const fired = !resetToStart && simTimeS >= sh.fireDelayS;
+    const impacted = !resetToStart && simTimeS >= sh.impactTimeS;
+    firedFlags.push(fired);
+    impactFlags.push(impacted);
+    if (impacted) landedCount = sh.shotNumber;
+  }
+  return {
+    totalDurationS: activeString.totalStringTimelineS,
+    firedFlags,
+    impactFlags,
+    landedCount,
+  };
+}
