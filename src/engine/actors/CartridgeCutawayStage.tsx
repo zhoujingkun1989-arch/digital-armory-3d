@@ -114,7 +114,7 @@ export function computeCartridgeStageOffsetInto(
   if (isTankGallery) {
     const camX = 0;
     const camZ = Math.max(198, 228 / aspect);
-    const stageSpanX = 82;
+    const stageSpanX = 104;
     const stageSpanY = 126 + 56 * explodeT;
 
     const dHoriz =
@@ -159,7 +159,7 @@ const ACTIVE_HALO_GEO = (() => {
   return g;
 })();
 
-const TANK_PLINTH_GEO = new THREE.BoxGeometry(76.0, 2.8, 26.0);
+const TANK_PLINTH_GEO = new THREE.BoxGeometry(102.0, 2.8, 26.0);
 const TANK_PEDESTAL_DISC_GEO = new THREE.CylinderGeometry(7.6, 8.3, 0.8, 40);
 const TANK_ACTIVE_HALO_GEO = (() => {
   const g = new THREE.RingGeometry(8.4, 9.4, 48);
@@ -225,8 +225,8 @@ function buildTankElevationScaleBackdrop(): {
 } {
   const minorVerts: number[] = [];
   const majorVerts: number[] = [];
-  const xLeft = -37.0;
-  const xRight = 37.0;
+  const xLeft = -48.0;
+  const xRight = 48.0;
   const zPlane = -12.0;
 
   majorVerts.push(xLeft, 0, zPlane, xLeft, 122.0, zPlane);

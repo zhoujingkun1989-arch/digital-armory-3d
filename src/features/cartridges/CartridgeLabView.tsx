@@ -33,7 +33,7 @@ import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
 import { StudioEnvironmentBar } from '../workbench/StudioEnvironmentBar';
 
 const MAX_SMALL_ARMS_OAL_MM = 138.43; // .50 BMG reference 100% bar height
-const MAX_TANK_ORDNANCE_OAL_MM = 984.0; // 120×570mm NATO APFSDS reference 100% bar height
+const MAX_TANK_ORDNANCE_OAL_MM = 1150.0; // 125mm DTC10-125 APFSDS reference 100% bar height
 
 function formatOrdnanceEnergy(energyJ: number): string {
   if (energyJ >= 1_000_000) {
@@ -100,19 +100,23 @@ export const CartridgeLabView: React.FC = () => {
   const caliberCount = activeOrder.length;
   const isMultiRowDock = caliberCount > 7;
   const zhCaliberCountWord =
-    caliberCount === 16
-      ? '十六'
-      : caliberCount === 15
-        ? '十五'
-        : caliberCount === 11
-          ? '十一'
-          : caliberCount === 10
-            ? '十'
-            : caliberCount === 7
-              ? '七'
-              : caliberCount === 3
-                ? '三'
-                : String(caliberCount);
+    caliberCount === 17
+      ? '十七'
+      : caliberCount === 16
+        ? '十六'
+        : caliberCount === 15
+          ? '十五'
+          : caliberCount === 11
+            ? '十一'
+            : caliberCount === 10
+              ? '十'
+              : caliberCount === 7
+                ? '七'
+                : caliberCount === 4
+                  ? '四'
+                  : caliberCount === 3
+                    ? '三'
+                    : String(caliberCount);
   const spec = CARTRIDGE_LAB_SPECS[activeCaliber];
   const primaryWeaponLabel = getLocalizedShortWeaponLabel(
     spec.primaryWeaponId,

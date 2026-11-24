@@ -971,7 +971,7 @@ export const WEAPON_ATTACHMENT_PROFILES: Readonly<
     muzzleReplacedPartIds: [],
     opticRailAnchor: [1.5, 3.28, 0],
     opticFollowPartId: null,
-    opticReplacedPartIds: [],
+    opticReplacedPartIds: ['k98k_stripper_clip'],
     allowedMuzzles: ALL_MUZZLES,
     allowedOptics: ALL_OPTICS,
   },

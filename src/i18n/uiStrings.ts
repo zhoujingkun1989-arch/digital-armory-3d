@@ -1281,23 +1281,23 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       subtitle:
         '严格遵循 1 单位 = 10mm 绝对比例并排纵剖陈列 · 直视发射药柱、4.73 无壳药块、底火砧座、12号鹿弹碗塞与双芯穿甲锥结构',
       gallerySwitchAria: '弹药展馆尺度切换',
-      gallerySmallArmsBtn: '轻武器实弹 (15)',
+      gallerySmallArmsBtn: '轻武器实弹 (17)',
       gallerySmallArmsTitle:
-        '切换至 15 大口径轻武器 1:1 实弹剖视陈列（29.69–138.43 mm）',
-      galleryTankOrdnanceBtn: '坦克主炮弹 (3)',
+        '切换至 17 大口径轻武器 1:1 实弹剖视陈列（29.69–138.43 mm）',
+      galleryTankOrdnanceBtn: '重型/坦克炮弹 (4)',
       galleryTankOrdnanceTitle:
-        '切换至 3 大口径主战坦克 1:1 主炮炮弹纵剖馆（88mm / 120mm / 125mm）',
-      tankOrdnanceBadge: 'HEAVY ORDNANCE · 1:1 坦克炮弹剖视馆',
-      tankOrdnanceTitle: '1:1 主战坦克炮弹纵剖对比实验室',
+        '切换至 4 大口径重型航炮与主战坦克 1:1 炮弹纵剖馆（30mm GAU-8 / 88mm / 120mm / 125mm）',
+      tankOrdnanceBadge: 'HEAVY ORDNANCE · 1:1 坦克与航炮弹剖视馆',
+      tankOrdnanceTitle: '1:1 坦克主炮与 30mm 航炮弹纵剖实验室',
       tankOrdnanceSubtitle:
-        '88×571mmR PzGr.39 · 120×570mm NATO APFSDS · 125mm DTC10-125 绝对物理比例纵剖',
+        '30×173mm GAU-8 PGU-14/B · 88×571mmR PzGr.39 · 120×570mm NATO APFSDS · 125mm DTC10-125 绝对物理比例纵剖',
       backVaultBtn: '返回数字枪库',
       backVaultTitle: '返回 3D 数字枪库武器展厅 (Esc / B)',
       lineupBtn: `1:1 ${LAB_CALIBER_ZH}弹同框全景`,
       lineupTitle: `拉远镜头以 1:1 绝对比例同屏并排对比全部 ${LAB_CALIBER_TOTAL} 款口径实弹`,
-      tankLineupBtn: '1:1 三款炮弹同框全景',
+      tankLineupBtn: '1:1 四款重炮弹同框全景',
       tankLineupTitle:
-        '拉远镜头以 1:1 绝对比例同屏并排对比全部 3 款主战坦克主炮炮弹（88mm / 120mm / 125mm）',
+        '拉远镜头以 1:1 绝对比例同屏并排对比全部 4 款重型航炮与坦克主炮炮弹（30mm GAU-8 / 88mm / 120mm / 125mm）',
       focusSpecimenBtn: '微距聚焦当前弹种',
       focusSpecimenTitle: '推近镜头微距检视当前选中实弹的底火砧座与弹芯纵剖面',
       cutawayOn: '180° 纵剖已开启 [C]',
@@ -1309,7 +1309,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       matrixToggleClose: '收起对比总表',
       matrixToggleTitle: `展开或收起 ${LAB_CALIBER_TOTAL} 大口径装药量、膛压、初速与枪口动能定量对比矩阵表`,
       tankMatrixToggleTitle:
-        '展开或收起 3 款主战坦克主炮炮弹装药量、膛压、初速与兆焦级枪口动能定量对比矩阵表',
+        '展开或收起 4 款重型航炮与坦克主炮炮弹装药量、膛压、初速与兆焦级枪口动能定量对比矩阵表',
       explodeLabel: '弹体结构轴向分解',
       explodeReset: '复位合拢',
       caliberSelectorAria: `馆藏${LAB_CALIBER_ZH}大口径实弹切换栏`,
@@ -2209,23 +2209,23 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       subtitle:
         'True 1:1 side-by-side longitudinal cutaways (1 unit = 10 mm) · Compare propellant columns, 4.73mm caseless blocks, Boxer anvils, 12ga buckshot wads, dual-core penetrators & muzzle energy',
       gallerySwitchAria: 'Ordnance Gallery Scale Switcher',
-      gallerySmallArmsBtn: 'Small Arms (15)',
+      gallerySmallArmsBtn: 'Small Arms (17)',
       gallerySmallArmsTitle:
-        'Switch to 15-caliber 1:1 Small-Arms Cutaway Gallery (29.69–138.43 mm)',
-      galleryTankOrdnanceBtn: 'Tank Ordnance (3)',
+        'Switch to 17-caliber 1:1 Small-Arms Cutaway Gallery (29.69–138.43 mm)',
+      galleryTankOrdnanceBtn: 'Heavy Ordnance (4)',
       galleryTankOrdnanceTitle:
-        'Switch to 3-caliber 1:1 Main Battle Tank Cannon Ordnance Gallery (88mm / 120mm / 125mm)',
-      tankOrdnanceBadge: 'HEAVY ORDNANCE · 1:1 TANK ORDNANCE LAB',
-      tankOrdnanceTitle: '1:1 Main Battle Tank Ordnance Cutaway Lab',
+        'Switch to 4-caliber 1:1 Heavy Autocannon & MBT Ordnance Gallery (30mm GAU-8 / 88mm / 120mm / 125mm)',
+      tankOrdnanceBadge: 'HEAVY ORDNANCE · 1:1 AUTOCANNON & TANK LAB',
+      tankOrdnanceTitle: '1:1 Heavy Ordnance & Tank Shell Cutaway Lab',
       tankOrdnanceSubtitle:
-        'Absolute 1:1 cutaway comparison: 88mm PzGr.39, 120mm NATO APFSDS & 125mm DTC10-125',
+        'Absolute 1:1 cutaway comparison: 30×173mm GAU-8 PGU-14/B, 88mm PzGr.39, 120mm NATO APFSDS & 125mm DTC10-125',
       backVaultBtn: 'Return to Vault',
       backVaultTitle: 'Return to 3D Digital Armory Vault (Esc / B)',
       lineupBtn: `1:1 Full ${LAB_CALIBER_TOTAL}-Caliber Lineup`,
       lineupTitle: `Frame all ${LAB_CALIBER_TOTAL} cartridges side-by-side at exact 1:1 physical scale`,
-      tankLineupBtn: '1:1 Full 3-Ordnance Lineup',
+      tankLineupBtn: '1:1 Full 4-Ordnance Lineup',
       tankLineupTitle:
-        'Frame all 3 main battle tank cannon rounds side-by-side at exact 1:1 physical scale',
+        'Frame all 4 heavy autocannon & MBT cannon rounds side-by-side at exact 1:1 physical scale',
       focusSpecimenBtn: 'Macro Specimen Focus',
       focusSpecimenTitle:
         'Zoom into the active cartridge cutaway to inspect primer anvil & bullet core',
@@ -2239,7 +2239,7 @@ export const UI_STRINGS: Record<LanguageCode, UiDictionary> = {
       matrixToggleClose: 'Hide Matrix',
       matrixToggleTitle: `Toggle ${LAB_CALIBER_TOTAL}-caliber quantitative comparison table (dimensions, charge, pressure & energy)`,
       tankMatrixToggleTitle:
-        'Toggle 3-ordnance tank cannon quantitative comparison table (dimensions, charge, pressure & energy)',
+        'Toggle 4-ordnance autocannon & tank cannon quantitative comparison table (dimensions, charge, pressure & energy)',
       explodeLabel: 'Axial Anatomy Explode',
       explodeReset: 'Collapse',
       caliberSelectorAria: 'Select caliber specimen in 1:1 cutaway lineup',
