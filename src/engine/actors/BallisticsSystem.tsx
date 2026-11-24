@@ -13,6 +13,7 @@ import {
   getActiveWeaponAttachmentPhysics,
   getWeaponAttachmentLoadout,
 } from '../attachments/attachmentStore';
+import { playBrassCasingBounceSound } from '../audio/mechanicalSoundEngine';
 import { GasFlowVisualizer } from './GasFlowVisualizer';
 import {
   SMOKE_WISP_POOL_SIZE,
@@ -29,6 +30,7 @@ import {
   isArcheryWeapon,
   isTankCaliber,
   isTankWeapon,
+  setCasingBounceListener,
   stepArmoryPhysics,
 } from '../physics/armoryPhysics';
 
@@ -3013,7 +3015,13 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
   );
 
   useEffect(() => {
+    setCasingBounceListener((caliber, impactSpeedCmS, bounceIndex) => {
+      if (!useAppStore.getState().sfxMuted) {
+        playBrassCasingBounceSound(caliber, impactSpeedCmS, bounceIndex);
+      }
+    });
     return () => {
+      setCasingBounceListener(null);
       muzzlePuffGeo.dispose();
     };
   }, [muzzlePuffGeo]);
