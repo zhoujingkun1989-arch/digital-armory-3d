@@ -8,6 +8,7 @@ import {
   Volume2,
   X,
 } from 'lucide-react';
+import { useDialogAccessibility } from '../../app/useDialogAccessibility';
 import {
   getRecordingAudioStream,
   playWorkbenchFoley,
@@ -61,20 +62,19 @@ export const DirectorReelModal: React.FC<DirectorReelModalProps> = ({
   const recorderSupported =
     typeof window !== 'undefined' && typeof MediaRecorder !== 'undefined';
 
+  useDialogAccessibility({
+    isOpen: true,
+    containerRef: dialogRef,
+    onClose,
+    closeOnEscape: !recording,
+  });
+
   useEffect(() => {
     const dialog = dialogRef.current;
-    if (dialog && !dialog.open) {
+    if (dialog && !dialog.open && typeof dialog.showModal === 'function') {
       dialog.showModal();
     }
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && !recording) {
-        e.preventDefault();
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', onKeyDown);
     return () => {
-      window.removeEventListener('keydown', onKeyDown);
       if (sessionRef.current) {
         void sessionRef.current.stop();
         sessionRef.current = null;
@@ -83,7 +83,7 @@ export const DirectorReelModal: React.FC<DirectorReelModalProps> = ({
         dialog.close();
       }
     };
-  }, [onClose, recording]);
+  }, []);
 
   const handleStart = async () => {
     const canvas = document.querySelector<HTMLCanvasElement>(
@@ -186,6 +186,8 @@ export const DirectorReelModal: React.FC<DirectorReelModalProps> = ({
       ref={dialogRef}
       className="director-reel-dialog"
       data-testid="director-reel-modal"
+      role="dialog"
+      aria-modal="true"
       aria-labelledby={titleId}
       onClick={(e) => {
         if (e.target === dialogRef.current && !recording) {

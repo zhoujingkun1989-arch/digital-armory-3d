@@ -839,7 +839,17 @@ a {
   }
 }
 
-/* Phone & Full Coarse-Pointer Touch Target Ergonomics (40px–44px) */
+/* Native modal dialog scroll containment (prevents backdrop scroll chaining) */
+dialog:modal {
+  overscroll-behavior: contain;
+}
+
+dialog::backdrop {
+  overflow: hidden;
+  overscroll-behavior: contain;
+}
+
+/* Phone & Full Coarse-Pointer Touch Target Ergonomics (>= 44px WCAG 2.1 AA touch targets) */
 @media (pointer: coarse), (max-width: 640px) {
   .armory-filter-btn,
   .armory-showcase-btn,
@@ -852,12 +862,54 @@ a {
   .top-bar .back-armory-btn,
   .top-bar .cam-btn,
   .top-bar .env-seg-btn,
-  .top-bar .lang-seg-btn {
-    min-height: 40px;
+  .top-bar .lang-seg-btn,
+  .armory-quick-enter-btn,
+  .armor-pen-reset-btn,
+  .armor-pen-close-btn,
+  .armor-view-tab,
+  .armor-theater-play-btn,
+  .armor-theater-icon-btn,
+  .armor-theater-speed-btn,
+  .armor-pill-btn,
+  .armor-era-btn,
+  .timeline-close-btn,
+  .timeline-chip,
+  .timeline-tour-pill,
+  .timeline-cta-btn,
+  .passport-close-btn,
+  .passport-action-btn,
+  .passport-train-btn,
+  .director-reel-close-btn,
+  .director-reel-action-btn,
+  .ps-close-btn,
+  .story-close-btn,
+  .story-minimize-btn,
+  .att-icon-btn,
+  .att-action-pill,
+  .att-preset-btn,
+  .causality-icon-btn,
+  .causality-pill-btn,
+  .causality-preset-pill,
+  .eb-seg-btn,
+  .eb-tab-btn,
+  .eb-preset-pill,
+  .eb-cat-pill,
+  .eb-range3d-fire-btn,
+  .split-btn {
+    min-height: 44px;
   }
 
-  .armory-quick-enter-btn {
-    min-height: 44px;
+  .armor-pen-close-btn,
+  .armor-theater-icon-btn,
+  .timeline-close-btn,
+  .passport-close-btn,
+  .director-reel-close-btn,
+  .ps-close-btn,
+  .story-close-btn,
+  .att-icon-btn,
+  .causality-icon-btn,
+  .rack-scroll-btn {
+    min-width: 44px;
   }
 }
 
@@ -924,7 +976,7 @@ a {
   .exam-cert-share-btn,
   .exam-cert-retry-btn,
   .exam-cert-exit-btn {
-    min-height: 40px;
+    min-height: 44px;
   }
 
   .armory-quick-enter-btn,
@@ -940,7 +992,7 @@ a {
   .rack-scroll-btn,
   .cartridge-dossier-toggle-btn,
   .cartridge-matrix-close {
-    min-width: 40px;
+    min-width: 44px;
   }
 
   .explode-slider,

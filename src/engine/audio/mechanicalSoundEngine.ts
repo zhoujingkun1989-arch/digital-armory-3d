@@ -65,7 +65,9 @@ export type MechanismAcousticStyle =
   | 'tank_bustle_cannon'
   | 'tank_ww2_cannon'
   | 'lever_action_rifle'
-  | 'pump_action_shotgun';
+  | 'pump_action_shotgun'
+  | 'browning_single_link'
+  | 'mauser_crf_bolt';
 
 export interface CaliberAcousticProfile {
   caliber: CaliberProfile;
@@ -400,6 +402,97 @@ export const CALIBER_ACOUSTIC_PROFILES: Record<
 export const GARAND_ENBLOC_PING_PARTIALS_HZ = [
   1740, 3510, 5260, 6890,
 ] as const;
+
+/**
+ * High-Q steel-body & spring-catch modal eigenfrequencies (Hz) for the Colt M1911A1
+ * 7-round single-stack heat-treated steel magazine latch & feed-lip snap.
+ */
+export const M1911_MAG_LATCH_PARTIALS_HZ = [2180, 3940, 5620] as const;
+
+/**
+ * Bright stamped brass / spring-steel modal partials (Hz) for the Mauser K98k
+ * 5-round *Ladestreifen* stripper-clip metallic ejection ping off the rear bridge.
+ */
+export const K98K_STRIPPER_CLIP_PING_PARTIALS_HZ = [
+  2420, 4180, 6140, 7920,
+] as const;
+
+export interface WeaponBespokeAcousticSignature {
+  weaponId: WeaponId;
+  mechanismStyle: MechanismAcousticStyle;
+  labelEn: string;
+  labelZh: string;
+  customizedEvents: readonly FiringSoundEventKind[];
+  modalPartialsHz: readonly number[];
+}
+
+export const BESPOKE_WEAPON_ACOUSTIC_SIGNATURES: Readonly<
+  Partial<Record<WeaponId, WeaponBespokeAcousticSignature>>
+> = {
+  m1911: {
+    weaponId: 'm1911',
+    mechanismStyle: 'browning_single_link',
+    labelEn:
+      'Colt M1911A1 Forged-Steel Slide, Swinging Barrel-Link Lockup, Spur Hammer & Single-Stack Mag Latch',
+    labelZh:
+      '柯尔特 M1911A1 锻钢套筒、勃朗宁单绞链闭锁咔哒、外露击锤敲击止动板与单排钢弹匣卡笋',
+    customizedEvents: [
+      'sear_release',
+      'primer_ignition',
+      'gas_or_recoil',
+      'cam_unlock',
+      'extract_eject',
+      'spring_feed',
+      'battery_lockup',
+      'sear_reset',
+    ],
+    modalPartialsHz: M1911_MAG_LATCH_PARTIALS_HZ,
+  },
+  k98k: {
+    weaponId: 'k98k',
+    mechanismStyle: 'mauser_crf_bolt',
+    labelEn:
+      'Mauser K98k 4-Stroke Controlled-Feed 90° Bolt Lift, 11cm Extraction Slide, Dual-Lug Cam Lock & 5-Rd Stripper-Clip Ping',
+    labelZh:
+      '毛瑟 K98k 四冲程受控供弹 90° 抬栓、11cm 后拉抽壳滑轨、双主突笋前推凸轮闭锁与 5 发桥夹金属叮响',
+    customizedEvents: [
+      'sear_release',
+      'primer_ignition',
+      'gas_or_recoil',
+      'cam_unlock',
+      'extract_eject',
+      'spring_feed',
+      'battery_lockup',
+      'sear_reset',
+    ],
+    modalPartialsHz: K98K_STRIPPER_CLIP_PING_PARTIALS_HZ,
+  },
+};
+
+/**
+ * Resolves the effective weapon-level mechanical acoustic style, allowing exhibits
+ * sharing a caliber (e.g., M1911A1 vs KRISS Vector in `.45 ACP`, or K98k vs MG 42
+ * in `7.92×57mm`) to use distinct mechanical synthesis paths.
+ */
+export function resolveWeaponMechanismAcousticStyle(
+  weaponId: WeaponId
+): MechanismAcousticStyle {
+  const bespoke = BESPOKE_WEAPON_ACOUSTIC_SIGNATURES[weaponId];
+  if (bespoke) {
+    return bespoke.mechanismStyle;
+  }
+  if (weaponId === 'p08') return 'toggle_lock_pistol';
+  if (weaponId === 'm249' || weaponId === 'mg42') return 'open_bolt_lmg';
+  if (weaponId === 'rem870') return 'pump_action_shotgun';
+  const manifest = getWeaponManifest(weaponId);
+  return CALIBER_ACOUSTIC_PROFILES[manifest.caliberProfile].mechanismStyle;
+}
+
+export function getWeaponBespokeAcousticSignature(
+  weaponId: WeaponId
+): WeaponBespokeAcousticSignature | null {
+  return BESPOKE_WEAPON_ACOUSTIC_SIGNATURES[weaponId] ?? null;
+}
 
 /** Stretched partials for high-tension braided BCY-X bowstrings. */
 const BOWSTRING_TWANG_PARTIALS = [1.0, 2.04, 3.11, 4.24] as const;
@@ -1236,6 +1329,48 @@ class ProceduralGunsmithSoundEngine {
             massBodyHz: 205,
             bus: 'mechanical',
           });
+        } else if (weaponId === 'm1911') {
+          // Colt M1911A1 crisp straight-pull single-action sear break + external forged spur hammer fall onto firing pin stop
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 2320,
+            baseDecaySec: 0.024,
+            gainPeak: 0.25,
+            hardness01: 0.92,
+            massBodyHz: 340,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + (isSlowMo ? 0.018 : 0.009),
+            fundamentalHz: 1640,
+            baseDecaySec: 0.04,
+            gainPeak: 0.3,
+            hardness01: 0.93,
+            massBodyHz: 285,
+            bus: 'mechanical',
+          });
+        } else if (weaponId === 'k98k') {
+          // Mauser K98k two-stage military trigger break + 24-coil mainspring surge driving 171mm firing pin
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 1840,
+            baseDecaySec: 0.036,
+            gainPeak: 0.26,
+            hardness01: 0.88,
+            massBodyHz: 260,
+            bus: 'mechanical',
+          });
+          this.emitNoiseBurst({
+            startTime: now + 0.003,
+            duration: isSlowMo ? 0.052 : 0.028,
+            filterType: 'bandpass',
+            freqStart: 1950,
+            freqEnd: 3100,
+            q: 4.4,
+            gainPeak: 0.14,
+            attack: 0.002,
+            bus: 'mechanical',
+          });
         } else if (weaponId === 'vss') {
           // VSS Vintorez hammerless silent linear striker glide (muted low-noise click!)
           this.emitSteelWaveguideStrike({
@@ -1470,12 +1605,66 @@ class ProceduralGunsmithSoundEngine {
             gainPeak: 0.22,
             bus: 'ballistic',
           });
+        } else if (weaponId === 'm1911') {
+          // Colt M1911A1 floating inertia firing-pin rebound tick against rectangular steel stop plate
+          this.emitSteelWaveguideStrike({
+            startTime: now + (isSlowMo ? 0.014 : 0.005),
+            fundamentalHz: 3120,
+            baseDecaySec: 0.018,
+            gainPeak: 0.16,
+            hardness01: 0.94,
+            bus: 'mechanical',
+          });
+        } else if (weaponId === 'k98k') {
+          // Mauser K98k heavy 171mm firing-pin collar seating inside locked 3-lug bolt body
+          this.emitSteelWaveguideStrike({
+            startTime: now + (isSlowMo ? 0.012 : 0.004),
+            fundamentalHz: 1980,
+            baseDecaySec: 0.026,
+            gainPeak: 0.18,
+            hardness01: 0.89,
+            massBodyHz: 245,
+            bus: 'mechanical',
+          });
         }
         break;
       }
 
       case 'gas_or_recoil': {
-        if (profile.mechanismStyle === 'short_recoil_heavy') {
+        if (weaponId === 'm1911') {
+          // Colt M1911A1 forged-steel slide & 5" barrel locked 3mm short-recoil glide prior to link drop
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 1180,
+            baseDecaySec: 0.044,
+            gainPeak: 0.24,
+            hardness01: 0.78,
+            massBodyHz: 235,
+            bus: 'mechanical',
+          });
+          this.emitNoiseBurst({
+            startTime: now + 0.002,
+            duration: isSlowMo ? 0.068 : 0.036,
+            filterType: 'bandpass',
+            freqStart: 1550,
+            freqEnd: 2480,
+            q: 4.0,
+            gainPeak: 0.14,
+            attack: 0.003,
+            bus: 'mechanical',
+          });
+        } else if (weaponId === 'k98k') {
+          // Mauser K98k manual bolt stays rigidly locked during bullet exit; laminated beechwood recoil settle only
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 520,
+            baseDecaySec: 0.068,
+            gainPeak: 0.2,
+            hardness01: 0.56,
+            massBodyHz: 118,
+            bus: 'mechanical',
+          });
+        } else if (profile.mechanismStyle === 'short_recoil_heavy') {
           // M82A1 29-inch fluted barrel + dual recoil springs heavy rearward mass impulse
           this.emitSteelWaveguideStrike({
             startTime: now,
@@ -1671,6 +1860,61 @@ class ProceduralGunsmithSoundEngine {
           });
           break;
         }
+        if (weaponId === 'm1911') {
+          // Colt M1911A1 Browning 0.278" swinging barrel-link 53° arc pivot pulling dual top lugs down onto frame bed
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 1720,
+            baseDecaySec: 0.038,
+            gainPeak: 0.27,
+            hardness01: 0.89,
+            massBodyHz: 270,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + (isSlowMo ? 0.015 : 0.007),
+            fundamentalHz: 1240,
+            baseDecaySec: 0.048,
+            gainPeak: 0.29,
+            hardness01: 0.85,
+            massBodyHz: 255,
+            bus: 'mechanical',
+          });
+          break;
+        }
+        if (weaponId === 'k98k') {
+          // Mauser K98k Stroke 1/4: 90° bent-handle bolt lift, dual-lug unseat & helical cock-on-opening cam
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 1060,
+            baseDecaySec: 0.054,
+            gainPeak: 0.28,
+            hardness01: 0.84,
+            massBodyHz: 220,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + (isSlowMo ? 0.024 : 0.012),
+            fundamentalHz: 1620,
+            baseDecaySec: 0.044,
+            gainPeak: 0.24,
+            hardness01: 0.88,
+            massBodyHz: 265,
+            bus: 'mechanical',
+          });
+          this.emitNoiseBurst({
+            startTime: now + 0.004,
+            duration: isSlowMo ? 0.095 : 0.052,
+            filterType: 'bandpass',
+            freqStart: 1580,
+            freqEnd: 2620,
+            q: 3.8,
+            gainPeak: 0.16,
+            attack: 0.005,
+            bus: 'mechanical',
+          });
+          break;
+        }
         if (weaponId === 'p08') {
           // Luger P08 signature double-articulated metallic knee-toggle ramp strike + center-hinge buckle snap
           this.emitSteelWaveguideStrike({
@@ -1749,10 +1993,24 @@ class ProceduralGunsmithSoundEngine {
           break;
         }
 
-        // 1. Extractor claw pull + steel ejector spur kick
+        // 1. Extractor claw pull + steel ejector spur kick (with Mauser K98k 11cm steel raceway slide!)
+        if (weaponId === 'k98k') {
+          // Mauser K98k Stroke 2/4: 110mm controlled-feed rear extraction slide along forged receiver raceways
+          this.emitNoiseBurst({
+            startTime: now,
+            duration: isSlowMo ? 0.145 : 0.084,
+            filterType: 'bandpass',
+            freqStart: 1320,
+            freqEnd: 2680,
+            q: 3.4,
+            gainPeak: 0.23,
+            attack: 0.006,
+            bus: 'mechanical',
+          });
+        }
         this.emitSteelWaveguideStrike({
           startTime: now,
-          fundamentalHz: 1620,
+          fundamentalHz: weaponId === 'k98k' ? 1480 : 1620,
           baseDecaySec: 0.042,
           gainPeak: 0.24,
           hardness01: 0.8,
@@ -1775,18 +2033,42 @@ class ProceduralGunsmithSoundEngine {
           });
         }
 
-        // 3. Rear trunnion / buffer impact (including Colt M4A1 buffer ring & WWII M1 Garand "PING!")
+        // 3. Rear trunnion / buffer impact (including Colt M4A1 buffer ring, M1911 steel mag latch & WWII M1 Garand "PING!")
         const tBuffer = now + (isSlowMo ? 0.04 : 0.016);
         this.emitSteelWaveguideStrike({
           startTime: tBuffer,
-          fundamentalHz: 740,
+          fundamentalHz: weaponId === 'm1911' ? 880 : weaponId === 'k98k' ? 860 : 740,
           baseDecaySec: 0.062,
           gainPeak: 0.24,
-          hardness01: 0.6,
-          massBodyHz: 138,
+          hardness01: weaponId === 'm1911' || weaponId === 'k98k' ? 0.78 : 0.6,
+          massBodyHz: weaponId === 'm1911' ? 195 : weaponId === 'k98k' ? 175 : 138,
           bus: 'mechanical',
         });
-        if (weaponId === 'm4a1') {
+        if (weaponId === 'm1911') {
+          // Colt M1911A1 7-rd single-stack heat-treated steel magazine latch & dimpled follower rise snap
+          const tLatch = tBuffer + (isSlowMo ? 0.018 : 0.008);
+          this.emitSteelWaveguideStrike({
+            startTime: tLatch,
+            fundamentalHz: 2180,
+            baseDecaySec: 0.032,
+            gainPeak: 0.22,
+            hardness01: 0.91,
+            massBodyHz: 315,
+            bus: 'mechanical',
+          });
+          for (let i = 0; i < M1911_MAG_LATCH_PARTIALS_HZ.length; i++) {
+            const fLatch = M1911_MAG_LATCH_PARTIALS_HZ[i];
+            this.emitModalPing({
+              startTime: tLatch + 0.001,
+              duration: (0.095 / (1 + i * 0.55)) * (isSlowMo ? 1.15 : 1.0),
+              freqStart: fLatch * 1.004,
+              freqEnd: fLatch * 0.996,
+              type: 'sine',
+              gainPeak: 0.095 / (1 + i * 0.65),
+              bus: 'mechanical',
+            });
+          }
+        } else if (weaponId === 'm4a1') {
           this.emitModalPing({
             startTime: tBuffer,
             duration: 0.15,
@@ -1825,10 +2107,7 @@ class ProceduralGunsmithSoundEngine {
             gainPeak: 0.075,
             bus: 'ballistic',
           });
-        } else if (
-          weaponId === 'vector' ||
-          profile.mechanismStyle === 'super_v_smg'
-        ) {
+        } else if (weaponId === 'vector') {
           // KRISS Vector -65° Super V tungsten counterweight slider bottoming on polyurethane guide-rod buffer
           this.emitModalPing({
             startTime: tBuffer,
@@ -1887,6 +2166,92 @@ class ProceduralGunsmithSoundEngine {
           });
           break;
         }
+        if (weaponId === 'm1911') {
+          // Colt M1911A1 16-lb music-wire recoil spring drive + 7-rd single-stack steel magazine latch & feed-lip snap
+          const dur = isSlowMo ? 0.11 : 0.06;
+          this.emitNoiseBurst({
+            startTime: now,
+            duration: dur,
+            filterType: 'bandpass',
+            freqStart: 1780,
+            freqEnd: 3120,
+            q: 4.4,
+            gainPeak: 0.18,
+            attack: 0.005,
+            bus: 'mechanical',
+          });
+          this.emitSteelWaveguideStrike({
+            startTime: now + dur * 0.38,
+            fundamentalHz: 2480,
+            baseDecaySec: 0.03,
+            gainPeak: 0.21,
+            hardness01: 0.9,
+            massBodyHz: 325,
+            bus: 'mechanical',
+          });
+          for (let i = 0; i < M1911_MAG_LATCH_PARTIALS_HZ.length; i++) {
+            const fLatch = M1911_MAG_LATCH_PARTIALS_HZ[i];
+            this.emitModalPing({
+              startTime: now + dur * 0.42,
+              duration: (0.075 / (1 + i * 0.52)) * (isSlowMo ? 1.15 : 1.0),
+              freqStart: fLatch,
+              freqEnd: fLatch * 0.994,
+              type: 'sine',
+              gainPeak: 0.07 / (1 + i * 0.7),
+              bus: 'mechanical',
+            });
+          }
+          break;
+        }
+        if (weaponId === 'k98k') {
+          // Mauser K98k Stroke 3/4: Controlled-Round-Feed forward bolt push + 5-rd brass Ladestreifen stripper-clip metallic ping!
+          const dur = isSlowMo ? 0.135 : 0.076;
+          this.emitNoiseBurst({
+            startTime: now,
+            duration: dur,
+            filterType: 'bandpass',
+            freqStart: 2480,
+            freqEnd: 1420,
+            q: 3.6,
+            gainPeak: 0.21,
+            attack: 0.006,
+            bus: 'mechanical',
+          });
+          // Rim sliding cleanly under full-length non-rotating claw extractor
+          this.emitSteelWaveguideStrike({
+            startTime: now + dur * 0.34,
+            fundamentalHz: 1860,
+            baseDecaySec: 0.032,
+            gainPeak: 0.19,
+            hardness01: 0.86,
+            bus: 'mechanical',
+          });
+          // Automatic bolt-face ejection of 5-rd stamped brass/spring-steel stripper clip off rear charger bridge ("PING!")
+          const tClipPing = now + dur * 0.52;
+          this.emitSteelWaveguideStrike({
+            startTime: tClipPing,
+            fundamentalHz: K98K_STRIPPER_CLIP_PING_PARTIALS_HZ[0],
+            baseDecaySec: 0.032,
+            gainPeak: 0.22,
+            hardness01: 0.94,
+            bus: 'ballistic',
+          });
+          const clipDecays = [0.58, 0.46, 0.36, 0.28] as const;
+          const clipWeights = [0.2, 0.14, 0.09, 0.055] as const;
+          for (let i = 0; i < K98K_STRIPPER_CLIP_PING_PARTIALS_HZ.length; i++) {
+            const fClip = K98K_STRIPPER_CLIP_PING_PARTIALS_HZ[i];
+            this.emitModalPing({
+              startTime: tClipPing + 0.001,
+              duration: clipDecays[i] * (isSlowMo ? 1.12 : 1.0),
+              freqStart: fClip * 1.003,
+              freqEnd: fClip * 0.997,
+              type: 'sine',
+              gainPeak: clipWeights[i],
+              bus: 'ballistic',
+            });
+          }
+          break;
+        }
         // Multi-strand braided recoil spring metallic coil rasp + brass cartridge feed-lip strip
         const dur = isSlowMo ? 0.12 : 0.065;
         this.emitNoiseBurst({
@@ -1936,6 +2301,54 @@ class ProceduralGunsmithSoundEngine {
           });
           break;
         }
+        if (weaponId === 'm1911') {
+          // Colt M1911A1 iconic all-steel forged slide + Browning swinging barrel-link upward lockup clack!
+          // Stage 1: Swinging link cams dual barrel top ribs up into forged slide ceiling mortises
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 1340,
+            baseDecaySec: 0.044,
+            gainPeak: 0.28,
+            hardness01: 0.86,
+            massBodyHz: 245,
+            bus: 'ballistic',
+          });
+          // Stage 2: Forged steel slide slams flush into frame abutment & muzzle bushing (+10ms / +18ms slow-mo)
+          this.emitSteelWaveguideStrike({
+            startTime: now + (isSlowMo ? 0.018 : 0.01),
+            fundamentalHz: 1760,
+            baseDecaySec: 0.058,
+            gainPeak: 0.35,
+            hardness01: 0.93,
+            massBodyHz: 295,
+            bus: 'ballistic',
+          });
+          break;
+        }
+        if (weaponId === 'k98k') {
+          // Mauser K98k Stroke 4/4: Dual front locking lugs + rear safety lug forward camming lock & 90° handle seat!
+          // Stage 1: Helical locking ramp camming 7.92×57mm cartridge +3.5mm into headspace
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 980,
+            baseDecaySec: 0.052,
+            gainPeak: 0.27,
+            hardness01: 0.82,
+            massBodyHz: 190,
+            bus: 'ballistic',
+          });
+          // Stage 2: Bent bolt handle seating solid against receiver stock notch as dual lugs lock (+14ms / +26ms)
+          this.emitSteelWaveguideStrike({
+            startTime: now + (isSlowMo ? 0.026 : 0.014),
+            fundamentalHz: 1340,
+            baseDecaySec: 0.064,
+            gainPeak: 0.34,
+            hardness01: 0.9,
+            massBodyHz: 235,
+            bus: 'ballistic',
+          });
+          break;
+        }
         // Authoritative twin-stage cold-forged bolt-into-battery lug lockup ("ka-chunk")
         const lockBase =
           weaponId === 'p08'
@@ -1969,6 +2382,32 @@ class ProceduralGunsmithSoundEngine {
       }
 
       case 'sear_reset': {
+        if (weaponId === 'm1911') {
+          // Colt M1911A1 3-leaf flat spring snapping paddle disconnector up into slide recess
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 2680,
+            baseDecaySec: 0.024,
+            gainPeak: 0.23,
+            hardness01: 0.92,
+            massBodyHz: 330,
+            bus: 'mechanical',
+          });
+          break;
+        }
+        if (weaponId === 'k98k') {
+          // Mauser K98k cocking-piece lug smoothly handing off onto lever sear nose
+          this.emitSteelWaveguideStrike({
+            startTime: now,
+            fundamentalHz: 2120,
+            baseDecaySec: 0.032,
+            gainPeak: 0.22,
+            hardness01: 0.88,
+            massBodyHz: 250,
+            bus: 'mechanical',
+          });
+          break;
+        }
         // Tactile disconnector-to-primary-sear steel hook engagement click
         this.emitSteelWaveguideStrike({
           startTime: now,
@@ -2824,6 +3263,103 @@ class ProceduralGunsmithSoundEngine {
       return;
     }
 
+    const activeWeaponId = useAppStore.getState().activeWeaponId;
+    if (activeWeaponId === 'm1911') {
+      if (isPull) {
+        // Forged steel M1911 slide-on-frame rail drag + 16-lb recoil spring + barrel-link cam-out
+        this.emitNoiseBurst({
+          startTime: now,
+          duration: 0.062,
+          filterType: 'bandpass',
+          freqStart: 1580,
+          freqEnd: 2640,
+          q: 4.3,
+          gainPeak: 0.17,
+          attack: 0.005,
+          bus: 'mechanical',
+        });
+        this.emitSteelWaveguideStrike({
+          startTime: now + 0.006,
+          fundamentalHz: 1680,
+          baseDecaySec: 0.038,
+          gainPeak: 0.22,
+          hardness01: 0.88,
+          massBodyHz: 250,
+          bus: 'mechanical',
+        });
+      } else {
+        // Authoritative M1911 forged steel barrel-link & slide battery clack
+        this.emitSteelWaveguideStrike({
+          startTime: now + 0.014,
+          fundamentalHz: 1340,
+          baseDecaySec: 0.042,
+          gainPeak: 0.25,
+          hardness01: 0.86,
+          massBodyHz: 245,
+          bus: 'ballistic',
+        });
+        this.emitSteelWaveguideStrike({
+          startTime: now + 0.024,
+          fundamentalHz: 1760,
+          baseDecaySec: 0.054,
+          gainPeak: 0.32,
+          hardness01: 0.92,
+          massBodyHz: 295,
+          bus: 'ballistic',
+        });
+      }
+      return;
+    }
+
+    if (activeWeaponId === 'k98k') {
+      if (isPull) {
+        // Mauser K98k 90° bolt lift + controlled-feed raceway draw
+        this.emitSteelWaveguideStrike({
+          startTime: now,
+          fundamentalHz: 1080,
+          baseDecaySec: 0.05,
+          gainPeak: 0.25,
+          hardness01: 0.85,
+          massBodyHz: 220,
+          bus: 'mechanical',
+        });
+        this.emitNoiseBurst({
+          startTime: now + 0.012,
+          duration: 0.072,
+          filterType: 'bandpass',
+          freqStart: 1340,
+          freqEnd: 2560,
+          q: 3.5,
+          gainPeak: 0.2,
+          attack: 0.005,
+          bus: 'mechanical',
+        });
+      } else {
+        // Mauser K98k forward raceway slide + dual-lug 90° cam-down lock
+        this.emitNoiseBurst({
+          startTime: now,
+          duration: 0.056,
+          filterType: 'bandpass',
+          freqStart: 2440,
+          freqEnd: 1420,
+          q: 3.6,
+          gainPeak: 0.18,
+          attack: 0.004,
+          bus: 'mechanical',
+        });
+        this.emitSteelWaveguideStrike({
+          startTime: now + 0.022,
+          fundamentalHz: 1340,
+          baseDecaySec: 0.058,
+          gainPeak: 0.31,
+          hardness01: 0.9,
+          massBodyHz: 235,
+          bus: 'ballistic',
+        });
+      }
+      return;
+    }
+
     if (isPull) {
       // Braided recoil spring compression rasp + partial lug cam-out click
       this.emitNoiseBurst({
@@ -2996,6 +3532,14 @@ export function playPressCheckSpringSound(
   direction: PressCheckDirection
 ): void {
   soundEngine.playPressCheckSpring(direction);
+}
+
+export function playWeaponFiringEventSound(
+  kind: FiringSoundEventKind,
+  weaponId: WeaponId,
+  speedMultiplier: 0.25 | 0.5 | 1.0 = 1.0
+): void {
+  soundEngine.playFiringEvent(kind, weaponId, speedMultiplier);
 }
 
 /**

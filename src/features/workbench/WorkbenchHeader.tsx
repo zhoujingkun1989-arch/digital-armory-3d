@@ -43,6 +43,11 @@ import { resolveWeaponDisplayMeta } from '../../i18n/weaponFallbacks';
 import { useWeaponNarration } from '../../narration/narrationService';
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
+import {
+  MUSEUM_EXHIBIT_COUNT,
+  MUSEUM_TIMELINE_SPAN_ASCII,
+  resolveArmorLabPresetForWeapon,
+} from '../../weapons/museumMetrics';
 import type { CameraPresetType } from '../../weapons/types';
 import { LanguageSwitchPill } from '../story/LanguageSwitchPill';
 import { launchMechanismShowdownFromPalette } from './commandPaletteEngine';
@@ -488,7 +493,9 @@ export const WorkbenchHeader: React.FC = () => {
                     className="toggle-chip"
                     onClick={() => {
                       setToolsMenuOpen(false);
-                      openArmorPenetrationModal();
+                      openArmorPenetrationModal(
+                        resolveArmorLabPresetForWeapon(activeWeaponId)
+                      );
                     }}
                     title={
                       lang === 'en'
@@ -530,8 +537,8 @@ export const WorkbenchHeader: React.FC = () => {
                     }}
                     title={
                       lang === 'en'
-                        ? 'View 27-exhibit Armorer Certification Passport'
-                        : '查看全馆 27 展品军械师资格护照与档案'
+                        ? `View ${MUSEUM_EXHIBIT_COUNT}-exhibit Armorer Certification Passport`
+                        : `查看全馆 ${MUSEUM_EXHIBIT_COUNT} 展品军械师资格护照与档案`
                     }
                   >
                     <Award size={13} aria-hidden="true" />
@@ -548,8 +555,8 @@ export const WorkbenchHeader: React.FC = () => {
                     }}
                     title={
                       lang === 'en'
-                        ? 'Open 1898-2026 Firearms & Armor History Timeline'
-                        : '浏览 1898-2026 全馆 patent 谱系演化时间轴'
+                        ? `Open ${MUSEUM_TIMELINE_SPAN_ASCII} Firearms & Armor History Timeline`
+                        : `浏览 ${MUSEUM_TIMELINE_SPAN_ASCII} 全馆专利谱系演化时间轴`
                     }
                   >
                     <Clock size={13} aria-hidden="true" />

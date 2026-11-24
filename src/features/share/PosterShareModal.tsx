@@ -24,6 +24,7 @@ import {
   Stamp,
   X,
 } from 'lucide-react';
+import { useDialogAccessibility } from '../../app/useDialogAccessibility';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import { playbackClock } from '../../engine/clock/playbackClock';
 import { useWeaponGeometries } from '../../engine/geometry/geometryService';
@@ -296,6 +297,12 @@ export const PosterShareModal: React.FC<PosterShareModalProps> = ({
     };
   }, [isOpen, geoReadyKey, resolveCaptureAsync]);
 
+  useDialogAccessibility({
+    isOpen,
+    containerRef: dialogRef,
+    onClose: handleClose,
+  });
+
   // Native <dialog> top-layer management + Safari light-dismiss fallback
   useEffect(() => {
     const dialog = dialogRef.current;
@@ -511,6 +518,8 @@ export const PosterShareModal: React.FC<PosterShareModalProps> = ({
     <dialog
       ref={dialogRef}
       className="poster-share-dialog"
+      role="dialog"
+      aria-modal="true"
       aria-labelledby={titleId}
       {...({ closedby: 'any' } as Record<string, string>)}
     >

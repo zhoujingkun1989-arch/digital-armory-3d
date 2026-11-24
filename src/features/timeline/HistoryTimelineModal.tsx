@@ -1,9 +1,17 @@
 import React, { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Clock, Compass, GitCompareArrows, Layers, Sparkles, X } from 'lucide-react';
+import { useDialogAccessibility } from '../../app/useDialogAccessibility';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import { getLocalizedShortWeaponLabel } from '../../i18n/weaponFallbacks';
 import { useAppStore } from '../../store/useAppStore';
 import { getWeaponManifest } from '../../weapons/manifests';
+import {
+  MUSEUM_EXHIBIT_COUNT,
+  MUSEUM_TIMELINE_LINEAGE_COUNT,
+  MUSEUM_TIMELINE_MAX_YEAR,
+  MUSEUM_TIMELINE_MIN_YEAR,
+  MUSEUM_TIMELINE_NODE_COUNT,
+} from '../../weapons/museumMetrics';
 import { isWeaponId } from '../../weapons/types';
 import {
   HISTORY_TIMELINE_NODES,
@@ -21,11 +29,10 @@ export interface HistoryTimelineModalProps {
 const TIMELINE_STRINGS = {
   zh: {
     badge: 'WP-24 · 百年轻武器与装甲工程演化史',
-    title: '1898 – 2026 交互式机构专利谱系与演化时间轴',
-    subtitle:
-      '横跨 6 大机械闭锁脉系纵览全馆 27 款名枪、复合弓弩与 1:1 主战坦克工程突破，支持精选策展导览、点击查看祖源连线与一键跳转 3D 剖视工作台',
+    title: `${MUSEUM_TIMELINE_MIN_YEAR} – ${MUSEUM_TIMELINE_MAX_YEAR} 交互式机构专利谱系与演化时间轴`,
+    subtitle: `横跨 ${MUSEUM_TIMELINE_LINEAGE_COUNT} 大机械闭锁脉系纵览全馆 ${MUSEUM_EXHIBIT_COUNT} 款名枪、复合弓弩、1:1 主战坦克与航空重武工程突破，支持精选策展导览、点击查看祖源连线与一键跳转 3D 剖视工作台`,
     close: '关闭演化时间轴',
-    allLineages: '全部 6 大脉系 (27)',
+    allLineages: `全部 ${MUSEUM_TIMELINE_LINEAGE_COUNT} 大脉系 (${MUSEUM_TIMELINE_NODE_COUNT})`,
     toursHeading: '策展主题导览路径',
     clearTour: '退出导览',
     ancestorsLabel: '机械源流追溯',
@@ -35,11 +42,10 @@ const TIMELINE_STRINGS = {
   },
   en: {
     badge: 'WP-24 · MECHANICAL EVOLUTION & LINEAGE',
-    title: '1898 - 2026 Interactive Firearms & Armor Patent Timeline',
-    subtitle:
-      'Explore all 27 exhibits across 6 foundational mechanical lineages with ancestry links, curated curatorial mini-tours, and one-click 3D cutaway launches',
+    title: `${MUSEUM_TIMELINE_MIN_YEAR} - ${MUSEUM_TIMELINE_MAX_YEAR} Interactive Firearms & Armor Patent Timeline`,
+    subtitle: `Explore all ${MUSEUM_EXHIBIT_COUNT} exhibits across ${MUSEUM_TIMELINE_LINEAGE_COUNT} foundational mechanical lineages with ancestry links, curated curatorial mini-tours, and one-click 3D cutaway launches`,
     close: 'Close History Timeline',
-    allLineages: 'All 6 Lineages (27)',
+    allLineages: `All ${MUSEUM_TIMELINE_LINEAGE_COUNT} Lineages (${MUSEUM_TIMELINE_NODE_COUNT})`,
     toursHeading: 'Curated Tours',
     clearTour: 'Show All',
     ancestorsLabel: 'Mechanical Ancestors',
@@ -49,8 +55,8 @@ const TIMELINE_STRINGS = {
   },
 } as const;
 
-const MIN_YEAR = 1894;
-const MAX_YEAR = 2026;
+const MIN_YEAR = MUSEUM_TIMELINE_MIN_YEAR;
+const MAX_YEAR = MUSEUM_TIMELINE_MAX_YEAR;
 const SVG_W = 1080;
 const SVG_H = 356;
 const PAD_L = 56;
@@ -91,25 +97,23 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
   const ui = TIMELINE_STRINGS[lang];
   const isZh = lang === 'zh';
 
+  useDialogAccessibility({
+    isOpen: true,
+    containerRef: dialogRef,
+    onClose,
+  });
+
   useEffect(() => {
     const dialog = dialogRef.current;
-    if (dialog && !dialog.open) {
+    if (dialog && !dialog.open && typeof dialog.showModal === 'function') {
       dialog.showModal();
     }
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', onKeyDown);
     return () => {
-      window.removeEventListener('keydown', onKeyDown);
       if (dialog?.open) {
         dialog.close();
       }
     };
-  }, [onClose]);
+  }, []);
 
   const lineageMap = useMemo(() => {
     const m = new Map<TimelineLineageId, (typeof TIMELINE_LINEAGES)[number]>();
@@ -186,6 +190,8 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
       ref={dialogRef}
       className="timeline-dialog"
       data-testid="history-timeline-modal"
+      role="dialog"
+      aria-modal="true"
       aria-labelledby={titleId}
       onClick={(e) => {
         if (e.target === dialogRef.current) {
@@ -366,7 +372,7 @@ export const HistoryTimelineModal: React.FC<HistoryTimelineModalProps> = ({
                 });
               })}
 
-              {/* 27 Clickable Nodes */}
+              {/* Clickable Exhibit Nodes */}
               {HISTORY_TIMELINE_NODES.map((node) => {
                 const pt = nodeCoords.get(node.weaponId)!;
                 const isSelected = node.weaponId === selectedWeaponId;

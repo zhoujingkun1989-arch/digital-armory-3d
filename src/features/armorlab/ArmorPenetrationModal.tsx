@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   X,
 } from 'lucide-react';
+import { useDialogAccessibility } from '../../app/useDialogAccessibility';
 import { playWorkbenchFoley } from '../../engine/audio/mechanicalSoundEngine';
 import {
   ARMOR_TARGET_SPECS,
@@ -23,12 +24,15 @@ import {
   type PenetratorId,
 } from '../../engine/physics/armorPenetration';
 import { useAppStore } from '../../store/useAppStore';
+import { resolveArmorLabPresetForWeapon } from '../../weapons/museumMetrics';
 import { ARMOR_PENETRATION_STRINGS } from './armorPenetrationStrings';
 import { ArmorPenetration3DScene } from './ArmorPenetration3DScene';
 import '../../styles/armor-penetration.css';
 
 export interface ArmorPenetrationModalProps {
   onClose: () => void;
+  initialProjectileId?: PenetratorId;
+  initialTargetTankId?: ArmorTargetTankId;
 }
 
 export type ArmorLabViewMode = 'theater3d' | 'schematic2d' | 'split';
@@ -42,24 +46,29 @@ const PAD_B = 26;
 
 export const ArmorPenetrationModal: React.FC<ArmorPenetrationModalProps> = ({
   onClose,
+  initialProjectileId,
+  initialTargetTankId,
 }) => {
   const titleId = useId();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const lang = useAppStore((s) => s.lang);
   const activeWeaponId = useAppStore((s) => s.activeWeaponId);
+  const launchOptions = useAppStore((s) => s.armorPenetrationLaunchOptions);
   const ui = ARMOR_PENETRATION_STRINGS[lang];
   const isZh = lang === 'zh';
 
+  const contextualPreset = resolveArmorLabPresetForWeapon(activeWeaponId);
+  const initialProjectile: PenetratorId =
+    initialProjectileId ??
+    launchOptions?.projectileId ??
+    contextualPreset.projectileId;
   const initialTarget: ArmorTargetTankId =
-    activeWeaponId === 'm1a2' ||
-    activeWeaponId === 'leopard2a7' ||
-    activeWeaponId === 'tiger1' ||
-    activeWeaponId === 'ztz99a'
-      ? activeWeaponId
-      : 'ztz99a';
+    initialTargetTankId ??
+    launchOptions?.targetTankId ??
+    contextualPreset.targetTankId;
 
   const [projectileId, setProjectileId] =
-    useState<PenetratorId>('125mm_apfsds');
+    useState<PenetratorId>(initialProjectile);
   const [targetTankId, setTargetTankId] =
     useState<ArmorTargetTankId>(initialTarget);
   const [zoneId, setZoneId] = useState<ArmorZoneId>('turret_front');
@@ -68,25 +77,23 @@ export const ArmorPenetrationModal: React.FC<ArmorPenetrationModalProps> = ({
   const [eraEnabled, setEraEnabled] = useState<boolean>(true);
   const [viewMode, setViewMode] = useState<ArmorLabViewMode>('theater3d');
 
+  useDialogAccessibility({
+    isOpen: true,
+    containerRef: dialogRef,
+    onClose,
+  });
+
   useEffect(() => {
     const dialog = dialogRef.current;
-    if (dialog && !dialog.open) {
+    if (dialog && !dialog.open && typeof dialog.showModal === 'function') {
       dialog.showModal();
     }
-    const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', onKeyDown);
     return () => {
-      window.removeEventListener('keydown', onKeyDown);
       if (dialog?.open) {
         dialog.close();
       }
     };
-  }, [onClose]);
+  }, []);
 
   const result = useMemo(
     () =>
@@ -385,6 +392,8 @@ export const ArmorPenetrationModal: React.FC<ArmorPenetrationModalProps> = ({
       ref={dialogRef}
       className="armor-pen-dialog"
       data-testid="armor-penetration-modal"
+      role="dialog"
+      aria-modal="true"
       aria-labelledby={titleId}
       onClick={(e) => {
         if (e.target === dialogRef.current) {
@@ -407,8 +416,8 @@ export const ArmorPenetrationModal: React.FC<ArmorPenetrationModalProps> = ({
               className="armor-pen-reset-btn"
               onClick={() => {
                 playWorkbenchFoley('preset_detent');
-                setProjectileId('125mm_apfsds');
-                setTargetTankId('ztz99a');
+                setProjectileId(initialProjectile);
+                setTargetTankId(initialTarget);
                 setZoneId('turret_front');
                 setRangeM(1500);
                 setObliquityDeg(15);

@@ -1,4 +1,17 @@
 import type { LanguageCode } from '../narration/types';
+import {
+  MUSEUM_BALLISTICS_PROFILE_COUNT,
+  MUSEUM_CARTRIDGE_LAB_TOTAL_COUNT,
+  MUSEUM_EXHIBIT_COUNT,
+  MUSEUM_HALL_COUNT,
+  MUSEUM_HEAVY_ARMOR_COUNT,
+  MUSEUM_HEAVY_ORDNANCE_CALIBER_COUNT,
+  MUSEUM_ORDNANCE_COUNT,
+  MUSEUM_PBR_SUITE_COUNT,
+  MUSEUM_PBR_WEBP_COUNT,
+  MUSEUM_SMALL_ARMS_CALIBER_COUNT,
+  MUSEUM_TOTAL_PARTS,
+} from '../weapons/museumMetrics';
 
 export interface CommandPaletteStringBundle {
   trigger: {
@@ -152,18 +165,18 @@ export const COMMAND_PALETTE_STRINGS: Record<
     trigger: {
       label: '快速检索',
       shortLabel: '搜索',
-      title: '打开全局命令面板：秒搜 29 款馆藏、731 零件、实验室与控制项 (Cmd/Ctrl+K)',
+      title: `打开全局命令面板：秒搜 ${MUSEUM_EXHIBIT_COUNT} 款馆藏、${MUSEUM_TOTAL_PARTS} 零件、实验室与控制项 (Cmd/Ctrl+K)`,
       ariaLabel: '打开全局命令面板 (Cmd+K)',
       kbdMac: '⌘K',
       kbdOther: 'Ctrl K',
     },
     modal: {
       dialogAria: '全局命令面板',
-      searchPlaceholder: '搜索 29 款名枪、弓弩与 1:1 主战坦克、731 零件、实验室或快捷操作...',
+      searchPlaceholder: `搜索 ${MUSEUM_EXHIBIT_COUNT} 款名枪、弓弩、1:1 主战坦克与航空重武、${MUSEUM_TOTAL_PARTS} 零件、实验室或快捷操作...`,
       clearAria: '清空搜索词',
       emptyTitle: '未找到匹配项',
       emptyHint:
-        '试试输入型号（如 ZTZ-99A / M1A2 / Leopard 2A7V / Tiger 131 / G11 / AN-94）、口径（125mm / 120mm / 88mm）、BOM 编号（如 B-03）或“重装甲 / 剖视 / 外弹道 / 白昼”',
+        '试试输入型号（如 ZTZ-99A / M1A2 / Leopard 2A7V / Tiger 131 / GAU-8 / M1911 / K98k / MG 42）、口径（30mm / 125mm / 120mm / 88mm）、BOM 编号（如 B-03）或“重装甲 / 航空重武 / 剖视 / 外弹道 / 白昼”',
       resultsCount: (count) => `${count} 项结果`,
       activeWeaponContext: (label, partsCount) =>
         `当前展品：${label} · ${partsCount} 个零件`,
@@ -171,7 +184,7 @@ export const COMMAND_PALETTE_STRINGS: Record<
       onBadge: '已开启',
       offBadge: '已关闭',
       groups: {
-        weapons: '馆藏展品（29 款）',
+        weapons: `馆藏展品（${MUSEUM_EXHIBIT_COUNT} 款）`,
         parts: '当前展品零件',
         labs: '展馆与工程实验室',
         actions: '快捷操作与视觉控制',
@@ -185,17 +198,17 @@ export const COMMAND_PALETTE_STRINGS: Record<
     },
     labs: {
       armoryTitle: '数字枪库展厅',
-      armorySub: '返回 29 款馆藏转台大厅（含 4 款 1:1 主战坦克重装甲大厅）与流派筛选架',
+      armorySub: `返回 ${MUSEUM_EXHIBIT_COUNT} 款馆藏 / ${MUSEUM_HALL_COUNT} 大展厅转台大厅（含 ${MUSEUM_HEAVY_ARMOR_COUNT} 款 1:1 主战坦克与 ${MUSEUM_ORDNANCE_COUNT} 款 30mm 航空重武）与流派筛选架`,
       showcaseTitle: '博物馆官方首页',
       showcaseSub: '返回旗舰宣传导览页与馆藏总览',
-      cartridgesTitle: '1:1 实弹与坦克炮弹剖视对比实验室',
-      cartridgesSub: '19 大口径（16 轻武器实弹 + 3 坦克主炮弹）绝对比例纵剖同台陈列',
-      ballisticsTitle: '1,000m 千米外弹道 DOPE 实验室',
-      ballisticsSub: '21 套弹道档案 RK4 气动弹道解算、横风偏流与第一像面 MIL 分划板',
+      cartridgesTitle: '1:1 实弹、航炮弹与坦克炮弹剖视对比实验室',
+      cartridgesSub: `${MUSEUM_CARTRIDGE_LAB_TOTAL_COUNT} 大口径（${MUSEUM_SMALL_ARMS_CALIBER_COUNT} 轻武器实弹 + ${MUSEUM_HEAVY_ORDNANCE_CALIBER_COUNT} 航炮与坦克主炮弹）绝对比例纵剖同台陈列`,
+      ballisticsTitle: '1,000m 千米外弹道 DOPE 实验室与 3D 靶场',
+      ballisticsSub: `${MUSEUM_BALLISTICS_PROFILE_COUNT} 套弹道档案 RK4 气动解算、1,000m 三维实弹靶场与第一像面 MIL 分划板`,
       showdownTitle: '自动原理流派谱系与同屏对照',
       showdownSub: '三轴机械流派矩阵与双展品内弹道曲线对比',
-      atlasTitle: '2K PBR 材质贴图图集检视器',
-      atlasSub: '检视全馆 86 套图集 / 369 张 2K/4K WebP Albedo / Normal / Packed ORM 通道贴图',
+      atlasTitle: '2K/4K PBR 材质贴图图集检视器',
+      atlasSub: `检视全馆 ${MUSEUM_PBR_SUITE_COUNT} 套图集 / ${MUSEUM_PBR_WEBP_COUNT} 张 2K/4K WebP Albedo / Normal / Packed ORM 通道贴图`,
       posterTitle: '高清 3D 剖视分享海报工坊',
       posterSub: '一键抓取实时 WebGL 画面合成 16:9 / 4:5 海报卡片',
       monographTitle: '收藏工程图鉴与儿童绘本打印工坊',
@@ -298,18 +311,18 @@ export const COMMAND_PALETTE_STRINGS: Record<
     trigger: {
       label: 'Quick Search',
       shortLabel: 'Search',
-      title: 'Open Global Command Palette: search 29 exhibits, 731 parts, labs & actions (Cmd/Ctrl+K)',
+      title: `Open Global Command Palette: search ${MUSEUM_EXHIBIT_COUNT} exhibits, ${MUSEUM_TOTAL_PARTS} parts, labs & actions (Cmd/Ctrl+K)`,
       ariaLabel: 'Open Global Command Palette (Cmd+K)',
       kbdMac: '⌘K',
       kbdOther: 'Ctrl K',
     },
     modal: {
       dialogAria: 'Global Command Palette',
-      searchPlaceholder: 'Search 29 exhibits (firearms, archery & 1:1 MBTs), 731 parts, labs, or quick controls...',
+      searchPlaceholder: `Search ${MUSEUM_EXHIBIT_COUNT} exhibits (firearms, archery, 1:1 MBTs & GAU-8/A), ${MUSEUM_TOTAL_PARTS} parts, labs, or quick controls...`,
       clearAria: 'Clear search query',
       emptyTitle: 'No matching results',
       emptyHint:
-        'Try a model (ZTZ-99A, M1A2, Leopard 2A7V, Tiger 131, G11, AN-94), caliber (125mm, 120mm, 88mm), BOM code (B-03), or "Heavy Armor", "cutaway", "ballistics", "blueprint"',
+        'Try a model (ZTZ-99A, M1A2, Leopard 2A7V, Tiger 131, GAU-8/A, M1911, K98k, MG 42), caliber (30mm, 125mm, 120mm, 88mm), BOM code (B-03), or "Heavy Armor", "cutaway", "ballistics", "blueprint"',
       resultsCount: (count) =>
         `${count} ${count === 1 ? 'result' : 'results'}`,
       activeWeaponContext: (label, partsCount) =>
@@ -318,7 +331,7 @@ export const COMMAND_PALETTE_STRINGS: Record<
       onBadge: 'ON',
       offBadge: 'OFF',
       groups: {
-        weapons: 'Museum Exhibits (29)',
+        weapons: `Museum Exhibits (${MUSEUM_EXHIBIT_COUNT})`,
         parts: 'Active Exhibit Parts',
         labs: 'Navigation & Engineering Labs',
         actions: 'Quick Actions & Visual Controls',
@@ -332,17 +345,17 @@ export const COMMAND_PALETTE_STRINGS: Record<
     },
     labs: {
       armoryTitle: 'Digital Armory Vault',
-      armorySub: 'Return to the 29-exhibit turntable hall (incl. 4 1:1 Heavy Armor MBTs) & category rack',
+      armorySub: `Return to the ${MUSEUM_EXHIBIT_COUNT}-exhibit / ${MUSEUM_HALL_COUNT}-hall turntable vault (incl. ${MUSEUM_HEAVY_ARMOR_COUNT} 1:1 MBTs & ${MUSEUM_ORDNANCE_COUNT} 30mm GAU-8/A) & category rack`,
       showcaseTitle: 'Museum Showcase Home',
       showcaseSub: 'Return to the flagship museum landing overview',
-      cartridgesTitle: '1:1 Cartridge & Tank Ordnance Cutaway Lab',
-      cartridgesSub: 'Compare all 19 calibers (16 small-arms + 3 tank cannon rounds) at true 1:1 scale',
-      ballisticsTitle: '1,000m External Ballistics DOPE Lab',
-      ballisticsSub: '21 RK4 3-DOF ballistic profiles, crosswind drift & FFP MIL reticle',
+      cartridgesTitle: '1:1 Cartridge, Aero Cannon & Tank Ordnance Cutaway Lab',
+      cartridgesSub: `Compare all ${MUSEUM_CARTRIDGE_LAB_TOTAL_COUNT} calibers (${MUSEUM_SMALL_ARMS_CALIBER_COUNT} small-arms + ${MUSEUM_HEAVY_ORDNANCE_CALIBER_COUNT} aero & tank cannon rounds) at true 1:1 scale`,
+      ballisticsTitle: '1,000m External Ballistics DOPE Lab & 3D Range',
+      ballisticsSub: `${MUSEUM_BALLISTICS_PROFILE_COUNT} RK4 3-DOF ballistic profiles, 3D 1,000m firing range & FFP MIL reticle`,
       showdownTitle: 'Mechanism Showdown Matrix',
       showdownSub: '3-axis action taxonomy & side-by-side internal ballistics comparison',
-      atlasTitle: '2K PBR Texture Atlas Inspector',
-      atlasSub: 'Inspect all 86 suites / 369 2K/4K WebP Albedo, Normal & Packed ORM channels',
+      atlasTitle: '2K/4K PBR Texture Atlas Inspector',
+      atlasSub: `Inspect all ${MUSEUM_PBR_SUITE_COUNT} suites / ${MUSEUM_PBR_WEBP_COUNT} 2K/4K WebP Albedo, Normal & Packed ORM channels`,
       posterTitle: 'HD 3D Cutaway Share Poster Studio',
       posterSub: 'Capture live WebGL canvas into 16:9 or 4:5 collector cards',
       monographTitle: 'Collector Monograph & Kids Print Studio',
