@@ -72,6 +72,45 @@ export function getGraphicsQualityProfile(
   return GRAPHICS_QUALITY_PROFILES[tier] ?? GRAPHICS_QUALITY_PROFILES.ultra;
 }
 
+export interface GraphicsQualityTelemetryMeta {
+  tier: GraphicsQualityTier;
+  maxDpr: number;
+  shadowMapSize: number;
+  gtaoQuality: GtaoQualityMode;
+  macroDofCapable: boolean;
+  enabledPostfxPasses: number;
+}
+
+/**
+ * Computes the count of optional post-processing passes active for a given quality profile
+ * (GTAO, Bloom, Macro DoF, Filmic Lens, SMAA) so telemetry HUDs & tests can inspect tier budgets.
+ */
+export function computeEffectivePostfxPassCount(
+  profile: GraphicsQualityProfile
+): number {
+  let count = 0;
+  if (profile.gtaoEnabled) count += 1;
+  if (profile.bloomEnabled) count += 1;
+  if (profile.macroDofCapable) count += 1;
+  if (profile.filmicLensEnabled) count += 1;
+  if (profile.smaaEnabled) count += 1;
+  return count;
+}
+
+export function getGraphicsQualityTelemetryMeta(
+  tier: GraphicsQualityTier
+): GraphicsQualityTelemetryMeta {
+  const profile = getGraphicsQualityProfile(tier);
+  return {
+    tier: profile.tier,
+    maxDpr: profile.maxDpr,
+    shadowMapSize: profile.shadowMapSize,
+    gtaoQuality: profile.gtaoQuality,
+    macroDofCapable: profile.macroDofCapable,
+    enabledPostfxPasses: computeEffectivePostfxPassCount(profile),
+  };
+}
+
 /**
  * Selects the default hardware-appropriate graphics quality tier:
  * Desktop / Mac defaults to `'ultra'` photorealistic studio quality; coarse-pointer mobile
