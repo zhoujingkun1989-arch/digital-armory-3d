@@ -219,17 +219,17 @@ if "--postprocess" in sys.argv:
 
         # Main Hero White Military Stencil Block (Center-Right, 100% readable in 3/4 macro!)
         tx = 770
-        drw.text((tx, 118), "GUN, AUTOMATIC, 7.62MM, M134D", font=_load_font(FONT_DIN, 102), fill=255)
+        drw.text((tx, 118), "DILLON AERO M134D  -  MINIGUN", font=_load_font(FONT_DIN, 102), fill=255)
         drw.line([(tx, 246), (RW - 88, 246)], fill=230, width=6)
-        drw.text((tx, 278), "DILLON AERO  -  GENERAL ELECTRIC", font=_load_font(FONT_DIN, 86), fill=255)
-        drw.text((tx, 398), "CAGE 1U2T4  /  3,000 RPM  /  28V DC", font=_load_font(FONT_DIN, 74), fill=252)
-        drw.text((tx, 514), "US GOVT PROPERTY  -  ROTARY GATLING SYSTEM", font=_load_font(FONT_COND, 62), fill=242)
+        drw.text((tx, 278), "7.62x51MM NATO  -  3,000 RPM", font=_load_font(FONT_DIN, 86), fill=255)
+        drw.text((tx, 398), "GENERAL ELECTRIC / CAGE 1U2T4 / 28V DC", font=_load_font(FONT_DIN, 70), fill=252)
+        drw.text((tx, 514), "GUN, AUTOMATIC, 7.62MM  -  US GOVT PROPERTY", font=_load_font(FONT_COND, 62), fill=242)
 
         # Bottom ordnance proof row
         _draw_nato_cross(drw, tx + 44, 658, r=38, lw=6)
-        drw.text((tx + 108, 658), "7.62x51MM NATO  -  M13 LINKLESS DELINKER", font=_load_font(FONT_COND, 56), fill=244, anchor="lm")
-        dre.text((tx, 118), "GUN, AUTOMATIC, 7.62MM, M134D", font=_load_font(FONT_DIN, 102), fill=220)
-        dre.text((tx, 278), "DILLON AERO  -  GENERAL ELECTRIC", font=_load_font(FONT_DIN, 86), fill=200)
+        drw.text((tx + 108, 658), "ROTARY GATLING SYSTEM  -  M13 LINKLESS DELINKER", font=_load_font(FONT_COND, 54), fill=244, anchor="lm")
+        dre.text((tx, 118), "DILLON AERO M134D  -  MINIGUN", font=_load_font(FONT_DIN, 102), fill=220)
+        dre.text((tx, 278), "7.62x51MM NATO  -  3,000 RPM", font=_load_font(FONT_DIN, 86), fill=200)
 
         _paste_uv_band(white_stencil, r_white, 0.015, 0.985, 0.805, 0.985)
         _paste_uv_band(engraving, r_eng, 0.015, 0.985, 0.805, 0.985)
@@ -483,7 +483,7 @@ MODELS_OUT = REPO_ROOT / "public" / "models" / "m134.glb"
 TEX_OUT_DIR = REPO_ROOT / "public" / "textures"
 
 ATLAS_SIZE = 2048
-BAKE_AO_SAMPLES = 24
+BAKE_AO_SAMPLES = 28
 BAKE_NORMAL_SAMPLES = 16
 
 PITCH_RADIUS = 2.65
@@ -683,7 +683,7 @@ def _build_pbr_mat(
     nt.links.new(texcoord.outputs["Object"], mapping.inputs["Vector"])
 
     n_macro = nt.nodes.new("ShaderNodeTexNoise")
-    n_macro.inputs["Scale"].default_value = 2.0
+    n_macro.inputs["Scale"].default_value = 14.0
     n_macro.inputs["Detail"].default_value = 4.0
     n_macro.inputs["Roughness"].default_value = 0.56
     nt.links.new(texcoord.outputs["Object"], n_macro.inputs["Vector"])
@@ -709,9 +709,9 @@ def _build_pbr_mat(
 
     base_a = srgb_to_lin(*base_srgb)
     base_b = srgb_to_lin(
-        min(1.0, base_srgb[0] * 1.07),
-        min(1.0, base_srgb[1] * 1.07),
-        min(1.0, base_srgb[2] * 1.07),
+        min(1.0, base_srgb[0] * 1.022),
+        min(1.0, base_srgb[1] * 1.022),
+        min(1.0, base_srgb[2] * 1.022),
     )
     mix_base = nt.nodes.new("ShaderNodeMix")
     mix_base.data_type = "RGBA"
@@ -733,13 +733,24 @@ def _build_pbr_mat(
     met_sock = met_node.outputs[0]
 
     if edge_wear > 0.001:
-        geom = nt.nodes.new("ShaderNodeNewGeometry")
+        # Tight Cycles inside-AO geometric convexity wear (eliminates 100% of cloudy Pointiness blotches!)
+        ao_in = nt.nodes.new("ShaderNodeAmbientOcclusion")
+        ao_in.samples = 8
+        ao_in.inside = True
+        ao_in.only_local = True
+        ao_in.inputs["Distance"].default_value = 0.046
+
+        inv_ao = nt.nodes.new("ShaderNodeMath")
+        inv_ao.operation = "SUBTRACT"
+        inv_ao.inputs[0].default_value = 1.0
+        nt.links.new(ao_in.outputs["AO"], inv_ao.inputs[1])
+
         ramp = nt.nodes.new("ShaderNodeValToRGB")
-        ramp.color_ramp.elements[0].position = 0.520
+        ramp.color_ramp.elements[0].position = 0.26
         ramp.color_ramp.elements[0].color = (0.0, 0.0, 0.0, 1.0)
-        ramp.color_ramp.elements[1].position = 0.588
+        ramp.color_ramp.elements[1].position = 0.66
         ramp.color_ramp.elements[1].color = (edge_wear, edge_wear, edge_wear, 1.0)
-        nt.links.new(geom.outputs["Pointiness"], ramp.inputs["Fac"])
+        nt.links.new(inv_ao.outputs["Value"], ramp.inputs["Fac"])
 
         mul_w = nt.nodes.new("ShaderNodeMath")
         mul_w.operation = "MULTIPLY"
@@ -755,7 +766,7 @@ def _build_pbr_mat(
 
         mix_er = nt.nodes.new("ShaderNodeMix")
         mix_er.data_type = "FLOAT"
-        mix_er.inputs[3].default_value = max(0.15, roughness - 0.16)
+        mix_er.inputs[3].default_value = max(0.15, roughness - 0.14)
         nt.links.new(mul_w.outputs["Value"], mix_er.inputs[0])
         nt.links.new(rgh_sock, mix_er.inputs[2])
         rgh_sock = mix_er.outputs[0]
@@ -809,25 +820,25 @@ def _build_flash_suppressor_heat_mat() -> bpy.types.Material:
     nt.links.new(sep.outputs["X"], mr.inputs["Value"])
 
     n_h = nt.nodes.new("ShaderNodeTexNoise")
-    n_h.inputs["Scale"].default_value = 3.2
+    n_h.inputs["Scale"].default_value = 8.5
     n_h.inputs["Detail"].default_value = 5.0
     nt.links.new(tc.outputs["Object"], n_h.inputs["Vector"])
 
     add_h = nt.nodes.new("ShaderNodeMath")
     add_h.operation = "MULTIPLY_ADD"
-    add_h.inputs[1].default_value = 0.09
+    add_h.inputs[1].default_value = 0.045
     nt.links.new(n_h.outputs["Fac"], add_h.inputs[0])
     nt.links.new(mr.outputs["Result"], add_h.inputs[2])
 
     rc = nt.nodes.new("ShaderNodeValToRGB")
     cr = rc.color_ramp
     cr.elements[0].position = 0.00
-    cr.elements[0].color = srgb_to_lin(0.245, 0.255, 0.262)   # Parkerized rear clamp collar
-    cr.elements[1].position = 0.36
-    cr.elements[1].color = srgb_to_lin(0.390, 0.285, 0.165)   # Sustained-fire golden-bronze temper!
+    cr.elements[0].color = srgb_to_lin(0.215, 0.226, 0.238)   # Parkerized rear clamp collar
+    cr.elements[1].position = 0.38
+    cr.elements[1].color = srgb_to_lin(0.395, 0.285, 0.155)   # Sustained-fire golden-bronze temper!
     for pos, rgb in (
-        (0.62, (0.235, 0.255, 0.395)),  # Heat-blued violet-indigo temper band!
-        (0.84, (0.185, 0.195, 0.220)),  # Dark heat-oxidized crown
+        (0.64, (0.218, 0.245, 0.405)),  # Heat-blued violet-indigo temper band!
+        (0.84, (0.178, 0.188, 0.215)),  # Dark heat-oxidized crown
         (0.95, (0.125, 0.124, 0.128)),  # Velvety carbon muzzle soot
     ):
         el = cr.elements.new(pos)
@@ -888,47 +899,56 @@ def _build_barrel_cluster_mat() -> bpy.types.Material:
     nt.links.new(sep.outputs["X"], mr.inputs["Value"])
 
     n_b = nt.nodes.new("ShaderNodeTexNoise")
-    n_b.inputs["Scale"].default_value = 2.6
+    n_b.inputs["Scale"].default_value = 9.0
     n_b.inputs["Detail"].default_value = 5.0
     nt.links.new(tc.outputs["Object"], n_b.inputs["Vector"])
 
     add_b = nt.nodes.new("ShaderNodeMath")
     add_b.operation = "MULTIPLY_ADD"
-    add_b.inputs[1].default_value = 0.05
+    add_b.inputs[1].default_value = 0.025
     nt.links.new(n_b.outputs["Fac"], add_b.inputs[0])
     nt.links.new(mr.outputs["Result"], add_b.inputs[2])
 
     rc = nt.nodes.new("ShaderNodeValToRGB")
     cr = rc.color_ramp
     cr.elements[0].position = 0.00
-    cr.elements[0].color = srgb_to_lin(0.242, 0.252, 0.262)
+    cr.elements[0].color = srgb_to_lin(0.215, 0.226, 0.238)
     cr.elements[1].position = 0.78
-    cr.elements[1].color = srgb_to_lin(0.252, 0.260, 0.266)
+    cr.elements[1].color = srgb_to_lin(0.228, 0.238, 0.248)
     for pos, rgb in (
-        (0.90, (0.315, 0.275, 0.215)),
-        (0.97, (0.245, 0.255, 0.305)),
+        (0.89, (0.315, 0.268, 0.198)),
+        (0.96, (0.228, 0.244, 0.315)),
     ):
         el = cr.elements.new(pos)
         el.color = srgb_to_lin(*rgb)
     nt.links.new(add_b.outputs["Value"], rc.inputs["Fac"])
 
-    geom = nt.nodes.new("ShaderNodeNewGeometry")
+    ao_in = nt.nodes.new("ShaderNodeAmbientOcclusion")
+    ao_in.samples = 8
+    ao_in.inside = True
+    ao_in.only_local = True
+    ao_in.inputs["Distance"].default_value = 0.044
+    inv_ao = nt.nodes.new("ShaderNodeMath")
+    inv_ao.operation = "SUBTRACT"
+    inv_ao.inputs[0].default_value = 1.0
+    nt.links.new(ao_in.outputs["AO"], inv_ao.inputs[1])
+
     re = nt.nodes.new("ShaderNodeValToRGB")
-    re.color_ramp.elements[0].position = 0.520
+    re.color_ramp.elements[0].position = 0.26
     re.color_ramp.elements[0].color = (0.0, 0.0, 0.0, 1.0)
-    re.color_ramp.elements[1].position = 0.585
-    re.color_ramp.elements[1].color = (0.50, 0.50, 0.50, 1.0)
-    nt.links.new(geom.outputs["Pointiness"], re.inputs["Fac"])
+    re.color_ramp.elements[1].position = 0.66
+    re.color_ramp.elements[1].color = (0.28, 0.28, 0.28, 1.0)
+    nt.links.new(inv_ao.outputs["Value"], re.inputs["Fac"])
 
     mix_c = nt.nodes.new("ShaderNodeMix")
     mix_c.data_type = "RGBA"
-    mix_c.inputs[7].default_value = srgb_to_lin(0.76, 0.79, 0.84)
+    mix_c.inputs[7].default_value = srgb_to_lin(0.74, 0.77, 0.82)
     nt.links.new(re.outputs["Color"], mix_c.inputs[0])
     nt.links.new(rc.outputs["Color"], mix_c.inputs[6])
 
     nt.links.new(mix_c.outputs[2], bsdf.inputs["Base Color"])
-    bsdf.inputs["Roughness"].default_value = 0.32
-    bsdf.inputs["Metallic"].default_value = 0.87
+    bsdf.inputs["Roughness"].default_value = 0.29
+    bsdf.inputs["Metallic"].default_value = 0.89
 
     bev = nt.nodes.new("ShaderNodeBevel")
     bev.samples = 5
@@ -1084,53 +1104,58 @@ def _build_rubber_knurl_mat() -> bpy.types.Material:
 
 
 def create_material_library() -> dict[str, bpy.types.Material]:
-    """AgX-calibrated M134D Minigun PBR material suite (all ordnance steel sRGB >= 0.22!)."""
+    """AgX-calibrated M134D Minigun PBR material suite (deep military parkerized gunmetal, zero cloudy Pointiness!)."""
     return {
         # --- SUITE 1: Housing, Cam Track, 28V Motor, Gearbox, Spade Grip, Carry Handle, Pintle ---
         "H_MainHousing": _build_pbr_mat(
             "H_MainHousing",
-            base_srgb=(0.244, 0.256, 0.264),
-            roughness=0.35,
-            metallic=0.84,
+            base_srgb=(0.205, 0.218, 0.232),
+            roughness=0.33,
+            metallic=0.86,
             bevel_r=0.032,
-            edge_wear=0.56,
-            edge_srgb=(0.82, 0.84, 0.88),
-            grain_scale=62.0,
-            grain_bump=0.044,
-            voronoi_grain=0.52,
-            voronoi_scale=88.0,
+            edge_wear=0.30,
+            edge_srgb=(0.74, 0.77, 0.82),
+            grain_scale=64.0,
+            grain_bump=0.032,
+            voronoi_grain=0.42,
+            voronoi_scale=96.0,
+            rough_var=0.024,
         ),
         "H_HousingPlate": _build_pbr_mat(
             "H_HousingPlate",
-            base_srgb=(0.238, 0.248, 0.258),
-            roughness=0.36,
-            metallic=0.83,
+            base_srgb=(0.178, 0.188, 0.200),
+            roughness=0.34,
+            metallic=0.82,
             bevel_r=0.024,
-            edge_wear=0.35,
-            grain_scale=66.0,
-            grain_bump=0.028,
-            voronoi_grain=0.45,
+            edge_wear=0.16,
+            edge_srgb=(0.68, 0.71, 0.76),
+            grain_scale=68.0,
+            grain_bump=0.022,
+            voronoi_grain=0.36,
+            rough_var=0.020,
         ),
         "H_FlangeSteel": _build_pbr_mat(
             "H_FlangeSteel",
-            base_srgb=(0.275, 0.288, 0.298),
-            roughness=0.31,
-            metallic=0.87,
+            base_srgb=(0.244, 0.258, 0.274),
+            roughness=0.29,
+            metallic=0.89,
             bevel_r=0.026,
-            edge_wear=0.62,
-            edge_srgb=(0.84, 0.86, 0.90),
-            grain_scale=52.0,
-            grain_bump=0.034,
+            edge_wear=0.32,
+            edge_srgb=(0.78, 0.81, 0.86),
+            grain_scale=54.0,
+            grain_bump=0.028,
+            rough_var=0.022,
         ),
         "H_CamSleeveDark": _build_pbr_mat(
             "H_CamSleeveDark",
-            base_srgb=(0.228, 0.240, 0.252),
-            roughness=0.34,
-            metallic=0.86,
+            base_srgb=(0.208, 0.220, 0.236),
+            roughness=0.32,
+            metallic=0.88,
             bevel_r=0.022,
-            edge_wear=0.50,
+            edge_wear=0.26,
             grain_scale=54.0,
-            grain_bump=0.030,
+            grain_bump=0.024,
+            rough_var=0.022,
         ),
         "H_CamGrooveChrome": _build_pbr_mat(
             "H_CamGrooveChrome",
@@ -1138,31 +1163,34 @@ def create_material_library() -> dict[str, bpy.types.Material]:
             roughness=0.16,
             metallic=0.97,
             bevel_r=0.016,
-            edge_wear=0.20,
+            edge_wear=0.16,
             grain_scale=28.0,
-            grain_bump=0.016,
+            grain_bump=0.014,
             aniso_stretch=(0.35, 3.6, 3.6),
+            rough_var=0.018,
         ),
         "H_MotorEnamel": _build_pbr_mat(
             "H_MotorEnamel",
-            base_srgb=(0.224, 0.242, 0.268),
-            roughness=0.32,
-            metallic=0.82,
+            base_srgb=(0.188, 0.206, 0.234),
+            roughness=0.30,
+            metallic=0.84,
             bevel_r=0.026,
-            edge_wear=0.54,
-            edge_srgb=(0.80, 0.83, 0.88),
-            grain_scale=56.0,
-            grain_bump=0.034,
+            edge_wear=0.28,
+            edge_srgb=(0.74, 0.78, 0.84),
+            grain_scale=58.0,
+            grain_bump=0.026,
+            rough_var=0.022,
         ),
         "H_MotorNameplate": _build_pbr_mat(
             "H_MotorNameplate",
             base_srgb=(0.76, 0.78, 0.81),
-            roughness=0.26,
+            roughness=0.25,
             metallic=0.92,
             bevel_r=0.014,
             grain_scale=38.0,
-            grain_bump=0.016,
+            grain_bump=0.014,
             aniso_stretch=(0.25, 4.0, 4.0),
+            rough_var=0.018,
         ),
         "H_CopperWinding": _build_copper_winding_mat(),
         "H_CommutatorBrass": _build_pbr_mat(
@@ -1173,17 +1201,19 @@ def create_material_library() -> dict[str, bpy.types.Material]:
             bevel_r=0.014,
             grain_scale=36.0,
             grain_bump=0.016,
+            rough_var=0.020,
         ),
         "H_StainlessBolt": _build_pbr_mat(
             "H_StainlessBolt",
-            base_srgb=(0.74, 0.77, 0.81),
-            roughness=0.20,
+            base_srgb=(0.76, 0.79, 0.83),
+            roughness=0.19,
             metallic=0.96,
             bevel_r=0.016,
-            edge_wear=0.24,
-            grain_scale=30.0,
-            grain_bump=0.018,
+            edge_wear=0.18,
+            grain_scale=32.0,
+            grain_bump=0.016,
             aniso_stretch=(0.4, 3.2, 3.2),
+            rough_var=0.018,
         ),
         "H_PintleBronze": _build_pbr_mat(
             "H_PintleBronze",
@@ -1193,6 +1223,7 @@ def create_material_library() -> dict[str, bpy.types.Material]:
             bevel_r=0.018,
             grain_scale=34.0,
             grain_bump=0.018,
+            rough_var=0.022,
         ),
         "H_RubberGrip": _build_rubber_knurl_mat(),
         "H_MasterRed": _build_pbr_mat(
@@ -1203,21 +1234,23 @@ def create_material_library() -> dict[str, bpy.types.Material]:
             bevel_r=0.014,
             grain_scale=38.0,
             grain_bump=0.012,
+            rough_var=0.020,
         ),
 
         # --- SUITE 2: Barrels, Clamp, Flash Suppressor, Star-Rotor, Drive Gear, Safing Sector ---
         "B_BarrelSteel": _build_barrel_cluster_mat(),
         "B_ClampSteel": _build_pbr_mat(
             "B_ClampSteel",
-            base_srgb=(0.246, 0.258, 0.268),
-            roughness=0.34,
-            metallic=0.86,
+            base_srgb=(0.222, 0.236, 0.252),
+            roughness=0.31,
+            metallic=0.88,
             bevel_r=0.024,
-            edge_wear=0.56,
-            edge_srgb=(0.82, 0.84, 0.88),
+            edge_wear=0.30,
+            edge_srgb=(0.76, 0.79, 0.84),
             grain_scale=56.0,
-            grain_bump=0.036,
-            voronoi_grain=0.45,
+            grain_bump=0.028,
+            voronoi_grain=0.38,
+            rough_var=0.024,
         ),
         "B_FlashHeatTemper": _build_flash_suppressor_heat_mat(),
         "B_RotorCNC": _build_pbr_mat(
@@ -1226,11 +1259,12 @@ def create_material_library() -> dict[str, bpy.types.Material]:
             roughness=0.21,
             metallic=0.95,
             bevel_r=0.020,
-            edge_wear=0.30,
+            edge_wear=0.22,
             edge_srgb=(0.90, 0.92, 0.96),
             grain_scale=30.0,
-            grain_bump=0.022,
+            grain_bump=0.020,
             aniso_stretch=(0.35, 3.4, 3.4),
+            rough_var=0.020,
         ),
         "B_DriveGear": _build_pbr_mat(
             "B_DriveGear",
@@ -1238,11 +1272,12 @@ def create_material_library() -> dict[str, bpy.types.Material]:
             roughness=0.19,
             metallic=0.96,
             bevel_r=0.016,
-            edge_wear=0.26,
+            edge_wear=0.20,
             edge_srgb=(0.92, 0.94, 0.98),
             grain_scale=32.0,
-            grain_bump=0.020,
+            grain_bump=0.018,
             aniso_stretch=(3.2, 0.5, 0.5),
+            rough_var=0.018,
         ),
         "B_SafingPlate": _build_pbr_mat(
             "B_SafingPlate",
@@ -1252,6 +1287,7 @@ def create_material_library() -> dict[str, bpy.types.Material]:
             bevel_r=0.012,
             grain_scale=42.0,
             grain_bump=0.014,
+            rough_var=0.020,
         ),
         "B_SafingRed": _build_pbr_mat(
             "B_SafingRed",
@@ -1261,6 +1297,7 @@ def create_material_library() -> dict[str, bpy.types.Material]:
             bevel_r=0.012,
             grain_scale=36.0,
             grain_bump=0.012,
+            rough_var=0.020,
         ),
 
         # --- SUITE 3: 6 Rotary Bolts, Delinker Housing, Sprocket, Ammo Chute (7.62mm Belt), Ejection Chute ---
@@ -1270,66 +1307,85 @@ def create_material_library() -> dict[str, bpy.types.Material]:
             roughness=0.17,
             metallic=0.97,
             bevel_r=0.016,
-            edge_wear=0.20,
+            edge_wear=0.16,
             edge_srgb=(0.94, 0.96, 0.98),
             grain_scale=28.0,
-            grain_bump=0.016,
+            grain_bump=0.014,
             aniso_stretch=(0.35, 3.4, 3.4),
+            rough_var=0.016,
+        ),
+        "D_BrassSprocket": _build_pbr_mat(
+            "D_BrassSprocket",
+            base_srgb=(0.82, 0.64, 0.28),
+            roughness=0.22,
+            metallic=0.94,
+            bevel_r=0.016,
+            edge_wear=0.18,
+            edge_srgb=(0.94, 0.80, 0.46),
+            grain_scale=34.0,
+            grain_bump=0.016,
+            aniso_stretch=(0.40, 3.0, 3.0),
+            rough_var=0.020,
         ),
         "D_BoltExtractor": _build_pbr_mat(
             "D_BoltExtractor",
-            base_srgb=(0.240, 0.252, 0.264),
-            roughness=0.30,
-            metallic=0.88,
+            base_srgb=(0.218, 0.230, 0.244),
+            roughness=0.29,
+            metallic=0.89,
             bevel_r=0.014,
-            edge_wear=0.45,
+            edge_wear=0.26,
             grain_scale=46.0,
-            grain_bump=0.024,
+            grain_bump=0.020,
+            rough_var=0.022,
         ),
         "D_DelinkerSteel": _build_pbr_mat(
             "D_DelinkerSteel",
-            base_srgb=(0.246, 0.258, 0.270),
-            roughness=0.33,
-            metallic=0.85,
+            base_srgb=(0.214, 0.226, 0.240),
+            roughness=0.32,
+            metallic=0.86,
             bevel_r=0.026,
-            edge_wear=0.52,
-            edge_srgb=(0.82, 0.84, 0.88),
-            grain_scale=58.0,
-            grain_bump=0.036,
-            voronoi_grain=0.48,
+            edge_wear=0.28,
+            edge_srgb=(0.76, 0.79, 0.84),
+            grain_scale=60.0,
+            grain_bump=0.028,
+            voronoi_grain=0.40,
+            rough_var=0.024,
         ),
         "D_DelinkerFaceplate": _build_pbr_mat(
             "D_DelinkerFaceplate",
-            base_srgb=(0.232, 0.244, 0.256),
-            roughness=0.35,
+            base_srgb=(0.186, 0.198, 0.212),
+            roughness=0.33,
             metallic=0.84,
             bevel_r=0.018,
-            edge_wear=0.32,
-            grain_scale=54.0,
-            grain_bump=0.024,
+            edge_wear=0.16,
+            grain_scale=56.0,
+            grain_bump=0.020,
+            rough_var=0.020,
         ),
         "D_StainlessChute": _build_pbr_mat(
             "D_StainlessChute",
             base_srgb=(0.72, 0.75, 0.79),
-            roughness=0.23,
+            roughness=0.22,
             metallic=0.95,
             bevel_r=0.018,
-            edge_wear=0.26,
+            edge_wear=0.20,
             grain_scale=36.0,
-            grain_bump=0.022,
+            grain_bump=0.018,
             aniso_stretch=(0.45, 2.8, 2.8),
+            rough_var=0.020,
         ),
         "D_EjectionSteel": _build_pbr_mat(
             "D_EjectionSteel",
-            base_srgb=(0.248, 0.258, 0.265),
-            roughness=0.36,
-            metallic=0.85,
+            base_srgb=(0.216, 0.226, 0.238),
+            roughness=0.33,
+            metallic=0.86,
             bevel_r=0.024,
-            edge_wear=0.58,
-            edge_srgb=(0.82, 0.80, 0.68),
-            grain_scale=60.0,
-            grain_bump=0.040,
-            voronoi_grain=0.50,
+            edge_wear=0.28,
+            edge_srgb=(0.78, 0.74, 0.56),
+            grain_scale=62.0,
+            grain_bump=0.030,
+            voronoi_grain=0.42,
+            rough_var=0.024,
         ),
         "D_Brass762": _build_brass_762_mat(),
         "D_CopperFMJ": _build_pbr_mat(
@@ -1342,6 +1398,7 @@ def create_material_library() -> dict[str, bpy.types.Material]:
             edge_srgb=(0.95, 0.64, 0.38),
             grain_scale=34.0,
             grain_bump=0.014,
+            rough_var=0.018,
         ),
         "D_PrimerSilver": _build_pbr_mat(
             "D_PrimerSilver",
@@ -1350,18 +1407,20 @@ def create_material_library() -> dict[str, bpy.types.Material]:
             metallic=0.96,
             bevel_r=0.008,
             grain_bump=0.012,
+            rough_var=0.016,
         ),
         "D_M13LinkSteel": _build_pbr_mat(
             "D_M13LinkSteel",
-            base_srgb=(0.220, 0.230, 0.238),
-            roughness=0.39,
-            metallic=0.84,
+            base_srgb=(0.208, 0.218, 0.228),
+            roughness=0.37,
+            metallic=0.85,
             bevel_r=0.012,
-            edge_wear=0.46,
-            edge_srgb=(0.76, 0.78, 0.82),
+            edge_wear=0.26,
+            edge_srgb=(0.74, 0.76, 0.80),
             grain_scale=66.0,
-            grain_bump=0.040,
-            voronoi_grain=0.50,
+            grain_bump=0.032,
+            voronoi_grain=0.42,
+            rough_var=0.024,
         ),
     }
 
@@ -1432,6 +1491,7 @@ def mk_cyl(
     xform: list[tuple] | None = None,
     mat: bpy.types.Material | None = None,
     bevel: float = 0.0,
+    bevel_segs: int = 2,
 ) -> bpy.types.Object:
     bm = bmesh.new()
     bmesh.ops.create_cone(
@@ -1442,7 +1502,7 @@ def mk_cyl(
         cap_edges = [e for e in bm.edges if abs(e.verts[0].co.z - e.verts[1].co.z) < 1e-4]
         if cap_edges:
             bmesh.ops.bevel(
-                bm, geom=cap_edges, offset=bevel, segments=2,
+                bm, geom=cap_edges, offset=bevel, segments=bevel_segs,
                 profile=0.5, affect="EDGES", clamp_overlap=True,
             )
     pre = []
@@ -1554,7 +1614,7 @@ def bool_op(target: bpy.types.Object, cutter: bpy.types.Object, op: str = "DIFFE
             target.data.materials.pop(index=i)
 
 
-def join_parts(name: str, objs: list[bpy.types.Object], smooth_angle_deg: float = 38.0) -> bpy.types.Object:
+def join_parts(name: str, objs: list[bpy.types.Object], smooth_angle_deg: float = 38.0, lock_flat_walls: bool = True) -> bpy.types.Object:
     if len(objs) == 1:
         root = objs[0]
         root.name = name
@@ -1575,6 +1635,7 @@ def join_parts(name: str, objs: list[bpy.types.Object], smooth_angle_deg: float 
     bm = bmesh.new()
     bm.from_mesh(root.data)
     bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-5)
+    bmesh.ops.dissolve_degenerate(bm, dist=1e-5, edges=list(bm.edges))
     bmesh.ops.recalc_face_normals(bm, faces=bm.faces)
     for f in bm.faces:
         f.smooth = True
@@ -1591,10 +1652,44 @@ def join_parts(name: str, objs: list[bpy.types.Object], smooth_angle_deg: float 
     select_only([root], root)
     wn = root.modifiers.new(name="WeightedNormal", type="WEIGHTED_NORMAL")
     wn.mode = "FACE_AREA_WITH_ANGLE"
-    wn.weight = 50
+    wn.weight = 100
+    wn.thresh = 0.01
     wn.keep_sharp = True
     bpy.ops.object.modifier_apply(modifier=wn.name)
+
+    if lock_flat_walls:
+        mesh = root.data
+        custom_nrms = [None] * len(mesh.loops)
+        for poly in mesh.polygons:
+            fn = poly.normal
+            is_flat = poly.area >= 0.50 and (abs(fn.x) > 0.992 or abs(fn.y) > 0.992 or abs(fn.z) > 0.992)
+            for li in poly.loop_indices:
+                custom_nrms[li] = tuple(fn) if is_flat else tuple(mesh.loops[li].normal)
+        if any(v is not None for v in custom_nrms):
+            mesh.normals_split_custom_set(custom_nrms)
+            mesh.update()
     return root
+
+
+def _triangulate_keep_normals(all_objs: list[bpy.types.Object]):
+    for o in all_objs:
+        select_only([o], o)
+        mod = o.modifiers.new(name="Triangulate", type="TRIANGULATE")
+        mod.quad_method = "BEAUTY"
+        mod.ngon_method = "BEAUTY"
+        mod.keep_custom_normals = True
+        bpy.ops.object.modifier_apply(modifier=mod.name)
+
+
+def _mk_socket_cap_bolt_x(
+    name: str, r: float, length: float, x_pos: float, y_pos: float, z_pos: float,
+    mat_outer: bpy.types.Material, mat_inner: bpy.types.Material,
+) -> bpy.types.Object:
+    """Machined cylindrical Allen/hex socket cap bolt with recessed 6-sided wrench bore along X."""
+    outer = mk_cyl(f"{name}_o", r, r, length, axis="x", segs=24, xform=[("t", x_pos, y_pos, z_pos)], mat=mat_outer, bevel=0.025, bevel_segs=2)
+    bore = mk_cyl(f"{name}_i", r * 0.54, r * 0.54, length * 0.55, axis="x", segs=6, xform=[("t", x_pos + length * 0.30, y_pos, z_pos)], mat=mat_inner)
+    bool_op(outer, bore, "DIFFERENCE")
+    return outer
 
 
 # =============================================================================
@@ -1602,57 +1697,59 @@ def join_parts(name: str, objs: list[bpy.types.Object], smooth_angle_deg: float 
 # =============================================================================
 def build_m134_main_housing(mats) -> bpy.types.Object:
     parts = []
-    # Main heavy ribbed cylindrical housing shell (inner bore r=4.88, outer r=5.82, X in [-8.5, +8.5])
-    parts.append(mk_hollow_tube_x("mh_tube", 5.82, 4.88, -8.50, 8.50, segs=64, bevel=0.06, mat=mats["H_MainHousing"]))
+    # Main heavy ribbed cylindrical housing shell (80-seg smooth forged steel, inner bore r=4.88, outer r=5.82)
+    parts.append(mk_hollow_tube_x("mh_tube", 5.82, 4.88, -8.50, 8.50, segs=80, bevel=0.07, mat=mats["H_MainHousing"]))
     # Heavy bolted front & rear mounting flanges (r=6.62)
-    parts.append(mk_hollow_tube_x("mh_fl_f", 6.62, 4.88, 7.85, 9.10, segs=64, bevel=0.06, mat=mats["H_FlangeSteel"]))
-    parts.append(mk_hollow_tube_x("mh_fl_r", 6.62, 4.88, -9.10, -7.85, segs=64, bevel=0.06, mat=mats["H_FlangeSteel"]))
+    parts.append(mk_hollow_tube_x("mh_fl_f", 6.62, 4.88, 7.85, 9.10, segs=80, bevel=0.075, mat=mats["H_FlangeSteel"]))
+    parts.append(mk_hollow_tube_x("mh_fl_r", 6.62, 4.88, -9.10, -7.85, segs=80, bevel=0.075, mat=mats["H_FlangeSteel"]))
     # Subtle mid stiffening hoop bands recessed at r=5.96 (< 6.10 plate outer Z -> ZERO collision with nameplates!)
     for hx in (-4.2, 4.2):
-        parts.append(mk_hollow_tube_x(f"mh_ring_{hx}", 5.96, 5.76, hx - 0.38, hx + 0.38, segs=64, bevel=0.04, mat=mats["H_FlangeSteel"]))
+        parts.append(mk_hollow_tube_x(f"mh_ring_{hx}", 5.96, 5.76, hx - 0.38, hx + 0.38, segs=80, bevel=0.045, mat=mats["H_FlangeSteel"]))
 
-    # 8 external longitudinal stiffening ribs around housing circumference (at 22.5°+k*45°, clean of Z=±6.10 flat plates!)
+    # 8 external longitudinal stiffening ribs around housing circumference
     for i in range(8):
         ang = i * (math.pi / 4.0) + math.pi / 8.0
         parts.append(mk_box(
             f"mh_rib_{i}", 16.0, 0.68, 0.58,
             xform=[("t", 0.0, 5.86, 0.0), ("rx", ang)],
-            mat=mats["H_MainHousing"], bevel=0.06,
+            mat=mats["H_MainHousing"], bevel=0.085, bevel_segs=3,
         ))
 
     # Right (+Z) Full Nomenclature Hero Plate (X in [-6.5, +6.5], Y in [-1.3, +2.8], outer Z = +6.10)
-    parts.append(mk_box("mh_plate_r", 13.0, 4.10, 0.56, xform=[("t", 0.0, 0.75, 5.82)], mat=mats["H_HousingPlate"], bevel=0.04))
+    parts.append(mk_box("mh_plate_r", 13.0, 4.10, 0.56, xform=[("t", 0.0, 0.75, 5.82)], mat=mats["H_HousingPlate"], bevel=0.05, bevel_segs=3))
     for rx_p in (-6.15, 6.15):
         for ry_p in (-1.0, 2.5):
             parts.append(mk_cyl(
-                f"mh_pr_r_{rx_p}_{ry_p}", 0.14, 0.14, 0.18, axis="z", segs=16,
-                xform=[("t", rx_p, ry_p, 6.08)], mat=mats["H_StainlessBolt"], bevel=0.02,
+                f"mh_pr_r_{rx_p}_{ry_p}", 0.14, 0.14, 0.18, axis="z", segs=24,
+                xform=[("t", rx_p, ry_p, 6.08)], mat=mats["H_StainlessBolt"], bevel=0.025, bevel_segs=2,
             ))
 
-    # Forward-Left (-Z) Unobstructed Hero Plate strictly forward of `m134_delinker_housing` (local X in [+2.2, +7.6], Y in [-1.0, +2.6], outer Z = -6.10)
-    parts.append(mk_box("mh_plate_l", 5.40, 3.60, 0.56, xform=[("t", 4.90, 0.80, -5.82)], mat=mats["H_HousingPlate"], bevel=0.04))
+    # Forward-Left (-Z) Unobstructed Hero Plate strictly forward of `m134_delinker_housing`
+    parts.append(mk_box("mh_plate_l", 5.40, 3.60, 0.56, xform=[("t", 4.90, 0.80, -5.82)], mat=mats["H_HousingPlate"], bevel=0.05, bevel_segs=3))
     for rx_p in (2.52, 7.28):
         for ry_p in (-0.72, 2.32):
             parts.append(mk_cyl(
-                f"mh_pr_l_{rx_p}_{ry_p}", 0.13, 0.13, 0.18, axis="z", segs=16,
-                xform=[("t", rx_p, ry_p, -6.08)], mat=mats["H_StainlessBolt"], bevel=0.02,
+                f"mh_pr_l_{rx_p}_{ry_p}", 0.13, 0.13, 0.18, axis="z", segs=24,
+                xform=[("t", rx_p, ry_p, -6.08)], mat=mats["H_StainlessBolt"], bevel=0.025, bevel_segs=2,
             ))
 
     # Top motor mounting cradle saddles & forward safing-sector frame boss
-    parts.append(mk_box("mh_cradle_r", 3.0, 1.45, 4.8, xform=[("t", -5.8, 5.98, 0.0)], mat=mats["H_FlangeSteel"], bevel=0.06))
-    parts.append(mk_box("mh_cradle_f", 2.8, 1.45, 4.8, xform=[("t", 0.2, 5.98, 0.0)], mat=mats["H_FlangeSteel"], bevel=0.06))
-    parts.append(mk_box("mh_safe_boss", 5.0, 1.15, 4.8, xform=[("t", 5.9, 5.85, 0.0)], mat=mats["H_MainHousing"], bevel=0.06))
+    parts.append(mk_box("mh_cradle_r", 3.0, 1.45, 4.8, xform=[("t", -5.8, 5.98, 0.0)], mat=mats["H_FlangeSteel"], bevel=0.085, bevel_segs=3))
+    parts.append(mk_box("mh_cradle_f", 2.8, 1.45, 4.8, xform=[("t", 0.2, 5.98, 0.0)], mat=mats["H_FlangeSteel"], bevel=0.085, bevel_segs=3))
+    parts.append(mk_box("mh_safe_boss", 5.0, 1.15, 4.8, xform=[("t", 5.9, 5.85, 0.0)], mat=mats["H_MainHousing"], bevel=0.085, bevel_segs=3))
 
     # Bottom pintle mounting lug pad
-    parts.append(mk_box("mh_pintle_pad", 9.6, 1.30, 4.6, xform=[("t", 0.0, -5.90, 0.0)], mat=mats["H_FlangeSteel"], bevel=0.06))
+    parts.append(mk_box("mh_pintle_pad", 9.6, 1.30, 4.6, xform=[("t", 0.0, -5.90, 0.0)], mat=mats["H_FlangeSteel"], bevel=0.085, bevel_segs=3))
 
-    # 8 front & 8 rear stainless hex flange bolts
+    # 8 front & 8 rear stainless hex flange bolts w/ machined washers
     for i in range(8):
         ang = i * (math.pi / 4.0)
         by = 6.22 * math.cos(ang)
         bz = 6.22 * math.sin(ang)
-        parts.append(mk_cyl(f"mh_bf_{i}", 0.31, 0.31, 0.42, axis="x", segs=6, xform=[("t", 9.09, by, bz)], mat=mats["H_StainlessBolt"], bevel=0.03))
-        parts.append(mk_cyl(f"mh_br_{i}", 0.31, 0.31, 0.42, axis="x", segs=6, xform=[("t", -9.09, by, bz)], mat=mats["H_StainlessBolt"], bevel=0.03))
+        parts.append(mk_cyl(f"mh_bf_{i}", 0.31, 0.31, 0.42, axis="x", segs=6, xform=[("t", 9.09, by, bz)], mat=mats["H_StainlessBolt"], bevel=0.035, bevel_segs=2))
+        parts.append(mk_cyl(f"mh_wf_{i}", 0.36, 0.36, 0.08, axis="x", segs=24, xform=[("t", 9.10, by, bz)], mat=mats["H_FlangeSteel"], bevel=0.015))
+        parts.append(mk_cyl(f"mh_br_{i}", 0.31, 0.31, 0.42, axis="x", segs=6, xform=[("t", -9.09, by, bz)], mat=mats["H_StainlessBolt"], bevel=0.035, bevel_segs=2))
+        parts.append(mk_cyl(f"mh_wr_{i}", 0.36, 0.36, 0.08, axis="x", segs=24, xform=[("t", -9.10, by, bz)], mat=mats["H_FlangeSteel"], bevel=0.015))
 
     return join_parts("m134_main_housing", parts)
 
@@ -1710,8 +1807,8 @@ def build_m134_drive_motor(mats) -> bpy.types.Object:
     radial cooling fins, brushed aluminum dual side nameplates & RECESSED (-Z <= -0.18)
     WARM ENAMELED COPPER ARMATURE WINDINGS + BRASS COMMUTATOR glowing cleanly in CT cutaway!"""
     parts = []
-    # Main hollow cylindrical stator housing (r_out=3.05, r_in=2.42, open interior cavity!)
-    stator = mk_hollow_tube_x("dm_stator", 3.05, 2.42, -5.85, 5.65, segs=48, bevel=0.05, mat=mats["H_MotorEnamel"])
+    # Main hollow cylindrical stator housing (64-seg smooth aerospace casing)
+    stator = mk_hollow_tube_x("dm_stator", 3.05, 2.42, -5.85, 5.65, segs=64, bevel=0.055, mat=mats["H_MotorEnamel"])
     for ang_deg in (42, 138, -42, -138):
         cutter = mk_box(
             "dm_vent_c", 7.2, 0.72, 1.4,
@@ -1720,16 +1817,15 @@ def build_m134_drive_motor(mats) -> bpy.types.Object:
         bool_op(stator, cutter, "DIFFERENCE")
     parts.append(stator)
 
-    # Thin hollow front & rear aerospace end-bells (0.60 cm wall so cutaway interior stays wide open!)
-    parts.append(mk_hollow_tube_x("dm_bell_f", 3.12, 0.85, 5.35, 6.18, segs=48, bevel=0.07, mat=mats["H_FlangeSteel"]))
-    parts.append(mk_hollow_tube_x("dm_bell_r", 3.12, 0.85, -6.20, -5.35, segs=48, bevel=0.07, mat=mats["H_FlangeSteel"]))
-    # Front central bearing nose cap (recessed behind Z <= -0.18 OR slim center boss at X=+5.8)
-    parts.append(mk_cyl("dm_nose_cap", 0.88, 0.88, 0.55, axis="x", segs=28, xform=[("t", 5.90, 0.0, 0.0)], mat=mats["H_FlangeSteel"], bevel=0.04))
+    # Thin hollow front & rear aerospace end-bells (64-seg)
+    parts.append(mk_hollow_tube_x("dm_bell_f", 3.12, 0.85, 5.35, 6.18, segs=64, bevel=0.08, mat=mats["H_FlangeSteel"]))
+    parts.append(mk_hollow_tube_x("dm_bell_r", 3.12, 0.85, -6.20, -5.35, segs=64, bevel=0.08, mat=mats["H_FlangeSteel"]))
+    parts.append(mk_cyl("dm_nose_cap", 0.88, 0.88, 0.55, axis="x", segs=40, xform=[("t", 5.90, 0.0, 0.0)], mat=mats["H_FlangeSteel"], bevel=0.05, bevel_segs=3))
 
-    # 10 circumferential radial cooling fins
+    # 10 circumferential radial cooling fins (64-seg with crisp beveled relief)
     for i in range(10):
         fx = -4.55 + i * 0.98
-        parts.append(mk_hollow_tube_x(f"dm_fin_{i}", 3.22, 2.94, fx - 0.15, fx + 0.15, segs=48, bevel=0.03, mat=mats["H_MotorEnamel"]))
+        parts.append(mk_hollow_tube_x(f"dm_fin_{i}", 3.22, 2.94, fx - 0.15, fx + 0.15, segs=64, bevel=0.04, mat=mats["H_MotorEnamel"]))
 
     # INTERNAL STAR FEATURE (STRICTLY RECESSED AT Z <= -0.20 so Z=0 StencilSectionCap NEVER paints grey hatch over it!!):
     # 1. Laminated dark iron armature core half-drum in -Z cavity (Z in [-1.55, -0.22])
@@ -1781,31 +1877,28 @@ def build_m134_drive_motor(mats) -> bpy.types.Object:
 def build_m134_gear_housing(mats) -> bpy.types.Object:
     """Truly hollow pear-shaped rear reduction gearbox (~0.55 cm wall thickness) wrapping
     `m134_drive_gear`, `m134_clutch_spring`, AND the 28V motor pinion with ZERO cutaway hatch clipping!"""
-    # Build unified outer pear silhouette first, then subtract unified interior gear+spring+pinion chamber!
-    shell = mk_cyl("gh_lo", 6.30, 6.30, 6.40, axis="x", segs=56, xform=[("t", 0.0, -2.20, 0.0)], mat=mats["H_MainHousing"], bevel=0.08)
-    tower = mk_box("gh_tower", 5.95, 8.80, 7.60, xform=[("t", 0.0, 2.30, 0.0)], mat=mats["H_MainHousing"], bevel=0.14)
-    top_cap = mk_cyl("gh_top_cap", 3.35, 3.35, 6.10, axis="x", segs=48, xform=[("t", 0.0, 6.90, 0.0)], mat=mats["H_FlangeSteel"], bevel=0.08)
-    fl_r = mk_box("gh_fl_r", 1.10, 9.20, 8.40, xform=[("t", -2.80, -1.60, 0.0)], mat=mats["H_FlangeSteel"], bevel=0.08)
-    fl_f = mk_box("gh_fl_f", 1.00, 12.20, 11.40, xform=[("t", 2.70, -0.50, 0.0)], mat=mats["H_FlangeSteel"], bevel=0.08)
+    shell = mk_cyl("gh_lo", 6.30, 6.30, 6.40, axis="x", segs=72, xform=[("t", 0.0, -2.20, 0.0)], mat=mats["H_MainHousing"], bevel=0.11, bevel_segs=3)
+    tower = mk_box("gh_tower", 5.95, 8.80, 7.60, xform=[("t", 0.0, 2.30, 0.0)], mat=mats["H_MainHousing"], bevel=0.22, bevel_segs=4)
+    top_cap = mk_cyl("gh_top_cap", 3.35, 3.35, 6.10, axis="x", segs=64, xform=[("t", 0.0, 6.90, 0.0)], mat=mats["H_FlangeSteel"], bevel=0.11, bevel_segs=3)
+    fl_r = mk_box("gh_fl_r", 1.10, 9.20, 8.40, xform=[("t", -2.80, -1.60, 0.0)], mat=mats["H_FlangeSteel"], bevel=0.12, bevel_segs=3)
+    fl_f = mk_box("gh_fl_f", 1.00, 12.20, 11.40, xform=[("t", 2.70, -0.50, 0.0)], mat=mats["H_FlangeSteel"], bevel=0.12, bevel_segs=3)
 
     for adder in (tower, top_cap, fl_r, fl_f):
         bool_op(shell, adder, "UNION")
 
-    # Hollow out entire interior gear, clutch-spring & motor-pinion cavity leaving crisp ~0.58 cm rear/outer cast wall!
-    cav_gear = mk_cyl("gh_cav_g", 5.64, 5.64, 5.85, axis="x", segs=48, xform=[("t", 0.85, -2.20, 0.0)], mat=mats["H_MainHousing"])
+    cav_gear = mk_cyl("gh_cav_g", 5.64, 5.64, 5.85, axis="x", segs=56, xform=[("t", 0.85, -2.20, 0.0)], mat=mats["H_MainHousing"])
     cav_mid = mk_box("gh_cav_m", 5.55, 9.50, 5.80, xform=[("t", 0.72, 2.35, 0.0)], mat=mats["H_MainHousing"])
-    cav_top = mk_cyl("gh_cav_t", 2.70, 2.70, 5.85, axis="x", segs=40, xform=[("t", 0.85, 6.90, 0.0)], mat=mats["H_MainHousing"])
+    cav_top = mk_cyl("gh_cav_t", 2.70, 2.70, 5.85, axis="x", segs=48, xform=[("t", 0.85, 6.90, 0.0)], mat=mats["H_MainHousing"])
     for cav in (cav_gear, cav_mid, cav_top):
         bool_op(shell, cav, "DIFFERENCE")
 
     parts = [shell]
-    # 8 perimeter stainless socket bolts around rear gearbox bulkhead
     for i in range(8):
         ang = i * (math.pi / 4.0)
         parts.append(mk_cyl(
             f"gh_b_{i}", 0.28, 0.28, 0.35, axis="x", segs=6,
             xform=[("t", -3.22, -2.20 + 5.75 * math.cos(ang), 5.75 * math.sin(ang))],
-            mat=mats["H_StainlessBolt"], bevel=0.02,
+            mat=mats["H_StainlessBolt"], bevel=0.025, bevel_segs=2,
         ))
     return join_parts("m134_gear_housing", parts)
 
@@ -1813,49 +1906,65 @@ def build_m134_gear_housing(mats) -> bpy.types.Object:
 def build_m134_spade_grip(mats) -> bpy.types.Object:
     parts = []
     # Heavy rear buffer mounting plate
-    parts.append(mk_box("sg_plate", 1.40, 7.20, 7.80, xform=[("t", 3.10, 0.0, 0.0)], mat=mats["H_FlangeSteel"], bevel=0.08))
+    parts.append(mk_box("sg_plate", 1.40, 7.20, 7.80, xform=[("t", 3.10, 0.0, 0.0)], mat=mats["H_FlangeSteel"], bevel=0.14, bevel_segs=3))
 
-    # Twin horizontal yokes, vertical knurled rubber hand grips, caps & twin butterfly fire paddles
+    # Ergonomic lathed vertical rubber spade handgrip profile (along local X -> rotated along Y!)
+    grip_prof = [
+        (0.00, -4.60), (0.98, -4.60), (1.10, -4.20),
+        (1.06, -3.40), (1.13, -2.60), (1.07, -1.75),
+        (1.16, -0.80), (1.19,  0.10), (1.15,  1.05),
+        (1.08,  2.10), (1.13,  3.10), (1.08,  4.15),
+        (0.96,  4.60), (0.00,  4.60),
+    ]
+
+    # Twin chamfered horizontal yokes, ergonomic lathed rubber hand grips, caps & twin butterfly fire paddles
     for s in (-1.0, 1.0):
-        parts.append(mk_box(f"sg_arm_t_{s}", 5.60, 1.35, 1.45, xform=[("t", 0.20, 3.20, s * 3.80)], mat=mats["H_MainHousing"], bevel=0.08))
-        parts.append(mk_box(f"sg_arm_b_{s}", 5.20, 1.35, 1.45, xform=[("t", 0.30, -4.10, s * 3.80)], mat=mats["H_MainHousing"], bevel=0.08))
-        parts.append(mk_cyl(f"sg_grip_{s}", 1.08, 1.12, 9.20, axis="y", segs=28, xform=[("t", -2.30, -0.50, s * 6.20)], mat=mats["H_RubberGrip"], bevel=0.08))
-        parts.append(mk_cyl(f"sg_cap_t_{s}", 1.20, 1.20, 0.65, axis="y", segs=24, xform=[("t", -2.30, 4.15, s * 6.20)], mat=mats["H_FlangeSteel"], bevel=0.05))
-        parts.append(mk_cyl(f"sg_cap_b_{s}", 1.20, 1.20, 0.65, axis="y", segs=24, xform=[("t", -2.30, -5.15, s * 6.20)], mat=mats["H_FlangeSteel"], bevel=0.05))
+        parts.append(mk_box(f"sg_arm_t_{s}", 5.60, 1.35, 1.45, xform=[("t", 0.20, 3.20, s * 3.80)], mat=mats["H_MainHousing"], bevel=0.16, bevel_segs=3))
+        parts.append(mk_box(f"sg_arm_b_{s}", 5.20, 1.35, 1.45, xform=[("t", 0.30, -4.10, s * 3.80)], mat=mats["H_MainHousing"], bevel=0.16, bevel_segs=3))
+        parts.append(mk_lathe_x(f"sg_grip_{s}", grip_prof, segs=48, xform=[("rz", math.pi * 0.5), ("t", -2.30, -0.50, s * 6.20)], mat=mats["H_RubberGrip"]))
+        parts.append(mk_cyl(f"sg_cap_t_{s}", 1.18, 1.22, 0.65, axis="y", segs=44, xform=[("t", -2.30, 4.15, s * 6.20)], mat=mats["H_FlangeSteel"], bevel=0.085, bevel_segs=3))
+        parts.append(mk_cyl(f"sg_cap_b_{s}", 1.22, 1.18, 0.65, axis="y", segs=44, xform=[("t", -2.30, -5.15, s * 6.20)], mat=mats["H_FlangeSteel"], bevel=0.085, bevel_segs=3))
         # Twin angled brushed-stainless thumb fire butterfly paddles
-        parts.append(mk_box(f"sg_pad_{s}", 1.15, 2.20, 2.45, xform=[("t", -2.90, 2.10, s * 3.15)], mat=mats["H_StainlessBolt"], bevel=0.06))
+        parts.append(mk_box(f"sg_pad_{s}", 1.15, 2.20, 2.45, xform=[("t", -2.90, 2.10, s * 3.15)], mat=mats["H_StainlessBolt"], bevel=0.10, bevel_segs=3))
 
     # Central trigger control box & top thumb-safety hoop
-    parts.append(mk_box("sg_box", 3.40, 3.80, 4.60, xform=[("t", -1.60, 2.30, 0.0)], mat=mats["H_MainHousing"], bevel=0.09))
-    parts.append(mk_box("sg_guard", 1.40, 0.52, 6.20, xform=[("t", -3.50, 4.20, 0.0)], mat=mats["H_FlangeSteel"], bevel=0.04))
+    parts.append(mk_box("sg_box", 3.40, 3.80, 4.60, xform=[("t", -1.60, 2.30, 0.0)], mat=mats["H_MainHousing"], bevel=0.16, bevel_segs=3))
+    parts.append(mk_box("sg_guard", 1.40, 0.52, 6.20, xform=[("t", -3.50, 4.20, 0.0)], mat=mats["H_FlangeSteel"], bevel=0.075, bevel_segs=3))
 
     # Firewalled Crimson-Red Master Arm Toggle Switch & Flip Guard!
-    parts.append(mk_box("sg_arm_guard", 1.05, 1.50, 1.10, xform=[("t", -3.55, 2.60, 0.0)], mat=mats["H_MasterRed"], bevel=0.06))
-    parts.append(mk_cyl("sg_arm_tog", 0.28, 0.34, 1.10, axis="x", segs=18, xform=[("t", -3.85, 2.75, 0.0)], mat=mats["H_MasterRed"], bevel=0.03))
+    parts.append(mk_box("sg_arm_guard", 1.05, 1.50, 1.10, xform=[("t", -3.55, 2.60, 0.0)], mat=mats["H_MasterRed"], bevel=0.095, bevel_segs=3))
+    parts.append(mk_cyl("sg_arm_tog", 0.28, 0.34, 1.10, axis="x", segs=28, xform=[("t", -3.85, 2.75, 0.0)], mat=mats["H_MasterRed"], bevel=0.04, bevel_segs=3))
     return join_parts("m134_spade_grip", parts)
 
 
 def build_m134_carry_handle(mats) -> bpy.types.Object:
     parts = []
-    parts.append(mk_box("ch_base", 2.20, 2.40, 7.20, xform=[("t", -0.50, -1.30, 0.0)], mat=mats["H_FlangeSteel"], bevel=0.08))
+    parts.append(mk_box("ch_base", 2.20, 2.40, 7.20, xform=[("t", -0.50, -1.30, 0.0)], mat=mats["H_FlangeSteel"], bevel=0.14, bevel_segs=3))
     for s in (-1.0, 1.0):
         parts.append(mk_box(
             f"ch_sr_{s}", 1.40, 6.60, 0.85,
             xform=[("rz", -0.26), ("t", 0.50, 2.20, s * 3.20)],
-            mat=mats["H_MainHousing"], bevel=0.06,
+            mat=mats["H_MainHousing"], bevel=0.12, bevel_segs=3,
         ))
         parts.append(mk_box(
             f"ch_sf_{s}", 1.30, 5.20, 0.85,
             xform=[("rz", 0.24), ("t", 9.60, 2.60, s * 3.20)],
-            mat=mats["H_MainHousing"], bevel=0.06,
+            mat=mats["H_MainHousing"], bevel=0.12, bevel_segs=3,
         ))
         parts.append(mk_box(
             f"ch_rail_{s}", 9.80, 0.95, 0.85,
             xform=[("t", 5.00, 5.30, s * 3.20)],
-            mat=mats["H_MainHousing"], bevel=0.06,
+            mat=mats["H_MainHousing"], bevel=0.12, bevel_segs=3,
         ))
-    parts.append(mk_box("ch_fbrace", 1.80, 1.10, 7.20, xform=[("t", 10.20, 0.40, 0.0)], mat=mats["H_FlangeSteel"], bevel=0.06))
-    parts.append(mk_cyl("ch_grip", 1.05, 1.05, 8.20, axis="z", segs=28, xform=[("t", 5.20, 5.55, 0.0)], mat=mats["H_RubberGrip"], bevel=0.08))
+        parts.append(mk_cyl(f"ch_end_{s}", 1.12, 1.12, 0.45, axis="z", segs=40, xform=[("t", 5.20, 5.55, s * 3.88)], mat=mats["H_FlangeSteel"], bevel=0.075, bevel_segs=3))
+    parts.append(mk_box("ch_fbrace", 1.80, 1.10, 7.20, xform=[("t", 10.20, 0.40, 0.0)], mat=mats["H_FlangeSteel"], bevel=0.11, bevel_segs=3))
+    # Contoured ergonomic lathed chainsaw handle grip (central palm swell + end flares)
+    ch_prof = [
+        (0.00, -3.70), (1.08, -3.70), (1.08, -3.35), (0.96, -2.95),
+        (1.06, -1.70), (1.12,  0.00), (1.06,  1.70),
+        (0.96,  2.95), (1.08,  3.35), (1.08,  3.70), (0.00,  3.70),
+    ]
+    parts.append(mk_lathe_x("ch_grip", ch_prof, segs=48, xform=[("ry", -math.pi * 0.5), ("t", 5.20, 5.55, 0.0)], mat=mats["H_RubberGrip"]))
     return join_parts("m134_carry_handle", parts)
 
 
@@ -1877,9 +1986,8 @@ def build_m134_mount_pintle(mats) -> bpy.types.Object:
 # PART BUILDERS — SUITE 2 (6 Parts: Barrels, Clamp, Flash Supp, Star-Rotor, Gear, Safing)
 # =============================================================================
 def build_m134_barrel_cluster(mats) -> bpy.types.Object:
-    """6 x 22-inch heavy fluted 7.62x51mm NATO rotary barrels with stepped chambers & hollow bores."""
+    """6 x 22-inch cold-hammer-forged 7.62x51mm NATO rotary barrels (60-seg smooth profiles, stepped chambers & hollow bores)."""
     parts = []
-    # Stepped hollow barrel profile along X in [-4.6, +48.4]
     prof_r_x = [
         (0.39, -4.60),
         (1.02, -4.60),
@@ -1900,13 +2008,12 @@ def build_m134_barrel_cluster(mats) -> bpy.types.Object:
         by = PITCH_RADIUS * math.cos(th)
         bz = PITCH_RADIUS * math.sin(th)
         parts.append(mk_lathe_x(
-            f"bc_b_{i}", prof_r_x, segs=32,
+            f"bc_b_{i}", prof_r_x, segs=60,
             xform=[("t", 0.0, by, bz)],
             mat=mats["B_BarrelSteel"],
         ))
-        # Subtle raised breech locking lug ring per barrel
         parts.append(mk_hollow_tube_x(
-            f"bc_lug_{i}", 1.03, 0.96, -4.40, -3.50, segs=28, bevel=0.02,
+            f"bc_lug_{i}", 1.03, 0.96, -4.40, -3.50, segs=44, bevel=0.025,
             xform=[("t", 0.0, by, bz)], mat=mats["B_BarrelSteel"],
         ))
     return join_parts("m134_barrel_cluster", parts)
@@ -1915,109 +2022,104 @@ def build_m134_barrel_cluster(mats) -> bpy.types.Object:
 def build_m134_barrel_clamp(mats) -> bpy.types.Object:
     parts = []
     for cx in (-6.40, 9.40):
-        disc = mk_cyl(f"bcl_d_{cx}", 4.18, 4.18, 2.00, axis="x", segs=56, xform=[("t", cx, 0.0, 0.0)], mat=mats["B_ClampSteel"], bevel=0.07)
+        disc = mk_cyl(f"bcl_d_{cx}", 4.18, 4.18, 2.00, axis="x", segs=72, xform=[("t", cx, 0.0, 0.0)], mat=mats["B_ClampSteel"], bevel=0.085, bevel_segs=3)
         for i in range(6):
             th = i * (math.pi / 3.0)
             by = PITCH_RADIUS * math.cos(th)
             bz = PITCH_RADIUS * math.sin(th)
-            bool_op(disc, mk_cyl("c_b", 0.87, 0.87, 2.6, axis="x", segs=24, xform=[("t", cx, by, bz)]), "DIFFERENCE")
+            bool_op(disc, mk_cyl("c_b", 0.87, 0.87, 2.6, axis="x", segs=36, xform=[("t", cx, by, bz)]), "DIFFERENCE")
             th_m = th + math.pi / 6.0
-            bool_op(disc, mk_cyl("c_l", 0.52, 0.52, 2.6, axis="x", segs=20, xform=[("t", cx, 3.35 * math.cos(th_m), 3.35 * math.sin(th_m))]), "DIFFERENCE")
+            bool_op(disc, mk_cyl("c_l", 0.52, 0.52, 2.6, axis="x", segs=28, xform=[("t", cx, 3.35 * math.cos(th_m), 3.35 * math.sin(th_m))]), "DIFFERENCE")
         parts.append(disc)
-        # 6 hex clamping bolts
+        # 6 precision recessed hex socket cap clamping bolts
         for i in range(6):
             th = i * (math.pi / 3.0) + math.pi / 6.0
-            parts.append(mk_cyl(
-                f"bcl_hb_{cx}_{i}", 0.26, 0.26, 2.34, axis="x", segs=6,
-                xform=[("t", cx, 2.05 * math.cos(th), 2.05 * math.sin(th))],
-                mat=mats["B_DriveGear"], bevel=0.02,
+            parts.append(_mk_socket_cap_bolt_x(
+                f"bcl_hb_{cx}_{i}", 0.26, 2.34,
+                cx, 2.05 * math.cos(th), 2.05 * math.sin(th),
+                mats["B_DriveGear"], mats["B_ClampSteel"],
             ))
-    parts.append(mk_hollow_tube_x("bcl_spine", 0.95, 0.55, -6.40, 9.40, segs=32, bevel=0.04, mat=mats["B_ClampSteel"]))
+    parts.append(mk_hollow_tube_x("bcl_spine", 0.95, 0.55, -6.40, 9.40, segs=48, bevel=0.05, mat=mats["B_ClampSteel"]))
     return join_parts("m134_barrel_clamp", parts)
 
 
 def build_m134_flash_suppressor(mats) -> bpy.types.Object:
     parts = []
-    rear = mk_cyl("fs_rear", 4.28, 4.22, 2.00, axis="x", segs=56, xform=[("t", -1.40, 0.0, 0.0)], mat=mats["B_FlashHeatTemper"], bevel=0.06)
+    rear = mk_cyl("fs_rear", 4.28, 4.22, 2.00, axis="x", segs=72, xform=[("t", -1.40, 0.0, 0.0)], mat=mats["B_FlashHeatTemper"], bevel=0.075, bevel_segs=3)
     for i in range(6):
         th = i * (math.pi / 3.0)
-        bool_op(rear, mk_cyl("fs_c", 0.84, 0.84, 2.6, axis="x", segs=24, xform=[("t", -1.40, PITCH_RADIUS * math.cos(th), PITCH_RADIUS * math.sin(th))]), "DIFFERENCE")
+        bool_op(rear, mk_cyl("fs_c", 0.84, 0.84, 2.6, axis="x", segs=36, xform=[("t", -1.40, PITCH_RADIUS * math.cos(th), PITCH_RADIUS * math.sin(th))]), "DIFFERENCE")
     parts.append(rear)
-    parts.append(mk_hollow_tube_x("fs_front", 4.32, 3.65, 2.00, 3.00, segs=56, bevel=0.05, mat=mats["B_FlashHeatTemper"]))
+    parts.append(mk_hollow_tube_x("fs_front", 4.32, 3.65, 2.00, 3.00, segs=72, bevel=0.06, mat=mats["B_FlashHeatTemper"]))
 
     for i in range(6):
         th = i * (math.pi / 3.0)
         by = PITCH_RADIUS * math.cos(th)
         bz = PITCH_RADIUS * math.sin(th)
         parts.append(mk_hollow_tube_x(
-            f"fs_cone_{i}", 1.06, 0.66, -0.50, 2.95, segs=28, bevel=0.03,
+            f"fs_cone_{i}", 1.06, 0.66, -0.50, 2.95, segs=44, bevel=0.035,
             xform=[("t", 0.0, by, bz)], mat=mats["B_FlashHeatTemper"],
         ))
         th_s = th + math.pi / 6.0
         parts.append(mk_box(
             f"fs_strut_{i}", 4.80, 0.42, 0.56,
             xform=[("t", 0.30, 3.96, 0.0), ("rx", th_s)],
-            mat=mats["B_FlashHeatTemper"], bevel=0.04,
+            mat=mats["B_FlashHeatTemper"], bevel=0.055, bevel_segs=3,
         ))
-    parts.append(mk_cyl("fs_hub", 1.12, 1.12, 5.20, axis="x", segs=28, xform=[("t", 0.25, 0.0, 0.0)], mat=mats["B_FlashHeatTemper"], bevel=0.05))
+    parts.append(mk_cyl("fs_hub", 1.12, 1.12, 5.20, axis="x", segs=40, xform=[("t", 0.25, 0.0, 0.0)], mat=mats["B_FlashHeatTemper"], bevel=0.065, bevel_segs=3))
     return join_parts("m134_flash_suppressor", parts)
 
 
 def build_m134_rotor_assembly(mats) -> bpy.types.Object:
     parts = []
-    # Rear splined drive shaft
-    parts.append(mk_cyl("rt_shaft", 1.32, 1.32, 4.20, axis="x", segs=36, xform=[("t", -9.70, 0.0, 0.0)], mat=mats["B_DriveGear"], bevel=0.04))
+    parts.append(mk_cyl("rt_shaft", 1.32, 1.32, 4.20, axis="x", segs=48, xform=[("t", -9.70, 0.0, 0.0)], mat=mats["B_DriveGear"], bevel=0.05, bevel_segs=3))
     for i in range(8):
         parts.append(mk_box(
             f"rt_spl_{i}", 3.40, 0.28, 0.26,
             xform=[("t", -9.80, 1.36, 0.0), ("rx", i * math.pi / 4.0)],
-            mat=mats["B_DriveGear"], bevel=0.02,
+            mat=mats["B_DriveGear"], bevel=0.025, bevel_segs=2,
         ))
-    # Central CNC 6-flute star-rotor core & 6 T-flange bolt guide rails
-    parts.append(mk_cyl("rt_core", 1.72, 1.72, 10.20, axis="x", segs=44, xform=[("t", -2.80, 0.0, 0.0)], mat=mats["B_RotorCNC"], bevel=0.05))
+    parts.append(mk_cyl("rt_core", 1.72, 1.72, 10.20, axis="x", segs=56, xform=[("t", -2.80, 0.0, 0.0)], mat=mats["B_RotorCNC"], bevel=0.06, bevel_segs=3))
     for i in range(6):
         th = (i + 0.5) * (math.pi / 3.0)
         parts.append(mk_box(
             f"rt_fin_{i}", 9.80, 1.88, 0.56,
             xform=[("t", -2.80, 2.58, 0.0), ("rx", th)],
-            mat=mats["B_RotorCNC"], bevel=0.04,
+            mat=mats["B_RotorCNC"], bevel=0.055, bevel_segs=3,
         ))
         parts.append(mk_box(
             f"rt_cap_{i}", 9.60, 0.36, 1.05,
             xform=[("t", -2.80, 3.42, 0.0), ("rx", th)],
-            mat=mats["B_DriveGear"], bevel=0.03,
+            mat=mats["B_DriveGear"], bevel=0.04, bevel_segs=2,
         ))
 
-    # Front circular rotor head with 6 barrel lock sockets
-    head = mk_cyl("rt_head", 3.92, 3.92, 7.00, axis="x", segs=56, xform=[("t", 5.80, 0.0, 0.0)], mat=mats["B_RotorCNC"], bevel=0.07)
+    head = mk_cyl("rt_head", 3.92, 3.92, 7.00, axis="x", segs=72, xform=[("t", 5.80, 0.0, 0.0)], mat=mats["B_RotorCNC"], bevel=0.085, bevel_segs=3)
     for i in range(6):
         th = i * (math.pi / 3.0)
-        bool_op(head, mk_cyl("rt_sock", 1.05, 1.05, 7.6, axis="x", segs=24, xform=[("t", 5.80, PITCH_RADIUS * math.cos(th), PITCH_RADIUS * math.sin(th))]), "DIFFERENCE")
+        bool_op(head, mk_cyl("rt_sock", 1.05, 1.05, 7.6, axis="x", segs=36, xform=[("t", 5.80, PITCH_RADIUS * math.cos(th), PITCH_RADIUS * math.sin(th))]), "DIFFERENCE")
     parts.append(head)
-    parts.append(mk_hollow_tube_x("rt_brg", 4.16, 3.85, 7.40, 9.30, segs=56, bevel=0.04, mat=mats["B_DriveGear"]))
+    parts.append(mk_hollow_tube_x("rt_brg", 4.16, 3.85, 7.40, 9.30, segs=72, bevel=0.05, mat=mats["B_DriveGear"]))
     return join_parts("m134_rotor_assembly", parts)
 
 
 def build_m134_drive_gear(mats) -> bpy.types.Object:
     parts = []
-    parts.append(mk_hollow_tube_x("dg_hub", 2.10, 1.32, -1.15, 1.15, segs=32, bevel=0.04, mat=mats["B_DriveGear"]))
-    parts.append(mk_hollow_tube_x("dg_web", 4.92, 2.05, -0.68, 0.68, segs=44, bevel=0.03, mat=mats["B_RotorCNC"]))
-    parts.append(mk_hollow_tube_x("dg_rim", 4.98, 4.15, -1.05, 1.05, segs=44, bevel=0.04, mat=mats["B_DriveGear"]))
-    # 6 lightening holes through gear web (simulated by crisp radial spokes/bosses!)
+    parts.append(mk_hollow_tube_x("dg_hub", 2.10, 1.32, -1.15, 1.15, segs=44, bevel=0.045, mat=mats["B_DriveGear"]))
+    parts.append(mk_hollow_tube_x("dg_web", 4.92, 2.05, -0.68, 0.68, segs=60, bevel=0.035, mat=mats["B_RotorCNC"]))
+    parts.append(mk_hollow_tube_x("dg_rim", 4.98, 4.15, -1.05, 1.05, segs=60, bevel=0.045, mat=mats["B_DriveGear"]))
     for i in range(6):
         th = i * (math.pi / 3.0)
         parts.append(mk_box(
             f"dg_sp_{i}", 1.65, 2.20, 0.45,
             xform=[("t", 0.0, 3.10, 0.0), ("rx", th)],
-            mat=mats["B_DriveGear"], bevel=0.04,
+            mat=mats["B_DriveGear"], bevel=0.055, bevel_segs=3,
         ))
-    # 28 precision-hobbed involute spur teeth
     for i in range(28):
         th = i * (2.0 * math.pi / 28.0)
         parts.append(mk_box(
             f"dg_t_{i}", 1.96, 0.62, 0.46,
             xform=[("t", 0.0, 5.12, 0.0), ("rx", th)],
-            mat=mats["B_DriveGear"], bevel=0.03,
+            mat=mats["B_DriveGear"], bevel=0.035, bevel_segs=2,
         ))
     return join_parts("m134_drive_gear", parts)
 
@@ -2044,52 +2146,52 @@ def build_m134_safing_sector(mats) -> bpy.types.Object:
 def build_m134_rotary_bolt(part_name: str, mats) -> bpy.types.Object:
     parts = []
     # Main brushed hard-chrome T-rail bolt body (local X in [-2.75, +1.25])
-    parts.append(mk_box("b_rail", 3.90, 1.38, 1.24, xform=[("t", -0.80, 0.0, 0.0)], mat=mats["D_ChromeBolt"], bevel=0.06))
-    parts.append(mk_cyl("b_cyl", 0.74, 0.74, 3.80, axis="x", segs=28, xform=[("t", -0.85, 0.0, 0.0)], mat=mats["D_ChromeBolt"], bevel=0.04))
+    parts.append(mk_box("b_rail", 3.90, 1.38, 1.24, xform=[("t", -0.80, 0.0, 0.0)], mat=mats["D_ChromeBolt"], bevel=0.075, bevel_segs=3))
+    parts.append(mk_cyl("b_cyl", 0.74, 0.74, 3.80, axis="x", segs=36, xform=[("t", -0.85, 0.0, 0.0)], mat=mats["D_ChromeBolt"], bevel=0.045, bevel_segs=2))
     # Rotating dual-lug locking bolt head (+1.05 .. +2.20)
-    parts.append(mk_cyl("b_head", 0.76, 0.76, 1.14, axis="x", segs=28, xform=[("t", 1.62, 0.0, 0.0)], mat=mats["D_ChromeBolt"], bevel=0.04))
-    parts.append(mk_box("b_lugs", 0.68, 0.44, 1.44, xform=[("t", 1.75, 0.0, 0.0)], mat=mats["D_ChromeBolt"], bevel=0.04))
+    parts.append(mk_cyl("b_head", 0.76, 0.76, 1.14, axis="x", segs=36, xform=[("t", 1.62, 0.0, 0.0)], mat=mats["D_ChromeBolt"], bevel=0.045, bevel_segs=2))
+    parts.append(mk_box("b_lugs", 0.68, 0.44, 1.44, xform=[("t", 1.75, 0.0, 0.0)], mat=mats["D_ChromeBolt"], bevel=0.05, bevel_segs=3))
     # Dark Parkerized extractor claw on flank of bolt head
-    parts.append(mk_box("b_ext", 1.35, 0.34, 0.28, xform=[("t", 1.35, 0.48, 0.62)], mat=mats["D_BoltExtractor"], bevel=0.03))
+    parts.append(mk_box("b_ext", 1.35, 0.34, 0.28, xform=[("t", 1.35, 0.48, 0.62)], mat=mats["D_BoltExtractor"], bevel=0.035, bevel_segs=2))
     # Rear coaxial striker tail
-    parts.append(mk_cyl("b_pin", 0.24, 0.24, 0.55, axis="x", segs=16, xform=[("t", -2.55, 0.0, 0.0)], mat=mats["D_BoltExtractor"], bevel=0.02))
-    # Radial Cam Follower Roller Stud pointing along local +Y into the 360° sinusoidal cam track!
-    parts.append(mk_cyl("b_stem", 0.32, 0.36, 0.68, axis="y", segs=20, xform=[("t", -0.80, 0.92, 0.0)], mat=mats["D_BoltExtractor"], bevel=0.02))
-    parts.append(mk_cyl("b_roller", 0.43, 0.43, 0.62, axis="y", segs=24, xform=[("t", -0.80, 1.50, 0.0)], mat=mats["D_ChromeBolt"], bevel=0.04))
+    parts.append(mk_cyl("b_pin", 0.24, 0.24, 0.55, axis="x", segs=24, xform=[("t", -2.55, 0.0, 0.0)], mat=mats["D_BoltExtractor"], bevel=0.025, bevel_segs=2))
+    # Machined Steel Radial Cam Follower Roller Stud riding the 360° sinusoidal cam track
+    parts.append(mk_cyl("b_stem", 0.32, 0.36, 0.68, axis="y", segs=28, xform=[("t", -0.80, 0.92, 0.0)], mat=mats["D_BoltExtractor"], bevel=0.025, bevel_segs=2))
+    parts.append(mk_cyl("b_roller", 0.43, 0.43, 0.62, axis="y", segs=32, xform=[("t", -0.80, 1.50, 0.0)], mat=mats["D_ChromeBolt"], bevel=0.055, bevel_segs=3))
     return join_parts(part_name, parts)
 
 
 def build_m134_delinker_housing(mats) -> bpy.types.Object:
     parts = []
-    outer = mk_box("dh_out", 9.20, 7.60, 5.80, xform=[("t", -0.10, 0.20, -0.10)], mat=mats["D_DelinkerSteel"], bevel=0.14)
+    outer = mk_box("dh_out", 9.20, 7.60, 5.80, xform=[("t", -0.10, 0.20, -0.10)], mat=mats["D_DelinkerSteel"], bevel=0.18, bevel_segs=3)
     inner = mk_box("dh_in", 7.60, 5.60, 4.40, xform=[("t", 0.0, 0.10, 0.50)])
     bool_op(outer, inner, "DIFFERENCE")
     parts.append(outer)
 
-    parts.append(mk_box("dh_inlet", 7.80, 1.60, 4.80, xform=[("t", 0.0, -3.40, -0.60)], mat=mats["D_DelinkerSteel"], bevel=0.08))
-    parts.append(mk_box("dh_collar", 7.40, 5.40, 1.20, xform=[("t", 0.0, 0.40, 2.40)], mat=mats["D_StainlessChute"], bevel=0.06))
+    parts.append(mk_box("dh_inlet", 7.80, 1.60, 4.80, xform=[("t", 0.0, -3.40, -0.60)], mat=mats["D_DelinkerSteel"], bevel=0.11, bevel_segs=3))
+    parts.append(mk_box("dh_collar", 7.40, 5.40, 1.20, xform=[("t", 0.0, 0.40, 2.40)], mat=mats["D_StainlessChute"], bevel=0.08, bevel_segs=3))
     # Left (-Z) Flat Hero Faceplate (X in [-4.0, +3.8], Y in [-2.5, +3.1], outer Z = -3.21)
-    parts.append(mk_box("dh_face", 7.80, 5.60, 0.38, xform=[("t", -0.10, 0.30, -3.02)], mat=mats["D_DelinkerFaceplate"], bevel=0.04))
-    # Twin stainless quick-release cam latches & corner socket bolts
+    parts.append(mk_box("dh_face", 7.80, 5.60, 0.38, xform=[("t", -0.10, 0.30, -3.02)], mat=mats["D_DelinkerFaceplate"], bevel=0.05, bevel_segs=3))
     for lx in (-3.40, 3.20):
-        parts.append(mk_box(f"dh_lt_{lx}", 0.75, 2.20, 0.65, xform=[("t", lx, 2.20, -2.95)], mat=mats["D_StainlessChute"], bevel=0.04))
+        parts.append(mk_box(f"dh_lt_{lx}", 0.75, 2.20, 0.65, xform=[("t", lx, 2.20, -2.95)], mat=mats["D_StainlessChute"], bevel=0.055, bevel_segs=3))
     for bx in (-3.6, 3.4):
         for by in (-2.1, 2.7):
-            parts.append(mk_cyl(f"dh_blt_{bx}_{by}", 0.16, 0.16, 0.24, axis="z", segs=6, xform=[("t", bx, by, -3.22)], mat=mats["D_ChromeBolt"], bevel=0.02))
+            parts.append(mk_cyl(f"dh_blt_{bx}_{by}", 0.16, 0.16, 0.24, axis="z", segs=6, xform=[("t", bx, by, -3.22)], mat=mats["D_ChromeBolt"], bevel=0.025, bevel_segs=2))
     return join_parts("m134_delinker_housing", parts)
 
 
 def build_m134_delinker_sprocket(mats) -> bpy.types.Object:
     parts = []
-    parts.append(mk_cyl("ds_axle", 0.95, 0.95, 7.60, axis="x", segs=28, mat=mats["D_ChromeBolt"], bevel=0.04))
+    parts.append(mk_cyl("ds_axle", 0.95, 0.95, 7.60, axis="x", segs=40, mat=mats["D_ChromeBolt"], bevel=0.045, bevel_segs=3))
+    # Precision-machined warm brass/bronze 6-lobe delinker feed sprockets!
     for i in range(6):
         th = i * (math.pi / 3.0)
         parts.append(mk_box(
             f"ds_lobe_{i}", 5.60, 1.35, 0.56,
             xform=[("t", 0.0, 1.48, 0.0), ("rx", th)],
-            mat=mats["D_ChromeBolt"], bevel=0.05,
+            mat=mats["D_BrassSprocket"], bevel=0.075, bevel_segs=3,
         ))
-    parts.append(mk_cyl("ds_gear", 1.95, 1.95, 0.90, axis="x", segs=28, xform=[("t", -3.15, 0.0, 0.0)], mat=mats["D_StainlessChute"], bevel=0.04))
+    parts.append(mk_cyl("ds_gear", 1.95, 1.95, 0.90, axis="x", segs=44, xform=[("t", -3.15, 0.0, 0.0)], mat=mats["D_BrassSprocket"], bevel=0.05, bevel_segs=3))
     return join_parts("m134_delinker_sprocket", parts)
 
 
@@ -2146,12 +2248,12 @@ def build_m134_ammo_chute(mats) -> bpy.types.Object:
             ))
 
         # 7.62x51mm NATO Cartridge: Annealed Brass Case + Silver Boxer Primer + Copper FMJ Spitzer + M13 Steel Link!
-        parts.append(mk_lathe_x(f"ac_br_{i}", brass_prof, segs=20, xform=[("t", 0.0, cy, cz - 0.55)], mat=mats["D_Brass762"]))
-        parts.append(mk_cyl(f"ac_pr_{i}", 0.24, 0.24, 0.08, axis="x", segs=14, xform=[("t", -3.41, cy, cz - 0.55)], mat=mats["D_PrimerSilver"], bevel=0.01))
-        parts.append(mk_lathe_x(f"ac_cu_{i}", bullet_prof, segs=20, xform=[("t", 0.0, cy, cz - 0.55)], mat=mats["D_CopperFMJ"]))
+        parts.append(mk_lathe_x(f"ac_br_{i}", brass_prof, segs=28, xform=[("t", 0.0, cy, cz - 0.55)], mat=mats["D_Brass762"]))
+        parts.append(mk_cyl(f"ac_pr_{i}", 0.24, 0.24, 0.08, axis="x", segs=18, xform=[("t", -3.41, cy, cz - 0.55)], mat=mats["D_PrimerSilver"], bevel=0.01))
+        parts.append(mk_lathe_x(f"ac_cu_{i}", bullet_prof, segs=28, xform=[("t", 0.0, cy, cz - 0.55)], mat=mats["D_CopperFMJ"]))
         # Iconic M13 Disintegrating Steel Link wrapping cartridge body
         parts.append(mk_hollow_tube_x(
-            f"ac_lk_{i}", 0.67, 0.57, -1.65, -0.05, segs=18, bevel=0.02,
+            f"ac_lk_{i}", 0.67, 0.57, -1.65, -0.05, segs=24, bevel=0.025,
             xform=[("t", 0.0, cy, cz - 0.55)], mat=mats["D_M13LinkSteel"],
         ))
         parts.append(mk_box(
@@ -2558,15 +2660,15 @@ def bake_atlas_suite(
     _set_grid_isolated_layout(all_objs)
 
     saved = _route_bsdf_input_to_emit(mats_set, "Base Color")
-    run_bake("albedo", "EMIT", samples=2, fill_color=(0.048, 0.052, 0.055, 1.0))
+    run_bake("albedo", "EMIT", samples=4, fill_color=(0.048, 0.052, 0.055, 1.0))
     _restore_bsdf(saved)
 
     saved = _route_bsdf_input_to_emit(mats_set, "Roughness")
-    run_bake("roughness", "EMIT", samples=2, fill_color=(0.5, 0.5, 0.5, 1.0))
+    run_bake("roughness", "EMIT", samples=4, fill_color=(0.5, 0.5, 0.5, 1.0))
     _restore_bsdf(saved)
 
     saved = _route_bsdf_input_to_emit(mats_set, "Metallic")
-    run_bake("metalness", "EMIT", samples=2, fill_color=(0.0, 0.0, 0.0, 1.0))
+    run_bake("metalness", "EMIT", samples=4, fill_color=(0.0, 0.0, 0.0, 1.0))
     _restore_bsdf(saved)
 
     run_bake("normal", "NORMAL", samples=BAKE_NORMAL_SAMPLES, fill_color=(0.5, 0.5, 1.0, 1.0), normal_op=True)
@@ -2655,14 +2757,6 @@ def verify_meshes(all_objs: list[bpy.types.Object]) -> dict:
 
 def export_draco_glb(all_objs: list[bpy.types.Object]):
     _set_identity_layout(all_objs)
-    for o in all_objs:
-        select_only([o], o)
-        mod = o.modifiers.new(name="Triangulate", type="TRIANGULATE")
-        mod.quad_method = "BEAUTY"
-        mod.ngon_method = "BEAUTY"
-        mod.keep_custom_normals = True
-        bpy.ops.object.modifier_apply(modifier=mod.name)
-
     select_only(all_objs, all_objs[0])
     MODELS_OUT.parent.mkdir(parents=True, exist_ok=True)
     bpy.ops.export_scene.gltf(
@@ -2682,6 +2776,125 @@ def export_draco_glb(all_objs: list[bpy.types.Object]):
         export_draco_texcoord_quantization=12,
     )
     print(f"[EXPORT] Wrote Draco GLB -> {MODELS_OUT} ({MODELS_OUT.stat().st_size / 1024:.1f} KB)")
+
+
+def _render_studio_previews(all_objs: list[bpy.types.Object], preview_dir: Path):
+    """Renders quick Cycles verification shots using the final baked v3 WebP PBR suites."""
+    preview_dir.mkdir(parents=True, exist_ok=True)
+    scene = bpy.context.scene
+    scene.view_settings.view_transform = "AgX"
+    scene.view_settings.look = "AgX - Medium High Contrast"
+    scene.view_settings.exposure = 0.25
+    scene.render.resolution_x = 1280
+    scene.render.resolution_y = 720
+    scene.cycles.samples = 36
+    scene.cycles.use_denoising = True
+    scene.cycles.max_bounces = 6
+    scene.cycles.diffuse_bounces = 3
+    scene.cycles.glossy_bounces = 3
+
+    def mk_baked_mat(suite: str, normal_strength: float) -> bpy.types.Material:
+        mat = bpy.data.materials.new(f"Baked_{suite}")
+        nt = mat.node_tree
+        nt.nodes.clear()
+        out = nt.nodes.new("ShaderNodeOutputMaterial")
+        bsdf = nt.nodes.new("ShaderNodeBsdfPrincipled")
+        nt.links.new(bsdf.outputs["BSDF"], out.inputs["Surface"])
+
+        tex_alb = nt.nodes.new("ShaderNodeTexImage")
+        tex_alb.image = bpy.data.images.load(str(TEX_OUT_DIR / f"m134_v3_{suite}_albedo.webp"))
+        tex_alb.image.colorspace_settings.name = "sRGB"
+
+        tex_orm = nt.nodes.new("ShaderNodeTexImage")
+        tex_orm.image = bpy.data.images.load(str(TEX_OUT_DIR / f"m134_v3_{suite}_roughness.webp"))
+        tex_orm.image.colorspace_settings.name = "Non-Color"
+        sep = nt.nodes.new("ShaderNodeSeparateColor")
+        nt.links.new(tex_orm.outputs["Color"], sep.inputs["Color"])
+
+        mix_ao = nt.nodes.new("ShaderNodeMix")
+        mix_ao.data_type = "RGBA"
+        mix_ao.blend_type = "MULTIPLY"
+        mix_ao.inputs["Factor"].default_value = 0.85
+        nt.links.new(tex_alb.outputs["Color"], mix_ao.inputs[6])
+        nt.links.new(sep.outputs["Red"], mix_ao.inputs[7])
+        nt.links.new(mix_ao.outputs[2], bsdf.inputs["Base Color"])
+        nt.links.new(sep.outputs["Green"], bsdf.inputs["Roughness"])
+        nt.links.new(sep.outputs["Blue"], bsdf.inputs["Metallic"])
+
+        tex_nrm = nt.nodes.new("ShaderNodeTexImage")
+        tex_nrm.image = bpy.data.images.load(str(TEX_OUT_DIR / f"m134_v3_{suite}_normal.webp"))
+        tex_nrm.image.colorspace_settings.name = "Non-Color"
+        nmap = nt.nodes.new("ShaderNodeNormalMap")
+        nmap.inputs["Strength"].default_value = normal_strength
+        nt.links.new(tex_nrm.outputs["Color"], nmap.inputs["Color"])
+        nt.links.new(nmap.outputs["Normal"], bsdf.inputs["Normal"])
+        return mat
+
+    mat_hm = mk_baked_mat("housing_motor", 0.88)
+    mat_br = mk_baked_mat("barrels_rotor", 0.88)
+    mat_db = mk_baked_mat("delinker_bolts", 0.88)
+    for o in all_objs:
+        o.data.materials.clear()
+        if o.name in HOUSING_MOTOR_PARTS:
+            o.data.materials.append(mat_hm)
+        elif o.name in BARRELS_ROTOR_PARTS:
+            o.data.materials.append(mat_br)
+        else:
+            o.data.materials.append(mat_db)
+        px, py, pz = ASSEMBLED_POS[o.name]
+        o.location = t2b(px, py, pz)
+        o.rotation_euler = (0.0, 0.0, 0.0)
+        o.hide_render = False
+
+    w_nt = scene.world.node_tree
+    w_nt.nodes.clear()
+    w_out = w_nt.nodes.new("ShaderNodeOutputWorld")
+    w_bg = w_nt.nodes.new("ShaderNodeBackground")
+    hdri = REPO_ROOT / "public" / "hdri" / "studio_dark_armory.hdr"
+    if hdri.exists():
+        env = w_nt.nodes.new("ShaderNodeTexEnvironment")
+        env.image = bpy.data.images.load(str(hdri))
+        w_nt.links.new(env.outputs["Color"], w_bg.inputs["Color"])
+        w_bg.inputs["Strength"].default_value = 1.65
+    else:
+        w_bg.inputs["Color"].default_value = (0.14, 0.16, 0.18, 1.0)
+        w_bg.inputs["Strength"].default_value = 1.0
+    w_nt.links.new(w_bg.outputs["Background"], w_out.inputs["Surface"])
+
+    for lname, loc_t, energy, size in (
+        ("KeyLight",  (22.0, 38.0,  46.0), 36000.0, 32.0),
+        ("FillLight", (-20.0, 22.0, -48.0), 22000.0, 34.0),
+        ("RimLight",  (32.0, 34.0, -24.0), 24000.0, 24.0),
+    ):
+        ldata = bpy.data.lights.new(lname, type="AREA")
+        ldata.energy = energy
+        ldata.size = size
+        lobj = bpy.data.objects.new(lname, ldata)
+        scene.collection.objects.link(lobj)
+        lobj.location = t2b(*loc_t)
+        d = t2b(6.0, 0.0, 0.0) - lobj.location
+        lobj.rotation_euler = d.to_track_quat("-Z", "Y").to_euler()
+
+    cam_data = bpy.data.cameras.new("PreviewCam")
+    cam_obj = bpy.data.objects.new("PreviewCam", cam_data)
+    scene.collection.objects.link(cam_obj)
+    scene.camera = cam_obj
+
+    shots = [
+        ("m134_iso_right.png",     ( 38.0, 24.0,  68.0), (  6.0,  1.0,  0.0), 42.0),
+        ("m134_iso_left.png",      ( 34.0, 22.0, -68.0), (  4.0,  0.0, -2.0), 42.0),
+        ("m134_macro_housing.png", (  2.0,  5.0,  28.0), ( -6.5,  2.5,  3.5), 48.0),
+        ("m134_macro_muzzle.png",  ( 66.0, 12.0,  22.0), ( 38.0,  0.0,  0.0), 50.0),
+        ("m134_macro_delinker.png",(-10.0,  2.0, -34.0), ( -9.2, -2.5, -8.5), 48.0),
+    ]
+    for fname, cpos, ctgt, lens in shots:
+        cam_data.lens = lens
+        cam_obj.location = t2b(*cpos)
+        direction = t2b(*ctgt) - cam_obj.location
+        cam_obj.rotation_euler = direction.to_track_quat("-Z", "Y").to_euler()
+        scene.render.filepath = str(preview_dir / fname)
+        bpy.ops.render.render(write_still=True)
+        print(f"[PREVIEW] Rendered {preview_dir / fname}")
 
 
 def main():
@@ -2736,6 +2949,9 @@ def main():
     unwrap_barrels_rotor_atlas(br_objs)
     unwrap_delinker_bolts_atlas(db_objs)
 
+    # Pre-bake triangulation with custom normal preservation so baked tangent normals match Draco export 100%!
+    _triangulate_keep_normals(all_objs)
+
     for label, group in (("housing_motor", hm_objs), ("barrels_rotor", br_objs), ("delinker_bolts", db_objs)):
         tot_area = 0.0
         for o in group:
@@ -2767,6 +2983,10 @@ def main():
         )
 
     export_draco_glb(all_objs)
+
+    if "--render-preview" in sys.argv:
+        pidx = sys.argv.index("--render-preview")
+        _render_studio_previews(all_objs, Path(sys.argv[pidx + 1]))
 
     outputs = [
         MODELS_OUT,
