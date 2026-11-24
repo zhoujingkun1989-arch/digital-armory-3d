@@ -2836,6 +2836,38 @@ const SMOKE_WISP_FRAG_GLSL = /* glsl */ `
   }
 `;
 
+// Cycle 21C: Fresnel refractive Schlieren supersonic blast-wave shock shell (replaces flat grey circle)
+const BLAST_SHOCK_SHELL_VERT_GLSL = /* glsl */ `
+  varying vec3 vViewNormal;
+  varying vec3 vViewDir;
+
+  void main() {
+    vViewNormal = normalize(normalMatrix * normal);
+    vec4 mvPos = modelViewMatrix * vec4(position, 1.0);
+    vViewDir = normalize(-mvPos.xyz);
+    gl_Position = projectionMatrix * mvPos;
+  }
+`;
+
+const BLAST_SHOCK_SHELL_FRAG_GLSL = /* glsl */ `
+  uniform vec3 uColor;
+  uniform float uOpacity;
+  varying vec3 vViewNormal;
+  varying vec3 vViewDir;
+
+  void main() {
+    float ndotv = abs(dot(normalize(vViewNormal), normalize(vViewDir)));
+    // Thin supersonic Schlieren shock rim: clear interior, crisp shock crest, soft outer feather (edge0 < edge1)
+    float outerFeather = smoothstep(0.0, 0.22, ndotv);
+    float innerClear = 1.0 - smoothstep(0.24, 0.72, ndotv);
+    float rim = outerFeather * innerClear;
+    float alpha = clamp((rim * 1.15 + 0.04 * outerFeather) * uOpacity, 0.0, 0.55);
+    if (alpha <= 0.003) discard;
+    gl_FragColor = vec4(uColor, alpha);
+  }
+`;
+const BLAST_SHOCK_COLOR = new THREE.Color('#e2e8f0');
+
 const MAX_SHOCK_DIAMONDS = 5;
 const DIAMOND_SLOTS = [0, 1, 2, 3, 4] as const;
 const MUZZLE_PUFF_SLOTS = [0, 1, 2] as const;
@@ -2851,12 +2883,92 @@ export const CHAMBER_IGNITION_WINDOW_END = 0.24;
 const _ballisticsInBoreSample = createMutableInBoreDeflagrationSample();
 const _chamberLightColor = new THREE.Color(CHAMBER_IGNITION_LIGHT_COLOR);
 const _chamberDefaultColor = new THREE.Color(CHAMBER_IGNITION_LIGHT_COLOR);
+const _chamberFlashEnv: ChamberFlashEnvelope = {
+  scaleX: 0,
+  scaleY: 0,
+  scaleZ: 0,
+  opacity: 0,
+};
 const _sabotKinematics = createMutableDiscardingSabotKinematicsSample();
 const _sabotAxisX = new THREE.Vector3(1, 0, 0);
 const _sabotAxisZ = new THREE.Vector3(0, 0, 1);
 const _sabotQuatAz = new THREE.Quaternion();
 const _sabotQuatPitch = new THREE.Quaternion();
 const _sabotQuatRoll = new THREE.Quaternion();
+
+export interface ChamberFlashEnvelope {
+  scaleX: number;
+  scaleY: number;
+  scaleZ: number;
+  opacity: number;
+}
+
+/**
+ * Zero-GC evaluator calibrating the legacy chamber ignition sphere (`radius = 0.52`)
+ * so that in longitudinal Z-cutaway with Cycle 15A GLSL in-bore deflagration active,
+ * the sphere stays strictly inside the sliced bore wall and never protrudes outside
+ * the steel receiver or obscures locking lugs & the Boxer primer spark.
+ */
+export function writeChamberFlashEnvelopeInto(
+  caliber: CaliberProfile,
+  intensity: number,
+  isTank: boolean,
+  isCutawayInBoreActive: boolean,
+  inBoreColumnRadiusCm: number,
+  out: ChamberFlashEnvelope
+): ChamberFlashEnvelope {
+  const clampedI = Number.isFinite(intensity)
+    ? Math.max(0, Math.min(1, intensity))
+    : 0;
+  if (clampedI <= 0.02) {
+    out.scaleX = 0;
+    out.scaleY = 0;
+    out.scaleZ = 0;
+    out.opacity = 0;
+    return out;
+  }
+  if (isCutawayInBoreActive && inBoreColumnRadiusCm > 0) {
+    const maxRadiusCm = inBoreColumnRadiusCm * (isTank ? 1.05 : 1.12);
+    const s = (maxRadiusCm / 0.52) * (0.72 + 0.28 * clampedI);
+    out.scaleX = s * 1.35;
+    out.scaleY = s;
+    out.scaleZ = s;
+    out.opacity = clampedI * 0.26;
+    return out;
+  }
+  const baseChamberScale = isTank
+    ? 7.2
+    : caliber === '30x173_gau8'
+      ? 2.4
+      : caliber === '50_bmg'
+        ? 0.95
+        : caliber === '338_lapua'
+          ? 0.78
+          : 0.48;
+  const s = baseChamberScale + clampedI * (isTank ? 4.8 : 0.44);
+  out.scaleX = s * 1.38;
+  out.scaleY = s;
+  out.scaleZ = s;
+  out.opacity = clampedI * 0.56;
+  return out;
+}
+
+export function computeChamberFlashEnvelope(
+  caliber: CaliberProfile,
+  intensity: number,
+  isTank: boolean,
+  isCutawayInBoreActive: boolean,
+  inBoreColumnRadiusCm = 0
+): ChamberFlashEnvelope {
+  return writeChamberFlashEnvelopeInto(
+    caliber,
+    intensity,
+    isTank,
+    isCutawayInBoreActive,
+    inBoreColumnRadiusCm,
+    { scaleX: 0, scaleY: 0, scaleZ: 0, opacity: 0 }
+  );
+}
 
 export type CaliberVfxTier =
   | 'archery'
@@ -3486,6 +3598,21 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
       }),
     []
   );
+  const blastShellMat = useMemo(
+    () =>
+      new THREE.ShaderMaterial({
+        vertexShader: BLAST_SHOCK_SHELL_VERT_GLSL,
+        fragmentShader: BLAST_SHOCK_SHELL_FRAG_GLSL,
+        transparent: true,
+        depthWrite: false,
+        side: THREE.FrontSide,
+        uniforms: {
+          uColor: { value: BLAST_SHOCK_COLOR.clone() },
+          uOpacity: { value: 0 },
+        },
+      }),
+    []
+  );
 
   useEffect(() => {
     return () => {
@@ -3496,8 +3623,9 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
   useEffect(() => {
     return () => {
       sabotPetalMat.dispose();
+      blastShellMat.dispose();
     };
-  }, [sabotPetalMat]);
+  }, [sabotPetalMat, blastShellMat]);
 
   const jets = useMemo(() => getMuzzleJets(activeWeaponId), [activeWeaponId]);
 
@@ -3582,7 +3710,6 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
   const shockRingRef = useRef<THREE.Group | THREE.Mesh>(null);
   const shockRingMatRef = useRef<THREE.MeshBasicMaterial>(null);
   const blastRingRef = useRef<THREE.Mesh>(null);
-  const blastRingMatRef = useRef<THREE.MeshBasicMaterial>(null);
   const magnumRingRef = useRef<THREE.Group>(null);
   const magnumRingOuterMatRef = useRef<THREE.MeshBasicMaterial>(null);
   const magnumRingCoreMatRef = useRef<THREE.MeshBasicMaterial>(null);
@@ -3824,30 +3951,42 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
     // 3. Chamber ignition glow + synchronized warm-amber breech bounce point-light (`f ∈ [0.04, 0.24]`)
     const p01 = ib.pressure01;
     const isCutawayOrXray = state.sectionCut || state.xrayShells;
+    const isCutawayZ = state.sectionCut && state.sectionCutAxis === 'z';
     const calVfx = resolveCaliberVfxClassScale(curProfile);
+    writeInBoreDeflagrationSampleInto(
+      weaponId,
+      f,
+      isArchery ? 0 : p01,
+      isArchery ? 0 : ib.boreTravelRatio,
+      isCutawayZ,
+      _ballisticsInBoreSample,
+      clock.animatedProgress
+    );
     if (chamberFlashRef.current) {
       const intensity = isArchery
         ? 0
         : Math.max(st.chamberFlashIntensity, p01 * 0.9);
-      chamberFlashRef.current.visible = !isArchery && intensity > 0.02;
+      writeChamberFlashEnvelopeInto(
+        curProfile,
+        intensity,
+        isTank,
+        _ballisticsInBoreSample.active,
+        _ballisticsInBoreSample.columnRadiusCm,
+        _chamberFlashEnv
+      );
+      chamberFlashRef.current.visible = !isArchery && _chamberFlashEnv.opacity > 0.01;
       chamberFlashRef.current.position.set(
         curMeta.chamberGlowPos[0] + muzzleShiftX * 0.65,
         curMeta.chamberGlowPos[1],
         curMeta.chamberGlowPos[2]
       );
-      const baseChamberScale = isTank
-        ? 8.5
-        : curProfile === '30x173_gau8'
-          ? 2.8
-          : curProfile === '50_bmg'
-            ? 1.25
-            : curProfile === '338_lapua'
-              ? 1.05
-              : 0.72;
-      const s = baseChamberScale + intensity * (isTank ? 6.5 : 0.75);
-      chamberFlashRef.current.scale.set(s * 1.45, s, s);
+      chamberFlashRef.current.scale.set(
+        _chamberFlashEnv.scaleX,
+        _chamberFlashEnv.scaleY,
+        _chamberFlashEnv.scaleZ
+      );
       (chamberFlashRef.current.material as THREE.MeshBasicMaterial).opacity =
-        intensity * 0.86;
+        _chamberFlashEnv.opacity;
     }
 
     if (chamberLightRef.current) {
@@ -3857,16 +3996,6 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
         isArchery,
         isCutawayOrXray,
         Math.max(st.chamberFlashIntensity, p01)
-      );
-      const isCutawayZ = state.sectionCut && state.sectionCutAxis === 'z';
-      writeInBoreDeflagrationSampleInto(
-        weaponId,
-        f,
-        isArchery ? 0 : p01,
-        isArchery ? 0 : ib.boreTravelRatio,
-        isCutawayZ,
-        _ballisticsInBoreSample,
-        clock.animatedProgress
       );
       if (_ballisticsInBoreSample.active) {
         const trackX = _ballisticsInBoreSample.columnActive
@@ -4088,8 +4217,8 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
       }
     }
 
-    // 4c. Expanding spherical blast-wave front (Mach disk → acoustic shock; muted on subsonic VSS & suppressors)
-    if (blastRingRef.current && blastRingMatRef.current) {
+    // 4c. Expanding spherical blast-wave front (Fresnel Schlieren acoustic shock shell; muted on subsonic VSS & suppressors)
+    if (blastRingRef.current) {
       const u = (f - timing.muzzleExitF) / 0.1;
       const on =
         !isArchery &&
@@ -4109,8 +4238,9 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
           curMeta.muzzlePos[2]
         );
         blastRingRef.current.scale.setScalar(rad);
-        blastRingMatRef.current.opacity =
-          (1 - u) * (1 - u) * 0.38 * Math.max(0.35, muzzleFlashGain);
+        const bMat = blastRingRef.current.material as THREE.ShaderMaterial;
+        bMat.uniforms.uOpacity.value =
+          (1 - u) * (1 - u) * 0.42 * Math.max(0.35, muzzleFlashGain);
       }
     }
 
@@ -4334,6 +4464,7 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
           transparent
           opacity={0}
           depthWrite={false}
+          blending={THREE.AdditiveBlending}
         />
       </mesh>
       <pointLight
@@ -4547,17 +4678,15 @@ export const BallisticsSystem: React.FC<BallisticsSystemProps> = ({
         />
       </mesh>
 
-      {/* Expanding blast-wave front (translucent shock shell) */}
-      <mesh ref={blastRingRef} visible={false} renderOrder={8}>
+      {/* Expanding blast-wave front (Fresnel Schlieren shock shell) */}
+      <mesh
+        ref={blastRingRef}
+        material={blastShellMat}
+        visible={false}
+        userData={{ excludeFromGtao: true }}
+        renderOrder={8}
+      >
         <sphereGeometry args={[1, 28, 16]} />
-        <meshBasicMaterial
-          ref={blastRingMatRef}
-          color="#e2e8f0"
-          transparent
-          opacity={0}
-          depthWrite={false}
-          side={THREE.BackSide}
-        />
       </mesh>
 
       {/* Signature .50 AE Desert Eagle Luminous Magnum Fireball Ring */}
