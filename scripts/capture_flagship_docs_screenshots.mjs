@@ -6,7 +6,7 @@
  * curated shot groups using the zero-zombie native Node 22+ WebSocket CDP runner
  * and an isolated ephemeral static `dist/` server:
  *   - core       (5 shots):  Showcase landing, Armory Vault, CT Cutaway, AK-15 Studio, Blueprint Exploded M4A1
- *   - sculptures (25 shots): Waves 1–9 Blender 5.2 hyper-sculpted exhibits (M1911A1..MP5 + Wave 8 G17/M82A1/AWM + Wave 9 SCAR-L/AUG/P320)
+ *   - sculptures (27 shots): Waves 1–10 Blender 5.2 hyper-sculpted exhibits (M1911A1..MP5 + G17/M82A1/AWM + SCAR-L/AUG/P320 + R500/M134D)
  *   - labs       (11 shots): 3D 1,000m Range + Schlieren Bullet-Cam, 3D Armor Theater,
  *                            3D Split Cutaway, 1:1 Cartridge Duel, 1:1 Scale Wall,
  *                            Blueprint Daylight Recoil Lab, 34×33 Showdown 6-Axis Radar,
@@ -143,7 +143,7 @@ export const FLAGSHIP_DOC_SHOTS = Object.freeze([
     readySelector: '.top-bar',
   }),
 
-  // ==================== Refreshed Sculptures — Waves 1–9 (25) ====================
+  // ==================== Refreshed Sculptures — Waves 1–10 (27) ====================
   Object.freeze({
     id: 'm1911-v6-hero',
     filename: 'm1911-v6-hero.jpg',
@@ -391,6 +391,26 @@ export const FLAGSHIP_DOC_SHOTS = Object.freeze([
     label: 'SIG Sauer P320 M17 9×19mm (Wave 9 Coyote PVD Slide & Modular FCU)',
     query: 'screen=workbench&weapon=p320',
     weaponId: 'p320',
+    expectsWebgl: true,
+    readySelector: '.top-bar',
+  }),
+  Object.freeze({
+    id: 'r500-v3-macro',
+    filename: 'r500-v3-macro.jpg',
+    group: 'sculptures',
+    label: 'Ravin R500 500 FPS Helical-Cam Crossbow (Wave 10 Grand Slam Sculpture)',
+    query: 'screen=workbench&weapon=r500',
+    weaponId: 'r500',
+    expectsWebgl: true,
+    readySelector: '.top-bar',
+  }),
+  Object.freeze({
+    id: 'm134-v3-macro',
+    filename: 'm134-v3-macro.jpg',
+    group: 'sculptures',
+    label: 'GE / Dillon Aero M134D 7.62mm 6-Barrel Minigun (Wave 10 Grand Slam Sculpture)',
+    query: 'screen=workbench&weapon=m134',
+    weaponId: 'm134',
     expectsWebgl: true,
     readySelector: '.top-bar',
   }),

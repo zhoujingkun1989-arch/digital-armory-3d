@@ -195,7 +195,7 @@ describe('Cycle 16A · PWA Service Worker, Offline Pack Integrity & Flagship 192
       expect(helpText).toContain('--json');
     });
 
-    it('emits valid 41-shot JSON manifest on --dry-run --json with unique filenames, valid WeaponIds, and wired postAction handlers', () => {
+    it('emits valid 43-shot JSON manifest on --dry-run --json with unique filenames, valid WeaponIds, and wired postAction handlers', () => {
       const stdout = execFileSync(
         process.execPath,
         [CAPTURE_SCRIPT_PATH, '--dry-run', '--json'],
@@ -220,8 +220,8 @@ describe('Cycle 16A · PWA Service Worker, Offline Pack Integrity & Flagship 192
       expect(plan.dryRun).toBe(true);
       expect(plan.viewport).toBe('1920x1080');
       expect(plan.quality).toBe(92);
-      expect(plan.totalShots).toBe(41);
-      expect(plan.shots).toHaveLength(41);
+      expect(plan.totalShots).toBe(43);
+      expect(plan.shots).toHaveLength(43);
 
       const idSet = new Set<string>();
       const fileSet = new Set<string>();
@@ -246,9 +246,9 @@ describe('Cycle 16A · PWA Service Worker, Offline Pack Integrity & Flagship 192
         }
       }
 
-      // Check core (5), sculptures (25 incl. Waves 8 & 9), and labs (11 incl. V7 showcase) counts + key README filenames
+      // Check core (5), sculptures (27 incl. Waves 8–10), and labs (11 incl. V7 showcase) counts + key README filenames
       expect(plan.shots.filter((s) => s.group === 'core')).toHaveLength(5);
-      expect(plan.shots.filter((s) => s.group === 'sculptures')).toHaveLength(25);
+      expect(plan.shots.filter((s) => s.group === 'sculptures')).toHaveLength(27);
       expect(plan.shots.filter((s) => s.group === 'labs')).toHaveLength(11);
       for (const requiredFile of [
         'showcase-landing.jpg',
@@ -265,6 +265,8 @@ describe('Cycle 16A · PWA Service Worker, Offline Pack Integrity & Flagship 192
         'scar-v3-macro.jpg',
         'aug-v3-macro.jpg',
         'p320-v3-macro.jpg',
+        'r500-v3-macro.jpg',
+        'm134-v3-macro.jpg',
         'v6-range-3d.jpg',
         'v7-scale-wall.jpg',
         'v7-recoil-lab.jpg',
