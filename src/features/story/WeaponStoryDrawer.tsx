@@ -283,7 +283,15 @@ export const WeaponStoryDrawer: React.FC<WeaponStoryDrawerProps> = ({
           </div>
 
           {localizedStory && localizedStory.acts.length > 0 && (
-            <div className="story-mini-acts">
+            <div
+              className="story-mini-acts"
+              role="group"
+              aria-label={
+                lang === 'zh'
+                  ? '四幕纪录片章节切换'
+                  : 'Documentary act selector'
+              }
+            >
               {localizedStory.acts.map((act, idx) => {
                 const isActCurrent =
                   isThisWeaponStoryActive && audio.activeActId === act.id;
@@ -294,6 +302,8 @@ export const WeaponStoryDrawer: React.FC<WeaponStoryDrawerProps> = ({
                     className={`story-mini-act-pill ${
                       isActCurrent ? 'active' : ''
                     }`}
+                    aria-label={`${act.actNumber} · ${act.title}`}
+                    aria-current={isActCurrent ? 'step' : undefined}
                     onClick={() => handleActClick(idx, act.id)}
                     title={`${act.actNumber} · ${act.title}`}
                   >
@@ -310,6 +320,7 @@ export const WeaponStoryDrawer: React.FC<WeaponStoryDrawerProps> = ({
               storyDirectorMode ? 'active' : ''
             }`}
             aria-pressed={storyDirectorMode}
+            aria-label={ui.directorBtnTitle}
             onClick={toggleStoryDirectorMode}
             title={ui.directorBtnTitle}
           >
@@ -320,6 +331,7 @@ export const WeaponStoryDrawer: React.FC<WeaponStoryDrawerProps> = ({
           <button
             type="button"
             className="story-rate-btn"
+            aria-label={`${ui.playbackRateTitle}: ${formatPlaybackRateLabel(audio.playbackRate)}`}
             onClick={cycleNarrationPlaybackRate}
             title={ui.playbackRateTitle}
           >
@@ -348,7 +360,12 @@ export const WeaponStoryDrawer: React.FC<WeaponStoryDrawerProps> = ({
         </div>
 
         {isThisWeaponStoryActive && activeCue && (
-          <div className="story-mini-caption-bar" aria-live="polite">
+          <div
+            className="story-mini-caption-bar"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
             {stageBadgeLabel && (
               <span className="story-stage-live-badge">{stageBadgeLabel}</span>
             )}
@@ -366,7 +383,14 @@ export const WeaponStoryDrawer: React.FC<WeaponStoryDrawerProps> = ({
               onChange={(e) =>
                 handleScrubChange(Number(e.target.value) / 1000)
               }
-              aria-label={audio.activeLabel ?? ui.badge}
+              aria-label={
+                audio.activeLabel
+                  ? `${lang === 'zh' ? '纪录片语音进度' : 'Documentary narration seek'}: ${audio.activeLabel}`
+                  : lang === 'zh'
+                    ? '纪录片语音进度条'
+                    : 'Documentary narration seek scrubber'
+              }
+              aria-valuetext={`${formatAudioTimestamp(audio.currentTime)} / ${formatAudioTimestamp(audio.duration)}`}
               className="story-audio-slider"
               style={
                 {
@@ -393,6 +417,16 @@ export const WeaponStoryDrawer: React.FC<WeaponStoryDrawerProps> = ({
       aria-labelledby={titleId}
       tabIndex={-1}
     >
+      {/* Persistent polite live region announcing the active documentary subtitle cue */}
+      <div
+        className="story-sr-only"
+        role="status"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {isThisWeaponStoryActive && activeCue ? activeCue.text : ''}
+      </div>
+
       {/* Sticky Drawer Header */}
       <div className="story-drawer-header">
         <div className="story-header-meta">
@@ -481,7 +515,7 @@ export const WeaponStoryDrawer: React.FC<WeaponStoryDrawerProps> = ({
           {/* 4-Act Visual Progress Rail (`Act I · II · III · IV`) */}
           <div
             className="story-act-rail"
-            role="list"
+            role="group"
             aria-label={
               lang === 'zh'
                 ? '四幕纪录片章节进度轨'
@@ -502,10 +536,10 @@ export const WeaponStoryDrawer: React.FC<WeaponStoryDrawerProps> = ({
                 <button
                   key={act.id}
                   type="button"
-                  role="listitem"
                   className={`story-act-rail-seg ${isActCurrent ? 'is-active' : ''} ${
                     isActDone ? 'is-done' : ''
                   }`}
+                  aria-label={`${act.actNumber} · ${act.title}`}
                   aria-current={isActCurrent ? 'step' : undefined}
                   onClick={() => handleActClick(idx, act.id)}
                   title={`${act.actNumber} · ${act.title}`}
@@ -565,6 +599,11 @@ export const WeaponStoryDrawer: React.FC<WeaponStoryDrawerProps> = ({
                   ? '纪录片语音进度条'
                   : 'Documentary narration seek scrubber'
               }
+              aria-valuetext={`${formatAudioTimestamp(
+                isThisWeaponStoryActive ? audio.currentTime : 0
+              )} / ${formatAudioTimestamp(
+                isThisWeaponStoryActive ? audio.duration : 0
+              )}`}
               className="story-audio-slider"
               style={
                 {
@@ -692,6 +731,10 @@ export const WeaponStoryDrawer: React.FC<WeaponStoryDrawerProps> = ({
                         className={`act-audio-btn ${
                           isActPlaying ? 'playing' : ''
                         }`}
+                        aria-pressed={isActPlaying}
+                        aria-label={`${
+                          isActPlaying ? ui.actVoicePlaying : ui.actVoicePlay
+                        } — ${act.actNumber} · ${act.title}`}
                         onClick={() => handleActClick(idx, act.id)}
                       >
                         {isActPlaying ? (
@@ -724,6 +767,7 @@ export const WeaponStoryDrawer: React.FC<WeaponStoryDrawerProps> = ({
                                 key={cue.index}
                                 ref={isCueCurrent ? activeCueBtnRef : undefined}
                                 type="button"
+                                aria-current={isCueCurrent ? 'true' : undefined}
                                 className={`story-cue-line ${
                                   isCueCurrent
                                     ? 'is-active'

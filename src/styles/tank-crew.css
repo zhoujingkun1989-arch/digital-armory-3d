@@ -279,8 +279,22 @@
 
 @media (max-width: 768px) {
   .tank-crew-hud {
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: clip;
     padding: 8px 10px;
     gap: 6px;
+  }
+
+  .tank-crew-head {
+    flex-wrap: wrap;
+  }
+
+  .tank-crew-icon-btn {
+    width: 34px;
+    height: 34px;
+    min-width: 34px;
+    min-height: 34px;
   }
 
   .tank-crew-sliders {
@@ -288,8 +302,14 @@
     gap: 5px;
   }
 
+  .tank-crew-slider input[type='range'] {
+    min-height: 34px;
+  }
+
   .tank-crew-pill {
-    padding: 5px 8px;
+    min-height: 34px;
+    min-width: 34px;
+    padding: 5px 9px;
     font-size: 10px;
   }
 
@@ -299,6 +319,8 @@
   }
 
   .tank-crew-lase-btn {
+    min-height: 34px;
+    min-width: 34px;
     justify-content: center;
   }
 }
@@ -360,4 +382,23 @@
   background: rgba(132, 204, 22, 0.22);
   border-color: #65a30d;
   color: #365314;
+}
+
+.tank-crew-icon-btn:focus-visible,
+.tank-crew-pill:focus-visible,
+.tank-crew-lase-btn:focus-visible,
+.tank-crew-slider input[type='range']:focus-visible {
+  outline: 2px solid var(--color-accent-cyan, #38bdf8);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tank-crew-hud,
+  .tank-crew-hud *,
+  .tank-gunner-reticle-overlay,
+  .tank-gunner-reticle-overlay * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

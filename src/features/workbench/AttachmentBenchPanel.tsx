@@ -114,6 +114,7 @@ const AttachmentBenchPanel: React.FC = () => {
                 className={`att-action-pill ${
                   mode === 'firing' && isFiringPlaying ? 'is-firing' : ''
                 }`}
+                aria-pressed={mode === 'firing' && isFiringPlaying}
                 title={ui.testFireTitle}
                 onClick={() => {
                   playWorkbenchFoley('toggle_switch');
@@ -161,7 +162,7 @@ const AttachmentBenchPanel: React.FC = () => {
       <p className="att-sub">{ui.subtitle}</p>
 
       {!supported ? (
-        <div className="att-notice-box" role="status">
+        <div className="att-notice-box" role="status" aria-live="polite">
           <div className="att-notice-title">
             {profile.platformClass === 'armor' ||
             profile.platformClass === 'ordnance' ? (
@@ -235,6 +236,7 @@ const AttachmentBenchPanel: React.FC = () => {
                   <button
                     key={presetId}
                     type="button"
+                    aria-pressed={isActivePreset}
                     className={`att-preset-btn ${
                       isActivePreset ? 'is-active' : ''
                     }`}
@@ -425,7 +427,12 @@ const AttachmentBenchPanel: React.FC = () => {
           </div>
 
           {/* Live Gas-Flow, Cutaway & Acoustic Coupling Banner */}
-          <div className="att-coupling-banner">
+          <div
+            className="att-coupling-banner"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          >
             <div className="att-coupling-pills">
               <span className="att-coupling-chip">
                 <Volume2
